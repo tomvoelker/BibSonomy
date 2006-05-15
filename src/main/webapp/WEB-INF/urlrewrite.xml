@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 2.5//EN"
+        "http://tuckey.org/res/dtds/urlrewrite2.5.dtd">
+
+<!--
+	Configuration file for UrlRewriteFilter 
+	http://tuckey.org/urlrewrite/
+-->
+<urlrewrite>
+
+    <rule>
+        <note>
+            The rule means that requests to /test/status/ will be redirected to /rewrite-status
+            the url will be rewritten.
+        </note>
+        <from>/test/status/</from>
+        <to type="redirect">/rewrite-status</to>
+    </rule>
+
+
+    <outbound-rule>
+        <note>
+            The outbound-rule specifies that when response.encodeURL is called (if you are using JSTL c:url)
+            the url /rewrite-status will be rewritten to /test/status/.
+
+            The above rule and this outbound-rule means that end users should never see the
+            url /rewrite-status only /test/status/ both in thier location bar and in hyperlinks
+            in your pages.
+        </note>
+        <from>/rewrite-status</from>
+        <to>/test/status/</to>
+    </outbound-rule>
+
+<!--START some servlets for testing purposes (new MVC implementation)  -->
+
+	<rule>
+		<from>/brokenurl.*</from>
+		<to>/brokenurl.html</to>
+	</rule>
+    <rule>
+    	<from>^/+rss/+(.*)$</from>
+    	<to last="false">/$1</to>
+    	<set name="type">rss</set>
+    </rule>
+    <rule>
+    	<from>^/+xml/+(.*)$</from>
+    	<to last="false">/$1</to>
+    	<set name="type">xml</set>
+    </rule>
+    <rule>
+    	<from>^/+bib/+(.*)$</from>
+    	<to last="false">/$1</to>
+    	<set name="type">bib</set>
+    </rule>
+	<rule>
+		<from>^/+(\?(.*))?$</from>
+		<to>/ResourceHandler?page=home&amp;$2</to>
+	</rule>
+    <rule>
+        <from>^/+popular(\?(.*))?$</from>
+        <to>/ResourceHandler?page=popular&amp;$2</to>
+    </rule>  
+    <rule>
+        <from>^/+concept/+user/+([^/]+?)/(.+?)(\?(.*))?$</from>
+        <to>/ResourceHandler?page=concept&amp;requUser=$1&amp;requTag=$2&amp;$4</to>
+    </rule>
+    <rule>
+        <from>^/+user/+([^/]+?)/(.+?)(\?(.*))?$</from>
+        <to>/ResourceHandler?page=usertag&amp;requUser=$1&amp;requTag=$2&amp;$4</to>
+    </rule>
+	<rule>
+		<from>^/+user/+([^/]+?)(\?(.*))?$</from>
+		<to>/ResourceHandler?page=user&amp;requUser=$1&amp;$3</to>
+	</rule>
+	<rule>
+		<from>^/+group/+([^/]+?)(\?(.*))?$</from>
+		<to>/ResourceHandler?page=group&amp;requGroup=$1&amp;$3</to>
+	</rule>
+	<!-- download a document -->
+    <rule>
+		<from>^/+documents/(.+?)(\?(.*))?$</from>
+		<to>/DocumentDownloadHandler?requHash=$1&amp;$3</to> 
+	</rule>	
+	<!-- Tags -->
+	<rule>
+	    <from>^/+tag/*$</from>
+	    <to>/tags.jsp</to>
+	</rule>
+    <rule>
+		<from>^/+tag/(.+?)(\?(.*))?$</from>
+		<to>/ResourceHandler?page=tag&amp;requTag=$1&amp;$3</to> 
+	</rule>
+	<rule>
+		<from>/edittag</from>
+		<to>/TagEditHandler?do=view</to> 
+	</rule>
+	<!-- URL Hashes -->
+	<rule>
+	    <from>^/+url/*$</from>
+	    <to type="redirect">/</to>
+	</rule>
+	<rule>
+		<from>^/+url\?url=(.*)$</from>
+		<to>/RedirectHandler?page=url&amp;requUrl=$1</to> 
+	</rule>
+	<rule>
+		<from>^/+url/+([0-9a-fA-F]+)(\?(.*))?$</from>
+		<to>/ResourceHandler?page=url&amp;requUrl=$1&amp;$3</to> 
+	</rule>
+	<rule>
+		<from>^/+url/+([0-9a-fA-F]+)/+(.+?)(\?(.*))?$</from>
+		<to>/ResourceHandler?page=userurl&amp;requUrl=$1&amp;requUser=$2&amp;$4</to> 
+	</rule>
+	<!--  BibTeX Hashes-->
+	<rule>
+		<from>^/+bibtex\?bibtex=(.*)$</from>
+		<to>/RedirectHandler?page=bibtex&amp;requBibtex=$1</to> 
+	</rule>
+	<rule>
+		<from>^/+bibtex/+([0-9a-fA-F]+)(\?(.*))?$</from>
+		<to>/ResourceHandler?page=bibtex&amp;requBibtex=$1&amp;$3</to> 
+	</rule>
+	<rule>
+		<from>^/+bibtex/+([0-9a-fA-F]+)/+(.+?)(\?(.*))?$</from>
+		<to>/ResourceHandler?page=userbibtex&amp;requBibtex=$1&amp;requUser=$2&amp;$4</to> 
+	</rule>
+	<!-- Search -->
+    <rule>
+		<from>^/+search\?q=(.*)$</from>
+		<to>/RedirectHandler?page=search&amp;requSearch=$1</to> 
+	</rule>
+  	<rule>
+		<from>^/+search/(.+?)(\?(.*))?$</from>
+		<to>/ResourceHandler?page=search&amp;requSearch=$1&amp;$3</to> 
+	</rule>
+	<rule>
+		<from>^/+relations/+([^/]+?)(\?(.*))?$</from>
+		<to>/RelationsHandler?do=show&amp;requUser=$1&amp;$3</to>
+	</rule>
+	<rule>
+		<from casesensitive="true">^/+relations</from>
+		<to>/RelationsHandler?do=show</to>
+	</rule>
+    <rule>
+        <from>^/+download</from>
+        <to>/ResourceHandler?page=download</to>
+    </rule>
+    <rule>
+        <from>^/+questions/+all(\?(.*))?$</from>
+        <to>/QuestionsHandler?page=all&amp;$2</to>
+    </rule>
+	<rule>
+        <from>^/+questions/+(typ[0-9]+)(\?(.*))?$</from>
+        <to>/QuestionsHandler?page=$1&amp;$3</to>
+    </rule>    
+    <rule>
+        <from>^/+questions/+all/+answer(\?(.*))?$</from>
+        <to>/QuestionsHandler?page=answer&amp;typ=all&amp;answer=true&amp;$2</to>
+    </rule>
+	<rule>
+        <from>^/+questions/+(typ[0-9]+)/+answer(\?(.*))?$</from>
+        <to>/QuestionsHandler?page=answer&amp;typ=$1&amp;$3</to>
+    </rule>
+	<rule>
+        <from>^/+questions/+hotanswer(\?(.*))?$</from>
+        <to>/QuestionsHandler?page=hotanswer&amp;$2</to>
+    </rule>
+	<rule>
+        <from>^/+questions/+turnmode/(.+?)(\?(.*))?$</from>
+        <to>/QuestionsHandler?page=turnmode&amp;turn=$1&amp;$3</to>
+    </rule>
+    
+<!--END some servlets for testing purposes (new MVC implementation)  -->        
+
+    <!--
+
+    INSTALLATION
+
+        in your web.xml add...
+
+        <filter>
+            <filter-name>UrlRewriteFilter</filter-name>
+            <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
+            <init-param>
+                <param-name>logLevel</param-name>
+                <param-value>WARN</param-value>
+            </init-param>
+        </filter>
+        <filter-mapping>
+            <filter-name>UrlRewriteFilter</filter-name>
+            <url-pattern>/*</url-pattern>
+        </filter-mapping>
+
+     EXAMPLES
+
+     Redirect one url
+        <rule>
+            <from>/some/old/page.html</from>
+            <to type="redirect">/very/new/page.html</to>
+        </rule>
+
+    Redirect a directory
+        <rule>
+            <from>/some/olddir/(.*)</from>
+            <to type="redirect">/very/newdir/$1</to>
+        </rule>
+
+    Clean a url
+        <rule>
+            <from>/products/([0-9]+)</from>
+            <to>/products/index.jsp?product_id=$1</to>
+        </rule>
+    eg, /products/1234 will be passed on to /products/index.jsp?product_id=1234 without the user noticing.
+
+    Browser detection
+        <rule>
+            <condition name="user-agent">Mozilla/[1-4]</condition>
+            <from>/some/page.html</from>
+            <to>/some/page-for-old-browsers.html</to>
+        </rule>
+    eg, will pass the request for /some/page.html on to /some/page-for-old-browsers.html only for older
+    browsers whose user agent srtings match Mozilla/1, Mozilla/2, Mozilla/3 or Mozilla/4.
+
+    -->
+
+</urlrewrite>
+

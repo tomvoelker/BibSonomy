@@ -1,0 +1,150 @@
+<?xml version="1.0"?>
+<slide>
+	<property name="filespath">${org.apache.slide.webapp.rootpath}</property>
+
+	<namespace name="slide">
+		<definition>
+			<store name="tagstore">
+				<nodestore classname="webdav.TagStore">
+					<parameter name="rootpath">${filespath}store</parameter>
+				</nodestore>
+				<securitystore classname="org.apache.slide.store.mem.TransientSecurityStore" />
+				<lockstore classname="org.apache.slide.store.mem.TransientLockStore" />
+				<revisiondescriptorsstore>
+					<reference store="nodestore" />
+				</revisiondescriptorsstore>
+				<revisiondescriptorstore>
+					<reference store="nodestore" />
+				</revisiondescriptorstore>
+				<contentstore>
+					<reference store="nodestore" />
+				</contentstore>
+			</store>
+			<scope match="/" store="tagstore" />
+		</definition>
+		<configuration>
+			<read-object>/actions/read</read-object>
+			<create-object>/actions/write</create-object>
+			<remove-object>/actions/write</remove-object>
+			<grant-permission>/actions/write-acl</grant-permission>
+			<revoke-permission>/actions/write-acl</revoke-permission>
+			<read-permissions>/actions/read-acl</read-permissions>
+			<read-own-permissions>/actions/read-current-user-privilege-set</read-own-permissions>
+			<lock-object>/actions/write</lock-object>
+			<kill-lock>/actions/unlock</kill-lock>
+			<read-locks>/actions/read</read-locks>
+			<read-revision-metadata>/actions/read</read-revision-metadata>
+			<create-revision-metadata>/actions/write-properties</create-revision-metadata>
+			<modify-revision-metadata>/actions/write-properties</modify-revision-metadata>
+			<remove-revision-metadata>/actions/write-properties</remove-revision-metadata>
+			<read-revision-content>/actions/read</read-revision-content>
+			<create-revision-content>/actions/write-content</create-revision-content>
+			<modify-revision-content>/actions/write-content</modify-revision-content>
+			<remove-revision-content>/actions/write-content</remove-revision-content>
+			<bind-member>/actions/bind</bind-member>
+			<unbind-member>/actions/unbind</unbind-member>
+			<userspath>/users</userspath>
+			<rolespath>/roles</rolespath>
+			<actionspath>/actions</actionspath>
+			<filespath>/files</filespath>
+			<parameter name="dav">true</parameter>
+			<parameter name="standalone">true</parameter>
+			<parameter name="acl_inheritance_type">path</parameter>
+			<!-- Nested roles: 0 means no nesting (default), 1 means one sublevel, etc. -->
+			<parameter name="nested_roles_maxdepth">0</parameter>
+			<!-- Can be "off", "fine-grain", "write" and "full" -->
+			<parameter name="sequential-mode">fine-grain</parameter>
+			<!-- "false" lets all read-only methods be executed outside of transactions -->
+			<parameter name="all-methods-in-transactions">true</parameter>
+			<!-- Setting this to true will force Slide to internally convert the username a user
+			     enters at login to lowercase. This is useful for users who can't be bothered
+			     with turning off their capslock key before logging in. -->
+			<parameter name="force-lowercase-login">false</parameter>
+		</configuration>
+		<data>
+			<objectnode classname="org.apache.slide.structure.SubjectNode" uri="/">
+				<permission action="all" subject="/roles/root" inheritable="true"/>
+				<permission action="/actions/read-acl" subject="all" inheritable="true" negative="true"/>
+				<permission action="/actions/write-acl" subject="all" inheritable="true" negative="true"/>
+				<permission action="/actions/unlock" subject="all" inheritable="true" negative="true"/>
+				<permission action="/actions/read" subject="all" inheritable="true"/>
+				<!--permission action="all" subject="all" inheritable="true"/-->
+				<objectnode classname="org.apache.slide.structure.SubjectNode" uri="/users">
+					<permission action="all" subject="self" inheritable="true"/>
+					<permission action="all" subject="unauthenticated" inheritable="true" negative="true"/>
+					<objectnode classname="org.apache.slide.structure.SubjectNode" uri="/users/root">
+						<revision>
+							<property namespace="http://jakarta.apache.org/slide/" name="password">root</property> 
+						</revision>
+					</objectnode>
+				</objectnode>
+				<objectnode classname="org.apache.slide.structure.SubjectNode" uri="/roles">
+					<permission action="all" subject="self" inheritable="true"/>
+					<permission action="all" subject="unauthenticated" inheritable="true" negative="true"/>
+					<objectnode classname="org.apache.slide.structure.SubjectNode" uri="/roles/root">
+						<revision>
+							<property name="group-member-set"><![CDATA[<D:href xmlns:D='DAV:'>/users/root</D:href>]]></property>
+						</revision>
+					</objectnode>
+				</objectnode>
+                <objectnode classname="org.apache.slide.structure.ActionNode" uri="/actions">
+                    <objectnode classname="org.apache.slide.structure.ActionNode" uri="/actions/read">
+                        <revision>
+                            <property name="privilege-member-set"><![CDATA[<D:href xmlns:D='DAV:'>/actions/read-acl</D:href> <D:href xmlns:D='DAV:'>/actions/read-current-user-privilege-set</D:href>]]></property>
+                        </revision>
+                    </objectnode>
+                    <objectnode classname="org.apache.slide.structure.ActionNode" uri="/actions/read-acl">
+                        <revision>
+                            <property name="privilege-member-set"/>
+                        </revision>
+                    </objectnode>
+                    <objectnode classname="org.apache.slide.structure.ActionNode" uri="/actions/read-current-user-privilege-set">
+                        <revision>
+                            <property name="privilege-member-set"/>
+                        </revision>
+                    </objectnode>
+                    <objectnode classname="org.apache.slide.structure.ActionNode" uri="/actions/write">
+                        <revision>
+                            <property name="privilege-member-set"><![CDATA[<D:href xmlns:D='DAV:'>/actions/write-acl</D:href> <D:href xmlns:D='DAV:'>/actions/write-properties</D:href> <D:href xmlns:D='DAV:'>/actions/write-content</D:href>]]></property>
+                        </revision>
+                    </objectnode>
+                    <objectnode classname="org.apache.slide.structure.ActionNode" uri="/actions/write-acl">
+                        <revision>
+                            <property name="privilege-member-set"/>
+                        </revision>
+                    </objectnode>
+                    <objectnode classname="org.apache.slide.structure.ActionNode" uri="/actions/write-properties">
+                        <revision>
+                            <property name="privilege-member-set"/>
+                        </revision>
+                    </objectnode>
+                    <objectnode classname="org.apache.slide.structure.ActionNode" uri="/actions/write-content">
+                        <revision>
+                            <property name="privilege-member-set"><![CDATA[<D:href xmlns:D='DAV:'>/actions/bind</D:href> <D:href xmlns:D='DAV:'>/actions/unbind</D:href>]]></property>
+                        </revision>
+                    </objectnode>
+                    <objectnode classname="org.apache.slide.structure.ActionNode" uri="/actions/bind">
+                        <revision>
+                            <property name="privilege-member-set"/>
+                        </revision>
+                    </objectnode>
+                    <objectnode classname="org.apache.slide.structure.ActionNode" uri="/actions/unbind">
+                        <revision>
+                            <property name="privilege-member-set"/>
+                        </revision>
+                    </objectnode>
+                    <objectnode classname="org.apache.slide.structure.ActionNode" uri="/actions/unlock">
+                        <revision>
+                            <property name="privilege-member-set"/>
+                        </revision>
+                    </objectnode>
+                </objectnode>
+                <objectnode classname="org.apache.slide.structure.SubjectNode" uri="/files">
+                    <permission action="all" subject="unauthenticated" inheritable="true"/>
+                    <permission action="/actions/write" subject="/roles/user" inheritable="true"/>
+                    <permission action="/actions/read-acl" subject="owner" inheritable="true"/>
+                </objectnode>
+			</objectnode>
+		</data>
+	</namespace>
+</slide>
