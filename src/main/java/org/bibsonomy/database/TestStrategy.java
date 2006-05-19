@@ -1,12 +1,11 @@
 /*
  * Created on 15.05.2006
  */
-package org.bibsonomy.model.impl;
+package org.bibsonomy.database;
 
 import java.util.Arrays;
 import java.util.Iterator;
 
-import org.bibsonomy.model.Strategy;
 import org.bibsonomy.viewmodel.TestViewModel;
 
 public class TestStrategy implements Strategy<TestViewModel>{

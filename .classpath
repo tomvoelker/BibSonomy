@@ -6,5 +6,13 @@
 	<classpathentry kind="src" path="work"/>
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="src" path="resources"/>
+	<classpathentry kind="src" path="src/main/generated"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/activation.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/assocs.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/jaxb-api.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/jaxb-impl.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/jsr173_api.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/log4j-1.2.11.jar"/>
 	<classpathentry kind="output" path="src/main/webapp/WEB-INF/classes"/>
 </classpath>

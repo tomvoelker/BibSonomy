@@ -5,6 +5,9 @@ package org.bibsonomy.viewmodel;
 
 import java.util.Iterator;
 
+/**
+ * manu: i dont think we need a viewmodel.. 
+ */
 public class TestViewModel {
 	private Iterator<String> items;
 

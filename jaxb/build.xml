@@ -1,0 +1,31 @@
+<?xml version="1.0" standalone="yes"?>
+<!--
+  Copyright 2004 Sun Microsystems, Inc. All rights reserved.
+-->
+<project basedir=".." default="compile">
+  <description>
+    This sample application demonstrates how to use the ObjectFactory 
+    class to create a Java content tree from scratch and marshal it to 
+    XML data. It also demonstrates how to add content to a JAXB List 
+    property.
+  </description>
+
+  <property name="home" value="." />
+	
+  <path id="classpath">
+    <pathelement path="src" />
+    <pathelement path="classes" />
+    <fileset dir="${home}" includes="src/main/webapp/WEB-INF/lib/*.jar" />
+    <fileset dir="${home}" includes="src/main/webapp/WEB-INF/lib/antonly/*.jar" />
+  </path>
+  <taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+    <classpath refid="classpath" />
+  </taskdef>
+
+  <target name="compile" description="Compile all Java source files">
+    <echo message="Compiling the schema.." />
+    <xjc schema="resources/xschema.xsd" package="org.bibsonomy.rest.renderer.xml" destdir="src/main/java">
+      <produces dir="src/main/java/org.bibsonomy.rest.renderer.xml" includes="**/*.java" />
+    </xjc>
+  </target>
+</project>
