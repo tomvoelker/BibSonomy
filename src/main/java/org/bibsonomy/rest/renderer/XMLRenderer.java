@@ -2,7 +2,6 @@ package org.bibsonomy.rest.renderer;
 
 import java.io.PrintWriter;
 import java.math.BigInteger;
-import java.util.GregorianCalendar;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
@@ -17,11 +16,11 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.InternServerException;
+import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 import org.bibsonomy.rest.renderer.xml.BibtexType;
 import org.bibsonomy.rest.renderer.xml.BookmarkType;
 import org.bibsonomy.rest.renderer.xml.GroupType;
-import org.bibsonomy.rest.renderer.xml.GroupsType;
 import org.bibsonomy.rest.renderer.xml.ObjectFactory;
 import org.bibsonomy.rest.renderer.xml.PostType;
 import org.bibsonomy.rest.renderer.xml.PostsType;
@@ -29,8 +28,6 @@ import org.bibsonomy.rest.renderer.xml.TagType;
 import org.bibsonomy.rest.renderer.xml.TagsType;
 import org.bibsonomy.rest.renderer.xml.UserType;
 import org.bibsonomy.rest.renderer.xml.UsersType;
-
-import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
 /**
  * this class creates xml documents valid to the xsd schema
@@ -41,12 +38,12 @@ import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl
 public class XMLRenderer implements Renderer
 {
 
-	public void serializeUsers( PrintWriter writer, Set<User> users, int start, int end, String next )
+	public void serializeUsers( PrintWriter writer, Set<User> users, ViewModel viewModel )
 	{
 		UsersType xmlUsers = new UsersType();
-		xmlUsers.setEnd( BigInteger.valueOf( end ) );
-		xmlUsers.setNext( next );
-		xmlUsers.setStart( BigInteger.valueOf( start ) );
+		xmlUsers.setEnd( BigInteger.valueOf( viewModel.getEndValue() ) );
+		xmlUsers.setNext( viewModel.getUrlToNextResources() );
+		xmlUsers.setStart( BigInteger.valueOf( viewModel.getStartValue() ) );
 		
 		for( User user: users )
 		{
@@ -65,12 +62,12 @@ public class XMLRenderer implements Renderer
 		serialize( writer, xmlDoc );
 	}
 	
-	public void serializeTags( PrintWriter writer, Set<Tag> tags, int start, int end, String next )
+	public void serializeTags( PrintWriter writer, Set<Tag> tags, ViewModel viewModel )
 	{
 		TagsType xmlTags = new TagsType();
-		xmlTags.setEnd( BigInteger.valueOf( end ) );
-		xmlTags.setNext( next );
-		xmlTags.setStart( BigInteger.valueOf( start ) );
+		xmlTags.setEnd( BigInteger.valueOf( viewModel.getEndValue() ) );
+		xmlTags.setNext( viewModel.getUrlToNextResources() );
+		xmlTags.setStart( BigInteger.valueOf( viewModel.getStartValue() ) );
 		
 		for( Tag tag: tags )
 		{
@@ -85,12 +82,12 @@ public class XMLRenderer implements Renderer
 		serialize( writer, xmlDoc );
 	}
 	
-	public void serializePosts( PrintWriter writer, Set<Post> posts, int start, int end, String next ) throws InternServerException
+	public void serializePosts( PrintWriter writer, Set<Post> posts, ViewModel viewModel ) throws InternServerException
 	{
 		PostsType xmlPosts = new PostsType();
-		xmlPosts.setEnd( BigInteger.valueOf( end ) );
-		xmlPosts.setNext( next );
-		xmlPosts.setStart( BigInteger.valueOf( start ) );
+		xmlPosts.setEnd( BigInteger.valueOf( viewModel.getEndValue() ) );
+		xmlPosts.setNext( viewModel.getUrlToNextResources() );
+		xmlPosts.setStart( BigInteger.valueOf( viewModel.getStartValue() ) );
 		
 		for( Post post: posts )
 		{
@@ -101,34 +98,24 @@ public class XMLRenderer implements Renderer
 //			xmlUser.setHref( createHrefForUser( post.getUser().getName() ) ); TODO
 			xmlPost.setUser( xmlUser );
 			
-			// set tags
-			TagsType xmlTags = new TagsType();
+			// add tags
 			for( Tag t: post.getTags() )
 			{
 				TagType xmlTag = new TagType();
 				xmlTag.setName( t.getName() );
-				xmlTags.getTag().add( xmlTag );
+				xmlPost.getTag().add( xmlTag );
 			}
-			xmlPost.setTags( xmlTags );
 			
-			// set group
-			if( post.getGroups().size() > 0 )
+			// add groups
+			for( Group group: post.getGroups() )
 			{
-				GroupsType xmlGroups = new GroupsType();
-				for( Group group: post.getGroups() )
-				{
-					GroupType xmlGroup = new GroupType();
-					xmlGroup.setName( group.getName() );
-//					xmlGroup.setHref( createHrefForGroup() ); // TODO
-					xmlGroups.getGroup().add( xmlGroup );
-				}
-				xmlPost.setGroups( xmlGroups );
+				GroupType xmlGroup = new GroupType();
+				xmlGroup.setName( group.getName() );
+//				xmlGroup.setHref( createHrefForGroup() ); // TODO
+				xmlPost.getGroup().add( xmlGroup );
 			}
 			
 			xmlPost.setDescription( post.getDescription() );
-			// xmlPost.setPostingDate( post.getPostingDate() ); // TODO
-			xmlPost.setPostingDate( new XMLGregorianCalendarImpl( new GregorianCalendar() ) );
-			
 			
 			if( post.getResource() instanceof Bookmark )
 			{
@@ -195,7 +182,10 @@ public class XMLRenderer implements Renderer
 
 /*
  * $Log$
- * Revision 1.1  2006-05-19 21:01:08  mbork
+ * Revision 1.2  2006-05-21 20:31:51  mbork
+ * continued implementing context
+ *
+ * Revision 1.1  2006/05/19 21:01:08  mbork
  * started implementing rest api
  *
  */

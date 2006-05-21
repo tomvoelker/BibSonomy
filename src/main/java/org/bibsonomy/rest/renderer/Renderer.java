@@ -7,6 +7,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.InternServerException;
+import org.bibsonomy.rest.ViewModel;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -21,46 +22,37 @@ public interface Renderer
 	/**
 	 * serializes a list of posts
 	 * 
-	 * TODO encapsulate start, end and next into a special context type?
-	 * 
 	 * @param writer
 	 * @param posts
-	 * @param start
-	 * @param end
-	 * @param next
+	 * @param viewModel
 	 */
-	public void serializePosts( PrintWriter writer, Set<Post> posts, int start, int end, String next ) throws InternServerException;
+	public void serializePosts( PrintWriter writer, Set<Post> posts, ViewModel viewModel ) throws InternServerException;
 
 	/**
 	 * serializes a list of users
 	 * 
-	 * TODO encapsulate start, end and next into a special context type?
-	 * 
 	 * @param writer
 	 * @param users
-	 * @param start
-	 * @param end
-	 * @param next
+	 * @param viewModel
 	 */
-	public void serializeUsers( PrintWriter writer, Set<User> users, int start, int end, String next );
+	public void serializeUsers( PrintWriter writer, Set<User> users, ViewModel viewModel );
 
 	/**
 	 * serializes a list of tags
 	 * 
-	 * TODO encapsulate start, end and next into a special context type?
-	 * 
 	 * @param writer
 	 * @param tags
-	 * @param start
-	 * @param end
-	 * @param next
+	 * @param viewModel
 	 */
-	public void serializeTags( PrintWriter writer, Set<Tag> tags, int start, int end, String next );
+	public void serializeTags( PrintWriter writer, Set<Tag> tags, ViewModel viewModel );
 }
 
 /*
  * $Log$
- * Revision 1.1  2006-05-19 21:01:08  mbork
+ * Revision 1.2  2006-05-21 20:31:51  mbork
+ * continued implementing context
+ *
+ * Revision 1.1  2006/05/19 21:01:08  mbork
  * started implementing rest api
  *
  */

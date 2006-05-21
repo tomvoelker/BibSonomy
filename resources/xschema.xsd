@@ -109,15 +109,15 @@
 	<xsd:complexType name="PostType">
 		<xsd:sequence>
   			<xsd:element name="user" type="UserType"/>
-			<xsd:element name="groups" type="GroupsType" minOccurs="0"/>
-			<xsd:element name="tags" type="TagsType"/>
+			<xsd:element name="group" type="GroupType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="tag" type="TagType" maxOccurs="unbounded"/>
 			<xsd:choice>
 				<xsd:element name="bookmark" type="BookmarkType"/>
 				<xsd:element name="bibtex" type="BibtexType"/>
 			</xsd:choice>
 		</xsd:sequence>
 		<xsd:attribute name="description" type="xsd:string" use="required"/>
-		<xsd:attribute name="postingDate" type="xsd:dateTime" use="required"/>
+		<xsd:attribute name="postingdate" type="xsd:dateTime" use="required"/>
 	</xsd:complexType>
 	
 	<!--
@@ -130,8 +130,6 @@
 		<xsd:attribute name="intrahash" type="xsd:string" use="required"/>
 		<!-- link to all posts of this bookmark -->
 		<xsd:attribute name="href" type="xsd:anyURI" use="required"/>
-		<!-- should be something like a version -->
-		<xsd:attribute name="timestamp" type="xsd:long" use="required"/>
 	</xsd:complexType>
 	
 	<!--
@@ -148,8 +146,6 @@
 		<xsd:attribute name="intrahash" type="xsd:string" use="required"/>
 		<!-- link to all posts of this bibtex -->
 		<xsd:attribute name="href" type="xsd:anyURI" use="required"/>
-		<!-- should be something like a version -->
-		<xsd:attribute name="timestamp" type="xsd:long" use="required"/>
 	</xsd:complexType>
 
 </xsd:schema>

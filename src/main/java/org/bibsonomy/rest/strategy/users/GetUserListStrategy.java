@@ -1,4 +1,4 @@
-package org.bibsonomy.rest.strategy;
+package org.bibsonomy.rest.strategy.users;
 
 import java.io.IOException;
 import java.util.Set;
@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.InternServerException;
 import org.bibsonomy.rest.ValidationException;
+import org.bibsonomy.rest.ViewModel;
+import org.bibsonomy.rest.strategy.Context;
+import org.bibsonomy.rest.strategy.Strategy;
 
 /**
  * shows all users bibsonomy has
@@ -16,10 +19,9 @@ import org.bibsonomy.rest.ValidationException;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public class UserListStrategy extends Strategy
+public class GetUserListStrategy extends Strategy
 {
-
-	public UserListStrategy( Context context )
+	public GetUserListStrategy( Context context )
 	{
 		super( context );
 	}
@@ -30,7 +32,7 @@ public class UserListStrategy extends Strategy
 	@Override
 	public void validate() throws ValidationException
 	{
-		// should be ok
+		// should be ok for everybody
 	}
 
 	/* (non-Javadoc)
@@ -39,16 +41,24 @@ public class UserListStrategy extends Strategy
 	@Override
 	public void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException
 	{
-		int start = context.getIntAttribute( "start", 1 );
-		int end = context.getIntAttribute( "end", 10 );
-		String next = "?start=" + String.valueOf( end + 1 ) + "&end=" + String.valueOf( end + 10 ); // TODO
+		// setup viewModel
+		int start = context.getIntAttribute( "start", 0 );
+		int end = context.getIntAttribute( "end", 19 );
+		String next = Context.API_URL + "/" + Context.URL_USERS + "?start=" + String.valueOf( end + 1 ) + 
+			"&end=" + String.valueOf( end + 10 );
 		
-		Set<User> users = context.getDatabase().getUsers( context.getAuthUserName(), start - 1 , end - 1 );
+		ViewModel viewModel = new ViewModel();
+		viewModel.setStartValue( start );
+		viewModel.setEndValue( end );
+		viewModel.setUrlToNextResources( next );
+		
+		// delegate to the renderer
+		Set<User> users = context.getDatabase().getUsers( context.getAuthUserName(), start, end );
 		try 
 		{
-			context.getRenderer().serializeUsers( response.getWriter(), users, start, end, next );
+			context.getRenderer().serializeUsers( response.getWriter(), users, viewModel );
 		} 
-		catch (IOException e) 
+		catch( IOException e ) 
 		{
 			throw new InternServerException( e );
 		}
@@ -59,7 +69,7 @@ public class UserListStrategy extends Strategy
 	 */
 	@Override
 	public String getContentType( String userAgent )
-	{
+	{// TODO: contentType
 		if( context.apiIsUserAgent( userAgent ) ) return "bibsonomy/users+xml";
 		return Context.DEFAULT_CONTENT_TYPE;
 	}
@@ -68,7 +78,10 @@ public class UserListStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.1  2006-05-19 21:01:08  mbork
+ * Revision 1.1  2006-05-21 20:31:51  mbork
+ * continued implementing context
+ *
+ * Revision 1.1  2006/05/19 21:01:08  mbork
  * started implementing rest api
  *
  */

@@ -1,5 +1,6 @@
 package org.bibsonomy.rest.strategy;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -37,6 +38,15 @@ public final class Context
 	public static final String URL_POSTS = "posts";
 	public static final String URL_POSTS_ADDED = "added";
 	public static final String URL_POSTS_POPULAR = "popular";
+	
+	private static Map<String, ContextHandler> urlHandlers = new HashMap<String, ContextHandler>();
+	static
+	{
+		Context.urlHandlers.put( URL_TAGS, new TagsHandler() );
+		Context.urlHandlers.put( URL_USERS, new UsersHandler() );
+		Context.urlHandlers.put( URL_GROUPS, new GroupsHandler() );
+		Context.urlHandlers.put( URL_POSTS, new PostsHandler() );
+	}
 	
 	/**
 	 * the authenticated userName, null if none
@@ -95,70 +105,15 @@ public final class Context
 		}
 		
 		// choose strategy
-		int numTokens = urlTokens.countTokens();
-		String token;
-		switch( numTokens ) 
+		if( urlTokens.countTokens() > 0 )
 		{
-			case 1:
-				token = urlTokens.nextToken();
-				if( URL_USERS.equalsIgnoreCase( token ) )
-				{
-					// users => www.bibsonomy.org/ .. /users
-					this.strategy = new UserListStrategy( this ); 
-				}
-				else if( URL_GROUPS.equalsIgnoreCase( token ) )
-				{
-					// groups => www.bibsonomy.org/ .. /groups
-//					this.strategy = new GroupListStrategy( this ); 
-				}
-				else if( URL_TAGS.equalsIgnoreCase( token ) )
-				{
-					// tags => www.bibsonomy.org/ .. /tags
-//					this.strategy = new TagListStrategy( this ); 
-				}
-				else if( URL_POSTS.equalsIgnoreCase( token ) )
-				{
-					// posts => www.bibsonomy.org/ .. /posts
-//					this.strategy = new PostListStrategy( this ); 
-				}
-				break;
-			case 2:
-				token = urlTokens.nextToken();
-				if( URL_USERS.equalsIgnoreCase( token ) )
-				{
-					// users => www.bibsonomy.org/ .. /users/[username]
-//					this.strategy = new UserDetailsStrategy( this, urlTokens.nextToken() ); 
-				}
-				else if( URL_GROUPS.equalsIgnoreCase( token ) )
-				{
-					// groups => www.bibsonomy.org/ .. /groups/[groupname]
-//					this.strategy = new GroupDetailsStrategy( this, urlTokens.nextToken() ); 
-				}
-				else if( URL_TAGS.equalsIgnoreCase( token ) )
-				{
-					// tags => www.bibsonomy.org/ .. /tags/substitute
-//					this.strategy = new TagSubstituteStrategy( this ); 
-				}
-				else if( URL_POSTS.equalsIgnoreCase( token ) )
-				{
-					if( URL_POSTS_ADDED.equalsIgnoreCase( token ) )
-					{
-						// posts => www.bibsonomy.org/ .. /posts/added
-//						this.strategy = new PostListStrategy( this ); 
-					}
-					else if( URL_POSTS_POPULAR.equalsIgnoreCase( token ) )
-					{
-						// posts => www.bibsonomy.org/ .. /posts/popular
-//						this.strategy = new PostListStrategy( this );
-					}
-				}
-				break;
-			case 3:
-				break;
-			case 4:
-				break;
+			ContextHandler contextHandler = Context.urlHandlers.get( urlTokens.nextElement() );
+			if( contextHandler != null )
+			{
+				this.strategy = contextHandler.createStrategy( this, urlTokens, httpMethod );
+			}
 		}
-
+		
 		if( strategy == null ) strategy = new TodoStrategy( this );
 	}
 
@@ -194,7 +149,7 @@ public final class Context
 	 * @param userAgent
 	 * @return true if the client uses this webservice api, false if its a browser for example
 	 */
-	protected boolean apiIsUserAgent( String userAgent )
+	public boolean apiIsUserAgent( String userAgent )
 	{
 		return userAgent != null && userAgent.startsWith( API_USER_AGENT );
 	}
@@ -255,7 +210,7 @@ public final class Context
 	/**
 	 * @return Returns the authUserName.
 	 */
-	protected String getAuthUserName()
+	public String getAuthUserName()
 	{
 		return authUserName;
 	}
@@ -283,18 +238,23 @@ public final class Context
 	{
 		return database;
 	}
-	
+
 	/**
-	 * @return Returns the httpMethod.
+	 * do not use, only for junit tests
+	 * @return Returns the strategy.
 	 */
-	public String getHttpMethod() {
-		return httpMethod;
+	Strategy getStrategy()
+	{
+		return strategy;
 	}
 }
 
 /*
  * $Log$
- * Revision 1.1  2006-05-19 21:01:08  mbork
+ * Revision 1.2  2006-05-21 20:31:51  mbork
+ * continued implementing context
+ *
+ * Revision 1.1  2006/05/19 21:01:08  mbork
  * started implementing rest api
  *
 */
