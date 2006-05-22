@@ -12,7 +12,6 @@ import org.bibsonomy.rest.strategy.users.GetPostDetailsStrategy;
 import org.bibsonomy.rest.strategy.users.GetUserListStrategy;
 import org.bibsonomy.rest.strategy.users.GetUserPostsStrategy;
 import org.bibsonomy.rest.strategy.users.GetUserStrategy;
-import org.bibsonomy.rest.strategy.users.GetUserTagsStrategy;
 import org.bibsonomy.rest.strategy.users.PostPostStrategy;
 import org.bibsonomy.rest.strategy.users.PostUserStrategy;
 import org.bibsonomy.rest.strategy.users.PutPostStrategy;
@@ -72,13 +71,6 @@ public class ContextUserTest extends TestCase
 				c.getStrategy() instanceof DeleteUserStrategy );
 	}
 	
-	public void testGetUserTagsStrategy() throws Exception
-	{
-		Context c = new Context( db, Context.HTTP_GET, "/users/testuser/tags", new HashMap() );
-		assertTrue( "failure initializing GetUserTagsStrategy",
-				c.getStrategy() instanceof GetUserTagsStrategy );
-	}
-	
 	public void testGetUserPostsStrategy() throws Exception
 	{
 		Context c = new Context( db, Context.HTTP_GET, "/users/testuser/posts", new HashMap() );
@@ -120,7 +112,10 @@ public class ContextUserTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.1  2006-05-21 20:31:51  mbork
+ * Revision 1.2  2006-05-22 10:34:38  mbork
+ * implemented context chooser for /groups
+ *
+ * Revision 1.1  2006/05/21 20:31:51  mbork
  * continued implementing context
  *
  * Revision 1.1  2006/05/19 21:01:09  mbork

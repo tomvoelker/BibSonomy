@@ -12,7 +12,6 @@ import org.bibsonomy.rest.strategy.users.PostPostStrategy;
 import org.bibsonomy.rest.strategy.users.PostUserStrategy;
 import org.bibsonomy.rest.strategy.users.PutPostStrategy;
 import org.bibsonomy.rest.strategy.users.PutUserStrategy;
-import org.bibsonomy.rest.strategy.users.GetUserTagsStrategy;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -38,12 +37,7 @@ public class UsersHandler implements ContextHandler
 			case 2:
 				userName = urlTokens.nextToken();
 				String req = urlTokens.nextToken();
-				if( Context.URL_TAGS.equalsIgnoreCase( req ) )
-				{
-					// /users/[username]/tags (only GET)
-					return new GetUserTagsStrategy( context, userName );
-				}
-				else if( Context.URL_POSTS.equalsIgnoreCase( req ) )
+				if( Context.URL_POSTS.equalsIgnoreCase( req ) )
 				{
 					// /users/[username]/posts
 					return createUserPostsStrategy( context, httpMethod, userName );
@@ -52,9 +46,12 @@ public class UsersHandler implements ContextHandler
 			case 3:
 				// /users/[username]/posts/[resourceHash]
 				userName = urlTokens.nextToken();
-				urlTokens.nextToken();
-				String resourceHash = urlTokens.nextToken();
-				return createUserPostStrategy( context, httpMethod, userName, resourceHash );
+				if( Context.URL_POSTS.equalsIgnoreCase( urlTokens.nextToken() ) )
+				{
+					String resourceHash = urlTokens.nextToken();
+					return createUserPostStrategy( context, httpMethod, userName, resourceHash );
+				}
+				break;
 		}
 		throw new UnsupportedOperationException( "no strategy for url " );
 	}
@@ -140,7 +137,10 @@ public class UsersHandler implements ContextHandler
 
 /*
  * $Log$
- * Revision 1.1  2006-05-21 20:31:51  mbork
+ * Revision 1.2  2006-05-22 10:34:38  mbork
+ * implemented context chooser for /groups
+ *
+ * Revision 1.1  2006/05/21 20:31:51  mbork
  * continued implementing context
  *
  */

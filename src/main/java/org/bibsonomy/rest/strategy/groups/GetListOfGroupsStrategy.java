@@ -1,4 +1,4 @@
-package org.bibsonomy.rest.strategy.users;
+package org.bibsonomy.rest.strategy.groups;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,14 +12,13 @@ import org.bibsonomy.rest.strategy.Strategy;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public class GetUserTagsStrategy extends Strategy
+public class GetListOfGroupsStrategy extends Strategy
 {
 
 	/**
 	 * @param context
-	 * @param userName 
 	 */
-	public GetUserTagsStrategy( Context context, String userName )
+	public GetListOfGroupsStrategy( Context context )
 	{
 		super( context );
 		// TODO Auto-generated constructor stub
@@ -60,7 +59,7 @@ public class GetUserTagsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.1  2006-05-21 20:31:51  mbork
- * continued implementing context
+ * Revision 1.1  2006-05-22 10:34:38  mbork
+ * implemented context chooser for /groups
  *
  */
