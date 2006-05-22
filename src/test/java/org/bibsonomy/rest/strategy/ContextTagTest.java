@@ -10,7 +10,7 @@ import org.bibsonomy.rest.strategy.tags.GetListOfTagsStrategy;
 import org.bibsonomy.rest.strategy.tags.GetTagDetailsStrategy;
 
 /**
- * Tests for correct strategy initialization if requesting something under /users
+ * Tests for correct strategy initialization if requesting something under /tags
  *  
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
@@ -45,7 +45,10 @@ public class ContextTagTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.1  2006-05-22 10:42:25  mbork
+ * Revision 1.2  2006-05-22 10:52:45  mbork
+ * implemented context chooser for /posts
+ *
+ * Revision 1.1  2006/05/22 10:42:25  mbork
  * implemented context chooser for /tags
  *
  */

@@ -16,7 +16,7 @@ import org.bibsonomy.rest.strategy.groups.RemoveUserFromGroupStrategy;
 import org.bibsonomy.rest.strategy.groups.UpdateGroupDetailsStrategy;
 
 /**
- * Tests for correct strategy initialization if requesting something under /users
+ * Tests for correct strategy initialization if requesting something under /groups
  *  
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
@@ -94,7 +94,10 @@ public class ContextGroupTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.1  2006-05-22 10:34:38  mbork
+ * Revision 1.2  2006-05-22 10:52:45  mbork
+ * implemented context chooser for /posts
+ *
+ * Revision 1.1  2006/05/22 10:34:38  mbork
  * implemented context chooser for /groups
  *
  */
