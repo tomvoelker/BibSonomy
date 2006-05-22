@@ -15,8 +15,8 @@ import org.bibsonomy.rest.strategy.groups.UpdateGroupDetailsStrategy;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public class GroupsHandler implements ContextHandler {
-
+public class GroupsHandler implements ContextHandler 
+{
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.rest.strategy.ContextHandler#createStrategy(java.lang.StringBuffer)
 	 */
@@ -113,7 +113,10 @@ public class GroupsHandler implements ContextHandler {
 
 /*
  * $Log$
- * Revision 1.2  2006-05-22 10:34:38  mbork
+ * Revision 1.3  2006-05-22 10:42:25  mbork
+ * implemented context chooser for /tags
+ *
+ * Revision 1.2  2006/05/22 10:34:38  mbork
  * implemented context chooser for /groups
  *
  * Revision 1.1  2006/05/21 20:31:51  mbork
