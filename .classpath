@@ -14,6 +14,6 @@
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/jaxb-impl.jar"/>
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/jsr173_api.jar"/>
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/log4j-1.2.11.jar"/>
-	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/DBCommands-0.0.2.jar"/>
+	<classpathentry sourcepath="src/main/webapp/WEB-INF/lib/DBCommands-0.0.2-sources.jar" kind="lib" path="src/main/webapp/WEB-INF/lib/DBCommands-0.0.2.jar"/>
 	<classpathentry kind="output" path="src/main/webapp/WEB-INF/classes"/>
 </classpath>
