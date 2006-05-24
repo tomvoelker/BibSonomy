@@ -1,0 +1,112 @@
+REST API
+
+  * ListeAllerUser:
+
+        GET /users
+
+  * UserAnlegen:
+
+        POST /users
+
+  * DetailsEinesUsers:
+
+        GET /users/[username]
+
+  * UserDetailsAendern:
+
+        PUT /users/[username]
+
+  * UserLoeschen:
+
+        DELETE /users/[username]
+
+  * ListeDerPostsEinesUsers?:
+
+        GET /users/[username]/posts ?tags=[t1+t2+...+tn] ?resourcetype=(bibtex|bookmark)
+
+  * PostHinzufuegen?:
+
+        POST /users/[username]/posts
+
+  * DetailsZuEinemPost:
+
+        GET /users/[username]/posts/[resourceHash]
+
+  * PostAendern?:
+
+        PUT /users/[username]/posts/[resourceHash]
+
+  * PostLoeschen?:
+
+        DELETE /users/[username]/posts/[resourceHash]
+
+  * ListeAllerGruppen?:
+
+        GET /groups
+
+  * GruppeHinzufuegen?:
+
+        POST /groups
+
+  * DetaileEinerGruppe?:
+
+        GET /groups/[groupname]
+
+  * GruppeAendern?:
+
+        PUT /groups/[groupname]
+
+  * GruppeLoeschen?:
+
+        DELETE /groups/[groupname]
+
+  * ListeAllerGruppenmitglieder?:
+
+        GET /groups/[groupname]/users
+
+  * GruppenmitgliedHinzufuegen?:
+
+        POST /groups/[groupname]/users
+
+  * GruppenmitgliedEntfernen?:
+
+        DELETE /groups/[groupname]/users/[username]
+
+  * ListeAllerTags?:
+
+        GET /tags ?filter=[regex] ?(user|group|viewable)=[username/groupname]
+
+  * DetailsZuEinemTag? / Details zur Liste der Sub-/Super-/Correlated-Tags:
+
+        GET /tags/[tag]
+
+  * GemeinsameVorkommenErsetzen? von t1,t2,.. durch T1,T2,..:
+
+        PUT /substitutetags?from=[t1+t2+..]&to=[T1+T2+..]
+
+  * ListeAllerPosts?:
+
+        GET /posts ?tags=[t1+t2+...+tn] ?resourcetype=(bibtex|bookmark) ?(user|group|viewable)=[username/groupname] ?resource=[hash]
+
+  * ListeDerNeuestenPosts?:
+
+        GET /posts/added ?resourcetype=(bibtex|bookmark)
+
+  * ListeDerPopulaerstenPosts?:
+
+        GET /posts/popular ?resourcetype=(bibtex|bookmark)
+
+  Die o.g. Requests können zusätzlich noch durch folgende Attribute ergänzt werden (start und end nur bei
+  Listen):
+
+  ?format=(xml|rdf|html)
+  ?start=[int], beginnend bei 0, default 0
+  ?end=[int], beginnend bei 0, default 19
+
+  Bei Tags ist folgende Notation gültig:
+
+  ->[Tag]   Tag und dessen direkte Kinder           
+  -->[Tag]  Tag und dessen Kinder (transitiv)
+  [Tag]->   Tag und dessen direkte Eltern           
+  [Tag]-->  Tag und dessen Eltern (transitiv)
+  <->[Tag]  Tag und dessen korrelierte Tags

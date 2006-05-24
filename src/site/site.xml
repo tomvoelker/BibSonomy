@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="BibSonomy">
+	<bannerLeft>
+		<name>BibSonomy</name>
+		<!--src>images/bibsonomy.png</src-->
+	</bannerLeft>
+	<!--bannerRight>
+		<src>images/bibsonomy.png</src>
+	</bannerRight-->
+	<body>
+		<links>
+			<item name="Knowledge and Data Engineering Group" href="http://www.kde.cs.uni-kassel.de/" />
+		</links>
+
+		<menu name="BibSonomy">
+			<item name="Introduction" href="intro.html" />
+			<item name="Todo" href="todo.html" />
+		</menu>
+
+		<menu name="Features">
+			<item name="REST API" href="rest/rest.html" />
+		</menu>
+
+		${reports}
+
+	</body>
+</project>
