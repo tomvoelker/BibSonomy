@@ -6,6 +6,7 @@ import junit.framework.TestCase;
 
 import org.bibsonomy.database.DbInterface;
 import org.bibsonomy.database.TestDatabase;
+import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.strategy.tags.GetListOfTagsStrategy;
 import org.bibsonomy.rest.strategy.tags.GetTagDetailsStrategy;
 
@@ -30,14 +31,14 @@ public class ContextTagTest extends TestCase
 	
 	public void testGetListOfTagsStrategy() throws Exception
 	{
-		Context c = new Context( db, Context.HTTP_GET, "/tags", new HashMap() );
+		Context c = new Context( db, HttpMethod.GET.toString(), "/tags", new HashMap() );
 		assertTrue( "failure initializing GetListOfTagsStrategy",
 				c.getStrategy() instanceof GetListOfTagsStrategy );
 	}
 	
 	public void testGetTagDetailsStrategy() throws Exception
 	{
-		Context c = new Context( db, Context.HTTP_GET, "/tags/wichtig", new HashMap() );
+		Context c = new Context( db, HttpMethod.GET.toString(), "/tags/wichtig", new HashMap() );
 		assertTrue( "failure initializing GetTagDetailsStrategy",
 				c.getStrategy() instanceof GetTagDetailsStrategy );
 	}
@@ -45,7 +46,10 @@ public class ContextTagTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.2  2006-05-22 10:52:45  mbork
+ * Revision 1.3  2006-05-24 13:02:44  cschenk
+ * Introduced an enum for the HttpMethod and moved the exceptions
+ *
+ * Revision 1.2  2006/05/22 10:52:45  mbork
  * implemented context chooser for /posts
  *
  * Revision 1.1  2006/05/22 10:42:25  mbork

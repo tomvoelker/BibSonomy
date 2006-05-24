@@ -3,8 +3,8 @@ package org.bibsonomy.rest.strategy.groups;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.bibsonomy.rest.InternServerException;
-import org.bibsonomy.rest.ValidationException;
+import org.bibsonomy.rest.exceptions.InternServerException;
+import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
 
@@ -60,7 +60,10 @@ public class DeleteGroupStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.1  2006-05-22 10:34:38  mbork
+ * Revision 1.2  2006-05-24 13:02:43  cschenk
+ * Introduced an enum for the HttpMethod and moved the exceptions
+ *
+ * Revision 1.1  2006/05/22 10:34:38  mbork
  * implemented context chooser for /groups
  *
  */

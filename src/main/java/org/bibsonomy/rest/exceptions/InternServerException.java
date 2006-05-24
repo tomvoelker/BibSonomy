@@ -1,4 +1,4 @@
-package org.bibsonomy.rest;
+package org.bibsonomy.rest.exceptions;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -27,7 +27,10 @@ public class InternServerException extends RuntimeException
 
 /*
  * $Log$
- * Revision 1.1  2006-05-19 21:01:09  mbork
+ * Revision 1.1  2006-05-24 13:02:44  cschenk
+ * Introduced an enum for the HttpMethod and moved the exceptions
+ *
+ * Revision 1.1  2006/05/19 21:01:09  mbork
  * started implementing rest api
  *
  */

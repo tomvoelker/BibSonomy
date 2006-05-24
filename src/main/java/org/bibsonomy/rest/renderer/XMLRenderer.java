@@ -15,8 +15,8 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.rest.InternServerException;
 import org.bibsonomy.rest.ViewModel;
+import org.bibsonomy.rest.exceptions.InternServerException;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 import org.bibsonomy.rest.renderer.xml.BibtexType;
 import org.bibsonomy.rest.renderer.xml.BookmarkType;
@@ -182,7 +182,10 @@ public class XMLRenderer implements Renderer
 
 /*
  * $Log$
- * Revision 1.2  2006-05-21 20:31:51  mbork
+ * Revision 1.3  2006-05-24 13:02:44  cschenk
+ * Introduced an enum for the HttpMethod and moved the exceptions
+ *
+ * Revision 1.2  2006/05/21 20:31:51  mbork
  * continued implementing context
  *
  * Revision 1.1  2006/05/19 21:01:08  mbork

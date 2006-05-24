@@ -3,8 +3,8 @@ package org.bibsonomy.rest.strategy.users;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.bibsonomy.rest.InternServerException;
-import org.bibsonomy.rest.ValidationException;
+import org.bibsonomy.rest.exceptions.InternServerException;
+import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
 
@@ -61,7 +61,10 @@ public class PutPostStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.1  2006-05-21 20:31:51  mbork
+ * Revision 1.2  2006-05-24 13:02:44  cschenk
+ * Introduced an enum for the HttpMethod and moved the exceptions
+ *
+ * Revision 1.1  2006/05/21 20:31:51  mbork
  * continued implementing context
  *
  */

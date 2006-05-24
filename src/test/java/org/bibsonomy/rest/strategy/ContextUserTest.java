@@ -6,6 +6,7 @@ import junit.framework.TestCase;
 
 import org.bibsonomy.database.DbInterface;
 import org.bibsonomy.database.TestDatabase;
+import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.strategy.users.DeletePostStrategy;
 import org.bibsonomy.rest.strategy.users.DeleteUserStrategy;
 import org.bibsonomy.rest.strategy.users.GetPostDetailsStrategy;
@@ -26,7 +27,7 @@ import org.bibsonomy.rest.strategy.users.PutUserStrategy;
 public class ContextUserTest extends TestCase 
 {
 	private DbInterface db;
-	
+
 	/* (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
 	 */
@@ -35,75 +36,75 @@ public class ContextUserTest extends TestCase
 	{
 		this.db = new TestDatabase();
 	}
-	
+
 	public void testGetListOfUsersStrategy() throws Exception
 	{
-		Context c = new Context( db, Context.HTTP_GET, "/users", new HashMap() );
+		Context c = new Context( db, HttpMethod.GET.toString(), "/users", new HashMap() );
 		assertTrue( "failure initializing GetUserListStrategy",
 				c.getStrategy() instanceof GetUserListStrategy );
 	}
-	
+
 	public void testPostUserStrategy() throws Exception
 	{
-		Context c = new Context( db, Context.HTTP_POST, "/users", new HashMap() );
+		Context c = new Context( db, HttpMethod.POST.toString(), "/users", new HashMap() );
 		assertTrue( "failure initializing PostUserStrategy",
 				c.getStrategy() instanceof PostUserStrategy );
 	}
-	
+
 	public void testGetDetailsOfUserStrategy() throws Exception
 	{
-		Context c = new Context( db, Context.HTTP_GET, "/users/testuser", new HashMap() );
+		Context c = new Context( db, HttpMethod.GET.toString(), "/users/testuser", new HashMap() );
 		assertTrue( "failure initializing GetUserStrategy",
 				c.getStrategy() instanceof GetUserStrategy );
 	}
-	
+
 	public void testPutDetailsOfUserStrategy() throws Exception
 	{
-		Context c = new Context( db, Context.HTTP_PUT, "/users/testuser", new HashMap() );
+		Context c = new Context( db, HttpMethod.PUT.toString(), "/users/testuser", new HashMap() );
 		assertTrue( "failure initializing PutUserStrategy",
 				c.getStrategy() instanceof PutUserStrategy );
 	}
-	
+
 	public void testDeleteUserStrategy() throws Exception
 	{
-		Context c = new Context( db, Context.HTTP_DELETE, "/users/testuser", new HashMap() );
+		Context c = new Context( db, HttpMethod.DELETE.toString(), "/users/testuser", new HashMap() );
 		assertTrue( "failure initializing DeleteUserStrategy",
 				c.getStrategy() instanceof DeleteUserStrategy );
 	}
-	
+
 	public void testGetUserPostsStrategy() throws Exception
 	{
-		Context c = new Context( db, Context.HTTP_GET, "/users/testuser/posts", new HashMap() );
+		Context c = new Context( db, HttpMethod.GET.toString(), "/users/testuser/posts", new HashMap() );
 		assertTrue( "failure initializing GetUserPostsStrategy",
 				c.getStrategy() instanceof GetUserPostsStrategy );
 	}
 
 	public void testPostPostStrategy() throws Exception
 	{
-		Context c = new Context( db, Context.HTTP_POST, "/users/testuser/posts", new HashMap() );
+		Context c = new Context( db, HttpMethod.POST.toString(), "/users/testuser/posts", new HashMap() );
 		assertTrue( "failure initializing PostPostStrategy",
 				c.getStrategy() instanceof PostPostStrategy );
 	}
-	
+
 	public void testGetPostDetailsStrategy() throws Exception
 	{
-		Context c = new Context( db, Context.HTTP_GET, "/users/testuser/posts/asdfsadf012312", 
+		Context c = new Context( db, HttpMethod.GET.toString(), "/users/testuser/posts/asdfsadf012312", 
 				new HashMap() );
 		assertTrue( "failure initializing GetPostDetailsStrategy",
 				c.getStrategy() instanceof GetPostDetailsStrategy );
 	}
-	
+
 	public void testPutPostStrategy() throws Exception
 	{
-		Context c = new Context( db, Context.HTTP_PUT, "/users/testuser/posts/asdfsadf012312", 
+		Context c = new Context( db, HttpMethod.PUT.toString(), "/users/testuser/posts/asdfsadf012312", 
 				new HashMap() );
 		assertTrue( "failure initializing PutPostStrategy",
 				c.getStrategy() instanceof PutPostStrategy );
 	}
-	
+
 	public void testDeletePostStrategy() throws Exception
 	{
-		Context c = new Context( db, Context.HTTP_DELETE, "/users/testuser/posts/asdfsadf012312", 
+		Context c = new Context( db, HttpMethod.DELETE.toString(), "/users/testuser/posts/asdfsadf012312", 
 				new HashMap() );
 		assertTrue( "failure initializing DeletePostStrategy",
 				c.getStrategy() instanceof DeletePostStrategy );
@@ -112,7 +113,10 @@ public class ContextUserTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.2  2006-05-22 10:34:38  mbork
+ * Revision 1.3  2006-05-24 13:02:44  cschenk
+ * Introduced an enum for the HttpMethod and moved the exceptions
+ *
+ * Revision 1.2  2006/05/22 10:34:38  mbork
  * implemented context chooser for /groups
  *
  * Revision 1.1  2006/05/21 20:31:51  mbork

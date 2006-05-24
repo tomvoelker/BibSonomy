@@ -3,8 +3,8 @@ package org.bibsonomy.rest.strategy.posts;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.bibsonomy.rest.InternServerException;
-import org.bibsonomy.rest.ValidationException;
+import org.bibsonomy.rest.exceptions.InternServerException;
+import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
 
@@ -59,7 +59,10 @@ public class GetListOfPostsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.1  2006-05-22 10:52:46  mbork
+ * Revision 1.2  2006-05-24 13:02:44  cschenk
+ * Introduced an enum for the HttpMethod and moved the exceptions
+ *
+ * Revision 1.1  2006/05/22 10:52:46  mbork
  * implemented context chooser for /posts
  *
  */

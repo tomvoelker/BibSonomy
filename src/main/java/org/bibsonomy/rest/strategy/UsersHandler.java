@@ -2,6 +2,8 @@ package org.bibsonomy.rest.strategy;
 
 import java.util.StringTokenizer;
 
+import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
 import org.bibsonomy.rest.strategy.users.DeletePostStrategy;
 import org.bibsonomy.rest.strategy.users.DeleteUserStrategy;
 import org.bibsonomy.rest.strategy.users.GetPostDetailsStrategy;
@@ -22,7 +24,7 @@ public class UsersHandler implements ContextHandler
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.rest.strategy.ContextHandler#createStrategy(java.lang.StringBuffer)
 	 */
-	public Strategy createStrategy( Context context, StringTokenizer urlTokens, String httpMethod ) 
+	public Strategy createStrategy( Context context, StringTokenizer urlTokens, HttpMethod httpMethod ) 
 	{
 		int numTokensLeft = urlTokens.countTokens();
 		String userName;
@@ -56,88 +58,65 @@ public class UsersHandler implements ContextHandler
 		throw new UnsupportedOperationException( "no strategy for url " );
 	}
 
-	private Strategy createUserListStrategy( Context context, String httpMethod ) 
+	private Strategy createUserListStrategy( Context context, HttpMethod httpMethod ) 
 	{
-		if( Context.HTTP_GET.equalsIgnoreCase( httpMethod) )
-		{
-			return new GetUserListStrategy( context );
-		}
-		else if( Context.HTTP_POST.equalsIgnoreCase( httpMethod) )
-		{
-			return new PostUserStrategy( context );
-		}
-		else
-		{
-			throw new UnsupportedOperationException( "HTTP-" + httpMethod + 
-					" not implemented for the UserList Resource " );
+		switch (httpMethod) {
+		case GET:
+			return new GetUserListStrategy(context);
+		case POST:
+			return new PostUserStrategy(context);
+		default:
+			throw new UnsupportedHttpMethodException(httpMethod, "UserList");
 		}
 	}
-	
 
-	private Strategy createUserStrategy( Context context, String httpMethod, String userName ) 
+	private Strategy createUserStrategy( Context context, HttpMethod httpMethod, String userName ) 
 	{
-		if( Context.HTTP_GET.equalsIgnoreCase( httpMethod) )
-		{
-			return new GetUserStrategy( context, userName );
-		}
-		else if( Context.HTTP_PUT.equalsIgnoreCase( httpMethod) )
-		{
-			return new PutUserStrategy( context, userName );
-		}
-		else if( Context.HTTP_DELETE.equalsIgnoreCase( httpMethod) )
-		{
-			return new DeleteUserStrategy( context, userName );
-		}
-		else
-		{
-			throw new UnsupportedOperationException( "HTTP-" + httpMethod + 
-			" not implemented for the User Resource" );
+		switch (httpMethod) {
+		case GET:
+			return new GetUserStrategy(context, userName);
+		case PUT:
+			return new PutUserStrategy(context, userName);
+		case DELETE:
+			return new DeleteUserStrategy(context, userName);
+		default:
+			throw new UnsupportedHttpMethodException(httpMethod, "User");
 		}
 	}
-	
 
-	private Strategy createUserPostsStrategy( Context context, String httpMethod, String userName ) 
+	private Strategy createUserPostsStrategy( Context context, HttpMethod httpMethod, String userName ) 
 	{
-		if( Context.HTTP_GET.equalsIgnoreCase( httpMethod) )
-		{
-			return new GetUserPostsStrategy( context, userName );
-		}
-		else if( Context.HTTP_POST.equalsIgnoreCase( httpMethod) )
-		{
-			return new PostPostStrategy( context, userName );
-		}
-		else
-		{
-			throw new UnsupportedOperationException( "HTTP-" + httpMethod + 
-			" not implemented for the User-Post Resource" );
+		switch (httpMethod) {
+		case GET:
+			return new GetUserPostsStrategy(context, userName);
+		case POST:
+			return new PostPostStrategy(context, userName);
+		default:
+			throw new UnsupportedHttpMethodException(httpMethod, "User-Post");
 		}
 	}
-	
-	private Strategy createUserPostStrategy( Context context, String httpMethod, String userName, String resourceHash ) 
+
+	private Strategy createUserPostStrategy( Context context, HttpMethod httpMethod, String userName, String resourceHash ) 
 	{
-		if( Context.HTTP_GET.equalsIgnoreCase( httpMethod) )
-		{
-			return new GetPostDetailsStrategy( context, userName, resourceHash );
-		}
-		else if( Context.HTTP_PUT.equalsIgnoreCase( httpMethod) )
-		{
-			return new PutPostStrategy( context, userName, resourceHash );
-		}
-		else if( Context.HTTP_DELETE.equalsIgnoreCase( httpMethod) )
-		{
-			return new DeletePostStrategy( context, userName, resourceHash );
-		}
-		else
-		{
-			throw new UnsupportedOperationException( "HTTP-" + httpMethod + 
-			" not implemented for the User Resource" );
+		switch (httpMethod) {
+		case GET:
+			return new GetPostDetailsStrategy(context, userName, resourceHash);
+		case PUT:
+			return new PutPostStrategy(context, userName, resourceHash);
+		case DELETE:
+			return new DeletePostStrategy(context, userName, resourceHash);
+		default:
+			throw new UnsupportedHttpMethodException(httpMethod, "User");
 		}
 	}
 }
 
 /*
  * $Log$
- * Revision 1.2  2006-05-22 10:34:38  mbork
+ * Revision 1.3  2006-05-24 13:02:44  cschenk
+ * Introduced an enum for the HttpMethod and moved the exceptions
+ *
+ * Revision 1.2  2006/05/22 10:34:38  mbork
  * implemented context chooser for /groups
  *
  * Revision 1.1  2006/05/21 20:31:51  mbork

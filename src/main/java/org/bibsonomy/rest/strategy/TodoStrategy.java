@@ -6,8 +6,8 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.bibsonomy.rest.InternServerException;
-import org.bibsonomy.rest.ValidationException;
+import org.bibsonomy.rest.exceptions.InternServerException;
+import org.bibsonomy.rest.exceptions.ValidationException;
 
 
 /**
@@ -61,7 +61,10 @@ public class TodoStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.1  2006-05-19 21:01:08  mbork
+ * Revision 1.2  2006-05-24 13:02:44  cschenk
+ * Introduced an enum for the HttpMethod and moved the exceptions
+ *
+ * Revision 1.1  2006/05/19 21:01:08  mbork
  * started implementing rest api
  *
  */

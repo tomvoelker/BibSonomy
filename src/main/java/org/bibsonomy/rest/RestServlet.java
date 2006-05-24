@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.database.DbInterface;
 import org.bibsonomy.database.TestDatabase;
+import org.bibsonomy.rest.exceptions.InternServerException;
+import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
 
 
@@ -144,7 +146,10 @@ public final class RestServlet extends HttpServlet
 
 /*
  * $Log$
- * Revision 1.1  2006-05-19 21:01:09  mbork
+ * Revision 1.2  2006-05-24 13:02:44  cschenk
+ * Introduced an enum for the HttpMethod and moved the exceptions
+ *
+ * Revision 1.1  2006/05/19 21:01:09  mbork
  * started implementing rest api
  *
  */

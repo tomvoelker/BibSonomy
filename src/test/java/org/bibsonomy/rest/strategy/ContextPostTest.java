@@ -6,6 +6,7 @@ import junit.framework.TestCase;
 
 import org.bibsonomy.database.DbInterface;
 import org.bibsonomy.database.TestDatabase;
+import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.strategy.posts.GetListOfPostsStrategy;
 import org.bibsonomy.rest.strategy.posts.GetNewPostsStrategy;
 import org.bibsonomy.rest.strategy.posts.GetPopularPostsStrategy;
@@ -31,21 +32,21 @@ public class ContextPostTest extends TestCase
 	
 	public void testGetListOfTagsStrategy() throws Exception
 	{
-		Context c = new Context( db, Context.HTTP_GET, "/posts", new HashMap() );
+		Context c = new Context( db, HttpMethod.GET.toString(), "/posts", new HashMap() );
 		assertTrue( "failure initializing GetListOfTagsStrategy",
 				c.getStrategy() instanceof GetListOfPostsStrategy );
 	}
 	
 	public void testGetNewPostsStrategy() throws Exception
 	{
-		Context c = new Context( db, Context.HTTP_GET, "/posts/added", new HashMap() );
+		Context c = new Context( db, HttpMethod.GET.toString(), "/posts/added", new HashMap() );
 		assertTrue( "failure initializing GetNewPostsStrategy",
 				c.getStrategy() instanceof GetNewPostsStrategy );
 	}
 	
 	public void testGetPopularPostsStrategy() throws Exception
 	{
-		Context c = new Context( db, Context.HTTP_GET, "/posts/popular", new HashMap() );
+		Context c = new Context( db, HttpMethod.GET.toString(), "/posts/popular", new HashMap() );
 		assertTrue( "failure initializing GetPopularPostsStrategy",
 				c.getStrategy() instanceof GetPopularPostsStrategy );
 	}
@@ -53,7 +54,10 @@ public class ContextPostTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.1  2006-05-22 10:52:45  mbork
+ * Revision 1.2  2006-05-24 13:02:44  cschenk
+ * Introduced an enum for the HttpMethod and moved the exceptions
+ *
+ * Revision 1.1  2006/05/22 10:52:45  mbork
  * implemented context chooser for /posts
  *
  */
