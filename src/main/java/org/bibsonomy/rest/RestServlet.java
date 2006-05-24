@@ -8,8 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.bibsonomy.database.DbInterface;
-import org.bibsonomy.database.TestDatabase;
+import org.bibsonomy.rest.database.TestDatabase;
 import org.bibsonomy.rest.exceptions.InternServerException;
 import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
@@ -24,7 +23,7 @@ public final class RestServlet extends HttpServlet
 	private static final long serialVersionUID = 1L;
 	
 	private Gatekeeper gatekeeper;
-	private DbInterface dbAdapter;
+	private LogicInterface dbAdapter;
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.GenericServlet#init()
@@ -146,7 +145,10 @@ public final class RestServlet extends HttpServlet
 
 /*
  * $Log$
- * Revision 1.2  2006-05-24 13:02:44  cschenk
+ * Revision 1.3  2006-05-24 20:09:03  jillig
+ * renamed DbInterface to RESTs LogicInterface
+ *
+ * Revision 1.2  2006/05/24 13:02:44  cschenk
  * Introduced an enum for the HttpMethod and moved the exceptions
  *
  * Revision 1.1  2006/05/19 21:01:09  mbork

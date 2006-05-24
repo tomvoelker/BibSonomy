@@ -7,7 +7,7 @@ import java.util.StringTokenizer;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.bibsonomy.database.DbInterface;
+import org.bibsonomy.rest.LogicInterface;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.InternServerException;
 import org.bibsonomy.rest.exceptions.ValidationException;
@@ -53,7 +53,7 @@ public final class Context
 	/**
 	 * the database
 	 */
-	private DbInterface database;
+	private LogicInterface database;
 	
 	/**
 	 * the renderer by which the output gets rendered
@@ -75,7 +75,7 @@ public final class Context
 	 * @param httpMethod httpMethod used in the request: GET, POST, PUT or DELETE
 	 * @param parameterMap map of the attributes 
 	 */
-	public Context( DbInterface dbAdapter, String httpMethod, String url, Map parameterMap )
+	public Context( LogicInterface dbAdapter, String httpMethod, String url, Map parameterMap )
 	{
 		this.database = dbAdapter;
 		this.httpMethod = HttpMethod.getHttpMethod(httpMethod);
@@ -219,7 +219,7 @@ public final class Context
 	/**
 	 * @return Returns the database.
 	 */
-	public DbInterface getDatabase()
+	public LogicInterface getDatabase()
 	{
 		return database;
 	}
@@ -236,7 +236,10 @@ public final class Context
 
 /*
  * $Log$
- * Revision 1.4  2006-05-24 15:18:08  cschenk
+ * Revision 1.5  2006-05-24 20:09:02  jillig
+ * renamed DbInterface to RESTs LogicInterface
+ *
+ * Revision 1.4  2006/05/24 15:18:08  cschenk
  * Introduced a rendering format and a factory that produces renderers (for xml, rdf, html)
  *
  * Revision 1.3  2006/05/24 13:02:44  cschenk

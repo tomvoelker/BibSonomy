@@ -1,4 +1,4 @@
-package org.bibsonomy.database;
+package org.bibsonomy.rest;
 
 import java.util.Set;
 
@@ -12,7 +12,7 @@ import org.bibsonomy.model.User;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public interface DbInterface
+public interface LogicInterface
 {
 
 	/**
@@ -207,7 +207,10 @@ public interface DbInterface
 
 /*
  * $Log$
- * Revision 1.1  2006-05-19 21:01:08  mbork
+ * Revision 1.1  2006-05-24 20:09:03  jillig
+ * renamed DbInterface to RESTs LogicInterface
+ *
+ * Revision 1.1  2006/05/19 21:01:08  mbork
  * started implementing rest api
  *
  */
