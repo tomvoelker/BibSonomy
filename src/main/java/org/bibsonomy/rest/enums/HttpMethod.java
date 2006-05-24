@@ -7,7 +7,7 @@ public enum HttpMethod {
 
 	public static HttpMethod getHttpMethod(final String httpMethod) {
 		if (httpMethod == null)	throw new InternServerException("HTTP-Method is null");
-		final String method = httpMethod.toLowerCase();
+		final String method = httpMethod.toLowerCase().trim();
 		if ("get".equals(method)) {
 			return GET;
 		} else if ("post".equals(method)) {

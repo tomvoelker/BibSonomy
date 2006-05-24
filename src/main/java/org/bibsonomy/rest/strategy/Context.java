@@ -11,10 +11,12 @@ import org.bibsonomy.database.DbInterface;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.InternServerException;
 import org.bibsonomy.rest.exceptions.ValidationException;
-import org.bibsonomy.rest.renderer.HTMLRenderer;
-import org.bibsonomy.rest.renderer.RDFRenderer;
 import org.bibsonomy.rest.renderer.Renderer;
-import org.bibsonomy.rest.renderer.XMLRenderer;
+import org.bibsonomy.rest.renderer.RendererFactory;
+import org.bibsonomy.rest.renderer.enums.RenderingFormat;
+import org.bibsonomy.rest.renderer.impl.HTMLRenderer;
+import org.bibsonomy.rest.renderer.impl.RDFRenderer;
+import org.bibsonomy.rest.renderer.impl.XMLRenderer;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -25,12 +27,6 @@ public final class Context
 	public static final String API_URL = "http://localhost:8080/restTomcat/api/";
 	public static final String DEFAULT_CONTENT_TYPE = "text/xml";
 	public static final String API_USER_AGENT = "BibsonomyWebServiceClient";
-
-	// some HTTP methods
-//	public static final String HTTP_GET = "GET";
-//	public static final String HTTP_POST = "POST";
-//	public static final String HTTP_PUT = "PUT";
-//	public static final String HTTP_DELETE = "DELETE";
 
 	// URI parts
 	public static final String URL_TAGS = "tags";
@@ -91,20 +87,8 @@ public final class Context
 	public void initStrategy()
 	{
 		// determine which renderer to use
-		String format = getStringAttribute( "format", "xml" );
-		if( Renderer.FORMAT_HTML.equalsIgnoreCase( format ) )
-		{
-			this.renderer = new HTMLRenderer();
-		}
-		else if( Renderer.FORMAT_RDF.equalsIgnoreCase( format ) )
-		{
-			this.renderer = new RDFRenderer();
-		}
-		else 
-		{
-			this.renderer = new XMLRenderer();
-		}
-		
+		this.renderer = RendererFactory.getRenderer(getStringAttribute("format", "xml"));
+
 		// choose strategy
 		if( urlTokens.countTokens() > 0 )
 		{
@@ -252,7 +236,10 @@ public final class Context
 
 /*
  * $Log$
- * Revision 1.3  2006-05-24 13:02:44  cschenk
+ * Revision 1.4  2006-05-24 15:18:08  cschenk
+ * Introduced a rendering format and a factory that produces renderers (for xml, rdf, html)
+ *
+ * Revision 1.3  2006/05/24 13:02:44  cschenk
  * Introduced an enum for the HttpMethod and moved the exceptions
  *
  * Revision 1.2  2006/05/21 20:31:51  mbork

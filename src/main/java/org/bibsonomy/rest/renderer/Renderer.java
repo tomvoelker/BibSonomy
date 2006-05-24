@@ -15,10 +15,6 @@ import org.bibsonomy.rest.exceptions.InternServerException;
  */
 public interface Renderer
 {
-	public final static String FORMAT_XML = "xml";
-	public final static String FORMAT_RDF = "rdf";
-	public final static String FORMAT_HTML = "html";
-
 	/**
 	 * serializes a list of posts
 	 * 
@@ -49,7 +45,10 @@ public interface Renderer
 
 /*
  * $Log$
- * Revision 1.3  2006-05-24 13:02:44  cschenk
+ * Revision 1.4  2006-05-24 15:18:08  cschenk
+ * Introduced a rendering format and a factory that produces renderers (for xml, rdf, html)
+ *
+ * Revision 1.3  2006/05/24 13:02:44  cschenk
  * Introduced an enum for the HttpMethod and moved the exceptions
  *
  * Revision 1.2  2006/05/21 20:31:51  mbork

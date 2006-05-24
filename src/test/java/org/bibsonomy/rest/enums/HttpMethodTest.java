@@ -17,8 +17,22 @@ public class HttpMethodTest extends TestCase {
 		assertEquals(HttpMethod.PUT, HttpMethod.getHttpMethod("pUt"));
 		assertEquals(HttpMethod.DELETE, HttpMethod.getHttpMethod("dElEtE"));
 
+		assertEquals(HttpMethod.GET, HttpMethod.getHttpMethod(" GeT "));
+
 		try {
 			HttpMethod.getHttpMethod("hurz");
+			fail("Should throw exception");
+		} catch (final InternServerException ex) {
+		}
+
+		try {
+			HttpMethod.getHttpMethod("");
+			fail("Should throw exception");
+		} catch (final InternServerException ex) {
+		}
+
+		try {
+			HttpMethod.getHttpMethod(null);
 			fail("Should throw exception");
 		} catch (final InternServerException ex) {
 		}

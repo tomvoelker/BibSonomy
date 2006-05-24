@@ -1,4 +1,4 @@
-package org.bibsonomy.rest.renderer;
+package org.bibsonomy.rest.renderer.impl;
 
 import java.io.PrintWriter;
 import java.util.Set;
@@ -8,6 +8,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.InternServerException;
+import org.bibsonomy.rest.renderer.Renderer;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -43,7 +44,10 @@ public class RDFRenderer implements Renderer
 
 /*
  * $Log$
- * Revision 1.3  2006-05-24 13:02:44  cschenk
+ * Revision 1.1  2006-05-24 15:18:08  cschenk
+ * Introduced a rendering format and a factory that produces renderers (for xml, rdf, html)
+ *
+ * Revision 1.3  2006/05/24 13:02:44  cschenk
  * Introduced an enum for the HttpMethod and moved the exceptions
  *
  * Revision 1.2  2006/05/21 20:31:51  mbork
