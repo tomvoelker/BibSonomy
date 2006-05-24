@@ -4,8 +4,8 @@ import java.util.HashMap;
 
 import junit.framework.TestCase;
 
-import org.bibsonomy.database.DbInterface;
-import org.bibsonomy.database.TestDatabase;
+import org.bibsonomy.rest.LogicInterface;
+import org.bibsonomy.rest.database.TestDatabase;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.strategy.users.DeletePostStrategy;
 import org.bibsonomy.rest.strategy.users.DeleteUserStrategy;
@@ -26,7 +26,7 @@ import org.bibsonomy.rest.strategy.users.PutUserStrategy;
  */
 public class ContextUserTest extends TestCase 
 {
-	private DbInterface db;
+	private LogicInterface db;
 
 	/* (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
@@ -113,7 +113,10 @@ public class ContextUserTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.3  2006-05-24 13:02:44  cschenk
+ * Revision 1.4  2006-05-24 20:05:55  jillig
+ * TestDatabase verschoben
+ *
+ * Revision 1.3  2006/05/24 13:02:44  cschenk
  * Introduced an enum for the HttpMethod and moved the exceptions
  *
  * Revision 1.2  2006/05/22 10:34:38  mbork

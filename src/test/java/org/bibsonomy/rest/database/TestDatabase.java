@@ -1,4 +1,4 @@
-package org.bibsonomy.database;
+package org.bibsonomy.rest.database;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -12,13 +12,14 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.rest.LogicInterface;
 
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public class TestDatabase implements DbInterface
+public class TestDatabase implements LogicInterface
 {
 	private Map<String, Group> dbGroups;
 	private Map<String, User> dbUsers;
@@ -543,7 +544,10 @@ public class TestDatabase implements DbInterface
 
 /*
  * $Log$
- * Revision 1.1  2006-05-19 21:01:08  mbork
+ * Revision 1.1  2006-05-24 20:05:55  jillig
+ * TestDatabase verschoben
+ *
+ * Revision 1.1  2006/05/19 21:01:08  mbork
  * started implementing rest api
  *
  */
