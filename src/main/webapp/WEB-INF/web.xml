@@ -28,7 +28,7 @@
 	<servlet>
 		<servlet-name>Test</servlet-name>
 		<servlet-class>
-			org.bibsonomy.web.view.TestServlet
+			org.bibsonomy.web.servlets.TestServlet
 		</servlet-class>
 	</servlet>
 
@@ -36,15 +36,14 @@
 		<servlet-name>Test</servlet-name>
 		<url-pattern>/test</url-pattern>
 	</servlet-mapping>
-	
 	<!-- REST API -->
-    <servlet>
-        <servlet-name>ApiServlet</servlet-name>
-        <servlet-class>org.bibsonomy.rest.RestServlet</servlet-class>
-    </servlet>
+	<servlet>
+		<servlet-name>ApiServlet</servlet-name>
+		<servlet-class>org.bibsonomy.rest.RestServlet</servlet-class>
+	</servlet>
 
-    <servlet-mapping>
-        <servlet-name>ApiServlet</servlet-name>
-        <url-pattern>/api/*</url-pattern>
-    </servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ApiServlet</servlet-name>
+		<url-pattern>/api/*</url-pattern>
+	</servlet-mapping>
 </web-app>
