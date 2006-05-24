@@ -17,8 +17,9 @@
 			<item name="Introduction" href="intro.html" />
 		</menu>
 
-		<menu name="Features">
+		<menu name="Documentation">
 			<item name="REST API" href="rest/rest.html" />
+			<item name="Maven" href="maven.html" />
 		</menu>
 
 		<menu ref="reports"/>

@@ -1,0 +1,59 @@
+Maven documentation
+
+  On this page we'll collect all things that are specific to Maven (e.g.
+  configuration, etc.).
+
+* JAXB
+
+  If we would want to generate sourcecode with JAXB ant Maven we would have to
+  use the {{{http://ws.apache.org/jaxme/mp/}JAXME-plugin}}. Because this
+  doesn't work for our current schema we will use an ant-<build.xml>.
+
+  If we would like to start the <build.xml> with maven we could say something
+  like the following in the <pom.xml>:
+
++--
+...
+<build>
+  <plugins>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-antrun-plugin</artifactId>
+      <executions>
+        <execution>
+          <id>compile</id>
+          <phase>compile</phase>
+          <configuration>
+            <tasks>
+              <ant antfile="${basedir}/src/jaxb/build.xml" inheritRefs="true"/>
+            </tasks>
+          </configuration>
+          <goals>
+            <goal>run</goal>
+          </goals>
+        </execution>
+      </executions>
+      <dependencies>
+        <dependency>
+          <groupId>ant</groupId>
+          <artifactId>ant-antlr</artifactId>
+          <version>1.6.5</version>
+        </dependency>
+        <dependency>
+          <groupId>antlr</groupId>
+          <artifactId>antlrall</artifactId>
+          <version>2.7.4</version>
+        </dependency>
+      </dependencies>
+    </plugin>
+  ...    
+  </plugins>    
+</build>
++--
+
+  Now we could invoke <mvn compile> and Maven would generate the sourcecode.
+
+  Although this would be a nice feature we don't do it this way ;-)) because
+  we want to put the generated sourcecode into the SCM-repository. If somebody
+  changes the XML-Schema, he'll have to generate the sourcecode and commit it
+  to the repository.
