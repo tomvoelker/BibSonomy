@@ -24,8 +24,8 @@
 
   <target name="compile" description="Compile all Java source files">
     <echo message="Compiling the schema.." />
-    <xjc schema="resources/xschema.xsd" package="org.bibsonomy.rest.renderer.xml" destdir="src/main/java">
-      <produces dir="src/main/java/org.bibsonomy.rest.renderer.xml" includes="**/*.java" />
+    <xjc schema="resources/xschema.xsd" package="org.bibsonomy.rest.renderer.xml" destdir="src/main/generated">
+      <produces dir="src/main/generated/org.bibsonomy.rest.renderer.xml" includes="**/*.java" />
     </xjc>
   </target>
 </project>
