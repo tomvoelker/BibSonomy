@@ -2,9 +2,18 @@ package org.bibsonomy.rest.enums;
 
 import org.bibsonomy.rest.exceptions.InternServerException;
 
+/**
+ * The supported HTTP-Methods.
+ *
+ * @author Christian Schenk
+ * @version $Id$
+ */
 public enum HttpMethod {
 	GET, POST, PUT, DELETE;
 
+	/**
+	 * Returns the corresponding HttpMethod-enum for the given string.
+	 */
 	public static HttpMethod getHttpMethod(final String httpMethod) {
 		if (httpMethod == null)	throw new InternServerException("HTTP-Method is null");
 		final String method = httpMethod.toLowerCase().trim();
