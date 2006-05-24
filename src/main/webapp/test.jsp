@@ -6,7 +6,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %> 
 <%@ page pageEncoding="UTF-8" %>
 
-<jsp:useBean id="bean" class="org.bibsonomy.viewmodel.TestViewModel" scope="request"/>
+<jsp:useBean id="bean" class="org.bibsonomy.web.model.TestViewModel" scope="request"/>
 
 <html>
 	<head>
@@ -16,7 +16,7 @@
 		<h1>hallo</h1>
 		<ul>
 			<c:forEach items="${bean.items}" var="item">
-			<li><c:out value="${item}"/></li>
+			<li><c:out value="${item.tagId}"/> - <c:out value="${item.name}"/></li>
 			</c:forEach>
 		</ul>
 	</body>
