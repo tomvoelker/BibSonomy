@@ -4,10 +4,9 @@ BibSonomy README
 
 Getting you started in this project should be easy. If you are not familiar with
 Maven you should install it first. You can fetch the commandline version from
-http://maven.apache.org/download.html. Just get the latest version of Maven2
-which is important, because this is a Maven2-Project. Unpack the file you
-downloaded and attach "/path/to/maven2/bin" to your Path-Variable (e.g.
-PATH=$PATH:/path/to/maven2/bin).
+http://maven.apache.org/download.html. Don't just get the latest version of
+Maven2, take version 2.0.2. Unpack the file you downloaded and attach
+"/path/to/maven2/bin" to your Path-Variable (e.g. PATH=$PATH:/path/to/maven2/bin).
 
 Once you're ready with that create a ".m2"-directory in your homedirectory. This
 step is necessary, because we want to download a Maven plugin for Eclipse and it
