@@ -3,15 +3,8 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
 	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="src" path="work"/>
-	<classpathentry kind="src" path="src/test/java"/>
-	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="src" path="src/main/generated"/>
-	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/activation.jar"/>
-	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/assocs.jar"/>
-	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/jaxb-api.jar"/>
-	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/jaxb-impl.jar"/>
-	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/jsr173_api.jar"/>
-	<classpathentry sourcepath="src/main/webapp/WEB-INF/lib/DBCommands-0.0.2-sources.jar" kind="lib" path="src/main/webapp/WEB-INF/lib/DBCommands-0.0.2.jar"/>
+	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="src" path="work"/>
 	<classpathentry kind="output" path="src/main/webapp/WEB-INF/classes"/>
 </classpath>
