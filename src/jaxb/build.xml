@@ -1,0 +1,24 @@
+<?xml version="1.0" standalone="yes"?>
+<project default="compile">
+  <description>
+  	Generates Java source files with JAXB.
+  </description>
+
+  <property name="gen.dir" value="generated" />
+
+  <path id="classpath">
+  	<fileset dir="." includes="lib/*.jar" />
+  </path>
+
+  <taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+    <classpath refid="classpath" />
+  </taskdef>
+
+  <target name="compile" description="Compile all Java source files">
+  	<mkdir dir="${gen.dir}"/>
+    <echo message="Compiling the schema..." />
+    <xjc schema="xschema.xsd" package="org.bibsonomy.rest.renderer.xml" destdir="${gen.dir}">
+      <produces dir="${gen.dir}/org.bibsonomy.rest.renderer.xml" includes="**/*.java" />
+    </xjc>
+  </target>
+</project>
