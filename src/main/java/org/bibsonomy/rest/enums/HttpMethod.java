@@ -1,6 +1,7 @@
 package org.bibsonomy.rest.enums;
 
 import org.bibsonomy.rest.exceptions.InternServerException;
+import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
 
 /**
  * The supported HTTP-Methods.
@@ -26,7 +27,7 @@ public enum HttpMethod {
 		} else if ("delete".equals(method)) {
 			return DELETE;
 		} else {
-			throw new InternServerException("HTTP-Method (" + httpMethod + ") is not supported");
+			throw new UnsupportedHttpMethodException(httpMethod);
 		}
 	}
 }

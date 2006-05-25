@@ -10,7 +10,11 @@ import org.bibsonomy.rest.enums.HttpMethod;
  */
 public class UnsupportedHttpMethodException extends RuntimeException {
 
+	public UnsupportedHttpMethodException(final String httpMethod) {
+		super("HTTP-Method ('" + httpMethod + "') is not supported");
+	}
+
 	public UnsupportedHttpMethodException(final HttpMethod httpMethod, final String resourceName) {
-		super("HTTP-Method ('" + httpMethod.name() + "') not implemented for the " + resourceName + " Resource ");
+		super("HTTP-Method ('" + httpMethod.name() + "') is not supported for the " + resourceName + " Resource");
 	}
 }
