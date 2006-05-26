@@ -13,10 +13,6 @@ import org.bibsonomy.rest.exceptions.InternServerException;
 import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
-import org.bibsonomy.rest.renderer.enums.RenderingFormat;
-import org.bibsonomy.rest.renderer.impl.HTMLRenderer;
-import org.bibsonomy.rest.renderer.impl.RDFRenderer;
-import org.bibsonomy.rest.renderer.impl.XMLRenderer;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -35,7 +31,7 @@ public final class Context
 	public static final String URL_POSTS = "posts";
 	public static final String URL_POSTS_ADDED = "added";
 	public static final String URL_POSTS_POPULAR = "popular";
-	
+
 	private static Map<String, ContextHandler> urlHandlers = new HashMap<String, ContextHandler>();
 	static
 	{
@@ -44,7 +40,7 @@ public final class Context
 		Context.urlHandlers.put( URL_GROUPS, new GroupsHandler() );
 		Context.urlHandlers.put( URL_POSTS, new PostsHandler() );
 	}
-	
+
 	/**
 	 * the authenticated userName, null if none
 	 */
@@ -236,7 +232,10 @@ public final class Context
 
 /*
  * $Log$
- * Revision 1.5  2006-05-24 20:09:02  jillig
+ * Revision 1.6  2006-05-26 14:02:03  cschenk
+ * Forgot to clean up
+ *
+ * Revision 1.5  2006/05/24 20:09:02  jillig
  * renamed DbInterface to RESTs LogicInterface
  *
  * Revision 1.4  2006/05/24 15:18:08  cschenk
