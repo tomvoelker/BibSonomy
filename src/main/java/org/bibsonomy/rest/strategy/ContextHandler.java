@@ -10,13 +10,15 @@ import org.bibsonomy.rest.enums.HttpMethod;
  */
 public interface ContextHandler 
 {
-	//public Strategy createStrategy( Context context, StringTokenizer urlTokens, String httpMethod );
 	public Strategy createStrategy( Context context, StringTokenizer urlTokens, HttpMethod httpMethod );
 }
 
 /*
  * $Log$
- * Revision 1.2  2006-05-24 13:02:44  cschenk
+ * Revision 1.3  2006-05-26 13:22:59  cschenk
+ * Forgot to clean up
+ *
+ * Revision 1.2  2006/05/24 13:02:44  cschenk
  * Introduced an enum for the HttpMethod and moved the exceptions
  *
  * Revision 1.1  2006/05/21 20:31:51  mbork
