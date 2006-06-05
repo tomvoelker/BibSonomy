@@ -60,60 +60,67 @@ public class UsersHandler implements ContextHandler
 
 	private Strategy createUserListStrategy( Context context, HttpMethod httpMethod ) 
 	{
-		switch (httpMethod) {
+		switch( httpMethod )
+		{
 		case GET:
-			return new GetUserListStrategy(context);
+			return new GetUserListStrategy( context );
 		case POST:
-			return new PostUserStrategy(context);
+			return new PostUserStrategy( context );
 		default:
-			throw new UnsupportedHttpMethodException(httpMethod, "UserList");
+			throw new UnsupportedHttpMethodException( httpMethod, "UserList" );
 		}
 	}
 
 	private Strategy createUserStrategy( Context context, HttpMethod httpMethod, String userName ) 
 	{
-		switch (httpMethod) {
+		switch( httpMethod )
+		{
 		case GET:
-			return new GetUserStrategy(context, userName);
+			return new GetUserStrategy( context, userName );
 		case PUT:
-			return new PutUserStrategy(context, userName);
+			return new PutUserStrategy( context, userName );
 		case DELETE:
-			return new DeleteUserStrategy(context, userName);
+			return new DeleteUserStrategy( context, userName );
 		default:
-			throw new UnsupportedHttpMethodException(httpMethod, "User");
+			throw new UnsupportedHttpMethodException( httpMethod, "User" );
 		}
 	}
 
 	private Strategy createUserPostsStrategy( Context context, HttpMethod httpMethod, String userName ) 
 	{
-		switch (httpMethod) {
+		switch( httpMethod )
+		{
 		case GET:
-			return new GetUserPostsStrategy(context, userName);
+			return new GetUserPostsStrategy( context, userName );
 		case POST:
-			return new PostPostStrategy(context, userName);
+			return new PostPostStrategy( context, userName );
 		default:
-			throw new UnsupportedHttpMethodException(httpMethod, "User-Post");
+			throw new UnsupportedHttpMethodException( httpMethod, "User-Post" );
 		}
 	}
 
 	private Strategy createUserPostStrategy( Context context, HttpMethod httpMethod, String userName, String resourceHash ) 
 	{
-		switch (httpMethod) {
+		switch( httpMethod )
+		{
 		case GET:
-			return new GetPostDetailsStrategy(context, userName, resourceHash);
+			return new GetPostDetailsStrategy( context, userName, resourceHash );
 		case PUT:
-			return new PutPostStrategy(context, userName, resourceHash);
+			return new PutPostStrategy( context, userName, resourceHash );
 		case DELETE:
-			return new DeletePostStrategy(context, userName, resourceHash);
+			return new DeletePostStrategy( context, userName, resourceHash );
 		default:
-			throw new UnsupportedHttpMethodException(httpMethod, "User");
+			throw new UnsupportedHttpMethodException( httpMethod, "User" );
 		}
 	}
 }
 
 /*
  * $Log$
- * Revision 1.3  2006-05-24 13:02:44  cschenk
+ * Revision 1.4  2006-06-05 14:14:12  mbork
+ * implemented GET strategies
+ *
+ * Revision 1.3  2006/05/24 13:02:44  cschenk
  * Introduced an enum for the HttpMethod and moved the exceptions
  *
  * Revision 1.2  2006/05/22 10:34:38  mbork

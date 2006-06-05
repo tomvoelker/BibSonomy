@@ -3,6 +3,7 @@ package org.bibsonomy.rest.renderer.impl;
 import java.io.PrintWriter;
 import java.util.Set;
 
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
@@ -16,27 +17,42 @@ import org.bibsonomy.rest.renderer.Renderer;
  */
 public class RDFRenderer implements Renderer 
 {
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.Renderer#serializePosts(java.io.PrintWriter, java.util.Set, int, int, java.lang.String)
-	 */
-	public void serializePosts( PrintWriter writer, Set<Post> posts, ViewModel viewModel )
-			throws InternServerException
+	public void serializePosts( PrintWriter writer, Set<Post> posts, ViewModel viewModel ) throws InternServerException
 	{
 		// TODO Auto-generated method stub
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.Renderer#serializeUsers(java.io.PrintWriter, java.util.Set, int, int, java.lang.String)
-	 */
+	public void serializePost( PrintWriter writer, Post post, ViewModel model )
+	{
+		// TODO Auto-generated method stub
+	}
+
 	public void serializeUsers( PrintWriter writer, Set<User> users, ViewModel viewModel )
 	{
 		// TODO Auto-generated method stub
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.Renderer#serializeTags(java.io.PrintWriter, java.util.Set, int, int, java.lang.String)
-	 */
+	public void serializeUser( PrintWriter writer, User user, ViewModel viewModel )
+	{
+		// TODO Auto-generated method stub
+	}
+
 	public void serializeTags( PrintWriter writer, Set<Tag> tags, ViewModel viewModel )
+	{
+		// TODO Auto-generated method stub
+	}
+
+	public void serializeTag( PrintWriter writer, Tag tag, ViewModel model )
+	{
+		// TODO Auto-generated method stub
+	}
+
+	public void serializeGroups( PrintWriter writer, Set<Group> groups, ViewModel viewModel )
+	{
+		// TODO Auto-generated method stub
+	}
+
+	public void serializeGroup( PrintWriter writer, Group group, ViewModel model )
 	{
 		// TODO Auto-generated method stub
 	}
@@ -44,7 +60,10 @@ public class RDFRenderer implements Renderer
 
 /*
  * $Log$
- * Revision 1.1  2006-05-24 15:18:08  cschenk
+ * Revision 1.2  2006-06-05 14:14:11  mbork
+ * implemented GET strategies
+ *
+ * Revision 1.1  2006/05/24 15:18:08  cschenk
  * Introduced a rendering format and a factory that produces renderers (for xml, rdf, html)
  *
  * Revision 1.3  2006/05/24 13:02:44  cschenk

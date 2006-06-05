@@ -1,5 +1,6 @@
 package org.bibsonomy.rest.renderer;
 
+import org.bibsonomy.rest.exceptions.InternServerException;
 import org.bibsonomy.rest.renderer.enums.RenderingFormat;
 import org.bibsonomy.rest.renderer.impl.HTMLRenderer;
 import org.bibsonomy.rest.renderer.impl.RDFRenderer;
@@ -12,14 +13,16 @@ import org.bibsonomy.rest.renderer.impl.XMLRenderer;
  * @author Christian Schenk
  * @version $Id$
  */
-public class RendererFactory {
-
+public class RendererFactory
+{
 	/**
 	 * Returns the renderer for the given format.
 	 */
-	public static Renderer getRenderer(final String format) {
-		final RenderingFormat renderingformat = RenderingFormat.getRenderingFormat(format);
-		switch (renderingformat) {
+	public static Renderer getRenderer( RenderingFormat renderingFormat )
+	{
+		if( renderingFormat == null ) throw new InternServerException( "RenderingFormat is null" );
+		switch( renderingFormat )
+		{
 		case HTML:
 			return new HTMLRenderer();
 		case RDF:
@@ -30,3 +33,10 @@ public class RendererFactory {
 		}
 	}
 }
+
+/*
+ * $Log$
+ * Revision 1.2  2006-06-05 14:14:11  mbork
+ * implemented GET strategies
+ *
+ */

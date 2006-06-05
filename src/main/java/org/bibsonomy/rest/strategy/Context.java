@@ -1,7 +1,9 @@
 package org.bibsonomy.rest.strategy;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +15,7 @@ import org.bibsonomy.rest.exceptions.InternServerException;
 import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
+import org.bibsonomy.rest.renderer.enums.RenderingFormat;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -64,6 +67,7 @@ public final class Context
 	private StringTokenizer urlTokens;
 	private Map parameterMap;
 	private final HttpMethod httpMethod;
+	private RenderingFormat renderingFormat;
 
 	/**
 	 * @param dbAdapter
@@ -82,8 +86,8 @@ public final class Context
 
 	public void initStrategy()
 	{
-		// determine which renderer to use
-		this.renderer = RendererFactory.getRenderer(getStringAttribute("format", "xml"));
+		renderingFormat = RenderingFormat.getRenderingFormat( getStringAttribute( "format", "xml" ) );
+		this.renderer = RendererFactory.getRenderer( renderingFormat );
 
 		// choose strategy
 		if( urlTokens.countTokens() > 0 )
@@ -135,6 +139,27 @@ public final class Context
 		return userAgent != null && userAgent.startsWith( API_USER_AGENT );
 	}
 
+	/**
+	 * 
+	 * @param parameterName parameter (= key) the tags are the value from
+	 * @return a list of all tags
+	 */
+	public Set<String> getTags( String parameterName )
+	{
+		Set<String> tags = new HashSet<String>();
+		
+		String param = getStringAttribute( parameterName, "" );
+		if( !param.equals( "" ) )
+		{
+			String[] params = param.split( "\\+" );
+			for( int i = 0; i < params.length; ++i )
+			{
+				tags.add( params[ i ] );
+			}
+		}
+		return tags;
+	}
+	
 	/**
 	 * @param parameterName name of the parameter
 	 * @param defaultValue
@@ -228,11 +253,22 @@ public final class Context
 	{
 		return strategy;
 	}
+
+	/**
+	 * @return Returns the renderingFormat.
+	 */
+	public RenderingFormat getRenderingFormat()
+	{
+		return renderingFormat;
+	}
 }
 
 /*
  * $Log$
- * Revision 1.6  2006-05-26 14:02:03  cschenk
+ * Revision 1.7  2006-06-05 14:14:12  mbork
+ * implemented GET strategies
+ *
+ * Revision 1.6  2006/05/26 14:02:03  cschenk
  * Forgot to clean up
  *
  * Revision 1.5  2006/05/24 20:09:02  jillig

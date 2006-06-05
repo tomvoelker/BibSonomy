@@ -1,8 +1,12 @@
 package org.bibsonomy.rest.strategy.users;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.bibsonomy.model.Post;
+import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.InternServerException;
 import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
@@ -35,34 +39,46 @@ public class GetPostDetailsStrategy extends Strategy
 	@Override
 	public void validate() throws ValidationException
 	{
-		// TODO check username for existance
-		// TODO check resourcehash for existance
+		// TODO check username for existance - or should the request then just return an empty entry?
+		// TODO check resourcehash for existance - or should the request then just return an empty entry?
 	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.rest.strategy.Strategy#perform(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	public void perform( HttpServletRequest request, HttpServletResponse response )
-			throws InternServerException
+	public void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException
 	{
+		// delegate to the renderer
+		Post post = context.getDatabase().getPostDetails( context.getAuthUserName(), resourceHash, userName );
+		try
+		{
+			context.getRenderer().serializePost( response.getWriter(), post, new ViewModel() );
+		}
+		catch( IOException e )
+		{
+			throw new InternServerException( e );
+		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see org.bibsonomy.rest.strategy.Strategy#getContentType(java.lang.String)
 	 */
 	@Override
 	public String getContentType( String userAgent )
 	{
-		// TODO content type
-		return null;
+		if( context.apiIsUserAgent( userAgent ) ) return "bibsonomy/posts" + context.getRenderingFormat().toString();
+		return Context.DEFAULT_CONTENT_TYPE;
 	}
-
 }
 
 /*
  * $Log$
- * Revision 1.2  2006-05-24 13:02:44  cschenk
+ * Revision 1.3  2006-06-05 14:14:11  mbork
+ * implemented GET strategies
+ *
+ * Revision 1.2  2006/05/24 13:02:44  cschenk
  * Introduced an enum for the HttpMethod and moved the exceptions
  *
  * Revision 1.1  2006/05/21 20:31:51  mbork

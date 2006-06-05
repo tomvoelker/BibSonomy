@@ -1,6 +1,7 @@
 package org.bibsonomy.rest.database;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -13,9 +14,23 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.LogicInterface;
+import org.bibsonomy.rest.enums.GroupingEntity;
+import org.bibsonomy.rest.enums.ResourceType;
 
 
 /**
+ * note: this class is only used on demonstrating purpose. it is not designed to
+ * verify any algorithm, not to verify any strategy. Testing strategies with
+ * this class is not possible, because one would only test the testcase's
+ * algorithm itself..<p/> furthermore the implementation is not complete;
+ * especially unimplemented are:
+ * <ul>
+ * <li>start and end value</li>
+ * <li>class-relations of tags (subclassing/ superclassing)</li>
+ * <li>popular- and added-flag at the posts-query</li>
+ * <li>viewable-stuff</li>
+ * </ul>
+ * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
@@ -34,235 +49,171 @@ public class TestDatabase implements LogicInterface
 		dbResources = new TreeMap<String, Resource>();
 		fillDataBase();
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.DbInterface#getUsers(java.lang.String, int, int)
-	 */
+
 	public Set<User> getUsers( String authUser, int start, int end )
 	{
 		Set<User> users = new HashSet<User>();
 		users.addAll( dbUsers.values() );
 		return users;
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.DbInterface#getPostsByTags(java.lang.String, java.util.Set, int, int)
-	 */
-	public Set<Post> getPostsByTags( String authUser, Set<String> tags, int start, int end )
+
+	public Set<User> getUsers( String authUser, String groupName, int start, int end )
 	{
-		Set<Post> posts = new HashSet<Post>();
-		for( String s: tags )
+		Set<User> users = new HashSet<User>();
+		Group group = dbGroups.get( groupName );
+		if( group != null )
 		{
-			Tag t = dbTags.get( s );
-			posts.addAll( t.getPosts() );
+			users.addAll( group.getUsers() );
 		}
-		return posts;
+		return users;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.DbInterface#getPostsOfUser(java.lang.String, java.lang.String, int, int)
-	 */
-	public Set<Post> getPostsOfUser( String authUser, String userName, int start, int end )
+	public User getUserDetails( String authUserName, String userName )
 	{
-		Set<Post> posts = new HashSet<Post>();
-		User user = dbUsers.get( userName );
-		if( user == null ) return posts; // TODO return null or return empty list?
-		posts.addAll( user.getPosts() );
-		return posts;
+		return dbUsers.get( userName );
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.DbInterface#getPostsOfUserByTags(java.lang.String, java.lang.String, java.util.Set, int, int)
-	 */
-	public Set<Post> getPostsOfUserByTags( String authUser, String userName, Set<String> tags, int start, int end )
+
+	public Post getPostDetails( String authUser, String resourceHash, String userName )
 	{
-		Set<Post> posts = new HashSet<Post>();
 		User user = dbUsers.get( userName );
-		if( user == null ) return posts; // TODO return null or return empty list?
-		for( Post post: user.getPosts() )
+		if( user != null )
 		{
-			boolean drin = false;
-			for( String tagName: tags )
+			for( Post p: user.getPosts() )
 			{
-				Tag tag = dbTags.get( tagName );
-				if( post.getTags().contains( tag ) ) drin = true;
+				if( p.getResource().getInterHash().equals( resourceHash ) )
+				{
+					return p;
+				}
 			}
-			if( drin ) posts.add( post );
 		}
-		return posts;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.DbInterface#getConceptOfUserByTags(java.lang.String, java.lang.String, java.util.Set, int, int)
-	 */
-	public Set<Post> getConceptOfUserByTags( String authUser, String userName, Set<String> tags, int start, int end )
-	{
-		// TODO
 		return null;
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.DbInterface#getPostsOfBookmark(java.lang.String, java.lang.String, int, int)
-	 */
-	public Set<Post> getPostsOfBookmark( String authUser, String bookmarkHash, int start, int end )
-	{
-		Set<Post> posts = new HashSet<Post>();
-		Resource resource = dbResources.get( bookmarkHash );
-		if( !( resource instanceof Bookmark ) )
-		{
-			return posts; // TODO return null or return empty list?
-		}
-		if( resource == null ) return posts; // TODO return null or return empty list?
-		posts.addAll( resource.getPosts() );
-		return posts;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.DbInterface#getPostOfBookmarkByUser(java.lang.String, java.lang.String, java.lang.String, int, int)
-	 */
-	public Set<Post> getPostOfBookmarkByUser( String authUser, String bookmarkHash, String userName, int start, int end )
-	{
-		Set<Post> posts = new HashSet<Post>();
-		Resource resource = dbResources.get( bookmarkHash );
-		if( resource == null ) return posts; // TODO return null or return empty list?
-		if( !( resource instanceof Bookmark ) )
-		{
-			return posts; // TODO return null or return empty list?
-		}
-		User user = dbUsers.get( userName );
-		if( user == null ) return posts; // TODO return null or return empty list?
-		for( Post post: resource.getPosts() )
-		{
-			if( ( post).getUser() == user ) posts.add( post );
-		}
-		return posts;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.DbInterface#getPostsOfBibtex(java.lang.String, java.lang.String, int, int)
-	 */
-	public Set<Post> getPostsOfBibtex( String authUser, String bibtexHash, int start, int end )
-	{
-		Set<Post> posts = new HashSet<Post>();
-		Resource resource = dbResources.get( bibtexHash );
-		if( !( resource instanceof BibTex ) )
-		{
-			return posts; // TODO return null or return empty list?
-		}
-		if( resource == null ) return posts; // TODO return null or return empty list?
-		posts.addAll( resource.getPosts() );
-		return posts;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.DbInterface#getPostOfBibtexByUser(java.lang.String, java.lang.String, java.lang.String, int, int)
-	 */
-	public Set<Post> getPostOfBibtexByUser( String authUser, String bibtexHash, String userName, int start, int end )
-	{
-		Set<Post> posts = new HashSet<Post>();
-		Resource resource = dbResources.get( bibtexHash );
-		if( resource == null ) return posts; // TODO return null or return empty list?
-		if( !( resource instanceof BibTex ) )
-		{
-			return posts; // TODO return null or return empty list?
-		}
-		User user = dbUsers.get( userName );
-		if( user == null ) return posts; // TODO return null or return empty list?
-		for( Post post: resource.getPosts() )
-		{
-			if( ( post).getUser() == user ) posts.add( post );
-		}
-		return posts;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.DbInterface#getGroups()
-	 */
-	public Set<Group> getGroups()
+
+	public Set<Group> getGroups( String string, int start, int end )
 	{
 		return (Set<Group>)dbGroups.values();
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.DbInterface#getPostsOfGroup(java.lang.String, java.lang.String, int, int)
-	 */
-	public Set<Post> getPostsOfGroup( String authUser, String groupName, int start, int end )
+
+	public Group getGroupDetails( String authUserName, String groupName )
 	{
-		Set<Post> posts = new HashSet<Post>();
-		Group group = dbGroups.get( groupName );
-		if( group == null )
-		{
-			return posts; // TODO return null or return empty list?
-		}
-		posts.addAll( group.getPosts() );
-		return null;
+		return dbGroups.get( groupName );
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.DbInterface#getPostsOfGroupByTags(java.lang.String, java.lang.String, java.util.Set, int, int)
+
+	/**
+	 * note: the regex is currently not considered
 	 */
-	public Set<Post> getPostsOfGroupByTags( String authUser, String groupName, Set<String> tags, int start, int end )
-	{
-		Set<Post> posts = new HashSet<Post>();
-		Group group = dbGroups.get( groupName );
-		if( group == null )
-		{
-			return posts; // TODO return null or return empty list?
-		}
-		for( Post post: group.getPosts() )
-		{
-			boolean drin = false;
-			for( String tagName: tags )
-			{
-				Tag tag = dbTags.get( tagName );
-				if( post.getTags().contains( tag ) ) drin = true;
-			}
-			if( drin ) posts.add( post );
-		}
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.DbInterface#getViewablePostsForGroup(java.lang.String, java.lang.String, int, int)
-	 */
-	public Set<Post> getViewablePostsForGroup( String authUser, String groupName, int start, int end )
-	{
-		// TODO
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.DbInterface#getViewablePostsTaggedWith(java.lang.String, java.lang.String, java.util.Set, int, int)
-	 */
-	public Set<Post> getViewablePostsTaggedWith( String authUser, String groupName, Set<String> tags, int start, int end )
-	{
-		// TODO
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.DbInterface#getResourcesBySearch(java.lang.String, java.lang.String, int, int)
-	 */
-	public Set<Resource> getResourcesBySearch( String authUser, String query, int start, int end )
-	{
-		// TODO
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.DbInterface#getTagsOfUser(java.lang.String, java.lang.String, int, int)
-	 */
-	public  Set<Tag> getTagsOfUser( String authUser, String userName, int start, int end )
+	public Set<Tag> getTags( String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end )
 	{
 		Set<Tag> tags = new HashSet<Tag>();
-		User user = dbUsers.get( userName );
-		if( user == null ) return tags; // TODO return null or return empty list?
-		for( Post post: user.getPosts() )
+		switch( grouping )
 		{
-			tags.addAll( post.getTags() );
+		case VIEWABLE:
+			// simply use groups
+		case GROUP:
+			if( dbGroups.get( groupingName ) != null )
+			{
+				for( Post post: dbGroups.get( groupingName ).getPosts() )
+				{
+					tags.addAll( post.getTags() );
+				}
+			}
+			break;
+		case USER:
+			if( dbUsers.get( groupingName ) != null )
+			{
+				for( Post post: dbUsers.get( groupingName ).getPosts() )
+				{
+					tags.addAll( post.getTags() );
+				}
+			}
+			break;
+		default: // ALL
+			tags.addAll( dbTags.values() );
+			break;
 		}
 		return tags;
+	}
+
+	public Tag getTagDetails( String authUserName, String tagName )
+	{
+		return dbTags.get( tagName );
+	}
+
+	/**
+	 * note: popular and added are not considered
+	 */
+	public Set<Post> getPosts( String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, Set<String> tags, String hash, boolean popular, boolean added, int start, int end )
+	{
+		Set<Post> posts = new HashSet<Post>();
+		// do grouping stuff
+		switch( grouping )
+		{
+		case USER:
+			if( dbUsers.get( groupingName ) != null )
+			{
+				posts.addAll( dbUsers.get( groupingName).getPosts() );
+			}
+			break;
+		case VIEWABLE:
+			// simply use groups
+		case GROUP:
+			if( dbGroups.get( groupingName ) != null )
+			{
+				posts.addAll( dbGroups.get( groupingName).getPosts() );
+			}
+			break;
+		default: // ALL
+			for( User user: dbUsers.values() )
+			{
+				posts.addAll( user.getPosts() );
+			}
+			break;
+		}
+		// check resourceType
+		switch( resourceType )
+		{
+		case BOOKMARK:
+			for( Iterator<Post> it = posts.iterator(); it.hasNext(); )
+			{
+				if( !( ( (Post)it ).getResource() instanceof Bookmark ) ) it.remove();
+			}
+			break;
+		case BIBTEX:
+			for( Iterator<Post> it = posts.iterator(); it.hasNext(); )
+			{
+				if( !( ( (Post)it ).getResource() instanceof BibTex ) ) it.remove();
+			}
+			break;
+		default: // ALL
+			break;
+		}
+		// check hash
+		if( !"".equals( hash ) )
+		{
+			for( Iterator<Post> it = posts.iterator(); it.hasNext(); )
+			{
+				if( !( (Post)it ).getResource().getInterHash().equals( hash ) ) it.remove();
+			}
+		}
+		// do tag filtering
+		for( Iterator<Post> it = posts.iterator(); it.hasNext(); )
+		{
+			boolean drin = false;
+			for( Tag tag: ( (Post)it ).getTags() )
+			{
+				for( String searchTag: tags )
+				{
+					if( tag.getName().equals( searchTag ) )
+					{
+						drin = true;
+						break;
+					}
+				}
+				
+			}
+			if( !drin ) it.remove();
+		}
+		return posts;
 	}
 	
 	/**
@@ -531,7 +482,7 @@ public class TestDatabase implements LogicInterface
 		dbResources.put( bibtexDemo.getIntraHash(), bibtexDemo );
 		
 		Post post_13 = new Post();
-		post_13.setDescription("Beschreibung einer allumfassenden Weltformel. T�glich lesen!" );
+		post_13.setDescription("Beschreibung einer allumfassenden Weltformel. Taeglich lesen!" );
 		post_13.setPostingDate( System.currentTimeMillis() );
 		post_13.setResource( bibtexDemo );
 		post_13.setUser( userManu  );
@@ -544,7 +495,10 @@ public class TestDatabase implements LogicInterface
 
 /*
  * $Log$
- * Revision 1.1  2006-05-24 20:05:55  jillig
+ * Revision 1.2  2006-06-05 14:14:11  mbork
+ * implemented GET strategies
+ *
+ * Revision 1.1  2006/05/24 20:05:55  jillig
  * TestDatabase verschoben
  *
  * Revision 1.1  2006/05/19 21:01:08  mbork

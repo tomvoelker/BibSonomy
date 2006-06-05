@@ -40,8 +40,7 @@ public class PutPostStrategy extends Strategy
 	 * @see org.bibsonomy.rest.strategy.Strategy#perform(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	public void perform( HttpServletRequest request, HttpServletResponse response )
-			throws InternServerException
+	public void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException
 	{
 		// TODO Auto-generated method stub
 
@@ -61,7 +60,10 @@ public class PutPostStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.2  2006-05-24 13:02:44  cschenk
+ * Revision 1.3  2006-06-05 14:14:11  mbork
+ * implemented GET strategies
+ *
+ * Revision 1.2  2006/05/24 13:02:44  cschenk
  * Introduced an enum for the HttpMethod and moved the exceptions
  *
  * Revision 1.1  2006/05/21 20:31:51  mbork

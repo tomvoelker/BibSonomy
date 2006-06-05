@@ -10,7 +10,7 @@ import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.strategy.groups.AddGroupStrategy;
 import org.bibsonomy.rest.strategy.groups.AddUserToGroupStrategy;
 import org.bibsonomy.rest.strategy.groups.DeleteGroupStrategy;
-import org.bibsonomy.rest.strategy.groups.GetDetailsOfGroupStrategy;
+import org.bibsonomy.rest.strategy.groups.GetGroupStrategy;
 import org.bibsonomy.rest.strategy.groups.GetListOfGroupsStrategy;
 import org.bibsonomy.rest.strategy.groups.GetUserListOfGroupStrategy;
 import org.bibsonomy.rest.strategy.groups.RemoveUserFromGroupStrategy;
@@ -52,8 +52,8 @@ public class ContextGroupTest extends TestCase
 	public void testGetDetailsOfGroupStrategy() throws Exception
 	{
 		Context c = new Context( db, HttpMethod.GET.toString(), "/groups/testgroup", new HashMap() );
-		assertTrue( "failure initializing GetDetailsOfGroupStrategy",
-				c.getStrategy() instanceof GetDetailsOfGroupStrategy );
+		assertTrue( "failure initializing GetGroupStrategy",
+				c.getStrategy() instanceof GetGroupStrategy );
 	}
 
 	public void testUpdateGroupDetailsStrategy() throws Exception
@@ -95,7 +95,10 @@ public class ContextGroupTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.4  2006-05-24 20:05:55  jillig
+ * Revision 1.5  2006-06-05 14:14:12  mbork
+ * implemented GET strategies
+ *
+ * Revision 1.4  2006/05/24 20:05:55  jillig
  * TestDatabase verschoben
  *
  * Revision 1.3  2006/05/24 13:02:44  cschenk

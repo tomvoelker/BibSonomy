@@ -1,0 +1,49 @@
+package org.bibsonomy.rest.enums;
+
+import org.bibsonomy.rest.exceptions.InternServerException;
+import org.bibsonomy.rest.exceptions.UnsupportedGroupingException;
+
+/**
+ * @author Manuel Bork <manuel.bork@uni-kassel.de>
+ * @version $Id$
+ */
+public enum GroupingEntity
+{
+	USER, GROUP, VIEWABLE, ALL;
+
+	/**
+	 * Returns the corresponding HttpMethod-enum for the given string.
+	 */
+	public static GroupingEntity getGroupingEntity( final String groupingEntity )
+	{
+		if( groupingEntity == null ) throw new InternServerException( "GroupingEntity is null" );
+		final String entity = groupingEntity.toLowerCase().trim();
+		if( "user".equals( entity ) )
+		{
+			return USER;
+		}
+		else if( "group".equals( entity ) )
+		{
+			return GROUP;
+		}
+		else if( "viewable".equals( entity ) )
+		{
+			return VIEWABLE;
+		}
+		else if( "all".equals( entity ) )
+		{
+			return ALL;
+		}
+		else
+		{
+			throw new UnsupportedGroupingException( groupingEntity );
+		}
+	}
+}
+
+/*
+ * $Log$
+ * Revision 1.1  2006-06-05 14:14:12  mbork
+ * implemented GET strategies
+ *
+ */

@@ -9,25 +9,43 @@ import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
  * @author Christian Schenk
  * @version $Id$
  */
-public enum HttpMethod {
+public enum HttpMethod
+{
 	GET, POST, PUT, DELETE;
 
 	/**
 	 * Returns the corresponding HttpMethod-enum for the given string.
 	 */
-	public static HttpMethod getHttpMethod(final String httpMethod) {
-		if (httpMethod == null)	throw new InternServerException("HTTP-Method is null");
+	public static HttpMethod getHttpMethod( final String httpMethod )
+	{
+		if( httpMethod == null ) throw new InternServerException( "HTTP-Method is null" );
 		final String method = httpMethod.toLowerCase().trim();
-		if ("get".equals(method)) {
+		if( "get".equals( method ) )
+		{
 			return GET;
-		} else if ("post".equals(method)) {
+		}
+		else if( "post".equals( method ) )
+		{
 			return POST;
-		} else if ("put".equals(method)) {
+		}
+		else if( "put".equals( method ) )
+		{
 			return PUT;
-		} else if ("delete".equals(method)) {
+		}
+		else if( "delete".equals( method ) )
+		{
 			return DELETE;
-		} else {
-			throw new UnsupportedHttpMethodException(httpMethod);
+		}
+		else
+		{
+			throw new UnsupportedHttpMethodException( httpMethod );
 		}
 	}
 }
+
+/*
+ * $Log$
+ * Revision 1.5  2006-06-05 14:14:12  mbork
+ * implemented GET strategies
+ *
+ */

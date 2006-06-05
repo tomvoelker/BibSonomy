@@ -4,210 +4,166 @@ import java.util.Set;
 
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.rest.enums.GroupingEntity;
+import org.bibsonomy.rest.enums.ResourceType;
 
 /**
+ * this interface is an adapter to the database. <p/> the methods returning
+ * information return in general, if there are no matches, an empty set (if a
+ * list is requested), or null (if a single entity is requested (a post, eg)).
+ * <p/><b>please try to be as close to the method-conventions as possible.
+ * </b>If something is unclear, guess, check occurences and document your
+ * result. if you have to change a convention, check all occurences and document
+ * it properly! try to check each possibility with a test-case.
+ * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
 public interface LogicInterface
 {
-
 	/**
 	 * returns all users bibsonomy has
 	 * 
 	 * @param authUser currently logged in user's name
 	 * @param start
 	 * @param end
-	 * @return
+	 * @return a set of users, an empty set else
 	 */
 	public abstract Set<User> getUsers( String authUser, int start, int end );
 
 	/**
-	 * returns every post which has all of the tags attached
+	 * returns all users who are members of the specified group
 	 * 
 	 * @param authUser currently logged in user's name
+	 * @param groupName name of the group
+	 * @param start
+	 * @param end
+	 * @return  a set of users, an empty set else
+	 */
+	public abstract Set<User> getUsers( String authUser, String groupName, int start, int end );
+	
+	/**
+	 * returns details about a specified user
+	 * 
+	 * @param authUserName
+	 * @param userName name of the user we want to get details from
+	 * @return details about a named user, null else
+	 */
+	public abstract User getUserDetails( String authUserName, String userName );
+	
+	/**
+	 * returns a list of posts. the list can be filtered
+	 * 
+	 * @param authUser
+	 *            name of the authenticated user
+	 * @param resourceType
+	 *            resource type to be shown.
+	 * @param grouping
+	 *            grouping tells whom posts are to be shown: the posts of a
+	 *            user, of a group or of the viewables.
+	 * @param groupingName
+	 *            name of the grouping. if grouping is user, then its the
+	 *            username. if grouping is set to {@link GroupingEntity#ALL},
+	 *            then its an empty string!
 	 * @param tags
+	 *            a set of tags. remember to parse special tags like
+	 *            ->[tagname], -->[tagname] and <->[tagname]. see documentation.
+	 *            if the parameter is not used, its am empty set
+	 * @param hash
+	 *            hash value of a resource, if one would like to get a list of
+	 *            all posts belonging to a given resource. if unused, its empty
+	 *            but not null.
+	 * @param added
+	 *            a flag indicating the way of sorting: if true, sort by
+	 *            adding-time. both flags cannot be true at the same time; an
+	 *            {@link IllegalArgumentException} is expected to be thrown
+	 * @param popular
+	 *            a flag indicating the way of sorting: if true, sort by
+	 *            popularity. both flags cannot be true at the same time; an
+	 *            {@link IllegalArgumentException} is expected to be thrown
 	 * @param start
 	 * @param end
-	 * @return
+	 * @return a set of posts, an empty set else
 	 */
-	public abstract Set<Post> getPostsByTags( String authUser, Set<String> tags, int start, int end );
+	public abstract Set<Post> getPosts( String authUser, ResourceType resourceType, GroupingEntity grouping,
+			String groupingName, Set<String> tags, String hash, boolean popular, boolean added, int start, int end );
 
 	/**
-	 * returns all posts of a user identified by an userName
+	 * returns details to a post. a post is uniquely identified by a hash of the corresponding resource and a username
 	 * 
-	 * @param authUser currently logged in user's name
-	 * @param userName
-	 * @param start
-	 * @param end
-	 * @return
+	 * @param authUser authenticated user name
+	 * @param resourceHash hash value of the corresponding resource
+	 * @param userName name of the post-owner
+	 * @return the post's details, null else
 	 */
-	public abstract Set<Post> getPostsOfUser( String authUser, String userName, int start, int end );
-
-	/**
-	 * returns every post of user u which has all of the tags attached
-	 * 
-	 * @param authUser currently logged in user's name
-	 * @param userName
-	 * @param tags
-	 * @param start
-	 * @param end
-	 * @return
-	 */
-	public abstract Set<Post> getPostsOfUserByTags( String authUser, String userName,
-			Set<String> tags, int start, int end );
-
-	/**
-	 * returns every post of user u which has for every tag at least one of its subtags or the tag 
-	 * itself attached
-	 * 
-	 * @param authUser currently logged in user's name
-	 * @param userName
-	 * @param tags
-	 * @param start
-	 * @param end
-	 * @return
-	 */
-	public abstract Set<Post> getConceptOfUserByTags( String authUser, String userName,
-			Set<String> tags, int start, int end );
-
-	/**
-	 * returns all posts of the resource r, if its a bookmark
-	 * 
-	 * @param authUser
-	 * @param bookmarkHash
-	 * @param start
-	 * @param end
-	 * @return
-	 */
-	public abstract Set<Post> getPostsOfBookmark( String authUser, String bookmarkHash, int start,
-			int end );
-
-	/**
-	 * returns the post of user u of the resource r, if its a bookmark
-	 * 
-	 * @param authUser
-	 * @param bookmarkHash
-	 * @param userName
-	 * @param start
-	 * @param end
-	 * @return
-	 */
-	public abstract Set<Post> getPostOfBookmarkByUser( String authUser, String bookmarkHash,
-			String userName, int start, int end );
-
-	/**
-	 * returns all posts of the resource r, it its a bibtex entry
-	 * 
-	 * @param authUser
-	 * @param bibtexHash
-	 * @param start
-	 * @param end
-	 * @return
-	 */
-	public abstract Set<Post> getPostsOfBibtex( String authUser, String bibtexHash, int start,
-			int end );
-
-	/**
-	 * returns the post of user u of the resource r, it its a bibtex entry
-	 * 
-	 * @param authUser
-	 * @param bibtexHash
-	 * @param userName
-	 * @param start
-	 * @param end
-	 * @return
-	 */
-	public abstract Set<Post> getPostOfBibtexByUser( String authUser, String bibtexHash,
-			String userName, int start, int end );
-
+	public abstract Post getPostDetails( String authUser, String resourceHash, String userName );
+	
 	/**
 	 * returns all groups of the system
 	 * 
-	 * @return
+	 * @param end 
+	 * @param start 
+	 * @param string 
+	 * @return a set of groups, an empty set else
 	 */
-	public abstract Set<Group> getGroups();
+	public abstract Set<Group> getGroups( String string, int start, int end );
+	
+	/**
+	 * returns details of one group
+	 * 
+	 * @param authUserName
+	 * @param groupName
+	 * @return the group's details, null else
+	 */
+	public abstract Group getGroupDetails( String authUserName, String groupName );
 
 	/**
-	 * returns all posts of all users belonging to the group g
+	 * returns a list of tags. the list can be filtered
 	 * 
 	 * @param authUser
-	 * @param groupName
+	 *            name of the authenticated user
+	 * @param grouping
+	 *            grouping tells whom tags are to be shown: the tags of a user,
+	 *            of a group or of the viewables.
+	 * @param groupingName
+	 *            name of the grouping. if grouping is user, then its the
+	 *            username. if grouping is set to {@link GroupingEntity#ALL},
+	 *            then its an empty string!
+	 * @param regex
+	 *            a regular expression used to filter the tagnames
 	 * @param start
 	 * @param end
-	 * @return
+	 * @return a set of tags, en empty set else
 	 */
-	public abstract Set<Post> getPostsOfGroup( String authUser, String groupName, int start, int end );
-
-	/**
-	 * returns every post which has all of the tags attached and where the user belongs to group g
-	 * 
-	 * @param authUser
-	 * @param groupName
-	 * @param tags
-	 * @param start
-	 * @param end
-	 * @return
-	 */
-	public abstract Set<Post> getPostsOfGroupByTags( String authUser, String groupName,
-			Set<String> tags, int start, int end );
-
-	/**
-	 * returns all posts which are set viewable for members of the group g
-	 * 
-	 * @param authUser
-	 * @param groupName
-	 * @param start
-	 * @param end
-	 * @return
-	 */
-	public abstract Set<Post> getViewablePostsForGroup( String authUser, String groupName,
+	public abstract Set<Tag> getTags( String authUser, GroupingEntity grouping, String groupingName, String regex,
 			int start, int end );
 
 	/**
-	 * returns all posts which are set viewable for members of the group g and which have all of the 
-	 * tags attached
+	 * returns details about a tag. those details are:
+	 * <ul>
+	 * <li>details about the tag itself, like number of occurrences etc</li>
+	 * <li>list of subtags</li>
+	 * <li>list of supertags</li>
+	 * <li>list of correlated tags</li>
+	 * </ul>
 	 * 
-	 * @param authUser
-	 * @param groupName
-	 * @param tags
-	 * @param start
-	 * @param end
-	 * @return
+	 * @param authUserName
+	 *            name of the authenticated user
+	 * @param tagName
+	 *            name of the tag
+	 * @return the tag's details, null else
 	 */
-	public abstract Set<Post> getViewablePostsTaggedWith( String authUser, String groupName,
-			Set<String> tags, int start, int end );
-
-	/**
-	 * returns every post which has all of the tags attached and where the user belongs to group g
-	 * 
-	 * @param authUser
-	 * @param query
-	 * @param start
-	 * @param end
-	 * @return
-	 */
-	public abstract Set<Resource> getResourcesBySearch( String authUser, String query, int start,
-			int end );
-
-	/**
-	 * returns all tags this user uses
-	 * 
-	 * @param authUser ?
-	 * @param userName
-	 * @param start
-	 * @param end
-	 * @return
-	 */
-	public abstract Set<Tag> getTagsOfUser( String authUser, String userName, int start, int end );
+	public abstract Tag getTagDetails( String authUserName, String tagName );
 }
 
 /*
  * $Log$
- * Revision 1.1  2006-05-24 20:09:03  jillig
+ * Revision 1.2  2006-06-05 14:14:12  mbork
+ * implemented GET strategies
+ *
+ * Revision 1.1  2006/05/24 20:09:03  jillig
  * renamed DbInterface to RESTs LogicInterface
  *
  * Revision 1.1  2006/05/19 21:01:08  mbork

@@ -38,51 +38,6 @@ import org.bibsonomy.rest.renderer.xml.UsersType;
  */
 public class XMLRenderer implements Renderer
 {
-
-	public void serializeUsers( PrintWriter writer, Set<User> users, ViewModel viewModel )
-	{
-		UsersType xmlUsers = new UsersType();
-		xmlUsers.setEnd( BigInteger.valueOf( viewModel.getEndValue() ) );
-		xmlUsers.setNext( viewModel.getUrlToNextResources() );
-		xmlUsers.setStart( BigInteger.valueOf( viewModel.getStartValue() ) );
-		
-		for( User user: users )
-		{
-			UserType xmlUser = new UserType();
-			xmlUser.setEmail( user.getEmail() );
-			xmlUser.setHomepage( user.getHomepage() );
-			xmlUser.setName( user.getName() );
-			xmlUser.setRealname( user.getRealname() );
-			xmlUser.setVersion( user.getTimestamp() );
-//			xmlUser.setHref( createHrefForUser( user.getName() ) ); TODO
-			
-			xmlUsers.getUser().add( xmlUser );
-		}
-		BibsonomyXML xmlDoc = new BibsonomyXML();
-		xmlDoc.setUsers( xmlUsers );
-		serialize( writer, xmlDoc );
-	}
-	
-	public void serializeTags( PrintWriter writer, Set<Tag> tags, ViewModel viewModel )
-	{
-		TagsType xmlTags = new TagsType();
-		xmlTags.setEnd( BigInteger.valueOf( viewModel.getEndValue() ) );
-		xmlTags.setNext( viewModel.getUrlToNextResources() );
-		xmlTags.setStart( BigInteger.valueOf( viewModel.getStartValue() ) );
-		
-		for( Tag tag: tags )
-		{
-			TagType xmlTag = new TagType();
-			xmlTag.setName( tag.getName() );
-			xmlTag.setCount( BigInteger.valueOf( tag.getCount() ) );
-			
-			xmlTags.getTag().add( xmlTag );
-		}
-		BibsonomyXML xmlDoc = new BibsonomyXML();
-		xmlDoc.setTags( xmlTags );
-		serialize( writer, xmlDoc );
-	}
-	
 	public void serializePosts( PrintWriter writer, Set<Post> posts, ViewModel viewModel ) throws InternServerException
 	{
 		PostsType xmlPosts = new PostsType();
@@ -148,6 +103,75 @@ public class XMLRenderer implements Renderer
 		xmlDoc.setPosts( xmlPosts );
 		serialize( writer, xmlDoc );
 	}
+
+	public void serializePost( PrintWriter writer, Post post, ViewModel model )
+	{
+		// TODO Auto-generated method stub
+	}
+
+	public void serializeUsers( PrintWriter writer, Set<User> users, ViewModel viewModel )
+	{
+		UsersType xmlUsers = new UsersType();
+		xmlUsers.setEnd( BigInteger.valueOf( viewModel.getEndValue() ) );
+		xmlUsers.setNext( viewModel.getUrlToNextResources() );
+		xmlUsers.setStart( BigInteger.valueOf( viewModel.getStartValue() ) );
+		
+		for( User user: users )
+		{
+			UserType xmlUser = new UserType();
+			xmlUser.setEmail( user.getEmail() );
+			xmlUser.setHomepage( user.getHomepage() );
+			xmlUser.setName( user.getName() );
+			xmlUser.setRealname( user.getRealname() );
+			xmlUser.setVersion( user.getTimestamp() );
+//			xmlUser.setHref( createHrefForUser( user.getName() ) ); TODO
+			
+			xmlUsers.getUser().add( xmlUser );
+		}
+		BibsonomyXML xmlDoc = new BibsonomyXML();
+		xmlDoc.setUsers( xmlUsers );
+		serialize( writer, xmlDoc );
+	}
+
+	public void serializeUser( PrintWriter writer, User user, ViewModel viewModel )
+	{
+		// TODO Auto-generated method stub
+	}
+
+	public void serializeTags( PrintWriter writer, Set<Tag> tags, ViewModel viewModel )
+	{
+		TagsType xmlTags = new TagsType();
+		xmlTags.setEnd( BigInteger.valueOf( viewModel.getEndValue() ) );
+		xmlTags.setNext( viewModel.getUrlToNextResources() );
+		xmlTags.setStart( BigInteger.valueOf( viewModel.getStartValue() ) );
+		
+		for( Tag tag: tags )
+		{
+			TagType xmlTag = new TagType();
+			xmlTag.setName( tag.getName() );
+			xmlTag.setCount( BigInteger.valueOf( tag.getCount() ) );
+			
+			xmlTags.getTag().add( xmlTag );
+		}
+		BibsonomyXML xmlDoc = new BibsonomyXML();
+		xmlDoc.setTags( xmlTags );
+		serialize( writer, xmlDoc );
+	}
+
+	public void serializeTag( PrintWriter writer, Tag tag, ViewModel model )
+	{
+		// TODO Auto-generated method stub
+	}
+
+	public void serializeGroups( PrintWriter writer, Set<Group> groups, ViewModel viewModel )
+	{
+		// TODO Auto-generated method stub
+	}
+
+	public void serializeGroup( PrintWriter writer, Group group, ViewModel model )
+	{
+		// TODO Auto-generated method stub
+	}
 	
 	/**
 	 * initializes java xml bindings, builds the xml document and then marshalls it to the writer
@@ -183,7 +207,10 @@ public class XMLRenderer implements Renderer
 
 /*
  * $Log$
- * Revision 1.1  2006-05-24 15:18:08  cschenk
+ * Revision 1.2  2006-06-05 14:14:11  mbork
+ * implemented GET strategies
+ *
+ * Revision 1.1  2006/05/24 15:18:08  cschenk
  * Introduced a rendering format and a factory that produces renderers (for xml, rdf, html)
  *
  * Revision 1.3  2006/05/24 13:02:44  cschenk

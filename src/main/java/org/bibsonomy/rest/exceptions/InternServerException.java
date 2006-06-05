@@ -19,7 +19,7 @@ public class InternServerException extends RuntimeException
 	/**
 	 * @param cause
 	 */
-	public InternServerException(Throwable cause) 
+	public InternServerException( Throwable cause )
 	{
 		super( cause );
 	}
@@ -27,7 +27,10 @@ public class InternServerException extends RuntimeException
 
 /*
  * $Log$
- * Revision 1.1  2006-05-24 13:02:44  cschenk
+ * Revision 1.2  2006-06-05 14:14:11  mbork
+ * implemented GET strategies
+ *
+ * Revision 1.1  2006/05/24 13:02:44  cschenk
  * Introduced an enum for the HttpMethod and moved the exceptions
  *
  * Revision 1.1  2006/05/19 21:01:09  mbork

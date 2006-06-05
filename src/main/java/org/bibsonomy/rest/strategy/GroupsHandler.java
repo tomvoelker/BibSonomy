@@ -9,7 +9,7 @@ import org.bibsonomy.rest.strategy.groups.DeleteGroupStrategy;
 import org.bibsonomy.rest.strategy.groups.GetUserListOfGroupStrategy;
 import org.bibsonomy.rest.strategy.groups.RemoveUserFromGroupStrategy;
 import org.bibsonomy.rest.strategy.groups.GetListOfGroupsStrategy;
-import org.bibsonomy.rest.strategy.groups.GetDetailsOfGroupStrategy;
+import org.bibsonomy.rest.strategy.groups.GetGroupStrategy;
 import org.bibsonomy.rest.strategy.groups.AddGroupStrategy;
 import org.bibsonomy.rest.strategy.groups.UpdateGroupDetailsStrategy;
 
@@ -59,46 +59,52 @@ public class GroupsHandler implements ContextHandler
 
 	private Strategy createGroupListStrategy( Context context, HttpMethod httpMethod )
 	{
-		switch (httpMethod) {
+		switch( httpMethod )
+		{
 		case GET:
-			return new GetListOfGroupsStrategy(context);
+			return new GetListOfGroupsStrategy( context );
 		case POST:
-			return new AddGroupStrategy(context);
+			return new AddGroupStrategy( context );
 		default:
-			throw new UnsupportedHttpMethodException(httpMethod, "GroupList");
+			throw new UnsupportedHttpMethodException( httpMethod, "GroupList" );
 		}
 	}
 
 	private Strategy createGroupStrategy( Context context, HttpMethod httpMethod, String groupName )
 	{
-		switch (httpMethod) {
+		switch( httpMethod )
+		{
 		case GET:
-			return new GetDetailsOfGroupStrategy(context, groupName);
+			return new GetGroupStrategy( context, groupName );
 		case PUT:
-			return new UpdateGroupDetailsStrategy(context, groupName);
+			return new UpdateGroupDetailsStrategy( context, groupName );
 		case DELETE:
-			return new DeleteGroupStrategy(context, groupName);
+			return new DeleteGroupStrategy( context, groupName );
 		default:
-			throw new UnsupportedHttpMethodException(httpMethod, "Group");
+			throw new UnsupportedHttpMethodException( httpMethod, "Group" );
 		}
 	}
 
 	private Strategy createUserPostsStrategy( Context context, HttpMethod httpMethod, String groupName )
 	{
-		switch (httpMethod) {
+		switch( httpMethod )
+		{
 		case GET:
-			return new GetUserListOfGroupStrategy(context, groupName);
+			return new GetUserListOfGroupStrategy( context, groupName );
 		case POST:
-			return new AddUserToGroupStrategy(context, groupName);
+			return new AddUserToGroupStrategy( context, groupName );
 		default:
-			throw new UnsupportedHttpMethodException(httpMethod, "Group");
+			throw new UnsupportedHttpMethodException( httpMethod, "Group" );
 		}
 	}
 }
 
 /*
  * $Log$
- * Revision 1.4  2006-05-24 13:02:44  cschenk
+ * Revision 1.5  2006-06-05 14:14:12  mbork
+ * implemented GET strategies
+ *
+ * Revision 1.4  2006/05/24 13:02:44  cschenk
  * Introduced an enum for the HttpMethod and moved the exceptions
  *
  * Revision 1.3  2006/05/22 10:42:25  mbork

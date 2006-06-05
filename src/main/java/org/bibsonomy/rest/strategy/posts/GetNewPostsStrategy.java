@@ -1,8 +1,15 @@
 package org.bibsonomy.rest.strategy.posts;
 
+import java.io.IOException;
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.bibsonomy.model.Post;
+import org.bibsonomy.rest.ViewModel;
+import org.bibsonomy.rest.enums.GroupingEntity;
+import org.bibsonomy.rest.enums.ResourceType;
 import org.bibsonomy.rest.exceptions.InternServerException;
 import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
@@ -14,14 +21,12 @@ import org.bibsonomy.rest.strategy.Strategy;
  */
 public class GetNewPostsStrategy extends Strategy
 {
-
 	/**
 	 * @param context
 	 */
 	public GetNewPostsStrategy( Context context )
 	{
 		super( context );
-		// TODO Auto-generated constructor stub
 	}
 
 	/* (non-Javadoc)
@@ -30,19 +35,45 @@ public class GetNewPostsStrategy extends Strategy
 	@Override
 	public void validate() throws ValidationException
 	{
-		// TODO Auto-generated method stub
-
+		// should be ok for everybody
 	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.rest.strategy.Strategy#perform(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	public void perform( HttpServletRequest request, HttpServletResponse response )
-			throws InternServerException
+	public void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException
 	{
-		// TODO Auto-generated method stub
-
+		// setup viewModel
+		int start = context.getIntAttribute( "start", 0 );
+		int end = context.getIntAttribute( "end", 19 );
+		
+		ResourceType resourceType = ResourceType.getResourceType( context.getStringAttribute( "resourceType", "all" ) );
+		
+		String next = Context.API_URL + "/" + Context.URL_POSTS + "/" + Context.URL_POSTS_ADDED + "?start="
+				+ String.valueOf( end + 1 ) + "&end=" + String.valueOf( end + 10 );
+		
+		if( resourceType != ResourceType.ALL )
+		{
+			next += "&resourceType=" + resourceType.toString();
+		}
+		
+		ViewModel viewModel = new ViewModel();
+		viewModel.setStartValue( start );
+		viewModel.setEndValue( end );
+		viewModel.setUrlToNextResources( next );
+		
+		// delegate to the renderer
+		Set<Post> posts = context.getDatabase().getPosts( context.getAuthUserName(), resourceType, GroupingEntity.ALL,
+				"", context.getTags( "tags" ), "", false, true, start, end );
+		try
+		{
+			context.getRenderer().serializePosts( response.getWriter(), posts, viewModel );
+		}
+		catch( IOException e )
+		{
+			throw new InternServerException( e );
+		}
 	}
 
 	/* (non-Javadoc)
@@ -51,15 +82,17 @@ public class GetNewPostsStrategy extends Strategy
 	@Override
 	public String getContentType( String userAgent )
 	{
-		// TODO Auto-generated method stub
-		return null;
+		if( context.apiIsUserAgent( userAgent ) ) return "bibsonomy/posts+" + context.getRenderingFormat().toString();
+		return Context.DEFAULT_CONTENT_TYPE;
 	}
-
 }
 
 /*
  * $Log$
- * Revision 1.2  2006-05-24 13:02:44  cschenk
+ * Revision 1.3  2006-06-05 14:14:12  mbork
+ * implemented GET strategies
+ *
+ * Revision 1.2  2006/05/24 13:02:44  cschenk
  * Introduced an enum for the HttpMethod and moved the exceptions
  *
  * Revision 1.1  2006/05/22 10:52:46  mbork

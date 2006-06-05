@@ -1,7 +1,6 @@
 package org.bibsonomy.rest.strategy.groups;
 
 import java.io.IOException;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,14 +16,18 @@ import org.bibsonomy.rest.strategy.Strategy;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public class GetListOfGroupsStrategy extends Strategy
+public class GetGroupStrategy extends Strategy
 {
+	private String groupName;
+
 	/**
 	 * @param context
+	 * @param groupName 
 	 */
-	public GetListOfGroupsStrategy( Context context )
+	public GetGroupStrategy( Context context, String groupName )
 	{
 		super( context );
+		this.groupName = groupName;
 	}
 
 	/* (non-Javadoc)
@@ -33,6 +36,7 @@ public class GetListOfGroupsStrategy extends Strategy
 	@Override
 	public void validate() throws ValidationException
 	{
+		// TODO check groupname for existance - or should the request then just return an empty entry?
 		// should be ok for everybody
 	}
 
@@ -42,22 +46,11 @@ public class GetListOfGroupsStrategy extends Strategy
 	@Override
 	public void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException
 	{
-		// setup viewModel
-		int start = context.getIntAttribute( "start", 0 );
-		int end = context.getIntAttribute( "end", 19 );
-		String next = Context.API_URL + "/" + Context.URL_GROUPS + "?start=" + String.valueOf( end + 1 ) + 
-			"&end=" + String.valueOf( end + 10 );
-		
-		ViewModel viewModel = new ViewModel();
-		viewModel.setStartValue( start );
-		viewModel.setEndValue( end );
-		viewModel.setUrlToNextResources( next );
-		
 		// delegate to the renderer
-		Set<Group> groups = context.getDatabase().getGroups( context.getAuthUserName(), start, end );
+		Group group = context.getDatabase().getGroupDetails( context.getAuthUserName(), groupName );
 		try 
 		{
-			context.getRenderer().serializeGroups( response.getWriter(), groups, viewModel );
+			context.getRenderer().serializeGroup( response.getWriter(), group, new ViewModel() );
 		} 
 		catch( IOException e ) 
 		{
@@ -71,14 +64,14 @@ public class GetListOfGroupsStrategy extends Strategy
 	@Override
 	public String getContentType( String userAgent )
 	{
-		if( context.apiIsUserAgent( userAgent ) ) return "bibsonomy/groups+" + context.getRenderingFormat().toString();
+		if( context.apiIsUserAgent( userAgent ) ) return "bibsonomy/group+" + context.getRenderingFormat().toString();
 		return Context.DEFAULT_CONTENT_TYPE;
 	}
 }
 
 /*
  * $Log$
- * Revision 1.3  2006-06-05 14:14:12  mbork
+ * Revision 1.1  2006-06-05 14:14:12  mbork
  * implemented GET strategies
  *
  * Revision 1.2  2006/05/24 13:02:43  cschenk
