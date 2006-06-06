@@ -1,5 +1,6 @@
 package org.bibsonomy.rest.renderer.impl;
 
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.Set;
@@ -8,6 +9,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -16,12 +18,14 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.ViewModel;
+import org.bibsonomy.rest.exceptions.BadRequestException;
 import org.bibsonomy.rest.exceptions.InternServerException;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 import org.bibsonomy.rest.renderer.xml.BibtexType;
 import org.bibsonomy.rest.renderer.xml.BookmarkType;
 import org.bibsonomy.rest.renderer.xml.GroupType;
+import org.bibsonomy.rest.renderer.xml.ModelFactory;
 import org.bibsonomy.rest.renderer.xml.ObjectFactory;
 import org.bibsonomy.rest.renderer.xml.PostType;
 import org.bibsonomy.rest.renderer.xml.PostsType;
@@ -173,6 +177,45 @@ public class XMLRenderer implements Renderer
 		// TODO Auto-generated method stub
 	}
 	
+	public User parseUser( InputStream is ) // throws BadRequestException
+	{
+		if( is == null ) throw new BadRequestException( "The body part of the received document is missing" );
+		
+		BibsonomyXML xmlDoc = parse( is );
+		
+		if( xmlDoc.getUser() != null )
+		{
+			return ModelFactory.getInstance().createUser( xmlDoc.getUser() );
+		}
+		throw new BadRequestException( "The body part of the received document is erroneous - no user defined." );
+	}
+
+	public Post parsePost( InputStream is )
+	{
+		if( is == null ) throw new BadRequestException( "The body part of the received document is missing" );
+		
+		BibsonomyXML xmlDoc = parse( is );
+		
+		if( xmlDoc.getPost() != null )
+		{
+			return ModelFactory.getInstance().createPost( xmlDoc.getPost() );
+		}
+		throw new BadRequestException( "The body part of the received document is erroneous - no post defined." );
+	}
+
+	public Group parseGroup( InputStream is )
+	{
+		if( is == null ) throw new BadRequestException( "The body part of the received document is missing" );
+		
+		BibsonomyXML xmlDoc = parse( is );
+		
+		if( xmlDoc.getGroup() != null )
+		{
+			return ModelFactory.getInstance().createGroup( xmlDoc.getGroup() );
+		}
+		throw new BadRequestException( "The body part of the received document is erroneous - no group defined." );
+	}
+	
 	/**
 	 * initializes java xml bindings, builds the xml document and then marshalls it to the writer
 	 * 
@@ -185,7 +228,7 @@ public class XMLRenderer implements Renderer
 		try
 		{
 			// initialize context for java xml bindings
-			JAXBContext jc = JAXBContext.newInstance( "org.bibsonomy.rest.schema" );
+			JAXBContext jc = JAXBContext.newInstance( "org.bibsonomy.rest.renderer.xml" );
 			
 			// buildup xml document
 			JAXBElement<BibsonomyXML> webserviceElement = ( new ObjectFactory() ).createBibsonomyXMLInterchangeDocument( xmlDoc );
@@ -203,11 +246,36 @@ public class XMLRenderer implements Renderer
 			throw new InternServerException( e.toString() );
 		}
 	}
+	
+	private BibsonomyXML parse( InputStream is ) throws InternServerException
+	{
+        try
+		{
+			JAXBContext jc = JAXBContext.newInstance( "org.bibsonomy.rest.renderer.xml" );
+			
+			// create an Unmarshaller
+			Unmarshaller u = jc.createUnmarshaller();
+
+			/*
+			 * unmarshal a xml instance document into a tree of Java content
+			 * objects composed of classes from the restapi package. 
+			 */
+			JAXBElement<?> xmlDoc = ( JAXBElement<?> )u.unmarshal( is );
+			return (BibsonomyXML)xmlDoc.getValue();
+		}
+		catch( JAXBException e )
+		{
+			throw new InternServerException( e.toString() );
+		}
+	}
 }
 
 /*
  * $Log$
- * Revision 1.2  2006-06-05 14:14:11  mbork
+ * Revision 1.3  2006-06-06 17:39:29  mbork
+ * implemented a modelfactory which parses incoming xml-requests and then generates the intern model
+ *
+ * Revision 1.2  2006/06/05 14:14:11  mbork
  * implemented GET strategies
  *
  * Revision 1.1  2006/05/24 15:18:08  cschenk

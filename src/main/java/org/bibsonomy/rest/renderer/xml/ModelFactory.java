@@ -1,0 +1,180 @@
+package org.bibsonomy.rest.renderer.xml;
+
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
+import org.bibsonomy.rest.exceptions.InvalidXMLException;
+
+/**
+ * @author Manuel Bork <manuel.bork@uni-kassel.de>
+ * @version $Id$
+ */
+public class ModelFactory
+{
+	private static ModelFactory modelFactory;
+	
+	private ModelFactory()
+	{}
+	
+	public static ModelFactory getInstance()
+	{
+		if( ModelFactory.modelFactory == null )
+		{
+			ModelFactory.modelFactory = new ModelFactory();
+		}
+		return ModelFactory.modelFactory;
+	}
+
+	/**
+	 * @param xmlUser
+	 * @return
+	 */
+	public User createUser( UserType xmlUser )
+	{
+		validateUser( xmlUser );
+		
+		User user = new User();
+		user.setEmail( xmlUser.getEmail() );
+		user.setHomepage( xmlUser.getHomepage() );
+		user.setName( xmlUser.getName() );
+		user.setRealname( xmlUser.getRealname() );
+		
+		return user;
+	}
+	
+	/**
+	 * @param xmlUser
+	 * @return
+	 */
+	public Group createGroup( GroupType xmlGroup )
+	{
+		validateGroup( xmlGroup );
+		
+		Group group = new Group();
+		group.setName( xmlGroup.getName() );
+		group.setDescription( xmlGroup.getDescription() );
+		
+		return group;
+	}
+
+
+	/**
+	 * @param xmlPost
+	 * @return
+	 */
+	public Post createPost( PostType xmlPost )
+	{
+		validatePost( xmlPost );
+		
+		// post itself
+		Post post = new Post();
+		post.setDescription( xmlPost.getDescription() );
+		
+		// user
+		User user = new User();
+		UserType xmlUser = xmlPost.getUser();
+		validateUser( xmlUser );
+		user.setName( xmlUser.getName() );
+		post.setUser( user );
+		
+		// tags
+		for( TagType xmlTag: xmlPost.getTag() )
+		{
+			validateTag( xmlTag );
+			
+			Tag tag = new Tag();
+			tag.setName( xmlTag.getName() );
+			post.getTags().add( tag );
+		}
+		
+		// resource
+		if( xmlPost.getBibtex() != null )
+		{
+			BibtexType xmlBibtex = xmlPost.getBibtex();
+			validateBibTex( xmlBibtex );
+			
+			BibTex bibtex = new BibTex();
+			bibtex.setAuthors( xmlBibtex.getAuthors() );
+			bibtex.setEditors( xmlBibtex.getEditors() );
+			bibtex.setIntraHash( xmlBibtex.getIntrahash() );
+			bibtex.setTitle( xmlBibtex.getTitle() );
+			bibtex.setType( xmlBibtex.getType() );
+			bibtex.setYear( xmlBibtex.getYear() );
+			
+			post.setResource( bibtex );
+		}
+		if( xmlPost.getBookmark() != null )
+		{
+			BookmarkType xmlBookmark = xmlPost.getBookmark();
+			validateBookmark( xmlBookmark );
+			
+			Bookmark bookmark = new Bookmark();
+			bookmark.setIntraHash( xmlBookmark.getIntrahash() );
+			bookmark.setUrl( xmlBookmark.getUrl() );
+			
+			post.setResource( bookmark );
+		}
+		return post;
+	}
+	
+
+	private void validateUser( UserType xmlUser )
+	{
+		if( xmlUser.getName() == null ) throw new InvalidXMLException( "username is missing" );
+	}
+
+	private void validateGroup( GroupType xmlGroup )
+	{
+		if( xmlGroup.getName() == null ) throw new InvalidXMLException( "groupname is missing" );
+	}
+	
+	private void validateTag( TagType xmlTag )
+	{
+		if( xmlTag.getName() == null ) throw new InvalidXMLException( "tag name is missing" );
+	}
+	
+	private void validatePost( PostType xmlPost )
+	{
+		if( xmlPost.getTag() == null ) throw new InvalidXMLException( "list of tags is missing" );
+		if( xmlPost.getTag().size() == 0 ) throw new InvalidXMLException( "no tags specified" );
+		if( xmlPost.getUser() == null ) throw new InvalidXMLException( "user is missing" );
+		BibtexType xmlBibtex = xmlPost.getBibtex();
+		BookmarkType xmlBookmark = xmlPost.getBookmark();
+		if( xmlBibtex == null && xmlBookmark == null )
+		{
+			throw new InvalidXMLException( "resource is missing" );
+		}
+		else if( xmlBibtex != null && xmlBookmark != null )
+		{
+			throw new InvalidXMLException( "only one resource is allowed" );
+		}
+		else
+		{
+			 // just fine: ( xmlBibtex == null && xmlBookmark != null ) || ( xmlBibtex != null || xmlBookmark == null ) <=> bibtex xor bookmark
+		}
+	}
+	
+	private void validateBookmark( BookmarkType xmlBookmark )
+	{
+		if( xmlBookmark.getUrl() == null ) throw new InvalidXMLException( "url is missing" );
+		// do not test hash value - it depends on the request if its available, so we check it later
+		// if( xmlBookmark.getIntrahash() == null ) throw new InvalidXMLException( "hash is missing" );
+	}
+
+	private void validateBibTex( BibtexType xmlBibtex )
+	{
+		if( xmlBibtex.getTitle() == null ) throw new InvalidXMLException( "title is missing" );
+		// do not test hash value - it depends on the request if its available, so we check it later
+		// if( xmlBibtex.getIntrahash() == null ) throw new InvalidXMLException( "hash is missing" );
+	}
+}
+
+/*
+ * $Log$
+ * Revision 1.1  2006-06-06 17:39:30  mbork
+ * implemented a modelfactory which parses incoming xml-requests and then generates the intern model
+ *
+ */

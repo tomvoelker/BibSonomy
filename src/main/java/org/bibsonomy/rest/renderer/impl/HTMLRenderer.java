@@ -1,5 +1,6 @@
 package org.bibsonomy.rest.renderer.impl;
 
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.Set;
 
@@ -57,11 +58,32 @@ public class HTMLRenderer implements Renderer
 	{
 		// TODO Auto-generated method stub
 	}
+
+	public User parseUser( InputStream is )
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Post parsePost( InputStream is )
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Group parseGroup( InputStream is )
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
 
 /*
  * $Log$
- * Revision 1.2  2006-06-05 14:14:11  mbork
+ * Revision 1.3  2006-06-06 17:39:29  mbork
+ * implemented a modelfactory which parses incoming xml-requests and then generates the intern model
+ *
+ * Revision 1.2  2006/06/05 14:14:11  mbork
  * implemented GET strategies
  *
  * Revision 1.1  2006/05/24 15:18:08  cschenk

@@ -1,5 +1,6 @@
 package org.bibsonomy.rest.renderer;
 
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.Set;
 
@@ -86,11 +87,18 @@ public interface Renderer
 	 * @param model
 	 */
 	public void serializeGroup( PrintWriter writer, Group group, ViewModel model );
+
+	public User parseUser( InputStream is );
+	public Post parsePost( InputStream is );
+	public Group parseGroup( InputStream is );
 }
 
 /*
  * $Log$
- * Revision 1.5  2006-06-05 14:14:11  mbork
+ * Revision 1.6  2006-06-06 17:39:30  mbork
+ * implemented a modelfactory which parses incoming xml-requests and then generates the intern model
+ *
+ * Revision 1.5  2006/06/05 14:14:11  mbork
  * implemented GET strategies
  *
  * Revision 1.4  2006/05/24 15:18:08  cschenk

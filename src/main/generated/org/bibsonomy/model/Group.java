@@ -12,6 +12,18 @@ import de.uni_kassel.assocs.impl.LinkHandler;
  **/
 public class Group {
 
+   private String description;
+    
+    public void setDescription (String value)
+   {
+         this.description = value;
+   }
+
+   public String getDescription ()
+   {
+      return this.description;
+   }
+
    private String name;
     
     public void setName (String value)

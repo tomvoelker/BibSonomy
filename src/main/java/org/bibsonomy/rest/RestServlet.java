@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.rest.database.TestDatabase;
+import org.bibsonomy.rest.exceptions.BadRequestException;
 import org.bibsonomy.rest.exceptions.InternServerException;
 import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
@@ -69,6 +70,10 @@ public final class RestServlet extends HttpServlet
 		catch( InternServerException e )
 		{
 			response.sendError( HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage() );
+		}
+		catch( BadRequestException e )
+		{
+			response.sendError( HttpServletResponse.SC_BAD_REQUEST, e.getMessage() );
 		}
 		catch( ValidationException e )
 		{
@@ -145,7 +150,10 @@ public final class RestServlet extends HttpServlet
 
 /*
  * $Log$
- * Revision 1.3  2006-05-24 20:09:03  jillig
+ * Revision 1.4  2006-06-06 17:39:30  mbork
+ * implemented a modelfactory which parses incoming xml-requests and then generates the intern model
+ *
+ * Revision 1.3  2006/05/24 20:09:03  jillig
  * renamed DbInterface to RESTs LogicInterface
  *
  * Revision 1.2  2006/05/24 13:02:44  cschenk
