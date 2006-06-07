@@ -2,6 +2,7 @@ package org.bibsonomy.rest.renderer.impl;
 
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.math.BigInteger;
 import java.util.Set;
 
@@ -42,7 +43,13 @@ import org.bibsonomy.rest.renderer.xml.UsersType;
  */
 public class XMLRenderer implements Renderer
 {
-	public void serializePosts( PrintWriter writer, Set<Post> posts, ViewModel viewModel ) throws InternServerException
+	private static XMLRenderer renderer;
+
+	private XMLRenderer()
+	{
+	}
+
+	public void serializePosts( Writer writer, Set<Post> posts, ViewModel viewModel ) throws InternServerException
 	{
 		PostsType xmlPosts = new PostsType();
 		xmlPosts.setEnd( BigInteger.valueOf( viewModel.getEndValue() ) );
@@ -108,12 +115,12 @@ public class XMLRenderer implements Renderer
 		serialize( writer, xmlDoc );
 	}
 
-	public void serializePost( PrintWriter writer, Post post, ViewModel model )
+	public void serializePost( Writer writer, Post post, ViewModel model )
 	{
 		// TODO Auto-generated method stub
 	}
 
-	public void serializeUsers( PrintWriter writer, Set<User> users, ViewModel viewModel )
+	public void serializeUsers( Writer writer, Set<User> users, ViewModel viewModel )
 	{
 		UsersType xmlUsers = new UsersType();
 		xmlUsers.setEnd( BigInteger.valueOf( viewModel.getEndValue() ) );
@@ -137,12 +144,12 @@ public class XMLRenderer implements Renderer
 		serialize( writer, xmlDoc );
 	}
 
-	public void serializeUser( PrintWriter writer, User user, ViewModel viewModel )
+	public void serializeUser( Writer writer, User user, ViewModel viewModel )
 	{
 		// TODO Auto-generated method stub
 	}
 
-	public void serializeTags( PrintWriter writer, Set<Tag> tags, ViewModel viewModel )
+	public void serializeTags( Writer writer, Set<Tag> tags, ViewModel viewModel )
 	{
 		TagsType xmlTags = new TagsType();
 		xmlTags.setEnd( BigInteger.valueOf( viewModel.getEndValue() ) );
@@ -162,7 +169,7 @@ public class XMLRenderer implements Renderer
 		serialize( writer, xmlDoc );
 	}
 
-	public void serializeTag( PrintWriter writer, Tag tag, ViewModel model )
+	public void serializeTag( Writer writer, Tag tag, ViewModel model )
 	{
 		// TODO Auto-generated method stub
 	}
@@ -172,7 +179,7 @@ public class XMLRenderer implements Renderer
 		// TODO Auto-generated method stub
 	}
 
-	public void serializeGroup( PrintWriter writer, Group group, ViewModel model )
+	public void serializeGroup( Writer writer, Group group, ViewModel model )
 	{
 		// TODO Auto-generated method stub
 	}
@@ -223,7 +230,7 @@ public class XMLRenderer implements Renderer
 	 * @param xmlDoc
 	 * @throws InternServerException
 	 */
-	private void serialize( PrintWriter writer, BibsonomyXML xmlDoc ) throws InternServerException
+	private void serialize( Writer writer, BibsonomyXML xmlDoc ) throws InternServerException
 	{
 		try
 		{
@@ -268,11 +275,23 @@ public class XMLRenderer implements Renderer
 			throw new InternServerException( e.toString() );
 		}
 	}
+
+	public static Renderer getInstance()
+	{
+		if( XMLRenderer.renderer == null )
+		{
+			renderer = new XMLRenderer();
+		}
+		return XMLRenderer.renderer;
+	}
 }
 
 /*
  * $Log$
- * Revision 1.4  2006-06-06 20:11:04  mbork
+ * Revision 1.5  2006-06-07 19:37:28  mbork
+ * implemented post queries
+ *
+ * Revision 1.4  2006/06/06 20:11:04  mbork
  * docu
  *
  * Revision 1.3  2006/06/06 17:39:29  mbork

@@ -21,7 +21,7 @@ public final class DeleteWorker extends HttpWorker
 	
 	public String perform( String url ) throws ErrorPerformingRequestException
 	{
-		LOGGER.log( Level.INFO, "URL: " + url );
+		LOGGER.log( Level.INFO, "DELETE: URL: " + url );
 		
 		DeleteMethod delete = new DeleteMethod( url );
 		delete.addRequestHeader( HEADER_AUTHORIZATION, encodeForAuthorization() );
@@ -56,7 +56,10 @@ public final class DeleteWorker extends HttpWorker
 
 /*
  * $Log$
- * Revision 1.1  2006-06-07 18:22:31  mbork
+ * Revision 1.2  2006-06-07 19:37:28  mbork
+ * implemented post queries
+ *
+ * Revision 1.1  2006/06/07 18:22:31  mbork
  * client api: finished implementing get and delete requests
  *
  */

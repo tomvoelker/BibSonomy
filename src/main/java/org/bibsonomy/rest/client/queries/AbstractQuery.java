@@ -6,6 +6,8 @@ import org.bibsonomy.rest.client.Bibsonomy;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.client.worker.DeleteWorker;
 import org.bibsonomy.rest.client.worker.GetWorker;
+import org.bibsonomy.rest.client.worker.PostWorker;
+import org.bibsonomy.rest.client.worker.PutWorker;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 
 
@@ -37,11 +39,28 @@ public abstract class AbstractQuery<T>
 		return bibsonomyXML;
     }
     
-
     protected String performDeleteRequest( String url ) throws ErrorPerformingRequestException
 	{
 		DeleteWorker worker = new DeleteWorker( username, password );
-		return worker.perform( url );
+		String result = worker.perform( url );
+		statusCode = worker.getHttpResult();
+		return result;
+	}
+
+    protected String performPostRequest( String url, String requestBody ) throws ErrorPerformingRequestException
+	{
+		PostWorker worker = new PostWorker( username, password );
+		String result = worker.perform( url, requestBody );
+		statusCode = worker.getHttpResult();
+		return result;
+	}
+    
+    protected String performPutRequest( String url, String requestBody ) throws ErrorPerformingRequestException
+	{
+		PutWorker worker = new PutWorker( username, password );
+		String result = worker.perform( url, requestBody );
+		statusCode = worker.getHttpResult();
+		return result;
 	}
 
     /**
@@ -79,7 +98,10 @@ public abstract class AbstractQuery<T>
 
 /*
  * $Log$
- * Revision 1.2  2006-06-07 18:27:04  mbork
+ * Revision 1.3  2006-06-07 19:37:28  mbork
+ * implemented post queries
+ *
+ * Revision 1.2  2006/06/07 18:27:04  mbork
  * moved enum
  *
  * Revision 1.1  2006/06/06 22:20:54  mbork

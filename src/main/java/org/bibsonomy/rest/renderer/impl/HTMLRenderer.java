@@ -2,6 +2,7 @@ package org.bibsonomy.rest.renderer.impl;
 
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.Set;
 
 import org.bibsonomy.model.Group;
@@ -19,32 +20,32 @@ import org.bibsonomy.rest.renderer.Renderer;
 public class HTMLRenderer implements Renderer 
 {
 
-	public void serializePosts( PrintWriter writer, Set<Post> posts, ViewModel viewModel ) throws InternServerException
+	public void serializePosts( Writer writer, Set<Post> posts, ViewModel viewModel ) throws InternServerException
 	{
 		// TODO Auto-generated method stub
 	}
 
-	public void serializePost( PrintWriter writer, Post post, ViewModel model )
+	public void serializePost( Writer writer, Post post, ViewModel model )
 	{
 		// TODO Auto-generated method stub
 	}
 
-	public void serializeUsers( PrintWriter writer, Set<User> users, ViewModel viewModel )
+	public void serializeUsers( Writer writer, Set<User> users, ViewModel viewModel )
 	{
 		// TODO Auto-generated method stub
 	}
 
-	public void serializeUser( PrintWriter writer, User user, ViewModel viewModel )
+	public void serializeUser( Writer writer, User user, ViewModel viewModel )
 	{
 		// TODO Auto-generated method stub
 	}
 
-	public void serializeTags( PrintWriter writer, Set<Tag> tags, ViewModel viewModel )
+	public void serializeTags( Writer writer, Set<Tag> tags, ViewModel viewModel )
 	{
 		// TODO Auto-generated method stub
 	}
 
-	public void serializeTag( PrintWriter writer, Tag tag, ViewModel model )
+	public void serializeTag( Writer writer, Tag tag, ViewModel model )
 	{
 		// TODO Auto-generated method stub
 	}
@@ -54,7 +55,7 @@ public class HTMLRenderer implements Renderer
 		// TODO Auto-generated method stub
 	}
 
-	public void serializeGroup( PrintWriter writer, Group group, ViewModel model )
+	public void serializeGroup( Writer writer, Group group, ViewModel model )
 	{
 		// TODO Auto-generated method stub
 	}
@@ -80,7 +81,10 @@ public class HTMLRenderer implements Renderer
 
 /*
  * $Log$
- * Revision 1.3  2006-06-06 17:39:29  mbork
+ * Revision 1.4  2006-06-07 19:37:28  mbork
+ * implemented post queries
+ *
+ * Revision 1.3  2006/06/06 17:39:29  mbork
  * implemented a modelfactory which parses incoming xml-requests and then generates the intern model
  *
  * Revision 1.2  2006/06/05 14:14:11  mbork

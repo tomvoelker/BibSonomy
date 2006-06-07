@@ -28,7 +28,7 @@ public final class GetWorker extends HttpWorker
 	
 	public BibsonomyXML perform( String url ) throws ErrorPerformingRequestException
 	{
-		LOGGER.log( Level.INFO, "URL: " + url );
+		LOGGER.log( Level.INFO, "GET: URL: " + url );
 		
 		GetMethod get = new GetMethod( url );
 		get.addRequestHeader( HEADER_AUTHORIZATION, encodeForAuthorization() );
@@ -88,7 +88,10 @@ public final class GetWorker extends HttpWorker
 
 /*
  * $Log$
- * Revision 1.1  2006-06-06 22:20:54  mbork
+ * Revision 1.2  2006-06-07 19:37:28  mbork
+ * implemented post queries
+ *
+ * Revision 1.1  2006/06/06 22:20:54  mbork
  * started implementing client api
  *
  */

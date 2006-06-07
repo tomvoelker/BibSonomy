@@ -40,7 +40,7 @@ public class XMLRendererTest extends TestCase
 	protected void setUp() throws Exception
 	{
 		super.setUp();
-		renderer = new XMLRenderer();
+		renderer = XMLRenderer.getInstance();
 	}
 
 	public void testParseUser() throws Exception
@@ -195,7 +195,10 @@ public class XMLRendererTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.1  2006-06-06 17:39:29  mbork
+ * Revision 1.2  2006-06-07 19:37:28  mbork
+ * implemented post queries
+ *
+ * Revision 1.1  2006/06/06 17:39:29  mbork
  * implemented a modelfactory which parses incoming xml-requests and then generates the intern model
  *
  */

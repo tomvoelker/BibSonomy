@@ -2,6 +2,7 @@ package org.bibsonomy.rest.renderer;
 
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.Set;
 
 import org.bibsonomy.model.Group;
@@ -24,7 +25,7 @@ public interface Renderer
 	 * @param posts
 	 * @param viewModel
 	 */
-	public void serializePosts( PrintWriter writer, Set<Post> posts, ViewModel viewModel ) throws InternServerException;
+	public void serializePosts( Writer writer, Set<Post> posts, ViewModel viewModel ) throws InternServerException;
 	
 	/**
 	 * serializes one post 
@@ -32,7 +33,7 @@ public interface Renderer
 	 * @param post
 	 * @param model
 	 */
-	public void serializePost( PrintWriter writer, Post post, ViewModel model );
+	public void serializePost( Writer writer, Post post, ViewModel model );
 	
 	/**
 	 * serializes a list of users
@@ -41,7 +42,7 @@ public interface Renderer
 	 * @param users
 	 * @param viewModel
 	 */
-	public void serializeUsers( PrintWriter writer, Set<User> users, ViewModel viewModel );
+	public void serializeUsers( Writer writer, Set<User> users, ViewModel viewModel );
 	
 	/**
 	 * serializes one user
@@ -50,7 +51,7 @@ public interface Renderer
 	 * @param user
 	 * @param viewModel
 	 */
-	public void serializeUser( PrintWriter writer, User user, ViewModel viewModel );
+	public void serializeUser( Writer writer, User user, ViewModel viewModel );
 	
 	/**
 	 * serializes a list of tags
@@ -59,7 +60,7 @@ public interface Renderer
 	 * @param tags
 	 * @param viewModel
 	 */
-	public void serializeTags( PrintWriter writer, Set<Tag> tags, ViewModel viewModel );
+	public void serializeTags( Writer writer, Set<Tag> tags, ViewModel viewModel );
 
 	/**
 	 * serializes a tag's details, including list of subtags, list of supertags and list of correlated tags
@@ -68,7 +69,7 @@ public interface Renderer
 	 * @param tag
 	 * @param model
 	 */
-	public void serializeTag( PrintWriter writer, Tag tag, ViewModel model );
+	public void serializeTag( Writer writer, Tag tag, ViewModel model );
 	
 	/**
 	 * serializes a list of groups
@@ -86,7 +87,7 @@ public interface Renderer
 	 * @param group
 	 * @param model
 	 */
-	public void serializeGroup( PrintWriter writer, Group group, ViewModel model );
+	public void serializeGroup( Writer writer, Group group, ViewModel model );
 
 	public User parseUser( InputStream is );
 	public Post parsePost( InputStream is );
@@ -95,7 +96,10 @@ public interface Renderer
 
 /*
  * $Log$
- * Revision 1.6  2006-06-06 17:39:30  mbork
+ * Revision 1.7  2006-06-07 19:37:29  mbork
+ * implemented post queries
+ *
+ * Revision 1.6  2006/06/06 17:39:30  mbork
  * implemented a modelfactory which parses incoming xml-requests and then generates the intern model
  *
  * Revision 1.5  2006/06/05 14:14:11  mbork
