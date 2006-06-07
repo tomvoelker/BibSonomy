@@ -4,15 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.client.queries.AbstractQuery;
 import org.bibsonomy.rest.enums.GroupingEntity;
-import org.bibsonomy.rest.enums.ResourceType;
 import org.bibsonomy.rest.exceptions.InvalidXMLException;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 import org.bibsonomy.rest.renderer.xml.ModelFactory;
-import org.bibsonomy.rest.renderer.xml.PostType;
+import org.bibsonomy.rest.renderer.xml.TagType;
 
 /**
  * Use this Class to receive an ordered list of all posts
@@ -20,32 +19,30 @@ import org.bibsonomy.rest.renderer.xml.PostType;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public final class GetPostsQuery extends AbstractQuery
+public final class GetTagsQuery extends AbstractQuery
 {
 	private int start;
 	private int end;
 	private BibsonomyXML bibsonomyXML;
-	private ResourceType resourceType;
-	private List<String> tags;
+	private String filter = null;
 	private GroupingEntity grouping = GroupingEntity.ALL;
 	private String groupingValue;
-	private String resourceHash;
-
+	
 	/**
-	 * Gets bibsonomy's posts list
+	 * Gets bibsonomy's tags list
 	 */
-	public GetPostsQuery()
+	public GetTagsQuery()
 	{
 		this( 0, 19 );
 	}
 
 	/**
-	 * Gets bibsonomy's posts list
+	 * Gets bibsonomy's tags list
 	 * 
 	 * @param start start of the list
 	 * @param end end of the list
 	 */
-	public GetPostsQuery( int start, int end )
+	public GetTagsQuery(  int start, int end )
 	{
 		if( start < 0 ) throw new IllegalArgumentException( "start must be >= 0" );
 		if( end < start ) throw new IllegalArgumentException( "end must be >= 0 and >= start value" );
@@ -77,47 +74,30 @@ public final class GetPostsQuery extends AbstractQuery
 	}
 	
 	/**
-	 * set the resource type of the resources of the posts 
-	 * @param type
+	 * @param filter The filter to set.
 	 */
-	public void setResourceType( ResourceType type )
+	public void setFilter( String filter )
 	{
-		this.resourceType = type;
+		this.filter = filter;
 	}
-	
-	/**
-	 * @param resourceHash The resourceHash to set.
-	 */
-	public void setResourceHash( String resourceHash )
-	{
-		this.resourceHash = resourceHash;
-	}
-	
-	/**
-	 * @param tags
-	 */
-	public void setTags( List<String> tags )
-	{
-		this.tags = tags;
-	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.rest.client.queries.AbstractQuery#getResult()
 	 */
 	@Override
-	public List<Post> getResult()
+	public List<Tag> getResult()
 	{
 		if( bibsonomyXML == null ) throw new IllegalStateException( "Execute the query first." );
 		
-		List<Post> posts = new ArrayList<Post>();
+		List<Tag> tags = new ArrayList<Tag>();
 
-		if( bibsonomyXML.getPosts() != null && bibsonomyXML.getPosts().getPost() != null )
+		if( bibsonomyXML.getTags() != null && bibsonomyXML.getTags().getTag() != null )
 		{
-			for( PostType xmlPost: bibsonomyXML.getPosts().getPost() )
+			for( TagType xmlTag: bibsonomyXML.getTags().getTag() )
 			{
 				try
 				{
-					posts.add( ModelFactory.getInstance().createPost( xmlPost ) );
+					tags.add( ModelFactory.getInstance().createTag( xmlTag ) );
 				}
 				catch( InvalidXMLException e )
 				{
@@ -126,7 +106,7 @@ public final class GetPostsQuery extends AbstractQuery
 				}
 			}
 		}
-		return posts;
+		return tags;
 	}
 
 	/* (non-Javadoc)
@@ -135,13 +115,7 @@ public final class GetPostsQuery extends AbstractQuery
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException
 	{
-		String url = API_URL + URL_POSTS + "?start=" + start + "&end=" + end;
-		
-		if( resourceType != ResourceType.ALL )
-		{
-			url += "&resourcetype=" + resourceType.toString();
-		}
-		
+		String url = API_URL + URL_TAGS + "?start=" + start + "&end=" + end;
 		switch( grouping )
 		{
 		case USER:
@@ -154,27 +128,10 @@ public final class GetPostsQuery extends AbstractQuery
 			url += "&viewable=" + groupingValue;
 			break;
 		}
-		
-		if( tags != null && tags.size() > 0 )
+			
+		if( filter != null && filter.length() > 0 )
 		{
-			boolean first = true;
-			for( String tag: tags )
-			{
-				if( first )
-				{
-					url += "&tags=" + tag;
-					first = false;
-				}
-				else
-				{
-					url += "+" + tag;
-				}
-			}
-		}
-		
-		if( resourceHash != null && resourceHash.length() > 0 )
-		{
-			url += "&resource=" + resourceHash;
+			url += "&filter=" + filter;
 		}
 		bibsonomyXML = performGetRequest( url );
 	}
@@ -182,10 +139,7 @@ public final class GetPostsQuery extends AbstractQuery
 
 /*
  * $Log$
- * Revision 1.2  2006-06-07 18:22:31  mbork
+ * Revision 1.1  2006-06-07 18:22:31  mbork
  * client api: finished implementing get and delete requests
- *
- * Revision 1.1  2006/06/06 22:20:54  mbork
- * started implementing client api
  *
  */

@@ -20,32 +20,30 @@ import org.bibsonomy.rest.renderer.xml.PostType;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public final class GetPostsQuery extends AbstractQuery
+public final class GetPopularPostsQuery extends AbstractQuery
 {
 	private int start;
 	private int end;
 	private BibsonomyXML bibsonomyXML;
 	private ResourceType resourceType;
-	private List<String> tags;
 	private GroupingEntity grouping = GroupingEntity.ALL;
 	private String groupingValue;
-	private String resourceHash;
 
 	/**
 	 * Gets bibsonomy's posts list
 	 */
-	public GetPostsQuery()
+	public GetPopularPostsQuery()
 	{
 		this( 0, 19 );
 	}
 
 	/**
-	 * Gets bibsonomy's posts list
+	 * Gets bibsonomy's posts list ordered by popularity
 	 * 
 	 * @param start start of the list
 	 * @param end end of the list
 	 */
-	public GetPostsQuery( int start, int end )
+	public GetPopularPostsQuery( int start, int end )
 	{
 		if( start < 0 ) throw new IllegalArgumentException( "start must be >= 0" );
 		if( end < start ) throw new IllegalArgumentException( "end must be >= 0 and >= start value" );
@@ -85,22 +83,6 @@ public final class GetPostsQuery extends AbstractQuery
 		this.resourceType = type;
 	}
 	
-	/**
-	 * @param resourceHash The resourceHash to set.
-	 */
-	public void setResourceHash( String resourceHash )
-	{
-		this.resourceHash = resourceHash;
-	}
-	
-	/**
-	 * @param tags
-	 */
-	public void setTags( List<String> tags )
-	{
-		this.tags = tags;
-	}
-	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.rest.client.queries.AbstractQuery#getResult()
 	 */
@@ -135,7 +117,7 @@ public final class GetPostsQuery extends AbstractQuery
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException
 	{
-		String url = API_URL + URL_POSTS + "?start=" + start + "&end=" + end;
+		String url = API_URL + URL_POSTS + "/" + URL_POSTS_POPULAR + "?start=" + start + "&end=" + end;
 		
 		if( resourceType != ResourceType.ALL )
 		{
@@ -155,37 +137,13 @@ public final class GetPostsQuery extends AbstractQuery
 			break;
 		}
 		
-		if( tags != null && tags.size() > 0 )
-		{
-			boolean first = true;
-			for( String tag: tags )
-			{
-				if( first )
-				{
-					url += "&tags=" + tag;
-					first = false;
-				}
-				else
-				{
-					url += "+" + tag;
-				}
-			}
-		}
-		
-		if( resourceHash != null && resourceHash.length() > 0 )
-		{
-			url += "&resource=" + resourceHash;
-		}
 		bibsonomyXML = performGetRequest( url );
 	}
 }
 
 /*
  * $Log$
- * Revision 1.2  2006-06-07 18:22:31  mbork
+ * Revision 1.1  2006-06-07 18:22:31  mbork
  * client api: finished implementing get and delete requests
- *
- * Revision 1.1  2006/06/06 22:20:54  mbork
- * started implementing client api
  *
  */

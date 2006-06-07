@@ -59,7 +59,17 @@ public class ModelFactory
 		
 		return group;
 	}
-
+	
+	public Tag createTag( TagType xmlTag )
+	{
+		validateTag( xmlTag );
+		
+		Tag tag = new Tag();
+		tag.setName( xmlTag.getName() );
+		tag.setCount( xmlTag.getCount().intValue() );
+		
+		return tag;
+	}
 
 	/**
 	 * @param xmlPost
@@ -174,7 +184,10 @@ public class ModelFactory
 
 /*
  * $Log$
- * Revision 1.1  2006-06-06 17:39:30  mbork
+ * Revision 1.2  2006-06-07 18:22:31  mbork
+ * client api: finished implementing get and delete requests
+ *
+ * Revision 1.1  2006/06/06 17:39:30  mbork
  * implemented a modelfactory which parses incoming xml-requests and then generates the intern model
  *
  */
