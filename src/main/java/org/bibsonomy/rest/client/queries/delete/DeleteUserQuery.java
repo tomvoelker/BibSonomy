@@ -23,6 +23,7 @@ public final class DeleteUserQuery extends AbstractQuery
 	 */
 	public DeleteUserQuery( String userName )
 	{
+		if( userName == null || userName.length() == 0 ) throw new IllegalArgumentException( "no username given" );
 		this.userName = userName;
 	}
 
@@ -49,7 +50,10 @@ public final class DeleteUserQuery extends AbstractQuery
 
 /*
  * $Log$
- * Revision 1.1  2006-06-07 18:22:31  mbork
+ * Revision 1.2  2006-06-07 18:25:13  mbork
+ * forgot checking constructor parameters
+ *
+ * Revision 1.1  2006/06/07 18:22:31  mbork
  * client api: finished implementing get and delete requests
  *
  */

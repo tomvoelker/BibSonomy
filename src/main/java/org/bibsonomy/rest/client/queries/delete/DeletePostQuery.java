@@ -26,6 +26,8 @@ public final class DeletePostQuery extends AbstractQuery
 	 */
 	public DeletePostQuery( String userName, String resourceHash )
 	{
+		if( userName == null || userName.length() == 0 ) throw new IllegalArgumentException( "no username given" );
+		if( resourceHash == null || resourceHash.length() == 0 ) throw new IllegalArgumentException( "no resourcehash given" );
 		this.userName = userName;
 		this.resourceHash = resourceHash;
 	}
@@ -53,7 +55,10 @@ public final class DeletePostQuery extends AbstractQuery
 
 /*
  * $Log$
- * Revision 1.1  2006-06-07 18:22:31  mbork
+ * Revision 1.2  2006-06-07 18:25:13  mbork
+ * forgot checking constructor parameters
+ *
+ * Revision 1.1  2006/06/07 18:22:31  mbork
  * client api: finished implementing get and delete requests
  *
  */

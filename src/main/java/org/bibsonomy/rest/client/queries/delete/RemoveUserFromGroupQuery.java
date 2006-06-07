@@ -26,6 +26,8 @@ public final class RemoveUserFromGroupQuery extends AbstractQuery
 	 */
 	public RemoveUserFromGroupQuery( String userName, String groupName )
 	{
+		if( userName == null || userName.length() == 0 ) throw new IllegalArgumentException( "no username given" );
+		if( groupName == null || groupName.length() == 0 ) throw new IllegalArgumentException( "no groupname given" );
 		this.userName = userName;
 		this.groupName = groupName;
 	}
@@ -53,7 +55,10 @@ public final class RemoveUserFromGroupQuery extends AbstractQuery
 
 /*
  * $Log$
- * Revision 1.1  2006-06-07 18:22:31  mbork
+ * Revision 1.2  2006-06-07 18:25:13  mbork
+ * forgot checking constructor parameters
+ *
+ * Revision 1.1  2006/06/07 18:22:31  mbork
  * client api: finished implementing get and delete requests
  *
  */
