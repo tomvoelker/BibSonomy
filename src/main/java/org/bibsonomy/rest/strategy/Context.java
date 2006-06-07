@@ -11,11 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.rest.LogicInterface;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.enums.RenderingFormat;
 import org.bibsonomy.rest.exceptions.InternServerException;
 import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
-import org.bibsonomy.rest.renderer.enums.RenderingFormat;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -265,7 +265,10 @@ public final class Context
 
 /*
  * $Log$
- * Revision 1.7  2006-06-05 14:14:12  mbork
+ * Revision 1.8  2006-06-07 18:27:04  mbork
+ * moved enum
+ *
+ * Revision 1.7  2006/06/05 14:14:12  mbork
  * implemented GET strategies
  *
  * Revision 1.6  2006/05/26 14:02:03  cschenk

@@ -1,7 +1,7 @@
 package org.bibsonomy.rest.renderer;
 
+import org.bibsonomy.rest.enums.RenderingFormat;
 import org.bibsonomy.rest.exceptions.InternServerException;
-import org.bibsonomy.rest.renderer.enums.RenderingFormat;
 import org.bibsonomy.rest.renderer.impl.HTMLRenderer;
 import org.bibsonomy.rest.renderer.impl.RDFRenderer;
 import org.bibsonomy.rest.renderer.impl.XMLRenderer;
@@ -36,7 +36,10 @@ public class RendererFactory
 
 /*
  * $Log$
- * Revision 1.2  2006-06-05 14:14:11  mbork
+ * Revision 1.3  2006-06-07 18:27:04  mbork
+ * moved enum
+ *
+ * Revision 1.2  2006/06/05 14:14:11  mbork
  * implemented GET strategies
  *
  */

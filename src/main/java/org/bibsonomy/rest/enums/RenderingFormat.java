@@ -1,4 +1,4 @@
-package org.bibsonomy.rest.renderer.enums;
+package org.bibsonomy.rest.enums;
 
 import org.bibsonomy.rest.exceptions.InternServerException;
 
@@ -36,7 +36,10 @@ public enum RenderingFormat
 
 /*
  * $Log$
- * Revision 1.3  2006-06-05 14:14:12  mbork
+ * Revision 1.1  2006-06-07 18:27:04  mbork
+ * moved enum
+ *
+ * Revision 1.3  2006/06/05 14:14:12  mbork
  * implemented GET strategies
  *
  */

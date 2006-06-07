@@ -1,5 +1,6 @@
-package org.bibsonomy.rest.renderer.enums;
+package org.bibsonomy.rest.enums;
 
+import org.bibsonomy.rest.enums.RenderingFormat;
 import org.bibsonomy.rest.exceptions.InternServerException;
 
 import junit.framework.TestCase;
@@ -36,7 +37,10 @@ public class RenderingFormatTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.2  2006-06-05 14:14:13  mbork
+ * Revision 1.1  2006-06-07 18:27:04  mbork
+ * moved enum
+ *
+ * Revision 1.2  2006/06/05 14:14:13  mbork
  * implemented GET strategies
  *
  */
