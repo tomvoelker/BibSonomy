@@ -15,7 +15,7 @@ import org.bibsonomy.rest.renderer.xml.ModelFactory;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public final class GetUserDetailsQuery extends AbstractQuery
+public final class GetUserDetailsQuery extends AbstractQuery<User>
 {
 	private String username;
 	private BibsonomyXML bibsonomyXML;
@@ -68,7 +68,10 @@ public final class GetUserDetailsQuery extends AbstractQuery
 
 /*
  * $Log$
- * Revision 1.1  2006-06-06 22:20:54  mbork
+ * Revision 1.2  2006-06-08 08:02:54  mbork
+ * fixed erroneous use of generics
+ *
+ * Revision 1.1  2006/06/06 22:20:54  mbork
  * started implementing client api
  *
  */

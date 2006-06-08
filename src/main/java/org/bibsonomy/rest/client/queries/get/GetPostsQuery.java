@@ -20,7 +20,7 @@ import org.bibsonomy.rest.renderer.xml.PostType;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public final class GetPostsQuery extends AbstractQuery
+public final class GetPostsQuery extends AbstractQuery<List<Post>>
 {
 	private int start;
 	private int end;
@@ -182,7 +182,10 @@ public final class GetPostsQuery extends AbstractQuery
 
 /*
  * $Log$
- * Revision 1.2  2006-06-07 18:22:31  mbork
+ * Revision 1.3  2006-06-08 08:02:54  mbork
+ * fixed erroneous use of generics
+ *
+ * Revision 1.2  2006/06/07 18:22:31  mbork
  * client api: finished implementing get and delete requests
  *
  * Revision 1.1  2006/06/06 22:20:54  mbork
