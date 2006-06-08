@@ -4,11 +4,11 @@ import java.util.logging.Logger;
 
 import org.bibsonomy.rest.client.Bibsonomy;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
-import org.bibsonomy.rest.client.worker.DeleteWorker;
-import org.bibsonomy.rest.client.worker.GetWorker;
 import org.bibsonomy.rest.client.worker.HttpWorker;
-import org.bibsonomy.rest.client.worker.PostWorker;
-import org.bibsonomy.rest.client.worker.PutWorker;
+import org.bibsonomy.rest.client.worker.impl.DeleteWorker;
+import org.bibsonomy.rest.client.worker.impl.GetWorker;
+import org.bibsonomy.rest.client.worker.impl.PostWorker;
+import org.bibsonomy.rest.client.worker.impl.PutWorker;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 
@@ -108,7 +108,10 @@ public abstract class AbstractQuery<T>
 
 /*
  * $Log$
- * Revision 1.5  2006-06-08 07:44:36  mbork
+ * Revision 1.6  2006-06-08 07:55:23  mbork
+ * moved classes for clearness
+ *
+ * Revision 1.5  2006/06/08 07:44:36  mbork
  * made two methods final
  *
  * Revision 1.4  2006/06/08 07:41:12  mbork

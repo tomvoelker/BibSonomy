@@ -1,4 +1,4 @@
-package org.bibsonomy.rest.client.worker;
+package org.bibsonomy.rest.client.worker.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +11,7 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
+import org.bibsonomy.rest.client.worker.HttpWorker;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 
 /**
@@ -88,7 +89,10 @@ public final class GetWorker extends HttpWorker
 
 /*
  * $Log$
- * Revision 1.2  2006-06-07 19:37:28  mbork
+ * Revision 1.1  2006-06-08 07:55:23  mbork
+ * moved classes for clearness
+ *
+ * Revision 1.2  2006/06/07 19:37:28  mbork
  * implemented post queries
  *
  * Revision 1.1  2006/06/06 22:20:54  mbork

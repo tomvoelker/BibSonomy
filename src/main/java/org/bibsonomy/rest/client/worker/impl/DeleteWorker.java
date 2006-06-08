@@ -1,10 +1,11 @@
-package org.bibsonomy.rest.client.worker;
+package org.bibsonomy.rest.client.worker.impl;
 
 import java.io.IOException;
 import java.util.logging.Level;
 
 import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
+import org.bibsonomy.rest.client.worker.HttpWorker;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -56,7 +57,10 @@ public final class DeleteWorker extends HttpWorker
 
 /*
  * $Log$
- * Revision 1.2  2006-06-07 19:37:28  mbork
+ * Revision 1.1  2006-06-08 07:55:23  mbork
+ * moved classes for clearness
+ *
+ * Revision 1.2  2006/06/07 19:37:28  mbork
  * implemented post queries
  *
  * Revision 1.1  2006/06/07 18:22:31  mbork

@@ -1,41 +1,42 @@
-package org.bibsonomy.rest.client.worker;
+package org.bibsonomy.rest.client.worker.impl;
 
 import java.io.IOException;
 import java.util.logging.Level;
 
-import org.apache.commons.httpclient.methods.PutMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
+import org.bibsonomy.rest.client.worker.HttpWorker;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public final class PutWorker extends HttpWorker
+public final class PostWorker extends HttpWorker
 {
 	private int httpResult;
 
-	public PutWorker( String username, String password )
+	public PostWorker( String username, String password )
 	{
 		super( username, password );
 	}
 	
 	public String perform( String url, String requestBody ) throws ErrorPerformingRequestException
 	{
-		LOGGER.log( Level.INFO, "PUT: URL: " + url );
+		LOGGER.log( Level.INFO, "POST: URL: " + url );
 		
-		PutMethod put = new PutMethod( url );
-		put.addRequestHeader( HEADER_AUTHORIZATION, encodeForAuthorization() );
-		put.setDoAuthentication( true );
-		put.setFollowRedirects( true );
+		PostMethod post = new PostMethod( url );
+		post.addRequestHeader( HEADER_AUTHORIZATION, encodeForAuthorization() );
+		post.setDoAuthentication( true );
+		post.setFollowRedirects( true );
 		
-		put.setRequestEntity( new StringRequestEntity( requestBody ) );
+		post.setRequestEntity( new StringRequestEntity( requestBody ) );
 		
 		try
 		{
-			httpResult = getHttpClient().executeMethod( put );
+			httpResult = getHttpClient().executeMethod( post );
 			LOGGER.log( Level.INFO, "Result: " + httpResult );
-			return put.getStatusText();
+			return post.getStatusText();
 		}
 		catch( IOException e )
 		{
@@ -44,7 +45,7 @@ public final class PutWorker extends HttpWorker
 		}
 		finally
 		{
-			put.releaseConnection();
+			post.releaseConnection();
 		}
 	}
 
@@ -59,7 +60,10 @@ public final class PutWorker extends HttpWorker
 
 /*
  * $Log$
- * Revision 1.1  2006-06-07 19:37:28  mbork
+ * Revision 1.1  2006-06-08 07:55:23  mbork
+ * moved classes for clearness
+ *
+ * Revision 1.1  2006/06/07 19:37:28  mbork
  * implemented post queries
  *
  */
