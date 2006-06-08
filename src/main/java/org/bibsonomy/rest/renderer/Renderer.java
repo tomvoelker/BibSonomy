@@ -1,7 +1,6 @@
 package org.bibsonomy.rest.renderer;
 
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Set;
 
@@ -96,7 +95,10 @@ public interface Renderer
 
 /*
  * $Log$
- * Revision 1.8  2006-06-08 13:23:48  mbork
+ * Revision 1.9  2006-06-08 13:33:19  mbork
+ * reorganized imports
+ *
+ * Revision 1.8  2006/06/08 13:23:48  mbork
  * improved documentation, added throws statements even for runtimeexceptions, moved abstractquery to prevent users to call execute directly
  *
  * Revision 1.7  2006/06/07 19:37:29  mbork
