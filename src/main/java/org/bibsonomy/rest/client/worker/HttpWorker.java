@@ -61,11 +61,16 @@ public abstract class HttpWorker
 	{
 		return httpClient;
 	}
+    
+    public abstract int getHttpResult();
 }
 
 /*
  * $Log$
- * Revision 1.1  2006-06-06 22:20:54  mbork
+ * Revision 1.2  2006-06-08 07:41:12  mbork
+ * client api completed
+ *
+ * Revision 1.1  2006/06/06 22:20:54  mbork
  * started implementing client api
  *
  */

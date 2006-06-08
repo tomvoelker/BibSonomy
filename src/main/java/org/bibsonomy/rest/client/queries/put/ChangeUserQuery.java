@@ -1,4 +1,4 @@
-package org.bibsonomy.rest.client.queries.post;
+package org.bibsonomy.rest.client.queries.put;
 
 import java.io.StringWriter;
 
@@ -9,30 +9,34 @@ import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.renderer.impl.XMLRenderer;
 
 /**
- * Use this Class to create a new user account in bibsonomy
+ * Use this Class to change details of an existing user account
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public final class CreateUserQuery extends AbstractQuery
+public final class ChangeUserQuery extends AbstractQuery
 {
 	private boolean executed = false;
 	private String result;
 	private User user;
+	private String userName;
 
 	/**
-	 * Creates a new user account in bibsonomy
-	 * <p/>
-	 * username and password must be specified, else an {@link IllegalArgumentException} is thrown.
+	 * Changes details of an existing user account <p/> both username of the
+	 * existing user and username as parameter for the uri must be specified,
+	 * else an {@link IllegalArgumentException} is thrown.
 	 * 
+	 * @param username
+	 *            the user to change
 	 * @param user
-	 *            the user to be created
+	 *            new values
 	 */
-	public CreateUserQuery( User user )
+	public ChangeUserQuery( String userName, User user )
 	{
+		if( userName == null || userName.length() == 0 ) throw new IllegalArgumentException( "no username given" );
 		if( user == null ) throw new IllegalArgumentException( "no user specified" );
 		if( user.getName() == null || user.getName().length() == 0 ) throw new IllegalArgumentException( "no username specified" );
-		if( user.getPassword() == null || user.getPassword().length() == 0 ) throw new IllegalArgumentException( "no password specified" );
+		this.userName = userName;
 		this.user = user;
 	}
 
@@ -55,16 +59,13 @@ public final class CreateUserQuery extends AbstractQuery
 		executed = true;
 		StringWriter sw = new StringWriter( 100 );
 		XMLRenderer.getInstance().serializeUser( sw, user, null );
-		result = performRequest( HttpMethod.POST, API_URL + URL_USERS, sw.toString() );
+		result = performRequest( HttpMethod.PUT, API_URL + URL_USERS + "/" + userName, sw.toString() );
 	}
 }
 
 /*
  * $Log$
- * Revision 1.2  2006-06-08 07:41:12  mbork
+ * Revision 1.1  2006-06-08 07:41:11  mbork
  * client api completed
- *
- * Revision 1.1  2006/06/07 19:37:29  mbork
- * implemented post queries
  *
  */

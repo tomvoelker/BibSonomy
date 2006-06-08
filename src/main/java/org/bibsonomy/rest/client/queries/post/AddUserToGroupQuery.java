@@ -5,6 +5,7 @@ import java.io.StringWriter;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.client.queries.AbstractQuery;
+import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.renderer.impl.XMLRenderer;
 
 /**
@@ -60,13 +61,16 @@ public final class AddUserToGroupQuery extends AbstractQuery
 		executed = true;
 		StringWriter sw = new StringWriter( 100 );
 		XMLRenderer.getInstance().serializeUser( sw, user, null );
-		result = performPostRequest( API_URL + URL_GROUPS + "/" + groupName + "/" + URL_USERS, sw.toString() );
+		result = performRequest( HttpMethod.POST, API_URL + URL_GROUPS + "/" + groupName + "/" + URL_USERS, sw.toString() );
 	}
 }
 
 /*
  * $Log$
- * Revision 1.1  2006-06-07 19:37:29  mbork
+ * Revision 1.2  2006-06-08 07:41:12  mbork
+ * client api completed
+ *
+ * Revision 1.1  2006/06/07 19:37:29  mbork
  * implemented post queries
  *
  */

@@ -2,6 +2,7 @@ package org.bibsonomy.rest.client.queries.delete;
 
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.client.queries.AbstractQuery;
+import org.bibsonomy.rest.enums.HttpMethod;
 
 /**
  * Use this Class to delete a specified post
@@ -49,13 +50,16 @@ public final class DeletePostQuery extends AbstractQuery
 	protected void doExecute() throws ErrorPerformingRequestException
 	{
 		executed = true;
-		result = performDeleteRequest( API_URL + URL_USERS + "/" + userName + "/" + URL_POSTS + "/" + resourceHash );
+		result = performRequest( HttpMethod.DELETE, API_URL + URL_USERS + "/" + userName + "/" + URL_POSTS + "/" + resourceHash, null );
 	}
 }
 
 /*
  * $Log$
- * Revision 1.2  2006-06-07 18:25:13  mbork
+ * Revision 1.3  2006-06-08 07:41:12  mbork
+ * client api completed
+ *
+ * Revision 1.2  2006/06/07 18:25:13  mbork
  * forgot checking constructor parameters
  *
  * Revision 1.1  2006/06/07 18:22:31  mbork

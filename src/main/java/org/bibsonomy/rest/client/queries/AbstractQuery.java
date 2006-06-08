@@ -6,8 +6,10 @@ import org.bibsonomy.rest.client.Bibsonomy;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.client.worker.DeleteWorker;
 import org.bibsonomy.rest.client.worker.GetWorker;
+import org.bibsonomy.rest.client.worker.HttpWorker;
 import org.bibsonomy.rest.client.worker.PostWorker;
 import org.bibsonomy.rest.client.worker.PutWorker;
+import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 
 
@@ -31,52 +33,60 @@ public abstract class AbstractQuery<T>
 	private String username;
 	private int statusCode = -1;
 
-    protected BibsonomyXML performGetRequest( String url ) throws ErrorPerformingRequestException
-    {
-    	GetWorker worker = new GetWorker( username, password );
-		BibsonomyXML bibsonomyXML = worker.perform( url );
-		statusCode = worker.getHttpResult();
-		return bibsonomyXML;
-    }
-    
-    protected String performDeleteRequest( String url ) throws ErrorPerformingRequestException
-	{
-		DeleteWorker worker = new DeleteWorker( username, password );
-		String result = worker.perform( url );
-		statusCode = worker.getHttpResult();
-		return result;
-	}
+   protected BibsonomyXML performGetRequest( String url ) throws ErrorPerformingRequestException
+   {
+      GetWorker worker = new GetWorker( username, password );
+      BibsonomyXML bibsonomyXML = worker.perform( url );
+      statusCode = worker.getHttpResult();
+      return bibsonomyXML;
+   }
 
-    protected String performPostRequest( String url, String requestBody ) throws ErrorPerformingRequestException
-	{
-		PostWorker worker = new PostWorker( username, password );
-		String result = worker.perform( url, requestBody );
-		statusCode = worker.getHttpResult();
-		return result;
-	}
-    
-    protected String performPutRequest( String url, String requestBody ) throws ErrorPerformingRequestException
-	{
-		PutWorker worker = new PutWorker( username, password );
-		String result = worker.perform( url, requestBody );
-		statusCode = worker.getHttpResult();
-		return result;
-	}
+   protected String performRequest( HttpMethod method, String url, String requestBody )
+         throws ErrorPerformingRequestException
+   {
+      HttpWorker worker;
+      String result;
+      switch( method )
+      {
+      case POST:
+         worker = new PostWorker( username, password );
+         result = ( (PostWorker)worker ).perform( url, requestBody );
+         statusCode = worker.getHttpResult();
+         break;
+      case DELETE:
+         worker = new DeleteWorker( username, password );
+         result = ( (DeleteWorker)worker ).perform( url );
+         statusCode = worker.getHttpResult();
+         break;
+      case PUT:
+         worker = new PutWorker( username, password );
+         result = ( (PutWorker)worker ).perform( url, requestBody );
+         break;
+      case GET:
+         throw new UnsupportedOperationException( "use AbstractQuery::performGetRequest( String url)" );
+      default:
+         throw new UnsupportedOperationException( "unsupported operation: " + method.toString() );
+      }
+      statusCode = worker.getHttpResult();
+      return result;
+   }
 
     /**
-	 * execute this query. the query blocks until a result from the server is
-	 * received
-	 * 
-     * @param username username at bibsonomy.org
-     * @param password the user's password
-     * @throws ErrorPerformingRequestException if something fails, eg an ioexception occurs (see the cause)
-	 */
-	public final void execute( String username, String password ) throws ErrorPerformingRequestException
-	{
-		this.username = username;
-		this.password = password;
-		doExecute();
-	}
+       * execute this query. the query blocks until a result from the server is received
+       * 
+       * @param username
+       *           username at bibsonomy.org
+       * @param password
+       *           the user's password
+       * @throws ErrorPerformingRequestException
+       *            if something fails, eg an ioexception occurs (see the cause)
+       */
+   public final void execute( String username, String password ) throws ErrorPerformingRequestException
+   {
+      this.username = username;
+      this.password = password;
+      doExecute();
+   }
 	
 	protected abstract void doExecute() throws ErrorPerformingRequestException;
 	
@@ -98,7 +108,10 @@ public abstract class AbstractQuery<T>
 
 /*
  * $Log$
- * Revision 1.3  2006-06-07 19:37:28  mbork
+ * Revision 1.4  2006-06-08 07:41:12  mbork
+ * client api completed
+ *
+ * Revision 1.3  2006/06/07 19:37:28  mbork
  * implemented post queries
  *
  * Revision 1.2  2006/06/07 18:27:04  mbork

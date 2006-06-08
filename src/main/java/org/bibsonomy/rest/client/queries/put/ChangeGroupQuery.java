@@ -1,4 +1,4 @@
-package org.bibsonomy.rest.client.queries.post;
+package org.bibsonomy.rest.client.queries.put;
 
 import java.io.StringWriter;
 
@@ -9,31 +9,36 @@ import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.renderer.impl.XMLRenderer;
 
 /**
- * Use this Class to create a new group in bibsonomy
+ * Use this Class to change details of an existing group in bibsonomy
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public final class CreateGroupQuery extends AbstractQuery
+public final class ChangeGroupQuery extends AbstractQuery
 {
 	private boolean executed = false;
 	private String result;
 	private Group group;
-
+	private String groupName;
+	
 	/**
-	 * Creates a new group account in bibsonomy
-	 * <p/>
-	 * an {@link IllegalArgumentException} is thrown, if the groupname is missing
+	 * Changes details of an existing group in bibsonomy <p/> both groupname of
+	 * the existing group and groupname as parameter for the uri must be
+	 * specified, else an {@link IllegalArgumentException} is thrown.
 	 * 
+	 * @param groupName
+	 *            name of the group to be changed
 	 * @param group
-	 *            the group to be created
+	 *            new values
 	 */
-	public CreateGroupQuery( Group group )
-	{
-		if( group == null ) throw new IllegalArgumentException( "no group specified" );
-		if( group.getName() == null || group.getName().length() == 0 ) throw new IllegalArgumentException( "no groupname specified" );
-		this.group = group;
-	}
+	public ChangeGroupQuery( String groupName, Group group )
+   {
+      if( groupName == null || groupName.length() == 0 ) throw new IllegalArgumentException( "no groupName given" );
+      if( group == null ) throw new IllegalArgumentException( "no group specified" );
+      if( group.getName() == null || group.getName().length() == 0 ) throw new IllegalArgumentException( "no groupname specified" );
+      this.groupName = groupName;
+      this.group = group;
+   }
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.rest.client.queries.AbstractQuery#getResult()
@@ -54,13 +59,13 @@ public final class CreateGroupQuery extends AbstractQuery
 		executed = true;
 		StringWriter sw = new StringWriter( 100 );
 		XMLRenderer.getInstance().serializeGroup( sw, group, null );
-		result = performRequest( HttpMethod.POST, API_URL + URL_GROUPS, sw.toString() );
+		result = performRequest( HttpMethod.PUT, API_URL + URL_GROUPS + "/" + groupName, sw.toString() );
 	}
 }
 
 /*
  * $Log$
- * Revision 1.2  2006-06-08 07:41:12  mbork
+ * Revision 1.1  2006-06-08 07:41:11  mbork
  * client api completed
  *
  * Revision 1.1  2006/06/07 19:37:29  mbork

@@ -1,4 +1,4 @@
-package org.bibsonomy.rest.client.queries.post;
+package org.bibsonomy.rest.client.queries.put;
 
 import java.io.StringWriter;
 
@@ -12,23 +12,25 @@ import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.renderer.impl.XMLRenderer;
 
 /**
- * Use this Class to post a post ;)
+ * Use this Class to change details of an existing post - change tags, for example
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public final class CreatePostQuery extends AbstractQuery
+public final class ChangePostQuery extends AbstractQuery
 {
 	private boolean executed = false;
 	private String result;
 	private Post post;
 	private String username;
+	private String resourceHash;
 
 	/**
-	 * Creates a new post in bibsonomy 
+	 * Changes details of an existing post
 	 * 
 	 * <p/> an {@link IllegalArgumentException} is thrown, if
 	 * <ul>
+	 * <li>username or resourcehash are not specified</li>
 	 * <li>no resource is connected with the post</li>
 	 * <li>the resource is a bookmark: if no url is specified</li>
 	 * <li>the resource is a bibtex: if no title is specified</li>
@@ -37,12 +39,15 @@ public final class CreatePostQuery extends AbstractQuery
 	 * 
 	 * @param username
 	 *            the username under which the post is to be created
+	 * @param resourceHash
+	 *            hash of the resource to change
 	 * @param post
-	 *            the post to be created
+	 *            the new value for the post
 	 */
-	public CreatePostQuery( String username, Post post )
+	public ChangePostQuery( String username, String resourceHash, Post post )
 	{
 		if( username == null || username.length() == 0 ) throw new IllegalArgumentException( "no username given" );
+		if( resourceHash == null || resourceHash.length() == 0 ) throw new IllegalArgumentException( "no resourceHash given" );
 		if( post == null ) throw new IllegalArgumentException( "no post specified" );
 		if( post.getResource() == null ) throw new IllegalArgumentException( "no resource specified" );
 		if( post.getResource() instanceof Bookmark )
@@ -61,6 +66,7 @@ public final class CreatePostQuery extends AbstractQuery
 			if( tag.getName().length() == 0 ) throw new IllegalArgumentException( "missing tagname" );
 		}
 		this.username = username;
+		this.resourceHash = resourceHash;
 		this.post = post;
 	}
 
@@ -81,18 +87,15 @@ public final class CreatePostQuery extends AbstractQuery
 	protected void doExecute() throws ErrorPerformingRequestException
 	{
 		executed = true;
-		StringWriter sw = new StringWriter( 100 );
-		XMLRenderer.getInstance().serializePost( sw, post, null );
-		result = performRequest( HttpMethod.POST, API_URL + URL_USERS + "/" + username + "/" + URL_POSTS, sw.toString() );
+		StringWriter sw = new StringWriter( 100);
+		XMLRenderer.getInstance().serializePost( sw, post, null);
+		result = performRequest( HttpMethod.PUT, API_URL + URL_USERS + "/" + username + "/" + URL_POSTS + "/" + resourceHash, sw.toString());
 	}
 }
 
 /*
  * $Log$
- * Revision 1.2  2006-06-08 07:41:12  mbork
+ * Revision 1.1  2006-06-08 07:41:11  mbork
  * client api completed
- *
- * Revision 1.1  2006/06/07 19:37:29  mbork
- * implemented post queries
  *
  */
