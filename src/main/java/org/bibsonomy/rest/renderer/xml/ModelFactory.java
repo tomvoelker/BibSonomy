@@ -66,7 +66,7 @@ public class ModelFactory
 		
 		Tag tag = new Tag();
 		tag.setName( xmlTag.getName() );
-		tag.setCount( xmlTag.getCount().intValue() );
+      if( xmlTag.getCount() != null ) tag.setCount( xmlTag.getCount().intValue() );
 		
 		return tag;
 	}
@@ -184,7 +184,10 @@ public class ModelFactory
 
 /*
  * $Log$
- * Revision 1.2  2006-06-07 18:22:31  mbork
+ * Revision 1.3  2006-06-08 16:14:36  mbork
+ * Implemented some XMLRenderer functions, including unit-tests. introduced djunitplugin (see http://works.dgic.co.jp/djunit/index.html)
+ *
+ * Revision 1.2  2006/06/07 18:22:31  mbork
  * client api: finished implementing get and delete requests
  *
  * Revision 1.1  2006/06/06 17:39:30  mbork

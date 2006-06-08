@@ -14,6 +14,7 @@
 				<xsd:element name="user" type="UserType"/>
 				<xsd:element name="group" type="GroupType"/>
 				<xsd:element name="post" type="PostType"/>
+				<xsd:element name="tag" type="TagType"/>
 				<xsd:element name="bookmark" type="BookmarkType"/>
 				<xsd:element name="bibtex" type="BibtexType"/>
 			</xsd:choice>

@@ -4,7 +4,7 @@
   	Generates Java source files with JAXB.
   </description>
 
-  <property name="gen.dir" value="generated" />
+  <property name="gen.dir" value="../main/generated" />
 
   <path id="classpath">
   	<fileset dir="." includes="lib/*.jar" />

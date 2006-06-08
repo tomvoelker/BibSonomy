@@ -25,6 +25,7 @@ import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 import org.bibsonomy.rest.renderer.xml.BibtexType;
 import org.bibsonomy.rest.renderer.xml.BookmarkType;
 import org.bibsonomy.rest.renderer.xml.GroupType;
+import org.bibsonomy.rest.renderer.xml.GroupsType;
 import org.bibsonomy.rest.renderer.xml.ModelFactory;
 import org.bibsonomy.rest.renderer.xml.ObjectFactory;
 import org.bibsonomy.rest.renderer.xml.PostType;
@@ -33,6 +34,7 @@ import org.bibsonomy.rest.renderer.xml.TagType;
 import org.bibsonomy.rest.renderer.xml.TagsType;
 import org.bibsonomy.rest.renderer.xml.UserType;
 import org.bibsonomy.rest.renderer.xml.UsersType;
+import org.bibsonomy.rest.strategy.Context;
 
 /**
  * this class creates xml documents valid to the xsd schema and vice-versa.
@@ -42,7 +44,8 @@ import org.bibsonomy.rest.renderer.xml.UsersType;
  */
 public class XMLRenderer implements Renderer
 {
-	private static XMLRenderer renderer;
+	public static final String JAXB_PACKAGE_DECLARATION = "org.bibsonomy.rest.renderer.xml";
+   private static XMLRenderer renderer;
 
 	private XMLRenderer()
 	{
@@ -114,76 +117,119 @@ public class XMLRenderer implements Renderer
 		serialize( writer, xmlDoc );
 	}
 
-	public void serializePost( Writer writer, Post post, ViewModel model )
+	public void serializePost( Writer writer, Post post, ViewModel model )throws InternServerException
 	{
 		// TODO Auto-generated method stub
 	}
 
-	public void serializeUsers( Writer writer, Set<User> users, ViewModel viewModel )
+	public void serializeUsers( Writer writer, Set<User> users, ViewModel viewModel ) throws InternServerException
 	{
 		UsersType xmlUsers = new UsersType();
-		xmlUsers.setEnd( BigInteger.valueOf( viewModel.getEndValue() ) );
-		xmlUsers.setNext( viewModel.getUrlToNextResources() );
-		xmlUsers.setStart( BigInteger.valueOf( viewModel.getStartValue() ) );
-		
+      if( viewModel != null )
+      {
+   		xmlUsers.setEnd( BigInteger.valueOf( viewModel.getEndValue() ) );
+   		xmlUsers.setNext( viewModel.getUrlToNextResources() );
+   		xmlUsers.setStart( BigInteger.valueOf( viewModel.getStartValue() ) );
+      }
 		for( User user: users )
 		{
-			UserType xmlUser = new UserType();
-			xmlUser.setEmail( user.getEmail() );
-			xmlUser.setHomepage( user.getHomepage() );
-			xmlUser.setName( user.getName() );
-			xmlUser.setRealname( user.getRealname() );
-			xmlUser.setVersion( user.getTimestamp() );
-//			xmlUser.setHref( createHrefForUser( user.getName() ) ); TODO
-			
-			xmlUsers.getUser().add( xmlUser );
+			xmlUsers.getUser().add( createXmlUser( user ) );
 		}
 		BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setUsers( xmlUsers );
 		serialize( writer, xmlDoc );
 	}
+   
+   public void serializeUser( Writer writer, User user, ViewModel viewModel ) throws InternServerException
+   {
+      BibsonomyXML xmlDoc = new BibsonomyXML();
+      xmlDoc.setUser( createXmlUser( user ) );
+      serialize( writer, xmlDoc );
+   }
+   
+   private UserType createXmlUser( User user ) throws InternServerException
+   {
+      checkUser( user );
+      UserType xmlUser = new UserType();
+      xmlUser.setEmail( user.getEmail() );
+      xmlUser.setHomepage( user.getHomepage() );
+      xmlUser.setName( user.getName() );
+      xmlUser.setRealname( user.getRealname() );
+      xmlUser.setVersion( user.getTimestamp() );
+      xmlUser.setHref( createHrefForUser( user.getName() ) );
+      return xmlUser;
+   }
 
-	public void serializeUser( Writer writer, User user, ViewModel viewModel )
-	{
-		// TODO Auto-generated method stub
-	}
-
-	public void serializeTags( Writer writer, Set<Tag> tags, ViewModel viewModel )
+   public void serializeTags( Writer writer, Set<Tag> tags, ViewModel viewModel ) throws InternServerException
 	{
 		TagsType xmlTags = new TagsType();
-		xmlTags.setEnd( BigInteger.valueOf( viewModel.getEndValue() ) );
-		xmlTags.setNext( viewModel.getUrlToNextResources() );
-		xmlTags.setStart( BigInteger.valueOf( viewModel.getStartValue() ) );
-		
+      if( viewModel != null )
+      {
+   		xmlTags.setEnd( BigInteger.valueOf( viewModel.getEndValue() ) );
+   		xmlTags.setNext( viewModel.getUrlToNextResources() );
+   		xmlTags.setStart( BigInteger.valueOf( viewModel.getStartValue() ) );
+      }
 		for( Tag tag: tags )
 		{
-			TagType xmlTag = new TagType();
-			xmlTag.setName( tag.getName() );
-			xmlTag.setCount( BigInteger.valueOf( tag.getCount() ) );
-			
-			xmlTags.getTag().add( xmlTag );
+			xmlTags.getTag().add( createXmlTag( tag ) );
 		}
 		BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setTags( xmlTags );
 		serialize( writer, xmlDoc );
 	}
 
-	public void serializeTag( Writer writer, Tag tag, ViewModel model )
+	public void serializeTag( Writer writer, Tag tag, ViewModel model ) throws InternServerException
 	{
-		// TODO Auto-generated method stub
+      BibsonomyXML xmlDoc = new BibsonomyXML();
+      xmlDoc.setTag( createXmlTag( tag ) );
+      serialize( writer, xmlDoc );
+	}
+   
+   private TagType createXmlTag( Tag tag ) throws InternServerException
+   {
+      TagType xmlTag = new TagType();
+      checkTag( tag );
+      xmlTag.setName( tag.getName() );
+      xmlTag.setCount( BigInteger.valueOf( tag.getCount() ) );
+      return xmlTag;
+   }
+
+	public void serializeGroups( Writer writer, Set<Group> groups, ViewModel viewModel ) throws InternServerException
+	{
+      GroupsType xmlGroups = new GroupsType();
+      if( viewModel != null )
+      {
+         xmlGroups.setEnd( BigInteger.valueOf( viewModel.getEndValue() ) );
+         xmlGroups.setNext( viewModel.getUrlToNextResources() );
+         xmlGroups.setStart( BigInteger.valueOf( viewModel.getStartValue() ) );
+      }
+      for( Group group: groups )
+      {
+         xmlGroups.getGroup().add( createXmlGroup( group ) );
+      }
+      BibsonomyXML xmlDoc = new BibsonomyXML();
+      xmlDoc.setGroups( xmlGroups );
+      serialize( writer, xmlDoc );
 	}
 
-	public void serializeGroups( Writer writer, Set<Group> groups, ViewModel viewModel )
-	{
-		// TODO Auto-generated method stub
-	}
-
-	public void serializeGroup( Writer writer, Group group, ViewModel model )
-	{
-		// TODO Auto-generated method stub
-	}
+	public void serializeGroup( Writer writer, Group group, ViewModel model ) throws InternServerException
+   {
+      BibsonomyXML xmlDoc = new BibsonomyXML();
+      xmlDoc.setGroup( createXmlGroup( group ) );
+      serialize( writer, xmlDoc );
+   }
 	
-	public User parseUser( InputStream is ) // throws BadRequestException
+	private GroupType createXmlGroup( Group group )
+   {
+      checkGroup( group );
+      GroupType xmlGroup = new GroupType();
+      xmlGroup.setName( group.getName() );
+      xmlGroup.setHref( createHrefForGroup( group.getName() ) );
+      xmlGroup.setDescription( group.getDescription() );
+      return xmlGroup;
+   }
+
+   public User parseUser( InputStream is ) throws BadRequestException
 	{
 		if( is == null ) throw new BadRequestException( "The body part of the received document is missing" );
 		
@@ -196,7 +242,7 @@ public class XMLRenderer implements Renderer
 		throw new BadRequestException( "The body part of the received document is erroneous - no user defined." );
 	}
 
-	public Post parsePost( InputStream is )
+	public Post parsePost( InputStream is ) throws BadRequestException
 	{
 		if( is == null ) throw new BadRequestException( "The body part of the received document is missing" );
 		
@@ -209,7 +255,7 @@ public class XMLRenderer implements Renderer
 		throw new BadRequestException( "The body part of the received document is erroneous - no post defined." );
 	}
 
-	public Group parseGroup( InputStream is )
+	public Group parseGroup( InputStream is ) throws BadRequestException
 	{
 		if( is == null ) throw new BadRequestException( "The body part of the received document is missing" );
 		
@@ -234,7 +280,7 @@ public class XMLRenderer implements Renderer
 		try
 		{
 			// initialize context for java xml bindings
-			JAXBContext jc = JAXBContext.newInstance( "org.bibsonomy.rest.renderer.xml" );
+			JAXBContext jc = JAXBContext.newInstance( JAXB_PACKAGE_DECLARATION );
 			
 			// buildup xml document
 			JAXBElement<BibsonomyXML> webserviceElement = ( new ObjectFactory() ).createBibsonomyXMLInterchangeDocument( xmlDoc );
@@ -245,7 +291,7 @@ public class XMLRenderer implements Renderer
 			
 			// marshal to the writer
 			marshaller.marshal( webserviceElement, writer );
-			marshaller.marshal( webserviceElement, System.out ); // TODO
+//			marshaller.marshal( webserviceElement, System.out ); // TODO
 		}
 		catch( JAXBException e )
 		{
@@ -257,7 +303,7 @@ public class XMLRenderer implements Renderer
 	{
         try
 		{
-			JAXBContext jc = JAXBContext.newInstance( "org.bibsonomy.rest.renderer.xml" );
+			JAXBContext jc = JAXBContext.newInstance( JAXB_PACKAGE_DECLARATION );
 			
 			// create an Unmarshaller
 			Unmarshaller u = jc.createUnmarshaller();
@@ -283,11 +329,48 @@ public class XMLRenderer implements Renderer
 		}
 		return XMLRenderer.renderer;
 	}
+   
+   private void checkTag( Tag tag ) throws InternServerException
+   {
+      if( tag.getName() == null || tag.getName().length() == 0 )
+      {
+         throw new InternServerException( "found a tag without tagname assigned." );
+      }
+   }
+   
+   private void checkUser( User user ) throws InternServerException
+   {
+      if( user.getName() == null || user.getName().length() == 0 )
+      {
+         throw new InternServerException( "found an user without username assigned." );
+      }
+   }
+   
+   private void checkGroup( Group group ) throws InternServerException
+   {
+      if( group.getName() == null || group.getName().length() == 0 )
+      {
+         throw new InternServerException( "found a group without username assigned." );
+      }
+   }
+   
+   private String createHrefForUser( String name )
+   {
+      return Context.API_URL + Context.URL_USERS + "/" + name;
+   }
+   
+   private String createHrefForGroup( String name )
+   {
+      return Context.API_URL + Context.URL_GROUPS + "/" + name;
+   }
 }
 
 /*
  * $Log$
- * Revision 1.6  2006-06-08 13:23:48  mbork
+ * Revision 1.7  2006-06-08 16:14:36  mbork
+ * Implemented some XMLRenderer functions, including unit-tests. introduced djunitplugin (see http://works.dgic.co.jp/djunit/index.html)
+ *
+ * Revision 1.6  2006/06/08 13:23:48  mbork
  * improved documentation, added throws statements even for runtimeexceptions, moved abstractquery to prevent users to call execute directly
  *
  * Revision 1.5  2006/06/07 19:37:28  mbork

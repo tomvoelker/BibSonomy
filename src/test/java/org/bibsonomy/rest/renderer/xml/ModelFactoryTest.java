@@ -1,5 +1,7 @@
 package org.bibsonomy.rest.renderer.xml;
 
+import java.math.BigInteger;
+
 import junit.framework.TestCase;
 
 import org.bibsonomy.model.BibTex;
@@ -67,6 +69,28 @@ public class ModelFactoryTest extends TestCase
 		Group group = modelFactory.createGroup( xmlGroup );
 		assertTrue( "model not correctly initialized", group.getName().equals( "test" ) );
 	}
+   
+   public void testCreateTag()
+   {
+      // check invalid tag
+      TagType xmlTag = new TagType();
+      try
+      {
+         modelFactory.createTag( xmlTag );
+      }
+      catch( InvalidXMLException e )
+      {
+         if( !e.getMessage().equals( "The body part of the received XML document is not valid: tag name is missing" ) )
+            fail( "wrong exception thrown: " + e.getMessage() );
+      }
+      // check valid tag
+      xmlTag.setName( "foo" );
+      Tag tag = modelFactory.createTag( xmlTag );
+      assertTrue( "tag not correctly initailized", tag.getName().equals( "foo" ) );
+      xmlTag.setCount( BigInteger.ONE );
+      tag = modelFactory.createTag( xmlTag );
+      assertTrue( "tag not correctly initailized", tag.getCount() == 1 );
+   }
 	
 	public void testCreatePost()
 	{
@@ -131,7 +155,10 @@ public class ModelFactoryTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.1  2006-06-06 17:39:30  mbork
+ * Revision 1.2  2006-06-08 16:14:35  mbork
+ * Implemented some XMLRenderer functions, including unit-tests. introduced djunitplugin (see http://works.dgic.co.jp/djunit/index.html)
+ *
+ * Revision 1.1  2006/06/06 17:39:30  mbork
  * implemented a modelfactory which parses incoming xml-requests and then generates the intern model
  *
  */

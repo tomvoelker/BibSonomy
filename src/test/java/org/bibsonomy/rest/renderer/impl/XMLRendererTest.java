@@ -1,9 +1,14 @@
 package org.bibsonomy.rest.renderer.impl;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.LinkedHashSet;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -14,8 +19,11 @@ import javax.xml.bind.PropertyException;
 import junit.framework.TestCase;
 
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestException;
+import org.bibsonomy.rest.exceptions.InternServerException;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 import org.bibsonomy.rest.renderer.xml.BookmarkType;
@@ -191,11 +199,189 @@ public class XMLRendererTest extends TestCase
 		marshaller.marshal( webserviceElement, new FileOutputStream( tmpFile ) );
 	}
 	
+   public void testSerializeTags() throws Exception
+   {
+      // empty list
+      StringWriter sw = new StringWriter( 100 );
+      LinkedHashSet<Tag> tags = new LinkedHashSet<Tag>();
+      renderer.serializeTags( sw, tags, null );
+      compareWithFile( sw, "ExampleResultTags0.txt" );
+      // empty list 2
+      ViewModel vm = new ViewModel();
+      vm.setStartValue( 0 );
+      vm.setEndValue( 10 );
+      vm.setUrlToNextResources( "http://www.bibsonomy.org/foo/bar" );
+      sw = new StringWriter( 100 );
+      renderer.serializeTags( sw, tags, vm );
+      compareWithFile( sw, "ExampleResultTags1.txt" );
+      // with tags
+      sw = new StringWriter( 100 );
+      Tag t1 = new Tag();
+      tags.add( t1 );
+      try
+      {
+         renderer.serializeTags( sw, tags, vm );
+         fail( "exception should have been thrown: no tagname specified" );
+      }
+      catch( InternServerException e )
+      {
+      }
+      t1.setName( "foo" );
+      sw = new StringWriter( 100 );
+      renderer.serializeTags( sw, tags, vm );
+      compareWithFile( sw, "ExampleResultTags2.txt" );
+      // with multiple tags
+      Tag t2 = new Tag();
+      t2.setName( "bar" );
+      t2.setCount( 5 );
+      tags.add( t2 );
+      sw = new StringWriter( 100 );
+      renderer.serializeTags( sw, tags, vm );
+      compareWithFile( sw, "ExampleResultTags3.txt" );
+   }
+   
+   public void testSerializeTag() throws Exception
+   {
+      // empty tag
+      StringWriter sw = new StringWriter( 100 );
+      Tag tag = new Tag();
+      try
+      {
+         renderer.serializeTag( sw, tag, null );
+         fail( "exception should have been thrown: no tagname specified" );
+      }
+      catch( InternServerException e )
+      {
+      }
+      tag.setName( "foo" );
+      renderer.serializeTag( sw, tag, null );
+      compareWithFile( sw, "ExampleResultTag.txt" );
+   }
+   
+   public void testSerializeUsers() throws Exception
+   {
+      // empty user
+      StringWriter sw = new StringWriter( 100 );
+      LinkedHashSet<User> users = new LinkedHashSet<User>();
+      renderer.serializeUsers( sw, users, null );
+      compareWithFile( sw, "ExampleResultUsers0.txt" );
+      //
+      ViewModel vm = new ViewModel();
+      vm.setStartValue( 20 );
+      vm.setEndValue( 30 );
+      vm.setUrlToNextResources( "http://www.bibsonomy.org/api/foo/bar" );
+      User u1 = new User();
+      users.add( u1 );
+      try
+      {
+         renderer.serializeUsers( sw, users, null );
+         fail( "exception should have been thrown: no username specified" );
+      }
+      catch( InternServerException e )
+      {
+      }
+      sw = new StringWriter( 100 );
+      u1.setName( "testName" );
+      u1.setEmail( "mail@foo.bar" );
+      u1.setHomepage( "foo.bar.com" );
+      u1.setPassword( "raboof" );
+      u1.setRealname( "Dr. FOO BaR" );
+      User u2 = new User();
+      u2.setName( "fooBar" );
+      users.add( u2 );
+      renderer.serializeUsers( sw, users, vm );
+      compareWithFile( sw, "ExampleResultUsers1.txt" );
+   }
+   
+   public void testSerializeUser() throws Exception
+   {
+      // empty user
+      StringWriter sw = new StringWriter( 100 );
+      User user = new User();
+      try
+      {
+         renderer.serializeUser( sw, user, null );
+         fail( "exception should have been thrown: no username specified" );
+      }
+      catch( InternServerException e )
+      {
+      }
+      user.setName( "foo" );
+      renderer.serializeUser( sw, user, null );
+      compareWithFile( sw, "ExampleResultUser.txt" );
+   }
+   
+   public void testSerializeGroups() throws Exception
+   {
+      // empty group
+      StringWriter sw = new StringWriter( 100 );
+      LinkedHashSet<Group> groups = new LinkedHashSet<Group>();
+      renderer.serializeGroups( sw, groups, null );
+      compareWithFile( sw, "ExampleResultGroups0.txt" );
+      //
+      ViewModel vm = new ViewModel();
+      vm.setStartValue( 20 );
+      vm.setEndValue( 30 );
+      vm.setUrlToNextResources( "http://www.bibsonomy.org/api/foo/bar" );
+      Group g1 = new Group();
+      groups.add( g1 );
+      try
+      {
+         renderer.serializeGroups( sw, groups, null );
+         fail( "exception should have been thrown: no groupname specified" );
+      }
+      catch( InternServerException e )
+      {
+      }
+      sw = new StringWriter( 100 );
+      g1.setName( "testName" );
+      g1.setDescription( "foo bar ..." );
+      Group g2 = new Group();
+      g2.setName( "testName2" );
+      groups.add( g2 );
+      renderer.serializeGroups( sw, groups, vm );
+      compareWithFile( sw, "ExampleResultGroups1.txt" );
+   }
+   
+   public void testSerializeGroup() throws Exception
+   {
+      // empty user
+      StringWriter sw = new StringWriter( 100 );
+      Group group = new Group();
+      try
+      {
+         renderer.serializeGroup( sw, group, null );
+         fail( "exception should have been thrown: no groupname specified" );
+      }
+      catch( InternServerException e )
+      {
+      }
+      group.setName( "foo" );
+      group.setDescription( "foo bar :)" );
+      renderer.serializeGroup( sw, group, null );
+      compareWithFile( sw, "ExampleResultGroup.txt" );
+   }
+   
+   private void compareWithFile( StringWriter sw, String filename ) throws IOException
+   {
+      StringBuffer sb = new StringBuffer( 200 );
+      File file = new File( "src/test/java/org/bibsonomy/rest/renderer/impl/" + filename );
+      BufferedReader br = new BufferedReader( new FileReader( file ) );
+      String s;
+      while( (s = br.readLine() ) != null )
+      {
+         sb.append( s + "\n" );
+      }
+      assertTrue( "output not as expected", sw.toString().equals( sb.toString() + "\n" ) );
+   }
 }
 
 /*
  * $Log$
- * Revision 1.2  2006-06-07 19:37:28  mbork
+ * Revision 1.3  2006-06-08 16:14:35  mbork
+ * Implemented some XMLRenderer functions, including unit-tests. introduced djunitplugin (see http://works.dgic.co.jp/djunit/index.html)
+ *
+ * Revision 1.2  2006/06/07 19:37:28  mbork
  * implemented post queries
  *
  * Revision 1.1  2006/06/06 17:39:29  mbork

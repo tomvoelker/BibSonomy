@@ -12,37 +12,48 @@ import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
  */
 public final class Bibsonomy
 {
-	public static final Logger LOGGER = Logger.getLogger( Bibsonomy.class.getName() );
+   public static final Logger LOGGER = Logger.getLogger( Bibsonomy.class.getName() );
+   private String username;
+   private String password;
 
-    private String username;
-    private String password;
-    
-	/**
-	 * Creates an object to interact with Bibsonomy.
-	 * 
-	 * @param username Username
-	 * @param password Password
-	 */
-	public Bibsonomy( String username, String password )
-	{
-        this.username = username;
-        this.password = password;
-	}
-	
+   /**
+    * Creates an object to interact with Bibsonomy.
+    * 
+    * @param username
+    *           name of the user
+    * @param password
+    *           password of the user
+    * @throws IllegalArgumentException
+    *            if username or password is null or empty
+    */
+   public Bibsonomy( String username, String password )
+   {
+      if( username == null || username.length() == 0 ) throw new IllegalArgumentException( "no username given" );
+      if( password == null || password.length() == 0 ) throw new IllegalArgumentException( "no password given" );
+      this.username = username;
+      this.password = password;
+   }
+
    /**
     * executes the given query.
-    * @param query the query to execute
-    * @throws ErrorPerformingRequestException if something fails, eg an ioexception occurs (see the cause)
+    * 
+    * @param query
+    *           the query to execute
+    * @throws ErrorPerformingRequestException
+    *            if something fails, eg an ioexception occurs (see the cause)
     */
-	public void executeQuery( AbstractQuery query ) throws ErrorPerformingRequestException
-	{
-		query.execute( username, password );
-	}
+   public void executeQuery( AbstractQuery query ) throws ErrorPerformingRequestException
+   {
+      query.execute( username, password );
+   }
 }
 
 /*
  * $Log$
- * Revision 1.2  2006-06-08 13:23:48  mbork
+ * Revision 1.3  2006-06-08 16:14:36  mbork
+ * Implemented some XMLRenderer functions, including unit-tests. introduced djunitplugin (see http://works.dgic.co.jp/djunit/index.html)
+ *
+ * Revision 1.2  2006/06/08 13:23:48  mbork
  * improved documentation, added throws statements even for runtimeexceptions, moved abstractquery to prevent users to call execute directly
  *
  * Revision 1.1  2006/06/06 22:20:55  mbork
