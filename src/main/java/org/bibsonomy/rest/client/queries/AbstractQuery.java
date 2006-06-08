@@ -33,7 +33,7 @@ public abstract class AbstractQuery<T>
 	private String username;
 	private int statusCode = -1;
 
-   protected BibsonomyXML performGetRequest( String url ) throws ErrorPerformingRequestException
+   protected final BibsonomyXML performGetRequest( String url ) throws ErrorPerformingRequestException
    {
       GetWorker worker = new GetWorker( username, password );
       BibsonomyXML bibsonomyXML = worker.perform( url );
@@ -41,7 +41,7 @@ public abstract class AbstractQuery<T>
       return bibsonomyXML;
    }
 
-   protected String performRequest( HttpMethod method, String url, String requestBody )
+   protected final String performRequest( HttpMethod method, String url, String requestBody )
          throws ErrorPerformingRequestException
    {
       HttpWorker worker;
@@ -108,7 +108,10 @@ public abstract class AbstractQuery<T>
 
 /*
  * $Log$
- * Revision 1.4  2006-06-08 07:41:12  mbork
+ * Revision 1.5  2006-06-08 07:44:36  mbork
+ * made two methods final
+ *
+ * Revision 1.4  2006/06/08 07:41:12  mbork
  * client api completed
  *
  * Revision 1.3  2006/06/07 19:37:28  mbork
