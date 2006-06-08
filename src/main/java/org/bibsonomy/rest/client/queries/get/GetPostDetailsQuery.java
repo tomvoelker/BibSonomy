@@ -3,14 +3,14 @@ package org.bibsonomy.rest.client.queries.get;
 import java.util.logging.Level;
 
 import org.bibsonomy.model.Post;
+import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
-import org.bibsonomy.rest.client.queries.AbstractQuery;
 import org.bibsonomy.rest.exceptions.InvalidXMLException;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 import org.bibsonomy.rest.renderer.xml.ModelFactory;
 
 /**
- * Use this Class to receive details about a post of an user
+ * Use this Class to receive details about a post of an user.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
@@ -22,12 +22,16 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post>
 	private BibsonomyXML bibsonomyXML;
 
 	/**
-	 * Gets details of a post of an user
-	 * 
-	 * @param username name of the user
-	 * @param resourceHash hash of the resource
-	 */
-	public GetPostDetailsQuery( String username, String resourceHash )
+    * Gets details of a post of an user.
+    * 
+    * @param username
+    *           name of the user
+    * @param resourceHash
+    *           hash of the resource
+    * @throws IllegalArgumentException
+    *            if userName or resourceHash are null or empty
+    */
+	public GetPostDetailsQuery( String username, String resourceHash ) throws IllegalArgumentException
 	{
 		if( username == null || username.length() == 0 ) throw new IllegalArgumentException( "no username given" );
 		if( resourceHash == null || resourceHash.length() == 0 ) throw new IllegalArgumentException( "no resourceHash given" );
@@ -72,7 +76,10 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post>
 
 /*
  * $Log$
- * Revision 1.2  2006-06-08 08:02:54  mbork
+ * Revision 1.3  2006-06-08 13:23:47  mbork
+ * improved documentation, added throws statements even for runtimeexceptions, moved abstractquery to prevent users to call execute directly
+ *
+ * Revision 1.2  2006/06/08 08:02:54  mbork
  * fixed erroneous use of generics
  *
  * Revision 1.1  2006/06/06 22:20:54  mbork

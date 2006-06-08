@@ -78,7 +78,7 @@ public interface Renderer
 	 * @param groups
 	 * @param viewModel
 	 */
-	public void serializeGroups( PrintWriter writer, Set<Group> groups, ViewModel viewModel );
+	public void serializeGroups( Writer writer, Set<Group> groups, ViewModel viewModel );
 
 	/**
 	 * serializes one group
@@ -96,7 +96,10 @@ public interface Renderer
 
 /*
  * $Log$
- * Revision 1.7  2006-06-07 19:37:29  mbork
+ * Revision 1.8  2006-06-08 13:23:48  mbork
+ * improved documentation, added throws statements even for runtimeexceptions, moved abstractquery to prevent users to call execute directly
+ *
+ * Revision 1.7  2006/06/07 19:37:29  mbork
  * implemented post queries
  *
  * Revision 1.6  2006/06/06 17:39:30  mbork

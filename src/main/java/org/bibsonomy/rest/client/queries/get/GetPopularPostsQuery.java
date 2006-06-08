@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.bibsonomy.model.Post;
+import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
-import org.bibsonomy.rest.client.queries.AbstractQuery;
 import org.bibsonomy.rest.enums.GroupingEntity;
 import org.bibsonomy.rest.enums.ResourceType;
 import org.bibsonomy.rest.exceptions.InvalidXMLException;
@@ -15,7 +15,7 @@ import org.bibsonomy.rest.renderer.xml.ModelFactory;
 import org.bibsonomy.rest.renderer.xml.PostType;
 
 /**
- * Use this Class to receive an ordered list of all posts
+ * Use this Class to receive an ordered list of all posts.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
@@ -30,7 +30,7 @@ public final class GetPopularPostsQuery extends AbstractQuery<List<Post>>
 	private String groupingValue;
 
 	/**
-	 * Gets bibsonomy's posts list
+	 * Gets bibsonomy's posts list.
 	 */
 	public GetPopularPostsQuery()
 	{
@@ -38,16 +38,16 @@ public final class GetPopularPostsQuery extends AbstractQuery<List<Post>>
 	}
 
 	/**
-	 * Gets bibsonomy's posts list ordered by popularity
+	 * Gets bibsonomy's posts list ordered by popularity.
 	 * 
 	 * @param start start of the list
 	 * @param end end of the list
 	 */
 	public GetPopularPostsQuery( int start, int end )
 	{
-		if( start < 0 ) throw new IllegalArgumentException( "start must be >= 0" );
-		if( end < start ) throw new IllegalArgumentException( "end must be >= 0 and >= start value" );
-		
+      if( start < 0 ) start = 0;
+      if( end < start ) end = start;
+      
 		this.start = start;
 		this.end = end;
 	}
@@ -61,8 +61,10 @@ public final class GetPopularPostsQuery extends AbstractQuery<List<Post>>
 	 * @param groupingValue
 	 *            the value for the chosen grouping; for example the username if
 	 *            grouping is {@link GroupingEntity#USER}
-	 */
-	public void setGrouping( GroupingEntity grouping, String groupingValue )
+    * @throws IllegalArgumentException
+    *            if grouping is != {@link GroupingEntity#ALL} and groupingValue is null or empty
+    */
+	public void setGrouping( GroupingEntity grouping, String groupingValue ) throws IllegalArgumentException
 	{
 		if( grouping == GroupingEntity.ALL )
 		{
@@ -75,8 +77,8 @@ public final class GetPopularPostsQuery extends AbstractQuery<List<Post>>
 	}
 	
 	/**
-	 * set the resource type of the resources of the posts 
-	 * @param type
+	 * set the resource type of the resources of the posts.
+	 * @param type the type to set
 	 */
 	public void setResourceType( ResourceType type )
 	{
@@ -143,7 +145,10 @@ public final class GetPopularPostsQuery extends AbstractQuery<List<Post>>
 
 /*
  * $Log$
- * Revision 1.2  2006-06-08 08:02:54  mbork
+ * Revision 1.3  2006-06-08 13:23:47  mbork
+ * improved documentation, added throws statements even for runtimeexceptions, moved abstractquery to prevent users to call execute directly
+ *
+ * Revision 1.2  2006/06/08 08:02:54  mbork
  * fixed erroneous use of generics
  *
  * Revision 1.1  2006/06/07 18:22:31  mbork

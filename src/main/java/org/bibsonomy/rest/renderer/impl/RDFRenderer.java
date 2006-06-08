@@ -1,7 +1,6 @@
 package org.bibsonomy.rest.renderer.impl;
 
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Set;
 
@@ -49,7 +48,7 @@ public class RDFRenderer implements Renderer
 		// TODO Auto-generated method stub
 	}
 
-	public void serializeGroups( PrintWriter writer, Set<Group> groups, ViewModel viewModel )
+	public void serializeGroups( Writer writer, Set<Group> groups, ViewModel viewModel )
 	{
 		// TODO Auto-generated method stub
 	}
@@ -80,7 +79,10 @@ public class RDFRenderer implements Renderer
 
 /*
  * $Log$
- * Revision 1.4  2006-06-07 19:37:28  mbork
+ * Revision 1.5  2006-06-08 13:23:48  mbork
+ * improved documentation, added throws statements even for runtimeexceptions, moved abstractquery to prevent users to call execute directly
+ *
+ * Revision 1.4  2006/06/07 19:37:28  mbork
  * implemented post queries
  *
  * Revision 1.3  2006/06/06 17:39:29  mbork

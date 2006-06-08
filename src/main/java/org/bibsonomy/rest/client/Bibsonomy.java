@@ -3,7 +3,6 @@ package org.bibsonomy.rest.client;
 import java.util.logging.Logger;
 
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
-import org.bibsonomy.rest.client.queries.AbstractQuery;
 
 /**
  * Bibsonomy is a class for accessing the <a href="http://www.bibsonomy.org/api/">Bibsonomy REST API</a>.
@@ -19,7 +18,7 @@ public final class Bibsonomy
     private String password;
     
 	/**
-	 * Create an object to interact with Bibsonomy
+	 * Creates an object to interact with Bibsonomy.
 	 * 
 	 * @param username Username
 	 * @param password Password
@@ -30,6 +29,11 @@ public final class Bibsonomy
         this.password = password;
 	}
 	
+   /**
+    * executes the given query.
+    * @param query the query to execute
+    * @throws ErrorPerformingRequestException if something fails, eg an ioexception occurs (see the cause)
+    */
 	public void executeQuery( AbstractQuery query ) throws ErrorPerformingRequestException
 	{
 		query.execute( username, password );
@@ -38,7 +42,10 @@ public final class Bibsonomy
 
 /*
  * $Log$
- * Revision 1.1  2006-06-06 22:20:55  mbork
+ * Revision 1.2  2006-06-08 13:23:48  mbork
+ * improved documentation, added throws statements even for runtimeexceptions, moved abstractquery to prevent users to call execute directly
+ *
+ * Revision 1.1  2006/06/06 22:20:55  mbork
  * started implementing client api
  *
  */

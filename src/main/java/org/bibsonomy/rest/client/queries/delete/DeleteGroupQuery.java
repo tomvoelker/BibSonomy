@@ -1,11 +1,11 @@
 package org.bibsonomy.rest.client.queries.delete;
 
+import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
-import org.bibsonomy.rest.client.queries.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 
 /**
- * Use this Class to delete a specified group
+ * Use this Class to delete a specified group.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
@@ -17,12 +17,14 @@ public final class DeleteGroupQuery extends AbstractQuery<String>
 	private String groupName;
 
 	/**
-	 * Deletes the specified group
-	 * 
-	 * @param groupName
-	 *            the groupName of the group to be deleted
-	 */
-	public DeleteGroupQuery( String groupName )
+    * Deletes the specified group.
+    * 
+    * @param groupName
+    *           the groupName of the group to be deleted
+    * @throws IllegalArgumentException
+    *            if the groupName is null or empty
+    */
+	public DeleteGroupQuery( String groupName ) throws IllegalArgumentException
 	{
 		if( groupName == null || groupName.length() == 0 ) throw new IllegalArgumentException( "no groupname given" );
 		this.groupName = groupName;
@@ -51,7 +53,10 @@ public final class DeleteGroupQuery extends AbstractQuery<String>
 
 /*
  * $Log$
- * Revision 1.4  2006-06-08 08:02:54  mbork
+ * Revision 1.5  2006-06-08 13:23:47  mbork
+ * improved documentation, added throws statements even for runtimeexceptions, moved abstractquery to prevent users to call execute directly
+ *
+ * Revision 1.4  2006/06/08 08:02:54  mbork
  * fixed erroneous use of generics
  *
  * Revision 1.3  2006/06/08 07:41:12  mbork

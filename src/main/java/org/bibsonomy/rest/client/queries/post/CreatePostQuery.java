@@ -6,13 +6,13 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
-import org.bibsonomy.rest.client.queries.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.renderer.impl.XMLRenderer;
 
 /**
- * Use this Class to post a post ;)
+ * Use this Class to post a post. ;)
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
@@ -25,22 +25,23 @@ public final class CreatePostQuery extends AbstractQuery<String>
 	private String username;
 
 	/**
-	 * Creates a new post in bibsonomy 
-	 * 
-	 * <p/> an {@link IllegalArgumentException} is thrown, if
-	 * <ul>
-	 * <li>no resource is connected with the post</li>
-	 * <li>the resource is a bookmark: if no url is specified</li>
-	 * <li>the resource is a bibtex: if no title is specified</li>
-	 * <li>no tags are specified or the tags have no names</li>
-	 * </ul>
-	 * 
-	 * @param username
-	 *            the username under which the post is to be created
-	 * @param post
-	 *            the post to be created
-	 */
-	public CreatePostQuery( String username, Post post )
+    * Creates a new post in bibsonomy.
+    * 
+    * @param username
+    *           the username under which the post is to be created
+    * @param post
+    *           the post to be created
+    * @throws IllegalArgumentException
+    *            if
+    *            <ul>
+    *            <li>the username is null or empty</li>
+    *            <li>no resource is connected with the post</li>
+    *            <li>the resource is a bookmark: if no url is specified</li>
+    *            <li>the resource is a bibtex: if no title is specified</li>
+    *            <li>no tags are specified or the tags have no names</li>
+    *            </ul>
+    */
+   public CreatePostQuery( String username, Post post ) throws IllegalArgumentException
 	{
 		if( username == null || username.length() == 0 ) throw new IllegalArgumentException( "no username given" );
 		if( post == null ) throw new IllegalArgumentException( "no post specified" );
@@ -89,7 +90,10 @@ public final class CreatePostQuery extends AbstractQuery<String>
 
 /*
  * $Log$
- * Revision 1.3  2006-06-08 08:02:54  mbork
+ * Revision 1.4  2006-06-08 13:23:47  mbork
+ * improved documentation, added throws statements even for runtimeexceptions, moved abstractquery to prevent users to call execute directly
+ *
+ * Revision 1.3  2006/06/08 08:02:54  mbork
  * fixed erroneous use of generics
  *
  * Revision 1.2  2006/06/08 07:41:12  mbork

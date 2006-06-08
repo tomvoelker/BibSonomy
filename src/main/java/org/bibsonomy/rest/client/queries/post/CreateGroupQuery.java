@@ -3,13 +3,13 @@ package org.bibsonomy.rest.client.queries.post;
 import java.io.StringWriter;
 
 import org.bibsonomy.model.Group;
+import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
-import org.bibsonomy.rest.client.queries.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.renderer.impl.XMLRenderer;
 
 /**
- * Use this Class to create a new group in bibsonomy
+ * Use this Class to create a new group in bibsonomy.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
@@ -21,14 +21,14 @@ public final class CreateGroupQuery extends AbstractQuery<String>
 	private Group group;
 
 	/**
-	 * Creates a new group account in bibsonomy
-	 * <p/>
-	 * an {@link IllegalArgumentException} is thrown, if the groupname is missing
-	 * 
-	 * @param group
-	 *            the group to be created
-	 */
-	public CreateGroupQuery( Group group )
+    * Creates a new group account in bibsonomy.
+    * 
+    * @param group
+    *           the group to be created
+    * @throws IllegalArgumentException
+    *            if the group has no name is defined
+    */
+	public CreateGroupQuery( Group group ) throws IllegalArgumentException
 	{
 		if( group == null ) throw new IllegalArgumentException( "no group specified" );
 		if( group.getName() == null || group.getName().length() == 0 ) throw new IllegalArgumentException( "no groupname specified" );
@@ -60,7 +60,10 @@ public final class CreateGroupQuery extends AbstractQuery<String>
 
 /*
  * $Log$
- * Revision 1.3  2006-06-08 08:02:54  mbork
+ * Revision 1.4  2006-06-08 13:23:47  mbork
+ * improved documentation, added throws statements even for runtimeexceptions, moved abstractquery to prevent users to call execute directly
+ *
+ * Revision 1.3  2006/06/08 08:02:54  mbork
  * fixed erroneous use of generics
  *
  * Revision 1.2  2006/06/08 07:41:12  mbork

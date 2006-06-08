@@ -5,15 +5,15 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.bibsonomy.model.Group;
+import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
-import org.bibsonomy.rest.client.queries.AbstractQuery;
 import org.bibsonomy.rest.exceptions.InvalidXMLException;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 import org.bibsonomy.rest.renderer.xml.GroupType;
 import org.bibsonomy.rest.renderer.xml.ModelFactory;
 
 /**
- * Use this Class to receive an ordered list of all groups bibsonomy has
+ * Use this Class to receive an ordered list of all groups bibsonomy has.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
@@ -33,16 +33,18 @@ public final class GetGroupListQuery extends AbstractQuery<List<Group>>
 	}
 
 	/**
-	 * Gets bibsonomy's group list
-	 * 
-	 * @param start start of the list
-	 * @param end end of the list
-	 */
+    * Gets bibsonomy's group list.
+    * 
+    * @param start
+    *           start of the list
+    * @param end
+    *           end of the list
+    */
 	public GetGroupListQuery( int start, int end )
 	{
-		if( start < 0 ) throw new IllegalArgumentException( "start must be >= 0" );
-		if( end < start ) throw new IllegalArgumentException( "end must be >= 0 and >= start value" );
-		
+      if( start < 0 ) start = 0;
+      if( end < start ) end = start;
+      
 		this.start = start;
 		this.end = end;
 	}
@@ -86,7 +88,10 @@ public final class GetGroupListQuery extends AbstractQuery<List<Group>>
 
 /*
  * $Log$
- * Revision 1.2  2006-06-08 08:02:54  mbork
+ * Revision 1.3  2006-06-08 13:23:47  mbork
+ * improved documentation, added throws statements even for runtimeexceptions, moved abstractquery to prevent users to call execute directly
+ *
+ * Revision 1.2  2006/06/08 08:02:54  mbork
  * fixed erroneous use of generics
  *
  * Revision 1.1  2006/06/06 22:20:54  mbork

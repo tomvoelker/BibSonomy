@@ -3,14 +3,14 @@ package org.bibsonomy.rest.client.queries.get;
 import java.util.logging.Level;
 
 import org.bibsonomy.model.User;
+import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
-import org.bibsonomy.rest.client.queries.AbstractQuery;
 import org.bibsonomy.rest.exceptions.InvalidXMLException;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 import org.bibsonomy.rest.renderer.xml.ModelFactory;
 
 /**
- * Use this Class to receive details about an user of bibsonomy
+ * Use this Class to receive details about an user of bibsonomy.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
@@ -21,11 +21,12 @@ public final class GetUserDetailsQuery extends AbstractQuery<User>
 	private BibsonomyXML bibsonomyXML;
 
 	/**
-	 * Gets details of a user
+	 * Gets details of a user.
 	 * 
 	 * @param username name of the user
+    * @throws IllegalArgumentException if username is null or empty
 	 */
-	public GetUserDetailsQuery( String username )
+	public GetUserDetailsQuery( String username ) throws IllegalArgumentException
 	{
 		if( username == null || username.length() == 0 ) throw new IllegalArgumentException( "no username given" );
 		this.username = username;
@@ -68,7 +69,10 @@ public final class GetUserDetailsQuery extends AbstractQuery<User>
 
 /*
  * $Log$
- * Revision 1.2  2006-06-08 08:02:54  mbork
+ * Revision 1.3  2006-06-08 13:23:47  mbork
+ * improved documentation, added throws statements even for runtimeexceptions, moved abstractquery to prevent users to call execute directly
+ *
+ * Revision 1.2  2006/06/08 08:02:54  mbork
  * fixed erroneous use of generics
  *
  * Revision 1.1  2006/06/06 22:20:54  mbork

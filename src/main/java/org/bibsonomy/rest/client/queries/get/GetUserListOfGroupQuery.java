@@ -5,15 +5,15 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.bibsonomy.model.User;
+import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
-import org.bibsonomy.rest.client.queries.AbstractQuery;
 import org.bibsonomy.rest.exceptions.InvalidXMLException;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 import org.bibsonomy.rest.renderer.xml.ModelFactory;
 import org.bibsonomy.rest.renderer.xml.UserType;
 
 /**
- * Use this Class to receive an ordered list of all users belonging to a given group
+ * Use this Class to receive an ordered list of all users belonging to a given group.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
@@ -34,16 +34,20 @@ public final class GetUserListOfGroupQuery extends AbstractQuery<List<User>>
 	}
 
 	/**
-	 * Gets an user list of a group
-	 * 
-	 * @param start start of the list
-	 * @param end end of the list
-	 */
-	public GetUserListOfGroupQuery( String groupname, int start, int end )
+    * Gets an user list of a group.
+    * 
+    * @param start
+    *           start of the list
+    * @param end
+    *           end of the list
+    * @throws IllegalArgumentException
+    *            if the groupname is null or empty
+    */
+	public GetUserListOfGroupQuery( String groupname, int start, int end ) throws IllegalArgumentException
 	{
 		if( groupname == null || groupname.length() == 0 ) throw new IllegalArgumentException( "no groupname given" );
-		if( start < 0 ) throw new IllegalArgumentException( "start must be >= 0" );
-		if( end < start ) throw new IllegalArgumentException( "end must be >= 0 and >= start value" );
+		if( start < 0 ) start = 0;
+		if( end < start ) end = start;
 		
 		this.groupname = groupname;
 		this.start = start;
@@ -90,7 +94,10 @@ public final class GetUserListOfGroupQuery extends AbstractQuery<List<User>>
 
 /*
  * $Log$
- * Revision 1.2  2006-06-08 08:02:54  mbork
+ * Revision 1.3  2006-06-08 13:23:47  mbork
+ * improved documentation, added throws statements even for runtimeexceptions, moved abstractquery to prevent users to call execute directly
+ *
+ * Revision 1.2  2006/06/08 08:02:54  mbork
  * fixed erroneous use of generics
  *
  * Revision 1.1  2006/06/06 22:20:54  mbork

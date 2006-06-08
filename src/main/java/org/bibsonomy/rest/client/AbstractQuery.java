@@ -1,8 +1,7 @@
-package org.bibsonomy.rest.client.queries;
+package org.bibsonomy.rest.client;
 
 import java.util.logging.Logger;
 
-import org.bibsonomy.rest.client.Bibsonomy;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.client.worker.HttpWorker;
 import org.bibsonomy.rest.client.worker.impl.DeleteWorker;
@@ -72,7 +71,7 @@ public abstract class AbstractQuery<T>
    }
 
     /**
-       * execute this query. the query blocks until a result from the server is received
+       * execute this query. the query blocks until a result from the server is received.
        * 
        * @param username
        *           username at bibsonomy.org
@@ -81,7 +80,7 @@ public abstract class AbstractQuery<T>
        * @throws ErrorPerformingRequestException
        *            if something fails, eg an ioexception occurs (see the cause)
        */
-   public final void execute( String username, String password ) throws ErrorPerformingRequestException
+   final void execute( String username, String password ) throws ErrorPerformingRequestException
    {
       this.username = username;
       this.password = password;
@@ -91,24 +90,29 @@ public abstract class AbstractQuery<T>
 	protected abstract void doExecute() throws ErrorPerformingRequestException;
 	
 	/**
-     * @return the HTTP status code this query had (only available after execution) 
+     * @return the HTTP status code this query had (only available after execution).
+     * @throws IllegalStateException if query has not yet been executed. 
      */
-    public final int getHttpStatusCode()
+    public final int getHttpStatusCode() throws IllegalStateException
     {
     	if( this.statusCode == -1 ) throw new IllegalStateException( "Execute the query first." );
     	return statusCode;
     }
     
 	/**
-	 * @return the result of this query, if there is one.
-	 * @throws ErrorPerformingRequestException 
-	 */
+    * @return the result of this query, if there is one.
+    * @throws ErrorPerformingRequestException
+    *            if something fails, eg an ioexception occurs (see the cause).
+    */
 	public abstract T getResult() throws ErrorPerformingRequestException;
 }
 
 /*
  * $Log$
- * Revision 1.6  2006-06-08 07:55:23  mbork
+ * Revision 1.1  2006-06-08 13:23:48  mbork
+ * improved documentation, added throws statements even for runtimeexceptions, moved abstractquery to prevent users to call execute directly
+ *
+ * Revision 1.6  2006/06/08 07:55:23  mbork
  * moved classes for clearness
  *
  * Revision 1.5  2006/06/08 07:44:36  mbork

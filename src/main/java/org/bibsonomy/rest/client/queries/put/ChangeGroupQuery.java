@@ -3,13 +3,13 @@ package org.bibsonomy.rest.client.queries.put;
 import java.io.StringWriter;
 
 import org.bibsonomy.model.Group;
+import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
-import org.bibsonomy.rest.client.queries.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.renderer.impl.XMLRenderer;
 
 /**
- * Use this Class to change details of an existing group in bibsonomy
+ * Use this Class to change details of an existing group in bibsonomy.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
@@ -22,16 +22,16 @@ public final class ChangeGroupQuery extends AbstractQuery<String>
 	private String groupName;
 	
 	/**
-	 * Changes details of an existing group in bibsonomy <p/> both groupname of
-	 * the existing group and groupname as parameter for the uri must be
-	 * specified, else an {@link IllegalArgumentException} is thrown.
-	 * 
-	 * @param groupName
-	 *            name of the group to be changed
-	 * @param group
-	 *            new values
-	 */
-	public ChangeGroupQuery( String groupName, Group group )
+    * Changes details of an existing group in bibsonomy.
+    * 
+    * @param groupName
+    *           name of the group to be changed
+    * @param group
+    *           new values
+    * @throws IllegalArgumentException
+    *            if groupname is null or empty, or if the group has no name specified
+    */
+	public ChangeGroupQuery( String groupName, Group group ) throws IllegalArgumentException
    {
       if( groupName == null || groupName.length() == 0 ) throw new IllegalArgumentException( "no groupName given" );
       if( group == null ) throw new IllegalArgumentException( "no group specified" );
@@ -65,7 +65,10 @@ public final class ChangeGroupQuery extends AbstractQuery<String>
 
 /*
  * $Log$
- * Revision 1.2  2006-06-08 08:02:54  mbork
+ * Revision 1.3  2006-06-08 13:23:48  mbork
+ * improved documentation, added throws statements even for runtimeexceptions, moved abstractquery to prevent users to call execute directly
+ *
+ * Revision 1.2  2006/06/08 08:02:54  mbork
  * fixed erroneous use of generics
  *
  * Revision 1.1  2006/06/08 07:41:11  mbork

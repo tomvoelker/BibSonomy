@@ -3,13 +3,13 @@ package org.bibsonomy.rest.client.queries.post;
 import java.io.StringWriter;
 
 import org.bibsonomy.model.User;
+import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
-import org.bibsonomy.rest.client.queries.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.renderer.impl.XMLRenderer;
 
 /**
- * Use this Class to create a new user account in bibsonomy
+ * Use this Class to create a new user account in bibsonomy.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
@@ -21,14 +21,13 @@ public final class CreateUserQuery extends AbstractQuery<String>
 	private User user;
 
 	/**
-	 * Creates a new user account in bibsonomy
-	 * <p/>
-	 * username and password must be specified, else an {@link IllegalArgumentException} is thrown.
+	 * Creates a new user account in bibsonomy.
 	 * 
 	 * @param user
 	 *            the user to be created
+    * @throws IllegalArgumentException if the user is null or the user has neither username nor password specified.
 	 */
-	public CreateUserQuery( User user )
+	public CreateUserQuery( User user ) throws IllegalArgumentException
 	{
 		if( user == null ) throw new IllegalArgumentException( "no user specified" );
 		if( user.getName() == null || user.getName().length() == 0 ) throw new IllegalArgumentException( "no username specified" );
@@ -61,7 +60,10 @@ public final class CreateUserQuery extends AbstractQuery<String>
 
 /*
  * $Log$
- * Revision 1.3  2006-06-08 08:02:54  mbork
+ * Revision 1.4  2006-06-08 13:23:47  mbork
+ * improved documentation, added throws statements even for runtimeexceptions, moved abstractquery to prevent users to call execute directly
+ *
+ * Revision 1.3  2006/06/08 08:02:54  mbork
  * fixed erroneous use of generics
  *
  * Revision 1.2  2006/06/08 07:41:12  mbork

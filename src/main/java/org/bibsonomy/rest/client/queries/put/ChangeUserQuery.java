@@ -3,13 +3,13 @@ package org.bibsonomy.rest.client.queries.put;
 import java.io.StringWriter;
 
 import org.bibsonomy.model.User;
+import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
-import org.bibsonomy.rest.client.queries.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.renderer.impl.XMLRenderer;
 
 /**
- * Use this Class to change details of an existing user account
+ * Use this Class to change details of an existing user account.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
@@ -22,16 +22,16 @@ public final class ChangeUserQuery extends AbstractQuery<String>
 	private String userName;
 
 	/**
-	 * Changes details of an existing user account <p/> both username of the
-	 * existing user and username as parameter for the uri must be specified,
-	 * else an {@link IllegalArgumentException} is thrown.
-	 * 
-	 * @param username
-	 *            the user to change
-	 * @param user
-	 *            new values
-	 */
-	public ChangeUserQuery( String userName, User user )
+    * Changes details of an existing user account.
+    * 
+    * @param username
+    *           the user to change
+    * @param user
+    *           new values
+    * @throws IllegalArgumentException
+    *            if the username is null or empty, or if the user hat no name specified.
+    */
+	public ChangeUserQuery( String userName, User user ) throws IllegalArgumentException
 	{
 		if( userName == null || userName.length() == 0 ) throw new IllegalArgumentException( "no username given" );
 		if( user == null ) throw new IllegalArgumentException( "no user specified" );
@@ -65,7 +65,10 @@ public final class ChangeUserQuery extends AbstractQuery<String>
 
 /*
  * $Log$
- * Revision 1.2  2006-06-08 08:02:54  mbork
+ * Revision 1.3  2006-06-08 13:23:48  mbork
+ * improved documentation, added throws statements even for runtimeexceptions, moved abstractquery to prevent users to call execute directly
+ *
+ * Revision 1.2  2006/06/08 08:02:54  mbork
  * fixed erroneous use of generics
  *
  * Revision 1.1  2006/06/08 07:41:11  mbork
