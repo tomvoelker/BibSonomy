@@ -133,17 +133,17 @@ public class ModelFactory
 
 	private void validateUser( UserType xmlUser )
 	{
-		if( xmlUser.getName() == null ) throw new InvalidXMLException( "username is missing" );
+		if( xmlUser.getName() == null || xmlUser.getName().length() == 0 ) throw new InvalidXMLException( "username is missing" );
 	}
 
 	private void validateGroup( GroupType xmlGroup )
 	{
-		if( xmlGroup.getName() == null ) throw new InvalidXMLException( "groupname is missing" );
+		if( xmlGroup.getName() == null || xmlGroup.getName().length() == 0  ) throw new InvalidXMLException( "groupname is missing" );
 	}
 	
 	private void validateTag( TagType xmlTag )
 	{
-		if( xmlTag.getName() == null ) throw new InvalidXMLException( "tag name is missing" );
+		if( xmlTag.getName() == null || xmlTag.getName().length() == 0 ) throw new InvalidXMLException( "tag name is missing" );
 	}
 	
 	private void validatePost( PostType xmlPost )
@@ -184,7 +184,10 @@ public class ModelFactory
 
 /*
  * $Log$
- * Revision 1.3  2006-06-08 16:14:36  mbork
+ * Revision 1.4  2006-06-09 14:18:44  mbork
+ * implemented xml renderer
+ *
+ * Revision 1.3  2006/06/08 16:14:36  mbork
  * Implemented some XMLRenderer functions, including unit-tests. introduced djunitplugin (see http://works.dgic.co.jp/djunit/index.html)
  *
  * Revision 1.2  2006/06/07 18:22:31  mbork

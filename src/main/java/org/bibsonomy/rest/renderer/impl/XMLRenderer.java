@@ -60,56 +60,7 @@ public class XMLRenderer implements Renderer
 		
 		for( Post post: posts )
 		{
-			PostType xmlPost = new PostType();
-			// set user
-			UserType xmlUser = new UserType();
-			xmlUser.setName( post.getUser().getName() );
-//			xmlUser.setHref( createHrefForUser( post.getUser().getName() ) ); TODO
-			xmlPost.setUser( xmlUser );
-			
-			// add tags
-			for( Tag t: post.getTags() )
-			{
-				TagType xmlTag = new TagType();
-				xmlTag.setName( t.getName() );
-				xmlPost.getTag().add( xmlTag );
-			}
-			
-			// add groups
-			for( Group group: post.getGroups() )
-			{
-				GroupType xmlGroup = new GroupType();
-				xmlGroup.setName( group.getName() );
-//				xmlGroup.setHref( createHrefForGroup() ); // TODO
-				xmlPost.getGroup().add( xmlGroup );
-			}
-			
-			xmlPost.setDescription( post.getDescription() );
-			
-			if( post.getResource() instanceof Bookmark )
-			{
-				Bookmark bookmark = (Bookmark)post.getResource();
-				BookmarkType xmlBookmark = new BookmarkType();
-//				xmlBookmark.setHref( ); // TODO
-				xmlBookmark.setIntrahash( bookmark.getIntraHash() );
-//				xmlBookmark.setTimestamp( ); // TODO
-				xmlBookmark.setUrl( bookmark.getUrl() );
-				xmlPost.setBookmark( xmlBookmark );
-			}
-			if( post.getResource() instanceof BibTex )
-			{
-				BibTex bibtex = (BibTex)post.getResource();
-				BibtexType xmlBibtex = new BibtexType();
-				xmlBibtex.setAuthors( bibtex.getAuthors() );
-				xmlBibtex.setEditors( bibtex.getEditors() );
-//				xmlBibtex.setHref( ); // TODO
-				xmlBibtex.setIntrahash( bibtex.getIntraHash() );
-//				xmlBibtex.setTimestamp(); // TODO
-				xmlBibtex.setTitle( bibtex.getTitle() );
-				xmlBibtex.setType( bibtex.getType() );
-				xmlBibtex.setYear( bibtex.getYear() );
-				xmlPost.setBibtex( xmlBibtex );
-			}
+			PostType xmlPost = createXmlPost( post );
 			xmlPosts.getPost().add( xmlPost );
 		}
 		BibsonomyXML xmlDoc = new BibsonomyXML();
@@ -117,10 +68,72 @@ public class XMLRenderer implements Renderer
 		serialize( writer, xmlDoc );
 	}
 
-	public void serializePost( Writer writer, Post post, ViewModel model )throws InternServerException
-	{
-		// TODO Auto-generated method stub
-	}
+   public void serializePost( Writer writer, Post post, ViewModel model ) throws InternServerException
+   {
+      BibsonomyXML xmlDoc = new BibsonomyXML();
+      xmlDoc.setPost( createXmlPost( post ) );
+      serialize( writer, xmlDoc );
+   }
+
+   private PostType createXmlPost( Post post ) throws InternServerException
+   {
+      PostType xmlPost = new PostType();
+      // set user
+      checkUser( post.getUser() );
+      UserType xmlUser = new UserType();
+      xmlUser.setName( post.getUser().getName() );
+      xmlUser.setHref( createHrefForUser( post.getUser().getName() ) );
+      xmlPost.setUser( xmlUser );
+      
+      // add tags
+      for( Tag t: post.getTags() )
+      {
+         checkTag( t );
+      	TagType xmlTag = new TagType();
+      	xmlTag.setName( t.getName() );
+      	xmlPost.getTag().add( xmlTag );
+      }
+      
+      // add groups
+      for( Group group: post.getGroups() )
+      {
+         checkGroup( group );
+      	GroupType xmlGroup = new GroupType();
+      	xmlGroup.setName( group.getName() );
+      	xmlGroup.setHref( createHrefForGroup( group.getName() ) );
+      	xmlPost.getGroup().add( xmlGroup );
+      }
+      
+      xmlPost.setDescription( post.getDescription() );
+      
+      if( post.getResource() instanceof Bookmark )
+      {
+      	Bookmark bookmark = (Bookmark)post.getResource();
+         checkBookmark( bookmark );
+      	BookmarkType xmlBookmark = new BookmarkType();
+      	// xmlBookmark.setHref( ); // TODO
+      	xmlBookmark.setIntrahash( bookmark.getIntraHash() );
+      	//	xmlBookmark.setTimestamp( ); // TODO
+      	xmlBookmark.setUrl( bookmark.getUrl() );
+      	xmlPost.setBookmark( xmlBookmark );
+      }
+      if( post.getResource() instanceof BibTex )
+      {
+      	BibTex bibtex = (BibTex)post.getResource();
+         checkBibtex( bibtex );
+      	BibtexType xmlBibtex = new BibtexType();
+      	xmlBibtex.setAuthors( bibtex.getAuthors() );
+      	xmlBibtex.setEditors( bibtex.getEditors() );
+      	// xmlBibtex.setHref( ); // TODO
+      	xmlBibtex.setIntrahash( bibtex.getIntraHash() );
+      	//	xmlBibtex.setTimestamp(); // TODO
+      	xmlBibtex.setTitle( bibtex.getTitle() );
+      	xmlBibtex.setType( bibtex.getType() );
+      	xmlBibtex.setYear( bibtex.getYear() );
+      	xmlPost.setBibtex( xmlBibtex );
+      }
+      return xmlPost;
+   }
 
 	public void serializeUsers( Writer writer, Set<User> users, ViewModel viewModel ) throws InternServerException
 	{
@@ -340,6 +353,10 @@ public class XMLRenderer implements Renderer
    
    private void checkUser( User user ) throws InternServerException
    {
+      if( user == null )
+      {
+         throw new InternServerException( "an user is required." );
+      }
       if( user.getName() == null || user.getName().length() == 0 )
       {
          throw new InternServerException( "found an user without username assigned." );
@@ -351,6 +368,30 @@ public class XMLRenderer implements Renderer
       if( group.getName() == null || group.getName().length() == 0 )
       {
          throw new InternServerException( "found a group without username assigned." );
+      }
+   }
+   
+   private void checkBookmark( Bookmark bookmark ) throws InternServerException
+   {
+      if( bookmark.getUrl() == null || bookmark.getUrl().length() == 0 )
+      {
+         throw new InternServerException( "found a bookmark without url assigned." );
+      }
+      if( bookmark.getInterHash() == null || bookmark.getInterHash().length() == 0 )
+      {
+         throw new InternServerException( "found a bookmark without hash assigned." );
+      }
+   }
+
+   private void checkBibtex( BibTex bibtex )
+   {
+      if( bibtex.getTitle() == null || bibtex.getTitle().length() == 0 )
+      {
+         throw new InternServerException( "found a bibtex without title assigned." );
+      }
+      if( bibtex.getInterHash() == null || bibtex.getInterHash().length() == 0 )
+      {
+         throw new InternServerException( "found an bibtex without hash assigned." );
       }
    }
    
@@ -367,7 +408,10 @@ public class XMLRenderer implements Renderer
 
 /*
  * $Log$
- * Revision 1.7  2006-06-08 16:14:36  mbork
+ * Revision 1.8  2006-06-09 14:18:44  mbork
+ * implemented xml renderer
+ *
+ * Revision 1.7  2006/06/08 16:14:36  mbork
  * Implemented some XMLRenderer functions, including unit-tests. introduced djunitplugin (see http://works.dgic.co.jp/djunit/index.html)
  *
  * Revision 1.6  2006/06/08 13:23:48  mbork
