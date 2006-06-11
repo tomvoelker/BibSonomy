@@ -48,7 +48,7 @@ public class GetUserStrategy extends Strategy
 	public void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException
 	{
 		// delegate to the renderer
-		User user = context.getDatabase().getUserDetails( context.getAuthUserName(), userName );
+		User user = context.getLogic().getUserDetails( context.getAuthUserName(), userName );
 		try 
 		{
 			context.getRenderer().serializeUser( response.getWriter(), user, new ViewModel() );
@@ -72,7 +72,10 @@ public class GetUserStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.3  2006-06-05 14:14:11  mbork
+ * Revision 1.4  2006-06-11 15:25:25  mbork
+ * removed gatekeeper, changed authentication process
+ *
+ * Revision 1.3  2006/06/05 14:14:11  mbork
  * implemented GET strategies
  *
  * Revision 1.2  2006/05/24 13:02:44  cschenk

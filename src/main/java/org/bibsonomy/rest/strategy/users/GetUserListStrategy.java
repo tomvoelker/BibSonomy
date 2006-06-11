@@ -53,7 +53,7 @@ public class GetUserListStrategy extends Strategy
 		viewModel.setUrlToNextResources( next );
 		
 		// delegate to the renderer
-		Set<User> users = context.getDatabase().getUsers( context.getAuthUserName(), start, end );
+		Set<User> users = context.getLogic().getUsers( context.getAuthUserName(), start, end );
 		try 
 		{
 			context.getRenderer().serializeUsers( response.getWriter(), users, viewModel );
@@ -77,7 +77,10 @@ public class GetUserListStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.3  2006-06-05 14:14:11  mbork
+ * Revision 1.4  2006-06-11 15:25:25  mbork
+ * removed gatekeeper, changed authentication process
+ *
+ * Revision 1.3  2006/06/05 14:14:11  mbork
  * implemented GET strategies
  *
  * Revision 1.2  2006/05/24 13:02:44  cschenk

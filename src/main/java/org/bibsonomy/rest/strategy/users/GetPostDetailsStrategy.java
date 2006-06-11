@@ -50,7 +50,7 @@ public class GetPostDetailsStrategy extends Strategy
 	public void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException
 	{
 		// delegate to the renderer
-		Post post = context.getDatabase().getPostDetails( context.getAuthUserName(), resourceHash, userName );
+		Post post = context.getLogic().getPostDetails( context.getAuthUserName(), resourceHash, userName );
 		try
 		{
 			context.getRenderer().serializePost( response.getWriter(), post, new ViewModel() );
@@ -75,7 +75,10 @@ public class GetPostDetailsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.3  2006-06-05 14:14:11  mbork
+ * Revision 1.4  2006-06-11 15:25:25  mbork
+ * removed gatekeeper, changed authentication process
+ *
+ * Revision 1.3  2006/06/05 14:14:11  mbork
  * implemented GET strategies
  *
  * Revision 1.2  2006/05/24 13:02:44  cschenk

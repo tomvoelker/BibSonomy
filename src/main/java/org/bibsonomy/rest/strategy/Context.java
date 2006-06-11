@@ -51,9 +51,9 @@ public final class Context
 	private String authUserName;
 
 	/**
-	 * the database
+	 * the logic
 	 */
-	private LogicInterface database;
+	private LogicInterface logic;
 	
 	/**
 	 * the renderer by which the output gets rendered
@@ -71,15 +71,15 @@ public final class Context
 	private RenderingFormat renderingFormat;
 
 	/**
-	 * @param dbAdapter
+	 * @param logic
 	 * @param url
 	 * @param httpMethod httpMethod used in the request: GET, POST, PUT or DELETE
 	 * @param parameterMap map of the attributes
     * @throws BadRequestException if there is no strategy handler for the requested url 
 	 */
-	public Context( LogicInterface dbAdapter, String httpMethod, String url, Map parameterMap ) throws BadRequestException
+	public Context( LogicInterface logic, String httpMethod, String url, Map parameterMap ) throws BadRequestException
 	{
-		this.database = dbAdapter;
+		this.logic = logic;
 		this.httpMethod = HttpMethod.getHttpMethod(httpMethod);
 		this.parameterMap = parameterMap;
 		this.urlTokens = new StringTokenizer( url, "/" );
@@ -239,11 +239,11 @@ public final class Context
 	}
 
 	/**
-	 * @return Returns the database.
+	 * @return Returns the logic.
 	 */
-	public LogicInterface getDatabase()
+	public LogicInterface getLogic()
 	{
-		return database;
+		return logic;
 	}
 
 	/**
@@ -266,7 +266,10 @@ public final class Context
 
 /*
  * $Log$
- * Revision 1.9  2006-06-11 11:51:25  mbork
+ * Revision 1.10  2006-06-11 15:25:25  mbork
+ * removed gatekeeper, changed authentication process
+ *
+ * Revision 1.9  2006/06/11 11:51:25  mbork
  * removed todo strategy, throws exception on wrong request url
  *
  * Revision 1.8  2006/06/07 18:27:04  mbork

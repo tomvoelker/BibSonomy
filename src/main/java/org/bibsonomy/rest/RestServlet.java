@@ -9,10 +9,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.rest.database.TestDatabase;
+import org.bibsonomy.rest.exceptions.AuthenticationException;
 import org.bibsonomy.rest.exceptions.BadRequestException;
 import org.bibsonomy.rest.exceptions.InternServerException;
 import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
+
+import sun.misc.BASE64Decoder;
 
 
 /**
@@ -23,8 +26,7 @@ public final class RestServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
 	
-	private Gatekeeper gatekeeper;
-	private LogicInterface dbAdapter;
+	private LogicInterface logic;
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.GenericServlet#init()
@@ -33,8 +35,7 @@ public final class RestServlet extends HttpServlet
 	public void init() throws ServletException
 	{
 		super.init();
-		gatekeeper = new Gatekeeper();
-		dbAdapter = new TestDatabase();
+		logic = new TestDatabase();
 	}
 	
 	/**
@@ -48,26 +49,32 @@ public final class RestServlet extends HttpServlet
 	 */
 	public void doGet( HttpServletRequest request, HttpServletResponse response ) throws IOException, ServletException
 	{
-		// validate the requesting user's authorization
-		if( !validateAuthorization( request, response ) ) return;
-		
       try
       {
+         // validate the requesting user's authorization
+         String username = validateAuthorization( request, response );
+         
    		// create Context 
-   		Context context = new Context( this.dbAdapter, "GET", request.getPathInfo(),request.getParameterMap() );
-   		context.setAuthUserName( gatekeeper.getLoggedInUsersName( request ) );
+   		Context context = new Context( this.logic, "GET", request.getPathInfo(),request.getParameterMap() );
+   		context.setAuthUserName( username );
 		
 			// validate request
 			context.validate();
 			
 			// set some response headers
 			response.setContentType( context.getContentType( request.getHeader( "User-Agent" ) ) );
-			response.setCharacterEncoding( "UTF-8" );
-			
-			// send answer
-			context.perform( request, response );
-		}
-		catch( InternServerException e )
+         response.setCharacterEncoding( "UTF-8" );
+
+         // send answer
+         response.setStatus( HttpServletResponse.SC_OK );
+         context.perform( request, response );
+      }
+      catch( AuthenticationException e )
+      {
+         response.setHeader( "WWW-Authenticate", "Basic realm=\"BibsonomyWebService\"" );
+         response.sendError( HttpURLConnection.HTTP_UNAUTHORIZED, e.getMessage() );
+      }
+      catch( InternServerException e )
 		{
 			response.sendError( HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage() );
 		}
@@ -134,23 +141,45 @@ public final class RestServlet extends HttpServlet
 	 * @param response
 	 * @throws IOException
 	 */
-	private boolean validateAuthorization( HttpServletRequest request, HttpServletResponse response ) throws IOException
+	private String validateAuthorization( HttpServletRequest request, HttpServletResponse response ) throws AuthenticationException
 	{
-		int code = gatekeeper.isAccessAllowed( request );
-		if( code != HttpURLConnection.HTTP_OK )
-		{
-			response.setHeader( "WWW-Authenticate", "Basic realm=\"BibsonomyWebService\"" );
-			response.sendError( gatekeeper.isAccessAllowed( request ) );
-			return false;
-		}
-		response.setStatus( HttpServletResponse.SC_OK );
-		return true;
-	}
+      String authorization = request.getHeader( "Authorization" );
+      if( authorization == null || !authorization.startsWith( "Basic " ) )
+      {
+         throw new AuthenticationException( "Please authenticate yourself." );
+      }
+      String basicCookie;
+      try
+      {
+         BASE64Decoder decoder = new BASE64Decoder();
+         basicCookie = new String( decoder.decodeBuffer( authorization.substring( 6 ) ) );
+      }
+      catch( IOException e )
+      {
+         throw new BadRequestException( "error decoding authorization header: " + e.toString() );
+      }
+      int i = basicCookie.indexOf( ':' );
+      if( i < 0 )
+      {
+         throw new BadRequestException( "error decoding authorization header: syntax error" );
+      }
+      String username = basicCookie.substring( 0, i );
+      String password = basicCookie.substring( i + 1 );
+
+      if( !logic.validateUserAccess( username, password ) )
+      {
+         throw new AuthenticationException( "Please authenticate yourself." );
+      }
+      return username;
+   }
 }
 
 /*
  * $Log$
- * Revision 1.5  2006-06-11 11:51:25  mbork
+ * Revision 1.6  2006-06-11 15:25:26  mbork
+ * removed gatekeeper, changed authentication process
+ *
+ * Revision 1.5  2006/06/11 11:51:25  mbork
  * removed todo strategy, throws exception on wrong request url
  *
  * Revision 1.4  2006/06/06 17:39:30  mbork

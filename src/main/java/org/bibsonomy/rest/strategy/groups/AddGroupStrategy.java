@@ -38,12 +38,11 @@ public class AddGroupStrategy extends Strategy
 	 * @see org.bibsonomy.rest.strategy.Strategy#perform(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	public void perform( HttpServletRequest request, HttpServletResponse response )
-			throws InternServerException
-	{
-		// TODO Auto-generated method stub
+	public void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException
+   {
+      // TODO Auto-generated method stub
 
-	}
+   }
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.rest.strategy.Strategy#getContentType(java.lang.String)
@@ -59,7 +58,10 @@ public class AddGroupStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.2  2006-05-24 13:02:43  cschenk
+ * Revision 1.3  2006-06-11 15:25:25  mbork
+ * removed gatekeeper, changed authentication process
+ *
+ * Revision 1.2  2006/05/24 13:02:43  cschenk
  * Introduced an enum for the HttpMethod and moved the exceptions
  *
  * Revision 1.1  2006/05/22 10:34:38  mbork

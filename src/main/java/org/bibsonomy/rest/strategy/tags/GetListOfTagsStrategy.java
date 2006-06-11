@@ -69,7 +69,7 @@ public class GetListOfTagsStrategy extends Strategy
 		viewModel.setUrlToNextResources( next );
 		
 		// delegate to the renderer
-		Set<Tag> tags = context.getDatabase().getTags( context.getAuthUserName(), grouping, groupingValue, regex, start, end );
+		Set<Tag> tags = context.getLogic().getTags( context.getAuthUserName(), grouping, groupingValue, regex, start, end );
 		try 
 		{
 			context.getRenderer().serializeTags( response.getWriter(), tags, viewModel );
@@ -93,7 +93,10 @@ public class GetListOfTagsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.3  2006-06-05 14:14:11  mbork
+ * Revision 1.4  2006-06-11 15:25:25  mbork
+ * removed gatekeeper, changed authentication process
+ *
+ * Revision 1.3  2006/06/05 14:14:11  mbork
  * implemented GET strategies
  *
  * Revision 1.2  2006/05/24 13:02:43  cschenk

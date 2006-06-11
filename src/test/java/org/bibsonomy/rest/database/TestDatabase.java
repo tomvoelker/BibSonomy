@@ -49,7 +49,12 @@ public class TestDatabase implements LogicInterface
 		dbResources = new TreeMap<String, Resource>();
 		fillDataBase();
 	}
-
+   
+   public boolean validateUserAccess( String username, String password )
+   {
+      return true;
+   }
+   
 	public Set<User> getUsers( String authUser, int start, int end )
 	{
 		Set<User> users = new HashSet<User>();
@@ -490,12 +495,14 @@ public class TestDatabase implements LogicInterface
 		post_13.getTags().add( weltformelTag );
 		post_13.getTags().add( nachrichtenTag );
 	}
-	
 }
 
 /*
  * $Log$
- * Revision 1.2  2006-06-05 14:14:11  mbork
+ * Revision 1.3  2006-06-11 15:25:25  mbork
+ * removed gatekeeper, changed authentication process
+ *
+ * Revision 1.2  2006/06/05 14:14:11  mbork
  * implemented GET strategies
  *
  * Revision 1.1  2006/05/24 20:05:55  jillig

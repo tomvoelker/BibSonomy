@@ -64,7 +64,7 @@ public class GetPopularPostsStrategy extends Strategy
 		viewModel.setUrlToNextResources( next );
 		
 		// delegate to the renderer
-		Set<Post> posts = context.getDatabase().getPosts( context.getAuthUserName(), resourceType, GroupingEntity.ALL,
+		Set<Post> posts = context.getLogic().getPosts( context.getAuthUserName(), resourceType, GroupingEntity.ALL,
 				"", context.getTags( "tags" ), "", true, false, start, end );
 		try
 		{
@@ -89,7 +89,10 @@ public class GetPopularPostsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.3  2006-06-05 14:14:12  mbork
+ * Revision 1.4  2006-06-11 15:25:25  mbork
+ * removed gatekeeper, changed authentication process
+ *
+ * Revision 1.3  2006/06/05 14:14:12  mbork
  * implemented GET strategies
  *
  * Revision 1.2  2006/05/24 13:02:44  cschenk

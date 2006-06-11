@@ -47,7 +47,7 @@ public class GetGroupStrategy extends Strategy
 	public void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException
 	{
 		// delegate to the renderer
-		Group group = context.getDatabase().getGroupDetails( context.getAuthUserName(), groupName );
+		Group group = context.getLogic().getGroupDetails( context.getAuthUserName(), groupName );
 		try 
 		{
 			context.getRenderer().serializeGroup( response.getWriter(), group, new ViewModel() );
@@ -71,7 +71,10 @@ public class GetGroupStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.1  2006-06-05 14:14:12  mbork
+ * Revision 1.2  2006-06-11 15:25:25  mbork
+ * removed gatekeeper, changed authentication process
+ *
+ * Revision 1.1  2006/06/05 14:14:12  mbork
  * implemented GET strategies
  *
  * Revision 1.2  2006/05/24 13:02:43  cschenk

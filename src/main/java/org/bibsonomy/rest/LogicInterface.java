@@ -156,11 +156,23 @@ public interface LogicInterface
 	 * @return the tag's details, null else
 	 */
 	public abstract Tag getTagDetails( String authUserName, String tagName );
+
+   /**
+    * validates a user's access to bibsonomy.
+    * 
+    * @param username name of the user
+    * @param password password
+    * @return true if the user exists and has the given password
+    */
+   public abstract boolean validateUserAccess( String username, String password );
 }
 
 /*
  * $Log$
- * Revision 1.2  2006-06-05 14:14:12  mbork
+ * Revision 1.3  2006-06-11 15:25:26  mbork
+ * removed gatekeeper, changed authentication process
+ *
+ * Revision 1.2  2006/06/05 14:14:12  mbork
  * implemented GET strategies
  *
  * Revision 1.1  2006/05/24 20:09:03  jillig
