@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<bibsonomyXMLInterchangeDocument>
+    <posts start="0" next="www.bibsonomy.org/foo/bar" end="10">
+        <post>
+            <user name="foo" href="http://localhost:8080/restTomcat/api/users/foo"/>
+            <group name="bar" href="http://localhost:8080/restTomcat/api/groups/bar"/>
+            <tag name="foobar"/>
+            <bibtex title="foo and bar" intrahash="abc" interhash="abc" href="http://localhost:8080/restTomcat/api/users/foo/posts/abc"/>
+        </post>
+        <post>
+            <user name="foo" href="http://localhost:8080/restTomcat/api/users/foo"/>
+            <tag name="foobar"/>
+            <bookmark url="www.foobar.de" intrahash="12345678" interhash="12345678" href="http://localhost:8080/restTomcat/api/users/foo/posts/12345678"/>
+        </post>
+    </posts>
+</bibsonomyXMLInterchangeDocument>

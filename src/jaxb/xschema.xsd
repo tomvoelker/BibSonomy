@@ -128,9 +128,10 @@
 		<xsd:attribute name="url" type="xsd:anyURI" use="required"/>
 
 		<!-- hash value identifying this resource -->
-		<xsd:attribute name="intrahash" type="xsd:string" use="required"/>
+		<xsd:attribute name="interhash" type="xsd:string" use="optional"/>
+		<xsd:attribute name="intrahash" type="xsd:string" use="optional"/>
 		<!-- link to all posts of this bookmark -->
-		<xsd:attribute name="href" type="xsd:anyURI" use="required"/>
+		<xsd:attribute name="href" type="xsd:anyURI" use="optional"/>
 	</xsd:complexType>
 	
 	<!--
@@ -144,9 +145,10 @@
 		<xsd:attribute name="year" type="xsd:string" use="required"/>
 
 		<!-- hash value identifying this resource -->
-		<xsd:attribute name="intrahash" type="xsd:string" use="required"/>
+		<xsd:attribute name="intrahash" type="xsd:string" use="optional"/>
+		<xsd:attribute name="interhash" type="xsd:string" use="optional"/>
 		<!-- link to all posts of this bibtex -->
-		<xsd:attribute name="href" type="xsd:anyURI" use="required"/>
+		<xsd:attribute name="href" type="xsd:anyURI" use="optional"/>
 	</xsd:complexType>
 
 </xsd:schema>

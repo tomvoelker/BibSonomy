@@ -54,10 +54,12 @@ public class XMLRenderer implements Renderer
 	public void serializePosts( Writer writer, Set<Post> posts, ViewModel viewModel ) throws InternServerException
 	{
 		PostsType xmlPosts = new PostsType();
-		xmlPosts.setEnd( BigInteger.valueOf( viewModel.getEndValue() ) );
-		xmlPosts.setNext( viewModel.getUrlToNextResources() );
-		xmlPosts.setStart( BigInteger.valueOf( viewModel.getStartValue() ) );
-		
+      if( viewModel != null )
+      {
+      	xmlPosts.setEnd( BigInteger.valueOf( viewModel.getEndValue() ) );
+      	xmlPosts.setNext( viewModel.getUrlToNextResources() );
+      	xmlPosts.setStart( BigInteger.valueOf( viewModel.getStartValue() ) );
+      }
 		for( Post post: posts )
 		{
 			PostType xmlPost = createXmlPost( post );
@@ -78,6 +80,7 @@ public class XMLRenderer implements Renderer
    private PostType createXmlPost( Post post ) throws InternServerException
    {
       PostType xmlPost = new PostType();
+      checkPost( post );
       // set user
       checkUser( post.getUser() );
       UserType xmlUser = new UserType();
@@ -111,9 +114,9 @@ public class XMLRenderer implements Renderer
       	Bookmark bookmark = (Bookmark)post.getResource();
          checkBookmark( bookmark );
       	BookmarkType xmlBookmark = new BookmarkType();
-      	// xmlBookmark.setHref( ); // TODO
-      	xmlBookmark.setIntrahash( bookmark.getIntraHash() );
-      	//	xmlBookmark.setTimestamp( ); // TODO
+      	xmlBookmark.setHref( createHrefForRessource( post.getUser().getName(), bookmark.getIntraHash() ) );
+      	xmlBookmark.setInterhash( bookmark.getInterHash() );
+         xmlBookmark.setIntrahash( bookmark.getIntraHash() );
       	xmlBookmark.setUrl( bookmark.getUrl() );
       	xmlPost.setBookmark( xmlBookmark );
       }
@@ -124,9 +127,9 @@ public class XMLRenderer implements Renderer
       	BibtexType xmlBibtex = new BibtexType();
       	xmlBibtex.setAuthors( bibtex.getAuthors() );
       	xmlBibtex.setEditors( bibtex.getEditors() );
-      	// xmlBibtex.setHref( ); // TODO
-      	xmlBibtex.setIntrahash( bibtex.getIntraHash() );
-      	//	xmlBibtex.setTimestamp(); // TODO
+      	xmlBibtex.setHref( createHrefForRessource( post.getUser().getName(), bibtex.getIntraHash() ) );
+      	xmlBibtex.setInterhash( bibtex.getInterHash() );
+         xmlBibtex.setIntrahash( bibtex.getIntraHash() );
       	xmlBibtex.setTitle( bibtex.getTitle() );
       	xmlBibtex.setType( bibtex.getType() );
       	xmlBibtex.setYear( bibtex.getYear() );
@@ -135,7 +138,14 @@ public class XMLRenderer implements Renderer
       return xmlPost;
    }
 
-	public void serializeUsers( Writer writer, Set<User> users, ViewModel viewModel ) throws InternServerException
+   private void checkPost( Post post ) throws InternServerException
+   {
+      if( post.getUser() == null ) throw new InternServerException( "error no user assigned!" );
+      if( post.getTags() == null || post.getTags().size() == 0 ) throw new InternServerException( "error no tags assigned!" );
+      if( post.getResource() == null ) throw new InternServerException( "error no ressource assigned!" );
+   }
+
+   public void serializeUsers( Writer writer, Set<User> users, ViewModel viewModel ) throws InternServerException
 	{
 		UsersType xmlUsers = new UsersType();
       if( viewModel != null )
@@ -353,10 +363,6 @@ public class XMLRenderer implements Renderer
    
    private void checkUser( User user ) throws InternServerException
    {
-      if( user == null )
-      {
-         throw new InternServerException( "an user is required." );
-      }
       if( user.getName() == null || user.getName().length() == 0 )
       {
          throw new InternServerException( "found an user without username assigned." );
@@ -377,7 +383,8 @@ public class XMLRenderer implements Renderer
       {
          throw new InternServerException( "found a bookmark without url assigned." );
       }
-      if( bookmark.getInterHash() == null || bookmark.getInterHash().length() == 0 )
+      if( bookmark.getInterHash() == null || bookmark.getInterHash().length() == 0 ||
+            bookmark.getIntraHash() == null || bookmark.getIntraHash().length() == 0 )
       {
          throw new InternServerException( "found a bookmark without hash assigned." );
       }
@@ -389,7 +396,8 @@ public class XMLRenderer implements Renderer
       {
          throw new InternServerException( "found a bibtex without title assigned." );
       }
-      if( bibtex.getInterHash() == null || bibtex.getInterHash().length() == 0 )
+      if( bibtex.getInterHash() == null || bibtex.getInterHash().length() == 0 ||
+            bibtex.getIntraHash() == null || bibtex.getIntraHash().length() == 0 )
       {
          throw new InternServerException( "found an bibtex without hash assigned." );
       }
@@ -404,11 +412,19 @@ public class XMLRenderer implements Renderer
    {
       return Context.API_URL + Context.URL_GROUPS + "/" + name;
    }
+   
+   private String createHrefForRessource( String userName, String intraHash )
+   {
+      return Context.API_URL + Context.URL_USERS + "/" + userName + "/" + Context.URL_POSTS + "/" + intraHash;
+   }
 }
 
 /*
  * $Log$
- * Revision 1.8  2006-06-09 14:18:44  mbork
+ * Revision 1.9  2006-06-11 11:42:47  mbork
+ * added unit tests for rendering posts
+ *
+ * Revision 1.8  2006/06/09 14:18:44  mbork
  * implemented xml renderer
  *
  * Revision 1.7  2006/06/08 16:14:36  mbork

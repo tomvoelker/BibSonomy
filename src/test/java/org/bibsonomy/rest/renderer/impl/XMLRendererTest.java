@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.LinkedHashSet;
+import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -18,7 +19,10 @@ import javax.xml.bind.PropertyException;
 
 import junit.framework.TestCase;
 
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.ViewModel;
@@ -345,7 +349,7 @@ public class XMLRendererTest extends TestCase
    
    public void testSerializeGroup() throws Exception
    {
-      // empty user
+      // empty group
       StringWriter sw = new StringWriter( 100 );
       Group group = new Group();
       try
@@ -360,6 +364,96 @@ public class XMLRendererTest extends TestCase
       group.setDescription( "foo bar :)" );
       renderer.serializeGroup( sw, group, null );
       compareWithFile( sw, "ExampleResultGroup.txt" );
+   }
+   
+   public void testSerializePosts() throws Exception
+   {
+      StringWriter sw = new StringWriter( 100 );
+      Set<Post> posts = new LinkedHashSet<Post>();
+      renderer.serializePosts( sw, posts, null );
+      sw = new StringWriter( 100 );
+      ViewModel vm = new ViewModel();
+      vm.setStartValue( 0 );
+      vm.setEndValue( 10 );
+      vm.setUrlToNextResources( "www.bibsonomy.org/foo/bar" );
+      Post post = new Post();
+      User user = new User();
+      user.setName( "foo" );
+      Group group = new Group();
+      group.setName( "bar" );
+      Tag tag = new Tag();
+      tag.setName( "foobar" );
+      post.setUser( user );
+      post.getGroups().add( group );
+      post.getTags().add( tag );
+      BibTex bib = new BibTex();
+      bib.setTitle( "foo and bar" );
+      bib.setIntraHash( "abc" );
+      bib.setInterHash( "abc" );
+      post.setResource( bib );
+      posts.add( post );
+      Bookmark b = new Bookmark();
+      b.setInterHash( "12345678" );
+      b.setIntraHash( "12345678" );
+      b.setUrl( "www.foobar.de" );
+      Post post2 = new Post();
+      post2.setResource( b );
+      post2.setUser( user );
+      post2.getTags().add( tag );
+      posts.add( post2 );
+      renderer.serializePosts( sw, posts, vm );
+      compareWithFile( sw, "ExampleResultPosts.txt" );
+   }
+   
+   public void testSerializePost() throws Exception
+   {
+      StringWriter sw = new StringWriter( 100 );
+      Post post = new Post();
+      try
+      {
+         renderer.serializePost( sw, post, null );
+         fail( "exception should have been thrown: no user specified" );
+      }
+      catch( InternServerException e )
+      {
+      }
+      User u = new User();
+      u.setName( "foo" );
+      post.setUser( u );
+      try
+      {
+         renderer.serializePost( sw, post, null );
+         fail( "exception should have been thrown: no tags assigned" );
+      }
+      catch( InternServerException e )
+      {
+      }
+      Tag t = new Tag();
+      t.setName( "bar" );
+      post.getTags().add( t );
+      try
+      {
+         renderer.serializePost( sw, post, null );
+         fail( "exception should have been thrown: no ressource assigned" );
+      }
+      catch( InternServerException e )
+      {
+      }
+      Bookmark b = new Bookmark();
+      post.setResource( b );
+      try
+      {
+         renderer.serializePost( sw, post, null );
+         fail( "exception should have been thrown: bookmark has no url assigned" );
+      }
+      catch( InternServerException e )
+      {
+      }
+      b.setUrl( "www.foobar.org" );
+      b.setIntraHash( "aabbcc" );
+      b.setInterHash( "1324356789" );
+      renderer.serializePost( sw, post, null );
+      compareWithFile( sw, "ExampleResultPost.txt" );
    }
    
    private void compareWithFile( StringWriter sw, String filename ) throws IOException
@@ -378,7 +472,10 @@ public class XMLRendererTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.3  2006-06-08 16:14:35  mbork
+ * Revision 1.4  2006-06-11 11:42:47  mbork
+ * added unit tests for rendering posts
+ *
+ * Revision 1.3  2006/06/08 16:14:35  mbork
  * Implemented some XMLRenderer functions, including unit-tests. introduced djunitplugin (see http://works.dgic.co.jp/djunit/index.html)
  *
  * Revision 1.2  2006/06/07 19:37:28  mbork
