@@ -51,12 +51,12 @@ public final class RestServlet extends HttpServlet
 		// validate the requesting user's authorization
 		if( !validateAuthorization( request, response ) ) return;
 		
-		// create Context 
-		Context context = new Context( this.dbAdapter, "GET", request.getPathInfo(),request.getParameterMap() );
-		context.setAuthUserName( gatekeeper.getLoggedInUsersName( request ) );
+      try
+      {
+   		// create Context 
+   		Context context = new Context( this.dbAdapter, "GET", request.getPathInfo(),request.getParameterMap() );
+   		context.setAuthUserName( gatekeeper.getLoggedInUsersName( request ) );
 		
-		try
-		{
 			// validate request
 			context.validate();
 			
@@ -150,7 +150,10 @@ public final class RestServlet extends HttpServlet
 
 /*
  * $Log$
- * Revision 1.4  2006-06-06 17:39:30  mbork
+ * Revision 1.5  2006-06-11 11:51:25  mbork
+ * removed todo strategy, throws exception on wrong request url
+ *
+ * Revision 1.4  2006/06/06 17:39:30  mbork
  * implemented a modelfactory which parses incoming xml-requests and then generates the intern model
  *
  * Revision 1.3  2006/05/24 20:09:03  jillig
