@@ -50,7 +50,7 @@ public class GetUserListOfGroupStrategy extends Strategy
 		// setup viewModel
 		int start = context.getIntAttribute( "start", 0 );
 		int end = context.getIntAttribute( "end", 19 );
-		String next = Context.API_URL + "/" + Context.URL_GROUPS + "/" + groupName + "/" + Context.URL_USERS
+		String next = Context.API_URL + Context.URL_GROUPS + "/" + groupName + "/" + Context.URL_USERS
 				+ "?start=" + String.valueOf( end + 1 ) + "&end=" + String.valueOf( end + 10 );
 		
 		ViewModel viewModel = new ViewModel();
@@ -83,7 +83,10 @@ public class GetUserListOfGroupStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.4  2006-06-11 15:25:25  mbork
+ * Revision 1.5  2006-06-13 21:30:40  mbork
+ * implemented unit tests for get-strategies; fixed some minor bugs
+ *
+ * Revision 1.4  2006/06/11 15:25:25  mbork
  * removed gatekeeper, changed authentication process
  *
  * Revision 1.3  2006/06/05 14:14:12  mbork

@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <bibsonomyXMLInterchangeDocument>
-    <user version="0" name="foo" href="http://localhost:8080/restTomcat/api/users/foo"/>
+    <user name="foo" href="http://localhost:8080/restTomcat/api/users/foo"/>
 </bibsonomyXMLInterchangeDocument>

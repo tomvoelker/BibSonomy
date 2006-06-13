@@ -89,7 +89,6 @@ public class TestRestServlet extends TestCase
       
       servlet.doGet( request, response );
       compareWithFile( response.getStringWriter(), "exampleComplexResult1.txt" );
-      
    }
    
    private void compareWithFile( StringWriter sw, String filename ) throws IOException
@@ -102,15 +101,17 @@ public class TestRestServlet extends TestCase
       {
          sb.append( s + "\n" );
       }
-//      assertTrue( "output not as expected", sw.toString().equals( sb.toString() ) );
+      assertTrue( "output not as expected", sw.toString().equals( sb.toString() + "\n" ) );
    }
-
 }
 
 
 /*
  * $Log$
- * Revision 1.1  2006-06-13 18:07:40  mbork
+ * Revision 1.2  2006-06-13 21:30:41  mbork
+ * implemented unit tests for get-strategies; fixed some minor bugs
+ *
+ * Revision 1.1  2006/06/13 18:07:40  mbork
  * introduced unit tests for servlet using null-pattern for request and response. tested to use cactus/ httpunit, but decided not to use them.
  *
  * 

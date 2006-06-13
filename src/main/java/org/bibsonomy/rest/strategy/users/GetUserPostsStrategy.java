@@ -55,7 +55,7 @@ public class GetUserPostsStrategy extends Strategy
 		
 		ResourceType resourceType = ResourceType.getResourceType( context.getStringAttribute( "resourceType", "all" ) );
 		
-		String next = Context.API_URL + "/" + Context.URL_USERS + "/" + userName + "/" + Context.URL_POSTS + "?start="
+		String next = Context.API_URL + Context.URL_USERS + "/" + userName + "/" + Context.URL_POSTS + "?start="
 				+ String.valueOf( end + 1 ) + "&end=" + String.valueOf( end + 10 );
 		
 		if( resourceType != ResourceType.ALL )
@@ -100,7 +100,10 @@ public class GetUserPostsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.4  2006-06-11 15:25:25  mbork
+ * Revision 1.5  2006-06-13 21:30:41  mbork
+ * implemented unit tests for get-strategies; fixed some minor bugs
+ *
+ * Revision 1.4  2006/06/11 15:25:25  mbork
  * removed gatekeeper, changed authentication process
  *
  * Revision 1.3  2006/06/05 14:14:11  mbork

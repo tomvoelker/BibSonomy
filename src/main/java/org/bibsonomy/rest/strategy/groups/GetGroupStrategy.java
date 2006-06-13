@@ -37,7 +37,6 @@ public class GetGroupStrategy extends Strategy
 	@Override
 	public void validate() throws ValidationException
 	{
-		// TODO check groupname for existance - or should the request then just return an empty entry?
 		// should be ok for everybody
 	}
 
@@ -76,7 +75,10 @@ public class GetGroupStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.3  2006-06-13 18:07:40  mbork
+ * Revision 1.4  2006-06-13 21:30:40  mbork
+ * implemented unit tests for get-strategies; fixed some minor bugs
+ *
+ * Revision 1.3  2006/06/13 18:07:40  mbork
  * introduced unit tests for servlet using null-pattern for request and response. tested to use cactus/ httpunit, but decided not to use them.
  *
  * Revision 1.2  2006/06/11 15:25:25  mbork

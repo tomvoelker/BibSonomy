@@ -74,14 +74,17 @@ public class GetPostDetailsStrategy extends Strategy
 	@Override
 	public String getContentType( String userAgent )
 	{
-		if( context.apiIsUserAgent( userAgent ) ) return "bibsonomy/posts" + context.getRenderingFormat().toString();
+		if( context.apiIsUserAgent( userAgent ) ) return "bibsonomy/post+" + context.getRenderingFormat().toString();
 		return Context.DEFAULT_CONTENT_TYPE;
 	}
 }
 
 /*
  * $Log$
- * Revision 1.5  2006-06-13 18:07:40  mbork
+ * Revision 1.6  2006-06-13 21:30:41  mbork
+ * implemented unit tests for get-strategies; fixed some minor bugs
+ *
+ * Revision 1.5  2006/06/13 18:07:40  mbork
  * introduced unit tests for servlet using null-pattern for request and response. tested to use cactus/ httpunit, but decided not to use them.
  *
  * Revision 1.4  2006/06/11 15:25:25  mbork

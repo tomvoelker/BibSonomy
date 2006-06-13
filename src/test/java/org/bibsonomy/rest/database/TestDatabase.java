@@ -1,10 +1,10 @@
 package org.bibsonomy.rest.database;
 
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -43,10 +43,11 @@ public class TestDatabase implements LogicInterface
 	
 	public TestDatabase()
 	{
-		dbGroups = new TreeMap<String, Group>();
-		dbUsers = new TreeMap<String, User>();
-		dbTags = new TreeMap<String, Tag>();
-		dbResources = new TreeMap<String, Resource>();
+      // use the linked map because ordering matters for the junit tests..
+		dbGroups = new LinkedHashMap<String, Group>();
+		dbUsers = new LinkedHashMap<String, User>();
+		dbTags = new LinkedHashMap<String, Tag>();
+		dbResources = new LinkedHashMap<String, Resource>();
 		fillDataBase();
 	}
    
@@ -57,14 +58,14 @@ public class TestDatabase implements LogicInterface
    
 	public Set<User> getUsers( String authUser, int start, int end )
 	{
-		Set<User> users = new HashSet<User>();
+		Set<User> users = new LinkedHashSet<User>();
 		users.addAll( dbUsers.values() );
 		return users;
 	}
 
 	public Set<User> getUsers( String authUser, String groupName, int start, int end )
 	{
-		Set<User> users = new HashSet<User>();
+		Set<User> users = new LinkedHashSet<User>();
 		Group group = dbGroups.get( groupName );
 		if( group != null )
 		{
@@ -96,7 +97,9 @@ public class TestDatabase implements LogicInterface
 
 	public Set<Group> getGroups( String string, int start, int end )
 	{
-		return (Set<Group>)dbGroups.values();
+      Set<Group> groups = new LinkedHashSet<Group>();
+      groups.addAll( dbGroups.values() );
+      return groups;
 	}
 
 	public Group getGroupDetails( String authUserName, String groupName )
@@ -109,7 +112,7 @@ public class TestDatabase implements LogicInterface
 	 */
 	public Set<Tag> getTags( String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end )
 	{
-		Set<Tag> tags = new HashSet<Tag>();
+		Set<Tag> tags = new LinkedHashSet<Tag>();
 		switch( grouping )
 		{
 		case VIEWABLE:
@@ -149,7 +152,7 @@ public class TestDatabase implements LogicInterface
 	 */
 	public Set<Post> getPosts( String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, Set<String> tags, String hash, boolean popular, boolean added, int start, int end )
 	{
-		Set<Post> posts = new HashSet<Post>();
+		Set<Post> posts = new LinkedHashSet<Post>();
 		// do grouping stuff
 		switch( grouping )
 		{
@@ -201,22 +204,25 @@ public class TestDatabase implements LogicInterface
 			}
 		}
 		// do tag filtering
-		for( Iterator<Post> it = posts.iterator(); it.hasNext(); )
-		{
-			boolean drin = false;
-			for( Tag tag: ( (Post)it ).getTags() )
-			{
-				for( String searchTag: tags )
-				{
-					if( tag.getName().equals( searchTag ) )
-					{
-						drin = true;
-						break;
-					}
-				}
-				
-			}
-			if( !drin ) it.remove();
+      if( tags.size() > 0 )
+      {
+   		for( Iterator<Post> it = posts.iterator(); it.hasNext(); )
+   		{
+   			boolean drin = false;
+   			for( Tag tag: ( (Post)it.next() ).getTags() )
+   			{
+   				for( String searchTag: tags )
+   				{
+   					if( tag.getName().equals( searchTag ) )
+   					{
+   						drin = true;
+   						break;
+   					}
+   				}
+   				
+   			}
+   			if( !drin ) it.remove();
+         }
 		}
 		return posts;
 	}
@@ -227,9 +233,9 @@ public class TestDatabase implements LogicInterface
 	private void fillDataBase()
 	{
 		// a group
-		Group group = new Group();
-		group.setName( "public" );
-		dbGroups.put( group.getName(), group );
+		Group publicGroup = new Group();
+		publicGroup.setName( "public" );
+		dbGroups.put( publicGroup.getName(), publicGroup );
 		
 		// dbUsers
 		User userManu = new User();
@@ -239,6 +245,7 @@ public class TestDatabase implements LogicInterface
 		userManu.setRealname( "Manuel Bork" );
 		userManu.setTimestamp( System.currentTimeMillis() );
 		dbUsers.put( userManu.getName(), userManu );
+      publicGroup.getUsers().add( userManu );
 		
 		User userAndreas = new User();
 		userAndreas.setEmail( "andreas.hotho@uni-kassel.de" );
@@ -247,6 +254,7 @@ public class TestDatabase implements LogicInterface
 		userAndreas.setRealname( "Andreas Hotho" );
 		userAndreas.setTimestamp( System.currentTimeMillis() );
 		dbUsers.put( userAndreas.getName(), userAndreas );
+      publicGroup.getUsers().add( userAndreas );
 		
 		User userButonic = new User();
 		userButonic.setEmail( "joern.dreyer@uni-kassel.de" );
@@ -255,7 +263,8 @@ public class TestDatabase implements LogicInterface
 		userButonic.setRealname( "Joern Dreyer" );
 		userButonic.setTimestamp( System.currentTimeMillis() );
 		dbUsers.put( userButonic.getName(), userButonic );
-		
+      publicGroup.getUsers().add( userButonic );
+      
 		// dbTags
 		Tag spiegelTag = new Tag(); 
 		spiegelTag.setName( "spiegel" );
@@ -379,7 +388,7 @@ public class TestDatabase implements LogicInterface
 		post_1.setPostingDate( System.currentTimeMillis() );
 		post_1.setResource( spiegelOnlineResource );
 		post_1.setUser( userManu );
-		post_1.getGroups().add( group );
+		post_1.getGroups().add( publicGroup );
 		post_1.getTags().add( spiegelTag );
 		post_1.getTags().add( nachrichtenTag );
 		
@@ -388,7 +397,7 @@ public class TestDatabase implements LogicInterface
 		post_2.setPostingDate( System.currentTimeMillis() );
 		post_2.setResource( hostingprojectResource );
 		post_2.setUser( userManu );
-		post_2.getGroups().add( group );
+		post_2.getGroups().add( publicGroup );
 		post_2.getTags().add( hostingTag  );
 		
 		Post post_3 = new Post();
@@ -396,7 +405,7 @@ public class TestDatabase implements LogicInterface
 		post_3.setPostingDate( System.currentTimeMillis() );
 		post_3.setResource( klabusterbeereResource );
 		post_3.setUser( userManu );
-		post_3.getGroups().add( group );
+		post_3.getGroups().add( publicGroup );
 		post_3.getTags().add( lustigTag );
 		
 		Post post_4 = new Post();
@@ -404,7 +413,7 @@ public class TestDatabase implements LogicInterface
 		post_4.setPostingDate( System.currentTimeMillis() );
 		post_4.setResource( bildschirmarbeiterResource );
 		post_4.setUser( userManu );
-		post_4.getGroups().add( group );
+		post_4.getGroups().add( publicGroup );
 		post_4.getTags().add( lustigTag );
 		
 		Post post_5 = new Post();
@@ -412,7 +421,7 @@ public class TestDatabase implements LogicInterface
 		post_5.setPostingDate( System.currentTimeMillis() );
 		post_5.setResource( semwebResource );
 		post_5.setUser( userManu );
-		post_5.getGroups().add( group );
+		post_5.getGroups().add( publicGroup );
 		post_5.getTags().add( semwebTag );
 		post_5.getTags().add( vorlesungTag );
 		post_5.getTags().add( ws0506Tag );
@@ -422,7 +431,7 @@ public class TestDatabase implements LogicInterface
 		post_6.setPostingDate( System.currentTimeMillis() );
 		post_6.setResource( butonicResource  );
 		post_6.setUser( userButonic );
-		post_6.getGroups().add( group );
+		post_6.getGroups().add( publicGroup );
 		post_6.getTags().add( mySiteTag  );
 		
 		Post post_7 = new Post();
@@ -430,7 +439,7 @@ public class TestDatabase implements LogicInterface
 		post_7.setPostingDate( System.currentTimeMillis() );
 		post_7.setResource( wowResource );
 		post_7.setUser( userButonic );
-		post_7.getGroups().add( group );
+		post_7.getGroups().add( publicGroup );
 		post_7.getTags().add( wowTag  );
 		
 		Post post_8 = new Post();
@@ -438,7 +447,7 @@ public class TestDatabase implements LogicInterface
 		post_8.setPostingDate( System.currentTimeMillis() );
 		post_8.setResource( dunkleResource );
 		post_8.setUser( userButonic );
-		post_8.getGroups().add( group );
+		post_8.getGroups().add( publicGroup );
 		post_8.getTags().add( wowTag );
 		
 		Post post_9 = new Post();
@@ -446,7 +455,7 @@ public class TestDatabase implements LogicInterface
 		post_9.setPostingDate( System.currentTimeMillis() );
 		post_9.setResource( w3cResource );
 		post_9.setUser( userAndreas  );
-		post_9.getGroups().add( group );
+		post_9.getGroups().add( publicGroup );
 		post_9.getTags().add( semwebTag  );
 
 		Post post_10 = new Post();
@@ -454,7 +463,7 @@ public class TestDatabase implements LogicInterface
 		post_10.setPostingDate( System.currentTimeMillis() );
 		post_10.setResource( wikipediaResource );
 		post_10.setUser( userAndreas  );
-		post_10.getGroups().add( group );
+		post_10.getGroups().add( publicGroup );
 		post_10.getTags().add( semwebTag );
 		
 		Post post_11 = new Post();
@@ -462,7 +471,7 @@ public class TestDatabase implements LogicInterface
 		post_11.setPostingDate( System.currentTimeMillis() );
 		post_11.setResource( kddResource );
 		post_11.setUser( userAndreas  );
-		post_11.getGroups().add( group );
+		post_11.getGroups().add( publicGroup );
 		post_11.getTags().add( lehreTag );
 		post_11.getTags().add( kddTag );
 		
@@ -471,7 +480,7 @@ public class TestDatabase implements LogicInterface
 		post_12.setPostingDate( System.currentTimeMillis() );
 		post_12.setResource( semwebResource );
 		post_12.setUser( userAndreas  );
-		post_12.getGroups().add( group );
+		post_12.getGroups().add( publicGroup );
 		post_12.getTags().add( lehreTag );
 		post_12.getTags().add( semwebTag );
 		
@@ -481,6 +490,7 @@ public class TestDatabase implements LogicInterface
 		bibtexDemo.setAuthors( "Albert Einstein, Leonardo da Vinci" );
 		bibtexDemo.setEditors( "Luke Skywalker, Yoda" );
 		bibtexDemo.setIntraHash( "abcdef0123abcdef0123abcdef012345" );
+      bibtexDemo.setInterHash( "abcdef0123abcdef0123abcdef012345" );
 		bibtexDemo.setTitle( "Die Weltformel" );
 		bibtexDemo.setType( "Paper" );
 		bibtexDemo.setYear( "2006" );
@@ -491,7 +501,7 @@ public class TestDatabase implements LogicInterface
 		post_13.setPostingDate( System.currentTimeMillis() );
 		post_13.setResource( bibtexDemo );
 		post_13.setUser( userManu  );
-		post_13.getGroups().add( group );
+		post_13.getGroups().add( publicGroup );
 		post_13.getTags().add( weltformelTag );
 		post_13.getTags().add( nachrichtenTag );
 	}
@@ -499,7 +509,10 @@ public class TestDatabase implements LogicInterface
 
 /*
  * $Log$
- * Revision 1.3  2006-06-11 15:25:25  mbork
+ * Revision 1.4  2006-06-13 21:30:40  mbork
+ * implemented unit tests for get-strategies; fixed some minor bugs
+ *
+ * Revision 1.3  2006/06/11 15:25:25  mbork
  * removed gatekeeper, changed authentication process
  *
  * Revision 1.2  2006/06/05 14:14:11  mbork

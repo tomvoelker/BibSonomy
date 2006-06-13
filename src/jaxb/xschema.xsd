@@ -44,8 +44,6 @@
 		<xsd:attribute name="password" type="xsd:string"/>
 		<!-- link to details page -->
 		<xsd:attribute name="href" type="xsd:anyURI"/>
-		<!-- something for version control -->
-		<xsd:attribute name="version" type="xsd:long"/>
 	</xsd:complexType>
 
 	<!--
@@ -71,8 +69,6 @@
 		<xsd:attribute name="description" type="xsd:string"/>
 		<!-- link to details page -->
 		<xsd:attribute name="href" type="xsd:anyURI"/>
-		<!-- something for version control -->
-		<xsd:attribute name="version" type="xsd:long"/>
 	</xsd:complexType>
 
 	<!--

@@ -89,7 +89,7 @@ public final class Context
       if( this.strategy == null ) throw new NoSuchResourceException( "The requested resource does not exist: " + url );
 	}
 
-	public void initStrategy()
+	private void initStrategy()
 	{
 		renderingFormat = RenderingFormat.getRenderingFormat( getStringAttribute( "format", "xml" ) );
 		this.renderer = RendererFactory.getRenderer( renderingFormat );
@@ -269,7 +269,10 @@ public final class Context
 
 /*
  * $Log$
- * Revision 1.11  2006-06-13 18:07:39  mbork
+ * Revision 1.12  2006-06-13 21:30:41  mbork
+ * implemented unit tests for get-strategies; fixed some minor bugs
+ *
+ * Revision 1.11  2006/06/13 18:07:39  mbork
  * introduced unit tests for servlet using null-pattern for request and response. tested to use cactus/ httpunit, but decided not to use them.
  *
  * Revision 1.10  2006/06/11 15:25:25  mbork

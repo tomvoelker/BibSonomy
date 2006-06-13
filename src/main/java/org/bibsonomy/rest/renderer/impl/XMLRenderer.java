@@ -178,7 +178,6 @@ public class XMLRenderer implements Renderer
       xmlUser.setHomepage( user.getHomepage() );
       xmlUser.setName( user.getName() );
       xmlUser.setRealname( user.getRealname() );
-      xmlUser.setVersion( user.getTimestamp() );
       xmlUser.setHref( createHrefForUser( user.getName() ) );
       return xmlUser;
    }
@@ -421,7 +420,10 @@ public class XMLRenderer implements Renderer
 
 /*
  * $Log$
- * Revision 1.9  2006-06-11 11:42:47  mbork
+ * Revision 1.10  2006-06-13 21:30:41  mbork
+ * implemented unit tests for get-strategies; fixed some minor bugs
+ *
+ * Revision 1.9  2006/06/11 11:42:47  mbork
  * added unit tests for rendering posts
  *
  * Revision 1.8  2006/06/09 14:18:44  mbork
