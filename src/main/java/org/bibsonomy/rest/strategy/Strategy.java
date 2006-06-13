@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.rest.enums.GroupingEntity;
 import org.bibsonomy.rest.exceptions.InternServerException;
+import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.ValidationException;
 
 /**
@@ -30,8 +31,9 @@ public abstract class Strategy
 	 * @param request
 	 * @param response
 	 * @throws InternServerException
+    * @throws NoSuchResourceException if one part of the uri doesnt exist (the user, eg) 
 	 */
-	public abstract void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException;
+	public abstract void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException, NoSuchResourceException;
 
 	/**
 	 * @param userAgent
@@ -62,7 +64,10 @@ public abstract class Strategy
 
 /*
  * $Log$
- * Revision 1.3  2006-06-05 14:14:12  mbork
+ * Revision 1.4  2006-06-13 18:07:39  mbork
+ * introduced unit tests for servlet using null-pattern for request and response. tested to use cactus/ httpunit, but decided not to use them.
+ *
+ * Revision 1.3  2006/06/05 14:14:12  mbork
  * implemented GET strategies
  *
  * Revision 1.2  2006/05/24 13:02:44  cschenk

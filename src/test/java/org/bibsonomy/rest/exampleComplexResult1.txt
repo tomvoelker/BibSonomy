@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<bibsonomyXMLInterchangeDocument>
+    <users start="0" next="http://localhost:8080/restTomcat/api/users?start=20&amp;end=29" end="19">
+        <user version="1150221677644" realname="Joern Dreyer" name="butonic" href="http://localhost:8080/restTomcat/api/users/butonic" homepage="www.butonic.org" email="joern.dreyer@uni-kassel.de"/>
+        <user version="1150221677644" realname="Manuel Bork" name="mbork" href="http://localhost:8080/restTomcat/api/users/mbork" homepage="www.manuelbork.de" email="manuel.bork@uni-kassel.de"/>
+        <user version="1150221677644" realname="Andreas Hotho" name="hotho" href="http://localhost:8080/restTomcat/api/users/hotho" homepage="www.bibsonomy.org" email="andreas.hotho@uni-kassel.de"/>
+    </users>
+</bibsonomyXMLInterchangeDocument>

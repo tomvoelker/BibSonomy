@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.InternServerException;
+import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
@@ -47,12 +48,17 @@ public class GetPostDetailsStrategy extends Strategy
 	 * @see org.bibsonomy.rest.strategy.Strategy#perform(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	public void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException
+	public void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException, NoSuchResourceException
 	{
 		// delegate to the renderer
 		Post post = context.getLogic().getPostDetails( context.getAuthUserName(), resourceHash, userName );
-		try
-		{
+      if( post == null )
+      {
+         throw new NoSuchResourceException( "The requested post for the hash '" + resourceHash
+               + "' of the requested user '" + userName + "' does not exist." );
+      }
+      try
+      {
 			context.getRenderer().serializePost( response.getWriter(), post, new ViewModel() );
 		}
 		catch( IOException e )
@@ -75,7 +81,10 @@ public class GetPostDetailsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.4  2006-06-11 15:25:25  mbork
+ * Revision 1.5  2006-06-13 18:07:40  mbork
+ * introduced unit tests for servlet using null-pattern for request and response. tested to use cactus/ httpunit, but decided not to use them.
+ *
+ * Revision 1.4  2006/06/11 15:25:25  mbork
  * removed gatekeeper, changed authentication process
  *
  * Revision 1.3  2006/06/05 14:14:11  mbork

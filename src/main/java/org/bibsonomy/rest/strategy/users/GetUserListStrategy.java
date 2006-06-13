@@ -44,7 +44,7 @@ public class GetUserListStrategy extends Strategy
 		// setup viewModel
 		int start = context.getIntAttribute( "start", 0 );
 		int end = context.getIntAttribute( "end", 19 );
-		String next = Context.API_URL + "/" + Context.URL_USERS + "?start=" + String.valueOf( end + 1 ) + 
+		String next = Context.API_URL + Context.URL_USERS + "?start=" + String.valueOf( end + 1 ) + 
 			"&end=" + String.valueOf( end + 10 );
 		
 		ViewModel viewModel = new ViewModel();
@@ -77,7 +77,10 @@ public class GetUserListStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.4  2006-06-11 15:25:25  mbork
+ * Revision 1.5  2006-06-13 18:07:40  mbork
+ * introduced unit tests for servlet using null-pattern for request and response. tested to use cactus/ httpunit, but decided not to use them.
+ *
+ * Revision 1.4  2006/06/11 15:25:25  mbork
  * removed gatekeeper, changed authentication process
  *
  * Revision 1.3  2006/06/05 14:14:11  mbork

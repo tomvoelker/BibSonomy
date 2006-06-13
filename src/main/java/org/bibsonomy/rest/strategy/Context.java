@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.bibsonomy.rest.LogicInterface;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.enums.RenderingFormat;
-import org.bibsonomy.rest.exceptions.BadRequestException;
 import org.bibsonomy.rest.exceptions.InternServerException;
+import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
@@ -75,27 +75,30 @@ public final class Context
 	 * @param url
 	 * @param httpMethod httpMethod used in the request: GET, POST, PUT or DELETE
 	 * @param parameterMap map of the attributes
-    * @throws BadRequestException if there is no strategy handler for the requested url 
+    * @throws NoSuchResourceException if the requested url doesnt exist 
+    * @throws ValidationException if '/' is requested
 	 */
-	public Context( LogicInterface logic, String httpMethod, String url, Map parameterMap ) throws BadRequestException
+	public Context( LogicInterface logic, String httpMethod, String url, Map parameterMap ) throws ValidationException, NoSuchResourceException
 	{
 		this.logic = logic;
 		this.httpMethod = HttpMethod.getHttpMethod(httpMethod);
 		this.parameterMap = parameterMap;
+      if( url == null || url.equals( "/" ) ) throw new ValidationException( "It is forbidden to access '/'." );
 		this.urlTokens = new StringTokenizer( url, "/" );
 		initStrategy();
-      if( this.strategy == null ) throw new BadRequestException( "There is no handler for the requested url: " + url );
+      if( this.strategy == null ) throw new NoSuchResourceException( "The requested resource does not exist: " + url );
 	}
 
 	public void initStrategy()
 	{
 		renderingFormat = RenderingFormat.getRenderingFormat( getStringAttribute( "format", "xml" ) );
 		this.renderer = RendererFactory.getRenderer( renderingFormat );
-
+      
 		// choose strategy
 		if( urlTokens.countTokens() > 0 )
 		{
-			ContextHandler contextHandler = Context.urlHandlers.get( urlTokens.nextElement() );
+			String nextElement = (String)urlTokens.nextElement();
+         ContextHandler contextHandler = Context.urlHandlers.get( nextElement );
 			if( contextHandler != null )
 			{
 				this.strategy = contextHandler.createStrategy( this, urlTokens, httpMethod );
@@ -266,7 +269,10 @@ public final class Context
 
 /*
  * $Log$
- * Revision 1.10  2006-06-11 15:25:25  mbork
+ * Revision 1.11  2006-06-13 18:07:39  mbork
+ * introduced unit tests for servlet using null-pattern for request and response. tested to use cactus/ httpunit, but decided not to use them.
+ *
+ * Revision 1.10  2006/06/11 15:25:25  mbork
  * removed gatekeeper, changed authentication process
  *
  * Revision 1.9  2006/06/11 11:51:25  mbork

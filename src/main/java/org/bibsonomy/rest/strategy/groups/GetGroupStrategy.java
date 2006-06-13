@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.InternServerException;
+import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
@@ -44,10 +45,14 @@ public class GetGroupStrategy extends Strategy
 	 * @see org.bibsonomy.rest.strategy.Strategy#perform(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	public void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException
+	public void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException, NoSuchResourceException
 	{
 		// delegate to the renderer
 		Group group = context.getLogic().getGroupDetails( context.getAuthUserName(), groupName );
+      if( group == null )
+      {
+         throw new NoSuchResourceException( "The requested group '" + groupName + "' does not exist." );
+      }
 		try 
 		{
 			context.getRenderer().serializeGroup( response.getWriter(), group, new ViewModel() );
@@ -71,7 +76,10 @@ public class GetGroupStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.2  2006-06-11 15:25:25  mbork
+ * Revision 1.3  2006-06-13 18:07:40  mbork
+ * introduced unit tests for servlet using null-pattern for request and response. tested to use cactus/ httpunit, but decided not to use them.
+ *
+ * Revision 1.2  2006/06/11 15:25:25  mbork
  * removed gatekeeper, changed authentication process
  *
  * Revision 1.1  2006/06/05 14:14:12  mbork
