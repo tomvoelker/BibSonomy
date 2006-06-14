@@ -137,7 +137,7 @@ public final class GetPostsQuery extends AbstractQuery<List<Post>>
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException
 	{
-		String url = API_URL + URL_POSTS + "?start=" + start + "&end=" + end;
+		String url = URL_POSTS + "?start=" + start + "&end=" + end;
 		
 		if( resourceType != ResourceType.ALL )
 		{
@@ -184,7 +184,10 @@ public final class GetPostsQuery extends AbstractQuery<List<Post>>
 
 /*
  * $Log$
- * Revision 1.4  2006-06-08 13:23:47  mbork
+ * Revision 1.5  2006-06-14 18:23:21  mbork
+ * refactored usage of username, password and host url
+ *
+ * Revision 1.4  2006/06/08 13:23:47  mbork
  * improved documentation, added throws statements even for runtimeexceptions, moved abstractquery to prevent users to call execute directly
  *
  * Revision 1.3  2006/06/08 08:02:54  mbork

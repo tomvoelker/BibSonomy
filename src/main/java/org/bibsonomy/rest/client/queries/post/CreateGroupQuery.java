@@ -54,13 +54,16 @@ public final class CreateGroupQuery extends AbstractQuery<String>
 		executed = true;
 		StringWriter sw = new StringWriter( 100 );
 		XMLRenderer.getInstance().serializeGroup( sw, group, null );
-		result = performRequest( HttpMethod.POST, API_URL + URL_GROUPS, sw.toString() );
+		result = performRequest( HttpMethod.POST, URL_GROUPS, sw.toString() );
 	}
 }
 
 /*
  * $Log$
- * Revision 1.4  2006-06-08 13:23:47  mbork
+ * Revision 1.5  2006-06-14 18:23:21  mbork
+ * refactored usage of username, password and host url
+ *
+ * Revision 1.4  2006/06/08 13:23:47  mbork
  * improved documentation, added throws statements even for runtimeexceptions, moved abstractquery to prevent users to call execute directly
  *
  * Revision 1.3  2006/06/08 08:02:54  mbork

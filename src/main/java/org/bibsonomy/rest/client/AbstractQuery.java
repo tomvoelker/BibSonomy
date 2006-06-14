@@ -20,7 +20,6 @@ public abstract class AbstractQuery<T>
 {
 	public static final Logger LOGGER = Logger.getLogger( Bibsonomy.class.getName() );
 	
-	protected static final String API_URL = "http://localhost:8080/bibsonomy/api/";
 	protected static final String URL_TAGS = "tags";
 	protected static final String URL_USERS = "users";
 	protected static final String URL_GROUPS = "groups";
@@ -30,6 +29,7 @@ public abstract class AbstractQuery<T>
 	
 	private String password;
 	private String username;
+   private String apiURL;
 	private int statusCode = -1;
 
    protected final BibsonomyXML performGetRequest( String url ) throws ErrorPerformingRequestException
@@ -49,17 +49,17 @@ public abstract class AbstractQuery<T>
       {
       case POST:
          worker = new PostWorker( username, password );
-         result = ( (PostWorker)worker ).perform( url, requestBody );
+         result = ( (PostWorker)worker ).perform( apiURL + url, requestBody );
          statusCode = worker.getHttpResult();
          break;
       case DELETE:
          worker = new DeleteWorker( username, password );
-         result = ( (DeleteWorker)worker ).perform( url );
+         result = ( (DeleteWorker)worker ).perform( apiURL + url );
          statusCode = worker.getHttpResult();
          break;
       case PUT:
          worker = new PutWorker( username, password );
-         result = ( (PutWorker)worker ).perform( url, requestBody );
+         result = ( (PutWorker)worker ).perform( apiURL + url, requestBody );
          break;
       case GET:
          throw new UnsupportedOperationException( "use AbstractQuery::performGetRequest( String url)" );
@@ -105,11 +105,22 @@ public abstract class AbstractQuery<T>
     *            if something fails, eg an ioexception occurs (see the cause).
     */
 	public abstract T getResult() throws ErrorPerformingRequestException;
+
+   /**
+    * @param apiURL The apiURL to set.
+    */
+   public void setApiURL( String apiURL )
+   {
+      this.apiURL = apiURL;
+   }
 }
 
 /*
  * $Log$
- * Revision 1.1  2006-06-08 13:23:48  mbork
+ * Revision 1.2  2006-06-14 18:23:22  mbork
+ * refactored usage of username, password and host url
+ *
+ * Revision 1.1  2006/06/08 13:23:48  mbork
  * improved documentation, added throws statements even for runtimeexceptions, moved abstractquery to prevent users to call execute directly
  *
  * Revision 1.6  2006/06/08 07:55:23  mbork

@@ -52,13 +52,16 @@ public final class RemoveUserFromGroupQuery extends AbstractQuery<String>
 	protected void doExecute() throws ErrorPerformingRequestException
 	{
 		executed = true;
-		result = performRequest( HttpMethod.DELETE, API_URL + URL_GROUPS + "/" + groupName+ "/" + URL_USERS + "/" + userName, null );
+		result = performRequest( HttpMethod.DELETE, URL_GROUPS + "/" + groupName+ "/" + URL_USERS + "/" + userName, null );
 	}
 }
 
 /*
  * $Log$
- * Revision 1.5  2006-06-08 13:23:47  mbork
+ * Revision 1.6  2006-06-14 18:23:21  mbork
+ * refactored usage of username, password and host url
+ *
+ * Revision 1.5  2006/06/08 13:23:47  mbork
  * improved documentation, added throws statements even for runtimeexceptions, moved abstractquery to prevent users to call execute directly
  *
  * Revision 1.4  2006/06/08 08:02:54  mbork

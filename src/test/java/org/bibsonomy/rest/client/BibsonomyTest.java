@@ -2,6 +2,8 @@ package org.bibsonomy.rest.client;
 
 import junit.framework.TestCase;
 
+import org.bibsonomy.rest.client.queries.get.GetUserDetailsQuery;
+
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
@@ -17,7 +19,7 @@ public class BibsonomyTest extends TestCase
       }
       catch( IllegalArgumentException e )
       {
-         if( !e.getMessage().equals( "no username given" ) )
+         if( !e.getMessage().equals( "The given username is not valid." ) )
          {
             fail( "wrong exception was thrown" );
          }
@@ -29,18 +31,109 @@ public class BibsonomyTest extends TestCase
       }
       catch( IllegalArgumentException e )
       {
-         if( !e.getMessage().equals( "no password given" ) )
+         if( !e.getMessage().equals( "The given password is not valid." ) )
          {
             fail( "wrong exception was thrown" );
          }
       }
       assertNotNull( "instantiation failed", new Bibsonomy( "user", "pw" ) );
    }
+   
+   public void testSetUsername()
+   {
+      Bibsonomy bib = new Bibsonomy();
+      try
+      {
+         bib.setUsername( "" );
+         fail( "exception should have been thrown" );
+      }
+      catch( IllegalArgumentException e )
+      {
+         if( !e.getMessage().equals( "The given username is not valid." ) )
+         {
+            fail( "wrong exception was thrown" );
+         }
+      }
+      bib.setUsername( "foo" );
+   }
+   
+   public void testSetPassword()
+   {
+      Bibsonomy bib = new Bibsonomy();
+      try
+      {
+         bib.setPassword( "" );
+         fail( "exception should have been thrown" );
+      }
+      catch( IllegalArgumentException e )
+      {
+         if( !e.getMessage().equals( "The given password is not valid." ) )
+         {
+            fail( "wrong exception was thrown" );
+         }
+      }
+      bib.setPassword( "foo" );
+   }
+   
+   public void testSetApiURL()
+   {
+      Bibsonomy bib = new Bibsonomy();
+      try
+      {
+         bib.setApiURL( "" );
+         fail( "exception should have been thrown" );
+      }
+      catch( IllegalArgumentException e )
+      {
+         if( !e.getMessage().equals( "The given apiURL is not valid." ) )
+         {
+            fail( "wrong exception was thrown" );
+         }
+      }
+      try
+      {
+         bib.setApiURL( "/" );
+         fail( "exception should have been thrown" );
+      }
+      catch( IllegalArgumentException e )
+      {
+         if( !e.getMessage().equals( "The given apiURL is not valid." ) )
+         {
+            fail( "wrong exception was thrown" );
+         }
+      }
+      bib.setApiURL( "foo" );
+   }
+   
+   public void testExecuteQuery() throws Exception
+   {
+      Bibsonomy bib = new Bibsonomy();
+      try
+      {
+         bib.executeQuery( new GetUserDetailsQuery( "foo" ) );
+         fail( "exception should have been thrown" );
+      }
+      catch( IllegalStateException e )
+      {
+      }
+      bib.setUsername( "foo" );
+      try
+      {
+         bib.executeQuery( new GetUserDetailsQuery( "foo" ) );
+         fail( "exception should have been thrown" );
+      }
+      catch( IllegalStateException e )
+      {
+      }
+   }
 }
 
 /*
  * $Log$
- * Revision 1.1  2006-06-08 16:14:36  mbork
+ * Revision 1.2  2006-06-14 18:23:21  mbork
+ * refactored usage of username, password and host url
+ *
+ * Revision 1.1  2006/06/08 16:14:36  mbork
  * Implemented some XMLRenderer functions, including unit-tests. introduced djunitplugin (see http://works.dgic.co.jp/djunit/index.html)
  *
  */

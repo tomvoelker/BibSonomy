@@ -115,7 +115,7 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>>
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException
 	{
-		String url = API_URL + URL_TAGS + "?start=" + start + "&end=" + end;
+		String url = URL_TAGS + "?start=" + start + "&end=" + end;
 		switch( grouping )
 		{
 		case USER:
@@ -139,7 +139,10 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>>
 
 /*
  * $Log$
- * Revision 1.3  2006-06-08 13:23:47  mbork
+ * Revision 1.4  2006-06-14 18:23:21  mbork
+ * refactored usage of username, password and host url
+ *
+ * Revision 1.3  2006/06/08 13:23:47  mbork
  * improved documentation, added throws statements even for runtimeexceptions, moved abstractquery to prevent users to call execute directly
  *
  * Revision 1.2  2006/06/08 08:02:54  mbork
