@@ -183,13 +183,13 @@ public class TestDatabase implements LogicInterface
 		case BOOKMARK:
 			for( Iterator<Post> it = posts.iterator(); it.hasNext(); )
 			{
-				if( !( ( (Post)it ).getResource() instanceof Bookmark ) ) it.remove();
+				if( !( ( (Post)it.next() ).getResource() instanceof Bookmark ) ) it.remove();
 			}
 			break;
 		case BIBTEX:
 			for( Iterator<Post> it = posts.iterator(); it.hasNext(); )
 			{
-				if( !( ( (Post)it ).getResource() instanceof BibTex ) ) it.remove();
+				if( !( ( (Post)it.next() ).getResource() instanceof BibTex ) ) it.remove();
 			}
 			break;
 		default: // ALL
@@ -200,7 +200,7 @@ public class TestDatabase implements LogicInterface
 		{
 			for( Iterator<Post> it = posts.iterator(); it.hasNext(); )
 			{
-				if( !( (Post)it ).getResource().getInterHash().equals( hash ) ) it.remove();
+				if( !( (Post)it.next() ).getResource().getInterHash().equals( hash ) ) it.remove();
 			}
 		}
 		// do tag filtering
@@ -509,7 +509,10 @@ public class TestDatabase implements LogicInterface
 
 /*
  * $Log$
- * Revision 1.4  2006-06-13 21:30:40  mbork
+ * Revision 1.5  2006-06-23 20:47:45  mbork
+ * bugfix: wrong usage of iterator
+ *
+ * Revision 1.4  2006/06/13 21:30:40  mbork
  * implemented unit tests for get-strategies; fixed some minor bugs
  *
  * Revision 1.3  2006/06/11 15:25:25  mbork
