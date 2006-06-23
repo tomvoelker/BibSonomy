@@ -43,7 +43,7 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post>
 	 * @see org.bibsonomy.rest.client.queries.AbstractQuery#getResult()
 	 */
 	@Override
-	public Post getResult() throws ErrorPerformingRequestException
+	public Post getResult() throws InvalidXMLException
 	{
 		if( bibsonomyXML == null ) throw new IllegalStateException( "Execute the query first." );
 
@@ -59,7 +59,7 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post>
 				throw e;
 			}
 		}
-		throw new ErrorPerformingRequestException( "The received document did not contain the requested data." );
+		throw new InvalidXMLException( "The received document did not contain the requested data." );
 	}
 
 	/*
@@ -76,7 +76,14 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post>
 
 /*
  * $Log$
- * Revision 1.4  2006-06-14 18:23:21  mbork
+ * Revision 1.5  2006-06-23 20:50:08  mbork
+ * clientlib:
+ * - added head request
+ * - fixed issues with enums using uppercase letters invoked with toString()
+ * serverlib:
+ * - fixed some issues
+ *
+ * Revision 1.4  2006/06/14 18:23:21  mbork
  * refactored usage of username, password and host url
  *
  * Revision 1.3  2006/06/08 13:23:47  mbork

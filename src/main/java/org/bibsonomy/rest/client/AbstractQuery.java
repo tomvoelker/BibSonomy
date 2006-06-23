@@ -6,9 +6,11 @@ import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.client.worker.HttpWorker;
 import org.bibsonomy.rest.client.worker.impl.DeleteWorker;
 import org.bibsonomy.rest.client.worker.impl.GetWorker;
+import org.bibsonomy.rest.client.worker.impl.HeadWorker;
 import org.bibsonomy.rest.client.worker.impl.PostWorker;
 import org.bibsonomy.rest.client.worker.impl.PutWorker;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.exceptions.InvalidXMLException;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 
 
@@ -35,7 +37,7 @@ public abstract class AbstractQuery<T>
    protected final BibsonomyXML performGetRequest( String url ) throws ErrorPerformingRequestException
    {
       GetWorker worker = new GetWorker( username, password );
-      BibsonomyXML bibsonomyXML = worker.perform( url );
+      BibsonomyXML bibsonomyXML = worker.perform( apiURL + url );
       statusCode = worker.getHttpResult();
       return bibsonomyXML;
    }
@@ -60,6 +62,10 @@ public abstract class AbstractQuery<T>
       case PUT:
          worker = new PutWorker( username, password );
          result = ( (PutWorker)worker ).perform( apiURL + url, requestBody );
+         break;
+      case HEAD:
+         worker = new HeadWorker( username, password );
+         result = ( (HeadWorker)worker ).perform( apiURL + url );
          break;
       case GET:
          throw new UnsupportedOperationException( "use AbstractQuery::performGetRequest( String url)" );
@@ -87,6 +93,10 @@ public abstract class AbstractQuery<T>
       doExecute();
    }
 	
+   /**
+    * @throws ErrorPerformingRequestException
+    *            if something fails, eg an ioexception occurs (see the cause).
+    */
 	protected abstract void doExecute() throws ErrorPerformingRequestException;
 	
 	/**
@@ -101,15 +111,15 @@ public abstract class AbstractQuery<T>
     
 	/**
     * @return the result of this query, if there is one.
-    * @throws ErrorPerformingRequestException
-    *            if something fails, eg an ioexception occurs (see the cause).
+    * @throws InvalidXMLException
+    *            if the received data is not valid.
     */
-	public abstract T getResult() throws ErrorPerformingRequestException;
+	public abstract T getResult() throws InvalidXMLException;
 
    /**
     * @param apiURL The apiURL to set.
     */
-   public void setApiURL( String apiURL )
+   void setApiURL( String apiURL )
    {
       this.apiURL = apiURL;
    }
@@ -117,7 +127,14 @@ public abstract class AbstractQuery<T>
 
 /*
  * $Log$
- * Revision 1.2  2006-06-14 18:23:22  mbork
+ * Revision 1.3  2006-06-23 20:50:09  mbork
+ * clientlib:
+ * - added head request
+ * - fixed issues with enums using uppercase letters invoked with toString()
+ * serverlib:
+ * - fixed some issues
+ *
+ * Revision 1.2  2006/06/14 18:23:22  mbork
  * refactored usage of username, password and host url
  *
  * Revision 1.1  2006/06/08 13:23:48  mbork

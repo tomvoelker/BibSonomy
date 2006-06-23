@@ -125,7 +125,7 @@ public final class GetAddedPostsQuery extends AbstractQuery<List<Post>>
 		
 		if( resourceType != ResourceType.ALL )
 		{
-			url += "&resourcetype=" + resourceType.toString();
+			url += "&resourcetype=" + resourceType.toString().toLowerCase();
 		}
 		
 		switch( grouping )
@@ -147,7 +147,14 @@ public final class GetAddedPostsQuery extends AbstractQuery<List<Post>>
 
 /*
  * $Log$
- * Revision 1.4  2006-06-14 18:23:21  mbork
+ * Revision 1.5  2006-06-23 20:50:08  mbork
+ * clientlib:
+ * - added head request
+ * - fixed issues with enums using uppercase letters invoked with toString()
+ * serverlib:
+ * - fixed some issues
+ *
+ * Revision 1.4  2006/06/14 18:23:21  mbork
  * refactored usage of username, password and host url
  *
  * Revision 1.3  2006/06/08 13:23:47  mbork

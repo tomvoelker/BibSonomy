@@ -11,7 +11,7 @@ import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
  */
 public enum HttpMethod
 {
-	GET, POST, PUT, DELETE;
+	GET, POST, PUT, DELETE, HEAD;
 
 	/**
 	 * Returns the corresponding HttpMethod-enum for the given string.
@@ -36,6 +36,10 @@ public enum HttpMethod
 		{
 			return DELETE;
 		}
+      else if( "head".equals( method ) )
+      {
+         return HEAD;
+      }
 		else
 		{
 			throw new UnsupportedHttpMethodException( httpMethod );
@@ -45,7 +49,14 @@ public enum HttpMethod
 
 /*
  * $Log$
- * Revision 1.5  2006-06-05 14:14:12  mbork
+ * Revision 1.6  2006-06-23 20:50:09  mbork
+ * clientlib:
+ * - added head request
+ * - fixed issues with enums using uppercase letters invoked with toString()
+ * serverlib:
+ * - fixed some issues
+ *
+ * Revision 1.5  2006/06/05 14:14:12  mbork
  * implemented GET strategies
  *
  */

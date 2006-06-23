@@ -55,7 +55,7 @@ public class GetPopularPostsStrategy extends Strategy
 		
 		if( resourceType != ResourceType.ALL )
 		{
-			next += "&resourceType=" + resourceType.toString();
+			next += "&resourceType=" + resourceType.toString().toLowerCase();
 		}
 		
 		ViewModel viewModel = new ViewModel();
@@ -89,7 +89,14 @@ public class GetPopularPostsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.5  2006-06-13 21:30:40  mbork
+ * Revision 1.6  2006-06-23 20:50:09  mbork
+ * clientlib:
+ * - added head request
+ * - fixed issues with enums using uppercase letters invoked with toString()
+ * serverlib:
+ * - fixed some issues
+ *
+ * Revision 1.5  2006/06/13 21:30:40  mbork
  * implemented unit tests for get-strategies; fixed some minor bugs
  *
  * Revision 1.4  2006/06/11 15:25:25  mbork
