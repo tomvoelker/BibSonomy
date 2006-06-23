@@ -12,16 +12,14 @@ public class ErrorPerformingRequestException extends Exception
 	{
 		super( cause );
 	}
-
-	public ErrorPerformingRequestException( String message )
-	{
-		super( message );
-	}
 }
 
 /*
  * $Log$
- * Revision 1.1  2006-06-06 22:20:55  mbork
+ * Revision 1.2  2006-06-23 20:46:18  mbork
+ * removed unneeded constructor
+ *
+ * Revision 1.1  2006/06/06 22:20:55  mbork
  * started implementing client api
  *
  */
