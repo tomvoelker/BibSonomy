@@ -28,7 +28,7 @@ public final class PostWorker extends HttpWorker
 		PostMethod post = new PostMethod( url );
 		post.addRequestHeader( HEADER_AUTHORIZATION, encodeForAuthorization() );
 		post.setDoAuthentication( true );
-		post.setFollowRedirects( true );
+		post.setFollowRedirects( false );
 		
 		post.setRequestEntity( new StringRequestEntity( requestBody ) );
 		
@@ -60,7 +60,10 @@ public final class PostWorker extends HttpWorker
 
 /*
  * $Log$
- * Revision 1.1  2006-06-08 07:55:23  mbork
+ * Revision 1.2  2006-06-28 14:50:24  mbork
+ * bugfix: 'follow redirects' - flag invalid for post and put method
+ *
+ * Revision 1.1  2006/06/08 07:55:23  mbork
  * moved classes for clearness
  *
  * Revision 1.1  2006/06/07 19:37:28  mbork
