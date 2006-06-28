@@ -110,6 +110,7 @@ public class ModelFactory
 			bibtex.setAuthors( xmlBibtex.getAuthors() );
 			bibtex.setEditors( xmlBibtex.getEditors() );
 			bibtex.setIntraHash( xmlBibtex.getIntrahash() );
+         bibtex.setInterHash( xmlBibtex.getIntrahash() );
 			bibtex.setTitle( xmlBibtex.getTitle() );
 			bibtex.setType( xmlBibtex.getType() );
 			bibtex.setYear( xmlBibtex.getYear() );
@@ -184,7 +185,10 @@ public class ModelFactory
 
 /*
  * $Log$
- * Revision 1.4  2006-06-09 14:18:44  mbork
+ * Revision 1.5  2006-06-28 14:50:50  mbork
+ * bugfix: missing interhash
+ *
+ * Revision 1.4  2006/06/09 14:18:44  mbork
  * implemented xml renderer
  *
  * Revision 1.3  2006/06/08 16:14:36  mbork
