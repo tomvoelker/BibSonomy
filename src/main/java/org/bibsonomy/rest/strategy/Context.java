@@ -78,10 +78,10 @@ public final class Context
     * @throws NoSuchResourceException if the requested url doesnt exist 
     * @throws ValidationException if '/' is requested
 	 */
-	public Context( LogicInterface logic, String httpMethod, String url, Map parameterMap ) throws ValidationException, NoSuchResourceException
+	public Context( LogicInterface logic, HttpMethod httpMethod, String url, Map parameterMap ) throws ValidationException, NoSuchResourceException
 	{
 		this.logic = logic;
-		this.httpMethod = HttpMethod.getHttpMethod(httpMethod);
+		this.httpMethod = httpMethod;
 		this.parameterMap = parameterMap;
       if( url == null || url.equals( "/" ) ) throw new ValidationException( "It is forbidden to access '/'." );
 		this.urlTokens = new StringTokenizer( url, "/" );
@@ -269,7 +269,10 @@ public final class Context
 
 /*
  * $Log$
- * Revision 1.12  2006-06-13 21:30:41  mbork
+ * Revision 1.13  2006-06-28 15:36:13  mbork
+ * started implementing other http methods
+ *
+ * Revision 1.12  2006/06/13 21:30:41  mbork
  * implemented unit tests for get-strategies; fixed some minor bugs
  *
  * Revision 1.11  2006/06/13 18:07:39  mbork

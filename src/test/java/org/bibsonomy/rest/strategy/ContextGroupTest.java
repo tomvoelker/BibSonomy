@@ -37,56 +37,56 @@ public class ContextGroupTest extends TestCase
 
 	public void testGetListOfGroupsStrategy() throws Exception
 	{
-		Context c = new Context( db, HttpMethod.GET.toString(), "/groups", new HashMap() );
+		Context c = new Context( db, HttpMethod.GET, "/groups", new HashMap() );
 		assertTrue( "failure initializing GetListOfGroupsStrategy",
 				c.getStrategy() instanceof GetListOfGroupsStrategy );
 	}
 
 	public void testAddGroupStrategy() throws Exception
 	{
-		Context c = new Context( db, HttpMethod.POST.toString(), "/groups", new HashMap() );
+		Context c = new Context( db, HttpMethod.POST, "/groups", new HashMap() );
 		assertTrue( "failure initializing AddGroupStrategy",
 				c.getStrategy() instanceof AddGroupStrategy );
 	}
 
 	public void testGetDetailsOfGroupStrategy() throws Exception
 	{
-		Context c = new Context( db, HttpMethod.GET.toString(), "/groups/testgroup", new HashMap() );
+		Context c = new Context( db, HttpMethod.GET, "/groups/testgroup", new HashMap() );
 		assertTrue( "failure initializing GetGroupStrategy",
 				c.getStrategy() instanceof GetGroupStrategy );
 	}
 
 	public void testUpdateGroupDetailsStrategy() throws Exception
 	{
-		Context c = new Context( db, HttpMethod.PUT.toString(), "/groups/testgroup", new HashMap() );
+		Context c = new Context( db, HttpMethod.PUT, "/groups/testgroup", new HashMap() );
 		assertTrue( "failure initializing UpdateGroupDetailsStrategy",
 				c.getStrategy() instanceof UpdateGroupDetailsStrategy );
 	}
 
 	public void testDeleteGroupStrategy() throws Exception
 	{
-		Context c = new Context( db, HttpMethod.DELETE.toString(), "/groups/testgroup", new HashMap() );
+		Context c = new Context( db, HttpMethod.DELETE, "/groups/testgroup", new HashMap() );
 		assertTrue( "failure initializing DeleteGroupStrategy",
 				c.getStrategy() instanceof DeleteGroupStrategy );
 	}
 
 	public void testGetUserListOfGroupStrategy() throws Exception
 	{
-		Context c = new Context( db, HttpMethod.GET.toString(), "/groups/testgroup/users", new HashMap() );
+		Context c = new Context( db, HttpMethod.GET, "/groups/testgroup/users", new HashMap() );
 		assertTrue( "failure initializing GetUserListOfGroupStrategy",
 				c.getStrategy() instanceof GetUserListOfGroupStrategy );
 	}
 
 	public void testAddUserToGroupStrategy() throws Exception
 	{
-		Context c = new Context( db, HttpMethod.POST.toString(), "/groups/testgroup/users", new HashMap() );
+		Context c = new Context( db, HttpMethod.POST, "/groups/testgroup/users", new HashMap() );
 		assertTrue( "failure initializing AddUserToGroupStrategy",
 				c.getStrategy() instanceof AddUserToGroupStrategy );
 	}
 
 	public void testRemoveUserFromGroupStrategy() throws Exception
 	{
-		Context c = new Context( db, HttpMethod.DELETE.toString(), "/groups/testgroup/users/testuser", 
+		Context c = new Context( db, HttpMethod.DELETE, "/groups/testgroup/users/testuser", 
 				new HashMap() );
 		assertTrue( "failure initializing RemoveUserFromGroupStrategy",
 				c.getStrategy() instanceof RemoveUserFromGroupStrategy );
@@ -95,7 +95,10 @@ public class ContextGroupTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.5  2006-06-05 14:14:12  mbork
+ * Revision 1.6  2006-06-28 15:36:13  mbork
+ * started implementing other http methods
+ *
+ * Revision 1.5  2006/06/05 14:14:12  mbork
  * implemented GET strategies
  *
  * Revision 1.4  2006/05/24 20:05:55  jillig

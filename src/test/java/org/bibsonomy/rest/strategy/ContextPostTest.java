@@ -32,21 +32,21 @@ public class ContextPostTest extends TestCase
 	
 	public void testGetListOfTagsStrategy() throws Exception
 	{
-		Context c = new Context( db, HttpMethod.GET.toString(), "/posts", new HashMap() );
+		Context c = new Context( db, HttpMethod.GET, "/posts", new HashMap() );
 		assertTrue( "failure initializing GetListOfTagsStrategy",
 				c.getStrategy() instanceof GetListOfPostsStrategy );
 	}
 	
 	public void testGetNewPostsStrategy() throws Exception
 	{
-		Context c = new Context( db, HttpMethod.GET.toString(), "/posts/added", new HashMap() );
+		Context c = new Context( db, HttpMethod.GET, "/posts/added", new HashMap() );
 		assertTrue( "failure initializing GetNewPostsStrategy",
 				c.getStrategy() instanceof GetNewPostsStrategy );
 	}
 	
 	public void testGetPopularPostsStrategy() throws Exception
 	{
-		Context c = new Context( db, HttpMethod.GET.toString(), "/posts/popular", new HashMap() );
+		Context c = new Context( db, HttpMethod.GET, "/posts/popular", new HashMap() );
 		assertTrue( "failure initializing GetPopularPostsStrategy",
 				c.getStrategy() instanceof GetPopularPostsStrategy );
 	}
@@ -54,7 +54,10 @@ public class ContextPostTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.3  2006-05-24 20:05:55  jillig
+ * Revision 1.4  2006-06-28 15:36:13  mbork
+ * started implementing other http methods
+ *
+ * Revision 1.3  2006/05/24 20:05:55  jillig
  * TestDatabase verschoben
  *
  * Revision 1.2  2006/05/24 13:02:44  cschenk

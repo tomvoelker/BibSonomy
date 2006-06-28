@@ -7,6 +7,7 @@ import junit.framework.TestCase;
 import org.bibsonomy.rest.NullRequest;
 import org.bibsonomy.rest.NullResponse;
 import org.bibsonomy.rest.database.TestDatabase;
+import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.strategy.Context;
 
 /**
@@ -17,7 +18,7 @@ public class GetGroupStrategyTest extends TestCase
 {
    public void testGetGroupStrategy()
    {
-      Context c = new Context( new TestDatabase(), "get", "/groups/public", new HashMap() );
+      Context c = new Context( new TestDatabase(), HttpMethod.GET, "/groups/public", new HashMap() );
       NullRequest request = new NullRequest();
       NullResponse response = new NullResponse();
       c.perform( request, response );
@@ -31,7 +32,10 @@ public class GetGroupStrategyTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.1  2006-06-13 21:30:40  mbork
+ * Revision 1.2  2006-06-28 15:36:13  mbork
+ * started implementing other http methods
+ *
+ * Revision 1.1  2006/06/13 21:30:40  mbork
  * implemented unit tests for get-strategies; fixed some minor bugs
  *
  */

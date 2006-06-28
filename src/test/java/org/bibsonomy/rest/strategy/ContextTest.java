@@ -31,7 +31,7 @@ public class ContextTest extends TestCase
 	public void testGetSimpleTags()
 	{
 		parameterMap.put( "tags", new String[]{ "foo+bar" } );
-		Context c = new Context( db, HttpMethod.GET.toString(), "/users/egal/posts", parameterMap );
+		Context c = new Context( db, HttpMethod.GET, "/users/egal/posts", parameterMap );
 		
 		Set<String> tags = c.getTags( "tags" );
 		assertTrue( "tag parameters are not correctly splitted!", tags.contains( "foo" ) );
@@ -42,7 +42,7 @@ public class ContextTest extends TestCase
 	public void testGetTags()
 	{
 		parameterMap.put( "tags", new String[]{ "foo+bar+->subtags+-->transitiveSubtags+supertags->+transitiveSupertags-->+<->correlated" } );
-		Context c = new Context( db, HttpMethod.GET.toString(), "/users/egal/posts", parameterMap );
+		Context c = new Context( db, HttpMethod.GET, "/users/egal/posts", parameterMap );
 		
 		Set<String> tags = c.getTags( "tags" );
 		assertTrue( "tag parameters are not correctly splitted!", tags.contains( "foo" ) );
@@ -58,7 +58,10 @@ public class ContextTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.3  2006-06-05 14:14:12  mbork
+ * Revision 1.4  2006-06-28 15:36:13  mbork
+ * started implementing other http methods
+ *
+ * Revision 1.3  2006/06/05 14:14:12  mbork
  * implemented GET strategies
  *
  */

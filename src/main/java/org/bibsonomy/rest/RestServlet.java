@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.rest.database.TestDatabase;
+import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
 import org.bibsonomy.rest.exceptions.BadRequestException;
 import org.bibsonomy.rest.exceptions.InternServerException;
@@ -59,20 +60,77 @@ public final class RestServlet extends HttpServlet
 	 */
 	public void doGet( HttpServletRequest request, HttpServletResponse response ) throws IOException, ServletException
 	{
+      handle( request, response, HttpMethod.GET );
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.servlet.http.HttpServlet#doPut(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
+	 */
+	@Override
+   public void doPut( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
+	{
+      handle( request, response, HttpMethod.PUT );
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.servlet.http.HttpServlet#doDelete(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
+	 */
+	@Override
+   public void doDelete( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
+	{
+      handle( request, response, HttpMethod.DELETE );
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
+	 */
+	@Override
+   public void doPost( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
+	{
+      handle( request, response, HttpMethod.POST );
+	}
+	
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#doHead(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
+	@Override
+   public void doHead( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
+	{
+		validateAuthorization( request.getHeader( "Authorization" ) );
+	}
+
+
+   /**
+    * @param request the servletrequest
+    * @param response the servletresponse
+    * @param method httpMethod to use, see {@link HttpMethod}
+    * @throws IOException
+    */
+   private void handle( HttpServletRequest request, HttpServletResponse response, HttpMethod method ) throws IOException
+   {
       try
       {
          // validate the requesting user's authorization
          String username = validateAuthorization( request.getHeader( "Authorization" ) );
 
-   		// create Context 
-   		Context context = new Context( this.logic, "GET", request.getPathInfo(), request.getParameterMap() );
-   		context.setAuthUserName( username );
+         // create Context 
+         Context context = new Context( this.logic, method, request.getPathInfo(), request.getParameterMap() );
+         context.setAuthUserName( username );
 
-			// validate request
-			context.validate();
+         // validate request
+         context.validate();
 
-			// set some response headers
-			response.setContentType( context.getContentType( request.getHeader( "User-Agent" ) ) );
+         // set some response headers
+         response.setContentType( context.getContentType( request.getHeader( "User-Agent" ) ) );
          response.setCharacterEncoding( "UTF-8" );
 
          // send answer
@@ -85,71 +143,23 @@ public final class RestServlet extends HttpServlet
          response.sendError( HttpURLConnection.HTTP_UNAUTHORIZED, e.getMessage() );
       }
       catch( InternServerException e )
-		{
-			response.sendError( HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage() );
-		}
+      {
+         response.sendError( HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage() );
+      }
       catch( NoSuchResourceException e )
       {
          response.sendError( HttpServletResponse.SC_NOT_FOUND, e.getMessage() );
       }
-		catch( BadRequestException e )
-		{
-			response.sendError( HttpServletResponse.SC_BAD_REQUEST, e.getMessage() );
-		}
-		catch( ValidationException e )
-		{
-			response.sendError( HttpServletResponse.SC_FORBIDDEN, e.getMessage() );
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.servlet.http.HttpServlet#doPut(javax.servlet.http.HttpServletRequest,
-	 *      javax.servlet.http.HttpServletResponse)
-	 */
-	@Override
-   public void doPut( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
-	{
-		validateAuthorization( request.getHeader( "Authorization" ) );
-		super.doPut( request, response );
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.servlet.http.HttpServlet#doDelete(javax.servlet.http.HttpServletRequest,
-	 *      javax.servlet.http.HttpServletResponse)
-	 */
-	@Override
-   public void doDelete( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
-	{
-		validateAuthorization( request.getHeader( "Authorization" ) );
-		super.doDelete( request, response );
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest,
-	 *      javax.servlet.http.HttpServletResponse)
-	 */
-	@Override
-   public void doPost( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
-	{
-		validateAuthorization( request.getHeader( "Authorization" ) );
-		super.doPost( request, response );
-	}
-	
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServlet#doHead(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-	 */
-	@Override
-   public void doHead( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
-	{
-		validateAuthorization( request.getHeader( "Authorization" ) );
-	}
-
+      catch( BadRequestException e )
+      {
+         response.sendError( HttpServletResponse.SC_BAD_REQUEST, e.getMessage() );
+      }
+      catch( ValidationException e )
+      {
+         response.sendError( HttpServletResponse.SC_FORBIDDEN, e.getMessage() );
+      }
+   }
+   
 	/**
 	 * @param authentication Authentication-value of the header's request
 	 * @throws IOException
@@ -189,7 +199,10 @@ public final class RestServlet extends HttpServlet
 
 /*
  * $Log$
- * Revision 1.7  2006-06-13 18:07:40  mbork
+ * Revision 1.8  2006-06-28 15:36:13  mbork
+ * started implementing other http methods
+ *
+ * Revision 1.7  2006/06/13 18:07:40  mbork
  * introduced unit tests for servlet using null-pattern for request and response. tested to use cactus/ httpunit, but decided not to use them.
  *
  * Revision 1.6  2006/06/11 15:25:26  mbork

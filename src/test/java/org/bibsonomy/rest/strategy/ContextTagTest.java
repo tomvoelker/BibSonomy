@@ -31,14 +31,14 @@ public class ContextTagTest extends TestCase
 	
 	public void testGetListOfTagsStrategy() throws Exception
 	{
-		Context c = new Context( db, HttpMethod.GET.toString(), "/tags", new HashMap() );
+		Context c = new Context( db, HttpMethod.GET, "/tags", new HashMap() );
 		assertTrue( "failure initializing GetListOfTagsStrategy",
 				c.getStrategy() instanceof GetListOfTagsStrategy );
 	}
 	
 	public void testGetTagDetailsStrategy() throws Exception
 	{
-		Context c = new Context( db, HttpMethod.GET.toString(), "/tags/wichtig", new HashMap() );
+		Context c = new Context( db, HttpMethod.GET, "/tags/wichtig", new HashMap() );
 		assertTrue( "failure initializing GetTagDetailsStrategy",
 				c.getStrategy() instanceof GetTagDetailsStrategy );
 	}
@@ -46,7 +46,10 @@ public class ContextTagTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.4  2006-05-24 20:05:55  jillig
+ * Revision 1.5  2006-06-28 15:36:13  mbork
+ * started implementing other http methods
+ *
+ * Revision 1.4  2006/05/24 20:05:55  jillig
  * TestDatabase verschoben
  *
  * Revision 1.3  2006/05/24 13:02:44  cschenk

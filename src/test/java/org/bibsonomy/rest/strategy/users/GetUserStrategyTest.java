@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.bibsonomy.rest.NullRequest;
 import org.bibsonomy.rest.NullResponse;
 import org.bibsonomy.rest.database.TestDatabase;
+import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.strategy.Context;
 
 import junit.framework.TestCase;
@@ -17,7 +18,7 @@ public class GetUserStrategyTest extends TestCase
 {
    public void testGetUserStrategy()
    {
-      Context c = new Context( new TestDatabase(), "get", "/users/mbork", new HashMap<String,String>() );
+      Context c = new Context( new TestDatabase(), HttpMethod.GET, "/users/mbork", new HashMap<String,String>() );
       NullRequest request = new NullRequest();
       NullResponse response = new NullResponse();
       c.perform( request, response );
@@ -31,7 +32,10 @@ public class GetUserStrategyTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.1  2006-06-13 21:30:40  mbork
+ * Revision 1.2  2006-06-28 15:36:13  mbork
+ * started implementing other http methods
+ *
+ * Revision 1.1  2006/06/13 21:30:40  mbork
  * implemented unit tests for get-strategies; fixed some minor bugs
  *
  */
