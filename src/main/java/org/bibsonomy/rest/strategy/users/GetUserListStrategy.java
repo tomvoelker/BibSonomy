@@ -44,18 +44,26 @@ public class GetUserListStrategy extends Strategy
 		// setup viewModel
 		int start = context.getIntAttribute( "start", 0 );
 		int end = context.getIntAttribute( "end", 19 );
-		String next = Context.API_URL + Context.URL_USERS + "?start=" + String.valueOf( end + 1 ) + 
-			"&end=" + String.valueOf( end + 10 );
 		
-		ViewModel viewModel = new ViewModel();
-		viewModel.setStartValue( start );
-		viewModel.setEndValue( end );
-		viewModel.setUrlToNextResources( next );
-		
-		// delegate to the renderer
 		Set<User> users = context.getLogic().getUsers( context.getAuthUserName(), start, end );
+      
+      ViewModel viewModel = new ViewModel();
+      if( users.size() < end + 1 )
+      {
+         end = users.size() - 1;
+      }
+      else
+      {
+         String next = Context.API_URL + Context.URL_USERS + "?start=" + String.valueOf( end + 1 ) + 
+         "&end=" + String.valueOf( end + 10 ); 
+         viewModel.setUrlToNextResources( next );
+      }
+      viewModel.setStartValue( start );
+      viewModel.setEndValue( end );
+   
 		try 
 		{
+         // delegate to the renderer
 			context.getRenderer().serializeUsers( response.getWriter(), users, viewModel );
 		} 
 		catch( IOException e ) 
@@ -77,7 +85,10 @@ public class GetUserListStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.5  2006-06-13 18:07:40  mbork
+ * Revision 1.6  2006-07-05 16:27:57  mbork
+ * fixed issues with link to next list of resources
+ *
+ * Revision 1.5  2006/06/13 18:07:40  mbork
  * introduced unit tests for servlet using null-pattern for request and response. tested to use cactus/ httpunit, but decided not to use them.
  *
  * Revision 1.4  2006/06/11 15:25:25  mbork

@@ -57,7 +57,7 @@ public class XMLRenderer implements Renderer
       if( viewModel != null )
       {
       	xmlPosts.setEnd( BigInteger.valueOf( viewModel.getEndValue() ) );
-      	xmlPosts.setNext( viewModel.getUrlToNextResources() );
+         if( viewModel.getUrlToNextResources() != null ) xmlPosts.setNext( viewModel.getUrlToNextResources() );
       	xmlPosts.setStart( BigInteger.valueOf( viewModel.getStartValue() ) );
       }
 		for( Post post: posts )
@@ -151,7 +151,7 @@ public class XMLRenderer implements Renderer
       if( viewModel != null )
       {
    		xmlUsers.setEnd( BigInteger.valueOf( viewModel.getEndValue() ) );
-   		xmlUsers.setNext( viewModel.getUrlToNextResources() );
+   		if( viewModel.getUrlToNextResources() != null ) xmlUsers.setNext( viewModel.getUrlToNextResources() );
    		xmlUsers.setStart( BigInteger.valueOf( viewModel.getStartValue() ) );
       }
 		for( User user: users )
@@ -188,7 +188,7 @@ public class XMLRenderer implements Renderer
       if( viewModel != null )
       {
    		xmlTags.setEnd( BigInteger.valueOf( viewModel.getEndValue() ) );
-   		xmlTags.setNext( viewModel.getUrlToNextResources() );
+         if( viewModel.getUrlToNextResources() != null ) xmlTags.setNext( viewModel.getUrlToNextResources() );
    		xmlTags.setStart( BigInteger.valueOf( viewModel.getStartValue() ) );
       }
 		for( Tag tag: tags )
@@ -223,7 +223,7 @@ public class XMLRenderer implements Renderer
       if( viewModel != null )
       {
          xmlGroups.setEnd( BigInteger.valueOf( viewModel.getEndValue() ) );
-         xmlGroups.setNext( viewModel.getUrlToNextResources() );
+         if( viewModel.getUrlToNextResources() != null ) xmlGroups.setNext( viewModel.getUrlToNextResources() );
          xmlGroups.setStart( BigInteger.valueOf( viewModel.getStartValue() ) );
       }
       for( Group group: groups )
@@ -421,7 +421,10 @@ public class XMLRenderer implements Renderer
 
 /*
  * $Log$
- * Revision 1.11  2006-07-05 15:20:14  mbork
+ * Revision 1.12  2006-07-05 16:27:57  mbork
+ * fixed issues with link to next list of resources
+ *
+ * Revision 1.11  2006/07/05 15:20:14  mbork
  * implemented missing strategies, little changes on datamodel --> alpha :)
  *
  * Revision 1.10  2006/06/13 21:30:41  mbork

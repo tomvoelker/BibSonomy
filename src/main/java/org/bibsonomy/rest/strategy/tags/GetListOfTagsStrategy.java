@@ -46,30 +46,41 @@ public class GetListOfTagsStrategy extends Strategy
 		// setup viewModel
 		int start = context.getIntAttribute( "start", 0 );
 		int end = context.getIntAttribute( "end", 19 );
-		String next = Context.API_URL + Context.URL_TAGS + "?start=" + String.valueOf( end + 1 ) + 
-			"&end=" + String.valueOf( end + 10 );
 
 		GroupingEntity grouping = chooseGroupingEntity();
 		String groupingValue = "";
 		if( grouping != GroupingEntity.ALL )
 		{
 			groupingValue = context.getStringAttribute( grouping.toString().toLowerCase(), "" );
-			next += "&" + grouping.toString().toLowerCase() + "=" + groupingValue; 
 		}
 		
 		String regex = context.getStringAttribute( "filter", "" );
-		if( !"".equals( regex ) )
-		{
-			next += "&" + "filter=" + regex;
-		}
 		
-		ViewModel viewModel = new ViewModel();
+      Set<Tag> tags = context.getLogic().getTags( context.getAuthUserName(), grouping, groupingValue, regex, start, end );
+      
+      ViewModel viewModel = new ViewModel();
+      if( tags.size() < end + 1 )
+      {
+         end = tags.size() - 1;
+      }
+      else
+      {
+         String next = Context.API_URL + Context.URL_TAGS + "?start=" + String.valueOf( end + 1 ) + 
+         "&end=" + String.valueOf( end + 10 );
+         if( grouping != GroupingEntity.ALL )
+         {
+            next += "&" + grouping.toString().toLowerCase() + "=" + groupingValue; 
+         }
+         if( !"".equals( regex ) )
+         {
+            next += "&" + "filter=" + regex;
+         }
+         viewModel.setUrlToNextResources( next );
+      }
 		viewModel.setStartValue( start );
 		viewModel.setEndValue( end );
-		viewModel.setUrlToNextResources( next );
 		
 		// delegate to the renderer
-		Set<Tag> tags = context.getLogic().getTags( context.getAuthUserName(), grouping, groupingValue, regex, start, end );
 		try 
 		{
 			context.getRenderer().serializeTags( response.getWriter(), tags, viewModel );
@@ -93,7 +104,10 @@ public class GetListOfTagsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.7  2006-07-05 15:27:51  mbork
+ * Revision 1.8  2006-07-05 16:27:57  mbork
+ * fixed issues with link to next list of resources
+ *
+ * Revision 1.7  2006/07/05 15:27:51  mbork
  * place constants on left side of comparison
  *
  * Revision 1.6  2006/06/23 20:50:08  mbork

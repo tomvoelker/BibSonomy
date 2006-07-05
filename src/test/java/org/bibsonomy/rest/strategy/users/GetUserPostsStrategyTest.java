@@ -24,7 +24,7 @@ public class GetUserPostsStrategyTest extends TestCase
       c.perform( request, response );
       // just test length, because the detail rendering output is tested by the
       // renderer test
-      assertEquals(  3768, response.getStringWriter().toString().length() );
+      assertEquals(  3685, response.getStringWriter().toString().length() );
       assertEquals( "text/xml", c.getContentType( "firefox" ) );
       assertEquals( "bibsonomy/posts+XML", c.getContentType( Context.API_USER_AGENT ) );
    }
@@ -32,7 +32,10 @@ public class GetUserPostsStrategyTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.2  2006-06-28 15:36:13  mbork
+ * Revision 1.3  2006-07-05 16:27:58  mbork
+ * fixed issues with link to next list of resources
+ *
+ * Revision 1.2  2006/06/28 15:36:13  mbork
  * started implementing other http methods
  *
  * Revision 1.1  2006/06/13 21:30:40  mbork

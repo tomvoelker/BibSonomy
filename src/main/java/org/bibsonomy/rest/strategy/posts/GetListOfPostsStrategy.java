@@ -50,42 +50,49 @@ public class GetListOfPostsStrategy extends Strategy
 		
 		ResourceType resourceType = ResourceType.getResourceType( context.getStringAttribute( "resourcetype", "all" ) );
 		
-		String next = Context.API_URL + Context.URL_POSTS + "?start=" + String.valueOf( end + 1 ) + "&end="
-				+ String.valueOf( end + 10 );
-		
-		if( resourceType != ResourceType.ALL )
-		{
-			next += "&resourcetype=" + resourceType.toString().toLowerCase();
-		}
-		
-		String tags = context.getStringAttribute( "tags", "" );
-		if( !"".equals( tags ) )
-		{
-			next += "&tags=" + tags;
-		}
-		
 		String hash = context.getStringAttribute( "resource", "" );
-		if( !"".equals( hash ) )
-		{
-			next += "&resource=" + hash;
-		}
 		
 		GroupingEntity grouping = chooseGroupingEntity();
 		String groupingValue = "";
 		if( grouping != GroupingEntity.ALL )
 		{
 			groupingValue = context.getStringAttribute( grouping.toString().toLowerCase(), "" );
-			next += "&" + grouping.toString().toLowerCase() + "=" + groupingValue; 
 		}
 		
-		ViewModel viewModel = new ViewModel();
+      Set<Post> posts = context.getLogic().getPosts( context.getAuthUserName(), resourceType, grouping,
+            groupingValue, context.getTags( "tags" ), hash, false, false, start, end );
+      ViewModel viewModel = new ViewModel();
+      if( posts.size() < end + 1 )
+      {
+         end = posts.size() - 1;
+      }
+      else
+      {
+         String next = Context.API_URL + Context.URL_POSTS + "?start=" + String.valueOf( end + 1 ) + "&end="
+         + String.valueOf( end + 10 );
+         if( resourceType != ResourceType.ALL )
+         {
+            next += "&resourcetype=" + resourceType.toString().toLowerCase();
+         }
+         String tags = context.getStringAttribute( "tags", "" );
+         if( !"".equals( tags ) )
+         {
+            next += "&tags=" + tags;
+         }
+         if( !"".equals( hash ) )
+         {
+            next += "&resource=" + hash;
+         }
+         if( grouping != GroupingEntity.ALL )
+         {
+            next += "&" + grouping.toString().toLowerCase() + "=" + groupingValue; 
+         }
+         viewModel.setUrlToNextResources( next );
+      }
 		viewModel.setStartValue( start );
 		viewModel.setEndValue( end );
-		viewModel.setUrlToNextResources( next );
 		
 		// delegate to the renderer
-		Set<Post> posts = context.getLogic().getPosts( context.getAuthUserName(), resourceType, grouping,
-				groupingValue, context.getTags( "tags" ), hash, false, false, start, end );
 		try
 		{
 			context.getRenderer().serializePosts( response.getWriter(), posts, viewModel );
@@ -109,7 +116,10 @@ public class GetListOfPostsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.8  2006-07-05 15:27:51  mbork
+ * Revision 1.9  2006-07-05 16:27:57  mbork
+ * fixed issues with link to next list of resources
+ *
+ * Revision 1.8  2006/07/05 15:27:51  mbork
  * place constants on left side of comparison
  *
  * Revision 1.7  2006/07/05 15:20:14  mbork
