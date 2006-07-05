@@ -141,7 +141,7 @@ public final class GetPostsQuery extends AbstractQuery<List<Post>>
 		
 		if( resourceType != ResourceType.ALL )
 		{
-			url += "&resourceType=" + resourceType.toString().toLowerCase();
+			url += "&resourcetype=" + resourceType.toString().toLowerCase();
 		}
 		
 		switch( grouping )
@@ -184,7 +184,10 @@ public final class GetPostsQuery extends AbstractQuery<List<Post>>
 
 /*
  * $Log$
- * Revision 1.6  2006-06-23 20:50:08  mbork
+ * Revision 1.7  2006-07-05 21:30:56  mbork
+ * bugfix: attributes are lowercase
+ *
+ * Revision 1.6  2006/06/23 20:50:08  mbork
  * clientlib:
  * - added head request
  * - fixed issues with enums using uppercase letters invoked with toString()
