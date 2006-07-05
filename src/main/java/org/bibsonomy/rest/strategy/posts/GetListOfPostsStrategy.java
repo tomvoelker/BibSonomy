@@ -48,14 +48,14 @@ public class GetListOfPostsStrategy extends Strategy
 		int start = context.getIntAttribute( "start", 0 );
 		int end = context.getIntAttribute( "end", 19 );
 		
-		ResourceType resourceType = ResourceType.getResourceType( context.getStringAttribute( "resourceType", "all" ) );
+		ResourceType resourceType = ResourceType.getResourceType( context.getStringAttribute( "resourcetype", "all" ) );
 		
 		String next = Context.API_URL + Context.URL_POSTS + "?start=" + String.valueOf( end + 1 ) + "&end="
 				+ String.valueOf( end + 10 );
 		
 		if( resourceType != ResourceType.ALL )
 		{
-			next += "&resourceType=" + resourceType.toString().toLowerCase();
+			next += "&resourcetype=" + resourceType.toString().toLowerCase();
 		}
 		
 		String tags = context.getStringAttribute( "tags", "" );
@@ -109,7 +109,10 @@ public class GetListOfPostsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.6  2006-06-23 20:50:09  mbork
+ * Revision 1.7  2006-07-05 15:20:14  mbork
+ * implemented missing strategies, little changes on datamodel --> alpha :)
+ *
+ * Revision 1.6  2006/06/23 20:50:09  mbork
  * clientlib:
  * - added head request
  * - fixed issues with enums using uppercase letters invoked with toString()

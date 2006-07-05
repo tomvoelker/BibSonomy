@@ -212,7 +212,8 @@ public class XMLRenderer implements Renderer
       TagType xmlTag = new TagType();
       checkTag( tag );
       xmlTag.setName( tag.getName() );
-      xmlTag.setCount( BigInteger.valueOf( tag.getCount() ) );
+      xmlTag.setGlobalcount( BigInteger.valueOf( tag.getGlobalcount() ) );
+      xmlTag.setUsercount( BigInteger.valueOf( tag.getUsercount() ) );
       return xmlTag;
    }
 
@@ -420,7 +421,10 @@ public class XMLRenderer implements Renderer
 
 /*
  * $Log$
- * Revision 1.10  2006-06-13 21:30:41  mbork
+ * Revision 1.11  2006-07-05 15:20:14  mbork
+ * implemented missing strategies, little changes on datamodel --> alpha :)
+ *
+ * Revision 1.10  2006/06/13 21:30:41  mbork
  * implemented unit tests for get-strategies; fixed some minor bugs
  *
  * Revision 1.9  2006/06/11 11:42:47  mbork

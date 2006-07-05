@@ -165,11 +165,77 @@ public interface LogicInterface
     * @return true if the user exists and has the given password
     */
    public abstract boolean validateUserAccess( String username, String password );
+
+   /**
+    * removes the given user from bibsonomy.
+    * 
+    * @param userName the user to delete
+    */
+   public abstract void deleteUser( String userName );
+
+   /**
+    * removes the given group from bibsonomy.
+    * 
+    * @param groupName the group to delete
+    */
+   public abstract void deleteGroup( String groupName );
+   
+   /**
+    * removes an user from a group.
+    * 
+    * @param groupName the group to change
+    * @param userName the user to remove
+    */
+   public abstract void removeUserFromGroup( String groupName, String userName );
+   
+   /**
+    * removes the given post - identified by the connected resource's hash - from the user.
+    * 
+    * @param userName user who's post is to be removed
+    * @param resourceHash hash of the resource, which is connected to the post to delete 
+    */
+   public abstract void deletePost( String userName, String resourceHash );
+
+   /**
+    * adds/ updates a user in the database.
+    * 
+    * @param user the user to store
+    * @param update true if its an existing user (identified by username), false if its a new user
+    */
+   public abstract void storeUser( User user, boolean update );
+   
+   /**
+    * adds/ updates a post in the database.
+    * 
+    * @param userName name of the user who posts this post
+    * @param post the post to be postet
+    * @param update true if its an existing post (identified by its resource's intrahash), false if its a new post
+    */
+   public abstract void storePost( String userName, Post post, boolean update );
+
+   /**
+    * adds/ updates a group in the database.
+    * 
+    * @param group the group to add
+    * @param update true if its an existing group, false if its a new group
+    */
+   public abstract void storeGroup( Group group, boolean update );
+
+   /**
+    * adds an existing user to an existing group.
+    * 
+    * @param groupName name of the existing group
+    * @param user user to add
+    */
+   public abstract void addUserToGroup( String groupName, String userName );
 }
 
 /*
  * $Log$
- * Revision 1.3  2006-06-11 15:25:26  mbork
+ * Revision 1.4  2006-07-05 15:20:14  mbork
+ * implemented missing strategies, little changes on datamodel --> alpha :)
+ *
+ * Revision 1.3  2006/06/11 15:25:26  mbork
  * removed gatekeeper, changed authentication process
  *
  * Revision 1.2  2006/06/05 14:14:12  mbork

@@ -2,9 +2,8 @@ package org.bibsonomy.model;
 
 
 import java.util.HashSet;
-
-import de.uni_kassel.assocs.SetRole;
 import de.uni_kassel.assocs.impl.DefaultSetRole;
+import de.uni_kassel.assocs.SetRole;
 import de.uni_kassel.assocs.impl.LinkHandler;
 
 /**
@@ -35,6 +34,17 @@ public class Post {
    public long getPostingDate ()
    {
       return this.postingDate;
+   }
+
+   /**
+    * generated API doc for method toString
+    * 
+    **/
+   public String toString ()
+   {
+
+      return getResource().toString();
+
    }
 
    /**
@@ -192,15 +202,5 @@ public class Post {
       this.setUser (null);
       this.getGroups().clear();
    }
-   
-   /**
-    * generated API doc for method toString
-    * 
-    **/
-   public String toString ()
-   {
-      return getResource().toString();
-   }
-
 }
 

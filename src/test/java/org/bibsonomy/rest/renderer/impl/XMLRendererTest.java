@@ -237,7 +237,8 @@ public class XMLRendererTest extends TestCase
       // with multiple tags
       Tag t2 = new Tag();
       t2.setName( "bar" );
-      t2.setCount( 5 );
+      t2.setUsercount( 5 );
+      t2.setGlobalcount( 10 );
       tags.add( t2 );
       sw = new StringWriter( 100 );
       renderer.serializeTags( sw, tags, vm );
@@ -472,7 +473,10 @@ public class XMLRendererTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.4  2006-06-11 11:42:47  mbork
+ * Revision 1.5  2006-07-05 15:20:13  mbork
+ * implemented missing strategies, little changes on datamodel --> alpha :)
+ *
+ * Revision 1.4  2006/06/11 11:42:47  mbork
  * added unit tests for rendering posts
  *
  * Revision 1.3  2006/06/08 16:14:35  mbork

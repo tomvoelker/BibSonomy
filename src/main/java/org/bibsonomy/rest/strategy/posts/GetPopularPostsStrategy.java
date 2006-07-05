@@ -48,24 +48,32 @@ public class GetPopularPostsStrategy extends Strategy
 		int start = context.getIntAttribute( "start", 0 );
 		int end = context.getIntAttribute( "end", 19 );
 		
-		ResourceType resourceType = ResourceType.getResourceType( context.getStringAttribute( "resourceType", "all" ) );
+		ResourceType resourceType = ResourceType.getResourceType( context.getStringAttribute( "resourcetype", "all" ) );
 		
 		String next = Context.API_URL + Context.URL_POSTS + "/" + Context.URL_POSTS_ADDED + "?start="
 				+ String.valueOf( end + 1 ) + "&end=" + String.valueOf( end + 10 );
 		
 		if( resourceType != ResourceType.ALL )
 		{
-			next += "&resourceType=" + resourceType.toString().toLowerCase();
+			next += "&resourcetype=" + resourceType.toString().toLowerCase();
 		}
-		
+      
+      GroupingEntity grouping = chooseGroupingEntity();
+      String groupingValue = "";
+      if( grouping != GroupingEntity.ALL )
+      {
+         groupingValue = context.getStringAttribute( grouping.toString().toLowerCase(), "" );
+         next += "&" + grouping.toString().toLowerCase() + "=" + groupingValue; 
+      }
+      
 		ViewModel viewModel = new ViewModel();
 		viewModel.setStartValue( start );
 		viewModel.setEndValue( end );
 		viewModel.setUrlToNextResources( next );
 		
 		// delegate to the renderer
-		Set<Post> posts = context.getLogic().getPosts( context.getAuthUserName(), resourceType, GroupingEntity.ALL,
-				"", context.getTags( "tags" ), "", true, false, start, end );
+		Set<Post> posts = context.getLogic().getPosts( context.getAuthUserName(), resourceType, grouping,
+            groupingValue, context.getTags( "tags" ), "", true, false, start, end );
 		try
 		{
 			context.getRenderer().serializePosts( response.getWriter(), posts, viewModel );
@@ -89,7 +97,10 @@ public class GetPopularPostsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.6  2006-06-23 20:50:09  mbork
+ * Revision 1.7  2006-07-05 15:20:14  mbork
+ * implemented missing strategies, little changes on datamodel --> alpha :)
+ *
+ * Revision 1.6  2006/06/23 20:50:09  mbork
  * clientlib:
  * - added head request
  * - fixed issues with enums using uppercase letters invoked with toString()

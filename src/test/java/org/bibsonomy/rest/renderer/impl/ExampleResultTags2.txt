@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <bibsonomyXMLInterchangeDocument>
     <tags start="0" next="http://www.bibsonomy.org/foo/bar" end="10">
-        <tag name="foo" count="0"/>
+        <tag usercount="0" name="foo" globalcount="0"/>
     </tags>
 </bibsonomyXMLInterchangeDocument>

@@ -268,62 +268,74 @@ public class TestDatabase implements LogicInterface
 		// dbTags
 		Tag spiegelTag = new Tag(); 
 		spiegelTag.setName( "spiegel" );
-		spiegelTag.setCount( 1 );
+		spiegelTag.setUsercount( 1 );
+      spiegelTag.setGlobalcount( 1 );
 		dbTags.put( spiegelTag.getName(), spiegelTag );
 		
 		Tag hostingTag = new Tag(); 
 		hostingTag.setName( "hosting" );
-		hostingTag.setCount( 1 );
+		hostingTag.setUsercount( 1 );
+      hostingTag.setGlobalcount( 1 );
 		dbTags.put( hostingTag.getName(), hostingTag );
 		
 		Tag lustigTag = new Tag(); 
 		lustigTag.setName( "lustig" );
-		lustigTag.setCount( 2 );
+		lustigTag.setUsercount( 1 );
+      lustigTag.setGlobalcount( 1 );
 		dbTags.put( lustigTag.getName(), lustigTag );
 		
 		Tag nachrichtenTag = new Tag(); 
 		nachrichtenTag.setName( "nachrichten" );
-		nachrichtenTag.setCount( 2 );
+		nachrichtenTag.setUsercount( 1 );
+      nachrichtenTag.setGlobalcount( 2 );
 		dbTags.put( nachrichtenTag.getName(), nachrichtenTag );
 		
 		Tag semwebTag = new Tag(); 
 		semwebTag.setName( "semweb" );
-		semwebTag.setCount( 1 );
+		semwebTag.setUsercount( 1 );
+      semwebTag.setGlobalcount( 4 );
 		dbTags.put( semwebTag.getName(), semwebTag );
 		
 		Tag vorlesungTag = new Tag(); 
 		vorlesungTag.setName( "vorlesung" );
-		vorlesungTag.setCount( 1 );
+		vorlesungTag.setUsercount( 1 );
+      vorlesungTag.setGlobalcount( 1 );
 		dbTags.put( vorlesungTag.getName(), vorlesungTag );
 		
 		Tag ws0506Tag = new Tag();
 		ws0506Tag.setName( "ws0506" );
-		ws0506Tag.setCount( 1 );
+		ws0506Tag.setUsercount( 1 );
+      ws0506Tag.setGlobalcount( 1 );
 		dbTags.put( ws0506Tag.getName(), ws0506Tag );
 		
 		Tag weltformelTag = new Tag();
 		weltformelTag.setName( "weltformel" );
-		weltformelTag.setCount( 1 );
+		weltformelTag.setUsercount( 1 );
+      weltformelTag.setGlobalcount( 1 );
 		dbTags.put( weltformelTag.getName(), weltformelTag );
 		
 		Tag mySiteTag = new Tag(); 
 		mySiteTag.setName( "mySite" );
-		mySiteTag.setCount( 1 );
+		mySiteTag.setUsercount( 1 );
+      mySiteTag.setGlobalcount( 1 );
 		dbTags.put( mySiteTag.getName(), mySiteTag );
 		
 		Tag wowTag = new Tag();
 		wowTag.setName( "wow" );
-		wowTag.setCount( 2 );
+		wowTag.setUsercount( 2 );
+      wowTag.setGlobalcount( 2 );
 		dbTags.put( wowTag.getName(), wowTag );
 		
 		Tag lehreTag = new Tag(); 
 		lehreTag.setName( "lehre" );
-		lehreTag.setCount( 2 );
+		lehreTag.setUsercount( 2 );
+      lehreTag.setGlobalcount( 2 );
 		dbTags.put( lehreTag.getName(), lehreTag );
 		
 		Tag kddTag = new Tag();
 		kddTag.setName( "kdd" );
-		kddTag.setCount( 1 );
+		kddTag.setUsercount( 1 );
+      kddTag.setGlobalcount( 1 );
 		dbTags.put( kddTag.getName(), kddTag );
 		
 		// dbResources
@@ -505,11 +517,62 @@ public class TestDatabase implements LogicInterface
 		post_13.getTags().add( weltformelTag );
 		post_13.getTags().add( nachrichtenTag );
 	}
+
+   public void addUserToGroup( String groupName, String userName )
+   {
+      // TODO Auto-generated method stub
+      
+   }
+
+   public void deleteGroup( String groupName )
+   {
+      // TODO Auto-generated method stub
+      
+   }
+
+   public void deletePost( String userName, String resourceHash )
+   {
+      // TODO Auto-generated method stub
+      
+   }
+
+   public void deleteUser( String userName )
+   {
+      // TODO Auto-generated method stub
+      
+   }
+
+   public void removeUserFromGroup( String groupName, String userName )
+   {
+      // TODO Auto-generated method stub
+      
+   }
+
+   public void storeGroup( Group group, boolean update )
+   {
+      // TODO Auto-generated method stub
+      
+   }
+
+   public void storePost( String userName, Post post, boolean update )
+   {
+      // TODO Auto-generated method stub
+      
+   }
+
+   public void storeUser( User user, boolean update )
+   {
+      // TODO Auto-generated method stub
+      
+   }
 }
 
 /*
  * $Log$
- * Revision 1.5  2006-06-23 20:47:45  mbork
+ * Revision 1.6  2006-07-05 15:20:13  mbork
+ * implemented missing strategies, little changes on datamodel --> alpha :)
+ *
+ * Revision 1.5  2006/06/23 20:47:45  mbork
  * bugfix: wrong usage of iterator
  *
  * Revision 1.4  2006/06/13 21:30:40  mbork

@@ -66,7 +66,8 @@ public class ModelFactory
 		
 		Tag tag = new Tag();
 		tag.setName( xmlTag.getName() );
-      if( xmlTag.getCount() != null ) tag.setCount( xmlTag.getCount().intValue() );
+      if( xmlTag.getGlobalcount() != null ) tag.setGlobalcount( xmlTag.getGlobalcount().intValue() ); //TODO tag count
+      if( xmlTag.getUsercount() != null ) tag.setUsercount( xmlTag.getUsercount().intValue() ); //TODO tag count
 		
 		return tag;
 	}
@@ -185,7 +186,10 @@ public class ModelFactory
 
 /*
  * $Log$
- * Revision 1.5  2006-06-28 14:50:50  mbork
+ * Revision 1.6  2006-07-05 15:20:14  mbork
+ * implemented missing strategies, little changes on datamodel --> alpha :)
+ *
+ * Revision 1.5  2006/06/28 14:50:50  mbork
  * bugfix: missing interhash
  *
  * Revision 1.4  2006/06/09 14:18:44  mbork

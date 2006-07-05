@@ -53,14 +53,14 @@ public class GetUserPostsStrategy extends Strategy
 		int start = context.getIntAttribute( "start", 0 );
 		int end = context.getIntAttribute( "end", 19 );
 		
-		ResourceType resourceType = ResourceType.getResourceType( context.getStringAttribute( "resourceType", "all" ) );
+		ResourceType resourceType = ResourceType.getResourceType( context.getStringAttribute( "resourcetype", "all" ) );
 		
 		String next = Context.API_URL + Context.URL_USERS + "/" + userName + "/" + Context.URL_POSTS + "?start="
 				+ String.valueOf( end + 1 ) + "&end=" + String.valueOf( end + 10 );
 		
 		if( resourceType != ResourceType.ALL )
 		{
-			next += "&resourceType=" + resourceType.toString();
+			next += "&resourcetype=" + resourceType.toString();
 		}
 		
 		String tags = context.getStringAttribute( "tags", "" );
@@ -100,7 +100,10 @@ public class GetUserPostsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.5  2006-06-13 21:30:41  mbork
+ * Revision 1.6  2006-07-05 15:20:13  mbork
+ * implemented missing strategies, little changes on datamodel --> alpha :)
+ *
+ * Revision 1.5  2006/06/13 21:30:41  mbork
  * implemented unit tests for get-strategies; fixed some minor bugs
  *
  * Revision 1.4  2006/06/11 15:25:25  mbork

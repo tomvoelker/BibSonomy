@@ -14,8 +14,10 @@ import org.bibsonomy.rest.strategy.Strategy;
  */
 public class RemoveUserFromGroupStrategy extends Strategy
 {
+	private String groupName;
+   private String userName;
 
-	/**
+   /**
 	 * @param context
 	 * @param userName 
 	 * @param groupName 
@@ -23,7 +25,8 @@ public class RemoveUserFromGroupStrategy extends Strategy
 	public RemoveUserFromGroupStrategy( Context context, String groupName, String userName )
 	{
 		super( context );
-		// TODO Auto-generated constructor stub
+		this.groupName = groupName;
+      this.userName = userName;
 	}
 
 	/* (non-Javadoc)
@@ -32,36 +35,35 @@ public class RemoveUserFromGroupStrategy extends Strategy
 	@Override
 	public void validate() throws ValidationException
 	{
-		// TODO Auto-generated method stub
-
+      // TODO only groupmembers may remove a user from a group?
 	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.rest.strategy.Strategy#perform(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	public void perform( HttpServletRequest request, HttpServletResponse response )
-			throws InternServerException
-	{
-		// TODO Auto-generated method stub
+	public void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException
+   {
+      context.getLogic().removeUserFromGroup( groupName, userName );
+   }
 
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.strategy.Strategy#getContentType(java.lang.String)
-	 */
-	@Override
-	public String getContentType( String userAgent )
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+   /* (non-Javadoc)
+    * @see org.bibsonomy.rest.strategy.Strategy#getContentType(java.lang.String)
+    */
+   @Override
+   public String getContentType( String userAgent )
+   {
+      // TODO no content-contenttype
+      return null;
+   }
 }
 
 /*
  * $Log$
- * Revision 1.2  2006-05-24 13:02:43  cschenk
+ * Revision 1.3  2006-07-05 15:20:13  mbork
+ * implemented missing strategies, little changes on datamodel --> alpha :)
+ *
+ * Revision 1.2  2006/05/24 13:02:43  cschenk
  * Introduced an enum for the HttpMethod and moved the exceptions
  *
  * Revision 1.1  2006/05/22 10:34:38  mbork

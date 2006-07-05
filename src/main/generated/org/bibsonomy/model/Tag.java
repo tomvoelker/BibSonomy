@@ -12,16 +12,16 @@ import de.uni_kassel.assocs.impl.LinkHandler;
  **/
 public class Tag {
 
-   private int count;
+   private int globalcount;
     
-    public void setCount (int value)
+    public void setGlobalcount (int value)
    {
-         this.count = value;
+         this.globalcount = value;
    }
 
-   public int getCount ()
+   public int getGlobalcount ()
    {
-      return this.count;
+      return this.globalcount;
    }
 
    private String name;
@@ -34,6 +34,18 @@ public class Tag {
    public String getName ()
    {
       return this.name;
+   }
+
+   private int usercount;
+    
+    public void setUsercount (int value)
+   {
+         this.usercount = value;
+   }
+
+   public int getUsercount ()
+   {
+      return this.usercount;
    }
 
    /**

@@ -26,11 +26,11 @@
 	-->
 	<xsd:complexType name="UsersType">
 		<xsd:sequence>
-			<xsd:element name="user" type="UserType" minOccurs="1" maxOccurs="unbounded"/>
+			<xsd:element name="user" type="UserType" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
 		<xsd:attribute name="start" type="xsd:positiveInteger" use="required"/>
 		<xsd:attribute name="end" type="xsd:positiveInteger" use="required"/>
-		<xsd:attribute name="next" type="xsd:anyURI" use="required"/>
+		<xsd:attribute name="next" type="xsd:anyURI"/>
 	</xsd:complexType>
 	
 	<!--
@@ -51,11 +51,11 @@
 	-->
 	<xsd:complexType name="GroupsType">
 		<xsd:sequence>
-			<xsd:element name="group" type="GroupType" minOccurs="1" maxOccurs="unbounded"/>
+			<xsd:element name="group" type="GroupType" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
 		<xsd:attribute name="start" type="xsd:positiveInteger" use="required"/>
 		<xsd:attribute name="end" type="xsd:positiveInteger" use="required"/>
-		<xsd:attribute name="next" type="xsd:anyURI" use="required"/>
+		<xsd:attribute name="next" type="xsd:anyURI"/>
 	</xsd:complexType>
 	
 	<!--
@@ -76,16 +76,17 @@
 	-->
 	<xsd:complexType name="TagsType">
 		<xsd:sequence>
-			<xsd:element name="tag" type="TagType" minOccurs="1" maxOccurs="unbounded"/>
+			<xsd:element name="tag" type="TagType" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
 		<xsd:attribute name="start" type="xsd:positiveInteger" use="required"/>
 		<xsd:attribute name="end" type="xsd:positiveInteger" use="required"/>
-		<xsd:attribute name="next" type="xsd:anyURI" use="required"/>
+		<xsd:attribute name="next" type="xsd:anyURI"/>
 	</xsd:complexType>
 	
 	<xsd:complexType name="TagType">
 		<xsd:attribute name="name" type="xsd:string" use="required"/>
-		<xsd:attribute name="count" type="xsd:positiveInteger"/>
+		<xsd:attribute name="globalcount" type="xsd:positiveInteger"/>
+		<xsd:attribute name="usercount" type="xsd:positiveInteger"/>
 	</xsd:complexType>
 
 	<!--
@@ -93,11 +94,11 @@
 	-->
 	<xsd:complexType name="PostsType">
 		<xsd:sequence>
-			<xsd:element name="post" type="PostType" minOccurs="1" maxOccurs="unbounded"/>
+			<xsd:element name="post" type="PostType" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
 		<xsd:attribute name="start" type="xsd:positiveInteger" use="required"/>
 		<xsd:attribute name="end" type="xsd:positiveInteger" use="required"/>
-		<xsd:attribute name="next" type="xsd:anyURI" use="required"/>
+		<xsd:attribute name="next" type="xsd:anyURI"/>
 	</xsd:complexType>
 
 	<!--
@@ -107,14 +108,15 @@
 		<xsd:sequence>
   			<xsd:element name="user" type="UserType"/>
 			<xsd:element name="group" type="GroupType" minOccurs="0" maxOccurs="unbounded"/>
+			<!-- Note: a post must have at least one tag -->
 			<xsd:element name="tag" type="TagType" maxOccurs="unbounded"/>
 			<xsd:choice>
 				<xsd:element name="bookmark" type="BookmarkType"/>
 				<xsd:element name="bibtex" type="BibtexType"/>
 			</xsd:choice>
 		</xsd:sequence>
-		<xsd:attribute name="description" type="xsd:string" use="required"/>
-		<xsd:attribute name="postingdate" type="xsd:dateTime" use="required"/>
+		<xsd:attribute name="description" type="xsd:string"/>
+		<xsd:attribute name="postingdate" type="xsd:dateTime"/>
 	</xsd:complexType>
 	
 	<!--
@@ -124,27 +126,27 @@
 		<xsd:attribute name="url" type="xsd:anyURI" use="required"/>
 
 		<!-- hash value identifying this resource -->
-		<xsd:attribute name="interhash" type="xsd:string" use="optional"/>
-		<xsd:attribute name="intrahash" type="xsd:string" use="optional"/>
+		<xsd:attribute name="interhash" type="xsd:string"/>
+		<xsd:attribute name="intrahash" type="xsd:string"/>
 		<!-- link to all posts of this bookmark -->
-		<xsd:attribute name="href" type="xsd:anyURI" use="optional"/>
+		<xsd:attribute name="href" type="xsd:anyURI"/>
 	</xsd:complexType>
 	
 	<!--
 		a bibtex
 	-->
 	<xsd:complexType name="BibtexType">
-		<xsd:attribute name="authors" type="xsd:string" use="required"/>
-		<xsd:attribute name="editors" type="xsd:string" use="required"/>
-		<xsd:attribute name="title" type="xsd:string" use="required"/>
-		<xsd:attribute name="type" type="xsd:string" use="required"/>
-		<xsd:attribute name="year" type="xsd:string" use="required"/>
+ 		<xsd:attribute name="title" type="xsd:string" use="required"/>
+		<xsd:attribute name="authors" type="xsd:string"/>
+		<xsd:attribute name="editors" type="xsd:string"/>
+		<xsd:attribute name="type" type="xsd:string"/>
+		<xsd:attribute name="year" type="xsd:string"/>
 
 		<!-- hash value identifying this resource -->
-		<xsd:attribute name="intrahash" type="xsd:string" use="optional"/>
-		<xsd:attribute name="interhash" type="xsd:string" use="optional"/>
+		<xsd:attribute name="intrahash" type="xsd:string"/>
+		<xsd:attribute name="interhash" type="xsd:string"/>
 		<!-- link to all posts of this bibtex -->
-		<xsd:attribute name="href" type="xsd:anyURI" use="optional"/>
+		<xsd:attribute name="href" type="xsd:anyURI"/>
 	</xsd:complexType>
 
 </xsd:schema>

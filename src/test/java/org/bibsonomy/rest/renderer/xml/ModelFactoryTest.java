@@ -87,9 +87,11 @@ public class ModelFactoryTest extends TestCase
       xmlTag.setName( "foo" );
       Tag tag = modelFactory.createTag( xmlTag );
       assertTrue( "tag not correctly initailized", tag.getName().equals( "foo" ) );
-      xmlTag.setCount( BigInteger.ONE );
+      xmlTag.setGlobalcount( BigInteger.ONE );
+      xmlTag.setUsercount( BigInteger.TEN );
       tag = modelFactory.createTag( xmlTag );
-      assertTrue( "tag not correctly initailized", tag.getCount() == 1 );
+      assertTrue( "tag not correctly initailized", tag.getGlobalcount() == 1 );
+      assertTrue( "tag not correctly initailized", tag.getUsercount() == 10 );
    }
 	
 	public void testCreatePost()
@@ -155,7 +157,10 @@ public class ModelFactoryTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.2  2006-06-08 16:14:35  mbork
+ * Revision 1.3  2006-07-05 15:20:14  mbork
+ * implemented missing strategies, little changes on datamodel --> alpha :)
+ *
+ * Revision 1.2  2006/06/08 16:14:35  mbork
  * Implemented some XMLRenderer functions, including unit-tests. introduced djunitplugin (see http://works.dgic.co.jp/djunit/index.html)
  *
  * Revision 1.1  2006/06/06 17:39:30  mbork
