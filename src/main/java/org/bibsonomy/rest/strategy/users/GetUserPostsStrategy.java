@@ -64,7 +64,7 @@ public class GetUserPostsStrategy extends Strategy
 		}
 		
 		String tags = context.getStringAttribute( "tags", "" );
-		if( !tags.equals( "" ) )
+		if( !"".equals( tags ) )
 		{
 			next += "&tags=" + tags;
 		}
@@ -100,7 +100,10 @@ public class GetUserPostsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.6  2006-07-05 15:20:13  mbork
+ * Revision 1.7  2006-07-05 15:27:51  mbork
+ * place constants on left side of comparison
+ *
+ * Revision 1.6  2006/07/05 15:20:13  mbork
  * implemented missing strategies, little changes on datamodel --> alpha :)
  *
  * Revision 1.5  2006/06/13 21:30:41  mbork

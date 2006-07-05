@@ -41,13 +41,13 @@ public class ModelFactoryTest extends TestCase
 		}
 		catch( InvalidXMLException e )
 		{
-			if( !e.getMessage().equals( "The body part of the received XML document is not valid: username is missing" ) )
+			if( !"The body part of the received XML document is not valid: username is missing".equals( e.getMessage() ) )
 				fail( "wrong exception thrown: " + e.getMessage() );
 		}
 		// check valid user
 		xmlUser.setName( "test" );
 		User user = modelFactory.createUser( xmlUser );
-		assertTrue( "model not correctly initialized", user.getName().equals( "test" ) );
+		assertTrue( "model not correctly initialized", "test".equals( user.getName() ) );
 	}
 	
 	public void testCreateGroup()
@@ -61,13 +61,13 @@ public class ModelFactoryTest extends TestCase
 		}
 		catch( InvalidXMLException e )
 		{
-			if( !e.getMessage().equals( "The body part of the received XML document is not valid: groupname is missing" ) )
+			if( !"The body part of the received XML document is not valid: groupname is missing".equals( e.getMessage() ) )
 				fail( "wrong exception thrown: " + e.getMessage() );
 		}
 		// check valid user
 		xmlGroup.setName( "test" );
 		Group group = modelFactory.createGroup( xmlGroup );
-		assertTrue( "model not correctly initialized", group.getName().equals( "test" ) );
+		assertTrue( "model not correctly initialized", "test".equals( group.getName() ) );
 	}
    
    public void testCreateTag()
@@ -80,13 +80,13 @@ public class ModelFactoryTest extends TestCase
       }
       catch( InvalidXMLException e )
       {
-         if( !e.getMessage().equals( "The body part of the received XML document is not valid: tag name is missing" ) )
+         if( !"The body part of the received XML document is not valid: tag name is missing".equals( e.getMessage() ) )
             fail( "wrong exception thrown: " + e.getMessage() );
       }
       // check valid tag
       xmlTag.setName( "foo" );
       Tag tag = modelFactory.createTag( xmlTag );
-      assertTrue( "tag not correctly initailized", tag.getName().equals( "foo" ) );
+      assertTrue( "tag not correctly initailized", "foo".equals( tag.getName() ) );
       xmlTag.setGlobalcount( BigInteger.ONE );
       xmlTag.setUsercount( BigInteger.TEN );
       tag = modelFactory.createTag( xmlTag );
@@ -118,10 +118,10 @@ public class ModelFactoryTest extends TestCase
 		
 		// check valid post with bookmark
 		Post post = modelFactory.createPost( xmlPost );
-		assertTrue( "model not correctly initialized", post.getUser().getName().equals( "tuser" ) );
+		assertTrue( "model not correctly initialized", "tuser".equals( post.getUser().getName() ) );
 		assertTrue( "model not correctly initialized", post.getResource() instanceof Bookmark );
-		assertTrue( "model not correctly initialized", ( (Bookmark)post.getResource() ).getUrl().equals( "http://www.google.de" ) );
-		assertTrue( "model not correctly initialized", ( (Tag)post.getTags().iterator().next() ).getName().equals( "testtag" ) );
+		assertTrue( "model not correctly initialized", "http://www.google.de".equals( ((Bookmark)post.getResource()).getUrl() ) );
+		assertTrue( "model not correctly initialized", "testtag".equals( ((Tag)post.getTags().iterator().next()).getName() ) );
 		
 		xmlPost.setBookmark( null );
 		BibtexType xmlBibtex = new BibtexType();
@@ -131,10 +131,10 @@ public class ModelFactoryTest extends TestCase
 		
 		// check valid post with bibtex
 		post = modelFactory.createPost( xmlPost );
-		assertTrue( "model not correctly initialized", post.getUser().getName().equals( "tuser" ) );
+		assertTrue( "model not correctly initialized", "tuser".equals( post.getUser().getName() ) );
 		assertTrue( "model not correctly initialized", post.getResource() instanceof BibTex );
-		assertTrue( "model not correctly initialized", ( (BibTex)post.getResource() ).getTitle().equals( "foo bar" ) );
-		assertTrue( "model not correctly initialized", ( (Tag)post.getTags().iterator().next() ).getName().equals( "testtag" ) );
+		assertTrue( "model not correctly initialized", "foo bar".equals( ((BibTex)post.getResource()).getTitle() ) );
+		assertTrue( "model not correctly initialized", "testtag".equals( ((Tag)post.getTags().iterator().next()).getName() ) );
 	}
 	
 	private void checkInvalidPost( PostType xmlPost, String exceptionMessage )
@@ -157,7 +157,10 @@ public class ModelFactoryTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.3  2006-07-05 15:20:14  mbork
+ * Revision 1.4  2006-07-05 15:27:51  mbork
+ * place constants on left side of comparison
+ *
+ * Revision 1.3  2006/07/05 15:20:14  mbork
  * implemented missing strategies, little changes on datamodel --> alpha :)
  *
  * Revision 1.2  2006/06/08 16:14:35  mbork

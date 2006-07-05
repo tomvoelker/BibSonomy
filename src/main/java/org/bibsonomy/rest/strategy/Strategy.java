@@ -44,17 +44,17 @@ public abstract class Strategy
 	protected GroupingEntity chooseGroupingEntity()
 	{
 		String value = context.getStringAttribute( "user", "" );
-		if( !value.equals( "" ) )
+		if( !"".equals( value ) )
 		{
 			return GroupingEntity.USER;
 		}
 		value = context.getStringAttribute( "group", "" );
-		if( !value.equals( "" ) )
+		if( !"".equals( value ) )
 		{
 			return GroupingEntity.GROUP;
 		}
 		value = context.getStringAttribute( "viewable", "" );
-		if( !value.equals( "" ) )
+		if( !"".equals( value ) )
 		{
 			return GroupingEntity.VIEWABLE;
 		}
@@ -64,7 +64,10 @@ public abstract class Strategy
 
 /*
  * $Log$
- * Revision 1.4  2006-06-13 18:07:39  mbork
+ * Revision 1.5  2006-07-05 15:27:51  mbork
+ * place constants on left side of comparison
+ *
+ * Revision 1.4  2006/06/13 18:07:39  mbork
  * introduced unit tests for servlet using null-pattern for request and response. tested to use cactus/ httpunit, but decided not to use them.
  *
  * Revision 1.3  2006/06/05 14:14:12  mbork

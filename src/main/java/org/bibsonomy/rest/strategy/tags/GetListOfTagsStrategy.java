@@ -58,7 +58,7 @@ public class GetListOfTagsStrategy extends Strategy
 		}
 		
 		String regex = context.getStringAttribute( "filter", "" );
-		if( !regex.equals( "" ) )
+		if( !"".equals( regex ) )
 		{
 			next += "&" + "filter=" + regex;
 		}
@@ -93,7 +93,10 @@ public class GetListOfTagsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.6  2006-06-23 20:50:08  mbork
+ * Revision 1.7  2006-07-05 15:27:51  mbork
+ * place constants on left side of comparison
+ *
+ * Revision 1.6  2006/06/23 20:50:08  mbork
  * clientlib:
  * - added head request
  * - fixed issues with enums using uppercase letters invoked with toString()

@@ -19,7 +19,7 @@ public class BibsonomyTest extends TestCase
       }
       catch( IllegalArgumentException e )
       {
-         if( !e.getMessage().equals( "The given username is not valid." ) )
+         if( !"The given username is not valid.".equals( e.getMessage() ) )
          {
             fail( "wrong exception was thrown" );
          }
@@ -31,7 +31,7 @@ public class BibsonomyTest extends TestCase
       }
       catch( IllegalArgumentException e )
       {
-         if( !e.getMessage().equals( "The given password is not valid." ) )
+         if( !"The given password is not valid.".equals( e.getMessage() ) )
          {
             fail( "wrong exception was thrown" );
          }
@@ -49,7 +49,7 @@ public class BibsonomyTest extends TestCase
       }
       catch( IllegalArgumentException e )
       {
-         if( !e.getMessage().equals( "The given username is not valid." ) )
+         if( !"The given username is not valid.".equals( e.getMessage() ) )
          {
             fail( "wrong exception was thrown" );
          }
@@ -67,7 +67,7 @@ public class BibsonomyTest extends TestCase
       }
       catch( IllegalArgumentException e )
       {
-         if( !e.getMessage().equals( "The given password is not valid." ) )
+         if( !"The given password is not valid.".equals( e.getMessage() ) )
          {
             fail( "wrong exception was thrown" );
          }
@@ -85,7 +85,7 @@ public class BibsonomyTest extends TestCase
       }
       catch( IllegalArgumentException e )
       {
-         if( !e.getMessage().equals( "The given apiURL is not valid." ) )
+         if( !"The given apiURL is not valid.".equals( e.getMessage() ) )
          {
             fail( "wrong exception was thrown" );
          }
@@ -97,7 +97,7 @@ public class BibsonomyTest extends TestCase
       }
       catch( IllegalArgumentException e )
       {
-         if( !e.getMessage().equals( "The given apiURL is not valid." ) )
+         if( !"The given apiURL is not valid.".equals( e.getMessage() ) )
          {
             fail( "wrong exception was thrown" );
          }
@@ -130,7 +130,10 @@ public class BibsonomyTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.2  2006-06-14 18:23:21  mbork
+ * Revision 1.3  2006-07-05 15:27:51  mbork
+ * place constants on left side of comparison
+ *
+ * Revision 1.2  2006/06/14 18:23:21  mbork
  * refactored usage of username, password and host url
  *
  * Revision 1.1  2006/06/08 16:14:36  mbork

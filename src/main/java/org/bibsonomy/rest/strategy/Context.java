@@ -83,7 +83,7 @@ public final class Context
 		this.logic = logic;
 		this.httpMethod = httpMethod;
 		this.parameterMap = parameterMap;
-      if( url == null || url.equals( "/" ) ) throw new ValidationException( "It is forbidden to access '/'." );
+      if( url == null || "/".equals( url ) ) throw new ValidationException( "It is forbidden to access '/'." );
 		this.urlTokens = new StringTokenizer( url, "/" );
 		initStrategy();
       if( this.strategy == null ) throw new NoSuchResourceException( "The requested resource does not exist: " + url );
@@ -153,7 +153,7 @@ public final class Context
 		Set<String> tags = new HashSet<String>();
 		
 		String param = getStringAttribute( parameterName, "" );
-		if( !param.equals( "" ) )
+		if( !"".equals( param ) )
 		{
 			String[] params = param.split( "\\+" );
 			for( int i = 0; i < params.length; ++i )
@@ -269,7 +269,10 @@ public final class Context
 
 /*
  * $Log$
- * Revision 1.13  2006-06-28 15:36:13  mbork
+ * Revision 1.14  2006-07-05 15:27:51  mbork
+ * place constants on left side of comparison
+ *
+ * Revision 1.13  2006/06/28 15:36:13  mbork
  * started implementing other http methods
  *
  * Revision 1.12  2006/06/13 21:30:41  mbork

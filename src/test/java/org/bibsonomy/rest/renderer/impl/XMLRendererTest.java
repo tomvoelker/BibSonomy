@@ -79,7 +79,7 @@ public class XMLRendererTest extends TestCase
 		}
 		catch( BadRequestException e )
 		{
-			if( !e.getMessage().equals( "The body part of the received document is erroneous - no user defined." ) )
+			if( !"The body part of the received document is erroneous - no user defined.".equals( e.getMessage() ) )
 				fail( "wrong exception thrown: " + e.getMessage() );
 		}
 		
@@ -91,7 +91,7 @@ public class XMLRendererTest extends TestCase
 		tmpFile = File.createTempFile( "bibsonomy", "junit" );
 		marshalToFile( bibXML, tmpFile );
 		User user = renderer.parseUser( new FileInputStream( tmpFile ) );
-		assertTrue( "model not correctly initialized", user.getName().equals( "test" ) );
+		assertTrue( "model not correctly initialized", "test".equals( user.getName() ) );
 	}
 	
 	public void testParseGroup() throws Exception
@@ -118,7 +118,7 @@ public class XMLRendererTest extends TestCase
 		}
 		catch( BadRequestException e )
 		{
-			if( !e.getMessage().equals( "The body part of the received document is erroneous - no group defined." ) )
+			if( !"The body part of the received document is erroneous - no group defined.".equals( e.getMessage() ) )
 				fail( "wrong exception thrown: " + e.getMessage() );
 		}
 		
@@ -130,7 +130,7 @@ public class XMLRendererTest extends TestCase
 		tmpFile = File.createTempFile( "bibsonomy", "junit" );
 		marshalToFile( bibXML, tmpFile );
 		Group group = renderer.parseGroup( new FileInputStream( tmpFile ) );
-		assertTrue( "model not correctly initialized", group.getName().equals( "test" ) );
+		assertTrue( "model not correctly initialized", "test".equals( group.getName() ) );
 	}
 	
 	public void testParsePost() throws Exception
@@ -157,7 +157,7 @@ public class XMLRendererTest extends TestCase
 		}
 		catch( BadRequestException e )
 		{
-			if( !e.getMessage().equals( "The body part of the received document is erroneous - no post defined." ) )
+			if( !"The body part of the received document is erroneous - no post defined.".equals( e.getMessage() ) )
 			{
 				System.out.println( e.getMessage() );
 				fail( "wrong exception thrown: " + e.getMessage() );
@@ -473,7 +473,10 @@ public class XMLRendererTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.5  2006-07-05 15:20:13  mbork
+ * Revision 1.6  2006-07-05 15:27:51  mbork
+ * place constants on left side of comparison
+ *
+ * Revision 1.5  2006/07/05 15:20:13  mbork
  * implemented missing strategies, little changes on datamodel --> alpha :)
  *
  * Revision 1.4  2006/06/11 11:42:47  mbork
