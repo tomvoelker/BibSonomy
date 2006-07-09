@@ -58,7 +58,14 @@ public final class ChangePostQuery extends AbstractQuery<String>
 		if( post.getResource() instanceof BibTex )
 		{
 			BibTex bibtex = (BibTex)post.getResource();
-			if( bibtex.getTitle() == null || bibtex.getTitle().length() == 0 ) throw new IllegalArgumentException( "no title specified in bibtex" );
+         if( bibtex.getInterHash() == null || bibtex.getInterHash().length() == 0 )
+         {
+            throw new IllegalArgumentException( "found an bibtex without interhash assigned." );
+         }
+         if( bibtex.getIntraHash() == null || bibtex.getIntraHash().length() == 0 )
+         {
+            throw new IllegalArgumentException( "found an bibtex without intrahash assigned." );
+         }
 		}
 		if( post.getTags() == null || post.getTags().size() == 0) throw new IllegalArgumentException( "no tags specified" );
 		for( Tag tag: post.getTags() )
@@ -95,7 +102,10 @@ public final class ChangePostQuery extends AbstractQuery<String>
 
 /*
  * $Log$
- * Revision 1.4  2006-06-14 18:23:21  mbork
+ * Revision 1.5  2006-07-09 19:07:12  mbork
+ * moved check for hash from renderer to ChangePostQuery, because some queries must not test for the hash
+ *
+ * Revision 1.4  2006/06/14 18:23:21  mbork
  * refactored usage of username, password and host url
  *
  * Revision 1.3  2006/06/08 13:23:48  mbork

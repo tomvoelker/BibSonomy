@@ -396,11 +396,6 @@ public class XMLRenderer implements Renderer
       {
          throw new InternServerException( "found a bibtex without title assigned." );
       }
-      if( bibtex.getInterHash() == null || bibtex.getInterHash().length() == 0 ||
-            bibtex.getIntraHash() == null || bibtex.getIntraHash().length() == 0 )
-      {
-         throw new InternServerException( "found an bibtex without hash assigned." );
-      }
    }
    
    private String createHrefForUser( String name )
@@ -421,7 +416,10 @@ public class XMLRenderer implements Renderer
 
 /*
  * $Log$
- * Revision 1.12  2006-07-05 16:27:57  mbork
+ * Revision 1.13  2006-07-09 19:07:12  mbork
+ * moved check for hash from renderer to ChangePostQuery, because some queries must not test for the hash
+ *
+ * Revision 1.12  2006/07/05 16:27:57  mbork
  * fixed issues with link to next list of resources
  *
  * Revision 1.11  2006/07/05 15:20:14  mbork
