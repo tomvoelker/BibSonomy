@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>kde.cs.uni-kassel.de</groupId>
+  <groupId>org.bibsonomy</groupId>
   <artifactId>bibsonomy</artifactId>
   <name>BibSonomy</name>
   <packaging>war</packaging>
@@ -80,6 +80,11 @@
       <id>innofinity</id>
       <name>Innofinity-Repository</name>
       <url>http://www.innofinity.de/maven2</url>
+    </repository>
+    <repository>
+      <id>se.uni-kassel.de</id>
+      <name>se@uni-kassel.de</name>
+      <url>http://www.se.eecs.uni-kassel.de/~maven/repository/</url>
     </repository>
   </repositories>
   <dependencies>
@@ -182,5 +187,10 @@
       <artifactId>assocs</artifactId>
       <version>1.0</version>
     </dependency>
+    <!--dependency>
+      <groupId>de.uni_kassel.assocs</groupId>
+      <artifactId>assocs</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency-->
   </dependencies>
 </project>
