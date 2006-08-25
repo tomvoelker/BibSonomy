@@ -13,7 +13,7 @@ public class GetTagNames extends DBQuery<Tag> {
 	private final String tagIdsCSV;
 	
 	public GetTagNames(final Iterable<Integer> tagIds) {
-		super(new TagRSHandler());
+		super(new TagRSHandler(), false);
 		this.tagIdsCSV = Helper.buildCSVList(tagIds);
 	}
 
