@@ -9,7 +9,7 @@ import java.io.StringWriter;
 import junit.framework.TestCase;
 
 import org.bibsonomy.rest.exceptions.AuthenticationException;
-import org.bibsonomy.rest.exceptions.BadRequestException;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.Context;
 
 public class TestRestServlet extends TestCase
@@ -30,7 +30,7 @@ public class TestRestServlet extends TestCase
       {
          servlet.validateAuthorization( "Basic ASDFASDF" );
       }
-      catch( BadRequestException e )
+      catch( BadRequestOrResponseException e )
       {}
       
       assertEquals( "error decoding string", servlet.validateAuthorization( "Basic YXNkZjphc2Rm" ), "asdf" );
@@ -108,7 +108,11 @@ public class TestRestServlet extends TestCase
 
 /*
  * $Log$
- * Revision 1.2  2006-06-13 21:30:41  mbork
+ * Revision 1.3  2006-09-16 18:17:50  mbork
+ * added some new fake bibtex entries to demonstrate jabref plugin :)
+ * fix of tests depiending on fake bibtex entries
+ *
+ * Revision 1.2  2006/06/13 21:30:41  mbork
  * implemented unit tests for get-strategies; fixed some minor bugs
  *
  * Revision 1.1  2006/06/13 18:07:40  mbork

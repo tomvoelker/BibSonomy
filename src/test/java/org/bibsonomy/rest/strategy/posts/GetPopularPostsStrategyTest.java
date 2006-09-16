@@ -24,7 +24,7 @@ public class GetPopularPostsStrategyTest extends TestCase
       c.perform( request, response );
       // just test length, because the detail rendering output is tested by the
       // renderer test
-      assertEquals(  7489, response.getStringWriter().toString().length() );
+      assertEquals(  9414, response.getStringWriter().toString().length() );
       assertEquals( "text/xml", c.getContentType( "firefox" ) );
       assertEquals( "bibsonomy/posts+XML", c.getContentType( Context.API_USER_AGENT ) );
    }
@@ -32,7 +32,11 @@ public class GetPopularPostsStrategyTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.3  2006-07-05 16:27:58  mbork
+ * Revision 1.4  2006-09-16 18:17:50  mbork
+ * added some new fake bibtex entries to demonstrate jabref plugin :)
+ * fix of tests depiending on fake bibtex entries
+ *
+ * Revision 1.3  2006/07/05 16:27:58  mbork
  * fixed issues with link to next list of resources
  *
  * Revision 1.2  2006/06/28 15:36:13  mbork

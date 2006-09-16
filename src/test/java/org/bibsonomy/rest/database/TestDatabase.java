@@ -43,7 +43,7 @@ public class TestDatabase implements LogicInterface
 	
 	public TestDatabase()
 	{
-      // use the linked map because ordering matters for the junit tests..
+		// use the linked map because ordering matters for the junit tests..
 		dbGroups = new LinkedHashMap<String, Group>();
 		dbUsers = new LinkedHashMap<String, User>();
 		dbTags = new LinkedHashMap<String, Tag>();
@@ -338,6 +338,12 @@ public class TestDatabase implements LogicInterface
       kddTag.setGlobalcount( 1 );
 		dbTags.put( kddTag.getName(), kddTag );
 		
+		Tag wwwTag = new Tag();
+		wwwTag.setName( "www" );
+		wwwTag.setUsercount( 1 );
+		wwwTag.setGlobalcount( 3 );
+		dbTags.put( wwwTag.getName(), wwwTag );
+		
 		// dbResources
 		Bookmark spiegelOnlineResource = new Bookmark();
 		spiegelOnlineResource.setIntraHash( "111111111111111111111111111111111" );
@@ -502,11 +508,41 @@ public class TestDatabase implements LogicInterface
 		bibtexDemo.setAuthors( "Albert Einstein, Leonardo da Vinci" );
 		bibtexDemo.setEditors( "Luke Skywalker, Yoda" );
 		bibtexDemo.setIntraHash( "abcdef0123abcdef0123abcdef012345" );
-      bibtexDemo.setInterHash( "abcdef0123abcdef0123abcdef012345" );
+		bibtexDemo.setInterHash( "abcdef0123abcdef0123abcdef012345" );
 		bibtexDemo.setTitle( "Die Weltformel" );
 		bibtexDemo.setType( "Paper" );
 		bibtexDemo.setYear( "2006" );
 		dbResources.put( bibtexDemo.getIntraHash(), bibtexDemo );
+		
+		BibTex bibtexDemo1 = new BibTex();
+		bibtexDemo1.setAuthors( "R. Fielding and J. Gettys and J. Mogul and H. Frystyk and L. Masinter and P. Leach and T. Berners-Lee" );
+		bibtexDemo1.setEditors( "" );
+		bibtexDemo1.setIntraHash( "aaaaaaaabbbbbbbbccccccccaaaaaaaa" );
+		bibtexDemo1.setInterHash( "aaaaaaaabbbbbbbbccccccccaaaaaaaa" );
+		bibtexDemo1.setTitle( "RFC 2616, Hypertext Transfer Protocol -- HTTP/1.1" );
+		bibtexDemo1.setType( "Paper" );
+		bibtexDemo1.setYear( "1999" );
+		dbResources.put( bibtexDemo1.getIntraHash(), bibtexDemo1 );
+		
+		BibTex bibtexDemo2 = new BibTex();
+		bibtexDemo2.setAuthors( "Roy T. Fielding" );
+		bibtexDemo2.setEditors( "" );
+		bibtexDemo2.setIntraHash( "abcdabcdabcdabcdaaaaaaaaaaaaaaaa" );
+		bibtexDemo2.setInterHash( "abcdabcdabcdabcdaaaaaaaaaaaaaaaa" );
+		bibtexDemo2.setTitle( "Architectural Styles and the Design of Network-based Software Architectures" );
+		bibtexDemo2.setType( "Paper" );
+		bibtexDemo2.setYear( "2000" );
+		dbResources.put( bibtexDemo2.getIntraHash(), bibtexDemo2 );
+		
+		BibTex bibtexDemo3 = new BibTex();
+		bibtexDemo3.setAuthors( "Tim Berners-Lee and Mark Fischetti" );
+		bibtexDemo3.setEditors( "" );
+		bibtexDemo3.setIntraHash( "ddddddddccccccccbbbbbbbbaaaaaaaa" );
+		bibtexDemo3.setInterHash( "ddddddddccccccccbbbbbbbbaaaaaaaa" );
+		bibtexDemo3.setTitle( "Weaving the web" );
+		bibtexDemo3.setType( "Paper" );
+		bibtexDemo3.setYear( "1999" );
+		dbResources.put( bibtexDemo3.getIntraHash(), bibtexDemo3 );
 		
 		Post post_13 = new Post();
 		post_13.setDescription("Beschreibung einer allumfassenden Weltformel. Taeglich lesen!" );
@@ -516,6 +552,30 @@ public class TestDatabase implements LogicInterface
 		post_13.getGroups().add( publicGroup );
 		post_13.getTags().add( weltformelTag );
 		post_13.getTags().add( nachrichtenTag );
+		
+		Post post_14 = new Post();
+		post_14.setDescription("Grundlagen des www" );
+		post_14.setPostingDate( System.currentTimeMillis() );
+		post_14.setResource( bibtexDemo1 );
+		post_14.setUser( userManu  );
+		post_14.getGroups().add( publicGroup );
+		post_14.getTags().add( wwwTag );
+		
+		Post post_15 = new Post();
+		post_15.setDescription("So ist unsers api konstruiert." );
+		post_15.setPostingDate( System.currentTimeMillis() );
+		post_15.setResource( bibtexDemo2 );
+		post_15.setUser( userManu  );
+		post_15.getGroups().add( publicGroup );
+		post_15.getTags().add( wwwTag );
+		
+		Post post_16 = new Post();
+		post_16.setDescription("das ist nur ein beispiel." );
+		post_16.setPostingDate( System.currentTimeMillis() );
+		post_16.setResource( bibtexDemo3 );
+		post_16.setUser( userManu  );
+		post_16.getGroups().add( publicGroup );
+		post_16.getTags().add( wwwTag );
 	}
 
    public void addUserToGroup( String groupName, String userName )
@@ -569,7 +629,11 @@ public class TestDatabase implements LogicInterface
 
 /*
  * $Log$
- * Revision 1.6  2006-07-05 15:20:13  mbork
+ * Revision 1.7  2006-09-16 18:17:50  mbork
+ * added some new fake bibtex entries to demonstrate jabref plugin :)
+ * fix of tests depiending on fake bibtex entries
+ *
+ * Revision 1.6  2006/07/05 15:20:13  mbork
  * implemented missing strategies, little changes on datamodel --> alpha :)
  *
  * Revision 1.5  2006/06/23 20:47:45  mbork

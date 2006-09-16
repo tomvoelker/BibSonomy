@@ -24,7 +24,7 @@ public class GetListOfTagsStrategyTest extends TestCase
       c.perform( request, response );
       // just test length, because the detail rendering output is tested by the
       // renderer test
-      assertEquals(  883, response.getStringWriter().toString().length() );
+      assertEquals(  939, response.getStringWriter().toString().length() );
       assertEquals( "text/xml", c.getContentType( "firefox" ) );
       assertEquals( "bibsonomy/tags+XML", c.getContentType( Context.API_USER_AGENT ) );
    }
@@ -32,7 +32,11 @@ public class GetListOfTagsStrategyTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.2  2006-07-05 16:27:57  mbork
+ * Revision 1.3  2006-09-16 18:17:50  mbork
+ * added some new fake bibtex entries to demonstrate jabref plugin :)
+ * fix of tests depiending on fake bibtex entries
+ *
+ * Revision 1.2  2006/07/05 16:27:57  mbork
  * fixed issues with link to next list of resources
  *
  * Revision 1.1  2006/07/05 15:20:13  mbork

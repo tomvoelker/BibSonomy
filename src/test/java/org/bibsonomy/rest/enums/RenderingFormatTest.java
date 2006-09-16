@@ -33,11 +33,22 @@ public class RenderingFormatTest extends TestCase
 		{
 		}
 	}
+	
+	public void testToString()
+	{
+		assertEquals( RenderingFormat.XML.toString(), "XML" );
+		assertEquals( RenderingFormat.RDF.toString(), "RDF" );
+		assertEquals( RenderingFormat.HTML.toString(), "HTML" );
+	}
 }
 
 /*
  * $Log$
- * Revision 1.1  2006-06-07 18:27:04  mbork
+ * Revision 1.2  2006-09-16 18:17:51  mbork
+ * added some new fake bibtex entries to demonstrate jabref plugin :)
+ * fix of tests depiending on fake bibtex entries
+ *
+ * Revision 1.1  2006/06/07 18:27:04  mbork
  * moved enum
  *
  * Revision 1.2  2006/06/05 14:14:13  mbork

@@ -26,7 +26,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.ViewModel;
-import org.bibsonomy.rest.exceptions.BadRequestException;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.InternServerException;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
@@ -63,7 +63,7 @@ public class XMLRendererTest extends TestCase
 			renderer.parseUser( null );
 			fail( "exception should have been thrown." );
 		}
-		catch( BadRequestException e )
+		catch( BadRequestOrResponseException e )
 		{
 		}
 		
@@ -77,7 +77,7 @@ public class XMLRendererTest extends TestCase
 			renderer.parseUser( new FileInputStream( tmpFile ) );
 			fail( "exception should have been thrown." );
 		}
-		catch( BadRequestException e )
+		catch( BadRequestOrResponseException e )
 		{
 			if( !"The body part of the received document is erroneous - no user defined.".equals( e.getMessage() ) )
 				fail( "wrong exception thrown: " + e.getMessage() );
@@ -102,7 +102,7 @@ public class XMLRendererTest extends TestCase
 			renderer.parseGroup( null );
 			fail( "exception should have been thrown." );
 		}
-		catch( BadRequestException e )
+		catch( BadRequestOrResponseException e )
 		{
 		}
 		
@@ -116,7 +116,7 @@ public class XMLRendererTest extends TestCase
 			renderer.parseGroup( new FileInputStream( tmpFile ) );
 			fail( "exception should have been thrown." );
 		}
-		catch( BadRequestException e )
+		catch( BadRequestOrResponseException e )
 		{
 			if( !"The body part of the received document is erroneous - no group defined.".equals( e.getMessage() ) )
 				fail( "wrong exception thrown: " + e.getMessage() );
@@ -141,7 +141,7 @@ public class XMLRendererTest extends TestCase
 			renderer.parsePost( null );
 			fail( "exception should have been thrown." );
 		}
-		catch( BadRequestException e )
+		catch( BadRequestOrResponseException e )
 		{
 		}
 		
@@ -155,7 +155,7 @@ public class XMLRendererTest extends TestCase
 			renderer.parsePost( new FileInputStream( tmpFile ) );
 			fail( "exception should have been thrown." );
 		}
-		catch( BadRequestException e )
+		catch( BadRequestOrResponseException e )
 		{
 			if( !"The body part of the received document is erroneous - no post defined.".equals( e.getMessage() ) )
 			{
@@ -473,7 +473,11 @@ public class XMLRendererTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.6  2006-07-05 15:27:51  mbork
+ * Revision 1.7  2006-09-16 18:17:50  mbork
+ * added some new fake bibtex entries to demonstrate jabref plugin :)
+ * fix of tests depiending on fake bibtex entries
+ *
+ * Revision 1.6  2006/07/05 15:27:51  mbork
  * place constants on left side of comparison
  *
  * Revision 1.5  2006/07/05 15:20:13  mbork
