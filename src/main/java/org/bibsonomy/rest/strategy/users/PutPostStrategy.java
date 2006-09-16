@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.model.Post;
-import org.bibsonomy.rest.exceptions.BadRequestException;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.InternServerException;
 import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
@@ -46,13 +46,13 @@ public class PutPostStrategy extends Strategy
 	 * @see org.bibsonomy.rest.strategy.Strategy#perform(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	public void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException, BadRequestException
+	public void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException, BadRequestOrResponseException
    {
       try
       {
          Post post = context.getRenderer().parsePost( request.getInputStream() );
          // ensure using the right resource...
-         if( !post.getResource().getIntraHash().equals( resourceHash ) ) throw new BadRequestException( "wrong resource" );
+         if( !post.getResource().getIntraHash().equals( resourceHash ) ) throw new BadRequestOrResponseException( "wrong resource" );
          context.getLogic().storePost( userName, post, true );
       }
       catch( IOException e )
@@ -74,7 +74,10 @@ public class PutPostStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.5  2006-07-05 15:20:13  mbork
+ * Revision 1.6  2006-09-16 18:19:16  mbork
+ * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
+ *
+ * Revision 1.5  2006/07/05 15:20:13  mbork
  * implemented missing strategies, little changes on datamodel --> alpha :)
  *
  * Revision 1.4  2006/06/28 15:36:13  mbork

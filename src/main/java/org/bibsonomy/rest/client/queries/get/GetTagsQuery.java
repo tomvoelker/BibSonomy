@@ -1,17 +1,14 @@
 package org.bibsonomy.rest.client.queries.get;
 
-import java.util.ArrayList;
+import java.io.InputStream;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.enums.GroupingEntity;
-import org.bibsonomy.rest.exceptions.InvalidXMLException;
-import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
-import org.bibsonomy.rest.renderer.xml.ModelFactory;
-import org.bibsonomy.rest.renderer.xml.TagType;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.renderer.RendererFactory;
 
 /**
  * Use this Class to receive an ordered list of all posts.
@@ -23,7 +20,7 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>>
 {
 	private int start;
 	private int end;
-	private BibsonomyXML bibsonomyXML;
+	private InputStream responseAsStream;
 	private String filter = null;
 	private GroupingEntity grouping = GroupingEntity.ALL;
 	private String groupingValue;
@@ -85,28 +82,18 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>>
 	 * @see org.bibsonomy.rest.client.queries.AbstractQuery#getResult()
 	 */
 	@Override
-	public List<Tag> getResult()
+	public List<Tag> getResult() throws BadRequestOrResponseException, IllegalStateException
 	{
-		if( bibsonomyXML == null ) throw new IllegalStateException( "Execute the query first." );
+		if( responseAsStream == null ) throw new IllegalStateException( "Execute the query first." );
 		
-		List<Tag> tags = new ArrayList<Tag>();
-
-		if( bibsonomyXML.getTags() != null && bibsonomyXML.getTags().getTag() != null )
+		try
 		{
-			for( TagType xmlTag: bibsonomyXML.getTags().getTag() )
-			{
-				try
-				{
-					tags.add( ModelFactory.getInstance().createTag( xmlTag ) );
-				}
-				catch( InvalidXMLException e )
-				{
-					LOGGER.log( Level.WARNING, e.getMessage(), e );
-					throw e;
-				}
-			}
+			return RendererFactory.getRenderer( getRenderingFormat() ).parseTagList( responseAsStream );
 		}
-		return tags;
+		catch( BadRequestOrResponseException e )
+		{
+			throw e;
+		}
 	}
 
 	/* (non-Javadoc)
@@ -133,13 +120,16 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>>
 		{
 			url += "&filter=" + filter;
 		}
-		bibsonomyXML = performGetRequest( url );
+		responseAsStream = performGetRequest( url + "&format=" + getRenderingFormat().toString().toLowerCase()  );
 	}
 }
 
 /*
  * $Log$
- * Revision 1.4  2006-06-14 18:23:21  mbork
+ * Revision 1.5  2006-09-16 18:19:15  mbork
+ * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
+ *
+ * Revision 1.4  2006/06/14 18:23:21  mbork
  * refactored usage of username, password and host url
  *
  * Revision 1.3  2006/06/08 13:23:47  mbork

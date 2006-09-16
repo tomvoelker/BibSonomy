@@ -6,7 +6,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.enums.HttpMethod;
-import org.bibsonomy.rest.renderer.impl.XMLRenderer;
+import org.bibsonomy.rest.renderer.RendererFactory;
 
 /**
  * Use this Class to create a new group in bibsonomy.
@@ -53,14 +53,17 @@ public final class CreateGroupQuery extends AbstractQuery<String>
 	{
 		executed = true;
 		StringWriter sw = new StringWriter( 100 );
-		XMLRenderer.getInstance().serializeGroup( sw, group, null );
-		result = performRequest( HttpMethod.POST, URL_GROUPS, sw.toString() );
+		RendererFactory.getRenderer( getRenderingFormat() ).serializeGroup( sw, group, null );
+		result = performRequest( HttpMethod.POST, URL_GROUPS + "?format=" + getRenderingFormat().toString().toLowerCase(), sw.toString() );
 	}
 }
 
 /*
  * $Log$
- * Revision 1.5  2006-06-14 18:23:21  mbork
+ * Revision 1.6  2006-09-16 18:19:16  mbork
+ * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
+ *
+ * Revision 1.5  2006/06/14 18:23:21  mbork
  * refactored usage of username, password and host url
  *
  * Revision 1.4  2006/06/08 13:23:47  mbork

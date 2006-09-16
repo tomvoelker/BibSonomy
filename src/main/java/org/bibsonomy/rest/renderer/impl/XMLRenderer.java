@@ -3,6 +3,8 @@ package org.bibsonomy.rest.renderer.impl;
 import java.io.InputStream;
 import java.io.Writer;
 import java.math.BigInteger;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
@@ -18,7 +20,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.ViewModel;
-import org.bibsonomy.rest.exceptions.BadRequestException;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.InternServerException;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
@@ -252,9 +254,9 @@ public class XMLRenderer implements Renderer
       return xmlGroup;
    }
 
-   public User parseUser( InputStream is ) throws BadRequestException
+   public User parseUser( InputStream is ) throws BadRequestOrResponseException
 	{
-		if( is == null ) throw new BadRequestException( "The body part of the received document is missing" );
+		if( is == null ) throw new BadRequestOrResponseException( "The body part of the received document is missing" );
 		
 		BibsonomyXML xmlDoc = parse( is );
 		
@@ -262,12 +264,12 @@ public class XMLRenderer implements Renderer
 		{
 			return ModelFactory.getInstance().createUser( xmlDoc.getUser() );
 		}
-		throw new BadRequestException( "The body part of the received document is erroneous - no user defined." );
+		throw new BadRequestOrResponseException( "The body part of the received document is erroneous - no user defined." );
 	}
 
-	public Post parsePost( InputStream is ) throws BadRequestException
+	public Post parsePost( InputStream is ) throws BadRequestOrResponseException
 	{
-		if( is == null ) throw new BadRequestException( "The body part of the received document is missing" );
+		if( is == null ) throw new BadRequestOrResponseException( "The body part of the received document is missing" );
 		
 		BibsonomyXML xmlDoc = parse( is );
 		
@@ -275,12 +277,12 @@ public class XMLRenderer implements Renderer
 		{
 			return ModelFactory.getInstance().createPost( xmlDoc.getPost() );
 		}
-		throw new BadRequestException( "The body part of the received document is erroneous - no post defined." );
+		throw new BadRequestOrResponseException( "The body part of the received document is erroneous - no post defined." );
 	}
 
-	public Group parseGroup( InputStream is ) throws BadRequestException
+	public Group parseGroup( InputStream is ) throws BadRequestOrResponseException
 	{
-		if( is == null ) throw new BadRequestException( "The body part of the received document is missing" );
+		if( is == null ) throw new BadRequestOrResponseException( "The body part of the received document is missing" );
 		
 		BibsonomyXML xmlDoc = parse( is );
 		
@@ -288,7 +290,75 @@ public class XMLRenderer implements Renderer
 		{
 			return ModelFactory.getInstance().createGroup( xmlDoc.getGroup() );
 		}
-		throw new BadRequestException( "The body part of the received document is erroneous - no group defined." );
+		throw new BadRequestOrResponseException( "The body part of the received document is erroneous - no group defined." );
+	}
+	
+	public List<Group> parseGroupList(InputStream is) throws BadRequestOrResponseException 
+	{
+		if( is == null ) throw new BadRequestOrResponseException( "The body part of the received document is missing" );
+		BibsonomyXML xmlDoc = parse( is );
+		if( xmlDoc.getGroups() != null )
+		{
+			List<Group> groups = new LinkedList<Group>();
+			for( GroupType gt: xmlDoc.getGroups().getGroup() )
+			{
+				Group g = ModelFactory.getInstance().createGroup( gt );
+				groups.add( g );
+			}
+			return groups;
+		}
+		throw new BadRequestOrResponseException( "The body part of the received document is erroneous - no list of groups defined." );
+	}
+	
+	public List<Post> parsePostList(InputStream is) throws BadRequestOrResponseException
+	{
+		if( is == null ) throw new BadRequestOrResponseException( "The body part of the received document is missing" );
+		BibsonomyXML xmlDoc = parse( is );
+		if( xmlDoc.getPosts() != null )
+		{
+			List<Post> posts = new LinkedList<Post>();
+			for( PostType pt: xmlDoc.getPosts().getPost() )
+			{
+				Post p = ModelFactory.getInstance().createPost( pt );
+				posts.add( p );
+			}
+			return posts;
+		}
+		throw new BadRequestOrResponseException( "The body part of the received document is erroneous - no list of posts defined." );
+	}
+	
+	public List<Tag> parseTagList(InputStream is) throws BadRequestOrResponseException 
+	{
+		if( is == null ) throw new BadRequestOrResponseException( "The body part of the received document is missing" );
+		BibsonomyXML xmlDoc = parse( is );
+		if( xmlDoc.getGroups() != null )
+		{
+			List<Tag> tags = new LinkedList<Tag>();
+			for( TagType tt: xmlDoc.getTags().getTag() )
+			{
+				Tag t = ModelFactory.getInstance().createTag( tt );
+				tags.add( t );
+			}
+			return tags;
+		}
+		throw new BadRequestOrResponseException( "The body part of the received document is erroneous - no list of tags defined." );
+	}
+	
+	public List<User> parseUserList(InputStream is) throws BadRequestOrResponseException 
+	{
+		if( is == null ) throw new BadRequestOrResponseException( "The body part of the received document is missing" );
+		BibsonomyXML xmlDoc = parse( is );
+		if( xmlDoc.getUsers() != null )
+		{
+			List<User> users = new LinkedList<User>();
+			for( UserType ut: xmlDoc.getUsers().getUser() )
+			{
+				User u = ModelFactory.getInstance().createUser( ut );
+				users.add( u );
+			}
+			return users;
+		}
+		throw new BadRequestOrResponseException( "The body part of the received document is erroneous - no list of users defined." );
 	}
 	
 	/**
@@ -314,7 +384,7 @@ public class XMLRenderer implements Renderer
 			
 			// marshal to the writer
 			marshaller.marshal( webserviceElement, writer );
-//			marshaller.marshal( webserviceElement, System.out ); // TODO
+//			marshaller.marshal( webserviceElement, System.out ); // TODO log
 		}
 		catch( JAXBException e )
 		{
@@ -416,7 +486,10 @@ public class XMLRenderer implements Renderer
 
 /*
  * $Log$
- * Revision 1.13  2006-07-09 19:07:12  mbork
+ * Revision 1.14  2006-09-16 18:19:16  mbork
+ * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
+ *
+ * Revision 1.13  2006/07/09 19:07:12  mbork
  * moved check for hash from renderer to ChangePostQuery, because some queries must not test for the hash
  *
  * Revision 1.12  2006/07/05 16:27:57  mbork

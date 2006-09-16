@@ -1,16 +1,13 @@
 package org.bibsonomy.rest.client.queries.get;
 
-import java.util.ArrayList;
+import java.io.InputStream;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
-import org.bibsonomy.rest.exceptions.InvalidXMLException;
-import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
-import org.bibsonomy.rest.renderer.xml.ModelFactory;
-import org.bibsonomy.rest.renderer.xml.UserType;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.renderer.RendererFactory;
 
 /**
  * Use this Class to receive an ordered list of all users belonging to a given group.
@@ -23,7 +20,7 @@ public final class GetUserListOfGroupQuery extends AbstractQuery<List<User>>
 	private String groupname;
 	private int start;
 	private int end;
-	private BibsonomyXML bibsonomyXML;
+	private InputStream responseAsStream;
 
 	/**
 	 * Gets an user list of a group
@@ -58,27 +55,18 @@ public final class GetUserListOfGroupQuery extends AbstractQuery<List<User>>
 	 * @see org.bibsonomy.rest.client.queries.AbstractQuery#getResult()
 	 */
 	@Override
-	public List<User> getResult()
+	public List<User> getResult() throws BadRequestOrResponseException, IllegalStateException
 	{
-		if( bibsonomyXML == null ) throw new IllegalStateException( "Execute the query first." );
+		if( responseAsStream == null ) throw new IllegalStateException( "Execute the query first." );
 		
-		List<User> users = new ArrayList<User>();
-
-		if( bibsonomyXML.getGroup() != null && bibsonomyXML.getGroup().getUser() != null )
+		try
 		{
-			for( UserType xmlUser: bibsonomyXML.getGroup().getUser() )
-			{
-				try
-				{
-					users.add( ModelFactory.getInstance().createUser( xmlUser ) );
-				}
-				catch( InvalidXMLException e )
-				{
-					LOGGER.log( Level.WARNING, e.getMessage(), e );
-				}
-			}
+			return RendererFactory.getRenderer( getRenderingFormat() ).parseUserList( responseAsStream );
 		}
-		return users;
+		catch( BadRequestOrResponseException e )
+		{
+			throw e;
+		}
 	}
 
 	/* (non-Javadoc)
@@ -87,14 +75,17 @@ public final class GetUserListOfGroupQuery extends AbstractQuery<List<User>>
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException
 	{
-		bibsonomyXML = performGetRequest( URL_GROUPS + "/" + groupname + "/" + URL_USERS + "?start=" + start
-				+ "&end=" + end );
+		responseAsStream = performGetRequest( URL_GROUPS + "/" + groupname + "/" + URL_USERS + "?start=" + start
+				+ "&end=" + end + "&format=" + getRenderingFormat().toString().toLowerCase()  );
 	}
 }
 
 /*
  * $Log$
- * Revision 1.4  2006-06-14 18:23:21  mbork
+ * Revision 1.5  2006-09-16 18:19:15  mbork
+ * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
+ *
+ * Revision 1.4  2006/06/14 18:23:21  mbork
  * refactored usage of username, password and host url
  *
  * Revision 1.3  2006/06/08 13:23:47  mbork

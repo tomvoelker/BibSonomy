@@ -9,7 +9,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.enums.HttpMethod;
-import org.bibsonomy.rest.renderer.impl.XMLRenderer;
+import org.bibsonomy.rest.renderer.RendererFactory;
 
 /**
  * Use this Class to change details of an existing post - change tags, for example.
@@ -95,14 +95,17 @@ public final class ChangePostQuery extends AbstractQuery<String>
 	{
 		executed = true;
 		StringWriter sw = new StringWriter( 100);
-		XMLRenderer.getInstance().serializePost( sw, post, null);
-		result = performRequest( HttpMethod.PUT, URL_USERS + "/" + username + "/" + URL_POSTS + "/" + resourceHash, sw.toString());
+		RendererFactory.getRenderer( getRenderingFormat() ).serializePost( sw, post, null);
+		result = performRequest( HttpMethod.PUT, URL_USERS + "/" + username + "/" + URL_POSTS + "/" + resourceHash + "?format=" + getRenderingFormat().toString().toLowerCase(), sw.toString());
 	}
 }
 
 /*
  * $Log$
- * Revision 1.5  2006-07-09 19:07:12  mbork
+ * Revision 1.6  2006-09-16 18:19:16  mbork
+ * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
+ *
+ * Revision 1.5  2006/07/09 19:07:12  mbork
  * moved check for hash from renderer to ChangePostQuery, because some queries must not test for the hash
  *
  * Revision 1.4  2006/06/14 18:23:21  mbork

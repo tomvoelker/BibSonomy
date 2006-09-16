@@ -2,6 +2,7 @@ package org.bibsonomy.rest.renderer.impl;
 
 import java.io.InputStream;
 import java.io.Writer;
+import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.model.Group;
@@ -9,6 +10,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.ViewModel;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.InternServerException;
 import org.bibsonomy.rest.renderer.Renderer;
 
@@ -75,11 +77,38 @@ public class RDFRenderer implements Renderer
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public List<Group> parseGroupList(InputStream is) throws BadRequestOrResponseException
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<Post> parsePostList(InputStream is) throws BadRequestOrResponseException
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<Tag> parseTagList(InputStream is) throws BadRequestOrResponseException
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<User> parseUserList(InputStream is) throws BadRequestOrResponseException
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
 
 /*
  * $Log$
- * Revision 1.5  2006-06-08 13:23:48  mbork
+ * Revision 1.6  2006-09-16 18:19:16  mbork
+ * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
+ *
+ * Revision 1.5  2006/06/08 13:23:48  mbork
  * improved documentation, added throws statements even for runtimeexceptions, moved abstractquery to prevent users to call execute directly
  *
  * Revision 1.4  2006/06/07 19:37:28  mbork

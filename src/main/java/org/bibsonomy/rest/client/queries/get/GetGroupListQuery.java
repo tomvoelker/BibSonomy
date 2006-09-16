@@ -1,16 +1,13 @@
 package org.bibsonomy.rest.client.queries.get;
 
-import java.util.ArrayList;
+import java.io.InputStream;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.bibsonomy.model.Group;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
-import org.bibsonomy.rest.exceptions.InvalidXMLException;
-import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
-import org.bibsonomy.rest.renderer.xml.GroupType;
-import org.bibsonomy.rest.renderer.xml.ModelFactory;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.renderer.RendererFactory;
 
 /**
  * Use this Class to receive an ordered list of all groups bibsonomy has.
@@ -22,7 +19,7 @@ public final class GetGroupListQuery extends AbstractQuery<List<Group>>
 {
 	private int start;
 	private int end;
-	private BibsonomyXML bibsonomyXML;
+	private InputStream responseAsStream;
 
 	/**
 	 * Gets bibsonomy's group list
@@ -53,27 +50,17 @@ public final class GetGroupListQuery extends AbstractQuery<List<Group>>
 	 * @see org.bibsonomy.rest.client.queries.AbstractQuery#getResult()
 	 */
 	@Override
-	public List<Group> getResult()
+	public List<Group> getResult() throws BadRequestOrResponseException, IllegalStateException
 	{
-		if( bibsonomyXML == null ) throw new IllegalStateException( "Execute the query first." );
-		
-		List<Group> groups = new ArrayList<Group>();
-
-		if( bibsonomyXML.getGroups() != null && bibsonomyXML.getGroups().getGroup() != null )
+		if( responseAsStream == null ) throw new IllegalStateException( "Execute the query first." );
+		try
 		{
-			for( GroupType xmlGroup: bibsonomyXML.getGroups().getGroup() )
-			{
-				try
-				{
-					groups.add( ModelFactory.getInstance().createGroup( xmlGroup ) );
-				}
-				catch( InvalidXMLException e )
-				{
-					LOGGER.log( Level.WARNING, e.getMessage(), e );
-				}
-			}
+			return RendererFactory.getRenderer( getRenderingFormat() ).parseGroupList( responseAsStream );
 		}
-		return groups;
+		catch( BadRequestOrResponseException e )
+		{
+			throw e;
+		}
 	}
 
 	/* (non-Javadoc)
@@ -82,13 +69,16 @@ public final class GetGroupListQuery extends AbstractQuery<List<Group>>
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException
 	{
-		bibsonomyXML = performGetRequest( URL_GROUPS + "?start=" + start + "&end=" + end );
+		responseAsStream = performGetRequest( URL_GROUPS + "?start=" + start + "&end=" + end  + "&format=" + getRenderingFormat().toString().toLowerCase() );
 	}
 }
 
 /*
  * $Log$
- * Revision 1.4  2006-06-14 18:23:21  mbork
+ * Revision 1.5  2006-09-16 18:19:15  mbork
+ * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
+ *
+ * Revision 1.4  2006/06/14 18:23:21  mbork
  * refactored usage of username, password and host url
  *
  * Revision 1.3  2006/06/08 13:23:47  mbork

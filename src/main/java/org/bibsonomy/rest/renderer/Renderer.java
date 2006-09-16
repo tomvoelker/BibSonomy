@@ -2,6 +2,7 @@ package org.bibsonomy.rest.renderer;
 
 import java.io.InputStream;
 import java.io.Writer;
+import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.model.Group;
@@ -9,6 +10,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.ViewModel;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.InternServerException;
 
 /**
@@ -88,14 +90,24 @@ public interface Renderer
 	 */
 	public void serializeGroup( Writer writer, Group group, ViewModel model );
 
-	public User parseUser( InputStream is );
-	public Post parsePost( InputStream is );
-	public Group parseGroup( InputStream is );
+	public List<User> parseUserList( InputStream is ) throws BadRequestOrResponseException;
+	public User parseUser( InputStream is ) throws BadRequestOrResponseException;
+	
+	public List<Post> parsePostList( InputStream is ) throws BadRequestOrResponseException;
+	public Post parsePost( InputStream is ) throws BadRequestOrResponseException;
+	
+	public List<Group> parseGroupList( InputStream is ) throws BadRequestOrResponseException;
+	public Group parseGroup( InputStream is ) throws BadRequestOrResponseException;
+	
+	public List<Tag> parseTagList( InputStream is ) throws BadRequestOrResponseException;
 }
 
 /*
  * $Log$
- * Revision 1.9  2006-06-08 13:33:19  mbork
+ * Revision 1.10  2006-09-16 18:19:16  mbork
+ * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
+ *
+ * Revision 1.9  2006/06/08 13:33:19  mbork
  * reorganized imports
  *
  * Revision 1.8  2006/06/08 13:23:48  mbork

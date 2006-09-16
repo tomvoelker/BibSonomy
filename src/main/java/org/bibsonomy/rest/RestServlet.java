@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.bibsonomy.rest.database.TestDatabase;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
-import org.bibsonomy.rest.exceptions.BadRequestException;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.InternServerException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.ValidationException;
@@ -150,7 +150,7 @@ public final class RestServlet extends HttpServlet
       {
          response.sendError( HttpServletResponse.SC_NOT_FOUND, e.getMessage() );
       }
-      catch( BadRequestException e )
+      catch( BadRequestOrResponseException e )
       {
          response.sendError( HttpServletResponse.SC_BAD_REQUEST, e.getMessage() );
       }
@@ -179,12 +179,12 @@ public final class RestServlet extends HttpServlet
       }
       catch( IOException e )
       {
-         throw new BadRequestException( "error decoding authorization header: " + e.toString() );
+         throw new BadRequestOrResponseException( "error decoding authorization header: " + e.toString() );
       }
       int i = basicCookie.indexOf( ':' );
       if( i < 0 )
       {
-         throw new BadRequestException( "error decoding authorization header: syntax error" );
+         throw new BadRequestOrResponseException( "error decoding authorization header: syntax error" );
       }
       String username = basicCookie.substring( 0, i );
       String password = basicCookie.substring( i + 1 );
@@ -199,7 +199,10 @@ public final class RestServlet extends HttpServlet
 
 /*
  * $Log$
- * Revision 1.8  2006-06-28 15:36:13  mbork
+ * Revision 1.9  2006-09-16 18:19:16  mbork
+ * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
+ *
+ * Revision 1.8  2006/06/28 15:36:13  mbork
  * started implementing other http methods
  *
  * Revision 1.7  2006/06/13 18:07:40  mbork

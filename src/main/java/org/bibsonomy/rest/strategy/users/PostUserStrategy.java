@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.model.User;
-import org.bibsonomy.rest.exceptions.BadRequestException;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.InternServerException;
 import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
@@ -39,13 +39,13 @@ public class PostUserStrategy extends Strategy
 	 * @see org.bibsonomy.rest.strategy.Strategy#perform(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	public void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException, BadRequestException
+	public void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException, BadRequestOrResponseException
 	{
       try
       {
          User user = context.getRenderer().parseUser( request.getInputStream() );
          // check this here, because its not checked in the renderer
-         if( user.getPassword() == null || user.getPassword().length() == 0 ) throw new BadRequestException( "missing password" );
+         if( user.getPassword() == null || user.getPassword().length() == 0 ) throw new BadRequestOrResponseException( "missing password" );
          context.getLogic().storeUser( user, false );
       }
       catch( IOException e )
@@ -68,7 +68,10 @@ public class PostUserStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.4  2006-07-05 15:20:13  mbork
+ * Revision 1.5  2006-09-16 18:19:16  mbork
+ * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
+ *
+ * Revision 1.4  2006/07/05 15:20:13  mbork
  * implemented missing strategies, little changes on datamodel --> alpha :)
  *
  * Revision 1.3  2006/06/05 14:14:11  mbork

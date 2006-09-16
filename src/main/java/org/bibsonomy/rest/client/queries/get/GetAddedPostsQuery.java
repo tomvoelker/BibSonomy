@@ -1,18 +1,15 @@
 package org.bibsonomy.rest.client.queries.get;
 
-import java.util.ArrayList;
+import java.io.InputStream;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.bibsonomy.model.Post;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.enums.GroupingEntity;
 import org.bibsonomy.rest.enums.ResourceType;
-import org.bibsonomy.rest.exceptions.InvalidXMLException;
-import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
-import org.bibsonomy.rest.renderer.xml.ModelFactory;
-import org.bibsonomy.rest.renderer.xml.PostType;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.renderer.RendererFactory;
 
 /**
  * Use this Class to receive an ordered list of all posts.
@@ -24,7 +21,7 @@ public final class GetAddedPostsQuery extends AbstractQuery<List<Post>>
 {
 	private int start;
 	private int end;
-	private BibsonomyXML bibsonomyXML;
+	private InputStream responseAsStream;
 	private ResourceType resourceType;
 	private GroupingEntity grouping = GroupingEntity.ALL;
 	private String groupingValue;
@@ -91,28 +88,17 @@ public final class GetAddedPostsQuery extends AbstractQuery<List<Post>>
 	 * @see org.bibsonomy.rest.client.queries.AbstractQuery#getResult()
 	 */
 	@Override
-	public List<Post> getResult()
+	public List<Post> getResult() throws BadRequestOrResponseException, IllegalStateException
 	{
-		if( bibsonomyXML == null ) throw new IllegalStateException( "Execute the query first." );
-		
-		List<Post> posts = new ArrayList<Post>();
-
-		if( bibsonomyXML.getPosts() != null && bibsonomyXML.getPosts().getPost() != null )
+		if( responseAsStream == null ) throw new IllegalStateException( "Execute the query first." );
+		try
 		{
-			for( PostType xmlPost: bibsonomyXML.getPosts().getPost() )
-			{
-				try
-				{
-					posts.add( ModelFactory.getInstance().createPost( xmlPost ) );
-				}
-				catch( InvalidXMLException e )
-				{
-					LOGGER.log( Level.WARNING, e.getMessage(), e );
-					throw e;
-				}
-			}
+			return RendererFactory.getRenderer( getRenderingFormat() ).parsePostList( responseAsStream );
 		}
-		return posts;
+		catch( BadRequestOrResponseException e )
+		{
+			throw e;
+		}
 	}
 
 	/* (non-Javadoc)
@@ -141,13 +127,16 @@ public final class GetAddedPostsQuery extends AbstractQuery<List<Post>>
 			break;
 		}
 		
-		bibsonomyXML = performGetRequest( url );
+		responseAsStream = performGetRequest( url + "&format=" + getRenderingFormat().toString().toLowerCase() );
 	}
 }
 
 /*
  * $Log$
- * Revision 1.5  2006-06-23 20:50:08  mbork
+ * Revision 1.6  2006-09-16 18:19:15  mbork
+ * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
+ *
+ * Revision 1.5  2006/06/23 20:50:08  mbork
  * clientlib:
  * - added head request
  * - fixed issues with enums using uppercase letters invoked with toString()

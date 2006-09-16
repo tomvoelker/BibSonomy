@@ -1,13 +1,12 @@
 package org.bibsonomy.rest.client.queries.get;
 
-import java.util.logging.Level;
+import java.io.InputStream;
 
 import org.bibsonomy.model.Post;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
-import org.bibsonomy.rest.exceptions.InvalidXMLException;
-import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
-import org.bibsonomy.rest.renderer.xml.ModelFactory;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.renderer.RendererFactory;
 
 /**
  * Use this Class to receive details about a post of an user.
@@ -19,7 +18,7 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post>
 {
 	private String username;
 	private String resourceHash;
-	private BibsonomyXML bibsonomyXML;
+	private InputStream responseAsStream;
 
 	/**
     * Gets details of a post of an user.
@@ -43,23 +42,18 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post>
 	 * @see org.bibsonomy.rest.client.queries.AbstractQuery#getResult()
 	 */
 	@Override
-	public Post getResult() throws InvalidXMLException
+	public Post getResult() throws BadRequestOrResponseException, IllegalStateException
 	{
-		if( bibsonomyXML == null ) throw new IllegalStateException( "Execute the query first." );
+		if( responseAsStream == null ) throw new IllegalStateException( "Execute the query first." );
 
-		if( bibsonomyXML.getPost() != null )
+		try
 		{
-			try
-			{
-				return ModelFactory.getInstance().createPost( bibsonomyXML.getPost() );
-			}
-			catch( InvalidXMLException e )
-			{
-				LOGGER.log( Level.WARNING, e.getMessage(), e );
-				throw e;
-			}
+			return RendererFactory.getRenderer( getRenderingFormat() ).parsePost( responseAsStream );
 		}
-		throw new InvalidXMLException( "The received document did not contain the requested data." );
+		catch( BadRequestOrResponseException e )
+		{
+			throw e;
+		}
 	}
 
 	/*
@@ -70,13 +64,16 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post>
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException
 	{
-		bibsonomyXML = performGetRequest( URL_USERS + "/" + username + "/" + URL_POSTS + "/" + resourceHash );
+		responseAsStream = performGetRequest( URL_USERS + "/" + username + "/" + URL_POSTS + "/" + resourceHash  + "?format=" + getRenderingFormat().toString().toLowerCase() );
 	}
 }
 
 /*
  * $Log$
- * Revision 1.5  2006-06-23 20:50:08  mbork
+ * Revision 1.6  2006-09-16 18:19:15  mbork
+ * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
+ *
+ * Revision 1.5  2006/06/23 20:50:08  mbork
  * clientlib:
  * - added head request
  * - fixed issues with enums using uppercase letters invoked with toString()

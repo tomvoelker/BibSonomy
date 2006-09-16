@@ -4,15 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.client.worker.HttpWorker;
-import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -27,7 +21,7 @@ public final class GetWorker extends HttpWorker
 		super( username, password );
 	}
 	
-	public BibsonomyXML perform( String url ) throws ErrorPerformingRequestException
+	public InputStream perform( String url ) throws ErrorPerformingRequestException
 	{
 		LOGGER.log( Level.INFO, "GET: URL: " + url );
 		
@@ -42,15 +36,10 @@ public final class GetWorker extends HttpWorker
 			LOGGER.log( Level.INFO, "Result: " + httpResult );
 			if( get.getResponseBodyAsStream() != null )
 			{
-				return getBibsonomyXML( get.getResponseBodyAsStream() );
+				return get.getResponseBodyAsStream();
 			}
 		}
 		catch( IOException e )
-		{
-			LOGGER.log( Level.SEVERE, e.getMessage(), e );
-			throw new ErrorPerformingRequestException( e );
-		}
-		catch( JAXBException e )
 		{
 			LOGGER.log( Level.SEVERE, e.getMessage(), e );
 			throw new ErrorPerformingRequestException( e );
@@ -59,23 +48,7 @@ public final class GetWorker extends HttpWorker
 		{
 			get.releaseConnection();
 		}
-		
-		return new BibsonomyXML();
-	}
-
-	private BibsonomyXML getBibsonomyXML( InputStream is ) throws JAXBException 
-	{
-        JAXBContext jc = JAXBContext.newInstance( "org.bibsonomy.rest.renderer.xml" );
-        
-        // create an Unmarshaller
-        Unmarshaller u = jc.createUnmarshaller();
-
-        /*
-         * unmarshal a xml instance document into a tree of Java content
-         * objects composed of classes from the restapi package. 
-         */
-        JAXBElement<?> xmlDoc = (JAXBElement<?>)u.unmarshal( is );
-        return (BibsonomyXML)xmlDoc.getValue();
+		throw new ErrorPerformingRequestException( "No Answer." );
 	}
 
 	/**
@@ -89,7 +62,10 @@ public final class GetWorker extends HttpWorker
 
 /*
  * $Log$
- * Revision 1.1  2006-06-08 07:55:23  mbork
+ * Revision 1.2  2006-09-16 18:19:16  mbork
+ * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
+ *
+ * Revision 1.1  2006/06/08 07:55:23  mbork
  * moved classes for clearness
  *
  * Revision 1.2  2006/06/07 19:37:28  mbork

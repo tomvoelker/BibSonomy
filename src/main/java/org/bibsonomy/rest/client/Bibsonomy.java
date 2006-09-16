@@ -3,6 +3,7 @@ package org.bibsonomy.rest.client;
 import java.util.logging.Logger;
 
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
+import org.bibsonomy.rest.enums.RenderingFormat;
 
 /**
  * Bibsonomy is a class for accessing the <a href="http://www.bibsonomy.org/api/">Bibsonomy REST API</a>.
@@ -17,6 +18,7 @@ public final class Bibsonomy
    private String apiURL = "http://www.bibsonomy.org/api/";
    private String username;
    private String password;
+   private RenderingFormat renderingFormat = RenderingFormat.XML;
 
    /**
     * Creates an object to interact with Bibsonomy.
@@ -59,6 +61,7 @@ public final class Bibsonomy
    {
       if( username == null ) throw new IllegalStateException( "The username has not yet been set." );
       if( password == null ) throw new IllegalStateException( "The password has not yet been set." );
+      query.setRenderingFormat( this.renderingFormat );
       query.setApiURL( this.apiURL );
       query.execute( username, password );
    }
@@ -104,11 +107,32 @@ public final class Bibsonomy
       if( !apiURL.endsWith( "/" ) ) apiURL += "/";
       this.apiURL = apiURL;
    }
+
+   /**
+    * Sets the {@link RenderingFormat} to use. Note that currently only the {@link RenderingFormat#XML} is
+    * supported (which is set by default), so this method is only intended for future releases.
+    * <br/>
+    * Setting the RenderingFormat to some other value than {@link RenderingFormat#XML} will cause
+    * an {@link UnsupportedOperationException} to be thrown, at the moment.
+    *  
+    * @param renderingFormat The {@link RenderingFormat} to use.
+    */
+   public void setRenderingFormat(RenderingFormat renderingFormat) 
+   {
+      if( renderingFormat != RenderingFormat.XML )
+      {
+         throw new UnsupportedOperationException("Currently only the xml rendering format is implemented.");
+      }
+      this.renderingFormat = renderingFormat;
+   }
 }
 
 /*
  * $Log$
- * Revision 1.4  2006-06-14 18:23:22  mbork
+ * Revision 1.5  2006-09-16 18:19:16  mbork
+ * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
+ *
+ * Revision 1.4  2006/06/14 18:23:22  mbork
  * refactored usage of username, password and host url
  *
  * Revision 1.3  2006/06/08 16:14:36  mbork

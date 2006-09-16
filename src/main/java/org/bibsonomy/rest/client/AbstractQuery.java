@@ -1,5 +1,6 @@
 package org.bibsonomy.rest.client;
 
+import java.io.InputStream;
 import java.util.logging.Logger;
 
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
@@ -10,8 +11,8 @@ import org.bibsonomy.rest.client.worker.impl.HeadWorker;
 import org.bibsonomy.rest.client.worker.impl.PostWorker;
 import org.bibsonomy.rest.client.worker.impl.PutWorker;
 import org.bibsonomy.rest.enums.HttpMethod;
-import org.bibsonomy.rest.exceptions.InvalidXMLException;
-import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
+import org.bibsonomy.rest.enums.RenderingFormat;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 
 
 /**
@@ -29,17 +30,18 @@ public abstract class AbstractQuery<T>
 	protected static final String URL_POSTS_ADDED = "added";
 	protected static final String URL_POSTS_POPULAR = "popular";
 	
-	private String password;
-	private String username;
+   private String password;
+   private String username;
    private String apiURL;
-	private int statusCode = -1;
+   private int statusCode = -1;
+   private RenderingFormat renderingFormat = RenderingFormat.XML;
 
-   protected final BibsonomyXML performGetRequest( String url ) throws ErrorPerformingRequestException
+   protected final InputStream performGetRequest( String url ) throws ErrorPerformingRequestException
    {
       GetWorker worker = new GetWorker( username, password );
-      BibsonomyXML bibsonomyXML = worker.perform( apiURL + url );
+      InputStream answerAsStream = worker.perform( apiURL + url );
       statusCode = worker.getHttpResult();
-      return bibsonomyXML;
+      return answerAsStream;
    }
 
    protected final String performRequest( HttpMethod method, String url, String requestBody )
@@ -111,10 +113,12 @@ public abstract class AbstractQuery<T>
     
 	/**
     * @return the result of this query, if there is one.
-    * @throws InvalidXMLException
+    * @throws {@link BadRequestOrResponseException}
     *            if the received data is not valid.
+    * @throws {@link IllegalStateException}
+    *            if @link {@link #getResult()} gets called before @link {@link Bibsonomy#executeQuery(AbstractQuery)}
     */
-	public abstract T getResult() throws InvalidXMLException;
+	public abstract T getResult() throws BadRequestOrResponseException, IllegalStateException;
 
    /**
     * @param apiURL The apiURL to set.
@@ -123,11 +127,30 @@ public abstract class AbstractQuery<T>
    {
       this.apiURL = apiURL;
    }
+   
+   /**
+    * @return the {@link RenderingFormat} to use.
+    */
+   protected RenderingFormat getRenderingFormat()
+   {
+	   return this.renderingFormat;
+   }
+
+   /**
+    * @param renderingFormat the {@link RenderingFormat} to use.
+    */
+   void setRenderingFormat(RenderingFormat renderingFormat)
+   {
+	   this.renderingFormat = renderingFormat;
+   }
 }
 
 /*
  * $Log$
- * Revision 1.3  2006-06-23 20:50:09  mbork
+ * Revision 1.4  2006-09-16 18:19:16  mbork
+ * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
+ *
+ * Revision 1.3  2006/06/23 20:50:09  mbork
  * clientlib:
  * - added head request
  * - fixed issues with enums using uppercase letters invoked with toString()

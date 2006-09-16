@@ -6,7 +6,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.enums.HttpMethod;
-import org.bibsonomy.rest.renderer.impl.XMLRenderer;
+import org.bibsonomy.rest.renderer.RendererFactory;
 
 /**
  * Use this Class to change details of an existing user account.
@@ -58,14 +58,17 @@ public final class ChangeUserQuery extends AbstractQuery<String>
 	{
 		executed = true;
 		StringWriter sw = new StringWriter( 100 );
-		XMLRenderer.getInstance().serializeUser( sw, user, null );
-		result = performRequest( HttpMethod.PUT, URL_USERS + "/" + userName, sw.toString() );
+		RendererFactory.getRenderer( getRenderingFormat() ).serializeUser( sw, user, null );
+		result = performRequest( HttpMethod.PUT, URL_USERS + "/" + userName + "?format=" + getRenderingFormat().toString().toLowerCase(), sw.toString() );
 	}
 }
 
 /*
  * $Log$
- * Revision 1.4  2006-06-14 18:23:21  mbork
+ * Revision 1.5  2006-09-16 18:19:16  mbork
+ * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
+ *
+ * Revision 1.4  2006/06/14 18:23:21  mbork
  * refactored usage of username, password and host url
  *
  * Revision 1.3  2006/06/08 13:23:48  mbork
