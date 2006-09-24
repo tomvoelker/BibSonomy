@@ -3,6 +3,7 @@ package org.bibsonomy.rest.client;
 import java.util.logging.Logger;
 
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
+import org.bibsonomy.rest.client.queries.get.GetPostsQuery;
 import org.bibsonomy.rest.enums.RenderingFormat;
 
 /**
@@ -48,7 +49,7 @@ public final class Bibsonomy
    }
 
    /**
-    * executes the given query.
+    * Executes the given query.
     * 
     * @param query
     *           the query to execute
@@ -66,6 +67,25 @@ public final class Bibsonomy
       query.execute( username, password );
    }
 
+   /**
+    * Executes the given query and notifies the callback on progress. Note that the callback only
+    * gets informed if the Query is kind of a Get-Query, a {@link GetPostsQuery}, for example.
+    * 
+    * @param query
+    *           the query to execute
+    * @param callback
+    *           the callback object to inform
+    * @throws ErrorPerformingRequestException
+    *            if something fails, eg an ioexception occurs (see the cause)
+    * @throws IllegalStateException
+    *            if the username or the password has not yet been set
+    */
+   public void executeQuery( AbstractQuery query, ProgressCallback callback ) throws ErrorPerformingRequestException, IllegalStateException
+   {
+      query.setProgressCallback( callback );
+      executeQuery( query );
+   }
+   
    /**
     * @param password
     *           The password to set.
@@ -91,7 +111,7 @@ public final class Bibsonomy
    }
 
    /**
-    * this is the accessor method for the apiurl. That is the url pointing to the REST webservice. 
+    * This is the accessor method for the apiurl. That is the url pointing to the REST webservice. 
     * It defaults to <i>http://www.bibsonomy.org/api/</i>. If no trailing slash is given it is
     * appended automatically
     * 
@@ -129,7 +149,10 @@ public final class Bibsonomy
 
 /*
  * $Log$
- * Revision 1.5  2006-09-16 18:19:16  mbork
+ * Revision 1.6  2006-09-24 21:26:21  mbork
+ * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
+ *
+ * Revision 1.5  2006/09/16 18:19:16  mbork
  * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
  *
  * Revision 1.4  2006/06/14 18:23:22  mbork

@@ -1,6 +1,6 @@
 package org.bibsonomy.rest.renderer.impl;
 
-import java.io.InputStream;
+import java.io.Reader;
 import java.io.Writer;
 import java.math.BigInteger;
 import java.util.LinkedList;
@@ -254,11 +254,11 @@ public class XMLRenderer implements Renderer
       return xmlGroup;
    }
 
-   public User parseUser( InputStream is ) throws BadRequestOrResponseException
+   public User parseUser( Reader reader ) throws BadRequestOrResponseException
 	{
-		if( is == null ) throw new BadRequestOrResponseException( "The body part of the received document is missing" );
+		if( reader == null ) throw new BadRequestOrResponseException( "The body part of the received document is missing" );
 		
-		BibsonomyXML xmlDoc = parse( is );
+		BibsonomyXML xmlDoc = parse( reader );
 		
 		if( xmlDoc.getUser() != null )
 		{
@@ -267,11 +267,11 @@ public class XMLRenderer implements Renderer
 		throw new BadRequestOrResponseException( "The body part of the received document is erroneous - no user defined." );
 	}
 
-	public Post parsePost( InputStream is ) throws BadRequestOrResponseException
+	public Post parsePost( Reader reader ) throws BadRequestOrResponseException
 	{
-		if( is == null ) throw new BadRequestOrResponseException( "The body part of the received document is missing" );
+		if( reader == null ) throw new BadRequestOrResponseException( "The body part of the received document is missing" );
 		
-		BibsonomyXML xmlDoc = parse( is );
+		BibsonomyXML xmlDoc = parse( reader );
 		
 		if( xmlDoc.getPost() != null )
 		{
@@ -280,11 +280,11 @@ public class XMLRenderer implements Renderer
 		throw new BadRequestOrResponseException( "The body part of the received document is erroneous - no post defined." );
 	}
 
-	public Group parseGroup( InputStream is ) throws BadRequestOrResponseException
+	public Group parseGroup( Reader reader ) throws BadRequestOrResponseException
 	{
-		if( is == null ) throw new BadRequestOrResponseException( "The body part of the received document is missing" );
+		if( reader == null ) throw new BadRequestOrResponseException( "The body part of the received document is missing" );
 		
-		BibsonomyXML xmlDoc = parse( is );
+		BibsonomyXML xmlDoc = parse( reader );
 		
 		if( xmlDoc.getGroup() != null )
 		{
@@ -293,10 +293,10 @@ public class XMLRenderer implements Renderer
 		throw new BadRequestOrResponseException( "The body part of the received document is erroneous - no group defined." );
 	}
 	
-	public List<Group> parseGroupList(InputStream is) throws BadRequestOrResponseException 
+	public List<Group> parseGroupList( Reader reader ) throws BadRequestOrResponseException 
 	{
-		if( is == null ) throw new BadRequestOrResponseException( "The body part of the received document is missing" );
-		BibsonomyXML xmlDoc = parse( is );
+		if( reader == null ) throw new BadRequestOrResponseException( "The body part of the received document is missing" );
+		BibsonomyXML xmlDoc = parse( reader );
 		if( xmlDoc.getGroups() != null )
 		{
 			List<Group> groups = new LinkedList<Group>();
@@ -310,10 +310,10 @@ public class XMLRenderer implements Renderer
 		throw new BadRequestOrResponseException( "The body part of the received document is erroneous - no list of groups defined." );
 	}
 	
-	public List<Post> parsePostList(InputStream is) throws BadRequestOrResponseException
+	public List<Post> parsePostList( Reader reader ) throws BadRequestOrResponseException
 	{
-		if( is == null ) throw new BadRequestOrResponseException( "The body part of the received document is missing" );
-		BibsonomyXML xmlDoc = parse( is );
+		if( reader == null ) throw new BadRequestOrResponseException( "The body part of the received document is missing" );
+		BibsonomyXML xmlDoc = parse( reader );
 		if( xmlDoc.getPosts() != null )
 		{
 			List<Post> posts = new LinkedList<Post>();
@@ -327,10 +327,10 @@ public class XMLRenderer implements Renderer
 		throw new BadRequestOrResponseException( "The body part of the received document is erroneous - no list of posts defined." );
 	}
 	
-	public List<Tag> parseTagList(InputStream is) throws BadRequestOrResponseException 
+	public List<Tag> parseTagList( Reader reader ) throws BadRequestOrResponseException 
 	{
-		if( is == null ) throw new BadRequestOrResponseException( "The body part of the received document is missing" );
-		BibsonomyXML xmlDoc = parse( is );
+		if( reader == null ) throw new BadRequestOrResponseException( "The body part of the received document is missing" );
+		BibsonomyXML xmlDoc = parse( reader );
 		if( xmlDoc.getGroups() != null )
 		{
 			List<Tag> tags = new LinkedList<Tag>();
@@ -344,10 +344,10 @@ public class XMLRenderer implements Renderer
 		throw new BadRequestOrResponseException( "The body part of the received document is erroneous - no list of tags defined." );
 	}
 	
-	public List<User> parseUserList(InputStream is) throws BadRequestOrResponseException 
+	public List<User> parseUserList( Reader reader ) throws BadRequestOrResponseException 
 	{
-		if( is == null ) throw new BadRequestOrResponseException( "The body part of the received document is missing" );
-		BibsonomyXML xmlDoc = parse( is );
+		if( reader == null ) throw new BadRequestOrResponseException( "The body part of the received document is missing" );
+		BibsonomyXML xmlDoc = parse( reader );
 		if( xmlDoc.getUsers() != null )
 		{
 			List<User> users = new LinkedList<User>();
@@ -392,7 +392,7 @@ public class XMLRenderer implements Renderer
 		}
 	}
 	
-	private BibsonomyXML parse( InputStream is ) throws InternServerException
+	private BibsonomyXML parse( Reader reader ) throws InternServerException
 	{
         try
 		{
@@ -405,7 +405,7 @@ public class XMLRenderer implements Renderer
 			 * unmarshal a xml instance document into a tree of Java content
 			 * objects composed of classes from the restapi package. 
 			 */
-			JAXBElement<?> xmlDoc = ( JAXBElement<?> )u.unmarshal( is );
+			JAXBElement<?> xmlDoc = ( JAXBElement<?> )u.unmarshal( reader );
 			return (BibsonomyXML)xmlDoc.getValue();
 		}
 		catch( JAXBException e )
@@ -486,7 +486,10 @@ public class XMLRenderer implements Renderer
 
 /*
  * $Log$
- * Revision 1.14  2006-09-16 18:19:16  mbork
+ * Revision 1.15  2006-09-24 21:26:21  mbork
+ * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
+ *
+ * Revision 1.14  2006/09/16 18:19:16  mbork
  * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
  *
  * Revision 1.13  2006/07/09 19:07:12  mbork

@@ -19,12 +19,29 @@ public class NullResponse implements HttpServletResponse
    
    private PrintWriter writer;
    private StringWriter stringWriter;
-
+   private ServletOutputStream servletOutputStream;
+   
    public StringWriter getStringWriter()
    {
       return stringWriter;
    }
 
+   public ServletOutputStream getOutputStream() throws IOException
+   {
+      if( servletOutputStream == null )
+      {
+         servletOutputStream = new ServletOutputStream()
+         {
+            @Override
+            public void write( int b ) throws IOException
+            {
+               getWriter().write( b );
+            }
+         };
+      }
+      return servletOutputStream;
+   }
+   
    public PrintWriter getWriter() throws IOException
    {
       if( writer == null )
@@ -129,11 +146,6 @@ public class NullResponse implements HttpServletResponse
       return null;
    }
 
-   public ServletOutputStream getOutputStream() throws IOException
-   {
-      return null;
-   }
-
    public void setCharacterEncoding( String arg0 )
    {
 
@@ -193,7 +205,10 @@ public class NullResponse implements HttpServletResponse
 
 /*
  * $Log$
- * Revision 1.1  2006-06-13 18:07:40  mbork
+ * Revision 1.2  2006-09-24 21:26:21  mbork
+ * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
+ *
+ * Revision 1.1  2006/06/13 18:07:40  mbork
  * introduced unit tests for servlet using null-pattern for request and response. tested to use cactus/ httpunit, but decided not to use them.
  *
  */

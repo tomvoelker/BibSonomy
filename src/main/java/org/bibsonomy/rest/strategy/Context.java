@@ -1,5 +1,6 @@
 package org.bibsonomy.rest.strategy;
 
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -7,7 +8,6 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.rest.LogicInterface;
 import org.bibsonomy.rest.enums.HttpMethod;
@@ -117,12 +117,12 @@ public final class Context
 
 	/**
 	 * @param request the request
-	 * @param response the response
+	 * @param responseAdapter the response
 	 * @throws InternServerException
 	 */
-	public void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException
+	public void perform( HttpServletRequest request, StringWriter writer ) throws InternServerException
 	{
-		strategy.perform( request, response );
+		strategy.perform( request, writer );
 	}
 	
 	/**
@@ -269,7 +269,10 @@ public final class Context
 
 /*
  * $Log$
- * Revision 1.14  2006-07-05 15:27:51  mbork
+ * Revision 1.15  2006-09-24 21:26:21  mbork
+ * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
+ *
+ * Revision 1.14  2006/07/05 15:27:51  mbork
  * place constants on left side of comparison
  *
  * Revision 1.13  2006/06/28 15:36:13  mbork

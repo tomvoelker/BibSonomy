@@ -1,6 +1,6 @@
 package org.bibsonomy.rest.renderer.impl;
 
-import java.io.InputStream;
+import java.io.Reader;
 import java.io.Writer;
 import java.util.List;
 import java.util.Set;
@@ -61,43 +61,43 @@ public class HTMLRenderer implements Renderer
 		// TODO Auto-generated method stub
 	}
 
-	public User parseUser( InputStream is )
+	public User parseUser( Reader reader )
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Post parsePost( InputStream is )
+	public Post parsePost( Reader reader )
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Group parseGroup( InputStream is )
+	public Group parseGroup( Reader reader )
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public List<Group> parseGroupList(InputStream is) throws BadRequestOrResponseException 
+	public List<Group> parseGroupList( Reader reader ) throws BadRequestOrResponseException 
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public List<Post> parsePostList(InputStream is) throws BadRequestOrResponseException 
+	public List<Post> parsePostList( Reader reader ) throws BadRequestOrResponseException 
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public List<Tag> parseTagList(InputStream is) throws BadRequestOrResponseException 
+	public List<Tag> parseTagList( Reader reader ) throws BadRequestOrResponseException 
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public List<User> parseUserList(InputStream is) throws BadRequestOrResponseException 
+	public List<User> parseUserList( Reader reader ) throws BadRequestOrResponseException 
 	{
 		// TODO Auto-generated method stub
 		return null;
@@ -106,7 +106,10 @@ public class HTMLRenderer implements Renderer
 
 /*
  * $Log$
- * Revision 1.6  2006-09-16 18:19:16  mbork
+ * Revision 1.7  2006-09-24 21:26:21  mbork
+ * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
+ *
+ * Revision 1.6  2006/09/16 18:19:16  mbork
  * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
  *
  * Revision 1.5  2006/06/08 13:23:48  mbork

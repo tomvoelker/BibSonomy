@@ -1,10 +1,9 @@
 package org.bibsonomy.rest.strategy.posts;
 
-import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.model.Post;
 import org.bibsonomy.rest.ViewModel;
@@ -42,7 +41,7 @@ public class GetListOfPostsStrategy extends Strategy
 	 * @see org.bibsonomy.rest.strategy.Strategy#perform(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	public void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException
+	public void perform( HttpServletRequest request, StringWriter writer ) throws InternServerException
 	{
 		// setup viewModel
 		int start = context.getIntAttribute( "start", 0 );
@@ -93,14 +92,7 @@ public class GetListOfPostsStrategy extends Strategy
 		viewModel.setEndValue( end );
 		
 		// delegate to the renderer
-		try
-		{
-			context.getRenderer().serializePosts( response.getWriter(), posts, viewModel );
-		}
-		catch( IOException e )
-		{
-			throw new InternServerException( e );
-		}
+		context.getRenderer().serializePosts( writer, posts, viewModel );
 	}
 
 	/* (non-Javadoc)
@@ -116,7 +108,10 @@ public class GetListOfPostsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.9  2006-07-05 16:27:57  mbork
+ * Revision 1.10  2006-09-24 21:26:21  mbork
+ * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
+ *
+ * Revision 1.9  2006/07/05 16:27:57  mbork
  * fixed issues with link to next list of resources
  *
  * Revision 1.8  2006/07/05 15:27:51  mbork

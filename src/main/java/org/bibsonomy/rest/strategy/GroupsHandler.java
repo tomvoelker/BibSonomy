@@ -4,13 +4,13 @@ import java.util.StringTokenizer;
 
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
+import org.bibsonomy.rest.strategy.groups.AddGroupStrategy;
 import org.bibsonomy.rest.strategy.groups.AddUserToGroupStrategy;
 import org.bibsonomy.rest.strategy.groups.DeleteGroupStrategy;
+import org.bibsonomy.rest.strategy.groups.GetGroupStrategy;
+import org.bibsonomy.rest.strategy.groups.GetListOfGroupsStrategy;
 import org.bibsonomy.rest.strategy.groups.GetUserListOfGroupStrategy;
 import org.bibsonomy.rest.strategy.groups.RemoveUserFromGroupStrategy;
-import org.bibsonomy.rest.strategy.groups.GetListOfGroupsStrategy;
-import org.bibsonomy.rest.strategy.groups.GetGroupStrategy;
-import org.bibsonomy.rest.strategy.groups.AddGroupStrategy;
 import org.bibsonomy.rest.strategy.groups.UpdateGroupDetailsStrategy;
 
 /**
@@ -101,7 +101,10 @@ public class GroupsHandler implements ContextHandler
 
 /*
  * $Log$
- * Revision 1.5  2006-06-05 14:14:12  mbork
+ * Revision 1.6  2006-09-24 21:26:21  mbork
+ * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
+ *
+ * Revision 1.5  2006/06/05 14:14:12  mbork
  * implemented GET strategies
  *
  * Revision 1.4  2006/05/24 13:02:44  cschenk

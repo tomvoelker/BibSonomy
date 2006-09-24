@@ -1,6 +1,6 @@
 package org.bibsonomy.rest.client.queries.get;
 
-import java.io.InputStream;
+import java.io.Reader;
 
 import org.bibsonomy.model.Post;
 import org.bibsonomy.rest.client.AbstractQuery;
@@ -18,7 +18,7 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post>
 {
 	private String username;
 	private String resourceHash;
-	private InputStream responseAsStream;
+	private Reader downloadedDocument;
 
 	/**
     * Gets details of a post of an user.
@@ -44,11 +44,11 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post>
 	@Override
 	public Post getResult() throws BadRequestOrResponseException, IllegalStateException
 	{
-		if( responseAsStream == null ) throw new IllegalStateException( "Execute the query first." );
+		if( downloadedDocument == null ) throw new IllegalStateException( "Execute the query first." );
 
 		try
 		{
-			return RendererFactory.getRenderer( getRenderingFormat() ).parsePost( responseAsStream );
+			return RendererFactory.getRenderer( getRenderingFormat() ).parsePost( downloadedDocument );
 		}
 		catch( BadRequestOrResponseException e )
 		{
@@ -64,13 +64,16 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post>
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException
 	{
-		responseAsStream = performGetRequest( URL_USERS + "/" + username + "/" + URL_POSTS + "/" + resourceHash  + "?format=" + getRenderingFormat().toString().toLowerCase() );
+		downloadedDocument = performGetRequest( URL_USERS + "/" + username + "/" + URL_POSTS + "/" + resourceHash  + "?format=" + getRenderingFormat().toString().toLowerCase() );
 	}
 }
 
 /*
  * $Log$
- * Revision 1.6  2006-09-16 18:19:15  mbork
+ * Revision 1.7  2006-09-24 21:26:20  mbork
+ * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
+ *
+ * Revision 1.6  2006/09/16 18:19:15  mbork
  * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
  *
  * Revision 1.5  2006/06/23 20:50:08  mbork

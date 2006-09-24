@@ -1,9 +1,8 @@
 package org.bibsonomy.rest.strategy.tags;
 
-import java.io.IOException;
+import java.io.StringWriter;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.rest.ViewModel;
@@ -43,18 +42,11 @@ public class GetTagDetailsStrategy extends Strategy
 	 * @see org.bibsonomy.rest.strategy.Strategy#perform(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	public void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException
+	public void perform( HttpServletRequest request, StringWriter writer ) throws InternServerException
 	{
 		// delegate to the renderer
 		Tag tag = context.getLogic().getTagDetails( context.getAuthUserName(), tagName );
-		try 
-		{
-			context.getRenderer().serializeTag( response.getWriter(), tag, new ViewModel() );
-		} 
-		catch( IOException e ) 
-		{
-			throw new InternServerException( e );
-		}
+		context.getRenderer().serializeTag( writer, tag, new ViewModel() );
 	}
 
 	/* (non-Javadoc)
@@ -70,7 +62,10 @@ public class GetTagDetailsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.4  2006-06-11 15:25:25  mbork
+ * Revision 1.5  2006-09-24 21:26:21  mbork
+ * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
+ *
+ * Revision 1.4  2006/06/11 15:25:25  mbork
  * removed gatekeeper, changed authentication process
  *
  * Revision 1.3  2006/06/05 14:14:11  mbork

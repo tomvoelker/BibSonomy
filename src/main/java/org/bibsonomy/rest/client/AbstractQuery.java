@@ -1,6 +1,6 @@
 package org.bibsonomy.rest.client;
 
-import java.io.InputStream;
+import java.io.Reader;
 import java.util.logging.Logger;
 
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
@@ -35,13 +35,14 @@ public abstract class AbstractQuery<T>
    private String apiURL;
    private int statusCode = -1;
    private RenderingFormat renderingFormat = RenderingFormat.XML;
+   private ProgressCallback callback;
 
-   protected final InputStream performGetRequest( String url ) throws ErrorPerformingRequestException
+   protected final Reader performGetRequest( String url ) throws ErrorPerformingRequestException
    {
-      GetWorker worker = new GetWorker( username, password );
-      InputStream answerAsStream = worker.perform( apiURL + url );
+      GetWorker worker = new GetWorker( username, password, callback );
+      Reader downloadedDocument = worker.perform( apiURL + url );
       statusCode = worker.getHttpResult();
-      return answerAsStream;
+      return downloadedDocument;
    }
 
    protected final String performRequest( HttpMethod method, String url, String requestBody )
@@ -143,11 +144,22 @@ public abstract class AbstractQuery<T>
    {
 	   this.renderingFormat = renderingFormat;
    }
+
+   /**
+    * @param callback the {@link ProgressCallback} to inform
+    */
+   void setProgressCallback( ProgressCallback callback )
+   {
+      this.callback = callback;
+   }
 }
 
 /*
  * $Log$
- * Revision 1.4  2006-09-16 18:19:16  mbork
+ * Revision 1.5  2006-09-24 21:26:21  mbork
+ * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
+ *
+ * Revision 1.4  2006/09/16 18:19:16  mbork
  * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
  *
  * Revision 1.3  2006/06/23 20:50:09  mbork

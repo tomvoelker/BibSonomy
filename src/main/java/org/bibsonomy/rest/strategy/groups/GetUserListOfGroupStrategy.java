@@ -1,10 +1,9 @@
 package org.bibsonomy.rest.strategy.groups;
 
-import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.ViewModel;
@@ -45,7 +44,7 @@ public class GetUserListOfGroupStrategy extends Strategy
 	 * @see org.bibsonomy.rest.strategy.Strategy#perform(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	public void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException
+	public void perform( HttpServletRequest request, StringWriter writer ) throws InternServerException
 	{
 		// setup viewModel
 		int start = context.getIntAttribute( "start", 0 );
@@ -67,15 +66,8 @@ public class GetUserListOfGroupStrategy extends Strategy
       viewModel.setStartValue( start );
       viewModel.setEndValue( end );
 		
-		try 
-		{
-		   // delegate to the renderer
-			context.getRenderer().serializeUsers( response.getWriter(), users, viewModel );
-		} 
-		catch( IOException e ) 
-		{
-			throw new InternServerException( e );
-		}
+		// delegate to the renderer
+		context.getRenderer().serializeUsers( writer, users, viewModel );
 	}
 
 	/* (non-Javadoc)
@@ -91,7 +83,10 @@ public class GetUserListOfGroupStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.6  2006-07-05 16:27:58  mbork
+ * Revision 1.7  2006-09-24 21:26:21  mbork
+ * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
+ *
+ * Revision 1.6  2006/07/05 16:27:58  mbork
  * fixed issues with link to next list of resources
  *
  * Revision 1.5  2006/06/13 21:30:40  mbork

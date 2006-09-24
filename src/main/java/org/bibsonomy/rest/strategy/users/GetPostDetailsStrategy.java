@@ -1,9 +1,8 @@
 package org.bibsonomy.rest.strategy.users;
 
-import java.io.IOException;
+import java.io.StringWriter;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.model.Post;
 import org.bibsonomy.rest.ViewModel;
@@ -48,7 +47,7 @@ public class GetPostDetailsStrategy extends Strategy
 	 * @see org.bibsonomy.rest.strategy.Strategy#perform(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	public void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException, NoSuchResourceException
+	public void perform( HttpServletRequest request, StringWriter writer ) throws InternServerException, NoSuchResourceException
 	{
 		// delegate to the renderer
 		Post post = context.getLogic().getPostDetails( context.getAuthUserName(), resourceHash, userName );
@@ -57,14 +56,7 @@ public class GetPostDetailsStrategy extends Strategy
          throw new NoSuchResourceException( "The requested post for the hash '" + resourceHash
                + "' of the requested user '" + userName + "' does not exist." );
       }
-      try
-      {
-			context.getRenderer().serializePost( response.getWriter(), post, new ViewModel() );
-		}
-		catch( IOException e )
-		{
-			throw new InternServerException( e );
-		}
+		context.getRenderer().serializePost( writer, post, new ViewModel() );
 	}
 
 	/*
@@ -81,7 +73,10 @@ public class GetPostDetailsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.6  2006-06-13 21:30:41  mbork
+ * Revision 1.7  2006-09-24 21:26:21  mbork
+ * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
+ *
+ * Revision 1.6  2006/06/13 21:30:41  mbork
  * implemented unit tests for get-strategies; fixed some minor bugs
  *
  * Revision 1.5  2006/06/13 18:07:40  mbork

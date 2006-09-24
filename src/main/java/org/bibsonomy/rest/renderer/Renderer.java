@@ -1,6 +1,6 @@
 package org.bibsonomy.rest.renderer;
 
-import java.io.InputStream;
+import java.io.Reader;
 import java.io.Writer;
 import java.util.List;
 import java.util.Set;
@@ -90,21 +90,24 @@ public interface Renderer
 	 */
 	public void serializeGroup( Writer writer, Group group, ViewModel model );
 
-	public List<User> parseUserList( InputStream is ) throws BadRequestOrResponseException;
-	public User parseUser( InputStream is ) throws BadRequestOrResponseException;
+	public List<User> parseUserList( Reader reader ) throws BadRequestOrResponseException;
+	public User parseUser( Reader reader ) throws BadRequestOrResponseException;
 	
-	public List<Post> parsePostList( InputStream is ) throws BadRequestOrResponseException;
-	public Post parsePost( InputStream is ) throws BadRequestOrResponseException;
+	public List<Post> parsePostList( Reader reader ) throws BadRequestOrResponseException;
+	public Post parsePost( Reader reader ) throws BadRequestOrResponseException;
 	
-	public List<Group> parseGroupList( InputStream is ) throws BadRequestOrResponseException;
-	public Group parseGroup( InputStream is ) throws BadRequestOrResponseException;
+	public List<Group> parseGroupList( Reader reader ) throws BadRequestOrResponseException;
+	public Group parseGroup( Reader reader ) throws BadRequestOrResponseException;
 	
-	public List<Tag> parseTagList( InputStream is ) throws BadRequestOrResponseException;
+	public List<Tag> parseTagList( Reader reader ) throws BadRequestOrResponseException;
 }
 
 /*
  * $Log$
- * Revision 1.10  2006-09-16 18:19:16  mbork
+ * Revision 1.11  2006-09-24 21:26:21  mbork
+ * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
+ *
+ * Revision 1.10  2006/09/16 18:19:16  mbork
  * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
  *
  * Revision 1.9  2006/06/08 13:33:19  mbork

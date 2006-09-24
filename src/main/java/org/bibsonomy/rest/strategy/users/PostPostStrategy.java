@@ -1,9 +1,10 @@
 package org.bibsonomy.rest.strategy.users;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.model.Post;
 import org.bibsonomy.rest.exceptions.InternServerException;
@@ -42,11 +43,11 @@ public class PostPostStrategy extends Strategy
 	 * @see org.bibsonomy.rest.strategy.Strategy#perform(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	public void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException
+	public void perform( HttpServletRequest request, StringWriter writer ) throws InternServerException
 	{
       try
       {
-         Post post = context.getRenderer().parsePost( request.getInputStream() );
+         Post post = context.getRenderer().parsePost( new InputStreamReader( request.getInputStream() ) );
          context.getLogic().storePost( userName, post, false );
       }
       catch( IOException e )
@@ -68,7 +69,10 @@ public class PostPostStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.4  2006-07-05 15:20:13  mbork
+ * Revision 1.5  2006-09-24 21:26:21  mbork
+ * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
+ *
+ * Revision 1.4  2006/07/05 15:20:13  mbork
  * implemented missing strategies, little changes on datamodel --> alpha :)
  *
  * Revision 1.3  2006/06/05 14:14:11  mbork

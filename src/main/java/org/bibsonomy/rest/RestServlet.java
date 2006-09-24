@@ -1,6 +1,7 @@
 package org.bibsonomy.rest;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.HttpURLConnection;
 
 import javax.servlet.ServletException;
@@ -135,7 +136,10 @@ public final class RestServlet extends HttpServlet
 
          // send answer
          response.setStatus( HttpServletResponse.SC_OK );
-         context.perform( request, response );
+         StringWriter writer = new StringWriter();
+         context.perform( request, writer );
+         response.addHeader( "Content-Length", String.valueOf( writer.getBuffer().length() ) );
+         response.getOutputStream().print( writer.toString() );
       }
       catch( AuthenticationException e )
       {
@@ -199,7 +203,10 @@ public final class RestServlet extends HttpServlet
 
 /*
  * $Log$
- * Revision 1.9  2006-09-16 18:19:16  mbork
+ * Revision 1.10  2006-09-24 21:26:21  mbork
+ * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
+ *
+ * Revision 1.9  2006/09/16 18:19:16  mbork
  * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
  *
  * Revision 1.8  2006/06/28 15:36:13  mbork

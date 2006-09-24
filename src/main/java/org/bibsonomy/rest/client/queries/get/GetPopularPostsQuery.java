@@ -1,6 +1,6 @@
 package org.bibsonomy.rest.client.queries.get;
 
-import java.io.InputStream;
+import java.io.Reader;
 import java.util.List;
 
 import org.bibsonomy.model.Post;
@@ -21,7 +21,7 @@ public final class GetPopularPostsQuery extends AbstractQuery<List<Post>>
 {
 	private int start;
 	private int end;
-	private InputStream responseAsStream;
+	private Reader downloadedDocument;
 	private ResourceType resourceType;
 	private GroupingEntity grouping = GroupingEntity.ALL;
 	private String groupingValue;
@@ -88,10 +88,10 @@ public final class GetPopularPostsQuery extends AbstractQuery<List<Post>>
 	@Override
 	public List<Post> getResult() throws BadRequestOrResponseException, IllegalStateException
 	{
-		if( responseAsStream == null ) throw new IllegalStateException( "Execute the query first." );
+		if( downloadedDocument == null ) throw new IllegalStateException( "Execute the query first." );
 		try
 		{
-			return RendererFactory.getRenderer( getRenderingFormat() ).parsePostList( responseAsStream );
+			return RendererFactory.getRenderer( getRenderingFormat() ).parsePostList( downloadedDocument );
 		}
 		catch( BadRequestOrResponseException e )
 		{
@@ -125,13 +125,16 @@ public final class GetPopularPostsQuery extends AbstractQuery<List<Post>>
 			break;
 		}
 		
-		responseAsStream = performGetRequest( url + "&format=" + getRenderingFormat().toString().toLowerCase()  );
+		downloadedDocument = performGetRequest( url + "&format=" + getRenderingFormat().toString().toLowerCase()  );
 	}
 }
 
 /*
  * $Log$
- * Revision 1.6  2006-09-16 18:19:15  mbork
+ * Revision 1.7  2006-09-24 21:26:20  mbork
+ * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
+ *
+ * Revision 1.6  2006/09/16 18:19:15  mbork
  * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
  *
  * Revision 1.5  2006/06/23 20:50:08  mbork

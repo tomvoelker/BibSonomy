@@ -1,6 +1,6 @@
 package org.bibsonomy.rest.client.queries.get;
 
-import java.io.InputStream;
+import java.io.Reader;
 import java.util.List;
 
 import org.bibsonomy.model.Tag;
@@ -20,7 +20,7 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>>
 {
 	private int start;
 	private int end;
-	private InputStream responseAsStream;
+	private Reader downloadedDocument;
 	private String filter = null;
 	private GroupingEntity grouping = GroupingEntity.ALL;
 	private String groupingValue;
@@ -84,11 +84,11 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>>
 	@Override
 	public List<Tag> getResult() throws BadRequestOrResponseException, IllegalStateException
 	{
-		if( responseAsStream == null ) throw new IllegalStateException( "Execute the query first." );
+		if( downloadedDocument == null ) throw new IllegalStateException( "Execute the query first." );
 		
 		try
 		{
-			return RendererFactory.getRenderer( getRenderingFormat() ).parseTagList( responseAsStream );
+			return RendererFactory.getRenderer( getRenderingFormat() ).parseTagList( downloadedDocument );
 		}
 		catch( BadRequestOrResponseException e )
 		{
@@ -120,13 +120,16 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>>
 		{
 			url += "&filter=" + filter;
 		}
-		responseAsStream = performGetRequest( url + "&format=" + getRenderingFormat().toString().toLowerCase()  );
+		downloadedDocument = performGetRequest( url + "&format=" + getRenderingFormat().toString().toLowerCase()  );
 	}
 }
 
 /*
  * $Log$
- * Revision 1.5  2006-09-16 18:19:15  mbork
+ * Revision 1.6  2006-09-24 21:26:20  mbork
+ * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
+ *
+ * Revision 1.5  2006/09/16 18:19:15  mbork
  * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
  *
  * Revision 1.4  2006/06/14 18:23:21  mbork

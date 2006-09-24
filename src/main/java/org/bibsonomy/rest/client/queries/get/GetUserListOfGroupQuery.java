@@ -1,6 +1,6 @@
 package org.bibsonomy.rest.client.queries.get;
 
-import java.io.InputStream;
+import java.io.Reader;
 import java.util.List;
 
 import org.bibsonomy.model.User;
@@ -20,7 +20,7 @@ public final class GetUserListOfGroupQuery extends AbstractQuery<List<User>>
 	private String groupname;
 	private int start;
 	private int end;
-	private InputStream responseAsStream;
+	private Reader downloadedDocument;
 
 	/**
 	 * Gets an user list of a group
@@ -57,11 +57,11 @@ public final class GetUserListOfGroupQuery extends AbstractQuery<List<User>>
 	@Override
 	public List<User> getResult() throws BadRequestOrResponseException, IllegalStateException
 	{
-		if( responseAsStream == null ) throw new IllegalStateException( "Execute the query first." );
+		if( downloadedDocument == null ) throw new IllegalStateException( "Execute the query first." );
 		
 		try
 		{
-			return RendererFactory.getRenderer( getRenderingFormat() ).parseUserList( responseAsStream );
+			return RendererFactory.getRenderer( getRenderingFormat() ).parseUserList( downloadedDocument );
 		}
 		catch( BadRequestOrResponseException e )
 		{
@@ -75,14 +75,17 @@ public final class GetUserListOfGroupQuery extends AbstractQuery<List<User>>
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException
 	{
-		responseAsStream = performGetRequest( URL_GROUPS + "/" + groupname + "/" + URL_USERS + "?start=" + start
+		downloadedDocument = performGetRequest( URL_GROUPS + "/" + groupname + "/" + URL_USERS + "?start=" + start
 				+ "&end=" + end + "&format=" + getRenderingFormat().toString().toLowerCase()  );
 	}
 }
 
 /*
  * $Log$
- * Revision 1.5  2006-09-16 18:19:15  mbork
+ * Revision 1.6  2006-09-24 21:26:20  mbork
+ * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
+ *
+ * Revision 1.5  2006/09/16 18:19:15  mbork
  * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
  *
  * Revision 1.4  2006/06/14 18:23:21  mbork

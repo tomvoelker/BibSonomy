@@ -1,7 +1,8 @@
 package org.bibsonomy.rest.strategy.groups;
 
+import java.io.StringWriter;
+
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.rest.exceptions.InternServerException;
 import org.bibsonomy.rest.exceptions.ValidationException;
@@ -42,7 +43,7 @@ public class RemoveUserFromGroupStrategy extends Strategy
 	 * @see org.bibsonomy.rest.strategy.Strategy#perform(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	public void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException
+	public void perform( HttpServletRequest request, StringWriter writer ) throws InternServerException
    {
       context.getLogic().removeUserFromGroup( groupName, userName );
    }
@@ -60,7 +61,10 @@ public class RemoveUserFromGroupStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.3  2006-07-05 15:20:13  mbork
+ * Revision 1.4  2006-09-24 21:26:21  mbork
+ * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
+ *
+ * Revision 1.3  2006/07/05 15:20:13  mbork
  * implemented missing strategies, little changes on datamodel --> alpha :)
  *
  * Revision 1.2  2006/05/24 13:02:43  cschenk

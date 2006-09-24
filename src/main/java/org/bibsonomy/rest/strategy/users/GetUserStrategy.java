@@ -1,9 +1,8 @@
 package org.bibsonomy.rest.strategy.users;
 
-import java.io.IOException;
+import java.io.StringWriter;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.ViewModel;
@@ -45,19 +44,12 @@ public class GetUserStrategy extends Strategy
 	 * @see org.bibsonomy.rest.strategy.Strategy#perform(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	public void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException, NoSuchResourceException
+	public void perform( HttpServletRequest request, StringWriter writer ) throws InternServerException, NoSuchResourceException
 	{
 		// delegate to the renderer
 		User user = context.getLogic().getUserDetails( context.getAuthUserName(), userName );
       if( user == null ) throw new NoSuchResourceException( "The requested user '" + userName + "' does not exist." );
-		try 
-		{
-			context.getRenderer().serializeUser( response.getWriter(), user, new ViewModel() );
-		} 
-		catch( IOException e ) 
-		{
-			throw new InternServerException( e );
-		}
+		context.getRenderer().serializeUser( writer, user, new ViewModel() );
 	}
 
 	/* (non-Javadoc)
@@ -73,7 +65,10 @@ public class GetUserStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.5  2006-06-13 18:07:40  mbork
+ * Revision 1.6  2006-09-24 21:26:21  mbork
+ * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
+ *
+ * Revision 1.5  2006/06/13 18:07:40  mbork
  * introduced unit tests for servlet using null-pattern for request and response. tested to use cactus/ httpunit, but decided not to use them.
  *
  * Revision 1.4  2006/06/11 15:25:25  mbork

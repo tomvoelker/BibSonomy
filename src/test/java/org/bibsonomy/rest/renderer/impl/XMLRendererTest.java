@@ -2,7 +2,6 @@ package org.bibsonomy.rest.renderer.impl;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -74,7 +73,7 @@ public class XMLRendererTest extends TestCase
 		
 		try 
 		{
-			renderer.parseUser( new FileInputStream( tmpFile ) );
+			renderer.parseUser( new FileReader( tmpFile ) );
 			fail( "exception should have been thrown." );
 		}
 		catch( BadRequestOrResponseException e )
@@ -90,7 +89,7 @@ public class XMLRendererTest extends TestCase
 		bibXML.setUser( userType );
 		tmpFile = File.createTempFile( "bibsonomy", "junit" );
 		marshalToFile( bibXML, tmpFile );
-		User user = renderer.parseUser( new FileInputStream( tmpFile ) );
+		User user = renderer.parseUser( new FileReader( tmpFile ) );
 		assertTrue( "model not correctly initialized", "test".equals( user.getName() ) );
 	}
 	
@@ -113,7 +112,7 @@ public class XMLRendererTest extends TestCase
 		
 		try 
 		{
-			renderer.parseGroup( new FileInputStream( tmpFile ) );
+			renderer.parseGroup( new FileReader( tmpFile ) );
 			fail( "exception should have been thrown." );
 		}
 		catch( BadRequestOrResponseException e )
@@ -129,7 +128,7 @@ public class XMLRendererTest extends TestCase
 		bibXML.setGroup( groupType );
 		tmpFile = File.createTempFile( "bibsonomy", "junit" );
 		marshalToFile( bibXML, tmpFile );
-		Group group = renderer.parseGroup( new FileInputStream( tmpFile ) );
+		Group group = renderer.parseGroup( new FileReader( tmpFile ) );
 		assertTrue( "model not correctly initialized", "test".equals( group.getName() ) );
 	}
 	
@@ -152,7 +151,7 @@ public class XMLRendererTest extends TestCase
 		
 		try 
 		{
-			renderer.parsePost( new FileInputStream( tmpFile ) );
+			renderer.parsePost( new FileReader( tmpFile ) );
 			fail( "exception should have been thrown." );
 		}
 		catch( BadRequestOrResponseException e )
@@ -183,7 +182,7 @@ public class XMLRendererTest extends TestCase
 		bibXML.setPost( xmlPost );
 		tmpFile = File.createTempFile( "bibsonomy", "junit" );
 		marshalToFile( bibXML, tmpFile );
-		renderer.parsePost( new FileInputStream( tmpFile ) );
+		renderer.parsePost( new FileReader( tmpFile ) );
 	}
 	
 	/**
@@ -473,7 +472,10 @@ public class XMLRendererTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.7  2006-09-16 18:17:50  mbork
+ * Revision 1.8  2006-09-24 21:26:21  mbork
+ * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
+ *
+ * Revision 1.7  2006/09/16 18:17:50  mbork
  * added some new fake bibtex entries to demonstrate jabref plugin :)
  * fix of tests depiending on fake bibtex entries
  *

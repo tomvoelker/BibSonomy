@@ -1,9 +1,10 @@
 package org.bibsonomy.rest.strategy.users;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -39,11 +40,11 @@ public class PostUserStrategy extends Strategy
 	 * @see org.bibsonomy.rest.strategy.Strategy#perform(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	public void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException, BadRequestOrResponseException
+	public void perform( HttpServletRequest request, StringWriter writer ) throws InternServerException, BadRequestOrResponseException
 	{
       try
       {
-         User user = context.getRenderer().parseUser( request.getInputStream() );
+         User user = context.getRenderer().parseUser( new InputStreamReader( request.getInputStream() ) );
          // check this here, because its not checked in the renderer
          if( user.getPassword() == null || user.getPassword().length() == 0 ) throw new BadRequestOrResponseException( "missing password" );
          context.getLogic().storeUser( user, false );
@@ -68,7 +69,10 @@ public class PostUserStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.5  2006-09-16 18:19:16  mbork
+ * Revision 1.6  2006-09-24 21:26:21  mbork
+ * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
+ *
+ * Revision 1.5  2006/09/16 18:19:16  mbork
  * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
  *
  * Revision 1.4  2006/07/05 15:20:13  mbork

@@ -1,9 +1,8 @@
 package org.bibsonomy.rest.strategy.groups;
 
-import java.io.IOException;
+import java.io.StringWriter;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.model.Group;
 import org.bibsonomy.rest.ViewModel;
@@ -44,7 +43,7 @@ public class GetGroupStrategy extends Strategy
 	 * @see org.bibsonomy.rest.strategy.Strategy#perform(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	public void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException, NoSuchResourceException
+	public void perform( HttpServletRequest request, StringWriter writer ) throws InternServerException, NoSuchResourceException
 	{
 		// delegate to the renderer
 		Group group = context.getLogic().getGroupDetails( context.getAuthUserName(), groupName );
@@ -52,14 +51,7 @@ public class GetGroupStrategy extends Strategy
       {
          throw new NoSuchResourceException( "The requested group '" + groupName + "' does not exist." );
       }
-		try 
-		{
-			context.getRenderer().serializeGroup( response.getWriter(), group, new ViewModel() );
-		} 
-		catch( IOException e ) 
-		{
-			throw new InternServerException( e );
-		}
+		context.getRenderer().serializeGroup( writer, group, new ViewModel() );
 	}
 
 	/* (non-Javadoc)
@@ -75,7 +67,10 @@ public class GetGroupStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.4  2006-06-13 21:30:40  mbork
+ * Revision 1.5  2006-09-24 21:26:21  mbork
+ * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
+ *
+ * Revision 1.4  2006/06/13 21:30:40  mbork
  * implemented unit tests for get-strategies; fixed some minor bugs
  *
  * Revision 1.3  2006/06/13 18:07:40  mbork

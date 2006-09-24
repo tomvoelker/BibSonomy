@@ -1,7 +1,8 @@
 package org.bibsonomy.rest.strategy;
 
+import java.io.StringWriter;
+
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.rest.enums.GroupingEntity;
 import org.bibsonomy.rest.exceptions.InternServerException;
@@ -29,11 +30,11 @@ public abstract class Strategy
 
 	/**
 	 * @param request
-	 * @param response
+	 * @param responseAdapter
 	 * @throws InternServerException
     * @throws NoSuchResourceException if one part of the uri doesnt exist (the user, eg) 
 	 */
-	public abstract void perform( HttpServletRequest request, HttpServletResponse response ) throws InternServerException, NoSuchResourceException;
+	public abstract void perform( HttpServletRequest request, StringWriter writer ) throws InternServerException, NoSuchResourceException;
 
 	/**
 	 * @param userAgent
@@ -64,7 +65,10 @@ public abstract class Strategy
 
 /*
  * $Log$
- * Revision 1.5  2006-07-05 15:27:51  mbork
+ * Revision 1.6  2006-09-24 21:26:21  mbork
+ * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
+ *
+ * Revision 1.5  2006/07/05 15:27:51  mbork
  * place constants on left side of comparison
  *
  * Revision 1.4  2006/06/13 18:07:39  mbork
