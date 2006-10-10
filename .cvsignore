@@ -1,3 +1,9 @@
+bin
 work
 target
-bin
+.classpath
+.project
+.wtpmodules
+.djunitplugin
+.tomcatplugin
+jcoverage.ser
