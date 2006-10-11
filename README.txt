@@ -1,32 +1,66 @@
-BibSonomy README
+Bibsonomy README
 
 1.) Getting Started
 
-Getting you started in this project should be easy. If you are not familiar with
-Maven you should install it first. You can fetch the commandline version from
-http://maven.apache.org/download.html. Don't just get the latest version of
-Maven2, take version 2.0.2. Unpack the file you downloaded and attach
-"/path/to/maven2/bin" to your Path-Variable (e.g. PATH=$PATH:/path/to/maven2/bin).
+Um das Projekt in Eclipse einzurichten, ist folgendes nötig:
 
-Once you're ready with that create a ".m2"-directory in your homedirectory. This
-step is necessary, because we want to download a Maven plugin for Eclipse and it
-gets confused if the directory isn't there. So open your Eclipse IDE and click
-on "Help", "Software Updates" and on "Find and Install". Select that you want to
-install a new feature and add a new remote site. As the name enter want every
-you like (e.g. Maven2) and let the URL point to http://m2eclipse.codehaus.org/.
-In the following dialogs simply select the latest version of Maven2 and let
-Eclipse install it.
+1. Projekt aus CVS auschecken
+2. Im Projektroot mvn eclipse:eclipse ausführen
+3. .project im Projektroot löschen
+4. In Eclipse: File - Import - Existing Projects into Workspace
+4.1 Als "root directory" Projektroot auswählen
+4.2 Alle Module sollten unter "Projects" auftauchen
+4.3 Sicherstellen, dass "Copy projects into workspace" aus ist
+4.4 Finish
+5. Alle Module werden als separate Projekte in Eclipse angezeigt
+5.1 Die meisten haben Build-Fehler - Dependencies fehlen!
+6. In das Verzeichnis misc/eclipse/project-descriptors wechseln und copy.sh ausführen
+7. Die Projekte sollten neu gebaut werden und alle Fehler verschwinden
+7.1 Meldet Eclipse, dass bspw. .project "out of sync with the filesystem"
+    ist, dann Eclipse neustarten.
 
-If you're done with that open a shell and change into the projectdirectory.
-Inside this directory you can invoke Maven; don't try it outside the directory
-because this will just not work. When you run Maven for the first time it'll
-download all JARs your project is depending on. So type 'mvn compile' and wait
-until it's finished. Once it's done you can get back to Eclipse and start
-developing. Notice the "Maven2 Dependencies"-library in the "Package
-Explorer"-view; all dependencies are inside it.
+Sollten die Module immer noch Fehler aufweisen, liegt dies an "Build Path"-Problemen.
+Dazu gibt es zwei Lösungen:
+1. entweder fehlt eine Abhängigkeit (Properties - Java Build Path - Projects)
+2. oder die Sourcen eines anderen Moduls müssen in das Projekt gelinkt werden.
 
-If you want to know more about Maven then here's a list of links which migth be
-interesting for you:
+Manchmal reicht das setzen von Abhängigkeiten zwischen den Projekten nicht aus,
+da bspw. bei einer Webapp alle Sourcen nach WEB-INF/classes compiliert werden müssen,
+damit der Classloader vom Tomcat sie finden kann. Dazu:
+
+1. Properties - Java Build Path - Source
+1.1 Link Source...
+2. Variables...
+2.1 New...
+2.2 Name: WORKSPACE, Location: Eclipse Workspace auswählen
+3. Extend...
+3.1 Sourcefolder des Moduls auswählen, dass eingebunden werden soll
+3.2 "Folder name" anpassen; statt ganzem Verzeichnis ggfls. Projektname des anderen Moduls
+4. Next - Exclusion patterns - Add
+4.1 **/CVS*
+5. Finish
+
+
+2.) Maven
+
+Maven2 ist für den Build und insb. das Auflösen von Abhängigkeiten verantwortlich.
+
+2.1) Maven auf der Kommandozeile installieren
+
+1. Maven2 runterladen: http://maven.apache.org/download.html
+2. Entpacken und in PATH eintragen: PATH=$PATH:/path/to/maven2/bin
+
+2.2) Maven in Eclipse installieren
+
+Sollte es die erste Maven2-Installation sein, legt man vorher ein .m2-Verzeichnis
+im Home an. Dort werden sämtliche JARs (Dependencies oder Maven Plugins) gespeichert.
+
+1. In Eclipse Help - Software Updates - Find and Install...
+1.1 Search for new features to install - New remote site...
+2. Name: Maven2 - URL: http://m2eclipse.codehaus.org/
+3. Site auswählen - Plugin auswählen - Installieren
+
+2.3) Links
 
 * http://maven.apache.org/guides/getting-started/index.html
 * http://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html
@@ -36,15 +70,21 @@ interesting for you:
 * http://maven.apache.org/ ;-))
 
 
-2.) Documentation
+3.) Documentation
 
-Maven has got its own documentation-mechanism. It's simply called a site. A site
-can be rendered to HTML so you can easily browse and read it. Just have a look
-inside the "src/site"-folder, where you can find the existing documentation. If
-you want to write documentation it's probably helpfull to read the following:
+Mit Maven kann HTML-Dokumentation erstellt werden.
+
+3.1) Wie
+
+TODO
+
+3.2) Links
 
 * http://maven.apache.org/guides/mini/guide-apt-format.html
 * http://maven.apache.org/guides/mini/guide-site.html
 
-To generate the site type 'mvn site', wait until it's finished and open the
-"target/site"-folder with you browser. You can now browse the documentation.
+
+4.) Dependencies
+
+You can find out the dependencies with
+bibsonomy2 # find . -maxdepth 2 -iname .classpath | xargs grep -i combineaccessrules
