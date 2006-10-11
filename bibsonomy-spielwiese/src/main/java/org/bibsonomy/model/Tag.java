@@ -1,0 +1,45 @@
+package org.bibsonomy.model;
+
+public class Tag {
+	private int id;
+	private String name;
+	private String stem;
+	private int count;
+
+	public int getId() {
+		return this.id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getCount() {
+		return this.count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getStem() {
+		return this.stem;
+	}
+
+	public void setStem(String stem) {
+		this.stem = stem;
+	}
+
+	@Override
+	public String toString() {
+		return this.id + " '" + this.name + "' '" + this.stem + "' " + this.count;
+	}
+}

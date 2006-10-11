@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Bookmark">
+	<typeAlias alias="tag" type="org.bibsonomy.model.Tag" />
+	<typeAlias alias="bookmark" type="org.bibsonomy.model.Bookmark" />
+	<typeAlias alias="byTagNames" type="org.bibsonomy.ibatis.params.ByTagNames" />
+
+	<resultMap id="bookmarks" class="bookmark" groupBy="contentId">
+		<result property="contentId" column="content_id" />
+		<result property="tags" resultMap="Bookmark.tags"/>
+		<result property="description" column="book_description" />
+		<result property="extended" column="book_extended" />
+		<result property="userName" column="user_name" />
+		<result property="date" column="date" />
+		<result property="urlHash" column="book_url_hash" />
+		<result property="url" column="book_url" />
+		<result property="count" column="book_url_ctr" />
+	</resultMap>
+
+	<resultMap id="tags" class="tag">
+		<result property="name" column="tag_name" javaType="java.lang.String" />
+	</resultMap>
+
+	<select id="getBookmarkByTagNames" resultMap="bookmarks" parameterClass="byTagNames">
+		SELECT b.content_id, t.tag_name, b.book_description, b.book_extended, b.user_name, b.date,
+		       b.book_url_hash, u.book_url, u.book_url_ctr
+		FROM bookmark b, urls u, tas t,
+		     (SELECT t1.content_id 
+		      FROM tas t1$from$
+		      WHERE $where$
+			        AND t1.content_type = #contentType#
+			        AND t1.group = #groupType#
+		      ORDER BY t1.date DESC
+		      LIMIT #limit# OFFSET #offset#) AS tt
+		WHERE b.content_id = tt.content_id 
+		      AND t.content_id = tt.content_id 
+			  AND b.book_url_hash = u.book_url_hash
+			  ORDER BY b.date DESC, b.content_id DESC;
+	</select>
+</sqlMap>

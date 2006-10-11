@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Tag">
+	<typeAlias alias="tag" type="org.bibsonomy.model.Tag" />
+
+	<resultMap id="tags" class="tag">
+		<result property="id" column="tag_id" javaType="java.lang.Integer" />
+		<result property="name" column="tag_name" javaType="java.lang.String" />
+		<result property="stem" column="tag_stem" javaType="java.lang.String" />
+		<result property="count" column="tag_ctr" javaType="java.lang.Integer" />
+	</resultMap>
+
+	<select id="getTagById" resultMap="tags" parameterClass="java.lang.Integer">
+		SELECT tag_id, tag_name, tag_stem, tag_ctr
+		FROM tags
+		WHERE tag_id = #value#
+	</select>
+
+	<select id="getTagByCount" resultMap="tags" parameterClass="java.lang.Integer">
+		SELECT tag_id, tag_name, tag_stem, tag_ctr
+		FROM tags
+		WHERE tag_ctr = #value#
+	</select>
+</sqlMap>
