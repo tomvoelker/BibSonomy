@@ -4,29 +4,25 @@ import junit.framework.TestCase;
 
 public class ByTagNamesTest extends TestCase {
 
-	private ByTagNames byTagNames;
+	public void testIt() {
+		final ByTagNames byTagNames = new ByTagNames();
 
-	@Override
-	protected void setUp() throws Exception {
-		this.byTagNames = new ByTagNames();
-	}
+		assertEquals(0, byTagNames.getTagIndex().size());
+		assertEquals(false, byTagNames.isCaseSensitive());
 
-	@Override
-	protected void tearDown() throws Exception {
-		this.byTagNames = null;
-	}
+		byTagNames.addTagName("tag1");
+		assertEquals(1, byTagNames.getTagIndex().size());
 
-	public void testGetFromGetWhere() {
-		this.byTagNames.setTags(new String[] {"tag1"});
-		assertEquals("", this.byTagNames.getFrom());
-		assertEquals("lower(t1.tag_name) = lower(\"tag1\")", this.byTagNames.getWhere());
+		byTagNames.addTagName("tag2");
+		assertEquals(2, byTagNames.getTagIndex().size());
 
-		this.byTagNames.setTags(new String[] {"tag1", "tag2"});
-		assertEquals(", tas t2", this.byTagNames.getFrom());
-		assertEquals("lower(t1.tag_name) = lower(\"tag1\") AND lower(t2.tag_name) = lower(\"tag2\")", this.byTagNames.getWhere());
+		byTagNames.addTagName("tag3");
+		assertEquals(3, byTagNames.getTagIndex().size());
 
-		this.byTagNames.setTags(new String[] {"tag1", "tag2", "tag3"});
-		assertEquals(", tas t2, tas t3", this.byTagNames.getFrom());
-		assertEquals("lower(t1.tag_name) = lower(\"tag1\") AND lower(t2.tag_name) = lower(\"tag2\") AND lower(t3.tag_name) = lower(\"tag3\")", this.byTagNames.getWhere());
+		for (int i = 0; i < byTagNames.getTagIndex().size(); i++) {
+			final TagIndex tIdx = byTagNames.getTagIndex().get(i);
+			assertEquals("tag" + (i + 1), tIdx.getTagName());
+			assertEquals(i + 1, tIdx.getIndex());
+		}
 	}
 }

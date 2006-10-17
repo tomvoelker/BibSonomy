@@ -1,18 +1,23 @@
 package org.bibsonomy.ibatis.params;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bibsonomy.ibatis.enums.ContentType;
 import org.bibsonomy.ibatis.enums.GroupType;
 
 public class ByTagNames {
 
-	private String[] tags;
+	private final List<TagIndex> tagIndex;
 	private ContentType contentType;
 	private GroupType groupType;
 	private int limit;
 	private int offset;
+	private boolean caseSensitive;
 
 	public ByTagNames() {
-
+		this.tagIndex = new ArrayList<TagIndex>();
+		this.caseSensitive = false;
 	}
 
 	public int getContentType() {
@@ -47,46 +52,19 @@ public class ByTagNames {
 		this.offset = offset;
 	}
 
-	public void setTags(String[] tags) {
-		this.tags = tags;
+	public boolean isCaseSensitive() {
+		return this.caseSensitive;
 	}
 
-	/**
-	 * Returns a FROM-clause like:<br/>
-	 * 
-	 * <pre>
-	 * , tas t2, ..., tas tn
-	 * </pre>
-	 * 
-	 * <br/> if there is more than one tag present
-	 */
-	public String getFrom() {
-		if (this.tags.length > 1) {
-			final int len = this.tags.length - 1;
-			final StringBuilder rVal = new StringBuilder();
-			for (int i = 0; i < len; i++) {
-				rVal.append(", tas t" + (i+2));
-			}
-			return rVal.substring(0);
-		} else {
-			return "";
-		}
+	public void setCaseSensitive(boolean caseSensitive) {
+		this.caseSensitive = caseSensitive;
 	}
 
-	/**
-	 * Returns a WHERE-clause like:<br/>
-	 * 
-	 * <pre>
-	 * lower(t1.tag_name) = lower(&quot;tag_1&quot;) AND ... AND lower(tn.tag_name)=lower(&quot;tag_n&quot;)
-	 * </pre>
-	 */
-	public String getWhere() {
-		final StringBuilder rVal = new StringBuilder();
-		int i = 1;
-		for (final String tag : this.tags) {
-			rVal.append("lower(t"+i+".tag_name) = lower(\""+tag+"\")" + ((this.tags.length > 1 && i < this.tags.length)?" AND ":""));
-			i++;
-		}
-		return rVal.substring(0);
+	public void addTagName(final String tagName) {
+		this.tagIndex.add(new TagIndex(tagName, this.tagIndex.size() + 1));
+	}
+
+	public List<TagIndex> getTagIndex() {
+		return this.tagIndex;
 	}
 }

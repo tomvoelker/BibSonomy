@@ -7,19 +7,19 @@
 	<typeAlias alias="byTagNames" type="org.bibsonomy.ibatis.params.ByTagNames" />
 
 	<resultMap id="bookmarks" class="bookmark" groupBy="contentId">
-		<result property="contentId" column="content_id" />
-		<result property="tags" resultMap="Bookmark.tags"/>
-		<result property="description" column="book_description" />
-		<result property="extended" column="book_extended" />
-		<result property="userName" column="user_name" />
-		<result property="date" column="date" />
-		<result property="urlHash" column="book_url_hash" />
-		<result property="url" column="book_url" />
-		<result property="count" column="book_url_ctr" />
+		<result property="contentId" column="content_id" javaType="int" />
+		<result property="tags" resultMap="Bookmark.tags" />
+		<result property="description" column="book_description" javaType="string" />
+		<result property="extended" column="book_extended" javaType="string" />
+		<result property="userName" column="user_name" javaType="string" />
+		<result property="date" column="date" javaType="java.util.Date" />
+		<result property="urlHash" column="book_url_hash" javaType="string" />
+		<result property="url" column="book_url" javaType="string" />
+		<result property="count" column="book_url_ctr" javaType="int" />
 	</resultMap>
 
 	<resultMap id="tags" class="tag">
-		<result property="name" column="tag_name" javaType="java.lang.String" />
+		<result property="name" column="tag_name" javaType="string" />
 	</resultMap>
 
 	<select id="getBookmarkByTagNames" resultMap="bookmarks" parameterClass="byTagNames">
@@ -27,8 +27,19 @@
 		       b.book_url_hash, u.book_url, u.book_url_ctr
 		FROM bookmark b, urls u, tas t,
 		     (SELECT t1.content_id 
-		      FROM tas t1$from$
-		      WHERE $where$
+		      FROM
+		      <iterate property="tagIndex" conjunction=",">
+		        tas t#tagIndex[].index#
+		      </iterate>
+		      WHERE
+		      <iterate property="tagIndex" conjunction="AND">
+		      	<isEqual property="caseSensitive" compareValue="true">
+		          t#tagIndex[].index#.tag_name = #tagIndex[].tagName#
+		      	</isEqual>
+		      	<isEqual property="caseSensitive" compareValue="false">
+		          lower(t#tagIndex[].index#.tag_name) = lower(#tagIndex[].tagName#)
+		      	</isEqual>
+		      </iterate>
 			        AND t1.content_type = #contentType#
 			        AND t1.group = #groupType#
 		      ORDER BY t1.date DESC

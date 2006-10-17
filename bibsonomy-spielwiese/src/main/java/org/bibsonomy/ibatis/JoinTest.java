@@ -9,19 +9,24 @@ import org.bibsonomy.ibatis.params.ByTagNames;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Tag;
 
-public class JoinTest extends AbstractSqlMapTest {	
+public class JoinTest extends AbstractSqlMapTest {
+
+	public ByTagNames getDefaultByTagNames() {
+		final ByTagNames rVal = new ByTagNames();
+		rVal.setContentType(ContentType.BOOKMARK);
+		rVal.setGroupType(GroupType.PUBLIC);
+		rVal.setLimit(5);
+		rVal.setOffset(0);
+		//btn.setCaseSensitive(true);
+		rVal.addTagName("Info");
+		rVal.addTagName("Buch");
+		return rVal;
+	}
 
 	@SuppressWarnings("unchecked")
 	public void testGetBookmarkByTagNames() {
 		try {
-			final ByTagNames btn = new ByTagNames();
-			btn.setContentType(ContentType.BOOKMARK);
-			btn.setGroupType(GroupType.PUBLIC);
-			btn.setLimit(5);
-			btn.setOffset(0);
-			//btn.setTags(new String[] {"Buch"});
-			btn.setTags(new String[] {"Info"});
-			//btn.setTags(new String[] {"Buch", "Info"});
+			final ByTagNames btn = this.getDefaultByTagNames();
 
 			final List<Bookmark> bookmarks = this.sqlMap.queryForList("getBookmarkByTagNames", btn);
 			for (final Bookmark bookmark : bookmarks) {

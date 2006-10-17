@@ -2,17 +2,14 @@
 <!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
 
 <sqlMapConfig>
-	<!--settings useFullyQualifiedStatementNames="true" /-->
+	<properties resource="database.properties" />
 
 	<transactionManager type="JDBC">
 		<dataSource type="SIMPLE">
-			<property name="JDBC.Driver" value="com.mysql.jdbc.Driver" />
-			<property name="JDBC.ConnectionURL"
-				value="jdbc:mysql://172.23.0.215/bibsonomy?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;mysqlEncoding=utf8" />
-			<!--property name="JDBC.ConnectionURL"
-				value="jdbc:mysql://localhost/bibsonomy?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;mysqlEncoding=utf8" /-->
-			<property name="JDBC.Username" value="bibsonomy" />
-			<property name="JDBC.Password" value="bib123" />
+			<property name="JDBC.Driver" value="${driver}" />
+			<property name="JDBC.ConnectionURL" value="${url}" />
+			<property name="JDBC.Username" value="${username}" />
+			<property name="JDBC.Password" value="${password}" />
 		</dataSource>
 	</transactionManager>
 
