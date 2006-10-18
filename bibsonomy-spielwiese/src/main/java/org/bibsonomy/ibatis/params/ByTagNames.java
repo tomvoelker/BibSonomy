@@ -6,13 +6,20 @@ import java.util.List;
 import org.bibsonomy.ibatis.enums.ContentType;
 import org.bibsonomy.ibatis.enums.GroupType;
 
+/**
+ * Can be used to search tags by its name.
+ * 
+ * @author Christian Schenk
+ */
 public class ByTagNames {
 
+	/** List of (tagname, index)-pairs */
 	private final List<TagIndex> tagIndex;
 	private ContentType contentType;
 	private GroupType groupType;
 	private int limit;
 	private int offset;
+	/** By default it's not case sensitive */
 	private boolean caseSensitive;
 
 	public ByTagNames() {
@@ -66,5 +73,16 @@ public class ByTagNames {
 
 	public List<TagIndex> getTagIndex() {
 		return this.tagIndex;
+	}
+
+	/**
+	 * This is used to determine the max. amount of join-indices for the iteration of the join-index.
+	 * If we have only one tag, we don't need a join index, if we got two then we need one, if we got
+	 * three then we need two, and so on.<br/> We had to introduce this because iBATIS can only call
+	 * methods that are true getter or setter. A call to tagIndex.size() is not possible. An attempt
+	 * fails with "There is no READABLE property named 'size' in class 'java.util.ArrayList'".
+	 */
+	public int getMaxTagIndex() {
+		return this.tagIndex.size();
 	}
 }

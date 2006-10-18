@@ -7,15 +7,15 @@
 	<typeAlias alias="byTagNames" type="org.bibsonomy.ibatis.params.ByTagNames" />
 
 	<resultMap id="bookmarks" class="bookmark" groupBy="contentId">
-		<result property="contentId" column="content_id" javaType="int" />
-		<result property="tags" resultMap="Bookmark.tags" />
+		<result property="contentId"   column="content_id"       javaType="int" />
+		<result property="tags"        resultMap="Bookmark.tags" />
 		<result property="description" column="book_description" javaType="string" />
-		<result property="extended" column="book_extended" javaType="string" />
-		<result property="userName" column="user_name" javaType="string" />
-		<result property="date" column="date" javaType="java.util.Date" />
-		<result property="urlHash" column="book_url_hash" javaType="string" />
-		<result property="url" column="book_url" javaType="string" />
-		<result property="count" column="book_url_ctr" javaType="int" />
+		<result property="extended"    column="book_extended"    javaType="string" />
+		<result property="userName"    column="user_name"        javaType="string" />
+		<result property="date"        column="date"             javaType="java.util.Date" />
+		<result property="urlHash"     column="book_url_hash"    javaType="string" />
+		<result property="url"         column="book_url"         javaType="string" />
+		<result property="count"       column="book_url_ctr"     javaType="int" />
 	</resultMap>
 
 	<resultMap id="tags" class="tag">
@@ -39,6 +39,11 @@
 		      	<isEqual property="caseSensitive" compareValue="false">
 		          lower(t#tagIndex[].index#.tag_name) = lower(#tagIndex[].tagName#)
 		      	</isEqual>
+		      </iterate>
+		      <iterate property="tagIndex" prepend="AND" conjunction="AND">
+		        <isLessThan property="tagIndex[].index" compareProperty="maxTagIndex">
+		          t#tagIndex[].index#.content_id = t#tagIndex[].index2#.content_id
+		        </isLessThan>
 		      </iterate>
 			        AND t1.content_type = #contentType#
 			        AND t1.group = #groupType#

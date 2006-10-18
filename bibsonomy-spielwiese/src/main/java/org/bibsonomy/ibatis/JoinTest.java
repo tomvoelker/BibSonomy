@@ -11,15 +11,19 @@ import org.bibsonomy.model.Tag;
 
 public class JoinTest extends AbstractSqlMapTest {
 
+	/**
+	 * The ByTagNames-bean is used at various locations and has been refactored to this method.
+	 */
 	public ByTagNames getDefaultByTagNames() {
 		final ByTagNames rVal = new ByTagNames();
 		rVal.setContentType(ContentType.BOOKMARK);
 		rVal.setGroupType(GroupType.PUBLIC);
 		rVal.setLimit(5);
 		rVal.setOffset(0);
-		//btn.setCaseSensitive(true);
-		rVal.addTagName("Info");
-		rVal.addTagName("Buch");
+		// btn.setCaseSensitive(true);
+		rVal.addTagName("web");
+		rVal.addTagName("online");
+		// rVal.addTagName("community");
 		return rVal;
 	}
 
@@ -29,6 +33,7 @@ public class JoinTest extends AbstractSqlMapTest {
 			final ByTagNames btn = this.getDefaultByTagNames();
 
 			final List<Bookmark> bookmarks = this.sqlMap.queryForList("getBookmarkByTagNames", btn);
+
 			for (final Bookmark bookmark : bookmarks) {
 				System.out.println("ContentId   : " + bookmark.getContentId());
 				System.out.println("Description : " + bookmark.getDescription());

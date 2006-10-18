@@ -1,5 +1,10 @@
 package org.bibsonomy.ibatis.params;
 
+/**
+ * This class holds the tagname and the corresponding index and join-index.
+ * 
+ * @author Christian Schenk
+ */
 public class TagIndex {
 	private final String tagName;
 	private final int index;
@@ -9,11 +14,18 @@ public class TagIndex {
 		this.index = index;
 	}
 
+	public String getTagName() {
+		return this.tagName;
+	}
+
 	public int getIndex() {
 		return this.index;
 	}
 
-	public String getTagName() {
-		return this.tagName;
+	/**
+	 * Retrieves the join-index which is always the current index plus one
+	 */
+	public int getIndex2() {
+		return (this.index + 1);
 	}
 }

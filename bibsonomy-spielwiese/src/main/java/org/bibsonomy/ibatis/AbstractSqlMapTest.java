@@ -8,8 +8,14 @@ import com.ibatis.sqlmap.client.SqlMapClientBuilder;
 
 import junit.framework.TestCase;
 
+/**
+ * This class provides iBATIS-tests with the necessary SqlMapClient.
+ * 
+ * @author Christian Schenk
+ */
 public abstract class AbstractSqlMapTest extends TestCase {
 
+	/** Communication with the database is done with this class */
 	protected SqlMapClient sqlMap;
 
 	@Override
