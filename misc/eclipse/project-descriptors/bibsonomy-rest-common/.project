@@ -20,11 +20,4 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.maven.ide.eclipse.maven2Nature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>model</name>
-			<type>2</type>
-			<locationURI>WORKSPACE/bibsonomy2/bibsonomy-model/src/main/generated</locationURI>
-		</link>
-	</linkedResources>
 </projectDescription>
