@@ -15,4 +15,5 @@
 
 	<sqlMap resource="Tag.xml" />
 	<sqlMap resource="Bookmark.xml" />
+	<sqlMap resource="TypeTests.xml" />
 </sqlMapConfig>
