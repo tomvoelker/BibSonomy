@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bibsonomy.ibatis.enums.ContentType;
 import org.bibsonomy.ibatis.enums.GroupType;
+import org.bibsonomy.ibatis.params.beans.TagIndex;
 
 /**
  * Can be used to search tags by its name.

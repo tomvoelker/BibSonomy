@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.bibsonomy.ibatis.params.TagIndex;
+import org.bibsonomy.ibatis.params.beans.TagIndex;
 
 /**
  * Creates JoinIndex implementations that return index-pairs like

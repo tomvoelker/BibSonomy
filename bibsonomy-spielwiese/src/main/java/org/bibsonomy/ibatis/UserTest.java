@@ -10,10 +10,10 @@ import org.bibsonomy.model.User;
 
 public class UserTest extends AbstractSqlMapTest {
 
-	public ByDate getDefaultByDate () {
+	public ByDate getDefaultByDate() {
 		return new ByDate(new Date());
 	}
-	
+
 	public ByUser getDefaultByUser() {
 		/*
 		 * machen wir mal noch Datum hinzu und testen das DynamicMapped Statement
@@ -23,13 +23,13 @@ public class UserTest extends AbstractSqlMapTest {
 		 */
 		return new ByUser("rja", new Date());
 	}
-	
-	public User getDefaultUser () {
+
+	public User getDefaultUser() {
 		User user = new User();
 		user.setName("rja");
 		user.setRealname("Robert Jäschke");
 		user.setEmail("jaeschke@cs.uni-kassel.de");
-		user.setHomepage("http://www.kde.cs.uni-kassel.de/jaeschke'\b\b\b\b\\x22\\x22\\x22\\x22\\x22\\x22\\x22\\x22\\x22; DELETE FROM user;");
+		user.setHomepageAsString("http://www.kde.cs.uni-kassel.de/jaeschke'\b\b\b\b\\x22\\x22\\x22\\x22\\x22\\x22\\x22\\x22\\x22; DELETE FROM user;");
 		return user;
 	}
 
@@ -39,8 +39,8 @@ public class UserTest extends AbstractSqlMapTest {
 			final ByUser bu = this.getDefaultByUser();
 
 			final List<User> users = this.sqlMap.queryForList("getByUser", bu);
-		
-			for (final User user: users) {
+
+			for (final User user : users) {
 				System.out.println("name              = " + user.getName());
 				System.out.println("real name         = " + user.getRealname());
 				System.out.println("email             = " + user.getEmail());
@@ -52,19 +52,18 @@ public class UserTest extends AbstractSqlMapTest {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public void testInsertUser () {
+	public void testInsertUser() {
 		/*
 		try {
 			final User user = this.getDefaultUser();
-			
+
 			this.sqlMap.insert("insertUser", user);
-			
+
 		} catch (final SQLException ex) {
 			ex.printStackTrace();
 		}
 		*/
 	}
-	
 }

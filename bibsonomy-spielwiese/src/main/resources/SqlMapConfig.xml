@@ -4,6 +4,9 @@
 <sqlMapConfig>
 	<properties resource="database.properties" />
 
+	<typeAlias alias="url" type="java.net.URL" />
+	<typeHandler javaType="url" callback="org.bibsonomy.ibatis.typehandler.UrlTypeHandlerCallback" />
+
 	<transactionManager type="JDBC">
 		<dataSource type="SIMPLE">
 			<property name="JDBC.Driver" value="${driver}" />

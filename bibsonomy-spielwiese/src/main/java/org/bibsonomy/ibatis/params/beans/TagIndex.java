@@ -1,4 +1,4 @@
-package org.bibsonomy.ibatis.params;
+package org.bibsonomy.ibatis.params.beans;
 
 /**
  * This class holds the tagname and the corresponding index and join-index.
