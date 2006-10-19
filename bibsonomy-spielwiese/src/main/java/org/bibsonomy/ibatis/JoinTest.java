@@ -23,7 +23,7 @@ public class JoinTest extends AbstractSqlMapTest {
 		// btn.setCaseSensitive(true);
 		rVal.addTagName("web");
 		rVal.addTagName("online");
-		// rVal.addTagName("community");
+		rVal.addTagName("community");
 		return rVal;
 	}
 

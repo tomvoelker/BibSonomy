@@ -29,20 +29,20 @@
 		     (SELECT t1.content_id 
 		      FROM
 		      <iterate property="tagIndex" conjunction=",">
-		        tas t#tagIndex[].index#
+		        tas t$tagIndex[].index$
 		      </iterate>
 		      WHERE
 		      <iterate property="tagIndex" conjunction="AND">
 		      	<isEqual property="caseSensitive" compareValue="true">
-		          t#tagIndex[].index#.tag_name = #tagIndex[].tagName#
+		          t$tagIndex[].index$.tag_name = #tagIndex[].tagName#
 		      	</isEqual>
 		      	<isEqual property="caseSensitive" compareValue="false">
-		          lower(t#tagIndex[].index#.tag_name) = lower(#tagIndex[].tagName#)
+		          t$tagIndex[].index$.tag_lower = lower(#tagIndex[].tagName#)
 		      	</isEqual>
 		      </iterate>
 		      <iterate property="tagIndex" prepend="AND" conjunction="AND">
 		        <isLessThan property="tagIndex[].index" compareProperty="maxTagIndex">
-		          t#tagIndex[].index#.content_id = t#tagIndex[].index2#.content_id
+		          t$tagIndex[].index$.content_id = t$tagIndex[].index2$.content_id
 		        </isLessThan>
 		      </iterate>
 			        AND t1.content_type = #contentType#
