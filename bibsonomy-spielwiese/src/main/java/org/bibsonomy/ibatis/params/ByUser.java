@@ -6,9 +6,12 @@ public class ByUser {
 	private String user;
 	private Date registrationDate;
 
-	public ByUser(String user, Date date) {
-		super();
+	public ByUser(String user) {
 		this.user = user;
+	}
+
+	public ByUser(String user, Date date) {
+		this(user);
 		this.registrationDate = date;
 	}
 
@@ -16,13 +19,7 @@ public class ByUser {
 		return user;
 	}
 
-	public ByUser(String user) {
-		super();
-		this.user = user;
-	}
-
 	public Date getRegistrationDate() {
 		return registrationDate;
 	}
-	
 }
