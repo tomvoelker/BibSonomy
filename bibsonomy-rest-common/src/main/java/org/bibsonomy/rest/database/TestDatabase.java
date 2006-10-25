@@ -629,7 +629,10 @@ public class TestDatabase implements LogicInterface
 
 /*
  * $Log$
- * Revision 1.1  2006-10-10 12:42:16  cschenk
+ * Revision 1.1  2006-10-25 19:14:55  mbork
+ * moved TestDatabase because other junit tests depend on it
+ *
+ * Revision 1.1  2006/10/10 12:42:16  cschenk
  * Auf Multi-Module Build umgestellt
  *
  * Revision 1.7  2006/09/16 18:17:50  mbork
