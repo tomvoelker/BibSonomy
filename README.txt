@@ -88,5 +88,20 @@ mvn site:stage -DstagingDirectory=/irgend/ein/verzeichnis
 
 4.) Dependencies
 
-You can find out the dependencies with
+4.1) Eclipse
+
+Die nötigen Abhängigkeiten finden sich in den .classpath-Dateien bspw. so:
 bibsonomy2 # find . -maxdepth 2 -iname .classpath | xargs grep -i combineaccessrules
+
+Wird in Eclipse entwickelt und an mehreren Modulen gleichzeitig Änderungen vorgenommen,
+so ist es sinnvoll, diese Abhängigkeiten auch in Eclipse einzurichten, um nicht bei jeder
+Änderung ein neues JAR mit Maven zu bauen und in das Maven-Repo kopieren zu müssen.
+
+4.2) Maven
+
+Möchte man die Abhängigkeiten zwischen den Modulen mit Maven managen (empfohlen!):
+1. Im Rootverzeichnis ein "mvn -N install"
+2. Im Rootverzeichnis ein "mvn -P fast install"
+3. Sollte Schritt 2 mit Buildfehlern abbrechen:
+   -> in jedem einzelnen Modul ein "mvn -P fast install"
+Danach liegen alle JARs im Maven-Repository und können bspw. in Eclipse genutzt werden.
