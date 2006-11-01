@@ -73,6 +73,14 @@
 			<url>http://www.se.eecs.uni-kassel.de/~maven/repository/</url>
 		</repository>
 	</repositories>
+	<profiles>
+		<profile>
+			<id>fast</id>
+			<properties>
+				<maven.test.skip>true</maven.test.skip>
+			</properties>
+		</profile>
+	</profiles>
 	<modules>
 		<module>bibsonomy-common</module>
 		<module>bibsonomy-model</module>
