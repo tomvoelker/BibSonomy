@@ -7,7 +7,7 @@
 	<artifactId>bibsonomy-rest-client</artifactId>
 	<version>2.0</version>
 	<packaging>jar</packaging>
-	<description></description>
+	<description>The REST-client.</description>
 	<parent>
 		<groupId>org.bibsonomy</groupId>
 		<artifactId>bibsonomy</artifactId>

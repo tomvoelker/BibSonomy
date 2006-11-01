@@ -1,0 +1,84 @@
+Maven documentation
+
+  On this page we'll collect all things that are specific to Maven (e.g.
+  configuration, etc.).
+
+* Eclipse plugin
+
+  If you add a new dependency to the <pom.xml> the plugin <should> download it
+  from one of the repositories. Sometimes this isn't the case and you get an
+  error like the following:
+
++--
+5/25/06 1:42:36 PM CEST:
+  Unable to get dependency information:
+  Unable to read the metadata file for artifact 'some-group:some-jar:jar':
+  Error getting POM for 'some-group:some-jar' from the repository:
+  Error transferring file some-group:some-jar:pom:0.0.1
+
+  from the specified remote repositories:
+    central (http://repo1.maven.org/maven2),
+    ibiblio (http://www.ibiblio.org/maven2),
+    innofinity (http://www.innofinity.de/maven2)
+    some-group:some-jar-0.0.1.jar
++--
+
+  In this case the POM can't be found on the server. You can get around this by
+  starting Maven from the commandline. Just do a <mvn compile> and Maven will
+  download the JAR (at least this has to exist on the server) into your local
+  repository. Once you've done that, everything will be fine in Eclipse, too.
+
+* JAXB
+
+  If we would want to generate sourcecode with JAXB ant Maven we would have to
+  use the {{{http://ws.apache.org/jaxme/mp/}JAXME-plugin}}. Because this
+  doesn't work for our current schema we will use an ant-<build.xml>.
+
+  If we would like to start the <build.xml> with maven we could say something
+  like the following in the <pom.xml>:
+
++--
+...
+<build>
+  <plugins>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-antrun-plugin</artifactId>
+      <executions>
+        <execution>
+          <id>compile</id>
+          <phase>compile</phase>
+          <configuration>
+            <tasks>
+              <ant antfile="${basedir}/src/jaxb/build.xml" inheritRefs="true"/>
+            </tasks>
+          </configuration>
+          <goals>
+            <goal>run</goal>
+          </goals>
+        </execution>
+      </executions>
+      <dependencies>
+        <dependency>
+          <groupId>ant</groupId>
+          <artifactId>ant-antlr</artifactId>
+          <version>1.6.5</version>
+        </dependency>
+        <dependency>
+          <groupId>antlr</groupId>
+          <artifactId>antlrall</artifactId>
+          <version>2.7.4</version>
+        </dependency>
+      </dependencies>
+    </plugin>
+  ...    
+  </plugins>    
+</build>
++--
+
+  Now we could invoke <mvn compile> and Maven would generate the sourcecode.
+
+  Although this would be a nice feature we don't do it this way ;-)) because
+  we want to put the generated sourcecode into the SCM-repository. If somebody
+  changes the XML-Schema, he'll have to generate the sourcecode and commit it
+  to the repository.

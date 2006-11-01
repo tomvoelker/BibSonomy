@@ -70,18 +70,20 @@ im Home an. Dort werden sämtliche JARs (Dependencies oder Maven Plugins) gespei
 * http://maven.apache.org/ ;-))
 
 
-3.) Documentation
+3.) Dokumentation
 
-Mit Maven kann HTML-Dokumentation erstellt werden.
+Mit Maven kann eine HTML-Dokumentation erstellt werden.
 
 3.1) Wie
 
-TODO
+Dazu startet man im bibsonomy-Rootverzeichnis folgendes:
+mvn site:stage -DstagingDirectory=/irgend/ein/verzeichnis
 
 3.2) Links
 
-* http://maven.apache.org/guides/mini/guide-apt-format.html
 * http://maven.apache.org/guides/mini/guide-site.html
+* http://maven.apache.org/guides/mini/guide-apt-format.html
+* http://maven.apache.org/plugins/maven-site-plugin/
 
 
 4.) Dependencies

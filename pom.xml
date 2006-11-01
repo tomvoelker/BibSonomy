@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<name>Bibsonomy</name>
@@ -7,7 +8,9 @@
 	<artifactId>bibsonomy</artifactId>
 	<packaging>pom</packaging>
 	<version>2.0</version>
-	<description>A blue social bookmark and publication sharing system.</description>
+	<description>
+		A blue social bookmark and publication sharing system.
+	</description>
 	<url>https://gforge.cs.uni-kassel.de/projects/bibsonomy2/</url>
 	<organization>
 		<name>Knowledge and Data Engineering Group</name>
@@ -76,11 +79,19 @@
 		<module>bibsonomy-rest-client</module>
 		<module>bibsonomy-rest-common</module>
 		<module>bibsonomy-rest-server</module>
-		<!--module>bibsonomy-site</module-->
 		<module>bibsonomy-spielwiese</module>
 		<module>bibsonomy-webapp</module>
 	</modules>
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>2.0-beta-5</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -159,7 +170,7 @@
 				<groupId>javax.servlet</groupId>
 				<artifactId>servlet-api</artifactId>
 				<version>2.4</version>
-	                </dependency>
+			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
@@ -182,9 +193,9 @@
 			</dependency>
 			<dependency>
 				<groupId>javax.activation</groupId>
-			    	<artifactId>activation</artifactId>
-			    	<version>1.1</version>
-		    	</dependency>
+				<artifactId>activation</artifactId>
+				<version>1.1</version>
+			</dependency>
 			<dependency>
 				<groupId>de.innofinity</groupId>
 				<artifactId>dbcommands</artifactId>
