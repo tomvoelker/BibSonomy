@@ -13,7 +13,8 @@
 	<body>
 		<links>
 			<item name="Bibsonomy" href="http://www.bibsonomy.org/" />
-			<item name="Knowledge and Data Engineering Group" href="http://www.kde.cs.uni-kassel.de/" />
+			<item name="Knowledge and Data Engineering Group"
+				href="http://www.kde.cs.uni-kassel.de/" />
 		</links>
 
 		<menu ref="parent" inherit="top" />
@@ -27,7 +28,10 @@
 			<item name="Maven" href="/maven.html" />
 		</menu>
 
-		<menu ref="modules" inherit="bottom" />
+		<menu ref="modules" inherit="bottom">
+			<item name="Dependencies" href="/deps.html"/>
+		</menu>
+
 		<menu ref="reports" inherit="bottom" />
 	</body>
 </project>
