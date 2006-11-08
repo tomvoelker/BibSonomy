@@ -22,6 +22,7 @@ public class ByTagNamesTest extends TestCase {
 			final TagIndex tIdx = byTagNames.getTagIndex().get(i);
 			assertEquals("tag" + (i + 1), tIdx.getTagName());
 			assertEquals(i + 1, tIdx.getIndex());
+			assertEquals(i + 2, tIdx.getIndex2());
 		}
 	}
 }

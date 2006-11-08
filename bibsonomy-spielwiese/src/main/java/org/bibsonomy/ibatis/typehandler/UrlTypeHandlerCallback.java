@@ -18,6 +18,7 @@ import com.ibatis.sqlmap.client.extensions.TypeHandlerCallback;
  * Almost copied from http://opensource.atlassian.com/confluence/oss/display/IBATIS/Type+Handler+Callbacks
  * 
  * @author Ken Weiner
+ * @author Christian Schenk
  */
 public class UrlTypeHandlerCallback implements TypeHandlerCallback {
 

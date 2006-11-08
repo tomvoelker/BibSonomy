@@ -17,7 +17,7 @@ import org.bibsonomy.ibatis.params.beans.TagIndex;
  */
 public class IterableJoinIndex implements Iterable<JoinIndex> {
 
-	/** tagIndex.size is used for the max. amount of JoinIndex pairs */
+	/** tagIndex.size() is used for the max. amount of JoinIndex pairs */
 	private final List<TagIndex> tagIndex;
 
 	public IterableJoinIndex(final List<TagIndex> tagIndex) {
