@@ -1,5 +1,7 @@
 package org.bibsonomy.model;
 
+import java.util.List;
+
 /**
  * This is the BibTex resource, which is used to handle BibTex-entries. It is
  * derived from {@link org.bibsonomy.model.Resource}. It contains a lot of
@@ -48,6 +50,14 @@ public class BibTex extends Resource {
 	private String month;
 	private String year;
 
+	private List <Tag> bibtexTags;
+
+	public List<Tag> getBibtexTags() {
+		return bibtexTags;
+	}
+	public void setBibtexTags(List<Tag> bibtexTags) {
+		this.bibtexTags = bibtexTags;
+	}
 	public String getAddress() {
 		return this.address;
 	}
