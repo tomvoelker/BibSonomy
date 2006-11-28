@@ -1,16 +1,16 @@
-package org.bibsonomy.ibatis.params;
+package org.bibsonomy.ibatis.params.generic;
 
 import java.util.Date;
 
 public class ByUser {
-	private String user;
+	private final String user;
 	private Date registrationDate;
 
-	public ByUser(String user) {
+	public ByUser(final String user) {
 		this.user = user;
 	}
 
-	public ByUser(String user, Date date) {
+	public ByUser(final String user, final Date date) {
 		this(user);
 		this.registrationDate = date;
 	}

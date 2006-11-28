@@ -1,18 +1,16 @@
-package org.bibsonomy.ibatis.params;
+package org.bibsonomy.ibatis.params.generic;
 
 import java.util.Date;
 
 public class ByDate {
-	private Date date;
 
-	public ByDate(Date date) {
-		super();
+	private final Date date;
+
+	public ByDate(final Date date) {
 		this.date = date;
 	}
 
 	public Date getDate() {
 		return date;
-	}
-
-	
+	}	
 }

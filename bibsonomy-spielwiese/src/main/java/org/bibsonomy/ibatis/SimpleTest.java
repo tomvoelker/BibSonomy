@@ -5,8 +5,16 @@ import java.util.List;
 
 import org.bibsonomy.model.Tag;
 
+/**
+ * This are simple tests because of the simple SQL
+ *
+ * @author Christian Schenk
+ */
 public class SimpleTest extends AbstractSqlMapTest {
 
+	/**
+	 * Retrieves only one Tag-object
+	 */
 	public void testGetObject() {
 		try {
 			final Tag tag = (Tag) this.sqlMap.queryForObject("getTagById", 387);
@@ -19,6 +27,9 @@ public class SimpleTest extends AbstractSqlMapTest {
 		}
 	}
 
+	/**
+	 * Retrieves a List of Tag-objects
+	 */
 	@SuppressWarnings("unchecked")
 	public void testGetList() {
 		try {			

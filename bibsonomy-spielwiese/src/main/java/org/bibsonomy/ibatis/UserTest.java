@@ -4,8 +4,8 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
-import org.bibsonomy.ibatis.params.ByDate;
-import org.bibsonomy.ibatis.params.ByUser;
+import org.bibsonomy.ibatis.params.generic.ByDate;
+import org.bibsonomy.ibatis.params.generic.ByUser;
 import org.bibsonomy.model.User;
 
 public class UserTest extends AbstractSqlMapTest {

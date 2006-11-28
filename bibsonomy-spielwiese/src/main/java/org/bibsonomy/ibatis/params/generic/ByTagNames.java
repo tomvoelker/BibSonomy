@@ -1,23 +1,24 @@
-package org.bibsonomy.ibatis.params;
+package org.bibsonomy.ibatis.params.generic;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bibsonomy.ibatis.enums.ContentType;
-import org.bibsonomy.ibatis.enums.GroupType;
+import org.bibsonomy.ibatis.enums.ConstantID;
 import org.bibsonomy.ibatis.params.beans.TagIndex;
 
 /**
- * Can be used to search tags by its name.
+ * Can be used to search tags by its name.<br/><br/>
+ * By default its groupType is <em>public</em> and it isn't case sensitive.
  * 
  * @author Christian Schenk
  */
-public class ByTagNames {
+public abstract class ByTagNames {
 
 	/** List of (tagname, index)-pairs */
 	private final List<TagIndex> tagIndex;
-	private ContentType contentType;
-	private GroupType groupType;
+	protected ConstantID contentType;
+	/** By default it's public */
+	private ConstantID groupType;
 	private int limit;
 	private int offset;
 	/** By default it's not case sensitive */
@@ -25,22 +26,17 @@ public class ByTagNames {
 
 	public ByTagNames() {
 		this.tagIndex = new ArrayList<TagIndex>();
+		this.groupType = ConstantID.GROUP_PUBLIC;
 		this.caseSensitive = false;
 	}
 
-	public int getContentType() {
-		return this.contentType.getId();
-	}
-
-	public void setContentType(ContentType contentType) {
-		this.contentType = contentType;
-	}
+	public abstract int getContentType();
 
 	public int getGroupType() {
 		return this.groupType.getId();
 	}
 
-	public void setGroupType(GroupType groupType) {
+	public void setGroupType(ConstantID groupType) {
 		this.groupType = groupType;
 	}
 

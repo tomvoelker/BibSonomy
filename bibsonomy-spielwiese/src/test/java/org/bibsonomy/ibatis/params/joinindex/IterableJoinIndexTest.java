@@ -5,7 +5,7 @@ import java.util.Iterator;
 import junit.framework.TestCase;
 
 import org.bibsonomy.ibatis.JoinTest;
-import org.bibsonomy.ibatis.params.ByTagNames;
+import org.bibsonomy.ibatis.params.generic.ByTagNames;
 import org.bibsonomy.ibatis.params.joinindex.IterableJoinIndex;
 import org.bibsonomy.ibatis.params.joinindex.JoinIndex;
 
@@ -15,7 +15,7 @@ public class IterableJoinIndexTest extends TestCase {
 	 * Tests the index-pairs.
 	 */
 	public void testIt() {
-		final ByTagNames btn = (new JoinTest()).getDefaultByTagNames();
+		final ByTagNames btn = (new JoinTest()).getDefaultBookmarkByTagNames();
 		// btn.addTagName("test");
 
 		final IterableJoinIndex iji = new IterableJoinIndex(btn.getTagIndex());

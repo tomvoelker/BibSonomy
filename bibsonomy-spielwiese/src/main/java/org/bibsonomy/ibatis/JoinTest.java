@@ -3,9 +3,8 @@ package org.bibsonomy.ibatis;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.bibsonomy.ibatis.enums.ContentType;
-import org.bibsonomy.ibatis.enums.GroupType;
-import org.bibsonomy.ibatis.params.ByTagNames;
+import org.bibsonomy.ibatis.enums.ConstantID;
+import org.bibsonomy.ibatis.params.bookmark.BookmarkByTagNames;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Tag;
 
@@ -14,10 +13,9 @@ public class JoinTest extends AbstractSqlMapTest {
 	/**
 	 * The ByTagNames-bean is used at various locations and has been refactored to this method.
 	 */
-	public ByTagNames getDefaultByTagNames() {
-		final ByTagNames rVal = new ByTagNames();
-		rVal.setContentType(ContentType.BOOKMARK);
-		rVal.setGroupType(GroupType.PUBLIC);
+	public BookmarkByTagNames getDefaultBookmarkByTagNames() {
+		final BookmarkByTagNames rVal = new BookmarkByTagNames();
+		rVal.setGroupType(ConstantID.GROUP_PUBLIC);
 		rVal.setLimit(5);
 		rVal.setOffset(0);
 		// btn.setCaseSensitive(true);
@@ -30,7 +28,7 @@ public class JoinTest extends AbstractSqlMapTest {
 	@SuppressWarnings("unchecked")
 	public void testGetBookmarkByTagNames() {
 		try {
-			final ByTagNames btn = this.getDefaultByTagNames();
+			final BookmarkByTagNames btn = this.getDefaultBookmarkByTagNames();
 
 			final List<Bookmark> bookmarks = this.sqlMap.queryForList("getBookmarkByTagNames", btn);
 

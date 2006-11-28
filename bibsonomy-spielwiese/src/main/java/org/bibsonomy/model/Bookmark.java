@@ -1,37 +1,28 @@
 package org.bibsonomy.model;
 
-import java.util.Date;
 import java.util.List;
 
-public class Bookmark {
+/**
+ * This is a bookmark, which is derived from
+ * {@link org.bibsonomy.model.Resource} like all resources in BibSonomy.
+ * 
+ * @author Christian Schenk
+ */
+public class Bookmark extends Resource {
 
-	private int contentId;
 	private List<Tag> tags;
 	private String description;
 	private String extended;
 	private String userName;
-	private Date date;
 	private String urlHash;
 	private String url;
 	private int count;
 
-	public int getContentId() {
-		return this.contentId;
-	}
-	public void setContentId(int contentId) {
-		this.contentId = contentId;
-	}
 	public int getCount() {
 		return this.count;
 	}
 	public void setCount(int count) {
 		this.count = count;
-	}
-	public Date getDate() {
-		return this.date;
-	}
-	public void setDate(Date date) {
-		this.date = date;
 	}
 	public String getDescription() {
 		return this.description;
