@@ -1,6 +1,8 @@
 package org.bibsonomy.model;
 
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * This is the BibTex resource, which is used to handle BibTex-entries. It is
@@ -11,6 +13,9 @@ import java.util.List;
  */
 public class BibTex extends Resource {
 
+	
+	
+	
 	private int group;
 	private String userName;
 	// private String type;
@@ -27,7 +32,7 @@ public class BibTex extends Resource {
 	private String address;
 	private String annote;
 	private String author;
-	// private String key; FIXME ???
+	//private String key; FIXME ???
 	private String title;
 	private String booktitle;
 	private String chapter;
@@ -44,14 +49,14 @@ public class BibTex extends Resource {
 	private String publisher;
 	private String school;
 	private String series;
-	private String url;
 	private String volume;
 	private String day;
 	private String month;
 	private String year;
 
 	private List <Tag> bibtexTags;
-
+    private BibtexUrl url;
+    
 	public List<Tag> getBibtexTags() {
 		return bibtexTags;
 	}
@@ -244,10 +249,10 @@ public class BibTex extends Resource {
 //	public void setType(String type) {
 //		this.type = type;
 //	}
-	public String getUrl() {
+	public BibtexUrl getUrl() {
 		return this.url;
 	}
-	public void setUrl(String url) {
+	public void setUrl(BibtexUrl url) {
 		this.url = url;
 	}
 	public String getUserName() {
