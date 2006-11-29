@@ -7,7 +7,6 @@
 	<typeAlias alias="byTagNames" type="org.bibsonomy.ibatis.params.ByTagNames" />
 
 	<resultMap id="bookmarks" class="bookmark" groupBy="contentId">
-		<result property="contentId"   column="content_id"       javaType="int" />
 		<result property="tags"        resultMap="Bookmark.tags" />
 		<result property="description" column="book_description" javaType="string" />
 		<result property="extended"    column="book_extended"    javaType="string" />
