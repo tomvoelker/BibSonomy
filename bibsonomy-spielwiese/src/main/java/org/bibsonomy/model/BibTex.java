@@ -1,8 +1,5 @@
 package org.bibsonomy.model;
 
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * This is the BibTex resource, which is used to handle BibTex-entries. It is
@@ -11,18 +8,17 @@ import java.util.TreeMap;
  * 
  * @author Christian Schenk
  */
+
+/*
+ * add addition attributes e.g. tag_name
+ */
+
+
 public class BibTex extends Resource {
 
-	
-	
-	
 	private int group;
 	private String userName;
-	// private String type;
-	// private char simhash0, ..., simhash3 FIXME ???
-	// private String privnote;
-	// private int scraperId;
-
+    private String contend_id; 
 	private String bibtexKey;
 	private String bKey;
 	private String misc;
@@ -32,7 +28,6 @@ public class BibTex extends Resource {
 	private String address;
 	private String annote;
 	private String author;
-	//private String key; FIXME ???
 	private String title;
 	private String booktitle;
 	private String chapter;
@@ -53,16 +48,22 @@ public class BibTex extends Resource {
 	private String day;
 	private String month;
 	private String year;
-
-	private List <Tag> bibtexTags;
+    private String tagname;
+    
+	//private List <Tag> bibtexTags;
     private BibtexUrl url;
     
-	public List<Tag> getBibtexTags() {
+    
+	/*public List<Tag> getBibtexTags() {
 		return bibtexTags;
 	}
 	public void setBibtexTags(List<Tag> bibtexTags) {
 		this.bibtexTags = bibtexTags;
-	}
+	}*/
+    
+    
+    
+    
 	public String getAddress() {
 		return this.address;
 	}
@@ -272,5 +273,17 @@ public class BibTex extends Resource {
 	}
 	public void setYear(String year) {
 		this.year = year;
+	}
+	public String getContend_id() {
+		return contend_id;
+	}
+	public void setContend_id(String contend_id) {
+		this.contend_id = contend_id;
+	}
+	public String getTagname() {
+		return tagname;
+	}
+	public void setTagname(String tagname) {
+		this.tagname = tagname;
 	}
 }
