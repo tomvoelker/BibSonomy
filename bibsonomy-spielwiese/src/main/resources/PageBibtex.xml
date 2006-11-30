@@ -42,20 +42,20 @@
 		</resultMap>
 
     
-	<select id="getBibtexByHash" resultMap="bibtexs" parameterClass="byBibhash">
-	
-	SELECT b.address,b.annote,b.booktitle,b.chapter,b.crossref,b.edition,b.howpublished,
+    <sql id ="select_bibtexAttributes"
+    SELECT b.address,b.annote,b.booktitle,b.chapter,b.crossref,b.edition,b.howpublished,
 	b.institution,b.journal,b.bkey,b.month,b.note,b.number,b.organization,b.pages,b.publisher,
 	b.school,b.series,b.type,b.volume,b.day,b.url,b.content_id,b.description,b.bibtexKey,b.misc,b.bibtexAbstract,b.user_name,b.date,b.title,b.author,
-	b.editor,b.year,b.entrytype,t.tag_name, h.ctr
-	 
+	b.editor,b.year,b.entrytype<sql/>
+    
+    
+	<select id="getBibtexByHash" resultMap="bibtexs" parameterClass="byBibhash">
+	
+	<include refid ="select_bibtexAttributes"/>,t.tag_name,h.ctr
 	FROM
 	
 	(SELECT
-	bibtex.address,bibtex.annote,bibtex.booktitle,bibtex.chapter,bibtex.crossref,bibtex.edition,
-	bibtex.howpublished,bibtex.institution,bibtex.journal,bibtex.bkey,bibtex.month,bibtex.note,bibtex.number,bibtex.organization,bibtex.pages,bibtex.publisher,bibtex.school,bibtex.series,bibtex.type,
-	bibtex.volume,bibtex.day,bibtex.url,bibtex.content_id,bibtex.description,bibtex.bibtexKey,bibtex.misc,bibtex.bibtexAbstract,bibtex.user_name,bibtex.date,bibtex.title,bibtex.author,
-	bibtex.editor,bibtex.year,bibtex.entrytype,bibtex.simhash#simValue#
+	<include refid ="select_bibtexAttributes"/>,bibtex.simhash#simValue#
 	 
 	FROM bibtex 
 	
