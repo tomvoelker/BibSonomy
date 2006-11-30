@@ -1,12 +1,14 @@
 package org.bibsonomy.ibatis;
-
 import java.io.Reader;
+
+import junit.framework.TestCase;
 
 import com.ibatis.common.resources.Resources;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapClientBuilder;
 
-import junit.framework.TestCase;
+
+
 
 /**
  * This class provides iBATIS-tests with the necessary SqlMapClient.
@@ -23,6 +25,7 @@ public abstract class AbstractSqlMapTest extends TestCase {
 		final String resource = "SqlMapConfig.xml";
 		final Reader reader = Resources.getResourceAsReader(resource);
 		this.sqlMap = SqlMapClientBuilder.buildSqlMapClient(reader);
+		
 	}
 
 	@Override

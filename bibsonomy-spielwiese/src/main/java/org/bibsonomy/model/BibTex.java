@@ -16,7 +16,7 @@ package org.bibsonomy.model;
 
 public class BibTex extends Resource {
 
-	private int group;
+	
 	private String userName;
     private String contend_id; 
 	private String bibtexKey;
@@ -49,7 +49,7 @@ public class BibTex extends Resource {
 	private String month;
 	private String year;
     private String tagname;
-    
+    private int group;
 	//private List <Tag> bibtexTags;
     private BibtexUrl url;
     
