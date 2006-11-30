@@ -15,7 +15,7 @@ public class BibtexByUsersFriendTest extends AbstractSqlMapTest {
 	
 	public BibTexByUserFriends getDefaultBibtexbyUserFriends() {
 		final BibTexByUserFriends bibVal = new BibTexByUserFriends();
-		bibVal.setUser("stumme");
+		bibVal.setUser("rja");
 		bibVal.setItemCount(10);
 		bibVal.setStartBib(3);
 		bibVal.setGroupType(ConstantID.BIBTEX_CONTENT_TYPE);
