@@ -5,7 +5,15 @@ import org.bibsonomy.ibatis.enums.ConstantID;
 
 
 
+/**
+ * @author mgr
+ *
+ */
 
+/*
+ * Define class for sql request: show me all bibtex entries of a given friend, define parameters for sql-request
+ * PAGE_FRIEND -- aggregiert über alle User, bei denen currUser Friend ist 
+ */
 public abstract class ByUserFriendsBibtex{
 	
 	

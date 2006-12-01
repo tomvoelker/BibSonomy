@@ -9,6 +9,14 @@ import org.bibsonomy.ibatis.params.bibtex.BibtexByHash;
 import org.bibsonomy.model.BibTex;
 
 
+/**
+ * @author mgr
+ *
+ */
+
+/*
+ * initialize parameters for database request 
+ */
 public class BibtexTest extends AbstractSqlMapTest {
 	
 	
@@ -18,7 +26,6 @@ public class BibtexTest extends AbstractSqlMapTest {
 		bibVal.setRequSim("1");
 		bibVal.setItemCount(5);
 		bibVal.setStartBib(0);
-		bibVal.setGroupType(ConstantID.BIBTEX_CONTENT_TYPE);
 		bibVal.setSimValue(ConstantID.SIM_HASH);
 		return bibVal;
 	}

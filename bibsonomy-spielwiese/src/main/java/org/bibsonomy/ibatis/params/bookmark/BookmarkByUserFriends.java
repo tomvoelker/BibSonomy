@@ -4,6 +4,18 @@ import org.bibsonomy.ibatis.params.generic.ByUserFriendsBookmark;
 
 
 
+
+/**
+ * @author mgr
+ *
+ */
+
+
+
+/*
+ * show all bookmark of users friends 
+ */
+
 public class BookmarkByUserFriends extends ByUserFriendsBookmark {
 
   public int getContentType() {

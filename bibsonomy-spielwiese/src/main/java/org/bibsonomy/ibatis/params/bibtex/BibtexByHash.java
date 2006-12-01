@@ -3,9 +3,17 @@ import org.bibsonomy.ibatis.enums.ConstantID;
 import org.bibsonomy.ibatis.params.generic.ByBibhash;
 import org.bibsonomy.ibatis.util.BibTexUtils;
 
-/*
- * class holds values
+
+/**
+ * @author mgr
+ *
  */
+
+
+/*
+ * Can be used to get all bibtex entries by its hash.
+ */
+
 
 
 public class BibtexByHash extends ByBibhash{

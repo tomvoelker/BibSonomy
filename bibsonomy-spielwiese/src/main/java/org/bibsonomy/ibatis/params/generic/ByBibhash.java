@@ -4,6 +4,16 @@ import org.bibsonomy.ibatis.enums.ConstantID;
 
 
 
+/**
+ * @author mgr
+ *
+ */
+
+/*
+ * by a given Bibtex (hash), it is returned a list of BibTex entries
+ */
+
+
 public abstract class ByBibhash{
 	
 	private ConstantID simValue;

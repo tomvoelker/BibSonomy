@@ -12,6 +12,15 @@ import org.bibsonomy.model.Bookmark;
 
 
 
+/**
+ * @author mgr
+ *
+ */
+
+/*
+ * initialize BibTexUserFriends parameters
+ * 
+ */
 public class BibtexByUsersFriendTest extends AbstractSqlMapTest {
 	
 	
@@ -29,9 +38,9 @@ public class BibtexByUsersFriendTest extends AbstractSqlMapTest {
 	public void testGetBibtexByUsersFriend() {
 			final BibTexByUserFriends btn = this.getDefaultBibtexbyUserFriends();
 
-			final List<BibTex> bibtexsByUsersFriend=this.sqlMap.queryForList("getBibtexbyUsersFriend",btn);
+			final List<BibTex> bibtexs=this.sqlMap.queryForList("getBibtexbyUsersFriend",btn);
 			
-			for (final BibTex bibtex : bibtexsByUsersFriend) {
+			for (final BibTex bibtex : bibtexs) {
 				System.out.println("Address  : " + bibtex.getAddress());
 				System.out.println("Annote   : " + bibtex.getAnnote());
 				System.out.println("Author : " + bibtex.getAuthor());
