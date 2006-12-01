@@ -20,4 +20,6 @@
 	<sqlMap resource="Bookmark.xml" />
 	<sqlMap resource="TypeTests.xml" />
 	<sqlMap resource="PageBibtex.xml""/>
+	<sqlMap resource="BookmarkByFriends.xml"/>
+	<sqlMap	resource="BibtexByFriends.xml"/>
 </sqlMapConfig>
