@@ -22,4 +22,6 @@
 	<sqlMap resource="PageBibtex.xml""/>
 	<sqlMap resource="BookmarkByFriends.xml"/>
 	<sqlMap	resource="BibtexByFriends.xml"/>
+	<sqMap resource="HomePageBookmarkTest"/>
+	<sqlMap resource="HomePageBookmarkTest"/>
 </sqlMapConfig>
