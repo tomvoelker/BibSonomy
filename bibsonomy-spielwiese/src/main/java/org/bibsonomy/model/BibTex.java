@@ -18,7 +18,6 @@ public class BibTex extends Resource {
 
 	
 	private String userName;
-    private String contend_id; 
 	private String bibtexKey;
 	private String bKey;
 	private String misc;
