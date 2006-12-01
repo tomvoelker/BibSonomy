@@ -6,7 +6,9 @@ import java.util.List;
 import org.bibsonomy.ibatis.enums.ConstantID;
 import org.bibsonomy.ibatis.params.bibtex.BibTexByUserFriends;
 import org.bibsonomy.ibatis.params.bibtex.BibtexByHash;
+import org.bibsonomy.ibatis.params.bookmark.BookmarkByTagNames;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 
 
 
@@ -18,7 +20,7 @@ public class BibtexByUsersFriendTest extends AbstractSqlMapTest {
 		bibVal.setUser("rja");
 		bibVal.setItemCount(10);
 		bibVal.setStartBib(3);
-		bibVal.setGroupType(ConstantID.BIBTEX_CONTENT_TYPE);
+		bibVal.setGroupType(ConstantID.GROUP_FRIENDS);
 		bibVal.setSimValue(ConstantID.SIM_HASH);
 		return bibVal;
 	}
@@ -27,14 +29,8 @@ public class BibtexByUsersFriendTest extends AbstractSqlMapTest {
 	public void testGetBibtexByUsersFriend() {
 			final BibTexByUserFriends btn = this.getDefaultBibtexbyUserFriends();
 
-			List<BibTex> bibtexsByUsersFriend=new LinkedList();;
-			try {
-				bibtexsByUsersFriend = this.sqlMap.queryForList("getBibTexbyHash", btn);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
+			final List<BibTex> bibtexsByUsersFriend=this.sqlMap.queryForList("getBibtexbyUsersFriend",btn);
+			
 			for (final BibTex bibtex : bibtexsByUsersFriend) {
 				System.out.println("Address  : " + bibtex.getAddress());
 				System.out.println("Annote   : " + bibtex.getAnnote());
