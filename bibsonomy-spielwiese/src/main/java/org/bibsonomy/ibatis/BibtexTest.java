@@ -10,12 +10,12 @@ import org.bibsonomy.model.BibTex;
 
 
 /**
+ * TESTCLASS
+ * 
+ * initialize BibTexbHash parameters 
+ * 
  * @author mgr
  *
- */
-
-/*
- * initialize parameters for database request 
  */
 public class BibtexTest extends AbstractSqlMapTest {
 	
@@ -34,7 +34,7 @@ public class BibtexTest extends AbstractSqlMapTest {
 	public void testGetBibtexByHash() {
 			final BibtexByHash btn = this.getDefaultBibtexbyHash();
 
-			List<BibTex> bibtexs=new LinkedList();;
+			List<BibTex> bibtexs=new LinkedList();
 			try {
 				bibtexs = this.sqlMap.queryForList("getBibTexbyHash", btn);
 			} catch (SQLException e) {

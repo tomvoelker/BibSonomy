@@ -2,34 +2,31 @@ package org.bibsonomy.ibatis.params.generic;
 import org.bibsonomy.ibatis.enums.ConstantID;
 
 
+
+
 /**
- * define parameters for sql-statement: give me all bookmark entries of the main page
+ * define parameters for sql-statement: give me all bibtex entries of the main page
  * 
  * 
  * @author mgr
  *
  */
-
-
-
-
-
-public abstract class HomePageForBookmark{
+public abstract class HomePageForBibtex{
 	
 	
 	
 	private ConstantID groupType;
+	private ConstantID simValue;
 	private int itemCount;
-	private int startBook;
+	private int startBib;
 	
 	
-	
-	public HomePageForBookmark(){
+	public  HomePageForBibtex(){
 		
 		this.groupType=ConstantID.GROUP_PUBLIC;
 		
-		}
-
+		
+	}
 
 
 	public ConstantID getGroupType() {
@@ -37,11 +34,9 @@ public abstract class HomePageForBookmark{
 	}
 
 
-
 	public void setGroupType(ConstantID groupType) {
 		this.groupType = groupType;
 	}
-
 
 
 	public int getItemCount() {
@@ -49,21 +44,30 @@ public abstract class HomePageForBookmark{
 	}
 
 
-
 	public void setItemCount(int itemCount) {
 		this.itemCount = itemCount;
 	}
 
 
+	public ConstantID getSimValue() {
+		return simValue;
+	}
 
-	public int getStartBook() {
-		return startBook;
+
+	public void setSimValue(ConstantID simValue) {
+		this.simValue = simValue;
 	}
 
 
 
-	public void setStartBook(int startBook) {
-		this.startBook = startBook;
+	public int getStartBib() {
+		return startBib;
 	}
+
+
+	public void setStartBib(int startBib) {
+		this.startBib = startBib;
+	}
+	
 	
 }

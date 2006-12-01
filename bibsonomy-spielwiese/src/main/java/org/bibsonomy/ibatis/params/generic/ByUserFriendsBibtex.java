@@ -6,14 +6,15 @@ import org.bibsonomy.ibatis.enums.ConstantID;
 
 
 /**
+ * 
+ * Define class for sql request: show me all bibtex entries of a given friend, define parameters for sql-request
+ * -- aggregates about all users, if current user is equals to friend
+ * 
  * @author mgr
  *
  */
 
-/*
- * Define class for sql request: show me all bibtex entries of a given friend, define parameters for sql-request
- * PAGE_FRIEND -- aggregiert über alle User, bei denen currUser Friend ist 
- */
+
 public abstract class ByUserFriendsBibtex{
 	
 	
@@ -22,7 +23,6 @@ public abstract class ByUserFriendsBibtex{
 	private ConstantID groupType;
 	private ConstantID simValue;
 	private int itemCount;
-	private int startBook;
 	private int startBib;
 	
 	
@@ -57,13 +57,7 @@ public abstract class ByUserFriendsBibtex{
 		this.startBib = startBib;
 	}
 
-	public int getStartBook() {
-		return startBook;
-	}
-
-	public void setStartBook(int startBook) {
-		this.startBook = startBook;
-	}
+	
 
 	public String getUser() {
 		return User;

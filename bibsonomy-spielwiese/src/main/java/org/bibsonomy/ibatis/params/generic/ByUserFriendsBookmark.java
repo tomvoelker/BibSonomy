@@ -4,16 +4,18 @@ package org.bibsonomy.ibatis.params.generic;
 import org.bibsonomy.ibatis.enums.ConstantID;
 
 
-
-
 /**
+ * Define class for sql request: show me all bibtex entries of a given friend, define parameters for sql-request
+ * -- aggregates about all users, if current user is equals to friend
+ * 
  * @author mgr
  *
  */
-/*
- * Define class for sql request: show me all bookmark entries of a given friend, define paramters for sql request
- * PAGE_FRIEND -- aggregiert über alle User, bei denen currUser Friend ist 
- */
+
+
+
+
+
 public abstract class ByUserFriendsBookmark{
 	
 	
@@ -22,7 +24,6 @@ public abstract class ByUserFriendsBookmark{
 	private ConstantID groupType;
 	private int itemCount;
 	private int startBook;
-	private int startBib;
 	
 	
 	
@@ -48,15 +49,8 @@ public abstract class ByUserFriendsBookmark{
 		this.itemCount = itemCount;
 	}
 
-	public int getStartBib() {
-		return startBib;
-	}
-
-	public void setStartBib(int startBib) {
-		this.startBib = startBib;
-	}
-
-	public int getStartBook() {
+	
+    public int getStartBook() {
 		return startBook;
 	}
 

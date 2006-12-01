@@ -5,13 +5,12 @@ import org.bibsonomy.ibatis.enums.ConstantID;
 
 
 /**
+ * by a given Bibtex (hash), it is returned a list of BibTex entries
+ * 
  * @author mgr
  *
  */
 
-/*
- * by a given Bibtex (hash), it is returned a list of BibTex entries
- */
 
 
 public abstract class ByBibhash{

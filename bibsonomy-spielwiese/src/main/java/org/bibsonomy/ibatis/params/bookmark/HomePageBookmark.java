@@ -5,7 +5,8 @@ import org.bibsonomy.ibatis.params.generic.HomePageForBookmark;
 
 public class HomePageBookmark extends HomePageForBookmark {
 
-  public int getContentType() {
+  
+	public int getContentType() {
 		return ConstantID.BOOKMARK_CONTENT_TYPE.getId();
 		
 		

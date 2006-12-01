@@ -7,15 +7,15 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Tag;
 
 
-
 /**
+ * TESTCLASS
+ * 
+ * initialize BookmarkByUserFriends parameters 
+ * 
  * @author mgr
  *
  */
-/*
- * initialize BookmarkByUserFriends parameters
- * 
- */
+
 public class BookByUsersFriendTest extends AbstractSqlMapTest {
 	
 	

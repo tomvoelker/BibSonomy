@@ -1,17 +1,18 @@
 package org.bibsonomy.ibatis.params.bibtex;
+
 import org.bibsonomy.ibatis.enums.ConstantID;
-import org.bibsonomy.ibatis.params.generic.ByUserFriendsBibtex;
+import org.bibsonomy.ibatis.params.generic.HomePageForBibtex;
+
 
 
 
 /**
- * Can be used to get all bibtex entries of users friends.
+ * Can be used to get all BibTex entries of the main Page
  * 
  * @author mgr 
  *
  */
-
-public class BibTexByUserFriends extends ByUserFriendsBibtex{
+public class HomePageBibtex extends HomePageForBibtex{
 	
 	
 	

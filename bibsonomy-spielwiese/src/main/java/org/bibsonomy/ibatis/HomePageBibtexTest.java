@@ -1,21 +1,16 @@
 package org.bibsonomy.ibatis;
-import java.sql.SQLException;
-import java.util.LinkedList;
+
 import java.util.List;
 
 import org.bibsonomy.ibatis.enums.ConstantID;
-import org.bibsonomy.ibatis.params.bibtex.BibTexByUserFriends;
-import org.bibsonomy.ibatis.params.bibtex.BibtexByHash;
-import org.bibsonomy.ibatis.params.bookmark.BookmarkByTagNames;
+import org.bibsonomy.ibatis.params.bibtex.HomePageBibtex;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
-
 
 
 /**
  * TESTCLASS
  * 
- * initialize BibTexUserFriends parameters 
+ * initialize HomePageforBibtex parameters 
  * 
  * @author mgr
  *
@@ -23,25 +18,23 @@ import org.bibsonomy.model.Bookmark;
 
 
 
-public class BibtexByUsersFriendTest extends AbstractSqlMapTest {
+public class HomePageBibtexTest extends AbstractSqlMapTest {
 	
 	
-	public BibTexByUserFriends getDefaultBibtexbyUserFriends() {
-		final BibTexByUserFriends bibVal = new BibTexByUserFriends();
-		bibVal.setUser("rja");
-		bibVal.setItemCount(10);
-		bibVal.setStartBib(3);
+	public HomePageBibtex getDefaultHomePageBibtex() {
+		final HomePageBibtex bibVal = new HomePageBibtex();
 		bibVal.setGroupType(ConstantID.GROUP_FRIENDS);
 		bibVal.setSimValue(ConstantID.SIM_HASH);
+		bibVal.setItemCount(15);
+		bibVal.setStartBib(0);
 		return bibVal;
 	}
 
-	@SuppressWarnings("unchecked")
-	public void testGetBibtexByUsersFriend() {
-			final BibTexByUserFriends btn = this.getDefaultBibtexbyUserFriends();
-
-			final List<BibTex> bibtexs=this.sqlMap.queryForList("getBibtexbyUsersFriend",btn);
+	public void testGetHomePageBibtexTest() {
+			final HomePageBibtex btn = this.getDefaultHomePageBibtex();
+			final List<BibTex> bibtexs = this.sqlMap.queryForList("getHomePageBibTex", btn);
 			
+
 			for (final BibTex bibtex : bibtexs) {
 				System.out.println("Address  : " + bibtex.getAddress());
 				System.out.println("Annote   : " + bibtex.getAnnote());
@@ -80,9 +73,4 @@ public class BibtexByUsersFriendTest extends AbstractSqlMapTest {
 			}
 		 
 	}
-	
-	
-	
-	
-	
 }
