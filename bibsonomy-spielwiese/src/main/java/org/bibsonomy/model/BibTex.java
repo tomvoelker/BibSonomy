@@ -273,12 +273,12 @@ public class BibTex extends Resource {
 	public void setYear(String year) {
 		this.year = year;
 	}
-	public String getContend_id() {
-		return contend_id;
-	}
-	public void setContend_id(String contend_id) {
-		this.contend_id = contend_id;
-	}
+//	public String getContend_id() {
+//		return contend_id;
+//	}
+//	public void setContend_id(String contend_id) {
+//		this.contend_id = contend_id;
+//	}
 	public String getTagname() {
 		return tagname;
 	}

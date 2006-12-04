@@ -1,6 +1,6 @@
 package org.bibsonomy.model;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -16,7 +16,8 @@ public class Bookmark extends Resource {
 	private String extended;
 	private String userName;
 	private String urlHash;
-	private BookUrl url;
+//	private BookUrl url;
+	private String url;
 	private int count;
 	private Date date;
 	
@@ -45,10 +46,16 @@ public class Bookmark extends Resource {
 	public void setTags(List<Tag> tags) {
 		this.tags = tags;
 	}
-	public BookUrl getUrl() {
-		return this.url;
+//	public BookUrl getUrl() {
+//		return this.url;
+//	}
+//	public void setUrl(BookUrl url) {
+//		this.url = url;
+//	}
+	public String getUrl() {
+		return url;
 	}
-	public void setUrl(BookUrl url) {
+	public void setUrl(String url) {
 		this.url = url;
 	}
 	public String getUrlHash() {

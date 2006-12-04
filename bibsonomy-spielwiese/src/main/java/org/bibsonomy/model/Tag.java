@@ -1,11 +1,12 @@
 package org.bibsonomy.model;
 
+
 public class Tag {
 	private int id;
 	private String name;
 	private String stem;
 	private int count;
-
+    
 	public int getId() {
 		return this.id;
 	}
