@@ -1,5 +1,6 @@
 package org.bibsonomy.ibatis;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import org.bibsonomy.ibatis.enums.ConstantID;
@@ -32,6 +33,7 @@ public class BibtexDownloadTest extends AbstractSqlMapTest {
 
 	@SuppressWarnings("unchecked")
 	public void testBibtexByDownload() {
+		try {
 			final BibtexByDownload btn = this.getDefaultBibtexByDownload();
 
 			final List<BibTex> bibtexs=this.sqlMap.queryForList("getBibtexByDownload",btn);
@@ -72,7 +74,9 @@ public class BibtexDownloadTest extends AbstractSqlMapTest {
 				System.out.println("Url    : " + bibtex.getUrl());
 				
 			}
-		 
+		} catch (final SQLException ex) {
+			ex.printStackTrace();
+		}
 	}
 	
 	

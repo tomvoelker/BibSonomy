@@ -1,11 +1,12 @@
 package org.bibsonomy.ibatis;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import org.bibsonomy.ibatis.enums.ConstantID;
-import org.bibsonomy.ibatis.params.bookmark.BookmarkByTagNames;
 import org.bibsonomy.ibatis.params.bookmark.HomePageBookmark;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Tag;
 
 
 
@@ -31,7 +32,7 @@ public class HomePageBookmarkTest extends AbstractSqlMapTest {
 
 
 	public void testHomePageBookmarkTest() {
-		
+		try {
 			final HomePageBookmark btn = this.getDefaultHomePageBookmark();
 
 			final List<Bookmark> bookmarks=this.sqlMap.queryForList("getHomePageBookmark",btn);
@@ -44,10 +45,16 @@ public class HomePageBookmarkTest extends AbstractSqlMapTest {
 				System.out.println("URL         : " + bookmark.getUrl());
 				System.out.println("URLHash     : " + bookmark.getUrlHash());
 				System.out.println("UserName    : " + bookmark.getUserName());
-		 
+				for (final Tag tag : bookmark.getTags()) {
+					System.out.print(tag.getName() + " ");
+				}
+				System.out.println("\n");
 			}
 	
-	
+		} catch (final SQLException ex) {
+			ex.printStackTrace();
+			fail("SQLException");
+		}
 	}	
 	
 

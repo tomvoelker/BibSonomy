@@ -1,14 +1,10 @@
 package org.bibsonomy.ibatis;
 import java.sql.SQLException;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.ibatis.enums.ConstantID;
 import org.bibsonomy.ibatis.params.bibtex.BibTexByUserFriends;
-import org.bibsonomy.ibatis.params.bibtex.BibtexByHash;
-import org.bibsonomy.ibatis.params.bookmark.BookmarkByTagNames;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 
 
 
@@ -30,7 +26,7 @@ public class BibtexByUsersFriendTest extends AbstractSqlMapTest {
 		final BibTexByUserFriends bibVal = new BibTexByUserFriends();
 		bibVal.setUser("rja");
 		bibVal.setItemCount(10);
-		bibVal.setStartBib(3);
+		bibVal.setStartBib(0);
 		bibVal.setGroupType(ConstantID.GROUP_FRIENDS);
 		bibVal.setSimValue(ConstantID.SIM_HASH);
 		return bibVal;
@@ -38,6 +34,7 @@ public class BibtexByUsersFriendTest extends AbstractSqlMapTest {
 
 	@SuppressWarnings("unchecked")
 	public void testGetBibtexByUsersFriend() {
+		try {
 			final BibTexByUserFriends btn = this.getDefaultBibtexbyUserFriends();
 
 			final List<BibTex> bibtexs=this.sqlMap.queryForList("getBibtexbyUsersFriend",btn);
@@ -78,7 +75,9 @@ public class BibtexByUsersFriendTest extends AbstractSqlMapTest {
 				System.out.println("Url    : " + bibtex.getUrl());
 				
 			}
-		 
+		} catch (final SQLException ex) {
+			ex.printStackTrace();
+		}
 	}
 	
 	

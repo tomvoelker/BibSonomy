@@ -1,7 +1,7 @@
 package org.bibsonomy.ibatis;
 
-import java.sql.SQLException;
 import java.util.Date;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.bibsonomy.ibatis.params.generic.ByDate;
@@ -9,7 +9,9 @@ import org.bibsonomy.ibatis.params.generic.ByUser;
 import org.bibsonomy.model.User;
 
 public class UserTest extends AbstractSqlMapTest {
-
+/*
+ * aktuelle Parameter werden mit default gefüllt
+ */
 	public ByDate getDefaultByDate() {
 		return new ByDate(new Date());
 	}
@@ -32,12 +34,19 @@ public class UserTest extends AbstractSqlMapTest {
 		user.setHomepageAsString("http://www.kde.cs.uni-kassel.de/jaeschke'\b\b\b\b\\x22\\x22\\x22\\x22\\x22\\x22\\x22\\x22\\x22; DELETE FROM user;");
 		return user;
 	}
-
+/*
+ * liest Daten
+ */
 	@SuppressWarnings("unchecked")
 	public void testGetUsersByDate() {
 		try {
 			final ByUser bu = this.getDefaultByUser();
-
+/*
+ * bekomme Liste von Usern zurück
+ */
+			/*
+			 * in XML ist id eingebettet
+			 */
 			final List<User> users = this.sqlMap.queryForList("getByUser", bu);
 
 			for (final User user : users) {

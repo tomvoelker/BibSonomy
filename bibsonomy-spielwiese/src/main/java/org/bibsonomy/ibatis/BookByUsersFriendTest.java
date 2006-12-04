@@ -1,4 +1,5 @@
 package org.bibsonomy.ibatis;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.bibsonomy.ibatis.enums.ConstantID;
@@ -21,16 +22,17 @@ public class BookByUsersFriendTest extends AbstractSqlMapTest {
 	
 	public BookmarkByUserFriends getDefaultBookmarkByUserFriends() {
 		final BookmarkByUserFriends bookVal = new BookmarkByUserFriends();
-		
+	    
 		bookVal.setUser("rja");
-		bookVal.setItemCount(10);
-		bookVal.setStartBook(3);
 		bookVal.setGroupType(ConstantID.GROUP_FRIENDS);
+		bookVal.setItemCount(10);
+		bookVal.setStartBook(0);
 		return bookVal;
 	}
 
 	@SuppressWarnings("unchecked")
 	public void testGetBookmarkByUsersFriend() {
+		try {
 			final BookmarkByUserFriends btn = this.getDefaultBookmarkByUserFriends();
 
 			final List<Bookmark> bookmarks=this.sqlMap.queryForList("getBookmarkbyUsersFriend",btn);
@@ -43,9 +45,15 @@ public class BookByUsersFriendTest extends AbstractSqlMapTest {
 				System.out.println("URL         : " + bookmark.getUrl());
 				System.out.println("URLHash     : " + bookmark.getUrlHash());
 				System.out.println("UserName    : " + bookmark.getUserName());
-		 
+				for (final Tag tag : bookmark.getTags()) {
+					System.out.print(tag.getName() + " ");
+				}
+				System.out.println("\n");
 			}
-	
+		} catch (final SQLException ex) {
+			ex.printStackTrace();
+			fail("SQLException");
+		}
 	
 	}	
 	

@@ -1,5 +1,6 @@
 package org.bibsonomy.ibatis;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import org.bibsonomy.ibatis.enums.ConstantID;
@@ -31,6 +32,7 @@ public class HomePageBibtexTest extends AbstractSqlMapTest {
 	}
 
 	public void testGetHomePageBibtexTest() {
+		try {
 			final HomePageBibtex btn = this.getDefaultHomePageBibtex();
 			final List<BibTex> bibtexs = this.sqlMap.queryForList("getHomePageBibTex", btn);
 			
@@ -71,6 +73,8 @@ public class HomePageBibtexTest extends AbstractSqlMapTest {
 				System.out.println("Url    : " + bibtex.getUrl());
 				
 			}
-		 
+		} catch (final SQLException ex) {
+			ex.printStackTrace();
+		}
 	}
 }

@@ -8,6 +8,7 @@ import org.bibsonomy.ibatis.params.bookmark.BookmarkByTagNames;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Tag;
 
+
 public class JoinTest extends AbstractSqlMapTest {
 
 	/**
@@ -48,6 +49,7 @@ public class JoinTest extends AbstractSqlMapTest {
 			}
 		} catch (final SQLException ex) {
 			ex.printStackTrace();
+			fail("SQLException");
 		}
 	}
 }
