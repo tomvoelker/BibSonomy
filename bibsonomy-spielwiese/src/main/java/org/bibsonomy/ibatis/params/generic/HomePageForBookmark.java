@@ -23,20 +23,17 @@ public abstract class HomePageForBookmark{
 	private int startBook;
 	
 	
-	
 	public HomePageForBookmark(){
 		
 		this.groupType=ConstantID.GROUP_PUBLIC;
 		
 		}
 
+	public abstract int getContentType();
 
-
-	public ConstantID getGroupType() {
-		return groupType;
+	public int getGroupType() {
+		return groupType.getId() ;
 	}
-
-
 
 	public void setGroupType(ConstantID groupType) {
 		this.groupType = groupType;

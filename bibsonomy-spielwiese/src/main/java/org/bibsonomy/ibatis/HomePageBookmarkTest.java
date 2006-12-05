@@ -31,6 +31,7 @@ public class HomePageBookmarkTest extends AbstractSqlMapTest {
 	}
 
 
+	@SuppressWarnings("unchecked")
 	public void testHomePageBookmarkTest() {
 		try {
 			final HomePageBookmark btn = this.getDefaultHomePageBookmark();
