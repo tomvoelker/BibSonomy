@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
-<sqlMap namespace="Bookmark">
-	<typeAlias alias="bookmark" type="org.bibsonomy.model.Bookmark" />
-	<typeAlias alias="byUserFriendsBookmark" type="org.bibsonomy.ibatis.params.ByUserFriendsBookmark" />
+<sqlMap namespace="BookmarkByFriends">
 
-	<resultMap id="bookmarks" class="bookmark">
+    <typeAlias alias="tag" type="org.bibsonomy.model.Tag" />
+	<typeAlias alias="bookmark" type="org.bibsonomy.model.Bookmark" />
+	<typeAlias alias="byUserFriendsBookmark" type="org.bibsonomy.ibatis.params.bookmark.BookmarkByUserFriends" />
+
+	<resultMap id="bookmarks" class="bookmark" groupBy="contentId">
+	    <result property="contentId" column="content_Id" javaType="int" />
+		<result property="tags"        resultMap="BookmarkByFriends.tags" />
 		<result property="description" column="book_description" javaType="string" />
 		<result property="extended"    column="book_extended"    javaType="string" />
 		<result property="userName"    column="user_name"        javaType="string" />
@@ -15,18 +19,21 @@
 		<result property="count"       column="book_url_ctr"     javaType="int" />
 	</resultMap>
 
-
-	<select id="getBookmarkByUserFriends" resultMap="bookmarks" parameterClass="byUsersFriendsBookmark">
+    <resultMap id="tags" class="tag">
+		<result property="name" column="tag_name" javaType="string" />
+	</resultMap>
+	
+	<select id="getBookmarkByUserFriends" resultMap="bookmarks" parameterClass="byUserFriendsBookmark">
 		SELECT
 		bb.content_id,b.book_url_hash,b.book_description,
 		b.book_extended,bb.date,u.book_url,u.book_url_ctr,t.tag_name,g.group_name,t.user_name
 	    FROM
 	    urls u, bookmark b,
 	    (SELECT content_id, date FROM bookmark b, friends f
-	    WHERE f.f_user_name =#User#                 
+	    WHERE f.f_user_name =#user#                
 	    AND b.user_name = f.user_name AND b.group =#groupType# 
 	   	ORDER BY date DESC 
-       	LIMIT#itemCount# OFFSET#startBook#) AS bb
+       	LIMIT #itemCount# OFFSET #startBook#) AS bb
 	   	LEFT OUTER JOIN tas AS t ON bb.content_id=t.content_id, groupids AS g  
 		WHERE t.group = g.group                                              
 		AND u.book_url_hash=b.book_url_hash                                  

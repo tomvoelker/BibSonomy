@@ -24,7 +24,7 @@ public abstract class ByUserFriendsBookmark{
 	private ConstantID groupType;
 	private int itemCount;
 	private int startBook;
-	
+	protected ConstantID contentType;
 	
 	
 	public ByUserFriendsBookmark(){
@@ -32,9 +32,11 @@ public abstract class ByUserFriendsBookmark{
 		this.groupType=ConstantID.GROUP_FRIENDS;
 		
 		}
+	
+	public abstract int getContentType();
 
-	public ConstantID getGroupType() {
-		return groupType;
+	public int getGroupType() {
+		return groupType.getId() ;
 	}
 
 	public void setGroupType(ConstantID groupType) {

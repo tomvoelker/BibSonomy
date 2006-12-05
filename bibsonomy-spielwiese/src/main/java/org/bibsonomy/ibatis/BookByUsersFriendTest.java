@@ -23,10 +23,11 @@ public class BookByUsersFriendTest extends AbstractSqlMapTest {
 	public BookmarkByUserFriends getDefaultBookmarkByUserFriends() {
 		final BookmarkByUserFriends bookVal = new BookmarkByUserFriends();
 	    
-		bookVal.setUser("rja");
+		bookVal.setUser("stumme");
 		bookVal.setGroupType(ConstantID.GROUP_FRIENDS);
 		bookVal.setItemCount(10);
 		bookVal.setStartBook(0);
+		
 		return bookVal;
 	}
 
@@ -35,7 +36,7 @@ public class BookByUsersFriendTest extends AbstractSqlMapTest {
 		try {
 			final BookmarkByUserFriends btn = this.getDefaultBookmarkByUserFriends();
 
-			final List<Bookmark> bookmarks=this.sqlMap.queryForList("getBookmarkbyUsersFriend",btn);
+			final List<Bookmark> bookmarks=this.sqlMap.queryForList("getBookmarkByUserFriends",btn);
 			
 			for (final Bookmark bookmark  : bookmarks) {
 				System.out.println("ContentId   : " + bookmark.getContentId());
@@ -45,6 +46,7 @@ public class BookByUsersFriendTest extends AbstractSqlMapTest {
 				System.out.println("URL         : " + bookmark.getUrl());
 				System.out.println("URLHash     : " + bookmark.getUrlHash());
 				System.out.println("UserName    : " + bookmark.getUserName());
+				
 				for (final Tag tag : bookmark.getTags()) {
 					System.out.print(tag.getName() + " ");
 				}
