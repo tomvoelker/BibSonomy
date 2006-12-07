@@ -1,5 +1,7 @@
 package org.bibsonomy.model;
 
+import java.util.List;
+
 
 /**
  * This is the BibTex resource, which is used to handle BibTex-entries. It is
@@ -19,7 +21,7 @@ public class BibTex extends Resource {
 	
 	private String userName;
 	private String bibtexKey;
-	private String bKey;
+	private String bkey;
 	private String misc;
 	private String bibtexAbstract;
 	private String description;
@@ -49,16 +51,22 @@ public class BibTex extends Resource {
 	private String year;
     private String tagname;
     private int group;
-	//private List <Tag> bibtexTags;
-    private BibtexUrl url;
+	private List <Tag> bibtextags;
+    private String url;
     
     
-	/*public List<Tag> getBibtexTags() {
-		return bibtexTags;
+	public String getUrl() {
+		return url;
 	}
-	public void setBibtexTags(List<Tag> bibtexTags) {
-		this.bibtexTags = bibtexTags;
-	}*/
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	public List<Tag> getBibtextags() {
+		return bibtextags;
+	}
+	public void setBibtextags(List<Tag> bibtexTags) {
+		this.bibtextags = bibtexTags;
+	}
     
     
     
@@ -93,11 +101,11 @@ public class BibTex extends Resource {
 	public void setBibtexKey(String bibtexKey) {
 		this.bibtexKey = bibtexKey;
 	}
-	public String getBKey() {
-		return this.bKey;
+	public String getBkey() {
+		return this.bkey;
 	}
-	public void setBKey(String key) {
-		this.bKey = key;
+	public void setBkey(String bkey) {
+		this.bkey = bkey;
 	}
 	public String getBooktitle() {
 		return this.booktitle;
@@ -249,12 +257,7 @@ public class BibTex extends Resource {
 //	public void setType(String type) {
 //		this.type = type;
 //	}
-	public BibtexUrl getUrl() {
-		return this.url;
-	}
-	public void setUrl(BibtexUrl url) {
-		this.url = url;
-	}
+	
 	public String getUserName() {
 		return this.userName;
 	}

@@ -17,19 +17,16 @@
 	</transactionManager>
 
 
-
+    <sqlMap resource="BookmarkByFriends.xml"/>
 	<sqlMap resource="BibtexDownload.xml"/>
-	 
-	<!--
-    <sqlMap resource="sql_snippets.xml" />
 	<sqlMap resource="Tag.xml" />
 	<sqlMap resource="Bookmark.xml" />
-	<sqlMap resource="TypeTests.xml" />
+	<sqlMap  resource="HomePageBookmark.xml"/>
 	<sqlMap resource="PageBibtex.xml"/>
-	<sqlMap resource="BookmarkByFriends.xml"/>
+	<!--
+    <sqlMap resource="sql_snippets.xml" />
+	<sqlMap resource="TypeTests.xml" />
 	<sqlMap	resource="BibtexByFriends.xml"/>
 	<sqlMap resource="HomePageBibtex.xml"/>
-	<sqlMap  resource="HomePageBookmark.xml"/>
-	<sqlMap resource="BibtexDownload.xml"/>
-	  -->
+	-->
 </sqlMapConfig>

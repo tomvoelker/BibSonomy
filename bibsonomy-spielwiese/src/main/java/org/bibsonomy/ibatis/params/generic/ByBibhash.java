@@ -17,6 +17,7 @@ public abstract class ByBibhash{
 	
 	private ConstantID simValue;
 	private ConstantID groupType;
+	protected ConstantID contentType;
 	private String requBibtex;
 	private String requSim;
 	private int itemCount;
@@ -26,8 +27,8 @@ public abstract class ByBibhash{
 	
 	public ByBibhash() {
 		
-		this.groupType = ConstantID.GROUP_PUBLIC;	
-	    this.simValue=ConstantID.SIM_HASH;
+		this.simValue=ConstantID.SIM_HASH;
+		this.groupType=ConstantID.GROUP_PUBLIC;
 	}
 
 	
@@ -73,8 +74,8 @@ public abstract class ByBibhash{
 	}
 
 
-	public ConstantID getGroupType() {
-		return groupType;
+	public int getGroupType() {
+		return groupType.getId() ;
 	}
 
 
@@ -83,8 +84,8 @@ public abstract class ByBibhash{
 	}
 
 
-	public ConstantID getSimValue() {
-		return simValue;
+	public int getSimValue() {
+		return this.simValue.getId();
 	}
 
 

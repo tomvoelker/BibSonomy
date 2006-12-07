@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
-<sqlMap namespace="BibTex">
-
+<sqlMap namespace="PageBibtex">
+    <typeAlias alias="tag" type="org.bibsonomy.model.Tag" />
 	<typeAlias alias="bibTex" type="org.bibsonomy.model.BibTex" />
-	<typeAlias alias="byBibhash" type="org.bibsonomy.ibatis.params.ByBibhash" />
+	<typeAlias alias="byBibhash" type="org.bibsonomy.ibatis.params.bibtex.BibtexByHash" />
 
-	<resultMap id="bibtexs" class="bibTex">
+	<resultMap id="bibtexs" class="bibTex" groupBy="contentId" >
+	    <result property="bibtextags"        resultMap="PageBibtex.bibtextags" />
+	    <result property="contentId" column="content_Id" javaType="int" />
 		<result property="bibtexKey"   column="bibtexKey"       javaType="string" />
-		<result property="bKey"        column="bkey"		     javaType="string" />
+		<result property="bkey"        column="bkey"		     javaType="string" />
 		<result property="misc"        column="misc"            javaType="string" />
 		<result property="bibtexAbstract" column="bibtexAbstract" javaType="string" />
 		<result property="description" column="description"     javaType="string" />
@@ -16,7 +18,6 @@
 		<result property="address"     column="address"         javaType="string" />
 		<result property="annote"      column="annote"          javaType="string" />
 		<result property="author"      column="author"          javaType="string" />
-		<result property="bKey"        column="bKey"            javaType="string"/>
 		<result property="title"       column="title"           javaType="string" />
 		<result property="booktitle"   column="booktitle"       javaType="string" />
 		<result property="chapter"     column="chapter"         javaType="string" />
@@ -37,21 +38,30 @@
 		<result property="day"         column="day"             javaType="string" />
 		<result property="month"       column="month"           javaType="string" />
 		<result property="year"        column="year"            javaType="string" />
-		<result property="privnote"    column="privnote"        javaType="string" />
-		<result property="userName"     column="user_name"      javaType="string" />                                                      />
+		<result property="userName"     column="user_name"      javaType="string" />                                                      
 		</resultMap>
+		
+		
+		<resultMap id="bibtextags" class="tag">
+		<result property="name" column="tag_name" javaType="string" />
+	    </resultMap>
 
     
-    <sql id ="select_bibtexAttributes"
+    <sql id ="select_bAttributes">
     SELECT b.address,b.annote,b.booktitle,b.chapter,b.crossref,b.edition,b.howpublished,
 	b.institution,b.journal,b.bkey,b.month,b.note,b.number,b.organization,b.pages,b.publisher,
 	b.school,b.series,b.type,b.volume,b.day,b.url,b.content_id,b.description,b.bibtexKey,b.misc,b.bibtexAbstract,b.user_name,b.date,b.title,b.author,
-	b.editor,b.year,b.entrytype<sql/>
+	b.editor,b.year,b.entrytype</sql>
     
-    
+    <sql id ="select_bibtexAttributes">
+    bibtex.address,bibtex.annote,bibtex.booktitle,bibtex.chapter,bibtex.crossref,bibtex.edition,bibtex.howpublished,
+	bibtex.institution,bibtex.journal,bibtex.bkey,bibtex.month,bibtex.note,bibtex.number,bibtex.organization,bibtex.pages,bibtex.publisher,
+	bibtex.school,bibtex.series,bibtex.type,bibtex.volume,bibtex.day,bibtex.url,bibtex.content_id,bibtex.description,bibtex.bibtexKey,bibtex.misc,bibtex.bibtexAbstract,bibtex.user_name,bibtex.date,bibtex.title,bibtex.author,
+	bibtex.editor,bibtex.year,bibtex.entrytype</sql>
+	
 	<select id="getBibtexByHash" resultMap="bibtexs" parameterClass="byBibhash">
 	
-	<include refid ="select_bibtexAttributes"/>,t.tag_name,h.ctr
+	<include refid ="select_bAttributes"/>,t.tag_name,h.ctr
 	FROM
 	
 	(SELECT
@@ -61,7 +71,7 @@
 	
 	WHERE
 	
-	simhash#requSim#=#requBibtex#  
+	simhash$requSim$ = #requBibtex#  
 	AND bibtex.group = #groupType# ORDER BY date DESC LIMIT #itemCount# OFFSET #startBib#)
 	
 	AS b LEFT OUTER JOIN tas t ON b.content_id=t.content_id,
