@@ -6,6 +6,7 @@ import java.util.List;
 import org.bibsonomy.ibatis.enums.ConstantID;
 import org.bibsonomy.ibatis.params.bibtex.BibtexByDownload;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Tag;
 
 
 
@@ -44,7 +45,7 @@ public class BibtexDownloadTest extends AbstractSqlMapTest {
 				System.out.println("Author : " + bibtex.getAuthor());
 				System.out.println("BibTexAbstract   : " +bibtex.getBibtexAbstract());
 				System.out.println("BibTexKey       : " + bibtex.getBibtexKey());
-				System.out.println("BKey        : " + bibtex.getBKey());
+				System.out.println("bkey        : " + bibtex.getBkey());
 				System.out.println("Booktitle    : " + bibtex.getBooktitle());
 				System.out.println("Chapter   : " + bibtex.getChapter());
 				System.out.println("Crossref    : " + bibtex.getCrossref());
@@ -73,6 +74,10 @@ public class BibtexDownloadTest extends AbstractSqlMapTest {
 				System.out.println("Year    : " + bibtex.getYear());
 				System.out.println("Url    : " + bibtex.getUrl());
 				
+				for (final Tag tag : bibtex.getBibtextags()) {
+					System.out.print(tag.getName() + " ");
+				}
+				System.out.println("\n");
 			}
 		} catch (final SQLException ex) {
 			ex.printStackTrace();

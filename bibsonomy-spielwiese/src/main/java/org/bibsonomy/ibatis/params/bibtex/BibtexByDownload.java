@@ -21,6 +21,7 @@ public class BibtexByDownload extends ByBibtexDownload{
 	public int getContentType() {
 		return ConstantID.BIBTEX_CONTENT_TYPE.getId();
 	}
-	
-	
 }
+
+	
+	

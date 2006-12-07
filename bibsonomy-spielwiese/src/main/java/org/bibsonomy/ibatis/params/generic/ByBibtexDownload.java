@@ -13,27 +13,20 @@ public abstract class ByBibtexDownload{
 	
 	private String User;
     private ConstantID simValue;
+    protected ConstantID contentType;
     
     
     public ByBibtexDownload(){
     	
     	this.simValue=ConstantID.SIM_HASH;
-    	
-    	
-    	
-    }
+   	
+    	}
+
+    public abstract int getContentType();
 
 
-	public ConstantID getSimValue() {
-		return simValue;
-	}
 
-
-	public void setSimValue(ConstantID simValue) {
-		this.simValue = simValue;
-	}
-
-
+	
 	public String getUser() {
 		return User;
 	}
@@ -42,7 +35,16 @@ public abstract class ByBibtexDownload{
 	public void setUser(String user) {
 		User = user;
 	}
-    
+
+	public int getSimValue() {
+		return this.simValue.getId();
+	}
+
+	public void setSimValue(ConstantID simValue) {
+		this.simValue = simValue;
+	}
+   
+	
     
 }
     
