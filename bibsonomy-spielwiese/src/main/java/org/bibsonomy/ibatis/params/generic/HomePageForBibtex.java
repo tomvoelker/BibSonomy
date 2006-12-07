@@ -28,16 +28,15 @@ public abstract class HomePageForBibtex{
 		
 	}
 
-
-	public ConstantID getGroupType() {
-		return groupType;
+	public abstract int getContentType();
+	
+	public int getGroupType() {
+		return groupType.getId() ;
 	}
-
 
 	public void setGroupType(ConstantID groupType) {
 		this.groupType = groupType;
 	}
-
 
 	public int getItemCount() {
 		return itemCount;

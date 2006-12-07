@@ -31,10 +31,11 @@ public class HomePageBibtexTest extends AbstractSqlMapTest {
 		return bibVal;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void testGetHomePageBibtexTest() {
 		try {
 			final HomePageBibtex btn = this.getDefaultHomePageBibtex();
-			final List<BibTex> bibtexs = this.sqlMap.queryForList("getHomePageBibTex", btn);
+			final List<BibTex> bibtexs = this.sqlMap.queryForList("getHomePageBibtex", btn);
 			
 
 			for (final BibTex bibtex : bibtexs) {
@@ -43,7 +44,7 @@ public class HomePageBibtexTest extends AbstractSqlMapTest {
 				System.out.println("Author : " + bibtex.getAuthor());
 				System.out.println("BibTexAbstract   : " +bibtex.getBibtexAbstract());
 				System.out.println("BibTexKey       : " + bibtex.getBibtexKey());
-				System.out.println("BKey        : " + bibtex.getBKey());
+				System.out.println("BKey        : " + bibtex.getBkey());
 				System.out.println("Booktitle    : " + bibtex.getBooktitle());
 				System.out.println("Chapter   : " + bibtex.getChapter());
 				System.out.println("Crossref    : " + bibtex.getCrossref());

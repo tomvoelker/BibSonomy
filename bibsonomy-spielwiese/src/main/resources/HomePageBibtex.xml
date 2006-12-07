@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
-<sqlMap namespace="BibTex">
-
+<sqlMap namespace="HomePageBibtex">
+    <typeAlias alias="tag" type="org.bibsonomy.model.Tag" />
 	<typeAlias alias="bibTex" type="org.bibsonomy.model.BibTex" />
-	<typeAlias alias="homePageForBibtex" type="org.bibsonomy.ibatis.params.HomePageForBibtex" />
+	<typeAlias alias="HomePageForBibtex" type="org.bibsonomy.ibatis.params.bibtex.HomePageBibtex" />
 
-	<resultMap id="bibtexs" class="bibTex">
+	<resultMap id="bibtexs" class="bibTex" groupBy="contentId" >
+	    <result property="bibtextags"        resultMap="BibtexDownload.bibtextags" />
+	    <result property="contentId" column="content_Id" javaType="int" />
 		<result property="bibtexKey"   column="bibtexKey"       javaType="string" />
-		<result property="bKey"        column="bkey"		     javaType="string" />
+		<result property="bkey"        column="bkey"		     javaType="string" />
 		<result property="misc"        column="misc"            javaType="string" />
 		<result property="bibtexAbstract" column="bibtexAbstract" javaType="string" />
 		<result property="description" column="description"     javaType="string" />
@@ -16,7 +18,6 @@
 		<result property="address"     column="address"         javaType="string" />
 		<result property="annote"      column="annote"          javaType="string" />
 		<result property="author"      column="author"          javaType="string" />
-		<result property="bKey"        column="bKey"            javaType="string"/>
 		<result property="title"       column="title"           javaType="string" />
 		<result property="booktitle"   column="booktitle"       javaType="string" />
 		<result property="chapter"     column="chapter"         javaType="string" />
@@ -37,28 +38,32 @@
 		<result property="day"         column="day"             javaType="string" />
 		<result property="month"       column="month"           javaType="string" />
 		<result property="year"        column="year"            javaType="string" />
-		<result property="privnote"    column="privnote"        javaType="string" />
-		<result property="userName"     column="user_name"      javaType="string" />                                                      />
+		<result property="userName"     column="user_name"      javaType="string" />                                                      
 		</resultMap>
+		
+		
+		<resultMap id="bibtextags" class="tag">
+		<result property="name" column="tag_name" javaType="string" />
+	    </resultMap>
 
     
-    <sql id ="select_bibtexAttributes"
+    <sql id ="select_bibtexAttributes">
     SELECT b.address,b.annote,b.booktitle,b.chapter,b.crossref,b.edition,b.howpublished,
 	b.institution,b.journal,b.bkey,b.month,b.note,b.number,b.organization,b.pages,b.publisher,
 	b.school,b.series,b.type,b.volume,b.day,b.url,b.content_id,b.description,b.bibtexKey,b.misc,b.bibtexAbstract,b.user_name,b.date,b.title,b.author,
-	b.editor,b.year,b.entrytype<sql/>
+	b.editor,b.year,b.entrytype</sql>
     
     
-	<select id="getHomePageBibtex" resultMap="bibtexs" parameterClass="homePageBibtex">
+	<select id="getHomePageBibtex" resultMap="bibtexs" parameterClass="HomePageForBibtex">
 	
 	<include refid ="select_bibtexAttributes"/>,t.tag_name,b.ctr
 	 FROM(<include refid ="select_bibtexAttributes"/>, h.ctr
      FROM bibtex b FORCE INDEX (group_date_content_id_idx), bibhash h
      WHERE `group` =#groupType#
      AND h.type =#simValue# 
-     AND b.simhash#simValue#=h.hash
+     AND b.simhash #simValue#=h.hash
      ORDER BY date DESC
-     LIMIT#itemCount#) AS b
+     LIMIT #itemCount#) AS b
      LEFT OUTER JOIN tas t ON b.content_id=t.content_id
      ORDER BY b.date DESC, b.content_id DESC;
 	</select>

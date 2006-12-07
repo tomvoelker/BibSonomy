@@ -23,10 +23,12 @@
 	<sqlMap resource="Bookmark.xml" />
 	<sqlMap  resource="HomePageBookmark.xml"/>
 	<sqlMap resource="PageBibtex.xml"/>
+	<sqlMap resource="HomePageBibtex.xml"/>
+	
 	<!--
     <sqlMap resource="sql_snippets.xml" />
 	<sqlMap resource="TypeTests.xml" />
 	<sqlMap	resource="BibtexByFriends.xml"/>
-	<sqlMap resource="HomePageBibtex.xml"/>
+	
 	-->
 </sqlMapConfig>
