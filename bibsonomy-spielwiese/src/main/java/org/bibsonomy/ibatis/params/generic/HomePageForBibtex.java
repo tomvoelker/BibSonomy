@@ -22,8 +22,9 @@ public abstract class HomePageForBibtex{
 	
 	
 	public  HomePageForBibtex(){
-		
+		this.simValue=ConstantID.SIM_HASH;
 		this.groupType=ConstantID.GROUP_PUBLIC;
+		
 		
 		
 	}
@@ -48,8 +49,8 @@ public abstract class HomePageForBibtex{
 	}
 
 
-	public ConstantID getSimValue() {
-		return simValue;
+	public int getSimValue() {
+		return simValue.getId();
 	}
 
 

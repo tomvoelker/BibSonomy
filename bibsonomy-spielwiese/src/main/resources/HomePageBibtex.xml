@@ -4,10 +4,10 @@
 <sqlMap namespace="HomePageBibtex">
     <typeAlias alias="tag" type="org.bibsonomy.model.Tag" />
 	<typeAlias alias="bibTex" type="org.bibsonomy.model.BibTex" />
-	<typeAlias alias="HomePageForBibtex" type="org.bibsonomy.ibatis.params.bibtex.HomePageBibtex" />
+	<typeAlias alias="homePageForBibtex" type="org.bibsonomy.ibatis.params.bibtex.HomePageBibtex" />
 
 	<resultMap id="bibtexs" class="bibTex" groupBy="contentId" >
-	    <result property="bibtextags"        resultMap="BibtexDownload.bibtextags" />
+	    <result property="bibtextags"        resultMap="HomePageBibtex.bibtextags" />
 	    <result property="contentId" column="content_Id" javaType="int" />
 		<result property="bibtexKey"   column="bibtexKey"       javaType="string" />
 		<result property="bkey"        column="bkey"		     javaType="string" />
@@ -54,8 +54,7 @@
 	b.editor,b.year,b.entrytype</sql>
     
     
-	<select id="getHomePageBibtex" resultMap="bibtexs" parameterClass="HomePageForBibtex">
-	
+	<select id="getHomePageBibtex" resultMap="bibtexs" parameterClass="homePageForBibtex">
 	<include refid ="select_bibtexAttributes"/>,t.tag_name,b.ctr
 	 FROM(<include refid ="select_bibtexAttributes"/>, h.ctr
      FROM bibtex b FORCE INDEX (group_date_content_id_idx), bibhash h
