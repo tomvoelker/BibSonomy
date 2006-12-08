@@ -19,7 +19,7 @@ public abstract class ByUserFriendsBibtex{
 	
 	
 	
-	private String User;
+	private String user;
 	private ConstantID groupType;
 	private ConstantID simValue;
 	private int itemCount;
@@ -33,8 +33,8 @@ public abstract class ByUserFriendsBibtex{
 		
 		}
 
-	public ConstantID getGroupType() {
-		return groupType;
+	public int getGroupType() {
+		return groupType.getId();
 	}
 
 	public void setGroupType(ConstantID groupType) {
@@ -60,15 +60,15 @@ public abstract class ByUserFriendsBibtex{
 	
 
 	public String getUser() {
-		return User;
+		return user;
 	}
 
 	public void setUser(String user) {
-		User = user;
+		this.user = user;
 	}
 
-	public ConstantID getSimValue() {
-		return simValue;
+	public int getSimValue() {
+		return simValue.getId();
 	}
 
 	public void setSimValue(ConstantID simValue) {

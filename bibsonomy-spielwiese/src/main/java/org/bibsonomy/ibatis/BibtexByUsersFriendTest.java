@@ -24,7 +24,7 @@ public class BibtexByUsersFriendTest extends AbstractSqlMapTest {
 	
 	public BibTexByUserFriends getDefaultBibtexbyUserFriends() {
 		final BibTexByUserFriends bibVal = new BibTexByUserFriends();
-		bibVal.setUser("rja");
+		bibVal.setUser("hotho");
 		bibVal.setItemCount(10);
 		bibVal.setStartBib(0);
 		bibVal.setGroupType(ConstantID.GROUP_FRIENDS);
@@ -37,15 +37,16 @@ public class BibtexByUsersFriendTest extends AbstractSqlMapTest {
 		try {
 			final BibTexByUserFriends btn = this.getDefaultBibtexbyUserFriends();
 
-			final List<BibTex> bibtexs=this.sqlMap.queryForList("getBibtexbyUsersFriend",btn);
+			final List<BibTex> bibtexs=this.sqlMap.queryForList("getBibTexByUserFriends",btn);
 			
 			for (final BibTex bibtex : bibtexs) {
 				System.out.println("Address  : " + bibtex.getAddress());
+				System.out.println("Test :");
 				System.out.println("Annote   : " + bibtex.getAnnote());
 				System.out.println("Author : " + bibtex.getAuthor());
 				System.out.println("BibTexAbstract   : " +bibtex.getBibtexAbstract());
 				System.out.println("BibTexKey       : " + bibtex.getBibtexKey());
-				System.out.println("BKey        : " + bibtex.getBKey());
+				System.out.println("BKey        : " + bibtex.getBkey());
 				System.out.println("Booktitle    : " + bibtex.getBooktitle());
 				System.out.println("Chapter   : " + bibtex.getChapter());
 				System.out.println("Crossref    : " + bibtex.getCrossref());
