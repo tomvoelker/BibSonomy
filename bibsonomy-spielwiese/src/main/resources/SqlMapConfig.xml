@@ -25,10 +25,12 @@
 	<sqlMap resource="PageBibtex.xml"/>
 	<sqlMap resource="HomePageBibtex.xml"/>
 	
+	
 	<!--
+	<sqlMap	resource="BibtexByFriends.xml"/>
     <sqlMap resource="sql_snippets.xml" />
 	<sqlMap resource="TypeTests.xml" />
-	<sqlMap	resource="BibtexByFriends.xml"/>
+	
 	
 	-->
 </sqlMapConfig>
