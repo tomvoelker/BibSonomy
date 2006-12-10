@@ -48,7 +48,7 @@ public class BibtexTest extends AbstractSqlMapTest {
 				System.out.println("Author : " + bibtex.getAuthor());
 				System.out.println("BibTexAbstract   : " +bibtex.getBibtexAbstract());
 				System.out.println("BibTexKey       : " + bibtex.getBibtexKey());
-				System.out.println("BKey        : " + bibtex.getBKey());
+				System.out.println("BKey        : " + bibtex.getBkey());
 				System.out.println("Booktitle    : " + bibtex.getBooktitle());
 				System.out.println("Chapter   : " + bibtex.getChapter());
 				System.out.println("Crossref    : " + bibtex.getCrossref());

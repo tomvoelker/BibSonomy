@@ -12,7 +12,7 @@ import org.bibsonomy.ibatis.util.ResourceUtils;
 
 public class SimHash {
 	
-	public static String getSimHash0 (Bibtex b) {
+	public static String getSimHash0 (BibTex b) {
 		// calculate an appropriate hash
 		return ResourceUtils.hash(removeNonNumbersOrLettersOrDotsOrSpace(b.getTitle())     + " " + 
 				removeNonNumbersOrLettersOrDotsOrSpace(b.getAuthor())    + " " + 
@@ -23,7 +23,7 @@ public class SimHash {
 				removeNonNumbersOrLettersOrDotsOrSpace(b.getBooktitle()));
 	}
 	
-	public static String getSimHash1 (Bibtex b) {	
+	public static String getSimHash1 (BibTex b) {	
 		if (removeNonNumbersOrLetters(b.getAuthor()).equals("")) {
 			// no author set --> take editor
 			return ResourceUtils.hash(getNormalizedTitle(b.getTitle()) + " " +
@@ -52,7 +52,7 @@ public class SimHash {
 	 have a look at SIM_HASH and INTRA_HASH - where are they used and should they be changed?
 
 	*/
-	public static String getSimHash2 (Bibtex b) {
+	public static String getSimHash2 (BibTex b) {
 		// calculate an appropriate hash
 		return ResourceUtils.hash(removeNonNumbersOrLettersOrDotsOrSpace(b.getTitle())     + " " + 
 				removeNonNumbersOrLettersOrDotsOrSpace(b.getAuthor())    + " " + 
