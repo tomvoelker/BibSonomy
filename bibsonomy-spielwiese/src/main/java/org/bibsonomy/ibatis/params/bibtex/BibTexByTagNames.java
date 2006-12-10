@@ -15,6 +15,10 @@ public class BibTexByTagNames extends ByTagNames {
 		return BibTexUtils.getBibtexSelect("b");
 	}
 
+	public int getSimHash() {
+		return ConstantID.SIM_HASH.getId();
+	}
+
 	@Override
 	public int getContentType() {
 		return ConstantID.BIBTEX_CONTENT_TYPE.getId();

@@ -36,15 +36,11 @@ public enum ConstantID {
 	IDS_EXTENDED_FIELDS(5),
 	IDS_SCRAPER_METADATA(7),
 	IDS_UNDEFINED_CONTENT_ID(-1),
-     
-	/*
-	 * constant for simhash
-	 */
-	
+
+	/* Constant for SimHash */
 	SIM_HASH(1),
-    
-	
-	/*spammer ids*/
+
+	/* Spammer ids */
 	SPAMMER_TRUE(1),
 	SPAMMER_FALSE(0);
 

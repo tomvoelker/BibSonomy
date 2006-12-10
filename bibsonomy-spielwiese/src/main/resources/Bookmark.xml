@@ -4,14 +4,15 @@
 <sqlMap namespace="Bookmark">
 	<typeAlias alias="tag" type="org.bibsonomy.model.Tag" />
 	<typeAlias alias="bookmark" type="org.bibsonomy.model.Bookmark" />
-	<typeAlias alias="byTagNames" type="org.bibsonomy.ibatis.params.ByTagNames" />
+	<typeAlias alias="bookmarkByTagNames" type="org.bibsonomy.ibatis.params.bookmark.BookmarkByTagNames" />
 
 	<resultMap id="bookmarks" class="bookmark" groupBy="contentId">
+		<result property="contentId"   column="content_id"       javaType="int" />
 		<result property="tags"        resultMap="Bookmark.tags" />
 		<result property="description" column="book_description" javaType="string" />
 		<result property="extended"    column="book_extended"    javaType="string" />
 		<result property="userName"    column="user_name"        javaType="string" />
-		<result property="date"        column="date"             javaType="java.util.Date" />
+		<result property="date"        column="date"             javaType="date" />
 		<result property="urlHash"     column="book_url_hash"    javaType="string" />
 		<result property="url"         column="book_url"         javaType="string" />
 		<result property="count"       column="book_url_ctr"     javaType="int" />
@@ -21,7 +22,7 @@
 		<result property="name" column="tag_name" javaType="string" />
 	</resultMap>
 
-	<select id="getBookmarkByTagNames" resultMap="bookmarks" parameterClass="byTagNames">
+	<select id="getBookmarkByTagNames" resultMap="bookmarks" parameterClass="bookmarkByTagNames">
 		SELECT b.content_id, t.tag_name, b.book_description, b.book_extended, b.user_name, b.date,
 		       b.book_url_hash, u.book_url, u.book_url_ctr
 		FROM bookmark b, urls u, tas t,

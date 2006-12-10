@@ -11,7 +11,7 @@ import org.bibsonomy.ibatis.enums.ConstantID;
  */
 public abstract class Resource {
 
-	public int contentId;
+	private int contentId;
 	private Date date;
 
 	// FIXME: put them only in the model, if we really need them

@@ -2,7 +2,6 @@ package org.bibsonomy.model;
 
 import java.util.List;
 
-
 /**
  * This is the BibTex resource, which is used to handle BibTex-entries. It is
  * derived from {@link org.bibsonomy.model.Resource}. It contains a lot of
@@ -15,10 +14,8 @@ import java.util.List;
  * add addition attributes e.g. tag_name
  */
 
-
 public class BibTex extends Resource {
 
-	
 	private String userName;
 	private String bibtexKey;
 	private String bkey;
@@ -35,7 +32,7 @@ public class BibTex extends Resource {
 	private String crossref;
 	private String edition;
 	private String editor;
-	private String howPublished;
+	private String howpublished;
 	private String institution;
 	private String organization;
 	private String journal;
@@ -49,28 +46,23 @@ public class BibTex extends Resource {
 	private String day;
 	private String month;
 	private String year;
-    private String tagname;
-    private int group;
-	private List <Tag> bibtextags;
-    private String url;
-    
-    
+	private String type; 
+	private int group;
+	private List <Tag> tags;
+	private String url;
+
 	public String getUrl() {
 		return url;
 	}
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	public List<Tag> getBibtextags() {
-		return bibtextags;
+	public List<Tag> getTags() {
+		return this.tags;
 	}
-	public void setBibtextags(List<Tag> bibtexTags) {
-		this.bibtextags = bibtexTags;
+	public void setTags(List<Tag> tags) {
+		this.tags = tags;
 	}
-    
-    
-    
-    
 	public String getAddress() {
 		return this.address;
 	}
@@ -161,11 +153,11 @@ public class BibTex extends Resource {
 	public void setGroup(int group) {
 		this.group = group;
 	}
-	public String getHowPublished() {
-		return this.howPublished;
+	public String getHowpublished() {
+		return this.howpublished;
 	}
-	public void setHowPublished(String howPublished) {
-		this.howPublished = howPublished;
+	public void setHowpublished(String howpublished) {
+		this.howpublished = howpublished;
 	}
 	public String getInstitution() {
 		return this.institution;
@@ -215,12 +207,6 @@ public class BibTex extends Resource {
 	public void setPages(String pages) {
 		this.pages = pages;
 	}
-//	public String getPrivnote() {
-//		return this.privnote;
-//	}
-//	public void setPrivnote(String privnote) {
-//		this.privnote = privnote;
-//	}
 	public String getPublisher() {
 		return this.publisher;
 	}
@@ -233,12 +219,6 @@ public class BibTex extends Resource {
 	public void setSchool(String school) {
 		this.school = school;
 	}
-//	public int getScraperId() {
-//		return this.scraperId;
-//	}
-//	public void setScraperId(int scraperId) {
-//		this.scraperId = scraperId;
-//	}
 	public String getSeries() {
 		return this.series;
 	}
@@ -251,13 +231,6 @@ public class BibTex extends Resource {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-//	public String getType() {
-//		return this.type;
-//	}
-//	public void setType(String type) {
-//		this.type = type;
-//	}
-	
 	public String getUserName() {
 		return this.userName;
 	}
@@ -276,16 +249,10 @@ public class BibTex extends Resource {
 	public void setYear(String year) {
 		this.year = year;
 	}
-//	public String getContend_id() {
-//		return contend_id;
-//	}
-//	public void setContend_id(String contend_id) {
-//		this.contend_id = contend_id;
-//	}
-	public String getTagname() {
-		return tagname;
+	public String getType() {
+		return this.type;
 	}
-	public void setTagname(String tagname) {
-		this.tagname = tagname;
+	public void setType(String type) {
+		this.type = type;
 	}
 }

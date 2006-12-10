@@ -16,7 +16,7 @@ public class PerfTest extends AbstractSqlMapTest {
 	@SuppressWarnings({"unchecked", "unused"})
 	public void testPerf() {
 		try {
-			final ByTagNames btn = (new JoinTest()).getDefaultBookmarkByTagNames();
+			final ByTagNames btn = (new ByTagNamesTest()).getDefaultBookmarkByTagNames();
 
 			List<Bookmark> bookmarks;
 			long all = 0;
