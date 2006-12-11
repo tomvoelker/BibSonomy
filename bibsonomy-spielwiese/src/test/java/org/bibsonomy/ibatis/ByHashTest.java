@@ -18,15 +18,13 @@ import org.junit.Test;
  * @author mgr
  * 
  */
-public class ByBibHashTest extends AbstractSqlMapTest {
+public class ByHashTest extends AbstractSqlMapTest {
 
 	public BibTexByHash getDefaultBibTexByHash() {
 		final BibTexByHash bibVal = new BibTexByHash();
 		bibVal.setRequBibtex("0000175071e6141a7d36835489f922ef");
-		bibVal.setRequSim("1");
-		bibVal.setItemCount(5);
-		bibVal.setStartBib(0);
-		bibVal.setSimValue(ConstantID.SIM_HASH);
+		bibVal.setLimit(5);
+		bibVal.setOffset(0);
 		bibVal.setGroupType(ConstantID.GROUP_PUBLIC);
 		return bibVal;
 	}

@@ -26,18 +26,17 @@ public class ByUserFriendsTest extends AbstractSqlMapTest {
 		final BookmarkByUserFriends bookVal = new BookmarkByUserFriends();
 		bookVal.setUser("stumme");
 		bookVal.setGroupType(ConstantID.GROUP_FRIENDS);
-		bookVal.setItemCount(10);
-		bookVal.setStartBook(0);
+		bookVal.setLimit(10);
+		bookVal.setOffset(0);
 		return bookVal;
 	}
 
 	public BibTexByUserFriends getDefaultBibTexByUserFriends() {
 		final BibTexByUserFriends bibVal = new BibTexByUserFriends();
 		bibVal.setUser("hotho");
-		bibVal.setItemCount(10);
-		bibVal.setStartBib(0);
+		bibVal.setLimit(10);
+		bibVal.setOffset(0);
 		bibVal.setGroupType(ConstantID.GROUP_FRIENDS);
-		bibVal.setSimValue(ConstantID.SIM_HASH);
 		return bibVal;
 	}
 

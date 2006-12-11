@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.bibsonomy.ibatis.enums.ConstantID;
-import org.bibsonomy.ibatis.params.bibtex.HomePageBibtex;
+import org.bibsonomy.ibatis.params.bibtex.HomePageBibTex;
 import org.bibsonomy.ibatis.params.bookmark.HomePageBookmark;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -24,18 +24,17 @@ public class HomePageTest extends AbstractSqlMapTest {
 
 	public HomePageBookmark getDefaultHomePageBookmark() {
 		final HomePageBookmark bookVal = new HomePageBookmark();
-		bookVal.setItemCount(20);
-		bookVal.setStartBook(0);
+		bookVal.setLimit(20);
+		bookVal.setOffset(0);
 		bookVal.setGroupType(ConstantID.GROUP_PUBLIC);
 		return bookVal;
 	}
 
-	public HomePageBibtex getDefaultHomePageBibtex() {
-		final HomePageBibtex bibVal = new HomePageBibtex();
+	public HomePageBibTex getDefaultHomePageBibtex() {
+		final HomePageBibTex bibVal = new HomePageBibTex();
 		bibVal.setGroupType(ConstantID.GROUP_FRIENDS);
-		bibVal.setSimValue(ConstantID.SIM_HASH);
-		bibVal.setItemCount(15);
-		bibVal.setStartBib(0);
+		bibVal.setLimit(15);
+		bibVal.setOffset(0);
 		return bibVal;
 	}
 
@@ -56,7 +55,7 @@ public class HomePageTest extends AbstractSqlMapTest {
 	@SuppressWarnings("unchecked")
 	public void testGetHomePageBibtexTest() {
 		try {
-			final HomePageBibtex btn = this.getDefaultHomePageBibtex();
+			final HomePageBibTex btn = this.getDefaultHomePageBibtex();
 			final List<BibTex> bibtexs = this.sqlMap.queryForList("getHomePageBibTex", btn);
 			printBibTex(bibtexs);
 		} catch (final SQLException ex) {

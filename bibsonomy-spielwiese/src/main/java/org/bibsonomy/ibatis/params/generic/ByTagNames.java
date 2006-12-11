@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bibsonomy.ibatis.enums.ConstantID;
 import org.bibsonomy.ibatis.params.beans.TagIndex;
+import org.bibsonomy.ibatis.params.generic.common.LimitOffset;
 
 /**
  * Can be used to search tags by its name.<br/><br/>
@@ -12,15 +13,13 @@ import org.bibsonomy.ibatis.params.beans.TagIndex;
  * 
  * @author Christian Schenk
  */
-public abstract class ByTagNames {
+public abstract class ByTagNames extends LimitOffset {
 
 	/** List of (tagname, index)-pairs */
 	private final List<TagIndex> tagIndex;
 	protected ConstantID contentType;
 	/** By default it's public */
 	private ConstantID groupType;
-	private int limit;
-	private int offset;
 	/** By default it's not case sensitive */
 	private boolean caseSensitive;
 
@@ -38,22 +37,6 @@ public abstract class ByTagNames {
 
 	public void setGroupType(ConstantID groupType) {
 		this.groupType = groupType;
-	}
-
-	public int getLimit() {
-		return this.limit;
-	}
-
-	public void setLimit(int limit) {
-		this.limit = limit;
-	}
-
-	public int getOffset() {
-		return this.offset;
-	}
-
-	public void setOffset(int offset) {
-		this.offset = offset;
 	}
 
 	public boolean isCaseSensitive() {

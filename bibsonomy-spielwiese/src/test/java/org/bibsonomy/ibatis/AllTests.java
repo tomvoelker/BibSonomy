@@ -10,6 +10,6 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses( { ByTagNamesTest.class, PopularTest.class, HomePageTest.class, DownloadTest.class,
-	ByUserFriendsTest.class, ByBibHashTest.class })
+	ByUserFriendsTest.class, ByHashTest.class })
 public class AllTests {
 }

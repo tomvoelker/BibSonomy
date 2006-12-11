@@ -1,27 +1,17 @@
 package org.bibsonomy.ibatis.params.bookmark;
+
 import org.bibsonomy.ibatis.enums.ConstantID;
-import org.bibsonomy.ibatis.params.generic.ByUserFriendsBookmark;
-
-
-
+import org.bibsonomy.ibatis.params.generic.ByUserFriends;
 
 /**
+ * show all bookmark of users friends
+ * 
  * @author mgr
- *
+ * 
  */
+public class BookmarkByUserFriends extends ByUserFriends {
 
-
-
-/*
- * show all bookmark of users friends 
- */
-
-public class BookmarkByUserFriends extends ByUserFriendsBookmark {
-
-  public int getContentType() {
+	public int getContentType() {
 		return ConstantID.BOOKMARK_CONTENT_TYPE.getId();
-		
-		
-		}
-
 	}
+}

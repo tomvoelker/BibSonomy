@@ -10,7 +10,7 @@
 		ORDER BY b.rank
 	</select>
 
-	<select id="getBibTexByTagNames" resultMap="BibTexCommon.bibtexs" parameterClass="bibTexByTagNames">
+	<select id="getBibTexByTagNames" resultMap="BibTexCommon.bibtexs" parameterClass="bibtexByTagNames">
 		SELECT <include refid="bibtexAttributes"/>, t.tag_name, h.ctr
 		FROM bibtex b, tas t, bibhash h,
 		     (SELECT t1.content_id 
@@ -42,58 +42,55 @@
 		ORDER BY b.date DESC, b.content_id DESC;
 	</select>
 
-	<select id="getBibTexByUserFriends" resultMap="BibTexCommon.bibtexs" parameterClass="byUserFriendsBibtex">	
+	<select id="getBibTexByUserFriends" resultMap="BibTexCommon.bibtexs" parameterClass="bibtexByUserFriends">	
 		SELECT <include refid="bibtexAttributes"/>, t.tag_name, g.group_name, h.ctr
 		FROM bibtex b, bibhash h,
-			(SELECT content_id, date						
+			(SELECT content_id, date
 			 FROM bibtex b, friends f
-			 WHERE f.f_user_name =#user#                  
-			       AND b.user_name = f.user_name                             
-			       AND b.group =#groupType# 
+			 WHERE f.f_user_name =#user#
+			       AND b.user_name = f.user_name
+			       AND b.group =#groupType#
 			 ORDER BY date DESC
-			 LIMIT #itemCount# OFFSET #startBib# ) AS bb
-		LEFT OUTER JOIN tas AS t ON bb.content_id=t.content_id, groupids AS g  
-		WHERE t.group = g.group                                               
-		      AND h.type = #simValue#
-		      AND b.simhash#simValue#= h.hash                      
-		      AND b.content_id = bb.content_id                                     
+			 LIMIT #limit# OFFSET #offset# ) AS bb
+		LEFT OUTER JOIN tas AS t ON bb.content_id=t.content_id, groupids AS g
+		WHERE t.group = g.group
+		      AND <include refid="bibtexSimHash"/>
+		      AND b.content_id = bb.content_id
 		ORDER BY bb.date DESC, bb.content_id DESC;
 	</select>
 
-	<select id="getHomePageBibTex" resultMap="BibTexCommon.bibtexs" parameterClass="homePageForBibtex">
+	<select id="getHomePageBibTex" resultMap="BibTexCommon.bibtexs" parameterClass="homePageBibTex">
 		SELECT <include refid ="bibtexAttributes"/>, t.tag_name, b.ctr
 		FROM (SELECT <include refid ="bibtexAttributes"/>, h.ctr
 		      FROM bibtex b FORCE INDEX (group_date_content_id_idx), bibhash h
 		      WHERE `group` =#groupType#
-		            AND h.type =#simValue# 
-		            AND b.simhash#simValue#=h.hash
+		            AND <include refid="bibtexSimHash"/>
 		      ORDER BY date DESC
-		      LIMIT #itemCount#) AS b
+		      LIMIT #limit#) AS b
 		LEFT OUTER JOIN tas t ON b.content_id=t.content_id
 		ORDER BY b.date DESC, b.content_id DESC;
 	</select>
 
-	<select id="getBibTexByDownload" resultMap="BibTexCommon.bibtexs" parameterClass="byBibtexDownload">
+	<select id="getBibTexByDownload" resultMap="BibTexCommon.bibtexs" parameterClass="bibtexByDownload">
 		SELECT <include refid ="bibtexAttributes"/>, t.tag_name, h.ctr
 		FROM (SELECT content_id, date FROM collector WHERE user_name =#user#) AS c		 
 		LEFT OUTER JOIN tas AS t ON c.content_id = t.content_id, bibtex b, bibhash h
 		WHERE b.content_id = c.content_id 
-		      AND h.type =#simValue#
-    	      AND b.simhash#simValue#= h.hash
+		      AND <include refid="bibtexSimHash"/>
 		ORDER BY c.date DESC, content_id DESC;
 	</select>
 
-	<select id="getBibTexByHash" resultMap="BibTexCommon.bibtexs" parameterClass="byBibHash">	
+	<!-- FROM (SELECT <include refid ="bibtexAttributes2"/>, bibtex.simhash#simValue# -->
+	<select id="getBibTexByHash" resultMap="BibTexCommon.bibtexs" parameterClass="bibtexByHash">	
 		SELECT <include refid ="bibtexAttributes"/>, t.tag_name, h.ctr
-		FROM (SELECT <include refid ="bibtexAttributes2"/>, bibtex.simhash#simValue#
+		FROM (SELECT <include refid ="bibtexAttributes2"/>, bibtex.simhash1
 		      FROM bibtex
 		      WHERE simhash$requSim$ = #requBibtex#  
 		            AND bibtex.group = #groupType#
 		      ORDER BY date DESC
-		      LIMIT #itemCount# OFFSET #startBib#) AS b
+		      LIMIT #limit# OFFSET #offset#) AS b
 		LEFT OUTER JOIN tas t ON b.content_id=t.content_id, bibhash h
-		WHERE b.simhash#simValue# = h.hash
-		      AND h.type = #simValue#
+		WHERE <include refid="bibtexSimHash"/>
 		ORDER BY b.date DESC, b.content_id DESC;
 	</select>
 </sqlMap>

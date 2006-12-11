@@ -42,7 +42,7 @@
 			  ORDER BY b.date DESC, b.content_id DESC;
 	</select>
 
-	<select id="getHomePageBookmark" resultMap="BookmarkCommon.bookmarks" parameterClass="homePageForBookmark">
+	<select id="getHomePageBookmark" resultMap="BookmarkCommon.bookmarks" parameterClass="homePageBookmark">
 		SELECT bb.content_id, bb.book_url_hash, bb.book_description, bb.book_extended, bb.date, bb.user_name,
 		       bb.book_url, bb.book_url_ctr, t.tag_name
 		FROM (SELECT <include refid="bookmarkAttributes"/>, u.book_url,u.book_url_ctr
@@ -50,12 +50,12 @@
 		      WHERE b.group = #groupType#
 		            AND u.book_url_hash = b.book_url_hash
 		      ORDER BY date DESC
-		      LIMIT	#itemCount#) AS bb
+		      LIMIT	#limit#) AS bb
 		LEFT OUTER JOIN tas AS t ON bb.content_id=t.content_id
 		ORDER BY bb.date DESC, bb.content_id DESC;
 	</select>
 
-	<select id="getBookmarkByUserFriends" resultMap="BookmarkCommon.bookmarks" parameterClass="byUserFriendsBookmark">
+	<select id="getBookmarkByUserFriends" resultMap="BookmarkCommon.bookmarks" parameterClass="bookmarkByUserFriends">
 		SELECT bb.content_id, b.book_url_hash, b.book_description, b.book_extended, bb.date, u.book_url,
 		       u.book_url_ctr, t.tag_name, g.group_name, t.user_name
 	    FROM urls u, bookmark b,
@@ -65,7 +65,7 @@
 	                AND b.user_name = f.user_name
 	                AND b.group =#groupType# 
 	   	      ORDER BY date DESC 
-       	      LIMIT #itemCount# OFFSET #startBook#) AS bb
+       	      LIMIT #limit# OFFSET #limit#) AS bb
 	   	LEFT OUTER JOIN tas AS t ON bb.content_id=t.content_id, groupids AS g  
 		WHERE t.group = g.group                                              
 		      AND u.book_url_hash = b.book_url_hash                                  
