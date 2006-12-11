@@ -50,6 +50,15 @@ public class BibTex extends Resource {
 	private int group;
 	private List <Tag> tags;
 	private String url;
+	/* FIXME: belongs to bibhash -> separate class? */
+	private int ctr;
+
+	public int getCtr() {
+		return this.ctr;
+	}
+	public void setCtr(int ctr) {
+		this.ctr = ctr;
+	}
 
 	public String getUrl() {
 		return url;

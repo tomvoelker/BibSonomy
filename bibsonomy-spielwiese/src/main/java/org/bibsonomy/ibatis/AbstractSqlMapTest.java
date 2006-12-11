@@ -44,7 +44,7 @@ public abstract class AbstractSqlMapTest extends TestCase {
 			System.out.println("URL         : " + bookmark.getUrl());
 			System.out.println("URLHash     : " + bookmark.getUrlHash());
 			System.out.println("UserName    : " + bookmark.getUserName());
-			
+			System.out.print("Tags        : ");
 			for (final Tag tag : bookmark.getTags()) {
 				System.out.print(tag.getName() + " ");
 			}
@@ -86,7 +86,8 @@ public abstract class AbstractSqlMapTest extends TestCase {
 			System.out.println("Volume           : " + bibtex.getVolume());
 			System.out.println("Year             : " + bibtex.getYear());
 			System.out.println("Url              : " + bibtex.getUrl());
-
+			System.out.println("Ctr              : " + bibtex.getCtr());
+			System.out.print("Tags             : ");
 			for (final Tag tag : bibtex.getTags()) {
 				System.out.print(tag.getName() + " ");
 			}
