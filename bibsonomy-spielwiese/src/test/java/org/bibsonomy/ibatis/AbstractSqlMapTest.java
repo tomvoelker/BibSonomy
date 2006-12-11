@@ -1,13 +1,14 @@
 package org.bibsonomy.ibatis;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Tag;
+import org.junit.After;
+import org.junit.Before;
 
 import com.ibatis.common.resources.Resources;
 import com.ibatis.sqlmap.client.SqlMapClient;
@@ -18,24 +19,25 @@ import com.ibatis.sqlmap.client.SqlMapClientBuilder;
  * 
  * @author Christian Schenk
  */
-public abstract class AbstractSqlMapTest extends TestCase {
+public abstract class AbstractSqlMapTest {
 
 	/** Communication with the database is done with this class */
 	protected SqlMapClient sqlMap;
 
-	@Override
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws IOException {
 		final String resource = "SqlMapConfig.xml";
 		final Reader reader = Resources.getResourceAsReader(resource);
 		this.sqlMap = SqlMapClientBuilder.buildSqlMapClient(reader);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() {
 		this.sqlMap = null;
 	}
 
 	protected void printBookmarks(final List<Bookmark> bookmarks) {
+		if (true) return;
 		for (final Bookmark bookmark  : bookmarks) {
 			System.out.println("ContentId   : " + bookmark.getContentId());
 			System.out.println("Description : " + bookmark.getDescription());
@@ -53,6 +55,7 @@ public abstract class AbstractSqlMapTest extends TestCase {
 	}
 
 	protected void printBibTex(final List<BibTex> bibtexs) {
+		if (true) return;
 		for (final BibTex bibtex : bibtexs) {
 			System.out.println("Address          : " + bibtex.getAddress());
 			System.out.println("Annote           : " + bibtex.getAnnote());

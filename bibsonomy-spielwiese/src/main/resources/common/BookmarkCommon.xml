@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="BookmarkCommon">
+	<resultMap id="bookmarks" class="bookmark" groupBy="contentId">
+		<result property="contentId"   column="content_id"       javaType="int" />
+		<result property="tags"        resultMap="BookmarkCommon.tags" />
+		<result property="description" column="book_description" javaType="string" />
+		<result property="extended"    column="book_extended"    javaType="string" />
+		<result property="userName"    column="user_name"        javaType="string" />
+		<result property="date"        column="date"             javaType="date" />
+		<result property="urlHash"     column="book_url_hash"    javaType="string" />
+		<result property="url"         column="book_url"         javaType="string" />
+		<result property="count"       column="book_url_ctr"     javaType="int" />
+	</resultMap>
+
+	<resultMap id="tags" class="tag">
+		<result property="name" column="tag_name" javaType="string" />
+	</resultMap>
+
+	<sql id="bookmarkAttributes">
+		b.content_id, b.book_description, b.book_extended, b.user_name, b.date, b.book_url_hash
+	</sql>
+</sqlMap>

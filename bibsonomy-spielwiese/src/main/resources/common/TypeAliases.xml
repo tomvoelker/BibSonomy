@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<!--
+	All aliases are collected here, because they must not exist twice (i.e. their names).
+-->
+<sqlMap namespace="TypeAliases">
+	<typeAlias alias="tag" type="org.bibsonomy.model.Tag" />
+	<typeAlias alias="bookmark" type="org.bibsonomy.model.Bookmark" />
+	<typeAlias alias="bibtex" type="org.bibsonomy.model.BibTex" />
+
+	<!-- Bookmark -->
+	<typeAlias alias="bookmarkByTagNames" type="org.bibsonomy.ibatis.params.bookmark.BookmarkByTagNames" />
+	<typeAlias alias="homePageForBookmark" type="org.bibsonomy.ibatis.params.bookmark.HomePageBookmark" />
+	<typeAlias alias="byUserFriendsBookmark" type="org.bibsonomy.ibatis.params.bookmark.BookmarkByUserFriends" />
+
+	<!-- BibTex -->
+	<typeAlias alias="bibTexByTagNames" type="org.bibsonomy.ibatis.params.bibtex.BibTexByTagNames" />
+	<typeAlias alias="byBibtexDownload" type="org.bibsonomy.ibatis.params.bibtex.BibtexByDownload" />
+	<typeAlias alias="homePageForBibtex" type="org.bibsonomy.ibatis.params.bibtex.HomePageBibtex" />
+	<typeAlias alias="byUserFriendsBibtex" type="org.bibsonomy.ibatis.params.bibtex.BibTexByUserFriends" />
+	<typeAlias alias="byBibHash" type="org.bibsonomy.ibatis.params.bibtex.BibTexByHash" />
+</sqlMap>

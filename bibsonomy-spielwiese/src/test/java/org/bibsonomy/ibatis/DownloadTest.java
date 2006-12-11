@@ -1,11 +1,14 @@
 package org.bibsonomy.ibatis;
 
+import static org.junit.Assert.fail;
+
 import java.sql.SQLException;
 import java.util.List;
 
 import org.bibsonomy.ibatis.enums.ConstantID;
 import org.bibsonomy.ibatis.params.bibtex.BibtexByDownload;
 import org.bibsonomy.model.BibTex;
+import org.junit.Test;
 
 /**
  * TESTCLASS
@@ -15,7 +18,7 @@ import org.bibsonomy.model.BibTex;
  * @author mgr
  * 
  */
-public class BibtexDownloadTest extends AbstractSqlMapTest {
+public class DownloadTest extends AbstractSqlMapTest {
 
 	public BibtexByDownload getDefaultBibtexByDownload() {
 		final BibtexByDownload bibVal = new BibtexByDownload();
@@ -24,16 +27,16 @@ public class BibtexDownloadTest extends AbstractSqlMapTest {
 		return bibVal;
 	}
 
+	@Test
 	@SuppressWarnings("unchecked")
 	public void testBibtexByDownload() {
 		try {
 			final BibtexByDownload btn = this.getDefaultBibtexByDownload();
-
-			final List<BibTex> bibtexs = this.sqlMap.queryForList("getBibtexByDownload", btn);
-
+			final List<BibTex> bibtexs = this.sqlMap.queryForList("getBibTexByDownload", btn);
 			printBibTex(bibtexs);
 		} catch (final SQLException ex) {
 			ex.printStackTrace();
+			fail("SQLException");
 		}
 	}
 }

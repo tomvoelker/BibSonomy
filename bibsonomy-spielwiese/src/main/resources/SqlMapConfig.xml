@@ -5,6 +5,7 @@
 	<properties resource="database.properties" />
 
 	<typeAlias alias="url" type="java.net.URL" />
+	<typeAlias alias="date" type="java.util.Date" />
 	<typeHandler javaType="url" callback="org.bibsonomy.ibatis.typehandler.UrlTypeHandlerCallback" />
 
 	<transactionManager type="JDBC">
@@ -16,21 +17,15 @@
 		</dataSource>
 	</transactionManager>
 
+	<sqlMap resource="common/TypeAliases.xml" />
+	<sqlMap resource="common/BookmarkCommon.xml" />
+	<sqlMap resource="common/BibTexCommon.xml" />
 
-    <sqlMap resource="BookmarkByFriends.xml"/>
-	<sqlMap resource="BibtexDownload.xml"/>
 	<sqlMap resource="Tag.xml" />
 	<sqlMap resource="Bookmark.xml" />
-	<sqlMap  resource="HomePageBookmark.xml"/>
-	<sqlMap resource="PageBibtex.xml"/>
-	<sqlMap resource="HomePageBibtex.xml"/>
-	<sqlMap	resource="BibtexByFriends.xml"/>
-	
+	<sqlMap resource="BibTex.xml" />
+
 	<!--
-	<sqlMap	resource="BibtexByFriends.xml"/>
-    <sqlMap resource="sql_snippets.xml" />
 	<sqlMap resource="TypeTests.xml" />
-	
-	
 	-->
 </sqlMapConfig>

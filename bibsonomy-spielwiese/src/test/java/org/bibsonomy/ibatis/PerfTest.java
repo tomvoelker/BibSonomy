@@ -1,10 +1,13 @@
 package org.bibsonomy.ibatis;
 
+import static org.junit.Assert.fail;
+
 import java.sql.SQLException;
 import java.util.List;
 
 import org.bibsonomy.ibatis.params.generic.ByTagNames;
 import org.bibsonomy.model.Bookmark;
+import org.junit.Test;
 
 /**
  * Performance test of iBATIS.
@@ -13,6 +16,7 @@ import org.bibsonomy.model.Bookmark;
  */
 public class PerfTest extends AbstractSqlMapTest {
 
+	@Test
 	@SuppressWarnings({"unchecked", "unused"})
 	public void testPerf() {
 		try {
@@ -40,6 +44,7 @@ public class PerfTest extends AbstractSqlMapTest {
 			System.out.println("Duration: " + (all / 19) + "ms");
 		} catch (final SQLException ex) {
 			ex.printStackTrace();
+			fail("SQLException");
 		}
 	}
 }
