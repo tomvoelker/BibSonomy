@@ -1,6 +1,7 @@
 package org.bibsonomy.ibatis.params.bibtex;
 
 import org.bibsonomy.ibatis.enums.ConstantID;
+import org.bibsonomy.ibatis.params.generic.common.aggregate.LimitOffsetSimHash;
 
 /**
  * Can be used to get all bibtex entries by its hash.
@@ -8,13 +9,12 @@ import org.bibsonomy.ibatis.enums.ConstantID;
  * @author mgr
  * 
  */
-public class BibTexByHash {
+public class BibTexByHash extends LimitOffsetSimHash {
 
 	private ConstantID groupType;
 	private String requBibtex;
+	// FIXME are requSim and simHash the same ???
 	private ConstantID requSim;
-	private int limit;
-	private int offset;
 
 	public BibTexByHash() {
 		this.groupType = ConstantID.GROUP_PUBLIC;
@@ -39,22 +39,6 @@ public class BibTexByHash {
 
 	public void setRequSim(ConstantID requSim) {
 		this.requSim = requSim;
-	}
-
-	public int getLimit() {
-		return limit;
-	}
-
-	public void setLimit(int itemCount) {
-		this.limit = itemCount;
-	}
-
-	public int getOffset() {
-		return offset;
-	}
-
-	public void setOffset(int startBib) {
-		this.offset = startBib;
 	}
 
 	public int getGroupType() {

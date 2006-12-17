@@ -5,6 +5,7 @@ import static org.junit.Assert.fail;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.bibsonomy.ibatis.params.bibtex.BibTexByHash;
 import org.bibsonomy.ibatis.params.bookmark.BookmarkByTagNames;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -29,7 +30,8 @@ public class PopularTest extends AbstractSqlMapTest {
 	@SuppressWarnings("unchecked")
 	public void testGetBibTexPopular() {
 		try {
-			final List<BibTex> bibtexs = this.sqlMap.queryForList("getBibTexPopular", null);
+			final BibTexByHash btn = ByHashTest.getDefaultBibTexByHash();
+			final List<BibTex> bibtexs = this.sqlMap.queryForList("getBibTexPopular", btn);
 			printBibTex(bibtexs);
 		} catch (final SQLException ex) {
 			ex.printStackTrace();

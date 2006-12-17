@@ -1,7 +1,7 @@
 package org.bibsonomy.ibatis.params.generic;
 
 import org.bibsonomy.ibatis.enums.ConstantID;
-import org.bibsonomy.ibatis.params.generic.common.LimitOffset;
+import org.bibsonomy.ibatis.params.generic.common.aggregate.LimitOffsetSimHash;
 
 /**
  * define parameters for sql-statement: give me all bibtex entries of the main
@@ -10,7 +10,7 @@ import org.bibsonomy.ibatis.params.generic.common.LimitOffset;
  * @author mgr
  * 
  */
-public abstract class HomePage extends LimitOffset {
+public abstract class HomePage extends LimitOffsetSimHash {
 
 	private ConstantID groupType;
 

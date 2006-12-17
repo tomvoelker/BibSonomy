@@ -11,10 +11,12 @@ import org.bibsonomy.ibatis.util.BibTexUtils;
  */
 public class BibTexByTagNames extends ByTagNames {
 
+	// FIXME is done by iBATIS
 	public String getBibtexSelect() {
 		return BibTexUtils.getBibtexSelect("b");
 	}
 
+	// FIXME not needed anymore
 	public int getSimHash() {
 		return ConstantID.SIM_HASH.getId();
 	}

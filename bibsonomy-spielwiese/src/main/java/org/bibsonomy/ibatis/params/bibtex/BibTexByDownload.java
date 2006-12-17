@@ -1,6 +1,7 @@
 package org.bibsonomy.ibatis.params.bibtex;
 
 import org.bibsonomy.ibatis.enums.ConstantID;
+import org.bibsonomy.ibatis.params.generic.common.SimHash;
 
 /**
  * Can be used to get all bibtex entries, which are picked by the current user.
@@ -8,7 +9,7 @@ import org.bibsonomy.ibatis.enums.ConstantID;
  * @author mgr
  * 
  */
-public class BibTexByDownload {
+public class BibTexByDownload extends SimHash {
 
 	private String user;
 

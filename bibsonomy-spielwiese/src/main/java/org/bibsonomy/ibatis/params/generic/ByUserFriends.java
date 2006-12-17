@@ -1,7 +1,7 @@
 package org.bibsonomy.ibatis.params.generic;
 
 import org.bibsonomy.ibatis.enums.ConstantID;
-import org.bibsonomy.ibatis.params.generic.common.LimitOffset;
+import org.bibsonomy.ibatis.params.generic.common.aggregate.LimitOffsetSimHash;
 
 /**
  * Define class for sql request: show me all bibtex entries of a given friend,
@@ -11,7 +11,7 @@ import org.bibsonomy.ibatis.params.generic.common.LimitOffset;
  * @author mgr
  * 
  */
-public abstract class ByUserFriends extends LimitOffset {
+public abstract class ByUserFriends extends LimitOffsetSimHash {
 
 	private String user;
 	private ConstantID groupType;

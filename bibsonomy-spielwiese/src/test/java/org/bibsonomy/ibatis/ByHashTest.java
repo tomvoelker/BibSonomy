@@ -20,7 +20,7 @@ import org.junit.Test;
  */
 public class ByHashTest extends AbstractSqlMapTest {
 
-	public BibTexByHash getDefaultBibTexByHash() {
+	public static BibTexByHash getDefaultBibTexByHash() {
 		final BibTexByHash bibVal = new BibTexByHash();
 		bibVal.setRequBibtex("0000175071e6141a7d36835489f922ef");
 		bibVal.setLimit(5);
@@ -33,7 +33,7 @@ public class ByHashTest extends AbstractSqlMapTest {
 	@SuppressWarnings("unchecked")
 	public void testGetBibtexbyHash() {
 		try {
-			final BibTexByHash btn = this.getDefaultBibTexByHash();
+			final BibTexByHash btn = getDefaultBibTexByHash();
 			final List<BibTex> bibtexs = this.sqlMap.queryForList("getBibTexByHash", btn);
 			printBibTex(bibtexs);
 		} catch (SQLException e) {

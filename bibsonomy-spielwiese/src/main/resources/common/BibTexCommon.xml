@@ -50,14 +50,13 @@
 	</sql>
 
 	<sql id="bibtexAttributes2">
-		bibtex.address,bibtex.annote,bibtex.booktitle,bibtex.chapter,bibtex.crossref,bibtex.edition,bibtex.howpublished,
-		bibtex.institution,bibtex.journal,bibtex.bkey,bibtex.month,bibtex.note,bibtex.number,bibtex.organization,bibtex.pages,bibtex.publisher,
-		bibtex.school,bibtex.series,bibtex.type,bibtex.volume,bibtex.day,bibtex.url,bibtex.content_id,bibtex.description,bibtex.bibtexKey,bibtex.misc,bibtex.bibtexAbstract,bibtex.user_name,bibtex.date,bibtex.title,bibtex.author,
-		bibtex.editor,bibtex.year,bibtex.entrytype
+		b2.address,b2.annote,b2.booktitle,b2.chapter,b2.crossref,b2.edition,b2.howpublished,
+		b2.institution,b2.journal,b2.bkey,b2.month,b2.note,b2.number,b2.organization,b2.pages,b2.publisher,
+		b2.school,b2.series,b2.type,b2.volume,b2.day,b2.url,b2.content_id,b2.description,b2.bibtexKey,
+		b2.misc,b2.bibtexAbstract,b2.user_name,b2.date,b2.title,b2.author,b2.editor,b2.year,b2.entrytype
 	</sql>
 
-	<!-- b.simhash$simHash$ = h.hash AND h.type = $simHash$ -->
 	<sql id="bibtexSimHash">
-		b.simhash1 = h.hash AND h.type = 1
+		b.simhash$simHash$ = h.hash AND h.type = $simHash$
 	</sql>
 </sqlMap>
