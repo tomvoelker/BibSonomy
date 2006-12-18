@@ -22,7 +22,6 @@ public abstract class GenericParam {
 	private Date date;
 	private String search;
 	private String userName;
-	private Date registrationDate;
 	/** By default it's public */
 	private ConstantID groupType;
 	private ConstantID simHash;
@@ -126,14 +125,6 @@ public abstract class GenericParam {
 
 	public void setDate(Date date) {
 		this.date = date;
-	}
-
-	public Date getRegistrationDate() {
-		return this.registrationDate;
-	}
-
-	public void setRegistrationDate(Date registrationDate) {
-		this.registrationDate = registrationDate;
 	}
 
 	public int getRequSim() {
