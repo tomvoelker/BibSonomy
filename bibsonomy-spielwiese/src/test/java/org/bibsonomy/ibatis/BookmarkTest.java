@@ -54,4 +54,9 @@ public class BookmarkTest extends AbstractSqlMapTest {
 		count = (Integer) this.sqlMap.queryForObject("getBookmarkSearchCount", this.bookmarkParam);
 		assertTrue(count >= 0);
 	}
+
+	@Test
+	public void getBookmarkViewable() {
+		bookmarkTemplate("getBookmarkViewable");
+	}
 }

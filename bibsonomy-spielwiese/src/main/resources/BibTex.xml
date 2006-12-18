@@ -66,16 +66,18 @@
 		      WHERE `group` = #groupType#
 		            AND <include refid="bibtexSimHash"/>
 		      ORDER BY date DESC
-		      LIMIT #limit#) AS b
+		      LIMIT 15) AS b
 		LEFT OUTER JOIN tas t ON b.content_id=t.content_id
 		ORDER BY b.date DESC, b.content_id DESC;
 	</select>
 
 	<select id="getBibTexByDownload" resultMap="BibTexCommon.bibtexs" parameterClass="bibtexParam">
 		SELECT <include refid ="bibtexAttributes"/>, t.tag_name, h.ctr
-		FROM (SELECT content_id, date FROM collector WHERE user_name = #userName#) AS c		 
+		FROM (SELECT content_id, date
+		      FROM collector
+		      WHERE user_name = #userName#) AS c
 		LEFT OUTER JOIN tas AS t ON c.content_id = t.content_id, bibtex b, bibhash h
-		WHERE b.content_id = c.content_id 
+		WHERE b.content_id = c.content_id
 		      AND <include refid="bibtexSimHash"/>
 		ORDER BY c.date DESC, content_id DESC;
 	</select>
@@ -120,5 +122,17 @@
 		      <isNotNull property="userName" prepend="AND">
 		        s.user_name = #userName#
 		      </isNotNull>
+	</select>
+
+	<select id="getBibTexViewable" resultMap="BibTexCommon.bibtexs" parameterClass="bibtexParam">
+		SELECT <include refid ="bibtexAttributes"/>, t.tag_name, b.ctr
+		FROM (SELECT <include refid ="bibtexAttributes2"/>, b2.group, h.ctr
+		      FROM bibtex b2, bibhash h
+		      WHERE b2.group = #groupType#
+		            AND <include refid="bibtexSimHash2"/>
+		      ORDER BY date DESC
+		      LIMIT #limit# OFFSET #offset#) AS b
+		LEFT OUTER JOIN tas AS t ON t.content_id = b.content_id
+		ORDER BY b.date DESC, b.content_id DESC
 	</select>
 </sqlMap>

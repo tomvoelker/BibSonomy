@@ -50,7 +50,7 @@
 		      WHERE b.group = #groupType#
 		            AND u.book_url_hash = b.book_url_hash
 		      ORDER BY date DESC
-		      LIMIT	#limit#) AS bb
+		      LIMIT 20) AS bb
 		LEFT OUTER JOIN tas AS t ON bb.content_id=t.content_id
 		ORDER BY bb.date DESC, bb.content_id DESC;
 	</select>
@@ -103,5 +103,19 @@
 		      <isNotNull property="userName" prepend="AND">
 		        s.user_name = #userName#
 		      </isNotNull>
+	</select>
+
+	<select id="getBookmarkViewable" resultMap="BookmarkCommon.bookmarks" parameterClass="bookmarkParam">
+		SELECT bb.content_id, bb.user_name, bb.book_url_hash, bb.book_description, bb.book_extended,
+		       bb.date, bb.book_url, bb.book_url_ctr, t.tag_name
+		FROM (SELECT b.content_id, b.user_name, b.book_url_hash, b.book_description, b.book_extended,
+		             b.date, u.book_url, u.book_url_ctr, b.group
+		      FROM bookmark b, urls u
+		      WHERE u.book_url_hash=b.book_url_hash
+		            AND b.group = #groupType#
+		      ORDER BY date DESC
+		      LIMIT #limit# OFFSET #offset#) AS bb
+		LEFT OUTER JOIN tas AS t ON t.content_id = bb.content_id
+		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 </sqlMap>

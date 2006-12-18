@@ -68,4 +68,9 @@ public class BibTexTest extends AbstractSqlMapTest {
 		count = (Integer) this.sqlMap.queryForObject("getBibTexSearchCount", this.bibtexParam);
 		assertTrue(count >= 0);
 	}
+
+	@Test
+	public void getBibTexViewable() {
+		bibtexTemplate("getBibTexViewable");
+	}
 }
