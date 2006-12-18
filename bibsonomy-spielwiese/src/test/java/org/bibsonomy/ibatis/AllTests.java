@@ -1,15 +1,15 @@
 package org.bibsonomy.ibatis;
 
+import org.bibsonomy.ibatis.params.ParamTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
- * All (important) testcases are executed here. 
- *
+ * All (important) testcases are executed here.
+ * 
  * @author Christian Schenk
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses( { ByTagNamesTest.class, PopularTest.class, HomePageTest.class, DownloadTest.class,
-	ByUserFriendsTest.class, ByHashTest.class })
+@Suite.SuiteClasses( { ParamTest.class, SimpleTest.class, BookmarkTest.class, BibTexTest.class })
 public class AllTests {
 }

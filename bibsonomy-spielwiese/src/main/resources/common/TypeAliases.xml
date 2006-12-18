@@ -10,14 +10,20 @@
 	<typeAlias alias="bibtex" type="org.bibsonomy.model.BibTex" />
 
 	<!-- Bookmark -->
+	<typeAlias alias="bookmarkParam" type="org.bibsonomy.ibatis.params.BookmarkParam" />
+	<!--
 	<typeAlias alias="bookmarkByTagNames" type="org.bibsonomy.ibatis.params.bookmark.BookmarkByTagNames" />
 	<typeAlias alias="homePageBookmark" type="org.bibsonomy.ibatis.params.bookmark.HomePageBookmark" />
 	<typeAlias alias="bookmarkByUserFriends" type="org.bibsonomy.ibatis.params.bookmark.BookmarkByUserFriends" />
+	-->
 
 	<!-- BibTex -->
+	<typeAlias alias="bibtexParam" type="org.bibsonomy.ibatis.params.BibTexParam" />
+	<!--
 	<typeAlias alias="bibtexByTagNames" type="org.bibsonomy.ibatis.params.bibtex.BibTexByTagNames" />
 	<typeAlias alias="bibtexByDownload" type="org.bibsonomy.ibatis.params.bibtex.BibTexByDownload" />
 	<typeAlias alias="homePageBibTex" type="org.bibsonomy.ibatis.params.bibtex.HomePageBibTex" />
 	<typeAlias alias="bibtexByUserFriends" type="org.bibsonomy.ibatis.params.bibtex.BibTexByUserFriends" />
 	<typeAlias alias="bibtexByHash" type="org.bibsonomy.ibatis.params.bibtex.BibTexByHash" />
+	-->
 </sqlMap>

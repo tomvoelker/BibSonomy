@@ -18,6 +18,7 @@
 	</transactionManager>
 
 	<sqlMap resource="common/TypeAliases.xml" />
+	<sqlMap resource="common/Common.xml" />
 	<sqlMap resource="common/BookmarkCommon.xml" />
 	<sqlMap resource="common/BibTexCommon.xml" />
 

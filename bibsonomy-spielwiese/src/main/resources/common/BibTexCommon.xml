@@ -4,7 +4,7 @@
 <sqlMap namespace="BibTexCommon">
 	<resultMap id="bibtexs" class="bibtex" groupBy="contentId">
 		<result property="contentId"      column="content_id"     javaType="int" />
-		<result property="tags"           resultMap="BookmarkCommon.tags" />
+		<result property="tags"           resultMap="Common.tags" />
 		<result property="title"          column="title"          javaType="string" />
 		<result property="address"        column="address"        javaType="string" />
 		<result property="annote"         column="annote"         javaType="string" />
@@ -58,5 +58,9 @@
 
 	<sql id="bibtexSimHash">
 		b.simhash$simHash$ = h.hash AND h.type = $simHash$
+	</sql>
+
+	<sql id="bibtexSimHash2">
+		b2.simhash$simHash$ = h.hash AND h.type = $simHash$
 	</sql>
 </sqlMap>

@@ -1,9 +1,14 @@
 package org.bibsonomy.ibatis;
 
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.io.Reader;
+import java.sql.SQLException;
 import java.util.List;
 
+import org.bibsonomy.ibatis.params.BibTexParam;
+import org.bibsonomy.ibatis.params.BookmarkParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Tag;
@@ -21,24 +26,69 @@ import com.ibatis.sqlmap.client.SqlMapClientBuilder;
  */
 public abstract class AbstractSqlMapTest {
 
-	/** Communication with the database is done with this class */
+	/** Communication with the database is done with the sqlMap */
 	protected SqlMapClient sqlMap;
+	protected BookmarkParam bookmarkParam;
+	protected BibTexParam bibtexParam;
+	protected boolean print;
+
+	private enum QueryTemplate {
+		BOOKMARK, BIBTEX
+	};
 
 	@Before
 	public void setUp() throws IOException {
 		final String resource = "SqlMapConfig.xml";
 		final Reader reader = Resources.getResourceAsReader(resource);
 		this.sqlMap = SqlMapClientBuilder.buildSqlMapClient(reader);
+		this.bookmarkParam = TestHelper.getDefaultBookmarkParam();
+		this.bibtexParam = TestHelper.getDefaultBibTexParam();
+		this.print = false;
 	}
 
 	@After
 	public void tearDown() {
 		this.sqlMap = null;
+		this.bookmarkParam = null;
+		this.bibtexParam = null;
 	}
 
-	protected void printBookmarks(final List<Bookmark> bookmarks) {
-		if (true) return;
-		for (final Bookmark bookmark  : bookmarks) {
+	/**
+	 * Can be used to start a query that retrieves a list of bookmarks.
+	 */
+	protected void bookmarkTemplate(final String query) {
+		this.template(query, QueryTemplate.BOOKMARK);
+	}
+
+	/**
+	 * Can be used to start a query that retrieves a list of BibTexs.
+	 */
+	protected void bibtexTemplate(final String query) {
+		this.template(query, QueryTemplate.BIBTEX);
+	}
+
+	@SuppressWarnings("unchecked")
+	private void template(final String query, final QueryTemplate template) {
+		try {
+			switch (template) {
+			case BOOKMARK:
+				final List<Bookmark> bookmarks = this.sqlMap.queryForList(query, this.bookmarkParam);
+				printBookmarks(bookmarks);
+				break;
+			case BIBTEX:
+				final List<BibTex> bibtexs = this.sqlMap.queryForList(query, this.bibtexParam);
+				printBibTex(bibtexs);
+				break;
+			}
+		} catch (final SQLException ex) {
+			ex.printStackTrace();
+			fail("SQLException");
+		}
+	}
+
+	private void printBookmarks(final List<Bookmark> bookmarks) {
+		if (!this.print) return;
+		for (final Bookmark bookmark : bookmarks) {
 			System.out.println("ContentId   : " + bookmark.getContentId());
 			System.out.println("Description : " + bookmark.getDescription());
 			System.out.println("Extended    : " + bookmark.getExtended());
@@ -54,8 +104,8 @@ public abstract class AbstractSqlMapTest {
 		}
 	}
 
-	protected void printBibTex(final List<BibTex> bibtexs) {
-		if (true) return;
+	private void printBibTex(final List<BibTex> bibtexs) {
+		if (!this.print) return;
 		for (final BibTex bibtex : bibtexs) {
 			System.out.println("Address          : " + bibtex.getAddress());
 			System.out.println("Annote           : " + bibtex.getAnnote());

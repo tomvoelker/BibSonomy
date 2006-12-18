@@ -5,7 +5,7 @@ import static org.junit.Assert.fail;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.bibsonomy.ibatis.params.generic.ByTagNames;
+import org.bibsonomy.ibatis.params.GenericParam;
 import org.bibsonomy.model.Bookmark;
 import org.junit.Test;
 
@@ -20,7 +20,7 @@ public class PerfTest extends AbstractSqlMapTest {
 	@SuppressWarnings({"unchecked", "unused"})
 	public void testPerf() {
 		try {
-			final ByTagNames btn = TestHelper.getDefaultBookmarkByTagNames();
+			final GenericParam param = TestHelper.getDefaultBookmarkParam();
 
 			List<Bookmark> bookmarks;
 			long all = 0;
@@ -30,7 +30,7 @@ public class PerfTest extends AbstractSqlMapTest {
 				// save the start time
 				final long start = System.currentTimeMillis();
 				for (int j = 0; j < 5; j++) {
-					bookmarks = this.sqlMap.queryForList("getBookmarkByTagNames", btn);
+					bookmarks = this.sqlMap.queryForList("getBookmarkByTagNames", param);
 				}
 				// save the time once the task is finished
 				final long end = System.currentTimeMillis();

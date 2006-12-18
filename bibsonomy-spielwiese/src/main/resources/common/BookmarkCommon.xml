@@ -4,7 +4,7 @@
 <sqlMap namespace="BookmarkCommon">
 	<resultMap id="bookmarks" class="bookmark" groupBy="contentId">
 		<result property="contentId"   column="content_id"       javaType="int" />
-		<result property="tags"        resultMap="BookmarkCommon.tags" />
+		<result property="tags"        resultMap="Common.tags" />
 		<result property="description" column="book_description" javaType="string" />
 		<result property="extended"    column="book_extended"    javaType="string" />
 		<result property="userName"    column="user_name"        javaType="string" />
