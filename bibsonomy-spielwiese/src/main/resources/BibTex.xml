@@ -110,4 +110,15 @@
 		LEFT OUTER JOIN tas AS t ON t.content_id = b.content_id
 		ORDER BY b.date DESC, b.content_id
 	</select>
+
+	<select id="getBibTexSearchCount" resultClass="int" parameterClass="bibtexParam">
+		SELECT count(*)
+		FROM search s
+		WHERE s.group = #groupType#
+		      AND MATCH (s.content) AGAINST (#search# IN BOOLEAN MODE)
+		      AND s.content_type = #contentType#
+		      <isNotNull property="userName" prepend="AND">
+		        s.user_name = #userName#
+		      </isNotNull>
+	</select>
 </sqlMap>

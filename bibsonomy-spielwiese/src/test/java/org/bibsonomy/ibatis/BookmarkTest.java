@@ -1,6 +1,10 @@
 package org.bibsonomy.ibatis;
 
+import java.sql.SQLException;
+
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests related to BibTex.
@@ -36,5 +40,18 @@ public class BookmarkTest extends AbstractSqlMapTest {
 		bookmarkTemplate("getBookmarkSearch");
 		this.bookmarkParam.setUserName(null);
 		bookmarkTemplate("getBookmarkSearch");
+	}
+
+	@Test
+	public void getBookmarkSearchCount() throws SQLException {
+		this.bookmarkParam.setSearch("test");
+		Integer count = -1;
+		count = (Integer) this.sqlMap.queryForObject("getBookmarkSearchCount", this.bookmarkParam);
+		assertTrue(count >= 0);
+
+		this.bookmarkParam.setUserName(null);
+		count = -1;
+		count = (Integer) this.sqlMap.queryForObject("getBookmarkSearchCount", this.bookmarkParam);
+		assertTrue(count >= 0);
 	}
 }

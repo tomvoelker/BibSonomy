@@ -93,4 +93,15 @@
 		LEFT OUTER JOIN tas AS t ON t.content_id = bb.content_id
 		ORDER BY bb.date DESC, bb.content_id
 	</select>
+
+	<select id="getBookmarkSearchCount" resultClass="int" parameterClass="bookmarkParam">
+		SELECT count(*)
+		FROM search s
+		WHERE s.group = #groupType#
+		      AND MATCH (s.content) AGAINST (#search# IN BOOLEAN MODE)
+		      AND s.content_type = #contentType#
+		      <isNotNull property="userName" prepend="AND">
+		        s.user_name = #userName#
+		      </isNotNull>
+	</select>
 </sqlMap>
