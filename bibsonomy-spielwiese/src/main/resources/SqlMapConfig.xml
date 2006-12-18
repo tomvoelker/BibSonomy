@@ -22,6 +22,7 @@
 	<sqlMap resource="common/BookmarkCommon.xml" />
 	<sqlMap resource="common/BibTexCommon.xml" />
 
+	<sqlMap resource="General.xml" />
 	<sqlMap resource="Tag.xml" />
 	<sqlMap resource="Bookmark.xml" />
 	<sqlMap resource="BibTex.xml" />

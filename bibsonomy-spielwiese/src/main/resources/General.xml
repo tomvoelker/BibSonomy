@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="General">
+	<!-- Changed 'SELECT user_name' to 'SELECT count(user_name)': this way we get the right boolean result -->
+	<select id="isFriendOf" resultClass="boolean" parameterClass="genericParam">
+		SELECT count(user_name)
+		FROM friends
+		WHERE user_name = #friendUserName# AND f_user_name = #userName#
+	</select>
+</sqlMap>

@@ -9,9 +9,8 @@
 	<typeAlias alias="bookmark" type="org.bibsonomy.model.Bookmark" />
 	<typeAlias alias="bibtex" type="org.bibsonomy.model.BibTex" />
 
-	<!-- Bookmark -->
+	<!-- Parameters -->
+	<typeAlias alias="genericParam" type="org.bibsonomy.ibatis.params.BookmarkParam" />
 	<typeAlias alias="bookmarkParam" type="org.bibsonomy.ibatis.params.BookmarkParam" />
-
-	<!-- BibTex -->
 	<typeAlias alias="bibtexParam" type="org.bibsonomy.ibatis.params.BibTexParam" />
 </sqlMap>

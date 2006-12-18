@@ -25,6 +25,7 @@ public class TestHelper {
 		final BookmarkParam rVal = new BookmarkParam();
 		setDefaults(rVal);
 		rVal.setUserName("stumme");
+		rVal.setFriendUserName("hotho");
 		return rVal;
 	}
 
@@ -33,6 +34,7 @@ public class TestHelper {
 		setDefaults(rVal);
 		rVal.setRequBibtex("0000175071e6141a7d36835489f922ef");
 		rVal.setUserName("hotho");
+		rVal.setFriendUserName("stumme");
 		return rVal;
 	}
 }

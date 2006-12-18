@@ -22,6 +22,7 @@ public abstract class GenericParam {
 	private Date date;
 	private String search;
 	private String userName;
+	private String friendUserName;
 	/** By default it's public */
 	private ConstantID groupType;
 	private ConstantID simHash;
@@ -93,6 +94,14 @@ public abstract class GenericParam {
 
 	public void setUserName(String user) {
 		this.userName = user;
+	}
+
+	public String getFriendUserName() {
+		return this.friendUserName;
+	}
+
+	public void setFriendUserName(String friendUserName) {
+		this.friendUserName = friendUserName;
 	}
 
 	public int getLimit() {
