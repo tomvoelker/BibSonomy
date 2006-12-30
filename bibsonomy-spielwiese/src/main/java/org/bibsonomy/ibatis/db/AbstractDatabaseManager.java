@@ -30,6 +30,11 @@ public abstract class AbstractDatabaseManager {
 	/** Communication with the database is done with the sqlMap */
 	private final SqlMapClient sqlMap;
 
+	/** Determines whether we retrieve an object or a list */
+	private enum QueryFor {
+		OBJECT, LIST;
+	}
+
 	/**
 	 * Initializes the SqlMap
 	 */
@@ -46,76 +51,57 @@ public abstract class AbstractDatabaseManager {
 
 	/**
 	 * Can be used to start a query that retrieves a list of bookmarks.
-	 * 
-	 * @throws SQLException
 	 */
-	//@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	protected List<Bookmark> bookmarkList(final String query, final BookmarkParam param) {
-//		List<Bookmark> rVal = null;
-//		try {
-//			rVal = this.sqlMap.queryForList(query, param);
-//		} catch (final SQLException ex) {
-//			log.error("Couldn't queryForList '" + query + "' - throwing RuntimeException");
-//			throw new RuntimeException("Couldn't queryForList '" + query + "'", ex);
-//		}
-//		return rVal;
-		return queryForList(query, param);
+		return (List<Bookmark>) queryForAnything(query, param, QueryFor.LIST);
 	}
 
 	/**
 	 * Can be used to start a query that retrieves a list of BibTexs.
-	 * 
-	 * @throws SQLException
-	 */
-//	@SuppressWarnings("unchecked")
-//	protected List<BibTex> bibtexList(final String query, final BibTexParam param) throws SQLException {
-	protected List<BibTex> bibtexList(final String query, final BibTexParam param) {
-//		return (List<BibTex>) this.sqlMap.queryForList(query, param);
-		return queryForList(query, param);
-	}
-
-	protected List<Tag> tagList(final String query, final Object param) {
-		return queryForList(query, param);
-	}
-
-//	private List<Bookmark> queryForList(final String query, final BookmarkParam param) {
-//		return queryForList(query, param);//, new Bookmark());
-//	}
-//
-//	private List<BibTex> queryForList(final String query, final BibTexParam param) {
-//		return queryForList(query, param);
-//	}
-
-	/**
-	 * This method calls the <em>queryForList</em>-Method on the sqlMap. We
-	 * encapsulate this method here to catch exceptions, namely SQLException,
-	 * which can be thrown from that call.<br/>
 	 */
 	@SuppressWarnings("unchecked")
-//	private <T> List<T> queryForList(final String query, final GenericParam param, final T type) {
-	private <T> List<T> queryForList(final String query, final Object param) {
-		List<T> rVal = null;
-		try {
-			rVal = this.sqlMap.queryForList(query, param);
-		} catch (final SQLException ex) {
-			log.error("Couldn't queryForList '" + query + "' - throwing RuntimeException");
-			throw new RuntimeException("Couldn't queryForList '" + query + "'", ex);
-		}
-		return rVal;
+	protected List<BibTex> bibtexList(final String query, final BibTexParam param) {
+		return (List<BibTex>) queryForAnything(query, param, QueryFor.LIST);
 	}
 
 	/**
-	 * This method calls the <em>queryForObject</em>-Method on the sqlMap. We
-	 * encapsulate this method here to catch exceptions, namely SQLException,
-	 * which can be thrown from that call.
+	 * Can be used to start a query that retrieves a list of tags.
+	 */
+	@SuppressWarnings("unchecked")
+	protected List<Tag> tagList(final String query, final Object param) {
+		return (List<Tag>) queryForAnything(query, param, QueryFor.LIST);
+	}
+
+	/**
+	 * Can be used to start a query that retrieves a single object.
 	 */
 	protected Object queryForObject(final String query, final Object param) {
-		Object rVal = null; 
+		return this.queryForAnything(query, param, QueryFor.OBJECT);
+	}
+
+	/**
+	 * This method calls the <em>queryForObject</em>- or the
+	 * <em>queryForList</em>-Method on the sqlMap. We encapsulate this method
+	 * here to catch exceptions, namely SQLException, which can be thrown from
+	 * that call.<br/>
+	 */
+	@SuppressWarnings("unchecked")
+	private Object queryForAnything(final String query, final Object param, final QueryFor queryFor) {
+		Object rVal = null;
 		try {
-			rVal = this.sqlMap.queryForObject(query, param);
+			switch (queryFor) {
+			case OBJECT:
+				rVal = this.sqlMap.queryForObject(query, param);
+				break;
+			case LIST:
+				rVal = this.sqlMap.queryForList(query, param);
+				break;
+			}
 		} catch (final SQLException ex) {
-			log.error("Couldn't queryForObject '" + query + "' - throwing RuntimeException");
-			throw new RuntimeException("Couldn't queryForObject '" + query + "'", ex);
+			final String error = "Couldn't execute query '" + query + "'";
+			log.error(error + " - throwing RuntimeException");
+			throw new RuntimeException(error, ex);
 		}
 		return rVal;
 	}

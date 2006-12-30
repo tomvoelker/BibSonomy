@@ -7,10 +7,15 @@ import org.bibsonomy.ibatis.enums.ConstantID;
 import org.bibsonomy.ibatis.params.BibTexParam;
 import org.bibsonomy.model.BibTex;
 
+/**
+ * Used to retrieve BibTexs from the database.
+ *
+ * @author Christian Schenk
+ */
 public class BibTexDatabaseManager extends AbstractDatabaseManager {
 
 	/**
-	 * Reduce visibility so only the {@link DatabaseManager} can instantiate us.
+	 * Reduce visibility so only the {@link DatabaseManager} can instantiate this class.
 	 */
 	BibTexDatabaseManager() {
 	}

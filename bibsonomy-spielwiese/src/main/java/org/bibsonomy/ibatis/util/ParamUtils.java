@@ -5,6 +5,11 @@ import org.bibsonomy.ibatis.params.BibTexParam;
 import org.bibsonomy.ibatis.params.BookmarkParam;
 import org.bibsonomy.ibatis.params.GenericParam;
 
+/**
+ * Provides methods to build parameter-objects.
+ *
+ * @author Christian Schenk
+ */
 public class ParamUtils {
 
 	/**
