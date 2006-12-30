@@ -16,47 +16,47 @@ public class BookmarkTest extends AbstractSqlMapTest {
 
 	@Test
 	public void getBookmarkByTagNames() {
-		bookmarkTemplate("getBookmarkByTagNames");
+		this.db.getBookmark().getBookmarkByTagNames(this.bookmarkParam);
 	}
 
 	@Test
 	public void getBookmarkByUserFriends() {
-		bookmarkTemplate("getBookmarkByUserFriends");
+		this.db.getBookmark().getBookmarkByUserFriends(this.bookmarkParam);
 	}
 
 	@Test
 	public void getHomePageBookmark() {
-		bookmarkTemplate("getHomePageBookmark");
+		this.db.getBookmark().getHomePageBookmark(this.bookmarkParam);
 	}
 
 	@Test
 	public void getBookmarkPopular() {
-		bookmarkTemplate("getBookmarkPopular");
+		this.db.getBookmark().getBookmarkPopular(this.bookmarkParam);
 	}
 
 	@Test
 	public void getBookmarkSearch() {
 		this.bookmarkParam.setSearch("test");
-		bookmarkTemplate("getBookmarkSearch");
+		this.db.getBookmark().getBookmarkSearch(this.bookmarkParam);
 		this.bookmarkParam.setUserName(null);
-		bookmarkTemplate("getBookmarkSearch");
+		this.db.getBookmark().getBookmarkSearch(this.bookmarkParam);
 	}
 
 	@Test
 	public void getBookmarkSearchCount() throws SQLException {
 		this.bookmarkParam.setSearch("test");
 		Integer count = -1;
-		count = (Integer) this.sqlMap.queryForObject("getBookmarkSearchCount", this.bookmarkParam);
+		count = this.db.getBookmark().getBookmarkSearchCount(this.bookmarkParam);
 		assertTrue(count >= 0);
 
 		this.bookmarkParam.setUserName(null);
 		count = -1;
-		count = (Integer) this.sqlMap.queryForObject("getBookmarkSearchCount", this.bookmarkParam);
+		count = (Integer) this.db.getBookmark().getBookmarkSearchCount(this.bookmarkParam);
 		assertTrue(count >= 0);
 	}
 
 	@Test
 	public void getBookmarkViewable() {
-		bookmarkTemplate("getBookmarkViewable");
+		this.db.getBookmark().getBookmarkViewable(this.bookmarkParam);
 	}
 }

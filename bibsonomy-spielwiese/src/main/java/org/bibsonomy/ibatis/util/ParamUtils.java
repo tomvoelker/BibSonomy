@@ -1,17 +1,16 @@
-package org.bibsonomy.ibatis;
+package org.bibsonomy.ibatis.util;
 
 import org.bibsonomy.ibatis.enums.ConstantID;
 import org.bibsonomy.ibatis.params.BibTexParam;
 import org.bibsonomy.ibatis.params.BookmarkParam;
 import org.bibsonomy.ibatis.params.GenericParam;
 
-public class TestHelper {
+public class ParamUtils {
 
 	/**
-	 * The ByTagNames-bean is used at various locations and has been refactored
-	 * to this method.
+	 * The defaults for every parameter-object are set here.
 	 */
-	public static void setDefaults(final GenericParam param) {
+	private static void setDefaults(final GenericParam param) {
 		param.setGroupType(ConstantID.GROUP_PUBLIC);
 		param.setLimit(10);
 		param.setOffset(0);
@@ -21,6 +20,9 @@ public class TestHelper {
 		param.addTagName("community");
 	}
 
+	/**
+	 * Retrieves a BookmarkParam.
+	 */
 	public static BookmarkParam getDefaultBookmarkParam() {
 		final BookmarkParam rVal = new BookmarkParam();
 		setDefaults(rVal);
@@ -29,6 +31,9 @@ public class TestHelper {
 		return rVal;
 	}
 
+	/**
+	 * Retrieves a BibTexParam.
+	 */
 	public static BibTexParam getDefaultBibTexParam() {
 		final BibTexParam rVal = new BibTexParam();
 		setDefaults(rVal);

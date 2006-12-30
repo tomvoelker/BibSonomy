@@ -9,7 +9,9 @@ import org.bibsonomy.ibatis.params.beans.TagIndex;
 
 /**
  * This is the most generic param. All fields which are not specific to
- * bookmarks or BibTexs are collected here.
+ * bookmarks or BibTexs are collected here. The parameter-objects are used by
+ * iBATIS in the SQL-statements to fill in values; they are put at the position
+ * of ?-marks.
  * 
  * @author Christian Schenk
  */
@@ -85,7 +87,7 @@ public abstract class GenericParam {
 
 	// TODO write testcase
 	public void setSearch(String search) {
-		this.search = search.replaceAll("([\\s]|^)([\\S&&[^-]])"," +$2");
+		this.search = search.replaceAll("([\\s]|^)([\\S&&[^-]])", " +$2");
 	}
 
 	public String getUserName() {

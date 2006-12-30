@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.bibsonomy.model.Tag;
@@ -16,21 +15,21 @@ import org.junit.Test;
  * 
  * @author Christian Schenk
  */
-public class SimpleTest extends AbstractSqlMapTest {
+public class TagTest extends AbstractSqlMapTest {
 
 	/**
 	 * Retrieves only one Tag-object
 	 */
 	@Test
 	@SuppressWarnings("unused")
-	public void testGetObject() {
+	public void getTagById() {
 		try {
-			final Tag tag = (Tag) this.sqlMap.queryForObject("getTagById", 387);
+			final Tag tag = (Tag) this.db.getTag().getTagById(387);
 			// System.out.println(tag);
 			// assertEquals(387, tag.getId());
 			// assertNotNull(tag.getName());
 			// assertNotNull(tag.getStem());
-		} catch (final SQLException ex) {
+		} catch (final RuntimeException ex) {
 			ex.printStackTrace();
 			fail("SQLException");
 		}
@@ -41,9 +40,9 @@ public class SimpleTest extends AbstractSqlMapTest {
 	 */
 	@Test
 	@SuppressWarnings("unchecked")
-	public void testGetList() {
+	public void getTagByCount() {
 		try {
-			final List<Tag> tags = sqlMap.queryForList("getTagByCount", 24);
+			final List<Tag> tags = this.db.getTag().getTagByCount(24);
 			for (final Tag tag : tags) {
 				// System.out.println(tag);
 				assertTrue(tag.getId() > 0);
@@ -51,7 +50,7 @@ public class SimpleTest extends AbstractSqlMapTest {
 				assertNotNull(tag.getStem());
 				assertEquals(24, tag.getCount());
 			}
-		} catch (final SQLException ex) {
+		} catch (final RuntimeException ex) {
 			ex.printStackTrace();
 			fail("SQLException");
 		}

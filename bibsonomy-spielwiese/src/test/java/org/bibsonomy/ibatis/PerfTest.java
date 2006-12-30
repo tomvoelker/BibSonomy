@@ -5,22 +5,23 @@ import static org.junit.Assert.fail;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.bibsonomy.ibatis.params.GenericParam;
+import org.bibsonomy.ibatis.params.BookmarkParam;
+import org.bibsonomy.ibatis.util.ParamUtils;
 import org.bibsonomy.model.Bookmark;
 import org.junit.Test;
 
 /**
  * Performance test of iBATIS.
- *
+ * 
  * @author Christian Schenk
  */
 public class PerfTest extends AbstractSqlMapTest {
 
 	@Test
-	@SuppressWarnings({"unchecked", "unused"})
+	@SuppressWarnings( { "unchecked", "unused" })
 	public void testPerf() {
 		try {
-			final GenericParam param = TestHelper.getDefaultBookmarkParam();
+			final BookmarkParam param = ParamUtils.getDefaultBookmarkParam();
 
 			List<Bookmark> bookmarks;
 			long all = 0;
@@ -30,21 +31,24 @@ public class PerfTest extends AbstractSqlMapTest {
 				// save the start time
 				final long start = System.currentTimeMillis();
 				for (int j = 0; j < 5; j++) {
-					bookmarks = this.sqlMap.queryForList("getBookmarkByTagNames", param);
+					bookmarks = this.db.getBookmark().getBookmarkByTagNames(param);
 				}
 				// save the time once the task is finished
 				final long end = System.currentTimeMillis();
 
-				// on the first run iBATIS is starting up and we don't want to measure that
+				// on the first run iBATIS is starting up and we don't want to
+				// measure that
 				if (i == 0) continue;
 
 				all += (end - start);
 			}
 
 			System.out.println("Duration: " + (all / 19) + "ms");
-		} catch (final SQLException ex) {
-			ex.printStackTrace();
-			fail("SQLException");
+		} catch (final RuntimeException ex) {
+			if (ex.getCause() instanceof SQLException) {
+				ex.printStackTrace();
+				fail("SQLException");
+			}
 		}
 	}
 }

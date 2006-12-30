@@ -4,7 +4,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.sql.SQLException;
 
-import org.bibsonomy.ibatis.enums.ConstantID;
 import org.junit.Test;
 
 /**
@@ -17,60 +16,58 @@ public class BibTexTest extends AbstractSqlMapTest {
 
 	@Test
 	public void getBibTexByHash() {
-		bibtexTemplate("getBibTexByHash");
+		this.db.getBibTex().getBibTexByHash(this.bibtexParam);
 	}
 
 	@Test
 	public void getBibTexByTagNames() {
-		bibtexTemplate("getBibTexByTagNames");
+		this.db.getBibTex().getBibTexByTagNames(this.bibtexParam);
 	}
 
 	@Test
 	public void getBibTexByUserFriends() {
-		this.bibtexParam.setGroupType(ConstantID.GROUP_FRIENDS);
-		bibtexTemplate("getBibTexByUserFriends");
+		this.db.getBibTex().getBibTexByUserFriends(this.bibtexParam);
 	}
 
 	@Test
 	public void getBibTexByDownload() {
 		this.bibtexParam.setUserName("grahl");
-		bibtexTemplate("getBibTexByDownload");
+		this.db.getBibTex().getBibTexByDownload(this.bibtexParam);
 	}
 
 	@Test
 	public void getHomePageBibTex() {
-		this.bibtexParam.setGroupType(ConstantID.GROUP_FRIENDS);
-		bibtexTemplate("getHomePageBibTex");
+		this.db.getBibTex().getHomePageBibTex(this.bibtexParam);
 	}
 
 	@Test
 	public void getBibTexPopular() {
-		bibtexTemplate("getBibTexPopular");
+		this.db.getBibTex().getBibTexPopular(this.bibtexParam);
 	}
 
 	@Test
 	public void getBibTexSearch() {
 		this.bibtexParam.setSearch("test");
-		bibtexTemplate("getBibTexSearch");
+		this.db.getBibTex().getBibTexSearch(this.bibtexParam);
 		this.bibtexParam.setUserName(null);
-		bibtexTemplate("getBibTexSearch");
+		this.db.getBibTex().getBibTexSearch(this.bibtexParam);
 	}
 
 	@Test
 	public void getBibTexSearchCount() throws SQLException {
 		this.bibtexParam.setSearch("test");
 		Integer count = -1;
-		count = (Integer) this.sqlMap.queryForObject("getBibTexSearchCount", this.bibtexParam);
+		count = this.db.getBibTex().getBibTexSearchCount(this.bibtexParam);
 		assertTrue(count >= 0);
 
 		this.bibtexParam.setUserName(null);
 		count = -1;
-		count = (Integer) this.sqlMap.queryForObject("getBibTexSearchCount", this.bibtexParam);
+		count = this.db.getBibTex().getBibTexSearchCount(this.bibtexParam);
 		assertTrue(count >= 0);
 	}
 
 	@Test
 	public void getBibTexViewable() {
-		bibtexTemplate("getBibTexViewable");
+		this.db.getBibTex().getBibTexViewable(this.bibtexParam);
 	}
 }

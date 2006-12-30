@@ -10,6 +10,6 @@ import org.junit.runners.Suite;
  * @author Christian Schenk
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses( { ParamTest.class, SimpleTest.class, GeneralTest.class, BookmarkTest.class, BibTexTest.class })
+@Suite.SuiteClasses( { ParamTest.class, TagTest.class, GeneralTest.class, BookmarkTest.class, BibTexTest.class })
 public class AllTests {
 }
