@@ -7,16 +7,9 @@
 	</resultMap>
 
 	<sql id="inGroups">
-		AND
-		<!-- isNotNull property="userName">
-		  <isNotNull property="friendUserName">
-		    <isNotEqual property="userName" compareProperty="friendUserName" prepend="AND"-->
-		      b.group in (0,
-		      <iterate property="groups" conjunction="," close=")">
-		        $groups[]$
-		      </iterate>
-		    <!--/isNotEqual>
-		  </isNotNull>
-		</isNotNull-->
+		AND b.group in (0,
+		<iterate property="groups" conjunction="," close=")">
+		  $groups[]$
+		</iterate>
 	</sql>
 </sqlMap>

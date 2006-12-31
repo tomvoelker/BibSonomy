@@ -63,10 +63,6 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	public List<BibTex> getBibTexDuplicate(final BibTexParam param) {
-//		final boolean friends = this.db.getGeneral().isFriendOf(param);
-//		final List<Integer> groups = this.db.getGeneral().getGroupsForUser(param);
-//		if (friends) groups.add(ConstantID.GROUP_FRIENDS.getId());
-//		param.setGroups(groups);
 		DatabaseUtils.setGroups(this.db, param);
 		return this.bibtexList("getBibTexDuplicate", param);
 	}
