@@ -1,20 +1,18 @@
 package org.bibsonomy.ibatis.db;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.ibatis.params.BibTexParam;
 import org.bibsonomy.ibatis.params.BookmarkParam;
+import org.bibsonomy.ibatis.util.DatabaseUtils;
+import org.bibsonomy.ibatis.util.ExceptionUtils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Tag;
 
-import com.ibatis.common.resources.Resources;
 import com.ibatis.sqlmap.client.SqlMapClient;
-import com.ibatis.sqlmap.client.SqlMapClientBuilder;
 
 /**
  * This is the superclass for all classes that are implementing methods to
@@ -30,7 +28,7 @@ public abstract class AbstractDatabaseManager {
 	/** Communication with the database is done with the sqlMap */
 	private final SqlMapClient sqlMap;
 
-	/** Determines whether we retrieve an object or a list */
+	/** Used to determine whether we want to retrieve an object or a list */
 	private enum QueryFor {
 		OBJECT, LIST;
 	}
@@ -39,14 +37,7 @@ public abstract class AbstractDatabaseManager {
 	 * Initializes the SqlMap
 	 */
 	public AbstractDatabaseManager() {
-		try {
-			final String resource = "SqlMapConfig.xml";
-			final Reader reader = Resources.getResourceAsReader(resource);
-			this.sqlMap = SqlMapClientBuilder.buildSqlMapClient(reader);
-		} catch (final IOException ex) {
-			log.error("Couldn't initialize SqlMap - throwing RuntimeException");
-			throw new RuntimeException("Couldn't initialize SqlMap", ex);
-		}
+		this.sqlMap = DatabaseUtils.getSqlMapClient(log);
 	}
 
 	/**
@@ -74,7 +65,8 @@ public abstract class AbstractDatabaseManager {
 	}
 
 	/**
-	 * Can be used to start a query that retrieves a single object.
+	 * Can be used to start a query that retrieves a single object like a tag or
+	 * bookmark but also an int or boolean.
 	 */
 	protected Object queryForObject(final String query, final Object param) {
 		return this.queryForAnything(query, param, QueryFor.OBJECT);
@@ -99,9 +91,7 @@ public abstract class AbstractDatabaseManager {
 				break;
 			}
 		} catch (final SQLException ex) {
-			final String error = "Couldn't execute query '" + query + "'";
-			log.error(error + " - throwing RuntimeException");
-			throw new RuntimeException(error, ex);
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't execute query '" + query + "'");
 		}
 		return rVal;
 	}
