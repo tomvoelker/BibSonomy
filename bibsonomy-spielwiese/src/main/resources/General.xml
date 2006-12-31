@@ -8,4 +8,8 @@
 		FROM friends
 		WHERE user_name = #friendUserName# AND f_user_name = #userName#
 	</select>
+
+	<select id="getGroupsForUser" resultClass="int" parameterClass="genericParam">
+		SELECT `group` FROM groups WHERE user_name = #userName#
+	</select>
 </sqlMap>

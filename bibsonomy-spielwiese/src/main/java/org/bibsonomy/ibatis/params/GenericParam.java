@@ -19,14 +19,18 @@ public abstract class GenericParam {
 
 	/** List of (tagname, index)-pairs */
 	private final List<TagIndex> tagIndex;
+	/** List of the groups the user belongs to */
+	private List<Integer> groups;
 	/** Should tagnames be case sensitive */
 	private boolean caseSensitiveTagNames;
 	private Date date;
+	/** RegEx search pattern */
 	private String search;
 	private String userName;
 	private String friendUserName;
 	/** By default it's public */
 	private ConstantID groupType;
+	/** By default the simhash is 1 */
 	private ConstantID simHash;
 	// FIXME are requSim and simHash the same ???
 	private ConstantID requSim;
@@ -41,6 +45,10 @@ public abstract class GenericParam {
 		this.requSim = ConstantID.SIM_HASH;
 	}
 
+	/**
+	 * Implementations of this class will have to implement this method to
+	 * identify their content type.
+	 */
 	public abstract int getContentType();
 
 	public boolean isCaseSensitiveTagNames() {
@@ -144,5 +152,13 @@ public abstract class GenericParam {
 
 	public void setRequSim(ConstantID requSim) {
 		this.requSim = requSim;
+	}
+
+	public List<Integer> getGroups() {
+		return this.groups;
+	}
+
+	public void setGroups(List<Integer> groups) {
+		this.groups = groups;
 	}
 }

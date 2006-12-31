@@ -10,7 +10,7 @@
 	<typeAlias alias="bibtex" type="org.bibsonomy.model.BibTex" />
 
 	<!-- Parameters -->
-	<typeAlias alias="genericParam" type="org.bibsonomy.ibatis.params.BookmarkParam" />
+	<typeAlias alias="genericParam" type="org.bibsonomy.ibatis.params.GenericParam" />
 	<typeAlias alias="bookmarkParam" type="org.bibsonomy.ibatis.params.BookmarkParam" />
 	<typeAlias alias="bibtexParam" type="org.bibsonomy.ibatis.params.BibTexParam" />
 </sqlMap>

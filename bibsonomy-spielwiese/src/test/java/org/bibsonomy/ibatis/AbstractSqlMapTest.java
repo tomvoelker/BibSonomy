@@ -23,7 +23,9 @@ public abstract class AbstractSqlMapTest {
 
 	/** Communication with the database is done with this class */
 	protected DatabaseManager db;
+	/** This param can be used both for queries about bookmarks and all other queries */
 	protected BookmarkParam bookmarkParam;
+	/** This param can be used for queries about BibTexs */
 	protected BibTexParam bibtexParam;
 
 	@Before
@@ -40,6 +42,9 @@ public abstract class AbstractSqlMapTest {
 		this.bibtexParam = null;
 	}
 
+	/**
+	 * Convenience method to print a list of bookmarks.
+	 */
 	protected void printBookmarks(final List<Bookmark> bookmarks) {
 		for (final Bookmark bookmark : bookmarks) {
 			System.out.println("ContentId   : " + bookmark.getContentId());
@@ -57,6 +62,9 @@ public abstract class AbstractSqlMapTest {
 		}
 	}
 
+	/**
+	 * Convenience method to print a list of BibTexs.
+	 */
 	protected void printBibTex(final List<BibTex> bibtexs) {
 		for (final BibTex bibtex : bibtexs) {
 			System.out.println("Address          : " + bibtex.getAddress());

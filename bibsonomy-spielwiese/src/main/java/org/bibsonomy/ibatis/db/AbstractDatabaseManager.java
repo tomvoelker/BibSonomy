@@ -17,7 +17,10 @@ import com.ibatis.sqlmap.client.SqlMapClient;
 /**
  * This is the superclass for all classes that are implementing methods to
  * retrieve data from a database. It provides methods for the interaction with
- * the database.
+ * the database, i.e. a lot of convenience methods that return the
+ * <em>right</em> results, e.g. not just an Object but a BibTex object or not
+ * just a list of Objects but a list of bookmarks. This way a lot of unchecked
+ * casting remains in this class and isn't scattered all over the code.
  * 
  * @author Christian Schenk
  */
@@ -65,8 +68,18 @@ public abstract class AbstractDatabaseManager {
 	}
 
 	/**
+	 * Can be used to start a query that retrieves a list of Integers.
+	 */
+	@SuppressWarnings("unchecked")
+	protected List<Integer> intList(final String query, final Object param) {
+		return (List<Integer>) queryForAnything(query, param, QueryFor.LIST);
+	}
+
+	/**
 	 * Can be used to start a query that retrieves a single object like a tag or
-	 * bookmark but also an int or boolean.
+	 * bookmark but also an int or boolean.<br/> In this case we break the rule
+	 * to create one method for every return type, because with a single object
+	 * it doesn't result in an unchecked cast.
 	 */
 	protected Object queryForObject(final String query, final Object param) {
 		return this.queryForAnything(query, param, QueryFor.OBJECT);

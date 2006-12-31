@@ -5,4 +5,18 @@
 	<resultMap id="tags" class="tag">
 		<result property="name" column="tag_name" javaType="string" />
 	</resultMap>
+
+	<sql id="inGroups">
+		AND
+		<!-- isNotNull property="userName">
+		  <isNotNull property="friendUserName">
+		    <isNotEqual property="userName" compareProperty="friendUserName" prepend="AND"-->
+		      b.group in (0,
+		      <iterate property="groups" conjunction="," close=")">
+		        $groups[]$
+		      </iterate>
+		    <!--/isNotEqual>
+		  </isNotNull>
+		</isNotNull-->
+	</sql>
 </sqlMap>

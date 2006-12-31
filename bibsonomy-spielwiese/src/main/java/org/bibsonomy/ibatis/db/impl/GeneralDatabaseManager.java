@@ -1,5 +1,7 @@
 package org.bibsonomy.ibatis.db.impl;
 
+import java.util.List;
+
 import org.bibsonomy.ibatis.db.AbstractDatabaseManager;
 import org.bibsonomy.ibatis.params.GenericParam;
 
@@ -18,5 +20,9 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 
 	public boolean isFriendOf(final GenericParam param) {
 		return (Boolean) this.queryForObject("isFriendOf", param);
+	}
+
+	public List<Integer> getGroupsForUser(final GenericParam param) {
+		return this.intList("getGroupsForUser", param);
 	}
 }

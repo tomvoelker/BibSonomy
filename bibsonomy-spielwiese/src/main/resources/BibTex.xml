@@ -135,4 +135,22 @@
 		LEFT OUTER JOIN tas AS t ON t.content_id = b.content_id
 		ORDER BY b.date DESC, b.content_id DESC
 	</select>
+
+	<select id="getBibTexDuplicate" resultMap="BibTexCommon.bibtexs" parameterClass="bibtexParam">
+		SELECT <include refid ="bibtexAttributes"/>, t.tag_name, g.group_name, h.ctr
+		FROM bibtex b, bibhash h,
+		     (SELECT b2.content_id, b2.date
+		      FROM (<include refid ="duplicatesCount"/>) AS b1
+		      JOIN bibtex b2 ON b1.simhash1 = b2.simhash1 AND b2.user_name = #userName#) AS bb
+		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas (get tags) -->
+		WHERE t.group = g.group                                                  <!-- join groupname -->
+		      <include refid="inGroups"/>
+		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
+		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
+		ORDER BY b.simhash1 DESC, bb.date DESC
+	</select>
+
+	<select id="getBibTexDuplicateCount" resultClass="int" parameterClass="bibtexParam">
+		SELECT count(*) FROM (<include refid ="duplicatesCount"/>) AS duplicates
+	</select>
 </sqlMap>

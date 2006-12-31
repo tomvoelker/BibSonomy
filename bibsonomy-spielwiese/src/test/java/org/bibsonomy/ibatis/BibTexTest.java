@@ -2,8 +2,6 @@ package org.bibsonomy.ibatis;
 
 import static org.junit.Assert.assertTrue;
 
-import java.sql.SQLException;
-
 import org.junit.Test;
 
 /**
@@ -54,7 +52,7 @@ public class BibTexTest extends AbstractSqlMapTest {
 	}
 
 	@Test
-	public void getBibTexSearchCount() throws SQLException {
+	public void getBibTexSearchCount() {
 		this.bibtexParam.setSearch("test");
 		Integer count = -1;
 		count = this.db.getBibTex().getBibTexSearchCount(this.bibtexParam);
@@ -69,5 +67,21 @@ public class BibTexTest extends AbstractSqlMapTest {
 	@Test
 	public void getBibTexViewable() {
 		this.db.getBibTex().getBibTexViewable(this.bibtexParam);
+	}
+
+	@Test
+	public void getBibTexDuplicate() {
+		// without a friend
+		this.db.getBibTex().getBibTexDuplicate(this.bibtexParam);
+		// with a friend
+		this.bibtexParam.setFriendUserName("grahl");
+		this.db.getBibTex().getBibTexDuplicate(this.bibtexParam);
+	}
+
+	@Test
+	public void getBibTexDuplicateCount() {
+		Integer count = -1;
+		count = this.db.getBibTex().getBibTexDuplicateCount(this.bibtexParam);
+		assertTrue(count >= 0);
 	}
 }

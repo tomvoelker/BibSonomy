@@ -5,6 +5,7 @@ import java.util.List;
 import org.bibsonomy.ibatis.db.AbstractDatabaseManager;
 import org.bibsonomy.ibatis.enums.ConstantID;
 import org.bibsonomy.ibatis.params.BibTexParam;
+import org.bibsonomy.ibatis.util.DatabaseUtils;
 import org.bibsonomy.model.BibTex;
 
 /**
@@ -14,10 +15,13 @@ import org.bibsonomy.model.BibTex;
  */
 public class BibTexDatabaseManager extends AbstractDatabaseManager {
 
+	private final DatabaseManager db;
+
 	/**
 	 * Reduce visibility so only the {@link DatabaseManager} can instantiate this class.
 	 */
-	BibTexDatabaseManager() {
+	BibTexDatabaseManager(final DatabaseManager db) {
+		this.db = db;
 	}
 
 	public List<BibTex> getBibTexByHash(final BibTexParam param) {
@@ -56,5 +60,18 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 
 	public List<BibTex> getBibTexViewable(final BibTexParam param) {
 		return this.bibtexList("getBibTexViewable", param);
+	}
+
+	public List<BibTex> getBibTexDuplicate(final BibTexParam param) {
+//		final boolean friends = this.db.getGeneral().isFriendOf(param);
+//		final List<Integer> groups = this.db.getGeneral().getGroupsForUser(param);
+//		if (friends) groups.add(ConstantID.GROUP_FRIENDS.getId());
+//		param.setGroups(groups);
+		DatabaseUtils.setGroups(this.db, param);
+		return this.bibtexList("getBibTexDuplicate", param);
+	}
+
+	public int getBibTexDuplicateCount(final BibTexParam param) {
+		return (Integer) this.queryForObject("getBibTexDuplicateCount", param);
 	}
 }

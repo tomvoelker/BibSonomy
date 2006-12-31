@@ -21,7 +21,7 @@ public final class DatabaseManager {
 	private DatabaseManager() {
 		this.generalDatabaseManager = new GeneralDatabaseManager();
 		this.bookmarkDatabaseManager = new BookmarkDatabaseManager();
-		this.bibtexDatabaseManager = new BibTexDatabaseManager();
+		this.bibtexDatabaseManager = new BibTexDatabaseManager(this);
 		this.tagDatabaseManager = new TagDatabaseManager();
 	}
 
