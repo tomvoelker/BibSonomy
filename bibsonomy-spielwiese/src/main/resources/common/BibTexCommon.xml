@@ -42,6 +42,10 @@
 		<result property="ctr"            column="ctr"            javaType="int" />
 	</resultMap>
 
+	<resultMap id="bibtexsWithGroupName" class="bibtex" extends="bibtexs">
+		<result property="groupName"      column="group_name"     javaType="string" />
+	</resultMap>
+
 	<sql id="bibtexAttributes">
 		b.address,b.annote,b.booktitle,b.chapter,b.crossref,b.edition,b.howpublished,
 		b.institution,b.journal,b.bkey,b.month,b.note,b.number,b.organization,b.pages,b.publisher,

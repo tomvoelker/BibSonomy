@@ -11,9 +11,8 @@ import java.util.List;
  */
 
 /*
- * add addition attributes e.g. tag_name
+ * TODO: add additional attributes, e.g. tag_name
  */
-
 public class BibTex extends Resource {
 
 	private String userName;
@@ -46,9 +45,9 @@ public class BibTex extends Resource {
 	private String day;
 	private String month;
 	private String year;
-	private String type; 
+	private String type;
 	private int group;
-	private List <Tag> tags;
+	private List<Tag> tags;
 	private String url;
 	/* FIXME: belongs to bibhash -> separate class? */
 	private int ctr;
@@ -56,6 +55,7 @@ public class BibTex extends Resource {
 	public int getCtr() {
 		return this.ctr;
 	}
+
 	public void setCtr(int ctr) {
 		this.ctr = ctr;
 	}
@@ -63,204 +63,271 @@ public class BibTex extends Resource {
 	public String getUrl() {
 		return url;
 	}
+
 	public void setUrl(String url) {
 		this.url = url;
 	}
+
 	public List<Tag> getTags() {
 		return this.tags;
 	}
+
 	public void setTags(List<Tag> tags) {
 		this.tags = tags;
 	}
+
 	public String getAddress() {
 		return this.address;
 	}
+
 	public void setAddress(String address) {
 		this.address = address;
 	}
+
 	public String getAnnote() {
 		return this.annote;
 	}
+
 	public void setAnnote(String annote) {
 		this.annote = annote;
 	}
+
 	public String getAuthor() {
 		return this.author;
 	}
+
 	public void setAuthor(String author) {
 		this.author = author;
 	}
+
 	public String getBibtexAbstract() {
 		return this.bibtexAbstract;
 	}
+
 	public void setBibtexAbstract(String bibtexAbstract) {
 		this.bibtexAbstract = bibtexAbstract;
 	}
+
 	public String getBibtexKey() {
 		return this.bibtexKey;
 	}
+
 	public void setBibtexKey(String bibtexKey) {
 		this.bibtexKey = bibtexKey;
 	}
+
 	public String getBkey() {
 		return this.bkey;
 	}
+
 	public void setBkey(String bkey) {
 		this.bkey = bkey;
 	}
+
 	public String getBooktitle() {
 		return this.booktitle;
 	}
+
 	public void setBooktitle(String booktitle) {
 		this.booktitle = booktitle;
 	}
+
 	public String getChapter() {
 		return this.chapter;
 	}
+
 	public void setChapter(String chapter) {
 		this.chapter = chapter;
 	}
+
 	public String getCrossref() {
 		return this.crossref;
 	}
+
 	public void setCrossref(String crossref) {
 		this.crossref = crossref;
 	}
+
 	public String getDay() {
 		return this.day;
 	}
+
 	public void setDay(String day) {
 		this.day = day;
 	}
+
 	public String getDescription() {
 		return this.description;
 	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
 	public String getEdition() {
 		return this.edition;
 	}
+
 	public void setEdition(String edition) {
 		this.edition = edition;
 	}
+
 	public String getEditor() {
 		return this.editor;
 	}
+
 	public void setEditor(String editor) {
 		this.editor = editor;
 	}
+
 	public String getEntrytype() {
 		return this.entrytype;
 	}
+
 	public void setEntrytype(String entrytype) {
 		this.entrytype = entrytype;
 	}
+
 	public int getGroup() {
 		return this.group;
 	}
+
 	public void setGroup(int group) {
 		this.group = group;
 	}
+
 	public String getHowpublished() {
 		return this.howpublished;
 	}
+
 	public void setHowpublished(String howpublished) {
 		this.howpublished = howpublished;
 	}
+
 	public String getInstitution() {
 		return this.institution;
 	}
+
 	public void setInstitution(String institution) {
 		this.institution = institution;
 	}
+
 	public String getJournal() {
 		return this.journal;
 	}
+
 	public void setJournal(String journal) {
 		this.journal = journal;
 	}
+
 	public String getMisc() {
 		return this.misc;
 	}
+
 	public void setMisc(String misc) {
 		this.misc = misc;
 	}
+
 	public String getMonth() {
 		return this.month;
 	}
+
 	public void setMonth(String month) {
 		this.month = month;
 	}
+
 	public String getNote() {
 		return this.note;
 	}
+
 	public void setNote(String note) {
 		this.note = note;
 	}
+
 	public String getNumber() {
 		return this.number;
 	}
+
 	public void setNumber(String number) {
 		this.number = number;
 	}
+
 	public String getOrganization() {
 		return this.organization;
 	}
+
 	public void setOrganization(String organization) {
 		this.organization = organization;
 	}
+
 	public String getPages() {
 		return this.pages;
 	}
+
 	public void setPages(String pages) {
 		this.pages = pages;
 	}
+
 	public String getPublisher() {
 		return this.publisher;
 	}
+
 	public void setPublisher(String publisher) {
 		this.publisher = publisher;
 	}
+
 	public String getSchool() {
 		return this.school;
 	}
+
 	public void setSchool(String school) {
 		this.school = school;
 	}
+
 	public String getSeries() {
 		return this.series;
 	}
+
 	public void setSeries(String series) {
 		this.series = series;
 	}
+
 	public String getTitle() {
 		return this.title;
 	}
+
 	public void setTitle(String title) {
 		this.title = title;
 	}
+
 	public String getUserName() {
 		return this.userName;
 	}
+
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
+
 	public String getVolume() {
 		return this.volume;
 	}
+
 	public void setVolume(String volume) {
 		this.volume = volume;
 	}
+
 	public String getYear() {
 		return this.year;
 	}
+
 	public void setYear(String year) {
 		this.year = year;
 	}
+
 	public String getType() {
 		return this.type;
 	}
+
 	public void setType(String type) {
 		this.type = type;
 	}

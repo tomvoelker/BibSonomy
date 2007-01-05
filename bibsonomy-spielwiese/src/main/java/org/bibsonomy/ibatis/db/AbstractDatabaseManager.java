@@ -77,9 +77,11 @@ public abstract class AbstractDatabaseManager {
 
 	/**
 	 * Can be used to start a query that retrieves a single object like a tag or
-	 * bookmark but also an int or boolean.<br/> In this case we break the rule
-	 * to create one method for every return type, because with a single object
-	 * it doesn't result in an unchecked cast.
+	 * bookmark but also an int or boolean.<br/>
+	 * 
+	 * In this case we break the rule to create one method for every return
+	 * type, because with a single object it doesn't result in an unchecked
+	 * cast.
 	 */
 	protected Object queryForObject(final String query, final Object param) {
 		return this.queryForAnything(query, param, QueryFor.OBJECT);

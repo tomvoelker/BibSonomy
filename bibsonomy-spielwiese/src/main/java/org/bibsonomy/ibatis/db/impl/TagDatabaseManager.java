@@ -7,13 +7,14 @@ import org.bibsonomy.model.Tag;
 
 /**
  * Used to retrieve Tags from the database.
- *
+ * 
  * @author Christian Schenk
  */
 public class TagDatabaseManager extends AbstractDatabaseManager {
 
 	/**
-	 * Reduce visibility so only the {@link DatabaseManager} can instantiate this class.
+	 * Reduce visibility so only the {@link DatabaseManager} can instantiate
+	 * this class.
 	 */
 	TagDatabaseManager() {
 	}

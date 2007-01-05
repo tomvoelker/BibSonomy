@@ -19,6 +19,8 @@ public class ParamUtils {
 		param.setGroupType(ConstantID.GROUP_PUBLIC);
 		param.setLimit(10);
 		param.setOffset(0);
+		param.setGroupId(3);
+		param.setRequestedUserName("grahl");
 		// btn.setCaseSensitive(true);
 		// btn.addTagName("web");
 		// btn.addTagName("online");
@@ -31,8 +33,9 @@ public class ParamUtils {
 	public static BookmarkParam getDefaultBookmarkParam() {
 		final BookmarkParam rVal = new BookmarkParam();
 		setDefaults(rVal);
-		rVal.setUserName("stumme");
-		rVal.setFriendUserName("hotho");
+		rVal.setHash("0aea152798b8e95ce7a1bedb4ab8e7d7");
+		rVal.setUserName("hotho");
+		rVal.setFriendUserName("stumme");
 		return rVal;
 	}
 
@@ -42,7 +45,7 @@ public class ParamUtils {
 	public static BibTexParam getDefaultBibTexParam() {
 		final BibTexParam rVal = new BibTexParam();
 		setDefaults(rVal);
-		rVal.setRequBibtex("0000175071e6141a7d36835489f922ef");
+		rVal.setHash("0000175071e6141a7d36835489f922ef");
 		rVal.setUserName("hotho");
 		rVal.setFriendUserName("stumme");
 		return rVal;

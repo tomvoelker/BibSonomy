@@ -15,6 +15,7 @@ public class ExceptionUtils {
 	 */
 	public static void logErrorAndThrowRuntimeException(final Logger log, final Exception ex, final String error) throws RuntimeException {
 		log.error(error + " - throwing RuntimeException");
+		log.error(ex.toString());
 		throw new RuntimeException(error, ex);
 	}
 }

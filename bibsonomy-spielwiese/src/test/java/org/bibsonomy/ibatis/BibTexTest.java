@@ -2,6 +2,7 @@ package org.bibsonomy.ibatis;
 
 import static org.junit.Assert.assertTrue;
 
+import org.bibsonomy.ibatis.enums.ConstantID;
 import org.junit.Test;
 
 /**
@@ -18,8 +19,36 @@ public class BibTexTest extends AbstractSqlMapTest {
 	}
 
 	@Test
+	public void getBibTexByHashCount() {
+		Integer count = -1;
+		count = this.db.getBibTex().getBibTexByHashCount(this.bibtexParam);
+		assertTrue(count >= 0);
+	}
+
+	@Test
+	public void getBibTexByHashForUser() {
+		this.db.getBibTex().getBibTexByHashForUser(this.bibtexParam);
+		this.resetParameters();
+		this.bibtexParam.setFriendUserName("hotho");
+		this.db.getBibTex().getBibTexByHashForUser(this.bibtexParam);
+	}
+
+	@Test
 	public void getBibTexByTagNames() {
 		this.db.getBibTex().getBibTexByTagNames(this.bibtexParam);
+	}
+
+	@Test
+	public void getBibTexByTagNamesForUser() {
+		this.db.getBibTex().getBibTexByTagNamesForUser(this.bibtexParam);
+		this.resetParameters();
+		this.bibtexParam.setGroupId(ConstantID.GROUP_INVALID.getId());
+		this.db.getBibTex().getBibTexByTagNamesForUser(this.bibtexParam);
+	}
+
+	@Test
+	public void getBibTexByConceptForUser() {
+		this.db.getBibTex().getBibTexByConceptForUser(this.bibtexParam);
 	}
 
 	@Test
@@ -34,8 +63,8 @@ public class BibTexTest extends AbstractSqlMapTest {
 	}
 
 	@Test
-	public void getHomePageBibTex() {
-		this.db.getBibTex().getHomePageBibTex(this.bibtexParam);
+	public void getBibTexForHomePage() {
+		this.db.getBibTex().getBibTexForHomePage(this.bibtexParam);
 	}
 
 	@Test
@@ -83,5 +112,38 @@ public class BibTexTest extends AbstractSqlMapTest {
 		Integer count = -1;
 		count = this.db.getBibTex().getBibTexDuplicateCount(this.bibtexParam);
 		assertTrue(count >= 0);
+	}
+
+	@Test
+	public void getBibTexForGroup() {
+		this.db.getBibTex().getBibTexForGroup(this.bibtexParam);
+	}
+
+	@Test
+	public void getBibTexForGroupCount() {
+		Integer count = -1;
+		count = this.db.getBibTex().getBibTexForGroupCount(this.bibtexParam);
+		assertTrue(count >= 0);
+	}
+
+	@Test
+	public void getBibTexForGroupByTag() {
+		this.db.getBibTex().getBibTexForGroupByTag(this.bibtexParam);
+	}
+
+	@Test
+	public void getBibTexForUser() {
+		this.db.getBibTex().getBibTexForUser(this.bibtexParam);
+		this.resetParameters();
+		this.bibtexParam.setGroupId(ConstantID.GROUP_INVALID.getId());
+		this.db.getBibTex().getBibTexForUser(this.bibtexParam);
+	}
+
+	@Test
+	public void getBibTexForUserCount() {
+		this.db.getBibTex().getBibTexForUserCount(this.bibtexParam);
+		this.resetParameters();
+		this.bibtexParam.setGroupId(ConstantID.GROUP_INVALID.getId());
+		this.db.getBibTex().getBibTexForUserCount(this.bibtexParam);
 	}
 }

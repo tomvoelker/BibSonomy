@@ -12,11 +12,12 @@ import org.bibsonomy.ibatis.enums.ConstantID;
 public abstract class Resource {
 
 	private int contentId;
+	private String groupName;
 	private Date date;
 
 	// FIXME: put them only in the model, if we really need them
 	// private int groupid;
-	// private String group;
+	// private String group; was this meant to be groupName
 	// private String title;
 	// private String privnote;
 
@@ -33,6 +34,14 @@ public abstract class Resource {
 
 	public void setContentId(int contentId) {
 		this.contentId = contentId;
+	}
+
+	public String getGroupName() {
+		return this.groupName;
+	}
+
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
 	}
 
 	public Date getDate() {

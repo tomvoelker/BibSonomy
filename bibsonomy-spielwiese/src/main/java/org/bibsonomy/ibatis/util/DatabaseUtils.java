@@ -40,9 +40,33 @@ public class DatabaseUtils {
 	 * users are friends the groupId for friends is also appended.
 	 */
 	public static void setGroups(final DatabaseManager db, final GenericParam param) {
+		// If userName and friendUserName are the same - do nothing
+		if (param.getUserName() != null && param.getFriendUserName() != null) {
+			if (param.getUserName().equals(param.getFriendUserName())) return;
+		}
 		final Boolean friends = db.getGeneral().isFriendOf(param);
 		final List<Integer> groups = db.getGeneral().getGroupsForUser(param);
 		if (friends) groups.add(ConstantID.GROUP_FRIENDS.getId());
 		param.setGroups(groups);
+	}
+
+	/**
+	 * This needs to be done for all get*ForGroup* queries.
+	 */
+	public static void prepareGetPostForGroup(final DatabaseManager db, final GenericParam param) {
+		DatabaseUtils.setGroups(db, param);
+		// the group type needs to be set to friends because of the second union
+		// in the SQL statement
+		param.setGroupType(ConstantID.GROUP_FRIENDS);
+	}
+
+	/**
+	 * This needs to be done for all get*ForUser* queries.
+	 */
+	public static void prepareGetPostForUser(final DatabaseManager db, final GenericParam param) {
+		// if the groupId is invalid we have to check for groups manually
+		if (param.getGroupId() == ConstantID.GROUP_INVALID.getId()) {
+			DatabaseUtils.setGroups(db, param);
+		}
 	}
 }

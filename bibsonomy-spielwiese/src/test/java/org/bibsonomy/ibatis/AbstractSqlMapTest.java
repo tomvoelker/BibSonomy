@@ -23,7 +23,10 @@ public abstract class AbstractSqlMapTest {
 
 	/** Communication with the database is done with this class */
 	protected DatabaseManager db;
-	/** This param can be used both for queries about bookmarks and all other queries */
+	/**
+	 * This param can be used both for queries about bookmarks and all other
+	 * queries
+	 */
 	protected BookmarkParam bookmarkParam;
 	/** This param can be used for queries about BibTexs */
 	protected BibTexParam bibtexParam;
@@ -31,8 +34,7 @@ public abstract class AbstractSqlMapTest {
 	@Before
 	public void setUp() throws IOException {
 		this.db = DatabaseManager.getInstance();
-		this.bookmarkParam = ParamUtils.getDefaultBookmarkParam();
-		this.bibtexParam = ParamUtils.getDefaultBibTexParam();
+		this.resetParameters();
 	}
 
 	@After
@@ -40,6 +42,19 @@ public abstract class AbstractSqlMapTest {
 		this.db = null;
 		this.bookmarkParam = null;
 		this.bibtexParam = null;
+	}
+
+	/**
+	 * Resets the parameter objects, which can be useful inside one method of a
+	 * testcase. On some occasions we need to do this, e.g. when more than one
+	 * query is involved and the results from one query are stored in the
+	 * parameter object so they can be used in the next query: in this case the
+	 * parameter object is altered which can lead to side effects in the
+	 * following queries.
+	 */
+	protected void resetParameters() {
+		this.bookmarkParam = ParamUtils.getDefaultBookmarkParam();
+		this.bibtexParam = ParamUtils.getDefaultBibTexParam();
 	}
 
 	/**

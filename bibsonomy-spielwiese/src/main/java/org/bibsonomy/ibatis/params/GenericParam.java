@@ -24,25 +24,29 @@ public abstract class GenericParam {
 	/** Should tagnames be case sensitive */
 	private boolean caseSensitiveTagNames;
 	private Date date;
+	/** The hash of a post */
+	private String hash;
 	/** RegEx search pattern */
 	private String search;
 	private String userName;
+	/**
+	 * The current user, who would be identified by userName, can look at others
+	 * people content. This requested user is identified by this.
+	 */
+	private String requestedUserName;
 	private String friendUserName;
-	/** By default it's public */
+	/** ID of a group; by default it's invalid */
+	private int groupId;
+	/** The type of a group is by default public */
 	private ConstantID groupType;
-	/** By default the simhash is 1 */
-	private ConstantID simHash;
-	// FIXME are requSim and simHash the same ???
-	private ConstantID requSim;
 	private int limit;
 	private int offset;
 
 	public GenericParam() {
 		this.tagIndex = new ArrayList<TagIndex>();
 		this.caseSensitiveTagNames = false;
+		this.groupId = ConstantID.GROUP_INVALID.getId();
 		this.groupType = ConstantID.GROUP_PUBLIC;
-		this.simHash = ConstantID.SIM_HASH;
-		this.requSim = ConstantID.SIM_HASH;
 	}
 
 	/**
@@ -130,28 +134,12 @@ public abstract class GenericParam {
 		this.offset = offset;
 	}
 
-	public int getSimHash() {
-		return this.simHash.getId();
-	}
-
-	public void setSimHash(ConstantID simHash) {
-		this.simHash = simHash;
-	}
-
 	public Date getDate() {
 		return this.date;
 	}
 
 	public void setDate(Date date) {
 		this.date = date;
-	}
-
-	public int getRequSim() {
-		return this.requSim.getId();
-	}
-
-	public void setRequSim(ConstantID requSim) {
-		this.requSim = requSim;
 	}
 
 	public List<Integer> getGroups() {
@@ -161,4 +149,28 @@ public abstract class GenericParam {
 	public void setGroups(List<Integer> groups) {
 		this.groups = groups;
 	}
+
+	public int getGroupId() {
+		return this.groupId;
+	}
+
+	public void setGroupId(int groupId) {
+		this.groupId = groupId;
+	}
+
+	public String getHash() {
+		return this.hash;
+	}
+
+	public void setHash(String requBibtex) {
+		this.hash = requBibtex;
+	}
+
+	public String getRequestedUserName() {
+		return this.requestedUserName;
+	}
+
+	public void setRequestedUserName(String requestedUserName) {
+		this.requestedUserName = requestedUserName;
+	}	
 }

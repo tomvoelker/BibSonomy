@@ -15,6 +15,7 @@ public enum ConstantID {
 	BIBTEX_CONTENT_TYPE(2),
 
 	/* constant group ids */
+	GROUP_INVALID(-1),
 	GROUP_PUBLIC(0),
 	GROUP_PRIVATE(1),
 	GROUP_FRIENDS(2),
