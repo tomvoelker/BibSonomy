@@ -50,7 +50,9 @@ public abstract class AbstractSqlMapTest {
 	 * query is involved and the results from one query are stored in the
 	 * parameter object so they can be used in the next query: in this case the
 	 * parameter object is altered which can lead to side effects in the
-	 * following queries.
+	 * following queries.<br/>
+	 * 
+	 * This is done before running a testcase method.
 	 */
 	protected void resetParameters() {
 		this.bookmarkParam = ParamUtils.getDefaultBookmarkParam();

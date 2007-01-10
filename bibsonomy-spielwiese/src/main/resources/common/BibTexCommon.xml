@@ -71,7 +71,7 @@
 	<sql id="duplicatesCount">
 		SELECT b0.simhash1,count(b0.simhash1) AS ctr
 		FROM bibtex b0
-		WHERE b0.user_name = #userName#
+		WHERE b0.user_name = #requestedUserName#
 		GROUP BY b0.simhash1 HAVING ctr > 1
 	</sql>
 </sqlMap>

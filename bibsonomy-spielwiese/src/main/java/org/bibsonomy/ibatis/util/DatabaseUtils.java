@@ -40,9 +40,9 @@ public class DatabaseUtils {
 	 * users are friends the groupId for friends is also appended.
 	 */
 	public static void setGroups(final DatabaseManager db, final GenericParam param) {
-		// If userName and friendUserName are the same - do nothing
-		if (param.getUserName() != null && param.getFriendUserName() != null) {
-			if (param.getUserName().equals(param.getFriendUserName())) return;
+		// If userName and requestedUserName are the same - do nothing
+		if (param.getUserName() != null && param.getRequestedUserName() != null) {
+			if (param.getUserName().equals(param.getRequestedUserName())) return;
 		}
 		final Boolean friends = db.getGeneral().isFriendOf(param);
 		final List<Integer> groups = db.getGeneral().getGroupsForUser(param);

@@ -17,29 +17,37 @@ import org.bibsonomy.ibatis.params.beans.TagIndex;
  */
 public abstract class GenericParam {
 
-	/** List of (tagname, index)-pairs */
+	/**
+	 * List of (tagname, index)-pairs, where tagname can be both a name of a tag
+	 * or concept.
+	 */
 	private final List<TagIndex> tagIndex;
 	/** List of the groups the user belongs to */
 	private List<Integer> groups;
-	/** Should tagnames be case sensitive */
+	/**
+	 * Should tagnames (names of tags and concepts) be case sensitive; by
+	 * default this is false, i.e. tagnames aren't case sensitive.
+	 */
 	private boolean caseSensitiveTagNames;
 	private Date date;
-	/** The hash of a post */
+	/** The hash of a post, e.g. a bookmark or a BibTex */
 	private String hash;
 	/** RegEx search pattern */
 	private String search;
+	/** This is the current user. */
 	private String userName;
 	/**
-	 * The current user, who would be identified by userName, can look at others
-	 * people content. This requested user is identified by this.
+	 * The current user, who would be identified by userName, can look at other
+	 * people's content. This requested user is identified by this string.
 	 */
 	private String requestedUserName;
-	private String friendUserName;
 	/** ID of a group; by default it's invalid */
 	private int groupId;
 	/** The type of a group is by default public */
 	private ConstantID groupType;
+	/** The SQL-Limit which is by default 10 */
 	private int limit;
+	/** The SQL-Offset which is by default 0 */
 	private int offset;
 
 	public GenericParam() {
@@ -47,6 +55,8 @@ public abstract class GenericParam {
 		this.caseSensitiveTagNames = false;
 		this.groupId = ConstantID.GROUP_INVALID.getId();
 		this.groupType = ConstantID.GROUP_PUBLIC;
+		this.limit = 10;
+		this.offset = 0;
 	}
 
 	/**
@@ -110,14 +120,6 @@ public abstract class GenericParam {
 		this.userName = user;
 	}
 
-	public String getFriendUserName() {
-		return this.friendUserName;
-	}
-
-	public void setFriendUserName(String friendUserName) {
-		this.friendUserName = friendUserName;
-	}
-
 	public int getLimit() {
 		return this.limit;
 	}
@@ -172,5 +174,5 @@ public abstract class GenericParam {
 
 	public void setRequestedUserName(String requestedUserName) {
 		this.requestedUserName = requestedUserName;
-	}	
+	}
 }

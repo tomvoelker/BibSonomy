@@ -3,6 +3,7 @@ package org.bibsonomy.ibatis.db.impl;
 import java.util.List;
 
 import org.bibsonomy.ibatis.db.AbstractDatabaseManager;
+import org.bibsonomy.ibatis.enums.ConstantID;
 import org.bibsonomy.ibatis.params.BookmarkParam;
 import org.bibsonomy.ibatis.util.DatabaseUtils;
 import org.bibsonomy.model.Bookmark;
@@ -24,6 +25,14 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 		this.db = db;
 	}
 
+	/**
+	 * <em>/tag/EinTag</em>, <em>/viewable/EineGruppe/EinTag</em><br/><br/>
+	 * 
+	 * On the <em>/tag</em> page only public entries are shown (groupType must
+	 * be set to public) which have all of the given tags attached. On the
+	 * <em>/viewable/</em> page only posts are shown which are set viewable to
+	 * the given group and which have all of the given tags attached.
+	 */
 	public List<Bookmark> getBookmarkByTagNames(final BookmarkParam param) {
 		return this.bookmarkList("getBookmarkByTagNames", param);
 	}
@@ -64,14 +73,32 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 		return this.bookmarkList("getBookmarkByConceptForUser", param);
 	}
 
+	/**
+	 * <em>/friends</em><br/><br/>
+	 * 
+	 * Prepares queries which show all posts of users which have currUser as
+	 * their friend.
+	 */
 	public List<Bookmark> getBookmarkByUserFriends(final BookmarkParam param) {
+		// groupType must be set to friends
+		param.setGroupType(ConstantID.GROUP_FRIENDS);
 		return this.bookmarkList("getBookmarkByUserFriends", param);
 	}
 
+	/**
+	 * This method prepares queries which retrieve all bookmarks for the home
+	 * page of BibSonomy. These are typically the X last posted entries. Only
+	 * public posts are shown.
+	 */
 	public List<Bookmark> getBookmarkForHomepage(final BookmarkParam param) {
 		return this.bookmarkList("getBookmarkForHomepage", param);
 	}
 
+	/**
+	 * This method prepares queries which retrieve all bookmarks for the
+	 * <em>/popular</em> page of BibSonomy. The lists are retrieved from two
+	 * separate temporary tables which are filled by an external script.
+	 */
 	public List<Bookmark> getBookmarkPopular(final BookmarkParam param) {
 		return this.bookmarkList("getBookmarkPopular", param);
 	}
@@ -101,14 +128,35 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 		return this.bookmarkList("getBookmarkByHashForUser", param);
 	}
 
+	/**
+	 * <em>/search/ein+lustiger+satz</em><br/><br/>
+	 * 
+	 * Prepares queries to retrieve posts which match a fulltext search in the
+	 * fulltext search table.<br/>
+	 * 
+	 * The search string, as given by the user will be mangled up in the method
+	 * to do what the user expects (AND searching). Unfortunately this also
+	 * destroys some other features (e.g. <em>phrase searching</em>).<br/>
+	 * 
+	 * If requestedUser is given, only (public) posts from the given user are
+	 * searched. Otherwise all (public) posts are searched.
+	 */
 	public List<Bookmark> getBookmarkSearch(final BookmarkParam param) {
 		return this.bookmarkList("getBookmarkSearch", param);
 	}
 
+	/**
+	 * Returns the number of bookmarks for a given search.
+	 */
 	public int getBookmarkSearchCount(final BookmarkParam param) {
 		return (Integer) this.queryForObject("getBookmarkSearchCount", param);
 	}
 
+	/**
+	 * <em>/viewable/EineGruppe</em><br/><br/>
+	 * 
+	 * Prepares queries to retrieve posts which are set viewable to group.
+	 */
 	public List<Bookmark> getBookmarkViewable(final BookmarkParam param) {
 		return this.bookmarkList("getBookmarkViewable", param);
 	}

@@ -2,11 +2,16 @@ package org.bibsonomy.ibatis.params.beans;
 
 /**
  * This class holds the tagname and the corresponding index and join-index.
+ * While the name of the class might be misleading, it can be used for tags as
+ * well for concepts.
  * 
  * @author Christian Schenk
  */
 public class TagIndex {
+
+	/** This name can be both a name of a tag or concept. */
 	private final String tagName;
+	/** A index to produce a self-join, like t1...=t2..., t2...=t3..., etc. */
 	private final int index;
 
 	public TagIndex(final String tagName, final int index) {

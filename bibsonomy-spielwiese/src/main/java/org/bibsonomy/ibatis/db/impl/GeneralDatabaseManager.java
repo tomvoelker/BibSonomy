@@ -19,7 +19,16 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	GeneralDatabaseManager() {
 	}
 
+	/**
+	 * Checks whether two users, given by userName and requestedUserName, are
+	 * friends.
+	 * 
+	 * @param userName
+	 * @param requestedUserName
+	 * @return true if the users are friends, false otherwise
+	 */
 	public boolean isFriendOf(final GenericParam param) {
+		if (param.getUserName() == null || param.getRequestedUserName() == null) return false;
 		return (Boolean) this.queryForObject("isFriendOf", param);
 	}
 

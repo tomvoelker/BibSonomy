@@ -6,7 +6,7 @@
 	<select id="isFriendOf" resultClass="boolean" parameterClass="genericParam">
 		SELECT count(user_name)
 		FROM friends
-		WHERE user_name = #friendUserName# AND f_user_name = #userName#
+		WHERE user_name = #requestedUserName# AND f_user_name = #userName#
 	</select>
 
 	<select id="getGroupsForUser" resultClass="int" parameterClass="genericParam">

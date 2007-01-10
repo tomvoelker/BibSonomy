@@ -34,7 +34,7 @@
 		      WHERE <include refid="tagWhereQuery"/>
 		            <include refid="getPostForUser2"/>
 		            AND t1.content_type = #contentType#
-		            AND t1.user_name = #userName#
+		            AND t1.user_name = #requestedUserName#
 		      ORDER BY t1.date DESC
 		      LIMIT #limit# OFFSET #offset#) AS tt
 		WHERE tt.content_id=b.content_id
@@ -48,8 +48,8 @@
 		SELECT <include refid="bibtexAttributes"/>, t.tag_name, g.group_name, h.ctr
 		FROM bibtex b, tas t, groupids g, bibhash h,
 		     (SELECT DISTINCT b.content_id
-		      FROM bibtex b, <include refid="tagFromQuery"/>
-		      WHERE <include refid="tagWhereQuery"/>
+		      FROM bibtex b, <include refid="conceptFromQuery"/>
+		      WHERE <include refid="conceptWhereQuery"/>
 		            <include refid="inGroups"/>
 		            AND t1.content_type = #contentType#
 		            AND t1.user_name = #userName#
@@ -68,17 +68,17 @@
 	<select id="getBibTexByUserFriends" resultMap="BibTexCommon.bibtexsWithGroupName" parameterClass="bibtexParam">
 		SELECT <include refid="bibtexAttributes"/>, t.tag_name, g.group_name, h.ctr
 		FROM bibtex b, bibhash h,
-			(SELECT content_id, date
+			(SELECT content_id, date                <!-- publications from users of group which currUser may see -->
 			 FROM bibtex b, friends f
-			 WHERE f.f_user_name = #userName#
-			       AND b.user_name = f.user_name
+			 WHERE f.f_user_name = #userName#       <!-- to see, which users have currUser as friend -->
+			       AND b.user_name = f.user_name    <!-- take alle rows, which are owned by friend -->
 			       AND b.group = #groupType#
 			 ORDER BY date DESC
 			 LIMIT #limit# OFFSET #offset# ) AS bb
-		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g
-		WHERE t.group = g.group
-		      AND <include refid="bibtexSimHash"/>
-		      AND b.content_id = bb.content_id
+		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas (get tags) -->
+		WHERE t.group = g.group                                                  <!-- join groupname -->
+		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
+		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 
@@ -133,7 +133,7 @@
 		      FROM bibtex b
 		      WHERE simhash$requestedSimHash$ = #hash#
 		            <include refid="inGroups"/>
-		            AND user_name = #userName#
+		            AND user_name = #requestedUserName#
 		      ORDER BY date DESC) AS b2
 		LEFT OUTER JOIN tas t ON b2.content_id = t.content_id
 		LEFT OUTER JOIN document d ON
@@ -152,8 +152,8 @@
 		            AND s.content_type = #contentType#
 		            AND <include refid="bibtexSimHash2"/>
 		            AND b2.content_id = s.content_id
-		            <isNotNull property="userName" prepend="AND">
-		              s.user_name = #userName#
+		            <isNotNull property="requestedUserName" prepend="AND">
+		              s.user_name = #requestedUserName#
 		            </isNotNull>
 		      ORDER BY s.date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b
@@ -167,8 +167,8 @@
 		WHERE s.group = #groupType#
 		      AND MATCH (s.content) AGAINST (#search# IN BOOLEAN MODE)
 		      AND s.content_type = #contentType#
-		      <isNotNull property="userName" prepend="AND">
-		        s.user_name = #userName#
+		      <isNotNull property="requestedUserName" prepend="AND">
+		        s.user_name = #requestedUserName#
 		      </isNotNull>
 	</select>
 
@@ -189,7 +189,7 @@
 		FROM bibtex b, bibhash h,
 		     (SELECT b2.content_id, b2.date
 		      FROM (<include refid ="duplicatesCount"/>) AS b1
-		      JOIN bibtex b2 ON b1.simhash1 = b2.simhash1 AND b2.user_name = #userName#) AS bb
+		      JOIN bibtex b2 ON b1.simhash1 = b2.simhash1 AND b2.user_name = #requestedUserName#) AS bb
 		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas (get tags) -->
 		WHERE t.group = g.group                                                  <!-- join groupname -->
 		      <include refid="inGroups"/>

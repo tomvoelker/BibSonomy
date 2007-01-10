@@ -15,6 +15,7 @@
 
 	<!--
 	   Should be used in conjunction with tagFromQuery.
+
 	   Depending on the number of tags it creates a query like:
 	        t1.tag_name = 'some-tag'
 	    AND t2.tag_name = 'a-tag'
@@ -31,6 +32,52 @@
 		    t$tagIndex[].index$.tag_lower = lower(#tagIndex[].tagName#)
 		  </isEqual>
 		</iterate>
+		<!-- Self-Join -->
+		<iterate property="tagIndex" prepend="AND" conjunction="AND">
+		  <isLessThan property="tagIndex[].index" compareProperty="maxTagIndex">
+		    t$tagIndex[].index$.content_id = t$tagIndex[].index2$.content_id
+		  </isLessThan>
+		</iterate>
+	</sql>
+
+	<!-- Should be used in conjunction with "conceptWhereQuery". -->
+	<sql id="conceptFromQuery">
+		<iterate property="tagIndex" conjunction=",">
+		  tas t$tagIndex[].index$, 
+		  <isEqual property="caseSensitiveTagNames" compareValue="true">
+		    (SELECT lower
+		     FROM tagtagrelations t$tagIndex[].index$
+		     WHERE user_name = #requestedUserName#
+		           AND upper = #tagIndex[].tagName#
+		     UNION
+		     SELECT #tagIndex[].tagName# AS lower
+		    ) AS r$tagIndex[].index$
+		  </isEqual>
+		  <isEqual property="caseSensitiveTagNames" compareValue="false">
+		    (SELECT lcase(lower) AS lower
+		     FROM tagtagrelations t$tagIndex[].index$
+		     WHERE user_name = #requestedUserName#
+		           AND lcase(upper) = lcase(#tagIndex[].tagName#)
+		     UNION
+		     SELECT lcase(#tagIndex[].tagName#) AS lower
+		    ) AS r$tagIndex[].index$
+		  </isEqual>
+		</iterate>
+	</sql>
+
+	<!--
+	   Should be used in conjunction with conceptFromQuery.
+	-->
+	<sql id="conceptWhereQuery">
+		<iterate property="tagIndex" conjunction="AND">
+		  <isEqual property="caseSensitiveTagNames" compareValue="true">
+		    t$tagIndex[].index$.tag_name = r$tagIndex[].index$.lower
+		  </isEqual>
+		  <isEqual property="caseSensitiveTagNames" compareValue="false">
+		    t$tagIndex[].index$.tag_lower = r$tagIndex[].index$.lower
+		  </isEqual>
+		</iterate>
+		<!-- Self-Join -->
 		<iterate property="tagIndex" prepend="AND" conjunction="AND">
 		  <isLessThan property="tagIndex[].index" compareProperty="maxTagIndex">
 		    t$tagIndex[].index$.content_id = t$tagIndex[].index2$.content_id
@@ -40,7 +87,7 @@
 
 	<!-- Refactor b to t1, and delete this snippet -->
 	<sql id="inGroups">
-		<isNotEqual property="userName" compareProperty="friendUserName" prepend="AND">
+		<isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">
 		  b.group in (0,
 		  <iterate property="groups" conjunction="," close=")">
 		    $groups[]$
@@ -49,7 +96,7 @@
 	</sql>
 
 	<sql id="inGroups2">
-		<isNotEqual property="userName" compareProperty="friendUserName" prepend="AND">
+		<isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">
 		  t1.group in (0,
 		  <iterate property="groups" conjunction="," close=")">
 		    $groups[]$

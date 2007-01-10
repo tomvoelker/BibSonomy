@@ -3,6 +3,7 @@ package org.bibsonomy.ibatis;
 import static org.junit.Assert.assertTrue;
 
 import org.bibsonomy.ibatis.enums.ConstantID;
+import org.bibsonomy.ibatis.util.ParamUtils;
 import org.junit.Test;
 
 /**
@@ -29,7 +30,7 @@ public class BibTexTest extends AbstractSqlMapTest {
 	public void getBibTexByHashForUser() {
 		this.db.getBibTex().getBibTexByHashForUser(this.bibtexParam);
 		this.resetParameters();
-		this.bibtexParam.setFriendUserName("hotho");
+		this.bibtexParam.setRequestedUserName("hotho");
 		this.db.getBibTex().getBibTexByHashForUser(this.bibtexParam);
 	}
 
@@ -48,7 +49,16 @@ public class BibTexTest extends AbstractSqlMapTest {
 
 	@Test
 	public void getBibTexByConceptForUser() {
-		this.db.getBibTex().getBibTexByConceptForUser(this.bibtexParam);
+		// test it with casesensitive and caseinsensitive tagnames
+		for (final boolean caseSensitive : new Boolean[] { true, false }) {
+			this.bibtexParam.setCaseSensitiveTagNames(caseSensitive);
+			this.db.getBibTex().getBibTexByConceptForUser(this.bibtexParam);
+			this.resetParameters();
+			// more tags
+			ParamUtils.addTagsToParam(this.bibtexParam);
+			this.db.getBibTex().getBibTexByConceptForUser(this.bibtexParam);
+			this.resetParameters();
+		}
 	}
 
 	@Test
@@ -103,7 +113,7 @@ public class BibTexTest extends AbstractSqlMapTest {
 		// without a friend
 		this.db.getBibTex().getBibTexDuplicate(this.bibtexParam);
 		// with a friend
-		this.bibtexParam.setFriendUserName("grahl");
+		this.bibtexParam.setRequestedUserName("grahl");
 		this.db.getBibTex().getBibTexDuplicate(this.bibtexParam);
 	}
 

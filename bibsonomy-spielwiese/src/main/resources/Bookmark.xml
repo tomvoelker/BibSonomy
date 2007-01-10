@@ -26,8 +26,7 @@
 		ORDER BY b.date DESC, b.content_id DESC
 	</select>
 
-	<!-- added t.user_name even though it is obvious (needs to fit result map) -->
-	<select id="getBookmarkByTagNamesForUser" resultMap="BookmarkCommon.bookmarks" parameterClass="bookmarkParam">
+	<select id="getBookmarkByTagNamesForUser" resultMap="BookmarkCommon.bookmarksWithoutUserName" parameterClass="bookmarkParam">
 		SELECT a.content_id, t.tag_name, a.book_url, a.book_url_hash, a.book_description, a.book_extended,
 		       a.date, a.book_url_ctr, g.group_name, t.user_name
 		FROM (SELECT b.content_id, u.book_url, b.book_url_hash, b.book_description, b.book_extended,
@@ -36,7 +35,7 @@
 		      WHERE <include refid="tagWhereQuery"/>
 		            <include refid="getPostForUser2"/>
 		            AND t1.content_type = #contentType#
-		            AND t1.user_name = #userName#
+		            AND t1.user_name = #requestedUserName#
 		            AND b.book_url_hash = u.book_url_hash
 		            AND t1.content_id = b.content_id
 		      ORDER BY t1.date DESC
@@ -46,8 +45,7 @@
 		ORDER BY a.date DESC, a.content_id DESC
 	</select>
 
-	<!-- added t.user_name even though it is obvious (needs to fit result map) -->
-	<select id="getBookmarkByConceptForUser" resultMap="BookmarkCommon.bookmarks" parameterClass="bookmarkParam">
+	<select id="getBookmarkByConceptForUser" resultMap="BookmarkCommon.bookmarksWithoutUserName" parameterClass="bookmarkParam">
 		SELECT a.content_id, t.tag_name, a.book_url, a.book_url_hash, a.book_description, a.book_extended,
 		       a.date, a.book_url_ctr, gi.group_name, t.user_name
 		FROM (SELECT DISTINCT b.content_id, u.book_url, b.book_url_hash, b.book_description, b.book_extended,
@@ -80,22 +78,21 @@
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 
-	<!-- FIXME Is this 'LIMIT #limit# OFFSET #limit#' correct? -->
 	<select id="getBookmarkByUserFriends" resultMap="BookmarkCommon.bookmarks" parameterClass="bookmarkParam">
 		SELECT bb.content_id, b.book_url_hash, b.book_description, b.book_extended, bb.date, u.book_url,
 		       u.book_url_ctr, t.tag_name, g.group_name, t.user_name
 	    FROM urls u, bookmark b,
-	         (SELECT content_id, date
+	         (SELECT content_id, date                 <!-- bookmarks from users of group which currUser may see -->
 	          FROM bookmark b, friends f
-	          WHERE f.f_user_name = #userName#
-	                AND b.user_name = f.user_name
+	          WHERE f.f_user_name = #userName#        <!-- to see, which users have currUser as friend -->
+	                AND b.user_name = f.user_name     <!-- take alle rows, which are owned by friend -->
 	                AND b.group = #groupType#
 	   	      ORDER BY date DESC
-       	      LIMIT #limit# OFFSET #limit#) AS bb
-	   	LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g
-		WHERE t.group = g.group
-		      AND u.book_url_hash = b.book_url_hash
-		      AND b.content_id = bb.content_id
+       	      LIMIT #limit# OFFSET #offset#) AS bb
+	   	LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas -->
+		WHERE t.group = g.group                                                  <!-- join groupname -->
+		      AND u.book_url_hash = b.book_url_hash                              <!-- join url -->
+		      AND b.content_id = bb.content_id                                   <!-- join title, description, ... -->
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 
@@ -124,7 +121,7 @@
 		      FROM bookmark b
 		      WHERE book_url_hash = #hash#
 		            <include refid="inGroups"/>
-		            AND user_name = #userName#
+		            AND user_name = #requestedUserName#
 		      ORDER BY date DESC) AS bb
 		LEFT OUTER JOIN tas t ON bb.content_id = t.content_id, urls u, groupids g
 		WHERE bb.book_url_hash = u.book_url_hash
@@ -143,8 +140,8 @@
 		            AND s.content_type = #contentType#
 		            AND u.book_url_hash = b.book_url_hash
 		            AND s.content_id = b.content_id
-		            <isNotNull property="userName" prepend="AND">
-		              s.user_name = #userName#
+		            <isNotNull property="requestedUserName" prepend="AND">
+		              s.user_name = #requestedUserName#
 		            </isNotNull>
 		      ORDER BY s.date DESC
 		      LIMIT #limit# OFFSET #offset#) AS bb
@@ -158,8 +155,8 @@
 		WHERE s.group = #groupType#
 		      AND MATCH (s.content) AGAINST (#search# IN BOOLEAN MODE)
 		      AND s.content_type = #contentType#
-		      <isNotNull property="userName" prepend="AND">
-		        s.user_name = #userName#
+		      <isNotNull property="requestedUserName" prepend="AND">
+		        s.user_name = #requestedUserName#
 		      </isNotNull>
 	</select>
 
@@ -229,8 +226,7 @@
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 
-	<!-- added t.user_name even though it is obvious (needs to fit result map) -->
-	<select id="getBookmarkForUser" resultMap="BookmarkCommon.bookmarks" parameterClass="bookmarkParam">
+	<select id="getBookmarkForUser" resultMap="BookmarkCommon.bookmarksWithoutUserName" parameterClass="bookmarkParam">
 		SELECT bb.content_id, bb.book_url_hash, bb.book_description, bb.book_extended, bb.date,
 		       bb.book_url, bb.book_url_ctr, t.tag_name, t.user_name, g.group_name
 		FROM (SELECT b.content_id, b.book_url_hash, b.book_description, b.book_extended, b.date,
