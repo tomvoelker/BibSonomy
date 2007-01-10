@@ -3,7 +3,9 @@ package org.bibsonomy.ibatis.db.impl;
 import java.util.List;
 
 import org.bibsonomy.ibatis.db.AbstractDatabaseManager;
+import org.bibsonomy.ibatis.enums.ConstantID;
 import org.bibsonomy.ibatis.params.GenericParam;
+import org.bibsonomy.ibatis.util.ExceptionUtils;
 
 /**
  * Used to retrieve all different kind of stuff from the database.
@@ -23,16 +25,51 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 * Checks whether two users, given by userName and requestedUserName, are
 	 * friends.
 	 * 
-	 * @param userName
-	 * @param requestedUserName
+	 * @param param
+	 *            Database-Properties used: userName, requestedUserName
 	 * @return true if the users are friends, false otherwise
 	 */
-	public boolean isFriendOf(final GenericParam param) {
+	public Boolean isFriendOf(final GenericParam param) {
 		if (param.getUserName() == null || param.getRequestedUserName() == null) return false;
 		return (Boolean) this.queryForObject("isFriendOf", param);
 	}
 
+	/**
+	 * Gets all the groups of the given user.
+	 * 
+	 * @param param
+	 *            Database-Properties used: userName
+	 * @return A list of groupids
+	 */
 	public List<Integer> getGroupsForUser(final GenericParam param) {
 		return this.intList("getGroupsForUser", param);
+	}
+
+	/**
+	 * Checks if group exists.
+	 * 
+	 * @param param
+	 *            Database-Properties used: requestedGroupName
+	 * @return groupid of group, ConstantID.GROUP_INVALID otherwise
+	 */
+	public Integer getGroupIdByGroupName(final GenericParam param) {
+		param.setUserName(null);
+		return this.getGroupIdByGroupNameAndUserName(param);
+	}
+
+	/**
+	 * Checks if a given user is in the given group.
+	 * 
+	 * @param param
+	 *            Database-Properties used: requestedGroupName, userName
+	 * @return groupid if user is in group, ConstantID.GROUP_INVALID otherwise
+	 */
+	public Integer getGroupIdByGroupNameAndUserName(final GenericParam param) {
+		if (param.getRequestedGroupName() == null) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "requestedGroupName is null");
+		}
+		final Integer rVal = (Integer) this.queryForObject("getGroupIdByGroupNameAndUserName", param);
+		if (rVal == null) return ConstantID.GROUP_INVALID.getId();
+		return rVal;
 	}
 }

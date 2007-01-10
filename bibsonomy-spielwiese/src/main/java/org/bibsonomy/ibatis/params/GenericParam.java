@@ -43,6 +43,8 @@ public abstract class GenericParam {
 	private String requestedUserName;
 	/** ID of a group; by default it's invalid */
 	private int groupId;
+	/** If we're searching for a group this is used for the name of the group */
+	private String requestedGroupName;
 	/** The type of a group is by default public */
 	private ConstantID groupType;
 	/** The SQL-Limit which is by default 10 */
@@ -174,5 +176,13 @@ public abstract class GenericParam {
 
 	public void setRequestedUserName(String requestedUserName) {
 		this.requestedUserName = requestedUserName;
+	}
+
+	public String getRequestedGroupName() {
+		return this.requestedGroupName;
+	}
+
+	public void setRequestedGroupName(String requestedGroupName) {
+		this.requestedGroupName = requestedGroupName;
 	}
 }

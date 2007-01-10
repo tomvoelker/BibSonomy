@@ -19,6 +19,7 @@ public enum ConstantID {
 	GROUP_PUBLIC(0),
 	GROUP_PRIVATE(1),
 	GROUP_FRIENDS(2),
+	GROUP_KDE(3),
 
 	/* privacy levels for groups */
 	/** member list public */

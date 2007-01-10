@@ -148,7 +148,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Returns the number of bookmarks for a given search.
 	 */
-	public int getBookmarkSearchCount(final BookmarkParam param) {
+	public Integer getBookmarkSearchCount(final BookmarkParam param) {
 		return (Integer) this.queryForObject("getBookmarkSearchCount", param);
 	}
 

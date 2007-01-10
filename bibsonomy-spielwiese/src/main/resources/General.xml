@@ -12,4 +12,14 @@
 	<select id="getGroupsForUser" resultClass="int" parameterClass="genericParam">
 		SELECT `group` FROM groups WHERE user_name = #userName#
 	</select>
+
+	<select id="getGroupIdByGroupNameAndUserName" resultClass="int" parameterClass="genericParam">
+		SELECT g.group
+		FROM groupids g <isNotNull property="userName" prepend=",">groups i</isNotNull>
+		WHERE g.group_name = #requestedGroupName#
+		      <isNotNull property="userName" prepend="AND">
+		        i.user_name = #userName#
+		        AND i.group = g.group
+		      </isNotNull>
+	</select>
 </sqlMap>

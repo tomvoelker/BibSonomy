@@ -89,9 +89,9 @@ public abstract class AbstractDatabaseManager {
 
 	/**
 	 * This method calls the <em>queryForObject</em>- or the
-	 * <em>queryForList</em>-Method on the sqlMap. We encapsulate this method
+	 * <em>queryForList</em>-method on the sqlMap. We encapsulate this method
 	 * here to catch exceptions, namely SQLException, which can be thrown from
-	 * that call.<br/>
+	 * that call.
 	 */
 	@SuppressWarnings("unchecked")
 	private Object queryForAnything(final String query, final Object param, final QueryFor queryFor) {
