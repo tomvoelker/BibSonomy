@@ -9,6 +9,11 @@
 		WHERE user_name = #requestedUserName# AND f_user_name = #userName#
 	</select>
 
+	<!-- Changed 'SELECT spammer' to 'SELECT count(spammer)': this way we get the right boolean result -->
+	<select id="isSpammer" resultClass="boolean" parameterClass="genericParam">
+		SELECT count(spammer) FROM user WHERE user_name = #requestedUserName#
+	</select>
+
 	<select id="getGroupsForUser" resultClass="int" parameterClass="genericParam">
 		SELECT `group` FROM groups WHERE user_name = #userName#
 	</select>

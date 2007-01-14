@@ -15,7 +15,7 @@
 		<result property="howpublished"   column="howpublished"   javaType="string" />
 		<result property="institution"    column="institution"    javaType="string" />
 		<result property="journal"        column="journal"        javaType="string" />
-		<result property="bkey"           column="bkey"           javaType="string" />
+		<result property="BKey"           column="bkey"           javaType="string" />
 		<result property="month"          column="month"          javaType="string" />
 		<result property="note"           column="note"           javaType="string" />
 		<result property="number"         column="number"         javaType="string" />
@@ -39,7 +39,7 @@
 		<result property="editor"         column="editor"         javaType="string" />
 		<result property="year"           column="year"           javaType="string" />
 		<result property="entrytype"      column="entrytype"      javaType="string" />
-		<result property="ctr"            column="ctr"            javaType="int" />
+		<result property="count"          column="ctr"            javaType="int" />
 	</resultMap>
 
 	<resultMap id="bibtexsWithGroupName" class="bibtex" extends="bibtexs">

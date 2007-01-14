@@ -2,6 +2,8 @@ package org.bibsonomy.model;
 
 import java.util.List;
 
+import org.bibsonomy.util.SimHash;
+
 /**
  * This is the BibTex resource, which is used to handle BibTex-entries. It is
  * derived from {@link org.bibsonomy.model.Resource}. It contains a lot of
@@ -11,13 +13,13 @@ import java.util.List;
  */
 
 /*
- * TODO: add additional attributes, e.g. tag_name
+ * TODO: add additional attributes, e.g. tag_name FIXME: Why?
  */
 public class BibTex extends Resource {
 
-	private String userName;
+	// FIXME: what's the difference between bibtexKey and bKey?
 	private String bibtexKey;
-	private String bkey;
+	private String bKey;
 	private String misc;
 	private String bibtexAbstract;
 	private String description;
@@ -46,27 +48,8 @@ public class BibTex extends Resource {
 	private String month;
 	private String year;
 	private String type;
-	private int group;
 	private List<Tag> tags;
-	private String url;
-	/* FIXME: belongs to bibhash -> separate class? */
-	private int ctr;
-
-	public int getCtr() {
-		return this.ctr;
-	}
-
-	public void setCtr(int ctr) {
-		this.ctr = ctr;
-	}
-
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
+	private int scraperId;
 
 	public List<Tag> getTags() {
 		return this.tags;
@@ -116,12 +99,12 @@ public class BibTex extends Resource {
 		this.bibtexKey = bibtexKey;
 	}
 
-	public String getBkey() {
-		return this.bkey;
+	public String getBKey() {
+		return this.bKey;
 	}
 
-	public void setBkey(String bkey) {
-		this.bkey = bkey;
+	public void setBKey(String bkey) {
+		this.bKey = bkey;
 	}
 
 	public String getBooktitle() {
@@ -186,14 +169,6 @@ public class BibTex extends Resource {
 
 	public void setEntrytype(String entrytype) {
 		this.entrytype = entrytype;
-	}
-
-	public int getGroup() {
-		return this.group;
-	}
-
-	public void setGroup(int group) {
-		this.group = group;
 	}
 
 	public String getHowpublished() {
@@ -300,14 +275,6 @@ public class BibTex extends Resource {
 		this.title = title;
 	}
 
-	public String getUserName() {
-		return this.userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
 	public String getVolume() {
 		return this.volume;
 	}
@@ -331,4 +298,28 @@ public class BibTex extends Resource {
 	public void setType(String type) {
 		this.type = type;
 	}
+
+	public int getScraperId() {
+		return this.scraperId;
+	}
+
+	public void setScraperId(int scraperId) {
+		this.scraperId = scraperId;
+	}
+
+	public String getSimHash0() {
+		return SimHash.getSimHash0(this);
+	}
+
+	public String getSimHash1() {
+		return SimHash.getSimHash1(this);
+	}
+
+	public String getSimHash2() {
+		return SimHash.getSimHash2(this);
+	}
+
+	public String getSimHash3() {
+		return SimHash.getSimHash3();
+	}	
 }

@@ -1,6 +1,7 @@
 package org.bibsonomy.ibatis.params;
 
 import org.bibsonomy.ibatis.enums.ConstantID;
+import org.bibsonomy.model.BibTex;
 
 /**
  * Parameters that are specific to BibTex.
@@ -9,6 +10,10 @@ import org.bibsonomy.ibatis.enums.ConstantID;
  */
 public class BibTexParam extends GenericParam {
 
+	/**
+	 * A BibTex object.
+	 */
+	private BibTex bibtex;
 	/**
 	 * This is used to restrict simHashes, i.e. which limit the overall
 	 * resultset. By default simhash1 is used.
@@ -29,6 +34,14 @@ public class BibTexParam extends GenericParam {
 	@Override
 	public int getContentType() {
 		return ConstantID.BIBTEX_CONTENT_TYPE.getId();
+	}
+
+	public BibTex getBibtex() {
+		return this.bibtex;
+	}
+
+	public void setBibtex(BibTex bibtex) {
+		this.bibtex = bibtex;
 	}
 
 	public int getSimHash() {

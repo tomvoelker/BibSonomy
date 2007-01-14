@@ -259,4 +259,88 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 		DatabaseUtils.setGroups(this.db, param);
 		return this.bibtexList("getBibTexByHashForUser", param);
 	}
+
+	/**
+	 * Inserts a publication into the database.
+	 */
+	public void insertBibTex(final BibTexParam param) {
+		// TODO not tested
+		this.insert("insertBibTex", param);
+	}
+
+	/**
+	 * Inserts a BibTex-hash into the database.
+	 */
+	public void insertBibTexHash(final BibTexParam param) {
+		// TODO not tested
+		if (param.getHash() == null || param.getHash().equals("")) {
+			throw new RuntimeException("Hash must be set");
+		}
+		this.insert("insertBibTexHash", param);
+	}
+
+	public void updateBibTexHashInc(final BibTexParam param) {
+		// TODO not tested
+		this.update("updateBibTexHashInc", param);
+	}
+
+	public void updateBibTexHashDec(final BibTexParam param) {
+		// TODO not tested
+		this.update("updateBibTexHashDec", param);
+	}
+
+	public void updateBibTexLog(final BibTexParam param) {
+		// TODO not tested
+		this.update("updateBibTexLog", param);
+	}
+
+	public void updateBibTexDocument(final BibTexParam param) {
+		// TODO not tested
+		this.update("updateBibTexDocument", param);
+	}
+
+	public void updateBibTexCollected(final BibTexParam param) {
+		// TODO not tested
+		this.update("updateBibTexCollected", param);
+	}
+
+	public void updateBibTexExtended(final BibTexParam param) {
+		// TODO not tested
+		this.update("updateBibTexExtended", param);
+	}
+
+	public void updateBibTexUrl(final BibTexParam param) {
+		// TODO not tested
+		this.update("updateBibTexUrl", param);
+	}
+
+	public void getBibTexSimHashsByContentId(final BibTexParam param) {
+		// TODO not tested
+		this.update("getBibTexSimHashsByContentId", param);
+	}
+
+	public void deleteBibTexByContentId(final BibTexParam param) {
+		// TODO not tested
+		this.update("deleteBibTexByContentId", param);
+	}
+
+	public void deleteBibTexDocumentByContentId(final BibTexParam param) {
+		// TODO not tested
+		this.update("deleteBibTexDocumentByContentId", param);
+	}
+
+	public void deleteBibTexCollectedByContentId(final BibTexParam param) {
+		// TODO not tested
+		this.update("deleteBibTexCollectedByContentId", param);
+	}
+
+	public void deleteBibTexExtendedByContentId(final BibTexParam param) {
+		// TODO not tested
+		this.update("deleteBibTexExtendedByContentId", param);
+	}
+
+	public void deleteBibTexUrlByContentId(final BibTexParam param) {
+		// TODO not tested
+		this.update("deleteBibTexUrlByContentId", param);
+	}
 }

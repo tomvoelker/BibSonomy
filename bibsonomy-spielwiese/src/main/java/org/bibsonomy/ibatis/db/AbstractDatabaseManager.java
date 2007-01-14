@@ -110,4 +110,48 @@ public abstract class AbstractDatabaseManager {
 		}
 		return rVal;
 	}
+
+	/**
+	 * Inserts an object into the database.
+	 */
+	protected void insert(final String query, final Object param) {
+		this.insertUpdateDelete(query, param, InsertUpdateDelete.INSERT);
+	}
+
+	/**
+	 * Updates an object in the database.
+	 */
+	protected void update(final String query, final Object param) {
+		this.insertUpdateDelete(query, param, InsertUpdateDelete.UPDATE);
+	}
+
+	/**
+	 * Deletes an object from the database.
+	 */
+	protected void delete(final String query, final Object param) {
+		this.insertUpdateDelete(query, param, InsertUpdateDelete.DELETE);
+	}
+
+	/** Used to determine the execution of an insert, update or delete. */
+	enum InsertUpdateDelete {
+		INSERT, UPDATE, DELETE;
+	}
+
+	private void insertUpdateDelete(final String query, final Object param, final InsertUpdateDelete insertUpdateDelete) {
+		try {
+			switch (insertUpdateDelete) {
+			case INSERT:
+				this.sqlMap.insert(query, param);
+				break;
+			case UPDATE:
+				this.sqlMap.update(query, param);
+				break;
+			case DELETE:
+				this.sqlMap.delete(query, param);
+				break;
+			}
+		} catch (final SQLException ex) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't execute query '" + query + "'");
+		}
+	}
 }

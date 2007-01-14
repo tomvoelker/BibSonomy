@@ -272,4 +272,99 @@
 		WHERE b.user_name = #requestedUserName#
 		      <include refid="getPostForUser"/>
 	</select>
+
+	<!-- Replaced 'simhash"+Bibtex.SIM_HASH_0, simhash"+Bibtex.SIM_HASH_1, simhash"+Bibtex.SIM_HASH_2, simhash"+Bibtex.SIM_HASH_3' -->
+	<!-- with 'simhash0, simhash1, simhash2, simhash3' -->
+	<insert id="insertBibTex" parameterClass="bibtexParam">
+		INSERT INTO bibtex (title, entrytype, author, editor, year, content_id, journal, volume, chapter,
+		                    edition, month, bookTitle, howpublished, institution, organization, publisher,
+		                    address, school, series, bibtexKey, `group`, date, user_name, url, description,
+		                    annote, note, pages, bKey, number, crossref, misc, bibtexAbstract, type, day,
+		                    scraperid, simhash0, simhash1, simhash2, simhash3)
+		VALUES (#bibtex.title#, #bibtex.entrytype#, #bibtex.author#, #bibtex.editor#, #bibtex.year#,
+		        #bibtex.contentId#, #bibtex.journal#, #bibtex.volume#, #bibtex.chapter#, #bibtex.edition#,
+		        #bibtex.month#, #bibtex.booktitle#, #bibtex.howpublished#, #bibtex.institution#,
+		        #bibtex.organization#, #bibtex.publisher#, #bibtex.address#, #bibtex.school#,
+		        #bibtex.series#, #bibtex.bibtexKey#, #bibtex.groupId#, #bibtex.date#, #bibtex.userName#,
+		        #bibtex.url#, #bibtex.description#, #bibtex.annote#, #bibtex.note#, #bibtex.pages#,
+		        #bibtex.BKey#, #bibtex.number#, #bibtex.crossref#, #bibtex.misc#, #bibtex.bibtexAbstract#,
+		        #bibtex.type#, #bibtex.day#, #bibtex.scraperId#, #bibtex.simHash0#, #bibtex.simHash1#,
+		        #bibtex.simHash2#, #bibtex.simHash3#)
+	</insert>
+
+	<insert id="insertBibTexLog" parameterClass="bibtexParam">
+		INSERT INTO bibtex (title, entrytype, author, editor, year, content_id, journal, volume, chapter,
+		                    edition, month, bookTitle, howpublished, institution, organization, publisher,
+		                    address, school, series, bibtexKey, `group`, date, user_name, url, description,
+		                    annote, note, pages, bKey, number, crossref, misc, bibtexAbstract, type, day,
+		                    scraperid, simhash0, simhash1, simhash2, simhash3)
+		SELECT title, entrytype, author, editor, year, content_id, journal, volume, chapter, edition,
+		       month, bookTitle, howpublished, institution, organization, publisher, address, school,
+		       series, bibtexKey, `group`, date, user_name, url, description, annote, note, pages, bKey,
+		       number, crossref, misc, bibtexAbstract, type, day, scraperid, simhash0, simhash1, simhash2,
+		       simhash3
+		FROM bibtex WHERE content_id = #requestedContentId#
+	</insert>
+
+	<insert id="insertBibTexHash" parameterClass="bibtexParam">
+		INSERT INTO bibhash (hash, type) VALUES (#hash#, #simHash#)
+	</insert>
+
+	<update id="updateBibTexHashInc" parameterClass="bibtexParam">
+		UPDATE bibhash SET ctr=ctr+1 WHERE hash = #hash# AND type = #simHash#
+	</update>
+
+	<update id="updateBibTexHashDec" parameterClass="bibtexParam">
+		UPDATE bibhash SET ctr=ctr-1 WHERE hash = #hash# AND type = #simHash#
+	</update>
+
+	<update id="updateBibTexLog" parameterClass="bibtexParam">
+		UPDATE log_bibtex SET new_content_id = #bibtex.contentId#
+		WHERE content_id = #requestedContentId#
+	</update>
+
+	<update id="updateBibTexDocument" parameterClass="bibtexParam">
+		UPDATE document SET content_id = #bibtex.contentId#
+		WHERE content_id = #requestedContentId#
+	</update>
+
+	<update id="updateBibTexCollected" parameterClass="bibtexParam">
+		UPDATE collector SET content_id = #bibtex.contentId#
+		WHERE content_id = #requestedContentId#
+	</update>
+
+	<update id="updateBibTexExtended" parameterClass="bibtexParam">
+		UPDATE extended_fields_data SET content_id = #bibtex.contentId#
+		WHERE content_id = #requestedContentId#
+	</update>
+
+	<update id="updateBibTexUrl" parameterClass="bibtexParam">
+		UPDATE bibtexurls SET content_id = #bibtex.contentId#
+		WHERE content_id = #requestedContentId#
+	</update>
+
+	<select id="getBibTexSimHashsByContentId">
+		SELECT simhash0, simhash1, simhash2, simhash3 FROM bibtex
+		WHERE content_id = #requestedContentId#
+	</select>
+
+	<delete id="deleteBibTexByContentId">
+		DELETE FROM bibtex WHERE content_id = #requestedContentId#
+	</delete>
+
+	<delete id="deleteBibTexDocumentByContentId">
+		DELETE FROM document WHERE content_id = #requestedContentId#
+	</delete>
+
+	<delete id="deleteBibTexCollectedByContentId">
+		DELETE FROM collector WHERE content_id = #requestedContentId#
+	</delete>
+
+	<delete id="deleteBibTexExtendedByContentId">
+		DELETE FROM extended_fields_data WHERE content_id = #requestedContentId#
+	</delete>
+
+	<delete id="deleteBibTexUrlByContentId">
+		DELETE FROM bibtexurls WHERE content_id = #requestedContentId#
+	</delete>
 </sqlMap>

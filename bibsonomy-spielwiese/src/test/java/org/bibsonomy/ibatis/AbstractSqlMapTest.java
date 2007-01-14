@@ -89,7 +89,7 @@ public abstract class AbstractSqlMapTest {
 			System.out.println("Author           : " + bibtex.getAuthor());
 			System.out.println("BibTexAbstract   : " + bibtex.getBibtexAbstract());
 			System.out.println("BibTexKey        : " + bibtex.getBibtexKey());
-			System.out.println("Bkey             : " + bibtex.getBkey());
+			System.out.println("BKey             : " + bibtex.getBKey());
 			System.out.println("Booktitle        : " + bibtex.getBooktitle());
 			System.out.println("Chapter          : " + bibtex.getChapter());
 			System.out.println("Crossref         : " + bibtex.getCrossref());
@@ -98,7 +98,6 @@ public abstract class AbstractSqlMapTest {
 			System.out.println("Edition          : " + bibtex.getEdition());
 			System.out.println("Editor           : " + bibtex.getEditor());
 			System.out.println("Entrytype        : " + bibtex.getEntrytype());
-			System.out.println("Group            : " + bibtex.getGroup());
 			System.out.println("HowPublished     : " + bibtex.getHowpublished());
 			System.out.println("Instution        : " + bibtex.getInstitution());
 			System.out.println("Journal          : " + bibtex.getJournal());
@@ -116,7 +115,6 @@ public abstract class AbstractSqlMapTest {
 			System.out.println("Volume           : " + bibtex.getVolume());
 			System.out.println("Year             : " + bibtex.getYear());
 			System.out.println("Url              : " + bibtex.getUrl());
-			System.out.println("Ctr              : " + bibtex.getCtr());
 			System.out.print("Tags             : ");
 			for (final Tag tag : bibtex.getTags()) {
 				System.out.print(tag.getName() + " ");

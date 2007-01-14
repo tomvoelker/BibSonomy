@@ -35,6 +35,21 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
+	 * Checks whether a user, given by requestedUserName, is a spammer. If
+	 * requestedUserName is set to null the default behaviour is to return
+	 * false, i.e. no spammer.
+	 * 
+	 * @param param
+	 *            Database-Properties used: requestedUserName
+	 * @return true if the user is a spammer, false otherwise
+	 */
+	public Boolean isSpammer(final GenericParam param) {
+		// TODO not tested
+		if (param.getRequestedUserName() == null) return false;
+		return (Boolean) this.queryForObject("isSpammer", param);
+	}
+
+	/**
 	 * Gets all the groups of the given user.
 	 * 
 	 * @param param

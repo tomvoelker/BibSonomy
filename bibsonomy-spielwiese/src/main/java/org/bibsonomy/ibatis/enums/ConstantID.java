@@ -40,7 +40,12 @@ public enum ConstantID {
 	IDS_UNDEFINED_CONTENT_ID(-1),
 
 	/* Constant for SimHash */
-	SIM_HASH(1),
+	SIM_HASH0(0),
+	SIM_HASH1(1),
+	SIM_HASH2(2),
+	SIM_HASH3(3),
+	SIM_HASH(SIM_HASH1),
+	INTRA_HASH(SIM_HASH0),
 
 	/* Spammer ids */
 	SPAMMER_TRUE(1),
@@ -50,6 +55,10 @@ public enum ConstantID {
 
 	private ConstantID(final int id) {
 		this.id = id;
+	}
+
+	private ConstantID(final ConstantID id) {
+		this.id = id.getId();
 	}
 
 	public int getId() {

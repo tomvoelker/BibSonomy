@@ -30,6 +30,8 @@ public abstract class GenericParam {
 	 */
 	private boolean caseSensitiveTagNames;
 	private Date date;
+	/** If a contentId is updated or deleted we need this as reference */
+	private int requestedContentId;
 	/** The hash of a post, e.g. a bookmark or a BibTex */
 	private String hash;
 	/** RegEx search pattern */
@@ -51,6 +53,8 @@ public abstract class GenericParam {
 	private int limit;
 	/** The SQL-Offset which is by default 0 */
 	private int offset;
+	/** Is user a spammer; by default false */
+	private ConstantID spammer;
 
 	public GenericParam() {
 		this.tagIndex = new ArrayList<TagIndex>();
@@ -59,6 +63,7 @@ public abstract class GenericParam {
 		this.groupType = ConstantID.GROUP_PUBLIC;
 		this.limit = 10;
 		this.offset = 0;
+		this.spammer = ConstantID.SPAMMER_FALSE;
 	}
 
 	/**
@@ -184,5 +189,21 @@ public abstract class GenericParam {
 
 	public void setRequestedGroupName(String requestedGroupName) {
 		this.requestedGroupName = requestedGroupName;
+	}
+
+	public int getSpammer() {
+		return this.spammer.getId();
+	}
+
+	public void setSpammer(ConstantID spammer) {
+		this.spammer = spammer;
+	}
+
+	public int getRequestedContentId() {
+		return this.requestedContentId;
+	}
+
+	public void setRequestedContentId(int requestedContentId) {
+		this.requestedContentId = requestedContentId;
 	}
 }
