@@ -36,35 +36,34 @@ public class GeneralTest extends AbstractSqlMapTest {
 		assertTrue(this.db.getGeneral().getGroupsForUser(this.bookmarkParam).size() == 0);
 	}
 
-	@Test
-	public void getGroupIdByGroupName() {
-		// group exists
-		this.bookmarkParam.setRequestedGroupName("kde");
-		assertEquals(ConstantID.GROUP_KDE.getId(), this.db.getGeneral().getGroupIdByGroupName(this.bookmarkParam));
-		// group doesn't exist
-		this.bookmarkParam.setRequestedGroupName("this-group-doesnt-exists");
-		assertEquals(ConstantID.GROUP_INVALID.getId(), this.db.getGeneral().getGroupIdByGroupName(this.bookmarkParam));
-		// groupname is null
-		this.bookmarkParam.setRequestedGroupName(null);
-		try {
-			this.db.getGeneral().getGroupIdByGroupName(this.bookmarkParam);
-			fail("Exception should be thrown");
-		} catch (final Exception ex) {
-		}
-	}
-
+	/*
+	 * Hint: we have to call the more generic method bevore the specific one,
+	 * i.e. getGroupIdByGroupNameAndUserName before getGroupIdByGroupName,
+	 * because the latter will have side effects.
+	 */
 	@Test
 	public void getGroupIdByGroupNameAndUserName() {
 		// group exists
 		this.bookmarkParam.setRequestedGroupName("kde");
 		assertEquals(ConstantID.GROUP_KDE.getId(), this.db.getGeneral().getGroupIdByGroupNameAndUserName(this.bookmarkParam));
+		assertEquals(ConstantID.GROUP_KDE.getId(), this.db.getGeneral().getGroupIdByGroupName(this.bookmarkParam));
+
 		// group doesn't exist
+		this.resetParameters();
 		this.bookmarkParam.setRequestedGroupName("this-group-doesnt-exists");
 		assertEquals(ConstantID.GROUP_INVALID.getId(), this.db.getGeneral().getGroupIdByGroupNameAndUserName(this.bookmarkParam));
+		assertEquals(ConstantID.GROUP_INVALID.getId(), this.db.getGeneral().getGroupIdByGroupName(this.bookmarkParam));
+
 		// groupname is null
+		this.resetParameters();
 		this.bookmarkParam.setRequestedGroupName(null);
 		try {
 			this.db.getGeneral().getGroupIdByGroupNameAndUserName(this.bookmarkParam);
+			fail("Exception should be thrown");
+		} catch (final Exception ex) {
+		}
+		try {
+			this.db.getGeneral().getGroupIdByGroupName(this.bookmarkParam);
 			fail("Exception should be thrown");
 		} catch (final Exception ex) {
 		}
