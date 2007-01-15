@@ -248,4 +248,65 @@
 		WHERE b.user_name = #requestedUserName#
 		      <include refid="getPostForUser"/>
 	</select>
+	
+
+	<!--<select id="getSpammerForBookmark" resultClass="int" parameterClass="bookmarkParam">
+	SELECT spammer FROM user WHERE user_name = #bookmark.requestedUserName#	
+	</select>-->
+	
+	
+	<insert id="insertBookmark" parameterClass="bookmarkParam">
+	INSERT INTO bookmark (content_id,book_url_hash,book_description,book_extended,`group`,date,user_name)values(#bookmark.contentID#,#bookmark.urlHash#,#bookmark.description#,#bookmark.extended#,#bookmark.groupType#,#bookmark.date#,#bookmark.userName#)
+	</insert> 
+	
+	<insert id="insertBookmarkLog" parameterClass="bookmarkParam">
+	    INSERT INTO bookmark (content_id,book_url_hash,book_description,book_extended,`group`,date,user_name)
+		SELECT content_id,book_url_hash,book_description,book_extended,`group`,date,user_name
+		FROM bookmark WHERE content_id = #requestedContentId#
+	</insert>
+	
+	<insert id="insertBookmarkHash" parameterClass="bookmarkParam">
+		INSERT INTO urls (book_url,book_url_hash) VALUES (#bookmark.url#,#bookmark.urlHash#)
+	</insert>
+	
+    <update id="updateBookmarkInc" parameterClass="bookmarkParam">
+		UPDATE urls SET book_url_ctr=book_url_ctr+1 WHERE book_url_hash = #bookmark.urlHash#
+	</update>
+
+	<update id="updateBookmarkHashDec" parameterClass="bookmarkParam">
+		UPDATE urls SET book_url_ctr=book_url_ctr-1 WHERE book_url_hash = #bookmark.urlHash# 
+	</update>
+	
+	<update id="updateBookmarkLog" parameterClass="bookmarkParam">
+		UPDATE log_bookmark SET new_content_id = #bookmark.contentId#
+		WHERE content_id = #requestedContentId#
+	</update>
+	
+	<delete id="deleteBookmarkByContentId">
+		DELETE FROM bookmark WHERE content_id = #requestedContentId#
+	</delete>
+	
+	
+	<!--  
+	
+	only for setting concerning geotagger feature 
+	
+	<update id="updateBookmarkDocument" parameterClass="bookmarkParam">
+		UPDATE document SET content_id = #bookmark.contentId# WHERE content_id =#requestedContentId#
+	</update>
+	
+	
+	<delete id="deleteBookmarkDocument">
+		DELETE FROM document WHERE content_id = #requestedContentId# AND user_name= #bookmark.userName#
+	</delete>
+	
+	 <insert id="insertBookmarkDocument" parameterClass="bookmarkParam">
+		INSERT INTO INTO document (hash, content_id, name, user_name, date)values(#bookmark.urlHash#,#bookmark.contentID#,##,#bookmark.userName#,#bookmark.date#);
+	</insert>
+	
+	
+	-->
+	
+	
+
 </sqlMap>
