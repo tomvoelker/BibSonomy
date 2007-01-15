@@ -24,6 +24,8 @@
 		</menu>
 
 		<menu name="Documentation">
+			<item name="Code Conventions" href="/codeconv.html" />
+			<item name="Transition" href="/transition.html" />
 			<item name="REST API" href="/rest.html" />
 			<item name="Maven" href="/maven.html" />
 		</menu>

@@ -1,0 +1,38 @@
+Code Conventions
+
+  On this page you can find conventions which are used throughout the code of
+  BibSonomy.
+
+* Java Code Conventions
+
+  We try to stick with the {{{http://java.sun.com/docs/codeconv/}Code Conventions for
+  the Java Programming Language}} and the suggestions made in the
+  {{{http://java.sun.com/docs/books/jls/}Java Language Specification}} with the following
+  exceptions
+
+  * One tab should be used as the unit of indentation. This is more flexible than using
+    white space because every developer can adjust the length of tabs to his needs; this
+    isn't possible with a fixed amount of white space.
+
+  * The line length isn't limited to 80 characters.
+
+* iBATIS Conventions
+
+  We are using {{{http://ibatis.apache.org/}iBATIS}} to retrieve data from a database.
+  This conventions helped:
+
+  * If you're implementing a SQL-statement there are at least two files involved: the
+    XML file for iBATIS, which contains the statement, and the Java class with a method
+    to execute the statement. If there's a 1-to-1 relation between the XML file and the
+    Java method it's practical to use the same name in the id-field for the statement
+    which is used as methodname in the class.
+
+  * The methodnames should start with:
+
+    * getBookmark or getBibTex if the statement retrieves bookmarks or publications
+
+    * insertBookmark or insertBibTex if the statement inserts data
+
+    * updateBookmark or updateBibTex if the statement updates data
+
+    * deleteBookmark or deleteBibTex if the statement deletes data

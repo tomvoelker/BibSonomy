@@ -1,0 +1,11 @@
+Transition from BibSonomy1 to BibSonomy2
+
+  Here you can find information about the process from BibSonomy1 to BibSonomy2.
+
+* Database
+
+  The following classes with SQL statements have been implemented with iBATIS so far:
+
+  * servlets.ResourceHandler
+
+  * helpers.database.DBBibtexManager
