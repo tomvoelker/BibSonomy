@@ -221,4 +221,56 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 		DatabaseUtils.prepareGetPostForUser(this.db, param);
 		return (Integer) this.queryForObject("getBookmarkForUserCount", param);
 	}
+	
+	
+	
+	/**
+	 * This methods  are for setting functions concerning bookmark entries
+	 * 
+	 * 
+	 */
+	
+	 public void insertBookmark(final BookmarkParam param) {
+		                // TODO not tested
+		                this.insert("insertBookmark", param);
+     }
+		
+
+	 public void insertBookmarkLog(final BookmarkParam param) {
+         // TODO not tested
+         this.insert("insertBookmarkLog", param);
+	 }
+	 
+	 
+	 public void insertBookmarkHash(final BookmarkParam param) {
+         // TODO not tested
+         this.insert("insertBookmarkHash", param);
+	 }
+	 
+	 
+	 public void updateBookmarkInc(final BookmarkParam param) {
+         // TODO not tested
+         this.insert("updateBookmarkInc", param);
+     }
+	 
+	 
+	 public void updateBookmarkHashDec(final BookmarkParam param) {
+         // TODO not tested
+         this.insert("updateBookmarkHashDec", param);
+     }
+	 
+	 
+	 public void updateBookmarkLog(final BookmarkParam param) {
+         // TODO not tested
+         this.insert("updateBookmarkLog", param);
+     }
+	 
+	 
+	 public void deleteBookmarkByContentId(final BookmarkParam param) {
+         // TODO not tested
+         this.insert("deleteBookmarkByContentId", param);
+     } 
+	 
+	
+	
 }
