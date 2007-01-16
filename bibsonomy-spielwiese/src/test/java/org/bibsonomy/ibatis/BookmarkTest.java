@@ -14,7 +14,7 @@ import static org.junit.Assert.assertTrue;
  * @author Christian Schenk
  */
 public class BookmarkTest extends AbstractSqlMapTest {
-
+	
 	@Test
 	public void getBookmarkByTagNames() {
 		this.db.getBookmark().getBookmarkByTagNames(this.bookmarkParam);
@@ -117,10 +117,23 @@ public class BookmarkTest extends AbstractSqlMapTest {
 	}
 
 	@Test
-	public void getBookmakrForUserCount() {
+	public void getBookmarkForUserCount() {
 		this.db.getBookmark().getBookmarkForUserCount(this.bookmarkParam);
 		this.resetParameters();
 		this.bookmarkParam.setGroupId(ConstantID.GROUP_INVALID.getId());
 		this.db.getBookmark().getBookmarkForUserCount(this.bookmarkParam);
 	}
+	
+	/**
+	 * Test for setting bookmarks of a user in database 
+	 * Update bookmark of a user in database
+	 */
+	
+	
+	
+	
+	
+	
+	
+	
 }
