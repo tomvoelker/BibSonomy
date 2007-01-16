@@ -256,7 +256,7 @@
 	
 	
 	<insert id="insertBookmark" parameterClass="bookmarkParam">
-	INSERT INTO bookmark (content_id,book_url_hash,book_description,book_extended,`group`,date,user_name)values(#bookmark.contentID#,#bookmark.urlHash#,#bookmark.description#,#bookmark.extended#,#bookmark.groupType#,#bookmark.date#,#bookmark.userName#)
+	INSERT INTO bookmark (content_id,book_url_hash,book_description,book_extended,`group`,date,user_name)values(#bookmark.contentId#,#bookmark.urlHash#,#bookmark.description#,#bookmark.extended#,#bookmark.groupId#,#bookmark.date#,#bookmark.userName#)
 	</insert> 
 	
 	<insert id="insertBookmarkLog" parameterClass="bookmarkParam">

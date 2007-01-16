@@ -33,6 +33,7 @@ public class ParamUtils {
 		final BookmarkParam rVal = new BookmarkParam();
 		setDefaults(rVal);
 		rVal.setHash("0aea152798b8e95ce7a1bedb4ab8e7d7");
+		rVal.setBookmark(ModelUtils.getBookmark());
 		return rVal;
 	}
 
@@ -43,6 +44,7 @@ public class ParamUtils {
 		final BibTexParam rVal = new BibTexParam();
 		setDefaults(rVal);
 		rVal.setHash("0000175071e6141a7d36835489f922ef");
+		rVal.setBibtex(ModelUtils.getBibTex());
 		return rVal;
 	}
 

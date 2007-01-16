@@ -27,6 +27,19 @@ public class ModelUtils {
 	}
 
 	/**
+	 * Creates a bookmark with all properties set.
+	 */
+	public static Bookmark getBookmark() {
+		final Bookmark rVal = new Bookmark();
+		rVal.setDescription("test");
+		rVal.setExtended("test");
+		rVal.setTags(new ArrayList<Tag>());
+		rVal.setUrl("http://www.bibsonomy.org");
+		rVal.setUrlHash("1234567890");
+		return rVal;
+	}
+
+	/**
 	 * Creates a BibTex with all properties set.
 	 */
 	public static BibTex getBibTex() {
