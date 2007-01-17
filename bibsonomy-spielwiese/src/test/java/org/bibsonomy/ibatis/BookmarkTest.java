@@ -125,15 +125,47 @@ public class BookmarkTest extends AbstractSqlMapTest {
 	}
 	
 	/**
-	 * Test for setting bookmarks of a user in database 
-	 * Update bookmark of a user in database
+	 * Test for setting bookmarks of a user in database regarding different statements 
+	 * 
 	 */
+	@Test
+	public void insertBookmark(){
+		this.db.setBookmark().insertBookmark(this.bookmarkParam);
+		
+	}
 	
+	@Test
+	public void insertBookmarkLog(){
+		this.db.setBookmark().insertBookmarkLog(this.bookmarkParam);
+	}
 	
+	@Test
+	public void insertBookmarkHash(){
+		System.out.println("insertBookmarkHash");
+		this.db.setBookmark().insertBookmarkHash(this.bookmarkParam);
+	}
 	
+	@Test
+	public void updateBookmarkInc(){
+		this.db.setBookmark().updateBookmarkInc(this.bookmarkParam);
+	}
 	
+	@Test
+	public void updateBookmarkHashDec(){
+		this.db.setBookmark().updateBookmarkHashDec(this.bookmarkParam);
+		
+	}
 	
+	@Test
+	public void updateBookmarkLog(){
+		this.db.setBookmark().updateBookmarkLog(this.bookmarkParam);
+		
+		}
+	@Test
+	public void deleteBookmarkByContentId(){
+	this.db.setBookmark().deleteBookmarkByContentId(this.bookmarkParam);
 	
+	}
 	
 	
 }
