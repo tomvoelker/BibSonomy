@@ -46,6 +46,10 @@ public final class DatabaseManager {
 		return this.bookmarkDatabaseManager;
 	}
 
+	 public final BookmarkDatabaseManager setBookmark(){
+		 return this.bookmarkDatabaseManager;
+		 
+		 }
 	/**
 	 * For queries concerning BibTexs.
 	 */
