@@ -22,6 +22,7 @@ public abstract class Resource {
 	private Date date;
 	private String url;
 	private int count;
+	
 
 	// XXX: put them only in the model, if we really need them
 	// private String group; FIXME was this meant to be groupName or groupId

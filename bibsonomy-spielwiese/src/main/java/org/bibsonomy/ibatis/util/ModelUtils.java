@@ -26,6 +26,7 @@ public class ModelUtils {
 		resource.setGroupName("kde");
 		resource.setUrl("");
 		resource.setUserName("kde");
+		
 	}
 
 	/**
@@ -34,8 +35,7 @@ public class ModelUtils {
 	public static Bookmark getBookmark() {
 		Date date = new Date();
 		final Bookmark rVal = new Bookmark();
-		//rVal.setGroupId(Constan)
-        rVal.setUserName("hallo");	
+		rVal.setUserName("hallo");	
 		rVal.setDescription("test");
 		rVal.setExtended("test");
 		rVal.setTags(new ArrayList<Tag>());
@@ -43,6 +43,7 @@ public class ModelUtils {
 		rVal.setUrlHash("123453747590");
 		rVal.setDate(date);
 		rVal.setContentId(2);
+	
 		return rVal;
 	}
 
