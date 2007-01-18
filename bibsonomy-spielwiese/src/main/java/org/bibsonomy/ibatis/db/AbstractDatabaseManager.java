@@ -30,11 +30,17 @@ public abstract class AbstractDatabaseManager {
 	protected static final Logger log = Logger.getLogger(AbstractDatabaseManager.class);
 	/** Communication with the database is done with the sqlMap */
 	private final SqlMapClient sqlMap;
+	/** Defines whether the database should be readonly */
 	private boolean readonly;
 
 	/** Used to determine whether we want to retrieve an object or a list */
 	private enum QueryFor {
-		OBJECT, LIST;
+		OBJECT, LIST, VOID;
+	}
+
+	/** Used to determine the execution of an select, insert, update or delete. */
+	private enum StatementType {
+		SELECT, INSERT, UPDATE, DELETE;
 	}
 
 	/**
@@ -45,10 +51,21 @@ public abstract class AbstractDatabaseManager {
 		this.readonly = false;
 	}
 
+	/**
+	 * Defines whether the database should be readonly.
+	 * 
+	 * @return true if the databse is readonly, false otherwise
+	 */
 	public boolean isReadonly() {
 		return this.readonly;
 	}
 
+	/**
+	 * If the database should be readonly, i.e. inserts and the like won't be
+	 * written to the database, we start a transaction and abort it. If the
+	 * database isn't readonly, i.e. writeable, we'll do a commit instead of
+	 * aborting the transaction.
+	 */
 	public void setReadonly(boolean readonly) {
 		this.readonly = readonly;
 	}
@@ -98,74 +115,82 @@ public abstract class AbstractDatabaseManager {
 	}
 
 	/**
-	 * This method calls the <em>queryForObject</em>- or the
-	 * <em>queryForList</em>-method on the sqlMap. We encapsulate this method
-	 * here to catch exceptions, namely SQLException, which can be thrown from
-	 * that call.
-	 */
-	@SuppressWarnings("unchecked")
-	private Object queryForAnything(final String query, final Object param, final QueryFor queryFor) {
-		Object rVal = null;
-		try {
-			this.sqlMap.startTransaction();
-			switch (queryFor) {
-			case OBJECT:
-				rVal = this.sqlMap.queryForObject(query, param);
-				break;
-			case LIST:
-				rVal = this.sqlMap.queryForList(query, param);
-				break;
-			}
-		  
-		} catch (final SQLException ex) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't execute query '" + query + "'");
-		} finally{
-			try {
-				if(this.isReadonly()){
-					this.sqlMap.endTransaction();	
-					
-				}
-				else{
-				this.sqlMap.commitTransaction();	
-					
-				}
-			}  catch (final SQLException ex) {
-				ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't execute query '" + query + "'");
-			} 
-			}
-		return rVal;
-	}
-
-	/**
 	 * Inserts an object into the database.
 	 */
 	protected void insert(final String query, final Object param) {
-		this.insertUpdateDelete(query, param, InsertUpdateDelete.INSERT);
+		this.insertUpdateDelete(query, param, StatementType.INSERT);
 	}
 
 	/**
 	 * Updates an object in the database.
 	 */
 	protected void update(final String query, final Object param) {
-		this.insertUpdateDelete(query, param, InsertUpdateDelete.UPDATE);
+		this.insertUpdateDelete(query, param, StatementType.UPDATE);
 	}
 
 	/**
 	 * Deletes an object from the database.
 	 */
 	protected void delete(final String query, final Object param) {
-		this.insertUpdateDelete(query, param, InsertUpdateDelete.DELETE);
+		this.insertUpdateDelete(query, param, StatementType.DELETE);
 	}
 
-	/** Used to determine the execution of an insert, update or delete. */
-	enum InsertUpdateDelete {
-		INSERT, UPDATE, DELETE;
+	/**
+	 * This is a convenience method, which calls the <em>queryForObject</em>-
+	 * or the <em>queryForList</em>-method on the sqlMap. We encapsulate this
+	 * method here to catch exceptions, namely SQLException, which can be thrown
+	 * from that call.
+	 */
+	@SuppressWarnings("unchecked")
+	private Object queryForAnything(final String query, final Object param, final QueryFor queryFor) {
+		return this.transactionWrapper(query, param, StatementType.SELECT, queryFor);
 	}
 
-	private void insertUpdateDelete(final String query, final Object param, final InsertUpdateDelete insertUpdateDelete) {
+	/**
+	 * This is another convenience method, which executes insert, update or
+	 * delete statements.
+	 */
+	private void insertUpdateDelete(final String query, final Object param, final StatementType statementType) {
+		this.transactionWrapper(query, param, statementType, null);
+	}
+
+	/**
+	 * This method combines all calls to the SqlMap. This way we can catch the
+	 * exceptions in one place and surround the queries with transaction
+	 * management.<br/>
+	 * 
+	 * TODO: If AOP is used in the future, especially the management of
+	 * transactions could be rewritten as an aspect.
+	 * 
+	 * @param query
+	 *            The SQL query which should be executed.
+	 * @param param
+	 *            A parameter object
+	 * @param statementType
+	 *            Defines whether it sould be a select, insert, update or delete
+	 * @param queryFor
+	 *            Defines whether we want to retrieve an object or a list from a
+	 *            select
+	 * @return An object in case of a select statement, null otherwise
+	 */
+	private Object transactionWrapper(final String query, final Object param, final StatementType statementType, final QueryFor queryFor) {
+		Object rVal = null;
 		try {
+			// If the database is readonly we start a transaction, so we can
+			// commit/abort it later
 			this.sqlMap.startTransaction();
-			switch (insertUpdateDelete) {
+
+			switch (statementType) {
+			case SELECT:
+				switch (queryFor) {
+				case OBJECT:
+					rVal = this.sqlMap.queryForObject(query, param);
+					break;
+				case LIST:
+					rVal = this.sqlMap.queryForList(query, param);
+					break;
+				}
+				break;
 			case INSERT:
 				this.sqlMap.insert(query, param);
 				break;
@@ -176,24 +201,18 @@ public abstract class AbstractDatabaseManager {
 				this.sqlMap.delete(query, param);
 				break;
 			}
-			
 		} catch (final SQLException ex) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't execute query '" + query + "'");
-		}
-		finally{
+		} finally {
 			try {
-				if(this.isReadonly()){
-					this.sqlMap.endTransaction();	
-					
-				}
-				else{
-				this.sqlMap.commitTransaction();	
-					
-				}
-				
-			}  catch (final SQLException ex) {
+				// If the database is writeable we commit the transaction
+				if (!this.isReadonly()) this.sqlMap.commitTransaction();
+				// Regardless of the commit we have to call endTransaction
+				this.sqlMap.endTransaction();
+			} catch (final SQLException ex) {
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't execute query '" + query + "'");
-			} 
 			}
+		}
+		return rVal;
 	}
 }

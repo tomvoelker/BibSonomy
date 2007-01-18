@@ -14,7 +14,7 @@ import static org.junit.Assert.assertTrue;
  * @author Christian Schenk
  */
 public class BookmarkTest extends AbstractSqlMapTest {
-	
+
 	@Test
 	public void getBookmarkByTagNames() {
 		this.db.getBookmark().getBookmarkByTagNames(this.bookmarkParam);
@@ -123,49 +123,48 @@ public class BookmarkTest extends AbstractSqlMapTest {
 		this.bookmarkParam.setGroupId(ConstantID.GROUP_INVALID.getId());
 		this.db.getBookmark().getBookmarkForUserCount(this.bookmarkParam);
 	}
-	
+
 	/**
-	 * Test for setting bookmarks of a user in database regarding different statements 
-	 * 
+	 * Test for setting bookmarks of a user in database regarding different
+	 * statements
 	 */
 	@Test
-	public void insertBookmark(){
-		this.db.setBookmark().insertBookmark(this.bookmarkParam);
-		
+	public void insertBookmark() {
+		this.db.getBookmark().insertBookmark(this.bookmarkParam);
+
 	}
-	
+
 	@Test
-	public void insertBookmarkLog(){
-		this.db.setBookmark().insertBookmarkLog(this.bookmarkParam);
+	public void insertBookmarkLog() {
+		this.db.getBookmark().insertBookmarkLog(this.bookmarkParam);
 	}
-	
+
 	@Test
-	public void insertBookmarkHash(){
+	public void insertBookmarkHash() {
 		System.out.println("insertBookmarkHash");
-		this.db.setBookmark().insertBookmarkHash(this.bookmarkParam);
+		this.db.getBookmark().insertBookmarkHash(this.bookmarkParam);
 	}
-	
+
 	@Test
-	public void updateBookmarkInc(){
-		this.db.setBookmark().updateBookmarkInc(this.bookmarkParam);
+	public void updateBookmarkInc() {
+		this.db.getBookmark().updateBookmarkInc(this.bookmarkParam);
 	}
-	
+
 	@Test
-	public void updateBookmarkHashDec(){
-		this.db.setBookmark().updateBookmarkHashDec(this.bookmarkParam);
-		
+	public void updateBookmarkHashDec() {
+		this.db.getBookmark().updateBookmarkHashDec(this.bookmarkParam);
+
 	}
-	
+
 	@Test
-	public void updateBookmarkLog(){
-		this.db.setBookmark().updateBookmarkLog(this.bookmarkParam);
-		
-		}
-	@Test
-	public void deleteBookmarkByContentId(){
-	this.db.setBookmark().deleteBookmarkByContentId(this.bookmarkParam);
-	
+	public void updateBookmarkLog() {
+		this.db.getBookmark().updateBookmarkLog(this.bookmarkParam);
+
 	}
-	
-	
+
+	@Test
+	public void deleteBookmarkByContentId() {
+		this.db.getBookmark().deleteBookmarkByContentId(this.bookmarkParam);
+
+	}
 }
