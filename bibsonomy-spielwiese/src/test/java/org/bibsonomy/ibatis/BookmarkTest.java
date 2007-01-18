@@ -167,4 +167,16 @@ public class BookmarkTest extends AbstractSqlMapTest {
 		this.db.getBookmark().deleteBookmarkByContentId(this.bookmarkParam);
 
 	}
+	
+	@Test
+	public void updateIds() {
+		this.db.getBookmark().updateIds(this.bookmarkParam);
+
+	}
+	@Test
+	public void getNewContentID() {
+		this.db.getBookmark().getNewContentID(this.bookmarkParam);
+
+	}
+	
 }
