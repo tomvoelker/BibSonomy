@@ -212,8 +212,8 @@ public abstract class GenericParam {
 		this.requestedContentId = requestedContentId;
 	}
 
-	public ConstantID getIdsType() {
-		return this.idsType;
+	public int getIdsType() {
+		return this.idsType.getId();
 	}
 
 	public void setIdsType(ConstantID idsType) {
