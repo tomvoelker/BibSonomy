@@ -38,6 +38,7 @@ public abstract class GenericParam {
 	private String search;
 	/** This is the current user. */
 	private String userName;
+	
 	/**
 	 * The current user, who would be identified by userName, can look at other
 	 * people's content. This requested user is identified by this string.
@@ -55,12 +56,16 @@ public abstract class GenericParam {
 	private int offset;
 	/** Is user a spammer; by default false */
 	private ConstantID spammer;
-
+	/** The type of a ID is by default DS_CONTENT_ID **/
+	private ConstantID idsType;
+    private int newContentId;
+    
 	public GenericParam() {
 		this.tagIndex = new ArrayList<TagIndex>();
 		this.caseSensitiveTagNames = false;
 		this.groupId = ConstantID.GROUP_INVALID.getId();
 		this.groupType = ConstantID.GROUP_PUBLIC;
+		this.idsType=ConstantID.IDS_CONTENT_ID;
 		this.limit = 10;
 		this.offset = 0;
 		this.spammer = ConstantID.SPAMMER_FALSE;
@@ -205,5 +210,21 @@ public abstract class GenericParam {
 
 	public void setRequestedContentId(int requestedContentId) {
 		this.requestedContentId = requestedContentId;
+	}
+
+	public ConstantID getIdsType() {
+		return this.idsType;
+	}
+
+	public void setIdsType(ConstantID idsType) {
+		this.idsType = idsType;
+	}
+
+	public int getNewContentId() {
+		return this.newContentId;
+	}
+
+	public void setNewContentId(int newContentId) {
+		this.newContentId = newContentId;
 	}
 }

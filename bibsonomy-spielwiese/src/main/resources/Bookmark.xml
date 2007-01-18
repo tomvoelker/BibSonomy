@@ -286,6 +286,14 @@
 		DELETE FROM bookmark WHERE content_id = #requestedContentId#
 	</delete>
 	
+	<select id="getNewContentID" resultClass="int" parameterClass="bookmarkParam">
+	       SELECT value FROM ids WHERE name=#idsType# FOR UPDATE
+	</select>
+	
+	<update id="updateIds" parameterClass="bookmarkParam">
+			UPDATE ids SET value=value+1
+			WHERE name = #idsType#
+	</update>
 	
 	<!--  
 	
@@ -294,19 +302,11 @@
 	<update id="updateBookmarkDocument" parameterClass="bookmarkParam">
 		UPDATE document SET content_id = #bookmark.contentId# WHERE content_id =#requestedContentId#
 	</update>
-	
-	
 	<delete id="deleteBookmarkDocument">
 		DELETE FROM document WHERE content_id = #requestedContentId# AND user_name= #bookmark.userName#
 	</delete>
 	
 	 <insert id="insertBookmarkDocument" parameterClass="bookmarkParam">
 		INSERT INTO INTO document (hash, content_id, name, user_name, date)values(#bookmark.urlHash#,#bookmark.contentID#,##,#bookmark.userName#,#bookmark.date#);
-	</insert>
-	
-	
-	-->
-	
-	
-
+	</insert>-->
 </sqlMap>

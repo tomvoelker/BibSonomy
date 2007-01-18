@@ -271,6 +271,23 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
          this.insert("deleteBookmarkByContentId", param);
      } 
 	 
+	 /**
+		 *get a current ContentID for setting a bookmark
+		 *update the current ContendID for bookmark and bibtex
+		 */
 	
+	 public Integer getNewContentID(final BookmarkParam param){
+	     // TODO not tested
+		return(Integer)this.queryForObject("getNewContentID", param);
+		}
+	
+	
+	 public void updateIds(final BookmarkParam param) {
+         // TODO not tested
+         this.insert("updateIds", param);
+     }
+	
+	
+	    
 	
 }

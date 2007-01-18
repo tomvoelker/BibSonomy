@@ -34,6 +34,7 @@ public class ParamUtils {
 		setDefaults(rVal);
 		rVal.setHash("0aea152798b8e95ce7a1bedb4ab8e7d7");
 		rVal.setBookmark(ModelUtils.getBookmark());
+		//rVal.setIdsType(ConstantID.IDS_CONTENT_ID);
 		return rVal;
 	}
 
