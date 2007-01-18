@@ -15,6 +15,7 @@ public class Bookmark extends Resource {
 	private String extended;
 	private String urlHash;
 	
+	
 	public String getDescription() {
 		return this.description;
 	}

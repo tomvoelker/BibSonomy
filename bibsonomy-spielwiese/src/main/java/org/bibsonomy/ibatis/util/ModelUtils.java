@@ -43,7 +43,7 @@ public class ModelUtils {
 		rVal.setUrlHash("123453747590");
 		rVal.setDate(date);
 		rVal.setContentId(2);
-	
+	    
 		return rVal;
 	}
 

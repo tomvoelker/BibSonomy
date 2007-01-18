@@ -292,7 +292,8 @@
 	
 	<update id="updateIds" parameterClass="bookmarkParam">
 			UPDATE ids SET value=value+1
-			WHERE name = #idsType#
+			  WHERE name = #idsType#
+			  <!--      WHERE name = #contentType#--> 
 	</update>
 	
 	<!--  

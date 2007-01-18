@@ -33,6 +33,34 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 	 * <em>/viewable/</em> page only posts are shown which are set viewable to
 	 * the given group and which have all of the given tags attached.
 	 */
+	
+	/*
+	 * a whole sequence of execution sql statements
+	 */
+	/*public void insertMyBookmark(){
+		
+		
+		
+		
+	}
+	
+	public void udateMyBookmark(){
+		
+		
+		
+		
+		
+	}
+	
+	
+	public void delteMyBookmark(){
+		
+		
+		
+		
+	}*/
+	
+	
 	public List<Bookmark> getBookmarkByTagNames(final BookmarkParam param) {
 		return this.bookmarkList("getBookmarkByTagNames", param);
 	}

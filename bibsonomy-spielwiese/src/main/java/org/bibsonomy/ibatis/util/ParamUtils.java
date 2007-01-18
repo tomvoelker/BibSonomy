@@ -22,7 +22,7 @@ public class ParamUtils {
 		param.setGroupId(3);
 		param.setUserName("hotho");
 		param.setRequestedUserName("stumme");
-		// param.setCaseSensitiveTagNames(true);
+        // param.setCaseSensitiveTagNames(true);
 		param.addTagName("community");
 	}
 

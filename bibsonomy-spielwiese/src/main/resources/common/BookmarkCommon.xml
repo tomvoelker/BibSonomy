@@ -10,7 +10,8 @@
 		<result property="date"        column="date"             javaType="date" />
 		<result property="urlHash"     column="book_url_hash"    javaType="string" />
 		<result property="url"         column="book_url"         javaType="string" />
-		<result property="count"       column="book_url_ctr"     javaType="int" />
+		<result property="count"       column="book_url_ctr"     javaType="int" />	
+		
 	</resultMap>
 
 	<resultMap id="bookmarks" class="bookmark" extends="bookmarksWithoutUserName">
@@ -23,5 +24,5 @@
 
 	<sql id="bookmarkAttributes">
 		b.content_id, b.book_description, b.book_extended, b.user_name, b.date, b.book_url_hash
-	</sql>
+	</sql>	
 </sqlMap>
