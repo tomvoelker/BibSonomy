@@ -14,8 +14,7 @@ public class Bookmark extends Resource {
 	private String description;
 	private String extended;
 	private String urlHash;
-	// private BookUrl url;
-
+	
 	public String getDescription() {
 		return this.description;
 	}
@@ -40,12 +39,6 @@ public class Bookmark extends Resource {
 		this.tags = tags;
 	}
 
-	// public BookUrl getUrl() {
-	// return this.url;
-	// }
-	// public void setUrl(BookUrl url) {
-	// this.url = url;
-	// }
 
 	public String getUrlHash() {
 		return this.urlHash;

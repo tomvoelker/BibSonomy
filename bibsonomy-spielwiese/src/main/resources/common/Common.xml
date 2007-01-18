@@ -88,19 +88,19 @@
 	<!-- Refactor b to t1, and delete this snippet -->
 	<sql id="inGroups">
 		<isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">
-		  b.group in (0,
-		  <iterate property="groups" conjunction="," close=")">
+		  b.group in (0
+		  <iterate property="groups" conjunction="," prepend=",">
 		    $groups[]$
-		  </iterate>
+		  </iterate>)
 		</isNotEqual>
 	</sql>
-
+    
 	<sql id="inGroups2">
 		<isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">
-		  t1.group in (0,
-		  <iterate property="groups" conjunction="," close=")">
+		  t1.group in (0
+		  <iterate property="groups" conjunction="," prepend=",">
 		    $groups[]$
-		  </iterate>
+		  </iterate>)
 		</isNotEqual>
 	</sql>
 

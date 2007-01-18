@@ -293,7 +293,7 @@
 	</insert>
 
 	<insert id="insertBibTexLog" parameterClass="bibtexParam">
-		INSERT INTO bibtex (title, entrytype, author, editor, year, content_id, journal, volume, chapter,
+		INSERT INTO log_bibtex (title, entrytype, author, editor, year, content_id, journal, volume, chapter,
 		                    edition, month, bookTitle, howpublished, institution, organization, publisher,
 		                    address, school, series, bibtexKey, `group`, date, user_name, url, description,
 		                    annote, note, pages, bKey, number, crossref, misc, bibtexAbstract, type, day,

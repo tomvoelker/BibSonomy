@@ -1,6 +1,8 @@
 package org.bibsonomy.ibatis.util;
 
+
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.bibsonomy.ibatis.enums.ConstantID;
 import org.bibsonomy.model.BibTex;
@@ -15,7 +17,7 @@ import org.bibsonomy.model.Tag;
  * @author Christian Schenk
  */
 public class ModelUtils {
-
+     
 	private static void setResourceDefaults(final Resource resource) {
 		// resource.setContentId(1);
 		resource.setCount(0);
@@ -30,12 +32,17 @@ public class ModelUtils {
 	 * Creates a bookmark with all properties set.
 	 */
 	public static Bookmark getBookmark() {
+		Date date = new Date();
 		final Bookmark rVal = new Bookmark();
+		//rVal.setGroupId(Constan)
+        rVal.setUserName("hallo");	
 		rVal.setDescription("test");
 		rVal.setExtended("test");
 		rVal.setTags(new ArrayList<Tag>());
-		rVal.setUrl("http://www.bibsonomy.org");
-		rVal.setUrlHash("1234567890");
+		rVal.setUrl("http://www.bibonomy.org");
+		rVal.setUrlHash("123453747590");
+		rVal.setDate(date);
+		rVal.setContentId(2);
 		return rVal;
 	}
 

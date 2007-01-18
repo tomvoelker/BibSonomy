@@ -30,11 +30,16 @@ public abstract class AbstractSqlMapTest {
 	protected BookmarkParam bookmarkParam;
 	/** This param can be used for queries about BibTexs */
 	protected BibTexParam bibtexParam;
+	protected boolean readonly;
 
 	@Before
 	public void setUp() throws IOException {
 		this.db = DatabaseManager.getInstance();
 		this.resetParameters();
+		this.db.getGeneral().setReadonly(true);
+		this.db.getBibTex().setReadonly(true);
+		this.db.getBookmark().setReadonly(false);
+		this.db.getTag().setReadonly(true);
 	}
 
 	@After

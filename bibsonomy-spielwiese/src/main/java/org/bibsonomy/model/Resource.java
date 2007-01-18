@@ -67,7 +67,7 @@ public abstract class Resource {
 		this.groupId = groupId;
 	}
 
-	public Date getDate() {
+	public  Date getDate() {
 		return this.date;
 	}
 

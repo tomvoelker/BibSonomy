@@ -30,6 +30,7 @@ public abstract class AbstractDatabaseManager {
 	protected static final Logger log = Logger.getLogger(AbstractDatabaseManager.class);
 	/** Communication with the database is done with the sqlMap */
 	private final SqlMapClient sqlMap;
+	private boolean readonly;
 
 	/** Used to determine whether we want to retrieve an object or a list */
 	private enum QueryFor {
@@ -41,6 +42,15 @@ public abstract class AbstractDatabaseManager {
 	 */
 	public AbstractDatabaseManager() {
 		this.sqlMap = DatabaseUtils.getSqlMapClient(log);
+		this.readonly = false;
+	}
+
+	public boolean isReadonly() {
+		return this.readonly;
+	}
+
+	public void setReadonly(boolean readonly) {
+		this.readonly = readonly;
 	}
 
 	/**
@@ -97,6 +107,7 @@ public abstract class AbstractDatabaseManager {
 	private Object queryForAnything(final String query, final Object param, final QueryFor queryFor) {
 		Object rVal = null;
 		try {
+			this.sqlMap.startTransaction();
 			switch (queryFor) {
 			case OBJECT:
 				rVal = this.sqlMap.queryForObject(query, param);
@@ -105,9 +116,23 @@ public abstract class AbstractDatabaseManager {
 				rVal = this.sqlMap.queryForList(query, param);
 				break;
 			}
+		  
 		} catch (final SQLException ex) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't execute query '" + query + "'");
-		}
+		} finally{
+			try {
+				if(this.isReadonly()){
+					this.sqlMap.endTransaction();	
+					
+				}
+				else{
+				this.sqlMap.commitTransaction();	
+					
+				}
+			}  catch (final SQLException ex) {
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't execute query '" + query + "'");
+			} 
+			}
 		return rVal;
 	}
 
@@ -139,6 +164,7 @@ public abstract class AbstractDatabaseManager {
 
 	private void insertUpdateDelete(final String query, final Object param, final InsertUpdateDelete insertUpdateDelete) {
 		try {
+			this.sqlMap.startTransaction();
 			switch (insertUpdateDelete) {
 			case INSERT:
 				this.sqlMap.insert(query, param);
@@ -150,8 +176,24 @@ public abstract class AbstractDatabaseManager {
 				this.sqlMap.delete(query, param);
 				break;
 			}
+			
 		} catch (final SQLException ex) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't execute query '" + query + "'");
 		}
+		finally{
+			try {
+				if(this.isReadonly()){
+					this.sqlMap.endTransaction();	
+					
+				}
+				else{
+				this.sqlMap.commitTransaction();	
+					
+				}
+				
+			}  catch (final SQLException ex) {
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't execute query '" + query + "'");
+			} 
+			}
 	}
 }

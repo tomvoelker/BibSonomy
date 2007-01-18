@@ -260,7 +260,7 @@
 	</insert> 
 	
 	<insert id="insertBookmarkLog" parameterClass="bookmarkParam">
-	    INSERT INTO bookmark (content_id,book_url_hash,book_description,book_extended,`group`,date,user_name)
+	    INSERT INTO log_bookmark (content_id,book_url_hash,book_description,book_extended,`group`,date,user_name)
 		SELECT content_id,book_url_hash,book_description,book_extended,`group`,date,user_name
 		FROM bookmark WHERE content_id = #requestedContentId#
 	</insert>
