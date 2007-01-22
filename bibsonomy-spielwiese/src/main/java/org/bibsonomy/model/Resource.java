@@ -22,12 +22,20 @@ public abstract class Resource {
 	private Date date;
 	private String url;
 	private int count;
-	
+	private String oldHash  = "";
 
 	// XXX: put them only in the model, if we really need them
 	// private String group; FIXME was this meant to be groupName or groupId
 	// private String title; FIXME belongs to BibTex?
 	// private String privnote; FIXME belongs to BibTex?
+
+	public String getOldHash() {
+		return this.oldHash;
+	}
+
+	public void setOldHash(String oldHash) {
+		this.oldHash = oldHash;
+	}
 
 	public Resource() {
 		this.contentId = ConstantID.IDS_UNDEFINED_CONTENT_ID.getId();
@@ -91,4 +99,6 @@ public abstract class Resource {
 	public void setCount(int count) {
 		this.count = count;
 	}
+	
+	    	
 }

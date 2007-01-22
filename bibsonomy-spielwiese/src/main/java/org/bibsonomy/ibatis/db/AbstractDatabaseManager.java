@@ -146,6 +146,7 @@ public abstract class AbstractDatabaseManager {
 		return this.transactionWrapper(query, param, StatementType.SELECT, queryFor);
 	}
 
+	
 	/**
 	 * This is another convenience method, which executes insert, update or
 	 * delete statements.

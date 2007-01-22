@@ -22,4 +22,8 @@
 		FROM tags
 		WHERE tag_ctr = #value#
 	</select>
+	
+	
+	
+	
 </sqlMap>

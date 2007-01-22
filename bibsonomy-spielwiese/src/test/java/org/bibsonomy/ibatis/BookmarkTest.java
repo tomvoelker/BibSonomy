@@ -3,6 +3,7 @@ package org.bibsonomy.ibatis;
 import java.sql.SQLException;
 
 import org.bibsonomy.ibatis.enums.ConstantID;
+import org.bibsonomy.ibatis.params.BookmarkParam;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
@@ -178,5 +179,17 @@ public class BookmarkTest extends AbstractSqlMapTest {
 		this.db.getBookmark().getNewContentID(this.bookmarkParam);
 
 	}
+	
+	public void getContentIDForBookmark() {
+   	 // TODO not tested
+   	 this.db.getBookmark().getContentIDForBookmark(this.bookmarkParam);   
+   	 
+    }
+	
+	
+	public void isSpammer(){
+		this.db.getBookmark().isSpammer(this.bookmarkParam);
+		
+		}
 	
 }

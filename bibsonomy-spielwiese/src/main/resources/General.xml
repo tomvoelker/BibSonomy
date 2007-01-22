@@ -27,4 +27,13 @@
 		        AND i.group = g.group
 		      </isNotNull>
 	</select>
+	<select id="getNewContentID" resultClass="int" parameterClass="bookmarkParam">
+	       SELECT value FROM ids WHERE name=#idsType# FOR UPDATE
+	</select>
+	
+	<update id="updateIds" parameterClass="bookmarkParam">
+			 UPDATE ids SET value=value+1
+			  WHERE name = #idsType#
+			 
+	</update>
 </sqlMap>

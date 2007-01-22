@@ -2,6 +2,8 @@ package org.bibsonomy.model;
 
 import java.util.List;
 
+//import resources.Resource;
+
 /**
  * This is a bookmark, which is derived from
  * {@link org.bibsonomy.model.Resource} like all resources in BibSonomy.
@@ -40,7 +42,7 @@ public class Bookmark extends Resource {
 		this.tags = tags;
 	}
 
-
+    
 	public String getUrlHash() {
 		return this.urlHash;
 	}
@@ -48,4 +50,10 @@ public class Bookmark extends Resource {
 	public void setUrlHash(String urlHash) {
 		this.urlHash = urlHash;
 	}
+	
+	public static String hash (String url) { // exists, so that everybody can calculate Hashes of an URL
+		return hash(url);
+	}
+
+	
 }

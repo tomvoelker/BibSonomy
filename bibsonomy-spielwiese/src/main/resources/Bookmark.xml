@@ -249,13 +249,7 @@
 		      <include refid="getPostForUser"/>
 	</select>
 	
-
-	<!--<select id="getSpammerForBookmark" resultClass="int" parameterClass="bookmarkParam">
-	SELECT spammer FROM user WHERE user_name = #bookmark.requestedUserName#	
-	</select>-->
-	
-	
-	<insert id="insertBookmark" parameterClass="bookmarkParam">
+    <insert id="insertBookmark" parameterClass="bookmarkParam">
 	INSERT INTO bookmark (content_id,book_url_hash,book_description,book_extended,`group`,date,user_name)values(#bookmark.contentId#,#bookmark.urlHash#,#bookmark.description#,#bookmark.extended#,#bookmark.groupId#,#bookmark.date#,#bookmark.userName#)
 	</insert> 
 	
@@ -270,7 +264,8 @@
 	</insert>
 	
     <update id="updateBookmarkInc" parameterClass="bookmarkParam">
-		UPDATE urls SET book_url_ctr=book_url_ctr+1 WHERE book_url_hash = #bookmark.urlHash#
+    INSERT INTO urls (book_url_hash) VALUES (#bookmark.urlHash#)ON DUPLICATE KEY UPDATE book_url_ctr=book_url_ctr+1
+		<!-- UPDATE urls SET book_url_ctr=book_url_ctr+1 WHERE book_url_hash = #bookmark.urlHash#-->
 	</update>
 
 	<update id="updateBookmarkHashDec" parameterClass="bookmarkParam">
@@ -286,15 +281,11 @@
 		DELETE FROM bookmark WHERE content_id = #requestedContentId#
 	</delete>
 	
-	<select id="getNewContentID" resultClass="int" parameterClass="bookmarkParam">
-	       SELECT value FROM ids WHERE name=#idsType# FOR UPDATE
+	<select id="getContentIDForBookmark" resultClass="int" parameterClass="bookmarkParam">
+	 SELECT content_id FROM bookmark WHERE book_url_hash = #bookmark.urlHash# AND user_name = #userName#
 	</select>
 	
-	<update id="updateIds" parameterClass="bookmarkParam">
-			 UPDATE ids SET value=value+1
-			  WHERE name = #idsType#
-			 
-	</update>
+	
 	
 	<!--  
 	

@@ -59,7 +59,7 @@ public abstract class GenericParam {
 	/** The type of a ID is by default DS_CONTENT_ID **/
 	private ConstantID idsType;
     private int newContentId;
-    
+    private int ContendIDbyBookmark;
 	public GenericParam() {
 		this.tagIndex = new ArrayList<TagIndex>();
 		this.caseSensitiveTagNames = false;
@@ -227,4 +227,15 @@ public abstract class GenericParam {
 	public void setNewContentId(int newContentId) {
 		this.newContentId = newContentId;
 	}
+
+	public int getContendIDbyBookmark() {
+		return this.ContendIDbyBookmark;
+	}
+
+	public void setContendIDbyBookmark(int contendIDbyBookmark) {
+		this.ContendIDbyBookmark = contendIDbyBookmark;
+	}
+	
+	
+	
 }
