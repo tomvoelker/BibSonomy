@@ -3,7 +3,6 @@ package org.bibsonomy.ibatis;
 import java.sql.SQLException;
 
 import org.bibsonomy.ibatis.enums.ConstantID;
-import org.bibsonomy.ibatis.params.BookmarkParam;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;

@@ -3,25 +3,11 @@ package org.bibsonomy.ibatis.util;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Tag;
 
-import question.generate.resource.Tags;
-import recommender.TagVectorUpdater;
-import recommender.db.backend.Database;
-import recommender.db.backend.DatabaseAction;
-import recommender.db.operations.tags.GetTagIds;
-import recommender.db.operations.tagvector.AbstractGetVectorEntries;
-import recommender.db.operations.tagvector.DecTagVectorSpace;
-import recommender.db.operations.tagvector.IncTagVectorSpace;
-import recommender.db.operations.tagvector.MarkModified;
-import resources.Resource;
 
 public class ResourceUtils {
 	
@@ -29,7 +15,6 @@ public class ResourceUtils {
 	/*** const to set/clear first bit of an integer***/
 	public static final int CONST_SET_1ST_BIT    = 0x80000000; //use logical OR  (|) to set second bit
 	public static final int CONST_CLEAR_1ST_BIT  = 0x7FFFFFFF; //use logical AND (&) to clear second bit
-	private static final Logger log = Logger.getLogger(TagVectorUpdater.class);
 	/**
 	 * Calculates the MD5-Hash of a String s and returns it encoded as a hex
 	 * string of 32 characters length.

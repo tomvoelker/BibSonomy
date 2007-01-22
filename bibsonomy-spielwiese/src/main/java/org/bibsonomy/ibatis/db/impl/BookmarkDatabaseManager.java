@@ -12,12 +12,9 @@ import org.bibsonomy.ibatis.params.GenericParam;
 import org.bibsonomy.ibatis.util.DatabaseUtils;         
 import org.bibsonomy.ibatis.util.ResourceUtils;
 import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 
-import question.UpdateQuestion;
-import recommender.TagVectorUpdater;
 /**
  * Used to retrieve bookmarks from the database.
  * 
@@ -37,8 +34,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 	private static Random generator = new Random();
 	private final DatabaseManager db;
 	private boolean isToDeleted;
-    private boolean setToDeleted;
+    @SuppressWarnings("unused")
+	private boolean setToDeleted;
     private boolean isToInserted;
+	@SuppressWarnings("unused")
 	private boolean setToInserted;
 	
     private BookmarkParam bookmarkParam;
