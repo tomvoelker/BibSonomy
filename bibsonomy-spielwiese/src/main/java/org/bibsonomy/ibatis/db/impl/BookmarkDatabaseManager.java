@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.bibsonomy.ibatis.db.AbstractDatabaseManager;
+import org.bibsonomy.ibatis.db.impl.GeneralDatabaseManager;	
 import org.bibsonomy.ibatis.enums.ConstantID;
 import org.bibsonomy.ibatis.params.BookmarkParam;
 import org.bibsonomy.ibatis.params.GenericParam;
@@ -24,10 +25,7 @@ import org.bibsonomy.model.User;
  * @author mgr
  *
  */
-/**
- * @author mgr
- *
- */
+
 public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 	
 	private static final int MAX_WAIT_TIMEOUT = 60; 
@@ -329,14 +327,6 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
         
      }
 	
-     /**TODO is not implemented, only a dummy version **/
-     public boolean isSpammer(final BookmarkParam param){
-    	 boolean dummy=true;
-    	 return dummy;
-     }
-	
-    
-     
      
      public boolean manipulateMyBookmark(GenericParam param, GeneralDatabaseManager gdm, List<Bookmark> bookmarks,Connection conn,User currUser,boolean overwrite, boolean already_change) throws SQLException {
     	     /*
@@ -344,7 +334,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
  		 */
     	    conn.setAutoCommit(false);
     	    /* *************** check if current user is a spammer ******************* */
-    	    isSpammer(bookmarkParam);    
+    	    gdm.isSpammer(param);    
  		boolean spammer=param.getSpammer()==ConstantID.SPAMMER_TRUE.getId();
  	
  		
@@ -460,6 +450,32 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
                            //insertrelation(bookmarkParam);
  				}
  				
+ 	/*
+				  update document table, if neccessary, this routine is only for the geotagging feature
+				  TODO update document table- method including sql-Statement in iBartis format
+				 
+				if (isToInserted) {
+					if (isToDeleted) {
+					
+					/**********insert + delete: update entries in document-table*****************/
+					
+						    /**TODO implement**updateDocument(bookmarkParam);******/
+						
+					/*} else if (bookmark./***TODO getDocHash() hast to be implemented*********************//* != null) {
+						
+						
+						/********insert*****************/
+						
+						/*****TODO*******insertDocument(bookmarkParam); **************/
+					/*}
+				} else if (isToDeleted) {
+					
+					/******delete******/
+					
+					/*****TODO*implement*****deleteDocument(bookmarkParam);****************/
+					
+				/*}
+ 	
  				/* 
 				 * Commit successful transaction 
 				 */
