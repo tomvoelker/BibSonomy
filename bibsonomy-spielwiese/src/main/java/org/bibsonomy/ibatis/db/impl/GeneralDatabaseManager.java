@@ -87,5 +87,43 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 		if (rVal == null) return ConstantID.GROUP_INVALID.getId();
 		return rVal;
 	}
+	   
+	public Integer getNewTasId(final int param) {
+      	//TODO not tested
+		return (Integer) this.queryForObject("getNewTasId", param);
+	}
+
+	public Integer getTas(final int param) {
+	//TODO not tested
+	return (Integer) this.queryForObject("getTas", param);
+	}
+
+
+	public void updateTasId(final int param){
+	 // TODO not tested
+	this.update("updateTasId", param);
+	
+	}
+ 
+	public void insertTas(final int param){
+	 // TODO not tested
+	this.insert("insertTas", param);
+	
+	}
+
+	public void deleteTas(final int param){
+    //TODO not tested	
+    this.delete("deleteTas", param);	
+	
+	}
+
+	public void insertLogTas(final int param){
+    // //TODO not tested	
+	this.insert("insertLogTas", param);
+	
+	}
+
+	
+	
 	
 }

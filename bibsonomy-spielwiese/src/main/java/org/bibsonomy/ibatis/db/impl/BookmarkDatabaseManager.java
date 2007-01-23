@@ -20,6 +20,7 @@ import org.bibsonomy.model.User;
  * Used to retrieve bookmarks from the database.
  * 
  * @author Christian Schenk
+ *
  */
 /**
  * @author mgr
