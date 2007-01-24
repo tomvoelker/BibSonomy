@@ -186,9 +186,6 @@ public class BookmarkTest extends AbstractSqlMapTest {
     }
 	
 	
-	public void isSpammer(){
-		this.db.getBookmark().isSpammer(this.bookmarkParam);
-		
-		}
+	
 	
 }

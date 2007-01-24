@@ -68,4 +68,8 @@ public class GeneralTest extends AbstractSqlMapTest {
 		} catch (final Exception ex) {
 		}
 	}
+	public void isSpammer(){
+		this.db.getGeneral().isSpammer(this.bookmarkParam);
+		
+		}
 }
