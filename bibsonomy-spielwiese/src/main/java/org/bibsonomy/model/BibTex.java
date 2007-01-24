@@ -1,7 +1,5 @@
 package org.bibsonomy.model;
 
-import java.util.List;
-
 import org.bibsonomy.util.SimHash;
 
 /**
@@ -48,16 +46,7 @@ public class BibTex extends Resource {
 	private String month;
 	private String year;
 	private String type;
-	private List<Tag> tags;
 	private int scraperId;
-
-	public List<Tag> getTags() {
-		return this.tags;
-	}
-
-	public void setTags(List<Tag> tags) {
-		this.tags = tags;
-	}
 
 	public String getAddress() {
 		return this.address;

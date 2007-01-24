@@ -1,6 +1,7 @@
 package org.bibsonomy.model;
 
 import java.util.Date;
+import java.util.List;
 
 import org.bibsonomy.ibatis.enums.ConstantID;
 
@@ -23,11 +24,13 @@ public abstract class Resource {
 	private String url;
 	private int count;
 	private String oldHash  = "";
-
+    private List<Tag> tags;
 	// XXX: put them only in the model, if we really need them
 	// private String group; FIXME was this meant to be groupName or groupId
 	// private String title; FIXME belongs to BibTex?
 	// private String privnote; FIXME belongs to BibTex?
+
+	
 
 	public String getOldHash() {
 		return this.oldHash;
@@ -99,6 +102,14 @@ public abstract class Resource {
 	public void setCount(int count) {
 		this.count = count;
 	}
-	
+
+	public List<Tag> getTags() {
+		return this.tags;
+	}
+
+	public void setTags(List<Tag> tags) {
+		this.tags = tags;
+	}
+
 	    	
 }

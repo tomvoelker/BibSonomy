@@ -8,7 +8,7 @@ import org.bibsonomy.model.BibTex;
  * 
  * @author Christian Schenk
  */
-public class BibTexParam extends GenericParam {
+public class BibTexParam extends GenericParam <BibTex>{
 
 	/**
 	 * A BibTex object.

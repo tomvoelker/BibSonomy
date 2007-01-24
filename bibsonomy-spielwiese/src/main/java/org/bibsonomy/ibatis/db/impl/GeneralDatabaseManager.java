@@ -6,6 +6,7 @@ import org.bibsonomy.ibatis.db.AbstractDatabaseManager;
 import org.bibsonomy.ibatis.enums.ConstantID;
 import org.bibsonomy.ibatis.params.GenericParam;
 import org.bibsonomy.ibatis.util.ExceptionUtils;
+import org.bibsonomy.model.Tag;
 
 /**
  * Used to retrieve all different kind of stuff from the database.
@@ -88,42 +89,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 		return rVal;
 	}
 	   
-	public Integer getNewTasId(final int param) {
-      	//TODO not tested
-		return (Integer) this.queryForObject("getNewTasId", param);
-	}
-
-	public Integer getTas(final int param) {
-	//TODO not tested
-	return (Integer) this.queryForObject("getTas", param);
-	}
-
-
-	public void updateTasId(final int param){
-	 // TODO not tested
-	this.update("updateTasId", param);
 	
-	}
- 
-	public void insertTas(final int param){
-	 // TODO not tested
-	this.insert("insertTas", param);
-	
-	}
 
-	public void deleteTas(final int param){
-    //TODO not tested	
-    this.delete("deleteTas", param);	
-	
-	}
-
-	public void insertLogTas(final int param){
-    // //TODO not tested	
-	this.insert("insertLogTas", param);
-	
-	}
-
-	
-	
 	
 }

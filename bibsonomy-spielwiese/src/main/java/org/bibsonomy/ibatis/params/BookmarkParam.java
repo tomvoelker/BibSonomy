@@ -8,23 +8,23 @@ import org.bibsonomy.model.Bookmark;
  * 
  * @author Christian Schenk
  */
-public class BookmarkParam extends GenericParam {
+public class BookmarkParam extends GenericParam <Bookmark> {
 
 	/**
 	 * A bookmark object.
 	 */
-	private Bookmark bookmark;
+	//private Bookmark bookmark;
 
 	@Override
 	public int getContentType() {
 		return ConstantID.BOOKMARK_CONTENT_TYPE.getId();
 	}
-
+/*
 	public Bookmark getBookmark() {
 		return this.bookmark;
 	}
 
 	public void setBookmark(Bookmark bookmark) {
 		this.bookmark = bookmark;
-	}
+	}*/
 }

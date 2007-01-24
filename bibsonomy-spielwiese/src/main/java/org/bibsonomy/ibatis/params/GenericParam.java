@@ -15,8 +15,10 @@ import org.bibsonomy.ibatis.params.beans.TagIndex;
  * 
  * @author Christian Schenk
  */
-public abstract class GenericParam {
+public abstract class GenericParam <T>{
 
+	private T resource;
+	
 	/**
 	 * List of (tagname, index)-pairs, where tagname can be both a name of a tag
 	 * or concept.
@@ -234,6 +236,14 @@ public abstract class GenericParam {
 
 	public void setContendIDbyBookmark(int contendIDbyBookmark) {
 		this.ContendIDbyBookmark = contendIDbyBookmark;
+	}
+
+	public T getResource() {
+		return this.resource;
+	}
+
+	public void setResource(T resource) {
+		this.resource = resource;
 	}
 	
 	

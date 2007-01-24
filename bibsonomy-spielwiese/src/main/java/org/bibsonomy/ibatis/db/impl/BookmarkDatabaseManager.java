@@ -329,7 +329,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
      }
 	
      
-     public boolean manipulateMyBookmark(GenericParam param, GeneralDatabaseManager gdm, List<Bookmark> bookmarks,Connection conn,User currUser,boolean overwrite, boolean already_change) throws SQLException {
+     public boolean manipulateMyBookmark(GenericParam param, GeneralDatabaseManager gdm,TagDatabaseManager tdm, List<Bookmark> bookmarks,Connection conn,User currUser,boolean overwrite, boolean already_change) throws SQLException {
     	     /*
  		 * deactivate auto-commit to enable transaction
  		 */
@@ -447,7 +447,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
                         /***increments the URL Counter for bookmark entries, i.e. if hash ist double than increments the URL counter***/
                             updateBookmarkInc(bookmarkParam);
                         /*** TODO insert TAGs and RelationTags according bookmark ***/
-                           // insertTags(bookmarkParam);
+                            //tdm.insertTags();
                            //insertrelation(bookmarkParam);
  				}
  				

@@ -1,8 +1,5 @@
 package org.bibsonomy.model;
 
-import java.util.List;
-
-//import resources.Resource;
 
 /**
  * This is a bookmark, which is derived from
@@ -12,7 +9,7 @@ import java.util.List;
  */
 public class Bookmark extends Resource {
 
-	private List<Tag> tags;
+	
 	private String description;
 	private String extended;
 	private String urlHash;
@@ -34,13 +31,7 @@ public class Bookmark extends Resource {
 		this.extended = extended;
 	}
 
-	public List<Tag> getTags() {
-		return this.tags;
-	}
-
-	public void setTags(List<Tag> tags) {
-		this.tags = tags;
-	}
+	
 
     
 	public String getUrlHash() {
