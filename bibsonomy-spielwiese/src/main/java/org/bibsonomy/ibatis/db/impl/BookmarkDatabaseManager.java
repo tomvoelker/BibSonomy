@@ -17,6 +17,8 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 
+import question.UpdateQuestion;
+
 /**
  * Used to retrieve bookmarks from the database.
  * 
@@ -326,10 +328,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 	
      
      public boolean manipulateMyBookmark(GenericParam<Bookmark> param, User currUser,boolean overwrite, boolean already_change) throws SQLException {
-    	  boolean isToDeleted=false;
-    	 boolean setToDeleted=false;
-    	   boolean isToInserted=false;
-    		 boolean setToInserted=false;
+    	  boolean isToDeleted = false;
+    	  boolean setToDeleted = false;
+    	  boolean isToInserted = false;
+    	  boolean setToInserted = false;
     	    /* *************** check if current user is a spammer ******************* */
     	    boolean spammer = this.db.getGeneral().isSpammer(param);    
  		
@@ -349,11 +351,11 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
  						 * 
  						 * if the bookmark already exist, we access the old content_id
  						 */
-                                         
- 						int oldContendID=bookmark.getContentId();
- 						/*** if bookmark is not added int o the system ***/
- 						if(bookmark.getContentId()==ConstantID.IDS_UNDEFINED_CONTENT_ID.getId() && !isToDeleted==false){
- 							setToInserted=true;
+                               /*****get old ContendId, if it exist******/          
+ 						int oldContendID = bookmark.getContentId();
+ 						/*** if bookmark is not added into the system ***/
+ 						if(bookmark.getContentId() == ConstantID.IDS_UNDEFINED_CONTENT_ID.getId() && !isToDeleted){
+ 							setToInserted = true;
  							if(already_change && bookmark.getUserName().equals(currUser)){
  								
  								/*
@@ -365,15 +367,15 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
  								 * button and then changes the URL). 
  								 * To delete the old bookmark, we have to extract its content id
  								 */	
- 								String oldUrlHash =bookmark.getHash();
+ 								String oldUrlHash = bookmark.getHash();
  								oldContendID=bookmark.getContentId();
- 								if(oldContendID !=ConstantID.IDS_UNDEFINED_CONTENT_ID.getId()){
+ 								if(oldContendID != ConstantID.IDS_UNDEFINED_CONTENT_ID.getId()){
  									/*** if an old bookmark exists, but NOT called by bookmarklet, then we change the old bookmark 
  									 * for URLS table ***/
  									
  									bookmark.setOldHash(bookmark);
  									bookmark.setContentId(oldContendID);
- 									setToDeleted=true;
+ 									setToDeleted = true;
  								}
  							}
  						}else {
@@ -382,26 +384,28 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
  								/*** we shall overwrite it ***/
  								bookmark.setOldHash(bookmark);
  								bookmark.setContentId(oldContendID);
- 								setToDeleted=true;
- 								setToInserted=true;
+ 								setToDeleted = true;
+ 								setToInserted = true;
  							}else{
  								/*** we do nothing and ignore it ***/
  								bookmark.setContentId(oldContendID);
- 								setToInserted=false;
+ 								setToInserted = false;
  							}
  				        }
  							/*** generate a list of tag objects ***/
- 				List<Tag> oldResourceTags=null;
+ 				List<Tag> oldResourceTags = null;
  				if(isToDeleted){
  					
  					/*****************************************************************
 					 *  DELETE SEQUENCE FOR BOOKMARKING
 					 ******************************************************************/
  					
- 					oldContendID =bookmark.getContentId();
- 					if(oldContendID !=ConstantID.IDS_UNDEFINED_CONTENT_ID.getId()){
+ 					oldContendID = bookmark.getContentId();
+ 					if(oldContendID != ConstantID.IDS_UNDEFINED_CONTENT_ID.getId()){
  						/***with the deletion of bookmarks the tags are also deleted ***/
- 					   oldResourceTags= this.db.getTag().deleteTags(param); 
+ 					   oldResourceTags = this.db.getTag().deleteTags(param); 
+ 					   /*******TODO Feature update-question*********/
+ 					   /***UpdateQuestion.update(conn, oldcontentid);****/
  						/*** decrement URL counter from bookmark ***/
  					  updateBookmarkHashDec(bookmark);
  					  	/*** copy the bookmark entries into the log_Bookmark table ***/
@@ -433,9 +437,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
                             insertBookmark(bookmark); 	
                         /***increments the URL Counter for bookmark entries, i.e. if hash ist double than increments the URL counter***/
                             updateBookmarkInc(bookmark);
-                        /*** TODO insert TAGs and RelationTags according bookmark ***/
+                        /**********insert a List of Tags***************/
                             this.db.getTag().insertTags(param);
-                           //insertrelation(bookmarkParam);
+                            /*********TODO insertTagrelation including relationmanager**********/
+                           /******insertrelation(bookmarkParam);************/
  				}
  				
  	/*
@@ -464,11 +469,9 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 					
 				/*}
  	
- 				/* 
-				 * Commit successful transaction 
-				 */
-               /***ending of*transaction *******/
- 				ResourceUtils.doUpdate(oldResourceTags,bookmark);
+ 				
+               /***TODO ending of*transaction *******/
+ 				/***TODO**ResourceUtils.doUpdate(oldResourceTags,bookmark);**********/
 				success = true;
 				
  				} catch(SQLException e){
@@ -480,12 +483,12 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
  			        } catch (InterruptedException i) {
  			        }	
                 } // catch SQLException (wait ...)    
- 		} // while loop
+ 		} 
  							
  			if (!success && wait >= MAX_WAIT_TIMEOUT) {
 				throw new SQLException("retry/wait timeout");
 			}			
-       }//get every bookmark	
+       }/*****get every bookmark*******/	
  		return spammer;	
  			
   }  
