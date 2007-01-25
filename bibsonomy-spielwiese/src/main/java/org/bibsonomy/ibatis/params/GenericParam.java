@@ -65,6 +65,16 @@ public abstract class GenericParam <T extends Resource> {
     private int newContentId;
     private int ContendIDbyBookmark;
     private List<Tag> tags;
+    private int newTasId;
+    private Tag tag;
+	public Tag getTag() {
+		return this.tag;
+	}
+
+	public void setTag(Tag tag) {
+		this.tag = tag;
+	}
+
 	public GenericParam() {
 		this.tagIndex = new ArrayList<TagIndex>();
 		this.caseSensitiveTagNames = false;
@@ -263,6 +273,14 @@ public abstract class GenericParam <T extends Resource> {
 
 	public void setTags(List<Tag> tags) {
 		this.tags = tags;
+	}
+
+	public int getNewTasId() {
+		return this.newTasId;
+	}
+
+	public void setNewTasId(int newTasId) {
+		this.newTasId = newTasId;
 	}
 	
 	

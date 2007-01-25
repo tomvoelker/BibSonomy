@@ -37,7 +37,6 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 	private final DatabaseManager db;
 	
 	
-    private BookmarkParam bookmarkParam;
 	/**
 	 * Reduce visibility so only the {@link DatabaseManager} can instantiate
 	 * this class.

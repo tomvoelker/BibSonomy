@@ -23,10 +23,15 @@
 		WHERE tag_ctr = #value#
 	</select>
 	
-	<update id="insertTag" parameterClass="tag">
+	<insert id="insertTag" parameterClass="tag">
     INSERT INTO tags (tag_name,tag_ctr) VALUES (#tag.name#,1)ON DUPLICATE KEY UPDATE tag_ctr=tag_ctr+1
     <!--UPDATE tags SET tag_ctr=tag_ctr+1 WHERE tag_name = ?-->
-	</update>
+	</insert>
+	
+	<insert id="insertTagTag" parameterClass="tag">
+    INSERT INTO tags (tag_name,tag_name,tag_ctr) VALUES (#tag.name#,#tag.name#,1)ON DUPLICATE KEY UPDATE tag_ctr=tag_ctr+1
+    <!--UPDATE tags SET tag_ctr=tag_ctr+1 WHERE tag_name = ?-->
+	</insert>
 	
 	
 	

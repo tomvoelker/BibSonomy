@@ -1,5 +1,6 @@
 package org.bibsonomy.ibatis.db.impl;
 
+import java.awt.geom.GeneralPath;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -55,27 +56,22 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		return this.tagList("getTasByTagName", param);
      }
 	
-	public void insertTagTag(final Tag tagParam){
-		// TODO not tested
-		this.insert("insertTagTag",tagParam);
-	}
-	
-	
 	/****************************
 	 * update increments and decrements for Tag 
 	 * and Tag-Tag combinations
 	 * *************************/
 	
-	// GenPara übernehmen
+	// Generic Para übernehmen
 	public void updateTagTagInc(final GenericParam param){
 		 // TODO not tested
 		this.update("updateTagTagInc",param);
 		
 	}
-	
-	public void updateTagTagDec(final Tag tagParam){
-		 // TODO not tested
-		this.update("updateTagTagDec",tagParam);
+	/*********snot **************/
+	public void updateTagTagDec(Tag tagFirst, Tag tagSecond, GenericParam param){
+		param.setTag(tagFirst);
+		param.setTag(tagSecond);
+		this.update("updateTagTagDec",param);
 		
 	}
 	
@@ -104,12 +100,6 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	
 	}
  
-	public void insertTas(final Tag tag,final GenericParam param){
-	 // TODO not tested
-	this.insert("insertTas", param);
-	
-	}
-
 	public void deleteTas(final GenericParam param){
     //TODO not tested	
     this.delete("deleteTas", param);	
@@ -144,15 +134,13 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			 *   IMPORTANT: read further to end of this note!
 			 ***/
 			/******** schedule job for decrement*******/
-			
 			insertTagTagBatch(param);
-			
 		} else {
 			/*****compute all Tag-Tag combinations with o(n_2)********/
 			for(Tag tag1:  tagSet){
 				for(Tag tag2: tagSet){
 					if(!tag1.equals(tag2)){
-						updateTagTagDec(tag1,tag2);
+						updateTagTagDec(tag1,tag2,param);
 					}
 				}
 			}
@@ -163,19 +151,17 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		deleteTas(param);
 		return tagSet;
 	}
-	
+	/**********insert a set of tags***********/
 	public void insertTags (GenericParam param) throws SQLException{
+		/**********generate a List of Tags*******/
 		List<Tag> allTags=param.getTags();
 		int tasId;
 		HashMap<Tag,Integer> tasIDs = new HashMap<Tag,Integer>();
 		if (allTags.size() > MAX_TAGS_TO_INSERT) {
-			/*
-			 * do it in a batch job
-			 */
-			
+		/******* do it in a batch job*********/
 			insertTagTagBatch(param);
      			for(Tag tagfirst: allTags){
-     				tasId=insertMyTas(tagfirst, param);
+     				tasId=insertTas(tagfirst, param);
      				insertTag(tagfirst);
      				/********remember tasId for tagtagrelation*************/
      				tasIDs.put(tagfirst, tasId);
@@ -187,57 +173,59 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			 */
 			for(Tag tagfirst: allTags){
 				/*********not correct**********/
-				tasId = insertMyTas(tagfirst, param);
+				tasId = insertTas(tagfirst, param);
 				insertTag(tagfirst);
 				/********remember tasId for tagtagrelation*************/
 				tasIDs.put(tagfirst, tasId);
 				/******* update tagtag table *******/
 				for(Tag tagsecond: allTags){
 					if(!tagfirst.equals(tagsecond)){
-						insertMyTagTag(tagfirst,tagsecond);
+						insertTagTag(tagfirst,tagsecond);
 					}
 				}
 			}
 		}
 	}
 	
+	
+	
 	/*************insert tag_name into tags***********/
-	public void insertTag(Tag tag) throws SQLException {
+	public void insertTag(Tag tag) {
 		// TODO not tested
-		this.update("insertTag",tag);
+		this.insert("insertTag",tag);
 		
 		}
-	
-	
 	
 	/****insert Tag-Tag Combination****/
-	public void insertMyTagTag(Tag tag1,  Tag tag2)throws SQLException{
-	     	if(tag1==null||tag2== null){
-	     		if (tag1.getName() )
-	     		
-	     		
-	     	}
-		if (param.getResource().getTags().get(0) == null || param.getResource().getTags().get(1) == null) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Two tags needed");
-		}
-		
-		/*****TODO not correct*************/
-		updateTagTagInc(param);
-		/*****dasselbe wie updateTagInc??****/
-		/********TODO pehaps execute an other sql-statement like
-		 * INSERT INTO ... ON DUPLICATE UPDATE ...
-		 *  **********/
-		
+	public void insertTagTag(Tag tag1,Tag tag2){
+	/*******check if the two first elements of tag taglist contains tag-entries*********/
+    	if(tag1 ==null||tag2==null){
+    		/*****if not*******/
+    		
+     		ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Two tags needed");
+     	}
+     	/**********not a optimal solution*************/
+     	else{   /*****if the list two valid tag entries*********/
+     		    
+     		    List<Tag> tagList=null;
+     		    /*******add teo tags into a list a give them as argument for the insert-method*********/
+     		    tagList.add(tag1);
+     		    tagList.add(tag2);
+     		    /*****TODO check if elements are accessible via iBatis*********/
+     			this.insert("insertTagTag", new Tag[] {tag1, tag2});
+     	}
+	
+}
+	
+	public int insertTas(Tag tag,GenericParam param){
+		param.setTag(tag);
+		int tas_id=getNewTasId(param);
+		param.setNewTasId(tas_id);
+		this.insert("insertTas",param);
+		return tas_id;
 	}
 	
-	/********TODO not correct**************/
-	private int insertMyTas(Tag tag, GenericParam param) throws SQLException {
-		/* get tas_id for this tas */
-		int tas_id =getNewTasId(param);
-		/* check, if we got an id */
-			insertTas(param);
-			return tas_id;
-	}
+	
 }
 
 

@@ -25,6 +25,7 @@ public abstract class Resource {
 	private int count;
 	private String oldHash  = "";
     private List<Tag> tags;
+    private int newTasId;
 	// XXX: put them only in the model, if we really need them
 	// private String group; FIXME was this meant to be groupName or groupId
 	// private String title; FIXME belongs to BibTex?
@@ -110,6 +111,14 @@ public abstract class Resource {
 
 	public void setTags(List<Tag> tags) {
 		this.tags = tags;
+	}
+
+	public int getNewTasId() {
+		return this.newTasId;
+	}
+
+	public void setNewTasId(int newTasId) {
+		this.newTasId = newTasId;
 	}
 
 	    	

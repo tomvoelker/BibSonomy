@@ -6,7 +6,6 @@ import org.bibsonomy.ibatis.db.AbstractDatabaseManager;
 import org.bibsonomy.ibatis.enums.ConstantID;
 import org.bibsonomy.ibatis.params.GenericParam;
 import org.bibsonomy.ibatis.util.ExceptionUtils;
-import org.bibsonomy.model.Tag;
 
 /**
  * Used to retrieve all different kind of stuff from the database.

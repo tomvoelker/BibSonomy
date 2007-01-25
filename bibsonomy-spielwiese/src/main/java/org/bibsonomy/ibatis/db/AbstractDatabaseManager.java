@@ -120,7 +120,6 @@ public abstract class AbstractDatabaseManager {
 	protected void insert(final String query, final Object param) {
 		this.insertUpdateDelete(query, param, StatementType.INSERT);
 	}
-
 	/**
 	 * Updates an object in the database.
 	 */
@@ -154,7 +153,7 @@ public abstract class AbstractDatabaseManager {
 	private void insertUpdateDelete(final String query, final Object param, final StatementType statementType) {
 		this.transactionWrapper(query, param, statementType, null);
 	}
-
+ 
 	/**
 	 * This method combines all calls to the SqlMap. This way we can catch the
 	 * exceptions in one place and surround the queries with transaction
