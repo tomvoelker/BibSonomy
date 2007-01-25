@@ -13,7 +13,6 @@ public class BibTexParam extends GenericParam <BibTex>{
 	/**
 	 * A BibTex object.
 	 */
-	private BibTex bibtex;
 	/**
 	 * This is used to restrict simHashes, i.e. which limit the overall
 	 * resultset. By default simhash1 is used.
@@ -34,14 +33,6 @@ public class BibTexParam extends GenericParam <BibTex>{
 	@Override
 	public int getContentType() {
 		return ConstantID.BIBTEX_CONTENT_TYPE.getId();
-	}
-
-	public BibTex getBibtex() {
-		return this.bibtex;
-	}
-
-	public void setBibtex(BibTex bibtex) {
-		this.bibtex = bibtex;
 	}
 
 	public int getSimHash() {

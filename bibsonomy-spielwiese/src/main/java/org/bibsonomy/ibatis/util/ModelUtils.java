@@ -40,7 +40,7 @@ public class ModelUtils {
 		rVal.setExtended("test");
 		rVal.setTags(new ArrayList<Tag>());
 		rVal.setUrl("http://www.bibonomy.org");
-		rVal.setUrlHash("123453747590");
+		rVal.setHash("123453747590");
 		rVal.setDate(date);
 		rVal.setContentId(2);
 	    

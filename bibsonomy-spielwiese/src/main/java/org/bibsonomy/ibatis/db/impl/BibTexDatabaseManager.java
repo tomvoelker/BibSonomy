@@ -33,6 +33,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	 * retrieved.
 	 */
 	public List<BibTex> getBibTexByHash(final BibTexParam param) {
+		/********TODO write some Expectation values for all methods**********/
 		return this.bibtexList("getBibTexByHash", param);
 	}
 

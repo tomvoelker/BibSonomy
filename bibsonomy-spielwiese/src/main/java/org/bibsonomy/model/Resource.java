@@ -21,7 +21,7 @@ public abstract class Resource {
 	private int groupId;
 	/** A timestamp for this resource */
 	private Date date;
-	private String url;
+	private String url="";
 	private int count;
 	private String oldHash  = "";
     private List<Tag> tags;
@@ -31,13 +31,14 @@ public abstract class Resource {
 	// private String privnote; FIXME belongs to BibTex?
 
 	
+    public abstract String getHash();
 
 	public String getOldHash() {
 		return this.oldHash;
 	}
 
-	public void setOldHash(String oldHash) {
-		this.oldHash = oldHash;
+	public void setOldHash(Resource resource) {
+		this.oldHash = resource.getHash();
 	}
 
 	public Resource() {

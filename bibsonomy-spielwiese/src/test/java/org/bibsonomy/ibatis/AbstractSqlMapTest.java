@@ -71,7 +71,7 @@ public abstract class AbstractSqlMapTest {
 			System.out.println("Extended    : " + bookmark.getExtended());
 			System.out.println("Date        : " + bookmark.getDate());
 			System.out.println("URL         : " + bookmark.getUrl());
-			System.out.println("URLHash     : " + bookmark.getUrlHash());
+			System.out.println("URLHash     : " + bookmark.getHash());
 			System.out.println("UserName    : " + bookmark.getUserName());
 			System.out.print("Tags        : ");
 			for (final Tag tag : bookmark.getTags()) {

@@ -296,6 +296,11 @@ public class BibTex extends Resource {
 		this.scraperId = scraperId;
 	}
 
+	@Override
+	public String getHash() {
+		return this.getSimHash0();
+	}
+
 	public String getSimHash0() {
 		return SimHash.getSimHash0(this);
 	}

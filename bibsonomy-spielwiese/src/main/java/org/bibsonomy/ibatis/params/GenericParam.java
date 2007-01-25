@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.bibsonomy.ibatis.enums.ConstantID;
 import org.bibsonomy.ibatis.params.beans.TagIndex;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
 
 /**
  * This is the most generic param. All fields which are not specific to
@@ -15,10 +17,10 @@ import org.bibsonomy.ibatis.params.beans.TagIndex;
  * 
  * @author Christian Schenk
  */
-public abstract class GenericParam <T>{
+public abstract class GenericParam <T extends Resource> {
 
 	private T resource;
-	
+	private List<T> resources;
 	/**
 	 * List of (tagname, index)-pairs, where tagname can be both a name of a tag
 	 * or concept.
@@ -62,6 +64,7 @@ public abstract class GenericParam <T>{
 	private ConstantID idsType;
     private int newContentId;
     private int ContendIDbyBookmark;
+    private List<Tag> tags;
 	public GenericParam() {
 		this.tagIndex = new ArrayList<TagIndex>();
 		this.caseSensitiveTagNames = false;
@@ -244,6 +247,22 @@ public abstract class GenericParam <T>{
 
 	public void setResource(T resource) {
 		this.resource = resource;
+	}
+
+	public List<T> getResources() {
+		return this.resources;
+	}
+
+	public void setResources(List<T> resources) {
+		this.resources = resources;
+	}
+
+	public List<Tag> getTags() {
+		return this.tags;
+	}
+
+	public void setTags(List<Tag> tags) {
+		this.tags = tags;
 	}
 	
 	
