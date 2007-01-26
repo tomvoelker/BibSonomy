@@ -1,34 +1,27 @@
 package org.bibsonomy.ibatis.db.impl;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Random;
 
 import org.bibsonomy.ibatis.db.AbstractDatabaseManager;
-import org.bibsonomy.ibatis.db.impl.GeneralDatabaseManager;	
 import org.bibsonomy.ibatis.enums.ConstantID;
 import org.bibsonomy.ibatis.params.BookmarkParam;
 import org.bibsonomy.ibatis.params.GenericParam;
 import org.bibsonomy.ibatis.util.DatabaseUtils;         
 import org.bibsonomy.ibatis.util.ResourceUtils;
 import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 
-import question.UpdateQuestion;
 
 /**
  * Used to retrieve bookmarks from the database.
  * 
  * @author Christian Schenk
- *
- */
-/**
  * @author mgr
- *
  */
+
 
 public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 	
@@ -279,9 +272,9 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 	 }
 	 
 	 
-	 public void updateBookmarkInc(final Bookmark param) {
+	 public void insertBookmarkInc(final Bookmark param) {
          // TODO not tested
-         this.insert("updateBookmarkInc", param);
+         this.insert("insertBookmarkInc", param);
      }
 	 
 	 
@@ -366,7 +359,6 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
  								 * button and then changes the URL). 
  								 * To delete the old bookmark, we have to extract its content id
  								 */	
- 								String oldUrlHash = bookmark.getHash();
  								oldContendID=bookmark.getContentId();
  								if(oldContendID != ConstantID.IDS_UNDEFINED_CONTENT_ID.getId()){
  									/*** if an old bookmark exists, but NOT called by bookmarklet, then we change the old bookmark 
@@ -435,7 +427,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
  					    /***insert a bookmark with attributes to bookmark table***/
                             insertBookmark(bookmark); 	
                         /***increments the URL Counter for bookmark entries, i.e. if hash ist double than increments the URL counter***/
-                            updateBookmarkInc(bookmark);
+                            insertBookmarkInc(bookmark);
                         /**********insert a List of Tags***************/
                             this.db.getTag().insertTags(param);
                             /*********TODO insertTagrelation including relationmanager**********/

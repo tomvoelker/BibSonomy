@@ -263,10 +263,10 @@
 		INSERT INTO urls (book_url,book_url_hash) VALUES (#bookmark.url#,#bookmark.urlHash#)
 	</insert>
 	
-    <update id="updateBookmarkInc" parameterClass="bookmarkParam">
-    INSERT INTO urls (book_url_hash) VALUES (#bookmark.urlHash#)ON DUPLICATE KEY UPDATE book_url_ctr=book_url_ctr+1
+    <insert id="insertBookmarkInc" parameterClass="bookmarkParam">
+    INSERT INTO urls (book_url_hash,book_url_ctr) VALUES (#bookmark.urlHash#,1)ON DUPLICATE KEY UPDATE book_url_ctr=book_url_ctr+1
 		<!-- UPDATE urls SET book_url_ctr=book_url_ctr+1 WHERE book_url_hash = #bookmark.urlHash#-->
-	</update>
+	</insert>
 
 	<update id="updateBookmarkHashDec" parameterClass="bookmarkParam">
 		UPDATE urls SET book_url_ctr=book_url_ctr-1 WHERE book_url_hash = #bookmark.urlHash# 
