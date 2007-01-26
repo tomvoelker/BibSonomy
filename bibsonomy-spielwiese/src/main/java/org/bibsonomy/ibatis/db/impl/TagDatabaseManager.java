@@ -1,19 +1,12 @@
 package org.bibsonomy.ibatis.db.impl;
 
-import java.awt.geom.GeneralPath;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.bibsonomy.ibatis.db.AbstractDatabaseManager;
 import org.bibsonomy.ibatis.params.GenericParam;
 import org.bibsonomy.ibatis.util.ExceptionUtils;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 
 

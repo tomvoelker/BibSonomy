@@ -1,22 +1,42 @@
 package org.bibsonomy.ibatis.db.impl;
 
+import helpers.ModifyGroupId;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 import org.bibsonomy.ibatis.db.AbstractDatabaseManager;
+import org.bibsonomy.ibatis.db.impl.TagDatabaseManager;
 import org.bibsonomy.ibatis.enums.ConstantID;
 import org.bibsonomy.ibatis.params.BibTexParam;
+import org.bibsonomy.ibatis.params.GenericParam;
 import org.bibsonomy.ibatis.util.DatabaseUtils;
+import org.bibsonomy.ibatis.util.ResourceUtils;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+
+import com.mysql.jdbc.UpdatableResultSet;
+
+import question.UpdateQuestion;
+import resources.Bibtex;
+import servlets.BibtexHandler.BibtexException;
 
 /**
  * Used to retrieve BibTexs from the database.
  * 
  * @author Christian Schenk
+ * @author mgr
  */
 public class BibTexDatabaseManager extends AbstractDatabaseManager {
 
+	
+	private static final int MAX_WAIT_TIMEOUT = 60; // in seconds
+	private static Random generator = new Random();
 	private final DatabaseManager db;
-
 	/**
 	 * Reduce visibility so only the {@link DatabaseManager} can instantiate
 	 * this class.
@@ -260,15 +280,28 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 		DatabaseUtils.setGroups(this.db, param);
 		return this.bibtexList("getBibTexByHashForUser", param);
 	}
-
+	/********get a content_id by a given user and a given hash***********/
+	public Integer getContentIdByUserAndHash(final BibTex bibtex){
+		return (Integer)this.queryForObject("getContentIdByUserAndHash", bibtex);
+	}
+	
+	/**********modify update to select, return is list of String**************/
+	public String getBibTexSimHashsByContentId(final BibTex param) {
+		// TODO not tested
+		return (String)this.queryForObject("getBibTexSimHashsByContentId", param);
+	}
 	/**
 	 * Inserts a publication into the database.
 	 */
-	public void insertBibTex(final BibTexParam param) {
+	public void insertBibTex(final BibTex param) {
 		// TODO not tested
 		this.insert("insertBibTex", param);
 	}
-
+	
+	public void insertBibTexLog(final BibTex param) {
+		// TODO not tested
+		this.insert("insertBibTexLog", param);
+	}
 	/**
 	 * Inserts a BibTex-hash into the database.
 	 */
@@ -280,32 +313,59 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 		this.insert("insertBibTexHash", param);
 	}
 
-	public void updateBibTexHashInc(final BibTexParam param) {
+	public void insertBibTexHash1Inc(final BibTex param) {
 		// TODO not tested
-		this.update("updateBibTexHashInc", param);
+		this.insert("insertBibTexHashInc", param);
+	}
+	
+	public void insertBibTexHash2Inc(final BibTex param) {
+		// TODO not tested
+		this.insert("insertBibTexHash2Inc", param);
+	}
+	
+	public void insertBibTexHash3Inc(final BibTex param) {
+		// TODO not tested
+		this.insert("insertBibTexHash3Inc", param);
+	}
+	
+	public void insertBibTexHash4Inc(final BibTex param) {
+		// TODO not tested
+		this.insert("insertBibTexHash4Inc", param);
 	}
 
-	public void updateBibTexHashDec(final BibTexParam param) {
+	public void updateBibTexHash1Dec(final BibTex param) {
 		// TODO not tested
 		this.update("updateBibTexHashDec", param);
 	}
 
-	public void updateBibTexLog(final BibTexParam param) {
+	public void updateBibTexHash2Dec(final BibTex param) {
+		// TODO not tested
+		this.update("updateBibTexHash2Dec", param);
+	}
+	public void updateBibTexHash3Dec(final BibTex param) {
+		// TODO not tested
+		this.update("updateBibTexHash3Dec", param);
+	}
+	public void updateBibTexHash4Dec(final BibTex param) {
+		// TODO not tested
+		this.update("updateBibTexHash4Dec", param);
+	}
+	public void updateBibTexLog(final BibTex param) {
 		// TODO not tested
 		this.update("updateBibTexLog", param);
 	}
 
-	public void updateBibTexDocument(final BibTexParam param) {
+	public void updateBibTexDocument(final BibTex param) {
 		// TODO not tested
 		this.update("updateBibTexDocument", param);
 	}
 
-	public void updateBibTexCollected(final BibTexParam param) {
+	public void updateBibTexCollected(final BibTex param) {
 		// TODO not tested
 		this.update("updateBibTexCollected", param);
 	}
 
-	public void updateBibTexExtended(final BibTexParam param) {
+	public void updateBibTexExtended(final BibTex param) {
 		// TODO not tested
 		this.update("updateBibTexExtended", param);
 	}
@@ -315,12 +375,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 		this.update("updateBibTexUrl", param);
 	}
 
-	public void getBibTexSimHashsByContentId(final BibTexParam param) {
-		// TODO not tested
-		this.update("getBibTexSimHashsByContentId", param);
-	}
-
-	public void deleteBibTexByContentId(final BibTexParam param) {
+	public void deleteBibTexByContentId(final BibTex param) {
 		// TODO not tested
 		this.update("deleteBibTexByContentId", param);
 	}
@@ -344,4 +399,254 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 		// TODO not tested
 		this.update("deleteBibTexUrlByContentId", param);
 	}
+	
+	
+	public int updateBibtex (GenericParam <BibTex>param, GenericParam<BibTex> duplicateParam, String currUser, boolean overwrite, String oldhash) {
+	    /*****TODO  Parameter should be reduce****************/
+		boolean isToDeleted = false;
+  	    boolean setToDeleted = false;
+  	    boolean isToInserted = false;
+  	    boolean setToInserted = false;
+		
+		boolean spammer = this.db.getGeneral().isSpammer(param);
+		/******** counter for succesfull bibtex inserts*************/
+		int bibSuccessCounter = 0; 
+		int oldcontentid =ConstantID.IDS_UNDEFINED_CONTENT_ID.getId();
+		boolean success;
+		return bibSuccessCounter;
+		
+
+		/* iterate over all complete bibtex objects */
+		for (BibTex bibtex: param.getResources()) {
+			param.setResource(bibtex);
+			int wait = 1;
+			success = false;
+			
+			while (wait < MAX_WAIT_TIMEOUT && !success) {
+				
+				try {
+					/* TODO:
+					 * rja, 2006-01-16, I changed user name from currUser to bib.getUser(), because
+					 * otherwise group-copy does not work. On the other hand this means, that I can
+					 * overwrite existing articles in the group (under which circumstances??)
+					 */
+					/* *************************************
+					 * duplicate checks
+					 * *************************************/
+					
+					/************give me a bibtex to given hash and user name**************/
+                    /************herausfinden, ob für diesen User Bibtex mit geg.Bibhash existiert***************/					
+					/*********TODO  create a appropriate method, the getContentIdByUserAndHash is already implemented, but doesn't work ******/
+					//int contentId=this.db.getBibTex().getContentIdByUserAndHash(bibtex);
+					if (contentId == ConstantID.IDS_UNDEFINED_CONTENT_ID.getId()) {
+						
+						 /*******the bibtex entry does NOT exist for that user ---> set toIns**/
+						 
+						setToInserted=true;
+						
+						// this is for doing a "move" operation, which is only done, if target does not exist
+						// check, if old hash is available and if we treat bibtex of currUser
+						
+						/*************not an optimal solution***************/
+						if (!"".equals(oldhash) && currUser.equals(bibtex.getUserName())) {
+							bibtex.setContentId(contentId);
+							setToDeleted=true;
+						}
+
+					} else { 
+						/*
+						 * the bibtex entry EXISTS for that user
+						 */
+						if (overwrite) {
+							// overwrite it --> set content id for delete
+							bibtex.setContentId(contentId);
+							setToDeleted=true;
+							setToInserted=true;
+						} else {
+							/* put duplicates into warning list */
+							/*******duplicates should be a list of bibtex objects******/
+							if (duplicateParam != null) ((List<BibTex>) duplicateParam).add(bibtex);
+							/* "remove" bibtex entry so that it is not inserted */
+							setToDeleted=false;
+							setToInserted=false;
+						}
+					}
+					
+					if (isToDeleted) {
+						/* *************************************
+						 * DELETE
+						 * *************************************/
+						oldcontentid = bibtex.getContentId();
+						/**********get simhashes by contentId**************/
+						String hashes=getBibTexSimHashsByContentId(bibtex);
+						/*******? bibtex.getHash();*******/
+						if(hashes==null){
+							/*
+							 * TODO: this is not good, since we should immediately proceed to the user with an error message!
+							 * The error message doesn't help, too, since the user gets back to the broken entry and tries to
+							 * re-enter it again (which will not work, since oldhash just does not exists any longer)
+							 * Solution would be: 
+							 * - find the entry, the user wants to edit (difficult)
+							 * - send him to the home page, together with an error message
+							 * - something else
+							 * 
+							 */
+							throw new BibtexException ("Entry not found in table!");	
+						}
+						
+						/*** log Bibtex*****/
+						insertBibTexLog(bibtex);
+						/** decrement hash counter with all different sinhashes **/
+						/********not the optimal solution***************/
+						updateBibTexHash1Dec(bibtex);
+						updateBibTexHash2Dec(bibtex);
+						updateBibTexHash3Dec(bibtex);
+						updateBibTexHash4Dec(bibtex);
+						
+						/***** delete tags for this item*********/
+						 this.db.getTag().deleteTags(param); 
+						 
+						// TODO delete all to the content related questions
+						/**UpdateQuestion.update(oldcontentid);*********/
+						/******* delete bibtex **********/
+						 deleteBibTexByContentId(bibtex);
+					} /*** delete***********/
+					if (isToInserted) {
+						/* *************************************
+						 * INSERT
+						 * *************************************/
+						
+						/*** create unique content_id ***/
+						bibtex.setContentId(param.getNewContentId());
+						
+					//	bibtex.setSpammer(spammer);
+						
+						/* insert into bibtex table */
+					    insertBibIntoDB(param,spammer);
+						
+						// insert tags, tas, tagtag, tagtagrelations into database
+						this.db.getTag().insertTags(param);
+						
+						/*******relationman.insertRelations(bib.getTag(), bib.getUser());*****************/
+						
+						/****count successful inserted bibtex entries and add them to a list**************/
+						bibSuccessCounter++;
+															
+						/** update documents and collector table, if item has been moved **/
+						if (isToDeleted) {
+
+							/** save content_id to log_bibtex **/
+							updateBibTexLog(bibtex);
+							
+							/*** Update content_id to linked document, if id has changed****/
+							updateBibTexDocument(bibtex);
+							/****** Update content_id in collector table, if id has changed****/
+							updateBibTexCollected(bibtex);
+							/******* update content_id in extended_fields table, if id has changed****/
+							updateBibTexExtended(bibtex);
+						}
+
+						
+					} /***********insert *************/
+					/*****TODO***stop transaction***********/
+					success = true;
+					
+				} catch (SQLException e) {
+					wait = wait * 2;
+					log.fatal("Could not insert bibtex objects, will wait at most " + wait + " seconds. Error was: " + e);
+					try {
+						Thread.sleep(generator.nextInt(wait));
+					} catch (InterruptedException i) {
+					}
+				} // catch SQLException (wait ...)
+				
+			} // while loop wait
+			if (!success && wait >= MAX_WAIT_TIMEOUT) {
+				log.fatal("Could not insert bibtex objects, waiting too long! ");
+				throw new SQLException("retry/wait timeout");
+						}
+		
+		}
+		return bibSuccessCounter;
+		}
+	
+	
+	private void insertBibIntoDB(GenericParam<BibTex> param, boolean spammer) throws SQLException {
+		
+		
+		  /**take care of spammers******/
+		 
+		
+		BibTex bibtex=param.getResource();
+		param.setGroupId(ResourceUtils.getGroupid(param.getGroupId(),true));
+		/****insert a bibtex object***************/
+		insertBibTex(bibtex);
+		/*********counter(increments) for different simhash(0-3)****************/
+		insertBibTexHash1Inc(bibtex);
+		insertBibTexHash2Inc(bibtex);
+		insertBibTexHash3Inc(bibtex);
+		insertBibTexHash4Inc(bibtex);
+
+	}
+	
+	/******TODO delete bibtex entries*******/
+	/********public void deleteBibtex(String currUser, GenericParam<BibTex> param) throws SQLException {
+		BibTex bibtex;
+		param.setResource(bibtex);
+		int oldcontentid=this.db.getBibTex().getContentIdByUserAndHash(bibtex);
+		// get content_id and check, if content_id exists
+		if (oldcontentid != Bibtex.UNDEFINED_CONTENT_ID) {
+			
+			
+			// log Bibtex
+			insertBibTexLog(bibtex);
+			
+			// delete tags for this item
+			deleteTags(param);
+			
+			// delete all related questions
+			UpdateQuestion.update(conn, oldcontentid);
+			
+			// get hashes
+			
+			stmtP_select_hashes.setInt (1, oldcontentid);
+			rst = stmtP_select_hashes.executeQuery();
+			
+			if (!rst.next()) {
+				throw new SQLException ("could not find hash in bibtex table");
+			}
+			
+			/* decrement hash counter */
+		/*	updateBibTexHash1Dec(bibtex);
+			updateBibTexHash2Dec(bibtex);
+			updateBibTexHash3Dec(bibtex);
+			updateBibTexHash4Dec(bibtex);
+			
+			
+			
+			// delete bibtex
+			stmtP_delete_bibtex.setInt(1, oldcontentid);
+			stmtP_delete_bibtex.executeUpdate();
+			
+			// delete link to related document
+			stmtP_delete_doc.setInt(1, oldcontentid);
+			stmtP_delete_doc.executeUpdate();
+			
+			// delete id in collector table
+			stmtP_delete_collected.setInt(1, oldcontentid);
+			stmtP_delete_collected.executeUpdate();
+			
+			// delete id in collector table
+			stmtP_delete_extended.setInt(1, oldcontentid);
+			stmtP_delete_extended.executeUpdate();*/
+			
+        /*******commit transaction************/			
+	//	}
+//}
+	
+	
+	
+	
+	
 }
+	

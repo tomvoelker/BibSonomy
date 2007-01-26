@@ -117,9 +117,13 @@
 		WHERE <include refid="bibtexSimHash"/>
 		ORDER BY b.date DESC, b.content_id DESC
 	</select>
-
+	
 	<select id="getBibTexByHashCount" resultClass="int" parameterClass="bibtexParam">
 		SELECT ctr FROM bibhash WHERE hash = #hash# AND type = #simHash#
+	</select>
+
+	<select id="getContentIdByUserAndHash" resultClass="int" parameterClass="bibtexParam">
+		SELECT contendID FROM  WHERE hash = #hash# AND type = #simHash#
 	</select>
 
 	<!--
@@ -309,14 +313,45 @@
 	<insert id="insertBibTexHash" parameterClass="bibtexParam">
 		INSERT INTO bibhash (hash, type) VALUES (#hash#, #simHash#)
 	</insert>
+	
+	<insert id="insertBibTexHash0Inc" parameterClass="bibtexParam">
+	INSERT INTO bibhash(hash,type,ctr) VALUES (#bibtex.simHash0#,0,1)ON DUPLICATE KEY UPDATE ctr=ctr+1 where type=0 and has=#simhash0#;
+	</insert>
+	
+	<insert id="insertBibTexHash1Inc" parameterClass="bibtexParam">
+	INSERT INTO bibhash(hash,type,ctr) VALUES (#bibtex.simHash1#,1,1)ON DUPLICATE KEY UPDATE ctr=ctr+1 where type=1 and has=#simhash1#;
+	</insert>
+	
+	<insert id="insertBibTexHash2Inc" parameterClass="bibtexParam">
+	INSERT INTO bibhash(hash,type,ctr) VALUES (#bibtex.simHash2#,2,1)ON DUPLICATE KEY UPDATE ctr=ctr+1 where type=2 and has=#simhash2#;
+	</insert>
+	
+	<insert id="insertBibTexHash1Inc" parameterClass="bibtexParam">
+	INSERT INTO bibhash(hash,type,ctr) VALUES (#bibtex.simHash0#,0,1)ON DUPLICATE KEY UPDATE ctr=ctr+1 where type=0 and has=#simhash0#;
+	</insert>
+	
 
+	
 	<update id="updateBibTexHashInc" parameterClass="bibtexParam">
 		UPDATE bibhash SET ctr=ctr+1 WHERE hash = #hash# AND type = #simHash#
 	</update>
 
-	<update id="updateBibTexHashDec" parameterClass="bibtexParam">
-		UPDATE bibhash SET ctr=ctr-1 WHERE hash = #hash# AND type = #simHash#
+	<update id="updateBibTexHas1Dec" parameterClass="bibtexParam">
+		UPDATE bibhash SET ctr=ctr-1 WHERE hash = #hash1# AND type = 0
 	</update>
+	
+	<update id="updateBibTexHash2Dec" parameterClass="bibtexParam">
+		UPDATE bibhash SET ctr=ctr-1 WHERE hash = #hash2# AND type = 1
+	</update>
+	
+	<update id="updateBibTexHash3Dec" parameterClass="bibtexParam">
+		UPDATE bibhash SET ctr=ctr-1 WHERE hash = #hash3# AND type = 2
+	</update>
+	
+	<update id="updateBibTexHash4Dec" parameterClass="bibtexParam">
+		UPDATE bibhash SET ctr=ctr-1 WHERE hash = #hash4# AND type = 3
+	</update>
+	
 
 	<update id="updateBibTexLog" parameterClass="bibtexParam">
 		UPDATE log_bibtex SET new_content_id = #bibtex.contentId#

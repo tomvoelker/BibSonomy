@@ -30,9 +30,17 @@ public abstract class Resource {
 	// private String group; FIXME was this meant to be groupName or groupId
 	// private String title; FIXME belongs to BibTex?
 	// private String privnote; FIXME belongs to BibTex?
-
+    private boolean spammer;
 	
-    public abstract String getHash();
+    public boolean isSpammer() {
+		return this.spammer;
+	}
+
+	public void setSpammer(boolean spammer) {
+		this.spammer = spammer;
+	}
+
+	public abstract String getHash();
 
 	public String getOldHash() {
 		return this.oldHash;

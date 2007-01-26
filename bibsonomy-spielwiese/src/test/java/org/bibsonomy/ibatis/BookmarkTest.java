@@ -146,11 +146,6 @@ public class BookmarkTest extends AbstractSqlMapTest {
 	}
 
 	@Test
-	public void updateBookmarkInc() {
-		this.db.getBookmark().updateBookmarkInc(this.bookmarkParam);
-	}
-
-	@Test
 	public void updateBookmarkHashDec() {
 		this.db.getBookmark().updateBookmarkHashDec(this.bookmarkParam);
 

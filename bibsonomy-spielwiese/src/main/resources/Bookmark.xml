@@ -267,6 +267,11 @@
     INSERT INTO urls (book_url_hash,book_url_ctr) VALUES (#bookmark.urlHash#,1)ON DUPLICATE KEY UPDATE book_url_ctr=book_url_ctr+1
 		<!-- UPDATE urls SET book_url_ctr=book_url_ctr+1 WHERE book_url_hash = #bookmark.urlHash#-->
 	</insert>
+<insert id="insertBibTexHashInc" parameterClass="bibtexParam">
+	INSERT INTO bibhash(hash,ctr) VALUES (#bibtex.urlHash#,1)ON DUPLICATE KEY UPDATE ctr=ctr+1
+		<!--  UPDATE bibhash SET ctr=ctr+1 WHERE hash = #hash# AND type = #simHash#-->
+	</insert>
+
 
 	<update id="updateBookmarkHashDec" parameterClass="bookmarkParam">
 		UPDATE urls SET book_url_ctr=book_url_ctr-1 WHERE book_url_hash = #bookmark.urlHash# 
