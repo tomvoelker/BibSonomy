@@ -8,13 +8,13 @@ import java.util.List;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Tag;
 
-
 public class ResourceUtils {
-	
-    /*** to set Group_id in case of spamm detection ***/
-	/*** const to set/clear first bit of an integer***/
-	public static final int CONST_SET_1ST_BIT    = 0x80000000; //use logical OR  (|) to set second bit
-	public static final int CONST_CLEAR_1ST_BIT  = 0x7FFFFFFF; //use logical AND (&) to clear second bit
+
+	/** To set groupId in case of spam detection. Use logical OR to set 2nd bit */
+	private static final int CONST_SET_1ST_BIT = 0x80000000;
+	/** To set/clear first bit of an integer. Use logical AND to clear 2nd bit */
+	private static final int CONST_CLEAR_1ST_BIT = 0x7FFFFFFF;
+
 	/**
 	 * Calculates the MD5-Hash of a String s and returns it encoded as a hex
 	 * string of 32 characters length.
@@ -47,28 +47,33 @@ public class ResourceUtils {
 	 * @return hex string representation of buffer
 	 */
 	public static String toHexString(final byte[] buffer) {
-		final StringBuffer result = new StringBuffer();
+		final StringBuffer rVal = new StringBuffer();
 		for (int i = 0, n = buffer.length; i < n; i++) {
 			String hex = Integer.toHexString((int) buffer[i]);
 			if (hex.length() == 1) {
 				hex = "0" + hex;
 			}
-			result.append(hex.substring(hex.length() - 2));
+			rVal.append(hex.substring(hex.length() - 2));
 		}
-		return result.toString();
+		return rVal.toString();
 	}
-	
-	/**  in case of spamm detection **/
-	public static int getGroupid(int groupid, boolean isSpammer) {
+
+	/**
+	 * In case of spam detection
+	 */
+	public static int getGroupId(final int groupId, final boolean isSpammer) {
 		if (isSpammer) {
-			return groupid | CONST_SET_1ST_BIT;			
+			return groupId | CONST_SET_1ST_BIT;
 		} else {
-			// NOTE: "return groupid" is not enough, since we want to use that to unflag spammers posts, as well 
-			return groupid & CONST_CLEAR_1ST_BIT;
+			// NOTE: "return groupId" is not enough, since we want to use that
+			// to unflag spammers posts, as well
+			return groupId & CONST_CLEAR_1ST_BIT;
 		}
 	}
-	/*** TODO implement doUpdate Recommender ***/
+
+	/**
+	 * TODO implement doUpdate Recommender
+	 */
 	public static void doUpdate(final List<Tag> oldResourceTags, final Bookmark bookmark) {
-	
-}
+	}
 }

@@ -3,21 +3,22 @@ package org.bibsonomy.model;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
+import java.util.List;
 
 import org.bibsonomy.DefaultValues;
 
 /**
- * This class is used to test how to read/write
- * 
- * @author Robert Jäschke
+ * This class defines a user.
  */
 public class User {
 
 	private String name;
-	private Date registrationDate;
-	private String email;
 	private String realname;
+	private String email;
+	private Date registrationDate;
 	private URL homepage;
+	/** The user belongs to these groups */
+	private List<Group> groups;
 
 	public String getEmail() {
 		return email;
@@ -67,4 +68,12 @@ public class User {
 	public void setRegistrationDate(Date registrationDate) {
 		this.registrationDate = registrationDate;
 	}
+
+	public List<Group> getGroups() {
+		return this.groups;
+	}
+
+	public void setGroups(List<Group> groups) {
+		this.groups = groups;
+	}	
 }

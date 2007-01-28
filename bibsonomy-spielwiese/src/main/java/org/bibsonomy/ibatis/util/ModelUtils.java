@@ -1,14 +1,11 @@
 package org.bibsonomy.ibatis.util;
 
-
-import java.util.ArrayList;
 import java.util.Date;
 
 import org.bibsonomy.ibatis.enums.ConstantID;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
 
 /**
  * Methods to create objects from the model like {@link Bookmark} or
@@ -17,7 +14,7 @@ import org.bibsonomy.model.Tag;
  * @author Christian Schenk
  */
 public class ModelUtils {
-     
+
 	private static void setResourceDefaults(final Resource resource) {
 		// resource.setContentId(1);
 		resource.setCount(0);
@@ -26,7 +23,6 @@ public class ModelUtils {
 		resource.setGroupName("kde");
 		resource.setUrl("");
 		resource.setUserName("kde");
-		
 	}
 
 	/**
@@ -38,12 +34,9 @@ public class ModelUtils {
 		rVal.setUserName("hallo");	
 		rVal.setDescription("test");
 		rVal.setExtended("test");
-		rVal.setTags(new ArrayList<Tag>());
 		rVal.setUrl("http://www.bibonomy.org");
-		rVal.setHash("123453747590");
 		rVal.setDate(date);
 		rVal.setContentId(2);
-	    
 		return rVal;
 	}
 
@@ -81,7 +74,6 @@ public class ModelUtils {
 		rVal.setSchool("test");
 		rVal.setScraperId(1);
 		rVal.setSeries("test");
-		rVal.setTags(new ArrayList<Tag>());
 		rVal.setTitle("test");
 		rVal.setType("test");
 		rVal.setUrl("test");

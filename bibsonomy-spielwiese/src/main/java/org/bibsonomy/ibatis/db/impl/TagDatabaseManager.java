@@ -9,29 +9,28 @@ import org.bibsonomy.ibatis.params.GenericParam;
 import org.bibsonomy.ibatis.util.ExceptionUtils;
 import org.bibsonomy.model.Tag;
 
-
-
 /**
  * Used to retrieve set Tags from the database.
  * 
  * @author Christian Schenk
  * @author mgr
  */
-
 public class TagDatabaseManager extends AbstractDatabaseManager {
+
 	/*
 	 * only a maximum of 10 tags can be set by the user
 	 * it serves to restrict the system behaviour in case of e.g. 200 Tags. 
 	 * Only a maximum of 10X10 Tag-Combinations can be computed
 	 */
-	
 	private static final int MAX_TAGS_TO_INSERT = 10;
+
 	/**
 	 * Reduce visibility so only the {@link DatabaseManager} can instantiate
 	 * this class.
 	 */
 	TagDatabaseManager() {
 	}
+
 	/*******return all tags for given TagId***********/
 	public Tag getTagById(final int param) {
 		return (Tag) this.queryForObject("getTagById", param);
@@ -42,40 +41,38 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		// TODO not tested
 		return this.tagList("getTagByCount", param);
 	}
-	
+
 	/*********return all tags for a given contentId*************/
 	public List<Tag> getTasByContendId(final GenericParam param) {
-		//TODO not tested
+		// TODO not tested
 		return this.tagList("getTasByTagName", param);
-     }
-	
+	}
+
 	/****************************
 	 * update increments and decrements for Tag 
 	 * and Tag-Tag combinations
 	 * *************************/
 	
 	// Generic Para übernehmen
-	public void updateTagTagInc(final GenericParam param){
-		 // TODO not tested
-		this.update("updateTagTagInc",param);
-		
+	public void updateTagTagInc(final GenericParam param) {
+		// TODO not tested
+		this.update("updateTagTagInc", param);
 	}
+
 	/*********snot **************/
-	public void updateTagTagDec(Tag tagFirst, Tag tagSecond, GenericParam param){
+	public void updateTagTagDec(Tag tagFirst, Tag tagSecond, GenericParam param) {
 		param.setTag(tagFirst);
 		param.setTag(tagSecond);
-		this.update("updateTagTagDec",param);
-		
+		this.update("updateTagTagDec", param);
 	}
-	
-	
-	public void updateTagDec(final Tag tagParam){
-		 // TODO not tested
-		this.update("updateTagDec",tagParam);
-		
+
+	public void updateTagDec(final Tag tagParam) {
+		// TODO not tested
+		this.update("updateTagDec", tagParam);
+
 	}
-	
-	public void insertTagTagBatch(final GenericParam  param){
+
+	public void insertTagTagBatch(final GenericParam param) {
 		// TODO not tested
 		this.insert("insertTagTagBatch", param);
 	}
@@ -86,35 +83,33 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		return (Integer) this.queryForObject("getNewTasId", param);
 	}
 
- 
-	public void updateTasId(final int param){
-	 // TODO not tested
-	this.update("updateTasId", param);
-	
-	}
- 
-	public void deleteTas(final GenericParam param){
-    //TODO not tested	
-    this.delete("deleteTas", param);	
-	
+	public void updateTasId(final int param) {
+		// TODO not tested
+		this.update("updateTasId", param);
 	}
 
-	public void insertLogTas(final GenericParam param){
-    // //TODO not tested	
-	this.insert("insertLogTas", param);
-	
+	public void deleteTas(final GenericParam param) {
+		// TODO not tested
+		this.delete("deleteTas", param);
 	}
-	public List <Tag> deleteTags (GenericParam param) throws SQLException {
-		/*** get tags for this content_id ***/
-		param.getResource().setTags(getTasByContendId(param));
+
+	public void insertLogTas(final GenericParam param) {
+		// TODO not tested
+		this.insert("insertLogTas", param);
+	}
+
+	public List<Tag> deleteTags(final GenericParam param) throws SQLException {
+		// get tags for this contentId
+		// FIXME param.getResource().setTags(getTasByContendId(param));
 		final List<Tag> tagSet = param.getResource().getTags();
-        /***add these tags to list and decrease counter in tag table***/
-		for(Tag  tag: tagSet){
-	   /***decrease counter in tag table***/
+
+		// add these tags to list and decrease counter in tag table
+		for (final Tag tag : tagSet) {
+			// decrease counter in tag table
 			updateTagDec(tag);
-		}							
+		}
+
 		if (tagSet.size() > MAX_TAGS_TO_INSERT) {
-			
 			/*** too much tags: batch the job**********/
 			/** a note regarding tag batch processing:
 			 * the batch table has four columns:
@@ -130,50 +125,53 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			insertTagTagBatch(param);
 		} else {
 			/*****compute all Tag-Tag combinations with o(n_2)********/
-			for(Tag tag1:  tagSet){
-				for(Tag tag2: tagSet){
-					if(!tag1.equals(tag2)){
-						updateTagTagDec(tag1,tag2,param);
+			for (final Tag tag1 : tagSet) {
+				for (final Tag tag2 : tagSet) {
+					if (!tag1.equals(tag2)) {
+						updateTagTagDec(tag1, tag2, param);
 					}
 				}
 			}
 		}
-		/********** log all tas related to this bookmark********/ 
+
+		// log all tas related to this bookmark 
 		insertLogTas(param);
-		/********** delete all tas related to this bookmark*******/
+		// delete all tas related to this bookmark
 		deleteTas(param);
+
 		return tagSet;
 	}
+
 	/**********insert a set of tags***********/
-	public void insertTags (GenericParam param) throws SQLException{
-		/**********generate a List of Tags*******/
-		List<Tag> allTags=param.getTags();
+	public void insertTags(final GenericParam param) throws SQLException {
+		// generate a list of tags
+		List<Tag> allTags = param.getTags();
 		int tasId;
-		HashMap<Tag,Integer> tasIDs = new HashMap<Tag,Integer>();
+		HashMap<Tag, Integer> tasIDs = new HashMap<Tag, Integer>();
+
+		// if there're to many tags, do it in a batch job
 		if (allTags.size() > MAX_TAGS_TO_INSERT) {
-		/******* do it in a batch job*********/
 			insertTagTagBatch(param);
-     			for(Tag tagfirst: allTags){
-     				tasId=insertTas(tagfirst, param);
-     				insertTag(tagfirst);
-     				/********remember tasId for tagtagrelation*************/
-     				tasIDs.put(tagfirst, tasId);
-				
+			for (Tag tagfirst : allTags) {
+				tasId = insertTas(tagfirst, param);
+				insertTag(tagfirst);
+				// remember tasId for tagtagrelation
+				tasIDs.put(tagfirst, tasId);
 			}
-		} 	else {
+		} else {
 			/*
 			 * do it here
 			 */
-			for(Tag tagfirst: allTags){
-				/*********not correct**********/
+			for (Tag tagfirst : allTags) {
+				// not correct
 				tasId = insertTas(tagfirst, param);
 				insertTag(tagfirst);
-				/********remember tasId for tagtagrelation*************/
+				// remember tasId for tagtagrelation
 				tasIDs.put(tagfirst, tasId);
-				/******* update tagtag table *******/
-				for(Tag tagsecond: allTags){
-					if(!tagfirst.equals(tagsecond)){
-						insertTagTag(tagfirst,tagsecond);
+				// update tagtag table
+				for (Tag tagsecond : allTags) {
+					if (!tagfirst.equals(tagsecond)) {
+						insertTagTag(tagfirst, tagsecond);
 					}
 				}
 			}
@@ -182,13 +180,13 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	
 	
 	
-	/*************insert tag_name into tags***********/
+	/** ***********insert tag_name into tags********** */
 	public void insertTag(Tag tag) {
 		// TODO not tested
 		this.insert("insertTag",tag);
 		
 		}
-	
+
 	/****insert Tag-Tag Combination****/
 	public void insertTagTag(Tag tag1,Tag tag2){
 	/*******check if the two first elements of tag taglist contains tag-entries*********/

@@ -1,5 +1,6 @@
 package org.bibsonomy.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -7,32 +8,39 @@ import org.bibsonomy.ibatis.enums.ConstantID;
 
 /**
  * Everything, which can be tagged in BibSonomy, is derived from this class.
- * 
- * @author Christian Schenk
  */
 public abstract class Resource {
 
 	/** An Id for this resource; by default ConstantID.IDS_UNDEFINED_CONTENT_ID */
 	private int contentId;
 	/** The userName who tagged this resource */
-	private String userName;
-	private String groupName;
+	private String userName; // FIXME belongs to Post?
+	private String groupName; // FIXME belongs to Post?
 	/** The groupId of this resource; by default ConstantID.GROUP_PUBLIC */
-	private int groupId;
+	private int groupId; // FIXME belongs to Post?
 	/** A timestamp for this resource */
-	private Date date;
-	private String url="";
+	private Date date; // FIXME belongs to Post?
+	private String url=""; // FIXME belongs to Bookmark?
 	private int count;
 	private String oldHash  = "";
-    private List<Tag> tags;
+    private List<Tag> tags; // FIXME belongs to Post?
     private int newTasId;
+    private boolean spammer; // FIXME belongs to User?
+
 	// XXX: put them only in the model, if we really need them
 	// private String group; FIXME was this meant to be groupName or groupId
 	// private String title; FIXME belongs to BibTex?
 	// private String privnote; FIXME belongs to BibTex?
-    private boolean spammer;
-	
-    public boolean isSpammer() {
+
+	public Resource() {
+		this.contentId = ConstantID.IDS_UNDEFINED_CONTENT_ID.getId();
+		this.groupId = ConstantID.GROUP_PUBLIC.getId();
+		this.tags = new ArrayList<Tag>();
+		// this.group = "public";
+		// this.title = "";
+	}
+
+	public boolean isSpammer() {
 		return this.spammer;
 	}
 
@@ -48,13 +56,6 @@ public abstract class Resource {
 
 	public void setOldHash(Resource resource) {
 		this.oldHash = resource.getHash();
-	}
-
-	public Resource() {
-		this.contentId = ConstantID.IDS_UNDEFINED_CONTENT_ID.getId();
-		this.groupId = ConstantID.GROUP_PUBLIC.getId();
-		// this.group = "public";
-		// this.title = "";
 	}
 
 	public int getContentId() {
@@ -117,8 +118,13 @@ public abstract class Resource {
 		return this.tags;
 	}
 
-	public void setTags(List<Tag> tags) {
-		this.tags = tags;
+	/**
+	 * Adds a tag with the given name.
+	 * 
+	 * @param tag Name of the tag.
+	 */
+	public void addTag(final String tag) {
+		this.tags.add(new Tag(tag));
 	}
 
 	public int getNewTasId() {
@@ -128,6 +134,4 @@ public abstract class Resource {
 	public void setNewTasId(int newTasId) {
 		this.newTasId = newTasId;
 	}
-
-	    	
 }

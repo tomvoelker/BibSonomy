@@ -38,7 +38,7 @@ public final class DatabaseManager {
 	 */
 	public final void setReadonly() {
 		this.getGeneral().setReadonly(true);
-		this.getBookmark().setReadonly(false);
+		this.getBookmark().setReadonly(true);
 		this.getBibTex().setReadonly(true);
 		this.getTag().setReadonly(true);
 	}

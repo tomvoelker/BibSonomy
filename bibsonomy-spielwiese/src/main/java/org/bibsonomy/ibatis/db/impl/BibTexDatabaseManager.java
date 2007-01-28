@@ -1,29 +1,17 @@
 package org.bibsonomy.ibatis.db.impl;
 
-import helpers.ModifyGroupId;
-
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
 import org.bibsonomy.ibatis.db.AbstractDatabaseManager;
-import org.bibsonomy.ibatis.db.impl.TagDatabaseManager;
 import org.bibsonomy.ibatis.enums.ConstantID;
 import org.bibsonomy.ibatis.params.BibTexParam;
 import org.bibsonomy.ibatis.params.GenericParam;
 import org.bibsonomy.ibatis.util.DatabaseUtils;
+import org.bibsonomy.ibatis.util.ExceptionUtils;
 import org.bibsonomy.ibatis.util.ResourceUtils;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
-
-import com.mysql.jdbc.UpdatableResultSet;
-
-import question.UpdateQuestion;
-import resources.Bibtex;
-import servlets.BibtexHandler.BibtexException;
 
 /**
  * Used to retrieve BibTexs from the database.
@@ -33,10 +21,10 @@ import servlets.BibtexHandler.BibtexException;
  */
 public class BibTexDatabaseManager extends AbstractDatabaseManager {
 
-	
 	private static final int MAX_WAIT_TIMEOUT = 60; // in seconds
-	private static Random generator = new Random();
+	private static Random generator = new Random(); // FIXME
 	private final DatabaseManager db;
+
 	/**
 	 * Reduce visibility so only the {@link DatabaseManager} can instantiate
 	 * this class.
@@ -399,8 +387,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 		// TODO not tested
 		this.update("deleteBibTexUrlByContentId", param);
 	}
-	
-	
+
 	public int updateBibtex (GenericParam <BibTex>param, GenericParam<BibTex> duplicateParam, String currUser, boolean overwrite, String oldhash) {
 	    /*****TODO  Parameter should be reduce****************/
 		boolean isToDeleted = false;
@@ -413,8 +400,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 		int bibSuccessCounter = 0; 
 		int oldcontentid =ConstantID.IDS_UNDEFINED_CONTENT_ID.getId();
 		boolean success;
-		return bibSuccessCounter;
-		
+//		return bibSuccessCounter; FIXME
 
 		/* iterate over all complete bibtex objects */
 		for (BibTex bibtex: param.getResources()) {
@@ -437,7 +423,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 					/************give me a bibtex to given hash and user name**************/
                     /************herausfinden, ob für diesen User Bibtex mit geg.Bibhash existiert***************/					
 					/*********TODO  create a appropriate method, the getContentIdByUserAndHash is already implemented, but doesn't work ******/
-					//int contentId=this.db.getBibTex().getContentIdByUserAndHash(bibtex);
+					int contentId=this.db.getBibTex().getContentIdByUserAndHash(bibtex); // FIXME
 					if (contentId == ConstantID.IDS_UNDEFINED_CONTENT_ID.getId()) {
 						
 						 /*******the bibtex entry does NOT exist for that user ---> set toIns**/
@@ -489,11 +475,11 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 							 * - find the entry, the user wants to edit (difficult)
 							 * - send him to the home page, together with an error message
 							 * - something else
-							 * 
 							 */
-							throw new BibtexException ("Entry not found in table!");	
+//							throw new BibtexException("Entry not found in table!");
+							ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Entry not found in table!");
 						}
-						
+
 						/*** log Bibtex*****/
 						insertBibTexLog(bibtex);
 						/** decrement hash counter with all different sinhashes **/
@@ -563,7 +549,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 			} // while loop wait
 			if (!success && wait >= MAX_WAIT_TIMEOUT) {
 				log.fatal("Could not insert bibtex objects, waiting too long! ");
-				throw new SQLException("retry/wait timeout");
+//				throw new SQLException("retry/wait timeout");
 						}
 		
 		}
@@ -578,7 +564,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 		 
 		
 		BibTex bibtex=param.getResource();
-		param.setGroupId(ResourceUtils.getGroupid(param.getGroupId(),true));
+		param.setGroupId(ResourceUtils.getGroupId(param.getGroupId(),true));
 		/****insert a bibtex object***************/
 		insertBibTex(bibtex);
 		/*********counter(increments) for different simhash(0-3)****************/

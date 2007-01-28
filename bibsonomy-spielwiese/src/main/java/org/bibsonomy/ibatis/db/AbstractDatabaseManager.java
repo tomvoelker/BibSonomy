@@ -35,7 +35,7 @@ public abstract class AbstractDatabaseManager {
 
 	/** Used to determine whether we want to retrieve an object or a list */
 	private enum QueryFor {
-		OBJECT, LIST, VOID;
+		OBJECT, LIST;
 	}
 
 	/** Used to determine the execution of an select, insert, update or delete. */
@@ -120,6 +120,7 @@ public abstract class AbstractDatabaseManager {
 	protected void insert(final String query, final Object param) {
 		this.insertUpdateDelete(query, param, StatementType.INSERT);
 	}
+
 	/**
 	 * Updates an object in the database.
 	 */
@@ -145,7 +146,6 @@ public abstract class AbstractDatabaseManager {
 		return this.transactionWrapper(query, param, StatementType.SELECT, queryFor);
 	}
 
-	
 	/**
 	 * This is another convenience method, which executes insert, update or
 	 * delete statements.
@@ -153,7 +153,7 @@ public abstract class AbstractDatabaseManager {
 	private void insertUpdateDelete(final String query, final Object param, final StatementType statementType) {
 		this.transactionWrapper(query, param, statementType, null);
 	}
- 
+
 	/**
 	 * This method combines all calls to the SqlMap. This way we can catch the
 	 * exceptions in one place and surround the queries with transaction

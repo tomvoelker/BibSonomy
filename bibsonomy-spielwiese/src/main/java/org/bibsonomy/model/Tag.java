@@ -1,11 +1,18 @@
 package org.bibsonomy.model;
 
+/**
+ * This class represents a tag.
+ */
 public class Tag {
 
 	private int id;
-	private String name;
+	private final String name;
 	private String stem;
 	private int count;
+
+	public Tag(final String name) {
+		this.name = name;
+	}
 
 	public int getId() {
 		return this.id;
@@ -25,10 +32,6 @@ public class Tag {
 
 	public String getName() {
 		return this.name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public String getStem() {

@@ -8,7 +8,7 @@ import org.bibsonomy.ibatis.db.AbstractDatabaseManager;
 import org.bibsonomy.ibatis.enums.ConstantID;
 import org.bibsonomy.ibatis.params.BookmarkParam;
 import org.bibsonomy.ibatis.params.GenericParam;
-import org.bibsonomy.ibatis.util.DatabaseUtils;         
+import org.bibsonomy.ibatis.util.DatabaseUtils;
 import org.bibsonomy.ibatis.util.ResourceUtils;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Tag;
@@ -21,15 +21,12 @@ import org.bibsonomy.model.User;
  * @author Christian Schenk
  * @author mgr
  */
-
-
 public class BookmarkDatabaseManager extends AbstractDatabaseManager {
-	
+
 	private static final int MAX_WAIT_TIMEOUT = 60; 
 	private static Random generator = new Random();
 	private final DatabaseManager db;
-	
-	
+
 	/**
 	 * Reduce visibility so only the {@link DatabaseManager} can instantiate
 	 * this class.
@@ -38,7 +35,6 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 		this.db = db;
 	}
 
-	
 	/**
 	 * <em>/tag/EinTag</em>, <em>/viewable/EineGruppe/EinTag</em><br/><br/>
 	 * 
@@ -317,8 +313,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
         	 return(Integer)this.queryForObject("getContentIDForBookmark", param);   
         
      }
-	
-     
+
      public boolean manipulateMyBookmark(GenericParam<Bookmark> param, User currUser,boolean overwrite, boolean already_change) throws SQLException {
     	  boolean isToDeleted = false;
     	  boolean setToDeleted = false;
@@ -414,7 +409,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
  					/***if current user is detected as spammer, modify group id***/
  					
  					if(spammer){
- 						bookmark.setGroupId(ResourceUtils.getGroupid(bookmark.getGroupId(),true));
+ 						bookmark.setGroupId(ResourceUtils.getGroupId(bookmark.getGroupId(),true));
  					}
  					
  					/*** create a unique contentID from table id_generator (get value from the tabel ids) ***/

@@ -42,7 +42,6 @@ public abstract class GenericParam <T extends Resource> {
 	private String search;
 	/** This is the current user. */
 	private String userName;
-	
 	/**
 	 * The current user, who would be identified by userName, can look at other
 	 * people's content. This requested user is identified by this string.
@@ -282,7 +281,4 @@ public abstract class GenericParam <T extends Resource> {
 	public void setNewTasId(int newTasId) {
 		this.newTasId = newTasId;
 	}
-	
-	
-	
 }
