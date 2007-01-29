@@ -406,7 +406,6 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 		int bibSuccessCounter = 0; 
 		int oldcontentid =ConstantID.IDS_UNDEFINED_CONTENT_ID.getId();
 		boolean success;
-//		return bibSuccessCounter; FIXME
 
 		/* iterate over all complete bibtex objects */
 		for (BibTex bibtex: param.getResources()) {
@@ -427,9 +426,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 					 * *************************************/
 					
 					/************give me a bibtex to given hash and user name**************/
-                    /************herausfinden, ob für diesen User Bibtex mit geg.Bibhash existiert***************/					
-					/*********TODO  create a appropriate method, the getContentIdByUserAndHash is already implemented, but doesn't work ******/
-					int contentId=this.db.getBibTex().getContentIdByUserAndHash(bibtex); // FIXME
+					int contentId=getContentIdByUserAndHash(bibtex); // FIXME
 					if (contentId == ConstantID.IDS_UNDEFINED_CONTENT_ID.getId()) {
 						
 						 /*******the bibtex entry does NOT exist for that user ---> set toIns**/

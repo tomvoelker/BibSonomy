@@ -45,12 +45,6 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 	 * @return 
 	 */
 	
-	/*
-	 * a whole sequence of sql statements execution
-	 */
-	
-	
-	
 		
 		
 	public List<Bookmark> getBookmarkByTagNames(final BookmarkParam param) {

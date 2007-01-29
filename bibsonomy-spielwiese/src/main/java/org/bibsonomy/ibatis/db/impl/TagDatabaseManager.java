@@ -145,6 +145,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	/**********insert a set of tags***********/
 	public void insertTags(final GenericParam param) throws SQLException {
 		// generate a list of tags
+		 /*********wo erfolgt Abfrage aus DB?**************/
 		List<Tag> allTags = param.getTags();
 		int tasId;
 		HashMap<Tag, Integer> tasIDs = new HashMap<Tag, Integer>();
@@ -198,10 +199,6 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
      	/**********not a optimal solution*************/
      	else{   /*****if the list two valid tag entries*********/
      		    
-     		    List<Tag> tagList=null;
-     		    /*******add teo tags into a list a give them as argument for the insert-method*********/
-     		    tagList.add(tag1);
-     		    tagList.add(tag2);
      		    /*****TODO check if elements are accessible via iBatis*********/
      			this.insert("insertTagTag", new Tag[] {tag1, tag2});
      	}
