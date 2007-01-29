@@ -178,7 +178,7 @@ public abstract class AbstractDatabaseManager {
 		try {
 			// If the database is readonly we start a transaction, so we can
 			// commit/abort it later
-			this.sqlMap.startTransaction();
+			if (this.isReadonly()) this.sqlMap.startTransaction();
 
 			switch (statementType) {
 			case SELECT:
@@ -207,10 +207,15 @@ public abstract class AbstractDatabaseManager {
 			try {
 				// If the database is writeable we commit the transaction
 				if (!this.isReadonly()) this.sqlMap.commitTransaction();
-				// Regardless of the commit we have to call endTransaction
-				this.sqlMap.endTransaction();
 			} catch (final SQLException ex) {
-				ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't execute query '" + query + "'");
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't commit transaction for query '" + query + "'");
+			} finally {
+				try {
+					// Regardless of the commit we have to call endTransaction
+					if (this.isReadonly()) this.sqlMap.endTransaction();
+				} catch (final SQLException ex) {
+					ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't end transaction for query '" + query + "'");
+				}
 			}
 		}
 		return rVal;

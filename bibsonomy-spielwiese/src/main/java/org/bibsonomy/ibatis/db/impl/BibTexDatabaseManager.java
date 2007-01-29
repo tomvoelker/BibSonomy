@@ -268,16 +268,18 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 		DatabaseUtils.setGroups(this.db, param);
 		return this.bibtexList("getBibTexByHashForUser", param);
 	}
+
 	/********get a content_id by a given user and a given hash***********/
 	public Integer getContentIdByUserAndHash(final BibTex bibtex){
 		return (Integer)this.queryForObject("getContentIdByUserAndHash", bibtex);
 	}
-	
+
 	/**********modify update to select, return is list of String**************/
 	public String getBibTexSimHashsByContentId(final BibTex param) {
 		// TODO not tested
 		return (String)this.queryForObject("getBibTexSimHashsByContentId", param);
 	}
+
 	/**
 	 * Inserts a publication into the database.
 	 */
@@ -285,11 +287,12 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 		// TODO not tested
 		this.insert("insertBibTex", param);
 	}
-	
+
 	public void insertBibTexLog(final BibTex param) {
 		// TODO not tested
 		this.insert("insertBibTexLog", param);
 	}
+
 	/**
 	 * Inserts a BibTex-hash into the database.
 	 */
@@ -330,14 +333,17 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 		// TODO not tested
 		this.update("updateBibTexHash2Dec", param);
 	}
+
 	public void updateBibTexHash3Dec(final BibTex param) {
 		// TODO not tested
 		this.update("updateBibTexHash3Dec", param);
 	}
+
 	public void updateBibTexHash4Dec(final BibTex param) {
 		// TODO not tested
 		this.update("updateBibTexHash4Dec", param);
 	}
+
 	public void updateBibTexLog(final BibTex param) {
 		// TODO not tested
 		this.update("updateBibTexLog", param);
@@ -388,7 +394,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 		this.update("deleteBibTexUrlByContentId", param);
 	}
 
-	public int updateBibtex (GenericParam <BibTex>param, GenericParam<BibTex> duplicateParam, String currUser, boolean overwrite, String oldhash) {
+	public int updateBibtex(GenericParam<BibTex> param, GenericParam<BibTex> duplicateParam, String currUser, boolean overwrite, String oldhash) {
 	    /*****TODO  Parameter should be reduce****************/
 		boolean isToDeleted = false;
   	    boolean setToDeleted = false;
