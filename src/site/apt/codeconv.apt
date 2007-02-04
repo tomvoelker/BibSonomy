@@ -36,3 +36,13 @@ Code Conventions
     * updateBookmark or updateBibTex if the statement updates data
 
     * deleteBookmark or deleteBibTex if the statement deletes data
+
+* CVS Conventions
+
+  Here are some ideas about the nomenclature of tags and branches in the CVS repository. 
+
+  * if you're adding a tag use a name like: tag-[ISO 8601 date without dashes]-[description]
+    e.g. tag-20060315-this-is-a-tag.
+
+  * if you're adding a branch just substitute the <tag> with <branch>,
+    e.g. branch-20060416-some-branch.
