@@ -8,11 +8,8 @@ import org.bibsonomy.model.BibTex;
  * 
  * @author Christian Schenk
  */
-public class BibTexParam extends GenericParam <BibTex>{
+public class BibTexParam extends GenericParam<BibTex> {
 
-	/**
-	 * A BibTex object.
-	 */
 	/**
 	 * This is used to restrict simHashes, i.e. which limit the overall
 	 * resultset. By default simhash1 is used.

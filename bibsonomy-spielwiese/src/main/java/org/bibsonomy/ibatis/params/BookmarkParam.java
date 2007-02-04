@@ -8,8 +8,7 @@ import org.bibsonomy.model.Bookmark;
  * 
  * @author Christian Schenk
  */
-public class BookmarkParam extends GenericParam <Bookmark> {
-
+public class BookmarkParam extends GenericParam<Bookmark> {
 
 	@Override
 	public int getContentType() {

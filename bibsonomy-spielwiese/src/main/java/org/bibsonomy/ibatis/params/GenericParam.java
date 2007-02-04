@@ -66,7 +66,7 @@ public abstract class GenericParam <T extends Resource> {
     private List<Tag> tags;
     private int newTasId;
     private Tag tag;
-    
+
 	public Tag getTag() {
 		return this.tag;
 	}

@@ -330,6 +330,8 @@
 	INSERT INTO bibhash(hash,type,ctr) VALUES (#bibtex.simHash0#,0,1)ON DUPLICATE KEY UPDATE ctr=ctr+1 where type=0 and has=#simhash0#;
 	</insert>
 	
+
+	
 	<update id="updateBibTexHashInc" parameterClass="bibtexParam">
 		UPDATE bibhash SET ctr=ctr+1 WHERE hash = #hash# AND type = #simHash#
 	</update>
