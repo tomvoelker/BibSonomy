@@ -6,13 +6,13 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
+import org.bibsonomy.gen_model.BibTex;
+import org.bibsonomy.gen_model.Bookmark;
+import org.bibsonomy.gen_model.Group;
+import org.bibsonomy.gen_model.Post;
+import org.bibsonomy.gen_model.Resource;
+import org.bibsonomy.gen_model.Tag;
+import org.bibsonomy.gen_model.User;
 import org.bibsonomy.rest.LogicInterface;
 import org.bibsonomy.rest.enums.GroupingEntity;
 import org.bibsonomy.rest.enums.ResourceType;
@@ -629,7 +629,10 @@ public class TestDatabase implements LogicInterface
 
 /*
  * $Log$
- * Revision 1.1  2006-10-25 19:14:55  mbork
+ * Revision 1.2  2007-02-05 10:35:55  cschenk
+ * Distributed code from the spielwiese among the modules
+ *
+ * Revision 1.1  2006/10/25 19:14:55  mbork
  * moved TestDatabase because other junit tests depend on it
  *
  * Revision 1.1  2006/10/10 12:42:16  cschenk

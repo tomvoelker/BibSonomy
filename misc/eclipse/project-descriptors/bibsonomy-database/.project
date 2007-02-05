@@ -1,0 +1,14 @@
+<projectDescription>
+  <name>bibsonomy-util</name>
+  <comment>Utils for Bibsonomy.</comment>
+  <projects/>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+      <arguments/>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>

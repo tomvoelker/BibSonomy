@@ -18,6 +18,10 @@
 	</build>
 	<dependencies>
 		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-common</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>javax.xml</groupId>
 			<artifactId>jaxb-api</artifactId>
 		</dependency>

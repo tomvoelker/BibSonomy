@@ -15,9 +15,8 @@
 	</parent>
 	<dependencies>
 		<dependency>
-			<groupId>de.innofinity</groupId>
-			<artifactId>dbcommands</artifactId>
-			<version>0.0.2</version>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
 		</dependency>
 	</dependencies>
 </project>

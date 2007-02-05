@@ -2,7 +2,7 @@ package org.bibsonomy.rest.client.queries.get;
 
 import java.io.Reader;
 
-import org.bibsonomy.model.User;
+import org.bibsonomy.gen_model.User;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -63,7 +63,10 @@ public final class GetUserDetailsQuery extends AbstractQuery<User>
 
 /*
  * $Log$
- * Revision 1.1  2006-10-24 21:39:22  mbork
+ * Revision 1.2  2007-02-05 10:35:53  cschenk
+ * Distributed code from the spielwiese among the modules
+ *
+ * Revision 1.1  2006/10/24 21:39:22  mbork
  * split up rest api into correct modules. verified with junit tests.
  *
  * Revision 1.1  2006/10/10 12:42:12  cschenk

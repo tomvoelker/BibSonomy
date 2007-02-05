@@ -13,12 +13,12 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
+import org.bibsonomy.gen_model.BibTex;
+import org.bibsonomy.gen_model.Bookmark;
+import org.bibsonomy.gen_model.Group;
+import org.bibsonomy.gen_model.Post;
+import org.bibsonomy.gen_model.Tag;
+import org.bibsonomy.gen_model.User;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -486,7 +486,10 @@ public class XMLRenderer implements Renderer
 
 /*
  * $Log$
- * Revision 1.2  2006-10-24 21:39:28  mbork
+ * Revision 1.3  2007-02-05 10:35:54  cschenk
+ * Distributed code from the spielwiese among the modules
+ *
+ * Revision 1.2  2006/10/24 21:39:28  mbork
  * split up rest api into correct modules. verified with junit tests.
  *
  * Revision 1.1  2006/10/10 12:42:16  cschenk

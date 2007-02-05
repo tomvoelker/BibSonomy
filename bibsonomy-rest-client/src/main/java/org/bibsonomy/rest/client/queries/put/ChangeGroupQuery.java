@@ -2,7 +2,7 @@ package org.bibsonomy.rest.client.queries.put;
 
 import java.io.StringWriter;
 
-import org.bibsonomy.model.Group;
+import org.bibsonomy.gen_model.Group;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.enums.HttpMethod;
@@ -65,7 +65,10 @@ public final class ChangeGroupQuery extends AbstractQuery<String>
 
 /*
  * $Log$
- * Revision 1.1  2006-10-24 21:39:23  mbork
+ * Revision 1.2  2007-02-05 10:35:55  cschenk
+ * Distributed code from the spielwiese among the modules
+ *
+ * Revision 1.1  2006/10/24 21:39:23  mbork
  * split up rest api into correct modules. verified with junit tests.
  *
  * Revision 1.1  2006/10/10 12:42:14  cschenk

@@ -2,10 +2,10 @@ package org.bibsonomy.rest;
 
 import java.util.Set;
 
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
+import org.bibsonomy.gen_model.Group;
+import org.bibsonomy.gen_model.Post;
+import org.bibsonomy.gen_model.Tag;
+import org.bibsonomy.gen_model.User;
 import org.bibsonomy.rest.enums.GroupingEntity;
 import org.bibsonomy.rest.enums.ResourceType;
 
@@ -232,7 +232,10 @@ public interface LogicInterface
 
 /*
  * $Log$
- * Revision 1.1  2006-10-10 12:42:15  cschenk
+ * Revision 1.2  2007-02-05 10:35:54  cschenk
+ * Distributed code from the spielwiese among the modules
+ *
+ * Revision 1.1  2006/10/10 12:42:15  cschenk
  * Auf Multi-Module Build umgestellt
  *
  * Revision 1.4  2006/07/05 15:20:14  mbork

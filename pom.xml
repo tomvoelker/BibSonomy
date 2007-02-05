@@ -84,6 +84,7 @@
 	<modules>
 		<module>bibsonomy-common</module>
 		<module>bibsonomy-model</module>
+		<module>bibsonomy-database</module>
 		<module>bibsonomy-rest-client</module>
 		<module>bibsonomy-rest-common</module>
 		<module>bibsonomy-rest-server</module>
@@ -122,6 +123,11 @@
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-model</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-database</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

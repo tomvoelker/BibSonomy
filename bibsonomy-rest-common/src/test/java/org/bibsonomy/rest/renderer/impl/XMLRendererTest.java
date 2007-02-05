@@ -18,12 +18,12 @@ import javax.xml.bind.PropertyException;
 
 import junit.framework.TestCase;
 
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
+import org.bibsonomy.gen_model.BibTex;
+import org.bibsonomy.gen_model.Bookmark;
+import org.bibsonomy.gen_model.Group;
+import org.bibsonomy.gen_model.Post;
+import org.bibsonomy.gen_model.Tag;
+import org.bibsonomy.gen_model.User;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.InternServerException;
@@ -472,7 +472,10 @@ public class XMLRendererTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.1  2006-10-10 12:42:13  cschenk
+ * Revision 1.2  2007-02-05 10:35:55  cschenk
+ * Distributed code from the spielwiese among the modules
+ *
+ * Revision 1.1  2006/10/10 12:42:13  cschenk
  * Auf Multi-Module Build umgestellt
  *
  * Revision 1.8  2006/09/24 21:26:21  mbork
