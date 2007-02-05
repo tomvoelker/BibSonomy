@@ -30,10 +30,6 @@
 			<artifactId>bibsonomy-common</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>de.innofinity</groupId>
-			<artifactId>dbcommands</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.ibatis</groupId>
 			<artifactId>ibatis2-common</artifactId>
 		</dependency>
