@@ -279,6 +279,7 @@
 
 	<!-- Replaced 'simhash"+Bibtex.SIM_HASH_0, simhash"+Bibtex.SIM_HASH_1, simhash"+Bibtex.SIM_HASH_2, simhash"+Bibtex.SIM_HASH_3' -->
 	<!-- with 'simhash0, simhash1, simhash2, simhash3' -->
+	<!--
 	<insert id="insertBibTex" parameterClass="bibtexParam">
 		INSERT INTO bibtex (title, entrytype, author, editor, year, content_id, journal, volume, chapter,
 		                    edition, month, bookTitle, howpublished, institution, organization, publisher,
@@ -402,4 +403,6 @@
 	<delete id="deleteBibTexUrlByContentId">
 		DELETE FROM bibtexurls WHERE content_id = #requestedContentId#
 	</delete>
+
+	-->
 </sqlMap>

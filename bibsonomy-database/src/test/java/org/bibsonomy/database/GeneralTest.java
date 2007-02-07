@@ -31,7 +31,7 @@ public class GeneralTest extends AbstractSqlMapTest {
 
 	@Test
 	public void getGroupsForUser() {
-		this.db.getGeneral().getGroupsForUser(this.bookmarkParam);
+		assertEquals(4, this.db.getGeneral().getGroupsForUser(this.bookmarkParam).size());
 		this.bookmarkParam.setUserName(null);
 		assertTrue(this.db.getGeneral().getGroupsForUser(this.bookmarkParam).size() == 0);
 	}
@@ -68,8 +68,8 @@ public class GeneralTest extends AbstractSqlMapTest {
 		} catch (final Exception ex) {
 		}
 	}
-	public void isSpammer(){
+
+	public void isSpammer() {
 		this.db.getGeneral().isSpammer(this.bookmarkParam);
-		
-		}
+	}
 }

@@ -142,7 +142,8 @@ public class BookmarkTest extends AbstractSqlMapTest {
 
 	@Test
 	public void insertBookmarkHash() {
-		System.out.println("insertBookmarkHash");
+		// to prevent duplicate key error
+		this.bookmarkParam.setHash("1234567890");
 		this.db.getBookmark().insertBookmarkHash(this.bookmarkParam);
 	}
 

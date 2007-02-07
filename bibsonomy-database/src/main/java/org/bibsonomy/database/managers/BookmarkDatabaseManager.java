@@ -14,7 +14,6 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 
-
 /**
  * Used to retrieve bookmarks from the database.
  * 
@@ -41,12 +40,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 	 * On the <em>/tag</em> page only public entries are shown (groupType must
 	 * be set to public) which have all of the given tags attached. On the
 	 * <em>/viewable/</em> page only posts are shown which are set viewable to
-	 * the given group and which have all of the given tags attached.
-	 * @return 
+	 * the given group and which have all of the given tags attached. 
 	 */
-	
-		
-		
 	public List<Bookmark> getBookmarkByTagNames(final BookmarkParam param) {
 		return this.bookmarkList("getBookmarkByTagNames", param);
 	}
@@ -454,7 +449,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
  				/***TODO**ResourceUtils.doUpdate(oldResourceTags,bookmark);**********/
 				success = true;
 				
- 				} catch(SQLException e){
+ 				} catch(final Exception e){
  				
 				wait = wait * 2;
 				log.fatal("Could not insert bookmark objects, will wait at most " + wait + " seconds. Error was: " + e);				

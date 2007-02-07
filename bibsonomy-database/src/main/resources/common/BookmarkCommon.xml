@@ -11,15 +11,10 @@
 		<result property="urlHash"     column="book_url_hash"    javaType="string" />
 		<result property="url"         column="book_url"         javaType="string" />
 		<result property="count"       column="book_url_ctr"     javaType="int" />	
-		
 	</resultMap>
 
 	<resultMap id="bookmarks" class="bookmark" extends="bookmarksWithoutUserName">
 		<result property="userName"    column="user_name"        javaType="string" />
-	</resultMap>
-
-	<resultMap id="tags" class="tag">
-		<result property="name" column="tag_name" javaType="string" />
 	</resultMap>
 
 	<sql id="bookmarkAttributes">

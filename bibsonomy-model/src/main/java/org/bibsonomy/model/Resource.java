@@ -119,13 +119,19 @@ public abstract class Resource {
 		return this.tags;
 	}
 
+	public void setTags(List<Tag> tags) {
+		this.tags = tags;
+	}
+
 	/**
 	 * Adds a tag with the given name.
 	 * 
 	 * @param tag Name of the tag.
 	 */
-	public void addTag(final String tag) {
-		this.tags.add(new Tag(tag));
+	public void addTag(final String tagName) {
+		final Tag tag = new Tag();
+		tag.setName(tagName);
+		this.tags.add(tag);
 	}
 
 	public int getNewTasId() {

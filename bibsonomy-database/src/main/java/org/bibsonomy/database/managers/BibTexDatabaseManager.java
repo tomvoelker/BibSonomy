@@ -409,7 +409,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 
 		/* iterate over all complete bibtex objects */
 		for (BibTex bibtex: param.getResources()) {
-			param.setResource(bibtex);
+//			param.setResource(bibtex); FIXME !!!
 			int wait = 1;
 			success = false;
 			
@@ -566,7 +566,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 		  /**take care of spammers******/
 		 
 		
-		BibTex bibtex=param.getResource();
+		BibTex bibtex= null; //param.getResource(); FIXME !!!
 		param.setGroupId(ResourceUtils.getGroupId(param.getGroupId(),true));
 		/****insert a bibtex object***************/
 		insertBibTex(bibtex);

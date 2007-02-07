@@ -1,5 +1,6 @@
 package org.bibsonomy.database;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.bibsonomy.common.enums.ConstantID;
@@ -21,9 +22,9 @@ public class BibTexTest extends AbstractSqlMapTest {
 
 	@Test
 	public void getBibTexByHashCount() {
-		Integer count = -1;
-		count = this.db.getBibTex().getBibTexByHashCount(this.bibtexParam);
-		assertTrue(count >= 0);
+		 Integer count = -1;
+		 count = this.db.getBibTex().getBibTexByHashCount(this.bibtexParam);
+		 assertEquals(1, count);
 	}
 
 	@Test

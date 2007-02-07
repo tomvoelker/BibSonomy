@@ -11,8 +11,19 @@ import org.bibsonomy.model.Bookmark;
  */
 public class BookmarkParam extends GenericParam<Bookmark> {
 
+	/** A single resource */
+	private Bookmark resource;
+
 	@Override
 	public int getContentType() {
 		return ConstantID.BOOKMARK_CONTENT_TYPE.getId();
+	}
+
+	public Bookmark getResource() {
+		return this.resource;
+	}
+
+	public void setResource(Bookmark resource) {
+		this.resource = resource;
 	}
 }

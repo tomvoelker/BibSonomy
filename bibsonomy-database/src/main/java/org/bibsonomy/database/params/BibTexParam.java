@@ -11,6 +11,8 @@ import org.bibsonomy.model.BibTex;
  */
 public class BibTexParam extends GenericParam<BibTex> {
 
+	/** A single resource */
+	private BibTex resource;
 	/**
 	 * This is used to restrict simHashes, i.e. which limit the overall
 	 * resultset. By default simhash1 is used.
@@ -31,6 +33,14 @@ public class BibTexParam extends GenericParam<BibTex> {
 	@Override
 	public int getContentType() {
 		return ConstantID.BIBTEX_CONTENT_TYPE.getId();
+	}
+
+	public BibTex getResource() {
+		return this.resource;
+	}
+
+	public void setResource(BibTex resource) {
+		this.resource = resource;
 	}
 
 	public int getSimHash() {

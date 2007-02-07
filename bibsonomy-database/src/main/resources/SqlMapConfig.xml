@@ -6,7 +6,7 @@
 
 	<typeAlias alias="url" type="java.net.URL" />
 	<typeAlias alias="date" type="java.util.Date" />
-	<typeHandler javaType="url" callback="org.bibsonomy.ibatis.typehandler.UrlTypeHandlerCallback" />
+	<typeHandler javaType="url" callback="org.bibsonomy.database.typehandler.UrlTypeHandlerCallback" />
 
 	<transactionManager type="JDBC">
 		<dataSource type="SIMPLE">

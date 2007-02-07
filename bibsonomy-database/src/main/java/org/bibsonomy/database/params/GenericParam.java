@@ -19,8 +19,14 @@ import org.bibsonomy.model.Tag;
  */
 public abstract class GenericParam<T extends Resource> {
 
-	private T resource;
+	// FIXME
+//	/** A single resource */
+//	protected T resource;
+	/** A list of resources. */
 	private List<T> resources;
+	/** A list of tags */
+    private List<Tag> tags;
+    private Tag tag;
 	/**
 	 * List of (tagname, index)-pairs, where tagname can be both a name of a tag
 	 * or concept.
@@ -63,17 +69,7 @@ public abstract class GenericParam<T extends Resource> {
 	private ConstantID idsType;
     private int newContentId;
     private int ContendIDbyBookmark;
-    private List<Tag> tags;
     private int newTasId;
-    private Tag tag;
-
-	public Tag getTag() {
-		return this.tag;
-	}
-
-	public void setTag(Tag tag) {
-		this.tag = tag;
-	}
 
 	public GenericParam() {
 		this.tagIndex = new ArrayList<TagIndex>();
@@ -251,14 +247,6 @@ public abstract class GenericParam<T extends Resource> {
 		this.ContendIDbyBookmark = contendIDbyBookmark;
 	}
 
-	public T getResource() {
-		return this.resource;
-	}
-
-	public void setResource(T resource) {
-		this.resource = resource;
-	}
-
 	public List<T> getResources() {
 		return this.resources;
 	}
@@ -266,6 +254,13 @@ public abstract class GenericParam<T extends Resource> {
 	public void setResources(List<T> resources) {
 		this.resources = resources;
 	}
+
+	// FIXME
+//	public abstract T getResource();
+//
+//	public void setResource(T resource) {
+//		this.resource = resource;
+//	}
 
 	public List<Tag> getTags() {
 		return this.tags;
@@ -281,5 +276,13 @@ public abstract class GenericParam<T extends Resource> {
 
 	public void setNewTasId(int newTasId) {
 		this.newTasId = newTasId;
+	}
+
+	public Tag getTag() {
+		return this.tag;
+	}
+
+	public void setTag(Tag tag) {
+		this.tag = tag;
 	}
 }
