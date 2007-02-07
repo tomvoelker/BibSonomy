@@ -316,5 +316,5 @@ public class BibTex extends Resource {
 
 	public String getSimHash3() {
 		return SimHash.getSimHash3();
-	}	
+	}
 }

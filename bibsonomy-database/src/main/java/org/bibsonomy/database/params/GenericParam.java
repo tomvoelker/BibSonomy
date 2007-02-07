@@ -20,13 +20,13 @@ import org.bibsonomy.model.Tag;
 public abstract class GenericParam<T extends Resource> {
 
 	// FIXME
-//	/** A single resource */
-//	protected T resource;
+	// /** A single resource */
+	// protected T resource;
 	/** A list of resources. */
 	private List<T> resources;
 	/** A list of tags */
-    private List<Tag> tags;
-    private Tag tag;
+	private List<Tag> tags;
+	private Tag tag;
 	/**
 	 * List of (tagname, index)-pairs, where tagname can be both a name of a tag
 	 * or concept.
@@ -65,18 +65,18 @@ public abstract class GenericParam<T extends Resource> {
 	private int offset;
 	/** Is user a spammer; by default false */
 	private ConstantID spammer;
-	/** The type of a ID is by default DS_CONTENT_ID **/
+	/** The type of a ID is by default DS_CONTENT_ID * */
 	private ConstantID idsType;
-    private int newContentId;
-    private int ContendIDbyBookmark;
-    private int newTasId;
+	private int newContentId;
+	private int ContendIDbyBookmark;
+	private int newTasId;
 
 	public GenericParam() {
 		this.tagIndex = new ArrayList<TagIndex>();
 		this.caseSensitiveTagNames = false;
 		this.groupId = ConstantID.GROUP_INVALID.getId();
 		this.groupType = ConstantID.GROUP_PUBLIC;
-		this.idsType=ConstantID.IDS_CONTENT_ID;
+		this.idsType = ConstantID.IDS_CONTENT_ID;
 		this.limit = 10;
 		this.offset = 0;
 		this.spammer = ConstantID.SPAMMER_FALSE;
@@ -256,11 +256,11 @@ public abstract class GenericParam<T extends Resource> {
 	}
 
 	// FIXME
-//	public abstract T getResource();
-//
-//	public void setResource(T resource) {
-//		this.resource = resource;
-//	}
+	// public abstract T getResource();
+	//
+	// public void setResource(T resource) {
+	// this.resource = resource;
+	// }
 
 	public List<Tag> getTags() {
 		return this.tags;

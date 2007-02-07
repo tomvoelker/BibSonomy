@@ -76,5 +76,5 @@ public class User {
 
 	public void setGroups(List<Group> groups) {
 		this.groups = groups;
-	}	
+	}
 }

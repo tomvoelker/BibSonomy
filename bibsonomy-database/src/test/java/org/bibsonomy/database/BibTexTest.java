@@ -22,9 +22,9 @@ public class BibTexTest extends AbstractSqlMapTest {
 
 	@Test
 	public void getBibTexByHashCount() {
-		 Integer count = -1;
-		 count = this.db.getBibTex().getBibTexByHashCount(this.bibtexParam);
-		 assertEquals(1, count);
+		Integer count = -1;
+		count = this.db.getBibTex().getBibTexByHashCount(this.bibtexParam);
+		assertEquals(1, count);
 	}
 
 	@Test

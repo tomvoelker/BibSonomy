@@ -21,12 +21,12 @@ public abstract class Resource {
 	private int groupId; // FIXME belongs to Post?
 	/** A timestamp for this resource */
 	private Date date; // FIXME belongs to Post?
-	private String url=""; // FIXME belongs to Bookmark?
+	private String url = ""; // FIXME belongs to Bookmark?
 	private int count;
-	private String oldHash  = "";
-    private List<Tag> tags; // FIXME belongs to Post?
-    private int newTasId;
-    private boolean spammer; // FIXME belongs to User?
+	private String oldHash = "";
+	private List<Tag> tags; // FIXME belongs to Post?
+	private int newTasId;
+	private boolean spammer; // FIXME belongs to User?
 
 	// XXX: put them only in the model, if we really need them
 	// private String group; FIXME was this meant to be groupName or groupId
@@ -91,7 +91,7 @@ public abstract class Resource {
 		this.groupId = groupId;
 	}
 
-	public  Date getDate() {
+	public Date getDate() {
 		return this.date;
 	}
 
@@ -126,7 +126,8 @@ public abstract class Resource {
 	/**
 	 * Adds a tag with the given name.
 	 * 
-	 * @param tag Name of the tag.
+	 * @param tag
+	 *            Name of the tag.
 	 */
 	public void addTag(final String tagName) {
 		final Tag tag = new Tag();
