@@ -7,9 +7,10 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.bibsonomy.database.params.BookmarkParam;
-import org.bibsonomy.database.util.ParamUtils;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.testutil.ParamUtils;
 import org.junit.Test;
+
 
 /**
  * Performance test of iBATIS.

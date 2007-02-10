@@ -230,80 +230,67 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 		DatabaseUtils.prepareGetPostForUser(this.db, param);
 		return (Integer) this.queryForObject("getBookmarkForUserCount", param);
 	}
-	
-	
-	
+
+
 	/**
 	 * This methods  are for setting functions concerning bookmark entries
-	 * 
-	 * 
 	 */
-	
-	 public void insertBookmark(final Bookmark param) {
-		                // TODO not tested
-		                this.insert("insertBookmark", param);
-     }
-		
 
-	 public void insertBookmarkLog(final Bookmark param) {
-         // TODO not tested
-         this.insert("insertBookmarkLog", param);
-	 }
-	 
-	 
-	 public void insertBookmarkHash(final BookmarkParam param) {
-         // TODO not tested
-         this.insert("insertBookmarkHash", param);
-	 }
-	 
-	 
-	 public void insertBookmarkInc(final Bookmark param) {
-         // TODO not tested
-         this.insert("insertBookmarkInc", param);
-     }
-	 
-	 
-	 public void updateBookmarkHashDec(final Bookmark param) {
-         // TODO not tested
-         this.insert("updateBookmarkHashDec",param);
-     }
-	 
-	 
-	 public void updateBookmarkLog(final Bookmark param) {
-         // TODO not tested
-         this.insert("updateBookmarkLog", param);
-     }
-	 
-	 
-	 public void deleteBookmarkByContentId(final Bookmark param) {
-         // TODO not tested
-         this.insert("deleteBookmarkByContentId", param);
-     } 
-	 
-	 /**
-		 *get a current ContentID for setting a bookmark
-		 *update the current ContendID for bookmark and bibtex
-		 */
-	
-	 public Integer getNewContentID(final Bookmark param){
-	     // TODO not tested
-		return(Integer)this.queryForObject("getNewContentID", param);
-		}
-	
-	
-	 public void updateIds(final BookmarkParam param) {
-         // TODO not tested
-         this.insert("updateIds", param);
-         
-	 }
-         
-     public Integer getContentIDForBookmark (final BookmarkParam param) {
-        	 // TODO not tested
-        	 return(Integer)this.queryForObject("getContentIDForBookmark", param);   
-        
-     }
+	public void insertBookmark(final Bookmark param) {
+		// TODO not tested
+		this.insert("insertBookmark", param);
+	}
 
-     public boolean manipulateMyBookmark(GenericParam<Bookmark> param, User currUser,boolean overwrite, boolean already_change) throws SQLException {
+	public void insertBookmarkLog(final Bookmark param) {
+		// TODO not tested
+		this.insert("insertBookmarkLog", param);
+	}
+
+	public void insertBookmarkHash(final BookmarkParam param) {
+		// TODO not tested
+		this.insert("insertBookmarkHash", param);
+	}
+
+	public void insertBookmarkInc(final Bookmark param) {
+		// TODO not tested
+		this.insert("insertBookmarkInc", param);
+	}
+
+	public void updateBookmarkHashDec(final Bookmark param) {
+		// TODO not tested
+		this.insert("updateBookmarkHashDec", param);
+	}
+
+	public void updateBookmarkLog(final Bookmark param) {
+		// TODO not tested
+		this.insert("updateBookmarkLog", param);
+	}
+
+	public void deleteBookmarkByContentId(final Bookmark param) {
+		// TODO not tested
+		this.insert("deleteBookmarkByContentId", param);
+	}
+
+	/**
+	 * Get a current ContentID for setting a bookmark update the current
+	 * ContendID for bookmark and bibtex
+	 */
+	public Integer getNewContentID(final Bookmark param) {
+		// TODO not tested
+		return (Integer) this.queryForObject("getNewContentID", param);
+	}
+
+	public void updateIds(final BookmarkParam param) {
+		// TODO not tested
+		this.insert("updateIds", param);
+	}
+
+	public Integer getContentIDForBookmark(final BookmarkParam param) {
+		// TODO not tested
+		return (Integer) this.queryForObject("getContentIDForBookmark", param);
+	}
+
+	public boolean manipulateMyBookmark(GenericParam<Bookmark> param, User currUser,boolean overwrite, boolean already_change) throws SQLException {
     	  boolean isToDeleted = false;
     	  boolean setToDeleted = false;
     	  boolean isToInserted = false;
@@ -464,8 +451,6 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 				throw new SQLException("retry/wait timeout");
 			}			
        }/*****get every bookmark*******/	
- 		return spammer;	
- 			
-  }  
-	
+ 		return spammer;
+  }
 }

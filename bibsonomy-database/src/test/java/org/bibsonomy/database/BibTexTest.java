@@ -4,8 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.bibsonomy.common.enums.ConstantID;
-import org.bibsonomy.database.util.ParamUtils;
+import org.bibsonomy.testutil.ParamUtils;
 import org.junit.Test;
+
 
 /**
  * Tests related to BibTex.

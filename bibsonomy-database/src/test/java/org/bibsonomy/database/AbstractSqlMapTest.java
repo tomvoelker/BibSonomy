@@ -6,12 +6,13 @@ import java.util.List;
 import org.bibsonomy.database.managers.DatabaseManager;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
-import org.bibsonomy.database.util.ParamUtils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.testutil.ParamUtils;
 import org.junit.After;
 import org.junit.Before;
+
 
 /**
  * This class provides a connection to the database and convenience methods to

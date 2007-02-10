@@ -1,84 +1,34 @@
 package org.bibsonomy.model.util;
 
-import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
-import org.bibsonomy.common.enums.ConstantID;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.User;
 
 /**
- * Methods to create objects from the model like {@link Bookmark} or
- * {@link BibTex}.
+ * We are juggling with the model.
  * 
  * @author Christian Schenk
  */
 public class ModelUtils {
 
-	private static void setResourceDefaults(final Resource resource) {
-		// resource.setContentId(1);
-		resource.setCount(0);
-		resource.setDate(null);
-		resource.setGroupId(ConstantID.GROUP_KDE.getId());
-		resource.setGroupName("kde");
-		resource.setUrl("");
-		resource.setUserName("kde");
-	}
-
 	/**
-	 * Creates a bookmark with all properties set.
+	 * Creates a set of posts from a list of resources.
 	 */
-	public static Bookmark getBookmark() {
-		Date date = new Date();
-		final Bookmark rVal = new Bookmark();
-		rVal.setUserName("hallo");	
-		rVal.setDescription("test");
-		rVal.setExtended("test");
-		rVal.setUrl("http://www.bibonomy.org");
-		rVal.setDate(date);
-		rVal.setContentId(2);
-		return rVal;
-	}
-
-	/**
-	 * Creates a BibTex with all properties set.
-	 */
-	public static BibTex getBibTex() {
-		final BibTex rVal = new BibTex();
-		setResourceDefaults(rVal);
-		rVal.setAddress("test");
-		rVal.setAnnote("test");
-		rVal.setAuthor("test");
-		rVal.setBKey("test");
-		rVal.setBibtexAbstract("test");
-		rVal.setBibtexKey("test");
-		rVal.setBooktitle("test");
-		rVal.setChapter("test");
-		rVal.setCrossref("test");
-		rVal.setCount(0);
-		rVal.setDay("test");
-		rVal.setDescription("test");
-		rVal.setEdition("test");
-		rVal.setEditor("test");
-		rVal.setEntrytype("test");
-		rVal.setHowpublished("test");
-		rVal.setInstitution("test");
-		rVal.setJournal("test");
-		rVal.setMisc("test");
-		rVal.setMonth("test");
-		rVal.setNote("test");
-		rVal.setNumber("test");
-		rVal.setOrganization("test");
-		rVal.setPages("test");
-		rVal.setPublisher("test");
-		rVal.setSchool("test");
-		rVal.setScraperId(1);
-		rVal.setSeries("test");
-		rVal.setTitle("test");
-		rVal.setType("test");
-		rVal.setUrl("test");
-		rVal.setVolume("test");
-		rVal.setYear("test");
+	public static Set<Post> putResourcesIntoPosts(final List<? extends Resource> resources) {
+		final Set<Post> rVal = new LinkedHashSet<Post>();
+		for (final Resource resource : resources) {
+			final Post<Resource> post = new Post<Resource>();
+			post.setResource(resource);
+			post.setTags(resource.getTags());
+			final User user = new User();
+			user.setName(resource.getUserName());
+			post.setUser(user);
+			rVal.add(post);
+		}
 		return rVal;
 	}
 }

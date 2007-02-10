@@ -1,10 +1,9 @@
-package org.bibsonomy.database.util;
+package org.bibsonomy.testutil;
 
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
-import org.bibsonomy.model.util.ModelUtils;
 
 /**
  * Provides methods to build parameter-objects.

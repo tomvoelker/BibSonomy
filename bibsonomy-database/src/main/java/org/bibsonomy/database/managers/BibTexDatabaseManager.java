@@ -631,11 +631,5 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 			
         /*******commit transaction************/			
 	//	}
-//}
-	
-	
-	
-	
-	
+//}	
 }
-	

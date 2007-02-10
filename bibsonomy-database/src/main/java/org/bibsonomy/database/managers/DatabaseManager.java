@@ -14,6 +14,7 @@ public final class DatabaseManager {
 	private final BookmarkDatabaseManager bookmarkDatabaseManager;
 	private final BibTexDatabaseManager bibtexDatabaseManager;
 	private final TagDatabaseManager tagDatabaseManager;
+	private final RESTDatabaseManager restDatabaseManager;
 
 	/**
 	 * The constructor is private due to the singleton pattern.
@@ -23,6 +24,7 @@ public final class DatabaseManager {
 		this.bookmarkDatabaseManager = new BookmarkDatabaseManager(this);
 		this.bibtexDatabaseManager = new BibTexDatabaseManager(this);
 		this.tagDatabaseManager = new TagDatabaseManager();
+		this.restDatabaseManager = new RESTDatabaseManager(this);
 	}
 
 	/**
@@ -41,6 +43,7 @@ public final class DatabaseManager {
 		this.getBookmark().setReadonly(true);
 		this.getBibTex().setReadonly(true);
 		this.getTag().setReadonly(true);
+		this.getREST().setReadonly(true);
 	}
 
 	/**
@@ -69,5 +72,12 @@ public final class DatabaseManager {
 	 */
 	public TagDatabaseManager getTag() {
 		return this.tagDatabaseManager;
+	}
+
+	/**
+	 * For the REST-Interface.
+	 */
+	public RESTDatabaseManager getREST() {
+		return this.restDatabaseManager;
 	}
 }
