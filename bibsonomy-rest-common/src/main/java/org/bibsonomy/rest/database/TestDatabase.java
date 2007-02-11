@@ -1,18 +1,21 @@
 package org.bibsonomy.rest.database;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.bibsonomy.gen_model.BibTex;
-import org.bibsonomy.gen_model.Bookmark;
-import org.bibsonomy.gen_model.Group;
-import org.bibsonomy.gen_model.Post;
-import org.bibsonomy.gen_model.Resource;
-import org.bibsonomy.gen_model.Tag;
-import org.bibsonomy.gen_model.User;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.rest.LogicInterface;
 import org.bibsonomy.rest.enums.GroupingEntity;
 import org.bibsonomy.rest.enums.ResourceType;
@@ -79,12 +82,12 @@ public class TestDatabase implements LogicInterface
 		return dbUsers.get( userName );
 	}
 
-	public Post getPostDetails( String authUser, String resourceHash, String userName )
+	public Post<Resource> getPostDetails( String authUser, String resourceHash, String userName )
 	{
 		User user = dbUsers.get( userName );
 		if( user != null )
 		{
-			for( Post p: user.getPosts() )
+			for( Post<Resource> p: user.getPosts() )
 			{
 				if( p.getResource().getInterHash().equals( resourceHash ) )
 				{
@@ -120,7 +123,7 @@ public class TestDatabase implements LogicInterface
 		case GROUP:
 			if( dbGroups.get( groupingName ) != null )
 			{
-				for( Post post: dbGroups.get( groupingName ).getPosts() )
+				for( Post<Resource> post: dbGroups.get( groupingName ).getPosts() )
 				{
 					tags.addAll( post.getTags() );
 				}
@@ -129,7 +132,7 @@ public class TestDatabase implements LogicInterface
 		case USER:
 			if( dbUsers.get( groupingName ) != null )
 			{
-				for( Post post: dbUsers.get( groupingName ).getPosts() )
+				for( Post<Resource> post: dbUsers.get( groupingName ).getPosts() )
 				{
 					tags.addAll( post.getTags() );
 				}
@@ -150,9 +153,9 @@ public class TestDatabase implements LogicInterface
 	/**
 	 * note: popular and added are not considered
 	 */
-	public Set<Post> getPosts( String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, Set<String> tags, String hash, boolean popular, boolean added, int start, int end )
+	public Set<Post<Resource>> getPosts( String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, Set<String> tags, String hash, boolean popular, boolean added, int start, int end )
 	{
-		Set<Post> posts = new LinkedHashSet<Post>();
+		Set<Post<Resource>> posts = new LinkedHashSet<Post<Resource>>();
 		// do grouping stuff
 		switch( grouping )
 		{
@@ -181,15 +184,15 @@ public class TestDatabase implements LogicInterface
 		switch( resourceType )
 		{
 		case BOOKMARK:
-			for( Iterator<Post> it = posts.iterator(); it.hasNext(); )
+			for( Iterator<Post<Resource>> it = posts.iterator(); it.hasNext(); )
 			{
-				if( !( ( (Post)it.next() ).getResource() instanceof Bookmark ) ) it.remove();
+				if( !( ( (Post<Resource>)it.next() ).getResource() instanceof Bookmark ) ) it.remove();
 			}
 			break;
 		case BIBTEX:
-			for( Iterator<Post> it = posts.iterator(); it.hasNext(); )
+			for( Iterator<Post<Resource>> it = posts.iterator(); it.hasNext(); )
 			{
-				if( !( ( (Post)it.next() ).getResource() instanceof BibTex ) ) it.remove();
+				if( !( ( (Post<Resource>)it.next() ).getResource() instanceof BibTex ) ) it.remove();
 			}
 			break;
 		default: // ALL
@@ -198,18 +201,18 @@ public class TestDatabase implements LogicInterface
 		// check hash
 		if( !"".equals( hash ) )
 		{
-			for( Iterator<Post> it = posts.iterator(); it.hasNext(); )
+			for( Iterator<Post<Resource>> it = posts.iterator(); it.hasNext(); )
 			{
-				if( !( (Post)it.next() ).getResource().getInterHash().equals( hash ) ) it.remove();
+				if( !( (Post<Resource>)it.next() ).getResource().getInterHash().equals( hash ) ) it.remove();
 			}
 		}
 		// do tag filtering
       if( tags.size() > 0 )
       {
-   		for( Iterator<Post> it = posts.iterator(); it.hasNext(); )
+   		for( Iterator<Post<Resource>> it = posts.iterator(); it.hasNext(); )
    		{
    			boolean drin = false;
-   			for( Tag tag: ( (Post)it.next() ).getTags() )
+   			for( Tag tag: ( (Post<Resource>)it.next() ).getTags() )
    			{
    				for( String searchTag: tags )
    				{
@@ -240,28 +243,46 @@ public class TestDatabase implements LogicInterface
 		// dbUsers
 		User userManu = new User();
 		userManu.setEmail( "manuel.bork@uni-kassel.de" );
-		userManu.setHomepage( "www.manuelbork.de" );
+		try
+      {
+         userManu.setHomepage( new URL( "www.manuelbork.de" ) );
+      }
+      catch( MalformedURLException e1 )
+      {
+      }
 		userManu.setName( "mbork" );
 		userManu.setRealname( "Manuel Bork" );
-		userManu.setTimestamp( System.currentTimeMillis() );
+		userManu.setRegistrationDate( new Date( System.currentTimeMillis() ) );
 		dbUsers.put( userManu.getName(), userManu );
       publicGroup.getUsers().add( userManu );
 		
 		User userAndreas = new User();
 		userAndreas.setEmail( "andreas.hotho@uni-kassel.de" );
-		userAndreas.setHomepage( "www.bibsonomy.org" );
+		try
+      {
+         userAndreas.setHomepage( new URL( "www.bibsonomy.org" ) );
+      }
+      catch( MalformedURLException e )
+      {
+      }
 		userAndreas.setName( "hotho" );
 		userAndreas.setRealname( "Andreas Hotho" );
-		userAndreas.setTimestamp( System.currentTimeMillis() );
+		userAndreas.setRegistrationDate( new Date( System.currentTimeMillis() ) );
 		dbUsers.put( userAndreas.getName(), userAndreas );
       publicGroup.getUsers().add( userAndreas );
 		
 		User userButonic = new User();
 		userButonic.setEmail( "joern.dreyer@uni-kassel.de" );
-		userButonic.setHomepage( "www.butonic.org" );
+		try
+      {
+         userButonic.setHomepage( new URL( "www.butonic.org" ) );
+      }
+      catch( MalformedURLException e )
+      {
+      }
 		userButonic.setName( "butonic" );
 		userButonic.setRealname( "Joern Dreyer" );
-		userButonic.setTimestamp( System.currentTimeMillis() );
+		userButonic.setRegistrationDate( new Date( System.currentTimeMillis() ) );
 		dbUsers.put( userButonic.getName(), userButonic );
       publicGroup.getUsers().add( userButonic );
       
@@ -269,79 +290,79 @@ public class TestDatabase implements LogicInterface
 		Tag spiegelTag = new Tag(); 
 		spiegelTag.setName( "spiegel" );
 		spiegelTag.setUsercount( 1 );
-      spiegelTag.setGlobalcount( 1 );
+      spiegelTag.setCount( 1 );
 		dbTags.put( spiegelTag.getName(), spiegelTag );
 		
 		Tag hostingTag = new Tag(); 
 		hostingTag.setName( "hosting" );
 		hostingTag.setUsercount( 1 );
-      hostingTag.setGlobalcount( 1 );
+      hostingTag.setCount( 1 );
 		dbTags.put( hostingTag.getName(), hostingTag );
 		
 		Tag lustigTag = new Tag(); 
 		lustigTag.setName( "lustig" );
 		lustigTag.setUsercount( 1 );
-      lustigTag.setGlobalcount( 1 );
+      lustigTag.setCount( 1 );
 		dbTags.put( lustigTag.getName(), lustigTag );
 		
 		Tag nachrichtenTag = new Tag(); 
 		nachrichtenTag.setName( "nachrichten" );
 		nachrichtenTag.setUsercount( 1 );
-      nachrichtenTag.setGlobalcount( 2 );
+      nachrichtenTag.setCount( 2 );
 		dbTags.put( nachrichtenTag.getName(), nachrichtenTag );
 		
 		Tag semwebTag = new Tag(); 
 		semwebTag.setName( "semweb" );
 		semwebTag.setUsercount( 1 );
-      semwebTag.setGlobalcount( 4 );
+      semwebTag.setCount( 4 );
 		dbTags.put( semwebTag.getName(), semwebTag );
 		
 		Tag vorlesungTag = new Tag(); 
 		vorlesungTag.setName( "vorlesung" );
 		vorlesungTag.setUsercount( 1 );
-      vorlesungTag.setGlobalcount( 1 );
+      vorlesungTag.setCount( 1 );
 		dbTags.put( vorlesungTag.getName(), vorlesungTag );
 		
 		Tag ws0506Tag = new Tag();
 		ws0506Tag.setName( "ws0506" );
 		ws0506Tag.setUsercount( 1 );
-      ws0506Tag.setGlobalcount( 1 );
+      ws0506Tag.setCount( 1 );
 		dbTags.put( ws0506Tag.getName(), ws0506Tag );
 		
 		Tag weltformelTag = new Tag();
 		weltformelTag.setName( "weltformel" );
 		weltformelTag.setUsercount( 1 );
-      weltformelTag.setGlobalcount( 1 );
+      weltformelTag.setCount( 1 );
 		dbTags.put( weltformelTag.getName(), weltformelTag );
 		
 		Tag mySiteTag = new Tag(); 
 		mySiteTag.setName( "mySite" );
 		mySiteTag.setUsercount( 1 );
-      mySiteTag.setGlobalcount( 1 );
+      mySiteTag.setCount( 1 );
 		dbTags.put( mySiteTag.getName(), mySiteTag );
 		
 		Tag wowTag = new Tag();
 		wowTag.setName( "wow" );
 		wowTag.setUsercount( 2 );
-      wowTag.setGlobalcount( 2 );
+      wowTag.setCount( 2 );
 		dbTags.put( wowTag.getName(), wowTag );
 		
 		Tag lehreTag = new Tag(); 
 		lehreTag.setName( "lehre" );
 		lehreTag.setUsercount( 2 );
-      lehreTag.setGlobalcount( 2 );
+      lehreTag.setCount( 2 );
 		dbTags.put( lehreTag.getName(), lehreTag );
 		
 		Tag kddTag = new Tag();
 		kddTag.setName( "kdd" );
 		kddTag.setUsercount( 1 );
-      kddTag.setGlobalcount( 1 );
+      kddTag.setCount( 1 );
 		dbTags.put( kddTag.getName(), kddTag );
 		
 		Tag wwwTag = new Tag();
 		wwwTag.setName( "www" );
 		wwwTag.setUsercount( 1 );
-		wwwTag.setGlobalcount( 3 );
+		wwwTag.setCount( 3 );
 		dbTags.put( wwwTag.getName(), wwwTag );
 		
 		// dbResources
@@ -401,7 +422,7 @@ public class TestDatabase implements LogicInterface
 		dbResources.put( kddResource.getIntraHash(), kddResource );
 		
 		// posts
-		Post post_1 = new Post();
+		Post<Bookmark> post_1 = new Post<Bookmark>();
 		post_1.setDescription( "Neueste Nachrichten aus aller Welt." );
 		post_1.setPostingDate( System.currentTimeMillis() );
 		post_1.setResource( spiegelOnlineResource );
@@ -410,7 +431,7 @@ public class TestDatabase implements LogicInterface
 		post_1.getTags().add( spiegelTag );
 		post_1.getTags().add( nachrichtenTag );
 		
-		Post post_2 = new Post();
+		Post<Bookmark> post_2 = new Post<Bookmark>();
 		post_2.setDescription( "Toller Webhoster und super Coder ;)" );
 		post_2.setPostingDate( System.currentTimeMillis() );
 		post_2.setResource( hostingprojectResource );
@@ -418,7 +439,7 @@ public class TestDatabase implements LogicInterface
 		post_2.getGroups().add( publicGroup );
 		post_2.getTags().add( hostingTag  );
 		
-		Post post_3 = new Post();
+		Post<Bookmark> post_3 = new Post<Bookmark>();
 		post_3.setDescription( "lustiger blog" );
 		post_3.setPostingDate( System.currentTimeMillis() );
 		post_3.setResource( klabusterbeereResource );
@@ -426,7 +447,7 @@ public class TestDatabase implements LogicInterface
 		post_3.getGroups().add( publicGroup );
 		post_3.getTags().add( lustigTag );
 		
-		Post post_4 = new Post();
+		Post<Bookmark> post_4 = new Post<Bookmark>();
 		post_4.setDescription( "lustiger mist ausm irc ^^" );
 		post_4.setPostingDate( System.currentTimeMillis() );
 		post_4.setResource( bildschirmarbeiterResource );
@@ -434,7 +455,7 @@ public class TestDatabase implements LogicInterface
 		post_4.getGroups().add( publicGroup );
 		post_4.getTags().add( lustigTag );
 		
-		Post post_5 = new Post();
+		Post<Bookmark> post_5 = new Post<Bookmark>();
 		post_5.setDescription( "Semantic Web Vorlesung im Wintersemester 0506" );
 		post_5.setPostingDate( System.currentTimeMillis() );
 		post_5.setResource( semwebResource );
@@ -444,7 +465,7 @@ public class TestDatabase implements LogicInterface
 		post_5.getTags().add( vorlesungTag );
 		post_5.getTags().add( ws0506Tag );
 		
-		Post post_6 = new Post();
+		Post<Bookmark> post_6 = new Post<Bookmark>();
 		post_6.setDescription( "joerns blog" );
 		post_6.setPostingDate( System.currentTimeMillis() );
 		post_6.setResource( butonicResource  );
@@ -452,7 +473,7 @@ public class TestDatabase implements LogicInterface
 		post_6.getGroups().add( publicGroup );
 		post_6.getTags().add( mySiteTag  );
 		
-		Post post_7 = new Post();
+		Post<Bookmark> post_7 = new Post<Bookmark>();
 		post_7.setDescription( "online game" );
 		post_7.setPostingDate( System.currentTimeMillis() );
 		post_7.setResource( wowResource );
@@ -460,7 +481,7 @@ public class TestDatabase implements LogicInterface
 		post_7.getGroups().add( publicGroup );
 		post_7.getTags().add( wowTag  );
 		
-		Post post_8 = new Post();
+		Post<Bookmark> post_8 = new Post<Bookmark>();
 		post_8.setDescription( "wow clan" );
 		post_8.setPostingDate( System.currentTimeMillis() );
 		post_8.setResource( dunkleResource );
@@ -468,7 +489,7 @@ public class TestDatabase implements LogicInterface
 		post_8.getGroups().add( publicGroup );
 		post_8.getTags().add( wowTag );
 		
-		Post post_9 = new Post();
+		Post<Bookmark> post_9 = new Post<Bookmark>();
 		post_9.setDescription( "w3c site zum semantic web" );
 		post_9.setPostingDate( System.currentTimeMillis() );
 		post_9.setResource( w3cResource );
@@ -476,7 +497,7 @@ public class TestDatabase implements LogicInterface
 		post_9.getGroups().add( publicGroup );
 		post_9.getTags().add( semwebTag  );
 
-		Post post_10 = new Post();
+		Post<Bookmark> post_10 = new Post<Bookmark>();
 		post_10.setDescription( "wikipedia site zum semantic web" );
 		post_10.setPostingDate( System.currentTimeMillis() );
 		post_10.setResource( wikipediaResource );
@@ -484,7 +505,7 @@ public class TestDatabase implements LogicInterface
 		post_10.getGroups().add( publicGroup );
 		post_10.getTags().add( semwebTag );
 		
-		Post post_11 = new Post();
+		Post<Bookmark> post_11 = new Post<Bookmark>();
 		post_11.setDescription( "kdd vorlesung im ss06" );
 		post_11.setPostingDate( System.currentTimeMillis() );
 		post_11.setResource( kddResource );
@@ -493,7 +514,7 @@ public class TestDatabase implements LogicInterface
 		post_11.getTags().add( lehreTag );
 		post_11.getTags().add( kddTag );
 		
-		Post post_12 = new Post();
+		Post<Bookmark> post_12 = new Post<Bookmark>();
 		post_12.setDescription( "semantic web vorlesung im ws0506" );
 		post_12.setPostingDate( System.currentTimeMillis() );
 		post_12.setResource( semwebResource );
@@ -505,8 +526,8 @@ public class TestDatabase implements LogicInterface
 		// bibtex resource & post
 		
 		BibTex bibtexDemo = new BibTex();
-		bibtexDemo.setAuthors( "Albert Einstein, Leonardo da Vinci" );
-		bibtexDemo.setEditors( "Luke Skywalker, Yoda" );
+		bibtexDemo.setAuthor( "Albert Einstein, Leonardo da Vinci" );
+		bibtexDemo.setEditor( "Luke Skywalker, Yoda" );
 		bibtexDemo.setIntraHash( "abcdef0123abcdef0123abcdef012345" );
 		bibtexDemo.setInterHash( "abcdef0123abcdef0123abcdef012345" );
 		bibtexDemo.setTitle( "Die Weltformel" );
@@ -515,8 +536,8 @@ public class TestDatabase implements LogicInterface
 		dbResources.put( bibtexDemo.getIntraHash(), bibtexDemo );
 		
 		BibTex bibtexDemo1 = new BibTex();
-		bibtexDemo1.setAuthors( "R. Fielding and J. Gettys and J. Mogul and H. Frystyk and L. Masinter and P. Leach and T. Berners-Lee" );
-		bibtexDemo1.setEditors( "" );
+		bibtexDemo1.setAuthor( "R. Fielding and J. Gettys and J. Mogul and H. Frystyk and L. Masinter and P. Leach and T. Berners-Lee" );
+		bibtexDemo1.setEditor( "" );
 		bibtexDemo1.setIntraHash( "aaaaaaaabbbbbbbbccccccccaaaaaaaa" );
 		bibtexDemo1.setInterHash( "aaaaaaaabbbbbbbbccccccccaaaaaaaa" );
 		bibtexDemo1.setTitle( "RFC 2616, Hypertext Transfer Protocol -- HTTP/1.1" );
@@ -525,8 +546,8 @@ public class TestDatabase implements LogicInterface
 		dbResources.put( bibtexDemo1.getIntraHash(), bibtexDemo1 );
 		
 		BibTex bibtexDemo2 = new BibTex();
-		bibtexDemo2.setAuthors( "Roy T. Fielding" );
-		bibtexDemo2.setEditors( "" );
+		bibtexDemo2.setAuthor( "Roy T. Fielding" );
+		bibtexDemo2.setEditor( "" );
 		bibtexDemo2.setIntraHash( "abcdabcdabcdabcdaaaaaaaaaaaaaaaa" );
 		bibtexDemo2.setInterHash( "abcdabcdabcdabcdaaaaaaaaaaaaaaaa" );
 		bibtexDemo2.setTitle( "Architectural Styles and the Design of Network-based Software Architectures" );
@@ -535,8 +556,8 @@ public class TestDatabase implements LogicInterface
 		dbResources.put( bibtexDemo2.getIntraHash(), bibtexDemo2 );
 		
 		BibTex bibtexDemo3 = new BibTex();
-		bibtexDemo3.setAuthors( "Tim Berners-Lee and Mark Fischetti" );
-		bibtexDemo3.setEditors( "" );
+		bibtexDemo3.setAuthor( "Tim Berners-Lee and Mark Fischetti" );
+		bibtexDemo3.setEditor( "" );
 		bibtexDemo3.setIntraHash( "ddddddddccccccccbbbbbbbbaaaaaaaa" );
 		bibtexDemo3.setInterHash( "ddddddddccccccccbbbbbbbbaaaaaaaa" );
 		bibtexDemo3.setTitle( "Weaving the web" );
@@ -544,7 +565,7 @@ public class TestDatabase implements LogicInterface
 		bibtexDemo3.setYear( "1999" );
 		dbResources.put( bibtexDemo3.getIntraHash(), bibtexDemo3 );
 		
-		Post post_13 = new Post();
+		Post<BibTex> post_13 = new Post<BibTex>();
 		post_13.setDescription("Beschreibung einer allumfassenden Weltformel. Taeglich lesen!" );
 		post_13.setPostingDate( System.currentTimeMillis() );
 		post_13.setResource( bibtexDemo );
@@ -553,7 +574,7 @@ public class TestDatabase implements LogicInterface
 		post_13.getTags().add( weltformelTag );
 		post_13.getTags().add( nachrichtenTag );
 		
-		Post post_14 = new Post();
+		Post<BibTex> post_14 = new Post<BibTex>();
 		post_14.setDescription("Grundlagen des www" );
 		post_14.setPostingDate( System.currentTimeMillis() );
 		post_14.setResource( bibtexDemo1 );
@@ -561,7 +582,7 @@ public class TestDatabase implements LogicInterface
 		post_14.getGroups().add( publicGroup );
 		post_14.getTags().add( wwwTag );
 		
-		Post post_15 = new Post();
+		Post<BibTex> post_15 = new Post<BibTex>();
 		post_15.setDescription("So ist unsers api konstruiert." );
 		post_15.setPostingDate( System.currentTimeMillis() );
 		post_15.setResource( bibtexDemo2 );
@@ -569,7 +590,7 @@ public class TestDatabase implements LogicInterface
 		post_15.getGroups().add( publicGroup );
 		post_15.getTags().add( wwwTag );
 		
-		Post post_16 = new Post();
+		Post<BibTex> post_16 = new Post<BibTex>();
 		post_16.setDescription("das ist nur ein beispiel." );
 		post_16.setPostingDate( System.currentTimeMillis() );
 		post_16.setResource( bibtexDemo3 );
@@ -629,7 +650,10 @@ public class TestDatabase implements LogicInterface
 
 /*
  * $Log$
- * Revision 1.2  2007-02-05 10:35:55  cschenk
+ * Revision 1.3  2007-02-11 17:55:39  mbork
+ * switched REST-api to the 'new' datamodel, which does not deserve the name...
+ *
+ * Revision 1.2  2007/02/05 10:35:55  cschenk
  * Distributed code from the spielwiese among the modules
  *
  * Revision 1.1  2006/10/25 19:14:55  mbork

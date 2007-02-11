@@ -5,10 +5,11 @@ import java.io.Writer;
 import java.util.List;
 import java.util.Set;
 
-import org.bibsonomy.gen_model.Group;
-import org.bibsonomy.gen_model.Post;
-import org.bibsonomy.gen_model.Tag;
-import org.bibsonomy.gen_model.User;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.InternServerException;
@@ -21,7 +22,7 @@ import org.bibsonomy.rest.renderer.Renderer;
 public class HTMLRenderer implements Renderer 
 {
 
-	public void serializePosts( Writer writer, Set<Post> posts, ViewModel viewModel ) throws InternServerException
+	public void serializePosts( Writer writer, Set<Post<Resource>> posts, ViewModel viewModel ) throws InternServerException
 	{
 		// TODO Auto-generated method stub
 	}
@@ -67,7 +68,7 @@ public class HTMLRenderer implements Renderer
 		return null;
 	}
 
-	public Post parsePost( Reader reader )
+	public Post<Resource> parsePost( Reader reader )
 	{
 		// TODO Auto-generated method stub
 		return null;
@@ -85,7 +86,7 @@ public class HTMLRenderer implements Renderer
 		return null;
 	}
 
-	public List<Post> parsePostList( Reader reader ) throws BadRequestOrResponseException 
+	public List<Post<Resource>> parsePostList( Reader reader ) throws BadRequestOrResponseException 
 	{
 		// TODO Auto-generated method stub
 		return null;
@@ -106,7 +107,10 @@ public class HTMLRenderer implements Renderer
 
 /*
  * $Log$
- * Revision 1.2  2007-02-05 10:35:54  cschenk
+ * Revision 1.3  2007-02-11 17:55:39  mbork
+ * switched REST-api to the 'new' datamodel, which does not deserve the name...
+ *
+ * Revision 1.2  2007/02/05 10:35:54  cschenk
  * Distributed code from the spielwiese among the modules
  *
  * Revision 1.1  2006/10/10 12:42:16  cschenk

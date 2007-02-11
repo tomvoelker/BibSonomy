@@ -3,7 +3,8 @@ package org.bibsonomy.rest.client.queries.get;
 import java.io.Reader;
 import java.util.List;
 
-import org.bibsonomy.gen_model.Post;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.enums.GroupingEntity;
@@ -17,7 +18,7 @@ import org.bibsonomy.rest.renderer.RendererFactory;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public final class GetAddedPostsQuery extends AbstractQuery<List<Post>>
+public final class GetAddedPostsQuery extends AbstractQuery<List<Post<Resource>>>
 {
 	private int start;
 	private int end;
@@ -88,7 +89,7 @@ public final class GetAddedPostsQuery extends AbstractQuery<List<Post>>
 	 * @see org.bibsonomy.rest.client.queries.AbstractQuery#getResult()
 	 */
 	@Override
-	public List<Post> getResult() throws BadRequestOrResponseException, IllegalStateException
+	public List<Post<Resource>> getResult() throws BadRequestOrResponseException, IllegalStateException
 	{
 		if( downloadedDocument == null ) throw new IllegalStateException( "Execute the query first." );
 		try
@@ -133,7 +134,10 @@ public final class GetAddedPostsQuery extends AbstractQuery<List<Post>>
 
 /*
  * $Log$
- * Revision 1.2  2007-02-05 10:35:53  cschenk
+ * Revision 1.3  2007-02-11 17:55:34  mbork
+ * switched REST-api to the 'new' datamodel, which does not deserve the name...
+ *
+ * Revision 1.2  2007/02/05 10:35:53  cschenk
  * Distributed code from the spielwiese among the modules
  *
  * Revision 1.1  2006/10/24 21:39:22  mbork

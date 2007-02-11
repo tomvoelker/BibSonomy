@@ -13,12 +13,13 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.bibsonomy.gen_model.BibTex;
-import org.bibsonomy.gen_model.Bookmark;
-import org.bibsonomy.gen_model.Group;
-import org.bibsonomy.gen_model.Post;
-import org.bibsonomy.gen_model.Tag;
-import org.bibsonomy.gen_model.User;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -53,7 +54,7 @@ public class XMLRenderer implements Renderer
 	{
 	}
 
-	public void serializePosts( Writer writer, Set<Post> posts, ViewModel viewModel ) throws InternServerException
+	public void serializePosts( Writer writer, Set<Post<Resource>> posts, ViewModel viewModel ) throws InternServerException
 	{
 		PostsType xmlPosts = new PostsType();
       if( viewModel != null )
@@ -62,7 +63,7 @@ public class XMLRenderer implements Renderer
          if( viewModel.getUrlToNextResources() != null ) xmlPosts.setNext( viewModel.getUrlToNextResources() );
       	xmlPosts.setStart( BigInteger.valueOf( viewModel.getStartValue() ) );
       }
-		for( Post post: posts )
+		for( Post<Resource> post: posts )
 		{
 			PostType xmlPost = createXmlPost( post );
 			xmlPosts.getPost().add( xmlPost );
@@ -72,14 +73,14 @@ public class XMLRenderer implements Renderer
 		serialize( writer, xmlDoc );
 	}
 
-   public void serializePost( Writer writer, Post post, ViewModel model ) throws InternServerException
+   public void serializePost( Writer writer, Post<Resource> post, ViewModel model ) throws InternServerException
    {
       BibsonomyXML xmlDoc = new BibsonomyXML();
       xmlDoc.setPost( createXmlPost( post ) );
       serialize( writer, xmlDoc );
    }
 
-   private PostType createXmlPost( Post post ) throws InternServerException
+   private PostType createXmlPost( Post<Resource> post ) throws InternServerException
    {
       PostType xmlPost = new PostType();
       checkPost( post );
@@ -127,8 +128,8 @@ public class XMLRenderer implements Renderer
       	BibTex bibtex = (BibTex)post.getResource();
          checkBibtex( bibtex );
       	BibtexType xmlBibtex = new BibtexType();
-      	xmlBibtex.setAuthors( bibtex.getAuthors() );
-      	xmlBibtex.setEditors( bibtex.getEditors() );
+      	xmlBibtex.setAuthors( bibtex.getAuthor() );
+      	xmlBibtex.setEditors( bibtex.getEditor() );
       	xmlBibtex.setHref( createHrefForRessource( post.getUser().getName(), bibtex.getIntraHash() ) );
       	xmlBibtex.setInterhash( bibtex.getInterHash() );
          xmlBibtex.setIntrahash( bibtex.getIntraHash() );
@@ -177,7 +178,7 @@ public class XMLRenderer implements Renderer
       checkUser( user );
       UserType xmlUser = new UserType();
       xmlUser.setEmail( user.getEmail() );
-      xmlUser.setHomepage( user.getHomepage() );
+      xmlUser.setHomepage( user.getHomepage().toString() );
       xmlUser.setName( user.getName() );
       xmlUser.setRealname( user.getRealname() );
       xmlUser.setHref( createHrefForUser( user.getName() ) );
@@ -214,7 +215,7 @@ public class XMLRenderer implements Renderer
       TagType xmlTag = new TagType();
       checkTag( tag );
       xmlTag.setName( tag.getName() );
-      xmlTag.setGlobalcount( BigInteger.valueOf( tag.getGlobalcount() ) );
+      xmlTag.setGlobalcount( BigInteger.valueOf( tag.getCount() ) );
       xmlTag.setUsercount( BigInteger.valueOf( tag.getUsercount() ) );
       return xmlTag;
    }
@@ -267,7 +268,7 @@ public class XMLRenderer implements Renderer
 		throw new BadRequestOrResponseException( "The body part of the received document is erroneous - no user defined." );
 	}
 
-	public Post parsePost( Reader reader ) throws BadRequestOrResponseException
+	public Post<Resource> parsePost( Reader reader ) throws BadRequestOrResponseException
 	{
 		if( reader == null ) throw new BadRequestOrResponseException( "The body part of the received document is missing" );
 		
@@ -310,16 +311,16 @@ public class XMLRenderer implements Renderer
 		throw new BadRequestOrResponseException( "The body part of the received document is erroneous - no list of groups defined." );
 	}
 	
-	public List<Post> parsePostList( Reader reader ) throws BadRequestOrResponseException
+	public List<Post<Resource>> parsePostList( Reader reader ) throws BadRequestOrResponseException
 	{
 		if( reader == null ) throw new BadRequestOrResponseException( "The body part of the received document is missing" );
 		BibsonomyXML xmlDoc = parse( reader );
 		if( xmlDoc.getPosts() != null )
 		{
-			List<Post> posts = new LinkedList<Post>();
+			List<Post<Resource>> posts = new LinkedList<Post<Resource>>();
 			for( PostType pt: xmlDoc.getPosts().getPost() )
 			{
-				Post p = ModelFactory.getInstance().createPost( pt );
+				Post<Resource> p = ModelFactory.getInstance().createPost( pt );
 				posts.add( p );
 			}
 			return posts;
@@ -486,7 +487,10 @@ public class XMLRenderer implements Renderer
 
 /*
  * $Log$
- * Revision 1.3  2007-02-05 10:35:54  cschenk
+ * Revision 1.4  2007-02-11 17:55:39  mbork
+ * switched REST-api to the 'new' datamodel, which does not deserve the name...
+ *
+ * Revision 1.3  2007/02/05 10:35:54  cschenk
  * Distributed code from the spielwiese among the modules
  *
  * Revision 1.2  2006/10/24 21:39:28  mbork

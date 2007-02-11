@@ -18,8 +18,8 @@ public class ModelUtils {
 	/**
 	 * Creates a set of posts from a list of resources.
 	 */
-	public static Set<Post> putResourcesIntoPosts(final List<? extends Resource> resources) {
-		final Set<Post> rVal = new LinkedHashSet<Post>();
+	public static Set<Post<Resource>> putResourcesIntoPosts(final List<? extends Resource> resources) {
+		final Set<Post<Resource>> rVal = new LinkedHashSet<Post<Resource>>();
 		for (final Resource resource : resources) {
 			final Post<Resource> post = new Post<Resource>();
 			post.setResource(resource);

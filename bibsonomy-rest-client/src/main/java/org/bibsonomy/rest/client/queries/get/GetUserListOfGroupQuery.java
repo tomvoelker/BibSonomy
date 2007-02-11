@@ -3,7 +3,7 @@ package org.bibsonomy.rest.client.queries.get;
 import java.io.Reader;
 import java.util.List;
 
-import org.bibsonomy.gen_model.User;
+import org.bibsonomy.model.User;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -82,7 +82,10 @@ public final class GetUserListOfGroupQuery extends AbstractQuery<List<User>>
 
 /*
  * $Log$
- * Revision 1.2  2007-02-05 10:35:53  cschenk
+ * Revision 1.3  2007-02-11 17:55:34  mbork
+ * switched REST-api to the 'new' datamodel, which does not deserve the name...
+ *
+ * Revision 1.2  2007/02/05 10:35:53  cschenk
  * Distributed code from the spielwiese among the modules
  *
  * Revision 1.1  2006/10/24 21:39:22  mbork

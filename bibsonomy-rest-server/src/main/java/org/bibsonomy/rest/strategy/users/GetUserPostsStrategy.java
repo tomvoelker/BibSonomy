@@ -5,7 +5,8 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.bibsonomy.gen_model.Post;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.enums.GroupingEntity;
@@ -55,7 +56,7 @@ public class GetUserPostsStrategy extends Strategy
 		
 		ResourceType resourceType = ResourceType.getResourceType( context.getStringAttribute( "resourcetype", "all" ) );
 		
-      Set<Post> posts = context.getLogic().getPosts( context.getAuthUserName(), resourceType, GroupingEntity.USER,
+      Set<Post<Resource>> posts = context.getLogic().getPosts( context.getAuthUserName(), resourceType, GroupingEntity.USER,
             userName, context.getTags( "tags" ), "", false, false, start, end );
       
       ViewModel viewModel = new ViewModel();
@@ -100,7 +101,10 @@ public class GetUserPostsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.2  2007-02-05 10:35:54  cschenk
+ * Revision 1.3  2007-02-11 17:55:26  mbork
+ * switched REST-api to the 'new' datamodel, which does not deserve the name...
+ *
+ * Revision 1.2  2007/02/05 10:35:54  cschenk
  * Distributed code from the spielwiese among the modules
  *
  * Revision 1.1  2006/10/24 21:39:52  mbork

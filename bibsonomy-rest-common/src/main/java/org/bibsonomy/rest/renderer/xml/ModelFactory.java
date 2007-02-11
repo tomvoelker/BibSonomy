@@ -1,11 +1,15 @@
 package org.bibsonomy.rest.renderer.xml;
 
-import org.bibsonomy.gen_model.BibTex;
-import org.bibsonomy.gen_model.Bookmark;
-import org.bibsonomy.gen_model.Group;
-import org.bibsonomy.gen_model.Post;
-import org.bibsonomy.gen_model.Tag;
-import org.bibsonomy.gen_model.User;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.rest.exceptions.InvalidXMLException;
 
 /**
@@ -38,7 +42,14 @@ public class ModelFactory
 		
 		User user = new User();
 		user.setEmail( xmlUser.getEmail() );
-		user.setHomepage( xmlUser.getHomepage() );
+		try
+      {
+         user.setHomepage( new URL( xmlUser.getHomepage() ) ); // FIXME move into Factory
+      }
+      catch( MalformedURLException e )
+      {
+         e.printStackTrace();
+      }
 		user.setName( xmlUser.getName() );
 		user.setRealname( xmlUser.getRealname() );
 		
@@ -66,7 +77,7 @@ public class ModelFactory
 		
 		Tag tag = new Tag();
 		tag.setName( xmlTag.getName() );
-      if( xmlTag.getGlobalcount() != null ) tag.setGlobalcount( xmlTag.getGlobalcount().intValue() ); //TODO tag count
+      if( xmlTag.getGlobalcount() != null ) tag.setCount( xmlTag.getGlobalcount().intValue() ); //TODO tag count
       if( xmlTag.getUsercount() != null ) tag.setUsercount( xmlTag.getUsercount().intValue() ); //TODO tag count
 		
 		return tag;
@@ -76,12 +87,12 @@ public class ModelFactory
 	 * @param xmlPost
 	 * @return
 	 */
-	public Post createPost( PostType xmlPost )
+	public Post<Resource> createPost( PostType xmlPost )
 	{
 		validatePost( xmlPost );
 		
 		// post itself
-		Post post = new Post();
+		Post<Resource> post = new Post<Resource>();
 		post.setDescription( xmlPost.getDescription() );
 		
 		// user
@@ -108,8 +119,8 @@ public class ModelFactory
 			validateBibTex( xmlBibtex );
 			
 			BibTex bibtex = new BibTex();
-			bibtex.setAuthors( xmlBibtex.getAuthors() );
-			bibtex.setEditors( xmlBibtex.getEditors() );
+			bibtex.setAuthor( xmlBibtex.getAuthors() );
+			bibtex.setEditor( xmlBibtex.getEditors() );
 			bibtex.setIntraHash( xmlBibtex.getIntrahash() );
          bibtex.setInterHash( xmlBibtex.getIntrahash() );
 			bibtex.setTitle( xmlBibtex.getTitle() );
@@ -186,7 +197,10 @@ public class ModelFactory
 
 /*
  * $Log$
- * Revision 1.2  2007-02-05 10:35:55  cschenk
+ * Revision 1.3  2007-02-11 17:55:39  mbork
+ * switched REST-api to the 'new' datamodel, which does not deserve the name...
+ *
+ * Revision 1.2  2007/02/05 10:35:55  cschenk
  * Distributed code from the spielwiese among the modules
  *
  * Revision 1.1  2006/10/10 12:42:16  cschenk

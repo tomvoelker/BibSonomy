@@ -4,10 +4,12 @@ import java.util.Set;
 
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.BookmarkParam;
-import org.bibsonomy.gen_model.Group;
-import org.bibsonomy.gen_model.Post;
-import org.bibsonomy.gen_model.Tag;
-import org.bibsonomy.gen_model.User;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.ModelUtils;
 import org.bibsonomy.rest.LogicInterface;
 import org.bibsonomy.rest.enums.GroupingEntity;
 import org.bibsonomy.rest.enums.ResourceType;
@@ -62,12 +64,12 @@ public class RESTDatabaseManager extends AbstractDatabaseManager implements Logi
 		throw new NotImplementedException();
 	}
 
-	public Post getPostDetails(String arg0, String arg1, String arg2) {
+	public Post<Resource> getPostDetails(String arg0, String arg1, String arg2) {
 		// TODO Auto-generated method stub
 		throw new NotImplementedException();
 	}
 
-	public Set<Post> getPosts(String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, Set<String> tags, String hash, boolean popular, boolean added, int start, int end) {
+	public Set<Post<Resource>> getPosts(String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, Set<String> tags, String hash, boolean popular, boolean added, int start, int end) {
 		switch (resourceType) {
 		case BOOKMARK:
 			final BookmarkParam param = new BookmarkParam();
@@ -75,7 +77,7 @@ public class RESTDatabaseManager extends AbstractDatabaseManager implements Logi
 			param.setOffset(start);
 			param.setLimit(end);
 			// FIXME Type mismatch: cannot convert from Set<Post> to Set<Post> - return type needs to be changed in the interface
-			//return ModelUtils.putResourcesIntoPosts(this.db.getBookmark().getBookmarkForUser(param));
+			return ModelUtils.putResourcesIntoPosts(this.db.getBookmark().getBookmarkForUser(param));
 		}
 		throw new NotImplementedException();
 	}

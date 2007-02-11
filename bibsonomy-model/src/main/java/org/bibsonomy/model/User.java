@@ -16,10 +16,12 @@ public class User {
 	private String name;
 	private String realname;
 	private String email;
+	private String password;
 	private Date registrationDate;
 	private URL homepage;
 	/** The user belongs to these groups */
 	private List<Group> groups;
+	private List<Post<Resource>> posts;
 
 	public String getEmail() {
 		return email;
@@ -76,5 +78,21 @@ public class User {
 
 	public void setGroups(List<Group> groups) {
 		this.groups = groups;
+	}
+
+	public String getPassword() {
+		return this.password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public List<Post<Resource>> getPosts() {
+		return this.posts;
+	}
+
+	public void setPosts(List<Post<Resource>> posts) {
+		this.posts = posts;
 	}
 }

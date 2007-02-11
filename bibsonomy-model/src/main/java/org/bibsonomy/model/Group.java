@@ -12,7 +12,7 @@ public class Group {
 
 	private String name;
 	private String description;
-	private List<Post> posts;
+	private List<Post<Resource>> posts;
 	private List<User> users;
 
 	public String getDescription() {
@@ -31,11 +31,11 @@ public class Group {
 		this.name = name;
 	}
 
-	public List<Post> getPosts() {
+	public List<Post<Resource>> getPosts() {
 		return this.posts;
 	}
 
-	public void setPosts(List<Post> posts) {
+	public void setPosts(List<Post<Resource>> posts) {
 		this.posts = posts;
 	}
 

@@ -5,10 +5,11 @@ import java.io.Writer;
 import java.util.List;
 import java.util.Set;
 
-import org.bibsonomy.gen_model.Group;
-import org.bibsonomy.gen_model.Post;
-import org.bibsonomy.gen_model.Tag;
-import org.bibsonomy.gen_model.User;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.InternServerException;
@@ -26,7 +27,7 @@ public interface Renderer
 	 * @param posts
 	 * @param viewModel
 	 */
-	public void serializePosts( Writer writer, Set<Post> posts, ViewModel viewModel ) throws InternServerException;
+	public void serializePosts( Writer writer, Set<Post<Resource>> posts, ViewModel viewModel ) throws InternServerException;
 	
 	/**
 	 * serializes one post 
@@ -34,7 +35,7 @@ public interface Renderer
 	 * @param post
 	 * @param model
 	 */
-	public void serializePost( Writer writer, Post post, ViewModel model );
+	public void serializePost( Writer writer, Post<Resource> post, ViewModel model );
 	
 	/**
 	 * serializes a list of users
@@ -93,8 +94,8 @@ public interface Renderer
 	public List<User> parseUserList( Reader reader ) throws BadRequestOrResponseException;
 	public User parseUser( Reader reader ) throws BadRequestOrResponseException;
 	
-	public List<Post> parsePostList( Reader reader ) throws BadRequestOrResponseException;
-	public Post parsePost( Reader reader ) throws BadRequestOrResponseException;
+	public List<Post<Resource>> parsePostList( Reader reader ) throws BadRequestOrResponseException;
+	public Post<Resource> parsePost( Reader reader ) throws BadRequestOrResponseException;
 	
 	public List<Group> parseGroupList( Reader reader ) throws BadRequestOrResponseException;
 	public Group parseGroup( Reader reader ) throws BadRequestOrResponseException;
@@ -104,7 +105,10 @@ public interface Renderer
 
 /*
  * $Log$
- * Revision 1.2  2007-02-05 10:35:55  cschenk
+ * Revision 1.3  2007-02-11 17:55:39  mbork
+ * switched REST-api to the 'new' datamodel, which does not deserve the name...
+ *
+ * Revision 1.2  2007/02/05 10:35:55  cschenk
  * Distributed code from the spielwiese among the modules
  *
  * Revision 1.1  2006/10/10 12:42:15  cschenk

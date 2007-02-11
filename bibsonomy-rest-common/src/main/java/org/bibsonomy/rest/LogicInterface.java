@@ -2,10 +2,11 @@ package org.bibsonomy.rest;
 
 import java.util.Set;
 
-import org.bibsonomy.gen_model.Group;
-import org.bibsonomy.gen_model.Post;
-import org.bibsonomy.gen_model.Tag;
-import org.bibsonomy.gen_model.User;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.rest.enums.GroupingEntity;
 import org.bibsonomy.rest.enums.ResourceType;
 
@@ -87,7 +88,7 @@ public interface LogicInterface
 	 * @param end
 	 * @return a set of posts, an empty set else
 	 */
-	public abstract Set<Post> getPosts( String authUser, ResourceType resourceType, GroupingEntity grouping,
+	public abstract Set<Post<Resource>> getPosts( String authUser, ResourceType resourceType, GroupingEntity grouping,
 			String groupingName, Set<String> tags, String hash, boolean popular, boolean added, int start, int end );
 
 	/**
@@ -98,7 +99,7 @@ public interface LogicInterface
 	 * @param userName name of the post-owner
 	 * @return the post's details, null else
 	 */
-	public abstract Post getPostDetails( String authUser, String resourceHash, String userName );
+	public abstract Post<Resource> getPostDetails( String authUser, String resourceHash, String userName );
 	
 	/**
 	 * returns all groups of the system
@@ -232,7 +233,10 @@ public interface LogicInterface
 
 /*
  * $Log$
- * Revision 1.2  2007-02-05 10:35:54  cschenk
+ * Revision 1.3  2007-02-11 17:55:39  mbork
+ * switched REST-api to the 'new' datamodel, which does not deserve the name...
+ *
+ * Revision 1.2  2007/02/05 10:35:54  cschenk
  * Distributed code from the spielwiese among the modules
  *
  * Revision 1.1  2006/10/10 12:42:15  cschenk

@@ -17,7 +17,7 @@ public class Post<T extends Resource> {
 	private List<Group> groups;
 	private List<Tag> tags;
 	private String description;
-	private long postingDate; // TODO why not use java.util.Date instead?
+	private long postingDate; // TODO why not use java.util.Date instead?: ok!
 
 	public String getDescription() {
 		return this.description;

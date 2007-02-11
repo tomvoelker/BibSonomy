@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.net.URL;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -18,12 +19,13 @@ import javax.xml.bind.PropertyException;
 
 import junit.framework.TestCase;
 
-import org.bibsonomy.gen_model.BibTex;
-import org.bibsonomy.gen_model.Bookmark;
-import org.bibsonomy.gen_model.Group;
-import org.bibsonomy.gen_model.Post;
-import org.bibsonomy.gen_model.Tag;
-import org.bibsonomy.gen_model.User;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.InternServerException;
@@ -237,7 +239,7 @@ public class XMLRendererTest extends TestCase
       Tag t2 = new Tag();
       t2.setName( "bar" );
       t2.setUsercount( 5 );
-      t2.setGlobalcount( 10 );
+      t2.setCount( 10 );
       tags.add( t2 );
       sw = new StringWriter( 100 );
       renderer.serializeTags( sw, tags, vm );
@@ -287,7 +289,7 @@ public class XMLRendererTest extends TestCase
       sw = new StringWriter( 100 );
       u1.setName( "testName" );
       u1.setEmail( "mail@foo.bar" );
-      u1.setHomepage( "foo.bar.com" );
+      u1.setHomepage( new URL( "foo.bar.com" ) );
       u1.setPassword( "raboof" );
       u1.setRealname( "Dr. FOO BaR" );
       User u2 = new User();
@@ -369,14 +371,14 @@ public class XMLRendererTest extends TestCase
    public void testSerializePosts() throws Exception
    {
       StringWriter sw = new StringWriter( 100 );
-      Set<Post> posts = new LinkedHashSet<Post>();
+      Set<Post<Resource>> posts = new LinkedHashSet<Post<Resource>>();
       renderer.serializePosts( sw, posts, null );
       sw = new StringWriter( 100 );
       ViewModel vm = new ViewModel();
       vm.setStartValue( 0 );
       vm.setEndValue( 10 );
       vm.setUrlToNextResources( "www.bibsonomy.org/foo/bar" );
-      Post post = new Post();
+      Post<Resource> post = new Post<Resource>();
       User user = new User();
       user.setName( "foo" );
       Group group = new Group();
@@ -396,7 +398,7 @@ public class XMLRendererTest extends TestCase
       b.setInterHash( "12345678" );
       b.setIntraHash( "12345678" );
       b.setUrl( "www.foobar.de" );
-      Post post2 = new Post();
+      Post<Resource> post2 = new Post<Resource>();
       post2.setResource( b );
       post2.setUser( user );
       post2.getTags().add( tag );
@@ -408,7 +410,7 @@ public class XMLRendererTest extends TestCase
    public void testSerializePost() throws Exception
    {
       StringWriter sw = new StringWriter( 100 );
-      Post post = new Post();
+      Post<Resource> post = new Post<Resource>();
       try
       {
          renderer.serializePost( sw, post, null );
@@ -472,7 +474,10 @@ public class XMLRendererTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.2  2007-02-05 10:35:55  cschenk
+ * Revision 1.3  2007-02-11 17:55:39  mbork
+ * switched REST-api to the 'new' datamodel, which does not deserve the name...
+ *
+ * Revision 1.2  2007/02/05 10:35:55  cschenk
  * Distributed code from the spielwiese among the modules
  *
  * Revision 1.1  2006/10/10 12:42:13  cschenk
