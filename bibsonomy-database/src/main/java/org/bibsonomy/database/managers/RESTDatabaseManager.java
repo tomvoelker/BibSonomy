@@ -70,13 +70,13 @@ public class RESTDatabaseManager extends AbstractDatabaseManager implements Logi
 	}
 
 	public Set<Post<Resource>> getPosts(String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, Set<String> tags, String hash, boolean popular, boolean added, int start, int end) {
+		resourceType = ResourceType.BOOKMARK; // TODO implement me..
 		switch (resourceType) {
 		case BOOKMARK:
 			final BookmarkParam param = new BookmarkParam();
 			param.setRequestedUserName(authUser);
 			param.setOffset(start);
 			param.setLimit(end);
-			// FIXME Type mismatch: cannot convert from Set<Post> to Set<Post> - return type needs to be changed in the interface
 			return ModelUtils.putResourcesIntoPosts(this.db.getBookmark().getBookmarkForUser(param));
 		}
 		throw new NotImplementedException();
@@ -128,7 +128,7 @@ public class RESTDatabaseManager extends AbstractDatabaseManager implements Logi
 	}
 
 	public boolean validateUserAccess(String arg0, String arg1) {
-		// TODO Auto-generated method stub
-		throw new NotImplementedException();
+		// TODO implement me
+		return true;
 	}
 }

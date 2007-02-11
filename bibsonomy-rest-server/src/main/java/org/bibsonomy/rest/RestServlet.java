@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.bibsonomy.database.managers.DatabaseManager;
+import org.bibsonomy.database.managers.RESTDatabaseManager;
 import org.bibsonomy.rest.database.TestDatabase;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
@@ -38,8 +40,9 @@ public final class RestServlet extends HttpServlet
 	public void init() throws ServletException
 	{
 		super.init();
-      // TODO instanziate the real logic-connection
-		logic = new TestDatabase();
+      // TODO instantiate the real logic-connection
+		//logic = new TestDatabase();
+      logic = DatabaseManager.getInstance().getREST();
 	}
    
    /**
@@ -203,7 +206,10 @@ public final class RestServlet extends HttpServlet
 
 /*
  * $Log$
- * Revision 1.1  2006-10-24 21:39:53  mbork
+ * Revision 1.2  2007-02-11 19:38:00  mbork
+ * successfully switched to the database interface.
+ *
+ * Revision 1.1  2006/10/24 21:39:53  mbork
  * split up rest api into correct modules. verified with junit tests.
  *
  * Revision 1.1  2006/10/10 12:42:15  cschenk

@@ -19,6 +19,10 @@
 			<artifactId>bibsonomy-rest-common</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-database</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<scope>provided</scope>
