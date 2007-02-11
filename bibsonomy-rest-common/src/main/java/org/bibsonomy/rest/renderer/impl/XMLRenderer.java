@@ -178,7 +178,10 @@ public class XMLRenderer implements Renderer
       checkUser( user );
       UserType xmlUser = new UserType();
       xmlUser.setEmail( user.getEmail() );
-      xmlUser.setHomepage( user.getHomepage().toString() );
+      if( user.getHomepage() != null )
+      {
+         xmlUser.setHomepage( user.getHomepage().toString() );
+      }
       xmlUser.setName( user.getName() );
       xmlUser.setRealname( user.getRealname() );
       xmlUser.setHref( createHrefForUser( user.getName() ) );
@@ -487,7 +490,12 @@ public class XMLRenderer implements Renderer
 
 /*
  * $Log$
- * Revision 1.4  2007-02-11 17:55:39  mbork
+ * Revision 1.5  2007-02-11 18:35:20  mbork
+ * lazy instantiation of lists in the model.
+ * we definitely need bidirectional links for the api to work proper!
+ * fixed all unit tests, every test performs well.
+ *
+ * Revision 1.4  2007/02/11 17:55:39  mbork
  * switched REST-api to the 'new' datamodel, which does not deserve the name...
  *
  * Revision 1.3  2007/02/05 10:35:54  cschenk

@@ -48,7 +48,6 @@ public class ModelFactory
       }
       catch( MalformedURLException e )
       {
-         e.printStackTrace();
       }
 		user.setName( xmlUser.getName() );
 		user.setRealname( xmlUser.getRealname() );
@@ -197,7 +196,12 @@ public class ModelFactory
 
 /*
  * $Log$
- * Revision 1.3  2007-02-11 17:55:39  mbork
+ * Revision 1.4  2007-02-11 18:35:20  mbork
+ * lazy instantiation of lists in the model.
+ * we definitely need bidirectional links for the api to work proper!
+ * fixed all unit tests, every test performs well.
+ *
+ * Revision 1.3  2007/02/11 17:55:39  mbork
  * switched REST-api to the 'new' datamodel, which does not deserve the name...
  *
  * Revision 1.2  2007/02/05 10:35:55  cschenk

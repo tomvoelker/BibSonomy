@@ -3,6 +3,6 @@
     <post>
         <user name="foo" href="http://localhost:8080/restTomcat/api/users/foo"/>
         <tag name="bar"/>
-        <bookmark url="www.foobar.org" intrahash="aabbcc" interhash="aabbcc" href="http://localhost:8080/restTomcat/api/users/foo/posts/aabbcc"/>
+        <bookmark url="www.foobar.org" intrahash="aabbcc" interhash="1324356789" href="http://localhost:8080/restTomcat/api/users/foo/posts/aabbcc"/>
     </post>
 </bibsonomyXMLInterchangeDocument>

@@ -289,7 +289,7 @@ public class XMLRendererTest extends TestCase
       sw = new StringWriter( 100 );
       u1.setName( "testName" );
       u1.setEmail( "mail@foo.bar" );
-      u1.setHomepage( new URL( "foo.bar.com" ) );
+      u1.setHomepage( new URL( "http://foo.bar.com" ) );
       u1.setPassword( "raboof" );
       u1.setRealname( "Dr. FOO BaR" );
       User u2 = new User();
@@ -474,7 +474,12 @@ public class XMLRendererTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.3  2007-02-11 17:55:39  mbork
+ * Revision 1.4  2007-02-11 18:35:20  mbork
+ * lazy instantiation of lists in the model.
+ * we definitely need bidirectional links for the api to work proper!
+ * fixed all unit tests, every test performs well.
+ *
+ * Revision 1.3  2007/02/11 17:55:39  mbork
  * switched REST-api to the 'new' datamodel, which does not deserve the name...
  *
  * Revision 1.2  2007/02/05 10:35:55  cschenk

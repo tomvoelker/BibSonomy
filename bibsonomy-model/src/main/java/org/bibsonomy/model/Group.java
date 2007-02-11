@@ -1,5 +1,6 @@
 package org.bibsonomy.model;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.model.Post;
@@ -32,6 +33,10 @@ public class Group {
 	}
 
 	public List<Post<Resource>> getPosts() {
+		if( this.posts == null )
+		{
+			this.posts = new LinkedList<Post<Resource>>();
+		}
 		return this.posts;
 	}
 
@@ -40,6 +45,10 @@ public class Group {
 	}
 
 	public List<User> getUsers() {
+		if( this.users == null )
+		{
+			this.users = new LinkedList<User>();
+		}
 		return this.users;
 	}
 

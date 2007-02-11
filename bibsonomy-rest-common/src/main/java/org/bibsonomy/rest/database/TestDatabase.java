@@ -245,7 +245,7 @@ public class TestDatabase implements LogicInterface
 		userManu.setEmail( "manuel.bork@uni-kassel.de" );
 		try
       {
-         userManu.setHomepage( new URL( "www.manuelbork.de" ) );
+         userManu.setHomepage( new URL( "http://www.manuelbork.de" ) );
       }
       catch( MalformedURLException e1 )
       {
@@ -255,12 +255,13 @@ public class TestDatabase implements LogicInterface
 		userManu.setRegistrationDate( new Date( System.currentTimeMillis() ) );
 		dbUsers.put( userManu.getName(), userManu );
       publicGroup.getUsers().add( userManu );
+      userManu.getGroups().add( publicGroup );
 		
 		User userAndreas = new User();
 		userAndreas.setEmail( "andreas.hotho@uni-kassel.de" );
 		try
       {
-         userAndreas.setHomepage( new URL( "www.bibsonomy.org" ) );
+         userAndreas.setHomepage( new URL( "http://www.bibsonomy.org" ) );
       }
       catch( MalformedURLException e )
       {
@@ -270,12 +271,13 @@ public class TestDatabase implements LogicInterface
 		userAndreas.setRegistrationDate( new Date( System.currentTimeMillis() ) );
 		dbUsers.put( userAndreas.getName(), userAndreas );
       publicGroup.getUsers().add( userAndreas );
+      userAndreas.getGroups().add( publicGroup );
 		
 		User userButonic = new User();
 		userButonic.setEmail( "joern.dreyer@uni-kassel.de" );
 		try
       {
-         userButonic.setHomepage( new URL( "www.butonic.org" ) );
+         userButonic.setHomepage( new URL( "http://www.butonic.org" ) );
       }
       catch( MalformedURLException e )
       {
@@ -285,6 +287,7 @@ public class TestDatabase implements LogicInterface
 		userButonic.setRegistrationDate( new Date( System.currentTimeMillis() ) );
 		dbUsers.put( userButonic.getName(), userButonic );
       publicGroup.getUsers().add( userButonic );
+      userButonic.getGroups().add( publicGroup );
       
 		// dbTags
 		Tag spiegelTag = new Tag(); 
@@ -422,106 +425,159 @@ public class TestDatabase implements LogicInterface
 		dbResources.put( kddResource.getIntraHash(), kddResource );
 		
 		// posts
-		Post<Bookmark> post_1 = new Post<Bookmark>();
+		Post<Resource> post_1 = new Post<Resource>();
 		post_1.setDescription( "Neueste Nachrichten aus aller Welt." );
 		post_1.setPostingDate( System.currentTimeMillis() );
 		post_1.setResource( spiegelOnlineResource );
+      spiegelOnlineResource.getPosts().add( post_1 );
 		post_1.setUser( userManu );
+      userManu.getPosts().add( post_1 );
 		post_1.getGroups().add( publicGroup );
+      publicGroup.getPosts().add( post_1 );
 		post_1.getTags().add( spiegelTag );
+      spiegelTag.getPosts().add( post_1 );
 		post_1.getTags().add( nachrichtenTag );
+      nachrichtenTag.getPosts().add( post_1 );
 		
-		Post<Bookmark> post_2 = new Post<Bookmark>();
+		Post<Resource> post_2 = new Post<Resource>();
 		post_2.setDescription( "Toller Webhoster und super Coder ;)" );
 		post_2.setPostingDate( System.currentTimeMillis() );
 		post_2.setResource( hostingprojectResource );
+      hostingprojectResource.getPosts().add( post_2 );
 		post_2.setUser( userManu );
+      userManu.getPosts().add( post_2 );
 		post_2.getGroups().add( publicGroup );
+      publicGroup.getPosts().add( post_2 );
 		post_2.getTags().add( hostingTag  );
+      hostingTag.getPosts().add( post_2 );
 		
-		Post<Bookmark> post_3 = new Post<Bookmark>();
+		Post<Resource> post_3 = new Post<Resource>();
 		post_3.setDescription( "lustiger blog" );
 		post_3.setPostingDate( System.currentTimeMillis() );
 		post_3.setResource( klabusterbeereResource );
+      klabusterbeereResource.getPosts().add( post_3 );
 		post_3.setUser( userManu );
+      userManu.getPosts().add( post_3 );
 		post_3.getGroups().add( publicGroup );
+      publicGroup.getPosts().add( post_3 );
 		post_3.getTags().add( lustigTag );
+      lustigTag.getPosts().add( post_3 );
 		
-		Post<Bookmark> post_4 = new Post<Bookmark>();
+		Post<Resource> post_4 = new Post<Resource>();
 		post_4.setDescription( "lustiger mist ausm irc ^^" );
 		post_4.setPostingDate( System.currentTimeMillis() );
 		post_4.setResource( bildschirmarbeiterResource );
+      bildschirmarbeiterResource.getPosts().add( post_4 );
 		post_4.setUser( userManu );
+      userManu.getPosts().add( post_4 );
 		post_4.getGroups().add( publicGroup );
+      publicGroup.getPosts().add( post_4 );
 		post_4.getTags().add( lustigTag );
+      lustigTag.getPosts().add( post_4 );
 		
-		Post<Bookmark> post_5 = new Post<Bookmark>();
+		Post<Resource> post_5 = new Post<Resource>();
 		post_5.setDescription( "Semantic Web Vorlesung im Wintersemester 0506" );
 		post_5.setPostingDate( System.currentTimeMillis() );
 		post_5.setResource( semwebResource );
+      semwebResource.getPosts().add( post_5 );
 		post_5.setUser( userManu );
+      userManu.getPosts().add( post_5 );
 		post_5.getGroups().add( publicGroup );
+      publicGroup.getPosts().add( post_5 );
 		post_5.getTags().add( semwebTag );
+      semwebTag.getPosts().add( post_5 );
 		post_5.getTags().add( vorlesungTag );
+      vorlesungTag.getPosts().add( post_5 );
 		post_5.getTags().add( ws0506Tag );
+      ws0506Tag.getPosts().add( post_5 );
 		
-		Post<Bookmark> post_6 = new Post<Bookmark>();
+		Post<Resource> post_6 = new Post<Resource>();
 		post_6.setDescription( "joerns blog" );
 		post_6.setPostingDate( System.currentTimeMillis() );
 		post_6.setResource( butonicResource  );
+      butonicResource.getPosts().add( post_6 );
 		post_6.setUser( userButonic );
+      userButonic.getPosts().add( post_6 );
 		post_6.getGroups().add( publicGroup );
+      publicGroup.getPosts().add( post_6 );
 		post_6.getTags().add( mySiteTag  );
+      mySiteTag.getPosts().add( post_6 );
 		
-		Post<Bookmark> post_7 = new Post<Bookmark>();
+		Post<Resource> post_7 = new Post<Resource>();
 		post_7.setDescription( "online game" );
 		post_7.setPostingDate( System.currentTimeMillis() );
 		post_7.setResource( wowResource );
+      wowResource.getPosts().add( post_7 );
 		post_7.setUser( userButonic );
+      userButonic.getPosts().add( post_7 );
 		post_7.getGroups().add( publicGroup );
+      publicGroup.getPosts().add( post_7 );
 		post_7.getTags().add( wowTag  );
+      wowTag.getPosts().add( post_7 );
 		
-		Post<Bookmark> post_8 = new Post<Bookmark>();
+		Post<Resource> post_8 = new Post<Resource>();
 		post_8.setDescription( "wow clan" );
 		post_8.setPostingDate( System.currentTimeMillis() );
 		post_8.setResource( dunkleResource );
+      dunkleResource.getPosts().add( post_8 );
 		post_8.setUser( userButonic );
+      userButonic.getPosts().add( post_8 );
 		post_8.getGroups().add( publicGroup );
+      publicGroup.getPosts().add( post_8 );
 		post_8.getTags().add( wowTag );
+      wowTag.getPosts().add( post_8 );
 		
-		Post<Bookmark> post_9 = new Post<Bookmark>();
+		Post<Resource> post_9 = new Post<Resource>();
 		post_9.setDescription( "w3c site zum semantic web" );
 		post_9.setPostingDate( System.currentTimeMillis() );
 		post_9.setResource( w3cResource );
+      w3cResource.getPosts().add( post_9 );
 		post_9.setUser( userAndreas  );
+      userAndreas.getPosts().add( post_9 );
 		post_9.getGroups().add( publicGroup );
+      publicGroup.getPosts().add( post_9 );
 		post_9.getTags().add( semwebTag  );
+      semwebTag.getPosts().add( post_9 );
 
-		Post<Bookmark> post_10 = new Post<Bookmark>();
+		Post<Resource> post_10 = new Post<Resource>();
 		post_10.setDescription( "wikipedia site zum semantic web" );
 		post_10.setPostingDate( System.currentTimeMillis() );
 		post_10.setResource( wikipediaResource );
+      wikipediaResource.getPosts().add( post_10 );
 		post_10.setUser( userAndreas  );
+      userAndreas.getPosts().add( post_10 );
 		post_10.getGroups().add( publicGroup );
+      publicGroup.getPosts().add( post_10 );
 		post_10.getTags().add( semwebTag );
+      semwebTag.getPosts().add( post_10 );
 		
-		Post<Bookmark> post_11 = new Post<Bookmark>();
+		Post<Resource> post_11 = new Post<Resource>();
 		post_11.setDescription( "kdd vorlesung im ss06" );
 		post_11.setPostingDate( System.currentTimeMillis() );
 		post_11.setResource( kddResource );
+      kddResource.getPosts().add( post_11 );
 		post_11.setUser( userAndreas  );
+      userAndreas.getPosts().add( post_11 );
 		post_11.getGroups().add( publicGroup );
+      publicGroup.getPosts().add( post_11 );
 		post_11.getTags().add( lehreTag );
+      lehreTag.getPosts().add( post_11 );
 		post_11.getTags().add( kddTag );
-		
-		Post<Bookmark> post_12 = new Post<Bookmark>();
+		kddTag.getPosts().add( post_11 );
+      
+		Post<Resource> post_12 = new Post<Resource>();
 		post_12.setDescription( "semantic web vorlesung im ws0506" );
 		post_12.setPostingDate( System.currentTimeMillis() );
 		post_12.setResource( semwebResource );
+      semwebResource.getPosts().add( post_12 );
 		post_12.setUser( userAndreas  );
+      userAndreas.getPosts().add( post_12 );
 		post_12.getGroups().add( publicGroup );
+      publicGroup.getPosts().add( post_12 );
 		post_12.getTags().add( lehreTag );
+      lehreTag.getPosts().add( post_12 );
 		post_12.getTags().add( semwebTag );
+      semwebTag.getPosts().add( post_12 );
 		
 		// bibtex resource & post
 		
@@ -565,38 +621,55 @@ public class TestDatabase implements LogicInterface
 		bibtexDemo3.setYear( "1999" );
 		dbResources.put( bibtexDemo3.getIntraHash(), bibtexDemo3 );
 		
-		Post<BibTex> post_13 = new Post<BibTex>();
+		Post<Resource> post_13 = new Post<Resource>();
 		post_13.setDescription("Beschreibung einer allumfassenden Weltformel. Taeglich lesen!" );
 		post_13.setPostingDate( System.currentTimeMillis() );
 		post_13.setResource( bibtexDemo );
+      bibtexDemo.getPosts().add( post_13 );
 		post_13.setUser( userManu  );
+      userManu.getPosts().add( post_13 );
 		post_13.getGroups().add( publicGroup );
+      publicGroup.getPosts().add( post_13 );
 		post_13.getTags().add( weltformelTag );
+      weltformelTag.getPosts().add( post_13 );
 		post_13.getTags().add( nachrichtenTag );
+      nachrichtenTag.getPosts().add( post_13 );
 		
-		Post<BibTex> post_14 = new Post<BibTex>();
+		Post<Resource> post_14 = new Post<Resource>();
 		post_14.setDescription("Grundlagen des www" );
 		post_14.setPostingDate( System.currentTimeMillis() );
 		post_14.setResource( bibtexDemo1 );
+      bibtexDemo1.getPosts().add( post_14 );
 		post_14.setUser( userManu  );
+      userManu.getPosts().add( post_14 );
 		post_14.getGroups().add( publicGroup );
+      publicGroup.getPosts().add( post_14 );
 		post_14.getTags().add( wwwTag );
+      wwwTag.getPosts().add( post_14 );
 		
-		Post<BibTex> post_15 = new Post<BibTex>();
+		Post<Resource> post_15 = new Post<Resource>();
 		post_15.setDescription("So ist unsers api konstruiert." );
 		post_15.setPostingDate( System.currentTimeMillis() );
 		post_15.setResource( bibtexDemo2 );
+      bibtexDemo2.getPosts().add( post_15 );
 		post_15.setUser( userManu  );
+      userManu.getPosts().add( post_15 );
 		post_15.getGroups().add( publicGroup );
+      publicGroup.getPosts().add( post_15 );
 		post_15.getTags().add( wwwTag );
+      wwwTag.getPosts().add( post_15 );
 		
-		Post<BibTex> post_16 = new Post<BibTex>();
+		Post<Resource> post_16 = new Post<Resource>();
 		post_16.setDescription("das ist nur ein beispiel." );
 		post_16.setPostingDate( System.currentTimeMillis() );
 		post_16.setResource( bibtexDemo3 );
+      bibtexDemo3.getPosts().add( post_16 );
 		post_16.setUser( userManu  );
+      userManu.getPosts().add( post_16 );
 		post_16.getGroups().add( publicGroup );
+      publicGroup.getPosts().add( post_16 );
 		post_16.getTags().add( wwwTag );
+      wwwTag.getPosts().add( post_16 );
 	}
 
    public void addUserToGroup( String groupName, String userName )
@@ -650,7 +723,12 @@ public class TestDatabase implements LogicInterface
 
 /*
  * $Log$
- * Revision 1.3  2007-02-11 17:55:39  mbork
+ * Revision 1.4  2007-02-11 18:35:20  mbork
+ * lazy instantiation of lists in the model.
+ * we definitely need bidirectional links for the api to work proper!
+ * fixed all unit tests, every test performs well.
+ *
+ * Revision 1.3  2007/02/11 17:55:39  mbork
  * switched REST-api to the 'new' datamodel, which does not deserve the name...
  *
  * Revision 1.2  2007/02/05 10:35:55  cschenk

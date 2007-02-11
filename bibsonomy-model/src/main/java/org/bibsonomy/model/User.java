@@ -3,6 +3,7 @@ package org.bibsonomy.model;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.util.DefaultValues;
@@ -73,6 +74,10 @@ public class User {
 	}
 
 	public List<Group> getGroups() {
+		if( this.groups == null )
+		{
+			this.groups = new LinkedList<Group>();
+		}
 		return this.groups;
 	}
 
@@ -89,6 +94,10 @@ public class User {
 	}
 
 	public List<Post<Resource>> getPosts() {
+		if( this.posts == null )
+		{
+			this.posts = new LinkedList<Post<Resource>>();
+		}
 		return this.posts;
 	}
 

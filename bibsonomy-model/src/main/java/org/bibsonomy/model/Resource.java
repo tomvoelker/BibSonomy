@@ -2,6 +2,7 @@ package org.bibsonomy.model;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
@@ -39,7 +40,7 @@ public abstract class Resource {
 	
 	private String interHash;
 	private String intraHash;
-	private List<Post> posts;
+	private List<Post<Resource>> posts;
 	
 
 	// XXX: put them only in the model, if we really need them
@@ -168,10 +169,14 @@ public abstract class Resource {
 	public void setIntraHash(String intraHash) {
 		this.intraHash = intraHash;
 	}
-	public List<Post> getPosts() {
+	public List<Post<Resource>> getPosts() {
+		if( this.posts == null )
+		{
+			this.posts = new LinkedList<Post<Resource>>();
+		}
 		return this.posts;
 	}
-	public void setPosts(List<Post> posts) {
+	public void setPosts(List<Post<Resource>> posts) {
 		this.posts = posts;
 	}
 }

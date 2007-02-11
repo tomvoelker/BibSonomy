@@ -1,7 +1,6 @@
 package org.bibsonomy.model;
 
 import org.bibsonomy.model.util.ResourceUtils;
-import org.bibsonomy.model.Resource;
 
 /**
  * This is a bookmark, which is derived from
@@ -16,6 +15,14 @@ public class Bookmark extends Resource {
 
 	public String getUrl() {
 		return this.url;
+	}
+
+	/**
+	 * bookmarks use the same hash value for both intrahash and interhash
+	 */
+	@Override
+	public String getInterHash() {
+		return super.getIntraHash();
 	}
 
 	public void setUrl(String url) {
