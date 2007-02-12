@@ -15,6 +15,7 @@ import org.bibsonomy.rest.enums.GroupingEntity;
 import org.bibsonomy.rest.enums.ResourceType;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import sun.text.Normalizer.Mode;
 
 /**
  * Adapter for the REST interface.
@@ -23,7 +24,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  * @author mgr
  */
 public class RESTDatabaseManager extends AbstractDatabaseManager implements LogicInterface {
-
+	
 	private final DatabaseManager db;
 
 	/**
@@ -64,15 +65,33 @@ public class RESTDatabaseManager extends AbstractDatabaseManager implements Logi
 		throw new NotImplementedException();
 	}
 
-	public Post<Resource> getPostDetails(String arg0, String arg1, String arg2) {
-		// TODO Auto-generated method stub
-		throw new NotImplementedException();
-	}
+	
+	/**
+	 * return a post with retaining details(authUser, resourceHash and current User)
+	 * */
 
+	public Post<Resource>getPostDetails(String authUser, String resourceHash, String currUser){
+		
+		final BookmarkParam param=new BookmarkParam();
+		param.setRequestedUserName(authUser);
+		param.setHash(resourceHash);
+		param.setUserName(currUser);
+		return (Post<Resource>) ModelUtils.putResourcesIntoPosts(this.db.getBookmark().getBookmarkForUser(param));
+			
+		
+	}
+	
+	
+	/* 
+	 * return a set of post by given argument types
+	 * */
+	
+	
 	public Set<Post<Resource>> getPosts(String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, Set<String> tags, String hash, boolean popular, boolean added, int start, int end) {
 		resourceType = ResourceType.BOOKMARK; // TODO implement me..
 		switch (resourceType) {
 		case BOOKMARK:
+			//Mapping nicht korrekt!
 			final BookmarkParam param = new BookmarkParam();
 			param.setRequestedUserName(authUser);
 			param.setOffset(start);
@@ -97,7 +116,9 @@ public class RESTDatabaseManager extends AbstractDatabaseManager implements Logi
 		throw new NotImplementedException();
 	}
 
-	public Set<User> getUsers(String arg0, int arg1, int arg2) {
+	
+	
+	public Set<User> getUsers(String authUser, int start, int end ) {
 		// TODO Auto-generated method stub
 		throw new NotImplementedException();
 	}

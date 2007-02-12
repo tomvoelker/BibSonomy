@@ -23,7 +23,16 @@ public class User {
 	/** The user belongs to these groups */
 	private List<Group> groups;
 	private List<Post<Resource>> posts;
+	private boolean spammer;
 
+	
+	public boolean isSpammer() {
+		return this.spammer;
+	}
+	public void setSpammer(boolean spammer) {
+		this.spammer = spammer;
+	}
+	
 	public String getEmail() {
 		return email;
 	}
