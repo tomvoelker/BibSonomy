@@ -206,7 +206,9 @@ public abstract class AbstractDatabaseManager {
 		} finally {
 			try {
 				// If the database is writeable we commit the transaction
-				if (!this.isReadonly()) this.sqlMap.commitTransaction();
+				// FIXME transaction management needs improvement
+				// if (!this.isReadonly()) this.sqlMap.commitTransaction();
+				if (false) throw new SQLException(); // XXX keeps the try-catch-block intact
 			} catch (final SQLException ex) {
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't commit transaction for query '" + query + "'");
 			} finally {
