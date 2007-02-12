@@ -40,8 +40,7 @@ public final class RestServlet extends HttpServlet
 	public void init() throws ServletException
 	{
 		super.init();
-      // TODO instantiate the real logic-connection
-		//logic = new TestDatabase();
+		// instantiate the bibsonomy database connection
       logic = DatabaseManager.getInstance().getREST();
 	}
    
@@ -206,7 +205,10 @@ public final class RestServlet extends HttpServlet
 
 /*
  * $Log$
- * Revision 1.2  2007-02-11 19:38:00  mbork
+ * Revision 1.3  2007-02-12 12:08:16  mgrahl
+ * *** empty log message ***
+ *
+ * Revision 1.2  2007/02/11 19:38:00  mbork
  * successfully switched to the database interface.
  *
  * Revision 1.1  2006/10/24 21:39:53  mbork

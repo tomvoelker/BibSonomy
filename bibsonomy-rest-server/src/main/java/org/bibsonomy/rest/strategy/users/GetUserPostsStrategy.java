@@ -50,6 +50,7 @@ public class GetUserPostsStrategy extends Strategy
 	@Override
 	public void perform( HttpServletRequest request, StringWriter writer ) throws InternServerException
 	{
+		//set up parameters
 		// setup viewModel
 		int start = context.getIntAttribute( "start", 0 );
 		int end = context.getIntAttribute( "end", 19 );
@@ -101,7 +102,10 @@ public class GetUserPostsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.3  2007-02-11 17:55:26  mbork
+ * Revision 1.4  2007-02-12 12:08:50  mgrahl
+ * *** empty log message ***
+ *
+ * Revision 1.3  2007/02/11 17:55:26  mbork
  * switched REST-api to the 'new' datamodel, which does not deserve the name...
  *
  * Revision 1.2  2007/02/05 10:35:54  cschenk
