@@ -38,11 +38,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.ibatis</groupId>
-			<artifactId>ibatis2-common</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.ibatis</groupId>
-			<artifactId>ibatis2-sqlmap</artifactId>
+			<artifactId>ibatis2</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
