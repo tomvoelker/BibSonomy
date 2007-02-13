@@ -87,8 +87,4 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 		if (rVal == null) return ConstantID.GROUP_INVALID.getId();
 		return rVal;
 	}
-	   
-	
-
-	
 }

@@ -1,11 +1,11 @@
 package org.bibsonomy.database;
 
+import static org.junit.Assert.assertTrue;
+
 import java.sql.SQLException;
 
 import org.bibsonomy.common.enums.ConstantID;
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests related to BibTex.

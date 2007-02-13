@@ -8,6 +8,8 @@
 	<typeAlias alias="tag" type="org.bibsonomy.model.Tag" />
 	<typeAlias alias="bookmark" type="org.bibsonomy.model.Bookmark" />
 	<typeAlias alias="bibtex" type="org.bibsonomy.model.BibTex" />
+	<typeAlias alias="post" type="org.bibsonomy.model.Post" />
+	<typeAlias alias="user" type="org.bibsonomy.model.User" />
 
 	<!-- Parameters -->
 	<typeAlias alias="genericParam" type="org.bibsonomy.database.params.GenericParam" />

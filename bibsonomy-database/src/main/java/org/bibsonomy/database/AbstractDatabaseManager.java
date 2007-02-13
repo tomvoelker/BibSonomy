@@ -7,10 +7,12 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.util.DatabaseUtils;
-import org.bibsonomy.util.ExceptionUtils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.util.ExceptionUtils;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 
@@ -76,6 +78,12 @@ public abstract class AbstractDatabaseManager {
 	@SuppressWarnings("unchecked")
 	protected List<Bookmark> bookmarkList(final String query, final BookmarkParam param) {
 		return (List<Bookmark>) queryForAnything(query, param, QueryFor.LIST);
+	}
+
+	// FIXME return value needs to be changed to org.bibsonomy.model.Post
+	@SuppressWarnings("unchecked")
+	protected List<Post<Resource>> bookmarkList(final String query, final BookmarkParam param, final boolean test) {
+		return (List<Post<Resource>>) queryForAnything(query, param, QueryFor.LIST);
 	}
 
 	/**

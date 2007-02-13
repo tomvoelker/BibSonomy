@@ -1,6 +1,7 @@
 package org.bibsonomy.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,23 +17,33 @@ import org.bibsonomy.model.User;
 public class Post<T extends Resource> {
 
 	private T resource;
+	/** We need this here if we want to use groupBy in iBatis */
+	private int contentId;
 	private User user;
-	private String userName;
-	private int groupId;
+	private String userName; // FIXME already in user
+	private int groupId; // FIXME shouldn't this be in a group too?
 	private List<Group> groups;
-	private String groupName; 
+	private String groupName; // FIXME already in groups
 	/** The groupId of this resource; by default ConstantID.GROUP_PUBLIC */
 	/** A timestamp for this resource */
 	//private Date date;
 	private List<Tag> tags;
 	private String description;
-	private long postingDate; // TODO why not use java.util.Date instead?: ok!
+	private Date date;
 
 	public Post() {
 		this.groupId = ConstantID.GROUP_PUBLIC.getId();
 		this.tags = new ArrayList<Tag>();
 	}
-	
+
+	public int getContentId() {
+		return this.contentId;
+	}
+
+	public void setContentId(int contentId) {
+		this.contentId = contentId;
+	}
+
 	public String getDescription() {
 		return this.description;
 	}
@@ -53,12 +64,12 @@ public class Post<T extends Resource> {
 		this.groups = groups;
 	}
 
-	public long getPostingDate() {
-		return this.postingDate;
+	public Date getDate() {
+		return this.date;
 	}
 
-	public void setPostingDate(long postingDate) {
-		this.postingDate = postingDate;
+	public void setDate(Date postingDate) {
+		this.date = postingDate;
 	}
 
 	public T getResource() {

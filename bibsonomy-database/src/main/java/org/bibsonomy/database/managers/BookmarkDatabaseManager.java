@@ -5,12 +5,13 @@ import java.util.List;
 import java.util.Random;
 
 import org.bibsonomy.common.enums.ConstantID;
-import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 
@@ -218,9 +219,9 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 	 * are retrieved, but also friends or private or other groups, depending
 	 * upon if userName is allowed to see them.
 	 */
-	public List<Bookmark> getBookmarkForUser(final BookmarkParam param) {
+	public List<Post<Resource>> getBookmarkForUser(final BookmarkParam param) {
 		DatabaseUtils.prepareGetPostForUser(this.db, param);
-		return this.bookmarkList("getBookmarkForUser", param);
+		return this.bookmarkList("getBookmarkForUser", param, true);
 	}
 
 	/**
@@ -319,7 +320,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
  						/*** if bookmark is not added into the system ***/
  						if(bookmark.getContentId() == ConstantID.IDS_UNDEFINED_CONTENT_ID.getId() && !isToDeleted){
  							setToInserted = true;
- 							if(already_change && bookmark.getUserName().equals(currUser)){
+ 							if(already_change /* FIXME && bookmark.getUserName().equals(currUser)*/){
  								
  								/*
  								 * (do this only, if currUser = book.user, otherwise overwriting group entries is possible)
@@ -385,7 +386,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
  					/***if current user is detected as spammer, modify group id***/
  					
  					if(spammer){
- 						bookmark.setGroupId(ResourceUtils.getGroupId(bookmark.getGroupId(),true));
+ 						// FIXME bookmark.setGroupId(ResourceUtils.getGroupId(bookmark.getGroupId(),true));
  					}
  					
  					/*** create a unique contentID from table id_generator (get value from the tabel ids) ***/

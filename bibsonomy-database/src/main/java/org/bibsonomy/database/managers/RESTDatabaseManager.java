@@ -4,18 +4,17 @@ import java.util.Set;
 
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.BookmarkParam;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.util.ModelUtils;
 import org.bibsonomy.rest.LogicInterface;
 import org.bibsonomy.rest.enums.GroupingEntity;
 import org.bibsonomy.rest.enums.ResourceType;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-import sun.text.Normalizer.Mode;
 
 /**
  * Adapter for the REST interface.
@@ -65,38 +64,32 @@ public class RESTDatabaseManager extends AbstractDatabaseManager implements Logi
 		throw new NotImplementedException();
 	}
 
-	
 	/**
-	 * return a post with retaining details(authUser, resourceHash and current User)
-	 * */
-
-	public Post<Resource>getPostDetails(String authUser, String resourceHash, String currUser){
-		
-		final BookmarkParam param=new BookmarkParam();
+	 * Return a post with retaining details (authUser, resourceHash and current User)
+	 */
+	public Post<Resource> getPostDetails(String authUser, String resourceHash, String currUser) {
+		final BookmarkParam param = new BookmarkParam();
 		param.setRequestedUserName(authUser);
 		param.setHash(resourceHash);
 		param.setUserName(currUser);
-		return (Post<Resource>) ModelUtils.putResourcesIntoPosts(this.db.getBookmark().getBookmarkForUser(param));
-			
-		
+		//return (Post<Resource>) ModelUtils.putResourcesIntoPosts(this.db.getBookmark().getBookmarkForUser(param));
+		return (Post<Resource>) this.db.getBookmark().getBookmarkForUser(param);
 	}
-	
-	
-	/* 
-	 * return a set of post by given argument types
-	 * */
-	
-	
+
+	/**
+	 * Return a set of post by given argument types
+	 */	
 	public Set<Post<Resource>> getPosts(String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, Set<String> tags, String hash, boolean popular, boolean added, int start, int end) {
 		resourceType = ResourceType.BOOKMARK; // TODO implement me..
 		switch (resourceType) {
 		case BOOKMARK:
-			//Mapping nicht korrekt!
+			//Mapping nicht korrekt! - des BookmarkParams? Wieso?
 			final BookmarkParam param = new BookmarkParam();
 			param.setRequestedUserName(authUser);
 			param.setOffset(start);
 			param.setLimit(end);
-			return ModelUtils.putResourcesIntoPosts(this.db.getBookmark().getBookmarkForUser(param));
+			// return ModelUtils.putResourcesIntoPosts(this.db.getBookmark().getBookmarkForUser(param));
+			return (Set<Post<Resource>>) this.db.getBookmark().getBookmarkForUser(param);
 		}
 		throw new NotImplementedException();
 	}
@@ -116,8 +109,6 @@ public class RESTDatabaseManager extends AbstractDatabaseManager implements Logi
 		throw new NotImplementedException();
 	}
 
-	
-	
 	public Set<User> getUsers(String authUser, int start, int end ) {
 		// TODO Auto-generated method stub
 		throw new NotImplementedException();

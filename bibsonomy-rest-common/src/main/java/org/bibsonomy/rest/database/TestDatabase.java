@@ -427,7 +427,8 @@ public class TestDatabase implements LogicInterface
 		// posts
 		Post<Resource> post_1 = new Post<Resource>();
 		post_1.setDescription( "Neueste Nachrichten aus aller Welt." );
-		post_1.setPostingDate( System.currentTimeMillis() );
+		// FIXME date changed from long to java.util.Date
+//		post_1.setDate( System.currentTimeMillis() );
 		post_1.setResource( spiegelOnlineResource );
       spiegelOnlineResource.getPosts().add( post_1 );
 		post_1.setUser( userManu );
@@ -441,7 +442,8 @@ public class TestDatabase implements LogicInterface
 		
 		Post<Resource> post_2 = new Post<Resource>();
 		post_2.setDescription( "Toller Webhoster und super Coder ;)" );
-		post_2.setPostingDate( System.currentTimeMillis() );
+		// FIXME date changed from long to java.util.Date
+//		post_2.setDate( System.currentTimeMillis() );
 		post_2.setResource( hostingprojectResource );
       hostingprojectResource.getPosts().add( post_2 );
 		post_2.setUser( userManu );
@@ -453,7 +455,8 @@ public class TestDatabase implements LogicInterface
 		
 		Post<Resource> post_3 = new Post<Resource>();
 		post_3.setDescription( "lustiger blog" );
-		post_3.setPostingDate( System.currentTimeMillis() );
+		// FIXME date changed from long to java.util.Date
+//		post_3.setDate( System.currentTimeMillis() );
 		post_3.setResource( klabusterbeereResource );
       klabusterbeereResource.getPosts().add( post_3 );
 		post_3.setUser( userManu );
@@ -465,7 +468,8 @@ public class TestDatabase implements LogicInterface
 		
 		Post<Resource> post_4 = new Post<Resource>();
 		post_4.setDescription( "lustiger mist ausm irc ^^" );
-		post_4.setPostingDate( System.currentTimeMillis() );
+		// FIXME date changed from long to java.util.Date
+//		post_4.setDate( System.currentTimeMillis() );
 		post_4.setResource( bildschirmarbeiterResource );
       bildschirmarbeiterResource.getPosts().add( post_4 );
 		post_4.setUser( userManu );
@@ -477,7 +481,8 @@ public class TestDatabase implements LogicInterface
 		
 		Post<Resource> post_5 = new Post<Resource>();
 		post_5.setDescription( "Semantic Web Vorlesung im Wintersemester 0506" );
-		post_5.setPostingDate( System.currentTimeMillis() );
+		// FIXME date changed from long to java.util.Date
+//		post_5.setDate( System.currentTimeMillis() );
 		post_5.setResource( semwebResource );
       semwebResource.getPosts().add( post_5 );
 		post_5.setUser( userManu );
@@ -493,7 +498,8 @@ public class TestDatabase implements LogicInterface
 		
 		Post<Resource> post_6 = new Post<Resource>();
 		post_6.setDescription( "joerns blog" );
-		post_6.setPostingDate( System.currentTimeMillis() );
+		// FIXME date changed from long to java.util.Date
+//		post_6.setDate( System.currentTimeMillis() );
 		post_6.setResource( butonicResource  );
       butonicResource.getPosts().add( post_6 );
 		post_6.setUser( userButonic );
@@ -505,7 +511,8 @@ public class TestDatabase implements LogicInterface
 		
 		Post<Resource> post_7 = new Post<Resource>();
 		post_7.setDescription( "online game" );
-		post_7.setPostingDate( System.currentTimeMillis() );
+		// FIXME date changed from long to java.util.Date
+//		post_7.setDate( System.currentTimeMillis() );
 		post_7.setResource( wowResource );
       wowResource.getPosts().add( post_7 );
 		post_7.setUser( userButonic );
@@ -517,7 +524,8 @@ public class TestDatabase implements LogicInterface
 		
 		Post<Resource> post_8 = new Post<Resource>();
 		post_8.setDescription( "wow clan" );
-		post_8.setPostingDate( System.currentTimeMillis() );
+		// FIXME date changed from long to java.util.Date
+//		post_8.setDate( System.currentTimeMillis() );
 		post_8.setResource( dunkleResource );
       dunkleResource.getPosts().add( post_8 );
 		post_8.setUser( userButonic );
@@ -529,7 +537,8 @@ public class TestDatabase implements LogicInterface
 		
 		Post<Resource> post_9 = new Post<Resource>();
 		post_9.setDescription( "w3c site zum semantic web" );
-		post_9.setPostingDate( System.currentTimeMillis() );
+		// FIXME date changed from long to java.util.Date
+//		post_9.setDate( System.currentTimeMillis() );
 		post_9.setResource( w3cResource );
       w3cResource.getPosts().add( post_9 );
 		post_9.setUser( userAndreas  );
@@ -541,7 +550,8 @@ public class TestDatabase implements LogicInterface
 
 		Post<Resource> post_10 = new Post<Resource>();
 		post_10.setDescription( "wikipedia site zum semantic web" );
-		post_10.setPostingDate( System.currentTimeMillis() );
+		// FIXME date changed from long to java.util.Date
+//		post_10.setDate( System.currentTimeMillis() );
 		post_10.setResource( wikipediaResource );
       wikipediaResource.getPosts().add( post_10 );
 		post_10.setUser( userAndreas  );
@@ -553,7 +563,8 @@ public class TestDatabase implements LogicInterface
 		
 		Post<Resource> post_11 = new Post<Resource>();
 		post_11.setDescription( "kdd vorlesung im ss06" );
-		post_11.setPostingDate( System.currentTimeMillis() );
+		// FIXME date changed from long to java.util.Date
+//		post_11.setDate( System.currentTimeMillis() );
 		post_11.setResource( kddResource );
       kddResource.getPosts().add( post_11 );
 		post_11.setUser( userAndreas  );
@@ -567,7 +578,8 @@ public class TestDatabase implements LogicInterface
       
 		Post<Resource> post_12 = new Post<Resource>();
 		post_12.setDescription( "semantic web vorlesung im ws0506" );
-		post_12.setPostingDate( System.currentTimeMillis() );
+		// FIXME date changed from long to java.util.Date
+//		post_12.setDate( System.currentTimeMillis() );
 		post_12.setResource( semwebResource );
       semwebResource.getPosts().add( post_12 );
 		post_12.setUser( userAndreas  );
@@ -623,7 +635,8 @@ public class TestDatabase implements LogicInterface
 		
 		Post<Resource> post_13 = new Post<Resource>();
 		post_13.setDescription("Beschreibung einer allumfassenden Weltformel. Taeglich lesen!" );
-		post_13.setPostingDate( System.currentTimeMillis() );
+		// FIXME date changed from long to java.util.Date
+//		post_13.setDate( System.currentTimeMillis() );
 		post_13.setResource( bibtexDemo );
       bibtexDemo.getPosts().add( post_13 );
 		post_13.setUser( userManu  );
@@ -637,7 +650,8 @@ public class TestDatabase implements LogicInterface
 		
 		Post<Resource> post_14 = new Post<Resource>();
 		post_14.setDescription("Grundlagen des www" );
-		post_14.setPostingDate( System.currentTimeMillis() );
+		// FIXME date changed from long to java.util.Date
+//		post_14.setDate( System.currentTimeMillis() );
 		post_14.setResource( bibtexDemo1 );
       bibtexDemo1.getPosts().add( post_14 );
 		post_14.setUser( userManu  );
@@ -649,7 +663,8 @@ public class TestDatabase implements LogicInterface
 		
 		Post<Resource> post_15 = new Post<Resource>();
 		post_15.setDescription("So ist unsers api konstruiert." );
-		post_15.setPostingDate( System.currentTimeMillis() );
+		// FIXME date changed from long to java.util.Date
+//		post_15.setDate( System.currentTimeMillis() );
 		post_15.setResource( bibtexDemo2 );
       bibtexDemo2.getPosts().add( post_15 );
 		post_15.setUser( userManu  );
@@ -661,7 +676,8 @@ public class TestDatabase implements LogicInterface
 		
 		Post<Resource> post_16 = new Post<Resource>();
 		post_16.setDescription("das ist nur ein beispiel." );
-		post_16.setPostingDate( System.currentTimeMillis() );
+		// FIXME date changed from long to java.util.Date
+//		post_16.setDate( System.currentTimeMillis() );
 		post_16.setResource( bibtexDemo3 );
       bibtexDemo3.getPosts().add( post_16 );
 		post_16.setUser( userManu  );
@@ -723,7 +739,10 @@ public class TestDatabase implements LogicInterface
 
 /*
  * $Log$
- * Revision 1.4  2007-02-11 18:35:20  mbork
+ * Revision 1.5  2007-02-13 13:23:15  cschenk
+ * Prepared transition from lists of Bookmarks and BibTexs to lists of posts
+ *
+ * Revision 1.4  2007/02/11 18:35:20  mbork
  * lazy instantiation of lists in the model.
  * we definitely need bidirectional links for the api to work proper!
  * fixed all unit tests, every test performs well.

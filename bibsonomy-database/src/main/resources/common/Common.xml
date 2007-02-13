@@ -2,6 +2,17 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="Common">
+	<resultMap id="posts" class="post" groupBy="contentId">
+		<result property="contentId"   column="content_id"       javaType="int" />
+		<result property="tags"        resultMap="Common.tags" />
+		<result property="date"        column="date"             javaType="date" />
+		<result property="user"        resultMap="Common.user" />
+	</resultMap>
+
+	<resultMap id="user" class="user">
+		<result property="name" column="user_name" javaType="string" />
+	</resultMap>
+
 	<resultMap id="tags" class="tag">
 		<result property="name" column="tag_name" javaType="string" />
 	</resultMap>

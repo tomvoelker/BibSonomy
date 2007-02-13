@@ -15,27 +15,29 @@ import org.bibsonomy.model.Resource;
  */
 public class ModelUtils {
 
+	// FIXME
 	private static void setResourceDefaults(final Resource resource) {
 		// resource.setContentId(1);
 		resource.setCount(0);
-		resource.setDate(null);
-		resource.setGroupId(ConstantID.GROUP_KDE.getId());
-		resource.setGroupName("kde");
+//		resource.setDate(null);
+//		resource.setGroupId(ConstantID.GROUP_KDE.getId());
+//		resource.setGroupName("kde");
 		resource.setUrl("");
-		resource.setUserName("kde");
+//		resource.setUserName("kde");
 	}
 
 	/**
 	 * Creates a bookmark with all properties set.
 	 */
+	// FIXME
 	public static Bookmark getBookmark() {
 		Date date = new Date();
 		final Bookmark rVal = new Bookmark();
-		rVal.setUserName("hallo");	
+//		rVal.setUserName("hallo");	
 		rVal.setDescription("test");
 		rVal.setExtended("test");
 		rVal.setUrl("http://www.bibonomy.org");
-		rVal.setDate(date);
+//		rVal.setDate(date);
 		rVal.setContentId(2);
 		return rVal;
 	}

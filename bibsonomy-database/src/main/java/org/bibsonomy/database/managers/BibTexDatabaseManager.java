@@ -437,7 +437,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 						// check, if old hash is available and if we treat bibtex of currUser
 						
 						/*************not an optimal solution***************/
-						if (!"".equals(oldhash) && currUser.equals(bibtex.getUserName())) {
+						if (!"".equals(oldhash) /* FIXME && currUser.equals(bibtex.getUserName()) */) {
 							bibtex.setContentId(contentId);
 							setToDeleted=true;
 						}
