@@ -11,7 +11,6 @@ public abstract class Resource {
 
 	/** An Id for this resource; by default ConstantID.IDS_UNDEFINED_CONTENT_ID */
 	private int contentId;
-	private String url = ""; 
 	private int count;
 	private String oldHash = "";
 	private int newTasId;
@@ -82,11 +81,5 @@ public abstract class Resource {
 	}
 	public void setCount(int count) {
 		this.count = count;
-	}
-	public String getUrl() {
-		return this.url;
-	}
-	public void setUrl(String url) {
-		this.url = url;
 	}
 }

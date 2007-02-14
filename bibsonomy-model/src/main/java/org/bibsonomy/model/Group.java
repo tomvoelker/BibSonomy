@@ -3,6 +3,7 @@ package org.bibsonomy.model;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 
@@ -15,6 +16,20 @@ public class Group {
 	private String description;
 	private List<Post<Resource>> posts;
 	private List<User> users;
+	private int groupId; 
+	
+	public Group() {
+		this.groupId = ConstantID.GROUP_PUBLIC.getId();
+	}
+	
+	
+	public int getGroupId() {
+		return this.groupId;
+	}
+
+	public void setGroupId(int groupId) {
+		this.groupId = groupId;
+	}
 
 	public String getDescription() {
 		return this.description;

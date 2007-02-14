@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -20,19 +19,13 @@ public class Post<T extends Resource> {
 	/** We need this here if we want to use groupBy in iBatis */
 	private int contentId;
 	private User user;
-	private String userName; // FIXME already in user
-	private int groupId; // FIXME shouldn't this be in a group too?
 	private List<Group> groups;
-	private String groupName; // FIXME already in groups
-	/** The groupId of this resource; by default ConstantID.GROUP_PUBLIC */
-	/** A timestamp for this resource */
-	//private Date date;
 	private List<Tag> tags;
+	/** A timestamp for this resource */
 	private String description;
 	private Date date;
 
 	public Post() {
-		this.groupId = ConstantID.GROUP_PUBLIC.getId();
 		this.tags = new ArrayList<Tag>();
 	}
 
@@ -100,32 +93,10 @@ public class Post<T extends Resource> {
 		this.user = user;
 	}
 
-	public String getGroupName() {
-		return this.groupName;
-	}
-
-	public void setGroupName(String groupName) {
-		this.groupName = groupName;
-	}
-
-	public String getUserName() {
-		return this.userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
 	public void addTag(final String tagName) {
 		final Tag tag = new Tag();
 		tag.setName(tagName);
 		this.tags.add(tag);
 	}
 
-	public int getGroupId() {
-		return this.groupId;
-	}
-
-	public void setGroupId(int groupId) {
-		this.groupId = groupId;
-	}
 }
