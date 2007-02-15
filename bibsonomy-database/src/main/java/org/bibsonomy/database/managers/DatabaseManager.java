@@ -1,5 +1,7 @@
 package org.bibsonomy.database.managers;
 
+
+
 /**
  * This singleton class supplies all database-managers which can execute queries
  * on the database.
@@ -8,18 +10,19 @@ package org.bibsonomy.database.managers;
  */
 public final class DatabaseManager {
 
+	
 	/** The singleton */
-	private static final DatabaseManager singleton = new DatabaseManager();
-	private final GeneralDatabaseManager generalDatabaseManager;
-	private final BookmarkDatabaseManager bookmarkDatabaseManager;
-	private final BibTexDatabaseManager bibtexDatabaseManager;
-	private final TagDatabaseManager tagDatabaseManager;
-	private final RESTDatabaseManager restDatabaseManager;
+	public static final DatabaseManager singleton = new DatabaseManager();
+	public final GeneralDatabaseManager generalDatabaseManager;
+	public final BookmarkDatabaseManager bookmarkDatabaseManager;
+	public final BibTexDatabaseManager bibtexDatabaseManager;
+	public final TagDatabaseManager tagDatabaseManager;
+	public final RESTDatabaseManager restDatabaseManager;
 
 	/**
 	 * The constructor is private due to the singleton pattern.
 	 */
-	private DatabaseManager() {
+	public DatabaseManager() {
 		this.generalDatabaseManager = new GeneralDatabaseManager();
 		this.bookmarkDatabaseManager = new BookmarkDatabaseManager(this);
 		this.bibtexDatabaseManager = new BibTexDatabaseManager(this);
@@ -80,4 +83,8 @@ public final class DatabaseManager {
 	public RESTDatabaseManager getREST() {
 		return this.restDatabaseManager;
 	}
+
+	
+		
+
 }
