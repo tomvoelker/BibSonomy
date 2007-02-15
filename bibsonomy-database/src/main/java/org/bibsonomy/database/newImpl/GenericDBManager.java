@@ -8,6 +8,9 @@ import java.util.TreeSet;
 
 import org.bibsonomy.database.newImpl.content.AbstractContentDBManager;
 import org.bibsonomy.database.newImpl.content.BookmarkDBManager;
+import org.bibsonomy.database.newImpl.general.GroupDBManager;
+import org.bibsonomy.database.newImpl.general.TagDBManager;
+import org.bibsonomy.database.newImpl.general.UserDBManager;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -36,7 +39,9 @@ public class GenericDBManager implements LogicInterface {
 	 */
 	
 	private Map<ResourceType, AbstractContentDBManager> contentDBManagers = new HashMap<ResourceType, AbstractContentDBManager>();
-		
+	private UserDBManager userman = new UserDBManager();
+	private TagDBManager tagman = new TagDBManager();
+	private GroupDBManager groupman = new GroupDBManager();
 	
 	public GenericDBManager() {
 		/*
@@ -54,7 +59,7 @@ public class GenericDBManager implements LogicInterface {
 	 * @return a set of users, an empty set else
 	 */
 	public Set<User> getUsers(String authUser, int start, int end) {
-		return null;
+		return userman.getUsers(authUser, start, end);
 	}
 
 	/**
@@ -67,7 +72,7 @@ public class GenericDBManager implements LogicInterface {
 	 * @return  a set of users, an empty set else
 	 */
 	public Set<User> getUsers(String authUser, String groupName, int start, int end) {
-		return null;
+		return userman.getUsers(authUser, groupName, start, end);
 	}
 
 	/**
@@ -78,7 +83,7 @@ public class GenericDBManager implements LogicInterface {
 	 * @return details about a named user, null else
 	 */
 	public User getUserDetails(String authUserName, String userName) {
-		return null;
+		return userman.getUserDetails(authUserName, userName);
 	}
 
 	/**
@@ -147,20 +152,25 @@ public class GenericDBManager implements LogicInterface {
 	 * @param userName name of the post-owner
 	 * @return the post's details, null else
 	 */
-	public Post getPostDetails(String authUser, String resourceHash, String userName) {
-		return null;
+	public Post<Resource> getPostDetails(String authUser, String resourceHash, String userName) {
+		Post<Resource> post = null;
+		for (AbstractContentDBManager man: contentDBManagers.values()) {
+			post = man.getPostDetails(authUser, resourceHash, userName);
+			if (post != null) break;
+		}
+		return post;
 	}
 
 	/**
 	 * returns all groups of the system
-	 * 
+	 * TODO: what is the param "string" good for??
 	 * @param end 
 	 * @param start 
 	 * @param string 
 	 * @return a set of groups, an empty set else
 	 */
 	public Set<Group> getGroups(String string, int start, int end) {
-		return null;
+		return groupman.getGroups(string, start, end);
 	}
 
 	/**
@@ -171,7 +181,7 @@ public class GenericDBManager implements LogicInterface {
 	 * @return the group's details, null else
 	 */
 	public Group getGroupDetails(String authUserName, String groupName) {
-		return null;
+		return groupman.getGroupDetails(authUserName, groupName);
 	}
 
 	/**
@@ -193,7 +203,7 @@ public class GenericDBManager implements LogicInterface {
 	 * @return a set of tags, en empty set else
 	 */
 	public Set<Tag> getTags(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end) {
-		return null;
+		return tagman.getTags(authUser, grouping, groupingName, regex, start, end);
 	}
 
 	/**
@@ -212,7 +222,7 @@ public class GenericDBManager implements LogicInterface {
 	 * @return the tag's details, null else
 	 */
 	public Tag getTagDetails(String authUserName, String tagName) {
-		return null;
+		return tagman.getTagDetails(authUserName, tagName);
 	}
 
 	/**
@@ -223,7 +233,7 @@ public class GenericDBManager implements LogicInterface {
 	 * @return true if the user exists and has the given password
 	 */
 	public boolean validateUserAccess(String username, String password) {
-		return false;
+		return userman.validateUserAccess(username, password);
 	}
 
 	/**
@@ -232,7 +242,7 @@ public class GenericDBManager implements LogicInterface {
 	 * @param userName the user to delete
 	 */
 	public void deleteUser(String userName) {
-
+		userman.deleteUser(userName);
 	}
 
 	/**
@@ -241,7 +251,7 @@ public class GenericDBManager implements LogicInterface {
 	 * @param groupName the group to delete
 	 */
 	public void deleteGroup(String groupName) {
-
+		groupman.deleteGroup(groupName);
 	}
 
 	/**
@@ -251,7 +261,7 @@ public class GenericDBManager implements LogicInterface {
 	 * @param userName the user to remove
 	 */
 	public void removeUserFromGroup(String groupName, String userName) {
-
+		groupman.removeUserFromGroup(groupName, userName);
 	}
 
 	/**
@@ -261,7 +271,9 @@ public class GenericDBManager implements LogicInterface {
 	 * @param resourceHash hash of the resource, which is connected to the post to delete 
 	 */
 	public void deletePost(String userName, String resourceHash) {
-
+		for (AbstractContentDBManager man: contentDBManagers.values()) {
+			if (man.deletePost(userName, resourceHash)) break;
+		}
 	}
 
 	/**
@@ -271,7 +283,7 @@ public class GenericDBManager implements LogicInterface {
 	 * @param update true if its an existing user (identified by username), false if its a new user
 	 */
 	public void storeUser(User user, boolean update) {
-
+		userman.storeUser(user, update);
 	}
 
 	/**
@@ -282,7 +294,9 @@ public class GenericDBManager implements LogicInterface {
 	 * @param update true if its an existing post (identified by its resource's intrahash), false if its a new post
 	 */
 	public void storePost(String userName, Post post, boolean update) {
-
+		for (AbstractContentDBManager man: contentDBManagers.values()) {
+			if (man.storePost(userName, post, update)) break;
+		}
 	}
 
 	/**
@@ -292,7 +306,7 @@ public class GenericDBManager implements LogicInterface {
 	 * @param update true if its an existing group, false if its a new group
 	 */
 	public void storeGroup(Group group, boolean update) {
-
+		groupman.storeGroup(group, update);
 	}
 
 	/**
@@ -302,6 +316,6 @@ public class GenericDBManager implements LogicInterface {
 	 * @param user user to add
 	 */
 	public void addUserToGroup(String groupName, String userName) {
-
+		groupman.addUserToGroup(groupName, userName);
 	}
 }
