@@ -1,7 +1,7 @@
 package org.bibsonomy.rest.strategy.groups;
 
 import java.io.StringWriter;
-import java.util.Set;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -51,7 +51,7 @@ public class GetUserListOfGroupStrategy extends Strategy
 		int start = context.getIntAttribute( "start", 0 );
 		int end = context.getIntAttribute( "end", 19 );
 		
-      Set<User> users = context.getLogic().getUsers( context.getAuthUserName(), groupName, start, end );
+      List<User> users = context.getLogic().getUsers( context.getAuthUserName(), groupName, start, end );
       
       ViewModel viewModel = new ViewModel();
       if( users.size() < end + 1 )
@@ -84,7 +84,11 @@ public class GetUserListOfGroupStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.3  2007-02-11 17:55:26  mbork
+ * Revision 1.4  2007-02-15 10:29:09  mbork
+ * the LogicInterface now uses Lists instead of Sets
+ * fixed use of generics
+ *
+ * Revision 1.3  2007/02/11 17:55:26  mbork
  * switched REST-api to the 'new' datamodel, which does not deserve the name...
  *
  * Revision 1.2  2007/02/05 10:35:54  cschenk

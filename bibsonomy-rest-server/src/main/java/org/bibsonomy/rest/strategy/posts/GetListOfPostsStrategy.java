@@ -1,7 +1,7 @@
 package org.bibsonomy.rest.strategy.posts;
 
 import java.io.StringWriter;
-import java.util.Set;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -60,7 +60,7 @@ public class GetListOfPostsStrategy extends Strategy
 			groupingValue = context.getStringAttribute( grouping.toString().toLowerCase(), "" );
 		}
 		
-      Set<Post<Resource>> posts = context.getLogic().getPosts( context.getAuthUserName(), resourceType, grouping,
+      List<Post<? extends Resource>> posts = context.getLogic().getPosts( context.getAuthUserName(), resourceType, grouping,
             groupingValue, context.getTags( "tags" ), hash, false, false, start, end );
       ViewModel viewModel = new ViewModel();
       if( posts.size() < end + 1 )
@@ -110,7 +110,11 @@ public class GetListOfPostsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.3  2007-02-11 17:55:26  mbork
+ * Revision 1.4  2007-02-15 10:29:09  mbork
+ * the LogicInterface now uses Lists instead of Sets
+ * fixed use of generics
+ *
+ * Revision 1.3  2007/02/11 17:55:26  mbork
  * switched REST-api to the 'new' datamodel, which does not deserve the name...
  *
  * Revision 1.2  2007/02/05 10:35:55  cschenk

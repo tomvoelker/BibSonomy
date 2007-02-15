@@ -25,7 +25,7 @@ public abstract class RequestHandlerForGetPosts {
 		this.next = nextHandler;
 	}
 
-	public List<Post<Resource>> perform(String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, Set<String> tags, String hash, boolean popular, boolean added, int start, int end) {
+	public List<Post<? extends Resource>> perform(String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
 		if (this.canHandle(authUser, resourceType, grouping, groupingName, tags, hash, popular, added, start, end)) {
 			return this.handleRequestForGetPosts(authUser, resourceType, grouping, groupingName, tags, hash, popular, added, start, end);
 		} else {
@@ -36,8 +36,8 @@ public abstract class RequestHandlerForGetPosts {
 		return null;
 	}
 
-	protected abstract List<Post<Resource>> handleRequestForGetPosts(String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, Set<String> tags, String hash, boolean popular, boolean added, int start, int end);
+	protected abstract List<Post<? extends Resource>> handleRequestForGetPosts(String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end);
 
-	protected abstract boolean canHandle(String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, Set<String> tags, String hash, boolean popular, boolean added, int start, int end);
+	protected abstract boolean canHandle(String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end);
 
 }

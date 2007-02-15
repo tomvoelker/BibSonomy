@@ -8,8 +8,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URL;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -208,7 +208,7 @@ public class XMLRendererTest extends TestCase
    {
       // empty list
       StringWriter sw = new StringWriter( 100 );
-      LinkedHashSet<Tag> tags = new LinkedHashSet<Tag>();
+      LinkedList<Tag> tags = new LinkedList<Tag>();
       renderer.serializeTags( sw, tags, null );
       compareWithFile( sw, "ExampleResultTags0.txt" );
       // empty list 2
@@ -268,7 +268,7 @@ public class XMLRendererTest extends TestCase
    {
       // empty user
       StringWriter sw = new StringWriter( 100 );
-      LinkedHashSet<User> users = new LinkedHashSet<User>();
+      LinkedList<User> users = new LinkedList<User>();
       renderer.serializeUsers( sw, users, null );
       compareWithFile( sw, "ExampleResultUsers0.txt" );
       //
@@ -321,7 +321,7 @@ public class XMLRendererTest extends TestCase
    {
       // empty group
       StringWriter sw = new StringWriter( 100 );
-      LinkedHashSet<Group> groups = new LinkedHashSet<Group>();
+      LinkedList<Group> groups = new LinkedList<Group>();
       renderer.serializeGroups( sw, groups, null );
       compareWithFile( sw, "ExampleResultGroups0.txt" );
       //
@@ -371,7 +371,7 @@ public class XMLRendererTest extends TestCase
    public void testSerializePosts() throws Exception
    {
       StringWriter sw = new StringWriter( 100 );
-      Set<Post<Resource>> posts = new LinkedHashSet<Post<Resource>>();
+      List<Post<? extends Resource>> posts = new LinkedList<Post<? extends Resource>>();
       renderer.serializePosts( sw, posts, null );
       sw = new StringWriter( 100 );
       ViewModel vm = new ViewModel();
@@ -474,7 +474,11 @@ public class XMLRendererTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.4  2007-02-11 18:35:20  mbork
+ * Revision 1.5  2007-02-15 10:29:08  mbork
+ * the LogicInterface now uses Lists instead of Sets
+ * fixed use of generics
+ *
+ * Revision 1.4  2007/02/11 18:35:20  mbork
  * lazy instantiation of lists in the model.
  * we definitely need bidirectional links for the api to work proper!
  * fixed all unit tests, every test performs well.

@@ -15,7 +15,7 @@ import org.bibsonomy.rest.renderer.RendererFactory;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public final class GetPostDetailsQuery extends AbstractQuery<Post<Resource>>
+public final class GetPostDetailsQuery extends AbstractQuery<Post<? extends Resource>>
 {
 	private String username;
 	private String resourceHash;
@@ -43,7 +43,7 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post<Resource>>
 	 * @see org.bibsonomy.rest.client.queries.AbstractQuery#getResult()
 	 */
 	@Override
-	public Post<Resource> getResult() throws BadRequestOrResponseException, IllegalStateException
+	public Post<? extends Resource> getResult() throws BadRequestOrResponseException, IllegalStateException
 	{
 		if( downloadedDocument == null ) throw new IllegalStateException( "Execute the query first." );
 
@@ -71,7 +71,11 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post<Resource>>
 
 /*
  * $Log$
- * Revision 1.3  2007-02-11 17:55:34  mbork
+ * Revision 1.4  2007-02-15 10:29:10  mbork
+ * the LogicInterface now uses Lists instead of Sets
+ * fixed use of generics
+ *
+ * Revision 1.3  2007/02/11 17:55:34  mbork
  * switched REST-api to the 'new' datamodel, which does not deserve the name...
  *
  * Revision 1.2  2007/02/05 10:35:53  cschenk

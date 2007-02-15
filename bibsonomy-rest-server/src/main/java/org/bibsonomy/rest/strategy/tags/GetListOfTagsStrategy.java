@@ -1,7 +1,7 @@
 package org.bibsonomy.rest.strategy.tags;
 
 import java.io.StringWriter;
-import java.util.Set;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -56,7 +56,7 @@ public class GetListOfTagsStrategy extends Strategy
 		
 		String regex = context.getStringAttribute( "filter", "" );
 		
-      Set<Tag> tags = context.getLogic().getTags( context.getAuthUserName(), grouping, groupingValue, regex, start, end );
+      List<Tag> tags = context.getLogic().getTags( context.getAuthUserName(), grouping, groupingValue, regex, start, end );
       
       ViewModel viewModel = new ViewModel();
       if( tags.size() < end + 1 )
@@ -97,7 +97,11 @@ public class GetListOfTagsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.3  2007-02-11 17:55:26  mbork
+ * Revision 1.4  2007-02-15 10:29:09  mbork
+ * the LogicInterface now uses Lists instead of Sets
+ * fixed use of generics
+ *
+ * Revision 1.3  2007/02/11 17:55:26  mbork
  * switched REST-api to the 'new' datamodel, which does not deserve the name...
  *
  * Revision 1.2  2007/02/05 10:35:55  cschenk

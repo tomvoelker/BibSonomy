@@ -1,13 +1,9 @@
 package org.bibsonomy.database.managers;
 
 import java.util.List;
-import java.util.Set;
 
 import org.bibsonomy.database.AbstractDatabaseManager;
-import org.bibsonomy.database.managers.getpostqueries.GetPostByHash;
-import org.bibsonomy.database.managers.getpostqueries.RequestHandlerForGetPost;
 import org.bibsonomy.database.managers.getpostsqueries.GetPostsByHashForUser;
-import org.bibsonomy.database.managers.getpostsqueries.RequestHandlerForGetPosts;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -71,7 +67,7 @@ public class RESTDatabaseManager extends AbstractDatabaseManager implements Logi
 		throw new NotImplementedException();
 	}
 
-	public Set<Group> getGroups(String arg0, int arg1, int arg2) {
+	public List<Group> getGroups(String arg0, int arg1, int arg2) {
 		// TODO Auto-generated method stub
 		throw new NotImplementedException();
 	}
@@ -80,7 +76,7 @@ public class RESTDatabaseManager extends AbstractDatabaseManager implements Logi
 	 * Return a post with retaining details (authUser, resourceHash and current
 	 * User)
 	 */
-	public Post<Resource> getPostDetails(String authUser, String resourceHash, String currUser) {
+	public Post<? extends Resource> getPostDetails(String authUser, String resourceHash, String currUser) {
 		// get handler chain
 		return getPostHandler.perform(authUser, resourceHash, currUser);
 	}
@@ -88,7 +84,7 @@ public class RESTDatabaseManager extends AbstractDatabaseManager implements Logi
 	/**
 	 * Return a set of post by given argument types
 	 */
-	public List<Post<Resource>> getPosts(String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, Set<String> tags, String hash, boolean popular, boolean added, int start, int end) {
+	public List<Post<? extends Resource>> getPosts(String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
 		return getPostsHandler.perform(authUser, resourceType, grouping, groupingName, tags, hash, popular, added, start, end);
 		// resourceType = ResourceType.BOOKMARK; // TODO implement me..
 		// switch (resourceType) {
@@ -112,7 +108,7 @@ public class RESTDatabaseManager extends AbstractDatabaseManager implements Logi
 		throw new NotImplementedException();
 	}
 
-	public Set<Tag> getTags(String arg0, GroupingEntity arg1, String arg2, String arg3, int arg4, int arg5) {
+	public List<Tag> getTags(String arg0, GroupingEntity arg1, String arg2, String arg3, int arg4, int arg5) {
 		// TODO Auto-generated method stub
 		throw new NotImplementedException();
 	}
@@ -122,12 +118,12 @@ public class RESTDatabaseManager extends AbstractDatabaseManager implements Logi
 		throw new NotImplementedException();
 	}
 
-	public Set<User> getUsers(String authUser, int start, int end) {
+	public List<User> getUsers(String authUser, int start, int end) {
 		// TODO Auto-generated method stub
 		throw new NotImplementedException();
 	}
 
-	public Set<User> getUsers(String arg0, String arg1, int arg2, int arg3) {
+	public List<User> getUsers(String arg0, String arg1, int arg2, int arg3) {
 		// TODO Auto-generated method stub
 		throw new NotImplementedException();
 	}

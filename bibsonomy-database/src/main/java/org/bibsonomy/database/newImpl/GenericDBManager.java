@@ -1,16 +1,9 @@
 package org.bibsonomy.database.newImpl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
-import org.bibsonomy.database.newImpl.content.AbstractContentDBManager;
-import org.bibsonomy.database.newImpl.content.BookmarkDBManager;
-import org.bibsonomy.database.newImpl.general.GroupDBManager;
-import org.bibsonomy.database.newImpl.general.TagDBManager;
-import org.bibsonomy.database.newImpl.general.UserDBManager;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -58,7 +51,7 @@ public class GenericDBManager implements LogicInterface {
 	 * @param end
 	 * @return a set of users, an empty set else
 	 */
-	public Set<User> getUsers(String authUser, int start, int end) {
+	public List<User> getUsers(String authUser, int start, int end) {
 		return userman.getUsers(authUser, start, end);
 	}
 
@@ -71,7 +64,7 @@ public class GenericDBManager implements LogicInterface {
 	 * @param end
 	 * @return  a set of users, an empty set else
 	 */
-	public Set<User> getUsers(String authUser, String groupName, int start, int end) {
+	public List<User> getUsers(String authUser, String groupName, int start, int end) {
 		return userman.getUsers(authUser, groupName, start, end);
 	}
 
@@ -120,7 +113,7 @@ public class GenericDBManager implements LogicInterface {
 	 * @param end
 	 * @return a set of posts, an empty set else
 	 */
-	public Set<Post<Resource>> getPosts(String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, Set<String> tags, String hash, boolean popular, boolean added, int start, int end) {
+	public List<Post<? extends Resource>> getPosts(String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, Set<String> tags, String hash, boolean popular, boolean added, int start, int end) {
 	
 		SortedSet <Post<Resource>> result = new TreeSet <Post<Resource>>();
 		
@@ -152,7 +145,7 @@ public class GenericDBManager implements LogicInterface {
 	 * @param userName name of the post-owner
 	 * @return the post's details, null else
 	 */
-	public Post<Resource> getPostDetails(String authUser, String resourceHash, String userName) {
+	public Post<? extends Resource> getPostDetails(String authUser, String resourceHash, String userName) {
 		Post<Resource> post = null;
 		for (AbstractContentDBManager man: contentDBManagers.values()) {
 			post = man.getPostDetails(authUser, resourceHash, userName);
@@ -169,7 +162,7 @@ public class GenericDBManager implements LogicInterface {
 	 * @param string 
 	 * @return a set of groups, an empty set else
 	 */
-	public Set<Group> getGroups(String string, int start, int end) {
+	public List<Group> getGroups(String string, int start, int end) {
 		return groupman.getGroups(string, start, end);
 	}
 
@@ -202,7 +195,7 @@ public class GenericDBManager implements LogicInterface {
 	 * @param end
 	 * @return a set of tags, en empty set else
 	 */
-	public Set<Tag> getTags(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end) {
+	public List<Tag> getTags(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end) {
 		return tagman.getTags(authUser, grouping, groupingName, regex, start, end);
 	}
 
@@ -293,7 +286,7 @@ public class GenericDBManager implements LogicInterface {
 	 * @param post the post to be postet
 	 * @param update true if its an existing post (identified by its resource's intrahash), false if its a new post
 	 */
-	public void storePost(String userName, Post post, boolean update) {
+	public void storePost(String userName, Post<? extends Resource> post, boolean update) {
 		for (AbstractContentDBManager man: contentDBManagers.values()) {
 			if (man.storePost(userName, post, update)) break;
 		}

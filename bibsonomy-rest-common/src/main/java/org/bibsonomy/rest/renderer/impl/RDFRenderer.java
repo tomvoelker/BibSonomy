@@ -3,7 +3,6 @@ package org.bibsonomy.rest.renderer.impl;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.List;
-import java.util.Set;
 
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -21,17 +20,17 @@ import org.bibsonomy.rest.renderer.Renderer;
  */
 public class RDFRenderer implements Renderer 
 {
-	public void serializePosts( Writer writer, Set<Post<Resource>> posts, ViewModel viewModel ) throws InternServerException
+	public void serializePosts( Writer writer, List<Post<? extends Resource>> posts, ViewModel viewModel ) throws InternServerException
 	{
 		// TODO Auto-generated method stub
 	}
 
-	public void serializePost( Writer writer, Post post, ViewModel model )
+	public void serializePost( Writer writer, Post<? extends Resource> post, ViewModel model )
 	{
 		// TODO Auto-generated method stub
 	}
 
-	public void serializeUsers( Writer writer, Set<User> users, ViewModel viewModel )
+	public void serializeUsers( Writer writer, List<User> users, ViewModel viewModel )
 	{
 		// TODO Auto-generated method stub
 	}
@@ -41,7 +40,7 @@ public class RDFRenderer implements Renderer
 		// TODO Auto-generated method stub
 	}
 
-	public void serializeTags( Writer writer, Set<Tag> tags, ViewModel viewModel )
+	public void serializeTags( Writer writer, List<Tag> tags, ViewModel viewModel )
 	{
 		// TODO Auto-generated method stub
 	}
@@ -51,7 +50,7 @@ public class RDFRenderer implements Renderer
 		// TODO Auto-generated method stub
 	}
 
-	public void serializeGroups( Writer writer, Set<Group> groups, ViewModel viewModel )
+	public void serializeGroups( Writer writer, List<Group> groups, ViewModel viewModel )
 	{
 		// TODO Auto-generated method stub
 	}
@@ -67,7 +66,7 @@ public class RDFRenderer implements Renderer
 		return null;
 	}
 
-	public Post<Resource> parsePost( Reader reader )
+	public Post<? extends Resource> parsePost( Reader reader )
 	{
 		// TODO Auto-generated method stub
 		return null;
@@ -85,7 +84,7 @@ public class RDFRenderer implements Renderer
 		return null;
 	}
 
-	public List<Post<Resource>> parsePostList( Reader reader ) throws BadRequestOrResponseException
+	public List<Post<? extends Resource>> parsePostList( Reader reader ) throws BadRequestOrResponseException
 	{
 		// TODO Auto-generated method stub
 		return null;
@@ -106,7 +105,11 @@ public class RDFRenderer implements Renderer
 
 /*
  * $Log$
- * Revision 1.3  2007-02-11 17:55:39  mbork
+ * Revision 1.4  2007-02-15 10:29:08  mbork
+ * the LogicInterface now uses Lists instead of Sets
+ * fixed use of generics
+ *
+ * Revision 1.3  2007/02/11 17:55:39  mbork
  * switched REST-api to the 'new' datamodel, which does not deserve the name...
  *
  * Revision 1.2  2007/02/05 10:35:54  cschenk

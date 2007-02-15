@@ -52,7 +52,7 @@ public class GetPostDetailsStrategy extends Strategy
 	public void perform( HttpServletRequest request, StringWriter writer ) throws InternServerException, NoSuchResourceException
 	{
 		// delegate to the renderer
-		Post<Resource> post = context.getLogic().getPostDetails( context.getAuthUserName(), resourceHash, userName );
+		Post<? extends Resource> post = context.getLogic().getPostDetails( context.getAuthUserName(), resourceHash, userName );
       if( post == null )
       {
          throw new NoSuchResourceException( "The requested post for the hash '" + resourceHash
@@ -75,7 +75,11 @@ public class GetPostDetailsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.3  2007-02-11 17:55:26  mbork
+ * Revision 1.4  2007-02-15 10:29:09  mbork
+ * the LogicInterface now uses Lists instead of Sets
+ * fixed use of generics
+ *
+ * Revision 1.3  2007/02/11 17:55:26  mbork
  * switched REST-api to the 'new' datamodel, which does not deserve the name...
  *
  * Revision 1.2  2007/02/05 10:35:54  cschenk

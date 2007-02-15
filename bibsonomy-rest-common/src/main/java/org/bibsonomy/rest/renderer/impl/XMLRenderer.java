@@ -5,7 +5,6 @@ import java.io.Writer;
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -54,7 +53,7 @@ public class XMLRenderer implements Renderer
 	{
 	}
 
-	public void serializePosts( Writer writer, Set<Post<Resource>> posts, ViewModel viewModel ) throws InternServerException
+	public void serializePosts( Writer writer, List<Post<? extends Resource>> posts, ViewModel viewModel ) throws InternServerException
 	{
 		PostsType xmlPosts = new PostsType();
       if( viewModel != null )
@@ -63,7 +62,7 @@ public class XMLRenderer implements Renderer
          if( viewModel.getUrlToNextResources() != null ) xmlPosts.setNext( viewModel.getUrlToNextResources() );
       	xmlPosts.setStart( BigInteger.valueOf( viewModel.getStartValue() ) );
       }
-		for( Post<Resource> post: posts )
+		for( Post<? extends Resource> post: posts )
 		{
 			PostType xmlPost = createXmlPost( post );
 			xmlPosts.getPost().add( xmlPost );
@@ -73,14 +72,14 @@ public class XMLRenderer implements Renderer
 		serialize( writer, xmlDoc );
 	}
 
-   public void serializePost( Writer writer, Post<Resource> post, ViewModel model ) throws InternServerException
+   public void serializePost( Writer writer, Post<? extends Resource> post, ViewModel model ) throws InternServerException
    {
       BibsonomyXML xmlDoc = new BibsonomyXML();
       xmlDoc.setPost( createXmlPost( post ) );
       serialize( writer, xmlDoc );
    }
 
-   private PostType createXmlPost( Post<Resource> post ) throws InternServerException
+   private PostType createXmlPost( Post<? extends Resource> post ) throws InternServerException
    {
       PostType xmlPost = new PostType();
       checkPost( post );
@@ -148,7 +147,7 @@ public class XMLRenderer implements Renderer
       if( post.getResource() == null ) throw new InternServerException( "error no ressource assigned!" );
    }
 
-   public void serializeUsers( Writer writer, Set<User> users, ViewModel viewModel ) throws InternServerException
+   public void serializeUsers( Writer writer, List<User> users, ViewModel viewModel ) throws InternServerException
 	{
 		UsersType xmlUsers = new UsersType();
       if( viewModel != null )
@@ -188,7 +187,7 @@ public class XMLRenderer implements Renderer
       return xmlUser;
    }
 
-   public void serializeTags( Writer writer, Set<Tag> tags, ViewModel viewModel ) throws InternServerException
+   public void serializeTags( Writer writer, List<Tag> tags, ViewModel viewModel ) throws InternServerException
 	{
 		TagsType xmlTags = new TagsType();
       if( viewModel != null )
@@ -223,7 +222,7 @@ public class XMLRenderer implements Renderer
       return xmlTag;
    }
 
-	public void serializeGroups( Writer writer, Set<Group> groups, ViewModel viewModel ) throws InternServerException
+	public void serializeGroups( Writer writer, List<Group> groups, ViewModel viewModel ) throws InternServerException
 	{
       GroupsType xmlGroups = new GroupsType();
       if( viewModel != null )
@@ -271,7 +270,7 @@ public class XMLRenderer implements Renderer
 		throw new BadRequestOrResponseException( "The body part of the received document is erroneous - no user defined." );
 	}
 
-	public Post<Resource> parsePost( Reader reader ) throws BadRequestOrResponseException
+	public Post<? extends Resource> parsePost( Reader reader ) throws BadRequestOrResponseException
 	{
 		if( reader == null ) throw new BadRequestOrResponseException( "The body part of the received document is missing" );
 		
@@ -314,16 +313,16 @@ public class XMLRenderer implements Renderer
 		throw new BadRequestOrResponseException( "The body part of the received document is erroneous - no list of groups defined." );
 	}
 	
-	public List<Post<Resource>> parsePostList( Reader reader ) throws BadRequestOrResponseException
+	public List<Post<? extends Resource>> parsePostList( Reader reader ) throws BadRequestOrResponseException
 	{
 		if( reader == null ) throw new BadRequestOrResponseException( "The body part of the received document is missing" );
 		BibsonomyXML xmlDoc = parse( reader );
 		if( xmlDoc.getPosts() != null )
 		{
-			List<Post<Resource>> posts = new LinkedList<Post<Resource>>();
+			List<Post<? extends Resource>> posts = new LinkedList<Post<? extends Resource>>();
 			for( PostType pt: xmlDoc.getPosts().getPost() )
 			{
-				Post<Resource> p = ModelFactory.getInstance().createPost( pt );
+				Post<? extends Resource> p = ModelFactory.getInstance().createPost( pt );
 				posts.add( p );
 			}
 			return posts;
@@ -490,7 +489,11 @@ public class XMLRenderer implements Renderer
 
 /*
  * $Log$
- * Revision 1.5  2007-02-11 18:35:20  mbork
+ * Revision 1.6  2007-02-15 10:29:08  mbork
+ * the LogicInterface now uses Lists instead of Sets
+ * fixed use of generics
+ *
+ * Revision 1.5  2007/02/11 18:35:20  mbork
  * lazy instantiation of lists in the model.
  * we definitely need bidirectional links for the api to work proper!
  * fixed all unit tests, every test performs well.

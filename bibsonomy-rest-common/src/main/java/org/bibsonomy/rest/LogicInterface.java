@@ -1,7 +1,6 @@
 package org.bibsonomy.rest;
 
 import java.util.List;
-import java.util.Set;
 
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -33,7 +32,7 @@ public interface LogicInterface
 	 * @param end
 	 * @return a set of users, an empty set else
 	 */
-	public abstract Set<User> getUsers( String authUser, int start, int end );
+	public abstract List<User> getUsers( String authUser, int start, int end );
 
 	/**
 	 * returns all users who are members of the specified group
@@ -44,7 +43,7 @@ public interface LogicInterface
 	 * @param end
 	 * @return  a set of users, an empty set else
 	 */
-	public abstract Set<User> getUsers( String authUser, String groupName, int start, int end );
+	public abstract List<User> getUsers( String authUser, String groupName, int start, int end );
 	
 	/**
 	 * returns details about a specified user
@@ -89,8 +88,8 @@ public interface LogicInterface
 	 * @param end
 	 * @return a set of posts, an empty set else
 	 */
-	public abstract List<Post<Resource>> getPosts( String authUser, ResourceType resourceType, GroupingEntity grouping,
-			String groupingName, Set<String> tags, String hash, boolean popular, boolean added, int start, int end );
+	public abstract List<Post<? extends Resource>> getPosts( String authUser, ResourceType resourceType, GroupingEntity grouping,
+			String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end );
 
 	/**
 	 * returns details to a post. a post is uniquely identified by a hash of the corresponding resource and a username
@@ -100,7 +99,7 @@ public interface LogicInterface
 	 * @param userName name of the post-owner
 	 * @return the post's details, null else
 	 */
-	public abstract Post<Resource> getPostDetails( String authUser, String resourceHash, String userName );
+	public abstract Post<? extends Resource> getPostDetails( String authUser, String resourceHash, String userName );
 	
 	/**
 	 * returns all groups of the system
@@ -110,7 +109,7 @@ public interface LogicInterface
 	 * @param string 
 	 * @return a set of groups, an empty set else
 	 */
-	public abstract Set<Group> getGroups( String string, int start, int end );
+	public abstract List<Group> getGroups( String string, int start, int end );
 	
 	/**
 	 * returns details of one group
@@ -139,7 +138,7 @@ public interface LogicInterface
 	 * @param end
 	 * @return a set of tags, en empty set else
 	 */
-	public abstract Set<Tag> getTags( String authUser, GroupingEntity grouping, String groupingName, String regex,
+	public abstract List<Tag> getTags( String authUser, GroupingEntity grouping, String groupingName, String regex,
 			int start, int end );
 
 	/**
@@ -234,7 +233,11 @@ public interface LogicInterface
 
 /*
  * $Log$
- * Revision 1.4  2007-02-15 09:16:03  mgrahl
+ * Revision 1.5  2007-02-15 10:29:08  mbork
+ * the LogicInterface now uses Lists instead of Sets
+ * fixed use of generics
+ *
+ * Revision 1.4  2007/02/15 09:16:03  mgrahl
  * *** empty log message ***
  *
  * Revision 1.3  2007/02/11 17:55:39  mbork

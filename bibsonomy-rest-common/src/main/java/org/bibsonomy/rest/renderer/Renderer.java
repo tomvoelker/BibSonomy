@@ -3,7 +3,6 @@ package org.bibsonomy.rest.renderer;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.List;
-import java.util.Set;
 
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -27,7 +26,7 @@ public interface Renderer
 	 * @param posts
 	 * @param viewModel
 	 */
-	public void serializePosts( Writer writer, Set<Post<Resource>> posts, ViewModel viewModel ) throws InternServerException;
+	public void serializePosts( Writer writer, List<Post<? extends Resource>> posts, ViewModel viewModel ) throws InternServerException;
 	
 	/**
 	 * serializes one post 
@@ -35,7 +34,7 @@ public interface Renderer
 	 * @param post
 	 * @param model
 	 */
-	public void serializePost( Writer writer, Post<Resource> post, ViewModel model );
+	public void serializePost( Writer writer, Post<? extends Resource> post, ViewModel model );
 	
 	/**
 	 * serializes a list of users
@@ -44,7 +43,7 @@ public interface Renderer
 	 * @param users
 	 * @param viewModel
 	 */
-	public void serializeUsers( Writer writer, Set<User> users, ViewModel viewModel );
+	public void serializeUsers( Writer writer, List<User> users, ViewModel viewModel );
 	
 	/**
 	 * serializes one user
@@ -62,7 +61,7 @@ public interface Renderer
 	 * @param tags
 	 * @param viewModel
 	 */
-	public void serializeTags( Writer writer, Set<Tag> tags, ViewModel viewModel );
+	public void serializeTags( Writer writer, List<Tag> tags, ViewModel viewModel );
 
 	/**
 	 * serializes a tag's details, including list of subtags, list of supertags and list of correlated tags
@@ -80,7 +79,7 @@ public interface Renderer
 	 * @param groups
 	 * @param viewModel
 	 */
-	public void serializeGroups( Writer writer, Set<Group> groups, ViewModel viewModel );
+	public void serializeGroups( Writer writer, List<Group> groups, ViewModel viewModel );
 
 	/**
 	 * serializes one group
@@ -94,8 +93,8 @@ public interface Renderer
 	public List<User> parseUserList( Reader reader ) throws BadRequestOrResponseException;
 	public User parseUser( Reader reader ) throws BadRequestOrResponseException;
 	
-	public List<Post<Resource>> parsePostList( Reader reader ) throws BadRequestOrResponseException;
-	public Post<Resource> parsePost( Reader reader ) throws BadRequestOrResponseException;
+	public List<Post<? extends Resource>> parsePostList( Reader reader ) throws BadRequestOrResponseException;
+	public Post<? extends Resource> parsePost( Reader reader ) throws BadRequestOrResponseException;
 	
 	public List<Group> parseGroupList( Reader reader ) throws BadRequestOrResponseException;
 	public Group parseGroup( Reader reader ) throws BadRequestOrResponseException;
@@ -105,7 +104,11 @@ public interface Renderer
 
 /*
  * $Log$
- * Revision 1.3  2007-02-11 17:55:39  mbork
+ * Revision 1.4  2007-02-15 10:29:08  mbork
+ * the LogicInterface now uses Lists instead of Sets
+ * fixed use of generics
+ *
+ * Revision 1.3  2007/02/11 17:55:39  mbork
  * switched REST-api to the 'new' datamodel, which does not deserve the name...
  *
  * Revision 1.2  2007/02/05 10:35:55  cschenk

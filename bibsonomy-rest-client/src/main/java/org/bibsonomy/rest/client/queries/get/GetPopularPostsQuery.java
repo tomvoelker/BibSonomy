@@ -18,7 +18,7 @@ import org.bibsonomy.rest.renderer.RendererFactory;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public final class GetPopularPostsQuery extends AbstractQuery<List<Post<Resource>>>
+public final class GetPopularPostsQuery extends AbstractQuery<List<Post<? extends Resource>>>
 {
 	private int start;
 	private int end;
@@ -87,7 +87,7 @@ public final class GetPopularPostsQuery extends AbstractQuery<List<Post<Resource
 	 * @see org.bibsonomy.rest.client.queries.AbstractQuery#getResult()
 	 */
 	@Override
-	public List<Post<Resource>> getResult() throws BadRequestOrResponseException, IllegalStateException
+	public List<Post<? extends Resource>> getResult() throws BadRequestOrResponseException, IllegalStateException
 	{
 		if( downloadedDocument == null ) throw new IllegalStateException( "Execute the query first." );
 		try
@@ -132,7 +132,11 @@ public final class GetPopularPostsQuery extends AbstractQuery<List<Post<Resource
 
 /*
  * $Log$
- * Revision 1.3  2007-02-11 17:55:34  mbork
+ * Revision 1.4  2007-02-15 10:29:10  mbork
+ * the LogicInterface now uses Lists instead of Sets
+ * fixed use of generics
+ *
+ * Revision 1.3  2007/02/11 17:55:34  mbork
  * switched REST-api to the 'new' datamodel, which does not deserve the name...
  *
  * Revision 1.2  2007/02/05 10:35:53  cschenk

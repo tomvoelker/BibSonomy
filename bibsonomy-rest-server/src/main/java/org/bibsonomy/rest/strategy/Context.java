@@ -2,9 +2,9 @@ package org.bibsonomy.rest.strategy;
 
 import java.io.StringWriter;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
@@ -137,9 +137,9 @@ public final class Context
 	 * @param parameterName parameter (= key) the tags are the value from
 	 * @return a list of all tags
 	 */
-	public Set<String> getTags( String parameterName )
+	public List<String> getTags( String parameterName )
 	{
-		Set<String> tags = new HashSet<String>();
+      List<String> tags = new LinkedList<String>();
 		
 		String param = getStringAttribute( parameterName, "" );
 		if( !"".equals( param ) )
@@ -258,7 +258,11 @@ public final class Context
 
 /*
  * $Log$
- * Revision 1.1  2006-10-24 21:39:52  mbork
+ * Revision 1.2  2007-02-15 10:29:09  mbork
+ * the LogicInterface now uses Lists instead of Sets
+ * fixed use of generics
+ *
+ * Revision 1.1  2006/10/24 21:39:52  mbork
  * split up rest api into correct modules. verified with junit tests.
  *
  * Revision 1.1  2006/10/10 12:42:14  cschenk

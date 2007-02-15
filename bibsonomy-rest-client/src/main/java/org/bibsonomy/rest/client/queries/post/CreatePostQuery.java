@@ -22,7 +22,7 @@ public final class CreatePostQuery extends AbstractQuery<String>
 {
 	private boolean executed = false;
 	private String result;
-	private Post<Resource> post;
+	private Post<? extends Resource> post;
 	private String username;
 
 	/**
@@ -91,7 +91,11 @@ public final class CreatePostQuery extends AbstractQuery<String>
 
 /*
  * $Log$
- * Revision 1.3  2007-02-11 17:55:34  mbork
+ * Revision 1.4  2007-02-15 10:29:10  mbork
+ * the LogicInterface now uses Lists instead of Sets
+ * fixed use of generics
+ *
+ * Revision 1.3  2007/02/11 17:55:34  mbork
  * switched REST-api to the 'new' datamodel, which does not deserve the name...
  *
  * Revision 1.2  2007/02/05 10:35:54  cschenk

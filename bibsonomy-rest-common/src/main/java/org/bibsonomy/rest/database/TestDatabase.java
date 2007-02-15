@@ -5,11 +5,9 @@ import java.net.URL;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -61,16 +59,16 @@ public class TestDatabase implements LogicInterface
       return true;
    }
    
-	public Set<User> getUsers( String authUser, int start, int end )
+	public List<User> getUsers( String authUser, int start, int end )
 	{
-		Set<User> users = new LinkedHashSet<User>();
+      List<User> users = new LinkedList<User>();
 		users.addAll( dbUsers.values() );
 		return users;
 	}
 
-	public Set<User> getUsers( String authUser, String groupName, int start, int end )
+	public List<User> getUsers( String authUser, String groupName, int start, int end )
 	{
-		Set<User> users = new LinkedHashSet<User>();
+		List<User> users = new LinkedList<User>();
 		Group group = dbGroups.get( groupName );
 		if( group != null )
 		{
@@ -84,7 +82,7 @@ public class TestDatabase implements LogicInterface
 		return dbUsers.get( userName );
 	}
 
-	public Post<Resource> getPostDetails( String authUser, String resourceHash, String userName )
+	public Post<? extends Resource> getPostDetails( String authUser, String resourceHash, String userName )
 	{
 		User user = dbUsers.get( userName );
 		if( user != null )
@@ -100,9 +98,9 @@ public class TestDatabase implements LogicInterface
 		return null;
 	}
 
-	public Set<Group> getGroups( String string, int start, int end )
+	public List<Group> getGroups( String string, int start, int end )
 	{
-      Set<Group> groups = new LinkedHashSet<Group>();
+      List<Group> groups = new LinkedList<Group>();
       groups.addAll( dbGroups.values() );
       return groups;
 	}
@@ -115,9 +113,9 @@ public class TestDatabase implements LogicInterface
 	/**
 	 * note: the regex is currently not considered
 	 */
-	public Set<Tag> getTags( String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end )
+	public List<Tag> getTags( String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end )
 	{
-		Set<Tag> tags = new LinkedHashSet<Tag>();
+      List<Tag> tags = new LinkedList<Tag>();
 		switch( grouping )
 		{
 		case VIEWABLE:
@@ -155,9 +153,9 @@ public class TestDatabase implements LogicInterface
 	/**
 	 * note: popular and added are not considered
 	 */
-	public List<Post<Resource>> getPosts( String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, Set<String> tags, String hash, boolean popular, boolean added, int start, int end )
+	public List<Post<? extends Resource>> getPosts( String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end )
 	{
-		List<Post<Resource>> posts = new LinkedList<Post<Resource>>();
+		List<Post<? extends Resource>> posts = new LinkedList<Post<? extends Resource>>();
 		// do grouping stuff
 		switch( grouping )
 		{
@@ -186,15 +184,15 @@ public class TestDatabase implements LogicInterface
 		switch( resourceType )
 		{
 		case BOOKMARK:
-			for( Iterator<Post<Resource>> it = posts.iterator(); it.hasNext(); )
+			for( Iterator<Post<? extends Resource>> it = posts.iterator(); it.hasNext(); )
 			{
-				if( !( ( (Post<Resource>)it.next() ).getResource() instanceof Bookmark ) ) it.remove();
+				if( !( ( (Post<? extends Resource>)it.next() ).getResource() instanceof Bookmark ) ) it.remove();
 			}
 			break;
 		case BIBTEX:
-			for( Iterator<Post<Resource>> it = posts.iterator(); it.hasNext(); )
+			for( Iterator<Post<? extends Resource>> it = posts.iterator(); it.hasNext(); )
 			{
-				if( !( ( (Post<Resource>)it.next() ).getResource() instanceof BibTex ) ) it.remove();
+				if( !( ( (Post<? extends Resource>)it.next() ).getResource() instanceof BibTex ) ) it.remove();
 			}
 			break;
 		default: // ALL
@@ -203,18 +201,18 @@ public class TestDatabase implements LogicInterface
 		// check hash
 		if( !"".equals( hash ) )
 		{
-			for( Iterator<Post<Resource>> it = posts.iterator(); it.hasNext(); )
+			for( Iterator<Post<? extends Resource>> it = posts.iterator(); it.hasNext(); )
 			{
-				if( !( (Post<Resource>)it.next() ).getResource().getInterHash().equals( hash ) ) it.remove();
+				if( !( (Post<? extends Resource>)it.next() ).getResource().getInterHash().equals( hash ) ) it.remove();
 			}
 		}
 		// do tag filtering
       if( tags.size() > 0 )
       {
-   		for( Iterator<Post<Resource>> it = posts.iterator(); it.hasNext(); )
+   		for( Iterator<Post<? extends Resource>> it = posts.iterator(); it.hasNext(); )
    		{
    			boolean drin = false;
-   			for( Tag tag: ( (Post<Resource>)it.next() ).getTags() )
+   			for( Tag tag: ( (Post<? extends Resource>)it.next() ).getTags() )
    			{
    				for( String searchTag: tags )
    				{
@@ -741,7 +739,11 @@ public class TestDatabase implements LogicInterface
 
 /*
  * $Log$
- * Revision 1.6  2007-02-15 09:16:21  mgrahl
+ * Revision 1.7  2007-02-15 10:29:08  mbork
+ * the LogicInterface now uses Lists instead of Sets
+ * fixed use of generics
+ *
+ * Revision 1.6  2007/02/15 09:16:21  mgrahl
  * *** empty log message ***
  *
  * Revision 1.5  2007/02/13 13:23:15  cschenk

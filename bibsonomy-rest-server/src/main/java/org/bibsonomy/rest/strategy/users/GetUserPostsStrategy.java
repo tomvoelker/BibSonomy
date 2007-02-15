@@ -1,7 +1,7 @@
 package org.bibsonomy.rest.strategy.users;
 
 import java.io.StringWriter;
-import java.util.Set;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -57,7 +57,7 @@ public class GetUserPostsStrategy extends Strategy
 		
 		ResourceType resourceType = ResourceType.getResourceType( context.getStringAttribute( "resourcetype", "all" ) );
 		
-      Set<Post<Resource>> posts = context.getLogic().getPosts( context.getAuthUserName(), resourceType, GroupingEntity.USER,
+      List<Post<? extends Resource>> posts = context.getLogic().getPosts( context.getAuthUserName(), resourceType, GroupingEntity.USER,
             userName, context.getTags( "tags" ), "", false, false, start, end );
       
       ViewModel viewModel = new ViewModel();
@@ -102,7 +102,11 @@ public class GetUserPostsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.4  2007-02-12 12:08:50  mgrahl
+ * Revision 1.5  2007-02-15 10:29:09  mbork
+ * the LogicInterface now uses Lists instead of Sets
+ * fixed use of generics
+ *
+ * Revision 1.4  2007/02/12 12:08:50  mgrahl
  * *** empty log message ***
  *
  * Revision 1.3  2007/02/11 17:55:26  mbork
