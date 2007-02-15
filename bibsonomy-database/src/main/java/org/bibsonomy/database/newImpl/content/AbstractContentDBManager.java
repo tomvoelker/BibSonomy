@@ -1,7 +1,6 @@
 package org.bibsonomy.database.newImpl.content;
 
 import java.util.List;
-import java.util.Set;
 
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
