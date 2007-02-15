@@ -95,7 +95,7 @@
 		  </isLessThan>
 		</iterate>
 	</sql>
-
+    
 	<!-- Refactor b to t1, and delete this snippet -->
 	<sql id="inGroups">
 		<isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">

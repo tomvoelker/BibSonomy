@@ -142,10 +142,12 @@ public class GenericDBManager implements LogicInterface {
 				// SELECT t.content_id,tt.tag_name,t.user_name,b.book_url_hash FROM (select * from tas where tag_name = "semantic" GROUP BY content_id ORDER BY date DESC LIMIT 10) AS t JOIN bookmark b USING (content_id) JOIN tas tt USING (content_id) WHERE t.content_type=1;
 			}
 		} else {
+			AbstractContentDBManager abstractContentDBManager = contentDBManagers.get(resourceType);
+			List<Post<? extends Resource>> posts = abstractContentDBManager.getPosts(authUser, grouping, groupingName, tags, hash, popular, added, start, end, true);
 			/*
 			 * get the next end-start posts for that resourceType!
 			 */
-			result.addAll(contentDBManagers.get(resourceType).getPosts(authUser, grouping, groupingName, tags, hash, popular, added, start, end, true));
+			result.addAll(posts);
 		}
 		return result;
 	}

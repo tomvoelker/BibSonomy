@@ -31,6 +31,6 @@ public class UserDBManager {
 	}
 	
 	public boolean validateUserAccess(String username, String password) {
-		return false;
+		return true;
 	}
 }
