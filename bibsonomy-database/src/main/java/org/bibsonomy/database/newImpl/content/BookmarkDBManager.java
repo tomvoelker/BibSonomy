@@ -2,22 +2,31 @@ package org.bibsonomy.database.newImpl.content;
 
 import java.util.List;
 
+import org.bibsonomy.database.managers.getpostsqueries.GetPostsByHashForUser;
+import org.bibsonomy.database.managers.RequestHandlerForGetPosts;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.enums.GroupingEntity;
 
 public class BookmarkDBManager extends AbstractContentDBManager {
 
-	@Override
-	public List<Post<? extends Resource>> getPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, boolean continuous) {
-		
+	/*
+	 * TODO: das hier auch als Singleton?!
+	 */
+	
+	private RequestHandlerForGetPosts getPostsHandler;
+	
+	public BookmarkDBManager() {
+		getPostsHandler = new GetPostsByHashForUser();
 		/*
-		 * TODO: hier über die Chain of Responsibility für Bookmarks iterieren!
+		 * TODO: hier die Kette aufbauen!
 		 */
 		
-		
-		// TODO Auto-generated method stub
-		return null;
+	}
+	
+	@Override
+	public List<Post<? extends Resource>> getPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, boolean continuous) {
+		return getPostsHandler.perform(authUser, resourceType, grouping, groupingName, tags, hash, popular, added, start, end);
 	}
 
 	

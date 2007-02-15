@@ -301,7 +301,7 @@ public class GenericDBManager implements LogicInterface {
 	 * @param post the post to be postet
 	 * @param update true if its an existing post (identified by its resource's intrahash), false if its a new post
 	 */
-	public void storePost(String userName, Post<? extends Resource> post, boolean update) {
+	public void storePost(String userName, Post post, boolean update) {
 		for (AbstractContentDBManager man: contentDBManagers.values()) {
 			if (man.storePost(userName, post, update)) break;
 		}

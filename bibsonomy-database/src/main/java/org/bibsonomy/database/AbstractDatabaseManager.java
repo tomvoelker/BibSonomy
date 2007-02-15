@@ -82,8 +82,8 @@ public class AbstractDatabaseManager {
 
 	// FIXME return value needs to be changed to org.bibsonomy.model.Post
 	@SuppressWarnings("unchecked")
-  public List<Post<Resource>> bookmarkList(final String query, final BookmarkParam param, final boolean test) {
-		return (List<Post<Resource>>) queryForAnything(query, param, QueryFor.LIST);
+  public List<Post<? extends Resource>> bookmarkList(final String query, final BookmarkParam param, final boolean test) {
+		return (List<Post<? extends Resource>>) queryForAnything(query, param, QueryFor.LIST);
 	}
 
 	/**

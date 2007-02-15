@@ -219,7 +219,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 	 * are retrieved, but also friends or private or other groups, depending
 	 * upon if userName is allowed to see them.
 	 */
-	public List<Post<Resource>> getBookmarkForUser(final BookmarkParam param) {
+	public List<Post<? extends Resource>> getBookmarkForUser(final BookmarkParam param) {
 		DatabaseUtils.prepareGetPostForUser(this.db, param);
 		return this.bookmarkList("getBookmarkForUser", param, true);
 	}

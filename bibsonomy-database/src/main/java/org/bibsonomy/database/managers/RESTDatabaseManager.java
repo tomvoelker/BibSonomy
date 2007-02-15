@@ -21,10 +21,10 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  * @author Christian Schenk
  * @author mgr
  */
+@Deprecated
 public class RESTDatabaseManager extends AbstractDatabaseManager implements LogicInterface {
 
 	private final DatabaseManager db;
-	private RequestHandlerForGetPost getPostHandler;
 	private RequestHandlerForGetPosts getPostsHandler;
 
 
@@ -78,7 +78,7 @@ public class RESTDatabaseManager extends AbstractDatabaseManager implements Logi
 	 */
 	public Post<? extends Resource> getPostDetails(String authUser, String resourceHash, String currUser) {
 		// get handler chain
-		return getPostHandler.perform(authUser, resourceHash, currUser);
+		return getPostsHandler.perform(authUser, resourceHash, currUser);
 	}
 
 	/**
