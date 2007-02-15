@@ -1,6 +1,6 @@
 package org.bibsonomy.database.newImpl.general;
 
-import java.util.Set;
+import java.util.List;
 
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.rest.enums.GroupingEntity;
@@ -11,7 +11,7 @@ import org.bibsonomy.rest.enums.GroupingEntity;
 public class TagDBManager {
 
 	
-	public Set<Tag> getTags(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end) {
+	public List<Tag> getTags(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end) {
 		return null;
 	}
 	

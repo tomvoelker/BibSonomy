@@ -1,6 +1,7 @@
 package org.bibsonomy.database.newImpl.general;
 
-import java.util.Set;
+
+import java.util.List;
 
 import org.bibsonomy.model.Group;
 /*
@@ -8,7 +9,7 @@ import org.bibsonomy.model.Group;
  */
 public class GroupDBManager {
 
-	public Set<Group> getGroups(String string, int start, int end) {
+	public List<Group> getGroups(String string, int start, int end) {
 		return null;
 	}
 	

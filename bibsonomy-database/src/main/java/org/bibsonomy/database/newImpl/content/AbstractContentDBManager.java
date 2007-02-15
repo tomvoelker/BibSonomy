@@ -1,5 +1,6 @@
 package org.bibsonomy.database.newImpl.content;
 
+import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.model.Post;
@@ -12,9 +13,9 @@ import org.bibsonomy.rest.enums.GroupingEntity;
  */
 public abstract class AbstractContentDBManager {
 
-	public abstract Set<Post<Resource>> getPosts(String authUser, GroupingEntity grouping, String groupingName, Set<String> tags, String hash, boolean popular, boolean added, int start, int end, boolean continuous);
+	public abstract List<Post<? extends Resource>> getPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, boolean continuous);
 
-	public abstract Post<Resource> getPostDetails(String authUser, String resourceHash, String userName);
+	public abstract Post<? extends Resource> getPostDetails(String authUser, String resourceHash, String userName);
 
 	public abstract boolean deletePost(String userName, String resourceHash);
 	

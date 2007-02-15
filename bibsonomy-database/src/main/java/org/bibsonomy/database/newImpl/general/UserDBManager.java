@@ -1,6 +1,6 @@
 package org.bibsonomy.database.newImpl.general;
 
-import java.util.Set;
+import java.util.List;
 
 import org.bibsonomy.model.User;
 
@@ -10,11 +10,11 @@ import org.bibsonomy.model.User;
 
 public class UserDBManager {
 
-	public Set<User> getUsers(String authUser, int start, int end) {
+	public List<User> getUsers(String authUser, int start, int end) {
 		return null;
 	}
 
-	public Set<User> getUsers(String authUser, String groupName, int start, int end) {
+	public List<User> getUsers(String authUser, String groupName, int start, int end) {
 		return null;
 	}
 	
