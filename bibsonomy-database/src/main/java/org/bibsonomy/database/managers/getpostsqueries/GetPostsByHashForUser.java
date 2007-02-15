@@ -1,4 +1,4 @@
-package org.bibsonomy.database.managers;
+package org.bibsonomy.database.managers.getpostsqueries;
 
 import java.util.List;
 import java.util.Set;
@@ -8,11 +8,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.enums.GroupingEntity;
 import org.bibsonomy.rest.enums.ResourceType;
-/*******
-* 
-* @author mgr
-*
-**/
+
 public class GetPostsByHashForUser extends RequestHandlerForGetPosts{
 
 	

@@ -1,10 +1,13 @@
 package org.bibsonomy.database.managers;
 
+import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.database.AbstractDatabaseManager;
-import org.bibsonomy.database.params.BookmarkParam;
-import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.database.managers.getpostqueries.GetPostByHash;
+import org.bibsonomy.database.managers.getpostqueries.RequestHandlerForGetPost;
+import org.bibsonomy.database.managers.getpostsqueries.GetPostsByHashForUser;
+import org.bibsonomy.database.managers.getpostsqueries.RequestHandlerForGetPosts;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -23,8 +26,11 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  * @author mgr
  */
 public class RESTDatabaseManager extends AbstractDatabaseManager implements LogicInterface {
-	
+
 	private final DatabaseManager db;
+	private RequestHandlerForGetPost getPostHandler;
+	private RequestHandlerForGetPosts getPostsHandler;
+
 
 	/**
 	 * Reduce visibility so only the {@link DatabaseManager} can instantiate
@@ -32,6 +38,12 @@ public class RESTDatabaseManager extends AbstractDatabaseManager implements Logi
 	 */
 	RESTDatabaseManager(final DatabaseManager db) {
 		this.db = db;
+		// chain for get post
+		//getPostHandler = new GetPostByHash();
+		getPostsHandler=new GetPostsByHashForUser();
+		 //postHandler.setNext( new GetBookmarkHandler() );
+		getPostsHandler.setNext(new GetPostsByHashForUser());
+
 	}
 
 	public void addUserToGroup(String arg0, String arg1) {
@@ -65,33 +77,34 @@ public class RESTDatabaseManager extends AbstractDatabaseManager implements Logi
 	}
 
 	/**
-	 * Return a post with retaining details (authUser, resourceHash and current User)
+	 * Return a post with retaining details (authUser, resourceHash and current
+	 * User)
 	 */
 	public Post<Resource> getPostDetails(String authUser, String resourceHash, String currUser) {
-		final BookmarkParam param = new BookmarkParam();
-		param.setRequestedUserName(authUser);
-		param.setHash(resourceHash);
-		param.setUserName(currUser);
-		//return (Post<Resource>) ModelUtils.putResourcesIntoPosts(this.db.getBookmark().getBookmarkForUser(param));
-		return (Post<Resource>) this.db.getBookmark().getBookmarkForUser(param);
+		// get handler chain
+		return getPostHandler.perform(authUser, resourceHash, currUser);
 	}
 
 	/**
 	 * Return a set of post by given argument types
-	 */	
-	public Set<Post<Resource>> getPosts(String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, Set<String> tags, String hash, boolean popular, boolean added, int start, int end) {
-		resourceType = ResourceType.BOOKMARK; // TODO implement me..
-		switch (resourceType) {
-		case BOOKMARK:
-			//Mapping nicht korrekt! - des BookmarkParams? Wieso?
-			final BookmarkParam param = new BookmarkParam();
-			param.setRequestedUserName(authUser);
-			param.setOffset(start);
-			param.setLimit(end);
-			// return ModelUtils.putResourcesIntoPosts(this.db.getBookmark().getBookmarkForUser(param));
-			return (Set<Post<Resource>>) this.db.getBookmark().getBookmarkForUser(param);
-		}
-		throw new NotImplementedException();
+	 */
+	public List<Post<Resource>> getPosts(String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, Set<String> tags, String hash, boolean popular, boolean added, int start, int end) {
+		return getPostsHandler.perform(authUser, resourceType, grouping, groupingName, tags, hash, popular, added, start, end);
+		// resourceType = ResourceType.BOOKMARK; // TODO implement me..
+		// switch (resourceType) {
+		// case BOOKMARK:
+		// // Mapping nicht korrekt! - des BookmarkParams? Wieso?
+		// final BookmarkParam param = new BookmarkParam();
+		// param.setRequestedUserName(authUser);
+		// param.setOffset(start);
+		// param.setLimit(end);
+		// // return
+		// //
+		// ModelUtils.putResourcesIntoPosts(this.db.getBookmark().getBookmarkForUser(param));
+		// return (Set<Post<Resource>>)
+		// this.db.getBookmark().getBookmarkForUser(param);
+		// }
+		// throw new NotImplementedException();
 	}
 
 	public Tag getTagDetails(String arg0, String arg1) {
@@ -109,7 +122,7 @@ public class RESTDatabaseManager extends AbstractDatabaseManager implements Logi
 		throw new NotImplementedException();
 	}
 
-	public Set<User> getUsers(String authUser, int start, int end ) {
+	public Set<User> getUsers(String authUser, int start, int end) {
 		// TODO Auto-generated method stub
 		throw new NotImplementedException();
 	}
