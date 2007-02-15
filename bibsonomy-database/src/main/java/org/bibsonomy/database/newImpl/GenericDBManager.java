@@ -49,10 +49,8 @@ public class GenericDBManager implements LogicInterface {
 		contentDBManagers.put(ResourceType.BOOKMARK, new BookmarkDBManager());
 	}
 	
-	public static GenericDBManager get()
-	{
-		if( GenericDBManager.instance == null )
-		{
+	public static LogicInterface getInstance() {
+		if(GenericDBManager.instance == null)	{
 			GenericDBManager.instance = new GenericDBManager();
 		}
 		return GenericDBManager.instance;
