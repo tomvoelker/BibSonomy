@@ -15,7 +15,7 @@ import org.bibsonomy.rest.enums.ResourceType;
 
 /**
  * this interface is an adapter to the database. <p/> the methods returning
- * information return in general, if there are no matches, an empty set (if a
+ * information return in general, if there are no matches, an empty list (if a
  * list is requested), or null (if a single entity is requested (a post, eg)).
  * <p/><b>please try to be as close to the method-conventions as possible.
  * </b>If something is unclear, guess, check occurences and document your
@@ -27,20 +27,28 @@ import org.bibsonomy.rest.enums.ResourceType;
  */
 public class GenericDBManager implements LogicInterface {
 	
-	/*
-	 * TODO: das ganze Ding hier als Singleton, richtig?
-	 */
+	private static GenericDBManager instance;
 	
 	private Map<ResourceType, AbstractContentDBManager> contentDBManagers = new HashMap<ResourceType, AbstractContentDBManager>();
 	private UserDBManager userman = new UserDBManager();
 	private TagDBManager tagman = new TagDBManager();
 	private GroupDBManager groupman = new GroupDBManager();
 	
-	public GenericDBManager() {
+	
+	private GenericDBManager() {
 		/*
 		 * add some default
 		 */
 		contentDBManagers.put(ResourceType.BOOKMARK, new BookmarkDBManager());
+	}
+	
+	public static GenericDBManager get()
+	{
+		if( GenericDBManager.instance == null )
+		{
+			GenericDBManager.instance = new GenericDBManager();
+		}
+		return GenericDBManager.instance;
 	}
 	
 	/**
