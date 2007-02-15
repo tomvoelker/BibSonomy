@@ -87,7 +87,7 @@ public class TestDatabase implements LogicInterface
 		User user = dbUsers.get( userName );
 		if( user != null )
 		{
-			for( Post<Resource> p: user.getPosts() )
+			for( Post<? extends Resource> p: user.getPosts() )
 			{
 				if( p.getResource().getInterHash().equals( resourceHash ) )
 				{
@@ -123,7 +123,7 @@ public class TestDatabase implements LogicInterface
 		case GROUP:
 			if( dbGroups.get( groupingName ) != null )
 			{
-				for( Post<Resource> post: dbGroups.get( groupingName ).getPosts() )
+				for( Post<? extends Resource> post: dbGroups.get( groupingName ).getPosts() )
 				{
 					tags.addAll( post.getTags() );
 				}
@@ -132,7 +132,7 @@ public class TestDatabase implements LogicInterface
 		case USER:
 			if( dbUsers.get( groupingName ) != null )
 			{
-				for( Post<Resource> post: dbUsers.get( groupingName ).getPosts() )
+				for( Post<? extends Resource> post: dbUsers.get( groupingName ).getPosts() )
 				{
 					tags.addAll( post.getTags() );
 				}
@@ -739,7 +739,10 @@ public class TestDatabase implements LogicInterface
 
 /*
  * $Log$
- * Revision 1.7  2007-02-15 10:29:08  mbork
+ * Revision 1.8  2007-02-15 10:46:54  mbork
+ * fixed unit tests
+ *
+ * Revision 1.7  2007/02/15 10:29:08  mbork
  * the LogicInterface now uses Lists instead of Sets
  * fixed use of generics
  *
