@@ -2,7 +2,6 @@ package org.bibsonomy.testutil;
 
 import java.util.Date;
 
-import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
@@ -22,7 +21,7 @@ public class ModelUtils {
 //		resource.setDate(null);
 //		resource.setGroupId(ConstantID.GROUP_KDE.getId());
 //		resource.setGroupName("kde");
-		resource.setUrl("");
+		//resource.setUrl("");
 //		resource.setUserName("kde");
 	}
 
@@ -78,7 +77,7 @@ public class ModelUtils {
 		rVal.setSeries("test");
 		rVal.setTitle("test");
 		rVal.setType("test");
-		rVal.setUrl("test");
+		//rVal.setUrl("test");
 		rVal.setVolume("test");
 		rVal.setYear("test");
 		return rVal;

@@ -1,5 +1,5 @@
 
-package org.bibsonomy.database.managers;
+package org.bibsonomy.database.managers.getpostsqueries;
 
 import java.util.List;
 
@@ -7,7 +7,6 @@ import org.bibsonomy.database.managers.DatabaseManager;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.enums.GroupingEntity;
-import org.bibsonomy.rest.enums.ResourceType;
 
 /*******
 * 
@@ -19,7 +18,7 @@ public abstract class RequestHandlerForGetPosts {
 
 	private RequestHandlerForGetPosts next;
 	protected final DatabaseManager db = new DatabaseManager();
-
+    
 	public void setNext(RequestHandlerForGetPosts nextHandler) {
 		this.next = nextHandler;
 	}

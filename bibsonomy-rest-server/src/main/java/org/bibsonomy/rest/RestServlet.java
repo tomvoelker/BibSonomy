@@ -10,7 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.database.managers.DatabaseManager;
+import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.managers.RESTDatabaseManager;
+import org.bibsonomy.database.newImpl.GenericDBManager;
 import org.bibsonomy.rest.database.TestDatabase;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
@@ -41,7 +43,8 @@ public final class RestServlet extends HttpServlet
 	{
 		super.init();
 		// instantiate the bibsonomy database connection
-      logic = DatabaseManager.getInstance().getREST();
+      //logic = DatabaseManager.getInstance().getREST();
+        logic=GenericDBManager.getInstance();
 	}
    
    /**
@@ -205,7 +208,10 @@ public final class RestServlet extends HttpServlet
 
 /*
  * $Log$
- * Revision 1.3  2007-02-12 12:08:16  mgrahl
+ * Revision 1.4  2007-02-15 14:02:56  mgrahl
+ * *** empty log message ***
+ *
+ * Revision 1.3  2007/02/12 12:08:16  mgrahl
  * *** empty log message ***
  *
  * Revision 1.2  2007/02/11 19:38:00  mbork

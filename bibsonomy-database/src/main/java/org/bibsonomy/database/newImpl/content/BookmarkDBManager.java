@@ -2,8 +2,8 @@ package org.bibsonomy.database.newImpl.content;
 
 import java.util.List;
 
-import org.bibsonomy.database.managers.getpostsqueries.GetPostsByHashForUser;
-import org.bibsonomy.database.managers.RequestHandlerForGetPosts;
+import org.bibsonomy.database.managers.getpostsqueries.GetBookmarksByHashForUser;
+import org.bibsonomy.database.managers.getpostsqueries.RequestHandlerForGetPosts;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.enums.GroupingEntity;
@@ -17,7 +17,7 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 	private RequestHandlerForGetPosts getPostsHandler;
 	
 	public BookmarkDBManager() {
-		getPostsHandler = new GetPostsByHashForUser();
+		getPostsHandler = new GetBookmarksByHashForUser();
 		/*
 		 * TODO: hier die Kette aufbauen!
 		 */

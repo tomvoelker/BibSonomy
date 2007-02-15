@@ -3,7 +3,9 @@ package org.bibsonomy.database.managers;
 import java.util.List;
 
 import org.bibsonomy.database.AbstractDatabaseManager;
-import org.bibsonomy.database.managers.getpostsqueries.GetPostsByHashForUser;
+import org.bibsonomy.database.managers.getpostqueries.RequestHandlerForGetPost;
+import org.bibsonomy.database.managers.getpostsqueries.GetBookmarksByHashForUser;
+import org.bibsonomy.database.managers.getpostsqueries.RequestHandlerForGetPosts;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -36,9 +38,10 @@ public class RESTDatabaseManager extends AbstractDatabaseManager implements Logi
 		this.db = db;
 		// chain for get post
 		//getPostHandler = new GetPostByHash();
-		getPostsHandler=new GetPostsByHashForUser();
-		 //postHandler.setNext( new GetBookmarkHandler() );
-		getPostsHandler.setNext(new GetPostsByHashForUser());
+		getPostsHandler=new GetBookmarksByHashForUser();
+	//	getPostsHandler=new GetBookmarksByTagNames();
+		//getPostsHandler.setNext(new GetBookmarksByTagNames());
+		getPostsHandler.setNext(new GetBookmarksByHashForUser());
 
 	}
 
@@ -78,29 +81,16 @@ public class RESTDatabaseManager extends AbstractDatabaseManager implements Logi
 	 */
 	public Post<? extends Resource> getPostDetails(String authUser, String resourceHash, String currUser) {
 		// get handler chain
-		return getPostsHandler.perform(authUser, resourceHash, currUser);
+		//return getPostsHandler.perform(authUser, resourceHash, currUser);
+	return null;
 	}
 
 	/**
 	 * Return a set of post by given argument types
 	 */
 	public List<Post<? extends Resource>> getPosts(String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
-		return getPostsHandler.perform(authUser, resourceType, grouping, groupingName, tags, hash, popular, added, start, end);
-		// resourceType = ResourceType.BOOKMARK; // TODO implement me..
-		// switch (resourceType) {
-		// case BOOKMARK:
-		// // Mapping nicht korrekt! - des BookmarkParams? Wieso?
-		// final BookmarkParam param = new BookmarkParam();
-		// param.setRequestedUserName(authUser);
-		// param.setOffset(start);
-		// param.setLimit(end);
-		// // return
-		// //
-		// ModelUtils.putResourcesIntoPosts(this.db.getBookmark().getBookmarkForUser(param));
-		// return (Set<Post<Resource>>)
-		// this.db.getBookmark().getBookmarkForUser(param);
-		// }
-		// throw new NotImplementedException();
+		//return getPostsHandler.perform(authUser, resourceType, grouping, groupingName, tags, hash, popular, added, start, end);
+	return null;
 	}
 
 	public Tag getTagDetails(String arg0, String arg1) {
