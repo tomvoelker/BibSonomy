@@ -26,7 +26,7 @@ import com.ibatis.sqlmap.client.SqlMapClient;
  * 
  * @author Christian Schenk
  */
-public abstract class AbstractDatabaseManager {
+public class AbstractDatabaseManager {
 
 	/** Logger */
 	protected static final Logger log = Logger.getLogger(AbstractDatabaseManager.class);
@@ -36,7 +36,7 @@ public abstract class AbstractDatabaseManager {
 	private boolean readonly;
 
 	/** Used to determine whether we want to retrieve an object or a list */
-	private enum QueryFor {
+	public enum QueryFor {
 		OBJECT, LIST;
 	}
 
@@ -76,13 +76,13 @@ public abstract class AbstractDatabaseManager {
 	 * Can be used to start a query that retrieves a list of bookmarks.
 	 */
 	@SuppressWarnings("unchecked")
-	protected List<Bookmark> bookmarkList(final String query, final BookmarkParam param) {
+	public List<Bookmark> bookmarkList(final String query, final BookmarkParam param) {
 		return (List<Bookmark>) queryForAnything(query, param, QueryFor.LIST);
 	}
 
 	// FIXME return value needs to be changed to org.bibsonomy.model.Post
 	@SuppressWarnings("unchecked")
-	protected List<Post<Resource>> bookmarkList(final String query, final BookmarkParam param, final boolean test) {
+  public List<Post<Resource>> bookmarkList(final String query, final BookmarkParam param, final boolean test) {
 		return (List<Post<Resource>>) queryForAnything(query, param, QueryFor.LIST);
 	}
 
