@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -153,9 +155,9 @@ public class TestDatabase implements LogicInterface
 	/**
 	 * note: popular and added are not considered
 	 */
-	public Set<Post<Resource>> getPosts( String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, Set<String> tags, String hash, boolean popular, boolean added, int start, int end )
+	public List<Post<Resource>> getPosts( String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, Set<String> tags, String hash, boolean popular, boolean added, int start, int end )
 	{
-		Set<Post<Resource>> posts = new LinkedHashSet<Post<Resource>>();
+		List<Post<Resource>> posts = new LinkedList<Post<Resource>>();
 		// do grouping stuff
 		switch( grouping )
 		{
@@ -739,7 +741,10 @@ public class TestDatabase implements LogicInterface
 
 /*
  * $Log$
- * Revision 1.5  2007-02-13 13:23:15  cschenk
+ * Revision 1.6  2007-02-15 09:16:21  mgrahl
+ * *** empty log message ***
+ *
+ * Revision 1.5  2007/02/13 13:23:15  cschenk
  * Prepared transition from lists of Bookmarks and BibTexs to lists of posts
  *
  * Revision 1.4  2007/02/11 18:35:20  mbork

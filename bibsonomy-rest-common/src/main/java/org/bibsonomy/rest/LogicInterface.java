@@ -1,5 +1,6 @@
 package org.bibsonomy.rest;
 
+import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.model.Group;
@@ -88,7 +89,7 @@ public interface LogicInterface
 	 * @param end
 	 * @return a set of posts, an empty set else
 	 */
-	public abstract Set<Post<Resource>> getPosts( String authUser, ResourceType resourceType, GroupingEntity grouping,
+	public abstract List<Post<Resource>> getPosts( String authUser, ResourceType resourceType, GroupingEntity grouping,
 			String groupingName, Set<String> tags, String hash, boolean popular, boolean added, int start, int end );
 
 	/**
@@ -233,7 +234,10 @@ public interface LogicInterface
 
 /*
  * $Log$
- * Revision 1.3  2007-02-11 17:55:39  mbork
+ * Revision 1.4  2007-02-15 09:16:03  mgrahl
+ * *** empty log message ***
+ *
+ * Revision 1.3  2007/02/11 17:55:39  mbork
  * switched REST-api to the 'new' datamodel, which does not deserve the name...
  *
  * Revision 1.2  2007/02/05 10:35:54  cschenk
