@@ -15,23 +15,21 @@ public class Tag {
 	private int usercount;
 	private List<Tag> superTags;
 	private List<Tag> subTags;
-	private List<Post<Resource>> posts;
-	
-	public List<Post<Resource>> getPosts() {
-		if( this.posts == null )
-		{
-			this.posts = new LinkedList<Post<Resource>>();
+	private List<Post<? extends Resource>> posts;
+
+	public List<Post<? extends Resource>> getPosts() {
+		if (this.posts == null) {
+			this.posts = new LinkedList<Post<? extends Resource>>();
 		}
 		return this.posts;
 	}
 
-	public void setPosts(List<Post<Resource>> posts) {
+	public void setPosts(List<Post<? extends Resource>> posts) {
 		this.posts = posts;
 	}
 
 	public List<Tag> getSubTags() {
-		if( this.subTags == null )
-		{
+		if (this.subTags == null) {
 			this.subTags = new LinkedList<Tag>();
 		}
 		return this.subTags;
@@ -42,8 +40,7 @@ public class Tag {
 	}
 
 	public List<Tag> getSuperTags() {
-		if( this.subTags == null )
-		{
+		if (this.subTags == null) {
 			this.subTags = new LinkedList<Tag>();
 		}
 		return this.superTags;

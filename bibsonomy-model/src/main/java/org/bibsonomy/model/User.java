@@ -22,7 +22,7 @@ public class User {
 	private URL homepage;
 	/** The user belongs to these groups */
 	private List<Group> groups;
-	private List<Post<Resource>> posts;
+	private List<Post<? extends Resource>> posts;
 	private boolean spammer;
 
 	
@@ -102,15 +102,15 @@ public class User {
 		this.password = password;
 	}
 
-	public List<Post<Resource>> getPosts() {
+	public List<Post<? extends Resource>> getPosts() {
 		if( this.posts == null )
 		{
-			this.posts = new LinkedList<Post<Resource>>();
+			this.posts = new LinkedList<Post<? extends Resource>>();
 		}
 		return this.posts;
 	}
 
-	public void setPosts(List<Post<Resource>> posts) {
+	public void setPosts(List<Post<? extends Resource>> posts) {
 		this.posts = posts;
 	}
 }

@@ -14,7 +14,7 @@ public class Group {
 
 	private String name;
 	private String description;
-	private List<Post<Resource>> posts;
+	private List<Post<? extends Resource>> posts;
 	private List<User> users;
 	private int groupId; 
 	
@@ -47,15 +47,15 @@ public class Group {
 		this.name = name;
 	}
 
-	public List<Post<Resource>> getPosts() {
+	public List<Post<? extends Resource>> getPosts() {
 		if( this.posts == null )
 		{
-			this.posts = new LinkedList<Post<Resource>>();
+			this.posts = new LinkedList<Post<? extends Resource>>();
 		}
 		return this.posts;
 	}
 
-	public void setPosts(List<Post<Resource>> posts) {
+	public void setPosts(List<Post<? extends Resource>> posts) {
 		this.posts = posts;
 	}
 
