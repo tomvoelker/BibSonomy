@@ -27,14 +27,14 @@ public class GetPostsByHashForUser extends RequestHandlerForGetPosts{
 		int limit=end-start;
 		param.setLimit(limit);
 		
-		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.bookmarkList("getPostsByHashForUser", param, true);
+		List<Post<Resource>> posts = db.bookmarkDatabaseManager.bookmarkList("getPostsByHashForUser", param, true);
 		return null;
 	}
 
 	@Override
 	protected boolean canHandle(String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
 		
-		if (hash != null && hash.length() > 0 && authUser!=null && grouping==GroupingEntity.USER && groupingName!=null) {
+		if (hash != null && hash.length() > 0 && authUser!=null && grouping==GroupingEntity.USER && groupingName!=null&& tags==null && popular==false&& added==true) {
 			return true;
 		}
 		return false;
