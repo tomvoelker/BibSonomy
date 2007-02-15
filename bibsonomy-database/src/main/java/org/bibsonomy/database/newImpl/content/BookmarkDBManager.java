@@ -26,7 +26,7 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 	
 	@Override
 	public List<Post<? extends Resource>> getPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, boolean continuous) {
-		return getPostsHandler.perform(authUser, resourceType, grouping, groupingName, tags, hash, popular, added, start, end);
+		return getPostsHandler.perform(authUser, grouping, groupingName, tags, hash, popular, added, start, end);
 	}
 
 	
