@@ -6,6 +6,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.bibsonomy.database.newImpl.content.AbstractContentDBManager;
+import org.bibsonomy.database.newImpl.content.BookmarkDBManager;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
