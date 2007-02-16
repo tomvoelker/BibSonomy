@@ -38,9 +38,5 @@
 			<groupId>javax.activation</groupId>
 			<artifactId>activation</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>de.uni_kassel</groupId>
-			<artifactId>assocs</artifactId>
-		</dependency>
 	</dependencies>
 </project>

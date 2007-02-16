@@ -33,9 +33,5 @@
 			<groupId>javax.xml</groupId>
 			<artifactId>jsr173</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>de.uni_kassel</groupId>
-			<artifactId>assocs</artifactId>
-		</dependency>
 	</dependencies>
 </project>
