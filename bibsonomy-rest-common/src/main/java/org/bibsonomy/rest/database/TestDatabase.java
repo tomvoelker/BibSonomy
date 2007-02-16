@@ -199,7 +199,7 @@ public class TestDatabase implements LogicInterface
 			break;
 		}
 		// check hash
-		if( !"".equals( hash ) )
+		if( hash != null )
 		{
 			for( Iterator<Post<? extends Resource>> it = posts.iterator(); it.hasNext(); )
 			{
@@ -739,7 +739,10 @@ public class TestDatabase implements LogicInterface
 
 /*
  * $Log$
- * Revision 1.8  2007-02-15 10:46:54  mbork
+ * Revision 1.9  2007-02-16 16:11:46  mbork
+ * changed default value from "" to null
+ *
+ * Revision 1.8  2007/02/15 10:46:54  mbork
  * fixed unit tests
  *
  * Revision 1.7  2007/02/15 10:29:08  mbork

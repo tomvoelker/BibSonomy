@@ -141,8 +141,8 @@ public final class Context
 	{
       List<String> tags = new LinkedList<String>();
 		
-		String param = getStringAttribute( parameterName, "" );
-		if( !"".equals( param ) )
+		String param = getStringAttribute( parameterName, null );
+		if( param != null )
 		{
 			String[] params = param.split( "\\+" );
 			for( int i = 0; i < params.length; ++i )
@@ -258,7 +258,10 @@ public final class Context
 
 /*
  * $Log$
- * Revision 1.2  2007-02-15 10:29:09  mbork
+ * Revision 1.3  2007-02-16 16:11:28  mbork
+ * changed default value from "" to null
+ *
+ * Revision 1.2  2007/02/15 10:29:09  mbork
  * the LogicInterface now uses Lists instead of Sets
  * fixed use of generics
  *

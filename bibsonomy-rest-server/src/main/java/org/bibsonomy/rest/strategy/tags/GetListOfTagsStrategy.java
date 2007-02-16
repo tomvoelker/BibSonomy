@@ -48,13 +48,13 @@ public class GetListOfTagsStrategy extends Strategy
 		int end = context.getIntAttribute( "end", 19 );
 
 		GroupingEntity grouping = chooseGroupingEntity();
-		String groupingValue = "";
+		String groupingValue = null;
 		if( grouping != GroupingEntity.ALL )
 		{
-			groupingValue = context.getStringAttribute( grouping.toString().toLowerCase(), "" );
+			groupingValue = context.getStringAttribute( grouping.toString().toLowerCase(), null );
 		}
 		
-		String regex = context.getStringAttribute( "filter", "" );
+		String regex = context.getStringAttribute( "filter", null );
 		
       List<Tag> tags = context.getLogic().getTags( context.getAuthUserName(), grouping, groupingValue, regex, start, end );
       
@@ -67,11 +67,11 @@ public class GetListOfTagsStrategy extends Strategy
       {
          String next = RestProperties.getInstance().getApiUrl() + RestProperties.getInstance().getTagsUrl() + "?start=" + String.valueOf( end + 1 ) + 
          "&end=" + String.valueOf( end + 10 );
-         if( grouping != GroupingEntity.ALL )
+         if( grouping != GroupingEntity.ALL && groupingValue != null )
          {
             next += "&" + grouping.toString().toLowerCase() + "=" + groupingValue; 
          }
-         if( !"".equals( regex ) )
+         if( regex != null )
          {
             next += "&" + "filter=" + regex;
          }
@@ -97,7 +97,10 @@ public class GetListOfTagsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.4  2007-02-15 10:29:09  mbork
+ * Revision 1.5  2007-02-16 16:11:28  mbork
+ * changed default value from "" to null
+ *
+ * Revision 1.4  2007/02/15 10:29:09  mbork
  * the LogicInterface now uses Lists instead of Sets
  * fixed use of generics
  *

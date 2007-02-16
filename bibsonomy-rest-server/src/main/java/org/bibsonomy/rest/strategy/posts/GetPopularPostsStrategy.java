@@ -52,14 +52,14 @@ public class GetPopularPostsStrategy extends Strategy
 		ResourceType resourceType = ResourceType.getResourceType( context.getStringAttribute( "resourcetype", "all" ) );
 		
       GroupingEntity grouping = chooseGroupingEntity();
-      String groupingValue = "";
+      String groupingValue = null;
       if( grouping != GroupingEntity.ALL )
       {
-         groupingValue = context.getStringAttribute( grouping.toString().toLowerCase(), "" );
+         groupingValue = context.getStringAttribute( grouping.toString().toLowerCase(), null );
       }
      
       List<Post<? extends Resource>> posts = context.getLogic().getPosts( context.getAuthUserName(), resourceType, grouping,
-            groupingValue, context.getTags( "tags" ), "", true, false, start, end );
+            groupingValue, context.getTags( "tags" ), null, true, false, start, end );
       ViewModel viewModel = new ViewModel();
       if( posts.size() < end + 1 )
       {
@@ -73,9 +73,8 @@ public class GetPopularPostsStrategy extends Strategy
          {
             next += "&resourcetype=" + resourceType.toString().toLowerCase();
          }
-         if( grouping != GroupingEntity.ALL )
+         if( grouping != GroupingEntity.ALL && groupingValue != null )
          {
-            groupingValue = context.getStringAttribute( grouping.toString().toLowerCase(), "" );
             next += "&" + grouping.toString().toLowerCase() + "=" + groupingValue; 
          }
          viewModel.setUrlToNextResources( next );
@@ -100,7 +99,10 @@ public class GetPopularPostsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.4  2007-02-15 10:29:09  mbork
+ * Revision 1.5  2007-02-16 16:11:28  mbork
+ * changed default value from "" to null
+ *
+ * Revision 1.4  2007/02/15 10:29:09  mbork
  * the LogicInterface now uses Lists instead of Sets
  * fixed use of generics
  *

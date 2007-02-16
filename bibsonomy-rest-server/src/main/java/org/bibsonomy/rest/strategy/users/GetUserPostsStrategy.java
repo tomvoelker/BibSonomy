@@ -58,7 +58,7 @@ public class GetUserPostsStrategy extends Strategy
 		ResourceType resourceType = ResourceType.getResourceType( context.getStringAttribute( "resourcetype", "all" ) );
 		
       List<Post<? extends Resource>> posts = context.getLogic().getPosts( context.getAuthUserName(), resourceType, GroupingEntity.USER,
-            userName, context.getTags( "tags" ), "", false, false, start, end );
+            userName, context.getTags( "tags" ), null, false, false, start, end );
       
       ViewModel viewModel = new ViewModel();
       if( posts.size() < end + 1 )
@@ -70,8 +70,8 @@ public class GetUserPostsStrategy extends Strategy
          String next = RestProperties.getInstance().getApiUrl() + RestProperties.getInstance().getUsersUrl() + "/" + userName + "/" + RestProperties.getInstance().getPostsUrl() + "?start="
          + String.valueOf( end + 1 ) + "&end=" + String.valueOf( end + 10 );
         
-         String tags = context.getStringAttribute( "tags", "" );
-         if( !"".equals( tags ) )
+         String tags = context.getStringAttribute( "tags", null );
+         if( tags != null )
          {
             next += "&tags=" + tags;
          }
@@ -102,7 +102,10 @@ public class GetUserPostsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.5  2007-02-15 10:29:09  mbork
+ * Revision 1.6  2007-02-16 16:11:28  mbork
+ * changed default value from "" to null
+ *
+ * Revision 1.5  2007/02/15 10:29:09  mbork
  * the LogicInterface now uses Lists instead of Sets
  * fixed use of generics
  *

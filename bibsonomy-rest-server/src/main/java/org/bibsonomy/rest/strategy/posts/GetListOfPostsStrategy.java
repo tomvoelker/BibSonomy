@@ -75,16 +75,16 @@ public class GetListOfPostsStrategy extends Strategy
          {
             next += "&resourcetype=" + resourceType.toString().toLowerCase();
          }
-         String tags = context.getStringAttribute( "tags", "" );
-         if( !"".equals( tags ) )
+         String tags = context.getStringAttribute( "tags", null );
+         if( tags != null )
          {
             next += "&tags=" + tags;
          }
-         if( !"".equals( hash ) )
+         if(  hash != null )
          {
             next += "&resource=" + hash;
          }
-         if( grouping != GroupingEntity.ALL )
+         if( grouping != GroupingEntity.ALL && groupingValue != null )
          {
             next += "&" + grouping.toString().toLowerCase() + "=" + groupingValue; 
          }
@@ -110,7 +110,10 @@ public class GetListOfPostsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.5  2007-02-16 12:26:56  rja
+ * Revision 1.6  2007-02-16 16:11:28  mbork
+ * changed default value from "" to null
+ *
+ * Revision 1.5  2007/02/16 12:26:56  rja
  * changed default value "" to null for groupingName and hash.
  *
  * Revision 1.4  2007/02/15 10:29:09  mbork

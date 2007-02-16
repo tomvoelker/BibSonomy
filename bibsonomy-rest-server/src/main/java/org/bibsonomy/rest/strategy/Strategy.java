@@ -44,18 +44,18 @@ public abstract class Strategy
 	
 	protected GroupingEntity chooseGroupingEntity()
 	{
-		String value = context.getStringAttribute( "user", "" );
-		if( !"".equals( value ) )
+		String value = context.getStringAttribute( "user", null );
+		if( value != null )
 		{
 			return GroupingEntity.USER;
 		}
-		value = context.getStringAttribute( "group", "" );
-		if( !"".equals( value ) )
+		value = context.getStringAttribute( "group", null );
+		if( value != null )
 		{
 			return GroupingEntity.GROUP;
 		}
-		value = context.getStringAttribute( "viewable", "" );
-		if( !"".equals( value ) )
+		value = context.getStringAttribute( "viewable", null );
+		if( value != null )
 		{
 			return GroupingEntity.VIEWABLE;
 		}
@@ -65,7 +65,10 @@ public abstract class Strategy
 
 /*
  * $Log$
- * Revision 1.1  2006-10-24 21:39:52  mbork
+ * Revision 1.2  2007-02-16 16:11:28  mbork
+ * changed default value from "" to null
+ *
+ * Revision 1.1  2006/10/24 21:39:52  mbork
  * split up rest api into correct modules. verified with junit tests.
  *
  * Revision 1.1  2006/10/10 12:42:13  cschenk
