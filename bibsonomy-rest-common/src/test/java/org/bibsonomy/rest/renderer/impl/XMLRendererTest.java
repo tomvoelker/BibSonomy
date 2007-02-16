@@ -458,6 +458,31 @@ public class XMLRendererTest extends TestCase
       compareWithFile( sw, "ExampleResultPost.txt" );
    }
    
+   public void testQuoting() throws IOException
+   {
+      StringWriter sw = new StringWriter( 100 );
+      List<Post<? extends Resource>> posts = new LinkedList<Post<? extends Resource>>();
+      Post<Resource> post = new Post<Resource>();
+      posts.add( post );
+      User u = new User();
+      u.setName( "foo" );
+      post.setUser( u );
+      Tag t = new Tag();
+      t.setName( "bar" );
+      post.getTags().add( t );
+      Bookmark b = new Bookmark();
+      post.setResource( b );
+      b.setUrl( "www.foobar.org" );
+      b.setIntraHash( "aabbcc" );
+      b.setInterHash( "1324356789" );
+      ViewModel vm = new ViewModel();
+      vm.setStartValue( 0 );
+      vm.setEndValue( 1 );
+      vm.setUrlToNextResources( "http://foo.bar/posts?start=1&end=2&resourcetype=bookmark&tags=a+->b+<-c+<->d&hash=asd&&&kjalsjdf" );
+      renderer.serializePosts( sw, posts, vm );
+      compareWithFile( sw, "QuotingTest.txt" );
+   }
+   
    private void compareWithFile( StringWriter sw, String filename ) throws IOException
    {
       StringBuffer sb = new StringBuffer( 200 );
@@ -474,7 +499,11 @@ public class XMLRendererTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.5  2007-02-15 10:29:08  mbork
+ * Revision 1.6  2007-02-16 16:12:42  mbork
+ * fixed tests broken by the updates
+ * added a test testing quotation of the urls in the xml
+ *
+ * Revision 1.5  2007/02/15 10:29:08  mbork
  * the LogicInterface now uses Lists instead of Sets
  * fixed use of generics
  *

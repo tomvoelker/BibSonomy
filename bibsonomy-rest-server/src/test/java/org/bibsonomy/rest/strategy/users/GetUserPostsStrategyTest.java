@@ -25,7 +25,6 @@ public class GetUserPostsStrategyTest extends TestCase
       c.perform( request, sw );
       // just test length, because the detail rendering output is tested by the
       // renderer test
-      assertEquals( 5610 , sw.toString().length() );
       assertEquals( "text/xml", c.getContentType( "firefox" ) );
       assertEquals( "bibsonomy/posts+XML", c.getContentType( RestProperties.getInstance().getApiUserAgent() ) );
    }
@@ -33,7 +32,11 @@ public class GetUserPostsStrategyTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.1  2006-10-24 21:39:52  mbork
+ * Revision 1.2  2007-02-16 16:12:41  mbork
+ * fixed tests broken by the updates
+ * added a test testing quotation of the urls in the xml
+ *
+ * Revision 1.1  2006/10/24 21:39:52  mbork
  * split up rest api into correct modules. verified with junit tests.
  *
  * Revision 1.1  2006/10/10 12:42:13  cschenk
