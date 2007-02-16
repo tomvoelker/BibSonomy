@@ -51,13 +51,13 @@ public class GetListOfPostsStrategy extends Strategy
 		
 		ResourceType resourceType = ResourceType.getResourceType( context.getStringAttribute( "resourcetype", "all" ) );
 		
-		String hash = context.getStringAttribute( "resource", "" );
+		String hash = context.getStringAttribute( "resource", null );
 		
 		GroupingEntity grouping = chooseGroupingEntity();
-		String groupingValue = "";
+		String groupingValue = null;
 		if( grouping != GroupingEntity.ALL )
 		{
-			groupingValue = context.getStringAttribute( grouping.toString().toLowerCase(), "" );
+			groupingValue = context.getStringAttribute( grouping.toString().toLowerCase(), null );
 		}
 		
       List<Post<? extends Resource>> posts = context.getLogic().getPosts( context.getAuthUserName(), resourceType, grouping,
@@ -110,7 +110,10 @@ public class GetListOfPostsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.4  2007-02-15 10:29:09  mbork
+ * Revision 1.5  2007-02-16 12:26:56  rja
+ * changed default value "" to null for groupingName and hash.
+ *
+ * Revision 1.4  2007/02/15 10:29:09  mbork
  * the LogicInterface now uses Lists instead of Sets
  * fixed use of generics
  *
