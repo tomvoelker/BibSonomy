@@ -66,6 +66,7 @@ public abstract class GenericParam<T extends Resource> {
 	private int offset;
 	/** Is user a spammer; by default false */
 	private ConstantID spammer;
+	/*is a user a friend of person x, true will be true*/
 	private  boolean friendOf;
 	/** The type of a ID is by default DS_CONTENT_ID * */
 	private ConstantID idsType;
