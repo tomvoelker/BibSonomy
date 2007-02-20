@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers.getpostsqueriesForBookmark;
 
 import java.util.List;
 
+import org.bibsonomy.database.managers.getpostsqueries.RequestHandlerForGetPosts;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
