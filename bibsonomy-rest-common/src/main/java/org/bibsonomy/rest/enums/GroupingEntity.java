@@ -9,7 +9,7 @@ import org.bibsonomy.rest.exceptions.UnsupportedGroupingException;
  */
 public enum GroupingEntity
 {
-	USER, GROUP, VIEWABLE, ALL;
+	USER, GROUP, VIEWABLE, ALL,FRIEND;
 
 	/**
 	 * Returns the corresponding HttpMethod-enum for the given string.
@@ -25,6 +25,10 @@ public enum GroupingEntity
 		else if( "group".equals( entity ) )
 		{
 			return GROUP;
+		}
+		else if( "friend".equals( entity ) )
+		{
+			return FRIEND;
 		}
 		else if( "viewable".equals( entity ) )
 		{
@@ -43,7 +47,10 @@ public enum GroupingEntity
 
 /*
  * $Log$
- * Revision 1.1  2006-10-10 12:42:12  cschenk
+ * Revision 1.2  2007-02-20 09:54:19  mgrahl
+ * *** empty log message ***
+ *
+ * Revision 1.1  2006/10/10 12:42:12  cschenk
  * Auf Multi-Module Build umgestellt
  *
  * Revision 1.1  2006/06/05 14:14:12  mbork

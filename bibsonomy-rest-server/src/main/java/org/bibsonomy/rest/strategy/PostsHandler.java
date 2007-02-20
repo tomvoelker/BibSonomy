@@ -30,7 +30,7 @@ public class PostsHandler implements ContextHandler
 			}
 			break;
 		case 1:
-			// /posts/added
+			// /posts/added or popular
 			if( HttpMethod.GET == httpMethod )
 			{
 				String path = urlTokens.nextToken();
@@ -51,7 +51,10 @@ public class PostsHandler implements ContextHandler
 
 /*
  * $Log$
- * Revision 1.1  2006-10-24 21:39:52  mbork
+ * Revision 1.2  2007-02-20 09:54:19  mgrahl
+ * *** empty log message ***
+ *
+ * Revision 1.1  2006/10/24 21:39:52  mbork
  * split up rest api into correct modules. verified with junit tests.
  *
  * Revision 1.1  2006/10/10 12:42:14  cschenk

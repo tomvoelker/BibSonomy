@@ -91,12 +91,15 @@ public class XMLRenderer implements Renderer
       xmlPost.setUser( xmlUser );
       
       // add tags
-      for( Tag t: post.getTags() )
+      if( post.getTags() != null )
       {
-         checkTag( t );
-      	TagType xmlTag = new TagType();
-      	xmlTag.setName( t.getName() );
-      	xmlPost.getTag().add( xmlTag );
+	      for( Tag t: post.getTags() )
+	      {
+	         checkTag( t );
+	      	TagType xmlTag = new TagType();
+	      	xmlTag.setName( t.getName() );
+	      	xmlPost.getTag().add( xmlTag );
+	      }
       }
       
       // add groups
@@ -143,7 +146,8 @@ public class XMLRenderer implements Renderer
    private void checkPost( Post post ) throws InternServerException
    {
       if( post.getUser() == null ) throw new InternServerException( "error no user assigned!" );
-      if( post.getTags() == null || post.getTags().size() == 0 ) throw new InternServerException( "error no tags assigned!" );
+      // there may be posts whithout tags
+      // if( post.getTags() == null || post.getTags().size() == 0 ) throw new InternServerException( "error no tags assigned!" );
       if( post.getResource() == null ) throw new InternServerException( "error no ressource assigned!" );
    }
 
@@ -489,7 +493,10 @@ public class XMLRenderer implements Renderer
 
 /*
  * $Log$
- * Revision 1.6  2007-02-15 10:29:08  mbork
+ * Revision 1.7  2007-02-20 09:54:19  mgrahl
+ * *** empty log message ***
+ *
+ * Revision 1.6  2007/02/15 10:29:08  mbork
  * the LogicInterface now uses Lists instead of Sets
  * fixed use of generics
  *
