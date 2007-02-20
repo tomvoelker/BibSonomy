@@ -66,6 +66,7 @@ public abstract class GenericParam<T extends Resource> {
 	private int offset;
 	/** Is user a spammer; by default false */
 	private ConstantID spammer;
+	private  boolean friendOf;
 	/** The type of a ID is by default DS_CONTENT_ID * */
 	private ConstantID idsType;
 	private int newContentId;
@@ -83,6 +84,7 @@ public abstract class GenericParam<T extends Resource> {
 		this.limit = 10;
 		this.offset = 0;
 		this.spammer = ConstantID.SPAMMER_FALSE;
+		this.friendOf=false;
 	}
 
 	/**
@@ -287,6 +289,14 @@ public abstract class GenericParam<T extends Resource> {
 
 	public void setTag(Tag tag) {
 		this.tag = tag;
+	}
+
+	public boolean getFriendOf() {
+		return this.friendOf;
+	}
+
+	public void setFriendOf(boolean friendOf) {
+		this.friendOf = friendOf;
 	}
 
 }
