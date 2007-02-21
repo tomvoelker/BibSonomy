@@ -1,14 +1,14 @@
-package org.bibsonomy.rest;
+package org.bibsonomy.database;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.ResourceType;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.rest.enums.GroupingEntity;
-import org.bibsonomy.rest.enums.ResourceType;
 
 /**
  * this interface is an adapter to the database. <p/> the methods returning
@@ -233,7 +233,13 @@ public interface LogicInterface
 
 /*
  * $Log$
- * Revision 1.5  2007-02-15 10:29:08  mbork
+ * Revision 1.1  2007-02-21 14:08:40  mbork
+ * - included code generation of the schema in the maven2 build-lifecycle
+ * - removed circular dependencies among the modules
+ * - cleaned up the poms of the modules
+ * - fixed failing unit-tests
+ *
+ * Revision 1.5  2007/02/15 10:29:08  mbork
  * the LogicInterface now uses Lists instead of Sets
  * fixed use of generics
  *

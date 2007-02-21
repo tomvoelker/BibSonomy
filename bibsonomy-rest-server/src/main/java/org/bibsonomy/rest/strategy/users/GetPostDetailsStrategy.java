@@ -4,11 +4,11 @@ import java.io.StringWriter;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.ViewModel;
-import org.bibsonomy.rest.exceptions.InternServerException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
@@ -75,7 +75,13 @@ public class GetPostDetailsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.4  2007-02-15 10:29:09  mbork
+ * Revision 1.5  2007-02-21 14:08:36  mbork
+ * - included code generation of the schema in the maven2 build-lifecycle
+ * - removed circular dependencies among the modules
+ * - cleaned up the poms of the modules
+ * - fixed failing unit-tests
+ *
+ * Revision 1.4  2007/02/15 10:29:09  mbork
  * the LogicInterface now uses Lists instead of Sets
  * fixed use of generics
  *

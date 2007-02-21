@@ -2,8 +2,8 @@ package org.bibsonomy.database.newImpl.general;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.rest.enums.GroupingEntity;
 
 /*
  * TODO: implements tag specific methods of LogicInterface; method descriptions there

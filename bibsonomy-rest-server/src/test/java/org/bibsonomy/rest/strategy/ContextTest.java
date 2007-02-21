@@ -5,7 +5,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.bibsonomy.rest.LogicInterface;
+import org.bibsonomy.database.LogicInterface;
 import org.bibsonomy.rest.database.TestDatabase;
 import org.bibsonomy.rest.enums.HttpMethod;
 
@@ -58,7 +58,13 @@ public class ContextTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.2  2007-02-15 10:29:09  mbork
+ * Revision 1.3  2007-02-21 14:08:35  mbork
+ * - included code generation of the schema in the maven2 build-lifecycle
+ * - removed circular dependencies among the modules
+ * - cleaned up the poms of the modules
+ * - fixed failing unit-tests
+ *
+ * Revision 1.2  2007/02/15 10:29:09  mbork
  * the LogicInterface now uses Lists instead of Sets
  * fixed use of generics
  *

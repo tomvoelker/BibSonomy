@@ -12,6 +12,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -22,7 +23,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
-import org.bibsonomy.rest.exceptions.InternServerException;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 import org.bibsonomy.rest.renderer.xml.BibtexType;
@@ -493,7 +493,13 @@ public class XMLRenderer implements Renderer
 
 /*
  * $Log$
- * Revision 1.7  2007-02-20 09:54:19  mgrahl
+ * Revision 1.8  2007-02-21 14:08:33  mbork
+ * - included code generation of the schema in the maven2 build-lifecycle
+ * - removed circular dependencies among the modules
+ * - cleaned up the poms of the modules
+ * - fixed failing unit-tests
+ *
+ * Revision 1.7  2007/02/20 09:54:19  mgrahl
  * *** empty log message ***
  *
  * Revision 1.6  2007/02/15 10:29:08  mbork

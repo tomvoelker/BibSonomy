@@ -100,14 +100,20 @@ public class TestRestServlet extends TestCase
       {
          sb.append( s + "\n" );
       }
-      assertTrue( "output not as expected", sw.toString().equals( sb.toString() + "\n" ) );
+      assertTrue( "output not as expected", sw.toString().equals( sb.toString() ) );
    }
 }
 
 
 /*
  * $Log$
- * Revision 1.1  2006-10-24 21:39:52  mbork
+ * Revision 1.2  2007-02-21 14:08:36  mbork
+ * - included code generation of the schema in the maven2 build-lifecycle
+ * - removed circular dependencies among the modules
+ * - cleaned up the poms of the modules
+ * - fixed failing unit-tests
+ *
+ * Revision 1.1  2006/10/24 21:39:52  mbork
  * split up rest api into correct modules. verified with junit tests.
  *
  * Revision 1.1  2006/10/10 12:42:14  cschenk

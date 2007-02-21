@@ -2,10 +2,10 @@ package org.bibsonomy.database.managers.getpostsqueries;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.rest.enums.GroupingEntity;
 
 public class GetBookmarksByHashForUser extends RequestHandlerForGetPosts{
 

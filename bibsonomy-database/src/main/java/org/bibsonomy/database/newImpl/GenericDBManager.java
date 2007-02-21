@@ -4,8 +4,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 
+import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.ResourceType;
+import org.bibsonomy.database.LogicInterface;
 import org.bibsonomy.database.newImpl.content.AbstractContentDBManager;
 import org.bibsonomy.database.newImpl.content.BookmarkDBManager;
 import org.bibsonomy.database.newImpl.general.GroupDBManager;
@@ -16,9 +18,6 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.rest.LogicInterface;
-import org.bibsonomy.rest.enums.GroupingEntity;
-import org.bibsonomy.rest.enums.ResourceType;
 
 /**
  * this interface is an adapter to the database. <p/> the methods returning

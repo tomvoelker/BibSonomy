@@ -9,12 +9,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.database.LogicInterface;
 import org.bibsonomy.database.newImpl.GenericDBManager;
 import org.bibsonomy.rest.database.TestDatabase;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
-import org.bibsonomy.rest.exceptions.InternServerException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
@@ -204,7 +205,13 @@ public final class RestServlet extends HttpServlet
 
 /*
  * $Log$
- * Revision 1.5  2007-02-16 16:11:28  mbork
+ * Revision 1.6  2007-02-21 14:08:35  mbork
+ * - included code generation of the schema in the maven2 build-lifecycle
+ * - removed circular dependencies among the modules
+ * - cleaned up the poms of the modules
+ * - fixed failing unit-tests
+ *
+ * Revision 1.5  2007/02/16 16:11:28  mbork
  * changed default value from "" to null
  *
  * Revision 1.3  2007/02/12 12:08:16  mgrahl

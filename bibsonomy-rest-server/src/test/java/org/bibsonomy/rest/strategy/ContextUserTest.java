@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import junit.framework.TestCase;
 
-import org.bibsonomy.rest.LogicInterface;
+import org.bibsonomy.database.LogicInterface;
 import org.bibsonomy.rest.database.TestDatabase;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.strategy.users.DeletePostStrategy;
@@ -113,7 +113,13 @@ public class ContextUserTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.1  2006-10-24 21:39:52  mbork
+ * Revision 1.2  2007-02-21 14:08:35  mbork
+ * - included code generation of the schema in the maven2 build-lifecycle
+ * - removed circular dependencies among the modules
+ * - cleaned up the poms of the modules
+ * - fixed failing unit-tests
+ *
+ * Revision 1.1  2006/10/24 21:39:52  mbork
  * split up rest api into correct modules. verified with junit tests.
  *
  * Revision 1.1  2006/10/10 12:42:15  cschenk

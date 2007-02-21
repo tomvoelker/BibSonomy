@@ -3,12 +3,12 @@ package org.bibsonomy.rest.client.queries.get;
 import java.io.Reader;
 import java.util.List;
 
+import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.ResourceType;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
-import org.bibsonomy.rest.enums.GroupingEntity;
-import org.bibsonomy.rest.enums.ResourceType;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.RendererFactory;
 
@@ -134,7 +134,13 @@ public final class GetAddedPostsQuery extends AbstractQuery<List<Post<? extends 
 
 /*
  * $Log$
- * Revision 1.4  2007-02-15 10:29:10  mbork
+ * Revision 1.5  2007-02-21 14:08:34  mbork
+ * - included code generation of the schema in the maven2 build-lifecycle
+ * - removed circular dependencies among the modules
+ * - cleaned up the poms of the modules
+ * - fixed failing unit-tests
+ *
+ * Revision 1.4  2007/02/15 10:29:10  mbork
  * the LogicInterface now uses Lists instead of Sets
  * fixed use of generics
  *

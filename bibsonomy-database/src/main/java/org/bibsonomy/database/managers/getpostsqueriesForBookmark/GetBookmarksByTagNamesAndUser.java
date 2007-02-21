@@ -2,11 +2,11 @@ package org.bibsonomy.database.managers.getpostsqueriesForBookmark;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.managers.getpostsqueries.RequestHandlerForGetPosts;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.rest.enums.GroupingEntity;
 
 public class GetBookmarksByTagNamesAndUser extends RequestHandlerForGetPosts{
 	/**

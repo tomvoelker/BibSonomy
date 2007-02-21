@@ -1,6 +1,6 @@
 package org.bibsonomy.rest.enums;
 
-import org.bibsonomy.rest.exceptions.InternServerException;
+import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
 
 import junit.framework.TestCase;
@@ -68,7 +68,13 @@ public class HttpMethodTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.1  2006-10-10 12:42:12  cschenk
+ * Revision 1.2  2007-02-21 14:08:33  mbork
+ * - included code generation of the schema in the maven2 build-lifecycle
+ * - removed circular dependencies among the modules
+ * - cleaned up the poms of the modules
+ * - fixed failing unit-tests
+ *
+ * Revision 1.1  2006/10/10 12:42:12  cschenk
  * Auf Multi-Module Build umgestellt
  *
  * Revision 1.3  2006/06/05 14:14:12  mbork

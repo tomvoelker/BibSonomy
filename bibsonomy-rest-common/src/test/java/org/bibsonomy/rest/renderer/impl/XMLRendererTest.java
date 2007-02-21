@@ -19,6 +19,7 @@ import javax.xml.bind.PropertyException;
 
 import junit.framework.TestCase;
 
+import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -28,7 +29,6 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
-import org.bibsonomy.rest.exceptions.InternServerException;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 import org.bibsonomy.rest.renderer.xml.BookmarkType;
@@ -493,13 +493,19 @@ public class XMLRendererTest extends TestCase
       {
          sb.append( s + "\n" );
       }
-      assertTrue( "output not as expected", sw.toString().equals( sb.toString() + "\n" ) );
+      assertTrue( "output not as expected", sw.toString().equals( sb.toString() ) );
    }
 }
 
 /*
  * $Log$
- * Revision 1.6  2007-02-16 16:12:42  mbork
+ * Revision 1.7  2007-02-21 14:08:33  mbork
+ * - included code generation of the schema in the maven2 build-lifecycle
+ * - removed circular dependencies among the modules
+ * - cleaned up the poms of the modules
+ * - fixed failing unit-tests
+ *
+ * Revision 1.6  2007/02/16 16:12:42  mbork
  * fixed tests broken by the updates
  * added a test testing quotation of the urls in the xml
  *

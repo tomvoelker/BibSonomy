@@ -2,9 +2,9 @@ package org.bibsonomy.database.newImpl.content;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.rest.enums.GroupingEntity;
 
 
 /*

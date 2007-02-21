@@ -33,10 +33,6 @@
 			<artifactId>bibsonomy-model</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-rest-common</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.ibatis</groupId>
 			<artifactId>ibatis2</artifactId>
 		</dependency>

@@ -2,10 +2,10 @@ package org.bibsonomy.database;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.getpostsqueriesForBookmark.GetBookmarksViewable;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.rest.enums.GroupingEntity;
 
 import junit.framework.TestCase;
 

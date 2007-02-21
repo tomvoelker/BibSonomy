@@ -3,10 +3,10 @@ package org.bibsonomy.rest.client.queries.get;
 import java.io.Reader;
 import java.util.List;
 
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
-import org.bibsonomy.rest.enums.GroupingEntity;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.RendererFactory;
 
@@ -126,7 +126,13 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>>
 
 /*
  * $Log$
- * Revision 1.3  2007-02-11 17:55:34  mbork
+ * Revision 1.4  2007-02-21 14:08:34  mbork
+ * - included code generation of the schema in the maven2 build-lifecycle
+ * - removed circular dependencies among the modules
+ * - cleaned up the poms of the modules
+ * - fixed failing unit-tests
+ *
+ * Revision 1.3  2007/02/11 17:55:34  mbork
  * switched REST-api to the 'new' datamodel, which does not deserve the name...
  *
  * Revision 1.2  2007/02/05 10:35:53  cschenk

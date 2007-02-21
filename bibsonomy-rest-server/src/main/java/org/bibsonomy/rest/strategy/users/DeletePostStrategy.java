@@ -4,7 +4,7 @@ import java.io.StringWriter;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.bibsonomy.rest.exceptions.InternServerException;
+import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
@@ -62,7 +62,13 @@ public class DeletePostStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.1  2006-10-24 21:39:52  mbork
+ * Revision 1.2  2007-02-21 14:08:36  mbork
+ * - included code generation of the schema in the maven2 build-lifecycle
+ * - removed circular dependencies among the modules
+ * - cleaned up the poms of the modules
+ * - fixed failing unit-tests
+ *
+ * Revision 1.1  2006/10/24 21:39:52  mbork
  * split up rest api into correct modules. verified with junit tests.
  *
  * Revision 1.1  2006/10/10 12:42:12  cschenk

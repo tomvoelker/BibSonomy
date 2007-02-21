@@ -25,7 +25,7 @@ public class GetUserStrategyTest extends TestCase
       c.perform( request, sw );
       // just test length, because the detail rendering output is tested by the
       // renderer test
-      assertEquals(  300, sw.toString().length() );
+      assertEquals(  299, sw.toString().length() );
       assertEquals( "text/xml", c.getContentType( "firefox" ) );
       assertEquals( "bibsonomy/user+XML", c.getContentType( RestProperties.getInstance().getApiUserAgent() ) );
    }
@@ -33,7 +33,13 @@ public class GetUserStrategyTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.2  2007-02-11 18:35:15  mbork
+ * Revision 1.3  2007-02-21 14:08:35  mbork
+ * - included code generation of the schema in the maven2 build-lifecycle
+ * - removed circular dependencies among the modules
+ * - cleaned up the poms of the modules
+ * - fixed failing unit-tests
+ *
+ * Revision 1.2  2007/02/11 18:35:15  mbork
  * lazy instantiation of lists in the model.
  * we definitely need bidirectional links for the api to work proper!
  * fixed all unit tests, every test performs well.
