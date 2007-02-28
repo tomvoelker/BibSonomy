@@ -59,13 +59,21 @@ public abstract class Strategy
 		{
 			return GroupingEntity.VIEWABLE;
 		}
+		value = context.getStringAttribute( "friend", null );
+		if( value != null )
+		{
+			return GroupingEntity.FRIEND;
+		}
 		return GroupingEntity.ALL;
 	}
 }
 
 /*
  * $Log$
- * Revision 1.3  2007-02-21 14:08:36  mbork
+ * Revision 1.4  2007-02-28 15:18:47  mgrahl
+ * extension of friend stategy
+ *
+ * Revision 1.3  2007/02/21 14:08:36  mbork
  * - included code generation of the schema in the maven2 build-lifecycle
  * - removed circular dependencies among the modules
  * - cleaned up the poms of the modules
