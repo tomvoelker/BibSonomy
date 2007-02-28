@@ -53,6 +53,10 @@ public class PutPostStrategy extends Strategy
       {
          Post post = context.getRenderer().parsePost( new InputStreamReader( request.getInputStream() ) );
          // ensure using the right resource...
+         /*
+          * TODO: this "if" is wrong, it does not allow to change existing posts title (authors, URL, ...)
+          */
+         
          if( !post.getResource().getIntraHash().equals( resourceHash ) ) throw new BadRequestOrResponseException( "wrong resource" );
          context.getLogic().storePost( userName, post, true );
       }
@@ -75,7 +79,10 @@ public class PutPostStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.4  2007-02-21 14:08:36  mbork
+ * Revision 1.5  2007-02-28 15:21:19  mgrahl
+ * additon suggestion
+ *
+ * Revision 1.4  2007/02/21 14:08:36  mbork
  * - included code generation of the schema in the maven2 build-lifecycle
  * - removed circular dependencies among the modules
  * - cleaned up the poms of the modules
