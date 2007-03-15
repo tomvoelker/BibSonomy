@@ -139,6 +139,7 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 		
 		System.out.println("hashFromUrl " + hashFromUrl);
 		System.out.println("userFromUrl " + userFromUrl);
+		
 		/*
 		 * return a bookmark object for current hash value
 		 */
@@ -188,14 +189,12 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 		bookmarkParam.setDescription(post.getResource().getDescription());
 		bookmarkParam.setDate(post.getDate());
 		bookmarkParam.setGroupId(post.getGroupId());
-		System.out.println("*****************************************************************************:"+bookmarkParam.getDescription());
 		bookmarkParam.setResource(bookmark);
 
 		bookmarkParam.setTags(post.getTags());
 		List <Tag> tagliste=new LinkedList<Tag>();
 		tagliste=post.getTags();
 		
-		System.out.println("tagliste=post.getTags():" + tagliste);
 		
 		String hashFromUrl=bookmarkParam.getHash();
 		String userFromUrl=bookmarkParam.getUserName();
@@ -238,9 +237,9 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 	    	System.out.println("User möchte bereits bestehenden Eintrag aktualisieren");
 	    	System.out.println("******************************************************");
 	    	
-	    	System.out.println("post.getResource "+ post.getResource().getIntraHash());
-	    	System.out.println("post.getUser().getName "+ post.getUser().getName());
-	    	System.out.println("groupID: " +post.getGroupId());
+	    	System.out.println("post hash "+ post.getResource().getIntraHash());
+	    	System.out.println("post userName "+ post.getUser().getName());
+	    	System.out.println("post groupID: " +post.getGroupId());
 	    	
 	    	/*
 	    	 * create bookmark object from database with current 
@@ -261,38 +260,37 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 			
         	if(storeTemp.size()==0){
         		System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        		System.out.println("storeTemp ist leer, kein Bookmark Object vorhanden zu aktuellem Hash und User");
+        		System.out.println("++++++++++++++++kein Bookmark Objekt vorhanden zu aktuellem Hash und User++++++++++");
+        		System.out.println("++++++++++++++++++++EXCEPTION++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         		System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         	}     	
         	
         	/*
         	 * get Hash from database object, rsp. we get a  post from database
-        	 * according arguments and compute a hash from current url and compare
-        	 * it with hash from already existing hash in database
+        	 * according arguments and compute a new hash from current url and compare
+        	 * it with the hash from already existing hash in our database
         	 */
         	
         	 else 
         		 {
         		 Post<? extends Resource> provePost =storeTemp.get(0);
         		 System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-                 System.out.println("+++++++Objekt wir zurückgeliefert für die Werte Hash und aktueller User++++++++++++");     
+                 System.out.println("+++++++Objekt wird zurückgeliefert für die Werte Hash und aktueller User++++++++++++");     
                  System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        		 System.out.println("storeTemp ist nicht leer, Objekt zu aktuellem User und Hash wird zurückgeliefert");
        		     System.out.println("getUserName() = " + provePost.getUser().getName());
      			 System.out.println("getIntraHash() = " + provePost.getResource().getIntraHash());	
         		
-     			 /*
+     			/*
         		 * compute new hash for bookmark object from URL
         		 * and compare it with hash from database
         		 */
         		 
         		 /**TODO compute new hash from URL******
         		  * with bookmark.getHash
-        		  * 
+        		  * TODO add newHash and oldHash also to logging object
         		  */
         		  
-        		 String newHash="7a2a36f3df07d2b03839faf6e05ec719";
-        		 
+        		 String newHash="8643901092ebe3ef26cb4a33b4b16b8d";
         		 System.out.println("new Hash "+ newHash);
         		 
         		 /*
@@ -301,113 +299,10 @@ public class BookmarkDBManager extends AbstractContentDBManager {
         		
         		 if(newHash.equals(provePost.getResource().getIntraHash())){
         			System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"); 
-        			System.out.println("+++++++++++ wenn neuer und alter Hash (database)++++++++++++++++++");
+        			System.out.println("Neu berechneter Hash entspricht altem Hash in der Datenbank+++");
         			System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         			
-        			System.out.println("newHash " + newHash);
-        			System.out.println("provePost.getResource.getIntraHash "+ provePost.getResource().getIntraHash());
-        			   /* 
-        	  		    * 1. save content_id to logged_bookmark or 
-        	  		    * 2. insert bookmark (with old and new contend_id) object into queue for logging
-        	  		    * 3. delete old bookmark from database
-        	  		    * 4. insert changed bookmark into database
-        	  		    * 
-        	  		 	* insert bookmark object with changed paramter values:
-        	  		 	* 1. store both old and new contend'ids (are not equal)
-        	  		 	* 2. create unique content_id from table id_generator
-        	  		 	*/
-        			
-        			bookmarkParam.setIdsType(ConstantID.IDS_CONTENT_ID);
-            		
-            		System.out.println("paramFromUrlValue.getIdsType " + bookmarkParam.getIdsType());
-            		
-            		/*
-            		 * TODO rename with getCurrentContentIdFromIDs
-            		 */
-            		
-            		bookmarkParam.setId(db.bookmarkDatabaseManager.getCurrentContentIdFromIds(bookmarkParam));
-            		
-            		System.out.println("bekomme aktuellen value aus ids table: "+ bookmarkParam.getId());
-            		
-            		/*
-            		 * update value in ids table +1
-            		 */
-            		
-            		db.bookmarkDatabaseManager.updateIds(bookmarkParam);
-            		bookmark.setContentId(db.bookmarkDatabaseManager.getCurrentContentIdFromIds(bookmarkParam));
-          	  		bookmarkParam.setHash(newHash);
-
-          	  		System.out.println("bookmark hat neue contentId:"+ bookmark.getContentId());  
-          	  		System.out.println("hash from current bookmark " + bookmarkParam.getHash());
-          	  		System.out.println("url form bookmarkParam: "+ bookmarkParam.getUrl());
-          	  		
-          	  		    bookmarkParam.setResource(bookmark);
-          	  		
-          			   /*
-          			    * insert current bookmark parameters 
-          			    */
-          			
-          			   db.bookmarkDatabaseManager.insert("insertBookmark",bookmarkParam);
-          			   
-          			   /*
-          			    * increment URL counter
-          			    */
-          			   
-          			   System.out.println("increment url counter inlusive insert hash plus url");
-        			   
-          			   db.bookmarkDatabaseManager.insert("insertBookmarkInc", bookmarkParam);
-          			   
-          			   
-          			   /*
-          			    * insert a set of tags according bookmark 
-          			    */
-          			   
-          			  // TODO db.bookmarkDatabaseManager.insert("insertTag",paramFromUrlValue);   
-          			 
-            			 
-        			
-        		} 
-        		 
-        		/*
-        		 * if old hash is not equal to new generated hash
-        		 */
-        		 
-        	 else{
-        		 
-        		 System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"); 
-     			 System.out.println("+++++++++++neuer Hash ist ungleich alter Hash (database)++++++");
-     			 System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        		 System.out.println("new Hash " +newHash);
-        		 System.out.println("alter hash "+ provePost.getResource().getIntraHash());
-  
-        		 
-        		 
-        		 /*
-     	    	 * create database object with given Arguments from current URL and new generated hash 
-     	    	 */
-     	    	
-        		List<Post<? extends Resource>> storeTempWithNewHash = getBookmarksByHashForUser.perform(userFromUrl,GroupingEntity.USER,userFromUrl,null,newHash,false, false, 0, 1);
-        		 
-        		System.out.println("storeTemp.size()= "+storeTemp.size());
-     			System.out.println("authUser = " + userFromUrl);
-     			System.out.println("grouping = " + GroupingEntity.USER);
-     			System.out.println("groupingName = " + userFromUrl);
-     			System.out.println("hash = " + newHash);
-     			
-     			Post<? extends Resource> provePostForNewHash =storeTempWithNewHash.get(0);
-     			
-     			System.out.println("getUserName() = " + provePostForNewHash.getUser().getName());
-     			System.out.println("getIntraHash() = " + provePostForNewHash.getResource().getIntraHash());	
-        		 
-             	
-             	/*
-        		  * prove if a new Hash does not exist in database 
-        		  */
-        		 
-        		 if(newHash!=provePostForNewHash.getResource().getIntraHash()){
-        			 
-        			 System.out.println("wenn neuer hash nicht in database/ ungleich dem hash in database");
-        			 System.out.println("Reihenfolge: loggen, löschen, einfügen");
+                    System.out.println("Reihenfolge: loggen, löschen, einfügen");
         			 
         			 /*
         			  * TODO  LOGGEN  QUEUE FUNKTION
@@ -417,53 +312,52 @@ public class BookmarkDBManager extends AbstractContentDBManager {
         			 /*
         			  * LÖSCHEN
         			  */
+                    
         		     String oldHash=provePost.getResource().getIntraHash();
         			 deletePost(userName, oldHash);
+        			 
         			 /*
         			  * EINFÜGEN
         			  */
         			 
         			 System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-	                 System.out.println("+++++++es wird kein Objekt für aktuelle Wertbelegung zurückgegeben+++++++++++++++++");     
 	                 System.out.println("++++++++++++++++++Objekt wird eingefügt++++++++++++++++++++++++++++++++++++++++++++");
-	    			 
-	                 bookmarkParam.setIdsType(ConstantID.IDS_CONTENT_ID);
+	                 System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 	                 
+	                 bookmarkParam.setIdsType(ConstantID.IDS_CONTENT_ID);
 	            	 System.out.println("paramFromUrlValue.getIdsType" + bookmarkParam.getIdsType());
 	            	 
    	                 bookmarkParam.setId(db.bookmarkDatabaseManager.getCurrentContentIdFromIds(bookmarkParam));
-	            	 
    	                 System.out.println("bekomme aktuellen value/content_id aus ids table: "+ bookmarkParam.getId());
 	            		
 	            	 db.bookmarkDatabaseManager.updateIds(bookmarkParam);
-	            	 
 	            	 bookmark.setContentId(db.bookmarkDatabaseManager.getCurrentContentIdFromIds(bookmarkParam));
 	            	 bookmarkParam.setRequestedContentId(bookmark.getContentId());
 	            	 System.out.println("bookmark content_id: " + bookmarkParam.getRequestedContentId());
-	          	  	 bookmarkParam.setUrl(post.getUrl());
-	          	  	 
+
+	            	 bookmarkParam.setUrl(post.getUrl());
 	          	  	 bookmarkParam.setIdsType(ConstantID.IDS_TAS_ID);
 
 	          	   	 bookmarkParam.setResource(bookmark);
                      bookmarkParam.setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
                      
                      
-	          	  		System.out.println("bookmarkParam  TasId:"+ bookmarkParam.getNewTasId());
-	          	  		System.out.println("bookmarkParam Content_ID :"+ bookmarkParam.getRequestedContentId());
-	          	  		System.out.println("bookmarkParam: " +bookmarkParam.getContentType());
-	          	  	    System.out.println("booomarkParam user_name: "+ bookmarkParam.getUserName());
-	          	  	    System.out.println("bookmarkParam date" +bookmarkParam.getDate());
-	          	  	    System.out.println("bookmarkParam group:" +bookmarkParam.getGroupId());
-	          	  		System.out.println("bookmarkParam hash " + bookmarkParam.getHash());
-	          	  		System.out.println("bookmarkParam url: "+ bookmarkParam.getUrl());
-	          	  	    System.out.println("bookmarkParam description: "+ bookmarkParam.getDescription());
+	          	  	System.out.println("bookmarkParam  TasId:"+ bookmarkParam.getNewTasId());
+	          	  	System.out.println("bookmarkParam Content_ID :"+ bookmarkParam.getRequestedContentId());
+	          	  	System.out.println("bookmarkParam: " +bookmarkParam.getContentType());
+	          	    System.out.println("booomarkParam user_name: "+ bookmarkParam.getUserName());
+	          	  	System.out.println("bookmarkParam date" +bookmarkParam.getDate());
+	          	  	System.out.println("bookmarkParam group:" +bookmarkParam.getGroupId());
+	          	    System.out.println("bookmarkParam hash " + bookmarkParam.getHash());
+	          	  	System.out.println("bookmarkParam url: "+ bookmarkParam.getUrl());
+	          	  	System.out.println("bookmarkParam description: "+ bookmarkParam.getDescription());
 	          	        
-	          	        System.out.println("bookmarkParam ids: " + bookmarkParam.getIdsType());
-	          	        System.out.println("bookmarkParam tags: " +bookmarkParam.getTags());
+	          	    System.out.println("bookmarkParam ids: " + bookmarkParam.getIdsType());
+	          	    System.out.println("bookmarkParam tags: " +bookmarkParam.getTags());
 	          	        
 	                   
-	                    db.bookmarkDatabaseManager.insert("insertBookmark",bookmarkParam);
-	                    System.out.println("insert Bookmark into bookmark table");
+	                db.bookmarkDatabaseManager.insert("insertBookmark",bookmarkParam);
+	                System.out.println("insert Bookmark into bookmark table");
                         
 	     		   /*
      			    * increment URL counter and insert hash
@@ -490,29 +384,139 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 	     				System.out.println("Tags in BookmarkObject heißen: "+ bookmarkParam.getTagName());
 	     				System.out.println("TAS eingefügt");
 	     			}
-     			      
-        		 }
-        			 
-        			 
-        		 else{
-        			 
-        			/*
-        			 * new hash already exists in database.
-        			 */
-        			 System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        			 System.out.println("Bookmark already exists!!!!!!!!!!!!!!!");
-        			 System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");        		
-        			 
-        		 }
-        			 
         			
-        		}
-        		
-        		
-        	 }
+        		} 
+        		 
+        		/*
+        		 * if old hash is not equal to new generated hash
+        		 */
+        		 
+        	 else{
+        		 
+        		 System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"); 
+     			 System.out.println("+neuer Hash ist ungleich dem alten Hash in der Datenbank++++++");
+     			 System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+  
+        		 /*
+     	    	 * create database object with given Arguments from current URL and new generated hash 
+     	    	 */
+     	    	
+        		List<Post<? extends Resource>> storeTempWithNewHash = getBookmarksByHashForUser.perform(userFromUrl,GroupingEntity.USER,userFromUrl,null,newHash,false, false, 0, 1);
+        		 
+     			System.out.println("authUser = " + userFromUrl);
+     			System.out.println("grouping = " + GroupingEntity.USER);
+     			System.out.println("groupingName = " + userFromUrl);
+     			System.out.println("newhash = " + newHash);
+     			System.out.println("size storeTempWithNewHash: " +storeTempWithNewHash.size());
+     			
+     			
+     		 /*
+       		  * prove if new Hash already exists in database 
+       		  */
+     			
+     			if(storeTempWithNewHash.size()==0){
+     				
+        			System.out.println("wenn neuer Hash nicht in der Datenbank/ungleich dem hash in database");
+        			System.out.println("Reihenfolge: loggen, löschen, einfügen ( mit neuem Hash)");
+        			 
+        			 /*
+        			  * TODO  LOGGEN  QUEUE FUNKTION
+        			  */
+        			 
+        			 
+        			 /*
+        			  * LÖSCHEN
+        			  */
+        			 
+        		     String oldHash=provePost.getResource().getIntraHash();
+        		     System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+	                 System.out.println("++++++++++++++++++Lösche Objekt mit altem Hash Wert++++++++++++++++++++++++++++++++");
+	                 System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        			 deletePost(userName, oldHash);
+        			 System.out.println("Objekt wurde gelöscht");
+        			 
+        			 /*
+        			  * EINFÜGEN
+        			  */
+        			 
+        			 System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+	                 System.out.println("++++++++++++++++++Objekt mit neuem Hash wird eingefügt+++++++++++++++++++++++++++++");
+	                 System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+	                 
+	                 bookmarkParam.setIdsType(ConstantID.IDS_CONTENT_ID);
+	            	 System.out.println("paramFromUrlValue.getIdsType" + bookmarkParam.getIdsType());
+	            	 bookmarkParam.setHash(newHash);
+   	                 bookmarkParam.setId(db.bookmarkDatabaseManager.getCurrentContentIdFromIds(bookmarkParam));
+   	                 System.out.println("bekomme aktuellen value/content_id aus ids table: "+ bookmarkParam.getId());
+	            		
+	            	 db.bookmarkDatabaseManager.updateIds(bookmarkParam);
+	            	 
+	            	 bookmark.setContentId(db.bookmarkDatabaseManager.getCurrentContentIdFromIds(bookmarkParam));
+	            	 bookmarkParam.setRequestedContentId(bookmark.getContentId());
+	          	  	 bookmarkParam.setUrl(post.getUrl());
+	          	  	 bookmarkParam.setIdsType(ConstantID.IDS_TAS_ID);
+	          	   	 bookmarkParam.setResource(bookmark);
+                     bookmarkParam.setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
+                     
+                     
+	          	  	System.out.println("bookmarkParam  TasId:"+ bookmarkParam.getNewTasId());
+	          	  	System.out.println("bookmarkParam Content_ID :"+ bookmarkParam.getRequestedContentId());
+	          	  	System.out.println("bookmarkParam: " +bookmarkParam.getContentType());
+	          	  	System.out.println("booomarkParam user_name: "+ bookmarkParam.getUserName());
+	          	  	System.out.println("bookmarkParam date" +bookmarkParam.getDate());
+	          	  	System.out.println("bookmarkParam group:" +bookmarkParam.getGroupId());
+	          	    System.out.println("bookmarkParam hash " + bookmarkParam.getHash());
+	          	  	System.out.println("bookmarkParam url: "+ bookmarkParam.getUrl());
+	          	  	System.out.println("bookmarkParam description: "+ bookmarkParam.getDescription());
+	          	        
+	          	    System.out.println("bookmarkParam ids: " + bookmarkParam.getIdsType());
+	          	    System.out.println("bookmarkParam tags: " +bookmarkParam.getTags());
+	          	        
+	                   
+	                    db.bookmarkDatabaseManager.insert("insertBookmark",bookmarkParam);
+	                    System.out.println("insert Bookmark into bookmark table");
+                        
+	     		   /*
+     			    * increment URL counter and insert hash
+     			    */
+	                    
+	     			  db.bookmarkDatabaseManager.insert("insertBookmarkInc",bookmarkParam);
+	     			  System.out.println("zähle URL counter hoch plus hash plus url insert");
+	     			  
+	     			 for(Tag tag: tagliste){
+	     				 
+	     				bookmarkParam.setId(db.bookmarkDatabaseManager.getCurrentTasIdFromIds(bookmarkParam));
+		          	   	System.out.println("currentTasID:" +bookmarkParam.getId());
+	     				 
+		          	    db.bookmarkDatabaseManager.updateIds(bookmarkParam);
+		          	    bookmarkParam.setNewTasId(db.bookmarkDatabaseManager.getCurrentTasIdFromIds(bookmarkParam));
+	     				 
+	     				 
+	     				bookmarkParam.setTagName(tag.getName());
+	     				db.tagDatabaseManager.insert("insertTas",bookmarkParam);
+	     				 
+	     				System.out.println("Tags in BookmarkObject heißen: "+ bookmarkParam.getTagName());
+	     				System.out.println("TAS eingefügt");
+	     			}
+        		 } /*end if*/
+
+     			
+     			else{
+     			/*
+    			 * new hash already exists in database.
+    			 */
+ 				
+    			 System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    			 System.out.println("++++++++++++++++++++++++++Bookmark already exists++++++++++++++++++++++++++++++++++");
+    			 System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");   
+     			
+     			}
+     			
+        	} /*end else*/
+          }
 	    
 	    
-        	}
+        } /*end if*/
 	    
 	    
 	    else{
@@ -522,7 +526,6 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 	    	System.out.println("*************************************************************************************************");
 	    	System.out.println("*************************User möchte neuen Eintrag zur DB hinzufügen*****************************");
 	    	System.out.println("*************************************************************************************************");
-	    	System.out.println("update value:" + update);
 	    	
 	    	if(update==false && post.getUser().getName()!=null){
 		    	/*
@@ -530,14 +533,16 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 		    	 */
 	    		List<Post<? extends Resource>> storeTemp = getBookmarksByHashForUser.perform(userFromUrl,GroupingEntity.USER,userFromUrl,null,hashFromUrl,false, false, 0, 1);
 	    		System.out.println("sizeOf storeTemp: " + storeTemp.size());
-	        	/*
+	        	
+	    		/*
 	    		 * hash already exists in database
 	    		 */
+	    		
 	    		if(storeTemp.size()!=0){
 	    		
 	    			System.out.println("****************************************************************************************");
-	    			System.out.println("************************Hash already exists*****************************");
-	    			System.out.println("************************break*********************************************");
+	    			System.out.println("************************Hash already exists*********************************************");
+	    			System.out.println("******************************BREAK*****************************************************");
 	    			
 	    		}
 	    		
@@ -549,41 +554,36 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 	    		     
 	        		 System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 	                 System.out.println("+++++++es wird kein Objekt für aktuelle Wertbelegung zurückgegeben+++++++++++++++++");     
-	                 System.out.println("++++++++++++++++++Objekt wird eingefügt+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+	                 System.out.println("++++++++++++++++++Objekt wird eingefügt++++++++++++++++++++++++++++++++++++++++++++");
 	    			 
 	                 bookmarkParam.setIdsType(ConstantID.IDS_CONTENT_ID);
-	                 
-	            	 System.out.println("paramFromUrlValue.getIdsType" + bookmarkParam.getIdsType());
+	            	 System.out.println("bookmarkParam IdsType" + bookmarkParam.getIdsType());
 	            	 
    	                 bookmarkParam.setId(db.bookmarkDatabaseManager.getCurrentContentIdFromIds(bookmarkParam));
-	            	 
-   	                 System.out.println("bekomme aktuellen value/content_id aus ids table: "+ bookmarkParam.getId());
+   	                 System.out.println("bookmarkParam currentContentIDFromIds"+ bookmarkParam.getId());
 	            		
 	            	 db.bookmarkDatabaseManager.updateIds(bookmarkParam);
 	            	 
 	            	 bookmark.setContentId(db.bookmarkDatabaseManager.getCurrentContentIdFromIds(bookmarkParam));
 	            	 bookmarkParam.setRequestedContentId(bookmark.getContentId());
-	            	 System.out.println("bookmark content_id: " + bookmarkParam.getRequestedContentId());
-	          	  	 bookmarkParam.setUrl(post.getUrl());
-	          	  	 
-	          	  	 bookmarkParam.setIdsType(ConstantID.IDS_TAS_ID);
 
+	            	 bookmarkParam.setUrl(post.getUrl());
+	          	  	 bookmarkParam.setIdsType(ConstantID.IDS_TAS_ID);
+	          	  	 
 	          	   	 bookmarkParam.setResource(bookmark);
                      bookmarkParam.setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
                      
                      
-	          	  		System.out.println("bookmarkParam  TasId:"+ bookmarkParam.getNewTasId());
-	          	  		System.out.println("bookmarkParam Content_ID :"+ bookmarkParam.getRequestedContentId());
-	          	  		System.out.println("bookmarkParam: " +bookmarkParam.getContentType());
-	          	  	    System.out.println("booomarkParam user_name: "+ bookmarkParam.getUserName());
+	          	  		System.out.println("bookmarkParam  TasID:"+ bookmarkParam.getNewTasId());
+	          	  		System.out.println("bookmarkParam ContentID :"+ bookmarkParam.getRequestedContentId());
+	          	  		System.out.println("bookmarkParam ContentType: " +bookmarkParam.getContentType());
+	          	  	    System.out.println("booomarkParam userName: "+ bookmarkParam.getUserName());
 	          	  	    System.out.println("bookmarkParam date" +bookmarkParam.getDate());
 	          	  	    System.out.println("bookmarkParam group:" +bookmarkParam.getGroupId());
 	          	  		System.out.println("bookmarkParam hash " + bookmarkParam.getHash());
 	          	  		System.out.println("bookmarkParam url: "+ bookmarkParam.getUrl());
 	          	  	    System.out.println("bookmarkParam description: "+ bookmarkParam.getDescription());
-	          	        
-	          	        System.out.println("bookmarkParam ids: " + bookmarkParam.getIdsType());
-	          	        System.out.println("bookmarkParam tags: " +bookmarkParam.getTags());
+	          	        System.out.println("bookmarkParam idsType: " + bookmarkParam.getIdsType());
 	          	        
 	                   
 	                    db.bookmarkDatabaseManager.insert("insertBookmark",bookmarkParam);
@@ -596,9 +596,6 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 	     			  db.bookmarkDatabaseManager.insert("insertBookmarkInc",bookmarkParam);
 	     			  System.out.println("zähle URL counter hoch plus hash plus url insert");
      			  
-                 
-	     			  
-	     			  
 	     			 for(Tag tag: tagliste){
 	     				 
 	     				bookmarkParam.setId(db.bookmarkDatabaseManager.getCurrentTasIdFromIds(bookmarkParam));
@@ -617,11 +614,11 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 	     			 
      			      
 	    		
-	    				}
+	    				} /*end else*/
 	    		
-	    	     }
+	    	     } /*end if*/
 	    	
-	    	}
+	    	} /*end else*/
 	    	
         return true;
 	}
