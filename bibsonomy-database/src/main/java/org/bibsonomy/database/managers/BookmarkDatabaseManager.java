@@ -233,225 +233,56 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 	}
 
 
+	
 	/**
 	 * This methods  are for setting functions concerning bookmark entries
 	 */
-
-	public void insertBookmark(final Bookmark param) {
-		// TODO not tested
-		this.insert("insertBookmark", param);
+	  public void insertBookmark(final BookmarkParam bookmark) {
+		this.insert("insertBookmark", bookmark);
 	}
 
-	public void insertBookmarkLog(final Bookmark param) {
+	public void insertBookmarkLog(final BookmarkParam bookmark) {
 		// TODO not tested
-		this.insert("insertBookmarkLog", param);
+		this.insert("insertBookmarkLog", bookmark);
 	}
-
-	public void insertBookmarkHash(final BookmarkParam param) {
-		// TODO not tested
-		this.insert("insertBookmarkHash", param);
-	}
-
+/*
+ * insert counter, hash and url of bookmark
+ */
 	public void insertBookmarkInc(final Bookmark param) {
-		// TODO not tested
 		this.insert("insertBookmarkInc", param);
 	}
 
-	public void updateBookmarkHashDec(final Bookmark param) {
-		// TODO not tested
+	public void updateBookmarkHashDec(final BookmarkParam param) {
 		this.insert("updateBookmarkHashDec", param);
 	}
 
-	public void updateBookmarkLog(final Bookmark param) {
+	public void updateBookmarkLog(final BookmarkParam param) {
 		// TODO not tested
 		this.insert("updateBookmarkLog", param);
 	}
 
-	public void deleteBookmarkByContentId(final Bookmark param) {
-		// TODO not tested
+	public void deleteBookmarkByContentId(final BookmarkParam param) {
 		this.insert("deleteBookmarkByContentId", param);
 	}
-
 	/**
 	 * Get a current ContentID for setting a bookmark update the current
 	 * ContendID for bookmark and bibtex
 	 */
-	public Integer getNewContentID(final Bookmark param) {
-		// TODO not tested
+	
+	public Integer getCurrentContentIdFromIds(final BookmarkParam param) {
 		return (Integer) this.queryForObject("getNewContentID", param);
 	}
 
 	public void updateIds(final BookmarkParam param) {
-		// TODO not tested
 		this.insert("updateIds", param);
+	}
+	
+	public Integer getCurrentTasIdFromIds(final BookmarkParam param) {
+		return (Integer) this.queryForObject("getNewTasID", param);
 	}
 
 	public Integer getContentIDForBookmark(final BookmarkParam param) {
-		// TODO not tested
 		return (Integer) this.queryForObject("getContentIDForBookmark", param);
 	}
-
-	public boolean manipulateMyBookmark(GenericParam<Bookmark> param, User currUser,boolean overwrite, boolean already_change) throws SQLException {
-    	  boolean isToDeleted = false;
-    	  boolean setToDeleted = false;
-    	  boolean isToInserted = false;
-    	  boolean setToInserted = false;
-    	    /* *************** check if current user is a spammer ******************* */
-    	    boolean spammer = this.db.getGeneral().isSpammer(param);    
- 		
- 			boolean success;
-           /*** waiting time between several tries when trying to insert one bookmark***/ 
- 			int wait;           
- 			/***iterate over all bookmark objects***/
- 			for (Bookmark bookmark: param.getResources()){
- 				wait 		= 1;
- 				success     = false;
- 				
- 				while (!success && wait < MAX_WAIT_TIMEOUT) {
- 					try{
- 						/*
- 						 * the first step of the iteration contains with checking if the bookmark URL
- 						 * alread exists for the current user
- 						 * 
- 						 * if the bookmark already exist, we access the old content_id
- 						 */
-                               /*****get old ContendId, if it exist******/          
- 						int oldContendID = bookmark.getContentId();
- 						/*** if bookmark is not added into the system ***/
- 						if(bookmark.getContentId() == ConstantID.IDS_UNDEFINED_CONTENT_ID.getId() && !isToDeleted){
- 							setToInserted = true;
- 							if(already_change /* FIXME && bookmark.getUserName().equals(currUser)*/){
- 								
- 								/*
- 								 * (do this only, if currUser = book.user, otherwise overwriting group entries is possible)
- 								 * 
- 								 * it may be the case, that the user wants to change a bookmarks URL, this can be done 
- 								 * in two ways: making a copy of it (this is done, when coming from bookmarklet with
- 								 * existing bookmark and then changing the URL) or moving it (when user presses "edit"
- 								 * button and then changes the URL). 
- 								 * To delete the old bookmark, we have to extract its content id
- 								 */	
- 								oldContendID=bookmark.getContentId();
- 								if(oldContendID != ConstantID.IDS_UNDEFINED_CONTENT_ID.getId()){
- 									/*** if an old bookmark exists, but NOT called by bookmarklet, then we change the old bookmark 
- 									 * for URLS table ***/
- 									
- 									bookmark.setOldHash(bookmark);
- 									bookmark.setContentId(oldContendID);
- 									setToDeleted = true;
- 								}
- 							}
- 						}else {
- 							/*** the bookmarks URL already exists for this user ***/
- 							if(overwrite){
- 								/*** we shall overwrite it ***/
- 								bookmark.setOldHash(bookmark);
- 								bookmark.setContentId(oldContendID);
- 								setToDeleted = true;
- 								setToInserted = true;
- 							}else{
- 								/*** we do nothing and ignore it ***/
- 								bookmark.setContentId(oldContendID);
- 								setToInserted = false;
- 							}
- 				        }
- 							/*** generate a list of tag objects ***/
- 				List<Tag> oldResourceTags = null;
- 				if(isToDeleted){
- 					
- 					/*****************************************************************
-					 *  DELETE SEQUENCE FOR BOOKMARKING
-					 ******************************************************************/
- 					
- 					oldContendID = bookmark.getContentId();
- 					if(oldContendID != ConstantID.IDS_UNDEFINED_CONTENT_ID.getId()){
- 						/***with the deletion of bookmarks the tags are also deleted ***/
- 					   oldResourceTags = this.db.getTag().deleteTags(param); 
- 					   /*******TODO Feature update-question*********/
- 					   /***UpdateQuestion.update(conn, oldcontentid);****/
- 						/*** decrement URL counter from bookmark ***/
- 					  updateBookmarkHashDec(bookmark);
- 					  	/*** copy the bookmark entries into the log_Bookmark table ***/
- 					  updateBookmarkLog(bookmark);
- 					  	/***delete the selected bookmark from the current database table***/ 					  
- 				      deleteBookmarkByContentId(bookmark);
- 					}
- 				}
- 							
- 				if(isToInserted){
- 					/*****************************************************************
-					 *  INSERT SEQUENCE FOR BOOKMARKING
-					 ******************************************************************/
- 					
- 					/***if current user is detected as spammer, modify group id***/
- 					
- 					if(spammer){
- 						// FIXME bookmark.setGroupId(ResourceUtils.getGroupId(bookmark.getGroupId(),true));
- 					}
- 					
- 					/*** create a unique contentID from table id_generator (get value from the tabel ids) ***/
- 					bookmark.setContentId(getNewContentID(bookmark));
- 					
- 						if(isToDeleted){
- 						  /*** save contentID to log_bookmark table***/
- 						updateBookmarkLog(bookmark);
- 					}
- 					    /***insert a bookmark with attributes to bookmark table***/
-                            insertBookmark(bookmark); 	
-                        /***increments the URL Counter for bookmark entries, i.e. if hash ist double than increments the URL counter***/
-                            insertBookmarkInc(bookmark);
-                        /**********insert a List of Tags***************/
-                            this.db.getTag().insertTags(param);
-                            /*********TODO insertTagrelation including relationmanager**********/
-                           /******insertrelation(bookmarkParam);************/
- 				}
- 				
- 	/*
-				  update document table, if neccessary, this routine is only for the geotagging feature
-				  TODO update document table- method including sql-Statement in iBartis format
-				 
-				if (isToInserted) {
-					if (isToDeleted) {
-					
-					/**********insert + delete: update entries in document-table*****************/
-					
-						    /**TODO implement**updateDocument(bookmarkParam);******/
-						
-					/*} else if (bookmark./***TODO getDocHash() hast to be implemented*********************//* != null) {
-						
-						
-						/********insert*****************/
-						
-						/*****TODO*******insertDocument(bookmarkParam); **************/
-					/*}
-				} else if (isToDeleted) {
-					
-					/******delete******/
-					
-					/*****TODO*implement*****deleteDocument(bookmarkParam);****************/
-					
-				/*}
- 	
- 				
-               /***TODO ending of*transaction *******/
- 				/***TODO**ResourceUtils.doUpdate(oldResourceTags,bookmark);**********/
-				success = true;
-				
- 				} catch(final Exception e){
- 				
-				wait = wait * 2;
-				log.fatal("Could not insert bookmark objects, will wait at most " + wait + " seconds. Error was: " + e);				
- 				try {
- 					Thread.sleep(generator.nextInt(wait));
- 			        } catch (InterruptedException i) {
- 			        }	
-                } // catch SQLException (wait ...)    
- 		} 
- 							
- 			if (!success && wait >= MAX_WAIT_TIMEOUT) {
-				throw new SQLException("retry/wait timeout");
-			}			
-       }/*****get every bookmark*******/	
- 		return spammer;
-  }
+    	
 }

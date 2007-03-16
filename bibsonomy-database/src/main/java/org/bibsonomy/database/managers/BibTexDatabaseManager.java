@@ -12,6 +12,8 @@ import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.util.ExceptionUtils;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 
 /**
  * Used to retrieve BibTexs from the database.
@@ -40,7 +42,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	 * requestedSimHash is equal to a given hash. Only public posts are
 	 * retrieved.
 	 */
-	public List<BibTex> getBibTexByHash(final BibTexParam param) {
+	public List<Post<? extends Resource>> getBibTexByHash(final BibTexParam param) {
 		/********TODO write some Expectation values for all methods**********/
 		return this.bibtexList("getBibTexByHash", param);
 	}
@@ -60,7 +62,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	 * <em>/viewable/</em> page only posts are shown which are set viewable to
 	 * the given group and which have all of the given tags attached.
 	 */
-	public List<BibTex> getBibTexByTagNames(final BibTexParam param) {
+	public List<Post<? extends Resource>> getBibTexByTagNames(final BibTexParam param) {
 		return this.bibtexList("getBibTexByTagNames", param);
 	}
 
@@ -75,7 +77,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	 * friends or private or other groups, depending upon if currUser us allowed
 	 * to see them.
 	 */
-	public List<BibTex> getBibTexByTagNamesForUser(final BibTexParam param) {
+	public List<Post<? extends Resource>> getBibTexByTagNamesForUser(final BibTexParam param) {
 		DatabaseUtils.prepareGetPostForUser(this.db, param);
 		return this.bibtexList("getBibTexByTagNamesForUser", param);
 	}
@@ -95,7 +97,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	 * friends or private or other groups, depending upon if userName us allowed
 	 * to see them.
 	 */
-	public List<BibTex> getBibTexByConceptForUser(final BibTexParam param) {
+	public List<Post<? extends Resource>> getBibTexByConceptForUser(final BibTexParam param) {
 		DatabaseUtils.setGroups(this.db, param);
 		return this.bibtexList("getBibTexByConceptForUser", param);
 	}
@@ -106,7 +108,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	 * Prepares queries which show all posts of users which have userName as
 	 * their friend.
 	 */
-	public List<BibTex> getBibTexByUserFriends(final BibTexParam param) {
+	public List<Post<? extends Resource>> getBibTexByUserFriends(final BibTexParam param) {
 		// groupType must be set to friends
 		param.setGroupType(ConstantID.GROUP_FRIENDS);
 		return this.bibtexList("getBibTexByUserFriends", param);
@@ -119,7 +121,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	 * download page, we use userName as restriction for the user name and not
 	 * requestedUserName.
 	 */
-	public List<BibTex> getBibTexByDownload(final BibTexParam param) {
+	public List<Post<? extends Resource>> getBibTexByDownload(final BibTexParam param) {
 		return this.bibtexList("getBibTexByDownload", param);
 	}
 
@@ -128,7 +130,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	 * page of BibSonomy. These are typically the X last posted entries. Only
 	 * public posts are shown.
 	 */
-	public List<BibTex> getBibTexForHomePage(final BibTexParam param) {
+	public List<Post<? extends Resource>> getBibTexForHomePage(final BibTexParam param) {
 		param.setGroupType(ConstantID.GROUP_FRIENDS);
 		return this.bibtexList("getBibTexForHomePage", param);
 	}
@@ -138,7 +140,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	 * <em>/popular</em> page of BibSonomy. The lists are retrieved from two
 	 * separate temporary tables which are filled by an external script.
 	 */
-	public List<BibTex> getBibTexPopular(final BibTexParam param) {
+	public List<Post<? extends Resource>> getBibTexPopular(final BibTexParam param) {
 		return this.bibtexList("getBibTexPopular", param);
 	}
 
@@ -155,7 +157,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	 * If requestedUser is given, only (public) posts from the given user are
 	 * searched. Otherwise all (public) posts are searched.
 	 */
-	public List<BibTex> getBibTexSearch(final BibTexParam param) {
+	public List<Post<? extends Resource>> getBibTexSearch(final BibTexParam param) {
 		return this.bibtexList("getBibTexSearch", param);
 	}
 
@@ -171,7 +173,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 * Prepares queries to retrieve posts which are set viewable to group.
 	 */
-	public List<BibTex> getBibTexViewable(final BibTexParam param) {
+	public List<Post<? extends Resource>> getBibTexViewable(final BibTexParam param) {
 		return this.bibtexList("getBibTexViewable", param);
 	}
 
@@ -181,7 +183,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	 * but a different simhash0 (the latter is always true within the posts of a
 	 * single user).
 	 */
-	public List<BibTex> getBibTexDuplicate(final BibTexParam param) {
+	public List<Post<? extends Resource>> getBibTexDuplicate(final BibTexParam param) {
 		DatabaseUtils.setGroups(this.db, param);
 		return this.bibtexList("getBibTexDuplicate", param);
 	}
@@ -205,7 +207,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	 * http://www.bibsonomy.org/bibtex/1d28c9f535d0f24eadb9d342168836199 page
 	 * 92, formula (9) for formal semantics of this query.
 	 */
-	public List<BibTex> getBibTexForGroup(final BibTexParam param) {
+	public List<Post<? extends Resource>> getBibTexForGroup(final BibTexParam param) {
 		DatabaseUtils.prepareGetPostForGroup(this.db, param);
 		return this.bibtexList("getBibTexForGroup", param);
 	}
@@ -227,7 +229,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	 * Does basically the same as getBibTexForGroup with the additionaly
 	 * possibility to restrict the tags the posts have to have.
 	 */
-	public List<BibTex> getBibTexForGroupByTag(final BibTexParam param) {
+	public List<Post<? extends Resource>> getBibTexForGroupByTag(final BibTexParam param) {
 		DatabaseUtils.prepareGetPostForGroup(this.db, param);
 		return this.bibtexList("getBibTexForGroupByTag", param);
 	}
@@ -241,7 +243,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	 * are retrieved, but also friends or private or other groups, depending
 	 * upon if userName is allowed to see them.
 	 */
-	public List<BibTex> getBibTexForUser(final BibTexParam param) {
+	public List<Post<? extends Resource>> getBibTexForUser(final BibTexParam param) {
 		DatabaseUtils.prepareGetPostForUser(this.db, param);
 		return this.bibtexList("getBibTexForUser", param);
 	}
@@ -264,7 +266,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	 * Additionally, if requUser = currUser, the document table is joined so
 	 * that we can present the user a link to the uploaded document.
 	 */
-	public List<BibTex> getBibTexByHashForUser(final BibTexParam param) {
+	public List<Post<? extends Resource>> getBibTexByHashForUser(final BibTexParam param) {
 		DatabaseUtils.setGroups(this.db, param);
 		return this.bibtexList("getBibTexByHashForUser", param);
 	}
@@ -393,243 +395,5 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 		// TODO not tested
 		this.update("deleteBibTexUrlByContentId", param);
 	}
-
-	public int updateBibtex(GenericParam<BibTex> param, GenericParam<BibTex> duplicateParam, String currUser, boolean overwrite, String oldhash) {
-	    /*****TODO  Parameter should be reduce****************/
-		boolean isToDeleted = false;
-  	    boolean setToDeleted = false;
-  	    boolean isToInserted = false;
-  	    boolean setToInserted = false;
 		
-		boolean spammer = this.db.getGeneral().isSpammer(param);
-		/******** counter for succesfull bibtex inserts*************/
-		int bibSuccessCounter = 0; 
-		int oldcontentid =ConstantID.IDS_UNDEFINED_CONTENT_ID.getId();
-		boolean success;
-
-		/* iterate over all complete bibtex objects */
-		for (BibTex bibtex: param.getResources()) {
-//			param.setResource(bibtex); FIXME !!!
-			int wait = 1;
-			success = false;
-			
-			while (wait < MAX_WAIT_TIMEOUT && !success) {
-				
-				try {
-					/* TODO:
-					 * rja, 2006-01-16, I changed user name from currUser to bib.getUser(), because
-					 * otherwise group-copy does not work. On the other hand this means, that I can
-					 * overwrite existing articles in the group (under which circumstances??)
-					 */
-					/* *************************************
-					 * duplicate checks
-					 * *************************************/
-					
-					/************give me a bibtex to given hash and user name**************/
-					int contentId=getContentIdByUserAndHash(bibtex); // FIXME
-					if (contentId == ConstantID.IDS_UNDEFINED_CONTENT_ID.getId()) {
-						
-						 /*******the bibtex entry does NOT exist for that user ---> set toIns**/
-						 
-						setToInserted=true;
-						
-						// this is for doing a "move" operation, which is only done, if target does not exist
-						// check, if old hash is available and if we treat bibtex of currUser
-						
-						/*************not an optimal solution***************/
-						if (!"".equals(oldhash) /* FIXME && currUser.equals(bibtex.getUserName()) */) {
-							bibtex.setContentId(contentId);
-							setToDeleted=true;
-						}
-
-					} else { 
-						/*
-						 * the bibtex entry EXISTS for that user
-						 */
-						if (overwrite) {
-							// overwrite it --> set content id for delete
-							bibtex.setContentId(contentId);
-							setToDeleted=true;
-							setToInserted=true;
-						} else {
-							/* put duplicates into warning list */
-							/*******duplicates should be a list of bibtex objects******/
-							if (duplicateParam != null) ((List<BibTex>) duplicateParam).add(bibtex);
-							/* "remove" bibtex entry so that it is not inserted */
-							setToDeleted=false;
-							setToInserted=false;
-						}
-					}
-					
-					if (isToDeleted) {
-						/* *************************************
-						 * DELETE
-						 * *************************************/
-						oldcontentid = bibtex.getContentId();
-						/**********get simhashes by contentId**************/
-						String hashes=getBibTexSimHashsByContentId(bibtex);
-						/*******? bibtex.getHash();*******/
-						if(hashes==null){
-							/*
-							 * TODO: this is not good, since we should immediately proceed to the user with an error message!
-							 * The error message doesn't help, too, since the user gets back to the broken entry and tries to
-							 * re-enter it again (which will not work, since oldhash just does not exists any longer)
-							 * Solution would be: 
-							 * - find the entry, the user wants to edit (difficult)
-							 * - send him to the home page, together with an error message
-							 * - something else
-							 */
-//							throw new BibtexException("Entry not found in table!");
-							ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Entry not found in table!");
-						}
-
-						/*** log Bibtex*****/
-						insertBibTexLog(bibtex);
-						/** decrement hash counter with all different sinhashes **/
-						/********not the optimal solution***************/
-						updateBibTexHash1Dec(bibtex);
-						updateBibTexHash2Dec(bibtex);
-						updateBibTexHash3Dec(bibtex);
-						updateBibTexHash4Dec(bibtex);
-						
-						/***** delete tags for this item*********/
-						 this.db.getTag().deleteTags(param); 
-						 
-						// TODO delete all to the content related questions
-						/**UpdateQuestion.update(oldcontentid);*********/
-						/******* delete bibtex **********/
-						 deleteBibTexByContentId(bibtex);
-					} /*** delete***********/
-					if (isToInserted) {
-						/* *************************************
-						 * INSERT
-						 * *************************************/
-						
-						/*** create unique content_id ***/
-						bibtex.setContentId(param.getNewContentId());
-						
-					//	bibtex.setSpammer(spammer);
-						
-						/* insert into bibtex table */
-					    insertBibIntoDB(param,spammer);
-						
-						// insert tags, tas, tagtag, tagtagrelations into database
-						this.db.getTag().insertTags(param);
-						
-						/*******relationman.insertRelations(bib.getTag(), bib.getUser());*****************/
-						
-						/****count successful inserted bibtex entries and add them to a list**************/
-						bibSuccessCounter++;
-															
-						/** update documents and collector table, if item has been moved **/
-						if (isToDeleted) {
-
-							/** save content_id to log_bibtex **/
-							updateBibTexLog(bibtex);
-							
-							/*** Update content_id to linked document, if id has changed****/
-							updateBibTexDocument(bibtex);
-							/****** Update content_id in collector table, if id has changed****/
-							updateBibTexCollected(bibtex);
-							/******* update content_id in extended_fields table, if id has changed****/
-							updateBibTexExtended(bibtex);
-						}
-
-						
-					} /***********insert *************/
-					/*****TODO***stop transaction***********/
-					success = true;
-					
-				} catch (SQLException e) {
-					wait = wait * 2;
-					log.fatal("Could not insert bibtex objects, will wait at most " + wait + " seconds. Error was: " + e);
-					try {
-						Thread.sleep(generator.nextInt(wait));
-					} catch (InterruptedException i) {
-					}
-				} // catch SQLException (wait ...)
-				
-			} // while loop wait
-			if (!success && wait >= MAX_WAIT_TIMEOUT) {
-				log.fatal("Could not insert bibtex objects, waiting too long! ");
-//				throw new SQLException("retry/wait timeout");
-						}
-		
-		}
-		return bibSuccessCounter;
-		}
-	
-	
-	private void insertBibIntoDB(GenericParam<BibTex> param, boolean spammer) throws SQLException {
-		
-		
-		  /**take care of spammers******/
-		 
-		
-		BibTex bibtex= null; //param.getResource(); FIXME !!!
-		param.setGroupId(ResourceUtils.getGroupId(param.getGroupId(),true));
-		/****insert a bibtex object***************/
-		insertBibTex(bibtex);
-		/*********counter(increments) for different simhash(0-3)****************/
-		insertBibTexHash1Inc(bibtex);
-		insertBibTexHash2Inc(bibtex);
-		insertBibTexHash3Inc(bibtex);
-		insertBibTexHash4Inc(bibtex);
-
-	}
-	
-	/******TODO delete bibtex entries*******/
-	/********public void deleteBibtex(String currUser, GenericParam<BibTex> param) throws SQLException {
-		BibTex bibtex;
-		param.setResource(bibtex);
-		int oldcontentid=this.db.getBibTex().getContentIdByUserAndHash(bibtex);
-		// get content_id and check, if content_id exists
-		if (oldcontentid != Bibtex.UNDEFINED_CONTENT_ID) {
-			
-			
-			// log Bibtex
-			insertBibTexLog(bibtex);
-			
-			// delete tags for this item
-			deleteTags(param);
-			
-			// delete all related questions
-			UpdateQuestion.update(conn, oldcontentid);
-			
-			// get hashes
-			
-			stmtP_select_hashes.setInt (1, oldcontentid);
-			rst = stmtP_select_hashes.executeQuery();
-			
-			if (!rst.next()) {
-				throw new SQLException ("could not find hash in bibtex table");
-			}
-			
-			/* decrement hash counter */
-		/*	updateBibTexHash1Dec(bibtex);
-			updateBibTexHash2Dec(bibtex);
-			updateBibTexHash3Dec(bibtex);
-			updateBibTexHash4Dec(bibtex);
-			
-			
-			
-			// delete bibtex
-			stmtP_delete_bibtex.setInt(1, oldcontentid);
-			stmtP_delete_bibtex.executeUpdate();
-			
-			// delete link to related document
-			stmtP_delete_doc.setInt(1, oldcontentid);
-			stmtP_delete_doc.executeUpdate();
-			
-			// delete id in collector table
-			stmtP_delete_collected.setInt(1, oldcontentid);
-			stmtP_delete_collected.executeUpdate();
-			
-			// delete id in collector table
-			stmtP_delete_extended.setInt(1, oldcontentid);
-			stmtP_delete_extended.executeUpdate();*/
-			
-        /*******commit transaction************/			
-	//	}
-//}	
 }

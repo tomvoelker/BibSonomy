@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.util.ExceptionUtils;
 
@@ -69,6 +70,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/** Return a new tasId by given IDD_TAS_ID(1) as constant */
+	
 	public Integer getNewTasId(final GenericParam param) {
 		// TODO not tested
 		return (Integer) this.queryForObject("getNewTasId", param);
@@ -78,10 +80,13 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		// TODO not tested
 		this.update("updateTasId", param);
 	}
-
-	public void deleteTas(final GenericParam param) {
-		// TODO not tested
-		this.delete("deleteTas", param);
+	
+	public void insertTas(final GenericParam<Bookmark> genericParam) {
+		this.insert("insertTas", genericParam);
+	}
+	
+	public void deleteTas(final GenericParam genericParam) {
+		this.delete("deleteTas", genericParam);
 	}
 
 	public void insertLogTas(final GenericParam param) {
@@ -141,7 +146,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		HashMap<Tag, Integer> tasIDs = new HashMap<Tag, Integer>();
 
 		// if there're to many tags, do it in a batch job
-		if (allTags.size() > MAX_TAGS_TO_INSERT) {
+		/*if (allTags.size() > MAX_TAGS_TO_INSERT) {
 			insertTagTagBatch(param);
 			for (final Tag tag1 : allTags) {
 				tasId = insertTas(tag1, param);
@@ -164,10 +169,12 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 					}
 				}
 			}
-		}
+		}*/
 	}
 
-	/** Insert tag_name into tags */
+	/**
+	 * Increases the tag counter in the tag table for the given tag. If this tag does not exist
+	 * inside the tag table, inserts it with count 1.*/
 	public void insertTag(Tag tag) {
 		// TODO not tested
 		this.insert("insertTag", tag);
@@ -183,11 +190,5 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		}
 	}
 
-	public int insertTas(Tag tag, GenericParam param) {
-		param.setTag(tag);
-		int tas_id = getNewTasId(param);
-		param.setNewTasId(tas_id);
-		this.insert("insertTas", param);
-		return tas_id;
-	}
+	
 }
