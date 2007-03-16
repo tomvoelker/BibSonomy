@@ -2,12 +2,16 @@ package org.bibsonomy.database.managers.getpostsqueriesForBookmark;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+/*
+ * TODO check
+ */
+public class GetBookmarksOfFriendsByUser extends RequestHandlerForGetPosts{
 
-public class GetBookmarksForUser extends RequestHandlerForGetPosts{
 	/**
 	 * 
 	 * @author mgr
@@ -15,44 +19,55 @@ public class GetBookmarksForUser extends RequestHandlerForGetPosts{
 	 */
 
 	/*
-	 * return a list of bookmark by a  logged user.
+	 * return a list of bookmark by given friends of a user (this friends also posted this bookmarks to group friends, made bookmarks viewable for friends).
 	 * Following arguments have to be given:
 	 * 
-	 * grouping:user
+	 * at first all bookmarks of user x are returned,  sencondly this list is restricted by those post which are posted to group friend, respectively are viewable for friends
+	 * e.g.  mgr/friend/stumme
+	 * 
+	 * 
+	 * bookmarks are listed which record me as friend and also posted this record to the group friend 
+	 * 
+	 * 
+	 * grouping:friend
 	 * name:given
 	 * tags:NULL
 	 * hash:NULL
 	 * popular:false
 	 * added:false
+	 * /user/friend
 	 *   
 	 */
 	@Override
 	protected List<Post<? extends Resource>> handleRequestForGetPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
 		final BookmarkParam param = new BookmarkParam();
+		
 		param.setRequestedUserName(groupingName);
 		param.setUserName(authUser);
 		param.setOffset(start);
 		int limit=end-start;
 		param.setLimit(limit);
-	    
-		param.setGroups(db.generalDatabaseManager.getGroupsForUser(param));
+		param.setGroupId(ConstantID.GROUP_FRIENDS.getId());
+		
+		
 		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.bookmarkList("getBookmarkForUser", param, true);
 		return posts;
 	}
-    
+
+	@Override
+	
 	/*
 	 * prove arguments as mentioned above
 	 */
 	
-	
-	@Override
 	protected boolean canHandle(String authUser,GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
 		return authUser != null && 
-			grouping == GroupingEntity.USER && groupingName != null && 
+			grouping == GroupingEntity.FRIEND && groupingName != null && 
 			(tags==null || tags.size() == 0) && 
-			hash ==null &&
+			hash==null &&
 			popular == false && 
 			added == false;
 	}
+
 
 }

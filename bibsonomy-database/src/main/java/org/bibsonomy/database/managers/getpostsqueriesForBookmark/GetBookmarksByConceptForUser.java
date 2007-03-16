@@ -7,7 +7,8 @@ import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
-public class GetBookmarksForUser extends RequestHandlerForGetPosts{
+public class GetBookmarksByConceptForUser extends RequestHandlerForGetPosts{
+
 	/**
 	 * 
 	 * @author mgr
@@ -15,13 +16,13 @@ public class GetBookmarksForUser extends RequestHandlerForGetPosts{
 	 */
 
 	/*
-	 * return a list of bookmark by a  logged user.
+	 * return a list of bookmarks by a tag-concept. All bookmarks will be return for a given "super-tag".
 	 * Following arguments have to be given:
 	 * 
 	 * grouping:user
 	 * name:given
-	 * tags:NULL
-	 * hash:NULL
+	 * tags:given
+	 * hash:null
 	 * popular:false
 	 * added:false
 	 *   
@@ -29,30 +30,34 @@ public class GetBookmarksForUser extends RequestHandlerForGetPosts{
 	@Override
 	protected List<Post<? extends Resource>> handleRequestForGetPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
 		final BookmarkParam param = new BookmarkParam();
-		param.setRequestedUserName(groupingName);
+		
+		param.setRequestedGroupName(groupingName);
 		param.setUserName(authUser);
 		param.setOffset(start);
 		int limit=end-start;
 		param.setLimit(limit);
-	    
+		
 		param.setGroups(db.generalDatabaseManager.getGroupsForUser(param));
-		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.bookmarkList("getBookmarkForUser", param, true);
+		
+		for (String tag : tags){
+			
+			param.addTagName(tag);
+			
+			}
+		
+		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.bookmarkList("getBookmarkByConceptForUser", param, true);
 		return posts;
 	}
-    
-	/*
-	 * prove arguments as mentioned above
-	 */
-	
-	
+
 	@Override
 	protected boolean canHandle(String authUser,GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
 		return authUser != null && 
 			grouping == GroupingEntity.USER && groupingName != null && 
-			(tags==null || tags.size() == 0) && 
-			hash ==null &&
+			tags!=null && 
+			hash==null &&
 			popular == false && 
 			added == false;
 	}
+
 
 }

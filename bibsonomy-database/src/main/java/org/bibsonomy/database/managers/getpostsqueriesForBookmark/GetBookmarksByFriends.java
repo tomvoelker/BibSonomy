@@ -7,7 +7,11 @@ import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
-public class GetBookmarksForUser extends RequestHandlerForGetPosts{
+/*
+ * TODO check
+ */
+public class GetBookmarksByFriends extends RequestHandlerForGetPosts{
+
 	/**
 	 * 
 	 * @author mgr
@@ -15,44 +19,51 @@ public class GetBookmarksForUser extends RequestHandlerForGetPosts{
 	 */
 
 	/*
-	 * return a list of bookmark by a  logged user.
-	 * Following arguments have to be given:
 	 * 
-	 * grouping:user
+	 * TODO extension with user restriction rearding returned bookmarks and appropriate namming of URL in REST interface
+	 * 
+	 * grouping:friend
 	 * name:given
 	 * tags:NULL
 	 * hash:NULL
 	 * popular:false
 	 * added:false
+	 * /user/friend
 	 *   
 	 */
 	@Override
 	protected List<Post<? extends Resource>> handleRequestForGetPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
 		final BookmarkParam param = new BookmarkParam();
-		param.setRequestedUserName(groupingName);
+		
+		param.setRequestedGroupName(groupingName);
 		param.setUserName(authUser);
 		param.setOffset(start);
 		int limit=end-start;
 		param.setLimit(limit);
-	    
-		param.setGroups(db.generalDatabaseManager.getGroupsForUser(param));
-		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.bookmarkList("getBookmarkForUser", param, true);
+		
+		
+		
+		
+		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.bookmarkList("getBookmarkByUserFriends", param, true);
 		return posts;
 	}
-    
+
+	@Override
+	
 	/*
 	 * prove arguments as mentioned above
 	 */
-	
-	
-	@Override
+	/*
+	 * TODO username: semantik fehlt in API
+	 */
 	protected boolean canHandle(String authUser,GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
 		return authUser != null && 
-			grouping == GroupingEntity.USER && groupingName != null && 
+			grouping == GroupingEntity.FRIEND && groupingName != null && 
 			(tags==null || tags.size() == 0) && 
-			hash ==null &&
+			hash==null     &&
 			popular == false && 
 			added == false;
 	}
+
 
 }

@@ -3,17 +3,16 @@ package org.bibsonomy.database.managers.getpostsqueriesForBookmark;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.managers.getpostsqueries.RequestHandlerForGetPosts;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
 
-/**
- * 
- * @author mgr
- *
- */
+	/**
+	 * 
+	 * @author mgr
+	 *
+ 	*/
 
 /*
  * return a list of bookmark by a given hash.
@@ -47,6 +46,10 @@ public class GetBookmarksByHash extends RequestHandlerForGetPosts {
 		
 		
 	}
+	
+	/*
+	 * prove arguments as mentioned above
+	 */
 	
 	@Override
 	protected boolean canHandle(String authUser,GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end){

@@ -3,7 +3,6 @@ package org.bibsonomy.database.managers.getpostsqueriesForBookmark;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.managers.getpostsqueries.RequestHandlerForGetPosts;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -50,7 +49,14 @@ public class GetBookmarksForGroupAndTag extends RequestHandlerForGetPosts{
 		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.bookmarkList("getBookmarkForGroupByTag", param, true);
 		return posts;
 	}
-
+    
+	
+	/*
+	 * prove arguments as mentioned above
+	 */
+	
+	
+	
 	@Override
 	protected boolean canHandle(String authUser,GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
 		return authUser != null && 

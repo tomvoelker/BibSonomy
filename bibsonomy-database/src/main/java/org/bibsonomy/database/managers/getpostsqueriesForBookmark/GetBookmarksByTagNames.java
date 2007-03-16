@@ -3,7 +3,6 @@ package org.bibsonomy.database.managers.getpostsqueriesForBookmark;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.managers.getpostsqueries.RequestHandlerForGetPosts;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -37,8 +36,6 @@ public class GetBookmarksByTagNames extends RequestHandlerForGetPosts{
 		int limit=end-start;
 		param.setLimit(limit);
 		
-		
-		
 		for (String tag : tags){
 			
 		param.addTagName(tag);
@@ -52,6 +49,10 @@ public class GetBookmarksByTagNames extends RequestHandlerForGetPosts{
  * 
  *      TODO    implement compartible method for concept structure
  */
+		/*
+		 * prove arguments as mentioned above
+		 */
+		
 		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.bookmarkList("getBookmarkByTagNames", param, true);
 		return posts;
 
@@ -72,5 +73,4 @@ public class GetBookmarksByTagNames extends RequestHandlerForGetPosts{
 
 
 }
-
 
