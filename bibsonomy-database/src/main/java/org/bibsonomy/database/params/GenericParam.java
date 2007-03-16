@@ -27,6 +27,7 @@ public abstract class GenericParam<T extends Resource> {
 	/** A list of tags */
 	private List<Tag> tags;
 	private Tag tag;
+	private String tagName;
 	/**
 	 * List of (tagname, index)-pairs, where tagname can be both a name of a tag
 	 * or concept.
@@ -48,6 +49,8 @@ public abstract class GenericParam<T extends Resource> {
 	private String search;
 	/** This is the current user. */
 	private String userName;
+	private String description;
+	private String extension;
 	
 	/**
 	 * The current user, who would be identified by userName, can look at other
@@ -71,9 +74,10 @@ public abstract class GenericParam<T extends Resource> {
 	/** The type of a ID is by default DS_CONTENT_ID * */
 	private ConstantID idsType;
 	private int newContentId;
-	private int ContendIDbyBookmark;
+	private int contendIDbyBookmark;
 	private int newTasId;
-	
+	private String url;
+	private ConstantID contentType;
 	
 
 	public GenericParam() {
@@ -81,7 +85,7 @@ public abstract class GenericParam<T extends Resource> {
 		this.caseSensitiveTagNames = false;
 		this.groupId = ConstantID.GROUP_INVALID.getId();
 		this.groupType = ConstantID.GROUP_PUBLIC;
-		this.idsType = ConstantID.IDS_CONTENT_ID;
+		this.idsType = ConstantID.IDS_UNDEFINED_CONTENT_ID;
 		this.limit = 10;
 		this.offset = 0;
 		this.spammer = ConstantID.SPAMMER_FALSE;
@@ -92,7 +96,6 @@ public abstract class GenericParam<T extends Resource> {
 	 * Implementations of this class will have to implement this method to
 	 * identify their content type.
 	 */
-	public abstract int getContentType();
 
 	public boolean isCaseSensitiveTagNames() {
 		return this.caseSensitiveTagNames;
@@ -237,20 +240,20 @@ public abstract class GenericParam<T extends Resource> {
 		this.idsType = idsType;
 	}
 
-	public int getNewContentId() {
+	public int getId() {
 		return this.newContentId;
 	}
 
-	public void setNewContentId(int newContentId) {
+	public void setId(int newContentId) {
 		this.newContentId = newContentId;
 	}
 
 	public int getContendIDbyBookmark() {
-		return this.ContendIDbyBookmark;
+		return this.contendIDbyBookmark;
 	}
 
 	public void setContendIDbyBookmark(int contendIDbyBookmark) {
-		this.ContendIDbyBookmark = contendIDbyBookmark;
+		this.contendIDbyBookmark = contendIDbyBookmark;
 	}
 
 	public List<T> getResources() {
@@ -260,13 +263,6 @@ public abstract class GenericParam<T extends Resource> {
 	public void setResources(List<T> resources) {
 		this.resources = resources;
 	}
-
-	// FIXME
-	// public abstract T getResource();
-	//
-	// public void setResource(T resource) {
-	// this.resource = resource;
-	// }
 
 	public List<Tag> getTags() {
 		return this.tags;
@@ -298,6 +294,47 @@ public abstract class GenericParam<T extends Resource> {
 
 	public void setFriendOf(boolean friendOf) {
 		this.friendOf = friendOf;
+	}
+
+	public String getDescription() {
+		return this.description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getExtension() {
+		return this.extension;
+	}
+
+	public void setExtension(String extension) {
+		this.extension = extension;
+	}
+
+	public String getUrl() {
+		return this.url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	
+	public int getContentType() {
+		return this.contentType.getId();
+	}
+
+	public void setContentType(ConstantID contentType) {
+		this.contentType = contentType;
+	}
+
+	public String getTagName() {
+		return this.tagName;
+	}
+
+	public void setTagName(String tagName) {
+		this.tagName = tagName;
 	}
 
 }
