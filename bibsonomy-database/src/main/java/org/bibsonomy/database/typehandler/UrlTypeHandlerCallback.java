@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.sql.Types;
 
 import org.bibsonomy.util.DefaultValues;
-
 import com.ibatis.sqlmap.client.extensions.ParameterSetter;
 import com.ibatis.sqlmap.client.extensions.ResultGetter;
 import com.ibatis.sqlmap.client.extensions.TypeHandlerCallback;
