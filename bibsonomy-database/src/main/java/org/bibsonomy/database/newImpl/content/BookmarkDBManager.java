@@ -70,10 +70,15 @@ public class BookmarkDBManager extends AbstractContentDBManager {
     */
 	public BookmarkDBManager() {
 		
-		 //getBookmarksConceptForUser =new GetBookmarksByConceptForUser();  
+		 /*getBookmarksConceptForUser =new GetBookmarksByConceptForUser();  
 		getBookmarksByHashForUser =new GetBookmarksByHashForUser();
-		//getBookmarksOfFriendsByTags=new GetBookmarksOfFriendsByTags();
-	    getBoomarksForUser=new GetBookmarksForUser();
+		getBookmarksOfFriendsByTags=new GetBookmarksOfFriendsByTags();
+	    getBoomarksForUser=new GetBookmarksForUser();*/
+	    
+		/*
+	     *TODO Test chain of responsibility 
+	     */
+		
 		/*getBoomarksForHomePage.setNext(getBoomarksForPopular);
 		getBoomarksForPopular.setNext(getBookmarksForUser);
 		getBoomarksForUser.setNext(getBookmarksByTagNames);
@@ -94,7 +99,9 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 	@Override
 	
 	public List<Post<? extends Resource>> getPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, boolean continuous) {
-        
+        /*
+         * For test options
+         */
 		List test_getBookmarksBoomarksForUser =getBoomarksForUser.perform("jaeschke", GroupingEntity.USER, "jaeschke",null,null,false, false, 0, 19);
 		System.out.println("test="+test_getBookmarksBoomarksForUser.size());
 		System.out.println("authUser = " + authUser);
@@ -147,6 +154,7 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 		List<Post<? extends Resource>> storeTemp=get.perform(userFromUrl,GroupingEntity.USER,userFromUrl,null,hashFromUrl,false, false, 0, 1);
 		System.out.println("storeTemp.size: " + storeTemp.size());
 		if(storeTemp.size()==0){
+			
 			System.out.println("bookmark ist schon gelöscht");
 			
 		}
@@ -184,13 +192,18 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 		BookmarkParam bookmarkParam =new BookmarkParam();
 		Bookmark bookmark =new Bookmark();
 	
+		Bookmark b = (Bookmark) post.getResource();
+		
+		//bookmarkParam.setBookmark(b);	
+		
 		bookmarkParam.setUserName(userName);
 		bookmarkParam.setHash(post.getResource().getIntraHash());
 		bookmarkParam.setDescription(post.getResource().getDescription());
 		bookmarkParam.setDate(post.getDate());
 		bookmarkParam.setGroupId(post.getGroupId());
 		bookmarkParam.setResource(bookmark);
-
+		
+        
 		bookmarkParam.setTags(post.getTags());
 		List <Tag> tagliste=new LinkedList<Tag>();
 		tagliste=post.getTags();
@@ -331,11 +344,11 @@ public class BookmarkDBManager extends AbstractContentDBManager {
    	                 System.out.println("bekomme aktuellen value/content_id aus ids table: "+ bookmarkParam.getId());
 	            		
 	            	 db.bookmarkDatabaseManager.updateIds(bookmarkParam);
-	            	 bookmark.setContentId(db.bookmarkDatabaseManager.getCurrentContentIdFromIds(bookmarkParam));
-	            	 bookmarkParam.setRequestedContentId(bookmark.getContentId());
+	            	 post.setContentId(db.bookmarkDatabaseManager.getCurrentContentIdFromIds(bookmarkParam));
+	            	 bookmarkParam.setRequestedContentId(post.getContentId());
 	            	 System.out.println("bookmark content_id: " + bookmarkParam.getRequestedContentId());
 
-	            	 bookmarkParam.setUrl(post.getUrl());
+	            	 bookmarkParam.setUrl(((Bookmark)post.getResource()).getUrl());
 	          	  	 bookmarkParam.setIdsType(ConstantID.IDS_TAS_ID);
 
 	          	   	 bookmarkParam.setResource(bookmark);
@@ -451,9 +464,9 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 	            		
 	            	 db.bookmarkDatabaseManager.updateIds(bookmarkParam);
 	            	 
-	            	 bookmark.setContentId(db.bookmarkDatabaseManager.getCurrentContentIdFromIds(bookmarkParam));
-	            	 bookmarkParam.setRequestedContentId(bookmark.getContentId());
-	          	  	 bookmarkParam.setUrl(post.getUrl());
+	            	 post.setContentId(db.bookmarkDatabaseManager.getCurrentContentIdFromIds(bookmarkParam));
+	            	 bookmarkParam.setRequestedContentId(post.getContentId());
+	            	 bookmarkParam.setUrl(((Bookmark)post.getResource()).getUrl());
 	          	  	 bookmarkParam.setIdsType(ConstantID.IDS_TAS_ID);
 	          	   	 bookmarkParam.setResource(bookmark);
                      bookmarkParam.setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
@@ -564,10 +577,10 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 	            		
 	            	 db.bookmarkDatabaseManager.updateIds(bookmarkParam);
 	            	 
-	            	 bookmark.setContentId(db.bookmarkDatabaseManager.getCurrentContentIdFromIds(bookmarkParam));
-	            	 bookmarkParam.setRequestedContentId(bookmark.getContentId());
+	            	 post.setContentId(db.bookmarkDatabaseManager.getCurrentContentIdFromIds(bookmarkParam));
+	            	 bookmarkParam.setRequestedContentId(post.getContentId());
 
-	            	 bookmarkParam.setUrl(post.getUrl());
+	            	 bookmarkParam.setUrl(((Bookmark)post.getResource()).getUrl());
 	          	  	 bookmarkParam.setIdsType(ConstantID.IDS_TAS_ID);
 	          	  	 
 	          	   	 bookmarkParam.setResource(bookmark);
