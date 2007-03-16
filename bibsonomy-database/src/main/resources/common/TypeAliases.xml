@@ -9,7 +9,10 @@
 	<typeAlias alias="bookmark" type="org.bibsonomy.model.Bookmark" />
 	<typeAlias alias="bibtex" type="org.bibsonomy.model.BibTex" />
 	<typeAlias alias="post" type="org.bibsonomy.model.Post" />
+	<typeAlias alias="resource" type="org.bibsonomy.model.Resource" />
 	<typeAlias alias="user" type="org.bibsonomy.model.User" />
+	<typeAlias alias="group" type="org.bibsonomy.model.Group" />
+
 
 	<!-- Parameters -->
 	<typeAlias alias="genericParam" type="org.bibsonomy.database.params.GenericParam" />
