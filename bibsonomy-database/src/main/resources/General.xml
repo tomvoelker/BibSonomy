@@ -27,6 +27,8 @@
 		        AND i.group = g.group
 		      </isNotNull>
 	</select>
+	<!--TODO enumeration -->
+	
 	<select id="getNewContentID" resultClass="int" parameterClass="bookmarkParam">
 	       SELECT value FROM ids WHERE name=#idsType# FOR UPDATE
 	</select>
@@ -36,4 +38,22 @@
 			  WHERE name = #idsType#
 			 
 	</update>
+	
+	<select id="getNewTasID" resultClass="int" parameterClass="bookmarkParam">
+	       SELECT value FROM ids WHERE name=#idsType# FOR UPDATE
+	</select>
+	
+<!--TODO change tag_lower value -->
+	
+	<insert id="insertTas" parameterClass="genericParam">
+		INSERT INTO tas (tas_id, tag_name,content_id,content_type,user_name,date,`group`,tag_lower,change_date) 
+		VALUES (#newTasId#,#tagName#,#requestedContentId#,#contentType#,#userName#,#date#,#groupId#,#tagName#,#date#)
+	</insert>
+	
+	
+	<delete id="deleteTas" parameterClass="genericParam">
+		DELETE FROM bookmark WHERE content_id = #requestedContentId#
+	</delete>
+	
+	
 </sqlMap>

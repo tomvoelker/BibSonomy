@@ -27,7 +27,6 @@
     	INSERT INTO tags (tag_name, tag_ctr)
     	VALUES (#name#,1)
     	ON DUPLICATE KEY UPDATE tag_ctr = tag_ctr+1
-		<!--UPDATE tags SET tag_ctr=tag_ctr+1 WHERE tag_name = ?-->
 	</insert>
 
 	<insert id="insertTagTag" parameterClass="tag">
