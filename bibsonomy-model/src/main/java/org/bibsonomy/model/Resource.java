@@ -9,14 +9,13 @@ import java.util.List;
 public abstract class Resource {
 
 	/** An Id for this resource; by default ConstantID.IDS_UNDEFINED_CONTENT_ID */
-	private int contentId;
 	private int count;
 	private String oldIntraHash = "";
-	private int newTasId;
 	private String interHash;
 	private String intraHash;
 	private List<Post<? extends Resource>> posts;
     
+	private String description;
 
 	public String getOldHash() {
 		return this.oldIntraHash;
@@ -24,30 +23,6 @@ public abstract class Resource {
 
 	public void setOldHash(Resource resource) {
 		this.oldIntraHash = resource.getIntraHash();
-	}
-
-	public int getContentId() {
-		return this.contentId;
-	}
-
-	public void setContentId(int contentId) {
-		this.contentId = contentId;
-	}
-
-	/**
-	 * Adds a tag with the given name.
-	 * 
-	 * @param tag
-	 *            Name of the tag.
-	 */
-	// @Deprecated?
-	public int getNewTasId() {
-		return this.newTasId;
-	}
-
-	// @Deprecated?
-	public void setNewTasId(int newTasId) {
-		this.newTasId = newTasId;
 	}
 
 	public String getInterHash() {
@@ -83,5 +58,13 @@ public abstract class Resource {
 
 	public void setCount(int count) {
 		this.count = count;
+	}
+
+	public String getDescription() {
+		return this.description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }

@@ -22,9 +22,13 @@ public class Post<T extends Resource> {
 	private List<Group> groups;
 	private List<Tag> tags;
 	/** A timestamp for this resource */
-	private String description;
 	private Date date;
-
+	private int groupId;
+	
+	/*
+	 * only for testCases
+	 */
+	
 	public Post() {
 		this.tags = new ArrayList<Tag>();
 	}
@@ -35,14 +39,6 @@ public class Post<T extends Resource> {
 
 	public void setContentId(int contentId) {
 		this.contentId = contentId;
-	}
-
-	public String getDescription() {
-		return this.description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
 	}
 
 	public List<Group> getGroups() {
@@ -97,6 +93,22 @@ public class Post<T extends Resource> {
 		final Tag tag = new Tag();
 		tag.setName(tagName);
 		this.tags.add(tag);
+	}
+
+	public void addGroup(final String groupName) {
+		final Group group = new Group();
+		group.setName(groupName);
+		this.groups.add(group);
+	}
+
+	
+
+	public int getGroupId() {
+		return this.groupId;
+	}
+
+	public void setGroupId(int groupId) {
+		this.groupId = groupId;
 	}
 
 }

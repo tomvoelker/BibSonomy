@@ -48,7 +48,9 @@ public class BibTex extends Resource {
 	private String year;
 	private String type;
 	private int scraperId;
-
+    private String url;
+    	
+	
 	public String getAddress() {
 		return this.address;
 	}
@@ -311,5 +313,13 @@ public class BibTex extends Resource {
 
 	public String getSimHash3() {
 		return SimHash.getSimHash3();
+	}
+
+	public String getUrl() {
+		return this.url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 }
