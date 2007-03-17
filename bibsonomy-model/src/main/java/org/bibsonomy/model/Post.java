@@ -23,11 +23,19 @@ public class Post<T extends Resource> {
 	private List<Tag> tags;
 	/** A timestamp for this resource */
 	private Date date;
-	private int groupId;
-	
-	/*
-	 * only for testCases
+    
+	/**
+	 * The description should be part of the post because it's a description individually made by 
+	 * one user for his post - another user may descripe the post with another text 
 	 */
+	private String description;
+	
+	/**
+	 * only for testCases
+	 * its not a good idea to damage the model just to let some unit-tests perform..
+	 */
+	@Deprecated
+	private int groupId;
 	
 	public Post() {
 		this.tags = new ArrayList<Tag>();
@@ -102,13 +110,35 @@ public class Post<T extends Resource> {
 	}
 
 	
-
+	/**
+	 * only for testCases
+	 * its not a good idea to damage the model just to let some unit-tests perform..
+	 */
+	@Deprecated
 	public int getGroupId() {
 		return this.groupId;
 	}
-
+	/**
+	 * only for testCases
+	 * its not a good idea to damage the model just to let some unit-tests perform..
+	 */
+	@Deprecated
 	public void setGroupId(int groupId) {
 		this.groupId = groupId;
+	}
+
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return this.description;
+	}
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 }

@@ -198,7 +198,7 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 		
 		bookmarkParam.setUserName(userName);
 		bookmarkParam.setHash(post.getResource().getIntraHash());
-		bookmarkParam.setDescription(post.getResource().getDescription());
+		bookmarkParam.setDescription(post.getDescription());
 		bookmarkParam.setDate(post.getDate());
 		bookmarkParam.setGroupId(post.getGroupId());
 		bookmarkParam.setResource(bookmark);

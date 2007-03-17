@@ -14,8 +14,6 @@ public abstract class Resource {
 	private String interHash;
 	private String intraHash;
 	private List<Post<? extends Resource>> posts;
-    
-	private String description;
 
 	public String getOldHash() {
 		return this.oldIntraHash;
@@ -58,13 +56,5 @@ public abstract class Resource {
 
 	public void setCount(int count) {
 		this.count = count;
-	}
-
-	public String getDescription() {
-		return this.description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
 	}
 }
