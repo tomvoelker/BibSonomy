@@ -52,11 +52,10 @@ public class PutPostStrategy extends Strategy
       try
       {
          Post post = context.getRenderer().parsePost( new InputStreamReader( request.getInputStream() ) );
-         // ensure using the right resource...
-         /*
-          * TODO: this "if" is wrong, it does not allow to change existing posts title (authors, URL, ...)
-          */
-         
+         // ensure using the right resource... 
+         // The 'if' is correct, because if one changes an existing post, 
+         // neither the client nor the REST API will calculate the new hash - 
+         // this will be done by the logic behind the LogicInterface!
          if( !post.getResource().getIntraHash().equals( resourceHash ) ) throw new BadRequestOrResponseException( "wrong resource" );
          context.getLogic().storePost( userName, post, true );
       }
@@ -79,7 +78,10 @@ public class PutPostStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.5  2007-02-28 15:21:19  mgrahl
+ * Revision 1.6  2007-03-17 20:44:00  mbork
+ * the 'if' is correct :)
+ *
+ * Revision 1.5  2007/02/28 15:21:19  mgrahl
  * additon suggestion
  *
  * Revision 1.4  2007/02/21 14:08:36  mbork
@@ -87,38 +89,4 @@ public class PutPostStrategy extends Strategy
  * - removed circular dependencies among the modules
  * - cleaned up the poms of the modules
  * - fixed failing unit-tests
- *
- * Revision 1.3  2007/02/11 17:55:26  mbork
- * switched REST-api to the 'new' datamodel, which does not deserve the name...
- *
- * Revision 1.2  2007/02/05 10:35:54  cschenk
- * Distributed code from the spielwiese among the modules
- *
- * Revision 1.1  2006/10/24 21:39:52  mbork
- * split up rest api into correct modules. verified with junit tests.
- *
- * Revision 1.1  2006/10/10 12:42:12  cschenk
- * Auf Multi-Module Build umgestellt
- *
- * Revision 1.7  2006/09/24 21:26:21  mbork
- * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
- *
- * Revision 1.6  2006/09/16 18:19:16  mbork
- * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
- *
- * Revision 1.5  2006/07/05 15:20:13  mbork
- * implemented missing strategies, little changes on datamodel --> alpha :)
- *
- * Revision 1.4  2006/06/28 15:36:13  mbork
- * started implementing other http methods
- *
- * Revision 1.3  2006/06/05 14:14:11  mbork
- * implemented GET strategies
- *
- * Revision 1.2  2006/05/24 13:02:44  cschenk
- * Introduced an enum for the HttpMethod and moved the exceptions
- *
- * Revision 1.1  2006/05/21 20:31:51  mbork
- * continued implementing context
- *
  */
