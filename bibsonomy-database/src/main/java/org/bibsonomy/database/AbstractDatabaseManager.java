@@ -90,8 +90,8 @@ public class AbstractDatabaseManager {
 	 * Can be used to start a query that retrieves a list of BibTexs.
 	 */
 	@SuppressWarnings("unchecked")
-	protected List<BibTex> bibtexList(final String query, final BibTexParam param) {
-		return (List<BibTex>) queryForAnything(query, param, QueryFor.LIST);
+	public List<Post<? extends Resource>> bibtexList(final String query, final BibTexParam param) {
+		return (List<Post<? extends Resource>>) queryForAnything(query, param, QueryFor.LIST);
 	}
 
 	/**
@@ -125,7 +125,7 @@ public class AbstractDatabaseManager {
 	/**
 	 * Inserts an object into the database.
 	 */
-	protected void insert(final String query, final Object param) {
+ public void insert(final String query, final Object param) {
 		this.insertUpdateDelete(query, param, StatementType.INSERT);
 	}
 
