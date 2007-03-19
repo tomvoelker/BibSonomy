@@ -36,7 +36,7 @@ import org.bibsonomy.model.Resource;
 
 
 
-public class BibTexDBManager extends AbstractContentDBManager {
+public class BibTexDBManager implements AbstractContentDBManager {
 	
 
 	/*
@@ -62,6 +62,9 @@ public class BibTexDBManager extends AbstractContentDBManager {
 	public BibTexDBManager() {
           
 		 getBibTexForUser=new GetBibtexForUser();
+		 
+		 
+		 
 		 /*
 		  * TODO not tested
 		  */
@@ -82,8 +85,6 @@ public class BibTexDBManager extends AbstractContentDBManager {
 		 */
 		
 	}
-	
-	@Override
 	
 	public List<Post<? extends Resource>> getPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, boolean continuous) {
         
@@ -108,21 +109,17 @@ public class BibTexDBManager extends AbstractContentDBManager {
 
 	
 	
-	@Override
 	public Post<Resource> getPostDetails(String authUser, String resourceHash, String userName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 
-
-	@Override
 	public boolean deletePost(String userName, String resourceHash) {
 	
 		return false;
 	}
-	
-	@Override
+
 	public boolean storePost(String userName, Post post, boolean update) {
 		
 	    	

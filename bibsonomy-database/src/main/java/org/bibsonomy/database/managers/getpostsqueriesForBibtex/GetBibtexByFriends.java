@@ -44,7 +44,7 @@ public class GetBibtexByFriends extends RequestHandlerForGetBibTexPosts{
 		
 		
 		
-		List<Post<? extends Resource>> posts = database.bibtexDatabaseManager.bibtexList("getBibTexByUserFriends", param);
+		List<Post<? extends Resource>> posts = database.bibtexDatabaseManager.getBibTexByUserFriends(param);
 		return posts;
 	}
 

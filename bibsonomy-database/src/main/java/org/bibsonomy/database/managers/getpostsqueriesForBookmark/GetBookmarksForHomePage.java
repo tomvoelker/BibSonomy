@@ -7,7 +7,7 @@ import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
-public class GetBookmarksForHomePage extends RequestHandlerForGetPosts{
+public class GetBookmarksForHomePage extends RequestHandlerForGetBookmarkPosts{
 
 	
 	/**
@@ -40,7 +40,7 @@ public class GetBookmarksForHomePage extends RequestHandlerForGetPosts{
 		/**
 		 * retrieve bookmark list with appropriate iBatis statement
 		 */
-		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.bookmarkList("getBookmarkForHomepage", param, true);
+		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.getBookmarkForHomepage(param);
         System.out.println("post="+posts.size()+"in getBookmarkForHomepage");
 		return posts;
 		

@@ -10,7 +10,7 @@ import org.bibsonomy.model.Resource;
 /*
  * TODO check
  */
-public class GetBookmarksByFriends extends RequestHandlerForGetPosts{
+public class GetBookmarksByFriends extends RequestHandlerForGetBookmarkPosts{
 
 	/**
 	 * 
@@ -42,9 +42,7 @@ public class GetBookmarksByFriends extends RequestHandlerForGetPosts{
 		param.setLimit(limit);
 		
 		
-		
-		
-		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.bookmarkList("getBookmarkByUserFriends", param, true);
+		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.getBookmarkByUserFriends(param);
 		return posts;
 	}
 

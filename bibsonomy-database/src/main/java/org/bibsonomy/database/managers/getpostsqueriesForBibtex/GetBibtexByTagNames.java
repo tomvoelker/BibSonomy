@@ -52,7 +52,7 @@ public class GetBibtexByTagNames extends RequestHandlerForGetBibTexPosts{
 		 * prove arguments as mentioned above
 		 */
 		
-		List<Post<? extends Resource>> posts = database.bibtexDatabaseManager.bibtexList("getBibTexByTagNames", param);
+		List<Post<? extends Resource>> posts = database.bibtexDatabaseManager.getBibTexByTagNames(param);
 		return posts;
 
 	}

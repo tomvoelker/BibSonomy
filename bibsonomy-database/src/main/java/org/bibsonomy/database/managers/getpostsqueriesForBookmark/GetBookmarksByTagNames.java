@@ -7,7 +7,7 @@ import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
-public class GetBookmarksByTagNames extends RequestHandlerForGetPosts{
+public class GetBookmarksByTagNames extends RequestHandlerForGetBookmarkPosts{
 	/**
 	 * 
 	 * @author mgr
@@ -53,7 +53,7 @@ public class GetBookmarksByTagNames extends RequestHandlerForGetPosts{
 		 * prove arguments as mentioned above
 		 */
 		
-		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.bookmarkList("getBookmarkByTagNames", param, true);
+		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.getBookmarkByTagNames(param);
 		return posts;
 
 	}

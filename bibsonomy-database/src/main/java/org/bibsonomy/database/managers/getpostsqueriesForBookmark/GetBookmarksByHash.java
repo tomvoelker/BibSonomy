@@ -26,7 +26,7 @@ import org.bibsonomy.model.Resource;
  * added:false
  *   
  */
-public class GetBookmarksByHash extends RequestHandlerForGetPosts {
+public class GetBookmarksByHash extends RequestHandlerForGetBookmarkPosts {
 
 	
 
@@ -41,7 +41,7 @@ public class GetBookmarksByHash extends RequestHandlerForGetPosts {
 		/**
 		 * retrieve bookmark list with appropriate iBatis statement
 		 */
-		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.bookmarkList("getBookmarkByHash", param, true);
+		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.getBookmarkByHash(param);
 		return posts;
 		
 		

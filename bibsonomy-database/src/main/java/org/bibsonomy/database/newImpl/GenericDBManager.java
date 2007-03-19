@@ -45,7 +45,7 @@ public class GenericDBManager implements LogicInterface {
 		/*
 		 * add some default
 		 */
-		contentDBManagers.put(ResourceType.BOOKMARK, new BookmarkDBManager());
+		contentDBManagers.put(ResourceType.BOOKMARK, BookmarkDBManager.getInstance());
 	}
 	
 	public static LogicInterface getInstance() {

@@ -13,7 +13,7 @@ import org.bibsonomy.model.Resource;
  * TODO check
  */
 
-public class GetBookmarksOfFriendsByTags extends RequestHandlerForGetPosts{
+public class GetBookmarksOfFriendsByTags extends RequestHandlerForGetBookmarkPosts{
 
 	/**
 	 * 
@@ -62,7 +62,7 @@ public class GetBookmarksOfFriendsByTags extends RequestHandlerForGetPosts{
 			
 		
 		
-		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.bookmarkList("getBookmarkForUser", param, true);
+		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.getBookmarkForUser(param);
 		System.err.println("posts"+posts);
 		return posts;
 	}

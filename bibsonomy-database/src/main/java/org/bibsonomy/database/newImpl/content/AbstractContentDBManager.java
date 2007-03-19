@@ -10,13 +10,13 @@ import org.bibsonomy.model.Resource;
 /*
  * for every content type there should exists a separate class which extends this class.
  */
-public abstract class AbstractContentDBManager {
+public interface AbstractContentDBManager {
 
-	public abstract List<Post<? extends Resource>> getPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, boolean continuous);
+	public List<Post<? extends Resource>> getPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, boolean continuous);
 
-	public abstract Post<? extends Resource> getPostDetails(String authUser, String resourceHash, String userName);
+	public Post<? extends Resource> getPostDetails(String authUser, String resourceHash, String userName);
 
-	public abstract boolean deletePost(String userName, String resourceHash);
+	public boolean deletePost(String userName, String resourceHash);
 	
-	public abstract boolean storePost(String userName, Post post, boolean update);
+	public boolean storePost(String userName, Post post, boolean update);
 }

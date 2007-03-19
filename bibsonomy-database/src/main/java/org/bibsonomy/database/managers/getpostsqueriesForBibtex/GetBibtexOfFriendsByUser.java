@@ -50,7 +50,7 @@ public class GetBibtexOfFriendsByUser extends RequestHandlerForGetBibTexPosts{
 		param.setGroupId(ConstantID.GROUP_FRIENDS.getId());
 		
 		
-		List<Post<? extends Resource>> posts = database.bibtexDatabaseManager.bibtexList("getBibTexForUser", param);
+		List<Post<? extends Resource>> posts = database.bibtexDatabaseManager.getBibTexForUser(param);
 		return posts;
 	}
 

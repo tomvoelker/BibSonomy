@@ -17,6 +17,8 @@ import org.bibsonomy.util.ExceptionUtils;
  */
 public class TagDatabaseManager extends AbstractDatabaseManager {
 
+	private static TagDatabaseManager instance = new TagDatabaseManager();
+	
 	/**
 	 * Only a maximum of 10 tags can be set by the user. It serves to restrict
 	 * the system behaviour in case of e.g. 200 Tags. Only a maximum of 10X10
@@ -28,7 +30,11 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * Reduce visibility so only the {@link DatabaseManager} can instantiate
 	 * this class.
 	 */
-	TagDatabaseManager() {
+	private TagDatabaseManager() {
+	}
+	
+	public static TagDatabaseManager getInstance () {
+		return instance;
 	}
 
 	/** Return all tags for given tagId */

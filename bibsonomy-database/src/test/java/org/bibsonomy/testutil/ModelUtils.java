@@ -37,7 +37,7 @@ public class ModelUtils {
 		rVal.setExtended("test");
 		rVal.setUrl("http://www.bibonomy.org");
 //		rVal.setDate(date);
-		rVal.setContentId(2);
+	//	rVal.setContentId(2);
 		return rVal;
 	}
 

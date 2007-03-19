@@ -16,7 +16,8 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.managers.DatabaseManager;
+import org.bibsonomy.database.managers.BookmarkDatabaseManager;
+import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.managers.getpostsqueriesForBookmark.GetBookmarksByHash;
 import org.bibsonomy.database.managers.getpostsqueriesForBookmark.GetBookmarksByHashForUser;
 import org.bibsonomy.database.managers.getpostsqueriesForBookmark.GetBookmarksByTagNames;
@@ -27,7 +28,7 @@ import org.bibsonomy.database.managers.getpostsqueriesForBookmark.GetBookmarksFo
 import org.bibsonomy.database.managers.getpostsqueriesForBookmark.GetBookmarksForUser;
 import org.bibsonomy.database.managers.getpostsqueriesForBookmark.GetBookmarksPopular;
 import org.bibsonomy.database.managers.getpostsqueriesForBookmark.GetBookmarksViewable;
-import org.bibsonomy.database.managers.getpostsqueriesForBookmark.RequestHandlerForGetPosts;
+import org.bibsonomy.database.managers.getpostsqueriesForBookmark.RequestHandlerForGetBookmarkPosts;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -42,25 +43,28 @@ import org.bibsonomy.model.Tag;
 
 
 
-public class BookmarkDBManager extends AbstractContentDBManager {
+public class BookmarkDBManager implements AbstractContentDBManager {
 	
 
 	/*
 	 * TODO: das hier auch als Singleton?!
 	 */
-
-	
-	   RequestHandlerForGetPosts getBookmarksForUser =new GetBookmarksForUser();
-	   RequestHandlerForGetPosts getBookmarksByHash =new GetBookmarksByHash();
-	   RequestHandlerForGetPosts getBookmarksByHashForUser=new GetBookmarksByHashForUser();
-	   RequestHandlerForGetPosts getBookmarksByTagNames=new GetBookmarksByTagNames();
-	   RequestHandlerForGetPosts getBoomarksByTagNamesAndUser=new GetBookmarksByTagNamesAndUser();
-	   RequestHandlerForGetPosts getBoomarksForGroup=new GetBookmarksForGroup();
-	   RequestHandlerForGetPosts getBoomarksForGroupAndTag=new GetBookmarksForGroupAndTag();
-	   RequestHandlerForGetPosts getBoomarksForHomePage=new GetBookmarksForHomePage();
-	   RequestHandlerForGetPosts getBoomarksForUser=new GetBookmarksForUser();
-	   RequestHandlerForGetPosts getBoomarksForPopular=new GetBookmarksPopular();
-	   RequestHandlerForGetPosts getBoomarksViewable=new GetBookmarksViewable();
+       private static BookmarkDBManager instance = new BookmarkDBManager();
+       private  TagDatabaseManager gdb = TagDatabaseManager.getInstance();
+	   private BookmarkDatabaseManager db = BookmarkDatabaseManager.getInstance();
+       
+       
+	   RequestHandlerForGetBookmarkPosts getBookmarksForUser =new GetBookmarksForUser();
+	   RequestHandlerForGetBookmarkPosts getBookmarksByHash =new GetBookmarksByHash();
+	   RequestHandlerForGetBookmarkPosts getBookmarksByHashForUser=new GetBookmarksByHashForUser();
+	   RequestHandlerForGetBookmarkPosts getBookmarksByTagNames=new GetBookmarksByTagNames();
+	   RequestHandlerForGetBookmarkPosts getBoomarksByTagNamesAndUser=new GetBookmarksByTagNamesAndUser();
+	   RequestHandlerForGetBookmarkPosts getBoomarksForGroup=new GetBookmarksForGroup();
+	   RequestHandlerForGetBookmarkPosts getBoomarksForGroupAndTag=new GetBookmarksForGroupAndTag();
+	   RequestHandlerForGetBookmarkPosts getBoomarksForHomePage=new GetBookmarksForHomePage();
+	   RequestHandlerForGetBookmarkPosts getBoomarksForUser=new GetBookmarksForUser();
+	   RequestHandlerForGetBookmarkPosts getBoomarksForPopular=new GetBookmarksPopular();
+	   RequestHandlerForGetBookmarkPosts getBoomarksViewable=new GetBookmarksViewable();
 	   //RequestHandlerForGetPosts getBookmarksOfFriendsByUser=new GetBookmarksOfFriendsByUser();
 	  //RequestHandlerForGetPosts getBookmarksByUserFriends =new GetBookmarksByUserFriends() ;
 	   //RequestHandlerForGetPosts getBookmarksConceptForUser =new GetBookmarksByConceptForUser() ;
@@ -68,7 +72,7 @@ public class BookmarkDBManager extends AbstractContentDBManager {
    /*
     * Selection of appropriate methods follows model of chain of responsibility
     */
-	public BookmarkDBManager() {
+	private BookmarkDBManager() {
 		
 		 /*getBookmarksConceptForUser =new GetBookmarksByConceptForUser();  
 		getBookmarksByHashForUser =new GetBookmarksByHashForUser();
@@ -96,7 +100,9 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 		
 	}
 	
-	@Override
+	public static BookmarkDBManager getInstance () {
+		return instance;
+	}
 	
 	public List<Post<? extends Resource>> getPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, boolean continuous) {
         /*
@@ -120,7 +126,6 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 
 	
 	
-	@Override
 	public Post<Resource> getPostDetails(String authUser, String resourceHash, String userName) {
 		// TODO Auto-generated method stub
 		return null;
@@ -128,10 +133,7 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 
 
 
-	@Override
 	public boolean deletePost(String userName, String resourceHash) {
-		
-		DatabaseManager db = new DatabaseManager();
 		
 		GetBookmarksByHashForUser get =new GetBookmarksByHashForUser();
         BookmarkParam paramDelete=new BookmarkParam();
@@ -167,14 +169,14 @@ public class BookmarkDBManager extends AbstractContentDBManager {
          * counter in urls table is decremented (-1)
          */
         
-		db.bookmarkDatabaseManager.updateBookmarkHashDec(paramDelete);
+		db.updateBookmarkHashDec(paramDelete);
 
 		/***delete the selected bookmark (by given contentId) from current database table***/ 	
 		
-	    db.bookmarkDatabaseManager.deleteBookmarkByContentId(paramDelete);
+	    db.deleteBookmarkByContentId(paramDelete);
 	    System.out.println("Lösche bookmark bei gegebener Content_Id");
 	    
-	    db.tagDatabaseManager.deleteTas(paramDelete);
+	    gdb.deleteTas(paramDelete);
 	    System.out.println("Lösche TAS wieder");
 	    
 		return true;
@@ -183,12 +185,10 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public boolean storePost(String userName, Post post, boolean update) {
 		/*
     	 * TODO  handling and proving valid post
     	 */
-	    DatabaseManager db = new DatabaseManager();
 		BookmarkParam bookmarkParam =new BookmarkParam();
 		Bookmark bookmark =new Bookmark();
 	
@@ -340,11 +340,11 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 	                 bookmarkParam.setIdsType(ConstantID.IDS_CONTENT_ID);
 	            	 System.out.println("paramFromUrlValue.getIdsType" + bookmarkParam.getIdsType());
 	            	 
-   	                 bookmarkParam.setId(db.bookmarkDatabaseManager.getCurrentContentIdFromIds(bookmarkParam));
+   	                 bookmarkParam.setId(db.getCurrentContentIdFromIds(bookmarkParam));
    	                 System.out.println("bekomme aktuellen value/content_id aus ids table: "+ bookmarkParam.getId());
 	            		
-	            	 db.bookmarkDatabaseManager.updateIds(bookmarkParam);
-	            	 post.setContentId(db.bookmarkDatabaseManager.getCurrentContentIdFromIds(bookmarkParam));
+	            	 db.updateIds(bookmarkParam);
+	            	 post.setContentId(db.getCurrentContentIdFromIds(bookmarkParam));
 	            	 bookmarkParam.setRequestedContentId(post.getContentId());
 	            	 System.out.println("bookmark content_id: " + bookmarkParam.getRequestedContentId());
 
@@ -369,14 +369,14 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 	          	    System.out.println("bookmarkParam tags: " +bookmarkParam.getTags());
 	          	        
 	                   
-	                db.bookmarkDatabaseManager.insert("insertBookmark",bookmarkParam);
+	                db.insert("insertBookmark",bookmarkParam);
 	                System.out.println("insert Bookmark into bookmark table");
                         
 	     		   /*
      			    * increment URL counter and insert hash
      			    */
 	                    
-	     			  db.bookmarkDatabaseManager.insert("insertBookmarkInc",bookmarkParam);
+	     			  db.insert("insertBookmarkInc",bookmarkParam);
 	     			  System.out.println("zähle URL counter hoch plus hash plus url insert");
      			  
                  
@@ -384,15 +384,15 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 	     			  
 	     			 for(Tag tag: tagliste){
 	     				 
-	     				bookmarkParam.setId(db.bookmarkDatabaseManager.getCurrentTasIdFromIds(bookmarkParam));
+	     				bookmarkParam.setId(db.getCurrentTasIdFromIds(bookmarkParam));
 		          	   	System.out.println("currentTasID:" +bookmarkParam.getId());
 	     				 
-		          	    db.bookmarkDatabaseManager.updateIds(bookmarkParam);
-		          	    bookmarkParam.setNewTasId(db.bookmarkDatabaseManager.getCurrentTasIdFromIds(bookmarkParam));
+		          	    db.updateIds(bookmarkParam);
+		          	    bookmarkParam.setNewTasId(db.getCurrentTasIdFromIds(bookmarkParam));
 	     				 
 	     				 
 	     				bookmarkParam.setTagName(tag.getName());
-	     				db.tagDatabaseManager.insert("insertTas",bookmarkParam);
+	     				db.insert("insertTas",bookmarkParam);
 	     				 
 	     				System.out.println("Tags in BookmarkObject heißen: "+ bookmarkParam.getTagName());
 	     				System.out.println("TAS eingefügt");
@@ -459,12 +459,12 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 	                 bookmarkParam.setIdsType(ConstantID.IDS_CONTENT_ID);
 	            	 System.out.println("paramFromUrlValue.getIdsType" + bookmarkParam.getIdsType());
 	            	 bookmarkParam.setHash(newHash);
-   	                 bookmarkParam.setId(db.bookmarkDatabaseManager.getCurrentContentIdFromIds(bookmarkParam));
+   	                 bookmarkParam.setId(db.getCurrentContentIdFromIds(bookmarkParam));
    	                 System.out.println("bekomme aktuellen value/content_id aus ids table: "+ bookmarkParam.getId());
 	            		
-	            	 db.bookmarkDatabaseManager.updateIds(bookmarkParam);
+	            	 db.updateIds(bookmarkParam);
 	            	 
-	            	 post.setContentId(db.bookmarkDatabaseManager.getCurrentContentIdFromIds(bookmarkParam));
+	            	 post.setContentId(db.getCurrentContentIdFromIds(bookmarkParam));
 	            	 bookmarkParam.setRequestedContentId(post.getContentId());
 	            	 bookmarkParam.setUrl(((Bookmark)post.getResource()).getUrl());
 	          	  	 bookmarkParam.setIdsType(ConstantID.IDS_TAS_ID);
@@ -486,27 +486,27 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 	          	    System.out.println("bookmarkParam tags: " +bookmarkParam.getTags());
 	          	        
 	                   
-	                    db.bookmarkDatabaseManager.insert("insertBookmark",bookmarkParam);
+	                    db.insert("insertBookmark",bookmarkParam);
 	                    System.out.println("insert Bookmark into bookmark table");
                         
 	     		   /*
      			    * increment URL counter and insert hash
      			    */
 	                    
-	     			  db.bookmarkDatabaseManager.insert("insertBookmarkInc",bookmarkParam);
+	     			  db.insert("insertBookmarkInc",bookmarkParam);
 	     			  System.out.println("zähle URL counter hoch plus hash plus url insert");
 	     			  
 	     			 for(Tag tag: tagliste){
 	     				 
-	     				bookmarkParam.setId(db.bookmarkDatabaseManager.getCurrentTasIdFromIds(bookmarkParam));
+	     				bookmarkParam.setId(db.getCurrentTasIdFromIds(bookmarkParam));
 		          	   	System.out.println("currentTasID:" +bookmarkParam.getId());
 	     				 
-		          	    db.bookmarkDatabaseManager.updateIds(bookmarkParam);
-		          	    bookmarkParam.setNewTasId(db.bookmarkDatabaseManager.getCurrentTasIdFromIds(bookmarkParam));
+		          	    db.updateIds(bookmarkParam);
+		          	    bookmarkParam.setNewTasId(db.getCurrentTasIdFromIds(bookmarkParam));
 	     				 
 	     				 
 	     				bookmarkParam.setTagName(tag.getName());
-	     				db.tagDatabaseManager.insert("insertTas",bookmarkParam);
+	     				db.insert("insertTas",bookmarkParam);
 	     				 
 	     				System.out.println("Tags in BookmarkObject heißen: "+ bookmarkParam.getTagName());
 	     				System.out.println("TAS eingefügt");
@@ -572,12 +572,12 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 	                 bookmarkParam.setIdsType(ConstantID.IDS_CONTENT_ID);
 	            	 System.out.println("bookmarkParam IdsType" + bookmarkParam.getIdsType());
 	            	 
-   	                 bookmarkParam.setId(db.bookmarkDatabaseManager.getCurrentContentIdFromIds(bookmarkParam));
+   	                 bookmarkParam.setId(db.getCurrentContentIdFromIds(bookmarkParam));
    	                 System.out.println("bookmarkParam currentContentIDFromIds"+ bookmarkParam.getId());
 	            		
-	            	 db.bookmarkDatabaseManager.updateIds(bookmarkParam);
+	            	 db.updateIds(bookmarkParam);
 	            	 
-	            	 post.setContentId(db.bookmarkDatabaseManager.getCurrentContentIdFromIds(bookmarkParam));
+	            	 post.setContentId(db.getCurrentContentIdFromIds(bookmarkParam));
 	            	 bookmarkParam.setRequestedContentId(post.getContentId());
 
 	            	 bookmarkParam.setUrl(((Bookmark)post.getResource()).getUrl());
@@ -599,27 +599,27 @@ public class BookmarkDBManager extends AbstractContentDBManager {
 	          	        System.out.println("bookmarkParam idsType: " + bookmarkParam.getIdsType());
 	          	        
 	                   
-	                    db.bookmarkDatabaseManager.insert("insertBookmark",bookmarkParam);
+	                    db.insert("insertBookmark",bookmarkParam);
 	                    System.out.println("insert Bookmark into bookmark table");
                         
 	     		   /*
      			    * increment URL counter and insert hash
      			    */
 	                    
-	     			  db.bookmarkDatabaseManager.insert("insertBookmarkInc",bookmarkParam);
+	     			  db.insert("insertBookmarkInc",bookmarkParam);
 	     			  System.out.println("zähle URL counter hoch plus hash plus url insert");
      			  
 	     			 for(Tag tag: tagliste){
 	     				 
-	     				bookmarkParam.setId(db.bookmarkDatabaseManager.getCurrentTasIdFromIds(bookmarkParam));
+	     				bookmarkParam.setId(db.getCurrentTasIdFromIds(bookmarkParam));
 		          	   	System.out.println("currentTasID:" +bookmarkParam.getId());
 	     				 
-		          	    db.bookmarkDatabaseManager.updateIds(bookmarkParam);
-		          	    bookmarkParam.setNewTasId(db.bookmarkDatabaseManager.getCurrentTasIdFromIds(bookmarkParam));
+		          	    db.updateIds(bookmarkParam);
+		          	    bookmarkParam.setNewTasId(db.getCurrentTasIdFromIds(bookmarkParam));
 	     				 
 	     				 
 	     				bookmarkParam.setTagName(tag.getName());
-	     				db.tagDatabaseManager.insert("insertTas",bookmarkParam);
+	     				db.insert("insertTas",bookmarkParam);
 	     				 
 	     				System.out.println("Tags in BookmarkObject heißen: "+ bookmarkParam.getTagName());
 	     				System.out.println("TAS eingefügt");

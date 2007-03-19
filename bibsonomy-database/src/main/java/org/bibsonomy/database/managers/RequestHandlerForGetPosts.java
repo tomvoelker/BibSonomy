@@ -1,10 +1,9 @@
 
-package org.bibsonomy.database.managers.getpostsqueriesForBookmark;
+package org.bibsonomy.database.managers;
 
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.managers.DatabaseManager;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
@@ -16,9 +15,10 @@ import org.bibsonomy.model.Resource;
 
 public abstract class RequestHandlerForGetPosts {
 
+	protected final GeneralDatabaseManager gdb = GeneralDatabaseManager.getInstance();
+	
 	private RequestHandlerForGetPosts next;
-	protected final DatabaseManager db = new DatabaseManager();
-    
+ 
 	public void setNext(RequestHandlerForGetPosts nextHandler) {
 		this.next = nextHandler;
 	}

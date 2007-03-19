@@ -41,7 +41,7 @@ public class GetBibtexPopular extends RequestHandlerForGetBibTexPosts{
 		/**
 		 * retrieve bibtex list with appropriate iBatis statement
 		 */
-		List<Post<? extends Resource>> posts = database.bibtexDatabaseManager.bibtexList("getBibTexPopular", param);
+		List<Post<? extends Resource>> posts = database.bibtexDatabaseManager.getBibTexPopular(param);
         System.out.println("post="+posts.size()+"in getBibtexPopular");
 		return posts;
 		

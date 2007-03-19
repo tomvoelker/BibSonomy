@@ -1,19 +1,13 @@
 package org.bibsonomy.database.managers;
 
-import java.sql.SQLException;
 import java.util.List;
-import java.util.Random;
-
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.BookmarkParam;
-import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
 
 /**
  * Used to retrieve bookmarks from the database.
@@ -23,16 +17,33 @@ import org.bibsonomy.model.User;
  */
 public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 
-	private static final int MAX_WAIT_TIMEOUT = 60; 
-	private static Random generator = new Random();
-	private final DatabaseManager db;
+	private final static BookmarkDatabaseManager db = new BookmarkDatabaseManager();
+	private final GeneralDatabaseManager gdb = GeneralDatabaseManager.getInstance();
 
 	/**
 	 * Reduce visibility so only the {@link DatabaseManager} can instantiate
 	 * this class.
 	 */
-	BookmarkDatabaseManager(final DatabaseManager db) {
-		this.db = db;
+	private BookmarkDatabaseManager() {
+	}
+	
+	public static BookmarkDatabaseManager getInstance(){
+		return db;
+	}
+	
+	
+	/**
+	 * Can be used to start a query that retrieves a list of bookmarks.
+	 */
+	@SuppressWarnings("unchecked")
+	protected List<Bookmark> bookmarkList(final String query, final BookmarkParam param) {
+		return (List<Bookmark>) queryForAnything(query, param, QueryFor.LIST);
+	}
+
+	// FIXME return value needs to be changed to org.bibsonomy.model.Post
+	@SuppressWarnings("unchecked")
+	protected List<Post<? extends Resource>> bookmarkList(final String query, final BookmarkParam param, final boolean test) {
+		return (List<Post<? extends Resource>>) queryForAnything(query, param, QueryFor.LIST);
 	}
 
 	/**
@@ -43,8 +54,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 	 * <em>/viewable/</em> page only posts are shown which are set viewable to
 	 * the given group and which have all of the given tags attached. 
 	 */
-	public List<Bookmark> getBookmarkByTagNames(final BookmarkParam param) {
-		return this.bookmarkList("getBookmarkByTagNames", param);
+	public List<Post<? extends Resource>> getBookmarkByTagNames(final BookmarkParam param) {
+		return this.bookmarkList("getBookmarkByTagNames", param,true);
 	}
 
 	/**
@@ -58,9 +69,9 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 	 * friends or private or other groups, depending upon if userName us allowed
 	 * to see them.
 	 */
-	public List<Bookmark> getBookmarkByTagNamesForUser(final BookmarkParam param) {
-		DatabaseUtils.prepareGetPostForUser(this.db, param);
-		return this.bookmarkList("getBookmarkByTagNamesForUser", param);
+	public List<Post<? extends Resource>> getBookmarkByTagNamesForUser(final BookmarkParam param) {
+		DatabaseUtils.prepareGetPostForUser(this.gdb, param);
+		return this.bookmarkList("getBookmarkByTagNamesForUser", param,true);
 	}
 
 	/**
@@ -78,9 +89,9 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 	 * friends or private or other groups, depending upon if userName us allowed
 	 * to see them.
 	 */
-	public List<Bookmark> getBookmarkByConceptForUser(final BookmarkParam param) {
-		DatabaseUtils.setGroups(this.db, param);
-		return this.bookmarkList("getBookmarkByConceptForUser", param);
+	public List<Post<? extends Resource>> getBookmarkByConceptForUser(final BookmarkParam param) {
+		DatabaseUtils.setGroups(this.gdb, param);
+		return this.bookmarkList("getBookmarkByConceptForUser", param,true);
 	}
 
 	/**
@@ -89,10 +100,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 	 * Prepares queries which show all posts of users which have currUser as
 	 * their friend.
 	 */
-	public List<Bookmark> getBookmarkByUserFriends(final BookmarkParam param) {
+	public List<Post<? extends Resource>> getBookmarkByUserFriends(final BookmarkParam param) {
 		// groupType must be set to friends
 		param.setGroupType(ConstantID.GROUP_FRIENDS);
-		return this.bookmarkList("getBookmarkByUserFriends", param);
+		return this.bookmarkList("getBookmarkByUserFriends", param,true);
 	}
 
 	/**
@@ -100,8 +111,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 	 * page of BibSonomy. These are typically the X last posted entries. Only
 	 * public posts are shown.
 	 */
-	public List<Bookmark> getBookmarkForHomepage(final BookmarkParam param) {
-		return this.bookmarkList("getBookmarkForHomepage", param);
+	public List<Post<? extends Resource>> getBookmarkForHomepage(final BookmarkParam param) {
+		return this.bookmarkList("getBookmarkForHomepage", param,true);
 	}
 
 	/**
@@ -109,16 +120,16 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 	 * <em>/popular</em> page of BibSonomy. The lists are retrieved from two
 	 * separate temporary tables which are filled by an external script.
 	 */
-	public List<Bookmark> getBookmarkPopular(final BookmarkParam param) {
-		return this.bookmarkList("getBookmarkPopular", param);
+	public List<Post<? extends Resource>> getBookmarkPopular(final BookmarkParam param) {
+		return this.bookmarkList("getBookmarkPopular", param,true);
 	}
 
 	/**
 	 * Prepares a query which retrieves all bookmarks which are represented by
 	 * the given hash. Retrieves only public bookmarks!
 	 */
-	public List<Bookmark> getBookmarkByHash(final BookmarkParam param) {
-		return this.bookmarkList("getBookmarkByHash", param);
+	public List<Post<? extends Resource>> getBookmarkByHash(final BookmarkParam param) {
+		return this.bookmarkList("getBookmarkByHash", param,true);
 	}
 
 	/**
@@ -133,9 +144,9 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 	 * the given hash) for a given user. Since user name is given, full group
 	 * checking is done, i.e. everbody who may see the bookmark will see it.
 	 */
-	public List<Bookmark> getBookmarkByHashForUser(final BookmarkParam param) {
-		DatabaseUtils.setGroups(this.db, param);
-		return this.bookmarkList("getBookmarkByHashForUser", param);
+	public List<Post<? extends Resource>> getBookmarkByHashForUser(final BookmarkParam param) {
+		DatabaseUtils.setGroups(this.gdb, param);
+		return this.bookmarkList("getBookmarkByHashForUser", param,true);
 	}
 
 	/**
@@ -151,8 +162,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 	 * If requestedUser is given, only (public) posts from the given user are
 	 * searched. Otherwise all (public) posts are searched.
 	 */
-	public List<Bookmark> getBookmarkSearch(final BookmarkParam param) {
-		return this.bookmarkList("getBookmarkSearch", param);
+	public List<Post<? extends Resource>> getBookmarkSearch(final BookmarkParam param) {
+		return this.bookmarkList("getBookmarkSearch", param,true);
 	}
 
 	/**
@@ -167,8 +178,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 * Prepares queries to retrieve posts which are set viewable to group.
 	 */
-	public List<Bookmark> getBookmarkViewable(final BookmarkParam param) {
-		return this.bookmarkList("getBookmarkViewable", param);
+	public List<Post<? extends Resource>> getBookmarkViewable(final BookmarkParam param) {
+		return this.bookmarkList("getBookmarkViewable", param,true);
 	}
 
 	/**
@@ -183,9 +194,9 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 	 * http://www.bibsonomy.org/bibtex/1d28c9f535d0f24eadb9d342168836199 page
 	 * 92, formula (9) for formal semantics of this query.
 	 */
-	public List<Bookmark> getBookmarkForGroup(final BookmarkParam param) {
-		DatabaseUtils.prepareGetPostForGroup(this.db, param);
-		return this.bookmarkList("getBookmarkForGroup", param);
+	public List<Post<? extends Resource>> getBookmarkForGroup(final BookmarkParam param) {
+		DatabaseUtils.prepareGetPostForGroup(this.gdb, param);
+		return this.bookmarkList("getBookmarkForGroup", param,true);
 	}
 
 	/**
@@ -195,7 +206,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 	 * and friends bookmarks are not included (same for publications)
 	 */
 	public Integer getBookmarkForGroupCount(final BookmarkParam param) {
-		DatabaseUtils.setGroups(this.db, param);
+		DatabaseUtils.setGroups(this.gdb, param);
 		return (Integer) this.queryForObject("getBookmarkForGroupCount", param);
 	}
 
@@ -205,9 +216,9 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 	 * Does basically the same as getBookmarkForGroup with the additionaly
 	 * possibility to restrict the tags the posts have to have.
 	 */
-	public List<Bookmark> getBookmarkForGroupByTag(final BookmarkParam param) {
-		DatabaseUtils.prepareGetPostForGroup(this.db, param);
-		return this.bookmarkList("getBookmarkForGroupByTag", param);
+	public List<Post<? extends Resource>> getBookmarkForGroupByTag(final BookmarkParam param) {
+		DatabaseUtils.prepareGetPostForGroup(this.gdb, param);
+		return this.bookmarkList("getBookmarkForGroupByTag", param,true);
 	}
 
 	/**
@@ -220,7 +231,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 	 * upon if userName is allowed to see them.
 	 */
 	public List<Post<? extends Resource>> getBookmarkForUser(final BookmarkParam param) {
-		DatabaseUtils.prepareGetPostForUser(this.db, param);
+		DatabaseUtils.prepareGetPostForUser(this.gdb, param);
 		return this.bookmarkList("getBookmarkForUser", param, true);
 	}
 
@@ -228,7 +239,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 	 * Returns the number of bookmarks for a given user.
 	 */
 	public Integer getBookmarkForUserCount(final BookmarkParam param) {
-		DatabaseUtils.prepareGetPostForUser(this.db, param);
+		DatabaseUtils.prepareGetPostForUser(this.gdb, param);
 		return (Integer) this.queryForObject("getBookmarkForUserCount", param);
 	}
 

@@ -36,7 +36,7 @@ public class GetBibtexForUser extends RequestHandlerForGetBibTexPosts{
 		param.setLimit(limit);
 	    
 		param.setGroups(database.generalDatabaseManager.getGroupsForUser(param));
-		List<Post<? extends Resource>> posts = database.bibtexDatabaseManager.bibtexList("getBibTexForUser", param);
+		List<Post<? extends Resource>> posts = database.bibtexDatabaseManager.getBibTexForUser(param);
 		return posts;
 	}
     

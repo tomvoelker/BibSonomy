@@ -44,7 +44,7 @@ public class GetBibtexByConceptForUser extends RequestHandlerForGetBibTexPosts{
 			
 			}
 		
-		List<Post<? extends Resource>> posts = database.bibtexDatabaseManager.bibtexList("getBibTexByConceptForUser", param);
+		List<Post<? extends Resource>> posts = database.bibtexDatabaseManager.getBibTexByConceptForUser(param);
 		return posts;
 	}
 

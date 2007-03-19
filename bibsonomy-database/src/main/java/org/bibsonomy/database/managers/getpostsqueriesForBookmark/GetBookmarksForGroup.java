@@ -7,7 +7,7 @@ import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
-public class GetBookmarksForGroup extends RequestHandlerForGetPosts{
+public class GetBookmarksForGroup extends RequestHandlerForGetBookmarkPosts{
 
 	/**
 	 * 
@@ -40,7 +40,7 @@ public class GetBookmarksForGroup extends RequestHandlerForGetPosts{
 	    param.setGroupId(db.generalDatabaseManager.getGroupIdByGroupName(param));
 		param.setGroups(db.generalDatabaseManager.getGroupsForUser(param));
 		
-		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.bookmarkList("getBookmarkForGroup", param, true);
+		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.getBookmarkForGroup(param);
 		return posts;
 	}
 

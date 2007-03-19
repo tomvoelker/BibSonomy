@@ -40,7 +40,7 @@ public class GetBibtexForGroup extends RequestHandlerForGetBibTexPosts{
 	    param.setGroupId(database.generalDatabaseManager.getGroupIdByGroupName(param));
 		param.setGroups(database.generalDatabaseManager.getGroupsForUser(param));
 		
-		List<Post<? extends Resource>> posts = database.bibtexDatabaseManager.bibtexList("getBibTexForGroup", param);
+		List<Post<? extends Resource>> posts = database.bibtexDatabaseManager.getBibTexForGroup(param);
 		return posts;
 	}
 

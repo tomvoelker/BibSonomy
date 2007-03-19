@@ -4,13 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.bibsonomy.database.params.BibTexParam;
-import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.util.DatabaseUtils;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.util.ExceptionUtils;
 
@@ -72,27 +66,8 @@ public class AbstractDatabaseManager {
 		this.readonly = readonly;
 	}
 
-	/**
-	 * Can be used to start a query that retrieves a list of bookmarks.
-	 */
-	@SuppressWarnings("unchecked")
-	public List<Bookmark> bookmarkList(final String query, final BookmarkParam param) {
-		return (List<Bookmark>) queryForAnything(query, param, QueryFor.LIST);
-	}
-
-	// FIXME return value needs to be changed to org.bibsonomy.model.Post
-	@SuppressWarnings("unchecked")
-  public List<Post<? extends Resource>> bookmarkList(final String query, final BookmarkParam param, final boolean test) {
-		return (List<Post<? extends Resource>>) queryForAnything(query, param, QueryFor.LIST);
-	}
-
-	/**
-	 * Can be used to start a query that retrieves a list of BibTexs.
-	 */
-	@SuppressWarnings("unchecked")
-	public List<Post<? extends Resource>> bibtexList(final String query, final BibTexParam param) {
-		return (List<Post<? extends Resource>>) queryForAnything(query, param, QueryFor.LIST);
-	}
+	
+	
 
 	/**
 	 * Can be used to start a query that retrieves a list of tags.
@@ -150,7 +125,7 @@ public class AbstractDatabaseManager {
 	 * from that call.
 	 */
 	@SuppressWarnings("unchecked")
-	private Object queryForAnything(final String query, final Object param, final QueryFor queryFor) {
+	protected Object queryForAnything(final String query, final Object param, final QueryFor queryFor) {
 		return this.transactionWrapper(query, param, StatementType.SELECT, queryFor);
 	}
 

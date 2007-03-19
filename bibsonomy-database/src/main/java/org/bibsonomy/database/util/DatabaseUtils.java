@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConstantID;
-import org.bibsonomy.database.managers.DatabaseManager;
+import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.util.ExceptionUtils;
@@ -42,13 +42,13 @@ public class DatabaseUtils {
 	 * Gets all groups of the user and puts them in the param. If the two given
 	 * users are friends the groupId for friends is also appended.
 	 */
-	public static void setGroups(final DatabaseManager db, final GenericParam<? extends Resource> param) {
+	public static void setGroups(final GeneralDatabaseManager db, final GenericParam<? extends Resource> param) {
 		// If userName and requestedUserName are the same - do nothing
 		if (param.getUserName() != null && param.getRequestedUserName() != null) {
 			if (param.getUserName().equals(param.getRequestedUserName())) return;
 		}
-		final Boolean friends = db.getGeneral().isFriendOf(param);
-		final List<Integer> groups = db.getGeneral().getGroupsForUser(param);
+		final Boolean friends = db.isFriendOf(param);
+		final List<Integer> groups = db.getGroupsForUser(param);
 		if (friends) groups.add(ConstantID.GROUP_FRIENDS.getId());
 		param.setGroups(groups);
 	}
@@ -56,7 +56,7 @@ public class DatabaseUtils {
 	/**
 	 * This needs to be done for all get*ForGroup* queries.
 	 */
-	public static void prepareGetPostForGroup(final DatabaseManager db, final GenericParam<? extends Resource> param) {
+	public static void prepareGetPostForGroup(final GeneralDatabaseManager db, final GenericParam<? extends Resource> param) {
 		DatabaseUtils.setGroups(db, param);
 		// the group type needs to be set to friends because of the second union
 		// in the SQL statement
@@ -66,7 +66,7 @@ public class DatabaseUtils {
 	/**
 	 * This needs to be done for all get*ForUser* queries.
 	 */
-	public static void prepareGetPostForUser(final DatabaseManager db, final GenericParam<? extends Resource> param) {
+	public static void prepareGetPostForUser(final GeneralDatabaseManager db, final GenericParam<? extends Resource> param) {
 		// if the groupId is invalid we have to check for groups manually
 		if (param.getGroupId() == ConstantID.GROUP_INVALID.getId()) {
 			DatabaseUtils.setGroups(db, param);

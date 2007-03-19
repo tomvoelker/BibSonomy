@@ -7,7 +7,7 @@ import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
-public class GetBookmarksByConceptForUser extends RequestHandlerForGetPosts{
+public class GetBookmarksByConceptForUser extends RequestHandlerForGetBookmarkPosts{
 
 	/**
 	 * 
@@ -37,7 +37,7 @@ public class GetBookmarksByConceptForUser extends RequestHandlerForGetPosts{
 		int limit=end-start;
 		param.setLimit(limit);
 		
-		param.setGroups(db.generalDatabaseManager.getGroupsForUser(param));
+		param.setGroups(gdb.getGroupsForUser(param));
 		
 		for (String tag : tags){
 			
@@ -45,7 +45,7 @@ public class GetBookmarksByConceptForUser extends RequestHandlerForGetPosts{
 			
 			}
 		
-		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.bookmarkList("getBookmarkByConceptForUser", param, true);
+		List<Post<? extends Resource>> posts = db.getBookmarkByConceptForUser(param);
 		return posts;
 	}
 

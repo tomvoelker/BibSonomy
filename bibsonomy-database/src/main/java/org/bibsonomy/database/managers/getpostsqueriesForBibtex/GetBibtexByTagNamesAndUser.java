@@ -45,7 +45,7 @@ public class GetBibtexByTagNamesAndUser extends RequestHandlerForGetBibTexPosts{
 			}
 		
 		
-		List<Post<? extends Resource>> posts = database.bibtexDatabaseManager.bibtexList("getBibTexByTagNamesForUser", param);
+		List<Post<? extends Resource>> posts = database.bibtexDatabaseManager.getBibTexByTagNamesForUser(param);
 		return posts;
 
 	}

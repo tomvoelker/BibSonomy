@@ -10,7 +10,7 @@ import org.bibsonomy.model.Resource;
 /*
  * TODO check
  */
-public class GetBookmarksOfFriendsByUser extends RequestHandlerForGetPosts{
+public class GetBookmarksOfFriendsByUser extends RequestHandlerForGetBookmarkPosts{
 
 	/**
 	 * 
@@ -50,7 +50,7 @@ public class GetBookmarksOfFriendsByUser extends RequestHandlerForGetPosts{
 		param.setGroupId(ConstantID.GROUP_FRIENDS.getId());
 		
 		
-		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.bookmarkList("getBookmarkForUser", param, true);
+		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.getBookmarkForUser(param);
 		return posts;
 	}
 

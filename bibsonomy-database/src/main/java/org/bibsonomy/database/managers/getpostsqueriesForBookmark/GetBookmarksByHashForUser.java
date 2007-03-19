@@ -7,7 +7,7 @@ import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
-public class GetBookmarksByHashForUser extends RequestHandlerForGetPosts{
+public class GetBookmarksByHashForUser extends RequestHandlerForGetBookmarkPosts{
 
 	/**
 	 * 
@@ -44,7 +44,7 @@ public class GetBookmarksByHashForUser extends RequestHandlerForGetPosts{
 		/**
 		 * retrieve bookmark list with appropriate iBatis statement
 		 */
-		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.bookmarkList("getBookmarkByHashForUser", param, true);
+		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.getBookmarkByHashForUser(param);
 		return posts;
 	}
 	

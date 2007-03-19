@@ -7,7 +7,7 @@ import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
-public class GetBookmarksForUser extends RequestHandlerForGetPosts{
+public class GetBookmarksForUser extends RequestHandlerForGetBookmarkPosts{
 	/**
 	 * 
 	 * @author mgr
@@ -36,7 +36,7 @@ public class GetBookmarksForUser extends RequestHandlerForGetPosts{
 		param.setLimit(limit);
 	    
 		param.setGroups(db.generalDatabaseManager.getGroupsForUser(param));
-		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.bookmarkList("getBookmarkForUser", param, true);
+		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.getBookmarkForUser(param);
 		return posts;
 	}
     

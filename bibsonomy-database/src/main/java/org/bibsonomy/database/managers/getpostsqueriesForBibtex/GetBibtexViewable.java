@@ -42,7 +42,7 @@ public class GetBibtexViewable extends RequestHandlerForGetBibTexPosts{
 		param.setGroupId(database.generalDatabaseManager.getGroupIdByGroupName(param));
 		param.setGroups(database.generalDatabaseManager.getGroupsForUser(param));
 		
-		List<Post<? extends Resource>> posts = database.bibtexDatabaseManager.bibtexList("getBibTexViewable", param);
+		List<Post<? extends Resource>> posts = database.bibtexDatabaseManager.getBibTexViewable(param);
 		return posts;
 	}
     

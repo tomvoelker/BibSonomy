@@ -33,7 +33,7 @@ public class PerfTest extends AbstractSqlMapTest {
 				// save the start time
 				final long start = System.currentTimeMillis();
 				for (int j = 0; j < 5; j++) {
-					bookmarks = this.db.getBookmark().getBookmarkByTagNames(param);
+					//bookmarks = this.db.getBookmark().getBookmarkByTagNames(param);
 				}
 				// save the time once the task is finished
 				final long end = System.currentTimeMillis();

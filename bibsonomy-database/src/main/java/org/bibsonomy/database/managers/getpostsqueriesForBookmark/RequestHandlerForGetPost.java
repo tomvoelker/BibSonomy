@@ -1,9 +1,13 @@
-package org.bibsonomy.database.managers.getpostqueries;
+package org.bibsonomy.database.managers.getpostsqueriesForBookmark;
 
 import org.bibsonomy.database.managers.DatabaseManager;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-
+/*******
+* 
+* @author mgr
+*
+**/
 public abstract class RequestHandlerForGetPost {
 
 	private RequestHandlerForGetPost next;
