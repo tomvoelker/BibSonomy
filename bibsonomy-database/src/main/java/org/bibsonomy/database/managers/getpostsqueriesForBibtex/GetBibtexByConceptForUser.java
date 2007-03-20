@@ -36,7 +36,7 @@ public class GetBibtexByConceptForUser extends RequestHandlerForGetBibTexPosts{
 		int limit=end-start;
 		param.setLimit(limit);
 		
-		param.setGroups(database.generalDatabaseManager.getGroupsForUser(param));
+		param.setGroups(gdb.getGroupsForUser(param));
 		
 		for (String tag : tags){
 			
@@ -44,7 +44,7 @@ public class GetBibtexByConceptForUser extends RequestHandlerForGetBibTexPosts{
 			
 			}
 		
-		List<Post<? extends Resource>> posts = database.bibtexDatabaseManager.getBibTexByConceptForUser(param);
+		List<Post<? extends Resource>> posts = db.getBibTexByConceptForUser(param);
 		return posts;
 	}
 

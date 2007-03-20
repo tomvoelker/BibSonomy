@@ -62,7 +62,7 @@ public class GetBibtexOfFriendsByTags extends RequestHandlerForGetBibTexPosts{
 			
 		
 		
-		List<Post<? extends Resource>> posts = database.bibtexDatabaseManager.getBibTexForUser(param);
+		List<Post<? extends Resource>> posts = db.getBibTexForUser(param);
 		System.err.println("posts"+posts);
 		return posts;
 	}

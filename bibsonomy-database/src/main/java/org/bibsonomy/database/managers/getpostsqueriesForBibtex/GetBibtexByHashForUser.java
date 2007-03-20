@@ -40,12 +40,12 @@ public class GetBibtexByHashForUser extends RequestHandlerForGetBibTexPosts{
 		int limit=end-start;
 		param.setLimit(limit);
 		
-		param.setGroups(database.generalDatabaseManager.getGroupsForUser(param));
+		param.setGroups(gdb.getGroupsForUser(param));
 		
 		/**
 		 * retrieve bookmark list with appropriate iBatis statement
 		 */
-		List<Post<? extends Resource>> posts = database.bibtexDatabaseManager.getBibTexByHashForUser(param);
+		List<Post<? extends Resource>> posts = db.getBibTexByHashForUser(param);
 		return posts;
 	}
 	

@@ -41,7 +41,7 @@ public class GetBibtexByHash extends RequestHandlerForGetBibTexPosts {
 		/**
 		 * retrieve bookmark list with appropriate iBatis statement
 		 */
-		List<Post<? extends Resource>> posts = database.bibtexDatabaseManager.getBibTexByHash(param);
+		List<Post<? extends Resource>> posts = db.getBibTexByHash(param);
 		return posts;
 		
 		

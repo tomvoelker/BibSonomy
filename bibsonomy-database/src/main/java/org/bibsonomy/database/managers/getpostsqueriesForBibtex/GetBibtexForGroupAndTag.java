@@ -43,10 +43,10 @@ public class GetBibtexForGroupAndTag extends RequestHandlerForGetBibTexPosts{
 			
 			}
 		
-	    param.setGroupId(database.generalDatabaseManager.getGroupIdByGroupName(param));
-		param.setGroups(database.generalDatabaseManager.getGroupsForUser(param));
+	    param.setGroupId(gdb.getGroupIdByGroupName(param));
+		param.setGroups(gdb.getGroupsForUser(param));
 		
-		List<Post<? extends Resource>> posts = database.bibtexDatabaseManager.getBibTexForGroupByTag(param);
+		List<Post<? extends Resource>> posts = db.getBibTexForGroupByTag(param);
 		return posts;
 	}
     

@@ -1,12 +1,9 @@
 
 package org.bibsonomy.database.managers.getpostsqueriesForBibtex;
 
-import java.util.List;
 
-import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.managers.DatabaseManager;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
+import org.bibsonomy.database.managers.BibTexDatabaseManager;
+import org.bibsonomy.database.managers.RequestHandlerForGetPosts;
 
 /*******
 * 
@@ -14,28 +11,7 @@ import org.bibsonomy.model.Resource;
 *
 **/
 
-public abstract class RequestHandlerForGetBibTexPosts {
-
-	private RequestHandlerForGetBibTexPosts next;
-	protected final DatabaseManager database = new DatabaseManager();
+public abstract class RequestHandlerForGetBibTexPosts extends RequestHandlerForGetPosts{
+	protected final BibTexDatabaseManager db = BibTexDatabaseManager.getInstance();
     
-	public void setNext(RequestHandlerForGetBibTexPosts nextHandler) {
-		this.next = nextHandler;
-	}
-
-	public List<Post<? extends Resource>> perform(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
-		if (this.canHandle(authUser, grouping, groupingName, tags, hash, popular, added, start, end)) {
-			return this.handleRequestForGetPosts(authUser, grouping, groupingName, tags, hash, popular, added, start, end);
-		} else {
-			if (next != null) {
-				return next.perform(authUser, grouping, groupingName, tags, hash, popular, added, start, end);
-			}
-		}
-		return null;
-	}
-
-	protected abstract List<Post<? extends Resource>> handleRequestForGetPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end);
-
-	protected abstract boolean canHandle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end);
-
 }

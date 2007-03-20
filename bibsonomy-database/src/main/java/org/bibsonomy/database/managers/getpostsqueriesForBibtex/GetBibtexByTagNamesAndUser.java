@@ -36,7 +36,7 @@ public class GetBibtexByTagNamesAndUser extends RequestHandlerForGetBibTexPosts{
 		param.setOffset(start);
 		int limit=end-start;
 		param.setLimit(limit);
-		param.setGroups(database.generalDatabaseManager.getGroupsForUser(param));
+		param.setGroups(gdb.getGroupsForUser(param));
 		
 		for (String tag : tags){
 			
@@ -45,7 +45,7 @@ public class GetBibtexByTagNamesAndUser extends RequestHandlerForGetBibTexPosts{
 			}
 		
 		
-		List<Post<? extends Resource>> posts = database.bibtexDatabaseManager.getBibTexByTagNamesForUser(param);
+		List<Post<? extends Resource>> posts = db.getBibTexByTagNamesForUser(param);
 		return posts;
 
 	}

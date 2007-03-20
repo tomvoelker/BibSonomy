@@ -40,7 +40,7 @@ public class GetBibtexForHomePage extends RequestHandlerForGetBibTexPosts{
 		/**
 		 * retrieve bookmark list with appropriate iBatis statement
 		 */
-		List<Post<? extends Resource>> posts = database.bibtexDatabaseManager.getBibTexForHomePage(param);
+		List<Post<? extends Resource>> posts = db.getBibTexForHomePage(param);
         System.out.println("post="+posts.size()+"in getBookmarkForHomepage");
 		return posts;
 		
