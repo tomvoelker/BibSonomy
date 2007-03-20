@@ -23,7 +23,7 @@ public class TestGetBibTexGetters extends TestCase {
 	/*******for local test options***********/
 	GetBibtexByConceptForUser get =new GetBibtexByConceptForUser();
 
-	public void test2 () {
+	public void testgetBookmark () {
 		
 		List <String> taglist=new LinkedList<String>();
 		taglist.add("semantic");

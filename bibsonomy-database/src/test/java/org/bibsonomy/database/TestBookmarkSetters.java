@@ -21,7 +21,8 @@ public class TestBookmarkSetters extends TestCase {
 		 * create a postobject with given parameters
 		 */
 		
-		BookmarkDBManager db=new BookmarkDBManager();
+		
+		BookmarkDBManager db= BookmarkDBManager.getInstance();
 		
 		final User user =new User();
 		final Tag tagfirstTest = new Tag();
@@ -42,7 +43,6 @@ public class TestBookmarkSetters extends TestCase {
 		post.setResource(bookmark);
 		post.setDate(date);
 		post.setUser(user);
-		post.setGroupId(4);
 		
 		
         List <Tag> testtags=new LinkedList<Tag>();
@@ -64,7 +64,7 @@ public class TestBookmarkSetters extends TestCase {
          */
         
 		post.setTags(testtags);
- 		db.storePost(post.getUser().getName(),post,true);
+ 	    db.storePost(post.getUser().getName(),post,true);
 		
 	}
 	

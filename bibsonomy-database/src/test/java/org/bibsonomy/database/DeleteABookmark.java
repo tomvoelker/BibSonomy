@@ -12,7 +12,7 @@ public class DeleteABookmark extends TestCase{
 
 	public void testdelete(){
 		
-		BookmarkDBManager db =new BookmarkDBManager();
+		BookmarkDBManager db =BookmarkDBManager.getInstance();
 		final User user =new User();
 		final Bookmark bookmark = new Bookmark();
 		final Post<Bookmark> post = new Post<Bookmark>();

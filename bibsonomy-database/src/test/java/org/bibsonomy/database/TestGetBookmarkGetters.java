@@ -7,7 +7,6 @@ import junit.framework.TestCase;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.getpostsqueriesForBookmark.GetBookmarksByConceptForUser;
-import org.bibsonomy.database.managers.getpostsqueriesForBookmark.GetBookmarksOfFriendsByUser;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
@@ -28,10 +27,6 @@ public class TestGetBookmarkGetters extends TestCase {
 		
 		List<Post<? extends Resource>> test =get.perform("jaeschke", GroupingEntity.USER, "jaeschke",taglist,null,false, false, 0, 19);
 		System.out.println(test.size()+" in my FirstTest");
-		//Post<? extends Resource> p =test.get(0);
-		//System.out.println("getInterHash() = " + p.getUser().getName());
-		//System.out.println("getIntraHash() = " + p.getResource().getIntraHash());
-		//System.out.println("getIntraHash() = " + p.getGroupId());
 	}
 	
 }
