@@ -39,12 +39,12 @@ public class GetBookmarksByHashForUser extends RequestHandlerForGetBookmarkPosts
 		int limit=end-start;
 		param.setLimit(limit);
 		
-		param.setGroups(db.generalDatabaseManager.getGroupsForUser(param));
+		param.setGroups(gdb.getGroupsForUser(param));
 		
 		/**
 		 * retrieve bookmark list with appropriate iBatis statement
 		 */
-		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.getBookmarkByHashForUser(param);
+		List<Post<? extends Resource>> posts = db.getBookmarkByHashForUser(param);
 		return posts;
 	}
 	

@@ -39,10 +39,10 @@ public class GetBookmarksViewable extends RequestHandlerForGetBookmarkPosts{
 		
 		
 		
-		param.setGroupId(db.generalDatabaseManager.getGroupIdByGroupName(param));
-		param.setGroups(db.generalDatabaseManager.getGroupsForUser(param));
+		param.setGroupId(gdb.getGroupIdByGroupName(param));
+		param.setGroups(gdb.getGroupsForUser(param));
 		
-		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.getBookmarkViewable(param);
+		List<Post<? extends Resource>> posts = db.getBookmarkViewable(param);
 		return posts;
 	}
     

@@ -35,8 +35,8 @@ public class GetBookmarksForUser extends RequestHandlerForGetBookmarkPosts{
 		int limit=end-start;
 		param.setLimit(limit);
 	    
-		param.setGroups(db.generalDatabaseManager.getGroupsForUser(param));
-		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.getBookmarkForUser(param);
+		param.setGroups(gdb.getGroupsForUser(param));
+		List<Post<? extends Resource>> posts = db.getBookmarkForUser(param);
 		return posts;
 	}
     

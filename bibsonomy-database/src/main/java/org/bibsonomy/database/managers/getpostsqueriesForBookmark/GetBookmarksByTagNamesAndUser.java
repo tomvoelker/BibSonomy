@@ -36,7 +36,7 @@ public class GetBookmarksByTagNamesAndUser extends RequestHandlerForGetBookmarkP
 		param.setOffset(start);
 		int limit=end-start;
 		param.setLimit(limit);
-		param.setGroups(db.generalDatabaseManager.getGroupsForUser(param));
+		param.setGroups(gdb.getGroupsForUser(param));
 		
 		for (String tag : tags){
 			
@@ -45,7 +45,7 @@ public class GetBookmarksByTagNamesAndUser extends RequestHandlerForGetBookmarkP
 			}
 		
 		
-		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.getBookmarkByTagNamesForUser(param);
+		List<Post<? extends Resource>> posts = db.getBookmarkByTagNamesForUser(param);
 		return posts;
 
 	}

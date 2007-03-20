@@ -40,7 +40,7 @@ public class GetBookmarksForHomePage extends RequestHandlerForGetBookmarkPosts{
 		/**
 		 * retrieve bookmark list with appropriate iBatis statement
 		 */
-		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.getBookmarkForHomepage(param);
+		List<Post<? extends Resource>> posts = db.getBookmarkForHomepage(param);
         System.out.println("post="+posts.size()+"in getBookmarkForHomepage");
 		return posts;
 		

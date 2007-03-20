@@ -37,10 +37,10 @@ public class GetBookmarksForGroup extends RequestHandlerForGetBookmarkPosts{
 		int limit=end-start;
 		param.setLimit(limit);
 		
-	    param.setGroupId(db.generalDatabaseManager.getGroupIdByGroupName(param));
-		param.setGroups(db.generalDatabaseManager.getGroupsForUser(param));
+	    param.setGroupId(gdb.getGroupIdByGroupName(param));
+		param.setGroups(gdb.getGroupsForUser(param));
 		
-		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.getBookmarkForGroup(param);
+		List<Post<? extends Resource>> posts = db.getBookmarkForGroup(param);
 		return posts;
 	}
 

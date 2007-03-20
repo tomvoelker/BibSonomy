@@ -62,7 +62,7 @@ public class GetBookmarksOfFriendsByTags extends RequestHandlerForGetBookmarkPos
 			
 		
 		
-		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.getBookmarkForUser(param);
+		List<Post<? extends Resource>> posts = db.getBookmarkForUser(param);
 		System.err.println("posts"+posts);
 		return posts;
 	}

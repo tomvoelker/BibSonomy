@@ -43,10 +43,10 @@ public class GetBookmarksForGroupAndTag extends RequestHandlerForGetBookmarkPost
 			
 			}
 		
-	    param.setGroupId(db.generalDatabaseManager.getGroupIdByGroupName(param));
-		param.setGroups(db.generalDatabaseManager.getGroupsForUser(param));
+	    param.setGroupId(gdb.getGroupIdByGroupName(param));
+		param.setGroups(gdb.getGroupsForUser(param));
 		
-		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.getBookmarkForGroupByTag(param);
+		List<Post<? extends Resource>> posts = db.getBookmarkForGroupByTag(param);
 		return posts;
 	}
     

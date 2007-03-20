@@ -50,7 +50,7 @@ public class GetBookmarksOfFriendsByUser extends RequestHandlerForGetBookmarkPos
 		param.setGroupId(ConstantID.GROUP_FRIENDS.getId());
 		
 		
-		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.getBookmarkForUser(param);
+		List<Post<? extends Resource>> posts = db.getBookmarkForUser(param);
 		return posts;
 	}
 

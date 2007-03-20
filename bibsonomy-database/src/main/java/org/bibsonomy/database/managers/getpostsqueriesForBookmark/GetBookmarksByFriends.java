@@ -42,7 +42,7 @@ public class GetBookmarksByFriends extends RequestHandlerForGetBookmarkPosts{
 		param.setLimit(limit);
 		
 		
-		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.getBookmarkByUserFriends(param);
+		List<Post<? extends Resource>> posts = db.getBookmarkByUserFriends(param);
 		return posts;
 	}
 

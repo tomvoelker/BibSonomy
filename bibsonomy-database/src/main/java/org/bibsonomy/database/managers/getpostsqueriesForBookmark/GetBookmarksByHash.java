@@ -41,7 +41,7 @@ public class GetBookmarksByHash extends RequestHandlerForGetBookmarkPosts {
 		/**
 		 * retrieve bookmark list with appropriate iBatis statement
 		 */
-		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.getBookmarkByHash(param);
+		List<Post<? extends Resource>> posts = db.getBookmarkByHash(param);
 		return posts;
 		
 		

@@ -53,7 +53,7 @@ public class GetBookmarksByTagNames extends RequestHandlerForGetBookmarkPosts{
 		 * prove arguments as mentioned above
 		 */
 		
-		List<Post<? extends Resource>> posts = db.bookmarkDatabaseManager.getBookmarkByTagNames(param);
+		List<Post<? extends Resource>> posts = db.getBookmarkByTagNames(param);
 		return posts;
 
 	}
