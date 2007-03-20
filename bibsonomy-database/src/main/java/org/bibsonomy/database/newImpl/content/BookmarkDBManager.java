@@ -192,15 +192,10 @@ public class BookmarkDBManager implements AbstractContentDBManager {
 		BookmarkParam bookmarkParam =new BookmarkParam();
 		Bookmark bookmark =new Bookmark();
 	
-		Bookmark b = (Bookmark) post.getResource();
-		
-		//bookmarkParam.setBookmark(b);	
-		
 		bookmarkParam.setUserName(userName);
 		bookmarkParam.setHash(post.getResource().getIntraHash());
 		bookmarkParam.setDescription(post.getDescription());
 		bookmarkParam.setDate(post.getDate());
-		bookmarkParam.setGroupId(post.getGroupId());
 		bookmarkParam.setResource(bookmark);
 		
         
@@ -252,7 +247,6 @@ public class BookmarkDBManager implements AbstractContentDBManager {
 	    	
 	    	System.out.println("post hash "+ post.getResource().getIntraHash());
 	    	System.out.println("post userName "+ post.getUser().getName());
-	    	System.out.println("post groupID: " +post.getGroupId());
 	    	
 	    	/*
 	    	 * create bookmark object from database with current 
