@@ -1,17 +1,11 @@
 package org.bibsonomy.database.managers;
 
-import java.sql.SQLException;
 import java.util.List;
-import java.util.Random;
 
 import org.bibsonomy.common.enums.ConstantID;
-import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.database.AbstractDatabaseManager;
-import org.bibsonomy.database.AbstractDatabaseManager.QueryFor;
 import org.bibsonomy.database.params.BibTexParam;
-import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.util.DatabaseUtils;
-import org.bibsonomy.util.ExceptionUtils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -25,7 +19,7 @@ import org.bibsonomy.model.Resource;
 public class BibTexDatabaseManager extends AbstractDatabaseManager {
 
 	private final static BibTexDatabaseManager db = new BibTexDatabaseManager();
-	private final GeneralDatabaseManager gdb = new GeneralDatabaseManager();
+	private final GeneralDatabaseManager gdb = GeneralDatabaseManager.getInstance();
 
 	/**
 	 * Reduce visibility so only the {@link DatabaseManager} can instantiate
