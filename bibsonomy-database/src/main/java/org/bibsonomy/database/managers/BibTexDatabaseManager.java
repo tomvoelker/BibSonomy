@@ -27,17 +27,14 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	 */
 	private BibTexDatabaseManager() {
 	}
-	
-	public static BibTexDatabaseManager getInstance(){
+
+	public static BibTexDatabaseManager getInstance() {
 		return db;
 	}
-	
-	
-	
+
 	/**
 	 * Can be used to start a query that retrieves a list of BibTexs.
 	 */
-	
 	@SuppressWarnings("unchecked")
      protected List<Post<? extends Resource>> bibtexList(final String query, final BibTexParam param) {
 		return (List<Post<? extends Resource>>) queryForAnything(query, param, QueryFor.LIST);
@@ -403,5 +400,4 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 		// TODO not tested
 		this.update("deleteBibTexUrlByContentId", param);
 	}
-		
 }

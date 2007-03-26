@@ -66,9 +66,6 @@ public class AbstractDatabaseManager {
 		this.readonly = readonly;
 	}
 
-	
-	
-
 	/**
 	 * Can be used to start a query that retrieves a list of tags.
 	 */
@@ -100,7 +97,7 @@ public class AbstractDatabaseManager {
 	/**
 	 * Inserts an object into the database.
 	 */
- public void insert(final String query, final Object param) {
+	public void insert(final String query, final Object param) {
 		this.insertUpdateDelete(query, param, StatementType.INSERT);
 	}
 
@@ -191,7 +188,8 @@ public class AbstractDatabaseManager {
 				// If the database is writeable we commit the transaction
 				// FIXME transaction management needs improvement
 				// if (!this.isReadonly()) this.sqlMap.commitTransaction();
-				if (false) throw new SQLException(); // XXX keeps the try-catch-block intact
+				// XXX keeps the try-catch-block intact
+				if (false) throw new SQLException();
 			} catch (final SQLException ex) {
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't commit transaction for query '" + query + "'");
 			} finally {

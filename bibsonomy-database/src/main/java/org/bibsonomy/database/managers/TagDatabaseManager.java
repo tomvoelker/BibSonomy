@@ -18,7 +18,7 @@ import org.bibsonomy.util.ExceptionUtils;
 public class TagDatabaseManager extends AbstractDatabaseManager {
 
 	private static TagDatabaseManager instance = new TagDatabaseManager();
-	
+
 	/**
 	 * Only a maximum of 10 tags can be set by the user. It serves to restrict
 	 * the system behaviour in case of e.g. 200 Tags. Only a maximum of 10X10
@@ -32,8 +32,8 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 */
 	private TagDatabaseManager() {
 	}
-	
-	public static TagDatabaseManager getInstance () {
+
+	public static TagDatabaseManager getInstance() {
 		return instance;
 	}
 
@@ -76,7 +76,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/** Return a new tasId by given IDD_TAS_ID(1) as constant */
-	
+
 	public Integer getNewTasId(final GenericParam param) {
 		// TODO not tested
 		return (Integer) this.queryForObject("getNewTasId", param);
@@ -86,11 +86,11 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		// TODO not tested
 		this.update("updateTasId", param);
 	}
-	
+
 	public void insertTas(final GenericParam<Bookmark> genericParam) {
 		this.insert("insertTas", genericParam);
 	}
-	
+
 	public void deleteTas(final GenericParam genericParam) {
 		this.delete("deleteTas", genericParam);
 	}
@@ -103,7 +103,8 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	public List<Tag> deleteTags(final GenericParam param) {
 		// get tags for this contentId
 		// FIXME param.getResource().setTags(getTasByContendId(param));
-		final List<Tag> tagSet = null; // FIXME !!! param.getResource().getTags();
+		final List<Tag> tagSet = null; // FIXME !!!
+										// param.getResource().getTags();
 
 		// add these tags to list and decrease counter in tag table
 		for (final Tag tag : tagSet) {
@@ -195,6 +196,4 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			this.insert("insertTagTag", new Tag[] { tag1, tag2 });
 		}
 	}
-
-	
 }

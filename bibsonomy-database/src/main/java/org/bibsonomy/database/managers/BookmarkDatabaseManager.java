@@ -26,12 +26,11 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager {
 	 */
 	private BookmarkDatabaseManager() {
 	}
-	
-	public static BookmarkDatabaseManager getInstance(){
+
+	public static BookmarkDatabaseManager getInstance() {
 		return db;
 	}
-	
-	
+
 	/**
 	 * Can be used to start a query that retrieves a list of bookmarks.
 	 */
