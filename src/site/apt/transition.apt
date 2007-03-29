@@ -9,3 +9,8 @@ Transition from BibSonomy1 to BibSonomy2
   * servlets.ResourceHandler
 
   * helpers.database.DBBibtexManager
+
+  []
+
+  We've set up a "Chain of Responsibility" pattern. The docs can be found
+  {{{docs/BibSonomyDBAnfragen.xls}here}}.
