@@ -1,6 +1,5 @@
 package org.bibsonomy.database;
 
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -25,7 +24,7 @@ public class TagTest extends AbstractSqlMapTest {
 	@SuppressWarnings("unused")
 	public void getTagById() {
 		try {
-			final Tag tag = (Tag) this.db.getTag().getTagById(387);
+			final Tag tag = (Tag) this.tagDb.getTagById(387);
 			// System.out.println(tag);
 			// assertEquals(387, tag.getId());
 			// assertNotNull(tag.getName());
@@ -43,7 +42,7 @@ public class TagTest extends AbstractSqlMapTest {
 	@SuppressWarnings("unchecked")
 	public void getTagByCount() {
 		try {
-			final List<Tag> tags = this.db.getTag().getTagByCount(24);
+			final List<Tag> tags = this.tagDb.getTagByCount(24);
 			for (final Tag tag : tags) {
 				// System.out.println(tag);
 				assertTrue(tag.getId() > 0);

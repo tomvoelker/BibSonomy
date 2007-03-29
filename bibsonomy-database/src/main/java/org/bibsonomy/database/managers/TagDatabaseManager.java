@@ -17,7 +17,7 @@ import org.bibsonomy.util.ExceptionUtils;
  */
 public class TagDatabaseManager extends AbstractDatabaseManager {
 
-	private static TagDatabaseManager instance = new TagDatabaseManager();
+	private static TagDatabaseManager singleton = new TagDatabaseManager();
 
 	/**
 	 * Only a maximum of 10 tags can be set by the user. It serves to restrict
@@ -26,15 +26,11 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 */
 	private static final int MAX_TAGS_TO_INSERT = 10;
 
-	/**
-	 * Reduce visibility so only the {@link DatabaseManager} can instantiate
-	 * this class.
-	 */
 	private TagDatabaseManager() {
 	}
 
 	public static TagDatabaseManager getInstance() {
-		return instance;
+		return singleton;
 	}
 
 	/** Return all tags for given tagId */

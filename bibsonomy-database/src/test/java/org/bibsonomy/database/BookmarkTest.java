@@ -17,111 +17,111 @@ public class BookmarkTest extends AbstractSqlMapTest {
 
 	@Test
 	public void getBookmarkByTagNames() {
-		this.db.getBookmark().getBookmarkByTagNames(this.bookmarkParam);
+		this.bookmarkDb.getBookmarkByTagNames(this.bookmarkParam);
 	}
 
 	@Test
 	public void getBookmarkByTagNamesForUser() {
-		this.db.getBookmark().getBookmarkByTagNamesForUser(this.bookmarkParam);
+		this.bookmarkDb.getBookmarkByTagNamesForUser(this.bookmarkParam);
 		this.resetParameters();
 		this.bookmarkParam.setGroupId(ConstantID.GROUP_INVALID.getId());
-		this.db.getBookmark().getBookmarkByTagNamesForUser(this.bookmarkParam);
+		this.bookmarkDb.getBookmarkByTagNamesForUser(this.bookmarkParam);
 	}
 
 	@Test
 	public void getBookmarkByConceptForUser() {
-		this.db.getBookmark().getBookmarkByConceptForUser(this.bookmarkParam);
+		this.bookmarkDb.getBookmarkByConceptForUser(this.bookmarkParam);
 	}
 
 	@Test
 	public void getBookmarkByUserFriends() {
-		this.db.getBookmark().getBookmarkByUserFriends(this.bookmarkParam);
+		this.bookmarkDb.getBookmarkByUserFriends(this.bookmarkParam);
 	}
 
 	@Test
 	public void getBookmarkForHomepage() {
-		this.db.getBookmark().getBookmarkForHomepage(this.bookmarkParam);
+		this.bookmarkDb.getBookmarkForHomepage(this.bookmarkParam);
 	}
 
 	@Test
 	public void getBookmarkPopular() {
-		this.db.getBookmark().getBookmarkPopular(this.bookmarkParam);
+		this.bookmarkDb.getBookmarkPopular(this.bookmarkParam);
 	}
 
 	@Test
 	public void getBookmarkByHash() {
-		this.db.getBookmark().getBookmarkByHash(this.bookmarkParam);
+		this.bookmarkDb.getBookmarkByHash(this.bookmarkParam);
 	}
 
 	@Test
 	public void getBookmarkByHashCount() {
 		Integer count = -1;
-		count = this.db.getBookmark().getBookmarkByHashCount(this.bookmarkParam);
+		count = this.bookmarkDb.getBookmarkByHashCount(this.bookmarkParam);
 		assertTrue(count >= 0);
 	}
 
 	@Test
 	public void getBookmarkByHashForUser() {
-		this.db.getBookmark().getBookmarkByHashForUser(this.bookmarkParam);
+		this.bookmarkDb.getBookmarkByHashForUser(this.bookmarkParam);
 	}
 
 	@Test
 	public void getBookmarkSearch() {
 		this.bookmarkParam.setSearch("test");
-		this.db.getBookmark().getBookmarkSearch(this.bookmarkParam);
+		this.bookmarkDb.getBookmarkSearch(this.bookmarkParam);
 		this.bookmarkParam.setUserName(null);
-		this.db.getBookmark().getBookmarkSearch(this.bookmarkParam);
+		this.bookmarkDb.getBookmarkSearch(this.bookmarkParam);
 	}
 
 	@Test
 	public void getBookmarkSearchCount() throws SQLException {
 		this.bookmarkParam.setSearch("test");
 		Integer count = -1;
-		count = this.db.getBookmark().getBookmarkSearchCount(this.bookmarkParam);
+		count = this.bookmarkDb.getBookmarkSearchCount(this.bookmarkParam);
 		assertTrue(count >= 0);
 
 		this.bookmarkParam.setUserName(null);
 		count = -1;
-		count = (Integer) this.db.getBookmark().getBookmarkSearchCount(this.bookmarkParam);
+		count = (Integer) this.bookmarkDb.getBookmarkSearchCount(this.bookmarkParam);
 		assertTrue(count >= 0);
 	}
 
 	@Test
 	public void getBookmarkViewable() {
-		this.db.getBookmark().getBookmarkViewable(this.bookmarkParam);
+		this.bookmarkDb.getBookmarkViewable(this.bookmarkParam);
 	}
 
 	@Test
 	public void getBookmarkForGroup() {
-		this.db.getBookmark().getBookmarkForGroup(this.bookmarkParam);
+		this.bookmarkDb.getBookmarkForGroup(this.bookmarkParam);
 	}
 
 	@Test
 	public void getBookmarkForGroupCount() {
 		Integer count = -1;
-		count = this.db.getBookmark().getBookmarkForGroupCount(this.bookmarkParam);
+		count = this.bookmarkDb.getBookmarkForGroupCount(this.bookmarkParam);
 		assertTrue(count >= 0);
 	}
 
 	@Test
 	public void getBookmarkForGroupByTag() {
-		this.db.getBookmark().getBookmarkForGroupByTag(this.bookmarkParam);
+		this.bookmarkDb.getBookmarkForGroupByTag(this.bookmarkParam);
 	}
 
 	@Test
 	public void getBookmarkForUser() {
-		this.db.getBookmark().getBookmarkForUser(this.bookmarkParam);
+		this.bookmarkDb.getBookmarkForUser(this.bookmarkParam);
 		this.resetParameters();
 		this.bookmarkParam.setGroupId(ConstantID.GROUP_INVALID.getId());
-		this.db.getBookmark().getBookmarkForUser(this.bookmarkParam);
+		this.bookmarkDb.getBookmarkForUser(this.bookmarkParam);
 	}
 
 	@Test
 	public void getBookmarkForUserCount() {
-		this.db.getBookmark().getBookmarkForUserCount(this.bookmarkParam);
+		this.bookmarkDb.getBookmarkForUserCount(this.bookmarkParam);
 		this.resetParameters();
 		this.bookmarkParam.setGroupId(ConstantID.GROUP_INVALID.getId());
-		this.db.getBookmark().getBookmarkForUserCount(this.bookmarkParam);
+		this.bookmarkDb.getBookmarkForUserCount(this.bookmarkParam);
 	}
 
 	/**
@@ -167,7 +167,7 @@ public class BookmarkTest extends AbstractSqlMapTest {
 
 	@Test
 	public void updateIds() {
-		this.db.getBookmark().updateIds(this.bookmarkParam);
+		this.bookmarkDb.updateIds(this.bookmarkParam);
 	}
 
 	@Test
@@ -179,6 +179,6 @@ public class BookmarkTest extends AbstractSqlMapTest {
 	@Test
 	public void getContentIDForBookmark() {
 		// TODO not tested
-		this.db.getBookmark().getContentIDForBookmark(this.bookmarkParam);
+		this.bookmarkDb.getContentIDForBookmark(this.bookmarkParam);
 	}
 }

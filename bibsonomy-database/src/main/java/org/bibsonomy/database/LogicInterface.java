@@ -11,13 +11,13 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 
 /**
- * this interface is an adapter to the database. <p/> the methods returning
+ * This interface is an adapter to the database. <br/> The methods returning
  * information return in general, if there are no matches, an empty set (if a
  * list is requested), or null (if a single entity is requested (a post, eg)).
- * <p/><b>please try to be as close to the method-conventions as possible.
+ * <br/><b>Please try to be as close to the method-conventions as possible.
  * </b>If something is unclear, guess, check occurences and document your
- * result. if you have to change a convention, check all occurences and document
- * it properly! try to check each possibility with a test-case.
+ * result. If you have to change a convention, check all occurences and document
+ * it properly! Try to check each possibility with a test-case.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
@@ -230,44 +230,3 @@ public interface LogicInterface
     */
    public abstract void addUserToGroup( String groupName, String userName );
 }
-
-/*
- * $Log$
- * Revision 1.1  2007-02-21 14:08:40  mbork
- * - included code generation of the schema in the maven2 build-lifecycle
- * - removed circular dependencies among the modules
- * - cleaned up the poms of the modules
- * - fixed failing unit-tests
- *
- * Revision 1.5  2007/02/15 10:29:08  mbork
- * the LogicInterface now uses Lists instead of Sets
- * fixed use of generics
- *
- * Revision 1.4  2007/02/15 09:16:03  mgrahl
- * *** empty log message ***
- *
- * Revision 1.3  2007/02/11 17:55:39  mbork
- * switched REST-api to the 'new' datamodel, which does not deserve the name...
- *
- * Revision 1.2  2007/02/05 10:35:54  cschenk
- * Distributed code from the spielwiese among the modules
- *
- * Revision 1.1  2006/10/10 12:42:15  cschenk
- * Auf Multi-Module Build umgestellt
- *
- * Revision 1.4  2006/07/05 15:20:14  mbork
- * implemented missing strategies, little changes on datamodel --> alpha :)
- *
- * Revision 1.3  2006/06/11 15:25:26  mbork
- * removed gatekeeper, changed authentication process
- *
- * Revision 1.2  2006/06/05 14:14:12  mbork
- * implemented GET strategies
- *
- * Revision 1.1  2006/05/24 20:09:03  jillig
- * renamed DbInterface to RESTs LogicInterface
- *
- * Revision 1.1  2006/05/19 21:01:08  mbork
- * started implementing rest api
- *
- */

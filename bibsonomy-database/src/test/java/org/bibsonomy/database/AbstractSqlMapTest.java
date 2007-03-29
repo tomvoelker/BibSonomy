@@ -3,7 +3,10 @@ package org.bibsonomy.database;
 import java.io.IOException;
 import java.util.List;
 
-import org.bibsonomy.database.managers.DatabaseManager;
+import org.bibsonomy.database.managers.BibTexDatabaseManager;
+import org.bibsonomy.database.managers.BookmarkDatabaseManager;
+import org.bibsonomy.database.managers.GeneralDatabaseManager;
+import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.BibTex;
@@ -20,8 +23,14 @@ import org.junit.Before;
  */
 public abstract class AbstractSqlMapTest {
 
-	/** Communication with the database is done with this class */
-	protected DatabaseManager db;
+	/** The database manager for general queries */
+	protected GeneralDatabaseManager generalDb;
+	/** The database manager for Bookmarks */
+	protected BookmarkDatabaseManager bookmarkDb;
+	/** The database manager for BibTexs */
+	protected BibTexDatabaseManager bibTexDb;
+	/** The database manager for Tags */
+	protected TagDatabaseManager tagDb;
 	/**
 	 * This param can be used both for queries about bookmarks and all other
 	 * queries
@@ -32,15 +41,21 @@ public abstract class AbstractSqlMapTest {
 
 	@Before
 	public void setUp() throws IOException {
-		this.db = DatabaseManager.getInstance();
+		this.generalDb = GeneralDatabaseManager.getInstance();
+		this.bookmarkDb = BookmarkDatabaseManager.getInstance();
+		this.bibTexDb = BibTexDatabaseManager.getInstance();
+		this.tagDb = TagDatabaseManager.getInstance();
 		this.resetParameters();
 		// testcases shouldn't write to the db
-		this.db.setReadonly();
+		this.generalDb.setReadonly(true);
+		this.bookmarkDb.setReadonly(true);
+		this.bibTexDb.setReadonly(true);
+		this.tagDb.setReadonly(true);
 	}
 
 	@After
 	public void tearDown() {
-		this.db = null;
+		this.bibTexDb = null;
 		this.bookmarkParam = null;
 		this.bibtexParam = null;
 	}

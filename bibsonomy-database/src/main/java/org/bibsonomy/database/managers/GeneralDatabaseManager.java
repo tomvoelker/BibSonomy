@@ -14,17 +14,13 @@ import org.bibsonomy.database.params.GenericParam;
  */
 public class GeneralDatabaseManager extends AbstractDatabaseManager {
 
-	private final static GeneralDatabaseManager db = new GeneralDatabaseManager();
-	
-	/**
-	 * Reduce visibility so only the {@link DatabaseManager} can instantiate
-	 * this class.
-	 */
+	private final static GeneralDatabaseManager singleton = new GeneralDatabaseManager();
+
 	private GeneralDatabaseManager() {
 	}
 
 	public static GeneralDatabaseManager getInstance() {
-		return db;
+		return singleton;
 	}
 
 	/**

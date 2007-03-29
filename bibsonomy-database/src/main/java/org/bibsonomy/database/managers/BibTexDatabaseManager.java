@@ -3,6 +3,7 @@ package org.bibsonomy.database.managers;
 import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.DatabaseUtils;
@@ -16,20 +17,16 @@ import org.bibsonomy.model.Resource;
  * @author Christian Schenk
  * @author mgr
  */
-public class BibTexDatabaseManager extends AbstractDatabaseManager {
+public class BibTexDatabaseManager extends AbstractDatabaseManager implements CrudableContent {
 
-	private final static BibTexDatabaseManager db = new BibTexDatabaseManager();
-	private final GeneralDatabaseManager gdb = GeneralDatabaseManager.getInstance();
+	private final static BibTexDatabaseManager singleton = new BibTexDatabaseManager();
+	private final GeneralDatabaseManager generalDb = GeneralDatabaseManager.getInstance();
 
-	/**
-	 * Reduce visibility so only the {@link DatabaseManager} can instantiate
-	 * this class.
-	 */
 	private BibTexDatabaseManager() {
 	}
 
 	public static BibTexDatabaseManager getInstance() {
-		return db;
+		return singleton;
 	}
 
 	/**
@@ -48,7 +45,6 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	 * retrieved.
 	 */
 	public List<Post<? extends Resource>> getBibTexByHash(final BibTexParam param) {
-		/********TODO write some Expectation values for all methods**********/
 		return this.bibtexList("getBibTexByHash", param);
 	}
 
@@ -83,7 +79,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	 * to see them.
 	 */
 	public List<Post<? extends Resource>> getBibTexByTagNamesForUser(final BibTexParam param) {
-		DatabaseUtils.prepareGetPostForUser(this.gdb, param);
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param);
 		return this.bibtexList("getBibTexByTagNamesForUser", param);
 	}
 
@@ -103,7 +99,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	 * to see them.
 	 */
 	public List<Post<? extends Resource>> getBibTexByConceptForUser(final BibTexParam param) {
-		DatabaseUtils.setGroups(this.gdb, param);
+		DatabaseUtils.setGroups(this.generalDb, param);
 		return this.bibtexList("getBibTexByConceptForUser", param);
 	}
 
@@ -189,7 +185,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	 * single user).
 	 */
 	public List<Post<? extends Resource>> getBibTexDuplicate(final BibTexParam param) {
-		DatabaseUtils.setGroups(this.gdb, param);
+		DatabaseUtils.setGroups(this.generalDb, param);
 		return this.bibtexList("getBibTexDuplicate", param);
 	}
 
@@ -213,7 +209,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	 * 92, formula (9) for formal semantics of this query.
 	 */
 	public List<Post<? extends Resource>> getBibTexForGroup(final BibTexParam param) {
-		DatabaseUtils.prepareGetPostForGroup(this.gdb, param);
+		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param);
 		return this.bibtexList("getBibTexForGroup", param);
 	}
 
@@ -224,7 +220,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	 * and friends bookmarks are not included (same for publications)
 	 */
 	public Integer getBibTexForGroupCount(final BibTexParam param) {
-		DatabaseUtils.setGroups(this.gdb, param);
+		DatabaseUtils.setGroups(this.generalDb, param);
 		return (Integer) this.queryForObject("getBibTexForGroupCount", param);
 	}
 
@@ -235,7 +231,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	 * possibility to restrict the tags the posts have to have.
 	 */
 	public List<Post<? extends Resource>> getBibTexForGroupByTag(final BibTexParam param) {
-		DatabaseUtils.prepareGetPostForGroup(this.gdb, param);
+		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param);
 		return this.bibtexList("getBibTexForGroupByTag", param);
 	}
 
@@ -249,7 +245,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	 * upon if userName is allowed to see them.
 	 */
 	public List<Post<? extends Resource>> getBibTexForUser(final BibTexParam param) {
-		DatabaseUtils.prepareGetPostForUser(this.gdb, param);
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param);
 		return this.bibtexList("getBibTexForUser", param);
 	}
 
@@ -257,7 +253,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	 * Returns the number of publications for a given user.
 	 */
 	public Integer getBibTexForUserCount(final BibTexParam param) {
-		DatabaseUtils.prepareGetPostForUser(this.gdb, param);
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param);
 		return (Integer) this.queryForObject("getBibTexForUserCount", param);
 	}
 
@@ -272,7 +268,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	 * that we can present the user a link to the uploaded document.
 	 */
 	public List<Post<? extends Resource>> getBibTexByHashForUser(final BibTexParam param) {
-		DatabaseUtils.setGroups(this.gdb, param);
+		DatabaseUtils.setGroups(this.generalDb, param);
 		return this.bibtexList("getBibTexByHashForUser", param);
 	}
 
@@ -399,5 +395,38 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager {
 	public void deleteBibTexUrlByContentId(final BibTexParam param) {
 		// TODO not tested
 		this.update("deleteBibTexUrlByContentId", param);
+	}
+
+	public List<Post<? extends Resource>> getPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, boolean continuous) {
+		/*
+		 * Test options
+		 */
+		// TODO fix this!
+//		List test_getBibtexForUser = getBibTexForUser.perform("jaeschke", GroupingEntity.USER, "jaeschke",null,null,false, false, 0, 19);
+//		System.out.println("test="+test_getBibtexForUser.size());
+//		System.out.println("authUser = " + authUser);
+//		System.out.println("grouping = " + grouping);
+//		System.out.println("groupingName = " + groupingName);
+//		System.out.println("tags = " + tags);
+//		System.out.println("hash = " + hash);
+//		System.out.println("start = " + start);
+//		System.out.println("end = " + end);
+//
+//		List<Post<? extends Resource>> posts = getBibTexForUser.perform(authUser, grouping, groupingName, tags, hash, popular, added, start, end);
+//		System.out.println("BibTexDbManager posts.size= " + posts.size());
+//		return posts;
+		return null;
+	}
+
+	public Post<Resource> getPostDetails(String authUser, String resourceHash, String userName) {
+		return null;
+	}
+
+	public boolean deletePost(String userName, String resourceHash) {
+		return false;
+	}
+
+	public boolean storePost(String userName, Post post, boolean update) {
+        return true;
 	}
 }
