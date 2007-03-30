@@ -18,16 +18,16 @@ import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexViewable;
  */
 public class BibTexChain implements FirstChainElement {
 
-	private ChainElement getBibTexByHash;
-	private ChainElement getBibTexByHashForUser;
-	private ChainElement getBibTexByTagNames;
-	private ChainElement getBibTexByTagNamesAndUser;
-	private ChainElement getBibTexForGroup;
-	private ChainElement getBibTexForGroupAndTag;
-	private ChainElement getBibTexForHomePage;
-	private ChainElement getBibTexForPopular;
-	private ChainElement getBibTexViewable;
-	private ChainElement getBibTexForUser;
+	private final ChainElement getBibTexByHash;
+	private final ChainElement getBibTexByHashForUser;
+	private final ChainElement getBibTexByTagNames;
+	private final ChainElement getBibTexByTagNamesAndUser;
+	private final ChainElement getBibTexForGroup;
+	private final ChainElement getBibTexForGroupAndTag;
+	private final ChainElement getBibTexForHomePage;
+	private final ChainElement getBibTexForPopular;
+	private final ChainElement getBibTexViewable;
+	private final ChainElement getBibTexForUser;
 
 	public BibTexChain() {
 		this.getBibTexByHash = new GetBibtexByHash();

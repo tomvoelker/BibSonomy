@@ -1,6 +1,5 @@
 package org.bibsonomy.database.managers;
 
-import java.util.HashMap;
 import java.util.List;
 
 import org.bibsonomy.database.AbstractDatabaseManager;
@@ -10,14 +9,15 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.util.ExceptionUtils;
 
 /**
- * Used to retrieve set Tags from the database.
+ * Used to retrieve tags from the database.
  * 
  * @author Christian Schenk
  * @author mgr
  */
 public class TagDatabaseManager extends AbstractDatabaseManager {
 
-	private static TagDatabaseManager singleton = new TagDatabaseManager();
+	/** Singleton */
+	private final static TagDatabaseManager singleton = new TagDatabaseManager();
 
 	/**
 	 * Only a maximum of 10 tags can be set by the user. It serves to restrict
@@ -144,9 +144,10 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	/** Insert a set of tags */
 	public void insertTags(final GenericParam param) {
 		// generate a list of tags
-		List<Tag> allTags = param.getTags();
-		int tasId;
-		HashMap<Tag, Integer> tasIDs = new HashMap<Tag, Integer>();
+		// TODO implement this
+//		List<Tag> allTags = param.getTags();
+//		int tasId;
+//		HashMap<Tag, Integer> tasIDs = new HashMap<Tag, Integer>();
 
 		// if there're to many tags, do it in a batch job
 		/*if (allTags.size() > MAX_TAGS_TO_INSERT) {

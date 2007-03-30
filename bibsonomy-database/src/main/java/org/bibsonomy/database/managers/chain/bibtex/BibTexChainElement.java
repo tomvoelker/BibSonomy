@@ -4,8 +4,16 @@ import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.chain.ChainElement;
 
 /**
+ * All elements for the chain of responsibility for publications are derived
+ * from this class.
+ * 
  * @author mgr
  */
 public abstract class BibTexChainElement extends ChainElement {
-	protected final BibTexDatabaseManager db = BibTexDatabaseManager.getInstance();
+
+	protected final BibTexDatabaseManager db;
+
+	public BibTexChainElement() {
+		this.db = BibTexDatabaseManager.getInstance();
+	}
 }

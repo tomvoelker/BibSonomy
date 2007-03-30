@@ -12,13 +12,14 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
 /**
- * Used to retrieve BibTexs from the database.
+ * Used to CRUD BibTexs from the database.
  * 
  * @author Christian Schenk
  * @author mgr
  */
 public class BibTexDatabaseManager extends AbstractDatabaseManager implements CrudableContent {
 
+	/** Singleton */
 	private final static BibTexDatabaseManager singleton = new BibTexDatabaseManager();
 	private final GeneralDatabaseManager generalDb = GeneralDatabaseManager.getInstance();
 

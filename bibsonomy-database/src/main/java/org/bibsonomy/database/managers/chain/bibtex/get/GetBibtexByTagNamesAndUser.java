@@ -28,7 +28,7 @@ public class GetBibtexByTagNamesAndUser extends BibTexChainElement{
 	 *   
 	 */
 	@Override
-	protected List<Post<? extends Resource>> handleRequestForGetPosts(String authUser,  GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
+	protected List<Post<? extends Resource>> handle(String authUser,  GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
 		
         final BibTexParam param= new BibTexParam();
 		param.setRequestedUserName(groupingName);

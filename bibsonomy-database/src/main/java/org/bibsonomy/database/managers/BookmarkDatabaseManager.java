@@ -14,13 +14,14 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 
 /**
- * Used to retrieve bookmarks from the database.
+ * Used to CRUD bookmarks from the database.
  * 
  * @author Christian Schenk
  * @author mgr
  */
 public class BookmarkDatabaseManager extends AbstractDatabaseManager implements CrudableContent {
 
+	/** Singleton */
 	private final static BookmarkDatabaseManager singleton = new BookmarkDatabaseManager();
 	private final GeneralDatabaseManager generalDb = GeneralDatabaseManager.getInstance();
 	private final TagDatabaseManager tagDb = TagDatabaseManager.getInstance();

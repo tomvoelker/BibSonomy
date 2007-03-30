@@ -14,6 +14,7 @@ import org.bibsonomy.database.params.GenericParam;
  */
 public class GeneralDatabaseManager extends AbstractDatabaseManager {
 
+	/** Singleton */
 	private final static GeneralDatabaseManager singleton = new GeneralDatabaseManager();
 
 	private GeneralDatabaseManager() {

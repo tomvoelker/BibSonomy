@@ -22,7 +22,7 @@ import org.bibsonomy.model.User;
 public class RestDatabaseManager implements LogicInterface {
 
 	/** Singleton */
-	private static RestDatabaseManager singleton = new RestDatabaseManager();
+	private final static RestDatabaseManager singleton = new RestDatabaseManager();
 	private final Map<ResourceType, CrudableContent> contentDBManagers;
 
 	private RestDatabaseManager() {

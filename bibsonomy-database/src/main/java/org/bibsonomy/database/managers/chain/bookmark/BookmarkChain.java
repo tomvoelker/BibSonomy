@@ -18,16 +18,16 @@ import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksViewable;
  */
 public class BookmarkChain implements FirstChainElement {
 
-	private BookmarkChainElement getBookmarksForUser;
-	private BookmarkChainElement getBookmarksByHash;
-	private BookmarkChainElement getBookmarksByHashForUser;
-	private BookmarkChainElement getBookmarksByTagNames;
-	private BookmarkChainElement getBookmarksByTagNamesAndUser;
-	private BookmarkChainElement getBookmarksForGroup;
-	private BookmarkChainElement getBookmarksForGroupAndTag;
-	private BookmarkChainElement getBookmarksForHomePage;
-	private BookmarkChainElement getBookmarksForPopular;
-	private BookmarkChainElement getBookmarksViewable;
+	private final ChainElement getBookmarksForUser;
+	private final ChainElement getBookmarksByHash;
+	private final ChainElement getBookmarksByHashForUser;
+	private final ChainElement getBookmarksByTagNames;
+	private final ChainElement getBookmarksByTagNamesAndUser;
+	private final ChainElement getBookmarksForGroup;
+	private final ChainElement getBookmarksForGroupAndTag;
+	private final ChainElement getBookmarksForHomePage;
+	private final ChainElement getBookmarksForPopular;
+	private final ChainElement getBookmarksViewable;
 
 	public BookmarkChain() {
 		this.getBookmarksForUser = new GetBookmarksForUser();
