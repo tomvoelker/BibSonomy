@@ -35,9 +35,9 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 */
 	@SuppressWarnings("unchecked")
      protected List<Post<? extends Resource>> bibtexList(final String query, final BibTexParam param) {
-		return (List<Post<? extends Resource>>) queryForAnything(query, param, QueryFor.LIST);
+		return (List<Post<? extends Resource>>) queryForList(query, param);
 	}
-	
+
 	/**
 	 * <em>/bibtex/023847123ffa8976a969786f876f78e68</em><br/><br/>
 	 * 
@@ -273,15 +273,19 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		return this.bibtexList("getBibTexByHashForUser", param);
 	}
 
-	/********get a content_id by a given user and a given hash***********/
-	public Integer getContentIdByUserAndHash(final BibTex bibtex){
-		return (Integer)this.queryForObject("getContentIdByUserAndHash", bibtex);
+	/**
+	 * Get a contentId by a given user and a given hash
+	 */
+	public Integer getContentIdByUserAndHash(final BibTex bibtex) {
+		return (Integer) this.queryForObject("getContentIdByUserAndHash", bibtex);
 	}
 
-	/**********modify update to select, return is list of String**************/
+	/**
+	 * Modify update to select, return is list of String (<- FIXME awkward docs)
+	 */
 	public String getBibTexSimHashsByContentId(final BibTex param) {
 		// TODO not tested
-		return (String)this.queryForObject("getBibTexSimHashsByContentId", param);
+		return (String) this.queryForObject("getBibTexSimHashsByContentId", param);
 	}
 
 	/**

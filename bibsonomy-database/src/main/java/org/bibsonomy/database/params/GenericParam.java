@@ -51,7 +51,6 @@ public abstract class GenericParam<T extends Resource> {
 	private String userName;
 	private String description;
 	private String extension;
-	
 	/**
 	 * The current user, who would be identified by userName, can look at other
 	 * people's content. This requested user is identified by this string.
@@ -78,7 +77,6 @@ public abstract class GenericParam<T extends Resource> {
 	private int newTasId;
 	private String url;
 	private ConstantID contentType;
-	
 
 	public GenericParam() {
 		this.tagIndex = new ArrayList<TagIndex>();
@@ -96,7 +94,6 @@ public abstract class GenericParam<T extends Resource> {
 	 * Implementations of this class will have to implement this method to
 	 * identify their content type.
 	 */
-
 	public boolean isCaseSensitiveTagNames() {
 		return this.caseSensitiveTagNames;
 	}
@@ -320,7 +317,6 @@ public abstract class GenericParam<T extends Resource> {
 		this.url = url;
 	}
 
-	
 	public int getContentType() {
 		return this.contentType.getId();
 	}
@@ -336,5 +332,4 @@ public abstract class GenericParam<T extends Resource> {
 	public void setTagName(String tagName) {
 		this.tagName = tagName;
 	}
-
 }

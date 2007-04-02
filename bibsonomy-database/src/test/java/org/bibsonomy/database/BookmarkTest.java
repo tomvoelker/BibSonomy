@@ -13,7 +13,7 @@ import org.junit.Test;
  * @author mgr
  * @author Christian Schenk
  */
-public class BookmarkTest extends AbstractSqlMapTest {
+public class BookmarkTest extends AbstractDatabaseTest {
 
 	@Test
 	public void getBookmarkByTagNames() {

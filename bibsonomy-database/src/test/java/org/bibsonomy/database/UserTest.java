@@ -4,7 +4,7 @@ package org.bibsonomy.database;
 import org.bibsonomy.model.User;
 
 // TODO should we fix this preliminary test ???
-public class UserTest extends AbstractSqlMapTest {
+public class UserTest extends AbstractDatabaseTest {
 /*
  * aktuelle Parameter werden mit default gefüllt
  */

@@ -38,13 +38,13 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 */
 	@SuppressWarnings("unchecked")
 	protected List<Bookmark> bookmarkList(final String query, final BookmarkParam param) {
-		return (List<Bookmark>) queryForAnything(query, param, QueryFor.LIST);
+		return (List<Bookmark>) queryForList(query, param);
 	}
 
 	// FIXME return value needs to be changed to org.bibsonomy.model.Post
 	@SuppressWarnings("unchecked")
 	protected List<Post<? extends Resource>> bookmarkList(final String query, final BookmarkParam param, final boolean test) {
-		return (List<Post<? extends Resource>>) queryForAnything(query, param, QueryFor.LIST);
+		return (List<Post<? extends Resource>>) queryForList(query, param);
 	}
 
 	/**
@@ -457,14 +457,14 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
         	/*
         	 * request object from database does not exist for attribute hash and user, 
         	 */
-			
         	if(storeTemp.size()==0){
         		System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         		System.out.println("++++++++++++++++kein Bookmark Objekt vorhanden zu aktuellem Hash und User++++++++++");
         		System.out.println("++++++++++++++++++++EXCEPTION++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         		System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        	}     	
-        	
+        		throw new RuntimeException("There's no bookmark for this hash");
+        	}
+
         	/*
         	 * get Hash from database object, rsp. we get a  post from database
         	 * according arguments and compute a new hash from current url and compare

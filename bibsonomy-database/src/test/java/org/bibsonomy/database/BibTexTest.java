@@ -13,7 +13,7 @@ import org.junit.Test;
  * @author mgr
  * @author Christian Schenk
  */
-public class BibTexTest extends AbstractSqlMapTest {
+public class BibTexTest extends AbstractDatabaseTest {
 
 	@Test
 	public void getBibTexByHash() {

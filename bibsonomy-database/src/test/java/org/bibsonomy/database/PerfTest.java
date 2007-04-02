@@ -17,7 +17,7 @@ import org.junit.Test;
  * 
  * @author Christian Schenk
  */
-public class PerfTest extends AbstractSqlMapTest {
+public class PerfTest extends AbstractDatabaseTest {
 
 	@Test
 	@SuppressWarnings( { "unchecked", "unused" })

@@ -15,7 +15,7 @@ import org.junit.Test;
  * 
  * @author Christian Schenk
  */
-public class TagTest extends AbstractSqlMapTest {
+public class TagTest extends AbstractDatabaseTest {
 
 	/**
 	 * Retrieves only one Tag-object

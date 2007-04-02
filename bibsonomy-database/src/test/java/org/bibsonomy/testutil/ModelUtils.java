@@ -1,7 +1,5 @@
 package org.bibsonomy.testutil;
 
-import java.util.Date;
-
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
@@ -18,26 +16,23 @@ public class ModelUtils {
 	private static void setResourceDefaults(final Resource resource) {
 		// resource.setContentId(1);
 		resource.setCount(0);
-//		resource.setDate(null);
-//		resource.setGroupId(ConstantID.GROUP_KDE.getId());
-//		resource.setGroupName("kde");
-		//resource.setUrl("");
-//		resource.setUserName("kde");
+		// resource.setDate(null);
+		// resource.setGroupId(ConstantID.GROUP_KDE.getId());
+		// resource.setGroupName("kde");
+		// resource.setUrl("");
+		// resource.setUserName("kde");
 	}
 
 	/**
 	 * Creates a bookmark with all properties set.
 	 */
 	// FIXME
-	public static Bookmark getBookmark() {
-		Date date = new Date();
+	public static Bookmark getBookmark() {		
 		final Bookmark rVal = new Bookmark();
-//		rVal.setUserName("hallo");	
+		setResourceDefaults(rVal);
 		rVal.setDescription("test");
 		rVal.setExtended("test");
 		rVal.setUrl("http://www.bibonomy.org");
-//		rVal.setDate(date);
-	//	rVal.setContentId(2);
 		return rVal;
 	}
 
@@ -77,7 +72,7 @@ public class ModelUtils {
 		rVal.setSeries("test");
 		rVal.setTitle("test");
 		rVal.setType("test");
-		//rVal.setUrl("test");
+		// rVal.setUrl("test");
 		rVal.setVolume("test");
 		rVal.setYear("test");
 		return rVal;

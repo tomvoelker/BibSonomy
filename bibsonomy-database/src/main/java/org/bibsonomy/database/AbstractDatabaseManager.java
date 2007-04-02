@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.bibsonomy.database.util.DatabaseUtils;
+import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.util.ExceptionUtils;
 
@@ -24,8 +24,6 @@ public class AbstractDatabaseManager {
 
 	/** Logger */
 	protected static final Logger log = Logger.getLogger(AbstractDatabaseManager.class);
-	/** Communication with the database is done with the sqlMap */
-	private final SqlMapClient sqlMap;
 	/** Defines whether the database should be readonly */
 	private boolean readonly;
 
@@ -40,10 +38,9 @@ public class AbstractDatabaseManager {
 	}
 
 	/**
-	 * Initializes the SqlMap
+	 * The database is writeable by default.
 	 */
 	public AbstractDatabaseManager() {
-		this.sqlMap = DatabaseUtils.getSqlMapClient(log);
 		this.readonly = false;
 	}
 
@@ -68,18 +65,42 @@ public class AbstractDatabaseManager {
 
 	/**
 	 * Can be used to start a query that retrieves a list of tags.
+	 * 
+	 * @see tagList(final String query, final Object param, final Transaction
+	 *      transaction)
+	 */
+	protected List<Tag> tagList(final String query, final Object param) {
+		return this.tagList(query, param, this.getTransaction());
+	}
+
+	/**
+	 * Can be used to start a query that retrieves a list of tags.
+	 * 
+	 * @see tagList(final String query, final Object param)
 	 */
 	@SuppressWarnings("unchecked")
-	protected List<Tag> tagList(final String query, final Object param) {
-		return (List<Tag>) queryForAnything(query, param, QueryFor.LIST);
+	protected List<Tag> tagList(final String query, final Object param, final Transaction transaction) {
+		return (List<Tag>) queryForAnything(query, param, QueryFor.LIST, transaction);
 	}
 
 	/**
 	 * Can be used to start a query that retrieves a list of Integers.
+	 * 
+	 * @see intList(final String query, final Object param, final Transaction
+	 *      transaction)
+	 */
+	protected List<Integer> intList(final String query, final Object param) {
+		return this.intList(query, param, this.getTransaction());
+	}
+
+	/**
+	 * Can be used to start a query that retrieves a list of Integers.
+	 * 
+	 * @see intList(final String query, final Object param)
 	 */
 	@SuppressWarnings("unchecked")
-	protected List<Integer> intList(final String query, final Object param) {
-		return (List<Integer>) queryForAnything(query, param, QueryFor.LIST);
+	protected List<Integer> intList(final String query, final Object param, final Transaction transaction) {
+		return (List<Integer>) queryForAnything(query, param, QueryFor.LIST, transaction);
 	}
 
 	/**
@@ -91,28 +112,28 @@ public class AbstractDatabaseManager {
 	 * cast.
 	 */
 	protected Object queryForObject(final String query, final Object param) {
-		return this.queryForAnything(query, param, QueryFor.OBJECT);
+		return this.queryForObject(query, param, this.getTransaction());
 	}
 
 	/**
-	 * Inserts an object into the database.
+	 * @see queryForObject(final String query, final Object param)
 	 */
-	public void insert(final String query, final Object param) {
-		this.insertUpdateDelete(query, param, StatementType.INSERT);
+	protected Object queryForObject(final String query, final Object param, final Transaction transaction) {
+		return this.queryForAnything(query, param, QueryFor.OBJECT, transaction);
 	}
 
 	/**
-	 * Updates an object in the database.
+	 * Can be used to retrieve a list of objects.
 	 */
-	protected void update(final String query, final Object param) {
-		this.insertUpdateDelete(query, param, StatementType.UPDATE);
+	protected List queryForList(final String query, final Object param) {
+		return this.queryForList(query, param, this.getTransaction());
 	}
 
 	/**
-	 * Deletes an object from the database.
+	 * @see queryForList(final String query, final Object param)
 	 */
-	protected void delete(final String query, final Object param) {
-		this.insertUpdateDelete(query, param, StatementType.DELETE);
+	protected List queryForList(final String query, final Object param, final Transaction transaction) {
+		return (List) this.queryForAnything(query, param, QueryFor.LIST, transaction);
 	}
 
 	/**
@@ -122,16 +143,58 @@ public class AbstractDatabaseManager {
 	 * from that call.
 	 */
 	@SuppressWarnings("unchecked")
-	protected Object queryForAnything(final String query, final Object param, final QueryFor queryFor) {
-		return this.transactionWrapper(query, param, StatementType.SELECT, queryFor);
+	private Object queryForAnything(final String query, final Object param, final QueryFor queryFor, final Transaction transaction) {
+		return this.transactionWrapper(query, param, StatementType.SELECT, queryFor, transaction);
+	}
+
+	/**
+	 * Inserts an object into the database.
+	 */
+	protected void insert(final String query, final Object param) {
+		this.insert(query, param, this.getTransaction());
+	}
+
+	/**
+	 * @see insert(final String query, final Object param)
+	 */
+	protected void insert(final String query, final Object param, final Transaction transaction) {
+		this.insertUpdateDelete(query, param, StatementType.INSERT, transaction);
+	}
+
+	/**
+	 * Updates an object in the database.
+	 */
+	protected void update(final String query, final Object param) {
+		this.update(query, param, this.getTransaction());
+	}
+
+	/**
+	 * @see update(final String query, final Object param)
+	 */
+	protected void update(final String query, final Object param, final Transaction transaction) {
+		this.insertUpdateDelete(query, param, StatementType.UPDATE, transaction);
+	}
+
+	/**
+	 * Deletes an object from the database.
+	 */
+	protected void delete(final String query, final Object param) {
+		this.delete(query, param, this.getTransaction());
+	}
+
+	/**
+	 * @see delete(final String query, final Object param)
+	 */
+	protected void delete(final String query, final Object param, final Transaction transaction) {
+		this.insertUpdateDelete(query, param, StatementType.DELETE, transaction);
 	}
 
 	/**
 	 * This is another convenience method, which executes insert, update or
 	 * delete statements.
 	 */
-	private void insertUpdateDelete(final String query, final Object param, final StatementType statementType) {
-		this.transactionWrapper(query, param, statementType, null);
+	private void insertUpdateDelete(final String query, final Object param, final StatementType statementType, final Transaction transaction) {
+		this.transactionWrapper(query, param, statementType, null, transaction);
 	}
 
 	/**
@@ -153,53 +216,69 @@ public class AbstractDatabaseManager {
 	 *            select
 	 * @return An object in case of a select statement, null otherwise
 	 */
-	private Object transactionWrapper(final String query, final Object param, final StatementType statementType, final QueryFor queryFor) {
-		Object rVal = null;
+	private Object transactionWrapper(final String query, final Object param, final StatementType statementType, final QueryFor queryFor, final Transaction transaction) {
+		final SqlMapClient sqlMap = transaction.getSqlMap();
 		try {
 			// If the database is readonly we start a transaction, so we can
 			// commit/abort it later
-			if (this.isReadonly()) this.sqlMap.startTransaction();
-
-			switch (statementType) {
-			case SELECT:
-				switch (queryFor) {
-				case OBJECT:
-					rVal = this.sqlMap.queryForObject(query, param);
-					break;
-				case LIST:
-					rVal = this.sqlMap.queryForList(query, param);
-					break;
-				}
-				break;
-			case INSERT:
-				this.sqlMap.insert(query, param);
-				break;
-			case UPDATE:
-				this.sqlMap.update(query, param);
-				break;
-			case DELETE:
-				this.sqlMap.delete(query, param);
-				break;
-			}
+			if (this.isReadonly()) transaction.startTransaction();
+			// Execute the query
+			return this.executeQuery(sqlMap, query, param, statementType, queryFor);
 		} catch (final SQLException ex) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't execute query '" + query + "'");
 		} finally {
 			try {
 				// If the database is writeable we commit the transaction
 				// FIXME transaction management needs improvement
-				// if (!this.isReadonly()) this.sqlMap.commitTransaction();
-				// XXX keeps the try-catch-block intact
-				if (false) throw new SQLException();
+				if (!this.isReadonly() && !transaction.isBatch()) transaction.commitTransaction();
+				// // XXX keeps the try-catch-block intact
+				// if (false) throw new SQLException();
 			} catch (final SQLException ex) {
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't commit transaction for query '" + query + "'");
 			} finally {
 				try {
 					// Regardless of the commit we have to call endTransaction
-					if (this.isReadonly()) this.sqlMap.endTransaction();
+					if (this.isReadonly() && !transaction.isBatch()) transaction.endTransaction();
 				} catch (final SQLException ex) {
 					ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't end transaction for query '" + query + "'");
 				}
 			}
+		}
+		return null; // unreachable
+	}
+
+	/**
+	 * Returns a new transaction object.
+	 */
+	protected Transaction getTransaction() {
+		return new Transaction();
+	}
+
+	/**
+	 * Executes a query.
+	 */
+	private Object executeQuery(final SqlMapClient sqlMap, final String query, final Object param, final StatementType statementType, final QueryFor queryFor) throws SQLException {
+		Object rVal = null;
+		switch (statementType) {
+		case SELECT:
+			switch (queryFor) {
+			case OBJECT:
+				rVal = sqlMap.queryForObject(query, param);
+				break;
+			case LIST:
+				rVal = sqlMap.queryForList(query, param);
+				break;
+			}
+			break;
+		case INSERT:
+			sqlMap.insert(query, param);
+			break;
+		case UPDATE:
+			sqlMap.update(query, param);
+			break;
+		case DELETE:
+			sqlMap.delete(query, param);
+			break;
 		}
 		return rVal;
 	}

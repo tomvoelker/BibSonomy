@@ -19,13 +19,19 @@ import org.bibsonomy.model.Resource;
  */
 public class GenericChainHandler implements ChainPerform {
 
+	/** Singleton */
+	private final static GenericChainHandler singleton = new GenericChainHandler();
 	/** List of all chains */
 	private final List<FirstChainElement> chains;
 
-	public GenericChainHandler() {
+	private GenericChainHandler() {
 		this.chains = new ArrayList<FirstChainElement>();
 		this.chains.add(new BookmarkChain());
 		this.chains.add(new BibTexChain());
+	}
+
+	public static GenericChainHandler getInstance() {
+		return singleton;
 	}
 
 	public List<Post<? extends Resource>> perform(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {

@@ -14,7 +14,7 @@ import org.junit.Test;
  * @author mgr
  * @author Christian Schenk
  */
-public class GeneralTest extends AbstractSqlMapTest {
+public class GeneralTest extends AbstractDatabaseTest {
 
 	@Test
 	public void isFriendOf() {

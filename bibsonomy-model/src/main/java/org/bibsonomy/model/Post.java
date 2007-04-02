@@ -15,6 +15,7 @@ import org.bibsonomy.model.User;
  */
 public class Post<T extends Resource> {
 
+	/** The resource assigned to this post */
 	private T resource;
 	/** We need this here if we want to use groupBy in iBatis */
 	private int contentId;
@@ -23,20 +24,19 @@ public class Post<T extends Resource> {
 	private List<Tag> tags;
 	/** A timestamp for this resource */
 	private Date date;
-    
 	/**
-	 * The description should be part of the post because it's a description individually made by 
-	 * one user for his post - another user may descripe the post with another text 
+	 * The description should be part of the post because it's a description
+	 * individually made by one user for his post - another user may describe
+	 * the post with another text
 	 */
 	private String description;
-	
 	/**
-	 * only for testCases
-	 * its not a good idea to damage the model just to let some unit-tests perform..
+	 * only for testCases its not a good idea to damage the model just to let
+	 * some unit-tests perform..
 	 */
 	@Deprecated
 	private int groupId;
-	
+
 	public Post() {
 		this.tags = new ArrayList<Tag>();
 	}
@@ -50,8 +50,7 @@ public class Post<T extends Resource> {
 	}
 
 	public List<Group> getGroups() {
-		if( this.groups == null )
-		{
+		if (this.groups == null) {
 			this.groups = new LinkedList<Group>();
 		}
 		return this.groups;
@@ -78,8 +77,7 @@ public class Post<T extends Resource> {
 	}
 
 	public List<Tag> getTags() {
-		if( this.tags == null )
-		{
+		if (this.tags == null) {
 			this.tags = new LinkedList<Tag>();
 		}
 		return this.tags;
@@ -109,18 +107,18 @@ public class Post<T extends Resource> {
 		this.groups.add(group);
 	}
 
-	
 	/**
-	 * only for testCases
-	 * its not a good idea to damage the model just to let some unit-tests perform..
+	 * only for testCases its not a good idea to damage the model just to let
+	 * some unit-tests perform..
 	 */
 	@Deprecated
 	public int getGroupId() {
 		return this.groupId;
 	}
+
 	/**
-	 * only for testCases
-	 * its not a good idea to damage the model just to let some unit-tests perform..
+	 * only for testCases its not a good idea to damage the model just to let
+	 * some unit-tests perform..
 	 */
 	@Deprecated
 	public void setGroupId(int groupId) {
@@ -135,10 +133,10 @@ public class Post<T extends Resource> {
 	}
 
 	/**
-	 * @param description the description to set
+	 * @param description
+	 *            the description to set
 	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
 }

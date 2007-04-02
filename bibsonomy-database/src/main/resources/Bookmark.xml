@@ -2,7 +2,6 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="Bookmark">
-	
 
 	<select id="getBookmarkByTagNames" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT <include refid="bookmarkAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr  count, NULL AS `group`, NULL AS group_name
@@ -72,7 +71,7 @@
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 
-   <select id="getBookmarkPopular" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+	<select id="getBookmarkPopular" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT <include refid="bookmarkAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name
 		FROM temp_bookmark b
 		LEFT OUTER JOIN tas AS t ON t.content_id = b.content_id, urls u

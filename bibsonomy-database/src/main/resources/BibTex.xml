@@ -11,7 +11,7 @@
 	</select>
 
 	<select id="getBibTexByTagNames" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid="bibtexAttributes"/>, t.tag_name, h.ctr as count, NULL AS `group`, NULL AS group_name
+		SELECT <include refid="bibtexAttributes"/>, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name
 		FROM bibtex b, tas t, bibhash h,
 		     (SELECT t1.content_id
 		      FROM <include refid="tagFromQuery"/>
@@ -27,7 +27,7 @@
 	</select>
 
 	<select id="getBibTexByTagNamesForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid="bibtexAttributes"/>, t.tag_name, g.group_name, h.ctr as count,g.group
+		SELECT <include refid="bibtexAttributes"/>, t.tag_name, h.ctr AS count, g.group, g.group_name
 		FROM bibtex b, tas t, groupids g, bibhash h,
 		     (SELECT t1.content_id
 		      FROM <include refid="tagFromQuery"/>
@@ -45,7 +45,7 @@
 	</select>
 
 	<select id="getBibTexByConceptForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid="bibtexAttributes"/>, t.tag_name, g.group_name, h.ctr as count, g.group
+		SELECT <include refid="bibtexAttributes"/>, t.tag_name, h.ctr AS count, g.group, g.group_name
 		FROM bibtex b, tas t, groupids g, bibhash h,
 		     (SELECT DISTINCT b.content_id
 		      FROM bibtex b, <include refid="conceptFromQuery"/>
@@ -83,7 +83,7 @@
 	</select>
 
 	<select id="getBibTexByDownload" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid ="bibtexAttributes"/>, t.tag_name, h.ctr
+		SELECT <include refid ="bibtexAttributes"/>, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name
 		FROM (SELECT content_id, date
 		      FROM collector
 		      WHERE user_name = #userName#) AS c
@@ -93,8 +93,31 @@
 		ORDER BY c.date DESC, content_id DESC
 	</select>
 
-	
-	
+	<select id="getBibTexForHomePage" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+		SELECT <include refid ="bibtexAttributes"/>, t.tag_name, b.ctr as count, NULL AS `group`, NULL AS group_name
+		FROM (SELECT b.*, h.ctr
+		      FROM bibtex b FORCE INDEX (group_date_content_id_idx), bibhash h
+		      WHERE `group` = #groupType#
+		            AND <include refid="bibtexSimHash"/>
+		      ORDER BY date DESC
+		      LIMIT 15) AS b
+		LEFT OUTER JOIN tas t ON b.content_id=t.content_id
+		ORDER BY b.date DESC, b.content_id DESC 
+	</select>
+
+	<select id="getBibTexByHash" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+		SELECT <include refid ="bibtexAttributes"/>, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name
+		FROM (SELECT b2.*
+		      FROM bibtex b2
+		      WHERE simhash$requestedSimHash$ = #hash#
+		            AND `group` = #groupType#
+		      ORDER BY date DESC
+		      LIMIT #limit# OFFSET #offset#) AS b
+		LEFT OUTER JOIN tas t ON b.content_id = t.content_id, bibhash h
+		WHERE <include refid="bibtexSimHash"/>
+		ORDER BY b.date DESC, b.content_id DESC
+	</select>
+
 	<select id="getBibTexByHashCount" resultClass="int" parameterClass="bibtexParam">
 		SELECT ctr FROM bibhash WHERE hash = #hash# AND type = #simHash#
 	</select>
@@ -103,11 +126,9 @@
 		SELECT contendID FROM  WHERE hash = #hash# AND type = #simHash#
 	</select>
 
-	
-	  <!--   Here we join the document table to the bibtex table to get the corresponding 
-	   documents and link them to the user; if currUser != requUser no documents
-	   are joined so that a user can only see her own documents.-->
-	
+	<!--   Here we join the document table to the bibtex table to get the corresponding 
+		documents and link them to the user; if currUser != requUser no documents
+		are joined so that a user can only see her own documents. -->
 	<select id="getBibTexByHashForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT *
 		FROM (SELECT *
@@ -125,7 +146,8 @@
 	</select>
 
 	<select id="getBibTexSearch" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid ="bibtexAttributes"/>, t.tag_name, b.ctr
+		SELECT <include refid ="bibtexAttributesWithoutSimHashes"/>, t.tag_name, b.ctr AS count,
+		       b.interHash, b.intraHash, NULL AS `group`, NULL AS group_name
 		FROM (SELECT <include refid ="bibtexAttributes2"/>, h.ctr
 		      FROM bibtex b2, bibhash h, search s
 		      WHERE s.group = #groupType#
@@ -254,25 +276,25 @@
 		      <include refid="getPostForUser"/>
 	</select>
 
-	<!-- Replaced 'simhash"+Bibtex.SIM_HASH_0, simhash"+Bibtex.SIM_HASH_1, simhash"+Bibtex.SIM_HASH_2, simhash"+Bibtex.SIM_HASH_3' 
-
+	<!-- Replaced 'simhash"+Bibtex.SIM_HASH_0, simhash"+Bibtex.SIM_HASH_1, simhash"+Bibtex.SIM_HASH_2, simhash"+Bibtex.SIM_HASH_3' -->
 	<insert id="insertBibTex" parameterClass="bibtexParam">
 		INSERT INTO bibtex (title, entrytype, author, editor, year, content_id, journal, volume, chapter,
 		                    edition, month, bookTitle, howpublished, institution, organization, publisher,
 		                    address, school, series, bibtexKey, `group`, date, user_name, url, description,
 		                    annote, note, pages, bKey, number, crossref, misc, bibtexAbstract, type, day,
 		                    scraperid, simhash0, simhash1, simhash2, simhash3)
-		VALUES (#bibtex.title#, #bibtex.entrytype#, #bibtex.author#, #bibtex.editor#, #bibtex.year#,
-		        #bibtex.contentId#, #bibtex.journal#, #bibtex.volume#, #bibtex.chapter#, #bibtex.edition#,
-		        #bibtex.month#, #bibtex.booktitle#, #bibtex.howpublished#, #bibtex.institution#,
-		        #bibtex.organization#, #bibtex.publisher#, #bibtex.address#, #bibtex.school#,
-		        #bibtex.series#, #bibtex.bibtexKey#, #bibtex.groupId#, #bibtex.date#, #bibtex.userName#,
-		        #bibtex.url#, #bibtex.description#, #bibtex.annote#, #bibtex.note#, #bibtex.pages#,
-		        #bibtex.BKey#, #bibtex.number#, #bibtex.crossref#, #bibtex.misc#, #bibtex.bibtexAbstract#,
-		        #bibtex.type#, #bibtex.day#, #bibtex.scraperId#, #bibtex.simHash0#, #bibtex.simHash1#,
-		        #bibtex.simHash2#, #bibtex.simHash3#)
+		VALUES (#resource.title#, #resource.entrytype#, #resource.author#, #resource.editor#, #resource.year#,
+		        #requestedContentId#, #resource.journal#, #resource.volume#, #resource.chapter#, #resource.edition#,
+		        #resource.month#, #resource.booktitle#, #resource.howpublished#, #resource.institution#,
+		        #resource.organization#, #resource.publisher#, #resource.address#, #resource.school#,
+		        #resource.series#, #resource.bibtexKey#, #groupId#, #date#, #userName#,
+		        #resource.url#, #resource.description#, #resource.annote#, #resource.note#, #resource.pages#,
+		        #resource.BKey#, #resource.number#, #resource.crossref#, #resource.misc#, #resource.bibtexAbstract#,
+		        #resource.type#, #resource.day#, #resource.scraperId#, #resource.simHash0#, #resource.simHash1#,
+		        #resource.simHash2#, #resource.simHash3#)
 	</insert>
 
+	<!--
 	<insert id="insertBibTexLog" parameterClass="bibtexParam">
 		INSERT INTO log_bibtex (title, entrytype, author, editor, year, content_id, journal, volume, chapter,
 		                    edition, month, bookTitle, howpublished, institution, organization, publisher,
@@ -379,32 +401,4 @@
 	<delete id="deleteBibTexUrlByContentId">
 		DELETE FROM bibtexurls WHERE content_id = #requestedContentId#
 	</delete> -->
-
-	
-	
-	<select id="getBibTexForHomePage" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid ="bibtexAttributes"/>, t.tag_name, b.ctr as count, NULL AS `group`, NULL AS group_name
-		FROM (SELECT b.*, h.ctr
-		      FROM bibtex b FORCE INDEX (group_date_content_id_idx), bibhash h
-		      WHERE `group` = #groupType#
-		            AND <include refid="bibtexSimHash"/>
-		      ORDER BY date DESC
-		      LIMIT 15) AS b
-		LEFT OUTER JOIN tas t ON b.content_id=t.content_id
-		ORDER BY b.date DESC, b.content_id DESC 
-	</select> 
-	
-	<select id="getBibTexByHash" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid ="bibtexAttributes"/>, t.tag_name, h.ctr as count, NULL AS `group`, NULL AS group_name
-		FROM (SELECT b2.*
-		      FROM bibtex b2
-		      WHERE simhash$requestedSimHash$ = #hash#
-		            AND `group` = #groupType#
-		      ORDER BY date DESC
-		      LIMIT #limit# OFFSET #offset#) AS b
-		LEFT OUTER JOIN tas t ON b.content_id = t.content_id, bibhash h
-		WHERE <include refid="bibtexSimHash"/>
-		ORDER BY b.date DESC, b.content_id DESC
-	</select>
-	
 </sqlMap>

@@ -6,6 +6,7 @@ import java.util.List;
 import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.BookmarkDatabaseManager;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
+import org.bibsonomy.database.managers.GenericChainHandler;
 import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
@@ -21,7 +22,7 @@ import org.junit.Before;
  * 
  * @author Christian Schenk
  */
-public abstract class AbstractSqlMapTest {
+public abstract class AbstractDatabaseTest {
 
 	/** The database manager for general queries */
 	protected GeneralDatabaseManager generalDb;
@@ -31,6 +32,8 @@ public abstract class AbstractSqlMapTest {
 	protected BibTexDatabaseManager bibTexDb;
 	/** The database manager for Tags */
 	protected TagDatabaseManager tagDb;
+	/** The chain handler */
+	protected GenericChainHandler chainHandler;
 	/**
 	 * This param can be used both for queries about bookmarks and all other
 	 * queries
@@ -45,6 +48,7 @@ public abstract class AbstractSqlMapTest {
 		this.bookmarkDb = BookmarkDatabaseManager.getInstance();
 		this.bibTexDb = BibTexDatabaseManager.getInstance();
 		this.tagDb = TagDatabaseManager.getInstance();
+		this.chainHandler = GenericChainHandler.getInstance();
 		this.resetParameters();
 		// testcases shouldn't write to the db
 		this.generalDb.setReadonly(true);
