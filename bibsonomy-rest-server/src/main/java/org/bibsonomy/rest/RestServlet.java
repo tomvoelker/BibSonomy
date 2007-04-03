@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.database.LogicInterface;
-import org.bibsonomy.database.newImpl.GenericDBManager;
+import org.bibsonomy.database.managers.RestDatabaseManager;
 import org.bibsonomy.rest.database.TestDatabase;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
@@ -41,7 +41,7 @@ public final class RestServlet extends HttpServlet
 	{
 		super.init();
 		// instantiate the bibsonomy database connection
-      logic=GenericDBManager.getInstance();
+      logic=RestDatabaseManager.getInstance();
 	}
    
    /**
@@ -205,7 +205,10 @@ public final class RestServlet extends HttpServlet
 
 /*
  * $Log$
- * Revision 1.6  2007-02-21 14:08:35  mbork
+ * Revision 1.7  2007-04-03 14:18:53  rja
+ * changed name
+ *
+ * Revision 1.6  2007/02/21 14:08:35  mbork
  * - included code generation of the schema in the maven2 build-lifecycle
  * - removed circular dependencies among the modules
  * - cleaned up the poms of the modules
