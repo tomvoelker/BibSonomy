@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers.chain.bookmark;
 
 import org.bibsonomy.database.managers.chain.FirstChainElement;
 import org.bibsonomy.database.managers.chain.ChainElement;
+import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByConceptForUser;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByHash;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByHashForUser;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByTagNames;
@@ -10,6 +11,8 @@ import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksForGroup;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksForGroupAndTag;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksForHomePage;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksForUser;
+import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksOfFriendsByTags;
+import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksOfFriendsByUser;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksPopular;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksViewable;
 
@@ -28,8 +31,12 @@ public class BookmarkChain implements FirstChainElement {
 	private final ChainElement getBookmarksForHomePage;
 	private final ChainElement getBookmarksForPopular;
 	private final ChainElement getBookmarksViewable;
-
+	private final ChainElement getBookmarksByConcept;
+    private final ChainElement  getBookmarksByUserFriends;
+    private final ChainElement  getBookmarksByUserAndTagsFriends;
+	
 	public BookmarkChain() {
+		
 		this.getBookmarksForUser = new GetBookmarksForUser();
 		this.getBookmarksByHash = new GetBookmarksByHash();
 		this.getBookmarksByHashForUser = new GetBookmarksByHashForUser();
@@ -40,8 +47,11 @@ public class BookmarkChain implements FirstChainElement {
 		this.getBookmarksForHomePage = new GetBookmarksForHomePage();
 		this.getBookmarksForPopular = new GetBookmarksPopular();
 		this.getBookmarksViewable = new GetBookmarksViewable();
+        this.getBookmarksByConcept= new GetBookmarksByConceptForUser();
+        this.getBookmarksByUserFriends=new GetBookmarksOfFriendsByUser();
+        this.getBookmarksByUserAndTagsFriends=new GetBookmarksOfFriendsByTags();
 
-		this.getBookmarksForHomePage.setNext(this.getBookmarksForPopular);
+        this.getBookmarksForHomePage.setNext(this.getBookmarksForPopular);
 		this.getBookmarksForPopular.setNext(this.getBookmarksForUser);
 		this.getBookmarksForUser.setNext(this.getBookmarksByTagNames);
 		this.getBookmarksByTagNames.setNext(this.getBookmarksByHashForUser);
@@ -50,11 +60,12 @@ public class BookmarkChain implements FirstChainElement {
 		this.getBookmarksByTagNamesAndUser.setNext(this.getBookmarksForGroup);
 		this.getBookmarksForGroup.setNext(this.getBookmarksForGroupAndTag);
 		this.getBookmarksForGroupAndTag.setNext(this.getBookmarksViewable);
-
-		/*
-		 * getBookmarksViewable.setNext(getBookmarksByUserFriends);
-		 * getBookmarksByUserFriends.setNext(getBookmarksConcept);
-		 */
+        this.getBookmarksViewable.setNext(this.getBookmarksByConcept);
+        this.getBookmarksByConcept.setNext(this.getBookmarksByUserFriends);
+		this.getBookmarksByUserFriends.setNext(this.getBookmarksByUserAndTagsFriends);
+		  
+		  
+		 
 	}
 
 	public ChainElement getFirstElement() {
