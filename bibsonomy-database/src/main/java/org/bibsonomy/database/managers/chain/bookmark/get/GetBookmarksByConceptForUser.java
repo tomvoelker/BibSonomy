@@ -25,7 +25,7 @@ public class GetBookmarksByConceptForUser extends BookmarkChainElement{
 	 * tags:given
 	 * hash:null
 	 * popular:false
-	 * added:false
+	 * added:true
 	 *   
 	 */
 	@Override
@@ -47,6 +47,11 @@ public class GetBookmarksByConceptForUser extends BookmarkChainElement{
 			}
 		
 		List<Post<? extends Resource>> posts = db.getBookmarkByConceptForUser(param);
+		if(posts.size()!=0){
+			System.out.println("GetBookmarksByConceptForUser");
+			
+			
+		}
 		return posts;
 	}
 
@@ -57,7 +62,7 @@ public class GetBookmarksByConceptForUser extends BookmarkChainElement{
 			tags!=null && 
 			hash==null &&
 			popular == false && 
-			added == false;
+			added == true;
 	}
 
 

@@ -57,7 +57,7 @@ public class GetBookmarksForHomePage extends BookmarkChainElement{
 	protected boolean canHandle(String authUser,GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end){
 		
 		return popular==false &&
-		added==true;
+		added==false;
 		
 	}
 

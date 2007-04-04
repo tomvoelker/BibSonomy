@@ -6,6 +6,7 @@ import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByHashForUser;
+import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksForUser;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.Bookmark;
@@ -302,20 +303,23 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
          * For test options
          */
 		// TODO fix this
-//		List test_getBookmarksBoomarksForUser = getBoomarksForUser.perform("jaeschke", GroupingEntity.USER, "jaeschke",null,null,false, false, 0, 19);
-//		System.out.println("test="+test_getBookmarksBoomarksForUser.size());
-//		System.out.println("authUser = " + authUser);
-//		System.out.println("grouping = " + grouping);
-//		System.out.println("groupingName = " + groupingName);
-//		System.out.println("tags = " + tags);
-//		System.out.println("hash = " + hash);
-//		System.out.println("start = " + start);
-//		System.out.println("end = " + end);
-//
-//		List<Post<? extends Resource>> posts = getBookmarksForUser.perform(authUser, grouping, groupingName, tags, hash, popular, added, start, end);
-//		System.out.println("BoookmarkDbManager posts.size= " + posts.size());
-//		return posts;
-		return null;
+/*	List test_getBookmarksBoomarksForUser =getBookmarkForUser.perform("jaeschke", GroupingEntity.USER, "jaeschke",null,null,false, false, 0, 19);
+		System.out.println("test="+test_getBookmarksBoomarksForUser.size());
+		System.out.println("authUser = " + authUser);
+		System.out.println("grouping = " + grouping);
+		System.out.println("groupingName = " + groupingName);
+		System.out.println("tags = " + tags);
+		System.out.println("hash = " + hash);
+		System.out.println("start = " + start);
+				System.out.println("end = " + end);*/
+		/*
+		 * for test intentions regarding webservice
+		 */
+		GetBookmarksForUser getBookmarkForUser=new GetBookmarksForUser();
+		List<Post<? extends Resource>> posts = getBookmarkForUser.perform(authUser, grouping, groupingName, tags, hash, popular, added, start, end);
+		System.out.println("BoookmarkDbManager posts.size= " + posts.size());
+		return posts;
+		//return null;
 	}
 
 	
@@ -350,7 +354,6 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		List<Post<? extends Resource>> storeTemp=get.perform(userFromUrl,GroupingEntity.USER,userFromUrl,null,hashFromUrl,false, false, 0, 1);
 		System.out.println("storeTemp.size: " + storeTemp.size());
 		if(storeTemp.size()==0){
-			
 			System.out.println("bookmark ist schon gelöscht");
 			
 		}
@@ -401,35 +404,6 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		String hashFromUrl=bookmarkParam.getHash();
 		String userFromUrl=bookmarkParam.getUserName();
         
-		/* TODO: if current user is a spammer*/ 
-		/*
-	     * check, if current user is a spammer 
-	    
-	    
-	    if(post.getUser().isSpammer()==true){
-
-	    	paramFromUrlValue.setSpammer(ConstantID.SPAMMER_TRUE);
-	    	
-	    }
-	    
-	    else{
-	    	
-	    	paramFromUrlValue.setSpammer(ConstantID.SPAMMER_FALSE);
-	    	
-	    }
-	    
-	    
-	    if(paramFromUrlValue.getSpammer()==ConstantID.SPAMMER_TRUE.getId()) {
-	    	
-	    	/* TODO
-	    	 * if spammer, then set  a new groupID (for external invisibility) without any loss of group information
-	    	 */
-	    	
-		/*	paramFromUrlValue.setGroupId(-3);
-		} */
-	
-	    
-	    
 	    /*
 	     *  User would like an existing bookmark
 	     */
