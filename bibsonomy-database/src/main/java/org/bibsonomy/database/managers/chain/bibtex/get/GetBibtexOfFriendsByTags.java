@@ -65,6 +65,9 @@ public class GetBibtexOfFriendsByTags extends BibTexChainElement{
 		
 		List<Post<? extends Resource>> posts = db.getBibTexForUser(param);
 		System.err.println("posts"+posts);
+		if(posts.size()!=0){
+			System.out.println("GetBibtexOfFriendsByTags");
+		}
 		return posts;
 	}
 

@@ -25,7 +25,7 @@ public class GetBibtexByConceptForUser extends BibTexChainElement{
 	 * tags:given
 	 * hash:null
 	 * popular:false
-	 * added:false
+	 * added:true
 	 *   
 	 */
 	@Override
@@ -46,6 +46,11 @@ public class GetBibtexByConceptForUser extends BibTexChainElement{
 			}
 		
 		List<Post<? extends Resource>> posts = db.getBibTexByConceptForUser(param);
+		if(posts.size()!=0){
+			System.out.println("GetBibtexByConceptForUser");
+			
+			
+		}
 		return posts;
 	}
 
@@ -56,7 +61,7 @@ public class GetBibtexByConceptForUser extends BibTexChainElement{
 			tags!=null && 
 			hash==null &&
 			popular == false && 
-			added == false;
+			added == true;
 	}
 
 

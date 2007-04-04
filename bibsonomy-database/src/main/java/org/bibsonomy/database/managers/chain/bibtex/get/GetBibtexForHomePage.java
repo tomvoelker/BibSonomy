@@ -21,7 +21,7 @@ public class GetBibtexForHomePage extends BibTexChainElement{
 	 * return a list of bibtex by a  logged user.
 	 * Following arguments have to be given:
 	 * 
-	 * grouping:irrelevant
+	 * grouping:null
 	 * name:irrelevant
 	 * tags:irrelevant
 	 * hash:irrelevant
@@ -42,7 +42,10 @@ public class GetBibtexForHomePage extends BibTexChainElement{
 		 * retrieve bookmark list with appropriate iBatis statement
 		 */
 		List<Post<? extends Resource>> posts = db.getBibTexForHomePage(param);
-        System.out.println("post="+posts.size()+"in getBookmarkForHomepage");
+        
+        if(posts.size()!=0){
+			System.out.println("GetBibtexForHomePage");
+		}
 		return posts;
 		
 		
@@ -56,8 +59,10 @@ public class GetBibtexForHomePage extends BibTexChainElement{
 	@Override
 	protected boolean canHandle(String authUser,GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end){
 		
-		return popular==false &&
-		added==true;
+		return
+		grouping==null&&
+		popular==false &&
+		added==false;
 		
 	}
 

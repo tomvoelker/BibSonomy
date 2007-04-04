@@ -22,7 +22,8 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	/** Singleton */
 	private final static BibTexDatabaseManager singleton = new BibTexDatabaseManager();
 	private final GeneralDatabaseManager generalDb = GeneralDatabaseManager.getInstance();
-
+	private final TagDatabaseManager tagDb = TagDatabaseManager.getInstance();
+	
 	private BibTexDatabaseManager() {
 	}
 

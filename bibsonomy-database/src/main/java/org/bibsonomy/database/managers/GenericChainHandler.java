@@ -26,7 +26,7 @@ public class GenericChainHandler implements ChainPerform {
 
 	private GenericChainHandler() {
 		this.chains = new ArrayList<FirstChainElement>();
-		this.chains.add(new BookmarkChain());
+		//this.chains.add(new BookmarkChain());
 		this.chains.add(new BibTexChain());
 	}
 

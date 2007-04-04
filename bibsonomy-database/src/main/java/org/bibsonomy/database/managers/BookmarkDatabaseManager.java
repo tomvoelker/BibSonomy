@@ -304,7 +304,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
         /*
          * For test options
          */
-		// TODO fix this
+		
 /*	List test_getBookmarksBoomarksForUser =getBookmarkForUser.perform("jaeschke", GroupingEntity.USER, "jaeschke",null,null,false, false, 0, 19);
 		System.out.println("test="+test_getBookmarksBoomarksForUser.size());
 		System.out.println("authUser = " + authUser);
@@ -317,10 +317,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		/*
 		 * for test intentions regarding webservice
 		 */
-		GetBookmarksForUser getBookmarkForUser=new GetBookmarksForUser();
-		List<Post<? extends Resource>> posts =GenericChainHandler.getInstance().perform("jaeschke", GroupingEntity.USER, "jaeschke", null, null, false, false, 0, 19);
-		//List<Post<? extends Resource>> posts = getBookmarkForUser.perform(authUser, grouping, groupingName, tags, hash, popular, added, start, end);
 		
+		List<Post<? extends Resource>> posts =GenericChainHandler.getInstance().perform("jaeschke", GroupingEntity.USER, "jaeschke", null, null, false, false, 0, 19);
 		System.out.println("BoookmarkDbManager posts.size= " + posts.size());
 		return posts;
 		//return null;

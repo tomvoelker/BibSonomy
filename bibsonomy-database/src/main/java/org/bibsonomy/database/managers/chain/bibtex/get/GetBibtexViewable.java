@@ -44,6 +44,9 @@ public class GetBibtexViewable extends BibTexChainElement{
 		param.setGroups(generalDb.getGroupsForUser(param));
 		
 		List<Post<? extends Resource>> posts = db.getBibTexViewable(param);
+		if(posts.size()!=0){
+			System.out.println("GetBibtexViewable");
+		}
 		return posts;
 	}
     

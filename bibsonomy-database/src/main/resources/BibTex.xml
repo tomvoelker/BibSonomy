@@ -129,9 +129,14 @@
 	<!--   Here we join the document table to the bibtex table to get the corresponding 
 		documents and link them to the user; if currUser != requUser no documents
 		are joined so that a user can only see her own documents. -->
+		
 	<select id="getBibTexByHashForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT *
-		FROM (SELECT *
+		SELECT g.*,b2.content_id,b2.date,t.tag_name,b2.user_name, b2.simhash1 AS interHash,b2.simhash2 AS intraHash,h.ctr AS count,b2.title,
+		b2.address,b2.annote, b2.booktitle, b2.chapter, b2.crossref, b2.edition, b2.howpublished,
+		b2.institution, b2.journal, b2.bkey, b2.month, b2.note, b2.number, b2.organization, b2.pages, b2.publisher,
+		b2.school, b2.series, b2.type, b2.volume, b2.day, b2.url, b2.content_id, b2.description, b2.bibtexKey,
+		b2.misc, b2.bibtexAbstract, b2.user_name, b2.date, b2.title, b2.author, b2.editor, b2.year, b2.entrytype
+		FROM (SELECT * 
 		      FROM bibtex b
 		      WHERE simhash$requestedSimHash$ = #hash#
 		            <include refid="inGroups"/>

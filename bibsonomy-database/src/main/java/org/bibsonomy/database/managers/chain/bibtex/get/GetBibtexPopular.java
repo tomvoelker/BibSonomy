@@ -44,6 +44,9 @@ public class GetBibtexPopular extends BibTexChainElement{
 		 */
 		List<Post<? extends Resource>> posts = db.getBibTexPopular(param);
         System.out.println("post="+posts.size()+"in getBibtexPopular");
+        if(posts.size()!=0){
+			System.out.println("GetBibtexPopular");
+		}
 		return posts;
 		
 		

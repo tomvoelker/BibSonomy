@@ -43,6 +43,11 @@ public class GetBibtexByHash extends BibTexChainElement {
 		 * retrieve bookmark list with appropriate iBatis statement
 		 */
 		List<Post<? extends Resource>> posts = db.getBibTexByHash(param);
+		if(posts.size()!=0){
+			System.out.println("GetBibtexByHash");
+			
+			
+		}
 		return posts;
 		
 		

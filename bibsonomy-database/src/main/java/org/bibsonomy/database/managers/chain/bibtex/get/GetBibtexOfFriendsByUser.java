@@ -52,6 +52,9 @@ public class GetBibtexOfFriendsByUser extends BibTexChainElement{
 		
 		
 		List<Post<? extends Resource>> posts = db.getBibTexForUser(param);
+		if(posts.size()!=0){
+			System.out.println("GetBibtexOfFriendsByUser");
+		}
 		return posts;
 	}
 

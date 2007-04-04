@@ -47,6 +47,9 @@ public class GetBibtexByTagNamesAndUser extends BibTexChainElement{
 		
 		
 		List<Post<? extends Resource>> posts = db.getBibTexByTagNamesForUser(param);
+		if(posts.size()!=0){
+			System.out.println("GetBibtexByTagNamesAndUser");
+		}
 		return posts;
 
 	}

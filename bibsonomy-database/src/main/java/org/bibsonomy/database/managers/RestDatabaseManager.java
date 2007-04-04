@@ -28,7 +28,8 @@ public class RestDatabaseManager implements LogicInterface {
 	private RestDatabaseManager() {
 		// add some default
 		this.contentDBManagers = new HashMap<ResourceType, CrudableContent>();
-		this.contentDBManagers.put(ResourceType.BOOKMARK, BookmarkDatabaseManager.getInstance());
+		//this.contentDBManagers.put(ResourceType.BOOKMARK, BookmarkDatabaseManager.getInstance());
+		this.contentDBManagers.put(ResourceType.BIBTEX, BibTexDatabaseManager.getInstance());
 	}
 
 	public static LogicInterface getInstance() {

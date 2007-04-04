@@ -48,6 +48,9 @@ public class GetBibtexForGroupAndTag extends BibTexChainElement{
 		param.setGroups(generalDb.getGroupsForUser(param));
 		
 		List<Post<? extends Resource>> posts = db.getBibTexForGroupByTag(param);
+		if(posts.size()!=0){
+			System.out.println("GetBibtexForGroupAndTag");
+		}
 		return posts;
 	}
     

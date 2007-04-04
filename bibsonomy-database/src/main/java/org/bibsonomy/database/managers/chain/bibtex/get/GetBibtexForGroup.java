@@ -42,6 +42,9 @@ public class GetBibtexForGroup extends BibTexChainElement{
 		param.setGroups(generalDb.getGroupsForUser(param));
 		
 		List<Post<? extends Resource>> posts = db.getBibTexForGroup(param);
+		if(posts.size()!=0){
+			System.out.println("GetBibtexForGroup");
+		}
 		return posts;
 	}
 

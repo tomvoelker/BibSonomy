@@ -1,4 +1,4 @@
-                package org.bibsonomy.database.managers;
+package org.bibsonomy.database.managers;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -18,7 +18,7 @@ public class GenericChainHandlerTest extends AbstractDatabaseTest {
 		taglist.add("semantic");
 		taglistfriend.add("DVD");
 		// ByTagName
-	   // final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", GroupingEntity.ALL, "jaeschke", taglist, null, false, false, 0, 10);
+	    //final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", GroupingEntity.ALL, "jaeschke", taglist, null, false, false, 0, 10);
 		 //ByTagNameForUser
 		//final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", GroupingEntity.USER, "jaeschke", taglist, null, false, false, 0, 19);
 		//ByConceptForUser 
@@ -26,9 +26,9 @@ public class GenericChainHandlerTest extends AbstractDatabaseTest {
 		//ForUser
 		//final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", GroupingEntity.USER, "jaeschke", null, null, false, false, 0, 19);
 		//ByHash
-		//final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", GroupingEntity.ALL, "jaeschke", null,"de85f4da2df7bc83640a960cfd367497", false, false, 0, 19);
-		//ByHashForUser
-		//final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", GroupingEntity.USER, "jaeschke", null,"de85f4da2df7bc83640a960cfd367497", false, false, 0, 19);
+		//final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", GroupingEntity.ALL, "jaeschke", null,"7d85e1092613fd7c91d6ba5dfcf4a044", false, false, 0, 19);
+		//ByHashForUser geht noch nicht
+		//final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", GroupingEntity.USER, "jaeschke", null,"7d85e1092613fd7c91d6ba5dfcf4a044", false, false, 0, 19);
 		//ByViewable
 		//final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", GroupingEntity.VIEWABLE, "jaeschke", null, null, false, false, 0, 19);
 		//ForGroup
