@@ -220,7 +220,8 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @return true if the user exists and has the given password
 	 */
 	public boolean validateUserAccess(String username, String password) {
-		return false;
+		return true;
+		//TODO: implement this method!
 	}
 
 	/**
