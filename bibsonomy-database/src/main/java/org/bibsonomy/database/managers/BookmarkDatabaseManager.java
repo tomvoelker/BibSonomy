@@ -427,13 +427,15 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	    	
 	    	System.out.println("post hash "+ post.getResource().getIntraHash());
 	    	System.out.println("post userName "+ post.getUser().getName());
+	    	GetBookmarksByHashForUser getBookmarksByHashForUser =new GetBookmarksByHashForUser();
 	    	
 	    	/*
 	    	 * create bookmark object from database with current 
 	    	 * hash and user values (getBookmarkByHashForUser)
 	    	 */
 	    	List<Post<? extends Resource>> storeTemp = null; 
-	    	 //this.getBookmarkByHashForUser.perform(userFromUrl,GroupingEntity.USER,userFromUrl,null,hashFromUrl,false, false, 0, 1);
+	    	
+	    	getBookmarksByHashForUser.perform(userFromUrl,GroupingEntity.USER,userFromUrl,null,hashFromUrl,false, false, 0, 1);
         	
 	    	System.out.println("storeTemp.size()= "+storeTemp.size());
 			System.out.println("authUser = " + userFromUrl);
