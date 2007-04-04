@@ -1,5 +1,6 @@
 package org.bibsonomy.database.managers;
 
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import org.bibsonomy.common.enums.ConstantID;
@@ -9,6 +10,7 @@ import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByHashForU
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksForUser;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.util.DatabaseUtils;
+import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -316,7 +318,9 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		 * for test intentions regarding webservice
 		 */
 		GetBookmarksForUser getBookmarkForUser=new GetBookmarksForUser();
-		List<Post<? extends Resource>> posts = getBookmarkForUser.perform(authUser, grouping, groupingName, tags, hash, popular, added, start, end);
+		List<Post<? extends Resource>> posts =GenericChainHandler.getInstance().perform("jaeschke", GroupingEntity.USER, "jaeschke", null, null, false, false, 0, 19);
+		//List<Post<? extends Resource>> posts = getBookmarkForUser.perform(authUser, grouping, groupingName, tags, hash, popular, added, start, end);
+		
 		System.out.println("BoookmarkDbManager posts.size= " + posts.size());
 		return posts;
 		//return null;
@@ -407,7 +411,15 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	    /*
 	     *  User would like an existing bookmark
 	     */
-	    
+		
+		Transaction transaction=this.getTransaction();
+		transaction.setBatch();
+		try {
+			transaction.startTransaction();
+		} catch (SQLException ex1) {
+			// TODO Auto-generated catch block
+			ex1.printStackTrace();
+		}
 	    if(update==true && post.getResource().getIntraHash()!=null && post.getUser().getName()!=null){
 	    	System.out.println("******************************************************");
 	    	System.out.println("User möchte bereits bestehenden Eintrag aktualisieren");
@@ -420,7 +432,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	    	 * create bookmark object from database with current 
 	    	 * hash and user values (getBookmarkByHashForUser)
 	    	 */
-	    	List<Post<? extends Resource>> storeTemp = null; //FIXME this.getBookmarkByHashForUser.perform(userFromUrl,GroupingEntity.USER,userFromUrl,null,hashFromUrl,false, false, 0, 1);
+	    	List<Post<? extends Resource>> storeTemp = null; 
+	    	 //this.getBookmarkByHashForUser.perform(userFromUrl,GroupingEntity.USER,userFromUrl,null,hashFromUrl,false, false, 0, 1);
         	
 	    	System.out.println("storeTemp.size()= "+storeTemp.size());
 			System.out.println("authUser = " + userFromUrl);
@@ -793,7 +806,13 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	    	     } /*end if*/
 	    	
 	    	} /*end else*/
-	    	
+	    try {
+			transaction.endTransaction();
+		} catch (SQLException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+		}
+	    
         return true;
 	}
 }
