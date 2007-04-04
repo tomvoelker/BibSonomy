@@ -55,6 +55,11 @@ public class GetBookmarksByTagNames extends BookmarkChainElement{
 		 */
 		
 		List<Post<? extends Resource>> posts = db.getBookmarkByTagNames(param);
+		if(posts.size()!=0){
+			System.out.println("GetBookmarksByTagNames");
+			
+			
+		}
 		return posts;
 
 	}

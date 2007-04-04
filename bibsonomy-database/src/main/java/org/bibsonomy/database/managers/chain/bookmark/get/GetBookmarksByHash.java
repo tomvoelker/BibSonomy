@@ -43,6 +43,11 @@ public class GetBookmarksByHash extends BookmarkChainElement {
 		 * retrieve bookmark list with appropriate iBatis statement
 		 */
 		List<Post<? extends Resource>> posts = db.getBookmarkByHash(param);
+		if(posts.size()!=0){
+			System.out.println("GetBookmarksByHash");
+			
+			
+		}
 		return posts;
 		
 		

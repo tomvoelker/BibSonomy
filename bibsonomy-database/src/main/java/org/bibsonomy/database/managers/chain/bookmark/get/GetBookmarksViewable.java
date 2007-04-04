@@ -44,6 +44,9 @@ public class GetBookmarksViewable extends BookmarkChainElement{
 		param.setGroups(generalDb.getGroupsForUser(param));
 		
 		List<Post<? extends Resource>> posts = db.getBookmarkViewable(param);
+		if(posts.size()!=0){
+			System.out.println("getBookmarkViewable");
+		}
 		return posts;
 	}
     

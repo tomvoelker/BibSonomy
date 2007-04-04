@@ -43,6 +43,11 @@ public class GetBookmarksPopular extends BookmarkChainElement{
 		 */
 		List<Post<? extends Resource>> posts = db.getBookmarkPopular(param);
         System.out.println("post="+posts.size()+"in getBookmarkPopular");
+        if(posts.size()!=0){
+			System.out.println("getBookmarkPopular");
+			
+			
+		}
 		return posts;
 		
 		

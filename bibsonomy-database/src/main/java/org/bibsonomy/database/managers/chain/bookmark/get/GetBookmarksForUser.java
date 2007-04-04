@@ -38,6 +38,11 @@ public class GetBookmarksForUser extends BookmarkChainElement{
 	    
 		param.setGroups(generalDb.getGroupsForUser(param));
 		List<Post<? extends Resource>> posts = db.getBookmarkForUser(param);
+		if(posts.size()!=0){
+			System.out.println("GetBookmarksForUser");
+			
+			
+		}
 		return posts;
 	}
     

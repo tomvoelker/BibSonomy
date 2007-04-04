@@ -47,6 +47,12 @@ public class GetBookmarksByTagNamesAndUser extends BookmarkChainElement{
 		
 		
 		List<Post<? extends Resource>> posts = db.getBookmarkByTagNamesForUser(param);
+		
+		if(posts.size()!=0){
+			System.out.println("GetBookmarksByTagNamesAndUser");
+			
+			
+		}
 		return posts;
 
 	}
@@ -65,7 +71,6 @@ public class GetBookmarksByTagNamesAndUser extends BookmarkChainElement{
 		hash==null &&
 		popular==false &&
 		added==false;
-		
 		
 		
 	}	

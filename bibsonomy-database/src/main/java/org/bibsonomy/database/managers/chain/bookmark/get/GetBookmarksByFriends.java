@@ -44,6 +44,7 @@ public class GetBookmarksByFriends extends BookmarkChainElement{
 		
 		
 		List<Post<? extends Resource>> posts = db.getBookmarkByUserFriends(param);
+		
 		return posts;
 	}
 

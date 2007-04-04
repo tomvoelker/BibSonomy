@@ -64,7 +64,14 @@ public class GetBookmarksOfFriendsByTags extends BookmarkChainElement{
 		
 		
 		List<Post<? extends Resource>> posts = db.getBookmarkForUser(param);
+		
 		System.err.println("posts"+posts);
+		
+		if(posts.size()!=0){
+			System.out.println("GetBookmarksOfFriendsByTags");
+			
+			
+		}
 		return posts;
 	}
 

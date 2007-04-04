@@ -21,12 +21,12 @@ public class GetBookmarksForHomePage extends BookmarkChainElement{
 	 * return a list of bookmark by a  logged user.
 	 * Following arguments have to be given:
 	 * 
-	 * grouping:irrelevant
+	 * grouping:null
 	 * name:irrelevant
 	 * tags:irrelevant
 	 * hash:irrelevant
 	 * popular:false
-	 * added:false
+	 * added:true
 	 *   
 	 */
 	
@@ -56,7 +56,9 @@ public class GetBookmarksForHomePage extends BookmarkChainElement{
 	@Override
 	protected boolean canHandle(String authUser,GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end){
 		
-		return popular==false &&
+		return 
+		grouping==null&&
+		popular==false &&
 		added==false;
 		
 	}

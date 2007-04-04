@@ -42,6 +42,11 @@ public class GetBookmarksForGroup extends BookmarkChainElement{
 		param.setGroups(generalDb.getGroupsForUser(param));
 		
 		List<Post<? extends Resource>> posts = db.getBookmarkForGroup(param);
+		if(posts.size()!=0){
+			System.out.println("GetBookmarksByGroup");
+			
+			
+		}
 		return posts;
 	}
 

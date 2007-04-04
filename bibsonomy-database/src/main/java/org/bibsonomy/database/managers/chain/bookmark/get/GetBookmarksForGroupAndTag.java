@@ -48,6 +48,11 @@ public class GetBookmarksForGroupAndTag extends BookmarkChainElement{
 		param.setGroups(generalDb.getGroupsForUser(param));
 		
 		List<Post<? extends Resource>> posts = db.getBookmarkForGroupByTag(param);
+		if(posts.size()!=0){
+			System.out.println("GetBookmarksByGroupAndTag");
+			
+			
+		}
 		return posts;
 	}
     
