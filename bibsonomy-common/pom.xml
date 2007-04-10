@@ -6,13 +6,13 @@
 	<name>Bibsonomy-Common</name>
 	<groupId>org.bibsonomy</groupId>
 	<artifactId>bibsonomy-common</artifactId>
-	<version>2.0</version>
+	<version>2.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<description>Common things can be found here.</description>
 	<parent>
 		<groupId>org.bibsonomy</groupId>
 		<artifactId>bibsonomy</artifactId>
-		<version>2.0</version>
+		<version>2.0.1-SNAPSHOT</version>
 	</parent>
 	<dependencies>
 		<dependency>

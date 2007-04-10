@@ -7,7 +7,7 @@
 	<groupId>org.bibsonomy</groupId>
 	<artifactId>bibsonomy</artifactId>
 	<packaging>pom</packaging>
-	<version>2.0</version>
+	<version>2.0.1-SNAPSHOT</version>
 	<description>
 		A blue social bookmark and publication sharing system.
 	</description>
@@ -19,9 +19,17 @@
 	<inceptionYear>2006</inceptionYear>
 	<scm>
 		<developerConnection>
-			scm:cvs:ext:user@cvs.gforge.cs.uni-kassel.de:/cvsroot/bibsonomy2
+			scm:cvs:ext:${maven.username}@cvs.gforge.cs.uni-kassel.de:/cvsroot/bibsonomy2:bibsonomy
 		</developerConnection>
 	</scm>
+	<issueManagement>
+		<system>GForge</system>
+		<url>https://gforge.cs.uni-kassel.de/tracker/?group_id=52</url>
+	</issueManagement>
+	<ciManagement>
+		<system>Continuum</system>
+		<url>http://www.se.eecs.uni-kassel.de/continuum/</url>
+	</ciManagement>
 	<developers>
 		<developer>
 			<name>Andreas Hotho</name>
@@ -75,7 +83,15 @@
 			</url>
 			<layout>legacy</layout>
 		</repository>
+		<repository>
+			<id>se.uni-kassel.de</id>
+			<name>se@uni-kassel.de</name>
+			<url>
+				http://www.se.eecs.uni-kassel.de/~maven/repository/
+			</url>
+		</repository>
 	</repositories>
+	<!-- I really think we should remove this. Disabling tests is neither maven nor XP philosophy.. -->
 	<profiles>
 		<profile>
 			<id>fast</id>
@@ -115,7 +131,27 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh-external</artifactId>
+			</extension>
+		</extensions>
 	</build>
+	<distributionManagement>
+		<repository>
+			<id>ssh-se.uni-kassel.de</id>
+			<!-- TODO: we need an own distribution-management location! -->
+			<url>
+				scpexe://www.se.eecs.uni-kassel.de/home/maven/public_html/repository
+			</url>
+		</repository>
+		<!-- TODO: where should the site be deployed to? -->
+		<!--site>
+			<id>website-se.uni-kassel.de</id>
+			<url>scpexe://www.se.eecs.uni-kassel.de/home/maven/public_html/sites/coobrasc2</url>
+		</site-->
+	</distributionManagement>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
