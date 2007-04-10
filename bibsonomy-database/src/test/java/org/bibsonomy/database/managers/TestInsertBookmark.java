@@ -12,7 +12,7 @@ import org.junit.Test;
 public class TestInsertBookmark {
 
 	@Test
-	public BookmarkParam getBookmarkDefault() {
+	public void getBookmarkDefault() {
 		final BookmarkParam bookmark = new BookmarkParam();
 		final Tag tagfirstTest = new Tag();
 		final Tag tagsecondTest = new Tag();
@@ -35,8 +35,6 @@ public class TestInsertBookmark {
 		bookmark.setDate(date);
 		bookmark.setResource(book);
 		bookmark.setGroupId(4);
-
-		return bookmark;
 	}
 
 	@Test

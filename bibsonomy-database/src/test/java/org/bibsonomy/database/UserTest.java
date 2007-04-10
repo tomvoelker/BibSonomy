@@ -2,6 +2,7 @@ package org.bibsonomy.database;
 
 
 import org.bibsonomy.model.User;
+import org.junit.Test;
 
 // TODO should we fix this preliminary test ???
 public class UserTest extends AbstractDatabaseTest {
@@ -58,7 +59,7 @@ public class UserTest extends AbstractDatabaseTest {
 //		}
 //	}
 
-	@SuppressWarnings("unchecked")
+	@Test
 	public void testInsertUser() {
 		/*
 		try {
