@@ -35,6 +35,7 @@ public class RestDatabaseManager implements LogicInterface {
 	public static LogicInterface getInstance() {
 		return singleton;
 	}
+	
 
 	/**
 	 * returns all users bibsonomy has
@@ -123,10 +124,14 @@ public class RestDatabaseManager implements LogicInterface {
 			}
 		} else {
 			CrudableContent abstractContentDBManager = this.contentDBManagers.get(resourceType);
+			/*
+			 * TODO FIXME: posts: return null
+			 */
 			List<Post<? extends Resource>> posts = abstractContentDBManager.getPosts(authUser, grouping, groupingName, tags, hash, popular, added, start, end, true);
 			/*
 			 * get the next end-start posts for that resourceType!
 			 */
+			if( posts == null ) System.out.println("POSTS SIND NULL");
 			result.addAll(posts);
 		}
 		return result;
