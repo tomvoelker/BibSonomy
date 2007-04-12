@@ -32,11 +32,10 @@ public class BookmarkChain implements FirstChainElement {
 	private final ChainElement getBookmarksForPopular;
 	private final ChainElement getBookmarksViewable;
 	private final ChainElement getBookmarksByConcept;
-    private final ChainElement  getBookmarksByUserFriends;
-    private final ChainElement  getBookmarksByUserAndTagsFriends;
-	
+	private final ChainElement getBookmarksByUserFriends;
+	private final ChainElement getBookmarksByUserAndTagsFriends;
+
 	public BookmarkChain() {
-		
 		this.getBookmarksForUser = new GetBookmarksForUser();
 		this.getBookmarksByHash = new GetBookmarksByHash();
 		this.getBookmarksByHashForUser = new GetBookmarksByHashForUser();
@@ -47,11 +46,11 @@ public class BookmarkChain implements FirstChainElement {
 		this.getBookmarksForHomePage = new GetBookmarksForHomePage();
 		this.getBookmarksForPopular = new GetBookmarksPopular();
 		this.getBookmarksViewable = new GetBookmarksViewable();
-        this.getBookmarksByConcept= new GetBookmarksByConceptForUser();
-        this.getBookmarksByUserFriends=new GetBookmarksOfFriendsByUser();
-        this.getBookmarksByUserAndTagsFriends=new GetBookmarksOfFriendsByTags();
+		this.getBookmarksByConcept = new GetBookmarksByConceptForUser();
+		this.getBookmarksByUserFriends = new GetBookmarksOfFriendsByUser();
+		this.getBookmarksByUserAndTagsFriends = new GetBookmarksOfFriendsByTags();
 
-        this.getBookmarksForHomePage.setNext(this.getBookmarksForPopular);
+		this.getBookmarksForHomePage.setNext(this.getBookmarksForPopular);
 		this.getBookmarksForPopular.setNext(this.getBookmarksForUser);
 		this.getBookmarksForUser.setNext(this.getBookmarksByTagNames);
 		this.getBookmarksByTagNames.setNext(this.getBookmarksByHashForUser);
@@ -60,12 +59,9 @@ public class BookmarkChain implements FirstChainElement {
 		this.getBookmarksByTagNamesAndUser.setNext(this.getBookmarksForGroup);
 		this.getBookmarksForGroup.setNext(this.getBookmarksForGroupAndTag);
 		this.getBookmarksForGroupAndTag.setNext(this.getBookmarksViewable);
-        this.getBookmarksViewable.setNext(this.getBookmarksByConcept);
-        this.getBookmarksByConcept.setNext(this.getBookmarksByUserFriends);
+		this.getBookmarksViewable.setNext(this.getBookmarksByConcept);
+		this.getBookmarksByConcept.setNext(this.getBookmarksByUserFriends);
 		this.getBookmarksByUserFriends.setNext(this.getBookmarksByUserAndTagsFriends);
-		  
-		  
-		 
 	}
 
 	public ChainElement getFirstElement() {

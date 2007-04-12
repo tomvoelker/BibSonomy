@@ -57,10 +57,11 @@ public class AbstractDatabaseManager {
 	 * If the database should be readonly, i.e. inserts and the like won't be
 	 * written to the database, we start a transaction and abort it. If the
 	 * database isn't readonly, i.e. writeable, we'll do a commit instead of
-	 * aborting the transaction.
+	 * aborting the transaction.<br/>
+	 * This comes in handy for unit tests. 
 	 */
-	public void setReadonly(boolean readonly) {
-		this.readonly = readonly;
+	public void setReadonly() {
+		this.readonly = true;
 	}
 
 	/**
@@ -198,12 +199,30 @@ public class AbstractDatabaseManager {
 	}
 
 	/**
+	 * Returns a new transaction object.
+	 */
+	protected Transaction getTransaction() {
+		return this.getTransaction(false);
+	}
+
+	/**
+	 * Convenience method for getTransaction(). Transaction can be set to batch.
+	 */
+	protected Transaction getTransaction(final boolean batch) {
+		final Transaction transaction = new Transaction(this.isReadonly());
+		if (batch) transaction.setBatch();
+		return transaction;
+	}
+
+	/**
 	 * This method combines all calls to the SqlMap. This way we can catch the
 	 * exceptions in one place and surround the queries with transaction
 	 * management.<br/>
 	 * 
 	 * TODO: If AOP is used in the future, especially the management of
 	 * transactions could be rewritten as an aspect.
+	 * 
+	 * TODO: This should be moved to a TransactionManager class.
 	 * 
 	 * @param query
 	 *            The SQL query which should be executed.
@@ -217,45 +236,33 @@ public class AbstractDatabaseManager {
 	 * @return An object in case of a select statement, null otherwise
 	 */
 	private Object transactionWrapper(final String query, final Object param, final StatementType statementType, final QueryFor queryFor, final Transaction transaction) {
-		final SqlMapClient sqlMap = transaction.getSqlMap();
 		try {
 			// If the database is readonly we start a transaction, so we can
 			// commit/abort it later
-			if (this.isReadonly()) transaction.startTransaction();
+			if (this.isReadonly() || transaction.isBatch()) transaction.startTransaction();
 			// Execute the query
-			return this.executeQuery(sqlMap, query, param, statementType, queryFor);
+			return this.executeQuery(transaction.getSqlMap(), query, param, statementType, queryFor);
 		} catch (final SQLException ex) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't execute query '" + query + "'");
+			// If an error occured we abort the transaction
+			transaction.endTransaction();
 		} finally {
-			try {
+			// If this transaction isn't a batch
+			if (!transaction.isBatch()) {
 				// If the database is writeable we commit the transaction
-				// FIXME transaction management needs improvement
-				if (!this.isReadonly() && !transaction.isBatch()) transaction.commitTransaction();
-				// // XXX keeps the try-catch-block intact
-				// if (false) throw new SQLException();
-			} catch (final SQLException ex) {
-				ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't commit transaction for query '" + query + "'");
-			} finally {
-				try {
-					// Regardless of the commit we have to call endTransaction
-					if (this.isReadonly() && !transaction.isBatch()) transaction.endTransaction();
-				} catch (final SQLException ex) {
-					ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't end transaction for query '" + query + "'");
-				}
+				transaction.commitTransaction();
+//				if (!this.isReadonly()) transaction.commitTransaction();
+//				// Regardless of the commit we have to call endTransaction
+//				transaction.endTransaction();
 			}
 		}
 		return null; // unreachable
 	}
 
 	/**
-	 * Returns a new transaction object.
-	 */
-	protected Transaction getTransaction() {
-		return new Transaction();
-	}
-
-	/**
 	 * Executes a query.
+	 * 
+	 * XXX: This should be moved to a TransactionManager class.
 	 */
 	private Object executeQuery(final SqlMapClient sqlMap, final String query, final Object param, final StatementType statementType, final QueryFor queryFor) throws SQLException {
 		Object rVal = null;

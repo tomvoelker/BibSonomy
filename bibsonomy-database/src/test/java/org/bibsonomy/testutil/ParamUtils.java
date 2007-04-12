@@ -44,6 +44,7 @@ public class ParamUtils {
 	public static BibTexParam getDefaultBibTexParam() {
 		final BibTexParam rVal = new BibTexParam();
 		setDefaults(rVal);
+		rVal.setRequestedContentId(1924061);
 		rVal.setHash("0000175071e6141a7d36835489f922ef");
 		rVal.setResource(ModelUtils.getBibTex());
 		return rVal;

@@ -281,7 +281,6 @@
 		      <include refid="getPostForUser"/>
 	</select>
 
-	<!-- Replaced 'simhash"+Bibtex.SIM_HASH_0, simhash"+Bibtex.SIM_HASH_1, simhash"+Bibtex.SIM_HASH_2, simhash"+Bibtex.SIM_HASH_3' -->
 	<insert id="insertBibTex" parameterClass="bibtexParam">
 		INSERT INTO bibtex (title, entrytype, author, editor, year, content_id, journal, volume, chapter,
 		                    edition, month, bookTitle, howpublished, institution, organization, publisher,
@@ -299,111 +298,32 @@
 		        #resource.simHash2#, #resource.simHash3#)
 	</insert>
 
-	<!--
-	<insert id="insertBibTexLog" parameterClass="bibtexParam">
-		INSERT INTO log_bibtex (title, entrytype, author, editor, year, content_id, journal, volume, chapter,
-		                    edition, month, bookTitle, howpublished, institution, organization, publisher,
-		                    address, school, series, bibtexKey, `group`, date, user_name, url, description,
-		                    annote, note, pages, bKey, number, crossref, misc, bibtexAbstract, type, day,
-		                    scraperid, simhash0, simhash1, simhash2, simhash3)
-		SELECT title, entrytype, author, editor, year, content_id, journal, volume, chapter, edition,
-		       month, bookTitle, howpublished, institution, organization, publisher, address, school,
-		       series, bibtexKey, `group`, date, user_name, url, description, annote, note, pages, bKey,
-		       number, crossref, misc, bibtexAbstract, type, day, scraperid, simhash0, simhash1, simhash2,
-		       simhash3
-		FROM bibtex WHERE content_id = #requestedContentId#
-	</insert>
-
 	<insert id="insertBibTexHash" parameterClass="bibtexParam">
-		INSERT INTO bibhash (hash, type) VALUES (#hash#, #simHash#)
+		INSERT INTO bibhash(hash, type, ctr) VALUES (#hash#, #requestedSimHash#, 1)
+		ON DUPLICATE KEY UPDATE ctr = ctr + 1
 	</insert>
-	
-	<insert id="insertBibTexHash0Inc" parameterClass="bibtexParam">
-	INSERT INTO bibhash(hash,type,ctr) VALUES (#bibtex.simHash0#,0,1)ON DUPLICATE KEY UPDATE ctr=ctr+1 where type=0 and has=#simhash0#;
-	</insert>
-	
-	<insert id="insertBibTexHash1Inc" parameterClass="bibtexParam">
-	INSERT INTO bibhash(hash,type,ctr) VALUES (#bibtex.simHash1#,1,1)ON DUPLICATE KEY UPDATE ctr=ctr+1 where type=1 and has=#simhash1#;
-	</insert>
-	
-	<insert id="insertBibTexHash2Inc" parameterClass="bibtexParam">
-	INSERT INTO bibhash(hash,type,ctr) VALUES (#bibtex.simHash2#,2,1)ON DUPLICATE KEY UPDATE ctr=ctr+1 where type=2 and has=#simhash2#;
-	</insert>
-	
-	<insert id="insertBibTexHash1Inc" parameterClass="bibtexParam">
-	INSERT INTO bibhash(hash,type,ctr) VALUES (#bibtex.simHash0#,0,1)ON DUPLICATE KEY UPDATE ctr=ctr+1 where type=0 and has=#simhash0#;
-	</insert>
-	
 
-	
-	<update id="updateBibTexHashInc" parameterClass="bibtexParam">
-		UPDATE bibhash SET ctr=ctr+1 WHERE hash = #hash# AND type = #simHash#
+	<update id="updateBibTexHash" parameterClass="bibtexParam">
+		UPDATE bibhash SET ctr = ctr - 1 WHERE hash = #hash# AND type = #requestedSimHash#
 	</update>
 
-	<update id="updateBibTexHas1Dec" parameterClass="bibtexParam">
-		UPDATE bibhash SET ctr=ctr-1 WHERE hash = #hash1# AND type = 0
-	</update>
-	
-	<update id="updateBibTexHash2Dec" parameterClass="bibtexParam">
-		UPDATE bibhash SET ctr=ctr-1 WHERE hash = #hash2# AND type = 1
-	</update>
-	
-	<update id="updateBibTexHash3Dec" parameterClass="bibtexParam">
-		UPDATE bibhash SET ctr=ctr-1 WHERE hash = #hash3# AND type = 2
-	</update>
-	
-	<update id="updateBibTexHash4Dec" parameterClass="bibtexParam">
-		UPDATE bibhash SET ctr=ctr-1 WHERE hash = #hash4# AND type = 3
-	</update>
-	
-
-	<update id="updateBibTexLog" parameterClass="bibtexParam">
-		UPDATE log_bibtex SET new_content_id = #bibtex.contentId#
-		WHERE content_id = #requestedContentId#
-	</update>
-
-	<update id="updateBibTexDocument" parameterClass="bibtexParam">
-		UPDATE document SET content_id = #bibtex.contentId#
-		WHERE content_id = #requestedContentId#
-	</update>
-
-	<update id="updateBibTexCollected" parameterClass="bibtexParam">
-		UPDATE collector SET content_id = #bibtex.contentId#
-		WHERE content_id = #requestedContentId#
-	</update>
-
-	<update id="updateBibTexExtended" parameterClass="bibtexParam">
-		UPDATE extended_fields_data SET content_id = #bibtex.contentId#
-		WHERE content_id = #requestedContentId#
-	</update>
-
-	<update id="updateBibTexUrl" parameterClass="bibtexParam">
-		UPDATE bibtexurls SET content_id = #bibtex.contentId#
-		WHERE content_id = #requestedContentId#
-	</update>
-
-	<select id="getBibTexSimHashsByContentId">
-		SELECT simhash0, simhash1, simhash2, simhash3 FROM bibtex
-		WHERE content_id = #requestedContentId#
-	</select>
-
-	<delete id="deleteBibTexByContentId">
+	<delete id="deleteBibTex">
 		DELETE FROM bibtex WHERE content_id = #requestedContentId#
 	</delete>
 
-	<delete id="deleteBibTexDocumentByContentId">
+	<delete id="deleteBibTexDoc">
 		DELETE FROM document WHERE content_id = #requestedContentId#
 	</delete>
 
-	<delete id="deleteBibTexCollectedByContentId">
+	<delete id="deleteBibTexCol">
 		DELETE FROM collector WHERE content_id = #requestedContentId#
 	</delete>
 
-	<delete id="deleteBibTexExtendedByContentId">
+	<delete id="deleteBibTexExt">
 		DELETE FROM extended_fields_data WHERE content_id = #requestedContentId#
 	</delete>
 
-	<delete id="deleteBibTexUrlByContentId">
+	<delete id="deleteBibTexUrls">
 		DELETE FROM bibtexurls WHERE content_id = #requestedContentId#
-	</delete> -->
+	</delete>
 </sqlMap>
