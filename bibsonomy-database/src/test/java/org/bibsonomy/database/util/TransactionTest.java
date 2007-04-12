@@ -1,7 +1,6 @@
 package org.bibsonomy.database.util;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 import java.sql.SQLException;
 
@@ -15,7 +14,7 @@ public class TransactionTest {
 
 	@Before
 	public void setUp() {
-		this.transaction = new Transaction();
+		this.transaction = new Transaction(true);
 	}
 
 	@After
@@ -57,11 +56,9 @@ public class TransactionTest {
 	}
 
 	@Test
-	public void commitTransactionWithoutStartTransaction() throws SQLException {
-		try {
-			this.transaction.commitTransaction();
-			fail("Exception should be thrown");
-		} catch (final RuntimeException ex) {
-		}
+	public void multipleTimesCommitTransaction() throws SQLException {
+		this.transaction.commitTransaction();
+		this.transaction.commitTransaction();
+		this.transaction.commitTransaction();
 	}
 }

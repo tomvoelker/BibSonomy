@@ -18,7 +18,8 @@ import org.junit.Before;
 
 /**
  * This class provides a connection to the database and convenience methods to
- * print both bookmarks and BibTexs.
+ * print both bookmarks and BibTexs. Every class that implements tests for
+ * methods which interact with the database should be derived from this class.
  * 
  * @author Christian Schenk
  */
@@ -51,15 +52,19 @@ public abstract class AbstractDatabaseTest {
 		this.chainHandler = GenericChainHandler.getInstance();
 		this.resetParameters();
 		// testcases shouldn't write to the db
-		this.generalDb.setReadonly(true);
-		this.bookmarkDb.setReadonly(true);
-		this.bibTexDb.setReadonly(true);
-		this.tagDb.setReadonly(true);
+		this.generalDb.setReadonly();
+		this.bookmarkDb.setReadonly();
+		this.bibTexDb.setReadonly();
+		this.tagDb.setReadonly();
 	}
 
 	@After
 	public void tearDown() {
+		this.generalDb = null;
+		this.bookmarkDb = null;
 		this.bibTexDb = null;
+		this.tagDb = null;
+		this.chainHandler = null;
 		this.bookmarkParam = null;
 		this.bibtexParam = null;
 	}

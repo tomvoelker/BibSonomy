@@ -1,7 +1,7 @@
 package org.bibsonomy.database.managers.chain.bibtex;
 
-import org.bibsonomy.database.managers.chain.FirstChainElement;
 import org.bibsonomy.database.managers.chain.ChainElement;
+import org.bibsonomy.database.managers.chain.FirstChainElement;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByConceptForUser;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByHash;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByHashForUser;
@@ -15,19 +15,6 @@ import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexOfFriendsByTags
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexOfFriendsByUser;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexPopular;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexViewable;
-import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByConceptForUser;
-import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByHash;
-import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByHashForUser;
-import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByTagNames;
-import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByTagNamesAndUser;
-import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksForGroup;
-import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksForGroupAndTag;
-import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksForHomePage;
-import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksForUser;
-import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksOfFriendsByTags;
-import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksOfFriendsByUser;
-import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksPopular;
-import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksViewable;
 
 /**
  * @author mgr
@@ -44,12 +31,11 @@ public class BibTexChain implements FirstChainElement {
 	private final ChainElement getBibTexForPopular;
 	private final ChainElement getBibTexViewable;
 	private final ChainElement getBibTexForUser;
-    private final ChainElement getBibTexByConceptForUser;
-    private final ChainElement getBibTexByUserFriends;
-    private final ChainElement getBibTexByUserAndTagsFriends;
-	
+	private final ChainElement getBibTexByConceptForUser;
+	private final ChainElement getBibTexByUserFriends;
+	private final ChainElement getBibTexByUserAndTagsFriends;
+
 	public BibTexChain() {
-		
 		this.getBibTexByHash = new GetBibtexByHash();
 		this.getBibTexByHashForUser = new GetBibtexByHashForUser();
 		this.getBibTexByTagNames = new GetBibtexByTagNames();
@@ -60,10 +46,10 @@ public class BibTexChain implements FirstChainElement {
 		this.getBibTexForPopular = new GetBibtexPopular();
 		this.getBibTexViewable = new GetBibtexViewable();
 		this.getBibTexForUser = new GetBibtexForUser();
-        this.getBibTexByConceptForUser= new GetBibtexByConceptForUser();
-        this.getBibTexByUserFriends=new GetBibtexOfFriendsByUser();
-        this.getBibTexByUserAndTagsFriends=new GetBibtexOfFriendsByTags();
-        
+		this.getBibTexByConceptForUser = new GetBibtexByConceptForUser();
+		this.getBibTexByUserFriends = new GetBibtexOfFriendsByUser();
+		this.getBibTexByUserAndTagsFriends = new GetBibtexOfFriendsByTags();
+
 		this.getBibTexForHomePage.setNext(this.getBibTexForPopular);
 		this.getBibTexForPopular.setNext(this.getBibTexForUser);
 		this.getBibTexForUser.setNext(this.getBibTexByTagNames);
@@ -74,7 +60,7 @@ public class BibTexChain implements FirstChainElement {
 		this.getBibTexForGroup.setNext(this.getBibTexForGroupAndTag);
 		this.getBibTexForGroupAndTag.setNext(this.getBibTexViewable);
 		this.getBibTexViewable.setNext(this.getBibTexByConceptForUser);
-        this.getBibTexByConceptForUser.setNext(this.getBibTexByUserFriends);
+		this.getBibTexByConceptForUser.setNext(this.getBibTexByUserFriends);
 		this.getBibTexByUserFriends.setNext(this.getBibTexByUserAndTagsFriends);
 	}
 

@@ -3,7 +3,12 @@ package org.bibsonomy.database;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.Test;
 
@@ -156,5 +161,28 @@ public class BibTexTest extends AbstractDatabaseTest {
 		this.resetParameters();
 		this.bibtexParam.setGroupId(ConstantID.GROUP_INVALID.getId());
 		this.bibTexDb.getBibTexForUserCount(this.bibtexParam);
+	}
+
+	@Test
+	public void getBibTexSimHashsByContentId() {
+		// TODO
+		// System.out.println(this.bibTexDb.getBibTexSimHashsByContentId(this.bibtexParam));
+	}
+
+	@Test
+	public void getPosts() {
+		final List<Post<? extends Resource>> posts = this.bibTexDb.getPosts("jaeschke", GroupingEntity.USER, "jaeschke", null, null, false, false, 0, 19, false);
+		assertEquals(19, posts.size());
+	}
+
+	@Test
+	public void insertBibTex() {
+		this.bibtexParam.setRequestedContentId(1234567);
+		this.bibTexDb.insertBibTex(this.bibtexParam);
+	}
+
+	@Test
+	public void deleteBibTex() {
+		this.bibTexDb.deletePost(this.bibtexParam.getRequestedUserName(), this.bibtexParam.getHash());
 	}
 }

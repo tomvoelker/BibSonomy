@@ -6,6 +6,7 @@ import java.util.SortedSet;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
+import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.util.StringUtils;
@@ -14,6 +15,24 @@ import org.bibsonomy.util.StringUtils;
  * Similarity hashes for publications are calculated here.
  */
 public class SimHash {
+
+	/**
+	 * Retruns the corresponding simhash.
+	 */
+	public static String getSimHash(final BibTex bibtex, ConstantID simHash) {
+		switch (simHash) {
+		case SIM_HASH0:
+			return getSimHash0(bibtex);
+		case SIM_HASH1:
+			return getSimHash1(bibtex);
+		case SIM_HASH2:
+			return getSimHash2(bibtex);
+		case SIM_HASH3:
+			return getSimHash3();
+		default:
+			throw new RuntimeException("SimHash " + simHash.getId() + " doesn't exist.");
+		}
+	}
 
 	/**
 	 * Calculates the simHash0, which consideres: title, author, editor, year,

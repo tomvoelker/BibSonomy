@@ -1,13 +1,12 @@
 package org.bibsonomy.database.managers;
 
-import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByHashForUser;
-import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksForUser;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.database.util.Transaction;
@@ -279,14 +278,6 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	public void deleteBookmarkByContentId(final BookmarkParam param) {
 		this.insert("deleteBookmarkByContentId", param);
 	}
-	/**
-	 * Get a current ContentID for setting a bookmark update the current
-	 * ContendID for bookmark and bibtex
-	 */
-	
-	public Integer getCurrentContentIdFromIds(final BookmarkParam param) {
-		return (Integer) this.queryForObject("getNewContentID", param);
-	}
 
 	public void updateIds(final BookmarkParam param) {
 		this.insert("updateIds", param);
@@ -377,7 +368,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	    
 	    this.tagDb.deleteTas(paramDelete);
 	    System.out.println("Lösche TAS wieder");
-	    
+
 		return true;
 	}
 
@@ -405,19 +396,13 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		
 		String hashFromUrl=bookmarkParam.getHash();
 		String userFromUrl=bookmarkParam.getUserName();
-        
+
+		// Start transaction
+		final Transaction transaction = this.getTransaction(true);
+
 	    /*
 	     *  User would like an existing bookmark
 	     */
-		
-		Transaction transaction=this.getTransaction();
-		transaction.setBatch();
-		try {
-			transaction.startTransaction();
-		} catch (SQLException ex1) {
-			// TODO Auto-generated catch block
-			ex1.printStackTrace();
-		}
 	    if(update==true && post.getResource().getIntraHash()!=null && post.getUser().getName()!=null){
 	    	System.out.println("******************************************************");
 	    	System.out.println("User möchte bereits bestehenden Eintrag aktualisieren");
@@ -514,11 +499,11 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	                 bookmarkParam.setIdsType(ConstantID.IDS_CONTENT_ID);
 	            	 System.out.println("paramFromUrlValue.getIdsType" + bookmarkParam.getIdsType());
 	            	 
-   	                 bookmarkParam.setId(this.getCurrentContentIdFromIds(bookmarkParam));
+   	                 bookmarkParam.setId(this.generalDb.getNewContentId(bookmarkParam));
    	                 System.out.println("bekomme aktuellen value/content_id aus ids table: "+ bookmarkParam.getId());
-	            		
+
 	            	 this.updateIds(bookmarkParam);
-	            	 post.setContentId(this.getCurrentContentIdFromIds(bookmarkParam));
+	            	 post.setContentId(this.generalDb.getNewContentId(bookmarkParam));
 	            	 bookmarkParam.setRequestedContentId(post.getContentId());
 	            	 System.out.println("bookmark content_id: " + bookmarkParam.getRequestedContentId());
 
@@ -633,12 +618,12 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	                 bookmarkParam.setIdsType(ConstantID.IDS_CONTENT_ID);
 	            	 System.out.println("paramFromUrlValue.getIdsType" + bookmarkParam.getIdsType());
 	            	 bookmarkParam.setHash(newHash);
-   	                 bookmarkParam.setId(this.getCurrentContentIdFromIds(bookmarkParam));
+   	                 bookmarkParam.setId(this.generalDb.getNewContentId(bookmarkParam));
    	                 System.out.println("bekomme aktuellen value/content_id aus ids table: "+ bookmarkParam.getId());
 	            		
 	            	 this.updateIds(bookmarkParam);
 	            	 
-	            	 post.setContentId(this.getCurrentContentIdFromIds(bookmarkParam));
+	            	 post.setContentId(this.generalDb.getNewContentId(bookmarkParam));
 	            	 bookmarkParam.setRequestedContentId(post.getContentId());
 	            	 bookmarkParam.setUrl(((Bookmark)post.getResource()).getUrl());
 	          	  	 bookmarkParam.setIdsType(ConstantID.IDS_TAS_ID);
@@ -746,12 +731,12 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	                 bookmarkParam.setIdsType(ConstantID.IDS_CONTENT_ID);
 	            	 System.out.println("bookmarkParam IdsType" + bookmarkParam.getIdsType());
 	            	 
-   	                 bookmarkParam.setId(this.getCurrentContentIdFromIds(bookmarkParam));
+   	                 bookmarkParam.setId(this.generalDb.getNewContentId(bookmarkParam));
    	                 System.out.println("bookmarkParam currentContentIDFromIds"+ bookmarkParam.getId());
 	            		
 	            	 this.updateIds(bookmarkParam);
 	            	 
-	            	 post.setContentId(this.getCurrentContentIdFromIds(bookmarkParam));
+	            	 post.setContentId(this.generalDb.getNewContentId(bookmarkParam));
 	            	 bookmarkParam.setRequestedContentId(post.getContentId());
 
 	            	 bookmarkParam.setUrl(((Bookmark)post.getResource()).getUrl());
@@ -806,13 +791,9 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	    	     } /*end if*/
 	    	
 	    	} /*end else*/
-	    try {
-			transaction.endTransaction();
-		} catch (SQLException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
-		}
-	    
+
+	    transaction.commitTransaction();
+
         return true;
 	}
 }

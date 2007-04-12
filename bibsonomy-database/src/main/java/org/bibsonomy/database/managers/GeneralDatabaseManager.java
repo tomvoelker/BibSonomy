@@ -3,9 +3,9 @@ package org.bibsonomy.database.managers;
 import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
-import org.bibsonomy.util.ExceptionUtils;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
+import org.bibsonomy.util.ExceptionUtils;
 
 /**
  * Used to retrieve all different kind of stuff from the database.
@@ -89,5 +89,13 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 		final Integer rVal = (Integer) this.queryForObject("getGroupIdByGroupNameAndUserName", param);
 		if (rVal == null) return ConstantID.GROUP_INVALID.getId();
 		return rVal;
+	}
+
+	/**
+	 * Get a current ContentID for setting a bookmark update the current
+	 * ContendID for bookmark and bibtex
+	 */
+	public Integer getNewContentId(final GenericParam param) {
+		return (Integer) this.queryForObject("getNewContentId", param);
 	}
 }

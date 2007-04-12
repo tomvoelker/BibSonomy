@@ -7,7 +7,6 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.ChainPerform;
 import org.bibsonomy.database.managers.chain.FirstChainElement;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChain;
-import org.bibsonomy.database.managers.chain.bookmark.BookmarkChain;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 

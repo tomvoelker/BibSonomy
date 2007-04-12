@@ -7,9 +7,11 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.DatabaseUtils;
+import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.util.SimHash;
 
 /**
  * Used to CRUD BibTexs from the database.
@@ -21,10 +23,12 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 
 	/** Singleton */
 	private final static BibTexDatabaseManager singleton = new BibTexDatabaseManager();
-	private final GeneralDatabaseManager generalDb = GeneralDatabaseManager.getInstance();
-	private final TagDatabaseManager tagDb = TagDatabaseManager.getInstance();
-	
+	private final GeneralDatabaseManager generalDb;
+	private final TagDatabaseManager tagDb;
+
 	private BibTexDatabaseManager() {
+		this.generalDb = GeneralDatabaseManager.getInstance();
+		this.tagDb = TagDatabaseManager.getInstance();
 	}
 
 	public static BibTexDatabaseManager getInstance() {
@@ -35,7 +39,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * Can be used to start a query that retrieves a list of BibTexs.
 	 */
 	@SuppressWarnings("unchecked")
-     protected List<Post<? extends Resource>> bibtexList(final String query, final BibTexParam param) {
+	protected List<Post<? extends Resource>> bibtexList(final String query, final BibTexParam param) {
 		return (List<Post<? extends Resource>>) queryForList(query, param);
 	}
 
@@ -277,151 +281,49 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	/**
 	 * Get a contentId by a given user and a given hash
 	 */
-	public Integer getContentIdByUserAndHash(final BibTex bibtex) {
-		return (Integer) this.queryForObject("getContentIdByUserAndHash", bibtex);
+	public Integer getContentIdByUserAndHash(final BibTex param) {
+		return (Integer) this.queryForObject("getContentIdByUserAndHash", param);
 	}
 
 	/**
-	 * Modify update to select, return is list of String (<- FIXME awkward docs)
+	 * Modify update to select, return is list of String (<- FIXME awkward
+	 * docs)
 	 */
-	public String getBibTexSimHashsByContentId(final BibTex param) {
+	public List getBibTexSimHashsByContentId(final BibTexParam param) {
 		// TODO not tested
-		return (String) this.queryForObject("getBibTexSimHashsByContentId", param);
+		return this.queryForList("getBibTexSimHashsByContentId", param);
 	}
 
 	/**
 	 * Inserts a publication into the database.
 	 */
-	public void insertBibTex(final BibTex param) {
-		// TODO not tested
-		this.insert("insertBibTex", param);
-	}
+	public void insertBibTex(final BibTexParam param) {
+		// Start transaction
+		final Transaction transaction = this.getTransaction(true);
 
-	public void insertBibTexLog(final BibTex param) {
-		// TODO not tested
-		this.insert("insertBibTexLog", param);
+		// Insert BibTex
+		this.insert("insertBibTex", param, transaction);
+		// Insert/Update SimHashes
+		for (final int i : new int[] { 0, 1, 2, 3 }) {
+			final ConstantID simHash = ConstantID.getSimHash(i);
+			param.setRequestedSimHash(simHash);
+			param.setHash(SimHash.getSimHash(param.getResource(), simHash));
+			this.insertBibTexHash(param);
+		}
+
+		// End transaction
+		transaction.commitTransaction();
 	}
 
 	/**
 	 * Inserts a BibTex-hash into the database.
 	 */
-	public void insertBibTexHash(final BibTexParam param) {
-		// TODO not tested
-		if (param.getHash() == null || param.getHash().equals("")) {
-			throw new RuntimeException("Hash must be set");
-		}
+	private void insertBibTexHash(final BibTexParam param) {
 		this.insert("insertBibTexHash", param);
 	}
 
-	public void insertBibTexHash1Inc(final BibTex param) {
-		// TODO not tested
-		this.insert("insertBibTexHashInc", param);
-	}
-	
-	public void insertBibTexHash2Inc(final BibTex param) {
-		// TODO not tested
-		this.insert("insertBibTexHash2Inc", param);
-	}
-	
-	public void insertBibTexHash3Inc(final BibTex param) {
-		// TODO not tested
-		this.insert("insertBibTexHash3Inc", param);
-	}
-	
-	public void insertBibTexHash4Inc(final BibTex param) {
-		// TODO not tested
-		this.insert("insertBibTexHash4Inc", param);
-	}
-
-	public void updateBibTexHash1Dec(final BibTex param) {
-		// TODO not tested
-		this.update("updateBibTexHashDec", param);
-	}
-
-	public void updateBibTexHash2Dec(final BibTex param) {
-		// TODO not tested
-		this.update("updateBibTexHash2Dec", param);
-	}
-
-	public void updateBibTexHash3Dec(final BibTex param) {
-		// TODO not tested
-		this.update("updateBibTexHash3Dec", param);
-	}
-
-	public void updateBibTexHash4Dec(final BibTex param) {
-		// TODO not tested
-		this.update("updateBibTexHash4Dec", param);
-	}
-
-	public void updateBibTexLog(final BibTex param) {
-		// TODO not tested
-		this.update("updateBibTexLog", param);
-	}
-
-	public void updateBibTexDocument(final BibTex param) {
-		// TODO not tested
-		this.update("updateBibTexDocument", param);
-	}
-
-	public void updateBibTexCollected(final BibTex param) {
-		// TODO not tested
-		this.update("updateBibTexCollected", param);
-	}
-
-	public void updateBibTexExtended(final BibTex param) {
-		// TODO not tested
-		this.update("updateBibTexExtended", param);
-	}
-
-	public void updateBibTexUrl(final BibTexParam param) {
-		// TODO not tested
-		this.update("updateBibTexUrl", param);
-	}
-
-	public void deleteBibTexByContentId(final BibTex param) {
-		// TODO not tested
-		this.update("deleteBibTexByContentId", param);
-	}
-
-	public void deleteBibTexDocumentByContentId(final BibTexParam param) {
-		// TODO not tested
-		this.update("deleteBibTexDocumentByContentId", param);
-	}
-
-	public void deleteBibTexCollectedByContentId(final BibTexParam param) {
-		// TODO not tested
-		this.update("deleteBibTexCollectedByContentId", param);
-	}
-
-	public void deleteBibTexExtendedByContentId(final BibTexParam param) {
-		// TODO not tested
-		this.update("deleteBibTexExtendedByContentId", param);
-	}
-
-	public void deleteBibTexUrlByContentId(final BibTexParam param) {
-		// TODO not tested
-		this.update("deleteBibTexUrlByContentId", param);
-	}
-
 	public List<Post<? extends Resource>> getPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, boolean continuous) {
-		/*
-		 * Test options
-		 */
-		// TODO fix this!
-//		List test_getBibtexForUser = getBibTexForUser.perform("jaeschke", GroupingEntity.USER, "jaeschke",null,null,false, false, 0, 19);
-//		System.out.println("test="+test_getBibtexForUser.size());
-//		System.out.println("authUser = " + authUser);
-//		System.out.println("grouping = " + grouping);
-//		System.out.println("groupingName = " + groupingName);
-//		System.out.println("tags = " + tags);
-//		System.out.println("hash = " + hash);
-//		System.out.println("start = " + start);
-//		System.out.println("end = " + end);
-//
-//		List<Post<? extends Resource>> posts = getBibTexForUser.perform(authUser, grouping, groupingName, tags, hash, popular, added, start, end);
-//		System.out.println("BibTexDbManager posts.size= " + posts.size());
-//		return posts;
-		return null;
+		return GenericChainHandler.getInstance().perform(authUser, grouping, groupingName, tags, hash, popular, added, start, end);
 	}
 
 	public Post<Resource> getPostDetails(String authUser, String resourceHash, String userName) {
@@ -429,10 +331,85 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	}
 
 	public boolean deletePost(String userName, String resourceHash) {
-		return false;
+		// Start transaction
+		final Transaction transaction = this.getTransaction(true);
+
+		// Used for userName, hash and contentId
+		final BibTexParam param = new BibTexParam();
+		param.setUserName(userName);
+		param.setHash(resourceHash);
+
+		final List<Post<? extends Resource>> bibtexs = this.getBibTexByHashForUser(param);
+		// BibTex doesn't exist
+		if(bibtexs.size() == 0) return true;
+
+		final Post<? extends Resource> oneBibtex = bibtexs.get(0);
+	    param.setRequestedContentId(oneBibtex.getContentId());
+
+	    // Delete Tas
+	    this.tagDb.deleteTas(param);
+	    // Update SimHashes
+	    for (final int i : new int[] { 0, 1, 2, 3 }) {
+			final ConstantID simHash = ConstantID.getSimHash(i);
+			param.setRequestedSimHash(simHash);
+			param.setHash(SimHash.getSimHash(((BibTex)oneBibtex.getResource()), simHash));
+			this.updateBibTexHash(param, transaction);
+		}
+	    // Delete BibTex
+		this.deleteBibTex(param, transaction);
+		// Delete link to related document
+		this.deleteBibTexDoc(param, transaction);
+		// Delete id in collector table
+		this.deleteBibTexCol(param, transaction);
+		// Delete id in extended fields table
+		this.deleteBibTexExt(param, transaction);
+		// Delete id in bibtexturl table
+		this.deleteBibTexUrls(param, transaction);
+
+		// End transaction
+	    transaction.commitTransaction();
+		return true;
+	}
+
+	private void deleteBibTex(final BibTexParam param, final Transaction transaction) {
+		this.delete("deleteBibTex", param, transaction);
+	}
+
+	private void updateBibTexHash(final BibTexParam param, final Transaction transaction) {
+		this.update("updateBibTexHash", param, transaction);
+	}
+
+	private void deleteBibTexDoc(final BibTexParam param, final Transaction transaction) {
+		this.delete("deleteBibTexDoc", param, transaction);
+	}
+
+	private void deleteBibTexCol(final BibTexParam param, final Transaction transaction) {
+		this.delete("deleteBibTexCol", param, transaction);
+	}
+
+	private void deleteBibTexExt(final BibTexParam param, final Transaction transaction) {
+		this.delete("deleteBibTexExt", param, transaction);
+	}
+
+	private void deleteBibTexUrls(final BibTexParam param, final Transaction transaction) {
+		this.delete("deleteBibTexUrls", param, transaction);
 	}
 
 	public boolean storePost(String userName, Post post, boolean update) {
-        return true;
+		// Start transaction
+		final Transaction transaction = this.getTransaction(true);
+
+		// Used for userName, hash and contentId
+		final BibTexParam param = new BibTexParam();
+		param.setUserName(userName);
+		param.setId(this.generalDb.getNewContentId(param));
+		param.setResource((BibTex) post.getResource());
+
+		this.insertBibTex(param);
+		// TODO: insertTags, insertRelations, update: log, doc, col, ext, url
+
+		// End transaction
+	    transaction.commitTransaction();
+		return true;
 	}
 }

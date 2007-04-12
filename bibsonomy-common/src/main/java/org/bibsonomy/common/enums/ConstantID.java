@@ -64,4 +64,22 @@ public enum ConstantID {
 	public int getId() {
 		return this.id;
 	}
+
+	/**
+	 * Returns the corresponding simhash.
+	 */
+	public static ConstantID getSimHash(final int simHash) {
+		switch (simHash) {
+		case 0:
+			return SIM_HASH0;
+		case 1:
+			return SIM_HASH1;
+		case 2:
+			return SIM_HASH2;
+		case 3:
+			return SIM_HASH3;
+		default:
+			throw new RuntimeException("SimHash " + simHash + " doesn't exist.");
+		}
+	}
 }
