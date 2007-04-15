@@ -2,7 +2,7 @@ package org.bibsonomy.rest.strategy.groups;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringWriter;
+import java.io.Writer;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -43,7 +43,7 @@ public class UpdateGroupDetailsStrategy extends Strategy
 	 * @see org.bibsonomy.rest.strategy.Strategy#perform(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	public void perform( HttpServletRequest request, StringWriter writer ) throws InternServerException
+	public void perform( HttpServletRequest request, Writer writer ) throws InternServerException
 	{
       try
       {
@@ -71,7 +71,10 @@ public class UpdateGroupDetailsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.4  2007-02-21 14:08:35  mbork
+ * Revision 1.5  2007-04-15 11:05:07  mbork
+ * changed method signature to use a more general Writer
+ *
+ * Revision 1.4  2007/02/21 14:08:35  mbork
  * - included code generation of the schema in the maven2 build-lifecycle
  * - removed circular dependencies among the modules
  * - cleaned up the poms of the modules

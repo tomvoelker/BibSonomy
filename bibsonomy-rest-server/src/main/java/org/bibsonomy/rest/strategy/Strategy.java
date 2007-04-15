@@ -1,6 +1,6 @@
 package org.bibsonomy.rest.strategy;
 
-import java.io.StringWriter;
+import java.io.Writer;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -34,7 +34,7 @@ public abstract class Strategy
 	 * @throws InternServerException
     * @throws NoSuchResourceException if one part of the uri doesnt exist (the user, eg) 
 	 */
-	public abstract void perform( HttpServletRequest request, StringWriter writer ) throws InternServerException, NoSuchResourceException;
+	public abstract void perform( HttpServletRequest request, Writer writer ) throws InternServerException, NoSuchResourceException;
 
 	/**
 	 * @param userAgent
@@ -70,7 +70,10 @@ public abstract class Strategy
 
 /*
  * $Log$
- * Revision 1.4  2007-02-28 15:18:47  mgrahl
+ * Revision 1.5  2007-04-15 11:05:07  mbork
+ * changed method signature to use a more general Writer
+ *
+ * Revision 1.4  2007/02/28 15:18:47  mgrahl
  * extension of friend stategy
  *
  * Revision 1.3  2007/02/21 14:08:36  mbork

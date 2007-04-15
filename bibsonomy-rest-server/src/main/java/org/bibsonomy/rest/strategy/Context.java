@@ -1,6 +1,6 @@
 package org.bibsonomy.rest.strategy;
 
-import java.io.StringWriter;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -109,7 +109,7 @@ public final class Context
 	 * @param responseAdapter the response
 	 * @throws InternServerException
 	 */
-	public void perform( HttpServletRequest request, StringWriter writer ) throws InternServerException
+	public void perform( HttpServletRequest request, Writer writer ) throws InternServerException
 	{
 		strategy.perform( request, writer );
 	}
@@ -258,7 +258,10 @@ public final class Context
 
 /*
  * $Log$
- * Revision 1.4  2007-02-21 14:08:36  mbork
+ * Revision 1.5  2007-04-15 11:05:07  mbork
+ * changed method signature to use a more general Writer
+ *
+ * Revision 1.4  2007/02/21 14:08:36  mbork
  * - included code generation of the schema in the maven2 build-lifecycle
  * - removed circular dependencies among the modules
  * - cleaned up the poms of the modules

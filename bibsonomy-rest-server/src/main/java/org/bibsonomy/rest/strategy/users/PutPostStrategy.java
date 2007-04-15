@@ -2,7 +2,7 @@ package org.bibsonomy.rest.strategy.users;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringWriter;
+import java.io.Writer;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -47,7 +47,7 @@ public class PutPostStrategy extends Strategy
 	 * @see org.bibsonomy.rest.strategy.Strategy#perform(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	public void perform( HttpServletRequest request, StringWriter writer ) throws InternServerException, BadRequestOrResponseException
+	public void perform( HttpServletRequest request, Writer writer ) throws InternServerException, BadRequestOrResponseException
    {
       try
       {
@@ -78,7 +78,10 @@ public class PutPostStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.6  2007-03-17 20:44:00  mbork
+ * Revision 1.7  2007-04-15 11:05:07  mbork
+ * changed method signature to use a more general Writer
+ *
+ * Revision 1.6  2007/03/17 20:44:00  mbork
  * the 'if' is correct :)
  *
  * Revision 1.5  2007/02/28 15:21:19  mgrahl
