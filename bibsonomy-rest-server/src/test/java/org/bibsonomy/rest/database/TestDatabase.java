@@ -732,75 +732,21 @@ public class TestDatabase implements LogicInterface
 
    public void storeUser( User user, boolean update )
    {
-      // TODO Auto-generated method stub
-      
+      if( ! update )
+      {
+         this.dbUsers.put( user.getName(), user );
+      }
    }
 }
 
 /*
  * $Log$
- * Revision 1.1  2007-02-21 14:08:36  mbork
+ * Revision 1.2  2007-04-15 11:05:39  mbork
+ * fixed a bug concerning UTF-8 characters. Added a test
+ *
+ * Revision 1.1  2007/02/21 14:08:36  mbork
  * - included code generation of the schema in the maven2 build-lifecycle
  * - removed circular dependencies among the modules
  * - cleaned up the poms of the modules
  * - fixed failing unit-tests
- *
- * Revision 1.9  2007/02/16 16:11:46  mbork
- * changed default value from "" to null
- *
- * Revision 1.8  2007/02/15 10:46:54  mbork
- * fixed unit tests
- *
- * Revision 1.7  2007/02/15 10:29:08  mbork
- * the LogicInterface now uses Lists instead of Sets
- * fixed use of generics
- *
- * Revision 1.6  2007/02/15 09:16:21  mgrahl
- * *** empty log message ***
- *
- * Revision 1.5  2007/02/13 13:23:15  cschenk
- * Prepared transition from lists of Bookmarks and BibTexs to lists of posts
- *
- * Revision 1.4  2007/02/11 18:35:20  mbork
- * lazy instantiation of lists in the model.
- * we definitely need bidirectional links for the api to work proper!
- * fixed all unit tests, every test performs well.
- *
- * Revision 1.3  2007/02/11 17:55:39  mbork
- * switched REST-api to the 'new' datamodel, which does not deserve the name...
- *
- * Revision 1.2  2007/02/05 10:35:55  cschenk
- * Distributed code from the spielwiese among the modules
- *
- * Revision 1.1  2006/10/25 19:14:55  mbork
- * moved TestDatabase because other junit tests depend on it
- *
- * Revision 1.1  2006/10/10 12:42:16  cschenk
- * Auf Multi-Module Build umgestellt
- *
- * Revision 1.7  2006/09/16 18:17:50  mbork
- * added some new fake bibtex entries to demonstrate jabref plugin :)
- * fix of tests depiending on fake bibtex entries
- *
- * Revision 1.6  2006/07/05 15:20:13  mbork
- * implemented missing strategies, little changes on datamodel --> alpha :)
- *
- * Revision 1.5  2006/06/23 20:47:45  mbork
- * bugfix: wrong usage of iterator
- *
- * Revision 1.4  2006/06/13 21:30:40  mbork
- * implemented unit tests for get-strategies; fixed some minor bugs
- *
- * Revision 1.3  2006/06/11 15:25:25  mbork
- * removed gatekeeper, changed authentication process
- *
- * Revision 1.2  2006/06/05 14:14:11  mbork
- * implemented GET strategies
- *
- * Revision 1.1  2006/05/24 20:05:55  jillig
- * TestDatabase verschoben
- *
- * Revision 1.1  2006/05/19 21:01:08  mbork
- * started implementing rest api
- *
  */

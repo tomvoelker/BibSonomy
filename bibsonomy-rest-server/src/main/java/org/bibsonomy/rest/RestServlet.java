@@ -1,8 +1,11 @@
 package org.bibsonomy.rest;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.StringWriter;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.HttpURLConnection;
+import java.nio.charset.Charset;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -41,16 +44,27 @@ public final class RestServlet extends HttpServlet
 	{
 		super.init();
 		// instantiate the bibsonomy database connection
-      logic=RestDatabaseManager.getInstance();
+      logic = RestDatabaseManager.getInstance();
 	}
    
    /**
-    * use this class in junit tests to initialize the test databse.
+    * Use this class in junit tests to initialize the test database.
     */
    void initTestScenario()
    {
       logic = new TestDatabase();
    }
+   
+   /**
+    * Use this class in junit tests to access the test-database
+    * 
+    * @return the {@link LogicInterface}
+    */
+   LogicInterface getLogic()
+   {
+      return logic;
+   }
+   
 	
 	/**
 	 * Respond to a GET request for the content produced by this servlet.
@@ -138,10 +152,14 @@ public final class RestServlet extends HttpServlet
 
          // send answer
          response.setStatus( HttpServletResponse.SC_OK );
-         StringWriter writer = new StringWriter();
+         ByteArrayOutputStream cachingStream = new ByteArrayOutputStream();
+         Writer writer = new OutputStreamWriter( cachingStream, Charset.forName( "UTF-8" ) );
+
          context.perform( request, writer );
-         response.addHeader( "Content-Length", String.valueOf( writer.getBuffer().length() ) );
-         response.getOutputStream().print( writer.toString() );
+         // attention: cachingStream.size() != cachingStream.toString().length() !!
+         // the correct value is the first one!
+         response.setContentLength( cachingStream.size() );
+         response.getOutputStream().print( cachingStream.toString( "UTF-8" ) );
       }
       catch( AuthenticationException e )
       {
@@ -205,7 +223,10 @@ public final class RestServlet extends HttpServlet
 
 /*
  * $Log$
- * Revision 1.7  2007-04-03 14:18:53  rja
+ * Revision 1.8  2007-04-15 11:05:39  mbork
+ * fixed a bug concerning UTF-8 characters. Added a test
+ *
+ * Revision 1.7  2007/04/03 14:18:53  rja
  * changed name
  *
  * Revision 1.6  2007/02/21 14:08:35  mbork

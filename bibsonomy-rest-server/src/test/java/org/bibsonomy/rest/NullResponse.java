@@ -16,14 +16,13 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class NullResponse implements HttpServletResponse
 {
-   
-   private PrintWriter writer;
-   private StringWriter stringWriter;
    private ServletOutputStream servletOutputStream;
+   private PrintWriter printWriter;
+   private StringWriter content;
    
-   public StringWriter getStringWriter()
+   public String getContent()
    {
-      return stringWriter;
+      return content.toString();
    }
 
    public ServletOutputStream getOutputStream() throws IOException
@@ -44,14 +43,29 @@ public class NullResponse implements HttpServletResponse
    
    public PrintWriter getWriter() throws IOException
    {
-      if( writer == null )
+      if( printWriter == null )
       {
-         stringWriter = new StringWriter(); 
-         writer = new PrintWriter( stringWriter );
+         content = new StringWriter(); 
+         printWriter = new PrintWriter( content );
       }
-      return writer;
+      return printWriter;
    }
 
+   private int contentLength;
+
+   public void setContentLength( int arg0 )
+   {
+      contentLength = arg0;
+   }
+
+   /**
+    * @return the contentLength
+    */
+   public int getContentLength()
+   {
+      return contentLength;
+   }
+   
    public void addCookie( Cookie arg0 )
    {
    }
@@ -151,11 +165,6 @@ public class NullResponse implements HttpServletResponse
 
    }
 
-   public void setContentLength( int arg0 )
-   {
-
-   }
-
    public void setContentType( String arg0 )
    {
 
@@ -200,12 +209,14 @@ public class NullResponse implements HttpServletResponse
    {
       return null;
    }
-
 }
 
 /*
  * $Log$
- * Revision 1.1  2006-10-24 21:39:52  mbork
+ * Revision 1.2  2007-04-15 11:05:39  mbork
+ * fixed a bug concerning UTF-8 characters. Added a test
+ *
+ * Revision 1.1  2006/10/24 21:39:52  mbork
  * split up rest api into correct modules. verified with junit tests.
  *
  * Revision 1.1  2006/10/10 12:42:14  cschenk

@@ -4,10 +4,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.StringWriter;
 
 import junit.framework.TestCase;
 
+import org.bibsonomy.database.LogicInterface;
+import org.bibsonomy.model.User;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 
@@ -87,27 +88,50 @@ public class TestRestServlet extends TestCase
       request.setPathInfo( "/users" );
       
       servlet.doGet( request, response );
-      compareWithFile( response.getStringWriter(), "exampleComplexResult1.txt" );
+      compareWithFile( response.getContent(), "exampleComplexResult1.txt" );
+      assertEquals( response.getContentLength(), response.getContent().length() );
    }
    
-   private void compareWithFile( StringWriter sw, String filename ) throws IOException
+   public void testUTF8() throws Exception
+   {
+      NullRequest request = new NullRequest();
+      request.getHeaders().put( "Authorization", "Basic YXNkZjphc2Rm" );
+      request.getHeaders().put( "User-Agent", RestProperties.getInstance().getApiUserAgent() );
+      NullResponse response = new NullResponse();
+      
+      RestServlet servlet = new RestServlet();
+      servlet.initTestScenario();
+      LogicInterface logic = servlet.getLogic();
+      User user = new User();
+      user.setName( "üöäßéèê" );
+      logic.storeUser( user, false );
+      request.setPathInfo( "/users" );
+      
+      servlet.doGet( request, response );
+      compareWithFile( response.getContent(), "UTF8TestResult.txt" );
+      assertEquals( 813, response.getContentLength() ); // 813 vs 799
+   }
+   
+   private void compareWithFile( String sw, String filename ) throws IOException
    {
       StringBuffer sb = new StringBuffer( 200 );
-      File file = new File( "src/test/java/org/bibsonomy/rest/" + filename );
+      File file = new File( "src/test/resources/" + filename );
       BufferedReader br = new BufferedReader( new FileReader( file ) );
       String s;
       while( (s = br.readLine() ) != null )
       {
          sb.append( s + "\n" );
       }
-      assertTrue( "output not as expected", sw.toString().equals( sb.toString() ) );
+      assertTrue( "output not as expected", sw.equals( sb.toString() ) );
    }
 }
 
-
 /*
  * $Log$
- * Revision 1.2  2007-02-21 14:08:36  mbork
+ * Revision 1.3  2007-04-15 11:05:39  mbork
+ * fixed a bug concerning UTF-8 characters. Added a test
+ *
+ * Revision 1.2  2007/02/21 14:08:36  mbork
  * - included code generation of the schema in the maven2 build-lifecycle
  * - removed circular dependencies among the modules
  * - cleaned up the poms of the modules
