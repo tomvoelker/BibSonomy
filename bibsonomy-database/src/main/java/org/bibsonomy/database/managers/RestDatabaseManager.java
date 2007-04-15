@@ -70,7 +70,11 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @return details about a named user, null else
 	 */
 	public User getUserDetails(String authUserName, String userName) {
-		return null;
+		// TODO implement me
+		// in the meantime return some demo-user
+		User user = new User();
+		user.setName( "BugsBunny" );
+		return user;
 	}
 
 	/**
