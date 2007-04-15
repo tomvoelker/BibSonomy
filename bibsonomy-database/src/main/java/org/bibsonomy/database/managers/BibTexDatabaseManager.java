@@ -341,21 +341,21 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 
 		final List<Post<? extends Resource>> bibtexs = this.getBibTexByHashForUser(param);
 		// BibTex doesn't exist
-		if(bibtexs.size() == 0) return true;
+		if (bibtexs.size() == 0) return true;
 
 		final Post<? extends Resource> oneBibtex = bibtexs.get(0);
-	    param.setRequestedContentId(oneBibtex.getContentId());
+		param.setRequestedContentId(oneBibtex.getContentId());
 
-	    // Delete Tas
-	    this.tagDb.deleteTas(param);
-	    // Update SimHashes
-	    for (final int i : new int[] { 0, 1, 2, 3 }) {
+		// Delete Tas
+		this.tagDb.deleteTas(param);
+		// Update SimHashes
+		for (final int i : new int[] { 0, 1, 2, 3 }) {
 			final ConstantID simHash = ConstantID.getSimHash(i);
 			param.setRequestedSimHash(simHash);
-			param.setHash(SimHash.getSimHash(((BibTex)oneBibtex.getResource()), simHash));
+			param.setHash(SimHash.getSimHash(((BibTex) oneBibtex.getResource()), simHash));
 			this.updateBibTexHash(param, transaction);
 		}
-	    // Delete BibTex
+		// Delete BibTex
 		this.deleteBibTex(param, transaction);
 		// Delete link to related document
 		this.deleteBibTexDoc(param, transaction);
@@ -367,7 +367,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		this.deleteBibTexUrls(param, transaction);
 
 		// End transaction
-	    transaction.commitTransaction();
+		transaction.commitTransaction();
 		return true;
 	}
 
@@ -409,7 +409,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		// TODO: insertTags, insertRelations, update: log, doc, col, ext, url
 
 		// End transaction
-	    transaction.commitTransaction();
+		transaction.commitTransaction();
 		return true;
 	}
 }

@@ -247,14 +247,8 @@ public class AbstractDatabaseManager {
 			// If an error occured we abort the transaction
 			transaction.endTransaction();
 		} finally {
-			// If this transaction isn't a batch
-			if (!transaction.isBatch()) {
-				// If the database is writeable we commit the transaction
-				transaction.commitTransaction();
-//				if (!this.isReadonly()) transaction.commitTransaction();
-//				// Regardless of the commit we have to call endTransaction
-//				transaction.endTransaction();
-			}
+			// If this transaction isn't a batch commit the transaction
+			if (!transaction.isBatch()) transaction.commitTransaction();
 		}
 		return null; // unreachable
 	}

@@ -17,7 +17,7 @@ import org.bibsonomy.util.StringUtils;
 public class SimHash {
 
 	/**
-	 * Retruns the corresponding simhash.
+	 * Returns the corresponding simhash.
 	 */
 	public static String getSimHash(final BibTex bibtex, ConstantID simHash) {
 		switch (simHash) {

@@ -13,6 +13,8 @@ import com.ibatis.sqlmap.client.SqlMapClient;
  * <li>A dependency to SqlMapClient isn't scattered all over the code</li>
  * <li>If reading the sqlMap gets slow, this class can be enhanced easily</li>
  * </ol>
+ * See org.bibsonomy.database.AbstractDatabaseManager.transactionWrapper() for
+ * further explanation and use of this class.
  * 
  * @author Christian Schenk
  */

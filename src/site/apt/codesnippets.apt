@@ -1,0 +1,25 @@
+Code Snippets
+
+  On this page you can find code snippets.
+
+* Database
+
+  If you'd like to make more than one query to the database in a transaction which
+  can be committed or aborted check out the following example.
+
++--
+public void someDatabaseMethod() {
+	// Start transaction
+	final Transaction transaction = this.getTransaction(true);
+
+	// ... some queries
+	
+	// ... an error occured: abort transaction
+	if (someError) transaction.endTransaction;
+
+	// End transaction
+	transaction.commitTransaction();
+}
++--
+
+  The class Transaction is used; check the docs there for further explanation.
