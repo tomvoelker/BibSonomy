@@ -237,7 +237,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	
 	/**
 	 * returns a list of tags. the list can be filtered
-	 * TODO: chain of responsibilty for different combined arguments
+	 * TODO: chain of responsibility for different combined arguments
 	 **/ 
 	 
 	

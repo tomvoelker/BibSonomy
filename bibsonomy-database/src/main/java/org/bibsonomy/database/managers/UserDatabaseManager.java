@@ -4,7 +4,10 @@ import java.util.List;
 
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.model.User;
-
+/**
+ * Used to retrieve users from the database.
+ * @author mgr
+ */
 public class UserDatabaseManager extends AbstractDatabaseManager  {
 
 	/** Singleton */
@@ -24,10 +27,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 		return (List<User>) queryForList(query, user);
 	}
 
-	/*
-	 * request:get all Users of BibSonomy
-	 */
-	
 	public List<User> getAllUsersOfBibSonomy(User user) {
 		return this.userList("getAllUsersOfBibSonomy", user);
 	}
@@ -48,13 +47,23 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 		return (User) this.queryForObject("getUserDetails", user);
 	}
 	
+	
+	/*
+	 * request:get all Users of BibSonomy, which are currently logged
+	 */
+	
 	public List<User> getUsers(String authUser, int start, int end) {
 		return null;
 	}
 
+	/*
+	 * returns all users who are members of the specified group
+	 */
+	
 	public List<User> getUsers(String authUser, String groupName, int start, int end) {
 		return null;
 	}
+	
 	
 	public User getUserDetails(String authUserName, String userName) {
 		return null;
