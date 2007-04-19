@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.model.Bookmark;
@@ -26,13 +27,18 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 */
 	private static final int MAX_TAGS_TO_INSERT = 10;
 
-	private TagDatabaseManager() {
+	TagDatabaseManager() {
 	}
 
 	public static TagDatabaseManager getInstance() {
 		return singleton;
 	}
-
+    
+	
+	
+	
+	
+	
 	/** Return all tags for given tagId */
 	public Tag getTagById(final int param) {
 		return (Tag) this.queryForObject("getTagById", param);
@@ -193,4 +199,48 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			this.insert("insertTagTag", new Tag[] { tag1, tag2 });
 		}
 	}
+	
+	
+	
+	/*
+	 * single requests for method get detailled information of a tag
+	 */
+	
+	public int getTagOccurrences(final Tag tag) {
+		return (Integer)this.queryForObject("getTagOccurrences", tag);
+	}
+	
+	public List<Tag> getSubtagsOfTag(final Tag tag) {
+		return this.tagList("getSubtagsOfTag", tag);
+	}
+	
+	public List<Tag> getSupertagsOfTag(final Tag tag) {
+		return this.tagList("getSupertagsOfTag", tag);
+	}
+	
+	public List<Tag> getCorrelatedTagsOfTag(final Tag tag) {
+		return this.tagList("getCorrelatedTagsOfTag", tag);
+	}
+	
+	/*
+	 * return all record tags of the system 
+	 */
+	
+	public List<Tag> getAllTagsOfBibSonomy(final Tag tag) {
+		return this.tagList("getCorrelatedTagsOfTag", tag);
+	}
+	
+
+	
+	
+	
+	public Tag getTagDetails(String authUserName, String tagName) {
+		return null;
+	}	
+	
+	public List<Tag> getTags(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end) {
+		return null;
+	}
+	
+	
 }

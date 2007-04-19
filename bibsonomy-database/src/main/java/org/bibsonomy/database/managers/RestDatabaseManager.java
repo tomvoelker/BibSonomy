@@ -24,12 +24,15 @@ public class RestDatabaseManager implements LogicInterface {
 	/** Singleton */
 	private final static RestDatabaseManager singleton = new RestDatabaseManager();
 	private final Map<ResourceType, CrudableContent> contentDBManagers;
+	private UserDatabaseManager userDBManager = new UserDatabaseManager();
+	private TagDatabaseManager tagDBManager = new TagDatabaseManager();
+	//private GroupDBManager groupDBManager = new GroupDBManager();
 
 	private RestDatabaseManager() {
 		// add some default
 		this.contentDBManagers = new HashMap<ResourceType, CrudableContent>();
-		//this.contentDBManagers.put(ResourceType.BOOKMARK, BookmarkDatabaseManager.getInstance());
-		this.contentDBManagers.put(ResourceType.BIBTEX, BibTexDatabaseManager.getInstance());
+		this.contentDBManagers.put(ResourceType.BOOKMARK, BookmarkDatabaseManager.getInstance());
+		//this.contentDBManagers.put(ResourceType.BIBTEX, BibTexDatabaseManager.getInstance());
 	}
 
 	public static LogicInterface getInstance() {
@@ -59,6 +62,22 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @return  a set of users, an empty set else
 	 */
 	public List<User> getUsers(String authUser, String groupName, int start, int end) {
+		
+		/*List <User> users = new LinkedList <User>();
+		
+		Group group =new Group();
+		group.setName("kde");
+		User user =new User();
+		user.setName("grahl");
+		
+		LinkedList<User> userlist=new LinkedList<User>();
+		group.setUsers(userlist);
+		
+		LinkedList<Group> groups=new LinkedList<Group>();
+		groups.add(group);
+		user.setGroups(groups);
+		
+		return users;*/
 		return null;
 	}
 
