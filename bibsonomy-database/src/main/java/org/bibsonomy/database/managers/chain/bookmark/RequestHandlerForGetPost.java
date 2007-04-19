@@ -10,7 +10,6 @@ public abstract class RequestHandlerForGetPost {
 
 	private RequestHandlerForGetPost next;
 
-	// protected final DatabaseManager db = new DatabaseManager();
 
 	public void setNext(RequestHandlerForGetPost nextHandler) {
 		this.next = nextHandler;
