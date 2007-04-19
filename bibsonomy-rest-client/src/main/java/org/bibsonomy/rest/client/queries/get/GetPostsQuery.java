@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.ResourceType;
+import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.client.AbstractQuery;
@@ -112,6 +113,10 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 		{
 			return RendererFactory.getRenderer( getRenderingFormat() ).parsePostList( downloadedDocument );
 		}
+      catch( InternServerException ex )
+      {
+         throw new BadRequestOrResponseException( ex );
+      }
 		catch( BadRequestOrResponseException e )
 		{
 			throw e;
@@ -171,7 +176,10 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 
 /*
  * $Log$
- * Revision 1.5  2007-02-21 14:08:34  mbork
+ * Revision 1.6  2007-04-19 16:12:20  mbork
+ * throw BadRequestOrResponseException on InternServerException in REST client
+ *
+ * Revision 1.5  2007/02/21 14:08:34  mbork
  * - included code generation of the schema in the maven2 build-lifecycle
  * - removed circular dependencies among the modules
  * - cleaned up the poms of the modules
