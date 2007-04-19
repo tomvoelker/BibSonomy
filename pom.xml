@@ -137,8 +137,8 @@
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>tomcat-maven-plugin</artifactId>
             <configuration>
-               <server>gromit</server>
-               <url>gromit:8080/manager</url>
+               <server>tomcat_gromit</server>
+               <url>http://gromit:8080/manager</url>
             </configuration>
          </plugin>
 		</plugins>
@@ -149,20 +149,20 @@
 			</extension>
 		</extensions>
 	</build>
-	<distributionManagement>
+	<!-- distributionManagement>
 		<repository>
 			<id>ssh-se.uni-kassel.de</id>
-			<!-- TODO: we need an own distribution-management location! -->
+			<! TODO: we need an own distribution-management location! >
 			<url>
 				scpexe://www.se.eecs.uni-kassel.de/home/maven/public_html/repository
 			</url>
 		</repository>
-		<!-- TODO: where should the site be deployed to? -->
-		<!--site>
+		<! TODO: where should the site be deployed to? >
+		<!site>
 			<id>website-se.uni-kassel.de</id>
 			<url>scpexe://www.se.eecs.uni-kassel.de/home/maven/public_html/sites/coobrasc2</url>
-		</site-->
-	</distributionManagement>
+		</site>
+	</distributionManagement -->
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
