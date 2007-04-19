@@ -5,6 +5,7 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
+import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
@@ -235,11 +236,20 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		return null;
 	}	
 	
-	/**
-	 * returns a list of tags. the list can be filtered
-	 * TODO: chain of responsibility for different combined arguments
-	 **/ 
-	 
+	public List<Tag> getTagsByUser(final UserParam user) {
+		return this.tagList("getTagsByUser", user);
+	} 
+	
+	public List<Tag> getTagsByGroup(final UserParam user) {
+		return this.tagList("getTagsByGroup", user);
+	}
+	public List<Tag> getTagsbExpression(final UserParam user) {
+		return this.tagList("getTagsbExpression", user);
+	} 
+	
+	public List<Tag> getTagsByGrouping(final UserParam user) {
+		return this.tagList("getTagsByGrouping", user);
+	} 
 	
 	public List<Tag> getTags(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end) {
 		return null;

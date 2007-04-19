@@ -5,6 +5,7 @@ import java.util.List;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
+import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.util.ExceptionUtils;
 
 /**
@@ -62,7 +63,14 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	public List<Integer> getGroupsForUser(final GenericParam param) {
 		return this.intList("getGroupsForUser", param);
 	}
-
+/*
+ * TODO only a temporary solution
+ */
+	public List<Integer> getGroupsForUser(final UserParam param) {
+		return this.intList("getGroupsForUser", param);
+	}
+	
+	
 	/**
 	 * Checks if group exists.
 	 * 

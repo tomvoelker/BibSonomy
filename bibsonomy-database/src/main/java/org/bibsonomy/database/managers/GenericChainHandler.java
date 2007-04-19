@@ -6,7 +6,9 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.ChainPerform;
 import org.bibsonomy.database.managers.chain.FirstChainElement;
+import org.bibsonomy.database.managers.chain.FirstChainElementforTag;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChain;
+import org.bibsonomy.database.managers.chain.tag.TagChain;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
@@ -16,13 +18,16 @@ import org.bibsonomy.model.Resource;
  * 
  * @author Christian Schenk
  */
-public class GenericChainHandler implements ChainPerform {
+
+public class GenericChainHandler implements ChainPerform{
 
 	/** Singleton */
 	private final static GenericChainHandler singleton = new GenericChainHandler();
 	/** List of all chains */
 	private final List<FirstChainElement> chains;
-
+/*
+ * TODO, more than one chains should be worked at the same time
+ */
 	private GenericChainHandler() {
 		this.chains = new ArrayList<FirstChainElement>();
 		//this.chains.add(new BookmarkChain());
