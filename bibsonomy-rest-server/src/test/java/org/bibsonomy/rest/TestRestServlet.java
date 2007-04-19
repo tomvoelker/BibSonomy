@@ -7,8 +7,6 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import org.bibsonomy.database.LogicInterface;
-import org.bibsonomy.model.User;
 import org.bibsonomy.rest.database.TestDatabase;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -21,7 +19,7 @@ public class TestRestServlet extends TestCase
       servlet.setLogicInterface( new TestDatabase() );
       try
       {
-         servlet.validateAuthorization( "YXNkZjphc2Rm" );
+         servlet.validateAuthorization( "YXNkZjphc2Rm", "" );
          fail( "exception should have been thrown" );
       }
       catch( AuthenticationException e )
@@ -29,12 +27,12 @@ public class TestRestServlet extends TestCase
       
       try
       {
-         servlet.validateAuthorization( "Basic ASDFASDF" );
+         servlet.validateAuthorization( "Basic ASDFASDF", "" );
       }
       catch( BadRequestOrResponseException e )
       {}
       
-      assertEquals( "error decoding string", servlet.validateAuthorization( "Basic YXNkZjphc2Rm" ), "asdf" );
+      assertEquals( "error decoding string", servlet.validateAuthorization( "Basic YXNkZjphc2Rm", "" ), "asdf" );
    }
    
    public void testSimpleStuff() throws Exception
@@ -131,7 +129,10 @@ public class TestRestServlet extends TestCase
 
 /*
  * $Log$
- * Revision 1.5  2007-04-19 16:16:28  mbork
+ * Revision 1.6  2007-04-19 19:42:46  mbork
+ * added the apikey-mechanism to the rest api and added a method to the LogicInterface to validate it.
+ *
+ * Revision 1.5  2007/04/19 16:16:28  mbork
  * disabled UTF8 test. will check later
  *
  * Revision 1.4  2007/04/19 13:30:40  rja

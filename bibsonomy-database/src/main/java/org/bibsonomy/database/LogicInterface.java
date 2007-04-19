@@ -168,6 +168,14 @@ public interface LogicInterface
    public abstract boolean validateUserAccess( String username, String password );
 
    /**
+    * Checks if the given api key is valid.
+    * 
+    * @param apiKey the api key to check.
+    * @return true if the key is valid, false else.
+    */
+   public abstract boolean validateApiKey( String apiKey );
+   
+   /**
     * removes the given user from bibsonomy.
     * 
     * @param userName the user to delete

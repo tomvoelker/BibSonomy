@@ -264,6 +264,17 @@ public class RestDatabaseManager implements LogicInterface {
 	}
 
 	/**
+	 * Checks if the given api key is valid.
+	 * 
+	 * @param apiKey the api key to check.
+	 * @return true if the key is valid, false else.
+	 */
+	public boolean validateApiKey(String apiKey) {
+		// TODO: please implement this method
+		return true;
+	}
+	
+	/**
 	 * removes the given user from bibsonomy.
 	 * 
 	 * @param userName the user to delete

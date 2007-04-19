@@ -33,10 +33,12 @@ public abstract class AbstractQuery<T>
 	
    private String password;
    private String username;
+   private String apiKey;
    private String apiURL;
    private int statusCode = -1;
    private RenderingFormat renderingFormat = RenderingFormat.XML;
    private ProgressCallback callback;
+
 
    protected final Reader performGetRequest( String url ) throws ErrorPerformingRequestException
    {
@@ -51,25 +53,26 @@ public abstract class AbstractQuery<T>
    {
       HttpWorker worker;
       String result;
+      String apiKeyString = "&" + RestProperties.PARAMETER_API_KEY + "=" + apiKey;
       switch( method )
       {
       case POST:
          worker = new PostWorker( username, password );
-         result = ( (PostWorker)worker ).perform( apiURL + url, requestBody );
+         result = ( (PostWorker)worker ).perform( apiURL + url + apiKeyString, requestBody );
          statusCode = worker.getHttpResult();
          break;
       case DELETE:
          worker = new DeleteWorker( username, password );
-         result = ( (DeleteWorker)worker ).perform( apiURL + url );
+         result = ( (DeleteWorker)worker ).perform( apiURL + url + apiKeyString );
          statusCode = worker.getHttpResult();
          break;
       case PUT:
          worker = new PutWorker( username, password );
-         result = ( (PutWorker)worker ).perform( apiURL + url, requestBody );
+         result = ( (PutWorker)worker ).perform( apiURL + url + apiKeyString, requestBody );
          break;
       case HEAD:
          worker = new HeadWorker( username, password );
-         result = ( (HeadWorker)worker ).perform( apiURL + url );
+         result = ( (HeadWorker)worker ).perform( apiURL + url + apiKeyString );
          break;
       case GET:
          throw new UnsupportedOperationException( "use AbstractQuery::performGetRequest( String url)" );
@@ -87,13 +90,16 @@ public abstract class AbstractQuery<T>
        *           username at bibsonomy.org
        * @param password
        *           the user's password
+       * @param apiKey 
+       *           the user's apikey
        * @throws ErrorPerformingRequestException
        *            if something fails, eg an ioexception occurs (see the cause)
        */
-   final void execute( String username, String password ) throws ErrorPerformingRequestException
+   final void execute( String username, String password, String apiKey ) throws ErrorPerformingRequestException
    {
       this.username = username;
       this.password = password;
+      this.apiKey = apiKey;
       doExecute();
    }
 	
@@ -157,47 +163,9 @@ public abstract class AbstractQuery<T>
 
 /*
  * $Log$
- * Revision 1.1  2006-10-24 21:39:23  mbork
+ * Revision 1.2  2007-04-19 19:42:46  mbork
+ * added the apikey-mechanism to the rest api and added a method to the LogicInterface to validate it.
+ *
+ * Revision 1.1  2006/10/24 21:39:23  mbork
  * split up rest api into correct modules. verified with junit tests.
- *
- * Revision 1.1  2006/10/10 12:42:15  cschenk
- * Auf Multi-Module Build umgestellt
- *
- * Revision 1.5  2006/09/24 21:26:21  mbork
- * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
- *
- * Revision 1.4  2006/09/16 18:19:16  mbork
- * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
- *
- * Revision 1.3  2006/06/23 20:50:09  mbork
- * clientlib:
- * - added head request
- * - fixed issues with enums using uppercase letters invoked with toString()
- * serverlib:
- * - fixed some issues
- *
- * Revision 1.2  2006/06/14 18:23:22  mbork
- * refactored usage of username, password and host url
- *
- * Revision 1.1  2006/06/08 13:23:48  mbork
- * improved documentation, added throws statements even for runtimeexceptions, moved abstractquery to prevent users to call execute directly
- *
- * Revision 1.6  2006/06/08 07:55:23  mbork
- * moved classes for clearness
- *
- * Revision 1.5  2006/06/08 07:44:36  mbork
- * made two methods final
- *
- * Revision 1.4  2006/06/08 07:41:12  mbork
- * client api completed
- *
- * Revision 1.3  2006/06/07 19:37:28  mbork
- * implemented post queries
- *
- * Revision 1.2  2006/06/07 18:27:04  mbork
- * moved enum
- *
- * Revision 1.1  2006/06/06 22:20:54  mbork
- * started implementing client api
- *
  */

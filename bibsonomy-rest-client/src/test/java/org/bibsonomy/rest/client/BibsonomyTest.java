@@ -14,7 +14,7 @@ public class BibsonomyTest extends TestCase
    {
       try
       {
-         new Bibsonomy( "", "test" );
+         new Bibsonomy( "", "test", null );
          fail( "exception should have been thrown" );
       }
       catch( IllegalArgumentException e )
@@ -26,7 +26,7 @@ public class BibsonomyTest extends TestCase
       }
       try
       {
-         new Bibsonomy( "test", "" );
+         new Bibsonomy( "test", "", null );
          fail( "exception should have been thrown" );
       }
       catch( IllegalArgumentException e )
@@ -36,7 +36,7 @@ public class BibsonomyTest extends TestCase
             fail( "wrong exception was thrown" );
          }
       }
-      assertNotNull( "instantiation failed", new Bibsonomy( "user", "pw" ) );
+      assertNotNull( "instantiation failed", new Bibsonomy( "user", "pw", "asdf" ) );
    }
    
    public void testSetUsername()
@@ -130,7 +130,10 @@ public class BibsonomyTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.1  2006-10-24 21:39:23  mbork
+ * Revision 1.2  2007-04-19 19:42:46  mbork
+ * added the apikey-mechanism to the rest api and added a method to the LogicInterface to validate it.
+ *
+ * Revision 1.1  2006/10/24 21:39:23  mbork
  * split up rest api into correct modules. verified with junit tests.
  *
  * Revision 1.1  2006/10/10 12:42:15  cschenk

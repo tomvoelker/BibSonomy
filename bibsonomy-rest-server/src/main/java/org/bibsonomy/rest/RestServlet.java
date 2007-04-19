@@ -31,7 +31,7 @@ import sun.misc.BASE64Decoder;
  */
 public final class RestServlet extends HttpServlet
 {
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 	
 	private LogicInterface logic;
 
@@ -121,7 +121,7 @@ public final class RestServlet extends HttpServlet
 	@Override
    public void doHead( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
 	{
-		validateAuthorization( request.getHeader( "Authorization" ) );
+		validateAuthorization( request.getHeader( "Authorization" ), request.getParameter( RestProperties.PARAMETER_API_KEY ) );
 	}
 
 
@@ -136,7 +136,7 @@ public final class RestServlet extends HttpServlet
       try
       {
          // validate the requesting user's authorization
-         String username = validateAuthorization( request.getHeader( "Authorization" ) );
+         String username = validateAuthorization( request.getHeader( "Authorization" ), request.getParameter( RestProperties.PARAMETER_API_KEY ) );
 
          // create Context 
          Context context = new Context( this.logic, method, request.getPathInfo(), request.getParameterMap() );
@@ -187,7 +187,7 @@ public final class RestServlet extends HttpServlet
 	 * @param authentication Authentication-value of the header's request
 	 * @throws IOException
 	 */
-	String validateAuthorization( String authentication ) throws AuthenticationException
+	String validateAuthorization( String authentication, String apiKey ) throws AuthenticationException
 	{
       if( authentication == null || !authentication.startsWith( "Basic " ) )
       {
@@ -212,17 +212,28 @@ public final class RestServlet extends HttpServlet
       String username = basicCookie.substring( 0, i );
       String password = basicCookie.substring( i + 1 );
       
+      // check username and password
       if( !logic.validateUserAccess( username, password ) )
       {
          throw new AuthenticationException( "Please authenticate yourself." );
       }
+      
+      // check the api key
+      if( !logic.validateApiKey( apiKey ) )
+      {
+         throw new AuthenticationException( "The supplied API-Key is not valid." );
+      }
+      
       return username;
    }
 }
 
 /*
  * $Log$
- * Revision 1.11  2007-04-19 16:47:54  rja
+ * Revision 1.12  2007-04-19 19:42:46  mbork
+ * added the apikey-mechanism to the rest api and added a method to the LogicInterface to validate it.
+ *
+ * Revision 1.11  2007/04/19 16:47:54  rja
  * introduced bug
  *
  * Revision 1.9  2007/04/19 13:30:40  rja

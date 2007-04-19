@@ -59,6 +59,11 @@ public class TestDatabase implements LogicInterface
       return true;
    }
    
+   public boolean validateApiKey( String apiKey )
+   {
+      return true;
+   }
+   
 	public List<User> getUsers( String authUser, int start, int end )
 	{
       List<User> users = new LinkedList<User>();
@@ -741,7 +746,10 @@ public class TestDatabase implements LogicInterface
 
 /*
  * $Log$
- * Revision 1.2  2007-04-15 11:05:39  mbork
+ * Revision 1.3  2007-04-19 19:42:46  mbork
+ * added the apikey-mechanism to the rest api and added a method to the LogicInterface to validate it.
+ *
+ * Revision 1.2  2007/04/15 11:05:39  mbork
  * fixed a bug concerning UTF-8 characters. Added a test
  *
  * Revision 1.1  2007/02/21 14:08:36  mbork
