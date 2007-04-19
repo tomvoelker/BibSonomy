@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.database.LogicInterface;
 import org.bibsonomy.database.managers.RestDatabaseManager;
-import org.bibsonomy.rest.database.TestDatabase;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -48,11 +47,11 @@ public final class RestServlet extends HttpServlet
 	}
    
    /**
-    * Use this class in junit tests to initialize the test database.
+    * Use this setter in junit tests to initialize the test database.
     */
-   void initTestScenario()
+   void setLogicInterface( LogicInterface logicInterface )
    {
-      logic = new TestDatabase();
+	   this.logic = logicInterface;
    }
    
    /**
@@ -223,7 +222,10 @@ public final class RestServlet extends HttpServlet
 
 /*
  * $Log$
- * Revision 1.8  2007-04-15 11:05:39  mbork
+ * Revision 1.9  2007-04-19 13:30:40  rja
+ * fixed a bug concerning Tests
+ *
+ * Revision 1.8  2007/04/15 11:05:39  mbork
  * fixed a bug concerning UTF-8 characters. Added a test
  *
  * Revision 1.7  2007/04/03 14:18:53  rja

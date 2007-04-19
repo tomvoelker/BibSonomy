@@ -9,6 +9,7 @@ import junit.framework.TestCase;
 
 import org.bibsonomy.database.LogicInterface;
 import org.bibsonomy.model.User;
+import org.bibsonomy.rest.database.TestDatabase;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 
@@ -17,7 +18,7 @@ public class TestRestServlet extends TestCase
    public void testValidateAuthorization() throws Exception
    {
       RestServlet servlet = new RestServlet();
-      servlet.initTestScenario();
+      servlet.setLogicInterface( new TestDatabase() );
       try
       {
          servlet.validateAuthorization( "YXNkZjphc2Rm" );
@@ -42,7 +43,7 @@ public class TestRestServlet extends TestCase
       NullResponse response = new NullResponse();
       
       RestServlet servlet = new RestServlet();
-      servlet.initTestScenario();
+      servlet.setLogicInterface( new TestDatabase() );
       
       try
       {
@@ -84,7 +85,7 @@ public class TestRestServlet extends TestCase
       NullResponse response = new NullResponse();
       
       RestServlet servlet = new RestServlet();
-      servlet.initTestScenario();
+      servlet.setLogicInterface( new TestDatabase() );
       request.setPathInfo( "/users" );
       
       servlet.doGet( request, response );
@@ -100,7 +101,7 @@ public class TestRestServlet extends TestCase
       NullResponse response = new NullResponse();
       
       RestServlet servlet = new RestServlet();
-      servlet.initTestScenario();
+      servlet.setLogicInterface( new TestDatabase() );
       LogicInterface logic = servlet.getLogic();
       User user = new User();
       user.setName( "üöäßéèê" );
@@ -128,7 +129,10 @@ public class TestRestServlet extends TestCase
 
 /*
  * $Log$
- * Revision 1.3  2007-04-15 11:05:39  mbork
+ * Revision 1.4  2007-04-19 13:30:40  rja
+ * fixed a bug concerning Tests
+ *
+ * Revision 1.3  2007/04/15 11:05:39  mbork
  * fixed a bug concerning UTF-8 characters. Added a test
  *
  * Revision 1.2  2007/02/21 14:08:36  mbork
