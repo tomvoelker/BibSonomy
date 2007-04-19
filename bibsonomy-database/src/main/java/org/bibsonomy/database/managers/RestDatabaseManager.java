@@ -49,7 +49,10 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @return a set of users, an empty set else
 	 */
 	public List<User> getUsers(String authUser, int start, int end) {
-		return null;
+		List<User> users= new LinkedList <User>();
+		users.addAll(userDBManager.getUsers(authUser, start, end));
+		return users; 
+
 	}
 
 	/**
@@ -62,9 +65,11 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @return  a set of users, an empty set else
 	 */
 	public List<User> getUsers(String authUser, String groupName, int start, int end) {
-		
+		List<User> users= new LinkedList <User>();
+		users.addAll(userDBManager.getUsers(authUser, groupName, start, end));
+		return users; 
+
 		/*List <User> users = new LinkedList <User>();
-		
 		Group group =new Group();
 		group.setName("kde");
 		User user =new User();
@@ -78,7 +83,6 @@ public class RestDatabaseManager implements LogicInterface {
 		user.setGroups(groups);
 		
 		return users;*/
-		return null;
 	}
 
 	/**
@@ -89,11 +93,14 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @return details about a named user, null else
 	 */
 	public User getUserDetails(String authUserName, String userName) {
+         
+		return userDBManager.getUserDetails(authUserName,userName);
+		
 		// TODO implement me
 		// in the meantime return some demo-user
-		User user = new User();
-		user.setName( "BugsBunny" );
-		return user;
+		//User user = new User();
+		//user.setName( "BugsBunny" );
+		//return user;
 	}
 
 	/**
@@ -219,7 +226,10 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @return a set of tags, en empty set else
 	 */
 	public List<Tag> getTags(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end) {
-		return null;
+		
+		List<Tag> tags= new LinkedList<Tag>();
+		tags.addAll(tagDBManager.getTags(authUser,grouping,groupingName,regex, start,end));
+		return tags; 
 	}
 
 	/**
@@ -238,7 +248,7 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @return the tag's details, null else
 	 */
 	public Tag getTagDetails(String authUserName, String tagName) {
-		return null;
+		return tagDBManager.getTagDetails(authUserName,tagName);
 	}
 
 	/**
