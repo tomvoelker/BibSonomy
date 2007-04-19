@@ -19,7 +19,7 @@
 	<inceptionYear>2006</inceptionYear>
 	<scm>
       <connection>
-			scm:cvs:ext:${maven.username}@cvs.gforge.cs.uni-kassel.de:/cvsroot/bibsonomy2:bibsonomy
+			scm:cvs:ext:continuum@cvs.gforge.cs.uni-kassel.de:/cvsroot/bibsonomy2:bibsonomy
       </connection>
 		<developerConnection>
 			scm:cvs:ext:${maven.username}@cvs.gforge.cs.uni-kassel.de:/cvsroot/bibsonomy2:bibsonomy
