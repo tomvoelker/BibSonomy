@@ -7,6 +7,7 @@ import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.util.ExceptionUtils;
 
 /**
@@ -226,17 +227,19 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * return all record tags of the system 
 	 */
 	
-	public List<Tag> getAllTagsOfBibSonomy(final Tag tag) {
-		return this.tagList("getCorrelatedTagsOfTag", tag);
+	public List<Tag> getAllTagsOfBibSonomy(final User user) {
+		return this.tagList("getCorrelatedTagsOfTag", user);
 	}
-	
-
-	
-	
 	
 	public Tag getTagDetails(String authUserName, String tagName) {
 		return null;
 	}	
+	
+	/**
+	 * returns a list of tags. the list can be filtered
+	 * TODO: chain of responsibilty for different combined arguments
+	 **/ 
+	 
 	
 	public List<Tag> getTags(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end) {
 		return null;
