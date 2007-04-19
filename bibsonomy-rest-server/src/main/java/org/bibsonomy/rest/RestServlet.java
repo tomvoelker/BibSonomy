@@ -34,6 +34,8 @@ public final class RestServlet extends HttpServlet
 	private static final long serialVersionUID = 1L;
 	
 	private LogicInterface logic;
+	
+	easrtawer
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.GenericServlet#init()
@@ -222,7 +224,10 @@ public final class RestServlet extends HttpServlet
 
 /*
  * $Log$
- * Revision 1.9  2007-04-19 13:30:40  rja
+ * Revision 1.10  2007-04-19 16:47:12  rja
+ * bugfix
+ *
+ * Revision 1.9  2007/04/19 13:30:40  rja
  * fixed a bug concerning Tests
  *
  * Revision 1.8  2007/04/15 11:05:39  mbork
