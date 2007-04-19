@@ -228,7 +228,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 */
 	
 	public List<Tag> getAllTagsOfBibSonomy(final User user) {
-		return this.tagList("getCorrelatedTagsOfTag", user);
+		return this.tagList("getAllTagsOfBibSonomy", user);
 	}
 	
 	public Tag getTagDetails(String authUserName, String tagName) {
