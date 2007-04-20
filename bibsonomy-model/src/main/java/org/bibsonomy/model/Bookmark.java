@@ -9,10 +9,8 @@ import org.bibsonomy.model.util.ResourceUtils;
 public class Bookmark extends Resource {
 
 	private String url;
-	private String urlHash;
-	private String description;
-	private String extended;
-
+	private String title;
+	
 	public String getUrl() {
 		return this.url;
 	}
@@ -29,31 +27,15 @@ public class Bookmark extends Resource {
 		this.url = url;
 	}
 
-	public String getUrlHash() {
-		return this.urlHash;
-	}
-
-	public void setUrlHash(String urlHash) {
-		this.urlHash = urlHash;
-	}
-
-	public String getDescription() {
-		return this.description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getExtended() {
-		return this.extended;
-	}
-
-	public void setExtended(String extended) {
-		this.extended = extended;
-	}
-
 	public String getHash() {
 		return ResourceUtils.hash(this.url);
+	}
+
+	public String getTitle() {
+		return this.title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 }

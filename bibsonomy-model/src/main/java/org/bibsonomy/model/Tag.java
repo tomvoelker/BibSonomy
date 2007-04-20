@@ -16,6 +16,12 @@ public class Tag {
 	private List<Tag> superTags;
 	private List<Tag> subTags;
 	private List<Post<? extends Resource>> posts;
+	/*
+	 * TODO subtags and supertags of a single tag
+	 */
+	
+	private List<Tag> supertags;
+	private List<Tag> subtags;
 
 	public List<Post<? extends Resource>> getPosts() {
 		if (this.posts == null) {

@@ -10,18 +10,10 @@ public abstract class Resource {
 
 	/** An Id for this resource; by default ConstantID.IDS_UNDEFINED_CONTENT_ID */
 	private int count;
-	private String oldIntraHash = "";
 	private String interHash;
 	private String intraHash;
 	private List<Post<? extends Resource>> posts;
 
-	public String getOldHash() {
-		return this.oldIntraHash;
-	}
-
-	public void setOldHash(Resource resource) {
-		this.oldIntraHash = resource.getIntraHash();
-	}
 
 	public String getInterHash() {
 		return this.interHash;
