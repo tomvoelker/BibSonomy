@@ -35,8 +35,7 @@ public class BookmarkTest extends AbstractDatabaseTest {
 
 	@Test
 	public void getBookmarkByUserFriends() {
-		// FIXME: this test doesnt work
-//		this.bookmarkDb.getBookmarkByUserFriends(this.bookmarkParam);
+		//FIXME this.bookmarkDb.getBookmarkByUserFriends(this.bookmarkParam);
 	}
 
 	@Test
