@@ -30,8 +30,8 @@ public class ModelUtils {
 	public static Bookmark getBookmark() {		
 		final Bookmark rVal = new Bookmark();
 		setResourceDefaults(rVal);
-		rVal.setDescription("test");
-		rVal.setExtended("test");
+		rVal.setTitle("test");
+		//rVal.setExtended("test");
 		rVal.setUrl("http://www.bibonomy.org");
 		return rVal;
 	}
