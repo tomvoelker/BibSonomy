@@ -2,11 +2,8 @@ package org.bibsonomy.database.managers;
 
 import java.util.Date;
 
-import junit.framework.TestCase;
-
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Tag;
 import org.junit.Test;
 
 public class TestInsertBookmark {
@@ -14,19 +11,19 @@ public class TestInsertBookmark {
 	@Test
 	public void getBookmarkDefault() {
 		final BookmarkParam bookmark = new BookmarkParam();
-		final Tag tagfirstTest = new Tag();
+		/*final Tag tagfirstTest = new Tag();
 		final Tag tagsecondTest = new Tag();
-		final Tag tagthirdTest = new Tag();
+		final Tag tagthirdTest = new Tag();*/
 		final Bookmark book = new Bookmark();
 
 		final Date date = new Date();
 
 		// book.setContentId(657493);
-		book.setDescription("TestDescription");
+		book.setTitle("TestTitle");
 		/*
 		 * TODO repair bookmarkExtended, return null
 		 */
-		book.setExtended("bookmark extension");
+		//book.get("bookmark extension");
 		bookmark.setUserName("grahl");
 
 		/* TODO Extension=Description Description=Title */
