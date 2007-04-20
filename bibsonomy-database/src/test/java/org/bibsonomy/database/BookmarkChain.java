@@ -6,12 +6,9 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.managers.chain.ChainElement;
 import org.bibsonomy.database.managers.chain.FirstChainElement;
-import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksForUser;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-
 
 
 
@@ -31,10 +28,10 @@ public class BookmarkChain extends TestCase {
 	
 	public void chainTest(){
 	
-		for (final FirstChainElement chain : this.chains) {
+		/*for (final FirstChainElement chain : this.chains) {
 			
 			final List<Post<? extends Resource>> list =chain.getFirstElement().perform(authUser, grouping, groupingName, tags, hash, popular, added, start, end);
-
+             
 			if (list != null){
 				
 			String e="Warnung";
@@ -43,7 +40,7 @@ public class BookmarkChain extends TestCase {
 			}
 				
 
-		}
+		}*/
 	}
 }
 
