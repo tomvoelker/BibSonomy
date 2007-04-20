@@ -20,7 +20,7 @@
 	</select>
 
 	<select id="getBookmarkByTagNamesForUser" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT a.content_id, t.tag_name, a.book_url, a.book_url_hash as interHash,a.book_url_hash as intraHash, a.book_description as title, a.book_extended as description,
+		SELECT a.content_id, t.tag_name, a.book_url, a.book_url_hash as interHash,a.book_url_hash as intraHash,title, description,
 		       a.date, a.book_url_ctr as count, t.user_name, g.group, g.group_name
 		FROM (SELECT b.content_id, u.book_url, b.book_url_hash, b.book_description as title, b.book_extended as description,
 		             b.date, u.book_url_ctr, b.group
@@ -39,7 +39,7 @@
 	</select>
 
 	<select id="getBookmarkByConceptForUser" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT a.content_id, t.tag_name, a.book_url, a.book_url_hash as interhash, a.book_url_hash as intrahash, a.book_description as title, a.book_extended as description,
+		SELECT a.content_id, t.tag_name, a.book_url, a.book_url_hash as interhash, a.book_url_hash as intrahash, title, description,
 		       a.date, a.book_url_ctr as count, gi.group_name, t.user_name, gi.group
 		FROM (SELECT DISTINCT b.content_id, u.book_url, b.book_url_hash, b.book_description as title, b.book_extended as description,
 		                      b.date, u.book_url_ctr, b.group
@@ -59,7 +59,7 @@
 	</select>
 
 	<select id="getBookmarkForHomepage" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT bb.content_id, bb.intraHash, bb.interHash, bb.book_description as title, bb.book_extended as description, bb.date, bb.user_name,
+		SELECT bb.content_id, bb.intraHash, bb.interHash, title, description, bb.date, bb.user_name,
 		       bb.book_url, bb.book_url_ctr as count, t.tag_name, NULL as `group`, NULL AS group_name
 		FROM (SELECT <include refid="bookmarkAttributes"/>, u.book_url, u.book_url_ctr 
 		      FROM bookmark b, urls u
@@ -98,7 +98,7 @@
 	</select>
 
 	<select id="getBookmarkByHash" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT b.content_id, t.tag_name, b.book_description as title, b.book_extended as description, b.user_name, b.date, 
+		SELECT b.content_id, t.tag_name, title, description, b.user_name, b.date, 
 		       b.book_url_hash as interHash, b.book_url_hash as intraHash, u.book_url, u.book_url_ctr as count, NULL AS group_name, NULL as `group`
 		FROM (SELECT book_url_hash, book_description as title, book_extended as description, user_name, date,content_id
 		      FROM bookmark
@@ -116,7 +116,7 @@
 	</select>
 
 	<select id="getBookmarkByHashForUser" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT g.*,bb.content_id, t.tag_name, bb.book_description as title, bb.book_extended as description, bb.user_name, bb.date,
+		SELECT g.*,bb.content_id, t.tag_name, title, description, bb.user_name, bb.date,
 		       bb.book_url_hash AS interhash,bb.book_url_hash AS intrahash, u.book_url, u.book_url_ctr as count, g.group_name
 		FROM (SELECT book_url_hash, book_description as title, book_extended as description, user_name, date, content_id, b.group
 		      FROM bookmark b
@@ -131,7 +131,7 @@
 	</select>
 
 	<select id="getBookmarkSearch" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT bb.content_id, bb.book_url_hash, bb.book_description as title, bb.book_extended as description, bb.date,
+		SELECT bb.content_id, bb.book_url_hash, title, description, bb.date,
 		       bb.user_name, bb.book_url, bb.book_url_ctr, t.tag_name
 		FROM (SELECT b.content_id, b.book_url_hash, b.book_description as title, b.book_extended as description, b.date,
 		             b.user_name, u.book_url, u.book_url_ctr
@@ -162,7 +162,7 @@
 	</select>
 
 	<select id="getBookmarkViewable" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT bb.content_id, bb.user_name,bb.book_url_hash as intraHash, bb.book_url_hash AS interHash, bb.book_description as title, bb.book_extended as description,
+		SELECT bb.content_id, bb.user_name,bb.book_url_hash as intraHash, bb.book_url_hash AS interHash, title, description,
 		       bb.date, bb.book_url, bb.book_url_ctr as count, t.tag_name, NULL as `group`, NULL AS group_name
 		FROM (SELECT b.content_id, b.user_name, b.book_url_hash, b.book_description as title, b.book_extended as description,
 		             b.date, u.book_url, u.book_url_ctr, b.group
@@ -228,7 +228,7 @@
 	</select>
 
 	<select id="getBookmarkForUser" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, bb.book_description as title, bb.book_extended as description, bb.date,
+		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
 		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, t.user_name
 		FROM (SELECT b.content_id, b.book_url_hash, b.book_description as title, b.book_extended as description, b.date,
 		             u.book_url, u.book_url_ctr, b.group
