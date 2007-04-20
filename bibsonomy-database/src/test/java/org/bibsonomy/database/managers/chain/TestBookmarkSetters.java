@@ -1,17 +1,7 @@
 package org.bibsonomy.database.managers.chain;
 
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.bibsonomy.database.managers.chain.bookmark.BookmarkChain;
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
 import org.junit.Test;
 
-import junit.framework.TestCase;
 
 public class TestBookmarkSetters {
 

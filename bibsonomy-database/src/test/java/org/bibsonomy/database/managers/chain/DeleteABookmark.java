@@ -1,9 +1,5 @@
 package org.bibsonomy.database.managers.chain;
 
-import org.bibsonomy.database.managers.chain.bookmark.BookmarkChain;
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.User;
 import org.junit.Test;
 
 public class DeleteABookmark {
