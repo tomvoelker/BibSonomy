@@ -28,6 +28,7 @@ public abstract class GenericParam<T extends Resource> {
 	private List<Tag> tags;
 	private Tag tag;
 	private String tagName;
+	private String title;
 	/**
 	 * List of (tagname, index)-pairs, where tagname can be both a name of a tag
 	 * or concept.
@@ -331,5 +332,13 @@ public abstract class GenericParam<T extends Resource> {
 
 	public void setTagName(String tagName) {
 		this.tagName = tagName;
+	}
+
+	public String getTitle() {
+		return this.title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 }
