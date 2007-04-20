@@ -82,7 +82,16 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 		param.setUserName(null);
 		return this.getGroupIdByGroupNameAndUserName(param);
 	}
-
+	
+/*
+ * for request getTagsByGroup
+ */
+	
+	public Integer getGroupIdByGroupName(final UserParam param) {
+		param.setUserName(null);
+		return this.getGroupIdByGroupNameAndUserName(param);
+	}
+	
 	/**
 	 * Checks if a given user is in the given group.
 	 * 
@@ -98,7 +107,19 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 		if (rVal == null) return ConstantID.GROUP_INVALID.getId();
 		return rVal;
 	}
-
+/*
+ * for request getTagsByGroup
+ */
+	public Integer getGroupIdByGroupNameAndUserName(final UserParam param) {
+		if (param.getRequestedGroupName() == null) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "requestedGroupName is null");
+		}
+		final Integer rVal = (Integer) this.queryForObject("getGroupIdByGroupNameAndUserName", param);
+		if (rVal == null) return ConstantID.GROUP_INVALID.getId();
+		return rVal;
+	}
+	
+	
 	/**
 	 * Get a current ContentID for setting a bookmark update the current
 	 * ContendID for bookmark and bibtex

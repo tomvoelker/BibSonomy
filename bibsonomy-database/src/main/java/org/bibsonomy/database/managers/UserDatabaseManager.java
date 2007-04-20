@@ -27,10 +27,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 		return (List<User>) queryForList(query, user);
 	}
 
-	public List<User> getAllUsersOfBibSonomy(User user) {
-		return this.userList("getAllUsersOfBibSonomy", user);
-	}
-	
 	/*
 	 * get all Users of a given Group 
 	 */
@@ -47,10 +43,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 		return (User) this.queryForObject("getUserDetails", user);
 	}
 	
-	
-	/*
-	 * request:get all Users of BibSonomy, which are currently logged
-	 */
 	
 	public List<User> getUsers(String authUser, int start, int end) {
 		return null;

@@ -6,11 +6,14 @@ import java.util.List;
 public class UserParam {
 
 	String requestedUserName;
+	String requestedGroupName;
 	String 	userName;
 	String  groupingName;
 	String  regex;
 	int offset;
 	int limit;
+	int groupId;
+	
 	private List<Integer> groups;
 	 
 	public int getLimit() {
@@ -55,6 +58,18 @@ public class UserParam {
 
 	public void setGroups(List<Integer> groups) {
 		this.groups = groups;
+	}
+	public String getRequestedGroupName() {
+		return this.requestedGroupName;
+	}
+	public void setRequestedGroupName(String requestedGroupName) {
+		this.requestedGroupName = requestedGroupName;
+	}
+	public int getGroupId() {
+		return this.groupId;
+	}
+	public void setGroupId(int groupId) {
+		this.groupId = groupId;
 	}
 	
 	

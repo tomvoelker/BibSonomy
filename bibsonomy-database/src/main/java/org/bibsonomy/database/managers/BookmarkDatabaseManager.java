@@ -401,7 +401,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		final Transaction transaction = this.getTransaction(true);
 
 	    /*
-	     *  User would like an existing bookmark
+	     *  User would like update an existing bookmark
 	     */
 	    if(update==true && post.getResource().getIntraHash()!=null && post.getUser().getName()!=null){
 	    	System.out.println("******************************************************");
@@ -418,7 +418,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	    	 */
 	    	List<Post<? extends Resource>> storeTemp = null; 
 	    	
-	    	getBookmarksByHashForUser.perform(userFromUrl,GroupingEntity.USER,userFromUrl,null,hashFromUrl,false, false, 0, 1);
+	    	storeTemp=getBookmarksByHashForUser.perform(userFromUrl,GroupingEntity.USER,userFromUrl,null,hashFromUrl,false, false, 0, 1);
         	
 	    	System.out.println("storeTemp.size()= "+storeTemp.size());
 			System.out.println("authUser = " + userFromUrl);

@@ -4,20 +4,56 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.tag.TagChainElement;
+import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.Tag;
 
 public class GetTagsByGroup extends TagChainElement{
 
+	/**
+	 * 
+	 * @author mgr
+	 *
+	 */
+
+	/*
+	 * return a list of tags by a given group.
+	 * Following arguments have to be given:
+	 * 
+	 * grouping:group
+	 * name:given
+	 * regex: irrelevant 
+	 */
+	
 	@Override
-	protected boolean canHandle(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end) {
-		// TODO Auto-generated method stub
-		return false;
+	protected List<Tag> handle(String authUser, GroupingEntity grouping, String groupingName,String regex,int start, int end) {
+		
+		final UserParam param =new UserParam();
+		param.setRequestedGroupName(groupingName);
+		param.setUserName(authUser);
+		param.setOffset(start);
+		int limit=end-start;
+		param.setLimit(limit);
+		
+	    param.setGroupId(generalDb.getGroupIdByGroupName(param));
+		param.setGroups(generalDb.getGroupsForUser(param));
+		
+		List<Tag> tags = db.getTagsByGroup(param);
+		if(tags.size()!=0){
+			System.out.println("GetTagsByGroup");
+		}
+		return tags;
+	}
+    
+	/*
+	 * prove arguments as mentioned above
+	 */
+	
+	
+	@Override
+	protected boolean canHandle(String authUser,GroupingEntity grouping,String groupingName,String regex,int start,int end) {
+		return authUser != null && 
+			grouping == GroupingEntity.GROUP && groupingName != null;			
 	}
 
-	@Override
-	protected List<Tag> handle(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

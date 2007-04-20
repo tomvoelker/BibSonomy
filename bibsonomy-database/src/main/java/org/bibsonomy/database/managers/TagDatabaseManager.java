@@ -225,30 +225,58 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	/*
-	 * return all record tags of the system 
+	 * return all recorded tags of the system 
 	 */
 	
-	public List<Tag> getAllTags(final User user) {
-		return this.tagList("getAllTags", user);
+	public List<Tag> getAllTags(final UserParam param) {
+		return this.tagList("getAllTags", param);
 	}
+	/**
+	 * returns details about a tag. those details are:
+	 * <ul>
+	 * <li>details about the tag itself, like number of occurrences etc</li>
+	 * <li>list of subtags</li>
+	 * <li>list of supertags</li>
+	 * <li>list of correlated tags</li>
+	 * </ul>
+	 * 
+	 * @param authUserName
+	 *            name of the authenticated user
+	 * @param tagName
+	 *            name of the tag
+	 * @return the tag's details, null else
+	 */
 	
 	public Tag getTagDetails(String authUserName, String tagName) {
 		return null;
 	}	
 	
+	/*
+	 * get all Tags of a given User
+	 */
 	public List<Tag> getTagsByUser(final UserParam user) {
 		return this.tagList("getTagsByUser", user);
 	} 
 	
+	/*
+	 * get all Tags of a given group
+	 */
+	
+	
 	public List<Tag> getTagsByGroup(final UserParam user) {
 		return this.tagList("getTagsByGroup", user);
 	}
-	public List<Tag> getTagsbExpression(final UserParam user) {
-		return this.tagList("getTagsbExpression", user);
+	
+	/*
+	 * get all Tags of a given regular expression 
+	 */
+	
+	public List<Tag> getTagsByExpression(final UserParam user) {
+		return this.tagList("getTagsByExpression", user);
 	} 
 	
-	public List<Tag> getTagsByGrouping(final UserParam user) {
-		return this.tagList("getTagsByGrouping", user);
+	public List<Tag> getTagsViewable(final UserParam user) {
+		return this.tagList("getTagsViewableg", user);
 	} 
 	
 	public List<Tag> getTags(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end) {

@@ -41,7 +41,6 @@ public class GetBookmarksForUser extends BookmarkChainElement{
 		if(posts.size()!=0){
 			System.out.println("GetBookmarksForUser");
 			
-			
 		}
 		return posts;
 	}
@@ -49,7 +48,6 @@ public class GetBookmarksForUser extends BookmarkChainElement{
 	/*
 	 * prove arguments as mentioned above
 	 */
-	
 	
 	@Override
 	protected boolean canHandle(String authUser,GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {

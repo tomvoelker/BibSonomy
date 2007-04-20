@@ -15,6 +15,7 @@ import org.bibsonomy.model.Resource;
 public abstract class ChainElement implements ChainPerform {
 
 	protected final GeneralDatabaseManager generalDb;
+	
 	/** The next element of the chain */
 	private ChainElement next;
 
