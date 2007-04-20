@@ -14,6 +14,7 @@
 		<result property="date"        column="date"            javaType="date" />
 		<result property="groups"      resultMap="Common.group" />
 		<result property="user"        resultMap="Common.user" />
+		<result property="description"   column="description"   javaType="string" />
 	</resultMap>
 
 	<resultMap id="group" class="group">
