@@ -17,6 +17,9 @@ public class GenericChainHandlerTest extends AbstractDatabaseTest {
 		final List<String> taglistfriend = new LinkedList<String>();
 		taglist.add("semantic");
 		taglistfriend.add("DVD");
+		/*
+		 * ByUserFriends has to add 
+		 */
 		// ByTagName
 	    //final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", GroupingEntity.ALL, "jaeschke", taglist, null, false, false, 0, 10);
 		 //ByTagNameForUser
@@ -28,7 +31,7 @@ public class GenericChainHandlerTest extends AbstractDatabaseTest {
 		//ByHash
 		//final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", GroupingEntity.ALL, "jaeschke", null,"7d85e1092613fd7c91d6ba5dfcf4a044", false, false, 0, 19);
 		//ByHashForUser geht noch nicht
-		final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", GroupingEntity.USER, "jaeschke", null,"7d85e1092613fd7c91d6ba5dfcf4a044", false, false, 0, 19);
+		//final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", GroupingEntity.USER, "jaeschke", null,"7d85e1092613fd7c91d6ba5dfcf4a044", false, false, 0, 19);
 		//ByViewable
 		//final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", GroupingEntity.VIEWABLE, "jaeschke", null, null, false, false, 0, 19);
 		//ForGroup
@@ -42,7 +45,7 @@ public class GenericChainHandlerTest extends AbstractDatabaseTest {
         //Popular
 		//final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", GroupingEntity.ALL, "jaeschke", taglist, null, true, false, 0, 19);
 		//Home
-		//final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", null, "jaeschke", taglist, null, false, false ,0, 19);
-		//System.out.println(test.size() + " in my FirstTest");
+		final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", null, "jaeschke", taglist, null, false, false ,0, 19);
+		System.out.println(test.size() + " in my FirstTest");
 	}
 }
