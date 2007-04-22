@@ -1,4 +1,4 @@
-package org.bibsonomy.database;
+package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertTrue;
 
@@ -13,7 +13,7 @@ import org.junit.Test;
  * @author mgr
  * @author Christian Schenk
  */
-public class BookmarkTest extends AbstractDatabaseTest {
+public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getBookmarkByTagNames() {

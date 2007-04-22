@@ -1,4 +1,4 @@
-package org.bibsonomy.database;
+package org.bibsonomy.database.managers.chain.bookmark;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -12,7 +12,7 @@ import org.bibsonomy.model.Resource;
 
 
 
-public class BookmarkChain extends TestCase {
+public class BookmarkChainTest extends TestCase {
 	
 	
 	List<FirstChainElement> chains = new LinkedList<FirstChainElement>();

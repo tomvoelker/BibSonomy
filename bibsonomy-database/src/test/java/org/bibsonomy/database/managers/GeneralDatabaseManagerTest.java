@@ -1,4 +1,4 @@
-package org.bibsonomy.database;
+package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -14,7 +14,7 @@ import org.junit.Test;
  * @author mgr
  * @author Christian Schenk
  */
-public class GeneralTest extends AbstractDatabaseTest {
+public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void isFriendOf() {

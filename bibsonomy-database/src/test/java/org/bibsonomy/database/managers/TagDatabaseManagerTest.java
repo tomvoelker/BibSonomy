@@ -1,4 +1,4 @@
-package org.bibsonomy.database;
+package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -15,7 +15,7 @@ import org.junit.Test;
  * 
  * @author Christian Schenk
  */
-public class TagTest extends AbstractDatabaseTest {
+public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	/**
 	 * Retrieves only one Tag-object

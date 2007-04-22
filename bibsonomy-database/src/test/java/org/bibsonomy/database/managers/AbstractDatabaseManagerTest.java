@@ -1,4 +1,4 @@
-package org.bibsonomy.database;
+package org.bibsonomy.database.managers;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,7 +23,7 @@ import org.junit.Before;
  * 
  * @author Christian Schenk
  */
-public abstract class AbstractDatabaseTest {
+public abstract class AbstractDatabaseManagerTest {
 
 	/** The database manager for general queries */
 	protected GeneralDatabaseManager generalDb;

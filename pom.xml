@@ -18,9 +18,9 @@
 	</organization>
 	<inceptionYear>2006</inceptionYear>
 	<scm>
-      <connection>
+		<connection>
 			scm:cvs:ext:continuum@cvs.gforge.cs.uni-kassel.de:/cvsroot/bibsonomy2:bibsonomy
-      </connection>
+		</connection>
 		<developerConnection>
 			scm:cvs:ext:${maven.username}@cvs.gforge.cs.uni-kassel.de:/cvsroot/bibsonomy2:bibsonomy
 		</developerConnection>
@@ -40,6 +40,24 @@
 			<email>hotho@cs.uni-kassel.de</email>
 			<roles>
 				<role>Project leader</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Miranda Grahl</name>
+			<id>mgr</id>
+			<email>mgr@cs.uni-kassel.de</email>
+			<roles>
+				<role>Project leader</role>
+				<role>Developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Robert Jaeschke</name>
+			<id>rja</id>
+			<email>jaeschke@cs.uni-kassel.de</email>
+			<roles>
+				<role>Project leader</role>
+				<role>Developer</role>
 			</roles>
 		</developer>
 		<developer>
@@ -133,14 +151,14 @@
 					<target>1.5</target>
 				</configuration>
 			</plugin>
-         <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>tomcat-maven-plugin</artifactId>
-            <configuration>
-               <server>tomcat_gromit</server>
-               <url>http://gromit:8080/manager</url>
-            </configuration>
-         </plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>tomcat-maven-plugin</artifactId>
+				<configuration>
+					<server>tomcat_gromit</server>
+					<url>http://gromit:8080/manager</url>
+				</configuration>
+			</plugin>
 		</plugins>
 		<extensions>
 			<extension>
@@ -260,6 +278,11 @@
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
 				<version>1.2.12</version>
+			</dependency>
+			<dependency>
+				<groupId>dom4j</groupId>
+				<artifactId>dom4j</artifactId>
+				<version>1.6.1</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

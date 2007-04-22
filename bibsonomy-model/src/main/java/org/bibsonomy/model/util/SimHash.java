@@ -19,7 +19,7 @@ public class SimHash {
 	/**
 	 * Returns the corresponding simhash.
 	 */
-	public static String getSimHash(final BibTex bibtex, ConstantID simHash) {
+	public static String getSimHash(final BibTex bibtex, final ConstantID simHash) {
 		switch (simHash) {
 		case SIM_HASH0:
 			return getSimHash0(bibtex);

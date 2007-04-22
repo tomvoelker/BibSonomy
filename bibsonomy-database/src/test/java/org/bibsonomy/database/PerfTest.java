@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.testutil.ParamUtils;
@@ -17,7 +18,7 @@ import org.junit.Test;
  * 
  * @author Christian Schenk
  */
-public class PerfTest extends AbstractDatabaseTest {
+public class PerfTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	@SuppressWarnings( { "unchecked", "unused" })

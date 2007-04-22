@@ -4,12 +4,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.AbstractDatabaseTest;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.junit.Test;
 
-public class GenericChainHandlerTest extends AbstractDatabaseTest {
+public class GenericChainHandlerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void perform() {

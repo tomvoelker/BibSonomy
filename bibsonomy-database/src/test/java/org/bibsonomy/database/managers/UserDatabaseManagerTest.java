@@ -1,11 +1,11 @@
-package org.bibsonomy.database;
+package org.bibsonomy.database.managers;
 
 
 import org.bibsonomy.model.User;
 import org.junit.Test;
 
 // TODO should we fix this preliminary test ???
-public class UserTest extends AbstractDatabaseTest {
+public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 /*
  * aktuelle Parameter werden mit default gefüllt
  */
