@@ -34,7 +34,7 @@ public class RestDatabaseManagerTest {
 
 	private GetMethod getWebServiceAction(final String path) {
 		try {
-			final AuthScope authScope = new AuthScope(this.apiURLHost, 1080, this.apiURLRealm);
+			final AuthScope authScope = new AuthScope(this.apiURLHost, this.apiURLPort, this.apiURLRealm);
 			final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("csc", "hurz123"); 
 			this.client.getState().setCredentials(authScope, credentials);
 

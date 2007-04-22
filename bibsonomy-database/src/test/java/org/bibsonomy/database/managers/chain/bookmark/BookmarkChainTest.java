@@ -9,12 +9,10 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.FirstChainElement;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.junit.Test;
 
+public class BookmarkChainTest {
 
-
-public class BookmarkChainTest extends TestCase {
-	
-	
 	List<FirstChainElement> chains = new LinkedList<FirstChainElement>();
 	String authUser="grahl";
 	GroupingEntity grouping=GroupingEntity.USER;
@@ -25,7 +23,8 @@ public class BookmarkChainTest extends TestCase {
 	boolean added=false;
 	int start=0; 
 	int end=19;
-	
+
+	@Test
 	public void chainTest(){
 	
 		/*for (final FirstChainElement chain : this.chains) {
@@ -38,9 +37,6 @@ public class BookmarkChainTest extends TestCase {
 			System.out.println(e);
 				
 			}
-				
-
 		}*/
 	}
 }
-

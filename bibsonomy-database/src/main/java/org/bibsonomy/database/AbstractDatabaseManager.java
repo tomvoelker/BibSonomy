@@ -28,7 +28,7 @@ public class AbstractDatabaseManager {
 	private boolean readonly;
 
 	/** Used to determine whether we want to retrieve an object or a list */
-	public enum QueryFor {
+	private enum QueryFor {
 		OBJECT, LIST;
 	}
 
