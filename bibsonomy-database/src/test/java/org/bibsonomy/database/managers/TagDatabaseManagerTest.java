@@ -1,12 +1,8 @@
 package org.bibsonomy.database.managers;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.util.List;
 
+import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.Tag;
 import org.junit.Test;
 
@@ -16,43 +12,46 @@ import org.junit.Test;
  * @author Christian Schenk
  */
 public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
-
-	/**
-	 * Retrieves only one Tag-object
-	 */
+	
 	@Test
-	@SuppressWarnings("unused")
 	public void getTagById() {
-		try {
-			final Tag tag = (Tag) this.tagDb.getTagById(387);
-			// System.out.println(tag);
-			// assertEquals(387, tag.getId());
-			// assertNotNull(tag.getName());
-			// assertNotNull(tag.getStem());
-		} catch (final RuntimeException ex) {
-			ex.printStackTrace();
-			fail("SQLException");
-		}
+		this.tagDb.	getTagById(this.tagParam);
+	}
+	
+	@Test
+	public void getTagByCount() {
+		this.tagDb.	getTagByCount(this.tagParam);
+	}
+	
+	@Test
+	public void getAllTags() {
+		this.tagDb.	getAllTags(this.userParam);
+	}
+	
+	/*@Test
+	public void getTagsByUser() {
+		this.tagDb. getTagsByUser(this.userParam);
 	}
 
-	/**
-	 * Retrieves a List of Tag-objects
-	 */
-	@Test
-	@SuppressWarnings("unchecked")
-	public void getTagByCount() {
-		try {
-			final List<Tag> tags = this.tagDb.getTagByCount(24);
-			for (final Tag tag : tags) {
-				// System.out.println(tag);
-				assertTrue(tag.getId() > 0);
-				assertNotNull(tag.getName());
-				assertNotNull(tag.getStem());
-				assertEquals(24, tag.getCount());
-			}
-		} catch (final RuntimeException ex) {
-			ex.printStackTrace();
-			fail("SQLException");
-		}
+	/*@Test
+	public void getTagsByGroup() {
+		this.tagDb. getTagsByGroup(this.userParam);
 	}
+	
+	@Test
+	public void getTagsViewable() {
+		this.tagDb. getTagsViewable(this.userParam);
+	}
+	
+	/*
+	 * TODO not imlemented
+	 */
+	
+	/*@Test
+	public void getTagsByExpression() {
+		this.tagDb. getTagsByExpression(this.tagParam);
+	}*/
+	
+
+	
 }

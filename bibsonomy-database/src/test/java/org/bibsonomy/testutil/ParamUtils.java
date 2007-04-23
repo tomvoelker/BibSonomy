@@ -4,11 +4,14 @@ import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
+import org.bibsonomy.database.params.TagParam;
+import org.bibsonomy.database.params.UserParam;
 
 /**
  * Provides methods to build parameter-objects.
  * 
  * @author Christian Schenk
+ * @author  mgr
  */
 public class ParamUtils {
 
@@ -25,7 +28,7 @@ public class ParamUtils {
         // param.setCaseSensitiveTagNames(true);
 		param.addTagName("community");
 	}
-
+	
 	/**
 	 * Retrieves a BookmarkParam.
 	 */
@@ -62,5 +65,32 @@ public class ParamUtils {
 	public static void addTagsToParam(final GenericParam param) {
 		param.addTagName("web");
 		param.addTagName("online");
+	}
+	
+	
+	/**
+	 * Retrieve a UserParam.
+	 */
+	public static UserParam getDefaultUserParam() {
+		UserParam param = new UserParam();
+		param.setUserName("grahl");
+		param.setOffset(0);
+		param.setLimit(100);
+		param.setGroupId(3);
+		return param;
+	}
+	
+	/*
+	 * Retrieve a TagParam
+	 */
+	public static TagParam getDefaultTagParam() {
+		TagParam param = new TagParam();
+		param.setOffset(0);
+		param.setLimit(200);
+		param.setCount(100);
+		param.setId(5218);
+	    //param.setGroupType();
+		param.setUserName("grahl");
+		return param;
 	}
 }

@@ -1,39 +1,21 @@
 package org.bibsonomy.database.managers;
 
 
-import org.bibsonomy.model.User;
+
 import org.junit.Test;
 
-// TODO should we fix this preliminary test ???
 public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
-/*
- * aktuelle Parameter werden mit default gefüllt
- */
-//	public ByDate getDefaultByDate() {
-//		return new ByDate(new Date());
-//	}
-//
-//	public ByUser getDefaultByUser() {
-//		/*
-//		 * machen wir mal noch Datum hinzu und testen das DynamicMapped Statement
-//		 * 
-//		 * --> interessanterweise sagt die DEBUG-Ausgabe von iBatis dann immer noch, 
-//		 * dass das ganze als PreparedStatement abgeliefert wird. Hhhmm. Nett. :-)
-//		 */
-//		return new ByUser("rja", new Date());
-//	}
+	
+	@Test
+	public void getUserDetails() {
+		this.userDb.getUserDetails(this.userParam);
+	}	
 
-	public User getDefaultUser() {
-		User user = new User();
-		user.setName("rja");
-		user.setRealname("Robert Jäschke");
-		user.setEmail("jaeschke@cs.uni-kassel.de");
-		user.setHomepageAsString("http://www.kde.cs.uni-kassel.de/jaeschke'\b\b\b\b\\x22\\x22\\x22\\x22\\x22\\x22\\x22\\x22\\x22; DELETE FROM user;");
-		return user;
-	}
-/*
- * liest Daten
- */
+	@Test
+	public void getUsersOfSystem() {
+		this.userDb.getUsersOfSystem(this.userParam);
+	}	
+
 //	@SuppressWarnings("unchecked")
 //	public void testGetUsersByDate() {
 //		try {

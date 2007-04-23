@@ -10,6 +10,8 @@ import org.bibsonomy.database.managers.GenericChainHandler;
 import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
+import org.bibsonomy.database.params.TagParam;
+import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.testutil.ParamUtils;
@@ -35,6 +37,7 @@ public abstract class AbstractDatabaseManagerTest {
 	protected TagDatabaseManager tagDb;
 	/** The chain handler */
 	protected GenericChainHandler chainHandler;
+	protected UserDatabaseManager userDb;
 	/**
 	 * This param can be used both for queries about bookmarks and all other
 	 * queries
@@ -42,7 +45,8 @@ public abstract class AbstractDatabaseManagerTest {
 	protected BookmarkParam bookmarkParam;
 	/** This param can be used for queries about BibTexs */
 	protected BibTexParam bibtexParam;
-
+	protected UserParam userParam;
+	protected TagParam tagParam;
 	@Before
 	public void setUp() throws IOException {
 		this.generalDb = GeneralDatabaseManager.getInstance();
@@ -50,12 +54,16 @@ public abstract class AbstractDatabaseManagerTest {
 		this.bibTexDb = BibTexDatabaseManager.getInstance();
 		this.tagDb = TagDatabaseManager.getInstance();
 		this.chainHandler = GenericChainHandler.getInstance();
+		this.userDb=UserDatabaseManager.getInstance();
 		this.resetParameters();
+		
 		// testcases shouldn't write to the db
+		
 		this.generalDb.setReadonly();
 		this.bookmarkDb.setReadonly();
 		this.bibTexDb.setReadonly();
 		this.tagDb.setReadonly();
+		this.userDb.setReadonly();
 	}
 
 	@After
@@ -64,6 +72,7 @@ public abstract class AbstractDatabaseManagerTest {
 		this.bookmarkDb = null;
 		this.bibTexDb = null;
 		this.tagDb = null;
+		this.userDb=null;
 		this.chainHandler = null;
 		this.bookmarkParam = null;
 		this.bibtexParam = null;
@@ -82,6 +91,8 @@ public abstract class AbstractDatabaseManagerTest {
 	protected void resetParameters() {
 		this.bookmarkParam = ParamUtils.getDefaultBookmarkParam();
 		this.bibtexParam = ParamUtils.getDefaultBibTexParam();
+		this.userParam=ParamUtils.getDefaultUserParam();
+		this.tagParam=ParamUtils.getDefaultTagParam();
 	}
 
 	/**
