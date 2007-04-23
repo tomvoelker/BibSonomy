@@ -28,15 +28,15 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected List<User> userList(final String query, final User user) {
-		return (List<User>) queryForList(query, user);
+	protected List<UserParam> userList(final String query, final UserParam user) {
+		return (List<UserParam>) queryForList(query, user);
 	}
 
 	/*
 	 * get all Users of a given Group 
 	 */
 	
-	public List<User> getUsersOfGroup(final User user) {
+	public List<UserParam> getUsersOfGroup(final UserParam user) {
 		return this.userList("getUsersOfGroup", user);
 	}
 	
@@ -44,9 +44,18 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 	 * get details by a given group of a user
 	 */
 	
-	public User getUserDetails(final User user) {
-		return (User) this.queryForObject("getUserDetails", user);
+	public List<UserParam> getUserDetails(final UserParam user) {
+		return this.userList("getUserDetails", user);
 	}
+	
+	/*
+	 * get all users of the system
+	 */
+	public List<UserParam> getUsersOfSystem(final UserParam user) {
+		return this.userList("getUsersOfSystem", user);
+	}
+	
+	
 	
 	/*
 	 * insert attributes for new user account
@@ -55,6 +64,9 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 		this.insert("insertUser", user);
 	}
 	
+	/*
+	 * delete a user from the system
+	 */ 
 	public void deleteUser(final User user) {
 		this.delete("deleteUser", user);
 	}
@@ -62,7 +74,10 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 	
 	
 	
+	
+	
 	public List<User> getUsers(String authUser, int start, int end) {
+		
 		return null;
 	}
 
@@ -125,7 +140,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
     		
     		else{	
     			/*
-    			 * userProve is the objec, which is already written in the database 
+    			 * userProve is the object, which is already written in the database 
     			 */
     			
     	        User proveUser =userTemp.get(0);
@@ -195,11 +210,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
     
     }
     	
-    	
-    	
-    	
-		
-	
 	public boolean validateUserAccess(String username, String password) {
 		return true;
 	}

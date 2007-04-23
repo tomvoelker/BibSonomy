@@ -5,10 +5,10 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
+import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
 import org.bibsonomy.util.ExceptionUtils;
 
 /**
@@ -36,18 +36,13 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		return singleton;
 	}
     
-	
-	
-	
-	
-	
 	/** Return all tags for given tagId */
-	public Tag getTagById(final int param) {
+	public Tag getTagById(final TagParam param) {
 		return (Tag) this.queryForObject("getTagById", param);
 	}
 
 	/** Return all tags for a given tag count */
-	public List<Tag> getTagByCount(final int param) {
+	public List<Tag> getTagByCount(final TagParam param) {
 		// TODO not tested
 		return this.tagList("getTagByCount", param);
 	}
@@ -202,8 +197,6 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		}
 	}
 	
-	
-	
 	/*
 	 * single requests for method get detailled information of a tag
 	 */
@@ -276,7 +269,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	} 
 	
 	public List<Tag> getTagsViewable(final UserParam user) {
-		return this.tagList("getTagsViewableg", user);
+		return this.tagList("getTagsViewable", user);
 	} 
 	
 	public List<Tag> getTags(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end) {
