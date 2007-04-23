@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="User">
+
+	<select id="getUserDetails" resultMap="UserCommon.user" parameterClass="userParam">
+		Select user_name,user_email,user_homepage,user_realname,openUrl from user WHERE user_name=#userName#;
+	</select>
+	
+	<!--TODO <select id="getUsersOfGroup" resultClass="string" parameterClass="userParam">
+		Select
+	</select>-->
+	
+	<select id="getUsersOfSystem" resultClass="string" parameterClass="userParam">
+		Select user_name from user LIMIT #limit# OFFSET #offset#;
+	</select>
+	
+</sqlMap>

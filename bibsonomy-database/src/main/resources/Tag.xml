@@ -11,18 +11,34 @@
 		<result property="count" column="tag_ctr" javaType="java.lang.Integer" />
 	</resultMap>
 
-	<select id="getTagById" resultMap="tags" parameterClass="java.lang.Integer">
+	<select id="getTagById" resultMap="tags" parameterClass="tagParam">
 		SELECT tag_id, tag_name, tag_stem, tag_ctr
 		FROM tags
-		WHERE tag_id = #value#
+		WHERE tag_id =#id#
 	</select>
 
-	<select id="getTagByCount" resultMap="tags" parameterClass="java.lang.Integer">
+	<select id="getTagByCount" resultMap="tags" parameterClass="tagParam">
 		SELECT tag_id, tag_name, tag_stem, tag_ctr
 		FROM tags
-		WHERE tag_ctr = #value#
+		WHERE tag_ctr = #count#
 	</select>
-
+	
+	<select id="getAllTags" resultClass="string" parameterClass="userParam">
+	 SELECT tag_name  FROM tas t GROUP BY t.tag_name LIMIT #limit# OFFSET #offset#;
+	</select>
+	
+	<!--<select id="getTagsViewable" resultMap="tags" parameterClass="tagParam">
+	SELECT tag_name FROM tas t WHERE t.user_name = #userName# AND t.group = 0 GROUP BY t.tag_name 
+	</select>-->
+	
+   <!-- <select id="getTagsByUser" resultMap="tags" parameterClass="userParam">
+	</select>-->
+	
+	<!--<select id="getTagsByGroup" resultMap="tags" parameterClass="tagParam">
+	</select>-->
+	
+<!-- noch an TagParam anpassen für das Einfügen von Bookmark bzw Bibtex Objekten -->
+	
 	<insert id="insertTag" parameterClass="tag">
     	INSERT INTO tags (tag_name, tag_ctr)
     	VALUES (#name#,1)
@@ -35,4 +51,10 @@
 		ON DUPLICATE KEY UPDATE tag_ctr = tag_ctr+1
     <!--UPDATE tags SET tag_ctr=tag_ctr+1 WHERE tag_name = ?-->
 	</insert>
+	
+	
+	
+	
+	
+	
 </sqlMap>
