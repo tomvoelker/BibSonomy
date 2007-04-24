@@ -110,6 +110,7 @@
 	</sql>
     
 	<!-- Refactor b to t1, and delete this snippet -->
+	
 	<sql id="inGroups">
 		<isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">
 		  b.group in (0
@@ -118,6 +119,18 @@
 		  </iterate>)
 		</isNotEqual>
 	</sql>
+	<!-- vorläufig für Tag anfragen -->
+	<sql id="lookinGroupsForTags">
+		<isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">
+		  t.group in (0
+		  <iterate property="groups" conjunction="," prepend=",">
+		    $groups[]$
+		  </iterate>)
+		</isNotEqual>
+	</sql>
+    
+	
+	
     
 	<sql id="inGroups2">
 		<isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">
@@ -182,6 +195,15 @@
 		</isEqual>
 		<isGreaterThan property="groupId" compareValue="-1" prepend="AND">
 		  t1.group = #groupId#
+		</isGreaterThan>
+	</sql>
+	
+	<sql id="getTagForUser">
+		<isEqual property="groupId" compareValue="-1">
+		  <include refid="inGroups"/>
+		</isEqual>
+		<isGreaterThan property="groupId" compareValue="-1" prepend="AND">
+		  t.group = #groupId#
 		</isGreaterThan>
 	</sql>
 </sqlMap>
