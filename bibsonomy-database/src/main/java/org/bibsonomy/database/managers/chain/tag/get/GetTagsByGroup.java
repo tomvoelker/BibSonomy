@@ -35,7 +35,7 @@ public class GetTagsByGroup extends TagChainElement{
 		param.setLimit(limit);
 		
 	    param.setGroupId(generalDb.getGroupIdByGroupName(param));
-		param.setGroups(generalDb.getGroupsForUser(param));
+		param.setGroups(generalDb.getGroupsForUserTag(param));
 		
 		List<Tag> tags = db.getTagsByGroup(param);
 		if(tags.size()!=0){

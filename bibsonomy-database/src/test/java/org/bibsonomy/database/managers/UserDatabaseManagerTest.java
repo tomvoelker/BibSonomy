@@ -15,7 +15,22 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getUsersOfSystem() {
 		this.userDb.getUsersOfSystem(this.userParam);
 	}	
-
+	
+	@Test
+	public void getPrivlevelOfUser() {
+		this.userDb.getPrivlevelOfUser(this.userParam);
+	}	
+	
+	@Test
+	public void getUsersOfGroupPublic() {
+		this.userDb.getUsersOfGroupPublic(this.userParam);
+	}	
+	@Test
+	public void getUsersOfGroupHidden() {
+		this.userDb.getUsersOfGroupPrivate(this.userParam);
+	}
+	
+	
 //	@SuppressWarnings("unchecked")
 //	public void testGetUsersByDate() {
 //		try {

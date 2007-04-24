@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
+import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.util.ExceptionUtils;
 import org.bibsonomy.model.Resource;
@@ -53,6 +54,22 @@ public class DatabaseUtils {
 		param.setGroups(groups);
 	}
 
+
+	/*
+	 * FIXME: vorläufig für set GroupForTag anfragen
+	 */
+	
+	public static void setGroupsForTag(final GeneralDatabaseManager db, final UserParam param) {
+		// If userName and requestedUserName are the same - do nothing
+		if (param.getUserName() != null && param.getRequestedUserName() != null) {
+			if (param.getUserName().equals(param.getRequestedUserName())) return;
+		}
+		final Boolean friends = db.isFriendOfTag(param);
+		final List<Integer> groups = db.getGroupsForUserTag(param);
+		if (friends) groups.add(ConstantID.GROUP_FRIENDS.getId());
+		param.setGroups(groups);
+	}
+	
 	/**
 	 * This needs to be done for all get*ForGroup* queries.
 	 */
@@ -62,7 +79,29 @@ public class DatabaseUtils {
 		// in the SQL statement
 		param.setGroupType(ConstantID.GROUP_FRIENDS);
 	}
-
+	/*
+	 * FIXME: vorläufig für Tag Anfragen 
+	 */
+	
+	public static void prepareGetTagForGroup(final GeneralDatabaseManager db, final UserParam param) {
+		DatabaseUtils.setGroupsForTag(db, param);
+		// the group type needs to be set to friends because of the second union
+		// in the SQL statement
+		param.setGroupType(ConstantID.GROUP_FRIENDS);
+	}
+	
+	
+	/*
+	 * FIXME:vorläufig für Tag Anfrage
+	 */
+	public static void prepareGetTagForUser(final GeneralDatabaseManager db, final UserParam param) {
+		// if the groupId is invalid we have to check for groups manually
+		if (param.getGroupId() == ConstantID.GROUP_INVALID.getId()) {
+			DatabaseUtils.setGroupsForTag(db, param);
+		}
+	}
+	
+	
 	/**
 	 * This needs to be done for all get*ForUser* queries.
 	 */

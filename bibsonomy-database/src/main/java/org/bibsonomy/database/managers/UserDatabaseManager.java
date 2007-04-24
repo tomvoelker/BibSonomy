@@ -4,7 +4,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -28,33 +30,44 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected List<UserParam> userList(final String query, final UserParam user) {
-		return (List<UserParam>) queryForList(query, user);
+	protected List<User> userList(final String query, final UserParam user) {
+		return (List<User>) queryForList(query, user);
 	}
 
 	/*
-	 * get all Users of a given Group 
+	 * get all Users of a given Group required different view right
 	 */
 	
-	public List<UserParam> getUsersOfGroup(final UserParam user) {
-		return this.userList("getUsersOfGroup", user);
+	public List<User> getUsersOfGroupPublic(final UserParam user) {
+		return this.userList("getUsersOfGroupPublic", user);
+	}
+	
+	public List<User> getUsersOfGroupPrivate(final UserParam user) {
+		return this.userList("getUsersOfGroupPrivate", user);
+	}
+	
+	public List<User> getUsersOfGroupFriends(final UserParam user) {
+		return this.userList("getUsersOfGroupFriends", user);
+	}
+	
+	public Integer getPrivlevelOfUser(final UserParam user) {
+		return (Integer) this.queryForObject("getPrivlevelOfUser", user);
 	}
 	
 	/*
 	 * get details by a given group of a user
 	 */
 	
-	public List<UserParam> getUserDetails(final UserParam user) {
+	public List<User> getUserDetails(final UserParam user) {
 		return this.userList("getUserDetails", user);
 	}
 	
 	/*
 	 * get all users of the system
 	 */
-	public List<UserParam> getUsersOfSystem(final UserParam user) {
+	public List<User> getUsersOfSystem(final UserParam user) {
 		return this.userList("getUsersOfSystem", user);
 	}
-	
 	
 	
 	/*

@@ -38,6 +38,17 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 		return (Boolean) this.queryForObject("isFriendOf", param);
 	}
 
+	/*
+	 * FIXME: vorläufig für Tag Abfragen
+	 */
+	
+	public Boolean isFriendOfTag(final UserParam param) {
+		if (param.getUserName() == null || param.getRequestedUserName() == null) return false;
+		return (Boolean) this.queryForObject("isFriendOfTag", param);
+	}
+	
+	
+	
 	/**
 	 * Checks whether a user, given by requestedUserName, is a spammer. If
 	 * requestedUserName is set to null the default behaviour is to return
@@ -66,8 +77,8 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 /*
  * TODO only a temporary solution
  */
-	public List<Integer> getGroupsForUser(final UserParam param) {
-		return this.intList("getGroupsForUser", param);
+	public List<Integer> getGroupsForUserTag(final UserParam param) {
+		return this.intList("getGroupsForUserTag", param);
 	}
 	
 	

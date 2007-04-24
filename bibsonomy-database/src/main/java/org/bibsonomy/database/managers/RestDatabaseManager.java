@@ -41,7 +41,7 @@ public class RestDatabaseManager implements LogicInterface {
 	
 
 	/**
-	 * returns all users bibsonomy has
+	 * returns all users of the system has
 	 * 
 	 * @param authUser currently logged in user's name
 	 * @param start
@@ -69,20 +69,6 @@ public class RestDatabaseManager implements LogicInterface {
 		users.addAll(userDBManager.getUsers(authUser, groupName, start, end));
 		return users; 
 
-		/*List <User> users = new LinkedList <User>();
-		Group group =new Group();
-		group.setName("kde");
-		User user =new User();
-		user.setName("grahl");
-		
-		LinkedList<User> userlist=new LinkedList<User>();
-		group.setUsers(userlist);
-		
-		LinkedList<Group> groups=new LinkedList<Group>();
-		groups.add(group);
-		user.setGroups(groups);
-		
-		return users;*/
 	}
 
 	/**
@@ -93,14 +79,8 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @return details about a named user, null else
 	 */
 	public User getUserDetails(String authUserName, String userName) {
-         
-		return userDBManager.getUserDetails(authUserName,userName);
 		
-		// TODO implement me
-		// in the meantime return some demo-user
-		//User user = new User();
-		//user.setName( "BugsBunny" );
-		//return user;
+		return userDBManager.getUserDetails(authUserName,userName);
 	}
 
 	/**

@@ -2,17 +2,21 @@ package org.bibsonomy.database.params;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.ConstantID;
+
 
 public class UserParam {
 
-	String requestedUserName;
-	String requestedGroupName;
-	String 	userName;
-	String  groupingName;
-	String  regex;
-	int offset;
-	int limit;
-	int groupId;
+private	String requestedUserName;
+private	String requestedGroupName;
+private	String userName;
+private	String groupingName;
+private	String regex;
+private	int offset;
+private	int limit;
+private	int groupId;
+private ConstantID groupType;
+	
 	
 	private List<Integer> groups;
 	 
@@ -55,7 +59,6 @@ public class UserParam {
 	public List<Integer> getGroups() {
 		return this.groups;
 	}
-
 	public void setGroups(List<Integer> groups) {
 		this.groups = groups;
 	}
@@ -70,6 +73,13 @@ public class UserParam {
 	}
 	public void setGroupId(int groupId) {
 		this.groupId = groupId;
+	}
+	public int getGroupType() {
+		return groupType.getId();
+	}
+
+	public void setGroupType(ConstantID groupType) {
+		this.groupType = groupType;
 	}
 	
 	

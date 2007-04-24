@@ -7,12 +7,24 @@
 		Select user_name,user_email,user_homepage,user_realname,openUrl from user WHERE user_name=#userName#;
 	</select>
 	
-	<!--TODO <select id="getUsersOfGroup" resultClass="string" parameterClass="userParam">
-		Select
-	</select>-->
+	<select id="getPrivlevelOfUser" resultClass="int" parameterClass="userParam">
+		SELECT privlevel FROM groupids WHERE `group` = #groupId#;
+	</select>
+	
+    <select id="getUsersOfGroupPublic" resultClass="string" parameterClass="userParam">
+		SELECT user_name FROM groups WHERE `group` = #groupId#;
+	</select>
+	
+	<select id="getUsersOfGroupPrivate" resultClass="string" parameterClass="userParam">
+		SELECT user_name FROM groups WHERE user_name = #requestedUserName# AND `group` = #groupId#;
+	</select>
+
+     <select id="getUsersOfGroupFriends" resultClass="string" parameterClass="userParam">
+		SELECT user_name FROM groups WHERE `group` = #groupId#;
+	</select>
 	
 	<select id="getUsersOfSystem" resultClass="string" parameterClass="userParam">
-		Select user_name from user LIMIT #limit# OFFSET #offset#;
+		Select user_name from user where spammer = 0 LIMIT #limit# OFFSET #offset#;
 	</select>
 	
 </sqlMap>

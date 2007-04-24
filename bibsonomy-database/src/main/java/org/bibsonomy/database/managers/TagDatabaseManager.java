@@ -4,10 +4,14 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.util.ExceptionUtils;
 
@@ -21,7 +25,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 
 	/** Singleton */
 	private final static TagDatabaseManager singleton = new TagDatabaseManager();
-
+	private final GeneralDatabaseManager generalDb = GeneralDatabaseManager.getInstance();
 	/**
 	 * Only a maximum of 10 tags can be set by the user. It serves to restrict
 	 * the system behaviour in case of e.g. 200 Tags. Only a maximum of 10X10
@@ -248,6 +252,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * get all Tags of a given User
 	 */
 	public List<Tag> getTagsByUser(final UserParam user) {
+		DatabaseUtils.prepareGetTagForUser(this.generalDb, user);
 		return this.tagList("getTagsByUser", user);
 	} 
 	
@@ -257,6 +262,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	
 	
 	public List<Tag> getTagsByGroup(final UserParam user) {
+		DatabaseUtils.prepareGetTagForGroup(this.generalDb, user);
 		return this.tagList("getTagsByGroup", user);
 	}
 	

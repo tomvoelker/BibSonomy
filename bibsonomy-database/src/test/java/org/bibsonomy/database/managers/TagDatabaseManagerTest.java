@@ -28,30 +28,28 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.tagDb.	getAllTags(this.userParam);
 	}
 	
-	/*@Test
-	public void getTagsByUser() {
-		this.tagDb. getTagsByUser(this.userParam);
-	}
-
-	/*@Test
-	public void getTagsByGroup() {
-		this.tagDb. getTagsByGroup(this.userParam);
-	}
-	
 	@Test
 	public void getTagsViewable() {
 		this.tagDb. getTagsViewable(this.userParam);
 	}
 	
+	@Test
+	public void getTagsByUser() {
+		this.tagDb. getTagsByUser(this.userParam);
+	} 
+
+	@Test
+	public void getTagsByGroup() {
+		this.tagDb. getTagsByGroup(this.userParam);
+	}
+	
 	/*
-	 * TODO not imlemented
+	 * TODO not implemented
 	 */
 	
 	/*@Test
 	public void getTagsByExpression() {
 		this.tagDb. getTagsByExpression(this.tagParam);
 	}*/
-	
-
 	
 }

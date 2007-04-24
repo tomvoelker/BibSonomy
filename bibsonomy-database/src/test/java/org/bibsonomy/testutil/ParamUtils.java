@@ -75,8 +75,10 @@ public class ParamUtils {
 		UserParam param = new UserParam();
 		param.setUserName("grahl");
 		param.setOffset(0);
-		param.setLimit(100);
+		param.setLimit(5);
 		param.setGroupId(3);
+		param.setGroupType(ConstantID.GROUP_PUBLIC);
+		param.setRequestedUserName("hotho");
 		return param;
 	}
 	
@@ -89,7 +91,7 @@ public class ParamUtils {
 		param.setLimit(200);
 		param.setCount(100);
 		param.setId(5218);
-	    //param.setGroupType();
+		param.setGroupType(ConstantID.GROUP_PUBLIC);
 		param.setUserName("grahl");
 		return param;
 	}

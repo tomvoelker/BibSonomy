@@ -2,6 +2,7 @@ package org.bibsonomy.database.params;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -20,14 +21,16 @@ public class TagParam {
 	private int offset;
 	private int limit;
 	private String userName;
-	private GroupType groupType;
+	private ConstantID groupType;
 	
-    public GroupType getGroupType() {
-		return this.groupType;
+	public int getGroupType() {
+		return groupType.getId();
 	}
-	public void setGroupType(GroupType groupType) {
+
+	public void setGroupType(ConstantID groupType) {
 		this.groupType = groupType;
 	}
+	
 	public String getUserName() {
 		return this.userName;
 	}

@@ -18,5 +18,6 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses( { ParamTest.class, BookmarkDatabaseManagerTest.class,BibTexDatabaseManagerTest.class,TagDatabaseManagerTest.class,TransactionTest.class,UserDatabaseManagerTest.class })
+//@Suite.SuiteClasses( {UserDatabaseManagerTest.class})
 public class AllTests {
 }

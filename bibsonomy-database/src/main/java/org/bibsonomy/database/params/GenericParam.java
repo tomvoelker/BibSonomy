@@ -17,8 +17,7 @@ import org.bibsonomy.model.Tag;
  * 
  * @author Christian Schenk
  */
-public abstract class GenericParam<T extends Resource> {
-
+public abstract class GenericParam<T extends Resource>{
 	// FIXME
 	// /** A single resource */
 	// protected T resource;

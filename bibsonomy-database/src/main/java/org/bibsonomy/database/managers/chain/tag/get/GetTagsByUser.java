@@ -33,7 +33,7 @@ public class GetTagsByUser extends TagChainElement {
 		int limit=end-start;
 		param.setLimit(limit);
 	    
-		param.setGroups(generalDb.getGroupsForUser(param));
+		param.setGroups(generalDb.getGroupsForUserTag(param));
 		List<Tag> tags = db.getTagsByUser(param);
 		if(tags.size()!=0){
 			System.out.println("GetTagsByUser");

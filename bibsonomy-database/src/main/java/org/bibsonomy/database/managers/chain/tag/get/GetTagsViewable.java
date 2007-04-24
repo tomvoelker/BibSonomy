@@ -33,7 +33,7 @@ public class GetTagsViewable extends TagChainElement{
 		param.setLimit(limit);
 	    
 		param.setGroupId(generalDb.getGroupIdByGroupName(param));
-		param.setGroups(generalDb.getGroupsForUser(param));
+		param.setGroups(generalDb.getGroupsForUserTag(param));
 		
 		List<Tag> tags = db.getTagsViewable(param);
 		if(tags.size()!=0){
