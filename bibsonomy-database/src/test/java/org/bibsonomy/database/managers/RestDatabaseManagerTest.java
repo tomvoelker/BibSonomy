@@ -9,10 +9,15 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Node;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class RestDatabaseManagerTest {
 
@@ -48,6 +53,18 @@ public class RestDatabaseManagerTest {
 		}
 	}
 
+	private Document getResponseBodyAsDocument(final GetMethod get) {
+		Document doc = null;
+		try {
+			doc = DocumentHelper.parseText(get.getResponseBodyAsString());
+		} catch (final DocumentException ex) {
+			fail("DocumentException");
+		} catch (final IOException ex) {
+			fail("IOException");
+		}
+		return doc;
+	}
+
 	@Test
 	public void aGetRequestWithoutAuthentication() throws HttpException, IOException {
 		final GetMethod get = new GetMethod(this.apiURLPrefix);
@@ -62,8 +79,14 @@ public class RestDatabaseManagerTest {
 	}
 
 	@Test
-	public void getPosts() throws IOException {
+	public void getPosts() throws IOException, DocumentException {
 		final GetMethod get = this.getWebServiceAction("posts");
 		assertEquals(HttpServletResponse.SC_OK, get.getStatusCode());
+
+		final Document doc = this.getResponseBodyAsDocument(get);
+
+		// Check posts count
+		final Node posts = doc.selectSingleNode("//posts");
+		assertEquals(18, Integer.parseInt(posts.valueOf("@end")));
 	}
 }

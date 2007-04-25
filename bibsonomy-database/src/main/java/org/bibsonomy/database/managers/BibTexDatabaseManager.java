@@ -279,22 +279,6 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	}
 
 	/**
-	 * Get a contentId by a given user and a given hash
-	 */
-	public Integer getContentIdByUserAndHash(final BibTex param) {
-		return (Integer) this.queryForObject("getContentIdByUserAndHash", param);
-	}
-
-	/**
-	 * Modify update to select, return is list of String (<- FIXME awkward
-	 * docs)
-	 */
-	public List getBibTexSimHashsByContentId(final BibTexParam param) {
-		// TODO not tested
-		return this.queryForList("getBibTexSimHashsByContentId", param);
-	}
-
-	/**
 	 * Inserts a publication into the database.
 	 */
 	public void insertBibTex(final BibTexParam param) {
@@ -402,8 +386,15 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		// Used for userName, hash and contentId
 		final BibTexParam param = new BibTexParam();
 		param.setUserName(userName);
-		param.setId(this.generalDb.getNewContentId(param));
 		param.setResource((BibTex) post.getResource());
+		// param.setHash(post.getResource().get)
+
+//		// BibTex entry does NOT exist for this user
+//		if (this.getBibTexByHashForUser(param).size() == 0) {
+//			param.setId(this.generalDb.getNewContentId(param));
+//		} else {
+//			
+//		}
 
 		this.insertBibTex(param);
 		// TODO: insertTags, insertRelations, update: log, doc, col, ext, url
@@ -411,5 +402,9 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		// End transaction
 		transaction.commitTransaction();
 		return true;
+	}
+
+	public List<Post<? extends Resource>> getTest(BibTexParam param) {
+		return this.getBibTexByHashForUser(param);
 	}
 }

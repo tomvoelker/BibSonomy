@@ -38,6 +38,7 @@ public abstract class AbstractDatabaseManagerTest {
 	/** The chain handler */
 	protected GenericChainHandler chainHandler;
 	protected UserDatabaseManager userDb;
+	protected GroupDatabaseManager groupDb;
 	/**
 	 * This param can be used both for queries about bookmarks and all other
 	 * queries
@@ -47,6 +48,7 @@ public abstract class AbstractDatabaseManagerTest {
 	protected BibTexParam bibtexParam;
 	protected UserParam userParam;
 	protected TagParam tagParam;
+
 	@Before
 	public void setUp() throws IOException {
 		this.generalDb = GeneralDatabaseManager.getInstance();
@@ -55,15 +57,16 @@ public abstract class AbstractDatabaseManagerTest {
 		this.tagDb = TagDatabaseManager.getInstance();
 		this.chainHandler = GenericChainHandler.getInstance();
 		this.userDb=UserDatabaseManager.getInstance();
+		this.groupDb = GroupDatabaseManager.getInstance();
 		this.resetParameters();
-		
-		// testcases shouldn't write to the db
-		
+
+		// testcases shouldn't write to the db		
 		this.generalDb.setReadonly();
 		this.bookmarkDb.setReadonly();
 		this.bibTexDb.setReadonly();
 		this.tagDb.setReadonly();
 		this.userDb.setReadonly();
+		this.groupDb.setReadonly();
 	}
 
 	@After
@@ -73,6 +76,7 @@ public abstract class AbstractDatabaseManagerTest {
 		this.bibTexDb = null;
 		this.tagDb = null;
 		this.userDb=null;
+		this.groupDb = null;
 		this.chainHandler = null;
 		this.bookmarkParam = null;
 		this.bibtexParam = null;

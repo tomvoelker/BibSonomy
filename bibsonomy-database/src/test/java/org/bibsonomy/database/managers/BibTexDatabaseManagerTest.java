@@ -164,12 +164,6 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	@Test
-	public void getBibTexSimHashsByContentId() {
-		// TODO
-		// System.out.println(this.bibTexDb.getBibTexSimHashsByContentId(this.bibtexParam));
-	}
-
-	@Test
 	public void getPosts() {
 		final List<Post<? extends Resource>> posts = this.bibTexDb.getPosts("jaeschke", GroupingEntity.USER, "jaeschke", null, null, false, false, 0, 19, false);
 		assertEquals(19, posts.size());
@@ -184,5 +178,10 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void deleteBibTex() {
 		this.bibTexDb.deletePost(this.bibtexParam.getRequestedUserName(), this.bibtexParam.getHash());
+	}
+
+	@Test
+	public void storePost() {
+		// TODO
 	}
 }
