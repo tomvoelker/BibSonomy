@@ -9,7 +9,7 @@ import java.util.List;
 public abstract class Resource {
 
 	/** An Id for this resource; by default ConstantID.IDS_UNDEFINED_CONTENT_ID */
-	private int count;
+	private int count; // FIXME why don't we name it id?
 	private String interHash;
 	private String intraHash;
 	private List<Post<? extends Resource>> posts;

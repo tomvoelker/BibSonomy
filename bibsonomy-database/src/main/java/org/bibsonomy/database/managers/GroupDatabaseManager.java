@@ -26,4 +26,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager  {
 	protected List<Group> groupList(final String query, final Group group) {
 		return (List<Group>) queryForList(query, group);
 	}
+
+	/**
+	 * Returns a list of all groups.
+	 */
+	public List<Group> getAllGroups() {
+		return this.groupList("getAllGroups", null);
+	}
 }

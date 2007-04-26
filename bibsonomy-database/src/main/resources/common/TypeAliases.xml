@@ -12,12 +12,12 @@
 	<typeAlias alias="resource" type="org.bibsonomy.model.Resource" />
 	<typeAlias alias="user"     type="org.bibsonomy.model.User" />
 	<typeAlias alias="group"    type="org.bibsonomy.model.Group" />
-   
+
 	<!-- Parameters -->
 	<typeAlias alias="genericParam"  type="org.bibsonomy.database.params.GenericParam" />
 	<typeAlias alias="bookmarkParam" type="org.bibsonomy.database.params.BookmarkParam" />
 	<typeAlias alias="bibtexParam"   type="org.bibsonomy.database.params.BibTexParam" />
 	<typeAlias alias="userParam"     type="org.bibsonomy.database.params.UserParam" />
-	<typeAlias alias="tagParam"     type="org.bibsonomy.database.params.TagParam" />
-	
+	<typeAlias alias="groupParam"    type="org.bibsonomy.database.params.GenericParam" />
+	<typeAlias alias="tagParam"      type="org.bibsonomy.database.params.TagParam" />	
 </sqlMap>

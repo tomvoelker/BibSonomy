@@ -4,8 +4,8 @@
 <sqlMapConfig>
 	<properties resource="database.properties" />
 
-	<typeAlias alias="url" type="java.net.URL" />
 	<typeAlias alias="date" type="java.util.Date" />
+	<typeAlias alias="url" type="java.net.URL" />
 	<typeHandler javaType="url" callback="org.bibsonomy.database.typehandler.UrlTypeHandlerCallback" />
 
 	<transactionManager type="JDBC">
@@ -21,11 +21,13 @@
 	<sqlMap resource="common/Common.xml" />
 	<sqlMap resource="common/BookmarkCommon.xml" />
 	<sqlMap resource="common/BibTexCommon.xml" />
-    <sqlMap resource="common/UserCommon.xml" />
-    
+	<sqlMap resource="common/UserCommon.xml" />
+	<sqlMap resource="common/GroupCommon.xml" />
+
 	<sqlMap resource="General.xml" />
 	<sqlMap resource="Tag.xml" />
 	<sqlMap resource="Bookmark.xml" />
 	<sqlMap resource="BibTex.xml"/>
-	 <sqlMap resource="User.xml"/> 
+	<sqlMap resource="User.xml"/>
+	<sqlMap resource="Group.xml"/>
 </sqlMapConfig>

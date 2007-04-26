@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Group">
+	<select id="getAllGroups" resultMap="GroupCommon.group" parameterClass="groupParam">
+		SELECT i.group_name, u.user_realname, u.user_homepage
+		FROM groupids i, user u
+		WHERE i.group > 2
+		      AND i.group_name = u.user_name
+		ORDER BY i.group_name
+	</select>
+</sqlMap>

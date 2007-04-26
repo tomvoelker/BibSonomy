@@ -9,12 +9,12 @@
 	</resultMap>
 
 	<resultMap id="posts" class="post" groupBy="contentId">
-		<result property="contentId"   column="content_id"      javaType="int" />
-		<result property="tags"        resultMap="Common.tag" />
-		<result property="date"        column="date"            javaType="date" />
-		<result property="groups"      resultMap="Common.group" />
-		<result property="user"        resultMap="Common.user" />
-		<result property="description"   column="description"   javaType="string" />
+		<result property="contentId"    column="content_id"     javaType="int" />
+		<result property="tags"         resultMap="Common.tag" />
+		<result property="date"         column="date"           javaType="date" />
+		<result property="groups"       resultMap="Common.group" />
+		<result property="user"         resultMap="Common.user" />
+		<result property="description"  column="description"    javaType="string" />
 	</resultMap>
 
 	<resultMap id="group" class="group">
@@ -108,9 +108,8 @@
 		  </isLessThan>
 		</iterate>
 	</sql>
-    
+
 	<!-- Refactor b to t1, and delete this snippet -->
-	
 	<sql id="inGroups">
 		<isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">
 		  b.group in (0
@@ -119,22 +118,20 @@
 		  </iterate>)
 		</isNotEqual>
 	</sql>
-	<!-- vorläufig für Tag anfragen -->
-	<sql id="lookinGroupsForTags">
+
+	<sql id="inGroups2">
 		<isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">
-		  t.group in (0
+		  t1.group in (0
 		  <iterate property="groups" conjunction="," prepend=",">
 		    $groups[]$
 		  </iterate>)
 		</isNotEqual>
 	</sql>
-    
-	
-	
-    
-	<sql id="inGroups2">
+
+	<!-- vorläufig für Tag anfragen -->
+	<sql id="lookinGroupsForTags">
 		<isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">
-		  t1.group in (0
+		  t.group in (0
 		  <iterate property="groups" conjunction="," prepend=",">
 		    $groups[]$
 		  </iterate>)
@@ -197,7 +194,7 @@
 		  t1.group = #groupId#
 		</isGreaterThan>
 	</sql>
-	
+
 	<sql id="getTagForUser">
 		<isEqual property="groupId" compareValue="-1">
 		  <include refid="inGroups"/>

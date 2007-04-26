@@ -389,22 +389,23 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		param.setResource((BibTex) post.getResource());
 		// param.setHash(post.getResource().get)
 
-//		// BibTex entry does NOT exist for this user
-//		if (this.getBibTexByHashForUser(param).size() == 0) {
-//			param.setId(this.generalDb.getNewContentId(param));
-//		} else {
-//			
-//		}
-
+		// BibTex entry does NOT exist for this user
+		final List<Post<? extends Resource>> isBibTexInDb = this.getBibTexByHashForUser(param);
+		if (isBibTexInDb.size() == 0) {
+			param.setId(this.generalDb.getNewContentId(param));
+		} else {
+			final Post oldBibTexPost = isBibTexInDb.get(0);
+			param.setId(oldBibTexPost.getContentId());
+			// Delete old BibTex post
+			// TODO intra or inter hash ???
+			this.deletePost(userName, oldBibTexPost.getResource().getIntraHash());
+		}
+		// Insert the new BibTex
 		this.insertBibTex(param);
 		// TODO: insertTags, insertRelations, update: log, doc, col, ext, url
 
 		// End transaction
 		transaction.commitTransaction();
 		return true;
-	}
-
-	public List<Post<? extends Resource>> getTest(BibTexParam param) {
-		return this.getBibTexByHashForUser(param);
 	}
 }

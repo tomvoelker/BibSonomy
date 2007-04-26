@@ -11,7 +11,7 @@ import org.bibsonomy.database.params.UserParam;
  * Provides methods to build parameter-objects.
  * 
  * @author Christian Schenk
- * @author  mgr
+ * @author mgr
  */
 public class ParamUtils {
 
@@ -25,10 +25,10 @@ public class ParamUtils {
 		param.setGroupId(3);
 		param.setUserName("hotho");
 		param.setRequestedUserName("stumme");
-        // param.setCaseSensitiveTagNames(true);
+		// param.setCaseSensitiveTagNames(true);
 		param.addTagName("community");
 	}
-	
+
 	/**
 	 * Retrieves a BookmarkParam.
 	 */
@@ -37,7 +37,7 @@ public class ParamUtils {
 		setDefaults(rVal);
 		rVal.setHash("0aea152798b8e95ce7a1bedb4ab8e7d7");
 		rVal.setResource(ModelUtils.getBookmark());
-		//rVal.setIdsType(ConstantID.IDS_CONTENT_ID);
+		// rVal.setIdsType(ConstantID.IDS_CONTENT_ID);
 		return rVal;
 	}
 
@@ -66,13 +66,12 @@ public class ParamUtils {
 		param.addTagName("web");
 		param.addTagName("online");
 	}
-	
-	
+
 	/**
 	 * Retrieve a UserParam.
 	 */
 	public static UserParam getDefaultUserParam() {
-		UserParam param = new UserParam();
+		final UserParam param = new UserParam();
 		param.setUserName("grahl");
 		param.setOffset(0);
 		param.setLimit(5);
@@ -81,12 +80,12 @@ public class ParamUtils {
 		param.setRequestedUserName("hotho");
 		return param;
 	}
-	
-	/*
+
+	/**
 	 * Retrieve a TagParam
 	 */
 	public static TagParam getDefaultTagParam() {
-		TagParam param = new TagParam();
+		final TagParam param = new TagParam();
 		param.setOffset(0);
 		param.setLimit(200);
 		param.setCount(100);
@@ -94,5 +93,13 @@ public class ParamUtils {
 		param.setGroupType(ConstantID.GROUP_PUBLIC);
 		param.setUserName("grahl");
 		return param;
+	}
+
+	/**
+	 * Retrieve a GroupParam
+	 */
+	public static GenericParam getDefaultGroupParam() {
+		return new GenericParam() {
+		};
 	}
 }
