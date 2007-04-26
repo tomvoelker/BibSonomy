@@ -1,36 +1,44 @@
 package org.bibsonomy.database.managers;
 
+import static org.junit.Assert.assertEquals;
 
+import java.util.List;
 
+import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.model.User;
 import org.junit.Test;
 
 public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
-	
+
+	@Test
+	public void getAllUsers() {
+		final List<User> users = this.userDb.getAllUsers(this.userParam);
+		assertEquals(1569, users.size());
+	}
+
 	@Test
 	public void getUserDetails() {
 		this.userDb.getUserDetails(this.userParam);
-	}	
+	}
 
 	@Test
-	public void getUsersOfSystem() {
-		this.userDb.getUsersOfSystem(this.userParam);
-	}	
-	
-	@Test
 	public void getPrivlevelOfUser() {
-		this.userDb.getPrivlevelOfUser(this.userParam);
-	}	
-	
+		assertEquals(ConstantID.GROUP_PUBLIC.getId(), this.userDb.getPrivlevelOfUser(this.userParam));
+	}
+
 	@Test
 	public void getUsersOfGroupPublic() {
-		this.userDb.getUsersOfGroupPublic(this.userParam);
-	}	
+		final List<User> users = this.userDb.getUsersOfGroupPublic(this.userParam);
+		assertEquals(13, users.size());
+	}
+
 	@Test
 	public void getUsersOfGroupHidden() {
-		this.userDb.getUsersOfGroupPrivate(this.userParam);
+		final List<User> users = this.userDb.getUsersOfGroupPrivate(this.userParam);
+		assertEquals(1, users.size());
 	}
-	
-	
+
+
 //	@SuppressWarnings("unchecked")
 //	public void testGetUsersByDate() {
 //		try {

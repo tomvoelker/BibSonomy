@@ -4,14 +4,11 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.AbstractDatabaseManager;
-import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.util.ExceptionUtils;
 
@@ -200,34 +197,33 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			this.insert("insertTagTag", new Tag[] { tag1, tag2 });
 		}
 	}
-	
+
 	/*
 	 * single requests for method get detailled information of a tag
 	 */
-	
 	public int getTagOccurrences(final Tag tag) {
 		return (Integer)this.queryForObject("getTagOccurrences", tag);
 	}
-	
+
 	public List<Tag> getSubtagsOfTag(final Tag tag) {
 		return this.tagList("getSubtagsOfTag", tag);
 	}
-	
+
 	public List<Tag> getSupertagsOfTag(final Tag tag) {
 		return this.tagList("getSupertagsOfTag", tag);
 	}
-	
+
 	public List<Tag> getCorrelatedTagsOfTag(final Tag tag) {
 		return this.tagList("getCorrelatedTagsOfTag", tag);
 	}
-	
+
 	/*
 	 * return all recorded tags of the system 
 	 */
-	
 	public List<Tag> getAllTags(final UserParam param) {
 		return this.tagList("getAllTags", param);
 	}
+
 	/**
 	 * returns details about a tag. those details are:
 	 * <ul>
@@ -243,44 +239,38 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 *            name of the tag
 	 * @return the tag's details, null else
 	 */
-	
 	public Tag getTagDetails(String authUserName, String tagName) {
 		return null;
 	}	
-	
-	/*
-	 * get all Tags of a given User
+
+	/**
+	 * Get all tags of a given user
 	 */
 	public List<Tag> getTagsByUser(final UserParam user) {
 		DatabaseUtils.prepareGetTagForUser(this.generalDb, user);
 		return this.tagList("getTagsByUser", user);
 	} 
-	
-	/*
-	 * get all Tags of a given group
+
+	/**
+	 * Get all tags of a given group
 	 */
-	
-	
 	public List<Tag> getTagsByGroup(final UserParam user) {
 		DatabaseUtils.prepareGetTagForGroup(this.generalDb, user);
 		return this.tagList("getTagsByGroup", user);
 	}
-	
-	/*
-	 * get all Tags of a given regular expression 
+
+	/**
+	 * Get all tags of a given regular expression 
 	 */
-	
 	public List<Tag> getTagsByExpression(final UserParam user) {
 		return this.tagList("getTagsByExpression", user);
 	} 
-	
+
 	public List<Tag> getTagsViewable(final UserParam user) {
 		return this.tagList("getTagsViewable", user);
 	} 
-	
+
 	public List<Tag> getTags(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end) {
 		return null;
 	}
-	
-	
 }

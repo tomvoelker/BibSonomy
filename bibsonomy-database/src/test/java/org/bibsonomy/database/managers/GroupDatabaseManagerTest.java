@@ -10,7 +10,7 @@ import org.junit.Test;
 public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
-	public void getAllGrous() {
+	public void getAllGroups() {
 		final List<Group> allGroups = this.groupDb.getAllGroups();
 
 		for (final Group group : allGroups) {
@@ -25,5 +25,20 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 				assertEquals("http://www.aifb.uni-karlsruhe.de/Forschungsgruppen/WBS/", homepage);
 			}
 		}
+	}
+
+	@Test
+	public void getGroupByName() {
+		final Group kdeGroup = this.groupDb.getGroupByName(this.groupParam);
+		assertEquals("kde", kdeGroup.getName());
+		assertEquals("Knowledge and Data Engineering Group", kdeGroup.getUsers().get(0).getRealname());
+		assertEquals("http://www.kde.cs.uni-kassel.de/", kdeGroup.getUsers().get(0).getHomepage().toString());
+	}
+
+	@Test
+	public void getGroupMembers() {
+		final Group kdeGroup = this.groupDb.getGroupMembers(this.groupParam);
+		assertEquals("kde", kdeGroup.getName());
+		assertEquals(13, kdeGroup.getUsers().size());	
 	}
 }

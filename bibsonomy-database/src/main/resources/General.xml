@@ -8,7 +8,7 @@
 		FROM friends
 		WHERE user_name = #requestedUserName# AND f_user_name = #userName#
 	</select>
-	
+
     <!-- vorläufig für Tag Abfrage  -->
     <select id="isFriendOfTag" resultClass="boolean" parameterClass="userParam">
 		SELECT count(user_name)
@@ -20,18 +20,15 @@
 	<select id="isSpammer" resultClass="boolean" parameterClass="genericParam">
 		SELECT count(spammer) FROM user WHERE user_name = #requestedUserName#
 	</select>
-	
+
 	<select id="getGroupsForUser" resultClass="int" parameterClass="genericParam">
 		SELECT `group` FROM groups WHERE user_name = #userName#
 	</select>
-	
+
     <!-- vorläufige Lösung für Tag Anfragen  -->
-    
     <select id="getGroupsForUserTag" resultClass="int" parameterClass="userParam">
 		SELECT `group` FROM groups WHERE user_name = #userName#
 	</select>
-
-
 
 	<select id="getGroupIdByGroupNameAndUserName" resultClass="int" parameterClass="genericParam">
 		SELECT g.group

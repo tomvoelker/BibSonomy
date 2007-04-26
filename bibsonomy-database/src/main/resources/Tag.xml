@@ -5,10 +5,10 @@
 	<typeAlias alias="tag" type="org.bibsonomy.model.Tag" />
 
 	<resultMap id="tags" class="tag">
-		<result property="id" column="tag_id" javaType="java.lang.Integer" />
-		<result property="name" column="tag_name" javaType="java.lang.String" />
-		<result property="stem" column="tag_stem" javaType="java.lang.String" />
-		<result property="count" column="tag_ctr" javaType="java.lang.Integer" />
+		<result property="id"    column="tag_id"   javaType="java.lang.Integer" />
+		<result property="name"  column="tag_name" javaType="java.lang.String" />
+		<result property="stem"  column="tag_stem" javaType="java.lang.String" />
+		<result property="count" column="tag_ctr"  javaType="java.lang.Integer" />
 	</resultMap>
 
 	<select id="getTagById" resultMap="tags" parameterClass="tagParam">
@@ -51,9 +51,8 @@
      tag_name FROM  tas t, groups g WHERE t.user_name=#userName# AND g.user_name = t.user_name AND g.group = #groupId#)) as tagsalias
      GROUP BY tag_name LIMIT #limit# OFFSET #offset#;
 	</select>
-	
+
     <!-- noch an TagParam anpassen für das Einfügen von Bookmark bzw Bibtex Objekten -->
-	
 	<insert id="insertTag" parameterClass="tag">
     	INSERT INTO tags (tag_name, tag_ctr)
     	VALUES (#name#,1)
@@ -66,10 +65,4 @@
 		ON DUPLICATE KEY UPDATE tag_ctr = tag_ctr+1
     <!--UPDATE tags SET tag_ctr=tag_ctr+1 WHERE tag_name = ?-->
 	</insert>
-	
-	
-	
-	
-	
-	
 </sqlMap>

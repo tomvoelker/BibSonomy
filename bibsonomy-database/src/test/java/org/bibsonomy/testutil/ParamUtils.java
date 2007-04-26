@@ -4,6 +4,7 @@ import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
+import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.UserParam;
 
@@ -98,8 +99,9 @@ public class ParamUtils {
 	/**
 	 * Retrieve a GroupParam
 	 */
-	public static GenericParam getDefaultGroupParam() {
-		return new GenericParam() {
-		};
+	public static GroupParam getDefaultGroupParam() {
+		final GroupParam param = new GroupParam();
+		param.setRequestedGroupName("kde");
+		return param;
 	}
 }

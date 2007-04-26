@@ -4,25 +4,20 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.database.AbstractDatabaseManager;
-import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.UserParam;
-import org.bibsonomy.database.util.DatabaseUtils;
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+
 /**
  * Used to retrieve users from the database.
+ *
  * @author mgr
  */
 public class UserDatabaseManager extends AbstractDatabaseManager  {
 
 	/** Singleton */
 	private  final static UserDatabaseManager singleton = new UserDatabaseManager();
-	private final GeneralDatabaseManager generalDb;
 
 	UserDatabaseManager() {
-		this.generalDb = GeneralDatabaseManager.getInstance();
 	}
 
 	public static UserDatabaseManager getInstance() {
@@ -37,7 +32,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 	/*
 	 * get all Users of a given Group required different view right
 	 */
-	
+
 	public List<User> getUsersOfGroupPublic(final UserParam user) {
 		return this.userList("getUsersOfGroupPublic", user);
 	}
@@ -53,30 +48,28 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 	public Integer getPrivlevelOfUser(final UserParam user) {
 		return (Integer) this.queryForObject("getPrivlevelOfUser", user);
 	}
-	
+
 	/*
 	 * get details by a given group of a user
 	 */
-	
 	public List<User> getUserDetails(final UserParam user) {
 		return this.userList("getUserDetails", user);
 	}
-	
+
 	/*
 	 * get all users of the system
 	 */
-	public List<User> getUsersOfSystem(final UserParam user) {
-		return this.userList("getUsersOfSystem", user);
+	public List<User> getAllUsers(final UserParam user) {
+		return this.userList("getAllUsers", user);
 	}
-	
-	
+
 	/*
 	 * insert attributes for new user account
 	 */
 	public void insertUser(final User user) {
 		this.insert("insertUser", user);
 	}
-	
+
 	/*
 	 * delete a user from the system
 	 */ 
@@ -207,7 +200,8 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
     		 * new user does not exist and would like get an account
     		 * **********************INSERT************************* 
     		 */
-    		
+
+    		// FIXME if "update" isn't "true" it should be false in this else block, shouldn't it?!?
     	 if(update==false){
     		 
     		 this.insert("insertUser",user);

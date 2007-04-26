@@ -3,6 +3,7 @@ package org.bibsonomy.database.managers;
 import java.util.List;
 
 import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.model.Group;
 
 /**
@@ -28,9 +29,23 @@ public class GroupDatabaseManager extends AbstractDatabaseManager  {
 	}
 
 	/**
-	 * Returns a list of all groups.
+	 * Returns a list of all groups
 	 */
 	public List<Group> getAllGroups() {
 		return this.groupList("getAllGroups", null);
+	}
+
+	/**
+	 * Returns a specific group
+	 */
+	public Group getGroupByName(final GroupParam param) {
+		return (Group) this.queryForObject("getGroupByName", param);
+	}
+
+	/**
+	 * Returns a group with all its memebers
+	 */
+	public Group getGroupMembers(final GroupParam param) {
+		return (Group) this.queryForObject("getGroupMembers", param);
 	}
 }

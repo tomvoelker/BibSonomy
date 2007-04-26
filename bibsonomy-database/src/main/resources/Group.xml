@@ -9,4 +9,21 @@
 		      AND i.group_name = u.user_name
 		ORDER BY i.group_name
 	</select>
+
+	<select id="getGroupByName" resultMap="GroupCommon.group" parameterClass="groupParam">
+		SELECT i.group_name, u.user_realname, u.user_homepage
+		FROM groupids i, user u
+		WHERE i.group_name = #requestedGroupName#
+		      AND i.group_name = u.user_name
+	</select>
+
+	<select id="getGroupMembers" resultMap="GroupCommon.group" parameterClass="groupParam">
+		SELECT i.group_name, u.user_realname, u.user_homepage
+		FROM groupids i, groups g, user u
+		WHERE group_name = #requestedGroupName#
+		      AND i.group = g.group
+		      AND i.group > 2
+		      <!-- AND g.user_name != #requestedGroupName# -->
+		      AND u.user_name = g.user_name
+	</select>
 </sqlMap>

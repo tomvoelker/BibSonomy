@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
-import org.bibsonomy.database.params.GenericParam;
+import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.testutil.ParamUtils;
@@ -34,16 +34,13 @@ public abstract class AbstractDatabaseManagerTest {
 	protected UserDatabaseManager userDb;
 	/** The database manager for groups */
 	protected GroupDatabaseManager groupDb;
-	/**
-	 * This param can be used both for queries about bookmarks and all other
-	 * queries
-	 */
+	/** This param can be used for queries about bookmarks */
 	protected BookmarkParam bookmarkParam;
 	/** This param can be used for queries about BibTexs */
 	protected BibTexParam bibtexParam;
 	protected UserParam userParam;
 	protected TagParam tagParam;
-	protected GenericParam groupParam;
+	protected GroupParam groupParam;
 
 	@Before
 	public void setUp() throws IOException {
@@ -52,11 +49,11 @@ public abstract class AbstractDatabaseManagerTest {
 		this.bibTexDb = BibTexDatabaseManager.getInstance();
 		this.tagDb = TagDatabaseManager.getInstance();
 		this.chainHandler = GenericChainHandler.getInstance();
-		this.userDb=UserDatabaseManager.getInstance();
+		this.userDb = UserDatabaseManager.getInstance();
 		this.groupDb = GroupDatabaseManager.getInstance();
 		this.resetParameters();
 
-		// testcases shouldn't write to the db		
+		// testcases shouldn't write to the db
 		this.generalDb.setReadonly();
 		this.bookmarkDb.setReadonly();
 		this.bibTexDb.setReadonly();
