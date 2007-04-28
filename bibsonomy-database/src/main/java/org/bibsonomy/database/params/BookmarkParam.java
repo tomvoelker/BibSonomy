@@ -1,7 +1,6 @@
 package org.bibsonomy.database.params;
 
 import org.bibsonomy.common.enums.ConstantID;
-import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.model.Bookmark;
 
 /**
@@ -9,7 +8,7 @@ import org.bibsonomy.model.Bookmark;
  * 
  * @author Christian Schenk
  */
-public class BookmarkParam extends GenericParam<Bookmark> {
+public class BookmarkParam extends ResourcesParam<Bookmark> {
 
 	/** A single resource */
 	private Bookmark resource;

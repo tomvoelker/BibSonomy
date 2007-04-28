@@ -35,7 +35,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public Boolean isFriendOf(final GenericParam param) {
 		if (param.getUserName() == null || param.getRequestedUserName() == null) return false;
-		return (Boolean) this.queryForObject("isFriendOf", param);
+		return this.queryForObject("isFriendOf", param, Boolean.class, null);
 	}
 
 	/*
@@ -44,7 +44,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	
 	public Boolean isFriendOfTag(final UserParam param) {
 		if (param.getUserName() == null || param.getRequestedUserName() == null) return false;
-		return (Boolean) this.queryForObject("isFriendOfTag", param);
+		return this.queryForObject("isFriendOfTag", param, Boolean.class, null);
 	}
 	
 	
@@ -61,7 +61,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	public Boolean isSpammer(final GenericParam param) {
 		// TODO not tested
 		if (param.getRequestedUserName() == null) return false;
-		return (Boolean) this.queryForObject("isSpammer", param);
+		return this.queryForObject("isSpammer", param, Boolean.class, null);
 	}
 
 	/**
@@ -72,13 +72,13 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 * @return A list of groupids
 	 */
 	public List<Integer> getGroupsForUser(final GenericParam param) {
-		return this.intList("getGroupsForUser", param);
+		return this.queryForList("getGroupsForUser", param, Integer.class, null);
 	}
 /*
  * TODO only a temporary solution
  */
 	public List<Integer> getGroupsForUserTag(final UserParam param) {
-		return this.intList("getGroupsForUserTag", param);
+		return this.queryForList("getGroupsForUserTag", param, Integer.class, null);
 	}
 	
 	
@@ -114,7 +114,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 		if (param.getRequestedGroupName() == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "requestedGroupName is null");
 		}
-		final Integer rVal = (Integer) this.queryForObject("getGroupIdByGroupNameAndUserName", param);
+		final Integer rVal = this.queryForObject("getGroupIdByGroupNameAndUserName", param, Integer.class, null);
 		if (rVal == null) return ConstantID.GROUP_INVALID.getId();
 		return rVal;
 	}
@@ -125,7 +125,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 		if (param.getRequestedGroupName() == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "requestedGroupName is null");
 		}
-		final Integer rVal = (Integer) this.queryForObject("getGroupIdByGroupNameAndUserName", param);
+		final Integer rVal = this.queryForObject("getGroupIdByGroupNameAndUserName", param, Integer.class, null);
 		if (rVal == null) return ConstantID.GROUP_INVALID.getId();
 		return rVal;
 	}
@@ -136,6 +136,6 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 * ContendID for bookmark and bibtex
 	 */
 	public Integer getNewContentId(final GenericParam param) {
-		return (Integer) this.queryForObject("getNewContentId", param);
+		return this.queryForObject("getNewContentId", param, Integer.class, null);
 	}
 }

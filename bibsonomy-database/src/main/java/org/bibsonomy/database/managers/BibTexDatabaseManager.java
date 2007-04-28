@@ -40,7 +40,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 */
 	@SuppressWarnings("unchecked")
 	protected List<Post<? extends Resource>> bibtexList(final String query, final BibTexParam param) {
-		return (List<Post<? extends Resource>>) queryForList(query, param);
+		return (List<Post<? extends Resource>>) queryForList(query, param, null);
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * Returns the number of publications for a given hash.
 	 */
 	public Integer getBibTexByHashCount(final BibTexParam param) {
-		return (Integer) this.queryForObject("getBibTexByHashCount", param);
+		return this.queryForObject("getBibTexByHashCount", param, Integer.class, null);
 	}
 
 	/**
@@ -172,7 +172,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * Returns the number of publications for a given search.
 	 */
 	public Integer getBibTexSearchCount(final BibTexParam param) {
-		return (Integer) this.queryForObject("getBibTexSearchCount", param);
+		return this.queryForObject("getBibTexSearchCount", param, Integer.class, null);
 	}
 
 	/**
@@ -199,7 +199,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * Returns the number of duplicates (i.e. BibTex posts) of a given user.
 	 */
 	public Integer getBibTexDuplicateCount(final BibTexParam param) {
-		return (Integer) this.queryForObject("getBibTexDuplicateCount", param);
+		return this.queryForObject("getBibTexDuplicateCount", param, Integer.class, null);
 	}
 
 	/**
@@ -227,7 +227,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 */
 	public Integer getBibTexForGroupCount(final BibTexParam param) {
 		DatabaseUtils.setGroups(this.generalDb, param);
-		return (Integer) this.queryForObject("getBibTexForGroupCount", param);
+		return this.queryForObject("getBibTexForGroupCount", param, Integer.class, null);
 	}
 
 	/**
@@ -260,7 +260,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 */
 	public Integer getBibTexForUserCount(final BibTexParam param) {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param);
-		return (Integer) this.queryForObject("getBibTexForUserCount", param);
+		return this.queryForObject("getBibTexForUserCount", param, Integer.class, null);
 	}
 
 	/**

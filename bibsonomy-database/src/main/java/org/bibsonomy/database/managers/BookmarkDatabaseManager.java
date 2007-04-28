@@ -35,18 +35,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		return singleton;
 	}
 
-	/**
-	 * Can be used to start a query that retrieves a list of bookmarks.
-	 */
-	@SuppressWarnings("unchecked")
-	protected List<Bookmark> bookmarkList(final String query, final BookmarkParam param) {
-		return (List<Bookmark>) queryForList(query, param);
-	}
-
 	// FIXME return value needs to be changed to org.bibsonomy.model.Post
 	@SuppressWarnings("unchecked")
 	protected List<Post<? extends Resource>> bookmarkList(final String query, final BookmarkParam param, final boolean test) {
-		return (List<Post<? extends Resource>>) queryForList(query, param);
+		return (List<Post<? extends Resource>>) queryForList(query, param, null);
 	}
 
 	/**
@@ -139,7 +131,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * Retrieves the number of bookmarks represented by the given hash.
 	 */
 	public Integer getBookmarkByHashCount(final BookmarkParam param) {
-		return (Integer) this.queryForObject("getBookmarkByHashCount", param);
+		return this.queryForObject("getBookmarkByHashCount", param, Integer.class, null);
 	}
 
 	/**
@@ -173,7 +165,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * Returns the number of bookmarks for a given search.
 	 */
 	public Integer getBookmarkSearchCount(final BookmarkParam param) {
-		return (Integer) this.queryForObject("getBookmarkSearchCount", param);
+		return this.queryForObject("getBookmarkSearchCount", param, Integer.class, null);
 	}
 
 	/**
@@ -210,7 +202,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 */
 	public Integer getBookmarkForGroupCount(final BookmarkParam param) {
 		DatabaseUtils.setGroups(this.generalDb, param);
-		return (Integer) this.queryForObject("getBookmarkForGroupCount", param);
+		return this.queryForObject("getBookmarkForGroupCount", param, Integer.class, null);
 	}
 
 	/**
@@ -243,7 +235,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 */
 	public Integer getBookmarkForUserCount(final BookmarkParam param) {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param);
-		return (Integer) this.queryForObject("getBookmarkForUserCount", param);
+		return this.queryForObject("getBookmarkForUserCount", param, Integer.class, null);
 	}
 
 
@@ -284,11 +276,11 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	}
 	
 	public Integer getCurrentTasIdFromIds(final BookmarkParam param) {
-		return (Integer) this.queryForObject("getNewTasID", param);
+		return this.queryForObject("getNewTasID", param, Integer.class, null);
 	}
 
 	public Integer getContentIDForBookmark(final BookmarkParam param) {
-		return (Integer) this.queryForObject("getContentIDForBookmark", param);
+		return this.queryForObject("getContentIDForBookmark", param, Integer.class, null);
 	}
 
 	public List<Post<? extends Resource>> getPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, boolean continuous) {

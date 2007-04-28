@@ -23,29 +23,24 @@ public class GroupDatabaseManager extends AbstractDatabaseManager  {
 		return singleton;
 	}
 
-	@SuppressWarnings("unchecked")
-	protected List<Group> groupList(final String query, final Group group) {
-		return (List<Group>) queryForList(query, group);
-	}
-
 	/**
 	 * Returns a list of all groups
 	 */
 	public List<Group> getAllGroups() {
-		return this.groupList("getAllGroups", null);
+		return this.queryForList("getAllGroups", null, Group.class, null);
 	}
 
 	/**
 	 * Returns a specific group
 	 */
 	public Group getGroupByName(final GroupParam param) {
-		return (Group) this.queryForObject("getGroupByName", param);
+		return this.queryForObject("getGroupByName", param, Group.class, null);
 	}
 
 	/**
 	 * Returns a group with all its memebers
 	 */
 	public Group getGroupMembers(final GroupParam param) {
-		return (Group) this.queryForObject("getGroupMembers", param);
+		return this.queryForObject("getGroupMembers", param, Group.class, null);
 	}
 }

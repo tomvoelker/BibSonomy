@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.database.util.Transaction;
-import org.bibsonomy.model.Tag;
 import org.bibsonomy.util.ExceptionUtils;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
@@ -65,43 +64,21 @@ public class AbstractDatabaseManager {
 	}
 
 	/**
-	 * Can be used to start a query that retrieves a list of tags.
-	 * 
-	 * @see tagList(final String query, final Object param, final Transaction
-	 *      transaction)
-	 */
-	protected List<Tag> tagList(final String query, final Object param) {
-		return this.tagList(query, param, this.getTransaction());
-	}
-
-	/**
-	 * Can be used to start a query that retrieves a list of tags.
-	 * 
-	 * @see tagList(final String query, final Object param)
-	 */
-	@SuppressWarnings("unchecked")
-	protected List<Tag> tagList(final String query, final Object param, final Transaction transaction) {
-		return (List<Tag>) queryForAnything(query, param, QueryFor.LIST, transaction);
-	}
-
-	/**
 	 * Can be used to start a query that retrieves a list of Integers.
 	 * 
 	 * @see intList(final String query, final Object param, final Transaction
 	 *      transaction)
 	 */
-	protected List<Integer> intList(final String query, final Object param) {
-		return this.intList(query, param, this.getTransaction());
-	}
-
-	/**
-	 * Can be used to start a query that retrieves a list of Integers.
-	 * 
-	 * @see intList(final String query, final Object param)
-	 */
 	@SuppressWarnings("unchecked")
-	protected List<Integer> intList(final String query, final Object param, final Transaction transaction) {
-		return (List<Integer>) queryForAnything(query, param, QueryFor.LIST, transaction);
+	protected <T> List<T> queryForList(final String query, final Object param, final Class<T> type, final Transaction transaction) {
+		return (List<T>) this.queryForAnything(query, param, QueryFor.LIST, transaction);
+	}
+	
+	/** 
+	 * short form of queryForList without Type argument
+	 */
+	protected List queryForList(final String query, final Object param, final Transaction transaction) {
+		return queryForList(query, param, Object.class, transaction);
 	}
 
 	/**
@@ -112,8 +89,9 @@ public class AbstractDatabaseManager {
 	 * type, because with a single object it doesn't result in an unchecked
 	 * cast.
 	 */
-	protected Object queryForObject(final String query, final Object param) {
-		return this.queryForObject(query, param, this.getTransaction());
+	@SuppressWarnings("unchecked")
+	protected <T> T queryForObject(final String query, final Object param, Class<T> type, final Transaction transaction) {
+		return (T) this.queryForAnything(query, param, QueryFor.OBJECT, transaction);
 	}
 
 	/**
@@ -121,20 +99,6 @@ public class AbstractDatabaseManager {
 	 */
 	protected Object queryForObject(final String query, final Object param, final Transaction transaction) {
 		return this.queryForAnything(query, param, QueryFor.OBJECT, transaction);
-	}
-
-	/**
-	 * Can be used to retrieve a list of objects.
-	 */
-	protected List queryForList(final String query, final Object param) {
-		return this.queryForList(query, param, this.getTransaction());
-	}
-
-	/**
-	 * @see queryForList(final String query, final Object param)
-	 */
-	protected List queryForList(final String query, final Object param, final Transaction transaction) {
-		return (List) this.queryForAnything(query, param, QueryFor.LIST, transaction);
 	}
 
 	/**
@@ -235,7 +199,10 @@ public class AbstractDatabaseManager {
 	 *            select
 	 * @return An object in case of a select statement, null otherwise
 	 */
-	private Object transactionWrapper(final String query, final Object param, final StatementType statementType, final QueryFor queryFor, final Transaction transaction) {
+	private Object transactionWrapper(final String query, final Object param, final StatementType statementType, final QueryFor queryFor, Transaction transaction) {
+		if (transaction == null) {
+			transaction = this.getTransaction();
+		}
 		try {
 			// If the database is readonly we start a transaction, so we can
 			// commit/abort it later

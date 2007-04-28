@@ -1,7 +1,6 @@
 package org.bibsonomy.database.params;
 
 import org.bibsonomy.common.enums.ConstantID;
-import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.model.BibTex;
 
 /**
@@ -9,7 +8,7 @@ import org.bibsonomy.model.BibTex;
  * 
  * @author Christian Schenk
  */
-public class BibTexParam extends GenericParam<BibTex> {
+public class BibTexParam extends ResourcesParam<BibTex> {
 
 	/** A single resource */
 	private BibTex resource;

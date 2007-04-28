@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.database.params.beans.TagIndex;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 
 /**
@@ -17,12 +16,7 @@ import org.bibsonomy.model.Tag;
  * 
  * @author Christian Schenk
  */
-public abstract class GenericParam<T extends Resource>{
-	// FIXME
-	// /** A single resource */
-	// protected T resource;
-	/** A list of resources. */
-	private List<T> resources;
+public abstract class GenericParam {
 	/** A list of tags */
 	private List<Tag> tags;
 	private Tag tag;
@@ -251,14 +245,6 @@ public abstract class GenericParam<T extends Resource>{
 
 	public void setContendIDbyBookmark(int contendIDbyBookmark) {
 		this.contendIDbyBookmark = contendIDbyBookmark;
-	}
-
-	public List<T> getResources() {
-		return this.resources;
-	}
-
-	public void setResources(List<T> resources) {
-		this.resources = resources;
 	}
 
 	public List<Tag> getTags() {

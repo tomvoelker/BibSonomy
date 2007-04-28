@@ -24,43 +24,38 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 		return singleton;
 	}
 
-	@SuppressWarnings("unchecked")
-	protected List<User> userList(final String query, final UserParam user) {
-		return (List<User>) queryForList(query, user);
-	}
-
 	/*
 	 * get all Users of a given Group required different view right
 	 */
 
 	public List<User> getUsersOfGroupPublic(final UserParam user) {
-		return this.userList("getUsersOfGroupPublic", user);
+		return this.queryForList("getUsersOfGroupPublic", user, User.class, null);
 	}
 	
 	public List<User> getUsersOfGroupPrivate(final UserParam user) {
-		return this.userList("getUsersOfGroupPrivate", user);
+		return this.queryForList("getUsersOfGroupPrivate", user, User.class, null);
 	}
 	
 	public List<User> getUsersOfGroupFriends(final UserParam user) {
-		return this.userList("getUsersOfGroupFriends", user);
+		return this.queryForList("getUsersOfGroupFriends", user, User.class, null);
 	}
 	
 	public Integer getPrivlevelOfUser(final UserParam user) {
-		return (Integer) this.queryForObject("getPrivlevelOfUser", user);
+		return this.queryForObject("getPrivlevelOfUser", user, Integer.class, null);
 	}
 
 	/*
 	 * get details by a given group of a user
 	 */
 	public List<User> getUserDetails(final UserParam user) {
-		return this.userList("getUserDetails", user);
+		return this.queryForList("getUserDetails", user, User.class, null);
 	}
 
 	/*
 	 * get all users of the system
 	 */
 	public List<User> getAllUsers(final UserParam user) {
-		return this.userList("getAllUsers", user);
+		return this.queryForList("getAllUsers", user, User.class, null);
 	}
 
 	/*

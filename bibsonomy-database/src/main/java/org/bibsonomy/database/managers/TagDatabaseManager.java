@@ -5,6 +5,7 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
+import org.bibsonomy.database.params.ResourcesParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.util.DatabaseUtils;
@@ -39,19 +40,19 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
     
 	/** Return all tags for given tagId */
 	public Tag getTagById(final TagParam param) {
-		return (Tag) this.queryForObject("getTagById", param);
+		return this.queryForObject("getTagById", param, Tag.class, null);
 	}
 
 	/** Return all tags for a given tag count */
 	public List<Tag> getTagByCount(final TagParam param) {
 		// TODO not tested
-		return this.tagList("getTagByCount", param);
+		return this.queryForList("getTagByCount", param, Tag.class, null);
 	}
 
 	/** Return all tags for a given contentId */
 	public List<Tag> getTasByContendId(final GenericParam param) {
 		// TODO not tested
-		return this.tagList("getTasByTagName", param);
+		return this.queryForList("getTasByTagName", param, Tag.class, null);
 	}
 
 	public void updateTagTagInc(final GenericParam param) {
@@ -79,7 +80,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 
 	public Integer getNewTasId(final GenericParam param) {
 		// TODO not tested
-		return (Integer) this.queryForObject("getNewTasId", param);
+		return this.queryForObject("getNewTasId", param, Integer.class, null);
 	}
 
 	public void updateTasId(final int param) {
@@ -87,7 +88,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		this.update("updateTasId", param);
 	}
 
-	public void insertTas(final GenericParam<Bookmark> genericParam) {
+	public void insertTas(final ResourcesParam<Bookmark> genericParam) {
 		this.insert("insertTas", genericParam);
 	}
 
@@ -202,26 +203,26 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * single requests for method get detailled information of a tag
 	 */
 	public int getTagOccurrences(final Tag tag) {
-		return (Integer)this.queryForObject("getTagOccurrences", tag);
+		return this.queryForObject("getTagOccurrences", tag, Integer.class, null);
 	}
 
 	public List<Tag> getSubtagsOfTag(final Tag tag) {
-		return this.tagList("getSubtagsOfTag", tag);
+		return this.queryForList("getSubtagsOfTag", tag, Tag.class, null);
 	}
 
 	public List<Tag> getSupertagsOfTag(final Tag tag) {
-		return this.tagList("getSupertagsOfTag", tag);
+		return this.queryForList("getSupertagsOfTag", tag, Tag.class, null);
 	}
 
 	public List<Tag> getCorrelatedTagsOfTag(final Tag tag) {
-		return this.tagList("getCorrelatedTagsOfTag", tag);
+		return this.queryForList("getCorrelatedTagsOfTag", tag, Tag.class, null);
 	}
 
 	/*
 	 * return all recorded tags of the system 
 	 */
 	public List<Tag> getAllTags(final UserParam param) {
-		return this.tagList("getAllTags", param);
+		return this.queryForList("getAllTags", param, Tag.class, null);
 	}
 
 	/**
@@ -248,7 +249,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public List<Tag> getTagsByUser(final UserParam user) {
 		DatabaseUtils.prepareGetTagForUser(this.generalDb, user);
-		return this.tagList("getTagsByUser", user);
+		return this.queryForList("getTagsByUser", user, Tag.class, null);
 	} 
 
 	/**
@@ -256,18 +257,18 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public List<Tag> getTagsByGroup(final UserParam user) {
 		DatabaseUtils.prepareGetTagForGroup(this.generalDb, user);
-		return this.tagList("getTagsByGroup", user);
+		return this.queryForList("getTagsByGroup", user, Tag.class, null);
 	}
 
 	/**
 	 * Get all tags of a given regular expression 
 	 */
 	public List<Tag> getTagsByExpression(final UserParam user) {
-		return this.tagList("getTagsByExpression", user);
+		return this.queryForList("getTagsByExpression", user, Tag.class, null);
 	} 
 
 	public List<Tag> getTagsViewable(final UserParam user) {
-		return this.tagList("getTagsViewable", user);
+		return this.queryForList("getTagsViewable", user, Tag.class, null);
 	} 
 
 	public List<Tag> getTags(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end) {

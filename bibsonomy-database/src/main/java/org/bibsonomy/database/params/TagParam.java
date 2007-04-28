@@ -6,7 +6,6 @@ import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.rest.renderer.xml.GroupType;
 
 public class TagParam {
 
