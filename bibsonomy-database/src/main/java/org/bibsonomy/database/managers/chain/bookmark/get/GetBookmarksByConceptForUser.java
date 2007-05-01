@@ -5,8 +5,8 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChainElement;
 import org.bibsonomy.database.params.BookmarkParam;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 
 public class GetBookmarksByConceptForUser extends BookmarkChainElement{
 
@@ -29,7 +29,7 @@ public class GetBookmarksByConceptForUser extends BookmarkChainElement{
 	 *   
 	 */
 	@Override
-	protected List<Post<? extends Resource>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
+	protected List<Post<Bookmark>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
 		final BookmarkParam param = new BookmarkParam();
 		
 		param.setRequestedGroupName(groupingName);
@@ -46,7 +46,7 @@ public class GetBookmarksByConceptForUser extends BookmarkChainElement{
 			
 			}
 		
-		List<Post<? extends Resource>> posts = db.getBookmarkByConceptForUser(param);
+		List<Post<Bookmark>> posts = db.getBookmarkByConceptForUser(param);
 		if(posts.size()!=0){
 			System.out.println("GetBookmarksByConceptForUser");
 			

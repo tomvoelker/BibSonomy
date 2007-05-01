@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers.chain.bookmark;
 
 import org.bibsonomy.database.managers.BookmarkDatabaseManager;
 import org.bibsonomy.database.managers.chain.ChainElement;
+import org.bibsonomy.model.Bookmark;
 
 /**
  * All elements for the chain of responsibility for bookmarks are derived from
@@ -9,7 +10,7 @@ import org.bibsonomy.database.managers.chain.ChainElement;
  * 
  * @author mgr
  */
-public abstract class BookmarkChainElement extends ChainElement {
+public abstract class BookmarkChainElement extends ChainElement<Bookmark> {
 
 	protected final BookmarkDatabaseManager db;
 

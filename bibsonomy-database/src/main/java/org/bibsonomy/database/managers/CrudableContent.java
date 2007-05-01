@@ -10,16 +10,16 @@ import org.bibsonomy.model.Resource;
  * For every content type there should exist a separate class which implements
  * this interface. It supplies basic CRUD: create, read, update and delete.
  */
-public interface CrudableContent {
+public interface CrudableContent<T extends Resource> {
 	// read
-	public List<Post<? extends Resource>> getPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, boolean continuous);
+	public List<Post<T>> getPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, boolean continuous);
 
 	// read
-	public Post<? extends Resource> getPostDetails(String authUser, String resourceHash, String userName);
+	public Post<T> getPostDetails(String authUser, String resourceHash, String userName);
 
 	// delete
 	public boolean deletePost(String userName, String resourceHash);
 
 	// create, update
-	public boolean storePost(String userName, Post post, boolean update);
+	public boolean storePost(String userName, Post<T> post, boolean update);
 }

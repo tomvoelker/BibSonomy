@@ -15,25 +15,26 @@ import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexOfFriendsByTags
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexOfFriendsByUser;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexPopular;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexViewable;
+import org.bibsonomy.model.BibTex;
 
 /**
  * @author mgr
  */
-public class BibTexChain implements FirstChainElement {
+public class BibTexChain implements FirstChainElement<BibTex> {
 
-	private final ChainElement getBibTexByHash;
-	private final ChainElement getBibTexByHashForUser;
-	private final ChainElement getBibTexByTagNames;
-	private final ChainElement getBibTexByTagNamesAndUser;
-	private final ChainElement getBibTexForGroup;
-	private final ChainElement getBibTexForGroupAndTag;
-	private final ChainElement getBibTexForHomePage;
-	private final ChainElement getBibTexForPopular;
-	private final ChainElement getBibTexViewable;
-	private final ChainElement getBibTexForUser;
-	private final ChainElement getBibTexByConceptForUser;
-	private final ChainElement getBibTexByUserFriends;
-	private final ChainElement getBibTexByUserAndTagsFriends;
+	private final ChainElement<BibTex> getBibTexByHash;
+	private final ChainElement<BibTex> getBibTexByHashForUser;
+	private final ChainElement<BibTex> getBibTexByTagNames;
+	private final ChainElement<BibTex> getBibTexByTagNamesAndUser;
+	private final ChainElement<BibTex> getBibTexForGroup;
+	private final ChainElement<BibTex> getBibTexForGroupAndTag;
+	private final ChainElement<BibTex> getBibTexForHomePage;
+	private final ChainElement<BibTex> getBibTexForPopular;
+	private final ChainElement<BibTex> getBibTexViewable;
+	private final ChainElement<BibTex> getBibTexForUser;
+	private final ChainElement<BibTex> getBibTexByConceptForUser;
+	private final ChainElement<BibTex> getBibTexByUserFriends;
+	private final ChainElement<BibTex> getBibTexByUserAndTagsFriends;
 
 	public BibTexChain() {
 		this.getBibTexByHash = new GetBibtexByHash();
@@ -64,7 +65,7 @@ public class BibTexChain implements FirstChainElement {
 		this.getBibTexByUserFriends.setNext(this.getBibTexByUserAndTagsFriends);
 	}
 
-	public ChainElement getFirstElement() {
+	public ChainElement<BibTex> getFirstElement() {
 		return this.getBibTexForHomePage;
 	}
 }

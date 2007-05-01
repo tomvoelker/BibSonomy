@@ -6,8 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.ResourceType;
+import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.LogicInterface;
+import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -23,16 +26,18 @@ public class RestDatabaseManager implements LogicInterface {
 
 	/** Singleton */
 	private final static RestDatabaseManager singleton = new RestDatabaseManager();
-	private final Map<ResourceType, CrudableContent> contentDBManagers;
-	private UserDatabaseManager userDBManager = new UserDatabaseManager();
-	private TagDatabaseManager tagDBManager = new TagDatabaseManager();
-	//private GroupDBManager groupDBManager = new GroupDBManager();
+	private final BookmarkDatabaseManager bookmarkDBManager;
+	private final BibTexDatabaseManager bibtexDBManager;
+	private final Map<Class<? extends Resource>, CrudableContent<? extends Resource>> allDatabaseManagers = new HashMap<Class<? extends Resource>, CrudableContent<? extends Resource>>();
+	private UserDatabaseManager userDBManager = UserDatabaseManager.getInstance();
+	private TagDatabaseManager tagDBManager = TagDatabaseManager.getInstance();
+	//private GroupDatabaseManager groupDBManager = GroupDatabaseManager.getInstance();
 
 	private RestDatabaseManager() {
-		// add some default
-		this.contentDBManagers = new HashMap<ResourceType, CrudableContent>();
-		this.contentDBManagers.put(ResourceType.BOOKMARK, BookmarkDatabaseManager.getInstance());
-		//this.contentDBManagers.put(ResourceType.BIBTEX, BibTexDatabaseManager.getInstance());
+		bibtexDBManager = BibTexDatabaseManager.getInstance();
+		allDatabaseManagers.put(BibTex.class, bibtexDBManager);
+		bookmarkDBManager = BookmarkDatabaseManager.getInstance();
+		allDatabaseManagers.put(Bookmark.class, bookmarkDBManager);
 	}
 
 	public static LogicInterface getInstance() {
@@ -117,34 +122,47 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @param end
 	 * @return a set of posts, an empty set else
 	 */
-	public List<Post<? extends Resource>> getPosts(String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
-	
-		List <Post<? extends Resource>> result = new LinkedList <Post<? extends Resource>>();
-		
-		if (resourceType == ResourceType.ALL) {
+	public <T extends Resource> List<Post<T>> getPosts(String authUser, Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
+		final List result;
+		if (resourceType == Resource.class) {
 			/*
-			 * iterate over all available database managers
+			 * yes, this IS unsave and indeed it BREAKS restrictions on generic-constraints.
+			 * it is the result of two designs:
+			 *  1. @ibatis: database-results should be accessible as a stream or should at least be saved using the visitor pattern (collection<? super X> arguments would do fine)
+			 *  2. @bibsonomy: this method needs runtime-type-checking which is not supported by generics
+			 *  so what: copy each and every entry manually or split this method to become
+			 *           type-safe WITHOUT falling back to <? extends Resource> (which
+			 *           means read-only) in the whole project
 			 */
-			for (CrudableContent man: this.contentDBManagers.values()) {
-				/*
-				 * TODO: this must be the "part of the window" query!
-				 */
-				result.addAll(man.getPosts(authUser, grouping, groupingName, tags, hash, popular, added, start, end, false));
-				// SELECT t.content_id,tt.tag_name,t.user_name,b.book_url_hash FROM (select * from tas where tag_name = "semantic" GROUP BY content_id ORDER BY date DESC LIMIT 10) AS t JOIN bookmark b USING (content_id) JOIN tas tt USING (content_id) WHERE t.content_type=1;
-			}
+			result = bibtexDBManager.getPosts(authUser, grouping, groupingName, tags, hash, popular, added, start, end, false);			
+			// TODO: solve problem with limit+offset:  result.addAll(bookmarkDBManager.getPosts(authUser, grouping, groupingName, tags, hash, popular, added, start, end, false));
+		} else if (resourceType == BibTex.class) {
+			result = bibtexDBManager.getPosts(authUser, grouping, groupingName, tags, hash, popular, added, start, end, true);
+		} else if (resourceType == Bookmark.class) {
+			result = bookmarkDBManager.getPosts(authUser, grouping, groupingName, tags, hash, popular, added, start, end, true);
 		} else {
-			CrudableContent abstractContentDBManager = this.contentDBManagers.get(resourceType);
-			/*
-			 * TODO FIXME: posts: return null
-			 */
-			List<Post<? extends Resource>> posts = abstractContentDBManager.getPosts(authUser, grouping, groupingName, tags, hash, popular, added, start, end, true);
-			/*
-			 * get the next end-start posts for that resourceType!
-			 */
-			if( posts == null ) System.out.println("POSTS SIND NULL");
-			result.addAll(posts);
+			throw new UnsupportedResourceTypeException( resourceType.toString() );
 		}
 		return result;
+	}
+	
+	public BibTexParam buildBibTexParam(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
+		final BibTexParam param = new BibTexParam();		
+		param.setUserName(authUser);
+		param.setOffset(start);
+		param.setLimit(end - start);
+		if ((groupingName != null) && (groupingName.length() == 0))	{
+			groupingName = null;
+		}
+		if (grouping == GroupingEntity.USER) {
+			param.setRequestedUserName(groupingName);
+		} else if (grouping == GroupingEntity.FRIEND) {
+			param.setRequestedGroupName(groupingName); // TODO: document
+		} else if (grouping == GroupingEntity.GROUP) {
+			param.setRequestedGroupName(groupingName); 
+		}
+		
+		return param;
 	}
 
 	/**
@@ -156,12 +174,14 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @return the post's details, null else
 	 */
 	public Post<? extends Resource> getPostDetails(String authUser, String resourceHash, String userName) {
-		Post<? extends Resource> post = null;
-		for (CrudableContent man : this.contentDBManagers.values()) {
-			post = man.getPostDetails(authUser, resourceHash, userName);
-			if (post != null) break;
+		Post<? extends Resource> rVal;
+		for (CrudableContent<? extends Resource> manager : allDatabaseManagers.values()) {
+			rVal = manager.getPostDetails(authUser, resourceHash, userName);
+			if (rVal != null) {
+				return rVal;
+			}
 		}
-		return post;
+		return null;
 	}
 
 	/**
@@ -286,8 +306,11 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @param resourceHash hash of the resource, which is connected to the post to delete 
 	 */
 	public void deletePost(String userName, String resourceHash) {
-		for (CrudableContent man : this.contentDBManagers.values()) {
-			if (man.deletePost(userName, resourceHash)) break;
+		// TODO would be nice to know about the resourcetype ot the instance behind this resourceHash
+		for (CrudableContent<? extends Resource> man : allDatabaseManagers.values()) {
+			if (man.deletePost(userName, resourceHash) == true) {
+				break;
+			}
 		}
 	}
 
@@ -308,9 +331,20 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @param update true if its an existing post (identified by its resource's intrahash), false if its a new post
 	 */
 	public void storePost(String userName, Post post, boolean update) {
-		for (CrudableContent man : this.contentDBManagers.values()) {
-			if (man.storePost(userName, post, update)) break;
+		Class resourceClass = post.getResource().getClass();
+		CrudableContent<? extends Resource> man = allDatabaseManagers.get(resourceClass);
+		if (man == null) {
+			for (Map.Entry<Class<? extends Resource>, CrudableContent<? extends Resource>> entry : allDatabaseManagers.entrySet()) {
+				if (entry.getKey().isAssignableFrom(resourceClass)) {
+					man = entry.getValue();
+					break;
+				}
+			}
+			if (man == null) {
+				throw new UnsupportedResourceTypeException( resourceClass.toString() );
+			}
 		}
+		man.storePost(userName, post, update);
 	}
 
 	/**

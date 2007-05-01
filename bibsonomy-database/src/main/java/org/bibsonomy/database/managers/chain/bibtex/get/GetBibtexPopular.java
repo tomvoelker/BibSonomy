@@ -5,8 +5,8 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
 import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 
 public class GetBibtexPopular extends BibTexChainElement{
 
@@ -32,7 +32,7 @@ public class GetBibtexPopular extends BibTexChainElement{
 	
 	
 	@Override
-	protected List<Post<? extends Resource>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
+	protected List<Post<BibTex>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
 
 		final BibTexParam param = new BibTexParam();
 		param.setOffset(start);
@@ -42,7 +42,7 @@ public class GetBibtexPopular extends BibTexChainElement{
 		/**
 		 * retrieve bibtex list with appropriate iBatis statement
 		 */
-		List<Post<? extends Resource>> posts = db.getBibTexPopular(param);
+		List<Post<BibTex>> posts = db.getBibTexPopular(param);
         System.out.println("post="+posts.size()+"in getBibtexPopular");
         if(posts.size()!=0){
 			System.out.println("GetBibtexPopular");

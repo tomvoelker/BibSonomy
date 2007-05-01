@@ -5,8 +5,8 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
 import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 
 public class GetBibtexViewable extends BibTexChainElement{
 
@@ -29,7 +29,7 @@ public class GetBibtexViewable extends BibTexChainElement{
 	 *   
 	 */
 	@Override
-	protected List<Post<? extends Resource>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
+	protected List<Post<BibTex>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
 		final BibTexParam param = new BibTexParam();
 		
 		param.setRequestedGroupName(groupingName);
@@ -43,7 +43,7 @@ public class GetBibtexViewable extends BibTexChainElement{
 		param.setGroupId(generalDb.getGroupIdByGroupName(param));
 		param.setGroups(generalDb.getGroupsForUser(param));
 		
-		List<Post<? extends Resource>> posts = db.getBibTexViewable(param);
+		List<Post<BibTex>> posts = db.getBibTexViewable(param);
 		if(posts.size()!=0){
 			System.out.println("GetBibtexViewable");
 		}

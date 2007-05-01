@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers.chain.bibtex;
 
 import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.chain.ChainElement;
+import org.bibsonomy.model.BibTex;
 
 /**
  * All elements for the chain of responsibility for publications are derived
@@ -9,7 +10,7 @@ import org.bibsonomy.database.managers.chain.ChainElement;
  * 
  * @author mgr
  */
-public abstract class BibTexChainElement extends ChainElement {
+public abstract class BibTexChainElement extends ChainElement<BibTex> {
 
 	protected final BibTexDatabaseManager db;
 

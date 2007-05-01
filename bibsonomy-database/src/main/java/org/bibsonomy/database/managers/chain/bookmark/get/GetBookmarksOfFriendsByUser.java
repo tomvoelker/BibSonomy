@@ -6,8 +6,8 @@ import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChainElement;
 import org.bibsonomy.database.params.BookmarkParam;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 /*
  * TODO check
  */
@@ -40,7 +40,7 @@ public class GetBookmarksOfFriendsByUser extends BookmarkChainElement{
 	 *   
 	 */
 	@Override
-	protected List<Post<? extends Resource>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
+	protected List<Post<Bookmark>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
 		final BookmarkParam param = new BookmarkParam();
 		
 		param.setRequestedUserName(groupingName);
@@ -51,7 +51,7 @@ public class GetBookmarksOfFriendsByUser extends BookmarkChainElement{
 		param.setGroupId(ConstantID.GROUP_FRIENDS.getId());
 		
 		
-		List<Post<? extends Resource>> posts = db.getBookmarkForUser(param);
+		List<Post<Bookmark>> posts = db.getBookmarkForUser(param);
 		if(posts.size()!=0){
 			System.out.println("GetBookmarksOfFriendsByUser");
 			

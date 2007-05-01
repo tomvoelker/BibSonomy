@@ -11,10 +11,10 @@ import org.bibsonomy.model.Resource;
  * 
  * @author Christian Schenk
  */
-public interface ChainPerform {
+public interface ChainPerform<T extends Resource> {
 
 	/**
 	 * Returns a list of posts.
 	 */
-	public List<Post<? extends Resource>> perform(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end);
+	public List<Post<T>> perform(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end);
 }

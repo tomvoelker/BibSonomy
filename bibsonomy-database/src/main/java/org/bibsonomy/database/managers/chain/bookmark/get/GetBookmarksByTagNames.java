@@ -5,8 +5,8 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChainElement;
 import org.bibsonomy.database.params.BookmarkParam;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 
 public class GetBookmarksByTagNames extends BookmarkChainElement{
 	/**
@@ -29,7 +29,7 @@ public class GetBookmarksByTagNames extends BookmarkChainElement{
 	 */
 	
 	@Override
-	protected List<Post<? extends Resource>> handle(String authUser,  GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
+	protected List<Post<Bookmark>> handle(String authUser,  GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
 		
 		final BookmarkParam param = new BookmarkParam();
 		
@@ -54,7 +54,7 @@ public class GetBookmarksByTagNames extends BookmarkChainElement{
 		 * prove arguments as mentioned above
 		 */
 		
-		List<Post<? extends Resource>> posts = db.getBookmarkByTagNames(param);
+		List<Post<Bookmark>> posts = db.getBookmarkByTagNames(param);
 		if(posts.size()!=0){
 			System.out.println("GetBookmarksByTagNames");
 			

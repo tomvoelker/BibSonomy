@@ -5,8 +5,8 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChainElement;
 import org.bibsonomy.database.params.BookmarkParam;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 
 
 	/**
@@ -32,7 +32,7 @@ public class GetBookmarksByHash extends BookmarkChainElement {
 	
 
 	@Override
-	protected List<Post<? extends Resource>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
+	protected List<Post<Bookmark>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
 
 		final BookmarkParam param = new BookmarkParam();
 		param.setHash(hash);
@@ -42,7 +42,7 @@ public class GetBookmarksByHash extends BookmarkChainElement {
 		/**
 		 * retrieve bookmark list with appropriate iBatis statement
 		 */
-		List<Post<? extends Resource>> posts = db.getBookmarkByHash(param);
+		List<Post<Bookmark>> posts = db.getBookmarkByHash(param);
 		if(posts.size()!=0){
 			System.out.println("GetBookmarksByHash");
 			

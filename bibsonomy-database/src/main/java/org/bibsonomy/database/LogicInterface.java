@@ -3,7 +3,6 @@ package org.bibsonomy.database;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.ResourceType;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -88,7 +87,7 @@ public interface LogicInterface
 	 * @param end
 	 * @return a set of posts, an empty set else
 	 */
-	public abstract List<Post<? extends Resource>> getPosts( String authUser, ResourceType resourceType, GroupingEntity grouping,
+	public abstract <T extends Resource> List<Post<T>> getPosts( String authUser, Class<T> resourceType, GroupingEntity grouping,
 			String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end );
 
 	/**
@@ -220,7 +219,7 @@ public interface LogicInterface
     * @param post the post to be postet
     * @param update true if its an existing post (identified by its resource's intrahash), false if its a new post
     */
-   public abstract void storePost( String userName, Post post, boolean update );
+   public abstract void storePost( String userName, Post<? extends Resource> post, boolean update );
 
    /**
     * adds/ updates a group in the database.

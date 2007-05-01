@@ -12,12 +12,12 @@ import org.bibsonomy.model.Resource;
  * 
  * @author mgr
  */
-public abstract class ChainElement implements ChainPerform {
+public abstract class ChainElement<T extends Resource> implements ChainPerform<T> {
 
 	protected final GeneralDatabaseManager generalDb;
 	
 	/** The next element of the chain */
-	private ChainElement next;
+	private ChainElement<T> next;
 
 	public ChainElement() {
 		this.generalDb = GeneralDatabaseManager.getInstance();
@@ -26,11 +26,11 @@ public abstract class ChainElement implements ChainPerform {
 	/**
 	 * Sets the next element in the chain.
 	 */
-	public final void setNext(final ChainElement nextElement) {
+	public final void setNext(final ChainElement<T> nextElement) {
 		this.next = nextElement;
 	}
 
-	public final List<Post<? extends Resource>> perform(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
+	public final List<Post<T>> perform(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
 		if (this.canHandle(authUser, grouping, groupingName, tags, hash, popular, added, start, end)) {
 			return this.handle(authUser, grouping, groupingName, tags, hash, popular, added, start, end);
 		} else {
@@ -45,7 +45,7 @@ public abstract class ChainElement implements ChainPerform {
 	/**
 	 * Handles the request.
 	 */
-	protected abstract List<Post<? extends Resource>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end);
+	protected abstract List<Post<T>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end);
 
 	/**
 	 * Returns true if the request can be handled, otherwise false.
