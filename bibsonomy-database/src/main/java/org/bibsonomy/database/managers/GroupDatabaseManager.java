@@ -16,7 +16,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager  {
 	/** Singleton */
 	private final static GroupDatabaseManager singleton = new GroupDatabaseManager();
 
-	GroupDatabaseManager() {
+	private GroupDatabaseManager() {
 	}
 
 	public static GroupDatabaseManager getInstance() {

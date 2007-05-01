@@ -30,7 +30,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 */
 	private static final int MAX_TAGS_TO_INSERT = 10;
 
-	TagDatabaseManager() {
+	private TagDatabaseManager() {
 	}
 
 	public static TagDatabaseManager getInstance() {
