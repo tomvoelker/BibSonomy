@@ -17,7 +17,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 	/** Singleton */
 	private  final static UserDatabaseManager singleton = new UserDatabaseManager();
 
-	UserDatabaseManager() {
+	private UserDatabaseManager() {
 	}
 
 	public static UserDatabaseManager getInstance() {
