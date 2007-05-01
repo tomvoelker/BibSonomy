@@ -115,7 +115,7 @@ public abstract class GenericParam {
 	 * 'java.util.ArrayList'".
 	 */
 	public int getMaxTagIndex() {
-		return this.tagIndex.size();
+		return this.tagIndex.size();  // TODO: if this methods name was intuitive, size-1 should be returned because tagIndex[size] is out of bounds 
 	}
 
 	public int getGroupType() {
