@@ -47,10 +47,13 @@ public class DatabaseUtils {
 		}
 		final Boolean friends = db.isFriendOf(param);
 		final List<Integer> groups = db.getGroupsForUser(param);
-		if (friends) groups.add(ConstantID.GROUP_FRIENDS.getId());
+		if (friends) {
+			groups.add(ConstantID.GROUP_FRIENDS.getId());
+		}
 		param.setGroups(groups);
 	}
-	
+
+
 	/**
 	 * This needs to be done for all get*ForGroup* queries.
 	 */
