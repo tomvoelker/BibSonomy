@@ -53,7 +53,7 @@ public class XMLRenderer implements Renderer
 	{
 	}
 
-	public void serializePosts( Writer writer, List<Post<? extends Resource>> posts, ViewModel viewModel ) throws InternServerException
+	public void serializePosts( Writer writer, List<? extends Post<? extends Resource>> posts, ViewModel viewModel ) throws InternServerException
 	{
 		PostsType xmlPosts = new PostsType();
       if( viewModel != null )
@@ -493,7 +493,10 @@ public class XMLRenderer implements Renderer
 
 /*
  * $Log$
- * Revision 1.8  2007-02-21 14:08:33  mbork
+ * Revision 1.9  2007-05-01 22:27:30  jillig
+ * ->more generic arguments
+ *
+ * Revision 1.8  2007/02/21 14:08:33  mbork
  * - included code generation of the schema in the maven2 build-lifecycle
  * - removed circular dependencies among the modules
  * - cleaned up the poms of the modules
