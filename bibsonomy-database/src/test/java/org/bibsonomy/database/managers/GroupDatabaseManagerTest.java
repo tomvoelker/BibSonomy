@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.model.Group;
 import org.junit.Test;
 
@@ -18,9 +19,12 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			final String homepage = group.getUsers().get(0).getHomepage().toString();
 
 			if (group.getName().equals("kde")) {
+				assertEquals(ConstantID.GROUP_KDE.getId(), group.getGroupId());
 				assertEquals("Knowledge and Data Engineering Group", realname);
 				assertEquals("http://www.kde.cs.uni-kassel.de/", homepage);
 			} else if (group.getName().equals("ls3wim")) {
+				assertEquals(6, group.getGroupId());
+				// Yes, that's "Kalrsruhe" and not "Karlsruhe"
 				assertEquals("Research Group Knowledge Management, AIFB, Kalrsruhe, Germany", realname);
 				assertEquals("http://www.aifb.uni-karlsruhe.de/Forschungsgruppen/WBS/", homepage);
 			}
@@ -31,6 +35,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getGroupByName() {
 		final Group kdeGroup = this.groupDb.getGroupByName(this.groupParam);
 		assertEquals("kde", kdeGroup.getName());
+		assertEquals(ConstantID.GROUP_KDE.getId(), kdeGroup.getGroupId());
 		assertEquals("Knowledge and Data Engineering Group", kdeGroup.getUsers().get(0).getRealname());
 		assertEquals("http://www.kde.cs.uni-kassel.de/", kdeGroup.getUsers().get(0).getHomepage().toString());
 	}
@@ -39,6 +44,13 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getGroupMembers() {
 		final Group kdeGroup = this.groupDb.getGroupMembers(this.groupParam);
 		assertEquals("kde", kdeGroup.getName());
+		assertEquals(ConstantID.GROUP_KDE.getId(), kdeGroup.getGroupId());
 		assertEquals(13, kdeGroup.getUsers().size());	
+	}
+
+	@Test
+	public void getGroupsForUser() {
+		final List<Group> groups = this.groupDb.getGroupsForUser(this.groupParam);
+		assertEquals(4, groups.size());
 	}
 }

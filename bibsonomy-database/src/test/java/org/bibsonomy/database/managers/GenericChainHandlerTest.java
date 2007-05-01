@@ -1,50 +1,130 @@
 package org.bibsonomy.database.managers;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 public class GenericChainHandlerTest extends AbstractDatabaseManagerTest {
 
+	private List<Post<? extends Resource>> postsList;
+	private List<String> taglist;
+	private List<String> taglistfriend;
+
+	@Before
+	public void setUp() {
+		super.setUp();
+		this.postsList = null;
+		this.taglist = new LinkedList<String>();
+		this.taglistfriend = new LinkedList<String>();
+		this.taglist.add("semantic");
+		this.taglistfriend.add("DVD");
+	}
+
+	@After
+	public void tearDown() {
+		super.tearDown();
+		this.postsList = null;
+		this.taglist = null;
+		this.taglistfriend = null;
+	}
+
 	@Test
-	public void perform() {
-		final List<String> taglist = new LinkedList<String>();
-		final List<String> taglistfriend = new LinkedList<String>();
-		taglist.add("semantic");
-		taglistfriend.add("DVD");
-		/*
-		 * ByUserFriends has to add 
-		 */
+	public void performByTagName() {
 		// ByTagName
-	    //final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", GroupingEntity.ALL, "jaeschke", taglist, null, false, false, 0, 10);
-		 //ByTagNameForUser
-		//final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", GroupingEntity.USER, "jaeschke", taglist, null, false, false, 0, 19);
-		//ByConceptForUser 
-		//final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", GroupingEntity.USER, "jaeschke", taglist, null, false,true, 0, 19);
-		//ForUser
-		//final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", GroupingEntity.USER, "jaeschke", null, null, false, false, 0, 19);
-		//ByHash
-		//final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", GroupingEntity.ALL, "jaeschke", null,"7d85e1092613fd7c91d6ba5dfcf4a044", false, false, 0, 19);
-		//ByHashForUser geht noch nicht
-		//final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", GroupingEntity.USER, "jaeschke", null,"7d85e1092613fd7c91d6ba5dfcf4a044", false, false, 0, 19);
-		//ByViewable
-		//final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", GroupingEntity.VIEWABLE, "jaeschke", null, null, false, false, 0, 19);
-		//ForGroup
-		//final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", GroupingEntity.GROUP, "kde", null, null, false, false, 0, 19);
-		//ForGroupByTag
-		//final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", GroupingEntity.GROUP, "kde", taglist, null, false, false, 0, 19);
-		//ByFriendName
-		//final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", GroupingEntity.FRIEND, "ralfm", null, null, false, false, 0, 19);
-		//ByFriendNameAndTag
-		//final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", GroupingEntity.FRIEND, "ralfm", taglistfriend, null, false, false, 0, 19);
-        //Popular
-		//final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", GroupingEntity.ALL, "jaeschke", taglist, null, true, false, 0, 19);
-		//Home
-		final List<Post<? extends Resource>> test = this.chainHandler.perform("jaeschke", null, "jaeschke", taglist, null, false, false ,0, 19);
-		System.out.println(test.size() + " in my FirstTest");
+		this.postsList = this.chainHandler.perform("jaeschke", GroupingEntity.ALL, "jaeschke", taglist, null, false, false, 0, 10);
+		assertEquals(10, this.postsList.size());
+	}
+
+	@Test
+	public void performByTagNameForUser() {
+		// ByTagNameForUser
+		this.postsList = this.chainHandler.perform("jaeschke", GroupingEntity.USER, "jaeschke", taglist, null, false, false, 0, 19);
+		assertEquals(19, this.postsList.size());
+	}
+
+	@Test
+	public void performByConceptForUser() {
+		// ByConceptForUser
+		this.postsList = this.chainHandler.perform("jaeschke", GroupingEntity.USER, "jaeschke", taglist, null, false, true, 0, 19);
+		assertEquals(19, this.postsList.size());
+	}
+
+	@Test
+	public void performForUser() {
+		// ForUser
+		this.postsList = this.chainHandler.perform("jaeschke", GroupingEntity.USER, "jaeschke", null, null, false, false, 0, 19);
+		assertEquals(19, this.postsList.size());
+	}
+
+	@Test
+	public void performByHash() {
+		// ByHash
+		this.postsList = this.chainHandler.perform("jaeschke", GroupingEntity.ALL, "jaeschke", null, "7d85e1092613fd7c91d6ba5dfcf4a044", false, false, 0, 19);
+		assertEquals(6, this.postsList.size());
+	}
+
+	@Test
+	public void performByHashForUser() {
+		// ByHashForUser
+		// FIXME geht noch nicht
+		this.postsList = this.chainHandler.perform("jaeschke", GroupingEntity.USER, "jaeschke", null, "7d85e1092613fd7c91d6ba5dfcf4a044", false, false, 0, 19);
+		assertEquals(1, this.postsList.size());
+	}
+
+	@Test
+	public void performByViewable() {
+		// ByViewable
+		this.postsList = this.chainHandler.perform("jaeschke", GroupingEntity.VIEWABLE, "jaeschke", null, null, false, false, 0, 19);
+		assertEquals(19, this.postsList.size());
+	}
+
+	@Test
+	public void performForGroup() {
+		// ForGroup
+		this.postsList = this.chainHandler.perform("jaeschke", GroupingEntity.GROUP, "kde", null, null, false, false, 0, 19);
+		assertEquals(19, this.postsList.size());
+	}
+
+	@Test
+	public void performForGroupByTag() {
+		// ForGroupByTag
+		this.postsList = this.chainHandler.perform("jaeschke", GroupingEntity.GROUP, "kde", taglist, null, false, false, 0, 19);
+		assertEquals(19, this.postsList.size());
+	}
+
+	@Test
+	public void performByFriendName() {
+		// ByFriendName
+		this.postsList = this.chainHandler.perform("jaeschke", GroupingEntity.FRIEND, "ralfm", null, null, false, false, 0, 19);
+		assertEquals(0, this.postsList.size());
+	}
+
+	@Test
+	public void performByFriendNameAndTag() {
+		// ByFriendNameAndTag
+		this.postsList = this.chainHandler.perform("jaeschke", GroupingEntity.FRIEND, "ralfm", taglistfriend, null, false, false, 0, 19);
+		assertEquals(0, this.postsList.size());
+	}
+
+	@Test
+	public void performPopular() {
+		// Popular
+		this.postsList = this.chainHandler.perform("jaeschke", GroupingEntity.ALL, "jaeschke", taglist, null, true, false, 0, 19);
+		assertEquals(91, this.postsList.size());
+	}
+
+	@Test
+	public void performHome() {
+		// Home
+		this.postsList = this.chainHandler.perform("jaeschke", null, "jaeschke", taglist, null, false, false, 0, 19);
+		assertEquals(15, this.postsList.size());
 	}
 }

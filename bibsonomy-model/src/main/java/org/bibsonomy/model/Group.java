@@ -12,17 +12,16 @@ import org.bibsonomy.model.User;
  */
 public class Group {
 
+	private int groupId;
 	private String name;
 	private String description;
 	private List<Post<? extends Resource>> posts;
 	private List<User> users;
-	private int groupId; 
-	
+
 	public Group() {
 		this.groupId = ConstantID.GROUP_PUBLIC.getId();
 	}
-	
-	
+
 	public int getGroupId() {
 		return this.groupId;
 	}
@@ -48,8 +47,7 @@ public class Group {
 	}
 
 	public List<Post<? extends Resource>> getPosts() {
-		if( this.posts == null )
-		{
+		if (this.posts == null) {
 			this.posts = new LinkedList<Post<? extends Resource>>();
 		}
 		return this.posts;
@@ -60,8 +58,7 @@ public class Group {
 	}
 
 	public List<User> getUsers() {
-		if( this.users == null )
-		{
+		if (this.users == null) {
 			this.users = new LinkedList<User>();
 		}
 		return this.users;

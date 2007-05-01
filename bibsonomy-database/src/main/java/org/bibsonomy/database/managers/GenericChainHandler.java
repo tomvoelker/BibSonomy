@@ -17,7 +17,7 @@ import org.bibsonomy.model.Resource;
  * @author Christian Schenk
  */
 
-public class GenericChainHandler implements ChainPerform{
+public class GenericChainHandler implements ChainPerform {
 
 	/** Singleton */
 	private final static GenericChainHandler singleton = new GenericChainHandler();

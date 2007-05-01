@@ -4,15 +4,15 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.tag.TagChainElement;
-import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.model.Tag;
 
+/**
+ * 
+ * @author mgr
+ *
+ */
 public class GetTagsViewable extends TagChainElement{
-	/**
-	 * 
-	 * @author mgr
-	 *
-	 */
 
 	/*
 	 * return a list of tags by a logged user.
@@ -21,32 +21,28 @@ public class GetTagsViewable extends TagChainElement{
 	 * grouping:viewable
 	 * name:given
 	 * regex: irrelevant  
-	 */
-	
+	 */	
 	@Override
 	protected List<Tag> handle(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end) {
-		final UserParam param =new UserParam();
+		final TagParam param = new TagParam();
 		param.setRequestedUserName(groupingName);
 		param.setUserName(authUser);
 		param.setOffset(start);
-		int limit=end-start;
+		int limit = end - start;
 		param.setLimit(limit);
-	    
+
 		param.setGroupId(generalDb.getGroupIdByGroupName(param));
-		param.setGroups(generalDb.getGroupsForUserTag(param));
-		
+		param.setGroups(generalDb.getGroupsForUser(param));
+
 		List<Tag> tags = db.getTagsViewable(param);
-		if(tags.size()!=0){
+		if (tags.size() != 0) {
 			System.out.println("GetTagsViewable");
 		}
-		return tags;	
+		return tags;
 	}
+
 	@Override
 	protected boolean canHandle(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end) {
-		return authUser != null && 
-		grouping == GroupingEntity.VIEWABLE && groupingName != null;
+		return authUser != null && grouping == GroupingEntity.VIEWABLE && groupingName != null;
 	}
-
-	
-
 }

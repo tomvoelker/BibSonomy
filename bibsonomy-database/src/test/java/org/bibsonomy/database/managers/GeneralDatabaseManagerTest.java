@@ -29,23 +29,6 @@ public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertFalse(this.generalDb.isFriendOf(this.bookmarkParam));
 	}
 
-	/*
-	 * vorläufig für Tag Abfragen
-	 */
-	
-	@Test
-	public void isFriendOfTag() {
-		this.userParam.setUserName("stumme");
-		this.userParam.setRequestedUserName("grahl");
-		assertTrue(this.generalDb.isFriendOfTag(this.userParam));
-
-		// with no users set no exception should be thrown and the result should
-		// just be "false"
-		this.userParam.setUserName(null);
-		this.userParam.setRequestedUserName(null);
-		assertFalse(this.generalDb.isFriendOfTag(this.userParam));
-	}
-
 	@Test
 	public void getGroupsForUser() {
 		assertEquals(4, this.generalDb.getGroupsForUser(this.bookmarkParam).size());

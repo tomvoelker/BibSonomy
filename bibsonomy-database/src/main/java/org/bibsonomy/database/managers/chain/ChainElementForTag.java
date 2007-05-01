@@ -6,10 +6,9 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.model.Tag;
 
-public abstract class ChainElementForTag implements ChainPerformForTag{
+public abstract class ChainElementForTag implements ChainPerformForTag {
 
-protected final GeneralDatabaseManager generalDb;
-	
+	protected final GeneralDatabaseManager generalDb;
 	/** The next element of the chain */
 	private ChainElementForTag next;
 
@@ -38,15 +37,11 @@ protected final GeneralDatabaseManager generalDb;
 
 	/**
 	 * Handles the request.
-	 */
-	
+	 */	
 	protected abstract List<Tag> handle(String authUser, GroupingEntity grouping, String groupingName,String regex , int start, int end);
 
 	/**
 	 * Returns true if the request can be handled, otherwise false.
 	 */
-	
-	protected abstract boolean canHandle(String authUser, GroupingEntity grouping, String groupingName,String regex, int start, int end);
-	
-	
+	protected abstract boolean canHandle(String authUser, GroupingEntity grouping, String groupingName,String regex, int start, int end);	
 }

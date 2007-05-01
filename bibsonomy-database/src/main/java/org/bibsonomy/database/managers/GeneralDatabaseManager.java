@@ -5,7 +5,6 @@ import java.util.List;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
-import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.util.ExceptionUtils;
 
 /**
@@ -38,17 +37,6 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForObject("isFriendOf", param, Boolean.class, null);
 	}
 
-	/*
-	 * FIXME: vorläufig für Tag Abfragen
-	 */
-	
-	public Boolean isFriendOfTag(final UserParam param) {
-		if (param.getUserName() == null || param.getRequestedUserName() == null) return false;
-		return this.queryForObject("isFriendOfTag", param, Boolean.class, null);
-	}
-	
-	
-	
 	/**
 	 * Checks whether a user, given by requestedUserName, is a spammer. If
 	 * requestedUserName is set to null the default behaviour is to return
@@ -74,14 +62,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	public List<Integer> getGroupsForUser(final GenericParam param) {
 		return this.queryForList("getGroupsForUser", param, Integer.class, null);
 	}
-/*
- * TODO only a temporary solution
- */
-	public List<Integer> getGroupsForUserTag(final UserParam param) {
-		return this.queryForList("getGroupsForUserTag", param, Integer.class, null);
-	}
-	
-	
+
 	/**
 	 * Checks if group exists.
 	 * 
@@ -93,16 +74,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 		param.setUserName(null);
 		return this.getGroupIdByGroupNameAndUserName(param);
 	}
-	
-/*
- * for request getTagsByGroup
- */
-	
-	public Integer getGroupIdByGroupName(final UserParam param) {
-		param.setUserName(null);
-		return this.getGroupIdByGroupNameAndUserName(param);
-	}
-	
+
 	/**
 	 * Checks if a given user is in the given group.
 	 * 
@@ -118,19 +90,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 		if (rVal == null) return ConstantID.GROUP_INVALID.getId();
 		return rVal;
 	}
-/*
- * for request getTagsByGroup
- */
-	public Integer getGroupIdByGroupNameAndUserName(final UserParam param) {
-		if (param.getRequestedGroupName() == null) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "requestedGroupName is null");
-		}
-		final Integer rVal = this.queryForObject("getGroupIdByGroupNameAndUserName", param, Integer.class, null);
-		if (rVal == null) return ConstantID.GROUP_INVALID.getId();
-		return rVal;
-	}
-	
-	
+
 	/**
 	 * Get a current ContentID for setting a bookmark update the current
 	 * ContendID for bookmark and bibtex

@@ -1,9 +1,15 @@
 package org.bibsonomy.database.managers;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
@@ -16,43 +22,54 @@ import org.dom4j.Node;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 public class RestDatabaseManagerTest {
 
 	private HttpClient client;
-	private final String apiURLHost = "www.biblicious.org";
-	private final int apiURLPort = 80;
-	private final String apiURLPrefix = "http://" + this.apiURLHost + ":" + this.apiURLPort + "/api/";
-	private final String apiURLRealm = "BibsonomyWebService";
+	private String apiUrl;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws ConfigurationException {
+		// Load configuration
+		final Configuration config = new PropertiesConfiguration("rest-api.properties");
+		final String host = config.getString("host");
+		final Integer port = config.getInt("port");
+		final String realm = config.getString("realm");
+		final String user = config.getString("user");
+		final String pass = config.getString("pass");
+		this.apiUrl = config.getString("url");
+
+		// configure the HTTP client
 		this.client = new HttpClient();
+		final AuthScope authScope = new AuthScope(host, port, realm);
+		final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(user, pass);
+		this.client.getState().setCredentials(authScope, credentials);
 	}
 
 	@After
 	public void tearDown() {
 		this.client = null;
+		this.apiUrl = null;
 	}
 
+	/**
+	 * Starts a GET request with authentication on the REST-API
+	 */
 	private GetMethod getWebServiceAction(final String path) {
+		GetMethod get = null;
 		try {
-			final AuthScope authScope = new AuthScope(this.apiURLHost, this.apiURLPort, this.apiURLRealm);
-			final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("csc", "hurz123"); 
-			this.client.getState().setCredentials(authScope, credentials);
-
-			final GetMethod get = new GetMethod(this.apiURLPrefix + path);
+			get = new GetMethod(this.apiUrl + path);
 			get.setDoAuthentication(true);
 			this.client.executeMethod(get);
-
-			return get;
 		} catch (final Exception ex) {
-			throw new RuntimeException(ex);
+			fail("Exception");
 		}
+		return get;
 	}
 
+	/**
+	 * Converts the XML response from the REST-API into a DOM
+	 */
 	private Document getResponseBodyAsDocument(final GetMethod get) {
 		Document doc = null;
 		try {
@@ -67,9 +84,9 @@ public class RestDatabaseManagerTest {
 
 	@Test
 	public void aGetRequestWithoutAuthentication() throws HttpException, IOException {
-		final GetMethod get = new GetMethod(this.apiURLPrefix);
+		final GetMethod get = new GetMethod(this.apiUrl);
 		this.client.executeMethod(get);
-		assertEquals(HttpServletResponse.SC_UNAUTHORIZED, get.getStatusCode());
+		assertEquals(HttpServletResponse.SC_FORBIDDEN, get.getStatusCode());
 	}
 
 	@Test
@@ -87,6 +104,7 @@ public class RestDatabaseManagerTest {
 
 		// Check posts count
 		final Node posts = doc.selectSingleNode("//posts");
+		assertEquals(0, Integer.parseInt(posts.valueOf("@start")));
 		assertEquals(18, Integer.parseInt(posts.valueOf("@end")));
 	}
 }

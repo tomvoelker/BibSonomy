@@ -7,14 +7,10 @@ package org.bibsonomy.database.managers.chain;
  * 
  * @author mgr
  */
+public interface FirstChainElementForTag {
 
-
-public interface FirstChainElementforTag {
-	
 	/**
 	 * Returns the first element from the chain.
 	 */
-	
-	public ChainElementForTag getFirstElementForTag(); 
-
+	public ChainElementForTag getFirstElementForTag();
 }

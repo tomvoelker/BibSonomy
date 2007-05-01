@@ -43,4 +43,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager  {
 	public Group getGroupMembers(final GroupParam param) {
 		return this.queryForObject("getGroupMembers", param, Group.class, null);
 	}
+
+	/**
+	 * Returns a a list of groups for a given user
+	 */
+	public List<Group> getGroupsForUser(final GroupParam param) {
+		return this.queryForList("getGroupsForUser", param, Group.class, null);
+	}
 }

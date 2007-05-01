@@ -1,7 +1,5 @@
 package org.bibsonomy.database.managers;
 
-import java.io.IOException;
-
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GroupParam;
@@ -43,7 +41,7 @@ public abstract class AbstractDatabaseManagerTest {
 	protected GroupParam groupParam;
 
 	@Before
-	public void setUp() throws IOException {
+	public void setUp() {
 		this.generalDb = GeneralDatabaseManager.getInstance();
 		this.bookmarkDb = BookmarkDatabaseManager.getInstance();
 		this.bibTexDb = BibTexDatabaseManager.getInstance();

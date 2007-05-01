@@ -1,42 +1,53 @@
 package org.bibsonomy.database.managers;
 
+import java.util.List;
+
+import org.bibsonomy.model.Tag;
 import org.junit.Test;
 
-/**
- * This are simple tests because of the simple SQL
- * 
- * @author Christian Schenk
- */
+import static org.junit.Assert.assertEquals;
+
 public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getTagById() {
-		this.tagDb.getTagById(this.tagParam);
+		final Tag tag = this.tagDb.getTagById(this.tagParam);
+		assertEquals(5218, tag.getId());
+		assertEquals("$100", tag.getName());
+		assertEquals("", tag.getStem());
+		assertEquals(5, tag.getCount());
 	}
 
 	@Test
 	public void getTagByCount() {
-		this.tagDb.getTagByCount(this.tagParam);
+		final List<Tag> tags = this.tagDb.getTagByCount(this.tagParam);
+		assertEquals(19, tags.size());
+		for (final Tag tag : tags)
+			assertEquals(100, tag.getCount());
 	}
 
 	@Test
 	public void getAllTags() {
-		this.tagDb.getAllTags(this.userParam);
+		final List<Tag> tags = this.tagDb.getAllTags(this.tagParam);
+		assertEquals(10, tags.size());
 	}
 
 	@Test
 	public void getTagsViewable() {
-		this.tagDb.getTagsViewable(this.userParam);
+		final List<Tag> tags = this.tagDb.getTagsViewable(this.tagParam);
+		assertEquals(10, tags.size());
 	}
 
 	@Test
 	public void getTagsByUser() {
-		this.tagDb.getTagsByUser(this.userParam);
+		final List<Tag> tags = this.tagDb.getTagsByUser(this.tagParam);
+		assertEquals(10, tags.size());
 	}
 
 	@Test
 	public void getTagsByGroup() {
-		this.tagDb.getTagsByGroup(this.userParam);
+		final List<Tag> tags = this.tagDb.getTagsByGroup(this.tagParam);
+		assertEquals(10, tags.size());
 	}
 
 	/*

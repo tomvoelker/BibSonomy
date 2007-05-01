@@ -7,9 +7,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
-import org.bibsonomy.database.params.ResourcesParam;
-import org.bibsonomy.database.params.UserParam;
-import org.bibsonomy.model.Resource;
+import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.util.ExceptionUtils;
 
 import com.ibatis.common.resources.Resources;
@@ -42,7 +40,7 @@ public class DatabaseUtils {
 	 * Gets all groups of the user and puts them in the param. If the two given
 	 * users are friends the groupId for friends is also appended.
 	 */
-	public static void setGroups(final GeneralDatabaseManager db, final ResourcesParam<? extends Resource> param) {
+	public static void setGroups(final GeneralDatabaseManager db, final GenericParam param) {
 		// If userName and requestedUserName are the same - do nothing
 		if (param.getUserName() != null && param.getRequestedUserName() != null) {
 			if (param.getUserName().equals(param.getRequestedUserName())) return;
@@ -52,59 +50,21 @@ public class DatabaseUtils {
 		if (friends) groups.add(ConstantID.GROUP_FRIENDS.getId());
 		param.setGroups(groups);
 	}
-
-
-	/*
-	 * FIXME: vorläufig für set GroupForTag anfragen
-	 */
-	
-	public static void setGroupsForTag(final GeneralDatabaseManager db, final UserParam param) {
-		// If userName and requestedUserName are the same - do nothing
-		if (param.getUserName() != null && param.getRequestedUserName() != null) {
-			if (param.getUserName().equals(param.getRequestedUserName())) return;
-		}
-		final Boolean friends = db.isFriendOfTag(param);
-		final List<Integer> groups = db.getGroupsForUserTag(param);
-		if (friends) groups.add(ConstantID.GROUP_FRIENDS.getId());
-		param.setGroups(groups);
-	}
 	
 	/**
 	 * This needs to be done for all get*ForGroup* queries.
 	 */
-	public static void prepareGetPostForGroup(final GeneralDatabaseManager db, final ResourcesParam<? extends Resource> param) {
+	public static void prepareGetPostForGroup(final GeneralDatabaseManager db, final GenericParam param) {
 		DatabaseUtils.setGroups(db, param);
 		// the group type needs to be set to friends because of the second union
 		// in the SQL statement
 		param.setGroupType(ConstantID.GROUP_FRIENDS);
 	}
-	/*
-	 * FIXME: vorläufig für Tag Anfragen 
-	 */
-	
-	public static void prepareGetTagForGroup(final GeneralDatabaseManager db, final UserParam param) {
-		DatabaseUtils.setGroupsForTag(db, param);
-		// the group type needs to be set to friends because of the second union
-		// in the SQL statement
-		param.setGroupType(ConstantID.GROUP_FRIENDS);
-	}
-	
-	
-	/*
-	 * FIXME:vorläufig für Tag Anfrage
-	 */
-	public static void prepareGetTagForUser(final GeneralDatabaseManager db, final UserParam param) {
-		// if the groupId is invalid we have to check for groups manually
-		if (param.getGroupId() == ConstantID.GROUP_INVALID.getId()) {
-			DatabaseUtils.setGroupsForTag(db, param);
-		}
-	}
-	
-	
+
 	/**
 	 * This needs to be done for all get*ForUser* queries.
 	 */
-	public static void prepareGetPostForUser(final GeneralDatabaseManager db, final ResourcesParam<? extends Resource> param) {
+	public static void prepareGetPostForUser(final GeneralDatabaseManager db, final GenericParam param) {
 		// if the groupId is invalid we have to check for groups manually
 		if (param.getGroupId() == ConstantID.GROUP_INVALID.getId()) {
 			DatabaseUtils.setGroups(db, param);

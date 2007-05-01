@@ -12,7 +12,5 @@ public interface FirstChainElement {
 	/**
 	 * Returns the first element from the chain.
 	 */
-	
-	public ChainElement getFirstElement();
-	
+	public ChainElement getFirstElement();	
 }

@@ -7,7 +7,6 @@ import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.ResourcesParam;
 import org.bibsonomy.database.params.TagParam;
-import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Tag;
@@ -218,10 +217,10 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForList("getCorrelatedTagsOfTag", tag, Tag.class, null);
 	}
 
-	/*
-	 * return all recorded tags of the system 
+	/**
+	 * Return all tags from the system 
 	 */
-	public List<Tag> getAllTags(final UserParam param) {
+	public List<Tag> getAllTags(final TagParam param) {
 		return this.queryForList("getAllTags", param, Tag.class, null);
 	}
 
@@ -247,28 +246,28 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Get all tags of a given user
 	 */
-	public List<Tag> getTagsByUser(final UserParam user) {
-		DatabaseUtils.prepareGetTagForUser(this.generalDb, user);
-		return this.queryForList("getTagsByUser", user, Tag.class, null);
+	public List<Tag> getTagsByUser(final TagParam param) {
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param);
+		return this.queryForList("getTagsByUser", param, Tag.class, null);
 	} 
 
 	/**
 	 * Get all tags of a given group
 	 */
-	public List<Tag> getTagsByGroup(final UserParam user) {
-		DatabaseUtils.prepareGetTagForGroup(this.generalDb, user);
-		return this.queryForList("getTagsByGroup", user, Tag.class, null);
+	public List<Tag> getTagsByGroup(final TagParam param) {
+		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param);
+		return this.queryForList("getTagsByGroup", param, Tag.class, null);
 	}
 
 	/**
 	 * Get all tags of a given regular expression 
 	 */
-	public List<Tag> getTagsByExpression(final UserParam user) {
-		return this.queryForList("getTagsByExpression", user, Tag.class, null);
+	public List<Tag> getTagsByExpression(final TagParam param) {
+		return this.queryForList("getTagsByExpression", param, Tag.class, null);
 	} 
 
-	public List<Tag> getTagsViewable(final UserParam user) {
-		return this.queryForList("getTagsViewable", user, Tag.class, null);
+	public List<Tag> getTagsViewable(final TagParam param) {
+		return this.queryForList("getTagsViewable", param, Tag.class, null);
 	} 
 
 	public List<Tag> getTags(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end) {

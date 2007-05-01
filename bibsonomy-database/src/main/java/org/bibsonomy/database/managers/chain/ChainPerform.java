@@ -17,5 +17,4 @@ public interface ChainPerform {
 	 * Returns a list of posts.
 	 */
 	public List<Post<? extends Resource>> perform(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end);
-
 }

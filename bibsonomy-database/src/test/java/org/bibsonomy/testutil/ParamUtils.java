@@ -26,6 +26,7 @@ public class ParamUtils {
 		param.setGroupId(3);
 		param.setUserName("hotho");
 		param.setRequestedUserName("stumme");
+		param.setRequestedGroupName("kde");
 		// param.setCaseSensitiveTagNames(true);
 		param.addTagName("community");
 	}
@@ -87,12 +88,9 @@ public class ParamUtils {
 	 */
 	public static TagParam getDefaultTagParam() {
 		final TagParam param = new TagParam();
-		param.setOffset(0);
-		param.setLimit(200);
-		param.setCount(100);
+		setDefaults(param);
 		param.setId(5218);
-		param.setGroupType(ConstantID.GROUP_PUBLIC);
-		param.setUserName("grahl");
+		param.setCount(100);
 		return param;
 	}
 
@@ -101,7 +99,7 @@ public class ParamUtils {
 	 */
 	public static GroupParam getDefaultGroupParam() {
 		final GroupParam param = new GroupParam();
-		param.setRequestedGroupName("kde");
+		setDefaults(param);
 		return param;
 	}
 }
