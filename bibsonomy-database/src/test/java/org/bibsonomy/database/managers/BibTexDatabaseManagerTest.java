@@ -7,8 +7,8 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.Test;
 
@@ -165,7 +165,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getPosts() {
-		final List<Post<? extends Resource>> posts = this.bibTexDb.getPosts("jaeschke", GroupingEntity.USER, "jaeschke", null, null, false, false, 0, 19, false);
+		final List<Post<BibTex>> posts = this.bibTexDb.getPosts("jaeschke", GroupingEntity.USER, "jaeschke", null, null, false, false, 0, 19, false);
 		assertEquals(19, posts.size());
 	}
 
