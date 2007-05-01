@@ -51,7 +51,7 @@ public class PutPostStrategy extends Strategy
    {
       try
       {
-         Post post = context.getRenderer().parsePost( new InputStreamReader( request.getInputStream() ) );
+         Post<?> post = context.getRenderer().parsePost( new InputStreamReader( request.getInputStream() ) );
          // ensure using the right resource... 
          // The 'if' is correct, because if one changes an existing post, 
          // neither the client nor the REST API will calculate the new hash - 
@@ -78,7 +78,10 @@ public class PutPostStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.7  2007-04-15 11:05:07  mbork
+ * Revision 1.8  2007-05-01 22:28:47  jillig
+ * ->more type-safety with class as resourcetype
+ *
+ * Revision 1.7  2007/04/15 11:05:07  mbork
  * changed method signature to use a more general Writer
  *
  * Revision 1.6  2007/03/17 20:44:00  mbork

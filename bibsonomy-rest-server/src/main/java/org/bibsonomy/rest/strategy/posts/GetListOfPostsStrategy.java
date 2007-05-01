@@ -6,7 +6,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.ResourceType;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -49,7 +48,7 @@ public class GetListOfPostsStrategy extends Strategy
 		int start = context.getIntAttribute( "start", 0 );
 		int end = context.getIntAttribute( "end", 19 );
 		
-		ResourceType resourceType = ResourceType.getResourceType( context.getStringAttribute( "resourcetype", "all" ) );
+		Class<? extends Resource> resourceType = Resource.getResourceType( context.getStringAttribute( "resourcetype", "all" ) );
 		
 		String hash = context.getStringAttribute( "resource", null );
 		
@@ -59,8 +58,8 @@ public class GetListOfPostsStrategy extends Strategy
 		{
 			groupingValue = context.getStringAttribute( grouping.toString().toLowerCase(), null );
 		}
-		
-      List<Post<? extends Resource>> posts = context.getLogic().getPosts( context.getAuthUserName(), resourceType, grouping,
+
+		List<? extends Post<? extends Resource>> posts = context.getLogic().getPosts( context.getAuthUserName(), resourceType, grouping,
             groupingValue, context.getTags( "tags" ), hash, false, false, start, end );
       ViewModel viewModel = new ViewModel();
       if( posts.size() < end + 1 )
@@ -71,7 +70,7 @@ public class GetListOfPostsStrategy extends Strategy
       {
          String next = RestProperties.getInstance().getApiUrl() + RestProperties.getInstance().getPostsUrl() + "?start=" + String.valueOf( end + 1 ) + "&end="
          + String.valueOf( end + 10 );
-         if( resourceType != ResourceType.ALL )
+         if( resourceType != Resource.class )
          {
             next += "&resourcetype=" + resourceType.toString().toLowerCase();
          }
@@ -110,7 +109,10 @@ public class GetListOfPostsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.8  2007-04-15 11:05:07  mbork
+ * Revision 1.9  2007-05-01 22:28:01  jillig
+ * ->more type-safety with class as resourcetype
+ *
+ * Revision 1.8  2007/04/15 11:05:07  mbork
  * changed method signature to use a more general Writer
  *
  * Revision 1.7  2007/02/21 14:08:35  mbork

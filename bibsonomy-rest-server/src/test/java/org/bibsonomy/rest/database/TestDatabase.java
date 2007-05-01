@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.ResourceType;
 import org.bibsonomy.database.LogicInterface;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -158,7 +157,7 @@ public class TestDatabase implements LogicInterface
 	/**
 	 * note: popular and added are not considered
 	 */
-	public List<Post<? extends Resource>> getPosts( String authUser, ResourceType resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end )
+	public <T extends Resource> List<Post<T>> getPosts( String authUser, Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end )
 	{
 		List<Post<? extends Resource>> posts = new LinkedList<Post<? extends Resource>>();
 		// do grouping stuff
@@ -186,38 +185,37 @@ public class TestDatabase implements LogicInterface
 			break;
 		}
 		// check resourceType
-		switch( resourceType )
-		{
-		case BOOKMARK:
+		if (resourceType == Bookmark.class) {
 			for( Iterator<Post<? extends Resource>> it = posts.iterator(); it.hasNext(); )
 			{
 				if( !( ( (Post<? extends Resource>)it.next() ).getResource() instanceof Bookmark ) ) it.remove();
 			}
-			break;
-		case BIBTEX:
+		} else if (resourceType == BibTex.class) {
 			for( Iterator<Post<? extends Resource>> it = posts.iterator(); it.hasNext(); )
 			{
 				if( !( ( (Post<? extends Resource>)it.next() ).getResource() instanceof BibTex ) ) it.remove();
 			}
-			break;
-		default: // ALL
-			break;
+		} else {
+			// ALL
 		}
+		// now this cast is ok
+		@SuppressWarnings("unchecked")
+		List<Post<T>> rVal = (List<Post<T>>) ((List) posts);
 		// check hash
 		if( hash != null )
 		{
-			for( Iterator<Post<? extends Resource>> it = posts.iterator(); it.hasNext(); )
+			for( Iterator<Post<T>> it = rVal.iterator(); it.hasNext(); )
 			{
-				if( !( (Post<? extends Resource>)it.next() ).getResource().getInterHash().equals( hash ) ) it.remove();
+				if( !( (Post<T>)it.next() ).getResource().getInterHash().equals( hash ) ) it.remove();
 			}
 		}
 		// do tag filtering
       if( tags.size() > 0 )
       {
-   		for( Iterator<Post<? extends Resource>> it = posts.iterator(); it.hasNext(); )
+   		for( Iterator<Post<T>> it = rVal.iterator(); it.hasNext(); )
    		{
    			boolean drin = false;
-   			for( Tag tag: ( (Post<? extends Resource>)it.next() ).getTags() )
+   			for( Tag tag: ( (Post<T>)it.next() ).getTags() )
    			{
    				for( String searchTag: tags )
    				{
@@ -232,7 +230,7 @@ public class TestDatabase implements LogicInterface
    			if( !drin ) it.remove();
          }
 		}
-		return posts;
+		return rVal;
 	}
 	
 	/**
@@ -746,7 +744,10 @@ public class TestDatabase implements LogicInterface
 
 /*
  * $Log$
- * Revision 1.3  2007-04-19 19:42:46  mbork
+ * Revision 1.4  2007-05-01 22:28:47  jillig
+ * ->more type-safety with class as resourcetype
+ *
+ * Revision 1.3  2007/04/19 19:42:46  mbork
  * added the apikey-mechanism to the rest api and added a method to the LogicInterface to validate it.
  *
  * Revision 1.2  2007/04/15 11:05:39  mbork
