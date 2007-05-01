@@ -13,6 +13,16 @@
 		<artifactId>bibsonomy</artifactId>
 		<version>2.0.1-SNAPSHOT</version>
 	</parent>
+	<dependencyManagement>
+		<dependencies>
+			<!-- Overwrites global dependency on JUnit -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.3.1</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	<dependencies>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
@@ -43,6 +53,28 @@
 		<dependency>
 			<groupId>de.innofinity</groupId>
 			<artifactId>dbcommands</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-configuration</groupId>
+			<artifactId>commons-configuration</artifactId>
+			<version>1.4</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>
