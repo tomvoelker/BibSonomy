@@ -26,8 +26,6 @@ public abstract class AbstractDatabaseManagerTest {
 	protected BibTexDatabaseManager bibTexDb;
 	/** The database manager for Tags */
 	protected TagDatabaseManager tagDb;
-	/** The chain handler */
-	protected GenericChainHandler chainHandler;
 	/** The database manager for users */
 	protected UserDatabaseManager userDb;
 	/** The database manager for groups */
@@ -46,7 +44,6 @@ public abstract class AbstractDatabaseManagerTest {
 		this.bookmarkDb = BookmarkDatabaseManager.getInstance();
 		this.bibTexDb = BibTexDatabaseManager.getInstance();
 		this.tagDb = TagDatabaseManager.getInstance();
-		this.chainHandler = GenericChainHandler.getInstance();
 		this.userDb = UserDatabaseManager.getInstance();
 		this.groupDb = GroupDatabaseManager.getInstance();
 		this.resetParameters();
@@ -68,7 +65,6 @@ public abstract class AbstractDatabaseManagerTest {
 		this.tagDb = null;
 		this.userDb = null;
 		this.groupDb = null;
-		this.chainHandler = null;
 
 		this.bookmarkParam = null;
 		this.bibtexParam = null;
