@@ -4,7 +4,6 @@ import java.io.Reader;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.ResourceType;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -24,7 +23,7 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 	private int start;
 	private int end;
 	private Reader downloadedDocument;
-	private ResourceType resourceType;
+	private Class<? extends Resource> resourceType;
 	private List<String> tags;
 	private GroupingEntity grouping = GroupingEntity.ALL;
 	private String groupingValue;
@@ -81,7 +80,7 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 	 * set the resource type of the resources of the posts.
 	 * @param type the type to set
 	 */
-	public void setResourceType( ResourceType type )
+	public void setResourceType( Class<? extends Resource> type )
 	{
 		this.resourceType = type;
 	}
@@ -131,7 +130,7 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 	{
 		String url = URL_POSTS + "?start=" + start + "&end=" + end;
 		
-		if( resourceType != ResourceType.ALL )
+		if( resourceType != Resource.class )
 		{
 			url += "&resourcetype=" + resourceType.toString().toLowerCase();
 		}
@@ -176,7 +175,10 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 
 /*
  * $Log$
- * Revision 1.6  2007-04-19 16:12:20  mbork
+ * Revision 1.7  2007-05-01 22:26:56  jillig
+ * ->more type-safety with class as resourcetype
+ *
+ * Revision 1.6  2007/04/19 16:12:20  mbork
  * throw BadRequestOrResponseException on InternServerException in REST client
  *
  * Revision 1.5  2007/02/21 14:08:34  mbork

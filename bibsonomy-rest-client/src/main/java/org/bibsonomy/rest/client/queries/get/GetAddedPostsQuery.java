@@ -4,7 +4,6 @@ import java.io.Reader;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.ResourceType;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.client.AbstractQuery;
@@ -23,7 +22,7 @@ public final class GetAddedPostsQuery extends AbstractQuery<List<Post<? extends 
 	private int start;
 	private int end;
 	private Reader downloadedDocument;
-	private ResourceType resourceType;
+	private Class<? extends Resource> resourceType;
 	private GroupingEntity grouping = GroupingEntity.ALL;
 	private String groupingValue;
 
@@ -80,7 +79,7 @@ public final class GetAddedPostsQuery extends AbstractQuery<List<Post<? extends 
 	 * set the resource type of the resources of the posts 
 	 * @param type the type to set
 	 */
-	public void setResourceType( ResourceType type )
+	public void setResourceType( Class<? extends Resource> type )
 	{
 		this.resourceType = type;
 	}
@@ -110,7 +109,7 @@ public final class GetAddedPostsQuery extends AbstractQuery<List<Post<? extends 
 	{
 		String url = URL_POSTS + "/" + URL_POSTS_ADDED + "?start=" + start + "&end=" + end;
 		
-		if( resourceType != ResourceType.ALL )
+		if( resourceType != Resource.class )
 		{
 			url += "&resourcetype=" + resourceType.toString().toLowerCase();
 		}
@@ -134,7 +133,10 @@ public final class GetAddedPostsQuery extends AbstractQuery<List<Post<? extends 
 
 /*
  * $Log$
- * Revision 1.5  2007-02-21 14:08:34  mbork
+ * Revision 1.6  2007-05-01 22:26:56  jillig
+ * ->more type-safety with class as resourcetype
+ *
+ * Revision 1.5  2007/02/21 14:08:34  mbork
  * - included code generation of the schema in the maven2 build-lifecycle
  * - removed circular dependencies among the modules
  * - cleaned up the poms of the modules
