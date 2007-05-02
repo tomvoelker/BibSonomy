@@ -20,22 +20,26 @@
 	</select>
 
 	<select id="getAllTags" resultClass="string" parameterClass="tagParam">
-		SELECT tag_name  FROM tas t GROUP BY t.tag_name LIMIT #limit# OFFSET #offset#
+		SELECT tag_name, count(tag_name) AS tag_count FROM tas t GROUP BY t.tag_name LIMIT #limit# OFFSET #offset#
+	</select>
+	
+	<select id="getTagsByExpression" resultClass="string" parameterClass="tagParam">
+		SELECT * FROM tags WHERE tag_name REGEXP #'regex'# LIMIT #limit# OFFSET #offset#
 	</select>
 
  	<select id="getTagsViewable" resultClass="string" parameterClass="tagParam">
-		SELECT tag_name FROM tas t
+		SELECT tag_name, count(tag_name) AS tag_count FROM tas t
 		WHERE t.group = #groupType#
 		GROUP BY t.tag_name LIMIT #limit# OFFSET #offset#
 	</select>
-
+	
 	<select id="getTagsByUser" resultClass="string" parameterClass="tagParam">
-		SELECT tag_name FROM tas t WHERE t.user_name = #requestedUserName#
+		SELECT tag_name, count(tag_name) AS tag_count FROM tas t WHERE t.user_name = #requestedUserName#
 		<include refid="getTagForUser"/> GROUP BY t.tag_name LIMIT #limit# OFFSET #offset#
 	</select>
 
 	<select id="getTagsByGroup" resultClass="string" parameterClass="tagParam">
-		SELECT tag_name FROM 
+		SELECT tag_name, count(tag_name) AS tag_count FROM 
 		((SELECT tag_name
 		  FROM tas t, groups g
 		  WHERE g.group = #groupId# AND g.user_name=t.user_name
