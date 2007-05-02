@@ -24,7 +24,7 @@
 	</select>
 	
 	<select id="getTagsByExpression" resultClass="string" parameterClass="tagParam">
-		SELECT * FROM tags WHERE tag_name REGEXP #'regex'# LIMIT #limit# OFFSET #offset#
+		SELECT * FROM tags WHERE tag_name REGEXP 'regex' LIMIT #limit# OFFSET #offset#
 	</select>
 
  	<select id="getTagsViewable" resultClass="string" parameterClass="tagParam">
