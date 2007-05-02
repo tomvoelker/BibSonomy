@@ -74,7 +74,7 @@
 			<groupId>commons-configuration</groupId>
 			<artifactId>commons-configuration</artifactId>
 			<version>1.4</version>
-			<scope>test</scope>
+			<!-- why doesn't this work? <scope>test</scope> -->
 		</dependency>
 	</dependencies>
 </project>
