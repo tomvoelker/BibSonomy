@@ -3,7 +3,7 @@ package org.bibsonomy.database.params;
 public class UserParam extends GenericParam {
 
 	private String groupingName;
-	private String regex;
+	
 
 	public String getGroupingName() {
 		return this.groupingName;
@@ -13,11 +13,5 @@ public class UserParam extends GenericParam {
 		this.groupingName = groupingName;
 	}
 
-	public String getRegex() {
-		return this.regex;
-	}
-
-	public void setRegex(String regex) {
-		this.regex = regex;
-	}
+	
 }

@@ -15,7 +15,18 @@ public class TagParam extends GenericParam {
 	private List<Tag> superTags;
 	private List<Tag> subTags;
 	private List<Post<? extends Resource>> posts;
+	private String regex;
+	
+	
+	public String getRegex() {
+		return this.regex;
+	}
 
+	public void setRegex(String regex) {
+		this.regex = regex;
+	}
+	
+	
 	public int getCount() {
 		return this.count;
 	}
