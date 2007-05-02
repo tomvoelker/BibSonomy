@@ -90,6 +90,7 @@ public class ParamUtils {
 		final TagParam param = new TagParam();
 		setDefaults(param);
 		param.setId(5218);
+		param.setRegex("web");
 		param.setCount(100);
 		return param;
 	}

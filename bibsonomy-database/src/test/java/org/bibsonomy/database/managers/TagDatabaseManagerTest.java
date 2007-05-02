@@ -51,10 +51,11 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/*
-	 * TODO not implemented
+	 * TODO implemented, but further restriction have to add!!
 	 */
-	/*
-	 * @Test public void getTagsByExpression() { this.tagDb.
-	 * getTagsByExpression(this.tagParam); }
-	 */
+	
+	@Test
+	 public void getTagsByExpression() { this.tagDb.
+	 getTagsByExpression(this.tagParam); }
+	 
 }
