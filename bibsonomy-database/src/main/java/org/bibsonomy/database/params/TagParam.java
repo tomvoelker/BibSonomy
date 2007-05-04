@@ -12,7 +12,7 @@ public class TagParam extends GenericParam {
 	private String stem;
 	private int count;
 	private int usercount;
-	private Tag superTags;
+	private List<Tag> superTags;
 	private List<Tag> subTags;
 	private List<Post<? extends Resource>> posts;
 	private String regex;
@@ -67,11 +67,11 @@ public class TagParam extends GenericParam {
 		this.subTags = subTags;
 	}
 
-	public Tag getSuperTags() {
+	public List<Tag> getSuperTags() {
 		return this.superTags;
 	}
 
-	public void setSuperTags(Tag superTags) {
+	public void setSuperTags(List<Tag> superTags) {
 		this.superTags = superTags;
 	}
 
