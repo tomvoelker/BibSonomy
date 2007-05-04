@@ -255,13 +255,13 @@
 		INSERT INTO bookmark (content_id, book_url_hash, book_description as title, book_extended as description, `group`, date, user_name)
 		VALUES (#requestedContentId#,#hash#,#resource.title#,#description#,#groupId#,#date#,#userName#)
 	</insert> 
-<!--
+
 	<insert id="insertBookmarkLog" parameterClass="bookmarkParam">
 	    INSERT INTO log_bookmark (content_id,book_url_hash,book_description as title,book_extended as description,`group`,date,user_name)
 		SELECT content_id,book_url_hash,book_description as title,book_extended as description,`group`,date,user_name
 		FROM bookmark WHERE content_id = #requestedContentId#
 	</insert>
--->
+
     <insert id="insertBookmarkInc" parameterClass="bookmarkParam">
 		INSERT INTO urls (book_url_hash,book_url,book_url_ctr) VALUES (#hash#,#url#,1) ON DUPLICATE KEY UPDATE book_url_ctr=book_url_ctr+1
 	</insert>
