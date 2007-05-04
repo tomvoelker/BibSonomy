@@ -13,7 +13,7 @@ public class Tag {
 	private String stem; // ? what's this
 	private int count; // = globalcount ?
 	private int usercount;
-	private Tag superTags;
+	private List<Tag> superTags;
 	private List<Tag> subTags;
 	private List<Post<? extends Resource>> posts;
 	/*
@@ -42,14 +42,14 @@ public class Tag {
 		this.subTags = subTags;
 	}
 
-	public Tag getSuperTags() {
+	public List<Tag> getSuperTags() {
 		if (this.subTags == null) {
 			this.subTags = new LinkedList<Tag>();
 		}
 		return this.superTags;
 	}
 
-	public void setSuperTags(Tag superTags) {
+	public void setSuperTags(List<Tag> superTags) {
 		this.superTags = superTags;
 	}
 
