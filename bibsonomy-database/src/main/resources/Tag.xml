@@ -23,8 +23,9 @@
 		SELECT tag_name, count(tag_name) AS tag_count FROM tas t GROUP BY t.tag_name LIMIT #limit# OFFSET #offset#
 	</select>
 	
+	<!-- TODO to adapted-->
 	<select id="getTagsByExpression" resultClass="string" parameterClass="tagParam">
-		SELECT * FROM tags WHERE tag_name REGEXP 'regex' LIMIT #limit# OFFSET #offset#
+		SELECT * FROM tags WHERE tag_name REGEXP '^regex' LIMIT #limit# OFFSET #offset#
 	</select>
 
  	<select id="getTagsViewable" resultClass="string" parameterClass="tagParam">
