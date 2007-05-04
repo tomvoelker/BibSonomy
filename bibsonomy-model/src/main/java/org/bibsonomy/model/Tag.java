@@ -13,15 +13,12 @@ public class Tag {
 	private String stem; // ? what's this
 	private int count; // = globalcount ?
 	private int usercount;
-	private List<Tag> superTags;
+	private Tag superTags;
 	private List<Tag> subTags;
 	private List<Post<? extends Resource>> posts;
 	/*
 	 * TODO subtags and supertags of a single tag
 	 */
-	
-	private List<Tag> supertags;
-	private List<Tag> subtags;
 
 	public List<Post<? extends Resource>> getPosts() {
 		if (this.posts == null) {
@@ -45,14 +42,14 @@ public class Tag {
 		this.subTags = subTags;
 	}
 
-	public List<Tag> getSuperTags() {
+	public Tag getSuperTags() {
 		if (this.subTags == null) {
 			this.subTags = new LinkedList<Tag>();
 		}
 		return this.superTags;
 	}
 
-	public void setSuperTags(List<Tag> superTags) {
+	public void setSuperTags(Tag superTags) {
 		this.superTags = superTags;
 	}
 
