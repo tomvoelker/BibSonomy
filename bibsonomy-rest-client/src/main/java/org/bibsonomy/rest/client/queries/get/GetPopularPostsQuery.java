@@ -109,7 +109,7 @@ public final class GetPopularPostsQuery extends AbstractQuery<List<Post<? extend
 		
 		if( resourceType != Resource.class )
 		{
-			url += "&resourcetype=" + resourceType.toString().toLowerCase();
+			url += "&resourcetype=" + Resource.toString( resourceType ).toLowerCase();
 		}
 		
 		switch( grouping )
@@ -131,7 +131,10 @@ public final class GetPopularPostsQuery extends AbstractQuery<List<Post<? extend
 
 /*
  * $Log$
- * Revision 1.6  2007-05-01 22:26:56  jillig
+ * Revision 1.7  2007-05-05 20:40:36  mbork
+ * fixed a bug caused by the removal of the ResourceType enum which was not covered by a test
+ *
+ * Revision 1.6  2007/05/01 22:26:56  jillig
  * ->more type-safety with class as resourcetype
  *
  * Revision 1.5  2007/02/21 14:08:34  mbork

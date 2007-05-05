@@ -71,7 +71,7 @@ public class GetNewPostsStrategy extends Strategy
          + String.valueOf( end + 1 ) + "&end=" + String.valueOf( end + 10 );
          if( resourceType != Resource.class )
          {
-            next += "&resourcetype=" + resourceType.toString().toLowerCase();
+            next += "&resourcetype=" + Resource.toString( resourceType ).toLowerCase();
          }
          if( grouping != GroupingEntity.ALL && groupingValue != null )
          {
@@ -99,7 +99,10 @@ public class GetNewPostsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.8  2007-05-01 22:28:01  jillig
+ * Revision 1.9  2007-05-05 20:40:36  mbork
+ * fixed a bug caused by the removal of the ResourceType enum which was not covered by a test
+ *
+ * Revision 1.8  2007/05/01 22:28:01  jillig
  * ->more type-safety with class as resourcetype
  *
  * Revision 1.7  2007/04/15 11:05:07  mbork
