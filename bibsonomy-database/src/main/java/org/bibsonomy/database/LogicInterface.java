@@ -219,7 +219,7 @@ public interface LogicInterface
     * @param post the post to be postet
     * @param update true if its an existing post (identified by its resource's intrahash), false if its a new post
     */
-   public abstract void storePost( String userName, Post<? extends Resource> post, boolean update );
+   public abstract <T extends Resource> void storePost( String userName, Post<T> post);
 
    /**
     * adds/ updates a group in the database.
