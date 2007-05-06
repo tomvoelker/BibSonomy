@@ -45,7 +45,8 @@ public enum ConstantID {
 	SIM_HASH2(2),
 	SIM_HASH3(3),
 	SIM_HASH(SIM_HASH1),
-	INTRA_HASH(SIM_HASH0),
+	INTRA_HASH(SIM_HASH2),  // TODO: check if this is the right hashing method and if so remove this comment
+	INTER_HASH(SIM_HASH),  // TODO: check if this is the right hashing method and if so remove this comment
 
 	/* Spammer ids */
 	SPAMMER_TRUE(1),
