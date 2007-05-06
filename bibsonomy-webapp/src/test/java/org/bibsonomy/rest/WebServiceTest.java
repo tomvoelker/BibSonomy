@@ -1,4 +1,5 @@
 package org.bibsonomy.rest;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -22,6 +23,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Blackbox tests for the REST-API.
+ *
+ * @author Christian Schenk
+ * @version $Id$
+ */
 public class WebServiceTest {
 
 	private HttpClient client;
