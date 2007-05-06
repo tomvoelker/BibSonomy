@@ -5,6 +5,7 @@ import java.util.List;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
+import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.util.ExceptionUtils;
 
 /**
@@ -32,9 +33,9 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 *            Database-Properties used: userName, requestedUserName
 	 * @return true if the users are friends, false otherwise
 	 */
-	public Boolean isFriendOf(final GenericParam param) {
+	public Boolean isFriendOf(final GenericParam param, final Transaction session) {
 		if (param.getUserName() == null || param.getRequestedUserName() == null) return false;
-		return this.queryForObject("isFriendOf", param, Boolean.class, null);
+		return this.queryForObject("isFriendOf", param, Boolean.class, session);
 	}
 
 	/**
@@ -46,10 +47,10 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 *            Database-Properties used: requestedUserName
 	 * @return true if the user is a spammer, false otherwise
 	 */
-	public Boolean isSpammer(final GenericParam param) {
+	public Boolean isSpammer(final GenericParam param, final Transaction session) {
 		// TODO not tested
 		if (param.getRequestedUserName() == null) return false;
-		return this.queryForObject("isSpammer", param, Boolean.class, null);
+		return this.queryForObject("isSpammer", param, Boolean.class, session);
 	}
 
 	/**
@@ -59,8 +60,8 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 *            Database-Properties used: userName
 	 * @return A list of groupids
 	 */
-	public List<Integer> getGroupsForUser(final GenericParam param) {
-		return this.queryForList("getGroupsForUser", param, Integer.class, null);
+	public List<Integer> getGroupsForUser(final GenericParam param, final Transaction session) {
+		return this.queryForList("getGroupsForUser", param, Integer.class, session);
 	}
 
 	/**
@@ -70,9 +71,9 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 *            Database-Properties used: requestedGroupName
 	 * @return groupid of group, ConstantID.GROUP_INVALID otherwise
 	 */
-	public Integer getGroupIdByGroupName(final GenericParam param) {
+	public Integer getGroupIdByGroupName(final GenericParam param, final Transaction session) {
 		param.setUserName(null);
-		return this.getGroupIdByGroupNameAndUserName(param);
+		return this.getGroupIdByGroupNameAndUserName(param, session);
 	}
 
 	/**
@@ -82,11 +83,11 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 *            Database-Properties used: requestedGroupName, userName
 	 * @return groupid if user is in group, ConstantID.GROUP_INVALID otherwise
 	 */
-	public Integer getGroupIdByGroupNameAndUserName(final GenericParam param) {
+	public Integer getGroupIdByGroupNameAndUserName(final GenericParam param, final Transaction session) {
 		if (param.getRequestedGroupName() == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "requestedGroupName is null");
 		}
-		final Integer rVal = this.queryForObject("getGroupIdByGroupNameAndUserName", param, Integer.class, null);
+		final Integer rVal = this.queryForObject("getGroupIdByGroupNameAndUserName", param, Integer.class, session);
 		if (rVal == null) return ConstantID.GROUP_INVALID.getId();
 		return rVal;
 	}
@@ -95,7 +96,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 * Get a current ContentID for setting a bookmark update the current
 	 * ContendID for bookmark and bibtex
 	 */
-	public Integer getNewContentId(final GenericParam param) {
-		return this.queryForObject("getNewContentId", param, Integer.class, null);
+	public Integer getNewContentId(final GenericParam param, final Transaction session) {
+		return this.queryForObject("getNewContentId", param, Integer.class, session);
 	}
 }
