@@ -1,16 +1,14 @@
 package org.bibsonomy.database.managers;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChain;
-import org.bibsonomy.database.managers.observer.DatabaseLogger;
+/*import org.bibsonomy.database.managers.observer.DatabaseLogger;
 import org.bibsonomy.database.managers.observer.PostStoreObserver;
-import org.bibsonomy.database.managers.observer.TagDatabaseUpdater;
+import org.bibsonomy.database.managers.observer.TagDatabaseUpdater;*/
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.database.util.Transaction;
