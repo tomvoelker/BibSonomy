@@ -15,16 +15,16 @@ import org.bibsonomy.model.Resource;
  */
 public interface CrudableContent<T extends Resource> {
 	// read
-	public List<Post<T>> getPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, boolean continuous, Transaction transaction);
+	public List<Post<T>> getPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, boolean continuous, Transaction session);
 
 	// read
-	public Post<T> getPostDetails(String authUser, String resourceHash, String userName, Transaction transaction);
+	public Post<T> getPostDetails(String authUser, String resourceHash, String userName, Transaction session);
 
 	// delete
 	// FIXME why do we return a boolean here? error checking?!?
-	public boolean deletePost(String userName, String resourceHash, Transaction transaction);
+	public boolean deletePost(String userName, String resourceHash, Transaction session);
 
 	// create, update
 	// FIXME why do we return a boolean here? error checking?!?
-	public boolean storePost(String userName, Post<T> post, String oldHash, Transaction transaction);
+	public boolean storePost(String userName, Post<T> post, String oldHash, Transaction session);
 }

@@ -24,7 +24,7 @@ public class GetBibtexForUser extends BibTexChainElement {
 	 * 
 	 */
 	@Override
-	protected List<Post<BibTex>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction transaction) {
+	protected List<Post<BibTex>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction session) {
 		final BibTexParam param = new BibTexParam();
 		param.setRequestedUserName(groupingName);
 		param.setUserName(authUser);
@@ -32,8 +32,8 @@ public class GetBibtexForUser extends BibTexChainElement {
 		int limit = end - start;
 		param.setLimit(limit);
 
-		param.setGroups(generalDb.getGroupsForUser(param, transaction));
-		List<Post<BibTex>> posts = db.getBibTexForUser(param, transaction);
+		param.setGroups(generalDb.getGroupsForUser(param, session));
+		List<Post<BibTex>> posts = db.getBibTexForUser(param, session);
 		if (posts.size() != 0) {
 			System.out.println("GetBibtexForUser");
 		}

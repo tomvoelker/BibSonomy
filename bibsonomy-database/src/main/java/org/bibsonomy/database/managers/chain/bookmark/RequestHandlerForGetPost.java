@@ -4,7 +4,8 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
 /**
- * @author mgr
+ * @author Miranda Grahl
+ * @version $Id$
  */
 public abstract class RequestHandlerForGetPost {
 

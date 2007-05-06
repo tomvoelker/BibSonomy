@@ -24,12 +24,12 @@ public class GetTagsByExpression extends TagChainElement {
 	 * regex: given
 	 */
 	@Override
-	protected List<Tag> handle(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end, final Transaction transaction) {
+	protected List<Tag> handle(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end, final Transaction session) {
 		final TagParam param = new TagParam();
 		param.setOffset(start);
 		int limit = end - start;
 		param.setLimit(limit);
-		List<Tag> tags = db.getTagsByExpression(param, transaction);
+		List<Tag> tags = db.getTagsByExpression(param, session);
 		if (tags.size() != 0) {
 			System.out.println("GetTagsByExpression");
 		}

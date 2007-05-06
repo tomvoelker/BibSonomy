@@ -11,7 +11,8 @@ import org.bibsonomy.model.Resource;
 /**
  * Represents one element in the chain of responsibility.
  * 
- * @author mgr
+ * @author Miranda Grahl
+ * @version $Id$
  */
 public abstract class ChainElement<T extends Resource> implements ChainPerform<T> {
 
@@ -31,12 +32,12 @@ public abstract class ChainElement<T extends Resource> implements ChainPerform<T
 		this.next = nextElement;
 	}
 
-	public final List<Post<T>> perform(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction transaction) {
+	public final List<Post<T>> perform(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction session) {
 		if (this.canHandle(authUser, grouping, groupingName, tags, hash, popular, added, start, end)) {
-			return this.handle(authUser, grouping, groupingName, tags, hash, popular, added, start, end, transaction);
+			return this.handle(authUser, grouping, groupingName, tags, hash, popular, added, start, end, session);
 		} else {
 			if (this.next != null) {
-				return this.next.perform(authUser, grouping, groupingName, tags, hash, popular, added, start, end, transaction);
+				return this.next.perform(authUser, grouping, groupingName, tags, hash, popular, added, start, end, session);
 			}
 		}
 		// FIXME nobody can handle this -> throw an exception
@@ -46,7 +47,7 @@ public abstract class ChainElement<T extends Resource> implements ChainPerform<T
 	/**
 	 * Handles the request.
 	 */
-	protected abstract List<Post<T>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction transaction);
+	protected abstract List<Post<T>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, Transaction session);
 
 	/**
 	 * Returns true if the request can be handled, otherwise false.

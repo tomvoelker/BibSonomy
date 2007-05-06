@@ -25,7 +25,7 @@ public class GetBibtexForGroupAndTag extends BibTexChainElement {
 	 * 
 	 */
 	@Override
-	protected List<Post<BibTex>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction transaction) {
+	protected List<Post<BibTex>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction session) {
 
 		final BibTexParam param = new BibTexParam();
 		param.setRequestedGroupName(groupingName);
@@ -38,10 +38,10 @@ public class GetBibtexForGroupAndTag extends BibTexChainElement {
 			param.addTagName(tag);
 		}
 
-		param.setGroupId(generalDb.getGroupIdByGroupName(param, transaction));
-		param.setGroups(generalDb.getGroupsForUser(param, transaction));
+		param.setGroupId(generalDb.getGroupIdByGroupName(param, session));
+		param.setGroups(generalDb.getGroupsForUser(param, session));
 
-		List<Post<BibTex>> posts = db.getBibTexForGroupByTag(param, transaction);
+		List<Post<BibTex>> posts = db.getBibTexForGroupByTag(param, session);
 		if (posts.size() != 0) {
 			System.out.println("GetBibtexForGroupAndTag");
 		}

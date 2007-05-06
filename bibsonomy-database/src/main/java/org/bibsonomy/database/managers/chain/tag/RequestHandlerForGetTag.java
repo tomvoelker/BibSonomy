@@ -4,9 +4,9 @@ import java.util.List;
 import org.bibsonomy.model.Tag;
 
 /**
- * @author mgr
+ * @author Miranda Grahl
+ * @version $Id$
  */
-
 public abstract class RequestHandlerForGetTag{
 
 	private RequestHandlerForGetTag next;

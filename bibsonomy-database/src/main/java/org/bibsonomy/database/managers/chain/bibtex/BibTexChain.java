@@ -18,7 +18,8 @@ import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexViewable;
 import org.bibsonomy.model.BibTex;
 
 /**
- * @author mgr
+ * @author Miranda Grahl
+ * @version $Id$
  */
 public class BibTexChain implements FirstChainElement<BibTex> {
 

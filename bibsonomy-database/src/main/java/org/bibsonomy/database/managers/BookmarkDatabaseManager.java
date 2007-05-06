@@ -21,7 +21,7 @@ import org.bibsonomy.model.Tag;
  * Used to CRUD bookmarks from the database.
  * 
  * @author Christian Schenk
- * @author mgr
+ * @author Miranda Grahl
  * @version $Id$
  */
 public class BookmarkDatabaseManager extends AbstractDatabaseManager implements CrudableContent<Bookmark> {
@@ -41,8 +41,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 
 	// FIXME return value needs to be changed to org.bibsonomy.model.Post
 	@SuppressWarnings("unchecked")
-	protected List<Post<Bookmark>> bookmarkList(final String query, final BookmarkParam param, final boolean test, final Transaction transaction) {
-		return (List<Post<Bookmark>>) queryForList(query, param, transaction);
+	protected List<Post<Bookmark>> bookmarkList(final String query, final BookmarkParam param, final boolean test, final Transaction session) {
+		return (List<Post<Bookmark>>) queryForList(query, param, session);
 	}
 
 	/**
@@ -53,8 +53,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * <em>/viewable/</em> page only posts are shown which are set viewable to
 	 * the given group and which have all of the given tags attached. 
 	 */
-	public List<Post<Bookmark>> getBookmarkByTagNames(final BookmarkParam param, final Transaction transaction) {
-		return this.bookmarkList("getBookmarkByTagNames", param,true, transaction);
+	public List<Post<Bookmark>> getBookmarkByTagNames(final BookmarkParam param, final Transaction session) {
+		return this.bookmarkList("getBookmarkByTagNames", param,true, session);
 	}
 
 	/**
@@ -68,9 +68,9 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * friends or private or other groups, depending upon if userName us allowed
 	 * to see them.
 	 */
-	public List<Post<Bookmark>> getBookmarkByTagNamesForUser(final BookmarkParam param, final Transaction transaction) {
-		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, transaction);
-		return this.bookmarkList("getBookmarkByTagNamesForUser", param, true, transaction);
+	public List<Post<Bookmark>> getBookmarkByTagNamesForUser(final BookmarkParam param, final Transaction session) {
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
+		return this.bookmarkList("getBookmarkByTagNamesForUser", param, true, session);
 	}
 
 	/**
@@ -88,9 +88,9 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * friends or private or other groups, depending upon if userName us allowed
 	 * to see them.
 	 */
-	public List<Post<Bookmark>> getBookmarkByConceptForUser(final BookmarkParam param, final Transaction transaction) {
-		DatabaseUtils.setGroups(this.generalDb, param, transaction);
-		return this.bookmarkList("getBookmarkByConceptForUser", param, true, transaction);
+	public List<Post<Bookmark>> getBookmarkByConceptForUser(final BookmarkParam param, final Transaction session) {
+		DatabaseUtils.setGroups(this.generalDb, param, session);
+		return this.bookmarkList("getBookmarkByConceptForUser", param, true, session);
 	}
 
 	/**
@@ -99,10 +99,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * Prepares queries which show all posts of users which have currUser as
 	 * their friend.
 	 */
-	public List<Post<Bookmark>> getBookmarkByUserFriends(final BookmarkParam param, final Transaction transaction) {
+	public List<Post<Bookmark>> getBookmarkByUserFriends(final BookmarkParam param, final Transaction session) {
 		// groupType must be set to friends
 		param.setGroupType(ConstantID.GROUP_FRIENDS);
-		return this.bookmarkList("getBookmarkByUserFriends", param, true, transaction);
+		return this.bookmarkList("getBookmarkByUserFriends", param, true, session);
 	}
 
 	/**
@@ -110,8 +110,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * page of BibSonomy. These are typically the X last posted entries. Only
 	 * public posts are shown.
 	 */
-	public List<Post<Bookmark>> getBookmarkForHomepage(final BookmarkParam param, final Transaction transaction) {
-		return this.bookmarkList("getBookmarkForHomepage", param, true, transaction);
+	public List<Post<Bookmark>> getBookmarkForHomepage(final BookmarkParam param, final Transaction session) {
+		return this.bookmarkList("getBookmarkForHomepage", param, true, session);
 	}
 
 	/**
@@ -119,23 +119,23 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * <em>/popular</em> page of BibSonomy. The lists are retrieved from two
 	 * separate temporary tables which are filled by an external script.
 	 */
-	public List<Post<Bookmark>> getBookmarkPopular(final BookmarkParam param, final Transaction transaction) {
-		return this.bookmarkList("getBookmarkPopular", param, true, transaction);
+	public List<Post<Bookmark>> getBookmarkPopular(final BookmarkParam param, final Transaction session) {
+		return this.bookmarkList("getBookmarkPopular", param, true, session);
 	}
 
 	/**
 	 * Prepares a query which retrieves all bookmarks which are represented by
 	 * the given hash. Retrieves only public bookmarks!
 	 */
-	public List<Post<Bookmark>> getBookmarkByHash(final BookmarkParam param, final Transaction transaction) {
-		return this.bookmarkList("getBookmarkByHash", param, true, transaction);
+	public List<Post<Bookmark>> getBookmarkByHash(final BookmarkParam param, final Transaction session) {
+		return this.bookmarkList("getBookmarkByHash", param, true, session);
 	}
 
 	/**
 	 * Retrieves the number of bookmarks represented by the given hash.
 	 */
-	public Integer getBookmarkByHashCount(final BookmarkParam param, final Transaction transaction) {
-		return this.queryForObject("getBookmarkByHashCount", param, Integer.class, transaction);
+	public Integer getBookmarkByHashCount(final BookmarkParam param, final Transaction session) {
+		return this.queryForObject("getBookmarkByHashCount", param, Integer.class, session);
 	}
 
 	/**
@@ -143,9 +143,9 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * the given hash) for a given user. Since user name is given, full group
 	 * checking is done, i.e. everbody who may see the bookmark will see it.
 	 */
-	public List<Post<Bookmark>> getBookmarkByHashForUser(final BookmarkParam param, final Transaction transaction) {
-		DatabaseUtils.setGroups(this.generalDb, param, transaction);
-		return this.bookmarkList("getBookmarkByHashForUser", param, true, transaction);
+	public List<Post<Bookmark>> getBookmarkByHashForUser(final BookmarkParam param, final Transaction session) {
+		DatabaseUtils.setGroups(this.generalDb, param, session);
+		return this.bookmarkList("getBookmarkByHashForUser", param, true, session);
 	}
 
 	/**
@@ -161,15 +161,15 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * If requestedUser is given, only (public) posts from the given user are
 	 * searched. Otherwise all (public) posts are searched.
 	 */
-	public List<Post<Bookmark>> getBookmarkSearch(final BookmarkParam param, final Transaction transaction) {
-		return this.bookmarkList("getBookmarkSearch", param, true, transaction);
+	public List<Post<Bookmark>> getBookmarkSearch(final BookmarkParam param, final Transaction session) {
+		return this.bookmarkList("getBookmarkSearch", param, true, session);
 	}
 
 	/**
 	 * Returns the number of bookmarks for a given search.
 	 */
-	public Integer getBookmarkSearchCount(final BookmarkParam param, final Transaction transaction) {
-		return this.queryForObject("getBookmarkSearchCount", param, Integer.class, transaction);
+	public Integer getBookmarkSearchCount(final BookmarkParam param, final Transaction session) {
+		return this.queryForObject("getBookmarkSearchCount", param, Integer.class, session);
 	}
 
 	/**
@@ -177,8 +177,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * 
 	 * Prepares queries to retrieve posts which are set viewable to group.
 	 */
-	public List<Post<Bookmark>> getBookmarkViewable(final BookmarkParam param, final Transaction transaction) {
-		return this.bookmarkList("getBookmarkViewable", param, true, transaction);
+	public List<Post<Bookmark>> getBookmarkViewable(final BookmarkParam param, final Transaction session) {
+		return this.bookmarkList("getBookmarkViewable", param, true, session);
 	}
 
 	/**
@@ -193,9 +193,9 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * http://www.bibsonomy.org/bibtex/1d28c9f535d0f24eadb9d342168836199 page
 	 * 92, formula (9) for formal semantics of this query.
 	 */
-	public List<Post<Bookmark>> getBookmarkForGroup(final BookmarkParam param, final Transaction transaction) {
-		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, transaction);
-		return this.bookmarkList("getBookmarkForGroup", param, true, transaction);
+	public List<Post<Bookmark>> getBookmarkForGroup(final BookmarkParam param, final Transaction session) {
+		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
+		return this.bookmarkList("getBookmarkForGroup", param, true, session);
 	}
 
 	/**
@@ -204,9 +204,9 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * TODO: these are just approximations - users own private/friends bookmarks
 	 * and friends bookmarks are not included (same for publications)
 	 */
-	public Integer getBookmarkForGroupCount(final BookmarkParam param, final Transaction transaction) {
-		DatabaseUtils.setGroups(this.generalDb, param, transaction);
-		return this.queryForObject("getBookmarkForGroupCount", param, Integer.class, transaction);
+	public Integer getBookmarkForGroupCount(final BookmarkParam param, final Transaction session) {
+		DatabaseUtils.setGroups(this.generalDb, param, session);
+		return this.queryForObject("getBookmarkForGroupCount", param, Integer.class, session);
 	}
 
 	/**
@@ -215,9 +215,9 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * Does basically the same as getBookmarkForGroup with the additionaly
 	 * possibility to restrict the tags the posts have to have.
 	 */
-	public List<Post<Bookmark>> getBookmarkForGroupByTag(final BookmarkParam param, final Transaction transaction) {
-		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, transaction);
-		return this.bookmarkList("getBookmarkForGroupByTag", param, true, transaction);
+	public List<Post<Bookmark>> getBookmarkForGroupByTag(final BookmarkParam param, final Transaction session) {
+		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
+		return this.bookmarkList("getBookmarkForGroupByTag", param, true, session);
 	}
 
 	/**
@@ -229,17 +229,17 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * are retrieved, but also friends or private or other groups, depending
 	 * upon if userName is allowed to see them.
 	 */
-	public List<Post<Bookmark>> getBookmarkForUser(final BookmarkParam param, final Transaction transaction) {
-		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, transaction);
-		return this.bookmarkList("getBookmarkForUser", param, true, transaction);
+	public List<Post<Bookmark>> getBookmarkForUser(final BookmarkParam param, final Transaction session) {
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
+		return this.bookmarkList("getBookmarkForUser", param, true, session);
 	}
 
 	/**
 	 * Returns the number of bookmarks for a given user.
 	 */
-	public Integer getBookmarkForUserCount(final BookmarkParam param, final Transaction transaction) {
-		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, transaction);
-		return this.queryForObject("getBookmarkForUserCount", param, Integer.class, transaction);
+	public Integer getBookmarkForUserCount(final BookmarkParam param, final Transaction session) {
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
+		return this.queryForObject("getBookmarkForUserCount", param, Integer.class, session);
 	}
 
 
@@ -247,56 +247,56 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	/**
 	 * This methods  are for setting functions concerning bookmark entries
 	 */
-	  public void insertBookmark(final BookmarkParam bookmark, final Transaction transaction) {
-		this.insert("insertBookmark", bookmark, transaction);
+	  public void insertBookmark(final BookmarkParam bookmark, final Transaction session) {
+		this.insert("insertBookmark", bookmark, session);
 	}
 
-	public void insertBookmarkLog(final BookmarkParam bookmark, final Transaction transaction) {
+	public void insertBookmarkLog(final BookmarkParam bookmark, final Transaction session) {
 		// TODO not tested
-		this.insert("insertBookmarkLog", bookmark, transaction);
+		this.insert("insertBookmarkLog", bookmark, session);
 	}
 
 	// insert counter, hash and url of bookmark
-	public void insertBookmarkInc(final Bookmark param, final Transaction transaction) {
-		this.insert("insertBookmarkInc", param, transaction);
+	public void insertBookmarkInc(final Bookmark param, final Transaction session) {
+		this.insert("insertBookmarkInc", param, session);
 	}
 
-	public void updateBookmarkHashDec(final BookmarkParam param, final Transaction transaction) {
-		this.insert("updateBookmarkHashDec", param, transaction);
+	public void updateBookmarkHashDec(final BookmarkParam param, final Transaction session) {
+		this.insert("updateBookmarkHashDec", param, session);
 	}
 
-	public void updateBookmarkLog(final BookmarkParam param, final Transaction transaction) {
+	public void updateBookmarkLog(final BookmarkParam param, final Transaction session) {
 		// TODO not tested
-		this.insert("updateBookmarkLog", param, transaction);
+		this.insert("updateBookmarkLog", param, session);
 	}
 
-	public void deleteBookmarkByContentId(final BookmarkParam param, final Transaction transaction) {
-		this.insert("deleteBookmarkByContentId", param, transaction);
+	public void deleteBookmarkByContentId(final BookmarkParam param, final Transaction session) {
+		this.insert("deleteBookmarkByContentId", param, session);
 	}
 
-	public Integer getContentIDForBookmark(final BookmarkParam param, final Transaction transaction) {
-		return this.queryForObject("getContentIDForBookmark", param, Integer.class, transaction);
+	public Integer getContentIDForBookmark(final BookmarkParam param, final Transaction session) {
+		return this.queryForObject("getContentIDForBookmark", param, Integer.class, session);
 	}
 
-	public List<Post<Bookmark>> getPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, boolean continuous, final Transaction transaction) {
-		return chain.getFirstElement().perform(authUser, grouping, groupingName, tags, hash, popular, added, start, end, transaction);
+	public List<Post<Bookmark>> getPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, boolean continuous, final Transaction session) {
+		return chain.getFirstElement().perform(authUser, grouping, groupingName, tags, hash, popular, added, start, end, session);
 	}
 
 	
 	
-	public Post<Bookmark> getPostDetails(String authUser, String resourceHash, String userName, final Transaction transaction) {
+	public Post<Bookmark> getPostDetails(String authUser, String resourceHash, String userName, final Transaction session) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public boolean deletePost(String userName, String resourceHash, final Transaction transaction) {
+	public boolean deletePost(String userName, String resourceHash, final Transaction session) {
 		final GetBookmarksByHashForUser get = new GetBookmarksByHashForUser();
 		final BookmarkParam paramDelete = new BookmarkParam();
 		paramDelete.setUserName(userName);
 		paramDelete.setHash(resourceHash);	
 
 		// return a bookmark object for current hash value
-		final List<Post<Bookmark>> storeTemp = get.perform(paramDelete.getUserName(), GroupingEntity.USER, paramDelete.getUserName(), null, paramDelete.getHash(), false, false, 0, 1, transaction);
+		final List<Post<Bookmark>> storeTemp = get.perform(paramDelete.getUserName(), GroupingEntity.USER, paramDelete.getUserName(), null, paramDelete.getHash(), false, false, 0, 1, session);
 		// bookmark DOESN'T EXIST
 		if (storeTemp.size() == 0) return false;
 
@@ -304,18 +304,18 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	    paramDelete.setRequestedContentId(provePost.getContentId());
 
         // counter in urls table is decremented (-1)
-		this.updateBookmarkHashDec(paramDelete, transaction);
+		this.updateBookmarkHashDec(paramDelete, session);
 		// delete the selected bookmark (by given contentId) from current database table
-	    this.deleteBookmarkByContentId(paramDelete, transaction);
+	    this.deleteBookmarkByContentId(paramDelete, session);
 	    // deleting tas
-	    this.tagDb.deleteTas((GenericParam) paramDelete, transaction);
+	    this.tagDb.deleteTas((GenericParam) paramDelete, session);
 
 		return true;
 	}
 
-	// TODO: this method belongs to the logic-layer not database-layer. anyway, i would appreciate a rewrite of this copy`paste mess
+	// TODO: this method belongs to the logic-layer not database-layer. anyway, i would appreciate a rewrite of this copy'n'paste mess
 	@SuppressWarnings("unchecked")
-	public boolean storePost(String userName, Post<Bookmark> post, final String oldIntraHash, final Transaction transaction) {
+	public boolean storePost(String userName, Post<Bookmark> post, final String oldIntraHash, final Transaction session) {
 		/*
     	 * TODO  handling and proving valid post
     	 */
@@ -342,7 +342,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		String userFromUrl = bookmarkParam.getUserName();
 
 		// Start transaction
-		transaction.beginTransaction();
+		session.beginTransaction();
 		try {
 	    /*
 	     *  User would like update an existing bookmark
@@ -362,7 +362,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	    	 */
 	    	List<Post<Bookmark>> storeTemp = null; 
 	    	
-	    	storeTemp=getBookmarksByHashForUser.perform(userFromUrl,GroupingEntity.USER,userFromUrl,null,hashFromUrl,false, false, 0, 1, transaction);
+	    	storeTemp=getBookmarksByHashForUser.perform(userFromUrl,GroupingEntity.USER,userFromUrl,null,hashFromUrl,false, false, 0, 1, session);
         	
 	    	System.out.println("storeTemp.size()= "+storeTemp.size());
 			System.out.println("authUser = " + userFromUrl);
@@ -430,7 +430,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
         			  */
                     
         		     String oldHash=provePost.getResource().getIntraHash();
-        			 deletePost(userName, oldHash, transaction);
+        			 deletePost(userName, oldHash, session);
         			 
         			 /*
         			  * EINFÜGEN
@@ -443,11 +443,11 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	                 bookmarkParam.setIdsType(ConstantID.IDS_CONTENT_ID);
 	            	 System.out.println("paramFromUrlValue.getIdsType" + bookmarkParam.getIdsType());
 	            	 
-   	                 bookmarkParam.setNewContentId(this.generalDb.getNewContentId(bookmarkParam, transaction));
+   	                 bookmarkParam.setNewContentId(this.generalDb.getNewContentId(bookmarkParam, session));
    	                 System.out.println("bekomme aktuellen value/content_id aus ids table: "+ bookmarkParam.getNewContentId());
 
-	            	 this.generalDb.updateIds(bookmarkParam, transaction);
-	            	 post.setContentId(this.generalDb.getNewContentId(bookmarkParam, transaction));
+	            	 this.generalDb.updateIds(bookmarkParam, session);
+	            	 post.setContentId(this.generalDb.getNewContentId(bookmarkParam, session));
 	            	 bookmarkParam.setRequestedContentId(post.getContentId());
 	            	 System.out.println("bookmark content_id: " + bookmarkParam.getRequestedContentId());
 
@@ -472,14 +472,14 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	          	    System.out.println("bookmarkParam tags: " +bookmarkParam.getTags());
 	          	        
 	                   
-	                this.insert("insertBookmark",bookmarkParam, transaction);
+	                this.insert("insertBookmark",bookmarkParam, session);
 	                System.out.println("insert Bookmark into bookmark table");
                         
 	     		   /*
      			    * increment URL counter and insert hash
      			    */
 	                    
-	     			  this.insert("insertBookmarkInc",bookmarkParam, transaction);
+	     			  this.insert("insertBookmarkInc",bookmarkParam, session);
 	     			  System.out.println("zähle URL counter hoch plus hash plus url insert");
      			  
                  
@@ -487,15 +487,15 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	     			  
 	     			 for(Tag tag: tagliste){
 	     				 
-	     				bookmarkParam.setNewContentId(this.generalDb.getNewContentId(bookmarkParam, transaction));
+	     				bookmarkParam.setNewContentId(this.generalDb.getNewContentId(bookmarkParam, session));
 		          	   	System.out.println("currentTasID:" +bookmarkParam.getNewContentId());
 	     				 
-		          	    this.generalDb.updateIds(bookmarkParam, transaction);
-		          	    bookmarkParam.setNewContentId(this.generalDb.getNewContentId(bookmarkParam, transaction));
+		          	    this.generalDb.updateIds(bookmarkParam, session);
+		          	    bookmarkParam.setNewContentId(this.generalDb.getNewContentId(bookmarkParam, session));
 	     				 
 	     				 
 	     				bookmarkParam.setTagName(tag.getName());
-	     				this.insert("insertTas",bookmarkParam, transaction);
+	     				this.insert("insertTas",bookmarkParam, session);
 	     				 
 	     				System.out.println("Tags in BookmarkObject heißen: "+ bookmarkParam.getTagName());
 	     				System.out.println("TAS eingefügt");
@@ -548,7 +548,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
         		     System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 	                 System.out.println("++++++++++++++++++Lösche Objekt mit altem Hash Wert++++++++++++++++++++++++++++++++");
 	                 System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        			 deletePost(userName, oldHash, transaction);
+        			 deletePost(userName, oldHash, session);
         			 System.out.println("Objekt wurde gelöscht");
         			 
         			 /*
@@ -562,12 +562,12 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	                 bookmarkParam.setIdsType(ConstantID.IDS_CONTENT_ID);
 	            	 System.out.println("paramFromUrlValue.getIdsType" + bookmarkParam.getIdsType());
 	            	 bookmarkParam.setHash(newHash);
-   	                 bookmarkParam.setNewContentId(this.generalDb.getNewContentId(bookmarkParam, transaction));
+   	                 bookmarkParam.setNewContentId(this.generalDb.getNewContentId(bookmarkParam, session));
    	                 System.out.println("bekomme aktuellen value/content_id aus ids table: "+ bookmarkParam.getNewContentId());
 	            		
-	            	 this.generalDb.updateIds(bookmarkParam, transaction);
+	            	 this.generalDb.updateIds(bookmarkParam, session);
 	            	 
-	            	 post.setContentId(this.generalDb.getNewContentId(bookmarkParam, transaction));
+	            	 post.setContentId(this.generalDb.getNewContentId(bookmarkParam, session));
 	            	 bookmarkParam.setRequestedContentId(post.getContentId());
 	            	 bookmarkParam.setUrl(((Bookmark)post.getResource()).getUrl());
 	          	  	 bookmarkParam.setIdsType(ConstantID.IDS_TAS_ID);
@@ -589,27 +589,27 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	          	    System.out.println("bookmarkParam tags: " +bookmarkParam.getTags());
 	          	        
 	                   
-	                    this.insert("insertBookmark",bookmarkParam, transaction);
+	                    this.insert("insertBookmark",bookmarkParam, session);
 	                    System.out.println("insert Bookmark into bookmark table");
                         
 	     		   /*
      			    * increment URL counter and insert hash
      			    */
 	                    
-	     			  this.insert("insertBookmarkInc",bookmarkParam, transaction);
+	     			  this.insert("insertBookmarkInc",bookmarkParam, session);
 	     			  System.out.println("zähle URL counter hoch plus hash plus url insert");
 	     			  
 	     			 for(Tag tag: tagliste){
 	     				 
-	     				bookmarkParam.setNewContentId(this.generalDb.getNewContentId(bookmarkParam, transaction));
+	     				bookmarkParam.setNewContentId(this.generalDb.getNewContentId(bookmarkParam, session));
 		          	   	System.out.println("currentTasID:" +bookmarkParam.getNewContentId());
 	     				 
-		          	    this.generalDb.updateIds(bookmarkParam, transaction);
-		          	    bookmarkParam.setNewContentId(this.generalDb.getNewContentId(bookmarkParam, transaction));
+		          	    this.generalDb.updateIds(bookmarkParam, session);
+		          	    bookmarkParam.setNewContentId(this.generalDb.getNewContentId(bookmarkParam, session));
 	     				 
 	     				 
 	     				bookmarkParam.setTagName(tag.getName());
-	     				this.insert("insertTas",bookmarkParam, transaction);
+	     				this.insert("insertTas",bookmarkParam, session);
 	     				 
 	     				System.out.println("Tags in BookmarkObject heißen: "+ bookmarkParam.getTagName());
 	     				System.out.println("TAS eingefügt");
@@ -675,12 +675,12 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	                 bookmarkParam.setIdsType(ConstantID.IDS_CONTENT_ID);
 	            	 System.out.println("bookmarkParam IdsType" + bookmarkParam.getIdsType());
 	            	 
-   	                 bookmarkParam.setNewContentId(this.generalDb.getNewContentId(bookmarkParam, transaction));
+   	                 bookmarkParam.setNewContentId(this.generalDb.getNewContentId(bookmarkParam, session));
    	                 System.out.println("bookmarkParam currentContentIDFromIds"+ bookmarkParam.getNewContentId());
 	            		
-	            	 this.generalDb.updateIds(bookmarkParam, transaction);
+	            	 this.generalDb.updateIds(bookmarkParam, session);
 	            	 
-	            	 post.setContentId(this.generalDb.getNewContentId(bookmarkParam, transaction));
+	            	 post.setContentId(this.generalDb.getNewContentId(bookmarkParam, session));
 	            	 bookmarkParam.setRequestedContentId(post.getContentId());
 
 	            	 bookmarkParam.setUrl(((Bookmark)post.getResource()).getUrl());
@@ -702,27 +702,27 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	          	        System.out.println("bookmarkParam idsType: " + bookmarkParam.getIdsType());
 	          	        
 	                   
-	                    this.insert("insertBookmark",bookmarkParam, transaction);
+	                    this.insert("insertBookmark",bookmarkParam, session);
 	                    System.out.println("insert Bookmark into bookmark table");
                         
 	     		   /*
      			    * increment URL counter and insert hash
      			    */
 	                    
-	     			  this.insert("insertBookmarkInc",bookmarkParam, transaction);
+	     			  this.insert("insertBookmarkInc",bookmarkParam, session);
 	     			  System.out.println("zähle URL counter hoch plus hash plus url insert");
      			  
 	     			 for(Tag tag: tagliste){
 	     				 
-	     				bookmarkParam.setNewContentId(this.generalDb.getNewContentId(bookmarkParam, transaction));
+	     				bookmarkParam.setNewContentId(this.generalDb.getNewContentId(bookmarkParam, session));
 		          	   	System.out.println("currentTasID:" +bookmarkParam.getNewContentId());
 	     				 
-		          	    this.generalDb.updateIds(bookmarkParam, transaction);
-		          	    bookmarkParam.setNewContentId(this.generalDb.getNewContentId(bookmarkParam, transaction));
+		          	    this.generalDb.updateIds(bookmarkParam, session);
+		          	    bookmarkParam.setNewContentId(this.generalDb.getNewContentId(bookmarkParam, session));
 	     				 
 	     				 
 	     				bookmarkParam.setTagName(tag.getName());
-	     				this.insert("insertTas",bookmarkParam, transaction);
+	     				this.insert("insertTas",bookmarkParam, session);
 	     				 
 	     				System.out.println("Tags in BookmarkObject heißen: "+ bookmarkParam.getTagName());
 	     				System.out.println("TAS eingefügt");
@@ -735,9 +735,9 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	    	     } /*end if*/
 	    	
 	    	} /*end else*/
-	    	transaction.commitTransaction();
+	    	session.commitTransaction();
 		} finally {
-			transaction.endTransaction();
+			session.endTransaction();
 		}
 
         return true;

@@ -18,7 +18,8 @@ import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksViewable;
 import org.bibsonomy.model.Bookmark;
 
 /**
- * @author mgr
+ * @author Miranda Grahl
+ * @version $Id$
  */
 public class BookmarkChain implements FirstChainElement<Bookmark> {
 

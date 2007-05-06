@@ -26,7 +26,7 @@ public class GetBibtexPopular extends BibTexChainElement {
 	 * 
 	 */
 	@Override
-	protected List<Post<BibTex>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction transaction) {
+	protected List<Post<BibTex>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction session) {
 		final BibTexParam param = new BibTexParam();
 		param.setOffset(start);
 		int limit = end - start;
@@ -35,7 +35,7 @@ public class GetBibtexPopular extends BibTexChainElement {
 		/**
 		 * retrieve bibtex list with appropriate iBatis statement
 		 */
-		List<Post<BibTex>> posts = db.getBibTexPopular(param, transaction);
+		List<Post<BibTex>> posts = db.getBibTexPopular(param, session);
 		System.out.println("post=" + posts.size() + "in getBibtexPopular");
 		if (posts.size() != 0) {
 			System.out.println("GetBibtexPopular");

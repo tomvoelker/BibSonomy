@@ -25,7 +25,7 @@ public class GetBookmarksByTagNames extends BookmarkChainElement {
 	 * 
 	 */
 	@Override
-	protected List<Post<Bookmark>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction transaction) {
+	protected List<Post<Bookmark>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction session) {
 		final BookmarkParam param = new BookmarkParam();
 		param.setOffset(start);
 		int limit = end - start;
@@ -41,7 +41,7 @@ public class GetBookmarksByTagNames extends BookmarkChainElement {
 		/*
 		 * prove arguments as mentioned above
 		 */
-		List<Post<Bookmark>> posts = db.getBookmarkByTagNames(param, transaction);
+		List<Post<Bookmark>> posts = db.getBookmarkByTagNames(param, session);
 		if (posts.size() != 0) {
 			System.out.println("GetBookmarksByTagNames");
 		}

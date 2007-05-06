@@ -18,6 +18,7 @@ import com.ibatis.sqlmap.client.SqlMapExecutor;
  * casting remains in this class and isn't scattered all over the code.
  * 
  * @author Christian Schenk
+ * @author Jens Illig
  * @version $Id$
  */
 public class AbstractDatabaseManager {
@@ -39,18 +40,18 @@ public class AbstractDatabaseManager {
 	 * Can be used to start a query that retrieves a list of Integers.
 	 * 
 	 * @see intList(final String query, final Object param, final Transaction
-	 *      transaction)
+	 *      session)
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T> List<T> queryForList(final String query, final Object param, final Class<T> type, final Transaction transaction) {
-		return (List<T>) this.queryForAnything(query, param, QueryFor.LIST, transaction);
+	protected <T> List<T> queryForList(final String query, final Object param, final Class<T> type, final Transaction session) {
+		return (List<T>) this.queryForAnything(query, param, QueryFor.LIST, session);
 	}
 
 	/**
 	 * short form of queryForList without Type argument
 	 */
-	protected List queryForList(final String query, final Object param, final Transaction transaction) {
-		return queryForList(query, param, Object.class, transaction);
+	protected List queryForList(final String query, final Object param, final Transaction session) {
+		return queryForList(query, param, Object.class, session);
 	}
 
 	/**
@@ -62,15 +63,15 @@ public class AbstractDatabaseManager {
 	 * cast.
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T> T queryForObject(final String query, final Object param, Class<T> type, final Transaction transaction) {
-		return (T) this.queryForAnything(query, param, QueryFor.OBJECT, transaction);
+	protected <T> T queryForObject(final String query, final Object param, Class<T> type, final Transaction session) {
+		return (T) this.queryForAnything(query, param, QueryFor.OBJECT, session);
 	}
 
 	/**
 	 * @see queryForObject(final String query, final Object param)
 	 */
-	protected Object queryForObject(final String query, final Object param, final Transaction transaction) {
-		return this.queryForAnything(query, param, QueryFor.OBJECT, transaction);
+	protected Object queryForObject(final String query, final Object param, final Transaction session) {
+		return this.queryForAnything(query, param, QueryFor.OBJECT, session);
 	}
 
 	/**
@@ -80,37 +81,37 @@ public class AbstractDatabaseManager {
 	 * from that call.
 	 */
 	@SuppressWarnings("unchecked")
-	private Object queryForAnything(final String query, final Object param, final QueryFor queryFor, final Transaction transaction) {
-		return this.transactionWrapper(query, param, StatementType.SELECT, queryFor, transaction);
+	private Object queryForAnything(final String query, final Object param, final QueryFor queryFor, final Transaction session) {
+		return this.transactionWrapper(query, param, StatementType.SELECT, queryFor, session);
 	}
 
 	/**
 	 * Inserts an object into the database.
 	 */
-	protected void insert(final String query, final Object param, final Transaction transaction) {
-		this.insertUpdateDelete(query, param, StatementType.INSERT, transaction);
+	protected void insert(final String query, final Object param, final Transaction session) {
+		this.insertUpdateDelete(query, param, StatementType.INSERT, session);
 	}
 
 	/**
 	 * Updates an object in the database.
 	 */
-	protected void update(final String query, final Object param, final Transaction transaction) {
-		this.insertUpdateDelete(query, param, StatementType.UPDATE, transaction);
+	protected void update(final String query, final Object param, final Transaction session) {
+		this.insertUpdateDelete(query, param, StatementType.UPDATE, session);
 	}
 
 	/**
 	 * Deletes an object from the database.
 	 */
-	protected void delete(final String query, final Object param, final Transaction transaction) {
-		this.insertUpdateDelete(query, param, StatementType.DELETE, transaction);
+	protected void delete(final String query, final Object param, final Transaction session) {
+		this.insertUpdateDelete(query, param, StatementType.DELETE, session);
 	}
 
 	/**
 	 * This is another convenience method, which executes insert, update or
 	 * delete statements.
 	 */
-	private void insertUpdateDelete(final String query, final Object param, final StatementType statementType, final Transaction transaction) {
-		this.transactionWrapper(query, param, statementType, null, transaction);
+	private void insertUpdateDelete(final String query, final Object param, final StatementType statementType, final Transaction session) {
+		this.transactionWrapper(query, param, statementType, null, session);
 	}
 
 	/**
@@ -129,11 +130,11 @@ public class AbstractDatabaseManager {
 	 *            select
 	 * @return An object in case of a select statement, null otherwise
 	 */
-	private Object transactionWrapper(final String query, final Object param, final StatementType statementType, final QueryFor queryFor, final Transaction transaction) {
+	private Object transactionWrapper(final String query, final Object param, final StatementType statementType, final QueryFor queryFor, final Transaction session) {
 		try {
-			return this.executeQuery(transaction.getSqlMapExecutor(), query, param, statementType, queryFor);
+			return this.executeQuery(session.getSqlMapExecutor(), query, param, statementType, queryFor);
 		} catch (final Exception ex) {
-			transaction.somethingWentWrong();
+			session.somethingWentWrong();
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't execute query '" + query + "'");
 		}
 		return null; // unreachable

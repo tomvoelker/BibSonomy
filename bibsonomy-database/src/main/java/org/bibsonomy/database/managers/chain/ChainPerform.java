@@ -11,11 +11,12 @@ import org.bibsonomy.model.Resource;
  * This interface encapsulates the getter for a list of posts.
  * 
  * @author Christian Schenk
+ * @version $Id$
  */
 public interface ChainPerform<T extends Resource> {
 
 	/**
 	 * Returns a list of posts.
 	 */
-	public List<Post<T>> perform(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction transaction);
+	public List<Post<T>> perform(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, Transaction session);
 }

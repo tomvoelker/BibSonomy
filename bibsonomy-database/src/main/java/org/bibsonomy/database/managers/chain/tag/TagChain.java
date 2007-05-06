@@ -9,7 +9,8 @@ import org.bibsonomy.database.managers.chain.tag.get.GetTagsViewable;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByUser;
 
 /**
- * @author mgr
+ * @author Miranda Grahl
+ * @version $Id$
  */
 public class TagChain implements FirstChainElementForTag {
 

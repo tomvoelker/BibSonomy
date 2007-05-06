@@ -5,7 +5,8 @@ package org.bibsonomy.database.managers.chain;
  * bundle a lot of elements for a chain can implement this interface so that
  * they're able to hand out the first element of their chain.
  * 
- * @author mgr
+ * @author Miranda Grahl
+ * @version $Id$
  */
 public interface FirstChainElementForTag {
 

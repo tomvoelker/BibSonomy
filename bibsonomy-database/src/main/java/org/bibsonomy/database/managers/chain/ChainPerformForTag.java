@@ -9,12 +9,13 @@ import org.bibsonomy.model.Tag;
 /**
  * This interface encapsulates the getter for a list of tags.
  * 
- * @author mgr
+ * @author Miranda Grahl
+ * @version $Id$
  */
 public interface ChainPerformForTag {
 
 	/**
 	 * Returns a list of tags.
 	 */
-	public List<Tag> perform(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end, Transaction transaction);
+	public List<Tag> perform(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end, Transaction session);
 }

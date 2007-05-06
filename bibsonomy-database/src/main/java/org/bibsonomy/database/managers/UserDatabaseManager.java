@@ -11,7 +11,7 @@ import org.bibsonomy.model.User;
 /**
  * Used to retrieve users from the database.
  *
- * @author mgr
+ * @author Miranda Grahl
  * @version $Id$
  */
 public class UserDatabaseManager extends AbstractDatabaseManager  {
@@ -30,48 +30,48 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 	 * get all Users of a given Group required different view right
 	 */
 
-	public List<User> getUsersOfGroupPublic(final UserParam user, final Transaction transaction) {
-		return this.queryForList("getUsersOfGroupPublic", user, User.class, transaction);
+	public List<User> getUsersOfGroupPublic(final UserParam user, final Transaction session) {
+		return this.queryForList("getUsersOfGroupPublic", user, User.class, session);
 	}
 	
-	public List<User> getUsersOfGroupPrivate(final UserParam user, final Transaction transaction) {
-		return this.queryForList("getUsersOfGroupPrivate", user, User.class, transaction);
+	public List<User> getUsersOfGroupPrivate(final UserParam user, final Transaction session) {
+		return this.queryForList("getUsersOfGroupPrivate", user, User.class, session);
 	}
 	
-	public List<User> getUsersOfGroupFriends(final UserParam user, final Transaction transaction) {
-		return this.queryForList("getUsersOfGroupFriends", user, User.class, transaction);
+	public List<User> getUsersOfGroupFriends(final UserParam user, final Transaction session) {
+		return this.queryForList("getUsersOfGroupFriends", user, User.class, session);
 	}
 	
-	public Integer getPrivlevelOfUser(final UserParam user, final Transaction transaction) {
-		return this.queryForObject("getPrivlevelOfUser", user, Integer.class, transaction);
+	public Integer getPrivlevelOfUser(final UserParam user, final Transaction session) {
+		return this.queryForObject("getPrivlevelOfUser", user, Integer.class, session);
 	}
 
 	/*
 	 * get details by a given group of a user
 	 */
-	public List<User> getUserDetails(final UserParam user, final Transaction transaction) {
-		return this.queryForList("getUserDetails", user, User.class, transaction);
+	public List<User> getUserDetails(final UserParam user, final Transaction session) {
+		return this.queryForList("getUserDetails", user, User.class, session);
 	}
 
 	/*
 	 * get all users of the system
 	 */
-	public List<User> getAllUsers(final UserParam user, final Transaction transaction) {
-		return this.queryForList("getAllUsers", user, User.class, transaction);
+	public List<User> getAllUsers(final UserParam user, final Transaction session) {
+		return this.queryForList("getAllUsers", user, User.class, session);
 	}
 
 	/*
 	 * insert attributes for new user account
 	 */
-	public void insertUser(final User user, final Transaction transaction) {
-		this.insert("insertUser", user, transaction);
+	public void insertUser(final User user, final Transaction session) {
+		this.insert("insertUser", user, session);
 	}
 
 	/*
 	 * delete a user from the system
 	 */ 
-	public void deleteUser(final User user, final Transaction transaction) {
-		this.delete("deleteUser", user, transaction);
+	public void deleteUser(final User user, final Transaction session) {
+		this.delete("deleteUser", user, session);
 	}
 	
 	
@@ -79,7 +79,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 	
 	
 	
-	public List<User> getUsers(String authUser, int start, int end, final Transaction transaction) {
+	public List<User> getUsers(String authUser, int start, int end, final Transaction session) {
 		// TODO: implement
 		return null;
 	}
@@ -88,14 +88,14 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 	 * returns all users who are members of the specified group
 	 */
 	
-	public List<User> getUsers(String authUser, String groupName, int start, int end, final Transaction transaction) {
+	public List<User> getUsers(String authUser, String groupName, int start, int end, final Transaction session) {
 		// TODO: implement
 		return null;
 	}
 	
 	
 	
-	public User getUserDetails(String authUserName, String userName, final Transaction transaction) {
+	public User getUserDetails(String authUserName, String userName, final Transaction session) {
 		// TODO: implement
 		return null;
 	}
@@ -104,11 +104,11 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 	 * TODO delete should also include delete of tas beside personla information
 	 */
 	
-	public void deleteUser(String userName, final Transaction transaction) {
+	public void deleteUser(String userName, final Transaction session) {
 		// TODO: implement
 	}
 	
-    public void storeUser(User user, boolean update, final Transaction transaction) {
+    public void storeUser(User user, boolean update, final Transaction session) {
     	/*
     	 * TODO sql-statements are not implemented 
     	 */
@@ -127,7 +127,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
     		
     	
          List<User> userTemp=new  LinkedList<User>();
-    	 userTemp= getUsers(user.getName(),1,1, transaction);
+    	 userTemp= getUsers(user.getName(),1,1, session);
     		
     		
         /*
@@ -203,7 +203,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
     		// FIXME if "update" isn't "true" it should be false in this else block, shouldn't it?!?
     	 if(update==false){
     		 
-    		 this.insert("insertUser", user, transaction);
+    		 this.insert("insertUser", user, session);
     		 
     		
     		

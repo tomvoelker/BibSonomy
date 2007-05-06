@@ -25,7 +25,7 @@ import org.bibsonomy.model.Post;
 public class GetBookmarksByHash extends BookmarkChainElement {
 
 	@Override
-	protected List<Post<Bookmark>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction transaction) {
+	protected List<Post<Bookmark>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction session) {
 		final BookmarkParam param = new BookmarkParam();
 		param.setHash(hash);
 		param.setOffset(start);
@@ -34,7 +34,7 @@ public class GetBookmarksByHash extends BookmarkChainElement {
 		/**
 		 * retrieve bookmark list with appropriate iBatis statement
 		 */
-		List<Post<Bookmark>> posts = db.getBookmarkByHash(param, transaction);
+		List<Post<Bookmark>> posts = db.getBookmarkByHash(param, session);
 		if (posts.size() != 0) {
 			System.out.println("GetBookmarksByHash");
 

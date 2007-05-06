@@ -8,7 +8,8 @@ import org.bibsonomy.model.BibTex;
  * All elements for the chain of responsibility for publications are derived
  * from this class.
  * 
- * @author mgr
+ * @author Miranda Grahl
+ * @version $Id$
  */
 public abstract class BibTexChainElement extends ChainElement<BibTex> {
 

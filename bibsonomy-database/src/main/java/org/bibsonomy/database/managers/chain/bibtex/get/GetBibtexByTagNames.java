@@ -25,7 +25,7 @@ public class GetBibtexByTagNames extends BibTexChainElement {
 	 * 
 	 */
 	@Override
-	protected List<Post<BibTex>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction transaction) {
+	protected List<Post<BibTex>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction session) {
 
 		final BibTexParam param = new BibTexParam();
 		param.setOffset(start);
@@ -43,7 +43,7 @@ public class GetBibtexByTagNames extends BibTexChainElement {
 		 * prove arguments as mentioned above
 		 */
 
-		List<Post<BibTex>> posts = db.getBibTexByTagNames(param, transaction);
+		List<Post<BibTex>> posts = db.getBibTexByTagNames(param, session);
 		if (posts.size() != 0) {
 			System.out.println("GetBibtexByTagNames");
 		}

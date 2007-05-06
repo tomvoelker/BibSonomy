@@ -15,7 +15,7 @@ import org.bibsonomy.util.ExceptionUtils;
  * Used to retrieve tags from the database.
  * 
  * @author Christian Schenk
- * @author mgr
+ * @author Miranda Grahl
  * @version $Id$
  */
 public class TagDatabaseManager extends AbstractDatabaseManager {
@@ -38,64 +38,64 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	}
     
 	/** Return tag for given tagId */
-	public Tag getTagById(final TagParam param, final Transaction transaction) {
-		return this.queryForObject("getTagById", param, Tag.class, transaction);
+	public Tag getTagById(final TagParam param, final Transaction session) {
+		return this.queryForObject("getTagById", param, Tag.class, session);
 	}
 
 	/** Return all tags for a given tag count */
 	// FIXME a single tag should be returned instead of a list, shouldn't it?  
-	public List<Tag> getTagByCount(final TagParam param, final Transaction transaction) {
+	public List<Tag> getTagByCount(final TagParam param, final Transaction session) {
 		// TODO not tested
-		return this.queryForList("getTagByCount", param, Tag.class, transaction);
+		return this.queryForList("getTagByCount", param, Tag.class, session);
 	}
 
 	/** Return all tags for a given contentId */
-	public List<Tag> getTasByContendId(final TagParam param, final Transaction transaction) {
+	public List<Tag> getTasByContendId(final TagParam param, final Transaction session) {
 		// FIXME this query doesn't exist
-		// return this.queryForList("getTasByTagName", param, Tag.class, transaction);
+		// return this.queryForList("getTasByTagName", param, Tag.class, session);
 		return null;
 	}
 
-	public void updateTagTagInc(final TagParam param, final Transaction transaction) {
+	public void updateTagTagInc(final TagParam param, final Transaction session) {
 		// TODO not tested
-		this.update("updateTagTagInc", param, transaction);
+		this.update("updateTagTagInc", param, session);
 	}
 
-	public void updateTagTagDec(Tag tagFirst, Tag tagSecond, TagParam param, final Transaction transaction) {
+	public void updateTagTagDec(Tag tagFirst, Tag tagSecond, TagParam param, final Transaction session) {
 		param.setTag(tagFirst);
 		param.setTag(tagSecond);
-		this.update("updateTagTagDec", param, transaction);
+		this.update("updateTagTagDec", param, session);
 	}
 
-	public void updateTagDec(final Tag param, final Transaction transaction) {
+	public void updateTagDec(final Tag param, final Transaction session) {
 		// TODO not tested
-		this.update("updateTagDec", param, transaction);
+		this.update("updateTagDec", param, session);
 	}
 
-	public void insertTagTagBatch(final TagParam param, final Transaction transaction) {
+	public void insertTagTagBatch(final TagParam param, final Transaction session) {
 		// TODO not tested
-		this.insert("insertTagTagBatch", param, transaction);
+		this.insert("insertTagTagBatch", param, session);
 	}
 
-	public void insertTas(final TagParam param, final Transaction transaction) {
-		this.insert("insertTas", param, transaction);
+	public void insertTas(final TagParam param, final Transaction session) {
+		this.insert("insertTas", param, session);
 	}
 
-	public void deleteTas(final GenericParam param, final Transaction transaction) {
-		this.delete("deleteTas", param, transaction);
+	public void deleteTas(final GenericParam param, final Transaction session) {
+		this.delete("deleteTas", param, session);
 	}
 
-	public void updateTasId(final int param, final Transaction transaction) {
+	public void updateTasId(final int param, final Transaction session) {
 		// TODO not tested
-		this.update("updateTasId", param, transaction);
+		this.update("updateTasId", param, session);
 	}
 
-	public void insertLogTas(final TagParam param, final Transaction transaction) {
+	public void insertLogTas(final TagParam param, final Transaction session) {
 		// TODO not tested
-		this.insert("insertLogTas", param, transaction);
+		this.insert("insertLogTas", param, session);
 	}
 
-	public List<Tag> deleteTags(final TagParam param, final Transaction transaction) {
+	public List<Tag> deleteTags(final TagParam param, final Transaction session) {
 		// get tags for this contentId
 		// FIXME param.getResource().setTags(getTasByContendId(param));
 		final List<Tag> tagSet = null; // FIXME !!!
@@ -104,7 +104,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		// add these tags to list and decrease counter in tag table
 		for (final Tag tag : tagSet) {
 			// decrease counter in tag table
-			updateTagDec(tag, transaction);
+			updateTagDec(tag, session);
 		}
 
 		if (tagSet.size() > MAX_TAGS_TO_INSERT) {
@@ -120,28 +120,28 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			 * this note!
 			 ******************************************************************/
 			/** ****** schedule job for decrement****** */
-			insertTagTagBatch(param, transaction);
+			insertTagTagBatch(param, session);
 		} else {
 			// compute all tag-tag combinations with o(n_2)
 			for (final Tag tag1 : tagSet) {
 				for (final Tag tag2 : tagSet) {
 					if (!tag1.equals(tag2)) {
-						updateTagTagDec(tag1, tag2, param, transaction);
+						updateTagTagDec(tag1, tag2, param, session);
 					}
 				}
 			}
 		}
 
 		// log all tas related to this bookmark
-		insertLogTas(param, transaction);
+		insertLogTas(param, session);
 		// delete all tas related to this bookmark
-		deleteTas(param, transaction);
+		deleteTas(param, session);
 
 		return tagSet;
 	}
 
 	/** Insert a set of tags */
-	public void insertTags(final TagParam param, final Transaction transaction) {
+	public void insertTags(final TagParam param, final Transaction session) {
 		// generate a list of tags
 		// TODO implement this
 //		List<Tag> allTags = param.getTags();
@@ -178,45 +178,45 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Increases the tag counter in the tag table for the given tag. If this tag does not exist
 	 * inside the tag table, inserts it with count 1.*/
-	public void insertTag(Tag tag, final Transaction transaction) {
+	public void insertTag(Tag tag, final Transaction session) {
 		// TODO not tested
-		this.insert("insertTag", tag, transaction);
+		this.insert("insertTag", tag, session);
 	}
 
 	/** Insert Tag-Tag Combination */
-	public void insertTagTag(Tag tag1, Tag tag2, final Transaction transaction) {
+	public void insertTagTag(Tag tag1, Tag tag2, final Transaction session) {
 		// check if the two first elements of tag taglist contains tag-entries
 		if (tag1 == null || tag2 == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Two tags needed");
 		} else {
-			this.insert("insertTagTag", new Tag[] { tag1, tag2 }, transaction);
+			this.insert("insertTagTag", new Tag[] { tag1, tag2 }, session);
 		}
 	}
 
 	/*
 	 * single requests for method get detailled information of a tag
 	 */
-	public int getTagOccurrences(final Tag tag, final Transaction transaction) {
-		return this.queryForObject("getTagOccurrences", tag, Integer.class, transaction);
+	public int getTagOccurrences(final Tag tag, final Transaction session) {
+		return this.queryForObject("getTagOccurrences", tag, Integer.class, session);
 	}
 
-	public List<Tag> getSubtagsOfTag(final Tag tag, final Transaction transaction) {
-		return this.queryForList("getSubtagsOfTag", tag, Tag.class, transaction);
+	public List<Tag> getSubtagsOfTag(final Tag tag, final Transaction session) {
+		return this.queryForList("getSubtagsOfTag", tag, Tag.class, session);
 	}
 
-	public List<Tag> getSupertagsOfTag(final Tag tag, final Transaction transaction) {
-		return this.queryForList("getSupertagsOfTag", tag, Tag.class, transaction);
+	public List<Tag> getSupertagsOfTag(final Tag tag, final Transaction session) {
+		return this.queryForList("getSupertagsOfTag", tag, Tag.class, session);
 	}
 
-	public List<Tag> getCorrelatedTagsOfTag(final Tag tag, final Transaction transaction) {
-		return this.queryForList("getCorrelatedTagsOfTag", tag, Tag.class, transaction);
+	public List<Tag> getCorrelatedTagsOfTag(final Tag tag, final Transaction session) {
+		return this.queryForList("getCorrelatedTagsOfTag", tag, Tag.class, session);
 	}
 
 	/**
 	 * Return all tags from the system 
 	 */
-	public List<Tag> getAllTags(final TagParam param, final Transaction transaction) {
-		return this.queryForList("getAllTags", param, Tag.class, transaction);
+	public List<Tag> getAllTags(final TagParam param, final Transaction session) {
+		return this.queryForList("getAllTags", param, Tag.class, session);
 	}
 
 	/**
@@ -234,38 +234,38 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 *            name of the tag
 	 * @return the tag's details, null else
 	 */
-	public Tag getTagDetails(String authUserName, String tagName, final Transaction transaction) {
+	public Tag getTagDetails(String authUserName, String tagName, final Transaction session) {
 		return null;
 	}	
 
 	/**
 	 * Get all tags of a given user
 	 */
-	public List<Tag> getTagsByUser(final TagParam param, final Transaction transaction) {
-		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, transaction);
-		return this.queryForList("getTagsByUser", param, Tag.class, transaction);
+	public List<Tag> getTagsByUser(final TagParam param, final Transaction session) {
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
+		return this.queryForList("getTagsByUser", param, Tag.class, session);
 	} 
 
 	/**
 	 * Get all tags of a given group
 	 */
-	public List<Tag> getTagsByGroup(final TagParam param, final Transaction transaction) {
-		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, transaction);
-		return this.queryForList("getTagsByGroup", param, Tag.class, transaction);
+	public List<Tag> getTagsByGroup(final TagParam param, final Transaction session) {
+		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
+		return this.queryForList("getTagsByGroup", param, Tag.class, session);
 	}
 
 	/**
 	 * Get all tags of a given regular expression 
 	 */
-	public List<Tag> getTagsByExpression(final TagParam param, final Transaction transaction) {
-		return this.queryForList("getTagsByExpression", param, Tag.class, transaction);
+	public List<Tag> getTagsByExpression(final TagParam param, final Transaction session) {
+		return this.queryForList("getTagsByExpression", param, Tag.class, session);
 	} 
 
-	public List<Tag> getTagsViewable(final TagParam param, final Transaction transaction) {
-		return this.queryForList("getTagsViewable", param, Tag.class, transaction);
+	public List<Tag> getTagsViewable(final TagParam param, final Transaction session) {
+		return this.queryForList("getTagsViewable", param, Tag.class, session);
 	} 
 
-	public List<Tag> getTags(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end, final Transaction transaction) {
+	public List<Tag> getTags(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end, final Transaction session) {
 		return null;
 	}
 }

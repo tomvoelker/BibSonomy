@@ -25,7 +25,7 @@ public class GetBookmarksByHashForUser extends BookmarkChainElement {
 	 * 
 	 */
 	@Override
-	protected List<Post<Bookmark>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction transaction) {
+	protected List<Post<Bookmark>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction session) {
 		final BookmarkParam param = new BookmarkParam();
 		param.setRequestedUserName(groupingName);
 		param.setUserName(authUser);
@@ -35,12 +35,12 @@ public class GetBookmarksByHashForUser extends BookmarkChainElement {
 		int limit = end - start;
 		param.setLimit(limit);
 
-		param.setGroups(generalDb.getGroupsForUser(param, transaction));
+		param.setGroups(generalDb.getGroupsForUser(param, session));
 
 		/**
 		 * retrieve bookmark list with appropriate iBatis statement
 		 */
-		List<Post<Bookmark>> posts = db.getBookmarkByHashForUser(param, transaction);
+		List<Post<Bookmark>> posts = db.getBookmarkByHashForUser(param, session);
 		if (posts.size() != 0) {
 			System.out.println("GetBookmarksByHashForUser");
 		}

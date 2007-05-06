@@ -39,7 +39,7 @@ public class GetBookmarksOfFriendsByTags extends BookmarkChainElement {
 	 * record to the group friend
 	 */
 	@Override
-	protected List<Post<Bookmark>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction transaction) {
+	protected List<Post<Bookmark>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction session) {
 		final BookmarkParam param = new BookmarkParam();
 
 		param.setRequestedUserName(groupingName);
@@ -53,7 +53,7 @@ public class GetBookmarksOfFriendsByTags extends BookmarkChainElement {
 			param.addTagName(tag);
 		}
 
-		List<Post<Bookmark>> posts = db.getBookmarkForUser(param, transaction);
+		List<Post<Bookmark>> posts = db.getBookmarkForUser(param, session);
 
 		System.err.println("posts" + posts);
 

@@ -57,13 +57,13 @@ public class DatabaseUtils {
 	 * Gets all groups of the user and puts them in the param. If the two given
 	 * users are friends the groupId for friends is also appended.
 	 */
-	public static void setGroups(final GeneralDatabaseManager db, final GenericParam param, final Transaction transaction) {
+	public static void setGroups(final GeneralDatabaseManager db, final GenericParam param, final Transaction session) {
 		// If userName and requestedUserName are the same - do nothing
 		if (param.getUserName() != null && param.getRequestedUserName() != null) {
 			if (param.getUserName().equals(param.getRequestedUserName())) return;
 		}
-		final Boolean friends = db.isFriendOf(param, transaction);
-		final List<Integer> groups = db.getGroupsForUser(param, transaction);
+		final Boolean friends = db.isFriendOf(param, session);
+		final List<Integer> groups = db.getGroupsForUser(param, session);
 		if (friends) {
 			groups.add(ConstantID.GROUP_FRIENDS.getId());
 		}
@@ -74,8 +74,8 @@ public class DatabaseUtils {
 	/**
 	 * This needs to be done for all get*ForGroup* queries.
 	 */
-	public static void prepareGetPostForGroup(final GeneralDatabaseManager db, final GenericParam param, final Transaction transaction) {
-		DatabaseUtils.setGroups(db, param, transaction);
+	public static void prepareGetPostForGroup(final GeneralDatabaseManager db, final GenericParam param, final Transaction session) {
+		DatabaseUtils.setGroups(db, param, session);
 		// the group type needs to be set to friends because of the second union
 		// in the SQL statement
 		param.setGroupType(ConstantID.GROUP_FRIENDS);
@@ -84,10 +84,10 @@ public class DatabaseUtils {
 	/**
 	 * This needs to be done for all get*ForUser* queries.
 	 */
-	public static void prepareGetPostForUser(final GeneralDatabaseManager db, final GenericParam param, final Transaction transaction) {
+	public static void prepareGetPostForUser(final GeneralDatabaseManager db, final GenericParam param, final Transaction session) {
 		// if the groupId is invalid we have to check for groups manually
 		if (param.getGroupId() == ConstantID.GROUP_INVALID.getId()) {
-			DatabaseUtils.setGroups(db, param, transaction);
+			DatabaseUtils.setGroups(db, param, session);
 		}
 	}
 }

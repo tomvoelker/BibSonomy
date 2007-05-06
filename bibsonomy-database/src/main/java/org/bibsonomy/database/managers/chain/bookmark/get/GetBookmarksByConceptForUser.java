@@ -25,7 +25,7 @@ public class GetBookmarksByConceptForUser extends BookmarkChainElement {
 	 * 
 	 */
 	@Override
-	protected List<Post<Bookmark>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction transaction) {
+	protected List<Post<Bookmark>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction session) {
 		final BookmarkParam param = new BookmarkParam();
 
 		param.setRequestedGroupName(groupingName);
@@ -34,7 +34,7 @@ public class GetBookmarksByConceptForUser extends BookmarkChainElement {
 		int limit = end - start;
 		param.setLimit(limit);
 
-		param.setGroups(generalDb.getGroupsForUser(param, transaction));
+		param.setGroups(generalDb.getGroupsForUser(param, session));
 
 		for (String tag : tags) {
 
@@ -42,7 +42,7 @@ public class GetBookmarksByConceptForUser extends BookmarkChainElement {
 
 		}
 
-		List<Post<Bookmark>> posts = db.getBookmarkByConceptForUser(param, transaction);
+		List<Post<Bookmark>> posts = db.getBookmarkByConceptForUser(param, session);
 		if (posts.size() != 0) {
 			System.out.println("GetBookmarksByConceptForUser");
 

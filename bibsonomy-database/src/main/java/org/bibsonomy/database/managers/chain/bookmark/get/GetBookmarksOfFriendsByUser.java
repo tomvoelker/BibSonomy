@@ -40,7 +40,7 @@ public class GetBookmarksOfFriendsByUser extends BookmarkChainElement {
 	 * 
 	 */
 	@Override
-	protected List<Post<Bookmark>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction transaction) {
+	protected List<Post<Bookmark>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction session) {
 		final BookmarkParam param = new BookmarkParam();
 
 		param.setRequestedUserName(groupingName);
@@ -50,7 +50,7 @@ public class GetBookmarksOfFriendsByUser extends BookmarkChainElement {
 		param.setLimit(limit);
 		param.setGroupId(ConstantID.GROUP_FRIENDS.getId());
 
-		List<Post<Bookmark>> posts = db.getBookmarkForUser(param, transaction);
+		List<Post<Bookmark>> posts = db.getBookmarkForUser(param, session);
 		if (posts.size() != 0) {
 			System.out.println("GetBookmarksOfFriendsByUser");
 		}

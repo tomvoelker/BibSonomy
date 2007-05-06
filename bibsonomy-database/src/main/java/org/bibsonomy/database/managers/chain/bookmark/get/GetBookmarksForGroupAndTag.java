@@ -25,7 +25,7 @@ public class GetBookmarksForGroupAndTag extends BookmarkChainElement {
 	 * 
 	 */
 	@Override
-	protected List<Post<Bookmark>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction transaction) {
+	protected List<Post<Bookmark>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction session) {
 		final BookmarkParam param = new BookmarkParam();
 
 		param.setRequestedGroupName(groupingName);
@@ -38,10 +38,10 @@ public class GetBookmarksForGroupAndTag extends BookmarkChainElement {
 			param.addTagName(tag);
 		}
 
-		param.setGroupId(generalDb.getGroupIdByGroupName(param, transaction));
-		param.setGroups(generalDb.getGroupsForUser(param, transaction));
+		param.setGroupId(generalDb.getGroupIdByGroupName(param, session));
+		param.setGroups(generalDb.getGroupsForUser(param, session));
 
-		List<Post<Bookmark>> posts = db.getBookmarkForGroupByTag(param, transaction);
+		List<Post<Bookmark>> posts = db.getBookmarkForGroupByTag(param, session);
 		if (posts.size() != 0) {
 			System.out.println("GetBookmarksByGroupAndTag");
 		}

@@ -8,6 +8,7 @@ import org.bibsonomy.model.Resource;
  * they're able to hand out the first element of their chain.
  * 
  * @author Christian Schenk
+ * @version $Id$
  */
 public interface FirstChainElement<T extends Resource> {
 

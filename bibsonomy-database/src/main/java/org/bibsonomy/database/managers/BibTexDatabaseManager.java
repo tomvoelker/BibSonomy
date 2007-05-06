@@ -21,7 +21,7 @@ import org.bibsonomy.model.util.SimHash;
  * Used to CRUD BibTexs from the database.
  * 
  * @author Christian Schenk
- * @author mgr
+ * @author Miranda Grahl
  * @version $Id$
  */
 public class BibTexDatabaseManager extends AbstractDatabaseManager implements CrudableContent<BibTex> {
@@ -49,8 +49,8 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * Can be used to start a query that retrieves a list of BibTexs.
 	 */
 	@SuppressWarnings("unchecked")
-	protected List<Post<BibTex>> bibtexList(final String query, final BibTexParam param, final Transaction transaction) {
-		return (List<Post<BibTex>>) queryForList(query, param, transaction);
+	protected List<Post<BibTex>> bibtexList(final String query, final BibTexParam param, final Transaction session) {
+		return (List<Post<BibTex>>) queryForList(query, param, session);
 	}
 
 	/**
@@ -60,15 +60,15 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * requestedSimHash is equal to a given hash. Only public posts are
 	 * retrieved.
 	 */
-	public List<Post<BibTex>> getBibTexByHash(final BibTexParam param, final Transaction transaction) {
-		return this.bibtexList("getBibTexByHash", param, transaction);
+	public List<Post<BibTex>> getBibTexByHash(final BibTexParam param, final Transaction session) {
+		return this.bibtexList("getBibTexByHash", param, session);
 	}
 
 	/**
 	 * Returns the number of publications for a given hash.
 	 */
-	public Integer getBibTexByHashCount(final BibTexParam param, final Transaction transaction) {
-		return this.queryForObject("getBibTexByHashCount", param, Integer.class, transaction);
+	public Integer getBibTexByHashCount(final BibTexParam param, final Transaction session) {
+		return this.queryForObject("getBibTexByHashCount", param, Integer.class, session);
 	}
 
 	/**
@@ -79,8 +79,8 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * <em>/viewable/</em> page only posts are shown which are set viewable to
 	 * the given group and which have all of the given tags attached.
 	 */
-	public List<Post<BibTex>> getBibTexByTagNames(final BibTexParam param, final Transaction transaction) {
-		return this.bibtexList("getBibTexByTagNames", param, transaction);
+	public List<Post<BibTex>> getBibTexByTagNames(final BibTexParam param, final Transaction session) {
+		return this.bibtexList("getBibTexByTagNames", param, session);
 	}
 
 	/**
@@ -94,9 +94,9 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * friends or private or other groups, depending upon if currUser us allowed
 	 * to see them.
 	 */
-	public List<Post<BibTex>> getBibTexByTagNamesForUser(final BibTexParam param, final Transaction transaction) {
-		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, transaction);
-		return this.bibtexList("getBibTexByTagNamesForUser", param, transaction);
+	public List<Post<BibTex>> getBibTexByTagNamesForUser(final BibTexParam param, final Transaction session) {
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
+		return this.bibtexList("getBibTexByTagNamesForUser", param, session);
 	}
 
 	/**
@@ -114,9 +114,9 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * friends or private or other groups, depending upon if userName us allowed
 	 * to see them.
 	 */
-	public List<Post<BibTex>> getBibTexByConceptForUser(final BibTexParam param, final Transaction transaction) {
-		DatabaseUtils.setGroups(this.generalDb, param, transaction);
-		return this.bibtexList("getBibTexByConceptForUser", param, transaction);
+	public List<Post<BibTex>> getBibTexByConceptForUser(final BibTexParam param, final Transaction session) {
+		DatabaseUtils.setGroups(this.generalDb, param, session);
+		return this.bibtexList("getBibTexByConceptForUser", param, session);
 	}
 
 	/**
@@ -125,10 +125,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * Prepares queries which show all posts of users which have userName as
 	 * their friend.
 	 */
-	public List<Post<BibTex>> getBibTexByUserFriends(final BibTexParam param, final Transaction transaction) {
+	public List<Post<BibTex>> getBibTexByUserFriends(final BibTexParam param, final Transaction session) {
 		// groupType must be set to friends
 		param.setGroupType(ConstantID.GROUP_FRIENDS);
-		return this.bibtexList("getBibTexByUserFriends", param, transaction);
+		return this.bibtexList("getBibTexByUserFriends", param, session);
 	}
 
 	/**
@@ -138,8 +138,8 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * download page, we use userName as restriction for the user name and not
 	 * requestedUserName.
 	 */
-	public List<Post<BibTex>> getBibTexByDownload(final BibTexParam param, final Transaction transaction) {
-		return this.bibtexList("getBibTexByDownload", param, transaction);
+	public List<Post<BibTex>> getBibTexByDownload(final BibTexParam param, final Transaction session) {
+		return this.bibtexList("getBibTexByDownload", param, session);
 	}
 
 	/**
@@ -147,9 +147,9 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * page of BibSonomy. These are typically the X last posted entries. Only
 	 * public posts are shown.
 	 */
-	public List<Post<BibTex>> getBibTexForHomePage(final BibTexParam param, final Transaction transaction) {
+	public List<Post<BibTex>> getBibTexForHomePage(final BibTexParam param, final Transaction session) {
 		param.setGroupType(ConstantID.GROUP_FRIENDS);
-		return this.bibtexList("getBibTexForHomePage", param, transaction);
+		return this.bibtexList("getBibTexForHomePage", param, session);
 	}
 
 	/**
@@ -157,8 +157,8 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * <em>/popular</em> page of BibSonomy. The lists are retrieved from two
 	 * separate temporary tables which are filled by an external script.
 	 */
-	public List<Post<BibTex>> getBibTexPopular(final BibTexParam param, final Transaction transaction) {
-		return this.bibtexList("getBibTexPopular", param, transaction);
+	public List<Post<BibTex>> getBibTexPopular(final BibTexParam param, final Transaction session) {
+		return this.bibtexList("getBibTexPopular", param, session);
 	}
 
 	/**
@@ -174,15 +174,15 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * If requestedUser is given, only (public) posts from the given user are
 	 * searched. Otherwise all (public) posts are searched.
 	 */
-	public List<Post<BibTex>> getBibTexSearch(final BibTexParam param, final Transaction transaction) {
-		return this.bibtexList("getBibTexSearch", param, transaction);
+	public List<Post<BibTex>> getBibTexSearch(final BibTexParam param, final Transaction session) {
+		return this.bibtexList("getBibTexSearch", param, session);
 	}
 
 	/**
 	 * Returns the number of publications for a given search.
 	 */
-	public Integer getBibTexSearchCount(final BibTexParam param, final Transaction transaction) {
-		return this.queryForObject("getBibTexSearchCount", param, Integer.class, transaction);
+	public Integer getBibTexSearchCount(final BibTexParam param, final Transaction session) {
+		return this.queryForObject("getBibTexSearchCount", param, Integer.class, session);
 	}
 
 	/**
@@ -190,8 +190,8 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * 
 	 * Prepares queries to retrieve posts which are set viewable to group.
 	 */
-	public List<Post<BibTex>> getBibTexViewable(final BibTexParam param, final Transaction transaction) {
-		return this.bibtexList("getBibTexViewable", param, transaction);
+	public List<Post<BibTex>> getBibTexViewable(final BibTexParam param, final Transaction session) {
+		return this.bibtexList("getBibTexViewable", param, session);
 	}
 
 	/**
@@ -200,16 +200,16 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * but a different simhash0 (the latter is always true within the posts of a
 	 * single user).
 	 */
-	public List<Post<BibTex>> getBibTexDuplicate(final BibTexParam param, final Transaction transaction) {
-		DatabaseUtils.setGroups(this.generalDb, param, transaction);
-		return this.bibtexList("getBibTexDuplicate", param, transaction);
+	public List<Post<BibTex>> getBibTexDuplicate(final BibTexParam param, final Transaction session) {
+		DatabaseUtils.setGroups(this.generalDb, param, session);
+		return this.bibtexList("getBibTexDuplicate", param, session);
 	}
 
 	/**
 	 * Returns the number of duplicates (i.e. BibTex posts) of a given user.
 	 */
-	public Integer getBibTexDuplicateCount(final BibTexParam param, final Transaction transaction) {
-		return this.queryForObject("getBibTexDuplicateCount", param, Integer.class, transaction);
+	public Integer getBibTexDuplicateCount(final BibTexParam param, final Transaction session) {
+		return this.queryForObject("getBibTexDuplicateCount", param, Integer.class, session);
 	}
 
 	/**
@@ -224,9 +224,9 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * http://www.bibsonomy.org/bibtex/1d28c9f535d0f24eadb9d342168836199 page
 	 * 92, formula (9) for formal semantics of this query.
 	 */
-	public List<Post<BibTex>> getBibTexForGroup(final BibTexParam param, final Transaction transaction) {
-		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, transaction);
-		return this.bibtexList("getBibTexForGroup", param, transaction);
+	public List<Post<BibTex>> getBibTexForGroup(final BibTexParam param, final Transaction session) {
+		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
+		return this.bibtexList("getBibTexForGroup", param, session);
 	}
 
 	/**
@@ -235,9 +235,9 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * TODO: these are just approximations - users own private/friends bookmarks
 	 * and friends bookmarks are not included (same for publications)
 	 */
-	public Integer getBibTexForGroupCount(final BibTexParam param, final Transaction transaction) {
-		DatabaseUtils.setGroups(this.generalDb, param, transaction);
-		return this.queryForObject("getBibTexForGroupCount", param, Integer.class, transaction);
+	public Integer getBibTexForGroupCount(final BibTexParam param, final Transaction session) {
+		DatabaseUtils.setGroups(this.generalDb, param, session);
+		return this.queryForObject("getBibTexForGroupCount", param, Integer.class, session);
 	}
 
 	/**
@@ -246,9 +246,9 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * Does basically the same as getBibTexForGroup with the additionaly
 	 * possibility to restrict the tags the posts have to have.
 	 */
-	public List<Post<BibTex>> getBibTexForGroupByTag(final BibTexParam param, final Transaction transaction) {
-		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, transaction);
-		return this.bibtexList("getBibTexForGroupByTag", param, transaction);
+	public List<Post<BibTex>> getBibTexForGroupByTag(final BibTexParam param, final Transaction session) {
+		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
+		return this.bibtexList("getBibTexForGroupByTag", param, session);
 	}
 
 	/**
@@ -260,17 +260,17 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * are retrieved, but also friends or private or other groups, depending
 	 * upon if userName is allowed to see them.
 	 */
-	public List<Post<BibTex>> getBibTexForUser(final BibTexParam param, final Transaction transaction) {
-		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, transaction);
-		return this.bibtexList("getBibTexForUser", param, transaction);
+	public List<Post<BibTex>> getBibTexForUser(final BibTexParam param, final Transaction session) {
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
+		return this.bibtexList("getBibTexForUser", param, session);
 	}
 
 	/**
 	 * Returns the number of publications for a given user.
 	 */
-	public Integer getBibTexForUserCount(final BibTexParam param, final Transaction transaction) {
-		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, transaction);
-		return this.queryForObject("getBibTexForUserCount", param, Integer.class, transaction);
+	public Integer getBibTexForUserCount(final BibTexParam param, final Transaction session) {
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
+		return this.queryForObject("getBibTexForUserCount", param, Integer.class, session);
 	}
 
 	/**
@@ -283,59 +283,59 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * Additionally, if requUser = currUser, the document table is joined so
 	 * that we can present the user a link to the uploaded document.
 	 */
-	public List<Post<BibTex>> getBibTexByHashForUser(final BibTexParam param, final Transaction transaction) {
-		DatabaseUtils.setGroups(this.generalDb, param, transaction);
-		return this.bibtexList("getBibTexByHashForUser", param, transaction);
+	public List<Post<BibTex>> getBibTexByHashForUser(final BibTexParam param, final Transaction session) {
+		DatabaseUtils.setGroups(this.generalDb, param, session);
+		return this.bibtexList("getBibTexByHashForUser", param, session);
 	}
 
 	/**
 	 * Inserts a publication into the database.
 	 */
-	public void insertBibTex(final BibTexParam param, final Transaction transaction) {
+	public void insertBibTex(final BibTexParam param, final Transaction session) {
 		// Start transaction
-		transaction.beginTransaction();
+		session.beginTransaction();
 		try {
 			// Insert BibTex
-			this.insert("insertBibTex", param, transaction);
+			this.insert("insertBibTex", param, session);
 			// Insert/Update SimHashes
 			for (final int i : new int[] { 0, 1, 2, 3 }) {
 				final ConstantID simHash = ConstantID.getSimHash(i);
 				param.setRequestedSimHash(simHash);
 				param.setHash(SimHash.getSimHash(param.getResource(), simHash));
-				this.insertBibTexHash(param, transaction);
+				this.insertBibTexHash(param, session);
 			}
-			transaction.commitTransaction();
+			session.commitTransaction();
 		} finally {
-			transaction.endTransaction();
+			session.endTransaction();
 		}
 	}
 
 	/**
 	 * Inserts a BibTex-hash into the database.
 	 */
-	private void insertBibTexHash(final BibTexParam param, final Transaction transaction) {
-		this.insert("insertBibTexHash", param, transaction);
+	private void insertBibTexHash(final BibTexParam param, final Transaction session) {
+		this.insert("insertBibTexHash", param, session);
 	}
 
-	public List<Post<BibTex>> getPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, boolean continuous, final Transaction transaction) {
+	public List<Post<BibTex>> getPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, boolean continuous, final Transaction session) {
 		//return GenericChainHandler.getInstance().perform(authUser, grouping, groupingName, tags, hash, popular, added, start, end);
-		return chain.getFirstElement().perform(authUser, grouping, groupingName, tags, hash, popular, added, start, end, transaction);
+		return chain.getFirstElement().perform(authUser, grouping, groupingName, tags, hash, popular, added, start, end, session);
 	}
 
-	public Post<BibTex> getPostDetails(String authUser, String resourceHash, String userName, final Transaction transaction) {
+	public Post<BibTex> getPostDetails(String authUser, String resourceHash, String userName, final Transaction session) {
 		return null; // TODO: implement
 	}
 
-	public boolean deletePost(String userName, String resourceHash, final Transaction transaction) {
+	public boolean deletePost(String userName, String resourceHash, final Transaction session) {
 		// Start transaction
-		transaction.beginTransaction();
+		session.beginTransaction();
 		try {
 			// Used for userName, hash and contentId
 			final BibTexParam param = new BibTexParam();
 			param.setUserName(userName);
 			param.setHash(resourceHash);
 	
-			final List<Post<BibTex>> bibtexs = this.getBibTexByHashForUser(param, transaction);
+			final List<Post<BibTex>> bibtexs = this.getBibTexByHashForUser(param, session);
 			// BibTex doesn't exist
 			if (bibtexs.size() == 0) return false;
 	
@@ -343,60 +343,60 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			param.setRequestedContentId(oneBibtex.getContentId());
 	
 			// Delete Tas
-			this.tagDb.deleteTas(param, transaction);
+			this.tagDb.deleteTas(param, session);
 			// Update SimHashes
 			for (final int i : new int[] { 0, 1, 2, 3 }) {
 				final ConstantID simHash = ConstantID.getSimHash(i);
 				param.setRequestedSimHash(simHash);
 				param.setHash(SimHash.getSimHash(((BibTex) oneBibtex.getResource()), simHash));
-				this.updateBibTexHash(param, transaction);
+				this.updateBibTexHash(param, session);
 			}
 			// Delete BibTex
-			this.deleteBibTex(param, transaction);
+			this.deleteBibTex(param, session);
 			// Delete link to related document
-			this.deleteBibTexDoc(param, transaction);
+			this.deleteBibTexDoc(param, session);
 			// Delete id in collector table
-			this.deleteBibTexCol(param, transaction);
+			this.deleteBibTexCol(param, session);
 			// Delete id in extended fields table
-			this.deleteBibTexExt(param, transaction);
+			this.deleteBibTexExt(param, session);
 			// Delete id in bibtexturl table
-			this.deleteBibTexUrls(param, transaction);
+			this.deleteBibTexUrls(param, session);
 	
 			// End transaction
-			transaction.commitTransaction();
+			session.commitTransaction();
 		} finally {
-			transaction.endTransaction();
+			session.endTransaction();
 		}
 		return true;
 	}
 
-	private void deleteBibTex(final BibTexParam param, final Transaction transaction) {
-		this.delete("deleteBibTex", param, transaction);
+	private void deleteBibTex(final BibTexParam param, final Transaction session) {
+		this.delete("deleteBibTex", param, session);
 	}
 
-	private void updateBibTexHash(final BibTexParam param, final Transaction transaction) {
-		this.update("updateBibTexHash", param, transaction);
+	private void updateBibTexHash(final BibTexParam param, final Transaction session) {
+		this.update("updateBibTexHash", param, session);
 	}
 
-	private void deleteBibTexDoc(final BibTexParam param, final Transaction transaction) {
-		this.delete("deleteBibTexDoc", param, transaction);
+	private void deleteBibTexDoc(final BibTexParam param, final Transaction session) {
+		this.delete("deleteBibTexDoc", param, session);
 	}
 
-	private void deleteBibTexCol(final BibTexParam param, final Transaction transaction) {
-		this.delete("deleteBibTexCol", param, transaction);
+	private void deleteBibTexCol(final BibTexParam param, final Transaction session) {
+		this.delete("deleteBibTexCol", param, session);
 	}
 
-	private void deleteBibTexExt(final BibTexParam param, final Transaction transaction) {
-		this.delete("deleteBibTexExt", param, transaction);
+	private void deleteBibTexExt(final BibTexParam param, final Transaction session) {
+		this.delete("deleteBibTexExt", param, session);
 	}
 
-	private void deleteBibTexUrls(final BibTexParam param, final Transaction transaction) {
-		this.delete("deleteBibTexUrls", param, transaction);
+	private void deleteBibTexUrls(final BibTexParam param, final Transaction session) {
+		this.delete("deleteBibTexUrls", param, session);
 	}
 
-	public boolean storePost(String userName, Post<BibTex> post, String oldIntraHash, final Transaction transaction) {
+	public boolean storePost(String userName, Post<BibTex> post, String oldIntraHash, final Transaction session) {
 		// Start transaction
-		transaction.beginTransaction();
+		session.beginTransaction();
 		try {
 			final String newIntraHash = post.getResource().getIntraHash();
 			// retrieve existing entry
@@ -406,27 +406,27 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			post.getResource().setIntraHash(oldIntraHash);
 			param.setHash(oldIntraHash);
 
-			final List<Post<BibTex>> isBibTexInDb = this.getBibTexByHashForUser(param, transaction);
+			final List<Post<BibTex>> isBibTexInDb = this.getBibTexByHashForUser(param, session);
 			post.getResource().setIntraHash(newIntraHash);
 			param.setHash(newIntraHash);
 			if (isBibTexInDb.size() == 0) {
 				// BibTex entry DOES NOT EXIST for this user
-				param.setNewContentId(this.generalDb.getNewContentId(param, transaction));
+				param.setNewContentId(this.generalDb.getNewContentId(param, session));
 			} else {
 				// BibTex entry DOES EXIST for this user
 				final Post oldBibTexPost = isBibTexInDb.get(0);
 				param.setNewContentId(oldBibTexPost.getContentId());
 				// Delete old BibTex post
-				this.deletePost(userName, oldBibTexPost.getResource().getIntraHash(), transaction);
+				this.deletePost(userName, oldBibTexPost.getResource().getIntraHash(), session);
 			}
 			// Insert the new BibTex
-			this.insertBibTex(param, transaction);
+			this.insertBibTex(param, session);
 			// TODO: insertTags, insertRelations, update: log, doc, col, ext, url
 	
 			// End transaction
-			transaction.commitTransaction();
+			session.commitTransaction();
 		} finally {
-			transaction.endTransaction();
+			session.endTransaction();
 		}
 		return true;
 	}

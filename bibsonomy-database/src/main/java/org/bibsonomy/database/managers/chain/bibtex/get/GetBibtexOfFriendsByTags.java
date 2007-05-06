@@ -43,7 +43,7 @@ public class GetBibtexOfFriendsByTags extends BibTexChainElement {
 	 * 
 	 */
 	@Override
-	protected List<Post<BibTex>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction transaction) {
+	protected List<Post<BibTex>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction session) {
 		final BibTexParam param = new BibTexParam();
 
 		param.setRequestedUserName(groupingName);
@@ -57,7 +57,7 @@ public class GetBibtexOfFriendsByTags extends BibTexChainElement {
 			param.addTagName(tag);
 		}
 
-		List<Post<BibTex>> posts = db.getBibTexForUser(param, transaction);
+		List<Post<BibTex>> posts = db.getBibTexForUser(param, session);
 		System.err.println("posts" + posts);
 		if (posts.size() != 0) {
 			System.out.println("GetBibtexOfFriendsByTags");

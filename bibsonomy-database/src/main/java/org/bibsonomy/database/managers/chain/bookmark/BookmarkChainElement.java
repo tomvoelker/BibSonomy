@@ -8,7 +8,8 @@ import org.bibsonomy.model.Bookmark;
  * All elements for the chain of responsibility for bookmarks are derived from
  * this class.
  * 
- * @author mgr
+ * @author Miranda Grahl
+ * @version $Id$
  */
 public abstract class BookmarkChainElement extends ChainElement<Bookmark> {
 

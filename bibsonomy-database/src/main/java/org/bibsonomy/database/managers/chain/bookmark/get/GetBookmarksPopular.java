@@ -26,7 +26,7 @@ public class GetBookmarksPopular extends BookmarkChainElement {
 	 * 
 	 */
 	@Override
-	protected List<Post<Bookmark>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction transaction) {
+	protected List<Post<Bookmark>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction session) {
 		final BookmarkParam param = new BookmarkParam();
 		param.setOffset(start);
 		int limit = end - start;
@@ -34,7 +34,7 @@ public class GetBookmarksPopular extends BookmarkChainElement {
 		/**
 		 * retrieve bookmark list with appropriate iBatis statement
 		 */
-		List<Post<Bookmark>> posts = db.getBookmarkPopular(param, transaction);
+		List<Post<Bookmark>> posts = db.getBookmarkPopular(param, session);
 		System.out.println("post=" + posts.size() + "in getBookmarkPopular");
 		if (posts.size() != 0) {
 			System.out.println("getBookmarkPopular");

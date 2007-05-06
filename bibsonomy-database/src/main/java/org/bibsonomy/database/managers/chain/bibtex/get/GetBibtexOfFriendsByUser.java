@@ -40,7 +40,7 @@ public class GetBibtexOfFriendsByUser extends BibTexChainElement {
 	 * 
 	 */
 	@Override
-	protected List<Post<BibTex>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction transaction) {
+	protected List<Post<BibTex>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction session) {
 		final BibTexParam param = new BibTexParam();
 		param.setRequestedUserName(groupingName);
 		param.setUserName(authUser);
@@ -49,7 +49,7 @@ public class GetBibtexOfFriendsByUser extends BibTexChainElement {
 		param.setLimit(limit);
 		param.setGroupId(ConstantID.GROUP_FRIENDS.getId());
 
-		List<Post<BibTex>> posts = db.getBibTexForUser(param, transaction);
+		List<Post<BibTex>> posts = db.getBibTexForUser(param, session);
 		if (posts.size() != 0) {
 			System.out.println("GetBibtexOfFriendsByUser");
 		}

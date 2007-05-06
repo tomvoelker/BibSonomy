@@ -7,7 +7,8 @@ import org.bibsonomy.database.managers.chain.ChainElementForTag;
  * All elements for the chain of responsibility for publications are derived
  * from this class.
  * 
- * @author mgr
+ * @author Miranda Grahl
+ * @version $Id$
  */
 public abstract class TagChainElement extends ChainElementForTag {
 
