@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.util.ExceptionUtils;
 
-import com.ibatis.sqlmap.client.SqlMapClient;
+import com.ibatis.sqlmap.client.SqlMapExecutor;
 
 /**
  * This is the superclass for all classes that are implementing methods to
@@ -24,7 +24,6 @@ public class AbstractDatabaseManager {
 	/** Logger */
 	protected static final Logger log = Logger.getLogger(AbstractDatabaseManager.class);
 	/** Defines whether the database should be readonly */
-	private boolean readonly;
 
 	/** Used to determine whether we want to retrieve an object or a list */
 	private enum QueryFor {
@@ -34,33 +33,6 @@ public class AbstractDatabaseManager {
 	/** Used to determine the execution of an select, insert, update or delete. */
 	private enum StatementType {
 		SELECT, INSERT, UPDATE, DELETE;
-	}
-
-	/**
-	 * The database is writeable by default.
-	 */
-	public AbstractDatabaseManager() {
-		this.readonly = false;
-	}
-
-	/**
-	 * Defines whether the database should be readonly.
-	 * 
-	 * @return true if the databse is readonly, false otherwise
-	 */
-	public boolean isReadonly() {
-		return this.readonly;
-	}
-
-	/**
-	 * If the database should be readonly, i.e. inserts and the like won't be
-	 * written to the database, we start a transaction and abort it. If the
-	 * database isn't readonly, i.e. writeable, we'll do a commit instead of
-	 * aborting the transaction.<br/>
-	 * This comes in handy for unit tests. 
-	 */
-	public void setReadonly() {
-		this.readonly = true;
 	}
 
 	/**
@@ -115,13 +87,6 @@ public class AbstractDatabaseManager {
 	/**
 	 * Inserts an object into the database.
 	 */
-	protected void insert(final String query, final Object param) {
-		this.insert(query, param, this.getTransaction());
-	}
-
-	/**
-	 * @see insert(final String query, final Object param)
-	 */
 	protected void insert(final String query, final Object param, final Transaction transaction) {
 		this.insertUpdateDelete(query, param, StatementType.INSERT, transaction);
 	}
@@ -129,26 +94,12 @@ public class AbstractDatabaseManager {
 	/**
 	 * Updates an object in the database.
 	 */
-	protected void update(final String query, final Object param) {
-		this.update(query, param, this.getTransaction());
-	}
-
-	/**
-	 * @see update(final String query, final Object param)
-	 */
 	protected void update(final String query, final Object param, final Transaction transaction) {
 		this.insertUpdateDelete(query, param, StatementType.UPDATE, transaction);
 	}
 
 	/**
 	 * Deletes an object from the database.
-	 */
-	protected void delete(final String query, final Object param) {
-		this.delete(query, param, this.getTransaction());
-	}
-
-	/**
-	 * @see delete(final String query, final Object param)
 	 */
 	protected void delete(final String query, final Object param, final Transaction transaction) {
 		this.insertUpdateDelete(query, param, StatementType.DELETE, transaction);
@@ -160,22 +111,6 @@ public class AbstractDatabaseManager {
 	 */
 	private void insertUpdateDelete(final String query, final Object param, final StatementType statementType, final Transaction transaction) {
 		this.transactionWrapper(query, param, statementType, null, transaction);
-	}
-
-	/**
-	 * Returns a new transaction object.
-	 */
-	protected Transaction getTransaction() {
-		return this.getTransaction(false);
-	}
-
-	/**
-	 * Convenience method for getTransaction(). Transaction can be set to batch.
-	 */
-	protected Transaction getTransaction(final boolean batch) {
-		final Transaction transaction = new Transaction(this.isReadonly());
-		if (batch) transaction.setBatch();
-		return transaction;
 	}
 
 	/**
@@ -200,22 +135,11 @@ public class AbstractDatabaseManager {
 	 * @return An object in case of a select statement, null otherwise
 	 */
 	private Object transactionWrapper(final String query, final Object param, final StatementType statementType, final QueryFor queryFor, Transaction transaction) {
-		if (transaction == null) {
-			transaction = this.getTransaction();
-		}
 		try {
-			// If the database is readonly we start a transaction, so we can
-			// commit/abort it later
-			if (this.isReadonly() || transaction.isBatch()) transaction.startTransaction();
-			// Execute the query
-			return this.executeQuery(transaction.getSqlMap(), query, param, statementType, queryFor);
-		} catch (final SQLException ex) {
+			return this.executeQuery(transaction.getSqlMapExecutor(), query, param, statementType, queryFor);
+		} catch (final Exception ex) {
+			transaction.somethingWentWrong();
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't execute query '" + query + "'");
-			// If an error occured we abort the transaction
-			transaction.endTransaction();
-		} finally {
-			// If this transaction isn't a batch commit the transaction
-			if (!transaction.isBatch()) transaction.commitTransaction();
 		}
 		return null; // unreachable
 	}
@@ -225,7 +149,7 @@ public class AbstractDatabaseManager {
 	 * 
 	 * XXX: This should be moved to a TransactionManager class.
 	 */
-	private Object executeQuery(final SqlMapClient sqlMap, final String query, final Object param, final StatementType statementType, final QueryFor queryFor) throws SQLException {
+	private Object executeQuery(final SqlMapExecutor sqlMap, final String query, final Object param, final StatementType statementType, final QueryFor queryFor) throws SQLException {
 		Object rVal = null;
 		switch (statementType) {
 		case SELECT:

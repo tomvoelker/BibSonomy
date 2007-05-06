@@ -13,6 +13,7 @@ import org.bibsonomy.util.ExceptionUtils;
 import com.ibatis.common.resources.Resources;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapClientBuilder;
+import com.ibatis.sqlmap.client.SqlMapSession;
 
 /**
  * Methods concerning the database.
@@ -20,33 +21,40 @@ import com.ibatis.sqlmap.client.SqlMapClientBuilder;
  * @author Christian Schenk
  */
 public class DatabaseUtils {
-
-	/**
-	 * Returns the SqlMapClient which can be used to query the database.
-	 */
-	public static SqlMapClient getSqlMapClient(final Logger log) {
-		SqlMapClient rVal = null;
+	private static final Logger log = Logger.getLogger(DatabaseUtils.class);
+	private static final SqlMapClient client;
+	
+	static {
+		SqlMapClient clientTmp;
 		try {
 			final String resource = "SqlMapConfig.xml";
 			final Reader reader = Resources.getResourceAsReader(resource);
-			rVal = SqlMapClientBuilder.buildSqlMapClient(reader);
+			clientTmp = SqlMapClientBuilder.buildSqlMapClient(reader);
 		} catch (final IOException ex) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't initialize SqlMap");
+			clientTmp = null;
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't initialize SqlMapClient");
 		}
-		return rVal;
+		client = clientTmp;
+	}
+	
+	/**
+	 * Returns the SqlMap which can be used to query the database.
+	 */
+	protected static SqlMapSession getSqlMap() {
+		return client.openSession();
 	}
 
 	/**
 	 * Gets all groups of the user and puts them in the param. If the two given
 	 * users are friends the groupId for friends is also appended.
 	 */
-	public static void setGroups(final GeneralDatabaseManager db, final GenericParam param) {
+	public static void setGroups(final GeneralDatabaseManager db, final GenericParam param, final Transaction session) {
 		// If userName and requestedUserName are the same - do nothing
 		if (param.getUserName() != null && param.getRequestedUserName() != null) {
 			if (param.getUserName().equals(param.getRequestedUserName())) return;
 		}
-		final Boolean friends = db.isFriendOf(param);
-		final List<Integer> groups = db.getGroupsForUser(param);
+		final Boolean friends = db.isFriendOf(param, session);
+		final List<Integer> groups = db.getGroupsForUser(param, session);
 		if (friends) {
 			groups.add(ConstantID.GROUP_FRIENDS.getId());
 		}
@@ -57,8 +65,8 @@ public class DatabaseUtils {
 	/**
 	 * This needs to be done for all get*ForGroup* queries.
 	 */
-	public static void prepareGetPostForGroup(final GeneralDatabaseManager db, final GenericParam param) {
-		DatabaseUtils.setGroups(db, param);
+	public static void prepareGetPostForGroup(final GeneralDatabaseManager db, final GenericParam param, final Transaction session) {
+		DatabaseUtils.setGroups(db, param, session);
 		// the group type needs to be set to friends because of the second union
 		// in the SQL statement
 		param.setGroupType(ConstantID.GROUP_FRIENDS);
@@ -67,10 +75,14 @@ public class DatabaseUtils {
 	/**
 	 * This needs to be done for all get*ForUser* queries.
 	 */
-	public static void prepareGetPostForUser(final GeneralDatabaseManager db, final GenericParam param) {
+	public static void prepareGetPostForUser(final GeneralDatabaseManager db, final GenericParam param, final Transaction session) {
 		// if the groupId is invalid we have to check for groups manually
 		if (param.getGroupId() == ConstantID.GROUP_INVALID.getId()) {
-			DatabaseUtils.setGroups(db, param);
+			DatabaseUtils.setGroups(db, param, session);
 		}
+	}
+
+	public static Transaction getDatabaseSession() {
+		return new Transaction(getSqlMap());
 	}
 }

@@ -1,11 +1,13 @@
 package org.bibsonomy.database.util;
 
+import java.io.Closeable;
 import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.util.ExceptionUtils;
 
-import com.ibatis.sqlmap.client.SqlMapClient;
+import com.ibatis.sqlmap.client.SqlMapExecutor;
+import com.ibatis.sqlmap.client.SqlMapSession;
 
 /**
  * This class wraps the sqlMap for two reasons:
@@ -18,93 +20,136 @@ import com.ibatis.sqlmap.client.SqlMapClient;
  * 
  * @author Christian Schenk
  */
-public class Transaction {
+public class Transaction implements Closeable {
 
 	/** Logger */
 	protected static final Logger log = Logger.getLogger(Transaction.class);
 	/** Communication with the database is done with the sqlMap */
-	private final SqlMapClient sqlMap;
-	/** If this transaction is readonly it won't be committed */
-	private final boolean readonly;
-	/** Determines whether a transaction has been started */
-	private boolean started;
-	/** Determines whether this transaction is finished */
-	private boolean finished;
-	/**
-	 * Determines whether more than one query will be executed. This can be used
-	 * to start and end a transaction manually.
-	 */
-	private boolean batch;
+	private final SqlMapSession sqlMap;
+	/** how many commit-calls have to be made for getting the real transaction to become committed */
+	private int transactionDepth;
+	private int uncommittedDepth;
+	/** if one virtual transaction is aborted, no other virtual transaction will become committed until all virtual transactions are ended */
+	private boolean aborted;
+	private boolean closed;
 
-	public Transaction(final boolean readonly) {
-		this.sqlMap = DatabaseUtils.getSqlMapClient(log);
-		this.readonly = readonly;
-		this.started = false;
-		this.finished = false;
-		this.batch = false;
+	protected Transaction(final SqlMapSession sqlMap) {
+		this.sqlMap = sqlMap;
+		this.transactionDepth = 0;
+		this.transactionDepth = 0;
+		this.aborted = false;
+		this.closed = false;
 	}
 
 	/**
 	 * Returns the sqlMap associated with this transaction.
 	 */
-	public SqlMapClient getSqlMap() {
+	public SqlMapExecutor getSqlMapExecutor() {
 		return this.sqlMap;
 	}
 
 	/**
-	 * Enables manual transaction management.
+	 * starts a virtual transaction (a real one if no real transaction has been started yet).
+	 * Either transactionSuccess or transactionFailure MUST be called hereafter.
 	 */
-	public void setBatch() {
-		this.batch = true;
-	}
-
-	/**
-	 * Returns true if this transaction object is managed manually, otherwise
-	 * false.
-	 */
-	public boolean isBatch() {
-		return this.batch;
-	}
-
-	/**
-	 * Starts a transaction if it hasn't been started yet. There's no need to
-	 * call this manually if batch is set to true.
-	 */
-	public void startTransaction() {
-		if (this.started) return;
-		this.started = true;
-		try {
-			this.sqlMap.startTransaction();
-		} catch (final SQLException ex) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't start transaction");
+	public void beginTransaction() {
+		if (aborted == true) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "real transaction already aborted");
 		}
+		if (transactionDepth == 0) {
+			try {
+				this.sqlMap.startTransaction();
+			} catch (final SQLException ex) {
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't start transaction");
+			}
+		}
+		++this.transactionDepth;
+		++this.uncommittedDepth;
 	}
 
 	/**
-	 * Commits the transaction. Once a transaction has been commited no further
-	 * queries are allowed.
+	 * marks the current (virtual) transaction as having been sucessfully completed.
+	 * if the transaction isn't virtual commits the real transaction .
 	 */
 	public void commitTransaction() {
-		if (!this.started || this.finished) return;
-		try {
-			if (!this.readonly) this.sqlMap.commitTransaction();
-			this.endTransaction();
-		} catch (final SQLException ex) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't commit transaction");
+		if (uncommittedDepth > 0) {
+			--uncommittedDepth;
+		} else {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "No transaction open");
 		}
 	}
 
+
 	/**
-	 * Ends the transaction. If the transaction hasn't been commited the
-	 * transaction will be aborted.
+	 * if this is called before the current (virtual) transaction has been committed, the 
+	 * transaction-stack is marked as failed. This causes the real transaction (with all N
+	 * virtual nested transactions) to abort.
+	 * this should always be called after each transaction, that has begun with
+	 * beginTransaction, sometimes with a preceeding call to commitTransaction, sometimes
+	 * (in case of an exception) without.
 	 */
 	public void endTransaction() {
-		if (!this.started || this.finished) return;
-		this.finished = true;
+		if (transactionDepth > 0) {
+			--transactionDepth;
+			if (transactionDepth < uncommittedDepth) {
+				// endTransaction was called before commitTransaction => abort
+				aborted = true;
+			}
+			if (transactionDepth == 0) {
+				if (uncommittedDepth == 0) {
+					if  (aborted == false) {
+						try {
+							this.sqlMap.commitTransaction();
+							log.info("committed");
+						} catch (final SQLException ex) {
+							ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't commit transaction");
+						}
+					}
+				}
+				uncommittedDepth = 0;
+				aborted = false;
+				try {
+					this.sqlMap.endTransaction();
+					log.debug("ended");
+				} catch (final SQLException ex) {
+					ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't end transaction");
+				}
+			}
+		} else {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "No transaction open");
+		}
+	}
+	
+	/** MUST be called to release the db-connection */
+	public void close() {
 		try {
 			this.sqlMap.endTransaction();
-		} catch (SQLException ex) {
+			log.debug("ended");
+		} catch (final SQLException ex) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't end transaction");
 		}
+		this.sqlMap.close();
+		this.closed = true;
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		// try to take care of other peoples mistakes. it may take a while before this is called,
+		// but it's better than nothing.
+		if (this.closed == false) {
+			log.error(this.getClass().getName() + " not closed");
+			this.sqlMap.close();
+		}
+		super.finalize();
+	}
+
+	public void somethingWentWrong() {
+		if (transactionDepth > 0) {
+			aborted = true;
+		}
+	}
+
+	public boolean isAborted() {
+		return this.aborted;
 	}
 }
