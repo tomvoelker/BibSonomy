@@ -37,7 +37,10 @@ public abstract class GenericParam {
 	private Date date;
 	/** If a contentId is updated or deleted we need this as reference */
 	private int requestedContentId;
-	/** The hash of a post, e.g. a bookmark or a BibTex */
+	/**
+	 * The hash of a post, e.g. a bookmark or a BibTex
+	 * TODO: really of the post and not of the resource? and for what kind of hash is this used? isn't it resource-specific and shouldn't it be set in the resource-field?
+	 */
 	private String hash;
 	/** RegEx search pattern */
 	private String search;
@@ -183,6 +186,7 @@ public abstract class GenericParam {
 		this.groupId = groupId;
 	}
 
+	// TODO: what hash?, what for?, why in genericparam and not in resource-field?
 	public String getHash() {
 		return this.hash;
 	}
@@ -191,6 +195,7 @@ public abstract class GenericParam {
 		this.hash = requBibtex;
 	}
 
+	// TODO: why in genericparam and not in resource-field?
 	public String getRequestedUserName() {
 		return this.requestedUserName;
 	}
