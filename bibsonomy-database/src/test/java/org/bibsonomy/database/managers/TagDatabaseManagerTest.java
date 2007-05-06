@@ -11,7 +11,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getTagById() {
-		final Tag tag = this.tagDb.getTagById(this.tagParam);
+		final Tag tag = this.tagDb.getTagById(this.tagParam, this.dbSession);
 		assertEquals(5218, tag.getId());
 		assertEquals("$100", tag.getName());
 		assertEquals("", tag.getStem());
@@ -20,7 +20,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getTagByCount() {
-		final List<Tag> tags = this.tagDb.getTagByCount(this.tagParam);
+		final List<Tag> tags = this.tagDb.getTagByCount(this.tagParam, this.dbSession);
 		assertEquals(19, tags.size());
 		for (final Tag tag : tags)
 			assertEquals(100, tag.getCount());
@@ -28,25 +28,25 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getAllTags() {
-		final List<Tag> tags = this.tagDb.getAllTags(this.tagParam);
+		final List<Tag> tags = this.tagDb.getAllTags(this.tagParam, this.dbSession);
 		assertEquals(10, tags.size());
 	}
 
 	@Test
 	public void getTagsViewable() {
-		final List<Tag> tags = this.tagDb.getTagsViewable(this.tagParam);
+		final List<Tag> tags = this.tagDb.getTagsViewable(this.tagParam, this.dbSession);
 		assertEquals(10, tags.size());
 	}
 
 	@Test
 	public void getTagsByUser() {
-		final List<Tag> tags = this.tagDb.getTagsByUser(this.tagParam);
+		final List<Tag> tags = this.tagDb.getTagsByUser(this.tagParam, this.dbSession);
 		assertEquals(10, tags.size());
 	}
 
 	@Test
 	public void getTagsByGroup() {
-		final List<Tag> tags = this.tagDb.getTagsByGroup(this.tagParam);
+		final List<Tag> tags = this.tagDb.getTagsByGroup(this.tagParam, this.dbSession);
 		assertEquals(10, tags.size());
 	}
 
@@ -55,7 +55,6 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	
 	@Test
-	 public void getTagsByExpression() { this.tagDb.
-	 getTagsByExpression(this.tagParam); }
+	 public void getTagsByExpression() { this.tagDb.getTagsByExpression(this.tagParam, this.dbSession); }
 	 
 }

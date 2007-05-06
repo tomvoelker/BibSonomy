@@ -20,20 +20,20 @@ public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void isFriendOf() {
 		this.bookmarkParam.setUserName("stumme");
 		this.bookmarkParam.setRequestedUserName("grahl");
-		assertTrue(this.generalDb.isFriendOf(this.bookmarkParam));
+		assertTrue(this.generalDb.isFriendOf(this.bookmarkParam, this.dbSession));
 
 		// with no users set no exception should be thrown and the result should
 		// just be "false"
 		this.bookmarkParam.setUserName(null);
 		this.bookmarkParam.setRequestedUserName(null);
-		assertFalse(this.generalDb.isFriendOf(this.bookmarkParam));
+		assertFalse(this.generalDb.isFriendOf(this.bookmarkParam, this.dbSession));
 	}
 
 	@Test
 	public void getGroupsForUser() {
-		assertEquals(4, this.generalDb.getGroupsForUser(this.bookmarkParam).size());
+		assertEquals(4, this.generalDb.getGroupsForUser(this.bookmarkParam, this.dbSession).size());
 		this.bookmarkParam.setUserName(null);
-		assertTrue(this.generalDb.getGroupsForUser(this.bookmarkParam).size() == 0);
+		assertTrue(this.generalDb.getGroupsForUser(this.bookmarkParam, this.dbSession).size() == 0);
 	}
 
 	/*
@@ -45,31 +45,31 @@ public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getGroupIdByGroupNameAndUserName() {
 		// group exists
 		this.bookmarkParam.setRequestedGroupName("kde");
-		assertEquals(ConstantID.GROUP_KDE.getId(), this.generalDb.getGroupIdByGroupNameAndUserName(this.bookmarkParam));
-		assertEquals(ConstantID.GROUP_KDE.getId(), this.generalDb.getGroupIdByGroupName(this.bookmarkParam));
+		assertEquals(ConstantID.GROUP_KDE.getId(), this.generalDb.getGroupIdByGroupNameAndUserName(this.bookmarkParam, this.dbSession));
+		assertEquals(ConstantID.GROUP_KDE.getId(), this.generalDb.getGroupIdByGroupName(this.bookmarkParam, this.dbSession));
 
 		// group doesn't exist
 		this.resetParameters();
 		this.bookmarkParam.setRequestedGroupName("this-group-doesnt-exists");
-		assertEquals(ConstantID.GROUP_INVALID.getId(), this.generalDb.getGroupIdByGroupNameAndUserName(this.bookmarkParam));
-		assertEquals(ConstantID.GROUP_INVALID.getId(), this.generalDb.getGroupIdByGroupName(this.bookmarkParam));
+		assertEquals(ConstantID.GROUP_INVALID.getId(), this.generalDb.getGroupIdByGroupNameAndUserName(this.bookmarkParam, this.dbSession));
+		assertEquals(ConstantID.GROUP_INVALID.getId(), this.generalDb.getGroupIdByGroupName(this.bookmarkParam, this.dbSession));
 
 		// groupname is null
 		this.resetParameters();
 		this.bookmarkParam.setRequestedGroupName(null);
 		try {
-			this.generalDb.getGroupIdByGroupNameAndUserName(this.bookmarkParam);
+			this.generalDb.getGroupIdByGroupNameAndUserName(this.bookmarkParam, this.dbSession);
 			fail("Exception should be thrown");
 		} catch (final Exception ex) {
 		}
 		try {
-			this.generalDb.getGroupIdByGroupName(this.bookmarkParam);
+			this.generalDb.getGroupIdByGroupName(this.bookmarkParam, this.dbSession);
 			fail("Exception should be thrown");
 		} catch (final Exception ex) {
 		}
 	}
 
 	public void isSpammer() {
-		this.generalDb.isSpammer(this.bookmarkParam);
+		this.generalDb.isSpammer(this.bookmarkParam, this.dbSession);
 	}
 }

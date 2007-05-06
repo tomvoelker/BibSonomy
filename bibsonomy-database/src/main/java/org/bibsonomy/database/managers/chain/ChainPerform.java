@@ -3,6 +3,7 @@ package org.bibsonomy.database.managers.chain;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
@@ -16,5 +17,5 @@ public interface ChainPerform<T extends Resource> {
 	/**
 	 * Returns a list of posts.
 	 */
-	public List<Post<T>> perform(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end);
+	public List<Post<T>> perform(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction transaction);
 }

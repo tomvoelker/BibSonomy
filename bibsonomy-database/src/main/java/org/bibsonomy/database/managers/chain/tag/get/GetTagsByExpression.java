@@ -5,6 +5,7 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.tag.TagChainElement;
 import org.bibsonomy.database.params.TagParam;
+import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.model.Tag;
 
 /**
@@ -23,12 +24,12 @@ public class GetTagsByExpression extends TagChainElement {
 	 * regex: given
 	 */
 	@Override
-	protected List<Tag> handle(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end) {
+	protected List<Tag> handle(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end, final Transaction session) {
 		final TagParam param = new TagParam();
 		param.setOffset(start);
 		int limit = end - start;
 		param.setLimit(limit);
-		List<Tag> tags = db.getTagsByExpression(param);
+		List<Tag> tags = db.getTagsByExpression(param, session);
 		if (tags.size() != 0) {
 			System.out.println("GetTagsByExpression");
 		}

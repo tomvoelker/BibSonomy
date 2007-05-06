@@ -1,10 +1,13 @@
 package org.bibsonomy.database.managers;
 
+import org.apache.log4j.Logger;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.database.util.DatabaseUtils;
+import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -17,6 +20,7 @@ import org.junit.Before;
  * @author Christian Schenk
  */
 public abstract class AbstractDatabaseManagerTest {
+	private static final Logger log = Logger.getLogger(AbstractDatabaseManagerTest.class);
 
 	/** The database manager for general queries */
 	protected GeneralDatabaseManager generalDb;
@@ -37,6 +41,7 @@ public abstract class AbstractDatabaseManagerTest {
 	protected UserParam userParam;
 	protected TagParam tagParam;
 	protected GroupParam groupParam;
+	protected Transaction dbSession;
 
 	@Before
 	public void setUp() {
@@ -48,17 +53,23 @@ public abstract class AbstractDatabaseManagerTest {
 		this.groupDb = GroupDatabaseManager.getInstance();
 		this.resetParameters();
 
-		// testcases shouldn't write to the db
-		this.generalDb.setReadonly();
-		this.bookmarkDb.setReadonly();
-		this.bibTexDb.setReadonly();
-		this.tagDb.setReadonly();
-		this.userDb.setReadonly();
-		this.groupDb.setReadonly();
+		// testcases shouldn't write into the db
+		log.debug("1");
+		try {
+			dbSession = DatabaseUtils.getDatabaseSession();
+			dbSession.beginTransaction();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@After
 	public void tearDown() {
+		log.debug("2");
+		dbSession.endTransaction();
+		log.debug("3");
+		dbSession.close();
+		log.debug("4");
 		this.generalDb = null;
 		this.bookmarkDb = null;
 		this.bibTexDb = null;

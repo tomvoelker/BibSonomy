@@ -12,29 +12,29 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getAllUsers() {
-		final List<User> users = this.userDb.getAllUsers(this.userParam);
+		final List<User> users = this.userDb.getAllUsers(this.userParam, this.dbSession);
 		assertEquals(1569, users.size());
 	}
 
 	@Test
 	public void getUserDetails() {
-		this.userDb.getUserDetails(this.userParam);
+		this.userDb.getUserDetails(this.userParam, this.dbSession);
 	}
 
 	@Test
 	public void getPrivlevelOfUser() {
-		assertEquals(ConstantID.GROUP_PUBLIC.getId(), this.userDb.getPrivlevelOfUser(this.userParam));
+		assertEquals(ConstantID.GROUP_PUBLIC.getId(), this.userDb.getPrivlevelOfUser(this.userParam, this.dbSession));
 	}
 
 	@Test
 	public void getUsersOfGroupPublic() {
-		final List<User> users = this.userDb.getUsersOfGroupPublic(this.userParam);
+		final List<User> users = this.userDb.getUsersOfGroupPublic(this.userParam, this.dbSession);
 		assertEquals(13, users.size());
 	}
 
 	@Test
 	public void getUsersOfGroupHidden() {
-		final List<User> users = this.userDb.getUsersOfGroupPrivate(this.userParam);
+		final List<User> users = this.userDb.getUsersOfGroupPrivate(this.userParam, this.dbSession);
 		assertEquals(1, users.size());
 	}
 

@@ -12,7 +12,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getAllGroups() {
-		final List<Group> allGroups = this.groupDb.getAllGroups();
+		final List<Group> allGroups = this.groupDb.getAllGroups(this.dbSession);
 
 		for (final Group group : allGroups) {
 			final String realname = group.getUsers().get(0).getRealname();
@@ -33,7 +33,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getGroupByName() {
-		final Group kdeGroup = this.groupDb.getGroupByName(this.groupParam);
+		final Group kdeGroup = this.groupDb.getGroupByName(this.groupParam, this.dbSession);
 		assertEquals("kde", kdeGroup.getName());
 		assertEquals(ConstantID.GROUP_KDE.getId(), kdeGroup.getGroupId());
 		assertEquals("Knowledge and Data Engineering Group", kdeGroup.getUsers().get(0).getRealname());
@@ -42,7 +42,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getGroupMembers() {
-		final Group kdeGroup = this.groupDb.getGroupMembers(this.groupParam);
+		final Group kdeGroup = this.groupDb.getGroupMembers(this.groupParam, this.dbSession);
 		assertEquals("kde", kdeGroup.getName());
 		assertEquals(ConstantID.GROUP_KDE.getId(), kdeGroup.getGroupId());
 		assertEquals(13, kdeGroup.getUsers().size());	
@@ -50,7 +50,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getGroupsForUser() {
-		final List<Group> groups = this.groupDb.getGroupsForUser(this.groupParam);
+		final List<Group> groups = this.groupDb.getGroupsForUser(this.groupParam, this.dbSession);
 		assertEquals(4, groups.size());
 	}
 }

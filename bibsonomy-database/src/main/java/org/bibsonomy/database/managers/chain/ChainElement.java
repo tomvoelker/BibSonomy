@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
+import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
@@ -30,12 +31,12 @@ public abstract class ChainElement<T extends Resource> implements ChainPerform<T
 		this.next = nextElement;
 	}
 
-	public final List<Post<T>> perform(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
+	public final List<Post<T>> perform(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction transaction) {
 		if (this.canHandle(authUser, grouping, groupingName, tags, hash, popular, added, start, end)) {
-			return this.handle(authUser, grouping, groupingName, tags, hash, popular, added, start, end);
+			return this.handle(authUser, grouping, groupingName, tags, hash, popular, added, start, end, transaction);
 		} else {
 			if (this.next != null) {
-				return this.next.perform(authUser, grouping, groupingName, tags, hash, popular, added, start, end);
+				return this.next.perform(authUser, grouping, groupingName, tags, hash, popular, added, start, end, transaction);
 			}
 		}
 		// FIXME nobody can handle this -> throw an exception
@@ -45,7 +46,7 @@ public abstract class ChainElement<T extends Resource> implements ChainPerform<T
 	/**
 	 * Handles the request.
 	 */
-	protected abstract List<Post<T>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end);
+	protected abstract List<Post<T>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction transaction);
 
 	/**
 	 * Returns true if the request can be handled, otherwise false.
