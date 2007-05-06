@@ -21,6 +21,7 @@ import org.bibsonomy.model.Tag;
  * 
  * @author Christian Schenk
  * @author mgr
+ * @version $Id$
  */
 public class BookmarkDatabaseManager extends AbstractDatabaseManager implements CrudableContent<Bookmark> {
 

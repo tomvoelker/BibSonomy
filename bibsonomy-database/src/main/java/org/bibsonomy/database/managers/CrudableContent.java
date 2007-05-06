@@ -10,6 +10,8 @@ import org.bibsonomy.model.Resource;
 /**
  * For every content type there should exist a separate class which implements
  * this interface. It supplies basic CRUD: create, read, update and delete.
+ * 
+ * @version $Id$
  */
 public interface CrudableContent<T extends Resource> {
 	// read

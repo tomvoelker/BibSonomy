@@ -16,5 +16,5 @@ public interface ChainPerformForTag {
 	/**
 	 * Returns a list of tags.
 	 */
-	public List<Tag> perform(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end, Transaction session);
+	public List<Tag> perform(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end, Transaction transaction);
 }

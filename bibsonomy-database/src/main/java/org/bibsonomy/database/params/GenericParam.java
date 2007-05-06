@@ -15,6 +15,7 @@ import org.bibsonomy.model.Tag;
  * of ?-marks.
  * 
  * @author Christian Schenk
+ * @version $Id$
  */
 public abstract class GenericParam {
 	/** A list of tags */

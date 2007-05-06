@@ -10,15 +10,14 @@ import com.ibatis.sqlmap.client.SqlMapExecutor;
 import com.ibatis.sqlmap.client.SqlMapSession;
 
 /**
- * This class wraps the sqlMap for two reasons:
- * <ol>
- * <li>A dependency to SqlMapClient isn't scattered all over the code</li>
- * <li>If reading the sqlMap gets slow, this class can be enhanced easily</li>
- * </ol>
+ * This class wraps the sqlMap.<br/>
+ * 
  * See org.bibsonomy.database.AbstractDatabaseManager.transactionWrapper() for
  * further explanation and use of this class.
  * 
  * @author Christian Schenk
+ * @author Jens Illig
+ * @version $Id$
  */
 public class Transaction implements Closeable {
 
@@ -49,14 +48,15 @@ public class Transaction implements Closeable {
 	}
 
 	/**
-	 * starts a virtual transaction (a real one if no real transaction has been started yet).
-	 * Either transactionSuccess or transactionFailure MUST be called hereafter.
+	 * Starts a virtual transaction (a real one if no real transaction has been
+	 * started yet). Either transactionSuccess or transactionFailure MUST be
+	 * called hereafter.
 	 */
 	public void beginTransaction() {
-		if (aborted == true) {
+		if (this.aborted == true) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "real transaction already aborted");
 		}
-		if (transactionDepth == 0) {
+		if (this.transactionDepth == 0) {
 			try {
 				this.sqlMap.startTransaction();
 			} catch (final SQLException ex) {
@@ -68,36 +68,35 @@ public class Transaction implements Closeable {
 	}
 
 	/**
-	 * marks the current (virtual) transaction as having been sucessfully completed.
-	 * if the transaction isn't virtual commits the real transaction .
+	 * Marks the current (virtual) transaction as having been sucessfully completed.
+	 * If the transaction isn't virtual commits the real transaction.
 	 */
 	public void commitTransaction() {
-		if (uncommittedDepth > 0) {
-			--uncommittedDepth;
+		if (this.uncommittedDepth > 0) {
+			--this.uncommittedDepth;
 		} else {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "No transaction open");
 		}
 	}
 
-
 	/**
-	 * if this is called before the current (virtual) transaction has been committed, the 
-	 * transaction-stack is marked as failed. This causes the real transaction (with all N
-	 * virtual nested transactions) to abort.
-	 * this should always be called after each transaction, that has begun with
-	 * beginTransaction, sometimes with a preceeding call to commitTransaction, sometimes
-	 * (in case of an exception) without.
+	 * If this is called before the current (virtual) transaction has been
+	 * committed, the transaction-stack is marked as failed. This causes the
+	 * real transaction (with all N virtual nested transactions) to abort.<br/>
+	 * This should always be called after each transaction, that has begun with
+	 * beginTransaction, sometimes with a preceeding call to commitTransaction,
+	 * sometimes (in case of an exception) without.
 	 */
 	public void endTransaction() {
-		if (transactionDepth > 0) {
-			--transactionDepth;
-			if (transactionDepth < uncommittedDepth) {
+		if (this.transactionDepth > 0) {
+			--this.transactionDepth;
+			if (this.transactionDepth < this.uncommittedDepth) {
 				// endTransaction was called before commitTransaction => abort
-				aborted = true;
+				this.aborted = true;
 			}
-			if (transactionDepth == 0) {
-				if (uncommittedDepth == 0) {
-					if  (aborted == false) {
+			if (this.transactionDepth == 0) {
+				if (this.uncommittedDepth == 0) {
+					if  (this.aborted == false) {
 						try {
 							this.sqlMap.commitTransaction();
 							log.info("committed");
@@ -106,8 +105,8 @@ public class Transaction implements Closeable {
 						}
 					}
 				}
-				uncommittedDepth = 0;
-				aborted = false;
+				this.uncommittedDepth = 0;
+				this.aborted = false;
 				try {
 					this.sqlMap.endTransaction();
 					log.debug("ended");
@@ -144,8 +143,8 @@ public class Transaction implements Closeable {
 	}
 
 	public void somethingWentWrong() {
-		if (transactionDepth > 0) {
-			aborted = true;
+		if (this.transactionDepth > 0) {
+			this.aborted = true;
 		}
 	}
 

@@ -6,6 +6,12 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 
+/**
+ * Parameters that are specific to tags.
+ *
+ * @author Miranda Grahl
+ * @version $Id$
+ */
 public class TagParam extends GenericParam {
 
 	private String name;
@@ -16,8 +22,7 @@ public class TagParam extends GenericParam {
 	private List<Tag> subTags;
 	private List<Post<? extends Resource>> posts;
 	private String regex;
-	
-	
+
 	public String getRegex() {
 		return this.regex;
 	}
@@ -25,8 +30,7 @@ public class TagParam extends GenericParam {
 	public void setRegex(String regex) {
 		this.regex = regex;
 	}
-	
-	
+
 	public int getCount() {
 		return this.count;
 	}

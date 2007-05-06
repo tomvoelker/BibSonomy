@@ -24,7 +24,7 @@ public class GetTagsByUser extends TagChainElement {
 	 * regex: irrelevant  
 	 */
 	@Override
-	protected List<Tag> handle(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end, final Transaction session) {
+	protected List<Tag> handle(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end, final Transaction transaction) {
 		final TagParam param = new TagParam();
 		param.setRequestedUserName(groupingName);
 		param.setUserName(authUser);
@@ -32,8 +32,8 @@ public class GetTagsByUser extends TagChainElement {
 		int limit = end - start;
 		param.setLimit(limit);
 
-		param.setGroups(generalDb.getGroupsForUser(param, session));
-		List<Tag> tags = db.getTagsByUser(param, session);
+		param.setGroups(generalDb.getGroupsForUser(param, transaction));
+		List<Tag> tags = db.getTagsByUser(param, transaction);
 		if (tags.size() != 0) {
 			System.out.println("GetTagsByUser");
 		}

@@ -16,9 +16,9 @@ import org.bibsonomy.model.Tag;
 public class GetAllTags extends TagChainElement {
 
 	@Override
-	protected List<Tag> handle(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end, final Transaction session) {
+	protected List<Tag> handle(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end, final Transaction transaction) {
 		final TagParam param = new TagParam();
-		final List<Tag> tags = db.getAllTags(param, session);
+		final List<Tag> tags = db.getAllTags(param, transaction);
 		if (tags.size() != 0) {
 			System.out.println("GetAllTags");
 		}

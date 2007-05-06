@@ -7,6 +7,7 @@ import org.bibsonomy.model.Bookmark;
  * Parameters that are specific to bookmarks.
  * 
  * @author Christian Schenk
+ * @version $Id$
  */
 public class BookmarkParam extends ResourcesParam<Bookmark> {
 

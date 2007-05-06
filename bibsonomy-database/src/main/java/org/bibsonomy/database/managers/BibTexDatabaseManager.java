@@ -22,6 +22,7 @@ import org.bibsonomy.model.util.SimHash;
  * 
  * @author Christian Schenk
  * @author mgr
+ * @version $Id$
  */
 public class BibTexDatabaseManager extends AbstractDatabaseManager implements CrudableContent<BibTex> {
 
@@ -267,9 +268,9 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	/**
 	 * Returns the number of publications for a given user.
 	 */
-	public Integer getBibTexForUserCount(final BibTexParam param, final Transaction session) {
-		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
-		return this.queryForObject("getBibTexForUserCount", param, Integer.class, session);
+	public Integer getBibTexForUserCount(final BibTexParam param, final Transaction transaction) {
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, transaction);
+		return this.queryForObject("getBibTexForUserCount", param, Integer.class, transaction);
 	}
 
 	/**

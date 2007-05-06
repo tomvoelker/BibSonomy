@@ -16,6 +16,7 @@ import org.junit.runners.Suite;
  * 
  * @author Christian Schenk
  * @author mgr
+ * @version $Id$
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses( { ParamTest.class, BookmarkDatabaseManagerTest.class, BibTexDatabaseManagerTest.class, TagDatabaseManagerTest.class, TransactionTest.class, UserDatabaseManagerTest.class, GroupDatabaseManagerTest.class, RestDatabaseManagerTest.class })

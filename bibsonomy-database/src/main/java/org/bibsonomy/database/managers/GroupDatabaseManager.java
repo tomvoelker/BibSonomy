@@ -11,6 +11,7 @@ import org.bibsonomy.model.Group;
  * Used to retrieve groups from the database.
  *
  * @author Christian Schenk
+ * @version $Id$
  */
 public class GroupDatabaseManager extends AbstractDatabaseManager  {
 
@@ -27,28 +28,28 @@ public class GroupDatabaseManager extends AbstractDatabaseManager  {
 	/**
 	 * Returns a list of all groups
 	 */
-	public List<Group> getAllGroups(final Transaction session) {
-		return this.queryForList("getAllGroups", null, Group.class, session);
+	public List<Group> getAllGroups(final Transaction transaction) {
+		return this.queryForList("getAllGroups", null, Group.class, transaction);
 	}
 
 	/**
 	 * Returns a specific group
 	 */
-	public Group getGroupByName(final GroupParam param, final Transaction session) {
-		return this.queryForObject("getGroupByName", param, Group.class, session);
+	public Group getGroupByName(final GroupParam param, final Transaction transaction) {
+		return this.queryForObject("getGroupByName", param, Group.class, transaction);
 	}
 
 	/**
 	 * Returns a group with all its memebers
 	 */
-	public Group getGroupMembers(final GroupParam param, final Transaction session) {
-		return this.queryForObject("getGroupMembers", param, Group.class, session);
+	public Group getGroupMembers(final GroupParam param, final Transaction transaction) {
+		return this.queryForObject("getGroupMembers", param, Group.class, transaction);
 	}
 
 	/**
 	 * Returns a a list of groups for a given user
 	 */
-	public List<Group> getGroupsForUser(final GroupParam param, final Transaction session) {
-		return this.queryForList("getGroupsForUser", param, Group.class, session);
+	public List<Group> getGroupsForUser(final GroupParam param, final Transaction transaction) {
+		return this.queryForList("getGroupsForUser", param, Group.class, transaction);
 	}
 }

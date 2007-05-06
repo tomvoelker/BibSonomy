@@ -12,6 +12,7 @@ import org.bibsonomy.util.ExceptionUtils;
  * Used to retrieve all different kind of stuff from the database.
  * 
  * @author Christian Schenk
+ * @version $Id$
  */
 public class GeneralDatabaseManager extends AbstractDatabaseManager {
 
@@ -33,9 +34,9 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 *            Database-Properties used: userName, requestedUserName
 	 * @return true if the users are friends, false otherwise
 	 */
-	public Boolean isFriendOf(final GenericParam param, final Transaction session) {
+	public Boolean isFriendOf(final GenericParam param, final Transaction transaction) {
 		if (param.getUserName() == null || param.getRequestedUserName() == null) return false;
-		return this.queryForObject("isFriendOf", param, Boolean.class, session);
+		return this.queryForObject("isFriendOf", param, Boolean.class, transaction);
 	}
 
 	/**
@@ -47,10 +48,10 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 *            Database-Properties used: requestedUserName
 	 * @return true if the user is a spammer, false otherwise
 	 */
-	public Boolean isSpammer(final GenericParam param, final Transaction session) {
+	public Boolean isSpammer(final GenericParam param, final Transaction transaction) {
 		// TODO not tested
 		if (param.getRequestedUserName() == null) return false;
-		return this.queryForObject("isSpammer", param, Boolean.class, session);
+		return this.queryForObject("isSpammer", param, Boolean.class, transaction);
 	}
 
 	/**
@@ -60,8 +61,8 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 *            Database-Properties used: userName
 	 * @return A list of groupids
 	 */
-	public List<Integer> getGroupsForUser(final GenericParam param, final Transaction session) {
-		return this.queryForList("getGroupsForUser", param, Integer.class, session);
+	public List<Integer> getGroupsForUser(final GenericParam param, final Transaction transaction) {
+		return this.queryForList("getGroupsForUser", param, Integer.class, transaction);
 	}
 
 	/**
@@ -71,9 +72,9 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 *            Database-Properties used: requestedGroupName
 	 * @return groupid of group, ConstantID.GROUP_INVALID otherwise
 	 */
-	public Integer getGroupIdByGroupName(final GenericParam param, final Transaction session) {
+	public Integer getGroupIdByGroupName(final GenericParam param, final Transaction transaction) {
 		param.setUserName(null);
-		return this.getGroupIdByGroupNameAndUserName(param, session);
+		return this.getGroupIdByGroupNameAndUserName(param, transaction);
 	}
 
 	/**
@@ -83,11 +84,11 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 *            Database-Properties used: requestedGroupName, userName
 	 * @return groupid if user is in group, ConstantID.GROUP_INVALID otherwise
 	 */
-	public Integer getGroupIdByGroupNameAndUserName(final GenericParam param, final Transaction session) {
+	public Integer getGroupIdByGroupNameAndUserName(final GenericParam param, final Transaction transaction) {
 		if (param.getRequestedGroupName() == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "requestedGroupName is null");
 		}
-		final Integer rVal = this.queryForObject("getGroupIdByGroupNameAndUserName", param, Integer.class, session);
+		final Integer rVal = this.queryForObject("getGroupIdByGroupNameAndUserName", param, Integer.class, transaction);
 		if (rVal == null) return ConstantID.GROUP_INVALID.getId();
 		return rVal;
 	}
@@ -96,7 +97,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 * Get a current ContentID for setting a bookmark update the current
 	 * ContendID for bookmark and bibtex
 	 */
-	public Integer getNewContentId(final GenericParam param, final Transaction session) {
-		return this.queryForObject("getNewContentId", param, Integer.class, session);
+	public Integer getNewContentId(final GenericParam param, final Transaction transaction) {
+		return this.queryForObject("getNewContentId", param, Integer.class, transaction);
 	}
 }

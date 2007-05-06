@@ -3,12 +3,8 @@ package org.bibsonomy.database.managers.chain.bookmark;
 import java.util.LinkedList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.FirstChainElement;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 import org.junit.Test;
 
 public class BookmarkChainTest {
@@ -25,8 +21,7 @@ public class BookmarkChainTest {
 	int end=19;
 
 	@Test
-	public void chainTest(){
-	
+	public void chainTest() {
 		/*for (final FirstChainElement chain : this.chains) {
 			
 			final List<Post<? extends Resource>> list =chain.getFirstElement().perform(authUser, grouping, groupingName, tags, hash, popular, added, start, end);

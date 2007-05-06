@@ -24,12 +24,12 @@ public abstract class ChainElementForTag implements ChainPerformForTag {
 		this.next = nextElement;
 	}
 
-	public final List<Tag> perform(String authUser, GroupingEntity grouping, String groupingName,String regex, int start, int end, final Transaction session) {
+	public final List<Tag> perform(String authUser, GroupingEntity grouping, String groupingName,String regex, int start, int end, final Transaction transaction) {
 		if (this.canHandle( authUser,  grouping,  groupingName,regex, start, end)) {
-			return this.handle(  authUser,  grouping,  groupingName,regex, start, end, session);
+			return this.handle(  authUser,  grouping,  groupingName,regex, start, end, transaction);
 		} else {
 			if (this.next != null) {
-				return this.next.perform(authUser, grouping, groupingName,regex,start, end, session);
+				return this.next.perform(authUser, grouping, groupingName,regex,start, end, transaction);
 			}
 		}
 		// FIXME nobody can handle this -> throw an exception
@@ -39,7 +39,7 @@ public abstract class ChainElementForTag implements ChainPerformForTag {
 	/**
 	 * Handles the request.
 	 */	
-	protected abstract List<Tag> handle(String authUser, GroupingEntity grouping, String groupingName,String regex , int start, int end, Transaction session);
+	protected abstract List<Tag> handle(String authUser, GroupingEntity grouping, String groupingName,String regex , int start, int end, Transaction transaction);
 
 	/**
 	 * Returns true if the request can be handled, otherwise false.

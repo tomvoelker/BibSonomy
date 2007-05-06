@@ -1,7 +1,6 @@
 package org.bibsonomy.database.managers;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +20,9 @@ import org.bibsonomy.model.User;
 
 /**
  * This is an implementation of the LogicInterface for the REST-API.
- * // TODO: ...so why is it called RestDATABASEManager and is part of the DATABASE package??? i would advise introducing a three+-layer architecture 
+ * 
+ * TODO: ...so why is it called RestDATABASEManager and is part of the DATABASE
+ * package??? i would advise introducing a three+-layer architecture
  * 
  * @version $Id$
  */
@@ -29,18 +30,21 @@ public class RestDatabaseManager implements LogicInterface {
 
 	/** Singleton */
 	private final static RestDatabaseManager singleton = new RestDatabaseManager();
+	private final Map<Class<? extends Resource>, CrudableContent<? extends Resource>> allDatabaseManagers = new HashMap<Class<? extends Resource>, CrudableContent<? extends Resource>>();
 	private final BookmarkDatabaseManager bookmarkDBManager;
 	private final BibTexDatabaseManager bibtexDBManager;
-	private final Map<Class<? extends Resource>, CrudableContent<? extends Resource>> allDatabaseManagers = new HashMap<Class<? extends Resource>, CrudableContent<? extends Resource>>();
-	private UserDatabaseManager userDBManager = UserDatabaseManager.getInstance();
-	private TagDatabaseManager tagDBManager = TagDatabaseManager.getInstance();
+	private final UserDatabaseManager userDBManager;
+	private final TagDatabaseManager tagDBManager;
 	//private GroupDatabaseManager groupDBManager = GroupDatabaseManager.getInstance();
 
 	private RestDatabaseManager() {
-		bibtexDBManager = BibTexDatabaseManager.getInstance();
-		allDatabaseManagers.put(BibTex.class, bibtexDBManager);
-		bookmarkDBManager = BookmarkDatabaseManager.getInstance();
-		allDatabaseManagers.put(Bookmark.class, bookmarkDBManager);
+		this.bibtexDBManager = BibTexDatabaseManager.getInstance();
+		this.allDatabaseManagers.put(BibTex.class, this.bibtexDBManager);
+		this.bookmarkDBManager = BookmarkDatabaseManager.getInstance();
+		this.allDatabaseManagers.put(Bookmark.class, this.bookmarkDBManager);
+		
+		this.userDBManager = UserDatabaseManager.getInstance();
+		this.tagDBManager = TagDatabaseManager.getInstance();
 	}
 
 	public static LogicInterface getInstance() {
@@ -52,7 +56,7 @@ public class RestDatabaseManager implements LogicInterface {
 	}
 
 	/**
-	 * returns all users of the system has
+	 * Returns all users of the system
 	 * 
 	 * @param authUser currently logged in user's name
 	 * @param start
@@ -60,18 +64,16 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @return a set of users, an empty set else
 	 */
 	public List<User> getUsers(String authUser, int start, int end) {
-		List<User> users= new LinkedList <User>();
 		final Transaction session = this.openSession();
 		try {
-			users.addAll(userDBManager.getUsers(authUser, start, end, session));
-			return users; 
+			return this.userDBManager.getUsers(authUser, start, end, session);
 		} finally {
 			session.close();
 		}
 	}
 
 	/**
-	 * returns all users who are members of the specified group
+	 * Returns all users who are members of the specified group
 	 * 
 	 * @param authUser currently logged in user's name
 	 * @param groupName name of the group
@@ -80,34 +82,32 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @return  a set of users, an empty set else
 	 */
 	public List<User> getUsers(String authUser, String groupName, int start, int end) {
-		List<User> users= new LinkedList <User>();
-		Transaction session = this.openSession();
+		final Transaction session = this.openSession();
 		try {
-			users.addAll(userDBManager.getUsers(authUser, groupName, start, end, session));
-			return users;
+			return this.userDBManager.getUsers(authUser, groupName, start, end, session);
 		} finally {
 			session.close();
 		}
 	}
 
 	/**
-	 * returns details about a specified user
+	 * Returns details about a specified user
 	 * 
 	 * @param authUserName
 	 * @param userName name of the user we want to get details from
 	 * @return details about a named user, null else
 	 */
 	public User getUserDetails(String authUserName, String userName) {
-		Transaction session = this.openSession();
+		final Transaction session = this.openSession();
 		try {
-			return userDBManager.getUserDetails(authUserName,userName, session);
+			return this.userDBManager.getUserDetails(authUserName,userName, session);
 		} finally {
 			session.close();
 		}
 	}
 
 	/**
-	 * returns a list of posts. the list can be filtered
+	 * Returns a list of posts; the list can be filtered.
 	 * 
 	 * @param authUser
 	 *            name of the authenticated user
@@ -142,7 +142,7 @@ public class RestDatabaseManager implements LogicInterface {
 	 */
 	public <T extends Resource> List<Post<T>> getPosts(String authUser, Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
 		final List<Post<T>> result;
-		Transaction session = this.openSession();
+		final Transaction session = this.openSession();
 		try {
 			/*if (resourceType == Resource.class) {
 				 * yes, this IS unsave and indeed it BREAKS restrictions on generic-constraints.
@@ -170,7 +170,10 @@ public class RestDatabaseManager implements LogicInterface {
 		}
 		return result;
 	}
-	
+
+	/**
+	 * FIXME: Where's this method called?
+	 */
 	public BibTexParam buildBibTexParam(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
 		final BibTexParam param = new BibTexParam();		
 		param.setUserName(authUser);
@@ -186,12 +189,12 @@ public class RestDatabaseManager implements LogicInterface {
 		} else if (grouping == GroupingEntity.GROUP) {
 			param.setRequestedGroupName(groupingName); 
 		}
-		
 		return param;
 	}
 
 	/**
-	 * returns details to a post. a post is uniquely identified by a hash of the corresponding resource and a username
+	 * Returns details to a post. A post is uniquely identified by a hash of the
+	 * corresponding resource and a username.
 	 * 
 	 * @param authUser authenticated user name
 	 * @param resourceHash hash value of the corresponding resource
@@ -199,7 +202,7 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @return the post's details, null else
 	 */
 	public Post<? extends Resource> getPostDetails(String authUser, String resourceHash, String userName) {
-		Transaction session = this.openSession();
+		final Transaction session = this.openSession();
 		try {
 			Post<? extends Resource> rVal;
 			for (CrudableContent<? extends Resource> manager : allDatabaseManagers.values()) {
@@ -215,11 +218,13 @@ public class RestDatabaseManager implements LogicInterface {
 	}
 
 	/**
-	 * returns all groups of the system
+	 * Returns all groups of the system
+	 * 
 	 * TODO: what is the param "string" good for??
-	 * @param end 
-	 * @param start 
-	 * @param string 
+	 * 
+	 * @param end
+	 * @param start
+	 * @param string
 	 * @return a set of groups, an empty set else
 	 */
 	public List<Group> getGroups(String string, int start, int end) {
@@ -227,7 +232,7 @@ public class RestDatabaseManager implements LogicInterface {
 	}
 
 	/**
-	 * returns details of one group
+	 * Returns details of one group
 	 * 
 	 * @param authUserName
 	 * @param groupName
@@ -238,7 +243,7 @@ public class RestDatabaseManager implements LogicInterface {
 	}
 
 	/**
-	 * returns a list of tags. the list can be filtered
+	 * Returns a list of tags; the list can be filtered.
 	 * 
 	 * @param authUser
 	 *            name of the authenticated user
@@ -256,18 +261,16 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @return a set of tags, en empty set else
 	 */
 	public List<Tag> getTags(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end) {
-		final Transaction session = openSession();
+		final Transaction session = this.openSession();
 		try {
-			List<Tag> tags= new LinkedList<Tag>();
-			tags.addAll( tagDBManager.getTags(authUser, grouping, groupingName, regex, start, end, session) );
-			return tags; 
+			return this.tagDBManager.getTags(authUser, grouping, groupingName, regex, start, end, session); 
 		} finally {
 			session.close();
 		}
 	}
 
 	/**
-	 * returns details about a tag. those details are:
+	 * Returns details about a tag. Those details are:
 	 * <ul>
 	 * <li>details about the tag itself, like number of occurrences etc</li>
 	 * <li>list of subtags</li>
@@ -282,7 +285,7 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @return the tag's details, null else
 	 */
 	public Tag getTagDetails(String authUserName, String tagName) {
-		final Transaction session = openSession();
+		final Transaction session = this.openSession();
 		try {
 			return tagDBManager.getTagDetails( authUserName, tagName, session);
 		} finally {
@@ -345,7 +348,7 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @param resourceHash hash of the resource, which is connected to the post to delete 
 	 */
 	public void deletePost(String userName, String resourceHash) {
-		final Transaction session = openSession();
+		final Transaction session = this.openSession();
 		try {
 			// TODO would be nice to know about the resourcetype ot the instance behind this resourceHash
 			for (CrudableContent<? extends Resource> man : allDatabaseManagers.values()) {
@@ -375,10 +378,10 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @param update true if its an existing post (identified by its resource's intrahash), false if its a new post
 	 */
 	public <T extends Resource> void storePost(String userName, Post<T> post) {
-		Transaction session = openSession();
+		final Transaction session = this.openSession();
 		try {
-			CrudableContent<T> man = getFittingDatabaseManager(post);
-			String oldIntraHash = post.getResource().getIntraHash();
+			final CrudableContent<T> man = getFittingDatabaseManager(post);
+			final String oldIntraHash = post.getResource().getIntraHash();
 			post.getResource().recalculateHashes();
 			man.storePost(userName, post, oldIntraHash, session);
 		} finally {
@@ -387,10 +390,10 @@ public class RestDatabaseManager implements LogicInterface {
 	}
 
 	private <T extends Resource>CrudableContent<T> getFittingDatabaseManager(Post<T> post) {
-		Class resourceClass = post.getResource().getClass();
-		CrudableContent<? extends Resource> man = allDatabaseManagers.get(resourceClass);
+		final Class resourceClass = post.getResource().getClass();
+		CrudableContent<? extends Resource> man = this.allDatabaseManagers.get(resourceClass);
 		if (man == null) {
-			for (Map.Entry<Class<? extends Resource>, CrudableContent<? extends Resource>> entry : allDatabaseManagers.entrySet()) {
+			for (final Map.Entry<Class<? extends Resource>, CrudableContent<? extends Resource>> entry : this.allDatabaseManagers.entrySet()) {
 				if (entry.getKey().isAssignableFrom(resourceClass)) {
 					man = entry.getValue();
 					break;

@@ -7,6 +7,7 @@ import org.bibsonomy.model.BibTex;
  * Parameters that are specific to BibTex.
  * 
  * @author Christian Schenk
+ * @version $Id$
  */
 public class BibTexParam extends ResourcesParam<BibTex> {
 

@@ -18,12 +18,12 @@ import com.ibatis.sqlmap.client.SqlMapExecutor;
  * casting remains in this class and isn't scattered all over the code.
  * 
  * @author Christian Schenk
+ * @version $Id$
  */
 public class AbstractDatabaseManager {
 
 	/** Logger */
 	protected static final Logger log = Logger.getLogger(AbstractDatabaseManager.class);
-	/** Defines whether the database should be readonly */
 
 	/** Used to determine whether we want to retrieve an object or a list */
 	private enum QueryFor {
@@ -45,8 +45,8 @@ public class AbstractDatabaseManager {
 	protected <T> List<T> queryForList(final String query, final Object param, final Class<T> type, final Transaction transaction) {
 		return (List<T>) this.queryForAnything(query, param, QueryFor.LIST, transaction);
 	}
-	
-	/** 
+
+	/**
 	 * short form of queryForList without Type argument
 	 */
 	protected List queryForList(final String query, final Object param, final Transaction transaction) {
@@ -116,12 +116,7 @@ public class AbstractDatabaseManager {
 	/**
 	 * This method combines all calls to the SqlMap. This way we can catch the
 	 * exceptions in one place and surround the queries with transaction
-	 * management.<br/>
-	 * 
-	 * TODO: If AOP is used in the future, especially the management of
-	 * transactions could be rewritten as an aspect.
-	 * 
-	 * TODO: This should be moved to a TransactionManager class.
+	 * management.
 	 * 
 	 * @param query
 	 *            The SQL query which should be executed.
@@ -134,7 +129,7 @@ public class AbstractDatabaseManager {
 	 *            select
 	 * @return An object in case of a select statement, null otherwise
 	 */
-	private Object transactionWrapper(final String query, final Object param, final StatementType statementType, final QueryFor queryFor, Transaction transaction) {
+	private Object transactionWrapper(final String query, final Object param, final StatementType statementType, final QueryFor queryFor, final Transaction transaction) {
 		try {
 			return this.executeQuery(transaction.getSqlMapExecutor(), query, param, statementType, queryFor);
 		} catch (final Exception ex) {
@@ -146,8 +141,6 @@ public class AbstractDatabaseManager {
 
 	/**
 	 * Executes a query.
-	 * 
-	 * XXX: This should be moved to a TransactionManager class.
 	 */
 	private Object executeQuery(final SqlMapExecutor sqlMap, final String query, final Object param, final StatementType statementType, final QueryFor queryFor) throws SQLException {
 		Object rVal = null;
