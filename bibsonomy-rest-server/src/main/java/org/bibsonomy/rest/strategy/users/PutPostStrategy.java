@@ -57,7 +57,7 @@ public class PutPostStrategy extends Strategy
          // neither the client nor the REST API will calculate the new hash - 
          // this will be done by the logic behind the LogicInterface!
          if( !post.getResource().getIntraHash().equals( resourceHash ) ) throw new BadRequestOrResponseException( "wrong resource" );
-         context.getLogic().storePost( userName, post, true );
+         context.getLogic().storePost( userName, post );
       }
       catch( IOException e )
       {
@@ -78,7 +78,10 @@ public class PutPostStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.8  2007-05-01 22:28:47  jillig
+ * Revision 1.9  2007-05-06 01:39:17  jillig
+ * ->changed storePost-signature
+ *
+ * Revision 1.8  2007/05/01 22:28:47  jillig
  * ->more type-safety with class as resourcetype
  *
  * Revision 1.7  2007/04/15 11:05:07  mbork

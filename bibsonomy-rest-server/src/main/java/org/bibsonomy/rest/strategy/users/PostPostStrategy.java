@@ -48,7 +48,7 @@ public class PostPostStrategy extends Strategy
       try
       {
          Post<?> post = context.getRenderer().parsePost( new InputStreamReader( request.getInputStream() ) );
-         context.getLogic().storePost( userName, post, false );
+         context.getLogic().storePost( userName, post);
       }
       catch( IOException e )
       {
@@ -69,7 +69,10 @@ public class PostPostStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.6  2007-05-01 22:28:47  jillig
+ * Revision 1.7  2007-05-06 01:39:17  jillig
+ * ->changed storePost-signature
+ *
+ * Revision 1.6  2007/05/01 22:28:47  jillig
  * ->more type-safety with class as resourcetype
  *
  * Revision 1.5  2007/04/15 11:05:07  mbork
