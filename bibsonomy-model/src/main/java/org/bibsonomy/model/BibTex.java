@@ -1,5 +1,6 @@
 package org.bibsonomy.model;
 
+import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.model.Resource;
 
@@ -321,5 +322,11 @@ public class BibTex extends Resource {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	@Override
+	public void recalculateHashes() {
+		this.setIntraHash(SimHash.getSimHash(this, ConstantID.INTRA_HASH));
+		this.setInterHash(SimHash.getSimHash(this, ConstantID.INTER_HASH));
 	}
 }

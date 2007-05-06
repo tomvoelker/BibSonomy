@@ -38,4 +38,9 @@ public class Bookmark extends Resource {
 	public void setTitle(String title) {
 		this.title = title;
 	}
+
+	@Override
+	public void recalculateHashes() {
+		this.setIntraHash(getHash());
+	}
 }

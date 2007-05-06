@@ -26,7 +26,8 @@ public abstract class Resource {
 	private String intraHash;
 	private List<Post<? extends Resource>> posts;
 
-
+	public abstract void recalculateHashes();
+	
 	public String getInterHash() {
 		return this.interHash;
 	}
