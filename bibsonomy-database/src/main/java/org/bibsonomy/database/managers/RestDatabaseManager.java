@@ -9,6 +9,8 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.LogicInterface;
 import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.database.util.DatabaseUtils;
+import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -19,6 +21,7 @@ import org.bibsonomy.model.User;
 
 /**
  * This is an implementation of the LogicInterface for the REST-API.
+ * // TODO: ...so why is it called RestDATABASEManager and is part of the DATABASE package??? i would advise introducing a three+-layer architecture 
  * 
  * @version $Id$
  */
@@ -43,7 +46,10 @@ public class RestDatabaseManager implements LogicInterface {
 	public static LogicInterface getInstance() {
 		return singleton;
 	}
-	
+
+	private Transaction openSession() {
+		return DatabaseUtils.getDatabaseSession();
+	}
 
 	/**
 	 * returns all users of the system has
@@ -55,9 +61,13 @@ public class RestDatabaseManager implements LogicInterface {
 	 */
 	public List<User> getUsers(String authUser, int start, int end) {
 		List<User> users= new LinkedList <User>();
-		users.addAll(userDBManager.getUsers(authUser, start, end));
-		return users; 
-
+		final Transaction session = this.openSession();
+		try {
+			users.addAll(userDBManager.getUsers(authUser, start, end, session));
+			return users; 
+		} finally {
+			session.close();
+		}
 	}
 
 	/**
@@ -71,9 +81,13 @@ public class RestDatabaseManager implements LogicInterface {
 	 */
 	public List<User> getUsers(String authUser, String groupName, int start, int end) {
 		List<User> users= new LinkedList <User>();
-		users.addAll(userDBManager.getUsers(authUser, groupName, start, end));
-		return users; 
-
+		Transaction session = this.openSession();
+		try {
+			users.addAll(userDBManager.getUsers(authUser, groupName, start, end, session));
+			return users;
+		} finally {
+			session.close();
+		}
 	}
 
 	/**
@@ -84,8 +98,12 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @return details about a named user, null else
 	 */
 	public User getUserDetails(String authUserName, String userName) {
-		
-		return userDBManager.getUserDetails(authUserName,userName);
+		Transaction session = this.openSession();
+		try {
+			return userDBManager.getUserDetails(authUserName,userName, session);
+		} finally {
+			session.close();
+		}
 	}
 
 	/**
@@ -123,25 +141,32 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @return a set of posts, an empty set else
 	 */
 	public <T extends Resource> List<Post<T>> getPosts(String authUser, Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
-		final List result;
-		if (resourceType == Resource.class) {
-			/*
-			 * yes, this IS unsave and indeed it BREAKS restrictions on generic-constraints.
-			 * it is the result of two designs:
-			 *  1. @ibatis: database-results should be accessible as a stream or should at least be saved using the visitor pattern (collection<? super X> arguments would do fine)
-			 *  2. @bibsonomy: this method needs runtime-type-checking which is not supported by generics
-			 *  so what: copy each and every entry manually or split this method to become
-			 *           type-safe WITHOUT falling back to <? extends Resource> (which
-			 *           means read-only) in the whole project
-			 */
-			result = bibtexDBManager.getPosts(authUser, grouping, groupingName, tags, hash, popular, added, start, end, false);			
-			// TODO: solve problem with limit+offset:  result.addAll(bookmarkDBManager.getPosts(authUser, grouping, groupingName, tags, hash, popular, added, start, end, false));
-		} else if (resourceType == BibTex.class) {
-			result = bibtexDBManager.getPosts(authUser, grouping, groupingName, tags, hash, popular, added, start, end, true);
-		} else if (resourceType == Bookmark.class) {
-			result = bookmarkDBManager.getPosts(authUser, grouping, groupingName, tags, hash, popular, added, start, end, true);
-		} else {
-			throw new UnsupportedResourceTypeException( resourceType.toString() );
+		final List<Post<T>> result;
+		Transaction session = this.openSession();
+		try {
+			/*if (resourceType == Resource.class) {
+				 * yes, this IS unsave and indeed it BREAKS restrictions on generic-constraints.
+				 * it is the result of two designs:
+				 *  1. @ibatis: database-results should be accessible as a stream or should at least be saved using the visitor pattern (collection<? super X> arguments would do fine)
+				 *  2. @bibsonomy: this method needs runtime-type-checking which is not supported by generics
+				 *  so what: copy each and every entry manually or split this method to become
+				 *           type-safe WITHOUT falling back to <? extends Resource> (which
+				 *           means read-only) in the whole project
+				 * result = bibtexDBManager.getPosts(authUser, grouping, groupingName, tags, hash, popular, added, start, end, false);			
+				 * // TODO: solve problem with limit+offset:  result.addAll(bookmarkDBManager.getPosts(authUser, grouping, groupingName, tags, hash, popular, added, start, end, false));
+				 * 
+			} else */
+			if (resourceType == BibTex.class) {
+				// this is save because of RTTI-check of resourceType argument which is of class T
+				result = (List<Post<T>>) ((List) bibtexDBManager.getPosts(authUser, grouping, groupingName, tags, hash, popular, added, start, end, true, session));
+			} else if (resourceType == Bookmark.class) {
+				// this is save because of RTTI-check of resourceType argument which is of class T
+				result = (List<Post<T>>) ((List) bookmarkDBManager.getPosts(authUser, grouping, groupingName, tags, hash, popular, added, start, end, true, session));
+			} else {
+				throw new UnsupportedResourceTypeException( resourceType.toString() );
+			}
+		} finally {
+			session.close();
 		}
 		return result;
 	}
@@ -174,12 +199,17 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @return the post's details, null else
 	 */
 	public Post<? extends Resource> getPostDetails(String authUser, String resourceHash, String userName) {
-		Post<? extends Resource> rVal;
-		for (CrudableContent<? extends Resource> manager : allDatabaseManagers.values()) {
-			rVal = manager.getPostDetails(authUser, resourceHash, userName);
-			if (rVal != null) {
-				return rVal;
+		Transaction session = this.openSession();
+		try {
+			Post<? extends Resource> rVal;
+			for (CrudableContent<? extends Resource> manager : allDatabaseManagers.values()) {
+				rVal = manager.getPostDetails(authUser, resourceHash, userName, session);
+				if (rVal != null) {
+					return rVal;
+				}
 			}
+		} finally {
+			session.close();
 		}
 		return null;
 	}
@@ -226,10 +256,14 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @return a set of tags, en empty set else
 	 */
 	public List<Tag> getTags(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end) {
-		
-		List<Tag> tags= new LinkedList<Tag>();
-		tags.addAll(tagDBManager.getTags(authUser,grouping,groupingName,regex, start,end));
-		return tags; 
+		final Transaction session = openSession();
+		try {
+			List<Tag> tags= new LinkedList<Tag>();
+			tags.addAll( tagDBManager.getTags(authUser, grouping, groupingName, regex, start, end, session) );
+			return tags; 
+		} finally {
+			session.close();
+		}
 	}
 
 	/**
@@ -248,7 +282,12 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @return the tag's details, null else
 	 */
 	public Tag getTagDetails(String authUserName, String tagName) {
-		return tagDBManager.getTagDetails(authUserName,tagName);
+		final Transaction session = openSession();
+		try {
+			return tagDBManager.getTagDetails( authUserName, tagName, session);
+		} finally {
+			session.close();
+		}
 	}
 
 	/**
@@ -306,11 +345,16 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @param resourceHash hash of the resource, which is connected to the post to delete 
 	 */
 	public void deletePost(String userName, String resourceHash) {
-		// TODO would be nice to know about the resourcetype ot the instance behind this resourceHash
-		for (CrudableContent<? extends Resource> man : allDatabaseManagers.values()) {
-			if (man.deletePost(userName, resourceHash) == true) {
-				break;
+		final Transaction session = openSession();
+		try {
+			// TODO would be nice to know about the resourcetype ot the instance behind this resourceHash
+			for (CrudableContent<? extends Resource> man : allDatabaseManagers.values()) {
+				if (man.deletePost(userName, resourceHash, session) == true) {
+					break;
+				}
 			}
+		} finally {
+			session.close();
 		}
 	}
 
@@ -330,7 +374,19 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @param post the post to be postet
 	 * @param update true if its an existing post (identified by its resource's intrahash), false if its a new post
 	 */
-	public void storePost(String userName, Post post, boolean update) {
+	public <T extends Resource> void storePost(String userName, Post<T> post) {
+		Transaction session = openSession();
+		try {
+			CrudableContent<T> man = getFittingDatabaseManager(post);
+			String oldIntraHash = post.getResource().getIntraHash();
+			post.getResource().recalculateHashes();
+			man.storePost(userName, post, oldIntraHash, session);
+		} finally {
+			session.close();
+		}
+	}
+
+	private <T extends Resource>CrudableContent<T> getFittingDatabaseManager(Post<T> post) {
 		Class resourceClass = post.getResource().getClass();
 		CrudableContent<? extends Resource> man = allDatabaseManagers.get(resourceClass);
 		if (man == null) {
@@ -344,7 +400,7 @@ public class RestDatabaseManager implements LogicInterface {
 				throw new UnsupportedResourceTypeException( resourceClass.toString() );
 			}
 		}
-		man.storePost(userName, post, update);
+		return (CrudableContent<T>) ((CrudableContent) man);
 	}
 
 	/**
