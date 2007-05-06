@@ -9,11 +9,15 @@
 	<typeHandler javaType="url" callback="org.bibsonomy.database.typehandler.UrlTypeHandlerCallback" />
 
 	<transactionManager type="JDBC">
-		<dataSource type="SIMPLE">
+		<dataSource type="DBCP">
 			<property name="JDBC.Driver" value="${driver}" />
 			<property name="JDBC.ConnectionURL" value="${url}" />
 			<property name="JDBC.Username" value="${username}" />
 			<property name="JDBC.Password" value="${password}" />
+			<property name="maxWait" value="6000"/>
+			<property name="Pool.MaximumWait" value="6000"/>
+			<property name="Pool.MaximumActiveConnections" value="2"/>
+			<property name="Pool.MaximumIdleConnections" value="2"/>
 		</dataSource>
 	</transactionManager>
 
