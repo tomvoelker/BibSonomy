@@ -8,6 +8,12 @@ import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.model.User;
 import org.junit.Test;
 
+/**
+ * Tests related to users.
+ *
+ * @author Miranda Grahl
+ * @version $Id$
+ */
 public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test

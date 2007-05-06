@@ -8,6 +8,12 @@ import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.model.Group;
 import org.junit.Test;
 
+/**
+ * Tests related to groups.
+ *
+ * @author Christian Schenk
+ * @version $Id$
+ */
 public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test

@@ -14,6 +14,8 @@ import org.bibsonomy.model.Tag;
  */
 public class TagParam extends GenericParam {
 
+	// FIXME Probably a duplicate: previously newContentId from GenericParam was used
+	private int id;
 	private String name;
 	private String stem;
 	private int count;
@@ -85,5 +87,13 @@ public class TagParam extends GenericParam {
 
 	public void setUsercount(int usercount) {
 		this.usercount = usercount;
+	}
+
+	public int getId() {
+		return this.id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 }

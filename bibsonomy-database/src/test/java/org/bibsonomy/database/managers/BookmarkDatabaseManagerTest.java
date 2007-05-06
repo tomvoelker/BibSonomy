@@ -10,8 +10,9 @@ import org.junit.Test;
 /**
  * Tests related to BibTex.
  * 
- * @author mgr
+ * @author Miranda Grahl
  * @author Christian Schenk
+ * @version $Id$
  */
 public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
@@ -163,11 +164,6 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void deleteBookmarkByContentId() {
 		// FIXME
 		// this.db.getBookmark().deleteBookmarkByContentId(this.bookmarkParam);
-	}
-
-	@Test
-	public void updateIds() {
-		this.bookmarkDb.updateIds(this.bookmarkParam, this.dbSession);
 	}
 
 	@Test

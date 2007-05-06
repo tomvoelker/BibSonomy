@@ -9,6 +9,7 @@ import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChain;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByHashForUser;
 import org.bibsonomy.database.params.BookmarkParam;
+import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.model.Bookmark;
@@ -254,9 +255,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		// TODO not tested
 		this.insert("insertBookmarkLog", bookmark, transaction);
 	}
-/*
- * insert counter, hash and url of bookmark
- */
+
+	// insert counter, hash and url of bookmark
 	public void insertBookmarkInc(final Bookmark param, final Transaction transaction) {
 		this.insert("insertBookmarkInc", param, transaction);
 	}
@@ -274,14 +274,6 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		this.insert("deleteBookmarkByContentId", param, transaction);
 	}
 
-	public void updateIds(final BookmarkParam param, final Transaction transaction) {
-		this.insert("updateIds", param, transaction);
-	}
-	
-	public Integer getCurrentTasIdFromIds(final BookmarkParam param, final Transaction transaction) {
-		return this.queryForObject("getNewTasID", param, Integer.class, transaction);
-	}
-
 	public Integer getContentIDForBookmark(final BookmarkParam param, final Transaction transaction) {
 		return this.queryForObject("getContentIDForBookmark", param, Integer.class, transaction);
 	}
@@ -297,57 +289,29 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		return null;
 	}
 
-
-
 	public boolean deletePost(String userName, String resourceHash, final Transaction transaction) {
-		
-		GetBookmarksByHashForUser get =new GetBookmarksByHashForUser();
-        BookmarkParam paramDelete=new BookmarkParam();
-        
+		final GetBookmarksByHashForUser get = new GetBookmarksByHashForUser();
+		final BookmarkParam paramDelete = new BookmarkParam();
 		paramDelete.setUserName(userName);
 		paramDelete.setHash(resourceHash);	
-		
-		System.out.println("paramFromValue in deleteBookmark " + paramDelete.getUserName()+ " " +paramDelete.getHash());
-		
-		String hashFromUrl=paramDelete.getHash();
-		String userFromUrl=paramDelete.getUserName();
-		
-		System.out.println("hashFromUrl " + hashFromUrl);
-		System.out.println("userFromUrl " + userFromUrl);
-		
-		/*
-		 * return a bookmark object for current hash value
-		 */
-		
-		List<Post<Bookmark>> storeTemp=get.perform(userFromUrl,GroupingEntity.USER,userFromUrl,null,hashFromUrl,false, false, 0, 1, transaction);
-		System.out.println("storeTemp.size: " + storeTemp.size());
-		if(storeTemp.size()==0){
-			System.out.println("bookmark ist schon gelöscht");
-			
-		}
-		Post<Bookmark> provePost =storeTemp.get(0);
-	    
-	    paramDelete.setRequestedContentId(provePost.getContentId());
-        System.out.println("paramDelete.getRequestedContentId " +paramDelete.getRequestedContentId());
-        
-        /*
-         * counter in urls table is decremented (-1)
-         */
-        
-		this.updateBookmarkHashDec(paramDelete, transaction);
 
-		/***delete the selected bookmark (by given contentId) from current database table***/ 	
-		
+		// return a bookmark object for current hash value
+		final List<Post<Bookmark>> storeTemp = get.perform(paramDelete.getUserName(), GroupingEntity.USER, paramDelete.getUserName(), null, paramDelete.getHash(), false, false, 0, 1, transaction);
+		// bookmark DOESN'T EXIST
+		if (storeTemp.size() == 0) return false;
+
+		final Post<Bookmark> provePost = storeTemp.get(0);
+	    paramDelete.setRequestedContentId(provePost.getContentId());
+
+        // counter in urls table is decremented (-1)
+		this.updateBookmarkHashDec(paramDelete, transaction);
+		// delete the selected bookmark (by given contentId) from current database table
 	    this.deleteBookmarkByContentId(paramDelete, transaction);
-	    System.out.println("Lösche bookmark bei gegebener Content_Id");
-	    
-	    this.tagDb.deleteTas(paramDelete, transaction);
-	    System.out.println("Lösche TAS wieder");
+	    // deleting tas
+	    this.tagDb.deleteTas((GenericParam) paramDelete, transaction);
 
 		return true;
 	}
-
-
 
 	// TODO: this method belongs to the logic-layer not database-layer. anyway, i would appreciate a rewrite of this copy`paste mess
 	@SuppressWarnings("unchecked")
@@ -479,10 +443,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	                 bookmarkParam.setIdsType(ConstantID.IDS_CONTENT_ID);
 	            	 System.out.println("paramFromUrlValue.getIdsType" + bookmarkParam.getIdsType());
 	            	 
-   	                 bookmarkParam.setId(this.generalDb.getNewContentId(bookmarkParam, transaction));
-   	                 System.out.println("bekomme aktuellen value/content_id aus ids table: "+ bookmarkParam.getId());
+   	                 bookmarkParam.setNewContentId(this.generalDb.getNewContentId(bookmarkParam, transaction));
+   	                 System.out.println("bekomme aktuellen value/content_id aus ids table: "+ bookmarkParam.getNewContentId());
 
-	            	 this.updateIds(bookmarkParam, transaction);
+	            	 this.generalDb.updateIds(bookmarkParam, transaction);
 	            	 post.setContentId(this.generalDb.getNewContentId(bookmarkParam, transaction));
 	            	 bookmarkParam.setRequestedContentId(post.getContentId());
 	            	 System.out.println("bookmark content_id: " + bookmarkParam.getRequestedContentId());
@@ -494,7 +458,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
                      bookmarkParam.setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
                      
                      
-	          	  	System.out.println("bookmarkParam  TasId:"+ bookmarkParam.getNewTasId());
+	          	  	System.out.println("bookmarkParam  TasId:"+ bookmarkParam.getNewContentId());
 	          	  	System.out.println("bookmarkParam Content_ID :"+ bookmarkParam.getRequestedContentId());
 	          	  	System.out.println("bookmarkParam: " +bookmarkParam.getContentType());
 	          	    System.out.println("booomarkParam user_name: "+ bookmarkParam.getUserName());
@@ -523,11 +487,11 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	     			  
 	     			 for(Tag tag: tagliste){
 	     				 
-	     				bookmarkParam.setId(this.getCurrentTasIdFromIds(bookmarkParam, transaction));
-		          	   	System.out.println("currentTasID:" +bookmarkParam.getId());
+	     				bookmarkParam.setNewContentId(this.generalDb.getNewContentId(bookmarkParam, transaction));
+		          	   	System.out.println("currentTasID:" +bookmarkParam.getNewContentId());
 	     				 
-		          	    this.updateIds(bookmarkParam, transaction);
-		          	    bookmarkParam.setNewTasId(this.getCurrentTasIdFromIds(bookmarkParam, transaction));
+		          	    this.generalDb.updateIds(bookmarkParam, transaction);
+		          	    bookmarkParam.setNewContentId(this.generalDb.getNewContentId(bookmarkParam, transaction));
 	     				 
 	     				 
 	     				bookmarkParam.setTagName(tag.getName());
@@ -598,10 +562,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	                 bookmarkParam.setIdsType(ConstantID.IDS_CONTENT_ID);
 	            	 System.out.println("paramFromUrlValue.getIdsType" + bookmarkParam.getIdsType());
 	            	 bookmarkParam.setHash(newHash);
-   	                 bookmarkParam.setId(this.generalDb.getNewContentId(bookmarkParam, transaction));
-   	                 System.out.println("bekomme aktuellen value/content_id aus ids table: "+ bookmarkParam.getId());
+   	                 bookmarkParam.setNewContentId(this.generalDb.getNewContentId(bookmarkParam, transaction));
+   	                 System.out.println("bekomme aktuellen value/content_id aus ids table: "+ bookmarkParam.getNewContentId());
 	            		
-	            	 this.updateIds(bookmarkParam, transaction);
+	            	 this.generalDb.updateIds(bookmarkParam, transaction);
 	            	 
 	            	 post.setContentId(this.generalDb.getNewContentId(bookmarkParam, transaction));
 	            	 bookmarkParam.setRequestedContentId(post.getContentId());
@@ -611,7 +575,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
                      bookmarkParam.setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
                      
                      
-	          	  	System.out.println("bookmarkParam  TasId:"+ bookmarkParam.getNewTasId());
+	          	  	System.out.println("bookmarkParam  TasId:"+ bookmarkParam.getNewContentId());
 	          	  	System.out.println("bookmarkParam Content_ID :"+ bookmarkParam.getRequestedContentId());
 	          	  	System.out.println("bookmarkParam: " +bookmarkParam.getContentType());
 	          	  	System.out.println("booomarkParam user_name: "+ bookmarkParam.getUserName());
@@ -637,11 +601,11 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	     			  
 	     			 for(Tag tag: tagliste){
 	     				 
-	     				bookmarkParam.setId(this.getCurrentTasIdFromIds(bookmarkParam, transaction));
-		          	   	System.out.println("currentTasID:" +bookmarkParam.getId());
+	     				bookmarkParam.setNewContentId(this.generalDb.getNewContentId(bookmarkParam, transaction));
+		          	   	System.out.println("currentTasID:" +bookmarkParam.getNewContentId());
 	     				 
-		          	    this.updateIds(bookmarkParam, transaction);
-		          	    bookmarkParam.setNewTasId(this.getCurrentTasIdFromIds(bookmarkParam, transaction));
+		          	    this.generalDb.updateIds(bookmarkParam, transaction);
+		          	    bookmarkParam.setNewContentId(this.generalDb.getNewContentId(bookmarkParam, transaction));
 	     				 
 	     				 
 	     				bookmarkParam.setTagName(tag.getName());
@@ -711,10 +675,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	                 bookmarkParam.setIdsType(ConstantID.IDS_CONTENT_ID);
 	            	 System.out.println("bookmarkParam IdsType" + bookmarkParam.getIdsType());
 	            	 
-   	                 bookmarkParam.setId(this.generalDb.getNewContentId(bookmarkParam, transaction));
-   	                 System.out.println("bookmarkParam currentContentIDFromIds"+ bookmarkParam.getId());
+   	                 bookmarkParam.setNewContentId(this.generalDb.getNewContentId(bookmarkParam, transaction));
+   	                 System.out.println("bookmarkParam currentContentIDFromIds"+ bookmarkParam.getNewContentId());
 	            		
-	            	 this.updateIds(bookmarkParam, transaction);
+	            	 this.generalDb.updateIds(bookmarkParam, transaction);
 	            	 
 	            	 post.setContentId(this.generalDb.getNewContentId(bookmarkParam, transaction));
 	            	 bookmarkParam.setRequestedContentId(post.getContentId());
@@ -726,7 +690,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
                      bookmarkParam.setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
                      
                      
-	          	  		System.out.println("bookmarkParam  TasID:"+ bookmarkParam.getNewTasId());
+	          	  		System.out.println("bookmarkParam  TasID:"+ bookmarkParam.getNewContentId());
 	          	  		System.out.println("bookmarkParam ContentID :"+ bookmarkParam.getRequestedContentId());
 	          	  		System.out.println("bookmarkParam ContentType: " +bookmarkParam.getContentType());
 	          	  	    System.out.println("booomarkParam userName: "+ bookmarkParam.getUserName());
@@ -750,11 +714,11 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
      			  
 	     			 for(Tag tag: tagliste){
 	     				 
-	     				bookmarkParam.setId(this.getCurrentTasIdFromIds(bookmarkParam, transaction));
-		          	   	System.out.println("currentTasID:" +bookmarkParam.getId());
+	     				bookmarkParam.setNewContentId(this.generalDb.getNewContentId(bookmarkParam, transaction));
+		          	   	System.out.println("currentTasID:" +bookmarkParam.getNewContentId());
 	     				 
-		          	    this.updateIds(bookmarkParam, transaction);
-		          	    bookmarkParam.setNewTasId(this.getCurrentTasIdFromIds(bookmarkParam, transaction));
+		          	    this.generalDb.updateIds(bookmarkParam, transaction);
+		          	    bookmarkParam.setNewContentId(this.generalDb.getNewContentId(bookmarkParam, transaction));
 	     				 
 	     				 
 	     				bookmarkParam.setTagName(tag.getName());

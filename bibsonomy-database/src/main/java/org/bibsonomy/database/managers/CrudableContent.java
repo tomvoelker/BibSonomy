@@ -21,8 +21,10 @@ public interface CrudableContent<T extends Resource> {
 	public Post<T> getPostDetails(String authUser, String resourceHash, String userName, Transaction transaction);
 
 	// delete
+	// FIXME why do we return a boolean here? error checking?!?
 	public boolean deletePost(String userName, String resourceHash, Transaction transaction);
 
 	// create, update
+	// FIXME why do we return a boolean here? error checking?!?
 	public boolean storePost(String userName, Post<T> post, String oldHash, Transaction transaction);
 }

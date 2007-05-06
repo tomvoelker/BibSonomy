@@ -3,6 +3,7 @@ package org.bibsonomy.database.managers;
 import org.apache.log4j.Logger;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
+import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.UserParam;
@@ -18,25 +19,21 @@ import org.junit.Before;
  * methods which interact with the database should be derived from this class.
  * 
  * @author Christian Schenk
+ * @author Jens Illig
+ * @version $Id$
  */
 public abstract class AbstractDatabaseManagerTest {
 	private static final Logger log = Logger.getLogger(AbstractDatabaseManagerTest.class);
 
-	/** The database manager for general queries */
 	protected GeneralDatabaseManager generalDb;
-	/** The database manager for Bookmarks */
 	protected BookmarkDatabaseManager bookmarkDb;
-	/** The database manager for BibTexs */
 	protected BibTexDatabaseManager bibTexDb;
-	/** The database manager for Tags */
 	protected TagDatabaseManager tagDb;
-	/** The database manager for users */
 	protected UserDatabaseManager userDb;
-	/** The database manager for groups */
 	protected GroupDatabaseManager groupDb;
-	/** This param can be used for queries about bookmarks */
+
+	protected GenericParam generalParam;
 	protected BookmarkParam bookmarkParam;
-	/** This param can be used for queries about BibTexs */
 	protected BibTexParam bibtexParam;
 	protected UserParam userParam;
 	protected TagParam tagParam;
@@ -95,6 +92,7 @@ public abstract class AbstractDatabaseManagerTest {
 	 * This is done before running a testcase method.
 	 */
 	protected void resetParameters() {
+		this.generalParam = ParamUtils.getDefaultGeneralParam();
 		this.bookmarkParam = ParamUtils.getDefaultBookmarkParam();
 		this.bibtexParam = ParamUtils.getDefaultBibTexParam();
 		this.userParam = ParamUtils.getDefaultUserParam();

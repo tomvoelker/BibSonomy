@@ -7,6 +7,12 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Tests related to tags.
+ *
+ * @author Christian Schenk
+ * @version $Id$
+ */
 public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
@@ -53,8 +59,13 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/*
 	 * TODO implemented, but further restriction have to add!!
 	 */
-	
 	@Test
-	 public void getTagsByExpression() { this.tagDb.getTagsByExpression(this.tagParam, this.dbSession); }
-	 
+	public void getTagsByExpression() {
+		this.tagDb.getTagsByExpression(this.tagParam, this.dbSession);
+	}
+
+	@Test
+	public void insertTas() {
+		this.tagDb.insertTas(this.tagParam, this.dbSession);
+	}
 }

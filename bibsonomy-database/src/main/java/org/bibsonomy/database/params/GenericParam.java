@@ -71,8 +71,7 @@ public abstract class GenericParam {
 	/** The type of a ID is by default DS_CONTENT_ID * */
 	private ConstantID idsType;
 	private int newContentId;
-	private int contendIDbyBookmark;
-	private int newTasId;
+	private int contendIDbyBookmark; // FIXME does this belong into BookmarkParam?
 	private String url;
 	private ConstantID contentType;
 
@@ -134,7 +133,6 @@ public abstract class GenericParam {
 		return this.search;
 	}
 
-	// TODO write testcase
 	public void setSearch(String search) {
 		this.search = search.replaceAll("([\\s]|^)([\\S&&[^-]])", " +$2");
 	}
@@ -237,11 +235,11 @@ public abstract class GenericParam {
 		this.idsType = idsType;
 	}
 
-	public int getId() {
+	public int getNewContentId() {
 		return this.newContentId;
 	}
 
-	public void setId(int newContentId) {
+	public void setNewContentId(int newContentId) {
 		this.newContentId = newContentId;
 	}
 
@@ -259,14 +257,6 @@ public abstract class GenericParam {
 
 	public void setTags(List<Tag> tags) {
 		this.tags = tags;
-	}
-
-	public int getNewTasId() {
-		return this.newTasId;
-	}
-
-	public void setNewTasId(int newTasId) {
-		this.newTasId = newTasId;
 	}
 
 	public Tag getTag() {
@@ -323,6 +313,10 @@ public abstract class GenericParam {
 
 	public void setTagName(String tagName) {
 		this.tagName = tagName;
+	}
+
+	public String getTagNameLower() {
+		return this.tagName.toLowerCase();
 	}
 
 	public String getTitle() {

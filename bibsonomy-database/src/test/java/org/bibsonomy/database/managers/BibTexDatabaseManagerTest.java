@@ -15,8 +15,9 @@ import org.junit.Test;
 /**
  * Tests related to BibTex.
  * 
- * @author mgr
+ * @author Miranda Grahl
  * @author Christian Schenk
+ * @version $Id$
  */
 public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
@@ -173,6 +174,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void insertBibTex() {
 		this.bibtexParam.setRequestedContentId(1234567);
 		this.bibTexDb.insertBibTex(this.bibtexParam, this.dbSession);
+//		this.bibTexDb.getB
 	}
 
 	@Test

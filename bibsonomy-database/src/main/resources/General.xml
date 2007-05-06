@@ -2,31 +2,17 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="General">
-	<!-- Changed 'SELECT user_name' to 'SELECT count(user_name)': this way we get the right boolean result -->
 	<select id="isFriendOf" resultClass="boolean" parameterClass="genericParam">
 		SELECT count(user_name)
 		FROM friends
 		WHERE user_name = #requestedUserName# AND f_user_name = #userName#
 	</select>
 
-    <!-- vorläufig für Tag Abfrage  -->
-    <select id="isFriendOfTag" resultClass="boolean" parameterClass="userParam">
-		SELECT count(user_name)
-		FROM friends
-		WHERE user_name = #requestedUserName# AND f_user_name = #userName#
-	</select>
-
-	<!-- Changed 'SELECT spammer' to 'SELECT count(spammer)': this way we get the right boolean result -->
 	<select id="isSpammer" resultClass="boolean" parameterClass="genericParam">
-		SELECT count(spammer) FROM user WHERE user_name = #requestedUserName#
+		SELECT spammer FROM user WHERE user_name = #requestedUserName#
 	</select>
 
 	<select id="getGroupsForUser" resultClass="int" parameterClass="genericParam">
-		SELECT `group` FROM groups WHERE user_name = #userName#
-	</select>
-
-    <!-- vorläufige Lösung für Tag Anfragen  -->
-    <select id="getGroupsForUserTag" resultClass="int" parameterClass="userParam">
 		SELECT `group` FROM groups WHERE user_name = #userName#
 	</select>
 
@@ -40,26 +26,20 @@
 		      </isNotNull>
 	</select>
 
-	<!--TODO enumeration -->
-	<select id="getNewContentId" resultClass="int" parameterClass="bookmarkParam">
+	<select id="getNewContentId" resultClass="int" parameterClass="genericParam">
 		SELECT value FROM ids WHERE name = #idsType# FOR UPDATE
 	</select>
 
-	<update id="updateIds" parameterClass="bookmarkParam">
+	<update id="updateIds" parameterClass="genericParam">
 		UPDATE ids SET value = value + 1 WHERE name = #idsType#
 	</update>
 
-	<select id="getNewTasID" resultClass="int" parameterClass="bookmarkParam">
-		SELECT value FROM ids WHERE name=#idsType# FOR UPDATE
-	</select>
-
-	<!-- TODO change tag_lower value -->
-	<insert id="insertTas" parameterClass="genericParam">
-		INSERT INTO tas (tas_id, tag_name,content_id,content_type,user_name,date,`group`,tag_lower,change_date) 
-		VALUES (#newTasId#,#tagName#,#requestedContentId#,#contentType#,#userName#,#date#,#groupId#,#tagName#,#date#)
+	<insert id="insertTas" parameterClass="tagParam">
+		INSERT INTO tas (tas_id, tag_name, content_id, content_type, user_name, date, `group`, tag_lower, change_date)
+		VALUES (#newContentId#, #tagName#, #requestedContentId#, #contentType#, #userName#, #date#, #groupId#, #tagNameLower#, #date#)
 	</insert>
 
-	<delete id="deleteTas" parameterClass="genericParam">
+	<delete id="deleteTas" parameterClass="tagParam">
 		DELETE FROM bookmark WHERE content_id = #requestedContentId#
 	</delete>
 </sqlMap>

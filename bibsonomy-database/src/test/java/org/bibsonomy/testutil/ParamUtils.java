@@ -1,5 +1,8 @@
 package org.bibsonomy.testutil;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
@@ -16,6 +19,14 @@ import org.bibsonomy.database.params.UserParam;
  */
 public class ParamUtils {
 
+	private static final Date date;
+
+	static {
+		final Calendar cal = Calendar.getInstance();
+		cal.clear();
+		date = cal.getTime();
+	}
+
 	/**
 	 * The defaults for every parameter-object are set here.
 	 */
@@ -27,8 +38,19 @@ public class ParamUtils {
 		param.setUserName("hotho");
 		param.setRequestedUserName("stumme");
 		param.setRequestedGroupName("kde");
+		param.setDate(date);
 		// param.setCaseSensitiveTagNames(true);
 		param.addTagName("community");
+	}
+
+	/**
+	 * Retrieves a GenericParam.
+	 */
+	public static GenericParam getDefaultGeneralParam() {
+		final GenericParam rVal = getDefaultBookmarkParam();
+		setDefaults(rVal);
+		rVal.setIdsType(ConstantID.IDS_CONTENT_ID);
+		return rVal;
 	}
 
 	/**
@@ -89,9 +111,13 @@ public class ParamUtils {
 	public static TagParam getDefaultTagParam() {
 		final TagParam param = new TagParam();
 		setDefaults(param);
+		// FIXME: what's the REAL id: id or newContentId?
 		param.setId(5218);
+		param.setNewContentId(5218);
 		param.setRegex("web");
 		param.setCount(100);
+		param.setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
+		param.setTagName("Test");
 		return param;
 	}
 

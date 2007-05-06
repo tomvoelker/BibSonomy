@@ -2,6 +2,7 @@ package org.bibsonomy.database;
 
 import org.bibsonomy.database.managers.BibTexDatabaseManagerTest;
 import org.bibsonomy.database.managers.BookmarkDatabaseManagerTest;
+import org.bibsonomy.database.managers.GeneralDatabaseManagerTest;
 import org.bibsonomy.database.managers.GroupDatabaseManagerTest;
 import org.bibsonomy.database.managers.RestDatabaseManagerTest;
 import org.bibsonomy.database.managers.TagDatabaseManagerTest;
@@ -19,6 +20,6 @@ import org.junit.runners.Suite;
  * @version $Id$
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses( { ParamTest.class, BookmarkDatabaseManagerTest.class, BibTexDatabaseManagerTest.class, TagDatabaseManagerTest.class, TransactionTest.class, UserDatabaseManagerTest.class, GroupDatabaseManagerTest.class, RestDatabaseManagerTest.class })
+@Suite.SuiteClasses( { ParamTest.class, BookmarkDatabaseManagerTest.class, BibTexDatabaseManagerTest.class, TagDatabaseManagerTest.class, TransactionTest.class, UserDatabaseManagerTest.class, GroupDatabaseManagerTest.class, RestDatabaseManagerTest.class, GeneralDatabaseManagerTest.class })
 public class AllTests {
 }

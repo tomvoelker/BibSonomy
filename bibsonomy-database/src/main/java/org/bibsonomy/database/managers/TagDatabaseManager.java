@@ -5,11 +5,9 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
-import org.bibsonomy.database.params.ResourcesParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.database.util.Transaction;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.util.ExceptionUtils;
 
@@ -39,49 +37,52 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		return singleton;
 	}
     
-	/** Return all tags for given tagId */
+	/** Return tag for given tagId */
 	public Tag getTagById(final TagParam param, final Transaction transaction) {
 		return this.queryForObject("getTagById", param, Tag.class, transaction);
 	}
 
 	/** Return all tags for a given tag count */
+	// FIXME a single tag should be returned instead of a list, shouldn't it?  
 	public List<Tag> getTagByCount(final TagParam param, final Transaction transaction) {
 		// TODO not tested
 		return this.queryForList("getTagByCount", param, Tag.class, transaction);
 	}
 
 	/** Return all tags for a given contentId */
-	public List<Tag> getTasByContendId(final GenericParam param, final Transaction transaction) {
-		// TODO not tested
-		return this.queryForList("getTasByTagName", param, Tag.class, transaction);
+	public List<Tag> getTasByContendId(final TagParam param, final Transaction transaction) {
+		// FIXME this query doesn't exist
+		// return this.queryForList("getTasByTagName", param, Tag.class, transaction);
+		return null;
 	}
 
-	public void updateTagTagInc(final GenericParam param, final Transaction transaction) {
+	public void updateTagTagInc(final TagParam param, final Transaction transaction) {
 		// TODO not tested
 		this.update("updateTagTagInc", param, transaction);
 	}
 
-	public void updateTagTagDec(Tag tagFirst, Tag tagSecond, GenericParam param, final Transaction transaction) {
+	public void updateTagTagDec(Tag tagFirst, Tag tagSecond, TagParam param, final Transaction transaction) {
 		param.setTag(tagFirst);
 		param.setTag(tagSecond);
 		this.update("updateTagTagDec", param, transaction);
 	}
 
-	public void updateTagDec(final Tag tagParam, final Transaction transaction) {
+	public void updateTagDec(final Tag param, final Transaction transaction) {
 		// TODO not tested
-		this.update("updateTagDec", tagParam, transaction);
+		this.update("updateTagDec", param, transaction);
 	}
 
-	public void insertTagTagBatch(final GenericParam param, final Transaction transaction) {
+	public void insertTagTagBatch(final TagParam param, final Transaction transaction) {
 		// TODO not tested
 		this.insert("insertTagTagBatch", param, transaction);
 	}
 
-	/** Return a new tasId by given IDD_TAS_ID(1) as constant */
+	public void insertTas(final TagParam param, final Transaction transaction) {
+		this.insert("insertTas", param, transaction);
+	}
 
-	public Integer getNewTasId(final GenericParam param, final Transaction transaction) {
-		// TODO not tested
-		return this.queryForObject("getNewTasId", param, Integer.class, transaction);
+	public void deleteTas(final GenericParam param, final Transaction transaction) {
+		this.delete("deleteTas", param, transaction);
 	}
 
 	public void updateTasId(final int param, final Transaction transaction) {
@@ -89,20 +90,12 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		this.update("updateTasId", param, transaction);
 	}
 
-	public void insertTas(final ResourcesParam<Bookmark> genericParam, final Transaction transaction) {
-		this.insert("insertTas", genericParam, transaction);
-	}
-
-	public void deleteTas(final GenericParam genericParam, final Transaction transaction) {
-		this.delete("deleteTas", genericParam, transaction);
-	}
-
-	public void insertLogTas(final GenericParam param, final Transaction transaction) {
+	public void insertLogTas(final TagParam param, final Transaction transaction) {
 		// TODO not tested
 		this.insert("insertLogTas", param, transaction);
 	}
 
-	public List<Tag> deleteTags(final GenericParam param, final Transaction transaction) {
+	public List<Tag> deleteTags(final TagParam param, final Transaction transaction) {
 		// get tags for this contentId
 		// FIXME param.getResource().setTags(getTasByContendId(param));
 		final List<Tag> tagSet = null; // FIXME !!!
@@ -148,7 +141,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/** Insert a set of tags */
-	public void insertTags(final GenericParam param, final Transaction transaction) {
+	public void insertTags(final TagParam param, final Transaction transaction) {
 		// generate a list of tags
 		// TODO implement this
 //		List<Tag> allTags = param.getTags();

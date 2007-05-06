@@ -6,6 +6,7 @@ import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
+import org.bibsonomy.database.params.beans.TagIndex;
 import org.junit.Test;
 
 public class ParamTest {
@@ -24,13 +25,15 @@ public class ParamTest {
 			assertEquals(i, param.getMaxTagIndex());
 		}
 
-		// FIXME
-//		for (int i = 0; i < param.getTagIndex().size(); i++) {
-//			final TagIndex tIdx = param.getTagIndex().get(i);
-//			assertEquals("tag" + (i + 1), tIdx.getTagName());
-//			assertEquals(i + 1, tIdx.getIndex());
-//			assertEquals(i + 2, tIdx.getIndex2());
-//		}
+		for (int i = 0; i < param.getTagIndex().size(); i++) {
+			final TagIndex tIdx = param.getTagIndex().get(i);
+			assertEquals("tag" + (i + 1), tIdx.getTagName());
+			assertEquals(i + 1, tIdx.getIndex());
+			assertEquals(i + 2, tIdx.getIndex2());
+		}
+
+		param.setSearch("test1 test2");
+		assertEquals(" +test1 +test2", param.getSearch());
 	}
 
 	@Test
@@ -47,5 +50,15 @@ public class ParamTest {
 		this.genericTest(param);
 		// special tests
 		assertEquals(ConstantID.BIBTEX_CONTENT_TYPE.getId(), param.getContentType());
+	}
+
+	@Test
+	public void testTag() {
+		final TagParam param = new TagParam();
+		this.genericTest(param);
+		// special tests
+		param.setTagName("Test");
+		assertEquals("Test", param.getTagName());
+		assertEquals("test", param.getTagNameLower());
 	}
 }

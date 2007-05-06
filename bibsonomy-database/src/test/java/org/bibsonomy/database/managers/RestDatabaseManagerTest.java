@@ -1,6 +1,3 @@
-/*
- * Created on 01.05.2007
- */
 package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertEquals;
@@ -16,6 +13,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * @author Jens Illig
+ * @version $Id$
+ */
 public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
 	protected LogicInterface restDb;

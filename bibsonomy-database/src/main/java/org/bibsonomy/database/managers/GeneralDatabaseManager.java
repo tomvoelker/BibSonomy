@@ -49,7 +49,6 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 * @return true if the user is a spammer, false otherwise
 	 */
 	public Boolean isSpammer(final GenericParam param, final Transaction transaction) {
-		// TODO not tested
 		if (param.getRequestedUserName() == null) return false;
 		return this.queryForObject("isSpammer", param, Boolean.class, transaction);
 	}
@@ -99,5 +98,9 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public Integer getNewContentId(final GenericParam param, final Transaction transaction) {
 		return this.queryForObject("getNewContentId", param, Integer.class, transaction);
+	}
+
+	public void updateIds(final GenericParam param, final Transaction transaction) {
+		this.insert("updateIds", param, transaction);
 	}
 }
