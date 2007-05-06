@@ -18,7 +18,7 @@ public class Post<T extends Resource> {
 	/** The resource assigned to this post */
 	private T resource;
 	/** We need this here if we want to use groupBy in iBatis */
-	private int contentId;
+	private Integer contentId;
 	private User user;
 	private List<Group> groups;
 	private List<Tag> tags;
@@ -41,11 +41,11 @@ public class Post<T extends Resource> {
 		this.tags = new ArrayList<Tag>();
 	}
 
-	public int getContentId() {
+	public Integer getContentId() {
 		return this.contentId;
 	}
 
-	public void setContentId(int contentId) {
+	public void setContentId(Integer contentId) {
 		this.contentId = contentId;
 	}
 
