@@ -19,7 +19,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getAllUsers() {
 		final List<User> users = this.userDb.getAllUsers(this.userParam, this.dbSession);
-		assertEquals(1569, users.size());
+		assertEquals(1568, users.size());
 	}
 
 	@Test
