@@ -1,5 +1,7 @@
 package org.bibsonomy.testutil;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -10,6 +12,7 @@ import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.model.Tag;
 
 /**
  * Provides methods to build parameter-objects.
@@ -111,9 +114,15 @@ public class ParamUtils {
 	public static TagParam getDefaultTagParam() {
 		final TagParam param = new TagParam();
 		setDefaults(param);
-		// FIXME: what's the REAL id: id or newContentId?
-		param.setId(5218);
 		param.setNewContentId(5218);
+		param.setTasId(213758);
+		param.setTags(new ArrayList<Tag>());
+		for (String s : new String[] { ParamUtils.class.getName(), "hurz", "trallalla", "---_-"}) {
+			final Tag tag = new Tag();
+			tag.setName(s);
+			param.getTags().add(tag);
+		}
+		param.setGroups( Arrays.asList(new Integer[] { 1, 5 }) );
 		param.setRegex("web");
 		param.setCount(100);
 		param.setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
