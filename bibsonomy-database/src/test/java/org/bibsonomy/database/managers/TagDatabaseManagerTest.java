@@ -17,7 +17,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getTagById() {
-		final Tag tag = this.tagDb.getTagById(this.tagParam, this.dbSession);
+		final Tag tag = this.tagDb.getTagById(5218, this.dbSession);
 		assertEquals(5218, tag.getId());
 		assertEquals("$100", tag.getName());
 		assertEquals("", tag.getStem());
