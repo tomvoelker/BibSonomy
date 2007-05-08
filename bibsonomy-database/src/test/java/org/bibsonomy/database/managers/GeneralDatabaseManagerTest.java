@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.bibsonomy.common.enums.ConstantID;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -86,14 +87,12 @@ public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getNewContentId() {
-		this.generalParam.setIdsType(ConstantID.IDS_UNDEFINED_CONTENT_ID);
-		assertEquals(null, this.generalDb.getNewContentId(this.generalParam, this.dbSession));
-		this.generalParam.setIdsType(ConstantID.IDS_CONTENT_ID);
-		assertEquals(2649144, this.generalDb.getNewContentId(this.generalParam, this.dbSession));
-
-		this.generalParam.setIdsType(null);
+		Assert.assertNull(this.generalDb.getNewContentId(ConstantID.IDS_UNDEFINED_CONTENT_ID, this.dbSession));
+		int id = this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
+		Assert.assertTrue(2649144 < id);
+		Assert.assertTrue(id < this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, this.dbSession));
 		try {
-			this.generalDb.getNewContentId(this.generalParam, this.dbSession);
+			this.generalDb.getNewContentId(null, this.dbSession);
 			fail("Exception should be thrown");
 		} catch (final Exception ex) {
 		}
@@ -103,9 +102,9 @@ public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void updateIds() {
 		Integer curId = 0;
 		Integer newId = 0;
-		curId = this.generalDb.getNewContentId(this.generalParam, this.dbSession);
-		this.generalDb.updateIds(this.generalParam, this.dbSession);
-		newId = this.generalDb.getNewContentId(this.generalParam, this.dbSession);
-		assertTrue(newId == curId + 1);
+		curId = this.generalDb.getNewContentId(ConstantID.IDS_TAS_ID, this.dbSession);
+		this.generalDb.updateIds(ConstantID.IDS_TAS_ID, this.dbSession);
+		newId = this.generalDb.getNewContentId(ConstantID.IDS_TAS_ID, this.dbSession);
+		assertTrue(newId == curId + 2);
 	}
 }
