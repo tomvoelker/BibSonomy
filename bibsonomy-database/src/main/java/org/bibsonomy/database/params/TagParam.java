@@ -16,6 +16,8 @@ public class TagParam extends GenericParam {
 
 	// FIXME Probably a duplicate: previously newContentId from GenericParam was used
 	private int id;
+	// FIXME: don't know if it is the third variable with the same meaning, but at least it is the first one, with an intuitive name
+	private Integer tasId;
 	private String name;
 	private String stem;
 	private int count;
@@ -95,5 +97,13 @@ public class TagParam extends GenericParam {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public Integer getTasId() {
+		return this.tasId;
+	}
+
+	public void setTasId(Integer tasId) {
+		this.tasId = tasId;
 	}
 }
