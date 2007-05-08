@@ -5,7 +5,11 @@ import java.util.Date;
 import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.params.beans.TagIndex;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 
 /**
@@ -35,6 +39,7 @@ public abstract class GenericParam {
 	 * default this is false, i.e. tagnames aren't case sensitive.
 	 */
 	private boolean caseSensitiveTagNames;
+	/** creation-date */
 	private Date date;
 	/** If a contentId is updated or deleted we need this as reference */
 	private int requestedContentId;
@@ -265,6 +270,7 @@ public abstract class GenericParam {
 
 	public void setTag(Tag tag) {
 		this.tag = tag;
+		this.tagName = tag.getName();
 	}
 
 	public boolean getFriendOf() {
@@ -306,17 +312,31 @@ public abstract class GenericParam {
 	public void setContentType(ConstantID contentType) {
 		this.contentType = contentType;
 	}
+	
+	public void setContentTypeByClass(Class<? extends Resource> nativeContentType) {
+		if (BibTex.class.isAssignableFrom(nativeContentType)) {
+			setContentType(ConstantID.BIBTEX_CONTENT_TYPE);
+		} else if (Bookmark.class.isAssignableFrom(nativeContentType)) {
+			setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
+		} else {
+			throw new UnsupportedResourceTypeException( nativeContentType.getName() );
+		}
+	}
 
 	public String getTagName() {
+		if (tag != null) {
+			return tag.getName();
+		}
 		return this.tagName;
 	}
 
 	public void setTagName(String tagName) {
+		this.tag = null;
 		this.tagName = tagName;
 	}
 
 	public String getTagNameLower() {
-		return this.tagName.toLowerCase();
+		return this.getTagName().toLowerCase();
 	}
 
 	public String getTitle() {
