@@ -327,6 +327,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	}
 
 	public boolean deletePost(String userName, String resourceHash, final Transaction session) {
+		// TODO: test removal (tas and bibtex ...)
 		// Start transaction
 		session.beginTransaction();
 		try {
@@ -343,7 +344,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			param.setRequestedContentId(oneBibtex.getContentId());
 	
 			// Delete Tas
-			this.tagDb.deleteTas(param, session);
+			this.tagDb.deleteTags(oneBibtex, session);
 			// Update SimHashes
 			for (final int i : new int[] { 0, 1, 2, 3 }) {
 				final ConstantID simHash = ConstantID.getSimHash(i);
@@ -395,33 +396,35 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	}
 
 	public boolean storePost(String userName, Post<BibTex> post, String oldIntraHash, final Transaction session) {
+		// TODO: test insertion (tas, bibtex, ...)
 		// Start transaction
 		session.beginTransaction();
 		try {
 			final String newIntraHash = post.getResource().getIntraHash();
-			// retrieve existing entry
 			final BibTexParam param = new BibTexParam();
 			param.setUserName(userName);
 			param.setResource(post.getResource());
+			
+			// retrieve existing entry
 			post.getResource().setIntraHash(oldIntraHash);
 			param.setHash(oldIntraHash);
-
 			final List<Post<BibTex>> isBibTexInDb = this.getBibTexByHashForUser(param, session);
 			post.getResource().setIntraHash(newIntraHash);
 			param.setHash(newIntraHash);
 			if (isBibTexInDb.size() == 0) {
-				// BibTex entry DOES NOT EXIST for this user
-				param.setNewContentId(this.generalDb.getNewContentId(param, session));
+				// BibTex entry DOES NOT EXIST for this user -> create a new contentId
+				post.setContentId( this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, session) );
 			} else {
-				// BibTex entry DOES EXIST for this user
+				// BibTex entry DOES EXIST for this user -> delete old BibTex post and use its contentId
 				final Post oldBibTexPost = isBibTexInDb.get(0);
-				param.setNewContentId(oldBibTexPost.getContentId());
-				// Delete old BibTex post
+				post.setContentId( oldBibTexPost.getContentId() );
 				this.deletePost(userName, oldBibTexPost.getResource().getIntraHash(), session);
 			}
 			// Insert the new BibTex
 			this.insertBibTex(param, session);
-			// TODO: insertTags, insertRelations, update: log, doc, col, ext, url
+			// add the tags
+			this.tagDb.insertTags(post, session);
+			// TODO: insertRelations (maybe in TagDatabaseManager for a gain in BookmarkDatabaseManager.storePost), update: log, doc, col, ext, url
 	
 			// End transaction
 			session.commitTransaction();
