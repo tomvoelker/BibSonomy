@@ -96,11 +96,13 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 * Get a current ContentID for setting a bookmark update the current
 	 * ContendID for bookmark and bibtex
 	 */
-	public Integer getNewContentId(final GenericParam param, final Transaction session) {
-		return this.queryForObject("getNewContentId", param, Integer.class, session);
+	public Integer getNewContentId(final ConstantID idsType, final Transaction session) {
+		final Integer rVal = this.queryForObject("getNewContentId", idsType.getId(), Integer.class, session);
+		this.updateIds(idsType, session);
+		return rVal;
 	}
 
-	public void updateIds(final GenericParam param, final Transaction session) {
-		this.insert("updateIds", param, session);
+	protected void updateIds(final ConstantID idsType, final Transaction session) {
+		this.insert("updateIds", idsType.getId(), session);
 	}
 }
