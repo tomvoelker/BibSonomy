@@ -1,15 +1,18 @@
 package org.bibsonomy.database.managers;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.AbstractDatabaseManager;
-import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.TagParam;
+import org.bibsonomy.database.params.beans.TagTagBatchParam;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.database.util.Transaction;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.util.ExceptionUtils;
 
 /**
  * Used to retrieve tags from the database.
@@ -38,8 +41,8 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	}
     
 	/** Return tag for given tagId */
-	public Tag getTagById(final TagParam param, final Transaction session) {
-		return this.queryForObject("getTagById", param, Tag.class, session);
+	public Tag getTagById(final Integer tagId, final Transaction session) {
+		return this.queryForObject("getTagById", tagId, Tag.class, session);
 	}
 
 	/** Return all tags for a given tag count */
@@ -72,22 +75,31 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		this.update("updateTagDec", param, session);
 	}
 
-	public void insertTagTagBatch(final TagParam param, final Transaction session) {
+	public void insertTagTagBatch(final int contentId, final Iterable<Tag> tags, TagTagBatchParam.Job job, final Transaction session) {
+		final TagTagBatchParam batchParam = new TagTagBatchParam();
+		batchParam.setContentId(contentId);
+		batchParam.setTagList( TagDatabaseManager.tagsToString(tags) );
+		batchParam.setJob(job);
+		this.insertTagTagBatch(batchParam, session);
+	}
+	public void insertTagTagBatch(final TagTagBatchParam param, final Transaction session) {
 		// TODO not tested
 		this.insert("insertTagTagBatch", param, session);
 	}
 
 	public void insertTas(final TagParam param, final Transaction session) {
-		this.insert("insertTas", param, session);
+		for (final Tag tag : param.getTags()) {
+			param.setTag(tag);
+			for (final Integer groupId : param.getGroups()) {
+				param.setGroupId(groupId);
+				param.setTasId(generalDb.getNewContentId(ConstantID.IDS_TAS_ID, session));
+				this.insert("insertTas", param, session);
+			}
+		}
 	}
 
-	public void deleteTas(final GenericParam param, final Transaction session) {
-		this.delete("deleteTas", param, session);
-	}
-
-	public void updateTasId(final int param, final Transaction session) {
-		// TODO not tested
-		this.update("updateTasId", param, session);
+	public void deleteTas(final Integer contentId, final Transaction session) {
+		this.delete("deleteTas", contentId, session);
 	}
 
 	public void insertLogTas(final TagParam param, final Transaction session) {
@@ -95,19 +107,19 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		this.insert("insertLogTas", param, session);
 	}
 
-	public List<Tag> deleteTags(final TagParam param, final Transaction session) {
+	public void deleteTags(final Post<?> post, final Transaction session) {
 		// get tags for this contentId
 		// FIXME param.getResource().setTags(getTasByContendId(param));
-		final List<Tag> tagSet = null; // FIXME !!!
+		final boolean batchIt = true;
 										// param.getResource().getTags();
 
 		// add these tags to list and decrease counter in tag table
-		for (final Tag tag : tagSet) {
+		for (final Tag tag : post.getTags()) {
 			// decrease counter in tag table
 			updateTagDec(tag, session);
 		}
 
-		if (tagSet.size() > MAX_TAGS_TO_INSERT) {
+		if (batchIt == true) {
 			/** * too much tags: batch the job********* */
 			/*******************************************************************
 			 * a note regarding tag batch processing: the batch table has four
@@ -119,60 +131,79 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			 * could get removed in between IMPORTANT: read further to end of
 			 * this note!
 			 ******************************************************************/
-			/** ****** schedule job for decrement****** */
-			insertTagTagBatch(param, session);
+			/** ****** schedule job for decrement****** */ 
+			insertTagTagBatch(post.getContentId(), post.getTags(), TagTagBatchParam.Job.DECREMENT, session);
 		} else {
+			throw new UnsupportedOperationException();
 			// compute all tag-tag combinations with o(n_2)
+			/* TODO: implement updateTagTagDec and do this:
 			for (final Tag tag1 : tagSet) {
 				for (final Tag tag2 : tagSet) {
 					if (!tag1.equals(tag2)) {
 						updateTagTagDec(tag1, tag2, param, session);
 					}
 				}
-			}
+			}*/
 		}
 
-		// log all tas related to this bookmark
-		insertLogTas(param, session);
+		// TODO: log all tas related to this post -> this.insertLogTas(...)
 		// delete all tas related to this bookmark
-		deleteTas(param, session);
-
-		return tagSet;
+		deleteTas(post.getContentId(), session);
 	}
 
-	/** Insert a set of tags */
+	public void insertTags(final Post<?> post, final Transaction session) {
+		final TagParam tagParam = new TagParam();
+		tagParam.setTags(post.getTags());
+		tagParam.setNewContentId(post.getContentId());
+		tagParam.setContentTypeByClass(post.getResource().getClass());
+		tagParam.setUserName(post.getUser().getName());
+		tagParam.setDate(post.getDate());
+		List<Integer> groups = new ArrayList<Integer>();
+		for (Group g : post.getGroups()) {
+			groups.add(g.getGroupId());
+		}
+		tagParam.setGroups(groups);
+		insertTags(tagParam, session);
+	}
+	
+	/** Insert a set of tags for a content (into tas table and what else is required) */
 	public void insertTags(final TagParam param, final Transaction session) {
 		// generate a list of tags
-		// TODO implement this
-//		List<Tag> allTags = param.getTags();
-//		int tasId;
-//		HashMap<Tag, Integer> tasIDs = new HashMap<Tag, Integer>();
-
-		// if there're to many tags, do it in a batch job
-		/*if (allTags.size() > MAX_TAGS_TO_INSERT) {
-			insertTagTagBatch(param);
-			for (final Tag tag1 : allTags) {
-				tasId = insertTas(tag1, param);
-				insertTag(tag1);
-				// remember tasId for tagtagrelation
-				tasIDs.put(tag1, tasId);
-			}
-		} else {
-			// do it here
-			for (final Tag tag1 : allTags) {
-				// not correct
-				tasId = insertTas(tag1, param);
-				insertTag(tag1);
-				// remember tasId for tagtagrelation
-				tasIDs.put(tag1, tasId);
-				// update tagtag table
+		List<Tag> allTags = param.getTags();
+		final boolean batchIt = true; // TODO: use this and implement nonbatch-tagtag-inserts: (allTags.size() > MAX_TAGS_TO_INSERT);
+		
+		if (batchIt == true) {
+			// if there're too many tags, do it in a batch job
+			// FIXME: i hate this: someone misused newContentId for the tasId. requestedContentId is the real new contentId here 
+			insertTagTagBatch(param.getNewContentId(), param.getTags(), TagTagBatchParam.Job.DECREMENT, session);
+		}
+		insertTas(param, session);
+		for (final Tag tag1 : allTags) {
+			insertTag(tag1, session);
+			if (batchIt == false) {
+				throw new UnsupportedOperationException();
+				/* TODO: implement nonbatch-tagtag-inserts
 				for (final Tag tag2 : allTags) {
 					if (!tag1.equals(tag2)) {
 						insertTagTag(tag1, tag2);
 					}
-				}
+				}*/
 			}
-		}*/
+		}
+	}
+	
+	/**
+	 * Builds a string from a list of tags. The tags are separated by space in the string.
+	 * 
+	 * @param tags some tags
+	 * @return the string of white space separated tags
+	 */
+	private static String tagsToString(Iterable<Tag> tags) {
+		final StringBuffer s = new StringBuffer();
+		for (final Tag tag : tags) {
+			s.append(tag.getName()).append(" ");
+		}
+		return s.toString().trim();
 	}
 
 	/**
@@ -184,6 +215,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/** Insert Tag-Tag Combination */
+	/* FIXME: SQL looks weird
 	public void insertTagTag(Tag tag1, Tag tag2, final Transaction session) {
 		// check if the two first elements of tag taglist contains tag-entries
 		if (tag1 == null || tag2 == null) {
@@ -191,7 +223,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		} else {
 			this.insert("insertTagTag", new Tag[] { tag1, tag2 }, session);
 		}
-	}
+	}*/
 
 	/*
 	 * single requests for method get detailled information of a tag
