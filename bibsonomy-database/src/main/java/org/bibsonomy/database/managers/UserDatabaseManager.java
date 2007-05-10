@@ -86,7 +86,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 	public List<User> getUsers(String authUser, int start, int end, final Transaction session) {
 		
 		UserParam param =new UserParam();
-		param.setAuthName(authUser);
+		param.setRequestedUserName(authUser);
         param.setOffset(start);
 		int limit = end - start;
 		param.setLimit(limit);
@@ -101,7 +101,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 	public List<User> getUsers(String authUser, String groupName, int start, int end, final Transaction session) {
 	
 		UserParam param=new UserParam();
-		param.setAuthName(authUser);
+		param.setRequestedUserName(authUser);
 		param.setGroupingName(groupName);
 		param.setOffset(start);
 		int limit = end - start;
@@ -121,7 +121,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 	public User getUserDetails(String authUserName, String userName, final Transaction session) {
 		
 		UserParam param=new UserParam();
-		param.setAuthName(authUserName);
+		param.setRequestedUserName(authUserName);
 		param.setUserName(userName);
 		User user =new User();
 	    user= this.getUserDetails(param, session);
