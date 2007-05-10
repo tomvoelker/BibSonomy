@@ -1,0 +1,18 @@
+Direct access
+
+  If you intend to use the BibSonomy webservice with another programming language
+  than Java, you are welcome to develop your own client library communicating
+  directly with the REST webservice. In the REST architecture's philosophy each
+  accessible object gets its own URI. The accessible objects of BibSonomy are users,
+  groups, posts and tags.
+~~ See [HJSS06a] for an introduction into their semantics. 
+  The exposed URIs are summarized {{{api.html}here}}.
+
+  REST webservices exchange structured data; so all exchange documents must be valid
+  to a given XML schema.
+~~Appendix B shows an extract of this schema, it can be viewed in whole on
+~~https://www.bibsonomy.org/BibWiki/RestApiUrls TODO: move documentation to a public website!.
+
+  If you succeed in writing your own client library, please let us know and send
+  us your files, so that other programmers can benefit from your work.
+  Thank you in advance.

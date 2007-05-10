@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+	<properties>
+		<title>API</title>
+	</properties>
+	<body>
+		<section name="API">
+			<p>
+				BibSonomy provides a webservice using Representational
+				State Transfer (REST), a software architectural style
+				for distributed hypermedia systems. The term originated
+				in a 2000 doctoral dissertation about the web written by
+				Roy Fielding, one of the principal authors of the HTTP
+				protocol specification. This site is intended for
+				developers who want to develop applications which
+				interact with BibSonomy.
+			</p>
+			<p>
+				You can use the provided client library, written in
+				Java, to access the API or you can directly interact
+				with the webservice if you would like to write a client
+				in a language other than Java:
+				<ul>
+					<li>
+						<a href="javaclient.html">
+							Java client library
+						</a>
+					</li>
+					<li>
+						<a href="genericclient.html">direct access</a>
+					</li>
+				</ul>
+			</p>
+			<subsection name="Methods">
+				<p>
+					For the uniform addressing and identification a URL
+					pattern was specified. The individual inquiries can
+					be partly supplemented with attributes of the form
+					<em>key=value</em>
+					.
+				</p>
+				<p>
+					An overview of the currently available methods is
+					outlined in the following table.
+				</p>
+				<p>
+					<table>
+						<tr>
+							<th>Description</th>
+							<th>HTTP</th>
+							<th>Path</th>
+							<th>Status</th>
+						</tr>
+						<tr>
+							<td>List of all users</td>
+							<td>GET</td>
+							<td>/users</td>
+							<td>
+								<img src="images/icon_success_sml.gif" />
+							</td>
+						</tr>
+						<tr>
+							<td>Create a user</td>
+							<td>POST</td>
+							<td>/users</td>
+							<td>
+								<img src="images/icon_error_sml.gif" />
+							</td>
+						</tr>
+						<tr>
+							<td>Details for a user</td>
+							<td>GET</td>
+							<td>/users/[username]</td>
+							<td>
+								<img src="images/icon_error_sml.gif" />
+							</td>
+						</tr>
+						<tr>
+							<td>Change user details</td>
+							<td>PUT</td>
+							<td>/users/[username]</td>
+							<td>
+								<img src="images/icon_error_sml.gif" />
+							</td>
+						</tr>
+						<tr>
+							<td>Delete user</td>
+							<td>DELETE</td>
+							<td>/users/[username]</td>
+							<td>
+								<img src="images/icon_error_sml.gif" />
+							</td>
+						</tr>
+						<tr>
+							<td>List of posts for a users</td>
+							<td>GET</td>
+							<td>
+								/users/[username]/posts
+								?tags=[t1+t2+...+tn]
+								?resourcetype=(bibtex|bookmark)
+							</td>
+							<td>
+								<img src="images/icon_success_sml.gif" />
+							</td>
+						</tr>
+						<tr>
+							<td>Add post</td>
+							<td>POST</td>
+							<td>/users/[username]/posts</td>
+							<td>
+								<img src="images/icon_success_sml.gif" />
+							</td>
+						</tr>
+						<tr>
+							<td>Details for a post</td>
+							<td>GET</td>
+							<td>
+								/users/[username]/posts/[resourceHash]
+							</td>
+							<td>
+								<img src="images/icon_success_sml.gif" />
+							</td>
+						</tr>
+						<tr>
+							<td>Change post</td>
+							<td>PUT</td>
+							<td>
+								/users/[username]/posts/[resourceHash]
+							</td>
+							<td>
+								<img src="images/icon_success_sml.gif" />
+							</td>
+						</tr>
+						<tr>
+							<td>Delete post</td>
+							<td>DELETE</td>
+							<td>
+								/users/[username]/posts/[resourceHash]
+							</td>
+							<td>
+								<img src="images/icon_success_sml.gif" />
+							</td>
+						</tr>
+						<tr>
+							<td>Liste of all groups</td>
+							<td>GET</td>
+							<td>/groups</td>
+							<td>
+								<img src="images/icon_success_sml.gif" />
+							</td>
+						</tr>
+						<tr>
+							<td>Create group</td>
+							<td>POST</td>
+							<td>/groups</td>
+							<td>
+								<img src="images/icon_error_sml.gif" />
+							</td>
+						</tr>
+						<tr>
+							<td>Details for a group</td>
+							<td>GET</td>
+							<td>/groups/[groupname]</td>
+							<td>
+								<img src="images/icon_success_sml.gif" />
+							</td>
+						</tr>
+						<tr>
+							<td>Change group</td>
+							<td>PUT</td>
+							<td>/groups/[groupname]</td>
+							<td>
+								<img src="images/icon_error_sml.gif" />
+							</td>
+						</tr>
+						<tr>
+							<td>Delete group</td>
+							<td>DELETE</td>
+							<td>/groups/[groupname]</td>
+							<td>
+								<img src="images/icon_error_sml.gif" />
+							</td>
+						</tr>
+						<tr>
+							<td>List of users for a group</td>
+							<td>GET</td>
+							<td>/groups/[groupname]/users</td>
+							<td>
+								<img src="images/icon_error_sml.gif" />
+							</td>
+						</tr>
+						<tr>
+							<td>Add user to a group</td>
+							<td>POST</td>
+							<td>/groups/[groupname]/users</td>
+							<td>
+								<img src="images/icon_error_sml.gif" />
+							</td>
+						</tr>
+						<tr>
+							<td>Remove user from a group</td>
+							<td>DELETE</td>
+							<td>
+								/groups/[groupname]/users/[username]
+							</td>
+							<td>
+								<img src="images/icon_error_sml.gif" />
+							</td>
+						</tr>
+						<tr>
+							<td>List of all tags</td>
+							<td>GET</td>
+							<td>
+								/tags ?filter=[regex]
+								?(user|group|viewable)=[username/groupname]
+							</td>
+							<td>
+								<img src="images/icon_error_sml.gif" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Details for a tag; details for a list of
+								sub-/super-/correlated-tags
+							</td>
+							<td>GET</td>
+							<td>/tags/[tag]</td>
+							<td>
+								<img src="images/icon_error_sml.gif" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Substitute the shared appearance of
+								t1,t2,... with T1,T2,...
+							</td>
+							<td>PUT</td>
+							<td>
+								/substitutetags
+								?from=[t1+t2+..]&amp;to=[T1+T2+..]
+							</td>
+							<td>
+								<img src="images/icon_error_sml.gif" />
+							</td>
+						</tr>
+						<tr>
+							<td>List of all posts</td>
+							<td>GET</td>
+							<td>
+								/posts ?tags=[t1+t2+...+tn]
+								?resourcetype=(bibtex|bookmark)
+								?(user|group|viewable)=[username/groupname]
+								?resource=[hash]
+							</td>
+							<td>
+								<img src="images/icon_success_sml.gif" />
+							</td>
+						</tr>
+						<tr>
+							<td>List of recent posts</td>
+							<td>GET</td>
+							<td>
+								/posts/added
+								?resourcetype=(bibtex|bookmark)
+							</td>
+							<td>
+								<img src="images/icon_success_sml.gif" />
+							</td>
+						</tr>
+						<tr>
+							<td>List of popular posts</td>
+							<td>GET</td>
+							<td>
+								/posts/popular
+								?resourcetype=(bibtex|bookmark)
+							</td>
+							<td>
+								<img src="images/icon_success_sml.gif" />
+							</td>
+						</tr>
+					</table>
+				</p>
+				<p>
+					All URLs can be supplemented by these attributes
+					(use
+					<em>start</em>
+					and
+					<em>end</em>
+					only with lists):
+					<ul>
+						<li>?format=(xml|rdf|html)</li>
+						<li>?start=[int], starting at 0, default 0</li>
+						<li>?end=[int], starting at 0, default 19</li>
+					</ul>
+				</p>
+				<p>
+					Tags can be customized the following way:
+					<ul>
+						<li>->[tag] tag and its direct children</li>
+						<li>
+							-->[tag] tag and its children (transitive)
+						</li>
+						<li>[tag]-> tag and its direct parents</li>
+						<li>
+							[tag]--> tag and its parents (transitive)
+						</li>
+						<li>
+							&lt;-&gt;[tag] tag and its correlated tags
+						</li>
+					</ul>
+
+				</p>
+			</subsection>
+		</section>
+	</body>
+</document>

@@ -1,0 +1,11 @@
+/* UniK Logo */
+#bannerLeft img {
+	padding-top: 1.6em;
+	padding-left: 3.6em;
+}
+
+/* KDE Logo */
+#bannerRight img {
+	padding-right: 0.5em;
+	padding-bottom: 0.3em;
+}

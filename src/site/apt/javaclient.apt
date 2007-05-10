@@ -1,0 +1,90 @@
+Java client library
+
+  The Java library encapsulates each accessing method provided by the webservice
+  (see {{{api.html}methods}}) with a corresponding class. The client library
+  can be downloaded from {{{download.html}here}}.
+
+  The client library consists of multiple jars which must be added to your
+  Java project's classpath. Those jars are: 
+
+  * <<Bibsonomy webservice>>:\
+    The webservice client itself consists of three jars:
+
+    * <<<bibsonomy-client.jar>>> (client library)
+
+    * <<<bibsonomy-data-model.jar>>> (bibsonomy data model)
+
+    * <<<bibsonomy-shared.jar>>> (shared library).
+
+  * <<Apache HTTP-Client>>:\
+    The HTTP client libraries by the apache software foundation are used for the
+    HTTP communication:
+
+    * <<<commons-httpclient.jar>>>.
+
+  * <<Java Architecture for XML Binding>> (JAXB):\
+    The client uses JAXB to (de)serialize the XML exchange documents:
+
+    * <<<jaxb-api.jar>>>
+
+    * <<<jaxb-impl.jar>>>
+
+    * <<<jsr173.jar>>>
+
+    * <<<activation.jar>>>
+
+~~  Figure 1: UML class diagram of the Bibsonomy data model 
+
+
+* Using the client library
+
+  Using the client library is rather simple. At first one has to instantiate an object of
+  type <<<Bibsonomy>>> and set the user's credentials on it. This object can be reused during
+  program run. As already discussed, there exist classes encapsulating each provided
+  webservice method. These classes are derived from <<<AbstractQuery>>> and request in
+  their constructor parameters (usually model data objects, see the package
+  <<<org.bibsonomy.model>>>) - please refer to the Java doc of the corresponding constructor.
+
+  After instantiating an appropriate <<<AbstractQuery>>> just execute it by invoking
+  the <<<executeQuery>>> method of the <<<Bibsonomy>>> object with the query object
+  as parameter. If your query object fetches a list of objects, for example a list of
+  posts, you can also use the overloaded <<<executeQuery>>> method and register a callback
+  object (use the <<<ProgressCallback>>> interface). The return values of your query are
+  available via the <<<getResult>>> and <<<getHttpStatusCode>>> methods of the <<<AbstractQuery>>>. 
+
+  Here is a simple example of how to use the client library:
+
+--------------------------------------------
+  // create webservice client object
+  Bibsonomy bib = new Bibsonomy( "myUserName", "mySecretPassword" );
+
+  // instantiate query object
+  GetPostsQuery gpq = new GetPostsQuery();
+
+  // some queries can be parametrized
+  // -> in this example we want to fetch only bibtex entries
+  gpq.setResourceType( BibTex.class );
+
+  try {
+    // perform query
+    bib.executeQuery( gpq );
+
+    // on success, read results
+    if( gpq.getHttpStatusCode() == 200 ) {
+      List<Post> posts = gpq.getResult();
+
+      for( Post post: posts ) {
+      /*
+       * now do something with your posts :)
+       */
+      }
+    }
+  } catch( ErrorPerformingRequestException e ) {
+    /*
+     * happens on network failure for example
+     */
+  }
+--------------------------------------------
+
+  A whole example application for managing bookmarks and publications, demonstrating the 
+  webservice client library, is available for {{{download.html}download}}.
