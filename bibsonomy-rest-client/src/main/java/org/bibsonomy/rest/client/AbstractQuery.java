@@ -31,9 +31,8 @@ public abstract class AbstractQuery<T>
 	protected static final String URL_POSTS_ADDED = RestProperties.getInstance().getAddedPostsUrl();
 	protected static final String URL_POSTS_POPULAR = RestProperties.getInstance().getPopularPostsUrl();
 	
-   private String password;
-   private String username;
    private String apiKey;
+   private String username;
    private String apiURL;
    private int statusCode = -1;
    private RenderingFormat renderingFormat = RenderingFormat.XML;
@@ -42,7 +41,7 @@ public abstract class AbstractQuery<T>
 
    protected final Reader performGetRequest( String url ) throws ErrorPerformingRequestException
    {
-      GetWorker worker = new GetWorker( username, password, callback );
+      GetWorker worker = new GetWorker( username, apiKey, callback );
       Reader downloadedDocument = worker.perform( apiURL + url );
       statusCode = worker.getHttpResult();
       return downloadedDocument;
@@ -53,26 +52,25 @@ public abstract class AbstractQuery<T>
    {
       HttpWorker worker;
       String result;
-      String apiKeyString = "&" + RestProperties.PARAMETER_API_KEY + "=" + apiKey;
       switch( method )
       {
       case POST:
-         worker = new PostWorker( username, password );
-         result = ( (PostWorker)worker ).perform( apiURL + url + apiKeyString, requestBody );
+         worker = new PostWorker( username, apiKey );
+         result = ( (PostWorker)worker ).perform( apiURL + url, requestBody );
          statusCode = worker.getHttpResult();
          break;
       case DELETE:
-         worker = new DeleteWorker( username, password );
-         result = ( (DeleteWorker)worker ).perform( apiURL + url + apiKeyString );
+         worker = new DeleteWorker( username, apiKey );
+         result = ( (DeleteWorker)worker ).perform( apiURL + url);
          statusCode = worker.getHttpResult();
          break;
       case PUT:
-         worker = new PutWorker( username, password );
-         result = ( (PutWorker)worker ).perform( apiURL + url + apiKeyString, requestBody );
+         worker = new PutWorker( username, apiKey );
+         result = ( (PutWorker)worker ).perform( apiURL + url, requestBody );
          break;
       case HEAD:
-         worker = new HeadWorker( username, password );
-         result = ( (HeadWorker)worker ).perform( apiURL + url + apiKeyString );
+         worker = new HeadWorker( username, apiKey );
+         result = ( (HeadWorker)worker ).perform( apiURL + url );
          break;
       case GET:
          throw new UnsupportedOperationException( "use AbstractQuery::performGetRequest( String url)" );
@@ -88,17 +86,14 @@ public abstract class AbstractQuery<T>
        * 
        * @param username
        *           username at bibsonomy.org
-       * @param password
+       * @param apiKey
        *           the user's password
-       * @param apiKey 
-       *           the user's apikey
        * @throws ErrorPerformingRequestException
        *            if something fails, eg an ioexception occurs (see the cause)
        */
-   final void execute( String username, String password, String apiKey ) throws ErrorPerformingRequestException
+   final void execute( String username, String apiKey ) throws ErrorPerformingRequestException
    {
       this.username = username;
-      this.password = password;
       this.apiKey = apiKey;
       doExecute();
    }
@@ -163,7 +158,10 @@ public abstract class AbstractQuery<T>
 
 /*
  * $Log$
- * Revision 1.2  2007-04-19 19:42:46  mbork
+ * Revision 1.3  2007-05-10 20:25:40  mbork
+ * api key implemented
+ *
+ * Revision 1.2  2007/04/19 19:42:46  mbork
  * added the apikey-mechanism to the rest api and added a method to the LogicInterface to validate it.
  *
  * Revision 1.1  2006/10/24 21:39:23  mbork

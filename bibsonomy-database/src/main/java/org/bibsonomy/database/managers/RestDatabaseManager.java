@@ -297,22 +297,22 @@ public class RestDatabaseManager implements LogicInterface {
 	 * validates a user's access to bibsonomy.
 	 * 
 	 * @param username name of the user
-	 * @param password password
+	 * @param apiKey apiKey
 	 * @return true if the user exists and has the given password
 	 */
-	public boolean validateUserAccess(String username, String password) {
+	public boolean validateUserAccess(String username, String apiKey) {
 		return true;
 		//TODO: implement this method!
 	}
 
 	/**
-	 * Checks if the given api key is valid.
+	 * Checks if the given software key is valid.
 	 * 
-	 * @param apiKey the api key to check.
-	 * @return true if the key is valid, false else.
+	 * @param softwareKey the software key to check.
+	 * @return true if the software key is valid, false else.
 	 */
-	public boolean validateApiKey(String apiKey) {
-		// TODO: please implement this method
+	public boolean validateSoftwareKey(String softwareKey) {
+		// TODO: determine if a software key is to use
 		return true;
 	}
 	

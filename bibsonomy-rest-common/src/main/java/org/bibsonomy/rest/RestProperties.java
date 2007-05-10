@@ -18,8 +18,6 @@ public class RestProperties extends Properties
 {
    private static RestProperties properties = null;
 
-   public static final String PARAMETER_API_KEY = "apiKey";
-   
    /* key names */
    private static final String PROPERTY_API_URL = "RestApiURL";
    private static final String PROPERTY_CONTENT_TYPE = "DefaultContentType";
@@ -199,7 +197,10 @@ public class RestProperties extends Properties
 
 /*
  * $Log$
- * Revision 1.2  2007-04-19 19:42:46  mbork
+ * Revision 1.3  2007-05-10 20:25:40  mbork
+ * api key implemented
+ *
+ * Revision 1.2  2007/04/19 19:42:46  mbork
  * added the apikey-mechanism to the rest api and added a method to the LogicInterface to validate it.
  *
  * Revision 1.1  2006/10/24 21:39:28  mbork

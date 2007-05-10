@@ -16,9 +16,9 @@ public final class PutWorker extends HttpWorker
 {
 	private int httpResult;
 
-	public PutWorker( String username, String password )
+	public PutWorker( String username, String apiKey )
 	{
-		super( username, password );
+		super( username, apiKey );
 	}
 	
 	public String perform( String url, String requestBody ) throws ErrorPerformingRequestException
@@ -60,7 +60,10 @@ public final class PutWorker extends HttpWorker
 
 /*
  * $Log$
- * Revision 1.1  2006-10-24 21:39:22  mbork
+ * Revision 1.2  2007-05-10 20:25:40  mbork
+ * api key implemented
+ *
+ * Revision 1.1  2006/10/24 21:39:22  mbork
  * split up rest api into correct modules. verified with junit tests.
  *
  * Revision 1.1  2006/10/10 12:42:13  cschenk

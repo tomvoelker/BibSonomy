@@ -14,7 +14,7 @@ public class BibsonomyTest extends TestCase
    {
       try
       {
-         new Bibsonomy( "", "test", null );
+         new Bibsonomy( "", "test" );
          fail( "exception should have been thrown" );
       }
       catch( IllegalArgumentException e )
@@ -26,7 +26,7 @@ public class BibsonomyTest extends TestCase
       }
       try
       {
-         new Bibsonomy( "test", "", null );
+         new Bibsonomy( "test", "" );
          fail( "exception should have been thrown" );
       }
       catch( IllegalArgumentException e )
@@ -36,7 +36,7 @@ public class BibsonomyTest extends TestCase
             fail( "wrong exception was thrown" );
          }
       }
-      assertNotNull( "instantiation failed", new Bibsonomy( "user", "pw", "asdf" ) );
+      assertNotNull( "instantiation failed", new Bibsonomy( "user", "pw" ) );
    }
    
    public void testSetUsername()
@@ -62,7 +62,7 @@ public class BibsonomyTest extends TestCase
       Bibsonomy bib = new Bibsonomy();
       try
       {
-         bib.setPassword( "" );
+         bib.setApiKey( "" );
          fail( "exception should have been thrown" );
       }
       catch( IllegalArgumentException e )
@@ -72,7 +72,7 @@ public class BibsonomyTest extends TestCase
             fail( "wrong exception was thrown" );
          }
       }
-      bib.setPassword( "foo" );
+      bib.setApiKey( "foo" );
    }
    
    public void testSetApiURL()
@@ -130,7 +130,10 @@ public class BibsonomyTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.2  2007-04-19 19:42:46  mbork
+ * Revision 1.3  2007-05-10 20:25:40  mbork
+ * api key implemented
+ *
+ * Revision 1.2  2007/04/19 19:42:46  mbork
  * added the apikey-mechanism to the rest api and added a method to the LogicInterface to validate it.
  *
  * Revision 1.1  2006/10/24 21:39:23  mbork

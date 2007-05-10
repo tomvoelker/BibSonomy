@@ -161,10 +161,10 @@ public interface LogicInterface
     * validates a user's access to bibsonomy.
     * 
     * @param username name of the user
-    * @param password password
-    * @return true if the user exists and has the given password
+    * @param apiKey apiKey
+    * @return true if the user exists and has the given apiKey
     */
-   public abstract boolean validateUserAccess( String username, String password );
+   public abstract boolean validateUserAccess( String username, String apiKey );
 
    /**
     * Checks if the given api key is valid.
@@ -172,7 +172,7 @@ public interface LogicInterface
     * @param apiKey the api key to check.
     * @return true if the key is valid, false else.
     */
-   public abstract boolean validateApiKey( String apiKey );
+   public abstract boolean validateSoftwareKey( String apiKey );
    
    /**
     * removes the given user from bibsonomy.

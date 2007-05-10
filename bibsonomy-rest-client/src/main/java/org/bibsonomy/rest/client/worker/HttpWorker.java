@@ -28,12 +28,12 @@ public abstract class HttpWorker
 	private HttpClient httpClient;
 	
     protected final String username;
-    protected final String password;
+    protected final String apiKey;
     
-	public HttpWorker( String username, String password )
+	public HttpWorker( String username, String apiKey )
 	{
         this.username = username;
-        this.password = password;
+        this.apiKey = apiKey;
         
         httpClient = new HttpClient();
 		HttpClientParams httpClientParams = new HttpClientParams();
@@ -52,7 +52,7 @@ public abstract class HttpWorker
      */
     protected String encodeForAuthorization() 
     {
-        return HEADER_AUTH_BASIC + new BASE64Encoder().encode( ( username + ":" + password ).getBytes() );
+        return HEADER_AUTH_BASIC + new BASE64Encoder().encode( ( username + ":" + apiKey ).getBytes() );
     }
 
 	/**
@@ -68,7 +68,10 @@ public abstract class HttpWorker
 
 /*
  * $Log$
- * Revision 1.1  2006-10-24 21:39:23  mbork
+ * Revision 1.2  2007-05-10 20:25:40  mbork
+ * api key implemented
+ *
+ * Revision 1.1  2006/10/24 21:39:23  mbork
  * split up rest api into correct modules. verified with junit tests.
  *
  * Revision 1.1  2006/10/10 12:42:16  cschenk

@@ -53,12 +53,12 @@ public class TestDatabase implements LogicInterface
 		fillDataBase();
 	}
    
-   public boolean validateUserAccess( String username, String password )
+   public boolean validateUserAccess( String username, String apiKey )
    {
       return true;
    }
    
-   public boolean validateApiKey( String apiKey )
+   public boolean validateSoftwareKey( String softwareKey )
    {
       return true;
    }
@@ -744,7 +744,10 @@ public class TestDatabase implements LogicInterface
 
 /*
  * $Log$
- * Revision 1.5  2007-05-06 01:39:17  jillig
+ * Revision 1.6  2007-05-10 20:25:40  mbork
+ * api key implemented
+ *
+ * Revision 1.5  2007/05/06 01:39:17  jillig
  * ->changed storePost-signature
  *
  * Revision 1.4  2007/05/01 22:28:47  jillig

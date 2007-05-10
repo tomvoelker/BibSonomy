@@ -19,14 +19,13 @@ public final class Bibsonomy
    
    private String apiURL = RestProperties.getInstance().getApiUrl();
    private String username;
-   private String password;
    private String apiKey;
    private RenderingFormat renderingFormat = RenderingFormat.XML;
 
 
    /**
     * Creates an object to interact with Bibsonomy.
-    * Remember to set {@link Bibsonomy#username} and {@link Bibsonomy#password} via
+    * Remember to set {@link Bibsonomy#username} and {@link Bibsonomy#apiKey} via
     * their accessor methods.
     */
    public Bibsonomy()
@@ -38,20 +37,16 @@ public final class Bibsonomy
     * 
     * @param username
     *           name of the user
-    * @param password
-    *           password of the user
     * @param apiKey
-    *           apikey of the user
+    *           password of the user
     * @throws IllegalArgumentException
     *            if username or password is null or empty
     */
-   public Bibsonomy( String username, String password, String apiKey ) throws IllegalArgumentException
+   public Bibsonomy( String username, String apiKey ) throws IllegalArgumentException
    {
       if( username == null || username.length() == 0 ) throw new IllegalArgumentException( "The given username is not valid." );
-      if( password == null || password.length() == 0 ) throw new IllegalArgumentException( "The given password is not valid." );
-      if( apiKey == null || apiKey.length() == 0 ) throw new IllegalArgumentException( "The given apiKey is not valid." );
+      if( apiKey == null || apiKey.length() == 0 ) throw new IllegalArgumentException( "The given password is not valid." );
       this.username = username;
-      this.password = password;
       this.apiKey = apiKey;
    }
 
@@ -68,10 +63,10 @@ public final class Bibsonomy
    public void executeQuery( AbstractQuery query ) throws ErrorPerformingRequestException, IllegalStateException
    {
       if( username == null ) throw new IllegalStateException( "The username has not yet been set." );
-      if( password == null ) throw new IllegalStateException( "The password has not yet been set." );
+      if( apiKey == null ) throw new IllegalStateException( "The password has not yet been set." );
       query.setRenderingFormat( this.renderingFormat );
       query.setApiURL( this.apiURL );
-      query.execute( username, password, apiKey );
+      query.execute( username, apiKey );
    }
 
    /**
@@ -99,10 +94,10 @@ public final class Bibsonomy
     * @throws IllegalArgumentException
     *            if the given password is null or empty
     */
-   public void setPassword( String password ) throws IllegalArgumentException
+   public void setApiKey( String password ) throws IllegalArgumentException
    {
       if( password == null || password.length() == 0 ) throw new IllegalArgumentException( "The given password is not valid." );
-      this.password = password;
+      this.apiKey = password;
    }
 
    /**
@@ -117,17 +112,6 @@ public final class Bibsonomy
       this.username = username;
    }
 
-   /**
-    * @param apiKey the apiKey to set.
-    * @throws IllegalArgumentException
-    *            if the given apiKey is null or empty
-    */
-   public void setApiKey( String apiKey ) throws IllegalArgumentException
-   {
-      if( apiKey == null || apiKey.length() == 0 ) throw new IllegalArgumentException( "The given apiKey is not valid." );
-      this.apiKey = apiKey;
-   }
-   
    /**
     * This is the accessor method for the apiurl. That is the url pointing to the REST webservice. 
     * It defaults to <i>http://www.bibsonomy.org/api/</i>. If no trailing slash is given it is
@@ -167,7 +151,10 @@ public final class Bibsonomy
 
 /*
  * $Log$
- * Revision 1.2  2007-04-19 19:42:46  mbork
+ * Revision 1.3  2007-05-10 20:25:40  mbork
+ * api key implemented
+ *
+ * Revision 1.2  2007/04/19 19:42:46  mbork
  * added the apikey-mechanism to the rest api and added a method to the LogicInterface to validate it.
  *
  * Revision 1.1  2006/10/24 21:39:23  mbork
