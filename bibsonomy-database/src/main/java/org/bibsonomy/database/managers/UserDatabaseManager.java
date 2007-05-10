@@ -47,15 +47,17 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 	}
 
 	/*
-	 * get details by a given group of a user
+	 * get details by a given user
 	 */
-	public List<User> getUserDetails(final UserParam user, final Transaction session) {
-		return this.queryForList("getUserDetails", user, User.class, session);
+	
+	public User getUserDetails(final UserParam user, final Transaction session) {
+		return this.queryForObject("getUserDetails", user, User.class, session);
 	}
 
 	/*
 	 * get all users of the system
 	 */
+	
 	public List<User> getAllUsers(final UserParam user, final Transaction session) {
 		return this.queryForList("getAllUsers", user, User.class, session);
 	}
@@ -63,6 +65,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 	/*
 	 * insert attributes for new user account
 	 */
+	
 	public void insertUser(final User user, final Transaction session) {
 		this.insert("insertUser", user, session);
 	}
@@ -70,18 +73,25 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 	/*
 	 * delete a user from the system
 	 */ 
+	
 	public void deleteUser(final User user, final Transaction session) {
 		this.delete("deleteUser", user, session);
 	}
 	
 	
-	
-	
-	
+	/*
+	 * returns all users of system
+	 */
 	
 	public List<User> getUsers(String authUser, int start, int end, final Transaction session) {
-		// TODO: implement
-		return null;
+		
+		UserParam param =new UserParam();
+		param.setAuthName(authUser);
+        param.setOffset(start);
+		int limit = end - start;
+		param.setLimit(limit);
+		List<User> users=this.getAllUsers(param, session);
+		return users;
 	}
 
 	/*
@@ -89,19 +99,37 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 	 */
 	
 	public List<User> getUsers(String authUser, String groupName, int start, int end, final Transaction session) {
-		// TODO: implement
-		return null;
+	
+		UserParam param=new UserParam();
+		param.setAuthName(authUser);
+		param.setGroupingName(groupName);
+		param.setOffset(start);
+		int limit = end - start;
+		param.setLimit(limit);
+		
+		//TODO implement incl. sql-statement
+		List<User> users=null;
+		
+		return users;
 	}
 	
 	
+	/*
+	 * Returns details about a specified user
+	 */
 	
 	public User getUserDetails(String authUserName, String userName, final Transaction session) {
-		// TODO: implement
-		return null;
+		
+		UserParam param=new UserParam();
+		param.setAuthName(authUserName);
+		param.setUserName(userName);
+		User user =new User();
+	    user= this.getUserDetails(param, session);
+		return user;
 	}
 	
 	/*
-	 * TODO delete should also include delete of tas beside personla information
+	 * TODO delete should also include delete of tas beside personal information
 	 */
 	
 	public void deleteUser(String userName, final Transaction session) {
