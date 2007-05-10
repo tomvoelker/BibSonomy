@@ -22,8 +22,16 @@ public class TagParam extends GenericParam {
 	private String stem;
 	private int count;
 	private int usercount;
-	private List<Tag> superTags;
-	private List<Tag> subTags;
+	
+	/*
+	 * for request wether to retrieve set of subTags or superTags
+	 * decide if relation is transitive or not
+	 */
+	
+	boolean subTags;
+	boolean supertags;
+	boolean transitive;
+	
 	private List<Post<? extends Resource>> posts;
 	private String regex;
 
@@ -67,22 +75,6 @@ public class TagParam extends GenericParam {
 		this.stem = stem;
 	}
 
-	public List<Tag> getSubTags() {
-		return this.subTags;
-	}
-
-	public void setSubTags(List<Tag> subTags) {
-		this.subTags = subTags;
-	}
-
-	public List<Tag> getSuperTags() {
-		return this.superTags;
-	}
-
-	public void setSuperTags(List<Tag> superTags) {
-		this.superTags = superTags;
-	}
-
 	public int getUsercount() {
 		return this.usercount;
 	}
@@ -105,5 +97,29 @@ public class TagParam extends GenericParam {
 
 	public void setTasId(Integer tasId) {
 		this.tasId = tasId;
+	}
+
+	public boolean isSubTags() {
+		return this.subTags;
+	}
+
+	public void setSubTags(boolean subTags) {
+		this.subTags = subTags;
+	}
+
+	public boolean isSupertags() {
+		return this.supertags;
+	}
+
+	public void setSupertags(boolean supertags) {
+		this.supertags = supertags;
+	}
+
+	public boolean isTransitive() {
+		return this.transitive;
+	}
+
+	public void setTransitive(boolean transitive) {
+		this.transitive = transitive;
 	}
 }
