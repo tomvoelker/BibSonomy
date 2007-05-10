@@ -24,7 +24,7 @@ public class GetTagsViewable extends TagChainElement{
 	 * regex: irrelevant  
 	 */	
 	@Override
-	protected List<Tag> handle(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end, final Transaction session) {
+	protected List<Tag> handle(String authUser, GroupingEntity grouping, String groupingName, String regex, Boolean subTags, Boolean superTags, Boolean subSuperTagsTransitive, int start, int end, final Transaction session) {
 		final TagParam param = new TagParam();
 		param.setRequestedUserName(groupingName);
 		param.setUserName(authUser);
@@ -43,7 +43,7 @@ public class GetTagsViewable extends TagChainElement{
 	}
 
 	@Override
-	protected boolean canHandle(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end) {
+	protected boolean canHandle(String authUser, GroupingEntity grouping, String groupingName, String regex, Boolean subTags, Boolean superTags, Boolean subSuperTagsTransitive, int start, int end, final Transaction session) {
 		return authUser != null && grouping == GroupingEntity.VIEWABLE && groupingName != null;
 	}
 }

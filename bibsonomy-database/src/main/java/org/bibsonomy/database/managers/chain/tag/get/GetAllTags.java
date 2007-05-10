@@ -16,7 +16,7 @@ import org.bibsonomy.model.Tag;
 public class GetAllTags extends TagChainElement {
 
 	@Override
-	protected List<Tag> handle(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end, final Transaction session) {
+	protected List<Tag> handle(String authUser, GroupingEntity grouping, String groupingName, String regex, Boolean subTags, Boolean superTags, Boolean subSuperTagsTransitive, int start, int end, final Transaction session) {
 		final TagParam param = new TagParam();
 		final List<Tag> tags = db.getAllTags(param, session);
 		if (tags.size() != 0) {
@@ -26,7 +26,7 @@ public class GetAllTags extends TagChainElement {
 	}
 
 	@Override
-	protected boolean canHandle(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end) {
+	protected boolean canHandle(String authUser, GroupingEntity grouping, String groupingName, String regex, Boolean subTags, Boolean superTags, Boolean subSuperTagsTransitive, int start, int end, final Transaction session) {
 		return true;
 	}
 }
