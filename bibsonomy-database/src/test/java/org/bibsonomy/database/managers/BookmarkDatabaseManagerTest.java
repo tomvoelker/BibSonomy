@@ -36,7 +36,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getBookmarkByUserFriends() {
-		//FIXME this.bookmarkDb.getBookmarkByUserFriends(this.bookmarkParam);
+		this.bookmarkDb.getBookmarkByUserFriends(this.bookmarkParam, this.dbSession);
 	}
 
 	@Test
