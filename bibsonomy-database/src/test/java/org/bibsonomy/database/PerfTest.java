@@ -3,18 +3,15 @@ package org.bibsonomy.database;
 import static org.junit.Assert.fail;
 
 import java.sql.SQLException;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.params.BookmarkParam;
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Post;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.Test;
 
 /**
- * Performance test of iBATIS.
+ * Performance tests for database methods.
  * 
  * @author Christian Schenk
  * @version $Id$
@@ -23,43 +20,127 @@ public class PerfTest extends AbstractDatabaseManagerTest {
 
 	private static final Logger log = Logger.getLogger(PerfTest.class);
 
+	/** This is used for the great switch statement in callMethod() */
+	private enum Method {
+		getBookmarkByTagNames, getBookmarkByTagNamesForUser, getBookmarkByConceptForUser, getBookmarkByUserFriends, getBookmarkForHomepage, getBookmarkPopular, getBookmarkByHash, getBookmarkByHashCount, getBookmarkByHashForUser, getBookmarkSearch, getBookmarkSearchCount, getBookmarkViewable, getBookmarkForGroup, getBookmarkForGroupCount, getBookmarkForGroupByTag, getBookmarkForUser, getBookmarkForUserCount
+	};
+
+	/**
+	 * Executes all methods we'd like to evaluate.
+	 */
 	@Test
-	@SuppressWarnings( { "unchecked", "unused" })
 	public void testPerf() {
+		for (final Method method : Method.values()) {
+			this.runPerfTest(method);
+		}
+	}
+
+	/**
+	 * Runs one method several times and prints statistics to the debug logger.
+	 */
+	private void runPerfTest(final Method method) {
 		int totalQueries = 0;
 		try {
 			final BookmarkParam param = ParamUtils.getDefaultBookmarkParam();
-
-			List<Post<Bookmark>> bookmarks;
+			final String methodname = method.name();
 			long all = 0;
 
 			// make 20 runs of the same task, so we get a good average
 			for (int i = 0; i <= 20; i++) {
 				// save the start time
 				final long start = System.currentTimeMillis();
+
+				// run method 5 times
 				for (int j = 0; j < 5; j++) {
-					bookmarks = this.bookmarkDb.getBookmarkByTagNames(param, this.dbSession);
+					/*
+					 * HERE we call the database method
+					 */
+					this.callMethod(method, param);
 					totalQueries++;
 				}
+
 				// save the time once the task is finished
 				final long end = System.currentTimeMillis();
 
 				// on the first run iBATIS is starting up and we don't want to
-				// measure that
+				// measure that. Even though this isn't correct after the first
+				// run for the following methods, we leave it in and execute
+				// some unnecessary calls for every method.
 				if (i == 0) continue;
 
 				all += (end - start);
 			}
 
-			log.debug("Executed " + totalQueries + " queries of getBookmarkByTagNames in: " + all + " ms");
-			log.debug("5 queries of getBookmarkByTagNames took: " + (all / 20) + " ms");
-			log.debug("1 query   of getBookmarkByTagNames took: " + ((all / 20) / 5) + " ms");
+			log.debug("Executed " + (totalQueries - 5) + " queries of " + methodname + " in: " + all + " ms");
+			log.debug("5 queries of " + methodname + " took: " + (all / 20) + " ms");
+			log.debug("1 query   of " + methodname + " took: " + ((all / 20) / 5) + " ms");
 			log.debug("Under this circumstances " + 1000 / ((all / 20) / 5) + " queries could be executed in one second");
 		} catch (final RuntimeException ex) {
 			if (ex.getCause() instanceof SQLException) {
 				ex.printStackTrace();
 				fail("SQLException");
 			}
+		}
+	}
+
+	/**
+	 * Calls the specified method.
+	 */
+	private void callMethod(final Method method, final BookmarkParam param) {
+		switch (method) {
+		case getBookmarkByTagNames:
+			this.bookmarkDb.getBookmarkByTagNames(param, this.dbSession);
+			break;
+		case getBookmarkByTagNamesForUser:
+			this.bookmarkDb.getBookmarkByTagNamesForUser(param, this.dbSession);
+			break;
+		case getBookmarkByConceptForUser:
+			this.bookmarkDb.getBookmarkByConceptForUser(param, this.dbSession);
+			break;
+		case getBookmarkByUserFriends:
+			this.bookmarkDb.getBookmarkByUserFriends(param, this.dbSession);
+			break;
+		case getBookmarkForHomepage:
+			this.bookmarkDb.getBookmarkForHomepage(param, this.dbSession);
+			break;
+		case getBookmarkPopular:
+			this.bookmarkDb.getBookmarkPopular(param, this.dbSession);
+			break;
+		case getBookmarkByHash:
+			this.bookmarkDb.getBookmarkByHash(param, this.dbSession);
+			break;
+		case getBookmarkByHashCount:
+			this.bookmarkDb.getBookmarkByHashCount(param, this.dbSession);
+			break;
+		case getBookmarkByHashForUser:
+			this.bookmarkDb.getBookmarkByHashForUser(param, this.dbSession);
+			break;
+		case getBookmarkSearch:
+			this.bookmarkDb.getBookmarkSearch(param, this.dbSession);
+			break;
+		case getBookmarkSearchCount:
+			this.bookmarkDb.getBookmarkSearchCount(param, this.dbSession);
+			break;
+		case getBookmarkViewable:
+			this.bookmarkDb.getBookmarkViewable(param, this.dbSession);
+			break;
+		case getBookmarkForGroup:
+			this.bookmarkDb.getBookmarkForGroup(param, this.dbSession);
+			break;
+		case getBookmarkForGroupCount:
+			this.bookmarkDb.getBookmarkForGroupCount(param, this.dbSession);
+			break;
+		case getBookmarkForGroupByTag:
+			this.bookmarkDb.getBookmarkForGroupByTag(param, this.dbSession);
+			break;
+		case getBookmarkForUser:
+			this.bookmarkDb.getBookmarkForUser(param, this.dbSession);
+			break;
+		case getBookmarkForUserCount:
+			this.bookmarkDb.getBookmarkForUserCount(param, this.dbSession);
+			break;
+		default:
+			throw new RuntimeException("The method " + method.name() + " can't be found in the switch");
 		}
 	}
 }
