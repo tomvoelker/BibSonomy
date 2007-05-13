@@ -25,13 +25,14 @@ import org.junit.Test;
 
 /**
  * Blackbox tests for the REST-API.
- *
+ * 
  * @author Christian Schenk
  * @version $Id$
  */
 public class WebServiceTest {
 
 	private HttpClient client;
+	private Document doc;
 	private String apiUrl;
 
 	@Before
@@ -88,6 +89,16 @@ public class WebServiceTest {
 		return doc;
 	}
 
+	/**
+	 * Wraps the methods getWebServiceAction and getResponseBodyAsDocument into
+	 * a single method.
+	 */
+	private Document getDocumentForWebServiceAction(final String path) {
+		final GetMethod get = this.getWebServiceAction(path);
+		assertEquals(HttpServletResponse.SC_OK, get.getStatusCode());
+		return this.getResponseBodyAsDocument(get);
+	}
+
 	@Test
 	public void aGetRequestWithoutAuthentication() throws HttpException, IOException {
 		final GetMethod get = new GetMethod(this.apiUrl);
@@ -96,21 +107,23 @@ public class WebServiceTest {
 	}
 
 	@Test
-	public void requestWithoutAction() throws HttpException, IOException {
+	public void requestWithoutAction() {
 		final GetMethod get = this.getWebServiceAction("");
 		assertEquals(HttpServletResponse.SC_FORBIDDEN, get.getStatusCode());
 	}
 
 	@Test
-	public void getPosts() throws IOException, DocumentException {
-		final GetMethod get = this.getWebServiceAction("posts");
-		assertEquals(HttpServletResponse.SC_OK, get.getStatusCode());
-
-		final Document doc = this.getResponseBodyAsDocument(get);
-
+	public void getPosts() {
+		this.doc = this.getDocumentForWebServiceAction("posts?resourcetype=bibtex");
 		// Check posts count
-		final Node posts = doc.selectSingleNode("//posts");
+		final Node posts = this.doc.selectSingleNode("//posts");
 		assertEquals(0, Integer.parseInt(posts.valueOf("@start")));
-		assertEquals(18, Integer.parseInt(posts.valueOf("@end")));
+		assertEquals(14, Integer.parseInt(posts.valueOf("@end")));
+
+		this.doc = this.getDocumentForWebServiceAction("posts?start=0&end=10&resourcetype=bibtex");
+		this.doc = this.getDocumentForWebServiceAction("posts?start=0&end=10&resourcetype=bookmark");
+
+		// add tags=web
+		// this.doc = this.getDocumentForWebServiceAction("posts?user=hotho&start=0&end=10&resourcetype=bibtex");
 	}
 }
