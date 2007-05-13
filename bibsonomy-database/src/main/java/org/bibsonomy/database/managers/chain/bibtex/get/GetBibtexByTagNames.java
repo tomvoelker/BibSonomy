@@ -9,52 +9,38 @@ import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 
+/**
+ * TODO implement compartible method for concept structure
+ * 
+ * @author Miranda Grahl
+ * @version $Id$
+ */
 public class GetBibtexByTagNames extends BibTexChainElement {
-	/**
-	 * 
-	 * @author mgr
-	 * 
-	 */
 
-	/*
-	 * return a list of bibtex by given tag/tags. Following arguments have to be
-	 * given:
+	/**
+	 * Returns a list of posts (bibtex) tagged with the given tags. Following
+	 * arguments have to be given:
 	 * 
 	 * grouping:all name:irrelevant tags:given hash:null popular:false
 	 * added:false
-	 * 
 	 */
 	@Override
-	protected List<Post<BibTex>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction session) {
+	protected List<Post<BibTex>> handle(final BibTexParam param, final Transaction session) {
+		log.debug(this.getClass().getSimpleName());
 
-		final BibTexParam param = new BibTexParam();
-		param.setOffset(start);
-		int limit = end - start;
-		param.setLimit(limit);
-
-		for (String tag : tags) {
-			param.addTagName(tag);
-		}
-
-		/*
-		 * TODO implement compartible method for concept structure
-		 */
-		/*
-		 * prove arguments as mentioned above
-		 */
-
-		List<Post<BibTex>> posts = db.getBibTexByTagNames(param, session);
-		if (posts.size() != 0) {
-			System.out.println("GetBibtexByTagNames");
+		List<Post<BibTex>> posts;
+		if (param.getTagIndex().size() == 0) {
+			log.debug("-> getBibTexForHomePage");
+			posts = db.getBibTexForHomePage(param, session);
+		} else {
+			log.debug("-> getBibTexByTagNames");
+			posts = db.getBibTexByTagNames(param, session);
 		}
 		return posts;
-
 	}
 
 	@Override
-	protected boolean canHandle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
-		return grouping == GroupingEntity.ALL && tags != null && hash == null && popular == false && added == false;
-
+	protected boolean canHandle(final BibTexParam param) {
+		return param.getGrouping() == GroupingEntity.ALL && param.getTagIndex() != null && param.getHash() == null && param.isPopular() == false && param.isAdded() == false;
 	}
-
 }

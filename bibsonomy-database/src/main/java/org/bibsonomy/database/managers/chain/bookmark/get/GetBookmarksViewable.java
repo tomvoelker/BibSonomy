@@ -9,48 +9,32 @@ import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 
+/**
+ * @author Miranda Grahl
+ * @version $Id$
+ */
 public class GetBookmarksViewable extends BookmarkChainElement {
 
 	/**
-	 * 
-	 * @author mgr
-	 * 
-	 */
-
-	/*
 	 * return a list of bookmark by a given group (which is only viewable for
 	 * groupmembers excluded public option regarding setting a post). Following
 	 * arguments have to be given:
 	 * 
 	 * grouping:viewable name:given tags:NULL hash:NULL popular:falses
 	 * added:false
-	 * 
 	 */
 	@Override
-	protected List<Post<Bookmark>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction session) {
-		final BookmarkParam param = new BookmarkParam();
-		param.setRequestedGroupName(groupingName);
-		param.setUserName(authUser);
-		param.setOffset(start);
-		int limit = end - start;
-		param.setLimit(limit);
+	protected List<Post<Bookmark>> handle(final BookmarkParam param, final Transaction session) {
+		log.debug(this.getClass().getSimpleName());
 
-		param.setGroupId(generalDb.getGroupIdByGroupName(param, session));
-		param.setGroups(generalDb.getGroupsForUser(param, session));
+		param.setGroupId(this.generalDb.getGroupIdByGroupName(param, session));
+		param.setGroups(this.generalDb.getGroupsForUser(param, session));
 
-		List<Post<Bookmark>> posts = db.getBookmarkViewable(param, session);
-		if (posts.size() != 0) {
-			System.out.println("getBookmarkViewable");
-		}
-		return posts;
+		return this.db.getBookmarkViewable(param, session);
 	}
 
-	/*
-	 * prove arguments as mentioned above
-	 */
 	@Override
-	protected boolean canHandle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
-		return authUser != null && grouping == GroupingEntity.VIEWABLE && groupingName != null && (tags == null || tags.size() == 0) && hash == null && popular == false && added == false;
+	protected boolean canHandle(final BookmarkParam param) {
+		return param.getUserName() != null && param.getGrouping() == GroupingEntity.VIEWABLE && param.getRequestedGroupName() != null && param.getTagIndex() == null && param.getHash() == null && param.isPopular() == false && param.isAdded() == false;
 	}
-
 }

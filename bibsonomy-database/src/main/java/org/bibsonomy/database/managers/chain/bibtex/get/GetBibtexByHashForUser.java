@@ -9,65 +9,27 @@ import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 
-public class GetBibtexByHashForUser extends BibTexChainElement{
+/**
+ * @author Miranda Grahl
+ * @version $Id$
+ */
+public class GetBibtexByHashForUser extends BibTexChainElement {
 
 	/**
+	 * return a list of bibtex by a given hash and a logged user. Following
+	 * arguments have to be given:
 	 * 
-	 * @author mgr
-	 *
+	 * grouping:user name:given tags:NULL hash:given popular:false added:false
 	 */
-
-	/*
-	 * return a list of bibtex by a given hash and a logged user.
-	 * Following arguments have to be given:
-	 * 
-	 * grouping:user
-	 * name:given
-	 * tags:NULL
-	 * hash:given
-	 * popular:false
-	 * added:false
-	 *   
-	 */
-
 	@Override
-	protected List<Post<BibTex>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction session) {
-        
-		final BibTexParam param =new BibTexParam();
-		param.setRequestedUserName(groupingName);
-		param.setUserName(authUser);
-		param.setHash(hash);
-		
-		param.setOffset(start);
-		int limit=end-start;
-		param.setLimit(limit);
-		
-		param.setGroups(generalDb.getGroupsForUser(param, session));
-		
-		/**
-		 * retrieve bookmark list with appropriate iBatis statement
-		 */
-		List<Post<BibTex>> posts = db.getBibTexByHashForUser(param, session);
-		if(posts.size()!=0){
-			System.out.println("GetBibtexByHashForUser");
-			
-			
-		}
-		return posts;
-	}
-	
-	/*
-	 * prove arguments as mentioned above
-	 */
-	
-	@Override
-	protected boolean canHandle(String authUser,GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
-		return hash != null && hash.length() > 0 &&
-			authUser != null && 
-			grouping == GroupingEntity.USER && groupingName != null && 
-			(tags==null || tags.size() == 0) && 
-			popular == false && 
-			added == false;
+	protected List<Post<BibTex>> handle(final BibTexParam param, final Transaction session) {
+		log.debug(this.getClass().getSimpleName());
+		param.setGroups(this.generalDb.getGroupsForUser(param, session));
+		return this.db.getBibTexByHashForUser(param, session);
 	}
 
+	@Override
+	protected boolean canHandle(final BibTexParam param) {
+		return param.getHash() != null && param.getHash().length() > 0 && param.getUserName() != null && param.getGrouping() == GroupingEntity.USER && param.getRequestedGroupName() != null && param.getTagIndex() == null && param.isPopular() == false && param.isAdded() == false;
+	}
 }

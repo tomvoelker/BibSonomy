@@ -3,10 +3,8 @@ package org.bibsonomy.database.managers;
 import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChain;
-import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByHashForUser;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.database.util.Transaction;
@@ -20,7 +18,7 @@ import org.bibsonomy.model.Post;
  * @author Miranda Grahl
  * @version $Id$
  */
-public class BookmarkDatabaseManager extends AbstractDatabaseManager implements CrudableContent<Bookmark> {
+public class BookmarkDatabaseManager extends AbstractDatabaseManager implements CrudableContent<Bookmark, BookmarkParam> {
 
 	/** Singleton */
 	private final static BookmarkDatabaseManager singleton = new BookmarkDatabaseManager();
@@ -107,6 +105,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * public posts are shown.
 	 */
 	public List<Post<Bookmark>> getBookmarkForHomepage(final BookmarkParam param, final Transaction session) {
+		param.setLimit(15);
+		param.setOffset(0);
 		return this.bookmarkList("getBookmarkForHomepage", param, true, session);
 	}
 
@@ -274,12 +274,11 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		return this.queryForObject("getContentIDForBookmark", param, Integer.class, session);
 	}
 
-	public List<Post<Bookmark>> getPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, boolean continuous, final Transaction session) {
-		return chain.getFirstElement().perform(authUser, grouping, groupingName, tags, hash, popular, added, start, end, session);
+//	public List<Post<Bookmark>> getPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, boolean continuous, final Transaction session) {
+	public List<Post<Bookmark>> getPosts(final BookmarkParam param, final Transaction session) {
+		return chain.getFirstElement().perform(param, session);
 	}
 
-	
-	
 	public Post<Bookmark> getPostDetails(String authUser, String resourceHash, String userName, final Transaction session) {
 		// TODO Auto-generated method stub
 		return null;
@@ -287,13 +286,12 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 
 	public boolean deletePost(String userName, String resourceHash, final Transaction session) {
 		// TODO: test for removal (tas, bookmark, ...)
-		final GetBookmarksByHashForUser get = new GetBookmarksByHashForUser();
 		final BookmarkParam paramDelete = new BookmarkParam();
 		paramDelete.setUserName(userName);
 		paramDelete.setHash(resourceHash);	
 
 		// return a bookmark object for current hash value
-		final List<Post<Bookmark>> storeTemp = get.perform(paramDelete.getUserName(), GroupingEntity.USER, paramDelete.getUserName(), null, paramDelete.getHash(), false, false, 0, 1, session);
+		final List<Post<Bookmark>> storeTemp = this.getBookmarkByHashForUser(paramDelete, session);
 		// bookmark DOESN'T EXIST
 		if (storeTemp.size() == 0) return false;
 

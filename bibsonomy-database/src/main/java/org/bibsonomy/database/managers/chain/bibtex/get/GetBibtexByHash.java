@@ -9,64 +9,27 @@ import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 
-
-	/**
-	 * 
-	 * @author mgr
-	 *
- 	*/
-
-/*
- * return a list of bibtex by a given hash.
- * Following arguments have to be given:
- * 
- * grouping:all
- * name:irrelevant
- * tags:NULL
- * hash:given
- * popular:false
- * added:false
- *   
+/**
+ * @author Miranda Grahl
+ * @version $Id$
  */
 public class GetBibtexByHash extends BibTexChainElement {
 
-	
-
-	@Override
-	protected List<Post<BibTex>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction session) {
-
-		final BibTexParam param =new BibTexParam();
-		param.setHash(hash);
-		param.setOffset(start);
-		int limit=end-start;
-		param.setLimit(limit);
-		/**
-		 * retrieve bookmark list with appropriate iBatis statement
-		 */
-		List<Post<BibTex>> posts = db.getBibTexByHash(param, session);
-		if(posts.size()!=0){
-			System.out.println("GetBibtexByHash");
-			
-			
-		}
-		return posts;
-		
-		
-	}
-	
-	/*
-	 * prove arguments as mentioned above
+	/**
+	 * return a list of bibtex by a given hash. Following arguments have to be
+	 * given:
+	 * 
+	 * grouping:all name:irrelevant tags:NULL hash:given popular:false
+	 * added:false
 	 */
-	
 	@Override
-	protected boolean canHandle(String authUser,GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end){
-		
-		return hash!=null && hash.length()>0 &&
-		grouping== GroupingEntity.ALL &&
-		(tags==null||tags.size()==0)&&
-		popular==false &&
-		added==false;
-		
+	protected List<Post<BibTex>> handle(final BibTexParam param, final Transaction session) {
+		log.debug(this.getClass().getSimpleName());
+		return this.db.getBibTexByHash(param, session);
 	}
-	
+
+	@Override
+	protected boolean canHandle(final BibTexParam param) {
+		return param.getHash() != null && param.getHash().length() > 0 && param.getGrouping() == GroupingEntity.ALL && param.getTagIndex() == null && param.isPopular() == false && param.isAdded() == false;
+	}
 }

@@ -1,16 +1,18 @@
 package org.bibsonomy.database.managers.chain.tag;
 
 import org.bibsonomy.database.managers.TagDatabaseManager;
-import org.bibsonomy.database.managers.chain.ChainElementForTag;
+import org.bibsonomy.database.managers.chain.ChainElement;
+import org.bibsonomy.database.params.TagParam;
+import org.bibsonomy.model.Tag;
 
 /**
- * All elements for the chain of responsibility for publications are derived
- * from this class.
+ * All elements for the chain of responsibility for tags are derived from this
+ * class.
  * 
  * @author Miranda Grahl
  * @version $Id$
  */
-public abstract class TagChainElement extends ChainElementForTag {
+public abstract class TagChainElement extends ChainElement<Tag, TagParam> {
 
 	protected final TagDatabaseManager db;
 

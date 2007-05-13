@@ -2,11 +2,10 @@ package org.bibsonomy.database.managers.chain;
 
 import java.util.List;
 
-import org.bibsonomy.common.enums.GroupingEntity;
+import org.apache.log4j.Logger;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
+import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.util.Transaction;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 
 /**
  * Represents one element in the chain of responsibility.
@@ -14,12 +13,13 @@ import org.bibsonomy.model.Resource;
  * @author Miranda Grahl
  * @version $Id$
  */
-public abstract class ChainElement<T extends Resource> implements ChainPerform<T> {
+public abstract class ChainElement<L, P extends GenericParam> implements ChainPerform<P, List<L>, L> {
 
+	/** Logger */
+	protected static final Logger log = Logger.getLogger(ChainElement.class);
 	protected final GeneralDatabaseManager generalDb;
-	
 	/** The next element of the chain */
-	private ChainElement<T> next;
+	private ChainElement<L, P> next;
 
 	public ChainElement() {
 		this.generalDb = GeneralDatabaseManager.getInstance();
@@ -28,29 +28,28 @@ public abstract class ChainElement<T extends Resource> implements ChainPerform<T
 	/**
 	 * Sets the next element in the chain.
 	 */
-	public final void setNext(final ChainElement<T> nextElement) {
+	public final void setNext(final ChainElement<L, P> nextElement) {
 		this.next = nextElement;
 	}
 
-	public final List<Post<T>> perform(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction session) {
-		if (this.canHandle(authUser, grouping, groupingName, tags, hash, popular, added, start, end)) {
-			return this.handle(authUser, grouping, groupingName, tags, hash, popular, added, start, end, session);
+	public final List<L> perform(final P param, final Transaction session) {
+		if (this.canHandle(param)) {
+			return this.handle(param, session);
 		} else {
 			if (this.next != null) {
-				return this.next.perform(authUser, grouping, groupingName, tags, hash, popular, added, start, end, session);
+				return this.next.perform(param, session);
 			}
 		}
-		// FIXME nobody can handle this -> throw an exception
-		return null;
+		throw new RuntimeException("Can't handle request.");
 	}
 
 	/**
 	 * Handles the request.
 	 */
-	protected abstract List<Post<T>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, Transaction session);
+	protected abstract List<L> handle(P param, Transaction session);
 
 	/**
-	 * Returns true if the request can be handled, otherwise false.
+	 * Returns true if the request can be handled by the current chain element, otherwise false.
 	 */
-	protected abstract boolean canHandle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end);
+	protected abstract boolean canHandle(P param);
 }

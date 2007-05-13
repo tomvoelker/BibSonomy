@@ -1,6 +1,5 @@
 package org.bibsonomy.database.managers;
 
-import org.apache.log4j.Logger;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
@@ -23,7 +22,6 @@ import org.junit.Before;
  * @version $Id$
  */
 public abstract class AbstractDatabaseManagerTest {
-	private static final Logger log = Logger.getLogger(AbstractDatabaseManagerTest.class);
 
 	protected GeneralDatabaseManager generalDb;
 	protected BookmarkDatabaseManager bookmarkDb;
@@ -51,7 +49,6 @@ public abstract class AbstractDatabaseManagerTest {
 		this.resetParameters();
 
 		// testcases shouldn't write into the db
-		log.debug("1");
 		try {
 			dbSession = DatabaseUtils.getDatabaseSession();
 			dbSession.beginTransaction();
@@ -62,11 +59,9 @@ public abstract class AbstractDatabaseManagerTest {
 
 	@After
 	public void tearDown() {
-		log.debug("2");
 		dbSession.endTransaction();
-		log.debug("3");
 		dbSession.close();
-		log.debug("4");
+
 		this.generalDb = null;
 		this.bookmarkDb = null;
 		this.bibTexDb = null;

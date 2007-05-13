@@ -15,27 +15,29 @@ import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexOfFriendsByTags
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexOfFriendsByUser;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexPopular;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexViewable;
+import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Post;
 
 /**
  * @author Miranda Grahl
  * @version $Id$
  */
-public class BibTexChain implements FirstChainElement<BibTex> {
+public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam> {
 
-	private final ChainElement<BibTex> getBibTexByHash;
-	private final ChainElement<BibTex> getBibTexByHashForUser;
-	private final ChainElement<BibTex> getBibTexByTagNames;
-	private final ChainElement<BibTex> getBibTexByTagNamesAndUser;
-	private final ChainElement<BibTex> getBibTexForGroup;
-	private final ChainElement<BibTex> getBibTexForGroupAndTag;
-	private final ChainElement<BibTex> getBibTexForHomePage;
-	private final ChainElement<BibTex> getBibTexForPopular;
-	private final ChainElement<BibTex> getBibTexViewable;
-	private final ChainElement<BibTex> getBibTexForUser;
-	private final ChainElement<BibTex> getBibTexByConceptForUser;
-	private final ChainElement<BibTex> getBibTexByUserFriends;
-	private final ChainElement<BibTex> getBibTexByUserAndTagsFriends;
+	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByHash;
+	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByHashForUser;
+	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByTagNames;
+	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByTagNamesAndUser;
+	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexForGroup;
+	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexForGroupAndTag;
+	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexForHomePage;
+	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexForPopular;
+	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexViewable;
+	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexForUser;
+	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByConceptForUser;
+	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByUserFriends;
+	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByUserAndTagsFriends;
 
 	public BibTexChain() {
 		this.getBibTexByHash = new GetBibtexByHash();
@@ -66,7 +68,7 @@ public class BibTexChain implements FirstChainElement<BibTex> {
 		this.getBibTexByUserFriends.setNext(this.getBibTexByUserAndTagsFriends);
 	}
 
-	public ChainElement<BibTex> getFirstElement() {
+	public ChainElement<Post<BibTex>, BibTexParam> getFirstElement() {
 		return this.getBibTexForHomePage;
 	}
 }

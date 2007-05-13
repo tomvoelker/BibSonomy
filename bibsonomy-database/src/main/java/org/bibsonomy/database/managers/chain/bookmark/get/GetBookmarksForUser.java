@@ -9,44 +9,27 @@ import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 
+/**
+ * @author Miranda Grahl
+ * @version $Id$
+ */
 public class GetBookmarksForUser extends BookmarkChainElement {
-	/**
-	 * 
-	 * @author mgr
-	 * 
-	 */
 
-	/*
+	/**
 	 * return a list of bookmark by a logged user. Following arguments have to
 	 * be given:
 	 * 
 	 * grouping:user name:given tags:NULL hash:NULL popular:false added:false
-	 * 
 	 */
 	@Override
-	protected List<Post<Bookmark>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction session) {
-		final BookmarkParam param = new BookmarkParam();
-		param.setRequestedUserName(groupingName);
-		param.setUserName(authUser);
-		param.setOffset(start);
-		int limit = end - start;
-		param.setLimit(limit);
-
-		param.setGroups(generalDb.getGroupsForUser(param, session));
-		List<Post<Bookmark>> posts = db.getBookmarkForUser(param, session);
-		if (posts.size() != 0) {
-			System.out.println("GetBookmarksForUser");
-
-		}
-		return posts;
+	protected List<Post<Bookmark>> handle(final BookmarkParam param, final Transaction session) {
+		log.debug(this.getClass().getSimpleName());
+		param.setGroups(this.generalDb.getGroupsForUser(param, session));
+		return this.db.getBookmarkForUser(param, session);
 	}
 
-	/*
-	 * prove arguments as mentioned above
-	 */
 	@Override
-	protected boolean canHandle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
-		return authUser != null && grouping == GroupingEntity.USER && groupingName != null && (tags == null || tags.size() == 0) && hash == null && popular == false && added == false;
+	protected boolean canHandle(final BookmarkParam param) {
+		return param.getUserName() != null && param.getGrouping() == GroupingEntity.USER && param.getRequestedGroupName() != null && param.getTagIndex() == null && param.getHash() == null && param.isPopular() == false && param.isAdded() == false;
 	}
-
 }

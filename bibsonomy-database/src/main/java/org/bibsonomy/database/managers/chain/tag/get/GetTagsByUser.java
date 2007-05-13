@@ -9,42 +9,26 @@ import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.model.Tag;
 
 /**
- * 
- * @author mgr
- *
+ * @author Miranda Grahl
+ * @version $Id$
  */
 public class GetTagsByUser extends TagChainElement {
 
-	/*
-	 * return a list of tags by a logged user.
-	 * Following arguments have to be given:
+	/**
+	 * return a list of tags by a logged user. Following arguments have to be
+	 * given:
 	 * 
-	 * grouping:user
-	 * name:given
-	 * regex: irrelevant  
+	 * grouping:user name:given regex: irrelevant
 	 */
 	@Override
-	protected List<Tag> handle(String authUser, GroupingEntity grouping, String groupingName, String regex, Boolean subTags, Boolean superTags, Boolean subSuperTagsTransitive, int start, int end, final Transaction session) {
-		final TagParam param = new TagParam();
-		param.setRequestedUserName(groupingName);
-		param.setUserName(authUser);
-		param.setOffset(start);
-		int limit = end - start;
-		param.setLimit(limit);
-
-		param.setGroups(generalDb.getGroupsForUser(param, session));
-		List<Tag> tags = db.getTagsByUser(param, session);
-		if (tags.size() != 0) {
-			System.out.println("GetTagsByUser");
-		}
-		return tags;
+	protected List<Tag> handle(final TagParam param, final Transaction session) {
+		log.debug(this.getClass().getSimpleName());
+		param.setGroups(this.generalDb.getGroupsForUser(param, session));
+		return this.db.getTagsByUser(param, session);
 	}
 
-	/*
-	 * prove arguments as mentioned above
-	 */
 	@Override
-	protected boolean canHandle(String authUser, GroupingEntity grouping, String groupingName, String regex, Boolean subTags, Boolean superTags, Boolean subSuperTagsTransitive, int start, int end, final Transaction session) {
-		return authUser != null && grouping == GroupingEntity.USER && groupingName != null;
+	protected boolean canHandle(final TagParam param) {
+		return param.getUserName() != null && param.getGrouping() == GroupingEntity.USER && param.getRequestedGroupName() != null;
 	}
 }

@@ -10,67 +10,37 @@ import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 
-/*
+/**
  * TODO check
+ * 
+ * @author Miranda Grahl
+ * @version $Id$
  */
-
 public class GetBibtexOfFriendsByTags extends BibTexChainElement {
 
 	/**
-	 * 
-	 * @author mgr
-	 * 
-	 */
-
-	/*
 	 * return a list of bibtex by given friends of a user (this friends also
 	 * posted this bookmarks to group friends, made bookmarks viewable for
-	 * friends). Following arguments have to be given:
-	 *  * grouping:friend name:given tags:given hash:NULL popular:false
-	 * added:false
+	 * friends). Following arguments have to be given: * grouping:friend
+	 * name:given tags:given hash:NULL popular:false added:false
 	 * 
 	 * /user/friend at first all bibtex of user(which add me as friend) x are
 	 * returned, sencondly this list is restricted by those post which are
 	 * posted to group friend, respectively are viewable for friends e.g.
 	 * mgr/friend/stumme
 	 * 
-	 * 
 	 * bibtex are listed which record me as friend and also posted this record
 	 * to the group friend
-	 * 
-	 * 
-	 * 
-	 * 
 	 */
 	@Override
-	protected List<Post<BibTex>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction session) {
-		final BibTexParam param = new BibTexParam();
-
-		param.setRequestedUserName(groupingName);
-		param.setUserName(authUser);
-		param.setOffset(start);
-		int limit = end - start;
-		param.setLimit(limit);
+	protected List<Post<BibTex>> handle(final BibTexParam param, final Transaction session) {
+		log.debug(this.getClass().getSimpleName());
 		param.setGroupId(ConstantID.GROUP_FRIENDS.getId());
-
-		for (String tag : tags) {
-			param.addTagName(tag);
-		}
-
-		List<Post<BibTex>> posts = db.getBibTexForUser(param, session);
-		System.err.println("posts" + posts);
-		if (posts.size() != 0) {
-			System.out.println("GetBibtexOfFriendsByTags");
-		}
-		return posts;
+		return this.db.getBibTexForUser(param, session);
 	}
 
 	@Override
-	/*
-	 * prove arguments as mentioned above
-	 */
-	protected boolean canHandle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
-		return authUser != null && grouping == GroupingEntity.FRIEND && groupingName != null && tags != null && hash == null && popular == false && added == false;
+	protected boolean canHandle(final BibTexParam param) {
+		return param.getUserName() != null && param.getGrouping() == GroupingEntity.FRIEND && param.getRequestedGroupName() != null && param.getTagIndex() != null && param.getHash() == null && param.isPopular() == false && param.isAdded() == false;
 	}
-
 }

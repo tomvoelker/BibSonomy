@@ -18,7 +18,8 @@ import org.bibsonomy.model.Tag;
  * Provides methods to build parameter-objects.
  * 
  * @author Christian Schenk
- * @author mgr
+ * @author Miranda Grahl
+ * @version $Id$
  */
 public class ParamUtils {
 

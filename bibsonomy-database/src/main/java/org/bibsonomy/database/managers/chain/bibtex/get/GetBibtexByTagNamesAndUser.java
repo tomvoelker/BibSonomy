@@ -9,48 +9,27 @@ import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 
+/**
+ * @author Miranda Grahl
+ * @version $Id$
+ */
 public class GetBibtexByTagNamesAndUser extends BibTexChainElement {
-	/**
-	 * 
-	 * @author mgr
-	 * 
-	 */
 
-	/*
+	/**
 	 * return a list of bibtex by given tag/tags and User. Following arguments
 	 * have to be given:
 	 * 
 	 * grouping:User name:given tags:given hash:null popular:false added:false
-	 * 
 	 */
 	@Override
-	protected List<Post<BibTex>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction session) {
-		final BibTexParam param = new BibTexParam();
-		param.setRequestedUserName(groupingName);
-		param.setUserName(authUser);
-
-		param.setOffset(start);
-		int limit = end - start;
-		param.setLimit(limit);
-		param.setGroups(generalDb.getGroupsForUser(param, session));
-
-		for (String tag : tags) {
-			param.addTagName(tag);
-		}
-
-		List<Post<BibTex>> posts = db.getBibTexByTagNamesForUser(param, session);
-		if (posts.size() != 0) {
-			System.out.println("GetBibtexByTagNamesAndUser");
-		}
-		return posts;
+	protected List<Post<BibTex>> handle(final BibTexParam param, final Transaction session) {
+		log.debug(this.getClass().getSimpleName());
+		param.setGroups(this.generalDb.getGroupsForUser(param, session));
+		return this.db.getBibTexByTagNamesForUser(param, session);
 	}
 
-	/*
-	 * prove arguments as mentioned above
-	 */
 	@Override
-	protected boolean canHandle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
-		return authUser != null && grouping == GroupingEntity.USER && tags != null && hash == null && popular == false && added == false;
+	protected boolean canHandle(final BibTexParam param) {
+		return param.getUserName() != null && param.getGrouping() == GroupingEntity.USER && param.getTagIndex() != null && param.getHash() == null && param.isPopular() == false && param.isAdded() == false;
 	}
-
 }

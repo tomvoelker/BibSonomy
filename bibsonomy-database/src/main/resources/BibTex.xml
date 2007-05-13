@@ -100,7 +100,7 @@
 		      WHERE `group` = #groupType#
 		            AND <include refid="bibtexSimHash"/>
 		      ORDER BY date DESC
-		      LIMIT 15) AS b
+		      LIMIT #limit# OFFSET #offset#) AS b
 		LEFT OUTER JOIN tas t ON b.content_id=t.content_id
 		ORDER BY b.date DESC, b.content_id DESC 
 	</select>

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.model.BibTex;
@@ -44,8 +45,9 @@ public abstract class GenericParam {
 	/** If a contentId is updated or deleted we need this as reference */
 	private int requestedContentId;
 	/**
-	 * The hash of a post, e.g. a bookmark or a BibTex
-	 * TODO: really of the post and not of the resource? and for what kind of hash is this used? isn't it resource-specific and shouldn't it be set in the resource-field?
+	 * The hash of a post, e.g. a bookmark or a BibTex TODO: really of the post
+	 * and not of the resource? and for what kind of hash is this used? isn't it
+	 * resource-specific and shouldn't it be set in the resource-field?
 	 */
 	private String hash;
 	/** RegEx search pattern */
@@ -71,14 +73,20 @@ public abstract class GenericParam {
 	private int offset;
 	/** Is user a spammer; by default false */
 	private ConstantID spammer;
-	/*is a user a friend of person x, true will be true*/
-	private  boolean friendOf;
+	/* is a user a friend of person x, true will be true */
+	private boolean friendOf;
 	/** The type of a ID is by default DS_CONTENT_ID * */
 	private ConstantID idsType;
 	private int newContentId;
-	private int contendIDbyBookmark; // FIXME does this belong into BookmarkParam?
+	// FIXME does this belong into BookmarkParam?
+	private int contendIDbyBookmark;
 	private String url;
 	private ConstantID contentType;
+
+	// Parameters for chain
+	private GroupingEntity grouping;
+	private boolean popular;
+	private boolean added;
 
 	public GenericParam() {
 		this.tagIndex = new ArrayList<TagIndex>();
@@ -89,7 +97,11 @@ public abstract class GenericParam {
 		this.limit = 10;
 		this.offset = 0;
 		this.spammer = ConstantID.SPAMMER_FALSE;
-		this.friendOf=false;
+		this.friendOf = false;
+
+		this.grouping = GroupingEntity.ALL;
+		this.popular = false;
+		this.added = false;
 	}
 
 	/**
@@ -123,7 +135,9 @@ public abstract class GenericParam {
 	 * 'java.util.ArrayList'".
 	 */
 	public int getMaxTagIndex() {
-		return this.tagIndex.size();  // TODO: if this methods name was intuitive, size-1 should be returned because tagIndex[size] is out of bounds 
+		// TODO: if this methods name was intuitive, size-1 should be returned
+		// because tagIndex[size] is out of bounds
+		return this.tagIndex.size();
 	}
 
 	public int getGroupType() {
@@ -190,7 +204,8 @@ public abstract class GenericParam {
 		this.groupId = groupId;
 	}
 
-	// TODO: what hash?, what for?, why in genericparam and not in resource-field?
+	// TODO: what hash?, what for?, why in genericparam and not in
+	// resource-field?
 	public String getHash() {
 		return this.hash;
 	}
@@ -312,14 +327,14 @@ public abstract class GenericParam {
 	public void setContentType(ConstantID contentType) {
 		this.contentType = contentType;
 	}
-	
+
 	public void setContentTypeByClass(Class<? extends Resource> nativeContentType) {
 		if (BibTex.class.isAssignableFrom(nativeContentType)) {
 			setContentType(ConstantID.BIBTEX_CONTENT_TYPE);
 		} else if (Bookmark.class.isAssignableFrom(nativeContentType)) {
 			setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
 		} else {
-			throw new UnsupportedResourceTypeException( nativeContentType.getName() );
+			throw new UnsupportedResourceTypeException(nativeContentType.getName());
 		}
 	}
 
@@ -345,5 +360,29 @@ public abstract class GenericParam {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public boolean isAdded() {
+		return this.added;
+	}
+
+	public void setAdded(boolean added) {
+		this.added = added;
+	}
+
+	public GroupingEntity getGrouping() {
+		return this.grouping;
+	}
+
+	public void setGrouping(GroupingEntity grouping) {
+		this.grouping = grouping;
+	}
+
+	public boolean isPopular() {
+		return this.popular;
+	}
+
+	public void setPopular(boolean popular) {
+		this.popular = popular;
 	}
 }

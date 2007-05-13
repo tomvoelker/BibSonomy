@@ -9,50 +9,27 @@ import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 
+/**
+ * @author Miranda Grahl
+ * @version $Id$
+ */
 public class GetBookmarksByHashForUser extends BookmarkChainElement {
 
 	/**
-	 * 
-	 * @author mgr
-	 * 
-	 */
-
-	/*
 	 * return a list of bookmark by a given hash and a logged user. Following
 	 * arguments have to be given:
 	 * 
 	 * grouping:user name:given tags:NULL hash:given popular:false added:false
-	 * 
 	 */
 	@Override
-	protected List<Post<Bookmark>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction session) {
-		final BookmarkParam param = new BookmarkParam();
-		param.setRequestedUserName(groupingName);
-		param.setUserName(authUser);
-		param.setHash(hash);
-
-		param.setOffset(start);
-		int limit = end - start;
-		param.setLimit(limit);
-
+	protected List<Post<Bookmark>> handle(final BookmarkParam param, final Transaction session) {
+		log.debug(this.getClass().getSimpleName());
 		param.setGroups(generalDb.getGroupsForUser(param, session));
-
-		/**
-		 * retrieve bookmark list with appropriate iBatis statement
-		 */
-		List<Post<Bookmark>> posts = db.getBookmarkByHashForUser(param, session);
-		if (posts.size() != 0) {
-			System.out.println("GetBookmarksByHashForUser");
-		}
-		return posts;
+		return this.db.getBookmarkByHashForUser(param, session);
 	}
 
-	/*
-	 * prove arguments as mentioned above
-	 */
 	@Override
-	protected boolean canHandle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
-		return hash != null && hash.length() > 0 && authUser != null && grouping == GroupingEntity.USER && groupingName != null && (tags == null || tags.size() == 0) && popular == false && added == false;
+	protected boolean canHandle(final BookmarkParam param) {
+		return param.getHash() != null && param.getHash().length() > 0 && param.getUserName() != null && param.getGrouping() == GroupingEntity.USER && param.getRequestedGroupName() != null && param.getTagIndex() == null && param.isPopular() == false && param.isAdded() == false;
 	}
-
 }

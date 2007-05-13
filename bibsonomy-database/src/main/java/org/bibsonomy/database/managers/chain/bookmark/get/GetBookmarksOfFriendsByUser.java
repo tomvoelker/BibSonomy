@@ -10,18 +10,15 @@ import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 
-/*
+/**
  * TODO check
+ * 
+ * @author Miranda Grahl
+ * @version $Id$
  */
 public class GetBookmarksOfFriendsByUser extends BookmarkChainElement {
 
 	/**
-	 * 
-	 * @author mgr
-	 * 
-	 */
-
-	/*
 	 * return a list of bookmark by given friends of a user (this friends also
 	 * posted this bookmarks to group friends, made bookmarks viewable for
 	 * friends). Following arguments have to be given:
@@ -30,39 +27,21 @@ public class GetBookmarksOfFriendsByUser extends BookmarkChainElement {
 	 * restricted by those post which are posted to group friend, respectively
 	 * are viewable for friends e.g. mgr/friend/stumme
 	 * 
-	 * 
 	 * bookmarks are listed which record me as friend and also posted this
 	 * record to the group friend
 	 * 
-	 * 
 	 * grouping:friend name:given tags:NULL hash:NULL popular:false added:false
 	 * /user/friend
-	 * 
 	 */
 	@Override
-	protected List<Post<Bookmark>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction session) {
-		final BookmarkParam param = new BookmarkParam();
-
-		param.setRequestedUserName(groupingName);
-		param.setUserName(authUser);
-		param.setOffset(start);
-		int limit = end - start;
-		param.setLimit(limit);
+	protected List<Post<Bookmark>> handle(final BookmarkParam param, final Transaction session) {
+		log.debug(this.getClass().getSimpleName());
 		param.setGroupId(ConstantID.GROUP_FRIENDS.getId());
-
-		List<Post<Bookmark>> posts = db.getBookmarkForUser(param, session);
-		if (posts.size() != 0) {
-			System.out.println("GetBookmarksOfFriendsByUser");
-		}
-		return posts;
+		return this.db.getBookmarkForUser(param, session);
 	}
 
 	@Override
-	/*
-	 * prove arguments as mentioned above
-	 */
-	protected boolean canHandle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
-		return authUser != null && grouping == GroupingEntity.FRIEND && groupingName != null && (tags == null || tags.size() == 0) && hash == null && popular == false && added == false;
+	protected boolean canHandle(final BookmarkParam param) {
+		return param.getUserName() != null && param.getGrouping() == GroupingEntity.FRIEND && param.getRequestedGroupName() != null && param.getTagIndex() == null && param.getHash() == null && param.isPopular() == false && param.isAdded() == false;
 	}
-
 }

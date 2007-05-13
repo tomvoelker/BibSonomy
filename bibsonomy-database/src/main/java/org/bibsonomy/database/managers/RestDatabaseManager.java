@@ -8,7 +8,10 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.LogicInterface;
 import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.database.params.BookmarkParam;
+import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.util.DatabaseUtils;
+import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -30,7 +33,7 @@ public class RestDatabaseManager implements LogicInterface {
 
 	/** Singleton */
 	private final static RestDatabaseManager singleton = new RestDatabaseManager();
-	private final Map<Class<? extends Resource>, CrudableContent<? extends Resource>> allDatabaseManagers = new HashMap<Class<? extends Resource>, CrudableContent<? extends Resource>>();
+	private final Map<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>> allDatabaseManagers = new HashMap<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>>();
 	private final BookmarkDatabaseManager bookmarkDBManager;
 	private final BibTexDatabaseManager bibtexDBManager;
 	private final UserDatabaseManager userDBManager;
@@ -140,6 +143,7 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @param end
 	 * @return a set of posts, an empty set else
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends Resource> List<Post<T>> getPosts(String authUser, Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
 		final List<Post<T>> result;
 		final Transaction session = this.openSession();
@@ -157,11 +161,13 @@ public class RestDatabaseManager implements LogicInterface {
 				 * 
 			} else */
 			if (resourceType == BibTex.class) {
+				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, authUser, grouping, groupingName, tags, hash, popular, added, start, end);
 				// this is save because of RTTI-check of resourceType argument which is of class T
-				result = (List<Post<T>>) ((List) bibtexDBManager.getPosts(authUser, grouping, groupingName, tags, hash, popular, added, start, end, true, session));
+				result = (List<Post<T>>) ((List) this.bibtexDBManager.getPosts(param, session));
 			} else if (resourceType == Bookmark.class) {
+				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, authUser, grouping, groupingName, tags, hash, popular, added, start, end);
 				// this is save because of RTTI-check of resourceType argument which is of class T
-				result = (List<Post<T>>) ((List) bookmarkDBManager.getPosts(authUser, grouping, groupingName, tags, hash, popular, added, start, end, true, session));
+				result = (List<Post<T>>) ((List) this.bookmarkDBManager.getPosts(param, session));
 			} else {
 				throw new UnsupportedResourceTypeException( resourceType.toString() );
 			}
@@ -205,7 +211,7 @@ public class RestDatabaseManager implements LogicInterface {
 		final Transaction session = this.openSession();
 		try {
 			Post<? extends Resource> rVal;
-			for (CrudableContent<? extends Resource> manager : allDatabaseManagers.values()) {
+			for (CrudableContent<? extends Resource, ? extends GenericParam> manager : allDatabaseManagers.values()) {
 				rVal = manager.getPostDetails(authUser, resourceHash, userName, session);
 				if (rVal != null) {
 					return rVal;
@@ -351,7 +357,7 @@ public class RestDatabaseManager implements LogicInterface {
 		final Transaction session = this.openSession();
 		try {
 			// TODO would be nice to know about the resourcetype ot the instance behind this resourceHash
-			for (CrudableContent<? extends Resource> man : allDatabaseManagers.values()) {
+			for (CrudableContent<? extends Resource, ? extends GenericParam> man : allDatabaseManagers.values()) {
 				if (man.deletePost(userName, resourceHash, session) == true) {
 					break;
 				}
@@ -380,7 +386,7 @@ public class RestDatabaseManager implements LogicInterface {
 	public <T extends Resource> void storePost(String userName, Post<T> post) {
 		final Transaction session = this.openSession();
 		try {
-			final CrudableContent<T> man = getFittingDatabaseManager(post);
+			final CrudableContent<T, GenericParam> man = getFittingDatabaseManager(post);
 			final String oldIntraHash = post.getResource().getIntraHash();
 			post.getResource().recalculateHashes();
 			man.storePost(userName, post, oldIntraHash, session);
@@ -389,11 +395,12 @@ public class RestDatabaseManager implements LogicInterface {
 		}
 	}
 
-	private <T extends Resource>CrudableContent<T> getFittingDatabaseManager(Post<T> post) {
+	@SuppressWarnings("unchecked")
+	private <T extends Resource> CrudableContent<T, GenericParam> getFittingDatabaseManager(Post<T> post) {
 		final Class resourceClass = post.getResource().getClass();
-		CrudableContent<? extends Resource> man = this.allDatabaseManagers.get(resourceClass);
+		CrudableContent<? extends Resource, ? extends GenericParam> man = this.allDatabaseManagers.get(resourceClass);
 		if (man == null) {
-			for (final Map.Entry<Class<? extends Resource>, CrudableContent<? extends Resource>> entry : this.allDatabaseManagers.entrySet()) {
+			for (final Map.Entry<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>> entry : this.allDatabaseManagers.entrySet()) {
 				if (entry.getKey().isAssignableFrom(resourceClass)) {
 					man = entry.getValue();
 					break;
@@ -403,7 +410,7 @@ public class RestDatabaseManager implements LogicInterface {
 				throw new UnsupportedResourceTypeException( resourceClass.toString() );
 			}
 		}
-		return (CrudableContent<T>) ((CrudableContent) man);
+		return (CrudableContent<T, GenericParam>) ((CrudableContent) man);
 	}
 
 	/**

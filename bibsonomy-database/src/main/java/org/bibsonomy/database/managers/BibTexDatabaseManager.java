@@ -3,12 +3,8 @@ package org.bibsonomy.database.managers;
 import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChain;
-/*import org.bibsonomy.database.managers.observer.DatabaseLogger;
-import org.bibsonomy.database.managers.observer.PostStoreObserver;
-import org.bibsonomy.database.managers.observer.TagDatabaseUpdater;*/
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.database.util.Transaction;
@@ -24,21 +20,17 @@ import org.bibsonomy.model.util.SimHash;
  * @author Miranda Grahl
  * @version $Id$
  */
-public class BibTexDatabaseManager extends AbstractDatabaseManager implements CrudableContent<BibTex> {
+public class BibTexDatabaseManager extends AbstractDatabaseManager implements CrudableContent<BibTex, BibTexParam> {
 
 	/** Singleton */
 	private final static BibTexDatabaseManager singleton = new BibTexDatabaseManager();
 	private final GeneralDatabaseManager generalDb;
 	private final TagDatabaseManager tagDb;
 	private static final BibTexChain chain = new BibTexChain();
-	//private final Collection<PostStoreObserver<? super BibTex>> storeObservers;
 
 	private BibTexDatabaseManager() {
 		this.generalDb = GeneralDatabaseManager.getInstance();
 		this.tagDb = TagDatabaseManager.getInstance();
-		/*this.storeObservers = new ArrayList<PostStoreObserver<? super BibTex>>();
-		this.storeObservers.add(new DatabaseLogger());
-		this.storeObservers.add(new TagDatabaseUpdater());*/
 	}
 
 	public static BibTexDatabaseManager getInstance() {
@@ -149,6 +141,8 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 */
 	public List<Post<BibTex>> getBibTexForHomePage(final BibTexParam param, final Transaction session) {
 		param.setGroupType(ConstantID.GROUP_FRIENDS);
+		param.setLimit(15);
+		param.setOffset(0);
 		return this.bibtexList("getBibTexForHomePage", param, session);
 	}
 
@@ -317,9 +311,8 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		this.insert("insertBibTexHash", param, session);
 	}
 
-	public List<Post<BibTex>> getPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, boolean continuous, final Transaction session) {
-		//return GenericChainHandler.getInstance().perform(authUser, grouping, groupingName, tags, hash, popular, added, start, end);
-		return chain.getFirstElement().perform(authUser, grouping, groupingName, tags, hash, popular, added, start, end, session);
+	public List<Post<BibTex>> getPosts(final BibTexParam param, final Transaction session) {
+		return chain.getFirstElement().perform(param, session);
 	}
 
 	public Post<BibTex> getPostDetails(String authUser, String resourceHash, String userName, final Transaction session) {

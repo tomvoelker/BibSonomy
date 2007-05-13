@@ -2,42 +2,31 @@ package org.bibsonomy.database.managers.chain.tag.get;
 
 import java.util.List;
 
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.tag.TagChainElement;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.model.Tag;
 
 /**
- * 
- * @author mgr
- * 
+ * @author Miranda Grahl
+ * @version $Id$
  */
 public class GetTagsByExpression extends TagChainElement {
 
-	/*
+	/**
 	 * return a list of tags by a logged user. Following arguments have to be
 	 * given:
 	 * 
-	 * grouping:irrelevant
-	 * name:irrelevant
-	 * regex: given
+	 * grouping:irrelevant name:irrelevant regex: given
 	 */
 	@Override
-	protected List<Tag> handle(String authUser, GroupingEntity grouping, String groupingName, String regex, Boolean subTags, Boolean superTags, Boolean subSuperTagsTransitive, int start, int end, final Transaction session) {
-		final TagParam param = new TagParam();
-		param.setOffset(start);
-		int limit = end - start;
-		param.setLimit(limit);
-		List<Tag> tags = db.getTagsByExpression(param, session);
-		if (tags.size() != 0) {
-			System.out.println("GetTagsByExpression");
-		}
-		return tags;
+	protected List<Tag> handle(final TagParam param, final Transaction session) {
+		log.debug(this.getClass().getSimpleName());
+		return this.db.getTagsByExpression(param, session);
 	}
 
 	@Override
-	protected boolean canHandle(String authUser, GroupingEntity grouping, String groupingName, String regex, Boolean subTags, Boolean superTags, Boolean subSuperTagsTransitive, int start, int end, final Transaction session) {
-		return regex != null;
+	protected boolean canHandle(final TagParam param) {
+		return param.getRegex() != null;
 	}
 }

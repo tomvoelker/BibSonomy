@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
 
 /**
  * Parameters that are specific to tags.
@@ -22,12 +21,11 @@ public class TagParam extends GenericParam {
 	private String stem;
 	private int count;
 	private int usercount;
-	
+
 	/*
 	 * for request wether to retrieve set of subTags or superTags
 	 * decide if relation is transitive or not
 	 */
-	
 	boolean subTags;
 	boolean supertags;
 	boolean transitive;

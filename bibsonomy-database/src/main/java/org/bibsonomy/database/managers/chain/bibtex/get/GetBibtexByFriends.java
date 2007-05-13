@@ -9,68 +9,33 @@ import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 
-/*
+/**
  * TODO check
+ * 
+ * @author Miranda Grahl
+ * @version $Id$
  */
-public class GetBibtexByFriends extends BibTexChainElement{
+public class GetBibtexByFriends extends BibTexChainElement {
 
 	/**
+	 * TODO extension with user restriction rearding returned bibtex and
+	 * appropriate namming of URL in REST interface
 	 * 
-	 * @author mgr
-	 *
-	 */
-
-	/*
+	 * grouping:friend name:given tags:NULL hash:NULL popular:false added:false
 	 * 
-	 * TODO extension with user restriction rearding returned bibtex and appropriate namming of URL in REST interface
-	 * 
-	 * grouping:friend
-	 * name:given
-	 * tags:NULL
-	 * hash:NULL
-	 * popular:false
-	 * added:false
 	 * /user/friend
-	 *   
 	 */
 	@Override
-	protected List<Post<BibTex>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction session) {
-        
-		final BibTexParam param = new BibTexParam();		
-		param.setRequestedGroupName(groupingName);
-		param.setUserName(authUser);
-		param.setOffset(start);
-		int limit=end-start;
-		param.setLimit(limit);
-		
-		
-		
-		
-		List<Post<BibTex>> posts = db.getBibTexByUserFriends(param, session);
-		if(posts.size()!=0){
-			System.out.println("GetBibtexByFriends");
-			
-			
-		}
-		return posts;
+	protected List<Post<BibTex>> handle(final BibTexParam param, final Transaction session) {
+		log.debug(this.getClass().getSimpleName());
+		return this.db.getBibTexByUserFriends(param, session);
 	}
 
-	@Override
-	
-	/*
-	 * prove arguments as mentioned above
-	 */
 	/*
 	 * TODO username: semantik fehlt in API
 	 */
-	protected boolean canHandle(String authUser,GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
-		return authUser != null && 
-			grouping == GroupingEntity.FRIEND && groupingName != null && 
-			(tags==null || tags.size() == 0) && 
-			hash==null     &&
-			popular == false && 
-			added == false;
+	@Override
+	protected boolean canHandle(final BibTexParam param) {
+		return param.getUserName() != null && param.getGrouping() == GroupingEntity.FRIEND && param.getRequestedGroupName() != null && param.getTagIndex() == null && param.getHash() == null && param.isPopular() == false && param.isAdded() == false;
 	}
-
-
 }

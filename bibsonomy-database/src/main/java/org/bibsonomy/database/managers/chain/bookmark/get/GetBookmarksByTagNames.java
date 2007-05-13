@@ -9,49 +9,36 @@ import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 
+/**
+ * TODO implement compartible method for concept structure
+ * 
+ * @author Miranda Grahl
+ * @version $Id$
+ */
 public class GetBookmarksByTagNames extends BookmarkChainElement {
-	/**
-	 * 
-	 * @author mgr
-	 * 
-	 */
 
-	/*
+	/**
 	 * return a list of bookmark by given tag/tags. Following arguments have to
 	 * be given:
 	 * 
 	 * grouping:all name:irrelevant tags:given hash:null popular:false
 	 * added:false
-	 * 
 	 */
 	@Override
-	protected List<Post<Bookmark>> handle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, final Transaction session) {
-		final BookmarkParam param = new BookmarkParam();
-		param.setOffset(start);
-		int limit = end - start;
-		param.setLimit(limit);
+	protected List<Post<Bookmark>> handle(final BookmarkParam param, final Transaction session) {
+		log.debug(this.getClass().getSimpleName());
 
-		for (String tag : tags) {
-			param.addTagName(tag);
-		}
-
-		/*
-		 * TODO implement compartible method for concept structure
-		 */
-		/*
-		 * prove arguments as mentioned above
-		 */
-		List<Post<Bookmark>> posts = db.getBookmarkByTagNames(param, session);
-		if (posts.size() != 0) {
-			System.out.println("GetBookmarksByTagNames");
+		List<Post<Bookmark>> posts;
+		if (param.getTagIndex().size() == 0) {
+			posts = db.getBookmarkForHomepage(param, session);
+		} else {
+			posts = db.getBookmarkByTagNames(param, session);
 		}
 		return posts;
-
 	}
 
 	@Override
-	protected boolean canHandle(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
-		return grouping == GroupingEntity.ALL && tags != null && hash == null && popular == false && added == false;
+	protected boolean canHandle(final BookmarkParam param) {
+		return param.getGrouping() == GroupingEntity.ALL && param.getTagIndex() != null && param.getHash() == null && param.isPopular() == false && param.isAdded() == false;
 	}
-
 }

@@ -1,24 +1,26 @@
 package org.bibsonomy.database.managers.chain.tag;
 
-import org.bibsonomy.database.managers.chain.ChainElementForTag;
-import org.bibsonomy.database.managers.chain.FirstChainElementForTag;
+import org.bibsonomy.database.managers.chain.ChainElement;
+import org.bibsonomy.database.managers.chain.FirstChainElement;
 import org.bibsonomy.database.managers.chain.tag.get.GetAllTags;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByExpression;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByGroup;
-import org.bibsonomy.database.managers.chain.tag.get.GetTagsViewable;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByUser;
+import org.bibsonomy.database.managers.chain.tag.get.GetTagsViewable;
+import org.bibsonomy.database.params.TagParam;
+import org.bibsonomy.model.Tag;
 
 /**
  * @author Miranda Grahl
  * @version $Id$
  */
-public class TagChain implements FirstChainElementForTag {
+public class TagChain implements FirstChainElement<Tag, TagParam> {
 
-	private final ChainElementForTag getTagsByUser;
-	private final ChainElementForTag getTagsByGroup;
-	private final ChainElementForTag getTagsViewable;
-	private final ChainElementForTag getTagsByRegularExpression;
-	private final ChainElementForTag getAllTags;
+	private final ChainElement<Tag, TagParam> getTagsByUser;
+	private final ChainElement<Tag, TagParam> getTagsByGroup;
+	private final ChainElement<Tag, TagParam> getTagsViewable;
+	private final ChainElement<Tag, TagParam> getTagsByRegularExpression;
+	private final ChainElement<Tag, TagParam> getAllTags;
 
 	public TagChain() {
 		this.getTagsByUser = new GetTagsByUser();
@@ -33,7 +35,7 @@ public class TagChain implements FirstChainElementForTag {
 		this.getTagsByRegularExpression.setNext(this.getAllTags);
 	}
 
-	public ChainElementForTag getFirstElementForTag() {
+	public ChainElement<Tag, TagParam> getFirstElement() {
 		return this.getTagsByUser;
 	}
 }

@@ -2,21 +2,21 @@ package org.bibsonomy.database.managers.chain;
 
 import java.util.List;
 
-import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.util.Transaction;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 
 /**
- * This interface encapsulates the getter for a list of posts.
+ * This interface encapsulates the getter for a list of T's (bookmarks,
+ * publications, tags, etc.).
  * 
  * @author Christian Schenk
  * @version $Id$
  */
-public interface ChainPerform<T extends Resource> {
+public interface ChainPerform<P extends GenericParam, T extends List<L>, L> {
 
 	/**
-	 * Returns a list of posts.
+	 * Walk through the chain until a ChainElement is found that can handle the
+	 * request.
 	 */
-	public List<Post<T>> perform(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, Transaction session);
+	public T perform(P param, Transaction session);
 }

@@ -2,7 +2,7 @@ package org.bibsonomy.database.managers;
 
 import java.util.List;
 
-import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -13,9 +13,9 @@ import org.bibsonomy.model.Resource;
  * 
  * @version $Id$
  */
-public interface CrudableContent<T extends Resource> {
+public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	// read
-	public List<Post<T>> getPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, boolean continuous, Transaction session);
+	public List<Post<T>> getPosts(P param, Transaction session);
 
 	// read
 	public Post<T> getPostDetails(String authUser, String resourceHash, String userName, Transaction session);
