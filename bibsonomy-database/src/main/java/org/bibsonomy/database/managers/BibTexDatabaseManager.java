@@ -3,12 +3,16 @@ package org.bibsonomy.database.managers;
 import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChain;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.SimHash;
@@ -88,6 +92,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 */
 	public List<Post<BibTex>> getBibTexByTagNamesForUser(final BibTexParam param, final Transaction session) {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
+		HashID.getSimHash(param.getSimHash()); // ensures correct simHash is set (exception would be thrown otherwise)
 		return this.bibtexList("getBibTexByTagNamesForUser", param, session);
 	}
 
@@ -119,7 +124,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 */
 	public List<Post<BibTex>> getBibTexByUserFriends(final BibTexParam param, final Transaction session) {
 		// groupType must be set to friends
-		param.setGroupType(ConstantID.GROUP_FRIENDS);
+		param.setGroupType(GroupID.GROUP_FRIENDS);
 		return this.bibtexList("getBibTexByUserFriends", param, session);
 	}
 
@@ -140,7 +145,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * public posts are shown.
 	 */
 	public List<Post<BibTex>> getBibTexForHomePage(final BibTexParam param, final Transaction session) {
-		param.setGroupType(ConstantID.GROUP_FRIENDS);
+		param.setGroupType(GroupID.GROUP_FRIENDS);
 		param.setLimit(15);
 		param.setOffset(0);
 		return this.bibtexList("getBibTexForHomePage", param, session);
@@ -285,7 +290,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	/**
 	 * Inserts a publication into the database.
 	 */
-	public void insertBibTex(final BibTexParam param, final Transaction session) {
+	private void insertBibTex(final BibTexParam param, final Transaction session) {
 		// Start transaction
 		session.beginTransaction();
 		try {
@@ -293,7 +298,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			this.insert("insertBibTex", param, session);
 			// Insert/Update SimHashes
 			for (final int i : new int[] { 0, 1, 2, 3 }) {
-				final ConstantID simHash = ConstantID.getSimHash(i);
+				final HashID simHash = HashID.getSimHash(i);
 				param.setRequestedSimHash(simHash);
 				param.setHash(SimHash.getSimHash(param.getResource(), simHash));
 				this.insertBibTexHash(param, session);
@@ -328,19 +333,19 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			final BibTexParam param = new BibTexParam();
 			param.setUserName(userName);
 			param.setHash(resourceHash);
-
+	
 			final List<Post<BibTex>> bibtexs = this.getBibTexByHashForUser(param, session);
 			// BibTex doesn't exist
 			if (bibtexs.size() == 0) return false;
-
+	
 			final Post<? extends Resource> oneBibtex = bibtexs.get(0);
 			param.setRequestedContentId(oneBibtex.getContentId());
-
+	
 			// Delete Tas
 			this.tagDb.deleteTags(oneBibtex, session);
 			// Update SimHashes
 			for (final int i : new int[] { 0, 1, 2, 3 }) {
-				final ConstantID simHash = ConstantID.getSimHash(i);
+				final HashID simHash = HashID.getSimHash(i);
 				param.setRequestedSimHash(simHash);
 				param.setHash(SimHash.getSimHash(((BibTex) oneBibtex.getResource()), simHash));
 				this.updateBibTexHash(param, session);
@@ -355,7 +360,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			this.deleteBibTexExt(param, session);
 			// Delete id in bibtexturl table
 			this.deleteBibTexUrls(param, session);
-
+	
 			// End transaction
 			session.commitTransaction();
 		} finally {
@@ -397,14 +402,20 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			final BibTexParam param = new BibTexParam();
 			param.setUserName(userName);
 			param.setResource(post.getResource());
+			
+			final List<Post<BibTex>> isBibTexInDb;
+			if (oldIntraHash != null) {
+				// retrieve existing entry
+				post.getResource().setIntraHash(oldIntraHash);
+				param.setHash(oldIntraHash);
+				isBibTexInDb = this.getBibTexByHashForUser(param, session);
+				post.getResource().setIntraHash(newIntraHash);
+				param.setHash(newIntraHash);
+			} else {
+				isBibTexInDb = null;
+			}
 
-			// retrieve existing entry
-			post.getResource().setIntraHash(oldIntraHash);
-			param.setHash(oldIntraHash);
-			final List<Post<BibTex>> isBibTexInDb = this.getBibTexByHashForUser(param, session);
-			post.getResource().setIntraHash(newIntraHash);
-			param.setHash(newIntraHash);
-			if (isBibTexInDb.size() == 0) {
+			if ((isBibTexInDb == null) || (isBibTexInDb.size() == 0)) {
 				// BibTex entry DOES NOT EXIST for this user -> create a new contentId
 				post.setContentId( this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, session) );
 			} else {
@@ -414,16 +425,27 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 				this.deletePost(userName, oldBibTexPost.getResource().getIntraHash(), session);
 			}
 			// Insert the new BibTex
-			this.insertBibTex(param, session);
+			this.insertBibTex(post, session);
 			// add the tags
 			this.tagDb.insertTags(post, session);
 			// TODO: insertRelations (maybe in TagDatabaseManager for a gain in BookmarkDatabaseManager.storePost), update: log, doc, col, ext, url
-
+	
 			// End transaction
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
 		}
 		return true;
+	}
+
+	protected void insertBibTex(Post<BibTex> post, Transaction session) {
+		final BibTexParam param = new BibTexParam();
+		param.setResource( post.getResource() );
+		param.setRequestedContentId( post.getContentId() );
+		param.setDescription( post.getDescription() );
+		for (Group g : post.getGroups()) {
+			param.setGroupId( g.getGroupId() );
+			this.insertBibTex(param, session);
+		}
 	}
 }
