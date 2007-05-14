@@ -127,8 +127,8 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getPostsPopular() {
 		// Popular
-		this.bibTexPostsList = this.restDb.getPosts(TEST_USER_NAME, BibTex.class, GroupingEntity.ALL, "jaeschke", taglist, null, true, false, 0, 19);
-		assertEquals(91, this.bibTexPostsList.size());
+		this.bibTexPostsList = this.restDb.getPosts(TEST_USER_NAME, BibTex.class, GroupingEntity.ALL, "", taglist, null, true, false, 0, 19);
+		assertEquals(19, this.bibTexPostsList.size());
 	}
 
 	@Test
