@@ -158,6 +158,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		tagParam.setContentTypeByClass(post.getResource().getClass());
 		tagParam.setUserName(post.getUser().getName());
 		tagParam.setDate(post.getDate());
+		tagParam.setDescription(post.getDescription());
 		List<Integer> groups = new ArrayList<Integer>();
 		for (Group g : post.getGroups()) {
 			groups.add(g.getGroupId());
