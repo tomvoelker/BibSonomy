@@ -6,8 +6,7 @@ import java.util.SortedSet;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
-import org.bibsonomy.common.enums.ConstantID;
-import org.bibsonomy.model.util.ResourceUtils;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.util.StringUtils;
 
@@ -19,17 +18,16 @@ public class SimHash {
 	/**
 	 * Returns the corresponding simhash.
 	 */
-	public static String getSimHash(final BibTex bibtex, final ConstantID simHash) {
-		switch (simHash) {
-		case SIM_HASH0:
+	public static String getSimHash(final BibTex bibtex, final HashID simHash) {
+		if (simHash.getId() == HashID.SIM_HASH0.getId()) {
 			return getSimHash0(bibtex);
-		case SIM_HASH1:
+		} else if (simHash.getId() == HashID.SIM_HASH1.getId()) {
 			return getSimHash1(bibtex);
-		case SIM_HASH2:
+		} else if (simHash.getId() == HashID.SIM_HASH2.getId()) {
 			return getSimHash2(bibtex);
-		case SIM_HASH3:
+		} else if (simHash.getId() == HashID.SIM_HASH3.getId()) {
 			return getSimHash3();
-		default:
+		} else {
 			throw new RuntimeException("SimHash " + simHash.getId() + " doesn't exist.");
 		}
 	}
