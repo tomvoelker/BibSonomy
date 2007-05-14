@@ -11,6 +11,7 @@ import org.bibsonomy.model.Resource;
  * For every content type there should exist a separate class which implements
  * this interface. It supplies basic CRUD: create, read, update and delete.
  * 
+ * @author Christian Schenk
  * @version $Id$
  */
 public interface CrudableContent<T extends Resource, P extends GenericParam> {
@@ -21,10 +22,8 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	public Post<T> getPostDetails(String authUser, String resourceHash, String userName, Transaction session);
 
 	// delete
-	// FIXME why do we return a boolean here? error checking?!?
 	public boolean deletePost(String userName, String resourceHash, Transaction session);
 
 	// create, update
-	// FIXME why do we return a boolean here? error checking?!?
 	public boolean storePost(String userName, Post<T> post, String oldHash, Transaction session);
 }

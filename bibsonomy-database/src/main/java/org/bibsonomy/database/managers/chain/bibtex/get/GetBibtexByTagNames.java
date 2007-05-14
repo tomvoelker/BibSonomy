@@ -27,16 +27,7 @@ public class GetBibtexByTagNames extends BibTexChainElement {
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final Transaction session) {
 		log.debug(this.getClass().getSimpleName());
-
-		List<Post<BibTex>> posts;
-		if (param.getTagIndex().size() == 0) {
-			log.debug("-> getBibTexForHomePage");
-			posts = db.getBibTexForHomePage(param, session);
-		} else {
-			log.debug("-> getBibTexByTagNames");
-			posts = db.getBibTexByTagNames(param, session);
-		}
-		return posts;
+		return this.db.getBibTexByTagNames(param, session);
 	}
 
 	@Override

@@ -296,16 +296,16 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		if (storeTemp.size() == 0) return false;
 
 		final Post<Bookmark> provePost = storeTemp.get(0);
-	    paramDelete.setRequestedContentId(provePost.getContentId());
+		paramDelete.setRequestedContentId(provePost.getContentId());
 
-        // counter in urls table is decremented (-1)
+	    // counter in urls table is decremented (-1)
 		this.updateBookmarkHashDec(paramDelete, session);
 		// delete the selected bookmark (by given contentId) from current database table
-	    this.deleteBookmarkByContentId(paramDelete, session);
+		this.deleteBookmarkByContentId(paramDelete, session);
 	    // deleting tas
 	    this.tagDb.deleteTags(provePost, session);
 
-		return true;
+	    return true;
 	}
 
 	// TODO: this method belongs to the logic-layer not database-layer. anyway, i would appreciate a rewrite of this copy'n'paste mess

@@ -15,7 +15,7 @@ import org.bibsonomy.database.util.Transaction;
 public interface ChainPerform<P extends GenericParam, T extends List<L>, L> {
 
 	/**
-	 * Walk through the chain until a ChainElement is found that can handle the
+	 * Walks through the chain until a ChainElement is found that can handle the
 	 * request.
 	 */
 	public T perform(P param, Transaction session);

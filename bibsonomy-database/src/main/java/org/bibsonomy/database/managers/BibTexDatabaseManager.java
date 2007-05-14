@@ -328,14 +328,14 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			final BibTexParam param = new BibTexParam();
 			param.setUserName(userName);
 			param.setHash(resourceHash);
-	
+
 			final List<Post<BibTex>> bibtexs = this.getBibTexByHashForUser(param, session);
 			// BibTex doesn't exist
 			if (bibtexs.size() == 0) return false;
-	
+
 			final Post<? extends Resource> oneBibtex = bibtexs.get(0);
 			param.setRequestedContentId(oneBibtex.getContentId());
-	
+
 			// Delete Tas
 			this.tagDb.deleteTags(oneBibtex, session);
 			// Update SimHashes
@@ -355,7 +355,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			this.deleteBibTexExt(param, session);
 			// Delete id in bibtexturl table
 			this.deleteBibTexUrls(param, session);
-	
+
 			// End transaction
 			session.commitTransaction();
 		} finally {
@@ -397,7 +397,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			final BibTexParam param = new BibTexParam();
 			param.setUserName(userName);
 			param.setResource(post.getResource());
-			
+
 			// retrieve existing entry
 			post.getResource().setIntraHash(oldIntraHash);
 			param.setHash(oldIntraHash);
@@ -418,7 +418,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			// add the tags
 			this.tagDb.insertTags(post, session);
 			// TODO: insertRelations (maybe in TagDatabaseManager for a gain in BookmarkDatabaseManager.storePost), update: log, doc, col, ext, url
-	
+
 			// End transaction
 			session.commitTransaction();
 		} finally {

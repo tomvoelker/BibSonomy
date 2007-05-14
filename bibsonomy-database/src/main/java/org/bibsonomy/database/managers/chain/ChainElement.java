@@ -23,6 +23,7 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 
 	public ChainElement() {
 		this.generalDb = GeneralDatabaseManager.getInstance();
+		this.next = null;
 	}
 
 	/**
