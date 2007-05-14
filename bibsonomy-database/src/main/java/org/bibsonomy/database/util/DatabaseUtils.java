@@ -5,7 +5,7 @@ import java.io.Reader;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.util.ExceptionUtils;
@@ -65,7 +65,7 @@ public class DatabaseUtils {
 		final Boolean friends = db.isFriendOf(param, session);
 		final List<Integer> groups = db.getGroupsForUser(param, session);
 		if (friends) {
-			groups.add(ConstantID.GROUP_FRIENDS.getId());
+			groups.add(GroupID.GROUP_FRIENDS.getId());
 		}
 		param.setGroups(groups);
 	}
@@ -78,7 +78,7 @@ public class DatabaseUtils {
 		DatabaseUtils.setGroups(db, param, session);
 		// the group type needs to be set to friends because of the second union
 		// in the SQL statement
-		param.setGroupType(ConstantID.GROUP_FRIENDS);
+		param.setGroupType(GroupID.GROUP_FRIENDS);
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class DatabaseUtils {
 	 */
 	public static void prepareGetPostForUser(final GeneralDatabaseManager db, final GenericParam param, final Transaction session) {
 		// if the groupId is invalid we have to check for groups manually
-		if (param.getGroupId() == ConstantID.GROUP_INVALID.getId()) {
+		if (param.getGroupId() == GroupID.GROUP_INVALID.getId()) {
 			DatabaseUtils.setGroups(db, param, session);
 		}
 	}
