@@ -1,8 +1,7 @@
 package org.bibsonomy.model;
 
-import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.util.SimHash;
-import org.bibsonomy.model.Resource;
 
 /**
  * This is the BibTex resource, which is used to handle BibTex-entries. It is
@@ -22,7 +21,6 @@ public class BibTex extends Resource {
 	private String bKey;
 	private String misc;
 	private String bibtexAbstract;
-	private String description;
 	private String entrytype;
 	private String address;
 	private String annote;
@@ -130,14 +128,6 @@ public class BibTex extends Resource {
 
 	public void setDay(String day) {
 		this.day = day;
-	}
-
-	public String getDescription() {
-		return this.description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
 	}
 
 	public String getEdition() {
@@ -326,7 +316,7 @@ public class BibTex extends Resource {
 
 	@Override
 	public void recalculateHashes() {
-		this.setIntraHash(SimHash.getSimHash(this, ConstantID.INTRA_HASH));
-		this.setInterHash(SimHash.getSimHash(this, ConstantID.INTER_HASH));
+		this.setIntraHash(SimHash.getSimHash(this, HashID.INTRA_HASH));
+		this.setInterHash(SimHash.getSimHash(this, HashID.INTER_HASH));
 	}
 }
