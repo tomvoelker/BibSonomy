@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
@@ -35,7 +36,7 @@ public class ParamUtils {
 	 * The defaults for every parameter-object are set here.
 	 */
 	private static void setDefaults(final GenericParam param) {
-		param.setGroupType(ConstantID.GROUP_PUBLIC);
+		param.setGroupType(GroupID.GROUP_PUBLIC);
 		param.setLimit(10);
 		param.setOffset(0);
 		param.setGroupId(3);
@@ -104,7 +105,7 @@ public class ParamUtils {
 		param.setOffset(0);
 		param.setLimit(5);
 		param.setGroupId(3);
-		param.setGroupType(ConstantID.GROUP_PUBLIC);
+		param.setGroupType(GroupID.GROUP_PUBLIC);
 		param.setRequestedUserName("hotho");
 		return param;
 	}

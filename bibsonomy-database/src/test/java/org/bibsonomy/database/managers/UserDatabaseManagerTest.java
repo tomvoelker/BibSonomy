@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.model.User;
 import org.junit.Test;
 
@@ -29,7 +29,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getPrivlevelOfUser() {
-		assertEquals(ConstantID.GROUP_PUBLIC.getId(), this.userDb.getPrivlevelOfUser(this.userParam, this.dbSession));
+		assertEquals(GroupID.GROUP_PUBLIC.getId(), this.userDb.getPrivlevelOfUser(this.userParam, this.dbSession));
 	}
 
 	@Test

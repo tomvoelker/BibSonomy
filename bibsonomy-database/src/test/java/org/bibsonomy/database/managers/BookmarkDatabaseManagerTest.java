@@ -4,7 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.sql.SQLException;
 
-import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.common.enums.GroupID;
 import org.junit.Test;
 
 /**
@@ -25,7 +25,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getBookmarkByTagNamesForUser() {
 		this.bookmarkDb.getBookmarkByTagNamesForUser(this.bookmarkParam, this.dbSession);
 		this.resetParameters();
-		this.bookmarkParam.setGroupId(ConstantID.GROUP_INVALID.getId());
+		this.bookmarkParam.setGroupId(GroupID.GROUP_INVALID.getId());
 		this.bookmarkDb.getBookmarkByTagNamesForUser(this.bookmarkParam, this.dbSession);
 	}
 
@@ -113,7 +113,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getBookmarkForUser() {
 		this.bookmarkDb.getBookmarkForUser(this.bookmarkParam, this.dbSession);
 		this.resetParameters();
-		this.bookmarkParam.setGroupId(ConstantID.GROUP_INVALID.getId());
+		this.bookmarkParam.setGroupId(GroupID.GROUP_INVALID.getId());
 		this.bookmarkDb.getBookmarkForUser(this.bookmarkParam, this.dbSession);
 	}
 
@@ -121,7 +121,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getBookmarkForUserCount() {
 		this.bookmarkDb.getBookmarkForUserCount(this.bookmarkParam, this.dbSession);
 		this.resetParameters();
-		this.bookmarkParam.setGroupId(ConstantID.GROUP_INVALID.getId());
+		this.bookmarkParam.setGroupId(GroupID.GROUP_INVALID.getId());
 		this.bookmarkDb.getBookmarkForUserCount(this.bookmarkParam, this.dbSession);
 	}
 

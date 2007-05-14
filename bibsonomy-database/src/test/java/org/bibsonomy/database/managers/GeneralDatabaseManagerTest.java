@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.common.enums.GroupID;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -47,14 +48,14 @@ public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getGroupIdByGroupNameAndUserName() {
 		// group exists
 		this.generalParam.setRequestedGroupName("kde");
-		assertEquals(ConstantID.GROUP_KDE.getId(), this.generalDb.getGroupIdByGroupNameAndUserName(this.generalParam, this.dbSession));
-		assertEquals(ConstantID.GROUP_KDE.getId(), this.generalDb.getGroupIdByGroupName(this.generalParam, this.dbSession));
+		assertEquals(GroupID.GROUP_KDE.getId(), this.generalDb.getGroupIdByGroupNameAndUserName(this.generalParam, this.dbSession));
+		assertEquals(GroupID.GROUP_KDE.getId(), this.generalDb.getGroupIdByGroupName(this.generalParam, this.dbSession));
 
 		// group doesn't exist
 		this.resetParameters();
 		this.generalParam.setRequestedGroupName("this-group-doesnt-exists");
-		assertEquals(ConstantID.GROUP_INVALID.getId(), this.generalDb.getGroupIdByGroupNameAndUserName(this.generalParam, this.dbSession));
-		assertEquals(ConstantID.GROUP_INVALID.getId(), this.generalDb.getGroupIdByGroupName(this.generalParam, this.dbSession));
+		assertEquals(GroupID.GROUP_INVALID.getId(), this.generalDb.getGroupIdByGroupNameAndUserName(this.generalParam, this.dbSession));
+		assertEquals(GroupID.GROUP_INVALID.getId(), this.generalDb.getGroupIdByGroupName(this.generalParam, this.dbSession));
 
 		// groupname is null
 		this.resetParameters();

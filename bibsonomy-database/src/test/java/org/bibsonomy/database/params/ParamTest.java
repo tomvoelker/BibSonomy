@@ -3,9 +3,7 @@ package org.bibsonomy.database.params;
 import static org.junit.Assert.assertEquals;
 
 import org.bibsonomy.common.enums.ConstantID;
-import org.bibsonomy.database.params.BibTexParam;
-import org.bibsonomy.database.params.BookmarkParam;
-import org.bibsonomy.database.params.GenericParam;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.junit.Test;
 
@@ -16,7 +14,7 @@ public class ParamTest {
 	 */
 	public void genericTest(final GenericParam param) {
 		assertEquals(0, param.getTagIndex().size());
-		assertEquals(ConstantID.GROUP_PUBLIC.getId(), param.getGroupType());
+		assertEquals(GroupID.GROUP_PUBLIC.getId(), param.getGroupType());
 		assertEquals(false, param.isCaseSensitiveTagNames());
 
 		for (final int i : new int[] { 1, 2, 3 }) {
