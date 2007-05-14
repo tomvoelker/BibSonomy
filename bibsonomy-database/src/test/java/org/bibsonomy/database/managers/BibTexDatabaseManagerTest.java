@@ -3,8 +3,22 @@ package org.bibsonomy.database.managers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.bibsonomy.common.enums.ConstantID;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+
+import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.database.util.LogicInterfaceHelper;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.testutil.ParamUtils;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -45,7 +59,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getBibTexByTagNamesForUser() {
 		this.bibTexDb.getBibTexByTagNamesForUser(this.bibtexParam, this.dbSession);
 		this.resetParameters();
-		this.bibtexParam.setGroupId(ConstantID.GROUP_INVALID.getId());
+		this.bibtexParam.setGroupId(GroupID.GROUP_INVALID.getId());
 		this.bibTexDb.getBibTexByTagNamesForUser(this.bibtexParam, this.dbSession);
 	}
 
@@ -147,7 +161,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getBibTexForUser() {
 		this.bibTexDb.getBibTexForUser(this.bibtexParam, this.dbSession);
 		this.resetParameters();
-		this.bibtexParam.setGroupId(ConstantID.GROUP_INVALID.getId());
+		this.bibtexParam.setGroupId(GroupID.GROUP_INVALID.getId());
 		this.bibTexDb.getBibTexForUser(this.bibtexParam, this.dbSession);
 	}
 
@@ -155,7 +169,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getBibTexForUserCount() {
 		this.bibTexDb.getBibTexForUserCount(this.bibtexParam, this.dbSession);
 		this.resetParameters();
-		this.bibtexParam.setGroupId(ConstantID.GROUP_INVALID.getId());
+		this.bibtexParam.setGroupId(GroupID.GROUP_INVALID.getId());
 		this.bibTexDb.getBibTexForUserCount(this.bibtexParam, this.dbSession);
 	}
 
@@ -167,18 +181,51 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void insertBibTex() {
-		this.bibtexParam.setRequestedContentId(1234567);
-		this.bibTexDb.insertBibTex(this.bibtexParam, this.dbSession);
-//		this.bibTexDb.getB
+		final Post<BibTex> toInsert = generatePost();
+		toInsert.setContentId(Integer.MAX_VALUE);
+		this.bibTexDb.insertBibTex(toInsert, this.dbSession);
 	}
 
 	@Test
 	public void deleteBibTex() {
 		this.bibTexDb.deletePost(this.bibtexParam.getRequestedUserName(), this.bibtexParam.getHash(), this.dbSession);
 	}
+	
+	private Post<BibTex> generatePost() {
+		final Post<BibTex> toInsert = new Post<BibTex>();
+		final Group g = new Group();
+		g.setGroupId(GroupID.GROUP_PUBLIC.getId());
+		g.setDescription(null);
+		toInsert.getGroups().add(g);
+		Tag t = new Tag();
+		t.setName(this.getClass().getName());
+		toInsert.getTags().add(t);
+		t = new Tag();
+		t.setName("hurz");
+		toInsert.getTags().add(t);
+		toInsert.setContentId(null);
+		toInsert.setDescription("trallalla");
+		toInsert.setDate(new Date());
+		toInsert.setUser(ModelUtils.getUser());
+		final BibTex bib = ModelUtils.getBibTex();
+		toInsert.setResource(bib);
+		return toInsert;
+	}
 
 	@Test
 	public void storePost() {
-		// TODO
+		final Post<BibTex> toInsert = generatePost();
+		
+		this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, null, this.dbSession);
+		
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { this.getClass().getName(), "hurz" }), "", false, false, 0, 50);
+		List<Post<BibTex>> posts = this.bibTexDb.getPosts(param, this.dbSession);
+		Assert.assertEquals(1, posts.size());
+		HashSet<String> skip = new HashSet<String>();
+		skip.addAll(Arrays.asList(new String[] {"resource", "tags"}));
+		ModelUtils.assertPropertyEquality(toInsert, posts.get(0), skip);
+		skip.clear();
+		toInsert.getResource().setCount(1);
+		ModelUtils.assertPropertyEquality(toInsert.getResource(), posts.get(0).getResource(), skip);
 	}
 }
