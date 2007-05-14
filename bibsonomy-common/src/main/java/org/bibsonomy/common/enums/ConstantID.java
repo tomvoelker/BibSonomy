@@ -14,13 +14,6 @@ public enum ConstantID {
 	/** Contenttype for BibTeX */
 	BIBTEX_CONTENT_TYPE(2),
 
-	/* constant group ids */
-	GROUP_INVALID(-1),
-	GROUP_PUBLIC(0),
-	GROUP_PRIVATE(1),
-	GROUP_FRIENDS(2),
-	GROUP_KDE(3),
-
 	/* privacy levels for groups */
 	/** member list public */
 	PRIVLEVEL_PUBLIC(0),
@@ -39,15 +32,6 @@ public enum ConstantID {
 	IDS_SCRAPER_METADATA(7),
 	IDS_UNDEFINED_CONTENT_ID(-1),
 
-	/* Constant for SimHash */
-	SIM_HASH0(0),
-	SIM_HASH1(1),
-	SIM_HASH2(2),
-	SIM_HASH3(3),
-	SIM_HASH(SIM_HASH1),
-	INTRA_HASH(SIM_HASH2),  // TODO: check if this is the right hashing method and if so remove this comment
-	INTER_HASH(SIM_HASH),  // TODO: check if this is the right hashing method and if so remove this comment
-
 	/* Spammer ids */
 	SPAMMER_TRUE(1),
 	SPAMMER_FALSE(0);
@@ -58,29 +42,7 @@ public enum ConstantID {
 		this.id = id;
 	}
 
-	private ConstantID(final ConstantID id) {
-		this.id = id.getId();
-	}
-
 	public int getId() {
 		return this.id;
-	}
-
-	/**
-	 * Returns the corresponding simhash.
-	 */
-	public static ConstantID getSimHash(final int simHash) {
-		switch (simHash) {
-		case 0:
-			return SIM_HASH0;
-		case 1:
-			return SIM_HASH1;
-		case 2:
-			return SIM_HASH2;
-		case 3:
-			return SIM_HASH3;
-		default:
-			throw new RuntimeException("SimHash " + simHash + " doesn't exist.");
-		}
 	}
 }
