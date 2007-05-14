@@ -1,5 +1,6 @@
 package org.bibsonomy.database.managers;
 
+import org.apache.log4j.Logger;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
@@ -22,6 +23,7 @@ import org.junit.Before;
  * @version $Id$
  */
 public abstract class AbstractDatabaseManagerTest {
+	private static final Logger log = Logger.getLogger(AbstractDatabaseManagerTest.class);
 
 	protected GeneralDatabaseManager generalDb;
 	protected BookmarkDatabaseManager bookmarkDb;
@@ -40,20 +42,20 @@ public abstract class AbstractDatabaseManagerTest {
 
 	@Before
 	public void setUp() {
-		this.generalDb = GeneralDatabaseManager.getInstance();
-		this.bookmarkDb = BookmarkDatabaseManager.getInstance();
-		this.bibTexDb = BibTexDatabaseManager.getInstance();
-		this.tagDb = TagDatabaseManager.getInstance();
-		this.userDb = UserDatabaseManager.getInstance();
-		this.groupDb = GroupDatabaseManager.getInstance();
-		this.resetParameters();
-
-		// testcases shouldn't write into the db
 		try {
+			this.generalDb = GeneralDatabaseManager.getInstance();
+			this.bookmarkDb = BookmarkDatabaseManager.getInstance();
+			this.bibTexDb = BibTexDatabaseManager.getInstance();
+			this.tagDb = TagDatabaseManager.getInstance();
+			this.userDb = UserDatabaseManager.getInstance();
+			this.groupDb = GroupDatabaseManager.getInstance();
+			this.resetParameters();
+
+			// testcases shouldn't write into the db		
 			dbSession = DatabaseUtils.getDatabaseSession();
 			dbSession.beginTransaction();
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception e) {	
+			log.fatal("exception in testcase setUp",e);
 		}
 	}
 
