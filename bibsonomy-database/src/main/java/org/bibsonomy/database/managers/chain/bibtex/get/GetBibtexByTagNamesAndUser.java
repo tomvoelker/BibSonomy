@@ -24,12 +24,13 @@ public class GetBibtexByTagNamesAndUser extends BibTexChainElement {
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final Transaction session) {
 		log.debug(this.getClass().getSimpleName());
-		param.setGroups(this.generalDb.getGroupsForUser(param, session));
+		//param.setGroups(this.generalDb.getGroupsForUser(param, session));
 		return this.db.getBibTexByTagNamesForUser(param, session);
 	}
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return param.getUserName() != null && param.getGrouping() == GroupingEntity.USER && param.getTagIndex() != null && param.getHash() == null && param.isPopular() == false && param.isAdded() == false;
+		return (param.getUserName() != null) && (param.getGrouping() == GroupingEntity.USER) && (param.getTagIndex() != null) && (param.getRequestedUserName() != null) && (param.getRequestedUserName().length() > 0) && ((param.getHash() == null) || (param.getHash().length() == 0)) && (param.isPopular() == false);
 	}
+
 }
