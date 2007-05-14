@@ -1,0 +1,48 @@
+package org.bibsonomy.common.enums;
+
+/**
+ * Constants that are used in SQL statements
+ *
+ * @author Jens Illig
+ */
+public enum HashID {
+	SIM_HASH0(0),
+	SIM_HASH1(1),
+	SIM_HASH2(2),
+	SIM_HASH3(3),
+	SIM_HASH(SIM_HASH1),
+	INTRA_HASH(SIM_HASH2),  // TODO: check if this is the right hashing method and if so remove this comment
+	INTER_HASH(SIM_HASH);  // TODO: check if this is the right hashing method and if so remove tis comment
+	
+	private final int id;
+
+	private HashID(final int id) {
+		this.id = id;
+	}
+
+	private HashID(final HashID id) {
+		this.id = id.getId();
+	}
+
+	public int getId() {
+		return this.id;
+	}
+
+	/**
+	 * Returns the corresponding simhash.
+	 */
+	public static HashID getSimHash(final int simHash) {
+		switch (simHash) {
+		case 0:
+			return SIM_HASH0;
+		case 1:
+			return SIM_HASH1;
+		case 2:
+			return SIM_HASH2;
+		case 3:
+			return SIM_HASH3;
+		default:
+			throw new RuntimeException("SimHash " + simHash + " doesn't exist.");
+		}
+	}
+}
