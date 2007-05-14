@@ -2,7 +2,8 @@ package org.bibsonomy.database.managers;
 
 import java.util.List;
 
-import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChain;
 import org.bibsonomy.database.params.BookmarkParam;
@@ -95,7 +96,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 */
 	public List<Post<Bookmark>> getBookmarkByUserFriends(final BookmarkParam param, final Transaction session) {
 		// groupType must be set to friends
-		param.setGroupType(ConstantID.GROUP_FRIENDS);
+		param.setGroupType(GroupID.GROUP_FRIENDS);
 		return this.bookmarkList("getBookmarkByUserFriends", param, true, session);
 	}
 
@@ -274,11 +275,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		return this.queryForObject("getContentIDForBookmark", param, Integer.class, session);
 	}
 
-//	public List<Post<Bookmark>> getPosts(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end, boolean continuous, final Transaction session) {
 	public List<Post<Bookmark>> getPosts(final BookmarkParam param, final Transaction session) {
 		return chain.getFirstElement().perform(param, session);
 	}
-
+	
 	public Post<Bookmark> getPostDetails(String authUser, String resourceHash, String userName, final Transaction session) {
 		// TODO Auto-generated method stub
 		return null;
@@ -296,16 +296,16 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		if (storeTemp.size() == 0) return false;
 
 		final Post<Bookmark> provePost = storeTemp.get(0);
-		paramDelete.setRequestedContentId(provePost.getContentId());
+	    paramDelete.setRequestedContentId(provePost.getContentId());
 
-	    // counter in urls table is decremented (-1)
+        // counter in urls table is decremented (-1)
 		this.updateBookmarkHashDec(paramDelete, session);
 		// delete the selected bookmark (by given contentId) from current database table
-		this.deleteBookmarkByContentId(paramDelete, session);
+	    this.deleteBookmarkByContentId(paramDelete, session);
 	    // deleting tas
 	    this.tagDb.deleteTags(provePost, session);
 
-	    return true;
+		return true;
 	}
 
 	// TODO: this method belongs to the logic-layer not database-layer. anyway, i would appreciate a rewrite of this copy'n'paste mess

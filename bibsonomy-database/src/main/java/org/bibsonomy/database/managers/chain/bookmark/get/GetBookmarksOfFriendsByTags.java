@@ -2,7 +2,7 @@ package org.bibsonomy.database.managers.chain.bookmark.get;
 
 import java.util.List;
 
-import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChainElement;
 import org.bibsonomy.database.params.BookmarkParam;
@@ -35,7 +35,7 @@ public class GetBookmarksOfFriendsByTags extends BookmarkChainElement {
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final Transaction session) {
 		log.debug(this.getClass().getSimpleName());
-		param.setGroupId(ConstantID.GROUP_FRIENDS.getId());
+		param.setGroupId(GroupID.GROUP_FRIENDS.getId());
 		return this.db.getBookmarkForUser(param, session);
 	}
 
