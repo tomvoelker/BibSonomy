@@ -91,7 +91,7 @@ public class ModelFactoryTest extends TestCase
       xmlTag.setGlobalcount( BigInteger.ONE );
       xmlTag.setUsercount( BigInteger.TEN );
       tag = modelFactory.createTag( xmlTag );
-      assertTrue( "tag not correctly initailized", tag.getCount() == 1 );
+      assertTrue( "tag not correctly initailized", tag.getGlobalcount() == 1 );
       assertTrue( "tag not correctly initailized", tag.getUsercount() == 10 );
    }
 	
@@ -158,7 +158,10 @@ public class ModelFactoryTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.3  2007-02-11 17:55:39  mbork
+ * Revision 1.4  2007-05-15 08:46:59  mbork
+ * refactored Tag.count to Tag.globalcount
+ *
+ * Revision 1.3  2007/02/11 17:55:39  mbork
  * switched REST-api to the 'new' datamodel, which does not deserve the name...
  *
  * Revision 1.2  2007/02/05 10:35:55  cschenk

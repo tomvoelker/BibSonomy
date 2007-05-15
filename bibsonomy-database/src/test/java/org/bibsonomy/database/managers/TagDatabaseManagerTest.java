@@ -21,7 +21,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(5218, tag.getId());
 		assertEquals("$100", tag.getName());
 		assertEquals("", tag.getStem());
-		assertEquals(5, tag.getCount());
+		assertEquals(5, tag.getGlobalcount());
 	}
 
 	@Test
@@ -29,7 +29,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final List<Tag> tags = this.tagDb.getTagByCount(this.tagParam, this.dbSession);
 		assertEquals(19, tags.size());
 		for (final Tag tag : tags)
-			assertEquals(100, tag.getCount());
+			assertEquals(100, tag.getGlobalcount());
 	}
 
 	@Test

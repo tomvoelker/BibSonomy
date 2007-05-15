@@ -239,7 +239,7 @@ public class XMLRendererTest extends TestCase
       Tag t2 = new Tag();
       t2.setName( "bar" );
       t2.setUsercount( 5 );
-      t2.setCount( 10 );
+      t2.setGlobalcount( 10 );
       tags.add( t2 );
       sw = new StringWriter( 100 );
       renderer.serializeTags( sw, tags, vm );
@@ -499,7 +499,10 @@ public class XMLRendererTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.7  2007-02-21 14:08:33  mbork
+ * Revision 1.8  2007-05-15 08:46:59  mbork
+ * refactored Tag.count to Tag.globalcount
+ *
+ * Revision 1.7  2007/02/21 14:08:33  mbork
  * - included code generation of the schema in the maven2 build-lifecycle
  * - removed circular dependencies among the modules
  * - cleaned up the poms of the modules

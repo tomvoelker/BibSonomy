@@ -296,79 +296,79 @@ public class TestDatabase implements LogicInterface
 		Tag spiegelTag = new Tag(); 
 		spiegelTag.setName( "spiegel" );
 		spiegelTag.setUsercount( 1 );
-      spiegelTag.setCount( 1 );
+      spiegelTag.setGlobalcount( 1 );
 		dbTags.put( spiegelTag.getName(), spiegelTag );
 		
 		Tag hostingTag = new Tag(); 
 		hostingTag.setName( "hosting" );
 		hostingTag.setUsercount( 1 );
-      hostingTag.setCount( 1 );
+      hostingTag.setGlobalcount( 1 );
 		dbTags.put( hostingTag.getName(), hostingTag );
 		
 		Tag lustigTag = new Tag(); 
 		lustigTag.setName( "lustig" );
 		lustigTag.setUsercount( 1 );
-      lustigTag.setCount( 1 );
+      lustigTag.setGlobalcount( 1 );
 		dbTags.put( lustigTag.getName(), lustigTag );
 		
 		Tag nachrichtenTag = new Tag(); 
 		nachrichtenTag.setName( "nachrichten" );
 		nachrichtenTag.setUsercount( 1 );
-      nachrichtenTag.setCount( 2 );
+      nachrichtenTag.setGlobalcount( 2 );
 		dbTags.put( nachrichtenTag.getName(), nachrichtenTag );
 		
 		Tag semwebTag = new Tag(); 
 		semwebTag.setName( "semweb" );
 		semwebTag.setUsercount( 1 );
-      semwebTag.setCount( 4 );
+      semwebTag.setGlobalcount( 4 );
 		dbTags.put( semwebTag.getName(), semwebTag );
 		
 		Tag vorlesungTag = new Tag(); 
 		vorlesungTag.setName( "vorlesung" );
 		vorlesungTag.setUsercount( 1 );
-      vorlesungTag.setCount( 1 );
+      vorlesungTag.setGlobalcount( 1 );
 		dbTags.put( vorlesungTag.getName(), vorlesungTag );
 		
 		Tag ws0506Tag = new Tag();
 		ws0506Tag.setName( "ws0506" );
 		ws0506Tag.setUsercount( 1 );
-      ws0506Tag.setCount( 1 );
+      ws0506Tag.setGlobalcount( 1 );
 		dbTags.put( ws0506Tag.getName(), ws0506Tag );
 		
 		Tag weltformelTag = new Tag();
 		weltformelTag.setName( "weltformel" );
 		weltformelTag.setUsercount( 1 );
-      weltformelTag.setCount( 1 );
+      weltformelTag.setGlobalcount( 1 );
 		dbTags.put( weltformelTag.getName(), weltformelTag );
 		
 		Tag mySiteTag = new Tag(); 
 		mySiteTag.setName( "mySite" );
 		mySiteTag.setUsercount( 1 );
-      mySiteTag.setCount( 1 );
+      mySiteTag.setGlobalcount( 1 );
 		dbTags.put( mySiteTag.getName(), mySiteTag );
 		
 		Tag wowTag = new Tag();
 		wowTag.setName( "wow" );
 		wowTag.setUsercount( 2 );
-      wowTag.setCount( 2 );
+      wowTag.setGlobalcount( 2 );
 		dbTags.put( wowTag.getName(), wowTag );
 		
 		Tag lehreTag = new Tag(); 
 		lehreTag.setName( "lehre" );
 		lehreTag.setUsercount( 2 );
-      lehreTag.setCount( 2 );
+      lehreTag.setGlobalcount( 2 );
 		dbTags.put( lehreTag.getName(), lehreTag );
 		
 		Tag kddTag = new Tag();
 		kddTag.setName( "kdd" );
 		kddTag.setUsercount( 1 );
-      kddTag.setCount( 1 );
+      kddTag.setGlobalcount( 1 );
 		dbTags.put( kddTag.getName(), kddTag );
 		
 		Tag wwwTag = new Tag();
 		wwwTag.setName( "www" );
 		wwwTag.setUsercount( 1 );
-		wwwTag.setCount( 3 );
+		wwwTag.setGlobalcount( 3 );
 		dbTags.put( wwwTag.getName(), wwwTag );
 		
 		// dbResources
@@ -744,7 +744,10 @@ public class TestDatabase implements LogicInterface
 
 /*
  * $Log$
- * Revision 1.6  2007-05-10 20:25:40  mbork
+ * Revision 1.7  2007-05-15 08:46:59  mbork
+ * refactored Tag.count to Tag.globalcount
+ *
+ * Revision 1.6  2007/05/10 20:25:40  mbork
  * api key implemented
  *
  * Revision 1.5  2007/05/06 01:39:17  jillig

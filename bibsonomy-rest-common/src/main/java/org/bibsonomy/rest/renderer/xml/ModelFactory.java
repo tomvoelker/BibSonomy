@@ -76,7 +76,7 @@ public class ModelFactory
 		
 		Tag tag = new Tag();
 		tag.setName( xmlTag.getName() );
-      if( xmlTag.getGlobalcount() != null ) tag.setCount( xmlTag.getGlobalcount().intValue() ); //TODO tag count
+      if( xmlTag.getGlobalcount() != null ) tag.setGlobalcount( xmlTag.getGlobalcount().intValue() ); //TODO tag count
       if( xmlTag.getUsercount() != null ) tag.setUsercount( xmlTag.getUsercount().intValue() ); //TODO tag count
 		
 		return tag;
@@ -196,7 +196,10 @@ public class ModelFactory
 
 /*
  * $Log$
- * Revision 1.4  2007-02-11 18:35:20  mbork
+ * Revision 1.5  2007-05-15 08:46:59  mbork
+ * refactored Tag.count to Tag.globalcount
+ *
+ * Revision 1.4  2007/02/11 18:35:20  mbork
  * lazy instantiation of lists in the model.
  * we definitely need bidirectional links for the api to work proper!
  * fixed all unit tests, every test performs well.

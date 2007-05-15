@@ -221,7 +221,7 @@ public class XMLRenderer implements Renderer
       TagType xmlTag = new TagType();
       checkTag( tag );
       xmlTag.setName( tag.getName() );
-      xmlTag.setGlobalcount( BigInteger.valueOf( tag.getCount() ) );
+      xmlTag.setGlobalcount( BigInteger.valueOf( tag.getGlobalcount() ) );
       xmlTag.setUsercount( BigInteger.valueOf( tag.getUsercount() ) );
       return xmlTag;
    }
@@ -493,7 +493,10 @@ public class XMLRenderer implements Renderer
 
 /*
  * $Log$
- * Revision 1.9  2007-05-01 22:27:30  jillig
+ * Revision 1.10  2007-05-15 08:46:59  mbork
+ * refactored Tag.count to Tag.globalcount
+ *
+ * Revision 1.9  2007/05/01 22:27:30  jillig
  * ->more generic arguments
  *
  * Revision 1.8  2007/02/21 14:08:33  mbork
