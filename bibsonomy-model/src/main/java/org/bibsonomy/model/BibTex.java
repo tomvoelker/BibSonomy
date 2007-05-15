@@ -9,17 +9,24 @@ import org.bibsonomy.model.util.SimHash;
  * BibTex fields like the author, publisher etc.
  * 
  * @author Christian Schenk
- */
-
-/*
- * TODO: add additional attributes, e.g. tag_name FIXME: Why?
+ * @version $Id$
  */
 public class BibTex extends Resource {
 
-	// FIXME: what's the difference between bibtexKey and bKey?
-	// TODO: document me
+	/**
+	 * Use this key to reference a citation, e.g.  \cite{hotho2006information}.
+	 * TODO: rename to something like citationKey ?
+	 */
 	private String bibtexKey;
+	
+	/**
+	 * This key is used by bibtex on sorting purpose if there is neither an
+	 * {@link #author} nor an {@link #editor} defined.
+	 * TODO: rename to something like sortingKey ?
+	 */
 	private String bKey;
+
+	// TODO: document me..
 	private String misc;
 	private String bibtexAbstract;
 	private String entrytype;
