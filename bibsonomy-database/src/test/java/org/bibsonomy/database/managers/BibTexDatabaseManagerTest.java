@@ -172,8 +172,8 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getPosts() {
-//		final List<Post<BibTex>> posts = this.bibTexDb.getPosts(this.bibtexParam, this.dbSession);
-//		assertEquals(19, posts.size());
+		// final List<Post<BibTex>> posts = this.bibTexDb.getPosts(this.bibtexParam, this.dbSession);
+		// assertEquals(19, posts.size());
 	}
 
 	@Test
@@ -191,14 +191,14 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void storePost() {
 		final Post<BibTex> toInsert = ModelUtils.generatePost(BibTex.class);
-		
+
 		this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, null, this.dbSession);
-		
-		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { this.getClass().getName(), "hurz" }), "", false, false, 0, 50);
+
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { ModelUtils.class.getName(), "hurz" }), "", false, false, 0, 50);
 		final List<Post<BibTex>> posts = this.bibTexDb.getPosts(param, this.dbSession);
 		assertEquals(1, posts.size());
 		final HashSet<String> skip = new HashSet<String>();
-		skip.addAll(Arrays.asList(new String[] {"resource", "tags"}));
+		skip.addAll(Arrays.asList(new String[] { "resource", "tags" }));
 		ModelUtils.assertPropertyEquality(toInsert, posts.get(0), skip);
 		skip.clear();
 		toInsert.getResource().setCount(1);
