@@ -15,28 +15,45 @@ import org.bibsonomy.model.User;
  */
 public class Post<T extends Resource> {
 
-	/** The resource assigned to this post */
+	/** 
+	 * This is the {@link Resource} that this post is encapsulating. 
+	 */
 	private T resource;
-	/** We need this here if we want to use groupBy in iBatis */
-	private Integer contentId;
-	private User user;
-	private List<Group> groups;
-	private List<Tag> tags;
-	/** A timestamp for this resource */
-	private Date date;
+	
 	/**
-	 * The description should be part of the post because it's a description
-	 * individually made by one user for his post - another user may describe
-	 * the post with another text
+	 *  We need this here if we want to use groupBy in iBatis
+	 *  TODO: document me
+	 *  TODO: Is this field really part of the model? 
+	 */
+	private Integer contentId;
+	
+	/**
+	 * This post belongs to this {@link User}.
+	 */
+	private User user;
+	
+	/**
+	 * This post belongs to these {@link Group}s.
+	 */
+	private List<Group> groups;
+	
+	/**
+	 * This post is tagged with these {@link Tag}s.
+	 */
+	private List<Tag> tags;
+	
+	/**
+	 * This is the {@link Date} when this post was lastly modified.
+	 */
+	private Date date;
+	
+	/**
+	 * This is a text describing the post. <br/> The description should be part
+	 * of the post because it's a description individually made by one user for
+	 * his post - another user may describe the post with another text
 	 */
 	private String description;
-	/**
-	 * only for testCases its not a good idea to damage the model just to let
-	 * some unit-tests perform..
-	 */
-	@Deprecated
-	private int groupId;
-
+	
 	public Post() {
 		this.tags = new ArrayList<Tag>();
 	}
@@ -105,24 +122,6 @@ public class Post<T extends Resource> {
 		final Group group = new Group();
 		group.setName(groupName);
 		this.groups.add(group);
-	}
-
-	/**
-	 * only for testCases its not a good idea to damage the model just to let
-	 * some unit-tests perform..
-	 */
-	@Deprecated
-	public int getGroupId() {
-		return this.groupId;
-	}
-
-	/**
-	 * only for testCases its not a good idea to damage the model just to let
-	 * some unit-tests perform..
-	 */
-	@Deprecated
-	public void setGroupId(int groupId) {
-		this.groupId = groupId;
 	}
 
 	/**

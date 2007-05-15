@@ -17,6 +17,7 @@ import org.bibsonomy.model.util.SimHash;
 public class BibTex extends Resource {
 
 	// FIXME: what's the difference between bibtexKey and bKey?
+	// TODO: document me
 	private String bibtexKey;
 	private String bKey;
 	private String misc;

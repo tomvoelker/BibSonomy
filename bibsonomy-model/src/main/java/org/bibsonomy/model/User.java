@@ -14,21 +14,56 @@ import org.bibsonomy.model.Group;
  */
 public class User {
 
+	/**
+	 * The (nick-)name of this user.
+	 */
 	private String name;
+	
+	/**
+	 * The (real-)name of this user.
+	 */
 	private String realname;
+	
+	/**
+	 * This user's email address.
+	 */
 	private String email;
+	
+	/**
+	 * This user's password
+	 */
 	private String password;
+	
+	/**
+	 * The {@link Date} when this user registered to bibsonomy.
+	 */
 	private Date registrationDate;
+	
+	/**
+	 * Ths {@link URL} to this user's homepage.
+	 */
 	private URL homepage;
-	/** The user belongs to these groups */
+	
+	/** 
+	 * The user belongs to these groups .
+	 */
 	private List<Group> groups;
+	
+	/**
+	 * Those are the posts of this user.
+	 */
 	private List<Post<? extends Resource>> posts;
+	
+	/**
+	 * Indicates if this user is a spammer.
+	 */
 	private boolean spammer;
 
 	
 	public boolean isSpammer() {
 		return this.spammer;
 	}
+	
 	public void setSpammer(boolean spammer) {
 		this.spammer = spammer;
 	}

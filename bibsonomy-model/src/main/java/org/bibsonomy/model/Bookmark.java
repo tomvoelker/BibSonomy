@@ -1,5 +1,7 @@
 package org.bibsonomy.model;
 
+import java.net.URL;
+
 import org.bibsonomy.model.util.ResourceUtils;
 
 /**
@@ -8,7 +10,15 @@ import org.bibsonomy.model.util.ResourceUtils;
  */
 public class Bookmark extends Resource {
 
+	/**
+	 * An {@link URL} pointing to some website.
+	 * FIXME: Use URL instead of String
+	 */
 	private String url;
+	
+	/**
+	 * The title of this bookmark.
+	 */
 	private String title;
 	
 	public String getUrl() {

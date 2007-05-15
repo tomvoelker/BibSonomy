@@ -18,14 +18,33 @@ import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
  */
 public abstract class Resource {
 	
-	/** An Id for this resource; by default ConstantID.IDS_UNDEFINED_CONTENT_ID */
-	private int count; // FIXME why don't we name it id?
-	/** TODO: document me */
+	/** 
+	 * An Id for this resource; by default ConstantID.IDS_UNDEFINED_CONTENT_ID
+	 * FIXME why don't we name it id?!? 
+	 */
+	private int count;
+	
+	/**
+	 * The inter user hash is less specific than the {@link #intraHash}.
+	 */
 	private String interHash;
-	/** TODO: document me */
+
+	/**
+	 * The intra user hash is relativily strict and takes many fiels of this
+	 * resource into account.
+	 */
 	private String intraHash;
+	
+	/**
+	 * These are the {@link Post}s this resource belongs to.
+	 */
 	private List<Post<? extends Resource>> posts;
 
+	/**
+	 * FIXME: This method does not belong to the model!!!! It would be fine to
+	 * make it a static method of this class and use the resource (to
+	 * recalculate hashes for) as parameter.
+	 */
 	public abstract void recalculateHashes();
 	
 	public String getInterHash() {
