@@ -53,14 +53,7 @@ public final class GetGroupListQuery extends AbstractQuery<List<Group>>
 	public List<Group> getResult() throws BadRequestOrResponseException, IllegalStateException
 	{
 		if( downloadedDocument == null ) throw new IllegalStateException( "Execute the query first." );
-		try
-		{
-			return RendererFactory.getRenderer( getRenderingFormat() ).parseGroupList( downloadedDocument );
-		}
-		catch( BadRequestOrResponseException e )
-		{
-			throw e;
-		}
+		return RendererFactory.getRenderer( getRenderingFormat() ).parseGroupList( downloadedDocument );
 	}
 
 	/* (non-Javadoc)
@@ -75,7 +68,10 @@ public final class GetGroupListQuery extends AbstractQuery<List<Group>>
 
 /*
  * $Log$
- * Revision 1.3  2007-02-11 17:55:34  mbork
+ * Revision 1.4  2007-05-15 08:45:56  mbork
+ * code walk-through
+ *
+ * Revision 1.3  2007/02/11 17:55:34  mbork
  * switched REST-api to the 'new' datamodel, which does not deserve the name...
  *
  * Revision 1.2  2007/02/05 10:35:53  cschenk

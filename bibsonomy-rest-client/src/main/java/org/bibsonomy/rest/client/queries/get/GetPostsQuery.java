@@ -101,9 +101,6 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 		this.tags = tags;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.client.queries.AbstractQuery#getResult()
-	 */
 	@Override
 	public List<Post<? extends Resource>> getResult() throws BadRequestOrResponseException, IllegalStateException
 	{
@@ -116,15 +113,8 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
       {
          throw new BadRequestOrResponseException( ex );
       }
-		catch( BadRequestOrResponseException e )
-		{
-			throw e;
-		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.client.queries.AbstractQuery#doExecute()
-	 */
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException
 	{
@@ -175,7 +165,10 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 
 /*
  * $Log$
- * Revision 1.8  2007-05-05 20:40:36  mbork
+ * Revision 1.9  2007-05-15 08:45:56  mbork
+ * code walk-through
+ *
+ * Revision 1.8  2007/05/05 20:40:36  mbork
  * fixed a bug caused by the removal of the ResourceType enum which was not covered by a test
  *
  * Revision 1.7  2007/05/01 22:26:56  jillig

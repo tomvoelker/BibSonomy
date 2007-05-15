@@ -85,15 +85,7 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>>
 	public List<Tag> getResult() throws BadRequestOrResponseException, IllegalStateException
 	{
 		if( downloadedDocument == null ) throw new IllegalStateException( "Execute the query first." );
-		
-		try
-		{
-			return RendererFactory.getRenderer( getRenderingFormat() ).parseTagList( downloadedDocument );
-		}
-		catch( BadRequestOrResponseException e )
-		{
-			throw e;
-		}
+		return RendererFactory.getRenderer( getRenderingFormat() ).parseTagList( downloadedDocument );
 	}
 
 	/* (non-Javadoc)
@@ -126,7 +118,10 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>>
 
 /*
  * $Log$
- * Revision 1.4  2007-02-21 14:08:34  mbork
+ * Revision 1.5  2007-05-15 08:45:56  mbork
+ * code walk-through
+ *
+ * Revision 1.4  2007/02/21 14:08:34  mbork
  * - included code generation of the schema in the maven2 build-lifecycle
  * - removed circular dependencies among the modules
  * - cleaned up the poms of the modules

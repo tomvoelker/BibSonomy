@@ -39,29 +39,13 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post<? extends Reso
 		this.resourceHash = resourceHash;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.client.queries.AbstractQuery#getResult()
-	 */
 	@Override
 	public Post<? extends Resource> getResult() throws BadRequestOrResponseException, IllegalStateException
 	{
 		if( downloadedDocument == null ) throw new IllegalStateException( "Execute the query first." );
-
-		try
-		{
-			return RendererFactory.getRenderer( getRenderingFormat() ).parsePost( downloadedDocument );
-		}
-		catch( BadRequestOrResponseException e )
-		{
-			throw e;
-		}
+		return RendererFactory.getRenderer( getRenderingFormat() ).parsePost( downloadedDocument );
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.bibsonomy.rest.client.queries.AbstractQuery#doExecute()
-	 */
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException
 	{
@@ -71,7 +55,10 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post<? extends Reso
 
 /*
  * $Log$
- * Revision 1.4  2007-02-15 10:29:10  mbork
+ * Revision 1.5  2007-05-15 08:45:56  mbork
+ * code walk-through
+ *
+ * Revision 1.4  2007/02/15 10:29:10  mbork
  * the LogicInterface now uses Lists instead of Sets
  * fixed use of generics
  *

@@ -82,26 +82,13 @@ public final class GetPopularPostsQuery extends AbstractQuery<List<Post<? extend
 		this.resourceType = type;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.client.queries.AbstractQuery#getResult()
-	 */
 	@Override
 	public List<Post<? extends Resource>> getResult() throws BadRequestOrResponseException, IllegalStateException
 	{
 		if( downloadedDocument == null ) throw new IllegalStateException( "Execute the query first." );
-		try
-		{
-			return RendererFactory.getRenderer( getRenderingFormat() ).parsePostList( downloadedDocument );
-		}
-		catch( BadRequestOrResponseException e )
-		{
-			throw e;
-		}
+		return RendererFactory.getRenderer( getRenderingFormat() ).parsePostList( downloadedDocument );
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.client.queries.AbstractQuery#doExecute()
-	 */
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException
 	{
@@ -131,7 +118,10 @@ public final class GetPopularPostsQuery extends AbstractQuery<List<Post<? extend
 
 /*
  * $Log$
- * Revision 1.7  2007-05-05 20:40:36  mbork
+ * Revision 1.8  2007-05-15 08:45:56  mbork
+ * code walk-through
+ *
+ * Revision 1.7  2007/05/05 20:40:36  mbork
  * fixed a bug caused by the removal of the ResourceType enum which was not covered by a test
  *
  * Revision 1.6  2007/05/01 22:26:56  jillig

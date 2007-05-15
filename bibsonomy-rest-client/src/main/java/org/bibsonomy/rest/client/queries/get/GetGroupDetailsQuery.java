@@ -31,29 +31,13 @@ public final class GetGroupDetailsQuery extends AbstractQuery<Group>
 		this.groupname = groupname;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.client.queries.AbstractQuery#getResult()
-	 */
 	@Override
 	public Group getResult() throws BadRequestOrResponseException, IllegalStateException
 	{
 		if( downloadedDocument == null ) throw new IllegalStateException( "Execute the query first." );
-
-		try
-		{
-			return RendererFactory.getRenderer( getRenderingFormat() ).parseGroup( downloadedDocument );
-		}
-		catch( BadRequestOrResponseException e )
-		{
-			throw e;
-		}
+		return RendererFactory.getRenderer( getRenderingFormat() ).parseGroup( downloadedDocument );
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.bibsonomy.rest.client.queries.AbstractQuery#doExecute()
-	 */
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException
 	{
@@ -63,7 +47,10 @@ public final class GetGroupDetailsQuery extends AbstractQuery<Group>
 
 /*
  * $Log$
- * Revision 1.3  2007-02-11 17:55:34  mbork
+ * Revision 1.4  2007-05-15 08:45:56  mbork
+ * code walk-through
+ *
+ * Revision 1.3  2007/02/11 17:55:34  mbork
  * switched REST-api to the 'new' datamodel, which does not deserve the name...
  *
  * Revision 1.2  2007/02/05 10:35:53  cschenk

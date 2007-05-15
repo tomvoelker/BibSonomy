@@ -84,26 +84,13 @@ public final class GetAddedPostsQuery extends AbstractQuery<List<Post<? extends 
 		this.resourceType = type;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.client.queries.AbstractQuery#getResult()
-	 */
 	@Override
 	public List<Post<? extends Resource>> getResult() throws BadRequestOrResponseException, IllegalStateException
 	{
 		if( downloadedDocument == null ) throw new IllegalStateException( "Execute the query first." );
-		try
-		{
-			return RendererFactory.getRenderer( getRenderingFormat() ).parsePostList( downloadedDocument );
-		}
-		catch( BadRequestOrResponseException e )
-		{
-			throw e;
-		}
+		return RendererFactory.getRenderer( getRenderingFormat() ).parsePostList( downloadedDocument );
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.client.queries.AbstractQuery#doExecute()
-	 */
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException
 	{
@@ -133,7 +120,10 @@ public final class GetAddedPostsQuery extends AbstractQuery<List<Post<? extends 
 
 /*
  * $Log$
- * Revision 1.6  2007-05-01 22:26:56  jillig
+ * Revision 1.7  2007-05-15 08:45:56  mbork
+ * code walk-through
+ *
+ * Revision 1.6  2007/05/01 22:26:56  jillig
  * ->more type-safety with class as resourcetype
  *
  * Revision 1.5  2007/02/21 14:08:34  mbork
