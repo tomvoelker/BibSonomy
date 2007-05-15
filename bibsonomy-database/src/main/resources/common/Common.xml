@@ -28,8 +28,6 @@
 
 	<resultMap id="tag" class="tag">
 		<result property="name" column="tag_name" javaType="string" />
-        <!-- FIXME globalcount or usercount? -->
-        <result property="globalcount" column="tag_count" javaType="int" />
 	</resultMap>
 
 	<!-- Should be used in conjunction with tagWhereQuery. -->
