@@ -9,7 +9,8 @@
 		<result property="id"    column="tag_id"   javaType="java.lang.Integer" />
 		<result property="name"  column="tag_name" javaType="java.lang.String" />
 		<result property="stem"  column="tag_stem" javaType="java.lang.String" />
-		<result property="count" column="tag_ctr"  javaType="java.lang.Integer" />
+        <!-- FIXME globalcount or usercount? -->
+		<result property="globalcount" column="tag_ctr"  javaType="java.lang.Integer" />
 	</resultMap>
 
 	<select id="getTagById" resultMap="tags" parameterClass="int">
