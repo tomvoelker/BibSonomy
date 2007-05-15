@@ -8,17 +8,53 @@ import java.util.List;
  */
 public class Tag {
 
-	private int id;
-	private String name;
-	private String stem; // ? what's this
-	private int count; // = globalcount ?
-	private int usercount;
-	private List<Tag> superTags;
-	private List<Tag> subTags;
-	private List<Post<? extends Resource>> posts;
-	/*
-	 * TODO subtags and supertags of a single tag
+	/**
+	 * The id of this tag.
 	 */
+	private int id;
+	
+	/**
+	 * The name of this tag.
+	 */
+	private String name;
+	
+	/**
+	 *  FIXME what's this ?
+	 */
+	private String stem;
+	
+	/**
+	 * Indicating how often this tag is used in the complete system.
+	 */
+	private int globalcount;
+	
+	/**
+	 * Indicating how often this tag is used by the user.
+	 */
+	private int usercount;
+	
+	/**
+	 * These are the supertags of this tag:
+	 * 
+	 * <pre>
+	 *   football--&gt; =&gt; football, sports 
+	 * </pre>
+	 */
+	private List<Tag> superTags;
+	
+	/**
+	 * These are the subtags of this tag.
+	 * 
+	 * <pre>
+	 *   --&gt;football =&gt; football, european-football, american-football 
+	 * </pre>
+	 */
+	private List<Tag> subTags;
+	
+	/**
+	 * These are the {@link Post}s that are tagged with this tag.
+	 */
+	private List<Post<? extends Resource>> posts;
 
 	public List<Post<? extends Resource>> getPosts() {
 		if (this.posts == null) {
@@ -69,12 +105,12 @@ public class Tag {
 		this.id = id;
 	}
 
-	public int getCount() {
-		return this.count;
+	public int getGlobalcount() {
+		return this.globalcount;
 	}
 
-	public void setCount(int count) {
-		this.count = count;
+	public void setGlobalcount(int count) {
+		this.globalcount = count;
 	}
 
 	public String getName() {
@@ -95,6 +131,6 @@ public class Tag {
 
 	@Override
 	public String toString() {
-		return this.id + " '" + this.name + "' '" + this.stem + "' " + this.count;
+		return this.id + " '" + this.name + "' '" + this.stem + "' " + this.globalcount;
 	}
 }
