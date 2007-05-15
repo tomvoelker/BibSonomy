@@ -2,18 +2,19 @@ package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
  * General tests.
  * 
  * @author Miranda Grahl
+ * @author Jens Illig
  * @author Christian Schenk
  * @version $Id$
  */
@@ -88,10 +89,10 @@ public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getNewContentId() {
-		Assert.assertNull(this.generalDb.getNewContentId(ConstantID.IDS_UNDEFINED_CONTENT_ID, this.dbSession));
+		assertNull(this.generalDb.getNewContentId(ConstantID.IDS_UNDEFINED_CONTENT_ID, this.dbSession));
 		int id = this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
-		Assert.assertTrue(2649144 < id);
-		Assert.assertTrue(id < this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, this.dbSession));
+		assertTrue(2649144 < id);
+		assertTrue(id < this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, this.dbSession));
 		try {
 			this.generalDb.getNewContentId(null, this.dbSession);
 			fail("Exception should be thrown");

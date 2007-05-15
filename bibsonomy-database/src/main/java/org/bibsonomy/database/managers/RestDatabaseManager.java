@@ -27,6 +27,9 @@ import org.bibsonomy.model.User;
  * TODO: ...so why is it called RestDATABASEManager and is part of the DATABASE
  * package??? i would advise introducing a three+-layer architecture
  * 
+ * @author Miranda Grahl
+ * @author Jens Illig
+ * @author Christian Schenk
  * @version $Id$
  */
 public class RestDatabaseManager implements LogicInterface {

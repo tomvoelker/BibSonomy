@@ -11,6 +11,7 @@ import org.bibsonomy.database.util.Transaction;
  * Represents one element in the chain of responsibility.
  * 
  * @author Miranda Grahl
+ * @author Christian Schenk
  * @version $Id$
  */
 public abstract class ChainElement<L, P extends GenericParam> implements ChainPerform<P, List<L>, L> {

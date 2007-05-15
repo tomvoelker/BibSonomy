@@ -8,23 +8,31 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.ExceptionUtils;
 import org.junit.Assert;
 
 /**
- * Methods to create objects from the model like {@link Bookmark} or
- * {@link BibTex}.
+ * Methods to create objects from the model like {@link Bookmark},
+ * {@link BibTex}, {@link User} or {@link Post}.
  * 
+ * @author Jens Illig
  * @author Christian Schenk
  */
 public class ModelUtils {
+
 	private static final Logger log = Logger.getLogger(ModelUtils.class);
 
 	// FIXME
@@ -62,30 +70,72 @@ public class ModelUtils {
 		return rVal;
 	}
 
-	private static void setBeanPropertiesOn(Object val) {
+	public static User getUser() {
+		final User u = new User();
+		setBeanPropertiesOn(u);
+		u.setName("jaeschke");
+		return u;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T extends Resource> Post<T> generatePost(final Class<T> resourceType) {
+		final Post<T> toInsert = new Post<T>();
+
+		final Group g = new Group();
+		g.setGroupId(GroupID.GROUP_PUBLIC.getId());
+		g.setDescription(null);
+		toInsert.getGroups().add(g);
+
+		Tag t = new Tag();
+		t.setName(ModelUtils.class.getName());
+		toInsert.getTags().add(t);
+		t = new Tag();
+		t.setName("hurz");
+		toInsert.getTags().add(t);
+
+		toInsert.setContentId(null);
+		toInsert.setDescription("trallalla");
+		toInsert.setDate(new Date());
+		toInsert.setUser(ModelUtils.getUser());
+
+		// FIXME this should be save but the cast to T annoys me...
+		final T resource;
+		if (resourceType == BibTex.class) {
+			resource = (T) ModelUtils.getBibTex();
+		} else if (resourceType == Bookmark.class) {
+			resource = (T) ModelUtils.getBookmark();
+		} else {
+			throw new UnsupportedResourceTypeException(resourceType.toString());
+		}
+		toInsert.setResource(resource);
+
+		return toInsert;
+	}
+
+	private static void setBeanPropertiesOn(final Object val) {
 		try {
 			final BeanInfo bi = Introspector.getBeanInfo(val.getClass());
-			for (PropertyDescriptor d : bi.getPropertyDescriptors()) {
+			for (final PropertyDescriptor d : bi.getPropertyDescriptors()) {
 				try {
 					final Method setter = d.getWriteMethod();
 					final Method getter = d.getReadMethod();
 					if ((setter != null) && (getter != null)) {
 						setter.invoke(val, new Object [] { getDummyValue(d.getPropertyType(), d.getName()) });
 					}
-				} catch (Exception ex) {
+				} catch (final Exception ex) {
 					ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "could not invoke setter '" + d.getName() + "'");
 				}
 			}
-		} catch (IntrospectionException ex) {
+		} catch (final IntrospectionException ex) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "could not introspect object of class '" + val.getClass().getName() + "'");
 		}
 	}
 	
-	public static void assertPropertyEquality(Object should, Object is, Set<String> excludeProperties) {
+	public static void assertPropertyEquality(final Object should, final Object is, final Set<String> excludeProperties) {
 		try {
 			Assert.assertTrue(should.getClass().isAssignableFrom(is.getClass()));
 			final BeanInfo bi = Introspector.getBeanInfo(should.getClass());
-			for (PropertyDescriptor d : bi.getPropertyDescriptors()) {
+			for (final PropertyDescriptor d : bi.getPropertyDescriptors()) {
 				Exception catched = null;
 				try {
 					if ((excludeProperties == null) || (excludeProperties.contains(d.getName()) == false)) {
@@ -96,23 +146,23 @@ public class ModelUtils {
 							Assert.assertEquals(d.getName(), getter.invoke(should, (Object[]) null), getter.invoke(is, (Object[]) null));
 						}
 					}
-				} catch (IllegalArgumentException ex) {
+				} catch (final IllegalArgumentException ex) {
 					catched = ex;
-				} catch (IllegalAccessException ex) {
+				} catch (final IllegalAccessException ex) {
 					catched = ex;
-				} catch (InvocationTargetException ex) {
+				} catch (final InvocationTargetException ex) {
 					catched = ex;
 				}
 				if (catched != null) {
 					ExceptionUtils.logErrorAndThrowRuntimeException(log, catched, "could not invoke setter '" + d.getName() + "'");
 				}
 			}
-		} catch (IntrospectionException ex) {
+		} catch (final IntrospectionException ex) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "could not introspect object of class '" + should.getClass().getName() + "'");
 		}
 	}
 
-	private static Object getDummyValue(Class type, String name) {
+	private static Object getDummyValue(final Class type, final String name) {
 		if (type == String.class) {
 			return "test-" + name;
 		}
@@ -125,18 +175,11 @@ public class ModelUtils {
 		if (URL.class == type) {
 			try {
 				return new URL("http://www.bibsonomy.org/test/" + name);
-			} catch (MalformedURLException ex) {
+			} catch (final MalformedURLException ex) {
 				throw new RuntimeException(ex);
 			}
 		}
 		log.debug("no dummy value for type '" + type.getName() + "'");
 		return null;
-	}
-
-	public static User getUser() {
-		User u = new User();
-		setBeanPropertiesOn(u);
-		u.setName("jaeschke");
-		return u;
 	}
 }

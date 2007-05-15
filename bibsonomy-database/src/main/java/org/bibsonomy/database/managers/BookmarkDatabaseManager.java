@@ -3,7 +3,6 @@ package org.bibsonomy.database.managers;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChain;
 import org.bibsonomy.database.params.BookmarkParam;
@@ -15,8 +14,9 @@ import org.bibsonomy.model.Post;
 /**
  * Used to CRUD bookmarks from the database.
  * 
- * @author Christian Schenk
  * @author Miranda Grahl
+ * @author Jens Illig
+ * @author Christian Schenk
  * @version $Id$
  */
 public class BookmarkDatabaseManager extends AbstractDatabaseManager implements CrudableContent<Bookmark, BookmarkParam> {

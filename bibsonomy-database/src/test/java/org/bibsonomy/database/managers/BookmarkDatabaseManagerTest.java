@@ -11,6 +11,7 @@ import org.junit.Test;
  * Tests related to BibTex.
  * 
  * @author Miranda Grahl
+ * @author Jens Illig
  * @author Christian Schenk
  * @version $Id$
  */
