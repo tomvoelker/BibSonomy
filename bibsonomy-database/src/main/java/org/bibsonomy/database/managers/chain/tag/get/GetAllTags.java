@@ -15,7 +15,6 @@ public class GetAllTags extends TagChainElement {
 
 	@Override
 	protected List<Tag> handle(final TagParam param, final Transaction session) {
-		log.debug(this.getClass().getSimpleName());
 		return this.db.getAllTags(param, session);
 	}
 

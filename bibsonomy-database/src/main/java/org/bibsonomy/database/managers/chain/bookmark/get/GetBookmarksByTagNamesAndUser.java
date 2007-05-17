@@ -23,7 +23,6 @@ public class GetBookmarksByTagNamesAndUser extends BookmarkChainElement {
 	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final Transaction session) {
-		log.debug(this.getClass().getSimpleName());
 		param.setGroups(generalDb.getGroupsForUser(param, session));
 		return this.db.getBookmarkByTagNamesForUser(param, session);
 	}

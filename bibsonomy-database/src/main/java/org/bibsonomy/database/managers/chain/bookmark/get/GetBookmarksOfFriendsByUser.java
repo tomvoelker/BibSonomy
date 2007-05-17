@@ -35,7 +35,6 @@ public class GetBookmarksOfFriendsByUser extends BookmarkChainElement {
 	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final Transaction session) {
-		log.debug(this.getClass().getSimpleName());
 		param.setGroupId(GroupID.GROUP_FRIENDS.getId());
 		return this.db.getBookmarkForUser(param, session);
 	}

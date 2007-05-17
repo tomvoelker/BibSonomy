@@ -23,7 +23,6 @@ public class GetBibtexByConceptForUser extends BibTexChainElement {
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final Transaction session) {
-		log.debug(this.getClass().getSimpleName());
 		param.setGroups(this.generalDb.getGroupsForUser(param, session));
 		return this.db.getBibTexByConceptForUser(param, session);
 	}

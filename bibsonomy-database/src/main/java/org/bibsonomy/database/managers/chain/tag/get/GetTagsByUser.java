@@ -22,7 +22,6 @@ public class GetTagsByUser extends TagChainElement {
 	 */
 	@Override
 	protected List<Tag> handle(final TagParam param, final Transaction session) {
-		log.debug(this.getClass().getSimpleName());
 		param.setGroups(this.generalDb.getGroupsForUser(param, session));
 		return this.db.getTagsByUser(param, session);
 	}

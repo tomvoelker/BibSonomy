@@ -36,6 +36,7 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 
 	public final List<L> perform(final P param, final Transaction session) {
 		if (this.canHandle(param)) {
+			log.debug(this.getClass().getSimpleName());
 			return this.handle(param, session);
 		} else {
 			if (this.next != null) {

@@ -25,8 +25,6 @@ public class GetBookmarksViewable extends BookmarkChainElement {
 	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final Transaction session) {
-		log.debug(this.getClass().getSimpleName());
-
 		param.setGroupId(this.generalDb.getGroupIdByGroupName(param, session));
 		param.setGroups(this.generalDb.getGroupsForUser(param, session));
 

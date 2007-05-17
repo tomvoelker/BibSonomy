@@ -35,7 +35,6 @@ public class GetBibtexOfFriendsByUser extends BibTexChainElement {
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final Transaction session) {
-		log.debug(this.getClass().getSimpleName());
 		param.setGroupId(GroupID.GROUP_FRIENDS.getId());
 		return this.db.getBibTexForUser(param, session);
 	}

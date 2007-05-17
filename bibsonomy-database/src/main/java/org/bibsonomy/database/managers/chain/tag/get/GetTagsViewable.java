@@ -22,8 +22,6 @@ public class GetTagsViewable extends TagChainElement {
 	 */
 	@Override
 	protected List<Tag> handle(final TagParam param, final Transaction session) {
-		log.debug(this.getClass().getSimpleName());
-
 		param.setGroupId(this.generalDb.getGroupIdByGroupName(param, session));
 		param.setGroups(this.generalDb.getGroupsForUser(param, session));
 

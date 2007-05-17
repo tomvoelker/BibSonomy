@@ -23,7 +23,6 @@ public class GetBookmarksByConceptForUser extends BookmarkChainElement {
 	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final Transaction session) {
-		log.debug(this.getClass().getSimpleName());
 		param.setGroups(this.generalDb.getGroupsForUser(param, session));
 		return this.db.getBookmarkByConceptForUser(param, session);
 	}
