@@ -2,9 +2,12 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="GroupCommon">
-	<resultMap id="group" class="group" groupBy="name">
+	<resultMap id="group_basic"	class="group">
 		<result property="groupId"  column="group"           javaType="int" />
 		<result property="name"     column="group_name"      javaType="string" />
+	</resultMap>
+	
+	<resultMap id="group" class="group" extends="group_basic" groupBy="name">
 		<result property="users"    resultMap="UserCommon.userForGroup" />
 	</resultMap>
 </sqlMap>

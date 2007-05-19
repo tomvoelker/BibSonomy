@@ -2,10 +2,14 @@ package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.model.Group;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -15,6 +19,7 @@ import org.junit.Test;
  * @version $Id$
  */
 public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
+	private static final Logger log = Logger.getLogger(GroupDatabaseManagerTest.class);
 
 	@Test
 	public void getAllGroups() {
@@ -57,6 +62,14 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getGroupsForUser() {
 		final List<Group> groups = this.groupDb.getGroupsForUser(this.groupParam, this.dbSession);
-		assertEquals(4, groups.size());
+		final Set<Integer> found = new HashSet<Integer>();
+		for (final Group g : groups) {
+			log.debug(g.getName());
+			found.add(g.getGroupId());
+		}
+		Assert.assertTrue( found.contains(GroupID.GROUP_PRIVATE.getId()) );
+		Assert.assertTrue( found.contains(GroupID.GROUP_PUBLIC.getId()) );
+		Assert.assertTrue( found.contains(GroupID.GROUP_FRIENDS.getId()) );
+		assertEquals(6, groups.size());
 	}
 }

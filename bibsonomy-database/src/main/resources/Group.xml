@@ -27,7 +27,7 @@
 		      AND u.user_name = g.user_name
 	</select>
 
-	<!-- select id="getGroupsForUser" resultMap="GroupCommon.group" parameterClass="groupParam">
+	<select id="getGroupsForUser" resultMap="GroupCommon.group_basic" parameterClass="groupParam">
 		(SELECT i.group_name, i.group
 		 FROM groups g, groupids i
 		 WHERE g.user_name = #requestedUserName#
@@ -37,5 +37,5 @@
 		 FROM groupids i
 		 WHERE i.group BETWEEN 0 AND 2)
 		ORDER BY `group`
-	</select-->
+	</select>
 </sqlMap>
