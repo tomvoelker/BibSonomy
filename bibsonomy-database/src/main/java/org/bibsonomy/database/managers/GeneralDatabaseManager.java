@@ -55,14 +55,14 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Gets all the groups of the given user.
+	 * Gets all the groupIds of the given users groups.
 	 * 
 	 * @param param
 	 *            Database-Properties used: userName
 	 * @return A list of groupids
 	 */
-	public List<Integer> getGroupsForUser(final GenericParam param, final Transaction session) {
-		return this.queryForList("getGroupsForUser", param, Integer.class, session);
+	public List<Integer> getGroupIdsForUser(final GenericParam param, final Transaction session) {
+		return this.queryForList("getGroupIdsForUser", param, Integer.class, session);
 	}
 
 	/**
@@ -73,8 +73,13 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 * @return groupid of group, ConstantID.GROUP_INVALID otherwise
 	 */
 	public Integer getGroupIdByGroupName(final GenericParam param, final Transaction session) {
+		final String oldUserName = param.getUserName();
 		param.setUserName(null);
-		return this.getGroupIdByGroupNameAndUserName(param, session);
+		try {
+			return this.getGroupIdByGroupNameAndUserName(param, session);
+		} finally {
+			param.setUserName(oldUserName);
+		}
 	}
 
 	/**
