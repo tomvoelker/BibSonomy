@@ -179,7 +179,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getBibTexForGroup() {
-		this.bibTexDb.getBibTexForGroup(this.bibtexParam, this.dbSession);
+		this.bibTexDb.getBibTexForUsersInGroup(this.bibtexParam, this.dbSession);
 	}
 
 	@Test
@@ -234,7 +234,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, null, this.dbSession);
 
-		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { ModelUtils.class.getName(), "hurz" }), "", false, false, 0, 50);
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { ModelUtils.class.getName(), "hurz" }), "", null, 0, 50);
 		final List<Post<BibTex>> posts = this.bibTexDb.getPosts(param, this.dbSession);
 		assertEquals(1, posts.size());
 		final HashSet<String> skip = new HashSet<String>();
