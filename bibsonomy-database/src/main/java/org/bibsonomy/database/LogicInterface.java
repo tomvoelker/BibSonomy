@@ -88,7 +88,7 @@ public interface LogicInterface
 	 * @return a set of posts, an empty set else
 	 */
 	public abstract <T extends Resource> List<Post<T>> getPosts( String authUser, Class<T> resourceType, GroupingEntity grouping,
-			String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end );
+			String groupingName, List<String> tags, String hash, Order order, int start, int end );
 
 	/**
 	 * returns details to a post. a post is uniquely identified by a hash of the corresponding resource and a username

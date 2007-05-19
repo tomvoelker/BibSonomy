@@ -8,6 +8,7 @@ import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
+import org.bibsonomy.database.Order;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -83,11 +84,9 @@ public abstract class GenericParam {
 	private int contendIDbyBookmark;
 	private String url;
 	private ConstantID contentType;
-
-	// Parameters for chain
+	
+	private Order order;
 	private GroupingEntity grouping;
-	private boolean popular;
-	private boolean added;
 
 	public GenericParam() {
 		this.tagIndex = new ArrayList<TagIndex>();
@@ -99,10 +98,8 @@ public abstract class GenericParam {
 		this.offset = 0;
 		this.spammer = ConstantID.SPAMMER_FALSE;
 		this.friendOf=false;
-
+		
 		this.grouping = GroupingEntity.ALL;
-		this.popular = false;
-		this.added = false;
 	}
 
 	/**
@@ -362,14 +359,7 @@ public abstract class GenericParam {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-
-	public boolean isAdded() {
-		return this.added;
-}
-	public void setAdded(boolean added) {
-		this.added = added;
-	}
-
+	
 	public GroupingEntity getGrouping() {
 		return this.grouping;
 	}
@@ -378,11 +368,11 @@ public abstract class GenericParam {
 		this.grouping = grouping;
 	}
 
-	public boolean isPopular() {
-		return this.popular;
+	public Order getOrder() {
+		return this.order;
 	}
 
-	public void setPopular(boolean popular) {
-		this.popular = popular;
+	public void setOrder(Order order) {
+		this.order = order;
 	}
 }
