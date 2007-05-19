@@ -33,7 +33,6 @@ public class Logging extends AbstractDatabasePlugin {
 				param.setRequestedContentId(contentId);
 				param.setNewContentId(newContentId);
 				insert("logBibTexUpdate", param, session);
-				System.out.println("\n\nTEST\n\n");
 			}
 		};
 	}
