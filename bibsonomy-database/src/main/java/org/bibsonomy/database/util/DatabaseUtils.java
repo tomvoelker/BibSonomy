@@ -63,11 +63,11 @@ public class DatabaseUtils {
 			if (param.getUserName().equals(param.getRequestedUserName())) return;
 		}
 		final Boolean friends = db.isFriendOf(param, session);
-		final List<Integer> groups = db.getGroupsForUser(param, session);
+		final List<Integer> groupIds = db.getGroupIdsForUser(param, session);
 		if (friends) {
-			groups.add(GroupID.GROUP_FRIENDS.getId());
+			groupIds.add(GroupID.GROUP_FRIENDS.getId());
 		}
-		param.setGroups(groups);
+		param.setGroups(groupIds);
 	}
 
 
