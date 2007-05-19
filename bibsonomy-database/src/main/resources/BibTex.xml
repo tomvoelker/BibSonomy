@@ -2,12 +2,12 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="BibTex">
-	<select id="getBibTexPopular" resultMap="BibTexCommon.bibtex_common" parameterClass="bibtexParam">
-		SELECT <include refid="commonBibtexAttributes"/>, <include refid="bibtexSimHashes"/>, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name
-		FROM temp_bibtex b
+	<select id="getBibTexPopular" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+		SELECT <include refid="commonBibtexAttributes"/>, -1 AS scraperId, <include refid="bibtexSimHashes"/>, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name
+		FROM (select * from temp_bibtex b2 ORDER BY b2.rank LIMIT #limit# OFFSET #offset#) b
 		LEFT OUTER JOIN tas t ON b.content_id = t.content_id, bibhash h
 		WHERE <include refid="bibtexSimHash"/>
-		ORDER BY b.rank LIMIT #limit# OFFSET #offset#
+		ORDER BY b.rank
 	</select>
 
 	<select id="getBibTexByTagNames" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
@@ -126,11 +126,12 @@
 		SELECT contendID FROM  WHERE hash = #hash# AND type = #simHash#
 	</select>
 
-	<!-- Here we join the document table to the bibtex table to get the corresponding 
-		 documents and link them to the user; if currUser != requUser no documents
-		 are joined so that a user can only see her own documents. -->
+	<!--   Here we join the document table to the bibtex table to get the corresponding 
+		documents and link them to the user; if currUser != requUser no documents
+		are joined so that a user can only see her own documents. -->
+		
 	<select id="getBibTexByHashForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT g.*, t.tag_name, h.ctr AS count, <include refid="bibtexAttributes2"/>
+		SELECT g.*,t.tag_name,h.ctr AS count, <include refid ="bibtexAttributes2"/>
 		FROM (SELECT * 
 		      FROM bibtex b
 		      WHERE simhash$requestedSimHash$ = #hash#
@@ -179,7 +180,7 @@
 		SELECT b.*, t.tag_name, b.ctr as count
 		FROM (SELECT <include refid ="bibtexAttributes2"/>, b2.group, h.ctr, NULL AS group_name
 		      FROM bibtex b2, bibhash h
-		      WHERE b2.group = #groupType#
+		      WHERE b2.group = #groupId#
 		            AND <include refid="bibtexSimHash2"/>
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b
@@ -205,7 +206,7 @@
 		SELECT count(*) FROM (<include refid ="duplicatesCount"/>) AS duplicates
 	</select>
 
-	<select id="getBibTexForGroup" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+	<select id="getBibTexForUsersInGroup" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, h.ctr as count, g.group
 		FROM bibtex b, bibhash h,
 		     ((SELECT content_id, date                <!-- publications from users of group which currUser may see -->
