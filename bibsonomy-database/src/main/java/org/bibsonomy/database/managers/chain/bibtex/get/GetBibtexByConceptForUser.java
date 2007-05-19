@@ -3,6 +3,7 @@ package org.bibsonomy.database.managers.chain.bibtex.get;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.Order;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.Transaction;
@@ -10,6 +11,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 
 /**
+ * TODO: merge with GetBibtexByTagNamesAndUser?
  * @author Miranda Grahl
  * @version $Id$
  */
@@ -23,12 +25,12 @@ public class GetBibtexByConceptForUser extends BibTexChainElement {
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final Transaction session) {
-		param.setGroups(this.generalDb.getGroupsForUser(param, session));
+		param.setGroups(this.generalDb.getGroupIdsForUser(param, session));
 		return this.db.getBibTexByConceptForUser(param, session);
 	}
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return param.getUserName() != null && param.getGrouping() == GroupingEntity.USER && param.getRequestedGroupName() != null && param.getTagIndex() != null && param.getHash() == null && param.isPopular() == false && param.isAdded() == true;
+		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.USER) && present(param.getRequestedUserName()) && present(param.getTagIndex()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED);
 	}
 }
