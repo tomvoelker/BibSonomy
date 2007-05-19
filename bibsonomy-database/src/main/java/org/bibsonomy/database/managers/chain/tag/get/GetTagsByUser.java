@@ -22,7 +22,7 @@ public class GetTagsByUser extends TagChainElement {
 	 */
 	@Override
 	protected List<Tag> handle(final TagParam param, final Transaction session) {
-		param.setGroups(this.generalDb.getGroupsForUser(param, session));
+		// TODO: is this needed?  param.setGroups(this.generalDb.getGroupsForUser(param, session));
 		return this.db.getTagsByUser(param, session);
 	}
 

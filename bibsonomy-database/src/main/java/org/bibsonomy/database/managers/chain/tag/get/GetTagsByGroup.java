@@ -22,8 +22,8 @@ public class GetTagsByGroup extends TagChainElement {
 	 */
 	@Override
 	protected List<Tag> handle(final TagParam param, final Transaction session) {
-		param.setGroupId(this.generalDb.getGroupIdByGroupName(param, session));
-		param.setGroups(this.generalDb.getGroupsForUser(param, session));
+		// TODO: is this needed?  param.setGroupId(this.generalDb.getGroupIdByGroupName(param, session));
+		// TODO: is this needed?  param.setGroups(this.generalDb.getGroupsForUser(param, session));
 
 		return this.db.getTagsByGroup(param, session);
 	}
