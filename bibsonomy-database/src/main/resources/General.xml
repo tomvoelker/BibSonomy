@@ -12,7 +12,7 @@
 		SELECT spammer FROM user WHERE user_name = #requestedUserName#
 	</select>
 
-	<select id="getGroupsForUser" resultClass="int" parameterClass="genericParam">
+	<select id="getGroupIdsForUser" resultClass="int" parameterClass="genericParam">
 		SELECT `group` FROM groups WHERE user_name = #userName#
 	</select>
 
