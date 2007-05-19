@@ -3,6 +3,7 @@ package org.bibsonomy.database.managers.chain.bibtex.get;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.Order;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.Transaction;
@@ -28,7 +29,7 @@ public class GetBibtexByTagNamesAndUser extends BibTexChainElement {
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return (param.getUserName() != null) && (param.getGrouping() == GroupingEntity.USER) && (param.getTagIndex() != null) && (param.getRequestedUserName() != null) && (param.getRequestedUserName().length() > 0) && ((param.getHash() == null) || (param.getHash().length() == 0)) && (param.isPopular() == false);
+		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.USER) && present(param.getTagIndex()) && present(param.getRequestedUserName()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED);
 	}
 
 }
