@@ -24,13 +24,13 @@ public class GetBibtexForGroup extends BibTexChainElement {
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final Transaction session) {
 		param.setGroupId(this.generalDb.getGroupIdByGroupName(param, session));
-		param.setGroups(this.generalDb.getGroupsForUser(param, session));
+		// TODO: is this needed?  param.setGroups(this.generalDb.getGroupsForUser(param, session));
 
-		return this.db.getBibTexForGroup(param, session);
+		return this.db.getBibTexForUsersInGroup(param, session);
 	}
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return param.getUserName() != null && param.getGrouping() == GroupingEntity.GROUP && param.getRequestedGroupName() != null && param.getTagIndex() == null && param.getHash() == null && param.isPopular() == false && param.isAdded() == false;
+		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.GROUP) && present(param.getRequestedGroupName()) &&  !present(param.getTagIndex()) && !present(param.getHash()) && !present(param.getOrder());
 	}
 }

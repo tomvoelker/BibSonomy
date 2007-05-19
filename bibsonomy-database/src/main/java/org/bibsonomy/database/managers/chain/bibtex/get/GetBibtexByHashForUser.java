@@ -23,12 +23,12 @@ public class GetBibtexByHashForUser extends BibTexChainElement {
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final Transaction session) {
-		param.setGroups(this.generalDb.getGroupsForUser(param, session));
+		// TODO: is this needed?  param.setGroups(this.generalDb.getGroupsForUser(param, session));
 		return this.db.getBibTexByHashForUser(param, session);
 	}
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return param.getHash() != null && param.getHash().length() > 0 && param.getUserName() != null && param.getGrouping() == GroupingEntity.USER && param.getRequestedGroupName() != null && param.getTagIndex() == null && param.isPopular() == false && param.isAdded() == false;
+		return present(param.getHash()) && (param.getGrouping() == GroupingEntity.USER) && present(param.getRequestedGroupName()) && !present(param.getTagIndex()) && !present(param.getOrder());
 	}
 }
