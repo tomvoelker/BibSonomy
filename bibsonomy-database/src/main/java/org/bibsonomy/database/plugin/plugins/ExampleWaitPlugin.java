@@ -1,16 +1,23 @@
 package org.bibsonomy.database.plugin.plugins;
 
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
-import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.database.util.Transaction;
 
+/**
+ * This plugin is just an example to demonstrate the usage of the database
+ * plugin facility: it just returns a Runnable that'll wait for some seconds.
+ * 
+ * @author Christian Schenk
+ * @version $Id$
+ */
 public class ExampleWaitPlugin extends AbstractDatabasePlugin {
 
 	private final Runnable waitRunnable = new Runnable() {
 		public void run() {
 			try {
-				// System.out.println("Start...");
+				log.debug("Start...");
 				Thread.sleep(2000);
-				// System.out.println("End.");
+				log.debug("End.");
 			} catch (final InterruptedException ex) {
 				throw new RuntimeException("Couldn't sleep", ex);
 			}
@@ -18,12 +25,12 @@ public class ExampleWaitPlugin extends AbstractDatabasePlugin {
 	};
 
 	@Override
-	public Runnable onBookmarkCreate(Bookmark bookmark) {
+	public Runnable onBibTexInsert(final int contentId, final Transaction session) {
 		return this.waitRunnable;
 	}
 
 	@Override
-	public Runnable onBookmarkUpdate(Bookmark bookmark, Bookmark oldBookmark) {
+	public Runnable onBibTexUpdate(final int oldContentId, final int newContentId, final Transaction session) {
 		return this.waitRunnable;
 	}
 }

@@ -1,55 +1,66 @@
 package org.bibsonomy.database.plugin;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.bibsonomy.database.plugin.plugins.ExampleWaitPlugin;
-import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.database.plugin.plugins.Logging;
+import org.bibsonomy.database.util.Transaction;
 
 /**
  * All database plugins are registered here.
  * 
- * FIXME: should implement DatabasePlugin
+ * FIXME: should implement DatabasePlugin, i.e. have the same methods as
+ * DatabasePlugin
  * 
  * @author Christian Schenk
+ * @version $Id$
  */
 public class DatabasePluginRegistry {
 
 	/** Singleton */
 	private final static DatabasePluginRegistry singleton = new DatabasePluginRegistry();
 	/** Holds all plugins */
-	private final List<DatabasePlugin> plugins;
+	private final Map<String, DatabasePlugin> plugins;
 	/** Runs the runnable returned by plugins */
-	private final ExecutorService executor;
+	// private final ExecutorService executor;
 
 	private DatabasePluginRegistry() {
-		this.plugins = new ArrayList<DatabasePlugin>();
-		this.executor = Executors.newCachedThreadPool();
-		// Add plugins here
-		this.plugins.add(new ExampleWaitPlugin());
+		this.plugins = new HashMap<String, DatabasePlugin>();
+		// this.executor = Executors.newCachedThreadPool();
+
+		// XXX: shouldn't be wired statically...
+		this.add(new Logging());
 	}
 
 	public static DatabasePluginRegistry getInstance() {
 		return singleton;
 	}
 
+	/**
+	 * Plugins can be added with this method.
+	 */
+	public void add(final DatabasePlugin plugin) {
+		final String key = plugin.getClass().getName();
+		if (this.plugins.containsKey(key)) throw new RuntimeException("Plugin already present " + key);
+		this.plugins.put(key, plugin);
+	}
+
 	private void executeRunnable(final Runnable runnable) {
 		// If the runnable is null we do nothing
 		if (runnable == null) return;
-		this.executor.execute(runnable);
+		// this.executor.execute(runnable);
+		runnable.run();
 	}
 
-	public void onBookmarkCreate(final Bookmark bookmark) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			this.executeRunnable(plugin.onBookmarkCreate(bookmark));
+	public void onBibTexInsert(final int contentId, final Transaction session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			this.executeRunnable(plugin.onBibTexInsert(contentId, session));
 		}
 	}
 
-	public void onBookmarkUpdate(final Bookmark bookmark, final Bookmark oldBookmark) {
-		for (final DatabasePlugin plugin : this.plugins) {
-			this.executeRunnable(plugin.onBookmarkUpdate(bookmark, oldBookmark));
+	public void onBibTexUpdate(final int oldContentId, final int newContentId, final Transaction session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			this.executeRunnable(plugin.onBibTexUpdate(oldContentId, newContentId, session));
 		}
-	}	
+	}
 }

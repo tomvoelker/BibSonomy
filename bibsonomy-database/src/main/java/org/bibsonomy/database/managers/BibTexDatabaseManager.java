@@ -8,6 +8,7 @@ import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChain;
 import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.model.BibTex;
@@ -30,11 +31,13 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	private final static BibTexDatabaseManager singleton = new BibTexDatabaseManager();
 	private final GeneralDatabaseManager generalDb;
 	private final TagDatabaseManager tagDb;
+	private final DatabasePluginRegistry plugins;
 	private static final BibTexChain chain = new BibTexChain();
 
 	private BibTexDatabaseManager() {
 		this.generalDb = GeneralDatabaseManager.getInstance();
 		this.tagDb = TagDatabaseManager.getInstance();
+		this.plugins = DatabasePluginRegistry.getInstance();
 	}
 
 	public static BibTexDatabaseManager getInstance() {
@@ -320,7 +323,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	/**
 	 * Inserts a post with a publication into the database.
 	 */
-	protected void insertBibTex(final Post<BibTex> post, final Transaction session) {
+	protected void insertBibTexPost(final Post<BibTex> post, final Transaction session) {
 		final BibTexParam param = new BibTexParam();
 		param.setResource(post.getResource());
 		param.setRequestedContentId(post.getContentId());
@@ -345,7 +348,9 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		try {
 			final String newIntraHash = post.getResource().getIntraHash();
 			final BibTexParam param = new BibTexParam();
-			param.setUserName(userName);
+			// FIXME: changed userName to requestedUserName and everything seems okay...
+			// param.setUserName(userName);
+			param.setRequestedUserName(userName);
 			param.setResource(post.getResource());
 
 			final List<Post<BibTex>> isBibTexInDb;
@@ -360,17 +365,20 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 				isBibTexInDb = null;
 			}
 
-			if ((isBibTexInDb == null) || (isBibTexInDb.size() == 0)) {
-				// BibTex entry DOES NOT EXIST for this user -> create a new contentId
-				post.setContentId(this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, session));
-			} else {
-				// BibTex entry DOES EXIST for this user -> delete old BibTex post and use its contentId
+			// ALWAYS get a new contentId
+			post.setContentId(this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, session));
+
+			if ((isBibTexInDb != null) && (isBibTexInDb.size() > 0)) {
+				// BibTex entry DOES EXIST for this user -> delete old BibTex post
 				final Post oldBibTexPost = isBibTexInDb.get(0);
-				post.setContentId(oldBibTexPost.getContentId());
+				// call plugins
+				this.plugins.onBibTexUpdate(post.getContentId(), oldBibTexPost.getContentId(), session);
+				// delete post
 				this.deletePost(userName, oldBibTexPost.getResource().getIntraHash(), session);
 			}
+
 			// Insert the new BibTex
-			this.insertBibTex(post, session);
+			this.insertBibTexPost(post, session);
 			// add the tags
 			this.tagDb.insertTags(post, session);
 			// TODO: insertRelations (maybe in TagDatabaseManager for a gain in BookmarkDatabaseManager.storePost), update: log, doc, col, ext, url

@@ -79,37 +79,36 @@ public class ModelUtils {
 
 	@SuppressWarnings("unchecked")
 	public static <T extends Resource> Post<T> generatePost(final Class<T> resourceType) {
-		final Post<T> toInsert = new Post<T>();
+		final Post<T> post = new Post<T>();
 
-		final Group g = new Group();
-		g.setGroupId(GroupID.GROUP_PUBLIC.getId());
-		g.setDescription(null);
-		toInsert.getGroups().add(g);
+		final Group group = new Group();
+		group.setGroupId(GroupID.GROUP_PUBLIC.getId());
+		group.setDescription(null);
+		post.getGroups().add(group);
 
-		Tag t = new Tag();
-		t.setName(ModelUtils.class.getName());
-		toInsert.getTags().add(t);
-		t = new Tag();
-		t.setName("hurz");
-		toInsert.getTags().add(t);
+		Tag tag = new Tag();
+		tag.setName(ModelUtils.class.getName());
+		post.getTags().add(tag);
+		tag = new Tag();
+		tag.setName("hurz");
+		post.getTags().add(tag);
 
-		toInsert.setContentId(null);
-		toInsert.setDescription("trallalla");
-		toInsert.setDate(new Date());
-		toInsert.setUser(ModelUtils.getUser());
+		post.setContentId(null);
+		post.setDescription("trallalla");
+		post.setDate(new Date());
+		post.setUser(ModelUtils.getUser());
 
-		// FIXME this should be save but the cast to T annoys me...
 		final T resource;
 		if (resourceType == BibTex.class) {
 			resource = (T) ModelUtils.getBibTex();
 		} else if (resourceType == Bookmark.class) {
 			resource = (T) ModelUtils.getBookmark();
 		} else {
-			throw new UnsupportedResourceTypeException(resourceType.toString());
+			throw new UnsupportedResourceTypeException(resourceType.getName());
 		}
-		toInsert.setResource(resource);
+		post.setResource(resource);
 
-		return toInsert;
+		return post;
 	}
 
 	private static void setBeanPropertiesOn(final Object val) {

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Logging">
+	<insert id="logBibTex" parameterClass="bibtexParam">
+		INSERT INTO log_bibtex (title, entrytype, author, editor, year, content_id, journal, volume, chapter,
+		                        edition, month, bookTitle, howpublished, institution, organization, publisher,
+		                        address, school, series, bibtexKey, `group`, date, user_name, url, description,
+		                        annote, note, pages, bKey, number, crossref, misc, bibtexAbstract, type, day,
+		                        scraperid, simhash0, simhash1, simhash2, simhash3)
+		SELECT title, entrytype, author, editor, year, content_id, journal, volume, chapter, edition, month,
+		       bookTitle, howpublished, institution, organization, publisher, address, school, series, bibtexKey,
+		       `group`, date, user_name, url, description, annote, note, pages, bKey, number, crossref, misc,
+		       bibtexAbstract, type, day, scraperid, simhash$SIM_HASH_0$, simhash$SIM_HASH_1$, simhash$SIM_HASH_2$,
+		       simhash$SIM_HASH_3$
+		FROM bibtex WHERE content_id = #requestedContentId#
+	</insert>
+
+	<update id="logBibTexUpdate" parameterClass="bibtexParam">
+		UPDATE log_bibtex SET new_content_id = #newContentId# WHERE content_id = #requestedContentId#
+	</update>
+</sqlMap>

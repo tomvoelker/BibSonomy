@@ -1,20 +1,23 @@
 package org.bibsonomy.database.plugin;
 
-import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.util.Transaction;
 
 /**
  * This class should be used by plugins. This way they don't have to implement
- * all methods from the interface DatabasePlugin.
+ * all methods from the interface DatabasePlugin. Furthermore they have access
+ * to some basic database methods.
  * 
  * @author Christian Schenk
+ * @version $Id$
  */
-public class AbstractDatabasePlugin implements DatabasePlugin {
+public class AbstractDatabasePlugin extends AbstractDatabaseManager implements DatabasePlugin {
 
-	public Runnable onBookmarkCreate(Bookmark bookmark) {
+	public Runnable onBibTexInsert(int contentId, Transaction session) {
 		return null;
 	}
 
-	public Runnable onBookmarkUpdate(Bookmark bookmark, Bookmark oldBookmark) {
+	public Runnable onBibTexUpdate(int newContentId, int contentId, Transaction session) {
 		return null;
 	}
 }

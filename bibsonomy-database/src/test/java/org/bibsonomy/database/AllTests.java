@@ -10,6 +10,7 @@ import org.bibsonomy.database.managers.UserDatabaseManagerTest;
 import org.bibsonomy.database.params.ParamTest;
 import org.bibsonomy.database.util.LogicInterfaceHelperTest;
 import org.bibsonomy.database.util.TransactionTest;
+import org.bibsonomy.testutil.DatabasePluginMock;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -21,6 +22,6 @@ import org.junit.runners.Suite;
  * @version $Id$
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses( { ParamTest.class, LogicInterfaceHelperTest.class, BookmarkDatabaseManagerTest.class, BibTexDatabaseManagerTest.class, TagDatabaseManagerTest.class, TransactionTest.class, UserDatabaseManagerTest.class, GroupDatabaseManagerTest.class, RestDatabaseManagerTest.class, GeneralDatabaseManagerTest.class })
+@Suite.SuiteClasses( { ParamTest.class, LogicInterfaceHelperTest.class, DatabasePluginMock.class, BookmarkDatabaseManagerTest.class, BibTexDatabaseManagerTest.class, TagDatabaseManagerTest.class, TransactionTest.class, UserDatabaseManagerTest.class, GroupDatabaseManagerTest.class, RestDatabaseManagerTest.class, GeneralDatabaseManagerTest.class })
 public class AllTests {
 }

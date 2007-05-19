@@ -1,0 +1,55 @@
+package org.bibsonomy.testutil;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.lang.reflect.Field;
+
+import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
+import org.bibsonomy.database.util.Transaction;
+import org.junit.Test;
+
+public class DatabasePluginMock extends AbstractDatabasePlugin {
+
+	private boolean onBibTexInsert;
+	private boolean onBibTexUpdate;
+
+	public DatabasePluginMock() {
+		try {
+			for (final Field field : this.getClass().getDeclaredFields()) {
+				field.setBoolean(this, false);
+			}
+		} catch (final Exception ex) {
+			// will not happen
+		}
+	}
+
+	@Test
+	public void test() throws IllegalArgumentException, IllegalAccessException {
+		final DatabasePluginMock plugin = new DatabasePluginMock();
+		for (final Field field : plugin.getClass().getDeclaredFields()) {
+			assertFalse(field.getBoolean(plugin));
+		}
+	}
+
+	@Override
+	public Runnable onBibTexInsert(final int contentId, final Transaction session) {
+		this.onBibTexInsert = true;
+		return null;
+	}
+
+	@Override
+	public Runnable onBibTexUpdate(final int newContentId, final int contentId, final Transaction session) {
+		assertTrue(contentId != newContentId);
+		this.onBibTexUpdate = true;
+		return null;
+	}
+
+	public boolean isOnBibTexInsert() {
+		return this.onBibTexInsert;
+	}
+
+	public boolean isOnBibTexUpdate() {
+		return this.onBibTexUpdate;
+	}
+}

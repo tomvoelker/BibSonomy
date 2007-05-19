@@ -34,4 +34,7 @@
 	<sqlMap resource="BibTex.xml"/>
 	<sqlMap resource="User.xml"/>
 	<sqlMap resource="Group.xml"/>
+
+	<!-- Plugins -->
+	<sqlMap resource="Logging.xml"/>
 </sqlMapConfig>

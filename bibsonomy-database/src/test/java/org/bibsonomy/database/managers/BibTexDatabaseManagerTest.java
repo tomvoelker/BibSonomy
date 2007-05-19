@@ -1,6 +1,7 @@
 package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -10,9 +11,11 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.testutil.DatabasePluginMock;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.Test;
@@ -29,22 +32,59 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getBibTexByHash() {
-		this.bibTexDb.getBibTexByHash(this.bibtexParam, this.dbSession);
+		final List<Post<BibTex>> posts = this.bibTexDb.getBibTexByHash(this.bibtexParam, this.dbSession);
+		assertNotNull(posts);
+		assertTrue(posts.size() == 1);
+		assertEquals("0000175071e6141a7d36835489f922ef", posts.get(0).getResource().getInterHash());
+		assertEquals("43ef2a4cc61e40a8999b132631e63bc4", posts.get(0).getResource().getIntraHash());
 	}
 
 	@Test
 	public void getBibTexByHashCount() {
 		Integer count = -1;
 		count = this.bibTexDb.getBibTexByHashCount(this.bibtexParam, this.dbSession);
+		assertNotNull(count);
 		assertEquals(1, count);
 	}
 
 	@Test
 	public void getBibTexByHashForUser() {
-		this.bibTexDb.getBibTexByHashForUser(this.bibtexParam, this.dbSession);
+		List<Post<BibTex>> posts;
+
+		// user != friend
+		this.bibtexParam.setRequestedUserName("dblp");
+		this.bibtexParam.setHash("");
+		posts = this.bibTexDb.getBibTexByHashForUser(this.bibtexParam, this.dbSession);
+		assertNotNull(posts);
+		assertTrue(posts.size() == 0);
+
+		// user != friend and existing hash
 		this.resetParameters();
+		this.bibtexParam.setRequestedUserName("dblp");
+		posts = this.bibTexDb.getBibTexByHashForUser(this.bibtexParam, this.dbSession);
+		assertNotNull(posts);
+		assertTrue(posts.size() == 1);
+		assertEquals("0000175071e6141a7d36835489f922ef", posts.get(0).getResource().getInterHash());
+		assertEquals("43ef2a4cc61e40a8999b132631e63bc4", posts.get(0).getResource().getIntraHash());
+
+		// user == friend
+		this.resetParameters();
+		this.bibtexParam.setUserName("hotho");
 		this.bibtexParam.setRequestedUserName("hotho");
-		this.bibTexDb.getBibTexByHashForUser(this.bibtexParam, this.dbSession);
+		posts = this.bibTexDb.getBibTexByHashForUser(this.bibtexParam, this.dbSession);
+		assertNotNull(posts);
+		assertTrue(posts.size() == 0);
+
+		// user == friend and existing hash
+		this.resetParameters();
+		this.bibtexParam.setUserName("hotho");
+		this.bibtexParam.setRequestedUserName("hotho");
+		this.bibtexParam.setHash("0154d8012c1773a0a9a54576b0e317bf");
+		posts = this.bibTexDb.getBibTexByHashForUser(this.bibtexParam, this.dbSession);
+		assertNotNull(posts);
+		assertTrue(posts.size() == 1);
+		assertEquals("0154d8012c1773a0a9a54576b0e317bf", posts.get(0).getResource().getInterHash());
+		assertEquals("3e8c52949336171a6c316ccfe9c5e581", posts.get(0).getResource().getIntraHash());
 	}
 
 	@Test
@@ -180,7 +220,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void insertBibTex() {
 		final Post<BibTex> toInsert = ModelUtils.generatePost(BibTex.class);
 		toInsert.setContentId(Integer.MAX_VALUE);
-		this.bibTexDb.insertBibTex(toInsert, this.dbSession);
+		this.bibTexDb.insertBibTexPost(toInsert, this.dbSession);
 	}
 
 	@Test
@@ -203,5 +243,14 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		skip.clear();
 		toInsert.getResource().setCount(1);
 		ModelUtils.assertPropertyEquality(toInsert.getResource(), posts.get(0).getResource(), skip);
+
+		// Duplicate post and check whether plugins are called
+		this.resetParameters();
+		final DatabasePluginMock plugin = new DatabasePluginMock();
+		DatabasePluginRegistry.getInstance().add(plugin);
+		param.setHash("06aef6e5439298f27dc5aee82c4293d6");
+		final Post<BibTex> someBibTexPost = this.bibTexDb.getBibTexByHash(param, this.dbSession).get(0);
+		this.bibTexDb.storePost(someBibTexPost.getUser().getName(), someBibTexPost, "06aef6e5439298f27dc5aee82c4293d6", this.dbSession);
+		assertTrue(plugin.isOnBibTexUpdate());
 	}
 }

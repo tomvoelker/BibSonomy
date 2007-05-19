@@ -77,7 +77,7 @@ public class ParamUtils {
 		final BibTexParam rVal = new BibTexParam();
 		setDefaults(rVal);
 		rVal.setRequestedContentId(1924061);
-		rVal.setHash("0000175071e6141a7d36835489f922ef");
+		rVal.setHash("0000175071e6141a7d36835489f922ef"); // from user dblp
 		rVal.setResource(ModelUtils.getBibTex());
 		return rVal;
 	}
