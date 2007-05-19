@@ -54,7 +54,7 @@ public abstract class AbstractDatabaseManagerTest {
 			// testcases shouldn't write into the db		
 			dbSession = DatabaseUtils.getDatabaseSession();
 			dbSession.beginTransaction();
-		} catch (Exception e) {	
+		} catch (Throwable e) {	
 			log.fatal("exception in testcase setUp",e);
 		}
 	}
