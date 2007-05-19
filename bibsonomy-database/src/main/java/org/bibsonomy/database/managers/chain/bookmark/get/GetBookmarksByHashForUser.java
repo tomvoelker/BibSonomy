@@ -23,12 +23,12 @@ public class GetBookmarksByHashForUser extends BookmarkChainElement {
 	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final Transaction session) {
-		param.setGroups(generalDb.getGroupsForUser(param, session));
+		// TODO: is this needed?  param.setGroups(generalDb.getGroupsForUser(param, session));
 		return this.db.getBookmarkByHashForUser(param, session);
 	}
 
 	@Override
 	protected boolean canHandle(final BookmarkParam param) {
-		return param.getHash() != null && param.getHash().length() > 0 && param.getUserName() != null && param.getGrouping() == GroupingEntity.USER && param.getRequestedGroupName() != null && param.getTagIndex() == null && param.isPopular() == false && param.isAdded() == false;
+		return present(param.getHash()) && (param.getGrouping() == GroupingEntity.USER) && present(param.getRequestedGroupName()) && !present(param.getTagIndex()) && !present(param.getOrder());
 	}
 }

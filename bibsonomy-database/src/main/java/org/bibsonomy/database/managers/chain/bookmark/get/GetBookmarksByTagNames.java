@@ -3,6 +3,7 @@ package org.bibsonomy.database.managers.chain.bookmark.get;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.Order;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChainElement;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.util.Transaction;
@@ -37,6 +38,6 @@ public class GetBookmarksByTagNames extends BookmarkChainElement {
 
 	@Override
 	protected boolean canHandle(final BookmarkParam param) {
-		return param.getGrouping() == GroupingEntity.ALL && param.getTagIndex() != null && param.getHash() == null && param.isPopular() == false && param.isAdded() == false;
+		return (param.getGrouping() == GroupingEntity.ALL) && present(param.getTagIndex()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED);
 	}
 }

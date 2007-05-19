@@ -34,6 +34,6 @@ public class GetBookmarksByFriends extends BookmarkChainElement {
 	 */
 	@Override
 	protected boolean canHandle(final BookmarkParam param) {
-		return param.getUserName() != null && param.getGrouping() == GroupingEntity.FRIEND && param.getRequestedGroupName() != null && param.getTagIndex() == null && param.getHash() == null && param.isPopular() == false && param.isAdded() == false;
+		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.FRIEND) && present(param.getRequestedGroupName()) && !present(param.getTagIndex()) && !present(param.getHash()) && !present(param.getOrder());
 	}
 }

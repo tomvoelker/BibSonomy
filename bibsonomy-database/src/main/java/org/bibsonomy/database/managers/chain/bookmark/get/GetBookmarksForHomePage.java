@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers.chain.bookmark.get;
 
 import java.util.List;
 
+import org.bibsonomy.database.Order;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChainElement;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.util.Transaction;
@@ -28,6 +29,6 @@ public class GetBookmarksForHomePage extends BookmarkChainElement {
 
 	@Override
 	protected boolean canHandle(final BookmarkParam param) {
-		return param.getGrouping() == null && param.isPopular() == false && param.isAdded() == false;
+		return !present(param.getGrouping()) && nullOrEqual(param.getOrder(), Order.ADDED);
 	}
 }
