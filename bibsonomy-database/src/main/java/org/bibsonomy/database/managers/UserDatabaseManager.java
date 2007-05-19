@@ -29,9 +29,13 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 	/*
 	 * get all Users of a given Group required different view right
 	 */
+	
+	public List<String> getUserNamesByGroupId(final Integer groupId, final Transaction session) {
+		return this.queryForList("getUserNamesByGroupId", groupId, String.class, session);
+	}
 
 	public List<User> getUsersOfGroupPublic(final UserParam user, final Transaction session) {
-		return this.queryForList("getUsersOfGroupPublic", user, User.class, session);
+		return null; // TODO: implement
 	}
 	
 	public List<User> getUsersOfGroupPrivate(final UserParam user, final Transaction session) {
@@ -39,7 +43,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 	}
 	
 	public List<User> getUsersOfGroupFriends(final UserParam user, final Transaction session) {
-		return this.queryForList("getUsersOfGroupFriends", user, User.class, session);
+		return null; // TODO: implement
 	}
 	
 	public Integer getPrivlevelOfUser(final UserParam user, final Transaction session) {
@@ -245,7 +249,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
     }
     	
 	public boolean validateUserAccess(String username, String password) {
-		return true;
+		return true; // FIXME:	IMPLEMENT ME!
 	}
 
 	
