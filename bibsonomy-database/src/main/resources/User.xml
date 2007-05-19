@@ -16,16 +16,12 @@
 		SELECT privlevel FROM groupids WHERE `group` = #groupId#;
 	</select>
 
-    <select id="getUsersOfGroupPublic" resultClass="string" parameterClass="userParam">
+    <select id="getUserNamesByGroupId" resultClass="string" parameterClass="int">
 		SELECT user_name FROM groups WHERE `group` = #groupId#;
 	</select>
 
 	<select id="getUsersOfGroupPrivate" resultClass="string" parameterClass="userParam">
 		SELECT user_name FROM groups WHERE user_name = #requestedUserName# AND `group` = #groupId#;
-	</select>
-
-	<select id="getUsersOfGroupFriends" resultClass="string" parameterClass="userParam">
-		SELECT user_name FROM groups WHERE `group` = #groupId#;
 	</select>
 
 </sqlMap>
