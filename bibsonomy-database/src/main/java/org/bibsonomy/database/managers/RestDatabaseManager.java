@@ -7,6 +7,7 @@ import java.util.Map;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.LogicInterface;
+import org.bibsonomy.database.Order;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
@@ -134,20 +135,13 @@ public class RestDatabaseManager implements LogicInterface {
 	 *            hash value of a resource, if one would like to get a list of
 	 *            all posts belonging to a given resource. if unused, its empty
 	 *            but not null.
-	 * @param added
-	 *            a flag indicating the way of sorting: if true, sort by
-	 *            adding-time. both flags cannot be true at the same time; an
-	 *            {@link IllegalArgumentException} is expected to be thrown
-	 * @param popular
-	 *            a flag indicating the way of sorting: if true, sort by
-	 *            popularity. both flags cannot be true at the same time; an
-	 *            {@link IllegalArgumentException} is expected to be thrown
+	 * @param ordering
 	 * @param start
 	 * @param end
 	 * @return a set of posts, an empty set else
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Resource> List<Post<T>> getPosts(String authUser, Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
+	public <T extends Resource> List<Post<T>> getPosts(String authUser, Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, int start, int end) {
 		final List<Post<T>> result;
 		final Transaction session = this.openSession();
 		try {
@@ -164,11 +158,11 @@ public class RestDatabaseManager implements LogicInterface {
 				 * 
 			} else */
 			if (resourceType == BibTex.class) {
-				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, authUser, grouping, groupingName, tags, hash, popular, added, start, end);
+				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, authUser, grouping, groupingName, tags, hash, order, start, end);
 				// this is save because of RTTI-check of resourceType argument which is of class T
 				result = (List<Post<T>>) ((List) this.bibtexDBManager.getPosts(param, session));
 			} else if (resourceType == Bookmark.class) {
-				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, authUser, grouping, groupingName, tags, hash, popular, added, start, end);
+				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, authUser, grouping, groupingName, tags, hash, order, start, end);
 				// this is save because of RTTI-check of resourceType argument which is of class T
 				result = (List<Post<T>>) ((List) this.bookmarkDBManager.getPosts(param, session));
 			} else {
@@ -178,27 +172,6 @@ public class RestDatabaseManager implements LogicInterface {
 			session.close();
 		}
 		return result;
-	}
-
-	/**
-	 * FIXME: Where's this method called?
-	 */
-	public BibTexParam buildBibTexParam(String authUser, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end) {
-		final BibTexParam param = new BibTexParam();		
-		param.setUserName(authUser);
-		param.setOffset(start);
-		param.setLimit(end - start);
-		if ((groupingName != null) && (groupingName.length() == 0))	{
-			groupingName = null;
-		}
-		if (grouping == GroupingEntity.USER) {
-			param.setRequestedUserName(groupingName);
-		} else if (grouping == GroupingEntity.FRIEND) {
-			param.setRequestedGroupName(groupingName); // TODO: document
-		} else if (grouping == GroupingEntity.GROUP) {
-			param.setRequestedGroupName(groupingName); 
-		}
-		return param;
 	}
 
 	/**
