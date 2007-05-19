@@ -1,5 +1,6 @@
 package org.bibsonomy.database.managers.chain;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -55,4 +56,20 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 	 * Returns true if the request can be handled by the current chain element, otherwise false.
 	 */
 	protected abstract boolean canHandle(P param);
+	
+	protected boolean present(String s) {
+		return ((s != null) && (s.length() > 0));
+	}
+	
+	protected boolean present(Collection c) {
+		return ((c != null) && (c.size() > 0));
+	}
+	
+	protected boolean present(Object o) {
+		return (o != null);
+	}
+	
+	protected boolean nullOrEqual(Object requested, Object supported) {
+		return ((requested == null) || (requested == supported));
+	}
 }
