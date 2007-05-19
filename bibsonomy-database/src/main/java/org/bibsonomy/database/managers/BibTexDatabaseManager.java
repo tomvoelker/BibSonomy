@@ -226,9 +226,9 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * http://www.bibsonomy.org/bibtex/1d28c9f535d0f24eadb9d342168836199 page
 	 * 92, formula (9) for formal semantics of this query.
 	 */
-	public List<Post<BibTex>> getBibTexForGroup(final BibTexParam param, final Transaction session) {
+	public List<Post<BibTex>> getBibTexForUsersInGroup(final BibTexParam param, final Transaction session) {
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
-		return this.bibtexList("getBibTexForGroup", param, session);
+		return this.bibtexList("getBibTexForUsersInGroup", param, session);
 	}
 
 	/**
@@ -366,7 +366,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			}
 
 			// ALWAYS get a new contentId
-			post.setContentId(this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, session));
+				post.setContentId(this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, session));
 
 			if ((isBibTexInDb != null) && (isBibTexInDb.size() > 0)) {
 				// BibTex entry DOES EXIST for this user -> delete old BibTex post
@@ -376,7 +376,6 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 				// delete post
 				this.deletePost(userName, oldBibTexPost.getResource().getIntraHash(), session);
 			}
-
 			// Insert the new BibTex
 			this.insertBibTexPost(post, session);
 			// add the tags
