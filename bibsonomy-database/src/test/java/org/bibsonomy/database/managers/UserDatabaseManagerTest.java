@@ -2,10 +2,12 @@ package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.model.User;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -32,7 +34,14 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(GroupID.GROUP_PUBLIC.getId(), this.userDb.getPrivlevelOfUser(this.userParam, this.dbSession));
 	}
 
-	@Test
+	public void getUserNamesOfGroupId() {
+		final List<String> users = this.userDb.getUserNamesByGroupId(GroupID.GROUP_KDE.getId(), dbSession);
+		final String[] kdeUsers = new String[] {"kde", "schmitz", "chs", "jaeschke", "stumme", "gst", "sfi", "finis", "rja", "aho", "hotho", "grahl", "beate" };
+		Assert.assertTrue( users.containsAll(Arrays.asList(kdeUsers)) );
+		Assert.assertEquals( kdeUsers.length, users.size() );
+	}
+	
+	// TODO: implement and @Test
 	public void getUsersOfGroupPublic() {
 		final List<User> users = this.userDb.getUsersOfGroupPublic(this.userParam, this.dbSession);
 		assertEquals(13, users.size());
