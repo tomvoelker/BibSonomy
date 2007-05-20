@@ -13,13 +13,13 @@ public class LogicInterfaceHelperTest {
 	public void buildParam() {
 		GenericParam param = null;
 
-		param = LogicInterfaceHelper.buildParam(BookmarkParam.class, "", null, "", null, "", false, false, 0, 10);
+		param = LogicInterfaceHelper.buildParam(BookmarkParam.class, "", null, "", null, "", null, 0, 10);
 		Assert.assertEquals(BookmarkParam.class, param.getClass());
 
-		param = LogicInterfaceHelper.buildParam(BibTexParam.class, "", null, "", null, "", false, false, 0, 10);
+		param = LogicInterfaceHelper.buildParam(BibTexParam.class, "", null, "", null, "", null, 0, 10);
 		Assert.assertEquals(BibTexParam.class, param.getClass());
 
-		param = LogicInterfaceHelper.buildParam(TagParam.class, "", null, "", null, "", false, false, 0, 10);
+		param = LogicInterfaceHelper.buildParam(TagParam.class, "", null, "", null, "", null, 0, 10);
 		Assert.assertEquals(TagParam.class, param.getClass());
 	}
 }
