@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.database.LogicInterface;
@@ -131,11 +132,10 @@ public final class Context
 	{
 		return userAgent != null && userAgent.startsWith( RestProperties.getInstance().getApiUserAgent() );
 	}
-
+   
 	/**
-	 * 
 	 * @param parameterName parameter (= key) the tags are the value from
-	 * @return a list of all tags
+	 * @return a list of all tags null, if none given.
 	 */
 	public List<String> getTags( String parameterName )
 	{
@@ -191,20 +191,33 @@ public final class Context
 	 */
 	public String getStringAttribute( String parameterName, String defaultValue ) 
 	{
-		if( parameterMap.containsKey( parameterName ) ) 
-		{
-			Object obj = parameterMap.get( parameterName );
-			if( obj instanceof String[] ) 
-			{
-				String[] tmp = (String[])obj;
-				if( tmp.length == 1 ) 
-				{
-					return tmp[ 0 ];
-				}
-			}
-		}
-		return defaultValue;
+      return Context.getStringAttribute( parameterMap, parameterName, defaultValue );
 	}
+   
+   /**
+    * Returns a {@link String} parameter of the request's parametermap, if any. 
+    * 
+    * @param parameterMap
+    * @param parameterName
+    * @param defaultValue
+    * @return
+    */
+   public static String getStringAttribute( Map parameterMap, String parameterName, String defaultValue )
+   {
+      if( parameterMap.containsKey( parameterName ) ) 
+      {
+         Object obj = parameterMap.get( parameterName );
+         if( obj instanceof String[] ) 
+         {
+            String[] tmp = (String[])obj;
+            if( tmp.length == 1 ) 
+            {
+               return tmp[ 0 ];
+            }
+         }
+      }
+      return defaultValue;
+   }
 
 	/**
 	 * @return Returns the authUserName.
@@ -258,7 +271,10 @@ public final class Context
 
 /*
  * $Log$
- * Revision 1.5  2007-04-15 11:05:07  mbork
+ * Revision 1.6  2007-05-20 12:08:42  mbork
+ * refactored getting parameters
+ *
+ * Revision 1.5  2007/04/15 11:05:07  mbork
  * changed method signature to use a more general Writer
  *
  * Revision 1.4  2007/02/21 14:08:36  mbork
