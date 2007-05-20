@@ -21,7 +21,8 @@
 		SELECT tag_id, tag_name, tag_stem, tag_ctr FROM tags WHERE tag_ctr = #count#
 	</select>
 
-	<select id="getAllTags" resultClass="string" parameterClass="tagParam">
+	<!-- TODO: this is only a hack to provide tag-support. feel free to change it. -->
+	<select id="getAllTags" resultMap="Common.tagWithCount" parameterClass="tagParam">
 		SELECT tag_name, count(tag_name) AS tag_count FROM tas t GROUP BY t.tag_name LIMIT #limit# OFFSET #offset#
 	</select>
 	
@@ -35,8 +36,9 @@
 		WHERE t.group = #groupType#
 		GROUP BY t.tag_name LIMIT #limit# OFFSET #offset#
 	</select>
-	
-	<select id="getTagsByUser" resultClass="string" parameterClass="tagParam">
+
+	<!-- TODO: this is only a hack to provide tag-support. feel free to change it. -->	
+	<select id="getTagsByUser" resultMap="Common.tagWithCount" parameterClass="tagParam">
 		SELECT tag_name, count(tag_name) AS tag_count FROM tas t WHERE t.user_name = #requestedUserName#
 		<include refid="getTagForUser"/> GROUP BY t.tag_name LIMIT #limit# OFFSET #offset#
 	</select>

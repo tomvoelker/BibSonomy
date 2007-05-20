@@ -299,6 +299,30 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	} 
 
 	public List<Tag> getTags(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end, final Transaction session) {
-		return null;
+		// TODO: this is only a hack to provide tag-support. feel free to delete the code and implement it with a nice and complete handler chain.
+		TagParam param = new TagParam();
+		param.setGrouping(grouping);
+		param.setOffset(start);
+		param.setLimit(end - start);
+		param.setUserName(authUser);
+		param.setRequestedUserName(groupingName);
+		if (grouping == GroupingEntity.ALL) {
+			
+			List<Tag> tags = this.queryForList("getAllTags", param, Tag.class, session);
+			for (Tag tag : tags) {
+				tag.setUsercount(tag.getGlobalcount());
+			}
+			return tags;
+			
+		} else {
+			
+			DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
+			List<Tag> tags = this.queryForList("getTagsByUser", param, Tag.class, session);
+			for (Tag tag : tags) {
+				tag.setUsercount(tag.getGlobalcount());
+			}
+			return tags;
+			
+		}
 	}
 }
