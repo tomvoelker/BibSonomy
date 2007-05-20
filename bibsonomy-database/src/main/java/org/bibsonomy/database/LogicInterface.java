@@ -70,7 +70,7 @@ public interface LogicInterface
 	 * @param tags
 	 *            a set of tags. remember to parse special tags like
 	 *            ->[tagname], -->[tagname] and <->[tagname]. see documentation.
-	 *            if the parameter is not used, its am empty set
+	 *            if the parameter is not used, its am empty list
 	 * @param hash
 	 *            hash value of a resource, if one would like to get a list of
 	 *            all posts belonging to a given resource. if unused, its empty
