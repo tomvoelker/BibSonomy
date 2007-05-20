@@ -78,7 +78,7 @@ public final class GetWorker extends HttpWorker
    {
       if( callback != null && responseContentLength > 0 )
       {
-         callback.setPercent( (int) ( bytesRead / responseContentLength ) );
+         callback.setPercent( (int) ( bytesRead * 100 / responseContentLength ) );
       }
    }
 
@@ -93,7 +93,10 @@ public final class GetWorker extends HttpWorker
 
 /*
  * $Log$
- * Revision 1.1  2006-10-24 21:39:22  mbork
+ * Revision 1.2  2007-05-20 16:48:48  mbork
+ * fixed invocation of progress callback
+ *
+ * Revision 1.1  2006/10/24 21:39:22  mbork
  * split up rest api into correct modules. verified with junit tests.
  *
  * Revision 1.1  2006/10/10 12:42:13  cschenk
