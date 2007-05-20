@@ -8,7 +8,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -180,5 +182,51 @@ public class ModelUtils {
 		}
 		log.debug("no dummy value for type '" + type.getName() + "'");
 		return null;
+	}
+	
+	public static HashSet<String> buildLowerCaseHashSet(String... values) {
+		HashSet<String> rVal = new HashSet<String>();
+		for (String value : values) {
+			rVal.add(value.toLowerCase());
+		}
+		return rVal;
+	}
+	
+	public static HashSet<String> buildLowerCaseHashSet(Collection<String> values) {
+		return buildLowerCaseHashSet(values.toArray(new String[values.size()]));
+	}
+
+	public static boolean hasTags(Post<?> p, Set<String> requiredTags) {
+		int required = requiredTags.size();
+		for (final Tag presentTag : p.getTags()) {
+			if (requiredTags.contains(presentTag.getName().toLowerCase()) == true) {
+				--required;
+				log.debug("found " + presentTag.getName());
+			}
+		}
+		if (required > 0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	public static boolean checkGroups(Post<?> p, Set<Integer> mustBeInGroups, Set<Integer> mustNotBeInGroups) {
+		int required = (mustBeInGroups != null) ? mustBeInGroups.size() : 0;
+		for (final Group group : p.getGroups()) {
+			if ((mustBeInGroups != null) && (mustBeInGroups.contains(group.getGroupId()) == true)) {
+				--required;
+				log.debug("found group " + group.getGroupId());
+			}
+			if ((mustNotBeInGroups != null) && (mustNotBeInGroups.contains(group.getGroupId()) == true)) {
+				log.debug("found incorrect group " + group.getGroupId());
+				return false;
+			}
+		}
+		if (required > 0) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 }
