@@ -118,13 +118,39 @@ public class ModelFactory
 			validateBibTex( xmlBibtex );
 			
 			BibTex bibtex = new BibTex();
-			bibtex.setAuthor( xmlBibtex.getAuthors() );
-			bibtex.setEditor( xmlBibtex.getEditors() );
-			bibtex.setIntraHash( xmlBibtex.getIntrahash() );
-         bibtex.setInterHash( xmlBibtex.getIntrahash() );
-			bibtex.setTitle( xmlBibtex.getTitle() );
-			bibtex.setType( xmlBibtex.getType() );
-			bibtex.setYear( xmlBibtex.getYear() );
+
+         bibtex.setAddress( xmlBibtex.getAddress() );
+         bibtex.setAnnote( xmlBibtex.getAnnote() );
+         bibtex.setAuthor( xmlBibtex.getAuthor() );
+         bibtex.setBibtexAbstract( xmlBibtex.getBibtexAbstract() );
+         bibtex.setBibtexKey( xmlBibtex.getBibtexKey() );
+         bibtex.setBKey( xmlBibtex.getBKey() );
+         bibtex.setBooktitle( xmlBibtex.getBooktitle() );
+         bibtex.setChapter( xmlBibtex.getChapter() );
+         bibtex.setCrossref(xmlBibtex.getCrossref());
+         bibtex.setDay( xmlBibtex.getDay() );
+         bibtex.setEdition( xmlBibtex.getEdition() );;;
+         bibtex.setEditor( xmlBibtex.getEditor() );
+         bibtex.setEntrytype( xmlBibtex.getEntrytype() );
+         bibtex.setHowpublished( xmlBibtex.getHowpublished() );
+         bibtex.setInstitution( xmlBibtex.getInstitution() );
+         bibtex.setInterHash( xmlBibtex.getInterhash() );
+         bibtex.setIntraHash( xmlBibtex.getIntrahash() );
+         bibtex.setJournal( xmlBibtex.getJournal() );
+         bibtex.setMisc( xmlBibtex.getMisc() );
+         bibtex.setMonth( xmlBibtex.getMonth() );
+         bibtex.setNote( xmlBibtex.getNote() );
+         bibtex.setNumber( xmlBibtex.getNumber() );
+         bibtex.setOrganization( xmlBibtex.getOrganization() );
+         bibtex.setPages( xmlBibtex.getPages() );
+         bibtex.setSchool( xmlBibtex.getPublisher() );
+         if( xmlBibtex.getScraperId() != null ) bibtex.setScraperId( xmlBibtex.getScraperId().intValue() );
+         bibtex.setSeries( xmlBibtex.getSeries() );
+         bibtex.setTitle( xmlBibtex.getTitle() );
+         bibtex.setType( xmlBibtex.getType() );
+         bibtex.setUrl( xmlBibtex.getUrl() );
+         bibtex.setVolume( xmlBibtex.getVolume() );
+         bibtex.setYear( xmlBibtex.getYear() );
 			
 			post.setResource( bibtex );
 		}
@@ -196,7 +222,10 @@ public class ModelFactory
 
 /*
  * $Log$
- * Revision 1.5  2007-05-15 08:46:59  mbork
+ * Revision 1.6  2007-05-20 18:51:33  mbork
+ * added missing bibtex attributes to the jaxb-model.
+ *
+ * Revision 1.5  2007/05/15 08:46:59  mbork
  * refactored Tag.count to Tag.globalcount
  *
  * Revision 1.4  2007/02/11 18:35:20  mbork

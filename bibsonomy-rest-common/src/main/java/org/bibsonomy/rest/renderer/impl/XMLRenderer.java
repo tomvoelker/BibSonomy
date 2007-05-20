@@ -130,14 +130,42 @@ public class XMLRenderer implements Renderer
       	BibTex bibtex = (BibTex)post.getResource();
          checkBibtex( bibtex );
       	BibtexType xmlBibtex = new BibtexType();
-      	xmlBibtex.setAuthors( bibtex.getAuthor() );
-      	xmlBibtex.setEditors( bibtex.getEditor() );
+
       	xmlBibtex.setHref( createHrefForRessource( post.getUser().getName(), bibtex.getIntraHash() ) );
-      	xmlBibtex.setInterhash( bibtex.getInterHash() );
+
+         xmlBibtex.setAddress( bibtex.getAddress() );
+         xmlBibtex.setAnnote( bibtex.getAnnote() );
+         xmlBibtex.setAuthor( bibtex.getAuthor() );
+         xmlBibtex.setBibtexAbstract( bibtex.getBibtexAbstract() );
+         xmlBibtex.setBibtexKey( bibtex.getBibtexKey() );
+         xmlBibtex.setBKey( bibtex.getBKey() );
+         xmlBibtex.setBooktitle( bibtex.getBooktitle() );
+         xmlBibtex.setChapter( bibtex.getChapter() );
+         xmlBibtex.setCrossref(bibtex.getCrossref());
+         xmlBibtex.setDay( bibtex.getDay() );
+         xmlBibtex.setEdition( bibtex.getEdition() );;;
+         xmlBibtex.setEditor( bibtex.getEditor() );
+         xmlBibtex.setEntrytype( bibtex.getEntrytype() );
+         xmlBibtex.setHowpublished( bibtex.getHowpublished() );
+         xmlBibtex.setInstitution( bibtex.getInstitution() );
+         xmlBibtex.setInterhash( bibtex.getInterHash() );
          xmlBibtex.setIntrahash( bibtex.getIntraHash() );
-      	xmlBibtex.setTitle( bibtex.getTitle() );
-      	xmlBibtex.setType( bibtex.getType() );
-      	xmlBibtex.setYear( bibtex.getYear() );
+         xmlBibtex.setJournal( bibtex.getJournal() );
+         xmlBibtex.setMisc( bibtex.getMisc() );
+         xmlBibtex.setMonth( bibtex.getMonth() );
+         xmlBibtex.setNote( bibtex.getNote() );
+         xmlBibtex.setNumber( bibtex.getNumber() );
+         xmlBibtex.setOrganization( bibtex.getOrganization() );
+         xmlBibtex.setPages( bibtex.getPages() );
+         xmlBibtex.setSchool( bibtex.getPublisher() );
+         xmlBibtex.setScraperId( BigInteger.valueOf( bibtex.getScraperId() ) );
+         xmlBibtex.setSeries( bibtex.getSeries() );
+         xmlBibtex.setTitle( bibtex.getTitle() );
+         xmlBibtex.setType( bibtex.getType() );
+         xmlBibtex.setUrl( bibtex.getUrl() );
+         xmlBibtex.setVolume( bibtex.getVolume() );
+         xmlBibtex.setYear( bibtex.getYear() );
+         
       	xmlPost.setBibtex( xmlBibtex );
       }
       return xmlPost;

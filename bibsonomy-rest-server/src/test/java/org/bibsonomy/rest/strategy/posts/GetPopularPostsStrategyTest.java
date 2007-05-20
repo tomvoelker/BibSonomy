@@ -25,7 +25,7 @@ public class GetPopularPostsStrategyTest extends TestCase
       c.perform( request, sw );
       // just test length, because the detail rendering output is tested by the
       // renderer test
-      assertEquals(  9413, sw.toString().length() );
+      assertEquals(  9461, sw.toString().length() );
       assertEquals( "text/xml", c.getContentType( "firefox" ) );
       assertEquals( "bibsonomy/posts+XML", c.getContentType( RestProperties.getInstance().getApiUserAgent() ) );
    }
@@ -33,7 +33,10 @@ public class GetPopularPostsStrategyTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.2  2007-02-21 14:08:36  mbork
+ * Revision 1.3  2007-05-20 18:51:33  mbork
+ * added missing bibtex attributes to the jaxb-model.
+ *
+ * Revision 1.2  2007/02/21 14:08:36  mbork
  * - included code generation of the schema in the maven2 build-lifecycle
  * - removed circular dependencies among the modules
  * - cleaned up the poms of the modules

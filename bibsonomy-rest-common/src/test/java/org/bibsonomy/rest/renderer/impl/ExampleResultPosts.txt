@@ -5,7 +5,7 @@
             <user name="foo" href="http://localhost:8080/restTomcat/api/users/foo"/>
             <group name="bar" href="http://localhost:8080/restTomcat/api/groups/bar"/>
             <tag name="foobar"/>
-            <bibtex title="foo and bar" intrahash="abc" interhash="abc" href="http://localhost:8080/restTomcat/api/users/foo/posts/abc"/>
+            <bibtex title="foo and bar" scraperId="0" intrahash="abc" interhash="abc" href="http://localhost:8080/restTomcat/api/users/foo/posts/abc"/>
         </post>
         <post>
             <user name="foo" href="http://localhost:8080/restTomcat/api/users/foo"/>
