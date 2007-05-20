@@ -14,149 +14,157 @@ import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 
 /**
+ * This interface should be implemented by classes that intend to add additional rendering
+ * capabilities to the system.<br/> Note that it also includes funtionality to read the data, that
+ * has been rendered with it.
+ * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
 public interface Renderer
 {
-	/**
-	 * serializes a list of posts
-	 * 
-	 * @param writer
-	 * @param posts
-	 * @param viewModel
-	 */
-	public void serializePosts( Writer writer, List<? extends Post<? extends Resource>> posts, ViewModel viewModel ) throws InternServerException;
-	
-	/**
-	 * serializes one post 
-	 * @param writer
-	 * @param post
-	 * @param model
-	 */
-	public void serializePost( Writer writer, Post<? extends Resource> post, ViewModel model );
-	
-	/**
-	 * serializes a list of users
-	 * 
-	 * @param writer
-	 * @param users
-	 * @param viewModel
-	 */
-	public void serializeUsers( Writer writer, List<User> users, ViewModel viewModel );
-	
-	/**
-	 * serializes one user
-	 * 
-	 * @param writer
-	 * @param user
-	 * @param viewModel
-	 */
-	public void serializeUser( Writer writer, User user, ViewModel viewModel );
-	
-	/**
-	 * serializes a list of tags
-	 * 
-	 * @param writer
-	 * @param tags
-	 * @param viewModel
-	 */
-	public void serializeTags( Writer writer, List<Tag> tags, ViewModel viewModel );
+   /**
+    * Serializes a {@link List} of {@link Post}s.
+    * 
+    * @param writer a {@link Writer} to use.
+    * @param posts a {@link List} of {@link Post} objects.
+    * @param viewModel the {@link ViewModel} encapsulates additional information,
+    */
+   public void serializePosts( Writer writer, List<? extends Post<? extends Resource>> posts, ViewModel viewModel )
+         throws InternServerException;
 
-	/**
-	 * serializes a tag's details, including list of subtags, list of supertags and list of correlated tags
-	 * 
-	 * @param writer
-	 * @param tag
-	 * @param model
-	 */
-	public void serializeTag( Writer writer, Tag tag, ViewModel model );
-	
-	/**
-	 * serializes a list of groups
-	 * 
-	 * @param writer
-	 * @param groups
-	 * @param viewModel
-	 */
-	public void serializeGroups( Writer writer, List<Group> groups, ViewModel viewModel );
+   /**
+    * Serializes one {@link Post}.
+    * 
+    * @param writer a {@link Writer} to use.
+    * @param post one {@link Post} object.
+    * @param viewModel the {@link ViewModel} encapsulates additional information,
+    */
+   public void serializePost( Writer writer, Post<? extends Resource> post, ViewModel model );
 
-	/**
-	 * serializes one group
-	 * 
-	 * @param writer
-	 * @param group
-	 * @param model
-	 */
-	public void serializeGroup( Writer writer, Group group, ViewModel model );
+   /**
+    * Serializes a {@link List} of {@link User}s.
+    * 
+    * @param writer a {@link Writer} to use.
+    * @param users a {@link List} of {@link User} objects.
+    * @param viewModel the {@link ViewModel} encapsulates additional information,
+    */
+   public void serializeUsers( Writer writer, List<User> users, ViewModel viewModel );
 
-	public List<User> parseUserList( Reader reader ) throws BadRequestOrResponseException;
-	public User parseUser( Reader reader ) throws BadRequestOrResponseException;
-	
-	public List<Post<? extends Resource>> parsePostList( Reader reader ) throws BadRequestOrResponseException;
-	public Post<? extends Resource> parsePost( Reader reader ) throws BadRequestOrResponseException;
-	
-	public List<Group> parseGroupList( Reader reader ) throws BadRequestOrResponseException;
-	public Group parseGroup( Reader reader ) throws BadRequestOrResponseException;
-	
-	public List<Tag> parseTagList( Reader reader ) throws BadRequestOrResponseException;
+   /**
+    * Serializes one {@link User}.
+    * 
+    * @param writer a {@link Writer} to use.
+    * @param user one {@link User} object.
+    * @param viewModel the {@link ViewModel} encapsulates additional information,
+    */
+   public void serializeUser( Writer writer, User user, ViewModel viewModel );
+
+   /**
+    * Serializes a {@link List} of {@link Tag}s.
+    * 
+    * @param writer a {@link Writer} to use.
+    * @param tags a {@link List} of {@link Tag} objects.
+    * @param viewModel the {@link ViewModel} encapsulates additional information,
+    */
+   public void serializeTags( Writer writer, List<Tag> tags, ViewModel viewModel );
+
+   /**
+    * Serializes a {@link Tag}'s details, including {@link List} of subtags, {@link List} of
+    * supertags and {@link List} of correlated tags
+    * 
+    * @param writer a {@link Writer} to use.
+    * @param tag one {@link Tag} object.
+    * @param viewModel the {@link ViewModel} encapsulates additional information,
+    */
+   public void serializeTag( Writer writer, Tag tag, ViewModel viewModel );
+
+   /**
+    * Serializes a list of {@link Group}s.
+    * 
+    * @param writer a {@link Writer} to use.
+    * @param groups a {@link List} of {@link Group} objects.
+    * @param viewModel the {@link ViewModel} encapsulates additional information,
+    */
+   public void serializeGroups( Writer writer, List<Group> groups, ViewModel viewModel );
+
+   /**
+    * Serializes one {@link Group}.
+    * 
+    * @param writer a {@link Writer} to use.
+    * @param group one {@link Group} object.
+    * @param viewModel the {@link ViewModel} encapsulates additional information,
+    */
+   public void serializeGroup( Writer writer, Group group, ViewModel viewModel );
+
+   /**
+    * Serializes an errormessage.
+    * 
+    * @param writer the {@link Writer} to use.
+    * @param errorMessage the error message to send.
+    */
+   public void serializeError( Writer writer, String errorMessage );
+
+   /**
+    * Reads a List of {@link User}s from a {@link Reader}.
+    * 
+    * @param reader the {@link Reader} to use.
+    * @return a {@link List} of {@link User} objects.
+    * @throws BadRequestOrResponseException if the document within the reader is errorenous.
+    */
+   public List<User> parseUserList( Reader reader ) throws BadRequestOrResponseException;
+
+   /**
+    * Reads one {@link User} from a {@link Reader}.
+    * 
+    * @param reader the {@link Reader} to use.
+    * @return one {@link User} object.
+    * @throws BadRequestOrResponseException if the document within the reader is errorenous.
+    */
+   public User parseUser( Reader reader ) throws BadRequestOrResponseException;
+
+   /**
+    * Reads a List of {@link Post}s from a {@link Reader}.
+    * 
+    * @param reader the {@link Reader} to use.
+    * @return a {@link List} of {@link Post} objects.
+    * @throws BadRequestOrResponseException if the document within the reader is errorenous.
+    */
+   public List<Post<? extends Resource>> parsePostList( Reader reader ) throws BadRequestOrResponseException;
+
+   /**
+    * Reads one {@link Post}s from a {@link Reader}.
+    * 
+    * @param reader the {@link Reader} to use.
+    * @return one {@link Post} object.
+    * @throws BadRequestOrResponseException if the document within the reader is errorenous.
+    */
+   public Post<? extends Resource> parsePost( Reader reader ) throws BadRequestOrResponseException;
+
+   /**
+    * Reads a List of {@link Group}s from a {@link Reader}.
+    * 
+    * @param reader the {@link Reader} to use.
+    * @return a {@link List} of {@link Group} objects.
+    * @throws BadRequestOrResponseException if the document within the reader is errorenous.
+    */
+   public List<Group> parseGroupList( Reader reader ) throws BadRequestOrResponseException;
+
+   /**
+    * Reads one {@link Group} from a {@link Reader}.
+    * 
+    * @param reader the {@link Reader} to use.
+    * @return one {@link Group} object.
+    * @throws BadRequestOrResponseException if the document within the reader is errorenous.
+    */
+   public Group parseGroup( Reader reader ) throws BadRequestOrResponseException;
+
+   /**
+    * Reads a List of {@link Tag}s from a {@link Reader}.
+    * 
+    * @param reader the {@link Reader} to use.
+    * @return a {@link List} of {@link Tag} objects.
+    * @throws BadRequestOrResponseException if the document within the reader is errorenous.
+    */
+   public List<Tag> parseTagList( Reader reader ) throws BadRequestOrResponseException;
 }
-
-/*
- * $Log$
- * Revision 1.6  2007-05-01 22:27:30  jillig
- * ->more generic arguments
- *
- * Revision 1.5  2007/02/21 14:08:33  mbork
- * - included code generation of the schema in the maven2 build-lifecycle
- * - removed circular dependencies among the modules
- * - cleaned up the poms of the modules
- * - fixed failing unit-tests
- *
- * Revision 1.4  2007/02/15 10:29:08  mbork
- * the LogicInterface now uses Lists instead of Sets
- * fixed use of generics
- *
- * Revision 1.3  2007/02/11 17:55:39  mbork
- * switched REST-api to the 'new' datamodel, which does not deserve the name...
- *
- * Revision 1.2  2007/02/05 10:35:55  cschenk
- * Distributed code from the spielwiese among the modules
- *
- * Revision 1.1  2006/10/10 12:42:15  cschenk
- * Auf Multi-Module Build umgestellt
- *
- * Revision 1.11  2006/09/24 21:26:21  mbork
- * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
- *
- * Revision 1.10  2006/09/16 18:19:16  mbork
- * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
- *
- * Revision 1.9  2006/06/08 13:33:19  mbork
- * reorganized imports
- *
- * Revision 1.8  2006/06/08 13:23:48  mbork
- * improved documentation, added throws statements even for runtimeexceptions, moved abstractquery to prevent users to call execute directly
- *
- * Revision 1.7  2006/06/07 19:37:29  mbork
- * implemented post queries
- *
- * Revision 1.6  2006/06/06 17:39:30  mbork
- * implemented a modelfactory which parses incoming xml-requests and then generates the intern model
- *
- * Revision 1.5  2006/06/05 14:14:11  mbork
- * implemented GET strategies
- *
- * Revision 1.4  2006/05/24 15:18:08  cschenk
- * Introduced a rendering format and a factory that produces renderers (for xml, rdf, html)
- *
- * Revision 1.3  2006/05/24 13:02:44  cschenk
- * Introduced an enum for the HttpMethod and moved the exceptions
- *
- * Revision 1.2  2006/05/21 20:31:51  mbork
- * continued implementing context
- *
- * Revision 1.1  2006/05/19 21:01:08  mbork
- * started implementing rest api
- *
- */

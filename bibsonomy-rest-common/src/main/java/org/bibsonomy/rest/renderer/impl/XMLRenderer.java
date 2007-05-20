@@ -260,6 +260,13 @@ public class XMLRenderer implements Renderer
       xmlGroup.setDescription( group.getDescription() );
       return xmlGroup;
    }
+   
+   public void serializeError( Writer writer, String errorMessage )
+   {
+      BibsonomyXML xmlDoc = new BibsonomyXML();
+      xmlDoc.setError( errorMessage );
+      serialize( writer, xmlDoc );
+   }
 
    public User parseUser( Reader reader ) throws BadRequestOrResponseException
 	{
@@ -271,6 +278,7 @@ public class XMLRenderer implements Renderer
 		{
 			return ModelFactory.getInstance().createUser( xmlDoc.getUser() );
 		}
+      if( xmlDoc.getError() != null ) throw new BadRequestOrResponseException( xmlDoc.getError() );
 		throw new BadRequestOrResponseException( "The body part of the received document is erroneous - no user defined." );
 	}
 
@@ -284,6 +292,7 @@ public class XMLRenderer implements Renderer
 		{
 			return ModelFactory.getInstance().createPost( xmlDoc.getPost() );
 		}
+      if( xmlDoc.getError() != null ) throw new BadRequestOrResponseException( xmlDoc.getError() );
 		throw new BadRequestOrResponseException( "The body part of the received document is erroneous - no post defined." );
 	}
 
@@ -297,6 +306,7 @@ public class XMLRenderer implements Renderer
 		{
 			return ModelFactory.getInstance().createGroup( xmlDoc.getGroup() );
 		}
+      if( xmlDoc.getError() != null ) throw new BadRequestOrResponseException( xmlDoc.getError() );
 		throw new BadRequestOrResponseException( "The body part of the received document is erroneous - no group defined." );
 	}
 	
@@ -314,6 +324,7 @@ public class XMLRenderer implements Renderer
 			}
 			return groups;
 		}
+      if( xmlDoc.getError() != null ) throw new BadRequestOrResponseException( xmlDoc.getError() );
 		throw new BadRequestOrResponseException( "The body part of the received document is erroneous - no list of groups defined." );
 	}
 	
@@ -331,6 +342,7 @@ public class XMLRenderer implements Renderer
 			}
 			return posts;
 		}
+      if( xmlDoc.getError() != null ) throw new BadRequestOrResponseException( xmlDoc.getError() );
 		throw new BadRequestOrResponseException( "The body part of the received document is erroneous - no list of posts defined." );
 	}
 	
@@ -338,7 +350,7 @@ public class XMLRenderer implements Renderer
 	{
 		if( reader == null ) throw new BadRequestOrResponseException( "The body part of the received document is missing" );
 		BibsonomyXML xmlDoc = parse( reader );
-		if( xmlDoc.getGroups() != null )
+		if( xmlDoc.getTags() != null )
 		{
 			List<Tag> tags = new LinkedList<Tag>();
 			for( TagType tt: xmlDoc.getTags().getTag() )
@@ -348,6 +360,7 @@ public class XMLRenderer implements Renderer
 			}
 			return tags;
 		}
+      if( xmlDoc.getError() != null ) throw new BadRequestOrResponseException( xmlDoc.getError() );
 		throw new BadRequestOrResponseException( "The body part of the received document is erroneous - no list of tags defined." );
 	}
 	
@@ -365,6 +378,7 @@ public class XMLRenderer implements Renderer
 			}
 			return users;
 		}
+      if( xmlDoc.getError() != null ) throw new BadRequestOrResponseException( xmlDoc.getError() );
 		throw new BadRequestOrResponseException( "The body part of the received document is erroneous - no list of users defined." );
 	}
 	
@@ -490,97 +504,3 @@ public class XMLRenderer implements Renderer
       return RestProperties.getInstance().getApiUrl() + RestProperties.getInstance().getUsersUrl() + "/" + userName + "/" + RestProperties.getInstance().getPostsUrl() + "/" + intraHash;
    }
 }
-
-/*
- * $Log$
- * Revision 1.10  2007-05-15 08:46:59  mbork
- * refactored Tag.count to Tag.globalcount
- *
- * Revision 1.9  2007/05/01 22:27:30  jillig
- * ->more generic arguments
- *
- * Revision 1.8  2007/02/21 14:08:33  mbork
- * - included code generation of the schema in the maven2 build-lifecycle
- * - removed circular dependencies among the modules
- * - cleaned up the poms of the modules
- * - fixed failing unit-tests
- *
- * Revision 1.7  2007/02/20 09:54:19  mgrahl
- * *** empty log message ***
- *
- * Revision 1.6  2007/02/15 10:29:08  mbork
- * the LogicInterface now uses Lists instead of Sets
- * fixed use of generics
- *
- * Revision 1.5  2007/02/11 18:35:20  mbork
- * lazy instantiation of lists in the model.
- * we definitely need bidirectional links for the api to work proper!
- * fixed all unit tests, every test performs well.
- *
- * Revision 1.4  2007/02/11 17:55:39  mbork
- * switched REST-api to the 'new' datamodel, which does not deserve the name...
- *
- * Revision 1.3  2007/02/05 10:35:54  cschenk
- * Distributed code from the spielwiese among the modules
- *
- * Revision 1.2  2006/10/24 21:39:28  mbork
- * split up rest api into correct modules. verified with junit tests.
- *
- * Revision 1.1  2006/10/10 12:42:16  cschenk
- * Auf Multi-Module Build umgestellt
- *
- * Revision 1.15  2006/09/24 21:26:21  mbork
- * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
- *
- * Revision 1.14  2006/09/16 18:19:16  mbork
- * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
- *
- * Revision 1.13  2006/07/09 19:07:12  mbork
- * moved check for hash from renderer to ChangePostQuery, because some queries must not test for the hash
- *
- * Revision 1.12  2006/07/05 16:27:57  mbork
- * fixed issues with link to next list of resources
- *
- * Revision 1.11  2006/07/05 15:20:14  mbork
- * implemented missing strategies, little changes on datamodel --> alpha :)
- *
- * Revision 1.10  2006/06/13 21:30:41  mbork
- * implemented unit tests for get-strategies; fixed some minor bugs
- *
- * Revision 1.9  2006/06/11 11:42:47  mbork
- * added unit tests for rendering posts
- *
- * Revision 1.8  2006/06/09 14:18:44  mbork
- * implemented xml renderer
- *
- * Revision 1.7  2006/06/08 16:14:36  mbork
- * Implemented some XMLRenderer functions, including unit-tests. introduced djunitplugin (see http://works.dgic.co.jp/djunit/index.html)
- *
- * Revision 1.6  2006/06/08 13:23:48  mbork
- * improved documentation, added throws statements even for runtimeexceptions, moved abstractquery to prevent users to call execute directly
- *
- * Revision 1.5  2006/06/07 19:37:28  mbork
- * implemented post queries
- *
- * Revision 1.4  2006/06/06 20:11:04  mbork
- * docu
- *
- * Revision 1.3  2006/06/06 17:39:29  mbork
- * implemented a modelfactory which parses incoming xml-requests and then generates the intern model
- *
- * Revision 1.2  2006/06/05 14:14:11  mbork
- * implemented GET strategies
- *
- * Revision 1.1  2006/05/24 15:18:08  cschenk
- * Introduced a rendering format and a factory that produces renderers (for xml, rdf, html)
- *
- * Revision 1.3  2006/05/24 13:02:44  cschenk
- * Introduced an enum for the HttpMethod and moved the exceptions
- *
- * Revision 1.2  2006/05/21 20:31:51  mbork
- * continued implementing context
- *
- * Revision 1.1  2006/05/19 21:01:08  mbork
- * started implementing rest api
- *
- */
