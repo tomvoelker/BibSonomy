@@ -42,7 +42,7 @@ public final class CreatePostQuery extends AbstractQuery<String>
     *            <li>no tags are specified or the tags have no names</li>
     *            </ul>
     */
-   public CreatePostQuery( String username, Post<Resource> post ) throws IllegalArgumentException
+   public CreatePostQuery( String username, Post<? extends Resource> post ) throws IllegalArgumentException
 	{
 		if( username == null || username.length() == 0 ) throw new IllegalArgumentException( "no username given" );
 		if( post == null ) throw new IllegalArgumentException( "no post specified" );
@@ -91,7 +91,10 @@ public final class CreatePostQuery extends AbstractQuery<String>
 
 /*
  * $Log$
- * Revision 1.4  2007-02-15 10:29:10  mbork
+ * Revision 1.5  2007-05-20 16:49:06  mbork
+ * fixed use of generics
+ *
+ * Revision 1.4  2007/02/15 10:29:10  mbork
  * the LogicInterface now uses Lists instead of Sets
  * fixed use of generics
  *

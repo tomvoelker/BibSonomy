@@ -22,7 +22,7 @@ public final class ChangePostQuery extends AbstractQuery<String>
 {
 	private boolean executed = false;
 	private String result;
-	private Post<Resource> post;
+	private Post<? extends Resource> post;
 	private String username;
 	private String resourceHash;
 
@@ -45,7 +45,7 @@ public final class ChangePostQuery extends AbstractQuery<String>
     *            <li>no tags are specified or the tags have no names</li>
     *            </ul>
     */
-	public ChangePostQuery( String username, String resourceHash, Post<Resource> post ) throws IllegalArgumentException
+	public ChangePostQuery( String username, String resourceHash, Post<? extends Resource> post ) throws IllegalArgumentException
 	{
 		if( username == null || username.length() == 0 ) throw new IllegalArgumentException( "no username given" );
 		if( resourceHash == null || resourceHash.length() == 0 ) throw new IllegalArgumentException( "no resourceHash given" );
@@ -103,7 +103,10 @@ public final class ChangePostQuery extends AbstractQuery<String>
 
 /*
  * $Log$
- * Revision 1.3  2007-02-11 17:55:34  mbork
+ * Revision 1.4  2007-05-20 16:49:06  mbork
+ * fixed use of generics
+ *
+ * Revision 1.3  2007/02/11 17:55:34  mbork
  * switched REST-api to the 'new' datamodel, which does not deserve the name...
  *
  * Revision 1.2  2007/02/05 10:35:55  cschenk
