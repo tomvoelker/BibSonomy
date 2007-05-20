@@ -56,7 +56,7 @@ public class GetUserPostsStrategy extends Strategy
 		
 		Class<? extends Resource> resourceType = Resource.getResourceType( context.getStringAttribute( "resourcetype", "all" ) );
 		List<? extends Post<? extends Resource>> posts = context.getLogic().getPosts( context.getAuthUserName(), resourceType, GroupingEntity.USER, 
-				userName, context.getTags( "tags" ), null, false, false, start, end );
+				userName, context.getTags( "tags" ), null, null, start, end );
       
       ViewModel viewModel = new ViewModel();
       if( posts.size() < end + 1 )
@@ -100,7 +100,10 @@ public class GetUserPostsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.9  2007-05-01 22:28:47  jillig
+ * Revision 1.10  2007-05-20 00:01:43  jillig
+ * ->Order-Enum
+ *
+ * Revision 1.9  2007/05/01 22:28:47  jillig
  * ->more type-safety with class as resourcetype
  *
  * Revision 1.8  2007/04/15 11:05:07  mbork

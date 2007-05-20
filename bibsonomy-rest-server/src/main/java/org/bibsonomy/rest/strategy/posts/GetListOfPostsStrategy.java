@@ -60,7 +60,7 @@ public class GetListOfPostsStrategy extends Strategy
 		}
 
 		List<? extends Post<? extends Resource>> posts = context.getLogic().getPosts( context.getAuthUserName(), resourceType, grouping,
-            groupingValue, context.getTags( "tags" ), hash, false, false, start, end );
+            groupingValue, context.getTags( "tags" ), hash, null, start, end );
       ViewModel viewModel = new ViewModel();
       if( posts.size() < end + 1 )
       {
@@ -109,7 +109,10 @@ public class GetListOfPostsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.10  2007-05-05 20:40:36  mbork
+ * Revision 1.11  2007-05-20 00:01:43  jillig
+ * ->Order-Enum
+ *
+ * Revision 1.10  2007/05/05 20:40:36  mbork
  * fixed a bug caused by the removal of the ResourceType enum which was not covered by a test
  *
  * Revision 1.9  2007/05/01 22:28:01  jillig

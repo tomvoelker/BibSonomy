@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.LogicInterface;
+import org.bibsonomy.database.Order;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -157,7 +158,7 @@ public class TestDatabase implements LogicInterface
 	/**
 	 * note: popular and added are not considered
 	 */
-	public <T extends Resource> List<Post<T>> getPosts( String authUser, Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, boolean popular, boolean added, int start, int end )
+	public <T extends Resource> List<Post<T>> getPosts( String authUser, Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, int start, int end )
 	{
 		List<Post<? extends Resource>> posts = new LinkedList<Post<? extends Resource>>();
 		// do grouping stuff
@@ -744,7 +745,10 @@ public class TestDatabase implements LogicInterface
 
 /*
  * $Log$
- * Revision 1.7  2007-05-15 08:46:59  mbork
+ * Revision 1.8  2007-05-20 00:01:43  jillig
+ * ->Order-Enum
+ *
+ * Revision 1.7  2007/05/15 08:46:59  mbork
  * refactored Tag.count to Tag.globalcount
  *
  * Revision 1.6  2007/05/10 20:25:40  mbork
