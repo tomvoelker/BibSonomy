@@ -16,10 +16,13 @@ import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.database.LogicInterface;
 import org.bibsonomy.database.managers.RestDatabaseManager;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.enums.RenderingFormat;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.ValidationException;
+import org.bibsonomy.rest.renderer.Renderer;
+import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.strategy.Context;
 
 import sun.misc.BASE64Decoder;
@@ -163,24 +166,55 @@ public final class RestServlet extends HttpServlet
       catch( AuthenticationException e )
       {
          response.setHeader( "WWW-Authenticate", "Basic realm=\"BibsonomyWebService\"" );
-         response.sendError( HttpURLConnection.HTTP_UNAUTHORIZED, e.getMessage() );
+         sendError( request, response, HttpURLConnection.HTTP_UNAUTHORIZED, e.getMessage() );
       }
       catch( InternServerException e )
       {
-         response.sendError( HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage() );
+         sendError( request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage() );
       }
       catch( NoSuchResourceException e )
       {
-         response.sendError( HttpServletResponse.SC_NOT_FOUND, e.getMessage() );
+         sendError( request, response, HttpServletResponse.SC_NOT_FOUND, e.getMessage() );
       }
       catch( BadRequestOrResponseException e )
       {
-         response.sendError( HttpServletResponse.SC_BAD_REQUEST, e.getMessage() );
+         sendError( request, response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage() );
       }
       catch( ValidationException e )
       {
-         response.sendError( HttpServletResponse.SC_FORBIDDEN, e.getMessage() );
+         sendError( request, response, HttpServletResponse.SC_FORBIDDEN, e.getMessage() );
       }
+      catch( Exception e )
+      {
+         // well, lets fetch each error..
+         sendError( request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage() );
+      }
+   }
+   
+   /**
+    * Sends an error to the client.
+    * 
+    * @param request the current {@link HttpServletRequest} object.
+    * @param response the current {@link HttpServletResponse} object.
+    * @param code the error code to send.
+    * @param message the message to send.
+    * @throws IOException 
+    * @throws  
+    */
+   private void sendError( HttpServletRequest request, HttpServletResponse response, int code, String message ) throws IOException
+   {
+      // get renderer
+      String renderingFormatName = Context.getStringAttribute( request.getParameterMap(), "format", "xml" );
+      RenderingFormat renderingFormat = RenderingFormat.getRenderingFormat( renderingFormatName );
+      Renderer renderer = RendererFactory.getRenderer( renderingFormat );
+      
+      // send error
+      response.setStatus( code );
+      ByteArrayOutputStream cachingStream = new ByteArrayOutputStream();
+      Writer writer = new OutputStreamWriter( cachingStream, Charset.forName( "UTF-8" ) );
+      renderer.serializeError( writer, message );
+      response.setContentLength( cachingStream.size() );
+      response.getOutputStream().print( cachingStream.toString( "UTF-8" ) );
    }
    
 	/**
@@ -220,76 +254,3 @@ public final class RestServlet extends HttpServlet
       return username;
    }
 }
-
-/*
- * $Log$
- * Revision 1.13  2007-05-10 20:25:40  mbork
- * api key implemented
- *
- * Revision 1.12  2007/04/19 19:42:46  mbork
- * added the apikey-mechanism to the rest api and added a method to the LogicInterface to validate it.
- *
- * Revision 1.11  2007/04/19 16:47:54  rja
- * introduced bug
- *
- * Revision 1.9  2007/04/19 13:30:40  rja
- * fixed a bug concerning Tests
- *
- * Revision 1.8  2007/04/15 11:05:39  mbork
- * fixed a bug concerning UTF-8 characters. Added a test
- *
- * Revision 1.7  2007/04/03 14:18:53  rja
- * changed name
- *
- * Revision 1.6  2007/02/21 14:08:35  mbork
- * - included code generation of the schema in the maven2 build-lifecycle
- * - removed circular dependencies among the modules
- * - cleaned up the poms of the modules
- * - fixed failing unit-tests
- *
- * Revision 1.5  2007/02/16 16:11:28  mbork
- * changed default value from "" to null
- *
- * Revision 1.3  2007/02/12 12:08:16  mgrahl
- * *** empty log message ***
- *
- * Revision 1.2  2007/02/11 19:38:00  mbork
- * successfully switched to the database interface.
- *
- * Revision 1.1  2006/10/24 21:39:53  mbork
- * split up rest api into correct modules. verified with junit tests.
- *
- * Revision 1.1  2006/10/10 12:42:15  cschenk
- * Auf Multi-Module Build umgestellt
- *
- * Revision 1.10  2006/09/24 21:26:21  mbork
- * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
- *
- * Revision 1.9  2006/09/16 18:19:16  mbork
- * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
- *
- * Revision 1.8  2006/06/28 15:36:13  mbork
- * started implementing other http methods
- *
- * Revision 1.7  2006/06/13 18:07:40  mbork
- * introduced unit tests for servlet using null-pattern for request and response. tested to use cactus/ httpunit, but decided not to use them.
- *
- * Revision 1.6  2006/06/11 15:25:26  mbork
- * removed gatekeeper, changed authentication process
- *
- * Revision 1.5  2006/06/11 11:51:25  mbork
- * removed todo strategy, throws exception on wrong request url
- *
- * Revision 1.4  2006/06/06 17:39:30  mbork
- * implemented a modelfactory which parses incoming xml-requests and then generates the intern model
- *
- * Revision 1.3  2006/05/24 20:09:03  jillig
- * renamed DbInterface to RESTs LogicInterface
- *
- * Revision 1.2  2006/05/24 13:02:44  cschenk
- * Introduced an enum for the HttpMethod and moved the exceptions
- *
- * Revision 1.1  2006/05/19 21:01:09  mbork
- * started implementing rest api
- *
- */
