@@ -30,7 +30,7 @@ public class ContextTest extends TestCase
 	
 	public void testGetSimpleTags()
 	{
-		parameterMap.put( "tags", new String[]{ "foo+bar" } );
+		parameterMap.put( "tags", new String[]{ "foo bar" } );
 		Context c = new Context( db, HttpMethod.GET, "/users/egal/posts", parameterMap );
 		
 		List<String> tags = c.getTags( "tags" );
@@ -41,7 +41,7 @@ public class ContextTest extends TestCase
 	
 	public void testGetTags()
 	{
-		parameterMap.put( "tags", new String[]{ "foo+bar+->subtags+-->transitiveSubtags+supertags->+transitiveSupertags-->+<->correlated" } );
+		parameterMap.put( "tags", new String[]{ "foo bar ->subtags -->transitiveSubtags supertags-> transitiveSupertags--> <->correlated" } );
 		Context c = new Context( db, HttpMethod.GET, "/users/egal/posts", parameterMap );
 		
 		List<String> tags = c.getTags( "tags" );
@@ -58,7 +58,10 @@ public class ContextTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.3  2007-02-21 14:08:35  mbork
+ * Revision 1.4  2007-05-20 17:07:25  mbork
+ * fixed test broken by the error-document feature
+ *
+ * Revision 1.3  2007/02/21 14:08:35  mbork
  * - included code generation of the schema in the maven2 build-lifecycle
  * - removed circular dependencies among the modules
  * - cleaned up the poms of the modules
