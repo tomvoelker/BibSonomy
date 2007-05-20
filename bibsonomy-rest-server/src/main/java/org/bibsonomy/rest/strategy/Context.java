@@ -144,7 +144,7 @@ public final class Context
 		String param = getStringAttribute( parameterName, null );
 		if( param != null )
 		{
-			String[] params = param.split( "\\+" );
+			String[] params = param.split( "\\s" );
 			for( int i = 0; i < params.length; ++i )
 			{
 				tags.add( params[ i ] );
@@ -271,7 +271,10 @@ public final class Context
 
 /*
  * $Log$
- * Revision 1.6  2007-05-20 12:08:42  mbork
+ * Revision 1.7  2007-05-20 16:49:40  mbork
+ * fixed getting tags
+ *
+ * Revision 1.6  2007/05/20 12:08:42  mbork
  * refactored getting parameters
  *
  * Revision 1.5  2007/04/15 11:05:07  mbork
