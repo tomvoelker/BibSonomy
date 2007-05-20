@@ -118,7 +118,7 @@ public class WebServiceTest {
 		// Check posts count
 		final Node posts = this.doc.selectSingleNode("//posts");
 		assertEquals(0, Integer.parseInt(posts.valueOf("@start")));
-		assertEquals(14, Integer.parseInt(posts.valueOf("@end")));
+		assertEquals(18, Integer.parseInt(posts.valueOf("@end")));
 
 		this.doc = this.getDocumentForWebServiceAction("posts?start=0&end=10&resourcetype=bibtex");
 		this.doc = this.getDocumentForWebServiceAction("posts?start=0&end=10&resourcetype=bookmark");
