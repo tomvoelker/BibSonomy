@@ -16,6 +16,10 @@
 	<select id="getTagById" resultMap="tags" parameterClass="int">
 		SELECT tag_id, tag_name, tag_stem, tag_ctr FROM tags WHERE tag_id = #id#
 	</select>
+	
+	<select id="getTagByName" resultMap="tags" parameterClass="tagParam">
+		SELECT tag_id, tag_name, tag_stem, tag_ctr FROM tags WHERE tag_name = #name#
+	</select>	
 
 	<select id="getTagByCount" resultMap="tags" parameterClass="tagParam">
 		SELECT tag_id, tag_name, tag_stem, tag_ctr FROM tags WHERE tag_ctr = #count#
