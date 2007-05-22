@@ -1,14 +1,14 @@
 package org.bibsonomy.database.managers.chain;
 
-import java.util.List;
-
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.managers.chain.tag.TagChain;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChain;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChain;
-import org.bibsonomy.database.util.Transaction;
-import org.bibsonomy.testutil.ParamUtils;
+import org.bibsonomy.database.params.BookmarkParam;
+import org.bibsonomy.database.params.TagParam;
+import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.database.params.GroupParam;
 import org.junit.After;
 import org.junit.Before;
 
@@ -24,24 +24,7 @@ public class AbstractChainTest extends AbstractDatabaseManagerTest {
 	protected TagChain tagChain;
 	protected BookmarkChain bookmarkChain;
 	protected BibTexChain bibtexChain;
-	
-	
-	// parameters
-	protected String authUser; 
-	protected GroupingEntity grouping; 
-	protected String groupingName; 
-	protected List<String> tags; 
-	protected String hash; 
-	protected boolean popular;
-	protected boolean added; 
-	protected int start; 
-	protected int end; 			
-	protected String regex;
-	protected Boolean subTags;
-	protected Boolean superTags;
-	protected Boolean subSuperTagsTransitive;
-	protected String tagName;	
-	
+			
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.database.managers.AbstractDatabaseManagerTest#setUp()
 	 */
@@ -61,40 +44,26 @@ public class AbstractChainTest extends AbstractDatabaseManagerTest {
 		super.tearDown();
 		this.tagChain = null;
 		this.bibtexChain = null;
-		this.bookmarkChain = null;
-		
-		this.authUser = null; 
-		this.grouping = null; 
-		this.groupingName = null; 
-		this.tags = null; 
-		this.hash = null; 
-		this.popular = false;
-		this.added = false; 
-		this.start = 0; 
-		this.end = 0; 			
-		this.regex = null;
-		this.subTags = null;
-		this.superTags = null;
-		this.subSuperTagsTransitive = null;
-		this.tagName = null;		
+		this.bookmarkChain = null;			
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.managers.AbstractDatabaseManagerTest#resetParameters()
+	 * 
+	 * In order to check if the chain elements are called correctly, we need to completely
+	 * reset the parameters.
+	 * 
+	 * @author dbe
+	 */
 	protected void resetParameters() {
-		super.resetParameters();
-		this.authUser = null; 
-		this.grouping = null; 
-		this.groupingName = null; 
-		this.tags = null; 
-		this.hash = null; 
-		this.popular = false;
-		this.added = false; 
-		this.start = 0; 
-		this.end = 0; 			
-		this.regex = null;
-		this.subTags = null;
-		this.superTags = null;
-		this.subSuperTagsTransitive = null;
-		this.tagName = null;			
+				
+		this.generalParam = new BookmarkParam();
+		this.bookmarkParam = new BookmarkParam();
+		this.bibtexParam = new BibTexParam();
+		this.userParam = new UserParam();
+		this.tagParam = new TagParam();
+		this.groupParam = new GroupParam();;
+		
 	}
 	
 }
