@@ -21,23 +21,25 @@ public class GetTagByTagName extends TagChainElement {
 	 * @see org.bibsonomy.database.managers.chain.ChainElementForTag#canHandle(java.lang.String, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.lang.String, java.lang.Boolean, java.lang.Boolean, java.lang.Boolean, int, int, org.bibsonomy.database.util.Transaction)
 	 */
 	@Override
-	protected boolean canHandle(String authUser, GroupingEntity grouping, String groupingName, String regex, Boolean subTags, Boolean superTags, Boolean subSuperTagsTransitive, String tagName, int start, int end, final Transaction session) {		
-		return  tagName != null && tagName != "" && subTags != null && superTags != null && subTags == false && superTags == false;
+	protected boolean canHandle(TagParam param) {		
+		// return  tagName != null && tagName != "" && subTags != null && superTags != null && subTags == false && superTags == false;
+		return false;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.database.managers.chain.ChainElementForTag#handle(java.lang.String, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.lang.String, java.lang.Boolean, java.lang.Boolean, java.lang.Boolean, int, int, org.bibsonomy.database.util.Transaction)
 	 */
 	@Override
-	protected List<Tag> handle(String authUser, GroupingEntity grouping, String groupingName, String regex, Boolean subTags, Boolean superTags, Boolean subSuperTagsTransitive, String tagName, int start, int end, final Transaction session) {
+	protected List<Tag> handle(final TagParam param, final Transaction session) {
 
-		final TagParam param = new TagParam();
-		param.setName(tagName);
-				
-		List<Tag> tags = db.getTagByTagName(param, session);
-		if (tags.size() != 0) {
-			System.out.println("GetTagByTagName");
-		}
-		return tags;				
+//		final TagParam param = new TagParam();
+//		param.setName(tagName);
+//				
+//		List<Tag> tags = db.getTagByTagName(param, session);
+//		if (tags.size() != 0) {
+//			System.out.println("GetTagByTagName");
+//		}
+//		return tags;
+		return null;
 	}
 }
