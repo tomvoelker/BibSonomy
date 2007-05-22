@@ -7,7 +7,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.GroupingEntityTest;
 import org.bibsonomy.model.Tag;
 import org.junit.Test;
 
