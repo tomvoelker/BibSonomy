@@ -27,7 +27,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getTagByCount() {
 		final List<Tag> tags = this.tagDb.getTagByCount(this.tagParam, this.dbSession);
-		assertEquals(19, tags.size());
+		assertEquals(18, tags.size());
 		for (final Tag tag : tags)
 			assertEquals(100, tag.getGlobalcount());
 	}
