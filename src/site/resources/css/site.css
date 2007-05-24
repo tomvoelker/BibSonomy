@@ -1,11 +1,61 @@
 /* UniK Logo */
 #bannerLeft img {
-	padding-top: 1.6em;
-	padding-left: 3.6em;
+	padding-top: 70px;
+	padding-left: 60px;
 }
 
 /* KDE Logo */
 #bannerRight img {
-	padding-right: 0.5em;
-	padding-bottom: 0.3em;
+	padding-right: 60px;
+	padding-bottom: 10px;
+}
+
+#breadcrumbs {
+	display: none;
+}
+
+#leftColumn {
+	margin-left: 60px;
+	width: 160px;
+	border: none;
+	color: #fff;
+	background: #a3004e;
+}
+
+#navcolumn ul li {
+	padding-bottom: 0.4em;
+	font-size: small;
+}
+
+#navcolumn h5 {
+	padding-bottom: 0.2em;
+	font-size: medium;
+	color: #fff;
+	border: none;
+}
+
+#navcolumn a {
+	color: #fff;
+}
+
+#bodyColumn {
+	/* 60px + 160px + 20px */
+	margin-left: 240px;
+	margin-right: 60px;
+}
+
+#bodyColumn a {
+	color: #a3004e;
+}
+
+.section h2, h3 {
+	padding: 0px;
+	font-family: sans-serif;
+	border: none;
+	border-bottom: #efd0d5 1px solid;
+	background: #fff;
+}
+
+#footer {
+	padding-right: 60px;
 }
