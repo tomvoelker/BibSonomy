@@ -46,7 +46,7 @@ public class DatabasePluginRegistry {
 	}
 
 	private void executeRunnable(final Runnable runnable) {
-		// If the runnable is null we do nothing
+		// If the runnable is null -> do nothing
 		if (runnable == null) return;
 		// this.executor.execute(runnable);
 		runnable.run();

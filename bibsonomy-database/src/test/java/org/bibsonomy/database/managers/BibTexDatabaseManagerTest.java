@@ -217,7 +217,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	@Test
-	public void insertBibTex() {
+	public void insertBibTexPost() {
 		final Post<BibTex> toInsert = ModelUtils.generatePost(BibTex.class);
 		toInsert.setContentId(Integer.MAX_VALUE);
 		this.bibTexDb.insertBibTexPost(toInsert, this.dbSession);

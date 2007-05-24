@@ -14,7 +14,7 @@ import org.bibsonomy.database.util.Transaction;
  */
 public interface DatabasePlugin {
 
-	public Runnable onBibTexInsert(final int contentId, final Transaction session);
+	public Runnable onBibTexInsert(int contentId, Transaction session);
 
-	public Runnable onBibTexUpdate(final int newContentId, final int contentId, final Transaction session);
+	public Runnable onBibTexUpdate(int newContentId, int contentId, Transaction session);
 }
