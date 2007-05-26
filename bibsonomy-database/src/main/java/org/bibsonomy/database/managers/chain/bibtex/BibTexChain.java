@@ -3,6 +3,7 @@ package org.bibsonomy.database.managers.chain.bibtex;
 import org.bibsonomy.database.managers.chain.ChainElement;
 import org.bibsonomy.database.managers.chain.FirstChainElement;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByConceptForUser;
+import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByFriends;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByHash;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByHashForUser;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByTagNames;
@@ -38,6 +39,7 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByConceptForUser;
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByUserFriends;
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByUserAndTagsFriends;
+	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByFriends;
 
 	public BibTexChain() {
 		this.getBibTexByHash = new GetBibtexByHash();
@@ -53,6 +55,7 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 		this.getBibTexByConceptForUser = new GetBibtexByConceptForUser();
 		this.getBibTexByUserFriends = new GetBibtexOfFriendsByUser();
 		this.getBibTexByUserAndTagsFriends = new GetBibtexOfFriendsByTags();
+		this.getBibTexByFriends = new GetBibtexByFriends();
 
 		this.getBibTexForHomePage.setNext(this.getBibTexForPopular);
 		this.getBibTexForPopular.setNext(this.getBibTexForUser);
@@ -66,6 +69,7 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 		this.getBibTexViewable.setNext(this.getBibTexByConceptForUser);
 		this.getBibTexByConceptForUser.setNext(this.getBibTexByUserFriends);
 		this.getBibTexByUserFriends.setNext(this.getBibTexByUserAndTagsFriends);
+		this.getBibTexByUserAndTagsFriends.setNext(this.getBibTexByFriends);
 	}
 
 	public ChainElement<Post<BibTex>, BibTexParam> getFirstElement() {
