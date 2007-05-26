@@ -21,9 +21,15 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	// read
 	public Post<T> getPostDetails(String authUser, String resourceHash, String userName, Transaction session);
 
-	// delete
+	/**
+	 *  delete
+	 *  @return true, if entry existed and was deleted
+	 */
 	public boolean deletePost(String userName, String resourceHash, Transaction session);
 
-	// create, update
+	/**
+	 *  create, update
+	 *  @return true, if entry existed and was updated
+	 */
 	public boolean storePost(String userName, Post<T> post, String oldHash, Transaction session);
 }
