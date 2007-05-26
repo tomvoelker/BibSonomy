@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.util.Transaction;
@@ -67,6 +68,14 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 	
 	protected boolean present(Object o) {
 		return (o != null);
+	}
+	
+	protected boolean present(GroupID gid) {
+		return ((gid != null) && (gid != GroupID.GROUP_INVALID));
+	}
+	
+	protected boolean presentValidGroupId(int gid) {
+		return (gid != GroupID.GROUP_INVALID.getId());
 	}
 	
 	protected boolean nullOrEqual(Object requested, Object supported) {
