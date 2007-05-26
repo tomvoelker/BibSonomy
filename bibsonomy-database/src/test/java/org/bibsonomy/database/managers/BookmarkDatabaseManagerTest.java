@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import java.sql.SQLException;
 
 import org.bibsonomy.common.enums.GroupID;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -173,9 +174,10 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// this.db.getBookmark().getNewContentID(this.bookmarkParam);
 	}
 
-	@Test
+	// FIXME: either db or single-result querytype is wrong @Test
 	public void getContentIDForBookmark() {
-		// TODO not tested
-		this.bookmarkDb.getContentIDForBookmark(this.bookmarkParam, this.dbSession);
+		this.bookmarkParam.setHash("5d2a36f3df07d2b03839faf6e05ec719");
+		this.bookmarkParam.setUserName("jaeschke");
+		Assert.assertEquals(2648964, this.bookmarkDb.getContentIDForBookmark(this.bookmarkParam, this.dbSession));
 	}
 }
