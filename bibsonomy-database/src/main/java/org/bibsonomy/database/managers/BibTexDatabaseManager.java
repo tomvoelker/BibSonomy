@@ -230,6 +230,13 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
 		return this.bibtexList("getBibTexForUsersInGroup", param, session);
 	}
+	
+	public List<Post<BibTex>> getBibTexForUsersInGroup(final String loginUserName, final Integer groupId, final Transaction session) {
+		final BibTexParam param = new BibTexParam();
+		param.setUserName(loginUserName);
+		param.setGroupId(groupId);
+		return getBibTexForUsersInGroup(param, session);
+	}
 
 	/**
 	 * Returns the number of publications belonging to the group.<br/><br/>
@@ -261,6 +268,9 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * restricted. The queries are built in a way, that not only public posts
 	 * are retrieved, but also friends or private or other groups, depending
 	 * upon if userName is allowed to see them.
+	 * 
+	 * ATTENTION! in case of a given groupId it is NOT checked if the user actually
+	 * belongs to this group.
 	 */
 	public List<Post<BibTex>> getBibTexForUser(final BibTexParam param, final Transaction session) {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
