@@ -103,9 +103,8 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 * ContendID for bookmark and bibtex
 	 */
 	public Integer getNewContentId(final ConstantID idsType, final Transaction session) {
-		final Integer rVal = this.queryForObject("getNewContentId", idsType.getId(), Integer.class, session);
 		this.updateIds(idsType, session);
-		return rVal;
+		return this.queryForObject("getNewContentId", idsType.getId(), Integer.class, session);
 	}
 
 	protected void updateIds(final ConstantID idsType, final Transaction session) {
