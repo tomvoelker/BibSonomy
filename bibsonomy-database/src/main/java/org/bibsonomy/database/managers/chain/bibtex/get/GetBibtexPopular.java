@@ -17,11 +17,7 @@ import org.bibsonomy.model.Post;
 public class GetBibtexPopular extends BibTexChainElement {
 
 	/**
-	 * return a list of bibtex by a logged user. Following arguments have to be
-	 * given:
-	 * 
-	 * grouping:irrelevant name:irrelevant tags:irrelevant hash:irrelevant
-	 * popular:true added:false
+	 * return a list of bibtex by a logged user.
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final Transaction session) {

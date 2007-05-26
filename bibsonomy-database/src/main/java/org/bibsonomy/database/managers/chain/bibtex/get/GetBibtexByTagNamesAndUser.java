@@ -17,10 +17,7 @@ import org.bibsonomy.model.Post;
 public class GetBibtexByTagNamesAndUser extends BibTexChainElement {
 
 	/**
-	 * return a list of bibtex by given tag/tags and User. Following arguments
-	 * have to be given:
-	 * 
-	 * grouping:User name:given tags:given hash:null popular:false added:false
+	 * return a list of bibtex by given tag/tags and User.
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final Transaction session) {

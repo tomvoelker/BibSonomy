@@ -16,11 +16,7 @@ import org.bibsonomy.model.Post;
 public class GetBibtexByHash extends BibTexChainElement {
 
 	/**
-	 * return a list of bibtex by a given hash. Following arguments have to be
-	 * given:
-	 * 
-	 * grouping:all name:irrelevant tags:NULL hash:given popular:false
-	 * added:false
+	 * return a list of bibtex by a given hash.
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final Transaction session) {

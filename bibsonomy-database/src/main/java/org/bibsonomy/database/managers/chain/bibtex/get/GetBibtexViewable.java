@@ -21,11 +21,7 @@ public class GetBibtexViewable extends BibTexChainElement {
 
 	/**
 	 * return a list of bibtex by a given group (which is only viewable for
-	 * groupmembers excluded public option regarding setting a post). Following
-	 * arguments have to be given:
-	 * 
-	 * grouping:viewable name:given tags:NULL hash:NULL popular:falses
-	 * added:false
+	 * groupmembers excluded public option regarding setting a post).
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final Transaction session) {
@@ -36,7 +32,6 @@ public class GetBibtexViewable extends BibTexChainElement {
 		}
 		log.debug("groupId=" + groupId);
 		param.setGroupId(groupId);
-		//TODO: is this needed?  param.setGroups(this.generalDb.getGroupsForUser(param, session));
 
 		return this.db.getBibTexViewable(param, session);
 	}

@@ -19,9 +19,7 @@ public class GetBibtexByConceptForUser extends BibTexChainElement {
 
 	/**
 	 * return a list of bibtex by a tag-concept. All bookmarks will be return
-	 * for a given "super-tag". Following arguments have to be given:
-	 * 
-	 * grouping:user name:given tags:given hash:null popular:false added:true
+	 * for a given "super-tag".
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final Transaction session) {

@@ -16,14 +16,10 @@ import org.bibsonomy.model.Post;
 public class GetBibtexByHashForUser extends BibTexChainElement {
 
 	/**
-	 * return a list of bibtex by a given hash and a logged user. Following
-	 * arguments have to be given:
-	 * 
-	 * grouping:user name:given tags:NULL hash:given popular:false added:false
+	 * return a list of bibtex by a given hash and a logged user.
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final Transaction session) {
-		// TODO: is this needed?  param.setGroups(this.generalDb.getGroupsForUser(param, session));
 		return this.db.getBibTexByHashForUser(param, session);
 	}
 

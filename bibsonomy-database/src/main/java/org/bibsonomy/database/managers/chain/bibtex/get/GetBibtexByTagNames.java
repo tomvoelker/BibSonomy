@@ -19,11 +19,7 @@ import org.bibsonomy.model.Post;
 public class GetBibtexByTagNames extends BibTexChainElement {
 
 	/**
-	 * Returns a list of posts (bibtex) tagged with the given tags. Following
-	 * arguments have to be given:
-	 * 
-	 * grouping:all name:irrelevant tags:given hash:null popular:false
-	 * added:false
+	 * Returns a list of posts (bibtex) tagged with the given tags.
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final Transaction session) {
