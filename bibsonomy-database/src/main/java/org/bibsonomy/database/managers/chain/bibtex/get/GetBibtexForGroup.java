@@ -16,21 +16,16 @@ import org.bibsonomy.model.Post;
 public class GetBibtexForGroup extends BibTexChainElement {
 
 	/**
-	 * return a list of bibtex by a given group. Following arguments have to be
-	 * given:
-	 * 
-	 * grouping:group name:given tags:NULL hash:null popular:false added:false
+	 * return a list of bibtex by a given group.
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final Transaction session) {
 		param.setGroupId(this.generalDb.getGroupIdByGroupName(param, session));
-		// TODO: is this needed?  param.setGroups(this.generalDb.getGroupsForUser(param, session));
-
 		return this.db.getBibTexForUsersInGroup(param, session);
 	}
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.GROUP) && present(param.getRequestedGroupName()) &&  !present(param.getTagIndex()) && !present(param.getHash()) && !present(param.getOrder());
+		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.GROUP) && present(param.getRequestedGroupName()) &&  !present(param.getRequestedUserName()) && !present(param.getTagIndex()) && !present(param.getHash()) && !present(param.getOrder());
 	}
 }
