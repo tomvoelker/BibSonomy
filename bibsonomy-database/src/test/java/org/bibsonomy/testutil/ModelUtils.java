@@ -37,21 +37,13 @@ public class ModelUtils {
 
 	private static final Logger log = Logger.getLogger(ModelUtils.class);
 
-	// FIXME
 	private static void setResourceDefaults(final Resource resource) {
-		// resource.setContentId(1);
 		resource.setCount(0);
-		// resource.setDate(null);
-		// resource.setGroupId(ConstantID.GROUP_KDE.getId());
-		// resource.setGroupName("kde");
-		// resource.setUrl("");
-		// resource.setUserName("kde");
 	}
 
 	/**
 	 * Creates a bookmark with all properties set.
 	 */
-	// FIXME
 	public static Bookmark getBookmark() {		
 		final Bookmark rVal = new Bookmark();
 		setResourceDefaults(rVal);
