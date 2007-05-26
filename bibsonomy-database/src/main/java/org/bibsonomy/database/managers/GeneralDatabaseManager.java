@@ -36,7 +36,12 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 * @return true if the users are friends, false otherwise
 	 */
 	public Boolean isFriendOf(final GenericParam param, final Transaction session) {
-		if (param.getUserName() == null || param.getRequestedUserName() == null) return false;
+		if (param.getUserName() == null || param.getRequestedUserName() == null) {
+			return false;
+		}
+		if (param.getUserName().equals(param.getRequestedUserName())) {
+			return true;
+		}
 		return this.queryForObject("isFriendOf", param, Boolean.class, session);
 	}
 
