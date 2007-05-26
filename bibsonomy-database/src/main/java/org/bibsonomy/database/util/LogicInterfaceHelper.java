@@ -24,7 +24,9 @@ public class LogicInterfaceHelper {
 		final T param = getParam(type);
 		param.setUserName(authUser);
 		param.setGrouping(grouping);
-		param.setRequestedUserName(groupingName);
+		if (grouping != GroupingEntity.GROUP) {
+			param.setRequestedUserName(groupingName);
+		}
 		param.setRequestedGroupName(groupingName);
 		param.setHash(hash);
 		param.setOrder(order);
