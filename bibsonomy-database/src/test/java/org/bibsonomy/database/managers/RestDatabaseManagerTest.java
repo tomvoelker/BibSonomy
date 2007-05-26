@@ -3,6 +3,7 @@ package org.bibsonomy.database.managers;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -84,7 +85,7 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 				this.orderValue = nextOrderValue;
 			}
 			/*
-			FIXME: not tested, because no rank is in model (and proberbly should not be)
+			FIXME: not tested, because no rank is in model (and probably should not be)
 			if (checkOrder == Order.POPULAR) {
 				int nextOrderValue = p.getResource().getRank();
 				Assert.assertTrue("order test", (this.orderValue >= nextOrderValue));
@@ -177,7 +178,7 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	@Test
-	public void getPostsForGroup() {
+	public void getPostsForUsersInGroup() {
 		final HashSet<String> usersInGroup = new HashSet<String>();
 		usersInGroup.addAll( userDb.getUserNamesByGroupId( GroupID.GROUP_KDE.getId(), dbSession) );
 		this.bibTexPostsList = this.restDb.getPosts(TEST_USER_NAME, BibTex.class, GroupingEntity.GROUP, "kde", null, "", null, 0, 10);
@@ -201,25 +202,56 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	@Test
-	public void getPostsByFriendName() {
-		final HashSet<Integer> mustGroups = new HashSet<Integer>();
-		mustGroups.add(GroupID.GROUP_FRIENDS.getId());
+	public void getBibtexOfFriendByTags() {
+		List<String> tags = Arrays.asList(new String[] {"java"});
+		this.bibTexPostsList = this.restDb.getPosts("buzz", BibTex.class, GroupingEntity.FRIEND, "apo", tags, null, Order.ADDED, 0, 19);
+		assertEquals(1, this.bibTexPostsList.size());
+		final Set<String> tagsSet = new HashSet<String>();
+		tagsSet.addAll(tags);
+		final Set<String> userSet = new HashSet<String>();
+		userSet.add("apo");
+		final Set<Integer> mustGroupIds = new HashSet<Integer>();
+		mustGroupIds.add(GroupID.GROUP_FRIENDS.getId());
 		final HashSet<Integer> mustNotGroups = new HashSet<Integer>();
 		mustNotGroups.add(GroupID.GROUP_PRIVATE.getId());
-		this.bibTexPostsList = this.restDb.getPosts(TEST_USER_NAME, BibTex.class, GroupingEntity.FRIEND, "ralfm", null, null, null, 0, 19);
-		assertEquals(0, this.bibTexPostsList.size()); // TODO: test nonempty result
-		assertList(testUserNameSet, null, null, null, mustGroups, mustNotGroups);
+		mustNotGroups.add(GroupID.GROUP_PUBLIC.getId());
+		assertList(userSet, Order.ADDED, tagsSet, null, mustGroupIds, mustNotGroups);
+		
+		this.bibTexPostsList = this.restDb.getPosts("jaeschke", BibTex.class, GroupingEntity.FRIEND, "apo", tags, null, null, 0, 19);
+		assertEquals(0, this.bibTexPostsList.size());
 	}
-
+	
 	@Test
-	public void getPostsByFriendNameAndTag() {
+	public void getBibtexOfFriendByUser() {
+		this.bibTexPostsList = this.restDb.getPosts("buzz", BibTex.class, GroupingEntity.FRIEND, "apo", new ArrayList<String>(0), null, Order.ADDED, 0, 19);
+		assertEquals(2, this.bibTexPostsList.size());
+		final Set<Integer> mustGroupIds = new HashSet<Integer>();
+		mustGroupIds.add(GroupID.GROUP_FRIENDS.getId());
+		final HashSet<Integer> mustNotGroups = new HashSet<Integer>();
+		mustNotGroups.add(GroupID.GROUP_PRIVATE.getId());
+		mustNotGroups.add(GroupID.GROUP_PUBLIC.getId());
+		final Set<String> userSet = new HashSet<String>();
+		userSet.add("apo");
+		assertList(userSet, Order.ADDED, null, null, mustGroupIds, mustNotGroups);
+		
+		this.bibTexPostsList = this.restDb.getPosts("jaeschke", BibTex.class, GroupingEntity.FRIEND, "apo", new ArrayList<String>(0), null, Order.ADDED, 0, 19);
+		assertEquals(0, this.bibTexPostsList.size());
+	}
+	
+	@Test
+	public void getBibtexByFriends() {
 		final HashSet<Integer> mustGroups = new HashSet<Integer>();
 		mustGroups.add(GroupID.GROUP_FRIENDS.getId());
 		final HashSet<Integer> mustNotGroups = new HashSet<Integer>();
 		mustNotGroups.add(GroupID.GROUP_PRIVATE.getId());
-		this.bibTexPostsList = this.restDb.getPosts(TEST_USER_NAME, BibTex.class, GroupingEntity.FRIEND, "ralfm", taglistfriend, null, null, 0, 19);
-		assertEquals(0, this.bibTexPostsList.size());  // TODO: test nonempty result
-		assertList(testUserNameSet, null, this.tagSet, null, mustGroups, mustNotGroups);
+		mustNotGroups.add(GroupID.GROUP_PUBLIC.getId());
+		this.bibTexPostsList = this.restDb.getPosts("mwkuster", BibTex.class, GroupingEntity.FRIEND, null, null, null, Order.ADDED, 0, 19);
+		assertEquals(19, this.bibTexPostsList.size());
+		assertList(null, Order.ADDED, null, null, mustGroups, mustNotGroups);
+		
+		this.bibTexPostsList = this.restDb.getPosts("mwkuster", BibTex.class, GroupingEntity.FRIEND, null, null, null, Order.ADDED, 100, 200);
+		assertEquals(10, this.bibTexPostsList.size());
+		assertList(null, Order.ADDED, null, null, mustGroups, mustNotGroups);
 	}
 
 	@Test
