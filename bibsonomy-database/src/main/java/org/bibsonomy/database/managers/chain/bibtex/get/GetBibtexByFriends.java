@@ -3,6 +3,7 @@ package org.bibsonomy.database.managers.chain.bibtex.get;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.Order;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.Transaction;
@@ -10,9 +11,8 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 
 /**
- * TODO check
- * 
  * @author Miranda Grahl
+ * @author Jens Illig
  * @version $Id$
  */
 public class GetBibtexByFriends extends BibTexChainElement {
@@ -21,8 +21,6 @@ public class GetBibtexByFriends extends BibTexChainElement {
 	 * TODO extension with user restriction rearding returned bibtex and
 	 * appropriate namming of URL in REST interface
 	 * 
-	 * grouping:friend name:given tags:NULL hash:NULL popular:false added:false
-	 * 
 	 * /user/friend
 	 */
 	@Override
@@ -30,11 +28,8 @@ public class GetBibtexByFriends extends BibTexChainElement {
 		return this.db.getBibTexByUserFriends(param, session);
 	}
 
-	/*
-	 * TODO username: semantik fehlt in API
-	 */
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.FRIEND) && present(param.getRequestedGroupName()) && !present(param.getTagIndex()) && !present(param.getHash()) && !present(param.getOrder());
+		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.FRIEND) && !present(param.getRequestedGroupName()) && !present(param.getRequestedUserName()) && !present(param.getTagIndex()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED);
 	}
 }
