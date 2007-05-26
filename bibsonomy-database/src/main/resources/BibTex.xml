@@ -66,7 +66,7 @@
 	</select>
 
 	<select id="getBibTexByUserFriends" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, h.ctr
+		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, g.group, h.ctr AS count
 		FROM bibtex b, bibhash h,
 			(SELECT content_id, date                <!-- publications from users of group which currUser may see -->
 			 FROM bibtex b, friends f
