@@ -85,6 +85,10 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertTrue(posts.size() == 1);
 		assertEquals("0154d8012c1773a0a9a54576b0e317bf", posts.get(0).getResource().getInterHash());
 		assertEquals("3e8c52949336171a6c316ccfe9c5e581", posts.get(0).getResource().getIntraHash());
+		
+		// nonpublic personal group
+		posts = this.bibTexDb.getBibTexByHashForUser("tausendeins", "10ec64d80b0ac085328a953bb494fb89", "tausendeins", this.dbSession);
+		assertEquals(1, posts.size());
 	}
 
 	@Test
@@ -178,8 +182,9 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	@Test
-	public void getBibTexForGroup() {
+	public void getBibTexForUsersInGroup() {
 		this.bibTexDb.getBibTexForUsersInGroup(this.bibtexParam, this.dbSession);
+		this.bibTexDb.getBibTexForUsersInGroup("jaeschke", GroupID.GROUP_KDE.getId(), this.dbSession);
 	}
 
 	@Test
