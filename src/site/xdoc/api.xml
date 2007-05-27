@@ -6,25 +6,19 @@
 	<body>
 		<section name="API">
 			<p>
-				BibSonomy provides a webservice using Representational
-				State Transfer (REST), a software architectural style
-				for distributed hypermedia systems. The term originated
-				in a 2000 doctoral dissertation about the web written by
-				Roy Fielding, one of the principal authors of the HTTP
-				protocol specification. This site is intended for
-				developers who want to develop applications which
-				interact with BibSonomy.
+				BibSonomy provides a webservice using Representational State Transfer (REST), a
+				software architectural style for distributed hypermedia systems. The term originated
+				in a 2000 doctoral dissertation about the web written by Roy Fielding, one of the
+				principal authors of the HTTP protocol specification. This site is intended for
+				developers who want to develop applications which interact with BibSonomy.
 			</p>
 			<p>
-				You can use the provided client library, written in
-				Java, to access the API or you can directly interact
-				with the webservice if you would like to write a client
-				in a language other than Java:
+				You can use the provided client library, written in Java, to access the API or you
+				can directly interact with the webservice if you would like to write a client in a
+				language other than Java:
 				<ul>
 					<li>
-						<a href="javaclient.html">
-							Java client library
-						</a>
+						<a href="javaclient.html">Java client library</a>
 					</li>
 					<li>
 						<a href="genericclient.html">direct access</a>
@@ -33,15 +27,14 @@
 			</p>
 			<subsection name="Methods">
 				<p>
-					For the uniform addressing and identification a URL
-					pattern was specified. The individual inquiries can
-					be partly supplemented with attributes of the form
+					For the uniform addressing and identification a URL pattern was specified. The
+					individual inquiries can be partly supplemented with attributes of the form
 					<em>key=value</em>
 					.
 				</p>
 				<p>
-					An overview of the currently available methods is
-					outlined in the following table.
+					An overview of the currently available methods is outlined in the following
+					table.
 				</p>
 				<p>
 					<table>
@@ -52,7 +45,9 @@
 							<th>Status</th>
 						</tr>
 						<tr>
-							<td>List of all users</td>
+							<td>
+								<a href="methods/ListOfAllUsers.html">List of all users</a>
+							</td>
 							<td>GET</td>
 							<td>/users</td>
 							<td>
@@ -60,7 +55,9 @@
 							</td>
 						</tr>
 						<tr>
-							<td>Create a user</td>
+							<td>
+								<a href="methods/CreateUser.html">Create a user</a>
+							</td>
 							<td>POST</td>
 							<td>/users</td>
 							<td>
@@ -68,7 +65,9 @@
 							</td>
 						</tr>
 						<tr>
-							<td>Details for a user</td>
+							<td>
+								<a href="methods/DetailsForUser.html">Details for a user</a>
+							</td>
 							<td>GET</td>
 							<td>/users/[username]</td>
 							<td>
@@ -76,7 +75,9 @@
 							</td>
 						</tr>
 						<tr>
-							<td>Change user details</td>
+							<td>
+								<a href="methods/ChangeUserDetails.html">Change user details</a>
+							</td>
 							<td>PUT</td>
 							<td>/users/[username]</td>
 							<td>
@@ -84,7 +85,9 @@
 							</td>
 						</tr>
 						<tr>
-							<td>Delete user</td>
+							<td>
+								<a href="methods/DeleteUser.html">Delete user</a>
+							</td>
 							<td>DELETE</td>
 							<td>/users/[username]</td>
 							<td>
@@ -92,11 +95,14 @@
 							</td>
 						</tr>
 						<tr>
-							<td>List of posts for a users</td>
+							<td>
+								<a href="methods/ListOfPostsForUser.html">
+									List of posts for a users
+								</a>
+							</td>
 							<td>GET</td>
 							<td>
-								/users/[username]/posts
-								?tags=[t1+t2+...+tn]
+								/users/[username]/posts ?tags=[t1+t2+...+tn]
 								?resourcetype=(bibtex|bookmark)
 							</td>
 							<td>
@@ -104,7 +110,9 @@
 							</td>
 						</tr>
 						<tr>
-							<td>Add post</td>
+							<td>
+								<a href="methods/AddPost.html">Add post</a>
+							</td>
 							<td>POST</td>
 							<td>/users/[username]/posts</td>
 							<td>
@@ -112,37 +120,39 @@
 							</td>
 						</tr>
 						<tr>
-							<td>Details for a post</td>
+							<td>
+								<a href="methods/DetailsForPost.html">Details for a post</a>
+							</td>
 							<td>GET</td>
-							<td>
-								/users/[username]/posts/[resourceHash]
-							</td>
+							<td>/users/[username]/posts/[resourceHash]</td>
 							<td>
 								<img src="images/icon_success_sml.gif" />
 							</td>
 						</tr>
 						<tr>
-							<td>Change post</td>
+							<td>
+								<a href="methods/ChangePost.html">Change post</a>
+							</td>
 							<td>PUT</td>
-							<td>
-								/users/[username]/posts/[resourceHash]
-							</td>
+							<td>/users/[username]/posts/[resourceHash]</td>
 							<td>
 								<img src="images/icon_success_sml.gif" />
 							</td>
 						</tr>
 						<tr>
-							<td>Delete post</td>
+							<td>
+								<a href="methods/DeletePost.html">Delete post</a>
+							</td>
 							<td>DELETE</td>
-							<td>
-								/users/[username]/posts/[resourceHash]
-							</td>
+							<td>/users/[username]/posts/[resourceHash]</td>
 							<td>
 								<img src="images/icon_success_sml.gif" />
 							</td>
 						</tr>
 						<tr>
-							<td>Liste of all groups</td>
+							<td>
+								<a href="methods/ListOfAllGroups.html">List of all groups</a>
+							</td>
 							<td>GET</td>
 							<td>/groups</td>
 							<td>
@@ -150,7 +160,9 @@
 							</td>
 						</tr>
 						<tr>
-							<td>Create group</td>
+							<td>
+								<a href="methods/CreateGroup.html">Create a group</a>
+							</td>
 							<td>POST</td>
 							<td>/groups</td>
 							<td>
@@ -158,7 +170,9 @@
 							</td>
 						</tr>
 						<tr>
-							<td>Details for a group</td>
+							<td>
+								<a href="methods/DetailsForGroup.html">Details for a group</a>
+							</td>
 							<td>GET</td>
 							<td>/groups/[groupname]</td>
 							<td>
@@ -166,7 +180,9 @@
 							</td>
 						</tr>
 						<tr>
-							<td>Change group</td>
+							<td>
+								<a href="methods/ChangeGroup.html">Change group</a>
+							</td>
 							<td>PUT</td>
 							<td>/groups/[groupname]</td>
 							<td>
@@ -174,7 +190,9 @@
 							</td>
 						</tr>
 						<tr>
-							<td>Delete group</td>
+							<td>
+								<a href="methods/DeleteGroup.html">Delete group</a>
+							</td>
 							<td>DELETE</td>
 							<td>/groups/[groupname]</td>
 							<td>
@@ -182,7 +200,11 @@
 							</td>
 						</tr>
 						<tr>
-							<td>List of users for a group</td>
+							<td>
+								<a href="methods/ListOfUsersForGroup.html">
+									List of users for a group
+								</a>
+							</td>
 							<td>GET</td>
 							<td>/groups/[groupname]/users</td>
 							<td>
@@ -190,7 +212,9 @@
 							</td>
 						</tr>
 						<tr>
-							<td>Add user to a group</td>
+							<td>
+								<a href="methods/AddUserToGroup.html">Add user to a group</a>
+							</td>
 							<td>POST</td>
 							<td>/groups/[groupname]/users</td>
 							<td>
@@ -198,21 +222,24 @@
 							</td>
 						</tr>
 						<tr>
-							<td>Remove user from a group</td>
-							<td>DELETE</td>
 							<td>
-								/groups/[groupname]/users/[username]
+								<a href="methods/DeleteUserFromGroup.html">
+									Remove user from a group
+								</a>
 							</td>
+							<td>DELETE</td>
+							<td>/groups/[groupname]/users/[username]</td>
 							<td>
 								<img src="images/icon_error_sml.gif" />
 							</td>
 						</tr>
 						<tr>
-							<td>List of all tags</td>
+							<td>
+								<a href="methods/ListOfAllTags.html">List of all tags</a>
+							</td>
 							<td>GET</td>
 							<td>
-								/tags ?filter=[regex]
-								?(user|group|viewable)=[username/groupname]
+								/tags ?filter=[regex] ?(user|group|viewable)=[username/groupname]
 							</td>
 							<td>
 								<img src="images/icon_error_sml.gif" />
@@ -220,7 +247,7 @@
 						</tr>
 						<tr>
 							<td>
-								Details for a tag; details for a list of
+								Details for a tag ; details for a list of
 								sub-/super-/correlated-tags
 							</td>
 							<td>GET</td>
@@ -230,50 +257,42 @@
 							</td>
 						</tr>
 						<tr>
-							<td>
-								Substitute the shared appearance of
-								t1,t2,... with T1,T2,...
-							</td>
+							<td>Substitute the shared appearance of t1,t2,... with T1,T2,...</td>
 							<td>PUT</td>
-							<td>
-								/substitutetags
-								?from=[t1+t2+..]&amp;to=[T1+T2+..]
-							</td>
+							<td>/substitutetags ?from=[t1+t2+..]&amp;to=[T1+T2+..]</td>
 							<td>
 								<img src="images/icon_error_sml.gif" />
 							</td>
 						</tr>
 						<tr>
-							<td>List of all posts</td>
+							<td>
+								<a href="methods/ListOfAllPosts.html">List of all posts</a>
+							</td>
 							<td>GET</td>
 							<td>
-								/posts ?tags=[t1+t2+...+tn]
-								?resourcetype=(bibtex|bookmark)
-								?(user|group|viewable)=[username/groupname]
-								?resource=[hash]
+								/posts ?tags=[t1+t2+...+tn] ?resourcetype=(bibtex|bookmark)
+								?(user|group|viewable)=[username/groupname] ?resource=[hash]
 							</td>
 							<td>
 								<img src="images/icon_success_sml.gif" />
 							</td>
 						</tr>
 						<tr>
-							<td>List of recent posts</td>
-							<td>GET</td>
 							<td>
-								/posts/added
-								?resourcetype=(bibtex|bookmark)
+								<a href="methods/ListOfRecentPosts.html">List of recent posts</a>
 							</td>
+							<td>GET</td>
+							<td>/posts/added ?resourcetype=(bibtex|bookmark)</td>
 							<td>
 								<img src="images/icon_success_sml.gif" />
 							</td>
 						</tr>
 						<tr>
-							<td>List of popular posts</td>
-							<td>GET</td>
 							<td>
-								/posts/popular
-								?resourcetype=(bibtex|bookmark)
+								<a href="methods/ListOfPopularPosts.html">List of popular posts</a>
 							</td>
+							<td>GET</td>
+							<td>/posts/popular ?resourcetype=(bibtex|bookmark)</td>
 							<td>
 								<img src="images/icon_success_sml.gif" />
 							</td>
@@ -281,8 +300,7 @@
 					</table>
 				</p>
 				<p>
-					All URLs can be supplemented by these attributes
-					(use
+					All URLs can be supplemented by these attributes (use
 					<em>start</em>
 					and
 					<em>end</em>
@@ -297,16 +315,10 @@
 					Tags can be customized the following way:
 					<ul>
 						<li>->[tag] tag and its direct children</li>
-						<li>
-							-->[tag] tag and its children (transitive)
-						</li>
+						<li>-->[tag] tag and its children (transitive)</li>
 						<li>[tag]-> tag and its direct parents</li>
-						<li>
-							[tag]--> tag and its parents (transitive)
-						</li>
-						<li>
-							&lt;-&gt;[tag] tag and its correlated tags
-						</li>
+						<li>[tag]--> tag and its parents (transitive)</li>
+						<li>&lt;-&gt;[tag] tag and its correlated tags</li>
 					</ul>
 
 				</p>
