@@ -33,8 +33,6 @@ Java client library
 
     * <<<activation.jar>>>
 
-~~  Figure 1: UML class diagram of the Bibsonomy data model 
-
 
 * Using the client library
 
@@ -88,3 +86,11 @@ Java client library
 
   A whole example application for managing bookmarks and publications, demonstrating the 
   webservice client library, is available for {{{download.html}download}}.
+
+
+* Class diagram
+
+  Here you can find a diagram that shows the classes of the BibSonomy data model and
+  the connections between them.
+
+[images/model.png] Class diagram
