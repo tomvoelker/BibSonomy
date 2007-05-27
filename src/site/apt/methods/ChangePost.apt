@@ -1,0 +1,96 @@
+Change post
+
+  <<Hint: you can't change the user's name.>>
+
+  Method: PUT
+
+  URL: www.bibsonomy.org/api/users/[username]/posts/[resourceHash]
+
+  Status codes:
+
+---
+200 ok
+
+400 bad request
+401 Unauthorized
+403 Forbidden
+
+500 Internal Server Error
+---
+
+  Example:
+
+---
+PUT www.bibsonomy.org/api/users/mbork/posts/aabbccddeeff01234
+
+<?xml version="1.0"?>
+<bibsonomyXMLInterchangeDocument>
+  <post description="some important bookmark!">
+    <user name="mbork"/>
+    <tag name="tag1"/>
+    <tag name="tag2"/>
+    <tag name="tag3"/>
+    <tag name="tag4"/>
+    <bookmark url="www.google.de" intrahash="aabbccddeeff01234" interhash="aabbccddeeff01234"/>
+  </post>
+</bibsonomyXMLInterchangeDocument>
+---
+
+  XML Schema:
+
+---
+<!--
+  a post
+-->
+<xsd:complexType name="PostType">
+  <xsd:sequence>
+    <xsd:element name="user" type="UserType"/>
+    <xsd:element name="group" type="GroupType" minOccurs="0" maxOccurs="unbounded"/>
+    <!-- Note: a post must have at least one tag -->
+    <xsd:element name="tag" type="TagType" maxOccurs="unbounded"/>
+    <xsd:choice>
+      <xsd:element name="bookmark" type="BookmarkType"/>
+      <xsd:element name="bibtex" type="BibtexType"/>
+    </xsd:choice>
+  </xsd:sequence>
+  <xsd:attribute name="description" type="xsd:string"/>
+</xsd:complexType>
+
+<!--
+  a bookmark
+-->
+<xsd:complexType name="BookmarkType">
+  <xsd:attribute name="url" type="xsd:anyURI" use="required"/>
+  <!-- hash value identifying this resource -->
+  <xsd:attribute name="interhash" type="xsd:string" use="required"/>
+  <xsd:attribute name="intrahash" type="xsd:string" use="required"/>
+</xsd:complexType>
+
+<!--
+  a bibtex
+-->
+<xsd:complexType name="BibtexType">
+  <xsd:attribute name="title" type="xsd:string" use="required"/>
+  <xsd:attribute name="authors" type="xsd:string"/>
+  <xsd:attribute name="editors" type="xsd:string"/>
+  <xsd:attribute name="type" type="xsd:string"/>
+  <xsd:attribute name="year" type="xsd:string"/>
+  <!-- hash value identifying this resource -->
+  <xsd:attribute name="intrahash" type="xsd:string" use="required"/>
+  <xsd:attribute name="interhash" type="xsd:string" use="required"/>
+</xsd:complexType>
+
+<!--
+  a user
+-->
+<xsd:complexType name="UserType">
+  <xsd:attribute name="name" type="xsd:string" use="required"/>
+</xsd:complexType>
+
+<!--
+  a tag
+-->
+<xsd:complexType name="TagType">
+  <xsd:attribute name="name" type="xsd:string" use="required"/>
+</xsd:complexType>
+---

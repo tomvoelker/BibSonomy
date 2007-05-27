@@ -1,0 +1,42 @@
+Change group
+
+  <<Hint: you can't change the group's name.>>
+
+  Method: PUT
+
+  URL: www.bibsonomy.org/api/groups/[groupname]
+
+  Status codes:
+
+---
+200 ok
+
+400 bad request
+401 Unauthorized
+403 Forbidden
+
+500 Internal Server Error
+---
+
+  Example:
+
+---
+PUT www.bibsonomy.org/api/groups/group1
+
+<?xml version="1.0"?>
+<bibsonomyXMLInterchangeDocument>
+  <group name="group1" description="This is a very special new group - updated."/>
+</bibsonomyXMLInterchangeDocument>
+---
+
+  XML Schema:
+
+---
+<!--
+  a group
+-->
+<xsd:complexType name="GroupType">
+  <xsd:attribute name="name" type="xsd:string" use="required"/>
+  <xsd:attribute name="description" type="xsd:string"/>
+</xsd:complexType>
+---
