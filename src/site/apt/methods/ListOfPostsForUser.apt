@@ -1,0 +1,3 @@
+List of posts for a users
+
+  This is an alternativ for {{{ListOfAllPosts.html}list of all posts}} with <<<?user=[username]>>>.
