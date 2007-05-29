@@ -34,6 +34,7 @@
 
     <select id="getUsersOfGroupPublic" resultClass="string" parameterClass="userParam">
 		SELECT user_name FROM groups WHERE `group` = #groupId# ;
+	</select>
     
     <select id="getUserNamesByGroupId" resultClass="string" parameterClass="int">
 		SELECT user_name FROM groups WHERE `group` = #groupId#;
