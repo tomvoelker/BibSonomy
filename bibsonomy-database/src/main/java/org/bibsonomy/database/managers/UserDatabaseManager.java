@@ -1,18 +1,24 @@
 package org.bibsonomy.database.managers;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.util.Transaction;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.User;
-
+import org.bibsonomy.model.util.UserUtils;
 /**
  * Used to retrieve users from the database.
  *
  * @author Miranda Grahl
  * @version $Id$
+ */
+/**
+ * @author mgr
+ *
  */
 public class UserDatabaseManager extends AbstractDatabaseManager  {
 
@@ -26,9 +32,64 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 		return singleton;
 	}
 
+	
+	/*
+	 *  
+	 */
+	
+	/**
+	 * get Api Key for given user
+	 * 
+	 * @param user
+	 * @param session
+	 * @return
+	 */
+	public String getApiKeyForUser(final UserParam user, final Transaction session) {
+		return this.queryForObject("getApiKeyForUser", user, String.class, session);
+	}
+	
+			
+	/**
+	 * Generate an API key for an existing user
+	 * 
+	 * @param user
+	 * @param session
+	 */	
+	public void updateApiKeyForUser(final UserParam user, final Transaction session) {
+		user.setApiKey(UserUtils.generateApiKey());
+		this.update("updateApiKeyForUser", user, session);
+	}
+	
+	/**
+	 * Generate 
+	 * 
+	 * @param session
+	 */
+	public void generateApiKeysForAllUsers(final Transaction session) {
+		
+		UserParam param=new UserParam();
+		List<User> user = this.getAllUsersWithoutApiKey(param,session);
+				
+		for(User currentUser  : user) {
+		
+			System.out.println(currentUser);
+			param.setUserName(currentUser.getName());
+			param.setApiKey(UserUtils.generateApiKey());			
+			updateApiKeyForUser(param, session);
+			
+		}
+		System.out.println("Finished with " + user.size() + " users");
+	}
+	
+	/*
+	 * TODO: renewApiKey
+	 */
+	
+	
 	/*
 	 * get all Users of a given Group required different view right
 	 */
+	
 	
 	public List<String> getUserNamesByGroupId(final Integer groupId, final Transaction session) {
 		return this.queryForList("getUserNamesByGroupId", groupId, String.class, session);
@@ -65,12 +126,17 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 	public List<User> getAllUsers(final UserParam user, final Transaction session) {
 		return this.queryForList("getAllUsers", user, User.class, session);
 	}
+	
+	public List<User> getAllUsersWithoutApiKey(final UserParam user, final Transaction session) {
+		return this.queryForList("getAllUsersWithoutApiKey", user, User.class, session);
+	}
 
 	/*
-	 * insert attributes for new user account
+	 * insert attributes for new user account including new ApiKey;
 	 */
 	
-	public void insertUser(final User user, final Transaction session) {
+	public void insertUser(final UserParam user, final Transaction session) {
+		user.setApiKey(UserUtils.generateApiKey());
 		this.insert("insertUser", user, session);
 	}
 
@@ -91,6 +157,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 		
 		UserParam param =new UserParam();
 		param.setRequestedUserName(authUser);
+		
         param.setOffset(start);
 		int limit = end - start;
 		param.setLimit(limit);
@@ -248,8 +315,11 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
     
     }
     	
-	public boolean validateUserAccess(String username, String password) {
-		return true; // FIXME:	IMPLEMENT ME!
+	public boolean validateUserAccess(String username, String apiKey,Transaction session) {
+		UserParam param= new UserParam();
+		param.setUserName(username);
+		String currentApiKey=this.getApiKeyForUser(param,session);
+		return currentApiKey==apiKey; 
 	}
 
 	

@@ -11,6 +11,7 @@ import org.bibsonomy.database.Order;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
+import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.database.util.Transaction;
@@ -283,8 +284,14 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @return true if the user exists and has the given password
 	 */
 	public boolean validateUserAccess(String username, String apiKey) {
-		return true;
-		//TODO: implement this method!
+		
+		final Transaction session = this.openSession();
+		try {
+			return userDBManager.validateUserAccess(username,apiKey,session);
+		} finally {
+			session.close();
+		}
+		
 	}
 
 	/**
