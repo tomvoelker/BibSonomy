@@ -14,6 +14,13 @@ import org.bibsonomy.model.Group;
  */
 public class User {
 
+	
+	/**
+	 * The Api Key for this user
+	 */
+	
+	private String apiKey;
+	
 	/**
 	 * The (nick-)name of this user.
 	 */
@@ -147,5 +154,13 @@ public class User {
 
 	public void setPosts(List<Post<? extends Resource>> posts) {
 		this.posts = posts;
+	}
+
+	public String getApiKey() {
+		return this.apiKey;
+	}
+
+	public void setApiKey(String apiKey) {
+		this.apiKey = apiKey;
 	}
 }
