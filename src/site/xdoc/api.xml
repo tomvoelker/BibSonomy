@@ -306,11 +306,10 @@
 					<em>end</em>
 					only with lists):
 					<ul>
-						<li>?format=(xml|rdf|owl) *)</li>
-						<li>?start=[int], starting at 0, default 0</li>
-						<li>?end=[int], starting at 0, default 19</li>
+						<li>?format=(xml|rdf|owl) <em>*)</em></li>
+						<li>?start=[int], starting at 0, default 0 <em>**)</em></li>
+						<li>?end=[int], starting at 0, default 20 <em>**)</em></li>
 					</ul>
-               *) Please note: RDF and OWL are not supported at the moment.
 				</p>
 				<p>
 					Tags can be customized the following way:
@@ -321,8 +320,11 @@
 						<li>[tag]--> tag and its parents (transitive)</li>
 						<li>&lt;-&gt;[tag] tag and its correlated tags</li>
 					</ul>
-
 				</p>
+            <p>
+              <em>*)</em> Please note: RDF and OWL are not supported at the moment.<br/>
+              <em>**)</em> ?start=0&amp;end=20 is a list of the first 20 entities (exclusively the 'end'-value).
+            </p>
 			</subsection>
          <subsection name="Errors">
             <p>
