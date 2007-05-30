@@ -47,7 +47,7 @@ public class GetNewPostsStrategy extends Strategy
 	{
 		// setup viewModel
 		int start = context.getIntAttribute( "start", 0 );
-		int end = context.getIntAttribute( "end", 19 );
+		int end = context.getIntAttribute( "end", 20 );
 		
 		Class<? extends Resource> resourceType = Resource.getResourceType( context.getStringAttribute( "resourcetype", "all" ) );
 		
@@ -62,14 +62,14 @@ public class GetNewPostsStrategy extends Strategy
             groupingValue, context.getTags( "tags" ), null, Order.ADDED, start, end );
 		
       ViewModel viewModel = new ViewModel();
-      if( posts.size() < end + 1 )
+      if( posts.size() < end || posts.size() > end )
       {
-         end = posts.size() - 1;
+         end = posts.size();
       }
       else
       {
          String next = RestProperties.getInstance().getApiUrl() + RestProperties.getInstance().getPostsUrl() + "/" +RestProperties.getInstance().getAddedPostsUrl() + "?start="
-         + String.valueOf( end + 1 ) + "&end=" + String.valueOf( end + 10 );
+         + String.valueOf( end ) + "&end=" + String.valueOf( end + 20 );
          if( resourceType != Resource.class )
          {
             next += "&resourcetype=" + Resource.toString( resourceType ).toLowerCase();
@@ -100,7 +100,10 @@ public class GetNewPostsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.10  2007-05-20 00:01:43  jillig
+ * Revision 1.11  2007-05-30 20:23:26  mbork
+ * Exclusive use of 'end'-parameter in requests returning lists.
+ *
+ * Revision 1.10  2007/05/20 00:01:43  jillig
  * ->Order-Enum
  *
  * Revision 1.9  2007/05/05 20:40:36  mbork

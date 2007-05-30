@@ -43,19 +43,19 @@ public class GetUserListStrategy extends Strategy
 	{
 		// setup viewModel
 		int start = context.getIntAttribute( "start", 0 );
-		int end = context.getIntAttribute( "end", 19 );
+		int end = context.getIntAttribute( "end", 20 );
 		
 		List<User> users = context.getLogic().getUsers( context.getAuthUserName(), start, end );
       
       ViewModel viewModel = new ViewModel();
-      if( users.size() < end + 1 )
+      if( users.size() < end || users.size() > end )
       {
-         end = users.size() - 1;
+         end = users.size();
       }
       else
       {
-         String next = RestProperties.getInstance().getApiUrl() + RestProperties.getInstance().getUsersUrl() + "?start=" + String.valueOf( end + 1 ) + 
-         "&end=" + String.valueOf( end + 10 ); 
+         String next = RestProperties.getInstance().getApiUrl() + RestProperties.getInstance().getUsersUrl() + "?start=" + String.valueOf( end ) + 
+         "&end=" + String.valueOf( end + 20 ); 
          viewModel.setUrlToNextResources( next );
       }
       viewModel.setStartValue( start );
@@ -78,7 +78,10 @@ public class GetUserListStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.6  2007-04-15 11:05:07  mbork
+ * Revision 1.7  2007-05-30 20:23:26  mbork
+ * Exclusive use of 'end'-parameter in requests returning lists.
+ *
+ * Revision 1.6  2007/04/15 11:05:07  mbork
  * changed method signature to use a more general Writer
  *
  * Revision 1.5  2007/02/21 14:08:36  mbork

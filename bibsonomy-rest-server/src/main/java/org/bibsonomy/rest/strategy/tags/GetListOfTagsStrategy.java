@@ -45,7 +45,7 @@ public class GetListOfTagsStrategy extends Strategy
 	{
 		// setup viewModel
 		int start = context.getIntAttribute( "start", 0 );
-		int end = context.getIntAttribute( "end", 19 );
+		int end = context.getIntAttribute( "end", 20 );
 
 		GroupingEntity grouping = chooseGroupingEntity();
 		String groupingValue = null;
@@ -59,14 +59,14 @@ public class GetListOfTagsStrategy extends Strategy
       List<Tag> tags = context.getLogic().getTags( context.getAuthUserName(), grouping, groupingValue, regex, start, end );
       
       ViewModel viewModel = new ViewModel();
-      if( tags.size() < end + 1 )
+      if( tags.size() < end || tags.size() > end )
       {
-         end = tags.size() - 1;
+         end = tags.size();
       }
       else
       {
-         String next = RestProperties.getInstance().getApiUrl() + RestProperties.getInstance().getTagsUrl() + "?start=" + String.valueOf( end + 1 ) + 
-         "&end=" + String.valueOf( end + 10 );
+         String next = RestProperties.getInstance().getApiUrl() + RestProperties.getInstance().getTagsUrl() + "?start=" + String.valueOf( end ) + 
+         "&end=" + String.valueOf( end + 20 );
          if( grouping != GroupingEntity.ALL && groupingValue != null )
          {
             next += "&" + grouping.toString().toLowerCase() + "=" + groupingValue; 
@@ -97,7 +97,10 @@ public class GetListOfTagsStrategy extends Strategy
 
 /*
  * $Log$
- * Revision 1.7  2007-04-15 11:05:07  mbork
+ * Revision 1.8  2007-05-30 20:23:26  mbork
+ * Exclusive use of 'end'-parameter in requests returning lists.
+ *
+ * Revision 1.7  2007/04/15 11:05:07  mbork
  * changed method signature to use a more general Writer
  *
  * Revision 1.6  2007/02/21 14:08:36  mbork
