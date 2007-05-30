@@ -8,28 +8,32 @@ Java client library
   Java project's classpath. Those jars are: 
 
   * <<Bibsonomy webservice>>:\
-    The webservice client itself consists of three jars:
+    The webservice client itself consists of four jars:
 
-    * <<<bibsonomy-client.jar>>> (client library)
+    * <<<bibsonomy-rest-client.jar>>> (client library classes)
+    
+    * <<<bibsonomy-rest-common.jar>>> (REST API core classes)
+    
+    * <<<bibsonomy-model.jar>>> (bibsonomy data model classes)
 
-    * <<<bibsonomy-data-model.jar>>> (bibsonomy data model)
-
-    * <<<bibsonomy-shared.jar>>> (shared library).
+    * <<<bibsonomy-common.jar>>> (shared library of bibsonomy).
 
   * <<Apache HTTP-Client>>:\
     The HTTP client libraries by the apache software foundation are used for the
     HTTP communication:
 
-    * <<<commons-httpclient.jar>>>.
-
+    * <<<commons-httpclient.jar>>> which uses 
+    
+    * <<<commons-codec.jar>>> and
+    
+    * <<<commons-logging.jar>>>.
+    
   * <<Java Architecture for XML Binding>> (JAXB):\
     The client uses JAXB to (de)serialize the XML exchange documents:
 
     * <<<jaxb-api.jar>>>
 
-    * <<<jaxb-impl.jar>>>
-
-    * <<<jsr173.jar>>>
+    * <<<jsr173_api.jar>>>
 
     * <<<activation.jar>>>
 
@@ -41,7 +45,7 @@ Java client library
   program run. As already discussed, there exist classes encapsulating each provided
   webservice method. These classes are derived from <<<AbstractQuery>>> and request in
   their constructor parameters (usually model data objects, see the package
-  <<<org.bibsonomy.model>>>) - please refer to the Java doc of the corresponding constructor.
+  <<<org.bibsonomy.model>>>) - please refer to the JavaDoc of the corresponding constructor.
 
   After instantiating an appropriate <<<AbstractQuery>>> just execute it by invoking
   the <<<executeQuery>>> method of the <<<Bibsonomy>>> object with the query object
