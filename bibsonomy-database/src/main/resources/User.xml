@@ -45,7 +45,7 @@
 	</select>
 
 	<select id="getUsersOfGroupFriends" resultClass="string" parameterClass="userParam">
-		"src/main/java/org/bibsonomy/database/params/GenericParam.java"SELECT user_name FROM groups WHERE `group` = #groupId# LIMIT #limit# OFFSET #offset#;
+		"SELECT user_name FROM groups WHERE `group` = #groupId# LIMIT #limit# OFFSET #offset#;
 	</select>
 
      <!-- add a new user -->
