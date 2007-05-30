@@ -1,0 +1,22 @@
+<assembly>
+   <formats>
+      <format>tar.gz</format>
+   </formats>
+   <fileSets>
+      <fileSet>
+         <includes>
+            <include>LICENSE.txt</include>
+         </includes>
+      </fileSet>
+   </fileSets>
+   <moduleSets>
+      <moduleSet>
+         <includes>
+            <include>org.bibsonomy:bibsonomy-rest-client</include>
+         </includes>
+         <binaries>
+            <unpack>false</unpack>
+         </binaries>
+      </moduleSet>
+   </moduleSets>
+</assembly>
