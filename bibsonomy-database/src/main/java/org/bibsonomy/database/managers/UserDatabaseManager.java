@@ -315,11 +315,20 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
     
     }
     	
-	public boolean validateUserAccess(String username, String apiKey,Transaction session) {
-		UserParam param= new UserParam();
+	/**
+	 * Authenticate a user by comparing his submitted API key with the one
+	 * stored in the database
+	 * 
+	 * @param username
+	 * @param apiKey
+	 * @param session
+	 * @return boolean true iff the 
+	 */
+	public boolean validateUserAccess(String username, String apiKey, Transaction session) {
+		UserParam param = new UserParam();
 		param.setUserName(username);
-		String currentApiKey=this.getApiKeyForUser(param,session);
-		return currentApiKey==apiKey; 
+		String currentApiKey = this.getApiKeyForUser(param,session);
+		return currentApiKey.equals(apiKey); 
 	}
 
 	
