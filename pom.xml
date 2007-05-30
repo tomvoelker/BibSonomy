@@ -159,6 +159,18 @@
 					<url>http://gromit:8080/manager</url>
 				</configuration>
 			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+            <configuration>
+              <descriptors>
+                <descriptor>src/main/assembly/clientapi.xml</descriptor>
+              </descriptors>
+				  <outputDirectory>
+						${project.build.directory}/site/download/
+				  </outputDirectory>
+              <finalName>Bibsonomy2ClientAPI-${project.version}</finalName>
+            </configuration>
+			</plugin>
 		</plugins>
 		<extensions>
 			<extension>
