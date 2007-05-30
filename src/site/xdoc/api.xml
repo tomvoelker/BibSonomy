@@ -306,10 +306,11 @@
 					<em>end</em>
 					only with lists):
 					<ul>
-						<li>?format=(xml|rdf|html)</li>
+						<li>?format=(xml|rdf|owl) *)</li>
 						<li>?start=[int], starting at 0, default 0</li>
 						<li>?end=[int], starting at 0, default 19</li>
 					</ul>
+               *) Please note: RDF and OWL are not supported at the moment.
 				</p>
 				<p>
 					Tags can be customized the following way:
@@ -323,6 +324,21 @@
 
 				</p>
 			</subsection>
+         <subsection name="Errors">
+            <p>
+               In case of an error the API sends the appropriate HTTP 
+               status code (please see the details of each request) and a XML 
+               document including a description of the error that occurred:
+            </p>
+            <br/>
+            <p>
+               <em>
+                  <br/>&lt;bibsonomyXMLInterchangeDocument>
+                  <br/>   &lt;error>some error message&lt;/error>
+                  <br/>&lt;/bibsonomyXMLInterchangeDocument>
+               </em>
+            </p>
+         </subsection>
 		</section>
 	</body>
 </document>

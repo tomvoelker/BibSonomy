@@ -65,10 +65,36 @@ POST www.bibsonomy.org/api/users/mbork/posts
 -->
 <xsd:complexType name="BibtexType">
   <xsd:attribute name="title" type="xsd:string" use="required"/>
-  <xsd:attribute name="authors" type="xsd:string"/>
-  <xsd:attribute name="editors" type="xsd:string"/>
-  <xsd:attribute name="type" type="xsd:string"/>
+  <xsd:attribute name="bibtexKey" type="xsd:string"/>
+  <xsd:attribute name="bKey" type="xsd:string"/>
+  <xsd:attribute name="misc" type="xsd:string"/>
+  <xsd:attribute name="bibtexAbstract" type="xsd:string"/>
+  <xsd:attribute name="entrytype" type="xsd:string"/>
+  <xsd:attribute name="address" type="xsd:string"/>
+  <xsd:attribute name="annote" type="xsd:string"/>
+  <xsd:attribute name="author" type="xsd:string"/>
+  <xsd:attribute name="booktitle" type="xsd:string"/>
+  <xsd:attribute name="chapter" type="xsd:string"/>
+  <xsd:attribute name="crossref" type="xsd:string"/>
+  <xsd:attribute name="edition" type="xsd:string"/>
+  <xsd:attribute name="editor" type="xsd:string"/>
+  <xsd:attribute name="howpublished" type="xsd:string"/>
+  <xsd:attribute name="institution" type="xsd:string"/>
+  <xsd:attribute name="organization" type="xsd:string"/>
+  <xsd:attribute name="journal" type="xsd:string"/>
+  <xsd:attribute name="note" type="xsd:string"/>
+  <xsd:attribute name="number" type="xsd:string"/>
+  <xsd:attribute name="pages" type="xsd:string"/>
+  <xsd:attribute name="publisher" type="xsd:string"/>
+  <xsd:attribute name="school" type="xsd:string"/>
+  <xsd:attribute name="series" type="xsd:string"/>
+  <xsd:attribute name="volume" type="xsd:string"/>
+  <xsd:attribute name="day" type="xsd:string"/>
+  <xsd:attribute name="month" type="xsd:string"/>
   <xsd:attribute name="year" type="xsd:string"/>
+  <xsd:attribute name="type" type="xsd:string"/>
+  <xsd:attribute name="scraperId" type="xsd:positiveInteger"/>
+  <xsd:attribute name="url" type="xsd:string"/>
 </xsd:complexType>
 
 <!--
