@@ -189,7 +189,7 @@
 		</repository-->
 		<site>
 			<id>website-bibsonomy-documentation</id>
-			<url>scpexe://gromit/home/bibsonomy/bibsonomy-doc-www</url>
+			<url>scpexe://bibsonomy@gromit/home/bibsonomy/bibsonomy-doc-www</url>
 		</site>
 	</distributionManagement>
 	<dependencyManagement>
