@@ -165,9 +165,9 @@
               <descriptors>
                 <descriptor>src/main/assembly/clientapi.xml</descriptor>
               </descriptors>
-				  <outputDirectory>
-						${project.build.directory}/site/download/
-				  </outputDirectory>
+              <outputDirectory>
+                 ${project.build.directory}/site/download/
+              </outputDirectory>
               <finalName>Bibsonomy2ClientAPI-${project.version}</finalName>
             </configuration>
 			</plugin>
@@ -179,20 +179,19 @@
 			</extension>
 		</extensions>
 	</build>
-	<!-- distributionManagement>
-		<repository>
+	<distributionManagement>
+		<!--repository>
 			<id>ssh-se.uni-kassel.de</id>
 			<! TODO: we need an own distribution-management location! >
 			<url>
 				scpexe://www.se.eecs.uni-kassel.de/home/maven/public_html/repository
 			</url>
-		</repository>
-		<! TODO: where should the site be deployed to? >
-		<!site>
-			<id>website-se.uni-kassel.de</id>
-			<url>scpexe://www.se.eecs.uni-kassel.de/home/maven/public_html/sites/coobrasc2</url>
+		</repository-->
+		<site>
+			<id>website-bibsonomy-documentation</id>
+			<url>scpexe://gromit/home/bibsonomy/bibsonomy-doc-www</url>
 		</site>
-	</distributionManagement -->
+	</distributionManagement>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
