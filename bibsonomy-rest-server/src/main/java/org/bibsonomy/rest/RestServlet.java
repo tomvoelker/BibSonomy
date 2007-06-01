@@ -12,9 +12,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.database.LogicInterface;
 import org.bibsonomy.database.managers.RestDatabaseManager;
+import org.bibsonomy.database.managers.chain.ChainElement;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.enums.RenderingFormat;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
@@ -136,6 +138,9 @@ public final class RestServlet extends HttpServlet
     */
    private void handle( HttpServletRequest request, HttpServletResponse response, HttpMethod method ) throws IOException
    {
+	  final Logger log = Logger.getLogger(RestServlet.class);	  
+	  log.debug("Incoming URL:" + request.getRequestURL());
+	   
       try
       {
          // validate the requesting user's authorization
