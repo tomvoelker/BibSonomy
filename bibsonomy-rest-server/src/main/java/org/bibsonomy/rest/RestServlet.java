@@ -37,6 +37,8 @@ import sun.misc.BASE64Decoder;
 public final class RestServlet extends HttpServlet
 {
    private static final long serialVersionUID = 1L;
+   
+   protected static final Logger log = Logger.getLogger(RestServlet.class);
 	
 	private LogicInterface logic;
 
@@ -137,8 +139,8 @@ public final class RestServlet extends HttpServlet
     * @throws IOException
     */
    private void handle( HttpServletRequest request, HttpServletResponse response, HttpMethod method ) throws IOException
-   {
-	  final Logger log = Logger.getLogger(RestServlet.class);	  
+   {	  	 
+	  
 	  log.debug("Incoming URL:" + request.getRequestURL());
 	   
       try
