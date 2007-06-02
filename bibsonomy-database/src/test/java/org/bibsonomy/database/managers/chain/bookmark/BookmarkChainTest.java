@@ -4,10 +4,17 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.managers.chain.AbstractChainTest;
 import org.bibsonomy.database.managers.chain.FirstChainElement;
 import org.junit.Test;
 
-public class BookmarkChainTest {
+/**
+ * Test related to the Bookmark Chain
+ * 
+ * @author dbenz
+ * @version $Id$
+ */
+public class BookmarkChainTest extends AbstractChainTest {
 
 	List<FirstChainElement> chains = new LinkedList<FirstChainElement>();
 	String authUser="grahl";
@@ -33,5 +40,13 @@ public class BookmarkChainTest {
 				
 			}
 		}*/
+	}
+	
+	/**
+	 * FIXME dummy method
+	 */
+	@Test
+	public void GetBookmarksForUser() {
+		
 	}
 }

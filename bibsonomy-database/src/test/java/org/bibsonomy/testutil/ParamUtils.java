@@ -18,8 +18,8 @@ import org.bibsonomy.model.Tag;
 /**
  * Provides methods to build parameter-objects.
  * 
- * @author Christian Schenk
  * @author Miranda Grahl
+ * @author Christian Schenk
  * @version $Id$
  */
 public class ParamUtils {
@@ -119,12 +119,12 @@ public class ParamUtils {
 		param.setNewContentId(5218);
 		param.setTasId(213758);
 		param.setTags(new ArrayList<Tag>());
-		for (String s : new String[] { ParamUtils.class.getName(), "hurz", "trallalla", "---_-"}) {
+		for (final String s : new String[] { ParamUtils.class.getName(), "hurz", "trallalla", "---_-" }) {
 			final Tag tag = new Tag();
 			tag.setName(s);
 			param.getTags().add(tag);
 		}
-		param.setGroups( Arrays.asList(new Integer[] { 1, 5 }) );
+		param.setGroups(Arrays.asList(new Integer[] { 1, 5 }));
 		param.setRegex("web");
 		param.setCount(100);
 		param.setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);

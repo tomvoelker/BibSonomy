@@ -7,6 +7,10 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.junit.Test;
 
+/**
+ * @author Christian Schenk
+ * @version $Id$
+ */
 public class ParamTest {
 
 	/**

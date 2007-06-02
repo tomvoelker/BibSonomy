@@ -19,6 +19,7 @@ import org.junit.Test;
  * @version $Id$
  */
 public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
+
 	private static final Logger log = Logger.getLogger(GroupDatabaseManagerTest.class);
 
 	@Test

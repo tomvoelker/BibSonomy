@@ -7,6 +7,11 @@ import org.bibsonomy.database.params.TagParam;
 import org.junit.Test;
 import org.junit.Assert;
 
+/**
+ * @author Jens Illig
+ * @author Christian Schenk
+ * @version $Id$
+ */
 public class LogicInterfaceHelperTest {
 
 	@Test

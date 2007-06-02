@@ -1,12 +1,16 @@
 package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.User;
@@ -18,10 +22,11 @@ import org.junit.Test;
  * Tests related to users.
  * 
  * @author Miranda Grahl
- * @version $Id: UserDatabaseManagerTest.java,v 1.11 2007/05/19 23:59:50 jillig
- *          Exp $
+ * @version $Id$
  */
 public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
+
+	private static final Logger log = Logger.getLogger(UserDatabaseManagerTest.class);
 
 	/**
 	 * Retrieve all users
@@ -83,9 +88,9 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void testInsertUser() {
-		UserParam param = new UserParam();
+		final UserParam param = new UserParam();
 		try {
-			URL url = new URL("http://www.db.de");
+			final URL url = new URL("http://www.db.de");
 			param.setUserName("neuerUser");
 			param.setEmail("mgr@cs.uni-kassel.de");
 			param.setHomepage(url);
@@ -93,28 +98,25 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			param.setRealname("mira");
 			this.userDb.insertUser(param, this.dbSession);
 
-			User user = this.userDb.getUserDetails(param, this.dbSession);
-
+			final User user = this.userDb.getUserDetails(param, this.dbSession);
 			assertEquals(user.getName(), "neuerUser");
 			assertEquals(user.getEmail(), "mgr@cs.uni-kassel.de");
 			assertEquals(user.getHomepage(), url);
 			assertEquals(user.getRealname(), "mira");
 			assertEquals(user.getApiKey(), param.getApiKey());
-
-		} catch (MalformedURLException ex) {
-			System.out.println("Malformed URL: ");
-			ex.printStackTrace();
+		} catch (final MalformedURLException ex) {
+			fail("Malformed URL: ");
 		}
 	}
 
 	/**
-	 * Generate 10 API Keys and print them to stdout
+	 * Generate 10 Api keys and log them
 	 */
 	@Test
 	public void generateApiKeys() {
 		for (int i = 0; i < 10; i++) {
-			String apiKey = UserUtils.generateApiKey();
-			System.out.println("Generated Api Key: " + apiKey);
+			final String apiKey = UserUtils.generateApiKey();
+			log.debug("Generated Api Key: " + apiKey);
 		}
 	}
 
@@ -141,11 +143,11 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void validateUserAccess() {
-		String username = "dbenz";
+		final String username = "dbenz";
 		String apiKey = "ThisIsJustAFakeAPIKey";
-		Assert.assertFalse(this.userDb.validateUserAccess(username, apiKey, this.dbSession));
-		apiKey = "a9999a44a48879d28bd34fd32bdfa0c1"; // the correct key
-		Assert.assertTrue(this.userDb.validateUserAccess(username, apiKey, this.dbSession));				
+		assertFalse(this.userDb.validateUserAccess(username, apiKey, this.dbSession));
+		// the correct key
+		apiKey = "a9999a44a48879d28bd34fd32bdfa0c1";
+		assertTrue(this.userDb.validateUserAccess(username, apiKey, this.dbSession));
 	}
-
 }

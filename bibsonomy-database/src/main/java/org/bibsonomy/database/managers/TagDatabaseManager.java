@@ -9,6 +9,7 @@ import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.beans.TagTagBatchParam;
 import org.bibsonomy.database.util.DatabaseUtils;
+import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -17,8 +18,9 @@ import org.bibsonomy.model.Tag;
 /**
  * Used to retrieve tags from the database.
  * 
- * @author Christian Schenk
  * @author Miranda Grahl
+ * @author Jens Illig
+ * @author Christian Schenk
  * @version $Id$
  */
 public class TagDatabaseManager extends AbstractDatabaseManager {
@@ -160,8 +162,8 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		tagParam.setDate(post.getDate());
 		tagParam.setDescription(post.getDescription());
 		List<Integer> groups = new ArrayList<Integer>();
-		for (Group g : post.getGroups()) {
-			groups.add(g.getGroupId());
+		for (final Group group : post.getGroups()) {
+			groups.add(group.getGroupId());
 		}
 		tagParam.setGroups(groups);
 		insertTags(tagParam, session);
@@ -170,12 +172,12 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	/** Insert a set of tags for a content (into tas table and what else is required) */
 	public void insertTags(final TagParam param, final Transaction session) {
 		// generate a list of tags
-		List<Tag> allTags = param.getTags();
+		final List<Tag> allTags = param.getTags();
 		final boolean batchIt = true; // TODO: use this and implement nonbatch-tagtag-inserts: (allTags.size() > MAX_TAGS_TO_INSERT);
 		
 		if (batchIt == true) {
 			// if there're too many tags, do it in a batch job
-			// FIXME: i hate this: someone misused newContentId for the tasId. requestedContentId is the real new contentId here 
+			// FIXME: someone misused newContentId for the tasId. requestedContentId is the real new contentId here 
 			insertTagTagBatch(param.getNewContentId(), param.getTags(), TagTagBatchParam.Job.DECREMENT, session);
 		}
 		insertTas(param, session);
@@ -199,7 +201,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param tags some tags
 	 * @return the string of white space separated tags
 	 */
-	private static String tagsToString(Iterable<Tag> tags) {
+	private static String tagsToString(final Iterable<Tag> tags) {
 		final StringBuffer s = new StringBuffer();
 		for (final Tag tag : tags) {
 			s.append(tag.getName()).append(" ");
@@ -208,9 +210,10 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Increases the tag counter in the tag table for the given tag. If this tag does not exist
-	 * inside the tag table, inserts it with count 1.*/
-	public void insertTag(Tag tag, final Transaction session) {
+	 * Increases the tag counter in the tag table for the given tag. If this tag
+	 * does not exist inside the tag table, inserts it with count 1.
+	 */
+	public void insertTag(final Tag tag, final Transaction session) {
 		// TODO not tested
 		this.insert("insertTag", tag, session);
 	}
@@ -226,9 +229,6 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		}
 	}*/
 
-	/*
-	 * single requests for method get detailled information of a tag
-	 */
 	public int getTagOccurrences(final Tag tag, final Transaction session) {
 		return this.queryForObject("getTagOccurrences", tag, Integer.class, session);
 	}
@@ -246,14 +246,14 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Return all tags from the system 
+	 * Returns all tags.
 	 */
 	public List<Tag> getAllTags(final TagParam param, final Transaction session) {
 		return this.queryForList("getAllTags", param, Tag.class, session);
 	}
 
 	/**
-	 * returns details about a tag. those details are:
+	 * Returns details about a tag. Those details are:
 	 * <ul>
 	 * <li>details about the tag itself, like number of occurrences etc</li>
 	 * <li>list of subtags</li>
@@ -267,8 +267,8 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 *            name of the tag
 	 * @return the tag's details, null else
 	 */
-	public Tag getTagDetails(String authUserName, String tagName, final Transaction session) {
-		return null;
+	public Tag getTagDetails(final String authUserName, final String tagName, final Transaction session) {
+		throw new UnsupportedOperationException();
 	}	
 
 	/**
@@ -298,31 +298,23 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForList("getTagsViewable", param, Tag.class, session);
 	} 
 
-	public List<Tag> getTags(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end, final Transaction session) {
-		// TODO: this is only a hack to provide tag-support. feel free to delete the code and implement it with a nice and complete handler chain.
-		TagParam param = new TagParam();
-		param.setGrouping(grouping);
-		param.setOffset(start);
-		param.setLimit(end - start);
-		param.setUserName(authUser);
-		param.setRequestedUserName(groupingName);
+	public List<Tag> getTags(final String authUser, final GroupingEntity grouping, final String groupingName, final String regex, final int start, final int end, final Transaction session) {
+		// TODO: this is only a hack to provide tag-support. feel free to delete
+		// the code and implement it with a nice and complete handler chain.
+		// --> from revision 1.27 - where's the hack?
+
+		final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, authUser, grouping, groupingName, null, null, null, start, end);
+
+		final List<Tag> tags;
 		if (grouping == GroupingEntity.ALL) {
-			
-			List<Tag> tags = this.queryForList("getAllTags", param, Tag.class, session);
-			for (Tag tag : tags) {
-				tag.setUsercount(tag.getGlobalcount());
-			}
-			return tags;
-			
+			tags = this.queryForList("getAllTags", param, Tag.class, session);
 		} else {
-			
 			DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
-			List<Tag> tags = this.queryForList("getTagsByUser", param, Tag.class, session);
-			for (Tag tag : tags) {
-				tag.setUsercount(tag.getGlobalcount());
-			}
-			return tags;
-			
+			tags = this.queryForList("getTagsByUser", param, Tag.class, session);
 		}
+		for (final Tag tag : tags) {
+			tag.setUsercount(tag.getGlobalcount());
+		}
+		return tags;
 	}
 }

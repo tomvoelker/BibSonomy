@@ -7,74 +7,70 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.util.DefaultValues;
-import org.bibsonomy.model.Group;
 
 /**
  * This class defines a user.
  */
 public class User {
 
-	
 	/**
 	 * The Api Key for this user
 	 */
-	
 	private String apiKey;
-	
+
 	/**
 	 * The (nick-)name of this user.
 	 */
 	private String name;
-	
+
 	/**
 	 * The (real-)name of this user.
 	 */
 	private String realname;
-	
+
 	/**
 	 * This user's email address.
 	 */
 	private String email;
-	
+
 	/**
 	 * This user's password
 	 */
 	private String password;
-	
+
 	/**
 	 * The {@link Date} when this user registered to bibsonomy.
 	 */
 	private Date registrationDate;
-	
+
 	/**
 	 * Ths {@link URL} to this user's homepage.
 	 */
 	private URL homepage;
-	
-	/** 
-	 * The user belongs to these groups .
+
+	/**
+	 * The user belongs to these groups.
 	 */
 	private List<Group> groups;
-	
+
 	/**
 	 * Those are the posts of this user.
 	 */
 	private List<Post<? extends Resource>> posts;
-	
+
 	/**
 	 * Indicates if this user is a spammer.
 	 */
 	private boolean spammer;
 
-	
 	public boolean isSpammer() {
 		return this.spammer;
 	}
-	
+
 	public void setSpammer(boolean spammer) {
 		this.spammer = spammer;
 	}
-	
+
 	public String getEmail() {
 		return email;
 	}
@@ -92,7 +88,6 @@ public class User {
 	}
 
 	public void setHomepageAsString(String homepage) {
-		// FIXME put this into a Helper-method
 		try {
 			this.homepage = new URL(homepage);
 		} catch (final MalformedURLException ex) {
@@ -125,8 +120,7 @@ public class User {
 	}
 
 	public List<Group> getGroups() {
-		if( this.groups == null )
-		{
+		if (this.groups == null) {
 			this.groups = new LinkedList<Group>();
 		}
 		return this.groups;
@@ -145,8 +139,7 @@ public class User {
 	}
 
 	public List<Post<? extends Resource>> getPosts() {
-		if( this.posts == null )
-		{
+		if (this.posts == null) {
 			this.posts = new LinkedList<Post<? extends Resource>>();
 		}
 		return this.posts;

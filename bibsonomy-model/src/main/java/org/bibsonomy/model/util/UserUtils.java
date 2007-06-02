@@ -4,40 +4,36 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
+/**
+ * @author Miranda Grahl
+ * @version $Id$
+ */
 public class UserUtils {
 
 	/**
-	 * @return String Api Key using a random number
+	 * Generates an Api key with a MD5 message digest from a random number.
+	 * 
+	 * @return String Api key
 	 */
-
 	public static String generateApiKey() {
-
-		byte[] randomArray = generateRandom();
-
 		try {
+			final byte[] randomArray = generateRandom();
 			final MessageDigest md = MessageDigest.getInstance("MD5");
-
 			return ResourceUtils.toHexString(md.digest(randomArray));
 		} catch (final NoSuchAlgorithmException e) {
-			return null;
+			// should never happen
+			throw new RuntimeException(e);
 		}
-
 	}
 
 	private static byte[] generateRandom() {
-
-		byte[] randomBytes = new byte[32];
+		final byte[] randomBytes = new byte[32];
 		try {
-			Random random = new Random();
+			final Random random = new Random();
 			random.nextBytes(randomBytes);
+		} catch (final Exception e) {
+			throw new RuntimeException(e);
 		}
-
-		catch (Exception e) {
-			e.printStackTrace();
-
-		}
-
 		return randomBytes;
 	}
-
 }

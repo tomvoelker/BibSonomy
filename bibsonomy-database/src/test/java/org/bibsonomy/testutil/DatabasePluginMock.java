@@ -9,6 +9,14 @@ import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 import org.bibsonomy.database.util.Transaction;
 import org.junit.Test;
 
+/**
+ * This is a test database plugin that'll check whether a method from the
+ * DatabasePlugin interface was called. The state can be checked with the
+ * <code>is*</code> methods.
+ * 
+ * @author Christian Schenk
+ * @version $Id$
+ */
 public class DatabasePluginMock extends AbstractDatabasePlugin {
 
 	private boolean onBibTexInsert;

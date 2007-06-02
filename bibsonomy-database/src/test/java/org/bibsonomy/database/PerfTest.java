@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.testutil.ParamUtils;
-import org.junit.Test;
 
 /**
  * Performance tests for database methods.
@@ -28,7 +27,7 @@ public class PerfTest extends AbstractDatabaseManagerTest {
 	/**
 	 * Executes all methods we'd like to evaluate.
 	 */
-	@Test
+	// @Test
 	public void testPerf() {
 		for (final Method method : Method.values()) {
 			this.runPerfTest(method);
@@ -65,7 +64,7 @@ public class PerfTest extends AbstractDatabaseManagerTest {
 				// on the first run iBATIS is starting up and we don't want to
 				// measure that. Even though this isn't correct after the first
 				// run for the following methods, we leave it in and execute
-				// some unnecessary calls for every method.
+				// one unnecessary call for every method.
 				if (i == 0) continue;
 
 				all += (end - start);

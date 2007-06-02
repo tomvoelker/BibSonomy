@@ -18,11 +18,12 @@ import com.ibatis.sqlmap.client.SqlMapSession;
 /**
  * Methods concerning the database.
  * 
- * @author Christian Schenk
  * @author Jens Illig
+ * @author Christian Schenk
  * @version $Id$
  */
 public class DatabaseUtils {
+
 	private static final Logger log = Logger.getLogger(DatabaseUtils.class);
 	private static final SqlMapClient client;
 

@@ -6,6 +6,7 @@ package org.bibsonomy.database.params.beans;
  * well for concepts.
  * 
  * @author Christian Schenk
+ * @version $Id$
  */
 public class TagIndex {
 

@@ -15,8 +15,8 @@ import com.ibatis.sqlmap.client.SqlMapSession;
  * See org.bibsonomy.database.AbstractDatabaseManager.transactionWrapper() for
  * further explanation and use of this class.
  * 
- * @author Christian Schenk
  * @author Jens Illig
+ * @author Christian Schenk
  * @version $Id$
  */
 public class Transaction implements Closeable {

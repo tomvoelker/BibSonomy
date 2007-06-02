@@ -23,13 +23,14 @@ import org.junit.Before;
  * @version $Id$
  */
 public abstract class AbstractDatabaseManagerTest {
+
 	private static final Logger log = Logger.getLogger(AbstractDatabaseManagerTest.class);
 
 	protected GeneralDatabaseManager generalDb;
 	protected BookmarkDatabaseManager bookmarkDb;
 	protected BibTexDatabaseManager bibTexDb;
-	protected TagDatabaseManager tagDb;
 	protected UserDatabaseManager userDb;
+	protected TagDatabaseManager tagDb;
 	protected GroupDatabaseManager groupDb;
 
 	protected GenericParam generalParam;
@@ -38,6 +39,7 @@ public abstract class AbstractDatabaseManagerTest {
 	protected UserParam userParam;
 	protected TagParam tagParam;
 	protected GroupParam groupParam;
+
 	protected Transaction dbSession;
 
 	@Before
@@ -46,23 +48,23 @@ public abstract class AbstractDatabaseManagerTest {
 			this.generalDb = GeneralDatabaseManager.getInstance();
 			this.bookmarkDb = BookmarkDatabaseManager.getInstance();
 			this.bibTexDb = BibTexDatabaseManager.getInstance();
-			this.tagDb = TagDatabaseManager.getInstance();
 			this.userDb = UserDatabaseManager.getInstance();
+			this.tagDb = TagDatabaseManager.getInstance();
 			this.groupDb = GroupDatabaseManager.getInstance();
 			this.resetParameters();
 
 			// testcases shouldn't write into the db		
-			dbSession = DatabaseUtils.getDatabaseSession();
-			dbSession.beginTransaction();
-		} catch (Throwable e) {	
-			log.fatal("exception in testcase setUp",e);
+			this.dbSession = DatabaseUtils.getDatabaseSession();
+			this.dbSession.beginTransaction();
+		} catch (final Throwable ex) {	
+			log.fatal("exception in testcase setUp", ex);
 		}
 	}
 
 	@After
 	public void tearDown() {
-		dbSession.endTransaction();
-		dbSession.close();
+		this.dbSession.endTransaction();
+		this.dbSession.close();
 
 		this.generalDb = null;
 		this.bookmarkDb = null;
@@ -71,10 +73,11 @@ public abstract class AbstractDatabaseManagerTest {
 		this.userDb = null;
 		this.groupDb = null;
 
+		this.generalParam = null;
 		this.bookmarkParam = null;
 		this.bibtexParam = null;
-		this.tagParam = null;
 		this.userParam = null;
+		this.tagParam = null;
 		this.groupParam = null;
 	}
 

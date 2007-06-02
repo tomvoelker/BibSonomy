@@ -11,7 +11,6 @@ import org.bibsonomy.database.Order;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
-import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.database.util.Transaction;
@@ -38,7 +37,7 @@ public class RestDatabaseManager implements LogicInterface {
 
 	/** Singleton */
 	private final static RestDatabaseManager singleton = new RestDatabaseManager();
-	private final Map<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>> allDatabaseManagers = new HashMap<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>>();
+	private final Map<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>> allDatabaseManagers;
 	private final BookmarkDatabaseManager bookmarkDBManager;
 	private final BibTexDatabaseManager bibtexDBManager;
 	private final UserDatabaseManager userDBManager;
@@ -46,6 +45,7 @@ public class RestDatabaseManager implements LogicInterface {
 	//private GroupDatabaseManager groupDBManager = GroupDatabaseManager.getInstance();
 
 	private RestDatabaseManager() {
+		this.allDatabaseManagers = new HashMap<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>>();
 		this.bibtexDBManager = BibTexDatabaseManager.getInstance();
 		this.allDatabaseManagers.put(BibTex.class, this.bibtexDBManager);
 		this.bookmarkDBManager = BookmarkDatabaseManager.getInstance();
@@ -66,12 +66,13 @@ public class RestDatabaseManager implements LogicInterface {
 	/**
 	 * Returns all users of the system
 	 * 
-	 * @param authUser currently logged in user's name
+	 * @param authUser
+	 *            currently logged in user's name
 	 * @param start
 	 * @param end
 	 * @return a set of users, an empty set else
 	 */
-	public List<User> getUsers(String authUser, int start, int end) {
+	public List<User> getUsers(final String authUser, final int start, final int end) {
 		final Transaction session = this.openSession();
 		try {
 			return this.userDBManager.getUsers(authUser, start, end, session);
@@ -83,13 +84,15 @@ public class RestDatabaseManager implements LogicInterface {
 	/**
 	 * Returns all users who are members of the specified group
 	 * 
-	 * @param authUser currently logged in user's name
-	 * @param groupName name of the group
+	 * @param authUser
+	 *            currently logged in user's name
+	 * @param groupName
+	 *            name of the group
 	 * @param start
 	 * @param end
-	 * @return  a set of users, an empty set else
+	 * @return a set of users, an empty set else
 	 */
-	public List<User> getUsers(String authUser, String groupName, int start, int end) {
+	public List<User> getUsers(final String authUser, final String groupName, final int start, final int end) {
 		final Transaction session = this.openSession();
 		try {
 			return this.userDBManager.getUsers(authUser, groupName, start, end, session);
@@ -102,13 +105,14 @@ public class RestDatabaseManager implements LogicInterface {
 	 * Returns details about a specified user
 	 * 
 	 * @param authUserName
-	 * @param userName name of the user we want to get details from
+	 * @param userName
+	 *            name of the user we want to get details from
 	 * @return details about a named user, null else
 	 */
-	public User getUserDetails(String authUserName, String userName) {
+	public User getUserDetails(final String authUserName, final String userName) {
 		final Transaction session = this.openSession();
 		try {
-			return this.userDBManager.getUserDetails(authUserName,userName, session);
+			return this.userDBManager.getUserDetails(authUserName, userName, session);
 		} finally {
 			session.close();
 		}
@@ -142,7 +146,7 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @return a set of posts, an empty set else
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Resource> List<Post<T>> getPosts(String authUser, Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, int start, int end) {
+	public <T extends Resource> List<Post<T>> getPosts(final String authUser, final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end) {
 		final List<Post<T>> result;
 		final Transaction session = this.openSession();
 		try {
@@ -167,7 +171,7 @@ public class RestDatabaseManager implements LogicInterface {
 				// this is save because of RTTI-check of resourceType argument which is of class T
 				result = (List<Post<T>>) ((List) this.bookmarkDBManager.getPosts(param, session));
 			} else {
-				throw new UnsupportedResourceTypeException( resourceType.toString() );
+				throw new UnsupportedResourceTypeException(resourceType.toString());
 			}
 		} finally {
 			session.close();
@@ -184,11 +188,11 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @param userName name of the post-owner
 	 * @return the post's details, null else
 	 */
-	public Post<? extends Resource> getPostDetails(String authUser, String resourceHash, String userName) {
+	public Post<? extends Resource> getPostDetails(final String authUser, final String resourceHash, final String userName) {
 		final Transaction session = this.openSession();
 		try {
 			Post<? extends Resource> rVal;
-			for (CrudableContent<? extends Resource, ? extends GenericParam> manager : allDatabaseManagers.values()) {
+			for (final CrudableContent<? extends Resource, ? extends GenericParam> manager : allDatabaseManagers.values()) {
 				rVal = manager.getPostDetails(authUser, resourceHash, userName, session);
 				if (rVal != null) {
 					return rVal;
@@ -210,7 +214,7 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @param string
 	 * @return a set of groups, an empty set else
 	 */
-	public List<Group> getGroups(String string, int start, int end) {
+	public List<Group> getGroups(final String string, final int start, final int end) {
 		return null;
 	}
 
@@ -221,7 +225,7 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @param groupName
 	 * @return the group's details, null else
 	 */
-	public Group getGroupDetails(String authUserName, String groupName) {
+	public Group getGroupDetails(final String authUserName, final String groupName) {
 		return null;
 	}
 
@@ -243,10 +247,10 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @param end
 	 * @return a set of tags, en empty set else
 	 */
-	public List<Tag> getTags(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end) {
+	public List<Tag> getTags(final String authUser, final GroupingEntity grouping, final String groupingName, final String regex, final int start, final int end) {
 		final Transaction session = this.openSession();
 		try {
-			return this.tagDBManager.getTags(authUser, grouping, groupingName, regex, start, end, session); 
+			return this.tagDBManager.getTags(authUser, grouping, groupingName, regex, start, end, session);
 		} finally {
 			session.close();
 		}
@@ -267,31 +271,31 @@ public class RestDatabaseManager implements LogicInterface {
 	 *            name of the tag
 	 * @return the tag's details, null else
 	 */
-	public Tag getTagDetails(String authUserName, String tagName) {
+	public Tag getTagDetails(final String authUserName, final String tagName) {
 		final Transaction session = this.openSession();
 		try {
-			return tagDBManager.getTagDetails( authUserName, tagName, session);
+			return this.tagDBManager.getTagDetails(authUserName, tagName, session);
 		} finally {
 			session.close();
 		}
 	}
 
 	/**
-	 * validates a user's access to bibsonomy.
+	 * Validates user access.
 	 * 
-	 * @param username name of the user
-	 * @param apiKey apiKey
+	 * @param username
+	 *            name of the user
+	 * @param apiKey
+	 *            apiKey
 	 * @return true if the user exists and has the given password
 	 */
-	public boolean validateUserAccess(String username, String apiKey) {
-		
+	public boolean validateUserAccess(final String username, final String apiKey) {
 		final Transaction session = this.openSession();
 		try {
-			return userDBManager.validateUserAccess(username,apiKey,session);
+			return this.userDBManager.validateUserAccess(username, apiKey, session);
 		} finally {
 			session.close();
 		}
-		
 	}
 
 	/**
@@ -300,47 +304,47 @@ public class RestDatabaseManager implements LogicInterface {
 	 * @param softwareKey the software key to check.
 	 * @return true if the software key is valid, false else.
 	 */
-	public boolean validateSoftwareKey(String softwareKey) {
-		// TODO: determine if a software key is to use
+	public boolean validateSoftwareKey(final String softwareKey) {
+		// FIXME: impl. a software key
 		return true;
 	}
-	
+
 	/**
-	 * removes the given user from bibsonomy.
+	 * Removes the given user from bibsonomy.
 	 * 
 	 * @param userName the user to delete
 	 */
-	public void deleteUser(String userName) {
+	public void deleteUser(final String userName) {
 	}
 
 	/**
-	 * removes the given group from bibsonomy.
+	 * Removes the given group from bibsonomy.
 	 * 
 	 * @param groupName the group to delete
 	 */
-	public void deleteGroup(String groupName) {
+	public void deleteGroup(final String groupName) {
 	}
 
 	/**
-	 * removes an user from a group.
+	 * Removes an user from a group.
 	 * 
 	 * @param groupName the group to change
 	 * @param userName the user to remove
 	 */
-	public void removeUserFromGroup(String groupName, String userName) {
+	public void removeUserFromGroup(final String groupName, final String userName) {
 	}
 
 	/**
-	 * removes the given post - identified by the connected resource's hash - from the user.
+	 * Removes the given post - identified by the connected resource's hash - from the user.
 	 * 
 	 * @param userName user who's post is to be removed
 	 * @param resourceHash hash of the resource, which is connected to the post to delete 
 	 */
-	public void deletePost(String userName, String resourceHash) {
+	public void deletePost(final String userName, final String resourceHash) {
 		final Transaction session = this.openSession();
 		try {
-			// TODO would be nice to know about the resourcetype ot the instance behind this resourceHash
-			for (CrudableContent<? extends Resource, ? extends GenericParam> man : allDatabaseManagers.values()) {
+			// TODO would be nice to know about the resourcetype or the instance behind this resourceHash
+			for (final CrudableContent<? extends Resource, ? extends GenericParam> man : this.allDatabaseManagers.values()) {
 				if (man.deletePost(userName, resourceHash, session) == true) {
 					break;
 				}
@@ -351,22 +355,22 @@ public class RestDatabaseManager implements LogicInterface {
 	}
 
 	/**
-	 * adds/ updates a user in the database.
+	 * Adds/updates a user in the database.
 	 * 
 	 * @param user the user to store
 	 * @param update true if its an existing user (identified by username), false if its a new user
 	 */
-	public void storeUser(User user, boolean update) {
+	public void storeUser(final User user, final boolean update) {
 	}
 
 	/**
-	 * adds/ updates a post in the database.
+	 * Adds/updates a post in the database.
 	 * 
 	 * @param userName name of the user who posts this post
 	 * @param post the post to be postet
 	 * @param update true if its an existing post (identified by its resource's intrahash), false if its a new post
 	 */
-	public <T extends Resource> void storePost(String userName, Post<T> post) {
+	public <T extends Resource> void storePost(final String userName, final Post<T> post) {
 		final Transaction session = this.openSession();
 		try {
 			final CrudableContent<T, GenericParam> man = getFittingDatabaseManager(post);
@@ -379,7 +383,7 @@ public class RestDatabaseManager implements LogicInterface {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T extends Resource> CrudableContent<T, GenericParam> getFittingDatabaseManager(Post<T> post) {
+	private <T extends Resource> CrudableContent<T, GenericParam> getFittingDatabaseManager(final Post<T> post) {
 		final Class resourceClass = post.getResource().getClass();
 		CrudableContent<? extends Resource, ? extends GenericParam> man = this.allDatabaseManagers.get(resourceClass);
 		if (man == null) {
@@ -390,27 +394,27 @@ public class RestDatabaseManager implements LogicInterface {
 				}
 			}
 			if (man == null) {
-				throw new UnsupportedResourceTypeException( resourceClass.toString() );
+				throw new UnsupportedResourceTypeException(resourceClass.toString());
 			}
 		}
 		return (CrudableContent<T, GenericParam>) ((CrudableContent) man);
 	}
 
 	/**
-	 * adds/ updates a group in the database.
+	 * Adds/updates a group in the database.
 	 * 
 	 * @param group the group to add
 	 * @param update true if its an existing group, false if its a new group
 	 */
-	public void storeGroup(Group group, boolean update) {
+	public void storeGroup(final Group group, final boolean update) {
 	}
 
 	/**
-	 * adds an existing user to an existing group.
+	 * Adds an existing user to an existing group.
 	 * 
 	 * @param groupName name of the existing group
 	 * @param user user to add
 	 */
-	public void addUserToGroup(String groupName, String userName) {
+	public void addUserToGroup(final String groupName, final String userName) {
 	}
 }

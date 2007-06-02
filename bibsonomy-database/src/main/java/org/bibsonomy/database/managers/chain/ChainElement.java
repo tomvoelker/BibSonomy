@@ -13,6 +13,7 @@ import org.bibsonomy.database.util.Transaction;
  * Represents one element in the chain of responsibility.
  * 
  * @author Miranda Grahl
+ * @author Jens Illig
  * @author Christian Schenk
  * @version $Id$
  */
@@ -57,28 +58,28 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 	 * Returns true if the request can be handled by the current chain element, otherwise false.
 	 */
 	protected abstract boolean canHandle(P param);
-	
-	protected boolean present(String s) {
+
+	protected boolean present(final String s) {
 		return ((s != null) && (s.length() > 0));
 	}
-	
-	protected boolean present(Collection c) {
+
+	protected boolean present(final Collection c) {
 		return ((c != null) && (c.size() > 0));
 	}
-	
-	protected boolean present(Object o) {
+
+	protected boolean present(final Object o) {
 		return (o != null);
 	}
-	
-	protected boolean present(GroupID gid) {
+
+	protected boolean present(final GroupID gid) {
 		return ((gid != null) && (gid != GroupID.GROUP_INVALID));
 	}
-	
-	protected boolean presentValidGroupId(int gid) {
+
+	protected boolean presentValidGroupId(final int gid) {
 		return (gid != GroupID.GROUP_INVALID.getId());
 	}
-	
-	protected boolean nullOrEqual(Object requested, Object supported) {
+
+	protected boolean nullOrEqual(final Object requested, final Object supported) {
 		return ((requested == null) || (requested == supported));
 	}
 }

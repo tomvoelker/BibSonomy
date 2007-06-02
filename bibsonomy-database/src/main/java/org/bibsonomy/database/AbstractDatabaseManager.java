@@ -17,8 +17,8 @@ import com.ibatis.sqlmap.client.SqlMapExecutor;
  * just a list of Objects but a list of bookmarks. This way a lot of unchecked
  * casting remains in this class and isn't scattered all over the code.
  * 
- * @author Christian Schenk
  * @author Jens Illig
+ * @author Christian Schenk
  * @version $Id$
  */
 public class AbstractDatabaseManager {
@@ -165,6 +165,8 @@ public class AbstractDatabaseManager {
 		case DELETE:
 			sqlMap.delete(query, param);
 			break;
+		default:
+			throw new UnsupportedOperationException();
 		}
 		return rVal;
 	}
