@@ -172,23 +172,23 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 	/*
 	 * TODO sql-statements are not implemented 
 	 */
-    public void storeUser(final User user, final boolean update, final Transaction session) {
+	public void storeUser(final User user, final boolean update, final Transaction session) {
 		// UPDATE
 		// user would like to update his/her personal information
 		if (update == true) {
 			// test if user already exist
 			final List<User> userTemp = getUsers(user.getName(), 1, 1, session);
 
-			// if the user already exists, it must be exist an user account in
-			// database according give name
+			// if the user already exists, there must be an user account in the
+			// database
 			if (userTemp.size() == 0) {
 				throw new RuntimeException("No user for given name in database");
 			} else {
-				// userProve is the object, which is already written in the
+				// proveUser is the object, which is already written in the
 				// database
 				final User proveUser = userTemp.get(0);
 				// comparison of user object in database and current handled
-				// user object each attribute two is compared
+				// user object - all attributes are checked against each other
 				if (proveUser.getName() != user.getName() || proveUser.getEmail() != user.getEmail() || proveUser.getHomepage() != user.getHomepage() || proveUser.getPassword() != user.getPassword() || proveUser.getRealname() != user.getRealname()) {
 					/*
 					 * TODO loggen löschen einfügen

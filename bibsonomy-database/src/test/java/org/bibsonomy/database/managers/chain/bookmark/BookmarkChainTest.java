@@ -11,7 +11,7 @@ import org.junit.Test;
 /**
  * Test related to the Bookmark Chain
  * 
- * @author dbenz
+ * @author Dominik Benz
  * @version $Id$
  */
 public class BookmarkChainTest extends AbstractChainTest {

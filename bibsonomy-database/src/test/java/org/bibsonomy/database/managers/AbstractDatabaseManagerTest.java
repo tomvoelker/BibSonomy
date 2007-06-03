@@ -18,8 +18,8 @@ import org.junit.Before;
  * print both bookmarks and BibTexs. Every class that implements tests for
  * methods which interact with the database should be derived from this class.
  * 
- * @author Christian Schenk
  * @author Jens Illig
+ * @author Christian Schenk
  * @version $Id$
  */
 public abstract class AbstractDatabaseManagerTest {

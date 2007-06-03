@@ -2,12 +2,11 @@ package org.bibsonomy.database;
 
 import static org.junit.Assert.fail;
 
-import java.sql.SQLException;
-
 import org.apache.log4j.Logger;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.testutil.ParamUtils;
+import org.junit.Test;
 
 /**
  * Performance tests for database methods.
@@ -27,9 +26,10 @@ public class PerfTest extends AbstractDatabaseManagerTest {
 	/**
 	 * Executes all methods we'd like to evaluate.
 	 */
-	// @Test
+	@Test
 	public void testPerf() {
-		for (final Method method : Method.values()) {
+		// for (final Method method : Method.values()) {
+		for (final Method method : new Method[] { Method.getBookmarkByTagNames }) {
 			this.runPerfTest(method);
 		}
 	}
@@ -74,11 +74,9 @@ public class PerfTest extends AbstractDatabaseManagerTest {
 			log.debug("5 queries of " + methodname + " took: " + (all / 20) + " ms");
 			log.debug("1 query   of " + methodname + " took: " + ((all / 20) / 5) + " ms");
 			log.debug("Under this circumstances " + 1000 / ((all / 20) / 5) + " queries could be executed in one second");
-		} catch (final RuntimeException ex) {
-			if (ex.getCause() instanceof SQLException) {
-				ex.printStackTrace();
-				fail("SQLException");
-			}
+		} catch (final Throwable ex) {
+			// ex.printStackTrace();
+			fail("Exception: " + ex.getMessage());
 		}
 	}
 

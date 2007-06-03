@@ -11,7 +11,7 @@ import org.junit.Test;
 /**
  * Tests related to the Tag Chain.
  * 
- * @author dbenz
+ * @author Dominik Benz
  * @version $Id$
  */
 public class TagChainTest extends AbstractChainTest {

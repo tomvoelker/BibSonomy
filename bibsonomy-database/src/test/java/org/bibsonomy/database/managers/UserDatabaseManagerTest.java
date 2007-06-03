@@ -1,21 +1,18 @@
 package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.util.UserUtils;
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -25,8 +22,6 @@ import org.junit.Test;
  * @version $Id$
  */
 public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
-
-	private static final Logger log = Logger.getLogger(UserDatabaseManagerTest.class);
 
 	/**
 	 * Retrieve all users
@@ -60,8 +55,8 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getUserNamesOfGroupId() {
 		final List<String> users = this.userDb.getUserNamesByGroupId(GroupID.GROUP_KDE.getId(), dbSession);
 		final String[] kdeUsers = new String[] { "kde", "schmitz", "chs", "jaeschke", "stumme", "gst", "sfi", "finis", "rja", "aho", "hotho", "grahl", "beate" };
-		Assert.assertTrue(users.containsAll(Arrays.asList(kdeUsers)));
-		Assert.assertEquals(kdeUsers.length, users.size());
+		assertTrue(users.containsAll(Arrays.asList(kdeUsers)));
+		assertEquals(kdeUsers.length, users.size());
 	}
 
 	/**
@@ -105,18 +100,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			assertEquals(user.getRealname(), "mira");
 			assertEquals(user.getApiKey(), param.getApiKey());
 		} catch (final MalformedURLException ex) {
-			fail("Malformed URL: ");
-		}
-	}
-
-	/**
-	 * Generate 10 Api keys and log them
-	 */
-	@Test
-	public void generateApiKeys() {
-		for (int i = 0; i < 10; i++) {
-			final String apiKey = UserUtils.generateApiKey();
-			log.debug("Generated Api Key: " + apiKey);
+			fail("Malformed URL: " + ex.getMessage());
 		}
 	}
 
@@ -125,7 +109,6 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void updateApiKeyForUser() {
-		this.resetParameters(); // load default parameters
 		this.userDb.updateApiKeyForUser(this.userParam, this.dbSession);
 		assertEquals(this.userParam.getApiKey(), this.userDb.getApiKeyForUser(this.userParam, this.dbSession));
 	}
