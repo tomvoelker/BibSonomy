@@ -19,19 +19,38 @@ public class TagParam extends GenericParam {
 	private Integer tasId;
 	private String name;
 	private String stem;
-	private int count;
+	private int count; 
 	private int usercount;
 
-	/*
-	 * for request wether to retrieve set of subTags or superTags
-	 * decide if relation is transitive or not
+
+	/**
+	 * Decides whether to retrieve the subtags of the current tag
 	 */
-	boolean subTags;
-	boolean supertags;
-	boolean transitive;
+	private boolean retrieveSubTags;
 	
+	/**
+	 * Decides whether to retrieve the superTags of the current tag
+	 */
+	private boolean retrieveSuperTags;
+	
+	/**
+	 * Decides whether to retrieve the sub-/supertags in a transitive manner, 
+	 * i.e. the complete subtree under the current tag (subtags) or all tags from
+	 * the current tag up to the tree root (supertags)
+	 */
+	private boolean retrieveSubSuperTagsTransitive;
+	
+	/**
+	 * TODO document
+	 */
 	private List<Post<? extends Resource>> posts;
+	
+	/**
+	 * Regular expression
+	 */
 	private String regex;
+	
+	
 
 	public String getRegex() {
 		return this.regex;
@@ -97,27 +116,28 @@ public class TagParam extends GenericParam {
 		this.tasId = tasId;
 	}
 
-	public boolean isSubTags() {
-		return this.subTags;
+	public boolean isRetrieveSubSuperTagsTransitive() {
+		return this.retrieveSubSuperTagsTransitive;
 	}
 
-	public void setSubTags(boolean subTags) {
-		this.subTags = subTags;
+	public void setRetrieveSubSuperTagsTransitive(boolean retrieveSubSuperTagsTransitive) {
+		this.retrieveSubSuperTagsTransitive = retrieveSubSuperTagsTransitive;
 	}
 
-	public boolean isSupertags() {
-		return this.supertags;
+	public boolean isRetrieveSubTags() {
+		return this.retrieveSubTags;
 	}
 
-	public void setSupertags(boolean supertags) {
-		this.supertags = supertags;
+	public void setRetrieveSubTags(boolean retrieveSubTags) {
+		this.retrieveSubTags = retrieveSubTags;
 	}
 
-	public boolean isTransitive() {
-		return this.transitive;
+	public boolean isRetrieveSuperTags() {
+		return this.retrieveSuperTags;
 	}
 
-	public void setTransitive(boolean transitive) {
-		this.transitive = transitive;
+	public void setRetrieveSuperTags(boolean retrieveSuperTags) {
+		this.retrieveSuperTags = retrieveSuperTags;
 	}
+
 }
