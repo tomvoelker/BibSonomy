@@ -23,7 +23,7 @@ import org.junit.runners.Suite;
  * @author Christian Schenk
  * @version $Id$
  */
-@RunWith(Suite.class)
+// @RunWith(Suite.class)
 @Suite.SuiteClasses( { ParamTest.class, LogicInterfaceHelperTest.class, DatabasePluginMock.class, ChainElementTest.class, BookmarkDatabaseManagerTest.class, BibTexDatabaseManagerTest.class, TagDatabaseManagerTest.class, TransactionTest.class, UserDatabaseManagerTest.class, GroupDatabaseManagerTest.class, RestDatabaseManagerTest.class, GeneralDatabaseManagerTest.class })
 public class AllTests {
 }
