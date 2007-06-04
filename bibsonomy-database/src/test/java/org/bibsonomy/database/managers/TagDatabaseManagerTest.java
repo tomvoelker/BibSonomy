@@ -6,6 +6,7 @@ import org.bibsonomy.model.Tag;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * Tests related to tags.
@@ -20,14 +21,14 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final Tag tag = this.tagDb.getTagById(5218, this.dbSession);
 		assertEquals(5218, tag.getId());
 		assertEquals("$100", tag.getName());
-		assertEquals("", tag.getStem());
+		assertNull(tag.getStem());
 		assertEquals(5, tag.getGlobalcount());
 	}
 
 	@Test
 	public void getTagByCount() {
 		final List<Tag> tags = this.tagDb.getTagByCount(this.tagParam, this.dbSession);
-		assertEquals(18, tags.size());
+		assertEquals(10, tags.size());
 		for (final Tag tag : tags)
 			assertEquals(100, tag.getGlobalcount());
 	}
