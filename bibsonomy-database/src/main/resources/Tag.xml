@@ -11,7 +11,7 @@
 		SELECT tag_id, tag_name, tag_ctr FROM tags WHERE tag_name = #name#
 	</select>	
 
-	<select id="getTagsByCount" resultMap="TagCommon.tagWithDetails" parameterClass="tagParam">
+	<select id="getTagByCount" resultMap="TagCommon.tagWithDetails" parameterClass="tagParam">
 		SELECT tag_id, tag_name, tag_ctr FROM tags WHERE tag_ctr = #count# LIMIT #limit# OFFSET #offset#
 	</select>
 
