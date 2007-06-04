@@ -30,12 +30,6 @@
 		<result property="name" column="tag_name" javaType="string" />
 	</resultMap>
 
-	<!-- TODO: this is only a hack to provide tag-support. feel free to delete it -->
-	<resultMap id="tagWithCount" class="tag">
-		<result property="name" column="tag_name" javaType="string" />
-		<result property="globalcount" column="tag_count" javaType="int" />
-	</resultMap>
-
 	<!-- Should be used in conjunction with tagWhereQuery. -->
 	<sql id="tagFromQuery">
 		<iterate property="tagIndex" conjunction=",">

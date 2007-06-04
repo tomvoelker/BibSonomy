@@ -5,6 +5,8 @@
 	All aliases are collected here, because they must not exist twice (i.e. their names).
 -->
 <sqlMap namespace="TypeAliases">
+
+	<!-- Model types -->
 	<typeAlias alias="tag"      type="org.bibsonomy.model.Tag" />
 	<typeAlias alias="bookmark" type="org.bibsonomy.model.Bookmark" />
 	<typeAlias alias="bibtex"   type="org.bibsonomy.model.BibTex" />
@@ -20,4 +22,5 @@
 	<typeAlias alias="userParam"     type="org.bibsonomy.database.params.UserParam" />
 	<typeAlias alias="groupParam"    type="org.bibsonomy.database.params.GenericParam" />
 	<typeAlias alias="tagParam"      type="org.bibsonomy.database.params.TagParam" />	
+	<typeAlias alias="tagTagBatchParam" type="org.bibsonomy.database.params.beans.TagTagBatchParam" />		
 </sqlMap>

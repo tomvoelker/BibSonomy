@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TagCommon">
+
+	<!-- tag with its global count, i.e. the number of posts it is part of -->
+	<resultMap id="tagWithGlobalCount" class="tag" extends="Common.tag">
+	    <result property="globalcount" column="tag_ctr" javaType="int" />
+	</resultMap>
+
+	<!-- tag name with its usercount, i.e. the number of users that have used it -->
+	<resultMap id="tagWithUserCount" class="tag" extends="Common.tag">
+	    <result property="usercount" column="user_count" javaType="int" />
+	</resultMap>	
+	
+	<!-- tag with its id, name and global count -->
+	<resultMap id="tagWithDetails" class="tag" extends="Common.tag">
+		<result property="id"     		column="tag_id"      	javaType="int" />
+		<result property="globalcount" 	column="tag_ctr"      	javaType="int" />	    
+	    <!-- not yet supported:	    	
+	    	<result property="stem"			column="tag_stem"      	javaType="string" />
+	     -->
+	    <!-- 
+	    	excluded for now because it does not correspond to a table field in the
+	    	database, and hast to be computed separately:
+	    	<result property="usercount" column="user_count" javaType="int" />
+	     -->	     	     
+	</resultMap>	
+	
+			
+</sqlMap>

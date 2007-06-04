@@ -2,53 +2,43 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="Tag">
-	<typeAlias alias="tag" type="org.bibsonomy.model.Tag" />
-	<typeAlias alias="tagTagBatchParam" type="org.bibsonomy.database.params.beans.TagTagBatchParam" />
 
-	<resultMap id="tags" class="tag">
-		<result property="id"    column="tag_id"   javaType="java.lang.Integer" />
-		<result property="name"  column="tag_name" javaType="java.lang.String" />
-		<result property="stem"  column="tag_stem" javaType="java.lang.String" />
-        <!-- FIXME globalcount or usercount? -->
-		<result property="globalcount" column="tag_ctr"  javaType="java.lang.Integer" />
-	</resultMap>
-
-	<select id="getTagById" resultMap="tags" parameterClass="int">
-		SELECT tag_id, tag_name, tag_stem, tag_ctr FROM tags WHERE tag_id = #id#
+	<select id="getTagById" resultMap="TagCommon.tagWithDetails" parameterClass="int">
+		SELECT tag_id, tag_name, tag_ctr FROM tags WHERE tag_id = #id#
 	</select>
 	
-	<select id="getTagByName" resultMap="tags" parameterClass="tagParam">
-		SELECT tag_id, tag_name, tag_stem, tag_ctr FROM tags WHERE tag_name = #name#
+	<select id="getTagByName" resultMap="TagCommon.tagWithDetails" parameterClass="tagParam">
+		SELECT tag_id, tag_name, tag_ctr FROM tags WHERE tag_name = #name#
 	</select>	
 
-	<select id="getTagByCount" resultMap="tags" parameterClass="tagParam">
-		SELECT tag_id, tag_name, tag_stem, tag_ctr FROM tags WHERE tag_ctr = #count#
+	<select id="getTagsByCount" resultMap="TagCommon.tagWithDetails" parameterClass="tagParam">
+		SELECT tag_id, tag_name, tag_ctr FROM tags WHERE tag_ctr = #count# LIMIT #limit# OFFSET #offset#
 	</select>
 
-	<!-- TODO: this is only a hack to provide tag-support. feel free to change it. -->
-	<select id="getAllTags" resultMap="Common.tagWithCount" parameterClass="tagParam">
-		SELECT tag_name, count(tag_name) AS tag_count FROM tas t GROUP BY t.tag_name LIMIT #limit# OFFSET #offset#
+	<select id="getAllTags" resultMap="TagCommon.tagWithDetails" parameterClass="tagParam">
+		<!--  SELECT tag_name, count(tag_name) AS tag_count FROM tas t GROUP BY t.tag_name LIMIT #limit# OFFSET #offset# -->
+		SELECT tag_id, tag_name, tag_ctr FROM tags t LIMIT #limit# OFFSET #offset#
 	</select>
 	
-	<!-- TODO to adapted-->
-	<select id="getTagsByExpression" resultClass="string" parameterClass="tagParam">
-		SELECT * FROM tags WHERE tag_name REGEXP '^regex' LIMIT #limit# OFFSET #offset#
+	<!-- TODO not yet tested -->
+	<select id="getTagsByExpression" resultMap="TagCommon.tagWithDetails" parameterClass="tagParam">
+		SELECT tag_id, tag_name, tag_ctr FROM tags WHERE tag_name REGEXP '^regex' LIMIT #limit# OFFSET #offset#
 	</select>
 
- 	<select id="getTagsViewable" resultClass="string" parameterClass="tagParam">
-		SELECT tag_name, count(tag_name) AS tag_count FROM tas t
+ 	<select id="getTagsViewable" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT tag_name, count(tag_name) AS tag_ctr 
+		FROM tas t
 		WHERE t.group = #groupType#
 		GROUP BY t.tag_name LIMIT #limit# OFFSET #offset#
 	</select>
 
-	<!-- TODO: this is only a hack to provide tag-support. feel free to change it. -->	
-	<select id="getTagsByUser" resultMap="Common.tagWithCount" parameterClass="tagParam">
-		SELECT tag_name, count(tag_name) AS tag_count FROM tas t WHERE t.user_name = #requestedUserName#
+	<select id="getTagsByUser" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT tag_name, count(tag_name) AS tag_ctr FROM tas t WHERE t.user_name = #requestedUserName#
 		<include refid="getTagForUser"/> GROUP BY t.tag_name LIMIT #limit# OFFSET #offset#
 	</select>
 
-	<select id="getTagsByGroup" resultClass="string" parameterClass="tagParam">
-		SELECT tag_name, count(tag_name) AS tag_count FROM 
+	<select id="getTagsByGroup" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT tag_name, count(tag_name) AS tag_ctr FROM 
 		((SELECT tag_name
 		  FROM tas t, groups g
 		  WHERE g.group = #groupId# AND g.user_name=t.user_name
@@ -84,4 +74,5 @@
 	<insert id="insertTagTagBatch" parameterClass="tagTagBatchParam">
 		INSERT INTO tagtag_batch (content_id, tags, toinc) VALUES (#contentId#, #tagList#, #jobInteger#)
 	</insert>
+	
 </sqlMap>
