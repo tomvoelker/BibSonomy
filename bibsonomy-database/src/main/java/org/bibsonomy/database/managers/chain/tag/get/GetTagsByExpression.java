@@ -26,6 +26,6 @@ public class GetTagsByExpression extends TagChainElement {
 
 	@Override
 	protected boolean canHandle(final TagParam param) {
-		return param.getRegex() != null;
+		return present(param.getRegex());
 	}
 }

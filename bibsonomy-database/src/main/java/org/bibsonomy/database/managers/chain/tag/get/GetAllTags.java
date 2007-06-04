@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers.chain.tag.get;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.tag.TagChainElement;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.util.Transaction;
@@ -20,6 +21,6 @@ public class GetAllTags extends TagChainElement {
 
 	@Override
 	protected boolean canHandle(final TagParam param) {
-		return true;
+		return param.getGrouping() == GroupingEntity.ALL;
 	}
 }

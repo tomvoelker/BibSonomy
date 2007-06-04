@@ -22,8 +22,7 @@ public class GetTagByTagName extends TagChainElement {
 	 */
 	@Override
 	protected boolean canHandle(TagParam param) {		
-		// return  tagName != null && tagName != "" && subTags != null && superTags != null && subTags == false && superTags == false;
-		return false;
+		return present(param.getTagName()) && !param.isRetrieveSubTags() && !param.isRetrieveSuperTags();
 	}
 
 	/* (non-Javadoc)
