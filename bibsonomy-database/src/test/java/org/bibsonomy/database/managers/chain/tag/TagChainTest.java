@@ -20,7 +20,7 @@ public class TagChainTest extends AbstractChainTest {
 	public void GetTagsByUser() {
 		// set parameters
 		this.tagParam.setGrouping(GroupingEntity.USER);
-		this.tagParam.setUserName("stumme");
+		this.tagParam.setUserName("hotho");
 
 		// start chain
 		final List<Tag> tags = this.tagChain.getFirstElement().perform(this.tagParam, this.dbSession);
