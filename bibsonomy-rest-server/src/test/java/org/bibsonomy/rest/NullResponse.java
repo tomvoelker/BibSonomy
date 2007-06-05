@@ -14,218 +14,157 @@ import javax.servlet.http.HttpServletResponse;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public class NullResponse implements HttpServletResponse
-{
-   private ServletOutputStream servletOutputStream;
-   private PrintWriter printWriter;
-   private StringWriter content;
-   
-   public String getContent()
-   {
-      return content.toString();
-   }
+public class NullResponse implements HttpServletResponse {
 
-   public ServletOutputStream getOutputStream() throws IOException
-   {
-      if( servletOutputStream == null )
-      {
-         servletOutputStream = new ServletOutputStream()
-         {
-            @Override
-            public void write( int b ) throws IOException
-            {
-               getWriter().write( b );
-            }
-         };
-      }
-      return servletOutputStream;
-   }
-   
-   public PrintWriter getWriter() throws IOException
-   {
-      if( printWriter == null )
-      {
-         content = new StringWriter(); 
-         printWriter = new PrintWriter( content );
-      }
-      return printWriter;
-   }
+	private ServletOutputStream servletOutputStream;
+	private PrintWriter printWriter;
+	private StringWriter content;
+	private int contentLength;
 
-   private int contentLength;
+	public String getContent() {
+		return this.content.toString();
+	}
 
-   public void setContentLength( int arg0 )
-   {
-      contentLength = arg0;
-   }
+	public ServletOutputStream getOutputStream() throws IOException {
+		if (this.servletOutputStream == null) {
+			this.servletOutputStream = new ServletOutputStream() {
+				@Override
+				public void write(final int b) throws IOException {
+					getWriter().write(b);
+				}
+			};
+		}
+		return this.servletOutputStream;
+	}
 
-   /**
-    * @return the contentLength
-    */
-   public int getContentLength()
-   {
-      return contentLength;
-   }
-   
-   public void addCookie( Cookie arg0 )
-   {
-   }
+	public PrintWriter getWriter() throws IOException {
+		if (this.printWriter == null) {
+			this.content = new StringWriter();
+			this.printWriter = new PrintWriter(this.content);
+		}
+		return this.printWriter;
+	}
 
-   public boolean containsHeader( String arg0 )
-   {
-      return false;
-   }
+	public void setContentLength(int contentLength) {
+		this.contentLength = contentLength;
+	}
 
-   public String encodeURL( String arg0 )
-   {
-      return null;
-   }
+	public int getContentLength() {
+		return this.contentLength;
+	}
 
-   public String encodeRedirectURL( String arg0 )
-   {
-      return null;
-   }
+	public void addCookie(Cookie arg0) {
+	}
 
-   public String encodeUrl( String arg0 )
-   {
-      return null;
-   }
+	public boolean containsHeader(String arg0) {
+		return false;
+	}
 
-   public String encodeRedirectUrl( String arg0 )
-   {
-      return null;
-   }
+	public String encodeURL(String arg0) {
+		return null;
+	}
 
-   public void sendError( int arg0, String arg1 ) throws IOException
-   {
-      throw new RuntimeException( "code: " + arg0 + " message: " + arg1 );
-   }
+	public String encodeRedirectURL(String arg0) {
+		return null;
+	}
 
-   public void sendError( int arg0 ) throws IOException
-   {
-      throw new RuntimeException( "code: " + arg0 );
-   }
+	public String encodeUrl(String arg0) {
+		return null;
+	}
 
-   public void sendRedirect( String arg0 ) throws IOException
-   {
+	public String encodeRedirectUrl(String arg0) {
+		return null;
+	}
 
-   }
+	public void sendError(final int code, final String msg) throws IOException {
+		throw new RuntimeException("code: " + code + " message: " + msg);
+	}
 
-   public void setDateHeader( String arg0, long arg1 )
-   {
+	public void sendError(final int code) throws IOException {
+		throw new RuntimeException("code: " + code);
+	}
 
-   }
+	public void sendRedirect(String arg0) throws IOException {
 
-   public void addDateHeader( String arg0, long arg1 )
-   {
+	}
 
-   }
+	public void setDateHeader(String arg0, long arg1) {
 
-   public void setHeader( String arg0, String arg1 )
-   {
+	}
 
-   }
+	public void addDateHeader(String arg0, long arg1) {
 
-   public void addHeader( String arg0, String arg1 )
-   {
+	}
 
-   }
+	public void setHeader(String arg0, String arg1) {
 
-   public void setIntHeader( String arg0, int arg1 )
-   {
+	}
 
-   }
+	public void addHeader(String arg0, String arg1) {
 
-   public void addIntHeader( String arg0, int arg1 )
-   {
+	}
 
-   }
+	public void setIntHeader(String arg0, int arg1) {
 
-   public void setStatus( int arg0 )
-   {
+	}
 
-   }
+	public void addIntHeader(String arg0, int arg1) {
 
-   public void setStatus( int arg0, String arg1 )
-   {
+	}
 
-   }
+	public void setStatus(int arg0) {
 
-   public String getCharacterEncoding()
-   {
-      return null;
-   }
+	}
 
-   public String getContentType()
-   {
-      return null;
-   }
+	public void setStatus(int arg0, String arg1) {
 
-   public void setCharacterEncoding( String arg0 )
-   {
+	}
 
-   }
+	public String getCharacterEncoding() {
+		return null;
+	}
 
-   public void setContentType( String arg0 )
-   {
+	public String getContentType() {
+		return null;
+	}
 
-   }
+	public void setCharacterEncoding(String arg0) {
 
-   public void setBufferSize( int arg0 )
-   {
+	}
 
-   }
+	public void setContentType(String arg0) {
 
-   public int getBufferSize()
-   {
-      return 0;
-   }
+	}
 
-   public void flushBuffer() throws IOException
-   {
+	public void setBufferSize(int arg0) {
 
-   }
+	}
 
-   public void resetBuffer()
-   {
+	public int getBufferSize() {
+		return 0;
+	}
 
-   }
+	public void flushBuffer() throws IOException {
 
-   public boolean isCommitted()
-   {
-      return false;
-   }
+	}
 
-   public void reset()
-   {
+	public void resetBuffer() {
 
-   }
+	}
 
-   public void setLocale( Locale arg0 )
-   {
+	public boolean isCommitted() {
+		return false;
+	}
 
-   }
+	public void reset() {
 
-   public Locale getLocale()
-   {
-      return null;
-   }
+	}
+
+	public void setLocale(Locale arg0) {
+
+	}
+
+	public Locale getLocale() {
+		return null;
+	}
 }
-
-/*
- * $Log$
- * Revision 1.2  2007-04-15 11:05:39  mbork
- * fixed a bug concerning UTF-8 characters. Added a test
- *
- * Revision 1.1  2006/10/24 21:39:52  mbork
- * split up rest api into correct modules. verified with junit tests.
- *
- * Revision 1.1  2006/10/10 12:42:14  cschenk
- * Auf Multi-Module Build umgestellt
- *
- * Revision 1.2  2006/09/24 21:26:21  mbork
- * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
- *
- * Revision 1.1  2006/06/13 18:07:40  mbork
- * introduced unit tests for servlet using null-pattern for request and response. tested to use cactus/ httpunit, but decided not to use them.
- *
- */

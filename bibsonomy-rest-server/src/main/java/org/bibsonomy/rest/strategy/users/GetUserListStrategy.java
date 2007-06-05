@@ -19,115 +19,41 @@ import org.bibsonomy.rest.strategy.Strategy;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public class GetUserListStrategy extends Strategy
-{
-	public GetUserListStrategy( Context context )
-	{
-		super( context );
+public class GetUserListStrategy extends Strategy {
+
+	public GetUserListStrategy(final Context context) {
+		super(context);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.strategy.Strategy#validate()
-	 */
 	@Override
-	public void validate() throws ValidationException
-	{
+	public void validate() throws ValidationException {
 		// should be ok for everybody
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.strategy.Strategy#perform(java.io.PrintWriter, java.util.Map)
-	 */
 	@Override
-	public void perform( HttpServletRequest request, Writer writer ) throws InternServerException
-	{
-		// setup viewModel
-		int start = context.getIntAttribute( "start", 0 );
-		int end = context.getIntAttribute( "end", 20 );
-		
-		List<User> users = context.getLogic().getUsers( context.getAuthUserName(), start, end );
-      
-      ViewModel viewModel = new ViewModel();
-      if( users.size() < end || users.size() > end )
-      {
-         end = users.size();
-      }
-      else
-      {
-         String next = RestProperties.getInstance().getApiUrl() + RestProperties.getInstance().getUsersUrl() + "?start=" + String.valueOf( end ) + 
-         "&end=" + String.valueOf( end + 20 ); 
-         viewModel.setUrlToNextResources( next );
-      }
-      viewModel.setStartValue( start );
-      viewModel.setEndValue( end );
-   
-      // delegate to the renderer
-		context.getRenderer().serializeUsers( writer, users, viewModel );
+	public void perform(final HttpServletRequest request, final Writer writer) throws InternServerException {
+		final int start = this.context.getIntAttribute("start", 0);
+		int end = this.context.getIntAttribute("end", 20);
+
+		final List<User> users = this.context.getLogic().getUsers(this.context.getAuthUserName(), start, end);
+
+		final ViewModel viewModel = new ViewModel();
+		if (users.size() < end || users.size() > end) {
+			end = users.size();
+		} else {
+			final String next = RestProperties.getInstance().getApiUrl() + RestProperties.getInstance().getUsersUrl() + "?start=" + String.valueOf(end) + "&end=" + String.valueOf(end + 20);
+			viewModel.setUrlToNextResources(next);
+		}
+		viewModel.setStartValue(start);
+		viewModel.setEndValue(end);
+
+		// delegate to the renderer
+		this.context.getRenderer().serializeUsers(writer, users, viewModel);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.strategy.Strategy#getContentType(java.lang.String)
-	 */
 	@Override
-	public String getContentType( String userAgent )
-	{
-		if( context.apiIsUserAgent( userAgent ) ) return "bibsonomy/users+" + context.getRenderingFormat().toString();
-      return RestProperties.getInstance().getContentType();
+	public String getContentType(final String userAgent) {
+		if (this.context.apiIsUserAgent(userAgent)) return "bibsonomy/users+" + this.context.getRenderingFormat().toString();
+		return RestProperties.getInstance().getContentType();
 	}
 }
-
-/*
- * $Log$
- * Revision 1.7  2007-05-30 20:23:26  mbork
- * Exclusive use of 'end'-parameter in requests returning lists.
- *
- * Revision 1.6  2007/04/15 11:05:07  mbork
- * changed method signature to use a more general Writer
- *
- * Revision 1.5  2007/02/21 14:08:36  mbork
- * - included code generation of the schema in the maven2 build-lifecycle
- * - removed circular dependencies among the modules
- * - cleaned up the poms of the modules
- * - fixed failing unit-tests
- *
- * Revision 1.4  2007/02/15 10:29:09  mbork
- * the LogicInterface now uses Lists instead of Sets
- * fixed use of generics
- *
- * Revision 1.3  2007/02/11 17:55:26  mbork
- * switched REST-api to the 'new' datamodel, which does not deserve the name...
- *
- * Revision 1.2  2007/02/05 10:35:54  cschenk
- * Distributed code from the spielwiese among the modules
- *
- * Revision 1.1  2006/10/24 21:39:52  mbork
- * split up rest api into correct modules. verified with junit tests.
- *
- * Revision 1.1  2006/10/10 12:42:12  cschenk
- * Auf Multi-Module Build umgestellt
- *
- * Revision 1.7  2006/09/24 21:26:21  mbork
- * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
- *
- * Revision 1.6  2006/07/05 16:27:57  mbork
- * fixed issues with link to next list of resources
- *
- * Revision 1.5  2006/06/13 18:07:40  mbork
- * introduced unit tests for servlet using null-pattern for request and response. tested to use cactus/ httpunit, but decided not to use them.
- *
- * Revision 1.4  2006/06/11 15:25:25  mbork
- * removed gatekeeper, changed authentication process
- *
- * Revision 1.3  2006/06/05 14:14:11  mbork
- * implemented GET strategies
- *
- * Revision 1.2  2006/05/24 13:02:44  cschenk
- * Introduced an enum for the HttpMethod and moved the exceptions
- *
- * Revision 1.1  2006/05/21 20:31:51  mbork
- * continued implementing context
- *
- * Revision 1.1  2006/05/19 21:01:08  mbork
- * started implementing rest api
- *
- */

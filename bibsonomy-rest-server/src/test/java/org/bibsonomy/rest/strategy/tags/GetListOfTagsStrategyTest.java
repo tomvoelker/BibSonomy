@@ -15,47 +15,18 @@ import org.bibsonomy.rest.strategy.Context;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public class GetListOfTagsStrategyTest extends TestCase
-{
-   public void testGetListOfTagsStrategy()
-   {
-      Context c = new Context( new TestDatabase(), HttpMethod.GET, "/tags", new HashMap<String,String>() );
-      NullRequest request = new NullRequest();
-      StringWriter sw = new StringWriter();
-      c.perform( request, sw );
-      // just test length, because the detail rendering output is tested by the
-      // renderer test
-      assertEquals(  938, sw.toString().length() );
-      assertEquals( "text/xml", c.getContentType( "firefox" ) );
-      assertEquals( "bibsonomy/tags+XML", c.getContentType( RestProperties.getInstance().getApiUserAgent() ) );
-   }
-}
+public class GetListOfTagsStrategyTest extends TestCase {
 
-/*
- * $Log$
- * Revision 1.2  2007-02-21 14:08:36  mbork
- * - included code generation of the schema in the maven2 build-lifecycle
- * - removed circular dependencies among the modules
- * - cleaned up the poms of the modules
- * - fixed failing unit-tests
- *
- * Revision 1.1  2006/10/24 21:39:53  mbork
- * split up rest api into correct modules. verified with junit tests.
- *
- * Revision 1.1  2006/10/10 12:42:15  cschenk
- * Auf Multi-Module Build umgestellt
- *
- * Revision 1.4  2006/09/24 21:26:21  mbork
- * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
- *
- * Revision 1.3  2006/09/16 18:17:50  mbork
- * added some new fake bibtex entries to demonstrate jabref plugin :)
- * fix of tests depiending on fake bibtex entries
- *
- * Revision 1.2  2006/07/05 16:27:57  mbork
- * fixed issues with link to next list of resources
- *
- * Revision 1.1  2006/07/05 15:20:13  mbork
- * implemented missing strategies, little changes on datamodel --> alpha :)
- *
- */
+	public void testGetListOfTagsStrategy() {
+		final Context ctx = new Context(new TestDatabase(), HttpMethod.GET, "/tags", new HashMap<String, String>());
+		final NullRequest request = new NullRequest();
+		final StringWriter sw = new StringWriter();
+		ctx.perform(request, sw);
+
+		// just test length, because the detail rendering output is tested by
+		// the renderer test
+		assertEquals(938, sw.toString().length());
+		assertEquals("text/xml", ctx.getContentType("firefox"));
+		assertEquals("bibsonomy/tags+XML", ctx.getContentType(RestProperties.getInstance().getApiUserAgent()));
+	}
+}

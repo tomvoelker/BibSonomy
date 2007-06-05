@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.database.LogicInterface;
@@ -24,15 +23,15 @@ import org.bibsonomy.rest.renderer.RendererFactory;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public final class Context
-{
-	private static Map<String, ContextHandler> urlHandlers = new HashMap<String, ContextHandler>();
-	static
-	{
-		Context.urlHandlers.put( RestProperties.getInstance().getTagsUrl(), new TagsHandler() );
-		Context.urlHandlers.put( RestProperties.getInstance().getUsersUrl(), new UsersHandler() );
-		Context.urlHandlers.put( RestProperties.getInstance().getGroupsUrl(), new GroupsHandler() );
-		Context.urlHandlers.put( RestProperties.getInstance().getPostsUrl(), new PostsHandler() );
+public final class Context {
+
+	private static final Map<String, ContextHandler> urlHandlers = new HashMap<String, ContextHandler>();
+
+	static {
+		Context.urlHandlers.put(RestProperties.getInstance().getTagsUrl(), new TagsHandler());
+		Context.urlHandlers.put(RestProperties.getInstance().getUsersUrl(), new UsersHandler());
+		Context.urlHandlers.put(RestProperties.getInstance().getGroupsUrl(), new GroupsHandler());
+		Context.urlHandlers.put(RestProperties.getInstance().getPostsUrl(), new PostsHandler());
 	}
 
 	/**
@@ -43,138 +42,134 @@ public final class Context
 	/**
 	 * the logic
 	 */
-	private LogicInterface logic;
-	
+	private final LogicInterface logic;
+
 	/**
 	 * the renderer by which the output gets rendered
 	 */
-	private Renderer renderer;
-	
+	private final Renderer renderer;
+
 	/**
 	 * the currently set strategy
 	 */
-	private Strategy strategy;
-	
-	private StringTokenizer urlTokens;
-	private Map parameterMap;
-	private final HttpMethod httpMethod;
-	private RenderingFormat renderingFormat;
+	private final Strategy strategy;
+
+	private final StringTokenizer urlTokens;
+	private final Map parameterMap;
+	// FIXME: never used locally ?
+	// private final HttpMethod httpMethod;
+	private final RenderingFormat renderingFormat;
 
 	/**
 	 * @param logic
 	 * @param url
-	 * @param httpMethod httpMethod used in the request: GET, POST, PUT or DELETE
-	 * @param parameterMap map of the attributes
-    * @throws NoSuchResourceException if the requested url doesnt exist 
-    * @throws ValidationException if '/' is requested
+	 * @param httpMethod
+	 *            httpMethod used in the request: GET, POST, PUT or DELETE
+	 * @param parameterMap
+	 *            map of the attributes
+	 * @throws NoSuchResourceException
+	 *             if the requested url doesnt exist
+	 * @throws ValidationException
+	 *             if '/' is requested
 	 */
-	public Context( LogicInterface logic, HttpMethod httpMethod, String url, Map parameterMap ) throws ValidationException, NoSuchResourceException
-	{
+	public Context(final LogicInterface logic, final HttpMethod httpMethod, final String url, final Map parameterMap) throws ValidationException, NoSuchResourceException {
 		this.logic = logic;
-		this.httpMethod = httpMethod;
+		// FIXME this.httpMethod = httpMethod;
+		if (parameterMap == null) throw new RuntimeException("Parameter map is null");
 		this.parameterMap = parameterMap;
-      if( url == null || "/".equals( url ) ) throw new ValidationException( "It is forbidden to access '/'." );
-		this.urlTokens = new StringTokenizer( url, "/" );
-		initStrategy();
-      if( this.strategy == null ) throw new NoSuchResourceException( "The requested resource does not exist: " + url );
+
+		if (url == null || "/".equals(url)) throw new ValidationException("It is forbidden to access '/'.");
+		this.urlTokens = new StringTokenizer(url, "/");
+
+		this.renderingFormat = RenderingFormat.getRenderingFormat(getStringAttribute("format", "xml"));
+		this.renderer = RendererFactory.getRenderer(this.renderingFormat);
+
+		// choose the strategy
+		this.strategy = this.chooseStrategy(httpMethod);
+		if (this.strategy == null) throw new NoSuchResourceException("The requested resource does not exist: " + url);
 	}
 
-	private void initStrategy()
-	{
-		renderingFormat = RenderingFormat.getRenderingFormat( getStringAttribute( "format", "xml" ) );
-		this.renderer = RendererFactory.getRenderer( renderingFormat );
-      
-		// choose strategy
-		if( urlTokens.countTokens() > 0 )
-		{
-			String nextElement = (String)urlTokens.nextElement();
-         ContextHandler contextHandler = Context.urlHandlers.get( nextElement );
-			if( contextHandler != null )
-			{
-				this.strategy = contextHandler.createStrategy( this, urlTokens, httpMethod );
+	private Strategy chooseStrategy(final HttpMethod httpMethod) {
+		if (this.urlTokens.countTokens() > 0) {
+			final String nextElement = (String) this.urlTokens.nextElement();
+			final ContextHandler contextHandler = Context.urlHandlers.get(nextElement);
+			if (contextHandler != null) {
+				return contextHandler.createStrategy(this, this.urlTokens, httpMethod);
 			}
 		}
+		return null;
 	}
 
 	/**
-	 * validates a strategy: correct userName, etc
+	 * Validates a strategy: correct userName, etc
+	 * 
 	 * @throws ValidationException
 	 */
-	public void validate() throws ValidationException
-	{
-		strategy.validate();
+	public void validate() throws ValidationException {
+		this.strategy.validate();
 	}
 
 	/**
-	 * @param request the request
-	 * @param responseAdapter the response
+	 * @param request
+	 *            the request
+	 * @param responseAdapter
+	 *            the response
 	 * @throws InternServerException
 	 */
-	public void perform( HttpServletRequest request, Writer writer ) throws InternServerException
-	{
-		strategy.perform( request, writer );
+	public void perform(final HttpServletRequest request, final Writer writer) throws InternServerException {
+		this.strategy.perform(request, writer);
 	}
-	
+
 	/**
 	 * @param userAgent
-	 * @return the contentType a depending on the userName agent
+	 * @return The contentType depending on the userAgent
 	 */
-	public String getContentType( String userAgent )
-	{
-		return strategy.getContentType( userAgent );
+	public String getContentType(final String userAgent) {
+		return this.strategy.getContentType(userAgent);
 	}
-	
+
 	/**
 	 * @param userAgent
-	 * @return true if the client uses this webservice api, false if its a browser for example
+	 * @return true if the client uses this webservice api, false if its a
+	 *         browser for example
 	 */
-	public boolean apiIsUserAgent( String userAgent )
-	{
-		return userAgent != null && userAgent.startsWith( RestProperties.getInstance().getApiUserAgent() );
+	public boolean apiIsUserAgent(final String userAgent) {
+		return userAgent != null && userAgent.startsWith(RestProperties.getInstance().getApiUserAgent());
 	}
-   
+
 	/**
-	 * @param parameterName parameter (= key) the tags are the value from
-	 * @return a list of all tags null, if none given.
+	 * @param parameterName
+	 *            The key from a map whose value holds the tags tags
+	 * @return a list of all tags, which might be empty.
 	 */
-	public List<String> getTags( String parameterName )
-	{
-      List<String> tags = new LinkedList<String>();
-		
-		String param = getStringAttribute( parameterName, null );
-		if( param != null )
-		{
-			String[] params = param.split( "\\s" );
-			for( int i = 0; i < params.length; ++i )
-			{
-				tags.add( params[ i ] );
+	public List<String> getTags(final String parameterName) {
+		final List<String> tags = new LinkedList<String>();
+		final String param = getStringAttribute(parameterName, null);
+		if (param != null) {
+			final String[] params = param.split("\\s");
+			for (int i = 0; i < params.length; ++i) {
+				tags.add(params[i]);
 			}
 		}
 		return tags;
 	}
-	
+
 	/**
-	 * @param parameterName name of the parameter
+	 * @param parameterName
+	 *            name of the parameter
 	 * @param defaultValue
 	 * @return paramter value
 	 */
-	public int getIntAttribute( String parameterName, int defaultValue ) 
-	{
-		if( parameterMap.containsKey( parameterName ) ) 
-		{
-			Object obj = parameterMap.get( parameterName );
-			if( obj instanceof String[] ) 
-			{
-				String[] tmp = (String[])obj;
-				if( tmp.length == 1 ) 
-				{
-					try
-					{
-						int tmpStart = Integer.valueOf( tmp[ 0 ] );
+	public int getIntAttribute(final String parameterName, final int defaultValue) {
+		if (this.parameterMap.containsKey(parameterName)) {
+			final Object obj = this.parameterMap.get(parameterName);
+			if (obj instanceof String[]) {
+				final String[] tmp = (String[]) obj;
+				if (tmp.length == 1) {
+					try {
+						int tmpStart = Integer.valueOf(tmp[0]);
 						return tmpStart;
-					} 
-					catch( NumberFormatException e ) 
-					{
+					} catch (final NumberFormatException e) {
 						// TODO ignore or throw exception ?
 						return defaultValue;
 					}
@@ -183,165 +178,80 @@ public final class Context
 		}
 		return defaultValue;
 	}
-	
+
 	/**
-	 * @param parameterName name of the parameter
+	 * @param parameterName
+	 *            name of the parameter
 	 * @param defaultValue
 	 * @return paramter value
 	 */
-	public String getStringAttribute( String parameterName, String defaultValue ) 
-	{
-      return Context.getStringAttribute( parameterMap, parameterName, defaultValue );
+	public String getStringAttribute(final String parameterName, final String defaultValue) {
+		return Context.getStringAttribute(this.parameterMap, parameterName, defaultValue);
 	}
-   
-   /**
-    * Returns a {@link String} parameter of the request's parametermap, if any. 
-    * 
-    * @param parameterMap
-    * @param parameterName
-    * @param defaultValue
-    * @return
-    */
-   public static String getStringAttribute( Map parameterMap, String parameterName, String defaultValue )
-   {
-      if( parameterMap.containsKey( parameterName ) ) 
-      {
-         Object obj = parameterMap.get( parameterName );
-         if( obj instanceof String[] ) 
-         {
-            String[] tmp = (String[])obj;
-            if( tmp.length == 1 ) 
-            {
-               return tmp[ 0 ];
-            }
-         }
-      }
-      return defaultValue;
-   }
+
+	/**
+	 * Returns a {@link String} parameter of the request's parametermap, if any.
+	 * 
+	 * @param parameterMap
+	 * @param parameterName
+	 * @param defaultValue
+	 * @return
+	 */
+	public static String getStringAttribute(final Map parameterMap, final String parameterName, final String defaultValue) {
+		if (parameterMap.containsKey(parameterName)) {
+			final Object obj = parameterMap.get(parameterName);
+			if (obj instanceof String[]) {
+				final String[] tmp = (String[]) obj;
+				if (tmp.length == 1) {
+					return tmp[0];
+				}
+			}
+		}
+		return defaultValue;
+	}
 
 	/**
 	 * @return Returns the authUserName.
 	 */
-	public String getAuthUserName()
-	{
-		return authUserName;
+	public String getAuthUserName() {
+		return this.authUserName;
 	}
 
 	/**
-	 * @param authUserName The authUserName to set.
+	 * @param authUserName
+	 *            The authUserName to set.
 	 */
-	public void setAuthUserName( String authUserName )
-	{
+	public void setAuthUserName(String authUserName) {
 		this.authUserName = authUserName;
 	}
 
 	/**
 	 * @return Returns the renderer.
 	 */
-	public Renderer getRenderer()
-	{
-		return renderer;
+	public Renderer getRenderer() {
+		return this.renderer;
 	}
 
 	/**
 	 * @return Returns the logic.
 	 */
-	public LogicInterface getLogic()
-	{
-		return logic;
-	}
-
-	/**
-	 * do not use, only for junit tests
-	 * @return Returns the strategy.
-	 */
-	Strategy getStrategy()
-	{
-		return strategy;
+	public LogicInterface getLogic() {
+		return this.logic;
 	}
 
 	/**
 	 * @return Returns the renderingFormat.
 	 */
-	public RenderingFormat getRenderingFormat()
-	{
-		return renderingFormat;
+	public RenderingFormat getRenderingFormat() {
+		return this.renderingFormat;
+	}
+
+	/**
+	 * Do not use, only for junit tests
+	 * 
+	 * @return Returns the strategy.
+	 */
+	Strategy getStrategy() {
+		return this.strategy;
 	}
 }
-
-/*
- * $Log$
- * Revision 1.7  2007-05-20 16:49:40  mbork
- * fixed getting tags
- *
- * Revision 1.6  2007/05/20 12:08:42  mbork
- * refactored getting parameters
- *
- * Revision 1.5  2007/04/15 11:05:07  mbork
- * changed method signature to use a more general Writer
- *
- * Revision 1.4  2007/02/21 14:08:36  mbork
- * - included code generation of the schema in the maven2 build-lifecycle
- * - removed circular dependencies among the modules
- * - cleaned up the poms of the modules
- * - fixed failing unit-tests
- *
- * Revision 1.3  2007/02/16 16:11:28  mbork
- * changed default value from "" to null
- *
- * Revision 1.2  2007/02/15 10:29:09  mbork
- * the LogicInterface now uses Lists instead of Sets
- * fixed use of generics
- *
- * Revision 1.1  2006/10/24 21:39:52  mbork
- * split up rest api into correct modules. verified with junit tests.
- *
- * Revision 1.1  2006/10/10 12:42:14  cschenk
- * Auf Multi-Module Build umgestellt
- *
- * Revision 1.15  2006/09/24 21:26:21  mbork
- * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
- *
- * Revision 1.14  2006/07/05 15:27:51  mbork
- * place constants on left side of comparison
- *
- * Revision 1.13  2006/06/28 15:36:13  mbork
- * started implementing other http methods
- *
- * Revision 1.12  2006/06/13 21:30:41  mbork
- * implemented unit tests for get-strategies; fixed some minor bugs
- *
- * Revision 1.11  2006/06/13 18:07:39  mbork
- * introduced unit tests for servlet using null-pattern for request and response. tested to use cactus/ httpunit, but decided not to use them.
- *
- * Revision 1.10  2006/06/11 15:25:25  mbork
- * removed gatekeeper, changed authentication process
- *
- * Revision 1.9  2006/06/11 11:51:25  mbork
- * removed todo strategy, throws exception on wrong request url
- *
- * Revision 1.8  2006/06/07 18:27:04  mbork
- * moved enum
- *
- * Revision 1.7  2006/06/05 14:14:12  mbork
- * implemented GET strategies
- *
- * Revision 1.6  2006/05/26 14:02:03  cschenk
- * Forgot to clean up
- *
- * Revision 1.5  2006/05/24 20:09:02  jillig
- * renamed DbInterface to RESTs LogicInterface
- *
- * Revision 1.4  2006/05/24 15:18:08  cschenk
- * Introduced a rendering format and a factory that produces renderers (for xml, rdf, html)
- *
- * Revision 1.3  2006/05/24 13:02:44  cschenk
- * Introduced an enum for the HttpMethod and moved the exceptions
- *
- * Revision 1.2  2006/05/21 20:31:51  mbork
- * continued implementing context
- *
- * Revision 1.1  2006/05/19 21:01:08  mbork
- * started implementing rest api
- *
-*/

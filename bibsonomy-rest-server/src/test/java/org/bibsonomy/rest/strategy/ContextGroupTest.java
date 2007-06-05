@@ -2,10 +2,6 @@ package org.bibsonomy.rest.strategy;
 
 import java.util.HashMap;
 
-import junit.framework.TestCase;
-
-import org.bibsonomy.database.LogicInterface;
-import org.bibsonomy.rest.database.TestDatabase;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.strategy.groups.AddGroupStrategy;
 import org.bibsonomy.rest.strategy.groups.AddUserToGroupStrategy;
@@ -22,19 +18,8 @@ import org.bibsonomy.rest.strategy.groups.UpdateGroupDetailsStrategy;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public class ContextGroupTest extends TestCase 
+public class ContextGroupTest extends AbstractContextTest 
 {
-	private LogicInterface db;
-	
-	/* (non-Javadoc)
-	 * @see junit.framework.TestCase#setUp()
-	 */
-	@Override
-	protected void setUp() throws Exception
-	{
-		this.db = new TestDatabase();
-	}
-
 	public void testGetListOfGroupsStrategy() throws Exception
 	{
 		Context c = new Context( db, HttpMethod.GET, "/groups", new HashMap() );
@@ -95,7 +80,10 @@ public class ContextGroupTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.2  2007-02-21 14:08:35  mbork
+ * Revision 1.3  2007-06-05 23:33:30  cschenk
+ * Code walk-through
+ *
+ * Revision 1.2  2007/02/21 14:08:35  mbork
  * - included code generation of the schema in the maven2 build-lifecycle
  * - removed circular dependencies among the modules
  * - cleaned up the poms of the modules

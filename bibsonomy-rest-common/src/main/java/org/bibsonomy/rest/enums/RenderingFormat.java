@@ -8,47 +8,23 @@ import org.bibsonomy.common.exceptions.InternServerException;
  * @author Christian Schenk
  * @version $Id$
  */
-public enum RenderingFormat
-{
+public enum RenderingFormat {
+
 	XML, RDF, HTML;
 
 	/**
 	 * Returns the rendering format to the given string. It defaults to XML.
 	 */
-	public static RenderingFormat getRenderingFormat( final String renderingFormat )
-	{
-		if( renderingFormat == null ) throw new InternServerException( "RenderingFormat is null" );
+	public static RenderingFormat getRenderingFormat(final String renderingFormat) {
+		if (renderingFormat == null) throw new InternServerException("RenderingFormat is null");
+
 		final String format = renderingFormat.toLowerCase().trim();
-		if( "rdf".equals( format ) )
-		{
+		if ("rdf".equals(format)) {
 			return RDF;
-		}
-		else if( "html".equals( format ) )
-		{
+		} else if ("html".equals(format)) {
 			return HTML;
-		}
-		else
-		{
+		} else {
 			return XML;
 		}
 	}
 }
-
-/*
- * $Log$
- * Revision 1.2  2007-02-21 14:08:33  mbork
- * - included code generation of the schema in the maven2 build-lifecycle
- * - removed circular dependencies among the modules
- * - cleaned up the poms of the modules
- * - fixed failing unit-tests
- *
- * Revision 1.1  2006/10/10 12:42:12  cschenk
- * Auf Multi-Module Build umgestellt
- *
- * Revision 1.1  2006/06/07 18:27:04  mbork
- * moved enum
- *
- * Revision 1.3  2006/06/05 14:14:12  mbork
- * implemented GET strategies
- *
- */

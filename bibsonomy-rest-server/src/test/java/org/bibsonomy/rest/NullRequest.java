@@ -19,306 +19,236 @@ import javax.servlet.http.HttpSession;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public class NullRequest implements HttpServletRequest
-{
-   private Map<String, String> headers;
-   private Map parameterMap;
-   private String pathInfo;
-   
-   public NullRequest()
-   {
-      this.headers = new HashMap<String, String>();
-      this.parameterMap = new HashMap();
-   }
-   
-   public String getPathInfo()
-   {
-      return pathInfo;
-   }
-   
-   public void setPathInfo( String pathInfo )
-   {
-      this.pathInfo = pathInfo;
-   }
-   
-   public String getHeader( String arg0 )
-   {
-      return headers.get( arg0 );
-   }
-   
-   public String getAuthType()
-   {
-      return null;
-   }
+public class NullRequest implements HttpServletRequest {
 
-   public Cookie[] getCookies()
-   {
-      return null;
-   }
+	private final Map<String, String> headers;
+	private final Map parameterMap;
+	private String pathInfo;
 
-   public long getDateHeader( String arg0 )
-   {
-      return 0;
-   }
+	public NullRequest() {
+		this.headers = new HashMap<String, String>();
+		this.parameterMap = new HashMap();
+	}
 
-   public Enumeration getHeaders( String arg0 )
-   {
-      return null;
-   }
+	public String getPathInfo() {
+		return pathInfo;
+	}
 
-   public Enumeration getHeaderNames()
-   {
-      return null;
-   }
+	public void setPathInfo(String pathInfo) {
+		this.pathInfo = pathInfo;
+	}
 
-   public int getIntHeader( String arg0 )
-   {
-      return 0;
-   }
+	public String getHeader(String arg0) {
+		return headers.get(arg0);
+	}
 
-   public String getMethod()
-   {
-      return null;
-   }
+	public String getAuthType() {
+		return null;
+	}
 
-   public String getPathTranslated()
-   {
-      return null;
-   }
+	public Cookie[] getCookies() {
+		return null;
+	}
 
-   public String getContextPath()
-   {
-      return null;
-   }
+	public long getDateHeader(String arg0) {
+		return 0;
+	}
 
-   public String getQueryString()
-   {
-      return null;
-   }
+	public Enumeration getHeaders(String arg0) {
+		return null;
+	}
 
-   public String getRemoteUser()
-   {
-      return null;
-   }
+	public Enumeration getHeaderNames() {
+		return null;
+	}
 
-   public boolean isUserInRole( String arg0 )
-   {
-      return false;
-   }
+	public int getIntHeader(String arg0) {
+		return 0;
+	}
 
-   public Principal getUserPrincipal()
-   {
-      return null;
-   }
+	public String getMethod() {
+		return null;
+	}
 
-   public String getRequestedSessionId()
-   {
-      return null;
-   }
+	public String getPathTranslated() {
+		return null;
+	}
 
-   public String getRequestURI()
-   {
-      return null;
-   }
+	public String getContextPath() {
+		return null;
+	}
 
-   public StringBuffer getRequestURL()
-   {
-      return null;
-   }
+	public String getQueryString() {
+		return null;
+	}
 
-   public String getServletPath()
-   {
-      return null;
-   }
+	public String getRemoteUser() {
+		return null;
+	}
 
-   public HttpSession getSession( boolean arg0 )
-   {
-      return null;
-   }
+	public boolean isUserInRole(String arg0) {
+		return false;
+	}
 
-   public HttpSession getSession()
-   {
-      return null;
-   }
+	public Principal getUserPrincipal() {
+		return null;
+	}
 
-   public boolean isRequestedSessionIdValid()
-   {
-      return false;
-   }
+	public String getRequestedSessionId() {
+		return null;
+	}
 
-   public boolean isRequestedSessionIdFromCookie()
-   {
-      return false;
-   }
+	public String getRequestURI() {
+		return null;
+	}
 
-   public boolean isRequestedSessionIdFromURL()
-   {
-      return false;
-   }
+	public StringBuffer getRequestURL() {
+		return null;
+	}
 
-   public boolean isRequestedSessionIdFromUrl()
-   {
-      return false;
-   }
+	public String getServletPath() {
+		return null;
+	}
 
-   public Object getAttribute( String arg0 )
-   {
-      return null;
-   }
+	public HttpSession getSession(boolean arg0) {
+		return null;
+	}
 
-   public Enumeration getAttributeNames()
-   {
-      return null;
-   }
+	public HttpSession getSession() {
+		return null;
+	}
 
-   public String getCharacterEncoding()
-   {
-      return null;
-   }
+	public boolean isRequestedSessionIdValid() {
+		return false;
+	}
 
-   public void setCharacterEncoding( String arg0 ) throws UnsupportedEncodingException
-   {
+	public boolean isRequestedSessionIdFromCookie() {
+		return false;
+	}
 
-   }
+	public boolean isRequestedSessionIdFromURL() {
+		return false;
+	}
 
-   public int getContentLength()
-   {
-      return 0;
-   }
+	public boolean isRequestedSessionIdFromUrl() {
+		return false;
+	}
 
-   public String getContentType()
-   {
-      return null;
-   }
+	public Object getAttribute(String arg0) {
+		return null;
+	}
 
-   public ServletInputStream getInputStream() throws IOException
-   {
-      return null;
-   }
+	public Enumeration getAttributeNames() {
+		return null;
+	}
 
-   public String getParameter( String arg0 )
-   {
-      return null;
-   }
+	public String getCharacterEncoding() {
+		return null;
+	}
 
-   public Enumeration getParameterNames()
-   {
-      return null;
-   }
+	public void setCharacterEncoding(String arg0) throws UnsupportedEncodingException {
 
-   public String[] getParameterValues( String arg0 )
-   {
-      return null;
-   }
+	}
 
-   public Map getParameterMap()
-   {
-      return parameterMap;
-   }
+	public int getContentLength() {
+		return 0;
+	}
 
-   public String getProtocol()
-   {
-      return null;
-   }
+	public String getContentType() {
+		return null;
+	}
 
-   public String getScheme()
-   {
-      return null;
-   }
+	public ServletInputStream getInputStream() throws IOException {
+		return null;
+	}
 
-   public String getServerName()
-   {
-      return null;
-   }
+	public String getParameter(String arg0) {
+		return null;
+	}
 
-   public int getServerPort()
-   {
-      return 0;
-   }
+	public Enumeration getParameterNames() {
+		return null;
+	}
 
-   public BufferedReader getReader() throws IOException
-   {
-      return null;
-   }
+	public String[] getParameterValues(String arg0) {
+		return null;
+	}
 
-   public String getRemoteAddr()
-   {
-      return null;
-   }
+	public Map getParameterMap() {
+		return parameterMap;
+	}
 
-   public String getRemoteHost()
-   {
-      return null;
-   }
+	public String getProtocol() {
+		return null;
+	}
 
-   public void setAttribute( String arg0, Object arg1 )
-   {
-   }
+	public String getScheme() {
+		return null;
+	}
 
-   public void removeAttribute( String arg0 )
-   {
-   }
+	public String getServerName() {
+		return null;
+	}
 
-   public Locale getLocale()
-   {
-      return null;
-   }
+	public int getServerPort() {
+		return 0;
+	}
 
-   public Enumeration getLocales()
-   {
-      return null;
-   }
+	public BufferedReader getReader() throws IOException {
+		return null;
+	}
 
-   public boolean isSecure()
-   {
-      return false;
-   }
+	public String getRemoteAddr() {
+		return null;
+	}
 
-   public RequestDispatcher getRequestDispatcher( String arg0 )
-   {
-      return null;
-   }
+	public String getRemoteHost() {
+		return null;
+	}
 
-   public String getRealPath( String arg0 )
-   {
-      return null;
-   }
+	public void setAttribute(String arg0, Object arg1) {
+	}
 
-   public int getRemotePort()
-   {
-      return 0;
-   }
+	public void removeAttribute(String arg0) {
+	}
 
-   public String getLocalName()
-   {
-      return null;
-   }
+	public Locale getLocale() {
+		return null;
+	}
 
-   public String getLocalAddr()
-   {
-      return null;
-   }
+	public Enumeration getLocales() {
+		return null;
+	}
 
-   public int getLocalPort()
-   {
-      return 0;
-   }
+	public boolean isSecure() {
+		return false;
+	}
 
-   public Map<String, String> getHeaders()
-   {
-      return headers;
-   }
+	public RequestDispatcher getRequestDispatcher(String arg0) {
+		return null;
+	}
+
+	public String getRealPath(String arg0) {
+		return null;
+	}
+
+	public int getRemotePort() {
+		return 0;
+	}
+
+	public String getLocalName() {
+		return null;
+	}
+
+	public String getLocalAddr() {
+		return null;
+	}
+
+	public int getLocalPort() {
+		return 0;
+	}
+
+	public Map<String, String> getHeaders() {
+		return headers;
+	}
 }
-
-/*
- * $Log$
- * Revision 1.1  2006-10-24 21:39:52  mbork
- * split up rest api into correct modules. verified with junit tests.
- *
- * Revision 1.1  2006/10/10 12:42:14  cschenk
- * Auf Multi-Module Build umgestellt
- *
- * Revision 1.1  2006/06/13 18:07:40  mbork
- * introduced unit tests for servlet using null-pattern for request and response. tested to use cactus/ httpunit, but decided not to use them.
- *
- */

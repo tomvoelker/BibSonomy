@@ -2,10 +2,6 @@ package org.bibsonomy.rest.strategy;
 
 import java.util.HashMap;
 
-import junit.framework.TestCase;
-
-import org.bibsonomy.database.LogicInterface;
-import org.bibsonomy.rest.database.TestDatabase;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.strategy.posts.GetListOfPostsStrategy;
 import org.bibsonomy.rest.strategy.posts.GetNewPostsStrategy;
@@ -17,19 +13,8 @@ import org.bibsonomy.rest.strategy.posts.GetPopularPostsStrategy;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public class ContextPostTest extends TestCase 
+public class ContextPostTest extends AbstractContextTest 
 {
-	private LogicInterface db;
-	
-	/* (non-Javadoc)
-	 * @see junit.framework.TestCase#setUp()
-	 */
-	@Override
-	protected void setUp() throws Exception
-	{
-		this.db = new TestDatabase();
-	}
-	
 	public void testGetListOfTagsStrategy() throws Exception
 	{
 		Context c = new Context( db, HttpMethod.GET, "/posts", new HashMap() );
@@ -54,7 +39,10 @@ public class ContextPostTest extends TestCase
 
 /*
  * $Log$
- * Revision 1.2  2007-02-21 14:08:35  mbork
+ * Revision 1.3  2007-06-05 23:33:30  cschenk
+ * Code walk-through
+ *
+ * Revision 1.2  2007/02/21 14:08:35  mbork
  * - included code generation of the schema in the maven2 build-lifecycle
  * - removed circular dependencies among the modules
  * - cleaned up the poms of the modules

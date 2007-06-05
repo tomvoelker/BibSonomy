@@ -14,94 +14,39 @@ import org.bibsonomy.rest.strategy.Strategy;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id$
+ * @version $Id: UpdateGroupDetailsStrategy.java,v 1.5 2007/04/15 11:05:07 mbork
+ *          Exp $
  */
-public class UpdateGroupDetailsStrategy extends Strategy
-{
-	private String groupName;
+public class UpdateGroupDetailsStrategy extends Strategy {
 
-   /**
-	 * @param context
-	 * @param groupName 
-	 */
-	public UpdateGroupDetailsStrategy( Context context, String groupName )
-	{
-		super( context );
-      this.groupName = groupName;
+	private final String groupName;
+
+	public UpdateGroupDetailsStrategy(final Context context, final String groupName) {
+		super(context);
+		this.groupName = groupName;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.strategy.Strategy#validate()
-	 */
 	@Override
-	public void validate() throws ValidationException
-	{
-      // TODO only groupmembers may change a group?
+	public void validate() throws ValidationException {
+		// TODO only groupmembers may change a group?
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.strategy.Strategy#perform(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-	 */
 	@Override
-	public void perform( HttpServletRequest request, Writer writer ) throws InternServerException
-	{
-      try
-      {
-         Group group = context.getRenderer().parseGroup( new InputStreamReader( request.getInputStream() ) );
-         // ensure right groupname
-         group.setName( groupName );
-         context.getLogic().storeGroup( group, true );
-      }
-      catch( IOException e )
-      {
-         throw new InternServerException( e );
-      }
-   }
+	public void perform(final HttpServletRequest request, final Writer writer) throws InternServerException {
+		try {
+			// ensure right groupname
+			final Group group = this.context.getRenderer().parseGroup(new InputStreamReader(request.getInputStream()));
+			group.setName(this.groupName);
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.strategy.Strategy#getContentType(java.lang.String)
-	 */
+			this.context.getLogic().storeGroup(group, true);
+		} catch (final IOException e) {
+			throw new InternServerException(e);
+		}
+	}
+
 	@Override
-	public String getContentType( String userAgent )
-   {
-      // TODO no content-contenttype
-      return null;
-   }
+	public String getContentType(final String userAgent) {
+		// TODO no content-contenttype
+		return null;
+	}
 }
-
-/*
- * $Log$
- * Revision 1.5  2007-04-15 11:05:07  mbork
- * changed method signature to use a more general Writer
- *
- * Revision 1.4  2007/02/21 14:08:35  mbork
- * - included code generation of the schema in the maven2 build-lifecycle
- * - removed circular dependencies among the modules
- * - cleaned up the poms of the modules
- * - fixed failing unit-tests
- *
- * Revision 1.3  2007/02/11 17:55:26  mbork
- * switched REST-api to the 'new' datamodel, which does not deserve the name...
- *
- * Revision 1.2  2007/02/05 10:35:54  cschenk
- * Distributed code from the spielwiese among the modules
- *
- * Revision 1.1  2006/10/24 21:39:53  mbork
- * split up rest api into correct modules. verified with junit tests.
- *
- * Revision 1.1  2006/10/10 12:42:13  cschenk
- * Auf Multi-Module Build umgestellt
- *
- * Revision 1.4  2006/09/24 21:26:21  mbork
- * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
- *
- * Revision 1.3  2006/07/05 15:20:13  mbork
- * implemented missing strategies, little changes on datamodel --> alpha :)
- *
- * Revision 1.2  2006/05/24 13:02:43  cschenk
- * Introduced an enum for the HttpMethod and moved the exceptions
- *
- * Revision 1.1  2006/05/22 10:34:38  mbork
- * implemented context chooser for /groups
- *
- */

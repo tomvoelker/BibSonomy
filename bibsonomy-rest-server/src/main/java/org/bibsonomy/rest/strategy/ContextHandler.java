@@ -8,26 +8,6 @@ import org.bibsonomy.rest.enums.HttpMethod;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public interface ContextHandler 
-{
-	public Strategy createStrategy( Context context, StringTokenizer urlTokens, HttpMethod httpMethod );
+public interface ContextHandler {
+	public Strategy createStrategy(Context context, StringTokenizer urlTokens, HttpMethod httpMethod);
 }
-
-/*
- * $Log$
- * Revision 1.1  2006-10-24 21:39:52  mbork
- * split up rest api into correct modules. verified with junit tests.
- *
- * Revision 1.1  2006/10/10 12:42:13  cschenk
- * Auf Multi-Module Build umgestellt
- *
- * Revision 1.3  2006/05/26 13:22:59  cschenk
- * Forgot to clean up
- *
- * Revision 1.2  2006/05/24 13:02:44  cschenk
- * Introduced an enum for the HttpMethod and moved the exceptions
- *
- * Revision 1.1  2006/05/21 20:31:51  mbork
- * continued implementing context
- *
- */
