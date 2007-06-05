@@ -1,6 +1,3 @@
-/*
- * Created on 03.06.2007
- */
 package org.bibsonomy.database.util.tag;
 
 import java.util.Map;
@@ -11,24 +8,29 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.util.ExceptionUtils;
 
+/**
+ * @author Jens Illig
+ * @version $Id$
+ */
 public class OperatorParser {
-	private Pattern pattern;
+
 	private static final Logger log = Logger.getLogger(OperatorParser.class);
 	private Map<String, TagOperator> operators;
-	
-	public Tag parse(String complexTag) {
+	private Pattern pattern;
+
+	public Tag parse(final String complexTag) {
 		Tag first = null;
 		Tag previous = null;
 		TagOperator tagOp = null;
 		String tagOpStr = null;
-		final Matcher m = pattern.matcher(complexTag);
+		final Matcher m = this.pattern.matcher(complexTag);
 		int lastEnd = 0;
 		while (m.find() == true) {
 			final Tag found = new Tag();
 			final String op = m.group(1);
 			found.setName(complexTag.substring(lastEnd, m.start()).trim());
 			lastEnd = m.end();
-			
+
 			if (previous == null) {
 				first = found;
 			} else if ((found != null) && (tagOp != null)) {
@@ -48,22 +50,23 @@ public class OperatorParser {
 	}
 
 	private TagOperator findTagOperator(final String op) {
-		final TagOperator rVal = operators.get(op);
+		final TagOperator rVal = this.operators.get(op);
 		if (rVal == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "could not find " + TagOperator.class.getSimpleName() + " for operator '" + op + "'");
 		}
 		return rVal;
 	}
 
-	public void setOperators(Map<String, TagOperator> operators) {
+	public void setOperators(final Map<String, TagOperator> operators) {
 		this.operators = operators;
 		final StringBuilder sb = new StringBuilder("(");
-		for (String op : operators.keySet()) {
+		for (final String op : operators.keySet()) {
 			sb.append(op).append('|');
 		}
-		sb.setCharAt(sb.length()-1, '|');
+		sb.setCharAt(sb.length() - 1, '|');
 		sb.append("$)");
 		log.debug("compiling pattern '" + sb.toString() + "'");
-		this.pattern = Pattern.compile(sb.toString()); // TODO: operatoren dynamisch einfügen
+		// TODO: insert operator dynamically
+		this.pattern = Pattern.compile(sb.toString());
 	}
 }

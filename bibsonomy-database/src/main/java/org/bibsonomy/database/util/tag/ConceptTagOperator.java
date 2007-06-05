@@ -1,15 +1,17 @@
-/*
- * Created on 03.06.2007
- */
 package org.bibsonomy.database.util.tag;
 
 import java.util.ArrayList;
 
 import org.bibsonomy.model.Tag;
 
+/**
+ * @author Jens Illig
+ * @version $Id$
+ */
 public class ConceptTagOperator implements TagOperator {
+
 	private boolean leftToRight = true;
-	
+
 	public boolean isLeftToRight() {
 		return this.leftToRight;
 	}
@@ -19,14 +21,14 @@ public class ConceptTagOperator implements TagOperator {
 	}
 
 	public String getName() {
-		if (leftToRight == true) {
+		if (this.leftToRight == true) {
 			return "->";
 		}
 		return "<-";
 	}
 
 	public void operate(Tag left, Tag right) {
-		if (leftToRight == false) {
+		if (this.leftToRight == false) {
 			final Tag tmp = left;
 			left = right;
 			right = tmp;
@@ -40,5 +42,4 @@ public class ConceptTagOperator implements TagOperator {
 		left.getSuperTags().add(right);
 		right.getSubTags().add(left);
 	}
-
 }

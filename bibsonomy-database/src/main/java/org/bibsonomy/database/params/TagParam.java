@@ -7,7 +7,8 @@ import org.bibsonomy.model.Resource;
 
 /**
  * Parameters that are specific to tags.
- *
+ * 
+ * @author Dominik Benz
  * @author Miranda Grahl
  * @version $Id$
  */
@@ -15,42 +16,40 @@ public class TagParam extends GenericParam {
 
 	// FIXME Probably a duplicate: previously newContentId from GenericParam was used
 	private int id;
-	// FIXME: don't know if it is the third variable with the same meaning, but at least it is the first one, with an intuitive name
+	// FIXME: don't know if it is the third variable with the same meaning, but
+	// at least it is the first one, with an intuitive name
 	private Integer tasId;
 	private String name;
 	private String stem;
-	private int count; 
+	private int count;
 	private int usercount;
-
 
 	/**
 	 * Decides whether to retrieve the subtags of the current tag
 	 */
 	private boolean retrieveSubTags;
-	
+
 	/**
 	 * Decides whether to retrieve the superTags of the current tag
 	 */
 	private boolean retrieveSuperTags;
-	
+
 	/**
-	 * Decides whether to retrieve the sub-/supertags in a transitive manner, 
-	 * i.e. the complete subtree under the current tag (subtags) or all tags from
-	 * the current tag up to the tree root (supertags)
+	 * Decides whether to retrieve the sub-/supertags in a transitive manner,
+	 * i.e. the complete subtree under the current tag (subtags) or all tags
+	 * from the current tag up to the tree root (supertags)
 	 */
 	private boolean retrieveSubSuperTagsTransitive;
-	
+
 	/**
 	 * TODO document
 	 */
 	private List<Post<? extends Resource>> posts;
-	
+
 	/**
 	 * Regular expression
 	 */
 	private String regex;
-	
-	
 
 	public String getRegex() {
 		return this.regex;
@@ -139,5 +138,4 @@ public class TagParam extends GenericParam {
 	public void setRetrieveSuperTags(boolean retrieveSuperTags) {
 		this.retrieveSuperTags = retrieveSuperTags;
 	}
-
 }

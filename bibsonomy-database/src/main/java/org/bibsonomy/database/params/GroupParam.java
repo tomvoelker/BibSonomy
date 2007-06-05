@@ -1,6 +1,5 @@
 package org.bibsonomy.database.params;
 
-
 /**
  * Parameters that are specific for groups.
  *
