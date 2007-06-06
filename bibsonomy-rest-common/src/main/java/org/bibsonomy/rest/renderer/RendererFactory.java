@@ -13,16 +13,15 @@ import org.bibsonomy.rest.renderer.impl.XMLRenderer;
  * @author Christian Schenk
  * @version $Id$
  */
-public class RendererFactory
-{
+public class RendererFactory {
+
 	/**
-	 * Returns the renderer for the given format.
+	 * Returns the renderer for the given format; it defaults to the XML renderer.
 	 */
-	public static Renderer getRenderer( RenderingFormat renderingFormat )
-	{
-		if( renderingFormat == null ) throw new InternServerException( "RenderingFormat is null" );
-		switch( renderingFormat )
-		{
+	public static Renderer getRenderer(final RenderingFormat renderingFormat) {
+		if (renderingFormat == null) throw new InternServerException("RenderingFormat is null");
+
+		switch (renderingFormat) {
 		case HTML:
 			return new HTMLRenderer();
 		case RDF:
@@ -33,25 +32,3 @@ public class RendererFactory
 		}
 	}
 }
-
-/*
- * $Log$
- * Revision 1.2  2007-02-21 14:08:33  mbork
- * - included code generation of the schema in the maven2 build-lifecycle
- * - removed circular dependencies among the modules
- * - cleaned up the poms of the modules
- * - fixed failing unit-tests
- *
- * Revision 1.1  2006/10/10 12:42:15  cschenk
- * Auf Multi-Module Build umgestellt
- *
- * Revision 1.4  2006/06/07 19:37:29  mbork
- * implemented post queries
- *
- * Revision 1.3  2006/06/07 18:27:04  mbork
- * moved enum
- *
- * Revision 1.2  2006/06/05 14:14:11  mbork
- * implemented GET strategies
- *
- */

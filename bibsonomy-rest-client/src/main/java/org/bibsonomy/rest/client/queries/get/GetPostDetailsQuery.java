@@ -15,88 +15,38 @@ import org.bibsonomy.rest.renderer.RendererFactory;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public final class GetPostDetailsQuery extends AbstractQuery<Post<? extends Resource>>
-{
-	private String username;
-	private String resourceHash;
+public final class GetPostDetailsQuery extends AbstractQuery<Post<? extends Resource>> {
+
+	private final String username;
+	private final String resourceHash;
 	private Reader downloadedDocument;
 
 	/**
-    * Gets details of a post of an user.
-    * 
-    * @param username
-    *           name of the user
-    * @param resourceHash
-    *           hash of the resource
-    * @throws IllegalArgumentException
-    *            if userName or resourceHash are null or empty
-    */
-	public GetPostDetailsQuery( String username, String resourceHash ) throws IllegalArgumentException
-	{
-		if( username == null || username.length() == 0 ) throw new IllegalArgumentException( "no username given" );
-		if( resourceHash == null || resourceHash.length() == 0 ) throw new IllegalArgumentException( "no resourceHash given" );
+	 * Gets details of a post of an user.
+	 * 
+	 * @param username
+	 *            name of the user
+	 * @param resourceHash
+	 *            hash of the resource
+	 * @throws IllegalArgumentException
+	 *             if userName or resourceHash are null or empty
+	 */
+	public GetPostDetailsQuery(final String username, final String resourceHash) throws IllegalArgumentException {
+		if (username == null || username.length() == 0) throw new IllegalArgumentException("no username given");
+		if (resourceHash == null || resourceHash.length() == 0) throw new IllegalArgumentException("no resourceHash given");
+
 		this.username = username;
 		this.resourceHash = resourceHash;
 	}
 
 	@Override
-	public Post<? extends Resource> getResult() throws BadRequestOrResponseException, IllegalStateException
-	{
-		if( downloadedDocument == null ) throw new IllegalStateException( "Execute the query first." );
-		return RendererFactory.getRenderer( getRenderingFormat() ).parsePost( downloadedDocument );
+	public Post<? extends Resource> getResult() throws BadRequestOrResponseException, IllegalStateException {
+		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
+		return RendererFactory.getRenderer(getRenderingFormat()).parsePost(this.downloadedDocument);
 	}
 
 	@Override
-	protected void doExecute() throws ErrorPerformingRequestException
-	{
-		downloadedDocument = performGetRequest( URL_USERS + "/" + username + "/" + URL_POSTS + "/" + resourceHash  + "?format=" + getRenderingFormat().toString().toLowerCase() );
+	protected void doExecute() throws ErrorPerformingRequestException {
+		this.downloadedDocument = performGetRequest(URL_USERS + "/" + this.username + "/" + URL_POSTS + "/" + this.resourceHash + "?format=" + getRenderingFormat().toString().toLowerCase());
 	}
 }
-
-/*
- * $Log$
- * Revision 1.5  2007-05-15 08:45:56  mbork
- * code walk-through
- *
- * Revision 1.4  2007/02/15 10:29:10  mbork
- * the LogicInterface now uses Lists instead of Sets
- * fixed use of generics
- *
- * Revision 1.3  2007/02/11 17:55:34  mbork
- * switched REST-api to the 'new' datamodel, which does not deserve the name...
- *
- * Revision 1.2  2007/02/05 10:35:53  cschenk
- * Distributed code from the spielwiese among the modules
- *
- * Revision 1.1  2006/10/24 21:39:22  mbork
- * split up rest api into correct modules. verified with junit tests.
- *
- * Revision 1.1  2006/10/10 12:42:12  cschenk
- * Auf Multi-Module Build umgestellt
- *
- * Revision 1.7  2006/09/24 21:26:20  mbork
- * enabled sending the content-lenght, so that clients now can register callback objects which show the download progress.
- *
- * Revision 1.6  2006/09/16 18:19:15  mbork
- * completed client side api: client api now supports multiple renderers (currently only an implementation for the xml-renderer exists).
- *
- * Revision 1.5  2006/06/23 20:50:08  mbork
- * clientlib:
- * - added head request
- * - fixed issues with enums using uppercase letters invoked with toString()
- * serverlib:
- * - fixed some issues
- *
- * Revision 1.4  2006/06/14 18:23:21  mbork
- * refactored usage of username, password and host url
- *
- * Revision 1.3  2006/06/08 13:23:47  mbork
- * improved documentation, added throws statements even for runtimeexceptions, moved abstractquery to prevent users to call execute directly
- *
- * Revision 1.2  2006/06/08 08:02:54  mbork
- * fixed erroneous use of generics
- *
- * Revision 1.1  2006/06/06 22:20:54  mbork
- * started implementing client api
- *
- */
