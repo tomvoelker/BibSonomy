@@ -393,10 +393,10 @@ public class XMLRenderer implements Renderer {
 	}
 
 	/**
-	 * Unmarshalles the xml document from the reading to the generated java
+	 * Unmarshalls the xml document from the reader to the generated java
 	 * model.
 	 * 
-	 * @return A BibsonomyXML that continas the unmarshalled content
+	 * @return A BibsonomyXML object that contains the unmarshalled content
 	 * @throws InternServerException
 	 *             if the content can't be unmarshalled
 	 */
