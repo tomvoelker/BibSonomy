@@ -108,6 +108,7 @@
 			<url>http://www.se.eecs.uni-kassel.de/~maven/repository/</url>
 		</repository>
 	</repositories>
+	<!--
 	<pluginRepositories>
 		<pluginRepository>
 			<id>ibiblio</id>
@@ -120,6 +121,7 @@
 			<url>http://people.apache.org/repo/m2-snapshot-repository</url>
 		</pluginRepository>
 	</pluginRepositories>
+	-->
 	<modules>
 		<module>bibsonomy-common</module>
 		<module>bibsonomy-model</module>
@@ -259,7 +261,7 @@
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
-				<version>3.8.2</version>
+				<version>4.3.1</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.xml.bind</groupId>
