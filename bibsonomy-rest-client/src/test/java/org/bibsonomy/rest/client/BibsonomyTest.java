@@ -26,7 +26,7 @@ public class BibsonomyTest {
 			new Bibsonomy("test", "");
 			fail("exception should have been thrown");
 		} catch (final IllegalArgumentException e) {
-			if (!"The given password is not valid.".equals(e.getMessage())) {
+			if (!"The given apiKey is not valid.".equals(e.getMessage())) {
 				fail("wrong exception was thrown");
 			}
 		}
@@ -54,7 +54,7 @@ public class BibsonomyTest {
 			bib.setApiKey("");
 			fail("exception should have been thrown");
 		} catch (final IllegalArgumentException e) {
-			if (!"The given password is not valid.".equals(e.getMessage())) {
+			if (!"The given apiKey is not valid.".equals(e.getMessage())) {
 				fail("wrong exception was thrown");
 			}
 		}
