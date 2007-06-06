@@ -23,11 +23,13 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 
 	/** Singleton */
 	private final static BookmarkDatabaseManager singleton = new BookmarkDatabaseManager();
-	private final GeneralDatabaseManager generalDb = GeneralDatabaseManager.getInstance();
-	private final TagDatabaseManager tagDb = TagDatabaseManager.getInstance();
+	private final GeneralDatabaseManager generalDb;
+	private final TagDatabaseManager tagDb;
 	private static final BookmarkChain chain = new BookmarkChain();
 
 	private BookmarkDatabaseManager() {
+		this.generalDb = GeneralDatabaseManager.getInstance();
+		this.tagDb = TagDatabaseManager.getInstance();
 	}
 
 	public static BookmarkDatabaseManager getInstance() {

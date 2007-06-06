@@ -27,28 +27,29 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 
 	/** Singleton */
 	private final static TagDatabaseManager singleton = new TagDatabaseManager();
-	private final GeneralDatabaseManager generalDb = GeneralDatabaseManager.getInstance();
+	private final GeneralDatabaseManager generalDb;
 	/**
 	 * Only a maximum of 10 tags can be set by the user. It serves to restrict
 	 * the system behaviour in case of e.g. 200 Tags. Only a maximum of 10X10
 	 * Tag-Combinations can be computed
 	 */
-	private static final int MAX_TAGS_TO_INSERT = 10;
+	// private static final int MAX_TAGS_TO_INSERT = 10;
 
 	private TagDatabaseManager() {
+		this.generalDb = GeneralDatabaseManager.getInstance();
 	}
 
 	public static TagDatabaseManager getInstance() {
 		return singleton;
 	}
-    
+
 	/** Return tag for given tagId */
 	public Tag getTagById(final Integer tagId, final Transaction session) {
 		return this.queryForObject("getTagById", tagId, Tag.class, session);
 	}
 
 	/** Return all tags for a given tag count */
-	// FIXME a single tag should be returned instead of a list, shouldn't it?  
+	// FIXME a single tag should be returned instead of a list, shouldn't it?
 	public List<Tag> getTagByCount(final TagParam param, final Transaction session) {
 		// TODO not tested
 		return this.queryForList("getTagByCount", param, Tag.class, session);
@@ -80,10 +81,11 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	public void insertTagTagBatch(final int contentId, final Iterable<Tag> tags, TagTagBatchParam.Job job, final Transaction session) {
 		final TagTagBatchParam batchParam = new TagTagBatchParam();
 		batchParam.setContentId(contentId);
-		batchParam.setTagList( TagDatabaseManager.tagsToString(tags) );
+		batchParam.setTagList(TagDatabaseManager.tagsToString(tags));
 		batchParam.setJob(job);
 		this.insertTagTagBatch(batchParam, session);
 	}
+
 	public void insertTagTagBatch(final TagTagBatchParam param, final Transaction session) {
 		// TODO not tested
 		this.insert("insertTagTagBatch", param, session);
@@ -113,7 +115,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		// get tags for this contentId
 		// FIXME param.getResource().setTags(getTasByContendId(param));
 		final boolean batchIt = true;
-										// param.getResource().getTags();
+		// param.getResource().getTags();
 
 		// add these tags to list and decrease counter in tag table
 		for (final Tag tag : post.getTags()) {
@@ -133,7 +135,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			 * could get removed in between IMPORTANT: read further to end of
 			 * this note!
 			 ******************************************************************/
-			/** ****** schedule job for decrement****** */ 
+			/** ****** schedule job for decrement****** */
 			insertTagTagBatch(post.getContentId(), post.getTags(), TagTagBatchParam.Job.DECREMENT, session);
 		} else {
 			throw new UnsupportedOperationException();
@@ -168,16 +170,22 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		tagParam.setGroups(groups);
 		insertTags(tagParam, session);
 	}
-	
-	/** Insert a set of tags for a content (into tas table and what else is required) */
+
+	/**
+	 * Insert a set of tags for a content (into tas table and what else is
+	 * required)
+	 */
 	public void insertTags(final TagParam param, final Transaction session) {
 		// generate a list of tags
 		final List<Tag> allTags = param.getTags();
-		final boolean batchIt = true; // TODO: use this and implement nonbatch-tagtag-inserts: (allTags.size() > MAX_TAGS_TO_INSERT);
-		
+		// TODO: use this and implement nonbatch-tagtag-inserts:
+		// (allTags.size() > MAX_TAGS_TO_INSERT);
+		final boolean batchIt = true;
+
 		if (batchIt == true) {
 			// if there're too many tags, do it in a batch job
-			// FIXME: someone misused newContentId for the tasId. requestedContentId is the real new contentId here 
+			// FIXME: someone misused newContentId for the tasId.
+			// requestedContentId is the real new contentId here
 			insertTagTagBatch(param.getNewContentId(), param.getTags(), TagTagBatchParam.Job.DECREMENT, session);
 		}
 		insertTas(param, session);
@@ -194,11 +202,13 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			}
 		}
 	}
-	
+
 	/**
-	 * Builds a string from a list of tags. The tags are separated by space in the string.
+	 * Builds a string from a list of tags. The tags are separated by space in
+	 * the string.
 	 * 
-	 * @param tags some tags
+	 * @param tags
+	 *            some tags
 	 * @return the string of white space separated tags
 	 */
 	private static String tagsToString(final Iterable<Tag> tags) {
@@ -269,7 +279,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public Tag getTagDetails(final String authUserName, final String tagName, final Transaction session) {
 		throw new UnsupportedOperationException();
-	}	
+	}
 
 	/**
 	 * Get all tags of a given user
@@ -277,7 +287,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	public List<Tag> getTagsByUser(final TagParam param, final Transaction session) {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		return this.queryForList("getTagsByUser", param, Tag.class, session);
-	} 
+	}
 
 	/**
 	 * Get all tags of a given group
@@ -288,15 +298,15 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Get all tags of a given regular expression 
+	 * Get all tags of a given regular expression
 	 */
 	public List<Tag> getTagsByExpression(final TagParam param, final Transaction session) {
 		return this.queryForList("getTagsByExpression", param, Tag.class, session);
-	} 
+	}
 
 	public List<Tag> getTagsViewable(final TagParam param, final Transaction session) {
 		return this.queryForList("getTagsViewable", param, Tag.class, session);
-	} 
+	}
 
 	public List<Tag> getTags(final String authUser, final GroupingEntity grouping, final String groupingName, final String regex, final int start, final int end, final Transaction session) {
 		// TODO: this is only a hack to provide tag-support. feel free to delete
