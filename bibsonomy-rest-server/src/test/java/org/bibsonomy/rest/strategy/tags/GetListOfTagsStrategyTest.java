@@ -1,22 +1,24 @@
 package org.bibsonomy.rest.strategy.tags;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.StringWriter;
 import java.util.HashMap;
-
-import junit.framework.TestCase;
 
 import org.bibsonomy.rest.NullRequest;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.database.TestDatabase;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.strategy.Context;
+import org.junit.Test;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public class GetListOfTagsStrategyTest extends TestCase {
+public class GetListOfTagsStrategyTest {
 
+	@Test
 	public void testGetListOfTagsStrategy() {
 		final Context ctx = new Context(new TestDatabase(), HttpMethod.GET, "/tags", new HashMap<String, String>());
 		final NullRequest request = new NullRequest();

@@ -1,15 +1,17 @@
 package org.bibsonomy.rest.strategy;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.junit.Test;
 
-import junit.framework.TestCase;
+public class StrategyTest {
 
-public class StrategyTest extends TestCase {
-
+	@Test
 	public void testChooseGroupingEntity() {
 		final Map<String, String[]> parameterMap = new HashMap<String, String[]>();
 		final Context ctx = new Context(null, HttpMethod.GET, "/users/egal/posts", parameterMap);

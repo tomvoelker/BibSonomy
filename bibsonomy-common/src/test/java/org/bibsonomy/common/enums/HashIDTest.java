@@ -1,9 +1,17 @@
 package org.bibsonomy.common.enums;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
-public class HashIDTest extends TestCase {
+import org.junit.Test;
 
+/**
+ * @author Jens Illig
+ * @version $Id$
+ */
+public class HashIDTest {
+
+	@Test
 	public void testGetSimHash() {
 		assertEquals(HashID.SIM_HASH0, HashID.getSimHash(0));
 		assertEquals(HashID.SIM_HASH1, HashID.getSimHash(1));

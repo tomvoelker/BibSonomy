@@ -10,7 +10,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */

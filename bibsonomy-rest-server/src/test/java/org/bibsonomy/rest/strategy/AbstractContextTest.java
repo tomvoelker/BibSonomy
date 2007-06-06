@@ -1,15 +1,14 @@
 package org.bibsonomy.rest.strategy;
 
-import junit.framework.TestCase;
-
 import org.bibsonomy.database.LogicInterface;
 import org.bibsonomy.rest.database.TestDatabase;
+import org.junit.Before;
 
 /**
  * @author Christian Schenk
  * @version $Id$
  */
-public abstract class AbstractContextTest extends TestCase {
+public abstract class AbstractContextTest {
 
 	protected LogicInterface db;
 
@@ -17,8 +16,8 @@ public abstract class AbstractContextTest extends TestCase {
 	 * If you override this method, remember to make a call to this method
 	 * (super.setUp()) to make sure that this code is executed too.
 	 */
-	@Override
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() {
 		this.db = new TestDatabase();
 	}
 }

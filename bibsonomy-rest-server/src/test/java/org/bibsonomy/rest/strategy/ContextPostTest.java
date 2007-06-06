@@ -1,69 +1,39 @@
 package org.bibsonomy.rest.strategy;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashMap;
 
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.strategy.posts.GetListOfPostsStrategy;
 import org.bibsonomy.rest.strategy.posts.GetNewPostsStrategy;
 import org.bibsonomy.rest.strategy.posts.GetPopularPostsStrategy;
+import org.junit.Test;
 
 /**
- * Tests for correct strategy initialization if requesting something under /posts
- *  
+ * Tests for correct strategy initialization if requesting something under
+ * /posts
+ * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public class ContextPostTest extends AbstractContextTest 
-{
-	public void testGetListOfTagsStrategy() throws Exception
-	{
-		Context c = new Context( db, HttpMethod.GET, "/posts", new HashMap() );
-		assertTrue( "failure initializing GetListOfTagsStrategy",
-				c.getStrategy() instanceof GetListOfPostsStrategy );
+public class ContextPostTest extends AbstractContextTest {
+
+	@Test
+	public void testGetListOfTagsStrategy() throws Exception {
+		Context c = new Context(db, HttpMethod.GET, "/posts", new HashMap());
+		assertTrue("failure initializing GetListOfTagsStrategy", c.getStrategy() instanceof GetListOfPostsStrategy);
 	}
-	
-	public void testGetNewPostsStrategy() throws Exception
-	{
-		Context c = new Context( db, HttpMethod.GET, "/posts/added", new HashMap() );
-		assertTrue( "failure initializing GetNewPostsStrategy",
-				c.getStrategy() instanceof GetNewPostsStrategy );
+
+	@Test
+	public void testGetNewPostsStrategy() throws Exception {
+		Context c = new Context(db, HttpMethod.GET, "/posts/added", new HashMap());
+		assertTrue("failure initializing GetNewPostsStrategy", c.getStrategy() instanceof GetNewPostsStrategy);
 	}
-	
-	public void testGetPopularPostsStrategy() throws Exception
-	{
-		Context c = new Context( db, HttpMethod.GET, "/posts/popular", new HashMap() );
-		assertTrue( "failure initializing GetPopularPostsStrategy",
-				c.getStrategy() instanceof GetPopularPostsStrategy );
+
+	@Test
+	public void testGetPopularPostsStrategy() throws Exception {
+		Context c = new Context(db, HttpMethod.GET, "/posts/popular", new HashMap());
+		assertTrue("failure initializing GetPopularPostsStrategy", c.getStrategy() instanceof GetPopularPostsStrategy);
 	}
 }
-
-/*
- * $Log$
- * Revision 1.3  2007-06-05 23:33:30  cschenk
- * Code walk-through
- *
- * Revision 1.2  2007/02/21 14:08:35  mbork
- * - included code generation of the schema in the maven2 build-lifecycle
- * - removed circular dependencies among the modules
- * - cleaned up the poms of the modules
- * - fixed failing unit-tests
- *
- * Revision 1.1  2006/10/24 21:39:52  mbork
- * split up rest api into correct modules. verified with junit tests.
- *
- * Revision 1.1  2006/10/10 12:42:15  cschenk
- * Auf Multi-Module Build umgestellt
- *
- * Revision 1.4  2006/06/28 15:36:13  mbork
- * started implementing other http methods
- *
- * Revision 1.3  2006/05/24 20:05:55  jillig
- * TestDatabase verschoben
- *
- * Revision 1.2  2006/05/24 13:02:44  cschenk
- * Introduced an enum for the HttpMethod and moved the exceptions
- *
- * Revision 1.1  2006/05/22 10:52:45  mbork
- * implemented context chooser for /posts
- *
- */

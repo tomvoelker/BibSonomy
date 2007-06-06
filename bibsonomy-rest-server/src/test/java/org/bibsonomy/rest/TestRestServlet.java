@@ -1,28 +1,32 @@
 package org.bibsonomy.rest;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import junit.framework.TestCase;
-
 import org.bibsonomy.rest.database.TestDatabase;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public class TestRestServlet extends TestCase {
+public class TestRestServlet {
 
 	private RestServlet servlet;
 	private NullRequest request;
 	private NullResponse response;
 
-	@Override
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() {
 		this.servlet = new RestServlet();
 		this.servlet.setLogicInterface(new TestDatabase());
 		
@@ -30,6 +34,7 @@ public class TestRestServlet extends TestCase {
 		this.response = new NullResponse();
 	}
 
+	@Test
 	public void testValidateAuthorization() throws Exception {
 		try {
 			this.servlet.validateAuthorization("YXNkZjphc2Rm");
@@ -45,12 +50,14 @@ public class TestRestServlet extends TestCase {
 		assertEquals("error decoding string", this.servlet.validateAuthorization("Basic YXNkZjphc2Rm"), "asdf");
 	}
 
+	@Test
 	public void testUnauthorized() throws Exception {
 		this.servlet.doGet(this.request, this.response);
 		compareWithFile(this.response.getContent(), "failAuth.txt");
 		assertEquals(this.response.getContentLength(), this.response.getContent().length());
 	}
 
+	@Test
 	public void testSimpleStuff() throws Exception {
 		this.request.getHeaders().put("Authorization", "Basic YXNkZjphc2Rm");
 		// try to get '/'
@@ -59,6 +66,7 @@ public class TestRestServlet extends TestCase {
 		assertEquals(this.response.getContentLength(), this.response.getContent().length());
 	}
 
+	@Test
 	public void testGetComplexStuff() throws Exception {
 		this.request.getHeaders().put("Authorization", "Basic YXNkZjphc2Rm");
 		this.request.getHeaders().put("User-Agent", RestProperties.getInstance().getApiUserAgent());
@@ -70,6 +78,7 @@ public class TestRestServlet extends TestCase {
 	}
 
 	// FIXME: do we want this to work?
+	// @Test
 	/* public void testUTF8() throws Exception {
 		final NullRequest request = new NullRequest();
 		request.getHeaders().put("Authorization", "Basic YXNkZjphc2Rm");

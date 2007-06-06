@@ -1,22 +1,24 @@
 package org.bibsonomy.rest.strategy.posts;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.StringWriter;
 import java.util.HashMap;
-
-import junit.framework.TestCase;
 
 import org.bibsonomy.rest.NullRequest;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.database.TestDatabase;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.strategy.Context;
+import org.junit.Test;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public class GetListOfPostsStrategyTest extends TestCase {
+public class GetListOfPostsStrategyTest {
 
+	@Test
 	public void testGetListOfPostsStrategy() {
 		final Context ctx = new Context(new TestDatabase(), HttpMethod.GET, "/posts", new HashMap<String, String>());
 		final NullRequest request = new NullRequest();
