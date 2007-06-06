@@ -20,6 +20,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.junit.Test;
 
 /**
  * This class is used for demonstrating purposes only. It is not designed to
@@ -57,6 +58,10 @@ public class TestDatabase implements LogicInterface {
 		this.date = cal.getTime();
 
 		fillDataBase();
+	}
+
+	@Test
+	public void testDummy() {
 	}
 
 	public boolean validateUserAccess(String username, String apiKey) {
