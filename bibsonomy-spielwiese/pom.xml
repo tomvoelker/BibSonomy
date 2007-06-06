@@ -16,24 +16,9 @@
 	</parent>
 	<dependencies>
 		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-common</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.ibatis</groupId>
-			<artifactId>ibatis2</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>catalina</artifactId>
+			<version>6.0.13</version>
 		</dependency>
 	</dependencies>
 </project>
