@@ -86,74 +86,46 @@ public class RestProperties extends Properties {
 	}
 
 	public String getApiUrl() {
-		if (getProperty(PROPERTY_API_URL) != null) {
-			return getProperty(PROPERTY_API_URL).trim();
-		} else {
-			return DEFAULT_API_URL;
-		}
+		return this.getPropertyOrDefault(PROPERTY_API_URL, DEFAULT_API_URL);
 	}
 
 	public String getContentType() {
-		if (getProperty(PROPERTY_CONTENT_TYPE) != null) {
-			return getProperty(PROPERTY_CONTENT_TYPE).trim();
-		} else {
-			return DEFAULT_CONTENT_TYPE;
-		}
+		return this.getPropertyOrDefault(PROPERTY_CONTENT_TYPE, DEFAULT_CONTENT_TYPE);
 	}
 
 	public String getApiUserAgent() {
-		if (getProperty(PROPERTY_API_USER_AGENT) != null) {
-			return getProperty(PROPERTY_API_USER_AGENT).trim();
-		} else {
-			return DEFAULT_API_USER_AGENT;
-		}
+		return this.getPropertyOrDefault(PROPERTY_API_USER_AGENT, DEFAULT_API_USER_AGENT);
 	}
 
 	public String getTagsUrl() {
-		if (getProperty(PROPERTY_URL_TAGS) != null) {
-			return getProperty(PROPERTY_URL_TAGS).trim();
-		} else {
-			return DEFAULT_URL_TAGS;
-		}
+		return this.getPropertyOrDefault(PROPERTY_URL_TAGS, DEFAULT_URL_TAGS);
 	}
 
 	public String getUsersUrl() {
-		if (getProperty(PROPERTY_URL_USERS) != null) {
-			return getProperty(PROPERTY_URL_USERS).trim();
-		} else {
-			return DEFAULT_URL_USERS;
-		}
+		return this.getPropertyOrDefault(PROPERTY_URL_USERS, DEFAULT_URL_USERS);
 	}
 
 	public String getGroupsUrl() {
-		if (getProperty(PROPERTY_URL_GROUPS) != null) {
-			return getProperty(PROPERTY_URL_GROUPS).trim();
-		} else {
-			return DEFAULT_URL_GROUPS;
-		}
+		return this.getPropertyOrDefault(PROPERTY_URL_GROUPS, DEFAULT_URL_GROUPS);
 	}
 
 	public String getPostsUrl() {
-		if (getProperty(PROPERTY_URL_POSTS) != null) {
-			return getProperty(PROPERTY_URL_POSTS).trim();
-		} else {
-			return DEFAULT_URL_POSTS;
-		}
+		return this.getPropertyOrDefault(PROPERTY_URL_POSTS, DEFAULT_URL_POSTS);
 	}
 
 	public String getAddedPostsUrl() {
-		if (getProperty(PROPERTY_URL_ADDED_POSTS) != null) {
-			return getProperty(PROPERTY_URL_ADDED_POSTS).trim();
-		} else {
-			return DEFAULT_URL_ADDED_POSTS;
-		}
+		return this.getPropertyOrDefault(PROPERTY_URL_ADDED_POSTS, DEFAULT_URL_ADDED_POSTS);
 	}
 
 	public String getPopularPostsUrl() {
-		if (getProperty(PROPERTY_URL_POPULAR_POSTS) != null) {
-			return getProperty(PROPERTY_URL_POPULAR_POSTS).trim();
+		return this.getPropertyOrDefault(PROPERTY_URL_POPULAR_POSTS, DEFAULT_URL_POPULAR_POSTS);
+	}
+
+	private final String getPropertyOrDefault(final String property, final String def) {
+		if (getProperty(property) != null) {
+			return getProperty(property).trim();
 		} else {
-			return DEFAULT_URL_POPULAR_POSTS;
+			return def;
 		}
 	}
 }
