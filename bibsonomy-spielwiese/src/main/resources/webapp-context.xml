@@ -1,0 +1,11 @@
+<!--
+  This is a context which can be used with the Tomcat application server.
+
+  Remember to change the docBase attribute!
+-->
+
+<Context path = "/realmtest" docBase = "---FILL IN---/bibsonomy-spielwiese/src/main/webapp/"
+         debug = "0" reloadable = "true">
+
+  <Realm className = "org.bibsonomy.spielwiese.BibSonomyRealm" debug = "0" />
+</Context>
