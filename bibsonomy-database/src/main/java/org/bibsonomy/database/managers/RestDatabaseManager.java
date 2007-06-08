@@ -214,13 +214,12 @@ public class RestDatabaseManager implements LogicInterface {
 	 * Validates user access.
 	 */
 	public boolean validateUserAccess(final String username, final String apiKey) {
-//		final Transaction session = this.openSession();
-//		try {
-//			return this.userDBManager.validateUserAccess(username, apiKey, session);
-//		} finally {
-//			session.close();
-//		}
-		return true;
+		final Transaction session = this.openSession();
+		try {
+			return this.userDBManager.validateUserAccess(username, apiKey, session);
+		} finally {
+			session.close();
+		}
 	}
 
 	/*
