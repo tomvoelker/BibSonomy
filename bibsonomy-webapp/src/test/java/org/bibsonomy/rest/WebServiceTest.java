@@ -118,12 +118,19 @@ public class WebServiceTest {
 		// Check posts count
 		final Node posts = this.doc.selectSingleNode("//posts");
 		assertEquals(0, Integer.parseInt(posts.valueOf("@start")));
-		assertEquals(18, Integer.parseInt(posts.valueOf("@end")));
-
-		this.doc = this.getDocumentForWebServiceAction("posts?start=0&end=10&resourcetype=bibtex");
-		this.doc = this.getDocumentForWebServiceAction("posts?start=0&end=10&resourcetype=bookmark");
-
-		// add tags=web
-		// this.doc = this.getDocumentForWebServiceAction("posts?user=hotho&start=0&end=10&resourcetype=bibtex");
+		assertEquals(19, Integer.parseInt(posts.valueOf("@end")));
+		final Number numPosts = this.doc.numberValueOf("count(//post)");
+		assertEquals(20, numPosts.intValue());		
 	}
+	
+	@Test
+	public void get100Posts() {
+		this.doc = this.getDocumentForWebServiceAction("posts?resourcetype=bibtex&start=0&end=100");
+		// Check posts count
+		final Node posts = this.doc.selectSingleNode("//posts");
+		assertEquals(0, Integer.parseInt(posts.valueOf("@start")));
+		assertEquals(99, Integer.parseInt(posts.valueOf("@end")));
+		final Number numPosts = this.doc.numberValueOf("count(//post)");
+		assertEquals(100, numPosts.intValue());		
+	}	
 }
