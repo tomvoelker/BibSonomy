@@ -16,10 +16,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-spielwiese</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-rest-server</artifactId>
 		</dependency>
 		<dependency>
