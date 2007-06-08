@@ -5,13 +5,13 @@ import static org.junit.Assert.fail;
 
 import java.math.BigInteger;
 
+import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.rest.exceptions.InvalidXMLException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,6 +22,7 @@ import org.junit.Test;
 public class ModelFactoryTest {
 
 	private ModelFactory modelFactory;
+	private final String XML_IS_INVALID_MSG = "The body part of the received XML document is not valid: ";
 
 	@Before
 	public void setUp() {
@@ -35,8 +36,8 @@ public class ModelFactoryTest {
 		try {
 			this.modelFactory.createUser(xmlUser);
 			fail("exception should have been thrown.");
-		} catch (final InvalidXMLException e) {
-			if (!"The body part of the received XML document is not valid: username is missing".equals(e.getMessage())) fail("wrong exception thrown: " + e.getMessage());
+		} catch (final InvalidModelException e) {
+			if (!(this.XML_IS_INVALID_MSG + "username is missing").equals(e.getMessage())) fail("wrong exception thrown: " + e.getMessage());
 		}
 
 		// check valid user
@@ -52,8 +53,8 @@ public class ModelFactoryTest {
 		try {
 			this.modelFactory.createGroup(xmlGroup);
 			fail("exception should have been thrown.");
-		} catch (final InvalidXMLException e) {
-			if (!"The body part of the received XML document is not valid: groupname is missing".equals(e.getMessage())) fail("wrong exception thrown: " + e.getMessage());
+		} catch (final InvalidModelException e) {
+			if (!(this.XML_IS_INVALID_MSG + "groupname is missing").equals(e.getMessage())) fail("wrong exception thrown: " + e.getMessage());
 		}
 
 		// check valid group
@@ -68,8 +69,8 @@ public class ModelFactoryTest {
 		final TagType xmlTag = new TagType();
 		try {
 			this.modelFactory.createTag(xmlTag);
-		} catch (InvalidXMLException e) {
-			if (!"The body part of the received XML document is not valid: tag name is missing".equals(e.getMessage())) fail("wrong exception thrown: " + e.getMessage());
+		} catch (InvalidModelException e) {
+			if (!(this.XML_IS_INVALID_MSG + "tag name is missing").equals(e.getMessage())) fail("wrong exception thrown: " + e.getMessage());
 		}
 
 		// check valid tag
@@ -87,22 +88,22 @@ public class ModelFactoryTest {
 	public void testCreatePost() {
 		// check invalid posts
 		final PostType xmlPost = new PostType();
-		checkInvalidPost(xmlPost, "The body part of the received XML document is not valid: no tags specified");
+		checkInvalidPost(xmlPost, this.XML_IS_INVALID_MSG + "no tags specified");
 		final TagType xmlTag = new TagType();
 		xmlPost.getTag().add(xmlTag);
-		checkInvalidPost(xmlPost, "The body part of the received XML document is not valid: user is missing");
+		checkInvalidPost(xmlPost, this.XML_IS_INVALID_MSG + "user is missing");
 		final UserType xmlUser = new UserType();
 		xmlUser.setName("tuser");
 		xmlPost.setUser(xmlUser);
-		checkInvalidPost(xmlPost, "The body part of the received XML document is not valid: resource is missing");
+		checkInvalidPost(xmlPost, this.XML_IS_INVALID_MSG + "resource is missing");
 		final BookmarkType xmlBookmark = new BookmarkType();
 		xmlPost.setBookmark(xmlBookmark);
-		checkInvalidPost(xmlPost, "The body part of the received XML document is not valid: tag name is missing");
+		checkInvalidPost(xmlPost, this.XML_IS_INVALID_MSG + "tag name is missing");
 		xmlTag.setName("testtag");
-		checkInvalidPost(xmlPost, "The body part of the received XML document is not valid: url is missing");
+		checkInvalidPost(xmlPost, this.XML_IS_INVALID_MSG + "url is missing");
 		xmlBookmark.setUrl("http://www.google.de");
 		xmlPost.setBibtex(new BibtexType());
-		checkInvalidPost(xmlPost, "The body part of the received XML document is not valid: only one resource is allowed");
+		checkInvalidPost(xmlPost, this.XML_IS_INVALID_MSG + "only one resource is allowed");
 		xmlPost.setBibtex(null);
 
 		// check valid post with bookmark
@@ -115,7 +116,7 @@ public class ModelFactoryTest {
 		xmlPost.setBookmark(null);
 		final BibtexType xmlBibtex = new BibtexType();
 		xmlPost.setBibtex(xmlBibtex);
-		checkInvalidPost(xmlPost, "The body part of the received XML document is not valid: title is missing");
+		checkInvalidPost(xmlPost, this.XML_IS_INVALID_MSG + "title is missing");
 		xmlBibtex.setTitle("foo bar");
 
 		// check valid post with bibtex
@@ -130,7 +131,7 @@ public class ModelFactoryTest {
 		try {
 			this.modelFactory.createPost(xmlPost);
 			fail("exception should have been thrown.");
-		} catch (final InvalidXMLException e) {
+		} catch (final InvalidModelException e) {
 			if (!e.getMessage().equals(exceptionMessage)) {
 				System.out.println(e.getMessage());
 				fail("wrong exception thrown: " + e.getMessage());

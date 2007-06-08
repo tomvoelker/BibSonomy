@@ -1,5 +1,12 @@
 package org.bibsonomy.rest.renderer.xml;
 
+import static org.bibsonomy.model.util.ValidationUtils.checkBibTex;
+import static org.bibsonomy.model.util.ValidationUtils.checkBookmark;
+import static org.bibsonomy.model.util.ValidationUtils.checkGroup;
+import static org.bibsonomy.model.util.ValidationUtils.checkPost;
+import static org.bibsonomy.model.util.ValidationUtils.checkTag;
+import static org.bibsonomy.model.util.ValidationUtils.checkUser;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -10,7 +17,6 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.rest.exceptions.InvalidXMLException;
 
 /**
  * Produces objects from the model based on objects from the XML model generated
@@ -34,13 +40,13 @@ public class ModelFactory {
 	}
 
 	public User createUser(final UserType xmlUser) {
-		validateUser(xmlUser);
+		checkUser(xmlUser);
 
 		final User user = new User();
 		user.setEmail(xmlUser.getEmail());
 		try {
-			user.setHomepage(new URL(xmlUser.getHomepage())); // FIXME move
-			// into Factory
+			// FIXME move into Factory
+			user.setHomepage(new URL(xmlUser.getHomepage()));
 		} catch (final MalformedURLException e) {
 		}
 		user.setName(xmlUser.getName());
@@ -50,7 +56,7 @@ public class ModelFactory {
 	}
 
 	public Group createGroup(final GroupType xmlGroup) {
-		validateGroup(xmlGroup);
+		checkGroup(xmlGroup);
 
 		final Group group = new Group();
 		group.setName(xmlGroup.getName());
@@ -60,7 +66,7 @@ public class ModelFactory {
 	}
 
 	public Tag createTag(final TagType xmlTag) {
-		validateTag(xmlTag);
+		checkTag(xmlTag);
 
 		final Tag tag = new Tag();
 		tag.setName(xmlTag.getName());
@@ -73,7 +79,7 @@ public class ModelFactory {
 	}
 
 	public Post<Resource> createPost(final PostType xmlPost) {
-		validatePost(xmlPost);
+		checkPost(xmlPost);
 
 		// post itself
 		final Post<Resource> post = new Post<Resource>();
@@ -82,13 +88,13 @@ public class ModelFactory {
 		// user
 		final User user = new User();
 		final UserType xmlUser = xmlPost.getUser();
-		validateUser(xmlUser);
+		checkUser(xmlUser);
 		user.setName(xmlUser.getName());
 		post.setUser(user);
 
 		// tags
 		for (final TagType xmlTag : xmlPost.getTag()) {
-			validateTag(xmlTag);
+			checkTag(xmlTag);
 
 			final Tag tag = new Tag();
 			tag.setName(xmlTag.getName());
@@ -98,7 +104,7 @@ public class ModelFactory {
 		// resource
 		if (xmlPost.getBibtex() != null) {
 			final BibtexType xmlBibtex = xmlPost.getBibtex();
-			validateBibTex(xmlBibtex);
+			checkBibTex(xmlBibtex);
 
 			final BibTex bibtex = new BibTex();
 
@@ -139,7 +145,7 @@ public class ModelFactory {
 		}
 		if (xmlPost.getBookmark() != null) {
 			final BookmarkType xmlBookmark = xmlPost.getBookmark();
-			validateBookmark(xmlBookmark);
+			checkBookmark(xmlBookmark);
 
 			final Bookmark bookmark = new Bookmark();
 			bookmark.setIntraHash(xmlBookmark.getIntrahash());
@@ -149,48 +155,5 @@ public class ModelFactory {
 		}
 
 		return post;
-	}
-
-	private void validateUser(final UserType xmlUser) {
-		if (xmlUser.getName() == null || xmlUser.getName().length() == 0) throw new InvalidXMLException("username is missing");
-	}
-
-	private void validateGroup(final GroupType xmlGroup) {
-		if (xmlGroup.getName() == null || xmlGroup.getName().length() == 0) throw new InvalidXMLException("groupname is missing");
-	}
-
-	private void validateTag(final TagType xmlTag) {
-		if (xmlTag.getName() == null || xmlTag.getName().length() == 0) throw new InvalidXMLException("tag name is missing");
-	}
-
-	private void validatePost(final PostType xmlPost) {
-		if (xmlPost.getTag() == null) throw new InvalidXMLException("list of tags is missing");
-		if (xmlPost.getTag().size() == 0) throw new InvalidXMLException("no tags specified");
-		if (xmlPost.getUser() == null) throw new InvalidXMLException("user is missing");
-
-		final BibtexType xmlBibtex = xmlPost.getBibtex();
-		final BookmarkType xmlBookmark = xmlPost.getBookmark();
-		if (xmlBibtex == null && xmlBookmark == null) {
-			throw new InvalidXMLException("resource is missing");
-		} else if (xmlBibtex != null && xmlBookmark != null) {
-			throw new InvalidXMLException("only one resource is allowed");
-		} else {
-			// just fine (bibtex xor bookmark):
-			// ( xmlBibtex == null && xmlBookmark != null ) || ( xmlBibtex != null || xmlBookmark == null )
-		}
-	}
-
-	private void validateBookmark(final BookmarkType xmlBookmark) {
-		if (xmlBookmark.getUrl() == null) throw new InvalidXMLException("url is missing");
-		// do not test hash value - it depends on the request if its available,
-		// so we check it later
-		// if( xmlBookmark.getIntrahash() == null ) throw new InvalidXMLException( "hash is missing" );
-	}
-
-	private void validateBibTex(BibtexType xmlBibtex) {
-		if (xmlBibtex.getTitle() == null) throw new InvalidXMLException("title is missing");
-		// do not test hash value - it depends on the request if its available,
-		// so we check it later
-		// if( xmlBibtex.getIntrahash() == null ) throw new InvalidXMLException( "hash is missing" );
 	}
 }

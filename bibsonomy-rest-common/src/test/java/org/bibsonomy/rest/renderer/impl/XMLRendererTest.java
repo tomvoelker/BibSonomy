@@ -21,6 +21,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
 
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -42,6 +43,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
+ * @author Manuel Bork
  * @author Christian Schenk
  * @version $Id$
  */
@@ -60,7 +62,7 @@ public class XMLRendererTest {
 		try {
 			this.renderer.parseUser(null);
 			fail("exception should have been thrown.");
-		} catch (BadRequestOrResponseException e) {
+		} catch (final BadRequestOrResponseException e) {
 		}
 
 		// check empty/ wrong document
@@ -71,15 +73,15 @@ public class XMLRendererTest {
 		try {
 			this.renderer.parseUser(new FileReader(tmpFile));
 			fail("exception should have been thrown.");
-		} catch (BadRequestOrResponseException e) {
+		} catch (final BadRequestOrResponseException e) {
 			if (!"The body part of the received document is erroneous - no user defined.".equals(e.getMessage())) fail("wrong exception thrown: " + e.getMessage());
 		}
 
 		// check valid user
 		bibXML = new BibsonomyXML();
-		UserType userType = new UserType();
-		userType.setName("test");
-		bibXML.setUser(userType);
+		final UserType xmlUser = new UserType();
+		xmlUser.setName("test");
+		bibXML.setUser(xmlUser);
 		tmpFile = File.createTempFile("bibsonomy", "junit");
 		marshalToFile(bibXML, tmpFile);
 		final User user = this.renderer.parseUser(new FileReader(tmpFile));
@@ -92,7 +94,7 @@ public class XMLRendererTest {
 		try {
 			this.renderer.parseGroup(null);
 			fail("exception should have been thrown.");
-		} catch (BadRequestOrResponseException e) {
+		} catch (final BadRequestOrResponseException e) {
 		}
 
 		// check empty/ wrong document
@@ -103,15 +105,15 @@ public class XMLRendererTest {
 		try {
 			this.renderer.parseGroup(new FileReader(tmpFile));
 			fail("exception should have been thrown.");
-		} catch (BadRequestOrResponseException e) {
+		} catch (final BadRequestOrResponseException e) {
 			if (!"The body part of the received document is erroneous - no group defined.".equals(e.getMessage())) fail("wrong exception thrown: " + e.getMessage());
 		}
 
 		// check valid group
 		bibXML = new BibsonomyXML();
-		GroupType groupType = new GroupType();
-		groupType.setName("test");
-		bibXML.setGroup(groupType);
+		final GroupType xmlGroup = new GroupType();
+		xmlGroup.setName("test");
+		bibXML.setGroup(xmlGroup);
 		tmpFile = File.createTempFile("bibsonomy", "junit");
 		marshalToFile(bibXML, tmpFile);
 		final Group group = this.renderer.parseGroup(new FileReader(tmpFile));
@@ -130,7 +132,7 @@ public class XMLRendererTest {
 		try {
 			this.renderer.parsePost(null);
 			fail("exception should have been thrown.");
-		} catch (BadRequestOrResponseException e) {
+		} catch (final BadRequestOrResponseException e) {
 		}
 
 		// check empty/ wrong document
@@ -194,24 +196,24 @@ public class XMLRendererTest {
 
 		// with tags
 		sw = new StringWriter(100);
-		final Tag t1 = new Tag();
-		tags.add(t1);
+		final Tag tag1 = new Tag();
+		tags.add(tag1);
 		try {
 			this.renderer.serializeTags(sw, tags, vm);
 			fail("exception should have been thrown: no tagname specified");
-		} catch (InternServerException e) {
+		} catch (final InvalidModelException e) {
 		}
-		t1.setName("foo");
+		tag1.setName("foo");
 		sw = new StringWriter(100);
 		this.renderer.serializeTags(sw, tags, vm);
 		compareWithFile(sw, "ExampleResultTags2.txt");
 
 		// with multiple tags
-		final Tag t2 = new Tag();
-		t2.setName("bar");
-		t2.setUsercount(5);
-		t2.setGlobalcount(10);
-		tags.add(t2);
+		final Tag tag2 = new Tag();
+		tag2.setName("bar");
+		tag2.setUsercount(5);
+		tag2.setGlobalcount(10);
+		tags.add(tag2);
 		sw = new StringWriter(100);
 		this.renderer.serializeTags(sw, tags, vm);
 		compareWithFile(sw, "ExampleResultTags3.txt");
@@ -225,7 +227,7 @@ public class XMLRendererTest {
 		try {
 			this.renderer.serializeTag(sw, tag, null);
 			fail("exception should have been thrown: no tagname specified");
-		} catch (InternServerException e) {
+		} catch (final InvalidModelException e) {
 		}
 		tag.setName("foo");
 		this.renderer.serializeTag(sw, tag, null);
@@ -246,23 +248,23 @@ public class XMLRendererTest {
 		vm.setStartValue(20);
 		vm.setEndValue(30);
 		vm.setUrlToNextResources("http://www.bibsonomy.org/api/foo/bar");
-		final User u1 = new User();
-		users.add(u1);
+		final User user1 = new User();
+		users.add(user1);
 		try {
 			this.renderer.serializeUsers(sw, users, null);
 			fail("exception should have been thrown: no username specified");
-		} catch (InternServerException e) {
+		} catch (final InvalidModelException e) {
 		}
 
 		sw = new StringWriter(100);
-		u1.setName("testName");
-		u1.setEmail("mail@foo.bar");
-		u1.setHomepage(new URL("http://foo.bar.com"));
-		u1.setPassword("raboof");
-		u1.setRealname("Dr. FOO BaR");
-		final User u2 = new User();
-		u2.setName("fooBar");
-		users.add(u2);
+		user1.setName("testName");
+		user1.setEmail("mail@foo.bar");
+		user1.setHomepage(new URL("http://foo.bar.com"));
+		user1.setPassword("raboof");
+		user1.setRealname("Dr. FOO BaR");
+		final User user2 = new User();
+		user2.setName("fooBar");
+		users.add(user2);
 		this.renderer.serializeUsers(sw, users, vm);
 		compareWithFile(sw, "ExampleResultUsers1.txt");
 	}
@@ -275,7 +277,7 @@ public class XMLRendererTest {
 		try {
 			this.renderer.serializeUser(sw, user, null);
 			fail("exception should have been thrown: no username specified");
-		} catch (InternServerException e) {
+		} catch (final InvalidModelException e) {
 		}
 		user.setName("foo");
 		this.renderer.serializeUser(sw, user, null);
@@ -296,20 +298,20 @@ public class XMLRendererTest {
 		vm.setStartValue(20);
 		vm.setEndValue(30);
 		vm.setUrlToNextResources("http://www.bibsonomy.org/api/foo/bar");
-		final Group g1 = new Group();
-		groups.add(g1);
+		final Group group1 = new Group();
+		groups.add(group1);
 		try {
 			this.renderer.serializeGroups(sw, groups, null);
 			fail("exception should have been thrown: no groupname specified");
-		} catch (InternServerException e) {
+		} catch (final InvalidModelException e) {
 		}
 
 		sw = new StringWriter(100);
-		g1.setName("testName");
-		g1.setDescription("foo bar ...");
-		final Group g2 = new Group();
-		g2.setName("testName2");
-		groups.add(g2);
+		group1.setName("testName");
+		group1.setDescription("foo bar ...");
+		final Group group2 = new Group();
+		group2.setName("testName2");
+		groups.add(group2);
 		this.renderer.serializeGroups(sw, groups, vm);
 		compareWithFile(sw, "ExampleResultGroups1.txt");
 	}
@@ -322,7 +324,7 @@ public class XMLRendererTest {
 		try {
 			this.renderer.serializeGroup(sw, group, null);
 			fail("exception should have been thrown: no groupname specified");
-		} catch (InternServerException e) {
+		} catch (final InvalidModelException e) {
 		}
 		group.setName("foo");
 		group.setDescription("foo bar :)");
@@ -350,18 +352,18 @@ public class XMLRendererTest {
 		post.setUser(user);
 		post.getGroups().add(group);
 		post.getTags().add(tag);
-		final BibTex bib = new BibTex();
-		bib.setTitle("foo and bar");
-		bib.setIntraHash("abc");
-		bib.setInterHash("abc");
-		post.setResource(bib);
+		final BibTex bibtex = new BibTex();
+		bibtex.setTitle("foo and bar");
+		bibtex.setIntraHash("abc");
+		bibtex.setInterHash("abc");
+		post.setResource(bibtex);
 		posts.add(post);
-		final Bookmark b = new Bookmark();
-		b.setInterHash("12345678");
-		b.setIntraHash("12345678");
-		b.setUrl("www.foobar.de");
+		final Bookmark bookmark = new Bookmark();
+		bookmark.setInterHash("12345678");
+		bookmark.setIntraHash("12345678");
+		bookmark.setUrl("www.foobar.de");
 		final Post<Resource> post2 = new Post<Resource>();
-		post2.setResource(b);
+		post2.setResource(bookmark);
 		post2.setUser(user);
 		post2.getTags().add(tag);
 		posts.add(post2);
@@ -376,34 +378,34 @@ public class XMLRendererTest {
 		try {
 			this.renderer.serializePost(sw, post, null);
 			fail("exception should have been thrown: no user specified");
-		} catch (InternServerException e) {
+		} catch (final InternServerException e) {
 		}
-		final User u = new User();
-		u.setName("foo");
-		post.setUser(u);
+		final User user = new User();
+		user.setName("foo");
+		post.setUser(user);
 		try {
 			this.renderer.serializePost(sw, post, null);
 			fail("exception should have been thrown: no tags assigned");
-		} catch (InternServerException e) {
+		} catch (final InternServerException e) {
 		}
-		final Tag t = new Tag();
-		t.setName("bar");
-		post.getTags().add(t);
+		final Tag tag = new Tag();
+		tag.setName("bar");
+		post.getTags().add(tag);
 		try {
 			this.renderer.serializePost(sw, post, null);
 			fail("exception should have been thrown: no ressource assigned");
-		} catch (InternServerException e) {
+		} catch (final InternServerException e) {
 		}
-		final Bookmark b = new Bookmark();
-		post.setResource(b);
+		final Bookmark bookmark = new Bookmark();
+		post.setResource(bookmark);
 		try {
 			this.renderer.serializePost(sw, post, null);
 			fail("exception should have been thrown: bookmark has no url assigned");
-		} catch (InternServerException e) {
+		} catch (final InvalidModelException e) {
 		}
-		b.setUrl("www.foobar.org");
-		b.setIntraHash("aabbcc");
-		b.setInterHash("1324356789");
+		bookmark.setUrl("www.foobar.org");
+		bookmark.setIntraHash("aabbcc");
+		bookmark.setInterHash("1324356789");
 		this.renderer.serializePost(sw, post, null);
 		compareWithFile(sw, "ExampleResultPost.txt");
 	}
@@ -414,17 +416,17 @@ public class XMLRendererTest {
 		final List<Post<? extends Resource>> posts = new LinkedList<Post<? extends Resource>>();
 		final Post<Resource> post = new Post<Resource>();
 		posts.add(post);
-		final User u = new User();
-		u.setName("foo");
-		post.setUser(u);
-		final Tag t = new Tag();
-		t.setName("bar");
-		post.getTags().add(t);
-		final Bookmark b = new Bookmark();
-		post.setResource(b);
-		b.setUrl("www.foobar.org");
-		b.setIntraHash("aabbcc");
-		b.setInterHash("1324356789");
+		final User user = new User();
+		user.setName("foo");
+		post.setUser(user);
+		final Tag tag = new Tag();
+		tag.setName("bar");
+		post.getTags().add(tag);
+		final Bookmark bookmark = new Bookmark();
+		post.setResource(bookmark);
+		bookmark.setUrl("www.foobar.org");
+		bookmark.setIntraHash("aabbcc");
+		bookmark.setInterHash("1324356789");
 		final ViewModel vm = new ViewModel();
 		vm.setStartValue(0);
 		vm.setEndValue(1);
@@ -435,7 +437,7 @@ public class XMLRendererTest {
 
 	private void compareWithFile(final StringWriter sw, final String filename) throws IOException {
 		final StringBuffer sb = new StringBuffer(200);
-		final File file = new File("src/test/java/org/bibsonomy/rest/renderer/impl/" + filename);
+		final File file = new File("src/test/resources/xmlrenderer/" + filename);
 		final BufferedReader br = new BufferedReader(new FileReader(file));
 		String s;
 		while ((s = br.readLine()) != null) {

@@ -1,5 +1,11 @@
 package org.bibsonomy.rest.renderer.impl;
 
+import static org.bibsonomy.model.util.ValidationUtils.checkBibtex;
+import static org.bibsonomy.model.util.ValidationUtils.checkBookmark;
+import static org.bibsonomy.model.util.ValidationUtils.checkGroup;
+import static org.bibsonomy.model.util.ValidationUtils.checkTag;
+import static org.bibsonomy.model.util.ValidationUtils.checkUser;
+
 import java.io.Reader;
 import java.io.Writer;
 import java.math.BigInteger;
@@ -50,6 +56,13 @@ public class XMLRenderer implements Renderer {
 	private static XMLRenderer renderer;
 
 	private XMLRenderer() {
+	}
+
+	public static Renderer getInstance() {
+		if (renderer == null) {
+			renderer = new XMLRenderer();
+		}
+		return renderer;
 	}
 
 	public void serializePosts(final Writer writer, final List<? extends Post<? extends Resource>> posts, final ViewModel viewModel) throws InternServerException {
@@ -415,46 +428,6 @@ public class XMLRenderer implements Renderer {
 			return (BibsonomyXML) xmlDoc.getValue();
 		} catch (final JAXBException e) {
 			throw new InternServerException(e.toString());
-		}
-	}
-
-	public static Renderer getInstance() {
-		if (XMLRenderer.renderer == null) {
-			renderer = new XMLRenderer();
-		}
-		return XMLRenderer.renderer;
-	}
-
-	private void checkTag(final Tag tag) throws InternServerException {
-		if (tag.getName() == null || tag.getName().length() == 0) {
-			throw new InternServerException("found a tag without tagname assigned.");
-		}
-	}
-
-	private void checkUser(final User user) throws InternServerException {
-		if (user.getName() == null || user.getName().length() == 0) {
-			throw new InternServerException("found an user without username assigned.");
-		}
-	}
-
-	private void checkGroup(final Group group) throws InternServerException {
-		if (group.getName() == null || group.getName().length() == 0) {
-			throw new InternServerException("found a group without username assigned.");
-		}
-	}
-
-	private void checkBookmark(final Bookmark bookmark) throws InternServerException {
-		if (bookmark.getUrl() == null || bookmark.getUrl().length() == 0) {
-			throw new InternServerException("found a bookmark without url assigned.");
-		}
-		if (bookmark.getInterHash() == null || bookmark.getInterHash().length() == 0 || bookmark.getIntraHash() == null || bookmark.getIntraHash().length() == 0) {
-			throw new InternServerException("found a bookmark without hash assigned.");
-		}
-	}
-
-	private void checkBibtex(final BibTex bibtex) {
-		if (bibtex.getTitle() == null || bibtex.getTitle().length() == 0) {
-			throw new InternServerException("found a bibtex without title assigned.");
 		}
 	}
 
