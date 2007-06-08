@@ -216,10 +216,15 @@ public class UserDatabaseManager extends AbstractDatabaseManager  {
 	 * @param session
 	 * @return boolean true if the Api key is correct, otherwise false
 	 */
-	public boolean validateUserAccess(final String username, final String apiKey, final Transaction session) {
+	public boolean validateUserAccess(final String username, final String apiKey, final Transaction session) {		
+		if (apiKey == null || "".equals(apiKey)) 
+			return false;
 		final UserParam param = new UserParam();
-		param.setUserName(username);
-		final String currentApiKey = this.getApiKeyForUser(param, session);
-		return currentApiKey.equals(apiKey);
+		param.setUserName(username);		
+		final String currentApiKey = this.getApiKeyForUser(param, session);	
+		if (currentApiKey == null ) 
+			return false;
+		else 
+			return apiKey.equals(currentApiKey);
 	}
 }
