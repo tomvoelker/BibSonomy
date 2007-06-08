@@ -14,11 +14,6 @@ import org.bibsonomy.util.DefaultValues;
 public class User {
 
 	/**
-	 * The Api Key for this user
-	 */
-	private String apiKey;
-
-	/**
 	 * The (nick-)name of this user.
 	 */
 	private String name;
@@ -57,6 +52,11 @@ public class User {
 	 * Those are the posts of this user.
 	 */
 	private List<Post<? extends Resource>> posts;
+
+	/**
+	 * The Api Key for this user
+	 */
+	private String apiKey;
 
 	/**
 	 * Indicates if this user is a spammer.

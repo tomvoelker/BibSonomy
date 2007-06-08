@@ -7,6 +7,7 @@ import java.net.URL;
  * Holds static values that can be created at initialization.
  * 
  * @author Christian Schenk
+ * @version $Id$
  */
 public class DefaultValues {
 

@@ -4,6 +4,7 @@ package org.bibsonomy.common.enums;
  * Constants that are used in SQL statements
  *
  * @author Christian Schenk
+ * @version $Id$
  */
 public enum ConstantString {
 	/*

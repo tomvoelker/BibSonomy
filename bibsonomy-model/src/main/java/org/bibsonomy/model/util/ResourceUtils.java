@@ -3,10 +3,6 @@ package org.bibsonomy.model.util;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
-
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Tag;
 
 public class ResourceUtils {
 
@@ -67,11 +63,5 @@ public class ResourceUtils {
 		} else {
 			return groupId & CONST_CLEAR_1ST_BIT;
 		}
-	}
-
-	/**
-	 * TODO implement doUpdate Recommender
-	 */
-	public static void doUpdate(final List<Tag> oldResourceTags, final Bookmark bookmark) {
 	}
 }

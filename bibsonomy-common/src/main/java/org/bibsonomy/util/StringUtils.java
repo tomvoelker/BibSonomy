@@ -30,7 +30,7 @@ public class StringUtils {
 	/**
 	 * Remove everything, but numbers.
 	 */
-	public static String removeNonNumbers(String str) {
+	public static String removeNonNumbers(final String str) {
 		if (str != null) {
 			return str.replaceAll("[^0-9]+", "");
 		}
@@ -40,7 +40,7 @@ public class StringUtils {
 	/**
 	 * Removes everything which is neither a number nor a letter.
 	 */
-	public static String removeNonNumbersOrLetters(String str) {
+	public static String removeNonNumbersOrLetters(final String str) {
 		if (str != null) {
 			return str.replaceAll("[^0-9\\p{L}]+", "");
 		}
@@ -51,7 +51,7 @@ public class StringUtils {
 	 * Removes everything which is neither a number nor a letter nor a dot (.)
 	 * nor space.
 	 */
-	public static String removeNonNumbersOrLettersOrDotsOrSpace(String str) {
+	public static String removeNonNumbersOrLettersOrDotsOrSpace(final String str) {
 		if (str != null) {
 			return normalizeWhitespace(str).replaceAll("[^0-9\\p{L}\\. ]+", "");
 		}
@@ -61,7 +61,7 @@ public class StringUtils {
 	/**
 	 * Removes all whitespace.
 	 */
-	public static String removeWhitespace(String str) {
+	public static String removeWhitespace(final String str) {
 		if (str != null) {
 			return str.replaceAll("\\s+", "");
 		}
@@ -71,7 +71,7 @@ public class StringUtils {
 	/**
 	 * Substitutes all whitespace with " "
 	 */
-	public static String normalizeWhitespace(String str) {
+	public static String normalizeWhitespace(final String str) {
 		if (str != null) {
 			return str.replaceAll("\\s+", " ");
 		}

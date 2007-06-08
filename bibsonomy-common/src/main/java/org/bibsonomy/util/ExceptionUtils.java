@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
  * Convenience methods to throw exceptions.
  *
  * @author Christian Schenk
+ * @version $Id$
  */
 public class ExceptionUtils {
 

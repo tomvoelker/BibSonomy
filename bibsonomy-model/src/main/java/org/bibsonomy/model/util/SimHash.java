@@ -97,22 +97,22 @@ public class SimHash {
 		return "";
 	}
 
-	private static String getNormalizedAuthor(String str) {
+	private static String getNormalizedAuthor(final String str) {
 		if (str == null) return "";
 		return StringUtils.getStringFromList(normalizePersonList(StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(str))).toLowerCase();
 	}
 
-	private static String getNormalizedEditor(String str) {
+	private static String getNormalizedEditor(final String str) {
 		if (str == null) return "";
 		return StringUtils.getStringFromList(normalizePersonList(StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(str))).toLowerCase();
 	}
 
-	private static String getNormalizedYear(String str) {
+	private static String getNormalizedYear(final String str) {
 		if (str == null) return "";
 		return StringUtils.removeNonNumbers(str);
 	}
 
-	private static String getNormalizedTitle(String str) {
+	private static String getNormalizedTitle(final String str) {
 		if (str == null) return "";
 		return StringUtils.removeNonNumbersOrLetters(str).toLowerCase();
 	}
@@ -123,7 +123,7 @@ public class SimHash {
 	 * Output: a Set of normalized persons, divided by ", " and enclosed in
 	 * brackets "[ ]"
 	 */
-	private static Set<String> normalizePersonList (String s) {
+	private static Set<String> normalizePersonList (final String s) {
 		final Scanner t = new Scanner(s).useDelimiter(" and ");
 		final SortedSet<String> persons = new TreeSet<String>(); 
 		while (t.hasNext()) {
@@ -143,7 +143,7 @@ public class SimHash {
 	 * Donald    Knuth --> d.knuth<br/>
 	 *           Knuth --> knuth
 	 */
-	private static String normalizePerson (String s) {
+	private static String normalizePerson (final String s) {
 		final StringTokenizer t = new StringTokenizer(s);
 		String first = null;
 		String last  = null;
