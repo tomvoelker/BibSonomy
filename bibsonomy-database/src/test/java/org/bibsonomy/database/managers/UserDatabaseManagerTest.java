@@ -5,20 +5,19 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
-import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.User;
+import org.bibsonomy.testutil.ParamUtils;
 import org.junit.Test;
 
 /**
  * Tests related to users.
  * 
  * @author Miranda Grahl
+ * @author Christian Schenk
  * @version $Id$
  */
 public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
@@ -28,8 +27,8 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void getAllUsers() {
-		final List<User> users = this.userDb.getAllUsers(this.userParam, this.dbSession);
-		assertEquals(1568, users.size());
+		final List<User> users = this.userDb.getAllUsers(0, 10, this.dbSession);
+		assertEquals(10, users.size());
 	}
 
 	/**
@@ -37,15 +36,13 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void getUserDetails() {
-		this.userDb.getUserDetails(this.userParam, this.dbSession);
-	}
-
-	/**
-	 * Privacy level of a user
-	 */
-	@Test
-	public void getPrivlevelOfUser() {
-		assertEquals(GroupID.GROUP_PUBLIC.getId(), this.userDb.getPrivlevelOfUser(this.userParam, this.dbSession));
+		final User testUser = this.userParam.getUser();
+		final User user = this.userDb.getUserDetails(testUser.getName(), this.dbSession);
+		assertEquals(testUser.getName(), user.getName());
+		assertEquals(testUser.getRealname(), user.getRealname());
+		assertEquals(testUser.getEmail(), user.getEmail());
+		assertEquals(testUser.getHomepage(), user.getHomepage());
+		assertEquals(testUser.getApiKey(), user.getApiKey());
 	}
 
 	/**
@@ -53,72 +50,56 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void getUserNamesOfGroupId() {
-		final List<String> users = this.userDb.getUserNamesByGroupId(GroupID.GROUP_KDE.getId(), dbSession);
+		final List<String> users = this.userDb.getUserNamesByGroupId(GroupID.GROUP_KDE.getId(), this.dbSession);
 		final String[] kdeUsers = new String[] { "kde", "schmitz", "chs", "jaeschke", "stumme", "gst", "sfi", "finis", "rja", "aho", "hotho", "grahl", "beate" };
 		assertTrue(users.containsAll(Arrays.asList(kdeUsers)));
 		assertEquals(kdeUsers.length, users.size());
 	}
 
 	/**
-	 * Retrieve users who belong to the group "public" 
-	 * 
-	 * TODO: implement and @Test
-	 */
-	public void getUsersOfGroupPublic() {
-		final List<User> users = this.userDb.getUsersOfGroupPublic(this.userParam, this.dbSession);
-		assertEquals(13, users.size());
-	}
-
-	/**
-	 * Retrieve users who belong to the group "hidden"
-	 */
-	@Test
-	public void getUsersOfGroupHidden() {
-		final List<User> users = this.userDb.getUsersOfGroupPrivate(this.userParam, this.dbSession);
-		assertEquals(1, users.size());
-	}
-
-	/**
 	 * Insert a new user
 	 */
 	@Test
-	public void testInsertUser() {
-		final UserParam param = new UserParam();
-		try {
-			final URL url = new URL("http://www.db.de");
-			param.setUserName("neuerUser");
-			param.setEmail("mgr@cs.uni-kassel.de");
-			param.setHomepage(url);
-			param.setPassword("dhdhd");
-			param.setRealname("mira");
-			this.userDb.insertUser(param, this.dbSession);
+	public void insertUser() {
+		final User newUser = new User();
+		newUser.setName("neuerUser");
+		newUser.setRealname("mira");
+		newUser.setPassword("dhdhd");
+		newUser.setEmail("mgr@cs.uni-kassel.de");
+		newUser.setHomepage(ParamUtils.SOME_URL);
+		this.userParam.setUser(newUser);
+		this.userDb.insertUser(this.userParam, this.dbSession);
 
-			final User user = this.userDb.getUserDetails(param, this.dbSession);
-			assertEquals(user.getName(), "neuerUser");
-			assertEquals(user.getEmail(), "mgr@cs.uni-kassel.de");
-			assertEquals(user.getHomepage(), url);
-			assertEquals(user.getRealname(), "mira");
-			assertEquals(user.getApiKey(), param.getApiKey());
-		} catch (final MalformedURLException ex) {
-			fail("Malformed URL: " + ex.getMessage());
+		final User user = this.userDb.getUserDetails(this.userParam.getUser().getName(), this.dbSession);
+		assertEquals(newUser.getName(), user.getName());
+		assertEquals(newUser.getEmail(), user.getEmail());
+		assertEquals(newUser.getHomepage(), user.getHomepage());
+		assertEquals(null, user.getPassword());
+		assertEquals(newUser.getRealname(), user.getRealname());
+		assertEquals(newUser.getApiKey(), user.getApiKey());
+
+		try {
+			this.userParam.setUser(null);
+			this.userDb.insertUser(this.userParam, this.dbSession);
+			fail("should throw exception");
+		} catch (final Exception ex) {
 		}
 	}
 
 	/**
-	 *  Update an API key for a given user
+	 * Update an API key for a given user
 	 */
 	@Test
 	public void updateApiKeyForUser() {
-		this.userDb.updateApiKeyForUser(this.userParam, this.dbSession);
-		assertEquals(this.userParam.getApiKey(), this.userDb.getApiKeyForUser(this.userParam, this.dbSession));
-	}
+		this.userDb.updateApiKeyForUser(this.userParam.getUser(), this.dbSession);
+		assertEquals(this.userParam.getUser().getApiKey(), this.userDb.getApiKeyForUser(this.userParam.getUser().getName(), this.dbSession));
 
-	/**
-	 * Re-Generate API keys for all users - handle with care! 
-	 */
-	@Test
-	public void generateApiKeysForAllUsers() {
-		// this.userDb.generateApiKeysForAllUsers(this.dbSession);
+		try {
+			this.userParam.getUser().setName("this-user-doesnt-exist");
+			this.userDb.updateApiKeyForUser(this.userParam.getUser(), this.dbSession);
+			fail("should throw exception");
+		} catch (final Exception ex) {
+		}
 	}
 
 	/**

@@ -3,55 +3,38 @@
 
 <sqlMap namespace="User">
 
-     <select id="getApiKeyForUser" resultClass="string" parameterClass="userParam">
-		SELECT api_key FROM user where user_name=#userName#; 
-	 </select>
-	 
-		<!-- TODO: update user details -->
+	<select id="getAllUsers" resultMap="Common.user" parameterClass="userParam">
+		SELECT user_name FROM user WHERE spammer = 0 LIMIT #limit# OFFSET #offset#
+	</select>
 
+	<select id="getApiKeyForUser" resultClass="string" parameterClass="string">
+		SELECT api_key FROM user where user_name = #userName#
+	</select>
 
-   <update id="updateApiKeyForUser" parameterClass="userParam">
-		UPDATE user SET api_key=#apiKey# WHERE user_name = #userName# 
+	<update id="updateApiKeyForUser" parameterClass="user">
+		UPDATE user SET api_key = #apiKey# WHERE user_name = #name#
 	</update>
 
-	<select id="getAllUsers" resultMap="Common.user" parameterClass="userParam">
-		SELECT user_name FROM user WHERE spammer = 0 <!-- LIMIT #limit# OFFSET #offset#; -->
-	</select>
-
 	<select id="getAllUsersWithoutApiKey" resultMap="Common.user" parameterClass="userParam">
-		SELECT user_name FROM user WHERE spammer = 0 AND api_key IS NULL;
-		<!-- LIMIT #limit# OFFSET #offset#; -->
+		SELECT user_name FROM user WHERE spammer = 0 AND api_key IS NULL LIMIT #limit# OFFSET #offset#
 	</select>
 
-	<select id="getUserDetails" resultMap="UserCommon.user" parameterClass="userParam">
-		SELECT user_name, user_email, user_homepage, user_realname, openUrl,api_key
-		FROM user WHERE user_name=#userName#;
+	<select id="getUserDetails" resultMap="UserCommon.user" parameterClass="string">
+		SELECT user_name, user_email, user_homepage, user_realname, openUrl, api_key
+		FROM user WHERE user_name = #username#
 	</select>
 
-	<select id="getPrivlevelOfUser" resultClass="int" parameterClass="userParam">
-		SELECT privlevel FROM groupids WHERE `group` = #groupId#;
+	<select id="getPrivlevelOfUser" resultClass="int" parameterClass="int">
+		SELECT privlevel FROM groupids WHERE `group` = #groupId#
 	</select>
 
-    <select id="getUsersOfGroupPublic" resultClass="string" parameterClass="userParam">
-		SELECT user_name FROM groups WHERE `group` = #groupId# ;
-	</select>
-    
-    <select id="getUserNamesByGroupId" resultClass="string" parameterClass="int">
-		SELECT user_name FROM groups WHERE `group` = #groupId#;
+	<select id="getUserNamesByGroupId" resultClass="string" parameterClass="int">
+		SELECT user_name FROM groups WHERE `group` = $groupId$
 	</select>
 
-	<select id="getUsersOfGroupPrivate" resultClass="string" parameterClass="userParam">
-		SELECT user_name FROM groups WHERE user_name = #requestedUserName# AND `group` = #groupId#;
-	</select>
-
-	<select id="getUsersOfGroupFriends" resultClass="string" parameterClass="userParam">
-		"SELECT user_name FROM groups WHERE `group` = #groupId# LIMIT #limit# OFFSET #offset#;
-	</select>
-
-     <!-- add a new user -->
-     
-     <insert id="insertUser" parameterClass="userParam">
-		INSERT INTO user (user_name,user_email,user_password,user_realname,user_homepage,api_key) VALUES (#userName#,#email#,#password#,#realname#,#homepage#,#apiKey#);
+	<insert id="insertUser" parameterClass="userParam">
+		INSERT INTO user (user_name, user_email, user_password, user_realname, user_homepage, api_key)
+		VALUES (#user.name#, #user.email#, #user.password#, #user.realname#, #user.homepage#, #user.apiKey#)
 	</insert>
 
 </sqlMap>

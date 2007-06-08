@@ -21,40 +21,44 @@ import org.bibsonomy.model.User;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public interface LogicInterface
-{
+public interface LogicInterface {
+
 	/**
-	 * returns all users bibsonomy has
+	 * Returns all users
 	 * 
-	 * @param authUser currently logged in user's name
+	 * @param authUser
+	 *            currently logged in user's name
 	 * @param start
 	 * @param end
 	 * @return a set of users, an empty set else
 	 */
-	public abstract List<User> getUsers( String authUser, int start, int end );
+	public abstract List<User> getUsers(String authUser, int start, int end);
 
 	/**
-	 * returns all users who are members of the specified group
+	 * Returns all users who are members of the specified group
 	 * 
-	 * @param authUser currently logged in user's name
-	 * @param groupName name of the group
+	 * @param authUser
+	 *            currently logged in user's name
+	 * @param groupName
+	 *            name of the group
 	 * @param start
 	 * @param end
-	 * @return  a set of users, an empty set else
+	 * @return a set of users, an empty set else
 	 */
-	public abstract List<User> getUsers( String authUser, String groupName, int start, int end );
-	
+	public abstract List<User> getUsers(String authUser, String groupName, int start, int end);
+
 	/**
-	 * returns details about a specified user
+	 * Returns details about a specified user
 	 * 
 	 * @param authUserName
-	 * @param userName name of the user we want to get details from
+	 * @param userName
+	 *            name of the user we want to get details from
 	 * @return details about a named user, null else
 	 */
-	public abstract User getUserDetails( String authUserName, String userName );
-	
+	public abstract User getUserDetails(String authUserName, String userName);
+
 	/**
-	 * returns a list of posts. the list can be filtered
+	 * Returns a list of posts which can be filtered.
 	 * 
 	 * @param authUser
 	 *            name of the authenticated user
@@ -87,40 +91,43 @@ public interface LogicInterface
 	 * @param end
 	 * @return a set of posts, an empty set else
 	 */
-	public abstract <T extends Resource> List<Post<T>> getPosts( String authUser, Class<T> resourceType, GroupingEntity grouping,
-			String groupingName, List<String> tags, String hash, Order order, int start, int end );
+	public abstract <T extends Resource> List<Post<T>> getPosts(String authUser, Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, int start, int end);
 
 	/**
-	 * returns details to a post. a post is uniquely identified by a hash of the corresponding resource and a username
+	 * Returns details to a post. A post is uniquely identified by a hash of the
+	 * corresponding resource and a username.
 	 * 
-	 * @param authUser authenticated user name
-	 * @param resourceHash hash value of the corresponding resource
-	 * @param userName name of the post-owner
+	 * @param authUser
+	 *            authenticated user name
+	 * @param resourceHash
+	 *            hash value of the corresponding resource
+	 * @param userName
+	 *            name of the post-owner
 	 * @return the post's details, null else
 	 */
-	public abstract Post<? extends Resource> getPostDetails( String authUser, String resourceHash, String userName );
-	
+	public abstract Post<? extends Resource> getPostDetails(String authUser, String resourceHash, String userName);
+
 	/**
-	 * returns all groups of the system
+	 * Returns all groups of the system.
 	 * 
-	 * @param end 
-	 * @param start 
-	 * @param string 
+	 * @param authUser
+	 * @param end
+	 * @param start
 	 * @return a set of groups, an empty set else
 	 */
-	public abstract List<Group> getGroups( String string, int start, int end );
-	
+	public abstract List<Group> getGroups(String authUser, int start, int end);
+
 	/**
-	 * returns details of one group
+	 * Returns details of one group.
 	 * 
 	 * @param authUserName
 	 * @param groupName
 	 * @return the group's details, null else
 	 */
-	public abstract Group getGroupDetails( String authUserName, String groupName );
+	public abstract Group getGroupDetails(String authUserName, String groupName);
 
 	/**
-	 * returns a list of tags. the list can be filtered
+	 * Returns a list of tags which can be filtered.
 	 * 
 	 * @param authUser
 	 *            name of the authenticated user
@@ -137,11 +144,10 @@ public interface LogicInterface
 	 * @param end
 	 * @return a set of tags, en empty set else
 	 */
-	public abstract List<Tag> getTags( String authUser, GroupingEntity grouping, String groupingName, String regex,
-			int start, int end );
+	public abstract List<Tag> getTags(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end);
 
 	/**
-	 * returns details about a tag. those details are:
+	 * Returns details about a tag. Those details are:
 	 * <ul>
 	 * <li>details about the tag itself, like number of occurrences etc</li>
 	 * <li>list of subtags</li>
@@ -155,85 +161,106 @@ public interface LogicInterface
 	 *            name of the tag
 	 * @return the tag's details, null else
 	 */
-	public abstract Tag getTagDetails( String authUserName, String tagName );
+	public abstract Tag getTagDetails(String authUserName, String tagName);
 
-   /**
-    * validates a user's access to bibsonomy.
-    * 
-    * @param username name of the user
-    * @param apiKey apiKey
-    * @return true if the user exists and has the given apiKey
-    */
-   public abstract boolean validateUserAccess( String username, String apiKey );
+	/**
+	 * Validates a user's access.
+	 * 
+	 * @param username
+	 *            name of the user
+	 * @param apiKey
+	 *            apiKey
+	 * @return true if the user exists and has the given apiKey
+	 */
+	public abstract boolean validateUserAccess(String username, String apiKey);
 
-   /**
-    * Checks if the given api key is valid.
-    * 
-    * @param apiKey the api key to check.
-    * @return true if the key is valid, false else.
-    */
-   public abstract boolean validateSoftwareKey( String apiKey );
-   
-   /**
-    * removes the given user from bibsonomy.
-    * 
-    * @param userName the user to delete
-    */
-   public abstract void deleteUser( String userName );
+	/**
+	 * Checks if the given api key is valid.
+	 * 
+	 * @param apiKey
+	 *            the api key to check.
+	 * @return true if the key is valid, false else.
+	 */
+	public abstract boolean validateSoftwareKey(String apiKey);
 
-   /**
-    * removes the given group from bibsonomy.
-    * 
-    * @param groupName the group to delete
-    */
-   public abstract void deleteGroup( String groupName );
-   
-   /**
-    * removes an user from a group.
-    * 
-    * @param groupName the group to change
-    * @param userName the user to remove
-    */
-   public abstract void removeUserFromGroup( String groupName, String userName );
-   
-   /**
-    * removes the given post - identified by the connected resource's hash - from the user.
-    * 
-    * @param userName user who's post is to be removed
-    * @param resourceHash hash of the resource, which is connected to the post to delete 
-    */
-   public abstract void deletePost( String userName, String resourceHash );
+	/**
+	 * Removes the given user.
+	 * 
+	 * @param userName
+	 *            the user to delete
+	 */
+	public abstract void deleteUser(String userName);
 
-   /**
-    * adds/ updates a user in the database.
-    * 
-    * @param user the user to store
-    * @param update true if its an existing user (identified by username), false if its a new user
-    */
-   public abstract void storeUser( User user, boolean update );
-   
-   /**
-    * adds/ updates a post in the database.
-    * 
-    * @param userName name of the user who posts this post
-    * @param post the post to be postet
-    * @param update true if its an existing post (identified by its resource's intrahash), false if its a new post
-    */
-   public abstract <T extends Resource> void storePost( String userName, Post<T> post);
+	/**
+	 * Removes the given group.
+	 * 
+	 * @param groupName
+	 *            the group to delete
+	 */
+	public abstract void deleteGroup(String groupName);
 
-   /**
-    * adds/ updates a group in the database.
-    * 
-    * @param group the group to add
-    * @param update true if its an existing group, false if its a new group
-    */
-   public abstract void storeGroup( Group group, boolean update );
+	/**
+	 * Removes an user from a group.
+	 * 
+	 * @param groupName
+	 *            the group to change
+	 * @param userName
+	 *            the user to remove
+	 */
+	public abstract void removeUserFromGroup(String groupName, String userName);
 
-   /**
-    * adds an existing user to an existing group.
-    * 
-    * @param groupName name of the existing group
-    * @param user user to add
-    */
-   public abstract void addUserToGroup( String groupName, String userName );
+	/**
+	 * Removes the given post - identified by the connected resource's hash -
+	 * from the user.
+	 * 
+	 * @param userName
+	 *            user who's post is to be removed
+	 * @param resourceHash
+	 *            hash of the resource, which is connected to the post to delete
+	 */
+	public abstract void deletePost(String userName, String resourceHash);
+
+	/**
+	 * Adds/updates a user in the database.
+	 * 
+	 * @param user
+	 *            the user to store
+	 * @param update
+	 *            true if its an existing user (identified by username), false
+	 *            if its a new user
+	 */
+	public abstract void storeUser(User user, boolean update);
+
+	/**
+	 * Adds/updates a post in the database.
+	 * 
+	 * @param userName
+	 *            name of the user who posts this post
+	 * @param post
+	 *            the post to be postet
+	 * @param update
+	 *            true if its an existing post (identified by its resource's
+	 *            intrahash), false if its a new post
+	 */
+	public abstract <T extends Resource> void storePost(String userName, Post<T> post);
+
+	/**
+	 * Adds/updates a group in the database.
+	 * 
+	 * @param group
+	 *            the group to add
+	 * @param update
+	 *            true if its an existing group, false if its a new group
+	 */
+	public abstract void storeGroup(Group group, boolean update);
+
+	/**
+	 * Adds an existing user to an existing group.
+	 * 
+	 * @param groupName
+	 *            name of the existing group
+	 * @param user
+	 *            user to add
+	 */
+	public abstract void addUserToGroup(String groupName, String userName);
 }

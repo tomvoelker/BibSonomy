@@ -1,30 +1,28 @@
 package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.model.Group;
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
  * Tests related to groups.
- *
+ * 
+ * @author Jens Illig
  * @author Christian Schenk
  * @version $Id$
  */
 public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
-	private static final Logger log = Logger.getLogger(GroupDatabaseManagerTest.class);
-
 	@Test
 	public void getAllGroups() {
-		final List<Group> allGroups = this.groupDb.getAllGroups(this.dbSession);
+		final List<Group> allGroups = this.groupDb.getAllGroups(0, 100, this.dbSession);
 
 		for (final Group group : allGroups) {
 			final String realname = group.getUsers().get(0).getRealname();
@@ -36,16 +34,18 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 				assertEquals("http://www.kde.cs.uni-kassel.de/", homepage);
 			} else if (group.getName().equals("ls3wim")) {
 				assertEquals(6, group.getGroupId());
-				// Yes, that's "Kalrsruhe" and not "Karlsruhe"
+				// Yes, that's "Kalrsruhe" and not "Karlsruhe" ;)
 				assertEquals("Research Group Knowledge Management, AIFB, Kalrsruhe, Germany", realname);
 				assertEquals("http://www.aifb.uni-karlsruhe.de/Forschungsgruppen/WBS/", homepage);
 			}
 		}
+
+		assertEquals(5, this.groupDb.getAllGroups(0, 5, this.dbSession).size());
 	}
 
 	@Test
 	public void getGroupByName() {
-		final Group kdeGroup = this.groupDb.getGroupByName(this.groupParam, this.dbSession);
+		final Group kdeGroup = this.groupDb.getGroupByName("kde", this.dbSession);
 		assertEquals("kde", kdeGroup.getName());
 		assertEquals(GroupID.GROUP_KDE.getId(), kdeGroup.getGroupId());
 		assertEquals("Knowledge and Data Engineering Group", kdeGroup.getUsers().get(0).getRealname());
@@ -54,23 +54,22 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getGroupMembers() {
-		final Group kdeGroup = this.groupDb.getGroupMembers(this.groupParam, this.dbSession);
+		final Group kdeGroup = this.groupDb.getGroupMembers("kde", this.dbSession);
 		assertEquals("kde", kdeGroup.getName());
 		assertEquals(GroupID.GROUP_KDE.getId(), kdeGroup.getGroupId());
-		assertEquals(13, kdeGroup.getUsers().size());	
+		assertEquals(13, kdeGroup.getUsers().size());
 	}
 
 	@Test
 	public void getGroupsForUser() {
-		final List<Group> groups = this.groupDb.getGroupsForUser(this.groupParam, this.dbSession);
+		final List<Group> groups = this.groupDb.getGroupsForUser("stumme", this.dbSession);
 		final Set<Integer> found = new HashSet<Integer>();
-		for (final Group g : groups) {
-			log.debug(g.getName());
-			found.add(g.getGroupId());
+		for (final Group group : groups) {
+			found.add(group.getGroupId());
 		}
-		Assert.assertTrue( found.contains(GroupID.GROUP_PRIVATE.getId()) );
-		Assert.assertTrue( found.contains(GroupID.GROUP_PUBLIC.getId()) );
-		Assert.assertTrue( found.contains(GroupID.GROUP_FRIENDS.getId()) );
+		assertTrue(found.contains(GroupID.GROUP_PUBLIC.getId()));
+		assertTrue(found.contains(GroupID.GROUP_PRIVATE.getId()));
+		assertTrue(found.contains(GroupID.GROUP_FRIENDS.getId()));
 		assertEquals(6, groups.size());
 	}
 }

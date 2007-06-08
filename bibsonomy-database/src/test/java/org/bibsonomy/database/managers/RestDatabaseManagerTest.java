@@ -1,6 +1,7 @@
 package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,7 +19,6 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -72,34 +72,34 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 	
 	private void assertList(final Set<String> checkUserNameOneOf, final Order checkOrder, final Set<String> checkTags, final String checkInterHash, final Set<Integer> mustBeInGroups, final Set<Integer> mustNotBeInGroups) {
-		for (final Post p : this.bibTexPostsList) {
-			Assert.assertTrue("contentid occured twice", alreadyFound.add(p.getContentId()) );
+		for (final Post post : this.bibTexPostsList) {
+			assertTrue("contentid occured twice", alreadyFound.add(post.getContentId()) );
 			
 			if (checkUserNameOneOf != null) {
-				Assert.assertTrue( "userName test with " + p.getUser().getName(), checkUserNameOneOf.contains( p.getUser().getName() ));
+				assertTrue( "userName test with " + post.getUser().getName(), checkUserNameOneOf.contains( post.getUser().getName() ));
 			}
 			if (checkOrder == Order.ADDED) {
-				long nextOrderValue = p.getDate().getTime();
+				final long nextOrderValue = post.getDate().getTime();
 				log.debug("date: " + nextOrderValue);
-				Assert.assertTrue("order test", (this.orderValue >= nextOrderValue));
+				assertTrue("order test", (this.orderValue >= nextOrderValue));
 				this.orderValue = nextOrderValue;
 			}
 			/*
 			FIXME: not tested, because no rank is in model (and probably should not be)
 			if (checkOrder == Order.POPULAR) {
 				int nextOrderValue = p.getResource().getRank();
-				Assert.assertTrue("order test", (this.orderValue >= nextOrderValue));
+				assertTrue("order test", (this.orderValue >= nextOrderValue));
 				this.orderValue = nextOrderValue;
 			}
 			*/
 			if (checkTags != null) {
-				Assert.assertTrue("tag-test", ModelUtils.hasTags(p, checkTags));
+				assertTrue("tag-test", ModelUtils.hasTags(post, checkTags));
 			}
 			if (checkInterHash != null) {
-				Assert.assertEquals(p.getResource().getInterHash(), checkInterHash);
+				assertEquals(post.getResource().getInterHash(), checkInterHash);
 			}
 			if ((mustBeInGroups != null) || (mustNotBeInGroups != null)) {
-				Assert.assertTrue("group-test", ModelUtils.checkGroups(p, mustBeInGroups, mustNotBeInGroups));
+				assertTrue("group-test", ModelUtils.checkGroups(post, mustBeInGroups, mustNotBeInGroups));
 			}
 		}
 	}

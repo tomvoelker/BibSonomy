@@ -1,5 +1,7 @@
 package org.bibsonomy.testutil;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -14,6 +16,7 @@ import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 
 /**
  * Provides methods to build parameter-objects.
@@ -25,11 +28,18 @@ import org.bibsonomy.model.Tag;
 public class ParamUtils {
 
 	private static final Date date;
+	public static URL SOME_URL;
 
 	static {
 		final Calendar cal = Calendar.getInstance();
 		cal.clear();
 		date = cal.getTime();
+
+		try {
+			SOME_URL = new URL("http://www.db.de");
+		} catch (final MalformedURLException ex) {
+			// will never happen
+		}
 	}
 
 	/**
@@ -101,12 +111,13 @@ public class ParamUtils {
 	 */
 	public static UserParam getDefaultUserParam() {
 		final UserParam param = new UserParam();
-		param.setUserName("grahl");
-		param.setOffset(0);
-		param.setLimit(5);
-		param.setGroupId(3);
-		param.setGroupType(GroupID.GROUP_PUBLIC);
-		param.setRequestedUserName("hotho");
+		setDefaults(param);
+		final User user = new User();
+		user.setName("hotho");
+		user.setRealname("Andreas Hotho");
+		user.setEmail("aho@cs.uni-kassel.de");
+		user.setHomepageAsString("http://www.kde.cs.uni-kassel.de/hotho");
+		param.setUser(user);
 		return param;
 	}
 

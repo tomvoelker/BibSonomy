@@ -7,7 +7,9 @@ import org.bibsonomy.database.Order;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
+import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
+import org.bibsonomy.database.params.UserParam;
 
 /**
  * Supplies methods to adapt the LogicInterface to the database layer.
@@ -51,6 +53,10 @@ public class LogicInterfaceHelper {
 			return (T) new BibTexParam();
 		} else if (type == TagParam.class) {
 			return (T) new TagParam();
+		} else if (type == UserParam.class) {
+			return (T) new UserParam();
+		} else if (type == GroupParam.class) {
+			return (T) new GroupParam();
 		} else {
 			throw new RuntimeException("Can't instantiate param: " + type.getName());
 		}

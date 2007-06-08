@@ -41,8 +41,8 @@ public class RestDatabaseManager implements LogicInterface {
 	private final BookmarkDatabaseManager bookmarkDBManager;
 	private final BibTexDatabaseManager bibtexDBManager;
 	private final UserDatabaseManager userDBManager;
+	private final GroupDatabaseManager groupDBManager;
 	private final TagDatabaseManager tagDBManager;
-	//private GroupDatabaseManager groupDBManager = GroupDatabaseManager.getInstance();
 
 	private RestDatabaseManager() {
 		this.allDatabaseManagers = new HashMap<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>>();
@@ -50,8 +50,9 @@ public class RestDatabaseManager implements LogicInterface {
 		this.allDatabaseManagers.put(BibTex.class, this.bibtexDBManager);
 		this.bookmarkDBManager = BookmarkDatabaseManager.getInstance();
 		this.allDatabaseManagers.put(Bookmark.class, this.bookmarkDBManager);
-		
+
 		this.userDBManager = UserDatabaseManager.getInstance();
+		this.groupDBManager = GroupDatabaseManager.getInstance();
 		this.tagDBManager = TagDatabaseManager.getInstance();
 	}
 
@@ -59,91 +60,51 @@ public class RestDatabaseManager implements LogicInterface {
 		return singleton;
 	}
 
+	/**
+	 * Returns a new database session.
+	 */
 	private Transaction openSession() {
 		return DatabaseUtils.getDatabaseSession();
 	}
 
-	/**
+	/*
 	 * Returns all users of the system
-	 * 
-	 * @param authUser
-	 *            currently logged in user's name
-	 * @param start
-	 * @param end
-	 * @return a set of users, an empty set else
 	 */
 	public List<User> getUsers(final String authUser, final int start, final int end) {
 		final Transaction session = this.openSession();
 		try {
-			return this.userDBManager.getUsers(authUser, start, end, session);
+			return this.userDBManager.getAllUsers(start, end, session);
 		} finally {
 			session.close();
 		}
 	}
 
-	/**
+	/*
 	 * Returns all users who are members of the specified group
-	 * 
-	 * @param authUser
-	 *            currently logged in user's name
-	 * @param groupName
-	 *            name of the group
-	 * @param start
-	 * @param end
-	 * @return a set of users, an empty set else
 	 */
 	public List<User> getUsers(final String authUser, final String groupName, final int start, final int end) {
 		final Transaction session = this.openSession();
 		try {
-			return this.userDBManager.getUsers(authUser, groupName, start, end, session);
+			return this.groupDBManager.getGroupMembers(groupName, session).getUsers();
 		} finally {
 			session.close();
 		}
 	}
 
-	/**
+	/*
 	 * Returns details about a specified user
-	 * 
-	 * @param authUserName
-	 * @param userName
-	 *            name of the user we want to get details from
-	 * @return details about a named user, null else
 	 */
 	public User getUserDetails(final String authUserName, final String userName) {
 		final Transaction session = this.openSession();
 		try {
-			return this.userDBManager.getUserDetails(authUserName, userName, session);
+			return this.userDBManager.getUserDetails(userName, session);
 		} finally {
 			session.close();
 		}
 	}
 
-	/**
+	/*
 	 * Returns a list of posts; the list can be filtered.
-	 * 
-	 * @param authUser
-	 *            name of the authenticated user
-	 * @param resourceType
-	 *            resource type to be shown.
-	 * @param grouping
-	 *            grouping tells whom posts are to be shown: the posts of a
-	 *            user, of a group or of the viewables.
-	 * @param groupingName
-	 *            name of the grouping. if grouping is user, then its the
-	 *            username. if grouping is set to {@link GroupingEntity#ALL},
-	 *            then its an empty string!
-	 * @param tags
-	 *            a set of tags. remember to parse special tags like
-	 *            ->[tagname], -->[tagname] and <->[tagname]. see documentation.
-	 *            if the parameter is not used, its am empty set
-	 * @param hash
-	 *            hash value of a resource, if one would like to get a list of
-	 *            all posts belonging to a given resource. if unused, its empty
-	 *            but not null.
-	 * @param ordering
-	 * @param start
-	 * @param end
-	 * @return a set of posts, an empty set else
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends Resource> List<Post<T>> getPosts(final String authUser, final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end) {
@@ -164,11 +125,13 @@ public class RestDatabaseManager implements LogicInterface {
 			} else */
 			if (resourceType == BibTex.class) {
 				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, authUser, grouping, groupingName, tags, hash, order, start, end);
-				// this is save because of RTTI-check of resourceType argument which is of class T
+				// this is save because of RTTI-check of resourceType argument
+				// which is of class T
 				result = (List<Post<T>>) ((List) this.bibtexDBManager.getPosts(param, session));
 			} else if (resourceType == Bookmark.class) {
 				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, authUser, grouping, groupingName, tags, hash, order, start, end);
-				// this is save because of RTTI-check of resourceType argument which is of class T
+				// this is save because of RTTI-check of resourceType argument
+				// which is of class T
 				result = (List<Post<T>>) ((List) this.bookmarkDBManager.getPosts(param, session));
 			} else {
 				throw new UnsupportedResourceTypeException(resourceType.toString());
@@ -179,14 +142,9 @@ public class RestDatabaseManager implements LogicInterface {
 		return result;
 	}
 
-	/**
+	/*
 	 * Returns details to a post. A post is uniquely identified by a hash of the
 	 * corresponding resource and a username.
-	 * 
-	 * @param authUser authenticated user name
-	 * @param resourceHash hash value of the corresponding resource
-	 * @param userName name of the post-owner
-	 * @return the post's details, null else
 	 */
 	public Post<? extends Resource> getPostDetails(final String authUser, final String resourceHash, final String userName) {
 		final Transaction session = this.openSession();
@@ -204,48 +162,32 @@ public class RestDatabaseManager implements LogicInterface {
 		return null;
 	}
 
-	/**
+	/*
 	 * Returns all groups of the system
-	 * 
-	 * TODO: what is the param "string" good for??
-	 * 
-	 * @param end
-	 * @param start
-	 * @param string
-	 * @return a set of groups, an empty set else
 	 */
-	public List<Group> getGroups(final String string, final int start, final int end) {
-		return null;
+	public List<Group> getGroups(final String authUser, final int start, final int end) {
+		final Transaction session = this.openSession();
+		try {
+			return this.groupDBManager.getAllGroups(start, end, session);
+		} finally {
+			session.close();
+		}
 	}
 
-	/**
+	/*
 	 * Returns details of one group
-	 * 
-	 * @param authUserName
-	 * @param groupName
-	 * @return the group's details, null else
 	 */
 	public Group getGroupDetails(final String authUserName, final String groupName) {
-		return null;
+		final Transaction session = this.openSession();
+		try {
+			return this.groupDBManager.getGroupByName(groupName, session);
+		} finally {
+			session.close();
+		}
 	}
 
-	/**
+	/*
 	 * Returns a list of tags; the list can be filtered.
-	 * 
-	 * @param authUser
-	 *            name of the authenticated user
-	 * @param grouping
-	 *            grouping tells whom tags are to be shown: the tags of a user,
-	 *            of a group or of the viewables.
-	 * @param groupingName
-	 *            name of the grouping. if grouping is user, then its the
-	 *            username. if grouping is set to {@link GroupingEntity#ALL},
-	 *            then its an empty string!
-	 * @param regex
-	 *            a regular expression used to filter the tagnames
-	 * @param start
-	 * @param end
-	 * @return a set of tags, en empty set else
 	 */
 	public List<Tag> getTags(final String authUser, final GroupingEntity grouping, final String groupingName, final String regex, final int start, final int end) {
 		final Transaction session = this.openSession();
@@ -256,20 +198,8 @@ public class RestDatabaseManager implements LogicInterface {
 		}
 	}
 
-	/**
+	/*
 	 * Returns details about a tag. Those details are:
-	 * <ul>
-	 * <li>details about the tag itself, like number of occurrences etc</li>
-	 * <li>list of subtags</li>
-	 * <li>list of supertags</li>
-	 * <li>list of correlated tags</li>
-	 * </ul>
-	 * 
-	 * @param authUserName
-	 *            name of the authenticated user
-	 * @param tagName
-	 *            name of the tag
-	 * @return the tag's details, null else
 	 */
 	public Tag getTagDetails(final String authUserName, final String tagName) {
 		final Transaction session = this.openSession();
@@ -280,70 +210,54 @@ public class RestDatabaseManager implements LogicInterface {
 		}
 	}
 
-	/**
+	/*
 	 * Validates user access.
-	 * 
-	 * @param username
-	 *            name of the user
-	 * @param apiKey
-	 *            apiKey
-	 * @return true if the user exists and has the given password
 	 */
 	public boolean validateUserAccess(final String username, final String apiKey) {
-		final Transaction session = this.openSession();
-		try {
-			return this.userDBManager.validateUserAccess(username, apiKey, session);
-		} finally {
-			session.close();
-		}
+//		final Transaction session = this.openSession();
+//		try {
+//			return this.userDBManager.validateUserAccess(username, apiKey, session);
+//		} finally {
+//			session.close();
+//		}
+		return true;
 	}
 
-	/**
+	/*
 	 * Checks if the given software key is valid.
-	 * 
-	 * @param softwareKey the software key to check.
-	 * @return true if the software key is valid, false else.
 	 */
 	public boolean validateSoftwareKey(final String softwareKey) {
 		// FIXME: impl. a software key
 		return true;
 	}
 
-	/**
+	/*
 	 * Removes the given user from bibsonomy.
-	 * 
-	 * @param userName the user to delete
 	 */
 	public void deleteUser(final String userName) {
 	}
 
-	/**
+	/*
 	 * Removes the given group from bibsonomy.
-	 * 
-	 * @param groupName the group to delete
 	 */
 	public void deleteGroup(final String groupName) {
 	}
 
-	/**
+	/*
 	 * Removes an user from a group.
-	 * 
-	 * @param groupName the group to change
-	 * @param userName the user to remove
 	 */
 	public void removeUserFromGroup(final String groupName, final String userName) {
 	}
 
-	/**
-	 * Removes the given post - identified by the connected resource's hash - from the user.
-	 * 
-	 * @param userName user who's post is to be removed
-	 * @param resourceHash hash of the resource, which is connected to the post to delete 
+	/*
+	 * Removes the given post - identified by the connected resource's hash -
+	 * from the user.
 	 */
 	public void deletePost(final String userName, final String resourceHash) {
 		final Transaction session = this.openSession();
 		try {
-			// TODO would be nice to know about the resourcetype or the instance behind this resourceHash
+			// TODO would be nice to know about the resourcetype or the instance
+			// behind this resourceHash
 			for (final CrudableContent<? extends Resource, ? extends GenericParam> man : this.allDatabaseManagers.values()) {
 				if (man.deletePost(userName, resourceHash, session) == true) {
 					break;
@@ -354,21 +268,15 @@ public class RestDatabaseManager implements LogicInterface {
 		}
 	}
 
-	/**
+	/*
 	 * Adds/updates a user in the database.
-	 * 
-	 * @param user the user to store
-	 * @param update true if its an existing user (identified by username), false if its a new user
 	 */
 	public void storeUser(final User user, final boolean update) {
+
 	}
 
-	/**
+	/*
 	 * Adds/updates a post in the database.
-	 * 
-	 * @param userName name of the user who posts this post
-	 * @param post the post to be postet
-	 * @param update true if its an existing post (identified by its resource's intrahash), false if its a new post
 	 */
 	public <T extends Resource> void storePost(final String userName, final Post<T> post) {
 		final Transaction session = this.openSession();
@@ -400,20 +308,14 @@ public class RestDatabaseManager implements LogicInterface {
 		return (CrudableContent<T, GenericParam>) ((CrudableContent) man);
 	}
 
-	/**
+	/*
 	 * Adds/updates a group in the database.
-	 * 
-	 * @param group the group to add
-	 * @param update true if its an existing group, false if its a new group
 	 */
 	public void storeGroup(final Group group, final boolean update) {
 	}
 
-	/**
+	/*
 	 * Adds an existing user to an existing group.
-	 * 
-	 * @param groupName name of the existing group
-	 * @param user user to add
 	 */
 	public void addUserToGroup(final String groupName, final String userName) {
 	}

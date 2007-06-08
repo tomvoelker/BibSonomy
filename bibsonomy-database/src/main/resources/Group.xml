@@ -2,35 +2,37 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="Group">
+
 	<select id="getAllGroups" resultMap="GroupCommon.group" parameterClass="groupParam">
 		SELECT i.group, i.group_name, u.user_realname, u.user_homepage
 		FROM groupids i, user u
 		WHERE i.group > 2
 		      AND i.group_name = u.user_name
 		ORDER BY i.group_name
+		LIMIT #limit# OFFSET #offset#
 	</select>
 
-	<select id="getGroupByName" resultMap="GroupCommon.group" parameterClass="groupParam">
+	<select id="getGroupByName" resultMap="GroupCommon.group" parameterClass="string">
 		SELECT i.group, i.group_name, u.user_realname, u.user_homepage
 		FROM groupids i, user u
-		WHERE i.group_name = #requestedGroupName#
+		WHERE i.group_name = #groupname#
 		      AND i.group_name = u.user_name
 	</select>
 
-	<select id="getGroupMembers" resultMap="GroupCommon.group" parameterClass="groupParam">
+	<select id="getGroupMembers" resultMap="GroupCommon.group" parameterClass="string">
 		SELECT i.group, i.group_name, u.user_realname, u.user_homepage
 		FROM groupids i, groups g, user u
-		WHERE group_name = #requestedGroupName#
+		WHERE group_name = #groupname#
 		      AND i.group = g.group
 		      AND i.group > 2
 		      <!-- AND g.user_name != #requestedGroupName# -->
 		      AND u.user_name = g.user_name
 	</select>
 
-	<select id="getGroupsForUser" resultMap="GroupCommon.group_basic" parameterClass="groupParam">
+	<select id="getGroupsForUser" resultMap="GroupCommon.group_basic" parameterClass="string">
 		(SELECT i.group_name, i.group
 		 FROM groups g, groupids i
-		 WHERE g.user_name = #requestedUserName#
+		 WHERE g.user_name = #username#
 		       AND g.group=i.group)
 		UNION
 		(SELECT i.group_name, i.group
@@ -38,4 +40,5 @@
 		 WHERE i.group BETWEEN 0 AND 2)
 		ORDER BY `group`
 	</select>
+
 </sqlMap>
