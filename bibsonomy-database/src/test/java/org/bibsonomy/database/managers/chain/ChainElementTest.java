@@ -24,12 +24,12 @@ public class ChainElementTest {
 	public void present() {
 		final ChainElement chain = new ChainElement<Bookmark, BookmarkParam>() {
 			@Override
-			protected boolean canHandle(BookmarkParam param) {
+			protected boolean canHandle(final BookmarkParam param) {
 				return false;
 			}
 
 			@Override
-			protected List<Bookmark> handle(BookmarkParam param, Transaction session) {
+			protected List<Bookmark> handle(final BookmarkParam param, final Transaction session) {
 				return null;
 			}
 		};

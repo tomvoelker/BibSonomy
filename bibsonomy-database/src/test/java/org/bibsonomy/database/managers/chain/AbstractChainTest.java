@@ -9,7 +9,7 @@ import org.junit.Before;
 
 /**
  * Abstract class to test the chains. It reuses the database connection setup/clean methods
- * of AbstractDatabaseManagerTest. 
+ * of {@link AbstractDatabaseManagerTest}. 
  * 
  * @author Dominik Benz
  * @version $Id$
@@ -20,9 +20,6 @@ public class AbstractChainTest extends AbstractDatabaseManagerTest {
 	protected BibTexChain bibtexChain;
 	protected TagChain tagChain;
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.managers.AbstractDatabaseManagerTest#setUp()
-	 */
 	@Before
 	public void setUp() {
 		super.setUp();
@@ -31,9 +28,6 @@ public class AbstractChainTest extends AbstractDatabaseManagerTest {
 		this.tagChain = new TagChain();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.managers.AbstractDatabaseManagerTest#tearDown()
-	 */
 	@After
 	public void tearDown() {
 		super.tearDown();

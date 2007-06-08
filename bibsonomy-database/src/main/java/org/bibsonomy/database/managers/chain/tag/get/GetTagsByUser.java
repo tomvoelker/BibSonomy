@@ -9,6 +9,7 @@ import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.model.Tag;
 
 /**
+ * @author Dominik Benz
  * @author Miranda Grahl
  * @version $Id$
  */
