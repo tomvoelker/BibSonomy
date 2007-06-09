@@ -85,7 +85,7 @@ public class RestDatabaseManager implements LogicInterface {
 	public List<User> getUsers(final String authUser, final String groupName, final int start, final int end) {
 		final Transaction session = this.openSession();
 		try {
-			return this.groupDBManager.getGroupMembers(groupName, session).getUsers();
+			return this.groupDBManager.getGroupMembers(authUser, groupName, session).getUsers();
 		} finally {
 			session.close();
 		}
@@ -150,7 +150,7 @@ public class RestDatabaseManager implements LogicInterface {
 		final Transaction session = this.openSession();
 		try {
 			Post<? extends Resource> rVal;
-			for (final CrudableContent<? extends Resource, ? extends GenericParam> manager : allDatabaseManagers.values()) {
+			for (final CrudableContent<? extends Resource, ? extends GenericParam> manager : this.allDatabaseManagers.values()) {
 				rVal = manager.getPostDetails(authUser, resourceHash, userName, session);
 				if (rVal != null) {
 					return rVal;

@@ -29,6 +29,10 @@
 		      AND u.user_name = g.user_name
 	</select>
 
+	<select id="getPrivlevelForGroup" resultClass="int" parameterClass="int">
+		SELECT privlevel FROM groupids WHERE `group` = #groupId#
+	</select>
+
 	<select id="getGroupsForUser" resultMap="GroupCommon.group_basic" parameterClass="string">
 		(SELECT i.group_name, i.group
 		 FROM groups g, groupids i

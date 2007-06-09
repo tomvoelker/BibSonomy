@@ -1,20 +1,23 @@
 package org.bibsonomy.database.managers;
 
+import java.util.Collections;
 import java.util.List;
 
+import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.User;
 
 /**
  * Used to retrieve groups from the database.
- *
+ * 
  * @author Christian Schenk
  * @version $Id$
  */
-public class GroupDatabaseManager extends AbstractDatabaseManager  {
+public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/** Singleton */
 	private final static GroupDatabaseManager singleton = new GroupDatabaseManager();
@@ -42,10 +45,31 @@ public class GroupDatabaseManager extends AbstractDatabaseManager  {
 	}
 
 	/**
-	 * Returns a group with all its memebers
+	 * Returns a group with all its members if the user is allowed to see them.
 	 */
-	public Group getGroupMembers(final String groupname, final Transaction session) {
-		return this.queryForObject("getGroupMembers", groupname, Group.class, session);
+	public Group getGroupMembers(final String authUser, final String groupname, final Transaction session) {
+		final int groupId = this.getGroupByName(groupname, session).getGroupId();
+		final int privlevel = this.getPrivlevelForGroup(groupId, session);
+		final Group group = this.queryForObject("getGroupMembers", groupname, Group.class, session);
+		// remove members as necessary
+		switch (Privlevel.getPrivlevel(privlevel)) {
+		case MEMBERS:
+			// if the user isn't a member of the group he can't see other
+			// members -> and we'll fall through to HIDDEN
+			final List<Group> userGroups = this.getGroupsForUser(authUser, session);
+			if (this.userIsInGroupWithName(groupname, userGroups)) break;
+		case HIDDEN:
+			group.setUsers(Collections.<User> emptyList());
+			break;
+		}
+		return group;
+	}
+
+	/**
+	 * Returns the privlevel for a group.
+	 */
+	private Integer getPrivlevelForGroup(final int groupId, final Transaction session) {
+		return this.queryForObject("getPrivlevelForGroup", groupId, Integer.class, session);
 	}
 
 	/**
@@ -53,5 +77,16 @@ public class GroupDatabaseManager extends AbstractDatabaseManager  {
 	 */
 	public List<Group> getGroupsForUser(final String username, final Transaction session) {
 		return this.queryForList("getGroupsForUser", username, Group.class, session);
+	}
+
+	/**
+	 * Returns true if a group with the given name is contained in the list,
+	 * otherwise false.
+	 */
+	private boolean userIsInGroupWithName(final String groupname, final List<Group> groups) {
+		for (final Group group : groups) {
+			if (groupname.equals(group.getName())) return true;
+		}
+		return false;
 	}
 }

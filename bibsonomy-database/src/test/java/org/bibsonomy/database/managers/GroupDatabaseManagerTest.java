@@ -54,10 +54,24 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getGroupMembers() {
-		final Group kdeGroup = this.groupDb.getGroupMembers("kde", this.dbSession);
+		final Group kdeGroup = this.groupDb.getGroupMembers("stumme", "kde", this.dbSession);
 		assertEquals("kde", kdeGroup.getName());
 		assertEquals(GroupID.GROUP_KDE.getId(), kdeGroup.getGroupId());
 		assertEquals(13, kdeGroup.getUsers().size());
+
+		// "xamde", a member of "ls3wim", can't see other members
+		Group hiddenGroup = this.groupDb.getGroupMembers("xamde", "ls3wim", this.dbSession);
+		assertEquals(0, hiddenGroup.getUsers().size());
+		// "stumme", not a member of "ls3wim", can't see members too
+		hiddenGroup = this.groupDb.getGroupMembers("stumme", "ls3wim", this.dbSession);
+		assertEquals(0, hiddenGroup.getUsers().size());
+
+		// "hotho" can see all members
+		Group memberOnlyGroup = this.groupDb.getGroupMembers("hotho", "kde_stud", this.dbSession);
+		assertEquals(6, memberOnlyGroup.getUsers().size());
+		// "xamde" isn't a member of "kde_stud" and can't see the members
+		memberOnlyGroup = this.groupDb.getGroupMembers("xamde", "kde_stud", this.dbSession);
+		assertEquals(0, memberOnlyGroup.getUsers().size());
 	}
 
 	@Test

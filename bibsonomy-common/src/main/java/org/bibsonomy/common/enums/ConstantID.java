@@ -15,14 +15,6 @@ public enum ConstantID {
 	/** Contenttype for BibTeX */
 	BIBTEX_CONTENT_TYPE(2),
 
-	/* privacy levels for groups */
-	/** member list public */
-	PRIVLEVEL_PUBLIC(0),
-	/** member list hidden */
-	PRIVLEVEL_HIDDEN(1),
-	/** members can list members */
-	PRIVLEVEL_MEMBERS(2),
-
 	/* names for ids table */
 	IDS_CONTENT_ID(0),
 	IDS_TAS_ID(1),
