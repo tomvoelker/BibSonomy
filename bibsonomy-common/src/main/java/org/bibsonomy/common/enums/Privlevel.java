@@ -5,7 +5,7 @@ package org.bibsonomy.common.enums;
  * <ul>
  * <li>public: the member list is public</li>
  * <li>hidden: the member list is hidden</li>
- * <li>members: members can <em>see</em> members</li>
+ * <li>members: only members can see members</li>
  * </ul>
  * 
  * @author Christian Schenk

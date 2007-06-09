@@ -57,7 +57,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			// if the user isn't a member of the group he can't see other
 			// members -> and we'll fall through to HIDDEN
 			final List<Group> userGroups = this.getGroupsForUser(authUser, session);
-			if (this.userIsInGroupWithName(groupname, userGroups)) break;
+			if (this.containsGroupWithName(userGroups, groupname)) break;
 		case HIDDEN:
 			group.setUsers(Collections.<User> emptyList());
 			break;
@@ -83,7 +83,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * Returns true if a group with the given name is contained in the list,
 	 * otherwise false.
 	 */
-	private boolean userIsInGroupWithName(final String groupname, final List<Group> groups) {
+	private boolean containsGroupWithName(final List<Group> groups, final String groupname) {
 		for (final Group group : groups) {
 			if (groupname.equals(group.getName())) return true;
 		}
