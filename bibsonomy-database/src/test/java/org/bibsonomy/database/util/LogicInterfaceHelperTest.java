@@ -1,11 +1,14 @@
 package org.bibsonomy.database.util;
 
+import static org.junit.Assert.assertEquals;
+
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
+import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
+import org.bibsonomy.database.params.UserParam;
 import org.junit.Test;
-import org.junit.Assert;
 
 /**
  * @author Jens Illig
@@ -19,12 +22,18 @@ public class LogicInterfaceHelperTest {
 		GenericParam param = null;
 
 		param = LogicInterfaceHelper.buildParam(BookmarkParam.class, "", null, "", null, "", null, 0, 10);
-		Assert.assertEquals(BookmarkParam.class, param.getClass());
+		assertEquals(BookmarkParam.class, param.getClass());
 
 		param = LogicInterfaceHelper.buildParam(BibTexParam.class, "", null, "", null, "", null, 0, 10);
-		Assert.assertEquals(BibTexParam.class, param.getClass());
+		assertEquals(BibTexParam.class, param.getClass());
 
 		param = LogicInterfaceHelper.buildParam(TagParam.class, "", null, "", null, "", null, 0, 10);
-		Assert.assertEquals(TagParam.class, param.getClass());
+		assertEquals(TagParam.class, param.getClass());
+
+		param = LogicInterfaceHelper.buildParam(UserParam.class, "", null, "", null, "", null, 0, 10);
+		assertEquals(UserParam.class, param.getClass());
+
+		param = LogicInterfaceHelper.buildParam(GroupParam.class, "", null, "", null, "", null, 0, 10);
+		assertEquals(GroupParam.class, param.getClass());
 	}
 }

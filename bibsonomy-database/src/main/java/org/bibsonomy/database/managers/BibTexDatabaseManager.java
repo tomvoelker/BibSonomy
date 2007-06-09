@@ -299,7 +299,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		DatabaseUtils.setGroups(this.generalDb, param, session);
 		return this.bibtexList("getBibTexByHashForUser", param, session);
 	}
-	
+
 	public List<Post<BibTex>> getBibTexByHashForUser(final String loginUserName, final String intraHash, final String requestedUserName, final Transaction session) {
 		final BibTexParam param = new BibTexParam();
 		param.setUserName(loginUserName);
@@ -346,8 +346,8 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		param.setResource(post.getResource());
 		param.setRequestedContentId(post.getContentId());
 		param.setDescription(post.getDescription());
-		for (final Group g : post.getGroups()) {
-			param.setGroupId(g.getGroupId());
+		for (final Group group : post.getGroups()) {
+			param.setGroupId(group.getGroupId());
 			this.insertBibTex(param, session);
 		}
 	}

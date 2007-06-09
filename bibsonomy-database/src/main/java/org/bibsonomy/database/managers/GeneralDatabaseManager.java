@@ -28,8 +28,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Checks whether two users, given by userName and requestedUserName, are
-	 * friends.
+	 * Checks whether two users are friends.
 	 * 
 	 * @param param
 	 *            Database-Properties used: userName, requestedUserName
@@ -75,7 +74,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 * @param param
 	 *            Database-Properties used: requestedGroupName
-	 * @return groupid of group, ConstantID.GROUP_INVALID otherwise
+	 * @return groupid of group, GroupID.GROUP_INVALID otherwise
 	 */
 	public Integer getGroupIdByGroupName(final GenericParam param, final Transaction session) {
 		final String oldUserName = param.getUserName();
@@ -92,7 +91,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 * @param param
 	 *            Database-Properties used: requestedGroupName, userName
-	 * @return groupid if user is in group, ConstantID.GROUP_INVALID otherwise
+	 * @return groupid if user is in group, GroupID.GROUP_INVALID otherwise
 	 */
 	public Integer getGroupIdByGroupNameAndUserName(final GenericParam param, final Transaction session) {
 		if (param.getRequestedGroupName() == null) {
@@ -104,8 +103,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Get a current ContentID for setting a bookmark update the current
-	 * ContendID for bookmark and bibtex
+	 * Returns a new contentId
 	 */
 	public Integer getNewContentId(final ConstantID idsType, final Transaction session) {
 		this.updateIds(idsType, session);

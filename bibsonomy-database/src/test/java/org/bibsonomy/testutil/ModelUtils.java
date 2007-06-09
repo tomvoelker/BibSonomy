@@ -1,5 +1,8 @@
 package org.bibsonomy.testutil;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -24,7 +27,6 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.ExceptionUtils;
-import org.junit.Assert;
 
 /**
  * Methods to create objects from the model like {@link Bookmark},
@@ -45,31 +47,31 @@ public class ModelUtils {
 	/**
 	 * Creates a bookmark with all properties set.
 	 */
-	public static Bookmark getBookmark() {		
-		final Bookmark rVal = new Bookmark();
-		setResourceDefaults(rVal);
-		rVal.setTitle("test");
-		//rVal.setExtended("test");
-		rVal.setUrl("http://www.bibonomy.org");
-		return rVal;
+	public static Bookmark getBookmark() {
+		final Bookmark bookmark = new Bookmark();
+		setResourceDefaults(bookmark);
+		bookmark.setTitle("test");
+		// rVal.setExtended("test");
+		bookmark.setUrl("http://www.bibonomy.org");
+		return bookmark;
 	}
 
 	/**
 	 * Creates a BibTex with all properties set.
 	 */
 	public static BibTex getBibTex() {
-		final BibTex rVal = new BibTex();
-		setBeanPropertiesOn(rVal);
-		setResourceDefaults(rVal);
-		rVal.recalculateHashes();
-		return rVal;
+		final BibTex bibtex = new BibTex();
+		setBeanPropertiesOn(bibtex);
+		setResourceDefaults(bibtex);
+		bibtex.recalculateHashes();
+		return bibtex;
 	}
 
 	public static User getUser() {
-		final User u = new User();
-		setBeanPropertiesOn(u);
-		u.setName("jaeschke");
-		return u;
+		final User user = new User();
+		setBeanPropertiesOn(user);
+		user.setName("jaeschke");
+		return user;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -114,7 +116,7 @@ public class ModelUtils {
 					final Method setter = d.getWriteMethod();
 					final Method getter = d.getReadMethod();
 					if ((setter != null) && (getter != null)) {
-						setter.invoke(val, new Object [] { getDummyValue(d.getPropertyType(), d.getName()) });
+						setter.invoke(val, new Object[] { getDummyValue(d.getPropertyType(), d.getName()) });
 					}
 				} catch (final Exception ex) {
 					ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "could not invoke setter '" + d.getName() + "'");
@@ -124,10 +126,10 @@ public class ModelUtils {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "could not introspect object of class '" + val.getClass().getName() + "'");
 		}
 	}
-	
+
 	public static void assertPropertyEquality(final Object should, final Object is, final Set<String> excludeProperties) {
 		try {
-			Assert.assertTrue(should.getClass().isAssignableFrom(is.getClass()));
+			assertTrue(should.getClass().isAssignableFrom(is.getClass()));
 			final BeanInfo bi = Introspector.getBeanInfo(should.getClass());
 			for (final PropertyDescriptor d : bi.getPropertyDescriptors()) {
 				Exception catched = null;
@@ -137,7 +139,7 @@ public class ModelUtils {
 						final Class type = d.getPropertyType();
 						if ((getter != null) && ((type == String.class) || (type.isPrimitive() == true) || (Number.class.isAssignableFrom(type) == true))) {
 							log.debug("comparing property " + d.getName());
-							Assert.assertEquals(d.getName(), getter.invoke(should, (Object[]) null), getter.invoke(is, (Object[]) null));
+							assertEquals(d.getName(), getter.invoke(should, (Object[]) null), getter.invoke(is, (Object[]) null));
 						}
 					}
 				} catch (final IllegalArgumentException ex) {
@@ -176,20 +178,20 @@ public class ModelUtils {
 		log.debug("no dummy value for type '" + type.getName() + "'");
 		return null;
 	}
-	
-	public static HashSet<String> buildLowerCaseHashSet(String... values) {
-		HashSet<String> rVal = new HashSet<String>();
-		for (String value : values) {
+
+	public static HashSet<String> buildLowerCaseHashSet(final String... values) {
+		final HashSet<String> rVal = new HashSet<String>();
+		for (final String value : values) {
 			rVal.add(value.toLowerCase());
 		}
 		return rVal;
 	}
-	
-	public static HashSet<String> buildLowerCaseHashSet(Collection<String> values) {
+
+	public static HashSet<String> buildLowerCaseHashSet(final Collection<String> values) {
 		return buildLowerCaseHashSet(values.toArray(new String[values.size()]));
 	}
 
-	public static boolean hasTags(Post<?> p, Set<String> requiredTags) {
+	public static boolean hasTags(final Post<?> p, final Set<String> requiredTags) {
 		int required = requiredTags.size();
 		for (final Tag presentTag : p.getTags()) {
 			if (requiredTags.contains(presentTag.getName().toLowerCase()) == true) {
@@ -204,7 +206,7 @@ public class ModelUtils {
 		}
 	}
 
-	public static boolean checkGroups(Post<?> p, Set<Integer> mustBeInGroups, Set<Integer> mustNotBeInGroups) {
+	public static boolean checkGroups(final Post<?> p, final Set<Integer> mustBeInGroups, final Set<Integer> mustNotBeInGroups) {
 		int required = (mustBeInGroups != null) ? mustBeInGroups.size() : 0;
 		for (final Group group : p.getGroups()) {
 			if ((mustBeInGroups != null) && (mustBeInGroups.contains(group.getGroupId()) == true)) {
