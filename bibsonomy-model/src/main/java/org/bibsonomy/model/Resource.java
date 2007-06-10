@@ -17,13 +17,13 @@ import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
  *    type-safe generic methods than an enum).
  */
 public abstract class Resource {
-	
-	/** 
+
+	/**
 	 * An Id for this resource; by default ConstantID.IDS_UNDEFINED_CONTENT_ID
-	 * FIXME why don't we name it id?!? 
+	 * FIXME why don't we name it id?!?
 	 */
 	private int count;
-	
+
 	/**
 	 * The inter user hash is less specific than the {@link #intraHash}.
 	 */
@@ -34,7 +34,7 @@ public abstract class Resource {
 	 * resource into account.
 	 */
 	private String intraHash;
-	
+
 	/**
 	 * These are the {@link Post}s this resource belongs to.
 	 */
@@ -46,7 +46,7 @@ public abstract class Resource {
 	 * recalculate hashes for) as parameter.
 	 */
 	public abstract void recalculateHashes();
-	
+
 	public String getInterHash() {
 		return this.interHash;
 	}
@@ -81,10 +81,9 @@ public abstract class Resource {
 	public void setCount(int count) {
 		this.count = count;
 	}
-	
-	
-	private static final Map<String,Class<? extends Resource>> byStringMap = new HashMap<String, Class<? extends Resource>>();
-	private static final Map<Class<? extends Resource>,String> toStringMap = new HashMap<Class<? extends Resource>,String>();
+
+	private static final Map<String, Class<? extends Resource>> byStringMap = new HashMap<String, Class<? extends Resource>>();
+	private static final Map<Class<? extends Resource>, String> toStringMap = new HashMap<Class<? extends Resource>, String>();
 	static {
 		byStringMap.put("BOOKMARK", Bookmark.class);
 		byStringMap.put("BIBTEX", BibTex.class);
@@ -93,23 +92,23 @@ public abstract class Resource {
 			toStringMap.put(entry.getValue(), entry.getKey());
 		}
 	}
-	
-	public static Class<? extends Resource> getResourceType( final String resourceType ) {
-		if( resourceType == null ) throw new InternServerException( "ResourceType is null" );
+
+	public static Class<? extends Resource> getResource(final String resourceType) {
+		if (resourceType == null) throw new InternServerException("ResourceType is null");
 		Class<? extends Resource> rVal = byStringMap.get(resourceType);
 		if (rVal == null) {
 			rVal = byStringMap.get(resourceType.trim().toUpperCase());
 			if (rVal == null) {
-				throw new UnsupportedResourceTypeException( resourceType );
+				throw new UnsupportedResourceTypeException(resourceType);
 			}
 		}
 		return rVal;
 	}
-	
+
 	public static String toString(Class<? extends Resource> clazz) {
 		final String rVal = toStringMap.get(clazz);
 		if (rVal == null) {
-			throw new UnsupportedResourceTypeException( clazz.toString() );
+			throw new UnsupportedResourceTypeException(clazz.toString());
 		}
 		return rVal;
 	}

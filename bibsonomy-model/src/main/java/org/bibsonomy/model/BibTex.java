@@ -5,7 +5,7 @@ import org.bibsonomy.model.util.SimHash;
 
 /**
  * This is the BibTex resource, which is used to handle BibTex-entries. It is
- * derived from {@link org.bibsonomy.gen_model.Resource}. It contains a lot of
+ * derived from {@link org.bibsonomy.model.Resource}. It contains a lot of
  * BibTex fields like the author, publisher etc.
  * 
  * @author Christian Schenk
@@ -14,11 +14,11 @@ import org.bibsonomy.model.util.SimHash;
 public class BibTex extends Resource {
 
 	/**
-	 * Use this key to reference a citation, e.g.  \cite{hotho2006information}.
+	 * Use this key to reference a citation, e.g. \cite{hotho2006information}.
 	 * TODO: rename to something like citationKey ?
 	 */
 	private String bibtexKey;
-	
+
 	/**
 	 * This key is used by bibtex on sorting purpose if there is neither an
 	 * {@link #author} nor an {@link #editor} defined.
@@ -55,9 +55,8 @@ public class BibTex extends Resource {
 	private String year;
 	private String type;
 	private int scraperId;
-    private String url;
-    	
-	
+	private String url;
+
 	public String getAddress() {
 		return this.address;
 	}

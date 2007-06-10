@@ -39,7 +39,7 @@ public class GetUserPostsStrategy extends Strategy {
 		final int start = this.context.getIntAttribute("start", 0);
 		int end = this.context.getIntAttribute("end", 19);
 
-		final Class<? extends Resource> resourceType = Resource.getResourceType(this.context.getStringAttribute("resourcetype", "all"));
+		final Class<? extends Resource> resourceType = Resource.getResource(this.context.getStringAttribute("resourcetype", "all"));
 		final List<? extends Post<? extends Resource>> posts = this.context.getLogic().getPosts(this.context.getAuthUserName(), resourceType, GroupingEntity.USER, userName, this.context.getTags("tags"), null, null, start, end);
 
 		// setup viewModel

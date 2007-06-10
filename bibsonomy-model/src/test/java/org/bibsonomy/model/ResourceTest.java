@@ -11,32 +11,32 @@ import org.junit.Test;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public class ResourceTypeTest {
+public class ResourceTest {
 
 	@Test
 	public void testGetResourceType() {
-		assertEquals(Resource.class, Resource.getResourceType("all"));
-		assertEquals(BibTex.class, Resource.getResourceType("bibtex"));
-		assertEquals(Bookmark.class, Resource.getResourceType("bookmark"));
+		assertEquals(Resource.class, Resource.getResource("all"));
+		assertEquals(BibTex.class, Resource.getResource("bibtex"));
+		assertEquals(Bookmark.class, Resource.getResource("bookmark"));
 
-		assertEquals(Resource.class, Resource.getResourceType(" All"));
-		assertEquals(BibTex.class, Resource.getResourceType("BIBTEX"));
-		assertEquals(Bookmark.class, Resource.getResourceType("BookMark "));
+		assertEquals(Resource.class, Resource.getResource(" All"));
+		assertEquals(BibTex.class, Resource.getResource("BIBTEX"));
+		assertEquals(Bookmark.class, Resource.getResource("BookMark "));
 
 		try {
-			Resource.getResourceType("foo bar");
+			Resource.getResource("foo bar");
 			fail("Should throw exception");
 		} catch (final UnsupportedResourceTypeException ex) {
 		}
 
 		try {
-			Resource.getResourceType("");
+			Resource.getResource("");
 			fail("Should throw exception");
 		} catch (final UnsupportedResourceTypeException ex) {
 		}
 
 		try {
-			Resource.getResourceType(null);
+			Resource.getResource(null);
 			fail("Should throw exception");
 		} catch (final InternServerException ex) {
 		}

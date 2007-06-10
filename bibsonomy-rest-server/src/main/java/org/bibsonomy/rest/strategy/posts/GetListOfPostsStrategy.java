@@ -36,7 +36,7 @@ public class GetListOfPostsStrategy extends Strategy {
 		final int start = this.context.getIntAttribute("start", 0);
 		int end = this.context.getIntAttribute("end", 20);
 
-		final Class<? extends Resource> resourceType = Resource.getResourceType(this.context.getStringAttribute("resourcetype", "all"));
+		final Class<? extends Resource> resourceType = Resource.getResource(this.context.getStringAttribute("resourcetype", "all"));
 
 		final String hash = this.context.getStringAttribute("resource", null);
 
