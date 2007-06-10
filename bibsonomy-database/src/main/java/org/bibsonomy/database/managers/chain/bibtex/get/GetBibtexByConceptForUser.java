@@ -11,7 +11,6 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 
 /**
- * TODO: merge with GetBibtexByTagNamesAndUser?
  * @author Miranda Grahl
  * @version $Id$
  */
@@ -23,12 +22,12 @@ public class GetBibtexByConceptForUser extends BibTexChainElement {
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final Transaction session) {
-		param.setGroups(this.generalDb.getGroupIdsForUser(param, session));
+		param.setGroups(this.generalDb.getGroupIdsForUser(param, session)); // TODO: is this needed? 
 		return this.db.getBibTexByConceptForUser(param, session);
 	}
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.USER) && present(param.getRequestedUserName()) && present(param.getTagIndex()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED);
+		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.USER) && present(param.getRequestedUserName()) && present(param.getTagIndex()) && (param.getNumSimpleConcepts() > 0) && (param.getNumSimpleTags() == 0) && (param.getNumTransitiveConcepts() == 0) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED);
 	}
 }

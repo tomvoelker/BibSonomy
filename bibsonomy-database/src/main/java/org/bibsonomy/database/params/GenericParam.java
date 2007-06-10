@@ -1,9 +1,11 @@
 package org.bibsonomy.database.params;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -35,6 +37,10 @@ public abstract class GenericParam {
 	 * or concept.
 	 */
 	private final List<TagIndex> tagIndex;
+	private int numTransitiveConcepts;
+	private int numSimpleConcepts;
+	private int numSimpleTags;
+	
 	/** List of the groups the user belongs to */
 	private List<Integer> groups;
 	/**
@@ -90,6 +96,9 @@ public abstract class GenericParam {
 
 	public GenericParam() {
 		this.tagIndex = new ArrayList<TagIndex>();
+		this.numSimpleTags = 0;
+		this.numSimpleConcepts = 0;
+		this.numTransitiveConcepts = 0;
 		this.caseSensitiveTagNames = false;
 		this.groupId = GroupID.GROUP_INVALID.getId();
 		this.groupType = GroupID.GROUP_PUBLIC;
@@ -113,13 +122,28 @@ public abstract class GenericParam {
 	public void setCaseSensitiveTagNames(boolean caseSensitive) {
 		this.caseSensitiveTagNames = caseSensitive;
 	}
-
-	public void addTagName(final String tagName) {
+	
+	private void addToTagIndex(final String tagName) {
 		this.tagIndex.add(new TagIndex(tagName, this.tagIndex.size() + 1));
 	}
 
+	public void addTagName(final String tagName) {
+		this.addToTagIndex(tagName);
+		this.numSimpleTags++;
+	}
+	
+	public void addSimpleConceptName(final String tagName) {
+		this.addToTagIndex(tagName);
+		this.numSimpleConcepts++;
+	}
+	
+	public void addTransitiveConceptName(final String tagName) {
+		this.addToTagIndex(tagName);
+		this.numTransitiveConcepts++;
+	}
+
 	public List<TagIndex> getTagIndex() {
-		return this.tagIndex;
+		return Collections.unmodifiableList(this.tagIndex);
 	}
 
 	/**
@@ -374,5 +398,17 @@ public abstract class GenericParam {
 
 	public void setOrder(Order order) {
 		this.order = order;
+	}
+
+	public Integer getNumSimpleConcepts() {
+		return this.numSimpleConcepts;
+	}
+
+	public Integer getNumSimpleTags() {
+		return this.numSimpleTags;
+	}
+
+	public Integer getNumTransitiveConcepts() {
+		return this.numTransitiveConcepts;
 	}
 }

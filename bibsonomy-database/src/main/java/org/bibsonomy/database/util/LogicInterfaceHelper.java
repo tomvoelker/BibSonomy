@@ -35,8 +35,23 @@ public class LogicInterfaceHelper {
 		param.setOffset(start);
 		param.setLimit(end - start);
 		if (tags != null) {
-			for (final String tag : tags) {
-				param.addTagName(tag);
+			for (String tag : tags) {
+				tag = tag.trim();
+				if (tag.length() > 2) {
+					if (tag.charAt(0) == '-') {
+						if (tag.charAt(1) == '>') {
+							param.addSimpleConceptName(tag.substring(2).trim());
+						} else if ((tag.charAt(1) == '-') && (tag.charAt(2) == '>')) {
+							if (tag.length() > 3) {
+								param.addTransitiveConceptName(tag.substring(3).trim());
+							}
+						}
+					} else {
+						param.addTagName(tag);
+					}
+				} else {
+					param.addTagName(tag);
+				}
 			}
 		}
 		return param;
