@@ -16,9 +16,12 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.LogicInterface;
 import org.bibsonomy.database.Order;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,7 +30,6 @@ import org.junit.Test;
  * @version $Id$
  */
 public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
-
 	private static final Logger log = Logger.getLogger(RestDatabaseManagerTest.class);
 
 	protected LogicInterface restDb;
@@ -48,19 +50,20 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void setUp() {
 		super.setUp();
 		this.restDb = RestDatabaseManager.getInstance();
+		((RestDatabaseManager) this.restDb).setDbSessionFactory(this.getDbSessionFactory());
 		this.bibTexPostsList = null;
 		this.alreadyFound = new HashSet<Integer>();
 		this.orderValue = Long.MAX_VALUE; // DESC testing
 
 		this.taglist = new LinkedList<String>();
 		this.taglist.add("semantic");
-
+		
 		this.tagSet = ModelUtils.buildLowerCaseHashSet(this.taglist);
 
 		this.taglistfriend = new LinkedList<String>();
 		this.taglistfriend.add("DVD");
-
-		this.testUserNameSet = new HashSet<String>(1, 1);
+		
+		this.testUserNameSet = new HashSet<String>(1,1);
 		this.testUserNameSet.add(TEST_USER_NAME);
 	}
 
@@ -71,11 +74,11 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.taglist = null;
 		this.taglistfriend = null;
 	}
-
+	
 	private void assertList(final Set<String> checkUserNameOneOf, final Order checkOrder, final Set<String> checkTags, final String checkInterHash, final Set<Integer> mustBeInGroups, final Set<Integer> mustNotBeInGroups) {
 		for (final Post post : this.bibTexPostsList) {
 			assertTrue("contentid occured twice", alreadyFound.add(post.getContentId()));
-
+			
 			if (checkUserNameOneOf != null) {
 				assertTrue("userName test with " + post.getUser().getName(), checkUserNameOneOf.contains(post.getUser().getName()));
 			}
@@ -127,11 +130,12 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getPostsByConceptForUser() {
-		this.bibTexPostsList = this.restDb.getPosts(TEST_USER_NAME, BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, taglist, "", Order.ADDED, 0, 10);
-		assertEquals(10, this.bibTexPostsList.size());
+		this.taglist = Arrays.asList(new String[] {"->researcher"});
+		this.bibTexPostsList = this.restDb.getPosts(TEST_USER_NAME, BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, taglist, "", Order.ADDED, 0, 2);
+		assertEquals(2, this.bibTexPostsList.size());
 		assertList(testUserNameSet, Order.ADDED, null, null, null, null);
-		this.bibTexPostsList = this.restDb.getPosts(TEST_USER_NAME, BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, taglist, null, Order.ADDED, 10, 19);
-		assertEquals(9, this.bibTexPostsList.size());
+		this.bibTexPostsList = this.restDb.getPosts(TEST_USER_NAME, BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, taglist, null, Order.ADDED, 2, 10);
+		assertEquals(2, this.bibTexPostsList.size());
 		assertList(testUserNameSet, Order.ADDED, null, null, null, null);
 	}
 
@@ -168,7 +172,7 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getPostsByViewable() {
 		final Set<Integer> mustGroupIds = new HashSet<Integer>();
 		final HashSet<String> usersInGroup = new HashSet<String>();
-		usersInGroup.addAll(userDb.getUserNamesByGroupId(GroupID.GROUP_KDE.getId(), dbSession));
+		usersInGroup.addAll( userDb.getUserNamesByGroupId( GroupID.GROUP_KDE.getId(), dbSession) );
 		mustGroupIds.add(GroupID.GROUP_KDE.getId());
 		this.bibTexPostsList = this.restDb.getPosts(TEST_USER_NAME, BibTex.class, GroupingEntity.VIEWABLE, "kde", new ArrayList<String>(), "", Order.ADDED, 0, 3);
 		assertEquals(3, this.bibTexPostsList.size());
@@ -181,7 +185,7 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getPostsForUsersInGroup() {
 		final HashSet<String> usersInGroup = new HashSet<String>();
-		usersInGroup.addAll(userDb.getUserNamesByGroupId(GroupID.GROUP_KDE.getId(), dbSession));
+		usersInGroup.addAll( userDb.getUserNamesByGroupId( GroupID.GROUP_KDE.getId(), dbSession) );
 		this.bibTexPostsList = this.restDb.getPosts(TEST_USER_NAME, BibTex.class, GroupingEntity.GROUP, "kde", null, "", null, 0, 10);
 		assertEquals(10, this.bibTexPostsList.size());
 		assertList(usersInGroup, null, null, null, null, null);
@@ -193,7 +197,7 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getPostsForGroupByTag() {
 		final HashSet<String> usersInGroup = new HashSet<String>();
-		usersInGroup.addAll(userDb.getUserNamesByGroupId(GroupID.GROUP_KDE.getId(), dbSession));
+		usersInGroup.addAll( userDb.getUserNamesByGroupId( GroupID.GROUP_KDE.getId(), dbSession) );
 		this.bibTexPostsList = this.restDb.getPosts("", BibTex.class, GroupingEntity.GROUP, "kde", taglist, "", null, 0, 9);
 		assertEquals(9, this.bibTexPostsList.size());
 		assertList(usersInGroup, null, this.tagSet, null, null, null);
@@ -204,7 +208,7 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getBibtexOfFriendByTags() {
-		List<String> tags = Arrays.asList(new String[] { "java" });
+		List<String> tags = Arrays.asList(new String[] {"java"});
 		this.bibTexPostsList = this.restDb.getPosts("buzz", BibTex.class, GroupingEntity.FRIEND, "apo", tags, null, Order.ADDED, 0, 19);
 		assertEquals(1, this.bibTexPostsList.size());
 		final Set<String> tagsSet = new HashSet<String>();
@@ -217,11 +221,11 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		mustNotGroups.add(GroupID.GROUP_PRIVATE.getId());
 		mustNotGroups.add(GroupID.GROUP_PUBLIC.getId());
 		assertList(userSet, Order.ADDED, tagsSet, null, mustGroupIds, mustNotGroups);
-
+		
 		this.bibTexPostsList = this.restDb.getPosts("jaeschke", BibTex.class, GroupingEntity.FRIEND, "apo", tags, null, null, 0, 19);
 		assertEquals(0, this.bibTexPostsList.size());
 	}
-
+	
 	@Test
 	public void getBibtexOfFriendByUser() {
 		this.bibTexPostsList = this.restDb.getPosts("buzz", BibTex.class, GroupingEntity.FRIEND, "apo", new ArrayList<String>(0), null, Order.ADDED, 0, 19);
@@ -234,11 +238,11 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final Set<String> userSet = new HashSet<String>();
 		userSet.add("apo");
 		assertList(userSet, Order.ADDED, null, null, mustGroupIds, mustNotGroups);
-
+		
 		this.bibTexPostsList = this.restDb.getPosts("jaeschke", BibTex.class, GroupingEntity.FRIEND, "apo", new ArrayList<String>(0), null, Order.ADDED, 0, 19);
 		assertEquals(0, this.bibTexPostsList.size());
 	}
-
+	
 	@Test
 	public void getBibtexByFriends() {
 		final HashSet<Integer> mustGroups = new HashSet<Integer>();
@@ -249,7 +253,7 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.bibTexPostsList = this.restDb.getPosts("mwkuster", BibTex.class, GroupingEntity.FRIEND, null, null, null, Order.ADDED, 0, 19);
 		assertEquals(19, this.bibTexPostsList.size());
 		assertList(null, Order.ADDED, null, null, mustGroups, mustNotGroups);
-
+		
 		this.bibTexPostsList = this.restDb.getPosts("mwkuster", BibTex.class, GroupingEntity.FRIEND, null, null, null, Order.ADDED, 100, 200);
 		assertEquals(10, this.bibTexPostsList.size());
 		assertList(null, Order.ADDED, null, null, mustGroups, mustNotGroups);
@@ -270,5 +274,41 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.bibTexPostsList = this.restDb.getPosts(TEST_USER_NAME, BibTex.class, null, TEST_REQUEST_USER_NAME, taglist, null, null, 0, 19);
 		assertEquals(15, this.bibTexPostsList.size());
 		// TODO: test something
+	}
+	
+	@Test
+	public void testConceptStore() {
+		final Post<BibTex> post = ModelUtils.generatePost(BibTex.class);
+		final Tag centerTag = new Tag();
+		centerTag.setName("testCenterTag");
+		
+		final Tag superTag = new Tag();
+		superTag.setName("testSuperTag");
+		superTag.setSubTags(Arrays.asList(new Tag[] {centerTag}));
+		centerTag.setSuperTags(Arrays.asList(new Tag[] {superTag}));
+		
+		final Tag superSuperTag = new Tag();
+		superSuperTag.setName("testSuperSuperTag");
+		superSuperTag.setSuperTags(Arrays.asList(new Tag[] {superSuperTag}));
+		superSuperTag.setSubTags(Arrays.asList(new Tag[] {superTag}));
+		
+		final Tag subTag = new Tag();
+		subTag.setName("testSubTag");
+		centerTag.setSubTags(Arrays.asList(new Tag[] {subTag}));
+		subTag.setSuperTags(Arrays.asList(new Tag[] {centerTag}));
+		
+		final String testUserName = this.getClass().getSimpleName();
+		post.getTags().add(centerTag);
+		post.getUser().setName(testUserName);
+		
+		final Group group = new Group();
+		group.setGroupId(GroupID.GROUP_PRIVATE.getId());
+		group.setDescription(null);
+		post.setGroups(Arrays.asList(new Group[] {group}));
+		
+		assertEquals( 0, this.restDb.getPosts(testUserName, BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null, 0, 100).size() );
+		this.restDb.storePost(testUserName, post);
+		assertEquals( 1, this.restDb.getPosts(testUserName, BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null, 0, 100).size() );
+		assertEquals( 0, this.restDb.getPosts("jaeschke", BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null, 0, 100).size() );
 	}
 }
