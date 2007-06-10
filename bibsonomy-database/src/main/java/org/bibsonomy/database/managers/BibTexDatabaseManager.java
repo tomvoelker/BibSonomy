@@ -118,6 +118,16 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		DatabaseUtils.setGroups(this.generalDb, param, session);
 		return this.bibtexList("getBibTexByConceptForUser", param, session);
 	}
+	
+	public List<Post<BibTex>> getBibTexByConceptForUser(final String loginUser, final String conceptName, final String requestedUser, final int limit, final int offset, final Transaction session) {
+		final BibTexParam param = new BibTexParam();
+		param.setUserName(loginUser);
+		param.setRequestedUserName(requestedUser);
+		param.addSimpleConceptName(conceptName);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		return this.getBibTexByConceptForUser(param, session);
+	}
 
 	/**
 	 * <em>/friends</em><br/><br/>
@@ -299,7 +309,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		DatabaseUtils.setGroups(this.generalDb, param, session);
 		return this.bibtexList("getBibTexByHashForUser", param, session);
 	}
-
+	
 	public List<Post<BibTex>> getBibTexByHashForUser(final String loginUserName, final String intraHash, final String requestedUserName, final Transaction session) {
 		final BibTexParam param = new BibTexParam();
 		param.setUserName(loginUserName);
@@ -385,7 +395,8 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			this.insertBibTexPost(post, session);
 			// add the tags
 			this.tagDb.insertTags(post, session);
-			// TODO: insertRelations (maybe in TagDatabaseManager for a gain in BookmarkDatabaseManager.storePost), update: log, doc, col, ext, url
+			
+			// TODO: update: log, doc, col, ext, url
 
 			session.commitTransaction();
 		} finally {
