@@ -53,7 +53,7 @@
 		INSERT INTO groupids (group_name, `group`, privlevel) VALUES (#name#, #groupId#, #privlevel#)
 	</insert>
 
-	<insert id="insertUserIntoGroup" parameterClass="group">
+	<insert id="addUserToGroup" parameterClass="group">
 		INSERT INTO groups (user_name, `group`, defaultgroup) VALUES (#name#, #groupId#, #groupId#)
 	</insert>
 

@@ -136,13 +136,14 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		if (this.userDb.getUserDetails(username, session) == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There's no user with this name");
 		}
+		// make sure that the group exists
 		final Group group = this.getGroupByName(groupname, session);
 		if (group == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group doesn't exist - can't add user to nonexistent group");
 		}
 		// XXX: the next line is semantically incorrect
 		group.setName(username);
-		this.insert("insertUserIntoGroup", group, session);
+		this.insert("addUserToGroup", group, session);
 	}
 
 	/**
