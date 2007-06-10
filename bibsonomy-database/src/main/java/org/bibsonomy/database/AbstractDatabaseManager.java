@@ -1,13 +1,11 @@
 package org.bibsonomy.database;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.database.util.QueryFor;
+import org.bibsonomy.database.util.StatementType;
 import org.bibsonomy.database.util.Transaction;
-import org.bibsonomy.util.ExceptionUtils;
-
-import com.ibatis.sqlmap.client.SqlMapExecutor;
 
 /**
  * This is the superclass for all classes that are implementing methods to
@@ -26,16 +24,6 @@ public class AbstractDatabaseManager {
 	/** Logger */
 	protected static final Logger log = Logger.getLogger(AbstractDatabaseManager.class);
 
-	/** Used to determine whether we want to retrieve an object or a list */
-	private enum QueryFor {
-		OBJECT, LIST;
-	}
-
-	/** Used to determine the execution of an select, insert, update or delete. */
-	private enum StatementType {
-		SELECT, INSERT, UPDATE, DELETE;
-	}
-
 	/**
 	 * Can be used to start a query that retrieves a list of Integers.
 	 * 
@@ -43,15 +31,23 @@ public class AbstractDatabaseManager {
 	 *      session)
 	 */
 	@SuppressWarnings("unchecked")
+	protected <T> List<T> queryForList(final String query, final Object param, final Class<T> type, final boolean ignoreException, final Transaction session) {
+		return (List<T>) this.queryForAnything(query, param, QueryFor.LIST, ignoreException, session);
+	}
+	
 	protected <T> List<T> queryForList(final String query, final Object param, final Class<T> type, final Transaction session) {
-		return (List<T>) this.queryForAnything(query, param, QueryFor.LIST, session);
+		return queryForList(query, param, type, false, session);
 	}
 
 	/**
 	 * short form of queryForList without Type argument
 	 */
+	protected List queryForList(final String query, final Object param, final boolean ignoreException, final Transaction session) {
+		return queryForList(query, param, Object.class, ignoreException, session);
+	}
+	
 	protected List queryForList(final String query, final Object param, final Transaction session) {
-		return queryForList(query, param, Object.class, session);
+		return queryForList(query, param, Object.class, false, session);
 	}
 
 	/**
@@ -63,15 +59,23 @@ public class AbstractDatabaseManager {
 	 * cast.
 	 */
 	@SuppressWarnings("unchecked")
+	protected <T> T queryForObject(final String query, final Object param, Class<T> type, final boolean ignoreException, final Transaction session) {
+		return (T) this.queryForAnything(query, param, QueryFor.OBJECT, ignoreException, session);
+	}
+	
 	protected <T> T queryForObject(final String query, final Object param, Class<T> type, final Transaction session) {
-		return (T) this.queryForAnything(query, param, QueryFor.OBJECT, session);
+		return this.queryForObject(query, param, type, false, session);
 	}
 
 	/**
 	 * @see queryForObject(final String query, final Object param)
 	 */
+	protected Object queryForObject(final String query, final Object param, final boolean ignoreException, final Transaction session) {
+		return this.queryForAnything(query, param, QueryFor.OBJECT, ignoreException, session);
+	}
+	
 	protected Object queryForObject(final String query, final Object param, final Transaction session) {
-		return this.queryForAnything(query, param, QueryFor.OBJECT, session);
+		return this.queryForAnything(query, param, QueryFor.OBJECT, false, session);
 	}
 
 	/**
@@ -81,93 +85,50 @@ public class AbstractDatabaseManager {
 	 * from that call.
 	 */
 	@SuppressWarnings("unchecked")
-	private Object queryForAnything(final String query, final Object param, final QueryFor queryFor, final Transaction session) {
-		return this.transactionWrapper(query, param, StatementType.SELECT, queryFor, session);
+	private Object queryForAnything(final String query, final Object param, final QueryFor queryFor, final boolean ignoreException, final Transaction session) {
+		return session.transactionWrapper(query, param, StatementType.SELECT, queryFor, ignoreException);
 	}
 
 	/**
 	 * Inserts an object into the database.
 	 */
+	protected void insert(final String query, final Object param, final boolean ignoreException, final Transaction session) {
+		this.insertUpdateDelete(query, param, StatementType.INSERT, ignoreException, session);
+	}
+	
 	protected void insert(final String query, final Object param, final Transaction session) {
-		this.insertUpdateDelete(query, param, StatementType.INSERT, session);
+		this.insertUpdateDelete(query, param, StatementType.INSERT, false, session);
 	}
 
 	/**
 	 * Updates an object in the database.
 	 */
+	protected void update(final String query, final Object param, final boolean ignoreException, final Transaction session) {
+		this.insertUpdateDelete(query, param, StatementType.UPDATE, ignoreException, session);
+	}
+	
 	protected void update(final String query, final Object param, final Transaction session) {
-		this.insertUpdateDelete(query, param, StatementType.UPDATE, session);
+		this.insertUpdateDelete(query, param, StatementType.UPDATE, false, session);
 	}
 
 	/**
 	 * Deletes an object from the database.
 	 */
+	protected void delete(final String query, final Object param, final boolean ignoreException, final Transaction session) {
+		this.insertUpdateDelete(query, param, StatementType.DELETE, ignoreException, session);
+	}
+	
 	protected void delete(final String query, final Object param, final Transaction session) {
-		this.insertUpdateDelete(query, param, StatementType.DELETE, session);
+		this.insertUpdateDelete(query, param, StatementType.DELETE, false, session);
 	}
 
 	/**
 	 * This is another convenience method, which executes insert, update or
 	 * delete statements.
 	 */
-	private void insertUpdateDelete(final String query, final Object param, final StatementType statementType, final Transaction session) {
-		this.transactionWrapper(query, param, statementType, null, session);
+	private void insertUpdateDelete(final String query, final Object param, final StatementType statementType, final boolean ignoreException, final Transaction session) {
+		session.transactionWrapper(query, param, statementType, null, ignoreException);
 	}
 
-	/**
-	 * This method combines all calls to the SqlMap. This way we can catch the
-	 * exceptions in one place and surround the queries with transaction
-	 * management.
-	 * 
-	 * @param query
-	 *            The SQL query which should be executed.
-	 * @param param
-	 *            A parameter object
-	 * @param statementType
-	 *            Defines whether it sould be a select, insert, update or delete
-	 * @param queryFor
-	 *            Defines whether we want to retrieve an object or a list from a
-	 *            select
-	 * @return An object in case of a select statement, null otherwise
-	 */
-	private Object transactionWrapper(final String query, final Object param, final StatementType statementType, final QueryFor queryFor, final Transaction session) {
-		try {
-			return this.executeQuery(session.getSqlMapExecutor(), query, param, statementType, queryFor);
-		} catch (final Exception ex) {
-			session.somethingWentWrong();
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't execute query '" + query + "'");
-		}
-		return null; // unreachable
-	}
 
-	/**
-	 * Executes a query.
-	 */
-	private Object executeQuery(final SqlMapExecutor sqlMap, final String query, final Object param, final StatementType statementType, final QueryFor queryFor) throws SQLException {
-		Object rVal = null;
-		switch (statementType) {
-		case SELECT:
-			switch (queryFor) {
-			case OBJECT:
-				rVal = sqlMap.queryForObject(query, param);
-				break;
-			case LIST:
-				rVal = sqlMap.queryForList(query, param);
-				break;
-			}
-			break;
-		case INSERT:
-			sqlMap.insert(query, param);
-			break;
-		case UPDATE:
-			sqlMap.update(query, param);
-			break;
-		case DELETE:
-			sqlMap.delete(query, param);
-			break;
-		default:
-			throw new UnsupportedOperationException();
-		}
-		return rVal;
-	}
 }
