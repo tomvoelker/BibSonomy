@@ -11,6 +11,7 @@ import org.bibsonomy.database.Order;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
+import org.bibsonomy.database.util.DBSessionFactory;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.database.util.Transaction;
@@ -43,6 +44,7 @@ public class RestDatabaseManager implements LogicInterface {
 	private final UserDatabaseManager userDBManager;
 	private final GroupDatabaseManager groupDBManager;
 	private final TagDatabaseManager tagDBManager;
+	private DBSessionFactory dbSessionFactory;
 
 	private RestDatabaseManager() {
 		this.allDatabaseManagers = new HashMap<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>>();
@@ -50,10 +52,11 @@ public class RestDatabaseManager implements LogicInterface {
 		this.allDatabaseManagers.put(BibTex.class, this.bibtexDBManager);
 		this.bookmarkDBManager = BookmarkDatabaseManager.getInstance();
 		this.allDatabaseManagers.put(Bookmark.class, this.bookmarkDBManager);
-
+		
 		this.userDBManager = UserDatabaseManager.getInstance();
 		this.groupDBManager = GroupDatabaseManager.getInstance();
 		this.tagDBManager = TagDatabaseManager.getInstance();
+		this.dbSessionFactory = DatabaseUtils.getDBSessionFactory();
 	}
 
 	public static LogicInterface getInstance() {
@@ -64,7 +67,7 @@ public class RestDatabaseManager implements LogicInterface {
 	 * Returns a new database session.
 	 */
 	private Transaction openSession() {
-		return DatabaseUtils.getDatabaseSession();
+		return dbSessionFactory.getDatabaseSession();
 	}
 
 	/*
@@ -125,13 +128,11 @@ public class RestDatabaseManager implements LogicInterface {
 			} else */
 			if (resourceType == BibTex.class) {
 				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, authUser, grouping, groupingName, tags, hash, order, start, end);
-				// this is save because of RTTI-check of resourceType argument
-				// which is of class T
+				// this is save because of RTTI-check of resourceType argument which is of class T
 				result = (List<Post<T>>) ((List) this.bibtexDBManager.getPosts(param, session));
 			} else if (resourceType == Bookmark.class) {
 				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, authUser, grouping, groupingName, tags, hash, order, start, end);
-				// this is save because of RTTI-check of resourceType argument
-				// which is of class T
+				// this is save because of RTTI-check of resourceType argument which is of class T
 				result = (List<Post<T>>) ((List) this.bookmarkDBManager.getPosts(param, session));
 			} else {
 				throw new UnsupportedResourceTypeException(resourceType.toString());
@@ -255,8 +256,7 @@ public class RestDatabaseManager implements LogicInterface {
 	public void deletePost(final String userName, final String resourceHash) {
 		final Transaction session = this.openSession();
 		try {
-			// TODO would be nice to know about the resourcetype or the instance
-			// behind this resourceHash
+			// TODO would be nice to know about the resourcetype or the instance behind this resourceHash
 			for (final CrudableContent<? extends Resource, ? extends GenericParam> man : this.allDatabaseManagers.values()) {
 				if (man.deletePost(userName, resourceHash, session) == true) {
 					break;
@@ -271,7 +271,6 @@ public class RestDatabaseManager implements LogicInterface {
 	 * Adds/updates a user in the database.
 	 */
 	public void storeUser(final User user, final boolean update) {
-
 	}
 
 	/*
@@ -329,5 +328,9 @@ public class RestDatabaseManager implements LogicInterface {
 		} finally {
 			session.close();
 		}
+	}
+
+	public void setDbSessionFactory(DBSessionFactory dbSessionFactory) {
+		this.dbSessionFactory = dbSessionFactory;
 	}
 }
