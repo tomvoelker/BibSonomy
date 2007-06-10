@@ -20,4 +20,8 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	public Runnable onBibTexUpdate(int newContentId, int contentId, Transaction session) {
 		return null;
 	}
+	
+	public Runnable onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final Transaction session) {
+		return null;
+	}
 }

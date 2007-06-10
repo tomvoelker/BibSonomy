@@ -17,4 +17,6 @@ public interface DatabasePlugin {
 	public Runnable onBibTexInsert(int contentId, Transaction session);
 
 	public Runnable onBibTexUpdate(int newContentId, int contentId, Transaction session);
+	
+	public Runnable onTagRelationDelete(String upperTagName, String lowerTagName, String userName, Transaction session);
 }

@@ -1,6 +1,7 @@
 package org.bibsonomy.database.plugin.plugins;
 
 import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.database.params.beans.TagRelationParam;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 import org.bibsonomy.database.util.Transaction;
 
@@ -33,6 +34,19 @@ public class Logging extends AbstractDatabasePlugin {
 				param.setRequestedContentId(contentId);
 				param.setNewContentId(newContentId);
 				insert("logBibTexUpdate", param, session);
+			}
+		};
+	}
+	
+	@Override
+	public Runnable onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final Transaction session) {
+		return new Runnable() {
+			public void run() {
+				final TagRelationParam trp = new TagRelationParam();
+				trp.setOwnerUserName(userName);
+				trp.setLowerTagName(lowerTagName);
+				trp.setUpperTagName(upperTagName);
+				insert("logTagRelation", trp, session);
 			}
 		};
 	}
