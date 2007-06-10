@@ -18,11 +18,11 @@ import org.junit.Test;
  */
 public class TransactionTest {
 
-	private Transaction transaction;
+	private DBSessionImpl transaction;
 
 	@Before
 	public void setUp() {
-		this.transaction = DatabaseUtils.getDatabaseSession();
+		this.transaction = (DBSessionImpl) DatabaseUtils.getDBSessionFactory().getDatabaseSession();
 	}
 
 	@After
