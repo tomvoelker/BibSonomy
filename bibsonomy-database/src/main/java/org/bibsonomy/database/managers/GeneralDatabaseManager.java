@@ -103,7 +103,8 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Returns a new contentId
+	 * Gets the next database-ID for inserting an entity with the type specified
+	 * by the idsType argument. Updates the ID generator.
 	 */
 	public Integer getNewContentId(final ConstantID idsType, final Transaction session) {
 		this.updateIds(idsType, session);
