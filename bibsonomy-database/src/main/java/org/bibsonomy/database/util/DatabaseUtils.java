@@ -41,16 +41,9 @@ public class DatabaseUtils {
 	}
 
 	/**
-	 * Returns a database transaction.
-	 */
-	public static Transaction getDatabaseSession() {
-		return new Transaction(getSqlMap());
-	}
-
-	/**
 	 * Returns the SqlMap which can be used to query the database.
 	 */
-	private static SqlMapSession getSqlMap() {
+	protected static SqlMapSession getSqlMap() {
 		return client.openSession();
 	}
 
@@ -71,6 +64,7 @@ public class DatabaseUtils {
 		param.setGroups(groupIds);
 	}
 
+
 	/**
 	 * This needs to be done for all get*ForGroup* queries.
 	 */
@@ -89,5 +83,18 @@ public class DatabaseUtils {
 		if (param.getGroupId() == GroupID.GROUP_INVALID.getId()) {
 			DatabaseUtils.setGroups(db, param, session);
 		}
+	}
+
+	public static DBSessionFactory getDBSessionFactory() {
+		return new DBSessionFactory() {
+
+			/**
+			 * Returns a database transaction.
+			 */
+			public Transaction getDatabaseSession() {
+				return new DBSessionImpl(getSqlMap());
+			}
+			
+		};
 	}
 }
