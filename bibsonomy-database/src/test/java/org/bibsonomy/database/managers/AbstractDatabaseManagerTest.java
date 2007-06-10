@@ -7,7 +7,8 @@ import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.UserParam;
-import org.bibsonomy.database.util.DatabaseUtils;
+import org.bibsonomy.database.util.DBSessionFactory;
+import org.bibsonomy.database.util.SandboxDBSessionFactory;
 import org.bibsonomy.database.util.Transaction;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.After;
@@ -31,6 +32,7 @@ public abstract class AbstractDatabaseManagerTest {
 	protected BibTexDatabaseManager bibTexDb;
 	protected UserDatabaseManager userDb;
 	protected TagDatabaseManager tagDb;
+	protected TagRelationDatabaseManager tagRelDb;
 	protected GroupDatabaseManager groupDb;
 
 	protected GenericParam generalParam;
@@ -41,6 +43,7 @@ public abstract class AbstractDatabaseManagerTest {
 	protected GroupParam groupParam;
 
 	protected Transaction dbSession;
+	private SandboxDBSessionFactory dbSessionFactory;
 
 	@Before
 	public void setUp() {
@@ -50,21 +53,23 @@ public abstract class AbstractDatabaseManagerTest {
 			this.bibTexDb = BibTexDatabaseManager.getInstance();
 			this.userDb = UserDatabaseManager.getInstance();
 			this.tagDb = TagDatabaseManager.getInstance();
+			this.tagRelDb = TagRelationDatabaseManager.getInstance();
 			this.groupDb = GroupDatabaseManager.getInstance();
 			this.resetParameters();
 
-			// testcases shouldn't write into the db		
-			this.dbSession = DatabaseUtils.getDatabaseSession();
-			this.dbSession.beginTransaction();
+			// testcases shouldn't write into the db
+			this.dbSessionFactory = new SandboxDBSessionFactory();
+			this.dbSession = this.dbSessionFactory.getDatabaseSession();
 		} catch (final Throwable ex) {	
 			log.fatal("exception in testcase setUp", ex);
 		}
 	}
 
+
+
 	@After
 	public void tearDown() {
-		this.dbSession.endTransaction();
-		this.dbSession.close();
+		this.dbSessionFactory.endTest();
 
 		this.generalDb = null;
 		this.bookmarkDb = null;
@@ -98,5 +103,11 @@ public abstract class AbstractDatabaseManagerTest {
 		this.userParam = ParamUtils.getDefaultUserParam();
 		this.tagParam = ParamUtils.getDefaultTagParam();
 		this.groupParam = ParamUtils.getDefaultGroupParam();
+	}
+
+
+
+	protected DBSessionFactory getDbSessionFactory() {
+		return this.dbSessionFactory;
 	}
 }
