@@ -28,6 +28,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	/** Singleton */
 	private final static TagDatabaseManager singleton = new TagDatabaseManager();
 	private final GeneralDatabaseManager generalDb;
+	private final TagRelationDatabaseManager tagRelDb;
 	/**
 	 * Only a maximum of 10 tags can be set by the user. It serves to restrict
 	 * the system behaviour in case of e.g. 200 Tags. Only a maximum of 10X10
@@ -37,6 +38,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 
 	private TagDatabaseManager() {
 		this.generalDb = GeneralDatabaseManager.getInstance();
+		this.tagRelDb = TagRelationDatabaseManager.getInstance();
 	}
 
 	public static TagDatabaseManager getInstance() {
@@ -182,24 +184,33 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		// (allTags.size() > MAX_TAGS_TO_INSERT);
 		final boolean batchIt = true;
 
-		if (batchIt == true) {
-			// if there're too many tags, do it in a batch job
-			// FIXME: someone misused newContentId for the tasId.
-			// requestedContentId is the real new contentId here
-			insertTagTagBatch(param.getNewContentId(), param.getTags(), TagTagBatchParam.Job.DECREMENT, session);
-		}
-		insertTas(param, session);
-		for (final Tag tag1 : allTags) {
-			insertTag(tag1, session);
-			if (batchIt == false) {
-				throw new UnsupportedOperationException();
-				/* TODO: implement nonbatch-tagtag-inserts
-				for (final Tag tag2 : allTags) {
-					if (!tag1.equals(tag2)) {
-						insertTagTag(tag1, tag2);
-					}
-				}*/
+		session.beginTransaction();
+		try {
+			if (batchIt == true) {
+				// if there're too many tags, do it in a batch job
+				// FIXME: someone misused newContentId for the tasId.
+				// requestedContentId is the real new contentId here
+				insertTagTagBatch(param.getNewContentId(), param.getTags(), TagTagBatchParam.Job.DECREMENT, session);
 			}
+			insertTas(param, session);
+			for (final Tag tag : param.getTags()) {
+				this.tagRelDb.insertRelations(tag, param.getUserName(), session);				
+			}
+			for (final Tag tag1 : allTags) {
+				insertTag(tag1, session);
+				if (batchIt == false) {
+					throw new UnsupportedOperationException();
+					/* TODO: implement nonbatch-tagtag-inserts
+					for (final Tag tag2 : allTags) {
+						if (!tag1.equals(tag2)) {
+							insertTagTag(tag1, tag2);
+						}
+					}*/
+				}
+			}
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
 		}
 	}
 
