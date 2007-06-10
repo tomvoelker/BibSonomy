@@ -14,8 +14,8 @@ import org.apache.log4j.Logger;
 public class SandboxDBSessionFactory extends DatabaseUtils implements DBSessionFactory {
 	private static final Logger log = Logger.getLogger(SandboxDBSessionFactory.class);
 	private static final HashSet<String> firewalledMethods = new HashSet<String>();
-	private Transaction realDbSession = null;
-	private Transaction dbSessionProxy = null;
+	private DBSession realDbSession = null;
+	private DBSession dbSessionProxy = null;
 	
 	static {
 		firewalledMethods.add("beginTransaction");
@@ -24,11 +24,11 @@ public class SandboxDBSessionFactory extends DatabaseUtils implements DBSessionF
 		firewalledMethods.add("close");
 	}
 
-	public Transaction getDatabaseSession() {
+	public DBSession getDatabaseSession() {
 		if (this.dbSessionProxy == null) {
 			this.realDbSession = super.getDBSessionFactory().getDatabaseSession();
 			this.realDbSession.beginTransaction();
-			this.dbSessionProxy = (Transaction) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class[] {Transaction.class}, new InvocationHandler() {
+			this.dbSessionProxy = (DBSession) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class[] {DBSession.class}, new InvocationHandler() {
 				
 				public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 					if (firewalledMethods.contains(method.getName()) == false) {

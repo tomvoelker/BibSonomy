@@ -12,7 +12,7 @@ import java.io.Closeable;
  * @author Christian Schenk
  * @version $Id$
  */
-public interface Transaction extends Closeable {
+public interface DBSession extends Closeable {
 	/**
 	 * Starts a virtual transaction (a real one if no real transaction has been
 	 * started yet). Either transactionSuccess or transactionFailure MUST be

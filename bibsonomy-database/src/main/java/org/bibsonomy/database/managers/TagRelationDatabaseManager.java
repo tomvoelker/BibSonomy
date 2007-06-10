@@ -8,7 +8,7 @@ import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.beans.TagRelationParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
-import org.bibsonomy.database.util.Transaction;
+import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.util.ExceptionUtils;
 
@@ -38,12 +38,12 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 		return singleton;
 	}
 
-	public void insertRelations(final Tag tag, final String userName, final Transaction session) {
+	public void insertRelations(final Tag tag, final String userName, final DBSession session) {
 		addRel(tag.getName(), tag.getSuperTags(), userName, Relation.SUPER, session);
 		addRel(tag.getName(), tag.getSubTags(), userName, Relation.SUB, session);
 	}
 
-	private void addRel(String centerTagName, final List<Tag> relatedTags, final String userName, final Relation rel, final Transaction session) {
+	private void addRel(String centerTagName, final List<Tag> relatedTags, final String userName, final Relation rel, final DBSession session) {
 		if ((relatedTags == null) || (relatedTags.size() == 0)) {
 			return;
 		}
@@ -67,7 +67,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 		}
 	}
 
-	private void insertIfNotPresent(final TagRelationParam trp, final Transaction session) {
+	private void insertIfNotPresent(final TagRelationParam trp, final DBSession session) {
 		session.beginTransaction();
 		try {
 			insert("insertTagRelationIfNotPresent", trp, true, session);
@@ -80,7 +80,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 		}
 	}
 	
-	public void deleteRelation(final String upperTagName, final String lowerTagName, final String userName, final Transaction session) {
+	public void deleteRelation(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
 		plugins.onTagRelationDelete(upperTagName, lowerTagName, userName, session);
 		final TagRelationParam trp = new TagRelationParam();
 		trp.setOwnerUserName(userName);
@@ -89,11 +89,11 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 		delete("deleteTagRelation", trp, session);
 	}
 
-	/*public List<Tag> getSubtagsOfTag(final Tag tag, final Transaction session) {
+	/*public List<Tag> getSubtagsOfTag(final Tag tag, final DBSession session) {
 		return this.queryForList("getSubtagsOfTag", tag, Tag.class, session);
 	}
 
-	public List<Tag> getSupertagsOfTag(final Tag tag, final Transaction session) {
+	public List<Tag> getSupertagsOfTag(final Tag tag, final DBSession session) {
 		return this.queryForList("getSupertagsOfTag", tag, Tag.class, session);
 	}*/
 }

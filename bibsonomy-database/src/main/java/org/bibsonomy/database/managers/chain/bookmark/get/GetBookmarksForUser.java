@@ -6,7 +6,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.Order;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChainElement;
 import org.bibsonomy.database.params.BookmarkParam;
-import org.bibsonomy.database.util.Transaction;
+import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 
@@ -23,7 +23,7 @@ public class GetBookmarksForUser extends BookmarkChainElement {
 	 * grouping:user name:given tags:NULL hash:NULL popular:false added:false
 	 */
 	@Override
-	protected List<Post<Bookmark>> handle(final BookmarkParam param, final Transaction session) {
+	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
 		// TODO: is this needed?  param.setGroups(this.generalDb.getGroupsForUser(param, session));
 		return this.db.getBookmarkForUser(param, session);
 	}

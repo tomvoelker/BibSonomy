@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.bibsonomy.database.managers.chain.tag.TagChainElement;
 import org.bibsonomy.database.params.TagParam;
-import org.bibsonomy.database.util.Transaction;
+import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Tag;
 
 /**
@@ -22,7 +22,7 @@ public class GetTagByTagName extends TagChainElement {
 	}
 
 	@Override
-	protected List<Tag> handle(final TagParam param, final Transaction session) {
+	protected List<Tag> handle(final TagParam param, final DBSession session) {
 //		final TagParam param = new TagParam();
 //		param.setName(tagName);
 //				

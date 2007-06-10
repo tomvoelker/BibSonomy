@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.lang.reflect.Field;
 
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
-import org.bibsonomy.database.util.Transaction;
+import org.bibsonomy.database.util.DBSession;
 import org.junit.Test;
 
 /**
@@ -41,13 +41,13 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public Runnable onBibTexInsert(final int contentId, final Transaction session) {
+	public Runnable onBibTexInsert(final int contentId, final DBSession session) {
 		this.onBibTexInsert = true;
 		return null;
 	}
 
 	@Override
-	public Runnable onBibTexUpdate(final int newContentId, final int contentId, final Transaction session) {
+	public Runnable onBibTexUpdate(final int newContentId, final int contentId, final DBSession session) {
 		assertTrue(contentId != newContentId);
 		this.onBibTexUpdate = true;
 		return null;

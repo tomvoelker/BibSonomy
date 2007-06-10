@@ -18,7 +18,7 @@ import com.ibatis.sqlmap.client.SqlMapSession;
  * @author Christian Schenk
  * @version $Id$
  */
-public class DBSessionImpl implements Transaction {
+public class DBSessionImpl implements DBSession {
 	protected static final Logger log = Logger.getLogger(DBSessionImpl.class);
 	/** Communication with the database is done with the sqlMap */
 	private final SqlMapSession sqlMap;

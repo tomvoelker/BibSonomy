@@ -9,7 +9,7 @@ import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.util.DBSessionFactory;
 import org.bibsonomy.database.util.SandboxDBSessionFactory;
-import org.bibsonomy.database.util.Transaction;
+import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -42,7 +42,7 @@ public abstract class AbstractDatabaseManagerTest {
 	protected TagParam tagParam;
 	protected GroupParam groupParam;
 
-	protected Transaction dbSession;
+	protected DBSession dbSession;
 	private SandboxDBSessionFactory dbSessionFactory;
 
 	@Before

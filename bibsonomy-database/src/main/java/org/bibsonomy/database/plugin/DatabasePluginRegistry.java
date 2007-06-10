@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bibsonomy.database.plugin.plugins.Logging;
-import org.bibsonomy.database.util.Transaction;
+import org.bibsonomy.database.util.DBSession;
 
 /**
  * All database plugins are registered here.
@@ -50,19 +50,19 @@ public class DatabasePluginRegistry {
 		runnable.run();
 	}
 
-	public void onBibTexInsert(final int contentId, final Transaction session) {
+	public void onBibTexInsert(final int contentId, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
 			this.executeRunnable(plugin.onBibTexInsert(contentId, session));
 		}
 	}
 
-	public void onBibTexUpdate(final int oldContentId, final int newContentId, final Transaction session) {
+	public void onBibTexUpdate(final int oldContentId, final int newContentId, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
 			this.executeRunnable(plugin.onBibTexUpdate(oldContentId, newContentId, session));
 		}
 	}
 	
-	public void onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final Transaction session) {
+	public void onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
 			this.executeRunnable(plugin.onTagRelationDelete(upperTagName, lowerTagName, userName, session));
 		}

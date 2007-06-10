@@ -5,7 +5,7 @@ import java.util.List;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
-import org.bibsonomy.database.util.Transaction;
+import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.ExceptionUtils;
@@ -33,7 +33,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Returns all users.
 	 */
-	public List<User> getAllUsers(final int start, final int end, final Transaction session) {
+	public List<User> getAllUsers(final int start, final int end, final DBSession session) {
 		final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, null, null, null, null, null, null, start, end);
 		return this.queryForList("getAllUsers", param, User.class, session);
 	}
@@ -41,34 +41,34 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Get details for a given user
 	 */
-	public User getUserDetails(final String username, final Transaction session) {
+	public User getUserDetails(final String username, final DBSession session) {
 		return this.queryForObject("getUserDetails", username, User.class, session);
 	}
 
 	/**
 	 * Get Api key for given user.
 	 */
-	public String getApiKeyForUser(final String username, final Transaction session) {
+	public String getApiKeyForUser(final String username, final DBSession session) {
 		return this.queryForObject("getApiKeyForUser", username, String.class, session);
 	}
 
 	/**
 	 * Generate an API key for an existing user.
 	 */
-	public void updateApiKeyForUser(final User user, final Transaction session) {
+	public void updateApiKeyForUser(final User user, final DBSession session) {
 		if (this.getUserDetails(user.getName(), session) == null) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update Api key for nonexistent user");
 		user.setApiKey(UserUtils.generateApiKey());
 		this.update("updateApiKeyForUser", user, session);
 	}
 
-	List<String> getUserNamesByGroupId(final Integer groupId, final Transaction session) {
+	List<String> getUserNamesByGroupId(final Integer groupId, final DBSession session) {
 		return this.queryForList("getUserNamesByGroupId", groupId, String.class, session);
 	}
 
 	/**
 	 * Insert attributes for new user account including new Api key.
 	 */
-	public void insertUser(final UserParam param, final Transaction session) {
+	public void insertUser(final UserParam param, final DBSession session) {
 		if (param.getUser() == null) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User object isn't present");
 		param.getUser().setApiKey(UserUtils.generateApiKey());
 		this.insert("insertUser", param, session);
@@ -77,21 +77,21 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Delete a user.
 	 */
-	public void deleteUser(final User user, final Transaction session) {
+	public void deleteUser(final User user, final DBSession session) {
 		this.delete("deleteUser", user, session);
 	}
 
 	/*
 	 * TODO delete should also include delete of tas beside personal information
 	 */
-	public void deleteUser(final String userName, final Transaction session) {
+	public void deleteUser(final String userName, final DBSession session) {
 		// TODO: implement
 	}
 
 	/*
 	 * TODO sql-statements are not implemented
 	 */
-	public void storeUser(final User user, final boolean update, final Transaction session) {
+	public void storeUser(final User user, final boolean update, final DBSession session) {
 		// UPDATE
 		// user would like to update his/her personal information
 		if (update == true) {
@@ -128,7 +128,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 * @return boolean true if the Api key is correct, otherwise false
 	 */
-	public boolean validateUserAccess(final String username, final String apiKey, final Transaction session) {
+	public boolean validateUserAccess(final String username, final String apiKey, final DBSession session) {
 		if (apiKey == null || "".equals(apiKey.trim())) return false;
 		final String currentApiKey = this.getApiKeyForUser(username, session);
 		if (currentApiKey == null) {

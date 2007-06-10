@@ -5,7 +5,7 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.tag.TagChainElement;
 import org.bibsonomy.database.params.TagParam;
-import org.bibsonomy.database.util.Transaction;
+import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Tag;
 
 /**
@@ -16,7 +16,7 @@ import org.bibsonomy.model.Tag;
 public class GetAllTags extends TagChainElement {
 
 	@Override
-	protected List<Tag> handle(final TagParam param, final Transaction session) {
+	protected List<Tag> handle(final TagParam param, final DBSession session) {
 		return this.db.getAllTags(param, session);
 	}
 

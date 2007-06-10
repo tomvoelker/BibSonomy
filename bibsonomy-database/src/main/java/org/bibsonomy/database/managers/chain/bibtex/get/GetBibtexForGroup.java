@@ -5,7 +5,7 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
 import org.bibsonomy.database.params.BibTexParam;
-import org.bibsonomy.database.util.Transaction;
+import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 
@@ -19,7 +19,7 @@ public class GetBibtexForGroup extends BibTexChainElement {
 	 * return a list of bibtex by a given group.
 	 */
 	@Override
-	protected List<Post<BibTex>> handle(final BibTexParam param, final Transaction session) {
+	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		param.setGroupId(this.generalDb.getGroupIdByGroupName(param, session));
 		return this.db.getBibTexForUsersInGroup(param, session);
 	}

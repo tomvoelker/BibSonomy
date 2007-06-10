@@ -1,7 +1,7 @@
 package org.bibsonomy.database.plugin.plugins;
 
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
-import org.bibsonomy.database.util.Transaction;
+import org.bibsonomy.database.util.DBSession;
 
 /**
  * This plugin is just an example to demonstrate the usage of the database
@@ -25,12 +25,12 @@ public class ExampleWaitPlugin extends AbstractDatabasePlugin {
 	};
 
 	@Override
-	public Runnable onBibTexInsert(final int contentId, final Transaction session) {
+	public Runnable onBibTexInsert(final int contentId, final DBSession session) {
 		return this.waitRunnable;
 	}
 
 	@Override
-	public Runnable onBibTexUpdate(final int oldContentId, final int newContentId, final Transaction session) {
+	public Runnable onBibTexUpdate(final int oldContentId, final int newContentId, final DBSession session) {
 		return this.waitRunnable;
 	}
 }

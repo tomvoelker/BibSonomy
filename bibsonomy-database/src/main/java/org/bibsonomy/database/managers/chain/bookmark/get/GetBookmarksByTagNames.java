@@ -6,7 +6,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.Order;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChainElement;
 import org.bibsonomy.database.params.BookmarkParam;
-import org.bibsonomy.database.util.Transaction;
+import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 
@@ -26,7 +26,7 @@ public class GetBookmarksByTagNames extends BookmarkChainElement {
 	 * added:false
 	 */
 	@Override
-	protected List<Post<Bookmark>> handle(final BookmarkParam param, final Transaction session) {
+	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
 		List<Post<Bookmark>> posts;
 		if (param.getTagIndex().size() == 0) {
 			posts = db.getBookmarkForHomepage(param, session);

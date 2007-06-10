@@ -5,7 +5,7 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChainElement;
 import org.bibsonomy.database.params.BookmarkParam;
-import org.bibsonomy.database.util.Transaction;
+import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 
@@ -25,7 +25,7 @@ public class GetBookmarksByFriends extends BookmarkChainElement {
 	 * /user/friend
 	 */
 	@Override
-	protected List<Post<Bookmark>> handle(final BookmarkParam param, final Transaction session) {
+	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
 		return this.db.getBookmarkByUserFriends(param, session);
 	}
 

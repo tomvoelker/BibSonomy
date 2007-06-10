@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.bibsonomy.database.managers.chain.tag.TagChainElement;
 import org.bibsonomy.database.params.TagParam;
-import org.bibsonomy.database.util.Transaction;
+import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Tag;
 
 /**
@@ -21,7 +21,7 @@ public class GetTagsByExpression extends TagChainElement {
 	 * grouping:irrelevant name:irrelevant regex: given
 	 */
 	@Override
-	protected List<Tag> handle(final TagParam param, final Transaction session) {
+	protected List<Tag> handle(final TagParam param, final DBSession session) {
 		return this.db.getTagsByExpression(param, session);
 	}
 

@@ -9,7 +9,7 @@ import org.bibsonomy.database.Order;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
 import org.bibsonomy.database.params.BibTexParam;
-import org.bibsonomy.database.util.Transaction;
+import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 
@@ -36,7 +36,7 @@ public class GetBibtexOfFriendsByUser extends BibTexChainElement {
 	 * /user/friend
 	 */
 	@Override
-	protected List<Post<BibTex>> handle(final BibTexParam param, final Transaction session) {
+	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		if (this.gdm.isFriendOf(param, session) == true) {
 			param.setGroupId(GroupID.GROUP_FRIENDS.getId());
 			return this.db.getBibTexForUser(param, session);

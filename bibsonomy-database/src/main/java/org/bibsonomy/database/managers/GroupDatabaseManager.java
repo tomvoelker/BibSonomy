@@ -7,7 +7,7 @@ import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
-import org.bibsonomy.database.util.Transaction;
+import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.ExceptionUtils;
@@ -35,7 +35,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Returns a list of all groups
 	 */
-	public List<Group> getAllGroups(final int start, final int end, final Transaction session) {
+	public List<Group> getAllGroups(final int start, final int end, final DBSession session) {
 		final GroupParam param = LogicInterfaceHelper.buildParam(GroupParam.class, null, null, null, null, null, null, start, end);
 		return this.queryForList("getAllGroups", param, Group.class, session);
 	}
@@ -43,7 +43,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Returns a specific group
 	 */
-	public Group getGroupByName(final String groupname, final Transaction session) {
+	public Group getGroupByName(final String groupname, final DBSession session) {
 		if (groupname == null || groupname.trim().length() == 0) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Groupname isn't present");
 		}
@@ -53,7 +53,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Returns a group with all its members if the user is allowed to see them.
 	 */
-	public Group getGroupMembers(final String authUser, final String groupname, final Transaction session) {
+	public Group getGroupMembers(final String authUser, final String groupname, final DBSession session) {
 		final int groupId = this.getGroupByName(groupname, session).getGroupId();
 		final int privlevel = this.getPrivlevelForGroup(groupId, session);
 		final Group group = this.queryForObject("getGroupMembers", groupname, Group.class, session);
@@ -74,14 +74,14 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Returns the privlevel for a group.
 	 */
-	private Integer getPrivlevelForGroup(final int groupId, final Transaction session) {
+	private Integer getPrivlevelForGroup(final int groupId, final DBSession session) {
 		return this.queryForObject("getPrivlevelForGroup", groupId, Integer.class, session);
 	}
 
 	/**
 	 * Returns a a list of groups for a given user
 	 */
-	public List<Group> getGroupsForUser(final String username, final Transaction session) {
+	public List<Group> getGroupsForUser(final String username, final DBSession session) {
 		return this.queryForList("getGroupsForUser", username, Group.class, session);
 	}
 
@@ -101,7 +101,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 * FIXME: update isn't implemented.
 	 */
-	public void storeGroup(final Group group, final boolean update, final Transaction session) {
+	public void storeGroup(final Group group, final boolean update, final DBSession session) {
 		if (update) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Not implemented yet");
 		}
@@ -121,7 +121,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Inserts a group.
 	 */
-	private void insertGroup(final Group group, final Transaction session) {
+	private void insertGroup(final Group group, final DBSession session) {
 		final int newGroupId = this.getNewGroupId(session);
 		group.setGroupId(newGroupId);
 		this.insert("insertGroup", group, session);
@@ -131,7 +131,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Adds a user to a group.
 	 */
-	public void addUserToGroup(final String groupname, final String username, final Transaction session) {
+	public void addUserToGroup(final String groupname, final String username, final DBSession session) {
 		// check if a user exists with that name
 		if (this.userDb.getUserDetails(username, session) == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There's no user with this name");
@@ -149,7 +149,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Returns a new groupId.
 	 */
-	private int getNewGroupId(final Transaction session) {
+	private int getNewGroupId(final DBSession session) {
 		return this.queryForObject("getNewGroupId", null, Integer.class, session);
 	}
 }

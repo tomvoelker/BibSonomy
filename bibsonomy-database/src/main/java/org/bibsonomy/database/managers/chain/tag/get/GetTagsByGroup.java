@@ -5,7 +5,7 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.tag.TagChainElement;
 import org.bibsonomy.database.params.TagParam;
-import org.bibsonomy.database.util.Transaction;
+import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Tag;
 
 /**
@@ -22,7 +22,7 @@ public class GetTagsByGroup extends TagChainElement {
 	 * grouping:group name:given regex:irrelevant
 	 */
 	@Override
-	protected List<Tag> handle(final TagParam param, final Transaction session) {
+	protected List<Tag> handle(final TagParam param, final DBSession session) {
 		param.setGroupId(this.generalDb.getGroupIdByGroupName(param, session));
 		// TODO: is this needed?  param.setGroups(this.generalDb.getGroupsForUser(param, session));
 

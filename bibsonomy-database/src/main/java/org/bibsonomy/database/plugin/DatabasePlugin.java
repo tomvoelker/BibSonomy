@@ -1,6 +1,6 @@
 package org.bibsonomy.database.plugin;
 
-import org.bibsonomy.database.util.Transaction;
+import org.bibsonomy.database.util.DBSession;
 
 /**
  * This interface supplies hooks which can be implemented by plugins. This way
@@ -14,9 +14,9 @@ import org.bibsonomy.database.util.Transaction;
  */
 public interface DatabasePlugin {
 
-	public Runnable onBibTexInsert(int contentId, Transaction session);
+	public Runnable onBibTexInsert(int contentId, DBSession session);
 
-	public Runnable onBibTexUpdate(int newContentId, int contentId, Transaction session);
+	public Runnable onBibTexUpdate(int newContentId, int contentId, DBSession session);
 	
-	public Runnable onTagRelationDelete(String upperTagName, String lowerTagName, String userName, Transaction session);
+	public Runnable onTagRelationDelete(String upperTagName, String lowerTagName, String userName, DBSession session);
 }

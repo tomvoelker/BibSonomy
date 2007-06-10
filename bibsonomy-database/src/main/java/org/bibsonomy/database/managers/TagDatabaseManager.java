@@ -10,7 +10,7 @@ import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.beans.TagTagBatchParam;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
-import org.bibsonomy.database.util.Transaction;
+import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
@@ -46,41 +46,41 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/** Return tag for given tagId */
-	public Tag getTagById(final Integer tagId, final Transaction session) {
+	public Tag getTagById(final Integer tagId, final DBSession session) {
 		return this.queryForObject("getTagById", tagId, Tag.class, session);
 	}
 
 	/** Return all tags for a given tag count */
 	// FIXME a single tag should be returned instead of a list, shouldn't it?
-	public List<Tag> getTagByCount(final TagParam param, final Transaction session) {
+	public List<Tag> getTagByCount(final TagParam param, final DBSession session) {
 		// TODO not tested
 		return this.queryForList("getTagByCount", param, Tag.class, session);
 	}
 
 	/** Return all tags for a given contentId */
-	public List<Tag> getTasByContendId(final TagParam param, final Transaction session) {
+	public List<Tag> getTasByContendId(final TagParam param, final DBSession session) {
 		// FIXME this query doesn't exist
 		// return this.queryForList("getTasByTagName", param, Tag.class, session);
 		return null;
 	}
 
-	public void updateTagTagInc(final TagParam param, final Transaction session) {
+	public void updateTagTagInc(final TagParam param, final DBSession session) {
 		// TODO not tested
 		this.update("updateTagTagInc", param, session);
 	}
 
-	public void updateTagTagDec(Tag tagFirst, Tag tagSecond, TagParam param, final Transaction session) {
+	public void updateTagTagDec(Tag tagFirst, Tag tagSecond, TagParam param, final DBSession session) {
 		param.setTag(tagFirst);
 		param.setTag(tagSecond);
 		this.update("updateTagTagDec", param, session);
 	}
 
-	public void updateTagDec(final Tag param, final Transaction session) {
+	public void updateTagDec(final Tag param, final DBSession session) {
 		// TODO not tested
 		this.update("updateTagDec", param, session);
 	}
 
-	public void insertTagTagBatch(final int contentId, final Iterable<Tag> tags, TagTagBatchParam.Job job, final Transaction session) {
+	public void insertTagTagBatch(final int contentId, final Iterable<Tag> tags, TagTagBatchParam.Job job, final DBSession session) {
 		final TagTagBatchParam batchParam = new TagTagBatchParam();
 		batchParam.setContentId(contentId);
 		batchParam.setTagList(TagDatabaseManager.tagsToString(tags));
@@ -88,12 +88,12 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		this.insertTagTagBatch(batchParam, session);
 	}
 
-	public void insertTagTagBatch(final TagTagBatchParam param, final Transaction session) {
+	public void insertTagTagBatch(final TagTagBatchParam param, final DBSession session) {
 		// TODO not tested
 		this.insert("insertTagTagBatch", param, session);
 	}
 
-	public void insertTas(final TagParam param, final Transaction session) {
+	public void insertTas(final TagParam param, final DBSession session) {
 		for (final Tag tag : param.getTags()) {
 			param.setTag(tag);
 			for (final Integer groupId : param.getGroups()) {
@@ -104,16 +104,16 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		}
 	}
 
-	public void deleteTas(final Integer contentId, final Transaction session) {
+	public void deleteTas(final Integer contentId, final DBSession session) {
 		this.delete("deleteTas", contentId, session);
 	}
 
-	public void insertLogTas(final TagParam param, final Transaction session) {
+	public void insertLogTas(final TagParam param, final DBSession session) {
 		// TODO not tested
 		this.insert("insertLogTas", param, session);
 	}
 
-	public void deleteTags(final Post<?> post, final Transaction session) {
+	public void deleteTags(final Post<?> post, final DBSession session) {
 		// get tags for this contentId
 		// FIXME param.getResource().setTags(getTasByContendId(param));
 		final boolean batchIt = true;
@@ -157,7 +157,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		deleteTas(post.getContentId(), session);
 	}
 
-	public void insertTags(final Post<?> post, final Transaction session) {
+	public void insertTags(final Post<?> post, final DBSession session) {
 		final TagParam tagParam = new TagParam();
 		tagParam.setTags(post.getTags());
 		tagParam.setNewContentId(post.getContentId());
@@ -177,7 +177,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * Insert a set of tags for a content (into tas table and what else is
 	 * required)
 	 */
-	public void insertTags(final TagParam param, final Transaction session) {
+	public void insertTags(final TagParam param, final DBSession session) {
 		// generate a list of tags
 		final List<Tag> allTags = param.getTags();
 		// TODO: use this and implement nonbatch-tagtag-inserts:
@@ -234,14 +234,14 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * Increases the tag counter in the tag table for the given tag. If this tag
 	 * does not exist inside the tag table, inserts it with count 1.
 	 */
-	public void insertTag(final Tag tag, final Transaction session) {
+	public void insertTag(final Tag tag, final DBSession session) {
 		// TODO not tested
 		this.insert("insertTag", tag, session);
 	}
 
 	/** Insert Tag-Tag Combination */
 	/* FIXME: SQL looks weird
-	public void insertTagTag(Tag tag1, Tag tag2, final Transaction session) {
+	public void insertTagTag(Tag tag1, Tag tag2, final DBSession session) {
 		// check if the two first elements of tag taglist contains tag-entries
 		if (tag1 == null || tag2 == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Two tags needed");
@@ -250,26 +250,26 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		}
 	}*/
 
-	public int getTagOccurrences(final Tag tag, final Transaction session) {
+	public int getTagOccurrences(final Tag tag, final DBSession session) {
 		return this.queryForObject("getTagOccurrences", tag, Integer.class, session);
 	}
 
-	public List<Tag> getSubtagsOfTag(final Tag tag, final Transaction session) {
+	public List<Tag> getSubtagsOfTag(final Tag tag, final DBSession session) {
 		return this.queryForList("getSubtagsOfTag", tag, Tag.class, session);
 	}
 
-	public List<Tag> getSupertagsOfTag(final Tag tag, final Transaction session) {
+	public List<Tag> getSupertagsOfTag(final Tag tag, final DBSession session) {
 		return this.queryForList("getSupertagsOfTag", tag, Tag.class, session);
 	}
 
-	public List<Tag> getCorrelatedTagsOfTag(final Tag tag, final Transaction session) {
+	public List<Tag> getCorrelatedTagsOfTag(final Tag tag, final DBSession session) {
 		return this.queryForList("getCorrelatedTagsOfTag", tag, Tag.class, session);
 	}
 
 	/**
 	 * Returns all tags.
 	 */
-	public List<Tag> getAllTags(final TagParam param, final Transaction session) {
+	public List<Tag> getAllTags(final TagParam param, final DBSession session) {
 		return this.queryForList("getAllTags", param, Tag.class, session);
 	}
 
@@ -288,14 +288,14 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 *            name of the tag
 	 * @return the tag's details, null else
 	 */
-	public Tag getTagDetails(final String authUserName, final String tagName, final Transaction session) {
+	public Tag getTagDetails(final String authUserName, final String tagName, final DBSession session) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * Get all tags of a given user
 	 */
-	public List<Tag> getTagsByUser(final TagParam param, final Transaction session) {
+	public List<Tag> getTagsByUser(final TagParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		return this.queryForList("getTagsByUser", param, Tag.class, session);
 	}
@@ -303,7 +303,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Get all tags of a given group
 	 */
-	public List<Tag> getTagsByGroup(final TagParam param, final Transaction session) {
+	public List<Tag> getTagsByGroup(final TagParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
 		return this.queryForList("getTagsByGroup", param, Tag.class, session);
 	}
@@ -311,15 +311,15 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Get all tags of a given regular expression
 	 */
-	public List<Tag> getTagsByExpression(final TagParam param, final Transaction session) {
+	public List<Tag> getTagsByExpression(final TagParam param, final DBSession session) {
 		return this.queryForList("getTagsByExpression", param, Tag.class, session);
 	}
 
-	public List<Tag> getTagsViewable(final TagParam param, final Transaction session) {
+	public List<Tag> getTagsViewable(final TagParam param, final DBSession session) {
 		return this.queryForList("getTagsViewable", param, Tag.class, session);
 	}
 
-	public List<Tag> getTags(final String authUser, final GroupingEntity grouping, final String groupingName, final String regex, final int start, final int end, final Transaction session) {
+	public List<Tag> getTags(final String authUser, final GroupingEntity grouping, final String groupingName, final String regex, final int start, final int end, final DBSession session) {
 		// TODO: this is only a hack to provide tag-support. feel free to delete
 		// the code and implement it with a nice and complete handler chain.
 		// --> from revision 1.27 - where's the hack?

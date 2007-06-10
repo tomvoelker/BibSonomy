@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
-import org.bibsonomy.database.util.Transaction;
+import org.bibsonomy.database.util.DBSession;
 
 /**
  * Represents one element in the chain of responsibility.
@@ -37,7 +37,7 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 		this.next = nextElement;
 	}
 
-	public final List<L> perform(final P param, final Transaction session) {
+	public final List<L> perform(final P param, final DBSession session) {
 		if (this.canHandle(param)) {
 			log.debug(this.getClass().getSimpleName());
 			return this.handle(param, session);
@@ -52,7 +52,7 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 	/**
 	 * Handles the request.
 	 */
-	protected abstract List<L> handle(P param, Transaction session);
+	protected abstract List<L> handle(P param, DBSession session);
 
 	/**
 	 * Returns true if the request can be handled by the current chain element, otherwise false.

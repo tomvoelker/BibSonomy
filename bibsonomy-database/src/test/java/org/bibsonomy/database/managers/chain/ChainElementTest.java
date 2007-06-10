@@ -10,7 +10,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.params.BookmarkParam;
-import org.bibsonomy.database.util.Transaction;
+import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Bookmark;
 import org.junit.Test;
 
@@ -29,7 +29,7 @@ public class ChainElementTest {
 			}
 
 			@Override
-			protected List<Bookmark> handle(final BookmarkParam param, final Transaction session) {
+			protected List<Bookmark> handle(final BookmarkParam param, final DBSession session) {
 				return null;
 			}
 		};

@@ -4,5 +4,5 @@
 package org.bibsonomy.database.util;
 
 public interface DBSessionFactory {
-	public Transaction getDatabaseSession();
+	public DBSession getDatabaseSession();
 }

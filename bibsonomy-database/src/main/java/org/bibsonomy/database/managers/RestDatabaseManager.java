@@ -14,7 +14,7 @@ import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.util.DBSessionFactory;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
-import org.bibsonomy.database.util.Transaction;
+import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -66,7 +66,7 @@ public class RestDatabaseManager implements LogicInterface {
 	/**
 	 * Returns a new database session.
 	 */
-	private Transaction openSession() {
+	private DBSession openSession() {
 		return dbSessionFactory.getDatabaseSession();
 	}
 
@@ -74,7 +74,7 @@ public class RestDatabaseManager implements LogicInterface {
 	 * Returns all users of the system
 	 */
 	public List<User> getUsers(final String authUser, final int start, final int end) {
-		final Transaction session = this.openSession();
+		final DBSession session = this.openSession();
 		try {
 			return this.userDBManager.getAllUsers(start, end, session);
 		} finally {
@@ -86,7 +86,7 @@ public class RestDatabaseManager implements LogicInterface {
 	 * Returns all users who are members of the specified group
 	 */
 	public List<User> getUsers(final String authUser, final String groupName, final int start, final int end) {
-		final Transaction session = this.openSession();
+		final DBSession session = this.openSession();
 		try {
 			return this.groupDBManager.getGroupMembers(authUser, groupName, session).getUsers();
 		} finally {
@@ -98,7 +98,7 @@ public class RestDatabaseManager implements LogicInterface {
 	 * Returns details about a specified user
 	 */
 	public User getUserDetails(final String authUserName, final String userName) {
-		final Transaction session = this.openSession();
+		final DBSession session = this.openSession();
 		try {
 			return this.userDBManager.getUserDetails(userName, session);
 		} finally {
@@ -112,7 +112,7 @@ public class RestDatabaseManager implements LogicInterface {
 	@SuppressWarnings("unchecked")
 	public <T extends Resource> List<Post<T>> getPosts(final String authUser, final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end) {
 		final List<Post<T>> result;
-		final Transaction session = this.openSession();
+		final DBSession session = this.openSession();
 		try {
 			/*if (resourceType == Resource.class) {
 				 * yes, this IS unsave and indeed it BREAKS restrictions on generic-constraints.
@@ -148,7 +148,7 @@ public class RestDatabaseManager implements LogicInterface {
 	 * corresponding resource and a username.
 	 */
 	public Post<? extends Resource> getPostDetails(final String authUser, final String resourceHash, final String userName) {
-		final Transaction session = this.openSession();
+		final DBSession session = this.openSession();
 		try {
 			Post<? extends Resource> rVal;
 			for (final CrudableContent<? extends Resource, ? extends GenericParam> manager : this.allDatabaseManagers.values()) {
@@ -167,7 +167,7 @@ public class RestDatabaseManager implements LogicInterface {
 	 * Returns all groups of the system
 	 */
 	public List<Group> getGroups(final String authUser, final int start, final int end) {
-		final Transaction session = this.openSession();
+		final DBSession session = this.openSession();
 		try {
 			return this.groupDBManager.getAllGroups(start, end, session);
 		} finally {
@@ -179,7 +179,7 @@ public class RestDatabaseManager implements LogicInterface {
 	 * Returns details of one group
 	 */
 	public Group getGroupDetails(final String authUserName, final String groupName) {
-		final Transaction session = this.openSession();
+		final DBSession session = this.openSession();
 		try {
 			return this.groupDBManager.getGroupByName(groupName, session);
 		} finally {
@@ -191,7 +191,7 @@ public class RestDatabaseManager implements LogicInterface {
 	 * Returns a list of tags; the list can be filtered.
 	 */
 	public List<Tag> getTags(final String authUser, final GroupingEntity grouping, final String groupingName, final String regex, final int start, final int end) {
-		final Transaction session = this.openSession();
+		final DBSession session = this.openSession();
 		try {
 			return this.tagDBManager.getTags(authUser, grouping, groupingName, regex, start, end, session);
 		} finally {
@@ -203,7 +203,7 @@ public class RestDatabaseManager implements LogicInterface {
 	 * Returns details about a tag. Those details are:
 	 */
 	public Tag getTagDetails(final String authUserName, final String tagName) {
-		final Transaction session = this.openSession();
+		final DBSession session = this.openSession();
 		try {
 			return this.tagDBManager.getTagDetails(authUserName, tagName, session);
 		} finally {
@@ -215,7 +215,7 @@ public class RestDatabaseManager implements LogicInterface {
 	 * Validates user access.
 	 */
 	public boolean validateUserAccess(final String username, final String apiKey) {
-		final Transaction session = this.openSession();
+		final DBSession session = this.openSession();
 		try {
 			return this.userDBManager.validateUserAccess(username, apiKey, session);
 		} finally {
@@ -254,7 +254,7 @@ public class RestDatabaseManager implements LogicInterface {
 	 * from the user.
 	 */
 	public void deletePost(final String userName, final String resourceHash) {
-		final Transaction session = this.openSession();
+		final DBSession session = this.openSession();
 		try {
 			// TODO would be nice to know about the resourcetype or the instance behind this resourceHash
 			for (final CrudableContent<? extends Resource, ? extends GenericParam> man : this.allDatabaseManagers.values()) {
@@ -277,7 +277,7 @@ public class RestDatabaseManager implements LogicInterface {
 	 * Adds/updates a post in the database.
 	 */
 	public <T extends Resource> void storePost(final String userName, final Post<T> post) {
-		final Transaction session = this.openSession();
+		final DBSession session = this.openSession();
 		try {
 			final CrudableContent<T, GenericParam> man = getFittingDatabaseManager(post);
 			final String oldIntraHash = post.getResource().getIntraHash();
@@ -310,7 +310,7 @@ public class RestDatabaseManager implements LogicInterface {
 	 * Adds/updates a group in the database.
 	 */
 	public void storeGroup(final Group group, final boolean update) {
-		final Transaction session = this.openSession();
+		final DBSession session = this.openSession();
 		try {
 			this.groupDBManager.storeGroup(group, update, session);
 		} finally {
@@ -322,7 +322,7 @@ public class RestDatabaseManager implements LogicInterface {
 	 * Adds an existing user to an existing group.
 	 */
 	public void addUserToGroup(final String groupName, final String userName) {
-		final Transaction session = this.openSession();
+		final DBSession session = this.openSession();
 		try {
 			this.groupDBManager.addUserToGroup(groupName, userName, session);
 		} finally {

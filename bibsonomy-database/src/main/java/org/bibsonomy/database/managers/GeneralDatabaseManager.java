@@ -6,7 +6,7 @@ import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
-import org.bibsonomy.database.util.Transaction;
+import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.util.ExceptionUtils;
 
 /**
@@ -34,7 +34,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 *            Database-Properties used: userName, requestedUserName
 	 * @return true if the users are friends, false otherwise
 	 */
-	public Boolean isFriendOf(final GenericParam param, final Transaction session) {
+	public Boolean isFriendOf(final GenericParam param, final DBSession session) {
 		if (param.getUserName() == null || param.getRequestedUserName() == null) {
 			return false;
 		}
@@ -53,7 +53,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 *            Database-Properties used: requestedUserName
 	 * @return true if the user is a spammer, false otherwise
 	 */
-	public Boolean isSpammer(final GenericParam param, final Transaction session) {
+	public Boolean isSpammer(final GenericParam param, final DBSession session) {
 		if (param.getRequestedUserName() == null) return false;
 		return this.queryForObject("isSpammer", param, Boolean.class, session);
 	}
@@ -65,7 +65,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 *            Database-Properties used: userName
 	 * @return A list of groupids
 	 */
-	public List<Integer> getGroupIdsForUser(final GenericParam param, final Transaction session) {
+	public List<Integer> getGroupIdsForUser(final GenericParam param, final DBSession session) {
 		return this.queryForList("getGroupIdsForUser", param, Integer.class, session);
 	}
 
@@ -76,7 +76,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 *            Database-Properties used: requestedGroupName
 	 * @return groupid of group, GroupID.GROUP_INVALID otherwise
 	 */
-	public Integer getGroupIdByGroupName(final GenericParam param, final Transaction session) {
+	public Integer getGroupIdByGroupName(final GenericParam param, final DBSession session) {
 		final String oldUserName = param.getUserName();
 		param.setUserName(null);
 		try {
@@ -93,7 +93,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 *            Database-Properties used: requestedGroupName, userName
 	 * @return groupid if user is in group, GroupID.GROUP_INVALID otherwise
 	 */
-	public Integer getGroupIdByGroupNameAndUserName(final GenericParam param, final Transaction session) {
+	public Integer getGroupIdByGroupNameAndUserName(final GenericParam param, final DBSession session) {
 		if (param.getRequestedGroupName() == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "requestedGroupName is null");
 		}
@@ -106,12 +106,12 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 * Gets the next database-ID for inserting an entity with the type specified
 	 * by the idsType argument. Updates the ID generator.
 	 */
-	public Integer getNewContentId(final ConstantID idsType, final Transaction session) {
+	public Integer getNewContentId(final ConstantID idsType, final DBSession session) {
 		this.updateIds(idsType, session);
 		return this.queryForObject("getNewContentId", idsType.getId(), Integer.class, session);
 	}
 
-	protected void updateIds(final ConstantID idsType, final Transaction session) {
+	protected void updateIds(final ConstantID idsType, final DBSession session) {
 		this.insert("updateIds", idsType.getId(), session);
 	}
 }

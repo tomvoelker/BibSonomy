@@ -3,7 +3,7 @@ package org.bibsonomy.database.plugin.plugins;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.beans.TagRelationParam;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
-import org.bibsonomy.database.util.Transaction;
+import org.bibsonomy.database.util.DBSession;
 
 /**
  * This plugin implements logging: on several occasions it'll save the old state
@@ -16,7 +16,7 @@ import org.bibsonomy.database.util.Transaction;
 public class Logging extends AbstractDatabasePlugin {
 
 	@Override
-	public Runnable onBibTexInsert(final int contentId, final Transaction session) {
+	public Runnable onBibTexInsert(final int contentId, final DBSession session) {
 		return new Runnable() {
 			public void run() {
 				final BibTexParam param = new BibTexParam();
@@ -27,7 +27,7 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public Runnable onBibTexUpdate(final int newContentId, final int contentId, final Transaction session) {
+	public Runnable onBibTexUpdate(final int newContentId, final int contentId, final DBSession session) {
 		return new Runnable() {
 			public void run() {
 				final BibTexParam param = new BibTexParam();
@@ -39,7 +39,7 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 	
 	@Override
-	public Runnable onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final Transaction session) {
+	public Runnable onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
 		return new Runnable() {
 			public void run() {
 				final TagRelationParam trp = new TagRelationParam();

@@ -51,7 +51,7 @@ public class DatabaseUtils {
 	 * Gets all groups of the user and puts them in the param. If the two given
 	 * users are friends the groupId for friends is also appended.
 	 */
-	public static void setGroups(final GeneralDatabaseManager db, final GenericParam param, final Transaction session) {
+	public static void setGroups(final GeneralDatabaseManager db, final GenericParam param, final DBSession session) {
 		// If userName and requestedUserName are the same - do nothing
 		if (param.getUserName() != null && param.getRequestedUserName() != null) {
 			if (param.getUserName().equals(param.getRequestedUserName())) return;
@@ -68,7 +68,7 @@ public class DatabaseUtils {
 	/**
 	 * This needs to be done for all get*ForGroup* queries.
 	 */
-	public static void prepareGetPostForGroup(final GeneralDatabaseManager db, final GenericParam param, final Transaction session) {
+	public static void prepareGetPostForGroup(final GeneralDatabaseManager db, final GenericParam param, final DBSession session) {
 		DatabaseUtils.setGroups(db, param, session);
 		// the group type needs to be set to friends because of the second union
 		// in the SQL statement
@@ -78,7 +78,7 @@ public class DatabaseUtils {
 	/**
 	 * This needs to be done for all get*ForUser* queries.
 	 */
-	public static void prepareGetPostForUser(final GeneralDatabaseManager db, final GenericParam param, final Transaction session) {
+	public static void prepareGetPostForUser(final GeneralDatabaseManager db, final GenericParam param, final DBSession session) {
 		// if the groupId is invalid we have to check for groups manually
 		if (param.getGroupId() == GroupID.GROUP_INVALID.getId()) {
 			DatabaseUtils.setGroups(db, param, session);
@@ -91,7 +91,7 @@ public class DatabaseUtils {
 			/**
 			 * Returns a database transaction.
 			 */
-			public Transaction getDatabaseSession() {
+			public DBSession getDatabaseSession() {
 				return new DBSessionImpl(getSqlMap());
 			}
 			

@@ -6,7 +6,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.Order;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
 import org.bibsonomy.database.params.BibTexParam;
-import org.bibsonomy.database.util.Transaction;
+import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 
@@ -22,7 +22,7 @@ public class GetBibtexByTagNames extends BibTexChainElement {
 	 * Returns a list of posts (bibtex) tagged with the given tags.
 	 */
 	@Override
-	protected List<Post<BibTex>> handle(final BibTexParam param, final Transaction session) {
+	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		return this.db.getBibTexByTagNames(param, session);
 	}
 
