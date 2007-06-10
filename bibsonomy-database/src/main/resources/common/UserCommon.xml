@@ -10,6 +10,6 @@
 	<resultMap id="user" class="user" extends="userForGroup">
 	    <result property="name"       column="user_name"      javaType="string" />
 	    <result property="email"      column="user_email"     javaType="string" />
-	     <result property="apiKey"      column="api_key"     javaType="string" />
+		<result property="apiKey"     column="api_key"        javaType="string" />
 	</resultMap>
 </sqlMap>

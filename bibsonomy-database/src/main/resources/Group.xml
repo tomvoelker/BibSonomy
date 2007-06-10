@@ -45,4 +45,16 @@
 		ORDER BY `group`
 	</select>
 
+	<select id="getNewGroupId" resultClass="int">
+		SELECT MAX(`group`) + 1 AS id FROM groupids
+	</select>
+
+	<insert id="insertGroup" parameterClass="group">
+		INSERT INTO groupids (group_name, `group`, privlevel) VALUES (#name#, #groupId#, #privlevel#)
+	</insert>
+
+	<insert id="insertUserIntoGroup" parameterClass="group">
+		INSERT INTO groups (user_name, `group`, defaultgroup) VALUES (#name#, #groupId#, #groupId#)
+	</insert>
+
 </sqlMap>

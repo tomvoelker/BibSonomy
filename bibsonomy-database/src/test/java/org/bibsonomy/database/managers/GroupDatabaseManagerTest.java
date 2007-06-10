@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.HashSet;
 import java.util.List;
@@ -19,6 +20,8 @@ import org.junit.Test;
  * @version $Id$
  */
 public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
+
+	private static final int NUM_KDE_MEMBERS = 13;
 
 	@Test
 	public void getAllGroups() {
@@ -50,6 +53,14 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(GroupID.GROUP_KDE.getId(), kdeGroup.getGroupId());
 		assertEquals("Knowledge and Data Engineering Group", kdeGroup.getUsers().get(0).getRealname());
 		assertEquals("http://www.kde.cs.uni-kassel.de/", kdeGroup.getUsers().get(0).getHomepage().toString());
+
+		for (final String groupname : new String[] { "", " ", null }) {
+			try {
+				this.groupDb.getGroupByName(groupname, this.dbSession);
+				fail("Should throw an exception");
+			} catch (final RuntimeException ex) {
+			}
+		}
 	}
 
 	@Test
@@ -57,7 +68,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final Group kdeGroup = this.groupDb.getGroupMembers("stumme", "kde", this.dbSession);
 		assertEquals("kde", kdeGroup.getName());
 		assertEquals(GroupID.GROUP_KDE.getId(), kdeGroup.getGroupId());
-		assertEquals(13, kdeGroup.getUsers().size());
+		assertEquals(NUM_KDE_MEMBERS, kdeGroup.getUsers().size());
 
 		// "xamde", a member of "ls3wim", can't see other members
 		Group hiddenGroup = this.groupDb.getGroupMembers("xamde", "ls3wim", this.dbSession);
@@ -85,5 +96,44 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertTrue(found.contains(GroupID.GROUP_PRIVATE.getId()));
 		assertTrue(found.contains(GroupID.GROUP_FRIENDS.getId()));
 		assertEquals(6, groups.size());
+	}
+
+	@Test
+	public void storeGroup() {
+		final Group newGroup = new Group();
+		newGroup.setName("stumme");
+		this.groupDb.storeGroup(newGroup, false, this.dbSession);
+		Group group = this.groupDb.getGroupByName("stumme", this.dbSession);
+		assertEquals("stumme", group.getName());
+		assertEquals(1, group.getUsers().size());
+		assertEquals("Gerd Stumme", group.getUsers().get(0).getRealname());
+		assertEquals("http://www.kde.cs.uni-kassel.de/stumme", group.getUsers().get(0).getHomepage().toString());
+
+		for (final boolean update : new boolean[] { true, false }) {
+			for (final String groupname : new String[] { "kde", "this-user-doesnt-exist", null }) {
+				try {
+					group = new Group();
+					group.setName(groupname);
+					this.groupDb.storeGroup(group, update, this.dbSession);
+					fail("Should throw an exception");
+				} catch (final RuntimeException ex) {
+				}
+			}
+		}
+	}
+
+	@Test
+	public void addUserToGroup() {
+		Group group = this.groupDb.getGroupMembers("stumme", "kde", this.dbSession);
+		assertEquals(NUM_KDE_MEMBERS, group.getUsers().size());
+		this.groupDb.addUserToGroup("kde", "cschenk", this.dbSession);
+		group = this.groupDb.getGroupMembers("cschenk", "kde", this.dbSession);
+		assertEquals(NUM_KDE_MEMBERS + 1, group.getUsers().size());
+
+		try {
+			this.groupDb.addUserToGroup(null, "this-user-doesnt-exist", this.dbSession);
+			fail("Should throw an exception");
+		} catch (final RuntimeException ex) {
+		}
 	}
 }

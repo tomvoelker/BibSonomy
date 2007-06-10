@@ -231,13 +231,13 @@ public class RestDatabaseManager implements LogicInterface {
 	}
 
 	/*
-	 * Removes the given user from bibsonomy.
+	 * Removes the given user.
 	 */
 	public void deleteUser(final String userName) {
 	}
 
 	/*
-	 * Removes the given group from bibsonomy.
+	 * Removes the given group.
 	 */
 	public void deleteGroup(final String groupName) {
 	}
@@ -311,11 +311,23 @@ public class RestDatabaseManager implements LogicInterface {
 	 * Adds/updates a group in the database.
 	 */
 	public void storeGroup(final Group group, final boolean update) {
+		final Transaction session = this.openSession();
+		try {
+			this.groupDBManager.storeGroup(group, update, session);
+		} finally {
+			session.close();
+		}
 	}
 
 	/*
 	 * Adds an existing user to an existing group.
 	 */
 	public void addUserToGroup(final String groupName, final String userName) {
+		final Transaction session = this.openSession();
+		try {
+			this.groupDBManager.addUserToGroup(groupName, userName, session);
+		} finally {
+			session.close();
+		}
 	}
 }
