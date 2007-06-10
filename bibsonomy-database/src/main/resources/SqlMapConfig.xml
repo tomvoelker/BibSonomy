@@ -27,10 +27,11 @@
 	<sqlMap resource="common/BibTexCommon.xml" />
 	<sqlMap resource="common/UserCommon.xml" />
 	<sqlMap resource="common/GroupCommon.xml" />
-	<sqlMap resource="common/TagCommon.xml" />	
+	<sqlMap resource="common/TagCommon.xml" />
 
 	<sqlMap resource="General.xml" />
 	<sqlMap resource="Tag.xml" />
+	<sqlMap resource="TagRelation.xml" />
 	<sqlMap resource="Bookmark.xml" />
 	<sqlMap resource="BibTex.xml"/>
 	<sqlMap resource="User.xml"/>

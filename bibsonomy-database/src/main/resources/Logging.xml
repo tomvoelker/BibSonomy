@@ -19,4 +19,9 @@
 	<update id="logBibTexUpdate" parameterClass="bibtexParam">
 		UPDATE log_bibtex SET new_content_id = #newContentId# WHERE content_id = #requestedContentId#
 	</update>
+
+	<insert id="logTagRelation" parameterClass="tagRelationParam">	
+		INSERT INTO log_tagtagrelations (relationID, lower, upper, date_of_create, user_name) 
+		SELECT relationID, lower, upper, date_of_create, user_name FROM tagtagrelations WHERE lower=#lowerTagName# AND upper=#upperTagName# AND user_name=#ownerUserName#
+	</insert>
 </sqlMap>
