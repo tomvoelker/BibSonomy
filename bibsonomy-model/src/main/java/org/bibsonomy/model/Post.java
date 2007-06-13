@@ -15,45 +15,45 @@ import org.bibsonomy.model.User;
  */
 public class Post<T extends Resource> {
 
-	/** 
-	 * This is the {@link Resource} that this post is encapsulating. 
+	/**
+	 * This is the {@link Resource} that this post is encapsulating.
 	 */
 	private T resource;
-	
+
 	/**
-	 *  We need this here if we want to use groupBy in iBatis
-	 *  TODO: document me
-	 *  TODO: Is this field really part of the model? 
+	 * We need this here if we want to use groupBy in iBatis
+	 * TODO: document me
+	 * TODO: Is this field really part of the model?
 	 */
 	private Integer contentId;
-	
+
 	/**
 	 * This post belongs to this {@link User}.
 	 */
 	private User user;
-	
+
 	/**
 	 * This post belongs to these {@link Group}s.
 	 */
 	private List<Group> groups;
-	
+
 	/**
 	 * This post is tagged with these {@link Tag}s.
 	 */
 	private List<Tag> tags;
-	
+
 	/**
 	 * This is the {@link Date} when this post was lastly modified.
 	 */
 	private Date date;
-	
+
 	/**
 	 * This is a text describing the post. <br/> The description should be part
 	 * of the post because it's a description individually made by one user for
 	 * his post - another user may describe the post with another text
 	 */
 	private String description;
-	
+
 	public Post() {
 		this.tags = new ArrayList<Tag>();
 	}

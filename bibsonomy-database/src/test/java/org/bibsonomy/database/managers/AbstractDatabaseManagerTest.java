@@ -15,9 +15,9 @@ import org.junit.After;
 import org.junit.Before;
 
 /**
- * This class provides a connection to the database and convenience methods to
- * print both bookmarks and BibTexs. Every class that implements tests for
- * methods which interact with the database should be derived from this class.
+ * This class provides a connection to the database. Every class that implements
+ * test cases for methods dealing with the database should be derived from this
+ * class.
  * 
  * @author Jens Illig
  * @author Christian Schenk
@@ -60,12 +60,10 @@ public abstract class AbstractDatabaseManagerTest {
 			// testcases shouldn't write into the db
 			this.dbSessionFactory = new SandboxDBSessionFactory();
 			this.dbSession = this.dbSessionFactory.getDatabaseSession();
-		} catch (final Throwable ex) {	
+		} catch (final Throwable ex) {
 			log.fatal("exception in testcase setUp", ex);
 		}
 	}
-
-
 
 	@After
 	public void tearDown() {
@@ -104,8 +102,6 @@ public abstract class AbstractDatabaseManagerTest {
 		this.tagParam = ParamUtils.getDefaultTagParam();
 		this.groupParam = ParamUtils.getDefaultGroupParam();
 	}
-
-
 
 	protected DBSessionFactory getDbSessionFactory() {
 		return this.dbSessionFactory;

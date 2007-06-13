@@ -1,11 +1,11 @@
 package org.bibsonomy.database.managers;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.SQLException;
 
 import org.bibsonomy.common.enums.GroupID;
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -145,6 +145,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void insertBookmarkHash() {
+		// FIXME
 		// to prevent duplicate key error
 		this.bookmarkParam.setHash("1234567890");
 		//this.db.getBookmark().insertBookmarkHash(this.bookmarkParam);
@@ -178,6 +179,6 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getContentIDForBookmark() {
 		this.bookmarkParam.setHash("5d2a36f3df07d2b03839faf6e05ec719");
 		this.bookmarkParam.setUserName("jaeschke");
-		Assert.assertEquals(2648964, this.bookmarkDb.getContentIDForBookmark(this.bookmarkParam, this.dbSession));
+		assertEquals(2648964, this.bookmarkDb.getContentIDForBookmark(this.bookmarkParam, this.dbSession));
 	}
 }

@@ -11,6 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -51,7 +52,6 @@ public class ModelUtils {
 		final Bookmark bookmark = new Bookmark();
 		setResourceDefaults(bookmark);
 		bookmark.setTitle("test");
-		// rVal.setExtended("test");
 		bookmark.setUrl("http://www.bibonomy.org");
 		return bookmark;
 	}
@@ -108,23 +108,34 @@ public class ModelUtils {
 		return post;
 	}
 
-	private static void setBeanPropertiesOn(final Object val) {
+	private static void setBeanPropertiesOn(final Object obj) {
 		try {
-			final BeanInfo bi = Introspector.getBeanInfo(val.getClass());
+			final BeanInfo bi = Introspector.getBeanInfo(obj.getClass());
 			for (final PropertyDescriptor d : bi.getPropertyDescriptors()) {
 				try {
 					final Method setter = d.getWriteMethod();
 					final Method getter = d.getReadMethod();
 					if ((setter != null) && (getter != null)) {
-						setter.invoke(val, new Object[] { getDummyValue(d.getPropertyType(), d.getName()) });
+						setter.invoke(obj, new Object[] { getDummyValue(d.getPropertyType(), d.getName()) });
 					}
 				} catch (final Exception ex) {
 					ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "could not invoke setter '" + d.getName() + "'");
 				}
 			}
 		} catch (final IntrospectionException ex) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "could not introspect object of class '" + val.getClass().getName() + "'");
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "could not introspect object of class '" + obj.getClass().getName() + "'");
 		}
+	}
+
+	public static void assertPropertyEquality(final Object should, final Object is, final String... excludeProperties) {
+		final Set<String> skip;
+		if (excludeProperties != null || excludeProperties.length > 0) {
+			skip = new HashSet<String>();
+			skip.addAll(Arrays.asList(excludeProperties));
+		} else {
+			skip = null;
+		}
+		assertPropertyEquality(should, is, skip);
 	}
 
 	public static void assertPropertyEquality(final Object should, final Object is, final Set<String> excludeProperties) {
@@ -159,7 +170,7 @@ public class ModelUtils {
 	}
 
 	private static Object getDummyValue(final Class type, final String name) {
-		if (type == String.class) {
+		if (String.class == type) {
 			return "test-" + name;
 		}
 		if ((int.class == type) || (Integer.class == type)) {
@@ -191,9 +202,9 @@ public class ModelUtils {
 		return buildLowerCaseHashSet(values.toArray(new String[values.size()]));
 	}
 
-	public static boolean hasTags(final Post<?> p, final Set<String> requiredTags) {
+	public static boolean hasTags(final Post<?> post, final Set<String> requiredTags) {
 		int required = requiredTags.size();
-		for (final Tag presentTag : p.getTags()) {
+		for (final Tag presentTag : post.getTags()) {
 			if (requiredTags.contains(presentTag.getName().toLowerCase()) == true) {
 				--required;
 				log.debug("found " + presentTag.getName());
@@ -206,9 +217,9 @@ public class ModelUtils {
 		}
 	}
 
-	public static boolean checkGroups(final Post<?> p, final Set<Integer> mustBeInGroups, final Set<Integer> mustNotBeInGroups) {
+	public static boolean checkGroups(final Post<?> post, final Set<Integer> mustBeInGroups, final Set<Integer> mustNotBeInGroups) {
 		int required = (mustBeInGroups != null) ? mustBeInGroups.size() : 0;
-		for (final Group group : p.getGroups()) {
+		for (final Group group : post.getGroups()) {
 			if ((mustBeInGroups != null) && (mustBeInGroups.contains(group.getGroupId()) == true)) {
 				--required;
 				log.debug("found group " + group.getGroupId());

@@ -80,13 +80,13 @@ public class OperatorParserTest {
 		try {
 			this.parser.setOperators(ops);
 			fail("Should throw exception");
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 		}
 
 		try {
 			this.parser.setOperators(null);
 			fail("Should throw exception");
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 		}
 	}
 }

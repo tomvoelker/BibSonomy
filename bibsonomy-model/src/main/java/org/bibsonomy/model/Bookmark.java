@@ -5,8 +5,8 @@ import java.net.URL;
 import org.bibsonomy.model.util.ResourceUtils;
 
 /**
- * This is a bookmark, which is derived from
- * {@link org.bibsonomy.gen_model.Resource} like all resources in BibSonomy.
+ * This is a bookmark, which is derived from {@link Resource} like all
+ * resources.
  */
 public class Bookmark extends Resource {
 
@@ -15,14 +15,26 @@ public class Bookmark extends Resource {
 	 * FIXME: Use URL instead of String
 	 */
 	private String url;
-	
+
 	/**
 	 * The title of this bookmark.
 	 */
 	private String title;
-	
+
 	public String getUrl() {
 		return this.url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getTitle() {
+		return this.title;
+	}
+	
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	/**
@@ -33,20 +45,8 @@ public class Bookmark extends Resource {
 		return super.getIntraHash();
 	}
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
 	public String getHash() {
 		return ResourceUtils.hash(this.url);
-	}
-
-	public String getTitle() {
-		return this.title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
 	}
 
 	@Override

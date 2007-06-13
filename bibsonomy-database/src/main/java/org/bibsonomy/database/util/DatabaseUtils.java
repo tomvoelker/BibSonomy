@@ -64,7 +64,6 @@ public class DatabaseUtils {
 		param.setGroups(groupIds);
 	}
 
-
 	/**
 	 * This needs to be done for all get*ForGroup* queries.
 	 */

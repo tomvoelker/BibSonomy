@@ -90,7 +90,7 @@ public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getNewContentId() {
 		assertNull(this.generalDb.getNewContentId(ConstantID.IDS_UNDEFINED_CONTENT_ID, this.dbSession));
-		int id = this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
+		final int id = this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
 		assertTrue(2649144 < id);
 		assertTrue(id < this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, this.dbSession));
 		try {
@@ -102,8 +102,8 @@ public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void updateIds() {
-		Integer curId = 0;
-		Integer newId = 0;
+		Integer curId = null;
+		Integer newId = null;
 		curId = this.generalDb.getNewContentId(ConstantID.IDS_TAS_ID, this.dbSession);
 		this.generalDb.updateIds(ConstantID.IDS_TAS_ID, this.dbSession);
 		newId = this.generalDb.getNewContentId(ConstantID.IDS_TAS_ID, this.dbSession);

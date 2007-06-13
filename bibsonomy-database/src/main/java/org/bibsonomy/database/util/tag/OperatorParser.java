@@ -23,13 +23,13 @@ public class OperatorParser {
 		Tag previous = null;
 		TagOperator tagOp = null;
 		String tagOpStr = null;
-		final Matcher m = this.pattern.matcher(complexTag);
+		final Matcher matcher = this.pattern.matcher(complexTag);
 		int lastEnd = 0;
-		while (m.find() == true) {
+		while (matcher.find() == true) {
 			final Tag found = new Tag();
-			final String op = m.group(1);
-			found.setName(complexTag.substring(lastEnd, m.start()).trim());
-			lastEnd = m.end();
+			final String operator = matcher.group(1);
+			found.setName(complexTag.substring(lastEnd, matcher.start()).trim());
+			lastEnd = matcher.end();
 
 			if (previous == null) {
 				first = found;
@@ -37,22 +37,22 @@ public class OperatorParser {
 				log.debug(previous.getName() + tagOpStr + found.getName());
 				tagOp.operate(previous, found);
 			}
-			if (op.length() > 0) {
-				tagOpStr = op;
-				tagOp = findTagOperator(op);
+			if (operator.length() > 0) {
+				tagOpStr = operator;
+				tagOp = findTagOperator(operator);
 			}
 			previous = found;
-			if (op == null) {
+			if (operator == null) {
 				break;
 			}
 		}
 		return first;
 	}
 
-	private TagOperator findTagOperator(final String op) {
-		final TagOperator rVal = this.operators.get(op);
+	private TagOperator findTagOperator(final String operator) {
+		final TagOperator rVal = this.operators.get(operator);
 		if (rVal == null) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "could not find " + TagOperator.class.getSimpleName() + " for operator '" + op + "'");
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "could not find " + TagOperator.class.getSimpleName() + " for operator '" + operator + "'");
 		}
 		return rVal;
 	}
@@ -60,8 +60,8 @@ public class OperatorParser {
 	public void setOperators(final Map<String, TagOperator> operators) {
 		this.operators = operators;
 		final StringBuilder sb = new StringBuilder("(");
-		for (final String op : operators.keySet()) {
-			sb.append(op).append('|');
+		for (final String operator : operators.keySet()) {
+			sb.append(operator).append('|');
 		}
 		sb.setCharAt(sb.length() - 1, '|');
 		sb.append("$)");

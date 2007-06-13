@@ -16,6 +16,7 @@ import org.bibsonomy.database.util.DBSession;
  * @version $Id$
  */
 public class DatabasePluginRegistry {
+
 	private final static DatabasePluginRegistry singleton = new DatabasePluginRegistry();
 	/** Holds all plugins */
 	private final Map<String, DatabasePlugin> plugins;
@@ -61,7 +62,7 @@ public class DatabasePluginRegistry {
 			this.executeRunnable(plugin.onBibTexUpdate(oldContentId, newContentId, session));
 		}
 	}
-	
+
 	public void onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
 			this.executeRunnable(plugin.onTagRelationDelete(upperTagName, lowerTagName, userName, session));

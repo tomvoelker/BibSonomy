@@ -6,13 +6,14 @@ import static org.junit.Assert.assertTrue;
 import java.lang.reflect.Field;
 
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
+import org.bibsonomy.database.plugin.DatabasePlugin;
 import org.bibsonomy.database.util.DBSession;
 import org.junit.Test;
 
 /**
  * This is a test database plugin that'll check whether a method from the
- * DatabasePlugin interface was called. The state can be checked with the
- * <code>is*</code> methods.
+ * {@link DatabasePlugin} interface was called. The state can be checked with
+ * the <code>is*</code> methods.
  * 
  * @author Christian Schenk
  * @version $Id$
@@ -21,6 +22,7 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 
 	private boolean onBibTexInsert;
 	private boolean onBibTexUpdate;
+	private boolean onTagRelationDelete;
 
 	public DatabasePluginMock() {
 		try {
@@ -53,11 +55,21 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 		return null;
 	}
 
+	@Override
+	public Runnable onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
+		this.onTagRelationDelete = true;
+		return null;
+	}
+
 	public boolean isOnBibTexInsert() {
 		return this.onBibTexInsert;
 	}
 
 	public boolean isOnBibTexUpdate() {
 		return this.onBibTexUpdate;
+	}
+
+	public boolean isOnTagRelationDelete() {
+		return this.onTagRelationDelete;
 	}
 }

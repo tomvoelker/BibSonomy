@@ -1,12 +1,9 @@
 package org.bibsonomy.model;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.bibsonomy.util.DefaultValues;
 
 /**
  * This class defines a user.
@@ -85,14 +82,6 @@ public class User {
 
 	public void setHomepage(URL homepage) {
 		this.homepage = homepage;
-	}
-
-	public void setHomepageAsString(String homepage) {
-		try {
-			this.homepage = new URL(homepage);
-		} catch (final MalformedURLException ex) {
-			this.homepage = DefaultValues.getInstance().getBibsonomyURL();
-		}
 	}
 
 	public String getName() {

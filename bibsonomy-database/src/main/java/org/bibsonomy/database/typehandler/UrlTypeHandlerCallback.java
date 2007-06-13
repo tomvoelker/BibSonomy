@@ -11,13 +11,17 @@ import com.ibatis.sqlmap.client.extensions.ResultGetter;
 import com.ibatis.sqlmap.client.extensions.TypeHandlerCallback;
 
 /**
- * An iBATIS type handler callback for java.net.URLs that are mapped to Strings in the database. If
- * a URL cannot be constructed based on the String, then the URL will be set to <code>null</code>.<br/>
- * <br/>
- * Almost copied from http://opensource.atlassian.com/confluence/oss/display/IBATIS/Type+Handler+Callbacks
+ * An iBATIS type handler callback for {@link URL}s that are mapped to Strings
+ * in the database. If a URL cannot be constructed based on the String, then the
+ * URL will be set to <code>null</code>.<br/>
+ * 
+ * Almost copied from <a
+ * href="http://opensource.atlassian.com/confluence/oss/display/IBATIS/Type+Handler+Callbacks">Atlassian -
+ * Type Handler Callbacks</a>
  * 
  * @author Ken Weiner
  * @author Christian Schenk
+ * @version $Id$
  */
 public class UrlTypeHandlerCallback implements TypeHandlerCallback {
 

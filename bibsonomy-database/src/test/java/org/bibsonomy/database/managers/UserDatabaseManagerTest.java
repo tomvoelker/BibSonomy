@@ -10,7 +10,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.model.User;
-import org.bibsonomy.testutil.ParamUtils;
+import org.bibsonomy.testutil.ModelUtils;
 import org.junit.Test;
 
 /**
@@ -38,11 +38,10 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getUserDetails() {
 		final User testUser = this.userParam.getUser();
 		final User user = this.userDb.getUserDetails(testUser.getName(), this.dbSession);
-		assertEquals(testUser.getName(), user.getName());
-		assertEquals(testUser.getRealname(), user.getRealname());
-		assertEquals(testUser.getEmail(), user.getEmail());
-		assertEquals(testUser.getHomepage(), user.getHomepage());
-		assertEquals(testUser.getApiKey(), user.getApiKey());
+		ModelUtils.assertPropertyEquality(testUser, user, new String[] { "homepage", "password", "apiKey" });
+		assertEquals("http://www.kde.cs.uni-kassel.de/hotho", user.getHomepage().toString());
+		assertEquals(null, user.getPassword());
+		assertEquals(null, user.getApiKey());
 	}
 
 	/**
@@ -61,22 +60,13 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void insertUser() {
-		final User newUser = new User();
-		newUser.setName("neuerUser");
-		newUser.setRealname("mira");
-		newUser.setPassword("dhdhd");
-		newUser.setEmail("mgr@cs.uni-kassel.de");
-		newUser.setHomepage(ParamUtils.SOME_URL);
+		final User newUser = ModelUtils.getUser();
+		newUser.setName("test-name");
 		this.userParam.setUser(newUser);
 		this.userDb.insertUser(this.userParam, this.dbSession);
-
 		final User user = this.userDb.getUserDetails(this.userParam.getUser().getName(), this.dbSession);
-		assertEquals(newUser.getName(), user.getName());
-		assertEquals(newUser.getEmail(), user.getEmail());
-		assertEquals(newUser.getHomepage(), user.getHomepage());
+		ModelUtils.assertPropertyEquality(newUser, user, new String[] { "password" });
 		assertEquals(null, user.getPassword());
-		assertEquals(newUser.getRealname(), user.getRealname());
-		assertEquals(newUser.getApiKey(), user.getApiKey());
 
 		try {
 			this.userParam.setUser(null);

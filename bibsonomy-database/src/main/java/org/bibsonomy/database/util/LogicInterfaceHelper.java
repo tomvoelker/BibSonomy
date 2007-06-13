@@ -14,6 +14,7 @@ import org.bibsonomy.database.params.UserParam;
 /**
  * Supplies methods to adapt the LogicInterface to the database layer.
  * 
+ * @author Jens Illig
  * @author Christian Schenk
  * @version $Id$
  */

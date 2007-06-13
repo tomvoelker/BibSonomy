@@ -3,10 +3,7 @@ package org.bibsonomy.database.util;
 import java.io.Closeable;
 
 /**
- * This class wraps the sqlMap.<br/>
- * 
- * See org.bibsonomy.database.AbstractDatabaseManager.transactionWrapper() for
- * further explanation and use of this class.
+ * This interface represents a session for the database.
  * 
  * @author Jens Illig
  * @author Christian Schenk
@@ -21,8 +18,8 @@ public interface DBSession extends Closeable {
 	public void beginTransaction();
 
 	/**
-	 * Marks the current (virtual) transaction as having been sucessfully completed.
-	 * If the transaction isn't virtual commits the real transaction.
+	 * Marks the current (virtual) transaction as having been sucessfully
+	 * completed. If the transaction isn't virtual commits the real transaction.
 	 */
 	public void commitTransaction();
 
@@ -35,10 +32,9 @@ public interface DBSession extends Closeable {
 	 * sometimes (in case of an exception) without.
 	 */
 	public void endTransaction();
-	
+
 	/** MUST be called to release the db-connection */
 	public void close();
-
 
 	/**
 	 * This method combines all calls to the SqlMap. This way we can catch the
@@ -57,5 +53,4 @@ public interface DBSession extends Closeable {
 	 * @return An object in case of a select statement, null otherwise
 	 */
 	public Object transactionWrapper(final String query, final Object param, final StatementType statementType, final QueryFor queryFor, final boolean ignoreException);
-	
 }

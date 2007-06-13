@@ -93,7 +93,7 @@ public class TransactionTest {
 		try {
 			this.transaction.endTransaction();
 			fail("should throw exception");
-		} catch (Exception e) {
+		} catch (final Exception ex) {
 		}
 	}
 
@@ -106,7 +106,7 @@ public class TransactionTest {
 		try {
 			this.transaction.commitTransaction();
 			fail("should throw exception");
-		} catch (Exception e) {
+		} catch (final Exception ex) {
 		}
 	}
 }

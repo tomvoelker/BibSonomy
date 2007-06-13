@@ -3,9 +3,9 @@ package org.bibsonomy.database.managers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
@@ -242,17 +242,16 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { ModelUtils.class.getName(), "hurz" }), "", null, 0, 50);
 		final List<Post<BibTex>> posts = this.bibTexDb.getPosts(param, this.dbSession);
 		assertEquals(1, posts.size());
-		final HashSet<String> skip = new HashSet<String>();
-		skip.addAll(Arrays.asList(new String[] { "resource", "tags" }));
-		ModelUtils.assertPropertyEquality(toInsert, posts.get(0), skip);
-		skip.clear();
+		ModelUtils.assertPropertyEquality(toInsert, posts.get(0), new String[] { "resource", "tags" });
 		toInsert.getResource().setCount(1);
-		ModelUtils.assertPropertyEquality(toInsert.getResource(), posts.get(0).getResource(), skip);
+		ModelUtils.assertPropertyEquality(toInsert.getResource(), posts.get(0).getResource(), "");
 
 		// Duplicate post and check whether plugins are called
 		this.resetParameters();
+		// FIXME: this boilerplate code could be removed with a DI-framework (i.e. next two lines)
 		final DatabasePluginMock plugin = new DatabasePluginMock();
 		DatabasePluginRegistry.getInstance().add(plugin);
+		assertFalse(plugin.isOnBibTexUpdate());
 		param.setHash("06aef6e5439298f27dc5aee82c4293d6");
 		final Post<BibTex> someBibTexPost = this.bibTexDb.getBibTexByHash(param, this.dbSession).get(0);
 		this.bibTexDb.storePost(someBibTexPost.getUser().getName(), someBibTexPost, "06aef6e5439298f27dc5aee82c4293d6", this.dbSession);

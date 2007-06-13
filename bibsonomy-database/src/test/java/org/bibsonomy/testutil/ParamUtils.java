@@ -1,7 +1,5 @@
 package org.bibsonomy.testutil;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -28,18 +26,11 @@ import org.bibsonomy.model.User;
 public class ParamUtils {
 
 	private static final Date date;
-	public static URL SOME_URL;
 
 	static {
 		final Calendar cal = Calendar.getInstance();
 		cal.clear();
 		date = cal.getTime();
-
-		try {
-			SOME_URL = new URL("http://www.db.de");
-		} catch (final MalformedURLException ex) {
-			// will never happen
-		}
 	}
 
 	/**
@@ -112,11 +103,10 @@ public class ParamUtils {
 	public static UserParam getDefaultUserParam() {
 		final UserParam param = new UserParam();
 		setDefaults(param);
-		final User user = new User();
+		final User user = ModelUtils.getUser();
 		user.setName("hotho");
 		user.setRealname("Andreas Hotho");
 		user.setEmail("aho@cs.uni-kassel.de");
-		user.setHomepageAsString("http://www.kde.cs.uni-kassel.de/hotho");
 		param.setUser(user);
 		return param;
 	}
@@ -130,9 +120,9 @@ public class ParamUtils {
 		param.setNewContentId(5218);
 		param.setTasId(213758);
 		param.setTags(new ArrayList<Tag>());
-		for (final String s : new String[] { ParamUtils.class.getName(), "hurz", "trallalla", "---_-" }) {
+		for (final String tagName : new String[] { ParamUtils.class.getName(), "hurz", "trallalla", "---_-" }) {
 			final Tag tag = new Tag();
-			tag.setName(s);
+			tag.setName(tagName);
 			param.getTags().add(tag);
 		}
 		param.setGroups(Arrays.asList(new Integer[] { 1, 5 }));

@@ -19,6 +19,7 @@ import com.ibatis.sqlmap.client.SqlMapSession;
  * @version $Id$
  */
 public class DBSessionImpl implements DBSession {
+
 	protected static final Logger log = Logger.getLogger(DBSessionImpl.class);
 	/** Communication with the database is done with the sqlMap */
 	private final SqlMapSession sqlMap;
@@ -28,7 +29,7 @@ public class DBSessionImpl implements DBSession {
 	/** if one virtual transaction is aborted, no other virtual transaction will become committed until all virtual transactions are ended */
 	private boolean aborted;
 	private boolean closed;
-	
+
 	protected DBSessionImpl(final SqlMapSession sqlMap) {
 		this.sqlMap = sqlMap;
 		this.transactionDepth = 0;
@@ -115,7 +116,7 @@ public class DBSessionImpl implements DBSession {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "No transaction open");
 		}
 	}
-	
+
 	/** MUST be called to release the db-connection */
 	public void close() {
 		try {
@@ -148,8 +149,7 @@ public class DBSessionImpl implements DBSession {
 	public boolean isAborted() {
 		return this.aborted;
 	}
-	
-	
+
 	/**
 	 * This method combines all calls to the SqlMap. This way we can catch the
 	 * exceptions in one place and surround the queries with transaction
@@ -182,8 +182,7 @@ public class DBSessionImpl implements DBSession {
 		}
 		return null; // unreachable
 	}
-	
-	
+
 	/**
 	 * Executes a query.
 	 */

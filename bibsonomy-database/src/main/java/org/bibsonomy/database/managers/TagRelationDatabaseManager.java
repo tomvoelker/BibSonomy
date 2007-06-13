@@ -19,11 +19,12 @@ import org.bibsonomy.util.ExceptionUtils;
  * @version $Id$
  */
 public class TagRelationDatabaseManager extends AbstractDatabaseManager {
+
 	private static final Logger log = Logger.getLogger(TagRelationDatabaseManager.class);
 	private final static TagRelationDatabaseManager singleton = new TagRelationDatabaseManager();
 	private final GeneralDatabaseManager generalDb;
 	private final DatabasePluginRegistry plugins;
-	
+
 	private static enum Relation {
 		SUPER,
 		SUB
@@ -43,7 +44,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 		addRel(tag.getName(), tag.getSubTags(), userName, Relation.SUB, session);
 	}
 
-	private void addRel(String centerTagName, final List<Tag> relatedTags, final String userName, final Relation rel, final DBSession session) {
+	private void addRel(final String centerTagName, final List<Tag> relatedTags, final String userName, final Relation rel, final DBSession session) {
 		if ((relatedTags == null) || (relatedTags.size() == 0)) {
 			return;
 		}
@@ -57,11 +58,11 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 		} else {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "unknown " + Relation.class.getName() + " '" + rel.toString() + "'");
 		}
-		for (final Tag t : relatedTags) {
+		for (final Tag tag : relatedTags) {
 			if (rel == Relation.SUPER) {
-				trp.setUpperTagName(t.getName());
+				trp.setUpperTagName(tag.getName());
 			} else if (rel == Relation.SUB) {
-				trp.setLowerTagName(t.getName());
+				trp.setLowerTagName(tag.getName());
 			}
 			this.insertIfNotPresent(trp, session);
 		}
@@ -71,17 +72,17 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 		session.beginTransaction();
 		try {
 			insert("insertTagRelationIfNotPresent", trp, true, session);
-			generalDb.updateIds( ConstantID.IDS_TAGREL_ID, session);
-		} catch (Exception e) {
-			log.debug(e.getMessage(),e);
+			this.generalDb.updateIds(ConstantID.IDS_TAGREL_ID, session);
+		} catch (final Exception ex) {
+			log.debug(ex.getMessage(), ex);
 		} finally {
 			session.commitTransaction();
 			session.endTransaction();
 		}
 	}
-	
+
 	public void deleteRelation(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
-		plugins.onTagRelationDelete(upperTagName, lowerTagName, userName, session);
+		this.plugins.onTagRelationDelete(upperTagName, lowerTagName, userName, session);
 		final TagRelationParam trp = new TagRelationParam();
 		trp.setOwnerUserName(userName);
 		trp.setLowerTagName(lowerTagName);

@@ -21,7 +21,6 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,9 +29,10 @@ import org.junit.Test;
  * @version $Id$
  */
 public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
+
 	private static final Logger log = Logger.getLogger(RestDatabaseManagerTest.class);
 
-	protected LogicInterface restDb;
+	private LogicInterface restDb;
 	private List<Post<BibTex>> bibTexPostsList;
 	private Set<Integer> alreadyFound;
 	private List<String> taglist;
@@ -130,7 +130,7 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getPostsByConceptForUser() {
-		this.taglist = Arrays.asList(new String[] {"->researcher"});
+		this.taglist = Arrays.asList(new String[] { "->researcher" });
 		this.bibTexPostsList = this.restDb.getPosts(TEST_USER_NAME, BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, taglist, "", Order.ADDED, 0, 2);
 		assertEquals(2, this.bibTexPostsList.size());
 		assertList(testUserNameSet, Order.ADDED, null, null, null, null);
@@ -172,7 +172,7 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getPostsByViewable() {
 		final Set<Integer> mustGroupIds = new HashSet<Integer>();
 		final HashSet<String> usersInGroup = new HashSet<String>();
-		usersInGroup.addAll( userDb.getUserNamesByGroupId( GroupID.GROUP_KDE.getId(), dbSession) );
+		usersInGroup.addAll( userDb.getUserNamesByGroupId( GroupID.GROUP_KDE.getId(), this.dbSession) );
 		mustGroupIds.add(GroupID.GROUP_KDE.getId());
 		this.bibTexPostsList = this.restDb.getPosts(TEST_USER_NAME, BibTex.class, GroupingEntity.VIEWABLE, "kde", new ArrayList<String>(), "", Order.ADDED, 0, 3);
 		assertEquals(3, this.bibTexPostsList.size());
@@ -185,7 +185,7 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getPostsForUsersInGroup() {
 		final HashSet<String> usersInGroup = new HashSet<String>();
-		usersInGroup.addAll( userDb.getUserNamesByGroupId( GroupID.GROUP_KDE.getId(), dbSession) );
+		usersInGroup.addAll( userDb.getUserNamesByGroupId( GroupID.GROUP_KDE.getId(), this.dbSession) );
 		this.bibTexPostsList = this.restDb.getPosts(TEST_USER_NAME, BibTex.class, GroupingEntity.GROUP, "kde", null, "", null, 0, 10);
 		assertEquals(10, this.bibTexPostsList.size());
 		assertList(usersInGroup, null, null, null, null, null);
@@ -197,7 +197,7 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getPostsForGroupByTag() {
 		final HashSet<String> usersInGroup = new HashSet<String>();
-		usersInGroup.addAll( userDb.getUserNamesByGroupId( GroupID.GROUP_KDE.getId(), dbSession) );
+		usersInGroup.addAll( userDb.getUserNamesByGroupId( GroupID.GROUP_KDE.getId(), this.dbSession) );
 		this.bibTexPostsList = this.restDb.getPosts("", BibTex.class, GroupingEntity.GROUP, "kde", taglist, "", null, 0, 9);
 		assertEquals(9, this.bibTexPostsList.size());
 		assertList(usersInGroup, null, this.tagSet, null, null, null);
@@ -208,7 +208,7 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getBibtexOfFriendByTags() {
-		List<String> tags = Arrays.asList(new String[] {"java"});
+		final List<String> tags = Arrays.asList(new String[] { "java" });
 		this.bibTexPostsList = this.restDb.getPosts("buzz", BibTex.class, GroupingEntity.FRIEND, "apo", tags, null, Order.ADDED, 0, 19);
 		assertEquals(1, this.bibTexPostsList.size());
 		final Set<String> tagsSet = new HashSet<String>();
@@ -221,7 +221,7 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		mustNotGroups.add(GroupID.GROUP_PRIVATE.getId());
 		mustNotGroups.add(GroupID.GROUP_PUBLIC.getId());
 		assertList(userSet, Order.ADDED, tagsSet, null, mustGroupIds, mustNotGroups);
-		
+
 		this.bibTexPostsList = this.restDb.getPosts("jaeschke", BibTex.class, GroupingEntity.FRIEND, "apo", tags, null, null, 0, 19);
 		assertEquals(0, this.bibTexPostsList.size());
 	}

@@ -88,7 +88,7 @@ public abstract class Resource {
 		byStringMap.put("BOOKMARK", Bookmark.class);
 		byStringMap.put("BIBTEX", BibTex.class);
 		byStringMap.put("ALL", Resource.class);
-		for (Map.Entry<String, Class<? extends Resource>> entry : byStringMap.entrySet()) {
+		for (final Map.Entry<String, Class<? extends Resource>> entry : byStringMap.entrySet()) {
 			toStringMap.put(entry.getValue(), entry.getKey());
 		}
 	}
@@ -105,7 +105,7 @@ public abstract class Resource {
 		return rVal;
 	}
 
-	public static String toString(Class<? extends Resource> clazz) {
+	public static String toString(final Class<? extends Resource> clazz) {
 		final String rVal = toStringMap.get(clazz);
 		if (rVal == null) {
 			throw new UnsupportedResourceTypeException(clazz.toString());

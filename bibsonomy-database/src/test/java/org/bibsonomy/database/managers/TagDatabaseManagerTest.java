@@ -11,6 +11,9 @@ import static org.junit.Assert.assertNull;
 /**
  * Tests related to tags.
  *
+ * @author Dominik Benz
+ * @author Miranda Grahl
+ * @author Jens Illig
  * @author Christian Schenk
  * @version $Id$
  */
