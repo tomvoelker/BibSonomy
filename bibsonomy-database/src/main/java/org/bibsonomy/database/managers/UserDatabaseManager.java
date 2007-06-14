@@ -130,6 +130,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public boolean validateUserAccess(final String username, final String apiKey, final DBSession session) {
 		if (apiKey == null || "".equals(apiKey.trim())) return false;
+		if (username == null || "".equals(username.trim())) return false;
 		final String currentApiKey = this.getApiKeyForUser(username, session);
 		if (currentApiKey == null) {
 			return false;
