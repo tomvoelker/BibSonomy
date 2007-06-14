@@ -114,6 +114,7 @@ public final class RestServlet extends HttpServlet {
 	private void handle(final HttpServletRequest request, final HttpServletResponse response, final HttpMethod method) throws IOException {
 
 		log.debug("Incoming URL:" + request.getRequestURL());
+		Long start = System.currentTimeMillis();
 
 		try {
 			// validate the requesting user's authorization
@@ -139,6 +140,12 @@ public final class RestServlet extends HttpServlet {
 			// XXX: cachingStream.size() != cachingStream.toString().length() !!
 			// the correct value is the first one!
 			response.setContentLength(cachingStream.size());
+			
+			// some more logging
+			log.debug("Size of output sent:" + cachingStream.size());
+			Long elapsed = System.currentTimeMillis() - start;
+			log.debug("Processing time: " + elapsed + " ms");
+			
 			response.getOutputStream().print(cachingStream.toString("UTF-8"));
 		} catch (final AuthenticationException e) {
 			response.setHeader("WWW-Authenticate", "Basic realm=\"BibsonomyWebService\"");
