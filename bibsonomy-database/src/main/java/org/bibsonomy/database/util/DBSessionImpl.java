@@ -9,10 +9,7 @@ import com.ibatis.sqlmap.client.SqlMapExecutor;
 import com.ibatis.sqlmap.client.SqlMapSession;
 
 /**
- * This class wraps the sqlMap.<br/>
- * 
- * See org.bibsonomy.database.AbstractDatabaseManager.transactionWrapper() for
- * further explanation and use of this class.
+ * This class wraps the iBatis SqlMap and manages database sessions.
  * 
  * @author Jens Illig
  * @author Christian Schenk
@@ -33,7 +30,7 @@ public class DBSessionImpl implements DBSession {
 	protected DBSessionImpl(final SqlMapSession sqlMap) {
 		this.sqlMap = sqlMap;
 		this.transactionDepth = 0;
-		this.transactionDepth = 0;
+		this.uncommittedDepth = 0;
 		this.aborted = false;
 		this.closed = false;
 	}
@@ -66,8 +63,8 @@ public class DBSessionImpl implements DBSession {
 	}
 
 	/**
-	 * Marks the current (virtual) transaction as having been sucessfully completed.
-	 * If the transaction isn't virtual commits the real transaction.
+	 * Marks the current (virtual) transaction as having been sucessfully
+	 * completed. If the transaction isn't virtual commits the real transaction.
 	 */
 	public void commitTransaction() {
 		if (this.uncommittedDepth > 0) {
@@ -81,6 +78,7 @@ public class DBSessionImpl implements DBSession {
 	 * If this is called before the current (virtual) transaction has been
 	 * committed, the transaction-stack is marked as failed. This causes the
 	 * real transaction (with all N virtual nested transactions) to abort.<br/>
+	 * 
 	 * This should always be called after each transaction, that has begun with
 	 * beginTransaction, sometimes with a preceeding call to commitTransaction,
 	 * sometimes (in case of an exception) without.
@@ -94,7 +92,7 @@ public class DBSessionImpl implements DBSession {
 			}
 			if (this.transactionDepth == 0) {
 				if (this.uncommittedDepth == 0) {
-					if  (this.aborted == false) {
+					if (this.aborted == false) {
 						try {
 							this.sqlMap.commitTransaction();
 							log.info("committed");
@@ -117,7 +115,9 @@ public class DBSessionImpl implements DBSession {
 		}
 	}
 
-	/** MUST be called to release the db-connection */
+	/**
+	 * MUST be called to release the db-connection
+	 */
 	public void close() {
 		try {
 			this.sqlMap.endTransaction();
@@ -131,8 +131,8 @@ public class DBSessionImpl implements DBSession {
 
 	@Override
 	protected void finalize() throws Throwable {
-		// try to take care of other peoples mistakes. it may take a while before this is called,
-		// but it's better than nothing.
+		// Try to take care of other peoples mistakes. It may take a while
+		// before this is called, but it's better than nothing.
 		if (this.closed == false) {
 			log.error(this.getClass().getName() + " not closed");
 			this.sqlMap.close();
