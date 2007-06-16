@@ -59,8 +59,9 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 
 	@Test
 	public void testDeleteRelation() {
-		// FIXME: this boilerplate code could be removed with a DI-framework (i.e. next two lines)
+		// FIXME: this boilerplate code could be removed with a DI-framework (i.e. next three lines)
 		final DatabasePluginMock plugin = new DatabasePluginMock();
+		DatabasePluginRegistry.getInstance().clearPlugins();
 		DatabasePluginRegistry.getInstance().add(plugin);
 		assertFalse(plugin.isOnTagRelationDelete());
 

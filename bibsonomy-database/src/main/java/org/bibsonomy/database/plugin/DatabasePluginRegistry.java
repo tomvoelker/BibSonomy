@@ -37,11 +37,19 @@ public class DatabasePluginRegistry {
 
 	/**
 	 * Plugins can be added with this method.
+	 * FIXME: will be removed with the introduction of a DI-framework
 	 */
 	public void add(final DatabasePlugin plugin) {
 		final String key = plugin.getClass().getName();
 		if (this.plugins.containsKey(key)) throw new RuntimeException("Plugin already present " + key);
 		this.plugins.put(key, plugin);
+	}
+
+	/*
+	 * FIXME: will be removed with the introduction of a DI-framework
+	 */
+	public void clearPlugins() {
+		this.plugins.clear();
 	}
 
 	private void executeRunnable(final Runnable runnable) {

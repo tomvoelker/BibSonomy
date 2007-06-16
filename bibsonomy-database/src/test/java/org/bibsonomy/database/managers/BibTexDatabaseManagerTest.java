@@ -248,8 +248,9 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		// Duplicate post and check whether plugins are called
 		this.resetParameters();
-		// FIXME: this boilerplate code could be removed with a DI-framework (i.e. next two lines)
+		// FIXME: this boilerplate code could be removed with a DI-framework (i.e. next three lines)
 		final DatabasePluginMock plugin = new DatabasePluginMock();
+		DatabasePluginRegistry.getInstance().clearPlugins();
 		DatabasePluginRegistry.getInstance().add(plugin);
 		assertFalse(plugin.isOnBibTexUpdate());
 		param.setHash("06aef6e5439298f27dc5aee82c4293d6");
