@@ -26,12 +26,19 @@ public class PerfTest extends AbstractDatabaseManagerTest {
 	/**
 	 * Executes all methods we'd like to evaluate.
 	 */
-	@Test
+	// @Test
 	public void testPerf() {
-		// for (final Method method : Method.values()) {
-		for (final Method method : new Method[] { Method.getBookmarkByTagNames }) {
+		for (final Method method : Method.values()) {
 			this.runPerfTest(method);
 		}
+	}
+
+	/**
+	 * We currently don't want to run these tests automatically but don't want
+	 * to break the maven build either.
+	 */
+	@Test
+	public void testDummy() {
 	}
 
 	/**
