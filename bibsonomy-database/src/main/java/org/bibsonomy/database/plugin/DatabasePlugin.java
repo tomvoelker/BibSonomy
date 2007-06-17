@@ -9,6 +9,7 @@ import org.bibsonomy.database.util.DBSession;
  * 
  * If a method returns <code>null</code> its execution will be skipped.
  * 
+ * @author Jens Illig
  * @author Christian Schenk
  * @version $Id$
  */
@@ -17,6 +18,6 @@ public interface DatabasePlugin {
 	public Runnable onBibTexInsert(int contentId, DBSession session);
 
 	public Runnable onBibTexUpdate(int newContentId, int contentId, DBSession session);
-	
+
 	public Runnable onTagRelationDelete(String upperTagName, String lowerTagName, String userName, DBSession session);
 }

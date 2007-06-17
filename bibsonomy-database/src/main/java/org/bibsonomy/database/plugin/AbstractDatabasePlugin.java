@@ -8,19 +8,20 @@ import org.bibsonomy.database.util.DBSession;
  * all methods from the interface DatabasePlugin. Furthermore they have access
  * to some basic database methods.
  * 
+ * @author Jens Illig
  * @author Christian Schenk
  * @version $Id$
  */
 public class AbstractDatabasePlugin extends AbstractDatabaseManager implements DatabasePlugin {
 
-	public Runnable onBibTexInsert(int contentId, DBSession session) {
+	public Runnable onBibTexInsert(final int contentId, final DBSession session) {
 		return null;
 	}
 
-	public Runnable onBibTexUpdate(int newContentId, int contentId, DBSession session) {
+	public Runnable onBibTexUpdate(final int newContentId, final int contentId, final DBSession session) {
 		return null;
 	}
-	
+
 	public Runnable onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
 		return null;
 	}

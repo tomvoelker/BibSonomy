@@ -10,6 +10,7 @@ import org.bibsonomy.database.util.DBSession;
  * of objects (bookmarks, publications, etc.) into special tables in the
  * database. This way it is possible to track the changes made by users.
  * 
+ * @author Jens Illig
  * @author Christian Schenk
  * @version $Id$
  */
@@ -37,7 +38,7 @@ public class Logging extends AbstractDatabasePlugin {
 			}
 		};
 	}
-	
+
 	@Override
 	public Runnable onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
 		return new Runnable() {
