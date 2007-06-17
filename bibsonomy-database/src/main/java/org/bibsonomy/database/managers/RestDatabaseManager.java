@@ -200,7 +200,7 @@ public class RestDatabaseManager implements LogicInterface {
 	}
 
 	/*
-	 * Returns details about a tag. Those details are:
+	 * Returns details about a tag.
 	 */
 	public Tag getTagDetails(final String authUserName, final String tagName) {
 		final DBSession session = this.openSession();
@@ -235,18 +235,36 @@ public class RestDatabaseManager implements LogicInterface {
 	 * Removes the given user.
 	 */
 	public void deleteUser(final String userName) {
+		final DBSession session = this.openSession();
+		try {
+			this.userDBManager.deleteUser(userName, session);
+		} finally {
+			session.close();
+		}
 	}
 
 	/*
 	 * Removes the given group.
 	 */
 	public void deleteGroup(final String groupName) {
+		final DBSession session = this.openSession();
+		try {
+			this.groupDBManager.deleteGroup(groupName, session);
+		} finally {
+			session.close();
+		}
 	}
 
 	/*
 	 * Removes an user from a group.
 	 */
 	public void removeUserFromGroup(final String groupName, final String userName) {
+		final DBSession session = this.openSession();
+		try {
+			this.groupDBManager.removeUserFromGroup(groupName, userName, session);
+		} finally {
+			session.close();
+		}
 	}
 
 	/*
@@ -271,6 +289,12 @@ public class RestDatabaseManager implements LogicInterface {
 	 * Adds/updates a user in the database.
 	 */
 	public void storeUser(final User user, final boolean update) {
+		final DBSession session = this.openSession();
+		try {
+			this.userDBManager.storeUser(user, update, session);
+		} finally {
+			session.close();
+		}
 	}
 
 	/*

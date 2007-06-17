@@ -66,60 +66,36 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
+	 * Inserts a user into the database.
+	 */
+	public void storeUser(final User user, final boolean update, final DBSession session) {
+		if (update) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Not implemented yet");
+		}
+
+		// check if a user exists with that name
+		if (this.getUserDetails(user.getName(), session) != null) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There's already a user with this name");
+		}
+
+		this.insertUser(user, session);
+	}
+
+	/**
 	 * Insert attributes for new user account including new Api key.
 	 */
-	public void insertUser(final UserParam param, final DBSession session) {
-		if (param.getUser() == null) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User object isn't present");
-		param.getUser().setApiKey(UserUtils.generateApiKey());
-		this.insert("insertUser", param, session);
+	private void insertUser(final User user, final DBSession session) {
+		if (user == null) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User object isn't present");
+		user.setApiKey(UserUtils.generateApiKey());
+		this.insert("insertUser", user, session);
 	}
 
 	/**
 	 * Delete a user.
 	 */
-	public void deleteUser(final User user, final DBSession session) {
-		this.delete("deleteUser", user, session);
-	}
-
-	/*
-	 * TODO delete should also include delete of tas beside personal information
-	 */
 	public void deleteUser(final String userName, final DBSession session) {
-		// TODO: implement
-	}
-
-	/*
-	 * TODO sql-statements are not implemented
-	 */
-	public void storeUser(final User user, final boolean update, final DBSession session) {
-		// UPDATE
-		// user would like to update his/her personal information
-		if (update == true) {
-			// test if user already exist
-			final User userTemp = this.getUserDetails(user.getName(), session);
-
-			// if the user already exists, there must be an user account in the
-			// database
-			if (userTemp == null) {
-				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "No user for given name in database");
-			} else {
-				// TODO change comparison!!!
-				if (userTemp.getName() != user.getName() || userTemp.getEmail() != user.getEmail() || userTemp.getHomepage() != user.getHomepage() || userTemp.getPassword() != user.getPassword() || userTemp.getRealname() != user.getRealname()) {
-					/*
-					 * TODO loggen löschen einfügen
-					 */
-				}
-			}
-		} else {
-			// INSERT
-			// new user does not exist and would like get an account
-
-			// FIXME if "update" isn't "true" it should be false in this else
-			// block, shouldn't it?!
-			if (update == false) {
-				this.insert("insertUser", user, session);
-			}
-		}
+		// TODO this should also delete tas entries
+		throw new UnsupportedOperationException("Not implemented");
 	}
 
 	/**

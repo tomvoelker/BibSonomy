@@ -42,6 +42,8 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Returns a specific group
+	 * 
+	 * @return Returns a {@link Group} object if the group exists otherwise null.
 	 */
 	public Group getGroupByName(final String groupname, final DBSession session) {
 		if (groupname == null || groupname.trim().length() == 0) {
@@ -54,16 +56,18 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * Returns a group with all its members if the user is allowed to see them.
 	 */
 	public Group getGroupMembers(final String authUser, final String groupname, final DBSession session) {
+		final Group group = this.queryForObject("getGroupMembers", groupname, Group.class, session);
+		if (group == null) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist");
+		}
 		final int groupId = this.getGroupByName(groupname, session).getGroupId();
 		final int privlevel = this.getPrivlevelForGroup(groupId, session);
-		final Group group = this.queryForObject("getGroupMembers", groupname, Group.class, session);
 		// remove members as necessary
 		switch (Privlevel.getPrivlevel(privlevel)) {
 		case MEMBERS:
 			// if the user isn't a member of the group he can't see other
 			// members -> and we'll fall through to HIDDEN
-			final List<Group> userGroups = this.getGroupsForUser(authUser, session);
-			if (this.containsGroupWithName(userGroups, groupname)) break;
+			if (this.isUserInGroup(authUser, groupname, session)) break;
 		case HIDDEN:
 			group.setUsers(Collections.<User> emptyList());
 			break;
@@ -79,21 +83,21 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
+	 * Returns true if the user is in the group otherwise false.
+	 */
+	private boolean isUserInGroup(final String username, final String groupname, final DBSession session) {
+		final List<Group> userGroups = this.getGroupsForUser(username, session);
+		for (final Group group : userGroups) {
+			if (groupname.equals(group.getName())) return true;
+		}
+		return false;
+	}
+
+	/**
 	 * Returns a a list of groups for a given user
 	 */
 	public List<Group> getGroupsForUser(final String username, final DBSession session) {
 		return this.queryForList("getGroupsForUser", username, Group.class, session);
-	}
-
-	/**
-	 * Returns true if a group with the given name is contained in the list,
-	 * otherwise false.
-	 */
-	private boolean containsGroupWithName(final List<Group> groups, final String groupname) {
-		for (final Group group : groups) {
-			if (groupname.equals(group.getName())) return true;
-		}
-		return false;
 	}
 
 	/**
@@ -112,7 +116,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		}
 		// check if a group exists with that name
 		if (this.getGroupByName(group.getName(), session) != null) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There's already a group with this name");
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There's already a group with this name ('" + group.getName() + "')");
 		}
 
 		this.insertGroup(group, session);
@@ -129,17 +133,41 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
+	 * Returns a new groupId.
+	 */
+	private int getNewGroupId(final DBSession session) {
+		return this.queryForObject("getNewGroupId", null, Integer.class, session);
+	}
+
+	/**
+	 * Delete a group from the database.
+	 */
+	public void deleteGroup(final String groupname, final DBSession session) {
+		// make sure that the group exists
+		final Group group = this.getGroupByName(groupname, session);
+		if (group == null) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist");
+		}
+		this.delete("deleteGroup", group.getGroupId(), session);
+		this.delete("removeAllUserFromGroup", group.getGroupId(), session);
+	}
+
+	/**
 	 * Adds a user to a group.
 	 */
 	public void addUserToGroup(final String groupname, final String username, final DBSession session) {
 		// check if a user exists with that name
 		if (this.userDb.getUserDetails(username, session) == null) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There's no user with this name");
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There's no user with this name ('" + username + "')");
 		}
 		// make sure that the group exists
 		final Group group = this.getGroupByName(groupname, session);
 		if (group == null) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group doesn't exist - can't add user to nonexistent group");
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't add user to nonexistent group");
+		}
+		// make sure that the user isn't a member of the group
+		if (this.isUserInGroup(username, groupname, session)) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') is already a member of this group ('" + groupname + "')");
 		}
 		// XXX: the next line is semantically incorrect
 		group.setName(username);
@@ -147,9 +175,20 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Returns a new groupId.
+	 * Removes a user from a group.
 	 */
-	private int getNewGroupId(final DBSession session) {
-		return this.queryForObject("getNewGroupId", null, Integer.class, session);
+	public void removeUserFromGroup(final String groupname, final String username, final DBSession session) {
+		// make sure that the group exists
+		final Group group = this.getGroupByName(groupname, session);
+		if (group == null) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't remove user from nonexistent group");
+		}
+		// make sure that the user is a member of the group
+		if (this.isUserInGroup(username, groupname, session) == false) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') isn't a member of this group ('" + groupname + "')");
+		}
+		// XXX: the next line is semantically incorrect
+		group.setName(username);
+		this.delete("removeUserFromGroup", group, session);
 	}
 }

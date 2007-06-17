@@ -25,6 +25,8 @@ import org.bibsonomy.model.User;
  */
 public class ParamUtils {
 
+	public static final String NOUSER_NAME = "this-user-doesnt-exist";
+	public static final String NOGROUP_NAME = "this-group-doesnt-exist";
 	private static final Date date;
 
 	static {

@@ -6,7 +6,7 @@
 		<result property="groupId"  column="group"           javaType="int" />
 		<result property="name"     column="group_name"      javaType="string" />
 	</resultMap>
-	
+
 	<resultMap id="group" class="group" extends="group_basic" groupBy="name">
 		<result property="users"    resultMap="UserCommon.userForGroup" />
 	</resultMap>

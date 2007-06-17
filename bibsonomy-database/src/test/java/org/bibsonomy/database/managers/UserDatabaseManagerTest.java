@@ -22,18 +22,12 @@ import org.junit.Test;
  */
 public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
-	/**
-	 * Retrieve all users
-	 */
 	@Test
 	public void getAllUsers() {
 		final List<User> users = this.userDb.getAllUsers(0, 10, this.dbSession);
 		assertEquals(10, users.size());
 	}
 
-	/**
-	 * Details of a given user
-	 */
 	@Test
 	public void getUserDetails() {
 		final User testUser = this.userParam.getUser();
@@ -55,30 +49,33 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(kdeUsers.length, users.size());
 	}
 
-	/**
-	 * Insert a new user
-	 */
 	@Test
-	public void insertUser() {
-		final User newUser = ModelUtils.getUser();
+	public void storeUser() {
+		final User newUser = this.userParam.getUser();
 		newUser.setName("test-name");
-		this.userParam.setUser(newUser);
-		this.userDb.insertUser(this.userParam, this.dbSession);
+		this.userDb.storeUser(newUser, false, this.dbSession);
 		final User user = this.userDb.getUserDetails(this.userParam.getUser().getName(), this.dbSession);
 		ModelUtils.assertPropertyEquality(newUser, user, new String[] { "password" });
 		assertEquals(null, user.getPassword());
 
-		try {
-			this.userParam.setUser(null);
-			this.userDb.insertUser(this.userParam, this.dbSession);
-			fail("should throw exception");
-		} catch (final Exception ex) {
+		for (final boolean update : new boolean[] { true, false }) {
+			try {
+				this.userDb.storeUser(null, update, this.dbSession);
+				fail("should throw exception");
+			} catch (final Exception ex) {
+			}
 		}
 	}
 
-	/**
-	 * Update an API key for a given user
-	 */
+	@Test
+	public void deleteUser() {
+		try {
+			this.userDb.deleteUser("", this.dbSession);
+			fail("should throw exception");
+		} catch (final UnsupportedOperationException ex) {
+		}
+	}
+
 	@Test
 	public void updateApiKeyForUser() {
 		this.userDb.updateApiKeyForUser(this.userParam.getUser(), this.dbSession);
@@ -103,5 +100,12 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// the correct key
 		apiKey = "a9999a44a48879d28bd34fd32bdfa0c1";
 		assertTrue(this.userDb.validateUserAccess(username, apiKey, this.dbSession));
+
+		// the user "14summerdays" hasn't got an Api key
+		for (final String name : new String[] { "", " ", null, "14summerdays" }) {
+			for (final String key : new String[] { "", " ", null, "hurz" }) {
+				assertFalse(this.userDb.validateUserAccess(name, key, this.dbSession));
+			}
+		}
 	}
 }

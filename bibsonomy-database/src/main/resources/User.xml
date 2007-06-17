@@ -15,26 +15,18 @@
 		UPDATE user SET api_key = #apiKey# WHERE user_name = #name#
 	</update>
 
-	<select id="getAllUsersWithoutApiKey" resultMap="Common.user" parameterClass="userParam">
-		SELECT user_name FROM user WHERE spammer = 0 AND api_key IS NULL LIMIT #limit# OFFSET #offset#
-	</select>
-
 	<select id="getUserDetails" resultMap="UserCommon.user" parameterClass="string">
 		SELECT user_name, user_email, user_homepage, user_realname, openUrl, api_key
 		FROM user WHERE user_name = #username#
-	</select>
-
-	<select id="getPrivlevelOfUser" resultClass="int" parameterClass="int">
-		SELECT privlevel FROM groupids WHERE `group` = #groupId#
 	</select>
 
 	<select id="getUserNamesByGroupId" resultClass="string" parameterClass="int">
 		SELECT user_name FROM groups WHERE `group` = $groupId$
 	</select>
 
-	<insert id="insertUser" parameterClass="userParam">
+	<insert id="insertUser" parameterClass="user">
 		INSERT INTO user (user_name, user_email, user_password, user_realname, user_homepage, api_key)
-		VALUES (#user.name#, #user.email#, #user.password#, #user.realname#, #user.homepage#, #user.apiKey#)
+		VALUES (#name#, #email#, #password#, #realname#, #homepage#, #apiKey#)
 	</insert>
 
 </sqlMap>
