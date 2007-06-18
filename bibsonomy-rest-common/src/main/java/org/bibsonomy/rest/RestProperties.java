@@ -2,10 +2,15 @@ package org.bibsonomy.rest;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import org.apache.log4j.Logger;
 
 /**
  * Some Properties for the REST Webservice.
@@ -14,118 +19,136 @@ import java.util.Properties;
  * @version $Id$
  */
 @SuppressWarnings("serial")
-public class RestProperties extends Properties {
+public class RestProperties {
+	private static final Logger log = Logger.getLogger(RestProperties.class);
+	private static RestProperties singleton = null;
+	
+	private final Properties properties;
+	private final Context jndiCtx;
+	
+	public static enum Property {
+		CONFIGFILE("RestConfig.cfg"),
+		API_URL("http://localhost:8080/restTomcat/api/"),
+		CONTENT_TYPE("text/xml"),
+		API_USER_AGENT("BibsonomyWebServiceClient"),
+		URL_TAGS("tags"),
+		URL_USERS("users"),
+		URL_GROUPS("groups"),
+		URL_POSTS("posts"),
+		URL_ADDED_POSTS("added"),
+		URL_POPULAR_POSTS("popular");
 
-	private static RestProperties properties = null;
-
-	/* key names */
-	private static final String PROPERTY_API_URL = "RestApiURL";
-	private static final String PROPERTY_CONTENT_TYPE = "DefaultContentType";
-	private static final String PROPERTY_API_USER_AGENT = "UserAgentOfAPI";
-	private static final String PROPERTY_URL_TAGS = "TagsURL";
-	private static final String PROPERTY_URL_USERS = "UsersURL";
-	private static final String PROPERTY_URL_GROUPS = "GroupsURL";
-	private static final String PROPERTY_URL_POSTS = "PostsURL";
-	private static final String PROPERTY_URL_ADDED_POSTS = "AddedPostsURL";
-	private static final String PROPERTY_URL_POPULAR_POSTS = "PopularPostsURL";
-
-	/* default values */
-	private static final String DEFAULT_API_URL = "http://localhost:8080/restTomcat/api/";
-	private static final String DEFAULT_CONTENT_TYPE = "text/xml";
-	private static final String DEFAULT_API_USER_AGENT = "BibsonomyWebServiceClient";
-	private static final String DEFAULT_URL_TAGS = "tags";
-	private static final String DEFAULT_URL_USERS = "users";
-	private static final String DEFAULT_URL_GROUPS = "groups";
-	private static final String DEFAULT_URL_POSTS = "posts";
-	private static final String DEFAULT_URL_ADDED_POSTS = "added";
-	private static final String DEFAULT_URL_POPULAR_POSTS = "popular";
-
-	/* some internals */
-	private static final String CONFIGFILE = "RestConfig.cfg";
-
-	private RestProperties() {
-		super();
+		private final String defaultValue;
+		private Property(final String defaultValue) {
+			this.defaultValue = defaultValue;
+		}
+	}
+	
+	private RestProperties(final Properties properties, final Context jndiCtx) {
+		this.properties = properties;
+		this.jndiCtx = jndiCtx;
+	}
+	
+	private static String getByJndi(final String name, final Context ctx) {
+		if (ctx == null) {
+			return null;
+		}
+		try {
+			return (String) ctx.lookup(name);
+		} catch (NamingException ex) {
+			if (log.isDebugEnabled() == true) {
+				log.debug("cannot retrieve java:/comp/env/" + name);
+			}
+			return null;
+		}
 	}
 
-	private RestProperties(final Properties properties) {
-		super(properties);
-		// store();
+	private static String get(final Property prop, final Properties properties, final Context ctx) {
+		String rVal = getByJndi(prop.name(), ctx);
+		if (rVal == null) {
+			if (properties != null) {
+				rVal = properties.getProperty(prop.name());
+			}
+			if (rVal == null) {
+				rVal = prop.defaultValue;
+			}
+		}
+		return rVal;
+	}
+	
+	public String get(final Property prop) {
+		return get(prop, this.properties, this.jndiCtx);
 	}
 
 	public static RestProperties getInstance() {
-		if (properties == null) {
+		if (singleton == null) {
+			Context ctx;
+			try {
+				ctx = ((Context) new InitialContext().lookup("java:/comp/env"));
+			} catch (NamingException ex) {
+				log.error("unable to initialize jndi context", ex);
+				ctx = null;
+			}
+			final String cfgFileName = get(Property.CONFIGFILE, null, ctx);
 			final Properties prop = new Properties();
 			try {
-				final File f = new File(CONFIGFILE);
-				if (f.exists()) {
-					prop.load(new FileInputStream(f));
+				final InputStream is;
+				final StringBuilder logMsgBuilder = new StringBuilder("reading config file '").append(cfgFileName).append("' from ");
+				final File f = new File(cfgFileName);
+				if (f.exists() == true) {
+					is = new FileInputStream(f);
+					logMsgBuilder.append("filesystem");
 				} else {
-					// System.err.println( "RestProperties.getInstance()" );
-					// System.err.println( "could not find config file." );
-					// System.exit( -1 );
-					// f.createNewFile();
+					logMsgBuilder.append("classloader");
+					is = RestProperties.class.getClassLoader().getResourceAsStream(cfgFileName);
 				}
-			} catch (final FileNotFoundException e) {
-				e.printStackTrace();
+				if (is != null) {
+					log.info(logMsgBuilder.toString());
+					prop.load(is);
+				} else {
+					log.info(logMsgBuilder.append("nowhere").toString());
+				}
 			} catch (final IOException e) {
-				e.printStackTrace();
+				log.error(e.getMessage(),e);
 			}
-			properties = new RestProperties(prop);
+			singleton = new RestProperties(prop, ctx);
 		}
-		return properties;
-	}
-
-	public void store() {
-		try {
-			super.store(new FileOutputStream(new File(CONFIGFILE)), "");
-		} catch (final FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (final IOException e) {
-			e.printStackTrace();
-		}
+		return singleton;
 	}
 
 	public String getApiUrl() {
-		return this.getPropertyOrDefault(PROPERTY_API_URL, DEFAULT_API_URL);
+		return this.get(Property.API_URL);
 	}
 
 	public String getContentType() {
-		return this.getPropertyOrDefault(PROPERTY_CONTENT_TYPE, DEFAULT_CONTENT_TYPE);
+		return this.get(Property.CONTENT_TYPE);
 	}
 
 	public String getApiUserAgent() {
-		return this.getPropertyOrDefault(PROPERTY_API_USER_AGENT, DEFAULT_API_USER_AGENT);
+		return this.get(Property.API_USER_AGENT);
 	}
 
 	public String getTagsUrl() {
-		return this.getPropertyOrDefault(PROPERTY_URL_TAGS, DEFAULT_URL_TAGS);
+		return this.get(Property.URL_TAGS);
 	}
 
 	public String getUsersUrl() {
-		return this.getPropertyOrDefault(PROPERTY_URL_USERS, DEFAULT_URL_USERS);
+		return this.get(Property.URL_USERS);
 	}
 
 	public String getGroupsUrl() {
-		return this.getPropertyOrDefault(PROPERTY_URL_GROUPS, DEFAULT_URL_GROUPS);
+		return this.get(Property.URL_GROUPS);
 	}
 
 	public String getPostsUrl() {
-		return this.getPropertyOrDefault(PROPERTY_URL_POSTS, DEFAULT_URL_POSTS);
+		return this.get(Property.URL_POSTS);
 	}
 
 	public String getAddedPostsUrl() {
-		return this.getPropertyOrDefault(PROPERTY_URL_ADDED_POSTS, DEFAULT_URL_ADDED_POSTS);
+		return this.get(Property.URL_ADDED_POSTS);
 	}
 
 	public String getPopularPostsUrl() {
-		return this.getPropertyOrDefault(PROPERTY_URL_POPULAR_POSTS, DEFAULT_URL_POPULAR_POSTS);
-	}
-
-	private final String getPropertyOrDefault(final String property, final String def) {
-		if (getProperty(property) != null) {
-			return getProperty(property).trim();
-		} else {
-			return def;
-		}
+		return this.get(Property.URL_POPULAR_POSTS);
 	}
 }
