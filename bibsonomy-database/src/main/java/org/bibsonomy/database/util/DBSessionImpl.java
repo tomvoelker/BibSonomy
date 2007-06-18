@@ -9,7 +9,8 @@ import com.ibatis.sqlmap.client.SqlMapExecutor;
 import com.ibatis.sqlmap.client.SqlMapSession;
 
 /**
- * This class wraps the iBatis SqlMap and manages database sessions.
+ * This class wraps the iBatis SqlMap and manages database sessions. Transations are virtual,
+ * which means a counter is used to emulate nested transactions.
  * 
  * @author Jens Illig
  * @author Christian Schenk
@@ -64,7 +65,8 @@ public class DBSessionImpl implements DBSession {
 
 	/**
 	 * Marks the current (virtual) transaction as having been sucessfully
-	 * completed. If the transaction isn't virtual commits the real transaction.
+	 * completed. If the transaction isn't virtual a following call to
+	 * endTransaction will do a commit on the real transaction.
 	 */
 	public void commitTransaction() {
 		if (this.uncommittedDepth > 0) {
@@ -151,20 +153,7 @@ public class DBSessionImpl implements DBSession {
 	}
 
 	/**
-	 * This method combines all calls to the SqlMap. This way we can catch the
-	 * exceptions in one place and surround the queries with transaction
-	 * management.
-	 * 
-	 * @param query
-	 *            The SQL query which should be executed.
-	 * @param param
-	 *            A parameter object
-	 * @param statementType
-	 *            Defines whether it sould be a select, insert, update or delete
-	 * @param queryFor
-	 *            Defines whether we want to retrieve an object or a list from a
-	 *            select
-	 * @return An object in case of a select statement, null otherwise
+	 * @see org.bibsonomy.database.util.DBSession.transactionWrapper(String, Object, StatementType, QueryFor, boolean)
 	 */
 	public Object transactionWrapper(final String query, final Object param, final StatementType statementType, final QueryFor queryFor, final boolean ignoreException) {
 		try {
