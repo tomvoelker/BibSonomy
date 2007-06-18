@@ -22,7 +22,7 @@ import org.bibsonomy.database.util.DBSession;
 public class AbstractDatabaseManager {
 
 	/** Logger */
-	protected static final Logger log = Logger.getLogger(AbstractDatabaseManager.class);
+	private static final Logger log = Logger.getLogger(AbstractDatabaseManager.class);
 
 	/**
 	 * Can be used to start a query that retrieves a list of Integers.
