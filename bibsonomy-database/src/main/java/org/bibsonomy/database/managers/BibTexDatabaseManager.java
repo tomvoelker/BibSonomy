@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
@@ -26,7 +27,8 @@ import org.bibsonomy.model.util.SimHash;
  * @version $Id$
  */
 public class BibTexDatabaseManager extends AbstractDatabaseManager implements CrudableContent<BibTex, BibTexParam> {
-
+	private static final Logger log = Logger.getLogger(BibTexDatabaseManager.class);
+	
 	/** Singleton */
 	private final static BibTexDatabaseManager singleton = new BibTexDatabaseManager();
 	private final GeneralDatabaseManager generalDb;
@@ -311,10 +313,15 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	}
 	
 	public List<Post<BibTex>> getBibTexByHashForUser(final String loginUserName, final String intraHash, final String requestedUserName, final DBSession session) {
+		return getBibTexByHashForUser(loginUserName, intraHash, requestedUserName, session, HashID.INTER_HASH);
+	}
+	
+	public List<Post<BibTex>> getBibTexByHashForUser(final String loginUserName, final String intraHash, final String requestedUserName, final DBSession session, final HashID hashType) {
 		final BibTexParam param = new BibTexParam();
 		param.setUserName(loginUserName);
 		param.setRequestedUserName(requestedUserName);
 		param.setHash(intraHash);
+		param.setRequestedSimHash(hashType);
 		return getBibTexByHashForUser(param, session);
 	}
 
@@ -323,7 +330,16 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	}
 
 	public Post<BibTex> getPostDetails(final String authUser, final String resourceHash, final String userName, final DBSession session) {
-		return null; // TODO: implement
+		final List<Post<BibTex>> list = getBibTexByHashForUser(authUser, resourceHash, userName, session, HashID.INTRA_HASH);
+		if (list.size() >= 1) {
+			if (list.size() > 1) {
+				log.warn("multiple bibtexPosts from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' found ->returning first");
+			}
+			return list.get(0);
+		} else {
+			log.debug("bibtexPost from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' not found");
+			return null;
+		}
 	}
 
 	/**
