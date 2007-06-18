@@ -20,15 +20,15 @@ public interface DBSession extends Closeable {
 
 	/**
 	 * Marks the current transaction as having been sucessfully completed.
-	 * However, the real commit may not be called before endTransaction
-	 * has been called. 
+	 * However, the real commit may not be called before endTransaction has been
+	 * called.
 	 */
 	public void commitTransaction();
 
 	/**
-	 * If this is called before the current transaction has been
-	 * committed, the transaction is marked as failed. This causes the
-	 * transaction to abort.<br/>
+	 * If this is called before the current transaction has been committed, the
+	 * transaction is marked as failed. This causes the transaction to abort.<br/>
+	 * 
 	 * This should always be called after each transaction, that has begun with
 	 * beginTransaction, sometimes with a preceeding call to commitTransaction,
 	 * sometimes (in case of an exception) without.

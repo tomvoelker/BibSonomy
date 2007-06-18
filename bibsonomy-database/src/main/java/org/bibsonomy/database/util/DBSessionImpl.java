@@ -9,7 +9,7 @@ import com.ibatis.sqlmap.client.SqlMapExecutor;
 import com.ibatis.sqlmap.client.SqlMapSession;
 
 /**
- * This class wraps the iBatis SqlMap and manages database sessions. Transations are virtual,
+ * This class wraps the iBatis SqlMap and manages database sessions. Transactions are virtual,
  * which means a counter is used to emulate nested transactions.
  * 
  * @author Jens Illig
@@ -152,7 +152,7 @@ public class DBSessionImpl implements DBSession {
 		return this.aborted;
 	}
 
-	/**
+	/*
 	 * @see org.bibsonomy.database.util.DBSession.transactionWrapper(String, Object, StatementType, QueryFor, boolean)
 	 */
 	public Object transactionWrapper(final String query, final Object param, final StatementType statementType, final QueryFor queryFor, final boolean ignoreException) {
