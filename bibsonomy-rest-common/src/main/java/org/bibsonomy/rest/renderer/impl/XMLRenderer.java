@@ -27,6 +27,10 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.RestProperties;
+import static org.bibsonomy.rest.RestProperties.Property.API_URL;
+import static org.bibsonomy.rest.RestProperties.Property.URL_GROUPS;
+import static org.bibsonomy.rest.RestProperties.Property.URL_POSTS;
+import static org.bibsonomy.rest.RestProperties.Property.URL_USERS;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.Renderer;
@@ -54,8 +58,16 @@ public class XMLRenderer implements Renderer {
 
 	private static final String JAXB_PACKAGE_DECLARATION = "org.bibsonomy.rest.renderer.xml";
 	private static XMLRenderer renderer;
+	private final String userUrlPrefix;
+	private final String groupUrlPrefix;
+	private final String postsUrlDelimiter;
 
 	private XMLRenderer() {
+		final RestProperties properties = RestProperties.getInstance();
+		final String apiUrl = properties.get(API_URL);
+		this.userUrlPrefix = apiUrl + properties.get(URL_USERS) + "/";
+		this.groupUrlPrefix = apiUrl + properties.get(URL_GROUPS) + "/";
+		this.postsUrlDelimiter = "/" + properties.get(URL_POSTS) + "/";
 	}
 
 	public static Renderer getInstance() {
@@ -432,14 +444,14 @@ public class XMLRenderer implements Renderer {
 	}
 
 	private String createHrefForUser(final String name) {
-		return RestProperties.getInstance().getApiUrl() + RestProperties.getInstance().getUsersUrl() + "/" + name;
+		return this.userUrlPrefix + name;
 	}
 
 	private String createHrefForGroup(final String name) {
-		return RestProperties.getInstance().getApiUrl() + RestProperties.getInstance().getGroupsUrl() + "/" + name;
+		return this.groupUrlPrefix + name;
 	}
 
 	private String createHrefForRessource(final String userName, final String intraHash) {
-		return RestProperties.getInstance().getApiUrl() + RestProperties.getInstance().getUsersUrl() + "/" + userName + "/" + RestProperties.getInstance().getPostsUrl() + "/" + intraHash;
+		return this.userUrlPrefix + userName + this.postsUrlDelimiter + intraHash;
 	}
 }
