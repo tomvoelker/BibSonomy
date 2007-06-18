@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
@@ -19,6 +20,7 @@ import org.bibsonomy.util.ExceptionUtils;
  * @version $Id$
  */
 public class UserDatabaseManager extends AbstractDatabaseManager {
+	private static final Logger log = Logger.getLogger(UserDatabaseManager.class);
 
 	/** Singleton */
 	private final static UserDatabaseManager singleton = new UserDatabaseManager();

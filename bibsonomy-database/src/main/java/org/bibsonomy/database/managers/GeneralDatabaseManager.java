@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.AbstractDatabaseManager;
@@ -16,7 +17,8 @@ import org.bibsonomy.util.ExceptionUtils;
  * @version $Id$
  */
 public class GeneralDatabaseManager extends AbstractDatabaseManager {
-
+	private static final Logger log = Logger.getLogger(GeneralDatabaseManager.class);
+	
 	/** Singleton */
 	private final static GeneralDatabaseManager singleton = new GeneralDatabaseManager();
 
