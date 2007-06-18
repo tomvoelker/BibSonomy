@@ -99,6 +99,20 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getGroupsForUser() {
 		List<Group> groups = this.groupDb.getGroupsForUser("stumme", this.dbSession);
+		assertEquals(6, groups.size());
+		this.assertStandardGroups(groups);
+
+		// every user has got at least three groups: "public", "private" and "friends"
+		groups = this.groupDb.getGroupsForUser(ParamUtils.NOUSER_NAME, this.dbSession);
+		assertEquals(3, groups.size());
+		this.assertStandardGroups(groups);
+	}
+
+	/**
+	 * Checks whether the list of groups contains at least the three standard
+	 * groups: "public", "private" and "friends"
+	 */
+	private void assertStandardGroups(final List<Group> groups) {
 		final Set<Integer> found = new HashSet<Integer>();
 		for (final Group group : groups) {
 			found.add(group.getGroupId());
@@ -106,22 +120,6 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertTrue(found.contains(GroupID.PUBLIC.getId()));
 		assertTrue(found.contains(GroupID.PRIVATE.getId()));
 		assertTrue(found.contains(GroupID.FRIENDS.getId()));
-		assertEquals(6, groups.size());
-
-		// every user has got at least three groups: "public", "private" and "friends"
-		groups = this.groupDb.getGroupsForUser(ParamUtils.NOUSER_NAME, this.dbSession);
-		assertEquals(3, groups.size());
-		for (final Group group : groups) {
-			boolean foundGroup = false;
-			for (final GroupID groupId : new GroupID[] { GroupID.PUBLIC, GroupID.PRIVATE, GroupID.FRIENDS }) {
-				if (groupId.toString().toLowerCase().endsWith(group.getName())) {
-					foundGroup = true;
-					break;
-				}
-			}
-			if (foundGroup) continue;
-			fail("User shouldn't be assigned to this group ('" + group.getName() + "')");
-		}
 	}
 
 	@Test
