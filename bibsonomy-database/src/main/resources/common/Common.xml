@@ -17,7 +17,7 @@
 		<result property="description"  column="description"    javaType="string" />
 	</resultMap>
 
-	<resultMap id="group" class="group">
+	<resultMap id="group" class="group" groupBy="groupId">
 		<result property="groupId" column="group"       javaType="int" />
 		<result property="name"    column="group_name"  javaType="string" />
 	</resultMap>
