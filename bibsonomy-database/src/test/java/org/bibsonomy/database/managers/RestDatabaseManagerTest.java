@@ -165,6 +165,7 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getPostsByHashForUser() {
 		this.bibTexPostsList = this.restDb.getPosts(TEST_USER_NAME, BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, new ArrayList<String>(), TEST_REQUEST_HASH, null, 0, 19);
 		assertEquals(1, this.bibTexPostsList.size());
+		assertEquals(1, this.bibTexPostsList.get(0).getGroups().size());
 		assertList(testUserNameSet, null, null, TEST_REQUEST_HASH, null, null);
 	}
 
