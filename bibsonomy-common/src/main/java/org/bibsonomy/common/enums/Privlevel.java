@@ -39,6 +39,7 @@ public enum Privlevel {
 		case 2:
 			return MEMBERS;
 		default:
+			// should never happen
 			throw new RuntimeException("Privlevel is out of bounds (" + privlevel + ")");
 		}
 	}

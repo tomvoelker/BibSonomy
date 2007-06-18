@@ -11,7 +11,7 @@ public class GroupTest {
 	@Test
 	public void getPrivlevel() {
 		final Group group = new Group();
-		assertEquals(GroupID.GROUP_PUBLIC.getId(), group.getGroupId());
+		assertEquals(GroupID.PUBLIC.getId(), group.getGroupId());
 		assertEquals(Privlevel.MEMBERS.getId(), group.getPrivlevel());
 	}
 }

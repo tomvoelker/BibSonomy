@@ -49,14 +49,14 @@ public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getGroupIdByGroupNameAndUserName() {
 		// group exists
 		this.generalParam.setRequestedGroupName("kde");
-		assertEquals(GroupID.GROUP_KDE.getId(), this.generalDb.getGroupIdByGroupNameAndUserName(this.generalParam, this.dbSession));
-		assertEquals(GroupID.GROUP_KDE.getId(), this.generalDb.getGroupIdByGroupName(this.generalParam, this.dbSession));
+		assertEquals(GroupID.KDE.getId(), this.generalDb.getGroupIdByGroupNameAndUserName(this.generalParam, this.dbSession));
+		assertEquals(GroupID.KDE.getId(), this.generalDb.getGroupIdByGroupName(this.generalParam, this.dbSession));
 
 		// group doesn't exist
 		this.resetParameters();
 		this.generalParam.setRequestedGroupName("this-group-doesnt-exists");
-		assertEquals(GroupID.GROUP_INVALID.getId(), this.generalDb.getGroupIdByGroupNameAndUserName(this.generalParam, this.dbSession));
-		assertEquals(GroupID.GROUP_INVALID.getId(), this.generalDb.getGroupIdByGroupName(this.generalParam, this.dbSession));
+		assertEquals(GroupID.INVALID.getId(), this.generalDb.getGroupIdByGroupNameAndUserName(this.generalParam, this.dbSession));
+		assertEquals(GroupID.INVALID.getId(), this.generalDb.getGroupIdByGroupName(this.generalParam, this.dbSession));
 
 		// groupname is null
 		this.resetParameters();

@@ -18,7 +18,7 @@ public class ParamTest {
 	 */
 	public void genericTest(final GenericParam param) {
 		assertEquals(0, param.getTagIndex().size());
-		assertEquals(GroupID.GROUP_PUBLIC.getId(), param.getGroupType());
+		assertEquals(GroupID.PUBLIC.getId(), param.getGroupType());
 		assertEquals(false, param.isCaseSensitiveTagNames());
 
 		for (final int i : new int[] { 1, 2, 3 }) {

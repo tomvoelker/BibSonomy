@@ -35,7 +35,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			final String homepage = group.getUsers().get(0).getHomepage().toString();
 
 			if (group.getName().equals("kde")) {
-				assertEquals(GroupID.GROUP_KDE.getId(), group.getGroupId());
+				assertEquals(GroupID.KDE.getId(), group.getGroupId());
 				assertEquals("Knowledge and Data Engineering Group", realname);
 				assertEquals("http://www.kde.cs.uni-kassel.de/", homepage);
 			} else if (group.getName().equals("ls3wim")) {
@@ -53,7 +53,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getGroupByName() {
 		final Group kdeGroup = this.groupDb.getGroupByName("kde", this.dbSession);
 		assertEquals("kde", kdeGroup.getName());
-		assertEquals(GroupID.GROUP_KDE.getId(), kdeGroup.getGroupId());
+		assertEquals(GroupID.KDE.getId(), kdeGroup.getGroupId());
 		assertEquals("Knowledge and Data Engineering Group", kdeGroup.getUsers().get(0).getRealname());
 		assertEquals("http://www.kde.cs.uni-kassel.de/", kdeGroup.getUsers().get(0).getHomepage().toString());
 
@@ -72,7 +72,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getGroupMembers() {
 		final Group kdeGroup = this.groupDb.getGroupMembers("stumme", "kde", this.dbSession);
 		assertEquals("kde", kdeGroup.getName());
-		assertEquals(GroupID.GROUP_KDE.getId(), kdeGroup.getGroupId());
+		assertEquals(GroupID.KDE.getId(), kdeGroup.getGroupId());
 		assertEquals(this.NUM_KDE_GROUP_MEMBERS, kdeGroup.getUsers().size());
 
 		// "xamde", a member of "ls3wim", can't see other members
@@ -103,14 +103,25 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		for (final Group group : groups) {
 			found.add(group.getGroupId());
 		}
-		assertTrue(found.contains(GroupID.GROUP_PUBLIC.getId()));
-		assertTrue(found.contains(GroupID.GROUP_PRIVATE.getId()));
-		assertTrue(found.contains(GroupID.GROUP_FRIENDS.getId()));
+		assertTrue(found.contains(GroupID.PUBLIC.getId()));
+		assertTrue(found.contains(GroupID.PRIVATE.getId()));
+		assertTrue(found.contains(GroupID.FRIENDS.getId()));
 		assertEquals(6, groups.size());
 
-		// every user has got at least three groups: PUBLIC, PRIVATE and FRIENDS
+		// every user has got at least three groups: "public", "private" and "friends"
 		groups = this.groupDb.getGroupsForUser(ParamUtils.NOUSER_NAME, this.dbSession);
 		assertEquals(3, groups.size());
+		for (final Group group : groups) {
+			boolean foundGroup = false;
+			for (final GroupID groupId : new GroupID[] { GroupID.PUBLIC, GroupID.PRIVATE, GroupID.FRIENDS }) {
+				if (groupId.toString().toLowerCase().endsWith(group.getName())) {
+					foundGroup = true;
+					break;
+				}
+			}
+			if (foundGroup) continue;
+			fail("User shouldn't be assigned to this group ('" + group.getName() + "')");
+		}
 	}
 
 	@Test
@@ -189,13 +200,13 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		try {
 			this.groupDb.addUserToGroup("kde", "stumme", this.dbSession);
 			fail("Should throw an exception");
-		} catch(final RuntimeException ex) {
+		} catch (final RuntimeException ex) {
 		}
 		// can't remove user from a group he isn't a member of
 		try {
 			this.groupDb.removeUserFromGroup("kde", "cschenk", this.dbSession);
 			fail("Should throw an exception");
-		} catch(final RuntimeException ex) {
+		} catch (final RuntimeException ex) {
 		}
 	}
 }

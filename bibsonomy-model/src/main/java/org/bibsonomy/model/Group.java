@@ -42,7 +42,7 @@ public class Group {
 	private Privlevel privlevel;
 
 	public Group() {
-		this.groupId = GroupID.GROUP_PUBLIC.getId();
+		this.groupId = GroupID.PUBLIC.getId();
 		this.privlevel = Privlevel.MEMBERS;
 	}
 

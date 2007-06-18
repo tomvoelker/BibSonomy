@@ -43,7 +43,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void getUserNamesOfGroupId() {
-		final List<String> users = this.userDb.getUserNamesByGroupId(GroupID.GROUP_KDE.getId(), this.dbSession);
+		final List<String> users = this.userDb.getUserNamesByGroupId(GroupID.KDE.getId(), this.dbSession);
 		final String[] kdeUsers = new String[] { "kde", "schmitz", "chs", "jaeschke", "stumme", "gst", "sfi", "finis", "rja", "aho", "hotho", "grahl", "beate" };
 		assertTrue(users.containsAll(Arrays.asList(kdeUsers)));
 		assertEquals(kdeUsers.length, users.size());

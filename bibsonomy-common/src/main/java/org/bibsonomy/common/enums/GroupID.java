@@ -2,11 +2,11 @@ package org.bibsonomy.common.enums;
 
 public enum GroupID {
 	/* constant group ids */
-	GROUP_INVALID(-1),
-	GROUP_PUBLIC(0),
-	GROUP_PRIVATE(1),
-	GROUP_FRIENDS(2),
-	GROUP_KDE(3);
+	PUBLIC(0),
+	PRIVATE(1),
+	FRIENDS(2),
+	KDE(3),
+	INVALID(-1);
 
 	private final int id;
 

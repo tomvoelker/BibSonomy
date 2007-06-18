@@ -99,8 +99,8 @@ public abstract class GenericParam {
 		this.numSimpleConcepts = 0;
 		this.numTransitiveConcepts = 0;
 		this.caseSensitiveTagNames = false;
-		this.groupId = GroupID.GROUP_INVALID.getId();
-		this.groupType = GroupID.GROUP_PUBLIC;
+		this.groupId = GroupID.INVALID.getId();
+		this.groupType = GroupID.PUBLIC;
 		this.idsType = ConstantID.IDS_UNDEFINED_CONTENT_ID;
 		this.limit = 10;
 		this.offset = 0;

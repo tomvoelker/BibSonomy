@@ -79,7 +79,7 @@ public class ModelUtils {
 		final Post<T> post = new Post<T>();
 
 		final Group group = new Group();
-		group.setGroupId(GroupID.GROUP_PUBLIC.getId());
+		group.setGroupId(GroupID.PUBLIC.getId());
 		group.setDescription(null);
 		post.getGroups().add(group);
 

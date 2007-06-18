@@ -53,9 +53,9 @@
 		INSERT INTO groupids (group_name, `group`, privlevel) VALUES (#name#, #groupId#, #privlevel#)
 	</insert>
 
-	<insert id="deleteGroup" parameterClass="int">
+	<delete id="deleteGroup" parameterClass="int">
 		DELETE FROM groupids WHERE `group` = #groupId#
-	</insert>
+	</delete>
 
 	<insert id="addUserToGroup" parameterClass="group">
 		INSERT INTO groups (user_name, `group`, defaultgroup) VALUES (#name#, #groupId#, #groupId#)

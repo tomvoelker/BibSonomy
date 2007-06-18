@@ -38,7 +38,7 @@ public class GetBibtexOfFriendsByUser extends BibTexChainElement {
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		if (this.gdm.isFriendOf(param, session) == true) {
-			param.setGroupId(GroupID.GROUP_FRIENDS.getId());
+			param.setGroupId(GroupID.FRIENDS.getId());
 			return this.db.getBibTexForUser(param, session);
 		}
 		return new ArrayList<Post<BibTex>>();

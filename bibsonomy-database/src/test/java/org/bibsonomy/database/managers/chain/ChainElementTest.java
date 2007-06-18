@@ -48,9 +48,9 @@ public class ChainElementTest {
 		assertTrue(chain.present(new Object()));
 
 		// GroupID
-		assertFalse(chain.present(GroupID.GROUP_INVALID));
+		assertFalse(chain.present(GroupID.INVALID));
 		for (final GroupID gid : GroupID.values()) {
-			if (gid == GroupID.GROUP_INVALID) continue;
+			if (gid == GroupID.INVALID) continue;
 			assertTrue(chain.present(gid));
 			assertTrue(chain.presentValidGroupId(gid.getId()));
 		}

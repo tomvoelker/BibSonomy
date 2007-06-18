@@ -98,7 +98,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "requestedGroupName is null");
 		}
 		final Integer rVal = this.queryForObject("getGroupIdByGroupNameAndUserName", param, Integer.class, session);
-		if (rVal == null) return GroupID.GROUP_INVALID.getId();
+		if (rVal == null) return GroupID.INVALID.getId();
 		return rVal;
 	}
 

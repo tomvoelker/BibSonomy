@@ -98,7 +98,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 */
 	public List<Post<Bookmark>> getBookmarkByUserFriends(final BookmarkParam param, final DBSession session) {
 		// groupType must be set to friends
-		param.setGroupType(GroupID.GROUP_FRIENDS);
+		param.setGroupType(GroupID.FRIENDS);
 		return this.bookmarkList("getBookmarkByUserFriends", param, true, session);
 	}
 

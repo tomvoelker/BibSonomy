@@ -37,7 +37,7 @@ public class GetBibtexOfFriendsByTags extends BibTexChainElement {
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		param.setGroupType(GroupID.GROUP_FRIENDS);
+		param.setGroupType(GroupID.FRIENDS);
 		if (this.gdm.isFriendOf(param, session) == true) {
 			return this.db.getBibTexByTagNamesForUser(param, session);
 		}

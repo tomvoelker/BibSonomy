@@ -137,7 +137,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 */
 	public List<Post<BibTex>> getBibTexByUserFriends(final BibTexParam param, final DBSession session) {
 		// groupType must be set to friends
-		param.setGroupType(GroupID.GROUP_FRIENDS);
+		param.setGroupType(GroupID.FRIENDS);
 		return this.bibtexList("getBibTexByUserFriends", param, session);
 	}
 
@@ -158,7 +158,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * public posts are shown.
 	 */
 	public List<Post<BibTex>> getBibTexForHomePage(final BibTexParam param, final DBSession session) {
-		param.setGroupType(GroupID.GROUP_FRIENDS);
+		param.setGroupType(GroupID.FRIENDS);
 		param.setLimit(15);
 		param.setOffset(0);
 		return this.bibtexList("getBibTexForHomePage", param, session);

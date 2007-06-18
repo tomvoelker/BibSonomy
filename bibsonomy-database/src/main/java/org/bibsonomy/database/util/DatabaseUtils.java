@@ -59,7 +59,7 @@ public class DatabaseUtils {
 		final Boolean friends = db.isFriendOf(param, session);
 		final List<Integer> groupIds = db.getGroupIdsForUser(param, session);
 		if (friends) {
-			groupIds.add(GroupID.GROUP_FRIENDS.getId());
+			groupIds.add(GroupID.FRIENDS.getId());
 		}
 		param.setGroups(groupIds);
 	}
@@ -71,7 +71,7 @@ public class DatabaseUtils {
 		DatabaseUtils.setGroups(db, param, session);
 		// the group type needs to be set to friends because of the second union
 		// in the SQL statement
-		param.setGroupType(GroupID.GROUP_FRIENDS);
+		param.setGroupType(GroupID.FRIENDS);
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class DatabaseUtils {
 	 */
 	public static void prepareGetPostForUser(final GeneralDatabaseManager db, final GenericParam param, final DBSession session) {
 		// if the groupId is invalid we have to check for groups manually
-		if (param.getGroupId() == GroupID.GROUP_INVALID.getId()) {
+		if (param.getGroupId() == GroupID.INVALID.getId()) {
 			DatabaseUtils.setGroups(db, param, session);
 		}
 	}

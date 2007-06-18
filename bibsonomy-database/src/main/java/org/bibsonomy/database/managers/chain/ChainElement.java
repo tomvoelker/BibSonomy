@@ -72,11 +72,11 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 	}
 
 	protected boolean present(final GroupID gid) {
-		return ((gid != null) && (gid != GroupID.GROUP_INVALID));
+		return ((gid != null) && (gid != GroupID.INVALID));
 	}
 
 	protected boolean presentValidGroupId(final int gid) {
-		return (gid != GroupID.GROUP_INVALID.getId());
+		return (gid != GroupID.INVALID.getId());
 	}
 
 	protected boolean nullOrEqual(final Object requested, final Object supported) {

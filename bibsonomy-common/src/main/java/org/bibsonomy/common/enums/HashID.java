@@ -1,8 +1,6 @@
 package org.bibsonomy.common.enums;
 
 /**
- * Constants that are used in SQL statements
- *
  * @author Jens Illig
  * @version $Id$
  */

@@ -100,7 +100,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getBibTexByTagNamesForUser() {
 		this.bibTexDb.getBibTexByTagNamesForUser(this.bibtexParam, this.dbSession);
 		this.resetParameters();
-		this.bibtexParam.setGroupId(GroupID.GROUP_INVALID.getId());
+		this.bibtexParam.setGroupId(GroupID.INVALID.getId());
 		this.bibTexDb.getBibTexByTagNamesForUser(this.bibtexParam, this.dbSession);
 	}
 
@@ -184,7 +184,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getBibTexForUsersInGroup() {
 		this.bibTexDb.getBibTexForUsersInGroup(this.bibtexParam, this.dbSession);
-		this.bibTexDb.getBibTexForUsersInGroup("jaeschke", GroupID.GROUP_KDE.getId(), this.dbSession);
+		this.bibTexDb.getBibTexForUsersInGroup("jaeschke", GroupID.KDE.getId(), this.dbSession);
 	}
 
 	@Test
@@ -203,7 +203,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getBibTexForUser() {
 		this.bibTexDb.getBibTexForUser(this.bibtexParam, this.dbSession);
 		this.resetParameters();
-		this.bibtexParam.setGroupId(GroupID.GROUP_INVALID.getId());
+		this.bibtexParam.setGroupId(GroupID.INVALID.getId());
 		this.bibTexDb.getBibTexForUser(this.bibtexParam, this.dbSession);
 	}
 
@@ -211,7 +211,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getBibTexForUserCount() {
 		this.bibTexDb.getBibTexForUserCount(this.bibtexParam, this.dbSession);
 		this.resetParameters();
-		this.bibtexParam.setGroupId(GroupID.GROUP_INVALID.getId());
+		this.bibtexParam.setGroupId(GroupID.INVALID.getId());
 		this.bibTexDb.getBibTexForUserCount(this.bibtexParam, this.dbSession);
 	}
 
