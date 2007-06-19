@@ -85,8 +85,9 @@ public class RestProperties {
 			Context ctx;
 			try {
 				ctx = ((Context) new InitialContext().lookup("java:/comp/env"));
-			} catch (NamingException ex) {
-				log.error("unable to initialize jndi context", ex);
+			} catch (Throwable ex) {
+				log.warn("unable to initialize jndi context");
+				log.debug(ex.getMessage(), ex);
 				ctx = null;
 			}
 			final String cfgFileName = get(Property.CONFIGFILE, null, ctx);
@@ -106,7 +107,7 @@ public class RestProperties {
 					log.info(logMsgBuilder.toString());
 					prop.load(is);
 				} else {
-					log.info(logMsgBuilder.append("nowhere").toString());
+					log.info(logMsgBuilder.append(" -> nowhere (not found)").toString());
 				}
 			} catch (final IOException e) {
 				log.error(e.getMessage(),e);
