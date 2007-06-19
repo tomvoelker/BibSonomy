@@ -230,6 +230,7 @@ public class ModelUtils {
 			}
 		}
 		if (required > 0) {
+			log.warn("not in all groups");
 			return false;
 		} else {
 			return true;

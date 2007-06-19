@@ -77,6 +77,7 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
 	private void assertList(final Set<String> checkUserNameOneOf, final Order checkOrder, final Set<String> checkTags, final String checkInterHash, final Set<Integer> mustBeInGroups, final Set<Integer> mustNotBeInGroups) {
 		for (final Post post : this.bibTexPostsList) {
+			log.debug("checking post with contentid " + post.getContentId());
 			assertTrue("contentid occured twice", alreadyFound.add(post.getContentId()));
 			
 			if (checkUserNameOneOf != null) {
