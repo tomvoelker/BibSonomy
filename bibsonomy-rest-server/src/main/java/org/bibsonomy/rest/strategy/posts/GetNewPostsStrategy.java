@@ -1,37 +1,37 @@
 package org.bibsonomy.rest.strategy.posts;
 
-import java.io.Writer;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.database.Order;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.RestProperties;
-import org.bibsonomy.rest.ViewModel;
-import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
-import org.bibsonomy.rest.strategy.Strategy;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public class GetNewPostsStrategy extends Strategy {
-
+public class GetNewPostsStrategy extends AbstractListOfPostsStrategy {
+	private final String nextLinkPrefix;
+	
 	public GetNewPostsStrategy(final Context context) {
 		super(context);
+		this.nextLinkPrefix = RestProperties.getInstance().getApiUrl() + RestProperties.getInstance().getPostsUrl() + "/" + RestProperties.getInstance().getAddedPostsUrl();
 	}
 
 	@Override
-	public void validate() throws ValidationException {
-		// should be ok for everybody
+	protected StringBuilder getLinkPrefix() {
+		return new StringBuilder(this.nextLinkPrefix);
 	}
 
 	@Override
+	protected List<? extends Post<? extends Resource>> getList(String authUserName, Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingValue, List<String> tags, String hash, Object object, int start, int end) {
+		return this.context.getLogic().getPosts(this.context.getAuthUserName(), resourceType, grouping, groupingValue, this.context.getTags("tags"), null, Order.ADDED, start, end);
+	}
+
+	/*@Override
 	public void perform(final HttpServletRequest request, final Writer writer) throws InternServerException {
 		// setup viewModel
 		final int start = this.context.getIntAttribute("start", 0);
@@ -67,11 +67,5 @@ public class GetNewPostsStrategy extends Strategy {
 
 		// delegate to the renderer
 		this.context.getRenderer().serializePosts(writer, posts, viewModel);
-	}
-
-	@Override
-	public String getContentType(final String userAgent) {
-		if (this.context.apiIsUserAgent(userAgent)) return "bibsonomy/posts+" + this.context.getRenderingFormat().toString();
-		return RestProperties.getInstance().getContentType();
-	}
+	}*/
 }
