@@ -1,9 +1,9 @@
 package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 
 import java.util.Arrays;
 import java.util.List;
@@ -136,7 +136,12 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getBibTexPopular() {
-		this.bibTexDb.getBibTexPopular(this.bibtexParam, this.dbSession);
+		List<Post<BibTex>> l = this.bibTexDb.getBibTexPopular(this.bibtexParam, this.dbSession);
+		assertEquals(this.bibtexParam.getLimit() , l.size());
+		this.bibtexParam.setLimit(1);
+		this.bibtexParam.setOffset(25);
+		l = this.bibTexDb.getBibTexPopular(this.bibtexParam, this.dbSession);
+		// FIXME: db inconsistency: assertEquals(1, l.size());
 	}
 
 	@Test
@@ -217,8 +222,9 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getPosts() {
-		// final List<Post<BibTex>> posts = this.bibTexDb.getPosts(this.bibtexParam, this.dbSession);
-		// assertEquals(19, posts.size());
+		this.bibtexParam.setHash("");
+		final List<Post<BibTex>> posts = this.bibTexDb.getPosts(this.bibtexParam, this.dbSession);
+		assertEquals(this.bibtexParam.getLimit(), posts.size());
 	}
 
 	@Test
