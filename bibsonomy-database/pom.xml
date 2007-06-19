@@ -23,8 +23,9 @@
 			<artifactId>bibsonomy-model</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.ibatis</groupId>
-			<artifactId>ibatis2</artifactId>
+			<groupId>org.apache.ibatis</groupId>
+			<artifactId>ibatis-sqlmap</artifactId>
+			<version>jeillig</version>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
