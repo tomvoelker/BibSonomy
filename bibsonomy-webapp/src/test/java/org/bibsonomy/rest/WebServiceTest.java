@@ -4,9 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
@@ -20,7 +24,10 @@ import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.dom4j.Node;
+import org.dom4j.dom.DOMElement;
+import org.dom4j.io.DOMReader;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -86,6 +93,7 @@ public class WebServiceTest {
 			log.debug("Executing: " + get.getURI());
 			this.client.executeMethod(get);
 		} catch (final Exception ex) {
+			log.fatal(ex.getMessage(),ex);
 			fail("Exception: " + ex.getMessage());
 		}
 		return get;
@@ -97,11 +105,23 @@ public class WebServiceTest {
 	private Document getResponseBodyAsDocument(final GetMethod get) {
 		try {
 			log.debug(get.getResponseBodyAsString());
-			return DocumentHelper.parseText(get.getResponseBodyAsString());
-		} catch (final DocumentException ex) {
+			DocumentBuilderFactory factory  = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			org.w3c.dom.Document domDoc = builder.parse(get.getResponseBodyAsStream());
+			return new DOMReader().read(domDoc);
+		} catch (final Exception ex) {
+			try {
+				final OutputStream os = new FileOutputStream("/tmp/bisonomyResponse.xml");
+				try {
+					os.write(get.getResponseBody());
+				} finally {
+					os.close();
+				}
+			} catch (Exception ex2) {
+				log.fatal(ex2.getMessage(),ex2);
+			}
+			log.fatal(ex.getMessage(),ex);
 			fail("DocumentException: " + ex.getMessage());
-		} catch (final IOException ex) {
-			fail("IOException: " + ex.getMessage());
 		}
 		return null; // unreachable
 	}
@@ -130,27 +150,27 @@ public class WebServiceTest {
 		assertTrue(get.getResponseBodyAsString().contains("error"));
 	}
 
-	// @Test
+	@Test
 	public void getPosts() throws IOException {
-		for (final String resourcetype : new String[] { "bibtex"/* , "bookmark" */}) {
+		for (final String resourcetype : new String[] { "bibtex"/* TODO: , "bookmark" */}) {
 			this.doc = this.getDocumentForWebServiceAction("posts?resourcetype=" + resourcetype);
 			// Check posts count
 			final Node posts = this.doc.selectSingleNode("//posts");
 			assertEquals(0, Integer.parseInt(posts.valueOf("@start")));
-			assertEquals(19, Integer.parseInt(posts.valueOf("@end")));
+			assertEquals(20, Integer.parseInt(posts.valueOf("@end")));
 			final Number numPosts = this.doc.numberValueOf("count(//post)");
 			assertEquals(20, numPosts.intValue());
 		}
 	}
 
-	// @Test
+	// FIXME: db inconsistency @Test
 	public void get100Posts() {
-		this.doc = this.getDocumentForWebServiceAction("posts?resourcetype=bibtex&start=0&end=100");
+		this.doc = this.getDocumentForWebServiceAction("posts?resourcetype=bibtex&start=5&end=30");
 		// Check posts count
 		final Node posts = this.doc.selectSingleNode("//posts");
-		assertEquals(0, Integer.parseInt(posts.valueOf("@start")));
-		assertEquals(99, Integer.parseInt(posts.valueOf("@end")));
+		assertEquals(5, Integer.parseInt(posts.valueOf("@start")));
 		final Number numPosts = this.doc.numberValueOf("count(//post)");
-		assertEquals(100, numPosts.intValue());
+		assertEquals(25, numPosts.intValue());
+		assertEquals(30, Integer.parseInt(posts.valueOf("@end")));
 	}
 }
