@@ -16,8 +16,8 @@
 			<property name="JDBC.Password" value="${password}" />
 			<property name="maxWait" value="6000"/>
 			<property name="Pool.MaximumWait" value="6000"/>
-			<property name="Pool.MaximumActiveConnections" value="2"/>
-			<property name="Pool.MaximumIdleConnections" value="2"/>
+			<property name="Pool.MaximumActiveConnections" value="250"/>
+			<property name="Pool.MaximumIdleConnections" value="250"/>
 		</dataSource>
 	</transactionManager>
 
