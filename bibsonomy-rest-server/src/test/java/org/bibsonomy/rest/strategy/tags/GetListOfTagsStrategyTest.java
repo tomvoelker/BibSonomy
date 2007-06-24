@@ -27,7 +27,7 @@ public class GetListOfTagsStrategyTest {
 
 		// just test length, because the detail rendering output is tested by
 		// the renderer test
-		assertEquals(938, sw.toString().length());
+		assertEquals(894, sw.toString().length());
 		assertEquals("text/xml", ctx.getContentType("firefox"));
 		assertEquals("bibsonomy/tags+XML", ctx.getContentType(RestProperties.getInstance().getApiUserAgent()));
 	}

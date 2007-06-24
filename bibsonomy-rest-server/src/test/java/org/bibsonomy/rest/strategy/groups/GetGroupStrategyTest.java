@@ -27,7 +27,7 @@ public class GetGroupStrategyTest {
 
 		// just test length, because the detail rendering output is tested by
 		// the renderer test
-		assertEquals(210, sw.toString().length());
+		assertEquals(166, sw.toString().length());
 		assertEquals("text/xml", ctx.getContentType("firefox"));
 		assertEquals("bibsonomy/group+XML", ctx.getContentType(RestProperties.getInstance().getApiUserAgent()));
 	}

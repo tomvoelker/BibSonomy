@@ -27,7 +27,7 @@ public class GetUserListOfGroupStrategyTest {
 
 		// just test length, because the detail rendering output is tested by
 		// the renderer test
-		assertEquals(710, sw.toString().length());
+		assertEquals(666, sw.toString().length());
 		assertEquals("text/xml", c.getContentType("firefox"));
 		assertEquals("bibsonomy/users+XML", c.getContentType(RestProperties.getInstance().getApiUserAgent()));
 	}
