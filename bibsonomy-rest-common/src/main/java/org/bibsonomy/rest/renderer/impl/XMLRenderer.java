@@ -402,7 +402,7 @@ public class XMLRenderer implements Renderer {
 			final JAXBContext jc = JAXBContext.newInstance(JAXB_PACKAGE_DECLARATION);
 
 			// buildup xml document
-			final JAXBElement<BibsonomyXML> webserviceElement = (new ObjectFactory()).createBibsonomyXMLInterchangeDocument(xmlDoc);
+			final JAXBElement<BibsonomyXML> webserviceElement = new ObjectFactory().createBibsonomy(xmlDoc);
 
 			// create a marshaller
 			final Marshaller marshaller = jc.createMarshaller();

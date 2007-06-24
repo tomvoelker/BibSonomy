@@ -170,7 +170,7 @@ public class XMLRendererTest {
 
 	private void marshalToFile(final BibsonomyXML bibXML, final File tmpFile) throws JAXBException, PropertyException, FileNotFoundException {
 		final JAXBContext jc = JAXBContext.newInstance("org.bibsonomy.rest.renderer.xml");
-		final JAXBElement<BibsonomyXML> webserviceElement = (new ObjectFactory()).createBibsonomyXMLInterchangeDocument(bibXML);
+		final JAXBElement<BibsonomyXML> webserviceElement = new ObjectFactory().createBibsonomy(bibXML);
 		final Marshaller marshaller = jc.createMarshaller();
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		marshaller.marshal(webserviceElement, new FileOutputStream(tmpFile));

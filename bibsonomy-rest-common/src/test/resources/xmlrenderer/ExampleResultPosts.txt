@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<bibsonomyXMLInterchangeDocument>
+<bibsonomy>
     <posts start="0" next="www.bibsonomy.org/foo/bar" end="10">
         <post>
             <user name="foo" href="http://localhost:8080/restTomcat/api/users/foo"/>
@@ -13,4 +13,4 @@
             <bookmark url="www.foobar.de" intrahash="12345678" interhash="12345678" href="http://localhost:8080/restTomcat/api/users/foo/posts/12345678"/>
         </post>
     </posts>
-</bibsonomyXMLInterchangeDocument>
+</bibsonomy>

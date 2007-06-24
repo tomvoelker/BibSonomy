@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<bibsonomyXMLInterchangeDocument>
+<bibsonomy>
     <post>
         <user name="foo" href="http://localhost:8080/restTomcat/api/users/foo"/>
         <tag name="bar"/>
         <bookmark url="www.foobar.org" intrahash="aabbcc" interhash="aabbcc" href="http://localhost:8080/restTomcat/api/users/foo/posts/aabbcc"/>
     </post>
-</bibsonomyXMLInterchangeDocument>
+</bibsonomy>

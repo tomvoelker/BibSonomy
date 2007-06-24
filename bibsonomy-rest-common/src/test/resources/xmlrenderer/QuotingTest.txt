@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<bibsonomyXMLInterchangeDocument>
+<bibsonomy>
     <posts start="0" next="http://foo.bar/posts?start=1&amp;end=2&amp;resourcetype=bookmark&amp;tags=a+-&gt;b+&lt;-c+&lt;-&gt;d&amp;hash=asd&amp;&amp;&amp;kjalsjdf" end="1">
         <post>
             <user name="foo" href="http://localhost:8080/restTomcat/api/users/foo"/>
@@ -7,4 +7,4 @@
             <bookmark url="www.foobar.org" intrahash="aabbcc" interhash="aabbcc" href="http://localhost:8080/restTomcat/api/users/foo/posts/aabbcc"/>
         </post>
     </posts>
-</bibsonomyXMLInterchangeDocument>
+</bibsonomy>
