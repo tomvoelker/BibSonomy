@@ -166,7 +166,7 @@ public interface Renderer {
 	public List<Post<? extends Resource>> parsePostList(Reader reader) throws BadRequestOrResponseException;
 
 	/**
-	 * Reads one {@link Post}s from a {@link Reader}.
+	 * Reads one {@link Post} from a {@link Reader}.
 	 * 
 	 * @param reader
 	 *            the {@link Reader} to use.
@@ -208,4 +208,15 @@ public interface Renderer {
 	 *             if the document within the reader is errorenous.
 	 */
 	public List<Tag> parseTagList(Reader reader) throws BadRequestOrResponseException;
+	
+	/**
+	 * Reads one {@link Tag} from a {@link Reader}.
+	 * 
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return one {@link Post} object.
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public Tag parseTag(Reader reader) throws BadRequestOrResponseException;
 }

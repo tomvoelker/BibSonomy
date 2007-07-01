@@ -454,4 +454,14 @@ public class XMLRenderer implements Renderer {
 	private String createHrefForRessource(final String userName, final String intraHash) {
 		return this.userUrlPrefix + userName + this.postsUrlDelimiter + intraHash;
 	}
+
+	public Tag parseTag(Reader reader) throws BadRequestOrResponseException {
+		if (reader == null) throw new BadRequestOrResponseException("The body part of the received document is missing");
+		final BibsonomyXML xmlDoc = parse(reader);
+		if (xmlDoc.getTag() != null) {
+			return ModelFactory.getInstance().createTag(xmlDoc.getTag());
+		}
+		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no tag defined.");
+	}
 }
