@@ -15,9 +15,6 @@ import org.bibsonomy.rest.renderer.RendererFactory;
  * @version $Id$
  */
 public final class CreateUserQuery extends AbstractQuery<String> {
-
-	private boolean executed = false;
-	private String result;
 	private final User user;
 
 	/**
@@ -38,16 +35,9 @@ public final class CreateUserQuery extends AbstractQuery<String> {
 	}
 
 	@Override
-	public String getResult() {
-		if (!this.executed) throw new IllegalStateException("Execute the query first.");
-		return this.result;
-	}
-
-	@Override
-	protected void doExecute() throws ErrorPerformingRequestException {
-		this.executed = true;
+	protected String doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		RendererFactory.getRenderer(getRenderingFormat()).serializeUser(sw, this.user, null);
-		this.result = performRequest(HttpMethod.POST, URL_USERS + "?format=" + getRenderingFormat().toString().toLowerCase(), sw.toString());
+		return performRequest(HttpMethod.POST, URL_USERS + "?format=" + getRenderingFormat().toString().toLowerCase(), sw.toString());
 	}
 }

@@ -15,9 +15,6 @@ import org.bibsonomy.rest.renderer.RendererFactory;
  * @version $Id$
  */
 public final class AddUserToGroupQuery extends AbstractQuery<String> {
-
-	private boolean executed = false;
-	private String result;
 	private final User user;
 	private final String groupName;
 
@@ -42,18 +39,11 @@ public final class AddUserToGroupQuery extends AbstractQuery<String> {
 		this.groupName = groupName;
 		this.user = user;
 	}
-
+	
 	@Override
-	public String getResult() {
-		if (!this.executed) throw new IllegalStateException("Execute the query first.");
-		return this.result;
-	}
-
-	@Override
-	protected void doExecute() throws ErrorPerformingRequestException {
-		this.executed = true;
+	protected String doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		RendererFactory.getRenderer(getRenderingFormat()).serializeUser(sw, user, null);
-		this.result = performRequest(HttpMethod.POST, URL_GROUPS + "/" + this.groupName + "/" + URL_USERS + "?format=" + getRenderingFormat().toString().toLowerCase(), sw.toString());
+		return performRequest(HttpMethod.POST, URL_GROUPS + "/" + this.groupName + "/" + URL_USERS + "?format=" + getRenderingFormat().toString().toLowerCase(), sw.toString());
 	}
 }
