@@ -2,8 +2,6 @@ package org.bibsonomy.rest.renderer;
 
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.rest.enums.RenderingFormat;
-import org.bibsonomy.rest.renderer.impl.HTMLRenderer;
-import org.bibsonomy.rest.renderer.impl.RDFRenderer;
 import org.bibsonomy.rest.renderer.impl.XMLRenderer;
 
 /**
@@ -22,10 +20,6 @@ public class RendererFactory {
 		if (renderingFormat == null) throw new InternServerException("RenderingFormat is null");
 
 		switch (renderingFormat) {
-		case HTML:
-			return new HTMLRenderer();
-		case RDF:
-			return new RDFRenderer();
 		case XML:
 		default:
 			return XMLRenderer.getInstance();
