@@ -40,7 +40,8 @@ public final class GetUserDetailsQuery extends AbstractQuery<User> {
 	}
 
 	@Override
-	protected void doExecute() throws ErrorPerformingRequestException {
+	protected User doExecute() throws ErrorPerformingRequestException {
 		this.downloadedDocument = performGetRequest(URL_USERS + "/" + this.username + "?format=" + getRenderingFormat().toString().toLowerCase());
+		return null;
 	}
 }

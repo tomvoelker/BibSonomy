@@ -46,7 +46,8 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post<? extends Reso
 	}
 
 	@Override
-	protected void doExecute() throws ErrorPerformingRequestException {
+	protected Post<? extends Resource> doExecute() throws ErrorPerformingRequestException {
 		this.downloadedDocument = performGetRequest(URL_USERS + "/" + this.username + "/" + URL_POSTS + "/" + this.resourceHash + "?format=" + getRenderingFormat().toString().toLowerCase());
+		return null;
 	}
 }

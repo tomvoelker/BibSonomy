@@ -51,7 +51,8 @@ public final class GetUserListQuery extends AbstractQuery<List<User>> {
 	}
 
 	@Override
-	protected void doExecute() throws ErrorPerformingRequestException {
+	protected List<User> doExecute() throws ErrorPerformingRequestException {
 		this.downloadedDocument = performGetRequest(URL_USERS + "?start=" + this.start + "&end=" + this.end + "&format=" + getRenderingFormat().toString().toLowerCase());
+		return null;
 	}
 }

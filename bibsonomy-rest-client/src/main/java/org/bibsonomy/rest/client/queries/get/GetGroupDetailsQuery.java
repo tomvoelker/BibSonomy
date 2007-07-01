@@ -40,7 +40,8 @@ public final class GetGroupDetailsQuery extends AbstractQuery<Group> {
 	}
 
 	@Override
-	protected void doExecute() throws ErrorPerformingRequestException {
+	protected Group doExecute() throws ErrorPerformingRequestException {
 		this.downloadedDocument = performGetRequest(URL_GROUPS + "/" + this.groupname + "?format=" + getRenderingFormat().toString().toLowerCase());
+		return null;
 	}
 }

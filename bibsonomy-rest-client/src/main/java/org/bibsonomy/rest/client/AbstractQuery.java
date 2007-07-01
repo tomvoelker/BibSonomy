@@ -19,7 +19,6 @@ import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
  * @version $Id$
  */
 public abstract class AbstractQuery<T> {
-
 	protected static final String URL_TAGS = RestProperties.getInstance().getTagsUrl();
 	protected static final String URL_USERS = RestProperties.getInstance().getUsersUrl();
 	protected static final String URL_GROUPS = RestProperties.getInstance().getGroupsUrl();
@@ -33,6 +32,9 @@ public abstract class AbstractQuery<T> {
 	private int statusCode = -1;
 	private RenderingFormat renderingFormat = RenderingFormat.XML;
 	private ProgressCallback callback;
+	
+	private T result;
+	private boolean executed = false;
 
 	protected final Reader performGetRequest(final String url) throws ErrorPerformingRequestException {
 		final GetWorker worker = new GetWorker(this.username, this.apiKey, this.callback);
@@ -87,14 +89,15 @@ public abstract class AbstractQuery<T> {
 	final void execute(final String username, final String apiKey) throws ErrorPerformingRequestException {
 		this.username = username;
 		this.apiKey = apiKey;
-		doExecute();
+		this.executed = true;
+		this.result = doExecute();
 	}
 
 	/**
-	 * @throws ErrorPerformingRequestException
-	 *             if something fails, eg an ioexception occurs (see the cause).
+	 * @return result of the query
+	 * @throws ErrorPerformingRequestException if something fails, eg an ioexception occurs (see the cause).
 	 */
-	protected abstract void doExecute() throws ErrorPerformingRequestException;
+	protected abstract T doExecute() throws ErrorPerformingRequestException;
 
 	/**
 	 * @return the HTTP status code this query had (only available after
@@ -116,7 +119,10 @@ public abstract class AbstractQuery<T> {
 	 * @link {@link #getResult()} gets called before
 	 * @link {@link Bibsonomy#executeQuery(AbstractQuery)}
 	 */
-	public abstract T getResult() throws BadRequestOrResponseException, IllegalStateException;
+	public T getResult() throws BadRequestOrResponseException, IllegalStateException {
+		if (!this.executed) throw new IllegalStateException("Execute the query first.");
+		return this.result;
+	}
 
 	/**
 	 * @param apiURL

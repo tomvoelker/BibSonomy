@@ -90,7 +90,7 @@ public final class GetAddedPostsQuery extends AbstractQuery<List<Post<? extends 
 	}
 
 	@Override
-	protected void doExecute() throws ErrorPerformingRequestException {
+	protected List<Post<? extends Resource>> doExecute() throws ErrorPerformingRequestException {
 		String url = URL_POSTS + "/" + URL_POSTS_ADDED + "?start=" + this.start + "&end=" + this.end;
 
 		if (this.resourceType != Resource.class) {
@@ -110,5 +110,6 @@ public final class GetAddedPostsQuery extends AbstractQuery<List<Post<? extends 
 		}
 
 		this.downloadedDocument = performGetRequest(url + "&format=" + getRenderingFormat().toString().toLowerCase());
+		return null;
 	}
 }

@@ -84,7 +84,7 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>> {
 	}
 
 	@Override
-	protected void doExecute() throws ErrorPerformingRequestException {
+	protected List<Tag> doExecute() throws ErrorPerformingRequestException {
 		String url = URL_TAGS + "?start=" + this.start + "&end=" + this.end;
 
 		switch (this.grouping) {
@@ -103,5 +103,6 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>> {
 			url += "&filter=" + this.filter;
 		}
 		this.downloadedDocument = performGetRequest(url + "&format=" + getRenderingFormat().toString().toLowerCase());
+		return null;
 	}
 }

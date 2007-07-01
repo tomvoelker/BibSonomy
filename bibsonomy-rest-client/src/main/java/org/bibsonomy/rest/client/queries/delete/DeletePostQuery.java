@@ -11,9 +11,6 @@ import org.bibsonomy.rest.enums.HttpMethod;
  * @version $Id$
  */
 public final class DeletePostQuery extends AbstractQuery<String> {
-
-	private boolean executed = false;
-	private String result;
 	private final String userName;
 	private final String resourceHash;
 
@@ -36,14 +33,7 @@ public final class DeletePostQuery extends AbstractQuery<String> {
 	}
 
 	@Override
-	public String getResult() {
-		if (!this.executed) throw new IllegalStateException("Execute the query first.");
-		return this.result;
-	}
-
-	@Override
-	protected void doExecute() throws ErrorPerformingRequestException {
-		this.executed = true;
-		this.result = performRequest(HttpMethod.DELETE, URL_USERS + "/" + this.userName + "/" + URL_POSTS + "/" + this.resourceHash, null);
+	protected String doExecute() throws ErrorPerformingRequestException {
+		return performRequest(HttpMethod.DELETE, URL_USERS + "/" + this.userName + "/" + URL_POSTS + "/" + this.resourceHash, null);
 	}
 }

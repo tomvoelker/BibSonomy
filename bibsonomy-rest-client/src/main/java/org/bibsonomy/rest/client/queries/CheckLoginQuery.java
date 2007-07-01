@@ -10,18 +10,8 @@ import org.bibsonomy.rest.enums.HttpMethod;
  */
 public class CheckLoginQuery extends AbstractQuery<String> {
 
-	private boolean executed = false;
-	private String result;
-
 	@Override
-	protected void doExecute() throws ErrorPerformingRequestException {
-		this.executed = true;
-		this.result = performRequest(HttpMethod.HEAD, URL_GROUPS, null);
-	}
-
-	@Override
-	public String getResult() {
-		if (!this.executed) throw new IllegalStateException("Execute the query first.");
-		return this.result;
+	protected String doExecute() throws ErrorPerformingRequestException {
+		return performRequest(HttpMethod.HEAD, URL_GROUPS, null);
 	}
 }

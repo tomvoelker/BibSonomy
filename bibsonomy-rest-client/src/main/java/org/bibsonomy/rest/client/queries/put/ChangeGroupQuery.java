@@ -15,9 +15,6 @@ import org.bibsonomy.rest.renderer.RendererFactory;
  * @version $Id$
  */
 public final class ChangeGroupQuery extends AbstractQuery<String> {
-
-	private boolean executed = false;
-	private String result;
 	private final Group group;
 	private final String groupName;
 
@@ -42,16 +39,9 @@ public final class ChangeGroupQuery extends AbstractQuery<String> {
 	}
 
 	@Override
-	public String getResult() {
-		if (!this.executed) throw new IllegalStateException("Execute the query first.");
-		return this.result;
-	}
-
-	@Override
-	protected void doExecute() throws ErrorPerformingRequestException {
-		this.executed = true;
+	protected String doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		RendererFactory.getRenderer(getRenderingFormat()).serializeGroup(sw, group, null);
-		this.result = performRequest(HttpMethod.PUT, URL_GROUPS + "/" + this.groupName + "?format=" + getRenderingFormat().toString().toLowerCase(), sw.toString());
+		return performRequest(HttpMethod.PUT, URL_GROUPS + "/" + this.groupName + "?format=" + getRenderingFormat().toString().toLowerCase(), sw.toString());
 	}
 }
