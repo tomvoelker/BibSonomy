@@ -19,6 +19,8 @@ import org.bibsonomy.model.User;
  * result. If you have to change a convention, check all occurences and document
  * it properly! Try to check each possibility with a test-case.
  * 
+ * TODO: split this interface as it might grow too much
+ * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @author Jens Illig <illig@innofinity.de>
  * @version $Id$
@@ -34,7 +36,7 @@ public interface LogicInterface {
 	 * @param end
 	 * @return a set of users, an empty set else
 	 */
-	public abstract List<User> getUsers(int start, int end);
+	public List<User> getUsers(int start, int end);
 
 	/**
 	 * Returns all users who are members of the specified group
@@ -44,7 +46,7 @@ public interface LogicInterface {
 	 * @param end
 	 * @return a set of users, an empty set else
 	 */
-	public abstract List<User> getUsers(String groupName, int start, int end);
+	public List<User> getUsers(String groupName, int start, int end);
 
 	/**
 	 * Returns details about a specified user
@@ -52,7 +54,7 @@ public interface LogicInterface {
 	 * @param userName name of the user we want to get details from
 	 * @return details about a named user, null else
 	 */
-	public abstract User getUserDetails(String userName);
+	public User getUserDetails(String userName);
 
 	/**
 	 * Returns a list of posts which can be filtered.
@@ -85,7 +87,7 @@ public interface LogicInterface {
 	 * @param end
 	 * @return a set of posts, an empty set else
 	 */
-	public abstract <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, int start, int end);
+	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, int start, int end);
 
 	/**
 	 * Returns details to a post. A post is uniquely identified by a hash of the
@@ -95,7 +97,7 @@ public interface LogicInterface {
 	 * @param userName name of the post-owner
 	 * @return the post's details, null else
 	 */
-	public abstract Post<? extends Resource> getPostDetails(String resourceHash, String userName);
+	public Post<? extends Resource> getPostDetails(String resourceHash, String userName);
 
 	/**
 	 * Returns all groups of the system.
@@ -104,7 +106,7 @@ public interface LogicInterface {
 	 * @param start
 	 * @return a set of groups, an empty set else
 	 */
-	public abstract List<Group> getGroups(int start, int end);
+	public List<Group> getGroups(int start, int end);
 
 	/**
 	 * Returns details of one group.
@@ -112,7 +114,7 @@ public interface LogicInterface {
 	 * @param groupName
 	 * @return the group's details, null else
 	 */
-	public abstract Group getGroupDetails(String groupName);
+	public Group getGroupDetails(String groupName);
 
 	/**
 	 * Returns a list of tags which can be filtered.
@@ -130,7 +132,7 @@ public interface LogicInterface {
 	 * @param end
 	 * @return a set of tags, en empty set else
 	 */
-	public abstract List<Tag> getTags(GroupingEntity grouping, String groupingName, String regex, int start, int end);
+	public List<Tag> getTags(GroupingEntity grouping, String groupingName, String regex, int start, int end);
 
 	/**
 	 * Returns details about a tag. Those details are:
@@ -145,21 +147,21 @@ public interface LogicInterface {
 	 * @param tagName name of the tag
 	 * @return the tag's details, null else
 	 */
-	public abstract Tag getTagDetails(String tagName);
+	public Tag getTagDetails(String tagName);
 
 	/**
 	 * Removes the given user.
 	 * 
 	 * @param userName the user to delete
 	 */
-	public abstract void deleteUser(String userName);
+	public void deleteUser(String userName);
 
 	/**
 	 * Removes the given group.
 	 * 
 	 * @param groupName the group to delete
 	 */
-	public abstract void deleteGroup(String groupName);
+	public void deleteGroup(String groupName);
 
 	/**
 	 * Removes an user from a group.
@@ -167,7 +169,7 @@ public interface LogicInterface {
 	 * @param groupName the group to change
 	 * @param userName the user to remove
 	 */
-	public abstract void removeUserFromGroup(String groupName, String userName);
+	public void removeUserFromGroup(String groupName, String userName);
 
 	/**
 	 * Removes the given post - identified by the connected resource's hash -
@@ -177,34 +179,59 @@ public interface LogicInterface {
 	 * @param resourceHash
 	 *            hash of the resource, which is connected to the post to delete
 	 */
-	public abstract void deletePost(String userName, String resourceHash);
+	public void deletePost(String userName, String resourceHash);
 
 	/**
-	 * Adds/updates a user in the database.
+	 * Adds a user to the database.
 	 * 
-	 * @param user  the user to store
+	 * @param user  the user to add
 	 */
-	public abstract void storeUser(User user);
-
+	public void createUser(User user);
+	
 	/**
-	 * Adds/updates a post in the database.
+	 * Updates a user to the database.
 	 * 
-	 * @param post  the post to be postet
+	 * @param user  the user to update
 	 */
-	public abstract <T extends Resource> void storePost(Post<T> post);
+	public void updateUser(User user);
 
 	/**
-	 * Adds/updates a group in the database.
+	 * Add a post to the database.
+	 * 
+	 * @param post  the post to add
+	 * @return 
+	 */
+	public void createPost(Post<?> post);
+
+	/**
+	 * Updates a post in the database.
+	 * 
+	 * @param post  the post to update
+	 * @return
+	 */
+	public void updatePost(Post<?> post);
+	
+	/**
+	 * Adds a group to the database.
 	 * 
 	 * @param group  the group to add
 	 */
-	public abstract void storeGroup(Group group);
+	public void createGroup(Group group);
+	
+	/**
+	 * Updates a group in the database.
+	 * 
+	 * @param group  the group to update
+	 */
+	public void updateGroup(Group group);
 
+	
+	
 	/**
 	 * Adds an existing user to an existing group.
 	 * 
 	 * @param groupName  name of the existing group
 	 * @param user  user to add
 	 */
-	public abstract void addUserToGroup(String groupName, String userName);
+	public void addUserToGroup(String groupName, String userName);
 }
