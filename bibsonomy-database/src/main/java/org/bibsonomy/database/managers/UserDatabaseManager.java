@@ -70,16 +70,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Inserts a user into the database.
 	 */
-	public void storeUser(final User user, final boolean update, final DBSession session) {
-		if (update) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Not implemented yet");
-		}
-
-		// check if a user exists with that name
-		if (this.getUserDetails(user.getName(), session) != null) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There's already a user with this name");
-		}
-
+	public void createUser(final User user, final DBSession session) {
 		this.insertUser(user, session);
 	}
 
