@@ -31,5 +31,5 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	 *  create, update
 	 *  @return true, if entry existed and was updated
 	 */
-	public boolean storePost(String userName, Post<T> post, String oldHash, DBSession session);
+	public boolean storePost(String userName, Post<T> post, String oldHash, boolean update, DBSession session);
 }

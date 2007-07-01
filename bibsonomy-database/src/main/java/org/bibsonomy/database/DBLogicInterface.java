@@ -224,24 +224,27 @@ public interface DBLogicInterface {
 	 * Adds/updates a user in the database.
 	 * @param authUserName  currently logged in user's name
 	 * @param user  the user to store
+	 * @param update  if true, an exception is thrown if the user does not exist. If false one is thrown if the user exists.
 	 */
-	public abstract void storeUser(String authUserName, User user);
+	public abstract void storeUser(String authUserName, User user, boolean update);
 
 	/**
 	 * Adds/updates a post in the database.
 	 * 
 	 * @param userName  name of the user who posts this post
 	 * @param post  the post to be postet
+	 * @param update  if true, an exception is thrown if the post does not exist. If false one is thrown if the post exists.
 	 */
-	public abstract <T extends Resource> void storePost(String userName, Post<T> post);
+	public abstract <T extends Resource> void storePost(String userName, Post<T> post, boolean update);
 
 	/**
 	 * Adds/updates a group in the database.
 	 * 
 	 * @param authUserName  currently logged in user's name
 	 * @param group  the group to add
+	 * @param update  if true, an exception is thrown if the group does not exist. If false one is thrown if the group exists.
 	 */
-	public abstract void storeGroup(String authUserName, Group group);
+	public abstract void storeGroup(String authUserName, Group group, boolean update);
 
 	/**
 	 * Adds an existing user to an existing group.

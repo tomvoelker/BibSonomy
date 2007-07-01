@@ -50,20 +50,17 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	@Test
-	public void storeUser() {
+	public void createUser() {
 		final User newUser = this.userParam.getUser();
 		newUser.setName("test-name");
-		this.userDb.storeUser(newUser, false, this.dbSession);
+		this.userDb.createUser(newUser, this.dbSession);
 		final User user = this.userDb.getUserDetails(this.userParam.getUser().getName(), this.dbSession);
 		ModelUtils.assertPropertyEquality(newUser, user, new String[] { "password" });
 		assertEquals(null, user.getPassword());
-
-		for (final boolean update : new boolean[] { true, false }) {
-			try {
-				this.userDb.storeUser(null, update, this.dbSession);
-				fail("should throw exception");
-			} catch (final Exception ex) {
-			}
+		try {
+			this.userDb.createUser(null, this.dbSession);
+			fail("should throw exception");
+		} catch (final Exception ex) {
 		}
 	}
 

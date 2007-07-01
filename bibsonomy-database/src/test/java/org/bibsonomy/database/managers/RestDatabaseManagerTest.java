@@ -331,7 +331,7 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		
 		final LogicInterface testClassAccess = this.getDbLogic(testUserName);
 		assertEquals( 0, testClassAccess.getPosts(BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null, 0, 100).size() );
-		testClassAccess.storePost(post);
+		testClassAccess.createPost(post);
 		assertEquals( 1, testClassAccess.getPosts(BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null, 0, 100).size() );
 		assertEquals( 0, this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null, 0, 100).size() );
 	}

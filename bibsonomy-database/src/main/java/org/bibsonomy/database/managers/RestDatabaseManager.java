@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
@@ -24,6 +25,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.Order;
+import org.bibsonomy.util.ExceptionUtils;
 
 /**
  * This is an implementation of the LogicInterface for the REST-API.
@@ -37,6 +39,7 @@ import org.bibsonomy.model.logic.Order;
  * @version $Id$
  */
 public class RestDatabaseManager implements DBLogicInterface {
+	private static final Logger log = Logger.getLogger(RestDatabaseManager.class);
 
 	/** Singleton */
 	private final static RestDatabaseManager singleton = new RestDatabaseManager();
@@ -290,20 +293,34 @@ public class RestDatabaseManager implements DBLogicInterface {
 	/*
 	 * Adds/updates a user in the database.
 	 */
-	public void storeUser(final String authUserName, final User user) {
+	public void storeUser(final String authUserName, final User user, boolean update) {
 		final DBSession session = this.openSession();
 		try {
+			String errorMsg = null;
+			
 			final User existingUser = this.userDBManager.getUserDetails(user.getName(), session);
-			final boolean update;
 			if (existingUser != null) {
-				if (existingUser.getName().equals(authUserName) == false) {
-					throw new ValidationException("user already exists");
+				if (update == false) {
+					errorMsg = "user " + existingUser.getName() + " already exists";
+				} else if (existingUser.getName().equals(authUserName) == false) {
+					errorMsg = "user " + authUserName + " is not authorized to change user " + existingUser.getName();
+					log.warn(errorMsg);
+					throw new ValidationException(errorMsg);
 				}
-				update = true;
 			} else {
-				update = false;
+				if (update == true) {
+					errorMsg = "user " + existingUser.getName() + " does not exist";
+				}
 			}
-			this.userDBManager.storeUser(user, update, session);
+			if (errorMsg != null) {
+				log.warn(errorMsg);
+				throw new IllegalStateException(errorMsg);
+			}
+			if (update == false) {
+				this.userDBManager.createUser(user, session);
+			} else {
+				throw new UnsupportedOperationException("update user not implemented yet");
+			}
 		} finally {
 			session.close();
 		}
@@ -312,13 +329,13 @@ public class RestDatabaseManager implements DBLogicInterface {
 	/*
 	 * Adds/updates a post in the database.
 	 */
-	public <T extends Resource> void storePost(final String userName, final Post<T> post) {
+	public <T extends Resource> void storePost(final String userName, final Post<T> post, boolean update) {
 		final DBSession session = this.openSession();
 		try {
 			final CrudableContent<T, GenericParam> man = getFittingDatabaseManager(post);
 			final String oldIntraHash = post.getResource().getIntraHash();
 			post.getResource().recalculateHashes();
-			man.storePost(userName, post, oldIntraHash, session);
+			man.storePost(userName, post, oldIntraHash, update, session);
 		} finally {
 			session.close();
 		}
@@ -345,7 +362,7 @@ public class RestDatabaseManager implements DBLogicInterface {
 	/*
 	 * Adds/updates a group in the database.
 	 */
-	public void storeGroup(final String authUserName, final Group group) {
+	public void storeGroup(final String authUserName, final Group group, boolean update) {
 		/* FIXME: unsure who may change a group -> better doing nothing
 		final DBSession session = this.openSession();
 		try {

@@ -8,6 +8,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.List;
 
+import junit.framework.Assert;
+
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.params.BibTexParam;
@@ -243,7 +245,21 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void storePost() {
 		final Post<BibTex> toInsert = ModelUtils.generatePost(BibTex.class);
 
-		this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, null, this.dbSession);
+		try {
+			this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, null, true, this.dbSession);
+			Assert.fail();
+		} catch (Throwable t) {
+			Assert.assertTrue(t instanceof IllegalArgumentException);
+		}
+		
+		try {
+			this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, "06aef6e5439298f27dc5aee82c4293d6", false, this.dbSession);
+			Assert.fail();
+		} catch (Throwable t) {
+			Assert.assertTrue(t instanceof IllegalArgumentException);
+		}
+		
+		this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, null, false, this.dbSession);
 
 		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { ModelUtils.class.getName(), "hurz" }), "", null, 0, 50);
 		final List<Post<BibTex>> posts = this.bibTexDb.getPosts(param, this.dbSession);
@@ -261,7 +277,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertFalse(plugin.isOnBibTexUpdate());
 		param.setHash("06aef6e5439298f27dc5aee82c4293d6");
 		final Post<BibTex> someBibTexPost = this.bibTexDb.getBibTexByHash(param, this.dbSession).get(0);
-		this.bibTexDb.storePost(someBibTexPost.getUser().getName(), someBibTexPost, "06aef6e5439298f27dc5aee82c4293d6", this.dbSession);
+		this.bibTexDb.storePost(someBibTexPost.getUser().getName(), someBibTexPost, "06aef6e5439298f27dc5aee82c4293d6", true, this.dbSession);
 		assertTrue(plugin.isOnBibTexUpdate());
 	}
 }

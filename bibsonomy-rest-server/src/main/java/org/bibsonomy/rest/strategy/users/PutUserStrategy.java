@@ -37,7 +37,7 @@ public class PutUserStrategy extends Strategy {
 			final User user = this.context.getRenderer().parseUser(new InputStreamReader(request.getInputStream()));
 			// ensure to use the right user name
 			user.setName(this.userName);
-			this.context.getLogic().storeUser(user);
+			this.context.getLogic().updateUser(user);
 		} catch (final IOException e) {
 			throw new InternServerException(e);
 		}

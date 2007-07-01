@@ -28,7 +28,7 @@ public class PostUserStrategy extends Strategy {
 			final User user = this.context.getRenderer().parseUser(new InputStreamReader(request.getInputStream()));
 			// check this here, because its not checked in the renderer
 			if (user.getPassword() == null || user.getPassword().length() == 0) throw new BadRequestOrResponseException("missing password");
-			this.context.getLogic().storeUser(user);
+			this.context.getLogic().createUser(user);
 		} catch (final IOException e) {
 			throw new InternServerException(e);
 		}

@@ -32,7 +32,7 @@ public class UpdateGroupDetailsStrategy extends Strategy {
 			final Group group = this.context.getRenderer().parseGroup(new InputStreamReader(request.getInputStream()));
 			group.setName(this.groupName);
 
-			this.context.getLogic().storeGroup(group);
+			this.context.getLogic().updateGroup(group);
 		} catch (final IOException e) {
 			throw new InternServerException(e);
 		}

@@ -25,7 +25,7 @@ public class AddGroupStrategy extends Strategy {
 	public void perform(final HttpServletRequest request, final Writer writer) throws InternServerException {
 		try {
 			final Group group = this.context.getRenderer().parseGroup(new InputStreamReader(request.getInputStream()));
-			this.context.getLogic().storeGroup(group);
+			this.context.getLogic().createGroup(group);
 		} catch (final IOException e) {
 			throw new InternServerException(e);
 		}

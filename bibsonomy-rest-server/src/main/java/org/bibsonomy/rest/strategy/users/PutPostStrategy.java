@@ -42,7 +42,7 @@ public class PutPostStrategy extends Strategy {
 			// XXX: neither the client nor the REST API will calculate the new
 			// hash - this will be done by the logic behind the LogicInterface!
 			if (!post.getResource().getIntraHash().equals(this.resourceHash)) throw new BadRequestOrResponseException("wrong resource");
-			this.context.getLogic().storePost(post);
+			this.context.getLogic().updatePost(post);
 		} catch (final IOException e) {
 			throw new InternServerException(e);
 		}

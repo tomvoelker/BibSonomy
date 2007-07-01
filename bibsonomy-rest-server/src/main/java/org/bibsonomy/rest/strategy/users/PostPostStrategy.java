@@ -34,7 +34,7 @@ public class PostPostStrategy extends Strategy {
 	public void perform(final HttpServletRequest request, final Writer writer) throws InternServerException {
 		try {
 			final Post<?> post = this.context.getRenderer().parsePost(new InputStreamReader(request.getInputStream()));
-			this.context.getLogic().storePost(post);
+			this.context.getLogic().createPost(post);
 		} catch (final IOException e) {
 			throw new InternServerException(e);
 		}

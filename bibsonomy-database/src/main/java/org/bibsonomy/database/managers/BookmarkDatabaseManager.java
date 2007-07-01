@@ -312,7 +312,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 
 	// TODO: this method belongs to the logic-layer not database-layer. anyway, i would appreciate a rewrite of this copy'n'paste mess
 	@SuppressWarnings("unchecked")
-	public boolean storePost(String userName, Post<Bookmark> post, final String oldIntraHash, final DBSession session) {
+	public boolean storePost(String userName, Post<Bookmark> post, final String oldIntraHash, final boolean update, final DBSession session) {
 		// TODO: implement correctly if it only had been copy'n'pasted it would have been ok, but it used contentids as tasids, hardcoded hashes and so on
 		throw new UnsupportedOperationException();
 	}

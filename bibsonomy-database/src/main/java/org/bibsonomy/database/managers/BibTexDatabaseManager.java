@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChain;
 import org.bibsonomy.database.params.BibTexParam;
@@ -385,27 +386,36 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		this.insert("insertBibTexHash", param, session);
 	}
 
-	public boolean storePost(final String userName, final Post<BibTex> post, final String oldIntraHash, final DBSession session) {
+	public boolean storePost(final String userName, final Post<BibTex> post, final String oldIntraHash,  boolean update, final DBSession session) {
 		// TODO: test insertion (tas, bibtex, ...)
-		final boolean update;
 		session.beginTransaction();
 		try {
 			final List<Post<BibTex>> isBibTexInDb;
 			if (oldIntraHash != null) {
+				if ((update == false) && (oldIntraHash.equals(post.getResource().getIntraHash()) == false)) {
+					throw new IllegalArgumentException("cannot create new resource with an old hash value");
+				}
 				isBibTexInDb = this.getBibTexByHashForUser(userName, oldIntraHash, userName, session);
 			} else {
+				if (update == true) {
+					throw new IllegalArgumentException("cannot update without old hash value");
+				}
 				isBibTexInDb = null;
 			}
 			// ALWAYS get a new contentId
 			post.setContentId(this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, session));
 
 			if ((isBibTexInDb != null) && (isBibTexInDb.size() > 0)) {
-				update = true;
 				// BibTex entry DOES EXIST for this user -> delete old BibTex post
 				final Post oldBibTexPost = isBibTexInDb.get(0);
 				this.plugins.onBibTexUpdate(post.getContentId(), oldBibTexPost.getContentId(), session);
 				this.deletePost(userName, oldBibTexPost.getResource().getIntraHash(), session);
 			} else {
+				if (update == true) {
+					final String errorMsg = "cannot update nonexisting bitexpost with intrahash " + oldIntraHash + " for user " + userName;
+					log.warn(errorMsg);
+					throw new ValidationException(errorMsg);
+				}
 				update = false;
 			}
 			this.insertBibTexPost(post, session);
