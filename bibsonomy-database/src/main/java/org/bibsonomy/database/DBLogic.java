@@ -5,6 +5,7 @@ package org.bibsonomy.database;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.managers.RestDatabaseManager;
@@ -17,6 +18,7 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.Order;
 
 public class DBLogic implements LogicInterface {
+	private static final Logger log = Logger.getLogger(DBLogic.class);
 	private final String loginUserName;
 	private final DBLogicInterface dbLogic;
 	
@@ -92,29 +94,48 @@ public class DBLogic implements LogicInterface {
 	}
 
 	public void removeUserFromGroup(String groupName, String userName) {
-		if (this.loginUserName == null) {
-			throw new ValidationException("You are not authorized to perform the requested operation");
-		}
+		ensureLoggedIn();
 		// FIXME: IMPORTANT: not everybody may do this!
 		// better do nothing than anything horribly wrong:  this.dbLogic.removeUserFromGroup(groupName, userName);
 	}
 
-	public void storeGroup(Group group) {
+	private void ensureLoggedIn() {
 		if (this.loginUserName == null) {
 			throw new ValidationException("You are not authorized to perform the requested operation");
 		}
-		this.dbLogic.storeGroup(this.loginUserName, group);
+	}
+	
+	public void createGroup(Group group) {
+		ensureLoggedIn();
+		this.dbLogic.storeGroup(this.loginUserName, group, false);
+	}
+	
+	public void updateGroup(Group group) {
+		ensureLoggedIn();
+		this.dbLogic.storeGroup(this.loginUserName, group, true);
 	}
 
-	public <T extends Resource> void storePost(Post<T> post) {
-		if (this.loginUserName == null) {
-			throw new ValidationException("You are not authorized to perform the requested operation");
+	public void createPost(Post<?> post) {
+		ensureLoggedIn();
+		this.dbLogic.storePost(this.loginUserName, post, false);
+	}
+	
+	public void updatePost(Post<?> post) {
+		ensureLoggedIn();
+		this.dbLogic.storePost(this.loginUserName, post, true);
+	}
+
+	public void createUser(User user) {
+		this.dbLogic.storeUser(this.loginUserName, user, false);
+	}
+	
+	public void updateUser(User user) {
+		if ((this.loginUserName == null) || (this.loginUserName.equals(user.getName()) == false)) {
+			final String errorMsg = "user " + ((this.loginUserName != null) ? this.loginUserName : "anonymous") + " is not authorized to change user " + user.getName();
+			log.warn(errorMsg);
+			throw new ValidationException(errorMsg);
 		}
-		this.dbLogic.storePost(this.loginUserName, post);
-	}
-
-	public void storeUser(User user) {
-		this.dbLogic.storeUser(this.loginUserName, user);
+		this.dbLogic.storeUser(this.loginUserName, user, true);
 	}
 
 	public String getAuthenticatedUser() {
