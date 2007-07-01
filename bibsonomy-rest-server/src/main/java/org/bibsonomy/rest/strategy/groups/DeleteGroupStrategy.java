@@ -5,7 +5,6 @@ import java.io.Writer;
 import javax.servlet.http.HttpServletRequest;
 
 import org.bibsonomy.common.exceptions.InternServerException;
-import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
 
@@ -20,11 +19,6 @@ public class DeleteGroupStrategy extends Strategy {
 	public DeleteGroupStrategy(final Context context, final String groupName) {
 		super(context);
 		this.groupName = groupName;
-	}
-
-	@Override
-	public void validate() throws ValidationException {
-		// TODO only groupmembers may delete a group?
 	}
 
 	@Override

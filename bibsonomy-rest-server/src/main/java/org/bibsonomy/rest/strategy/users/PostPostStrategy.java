@@ -7,8 +7,8 @@ import java.io.Writer;
 import javax.servlet.http.HttpServletRequest;
 
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
 
@@ -27,14 +27,14 @@ public class PostPostStrategy extends Strategy {
 
 	@Override
 	public void validate() throws ValidationException {
-		if (!this.userName.equals(this.context.getAuthUserName())) throw new ValidationException("You are not authorized to perform the requested operation");
+		if (!this.userName.equals(this.context.getLogic().getAuthenticatedUser())) throw new ValidationException("You are not authorized to perform the requested operation");
 	}
 
 	@Override
 	public void perform(final HttpServletRequest request, final Writer writer) throws InternServerException {
 		try {
 			final Post<?> post = this.context.getRenderer().parsePost(new InputStreamReader(request.getInputStream()));
-			this.context.getLogic().storePost(this.userName, post);
+			this.context.getLogic().storePost(post);
 		} catch (final IOException e) {
 			throw new InternServerException(e);
 		}

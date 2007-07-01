@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import org.bibsonomy.rest.database.TestDatabase;
+import org.bibsonomy.rest.database.TestDBLogic;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.junit.Before;
@@ -28,7 +28,7 @@ public class TestRestServlet {
 	@Before
 	public void setUp() {
 		this.servlet = new RestServlet();
-		this.servlet.setLogicInterface(new TestDatabase());
+		this.servlet.setLogicInterface(TestDBLogic.factory);
 		
 		this.request = new NullRequest();
 		this.response = new NullResponse();
@@ -47,7 +47,7 @@ public class TestRestServlet {
 		} catch (BadRequestOrResponseException e) {
 		}
 
-		assertEquals("error decoding string", this.servlet.validateAuthorization("Basic YXNkZjphc2Rm"), "asdf");
+		assertEquals("error decoding string", "asdf", this.servlet.validateAuthorization("Basic YXNkZjphc2Rm").getAuthenticatedUser());
 	}
 
 	@Test

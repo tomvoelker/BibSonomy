@@ -9,7 +9,6 @@ import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.ViewModel;
-import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
 
@@ -26,16 +25,11 @@ public class GetUserListStrategy extends Strategy {
 	}
 
 	@Override
-	public void validate() throws ValidationException {
-		// should be ok for everybody
-	}
-
-	@Override
 	public void perform(final HttpServletRequest request, final Writer writer) throws InternServerException {
 		final int start = this.context.getIntAttribute("start", 0);
 		int end = this.context.getIntAttribute("end", 20);
 
-		final List<User> users = this.context.getLogic().getUsers(this.context.getAuthUserName(), start, end);
+		final List<User> users = this.context.getLogic().getUsers(start, end);
 
 		final ViewModel viewModel = new ViewModel();
 		if (users.size() < end || users.size() > end) {

@@ -11,7 +11,6 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.ViewModel;
-import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
 
@@ -23,11 +22,6 @@ public abstract class AbstractListOfPostsStrategy extends Strategy {
 
 	public AbstractListOfPostsStrategy(final Context context) {
 		super(context);
-	}
-
-	@Override
-	public final void validate() throws ValidationException {
-		// should be ok for everybody
 	}
 
 	@Override
@@ -48,7 +42,7 @@ public abstract class AbstractListOfPostsStrategy extends Strategy {
 			groupingValue = null;
 		}
 
-		final List<? extends Post<? extends Resource>> posts = getList(this.context.getAuthUserName(), resourceType, grouping, groupingValue, this.context.getTags("tags"), hash, null, start, end);
+		final List<? extends Post<? extends Resource>> posts = getList(resourceType, grouping, groupingValue, this.context.getTags("tags"), hash, null, start, end);
 		
 		final ViewModel viewModel = new ViewModel();
 		if (posts.size() != (end - start)) {
@@ -63,7 +57,7 @@ public abstract class AbstractListOfPostsStrategy extends Strategy {
 		this.context.getRenderer().serializePosts(writer, posts, viewModel);
 	}
 
-	protected abstract List<? extends Post<? extends Resource>> getList(String authUserName, Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingValue, List<String> tags, String hash, Object object, int start, int end);
+	protected abstract List<? extends Post<? extends Resource>> getList(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingValue, List<String> tags, String hash, Object object, int start, int end);
 
 	private final String buildNextLink(final int start, final int end, final Class<? extends Resource> resourceType, final String hash, final GroupingEntity grouping, final String groupingValue) {
 		final StringBuilder sb = getLinkPrefix();

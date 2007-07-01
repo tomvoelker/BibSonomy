@@ -7,8 +7,8 @@ import java.util.HashMap;
 
 import org.bibsonomy.rest.NullRequest;
 import org.bibsonomy.rest.RestProperties;
-import org.bibsonomy.rest.database.TestDatabase;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.strategy.AbstractContextTest;
 import org.bibsonomy.rest.strategy.Context;
 import org.junit.Test;
 
@@ -16,11 +16,11 @@ import org.junit.Test;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public class GetUserListStrategyTest {
+public class GetUserListStrategyTest extends AbstractContextTest {
 
 	@Test
 	public void testGetUserListStrategy() {
-		final Context ctx = new Context(new TestDatabase(), HttpMethod.GET, "/users", new HashMap<String, String>());
+		final Context ctx = new Context(this.db, HttpMethod.GET, "/users", new HashMap<String, String>());
 		final NullRequest request = new NullRequest();
 		final StringWriter sw = new StringWriter();
 		ctx.perform(request, sw);

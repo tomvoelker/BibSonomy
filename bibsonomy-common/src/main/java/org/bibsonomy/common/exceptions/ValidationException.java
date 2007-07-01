@@ -1,4 +1,4 @@
-package org.bibsonomy.rest.exceptions;
+package org.bibsonomy.common.exceptions;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>

@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.User;
-import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
 
@@ -23,11 +22,6 @@ public class AddUserToGroupStrategy extends Strategy {
 	public AddUserToGroupStrategy(final Context context, final String groupName) {
 		super(context);
 		this.groupName = groupName;
-	}
-
-	@Override
-	public void validate() throws ValidationException {
-		// TODO only groupmembers may add users to a group
 	}
 
 	@Override

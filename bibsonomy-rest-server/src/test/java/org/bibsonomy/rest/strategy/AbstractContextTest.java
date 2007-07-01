@@ -1,7 +1,7 @@
 package org.bibsonomy.rest.strategy;
 
-import org.bibsonomy.database.LogicInterface;
-import org.bibsonomy.rest.database.TestDatabase;
+import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.rest.database.TestDBLogic;
 import org.junit.Before;
 
 /**
@@ -18,6 +18,6 @@ public abstract class AbstractContextTest {
 	 */
 	@Before
 	public void setUp() {
-		this.db = new TestDatabase();
+		this.db = TestDBLogic.factory.getLogicAccess(this.getClass().getSimpleName(), "apiKey");
 	}
 }

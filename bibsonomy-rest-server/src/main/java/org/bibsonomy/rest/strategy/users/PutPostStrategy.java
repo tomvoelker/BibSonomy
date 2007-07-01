@@ -7,9 +7,9 @@ import java.io.Writer;
 import javax.servlet.http.HttpServletRequest;
 
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
-import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
 
@@ -30,7 +30,7 @@ public class PutPostStrategy extends Strategy {
 
 	@Override
 	public void validate() throws ValidationException {
-		if (!this.userName.equals(this.context.getAuthUserName())) throw new ValidationException("You are not authorized to perform the requested operation");
+		if (!this.userName.equals(this.context.getLogic().getAuthenticatedUser())) throw new ValidationException("You are not authorized to perform the requested operation");
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class PutPostStrategy extends Strategy {
 			// XXX: neither the client nor the REST API will calculate the new
 			// hash - this will be done by the logic behind the LogicInterface!
 			if (!post.getResource().getIntraHash().equals(this.resourceHash)) throw new BadRequestOrResponseException("wrong resource");
-			this.context.getLogic().storePost(this.userName, post);
+			this.context.getLogic().storePost(post);
 		} catch (final IOException e) {
 			throw new InternServerException(e);
 		}

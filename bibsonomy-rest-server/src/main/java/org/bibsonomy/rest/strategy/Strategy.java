@@ -6,8 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
-import org.bibsonomy.rest.exceptions.ValidationException;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -26,7 +26,8 @@ public abstract class Strategy {
 	 * 
 	 * @throws ValidationException
 	 */
-	public abstract void validate() throws ValidationException;
+	public void validate() throws ValidationException {
+	}
 
 	/**
 	 * @param request

@@ -10,7 +10,6 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
-import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
 
@@ -30,18 +29,9 @@ public class GetPostDetailsStrategy extends Strategy {
 	}
 
 	@Override
-	public void validate() throws ValidationException {
-		// TODO check username for existance - or should the request then just
-		// return an empty entry?
-
-		// TODO check resourcehash for existance - or should the request then
-		// just return an empty entry?
-	}
-
-	@Override
 	public void perform(final HttpServletRequest request, final Writer writer) throws InternServerException, NoSuchResourceException {
 		// delegate to the renderer
-		final Post<? extends Resource> post = this.context.getLogic().getPostDetails(this.context.getAuthUserName(), this.resourceHash, this.userName);
+		final Post<? extends Resource> post = this.context.getLogic().getPostDetails(this.resourceHash, this.userName);
 		if (post == null) {
 			throw new NoSuchResourceException("The requested post for the hash '" + this.resourceHash + "' of the requested user '" + this.userName + "' does not exist.");
 		}

@@ -8,6 +8,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.logic.Order;
 
 /**
  * This interface is an adapter to the database. <br/> The methods returning
@@ -21,7 +22,7 @@ import org.bibsonomy.model.User;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public interface LogicInterface {
+public interface DBLogicInterface {
 
 	/**
 	 * Returns all users
@@ -213,8 +214,7 @@ public interface LogicInterface {
 	 * Removes the given post - identified by the connected resource's hash -
 	 * from the user.
 	 * 
-	 * @param userName
-	 *            user who's post is to be removed
+	 * @param userName  user who's post is to be removed
 	 * @param resourceHash
 	 *            hash of the resource, which is connected to the post to delete
 	 */
@@ -222,45 +222,32 @@ public interface LogicInterface {
 
 	/**
 	 * Adds/updates a user in the database.
-	 * 
-	 * @param user
-	 *            the user to store
-	 * @param update
-	 *            true if its an existing user (identified by username), false
-	 *            if its a new user
+	 * @param authUserName  currently logged in user's name
+	 * @param user  the user to store
 	 */
-	public abstract void storeUser(User user, boolean update);
+	public abstract void storeUser(String authUserName, User user);
 
 	/**
 	 * Adds/updates a post in the database.
 	 * 
-	 * @param userName
-	 *            name of the user who posts this post
-	 * @param post
-	 *            the post to be postet
-	 * @param update
-	 *            true if its an existing post (identified by its resource's
-	 *            intrahash), false if its a new post
+	 * @param userName  name of the user who posts this post
+	 * @param post  the post to be postet
 	 */
 	public abstract <T extends Resource> void storePost(String userName, Post<T> post);
 
 	/**
 	 * Adds/updates a group in the database.
 	 * 
-	 * @param group
-	 *            the group to add
-	 * @param update
-	 *            true if its an existing group, false if its a new group
+	 * @param authUserName  currently logged in user's name
+	 * @param group  the group to add
 	 */
-	public abstract void storeGroup(Group group, boolean update);
+	public abstract void storeGroup(String authUserName, Group group);
 
 	/**
 	 * Adds an existing user to an existing group.
 	 * 
-	 * @param groupName
-	 *            name of the existing group
-	 * @param user
-	 *            user to add
+	 * @param groupName  name of the existing group
+	 * @param user  user to add
 	 */
 	public abstract void addUserToGroup(String groupName, String userName);
 }

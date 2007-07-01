@@ -11,8 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.LogicInterface;
-import org.bibsonomy.database.Order;
+import org.bibsonomy.database.DBLogicInterface;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -20,6 +19,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.logic.Order;
 import org.junit.Test;
 
 /**
@@ -38,7 +38,7 @@ import org.junit.Test;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public class TestDatabase implements LogicInterface {
+public class TestDatabase implements DBLogicInterface {
 
 	private final Map<String, Group> dbGroups;
 	private final Map<String, User> dbUsers;
@@ -663,16 +663,14 @@ public class TestDatabase implements LogicInterface {
 	public void removeUserFromGroup(String groupName, String userName) {
 	}
 
-	public void storeGroup(Group group, boolean update) {
+	public void storeGroup(final String authUserName, Group group) {
 	}
 
 	public void storePost(String userName, Post post) {
 
 	}
 
-	public void storeUser(User user, boolean update) {
-		if (!update) {
-			this.dbUsers.put(user.getName(), user);
-		}
+	public void storeUser(final String authUserName,  User user) {
+		this.dbUsers.put(user.getName(), user);
 	}
 }

@@ -3,13 +3,13 @@ package org.bibsonomy.database.util;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.Order;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.model.logic.Order;
 
 /**
  * Supplies methods to adapt the LogicInterface to the database layer.

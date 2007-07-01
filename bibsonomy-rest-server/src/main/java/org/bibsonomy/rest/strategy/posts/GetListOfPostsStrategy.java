@@ -20,8 +20,8 @@ public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
 		this.nextLinkPrefix = RestProperties.getInstance().getApiUrl() + RestProperties.getInstance().getPostsUrl();
 	}
 
-	protected List<? extends Post<? extends Resource>> getList(String authUserName, Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingValue, List<String> tags, String hash, Object object, int start, int end) {
-		return this.context.getLogic().getPosts(this.context.getAuthUserName(), resourceType, grouping, groupingValue, this.context.getTags("tags"), hash, null, start, end);
+	protected List<? extends Post<? extends Resource>> getList(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingValue, List<String> tags, String hash, Object object, int start, int end) {
+		return this.context.getLogic().getPosts(resourceType, grouping, groupingValue, this.context.getTags("tags"), hash, null, start, end);
 	}
 
 	protected StringBuilder getLinkPrefix() {

@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Group;
-import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
 
@@ -27,18 +26,13 @@ public class UpdateGroupDetailsStrategy extends Strategy {
 	}
 
 	@Override
-	public void validate() throws ValidationException {
-		// TODO only groupmembers may change a group?
-	}
-
-	@Override
 	public void perform(final HttpServletRequest request, final Writer writer) throws InternServerException {
 		try {
 			// ensure right groupname
 			final Group group = this.context.getRenderer().parseGroup(new InputStreamReader(request.getInputStream()));
 			group.setName(this.groupName);
 
-			this.context.getLogic().storeGroup(group, true);
+			this.context.getLogic().storeGroup(group);
 		} catch (final IOException e) {
 			throw new InternServerException(e);
 		}

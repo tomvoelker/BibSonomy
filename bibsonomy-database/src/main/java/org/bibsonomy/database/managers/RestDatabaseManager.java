@@ -6,15 +6,15 @@ import java.util.Map;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
-import org.bibsonomy.database.LogicInterface;
-import org.bibsonomy.database.Order;
+import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.database.DBLogicInterface;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
+import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DBSessionFactory;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
-import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -22,6 +22,8 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.Order;
 
 /**
  * This is an implementation of the LogicInterface for the REST-API.
@@ -34,7 +36,7 @@ import org.bibsonomy.model.User;
  * @author Christian Schenk
  * @version $Id$
  */
-public class RestDatabaseManager implements LogicInterface {
+public class RestDatabaseManager implements DBLogicInterface {
 
 	/** Singleton */
 	private final static RestDatabaseManager singleton = new RestDatabaseManager();
@@ -59,7 +61,7 @@ public class RestDatabaseManager implements LogicInterface {
 		this.dbSessionFactory = DatabaseUtils.getDBSessionFactory();
 	}
 
-	public static LogicInterface getInstance() {
+	public static RestDatabaseManager getInstance() {
 		return singleton;
 	}
 
@@ -288,9 +290,19 @@ public class RestDatabaseManager implements LogicInterface {
 	/*
 	 * Adds/updates a user in the database.
 	 */
-	public void storeUser(final User user, final boolean update) {
+	public void storeUser(final String authUserName, final User user) {
 		final DBSession session = this.openSession();
 		try {
+			final User existingUser = this.userDBManager.getUserDetails(user.getName(), session);
+			final boolean update;
+			if (existingUser != null) {
+				if (existingUser.getName().equals(authUserName) == false) {
+					throw new ValidationException("user already exists");
+				}
+				update = true;
+			} else {
+				update = false;
+			}
 			this.userDBManager.storeUser(user, update, session);
 		} finally {
 			session.close();
@@ -333,13 +345,15 @@ public class RestDatabaseManager implements LogicInterface {
 	/*
 	 * Adds/updates a group in the database.
 	 */
-	public void storeGroup(final Group group, final boolean update) {
+	public void storeGroup(final String authUserName, final Group group) {
+		/* FIXME: unsure who may change a group -> better doing nothing
 		final DBSession session = this.openSession();
 		try {
 			this.groupDBManager.storeGroup(group, update, session);
 		} finally {
 			session.close();
 		}
+		*/
 	}
 
 	/*

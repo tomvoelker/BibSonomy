@@ -10,12 +10,12 @@ import java.util.StringTokenizer;
 import javax.servlet.http.HttpServletRequest;
 
 import org.bibsonomy.common.exceptions.InternServerException;
-import org.bibsonomy.database.LogicInterface;
+import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.enums.RenderingFormat;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
-import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
 
@@ -33,11 +33,6 @@ public final class Context {
 		Context.urlHandlers.put(RestProperties.getInstance().getGroupsUrl(), new GroupsHandler());
 		Context.urlHandlers.put(RestProperties.getInstance().getPostsUrl(), new PostsHandler());
 	}
-
-	/**
-	 * the authenticated userName, null if none
-	 */
-	private String authUserName;
 
 	/**
 	 * the logic
@@ -61,7 +56,7 @@ public final class Context {
 	private final RenderingFormat renderingFormat;
 
 	/**
-	 * @param logic
+	 * @param authUserName  The authUserName to set.
 	 * @param url
 	 * @param httpMethod
 	 *            httpMethod used in the request: GET, POST, PUT or DELETE
@@ -208,21 +203,6 @@ public final class Context {
 			}
 		}
 		return defaultValue;
-	}
-
-	/**
-	 * @return Returns the authUserName.
-	 */
-	public String getAuthUserName() {
-		return this.authUserName;
-	}
-
-	/**
-	 * @param authUserName
-	 *            The authUserName to set.
-	 */
-	public void setAuthUserName(String authUserName) {
-		this.authUserName = authUserName;
 	}
 
 	/**

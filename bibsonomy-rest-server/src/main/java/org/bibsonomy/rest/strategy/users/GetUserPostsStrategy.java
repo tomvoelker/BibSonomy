@@ -11,7 +11,6 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.ViewModel;
-import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
 
@@ -29,18 +28,12 @@ public class GetUserPostsStrategy extends Strategy {
 	}
 
 	@Override
-	public void validate() throws ValidationException {
-		// TODO check username for existance - or should the request then just
-		// return an empty list?
-	}
-
-	@Override
 	public void perform(final HttpServletRequest request, final Writer writer) throws InternServerException {
 		final int start = this.context.getIntAttribute("start", 0);
 		int end = this.context.getIntAttribute("end", 19);
 
 		final Class<? extends Resource> resourceType = Resource.getResource(this.context.getStringAttribute("resourcetype", "all"));
-		final List<? extends Post<? extends Resource>> posts = this.context.getLogic().getPosts(this.context.getAuthUserName(), resourceType, GroupingEntity.USER, userName, this.context.getTags("tags"), null, null, start, end);
+		final List<? extends Post<? extends Resource>> posts = this.context.getLogic().getPosts(resourceType, GroupingEntity.USER, userName, this.context.getTags("tags"), null, null, start, end);
 
 		// setup viewModel
 		final ViewModel viewModel = new ViewModel();

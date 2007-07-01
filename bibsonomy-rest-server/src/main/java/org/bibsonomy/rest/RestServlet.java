@@ -14,14 +14,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.exceptions.InternServerException;
-import org.bibsonomy.database.LogicInterface;
-import org.bibsonomy.database.managers.RestDatabaseManager;
+import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.database.DBLogic;
+import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.enums.RenderingFormat;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
-import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.strategy.Context;
@@ -38,13 +38,17 @@ public final class RestServlet extends HttpServlet {
 
 	private static final Logger log = Logger.getLogger(RestServlet.class);
 
-	private LogicInterface logic;
+	private LogicInterfaceFactory logicFactory;
 
 	@Override
 	public void init() throws ServletException {
 		super.init();
 		// instantiate the bibsonomy database connection
-		this.logic = RestDatabaseManager.getInstance();
+		this.logicFactory = new LogicInterfaceFactory() {
+			public LogicInterface getLogicAccess(final String loginName, final String apiKey) {
+				return DBLogic.getApiAccess(loginName, apiKey);
+			}
+		};
 	}
 
 	/**
@@ -52,8 +56,8 @@ public final class RestServlet extends HttpServlet {
 	 * 
 	 * FIXME: could be removed if we would use a DI-Framework
 	 */
-	void setLogicInterface(LogicInterface logicInterface) {
-		this.logic = logicInterface;
+	void setLogicInterface(LogicInterfaceFactory logicInterfaceFactory) {
+		this.logicFactory = logicInterfaceFactory;
 	}
 
 	/**
@@ -61,8 +65,8 @@ public final class RestServlet extends HttpServlet {
 	 * 
 	 * @return the {@link LogicInterface}
 	 */
-	LogicInterface getLogic() {
-		return this.logic;
+	LogicInterfaceFactory getLogic() {
+		return this.logicFactory;
 	}
 
 	/**
@@ -118,11 +122,10 @@ public final class RestServlet extends HttpServlet {
 
 		try {
 			// validate the requesting user's authorization
-			final String username = validateAuthorization(request.getHeader("Authorization"));
+			final LogicInterface logic = validateAuthorization(request.getHeader("Authorization"));
 
 			// create Context
-			final Context context = new Context(this.logic, method, request.getPathInfo(), request.getParameterMap());
-			context.setAuthUserName(username);
+			final Context context = new Context(logic, method, request.getPathInfo(), request.getParameterMap());
 
 			// validate request
 			context.validate();
@@ -197,7 +200,7 @@ public final class RestServlet extends HttpServlet {
 	 *            Authentication-value of the header's request
 	 * @throws IOException
 	 */
-	String validateAuthorization(final String authentication) throws AuthenticationException {
+	LogicInterface validateAuthorization(final String authentication) throws AuthenticationException {
 		if (authentication == null || !authentication.startsWith("Basic ")) {
 			throw new AuthenticationException("Please authenticate yourself.");
 		}
@@ -218,10 +221,10 @@ public final class RestServlet extends HttpServlet {
 		// check username and password
 		final String username = basicCookie.substring(0, i);
 		final String apiKey = basicCookie.substring(i + 1);
-		if (!this.logic.validateUserAccess(username, apiKey)) {
-			throw new AuthenticationException("Please authenticate yourself.");
+		try {
+			return logicFactory.getLogicAccess(username, apiKey);
+		} catch (ValidationException ve) {
+			throw new AuthenticationException("Please authenticate yourself: " + ve.getClass().getSimpleName() + ": " + ve.getMessage());
 		}
-
-		return username;
 	}
 }

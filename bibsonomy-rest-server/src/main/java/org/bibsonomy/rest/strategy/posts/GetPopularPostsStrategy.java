@@ -3,9 +3,9 @@ package org.bibsonomy.rest.strategy.posts;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.Order;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.logic.Order;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.strategy.Context;
 
@@ -27,8 +27,8 @@ public class GetPopularPostsStrategy extends AbstractListOfPostsStrategy {
 	}
 
 	@Override
-	protected List<? extends Post<? extends Resource>> getList(String authUserName, Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingValue, List<String> tags, String hash, Object object, int start, int end) {
-		return this.context.getLogic().getPosts(this.context.getAuthUserName(), resourceType, grouping, groupingValue, this.context.getTags("tags"), null, Order.POPULAR, start, end);
+	protected List<? extends Post<? extends Resource>> getList(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingValue, List<String> tags, String hash, Object object, int start, int end) {
+		return this.context.getLogic().getPosts(resourceType, grouping, groupingValue, this.context.getTags("tags"), null, Order.POPULAR, start, end);
 	}
 
 	/*@Override

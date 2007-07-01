@@ -7,8 +7,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.rest.enums.HttpMethod;
-import org.bibsonomy.rest.exceptions.ValidationException;
 import org.junit.Before;
 import org.junit.Test;
 

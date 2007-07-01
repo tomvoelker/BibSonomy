@@ -9,7 +9,6 @@ import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.ViewModel;
-import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
 
@@ -24,17 +23,12 @@ public class GetListOfGroupsStrategy extends Strategy {
 	}
 
 	@Override
-	public void validate() throws ValidationException {
-		// should be ok for everybody
-	}
-
-	@Override
 	public void perform(final HttpServletRequest request, final Writer writer) throws InternServerException {
 		// setup viewModel
 		final int start = this.context.getIntAttribute("start", 0);
 		int end = this.context.getIntAttribute("end", 20);
 
-		final List<Group> groups = this.context.getLogic().getGroups(this.context.getAuthUserName(), start, end);
+		final List<Group> groups = this.context.getLogic().getGroups(start, end);
 
 		final ViewModel viewModel = new ViewModel();
 		if (groups.size() < end || groups.size() > end) {

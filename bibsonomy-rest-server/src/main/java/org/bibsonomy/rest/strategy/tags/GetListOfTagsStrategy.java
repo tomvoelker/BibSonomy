@@ -10,7 +10,6 @@ import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.ViewModel;
-import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
 
@@ -22,11 +21,6 @@ public class GetListOfTagsStrategy extends Strategy {
 
 	public GetListOfTagsStrategy(final Context context) {
 		super(context);
-	}
-
-	@Override
-	public void validate() throws ValidationException {
-		// should be ok for everybody
 	}
 
 	@Override
@@ -45,7 +39,7 @@ public class GetListOfTagsStrategy extends Strategy {
 
 		final String regex = this.context.getStringAttribute("filter", null);
 
-		final List<Tag> tags = this.context.getLogic().getTags(this.context.getAuthUserName(), grouping, groupingValue, regex, start, end);
+		final List<Tag> tags = this.context.getLogic().getTags(grouping, groupingValue, regex, start, end);
 
 		final ViewModel viewModel = new ViewModel();
 		if (tags.size() < end || tags.size() > end) {

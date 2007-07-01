@@ -9,7 +9,6 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
-import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
 
@@ -27,14 +26,9 @@ public class GetGroupStrategy extends Strategy {
 	}
 
 	@Override
-	public void validate() throws ValidationException {
-		// should be ok for everybody
-	}
-
-	@Override
 	public void perform(final HttpServletRequest request, final Writer writer) throws InternServerException, NoSuchResourceException {
 		// delegate to the renderer
-		final Group group = this.context.getLogic().getGroupDetails(this.context.getAuthUserName(), this.groupName);
+		final Group group = this.context.getLogic().getGroupDetails(this.groupName);
 		if (group == null) {
 			throw new NoSuchResourceException("The requested group '" + this.groupName + "' does not exist.");
 		}

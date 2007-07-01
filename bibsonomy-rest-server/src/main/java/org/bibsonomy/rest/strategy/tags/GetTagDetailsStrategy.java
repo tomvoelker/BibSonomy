@@ -8,7 +8,6 @@ import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.ViewModel;
-import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
 
@@ -26,14 +25,9 @@ public class GetTagDetailsStrategy extends Strategy {
 	}
 
 	@Override
-	public void validate() throws ValidationException {
-		// should be ok for everybody
-	}
-
-	@Override
 	public void perform(final HttpServletRequest request, final Writer writer) throws InternServerException {
 		// delegate to the renderer
-		final Tag tag = this.context.getLogic().getTagDetails(this.context.getAuthUserName(), tagName);
+		final Tag tag = this.context.getLogic().getTagDetails(tagName);
 		this.context.getRenderer().serializeTag(writer, tag, new ViewModel());
 	}
 

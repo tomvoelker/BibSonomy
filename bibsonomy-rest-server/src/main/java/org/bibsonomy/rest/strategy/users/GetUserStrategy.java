@@ -9,7 +9,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
-import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
 
@@ -27,13 +26,8 @@ public class GetUserStrategy extends Strategy {
 	}
 
 	@Override
-	public void validate() throws ValidationException {
-		// should be ok for everybody
-	}
-
-	@Override
 	public void perform(final HttpServletRequest request, final Writer writer) throws InternServerException, NoSuchResourceException {
-		final User user = this.context.getLogic().getUserDetails(this.context.getAuthUserName(), userName);
+		final User user = this.context.getLogic().getUserDetails(userName);
 		if (user == null) throw new NoSuchResourceException("The requested user '" + this.userName + "' does not exist.");
 		// delegate to the renderer
 		this.context.getRenderer().serializeUser(writer, user, new ViewModel());

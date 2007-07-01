@@ -1,4 +1,4 @@
-package org.bibsonomy.database;
+package org.bibsonomy.model.logic;
 
 /**
  * @author Jens Illig

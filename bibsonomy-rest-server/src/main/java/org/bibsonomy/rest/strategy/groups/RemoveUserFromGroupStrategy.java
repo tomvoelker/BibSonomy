@@ -5,7 +5,6 @@ import java.io.Writer;
 import javax.servlet.http.HttpServletRequest;
 
 import org.bibsonomy.common.exceptions.InternServerException;
-import org.bibsonomy.rest.exceptions.ValidationException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
 
@@ -22,11 +21,6 @@ public class RemoveUserFromGroupStrategy extends Strategy {
 		super(context);
 		this.groupName = groupName;
 		this.userName = userName;
-	}
-
-	@Override
-	public void validate() throws ValidationException {
-		// TODO only groupmembers may remove a user from a group?
 	}
 
 	@Override
