@@ -663,14 +663,14 @@ public class TestDatabase implements DBLogicInterface {
 	public void removeUserFromGroup(String groupName, String userName) {
 	}
 
-	public void storeGroup(final String authUserName, Group group) {
+	public void storeGroup(final String authUserName, Group group, boolean update) {
 	}
 
-	public void storePost(String userName, Post post) {
+	public void storePost(String userName, Post post, boolean update) {
 
 	}
 
-	public void storeUser(final String authUserName,  User user) {
+	public void storeUser(final String authUserName,  User user, boolean update) {
 		this.dbUsers.put(user.getName(), user);
 	}
 }
