@@ -6,7 +6,9 @@ package org.bibsonomy.rest.database;
 import org.bibsonomy.database.DBLogic;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.rest.LogicInterfaceFactory;
+import org.junit.Ignore;
 
+@Ignore
 public class TestDBLogic extends DBLogic {
 	
 	public static final LogicInterfaceFactory factory = new LogicInterfaceFactory() {
@@ -18,5 +20,4 @@ public class TestDBLogic extends DBLogic {
 	public TestDBLogic(final String authUserName) {
 		super(authUserName, new TestDatabase());
 	}
-
 }
