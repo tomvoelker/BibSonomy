@@ -1,6 +1,3 @@
-/*
- * Created on 28.06.2007
- */
 package org.bibsonomy.database;
 
 import java.util.List;
@@ -17,16 +14,20 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.Order;
 
+/**
+ * @author Jens Illig
+ * @version $Id$
+ */
 public class DBLogic implements LogicInterface {
 	private static final Logger log = Logger.getLogger(DBLogic.class);
 	private final String loginUserName;
 	private final DBLogicInterface dbLogic;
-	
+
 	protected DBLogic(final String loginUserName, final DBLogicInterface dbLogic) {
 		this.loginUserName = loginUserName;
 		this.dbLogic = dbLogic;
 	}
-	
+
 	public static DBLogic getApiAccess(final String username, final String apiKey) {
 		final RestDatabaseManager restDbM = RestDatabaseManager.getInstance();
 		if (restDbM.validateUserAccess(username, apiKey) == false) {
@@ -94,7 +95,8 @@ public class DBLogic implements LogicInterface {
 	}
 
 	public void removeUserFromGroup(String groupName, String userName) {
-		ensureLoggedIn();
+		throw new RuntimeException("Not implemented yet");
+		// ensureLoggedIn();
 		// FIXME: IMPORTANT: not everybody may do this!
 		// better do nothing than anything horribly wrong:  this.dbLogic.removeUserFromGroup(groupName, userName);
 	}

@@ -23,9 +23,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.Order;
-import org.bibsonomy.util.ExceptionUtils;
 
 /**
  * This is an implementation of the LogicInterface for the REST-API.

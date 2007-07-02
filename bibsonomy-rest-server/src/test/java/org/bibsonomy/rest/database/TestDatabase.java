@@ -20,7 +20,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.Order;
-import org.junit.Test;
+import org.junit.Ignore;
 
 /**
  * This class is used for demonstrating purposes only. It is not designed to
@@ -38,6 +38,7 @@ import org.junit.Test;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
+@Ignore
 public class TestDatabase implements DBLogicInterface {
 
 	private final Map<String, Group> dbGroups;
@@ -58,10 +59,6 @@ public class TestDatabase implements DBLogicInterface {
 		this.date = cal.getTime();
 
 		fillDataBase();
-	}
-
-	@Test
-	public void testDummy() {
 	}
 
 	public boolean validateUserAccess(String username, String apiKey) {

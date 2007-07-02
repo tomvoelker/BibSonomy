@@ -1,6 +1,3 @@
-/*
- * Created on 01.07.2007
- */
 package org.bibsonomy.rest.client;
 
 import java.util.List;
@@ -44,12 +41,12 @@ public class RestLogic implements LogicInterface {
 		this(apiKey, apiURL);
 		this.bibsonomy.setApiURL(apiURL);
 	}
-	
+
 	public RestLogic(final String username, final String apiKey) {
 		this.bibsonomy = new Bibsonomy(username, apiKey);
 		this.authUserName = username;
 	}
-	
+
 	private <T> T execute(AbstractQuery<T> query) {
 		try {
 			bibsonomy.executeQuery(query);
@@ -58,9 +55,12 @@ public class RestLogic implements LogicInterface {
 		}
 		return query.getResult();
 	}
-	
+
 	public void addUserToGroup(String groupName, String userName) {
-		final User dummyUserObject = new User(); // TODO: only the username is used, but a whole user object is transmitted, so a dumm with only username is used here. This could lead to future problems
+		// TODO: only the username is used, but a whole user object is
+		// transmitted, so a dummy with only username is used here.
+		// -> This could lead to future problems
+		final User dummyUserObject = new User();
 		dummyUserObject.setName(userName);
 		execute(new AddUserToGroupQuery(groupName, dummyUserObject));
 	}
@@ -122,7 +122,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	public List<User> getUsers(String groupName, int start, int end) {
-		return execute(new GetUserListOfGroupQuery(groupName,start, end));
+		return execute(new GetUserListOfGroupQuery(groupName, start, end));
 	}
 
 	public void removeUserFromGroup(String groupName, String userName) {
@@ -142,15 +142,17 @@ public class RestLogic implements LogicInterface {
 	}
 
 	public void updateGroup(final Group group) {
-		execute(new ChangeGroupQuery(group.getName(), group)); // groups cannot be renamed
+		// groups cannot be renamed
+		execute(new ChangeGroupQuery(group.getName(), group));
 	}
 
 	public void updatePost(final Post<?> post) {
-		execute(new ChangePostQuery(this.authUserName, post.getResource().getIntraHash(), post)); // hashes are recalculated by the server
+		// hashes are recalculated by the server
+		execute(new ChangePostQuery(this.authUserName, post.getResource().getIntraHash(), post));
 	}
 
 	public void updateUser(User user) {
-		execute(new ChangeUserQuery(user.getName(), user)); // accounts cannot be renamed
+		// accounts cannot be renamed
+		execute(new ChangeUserQuery(user.getName(), user));
 	}
-
 }

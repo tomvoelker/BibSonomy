@@ -334,11 +334,11 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		final List<Post<BibTex>> list = getBibTexByHashForUser(authUser, resourceHash, userName, session, HashID.INTRA_HASH);
 		if (list.size() >= 1) {
 			if (list.size() > 1) {
-				log.warn("multiple bibtexPosts from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' found ->returning first");
+				log.warn("multiple BibTex-post from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' found ->returning first");
 			}
 			return list.get(0);
 		} else {
-			log.debug("bibtexPost from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' not found");
+			log.debug("BibTex-post from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' not found");
 			return null;
 		}
 	}
@@ -412,7 +412,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 				this.deletePost(userName, oldBibTexPost.getResource().getIntraHash(), session);
 			} else {
 				if (update == true) {
-					final String errorMsg = "cannot update nonexisting bitexpost with intrahash " + oldIntraHash + " for user " + userName;
+					final String errorMsg = "cannot update nonexisting BibTex-post with intrahash " + oldIntraHash + " for user " + userName;
 					log.warn(errorMsg);
 					throw new ValidationException(errorMsg);
 				}

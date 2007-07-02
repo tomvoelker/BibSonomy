@@ -2,10 +2,9 @@ package org.bibsonomy.database;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.QueryFor;
 import org.bibsonomy.database.util.StatementType;
-import org.bibsonomy.database.util.DBSession;
 
 /**
  * This is the superclass for all classes that are implementing methods to
@@ -20,9 +19,6 @@ import org.bibsonomy.database.util.DBSession;
  * @version $Id$
  */
 public class AbstractDatabaseManager {
-
-	/** Logger */
-	private static final Logger log = Logger.getLogger(AbstractDatabaseManager.class);
 
 	/**
 	 * Can be used to start a query that retrieves a list of Integers.
@@ -129,6 +125,4 @@ public class AbstractDatabaseManager {
 	private void insertUpdateDelete(final String query, final Object param, final StatementType statementType, final boolean ignoreException, final DBSession session) {
 		session.transactionWrapper(query, param, statementType, null, ignoreException);
 	}
-
-
 }
