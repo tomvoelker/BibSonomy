@@ -30,7 +30,7 @@ List of all groups
 GET www.bibsonomy.org/api/groups
 
 <?xml version="1.0"?>
-<bibsonomyXMLInterchangeDocument>
+<bibsonomy>
   <groups start="0" end="5">
     <group name="group1" description="demo group" href="www.bibsonomy.org/groups/group1"/>
     <group name="group2" description="demo group" href="www.bibsonomy.org/groups/group2"/>
@@ -38,7 +38,7 @@ GET www.bibsonomy.org/api/groups
     <group name="group4" description="demo group" href="www.bibsonomy.org/groups/group4"/>
     <group name="group5" description="demo group" href="www.bibsonomy.org/groups/group5"/>
   </groups>
-</bibsonomyXMLInterchangeDocument>
+</bibsonomy>
 ---
 
   XML Schema:

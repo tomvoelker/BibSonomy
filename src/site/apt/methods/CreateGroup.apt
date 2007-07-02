@@ -24,9 +24,9 @@ Create group
 POST www.bibsonomy.org/api/groups
 
 <?xml version="1.0"?>
-<bibsonomyXMLInterchangeDocument>
+<bibsonomy>
   <group name="newGroup" description="This is a very special new group"/>
-</bibsonomyXMLInterchangeDocument>
+</bibsonomy>
 ---
 
   XML Schema:

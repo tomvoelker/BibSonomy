@@ -335,9 +335,9 @@
             <br/>
             <p>
                <em>
-                  <br/>&lt;bibsonomyXMLInterchangeDocument>
+                  <br/>&lt;bibsonomy>
                   <br/>   &lt;error>some error message&lt;/error>
-                  <br/>&lt;/bibsonomyXMLInterchangeDocument>
+                  <br/>&lt;/bibsonomy>
                </em>
             </p>
          </subsection>

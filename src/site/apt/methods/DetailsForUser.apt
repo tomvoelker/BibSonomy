@@ -28,9 +28,9 @@ Details for user
 GET www.bibsonomy.org/api/users/hotho
 
 <?xml version="1.0"?>
-<bibsonomyXMLInterchangeDocument>
+<bibsonomy>
   <user name="hotho" realname="Andreas Hotho" email="hotho@cs.uni-kassel.de" homepage="www.kde.cs.uni-kassel.de/hotho"/>
-</bibsonomyXMLInterchangeDocument>
+</bibsonomy>
 ---
 
   XML Schema:

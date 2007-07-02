@@ -24,9 +24,9 @@ Change group
 PUT www.bibsonomy.org/api/groups/group1
 
 <?xml version="1.0"?>
-<bibsonomyXMLInterchangeDocument>
+<bibsonomy>
   <group name="group1" description="This is a very special new group - updated."/>
-</bibsonomyXMLInterchangeDocument>
+</bibsonomy>
 ---
 
   XML Schema:

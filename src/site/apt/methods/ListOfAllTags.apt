@@ -32,12 +32,12 @@ List of all tags
 GET www.bibsonomy.org/api/tags?end=1&user=mbork
 
 <?xml version="1.0"?>
-<bibsonomyXMLInterchangeDocument>
+<bibsonomy>
   <tags start="0" end="1" next="http://www.bibsonomy.org/api/users?start=2&end=3&user=mbork">
     <tag name="tag1" globalcount="13" usercount="5"/>
     <tag name="tag2" globalcount="23" usercount="15"/>
   </tags>
-</bibsonomyXMLInterchangeDocument>
+</bibsonomy>
 ---
 
   XML Schema:

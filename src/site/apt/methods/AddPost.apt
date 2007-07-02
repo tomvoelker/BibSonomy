@@ -22,7 +22,7 @@ Add post
 POST www.bibsonomy.org/api/users/mbork/posts
 
 <?xml version="1.0"?>
-<bibsonomyXMLInterchangeDocument>
+<bibsonomy>
   <post description="some important bookmark!">
     <user name="mbork"/>
     <tag name="tag1"/>
@@ -30,7 +30,7 @@ POST www.bibsonomy.org/api/users/mbork/posts
     <tag name="tag3"/>
     <bookmark url="www.google.de"/>
   </post>
-</bibsonomyXMLInterchangeDocument>
+</bibsonomy>
 ---
 
   XML Schema:

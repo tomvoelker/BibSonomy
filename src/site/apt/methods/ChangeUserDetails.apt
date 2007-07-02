@@ -22,9 +22,9 @@ Change user details
 PUT www.bibsonomy.org/api/users/mbork
 
 <?xml version="1.0"?>
-<bibsonomyXMLInterchangeDocument>
+<bibsonomy>
   <user name="mbork" realname="Manuel Bork" password="newPass" email="manuel.bork@uni-kassel.de" homepage="www.manuelbork.de"/>
-</bibsonomyXMLInterchangeDocument>
+</bibsonomy>
 ---
 
   XML Schema:

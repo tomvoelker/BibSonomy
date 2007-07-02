@@ -28,7 +28,7 @@ Details for post
 GET www.bibsonomy.org/api/users/mbork/posts/aaaaaaabbbbbbbbcccccccc
 
 <?xml version="1.0"?>
-<bibsonomyXMLInterchangeDocument>
+<bibsonomy>
   <post description="some important bookmark!" postingdate="2006-05-21T17:47+01:00">
     <user name="mbork"/>
     <tag name="tag1"/>
@@ -36,7 +36,7 @@ GET www.bibsonomy.org/api/users/mbork/posts/aaaaaaabbbbbbbbcccccccc
     <tag name="tag3"/>
     <bookmark url="www.google.de" intrahash="aaaaaaabbbbbbbbcccccccc" href="www.bibsonomy.org/api/posts?resource=aaaaaaabbbbbbbbcccccccc"/>
   </post>
-</bibsonomyXMLInterchangeDocument>
+</bibsonomy>
 ---
 
   XML Schema:

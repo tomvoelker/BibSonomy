@@ -24,7 +24,7 @@ Change post
 PUT www.bibsonomy.org/api/users/mbork/posts/aabbccddeeff01234
 
 <?xml version="1.0"?>
-<bibsonomyXMLInterchangeDocument>
+<bibsonomy>
   <post description="some important bookmark!">
     <user name="mbork"/>
     <tag name="tag1"/>
@@ -33,7 +33,7 @@ PUT www.bibsonomy.org/api/users/mbork/posts/aabbccddeeff01234
     <tag name="tag4"/>
     <bookmark url="www.google.de" intrahash="aabbccddeeff01234" interhash="aabbccddeeff01234"/>
   </post>
-</bibsonomyXMLInterchangeDocument>
+</bibsonomy>
 ---
 
   XML Schema:

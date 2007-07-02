@@ -30,7 +30,7 @@ List of users for a group
 GET www.bibsonomy.org/api/groups/group1/users/
 
 <?xml version="1.0"?>
-<bibsonomyXMLInterchangeDocument>
+<bibsonomy>
   <users start="0" end="5">
     <user name="mbork" href="www.bibsonomy.org/users/mbork"/>
     <user name="user1" href="www.bibsonomy.org/users/user1"/>
@@ -38,7 +38,7 @@ GET www.bibsonomy.org/api/groups/group1/users/
     <user name="user3" href="www.bibsonomy.org/users/user3"/>
     <user name="user4" href="www.bibsonomy.org/users/user4"/>
   </users>
-</bibsonomyXMLInterchangeDocument>
+</bibsonomy>
 ---
 
   XML Schema:

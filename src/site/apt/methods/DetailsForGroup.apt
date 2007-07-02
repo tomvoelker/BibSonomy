@@ -30,9 +30,9 @@ Details for group
 GET www.bibsonomy.org/api/groups/group1
 
 <?xml version="1.0"?>
-<bibsonomyXMLInterchangeDocument>
+<bibsonomy>
   <group name="group1" description="this is a demo group" href="www.bibsonomy.org/groups/group1"/>
-</bibsonomyXMLInterchangeDocument>
+</bibsonomy>
 ---
 
   XML Schema:
