@@ -13,10 +13,10 @@ my $apiUrl = "http://www.biblicious.org/api/";
 use strict;
 use Socket;
 use Sys::Hostname;
-require "DB.pl";   
+require "DB.pl";
 require "LogFile.pl";
 require "HTTPClient.pl";   
-require "XMLProc.pl";  
+require "XMLProc.pl";
 require "StopWatch.pl";
 
 # create database handler, http client, XML processor, stop watch      
@@ -33,15 +33,40 @@ my $num_parallel = ($ARGV[0] ? $ARGV[0] : 1);
 
 
 # start test runs
-testGetBibtexByTag();
-testGetBibtexByUser();
-testGetBibtexByHash();
+# testGetBibtexByTag();
+# testGetBibtexByUser();
+# testGetBibtexByHash();
 
-
+# benchmark test
+testGetBibtexForUserDBLP(1, 1000);
+testGetBibtexForUserDBLP(20, 1000);
+testGetBibtexForUserDBLP(100, 1000);
+testGetBibtexForUserDBLP(500, 1000);
+testGetBibtexForUserDBLP(1000, 1000);
+testGetBibtexForUserDBLP(5000, 500);
+testGetBibtexForUserDBLP(10000, 500);
 
 
 ##############################################################################
 ##############################################################################
+
+
+#
+# user DBLP
+# benchmark test for user dblp; retrieve $numRuns times $numPosts posts
+#
+sub testGetBibtexForUserDBLP {
+	my ($numPosts, $numRuns) = @_;
+		
+	my $i = 0;
+	for ($i = 0; $i < $numRuns; $i++) {		
+		my $start = int(rand(2000)); # choose start randomly to avoid caching
+		my $end = $start + $numPosts; 					
+	  	my $query = "users/dblp/posts?resourcetype=bibtex&start=$start&end=$end";
+	  	process($query, "getBibtexByUser", $numPosts);
+	}
+}
+
 
 
 #
@@ -57,7 +82,6 @@ sub testGetBibtexByTag {
 	  	process($query, "getBibtexByTag");
 	}
 }
-
 
 #
 # getBibtexByUser
@@ -92,7 +116,7 @@ sub testGetBibtexByHash {
 # process a URL
 #
 sub process {
-	my ($query, $query_class) = @_;
+	my ($query, $query_class, $numPosts) = @_;
 	
 	print "processing request " . $query . "\n";
 	
@@ -101,20 +125,25 @@ sub process {
 	my $elapsed = $sw->stopRetrieveTime;  
 		
 	if ($cl->is_success) {			
-		$xp->parse($cl->content);
-		if ($xp->is_success) {
-			$log->log($host,$query,$query_class,$cl->status,0,'','',$elapsed,$xp->numPosts,$cl->result->content_length,$num_parallel,$hostname);
-			# print "query successful: " . $xp->numPosts . " posts, time: $elapsed\n\n";
-		}
-		else {
-			# handle xml processing error
-			# print $xp->errorMsg
-			$log->log($host,$query,$query_class,$cl->status,1,$xp->error,$xp->errorMsg,$elapsed,0,$cl->result->content_length,$num_parallel,$hostname);
-		};		
+		
+		$log->log($host,$query,$query_class,$cl->status,0,'','',$elapsed,$numPosts,$cl->result->content_length,$num_parallel,$hostname);
+		
+#
+#       we won't parse the result for now, as we're solely interested in the web server performance
+#		
+#		$xp->parse($cl->content);
+#		if ($xp->is_success) {
+#			$log->log($host,$query,$query_class,$cl->status,0,'','',$elapsed,$xp->numPosts,$cl->result->content_length,$num_parallel,$hostname);
+#			# print "query successful: " . $xp->numPosts . " posts, time: $elapsed\n\n";
+#		}
+#		else {
+#			# handle xml processing error
+#			# print $xp->errorMsg
+#			$log->log($host,$query,$query_class,$cl->status,1,$xp->error,$xp->errorMsg,$elapsed,0,$cl->result->content_length,$num_parallel,$hostname);
+#		};		
 	} 
 	else {
 		# handle http client error
-		# print $cl->errorMsg;
-		$log->log($host,$query,$query_class,$cl->status,1,$cl->error,$cl->errorMsg,$elapsed,0,0,$num_parallel,$hostname);
+		$log->log($host,$query,$query_class,$cl->status,1,$cl->error,$cl->errorMsg,$elapsed,$numPosts,0,$num_parallel,$hostname);
 	}		
 }

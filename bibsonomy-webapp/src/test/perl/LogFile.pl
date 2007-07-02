@@ -9,6 +9,7 @@
 # database connection
 use DBI;
 use strict;
+use POSIX;
 
 # class LogFile
 package LogFile;
@@ -37,12 +38,16 @@ sub log {
 	$error_type = $self->{_db}->dbh->quote($error_type);
 	$error_msg = $self->{_db}->dbh->quote($error_msg);
 	
+	# time
+	my $timestamp = POSIX::strftime("%Y-%m-%d %H:%M:%S", localtime);
+	$timestamp = $self->{_db}->dbh->quote($timestamp);
+		
 	my $statement = 
 			"INSERT INTO results " . 
-					 "(host,query,query_class,http_status,error,error_type,error_msg,elapsed,num_posts,content_length,num_parallel) " .  
-			"VALUES ($host,$query,$query_class,$http_status,$error,$error_type,$error_msg,$elapsed,$num_posts,$content_length,$num_parallel);";
+					 "(timestamp,host,query,query_class,http_status,error,error_type,error_msg,elapsed,num_posts,content_length,num_parallel) " .  
+			"VALUES ($timestamp,$host,$query,$query_class,$http_status,$error,$error_type,$error_msg,$elapsed,$num_posts,$content_length,$num_parallel);";
 			
-	$self->saveToFile($statement, $hostname . ".log");
+	$self->saveToFile($statement, $hostname . ".log.sql");
 }
 
 sub saveToFile {
