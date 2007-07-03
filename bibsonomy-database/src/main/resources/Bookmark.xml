@@ -253,7 +253,7 @@
 
 
     <insert id="insertBookmark" parameterClass="bookmarkParam">
-		INSERT INTO bookmark (content_id, book_url_hash, book_description AS title, book_extended AS description, `group`, date, user_name)
+		INSERT INTO bookmark (content_id, book_url_hash, book_description, book_extended, `group`, date, user_name)
 		VALUES (#requestedContentId#,#hash#,#resource.title#,#description#,#groupId#,#date#,#userName#)
 	</insert> 
 
@@ -263,23 +263,19 @@
 		FROM bookmark WHERE content_id = #requestedContentId#
 	</insert>
 
-    <insert id="insertBookmarkInc" parameterClass="bookmarkParam">
+    <insert id="insertBookmarkHash" parameterClass="bookmarkParam">
 		INSERT INTO urls (book_url_hash,book_url,book_url_ctr) VALUES (#hash#,#url#,1) ON DUPLICATE KEY UPDATE book_url_ctr=book_url_ctr+1
 	</insert>
 	
-	<update id="updateBookmarkHashDec" parameterClass="bookmarkParam">
+	<update id="updateBookmarkHash" parameterClass="bookmarkParam">
 		UPDATE urls SET book_url_ctr=book_url_ctr-1 WHERE book_url_hash = #hash# 
 	</update>
 	
-	<delete id="deleteBookmarkByContentId" parameterClass="bookmarkParam">
+	<delete id="deleteBookmark" parameterClass="bookmarkParam">
 		DELETE FROM bookmark WHERE content_id = #requestedContentId#
 	</delete>
 	
 <!--
-	<insert id="insertBibTexHashInc" parameterClass="bibtexParam">
-		INSERT INTO bibhash(hash, ctr) VALUES (#hash#, 1) ON DUPLICATE KEY UPDATE ctr=ctr+1
-	</insert>
-
 	<update id="updateBookmarkLog" parameterClass="bookmarkParam">
 		UPDATE log_bookmark SET new_content_id = #resource.contentId#
 		WHERE content_id = #requestedContentId#
@@ -289,18 +285,5 @@
 		SELECT content_id FROM bookmark WHERE book_url_hash = #hash# AND user_name = #userName#
 	</select>
 
-
-	<!--	
-	only for setting concerning geotagger feature 
 	
-	<update id="updateBookmarkDocument" parameterClass="bookmarkParam">
-		UPDATE document SET content_id = #resource.contentId# WHERE content_id =#requestedContentId#
-	</update>
-	<delete id="deleteBookmarkDocument">
-		DELETE FROM document WHERE content_id = #requestedContentId# AND user_name= #resource.userName#
-	</delete>
-	
-	 <insert id="insertBookmarkDocument" parameterClass="bookmarkParam">
-		INSERT INTO INTO document (hash, content_id, name, user_name, date)values(#resource.hash#,#resource.contentID#,##,#resource.userName#,#resource.date#);
-	</insert>-->
 </sqlMap>
