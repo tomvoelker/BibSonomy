@@ -2,14 +2,22 @@ package org.bibsonomy.database.managers;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
+import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChain;
 import org.bibsonomy.database.params.BookmarkParam;
+import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.util.SimHash;
 
 /**
  * Used to CRUD bookmarks from the database.
@@ -20,23 +28,30 @@ import org.bibsonomy.model.Post;
  * @version $Id$
  */
 public class BookmarkDatabaseManager extends AbstractDatabaseManager implements CrudableContent<Bookmark, BookmarkParam> {
-
+	private static final Logger log = Logger.getLogger(BookmarkDatabaseManager.class);
+	
 	/** Singleton */
 	private final static BookmarkDatabaseManager singleton = new BookmarkDatabaseManager();
 	private final GeneralDatabaseManager generalDb;
 	private final TagDatabaseManager tagDb;
+	private final DatabasePluginRegistry plugins;
 	private static final BookmarkChain chain = new BookmarkChain();
-
+	
+	
+	
 	private BookmarkDatabaseManager() {
 		this.generalDb = GeneralDatabaseManager.getInstance();
 		this.tagDb = TagDatabaseManager.getInstance();
+		this.plugins = DatabasePluginRegistry.getInstance();
 	}
 
 	public static BookmarkDatabaseManager getInstance() {
 		return singleton;
 	}
 
-	// FIXME return value needs to be changed to org.bibsonomy.model.Post
+	/**
+	 * Can be used to start a query that retrieves a list of bookmarks.
+	 */
 	@SuppressWarnings("unchecked")
 	protected List<Post<Bookmark>> bookmarkList(final String query, final BookmarkParam param, final boolean test, final DBSession session) {
 		return (List<Post<Bookmark>>) queryForList(query, param, session);
@@ -147,6 +162,20 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		return this.bookmarkList("getBookmarkByHashForUser", param, true, session);
 	}
 
+	public List<Post<Bookmark>> getBookmarkHashForUser(final String loginUserName, final String interHash, final String requestedUserName, final DBSession session) {
+		return getBookmarkByHashForUser(loginUserName, interHash, requestedUserName, session, HashID.INTER_HASH);
+	}
+	
+	public List<Post<Bookmark>> getBookmarkByHashForUser(final String loginUserName, final String intraHash, final String requestedUserName, final DBSession session, final HashID hashType) {
+		final BookmarkParam param = new BookmarkParam();
+		param.setUserName(loginUserName);
+		param.setRequestedUserName(requestedUserName);
+		param.setHash(intraHash);
+		param.setRequestedSimHash(hashType);
+		return getBookmarkByHashForUser(param, session);
+	}
+	
+	
 	/**
 	 * <em>/search/ein+lustiger+satz</em><br/><br/>
 	 * 
@@ -242,26 +271,60 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	}
 
 
-	
 	/**
-	 * This methods  are for setting functions concerning bookmark entries
+	 * Inserts a bookmark into the database.
 	 */
-	  public void insertBookmark(final BookmarkParam bookmark, final DBSession session) {
-		this.insert("insertBookmark", bookmark, session);
+	private void insertBookmark(final BookmarkParam param, final DBSession session) {
+		// Start transaction
+		session.beginTransaction();
+		try {
+			// Insert bookmark
+			this.insert("insertBookmark", param, session);
+			for (final int i : new int[] { 0, 1 }) {
+				final HashID simHash = HashID.getSimHash(i);
+				param.setRequestedSimHash(simHash);
+				param.setHash(SimHash.getSimHash(param.getResource(),simHash));
+				this.insertBookmarkHash(param, session);
+			}
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
 	}
 
+	/**
+	 * Inserts a post with a bookmark into the database.
+	 */
+	  protected void insertBookmarkPost(final Post<Bookmark> post, final DBSession session) {
+			final BookmarkParam param = new BookmarkParam();
+			param.setResource(post.getResource());
+			param.setDate(post.getDate());
+			param.setRequestedContentId(post.getContentId());
+			param.setHash(post.getResource().getIntraHash());
+			param.setDescription(post.getDescription());
+			param.setUserName(post.getUser().getName());
+			param.setUrl(post.getResource().getUrl());
+			for (final Group group : post.getGroups()) {
+				param.setGroupId(group.getGroupId());
+				this.insertBookmark(param, session);
+			}
+		}
+	  
+	  
+	  
+	  
 	public void insertBookmarkLog(final BookmarkParam bookmark, final DBSession session) {
 		// TODO not tested
 		this.insert("insertBookmarkLog", bookmark, session);
 	}
 
 	// insert counter, hash and url of bookmark
-	public void insertBookmarkInc(final Bookmark param, final DBSession session) {
-		this.insert("insertBookmarkInc", param, session);
+	public void insertBookmarkHash(final BookmarkParam param, final DBSession session) {
+		this.insert("insertBookmarkHash", param, session);
 	}
-
-	public void updateBookmarkHashDec(final BookmarkParam param, final DBSession session) {
-		this.insert("updateBookmarkHashDec", param, session);
+   // decrements one count in url table after deleting
+	public void updateBookmarkHash(final BookmarkParam param, final DBSession session) {
+		this.insert("updateBookmarkHash", param, session);
 	}
 
 	public void updateBookmarkLog(final BookmarkParam param, final DBSession session) {
@@ -269,8 +332,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		this.insert("updateBookmarkLog", param, session);
 	}
 
-	public void deleteBookmarkByContentId(final BookmarkParam param, final DBSession session) {
-		this.insert("deleteBookmarkByContentId", param, session);
+	public void deleteBookmark(final BookmarkParam param, final DBSession session) {
+		this.delete("deleteBookmark", param, session);
 	}
 
 	public Integer getContentIDForBookmark(final BookmarkParam param, final DBSession session) {
@@ -283,37 +346,111 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	
 	public Post<Bookmark> getPostDetails(String authUser, String resourceHash, String userName, final DBSession session) {
 		// TODO Auto-generated method stub
+		//
 		return null;
 	}
 
-	public boolean deletePost(String userName, String resourceHash, final DBSession session) {
-		// TODO: test for removal (tas, bookmark, ...)
-		final BookmarkParam paramDelete = new BookmarkParam();
-		paramDelete.setUserName(userName);
-		paramDelete.setHash(resourceHash);	
+	public boolean deletePost(final String userName, final String resourceHash, final DBSession session) {
+		// TODO: test removal (tas and bibtex ...)
+		session.beginTransaction();
+		try {
+			// Used for userName, hash and contentId
+			final BookmarkParam param = new BookmarkParam();
+			param.setUserName(userName);
+			param.setHash(resourceHash);
 
-		// return a bookmark object for current hash value
-		final List<Post<Bookmark>> storeTemp = this.getBookmarkByHashForUser(paramDelete, session);
-		// bookmark DOESN'T EXIST
-		if (storeTemp.size() == 0) return false;
+			final List<Post<Bookmark>> bookmarks = this.getBookmarkByHashForUser(param, session);
+			if (bookmarks.size() == 0) {
+				// Bookmark doesn't exist
+				return false;
+			}
 
-		final Post<Bookmark> provePost = storeTemp.get(0);
-	    paramDelete.setRequestedContentId(provePost.getContentId());
-
-        // counter in urls table is decremented (-1)
-		this.updateBookmarkHashDec(paramDelete, session);
-		// delete the selected bookmark (by given contentId) from current database table
-	    this.deleteBookmarkByContentId(paramDelete, session);
-	    // deleting tas
-	    this.tagDb.deleteTags(provePost, session);
-
+			final Post<? extends Resource> oneBookmark = bookmarks.get(0);
+			param.setRequestedContentId(oneBookmark.getContentId());
+			// Delete al tags according bookmark
+			this.tagDb.deleteTags(oneBookmark, session);
+			// Update SimHashes
+			for (final int i : new int[] { 0, 1 }) {
+				final HashID simHash = HashID.getSimHash(i);
+				param.setRequestedSimHash(simHash);
+				param.setHash(SimHash.getSimHash(((Bookmark) oneBookmark.getResource()), simHash));
+				// Decrement counter in url table
+				this.updateBookmarkHash(param, session);
+			}
+			// Delete entry from table bookmark
+			this.deleteBookmark(param, session);
+			
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
 		return true;
 	}
 
-	// TODO: this method belongs to the logic-layer not database-layer. anyway, i would appreciate a rewrite of this copy'n'paste mess
-	@SuppressWarnings("unchecked")
-	public boolean storePost(String userName, Post<Bookmark> post, final String oldIntraHash, final boolean update, final DBSession session) {
-		// TODO: implement correctly if it only had been copy'n'pasted it would have been ok, but it used contentids as tasids, hardcoded hashes and so on
-		throw new UnsupportedOperationException();
+	
+	public boolean storePost(String userName, Post<Bookmark> post, String oldIntraHash, boolean update, DBSession session)  {
+		
+		
+		session.beginTransaction();
+		try {
+			final List<Post<Bookmark>> isBookmarkInDb;
+			System.out.println("oldIntraHash "+ oldIntraHash);
+			if (oldIntraHash != null) {
+				System.out.println("oldIntraHash != null");
+				if ((update == false) && (oldIntraHash.equals(post.getResource().getIntraHash()) == false)) {
+					System.out.println("update==false");
+					throw new IllegalArgumentException("cannot create new resource/BOOKMARK with an old hash value");
+				}
+				isBookmarkInDb = this.getBookmarkHashForUser(userName, oldIntraHash, userName,session);
+			} else {
+				if (update == true) {
+					System.out.println("update==true");
+					throw new IllegalArgumentException("cannot update/BOOKMARK without old hash value");
+				}
+				isBookmarkInDb = null;
+			}
+			
+			// ALWAYS get a new contentId
+			post.setContentId(this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, session));
+			System.out.println("post.setContentId");
+			if ((isBookmarkInDb != null) && (isBookmarkInDb.size() > 0)) {
+				update = true;
+				// Bookmark entry DOES EXIST for this user -> delete old Bookmark post
+				final Post oldBookmarkPost = isBookmarkInDb.get(0);
+				this.plugins.onBookmarkUpdate(post.getContentId(), oldBookmarkPost.getContentId(), session);
+				this.deletePost(userName, oldBookmarkPost.getResource().getIntraHash(), session);
+			} else {
+				if (update == true) {
+					final String errorMsg = "cannot update nonexisting BOOKMARK-post with intrahash " + oldIntraHash + " for user " + userName;
+					log.warn(errorMsg);
+					throw new ValidationException(errorMsg);
+				}
+				update = false;
+			}
+			
+			this.insertBookmarkPost(post, session);
+			
+			// add the tags
+			this.tagDb.insertTags(post, session);
+			
+			// TODO: update: log, doc, col, ext, url
+
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+		System.out.println("update "+update);
+		return update;
+		
+		
+		
 	}
+
+	
+		
+
+
+	
+
+	
 }
