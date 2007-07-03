@@ -46,7 +46,7 @@ public class ParamUtils {
 		param.setUserName("hotho");
 		param.setRequestedUserName("stumme");
 		param.setRequestedGroupName("kde");
-		param.setDate(date);
+		//param.setDate(date);
 		// param.setCaseSensitiveTagNames(true);
 		param.addTagName("community");
 	}

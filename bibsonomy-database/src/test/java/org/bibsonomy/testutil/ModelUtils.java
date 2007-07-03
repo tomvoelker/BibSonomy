@@ -12,6 +12,7 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -40,7 +41,7 @@ import org.bibsonomy.util.ExceptionUtils;
 public class ModelUtils {
 
 	private static final Logger log = Logger.getLogger(ModelUtils.class);
-
+	
 	private static void setResourceDefaults(final Resource resource) {
 		resource.setCount(0);
 	}
@@ -51,6 +52,7 @@ public class ModelUtils {
 	public static Bookmark getBookmark() {
 		final Bookmark bookmark = new Bookmark();
 		setResourceDefaults(bookmark);
+		bookmark.setIntraHash("e636edf2736cfc61897bf21039ffabsde");
 		bookmark.setTitle("test");
 		bookmark.setUrl("http://www.bibonomy.org");
 		return bookmark;
@@ -94,7 +96,6 @@ public class ModelUtils {
 		post.setDescription("trallalla");
 		post.setDate(new Date());
 		post.setUser(ModelUtils.getUser());
-
 		final T resource;
 		if (resourceType == BibTex.class) {
 			resource = (T) ModelUtils.getBibTex();

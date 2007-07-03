@@ -22,6 +22,10 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 
 	private boolean onBibTexInsert;
 	private boolean onBibTexUpdate;
+	
+	private boolean onBookmarkInsert;
+	private boolean onBookmarkUpdate;
+	
 	private boolean onTagRelationDelete;
 
 	public DatabasePluginMock() {
@@ -42,11 +46,11 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 		}
 	}
 
-	@Override
+	/*@Override
 	public Runnable onBibTexInsert(final int contentId, final DBSession session) {
 		this.onBibTexInsert = true;
 		return null;
-	}
+	}*/
 
 	@Override
 	public Runnable onBibTexUpdate(final int newContentId, final int contentId, final DBSession session) {
@@ -54,6 +58,20 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 		this.onBibTexUpdate = true;
 		return null;
 	}
+	
+	@Override
+	public Runnable onBookmarkInsert(final int contentId, final DBSession session) {
+		this.onBookmarkInsert = true;
+		return null;
+	}
+
+	@Override
+	public Runnable onBookmarkUpdate(final int newContentId, final int contentId, final DBSession session) {
+		assertTrue(contentId != newContentId);
+		this.onBookmarkUpdate = true;
+		return null;
+	}
+	
 
 	@Override
 	public Runnable onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
@@ -69,6 +87,15 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 		return this.onBibTexUpdate;
 	}
 
+	public boolean isOnBookmarkInsert() {
+		return this.onBookmarkInsert;
+	}
+
+	public boolean isOnBookmarkUpdate() {
+		return this.onBookmarkUpdate;
+	}
+
+	
 	public boolean isOnTagRelationDelete() {
 		return this.onTagRelationDelete;
 	}
