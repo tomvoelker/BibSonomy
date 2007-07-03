@@ -8,6 +8,7 @@ import java.util.TreeSet;
 
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.util.StringUtils;
 
 /**
@@ -16,7 +17,7 @@ import org.bibsonomy.util.StringUtils;
 public class SimHash {
 
 	/**
-	 * Returns the corresponding simhash.
+	 * Returns the corresponding simhash for a bookmark.
 	 */
 	public static String getSimHash(final BibTex bibtex, final HashID simHash) {
 		if (simHash.getId() == HashID.SIM_HASH0.getId()) {
@@ -32,6 +33,42 @@ public class SimHash {
 		}
 	}
 
+	
+	/**
+	 * Returns the corresponding simhash for a bookmark.
+	 */
+	public static String getSimHash(final Bookmark bookmark, final HashID simHash) {
+		if (simHash.getId() == HashID.SIM_HASH0.getId()) {
+			return getSimHash1(bookmark);
+		} else if (simHash.getId() == HashID.SIM_HASH1.getId()) {
+			return getSimHash2(bookmark);
+		} else {
+			throw new RuntimeException("SimHash " + simHash.getId() + " doesn't exist.");
+		}
+	}
+	
+	
+	/**
+	 * Calculates the simHash0,1,2,3 for a bookmark, which consideres: url of a bookmark
+	 * Currently, all hashes for bookmark are equal
+	 */
+	public static String getSimHash0(final Bookmark bookmark) {
+		return ResourceUtils.hash(bookmark.getUrl());
+	}
+
+	public static String getSimHash1(final Bookmark bookmark) {
+		return ResourceUtils.hash(bookmark.getUrl());
+	}
+
+	public static String getSimHash2(final Bookmark bookmark) {
+		return ResourceUtils.hash(bookmark.getUrl());
+	}
+
+	public static String getSimHash3(final Bookmark bookmark) {
+		return ResourceUtils.hash(bookmark.getUrl());
+	}
+	
+	
 	/**
 	 * Calculates the simHash0, which consideres: title, author, editor, year,
 	 * entrytype, journal, booktitle.
