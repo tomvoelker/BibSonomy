@@ -1,11 +1,26 @@
 package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
+
+import junit.framework.Assert;
 
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.database.params.BookmarkParam;
+import org.bibsonomy.database.plugin.DatabasePluginRegistry;
+import org.bibsonomy.database.util.LogicInterfaceHelper;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.testutil.DatabasePluginMock;
+import org.bibsonomy.testutil.ModelUtils;
 import org.junit.Test;
 
 /**
@@ -131,12 +146,64 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * Test for setting bookmarks of a user in database regarding different
 	 * statements
 	 */
+	
 	@Test
-	public void insertBookmark() {
-		// FIXME
-		// this.db.getBookmark().insertBookmark(this.bookmarkParam);
+	public void insertBookmarkPost() {
+		final Post<Bookmark> toInsert = ModelUtils.generatePost(Bookmark.class);
+		toInsert.setContentId(Integer.MAX_VALUE);
+		this.bookmarkDb.insertBookmarkPost(toInsert, this.dbSession);
 	}
+	
+	@Test
+	public void deleteBookmark() {
+		this.bookmarkDb.deletePost(this.bookmarkParam.getRequestedUserName(), this.bookmarkParam.getHash(), this.dbSession);
+	}
+	
+	
+	
+	
+	@Test
+	public void storePost() {
+		final Post<Bookmark> toInsert = ModelUtils.generatePost(Bookmark.class);
+		System.out.println("test");
 
+		try {
+			this.bookmarkDb.storePost(toInsert.getUser().getName(), toInsert, null, true, this.dbSession);
+			Assert.fail();
+		} catch (Throwable t) {
+			Assert.assertTrue(t instanceof IllegalArgumentException);
+		}
+		
+		try {
+			this.bookmarkDb.storePost(toInsert.getUser().getName(), toInsert, "06aef6e5439298f27dc5aee82c4293d6", false, this.dbSession);
+			
+			Assert.fail();
+		} catch (Throwable t) {
+			Assert.assertTrue(t instanceof IllegalArgumentException);
+		}
+		
+		this.bookmarkDb.storePost(toInsert.getUser().getName(), toInsert, null, false, this.dbSession);
+		final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { ModelUtils.class.getName(), "hurz" }), "", null, 0, 50);
+		final List<Post<Bookmark>> posts = this.bookmarkDb.getPosts(param, this.dbSession);
+		assertEquals(1, posts.size());
+		ModelUtils.assertPropertyEquality(toInsert, posts.get(0), new String[] { "resource", "tags" });
+		toInsert.getResource().setCount(1);
+		ModelUtils.assertPropertyEquality(toInsert.getResource(), posts.get(0).getResource(), "");
+
+		// Duplicate post and check whether plugins are called
+		this.resetParameters();
+		// FIXME: this boilerplate code could be removed with a DI-framework (i.e. next three lines)
+		final DatabasePluginMock plugin = new DatabasePluginMock();
+		DatabasePluginRegistry.getInstance().clearPlugins();
+		DatabasePluginRegistry.getInstance().add(plugin);
+		assertFalse(plugin.isOnBibTexUpdate());
+		param.setHash("e636edf2736cfc61897bf21039ffea1b");
+		final Post<Bookmark> someBookmarkPost = this.bookmarkDb.getBookmarkByHash(param, this.dbSession).get(0);
+		this.bookmarkDb.storePost(someBookmarkPost.getUser().getName(), someBookmarkPost, "e636edf2736cfc61897bf21039ffea1b", true, this.dbSession);
+		assertTrue(plugin.isOnBookmarkUpdate());
+	}
+	
+	
 	@Test
 	public void insertBookmarkLog() {
 		// FIXME
@@ -145,16 +212,14 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void insertBookmarkHash() {
-		// FIXME
-		// to prevent duplicate key error
 		this.bookmarkParam.setHash("1234567890");
-		//this.db.getBookmark().insertBookmarkHash(this.bookmarkParam);
+		this.bookmarkParam.setUrl("www.hallo.de");
+		this.bookmarkDb.insertBookmarkHash(this.bookmarkParam,this.dbSession);
 	}
 
 	@Test
-	public void updateBookmarkHashDec() {
-		// FIXME
-		// this.db.getBookmark().updateBookmarkHashDec(this.bookmarkParam);
+	public void updateBookmarkHash() {
+		 this.bookmarkDb.updateBookmarkHash(this.bookmarkParam,this.dbSession);
 	}
 
 	@Test
@@ -180,5 +245,11 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.bookmarkParam.setHash("5d2a36f3df07d2b03839faf6e05ec719");
 		this.bookmarkParam.setUserName("jaeschke");
 		assertEquals(2648964, this.bookmarkDb.getContentIDForBookmark(this.bookmarkParam, this.dbSession));
+	}
+	@Test
+	public void getPosts() {
+		this.bookmarkParam.setHash("");
+		final List<Post<Bookmark>> posts = this.bookmarkDb.getPosts(this.bookmarkParam, this.dbSession);
+		assertEquals(this.bookmarkParam.getLimit(), posts.size());
 	}
 }
