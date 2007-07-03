@@ -25,4 +25,14 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	public Runnable onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
 		return null;
 	}
+
+	public Runnable onBookmarkUpdate(int newContentId, int contentId, DBSession session) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Runnable onBookmarkInsert(int contentId, DBSession session) {
+		
+		return null;
+	}
 }
