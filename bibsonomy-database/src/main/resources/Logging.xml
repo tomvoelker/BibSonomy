@@ -15,13 +15,69 @@
 		       simhash$SIM_HASH_3$
 		FROM bibtex WHERE content_id = #requestedContentId#
 	</insert>
+	
+	<delete id="logBibTexDelete" parameterClass="bibtexParam">
+		INSERT INTO log_bibtex (title, entrytype, author, editor, year, content_id, journal, volume, chapter,
+		                        edition, month, bookTitle, howpublished, institution, organization, publisher,
+		                        address, school, series, bibtexKey, `group`, date, user_name, url, description,
+		                        annote, note, pages, bKey, number, crossref, misc, bibtexAbstract, type, day,
+		                        scraperid, simhash0, simhash1, simhash2, simhash3)
+		SELECT title, entrytype, author, editor, year, content_id, journal, volume, chapter, edition, month,
+		       bookTitle, howpublished, institution, organization, publisher, address, school, series, bibtexKey,
+		       `group`, date, user_name, url, description, annote, note, pages, bKey, number, crossref, misc,
+		       bibtexAbstract, type, day, scraperid, simhash$SIM_HASH_0$, simhash$SIM_HASH_1$, simhash$SIM_HASH_2$,
+		       simhash$SIM_HASH_3$
+		FROM bibtex WHERE content_id = #requestedContentId#
+	</delete>
 
 	<update id="logBibTexUpdate" parameterClass="bibtexParam">
 		UPDATE log_bibtex SET new_content_id = #newContentId# WHERE content_id = #requestedContentId#
 	</update>
+	
+	<insert id="logBookmark" parameterClass="bookmarkParam">
+		INSERT INTO log_bookmark (content_id, book_url_hash, book_description, book_extended, `group`, date, user_name)
+		SELECT content_id, book_url_hash, book_description, book_extended, `group`, date, user_name
+		FROM bookmark where content_id = #requestedContentId#
+	</insert>
+	
+	<delete id="logBookmarkDelete" parameterClass="bookmarkParam">
+		INSERT INTO log_bookmark (content_id, book_url_hash, book_description, book_extended, `group`, date, user_name)
+		SELECT content_id, book_url_hash, book_description, book_extended, `group`, date, user_name
+		FROM bookmark where content_id = #requestedContentId#
+	</delete>
+	
+	<update id="logBookmarkUpdate" parameterClass="bookmarkParam">
+		UPDATE log_bookmark SET new_content_id = #newContentId# WHERE content_id = #requestedContentId#
+	</update>
 
 	<insert id="logTagRelation" parameterClass="tagRelationParam">	
 		INSERT INTO log_tagtagrelations (relationID, lower, upper, date_of_create, user_name) 
-		SELECT relationID, lower, upper, date_of_create, user_name FROM tagtagrelations WHERE lower=#lowerTagName# AND upper=#upperTagName# AND user_name=#ownerUserName#
+		SELECT relationID, lower, upper, date_of_create, user_name
+		FROM tagtagrelations WHERE lower=#lowerTagName# AND upper=#upperTagName# AND user_name=#ownerUserName#
 	</insert>
+	
+	<delete id="logTagDelete" parameterClass="tagParam">
+		INSERT INTO log_tas (tas_id, tag_name, content_id, content_type, date, change_date)
+		SELECT tas_id, tag_name, content_id, content_type, date,change_date
+		FROM tas WHERE content_id = #requestedContentId#
+	</delete>
+	
+	<delete id="logGroupDeleteUser" parameterClass="groupParam">
+		INSERT INTO log_groups (`user_name`, `group`, `defaultgroup`, `start_date`, `user_status`)
+		SELECT g.user_name, g.group, g.defaultgroup, g.start_date, g.user_status
+		FROM groups g WHERE g.user_name #userName# AND g.group = #groupId#
+	</delete>
+	
+	<delete id="logBibtexDeleteUserfromGroup" parameterClass="bibtexParam">
+		INSERT INTO log_bibtex (content_id, `group`, user_name)
+		SELECT content_id, user_name, group
+		FROM bibtex WHERE user_name = #userName# AND group = #groupId#
+	</delete>
+	
+	<delete id="logBookmarkDeleteUserfromGroup" parameterClass="bookmarkParam">
+		INSERT INTO log_bookmark (content_id, `group`, user_name)
+		SELECT content_id, user_name, group
+		FROM bookmark WHERE user_name = #userName# AND group = #groupId#
+	</delete>
+	
 </sqlMap>

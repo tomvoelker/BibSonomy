@@ -10,6 +10,7 @@ import org.bibsonomy.database.util.DBSession;
  * 
  * @author Jens Illig
  * @author Christian Schenk
+ * @author Anton Wilhelm
  * @version $Id$
  */
 public class AbstractDatabasePlugin extends AbstractDatabaseManager implements DatabasePlugin {
@@ -17,22 +18,36 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	public Runnable onBibTexInsert(final int contentId, final DBSession session) {
 		return null;
 	}
+	
+	public Runnable onBibTexDelete(final int contentId, final DBSession session) {
+		return null;
+	}
 
 	public Runnable onBibTexUpdate(final int newContentId, final int contentId, final DBSession session) {
+		return null;
+	}
+	
+	public Runnable onBookmarkInsert(final int contentId, final DBSession session) {
+		return null;
+	}
+	
+	public Runnable onBookmarkDelete(final int contentId, final DBSession session) {
+		return null;
+	}
+	
+	public Runnable onBookmarkUpdate(final int newContentId, final int contentId, final DBSession session) {
 		return null;
 	}
 
 	public Runnable onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
 		return null;
 	}
-
-	public Runnable onBookmarkUpdate(int newContentId, int contentId, DBSession session) {
-		// TODO Auto-generated method stub
+	
+	public Runnable onTagDelete(final int contentId, final DBSession session) {
 		return null;
 	}
-
-	public Runnable onBookmarkInsert(int contentId, DBSession session) {
-		
+	
+	public Runnable onDeleteUserfromGroup(final String userName, final int groupId, final DBSession session) {
 		return null;
 	}
 }
