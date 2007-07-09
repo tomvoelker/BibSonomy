@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
 import org.bibsonomy.database.params.BibTexParam;
@@ -25,7 +26,13 @@ public class GetBibtexViewable extends BibTexChainElement {
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		final Integer groupId = this.generalDb.getGroupIdByGroupNameAndUserName(param, session);
+		final Integer groupId;
+		final GroupID specialGroup = GroupID.getSpecialGroup( param.getRequestedGroupName() );
+		if (specialGroup != null) {
+			groupId = specialGroup.getId();
+		} else {
+			groupId = this.generalDb.getGroupIdByGroupNameAndUserName(param, session);
+		}
 		if (groupId == null) {
 			log.debug("groupId not found");
 			return new ArrayList<Post<BibTex>>(0);
@@ -33,11 +40,15 @@ public class GetBibtexViewable extends BibTexChainElement {
 		log.debug("groupId=" + groupId);
 		param.setGroupId(groupId);
 
-		return this.db.getBibTexViewable(param, session);
+		if (present(param.getTagIndex()) == true) {
+			return this.db.getBibTexViewableByTag(param, session);	
+		} else {
+			return this.db.getBibTexViewable(param, session);
+		}
 	}
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.VIEWABLE) && present(param.getRequestedGroupName()) && !present(param.getTagIndex()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED);
+		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.VIEWABLE) && present(param.getRequestedGroupName()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED);
 	}
 }

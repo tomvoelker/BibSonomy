@@ -206,7 +206,21 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * Prepares queries to retrieve posts which are set viewable to group.
 	 */
 	public List<Post<BibTex>> getBibTexViewable(final BibTexParam param, final DBSession session) {
+		if (GroupID.isSpecialGroupId(param.getGroupId()) == true) {
+			// show users own bookmarks, which are private, public or for friends
+			param.setRequestedUserName(param.getUserName());
+			return getBibTexForUser(param, session);
+		}
 		return this.bibtexList("getBibTexViewable", param, session);
+	}
+	
+	public List<Post<BibTex>> getBibTexViewableByTag(final BibTexParam param, final DBSession session) {
+		if (GroupID.isSpecialGroupId(param.getGroupId()) == true) {
+			// show users own bookmarks, which are private, public or for friends
+			param.setRequestedUserName(param.getUserName());
+			return getBibTexByTagNamesForUser(param, session);
+		}
+		return getBibTexByTagNames(param, session);
 	}
 
 	/**
