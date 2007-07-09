@@ -4,11 +4,12 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.GroupParam;
-import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.database.util.DBSession;
+import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.ExceptionUtils;
@@ -51,14 +52,33 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		if (groupname == null || groupname.trim().length() == 0) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Groupname isn't present");
 		}
+		if ("friends".equals(groupname) == true) {
+			return getFriendsGroup();
+		}
 		return this.queryForObject("getGroupByName", groupname, Group.class, session);
+	}
+
+	private static Group getFriendsGroup() {
+		final Group friends = new Group();
+		friends.setDescription("group of all your bibsonomy-friends");
+		friends.setGroupId(GroupID.FRIENDS.getId());
+		friends.setName("friends");
+		friends.setPrivlevel(Privlevel.HIDDEN);
+		return friends;
 	}
 
 	/**
 	 * Returns a group with all its members if the user is allowed to see them.
 	 */
 	public Group getGroupMembers(final String authUser, final String groupname, final DBSession session) {
-		final Group group = this.queryForObject("getGroupMembers", groupname, Group.class, session);
+		final Group group;
+		if ("friends".equals(groupname) == true) {
+			group = getFriendsGroup();
+			group.setUsers(getFriendsOfUser(authUser,session));
+			return group;
+		}
+		
+		group = this.queryForObject("getGroupMembers", groupname, Group.class, session);
 		if (group == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist");
 		}
@@ -75,6 +95,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			break;
 		}
 		return group;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<User> getFriendsOfUser(final String authUser, final DBSession session) {
+		return queryForList("getFriendsOfUser", authUser, session);
 	}
 
 	/**
