@@ -1,13 +1,14 @@
 package org.bibsonomy.rest.strategy;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ValidationException;
@@ -34,6 +35,8 @@ public final class Context {
 		Context.urlHandlers.put(RestProperties.getInstance().getPostsUrl(), new PostsHandler());
 	}
 
+	private final InputStream doc;
+	
 	/**
 	 * the logic
 	 */
@@ -67,7 +70,8 @@ public final class Context {
 	 * @throws ValidationException
 	 *             if '/' is requested
 	 */
-	public Context(final LogicInterface logic, final HttpMethod httpMethod, final String url, final Map parameterMap) throws ValidationException, NoSuchResourceException {
+	public Context(final InputStream doc, final LogicInterface logic, final HttpMethod httpMethod, final String url, final Map parameterMap) throws ValidationException, NoSuchResourceException {
+		this.doc = doc;
 		this.logic = logic;
 		// FIXME this.httpMethod = httpMethod;
 		if (parameterMap == null) throw new RuntimeException("Parameter map is null");
@@ -111,8 +115,8 @@ public final class Context {
 	 *            the response
 	 * @throws InternServerException
 	 */
-	public void perform(final HttpServletRequest request, final Writer writer) throws InternServerException {
-		this.strategy.perform(request, writer);
+	public void perform(final Writer writer) throws InternServerException {
+		this.strategy.perform(writer);
 	}
 
 	/**
@@ -140,7 +144,7 @@ public final class Context {
 	public List<String> getTags(final String parameterName) {
 		final List<String> tags = new LinkedList<String>();
 		final String param = getStringAttribute(parameterName, null);
-		if (param != null) {
+		if ((param != null) && (param.length() > 0)) {
 			final String[] params = param.split("\\s");
 			for (int i = 0; i < params.length; ++i) {
 				tags.add(params[i]);
@@ -233,5 +237,9 @@ public final class Context {
 	 */
 	Strategy getStrategy() {
 		return this.strategy;
+	}
+
+	public Reader getDocument() {
+		return new InputStreamReader(this.doc);
 	}
 }

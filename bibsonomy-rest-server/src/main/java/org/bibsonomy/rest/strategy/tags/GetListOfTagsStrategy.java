@@ -3,67 +3,63 @@ package org.bibsonomy.rest.strategy.tags;
 import java.io.Writer;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.rest.RestProperties;
-import org.bibsonomy.rest.ViewModel;
+import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
-import org.bibsonomy.rest.strategy.Strategy;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public class GetListOfTagsStrategy extends Strategy {
+public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
+	private final GroupingEntity grouping;
+	private final String groupingValue;
+	private final String regex;
 
 	public GetListOfTagsStrategy(final Context context) {
 		super(context);
+		this.grouping = chooseGroupingEntity();
+		
+		if (this.grouping != GroupingEntity.ALL) {
+			this.groupingValue = context.getStringAttribute(this.grouping.toString().toLowerCase(), null);
+		} else {
+			this.groupingValue = null;
+		}
+
+		this.regex = context.getStringAttribute("filter", null);
 	}
 
 	@Override
-	public void perform(final HttpServletRequest request, final Writer writer) throws InternServerException {
-		// setup viewModel
-		final int start = this.context.getIntAttribute("start", 0);
-		int end = this.context.getIntAttribute("end", 20);
-
-		final GroupingEntity grouping = chooseGroupingEntity();
-		final String groupingValue;
-		if (grouping != GroupingEntity.ALL) {
-			groupingValue = this.context.getStringAttribute(grouping.toString().toLowerCase(), null);
-		} else {
-			groupingValue = null;
+	protected void appendLinkPostFix(StringBuilder sb) {
+		if (grouping != GroupingEntity.ALL && groupingValue != null) {
+			sb.append("&").append(grouping.toString().toLowerCase()).append("=").append(groupingValue);
 		}
-
-		final String regex = this.context.getStringAttribute("filter", null);
-
-		final List<Tag> tags = this.context.getLogic().getTags(grouping, groupingValue, regex, start, end);
-
-		final ViewModel viewModel = new ViewModel();
-		if (tags.size() < end || tags.size() > end) {
-			end = tags.size();
-		} else {
-			String next = RestProperties.getInstance().getApiUrl() + RestProperties.getInstance().getTagsUrl() + "?start=" + String.valueOf(end) + "&end=" + String.valueOf(end + 20);
-			if (grouping != GroupingEntity.ALL && groupingValue != null) {
-				next += "&" + grouping.toString().toLowerCase() + "=" + groupingValue;
-			}
-			if (regex != null) {
-				next += "&" + "filter=" + regex;
-			}
-			viewModel.setUrlToNextResources(next);
+		if (regex != null) {
+			sb.append("&").append("filter=").append(regex);
 		}
-		viewModel.setStartValue(start);
-		viewModel.setEndValue(end);
-
-		// delegate to the renderer
-		this.context.getRenderer().serializeTags(writer, tags, viewModel);
 	}
 
 	@Override
-	public String getContentType(final String userAgent) {
-		if (this.context.apiIsUserAgent(userAgent)) return "bibsonomy/tags+" + this.context.getRenderingFormat().toString();
-		return RestProperties.getInstance().getContentType();
+	protected StringBuilder getLinkPrefix() {
+		return new StringBuilder( RestProperties.getInstance().getApiUrl() + RestProperties.getInstance().getTagsUrl() );
 	}
+
+	@Override
+	protected List<Tag> getList() {
+		return this.getLogic().getTags(grouping, groupingValue, regex, this.getView().getStartValue(), this.getView().getEndValue());
+	}
+
+	@Override
+	protected void render(Writer writer, List<Tag> resultList) {
+		this.getRenderer().serializeTags(writer, resultList, this.getView());
+	}
+
+	@Override
+	protected String getContentType() {
+		return "tags";
+	}
+
+	
 }

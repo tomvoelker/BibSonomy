@@ -2,11 +2,8 @@ package org.bibsonomy.rest.strategy.groups;
 
 import java.io.Writer;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Group;
-import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.Context;
@@ -26,18 +23,17 @@ public class GetGroupStrategy extends Strategy {
 	}
 
 	@Override
-	public void perform(final HttpServletRequest request, final Writer writer) throws InternServerException, NoSuchResourceException {
+	public void perform(final Writer writer) throws InternServerException, NoSuchResourceException {
 		// delegate to the renderer
-		final Group group = this.context.getLogic().getGroupDetails(this.groupName);
+		final Group group = this.getLogic().getGroupDetails(this.groupName);
 		if (group == null) {
 			throw new NoSuchResourceException("The requested group '" + this.groupName + "' does not exist.");
 		}
-		this.context.getRenderer().serializeGroup(writer, group, new ViewModel());
+		this.getRenderer().serializeGroup(writer, group, new ViewModel());
 	}
 
 	@Override
-	public String getContentType(final String userAgent) {
-		if (this.context.apiIsUserAgent(userAgent)) return "bibsonomy/group+" + this.context.getRenderingFormat().toString();
-		return RestProperties.getInstance().getContentType();
+	public String getContentType() {
+		return "group";
 	}
 }

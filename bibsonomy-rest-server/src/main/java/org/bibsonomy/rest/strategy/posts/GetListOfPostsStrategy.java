@@ -2,7 +2,6 @@ package org.bibsonomy.rest.strategy.posts;
 
 import java.util.List;
 
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.RestProperties;
@@ -20,11 +19,12 @@ public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
 		this.nextLinkPrefix = RestProperties.getInstance().getApiUrl() + RestProperties.getInstance().getPostsUrl();
 	}
 
-	protected List<? extends Post<? extends Resource>> getList(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingValue, List<String> tags, String hash, Object object, int start, int end) {
-		return this.context.getLogic().getPosts(resourceType, grouping, groupingValue, this.context.getTags("tags"), hash, null, start, end);
-	}
-
 	protected StringBuilder getLinkPrefix() {
 		return new StringBuilder(this.nextLinkPrefix);
+	}
+
+	@Override
+	protected List<? extends Post<? extends Resource>> getList() {
+		return this.getLogic().getPosts(resourceType, grouping, groupingValue, this.tags, hash, null, getView().getStartValue(), getView().getEndValue());
 	}
 }

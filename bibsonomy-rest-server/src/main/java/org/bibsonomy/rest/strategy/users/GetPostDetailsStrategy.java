@@ -2,12 +2,9 @@ package org.bibsonomy.rest.strategy.users;
 
 import java.io.Writer;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.Context;
@@ -29,18 +26,17 @@ public class GetPostDetailsStrategy extends Strategy {
 	}
 
 	@Override
-	public void perform(final HttpServletRequest request, final Writer writer) throws InternServerException, NoSuchResourceException {
+	public void perform(final Writer writer) throws InternServerException, NoSuchResourceException {
 		// delegate to the renderer
-		final Post<? extends Resource> post = this.context.getLogic().getPostDetails(this.resourceHash, this.userName);
+		final Post<? extends Resource> post = this.getLogic().getPostDetails(this.resourceHash, this.userName);
 		if (post == null) {
 			throw new NoSuchResourceException("The requested post for the hash '" + this.resourceHash + "' of the requested user '" + this.userName + "' does not exist.");
 		}
-		this.context.getRenderer().serializePost(writer, post, new ViewModel());
+		this.getRenderer().serializePost(writer, post, new ViewModel());
 	}
 
 	@Override
-	public String getContentType(final String userAgent) {
-		if (this.context.apiIsUserAgent(userAgent)) return "bibsonomy/post+" + this.context.getRenderingFormat().toString();
-		return RestProperties.getInstance().getContentType();
+	public String getContentType() {
+		return "post";
 	}
 }

@@ -30,7 +30,7 @@ public class ContextTest extends AbstractContextTest {
 	@Test
 	public void testGetSimpleTags() {
 		this.parameterMap.put("tags", new String[] { "foo bar" });
-		final Context ctx = new Context(this.db, HttpMethod.GET, "/users/egal/posts", this.parameterMap);
+		final Context ctx = new Context(this.is, this.db, HttpMethod.GET, "/users/egal/posts", this.parameterMap);
 
 		final List<String> tags = ctx.getTags("tags");
 		assertTrue(this.NOT_SPLITTED_MSG, tags.contains("foo"));
@@ -41,7 +41,7 @@ public class ContextTest extends AbstractContextTest {
 	@Test
 	public void testGetTags() {
 		this.parameterMap.put("tags", new String[] { "foo bar ->subtags -->transitiveSubtags supertags-> transitiveSupertags--> <->correlated" });
-		final Context ctx = new Context(this.db, HttpMethod.GET, "/users/egal/posts", this.parameterMap);
+		final Context ctx = new Context(this.is, this.db, HttpMethod.GET, "/users/egal/posts", this.parameterMap);
 
 		final List<String> tags = ctx.getTags("tags");
 		assertTrue(this.NOT_SPLITTED_MSG, tags.contains("foo"));
@@ -57,13 +57,13 @@ public class ContextTest extends AbstractContextTest {
 	@Test
 	public void testWrongUsage() {
 		try {
-			new Context(null, HttpMethod.GET, null, Collections.EMPTY_MAP);
+			new Context(this.is, null, HttpMethod.GET, null, Collections.EMPTY_MAP);
 			fail("Should throw exception");
 		} catch (ValidationException ex) {
 		}
 
 		try {
-			new Context(null, HttpMethod.GET, "", null);
+			new Context(this.is, null, HttpMethod.GET, "", null);
 			fail("Should throw exception");
 		} catch (RuntimeException ex) {
 		}

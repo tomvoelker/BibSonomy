@@ -44,11 +44,28 @@ public final class RestServlet extends HttpServlet {
 	public void init() throws ServletException {
 		super.init();
 		// instantiate the bibsonomy database connection
-		this.logicFactory = new LogicInterfaceFactory() {
-			public LogicInterface getLogicAccess(final String loginName, final String apiKey) {
-				return DBLogic.getApiAccess(loginName, apiKey);
+		final String logicFactoryClassName = this.getServletConfig().getInitParameter("logicFactoryClass");
+		if (logicFactoryClassName != null) {
+			Object logicFactoryObj;
+			try {
+				Class logicFactoryClass = this.getClass().getClassLoader().loadClass(logicFactoryClassName);
+				logicFactoryObj = logicFactoryClass.newInstance();
+			} catch (Exception e) {
+				throw new ServletException("problem while instantiating " + logicFactoryClassName, e);
+			}			
+			if (logicFactoryObj instanceof LogicInterfaceFactory) {
+				this.logicFactory = (LogicInterfaceFactory) logicFactoryObj;
+			} else {
+				throw new ServletException(logicFactoryClassName + " does not implement " + LogicInterfaceFactory.class.getName());
 			}
-		};
+		} else {
+			log.info("no 'logicFactoryClass' initParameter -> using default");
+			this.logicFactory = new LogicInterfaceFactory() {
+				public LogicInterface getLogicAccess(final String loginName, final String apiKey) {
+					return DBLogic.getApiAccess(loginName, apiKey);
+				}
+			};
+		}
 	}
 
 	/**
@@ -125,7 +142,7 @@ public final class RestServlet extends HttpServlet {
 			final LogicInterface logic = validateAuthorization(request.getHeader("Authorization"));
 
 			// create Context
-			final Context context = new Context(logic, method, request.getPathInfo(), request.getParameterMap());
+			final Context context = new Context(request.getInputStream(), logic, method, request.getPathInfo(), request.getParameterMap());
 
 			// validate request
 			context.validate();
@@ -139,7 +156,7 @@ public final class RestServlet extends HttpServlet {
 			final ByteArrayOutputStream cachingStream = new ByteArrayOutputStream();
 			final Writer writer = new OutputStreamWriter(cachingStream, Charset.forName("UTF-8"));
 
-			context.perform(request, writer);
+			context.perform(writer);
 			// XXX: cachingStream.size() != cachingStream.toString().length() !!
 			// the correct value is the first one!
 			response.setContentLength(cachingStream.size());

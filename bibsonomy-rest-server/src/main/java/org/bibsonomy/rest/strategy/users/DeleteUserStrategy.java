@@ -2,8 +2,6 @@ package org.bibsonomy.rest.strategy.users;
 
 import java.io.Writer;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
@@ -22,12 +20,12 @@ public class DeleteUserStrategy extends Strategy {
 	}
 
 	@Override
-	public void perform(final HttpServletRequest request, final Writer writer) throws InternServerException {
-		this.context.getLogic().deleteUser(this.userName);
+	public void perform(final Writer writer) throws InternServerException {
+		this.getLogic().deleteUser(this.userName);
 	}
 
 	@Override
-	public String getContentType(final String userAgent) {
+	public String getContentType() {
 		// TODO no content-contenttype
 		return null;
 	}

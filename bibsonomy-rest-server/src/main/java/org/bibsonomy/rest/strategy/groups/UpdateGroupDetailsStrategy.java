@@ -1,10 +1,7 @@
 package org.bibsonomy.rest.strategy.groups;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.Writer;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Group;
@@ -17,29 +14,25 @@ import org.bibsonomy.rest.strategy.Strategy;
  *          Exp $
  */
 public class UpdateGroupDetailsStrategy extends Strategy {
-
+	private final Reader doc;
 	private final String groupName;
 
 	public UpdateGroupDetailsStrategy(final Context context, final String groupName) {
 		super(context);
 		this.groupName = groupName;
+		this.doc = context.getDocument();
 	}
 
 	@Override
-	public void perform(final HttpServletRequest request, final Writer writer) throws InternServerException {
-		try {
-			// ensure right groupname
-			final Group group = this.context.getRenderer().parseGroup(new InputStreamReader(request.getInputStream()));
-			group.setName(this.groupName);
-
-			this.context.getLogic().updateGroup(group);
-		} catch (final IOException e) {
-			throw new InternServerException(e);
-		}
+	public void perform(final Writer writer) throws InternServerException {
+		// ensure right groupname
+		final Group group = this.getRenderer().parseGroup(this.doc);
+		group.setName(this.groupName);
+		this.getLogic().updateGroup(group);
 	}
 
 	@Override
-	public String getContentType(final String userAgent) {
+	public String getContentType() {
 		// TODO no content-contenttype
 		return null;
 	}

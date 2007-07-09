@@ -1,10 +1,7 @@
 package org.bibsonomy.rest.strategy.users;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.Writer;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ValidationException;
@@ -18,7 +15,7 @@ import org.bibsonomy.rest.strategy.Strategy;
  * @version $Id$
  */
 public class PutPostStrategy extends Strategy {
-
+	private final Reader doc;
 	private final String userName;
 	private final String resourceHash;
 
@@ -26,30 +23,26 @@ public class PutPostStrategy extends Strategy {
 		super(context);
 		this.userName = userName;
 		this.resourceHash = resourceHash;
+		this.doc = context.getDocument();
 	}
 
 	@Override
 	public void validate() throws ValidationException {
-		if (!this.userName.equals(this.context.getLogic().getAuthenticatedUser())) throw new ValidationException("You are not authorized to perform the requested operation");
+		if (!this.userName.equals(this.getLogic().getAuthenticatedUser())) throw new ValidationException("You are not authorized to perform the requested operation");
 	}
 
 	@Override
-	public void perform(final HttpServletRequest request, final Writer writer) throws InternServerException, BadRequestOrResponseException {
-		try {
-			final Post<?> post = this.context.getRenderer().parsePost(new InputStreamReader(request.getInputStream()));
-
-			// ensure using the right resource.
-			// XXX: neither the client nor the REST API will calculate the new
-			// hash - this will be done by the logic behind the LogicInterface!
-			if (!post.getResource().getIntraHash().equals(this.resourceHash)) throw new BadRequestOrResponseException("wrong resource");
-			this.context.getLogic().updatePost(post);
-		} catch (final IOException e) {
-			throw new InternServerException(e);
-		}
+	public void perform(final Writer writer) throws InternServerException, BadRequestOrResponseException {
+		final Post<?> post = this.getRenderer().parsePost(this.doc);
+		// ensure using the right resource.
+		// XXX: neither the client nor the REST API will calculate the new
+		// hash - this will be done by the logic behind the LogicInterface!
+		if (!post.getResource().getIntraHash().equals(this.resourceHash)) throw new BadRequestOrResponseException("wrong resource");
+		this.getLogic().updatePost(post);
 	}
 
 	@Override
-	public String getContentType(String userAgent) {
+	public String getContentType() {
 		// TODO no content-contenttype
 		return null;
 	}

@@ -3,65 +3,61 @@ package org.bibsonomy.rest.strategy.users;
 import java.io.Writer;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.RestProperties;
-import org.bibsonomy.rest.ViewModel;
+import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
-import org.bibsonomy.rest.strategy.Strategy;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public class GetUserPostsStrategy extends Strategy {
+public class GetUserPostsStrategy extends AbstractGetListStrategy<List<? extends Post<? extends Resource>>> {
 
 	private final String userName;
+	private final List<String> tags;
+	private final String tagString;
+	private final Class<? extends Resource> resourceType;
 
 	public GetUserPostsStrategy(final Context context, final String userName) {
 		super(context);
 		this.userName = userName;
+		this.tags = context.getTags("tags");
+		this.tagString = context.getStringAttribute("tags", null);
+		this.resourceType = Resource.getResource(context.getStringAttribute("resourcetype", "all"));
 	}
 
 	@Override
-	public void perform(final HttpServletRequest request, final Writer writer) throws InternServerException {
-		final int start = this.context.getIntAttribute("start", 0);
-		int end = this.context.getIntAttribute("end", 19);
-
-		final Class<? extends Resource> resourceType = Resource.getResource(this.context.getStringAttribute("resourcetype", "all"));
-		final List<? extends Post<? extends Resource>> posts = this.context.getLogic().getPosts(resourceType, GroupingEntity.USER, userName, this.context.getTags("tags"), null, null, start, end);
-
-		// setup viewModel
-		final ViewModel viewModel = new ViewModel();
-		if (posts.size() < end + 1) {
-			end = posts.size() - 1;
-		} else {
-			String next = RestProperties.getInstance().getApiUrl() + RestProperties.getInstance().getUsersUrl() + "/" + userName + "/" + RestProperties.getInstance().getPostsUrl() + "?start=" + String.valueOf(end + 1) + "&end=" + String.valueOf(end + 10);
-
-			final String tags = this.context.getStringAttribute("tags", null);
-			if (tags != null) {
-				next += "&tags=" + tags;
-			}
-
-			if (resourceType != Resource.class) {
-				next += "&resourcetype=" + resourceType.toString();
-			}
-			viewModel.setUrlToNextResources(next);
+	protected void appendLinkPostFix(StringBuilder sb) {
+		if (this.tagString != null) {
+			sb.append("&tags=").append(this.tagString);
 		}
-		viewModel.setStartValue(start);
-		viewModel.setEndValue(end);
-
-		// delegate to the renderer
-		this.context.getRenderer().serializePosts(writer, posts, viewModel);
+		if (this.resourceType != Resource.class) {
+			sb.append("&resourcetype=").append(resourceType.toString());
+		}
 	}
 
 	@Override
-	public String getContentType(final String userAgent) {
-		if (this.context.apiIsUserAgent(userAgent)) return "bibsonomy/posts+" + this.context.getRenderingFormat().toString();
-		return RestProperties.getInstance().getContentType();
+	protected StringBuilder getLinkPrefix() {
+		final StringBuilder sb = new StringBuilder( RestProperties.getInstance().getApiUrl() );
+		sb.append( RestProperties.getInstance().getUsersUrl() ).append("/").append(this.userName).append("/").append(RestProperties.getInstance().getPostsUrl()); 
+		return sb;
+	}
+
+	@Override
+	protected List<? extends Post<? extends Resource>> getList() {
+		return this.getLogic().getPosts(resourceType, GroupingEntity.USER, userName, this.tags, null, null, this.getView().getStartValue(), this.getView().getEndValue());
+	}
+
+	@Override
+	protected void render(Writer writer, List<? extends Post<? extends Resource>> resultList) {
+		this.getRenderer().serializePosts(writer, resultList, this.getView());
+	}
+
+	@Override
+	public String getContentType() {
+		return "posts";
 	}
 }

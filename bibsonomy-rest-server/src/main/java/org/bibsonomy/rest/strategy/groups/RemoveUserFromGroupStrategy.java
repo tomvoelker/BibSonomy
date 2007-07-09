@@ -2,8 +2,6 @@ package org.bibsonomy.rest.strategy.groups;
 
 import java.io.Writer;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
@@ -13,7 +11,6 @@ import org.bibsonomy.rest.strategy.Strategy;
  * @version $Id$
  */
 public class RemoveUserFromGroupStrategy extends Strategy {
-
 	private String groupName;
 	private String userName;
 
@@ -24,13 +21,12 @@ public class RemoveUserFromGroupStrategy extends Strategy {
 	}
 
 	@Override
-	public void perform(final HttpServletRequest request, final Writer writer) throws InternServerException {
-		this.context.getLogic().removeUserFromGroup(this.groupName, this.userName);
+	public void perform(final Writer writer) throws InternServerException {
+		this.getLogic().removeUserFromGroup(this.groupName, this.userName);
 	}
 
 	@Override
-	public String getContentType(final String userAgent) {
-		// TODO no content-contenttype
+	public String getContentType() {
 		return null;
 	}
 }

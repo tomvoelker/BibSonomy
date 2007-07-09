@@ -2,23 +2,27 @@ package org.bibsonomy.rest.strategy;
 
 import java.io.Writer;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
+import org.bibsonomy.rest.renderer.Renderer;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
 public abstract class Strategy {
-
-	protected final Context context;
+	private final LogicInterface logic;
+	private final Context context;
+	private final Renderer renderer;
 
 	public Strategy(final Context context) {
 		this.context = context;
+		this.logic = context.getLogic();
+		this.renderer = context.getRenderer();
 	}
 
 	/**
@@ -29,20 +33,21 @@ public abstract class Strategy {
 	public void validate() throws ValidationException {
 	}
 
-	/**
-	 * @param request
-	 * @param responseAdapter
-	 * @throws InternServerException
-	 * @throws NoSuchResourceException
-	 *             if one part of the uri doesnt exist (the user, eg)
-	 */
-	public abstract void perform(HttpServletRequest request, Writer writer) throws InternServerException, NoSuchResourceException;
+	public abstract void perform(final Writer writer) throws InternServerException, NoSuchResourceException;
 
 	/**
 	 * @param userAgent
 	 * @return the contentType of the answer document
 	 */
-	public abstract String getContentType(String userAgent);
+	public final String getContentType(final String userAgent) {
+		if (getContentType() == null) {
+			return null;
+		}
+		if (this.context.apiIsUserAgent(userAgent)) return "bibsonomy/" + getContentType() + "+" + this.context.getRenderingFormat().toString();
+		return RestProperties.getInstance().getContentType();
+	}
+
+	protected abstract String getContentType();
 
 	/**
 	 * Chooses a GroupingEntity based on the parameterMap in the {@link Context}.
@@ -63,5 +68,13 @@ public abstract class Strategy {
 		if (value != null) return GroupingEntity.FRIEND;
 
 		return GroupingEntity.ALL;
+	}
+
+	protected LogicInterface getLogic() {
+		return this.logic;
+	}
+
+	protected Renderer getRenderer() {
+		return this.renderer;
 	}
 }

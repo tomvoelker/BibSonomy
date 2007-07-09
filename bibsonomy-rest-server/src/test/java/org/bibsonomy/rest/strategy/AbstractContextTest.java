@@ -1,5 +1,8 @@
 package org.bibsonomy.rest.strategy;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.rest.database.TestDBLogic;
 import org.junit.Before;
@@ -11,6 +14,7 @@ import org.junit.Before;
 public abstract class AbstractContextTest {
 
 	protected LogicInterface db;
+	protected InputStream is;
 
 	/*
 	 * If you override this method, remember to make a call to this method
@@ -19,5 +23,6 @@ public abstract class AbstractContextTest {
 	@Before
 	public void setUp() {
 		this.db = TestDBLogic.factory.getLogicAccess(this.getClass().getSimpleName(), "apiKey");
+		this.is = new ByteArrayInputStream("".getBytes());
 	}
 }

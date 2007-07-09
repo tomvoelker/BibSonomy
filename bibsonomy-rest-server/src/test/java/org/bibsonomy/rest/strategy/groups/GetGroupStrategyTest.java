@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.StringWriter;
 import java.util.HashMap;
 
-import org.bibsonomy.rest.NullRequest;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.strategy.AbstractContextTest;
@@ -20,10 +19,9 @@ public class GetGroupStrategyTest extends AbstractContextTest {
 
 	@Test
 	public void testGetGroupStrategy() {
-		final Context ctx = new Context(this.db, HttpMethod.GET, "/groups/public", new HashMap());
-		final NullRequest request = new NullRequest();
+		final Context ctx = new Context(this.is, this.db, HttpMethod.GET, "/groups/public", new HashMap());
 		final StringWriter sw = new StringWriter();
-		ctx.perform(request, sw);
+		ctx.perform(sw);
 
 		// just test length, because the detail rendering output is tested by
 		// the renderer test
