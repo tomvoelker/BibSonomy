@@ -177,8 +177,8 @@
 	</select>
 
 	<select id="getBibTexViewable" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT b.*, t.tag_name, b.ctr as count
-		FROM (SELECT <include refid ="bibtexAttributes2"/>, b2.group, h.ctr, NULL AS group_name
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, b.ctr as count, b.group, #requestedGroupName# AS group_name
+		FROM (SELECT <include refid ="bibtexAttributes2"/>, b2.simhash1, b2.simhash2, b2.group, h.ctr
 		      FROM bibtex b2, bibhash h
 		      WHERE b2.group = #groupId#
 		            AND <include refid="bibtexSimHash2"/>
