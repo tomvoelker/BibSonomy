@@ -2,6 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="BibTex">
+
 	<select id="getBibTexPopular" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid="commonBibtexAttributes"/>, -1 AS scraperId, <include refid="bibtexSimHashes"/>, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name
 		FROM (select * from temp_bibtex b2 ORDER BY b2.rank LIMIT #limit# OFFSET #offset#) b
@@ -277,6 +278,11 @@
 		      <include refid="getPostForUser"/>
 	</select>
 
+	<select id="getContentIdForBibTex" resultClass="int" parameterClass="bibtexParam">
+		SELECT content_id FROM bibtex
+		WHERE simhash$simHash$ = #hash# AND user_name = #requestedUserName#
+	</select>
+
 	<insert id="insertBibTex" parameterClass="bibtexParam">
 		INSERT INTO bibtex (title, entrytype, author, editor, year, content_id, journal, volume, chapter,
 		                    edition, month, bookTitle, howpublished, institution, organization, publisher,
@@ -322,4 +328,5 @@
 	<delete id="deleteBibTexUrls">
 		DELETE FROM bibtexurls WHERE content_id = #requestedContentId#
 	</delete>
+
 </sqlMap>

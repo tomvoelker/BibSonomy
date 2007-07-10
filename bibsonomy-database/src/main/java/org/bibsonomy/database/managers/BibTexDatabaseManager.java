@@ -18,6 +18,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.SimHash;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * Used to CRUD BibTexs from the database.
@@ -28,19 +29,21 @@ import org.bibsonomy.model.util.SimHash;
  * @version $Id$
  */
 public class BibTexDatabaseManager extends AbstractDatabaseManager implements CrudableContent<BibTex, BibTexParam> {
+
 	private static final Logger log = Logger.getLogger(BibTexDatabaseManager.class);
-	
-	/** Singleton */
+
 	private final static BibTexDatabaseManager singleton = new BibTexDatabaseManager();
 	private final GeneralDatabaseManager generalDb;
 	private final TagDatabaseManager tagDb;
 	private final DatabasePluginRegistry plugins;
 	private static final BibTexChain chain = new BibTexChain();
+	private final ValidationUtils check;
 
 	private BibTexDatabaseManager() {
 		this.generalDb = GeneralDatabaseManager.getInstance();
 		this.tagDb = TagDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
+		this.check = ValidationUtils.getInstance();
 	}
 
 	public static BibTexDatabaseManager getInstance() {
@@ -213,7 +216,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		}
 		return this.bibtexList("getBibTexViewable", param, session);
 	}
-	
+
 	public List<Post<BibTex>> getBibTexViewableByTag(final BibTexParam param, final DBSession session) {
 		if (GroupID.isSpecialGroupId(param.getGroupId()) == true) {
 			// show users own bookmarks, which are private, public or for friends
@@ -326,11 +329,11 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		DatabaseUtils.setGroups(this.generalDb, param, session);
 		return this.bibtexList("getBibTexByHashForUser", param, session);
 	}
-	
+
 	public List<Post<BibTex>> getBibTexByHashForUser(final String loginUserName, final String intraHash, final String requestedUserName, final DBSession session) {
 		return getBibTexByHashForUser(loginUserName, intraHash, requestedUserName, session, HashID.INTER_HASH);
 	}
-	
+
 	public List<Post<BibTex>> getBibTexByHashForUser(final String loginUserName, final String intraHash, final String requestedUserName, final DBSession session, final HashID hashType) {
 		final BibTexParam param = new BibTexParam();
 		param.setUserName(loginUserName);
@@ -338,6 +341,16 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		param.setHash(intraHash);
 		param.setRequestedSimHash(hashType);
 		return getBibTexByHashForUser(param, session);
+	}
+
+	public int getContentIdForBibTex(final String hash, final String userName, final DBSession session) {
+		if (this.check.present(hash) == false || this.check.present(userName) == false) {
+			throw new RuntimeException("Hash and user name must be set");
+		}
+		final BibTexParam param = new BibTexParam();
+		param.setHash(hash);
+		param.setRequestedUserName(userName);
+		return this.queryForObject("getContentIdForBibTex", param, Integer.class, session);
 	}
 
 	public List<Post<BibTex>> getPosts(final BibTexParam param, final DBSession session) {
@@ -348,7 +361,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		final List<Post<BibTex>> list = getBibTexByHashForUser(authUser, resourceHash, userName, session, HashID.INTRA_HASH);
 		if (list.size() >= 1) {
 			if (list.size() > 1) {
-				log.warn("multiple BibTex-post from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' found ->returning first");
+				log.warn("multiple BibTex-posts from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' found ->returning first");
 			}
 			return list.get(0);
 		} else {
@@ -400,7 +413,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		this.insert("insertBibTexHash", param, session);
 	}
 
-	public boolean storePost(final String userName, final Post<BibTex> post, final String oldIntraHash,  boolean update, final DBSession session) {
+	public boolean storePost(final String userName, final Post<BibTex> post, final String oldIntraHash, boolean update, final DBSession session) {
 		// TODO: test insertion (tas, bibtex, ...)
 		session.beginTransaction();
 		try {
