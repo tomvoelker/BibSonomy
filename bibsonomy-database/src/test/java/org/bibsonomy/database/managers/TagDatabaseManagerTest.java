@@ -25,7 +25,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(5218, tag.getId());
 		assertEquals("$100", tag.getName());
 		assertNull(tag.getStem());
-		assertEquals(5, tag.getGlobalcount());
+		assertEquals(7, tag.getGlobalcount());
 	}
 
 	@Test
