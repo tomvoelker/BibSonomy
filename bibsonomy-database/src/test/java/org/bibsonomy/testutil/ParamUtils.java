@@ -132,6 +132,7 @@ public class ParamUtils {
 		param.setCount(100);
 		param.setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
 		param.setTagName("Test");
+		param.setDate(new Date());
 		return param;
 	}
 
