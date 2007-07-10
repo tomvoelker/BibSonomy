@@ -15,23 +15,22 @@ import org.bibsonomy.database.util.DBSession;
  * @version $Id$
  */
 public interface DatabasePlugin {
-	
+
 	public Runnable onBibTexInsert(int contentId, DBSession session);
 
 	public Runnable onBibTexDelete(int contentId, DBSession session);
-	
+
 	public Runnable onBibTexUpdate(int newContentId, int contentId, DBSession session);
-	
+
 	public Runnable onBookmarkInsert(int contentId, DBSession session);
-	
+
 	public Runnable onBookmarkDelete(int contentId, DBSession session);
-	
+
 	public Runnable onBookmarkUpdate(int newNontentId, int contentId, DBSession session);
 
 	public Runnable onTagRelationDelete(String upperTagName, String lowerTagName, String userName, DBSession session);
-	
+
 	public Runnable onTagDelete(int contentId, DBSession session);
-	
-	public Runnable onDeleteUserfromGroup(final String userName, final int groupId, final DBSession session);
-	
+
+	public Runnable onDeleteUserfromGroup(String userName, int groupId, DBSession session);
 }

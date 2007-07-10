@@ -18,7 +18,7 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	public Runnable onBibTexInsert(final int contentId, final DBSession session) {
 		return null;
 	}
-	
+
 	public Runnable onBibTexDelete(final int contentId, final DBSession session) {
 		return null;
 	}
@@ -26,15 +26,15 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	public Runnable onBibTexUpdate(final int newContentId, final int contentId, final DBSession session) {
 		return null;
 	}
-	
+
 	public Runnable onBookmarkInsert(final int contentId, final DBSession session) {
 		return null;
 	}
-	
+
 	public Runnable onBookmarkDelete(final int contentId, final DBSession session) {
 		return null;
 	}
-	
+
 	public Runnable onBookmarkUpdate(final int newContentId, final int contentId, final DBSession session) {
 		return null;
 	}
@@ -42,11 +42,11 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	public Runnable onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
 		return null;
 	}
-	
+
 	public Runnable onTagDelete(final int contentId, final DBSession session) {
 		return null;
 	}
-	
+
 	public Runnable onDeleteUserfromGroup(final String userName, final int groupId, final DBSession session) {
 		return null;
 	}

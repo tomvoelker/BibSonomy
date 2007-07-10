@@ -70,17 +70,18 @@ public class DatabasePluginRegistry {
 			this.executeRunnable(plugin.onBibTexUpdate(oldContentId, newContentId, session));
 		}
 	}
-	
+
 	public void onBookmarkInsert(final int contentId, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
 			this.executeRunnable(plugin.onBookmarkInsert(contentId, session));
 		}
 	}
+
 	public void onBookmarkUpdate(final int oldContentId, final int newContentId, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
 			this.executeRunnable(plugin.onBookmarkUpdate(oldContentId, newContentId, session));
 		}
-	}	
+	}
 
 	public void onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
