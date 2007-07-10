@@ -8,6 +8,7 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.util.DBSession;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * Represents one element in the chain of responsibility.
@@ -19,14 +20,15 @@ import org.bibsonomy.database.util.DBSession;
  */
 public abstract class ChainElement<L, P extends GenericParam> implements ChainPerform<P, List<L>, L> {
 
-	/** Logger */
 	protected static final Logger log = Logger.getLogger(ChainElement.class);
 	protected final GeneralDatabaseManager generalDb;
+	private final ValidationUtils validationUtils;
 	/** The next element of the chain */
 	private ChainElement<L, P> next;
 
 	public ChainElement() {
 		this.generalDb = GeneralDatabaseManager.getInstance();
+		this.validationUtils = ValidationUtils.getInstance();
 		this.next = null;
 	}
 
@@ -59,27 +61,33 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 	 */
 	protected abstract boolean canHandle(P param);
 
+	// FIXME: remove me!
 	protected boolean present(final String s) {
-		return ((s != null) && (s.length() > 0));
+		return this.validationUtils.present(s);
 	}
 
+	// FIXME: remove me!
 	protected boolean present(final Collection c) {
-		return ((c != null) && (c.size() > 0));
+		return this.validationUtils.present(c);
 	}
 
+	// FIXME: remove me!
 	protected boolean present(final Object o) {
-		return (o != null);
+		return this.validationUtils.present(o);
 	}
 
+	// FIXME: remove me!
 	protected boolean present(final GroupID gid) {
-		return ((gid != null) && (gid != GroupID.INVALID));
+		return this.validationUtils.present(gid);
 	}
 
+	// FIXME: remove me!
 	protected boolean presentValidGroupId(final int gid) {
-		return (gid != GroupID.INVALID.getId());
+		return this.validationUtils.presentValidGroupId(gid);
 	}
 
+	// FIXME: remove me!
 	protected boolean nullOrEqual(final Object requested, final Object supported) {
-		return ((requested == null) || (requested == supported));
+		return this.validationUtils.nullOrEqual(requested, supported);
 	}
 }
