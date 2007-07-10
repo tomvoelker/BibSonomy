@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="BibTexExtraCommon">
+
+	<resultMap id="bibtexExtraURL" class="bibtexExtra">
+		<result property="url"  column="url"  javaType="url" />
+		<result property="text" column="text" javaType="string" />
+		<result property="date" column="date" javaType="date" />
+	</resultMap>
+
+</sqlMap>

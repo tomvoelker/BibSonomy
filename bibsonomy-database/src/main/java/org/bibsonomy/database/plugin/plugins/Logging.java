@@ -21,7 +21,7 @@ import org.bibsonomy.database.util.DBSession;
 public class Logging extends AbstractDatabasePlugin {
 
 	@Override
-	public  Runnable onBibTexInsert(final int contentId, final DBSession session) {
+	public Runnable onBibTexInsert(final int contentId, final DBSession session) {
 		return new Runnable() {
 			public void run() {
 				final BibTexParam param = new BibTexParam();
@@ -41,7 +41,7 @@ public class Logging extends AbstractDatabasePlugin {
 			}
 		};
 	}
-	
+
 	@Override
 	public Runnable onBibTexUpdate(final int newContentId, final int contentId, final DBSession session) {
 		return new Runnable() {
@@ -53,7 +53,7 @@ public class Logging extends AbstractDatabasePlugin {
 			}
 		};
 	}
-	
+
 	@Override
 	public Runnable onBookmarkInsert(final int contentId, final DBSession session) {
 		return new Runnable() {
@@ -64,7 +64,7 @@ public class Logging extends AbstractDatabasePlugin {
 			}
 		};
 	}
-	
+
 	@Override
 	public Runnable onBookmarkDelete(final int contentId, final DBSession session) {
 		return new Runnable() {
@@ -75,7 +75,7 @@ public class Logging extends AbstractDatabasePlugin {
 			}
 		};
 	}
-	
+
 	@Override
 	public Runnable onBookmarkUpdate(final int newContentId, final int contentId, final DBSession session) {
 		return new Runnable() {
@@ -100,7 +100,7 @@ public class Logging extends AbstractDatabasePlugin {
 			}
 		};
 	}
-	
+
 	@Override
 	public Runnable onTagDelete(final int contentId, final DBSession session) {
 		return new Runnable() {
@@ -111,7 +111,7 @@ public class Logging extends AbstractDatabasePlugin {
 			}
 		};
 	}
-	
+
 	@Override
 	public Runnable onDeleteUserfromGroup(final String userName, final int groupId, final DBSession session) {
 		return new Runnable() {

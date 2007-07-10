@@ -7,22 +7,24 @@
 <sqlMap namespace="TypeAliases">
 
 	<!-- Model types -->
-	<typeAlias alias="tag"      type="org.bibsonomy.model.Tag" />
-	<typeAlias alias="bookmark" type="org.bibsonomy.model.Bookmark" />
-	<typeAlias alias="bibtex"   type="org.bibsonomy.model.BibTex" />
-	<typeAlias alias="post"     type="org.bibsonomy.model.Post" />
-	<typeAlias alias="resource" type="org.bibsonomy.model.Resource" />
-	<typeAlias alias="user"     type="org.bibsonomy.model.User" />
-	<typeAlias alias="group"    type="org.bibsonomy.model.Group" />
+	<typeAlias alias="tag"           type="org.bibsonomy.model.Tag" />
+	<typeAlias alias="bookmark"      type="org.bibsonomy.model.Bookmark" />
+	<typeAlias alias="bibtex"        type="org.bibsonomy.model.BibTex" />
+	<typeAlias alias="bibtexExtra"   type="org.bibsonomy.model.BibTexExtra" />
+	<typeAlias alias="post"          type="org.bibsonomy.model.Post" />
+	<typeAlias alias="resource"      type="org.bibsonomy.model.Resource" />
+	<typeAlias alias="user"          type="org.bibsonomy.model.User" />
+	<typeAlias alias="group"         type="org.bibsonomy.model.Group" />
 
 	<!-- Parameters -->
-	<typeAlias alias="genericParam"  type="org.bibsonomy.database.params.GenericParam" />
-	<typeAlias alias="bookmarkParam" type="org.bibsonomy.database.params.BookmarkParam" />
-	<typeAlias alias="bibtexParam"   type="org.bibsonomy.database.params.BibTexParam" />
-	<typeAlias alias="userParam"     type="org.bibsonomy.database.params.UserParam" />
-	<typeAlias alias="groupParam"    type="org.bibsonomy.database.params.GroupParam" />
-	<typeAlias alias="tagParam"      type="org.bibsonomy.database.params.TagParam" />	
-	<typeAlias alias="tagTagBatchParam" type="org.bibsonomy.database.params.beans.TagTagBatchParam" />
-	<typeAlias alias="tagRelationParam" type="org.bibsonomy.database.params.beans.TagRelationParam" />
+	<typeAlias alias="genericParam"       type="org.bibsonomy.database.params.GenericParam" />
+	<typeAlias alias="bookmarkParam"      type="org.bibsonomy.database.params.BookmarkParam" />
+	<typeAlias alias="bibtexParam"        type="org.bibsonomy.database.params.BibTexParam" />
+	<typeAlias alias="bibtexExtraParam"   type="org.bibsonomy.database.params.BibTexExtraParam" />
+	<typeAlias alias="userParam"          type="org.bibsonomy.database.params.UserParam" />
+	<typeAlias alias="groupParam"         type="org.bibsonomy.database.params.GroupParam" />
+	<typeAlias alias="tagParam"           type="org.bibsonomy.database.params.TagParam" />	
+	<typeAlias alias="tagTagBatchParam"   type="org.bibsonomy.database.params.beans.TagTagBatchParam" />
+	<typeAlias alias="tagRelationParam"   type="org.bibsonomy.database.params.beans.TagRelationParam" />
 
 </sqlMap>

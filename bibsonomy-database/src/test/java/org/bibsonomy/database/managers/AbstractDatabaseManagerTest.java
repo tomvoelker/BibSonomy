@@ -8,9 +8,9 @@ import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.util.DBSessionFactory;
-import org.bibsonomy.database.util.SandboxDBSessionFactory;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.testutil.ParamUtils;
+import org.bibsonomy.testutil.SandboxDBSessionFactory;
 import org.junit.After;
 import org.junit.Before;
 
@@ -30,6 +30,7 @@ public abstract class AbstractDatabaseManagerTest {
 	protected GeneralDatabaseManager generalDb;
 	protected BookmarkDatabaseManager bookmarkDb;
 	protected BibTexDatabaseManager bibTexDb;
+	protected BibTexExtraDatabaseManager bibTexExtraDb;
 	protected UserDatabaseManager userDb;
 	protected TagDatabaseManager tagDb;
 	protected TagRelationDatabaseManager tagRelDb;
@@ -51,6 +52,7 @@ public abstract class AbstractDatabaseManagerTest {
 			this.generalDb = GeneralDatabaseManager.getInstance();
 			this.bookmarkDb = BookmarkDatabaseManager.getInstance();
 			this.bibTexDb = BibTexDatabaseManager.getInstance();
+			this.bibTexExtraDb = BibTexExtraDatabaseManager.getInstance();
 			this.userDb = UserDatabaseManager.getInstance();
 			this.tagDb = TagDatabaseManager.getInstance();
 			this.tagRelDb = TagRelationDatabaseManager.getInstance();
@@ -72,6 +74,7 @@ public abstract class AbstractDatabaseManagerTest {
 		this.generalDb = null;
 		this.bookmarkDb = null;
 		this.bibTexDb = null;
+		this.bibTexExtraDb = null;
 		this.tagDb = null;
 		this.userDb = null;
 		this.groupDb = null;
@@ -92,7 +95,8 @@ public abstract class AbstractDatabaseManagerTest {
 	 * parameter object is altered which can lead to side effects in the
 	 * following queries.<br/>
 	 * 
-	 * This is done before running a testcase method.
+	 * This is done before running a testcase method, so you don't have to do
+	 * this manually.
 	 */
 	protected void resetParameters() {
 		this.generalParam = ParamUtils.getDefaultGeneralParam();

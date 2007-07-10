@@ -4,11 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.List;
-
-import junit.framework.Assert;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -223,6 +222,21 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	@Test
+	public void getContentIdForBibTex() {
+		assertEquals(925724, this.bibTexDb.getContentIdForBibTex("b6c9a44d411bf8101abdf809d5df1431", "thomi", this.dbSession));
+
+		for (final String hash : new String[] { "", null }) {
+			for (final String username : new String[] { "", null }) {
+				try {
+					this.bibTexDb.getContentIdForBibTex(hash, username, this.dbSession);
+					fail("Should throw an exception");
+				} catch (final RuntimeException ex) {
+				}
+			}
+		}
+	}
+
+	@Test
 	public void getPosts() {
 		this.bibtexParam.setHash("");
 		final List<Post<BibTex>> posts = this.bibTexDb.getPosts(this.bibtexParam, this.dbSession);
@@ -244,23 +258,25 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void storePost() {
 		final Post<BibTex> toInsert = ModelUtils.generatePost(BibTex.class);
+		final String BIBTEX_TEST_HASH = "06aef6e5439298f27dc5aee82c4293d6";
 
+		// can't update without old hash
 		try {
 			this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, null, true, this.dbSession);
-			Assert.fail();
+			fail("Should throw a throwable");
 		} catch (Throwable t) {
-			Assert.assertTrue(t instanceof IllegalArgumentException);
+			assertTrue(t instanceof IllegalArgumentException);
 		}
-		
-		try {
-			this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, "06aef6e5439298f27dc5aee82c4293d6", false, this.dbSession);
-			Assert.fail();
-		} catch (Throwable t) {
-			Assert.assertTrue(t instanceof IllegalArgumentException);
-		}
-		
-		this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, null, false, this.dbSession);
 
+		// can't create new resource with old hash
+		try {
+			this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, BIBTEX_TEST_HASH, false, this.dbSession);
+			fail("Should throw a throwable");
+		} catch (Throwable t) {
+			assertTrue(t instanceof IllegalArgumentException);
+		}
+
+		this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, null, false, this.dbSession);
 		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { ModelUtils.class.getName(), "hurz" }), "", null, 0, 50);
 		final List<Post<BibTex>> posts = this.bibTexDb.getPosts(param, this.dbSession);
 		assertEquals(1, posts.size());
@@ -268,16 +284,16 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		toInsert.getResource().setCount(1);
 		ModelUtils.assertPropertyEquality(toInsert.getResource(), posts.get(0).getResource(), "");
 
-		// Duplicate post and check whether plugins are called
+		// post a duplicate and check whether plugins are called
 		this.resetParameters();
 		// FIXME: this boilerplate code could be removed with a DI-framework (i.e. next three lines)
 		final DatabasePluginMock plugin = new DatabasePluginMock();
 		DatabasePluginRegistry.getInstance().clearPlugins();
 		DatabasePluginRegistry.getInstance().add(plugin);
 		assertFalse(plugin.isOnBibTexUpdate());
-		param.setHash("06aef6e5439298f27dc5aee82c4293d6");
+		param.setHash(BIBTEX_TEST_HASH);
 		final Post<BibTex> someBibTexPost = this.bibTexDb.getBibTexByHash(param, this.dbSession).get(0);
-		this.bibTexDb.storePost(someBibTexPost.getUser().getName(), someBibTexPost, "06aef6e5439298f27dc5aee82c4293d6", true, this.dbSession);
+		this.bibTexDb.storePost(someBibTexPost.getUser().getName(), someBibTexPost, BIBTEX_TEST_HASH, true, this.dbSession);
 		assertTrue(plugin.isOnBibTexUpdate());
 	}
 }

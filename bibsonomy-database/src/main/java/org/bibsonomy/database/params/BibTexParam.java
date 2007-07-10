@@ -15,18 +15,19 @@ public class BibTexParam extends ResourcesParam<BibTex> {
 	/** A single resource */
 	private BibTex resource;
 	/**
-	 * This is used to restrict simHashes, i.e. which limit the overall
-	 * resultset. By default simhash1 is used.
+	 * This is used to restrict simHashes, i.e. to limit the overall resultset.
+	 * The default simHash is defined in {@link HashID}.
 	 */
 	private HashID simHash;
 	/**
 	 * A user can search for hashes and this defines which simHash should be
-	 * used, e.g. either a restrictive or non-restrictive one. By default
-	 * simhash1 is used.
+	 * used, e.g. either a restrictive or non-restrictive one. The default
+	 * simHash is defined in {@link HashID}.
 	 */
 	private HashID requestedSimHash;
 
 	public BibTexParam() {
+		this.resource = new BibTex();
 		this.simHash = HashID.SIM_HASH;
 		this.requestedSimHash = HashID.SIM_HASH;
 	}

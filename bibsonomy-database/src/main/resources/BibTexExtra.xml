@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="BibTexExtra">
+
+	<select id="getBibTexExtraURL" resultMap="BibTexExtraCommon.bibtexExtraURL" parameterClass="bibtexExtraParam">
+		SELECT u.url, u.text, u.date
+		FROM bibtexurls u
+		JOIN bibtex b ON u.content_id = b.content_id
+		WHERE b.simhash$simHash$ = #hash#
+		      AND b.user_name = #userName#
+		ORDER BY u.date DESC
+	</select>
+
+	<insert id="insertBibTexExtraURL" parameterClass="bibtexExtraParam">
+		INSERT INTO bibtexurls (url, text, content_id)
+		VALUES (#bibtexExtra.url#, #bibtexExtra.text#, #requestedContentId#)
+	</insert>
+
+	<delete id="deleteBibTexExtraURL" parameterClass="bibtexExtraParam">
+		DELETE FROM bibtexurls WHERE content_id = #requestedContentId# AND url = #bibtexExtra.url#
+	</delete>
+
+	<select id="getBibTexPrivnoteForUser" resultClass="string" parameterClass="bibtexExtraParam">
+		SELECT privnote FROM bibtex WHERE user_name = #userName# AND simhash$simHash$ = #hash#
+	</select>
+
+	<update id="updateBibTexPrivnoteForUser" parameterClass="bibtexExtraParam">
+		UPDATE bibtex SET privnote = #resource.note#
+		WHERE user_name = #userName# AND simhash$simHash$ = #hash#
+	</update>
+
+</sqlMap>

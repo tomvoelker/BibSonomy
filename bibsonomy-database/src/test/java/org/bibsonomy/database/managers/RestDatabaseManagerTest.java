@@ -53,7 +53,7 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		}
 		return this.dbLogic;
 	}
-		
+
 	protected LogicInterface getDbLogic(final String userName) {
 		final RestDatabaseManager restDbM = RestDatabaseManager.getInstance();
 		restDbM.setDbSessionFactory(this.getDbSessionFactory());
@@ -61,7 +61,7 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		};
 		return dbl;
 	}
-	
+
 	@Before
 	public void setUp() {
 		super.setUp();
@@ -298,37 +298,37 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(15, this.bibTexPostsList.size());
 		// TODO: test something
 	}
-	
+
 	@Test
 	public void testConceptStore() {
 		final Post<BibTex> post = ModelUtils.generatePost(BibTex.class);
 		final Tag centerTag = new Tag();
 		centerTag.setName("testCenterTag");
-		
+
 		final Tag superTag = new Tag();
 		superTag.setName("testSuperTag");
 		superTag.setSubTags(Arrays.asList(new Tag[] {centerTag}));
 		centerTag.setSuperTags(Arrays.asList(new Tag[] {superTag}));
-		
+
 		final Tag superSuperTag = new Tag();
 		superSuperTag.setName("testSuperSuperTag");
 		superSuperTag.setSuperTags(Arrays.asList(new Tag[] {superSuperTag}));
 		superSuperTag.setSubTags(Arrays.asList(new Tag[] {superTag}));
-		
+
 		final Tag subTag = new Tag();
 		subTag.setName("testSubTag");
 		centerTag.setSubTags(Arrays.asList(new Tag[] {subTag}));
 		subTag.setSuperTags(Arrays.asList(new Tag[] {centerTag}));
-		
+
 		final String testUserName = this.getClass().getSimpleName();
 		post.getTags().add(centerTag);
 		post.getUser().setName(testUserName);
-		
+
 		final Group group = new Group();
 		group.setGroupId(GroupID.PRIVATE.getId());
 		group.setDescription(null);
 		post.setGroups(Arrays.asList(new Group[] {group}));
-		
+
 		final LogicInterface testClassAccess = this.getDbLogic(testUserName);
 		assertEquals( 0, testClassAccess.getPosts(BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null, 0, 100).size() );
 		testClassAccess.createPost(post);
