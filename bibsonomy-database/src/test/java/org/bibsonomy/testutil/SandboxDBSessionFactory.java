@@ -1,4 +1,4 @@
-package org.bibsonomy.database.util;
+package org.bibsonomy.testutil;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -6,6 +6,9 @@ import java.lang.reflect.Proxy;
 import java.util.HashSet;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.database.util.DBSession;
+import org.bibsonomy.database.util.DBSessionFactory;
+import org.bibsonomy.database.util.DatabaseUtils;
 
 /**
  * An implementation of the {@link DBSessionFactory} interface which intercepts
