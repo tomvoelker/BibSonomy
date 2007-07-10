@@ -295,24 +295,21 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	/**
 	 * Inserts a post with a bookmark into the database.
 	 */
-	  protected void insertBookmarkPost(final Post<Bookmark> post, final DBSession session) {
-			final BookmarkParam param = new BookmarkParam();
-			param.setResource(post.getResource());
-			param.setDate(post.getDate());
-			param.setRequestedContentId(post.getContentId());
-			param.setHash(post.getResource().getIntraHash());
-			param.setDescription(post.getDescription());
-			param.setUserName(post.getUser().getName());
-			param.setUrl(post.getResource().getUrl());
-			for (final Group group : post.getGroups()) {
-				param.setGroupId(group.getGroupId());
-				this.insertBookmark(param, session);
-			}
+	protected void insertBookmarkPost(final Post<Bookmark> post, final DBSession session) {
+		final BookmarkParam param = new BookmarkParam();
+		param.setResource(post.getResource());
+		param.setDate(post.getDate());
+		param.setRequestedContentId(post.getContentId());
+		param.setHash(post.getResource().getIntraHash());
+		param.setDescription(post.getDescription());
+		param.setUserName(post.getUser().getName());
+		param.setUrl(post.getResource().getUrl());
+		for (final Group group : post.getGroups()) {
+			param.setGroupId(group.getGroupId());
+			this.insertBookmark(param, session);
 		}
-	  
-	  
-	  
-	  
+	}
+
 	public void insertBookmarkLog(final BookmarkParam bookmark, final DBSession session) {
 		// TODO not tested
 		this.insert("insertBookmarkLog", bookmark, session);
@@ -322,7 +319,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	public void insertBookmarkHash(final BookmarkParam param, final DBSession session) {
 		this.insert("insertBookmarkHash", param, session);
 	}
-   // decrements one count in url table after deleting
+
+   	// decrements one count in url table after deleting
 	public void updateBookmarkHash(final BookmarkParam param, final DBSession session) {
 		this.insert("updateBookmarkHash", param, session);
 	}
@@ -343,10 +341,9 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	public List<Post<Bookmark>> getPosts(final BookmarkParam param, final DBSession session) {
 		return chain.getFirstElement().perform(param, session);
 	}
-	
+
 	public Post<Bookmark> getPostDetails(String authUser, String resourceHash, String userName, final DBSession session) {
 		// TODO Auto-generated method stub
-		//
 		return null;
 	}
 
@@ -379,7 +376,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 			}
 			// Delete entry from table bookmark
 			this.deleteBookmark(param, session);
-			
+
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -387,32 +384,29 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		return true;
 	}
 
-	
-	public boolean storePost(String userName, Post<Bookmark> post, String oldIntraHash, boolean update, DBSession session)  {
-		
-		
+	public boolean storePost(final String userName, final Post<Bookmark> post, final String oldIntraHash, boolean update, final DBSession session)  {
 		session.beginTransaction();
 		try {
 			final List<Post<Bookmark>> isBookmarkInDb;
-			System.out.println("oldIntraHash "+ oldIntraHash);
+			log.debug("oldIntraHash "+ oldIntraHash);
 			if (oldIntraHash != null) {
-				System.out.println("oldIntraHash != null");
+				log.debug("oldIntraHash != null");
 				if ((update == false) && (oldIntraHash.equals(post.getResource().getIntraHash()) == false)) {
-					System.out.println("update==false");
+					log.debug("update==false");
 					throw new IllegalArgumentException("cannot create new resource/BOOKMARK with an old hash value");
 				}
 				isBookmarkInDb = this.getBookmarkHashForUser(userName, oldIntraHash, userName,session);
 			} else {
 				if (update == true) {
-					System.out.println("update==true");
+					log.debug("update==true");
 					throw new IllegalArgumentException("cannot update/BOOKMARK without old hash value");
 				}
 				isBookmarkInDb = null;
 			}
-			
+
 			// ALWAYS get a new contentId
 			post.setContentId(this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, session));
-			System.out.println("post.setContentId");
+			log.debug("post.setContentId");
 			if ((isBookmarkInDb != null) && (isBookmarkInDb.size() > 0)) {
 				update = true;
 				// Bookmark entry DOES EXIST for this user -> delete old Bookmark post
@@ -427,30 +421,19 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 				}
 				update = false;
 			}
-			
+
 			this.insertBookmarkPost(post, session);
-			
+
 			// add the tags
 			this.tagDb.insertTags(post, session);
-			
+
 			// TODO: update: log, doc, col, ext, url
 
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
 		}
-		System.out.println("update "+update);
+		log.debug("update "+update);
 		return update;
-		
-		
-		
 	}
-
-	
-		
-
-
-	
-
-	
 }
