@@ -98,12 +98,15 @@ public class RestDatabaseManager implements DBLogicInterface {
 	}
 
 	/*
-	 * Returns details about a specified user
+	 * Returns details about the specified user and makes sure that we don't
+	 * leak private information like the e-mail-address.
 	 */
 	public User getUserDetails(final String authUserName, final String userName) {
 		final DBSession session = this.openSession();
 		try {
-			return this.userDBManager.getUserDetails(userName, session);
+			final User user = this.userDBManager.getUserDetails(userName, session);
+			user.setEmail(null);
+			return user;
 		} finally {
 			session.close();
 		}
