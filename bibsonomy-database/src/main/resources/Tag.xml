@@ -4,25 +4,54 @@
 <sqlMap namespace="Tag">
 
 	<select id="getTagById" resultMap="TagCommon.tagWithDetails" parameterClass="int">
-		SELECT tag_id, tag_name, tag_ctr FROM tags WHERE tag_id = #id#
+		SELECT T.tag_id, TAS.tag_name, count(TAS.tag_name) as tag_ctr 
+		FROM tags T, tas TAS 
+		WHERE T.tag_name=TAS.tag_name AND
+			  (TAS.user_name=#requestedUserName# OR TAS.group=0) AND			  
+			  T.tag_id = #id#
+		GROUP BY TAS.tag_name
 	</select>
 
-	<select id="getTagByName" resultMap="TagCommon.tagWithDetails" parameterClass="tagParam">
-		SELECT tag_id, tag_name, tag_ctr FROM tags WHERE tag_name = #name#
+	<select id="getTagByName" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT TAS.tag_name, count(TAS.tag_name) as tag_ctr 
+		FROM tas TAS 
+		WHERE (TAS.user_name=#requestedUserName# OR
+			  TAS.group=0) AND
+			  TAS.tag_name=#name#
+		GROUP BY TAS.tag_name
+		LIMIT #limit# OFFSET #offset#
 	</select>	
 
-	<select id="getTagByCount" resultMap="TagCommon.tagWithDetails" parameterClass="tagParam">
-		SELECT tag_id, tag_name, tag_ctr FROM tags WHERE tag_ctr = #count# LIMIT #limit# OFFSET #offset#
+	<select id="getTagByCount" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT DISTINCT T.tag_name, T.tag_ctr  
+		FROM tags T, tas TAS  
+		WHERE T.tag_name=TAS.tag_name AND 
+		      T.tag_ctr=#count# AND 
+		      (TAS.group=0 OR TAS.user_name=#requestedUserName#)
+		LIMIT #limit# OFFSET #offset#	      
 	</select>
 
-	<select id="getAllTags" resultMap="TagCommon.tagWithDetails" parameterClass="tagParam">
+	<select id="getAllTags" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
 		<!--  SELECT tag_name, count(tag_name) AS tag_count FROM tas t GROUP BY t.tag_name LIMIT #limit# OFFSET #offset# -->
-		SELECT tag_id, tag_name, tag_ctr FROM tags t LIMIT #limit# OFFSET #offset#
+		<!--  up to now, a user can see his own tags as well as public tags -->
+		SELECT TAS.tag_name, count(TAS.tag_name) as tag_ctr 
+		FROM tas TAS 
+		WHERE TAS.user_name=#requestedUserName# OR
+			  TAS.group=0
+		GROUP BY TAS.tag_name
+		HAVING tag_ctr > 0
+		LIMIT #limit# OFFSET #offset#
 	</select>
 
 	<!-- TODO not yet tested -->
-	<select id="getTagsByExpression" resultMap="TagCommon.tagWithDetails" parameterClass="tagParam">
-		SELECT tag_id, tag_name, tag_ctr FROM tags WHERE tag_name REGEXP '^regex' LIMIT #limit# OFFSET #offset#
+	<select id="getTagsByExpression" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT TAS.tag_name, count(TAS.tag_name) as tag_ctr 
+		FROM tas TAS 
+		WHERE (TAS.user_name=#requestedUserName# OR
+			  TAS.group=0) AND
+			  TAS.tag_name REGEXP '^regex'
+		GROUP BY TAS.tag_name
+		LIMIT #limit# OFFSET #offset#		
 	</select>
 
  	<select id="getTagsViewable" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
