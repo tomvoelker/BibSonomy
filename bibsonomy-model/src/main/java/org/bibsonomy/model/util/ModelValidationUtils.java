@@ -20,7 +20,7 @@ import org.bibsonomy.rest.renderer.xml.UserType;
  * @author Christian Schenk
  * @version $Id$
  */
-public class ValidationUtils {
+public class ModelValidationUtils {
 
 	private static final String XML_IS_INVALID_MSG = "The body part of the received XML document is not valid: ";
 

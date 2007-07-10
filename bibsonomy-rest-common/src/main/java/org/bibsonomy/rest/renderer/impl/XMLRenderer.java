@@ -1,10 +1,14 @@
 package org.bibsonomy.rest.renderer.impl;
 
-import static org.bibsonomy.model.util.ValidationUtils.checkBibtex;
-import static org.bibsonomy.model.util.ValidationUtils.checkBookmark;
-import static org.bibsonomy.model.util.ValidationUtils.checkGroup;
-import static org.bibsonomy.model.util.ValidationUtils.checkTag;
-import static org.bibsonomy.model.util.ValidationUtils.checkUser;
+import static org.bibsonomy.model.util.ModelValidationUtils.checkBibtex;
+import static org.bibsonomy.model.util.ModelValidationUtils.checkBookmark;
+import static org.bibsonomy.model.util.ModelValidationUtils.checkGroup;
+import static org.bibsonomy.model.util.ModelValidationUtils.checkTag;
+import static org.bibsonomy.model.util.ModelValidationUtils.checkUser;
+import static org.bibsonomy.rest.RestProperties.Property.API_URL;
+import static org.bibsonomy.rest.RestProperties.Property.URL_GROUPS;
+import static org.bibsonomy.rest.RestProperties.Property.URL_POSTS;
+import static org.bibsonomy.rest.RestProperties.Property.URL_USERS;
 
 import java.io.Reader;
 import java.io.Writer;
@@ -27,10 +31,6 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.RestProperties;
-import static org.bibsonomy.rest.RestProperties.Property.API_URL;
-import static org.bibsonomy.rest.RestProperties.Property.URL_GROUPS;
-import static org.bibsonomy.rest.RestProperties.Property.URL_POSTS;
-import static org.bibsonomy.rest.RestProperties.Property.URL_USERS;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.Renderer;

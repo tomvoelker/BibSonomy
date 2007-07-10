@@ -1,11 +1,11 @@
 package org.bibsonomy.rest.renderer.xml;
 
-import static org.bibsonomy.model.util.ValidationUtils.checkBibTex;
-import static org.bibsonomy.model.util.ValidationUtils.checkBookmark;
-import static org.bibsonomy.model.util.ValidationUtils.checkGroup;
-import static org.bibsonomy.model.util.ValidationUtils.checkPost;
-import static org.bibsonomy.model.util.ValidationUtils.checkTag;
-import static org.bibsonomy.model.util.ValidationUtils.checkUser;
+import static org.bibsonomy.model.util.ModelValidationUtils.checkBibTex;
+import static org.bibsonomy.model.util.ModelValidationUtils.checkBookmark;
+import static org.bibsonomy.model.util.ModelValidationUtils.checkGroup;
+import static org.bibsonomy.model.util.ModelValidationUtils.checkPost;
+import static org.bibsonomy.model.util.ModelValidationUtils.checkTag;
+import static org.bibsonomy.model.util.ModelValidationUtils.checkUser;
 
 import java.net.MalformedURLException;
 import java.net.URL;
