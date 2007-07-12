@@ -111,7 +111,7 @@
 						</tr>
 						<tr>
 							<td>
-								<a href="methods/AddPost.html">Add post</a>
+								<a href="methods/CreatePost.html">Create post</a>
 							</td>
 							<td>POST</td>
 							<td>/users/[username]/posts</td>
