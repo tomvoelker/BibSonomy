@@ -4,7 +4,7 @@
 <sqlMap namespace="Bookmark">
 
 	<select id="getBookmarkByTagNames" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT <include refid="bookmarkAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr  count, NULL AS `group`, NULL AS group_name
+		SELECT <include refid="bookmarkAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name
 		FROM bookmark b, urls u, tas t,
 		     (SELECT t1.content_id 
 		      FROM <include refid="tagFromQuery"/>
