@@ -34,8 +34,13 @@ import org.junit.Test;
 public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
-	public void getBookmarkByTagNames() {
-		this.bookmarkDb.getBookmarkByTagNames(this.bookmarkParam, this.dbSession);
+	public void getBookmarkByTagNames() {		
+		List<Post<Bookmark>> temp = this.bookmarkDb.getBookmarkByTagNames(this.bookmarkParam, this.dbSession);
+		//System.out.println(temp.get(4).getDescription());
+		System.out.println(temp.get(1).getTags());
+		System.out.println("Size "+ temp.size());
+		assertEquals(temp.size(),10);
+		
 	}
 
 	@Test
@@ -250,6 +255,8 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getPosts() {
 		this.bookmarkParam.setHash("");
 		final List<Post<Bookmark>> posts = this.bookmarkDb.getPosts(this.bookmarkParam, this.dbSession);
+		System.out.println("post " + posts.get(1).getDescription());
+		// print out contained tags
 		assertEquals(this.bookmarkParam.getLimit(), posts.size());
 	}
 }
