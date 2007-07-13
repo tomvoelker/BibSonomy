@@ -80,5 +80,9 @@
 		SELECT content_id, user_name, group
 		FROM bookmark WHERE user_name = #userName# AND group = #groupId#
 	</insert>
+	
+	<select id="testLogBibtex" resultClass="int" parameterClass="bibtexParam">
+		SELECT COUNT(*)	AS count FROM log_bibtex LB WHERE LB.content_id=#requestedContentId#;
+	</select>	
 
 </sqlMap>
