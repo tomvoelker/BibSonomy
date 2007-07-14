@@ -18,7 +18,7 @@ public class StringUtils {
 		} else {
 			// returns [item1,item2,item3,...]
 			final StringBuffer s = new StringBuffer("[");
-			final Iterator it = collection.iterator();
+			final Iterator<String> it = collection.iterator();
 			while (it.hasNext()) {
 				s.append(it.next() + ",");
 			}

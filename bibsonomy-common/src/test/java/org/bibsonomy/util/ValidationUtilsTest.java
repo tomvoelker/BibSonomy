@@ -28,6 +28,7 @@ public class ValidationUtilsTest {
 	public void present() {
 		// String
 		assertFalse(this.check.present(""));
+		assertFalse(this.check.present(" "));
 		assertTrue(this.check.present("hurz"));
 
 		// Collection

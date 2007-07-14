@@ -20,10 +20,10 @@ public class ValidationUtils {
 	}
 
 	public boolean present(final String s) {
-		return ((s != null) && (s.length() > 0));
+		return ((s != null) && (s.trim().length() > 0));
 	}
 
-	public boolean present(final Collection c) {
+	public boolean present(final Collection<?> c) {
 		return ((c != null) && (c.size() > 0));
 	}
 
