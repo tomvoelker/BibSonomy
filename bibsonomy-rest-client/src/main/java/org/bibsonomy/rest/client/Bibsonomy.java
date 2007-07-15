@@ -52,7 +52,7 @@ public final class Bibsonomy {
 	 * @throws IllegalStateException
 	 *             if the username or the password has not yet been set
 	 */
-	public void executeQuery(final AbstractQuery query) throws ErrorPerformingRequestException, IllegalStateException {
+	public void executeQuery(final AbstractQuery<?> query) throws ErrorPerformingRequestException, IllegalStateException {
 		if (this.username == null) throw new IllegalStateException("The username has not yet been set.");
 		if (this.apiKey == null) throw new IllegalStateException("The password has not yet been set.");
 		query.setRenderingFormat(this.renderingFormat);
@@ -74,7 +74,7 @@ public final class Bibsonomy {
 	 * @throws IllegalStateException
 	 *             if the username or the password has not yet been set
 	 */
-	public void executeQuery(final AbstractQuery query, final ProgressCallback callback) throws ErrorPerformingRequestException, IllegalStateException {
+	public void executeQuery(final AbstractQuery<?> query, final ProgressCallback callback) throws ErrorPerformingRequestException, IllegalStateException {
 		query.setProgressCallback(callback);
 		executeQuery(query);
 	}

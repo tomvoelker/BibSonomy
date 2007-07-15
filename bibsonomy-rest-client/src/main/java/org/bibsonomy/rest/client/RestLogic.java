@@ -38,6 +38,7 @@ public class RestLogic implements LogicInterface {
 	private final String authUserName;
 
 	public RestLogic(final String username, final String apiKey, final String apiURL) {
+		// FIXME: should be "this(username, apiKey)" instead?
 		this(apiKey, apiURL);
 		this.bibsonomy.setApiURL(apiURL);
 	}
@@ -93,6 +94,7 @@ public class RestLogic implements LogicInterface {
 		return execute(new GetPostDetailsQuery(userName, resourceHash));
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, int start, int end) {
 		final GetPostsQuery query = new GetPostsQuery(start, end);
 		query.setGrouping(grouping, groupingName);
