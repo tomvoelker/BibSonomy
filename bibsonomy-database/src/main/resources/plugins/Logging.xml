@@ -12,22 +12,7 @@
 		SELECT title, entrytype, author, editor, year, content_id, journal, volume, chapter, edition, month,
 		       bookTitle, howpublished, institution, organization, publisher, address, school, series, bibtexKey,
 		       `group`, date, user_name, url, description, annote, note, pages, bKey, number, crossref, misc,
-		       bibtexAbstract, type, day, scraperid, simhash$SIM_HASH_0$, simhash$SIM_HASH_1$, simhash$SIM_HASH_2$,
-		       simhash$SIM_HASH_3$
-		FROM bibtex WHERE content_id = #requestedContentId#
-	</insert>
-
-	<insert id="logBibTexDelete" parameterClass="bibtexParam">
-		INSERT INTO log_bibtex (title, entrytype, author, editor, year, content_id, journal, volume, chapter,
-		                        edition, month, bookTitle, howpublished, institution, organization, publisher,
-		                        address, school, series, bibtexKey, `group`, date, user_name, url, description,
-		                        annote, note, pages, bKey, number, crossref, misc, bibtexAbstract, type, day,
-		                        scraperid, simhash0, simhash1, simhash2, simhash3)
-		SELECT title, entrytype, author, editor, year, content_id, journal, volume, chapter, edition, month,
-		       bookTitle, howpublished, institution, organization, publisher, address, school, series, bibtexKey,
-		       `group`, date, user_name, url, description, annote, note, pages, bKey, number, crossref, misc,
-		       bibtexAbstract, type, day, scraperid, simhash$SIM_HASH_0$, simhash$SIM_HASH_1$, simhash$SIM_HASH_2$,
-		       simhash$SIM_HASH_3$
+		       bibtexAbstract, type, day, scraperid, simhash0, simhash1, simhash2, simhash3
 		FROM bibtex WHERE content_id = #requestedContentId#
 	</insert>
 
@@ -38,13 +23,7 @@
 	<insert id="logBookmark" parameterClass="bookmarkParam">
 		INSERT INTO log_bookmark (content_id, book_url_hash, book_description, book_extended, `group`, date, user_name)
 		SELECT content_id, book_url_hash, book_description, book_extended, `group`, date, user_name
-		FROM bookmark where content_id = #requestedContentId#
-	</insert>
-
-	<insert id="logBookmarkDelete" parameterClass="bookmarkParam">
-		INSERT INTO log_bookmark (content_id, book_url_hash, book_description, book_extended, `group`, date, user_name)
-		SELECT content_id, book_url_hash, book_description, book_extended, `group`, date, user_name
-		FROM bookmark where content_id = #requestedContentId#
+		FROM bookmark WHERE content_id = #requestedContentId#
 	</insert>
 
 	<update id="logBookmarkUpdate" parameterClass="bookmarkParam">
@@ -80,9 +59,9 @@
 		SELECT content_id, user_name, group
 		FROM bookmark WHERE user_name = #userName# AND group = #groupId#
 	</insert>
-	
+
 	<select id="testLogBibtex" resultClass="int" parameterClass="bibtexParam">
 		SELECT COUNT(*)	AS count FROM log_bibtex LB WHERE LB.content_id=#requestedContentId#;
-	</select>	
+	</select>
 
 </sqlMap>
