@@ -50,10 +50,10 @@ public class ModelUtils {
 	 */
 	public static Bookmark getBookmark() {
 		final Bookmark bookmark = new Bookmark();
-		setResourceDefaults(bookmark);
-		bookmark.setIntraHash("e636edf2736cfc61897bf21039ffabsde");
-		bookmark.setTitle("test");
-		bookmark.setUrl("http://www.bibonomy.org");
+		setResourceDefaults(bookmark); 
+		bookmark.setIntraHash("e44a7a8fac3a70901329214fcc1525aa");
+		bookmark.setTitle("bookmarked_by_nobody");
+		bookmark.setUrl("http://www.bookmarkedbynobody.com");
 		return bookmark;
 	}
 
@@ -149,7 +149,7 @@ public class ModelUtils {
 						final Method getter = d.getReadMethod();
 						final Class type = d.getPropertyType();
 						if ((getter != null) && ((type == String.class) || (type.isPrimitive() == true) || (Number.class.isAssignableFrom(type) == true))) {
-							log.debug("comparing property " + d.getName());
+							log.debug("comparing property " + d.getName());							
 							assertEquals(d.getName(), getter.invoke(should, (Object[]) null), getter.invoke(is, (Object[]) null));
 						}
 					}

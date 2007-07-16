@@ -48,7 +48,7 @@ public class ParamUtils {
 		param.setRequestedGroupName("kde");
 		//param.setDate(date);
 		// param.setCaseSensitiveTagNames(true);
-		param.addTagName("wow");
+		param.addTagName("kassel");
 	}
 
 	/**

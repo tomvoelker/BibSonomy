@@ -6,16 +6,19 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.testutil.DatabasePluginMock;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.testutil.ParamUtils;
@@ -240,7 +243,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getPosts() {
 		this.bibtexParam.setHash("");
 		final List<Post<BibTex>> posts = this.bibTexDb.getPosts(this.bibtexParam, this.dbSession);
-		assertEquals(this.bibtexParam.getLimit(), posts.size());
+		assertEquals(9, posts.size());
 	}
 
 	@Test
@@ -277,7 +280,10 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		}
 
 		this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, null, false, this.dbSession);
-		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { ModelUtils.class.getName(), "hurz" }), "", null, 0, 50);
+
+		
+		
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { ModelUtils.class.getName(), "hurz" }), null, null, 0, 50);
 		final List<Post<BibTex>> posts = this.bibTexDb.getPosts(param, this.dbSession);
 		assertEquals(1, posts.size());
 		ModelUtils.assertPropertyEquality(toInsert, posts.get(0), new String[] { "resource", "tags" });

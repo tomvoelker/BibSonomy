@@ -35,12 +35,8 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getBookmarkByTagNames() {		
-		List<Post<Bookmark>> temp = this.bookmarkDb.getBookmarkByTagNames(this.bookmarkParam, this.dbSession);
-		//System.out.println(temp.get(4).getDescription());
-		System.out.println(temp.get(1).getTags());
-		System.out.println("Size "+ temp.size());
-		assertEquals(temp.size(),10);
-		
+		List<Post<Bookmark>> posts = this.bookmarkDb.getBookmarkByTagNames(this.bookmarkParam, this.dbSession);
+		assertEquals(10, posts.size());		
 	}
 
 	@Test
@@ -170,7 +166,6 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void storePost() {
 		final Post<Bookmark> toInsert = ModelUtils.generatePost(Bookmark.class);
-		System.out.println("test");
 
 		try {
 			this.bookmarkDb.storePost(toInsert.getUser().getName(), toInsert, null, true, this.dbSession);
@@ -180,8 +175,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		}
 		
 		try {
-			this.bookmarkDb.storePost(toInsert.getUser().getName(), toInsert, "06aef6e5439298f27dc5aee82c4293d6", false, this.dbSession);
-			
+			this.bookmarkDb.storePost(toInsert.getUser().getName(), toInsert, "06aef6e5439298f27dc5aee82c4293d6", false, this.dbSession);			
 			Assert.fail();
 		} catch (Throwable t) {
 			Assert.assertTrue(t instanceof IllegalArgumentException);
@@ -251,12 +245,11 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.bookmarkParam.setUserName("jaeschke");
 		assertEquals(2648964, this.bookmarkDb.getContentIDForBookmark(this.bookmarkParam, this.dbSession));
 	}
+	
 	@Test
 	public void getPosts() {
 		this.bookmarkParam.setHash("");
 		final List<Post<Bookmark>> posts = this.bookmarkDb.getPosts(this.bookmarkParam, this.dbSession);
-		System.out.println("post " + posts.get(1).getDescription());
-		// print out contained tags
 		assertEquals(this.bookmarkParam.getLimit(), posts.size());
 	}
 }
