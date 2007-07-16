@@ -17,15 +17,12 @@ public class PrivlevelTest {
 		assertEquals(Privlevel.HIDDEN, Privlevel.getPrivlevel(1));
 		assertEquals(Privlevel.MEMBERS, Privlevel.getPrivlevel(2));
 
-		try {
-			Privlevel.getPrivlevel(3);
-			fail("Should throw exception");
-		} catch (final RuntimeException ex) {
-		}
-		try {
-			Privlevel.getPrivlevel(-1);
-			fail("Should throw exception");
-		} catch (final RuntimeException ex) {
+		for (final int privlevel : new int[] { -1, 3, 42 }) {
+			try {
+				Privlevel.getPrivlevel(privlevel);
+				fail("Should throw exception");
+			} catch (final RuntimeException ex) {
+			}
 		}
 	}
 }

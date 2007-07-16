@@ -12,7 +12,7 @@ import org.junit.Test;
 public class HashIDTest {
 
 	@Test
-	public void testGetSimHash() {
+	public void getSimHash() {
 		assertEquals(HashID.SIM_HASH0, HashID.getSimHash(0));
 		assertEquals(HashID.SIM_HASH1, HashID.getSimHash(1));
 		assertEquals(HashID.SIM_HASH2, HashID.getSimHash(2));
@@ -23,5 +23,10 @@ public class HashIDTest {
 			fail("Should throw exception");
 		} catch (final RuntimeException ex) {
 		}
+	}
+
+	@Test
+	public void getHashRange() {
+		assertEquals(4, HashID.getHashRange().length);
 	}
 }

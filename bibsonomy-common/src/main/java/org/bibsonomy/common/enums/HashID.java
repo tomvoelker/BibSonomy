@@ -5,6 +5,7 @@ package org.bibsonomy.common.enums;
  * @version $Id$
  */
 public enum HashID {
+
 	SIM_HASH0(0),
 	SIM_HASH1(1),
 	SIM_HASH2(2),
@@ -12,7 +13,7 @@ public enum HashID {
 	SIM_HASH(SIM_HASH1),
 	INTRA_HASH(SIM_HASH2),  // TODO: check if this is the right hashing method and if so remove this comment
 	INTER_HASH(SIM_HASH);  // TODO: check if this is the right hashing method and if so remove tis comment
-	
+
 	private final int id;
 
 	private HashID(final int id) {
@@ -43,5 +44,12 @@ public enum HashID {
 		default:
 			throw new RuntimeException("SimHash " + simHash + " doesn't exist.");
 		}
+	}
+
+	/**
+	 * Returns an integer array that contains all ids.
+	 */
+	public static int[] getHashRange() {
+		return new int[] { 0, 1, 2, 3 };
 	}
 }
