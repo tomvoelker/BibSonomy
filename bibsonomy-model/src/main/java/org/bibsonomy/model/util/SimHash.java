@@ -33,21 +33,22 @@ public class SimHash {
 		}
 	}
 
-	
 	/**
 	 * Returns the corresponding simhash for a bookmark.
 	 */
+	// FIXME: HashID was meant for BibTexs only - we should create a new enum for Bookmarks
 	public static String getSimHash(final Bookmark bookmark, final HashID simHash) {
 		if (simHash.getId() == HashID.SIM_HASH0.getId()) {
+			// XXX: do we want to return simHash1 for SIM_HASH0?
 			return getSimHash1(bookmark);
 		} else if (simHash.getId() == HashID.SIM_HASH1.getId()) {
+			// XXX: do we want to return simHash2 for SIM_HASH1?
 			return getSimHash2(bookmark);
 		} else {
 			throw new RuntimeException("SimHash " + simHash.getId() + " doesn't exist.");
 		}
 	}
-	
-	
+
 	/**
 	 * Calculates the simHash0,1,2,3 for a bookmark, which consideres: url of a bookmark
 	 * Currently, all hashes for bookmark are equal
@@ -67,8 +68,7 @@ public class SimHash {
 	public static String getSimHash3(final Bookmark bookmark) {
 		return ResourceUtils.hash(bookmark.getUrl());
 	}
-	
-	
+
 	/**
 	 * Calculates the simHash0, which consideres: title, author, editor, year,
 	 * entrytype, journal, booktitle.
@@ -89,12 +89,11 @@ public class SimHash {
 			return ResourceUtils.hash(getNormalizedTitle(bibtex.getTitle()) + " " +
 					getNormalizedEditor(bibtex.getEditor())            + " " +
 					getNormalizedYear(bibtex.getYear()));				
-		} else {
-			// author set
-			return ResourceUtils.hash(getNormalizedTitle(bibtex.getTitle()) + " " + 
-					getNormalizedAuthor(bibtex.getAuthor())            + " " + 
-					getNormalizedYear(bibtex.getYear()));
 		}
+		// author set
+		return ResourceUtils.hash(getNormalizedTitle(bibtex.getTitle()) + " " + 
+				getNormalizedAuthor(bibtex.getAuthor())            + " " + 
+				getNormalizedYear(bibtex.getYear()));
 	}
 
 	/*
@@ -113,7 +112,6 @@ public class SimHash {
 
 	*/
 	public static String getSimHash2(final BibTex bibtex) {
-		// calculate an appropriate hash
 		return ResourceUtils.hash(StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(bibtex.getTitle())     + " " + 
 				StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(bibtex.getAuthor())    + " " + 
 				StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(bibtex.getEditor())    + " " + 
@@ -127,7 +125,7 @@ public class SimHash {
 	}
 
 	/**
-	 * Reproduces the behaviour of the former BibTex-model, where simhash3 was
+	 * Reproduces the behaviour of the former BibTex-model, where simHash3 was
 	 * always an empty string.
 	 */
 	public static String getSimHash3() {
