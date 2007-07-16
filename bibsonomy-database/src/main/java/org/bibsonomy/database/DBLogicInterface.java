@@ -33,7 +33,7 @@ public interface DBLogicInterface {
 	 * @param end
 	 * @return a set of users, an empty set else
 	 */
-	public abstract List<User> getUsers(String authUser, int start, int end);
+	public List<User> getUsers(String authUser, int start, int end);
 
 	/**
 	 * Returns all users who are members of the specified group
@@ -46,7 +46,7 @@ public interface DBLogicInterface {
 	 * @param end
 	 * @return a set of users, an empty set else
 	 */
-	public abstract List<User> getUsers(String authUser, String groupName, int start, int end);
+	public List<User> getUsers(String authUser, String groupName, int start, int end);
 
 	/**
 	 * Returns details about a specified user
@@ -56,7 +56,7 @@ public interface DBLogicInterface {
 	 *            name of the user we want to get details from
 	 * @return details about a named user, null else
 	 */
-	public abstract User getUserDetails(String authUserName, String userName);
+	public User getUserDetails(String authUserName, String userName);
 
 	/**
 	 * Returns a list of posts which can be filtered.
@@ -92,7 +92,7 @@ public interface DBLogicInterface {
 	 * @param end
 	 * @return a set of posts, an empty set else
 	 */
-	public abstract <T extends Resource> List<Post<T>> getPosts(String authUser, Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, int start, int end);
+	public <T extends Resource> List<Post<T>> getPosts(String authUser, Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, int start, int end);
 
 	/**
 	 * Returns details to a post. A post is uniquely identified by a hash of the
@@ -106,7 +106,7 @@ public interface DBLogicInterface {
 	 *            name of the post-owner
 	 * @return the post's details, null else
 	 */
-	public abstract Post<? extends Resource> getPostDetails(String authUser, String resourceHash, String userName);
+	public Post<? extends Resource> getPostDetails(String authUser, String resourceHash, String userName);
 
 	/**
 	 * Returns all groups of the system.
@@ -116,7 +116,7 @@ public interface DBLogicInterface {
 	 * @param start
 	 * @return a set of groups, an empty set else
 	 */
-	public abstract List<Group> getGroups(String authUser, int start, int end);
+	public List<Group> getGroups(String authUser, int start, int end);
 
 	/**
 	 * Returns details of one group.
@@ -125,7 +125,7 @@ public interface DBLogicInterface {
 	 * @param groupName
 	 * @return the group's details, null else
 	 */
-	public abstract Group getGroupDetails(String authUserName, String groupName);
+	public Group getGroupDetails(String authUserName, String groupName);
 
 	/**
 	 * Returns a list of tags which can be filtered.
@@ -145,7 +145,7 @@ public interface DBLogicInterface {
 	 * @param end
 	 * @return a set of tags, en empty set else
 	 */
-	public abstract List<Tag> getTags(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end);
+	public List<Tag> getTags(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end);
 
 	/**
 	 * Returns details about a tag. Those details are:
@@ -162,7 +162,7 @@ public interface DBLogicInterface {
 	 *            name of the tag
 	 * @return the tag's details, null else
 	 */
-	public abstract Tag getTagDetails(String authUserName, String tagName);
+	public Tag getTagDetails(String authUserName, String tagName);
 
 	/**
 	 * Validates a user's access.
@@ -173,7 +173,7 @@ public interface DBLogicInterface {
 	 *            apiKey
 	 * @return true if the user exists and has the given apiKey
 	 */
-	public abstract boolean validateUserAccess(String username, String apiKey);
+	public boolean validateUserAccess(String username, String apiKey);
 
 	/**
 	 * Checks if the given api key is valid.
@@ -182,7 +182,7 @@ public interface DBLogicInterface {
 	 *            the api key to check.
 	 * @return true if the key is valid, false else.
 	 */
-	public abstract boolean validateSoftwareKey(String apiKey);
+	public boolean validateSoftwareKey(String apiKey);
 
 	/**
 	 * Removes the given user.
@@ -190,7 +190,7 @@ public interface DBLogicInterface {
 	 * @param userName
 	 *            the user to delete
 	 */
-	public abstract void deleteUser(String userName);
+	public void deleteUser(String userName);
 
 	/**
 	 * Removes the given group.
@@ -198,7 +198,7 @@ public interface DBLogicInterface {
 	 * @param groupName
 	 *            the group to delete
 	 */
-	public abstract void deleteGroup(String groupName);
+	public void deleteGroup(String groupName);
 
 	/**
 	 * Removes an user from a group.
@@ -208,7 +208,7 @@ public interface DBLogicInterface {
 	 * @param userName
 	 *            the user to remove
 	 */
-	public abstract void removeUserFromGroup(String groupName, String userName);
+	public void removeUserFromGroup(String groupName, String userName);
 
 	/**
 	 * Removes the given post - identified by the connected resource's hash -
@@ -218,7 +218,7 @@ public interface DBLogicInterface {
 	 * @param resourceHash
 	 *            hash of the resource, which is connected to the post to delete
 	 */
-	public abstract void deletePost(String userName, String resourceHash);
+	public void deletePost(String userName, String resourceHash);
 
 	/**
 	 * Adds/updates a user in the database.
@@ -226,7 +226,7 @@ public interface DBLogicInterface {
 	 * @param user  the user to store
 	 * @param update  if true, an exception is thrown if the user does not exist. If false one is thrown if the user exists.
 	 */
-	public abstract void storeUser(String authUserName, User user, boolean update);
+	public void storeUser(String authUserName, User user, boolean update);
 
 	/**
 	 * Adds/updates a post in the database.
@@ -235,7 +235,7 @@ public interface DBLogicInterface {
 	 * @param post  the post to be postet
 	 * @param update  if true, an exception is thrown if the post does not exist. If false one is thrown if the post exists.
 	 */
-	public abstract <T extends Resource> void storePost(String userName, Post<T> post, boolean update);
+	public <T extends Resource> void storePost(String userName, Post<T> post, boolean update);
 
 	/**
 	 * Adds/updates a group in the database.
@@ -244,7 +244,7 @@ public interface DBLogicInterface {
 	 * @param group  the group to add
 	 * @param update  if true, an exception is thrown if the group does not exist. If false one is thrown if the group exists.
 	 */
-	public abstract void storeGroup(String authUserName, Group group, boolean update);
+	public void storeGroup(String authUserName, Group group, boolean update);
 
 	/**
 	 * Adds an existing user to an existing group.
@@ -252,5 +252,5 @@ public interface DBLogicInterface {
 	 * @param groupName  name of the existing group
 	 * @param user  user to add
 	 */
-	public abstract void addUserToGroup(String groupName, String userName);
+	public void addUserToGroup(String groupName, String userName);
 }
