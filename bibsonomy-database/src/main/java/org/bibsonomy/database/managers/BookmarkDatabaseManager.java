@@ -280,12 +280,11 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		try {
 			// Insert bookmark
 			this.insert("insertBookmark", param, session);
-			for (final int i : new int[] { 0, 1 }) {
-				final HashID simHash = HashID.getSimHash(i);
-				param.setRequestedSimHash(simHash);
-				param.setHash(SimHash.getSimHash(param.getResource(),simHash));
-				this.insertBookmarkHash(param, session);
-			}
+			// compute only a single simHash, as all simHashes are equal for bookmarks
+			final HashID simHash = HashID.getSimHash(0);
+			param.setRequestedSimHash(simHash);
+			param.setHash(SimHash.getSimHash(param.getResource(),simHash));
+			this.insertBookmarkHash(param, session);			
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
