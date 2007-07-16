@@ -27,7 +27,7 @@ public class GroupIDTest {
 		}
 
 		try {
-			assertEquals(null, GroupID.getSpecialGroup("hurz"));
+			GroupID.getSpecialGroup("hurz");
 			fail("Should throw IllegalArgumentException");
 		} catch (final IllegalArgumentException ex) {
 		}
