@@ -22,13 +22,13 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 
 	protected static final Logger log = Logger.getLogger(ChainElement.class);
 	protected final GeneralDatabaseManager generalDb;
-	private final ValidationUtils validationUtils;
+	private final ValidationUtils check;
 	/** The next element of the chain */
 	private ChainElement<L, P> next;
 
 	public ChainElement() {
 		this.generalDb = GeneralDatabaseManager.getInstance();
-		this.validationUtils = ValidationUtils.getInstance();
+		this.check = ValidationUtils.getInstance();
 		this.next = null;
 	}
 
@@ -43,11 +43,8 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 		if (this.canHandle(param)) {
 			log.debug(this.getClass().getSimpleName());
 			return this.handle(param, session);
-		} else {
-			if (this.next != null) {
-				return this.next.perform(param, session);
-			}
 		}
+		if (this.next != null) return this.next.perform(param, session);
 		throw new RuntimeException("Can't handle request.");
 	}
 
@@ -63,31 +60,31 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 
 	// FIXME: remove me!
 	protected boolean present(final String s) {
-		return this.validationUtils.present(s);
+		return this.check.present(s);
 	}
 
 	// FIXME: remove me!
-	protected boolean present(final Collection c) {
-		return this.validationUtils.present(c);
+	protected boolean present(final Collection<?> c) {
+		return this.check.present(c);
 	}
 
 	// FIXME: remove me!
 	protected boolean present(final Object o) {
-		return this.validationUtils.present(o);
+		return this.check.present(o);
 	}
 
 	// FIXME: remove me!
 	protected boolean present(final GroupID gid) {
-		return this.validationUtils.present(gid);
+		return this.check.present(gid);
 	}
 
 	// FIXME: remove me!
 	protected boolean presentValidGroupId(final int gid) {
-		return this.validationUtils.presentValidGroupId(gid);
+		return this.check.presentValidGroupId(gid);
 	}
 
 	// FIXME: remove me!
 	protected boolean nullOrEqual(final Object requested, final Object supported) {
-		return this.validationUtils.nullOrEqual(requested, supported);
+		return this.check.nullOrEqual(requested, supported);
 	}
 }

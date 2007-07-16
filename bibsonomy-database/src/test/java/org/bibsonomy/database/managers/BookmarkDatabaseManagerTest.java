@@ -3,20 +3,16 @@ package org.bibsonomy.database.managers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.testutil.DatabasePluginMock;
@@ -34,9 +30,9 @@ import org.junit.Test;
 public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
-	public void getBookmarkByTagNames() {		
+	public void getBookmarkByTagNames() {
 		List<Post<Bookmark>> posts = this.bookmarkDb.getBookmarkByTagNames(this.bookmarkParam, this.dbSession);
-		assertEquals(10, posts.size());		
+		assertEquals(10, posts.size());
 	}
 
 	@Test
@@ -93,7 +89,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	@Test
-	public void getBookmarkSearchCount() throws SQLException {
+	public void getBookmarkSearchCount() {
 		this.bookmarkParam.setSearch("test");
 		Integer count = -1;
 		count = this.bookmarkDb.getBookmarkSearchCount(this.bookmarkParam, this.dbSession);
@@ -101,7 +97,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		this.bookmarkParam.setUserName(null);
 		count = -1;
-		count = (Integer) this.bookmarkDb.getBookmarkSearchCount(this.bookmarkParam, this.dbSession);
+		count = this.bookmarkDb.getBookmarkSearchCount(this.bookmarkParam, this.dbSession);
 		assertTrue(count >= 0);
 	}
 
@@ -159,28 +155,24 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void deleteBookmark() {
 		this.bookmarkDb.deletePost(this.bookmarkParam.getRequestedUserName(), this.bookmarkParam.getHash(), this.dbSession);
 	}
-	
-	
-	
-	
+
 	@Test
 	public void storePost() {
 		final Post<Bookmark> toInsert = ModelUtils.generatePost(Bookmark.class);
 
 		try {
 			this.bookmarkDb.storePost(toInsert.getUser().getName(), toInsert, null, true, this.dbSession);
-			Assert.fail();
+			fail("Should throw a throwable");
 		} catch (Throwable t) {
-			Assert.assertTrue(t instanceof IllegalArgumentException);
+			assertTrue(t instanceof IllegalArgumentException);
 		}
-		
 		try {
-			this.bookmarkDb.storePost(toInsert.getUser().getName(), toInsert, "06aef6e5439298f27dc5aee82c4293d6", false, this.dbSession);			
-			Assert.fail();
+			this.bookmarkDb.storePost(toInsert.getUser().getName(), toInsert, "06aef6e5439298f27dc5aee82c4293d6", false, this.dbSession);
+			fail("Should throw a throwable");
 		} catch (Throwable t) {
-			Assert.assertTrue(t instanceof IllegalArgumentException);
+			assertTrue(t instanceof IllegalArgumentException);
 		}
-		
+
 		this.bookmarkDb.storePost(toInsert.getUser().getName(), toInsert, null, false, this.dbSession);
 		final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { ModelUtils.class.getName(), "hurz" }), "", null, 0, 50);
 		final List<Post<Bookmark>> posts = this.bookmarkDb.getPosts(param, this.dbSession);
@@ -201,8 +193,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.bookmarkDb.storePost(someBookmarkPost.getUser().getName(), someBookmarkPost, "e636edf2736cfc61897bf21039ffea1b", true, this.dbSession);
 		assertTrue(plugin.isOnBookmarkUpdate());
 	}
-	
-	
+
 	@Test
 	public void insertBookmarkLog() {
 		// FIXME
@@ -245,7 +236,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.bookmarkParam.setUserName("jaeschke");
 		assertEquals(2648964, this.bookmarkDb.getContentIDForBookmark(this.bookmarkParam, this.dbSession));
 	}
-	
+
 	@Test
 	public void getPosts() {
 		this.bookmarkParam.setHash("");

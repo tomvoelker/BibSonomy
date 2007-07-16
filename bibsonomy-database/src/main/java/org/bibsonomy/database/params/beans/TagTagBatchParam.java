@@ -35,11 +35,8 @@ public class TagTagBatchParam {
 	}
 
 	protected Integer getJobInteger() {
-		if (job == null) {
-			return null;
-		} else {
-			return job.ordinal();
-		}
+		if (job == null) return null;
+		return job.ordinal();
 	}
 
 	protected void setJobInteger(final Integer jobInteger) {

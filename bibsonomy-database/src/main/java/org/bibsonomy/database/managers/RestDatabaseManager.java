@@ -135,11 +135,11 @@ public class RestDatabaseManager implements DBLogicInterface {
 			if (resourceType == BibTex.class) {
 				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, authUser, grouping, groupingName, tags, hash, order, start, end);
 				// this is save because of RTTI-check of resourceType argument which is of class T
-				result = (List<Post<T>>) ((List) this.bibtexDBManager.getPosts(param, session));
+				result = ((List) this.bibtexDBManager.getPosts(param, session));
 			} else if (resourceType == Bookmark.class) {
 				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, authUser, grouping, groupingName, tags, hash, order, start, end);
 				// this is save because of RTTI-check of resourceType argument which is of class T
-				result = (List<Post<T>>) ((List) this.bookmarkDBManager.getPosts(param, session));
+				result = ((List) this.bookmarkDBManager.getPosts(param, session));
 			} else {
 				throw new UnsupportedResourceTypeException(resourceType.toString());
 			}
@@ -310,7 +310,7 @@ public class RestDatabaseManager implements DBLogicInterface {
 				}
 			} else {
 				if (update == true) {
-					errorMsg = "user " + existingUser.getName() + " does not exist";
+					errorMsg = "user " + user.getName() + " does not exist";
 				}
 			}
 			if (errorMsg != null) {
@@ -357,7 +357,7 @@ public class RestDatabaseManager implements DBLogicInterface {
 				throw new UnsupportedResourceTypeException(resourceClass.toString());
 			}
 		}
-		return (CrudableContent<T, GenericParam>) ((CrudableContent) man);
+		return ((CrudableContent) man);
 	}
 
 	/*

@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.testutil.ParamUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -14,6 +15,7 @@ import org.junit.Test;
  * @author Christian Schenk
  * @version $Id$
  */
+@Ignore
 public class PerfTest extends AbstractDatabaseManagerTest {
 
 	private static final Logger log = Logger.getLogger(PerfTest.class);
@@ -21,24 +23,16 @@ public class PerfTest extends AbstractDatabaseManagerTest {
 	/** This is used for the great switch statement in callMethod() */
 	private enum Method {
 		getBookmarkByTagNames, getBookmarkByTagNamesForUser, getBookmarkByConceptForUser, getBookmarkByUserFriends, getBookmarkForHomepage, getBookmarkPopular, getBookmarkByHash, getBookmarkByHashCount, getBookmarkByHashForUser, getBookmarkSearch, getBookmarkSearchCount, getBookmarkViewable, getBookmarkForGroup, getBookmarkForGroupCount, getBookmarkForGroupByTag, getBookmarkForUser, getBookmarkForUserCount
-	};
+	}
 
 	/**
 	 * Executes all methods we'd like to evaluate.
 	 */
-	// @Test
+	@Test
 	public void testPerf() {
 		for (final Method method : Method.values()) {
 			this.runPerfTest(method);
 		}
-	}
-
-	/**
-	 * We currently don't want to run these tests automatically but don't want
-	 * to break the maven build either.
-	 */
-	@Test
-	public void testDummy() {
 	}
 
 	/**

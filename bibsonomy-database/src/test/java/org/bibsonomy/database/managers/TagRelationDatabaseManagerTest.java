@@ -25,6 +25,7 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	private Tag subTag;
 	private Tag superTag;
 
+	@Override
 	@Before
 	public void setUp() {
 		super.setUp();

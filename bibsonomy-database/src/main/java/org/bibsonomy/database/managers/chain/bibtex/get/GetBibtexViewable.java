@@ -18,6 +18,8 @@ import org.bibsonomy.model.logic.Order;
  * @version $Id$
  */
 public class GetBibtexViewable extends BibTexChainElement {
+
+	@SuppressWarnings("hiding")
 	private static final Logger log = Logger.getLogger(GetBibtexViewable.class);
 
 	/**
@@ -40,11 +42,8 @@ public class GetBibtexViewable extends BibTexChainElement {
 		log.debug("groupId=" + groupId);
 		param.setGroupId(groupId);
 
-		if (present(param.getTagIndex()) == true) {
-			return this.db.getBibTexViewableByTag(param, session);	
-		} else {
-			return this.db.getBibTexViewable(param, session);
-		}
+		if (present(param.getTagIndex()) == true) return this.db.getBibTexViewableByTag(param, session);
+		return this.db.getBibTexViewable(param, session);
 	}
 
 	@Override

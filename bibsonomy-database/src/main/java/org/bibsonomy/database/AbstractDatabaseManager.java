@@ -27,10 +27,10 @@ public class AbstractDatabaseManager {
 	 *      session)
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T> List<T> queryForList(final String query, final Object param, final Class<T> type, final boolean ignoreException, final DBSession session) {
+	protected <T> List<T> queryForList(final String query, final Object param, @SuppressWarnings("unused") final Class<T> type, final boolean ignoreException, final DBSession session) {
 		return (List<T>) this.queryForAnything(query, param, QueryFor.LIST, ignoreException, session);
 	}
-	
+
 	protected <T> List<T> queryForList(final String query, final Object param, final Class<T> type, final DBSession session) {
 		return queryForList(query, param, type, false, session);
 	}
@@ -38,10 +38,12 @@ public class AbstractDatabaseManager {
 	/**
 	 * short form of queryForList without Type argument
 	 */
+	@SuppressWarnings("unchecked")
 	protected List queryForList(final String query, final Object param, final boolean ignoreException, final DBSession session) {
 		return queryForList(query, param, Object.class, ignoreException, session);
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	protected List queryForList(final String query, final Object param, final DBSession session) {
 		return queryForList(query, param, Object.class, false, session);
 	}
@@ -55,10 +57,10 @@ public class AbstractDatabaseManager {
 	 * cast.
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T> T queryForObject(final String query, final Object param, Class<T> type, final boolean ignoreException, final DBSession session) {
+	protected <T> T queryForObject(final String query, final Object param, @SuppressWarnings("unused") Class<T> type, final boolean ignoreException, final DBSession session) {
 		return (T) this.queryForAnything(query, param, QueryFor.OBJECT, ignoreException, session);
 	}
-	
+
 	protected <T> T queryForObject(final String query, final Object param, Class<T> type, final DBSession session) {
 		return this.queryForObject(query, param, type, false, session);
 	}
@@ -69,7 +71,7 @@ public class AbstractDatabaseManager {
 	protected Object queryForObject(final String query, final Object param, final boolean ignoreException, final DBSession session) {
 		return this.queryForAnything(query, param, QueryFor.OBJECT, ignoreException, session);
 	}
-	
+
 	protected Object queryForObject(final String query, final Object param, final DBSession session) {
 		return this.queryForAnything(query, param, QueryFor.OBJECT, false, session);
 	}
@@ -91,7 +93,7 @@ public class AbstractDatabaseManager {
 	protected void insert(final String query, final Object param, final boolean ignoreException, final DBSession session) {
 		this.insertUpdateDelete(query, param, StatementType.INSERT, ignoreException, session);
 	}
-	
+
 	protected void insert(final String query, final Object param, final DBSession session) {
 		this.insertUpdateDelete(query, param, StatementType.INSERT, false, session);
 	}
@@ -102,7 +104,7 @@ public class AbstractDatabaseManager {
 	protected void update(final String query, final Object param, final boolean ignoreException, final DBSession session) {
 		this.insertUpdateDelete(query, param, StatementType.UPDATE, ignoreException, session);
 	}
-	
+
 	protected void update(final String query, final Object param, final DBSession session) {
 		this.insertUpdateDelete(query, param, StatementType.UPDATE, false, session);
 	}
@@ -113,7 +115,7 @@ public class AbstractDatabaseManager {
 	protected void delete(final String query, final Object param, final boolean ignoreException, final DBSession session) {
 		this.insertUpdateDelete(query, param, StatementType.DELETE, ignoreException, session);
 	}
-	
+
 	protected void delete(final String query, final Object param, final DBSession session) {
 		this.insertUpdateDelete(query, param, StatementType.DELETE, false, session);
 	}

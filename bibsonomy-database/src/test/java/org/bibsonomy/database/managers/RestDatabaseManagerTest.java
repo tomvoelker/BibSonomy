@@ -62,6 +62,7 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		return dbl;
 	}
 
+	@Override
 	@Before
 	public void setUp() {
 		super.setUp();
@@ -82,6 +83,7 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.testUserNameSet.add(TEST_USER_NAME);
 	}
 
+	@Override
 	@After
 	public void tearDown() {
 		super.tearDown();
@@ -89,12 +91,12 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.taglist = null;
 		this.taglistfriend = null;
 	}
-	
+
 	private void assertList(final Set<String> checkUserNameOneOf, final Order checkOrder, final Set<String> checkTags, final String checkInterHash, final Set<Integer> mustBeInGroups, final Set<Integer> mustNotBeInGroups) {
-		for (final Post post : this.bibTexPostsList) {
+		for (final Post<BibTex> post : this.bibTexPostsList) {
 			log.debug("checking post with contentid " + post.getContentId());
 			assertTrue("contentid occured twice", alreadyFound.add(post.getContentId()));
-			
+
 			if (checkUserNameOneOf != null) {
 				assertTrue("userName test with " + post.getUser().getName(), checkUserNameOneOf.contains(post.getUser().getName()));
 			}

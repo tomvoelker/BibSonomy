@@ -2,7 +2,6 @@ package org.bibsonomy.testutil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 
 import org.bibsonomy.common.enums.ConstantID;
@@ -27,13 +26,6 @@ public class ParamUtils {
 
 	public static final String NOUSER_NAME = "this-user-doesnt-exist";
 	public static final String NOGROUP_NAME = "this-group-doesnt-exist";
-	private static final Date date;
-
-	static {
-		final Calendar cal = Calendar.getInstance();
-		cal.clear();
-		date = cal.getTime();
-	}
 
 	/**
 	 * The defaults for every parameter-object are set here.
@@ -46,9 +38,8 @@ public class ParamUtils {
 		param.setUserName("hotho");
 		param.setRequestedUserName("stumme");
 		param.setRequestedGroupName("kde");
-		//param.setDate(date);
 		// param.setCaseSensitiveTagNames(true);
-		param.addTagName("kassel");
+		param.addTagName("community");
 	}
 
 	/**

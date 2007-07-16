@@ -20,6 +20,7 @@ public class AbstractChainTest extends AbstractDatabaseManagerTest {
 	protected BibTexChain bibtexChain;
 	protected TagChain tagChain;
 
+	@Override
 	@Before
 	public void setUp() {
 		super.setUp();
@@ -28,6 +29,7 @@ public class AbstractChainTest extends AbstractDatabaseManagerTest {
 		this.tagChain = new TagChain();
 	}
 
+	@Override
 	@After
 	public void tearDown() {
 		super.tearDown();

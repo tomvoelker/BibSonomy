@@ -58,29 +58,28 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/** Return all tags for a given contentId */
-	public List<Tag> getTasByContendId(final TagParam param, final DBSession session) {
+	private List<Tag> getTasByContendId(final TagParam param, final DBSession session) {
 		// FIXME this query doesn't exist
 		// return this.queryForList("getTasByTagName", param, Tag.class, session);
 		return null;
 	}
 
-	public void updateTagTagInc(final TagParam param, final DBSession session) {
+	private void updateTagTagInc(final TagParam param, final DBSession session) {
 		// TODO not tested
 		this.update("updateTagTagInc", param, session);
 	}
 
-	public void updateTagTagDec(Tag tagFirst, Tag tagSecond, TagParam param, final DBSession session) {
+	private void updateTagTagDec(Tag tagFirst, Tag tagSecond, TagParam param, final DBSession session) {
 		param.setTag(tagFirst);
 		param.setTag(tagSecond);
 		this.update("updateTagTagDec", param, session);
 	}
 
-	public void updateTagDec(final Tag param, final DBSession session) {
-		// TODO not tested
-		this.update("updateTagDec", param, session);
+	private void updateTagDec(final String tagname, final DBSession session) {
+		this.update("updateTagDec", tagname, session);
 	}
 
-	public void insertTagTagBatch(final int contentId, final Iterable<Tag> tags, TagTagBatchParam.Job job, final DBSession session) {
+	private void insertTagTagBatch(final int contentId, final Iterable<Tag> tags, TagTagBatchParam.Job job, final DBSession session) {
 		final TagTagBatchParam batchParam = new TagTagBatchParam();
 		batchParam.setContentId(contentId);
 		batchParam.setTagList(TagDatabaseManager.tagsToString(tags));
@@ -88,7 +87,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		this.insertTagTagBatch(batchParam, session);
 	}
 
-	public void insertTagTagBatch(final TagTagBatchParam param, final DBSession session) {
+	private void insertTagTagBatch(final TagTagBatchParam param, final DBSession session) {
 		// TODO not tested
 		this.insert("insertTagTagBatch", param, session);
 	}
@@ -108,11 +107,6 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		this.delete("deleteTas", contentId, session);
 	}
 
-	public void insertLogTas(final TagParam param, final DBSession session) {
-		// TODO not tested
-		this.insert("insertLogTas", param, session);
-	}
-
 	public void deleteTags(final Post<?> post, final DBSession session) {
 		// get tags for this contentId
 		// FIXME param.getResource().setTags(getTasByContendId(param));
@@ -122,7 +116,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		// add these tags to list and decrease counter in tag table
 		for (final Tag tag : post.getTags()) {
 			// decrease counter in tag table
-			updateTagDec(tag, session);
+			updateTagDec(tag.getName(), session);
 		}
 
 		if (batchIt == true) {
@@ -190,14 +184,17 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 				// if there're too many tags, do it in a batch job
 				// FIXME: someone misused newContentId for the tasId.
 				// requestedContentId is the real new contentId here
-				insertTagTagBatch(param.getNewContentId(), param.getTags(), TagTagBatchParam.Job.DECREMENT, session);
+				this.insertTagTagBatch(param.getNewContentId(), param.getTags(), TagTagBatchParam.Job.DECREMENT, session);
 			}
-			insertTas(param, session);
+
+			this.insertTas(param, session);
+
 			for (final Tag tag : param.getTags()) {
 				this.tagRelDb.insertRelations(tag, param.getUserName(), session);				
 			}
-			for (final Tag tag1 : allTags) {
-				insertTag(tag1, session);
+
+			for (final Tag tag : allTags) {
+				this.insertTag(tag, session);
 				if (batchIt == false) {
 					throw new UnsupportedOperationException();
 					/* TODO: implement nonbatch-tagtag-inserts
@@ -208,6 +205,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 					}*/
 				}
 			}
+
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();

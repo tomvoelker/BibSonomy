@@ -81,10 +81,10 @@ public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.generalParam.setRequestedUserName("alexsandra");
 		assertEquals(true, this.generalDb.isSpammer(this.generalParam, this.dbSession));
 		// Default behaviour
-		this.generalParam.setRequestedUserName("");
-		assertEquals(null, this.generalDb.isSpammer(this.generalParam, this.dbSession)); // FIXME shouldn't be null
-		this.generalParam.setRequestedUserName(null);
-		assertEquals(false, this.generalDb.isSpammer(this.generalParam, this.dbSession));
+		for (final String requestedUserName : new String[] { "", " ", null }) {
+			this.generalParam.setRequestedUserName(requestedUserName);
+			assertEquals(false, this.generalDb.isSpammer(this.generalParam, this.dbSession));
+		}
 	}
 
 	@Test

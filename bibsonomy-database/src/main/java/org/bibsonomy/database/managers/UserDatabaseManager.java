@@ -10,6 +10,7 @@ import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.ExceptionUtils;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * Used to retrieve users from the database.
@@ -20,12 +21,13 @@ import org.bibsonomy.util.ExceptionUtils;
  * @version $Id$
  */
 public class UserDatabaseManager extends AbstractDatabaseManager {
-	private static final Logger log = Logger.getLogger(UserDatabaseManager.class);
 
-	/** Singleton */
+	private static final Logger log = Logger.getLogger(UserDatabaseManager.class);
 	private final static UserDatabaseManager singleton = new UserDatabaseManager();
+	private final ValidationUtils check;
 
 	private UserDatabaseManager() {
+		this.check = ValidationUtils.getInstance();
 	}
 
 	public static UserDatabaseManager getInstance() {
@@ -86,7 +88,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Delete a user.
 	 */
-	public void deleteUser(final String userName, final DBSession session) {
+	public void deleteUser(@SuppressWarnings("unused") final String userName, @SuppressWarnings("unused") final DBSession session) {
 		// TODO this should also delete tas entries
 		throw new UnsupportedOperationException("Not implemented");
 	}
@@ -98,13 +100,9 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @return boolean true if the Api key is correct, otherwise false
 	 */
 	public boolean validateUserAccess(final String username, final String apiKey, final DBSession session) {
-		if (apiKey == null || "".equals(apiKey.trim())) return false;
-		if (username == null || "".equals(username.trim())) return false;
+		if (this.check.present(apiKey) == false || this.check.present(username) == false) return false;
 		final String currentApiKey = this.getApiKeyForUser(username, session);
-		if (currentApiKey == null) {
-			return false;
-		} else {
-			return apiKey.equals(currentApiKey);
-		}
+		if (currentApiKey == null) return false;
+		return apiKey.equals(currentApiKey);
 	}
 }

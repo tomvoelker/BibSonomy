@@ -28,7 +28,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	private static enum Relation {
 		SUPER,
 		SUB
-	};
+	}
 
 	private TagRelationDatabaseManager() {
 		this.generalDb = GeneralDatabaseManager.getInstance();
