@@ -1,4 +1,4 @@
-package org.bibsonomy.model;
+package org.bibsonomy.model.extra;
 
 import java.net.URL;
 import java.util.Date;
