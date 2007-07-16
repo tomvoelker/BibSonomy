@@ -22,22 +22,20 @@ public class Logging extends AbstractDatabasePlugin {
 
 	@Override
 	public Runnable onBibTexInsert(final int contentId, final DBSession session) {
+		return this.buildOnBibTexInsertAndDelete(contentId, session);
+	}
+
+	@Override
+	public Runnable onBibTexDelete(final int contentId, final DBSession session) {
+		return this.buildOnBibTexInsertAndDelete(contentId, session);
+	}
+
+	private final Runnable buildOnBibTexInsertAndDelete(final int contentId, final DBSession session) {
 		return new Runnable() {
 			public void run() {
 				final BibTexParam param = new BibTexParam();
 				param.setRequestedContentId(contentId);
 				insert("logBibTex", param, session);
-			}
-		};
-	}
-
-	@Override
-	public Runnable onBibTexDelete(final int contentId, final DBSession session) {
-		return new Runnable() {
-			public void run() {
-				final BibTexParam param = new BibTexParam();
-				param.setRequestedContentId(contentId);
-				insert("logBibTexDelete", param, session);
 			}
 		};
 	}
@@ -56,22 +54,20 @@ public class Logging extends AbstractDatabasePlugin {
 
 	@Override
 	public Runnable onBookmarkInsert(final int contentId, final DBSession session) {
+		return this.buildOnBookmarkInsertAndDelete(contentId, session);
+	}
+
+	@Override
+	public Runnable onBookmarkDelete(final int contentId, final DBSession session) {
+		return this.buildOnBookmarkInsertAndDelete(contentId, session);
+	}
+
+	private final Runnable buildOnBookmarkInsertAndDelete(final int contentId, final DBSession session) {
 		return new Runnable() {
 			public void run() {
 				final BookmarkParam param = new BookmarkParam();
 				param.setRequestedContentId(contentId);
 				insert("logBookmark", param, session);
-			}
-		};
-	}
-
-	@Override
-	public Runnable onBookmarkDelete(final int contentId, final DBSession session) {
-		return new Runnable() {
-			public void run() {
-				final BookmarkParam param = new BookmarkParam();
-				param.setRequestedContentId(contentId);
-				insert("logBookmarkDelete", param, session);
 			}
 		};
 	}
@@ -116,16 +112,16 @@ public class Logging extends AbstractDatabasePlugin {
 	public Runnable onDeleteUserfromGroup(final String userName, final int groupId, final DBSession session) {
 		return new Runnable() {
 			public void run() {
-				final GroupParam gParam = new GroupParam();
+				final GroupParam groupParam = new GroupParam();
 				final BibTexParam bibParam = new BibTexParam();
 				final BookmarkParam bookParam = new BookmarkParam();
-				gParam.setGroupId(groupId);
-				gParam.setUserName(userName);
+				groupParam.setGroupId(groupId);
+				groupParam.setUserName(userName);
 				bibParam.setGroupId(groupId);
 				bibParam.setUserName(userName);
 				bookParam.setGroupId(groupId);
 				bookParam.setUserName(userName);
-				insert("logGroupDeleteUser", gParam, session);
+				insert("logGroupDeleteUser", groupParam, session);
 				insert("logBibtexDeleteUserfromGroup", bibParam, session);
 				insert("logBookmarkDeleteUserfromGroup", bookParam, session);
 			}
