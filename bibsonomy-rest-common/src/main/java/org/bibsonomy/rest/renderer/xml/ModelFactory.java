@@ -9,6 +9,7 @@ import static org.bibsonomy.model.util.ModelValidationUtils.checkUser;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -132,7 +133,8 @@ public class ModelFactory {
 			bibtex.setNumber(xmlBibtex.getNumber());
 			bibtex.setOrganization(xmlBibtex.getOrganization());
 			bibtex.setPages(xmlBibtex.getPages());
-			bibtex.setSchool(xmlBibtex.getPublisher());
+			bibtex.setPublisher(xmlBibtex.getPublisher());
+			bibtex.setSchool(xmlBibtex.getSchool());
 			if (xmlBibtex.getScraperId() != null) bibtex.setScraperId(xmlBibtex.getScraperId().intValue());
 			bibtex.setSeries(xmlBibtex.getSeries());
 			bibtex.setTitle(xmlBibtex.getTitle());
@@ -149,9 +151,20 @@ public class ModelFactory {
 
 			final Bookmark bookmark = new Bookmark();
 			bookmark.setIntraHash(xmlBookmark.getIntrahash());
+			bookmark.setTitle(xmlBookmark.getTitle());
 			bookmark.setUrl(xmlBookmark.getUrl());
 
 			post.setResource(bookmark);
+		}
+		if (xmlPost.getGroup() != null) {
+			post.setGroups(new ArrayList<Group>());
+			for (final GroupType xmlGroup : xmlPost.getGroup()) {
+				checkGroup(xmlGroup);
+				final Group group = new Group();
+				group.setDescription(xmlGroup.getDescription());
+				group.setName(xmlGroup.getName());
+				post.getGroups().add(group);
+			}
 		}
 
 		return post;
