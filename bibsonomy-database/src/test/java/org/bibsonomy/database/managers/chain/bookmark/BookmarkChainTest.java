@@ -6,6 +6,9 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.AbstractChainTest;
 import org.bibsonomy.database.managers.chain.FirstChainElement;
+import org.bibsonomy.database.params.BookmarkParam;
+import org.bibsonomy.model.Bookmark;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -14,9 +17,10 @@ import org.junit.Test;
  * @author Dominik Benz
  * @version $Id$
  */
+@Ignore
 public class BookmarkChainTest extends AbstractChainTest {
 
-	List<FirstChainElement> chains = new LinkedList<FirstChainElement>();
+	List<FirstChainElement<Bookmark, BookmarkParam>> chains = new LinkedList<FirstChainElement<Bookmark, BookmarkParam>>();
 	String authUser="grahl";
 	GroupingEntity grouping=GroupingEntity.USER;
 	String groupingName="grahl";
@@ -40,13 +44,5 @@ public class BookmarkChainTest extends AbstractChainTest {
 				
 			}
 		}*/
-	}
-	
-	/**
-	 * FIXME dummy method
-	 */
-	@Test
-	public void GetBookmarksForUser() {
-		
 	}
 }
