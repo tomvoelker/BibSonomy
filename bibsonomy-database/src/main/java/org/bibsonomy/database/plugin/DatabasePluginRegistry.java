@@ -3,6 +3,7 @@ package org.bibsonomy.database.plugin;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bibsonomy.database.plugin.plugins.BibTexExtra;
 import org.bibsonomy.database.plugin.plugins.Logging;
 import org.bibsonomy.database.util.DBSession;
 
@@ -29,6 +30,7 @@ public class DatabasePluginRegistry {
 
 		// XXX: shouldn't be wired statically...
 		this.add(new Logging());
+		this.add(new BibTexExtra());
 	}
 
 	public static DatabasePluginRegistry getInstance() {
@@ -62,6 +64,12 @@ public class DatabasePluginRegistry {
 	public void onBibTexInsert(final int contentId, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
 			this.executeRunnable(plugin.onBibTexInsert(contentId, session));
+		}
+	}
+
+	public void onBibTexDelete(final int contentId, final DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			this.executeRunnable(plugin.onBibTexDelete(contentId, session));
 		}
 	}
 

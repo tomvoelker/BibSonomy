@@ -21,14 +21,16 @@ import org.junit.Test;
 public class DatabasePluginMock extends AbstractDatabasePlugin {
 
 	private boolean onBibTexInsert;
+	private boolean onBibTexDelete;
 	private boolean onBibTexUpdate;
-	
+
 	private boolean onBookmarkInsert;
 	private boolean onBookmarkUpdate;
-	
+
 	private boolean onTagRelationDelete;
 
 	public DatabasePluginMock() {
+		// make sure that all fields are initialized with "false"
 		try {
 			for (final Field field : this.getClass().getDeclaredFields()) {
 				field.setBoolean(this, false);
@@ -46,11 +48,17 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 		}
 	}
 
-	/*@Override
+	@Override
 	public Runnable onBibTexInsert(final int contentId, final DBSession session) {
 		this.onBibTexInsert = true;
 		return null;
-	}*/
+	}
+
+	@Override
+	public Runnable onBibTexDelete(int contentId, DBSession session) {
+		this.onBibTexDelete = true;
+		return null;
+	}
 
 	@Override
 	public Runnable onBibTexUpdate(final int newContentId, final int contentId, final DBSession session) {
@@ -58,7 +66,7 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 		this.onBibTexUpdate = true;
 		return null;
 	}
-	
+
 	@Override
 	public Runnable onBookmarkInsert(final int contentId, final DBSession session) {
 		this.onBookmarkInsert = true;
@@ -71,7 +79,6 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 		this.onBookmarkUpdate = true;
 		return null;
 	}
-	
 
 	@Override
 	public Runnable onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
@@ -81,6 +88,10 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 
 	public boolean isOnBibTexInsert() {
 		return this.onBibTexInsert;
+	}
+
+	public boolean isOnBibTexDelete() {
+		return this.onBibTexDelete;
 	}
 
 	public boolean isOnBibTexUpdate() {
@@ -95,7 +106,6 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 		return this.onBookmarkUpdate;
 	}
 
-	
 	public boolean isOnTagRelationDelete() {
 		return this.onTagRelationDelete;
 	}
