@@ -53,8 +53,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * Can be used to start a query that retrieves a list of bookmarks.
 	 */
 	@SuppressWarnings("unchecked")
-	protected List<Post<Bookmark>> bookmarkList(final String query, final BookmarkParam param, final boolean test, final DBSession session) {
-		return (List<Post<Bookmark>>) queryForList(query, param, session);
+	protected List<Post<Bookmark>> bookmarkList(final String query, final BookmarkParam param, final DBSession session) {
+		return queryForList(query, param, session);
 	}
 
 	/**
@@ -66,7 +66,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * the given group and which have all of the given tags attached. 
 	 */
 	public List<Post<Bookmark>> getBookmarkByTagNames(final BookmarkParam param, final DBSession session) {
-		return this.bookmarkList("getBookmarkByTagNames", param,true, session);
+		return this.bookmarkList("getBookmarkByTagNames", param, session);
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 */
 	public List<Post<Bookmark>> getBookmarkByTagNamesForUser(final BookmarkParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
-		return this.bookmarkList("getBookmarkByTagNamesForUser", param, true, session);
+		return this.bookmarkList("getBookmarkByTagNamesForUser", param, session);
 	}
 
 	/**
@@ -102,7 +102,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 */
 	public List<Post<Bookmark>> getBookmarkByConceptForUser(final BookmarkParam param, final DBSession session) {
 		DatabaseUtils.setGroups(this.generalDb, param, session);
-		return this.bookmarkList("getBookmarkByConceptForUser", param, true, session);
+		return this.bookmarkList("getBookmarkByConceptForUser", param, session);
 	}
 
 	/**
@@ -114,7 +114,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	public List<Post<Bookmark>> getBookmarkByUserFriends(final BookmarkParam param, final DBSession session) {
 		// groupType must be set to friends
 		param.setGroupType(GroupID.FRIENDS);
-		return this.bookmarkList("getBookmarkByUserFriends", param, true, session);
+		return this.bookmarkList("getBookmarkByUserFriends", param, session);
 	}
 
 	/**
@@ -125,7 +125,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	public List<Post<Bookmark>> getBookmarkForHomepage(final BookmarkParam param, final DBSession session) {
 		param.setLimit(15);
 		param.setOffset(0);
-		return this.bookmarkList("getBookmarkForHomepage", param, true, session);
+		return this.bookmarkList("getBookmarkForHomepage", param, session);
 	}
 
 	/**
@@ -134,7 +134,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * separate temporary tables which are filled by an external script.
 	 */
 	public List<Post<Bookmark>> getBookmarkPopular(final BookmarkParam param, final DBSession session) {
-		return this.bookmarkList("getBookmarkPopular", param, true, session);
+		return this.bookmarkList("getBookmarkPopular", param, session);
 	}
 
 	/**
@@ -142,7 +142,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * the given hash. Retrieves only public bookmarks!
 	 */
 	public List<Post<Bookmark>> getBookmarkByHash(final BookmarkParam param, final DBSession session) {
-		return this.bookmarkList("getBookmarkByHash", param, true, session);
+		return this.bookmarkList("getBookmarkByHash", param, session);
 	}
 
 	/**
@@ -159,7 +159,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 */
 	public List<Post<Bookmark>> getBookmarkByHashForUser(final BookmarkParam param, final DBSession session) {
 		DatabaseUtils.setGroups(this.generalDb, param, session);
-		return this.bookmarkList("getBookmarkByHashForUser", param, true, session);
+		return this.bookmarkList("getBookmarkByHashForUser", param, session);
 	}
 
 	public List<Post<Bookmark>> getBookmarkHashForUser(final String loginUserName, final String interHash, final String requestedUserName, final DBSession session) {
@@ -190,7 +190,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * searched. Otherwise all (public) posts are searched.
 	 */
 	public List<Post<Bookmark>> getBookmarkSearch(final BookmarkParam param, final DBSession session) {
-		return this.bookmarkList("getBookmarkSearch", param, true, session);
+		return this.bookmarkList("getBookmarkSearch", param, session);
 	}
 
 	/**
@@ -206,7 +206,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * Prepares queries to retrieve posts which are set viewable to group.
 	 */
 	public List<Post<Bookmark>> getBookmarkViewable(final BookmarkParam param, final DBSession session) {
-		return this.bookmarkList("getBookmarkViewable", param, true, session);
+		return this.bookmarkList("getBookmarkViewable", param, session);
 	}
 
 	/**
@@ -223,7 +223,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 */
 	public List<Post<Bookmark>> getBookmarkForGroup(final BookmarkParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
-		return this.bookmarkList("getBookmarkForGroup", param, true, session);
+		return this.bookmarkList("getBookmarkForGroup", param, session);
 	}
 
 	/**
@@ -245,7 +245,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 */
 	public List<Post<Bookmark>> getBookmarkForGroupByTag(final BookmarkParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
-		return this.bookmarkList("getBookmarkForGroupByTag", param, true, session);
+		return this.bookmarkList("getBookmarkForGroupByTag", param, session);
 	}
 
 	/**
@@ -259,7 +259,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 */
 	public List<Post<Bookmark>> getBookmarkForUser(final BookmarkParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
-		return this.bookmarkList("getBookmarkForUser", param, true, session);
+		return this.bookmarkList("getBookmarkForUser", param, session);
 	}
 
 	/**
@@ -269,7 +269,6 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		return this.queryForObject("getBookmarkForUserCount", param, Integer.class, session);
 	}
-
 
 	/**
 	 * Inserts a bookmark into the database.
@@ -409,7 +408,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 			if ((isBookmarkInDb != null) && (isBookmarkInDb.size() > 0)) {
 				update = true;
 				// Bookmark entry DOES EXIST for this user -> delete old Bookmark post
-				final Post oldBookmarkPost = isBookmarkInDb.get(0);
+				final Post<?> oldBookmarkPost = isBookmarkInDb.get(0);
 				this.plugins.onBookmarkUpdate(post.getContentId(), oldBookmarkPost.getContentId(), session);
 				this.deletePost(userName, oldBookmarkPost.getResource().getIntraHash(), session);
 			} else {
