@@ -28,17 +28,15 @@ import org.bibsonomy.model.util.SimHash;
  * @version $Id$
  */
 public class BookmarkDatabaseManager extends AbstractDatabaseManager implements CrudableContent<Bookmark, BookmarkParam> {
+
 	private static final Logger log = Logger.getLogger(BookmarkDatabaseManager.class);
 	
-	/** Singleton */
 	private final static BookmarkDatabaseManager singleton = new BookmarkDatabaseManager();
 	private final GeneralDatabaseManager generalDb;
 	private final TagDatabaseManager tagDb;
 	private final DatabasePluginRegistry plugins;
 	private static final BookmarkChain chain = new BookmarkChain();
-	
-	
-	
+
 	private BookmarkDatabaseManager() {
 		this.generalDb = GeneralDatabaseManager.getInstance();
 		this.tagDb = TagDatabaseManager.getInstance();

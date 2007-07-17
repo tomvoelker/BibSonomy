@@ -394,7 +394,6 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	private void postDuplicate(final BibTexParam param, final String hash) {
 		param.setHash(hash);
 		final Post<BibTex> someBibTexPost = this.bibTexDb.getBibTexByHash(param, this.dbSession).get(0);
-		System.out.println(someBibTexPost.getGroups().get(0).getGroupId() + " - " + someBibTexPost.getGroups().size());
 		this.bibTexDb.storePost(someBibTexPost.getUser().getName(), someBibTexPost, hash, true, this.dbSession);
 	}
 

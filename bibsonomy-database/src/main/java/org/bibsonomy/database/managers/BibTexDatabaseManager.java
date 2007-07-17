@@ -32,7 +32,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 
 	private static final Logger log = Logger.getLogger(BibTexDatabaseManager.class);
 
-	private final static BibTexDatabaseManager singleton = new BibTexDatabaseManager();
+	private static final BibTexDatabaseManager singleton = new BibTexDatabaseManager();
 	private final GeneralDatabaseManager generalDb;
 	private final TagDatabaseManager tagDb;
 	private final DatabasePluginRegistry plugins;

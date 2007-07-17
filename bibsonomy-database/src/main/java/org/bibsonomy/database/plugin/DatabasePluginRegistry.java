@@ -18,7 +18,7 @@ import org.bibsonomy.database.util.DBSession;
  */
 public class DatabasePluginRegistry {
 
-	private final static DatabasePluginRegistry singleton = new DatabasePluginRegistry();
+	private static final DatabasePluginRegistry singleton = new DatabasePluginRegistry();
 	/** Holds all plugins */
 	private final Map<String, DatabasePlugin> plugins;
 	/** Runs the runnable returned by plugins */

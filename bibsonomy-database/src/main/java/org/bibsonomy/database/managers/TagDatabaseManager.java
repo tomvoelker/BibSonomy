@@ -8,9 +8,9 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.beans.TagTagBatchParam;
+import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
-import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
@@ -25,8 +25,7 @@ import org.bibsonomy.model.Tag;
  */
 public class TagDatabaseManager extends AbstractDatabaseManager {
 
-	/** Singleton */
-	private final static TagDatabaseManager singleton = new TagDatabaseManager();
+	private static final TagDatabaseManager singleton = new TagDatabaseManager();
 	private final GeneralDatabaseManager generalDb;
 	private final TagRelationDatabaseManager tagRelDb;
 	/**
