@@ -20,7 +20,7 @@ import org.bibsonomy.testutil.ModelUtils;
 import org.junit.Test;
 
 /**
- * Tests related to BibTex.
+ * Tests related to BibTex or Bookmarks... who knows ;)
  * 
  * @author Miranda Grahl
  * @author Jens Illig
@@ -31,8 +31,8 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getBookmarkByTagNames() {
-		List<Post<Bookmark>> posts = this.bookmarkDb.getBookmarkByTagNames(this.bookmarkParam, this.dbSession);
-		assertEquals(10, posts.size());
+		final List<Post<Bookmark>> posts = this.bookmarkDb.getBookmarkByTagNames(this.bookmarkParam, this.dbSession);
+		assertEquals(9, posts.size());
 	}
 
 	@Test
@@ -241,6 +241,6 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getPosts() {
 		this.bookmarkParam.setHash("");
 		final List<Post<Bookmark>> posts = this.bookmarkDb.getPosts(this.bookmarkParam, this.dbSession);
-		assertEquals(this.bookmarkParam.getLimit(), posts.size());
+		assertEquals(9, posts.size());
 	}
 }
