@@ -1,5 +1,9 @@
 package org.bibsonomy.rest.client;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -38,8 +42,7 @@ public class RestLogic implements LogicInterface {
 	private final String authUserName;
 
 	public RestLogic(final String username, final String apiKey, final String apiURL) {
-		// FIXME: should be "this(username, apiKey)" instead?
-		this(apiKey, apiURL);
+		this(username, apiKey);
 		this.bibsonomy.setApiURL(apiURL);
 	}
 
