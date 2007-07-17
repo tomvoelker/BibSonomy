@@ -87,9 +87,7 @@
 
 	<!-- noch an TagParam anpassen für das Einfügen von Bookmark bzw Bibtex Objekten -->
 	<insert id="insertTag" parameterClass="tag">
-		INSERT INTO tags (tag_name, tag_ctr)
-		VALUES (#name#,1)
-		ON DUPLICATE KEY UPDATE tag_ctr = tag_ctr+1
+		INSERT INTO tags (tag_name, tag_ctr) VALUES (#name#, 1) ON DUPLICATE KEY UPDATE tag_ctr = tag_ctr + 1
 	</insert>
 
 	<!-- FIXME: this looks weird
@@ -103,5 +101,9 @@
 	<insert id="insertTagTagBatch" parameterClass="tagTagBatchParam">
 		INSERT INTO tagtag_batch (content_id, tags, toinc) VALUES (#contentId#, #tagList#, #jobInteger#)
 	</insert>
+
+	<update id="updateTagDec" parameterClass="string">
+		UPDATE tags SET tag_ctr = tag_ctr - 1 WHERE tag_name = #tagName#
+	</update>
 
 </sqlMap>
