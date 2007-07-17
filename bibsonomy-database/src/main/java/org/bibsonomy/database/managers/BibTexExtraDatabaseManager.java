@@ -7,7 +7,9 @@ import java.util.List;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.util.DBSession;
-import org.bibsonomy.model.BibTexExtra;
+import org.bibsonomy.model.extra.BibTexExtra;
+import org.bibsonomy.model.extra.ExtendedFields;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author Christian Schenk
@@ -17,8 +19,12 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 
 	private final static BibTexExtraDatabaseManager singleton = new BibTexExtraDatabaseManager();
 	private final BibTexDatabaseManager bibtexDb = BibTexDatabaseManager.getInstance();
+	private final ValidationUtils check;
+	/** Denotes whether documents are public, i.e. everybody sees everything */
+	private final boolean PUBLIC_DOCUMENTS = false;
 
 	private BibTexExtraDatabaseManager() {
+		this.check = ValidationUtils.getInstance();
 	}
 
 	public static BibTexExtraDatabaseManager getInstance() {
@@ -33,31 +39,28 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	public void createURL(final String hash, final String username, final String url, final String text, final DBSession session) {
-		final BibTexExtraParam param = this.buildParam(hash, username, url, text, null, session);
+		final BibTexExtraParam param = this.buildURLParam(hash, username, url, text, session);
 		this.insert("insertBibTexExtraURL", param, session);
 	}
 
 	public void deleteURL(final String hash, final String username, final String url, final DBSession session) {
-		final BibTexExtraParam param = this.buildParam(hash, username, url, null, null, session);
+		final BibTexExtraParam param = this.buildURLParam(hash, username, url, null, session);
 		this.delete("deleteBibTexExtraURL", param, session);
 	}
 
-	public String getBibTexPrivnoteForUser(final String hash, final String username, final DBSession session) {
-		final BibTexExtraParam param = new BibTexExtraParam();
-		param.setHash(hash);
-		param.setUserName(username);
-		return this.queryForObject("getBibTexPrivnoteForUser", param, String.class, session);
+	/**
+	 * Doesn't delete <em>all</em> URLs, but only those for the resource with
+	 * the given hash.
+	 */
+	public void deleteAllURLs(final int contentId, final DBSession session) {
+		this.delete("deleteAllBibTexExtraURLs", contentId, session);
 	}
 
-	public void updateBibTexPrivnoteForUser(final String hash, final String username, final String note, final DBSession session) {
-		final BibTexExtraParam param = new BibTexExtraParam();
-		param.setHash(hash);
-		param.setUserName(username);
-		param.getResource().setNote(note);
-		this.update("updateBibTexPrivnoteForUser", param, session);
+	public void updateURL(final int contentId, final int newContentId, final DBSession session) {
+		this.update("updateBibTexURL", this.buildContentIdParam(contentId, newContentId), session);
 	}
 
-	private BibTexExtraParam buildParam(final String hash, final String username, final String url, final String text, final String note, final DBSession session) {
+	private BibTexExtraParam buildURLParam(final String hash, final String username, final String url, final String text, final DBSession session) {
 		final int contentId = this.bibtexDb.getContentIdForBibTex(hash, username, session);
 		final BibTexExtraParam param = new BibTexExtraParam();
 		param.setRequestedContentId(contentId);
@@ -67,7 +70,80 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 			throw new RuntimeException(ex);
 		}
 		param.getBibtexExtra().setText(text);
+		return param;
+	}
+
+	public String getBibTexPrivnoteForUser(final String hash, final String username, final DBSession session) {
+		final BibTexExtraParam param = this.buildPrivnoteParam(hash, username, null);
+		return this.queryForObject("getBibTexPrivnoteForUser", param, String.class, session);
+	}
+
+	public void updateBibTexPrivnoteForUser(final String hash, final String username, final String note, final DBSession session) {
+		final BibTexExtraParam param = this.buildPrivnoteParam(hash, username, note);
+		this.update("updateBibTexPrivnoteForUser", param, session);
+	}
+
+	private BibTexExtraParam buildPrivnoteParam(final String hash, final String username, final String note) {
+		final BibTexExtraParam param = new BibTexExtraParam();
+		param.setHash(hash);
+		param.setUserName(username);
 		param.getResource().setNote(note);
 		return param;
+	}
+
+	/**
+	 * Returns the filename for the document with the given hash.
+	 */
+	public String getDocumentByHash(final String hash, final DBSession session) {
+		return this.getDocumentByHashAndUser(hash, null, session);
+	}
+
+	/**
+	 * Returns the filename for the document with the given hash and username.
+	 */
+	public String getDocumentByHashAndUser(final String hash, final String username, final DBSession session) {
+		if (this.check.present(hash) == false) throw new RuntimeException("Hash must be present.");
+		// if all documents are public -> return them
+		if (this.PUBLIC_DOCUMENTS) return this.queryForObject("getDocumentByHash", hash, String.class, session);
+		// if documents aren't public we need a username and return the document
+		if (this.check.present(username) == false) throw new RuntimeException("Username must be present.");
+		final BibTexExtraParam param = new BibTexExtraParam();
+		param.setHash(hash);
+		param.setUserName(username);
+		return this.queryForObject("getDocumentByHashAndUser", param, String.class, session);
+	}
+
+	public void deleteDocument(final int contentId, final DBSession session) {
+		this.delete("deleteDocument", contentId, session);
+	}
+
+	public void updateDocument(final int contentId, final int newContentId, final DBSession session) {
+		this.delete("updateDocument", this.buildContentIdParam(contentId, newContentId), session);
+	}
+
+	public List<ExtendedFields> getExtendedFields(final String hash, final String username, final DBSession session) {
+		final BibTexExtraParam param = new BibTexExtraParam();
+		param.setHash(hash);
+		param.setUserName(username);
+		return this.queryForList("getExtendedFields", param, ExtendedFields.class, session);
+	}
+
+	public void updateExtendedFieldsData(final int contentId, final int newContentId, final DBSession session) {
+		this.update("updateExtendedFieldsData", this.buildContentIdParam(contentId, newContentId), session);
+	}
+
+	public void deleteExtendedFieldsData(final int contentId, final DBSession session) {
+		this.delete("deleteExtendedFieldsData", contentId, session);
+	}
+
+	private BibTexExtraParam buildContentIdParam(final int contentId, final int newContentId) {
+		final BibTexExtraParam param = new BibTexExtraParam();
+		param.setNewContentId(newContentId);
+		param.setRequestedContentId(contentId);
+		return param;
+	}
+
+	public void deleteCollector(final int contentId, final DBSession session) {
+		this.delete("deleteBibTexCollector", contentId, session);
 	}
 }

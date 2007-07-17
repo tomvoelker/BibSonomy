@@ -6,7 +6,7 @@
 	<select id="getBibTexExtraURL" resultMap="BibTexExtraCommon.bibtexExtraURL" parameterClass="bibtexExtraParam">
 		SELECT u.url, u.text, u.date
 		FROM bibtexurls u
-		JOIN bibtex b ON u.content_id = b.content_id
+		     JOIN bibtex b ON u.content_id = b.content_id
 		WHERE b.simhash$simHash$ = #hash#
 		      AND b.user_name = #userName#
 		ORDER BY u.date DESC
@@ -16,6 +16,14 @@
 		INSERT INTO bibtexurls (url, text, content_id)
 		VALUES (#bibtexExtra.url#, #bibtexExtra.text#, #requestedContentId#)
 	</insert>
+
+	<update id="updateBibTexURL" parameterClass="bibtexExtraParam">
+		UPDATE bibtexurls SET content_id = #newContentId# WHERE content_id = #requestedContentId#
+	</update>
+
+	<delete id="deleteAllBibTexExtraURLs" parameterClass="int">
+		DELETE FROM bibtexurls WHERE content_id = #requestedContentId#
+	</delete>
 
 	<delete id="deleteBibTexExtraURL" parameterClass="bibtexExtraParam">
 		DELETE FROM bibtexurls WHERE content_id = #requestedContentId# AND url = #bibtexExtra.url#
@@ -29,5 +37,42 @@
 		UPDATE bibtex SET privnote = #resource.note#
 		WHERE user_name = #userName# AND simhash$simHash$ = #hash#
 	</update>
+
+	<select id="getDocumentByHash" resultClass="string" parameterClass="string">
+		SELECT name FROM document WHERE hash = #hash#
+	</select>
+
+	<select id="getDocumentByHashAndUser" resultClass="string" parameterClass="bibtexExtraParam">
+		SELECT name FROM document WHERE hash = #hash# AND user_name = #userName#
+	</select>
+
+	<update id="updateDocument" parameterClass="bibtexExtraParam">
+		UPDATE document SET content_id = #newContentId# WHERE content_id = #requestedContentId#
+	</update>
+
+	<delete id="deleteDocument" parameterClass="int">
+		DELETE FROM document WHERE content_id = #requestedContentId#
+	</delete>
+
+	<select id="getExtendedFields" resultMap="BibTexExtraCommon.extendedFields" parameterClass="bibtexExtraParam">
+		SELECT d.*, m.*
+		FROM extended_fields_map m
+		     JOIN extended_fields_data d ON d.key_id = m.key_id
+		     JOIN bibtex b ON b.content_id = d.content_id
+		WHERE b.user_name = #userName# AND b.simhash$simHash$ = #hash#
+		ORDER BY m.order
+	</select>
+
+	<update id="updateExtendedFieldsData" parameterClass="bibtexExtraParam">
+		UPDATE extended_fields_data SET content_id = #newContentId# WHERE content_id = #requestedContentId#
+	</update>
+
+	<delete id="deleteExtendedFieldsData" parameterClass="int">
+		DELETE FROM extended_fields_data WHERE content_id = #requestedContentId#
+	</delete>
+
+	<delete id="deleteBibTexCollector">
+		DELETE FROM collector WHERE content_id = #requestedContentId#
+	</delete>
 
 </sqlMap>

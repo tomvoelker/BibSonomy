@@ -66,7 +66,7 @@
 		b2.misc, b2.bibtexAbstract, b2.user_name, b2.date, b2.title, b2.author, b2.editor, b2.year, b2.entrytype,
 		<include refid="bibtexSimHashes2"/>
 	</sql>
-	
+
 	<sql id="bibtexAttributes2">
 		<include refid="commonBibtexAttributes2"/>, b2.scraperid
 	</sql>

@@ -3,22 +3,23 @@ package org.bibsonomy.database.managers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.params.BibTexParam;
-import org.bibsonomy.database.params.BookmarkParam;
+import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.testutil.DatabasePluginMock;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.testutil.ParamUtils;
@@ -38,7 +39,8 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getBibTexByHash() {
 		final List<Post<BibTex>> posts = this.bibTexDb.getBibTexByHash(this.bibtexParam, this.dbSession);
 		assertNotNull(posts);
-		assertTrue(posts.size() == 1);
+		assertEquals(1, posts.get(0).getGroups().size());
+		assertEquals(1, posts.size());
 		assertEquals("0000175071e6141a7d36835489f922ef", posts.get(0).getResource().getInterHash());
 		assertEquals("43ef2a4cc61e40a8999b132631e63bc4", posts.get(0).getResource().getIntraHash());
 	}
@@ -79,16 +81,26 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertNotNull(posts);
 		assertTrue(posts.size() == 0);
 
-		// user == friend and existing hash
+		// user == friend, existing hash and spammer
+		// FIXME: Should we add Integer.MIN_VALUE to the groups? This way we could retrive spam-posts
 		this.resetParameters();
 		this.bibtexParam.setUserName("hotho");
 		this.bibtexParam.setRequestedUserName("hotho");
 		this.bibtexParam.setHash("0154d8012c1773a0a9a54576b0e317bf");
 		posts = this.bibTexDb.getBibTexByHashForUser(this.bibtexParam, this.dbSession);
 		assertNotNull(posts);
+		assertTrue(posts.size() == 0);
+
+		// user == friend, existing hash and no spammer
+		this.resetParameters();
+		this.bibtexParam.setUserName("dblp");
+		this.bibtexParam.setRequestedUserName("dblp");
+		this.bibtexParam.setHash("546b14be1492272632ef513a1fdeee7a");
+		posts = this.bibTexDb.getBibTexByHashForUser(this.bibtexParam, this.dbSession);
+		assertNotNull(posts);
 		assertTrue(posts.size() == 1);
-		assertEquals("0154d8012c1773a0a9a54576b0e317bf", posts.get(0).getResource().getInterHash());
-		assertEquals("3e8c52949336171a6c316ccfe9c5e581", posts.get(0).getResource().getIntraHash());
+		assertEquals("546b14be1492272632ef513a1fdeee7a", posts.get(0).getResource().getInterHash());
+		assertEquals("9ad22a9cbce2cb8c10fb5d95903ceeff", posts.get(0).getResource().getIntraHash());
 		
 		// nonpublic personal group
 		posts = this.bibTexDb.getBibTexByHashForUser("tausendeins", "10ec64d80b0ac085328a953bb494fb89", "tausendeins", this.dbSession);
@@ -97,15 +109,40 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getBibTexByTagNames() {
-		this.bibTexDb.getBibTexByTagNames(this.bibtexParam, this.dbSession);
+		final List<Post<BibTex>> posts = this.bibTexDb.getBibTexByTagNames(this.bibtexParam, this.dbSession);
+		assertEquals(this.bibtexParam.getLimit(), posts.size());
+		this.assertByTagNames(posts);
 	}
 
 	@Test
 	public void getBibTexByTagNamesForUser() {
-		this.bibTexDb.getBibTexByTagNamesForUser(this.bibtexParam, this.dbSession);
+		List<Post<BibTex>> posts = this.bibTexDb.getBibTexByTagNamesForUser(this.bibtexParam, this.dbSession);
+		this.assertByTagNames(posts);
+
 		this.resetParameters();
 		this.bibtexParam.setGroupId(GroupID.INVALID.getId());
-		this.bibTexDb.getBibTexByTagNamesForUser(this.bibtexParam, this.dbSession);
+		posts = this.bibTexDb.getBibTexByTagNamesForUser(this.bibtexParam, this.dbSession);
+		this.assertByTagNames(posts);
+	}
+
+	/**
+	 * Searches in a list of posts for the requested tags from the bibtexParam.
+	 */
+	private void assertByTagNames(final List<Post<BibTex>> posts) {
+		if (posts.size() == 0) return;
+		for (final TagIndex requestedTag : this.bibtexParam.getTagIndex()) {
+			boolean foundTag = false;
+			for (final Post<BibTex> post : posts) {
+				for (final Tag tagFromOnePost : post.getTags()) {
+					if (requestedTag.getTagName().equals(tagFromOnePost.getName())) {
+						foundTag = true;
+						break;
+					}
+				}
+				if (foundTag) break;
+			}
+			assertTrue(foundTag);
+		}
 	}
 
 	@Test
@@ -228,8 +265,8 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getContentIdForBibTex() {
 		assertEquals(925724, this.bibTexDb.getContentIdForBibTex("b6c9a44d411bf8101abdf809d5df1431", "thomi", this.dbSession));
 
-		for (final String hash : new String[] { "", null }) {
-			for (final String username : new String[] { "", null }) {
+		for (final String hash : new String[] { "", " ", null }) {
+			for (final String username : new String[] { "", " ", null }) {
 				try {
 					this.bibTexDb.getContentIdForBibTex(hash, username, this.dbSession);
 					fail("Should throw an exception");
@@ -243,7 +280,8 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getPosts() {
 		this.bibtexParam.setHash("");
 		final List<Post<BibTex>> posts = this.bibTexDb.getPosts(this.bibtexParam, this.dbSession);
-		assertEquals(9, posts.size());
+		assertEquals(this.bibtexParam.getLimit(), posts.size());
+		this.assertByTagNames(posts);
 	}
 
 	@Test
@@ -255,7 +293,27 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void deleteBibTex() {
+		// deleting a bibtex post (group is public)
+		this.bibtexParam.setHash("00d062518a5549c3572b26f7ce9956f3");
+		this.assertDeleteBibTex();
+
+		// deleting a bibtex post (group is private)
+		this.bibtexParam.setUserName("maybe");
+		this.bibtexParam.setRequestedUserName("maybe");
+		this.bibtexParam.setHash("967449bcdaabceaa22cfcbe0c554356d");
+		// FIXME: this boilerplate code could be removed with a DI-framework (i.e. next three lines)
+		final DatabasePluginMock plugin = new DatabasePluginMock();
+		DatabasePluginRegistry.getInstance().clearPlugins();
+		DatabasePluginRegistry.getInstance().add(plugin);
+		assertFalse(plugin.isOnBibTexDelete());
+		this.assertDeleteBibTex();
+		assertTrue(plugin.isOnBibTexDelete());
+	}
+
+	private void assertDeleteBibTex() {
+		assertEquals(1, this.bibTexDb.getBibTexByHashForUser(this.bibtexParam, this.dbSession).size());
 		this.bibTexDb.deletePost(this.bibtexParam.getRequestedUserName(), this.bibtexParam.getHash(), this.dbSession);
+		assertEquals(0, this.bibTexDb.getBibTexByHashForUser(this.bibtexParam, this.dbSession).size());
 	}
 
 	@Test
@@ -263,27 +321,8 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final Post<BibTex> toInsert = ModelUtils.generatePost(BibTex.class);
 		final String BIBTEX_TEST_HASH = "06aef6e5439298f27dc5aee82c4293d6";
 
-		// can't update without old hash
-		try {
-			this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, null, true, this.dbSession);
-			fail("Should throw a throwable");
-		} catch (Throwable t) {
-			assertTrue(t instanceof IllegalArgumentException);
-		}
-
-		// can't create new resource with old hash
-		try {
-			this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, BIBTEX_TEST_HASH, false, this.dbSession);
-			fail("Should throw a throwable");
-		} catch (Throwable t) {
-			assertTrue(t instanceof IllegalArgumentException);
-		}
-
 		this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, null, false, this.dbSession);
-
-		
-		
-		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { ModelUtils.class.getName(), "hurz" }), null, null, 0, 50);
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { ModelUtils.class.getName(), "hurz" }), "", null, 0, 50);
 		final List<Post<BibTex>> posts = this.bibTexDb.getPosts(param, this.dbSession);
 		assertEquals(1, posts.size());
 		ModelUtils.assertPropertyEquality(toInsert, posts.get(0), new String[] { "resource", "tags" });
@@ -297,9 +336,88 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		DatabasePluginRegistry.getInstance().clearPlugins();
 		DatabasePluginRegistry.getInstance().add(plugin);
 		assertFalse(plugin.isOnBibTexUpdate());
-		param.setHash(BIBTEX_TEST_HASH);
-		final Post<BibTex> someBibTexPost = this.bibTexDb.getBibTexByHash(param, this.dbSession).get(0);
-		this.bibTexDb.storePost(someBibTexPost.getUser().getName(), someBibTexPost, BIBTEX_TEST_HASH, true, this.dbSession);
+		this.postDuplicate(param, BIBTEX_TEST_HASH);
 		assertTrue(plugin.isOnBibTexUpdate());
+	}
+
+	@Test
+	public void storePostWrongUsage() {
+		final Post<BibTex> toInsert = ModelUtils.generatePost(BibTex.class);
+
+		// can't update without old hash
+		try {
+			this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, null, true, this.dbSession);
+			fail("Should throw a throwable");
+		} catch (Throwable t) {
+			assertTrue(t instanceof IllegalArgumentException);
+		}
+
+		// can't create new resource with old hash
+		try {
+			this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, "123456789", false, this.dbSession);
+			fail("Should throw a throwable");
+		} catch (Throwable t) {
+			assertTrue(t instanceof IllegalArgumentException);
+		}
+	}
+
+	/**
+	 * Makes sure that we don't lose information if we change something on an
+	 * existing post.
+	 */
+	@Test
+	public void storePostDuplicate() {
+		// the first (default) hash belongs to a public post,
+		// the second to a private one
+		for (final String simHash1 : new String[] { this.bibtexParam.getHash(), "b6c9a44d411bf8101abdf809d5df1431" }) {
+			this.bibtexParam.setHash(simHash1);
+			if (simHash1.startsWith("b6c9")) this.bibtexParam.setGroupType(GroupID.PRIVATE);
+
+			final Post<BibTex> originalPost = this.bibTexDb.getBibTexByHash(this.bibtexParam, this.dbSession).get(0);
+			this.postDuplicate(this.bibtexParam, this.bibtexParam.getHash());
+			final Post<BibTex> newPost = this.bibTexDb.getBibTexByHash(this.bibtexParam, this.dbSession).get(0);
+
+			assertNotSame(originalPost.getContentId(), newPost.getContentId());
+			assertEquals(originalPost.getDate().toString(), newPost.getDate().toString());
+			assertEquals(originalPost.getDescription(), newPost.getDescription());
+			assertEquals(originalPost.getGroups().size(), newPost.getGroups().size());
+			assertEquals(originalPost.getTags().size(), newPost.getTags().size());
+			assertEquals(originalPost.getUser().getName(), newPost.getUser().getName());
+			assertEquals(originalPost.getResource().getSimHash0(), newPost.getResource().getSimHash0());
+			assertEquals(originalPost.getResource().getSimHash1(), newPost.getResource().getSimHash1());
+			assertEquals(originalPost.getResource().getSimHash2(), newPost.getResource().getSimHash2());
+			assertEquals(originalPost.getResource().getSimHash3(), newPost.getResource().getSimHash3());
+			// TODO: more tests please...
+		}
+	}
+
+	private void postDuplicate(final BibTexParam param, final String hash) {
+		param.setHash(hash);
+		final Post<BibTex> someBibTexPost = this.bibTexDb.getBibTexByHash(param, this.dbSession).get(0);
+		System.out.println(someBibTexPost.getGroups().get(0).getGroupId() + " - " + someBibTexPost.getGroups().size());
+		this.bibTexDb.storePost(someBibTexPost.getUser().getName(), someBibTexPost, hash, true, this.dbSession);
+	}
+
+	@Test
+	public void storePostBibTexUpdatePlugin() {
+		final String BIB_TEST_HASH = "b6c9a44d411bf8101abdf809d5df1431";
+		final String TEST_USER = "thomi";
+
+		// FIXME: this boilerplate code could be removed with a DI-framework (i.e. next three lines)
+		final org.bibsonomy.database.plugin.plugins.BibTexExtra plugin = new org.bibsonomy.database.plugin.plugins.BibTexExtra();
+		DatabasePluginRegistry.getInstance().clearPlugins();
+		DatabasePluginRegistry.getInstance().add(plugin);
+
+		List<BibTexExtra> extras = this.bibTexExtraDb.getURL(BIB_TEST_HASH, TEST_USER, this.dbSession);
+		assertEquals(2, extras.size());
+
+		this.bibtexParam.setGroupType(GroupID.PRIVATE);
+		this.postDuplicate(this.bibtexParam, BIB_TEST_HASH);
+
+		final Post<BibTex> post = this.bibTexDb.getBibTexByHash(this.bibtexParam, this.dbSession).get(0);
+		assertNotNull(post);
+
+		extras = this.bibTexExtraDb.getURL(BIB_TEST_HASH, TEST_USER, this.dbSession);
+		assertEquals(2, extras.size());
 	}
 }

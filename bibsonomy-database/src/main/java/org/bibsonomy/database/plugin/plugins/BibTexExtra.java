@@ -1,30 +1,31 @@
 package org.bibsonomy.database.plugin.plugins;
 
+import org.bibsonomy.database.managers.BibTexExtraDatabaseManager;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 import org.bibsonomy.database.util.DBSession;
 
 /**
- * This plugin takes care of additional features for BibTex entries.
+ * This plugin takes care of additional features for BibTex posts.
  * 
  * @author Christian Schenk
  * @version $Id$
  */
 public class BibTexExtra extends AbstractDatabasePlugin {
 
-	@Override
-	public Runnable onBibTexInsert(final int contentId, final DBSession session) {
-		return new Runnable() {
-			public void run() {
-				// TODO implement...
-			}
-		};
-	}
+	private final BibTexExtraDatabaseManager bibtexExtraDb = BibTexExtraDatabaseManager.getInstance();
 
 	@Override
 	public Runnable onBibTexDelete(final int contentId, final DBSession session) {
 		return new Runnable() {
 			public void run() {
-				// TODO implement...
+				// Delete link to related document
+				bibtexExtraDb.deleteDocument(contentId, session);
+				// Delete id in collector table
+				bibtexExtraDb.deleteCollector(contentId, session);
+				// Delete id in extended fields table
+				bibtexExtraDb.deleteExtendedFieldsData(contentId, session);
+				// Delete id in bibtexturl table
+				bibtexExtraDb.deleteAllURLs(contentId, session);
 			}
 		};
 	}
@@ -33,7 +34,9 @@ public class BibTexExtra extends AbstractDatabasePlugin {
 	public Runnable onBibTexUpdate(final int newContentId, final int contentId, final DBSession session) {
 		return new Runnable() {
 			public void run() {
-				// TODO implement...
+				bibtexExtraDb.updateURL(contentId, newContentId, session);
+				bibtexExtraDb.updateDocument(contentId, newContentId, session);
+				bibtexExtraDb.updateExtendedFieldsData(contentId, newContentId, session);
 			}
 		};
 	}
