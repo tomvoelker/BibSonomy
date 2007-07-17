@@ -7,11 +7,9 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -27,6 +25,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.testutil.DepthEqualityTester.EqualityChecker;
 import org.bibsonomy.util.ExceptionUtils;
 
 /**
@@ -74,6 +73,12 @@ public class ModelUtils {
 		user.setName("jaeschke");
 		return user;
 	}
+	
+	public static Group getGroup() {
+		final Group group = new Group();
+		setBeanPropertiesOn(group);
+		return group;
+	}
 
 	@SuppressWarnings("unchecked")
 	public static <T extends Resource> Post<T> generatePost(final Class<T> resourceType) {
@@ -82,6 +87,7 @@ public class ModelUtils {
 		final Group group = new Group();
 		group.setGroupId(GroupID.PUBLIC.getId());
 		group.setDescription(null);
+		group.setName("public");
 		post.getGroups().add(group);
 
 		Tag tag = new Tag();
@@ -127,48 +133,23 @@ public class ModelUtils {
 		}
 	}
 
-	public static void assertPropertyEquality(final Object should, final Object is, final String... excludeProperties) {
-		final Set<String> skip;
-		if (excludeProperties != null && excludeProperties.length > 0) {
-			skip = new HashSet<String>();
-			skip.addAll(Arrays.asList(excludeProperties));
-		} else {
-			skip = null;
-		}
-		assertPropertyEquality(should, is, skip);
-	}
+	public static void assertPropertyEquality(final Object should, final Object is, final int maxDepth, final String... excludeProperties) {
+		final EqualityChecker checker = new EqualityChecker() {
 
-	public static void assertPropertyEquality(final Object should, final Object is, final Set<String> excludeProperties) {
-		try {
-			assertTrue(should.getClass().isAssignableFrom(is.getClass()));
-			final BeanInfo bi = Introspector.getBeanInfo(should.getClass());
-			for (final PropertyDescriptor d : bi.getPropertyDescriptors()) {
-				Exception catched = null;
-				try {
-					if ((excludeProperties == null) || (excludeProperties.contains(d.getName()) == false)) {
-						final Method getter = d.getReadMethod();
-						final Class<?> type = d.getPropertyType();
-						if ((getter != null) && ((type == String.class) || (type.isPrimitive() == true) || (Number.class.isAssignableFrom(type) == true))) {
-							log.debug("comparing property " + d.getName());
-							assertEquals(d.getName(), getter.invoke(should, (Object[]) null), getter.invoke(is, (Object[]) null));
-						}
-					}
-				} catch (final IllegalArgumentException ex) {
-					catched = ex;
-				} catch (final IllegalAccessException ex) {
-					catched = ex;
-				} catch (final InvocationTargetException ex) {
-					catched = ex;
-				}
-				if (catched != null) {
-					ExceptionUtils.logErrorAndThrowRuntimeException(log, catched, "could not invoke setter '" + d.getName() + "'");
-				}
+			public boolean checkEquals(Object should, Object is, String path) {
+				assertEquals(path, should,is);
+				return true;
 			}
-		} catch (final IntrospectionException ex) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "could not introspect object of class '" + should.getClass().getName() + "'");
-		}
-	}
 
+			public boolean checkTrue(boolean value, String path, String checkName) {
+				assertTrue(path + " " + checkName, value);
+				return true;
+			}
+			
+		};
+		DepthEqualityTester.areEqual(should, is, checker, maxDepth, excludeProperties);
+	}
+	
 	private static Object getDummyValue(final Class<?> type, final String name) {
 		if (String.class == type) {
 			return "test-" + name;
@@ -211,8 +192,8 @@ public class ModelUtils {
 			}
 		}
 		if (required > 0) return false;
-		return true;
-	}
+			return true;
+		}
 
 	public static boolean checkGroups(final Post<?> post, final Set<Integer> mustBeInGroups, final Set<Integer> mustNotBeInGroups) {
 		int required = (mustBeInGroups != null) ? mustBeInGroups.size() : 0;
@@ -230,6 +211,6 @@ public class ModelUtils {
 			log.warn("not in all groups");
 			return false;
 		}
-		return true;
+			return true;
+		}
 	}
-}
