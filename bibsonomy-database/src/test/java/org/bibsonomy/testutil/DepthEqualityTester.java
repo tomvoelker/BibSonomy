@@ -1,0 +1,128 @@
+/*
+ * Created on 16.07.2007
+ */
+package org.bibsonomy.testutil;
+
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
+import org.bibsonomy.util.ExceptionUtils;
+
+public class DepthEqualityTester  {
+	private static final Logger log = Logger.getLogger(DepthEqualityTester.class);
+	
+	public static interface EqualityChecker {
+		public boolean checkEquals(Object should, Object is, String path);
+		public boolean checkTrue(boolean value, String path, String checkName);
+	}
+		
+	private static Set<String> toSet(String[] excludeProperties) {
+		final Set<String> skip;
+		if (excludeProperties != null || excludeProperties.length > 0) {
+			skip = new HashSet<String>();
+			skip.addAll(Arrays.asList(excludeProperties));
+		} else {
+			skip = null;
+		}
+		return skip;
+	}
+	
+	public static boolean areEqual(Object should, Object is, final EqualityChecker checker, final int maxDepth, final String... excludeProperties) {
+		return areEqual(should, is, checker, maxDepth, toSet(excludeProperties));
+	}
+	
+	public static boolean areEqual(Object should, Object is, final EqualityChecker checker, final int maxDepth, final Set<String> excludeProperties) {
+		excludeProperties.add("class");
+		return assertPropertyEquality(should, is, checker, maxDepth, excludeProperties, "", new HashSet<Object>());
+	}
+	
+	private static boolean assertPropertyEquality(final Object should, final Object is, final EqualityChecker checker, final int remainingDepth, final Set<String> excludeProperties, final String path, final Set<Object> visited) {
+		if (remainingDepth < 0) {
+			return true;
+		}
+		if ((excludeProperties != null) && (excludeProperties.contains(path) == true)) {
+			log.debug("skipping '" + path + "'");
+			return true;
+		}
+		if ((is == null) || (should == null)) {
+			return checker.checkEquals(should, is, path);
+		}
+		final Class shouldType = should.getClass();
+		/*if (checker.checkTrue(shouldType.isAssignableFrom(is.getClass()), path, "should be " + shouldType.getName()) == false) {
+			return false;
+		}*/
+		
+		if ((shouldType == String.class) || (shouldType.isPrimitive() == true) || (Number.class.isAssignableFrom(shouldType) == true) || (shouldType == Date.class) || (shouldType == URL.class)) {
+			log.debug("comparing " + path);
+			return checker.checkEquals(should, is, path);
+		} else {
+			if (remainingDepth <= 0) {
+				return true;
+			}
+			if (visited.contains(should) == true) {
+				return true;
+			}
+			visited.add(should);
+			
+			if (Iterable.class.isAssignableFrom(shouldType) == true) {
+				final Iterable shouldIterable = (Iterable) should;
+				final Iterator isIterator = ((Iterable) is).iterator();
+				int i = 0;
+				for (Object shouldEntry : shouldIterable) {
+					final String entryPath = path + "[" + i + "]";
+					if (checker.checkTrue(isIterator.hasNext(), entryPath, "should be present") == false) {
+						return false;
+					}
+					if (assertPropertyEquality(shouldEntry, isIterator.next(), checker, remainingDepth - 1, excludeProperties, entryPath, visited) == false) {
+						return false;
+					}
+					i++;
+				}
+				if (checker.checkTrue(isIterator.hasNext() == false, path, "should not be present") == false) {
+					return false;
+				}
+			} else {
+				try {
+					final BeanInfo bi = Introspector.getBeanInfo(should.getClass());
+					for (final PropertyDescriptor d : bi.getPropertyDescriptors()) {
+						final String propertyPath = (path.length() > 0) ? (path + "." + d.getName()) : d.getName();
+						Exception catched = null;
+						try {
+							if ("class".equals(d.getName()) == false) {
+								final Method getter = d.getReadMethod();
+								if (getter != null) {
+									if (assertPropertyEquality(getter.invoke(should, (Object[]) null), getter.invoke(is, (Object[]) null), checker, remainingDepth - 1, excludeProperties, propertyPath, visited) == false) {
+										return false;
+									}
+								}
+							}
+						} catch (final IllegalArgumentException ex) {
+							catched = ex;
+						} catch (final IllegalAccessException ex) {
+							catched = ex;
+						} catch (final InvocationTargetException ex) {
+							catched = ex;
+						}
+						if (catched != null) {
+							ExceptionUtils.logErrorAndThrowRuntimeException(log, catched, "could not invoke getter of property '" + propertyPath + "'");
+						}
+					}
+				} catch (final IntrospectionException ex) {
+					ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "could not introspect object of class '" + should.getClass().getName() + "'");
+				}
+			}
+		}
+		return true;
+	}
+}
