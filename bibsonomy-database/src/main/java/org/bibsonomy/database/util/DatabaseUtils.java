@@ -9,6 +9,7 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.util.ExceptionUtils;
+import org.bibsonomy.util.ValidationUtils;
 
 import com.ibatis.common.resources.Resources;
 import com.ibatis.sqlmap.client.SqlMapClient;
@@ -26,6 +27,7 @@ public class DatabaseUtils {
 
 	private static final Logger log = Logger.getLogger(DatabaseUtils.class);
 	private static final SqlMapClient client;
+	private static final ValidationUtils check = ValidationUtils.getInstance();
 
 	static {
 		SqlMapClient clientTmp;
@@ -52,15 +54,19 @@ public class DatabaseUtils {
 	 * users are friends the groupId for friends is also appended.
 	 */
 	public static void setGroups(final GeneralDatabaseManager db, final GenericParam param, final DBSession session) {
-		// If userName and requestedUserName are the same - do nothing
-		if (param.getUserName() != null && param.getRequestedUserName() != null) {
-			if (param.getUserName().equals(param.getRequestedUserName())) return;
-		}
-		final Boolean friends = db.isFriendOf(param, session);
 		final List<Integer> groupIds = db.getGroupIdsForUser(param, session);
-		if (friends) {
-			groupIds.add(GroupID.FRIENDS.getId());
+
+		if (check.present(param.getUserName()) && check.present(param.getRequestedUserName())) {
+			// If userName and requestedUserName are the same -> add private
+			// otherwise: if they're friends -> add friends
+			if (param.getUserName().equals(param.getRequestedUserName())) {
+				groupIds.add(GroupID.PRIVATE.getId());
+			} else {
+				final boolean friends = db.isFriendOf(param, session);
+				if (friends) groupIds.add(GroupID.FRIENDS.getId());
+			}
 		}
+
 		param.setGroups(groupIds);
 	}
 
