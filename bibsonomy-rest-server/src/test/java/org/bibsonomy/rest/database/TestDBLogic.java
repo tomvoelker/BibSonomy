@@ -2,7 +2,7 @@ package org.bibsonomy.rest.database;
 
 import org.bibsonomy.database.DBLogic;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.rest.LogicInterfaceFactory;
+import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.junit.Ignore;
 
 /**
