@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Tests related to tags.
@@ -60,16 +61,36 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(10, tags.size());
 	}
 
-	/*
-	 * TODO implemented, but further restriction have to add!!
-	 */
 	@Test
 	public void getTagsByExpression() {
-		this.tagDb.getTagsByExpression(this.tagParam, this.dbSession);
+		this.tagParam.setLimit(1000);
+		List<Tag> tags = this.tagDb.getTagsByExpression(this.tagParam, this.dbSession);
+		assertEquals(161,tags.size());
+		this.resetParameters();		
 	}
 
 	@Test
 	public void insertTas() {
 		this.tagDb.insertTas(this.tagParam, this.dbSession);
 	}
+	
+	@Test
+	public void getTagDetails() {
+		this.tagParam.setTagName("kassel");
+		Tag tag = this.tagDb.getTagDetails(this.tagParam, this.dbSession);
+		assertNotNull(tag);
+		assertEquals(this.tagParam.getTagName(), tag.getName()); 
+		assertNotNull(tag.getGlobalcount());
+		assertNotNull(tag.getUsercount()); 
+	}
+	
+	@Test
+	public void getTags() {
+		this.tagParam.setLimit(1000);
+		List<Tag> tags = this.tagDb.getTags(this.tagParam, this.dbSession);		
+		assertEquals(161,tags.size());
+		this.resetParameters();			
+	}		
+	
+	
 }
