@@ -46,23 +46,25 @@ public abstract class AbstractQuery<T> {
 	protected final String performRequest(final HttpMethod method, final String url, final String requestBody) throws ErrorPerformingRequestException {
 		final HttpWorker worker;
 		final String result;
+		final String absoluteUrl;
+		absoluteUrl = apiURL + url;
 
 		switch (method) {
 		case POST:
 			worker = new PostWorker(this.username, this.apiKey);
-			result = ((PostWorker) worker).perform(apiURL + url, requestBody);
+			result = ((PostWorker) worker).perform(absoluteUrl, requestBody);
 			break;
 		case DELETE:
 			worker = new DeleteWorker(this.username, this.apiKey);
-			result = ((DeleteWorker) worker).perform(apiURL + url);
+			result = ((DeleteWorker) worker).perform(absoluteUrl);
 			break;
 		case PUT:
 			worker = new PutWorker(this.username, this.apiKey);
-			result = ((PutWorker) worker).perform(apiURL + url, requestBody);
+			result = ((PutWorker) worker).perform(absoluteUrl, requestBody);
 			break;
 		case HEAD:
 			worker = new HeadWorker(this.username, this.apiKey);
-			result = ((HeadWorker) worker).perform(this.apiURL + url);
+			result = ((HeadWorker) worker).perform(absoluteUrl);
 			break;
 		case GET:
 			throw new UnsupportedOperationException("use AbstractQuery::performGetRequest( String url)");
