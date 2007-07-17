@@ -17,6 +17,7 @@ import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.DBLogic;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.enums.RenderingFormat;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
@@ -38,13 +39,15 @@ public final class RestServlet extends HttpServlet {
 
 	private static final Logger log = Logger.getLogger(RestServlet.class);
 
+	public static final String PARAM_LOGICFACTORY_CLASS = "logicFactoryClass";
+
 	private LogicInterfaceFactory logicFactory;
 
 	@Override
 	public void init() throws ServletException {
 		super.init();
 		// instantiate the bibsonomy database connection
-		final String logicFactoryClassName = this.getServletConfig().getInitParameter("logicFactoryClass");
+		final String logicFactoryClassName = this.getServletConfig().getInitParameter(PARAM_LOGICFACTORY_CLASS);
 		if (logicFactoryClassName != null) {
 			Object logicFactoryObj;
 			try {
@@ -58,6 +61,7 @@ public final class RestServlet extends HttpServlet {
 			} else {
 				throw new ServletException(logicFactoryClassName + " does not implement " + LogicInterfaceFactory.class.getName());
 			}
+			log.info("using logicFactoryClass '" + logicFactoryClassName + "'");
 		} else {
 			log.info("no 'logicFactoryClass' initParameter -> using default");
 			this.logicFactory = new LogicInterfaceFactory() {
@@ -168,17 +172,23 @@ public final class RestServlet extends HttpServlet {
 			
 			response.getOutputStream().print(cachingStream.toString("UTF-8"));
 		} catch (final AuthenticationException e) {
+			log.error(e,e);
 			response.setHeader("WWW-Authenticate", "Basic realm=\"BibsonomyWebService\"");
 			sendError(request, response, HttpURLConnection.HTTP_UNAUTHORIZED, e.getMessage());
 		} catch (final InternServerException e) {
+			log.error(e,e);
 			sendError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 		} catch (final NoSuchResourceException e) {
+			log.error(e,e);
 			sendError(request, response, HttpServletResponse.SC_NOT_FOUND, e.getMessage());
 		} catch (final BadRequestOrResponseException e) {
+			log.error(e,e);
 			sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
 		} catch (final ValidationException e) {
+			log.error(e,e);
 			sendError(request, response, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		} catch (final Exception e) {
+			log.error(e,e);
 			// well, lets fetch each and every error...
 			sendError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 		}
@@ -198,6 +208,7 @@ public final class RestServlet extends HttpServlet {
 	 * @throws IOException
 	 */
 	private void sendError(final HttpServletRequest request, final HttpServletResponse response, final int code, final String message) throws IOException {
+		log.error(message);
 		// get renderer
 		final String renderingFormatName = Context.getStringAttribute(request.getParameterMap(), "format", "xml");
 		final RenderingFormat renderingFormat = RenderingFormat.getRenderingFormat(renderingFormatName);
