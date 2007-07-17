@@ -6,11 +6,12 @@ import java.util.List;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.managers.chain.tag.TagChain;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.beans.TagTagBatchParam;
-import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
+import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
@@ -25,9 +26,12 @@ import org.bibsonomy.model.Tag;
  */
 public class TagDatabaseManager extends AbstractDatabaseManager {
 
-	private static final TagDatabaseManager singleton = new TagDatabaseManager();
+	/** Singleton */
+	private final static TagDatabaseManager singleton = new TagDatabaseManager();
 	private final GeneralDatabaseManager generalDb;
 	private final TagRelationDatabaseManager tagRelDb;
+	private static final TagChain chain = new TagChain();
+	
 	/**
 	 * Only a maximum of 10 tags can be set by the user. It serves to restrict
 	 * the system behaviour in case of e.g. 200 Tags. Only a maximum of 10X10
@@ -285,8 +289,13 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 *            name of the tag
 	 * @return the tag's details, null else
 	 */
-	public Tag getTagDetails(final String authUserName, final String tagName, final DBSession session) {
-		throw new UnsupportedOperationException();
+	public Tag getTagDetails(TagParam param, final DBSession session) {
+		final Tag tag;
+		tag = this.queryForObject("getTagByName", param, Tag.class, session);
+		// this is just a hack as long as we don't supply separate user counts for
+		// each tag, DB
+		tag.setUsercount(tag.getGlobalcount());
+		return tag;
 	}
 
 	/**
@@ -316,23 +325,18 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForList("getTagsViewable", param, Tag.class, session);
 	}
 
-	public List<Tag> getTags(final String authUser, final GroupingEntity grouping, final String groupingName, final String regex, final int start, final int end, final DBSession session) {
-		// TODO: this is only a hack to provide tag-support. feel free to delete
-		// the code and implement it with a nice and complete handler chain.
-		// --> from revision 1.27 - where's the hack?
-
-		final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, authUser, grouping, groupingName, null, null, null, start, end);
-
+	public List<Tag> getTags(final TagParam param, final DBSession session) {
+		
 		final List<Tag> tags;
-		if (grouping == GroupingEntity.ALL) {
-			tags = this.queryForList("getAllTags", param, Tag.class, session);
-		} else {
-			DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
-			tags = this.queryForList("getTagsByUser", param, Tag.class, session);
-		}
+		
+		// start the chain
+		tags = chain.getFirstElement().perform(param, session); 
+		
+		// this is just a hack as long as we don't supply separate user counts for
+		// each tag, dbe
 		for (final Tag tag : tags) {
 			tag.setUsercount(tag.getGlobalcount());
 		}
-		return tags;
+		return tags;		
 	}
 }

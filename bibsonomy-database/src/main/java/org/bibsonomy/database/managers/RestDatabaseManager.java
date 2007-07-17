@@ -12,6 +12,7 @@ import org.bibsonomy.database.DBLogicInterface;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
+import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DBSessionFactory;
 import org.bibsonomy.database.util.DatabaseUtils;
@@ -199,19 +200,23 @@ public class RestDatabaseManager implements DBLogicInterface {
 	public List<Tag> getTags(final String authUser, final GroupingEntity grouping, final String groupingName, final String regex, final int start, final int end) {
 		final DBSession session = this.openSession();
 		try {
-			return this.tagDBManager.getTags(authUser, grouping, groupingName, regex, start, end, session);
+			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, authUser, grouping, groupingName, null, null, null, start, end);
+			param.setRegex(regex);
+			return this.tagDBManager.getTags(param, session);
 		} finally {
 			session.close();
-		}
+		}	
 	}
 
 	/*
 	 * Returns details about a tag.
 	 */
-	public Tag getTagDetails(final String authUserName, final String tagName) {
+	public Tag getTagDetails(final String authUser, final String tagName) {
 		final DBSession session = this.openSession();
 		try {
-			return this.tagDBManager.getTagDetails(authUserName, tagName, session);
+			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, authUser, null, authUser, null, null, null, 0, 1);
+			param.setTagName(tagName);
+			return this.tagDBManager.getTagDetails(param, session); 
 		} finally {
 			session.close();
 		}

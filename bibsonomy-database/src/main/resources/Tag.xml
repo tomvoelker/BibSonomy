@@ -17,7 +17,7 @@
 		FROM tas TAS 
 		WHERE (TAS.user_name=#requestedUserName# OR
 			  TAS.group=0) AND
-			  TAS.tag_name=#name#
+			  TAS.tag_name=#tagName#
 		GROUP BY TAS.tag_name
 		LIMIT #limit# OFFSET #offset#
 	</select>	
@@ -43,13 +43,12 @@
 		LIMIT #limit# OFFSET #offset#
 	</select>
 
-	<!-- TODO not yet tested -->
 	<select id="getTagsByExpression" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
 		SELECT TAS.tag_name, count(TAS.tag_name) as tag_ctr 
 		FROM tas TAS 
 		WHERE (TAS.user_name=#requestedUserName# OR
 			  TAS.group=0) AND
-			  TAS.tag_name REGEXP '^regex'
+			  TAS.tag_name REGEXP #regex#
 		GROUP BY TAS.tag_name
 		LIMIT #limit# OFFSET #offset#		
 	</select>
