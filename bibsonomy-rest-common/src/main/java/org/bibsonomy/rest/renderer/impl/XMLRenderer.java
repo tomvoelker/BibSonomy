@@ -10,7 +10,9 @@ import static org.bibsonomy.rest.RestProperties.Property.URL_GROUPS;
 import static org.bibsonomy.rest.RestProperties.Property.URL_POSTS;
 import static org.bibsonomy.rest.RestProperties.Property.URL_USERS;
 
+import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.Writer;
 import java.math.BigInteger;
 import java.util.LinkedList;
@@ -22,6 +24,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.apache.log4j.Logger;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -55,7 +58,7 @@ import org.bibsonomy.rest.renderer.xml.UsersType;
  * @version $Id$
  */
 public class XMLRenderer implements Renderer {
-
+	private static final Logger log = Logger.getLogger(XMLRenderer.class);
 	private static final String JAXB_PACKAGE_DECLARATION = "org.bibsonomy.rest.renderer.xml";
 	private static XMLRenderer renderer;
 	private final String userUrlPrefix;
@@ -138,6 +141,7 @@ public class XMLRenderer implements Renderer {
 			xmlBookmark.setHref(createHrefForRessource(post.getUser().getName(), bookmark.getIntraHash()));
 			xmlBookmark.setInterhash(bookmark.getInterHash());
 			xmlBookmark.setIntrahash(bookmark.getIntraHash());
+			xmlBookmark.setTitle(bookmark.getTitle());
 			xmlBookmark.setUrl(bookmark.getUrl());
 			xmlPost.setBookmark(xmlBookmark);
 		}
@@ -172,7 +176,8 @@ public class XMLRenderer implements Renderer {
 			xmlBibtex.setNumber(bibtex.getNumber());
 			xmlBibtex.setOrganization(bibtex.getOrganization());
 			xmlBibtex.setPages(bibtex.getPages());
-			xmlBibtex.setSchool(bibtex.getPublisher());
+			xmlBibtex.setPublisher(bibtex.getPublisher());
+			xmlBibtex.setSchool(bibtex.getSchool());
 			xmlBibtex.setScraperId(BigInteger.valueOf(bibtex.getScraperId()));
 			xmlBibtex.setSeries(bibtex.getSeries());
 			xmlBibtex.setTitle(bibtex.getTitle());
@@ -425,8 +430,22 @@ public class XMLRenderer implements Renderer {
 	 * @throws InternServerException
 	 *             if the content can't be unmarshalled
 	 */
-	private BibsonomyXML parse(final Reader reader) throws InternServerException {
+	private BibsonomyXML parse(Reader reader) throws InternServerException {
 		try {
+			
+			if (log.isDebugEnabled() == true) {
+				char[] chars = new char[65536];
+				String s;
+				try {
+					int read = reader.read(chars);
+					s = new String(chars,0,read); 
+					log.debug("request-body:\n[" + s + "]");
+					reader = new StringReader(s);
+				} catch (IOException ex) {
+					log.error(ex,ex);
+				}
+			}
+			
 			final JAXBContext jc = JAXBContext.newInstance(JAXB_PACKAGE_DECLARATION);
 
 			// create an Unmarshaller
