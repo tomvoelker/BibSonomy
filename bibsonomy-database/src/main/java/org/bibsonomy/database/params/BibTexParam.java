@@ -27,7 +27,6 @@ public class BibTexParam extends ResourcesParam<BibTex> {
 	private HashID requestedSimHash;
 
 	public BibTexParam() {
-		this.resource = new BibTex();
 		this.simHash = HashID.SIM_HASH;
 		this.requestedSimHash = HashID.SIM_HASH;
 	}
@@ -38,6 +37,7 @@ public class BibTexParam extends ResourcesParam<BibTex> {
 	}
 
 	public BibTex getResource() {
+		if (this.resource == null) this.resource = new BibTex();
 		return this.resource;
 	}
 

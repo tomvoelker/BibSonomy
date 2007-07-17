@@ -1,6 +1,6 @@
 package org.bibsonomy.database.params;
 
-import org.bibsonomy.model.BibTexExtra;
+import org.bibsonomy.model.extra.BibTexExtra;
 
 /**
  * @author Christian Schenk
@@ -10,11 +10,8 @@ public class BibTexExtraParam extends BibTexParam {
 
 	private BibTexExtra bibtexExtra;
 
-	public BibTexExtraParam() {
-		this.bibtexExtra = new BibTexExtra();
-	}
-
 	public BibTexExtra getBibtexExtra() {
+		if (this.bibtexExtra == null) this.bibtexExtra = new BibTexExtra();
 		return this.bibtexExtra;
 	}
 
