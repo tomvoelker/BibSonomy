@@ -2,6 +2,7 @@ package org.bibsonomy.rest.strategy.users;
 
 import java.io.Reader;
 import java.io.Writer;
+import java.util.Date;
 
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ValidationException;
@@ -31,6 +32,7 @@ public class PostPostStrategy extends Strategy {
 	@Override
 	public void perform(final Writer writer) throws InternServerException {
 		final Post<?> post = this.getRenderer().parsePost(this.doc);
+		post.setDate(new Date());
 		this.getLogic().createPost(post);
 	}
 
