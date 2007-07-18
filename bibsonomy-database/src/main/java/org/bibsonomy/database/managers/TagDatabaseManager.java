@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.tag.TagChain;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.beans.TagTagBatchParam;
 import org.bibsonomy.database.util.DatabaseUtils;
-import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -251,20 +249,20 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		}
 	}*/
 
-	public int getTagOccurrences(final Tag tag, final DBSession session) {
-		return this.queryForObject("getTagOccurrences", tag, Integer.class, session);
+	public int getTagOccurrences(final TagParam param, final DBSession session) {
+		return this.queryForObject("getTagOccurrences", param, Integer.class, session);
 	}
 
-	public List<Tag> getSubtagsOfTag(final Tag tag, final DBSession session) {
-		return this.queryForList("getSubtagsOfTag", tag, Tag.class, session);
+	public List<Tag> getSubtagsOfTag(final TagParam param, final DBSession session) {
+		return this.queryForList("getSubtagsOfTag", param, Tag.class, session);
 	}
 
-	public List<Tag> getSupertagsOfTag(final Tag tag, final DBSession session) {
-		return this.queryForList("getSupertagsOfTag", tag, Tag.class, session);
+	public List<Tag> getSupertagsOfTag(final TagParam param, final DBSession session) {
+		return this.queryForList("getSupertagsOfTag", param, Tag.class, session);
 	}
 
-	public List<Tag> getCorrelatedTagsOfTag(final Tag tag, final DBSession session) {
-		return this.queryForList("getCorrelatedTagsOfTag", tag, Tag.class, session);
+	public List<Tag> getCorrelatedTagsOfTag(final TagParam param, final DBSession session) {
+		return this.queryForList("getCorrelatedTagsOfTag", param, Tag.class, session);
 	}
 
 	/**
@@ -273,6 +271,14 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	public List<Tag> getAllTags(final TagParam param, final DBSession session) {
 		return this.queryForList("getAllTags", param, Tag.class, session);
 	}
+
+	/**
+	 * Return a tag by its tag name
+	 */
+	public Tag getTagByName(final TagParam param, final DBSession session) {
+		return this.queryForObject("getTagByName", param, Tag.class, session);
+	}
+	
 
 	/**
 	 * Returns details about a tag. Those details are:
@@ -291,10 +297,37 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public Tag getTagDetails(TagParam param, final DBSession session) {
 		final Tag tag;
-		tag = this.queryForObject("getTagByName", param, Tag.class, session);
+		param.setCaseSensitiveTagNames(true);
+		tag = this.getTagByName(param, session);
+		
+		// retrieve all sub-/supertags
+		param.setLimit(10000);
+		param.setOffset(0);
+		
+		// check for sub-/supertags
+		if (param.getNumSimpleConcepts() > 0) {
+			List<Tag> subTags = this.getSubtagsOfTag(param, session);
+			tag.setSubTags(setUsercountToGlobalCount(subTags));
+		}
+		if (param.getNumSimpleConceptsWithParent() > 0) {
+			List<Tag> superTags = this.getSupertagsOfTag(param, session);
+			tag.setSuperTags(setUsercountToGlobalCount(superTags));
+		}
+		if (param.getNumCorrelatedConcepts() > 0) {
+			List<Tag> subTags = this.getSubtagsOfTag(param, session);
+			tag.setSubTags(setUsercountToGlobalCount(subTags));
+			List<Tag> superTags = this.getSupertagsOfTag(param, session);
+			tag.setSuperTags(setUsercountToGlobalCount(superTags));			
+		}
+		
 		// this is just a hack as long as we don't supply separate user counts for
 		// each tag, DB
 		tag.setUsercount(tag.getGlobalcount());
+		
+		System.out.println("SUPERTAGS:");
+		printTags(tag.getSuperTags());
+		System.out.println("SUBTAGS:");
+		printTags(tag.getSubTags());
 		return tag;
 	}
 
@@ -332,11 +365,26 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		// start the chain
 		tags = chain.getFirstElement().perform(param, session); 
 		
-		// this is just a hack as long as we don't supply separate user counts for
-		// each tag, dbe
+		return this.setUsercountToGlobalCount(tags);		
+	}
+	
+	/**
+	 * This is just a hack as long as we don't supply separate user counts for each tag, dbe
+	 * 
+	 * @param tags a list of tags
+	 * @return list of tags with usercount set to globalcount for each tag
+	 */
+	private List<Tag> setUsercountToGlobalCount(List<Tag> tags) {
 		for (final Tag tag : tags) {
 			tag.setUsercount(tag.getGlobalcount());
 		}
-		return tags;		
+		return tags;
 	}
+	
+	private void printTags(List<Tag> tags) {
+		if (tags != null)
+		for (final Tag tag : tags) {
+			System.out.println(tag.getName());
+		}
+	}	
 }

@@ -38,23 +38,50 @@ public class LogicInterfaceHelper {
 		if (tags != null) {
 			for (String tag : tags) {
 				tag = tag.trim();
+				
 				if (tag.length() > 2) {
-					if (tag.charAt(0) == '-') {
-						if (tag.charAt(1) == '>') {
-							param.addSimpleConceptName(tag.substring(2).trim());
-						} else if ((tag.charAt(1) == '-') && (tag.charAt(2) == '>')) {
-							if (tag.length() > 3) {
-								param.addTransitiveConceptName(tag.substring(3).trim());
-							}
-						}
-					} else {
+					if (tag.charAt(0) != '-' && tag.charAt(0) != '<' && tag.charAt(tag.length() - 1) != '>') {
 						param.addTagName(tag);
+						continue;
 					}
-				} else {
-					param.addTagName(tag);
+					if (tag.substring(0, 2).equals("->")) {
+						param.addSimpleConceptName(tag.substring(2).trim());
+						continue;
+					}
+					if (tag.substring(0, 3).equals("-->")) {
+						if (tag.length() > 3) 
+							param.addTransitiveConceptName(tag.substring(3).trim());
+						else
+							param.addTagName(tag);						
+						continue;
+					}
+					if (tag.substring(tag.length() - 3, tag.length()).equals("-->")) {
+						if (tag.length() > 3) 
+							param.addSimpleConceptWithParentName(tag.substring(0,tag.length() - 3).trim());
+						else
+							param.addTagName(tag);						
+						continue;
+					}					
+					if (tag.substring(tag.length() - 2, tag.length()).equals("->")) {
+						param.addSimpleConceptWithParentName(tag.substring(0,tag.length() - 2).trim());
+						continue;
+					}
+					if (tag.substring(0,3).equals("<->")) {
+						if (tag.length() > 3) 
+							param.addCorrelatedConceptName(tag.substring(3).trim());
+						else
+							param.addTagName(tag);
+						continue;
+					}															
 				}
-			}
-		}
+				
+				// if none of the above was applicable, we add a simple tag
+				param.addTagName(tag);
+				
+			} // end for
+			
+		} // end if (tags != null)
+		
 		return param;
 	}
 

@@ -13,12 +13,12 @@
 	</select>
 
 	<select id="getTagByName" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
-		SELECT TAS.tag_name, count(TAS.tag_name) as tag_ctr 
-		FROM tas TAS 
-		WHERE (TAS.user_name=#requestedUserName# OR
-			  TAS.group=0) AND
-			  TAS.tag_name=#tagName#
-		GROUP BY TAS.tag_name
+		SELECT t1.tag_name, count(t1.tag_name) as tag_ctr 
+		FROM <include refid="tagFromQuery"/>
+		WHERE <include refid="tagWhereQuery"/> AND
+			  (t1.user_name=#requestedUserName# OR
+			  t1.group=0)
+		GROUP BY t1.tag_name
 		LIMIT #limit# OFFSET #offset#
 	</select>	
 
@@ -84,6 +84,27 @@
 		GROUP BY tag_name LIMIT #limit# OFFSET #offset#
 	</select>
 
+
+	<select id="getSubtagsOfTag" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT t1.tag_name, count(distinct(t1.tas_id)) as tag_ctr 
+		FROM tas t1, tagtagrelations TTR 
+		WHERE TTR.upper = <iterate property="tagIndex">#tagIndex[].tagName#</iterate> AND 
+                TTR.lower = t1.tag_name AND
+                (t1.group=0 OR t1.user_name = #requestedUserName#)
+		GROUP BY t1.tag_name
+		LIMIT #limit# OFFSET #offset#
+	</select>
+
+	<select id="getSupertagsOfTag" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT t1.tag_name, count(distinct(t1.tas_id)) as tag_ctr 
+		FROM tas t1, tagtagrelations TTR 
+		WHERE TTR.lower = <iterate property="tagIndex">#tagIndex[].tagName#</iterate> AND 
+                TTR.upper = t1.tag_name AND
+                (t1.group=0 OR t1.user_name = #requestedUserName#)
+		GROUP BY t1.tag_name
+		LIMIT #limit# OFFSET #offset#
+	</select>
+	
 	<!-- noch an TagParam anpassen für das Einfügen von Bookmark bzw Bibtex Objekten -->
 	<insert id="insertTag" parameterClass="tag">
 		INSERT INTO tags (tag_name, tag_ctr) VALUES (#name#, 1) ON DUPLICATE KEY UPDATE tag_ctr = tag_ctr + 1
@@ -104,5 +125,9 @@
 	<update id="updateTagDec" parameterClass="string">
 		UPDATE tags SET tag_ctr = tag_ctr - 1 WHERE tag_name = #tagName#
 	</update>
+	
+
+	
+	
 
 </sqlMap>

@@ -25,20 +25,66 @@ import org.bibsonomy.model.logic.Order;
  * @author Christian Schenk
  * @version $Id$
  */
+/**
+ * @author dbenz
+ *
+ */
 public abstract class GenericParam {
-	/** A list of tags */
+	/**
+	 * A list of tags
+	 */
 	private List<Tag> tags;
+	
+	/**
+	 * A single tag
+	 */
 	private Tag tag;
+	
+	/**
+	 * A tag name
+	 */
 	private String tagName;
+	
+	/**
+	 * FIXME what is this for?
+	 */
 	private String title;
+	
 	/**
 	 * List of (tagname, index)-pairs, where tagname can be both a name of a tag
 	 * or concept.
 	 */
 	private final List<TagIndex> tagIndex;
+	
+	/**
+	 * corresponds to -->[tagName]
+	 */
 	private int numTransitiveConcepts;
+	
+	/**
+	 * corresponds to ->[tagName] 
+	 */
 	private int numSimpleConcepts;
+	
+	/**
+	 * corresponds to [tagName]
+	 */
 	private int numSimpleTags;
+	
+	/**
+	 * corresponds to [tagName]-> 
+	 */
+	private int numSimpleConceptsWithParent;
+	
+	/**
+	 * corresponds to [tagName]-->
+	 */
+	private int numSimpleConceptsWithAncestors;
+	
+	/**
+	 * corresponds to <->[tagName]
+	 */
+	private int numCorrelatedConcepts;
 	
 	/** List of the groups the user belongs to */
 	private List<Integer> groups;
@@ -98,6 +144,9 @@ public abstract class GenericParam {
 		this.numSimpleTags = 0;
 		this.numSimpleConcepts = 0;
 		this.numTransitiveConcepts = 0;
+		this.numSimpleConceptsWithParent = 0;
+		this.numSimpleConceptsWithAncestors = 0;
+		this.numCorrelatedConcepts = 0;
 		this.caseSensitiveTagNames = false;
 		this.groupId = GroupID.INVALID.getId();
 		this.groupType = GroupID.PUBLIC;
@@ -140,6 +189,21 @@ public abstract class GenericParam {
 		this.addToTagIndex(tagName);
 		this.numTransitiveConcepts++;
 	}
+	
+	public void addSimpleConceptWithParentName(final String tagName) {
+		this.addToTagIndex(tagName);
+		this.numSimpleConceptsWithParent++;
+	}
+	
+	public void addSimpleConceptwithAncestorsName(final String tagName) {
+		this.addToTagIndex(tagName);
+		this.numSimpleConceptsWithAncestors++;
+	}
+	
+	public void addCorrelatedConceptName(final String tagName) {
+		this.addToTagIndex(tagName);
+		this.numCorrelatedConcepts++;
+	}	
 
 	public List<TagIndex> getTagIndex() {
 		return Collections.unmodifiableList(this.tagIndex);
@@ -409,5 +473,17 @@ public abstract class GenericParam {
 
 	public Integer getNumTransitiveConcepts() {
 		return this.numTransitiveConcepts;
+	}
+
+	public int getNumSimpleConceptsWithParent() {
+		return this.numSimpleConceptsWithParent;
+	}
+
+	public int getNumCorrelatedConcepts() {
+		return this.numCorrelatedConcepts;
+	}
+
+	public int getNumSimpleConceptsWithAncestors() {
+		return this.numSimpleConceptsWithAncestors;
 	}
 }

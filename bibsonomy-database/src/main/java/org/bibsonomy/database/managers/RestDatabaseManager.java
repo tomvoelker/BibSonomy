@@ -1,5 +1,6 @@
 package org.bibsonomy.database.managers;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -214,8 +215,7 @@ public class RestDatabaseManager implements DBLogicInterface {
 	public Tag getTagDetails(final String authUser, final String tagName) {
 		final DBSession session = this.openSession();
 		try {
-			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, authUser, null, authUser, null, null, null, 0, 1);
-			param.setTagName(tagName);
+			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, authUser, null, authUser, Arrays.asList(tagName), null, null, 0, 1);
 			return this.tagDBManager.getTagDetails(param, session); 
 		} finally {
 			session.close();
