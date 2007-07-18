@@ -259,7 +259,23 @@ public class XMLRenderer implements Renderer {
 		xmlTag.setName(tag.getName());
 		xmlTag.setGlobalcount(BigInteger.valueOf(tag.getGlobalcount()));
 		xmlTag.setUsercount(BigInteger.valueOf(tag.getUsercount()));
+		
+		// add sub-/supertags - dbe, 20070718
+		if (tag.getSubTags() != null && tag.getSubTags().size() > 0) {			
+			xmlTag.getSubTags().add(createXmlTags(tag.getSubTags()));
+		}
+		if (tag.getSuperTags() != null && tag.getSuperTags().size() > 0) {
+			xmlTag.getSuperTags().add(createXmlTags(tag.getSuperTags()));
+		}
 		return xmlTag;
+	}
+	
+	private TagsType createXmlTags(final List<Tag> tags) {
+		final TagsType xmlTags = new TagsType();
+		for (final Tag tag : tags) {
+			xmlTags.getTag().add(createXmlTag(tag));				
+		}
+		return xmlTags;
 	}
 
 	public void serializeGroups(final Writer writer, final List<Group> groups, final ViewModel viewModel) throws InternServerException {
