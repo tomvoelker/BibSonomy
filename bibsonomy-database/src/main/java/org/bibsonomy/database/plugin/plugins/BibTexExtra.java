@@ -12,12 +12,14 @@ import org.bibsonomy.database.util.DBSession;
  */
 public class BibTexExtra extends AbstractDatabasePlugin {
 
-	private final BibTexExtraDatabaseManager bibtexExtraDb = BibTexExtraDatabaseManager.getInstance();
+	// removed circular dependencies
+	// private final BibTexExtraDatabaseManager BibTexExtraDatabaseManager bibtexExtraDb = BibTexExtraDatabaseManager.getInstance();
 
 	@Override
 	public Runnable onBibTexDelete(final int contentId, final DBSession session) {
 		return new Runnable() {
 			public void run() {
+				BibTexExtraDatabaseManager bibtexExtraDb = BibTexExtraDatabaseManager.getInstance();
 				// Delete link to related document
 				bibtexExtraDb.deleteDocument(contentId, session);
 				// Delete id in collector table
@@ -34,6 +36,7 @@ public class BibTexExtra extends AbstractDatabasePlugin {
 	public Runnable onBibTexUpdate(final int newContentId, final int contentId, final DBSession session) {
 		return new Runnable() {
 			public void run() {
+				BibTexExtraDatabaseManager bibtexExtraDb = BibTexExtraDatabaseManager.getInstance();
 				bibtexExtraDb.updateURL(contentId, newContentId, session);
 				bibtexExtraDb.updateDocument(contentId, newContentId, session);
 				bibtexExtraDb.updateExtendedFieldsData(contentId, newContentId, session);
