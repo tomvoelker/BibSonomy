@@ -7,6 +7,7 @@ import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
+import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.util.ExceptionUtils;
 import org.bibsonomy.util.ValidationUtils;
@@ -114,4 +115,13 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	protected void updateIds(final ConstantID idsType, final DBSession session) {
 		this.insert("updateIds", idsType.getId(), session);
 	}
+	
+	public Integer getCurrentContentId(final ConstantID idsType, final DBSession session) {
+		return this.queryForObject("getCurrentContentId", idsType.getId(), Integer.class, session);
+	}
+	
+	public Integer onBibTexInsertSQL(final BibTexParam param, final DBSession session) {
+		return this.queryForObject("testLogBibtex", param, Integer.class, session);
+	}
+			
 }

@@ -41,23 +41,23 @@
 		SELECT tas_id, tag_name, content_id, content_type, date,change_date
 		FROM tas WHERE content_id = #requestedContentId#
 	</insert>
-
+	
 	<insert id="logGroupDeleteUser" parameterClass="groupParam">
-		INSERT INTO log_groups (`user_name`, `group`, `defaultgroup`, `start_date`, `user_status`)
-		SELECT g.user_name, g.group, g.defaultgroup, g.start_date, g.user_status
-		FROM groups g WHERE g.user_name #userName# AND g.group = #groupId#
+		INSERT INTO log_groups (`user_name`, `group`, `defaultgroup`, `start_date`)
+		SELECT g.user_name, g.group, g.defaultgroup, g.start_date
+		FROM groups g WHERE g.user_name = #userName# AND g.group = #groupId#
 	</insert>
 
 	<insert id="logBibtexDeleteUserfromGroup" parameterClass="bibtexParam">
 		INSERT INTO log_bibtex (content_id, `group`, user_name)
-		SELECT content_id, user_name, group
-		FROM bibtex WHERE user_name = #userName# AND group = #groupId#
+		SELECT content_id, user_name, `group`
+		FROM bibtex WHERE user_name = #userName# AND `group` = #groupId#
 	</insert>
 
 	<insert id="logBookmarkDeleteUserfromGroup" parameterClass="bookmarkParam">
 		INSERT INTO log_bookmark (content_id, `group`, user_name)
-		SELECT content_id, user_name, group
-		FROM bookmark WHERE user_name = #userName# AND group = #groupId#
+		SELECT content_id, user_name, `group`
+		FROM bookmark WHERE user_name = #userName# AND `group` = #groupId#
 	</insert>
 
 	<select id="testLogBibtex" resultClass="int" parameterClass="bibtexParam">

@@ -29,6 +29,10 @@
 	<select id="getNewContentId" resultClass="int" parameterClass="int">
 		SELECT value FROM ids WHERE name = #idsType# FOR UPDATE
 	</select>
+	
+	<select id="getCurrentContentId" resultClass="int" parameterClass="int">
+		SELECT MAX(value) FROM ids WHERE name = #idsType# FOR UPDATE
+	</select>
 
 	<update id="updateIds" parameterClass="int">
 		UPDATE ids SET value = value + 1 WHERE name = #idsType#
