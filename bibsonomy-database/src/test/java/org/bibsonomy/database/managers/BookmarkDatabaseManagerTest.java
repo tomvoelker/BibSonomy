@@ -177,7 +177,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { ModelUtils.class.getName(), "hurz" }), "", null, 0, 50);
 		final List<Post<Bookmark>> posts = this.bookmarkDb.getPosts(param, this.dbSession);
 		assertEquals(1, posts.size());
-		ModelUtils.assertPropertyEquality(toInsert, posts.get(0), Integer.MAX_VALUE, new String[] { "resource", "tags" });
+		ModelUtils.assertPropertyEquality(toInsert, posts.get(0), Integer.MAX_VALUE, new String[] { "resource", "tags", "user", "date" });
 		toInsert.getResource().setCount(1);
 		ModelUtils.assertPropertyEquality(toInsert.getResource(), posts.get(0).getResource(), Integer.MAX_VALUE);
 

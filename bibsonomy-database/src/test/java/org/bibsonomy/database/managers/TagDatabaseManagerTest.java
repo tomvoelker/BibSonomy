@@ -76,12 +76,12 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
 	@Test
 	public void getTagDetails() {
-		this.tagParam.setTagName("kassel");
 		Tag tag = this.tagDb.getTagDetails(this.tagParam, this.dbSession);
-		assertNotNull(tag);
-		assertEquals(this.tagParam.getTagName(), tag.getName()); 
+		assertNotNull(tag);	
+		assertEquals(this.tagParam.getTagIndex().get(0).getTagName(), tag.getName());	
 		assertNotNull(tag.getGlobalcount());
 		assertNotNull(tag.getUsercount()); 
+		this.resetParameters();
 	}
 	
 	@Test

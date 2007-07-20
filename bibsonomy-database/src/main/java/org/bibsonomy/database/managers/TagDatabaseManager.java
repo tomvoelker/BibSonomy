@@ -324,10 +324,6 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		// each tag, DB
 		tag.setUsercount(tag.getGlobalcount());
 		
-		System.out.println("SUPERTAGS:");
-		printTags(tag.getSuperTags());
-		System.out.println("SUBTAGS:");
-		printTags(tag.getSubTags());
 		return tag;
 	}
 
@@ -381,6 +377,11 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		return tags;
 	}
 	
+	/**
+	 * Helper function to print a list of tags to stdout
+	 * 
+	 * @param tags
+	 */
 	private void printTags(List<Tag> tags) {
 		if (tags != null)
 		for (final Tag tag : tags) {
