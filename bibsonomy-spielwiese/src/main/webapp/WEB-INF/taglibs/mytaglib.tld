@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN" "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
+
+<!-- a tag library descriptor -->
+
+<taglib>
+   <tlibversion>1.0</tlibversion>
+   <jspversion>1.1</jspversion>
+   <shortname>mytaglib</shortname>
+   <uri></uri>
+   <info>Some helpers to shorten syntax</info>
+
+  <tag>
+    <name>encode</name>
+    <tagclass>tags.Encode</tagclass>
+    <bodycontent>empty</bodycontent>
+    <info>Encodes the given string with URLEncoder</info>
+    <attribute>
+       <name>value</name>
+       <required>true</required>
+       <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>entrytype</name>
+    <tagclass>tags.EntryType</tagclass>
+    <bodycontent>empty</bodycontent>
+    <info>Encodes the given string with URLEncoder</info>
+    <attribute>
+       <name>value</name>
+       <required>true</required>
+       <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+           
+  <tag>
+    <name>encode2</name>
+    <tagclass>tags.Encode2</tagclass>
+    <bodycontent>empty</bodycontent>
+    <info>Encodes the given string TWO TIMES with URLEncoder</info>
+    <attribute>
+       <name>value</name>
+       <required>true</required>
+       <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>bibclean</name>
+    <tagclass>tags.Bibclean</tagclass>
+    <bodycontent>empty</bodycontent>
+    <info>Removes {} and other symbols from the input String and encodes HTML Entities</info>
+    <attribute>
+       <name>value</name>
+       <required>true</required>
+       <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>bibcleancsv</name>
+    <tagclass>tags.BibcleanCSV</tagclass>
+    <bodycontent>empty</bodycontent>
+    <info>Removes {} and other symbols from the input String</info>
+    <attribute>
+       <name>value</name>
+       <required>true</required>
+       <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+
+  <tag>
+    <name>xotherpersons</name>
+    <tagclass>tags.Xotherpersons</tagclass>
+    <bodycontent>empty</bodycontent>
+    <info>returns CSS for formating the "... and X other persons" link</info>
+    <attribute>
+       <name>value</name>
+       <required>true</required>
+       <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>formatDate</name>
+    <tagclass>tags.FormatDate</tagclass>
+    <bodycontent>empty</bodycontent>
+    <info>formats the date according to given format type</info>
+    <attribute>
+       <name>value</name>
+       <required>true</required>
+       <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+       <name>type</name>
+       <required>false</required>
+       <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  
+  
+  <function>
+    <name>trimWhiteSpace</name>
+    <function-class>tags.Functions</function-class>
+    <function-signature>String trimWhiteSpace (java.lang.String)</function-signature>
+  </function> 
+
+  <function>
+    <name>decodeURI</name>
+    <function-class>tags.Functions</function-class>
+    <function-signature>String decodeURI (java.lang.String)</function-signature>
+  </function> 
+  
+  <function>
+    <name>makeCredential</name>
+    <function-class>tags.Functions</function-class>
+    <function-signature>String makeCredential (java.lang.String)</function-signature>
+  </function> 
+  
+</taglib>
