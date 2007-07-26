@@ -32,7 +32,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getUserDetails() {
 		final User testUser = this.userParam.getUser();
 		final User user = this.userDb.getUserDetails(testUser.getName(), this.dbSession);
-		ModelUtils.assertPropertyEquality(testUser, user, Integer.MAX_VALUE, new String[] { "homepage", "password", "apiKey" });
+		ModelUtils.assertPropertyEquality(testUser, user, Integer.MAX_VALUE, null, new String[] { "homepage", "password", "apiKey" });
 		assertEquals("http://www.kde.cs.uni-kassel.de/hotho", user.getHomepage().toString());
 		assertEquals(null, user.getPassword());
 		assertEquals(null, user.getApiKey());
@@ -55,7 +55,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		newUser.setName("test-name");
 		this.userDb.createUser(newUser, this.dbSession);
 		final User user = this.userDb.getUserDetails(this.userParam.getUser().getName(), this.dbSession);
-		ModelUtils.assertPropertyEquality(newUser, user, Integer.MAX_VALUE, new String[] { "password" });
+		ModelUtils.assertPropertyEquality(newUser, user, Integer.MAX_VALUE, null, new String[] { "password" });
 		assertEquals(null, user.getPassword());
 		try {
 			this.userDb.createUser(null, this.dbSession);
