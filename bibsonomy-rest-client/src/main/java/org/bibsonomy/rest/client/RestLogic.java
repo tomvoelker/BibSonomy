@@ -1,9 +1,5 @@
 package org.bibsonomy.rest.client;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -23,6 +19,7 @@ import org.bibsonomy.rest.client.queries.get.GetGroupDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetGroupListQuery;
 import org.bibsonomy.rest.client.queries.get.GetPostDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetPostsQuery;
+import org.bibsonomy.rest.client.queries.get.GetTagDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetTagsQuery;
 import org.bibsonomy.rest.client.queries.get.GetUserDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetUserListOfGroupQuery;
@@ -99,6 +96,7 @@ public class RestLogic implements LogicInterface {
 
 	@SuppressWarnings("unchecked")
 	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, int start, int end) {
+		// TODO: clientside chain of responsibility
 		final GetPostsQuery query = new GetPostsQuery(start, end);
 		query.setGrouping(grouping, groupingName);
 		query.setResourceHash(hash);
@@ -108,7 +106,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	public Tag getTagDetails(String tagName) {
-		return getTagDetails(tagName);
+		return execute(new GetTagDetailsQuery(tagName));
 	}
 
 	public List<Tag> getTags(GroupingEntity grouping, String groupingName, String regex, int start, int end) {
