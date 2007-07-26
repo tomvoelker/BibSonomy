@@ -35,6 +35,10 @@ import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.resource.Resource;
 
+/**
+ * @author Jens Illig
+ *
+ */
 public class LogicInterfaceProxyTest implements LogicInterface {
 	private static final Logger log = Logger.getLogger(LogicInterfaceProxyTest.class);
 	private static final String LOGIN_USER_NAME = LogicInterfaceProxyTest.class.getSimpleName();
