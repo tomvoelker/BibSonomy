@@ -3,7 +3,10 @@
  */
 package org.bibsonomy.rest.remotecall;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import junit.framework.Assert;
 
@@ -110,7 +113,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 
 		public boolean matches(Object b) {
 			try {
-				ModelUtils.assertPropertyEquality(a, b, 5, excludeProperties);
+				ModelUtils.assertPropertyEquality(a, b, 5, null, excludeProperties);
 			} catch (Throwable t) {
 				log.error(t,t);
 				return false;
@@ -163,25 +166,54 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		EasyMock.verify(serverLogic);
 		assertLogin();
 	}
-
+	
+	@Test
+	public void createUserTest() {
+		createUser(ModelUtils.getUser());
+	}
 	public void createUser(User user) {
-		// TODO Auto-generated method stub
-		
+		serverLogic.createUser(PropertyEqualityArgumentMatcher.eq(user, "apiKey"));
+		EasyMock.replay(serverLogic);
+		clientLogic.createUser(user);
+		EasyMock.verify(serverLogic);
+		assertLogin();
 	}
 
+	@Test
+	public void deleteGroupTest() {
+		deleteGroup("hurzelGroupName");
+	}
 	public void deleteGroup(String groupName) {
-		// TODO Auto-generated method stub
-		
+		serverLogic.deleteGroup(groupName);
+		EasyMock.replay(serverLogic);
+		clientLogic.deleteGroup(groupName);
+		EasyMock.verify(serverLogic);
+		assertLogin();
 	}
 
+	
+	@Test
+	public void deletePostTest() {
+		deletePost("hurzelUserName", ModelUtils.getBookmark().getIntraHash());
+	}
 	public void deletePost(String userName, String resourceHash) {
-		// TODO Auto-generated method stub
-		
+		serverLogic.deletePost(userName, resourceHash);
+		EasyMock.replay(serverLogic);
+		clientLogic.deletePost(userName, resourceHash);
+		EasyMock.verify(serverLogic);
+		assertLogin();
 	}
 
+	@Test
+	public void deleteUserTest() {
+		deleteUser("hurzelUserName");
+	}
 	public void deleteUser(String userName) {
-		// TODO Auto-generated method stub
-		
+		serverLogic.deleteUser(userName);
+		EasyMock.replay(serverLogic);
+		clientLogic.deleteUser(userName);
+		EasyMock.verify(serverLogic);
+		assertLogin();
 	}
 
 	public String getAuthenticatedUser() {
@@ -189,69 +221,252 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		return null;
 	}
 
+	@Test
+	public void getGroupDetailsTest() {
+		getGroupDetails("hurzelGroupName");
+	}
 	public Group getGroupDetails(String groupName) {
-		// TODO Auto-generated method stub
-		return null;
+		final Group returnedGroupExpectation = ModelUtils.getGroup();
+		returnedGroupExpectation.setUsers(new ArrayList<User>());
+		returnedGroupExpectation.getUsers().add(ModelUtils.getUser());
+		returnedGroupExpectation.getUsers().get(0).setName("Nr1");
+		returnedGroupExpectation.getUsers().add(ModelUtils.getUser());
+		for (final User u : returnedGroupExpectation.getUsers()) {
+			u.setApiKey(null);
+			u.setPassword(null);
+		}
+		EasyMock.expect(serverLogic.getGroupDetails(groupName)).andReturn(returnedGroupExpectation);
+		EasyMock.replay(serverLogic);
+		final Group returnedGroup = clientLogic.getGroupDetails(groupName);
+		ModelUtils.assertPropertyEquality(returnedGroupExpectation, returnedGroup, 5, null, "groupId");
+		EasyMock.verify(serverLogic);
+		assertLogin();
+		return returnedGroup;
 	}
-
+	
+	
+	@Test
+	public void getGroupsTest() {
+		getGroups(64, 129);
+	}
 	public List<Group> getGroups(int start, int end) {
-		// TODO Auto-generated method stub
-		return null;
+		final List<Group> expectedList = new ArrayList<Group>();
+		expectedList.add(ModelUtils.getGroup());
+		expectedList.get(0).setName("Group1");
+		expectedList.add(ModelUtils.getGroup());
+		expectedList.get(1).setName("Group2");
+		
+		EasyMock.expect(serverLogic.getGroups(start, end)).andReturn(expectedList);
+		EasyMock.replay(serverLogic);
+		final List<Group> returnedGroups = clientLogic.getGroups(start,end);
+		ModelUtils.assertPropertyEquality(expectedList, returnedGroups, 3, Pattern.compile(".*\\.groupId"));
+		EasyMock.verify(serverLogic);
+		assertLogin();
+		return returnedGroups;
 	}
-
+	
+	
+	@Test
+	public void getPostDetailsTest() {
+		getPostDetails(ModelUtils.getBibTex().getIntraHash(), "testUser");
+	}
 	public Post<? extends org.bibsonomy.model.Resource> getPostDetails(String resourceHash, String userName) {
-		// TODO Auto-generated method stub
-		return null;
+		final Post<BibTex> expectedBibtexPost = ModelUtils.generatePost(BibTex.class);
+		final Post<Bookmark> expectedBookmarkPost = ModelUtils.generatePost(Bookmark.class);
+		
+		EasyMock.expect(serverLogic.getPostDetails(resourceHash, userName)).andReturn((Post) expectedBibtexPost);
+		EasyMock.expect(serverLogic.getPostDetails(resourceHash, userName)).andReturn((Post) expectedBookmarkPost);
+		EasyMock.replay(serverLogic);
+		
+		final String[] ignoreProperties = new String[] {"user.apiKey", "user.email", "user.homepage", "user.password", "user.realname"};
+		final Post<? extends org.bibsonomy.model.Resource> returnedBibtexPost = clientLogic.getPostDetails(resourceHash,userName);
+		ModelUtils.assertPropertyEquality(expectedBibtexPost, returnedBibtexPost, 5, null, ignoreProperties);
+		final Post<? extends org.bibsonomy.model.Resource> returnedBookmarkPost = clientLogic.getPostDetails(resourceHash,userName);
+		ModelUtils.assertPropertyEquality(expectedBookmarkPost, returnedBookmarkPost, 5, null, ignoreProperties);
+		EasyMock.verify(serverLogic);
+		assertLogin();
+		return returnedBibtexPost;
 	}
-
+	
+	
+	@Test
+	public void getPostsTestBookmarkByTag() {
+		getPosts(Bookmark.class, GroupingEntity.ALL, null, Arrays.asList("bla", "blub"), null, null /* must be null because order is inferred and not transmitted */, 7, 1264);
+	}
+	@Test
+	public void getPostsTestBibtexByGroupAndTag() {
+		getPosts(BibTex.class, GroupingEntity.GROUP, "testGroup", Arrays.asList("blub", "bla"), null, null, 0, 1);
+	}
+	@Test
+	public void getPostsTestBibtexByUserAndHash() {
+		getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), null, 0, 5);
+	}
 	public <T extends org.bibsonomy.model.Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, int start, int end) {
-		// TODO Auto-generated method stub
-		return null;
+		final List<Post<T>> expectedPosts = new ArrayList<Post<T>>();
+		expectedPosts.add(ModelUtils.generatePost(resourceType));
+		expectedPosts.get(0).setDescription("erstes");
+		expectedPosts.add(ModelUtils.generatePost(resourceType));
+		if (resourceType == org.bibsonomy.model.Resource.class) {
+			expectedPosts.add( (Post) ModelUtils.generatePost(Bookmark.class));
+			expectedPosts.add( (Post) ModelUtils.generatePost(BibTex.class));
+		}
+		
+		EasyMock.expect(serverLogic.getPosts(resourceType, grouping, groupingName, tags, hash, order, start, end )).andReturn(expectedPosts);
+		EasyMock.replay(serverLogic);
+		
+		final List<Post<T>> returnedPosts = clientLogic.getPosts(resourceType, grouping, groupingName, tags, hash, order, start, end );
+		ModelUtils.assertPropertyEquality(expectedPosts, returnedPosts, 5, Pattern.compile(".*\\.user\\.(apiKey|homepage|realname|email|password)"));
+		EasyMock.verify(serverLogic);
+		assertLogin();
+		return returnedPosts;
 	}
 
+
+	@Test
+	public void getTagDetailsTest() {
+		getTagDetails("testzeug");
+	}	
 	public Tag getTagDetails(String tagName) {
-		// TODO Auto-generated method stub
-		return null;
+		final Tag expected = ModelUtils.getTag();		
+		EasyMock.expect(serverLogic.getTagDetails(tagName)).andReturn(expected);
+		EasyMock.replay(serverLogic);
+		
+		final Tag returned = clientLogic.getTagDetails(tagName);
+		ModelUtils.assertPropertyEquality(expected, returned, 3, Pattern.compile("(.*\\.)?(id|stem)"));
+		EasyMock.verify(serverLogic);
+		assertLogin();
+		return returned;
 	}
 
+	
+	@Test
+	public void getTagsTest() {
+		getTags(GroupingEntity.GROUP, "testGroup", "regex", 4, 22);
+	}
 	public List<Tag> getTags(GroupingEntity grouping, String groupingName, String regex, int start, int end) {
-		// TODO Auto-generated method stub
-		return null;
+		final List<Tag> expected = ModelUtils.buildTagList(3, "testPrefix", 1);		
+		EasyMock.expect(serverLogic.getTags(grouping, groupingName, regex, start, end)).andReturn(expected);
+		EasyMock.replay(serverLogic);
+		
+		final List<Tag> returned = clientLogic.getTags(grouping, groupingName, regex, start, end);
+		ModelUtils.assertPropertyEquality(expected, returned, 5, Pattern.compile("(.*\\.)?(id|stem)"));
+		EasyMock.verify(serverLogic);
+		assertLogin();
+		return returned;
 	}
 
+	
+	@Test
+	public void getUserDetailsTest() {
+		getUserDetails("usrName");
+	}
 	public User getUserDetails(String userName) {
-		// TODO Auto-generated method stub
-		return null;
+		final User expected = ModelUtils.getUser();		
+		EasyMock.expect(serverLogic.getUserDetails(userName)).andReturn(expected);
+		EasyMock.replay(serverLogic);
+		
+		final User returned = clientLogic.getUserDetails(userName);
+		ModelUtils.assertPropertyEquality(expected, returned, 3, null, "apiKey", "email", "homepage", "password", "realname");
+		EasyMock.verify(serverLogic);
+		assertLogin();
+		return returned;
 	}
+	
 
+	@Test
+	public void getUsersTest() {
+		getUsers(1,56);
+	}
 	public List<User> getUsers(int start, int end) {
-		// TODO Auto-generated method stub
-		return null;
+		final List<User> expected = new ArrayList<User>(2);
+		expected.add(ModelUtils.getUser());
+		expected.get(0).setName("Nr1");
+		expected.add(ModelUtils.getUser());
+		expected.get(1).setName("Nr2");
+		EasyMock.expect(serverLogic.getUsers(start, end)).andReturn(expected);
+		EasyMock.replay(serverLogic);
+		
+		final List<User> returned = clientLogic.getUsers(start, end);
+		ModelUtils.assertPropertyEquality(expected, returned, 5, Pattern.compile(".*\\.(apiKey|homepage|realname|email|password)"));
+		EasyMock.verify(serverLogic);
+		assertLogin();
+		return returned;
 	}
 
+	@Test
+	public void getUsersTestWithGroup() {
+		getUsers("grpX",1,56);
+	}
 	public List<User> getUsers(String groupName, int start, int end) {
-		// TODO Auto-generated method stub
-		return null;
+		final List<User> expected = new ArrayList<User>(2);
+		expected.add(ModelUtils.getUser());
+		expected.get(0).setName("nr1");
+		expected.add(ModelUtils.getUser());
+		expected.get(1).setName("nr2");
+		EasyMock.expect(serverLogic.getUsers(groupName, start, end)).andReturn(expected);
+		EasyMock.replay(serverLogic);
+		
+		final List<User> returned = clientLogic.getUsers(groupName, start, end);
+		ModelUtils.assertPropertyEquality(expected, returned, 5, Pattern.compile(".*\\.(apiKey|homepage|realname|email|password)"));
+		EasyMock.verify(serverLogic);
+		assertLogin();
+		return returned;
 	}
 
+	
+	@Test
+	public void removeUserFromGroupTest() {
+		removeUserFromGroup("grooouuup!", "userTest");
+	}
 	public void removeUserFromGroup(String groupName, String userName) {
-		// TODO Auto-generated method stub
-		
+		serverLogic.removeUserFromGroup(groupName, userName);
+		EasyMock.replay(serverLogic);
+		clientLogic.removeUserFromGroup(groupName, userName);
+		EasyMock.verify(serverLogic);
+		assertLogin();
 	}
 
+	
+	@Test
+	public void updateGroupTest() {
+		updateGroup(ModelUtils.getGroup());
+	}
 	public void updateGroup(Group group) {
-		// TODO Auto-generated method stub
-		
+		serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"));
+		EasyMock.replay(serverLogic);
+		clientLogic.updateGroup(group);
+		EasyMock.verify(serverLogic);
+		assertLogin();
 	}
 
+	
+	@Test
+	public void updatePostTestBibtex() {
+		updatePost(ModelUtils.generatePost(BibTex.class));
+	}
+	@Test
+	public void updatePostTestBookmark() {
+		updatePost(ModelUtils.generatePost(Bookmark.class));
+	}
 	public void updatePost(Post<?> post) {
-		// TODO Auto-generated method stub
-		
+		serverLogic.updatePost(PropertyEqualityArgumentMatcher.eq(post,"date", "user.apiKey", "user.email", "user.homepage", "user.password", "user.realname"));
+		EasyMock.replay(serverLogic);
+		clientLogic.updatePost(post);
+		EasyMock.verify(serverLogic);
+		assertLogin();
 	}
 
+	
+	@Test
+	public void updateUserTest() {
+		createUser(ModelUtils.getUser());
+	}
 	public void updateUser(User user) {
-		// TODO Auto-generated method stub
-		
+		serverLogic.createUser(PropertyEqualityArgumentMatcher.eq(user, "apiKey"));
+		EasyMock.replay(serverLogic);
+		clientLogic.createUser(user);
+		EasyMock.verify(serverLogic);
+		assertLogin();
 	}
 	
 	@AfterClass
