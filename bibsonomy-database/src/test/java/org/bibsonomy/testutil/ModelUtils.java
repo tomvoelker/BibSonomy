@@ -10,10 +10,13 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupID;
@@ -133,7 +136,7 @@ public class ModelUtils {
 		}
 	}
 
-	public static void assertPropertyEquality(final Object should, final Object is, final int maxDepth, final String... excludeProperties) {
+	public static void assertPropertyEquality(final Object should, final Object is, final int maxDepth, final Pattern excludePropertiesPattern, final String... excludeProperties) {
 		final EqualityChecker checker = new EqualityChecker() {
 
 			public boolean checkEquals(Object should, Object is, String path) {
@@ -147,7 +150,7 @@ public class ModelUtils {
 			}
 			
 		};
-		DepthEqualityTester.areEqual(should, is, checker, maxDepth, excludeProperties);
+		DepthEqualityTester.areEqual(should, is, checker, maxDepth, excludePropertiesPattern, excludeProperties);
 	}
 	
 	private static Object getDummyValue(final Class<?> type, final String name) {
@@ -212,5 +215,28 @@ public class ModelUtils {
 			return false;
 		}
 			return true;
-		}
 	}
+
+	public static List<Tag> buildTagList(final int count, final String namePrefix, final int detailDepth) {
+		final List<Tag> tags = new ArrayList<Tag>(count);
+		for (int i = 1; i <= count; ++i) {
+			final Tag tag = new Tag();
+			setBeanPropertiesOn(tag);
+			tag.setName(namePrefix + i);
+			tags.add(tag);
+			if (detailDepth > 0) {
+				tag.setSubTags(buildTagList(count, namePrefix + "-subtag", detailDepth - 1));
+				tag.setSuperTags(buildTagList(count, namePrefix + "-supertag", detailDepth - 1));
+			}
+		}
+		return tags;
+	}
+	
+	public static Tag getTag() {
+		final Tag tag = new Tag();
+		setBeanPropertiesOn(tag);
+		tag.setSubTags(buildTagList(3, "subtag", 0));
+		tag.setSuperTags(buildTagList(3, "supertag", 0));
+		return tag;
+	}
+}

@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.util.ExceptionUtils;
@@ -38,23 +39,23 @@ public class DepthEqualityTester  {
 		return skip;
 	}
 	
-	public static boolean areEqual(Object should, Object is, final EqualityChecker checker, final int maxDepth, final String... excludeProperties) {
-		return areEqual(should, is, checker, maxDepth, toSet(excludeProperties));
+	public static boolean areEqual(Object should, Object is, final EqualityChecker checker, final int maxDepth, final Pattern exclusionPattern, final String... excludeProperties) {
+		return areEqual(should, is, checker, maxDepth, exclusionPattern, toSet(excludeProperties));
 	}
 	
-	public static boolean areEqual(Object should, Object is, final EqualityChecker checker, final int maxDepth, final Set<String> excludeProperties) {
-		excludeProperties.add("class");
-		return assertPropertyEquality(should, is, checker, maxDepth, excludeProperties, "", new HashSet<Object>());
+	public static boolean areEqual(Object should, Object is, final EqualityChecker checker, final int maxDepth, final Pattern exclusionPattern, final Set<String> excludeProperties) {
+		return assertPropertyEquality(should, is, checker, maxDepth, exclusionPattern, excludeProperties, "", new HashSet<Object>());
 	}
 	
-	private static boolean assertPropertyEquality(final Object should, final Object is, final EqualityChecker checker, final int remainingDepth, final Set<String> excludeProperties, final String path, final Set<Object> visited) {
+	private static boolean assertPropertyEquality(final Object should, final Object is, final EqualityChecker checker, final int remainingDepth, final Pattern exclusionPattern, final Set<String> excludeProperties, final String path, final Set<Object> visited) {
 		if (remainingDepth < 0) {
 			return true;
 		}
-		if ((excludeProperties != null) && (excludeProperties.contains(path) == true)) {
+		if (((excludeProperties != null) && (excludeProperties.contains(path) == true)) || ((exclusionPattern != null) && (exclusionPattern.matcher(path).find() == true))) {
 			log.debug("skipping '" + path + "'");
 			return true;
 		}
+		log.debug("comparing " + path);
 		if ((is == null) || (should == null)) {
 			return checker.checkEquals(should, is, path);
 		}
@@ -64,7 +65,6 @@ public class DepthEqualityTester  {
 		}*/
 		
 		if ((shouldType == String.class) || (shouldType.isPrimitive() == true) || (Number.class.isAssignableFrom(shouldType) == true) || (shouldType == Date.class) || (shouldType == URL.class)) {
-			log.debug("comparing " + path);
 			return checker.checkEquals(should, is, path);
 		} else {
 			if (remainingDepth <= 0) {
@@ -84,7 +84,7 @@ public class DepthEqualityTester  {
 					if (checker.checkTrue(isIterator.hasNext(), entryPath, "should be present") == false) {
 						return false;
 					}
-					if (assertPropertyEquality(shouldEntry, isIterator.next(), checker, remainingDepth - 1, excludeProperties, entryPath, visited) == false) {
+					if (assertPropertyEquality(shouldEntry, isIterator.next(), checker, remainingDepth - 1, exclusionPattern, excludeProperties, entryPath, visited) == false) {
 						return false;
 					}
 					i++;
@@ -102,7 +102,7 @@ public class DepthEqualityTester  {
 							if ("class".equals(d.getName()) == false) {
 								final Method getter = d.getReadMethod();
 								if (getter != null) {
-									if (assertPropertyEquality(getter.invoke(should, (Object[]) null), getter.invoke(is, (Object[]) null), checker, remainingDepth - 1, excludeProperties, propertyPath, visited) == false) {
+									if (assertPropertyEquality(getter.invoke(should, (Object[]) null), getter.invoke(is, (Object[]) null), checker, remainingDepth - 1, exclusionPattern, excludeProperties, propertyPath, visited) == false) {
 										return false;
 									}
 								}
