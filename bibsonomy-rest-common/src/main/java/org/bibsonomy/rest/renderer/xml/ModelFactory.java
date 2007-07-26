@@ -10,6 +10,12 @@ import static org.bibsonomy.model.util.ModelValidationUtils.checkUser;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -52,6 +58,7 @@ public class ModelFactory {
 		}
 		user.setName(xmlUser.getName());
 		user.setRealname(xmlUser.getRealname());
+		user.setPassword(xmlUser.getPassword());
 
 		return user;
 	}
@@ -62,21 +69,50 @@ public class ModelFactory {
 		final Group group = new Group();
 		group.setName(xmlGroup.getName());
 		group.setDescription(xmlGroup.getDescription());
+		if (xmlGroup.getUser().size() > 0) {
+			group.setUsers(new ArrayList<User>());
+			for (final UserType xmlUser : xmlGroup.getUser()) {
+				group.getUsers().add(createUser(xmlUser));
+			}
+		}
 
 		return group;
 	}
 
 	public Tag createTag(final TagType xmlTag) {
+		return createTag(xmlTag, 1);
+	}
+	
+	public Tag createTag(final TagType xmlTag, final int depth) {
 		checkTag(xmlTag);
 
 		final Tag tag = new Tag();
 		tag.setName(xmlTag.getName());
-		// TODO tag count
+		// TODO tag count  häh?
 		if (xmlTag.getGlobalcount() != null) tag.setGlobalcount(xmlTag.getGlobalcount().intValue());
-		// TODO tag count
+		// TODO tag count  häh?
 		if (xmlTag.getUsercount() != null) tag.setUsercount(xmlTag.getUsercount().intValue());
-
+		
+		if (depth > 0) {
+			if (xmlTag.getSubTags() != null) {
+				tag.setSubTags(createTags(xmlTag.getSubTags(), depth - 1));
+			}
+			if (xmlTag.getSuperTags() != null) {
+				tag.setSuperTags(createTags(xmlTag.getSuperTags(), depth - 1));
+			}
+		}
 		return tag;
+	}
+
+	private List<Tag> createTags(final List<TagsType> xmlTags, final int depth) {
+		final List<Tag> rVal = new ArrayList<Tag>();
+		for (final TagsType xmlSubTags : xmlTags) {
+			//tags.add(xmlSubTag);
+			for (final TagType xmlSubTag : xmlSubTags.getTag()) {
+				rVal.add(createTag(xmlSubTag, depth));
+			}
+		}
+		return rVal;
 	}
 
 	public Post<Resource> createPost(final PostType xmlPost) {
@@ -92,6 +128,8 @@ public class ModelFactory {
 		checkUser(xmlUser);
 		user.setName(xmlUser.getName());
 		post.setUser(user);
+		
+		post.setDate(createDate(xmlPost.getPostingdate()));
 
 		// tags
 		for (final TagType xmlTag : xmlPost.getTag()) {
@@ -168,5 +206,11 @@ public class ModelFactory {
 		}
 
 		return post;
+	}
+
+	private Date createDate(XMLGregorianCalendar date) {
+		final Calendar cal = new GregorianCalendar(date.getYear(), date.getMonth() - 1, date.getDay(), date.getHour(), date.getMinute(), date.getSecond());
+		cal.set(Calendar.MILLISECOND, date.getMillisecond());
+		return cal.getTime();
 	}
 }
