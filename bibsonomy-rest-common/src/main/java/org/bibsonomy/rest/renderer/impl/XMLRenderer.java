@@ -15,6 +15,8 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
 import java.math.BigInteger;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,6 +25,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.exceptions.InternServerException;
@@ -50,6 +53,8 @@ import org.bibsonomy.rest.renderer.xml.TagType;
 import org.bibsonomy.rest.renderer.xml.TagsType;
 import org.bibsonomy.rest.renderer.xml.UserType;
 import org.bibsonomy.rest.renderer.xml.UsersType;
+
+import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
 /**
  * This class creates xml documents valid to the xsd schema and vice-versa.
@@ -112,6 +117,7 @@ public class XMLRenderer implements Renderer {
 		xmlUser.setName(post.getUser().getName());
 		xmlUser.setHref(createHrefForUser(post.getUser().getName()));
 		xmlPost.setUser(xmlUser);
+		xmlPost.setPostingdate(createXmlCalendar(post.getDate()));
 
 		// add tags
 		if (post.getTags() != null) {
@@ -191,6 +197,12 @@ public class XMLRenderer implements Renderer {
 		return xmlPost;
 	}
 
+	private XMLGregorianCalendar createXmlCalendar(final Date date) {
+		final GregorianCalendar cal = new GregorianCalendar();
+		cal.setTime(date);
+		return new XMLGregorianCalendarImpl(cal);
+	}
+
 	private void checkPost(final Post post) throws InternServerException {
 		if (post.getUser() == null) throw new InternServerException("error no user assigned!");
 		// there may be posts whithout tags
@@ -229,6 +241,7 @@ public class XMLRenderer implements Renderer {
 		xmlUser.setName(user.getName());
 		xmlUser.setRealname(user.getRealname());
 		xmlUser.setHref(createHrefForUser(user.getName()));
+		xmlUser.setPassword(user.getPassword());
 		return xmlUser;
 	}
 
@@ -269,7 +282,7 @@ public class XMLRenderer implements Renderer {
 		}
 		return xmlTag;
 	}
-	
+
 	private TagsType createXmlTags(final List<Tag> tags) {
 		final TagsType xmlTags = new TagsType();
 		for (final Tag tag : tags) {
@@ -305,6 +318,11 @@ public class XMLRenderer implements Renderer {
 		xmlGroup.setName(group.getName());
 		xmlGroup.setHref(createHrefForGroup(group.getName()));
 		xmlGroup.setDescription(group.getDescription());
+		if (group.getUsers() != null) {
+			for (final User user : group.getUsers()) {
+				xmlGroup.getUser().add(createXmlUser(user));
+			}
+		}
 		return xmlGroup;
 	}
 
