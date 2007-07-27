@@ -8,7 +8,11 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.util.DBSession;
+import org.bibsonomy.database.util.DatabaseUtils;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.util.ExceptionUtils;
 import org.bibsonomy.util.ValidationUtils;
 
@@ -16,6 +20,7 @@ import org.bibsonomy.util.ValidationUtils;
  * Used to retrieve all different kind of stuff from the database.
  * 
  * @author Christian Schenk
+ * @author Anton Wilhelm
  * @version $Id$
  */
 public class GeneralDatabaseManager extends AbstractDatabaseManager {
@@ -23,7 +28,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	private static final Logger log = Logger.getLogger(GeneralDatabaseManager.class);
 	private static final GeneralDatabaseManager singleton = new GeneralDatabaseManager();
 	private static final ValidationUtils check = ValidationUtils.getInstance();
-
+	
 	private GeneralDatabaseManager() {
 	}
 
@@ -120,8 +125,20 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForObject("getCurrentContentId", idsType.getId(), Integer.class, session);
 	}
 	
-	public Integer onBibTexInsertSQL(final BibTexParam param, final DBSession session) {
-		return this.queryForObject("testLogBibtex", param, Integer.class, session);
+	public Integer countNewContentIdFromBibTex(final BibTexParam param, final DBSession session) {
+		return this.queryForObject("countNewContentIdFromBibTex", param, Integer.class, session);
+	}
+	
+	public Integer countRequestedContentIdFromBibTex(final BibTexParam param, final DBSession session) {
+		return this.queryForObject("countRequestedContentIdFromBibTex", param, Integer.class, session);
+	}
+
+	public Integer countNewContentIdFromBookmark(final BookmarkParam param, final DBSession session) {
+		return this.queryForObject("countNewContentIdFromBookmark", param, Integer.class, session);
+	}
+
+	public Integer countRequestedContentIdFromBookmark(final BookmarkParam param, final DBSession session) {
+		return this.queryForObject("countRequestedContentIdFromBookmark", param, Integer.class, session);
 	}
 			
 }

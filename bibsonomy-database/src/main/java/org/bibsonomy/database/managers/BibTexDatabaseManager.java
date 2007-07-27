@@ -501,11 +501,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 
 			final Post<? extends Resource> oneBibtex = bibtexs.get(0);
 			param.setRequestedContentId(oneBibtex.getContentId());
-
+			if (update == false) this.plugins.onBibTexDelete(param.getRequestedContentId(), session);
 			this.tagDb.deleteTags(oneBibtex, session);
 			this.insertUpdateSimHashes(((BibTex) oneBibtex.getResource()), true, session);
 			this.deleteBibTex(param, session);
-			if (update == false) this.plugins.onBibTexDelete(param.getRequestedContentId(), session);
 
 			session.commitTransaction();
 		} finally {

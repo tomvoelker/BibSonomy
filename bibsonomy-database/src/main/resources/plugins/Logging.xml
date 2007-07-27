@@ -36,7 +36,7 @@
 		FROM tagtagrelations WHERE lower=#lowerTagName# AND upper=#upperTagName# AND user_name=#ownerUserName#
 	</insert>
 
-	<insert id="logTagDelete" parameterClass="tagParam">
+	<insert id="logTasDelete" parameterClass="tagParam">
 		INSERT INTO log_tas (tas_id, tag_name, content_id, content_type, date, change_date)
 		SELECT tas_id, tag_name, content_id, content_type, date,change_date
 		FROM tas WHERE content_id = #requestedContentId#
@@ -59,9 +59,21 @@
 		SELECT content_id, user_name, `group`
 		FROM bookmark WHERE user_name = #userName# AND `group` = #groupId#
 	</insert>
-
-	<select id="testLogBibtex" resultClass="int" parameterClass="bibtexParam">
-		SELECT COUNT(*)	AS count FROM log_bibtex LB WHERE LB.content_id=#requestedContentId#;
+	
+	<select id="countNewContentIdFromBibTex" resultClass="int" parameterClass="bibtexParam">
+		SELECT COUNT(*)	AS count FROM log_bibtex LB WHERE LB.new_content_id=#newContentId#
+	</select>
+	
+	<select id="countRequestedContentIdFromBibTex" resultClass="int" parameterClass="bibtexParam">
+		SELECT COUNT(*)	AS count FROM log_bibtex LB WHERE LB.content_id=#requestedContentId#
+	</select>
+	            
+	<select id="countNewContentIdFromBookmark" resultClass="int" parameterClass="bookmarkParam">
+		SELECT COUNT(*)	AS count FROM log_bookmark LB WHERE LB.new_content_id=#newContentId#
+	</select>
+	
+	<select id="countRequestedContentIdFromBookmark" resultClass="int" parameterClass="bookmarkParam">
+		SELECT COUNT(*)	AS count FROM log_bookmark LB WHERE LB.content_id=#requestedContentId#
 	</select>
 
 </sqlMap>

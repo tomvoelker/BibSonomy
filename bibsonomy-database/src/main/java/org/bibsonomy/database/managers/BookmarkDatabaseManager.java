@@ -342,24 +342,33 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 	public boolean deletePost(final String userName, final String resourceHash, final DBSession session) {
+		return this.deletePost(userName, resourceHash, false, session);
+	}
+
+	
+	private boolean deletePost(final String userName, final String resourceHash, boolean update, final DBSession session) {
 		// TODO: test removal (tas and bibtex ...)
 		session.beginTransaction();
 		try {
 			// Used for userName, hash and contentId
 			final BookmarkParam param = new BookmarkParam();
-			param.setUserName(userName);
+			param.setRequestedUserName(userName);
 			param.setHash(resourceHash);
-
+			
 			final List<Post<Bookmark>> bookmarks = this.getBookmarkByHashForUser(param, session);
 			if (bookmarks.size() == 0) {
 				// Bookmark doesn't exist
 				return false;
 			}
-
+			
 			final Post<? extends Resource> oneBookmark = bookmarks.get(0);
 			param.setRequestedContentId(oneBookmark.getContentId());
+			
+			if (update == false) {
+				this.plugins.onBookmarkDelete(param.getRequestedContentId(), session);
+			}
 			// Delete al tags according bookmark
 			this.tagDb.deleteTags(oneBookmark, session);
 			// Update SimHashes
@@ -408,7 +417,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 				// Bookmark entry DOES EXIST for this user -> delete old Bookmark post
 				final Post<?> oldBookmarkPost = isBookmarkInDb.get(0);
 				this.plugins.onBookmarkUpdate(post.getContentId(), oldBookmarkPost.getContentId(), session);
-				this.deletePost(userName, oldBookmarkPost.getResource().getIntraHash(), session);
+				this.deletePost(userName, oldBookmarkPost.getResource().getIntraHash(), true, session);
 			} else {
 				if (update == true) {
 					final String errorMsg = "cannot update nonexisting BOOKMARK-post with intrahash " + oldIntraHash + " for user " + userName;

@@ -21,16 +21,7 @@ import org.bibsonomy.database.util.DBSession;
 public class Logging extends AbstractDatabasePlugin {
 
 	@Override
-	public Runnable onBibTexInsert(final int contentId, final DBSession session) {
-		return this.buildOnBibTexInsertAndDelete(contentId, session);
-	}
-
-	@Override
 	public Runnable onBibTexDelete(final int contentId, final DBSession session) {
-		return this.buildOnBibTexInsertAndDelete(contentId, session);
-	}
-
-	private final Runnable buildOnBibTexInsertAndDelete(final int contentId, final DBSession session) {
 		return new Runnable() {
 			public void run() {
 				final BibTexParam param = new BibTexParam();
@@ -46,23 +37,16 @@ public class Logging extends AbstractDatabasePlugin {
 			public void run() {
 				final BibTexParam param = new BibTexParam();
 				param.setRequestedContentId(contentId);
+				insert("logBibTex", param, session);
 				param.setNewContentId(newContentId);
 				insert("logBibTexUpdate", param, session);
 			}
 		};
 	}
 
-	@Override
-	public Runnable onBookmarkInsert(final int contentId, final DBSession session) {
-		return this.buildOnBookmarkInsertAndDelete(contentId, session);
-	}
 
 	@Override
 	public Runnable onBookmarkDelete(final int contentId, final DBSession session) {
-		return this.buildOnBookmarkInsertAndDelete(contentId, session);
-	}
-
-	private final Runnable buildOnBookmarkInsertAndDelete(final int contentId, final DBSession session) {
 		return new Runnable() {
 			public void run() {
 				final BookmarkParam param = new BookmarkParam();
@@ -72,12 +56,14 @@ public class Logging extends AbstractDatabasePlugin {
 		};
 	}
 
+
 	@Override
 	public Runnable onBookmarkUpdate(final int newContentId, final int contentId, final DBSession session) {
 		return new Runnable() {
 			public void run() {
 				final BookmarkParam param = new BookmarkParam();
 				param.setRequestedContentId(contentId);
+				insert("logBookmark", param, session);
 				param.setNewContentId(newContentId);
 				insert("logBookmarkUpdate", param, session);
 			}
@@ -103,7 +89,7 @@ public class Logging extends AbstractDatabasePlugin {
 			public void run() {
 				final TagParam param = new TagParam();
 				param.setRequestedContentId(contentId);
-				insert("logTagDelete", param, session);
+				insert("logTasDelete", param, session);
 			}
 		};
 	}
