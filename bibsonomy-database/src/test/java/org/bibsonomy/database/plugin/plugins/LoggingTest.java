@@ -23,6 +23,7 @@ import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.testutil.ParamUtils;
 import org.bibsonomy.util.ValidationUtils;
@@ -161,9 +162,11 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 		Integer result = this.generalDb.countRequestedContentIdFromBookmark(param, this.dbSession);
 		assertEquals(1, result);
 	}
+	/*
 	//@Test
 	public void onTagRelationDeleteSQL() {
-		/* 
+		
+		// 1st try
 		// this example don't work!
 		// TagRelations with relationId 10 will be tested
 		final String TEST_USER =  "schmitz";
@@ -174,8 +177,8 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 		this.tagRelDb.deleteRelation(TEST_UPPER, TEST_LOWER, TEST_USER, this.dbSession);
 		final int countAfter = bibTexDb.getBibTexByConceptForUser(TEST_USER, TEST_UPPER, TEST_USER, 100, 0, this.dbSession).size();
 		assertTrue(countBefore > countAfter);
-		*//*
 		
+		// 2nd try
 		final int countBefore = bibTexDb.getBibTexByConceptForUser("jaeschke", "researcher", "jaeschke", 100, 0, this.dbSession).size();
 		final int countLogBefore = this.generalDb.getBibTexByConceptForUser("jaeschke", "researcher", "jaeschke", 100, 0, this.dbSession).size();
 		this.tagRelDb.deleteRelation("researcher", "shannon", "jaeschke", this.dbSession);
@@ -183,17 +186,29 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 		final int countLogAfter = this.generalDb.getBibTexByConceptForUser("jaeschke", "researcher", "jaeschke", 100, 0, this.dbSession).size();
 		assertTrue(countBefore > countAfter);
 		assertTrue(countLogBefore < countLogAfter);
-		*/
+		
 	}
 	
 	//@Test
 	public void onTagDeleteSQL() {
 		
+		final int TAS_TEST_CONTENTID = 11;
+		final TagParam param = this.tagParam;
+		param.setRequestedContentId(TAS_TEST_CONTENTID);
+		
+		final Post<?> post = this.tagDb.getTagById(TAS_TEST_CONTENTID, this.dbSession);
+		
+		this.tagDb.deleteTags(post, this.dbSession);
+		
+		Integer res_original = this.generalDb.countTasIds(param, this.dbSession);
+		Integer res_logging = this.generalDb.countLogedTasIds(param, this.dbSession);
+		assertEquals(res_original, res_original);
+		
 	}
 	
-	//@Test
 	public void onDeleteUserfromGroupSQL() {
 		
 	}
+	*/
 	
 }
