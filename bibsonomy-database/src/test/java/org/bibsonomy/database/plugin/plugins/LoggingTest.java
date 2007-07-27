@@ -156,7 +156,6 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 		//param.setSimHash(HashID.INTRA_HASH);
 		final Post<Bookmark> someBookmarkPost = this.bookmarkDb.getBookmarkByHash(param, this.dbSession).get(0);
 		
-		System.out.println("### LOESCH VORGANG START");
 		this.bookmarkDb.deletePost(someBookmarkPost.getUser().getName(), BOOKMARK_TEST_HASH, this.dbSession);
 		
 		Integer result = this.generalDb.countRequestedContentIdFromBookmark(param, this.dbSession);
