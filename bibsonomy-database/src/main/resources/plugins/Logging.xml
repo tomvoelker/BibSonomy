@@ -75,5 +75,14 @@
 	<select id="countRequestedContentIdFromBookmark" resultClass="int" parameterClass="bookmarkParam">
 		SELECT COUNT(*)	AS count FROM log_bookmark LB WHERE LB.content_id=#requestedContentId#
 	</select>
+	
+	<select id="countTasIds" resultClass="int" parameterClass="tagParam">
+		SELECT COUNT(*)	AS count FROM tas LB WHERE LB.content_id=#requestedContentId#
+	</select>
+	
+	<select id="countLogedTasIds" resultClass="int" parameterClass="tagParam">
+		SELECT COUNT(*)	AS count FROM log_tas LB WHERE LB.content_id=#requestedContentId#
+	</select>
+	
 
 </sqlMap>

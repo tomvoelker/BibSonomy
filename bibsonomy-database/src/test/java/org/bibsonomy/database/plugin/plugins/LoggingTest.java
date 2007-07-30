@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConstantID;
@@ -17,12 +18,12 @@ import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.managers.TagRelationDatabaseManagerTest;
 import org.bibsonomy.database.params.*;
-import org.bibsonomy.database.params.beans.TagRelationParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.testutil.ParamUtils;
@@ -162,8 +163,40 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 		Integer result = this.generalDb.countRequestedContentIdFromBookmark(param, this.dbSession);
 		assertEquals(1, result);
 	}
+	
+	@Test
+	public void onTagDeleteSQL() {
+		final String BIB_TEST_HASH = "00078c9690694eb9a56ca7866b5101c6";
+		// ContentId of the BibTex with the Hash above
+		final int BIB_TEST_CONTENTID = 711342;
+		final BibTexParam param = this.bibtexParam;
+		param.setRequestedContentId(BIB_TEST_CONTENTID);
+		param.setHash(BIB_TEST_HASH);
+		param.setSimHash(HashID.INTRA_HASH);
+		final TagParam tagparam = this.tagParam;
+		tagparam.setRequestedContentId(BIB_TEST_CONTENTID);	
+		
+		Integer res_original = this.generalDb.countTasIds(tagparam, this.dbSession);
+	
+		final Post<BibTex> someBibTexPost = this.bibTexDb.getBibTexByHash(param, this.dbSession).get(0);
+	
+		Integer result = this.generalDb.countRequestedContentIdFromBibTex(param, this.dbSession);
+		assertEquals(0, result);
+		
+		this.bibTexDb.deletePost(someBibTexPost.getUser().getName(), BIB_TEST_HASH, this.dbSession);
+		
+		result = this.generalDb.countRequestedContentIdFromBibTex(param, this.dbSession);
+		assertEquals(1, result);
+		
+		Integer res_logging = this.generalDb.countLogedTasIds(tagparam, this.dbSession);
+		
+		assertEquals(res_original, res_logging);
+		
+	}
+	
 	/*
 	//@Test
+	// tagRelation only be called by a Testclass until yet
 	public void onTagRelationDeleteSQL() {
 		
 		// 1st try
@@ -186,23 +219,6 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 		final int countLogAfter = this.generalDb.getBibTexByConceptForUser("jaeschke", "researcher", "jaeschke", 100, 0, this.dbSession).size();
 		assertTrue(countBefore > countAfter);
 		assertTrue(countLogBefore < countLogAfter);
-		
-	}
-	
-	//@Test
-	public void onTagDeleteSQL() {
-		
-		final int TAS_TEST_CONTENTID = 11;
-		final TagParam param = this.tagParam;
-		param.setRequestedContentId(TAS_TEST_CONTENTID);
-		
-		final Post<?> post = this.tagDb.getTagById(TAS_TEST_CONTENTID, this.dbSession);
-		
-		this.tagDb.deleteTags(post, this.dbSession);
-		
-		Integer res_original = this.generalDb.countTasIds(param, this.dbSession);
-		Integer res_logging = this.generalDb.countLogedTasIds(param, this.dbSession);
-		assertEquals(res_original, res_original);
 		
 	}
 	

@@ -9,6 +9,7 @@ import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
+import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.BibTex;
@@ -139,6 +140,14 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 
 	public Integer countRequestedContentIdFromBookmark(final BookmarkParam param, final DBSession session) {
 		return this.queryForObject("countRequestedContentIdFromBookmark", param, Integer.class, session);
+	}
+	
+	public Integer countTasIds(final TagParam param, final DBSession session) {
+		return this.queryForObject("countTasIds", param, Integer.class, session);
+	}
+	
+	public Integer countLogedTasIds(final TagParam param, final DBSession session) {
+		return this.queryForObject("countLogedTasIds", param, Integer.class, session);
 	}
 			
 }

@@ -8,6 +8,7 @@ import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.tag.TagChain;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.beans.TagTagBatchParam;
+import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Group;
@@ -28,6 +29,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	private final static TagDatabaseManager singleton = new TagDatabaseManager();
 	private final GeneralDatabaseManager generalDb;
 	private final TagRelationDatabaseManager tagRelDb;
+	private final DatabasePluginRegistry plugins;
 	private static final TagChain chain = new TagChain();
 	
 	/**
@@ -40,6 +42,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	private TagDatabaseManager() {
 		this.generalDb = GeneralDatabaseManager.getInstance();
 		this.tagRelDb = TagRelationDatabaseManager.getInstance();
+		this.plugins = DatabasePluginRegistry.getInstance();
 	}
 
 	public static TagDatabaseManager getInstance() {
@@ -148,6 +151,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		}
 
 		// TODO: log all tas related to this post -> this.insertLogTas(...)
+		this.plugins.onTagDelete(post.getContentId(), session);
 		// delete all tas related to this bookmark
 		deleteTas(post.getContentId(), session);
 	}
