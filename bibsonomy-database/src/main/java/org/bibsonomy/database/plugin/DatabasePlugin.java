@@ -32,5 +32,5 @@ public interface DatabasePlugin {
 
 	public Runnable onTagDelete(int contentId, DBSession session);
 
-	public Runnable onDeleteUserfromGroup(String userName, int groupId, DBSession session);
+	public Runnable onRemoveUserFromGroup(String userName, int groupId, DBSession session);
 }

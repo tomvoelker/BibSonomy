@@ -8,6 +8,7 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.GroupParam;
+import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Group;
@@ -26,9 +27,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	/** Singleton */
 	private final static GroupDatabaseManager singleton = new GroupDatabaseManager();
 	private final UserDatabaseManager userDb;
+	private final DatabasePluginRegistry plugins;
 
 	private GroupDatabaseManager() {
 		this.userDb = UserDatabaseManager.getInstance();
+		this.plugins = DatabasePluginRegistry.getInstance();
 	}
 
 	public static GroupDatabaseManager getInstance() {
@@ -216,6 +219,8 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		}
 		// XXX: the next line is semantically incorrect
 		group.setName(username);
+		
+		this.plugins.onRemoveUserFromGroup(username, group.getGroupId(), session);
 		this.delete("removeUserFromGroup", group, session);
 	}
 }

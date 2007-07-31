@@ -109,9 +109,9 @@ public class DatabasePluginRegistry {
 		}
 	}
 	
-	public void onDeleteUserfromGroup(final String username, final int groupId, DBSession session){
+	public void onRemoveUserFromGroup(final String username, final int groupId, DBSession session){
 		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onDeleteUserfromGroup(username, groupId, session));
+			this.executeRunnable(plugin.onRemoveUserFromGroup(username, groupId, session));
 		}
 	}
 	

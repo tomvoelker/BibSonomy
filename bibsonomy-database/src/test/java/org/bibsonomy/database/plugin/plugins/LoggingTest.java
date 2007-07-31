@@ -2,38 +2,23 @@ package org.bibsonomy.database.plugin.plugins;
 
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConstantID;
-import org.bibsonomy.common.enums.GroupID;
-import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
-import org.bibsonomy.database.managers.TagRelationDatabaseManagerTest;
 import org.bibsonomy.database.params.*;
+import org.bibsonomy.database.params.beans.TagRelationParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
-import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.testutil.ModelUtils;
-import org.bibsonomy.testutil.ParamUtils;
-import org.bibsonomy.util.ValidationUtils;
+
 import org.junit.Test;
 
 /**
- * This TestCase tests the syntax of the methods  of the class Logging.java.
- * The SQL Testmethods tests ifthe SQL Statements of the Loggin.java class is
- * working correctly by checking the count of the content id.
+ * The first methods test the syntax of the methods of the class: Logging.java.
+ * The SQL methods test if the SQL Statements of the Logging.java class work
+ * semantically correct
  * 
  * @author Anton Wilhelm
  */
@@ -86,145 +71,189 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	}
 	
 	@Test
-	public void onDeleteUserfromGroup() {
+	public void removeUserFromGroup() {
 		plugins = DatabasePluginRegistry.getInstance();
 		anyContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
-		plugins.onDeleteUserfromGroup("username", 1, dbSession);
+		plugins.onRemoveUserFromGroup("username", 1, dbSession);
 	}
 	
 	/**
-	 * Use BibTex with Hash: BIB_TEST_HASH
-	 * Get contentId, which is generated when the storePost Methods access
-	 * and count this contentId in table log_bibtex. When result = 1, logging was successfull
+	 * 
+	 *  SQL - methods ------------------------------------------------------------------------------
+	 * 
+	 * 
+	 * The procedure of all following methods can be describes in the following way
+	 * 
+	 * 1) Search for each Method any Object (BibTex, Bookmark, etc.) with parameter:
+	 *    ContentID, Name, Hash, etc.
+	 * 2) Build a param for this Object ans set the parameter
+	 * 3) Count in the log_<OBJECT> table for the choosen Object, it must be 0
+	 * 4) Do the Logging ( for example: this.bibTexDb.storePost(...); )
+	 * 5) Count it again in the log_<OBJECT> table, it must 1
+	 * 
+	 * All* methods which are calling by the generalDb access to the log_<OBJECT> table
+	 * Example: countNewContentIdFromBibTex(...) access to the log_bibtex table
+	 * 
+	 * * only "countTasIds()" is special
+	 */
+	
+	
+	/**
+	 * After building a param, you need to build a Post for using the storePost() method
 	 */
 	@Test
 	public void onBibTexUpdateSQL() {
-		final String BIB_TEST_HASH = "00078c9690694eb9a56ca7866b5101c6";
+		final String HASH = "00078c9690694eb9a56ca7866b5101c6";
 		final BibTexParam param = this.bibtexParam;
-		param.setHash(BIB_TEST_HASH);
-		param.setSimHash(HashID.INTRA_HASH);
+		param.setHash(HASH);
 		final Post<BibTex> someBibTexPost = this.bibTexDb.getBibTexByHash(param, this.dbSession).get(0);
-		this.bibTexDb.storePost(someBibTexPost.getUser().getName(), someBibTexPost, BIB_TEST_HASH, true, this.dbSession);
 		
 		Integer currentContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
-		param.setNewContentId(currentContentId);
+		param.setNewContentId(currentContentId+1); // +1 for the future contentId
 		Integer result = this.generalDb.countNewContentIdFromBibTex(param, this.dbSession);
+		assertEquals(0, result);
+		
+		this.bibTexDb.storePost(someBibTexPost.getUser().getName(), someBibTexPost, HASH, true, this.dbSession);
+		
+		currentContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
+		param.setNewContentId(currentContentId);
+		result = this.generalDb.countNewContentIdFromBibTex(param, this.dbSession);
 		assertEquals(1, result);
 	}
 	
 	
 	@Test
 	public void onBibTexDeleteSQL() {
-
-		final String BIB_TEST_HASH = "00078c9690694eb9a56ca7866b5101c6";
+		final String HASH = "00078c9690694eb9a56ca7866b5101c6";
 		// ContentId of the BibTex with the Hash above
-		final int BIB_TEST_CONTENTID = 711342;
+		final int CONTENTID = 711342;
 		final BibTexParam param = this.bibtexParam;
-		param.setRequestedContentId(BIB_TEST_CONTENTID);
-		param.setHash(BIB_TEST_HASH);
-		param.setSimHash(HashID.INTRA_HASH);
+		param.setRequestedContentId(CONTENTID);
+		param.setHash(HASH);
 		final Post<BibTex> someBibTexPost = this.bibTexDb.getBibTexByHash(param, this.dbSession).get(0);
 		
 		Integer result = this.generalDb.countRequestedContentIdFromBibTex(param, this.dbSession);
 		assertEquals(0, result);
-		this.bibTexDb.deletePost(someBibTexPost.getUser().getName(), BIB_TEST_HASH, this.dbSession);
+		
+		this.bibTexDb.deletePost(someBibTexPost.getUser().getName(), HASH, this.dbSession);
+		
 		result = this.generalDb.countRequestedContentIdFromBibTex(param, this.dbSession);
 		assertEquals(1, result);
 	}
 	
 	@Test
 	public void onBookmarkUpdateSQL() {
-		final String BOOKMARK_TEST_HASH = "0008bae834cc2af4a63fead1fd04b3e1";
+		final String HASH = "0008bae834cc2af4a63fead1fd04b3e1";
 		final BookmarkParam param = this.bookmarkParam;
-		param.setHash(BOOKMARK_TEST_HASH);
-		param.setSimHash(HashID.INTRA_HASH);
+		param.setHash(HASH);
 		final Post<Bookmark> someBookmarkPost = this.bookmarkDb.getBookmarkByHash(param, this.dbSession).get(0);
-		this.bookmarkDb.storePost(someBookmarkPost.getUser().getName(), someBookmarkPost, BOOKMARK_TEST_HASH, true, this.dbSession);
 		
 		Integer currentContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
-		param.setNewContentId(currentContentId);
+		param.setNewContentId(currentContentId+1); // +1, next content_id
 		Integer result = this.generalDb.countNewContentIdFromBookmark(param, this.dbSession);
+		assertEquals(0, result);
+		
+		this.bookmarkDb.storePost(someBookmarkPost.getUser().getName(), someBookmarkPost, HASH, true, this.dbSession);
+		
+		currentContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
+		param.setNewContentId(currentContentId);
+		result = this.generalDb.countNewContentIdFromBookmark(param, this.dbSession);
 		assertEquals(1, result);
 	}
 	
 	@Test
 	public void onBookmarkDeleteSQL() {
-		final String BOOKMARK_TEST_HASH = "00319006d9b0105704533e49661ffab6";
+		final String HASH = "00319006d9b0105704533e49661ffab6";
 		// ContentId of the Bookmark with the Hash above
-		final int BOOKMARK_TEST_CONTENTID = 716849;
+		final int CONTENTID = 716849;
 		final BookmarkParam param = this.bookmarkParam;
-		param.setRequestedContentId(BOOKMARK_TEST_CONTENTID);
-		param.setHash(BOOKMARK_TEST_HASH);
-		//param.setSimHash(HashID.INTRA_HASH);
+		param.setRequestedContentId(CONTENTID);
+		param.setHash(HASH);
 		final Post<Bookmark> someBookmarkPost = this.bookmarkDb.getBookmarkByHash(param, this.dbSession).get(0);
 		
-		this.bookmarkDb.deletePost(someBookmarkPost.getUser().getName(), BOOKMARK_TEST_HASH, this.dbSession);
-		
 		Integer result = this.generalDb.countRequestedContentIdFromBookmark(param, this.dbSession);
+		assertEquals(0, result);
+		
+		this.bookmarkDb.deletePost(someBookmarkPost.getUser().getName(), HASH, this.dbSession);
+		
+		result = this.generalDb.countRequestedContentIdFromBookmark(param, this.dbSession);
 		assertEquals(1, result);
 	}
 	
+	/**
+	 * For Testing the onTagDelete() method you must first build a 
+	 * BibTex and then delete it, the Tags will be deleted automatically
+	 * by the delete methode of the BibTexDatabaseManager
+	 * 
+	 * 2nd assertion:
+	 * countTasIds() count the number of TAS with the choosen ContentID
+	 * in the original table: bibtex
+	 * countLoggedTasIds() count it in the logging table: log_bibtex
+	 * At the end it will be comparing (res_original, res_logging)
+	 */
 	@Test
 	public void onTagDeleteSQL() {
-		final String BIB_TEST_HASH = "00078c9690694eb9a56ca7866b5101c6";
+		final String HASH = "00078c9690694eb9a56ca7866b5101c6";
 		// ContentId of the BibTex with the Hash above
-		final int BIB_TEST_CONTENTID = 711342;
+		final int CONTENTID = 711342;
 		final BibTexParam param = this.bibtexParam;
-		param.setRequestedContentId(BIB_TEST_CONTENTID);
-		param.setHash(BIB_TEST_HASH);
-		param.setSimHash(HashID.INTRA_HASH);
+		param.setRequestedContentId(CONTENTID);
+		param.setHash(HASH);
 		final TagParam tagparam = this.tagParam;
-		tagparam.setRequestedContentId(BIB_TEST_CONTENTID);	
+		tagparam.setRequestedContentId(CONTENTID);	
+		final Post<BibTex> someBibTexPost = this.bibTexDb.getBibTexByHash(param, this.dbSession).get(0);
 		
 		Integer res_original = this.generalDb.countTasIds(tagparam, this.dbSession);
-	
-		final Post<BibTex> someBibTexPost = this.bibTexDb.getBibTexByHash(param, this.dbSession).get(0);
-	
 		Integer result = this.generalDb.countRequestedContentIdFromBibTex(param, this.dbSession);
 		assertEquals(0, result);
 		
-		this.bibTexDb.deletePost(someBibTexPost.getUser().getName(), BIB_TEST_HASH, this.dbSession);
+		this.bibTexDb.deletePost(someBibTexPost.getUser().getName(), HASH, this.dbSession);
 		
 		result = this.generalDb.countRequestedContentIdFromBibTex(param, this.dbSession);
 		assertEquals(1, result);
-		
-		Integer res_logging = this.generalDb.countLogedTasIds(tagparam, this.dbSession);
-		
+		Integer res_logging = this.generalDb.countLoggedTasIds(tagparam, this.dbSession);
 		assertEquals(res_original, res_logging);
 		
 	}
 	
-	/*
-	//@Test
-	// tagRelation only be called by a Testclass until yet
+	
+	/**
+	 * 2nd assertion:
+	 * It is like in the onTagDeleteSQL() method
+	 * getBibTexByConceptForUser() will be access before and after logging (in the original table!)
+	 * At the end the tests checks if the TagRelation decreases in the orignial table
+	 * 
+	 */
+	@Test
 	public void onTagRelationDeleteSQL() {
-		
-		// 1st try
-		// this example don't work!
-		// TagRelations with relationId 10 will be tested
-		final String TEST_USER =  "schmitz";
-		final String TEST_LOWER = "plane";
-		final String TEST_UPPER = "woodworking";
-		
-		final int countBefore = bibTexDb.getBibTexByConceptForUser(TEST_USER, TEST_UPPER, TEST_USER, 100, 0, this.dbSession).size();
-		this.tagRelDb.deleteRelation(TEST_UPPER, TEST_LOWER, TEST_USER, this.dbSession);
-		final int countAfter = bibTexDb.getBibTexByConceptForUser(TEST_USER, TEST_UPPER, TEST_USER, 100, 0, this.dbSession).size();
+		final String USER = "jaeschke", LOWER = "shannon", UPPER = "researcher";
+		final int countBefore = bibTexDb.getBibTexByConceptForUser(USER, UPPER, USER, 100, 0, this.dbSession).size();
+		final TagRelationParam trp = new TagRelationParam();
+		trp.setOwnerUserName(USER);
+		trp.setLowerTagName(LOWER);
+		trp.setUpperTagName(UPPER);
+		Integer result = this.generalDb.countTagRelation(trp, this.dbSession);
+		assertEquals(0, result);
+		this.tagRelDb.deleteRelation(UPPER, LOWER, USER, this.dbSession);
+		final int countAfter = bibTexDb.getBibTexByConceptForUser(USER, UPPER, USER, 100, 0, this.dbSession).size();
+		result = this.generalDb.countTagRelation(trp, this.dbSession);
 		assertTrue(countBefore > countAfter);
-		
-		// 2nd try
-		final int countBefore = bibTexDb.getBibTexByConceptForUser("jaeschke", "researcher", "jaeschke", 100, 0, this.dbSession).size();
-		final int countLogBefore = this.generalDb.getBibTexByConceptForUser("jaeschke", "researcher", "jaeschke", 100, 0, this.dbSession).size();
-		this.tagRelDb.deleteRelation("researcher", "shannon", "jaeschke", this.dbSession);
-		final int countAfter = bibTexDb.getBibTexByConceptForUser("jaeschke", "researcher", "jaeschke", 100, 0, this.dbSession).size();
-		final int countLogAfter = this.generalDb.getBibTexByConceptForUser("jaeschke", "researcher", "jaeschke", 100, 0, this.dbSession).size();
-		assertTrue(countBefore > countAfter);
-		assertTrue(countLogBefore < countLogAfter);
-		
+		assertEquals(1, result);
 	}
 	
-	public void onDeleteUserfromGroupSQL() {
+	@Test
+	public void onRemoveUserFromGroupSQL() {
+		final String USER = "jaeschke", GROUPNAME = "kde";
+		final int GROUPID = 3;
+		final GroupParam param = new GroupParam();
+		param.setUserName(USER);
+		param.setGroupId(GROUPID);
 		
+		Integer result = this.generalDb.countGroup(param, this.dbSession);
+		assertEquals(0, result);
+		this.groupDb.removeUserFromGroup(GROUPNAME, USER, this.dbSession);
+		result = this.generalDb.countGroup(param, this.dbSession);
+		assertEquals(1, result);
 	}
-	*/
 	
 }

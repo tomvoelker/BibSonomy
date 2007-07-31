@@ -47,7 +47,7 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 		return null;
 	}
 
-	public Runnable onDeleteUserfromGroup(final String userName, final int groupId, final DBSession session) {
+	public Runnable onRemoveUserFromGroup(final String userName, final int groupId, final DBSession session) {
 		return null;
 	}
 }

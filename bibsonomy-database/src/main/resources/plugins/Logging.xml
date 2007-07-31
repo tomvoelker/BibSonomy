@@ -42,22 +42,10 @@
 		FROM tas WHERE content_id = #requestedContentId#
 	</insert>
 	
-	<insert id="logGroupDeleteUser" parameterClass="groupParam">
+	<insert id="logRemoveUserFromGroup" parameterClass="groupParam">
 		INSERT INTO log_groups (`user_name`, `group`, `defaultgroup`, `start_date`)
 		SELECT g.user_name, g.group, g.defaultgroup, g.start_date
 		FROM groups g WHERE g.user_name = #userName# AND g.group = #groupId#
-	</insert>
-
-	<insert id="logBibtexDeleteUserfromGroup" parameterClass="bibtexParam">
-		INSERT INTO log_bibtex (content_id, `group`, user_name)
-		SELECT content_id, user_name, `group`
-		FROM bibtex WHERE user_name = #userName# AND `group` = #groupId#
-	</insert>
-
-	<insert id="logBookmarkDeleteUserfromGroup" parameterClass="bookmarkParam">
-		INSERT INTO log_bookmark (content_id, `group`, user_name)
-		SELECT content_id, user_name, `group`
-		FROM bookmark WHERE user_name = #userName# AND `group` = #groupId#
 	</insert>
 	
 	<select id="countNewContentIdFromBibTex" resultClass="int" parameterClass="bibtexParam">
@@ -80,9 +68,18 @@
 		SELECT COUNT(*)	AS count FROM tas LB WHERE LB.content_id=#requestedContentId#
 	</select>
 	
-	<select id="countLogedTasIds" resultClass="int" parameterClass="tagParam">
+	<select id="countLoggedTasIds" resultClass="int" parameterClass="tagParam">
 		SELECT COUNT(*)	AS count FROM log_tas LB WHERE LB.content_id=#requestedContentId#
 	</select>
 	
+	<select id="countTagRelation" resultClass="int" parameterClass="tagRelationParam">
+		SELECT COUNT(*)	AS count FROM log_tagtagrelations
+		WHERE lower=#lowerTagName# AND upper=#upperTagName# AND user_name=#ownerUserName#
+	</select>
+	
+	<select id="countGroup" resultClass="int" parameterClass="groupParam">
+		SELECT COUNT(*)	AS count FROM log_groups
+		WHERE user_name = #userName# AND `group` = #groupId#
+	</select>
 
 </sqlMap>

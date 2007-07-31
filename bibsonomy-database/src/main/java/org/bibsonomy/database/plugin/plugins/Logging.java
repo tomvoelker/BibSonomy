@@ -95,21 +95,14 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public Runnable onDeleteUserfromGroup(final String userName, final int groupId, final DBSession session) {
+	public Runnable onRemoveUserFromGroup(final String userName, final int groupId, final DBSession session) {
 		return new Runnable() {
 			public void run() {
 				final GroupParam groupParam = new GroupParam();
-				final BibTexParam bibParam = new BibTexParam();
-				final BookmarkParam bookParam = new BookmarkParam();
 				groupParam.setGroupId(groupId);
 				groupParam.setUserName(userName);
-				bibParam.setGroupId(groupId);
-				bibParam.setUserName(userName);
-				bookParam.setGroupId(groupId);
-				bookParam.setUserName(userName);
-				insert("logGroupDeleteUser", groupParam, session);
-				insert("logBibtexDeleteUserfromGroup", bibParam, session);
-				insert("logBookmarkDeleteUserfromGroup", bookParam, session);
+				insert("logRemoveUserFromGroup", groupParam, session);
+
 			}
 		};
 	}
