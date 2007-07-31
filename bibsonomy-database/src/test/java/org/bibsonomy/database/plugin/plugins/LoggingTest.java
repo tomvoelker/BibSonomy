@@ -29,6 +29,13 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	private Integer anyContentId;
 
 	@Test
+	public void addLoggingPlugin() {
+		plugins = DatabasePluginRegistry.getInstance();
+		plugins.clearPlugins();
+		plugins.add( new Logging());
+	}
+	
+	@Test
 	public void onBibTexDelete() {
 		plugins = DatabasePluginRegistry.getInstance();
 		anyContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
@@ -101,6 +108,7 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	/**
 	 * After building a param, you need to build a Post for using the storePost() method
 	 */
+	
 	@Test
 	public void onBibTexUpdateSQL() {
 		final String HASH = "00078c9690694eb9a56ca7866b5101c6";
