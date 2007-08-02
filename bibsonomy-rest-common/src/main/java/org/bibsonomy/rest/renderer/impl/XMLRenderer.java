@@ -10,6 +10,7 @@ import static org.bibsonomy.rest.RestProperties.Property.URL_GROUPS;
 import static org.bibsonomy.rest.RestProperties.Property.URL_POSTS;
 import static org.bibsonomy.rest.RestProperties.Property.URL_USERS;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -20,12 +21,16 @@ import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.datatype.XMLGregorianCalendar;
+
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.exceptions.InternServerException;
@@ -53,6 +58,7 @@ import org.bibsonomy.rest.renderer.xml.TagType;
 import org.bibsonomy.rest.renderer.xml.TagsType;
 import org.bibsonomy.rest.renderer.xml.UserType;
 import org.bibsonomy.rest.renderer.xml.UsersType;
+import org.xml.sax.SAXException;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
@@ -68,7 +74,8 @@ public class XMLRenderer implements Renderer {
 	private static XMLRenderer renderer;
 	private final String userUrlPrefix;
 	private final String groupUrlPrefix;
-	private final String postsUrlDelimiter;
+	private final String postsUrlDelimiter;	
+	private static Schema schema;
 
 	private XMLRenderer() {
 		final RestProperties properties = RestProperties.getInstance();
@@ -76,6 +83,13 @@ public class XMLRenderer implements Renderer {
 		this.userUrlPrefix = apiUrl + properties.get(URL_USERS) + "/";
 		this.groupUrlPrefix = apiUrl + properties.get(URL_GROUPS) + "/";
 		this.postsUrlDelimiter = "/" + properties.get(URL_POSTS) + "/";
+		
+		try {
+			schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(new File("xschema.xsd"));
+		}
+		catch (SAXException e) {
+			log.debug("Failed to load XML schema", e);
+		}
 	}
 
 	public static Renderer getInstance() {
@@ -446,6 +460,10 @@ public class XMLRenderer implements Renderer {
 			// create a marshaller
 			final Marshaller marshaller = jc.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			
+			// validate the XML produced by the marshaller
+			marshaller.setSchema(schema);
+			marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.FALSE);
 
 			// marshal to the writer
 			marshaller.marshal(webserviceElement, writer);
