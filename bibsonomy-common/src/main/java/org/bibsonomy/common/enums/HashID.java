@@ -11,8 +11,8 @@ public enum HashID {
 	SIM_HASH2(2),
 	SIM_HASH3(3),
 	SIM_HASH(SIM_HASH1),
-	INTRA_HASH(SIM_HASH2),  // TODO: check if this is the right hashing method and if so remove this comment
-	INTER_HASH(SIM_HASH);  // TODO: check if this is the right hashing method and if so remove tis comment
+	INTRA_HASH(SIM_HASH2),  
+	INTER_HASH(SIM_HASH);
 
 	private final int id;
 
