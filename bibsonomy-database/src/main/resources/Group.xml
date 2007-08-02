@@ -51,7 +51,14 @@
 		 WHERE i.group BETWEEN 0 AND 2)
 		ORDER BY `group`
 	</select>
-
+	
+	<select id="getGroupsForContentId" resultMap="GroupCommon.group_basic" parameterClass="Integer">
+		SELECT DISTINCT G.group, G.group_name 
+		FROM groupids G, tas T 
+		WHERE T.content_id = #contentId# 
+		  AND T.group = G.group 
+	</select>	
+	
 	<select id="getNewGroupId" resultClass="int">
 		SELECT MAX(`group`) + 1 AS id FROM groupids
 	</select>

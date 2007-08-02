@@ -17,7 +17,8 @@ import org.junit.Test;
  */
 public class BibTexExtraDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
-	private final String BIB_TEST_HASH = "b6c9a44d411bf8101abdf809d5df1431";
+	// private final String BIB_TEST_HASH = "b6c9a44d411bf8101abdf809d5df1431"; // INTER-hash
+	private final String BIB_TEST_HASH = "2313536a09d3af706469e3d2523fe7ca"; // INTRA-hash
 	private final String TEST_USER = "thomi";
 	private final String TEST_URL = "http://www.example.com/";
 	private final String TEST_TXT = "This is a test...";
@@ -70,7 +71,7 @@ public class BibTexExtraDatabaseManagerTest extends AbstractDatabaseManagerTest 
 
 	@Test
 	public void getBibTexPrivnoteForUser() {
-		final String note = this.bibTexExtraDb.getBibTexPrivnoteForUser("628119945ae766f2e938731644847382", "siko", this.dbSession);
+		final String note = this.bibTexExtraDb.getBibTexPrivnoteForUser("6e955a315951954a8030b79cece1e314", "siko", this.dbSession);
 		assertEquals("test", note);
 	}
 

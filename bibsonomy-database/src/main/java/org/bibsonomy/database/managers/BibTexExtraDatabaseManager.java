@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.util.DBSession;
@@ -33,6 +34,7 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 
 	public List<BibTexExtra> getURL(final String hash, final String username, final DBSession session) {
 		final BibTexExtraParam param = new BibTexExtraParam();
+		param.setSimHash(HashID.INTRA_HASH); 
 		param.setHash(hash);
 		param.setUserName(username);
 		return this.queryForList("getBibTexExtraURL", param, BibTexExtra.class, session);
@@ -86,6 +88,7 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 	private BibTexExtraParam buildPrivnoteParam(final String hash, final String username, final String note) {
 		final BibTexExtraParam param = new BibTexExtraParam();
 		param.setHash(hash);
+		param.setSimHash(HashID.INTRA_HASH);
 		param.setUserName(username);
 		param.getResource().setNote(note);
 		return param;

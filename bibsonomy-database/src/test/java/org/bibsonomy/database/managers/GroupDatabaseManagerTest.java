@@ -207,4 +207,12 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		} catch (final RuntimeException ex) {
 		}
 	}
+	
+	@Test
+	public void getGroupsByContentId() {
+		List<Group> groups = this.groupDb.getGroupsForContentId(688174, this.dbSession);
+		assertEquals(1,groups.size());
+		assertEquals("kde", groups.get(0).getName());
+		assertEquals(3, groups.get(0).getGroupId()); 
+	}
 }

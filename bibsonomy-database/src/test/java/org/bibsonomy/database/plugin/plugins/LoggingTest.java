@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.params.*;
 import org.bibsonomy.database.params.beans.TagRelationParam;
@@ -111,17 +112,17 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	
 	@Test
 	public void onBibTexUpdateSQL() {
-		final String HASH = "00078c9690694eb9a56ca7866b5101c6";
+		final String HASH = "00078c9690694eb9a56ca7866b5101c6"; // this is an INTER-hash
 		final BibTexParam param = this.bibtexParam;
 		param.setHash(HASH);
+		param.setRequestedSimHash(HashID.INTER_HASH);
 		final Post<BibTex> someBibTexPost = this.bibTexDb.getBibTexByHash(param, this.dbSession).get(0);
 		
 		Integer currentContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
 		param.setNewContentId(currentContentId+1); // +1 for the future contentId
 		Integer result = this.generalDb.countNewContentIdFromBibTex(param, this.dbSession);
 		assertEquals(0, result);
-		
-		this.bibTexDb.storePost(someBibTexPost.getUser().getName(), someBibTexPost, HASH, true, this.dbSession);
+		this.bibTexDb.storePost(someBibTexPost.getUser().getName(), someBibTexPost, someBibTexPost.getResource().getIntraHash(), true, this.dbSession);
 		
 		currentContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
 		param.setNewContentId(currentContentId);

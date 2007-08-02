@@ -160,6 +160,15 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		return this.bookmarkList("getBookmarkByHashForUser", param, session);
 	}
 
+	/**
+	 * Returns a list with bookmark posts identified by INTER-hash for a given user
+	 * 
+	 * @param loginUserName
+	 * @param interHash
+	 * @param requestedUserName
+	 * @param session
+	 * @return List<Post<Bookmark>> list of bookmark posts
+	 */
 	public List<Post<Bookmark>> getBookmarkHashForUser(final String loginUserName, final String interHash, final String requestedUserName, final DBSession session) {
 		return getBookmarkByHashForUser(loginUserName, interHash, requestedUserName, session, HashID.INTER_HASH);
 	}
@@ -400,7 +409,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 					log.debug("update==false");
 					throw new IllegalArgumentException("cannot create new resource/BOOKMARK with an old hash value");
 				}
-				isBookmarkInDb = this.getBookmarkHashForUser(userName, oldIntraHash, userName,session);
+				isBookmarkInDb = this.getBookmarkByHashForUser(userName, oldIntraHash, userName,session,HashID.INTRA_HASH);
 			} else {
 				if (update == true) {
 					log.debug("update==true");

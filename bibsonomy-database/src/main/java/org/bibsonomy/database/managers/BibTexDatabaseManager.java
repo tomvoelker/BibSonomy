@@ -1,5 +1,6 @@
 package org.bibsonomy.database.managers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -35,6 +36,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	private static final BibTexDatabaseManager singleton = new BibTexDatabaseManager();
 	private final GeneralDatabaseManager generalDb;
 	private final TagDatabaseManager tagDb;
+	private final GroupDatabaseManager groupDb;
 	private final DatabasePluginRegistry plugins;
 	private static final BibTexChain chain = new BibTexChain();
 	private final ValidationUtils check;
@@ -42,6 +44,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	private BibTexDatabaseManager() {
 		this.generalDb = GeneralDatabaseManager.getInstance();
 		this.tagDb = TagDatabaseManager.getInstance();
+		this.groupDb = GroupDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
 		this.check = ValidationUtils.getInstance();
 	}
@@ -330,8 +333,17 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		return this.bibtexList("getBibTexByHashForUser", param, session);
 	}
 
-	public List<Post<BibTex>> getBibTexByHashForUser(final String loginUserName, final String intraHash, final String requestedUserName, final DBSession session) {
-		return this.getBibTexByHashForUser(loginUserName, intraHash, requestedUserName, session, HashID.INTER_HASH);
+	/**
+	 * Returns a list containg BibTeX posts by INTER-Hash for a user
+	 * 
+	 * @param loginUserName
+	 * @param interHash
+	 * @param requestedUserName
+	 * @param session
+	 * @return List<Post<BibTex>> a list of BibTeX posts
+	 */
+	public List<Post<BibTex>> getBibTexByHashForUser(final String loginUserName, final String interHash, final String requestedUserName, final DBSession session) {
+		return this.getBibTexByHashForUser(loginUserName, interHash, requestedUserName, session, HashID.INTER_HASH);
 	}
 
 	public List<Post<BibTex>> getBibTexByHashForUser(final String loginUserName, final String intraHash, final String requestedUserName, final DBSession session, final HashID hashType) {
@@ -350,9 +362,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		final BibTexParam param = new BibTexParam();
 		param.setHash(hash);
 		param.setRequestedUserName(userName);
+		param.setSimHash(HashID.INTRA_HASH);
 		return this.queryForObject("getContentIdForBibTex", param, Integer.class, session);
 	}
-
+		
 	public List<Post<BibTex>> getPosts(final BibTexParam param, final DBSession session) {
 		return chain.getFirstElement().perform(param, session);
 	}
@@ -373,13 +386,13 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	/**
 	 * Inserts a publication into the database.
 	 */
-	private void insertBibTex(final BibTexParam param, final DBSession session) {
+	private void insertBibTex(final BibTexParam param, final boolean update, final DBSession session) {
 		session.beginTransaction();
 		try {
 			// Insert BibTex
 			this.insert("insertBibTex", param, session);
 			// Insert/Update SimHashes
-			this.insertUpdateSimHashes(param.getResource(), false, session);
+			this.insertUpdateSimHashes(param.getResource(), update, false, session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -389,7 +402,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	/**
 	 * Inserts and updates simHashes.
 	 */
-	private void insertUpdateSimHashes(final BibTex bibtex, final boolean update, final DBSession session) {
+	private void insertUpdateSimHashes(final BibTex bibtex, final boolean update, final boolean delete, final DBSession session) {
 		for (final int hashId : HashID.getHashRange()) {
 			final HashID simHash = HashID.getSimHash(hashId);
 			final String hash = SimHash.getSimHash(bibtex, simHash);
@@ -400,8 +413,11 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			param.setRequestedSimHash(simHash);
 			param.setHash(hash);
 			if (update == false) {
-				this.insertBibTexHash(param, session);
-			} else {
+				// insert new hash or increment its counter, if it already exists
+				this.insertBibTexHash(param, session);  
+			} 
+			else if (delete == true) {
+				// decrement counter
 				this.updateBibTexHash(param, session);
 			}
 		}
@@ -410,10 +426,12 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	/**
 	 * Inserts a post with a publication into the database.
 	 */
-	protected void insertBibTexPost(final Post<BibTex> post, final DBSession session) {
+	protected void insertBibTexPost(final Post<BibTex> post, final boolean update, final DBSession session) {
 		if (this.check.present(post.getResource()) == false) throw new RuntimeException("There is no resource for this post");
 		if (this.check.present(post.getGroups()) == false) throw new RuntimeException("There are no groups for this post");
 
+
+		
 		final BibTexParam param = new BibTexParam();
 		param.setResource(post.getResource());
 		param.setRequestedContentId(post.getContentId());
@@ -422,7 +440,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		param.setUserName(((post.getUser() != null) ? post.getUser().getName() : ""));
 		for (final Group group : post.getGroups()) {
 			param.setGroupId(group.getGroupId());
-			this.insertBibTex(param, session);
+			this.insertBibTex(param, update, session);
 		}
 	}
 
@@ -442,7 +460,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 				if ((update == false) && (oldIntraHash.equals(post.getResource().getIntraHash()) == false)) {
 					throw new IllegalArgumentException("cannot create new resource with an old hash value");
 				}
-				isBibTexInDb = this.getBibTexByHashForUser(userName, oldIntraHash, userName, session);
+				isBibTexInDb = this.getBibTexByHashForUser(userName, oldIntraHash, userName, session, HashID.INTRA_HASH);
 			} else {
 				if (update == true) {
 					throw new IllegalArgumentException("cannot update without old hash value");
@@ -456,8 +474,17 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			if (this.check.present(isBibTexInDb)) {
 				// BibTex entry DOES EXIST for this user -> delete old BibTex post
 				final Post<BibTex> oldBibTexPost = isBibTexInDb.get(0);
+				
+				// if no groups are specified for an existing bibtex when updating -> take over existing groups
+				// this is kind of a hack, as the JabRef-Client does not store group information so far :(
+				// dbe, 2007/07/27
+				if (update == true && !this.check.present(post.getGroups())) {										
+					post.setGroups(this.groupDb.getGroupsForContentId(oldBibTexPost.getContentId(), session));
+				}				
+				
 				this.plugins.onBibTexUpdate(post.getContentId(), oldBibTexPost.getContentId(), session);
 				this.deletePost(userName, oldBibTexPost.getResource().getInterHash(), true, session);
+												
 			} else {
 				if (update == true) {
 					final String errorMsg = "cannot update nonexisting BibTex-post with intrahash " + oldIntraHash + " for user " + userName;
@@ -466,7 +493,8 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 				}
 				update = false;
 			}
-			this.insertBibTexPost(post, session);
+								
+			this.insertBibTexPost(post, update, session);
 			// add the tags
 			this.tagDb.insertTags(post, session);
 
@@ -503,7 +531,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			param.setRequestedContentId(oneBibtex.getContentId());
 			if (update == false) this.plugins.onBibTexDelete(param.getRequestedContentId(), session);
 			this.tagDb.deleteTags(oneBibtex, session);
-			this.insertUpdateSimHashes(((BibTex) oneBibtex.getResource()), true, session);
+			this.insertUpdateSimHashes(((BibTex) oneBibtex.getResource()), false, true, session);
 			this.deleteBibTex(param, session);
 
 			session.commitTransaction();

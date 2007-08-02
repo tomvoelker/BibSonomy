@@ -129,6 +129,13 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	public List<Group> getGroupsForUser(final String username, final DBSession session) {
 		return this.queryForList("getGroupsForUser", username, Group.class, session);
 	}
+	
+	/**
+	 * Returns a a list of groups for a given content ID
+	 */
+	public List<Group> getGroupsForContentId(final Integer contentId, final DBSession session) {
+		return this.queryForList("getGroupsForContentId", contentId, Group.class, session);
+	}	
 
 	/**
 	 * Stores a group in the database.

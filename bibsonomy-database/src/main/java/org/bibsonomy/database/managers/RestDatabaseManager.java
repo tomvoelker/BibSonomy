@@ -1,6 +1,7 @@
 package org.bibsonomy.database.managers;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +62,7 @@ public class RestDatabaseManager implements DBLogicInterface {
 		this.userDBManager = UserDatabaseManager.getInstance();
 		this.groupDBManager = GroupDatabaseManager.getInstance();
 		this.tagDBManager = TagDatabaseManager.getInstance();
-		this.dbSessionFactory = DatabaseUtils.getDBSessionFactory();
+		this.dbSessionFactory = DatabaseUtils.getDBSessionFactory();		
 	}
 
 	public static RestDatabaseManager getInstance() {
@@ -341,6 +342,8 @@ public class RestDatabaseManager implements DBLogicInterface {
 			final CrudableContent<T, GenericParam> man = getFittingDatabaseManager(post);
 			final String oldIntraHash = post.getResource().getIntraHash();
 			post.getResource().recalculateHashes();
+			if (post.getDate() == null)
+				post.setDate(new Date());
 			man.storePost(userName, post, oldIntraHash, update, session);
 		} finally {
 			session.close();

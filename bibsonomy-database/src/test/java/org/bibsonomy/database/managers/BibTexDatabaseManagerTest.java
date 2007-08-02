@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
@@ -263,7 +264,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getContentIdForBibTex() {
-		assertEquals(925724, this.bibTexDb.getContentIdForBibTex("b6c9a44d411bf8101abdf809d5df1431", "thomi", this.dbSession));
+		assertEquals(925724, this.bibTexDb.getContentIdForBibTex("2313536a09d3af706469e3d2523fe7ca", "thomi", this.dbSession));
 
 		for (final String hash : new String[] { "", " ", null }) {
 			for (final String username : new String[] { "", " ", null }) {
@@ -288,7 +289,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void insertBibTexPost() {
 		final Post<BibTex> toInsert = ModelUtils.generatePost(BibTex.class);
 		toInsert.setContentId(Integer.MAX_VALUE);
-		this.bibTexDb.insertBibTexPost(toInsert, this.dbSession);
+		this.bibTexDb.insertBibTexPost(toInsert, false, this.dbSession);
 	}
 
 	@Test
@@ -319,10 +320,12 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void storePost() {
 		final Post<BibTex> toInsert = ModelUtils.generatePost(BibTex.class);
-		final String BIBTEX_TEST_HASH = "06aef6e5439298f27dc5aee82c4293d6";
+		// this was a INTER-hash - we want an INTRA-hash here...
+		final String BIBTEX_TEST_HASH = "41b80148937cf74ad9b07ed4b227345a"; // INTRA-hash
 
 		this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, null, false, this.dbSession);
 		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { ModelUtils.class.getName(), "hurz" }), "", null, 0, 50);
+		param.setRequestedSimHash(HashID.INTRA_HASH);
 		final List<Post<BibTex>> posts = this.bibTexDb.getPosts(param, this.dbSession);
 		assertEquals(1, posts.size());
 		ModelUtils.assertPropertyEquality(toInsert, posts.get(0), Integer.MAX_VALUE, null, new String[] { "resource", "tags", "user", "date"});
@@ -369,9 +372,12 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void storePostDuplicate() {
 		// the first (default) hash belongs to a public post,
 		// the second to a private one
-		for (final String simHash1 : new String[] { this.bibtexParam.getHash(), "b6c9a44d411bf8101abdf809d5df1431" }) {
-			this.bibtexParam.setHash(simHash1);
-			if (simHash1.startsWith("b6c9")) this.bibtexParam.setGroupType(GroupID.PRIVATE);
+		// for (final String simHash1 : new String[] { this.bibtexParam.getHash(), "b6c9a44d411bf8101abdf809d5df1431" }) {
+		for (final String intraHash : new String[] {"2313536a09d3af706469e3d2523fe7ca" }) {
+			this.bibtexParam.setHash(intraHash);
+			this.bibtexParam.setRequestedSimHash(HashID.INTRA_HASH);
+			// if (simHash1.startsWith("b6c9")) this.bibtexParam.setGroupType(GroupID.PRIVATE);
+			if (intraHash.startsWith("2313")) this.bibtexParam.setGroupType(GroupID.PRIVATE);
 
 			final Post<BibTex> originalPost = this.bibTexDb.getBibTexByHash(this.bibtexParam, this.dbSession).get(0);
 			this.postDuplicate(this.bibtexParam, this.bibtexParam.getHash());
@@ -393,14 +399,19 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	private void postDuplicate(final BibTexParam param, final String hash) {
 		param.setHash(hash);
+		
 		final Post<BibTex> someBibTexPost = this.bibTexDb.getBibTexByHash(param, this.dbSession).get(0);
+		someBibTexPost.getGroups().clear();
 		this.bibTexDb.storePost(someBibTexPost.getUser().getName(), someBibTexPost, hash, true, this.dbSession);
 	}
 
 	@Test
 	public void storePostBibTexUpdatePlugin() {
-		final String BIB_TEST_HASH = "b6c9a44d411bf8101abdf809d5df1431";
+		// final String BIB_TEST_HASH = "b6c9a44d411bf8101abdf809d5df1431";
+		final String BIB_TEST_HASH = "2313536a09d3af706469e3d2523fe7ca";		
 		final String TEST_USER = "thomi";
+		
+		this.bibtexParam.setRequestedSimHash(HashID.INTRA_HASH);
 
 		// FIXME: this boilerplate code could be removed with a DI-framework (i.e. next three lines)
 		final org.bibsonomy.database.plugin.plugins.BibTexExtra plugin = new org.bibsonomy.database.plugin.plugins.BibTexExtra();
@@ -418,5 +429,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		extras = this.bibTexExtraDb.getURL(BIB_TEST_HASH, TEST_USER, this.dbSession);
 		assertEquals(2, extras.size());
+		
+		this.resetParameters();
 	}
 }
