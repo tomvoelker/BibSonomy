@@ -342,8 +342,6 @@ public class RestDatabaseManager implements DBLogicInterface {
 			final CrudableContent<T, GenericParam> man = getFittingDatabaseManager(post);
 			final String oldIntraHash = post.getResource().getIntraHash();
 			post.getResource().recalculateHashes();
-			if (post.getDate() == null)
-				post.setDate(new Date());
 			man.storePost(userName, post, oldIntraHash, update, session);
 		} finally {
 			session.close();

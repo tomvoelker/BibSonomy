@@ -32,7 +32,7 @@ public class PostPostStrategy extends Strategy {
 	@Override
 	public void perform(final Writer writer) throws InternServerException {
 		final Post<?> post = this.getRenderer().parsePost(this.doc);
-		post.setDate(new Date());
+		post.setDate(new Date(System.currentTimeMillis()));
 		this.getLogic().createPost(post);
 	}
 
