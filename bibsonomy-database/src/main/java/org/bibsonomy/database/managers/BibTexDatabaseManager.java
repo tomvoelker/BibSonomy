@@ -492,6 +492,18 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 					throw new ValidationException(errorMsg);
 				}
 				update = false;
+				
+				// if no groups are specified when inserting a new bibtex -> post it as public
+				// this is kind of a hack, as the JabRef-Client does not store group information so far :(
+				// dbe, 2007/08/02
+				if (!this.check.present(post.getGroups())) {
+					List<Group> groups = new ArrayList<Group>();
+					Group pub = new Group();
+					pub.setGroupId(GroupID.PUBLIC.getId());
+					pub.setName("public");
+					groups.add(pub);
+					post.setGroups(groups);
+				}				
 			}
 								
 			this.insertBibTexPost(post, update, session);
