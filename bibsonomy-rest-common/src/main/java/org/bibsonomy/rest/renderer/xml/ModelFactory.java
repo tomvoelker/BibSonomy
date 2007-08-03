@@ -173,7 +173,7 @@ public class ModelFactory {
 			bibtex.setPages(xmlBibtex.getPages());
 			bibtex.setPublisher(xmlBibtex.getPublisher());
 			bibtex.setSchool(xmlBibtex.getSchool());
-			if (xmlBibtex.getScraperId() != null) bibtex.setScraperId(xmlBibtex.getScraperId().intValue());
+			// if (xmlBibtex.getScraperId() != null) bibtex.setScraperId(xmlBibtex.getScraperId().intValue());
 			bibtex.setSeries(xmlBibtex.getSeries());
 			bibtex.setTitle(xmlBibtex.getTitle());
 			bibtex.setType(xmlBibtex.getType());
@@ -209,8 +209,11 @@ public class ModelFactory {
 	}
 
 	private Date createDate(XMLGregorianCalendar date) {
-		final Calendar cal = new GregorianCalendar(date.getYear(), date.getMonth() - 1, date.getDay(), date.getHour(), date.getMinute(), date.getSecond());
-		cal.set(Calendar.MILLISECOND, date.getMillisecond());
-		return cal.getTime();
+		
+		return new Date(System.currentTimeMillis());
+		
+//		final Calendar cal = new GregorianCalendar(date.getYear(), date.getMonth() - 1, date.getDay(), date.getHour(), date.getMinute(), date.getSecond());
+//		cal.set(Calendar.MILLISECOND, date.getMillisecond());
+//		return cal.getTime();
 	}
 }

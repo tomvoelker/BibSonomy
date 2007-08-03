@@ -85,7 +85,7 @@ public class XMLRenderer implements Renderer {
 		this.postsUrlDelimiter = "/" + properties.get(URL_POSTS) + "/";
 		
 		try {
-			schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(new File("xschema.xsd"));
+			schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(new File("../dev/bibsonomy/bibsonomy-model/src/main/resources/xschema.xsd"));
 		}
 		catch (SAXException e) {
 			log.debug("Failed to load XML schema", e);
@@ -198,7 +198,7 @@ public class XMLRenderer implements Renderer {
 			xmlBibtex.setPages(bibtex.getPages());
 			xmlBibtex.setPublisher(bibtex.getPublisher());
 			xmlBibtex.setSchool(bibtex.getSchool());
-			xmlBibtex.setScraperId(BigInteger.valueOf(bibtex.getScraperId()));
+			// xmlBibtex.setScraperId(BigInteger.valueOf(bibtex.getScraperId()));
 			xmlBibtex.setSeries(bibtex.getSeries());
 			xmlBibtex.setTitle(bibtex.getTitle());
 			xmlBibtex.setType(bibtex.getType());

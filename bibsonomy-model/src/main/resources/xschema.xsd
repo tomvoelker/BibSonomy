@@ -31,8 +31,8 @@
 		<xsd:sequence>
 			<xsd:element maxOccurs="unbounded" minOccurs="0" name="user" type="UserType"/>
 		</xsd:sequence>
-		<xsd:attribute name="start" type="xsd:positiveInteger" use="required"/>
-		<xsd:attribute name="end" type="xsd:positiveInteger" use="required"/>
+		<xsd:attribute name="start" type="positiveIntegerIncludingZero" use="required"/>
+		<xsd:attribute name="end" type="positiveIntegerIncludingZero" use="required"/>
 		<xsd:attribute name="next" type="xsd:anyURI"/>
 	</xsd:complexType>
 
@@ -56,8 +56,8 @@
 		<xsd:sequence>
 			<xsd:element maxOccurs="unbounded" minOccurs="0" name="group" type="GroupType"/>
 		</xsd:sequence>
-		<xsd:attribute name="start" type="xsd:positiveInteger" use="required"/>
-		<xsd:attribute name="end" type="xsd:positiveInteger" use="required"/>
+		<xsd:attribute name="start" type="positiveIntegerIncludingZero" use="required"/>
+		<xsd:attribute name="end" type="positiveIntegerIncludingZero" use="required"/>
 		<xsd:attribute name="next" type="xsd:anyURI"/>
 	</xsd:complexType>
 
@@ -81,8 +81,8 @@
 		<xsd:sequence>
 			<xsd:element maxOccurs="unbounded" minOccurs="0" name="tag" type="TagType"/>
 		</xsd:sequence>
-		<xsd:attribute name="start" type="xsd:positiveInteger" use="required"/>
-		<xsd:attribute name="end" type="xsd:positiveInteger" use="required"/>
+		<xsd:attribute name="start" type="positiveIntegerIncludingZero" use="required"/>
+		<xsd:attribute name="end" type="positiveIntegerIncludingZero" use="required"/>
 		<xsd:attribute name="next" type="xsd:anyURI"/>
 	</xsd:complexType>
 
@@ -106,8 +106,8 @@
 		<xsd:sequence>
 			<xsd:element maxOccurs="unbounded" minOccurs="0" name="post" type="PostType"/>
 		</xsd:sequence>
-		<xsd:attribute name="start" type="xsd:positiveInteger" use="required"/>
-		<xsd:attribute name="end" type="xsd:positiveInteger" use="required"/>
+		<xsd:attribute name="start" type="positiveIntegerIncludingZero" use="required"/>
+		<xsd:attribute name="end" type="positiveIntegerIncludingZero" use="required"/>
 		<xsd:attribute name="next" type="xsd:anyURI"/>
 	</xsd:complexType>
 
@@ -176,7 +176,7 @@
 		<xsd:attribute name="month" type="xsd:string"/>
 		<xsd:attribute name="year" type="xsd:string"/>
 		<xsd:attribute name="type" type="xsd:string"/>
-		<xsd:attribute name="scraperId" type="xsd:positiveInteger"/>
+		<!-- <xsd:attribute name="scraperId" type="xsd:positiveInteger"/>  -->
 		<xsd:attribute name="url" type="xsd:string"/>
 
 		<!-- hash value identifying this resource -->
@@ -185,5 +185,11 @@
 		<!-- link to all posts of this bibtex -->
 		<xsd:attribute name="href" type="xsd:anyURI"/>
 	</xsd:complexType>
+	
+	<xsd:simpleType name="positiveIntegerIncludingZero">
+		<xsd:restriction base="xsd:integer">
+    		<xsd:minInclusive value="0"/>
+    	</xsd:restriction>
+	</xsd:simpleType>
 
 </xsd:schema>
