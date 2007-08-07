@@ -336,16 +336,40 @@ public class RestDatabaseManager implements DBLogicInterface {
 	/*
 	 * Adds/updates a post in the database.
 	 */
-	public <T extends Resource> void storePost(final String userName, final Post<T> post, boolean update) {
+	public <T extends Resource> void storePost(final String userName, Post<T> post, boolean update) {
 		final DBSession session = this.openSession();
 		try {
 			final CrudableContent<T, GenericParam> man = getFittingDatabaseManager(post);
 			final String oldIntraHash = post.getResource().getIntraHash();
-			post.getResource().recalculateHashes();
+			post.getResource().recalculateHashes();			
+			post = this.checkGroups(post, session);			
 			man.storePost(userName, post, oldIntraHash, update, session);
 		} finally {
 			session.close();
 		}
+	}
+	
+	/**
+	 * Check for each group of a post if the groups actually exist. If yes, insert the
+	 * correct group ID
+	 * 
+	 * @param post the incoming post
+	 * @return post the incoming post with the groupIDs filled in
+	 */
+	private <T extends Resource> Post<T> checkGroups(Post<T> post, DBSession session) {
+		
+		if (post.getGroups() == null)
+			throw new ValidationException("No groups assigned to post");
+		
+		for (Group group : post.getGroups()) {
+			Group testGroup = groupDBManager.getGroupByName(group.getName().toLowerCase(), session);
+			if (testGroup == null) {
+				// group does not exist
+				throw new ValidationException("Group " + group.getName() + " does not exist");
+			}
+			group.setGroupId(testGroup.getGroupId());
+		}		
+		return post;
 	}
 
 	@SuppressWarnings("unchecked")

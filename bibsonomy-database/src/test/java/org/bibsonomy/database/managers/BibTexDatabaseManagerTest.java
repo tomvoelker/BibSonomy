@@ -289,7 +289,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void insertBibTexPost() {
 		final Post<BibTex> toInsert = ModelUtils.generatePost(BibTex.class);
 		toInsert.setContentId(Integer.MAX_VALUE);
-		this.bibTexDb.insertBibTexPost(toInsert, false, this.dbSession);
+		this.bibTexDb.insertBibTexPost(toInsert, this.dbSession);
 	}
 
 	@Test
@@ -401,7 +401,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		param.setHash(hash);
 		
 		final Post<BibTex> someBibTexPost = this.bibTexDb.getBibTexByHash(param, this.dbSession).get(0);
-		someBibTexPost.getGroups().clear();
+		// someBibTexPost.getGroups().clear();
 		this.bibTexDb.storePost(someBibTexPost.getUser().getName(), someBibTexPost, hash, true, this.dbSession);
 	}
 

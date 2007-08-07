@@ -386,13 +386,13 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	/**
 	 * Inserts a publication into the database.
 	 */
-	private void insertBibTex(final BibTexParam param, final boolean update, final DBSession session) {
+	private void insertBibTex(final BibTexParam param, final DBSession session) {
 		session.beginTransaction();
 		try {
 			// Insert BibTex
 			this.insert("insertBibTex", param, session);
 			// Insert/Update SimHashes
-			this.insertUpdateSimHashes(param.getResource(), update, false, session);
+			this.insertUpdateSimHashes(param.getResource(), false, session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -402,7 +402,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	/**
 	 * Inserts and updates simHashes.
 	 */
-	private void insertUpdateSimHashes(final BibTex bibtex, final boolean update, final boolean delete, final DBSession session) {
+	private void insertUpdateSimHashes(final BibTex bibtex, final boolean delete, final DBSession session) {
 		for (final int hashId : HashID.getHashRange()) {
 			final HashID simHash = HashID.getSimHash(hashId);
 			final String hash = SimHash.getSimHash(bibtex, simHash);
@@ -412,26 +412,25 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			final BibTexParam param = new BibTexParam();
 			param.setRequestedSimHash(simHash);
 			param.setHash(hash);
-			if (update == false) {
-				// insert new hash or increment its counter, if it already exists
-				this.insertBibTexHash(param, session);  
-			} 
-			else if (delete == true) {
+
+			if (delete == true) {
 				// decrement counter
 				this.updateBibTexHash(param, session);
 			}
+			else {
+				// insert new hash or increment its counter, if it already exists
+				this.insertBibTexHash(param, session);  
+			} 				
 		}
 	}
 
 	/**
 	 * Inserts a post with a publication into the database.
 	 */
-	protected void insertBibTexPost(final Post<BibTex> post, final boolean update, final DBSession session) {
+	protected void insertBibTexPost(final Post<BibTex> post, final DBSession session) {
 		if (this.check.present(post.getResource()) == false) throw new RuntimeException("There is no resource for this post");
 		if (this.check.present(post.getGroups()) == false) throw new RuntimeException("There are no groups for this post");
 
-
-		
 		final BibTexParam param = new BibTexParam();
 		param.setResource(post.getResource());
 		param.setRequestedContentId(post.getContentId());
@@ -440,7 +439,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		param.setUserName(((post.getUser() != null) ? post.getUser().getName() : ""));
 		for (final Group group : post.getGroups()) {
 			param.setGroupId(group.getGroupId());
-			this.insertBibTex(param, update, session);
+			this.insertBibTex(param, session);
 		}
 	}
 
@@ -478,12 +477,12 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 				// if no groups are specified for an existing bibtex when updating -> take over existing groups
 				// this is kind of a hack, as the JabRef-Client does not store group information so far :(
 				// dbe, 2007/07/27
-				if (update == true && !this.check.present(post.getGroups())) {										
-					post.setGroups(this.groupDb.getGroupsForContentId(oldBibTexPost.getContentId(), session));
-				}				
+//				if (update == true && !this.check.present(post.getGroups())) {										
+//					post.setGroups(this.groupDb.getGroupsForContentId(oldBibTexPost.getContentId(), session));
+//				}				
 				
 				this.plugins.onBibTexUpdate(post.getContentId(), oldBibTexPost.getContentId(), session);
-				this.deletePost(userName, oldBibTexPost.getResource().getInterHash(), true, session);
+				this.deletePost(userName, oldBibTexPost.getResource().getInterHash(), update, session);
 												
 			} else {
 				if (update == true) {
@@ -496,17 +495,17 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 				// if no groups are specified when inserting a new bibtex -> post it as public
 				// this is kind of a hack, as the JabRef-Client does not store group information so far :(
 				// dbe, 2007/08/02
-				if (!this.check.present(post.getGroups())) {
-					List<Group> groups = new ArrayList<Group>();
-					Group pub = new Group();
-					pub.setGroupId(GroupID.PUBLIC.getId());
-					pub.setName("public");
-					groups.add(pub);
-					post.setGroups(groups);
-				}				
+//				if (!this.check.present(post.getGroups())) {
+//					List<Group> groups = new ArrayList<Group>();
+//					Group pub = new Group();
+//					pub.setGroupId(GroupID.PUBLIC.getId());
+//					pub.setName("public");
+//					groups.add(pub);
+//					post.setGroups(groups);
+//				}				
 			}
 								
-			this.insertBibTexPost(post, update, session);
+			this.insertBibTexPost(post, session);
 			// add the tags
 			this.tagDb.insertTags(post, session);
 
@@ -543,7 +542,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			param.setRequestedContentId(oneBibtex.getContentId());
 			if (update == false) this.plugins.onBibTexDelete(param.getRequestedContentId(), session);
 			this.tagDb.deleteTags(oneBibtex, session);
-			this.insertUpdateSimHashes(((BibTex) oneBibtex.getResource()), false, true, session);
+			this.insertUpdateSimHashes(((BibTex) oneBibtex.getResource()), true, session);
 			this.deleteBibTex(param, session);
 
 			session.commitTransaction();

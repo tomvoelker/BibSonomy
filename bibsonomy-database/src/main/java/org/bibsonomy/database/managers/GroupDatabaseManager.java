@@ -58,6 +58,12 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		if ("friends".equals(groupname) == true) {
 			return getFriendsGroup();
 		}
+		if ("public".equals(groupname) == true) {
+			return getPublicGroup();
+		}
+		if ("private".equals(groupname) == true) {
+			return getPrivateGroup();
+		}
 		return this.queryForObject("getGroupByName", groupname, Group.class, session);
 	}
 
@@ -69,6 +75,24 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		friends.setPrivlevel(Privlevel.HIDDEN);
 		return friends;
 	}
+	
+	private static Group getPublicGroup() {
+		final Group pub = new Group();
+		pub.setDescription("public group");
+		pub.setGroupId(GroupID.PUBLIC.getId());
+		pub.setName("public");
+		pub.setPrivlevel(Privlevel.PUBLIC);
+		return pub;
+	}
+	
+	private static Group getPrivateGroup() {
+		final Group priv = new Group();
+		priv.setDescription("private groiup");
+		priv.setGroupId(GroupID.PRIVATE.getId());
+		priv.setName("private");
+		priv.setPrivlevel(Privlevel.HIDDEN);
+		return priv;
+	}	
 
 	/**
 	 * Returns a group with all its members if the user is allowed to see them.

@@ -328,6 +328,7 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		final Group group = new Group();
 		group.setGroupId(GroupID.PRIVATE.getId());
+		group.setName("private");
 		group.setDescription(null);
 		post.setGroups(Arrays.asList(new Group[] {group}));
 
