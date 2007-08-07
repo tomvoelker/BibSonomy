@@ -38,7 +38,7 @@ public class ModelValidationUtils {
 
 	public static void checkGroup(final Group group) throws InvalidModelException {
 		if (group.getName() == null || group.getName().length() == 0) {
-			throw new InvalidModelException("found a group without username assigned.");
+			throw new InvalidModelException("found a group without groupname assigned.");
 		}
 	}
 
