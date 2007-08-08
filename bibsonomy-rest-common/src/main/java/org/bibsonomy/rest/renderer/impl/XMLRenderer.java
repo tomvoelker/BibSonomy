@@ -255,7 +255,7 @@ public class XMLRenderer implements Renderer {
 		xmlUser.setName(user.getName());
 		xmlUser.setRealname(user.getRealname());
 		xmlUser.setHref(createHrefForUser(user.getName()));
-		xmlUser.setPassword(user.getPassword());
+		// xmlUser.setPassword(user.getPassword());
 		return xmlUser;
 	}
 
@@ -485,18 +485,18 @@ public class XMLRenderer implements Renderer {
 	private BibsonomyXML parse(Reader reader) throws InternServerException {
 		try {
 			
-			if (log.isDebugEnabled() == true) {
-				char[] chars = new char[65536];
-				String s;
-				try {
-					int read = reader.read(chars);
-					s = new String(chars,0,read); 
-					log.debug("request-body:\n[" + s + "]");
-					reader = new StringReader(s);
-				} catch (IOException ex) {
-					log.error(ex,ex);
-				}
-			}
+//			if (log.isDebugEnabled() == true) {
+//				char[] chars = new char[65536];
+//				String s;
+//				try {
+//					int read = reader.read(chars);
+//					s = new String(chars,0,read); 
+//					log.debug("request-body:\n[" + s + "]");
+//					reader = new StringReader(s);
+//				} catch (IOException ex) {
+//					log.error(ex,ex);
+//				}
+//			}
 			
 			final JAXBContext jc = JAXBContext.newInstance(JAXB_PACKAGE_DECLARATION);
 

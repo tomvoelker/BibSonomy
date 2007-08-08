@@ -11,6 +11,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URL;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -352,6 +353,7 @@ public class XMLRendererTest {
 		post.setUser(user);
 		post.getGroups().add(group);
 		post.getTags().add(tag);
+		post.setDate(new Date(System.currentTimeMillis()));
 		final BibTex bibtex = new BibTex();
 		bibtex.setTitle("foo and bar");
 		bibtex.setIntraHash("abc");
@@ -366,6 +368,7 @@ public class XMLRendererTest {
 		post2.setResource(bookmark);
 		post2.setUser(user);
 		post2.getTags().add(tag);
+		post2.setDate(new Date(System.currentTimeMillis()));
 		posts.add(post2);
 		this.renderer.serializePosts(sw, posts, vm);
 		compareWithFile(sw, "ExampleResultPosts.txt");
@@ -398,6 +401,7 @@ public class XMLRendererTest {
 		}
 		final Bookmark bookmark = new Bookmark();
 		post.setResource(bookmark);
+		post.setDate(new Date(System.currentTimeMillis()));
 		try {
 			this.renderer.serializePost(sw, post, null);
 			fail("exception should have been thrown: bookmark has no url assigned");
@@ -422,6 +426,7 @@ public class XMLRendererTest {
 		final Tag tag = new Tag();
 		tag.setName("bar");
 		post.getTags().add(tag);
+		post.setDate(new Date(System.currentTimeMillis()));
 		final Bookmark bookmark = new Bookmark();
 		post.setResource(bookmark);
 		bookmark.setUrl("www.foobar.org");
@@ -440,9 +445,11 @@ public class XMLRendererTest {
 		final File file = new File("src/test/resources/xmlrenderer/" + filename);
 		final BufferedReader br = new BufferedReader(new FileReader(file));
 		String s;
-		while ((s = br.readLine()) != null) {
+		while ((s = br.readLine()) != null) {						
 			sb.append(s + "\n");
 		}
-		assertTrue("output not as expected", sw.toString().equals(sb.toString()));
+		// cut out postingdate as it changes each time
+		String swWithoutPostingdate = sw.toString().replaceAll(" postingdate=\"[^\"]*\"", "");		
+		assertTrue("output not as expected", swWithoutPostingdate.toString().equals(sb.toString()));
 	}
 }
