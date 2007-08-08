@@ -39,6 +39,8 @@ import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.resource.Resource;
 
 /**
+ * Remote Call Tests
+ * 
  * @author Jens Illig
  *
  */
