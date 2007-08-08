@@ -255,7 +255,7 @@ public class XMLRenderer implements Renderer {
 		xmlUser.setName(user.getName());
 		xmlUser.setRealname(user.getRealname());
 		xmlUser.setHref(createHrefForUser(user.getName()));
-		// xmlUser.setPassword(user.getPassword());
+		xmlUser.setPassword(user.getPassword());
 		return xmlUser;
 	}
 

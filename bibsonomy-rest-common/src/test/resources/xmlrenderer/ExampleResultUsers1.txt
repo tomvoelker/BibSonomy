@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <bibsonomy>
     <users start="20" next="http://www.bibsonomy.org/api/foo/bar" end="30">
-        <user realname="Dr. FOO BaR" name="testName" href="http://localhost:8080/restTomcat/api/users/testName" homepage="http://foo.bar.com" email="mail@foo.bar"/>
+        <user realname="Dr. FOO BaR" password="raboof" name="testName" href="http://localhost:8080/restTomcat/api/users/testName" homepage="http://foo.bar.com" email="mail@foo.bar"/>
         <user name="fooBar" href="http://localhost:8080/restTomcat/api/users/fooBar"/>
     </users>
 </bibsonomy>

@@ -160,7 +160,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		createPost(ModelUtils.generatePost(BibTex.class));
 	}
 	public void createPost(Post<?> post) {
-		serverLogic.createPost(PropertyEqualityArgumentMatcher.eq(post,"date", "user.apiKey", "user.email", "user.homepage", "user.password", "user.realname"));
+		serverLogic.createPost(PropertyEqualityArgumentMatcher.eq(post,"date", "user.apiKey", "user.email", "user.homepage", "user.password", "user.realname", "resource.scraperId"));
 		EasyMock.replay(serverLogic);
 		clientLogic.createPost(post);
 		EasyMock.verify(serverLogic);
@@ -278,7 +278,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		EasyMock.expect(serverLogic.getPostDetails(resourceHash, userName)).andReturn((Post) expectedBookmarkPost);
 		EasyMock.replay(serverLogic);
 		
-		final String[] ignoreProperties = new String[] {"user.apiKey", "user.email", "user.homepage", "user.password", "user.realname"};
+		final String[] ignoreProperties = new String[] {"user.apiKey", "user.email", "user.homepage", "user.password", "user.realname", "date", "resource.scraperId"};
 		final Post<? extends org.bibsonomy.model.Resource> returnedBibtexPost = clientLogic.getPostDetails(resourceHash,userName);
 		ModelUtils.assertPropertyEquality(expectedBibtexPost, returnedBibtexPost, 5, null, ignoreProperties);
 		final Post<? extends org.bibsonomy.model.Resource> returnedBookmarkPost = clientLogic.getPostDetails(resourceHash,userName);
@@ -313,9 +313,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		
 		EasyMock.expect(serverLogic.getPosts(resourceType, grouping, groupingName, tags, hash, order, start, end )).andReturn(expectedPosts);
 		EasyMock.replay(serverLogic);
-		
+
 		final List<Post<T>> returnedPosts = clientLogic.getPosts(resourceType, grouping, groupingName, tags, hash, order, start, end );
-		ModelUtils.assertPropertyEquality(expectedPosts, returnedPosts, 5, Pattern.compile(".*\\.user\\.(apiKey|homepage|realname|email|password)"));
+		ModelUtils.assertPropertyEquality(expectedPosts, returnedPosts, 5, Pattern.compile(".*\\.user\\.(apiKey|homepage|realname|email|password|date)|.*\\.date|.*\\.scraperId"));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return returnedPosts;
@@ -449,7 +449,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		updatePost(ModelUtils.generatePost(Bookmark.class));
 	}
 	public void updatePost(Post<?> post) {
-		serverLogic.updatePost(PropertyEqualityArgumentMatcher.eq(post,"date", "user.apiKey", "user.email", "user.homepage", "user.password", "user.realname"));
+		serverLogic.updatePost(PropertyEqualityArgumentMatcher.eq(post,"date", "user.apiKey", "user.email", "user.homepage", "user.password", "user.realname", "resource.scraperId"));
 		EasyMock.replay(serverLogic);
 		clientLogic.updatePost(post);
 		EasyMock.verify(serverLogic);
