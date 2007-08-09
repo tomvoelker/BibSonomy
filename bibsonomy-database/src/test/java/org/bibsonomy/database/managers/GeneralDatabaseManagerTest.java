@@ -35,9 +35,9 @@ public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getGroupIdsForUser() {
-		assertEquals(4, this.generalDb.getGroupIdsForUser(this.generalParam, this.dbSession).size());
+		assertEquals(4, this.generalDb.getGroupIdsForUser(this.generalParam.getUserName(), this.dbSession).size());
 		this.generalParam.setUserName(null);
-		assertTrue(this.generalDb.getGroupIdsForUser(this.generalParam, this.dbSession).size() == 0);
+		assertTrue(this.generalDb.getGroupIdsForUser(this.generalParam.getUserName(), this.dbSession).size() == 0);
 	}
 
 	/*

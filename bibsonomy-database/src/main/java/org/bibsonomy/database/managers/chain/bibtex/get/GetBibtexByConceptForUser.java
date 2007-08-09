@@ -22,7 +22,7 @@ public class GetBibtexByConceptForUser extends BibTexChainElement {
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		param.setGroups(this.generalDb.getGroupIdsForUser(param, session)); // TODO: is this needed? 
+		param.setGroups(this.generalDb.getGroupIdsForUser(param.getUserName(), session)); // TODO: is this needed? 
 		return this.db.getBibTexByConceptForUser(param, session);
 	}
 

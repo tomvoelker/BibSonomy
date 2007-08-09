@@ -157,6 +157,8 @@ public abstract class GenericParam {
 		this.friendOf=false;
 		
 		this.grouping = GroupingEntity.ALL;
+		
+		this.groups =  new ArrayList<Integer>();
 	}
 
 	/**

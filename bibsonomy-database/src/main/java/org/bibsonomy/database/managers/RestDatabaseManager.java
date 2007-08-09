@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.DBLogicInterface;
@@ -45,6 +47,7 @@ public class RestDatabaseManager implements DBLogicInterface {
 	/** Singleton */
 	private final static RestDatabaseManager singleton = new RestDatabaseManager();
 	private final Map<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>> allDatabaseManagers;
+	private final GeneralDatabaseManager generalDBManager;
 	private final BookmarkDatabaseManager bookmarkDBManager;
 	private final BibTexDatabaseManager bibtexDBManager;
 	private final UserDatabaseManager userDBManager;
@@ -53,6 +56,7 @@ public class RestDatabaseManager implements DBLogicInterface {
 	private DBSessionFactory dbSessionFactory;
 
 	private RestDatabaseManager() {
+		this.generalDBManager = GeneralDatabaseManager.getInstance();
 		this.allDatabaseManagers = new HashMap<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>>();
 		this.bibtexDBManager = BibTexDatabaseManager.getInstance();
 		this.allDatabaseManagers.put(BibTex.class, this.bibtexDBManager);
@@ -342,7 +346,7 @@ public class RestDatabaseManager implements DBLogicInterface {
 			final CrudableContent<T, GenericParam> man = getFittingDatabaseManager(post);
 			final String oldIntraHash = post.getResource().getIntraHash();
 			post.getResource().recalculateHashes();			
-			post = this.checkGroups(post, session);			
+			post = this.validateGroups(post, session);			
 			man.storePost(userName, post, oldIntraHash, update, session);
 		} finally {
 			session.close();
@@ -350,22 +354,33 @@ public class RestDatabaseManager implements DBLogicInterface {
 	}
 	
 	/**
-	 * Check for each group of a post if the groups actually exist. If yes, insert the
-	 * correct group ID
+	 * Check for each group of a post if the groups actually exist and if the posting user is allowed to post.  
+	 * If yes, insert the correct group ID
 	 * 
 	 * @param post the incoming post
 	 * @return post the incoming post with the groupIDs filled in
 	 */
-	private <T extends Resource> Post<T> checkGroups(Post<T> post, DBSession session) {
+	private <T extends Resource> Post<T> validateGroups(Post<T> post, DBSession session) {
 		
 		if (post.getGroups() == null)
-			throw new ValidationException("No groups assigned to post");
+			throw new InvalidModelException("No groups assigned to post");
+		
+		// retrieve the user's groups
+		final List<Integer> groupIds = generalDBManager.getGroupIdsForUser(post.getUser().getName(), session);
+		// each user can post as public / private / friends
+		groupIds.add(GroupID.PUBLIC.getId());
+		groupIds.add(GroupID.PRIVATE.getId());
+		groupIds.add(GroupID.FRIENDS.getId());
 		
 		for (Group group : post.getGroups()) {
 			Group testGroup = groupDBManager.getGroupByName(group.getName().toLowerCase(), session);
 			if (testGroup == null) {
 				// group does not exist
 				throw new ValidationException("Group " + group.getName() + " does not exist");
+			}
+			if (!groupIds.contains(testGroup.getGroupId())) {
+				// the posting user is not a member of this group
+				throw new ValidationException("User " + post.getUser().getName() + " is not a member of group " + group.getName());
 			}
 			group.setGroupId(testGroup.getGroupId());
 		}		

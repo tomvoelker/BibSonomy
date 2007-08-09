@@ -74,8 +74,13 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 *            Database-Properties used: userName
 	 * @return A list of groupids
 	 */
-	public List<Integer> getGroupIdsForUser(final GenericParam param, final DBSession session) {
-		return this.queryForList("getGroupIdsForUser", param, Integer.class, session);
+	/**
+	 * @param param
+	 * @param session
+	 * @return
+	 */
+	public List<Integer> getGroupIdsForUser(final String userName, final DBSession session) {
+		return this.queryForList("getGroupIdsForUser", userName, Integer.class, session);
 	}
 
 	/**

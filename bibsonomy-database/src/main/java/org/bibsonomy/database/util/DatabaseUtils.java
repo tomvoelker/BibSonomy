@@ -54,13 +54,17 @@ public class DatabaseUtils {
 	 * users are friends the groupId for friends is also appended.
 	 */
 	public static void setGroups(final GeneralDatabaseManager db, final GenericParam param, final DBSession session) {
-		final List<Integer> groupIds = db.getGroupIdsForUser(param, session);
+		final List<Integer> groupIds = db.getGroupIdsForUser(param.getUserName(), session);
 
+		// each user is allowed to see public posts
+		groupIds.add(GroupID.PUBLIC.getId());
+		
 		if (check.present(param.getUserName()) && check.present(param.getRequestedUserName())) {
-			// If userName and requestedUserName are the same -> add private
+			// If userName and requestedUserName are the same -> add private and friends
 			// otherwise: if they're friends -> add friends
 			if (param.getUserName().equals(param.getRequestedUserName())) {
 				groupIds.add(GroupID.PRIVATE.getId());
+				groupIds.add(GroupID.FRIENDS.getId());
 			} else {
 				final boolean friends = db.isFriendOf(param, session);
 				if (friends) groupIds.add(GroupID.FRIENDS.getId());
