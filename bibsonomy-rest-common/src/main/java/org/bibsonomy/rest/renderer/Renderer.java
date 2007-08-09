@@ -133,6 +133,17 @@ public interface Renderer {
 	public void serializeError(Writer writer, String errorMessage);
 
 	/**
+	 * Reads an errormessage from a {@link Reader}
+	 * 
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return an error string
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public String parseError(Reader reader) throws BadRequestOrResponseException;	
+	
+	/**
 	 * Reads a List of {@link User}s from a {@link Reader}.
 	 * 
 	 * @param reader

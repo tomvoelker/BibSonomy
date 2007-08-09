@@ -71,6 +71,18 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	public List<Post<BibTex>> getBibTexByHash(final BibTexParam param, final DBSession session) {
 		return this.bibtexList("getBibTexByHash", param, session);
 	}
+	
+	/**
+	 * wrapper for {@see getBibTexByHash(final BibTexParam param, final DBSession session)}
+	 */
+	public List<Post<BibTex>> getBibTexByHash(final String hash, final HashID hashId, final DBSession session) {
+		BibTexParam param = new BibTexParam();
+		param.setRequestedSimHash(hashId);
+		param.setSimHash(hashId);
+		param.setHash(hash);
+		param.setGroupType(GroupID.PUBLIC);
+		return this.getBibTexByHash(param, session);
+	}	
 
 	/**
 	 * Returns the number of publications for a given hash.
@@ -428,8 +440,8 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * Inserts a post with a publication into the database.
 	 */
 	protected void insertBibTexPost(final Post<BibTex> post, final DBSession session) {
-		if (this.check.present(post.getResource()) == false) throw new RuntimeException("There is no resource for this post");
-		if (this.check.present(post.getGroups()) == false) throw new RuntimeException("There are no groups for this post");
+		if (this.check.present(post.getResource()) == false) throw new RuntimeException("There is no resource for this post.");
+		if (this.check.present(post.getGroups()) == false) throw new RuntimeException("There are no groups for this post.");
 
 		final BibTexParam param = new BibTexParam();
 		param.setResource(post.getResource());
@@ -457,12 +469,12 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			final List<Post<BibTex>> isBibTexInDb;
 			if (oldIntraHash != null) {
 				if ((update == false) && (oldIntraHash.equals(post.getResource().getIntraHash()) == false)) {
-					throw new IllegalArgumentException("cannot create new resource with an old hash value");
+					throw new IllegalArgumentException("The requested resource (with ID (with ID " + oldIntraHash + ") already exists.");
 				}
 				isBibTexInDb = this.getBibTexByHashForUser(userName, oldIntraHash, userName, session, HashID.INTRA_HASH);
 			} else {
 				if (update == true) {
-					throw new IllegalArgumentException("cannot update without old hash value");
+					throw new IllegalArgumentException("Cannot update the requested resource due to missing ID.");
 				}
 				isBibTexInDb = null;
 			}
@@ -486,9 +498,9 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 												
 			} else {
 				if (update == true) {
-					final String errorMsg = "cannot update nonexisting BibTex-post with intrahash " + oldIntraHash + " for user " + userName;
+					final String errorMsg = "The requested resource (with ID " + oldIntraHash + ") does not exist for user " + userName + ". \nMaybe it has been deleted or its ID has changed, because it has been modfied via the webinterface or another application.";
 					log.warn(errorMsg);
-					throw new ValidationException(errorMsg);
+					throw new ValidationException(errorMsg);											
 				}
 				update = false;
 				

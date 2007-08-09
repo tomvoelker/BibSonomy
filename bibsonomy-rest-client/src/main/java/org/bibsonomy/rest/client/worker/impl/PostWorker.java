@@ -31,7 +31,7 @@ public final class PostWorker extends HttpWorker {
 		try {
 			this.httpResult = getHttpClient().executeMethod(post);
 			LOGGER.log(Level.INFO, "Result: " + this.httpResult);
-			return post.getStatusText();
+			return post.getResponseBodyAsString();
 		} catch (final IOException e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			throw new ErrorPerformingRequestException(e);

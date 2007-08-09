@@ -345,7 +345,16 @@ public class XMLRenderer implements Renderer {
 		xmlDoc.setError(errorMessage);
 		serialize(writer, xmlDoc);
 	}
-
+	
+	public String parseError(final Reader reader) throws BadRequestOrResponseException {
+		if (reader == null) throw new BadRequestOrResponseException("The body part of the received document is missing");
+		final BibsonomyXML xmlDoc = parse(reader);
+		if (xmlDoc.getError() != null) {
+			return xmlDoc.getError();
+		}
+		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no error defined.");
+	}
+	
 	public User parseUser(final Reader reader) throws BadRequestOrResponseException {
 		if (reader == null) throw new BadRequestOrResponseException("The body part of the received document is missing");
 

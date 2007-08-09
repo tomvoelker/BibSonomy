@@ -28,7 +28,7 @@ public final class DeleteWorker extends HttpWorker {
 		try {
 			this.httpResult = getHttpClient().executeMethod(delete);
 			LOGGER.log(Level.INFO, "Result: " + this.httpResult);
-			return delete.getStatusText();
+			return delete.getResponseBodyAsString();
 		} catch (final IOException e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			throw new ErrorPerformingRequestException(e);
