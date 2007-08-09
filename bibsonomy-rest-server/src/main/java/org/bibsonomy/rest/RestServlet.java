@@ -216,6 +216,7 @@ public final class RestServlet extends HttpServlet {
 
 		// send error
 		response.setStatus(code);
+		response.setContentType(RestProperties.getInstance().getContentType());
 		final ByteArrayOutputStream cachingStream = new ByteArrayOutputStream();
 		final Writer writer = new OutputStreamWriter(cachingStream, Charset.forName("UTF-8"));
 		renderer.serializeError(writer, message);

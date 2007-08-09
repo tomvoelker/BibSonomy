@@ -4,6 +4,7 @@ import java.io.Reader;
 import java.io.Writer;
 
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -38,7 +39,12 @@ public class PutPostStrategy extends Strategy {
 		// XXX: neither the client nor the REST API will calculate the new
 		// hash - this will be done by the logic behind the LogicInterface!
 		if (!post.getResource().getIntraHash().equals(this.resourceHash)) throw new BadRequestOrResponseException("wrong resource");
-		this.getLogic().updatePost(post);
+		try {
+			this.getLogic().updatePost(post);
+		}
+		catch (InvalidModelException ex) {
+			throw new BadRequestOrResponseException(ex);
+		}
 	}
 
 	@Override

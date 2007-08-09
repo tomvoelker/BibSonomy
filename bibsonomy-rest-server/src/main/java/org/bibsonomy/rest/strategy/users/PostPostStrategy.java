@@ -5,8 +5,10 @@ import java.io.Writer;
 import java.util.Date;
 
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
 
@@ -33,7 +35,12 @@ public class PostPostStrategy extends Strategy {
 	public void perform(final Writer writer) throws InternServerException {
 		final Post<?> post = this.getRenderer().parsePost(this.doc);
 		post.setDate(new Date(System.currentTimeMillis()));
-		this.getLogic().createPost(post);
+		try {
+			this.getLogic().createPost(post);
+		}
+		catch (InvalidModelException ex) {
+			throw new BadRequestOrResponseException(ex);
+		}
 	}
 
 	@Override
