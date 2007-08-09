@@ -47,7 +47,8 @@ import org.mortbay.resource.Resource;
 public class LogicInterfaceProxyTest implements LogicInterface {
 	private static final Logger log = Logger.getLogger(LogicInterfaceProxyTest.class);
 	private static final String LOGIN_USER_NAME = LogicInterfaceProxyTest.class.getSimpleName();
-	private static final String API_KEY = "A P I äöü K e y";
+	// private static final String API_KEY = "A P I äöü K e y";
+	private static final String API_KEY = "yetAnother Strange API KEY";
 	private static Server server;
 	private static String apiUrl;
 	private static LogicInterfaceFactory clientLogicFactory;
@@ -70,7 +71,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			resource.setAssociate(apiUrl);
 			servletContext.setBaseResource(resource);
 			ServletHolder restServlet = servletContext.addServlet(RestServlet.class, "/*");
-			restServlet.setInitParameter(RestServlet.PARAM_LOGICFACTORY_CLASS, MockLogicFactory.class.getName() );
+			restServlet.setInitParameter(RestServlet.PARAM_LOGICFACTORY_CLASS, MockLogicFactory.class.getName() );			
 			server.addHandler(servletContext);
 			server.start();
 			connector.start();
@@ -98,6 +99,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	private void assertLogin() {
 		Assert.assertEquals(LOGIN_USER_NAME, MockLogicFactory.getRequestedLoginName());
 		Assert.assertEquals(API_KEY, MockLogicFactory.getRequestedApiKey());
+		System.out.println(API_KEY + " +++ " + MockLogicFactory.getRequestedApiKey());
 	}
 	
 	private static class PropertyEqualityArgumentMatcher<T> implements IArgumentMatcher {
