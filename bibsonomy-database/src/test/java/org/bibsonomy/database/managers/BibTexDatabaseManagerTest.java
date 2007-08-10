@@ -15,6 +15,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.beans.TagIndex;
+import org.bibsonomy.database.plugin.DatabasePlugin;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
@@ -319,6 +320,9 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void storePost() {
+		// make sure the BibTexExtra plugin is activated
+		DatabasePluginRegistry.getInstance().clearPlugins();
+		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtra());
 		final Post<BibTex> toInsert = ModelUtils.generatePost(BibTex.class);
 		// this was a INTER-hash - we want an INTRA-hash here...
 		final String BIBTEX_TEST_HASH = "41b80148937cf74ad9b07ed4b227345a"; // INTRA-hash

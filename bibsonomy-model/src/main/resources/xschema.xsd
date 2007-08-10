@@ -178,6 +178,7 @@
 		<xsd:attribute name="type" type="xsd:string"/>
 		<!-- <xsd:attribute name="scraperId" type="xsd:positiveInteger"/>  -->
 		<xsd:attribute name="url" type="xsd:string"/>
+		<xsd:attribute name="privnote" type="xsd:string"/>
 
 		<!-- hash value identifying this resource -->
 		<xsd:attribute name="intrahash" type="xsd:string"/>

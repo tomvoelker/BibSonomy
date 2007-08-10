@@ -56,6 +56,15 @@ public class BibTex extends Resource {
 	private String type;
 	private int scraperId;
 	private String url;
+	private String privnote;
+
+	public String getPrivnote() {
+		return this.privnote;
+	}
+
+	public void setPrivnote(String privnote) {
+		this.privnote = privnote;
+	}
 
 	public String getAddress() {
 		return this.address;

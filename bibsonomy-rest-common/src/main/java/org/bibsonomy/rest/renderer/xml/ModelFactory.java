@@ -180,6 +180,7 @@ public class ModelFactory {
 			bibtex.setUrl(xmlBibtex.getUrl());
 			bibtex.setVolume(xmlBibtex.getVolume());
 			bibtex.setYear(xmlBibtex.getYear());
+			bibtex.setPrivnote(xmlBibtex.getPrivnote());
 
 			post.setResource(bibtex);
 		}

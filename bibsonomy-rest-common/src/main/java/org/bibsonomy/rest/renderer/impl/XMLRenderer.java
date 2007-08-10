@@ -205,6 +205,7 @@ public class XMLRenderer implements Renderer {
 			xmlBibtex.setUrl(bibtex.getUrl());
 			xmlBibtex.setVolume(bibtex.getVolume());
 			xmlBibtex.setYear(bibtex.getYear());
+			xmlBibtex.setPrivnote(bibtex.getPrivnote());
 
 			xmlPost.setBibtex(xmlBibtex);
 		}

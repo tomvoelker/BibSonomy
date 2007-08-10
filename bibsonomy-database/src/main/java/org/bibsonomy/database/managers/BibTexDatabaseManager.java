@@ -1,6 +1,7 @@
 package org.bibsonomy.database.managers;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -379,9 +380,34 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	}
 		
 	public List<Post<BibTex>> getPosts(final BibTexParam param, final DBSession session) {
-		return chain.getFirstElement().perform(param, session);
+		return this.getPostsWithPrivnote(param, session);
 	}
-
+		
+	/**
+	 * Iterates over a list of bibtex posts and inserts private notes, if existent and if
+	 * post belongs to the logged-in user
+	 * 
+	 * @param param a bibtex parameter object
+	 * @param session a database session
+	 * @return a list of bibtex posts, with private notes inserted at the appropriate places
+	 */
+	public List<Post<BibTex>> getPostsWithPrivnote(final BibTexParam param, final DBSession session) {
+		// start the chain
+		List<Post<BibTex>> posts = chain.getFirstElement().perform(param, session);
+		// insert the private notes
+		BibTexExtraDatabaseManager bibtexExtraDB = BibTexExtraDatabaseManager.getInstance();
+		for ( Iterator<Post<BibTex>> postsIterator = posts.iterator() ; postsIterator.hasNext() ; ) {
+			Post<BibTex> post = postsIterator.next();
+			if (post.getUser().getName().equals(param.getUserName())) {
+				post.getResource().setPrivnote(
+						bibtexExtraDB.getBibTexPrivnoteForUser(
+								post.getResource().getIntraHash(), param.getUserName(), session)
+						);
+			}
+		}
+		return posts;
+	} 
+	
 	public Post<BibTex> getPostDetails(final String authUser, final String resourceHash, final String userName, final DBSession session) {
 		final List<Post<BibTex>> list = getBibTexByHashForUser(authUser, resourceHash, userName, session, HashID.INTRA_HASH);
 		if (list.size() >= 1) {
@@ -518,6 +544,15 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			}
 								
 			this.insertBibTexPost(post, session);
+			
+			// add private note, if exists
+			if (post.getResource().getPrivnote() != null) {
+				BibTexExtraDatabaseManager bibtexExtraDb = BibTexExtraDatabaseManager.getInstance();
+				bibtexExtraDb.updateBibTexPrivnoteForUser(
+						post.getResource().getIntraHash(), post.getUser().getName(), 
+						post.getResource().getPrivnote(), session);
+			}
+			
 			// add the tags
 			this.tagDb.insertTags(post, session);
 
