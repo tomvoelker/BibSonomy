@@ -85,10 +85,10 @@ public class XMLRenderer implements Renderer {
 		this.postsUrlDelimiter = "/" + properties.get(URL_POSTS) + "/";
 		
 		try {
-			schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(new File("../dev/bibsonomy/bibsonomy-model/src/main/resources/xschema.xsd"));
+			SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(this.getClass().getClassLoader().getResource("xschema.xsd"));
 		}
-		catch (SAXException e) {
-			log.debug("Failed to load XML schema", e);
+		catch (Exception e) {
+			log.error("Failed to load XML schema", e);
 		}
 	}
 
