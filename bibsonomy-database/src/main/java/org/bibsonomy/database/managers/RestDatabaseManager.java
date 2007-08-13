@@ -290,11 +290,18 @@ public class RestDatabaseManager implements DBLogicInterface {
 	public void deletePost(final String userName, final String resourceHash) {
 		final DBSession session = this.openSession();
 		try {
+			Boolean resourceFound = false;
 			// TODO would be nice to know about the resourcetype or the instance behind this resourceHash
 			for (final CrudableContent<? extends Resource, ? extends GenericParam> man : this.allDatabaseManagers.values()) {
-				if (man.deletePost(userName, resourceHash, session) == true) {
+				if (man.deletePost(userName, resourceHash, session) == true) 
+				{
+					resourceFound = true;
 					break;
 				}
+			}
+			if (resourceFound == false) 
+			{
+				throw new IllegalStateException("The resource with ID " + resourceHash + " does not exist and could hence not be deleted.");
 			}
 		} finally {
 			session.close();
