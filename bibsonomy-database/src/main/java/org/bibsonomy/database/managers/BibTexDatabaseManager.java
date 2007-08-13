@@ -431,6 +431,13 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			this.insert("insertBibTex", param, session);
 			// Insert/Update SimHashes
 			this.insertUpdateSimHashes(param.getResource(), false, session);
+			// add private note, if exists
+			if (param.getResource().getPrivnote() != null) {
+				BibTexExtraDatabaseManager bibtexExtraDb = BibTexExtraDatabaseManager.getInstance();
+				bibtexExtraDb.updateBibTexPrivnoteForUser(
+						param.getResource().getIntraHash(), param.getUserName(), 
+						param.getResource().getPrivnote(), session);
+			}			
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -518,9 +525,8 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 //				if (update == true && !this.check.present(post.getGroups())) {										
 //					post.setGroups(this.groupDb.getGroupsForContentId(oldBibTexPost.getContentId(), session));
 //				}				
-				
 				this.plugins.onBibTexUpdate(post.getContentId(), oldBibTexPost.getContentId(), session);
-				this.deletePost(userName, oldBibTexPost.getResource().getInterHash(), update, session);
+				this.deletePost(userName, oldBibTexPost.getResource().getIntraHash(), update, session);
 												
 			} else {
 				if (update == true) {
@@ -543,19 +549,9 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 //				}				
 			}
 								
-			this.insertBibTexPost(post, session);
-			
-			// add private note, if exists
-			if (post.getResource().getPrivnote() != null) {
-				BibTexExtraDatabaseManager bibtexExtraDb = BibTexExtraDatabaseManager.getInstance();
-				bibtexExtraDb.updateBibTexPrivnoteForUser(
-						post.getResource().getIntraHash(), post.getUser().getName(), 
-						post.getResource().getPrivnote(), session);
-			}
-			
+			this.insertBibTexPost(post, session);			
 			// add the tags
 			this.tagDb.insertTags(post, session);
-
 			// TODO: update: log, doc, col, ext, url
 
 			session.commitTransaction();
@@ -579,7 +575,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			param.setRequestedUserName(userName); // FIXME: grmpf.
 			param.setHash(resourceHash);
 
-			final List<Post<BibTex>> bibtexs = this.getBibTexByHashForUser(param, session);
+			final List<Post<BibTex>> bibtexs = this.getBibTexByHashForUser(userName, resourceHash, userName, session, HashID.INTRA_HASH);
 			if (bibtexs.size() == 0) {
 				// BibTex doesn't exist
 				return false;

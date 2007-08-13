@@ -296,13 +296,14 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void deleteBibTex() {
 		// deleting a bibtex post (group is public)
-		this.bibtexParam.setHash("00d062518a5549c3572b26f7ce9956f3");
+		this.bibtexParam.setHash("65dd8521862eca7c81bd6ba32d0f0433"); // INTRAHASH
+		this.bibtexParam.setRequestedSimHash(HashID.INTRA_HASH);
 		this.assertDeleteBibTex();
 
 		// deleting a bibtex post (group is private)
 		this.bibtexParam.setUserName("maybe");
-		this.bibtexParam.setRequestedUserName("maybe");
-		this.bibtexParam.setHash("967449bcdaabceaa22cfcbe0c554356d");
+		this.bibtexParam.setRequestedUserName("maybe"); 
+		this.bibtexParam.setHash("529264365274b73d78003aeb46db286d"); // INTRAHASH
 		// FIXME: this boilerplate code could be removed with a DI-framework (i.e. next three lines)
 		final DatabasePluginMock plugin = new DatabasePluginMock();
 		DatabasePluginRegistry.getInstance().clearPlugins();

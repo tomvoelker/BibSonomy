@@ -133,12 +133,14 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	
 	@Test
 	public void onBibTexDeleteSQL() {
-		final String HASH = "00078c9690694eb9a56ca7866b5101c6";
+		// final String HASH = "00078c9690694eb9a56ca7866b5101c6"; INTERHASH
+		final String HASH = "a0bda74e39a8f4c286a81fc66e77f69d"; // INTRAHASH
 		// ContentId of the BibTex with the Hash above
 		final int CONTENTID = 711342;
 		final BibTexParam param = this.bibtexParam;
 		param.setRequestedContentId(CONTENTID);
 		param.setHash(HASH);
+		param.setRequestedSimHash(HashID.INTRA_HASH);
 		final Post<BibTex> someBibTexPost = this.bibTexDb.getBibTexByHash(param, this.dbSession).get(0);
 		
 		Integer result = this.generalDb.countRequestedContentIdFromBibTex(param, this.dbSession);
@@ -202,12 +204,14 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void onTagDeleteSQL() {
-		final String HASH = "00078c9690694eb9a56ca7866b5101c6";
+		// final String HASH = "00078c9690694eb9a56ca7866b5101c6"; INTERHASH
+		final String HASH = "a0bda74e39a8f4c286a81fc66e77f69d"; // INTRAHASH
 		// ContentId of the BibTex with the Hash above
 		final int CONTENTID = 711342;
 		final BibTexParam param = this.bibtexParam;
 		param.setRequestedContentId(CONTENTID);
 		param.setHash(HASH);
+		param.setRequestedSimHash(HashID.INTRA_HASH);
 		final TagParam tagparam = this.tagParam;
 		tagparam.setRequestedContentId(CONTENTID);	
 		final Post<BibTex> someBibTexPost = this.bibTexDb.getBibTexByHash(param, this.dbSession).get(0);
