@@ -30,7 +30,7 @@
 	</delete>
 
 	<select id="getBibTexPrivnoteForUser" resultClass="string" parameterClass="bibtexExtraParam">
-		SELECT privnote FROM bibtex WHERE user_name = #userName# AND simhash$simHash$ = #hash#
+		SELECT privnote FROM bibtex WHERE user_name = #userName# AND simhash$simHash$ = #hash# LIMIT 1
 	</select>
 
 	<update id="updateBibTexPrivnoteForUser" parameterClass="bibtexExtraParam">
