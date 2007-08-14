@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers.chain.bibtex.get;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.DBSession;
@@ -25,6 +26,6 @@ public class GetBibtexForHomePage extends BibTexChainElement {
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return !present(param.getGrouping()) && nullOrEqual(param.getOrder(), Order.ADDED);
+		return present(param.getGrouping()) && param.getGrouping().equals(GroupingEntity.ALL) && !present(param.getTagIndex()) && !(present(param.getHash())) && nullOrEqual(param.getOrder(), Order.ADDED);
 	}
 }

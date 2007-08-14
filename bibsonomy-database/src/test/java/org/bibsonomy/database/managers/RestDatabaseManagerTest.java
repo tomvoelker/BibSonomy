@@ -296,7 +296,7 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getPostsHome() {
-		this.bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, null, TEST_REQUEST_USER_NAME, taglist, null, null, 0, 19);
+		this.bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, TEST_REQUEST_USER_NAME, taglist, null, null, 0, 15);
 		assertEquals(15, this.bibTexPostsList.size());
 		// TODO: test something
 	}

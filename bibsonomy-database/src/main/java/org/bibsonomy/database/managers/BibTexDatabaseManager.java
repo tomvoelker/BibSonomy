@@ -37,7 +37,6 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	private static final BibTexDatabaseManager singleton = new BibTexDatabaseManager();
 	private final GeneralDatabaseManager generalDb;
 	private final TagDatabaseManager tagDb;
-	private final GroupDatabaseManager groupDb;
 	private final DatabasePluginRegistry plugins;
 	private static final BibTexChain chain = new BibTexChain();
 	private final ValidationUtils check;
@@ -45,7 +44,6 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	private BibTexDatabaseManager() {
 		this.generalDb = GeneralDatabaseManager.getInstance();
 		this.tagDb = TagDatabaseManager.getInstance();
-		this.groupDb = GroupDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
 		this.check = ValidationUtils.getInstance();
 	}
@@ -180,7 +178,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * public posts are shown.
 	 */
 	public List<Post<BibTex>> getBibTexForHomePage(final BibTexParam param, final DBSession session) {
-		param.setGroupType(GroupID.FRIENDS);
+		param.setGroupType(GroupID.PUBLIC);
 		param.setLimit(15);
 		param.setOffset(0);
 		return this.bibtexList("getBibTexForHomePage", param, session);
