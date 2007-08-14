@@ -19,6 +19,7 @@ import org.bibsonomy.model.logic.Order;
  * @version $Id$
  */
 public class DBLogic implements LogicInterface {
+
 	private static final Logger log = Logger.getLogger(DBLogic.class);
 	private final String loginUserName;
 	private final DBLogicInterface dbLogic;

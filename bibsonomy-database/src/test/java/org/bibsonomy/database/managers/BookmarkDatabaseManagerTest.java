@@ -195,12 +195,6 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	@Test
-	public void insertBookmarkLog() {
-		// FIXME
-		// this.db.getBookmark().insertBookmarkLog(this.bookmarkParam);
-	}
-
-	@Test
 	public void insertBookmarkHash() {
 		this.bookmarkParam.setHash("1234567890");
 		this.bookmarkParam.setUrl("www.hallo.de");
@@ -213,21 +207,9 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	@Test
-	public void updateBookmarkLog() {
-		// FIXME
-		// this.db.getBookmark().updateBookmarkLog(this.bookmarkParam);
-	}
-
-	@Test
 	public void deleteBookmarkByContentId() {
 		// FIXME
 		// this.db.getBookmark().deleteBookmarkByContentId(this.bookmarkParam);
-	}
-
-	@Test
-	public void getNewContentID() {
-		// FIXME
-		// this.db.getBookmark().getNewContentID(this.bookmarkParam);
 	}
 
 	// FIXME: either db or single-result querytype is wrong @Test

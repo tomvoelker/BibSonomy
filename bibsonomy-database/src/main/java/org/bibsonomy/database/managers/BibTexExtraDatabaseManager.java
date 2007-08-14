@@ -1,5 +1,7 @@
 package org.bibsonomy.database.managers;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -10,7 +12,6 @@ import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.extra.ExtendedFields;
-import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author Christian Schenk
@@ -20,12 +21,10 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 
 	private final static BibTexExtraDatabaseManager singleton = new BibTexExtraDatabaseManager();
 	private final BibTexDatabaseManager bibtexDb = BibTexDatabaseManager.getInstance();
-	private final ValidationUtils check;
 	/** Denotes whether documents are public, i.e. everybody sees everything */
 	private final boolean PUBLIC_DOCUMENTS = false;
 
 	private BibTexExtraDatabaseManager() {
-		this.check = ValidationUtils.getInstance();
 	}
 
 	public static BibTexExtraDatabaseManager getInstance() {
@@ -105,11 +104,11 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 	 * Returns the filename for the document with the given hash and username.
 	 */
 	public String getDocumentByHashAndUser(final String hash, final String username, final DBSession session) {
-		if (this.check.present(hash) == false) throw new RuntimeException("Hash must be present.");
+		if (present(hash) == false) throw new RuntimeException("Hash must be present.");
 		// if all documents are public -> return them
 		if (this.PUBLIC_DOCUMENTS) return this.queryForObject("getDocumentByHash", hash, String.class, session);
 		// if documents aren't public we need a username and return the document
-		if (this.check.present(username) == false) throw new RuntimeException("Username must be present.");
+		if (present(username) == false) throw new RuntimeException("Username must be present.");
 		final BibTexExtraParam param = new BibTexExtraParam();
 		param.setHash(hash);
 		param.setUserName(username);

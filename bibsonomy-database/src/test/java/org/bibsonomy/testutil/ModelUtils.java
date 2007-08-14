@@ -110,7 +110,7 @@ public class ModelUtils {
 		} else if (resourceType == Bookmark.class) {
 			resource = (T) ModelUtils.getBookmark();
 		} else {
-			throw new UnsupportedResourceTypeException(resourceType.getName());
+			throw new UnsupportedResourceTypeException();
 		}
 		post.setResource(resource);
 

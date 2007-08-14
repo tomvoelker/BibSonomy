@@ -1,16 +1,17 @@
 package org.bibsonomy.database.managers;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.UserParam;
-import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.database.util.DBSession;
+import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.ExceptionUtils;
-import org.bibsonomy.util.ValidationUtils;
 
 /**
  * Used to retrieve users from the database.
@@ -24,10 +25,8 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 
 	private static final Logger log = Logger.getLogger(UserDatabaseManager.class);
 	private final static UserDatabaseManager singleton = new UserDatabaseManager();
-	private final ValidationUtils check;
 
 	private UserDatabaseManager() {
-		this.check = ValidationUtils.getInstance();
 	}
 
 	public static UserDatabaseManager getInstance() {
@@ -100,7 +99,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @return boolean true if the Api key is correct, otherwise false
 	 */
 	public boolean validateUserAccess(final String username, final String apiKey, final DBSession session) {
-		if (this.check.present(apiKey) == false || this.check.present(username) == false) return false;
+		if (present(apiKey) == false || present(username) == false) return false;
 		final String currentApiKey = this.getApiKeyForUser(username, session);
 		if (currentApiKey == null) return false;
 		return apiKey.equals(currentApiKey);

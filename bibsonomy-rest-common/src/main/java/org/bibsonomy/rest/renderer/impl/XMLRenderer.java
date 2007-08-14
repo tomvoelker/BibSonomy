@@ -10,10 +10,7 @@ import static org.bibsonomy.rest.RestProperties.Property.URL_GROUPS;
 import static org.bibsonomy.rest.RestProperties.Property.URL_POSTS;
 import static org.bibsonomy.rest.RestProperties.Property.URL_USERS;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.Reader;
-import java.io.StringReader;
 import java.io.Writer;
 import java.math.BigInteger;
 import java.util.Date;
@@ -28,7 +25,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.datatype.XMLGregorianCalendar;
-
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
@@ -58,7 +54,6 @@ import org.bibsonomy.rest.renderer.xml.TagType;
 import org.bibsonomy.rest.renderer.xml.TagsType;
 import org.bibsonomy.rest.renderer.xml.UserType;
 import org.bibsonomy.rest.renderer.xml.UsersType;
-import org.xml.sax.SAXException;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
@@ -218,7 +213,7 @@ public class XMLRenderer implements Renderer {
 		return new XMLGregorianCalendarImpl(cal);
 	}
 
-	private void checkPost(final Post post) throws InternServerException {
+	private void checkPost(final Post<? extends Resource> post) throws InternServerException {
 		if (post.getUser() == null) throw new InternServerException("error no user assigned!");
 		// there may be posts whithout tags
 		// if( post.getTags() == null || post.getTags().size() == 0 ) throw new InternServerException( "error no tags assigned!" );

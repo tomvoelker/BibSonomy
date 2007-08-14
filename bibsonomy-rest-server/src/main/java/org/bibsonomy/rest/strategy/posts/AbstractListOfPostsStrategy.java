@@ -43,6 +43,7 @@ public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrateg
 
 	//protected abstract List<? extends Post<? extends Resource>> getList(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingValue, List<String> tags, String hash, Object object, int start, int end);
 
+	@Override
 	protected abstract StringBuilder getLinkPrefix();
 
 	@Override

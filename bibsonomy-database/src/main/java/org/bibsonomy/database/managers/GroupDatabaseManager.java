@@ -22,14 +22,14 @@ import org.bibsonomy.util.ExceptionUtils;
  * @version $Id$
  */
 public class GroupDatabaseManager extends AbstractDatabaseManager {
+
 	private static final Logger log = Logger.getLogger(GroupDatabaseManager.class);
 	
-	/** Singleton */
 	private final static GroupDatabaseManager singleton = new GroupDatabaseManager();
 	private final UserDatabaseManager userDb;
 	private final DatabasePluginRegistry plugins;
 
-	private GroupDatabaseManager() {
+	public GroupDatabaseManager() {
 		this.userDb = UserDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
 	}

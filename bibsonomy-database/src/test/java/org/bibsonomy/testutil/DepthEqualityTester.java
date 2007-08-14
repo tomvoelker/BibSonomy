@@ -1,6 +1,3 @@
-/*
- * Created on 16.07.2007
- */
 package org.bibsonomy.testutil;
 
 import java.beans.BeanInfo;
@@ -27,7 +24,7 @@ public class DepthEqualityTester  {
 		public boolean checkEquals(Object should, Object is, String path);
 		public boolean checkTrue(boolean value, String path, String checkName);
 	}
-		
+
 	private static Set<String> toSet(String[] excludeProperties) {
 		final Set<String> skip;
 		if (excludeProperties != null || excludeProperties.length > 0) {

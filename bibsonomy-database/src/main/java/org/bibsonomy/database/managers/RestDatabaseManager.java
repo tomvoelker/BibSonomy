@@ -1,7 +1,6 @@
 package org.bibsonomy.database.managers;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,9 +41,9 @@ import org.bibsonomy.model.logic.Order;
  * @version $Id$
  */
 public class RestDatabaseManager implements DBLogicInterface {
+
 	private static final Logger log = Logger.getLogger(RestDatabaseManager.class);
 
-	/** Singleton */
 	private final static RestDatabaseManager singleton = new RestDatabaseManager();
 	private final Map<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>> allDatabaseManagers;
 	private final GeneralDatabaseManager generalDBManager;
@@ -62,10 +61,11 @@ public class RestDatabaseManager implements DBLogicInterface {
 		this.allDatabaseManagers.put(BibTex.class, this.bibtexDBManager);
 		this.bookmarkDBManager = BookmarkDatabaseManager.getInstance();
 		this.allDatabaseManagers.put(Bookmark.class, this.bookmarkDBManager);
-		
+
 		this.userDBManager = UserDatabaseManager.getInstance();
 		this.groupDBManager = GroupDatabaseManager.getInstance();
 		this.tagDBManager = TagDatabaseManager.getInstance();
+
 		this.dbSessionFactory = DatabaseUtils.getDBSessionFactory();		
 	}
 
@@ -148,7 +148,7 @@ public class RestDatabaseManager implements DBLogicInterface {
 				// this is save because of RTTI-check of resourceType argument which is of class T
 				result = ((List) this.bookmarkDBManager.getPosts(param, session));
 			} else {
-				throw new UnsupportedResourceTypeException(resourceType.toString());
+				throw new UnsupportedResourceTypeException();
 			}
 		} finally {
 			session.close();
@@ -290,17 +290,15 @@ public class RestDatabaseManager implements DBLogicInterface {
 	public void deletePost(final String userName, final String resourceHash) {
 		final DBSession session = this.openSession();
 		try {
-			Boolean resourceFound = false;
+			boolean resourceFound = false;
 			// TODO would be nice to know about the resourcetype or the instance behind this resourceHash
 			for (final CrudableContent<? extends Resource, ? extends GenericParam> man : this.allDatabaseManagers.values()) {
-				if (man.deletePost(userName, resourceHash, session) == true) 
-				{
+				if (man.deletePost(userName, resourceHash, session) == true) {
 					resourceFound = true;
 					break;
 				}
 			}
-			if (resourceFound == false) 
-			{
+			if (resourceFound == false) {
 				throw new IllegalStateException("The resource with ID " + resourceHash + " does not exist and could hence not be deleted.");
 			}
 		} finally {
@@ -368,19 +366,19 @@ public class RestDatabaseManager implements DBLogicInterface {
 	 * @return post the incoming post with the groupIDs filled in
 	 */
 	private <T extends Resource> Post<T> validateGroups(Post<T> post, DBSession session) {
-		
-		if (post.getGroups() == null)
+		if (post.getGroups() == null) {
 			throw new InvalidModelException("No groups assigned to post");
-		
+		}
+
 		// retrieve the user's groups
-		final List<Integer> groupIds = generalDBManager.getGroupIdsForUser(post.getUser().getName(), session);
+		final List<Integer> groupIds = this.generalDBManager.getGroupIdsForUser(post.getUser().getName(), session);
 		// each user can post as public / private / friends
 		groupIds.add(GroupID.PUBLIC.getId());
 		groupIds.add(GroupID.PRIVATE.getId());
 		groupIds.add(GroupID.FRIENDS.getId());
-		
-		for (Group group : post.getGroups()) {
-			Group testGroup = groupDBManager.getGroupByName(group.getName().toLowerCase(), session);
+
+		for (final Group group : post.getGroups()) {
+			final Group testGroup = this.groupDBManager.getGroupByName(group.getName().toLowerCase(), session);
 			if (testGroup == null) {
 				// group does not exist
 				throw new ValidationException("Group " + group.getName() + " does not exist");
@@ -406,7 +404,7 @@ public class RestDatabaseManager implements DBLogicInterface {
 				}
 			}
 			if (man == null) {
-				throw new UnsupportedResourceTypeException(resourceClass.toString());
+				throw new UnsupportedResourceTypeException();
 			}
 		}
 		return ((CrudableContent) man);

@@ -22,12 +22,9 @@ import org.bibsonomy.model.logic.Order;
  * iBATIS in the SQL-statements to fill in values; they are put at the position
  * of ?-marks.
  * 
+ * @author Dominik Benz
  * @author Christian Schenk
  * @version $Id$
- */
-/**
- * @author dbenz
- *
  */
 public abstract class GenericParam {
 	/**
@@ -421,7 +418,7 @@ public abstract class GenericParam {
 		} else if (Bookmark.class.isAssignableFrom(nativeContentType)) {
 			setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
 		} else {
-			throw new UnsupportedResourceTypeException( nativeContentType.getName() );
+			throw new UnsupportedResourceTypeException();
 		}
 	}
 

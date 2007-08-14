@@ -7,8 +7,8 @@ import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.UserParam;
-import org.bibsonomy.database.util.DBSessionFactory;
 import org.bibsonomy.database.util.DBSession;
+import org.bibsonomy.database.util.DBSessionFactory;
 import org.bibsonomy.testutil.ParamUtils;
 import org.bibsonomy.testutil.SandboxDBSessionFactory;
 import org.junit.After;
@@ -57,6 +57,7 @@ public abstract class AbstractDatabaseManagerTest {
 			this.tagDb = TagDatabaseManager.getInstance();
 			this.tagRelDb = TagRelationDatabaseManager.getInstance();
 			this.groupDb = GroupDatabaseManager.getInstance();
+
 			this.resetParameters();
 
 			// testcases shouldn't write into the db

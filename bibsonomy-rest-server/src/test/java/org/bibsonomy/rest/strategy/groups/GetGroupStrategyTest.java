@@ -19,7 +19,7 @@ public class GetGroupStrategyTest extends AbstractContextTest {
 
 	@Test
 	public void testGetGroupStrategy() {
-		final Context ctx = new Context(this.is, this.db, HttpMethod.GET, "/groups/public", new HashMap());
+		final Context ctx = new Context(this.is, this.db, HttpMethod.GET, "/groups/public", new HashMap<Object, Object>());
 		final StringWriter sw = new StringWriter();
 		ctx.perform(sw);
 

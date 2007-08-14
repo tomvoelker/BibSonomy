@@ -10,6 +10,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.junit.Before;
@@ -107,11 +108,11 @@ public class ModelFactoryTest {
 		xmlPost.setBibtex(null);
 
 		// check valid post with bookmark
-		Post post = modelFactory.createPost(xmlPost);
+		Post<? extends Resource> post = modelFactory.createPost(xmlPost);
 		assertTrue("model not correctly initialized", "tuser".equals(post.getUser().getName()));
 		assertTrue("model not correctly initialized", post.getResource() instanceof Bookmark);
 		assertTrue("model not correctly initialized", "http://www.google.de".equals(((Bookmark) post.getResource()).getUrl()));
-		assertTrue("model not correctly initialized", "testtag".equals(((Tag) post.getTags().iterator().next()).getName()));
+		assertTrue("model not correctly initialized", "testtag".equals(post.getTags().iterator().next().getName()));
 
 		xmlPost.setBookmark(null);
 		final BibtexType xmlBibtex = new BibtexType();
@@ -124,7 +125,7 @@ public class ModelFactoryTest {
 		assertTrue("model not correctly initialized", "tuser".equals(post.getUser().getName()));
 		assertTrue("model not correctly initialized", post.getResource() instanceof BibTex);
 		assertTrue("model not correctly initialized", "foo bar".equals(((BibTex) post.getResource()).getTitle()));
-		assertTrue("model not correctly initialized", "testtag".equals(((Tag) post.getTags().iterator().next()).getName()));
+		assertTrue("model not correctly initialized", "testtag".equals(post.getTags().iterator().next().getName()));
 	}
 
 	private void checkInvalidPost(final PostType xmlPost, final String exceptionMessage) {

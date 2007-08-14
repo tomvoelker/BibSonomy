@@ -19,13 +19,13 @@ public class ContextTagTest extends AbstractContextTest {
 
 	@Test
 	public void testGetListOfTagsStrategy() throws Exception {
-		Context c = new Context(this.is, db, HttpMethod.GET, "/tags", new HashMap());
+		final Context c = new Context(this.is, db, HttpMethod.GET, "/tags", new HashMap<Object, Object>());
 		assertTrue("failure initializing GetListOfTagsStrategy", c.getStrategy() instanceof GetListOfTagsStrategy);
 	}
 
 	@Test
 	public void testGetTagDetailsStrategy() throws Exception {
-		Context c = new Context(this.is, db, HttpMethod.GET, "/tags/wichtig", new HashMap());
+		final Context c = new Context(this.is, db, HttpMethod.GET, "/tags/wichtig", new HashMap<Object, Object>());
 		assertTrue("failure initializing GetTagDetailsStrategy", c.getStrategy() instanceof GetTagDetailsStrategy);
 	}
 }

@@ -15,7 +15,6 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.beans.TagIndex;
-import org.bibsonomy.database.plugin.DatabasePlugin;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
@@ -404,7 +403,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	private void postDuplicate(final BibTexParam param, final String hash) {
 		param.setHash(hash);
-		
+
 		final Post<BibTex> someBibTexPost = this.bibTexDb.getBibTexByHash(param, this.dbSession).get(0);
 		// someBibTexPost.getGroups().clear();
 		this.bibTexDb.storePost(someBibTexPost.getUser().getName(), someBibTexPost, hash, true, this.dbSession);
@@ -415,7 +414,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// final String BIB_TEST_HASH = "b6c9a44d411bf8101abdf809d5df1431";
 		final String BIB_TEST_HASH = "2313536a09d3af706469e3d2523fe7ca";		
 		final String TEST_USER = "thomi";
-		
+
 		this.bibtexParam.setRequestedSimHash(HashID.INTRA_HASH);
 
 		// FIXME: this boilerplate code could be removed with a DI-framework (i.e. next three lines)
@@ -434,7 +433,5 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		extras = this.bibTexExtraDb.getURL(BIB_TEST_HASH, TEST_USER, this.dbSession);
 		assertEquals(2, extras.size());
-		
-		this.resetParameters();
 	}
 }

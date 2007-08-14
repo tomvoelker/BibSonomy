@@ -186,11 +186,11 @@ public class TestDatabase implements DBLogicInterface {
 
 		// now this cast is ok
 		@SuppressWarnings("unchecked")
-		final List<Post<T>> rVal = (List<Post<T>>) ((List) posts);
+		final List<Post<T>> rVal = ((List) posts);
 		// check hash
 		if (hash != null) {
 			for (final Iterator<Post<T>> it = rVal.iterator(); it.hasNext();) {
-				if (!((Post<T>) it.next()).getResource().getInterHash().equals(hash)) it.remove();
+				if (!it.next().getResource().getInterHash().equals(hash)) it.remove();
 			}
 		}
 
@@ -198,7 +198,7 @@ public class TestDatabase implements DBLogicInterface {
 		if (tags.size() > 0) {
 			for (final Iterator<Post<T>> it = rVal.iterator(); it.hasNext();) {
 				boolean drin = false;
-				for (final Tag tag : ((Post<T>) it.next()).getTags()) {
+				for (final Tag tag : it.next().getTags()) {
 					for (final String searchTag : tags) {
 						if (tag.getName().equals(searchTag)) {
 							drin = true;
@@ -663,8 +663,7 @@ public class TestDatabase implements DBLogicInterface {
 	public void storeGroup(final String authUserName, Group group, boolean update) {
 	}
 
-	public void storePost(String userName, Post post, boolean update) {
-
+	public <T extends Resource> void storePost(String userName, Post<T> post, boolean update) {
 	}
 
 	public void storeUser(final String authUserName,  User user, boolean update) {

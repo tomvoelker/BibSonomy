@@ -99,7 +99,7 @@ public abstract class Resource {
 		if (rVal == null) {
 			rVal = byStringMap.get(resourceType.trim().toUpperCase());
 			if (rVal == null) {
-				throw new UnsupportedResourceTypeException(resourceType);
+				throw new UnsupportedResourceTypeException();
 			}
 		}
 		return rVal;
@@ -108,7 +108,7 @@ public abstract class Resource {
 	public static String toString(final Class<? extends Resource> clazz) {
 		final String rVal = toStringMap.get(clazz);
 		if (rVal == null) {
-			throw new UnsupportedResourceTypeException(clazz.toString());
+			throw new UnsupportedResourceTypeException();
 		}
 		return rVal;
 	}

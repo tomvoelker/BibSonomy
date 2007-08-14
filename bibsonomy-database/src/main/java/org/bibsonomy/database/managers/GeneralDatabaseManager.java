@@ -1,23 +1,21 @@
 package org.bibsonomy.database.managers;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.AbstractDatabaseManager;
-import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
+import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.beans.TagRelationParam;
 import org.bibsonomy.database.util.DBSession;
-import org.bibsonomy.database.util.DatabaseUtils;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Post;
 import org.bibsonomy.util.ExceptionUtils;
-import org.bibsonomy.util.ValidationUtils;
 
 /**
  * Used to retrieve all different kind of stuff from the database.
@@ -30,8 +28,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 
 	private static final Logger log = Logger.getLogger(GeneralDatabaseManager.class);
 	private static final GeneralDatabaseManager singleton = new GeneralDatabaseManager();
-	private static final ValidationUtils check = ValidationUtils.getInstance();
-	
+
 	private GeneralDatabaseManager() {
 	}
 
@@ -47,8 +44,8 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 * @return true if the users are friends, false otherwise
 	 */
 	public Boolean isFriendOf(final GenericParam param, final DBSession session) {
-		if (check.present(param.getUserName()) == false) return false;
-		if (check.present(param.getRequestedUserName()) == false) return false;
+		if (present(param.getUserName()) == false) return false;
+		if (present(param.getRequestedUserName()) == false) return false;
 		if (param.getUserName().equals(param.getRequestedUserName())) return true;
 		return this.queryForObject("isFriendOf", param, Boolean.class, session);
 	}
@@ -63,7 +60,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 * @return true if the user is a spammer, false otherwise
 	 */
 	public Boolean isSpammer(final GenericParam param, final DBSession session) {
-		if (check.present(param.getRequestedUserName()) == false) return false;
+		if (present(param.getRequestedUserName()) == false) return false;
 		return this.queryForObject("isSpammer", param, Boolean.class, session);
 	}
 
@@ -108,7 +105,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 * @return groupid if user is in group, GroupID.GROUP_INVALID otherwise
 	 */
 	public Integer getGroupIdByGroupNameAndUserName(final GenericParam param, final DBSession session) {
-		if (check.present(param.getRequestedGroupName()) == false) {
+		if (present(param.getRequestedGroupName()) == false) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "requestedGroupName isn't set");
 		}
 		final Integer rVal = this.queryForObject("getGroupIdByGroupNameAndUserName", param, Integer.class, session);

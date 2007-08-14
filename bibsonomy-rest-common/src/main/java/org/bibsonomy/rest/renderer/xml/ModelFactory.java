@@ -10,9 +10,7 @@ import static org.bibsonomy.model.util.ModelValidationUtils.checkUser;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -128,7 +126,6 @@ public class ModelFactory {
 		checkUser(xmlUser);
 		user.setName(xmlUser.getName());
 		post.setUser(user);
-		
 		post.setDate(createDate(xmlPost.getPostingdate()));
 
 		// tags
@@ -209,6 +206,7 @@ public class ModelFactory {
 		return post;
 	}
 
+	// FIXME what do we want to do here?
 	private Date createDate(XMLGregorianCalendar date) {
 		
 		return new Date(System.currentTimeMillis());

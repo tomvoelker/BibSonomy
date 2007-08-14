@@ -1,5 +1,7 @@
 package org.bibsonomy.database.util;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
@@ -9,7 +11,6 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.util.ExceptionUtils;
-import org.bibsonomy.util.ValidationUtils;
 
 import com.ibatis.common.resources.Resources;
 import com.ibatis.sqlmap.client.SqlMapClient;
@@ -27,7 +28,6 @@ public class DatabaseUtils {
 
 	private static final Logger log = Logger.getLogger(DatabaseUtils.class);
 	private static final SqlMapClient client;
-	private static final ValidationUtils check = ValidationUtils.getInstance();
 
 	static {
 		SqlMapClient clientTmp;
@@ -59,7 +59,7 @@ public class DatabaseUtils {
 		// each user is allowed to see public posts
 		groupIds.add(GroupID.PUBLIC.getId());
 		
-		if (check.present(param.getUserName()) && check.present(param.getRequestedUserName())) {
+		if (present(param.getUserName()) && present(param.getRequestedUserName())) {
 			// If userName and requestedUserName are the same -> add private and friends
 			// otherwise: if they're friends -> add friends
 			if (param.getUserName().equals(param.getRequestedUserName())) {

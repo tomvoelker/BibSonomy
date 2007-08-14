@@ -12,9 +12,6 @@ import org.bibsonomy.database.util.DBSession;
  */
 public class BibTexExtra extends AbstractDatabasePlugin {
 
-	// removed circular dependencies
-	// private final BibTexExtraDatabaseManager BibTexExtraDatabaseManager bibtexExtraDb = BibTexExtraDatabaseManager.getInstance();
-
 	@Override
 	public Runnable onBibTexDelete(final int contentId, final DBSession session) {
 		return new Runnable() {

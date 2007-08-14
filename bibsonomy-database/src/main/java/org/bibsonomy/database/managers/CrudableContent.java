@@ -22,14 +22,16 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	public Post<T> getPostDetails(String authUser, String resourceHash, String userName, DBSession session);
 
 	/**
-	 *  delete
-	 *  @return true, if entry existed and was deleted
+	 * delete
+	 * 
+	 * @return true, if entry existed and was deleted
 	 */
 	public boolean deletePost(String userName, String resourceHash, DBSession session);
 
 	/**
-	 *  create, update
-	 *  @return true, if entry existed and was updated
+	 * create, update
+	 * 
+	 * @return true, if entry existed and was updated
 	 */
 	public boolean storePost(String userName, Post<T> post, String oldHash, boolean update, DBSession session);
 }

@@ -22,12 +22,12 @@ import javax.servlet.http.HttpSession;
 public class NullRequest implements HttpServletRequest {
 
 	private final Map<String, String> headers;
-	private final Map parameterMap;
+	private final Map<?, ?> parameterMap;
 	private String pathInfo;
 
 	public NullRequest() {
 		this.headers = new HashMap<String, String>();
-		this.parameterMap = new HashMap();
+		this.parameterMap = new HashMap<Object, Object>();
 	}
 
 	public String getPathInfo() {
@@ -54,11 +54,11 @@ public class NullRequest implements HttpServletRequest {
 		return 0;
 	}
 
-	public Enumeration getHeaders(String arg0) {
+	public Enumeration<?> getHeaders(String arg0) {
 		return null;
 	}
 
-	public Enumeration getHeaderNames() {
+	public Enumeration<?> getHeaderNames() {
 		return null;
 	}
 
@@ -138,7 +138,7 @@ public class NullRequest implements HttpServletRequest {
 		return null;
 	}
 
-	public Enumeration getAttributeNames() {
+	public Enumeration<?> getAttributeNames() {
 		return null;
 	}
 
@@ -166,7 +166,7 @@ public class NullRequest implements HttpServletRequest {
 		return null;
 	}
 
-	public Enumeration getParameterNames() {
+	public Enumeration<?> getParameterNames() {
 		return null;
 	}
 
@@ -174,7 +174,7 @@ public class NullRequest implements HttpServletRequest {
 		return null;
 	}
 
-	public Map getParameterMap() {
+	public Map<?, ?> getParameterMap() {
 		return parameterMap;
 	}
 
@@ -216,7 +216,7 @@ public class NullRequest implements HttpServletRequest {
 		return null;
 	}
 
-	public Enumeration getLocales() {
+	public Enumeration<?> getLocales() {
 		return null;
 	}
 

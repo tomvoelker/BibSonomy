@@ -21,6 +21,7 @@ public class ContextTest extends AbstractContextTest {
 	private HashMap<String, String[]> parameterMap;
 	private final String NOT_SPLITTED_MSG = "tag parameters are not correctly splitted!";
 
+	@Override
 	@Before
 	public void setUp() {
 		super.setUp();

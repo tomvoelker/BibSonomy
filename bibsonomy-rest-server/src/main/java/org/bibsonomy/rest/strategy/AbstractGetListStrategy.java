@@ -11,7 +11,7 @@ import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
  * @author Jens Illig
  * @version $Id$
  */
-public abstract class AbstractGetListStrategy<L extends List> extends Strategy {
+public abstract class AbstractGetListStrategy<L extends List<?>> extends Strategy {
 	private final ViewModel view;
 
 	public AbstractGetListStrategy(final Context context) {
@@ -48,7 +48,7 @@ public abstract class AbstractGetListStrategy<L extends List> extends Strategy {
 	}
 
 	protected abstract StringBuilder getLinkPrefix();
-	
+
 	protected abstract void appendLinkPostFix(StringBuilder sb);
 
 	protected ViewModel getView() {

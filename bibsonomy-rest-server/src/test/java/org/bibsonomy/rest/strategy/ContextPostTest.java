@@ -21,19 +21,19 @@ public class ContextPostTest extends AbstractContextTest {
 
 	@Test
 	public void testGetListOfTagsStrategy() throws Exception {
-		Context c = new Context(this.is, db, HttpMethod.GET, "/posts", new HashMap());
+		final Context c = new Context(this.is, db, HttpMethod.GET, "/posts", new HashMap<Object, Object>());
 		assertTrue("failure initializing GetListOfTagsStrategy", c.getStrategy() instanceof GetListOfPostsStrategy);
 	}
 
 	@Test
 	public void testGetNewPostsStrategy() throws Exception {
-		Context c = new Context(this.is, db, HttpMethod.GET, "/posts/added", new HashMap());
+		final Context c = new Context(this.is, db, HttpMethod.GET, "/posts/added", new HashMap<Object, Object>());
 		assertTrue("failure initializing GetNewPostsStrategy", c.getStrategy() instanceof GetNewPostsStrategy);
 	}
 
 	@Test
 	public void testGetPopularPostsStrategy() throws Exception {
-		Context c = new Context(this.is, db, HttpMethod.GET, "/posts/popular", new HashMap());
+		final Context c = new Context(this.is, db, HttpMethod.GET, "/posts/popular", new HashMap<Object, Object>());
 		assertTrue("failure initializing GetPopularPostsStrategy", c.getStrategy() instanceof GetPopularPostsStrategy);
 	}
 }

@@ -11,8 +11,8 @@ import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChain;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
-import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.database.util.DBSession;
+import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -30,14 +30,14 @@ import org.bibsonomy.model.util.SimHash;
 public class BookmarkDatabaseManager extends AbstractDatabaseManager implements CrudableContent<Bookmark, BookmarkParam> {
 
 	private static final Logger log = Logger.getLogger(BookmarkDatabaseManager.class);
-	
+
 	private final static BookmarkDatabaseManager singleton = new BookmarkDatabaseManager();
 	private final GeneralDatabaseManager generalDb;
 	private final TagDatabaseManager tagDb;
 	private final DatabasePluginRegistry plugins;
 	private static final BookmarkChain chain = new BookmarkChain();
 
-	private BookmarkDatabaseManager() {
+	public BookmarkDatabaseManager() {
 		this.generalDb = GeneralDatabaseManager.getInstance();
 		this.tagDb = TagDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
@@ -160,17 +160,11 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 
 	/**
 	 * Returns a list with bookmark posts identified by INTER-hash for a given user
-	 * 
-	 * @param loginUserName
-	 * @param interHash
-	 * @param requestedUserName
-	 * @param session
-	 * @return List<Post<Bookmark>> list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkHashForUser(final String loginUserName, final String interHash, final String requestedUserName, final DBSession session) {
 		return getBookmarkByHashForUser(loginUserName, interHash, requestedUserName, session, HashID.INTER_HASH);
 	}
-	
+
 	public List<Post<Bookmark>> getBookmarkByHashForUser(final String loginUserName, final String intraHash, final String requestedUserName, final DBSession session, final HashID hashType) {
 		final BookmarkParam param = new BookmarkParam();
 		param.setUserName(loginUserName);
@@ -179,8 +173,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setRequestedSimHash(hashType);
 		return getBookmarkByHashForUser(param, session);
 	}
-	
-	
+
 	/**
 	 * <em>/search/ein+lustiger+satz</em><br/><br/>
 	 * 
@@ -313,11 +306,6 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		}
 	}
 
-	public void insertBookmarkLog(final BookmarkParam bookmark, final DBSession session) {
-		// TODO not tested
-		this.insert("insertBookmarkLog", bookmark, session);
-	}
-
 	// insert counter, hash and url of bookmark
 	public void insertBookmarkHash(final BookmarkParam param, final DBSession session) {
 		this.insert("insertBookmarkHash", param, session);
@@ -326,11 +314,6 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
    	// decrements one count in url table after deleting
 	public void updateBookmarkHash(final BookmarkParam param, final DBSession session) {
 		this.insert("updateBookmarkHash", param, session);
-	}
-
-	public void updateBookmarkLog(final BookmarkParam param, final DBSession session) {
-		// TODO not tested
-		this.insert("updateBookmarkLog", param, session);
 	}
 
 	public void deleteBookmark(final BookmarkParam param, final DBSession session) {
@@ -345,16 +328,15 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		return chain.getFirstElement().perform(param, session);
 	}
 
+	// TODO implement me...
 	public Post<Bookmark> getPostDetails(String authUser, String resourceHash, String userName, final DBSession session) {
-		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	public boolean deletePost(final String userName, final String resourceHash, final DBSession session) {
 		return this.deletePost(userName, resourceHash, false, session);
 	}
 
-	
 	private boolean deletePost(final String userName, final String resourceHash, boolean update, final DBSession session) {
 		// TODO: test removal (tas and bibtex ...)
 		session.beginTransaction();
@@ -400,17 +382,13 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		session.beginTransaction();
 		try {
 			final List<Post<Bookmark>> isBookmarkInDb;
-			log.debug("oldIntraHash "+ oldIntraHash);
 			if (oldIntraHash != null) {
-				log.debug("oldIntraHash != null");
 				if ((update == false) && (oldIntraHash.equals(post.getResource().getIntraHash()) == false)) {
-					log.debug("update==false");
 					throw new IllegalArgumentException("cannot create new resource/BOOKMARK with an old hash value");
 				}
 				isBookmarkInDb = this.getBookmarkByHashForUser(userName, oldIntraHash, userName,session,HashID.INTRA_HASH);
 			} else {
 				if (update == true) {
-					log.debug("update==true");
 					throw new IllegalArgumentException("cannot update/BOOKMARK without old hash value");
 				}
 				isBookmarkInDb = null;
@@ -418,7 +396,6 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 
 			// ALWAYS get a new contentId
 			post.setContentId(this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, session));
-			log.debug("post.setContentId");
 			if ((isBookmarkInDb != null) && (isBookmarkInDb.size() > 0)) {
 				update = true;
 				// Bookmark entry DOES EXIST for this user -> delete old Bookmark post
@@ -445,7 +422,6 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		} finally {
 			session.endTransaction();
 		}
-		log.debug("update "+update);
 		return update;
 	}
 }

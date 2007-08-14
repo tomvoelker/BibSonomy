@@ -256,12 +256,6 @@
 		VALUES (#requestedContentId#,#hash#,#resource.title#,#description#,#groupId#,#date#,#userName#)
 	</insert> 
 
-	<insert id="insertBookmarkLog" parameterClass="bookmarkParam">
-	    INSERT INTO log_bookmark (content_id,book_url_hash,book_description AS title,book_extended AS description,`group`,date,user_name)
-		SELECT content_id,book_url_hash,book_description AS title,book_extended AS description,`group`,date,user_name
-		FROM bookmark WHERE content_id = #requestedContentId#
-	</insert>
-
     <insert id="insertBookmarkHash" parameterClass="bookmarkParam">
 		INSERT INTO urls (book_url_hash,book_url,book_url_ctr) VALUES (#hash#,#url#,1) ON DUPLICATE KEY UPDATE book_url_ctr=book_url_ctr+1
 	</insert>
@@ -274,12 +268,6 @@
 		DELETE FROM bookmark WHERE content_id = #requestedContentId#
 	</delete>
 
-<!--
-	<update id="updateBookmarkLog" parameterClass="bookmarkParam">
-		UPDATE log_bookmark SET new_content_id = #resource.contentId#
-		WHERE content_id = #requestedContentId#
-	</update>
--->
 	<select id="getContentIDForBookmark" resultClass="int" parameterClass="bookmarkParam">
 		SELECT content_id FROM bookmark WHERE book_url_hash = #hash# AND user_name = #userName#
 	</select>

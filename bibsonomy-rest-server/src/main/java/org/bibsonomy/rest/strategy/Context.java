@@ -53,7 +53,7 @@ public final class Context {
 	private final Strategy strategy;
 
 	private final StringTokenizer urlTokens;
-	private final Map parameterMap;
+	private final Map<?, ?> parameterMap;
 	// FIXME: never used locally ?
 	// private final HttpMethod httpMethod;
 	private final RenderingFormat renderingFormat;
@@ -70,7 +70,7 @@ public final class Context {
 	 * @throws ValidationException
 	 *             if '/' is requested
 	 */
-	public Context(final InputStream doc, final LogicInterface logic, final HttpMethod httpMethod, final String url, final Map parameterMap) throws ValidationException, NoSuchResourceException {
+	public Context(final InputStream doc, final LogicInterface logic, final HttpMethod httpMethod, final String url, final Map<?, ?> parameterMap) throws ValidationException, NoSuchResourceException {
 		this.doc = doc;
 		this.logic = logic;
 		// FIXME this.httpMethod = httpMethod;
@@ -196,7 +196,7 @@ public final class Context {
 	 * @param defaultValue
 	 * @return
 	 */
-	public static String getStringAttribute(final Map parameterMap, final String parameterName, final String defaultValue) {
+	public static String getStringAttribute(final Map<?, ?> parameterMap, final String parameterName, final String defaultValue) {
 		if (parameterMap.containsKey(parameterName)) {
 			final Object obj = parameterMap.get(parameterName);
 			if (obj instanceof String[]) {

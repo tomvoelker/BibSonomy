@@ -51,7 +51,7 @@ public final class RestServlet extends HttpServlet {
 		if (logicFactoryClassName != null) {
 			Object logicFactoryObj;
 			try {
-				Class logicFactoryClass = this.getClass().getClassLoader().loadClass(logicFactoryClassName);
+				final Class<?> logicFactoryClass = this.getClass().getClassLoader().loadClass(logicFactoryClassName);
 				logicFactoryObj = logicFactoryClass.newInstance();
 			} catch (Exception e) {
 				throw new ServletException("problem while instantiating " + logicFactoryClassName, e);
@@ -103,6 +103,7 @@ public final class RestServlet extends HttpServlet {
 	 * @exception ServletException
 	 *                if a servlet error occurs
 	 */
+	@Override
 	public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {
 		handle(request, response, HttpMethod.GET);
 	}
