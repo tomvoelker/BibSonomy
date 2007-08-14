@@ -1,11 +1,13 @@
 package org.bibsonomy.database.managers.chain.bibtex.get;
 
+import static org.bibsonomy.util.ValidationUtils.nullOrEqual;
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.DBSession;
@@ -20,8 +22,6 @@ import org.bibsonomy.model.logic.Order;
  */
 public class GetBibtexOfFriendsByUser extends BibTexChainElement {
 
-	private final GeneralDatabaseManager gdm = GeneralDatabaseManager.getInstance();
-	
 	/**
 	 * return a list of bibtex by given friends of a user (this friends also
 	 * posted this bibtex to group friends, made bibtex viewable for friends).
@@ -37,7 +37,7 @@ public class GetBibtexOfFriendsByUser extends BibTexChainElement {
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		if (this.gdm.isFriendOf(param, session) == true) {
+		if (this.generalDb.isFriendOf(param, session) == true) {
 			param.setGroupId(GroupID.FRIENDS.getId());
 			return this.db.getBibTexForUser(param, session);
 		}
@@ -46,6 +46,6 @@ public class GetBibtexOfFriendsByUser extends BibTexChainElement {
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.FRIEND) && present(param.getRequestedUserName()) && !present(param.getTagIndex()) && !present(param.getHash()) && nullOrEqual(param.getOrder(),Order.ADDED);
+		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.FRIEND) && present(param.getRequestedUserName()) && !present(param.getTagIndex()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED);
 	}
 }

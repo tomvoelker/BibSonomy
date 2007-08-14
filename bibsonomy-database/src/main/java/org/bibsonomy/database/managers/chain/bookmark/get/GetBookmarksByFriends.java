@@ -1,5 +1,7 @@
 package org.bibsonomy.database.managers.chain.bookmark.get;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -10,7 +12,7 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 
 /**
- * TODO check
+ * TODO check... what?
  * 
  * @author Miranda Grahl
  * @version $Id$

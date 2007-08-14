@@ -1,5 +1,8 @@
 package org.bibsonomy.database.managers.chain.bookmark.get;
 
+import static org.bibsonomy.util.ValidationUtils.nullOrEqual;
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -29,9 +32,9 @@ public class GetBookmarksByTagNames extends BookmarkChainElement {
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
 		List<Post<Bookmark>> posts;
 		if (param.getTagIndex().size() == 0) {
-			posts = db.getBookmarkForHomepage(param, session);
+			posts = this.db.getBookmarkForHomepage(param, session);
 		} else {
-			posts = db.getBookmarkByTagNames(param, session);
+			posts = this.db.getBookmarkByTagNames(param, session);
 		}
 		return posts;
 	}

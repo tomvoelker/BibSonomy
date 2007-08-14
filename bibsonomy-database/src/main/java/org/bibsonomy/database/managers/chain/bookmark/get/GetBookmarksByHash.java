@@ -1,5 +1,7 @@
 package org.bibsonomy.database.managers.chain.bookmark.get;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;

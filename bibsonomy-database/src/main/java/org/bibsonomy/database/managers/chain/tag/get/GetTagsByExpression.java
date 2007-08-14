@@ -1,5 +1,7 @@
 package org.bibsonomy.database.managers.chain.tag.get;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.bibsonomy.database.managers.chain.tag.TagChainElement;

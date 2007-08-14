@@ -1,11 +1,13 @@
 package org.bibsonomy.database.managers.chain.bibtex.get;
 
+import static org.bibsonomy.util.ValidationUtils.nullOrEqual;
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.DBSession;
@@ -19,8 +21,6 @@ import org.bibsonomy.model.logic.Order;
  * @version $Id$
  */
 public class GetBibtexOfFriendsByTags extends BibTexChainElement {
-	
-	private final GeneralDatabaseManager gdm = GeneralDatabaseManager.getInstance();
 
 	/**
 	 * return a list of bibtex by given friends of a user (this friends also
@@ -38,7 +38,7 @@ public class GetBibtexOfFriendsByTags extends BibTexChainElement {
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		param.setGroupType(GroupID.FRIENDS);
-		if (this.gdm.isFriendOf(param, session) == true) {
+		if (this.generalDb.isFriendOf(param, session) == true) {
 			return this.db.getBibTexByTagNamesForUser(param, session);
 		}
 		return new ArrayList<Post<BibTex>>();
@@ -46,6 +46,6 @@ public class GetBibtexOfFriendsByTags extends BibTexChainElement {
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.FRIEND) && present(param.getRequestedUserName()) && present(param.getTagIndex())&& (param.getNumSimpleConcepts() == 0) && (param.getNumSimpleTags() > 0) && (param.getNumTransitiveConcepts() == 0) && !present(param.getHash()) &&  nullOrEqual(param.getOrder(),Order.ADDED);
+		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.FRIEND) && present(param.getRequestedUserName()) && present(param.getTagIndex()) && (param.getNumSimpleConcepts() == 0) && (param.getNumSimpleTags() > 0) && (param.getNumTransitiveConcepts() == 0) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED);
 	}
 }

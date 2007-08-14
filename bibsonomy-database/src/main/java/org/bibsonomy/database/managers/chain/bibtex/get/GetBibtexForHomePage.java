@@ -1,5 +1,8 @@
 package org.bibsonomy.database.managers.chain.bibtex.get;
 
+import static org.bibsonomy.util.ValidationUtils.nullOrEqual;
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -16,9 +19,6 @@ import org.bibsonomy.model.logic.Order;
  */
 public class GetBibtexForHomePage extends BibTexChainElement {
 
-	/**
-	 * return a list of bibtex by a logged user.
-	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		return this.db.getBibTexForHomePage(param, session);

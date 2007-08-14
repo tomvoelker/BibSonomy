@@ -1,5 +1,8 @@
 package org.bibsonomy.database.managers.chain.bibtex.get;
 
+import static org.bibsonomy.util.ValidationUtils.nullOrEqual;
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +32,7 @@ public class GetBibtexViewable extends BibTexChainElement {
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		final Integer groupId;
-		final GroupID specialGroup = GroupID.getSpecialGroup( param.getRequestedGroupName() );
+		final GroupID specialGroup = GroupID.getSpecialGroup(param.getRequestedGroupName());
 		if (specialGroup != null) {
 			groupId = specialGroup.getId();
 		} else {
