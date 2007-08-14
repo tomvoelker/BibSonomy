@@ -121,8 +121,6 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * public posts are shown.
 	 */
 	public List<Post<Bookmark>> getBookmarkForHomepage(final BookmarkParam param, final DBSession session) {
-		param.setLimit(15);
-		param.setOffset(0);
 		return this.bookmarkList("getBookmarkForHomepage", param, session);
 	}
 
