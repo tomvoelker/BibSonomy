@@ -150,6 +150,9 @@
 				<configuration>
 					<source>1.5</source>
 					<target>1.5</target>
+					<compilerArguments>
+						<encoding>UTF-8</encoding>
+					</compilerArguments>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -269,7 +272,7 @@
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>4.3.1</version>
-				<scope>test</scope>
+				<!-- scope>test</scope -->
 			</dependency>
 			<dependency>
 				<groupId>com.sun.xml.bind</groupId>
