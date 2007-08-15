@@ -20,8 +20,14 @@
 				<xsd:element name="bibtex" type="BibtexType"/>
 				<!-- error -->
 				<xsd:element name="error" type="xsd:string"/>
+				<!-- hashes to return when creating / updating resources -->
+				<xsd:element name="resourcehash" type="hashType"/>
+				<!-- user-/group-ids to return wehn creating / updating users / groups -->
+				<xsd:element name="userid" type="xsd:string"/>
+				<xsd:element name="groupid" type="xsd:string"/>
 			</xsd:choice>
 		</xsd:sequence>
+		<xsd:attribute name="stat" type="statType" use="required"/>
 	</xsd:complexType>
 
 	<!--
@@ -192,5 +198,19 @@
     		<xsd:minInclusive value="0"/>
     	</xsd:restriction>
 	</xsd:simpleType>
+	
+	<xsd:simpleType name="hashType">
+		<xsd:restriction base="xsd:string">
+    		<xsd:length value="32"/>
+    		<xsd:pattern value="([a-z]|[0-9])*"/>
+    	</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="statType">
+		<xsd:restriction base="xsd:string">
+      		<xsd:enumeration value="ok"/>
+      		<xsd:enumeration value="fail"/>
+    	</xsd:restriction>
+	</xsd:simpleType>	
 
 </xsd:schema>

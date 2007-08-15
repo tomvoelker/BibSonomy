@@ -185,48 +185,50 @@ public interface LogicInterface {
 	 * Adds a user to the database.
 	 * 
 	 * @param user  the user to add
+	 * @return userid the user id of the created user
 	 */
-	public void createUser(User user);
+	public String createUser(User user);
 	
 	/**
 	 * Updates a user to the database.
 	 * 
 	 * @param user  the user to update
+	 * @return userid the user id of the updated user
 	 */
-	public void updateUser(User user);
+	public String updateUser(User user);
 
 	/**
 	 * Add a post to the database.
 	 * 
 	 * @param post  the post to add
-	 * @return 
+	 * @return String the resource hash of the created post
 	 */
-	public void createPost(Post<?> post);
+	public String createPost(Post<?> post);
 
 	/**
 	 * Updates a post in the database.
 	 * 
 	 * @param post  the post to update
-	 * @return
+	 * @return resourceHash the hash of the updated resource
 	 */
-	public void updatePost(Post<?> post);
+	public String updatePost(Post<?> post);
 	
 	/**
 	 * Adds a group to the database.
 	 * 
 	 * @param group  the group to add
+	 * @return groupID the group id of the created group
 	 */
-	public void createGroup(Group group);
+	public String createGroup(Group group);
 	
 	/**
 	 * Updates a group in the database.
 	 * 
 	 * @param group  the group to update
+	 * @return groupID the group id of the updated group
 	 */
-	public void updateGroup(Group group);
-
-	
-	
+	public String updateGroup(Group group);
+		
 	/**
 	 * Adds an existing user to an existing group.
 	 * 
