@@ -1,0 +1,72 @@
+body{
+	font-family: Arial,sans-serif;
+	color: #333333;
+	line-height: 1.166;	padding: 2px 10px 2px 10px;
+	margin: 5px 0px 0px 0px;
+	padding: 0px;
+}
+
+h2{
+ font-family: Arial,sans-serif;
+ font-size: 114%;
+ color: #006699;
+ margin: 6px 0px 10px 0px;
+ padding: 0px;
+}
+
+a {
+	color: #006699;
+	text-decoration: none;
+}
+
+a:link{
+	color: #006699;
+	text-decoration: none;
+}
+
+a:visited{
+	color: #006699;
+	text-decoration: none;
+}
+
+a:hover{
+	color: red;
+	text-decoration: none;
+}
+
+.block {
+  margin: 1em;
+  width: 400px;
+}
+
+
+
+/* gesamtes Bookmark */
+.bm {
+	margin-bottom:1.5em;
+	line-height:1em;
+    display: block;
+}
+
+/* Titel/Description */
+.bmdesc {
+	font-size: 100%;
+	font-weight: bold;
+}
+
+/* extended/erweiterte Beschreibung */
+.bmext {
+	font-size: 72%;
+	color: #aaaaaa;
+}
+
+/* Meta-Angaben */
+.bmmeta {
+	color: #555555;
+	font-size: 70%;
+}
+
+/* Tags */
+.bmtags {
+	font-size: 80%;
+}

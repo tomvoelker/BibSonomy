@@ -1,0 +1,25 @@
+<%@include file="include_jsp_head.jsp" %>
+
+<%-- include HTML header --%>
+<jsp:include page="html_header.jsp">
+  <jsp:param name="title" value="scraperinfo" />
+</jsp:include>
+
+<%-------------------------- Heading -----------------------%>
+<h1><a href="/">${projectName}</a> :: <a href="/scraperinfo">scraperinfo</a></h1> 
+
+<%@include file="/boxes/navi.jsp" %> 
+
+<div id="general">
+  <h2>Scrapers used within ${projectName}</h2>
+  
+  <jsp:useBean id="factory" class="scraper.KDEScraperFactory" scope="request"/>
+
+  <dl><c:forEach var="scraper" items="${factory.scraper.scraper}">
+    <dt style="padding-top: 1em;">${scraper.class.name}:</dt> 
+    <dd>${scraper.info}</dd>
+  </c:forEach></dl>
+
+  </div>
+
+<%@ include file="footer.jsp" %>

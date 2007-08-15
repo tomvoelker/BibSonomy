@@ -1,0 +1,274 @@
+
+<%@include file="/include_jsp_head.jsp"%>
+
+
+<%@include file="/boxes/admin/login.jsp"%>
+
+<script type="text/javascript" src="/ajax/scriptaculous/lib/prototype.js"></script>
+<script type="text/javascript" src="/ajax/scriptaculous/src/scriptaculous.js"></script>    
+
+
+<%-- include HTML header --%>
+<jsp:include page="html_header.jsp">
+  <jsp:param name="title" value="admin" />
+</jsp:include>
+
+<%-------------------------- Heading -----------------------%>
+<h1><a href="/?filter=no" rel="Start">${projectName}</a> :: <a href="/admin.jsp">admin</a></h1>
+
+<%@include file="/boxes/navi.jsp"%>
+
+<%-- ------------------------ change settings -------------------------- --%>
+<jsp:useBean id="adminBean" class="beans.AdminBean" scope="request">
+  <jsp:setProperty name="adminBean" property="*"/>
+</jsp:useBean>
+
+<% adminBean.queryDB(); %> <%-- write data to database (if neccessary) --%>
+
+
+<div id="general">
+
+
+<%@include file="/boxes/admin/navi.jsp"%>
+
+
+<p style="font-weight: bold; color: #ff0000; ">
+  <c:forEach var="info" items="${adminBean.infos}">Info: ${info}<br></c:forEach>
+  <c:forEach var="error" items="${adminBean.errors}">Error: ${error}<br></c:forEach>
+</p>
+
+
+
+<h2>flag/unflag a spammer</h2>
+
+<%-- spammer form  --%>
+<form action="/admin.jsp">
+  <b>Spammer:</b> user name <input type="text" name="user" id="acl_spam" />
+  <input type="hidden" name="action" value="flag_spammer"/>
+  <input type="submit"/>
+</form>
+
+<div id="autocomplete_spam" class="autocomplete"></div>
+<script type="text/javascript">
+  new Ajax.Autocompleter("acl_spam","autocomplete_spam","admin_suggest.jsp");
+</script>
+
+<form action="/admin.jsp">
+  <b style="text-decoration:line-through;">Spammer:</b> user name <input type="text" name="user" id="acl_unspam"/>
+  <input type="hidden" name="action" value="unflag_spammer"/>
+  <input type="submit"/>
+</form>
+
+<div id="autocomplete_unspam" class="autocomplete"></div>
+<script type="text/javascript">
+  new Ajax.Autocompleter("acl_unspam","autocomplete_unspam","admin_suggest.jsp");
+</script>
+
+<hr>
+
+<h2> User Info </h2>
+
+<form name="userinfo" action="/admin.jsp">
+  user name <input type="text" name="userinfo" id="acl_userinfo"/>
+  <input type="submit"/>
+</form>
+
+<div id="autocomplete_userinfo" class="autocomplete"></div>
+<script type="text/javascript">
+  new Ajax.Autocompleter("acl_userinfo","autocomplete_userinfo","admin_suggest.jsp");
+</script>
+
+<sql:setDataSource dataSource="jdbc/bibsonomy" var="dataSource"/>   
+
+
+<c:if test="${param.userinfo != null }">
+	<%-- do SQL query to get new users --%>
+	<sql:query var="rsInfo" dataSource="${dataSource}">
+	  SELECT user_name, spammer, trim(trailing ', 141.51.167.67, 141.51.167.67' from trim(trailing ', 141.51.167.67, 141.51.167.130' from ip_address)) as ip_address, user_realname, user_email, date_format(reg_date,'%d.%c.%y_%H:%i') as reg_date2 FROM user WHERE user_name= ?
+	  <sql:param value="${param.userinfo}" />
+	</sql:query> 
+</c:if>
+
+
+<hr>
+
+
+<c:set var="usercount" value="40"/>
+<c:if test="${not empty param.usercount}">
+  <c:set var="usercount" value="${param.usercount}"/>
+</c:if>
+
+<c:choose>
+  <c:when test="${not empty param.frequent}">
+    <%-- show most frequent IPs  --%>
+    <sql:query var="rs" dataSource="${dataSource}">
+      SELECT a.user_name, a.spammer, trim(trailing ', 141.51.167.67, 141.51.167.67' from trim(trailing ', 141.51.167.67, 141.51.167.130' from ip_address)) as ip_address, a.user_realname, a.user_email, date_format(a.reg_date, '%d.%c.%y_%H:%i') as reg_date1 FROM (SELECT ips.ip_address,count(ip_address) AS ipctr FROM (SELECT u.ip_address,u.user_name FROM user u JOIN user u2 USING (ip_address) WHERE u.spammer = 0) AS ips group by ips.ip_address having ipctr > 2) AS u JOIN user a USING(ip_address) ORDER BY ipctr, ip_address, reg_date DESC ;
+    </sql:query>
+  </c:when>
+  <c:otherwise>
+    <%-- do SQL query to get new users --%>
+    <sql:query var="rs" dataSource="${dataSource}">
+      SELECT user_name, spammer, trim(trailing ', 141.51.167.67, 141.51.167.67' from trim(trailing ', 141.51.167.67, 141.51.167.130' from ip_address)) as ip_address, user_realname, user_email, date_format(reg_date,'%d.%c.%y_%H:%i') as reg_date1 FROM user ORDER BY reg_date DESC LIMIT ?
+      <sql:param value="${usercount}" />  
+    </sql:query>
+  </c:otherwise>
+</c:choose>
+
+
+<h2> List of new users </h2> 
+
+(show 
+<a href="?usercount=100">100</a>
+<a href="?usercount=500">500</a>
+<a href="?usercount=1000">1000</a>
+<a href="?usercount=100000">all</a>, show <a href="?frequent=true">frequent IPs</a>)
+
+  <table style="font-size:80%">
+    <tr style="font-size:120%"><th>Is it a Spammer?</th><th>Username</th><th>Spammer?</th><th>IP</th><th>Realname</th><th>E-Mail</th><th>Date</th></tr>
+    
+    
+    <c:if test="${param.userinfo != null }">
+
+    	<c:forEach var="rows" items="${rsInfo.rows}">
+	
+	      <c:choose>
+	        <c:when test="${rows.spammer}">
+	          <tr style="background-color: #ffeeee; border-bottom: 1px solid black">
+	        </c:when>
+	        <c:otherwise>
+	          <tr>
+	        </c:otherwise>
+	      </c:choose>
+	
+	       <td style="border-bottom: 1px solid black">
+	         <a href="/admin.jsp?user=<mtl:encode value='${rows.user_name}'/>&action=flag_spammer">YES</a>
+	         <a href="/admin.jsp?user=<mtl:encode value='${rows.user_name}'/>&action=unflag_spammer">NO</a>
+	       </td>
+	       <td style="border-bottom: 1px solid black"><a href="/user/<mtl:encode value='${rows.user_name}'/>"><c:out value="${rows.user_name}"/></a></td>
+	       <td style="border-bottom: 1px solid black"><c:out value="${rows.spammer}"/></td>
+	       <td style="border-bottom: 1px solid black"><c:out value="${rows.ip_address}"/></td>
+	       <td style="border-bottom: 1px solid black"><c:out value="${rows.user_realname}"/></td>
+	       <td style="border-bottom: 1px solid black"><c:out value="${rows.user_email}"/></td>
+	       <td style="border-bottom: 1px solid black"><c:out value="${rows.reg_date2}"/></td>
+	       </tr>
+	    </c:forEach>
+
+	  </c:if>
+    
+    
+    
+      <c:forEach var="row" items="${rs.rows}">
+
+      <c:choose>
+        <c:when test="${row.spammer}">
+          <tr style="background-color: #ffeeee;">
+        </c:when>
+        <c:otherwise>
+          <tr>
+        </c:otherwise>
+      </c:choose>
+
+       <td>
+         <a href="/admin.jsp?user=<mtl:encode value='${row.user_name}'/>&action=flag_spammer">YES</a>
+         <a href="/admin.jsp?user=<mtl:encode value='${row.user_name}'/>&action=unflag_spammer">NO</a>
+       </td>
+       <td><a href="/user/<mtl:encode value='${row.user_name}'/>"><c:out value="${row.user_name}"/></a></td>
+       <td><c:out value="${row.spammer}"/></td>
+       <td><c:out value="${row.ip_address}"/></td>
+       <td><c:out value="${row.user_realname}"/></td>
+       <td><c:out value="${row.user_email}"/></td>
+	   <td><c:out value="${row.reg_date1}"/></td>
+       </tr>
+
+    </c:forEach>
+  </table>
+</div>
+
+
+<%-- ------------------------ right box -------------------------- --%>
+<ul id="sidebar">
+
+<li>
+
+<%-- scraper action box --%>
+<hr/>
+
+<span class="sidebar_h">Scraper</span>
+
+<ul>
+  
+  <li><%-- -----HIGHWIRE LIST UPDATE ------- --%>
+    <%-- get the date of lastupdate --%>
+    <sql:query var="listInfo" dataSource="${dataSource}">
+      SELECT lastupdate from highwirelist; 
+    </sql:query> 
+    Highwire Linklist:  
+    <form method="POST" action="/AdminHandler" style="display:inline;">
+      <input type="hidden" name="action" value="update highwire"/>
+      <input type="hidden" name="ckey" value="${ckey}"/>
+      <input type="submit" value="update" />
+    </form>
+    <br/>
+    <c:forEach var="rows" items="${listInfo.rows}">
+	  Last Update: <fmt:formatDate value="${rows.lastupdate}" pattern="dd.MM.yyyy HH:mm:ss" />
+    </c:forEach>
+  </li>
+  
+</ul>
+<hr/>
+
+<%-- group management  --%>
+<span class="sidebar_h">add a group to the system</span>
+
+<%--  group form  --%>
+<form action="/admin.jsp">
+  <table>
+    <tr>
+      <td>user name</td><td><input type="text" name="user" id="acl_usergroup" /></td></tr>
+    <tr>
+      <td>privacy</td>
+      <td>
+        <select name="privlevel">
+          <option value="0">member list public</option>
+          <option value="1">member list hidden</option>
+          <option value="2">members can list members</option>
+        </select>
+      </td>
+    </tr>
+  
+    <tr>
+     <td></td>
+     <td>
+       <input type="hidden" name="action" value="add_group"/>
+       <input type="submit"/>
+     </td>
+   </tr>
+   </table>
+</form>
+
+<div id="autocomplete_usergroup" class="autocomplete"></div>
+<script type="text/javascript">
+  new Ajax.Autocompleter("acl_usergroup","autocomplete_usergroup","admin_suggest.jsp");
+</script>
+</li>
+
+<li>
+
+<%-- do SQL query to get groups --%> 
+<sql:query var="rs" dataSource="${dataSource}">
+  SELECT i.group_name, u.user_realname, u.user_homepage FROM groupids i, user u WHERE i.group > 2 AND i.group_name = u.user_name ORDER BY i.group_name
+</sql:query>
+
+<span class="sidebar_h">existing groups</span>
+  <ul>
+    <c:forEach var="row" items="${rs.rows}">
+       <li><a href="/group/<c:out value='${row.group_name}'/>"><c:out value="${row.group_name}"/></a></li>
+    </c:forEach>
+  </ul>
+
+
+</li>
+
+</ul>
+
+<%@ include file="footer.jsp"%>
