@@ -63,6 +63,12 @@
 		<dependency>
 			<groupId>dom4j</groupId>
 			<artifactId>dom4j</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>pull-parser</artifactId>
+					<groupId>pull-parser</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>commons-dbcp</groupId>
