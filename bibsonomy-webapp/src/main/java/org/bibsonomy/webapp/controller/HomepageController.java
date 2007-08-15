@@ -1,0 +1,34 @@
+package org.bibsonomy.webapp.controller;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+import org.bibsonomy.database.managers.RestDatabaseManager;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Post;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
+
+public class HomepageController implements Controller {
+
+	private static final Logger log = Logger.getLogger(HomepageController.class);
+
+	public ModelAndView handleRequest(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
+		log.debug(this.getClass().getSimpleName());
+		log.debug("Path: " + request.getRequestURI());
+
+		final Map<String, Object> model = new HashMap<String, Object>();
+		model.put("projectName", "BibSonomy");
+
+		final List<Post<Bookmark>> bookmarks = RestDatabaseManager.getInstance().getPosts("cschenk", Bookmark.class, null, null, null, null, null, 0, 10);
+		model.put("bookmarks", bookmarks);
+
+		return new ModelAndView("home", model);
+	}
+}

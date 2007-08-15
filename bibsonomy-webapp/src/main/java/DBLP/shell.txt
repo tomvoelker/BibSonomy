@@ -1,0 +1,1 @@
+java -Xmx1000m -jar DBLP.jar DBLPConstants.xml > standard_out.txt 2> error_out.txt

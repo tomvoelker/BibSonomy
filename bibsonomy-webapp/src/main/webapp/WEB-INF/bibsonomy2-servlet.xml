@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="homepage" class="org.bibsonomy.webapp.controller.HomepageController" />
+	<bean id="posts" class="org.bibsonomy.webapp.controller.PostsController" />
+
+	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="urlMap">
+			<map>
+				<entry key="/new/"><ref bean="homepage" /></entry>
+				<entry key="/new/posts/*"><ref bean="posts" /></entry>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="viewResolver"	class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+</beans>

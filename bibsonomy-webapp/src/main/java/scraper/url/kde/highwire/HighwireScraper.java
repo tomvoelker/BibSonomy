@@ -1,0 +1,111 @@
+package scraper.url.kde.highwire;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.log4j.Logger;
+
+import scraper.Scraper;
+import scraper.ScrapingContext;
+import scraper.ScrapingException;
+
+public class HighwireScraper implements Scraper {
+	private static final Logger log 	= Logger.getLogger(HighwireScraper.class);
+	private static final String info 	= "Highwire Scraper: This scraper parses a publication page from one of these <a href=\"/scraperinfo_highwire\">journals hosted by Highwire Press</a>  " +
+	"and extracts the adequate BibTeX entry. Author: KDE";
+
+	//Pattern p = Pattern.compile("/cgi/citmgr\\?(gca=\\w+;\\d+/\\d+/[\\w+]*\\d+[&]*)+");
+	private static final Pattern urlPattern = Pattern.compile("/cgi/citmgr\\?gca=[\\w+;/&=.-]+");
+	
+	public boolean scrape(ScrapingContext sc) throws ScrapingException {
+
+		//-- url shouldn't be null
+		if (sc.getUrl() != null) {
+
+			/*
+			 * test if the export link is available: /cgi/citmgr?gca=abcd;999/99/99
+			 * 
+			 * If not, this scraper can't do anything and hence returns false. It does NOT 
+			 * throw an exception because the IEScraper might do its job.
+			 * 
+			 */
+			String pageContent;
+			try {
+				pageContent = sc.getPageContent();
+			} catch (ScrapingException e) {
+				return false;
+			}
+			
+			Matcher m = urlPattern.matcher(pageContent);
+			
+			try {
+				//-- if its available extract the needed parts and form the final bibtex export url
+				if (m.find()){
+
+					//-- to export the bibtex we need to replace ? through ?type=bibtex
+					String exportUrl = m.group(0).replaceFirst("\\?","?type=bibtex&");
+
+					//-- form the host url and put them together 
+					String newUrl = "http://" + sc.getUrl().getHost() + exportUrl;
+
+					//-- get the bibtex export and throw new ScrapingException if the url is broken
+					String bibtexresult = sc.getContentAsString(new URL(newUrl));
+
+					/*
+					 * Need to fix the bibtexkey. Its necessary to replace
+					 * ALL whitespace through underscores otherwise the import 
+					 * will crash.
+					 */
+					//-- create the pattern to finde the bibtexkey
+					Pattern pa1 = Pattern.compile("@\\w+\\{.+,");
+					Matcher ma1 = pa1.matcher(bibtexresult);
+
+					//-- for every match ...
+					while(ma1.find()){
+						String bibtexpart = ma1.group(0);
+						Pattern pat = Pattern.compile("\\s");
+						Matcher mat = pat.matcher(bibtexpart);
+						// ... check if whitespaces are existing and replace 
+						// them through underscore
+						if (mat.find()){
+							String preparedbibtexkey = mat.replaceAll("_");
+							bibtexresult = bibtexresult.replaceFirst(Pattern.quote(bibtexpart), preparedbibtexkey);
+						}
+					}
+
+
+					//-- bibtex string may not be empty
+					if (bibtexresult != null && !"".equals(bibtexresult)) {
+						sc.setBibtexResult(bibtexresult);
+						/*
+						 * returns itself to know, which scraper scraped this
+						 */
+						sc.setScraper(this);
+
+						return true;
+					}
+
+				}
+
+			} catch (MalformedURLException e) {
+				log.fatal("could not scrape highwire publication " + sc.getUrl().toString());
+				log.fatal(e);
+				throw new ScrapingException(e);
+			}
+		}
+		//-- This Scraper can`t handle the specified url
+		return false;
+	}
+
+	public String getInfo() {
+		return info;
+	}
+
+	public Collection<Scraper> getScraper() {
+		return Collections.singletonList((Scraper) this);
+	}
+}
