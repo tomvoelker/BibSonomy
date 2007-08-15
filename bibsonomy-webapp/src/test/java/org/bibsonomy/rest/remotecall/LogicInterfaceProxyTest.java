@@ -47,8 +47,8 @@ import org.mortbay.resource.Resource;
 public class LogicInterfaceProxyTest implements LogicInterface {
 	private static final Logger log = Logger.getLogger(LogicInterfaceProxyTest.class);
 	private static final String LOGIN_USER_NAME = LogicInterfaceProxyTest.class.getSimpleName();
-	// private static final String API_KEY = "A P I äöü K e y";
-	private static final String API_KEY = "yetAnother Strange API KEY";
+	private static final String API_KEY = "A P I äöü K e y";
+	//private static final String API_KEY = "yetAnother Strange API KEY";
 	private static Server server;
 	private static String apiUrl;
 	private static LogicInterfaceFactory clientLogicFactory;
@@ -148,9 +148,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		createGroup(ModelUtils.getGroup());
 	}
 	public String createGroup(Group group) {		
-		EasyMock.expect(serverLogic.createGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"))).andReturn(group.getName());
+		EasyMock.expect(serverLogic.createGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"))).andReturn(group.getName() + "-new");
 		EasyMock.replay(serverLogic);
-		clientLogic.createGroup(group);
+		Assert.assertEquals(group.getName() + "-new", clientLogic.createGroup(group));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return null;
@@ -165,9 +165,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		createPost(ModelUtils.generatePost(BibTex.class));
 	}
 	public String createPost(Post<?> post) {
-		EasyMock.expect(serverLogic.createPost(PropertyEqualityArgumentMatcher.eq(post,"date", "user.apiKey", "user.email", "user.homepage", "user.password", "user.realname", "resource.scraperId"))).andReturn(post.getResource().getIntraHash());
+		EasyMock.expect(serverLogic.createPost(PropertyEqualityArgumentMatcher.eq(post,"date", "user.apiKey", "user.email", "user.homepage", "user.password", "user.realname", "resource.scraperId"))).andReturn(post.getResource().getIntraHash() + "-new");
 		EasyMock.replay(serverLogic);
-		clientLogic.createPost(post);
+		Assert.assertEquals(post.getResource().getIntraHash() + "-new", clientLogic.createPost(post));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return null;
@@ -178,9 +178,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		createUser(ModelUtils.getUser());
 	}
 	public String createUser(User user) {
-		EasyMock.expect(serverLogic.createUser(PropertyEqualityArgumentMatcher.eq(user, "apiKey"))).andReturn(user.getName());
+		EasyMock.expect(serverLogic.createUser(PropertyEqualityArgumentMatcher.eq(user, "apiKey"))).andReturn(user.getName() + "-new");
 		EasyMock.replay(serverLogic);
-		clientLogic.createUser(user);
+		Assert.assertEquals(user.getName() + "-new", clientLogic.createUser(user));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return null;
@@ -439,9 +439,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		updateGroup(ModelUtils.getGroup());
 	}
 	public String updateGroup(Group group) {
-		EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"))).andReturn(group.getName());
+		EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"))).andReturn(group.getName() + "-new");
 		EasyMock.replay(serverLogic);
-		clientLogic.updateGroup(group);
+		Assert.assertEquals(group.getName() + "-new", clientLogic.updateGroup(group));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return null;
@@ -457,9 +457,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		updatePost(ModelUtils.generatePost(Bookmark.class));
 	}
 	public String updatePost(Post<?> post) {
-		EasyMock.expect(serverLogic.updatePost(PropertyEqualityArgumentMatcher.eq(post,"date", "user.apiKey", "user.email", "user.homepage", "user.password", "user.realname", "resource.scraperId"))).andReturn(post.getResource().getIntraHash());
+		EasyMock.expect(serverLogic.updatePost(PropertyEqualityArgumentMatcher.eq(post,"date", "user.apiKey", "user.email", "user.homepage", "user.password", "user.realname", "resource.scraperId"))).andReturn(post.getResource().getIntraHash() + "-new");
 		EasyMock.replay(serverLogic);
-		clientLogic.updatePost(post);
+		Assert.assertEquals(post.getResource().getIntraHash() + "-new", clientLogic.updatePost(post));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return null;
@@ -471,9 +471,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		createUser(ModelUtils.getUser());
 	}
 	public String updateUser(User user) {
-		serverLogic.createUser(PropertyEqualityArgumentMatcher.eq(user, "apiKey"));
+		EasyMock.expect(serverLogic.createUser(PropertyEqualityArgumentMatcher.eq(user, "apiKey"))).andReturn("rVal");
 		EasyMock.replay(serverLogic);
-		clientLogic.createUser(user);
+		Assert.assertEquals("rVal", clientLogic.createUser(user));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return null;
