@@ -1,0 +1,1472 @@
+202:202
+author/author: [Conklin]: <START0>@-1 <START1>@-2 INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=D@2 W=Conklin 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 <START0>@-2 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=D@1 W=Conklin@-1 
+author/author: [D]: W=,@2 PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=D W=Conklin@-2 
+author/author: [.]: INITCAP@2 W=,@1 PUNC@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=D@-1 W=Fortier@2 
+author/author: [,]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-2 PUNC W=, PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=D@-2 W=Fortier@1 
+author/author: [Fortier]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=,@-1 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=S@2 W=Fortier 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=,@-2 PUNC@-2 W=S@1 W=Fortier@-1 
+author/author: [S]: W=,@2 PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=S W=Fortier@-2 
+author/author: [.]: W=,@1 PUNC@1 INITCAP@-1 PUNC W=&@2 ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=S@-1 
+author/author: [,]: INITCAP@2 INITCAP@-2 PUNC W=, PUNC@-1 W=&@1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=S@-2 W=Glasgow@2 
+author/author: [&]: W=,@2 PUNC@2 INITCAP@1 W=,@-1 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=& W=Glasgow@1 
+author/author: [Glasgow]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=,@-2 PUNC@-2 W=&@-1 W=J@2 W=Glasgow 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=&@-2 W=J@1 W=Glasgow@-1 
+author/author: [J]: PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=(@2 W=J W=Glasgow@-2 
+author/author: [.]: PUNC@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@2 CONTAINSDIGITS@2 W=(@1 W=1993@2 W=J@-1 
+date/date: [(]: SINGLECHAR@2 INITCAP@-2 PUNC PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 ALLDIGITS@1 CONTAINSDIGITS@1 W=( W=1993@1 W=a@2 W=J@-2 
+date/date: [1993]: PUNC@2 SINGLECHAR@1 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=)@2 W=(@-1 ALLDIGITS CONTAINSDIGITS W=1993 W=a@1 
+date/date: [a]: PUNC@2 PUNC@1 W=.@2 CONTAINSDOTS@2 SINGLECHAR PUNC@-2 W=)@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=(@-2 W=1993@-1 W=a 
+date/date: [)]: INITCAP@2 PUNC@1 PUNC W=.@1 CONTAINSDOTS@1 SINGLECHAR@-1 W=) ALLDIGITS@-2 CONTAINSDIGITS@-2 W=Knowledge@2 W=1993@-2 W=a@-1 
+date/date: [.]: INITCAP@1 PUNC PUNC@-1 CONTAINSDOTS W=. SINGLECHAR@-2 W=)@-1 W=Knowledge@1 W=a@-2 W=discovery@2 
+title/title: [Knowledge]: INITCAP PUNC@-1 PUNC@-2 W=.@-1 CONTAINSDOTS@-1 W=)@-2 W=in@2 W=Knowledge W=discovery@1 
+title/title: [discovery]: INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=in@1 W=Knowledge@-1 W=discovery W=molecular@2 
+title/title: [in]: INITCAP@-2 W=in W=Knowledge@-2 W=databases@2 W=discovery@-1 W=molecular@1 
+title/title: [molecular]: PUNC@2 W=.@2 CONTAINSDOTS@2 W=in@-1 W=databases@1 W=discovery@-2 W=molecular 
+title/title: [databases]: INITCAP@2 ALLCAPS@2 PUNC@1 W=.@1 CONTAINSDOTS@1 W=in@-2 W=IEEE@2 W=databases W=molecular@-1 
+title/title: [.]: INITCAP@1 INITCAP@2 ALLCAPS@1 PUNC CONTAINSDOTS W=. W=Transactions@2 W=IEEE@1 W=databases@-1 W=molecular@-2 
+journal/booktitle* [IEEE]* INITCAP@1 INITCAP PUNC@-1 ALLCAPS W=.@-1 CONTAINSDOTS@-1 W=on@2 W=Transactions@1 W=IEEE W=databases@-2 
+journal/booktitle* [Transactions]* INITCAP INITCAP@2 INITCAP@-1 ALLCAPS@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=Knowledge@2 W=on@1 W=IEEE@-1 W=Transactions 
+journal/booktitle* [on]* INITCAP@1 INITCAP@-1 INITCAP@-2 ALLCAPS@-2 W=and@2 W=Knowledge@1 W=Transactions@-1 W=IEEE@-2 W=on 
+journal/booktitle* [Knowledge]* INITCAP INITCAP@2 INITCAP@-2 W=and@1 W=Knowledge W=on@-1 W=Transactions@-2 W=Data@2 
+journal/booktitle* [and]* INITCAP@1 INITCAP@2 INITCAP@-1 W=and W=Knowledge@-1 W=on@-2 W=Engineering@2 W=Data@1 
+journal/booktitle* [Data]* W=,@2 PUNC@2 INITCAP@1 INITCAP INITCAP@-2 W=and@-1 W=Knowledge@-2 W=Engineering@1 W=Data 
+journal/booktitle* [Engineering]* INITCAP W=,@1 PUNC@1 INITCAP@-1 ALLDIGITS@2 CONTAINSDIGITS@2 W=and@-2 W=Engineering W=Data@-1 W=985@2 
+journal/booktitle* [,]* INITCAP@-1 INITCAP@-2 PUNC W=, ALLDIGITS@1 CONTAINSDIGITS@1 W=-@2 W=Engineering@-1 W=Data@-2 W=985@1 
+pages/pages: [985]: INITCAP@-2 W=,@-1 PUNC@-1 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS CONTAINSDIGITS W=-@1 W=Engineering@-2 W=987@2 W=985 
+pages/pages: [-]: PUNC@2 W=.@2 CONTAINSDOTS@2 W=,@-2 PUNC@-2 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=- W=987@1 W=985@-1 
+pages/pages: [987]: INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 W=-@-1 W=Special@2 W=985@-2 W=987 
+pages/pages: [.]: INITCAP@1 INITCAP@2 PUNC CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 W=-@-2 W=Issue@2 W=Special@1 W=987@-1 
+note/booktitle* [Special]* INITCAP@1 INITCAP PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=on@2 W=Issue@1 W=Special W=987@-2 
+note/booktitle* [Issue]* INITCAP INITCAP@2 INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=on@1 W=Special@-1 W=Issue W=Learning@2 
+note/booktitle* [on]* INITCAP@1 INITCAP@-1 INITCAP@-2 W=and@2 W=on W=Issue@-1 W=Special@-2 W=Learning@1 
+note/booktitle* [Learning]* INITCAP INITCAP@2 INITCAP@-2 W=and@1 W=on@-1 W=Issue@-2 W=Learning W=Discovery@2 
+note/booktitle* [and]* INITCAP@1 INITCAP@-1 W=in@2 W=and W=on@-2 W=Learning@-1 W=Discovery@1 
+note/booktitle* [Discovery]* INITCAP INITCAP@2 INITCAP@-2 W=in@1 W=and@-1 W=Knowledge@2 W=Learning@-2 W=Discovery 
+note/booktitle* [in]* INITCAP@1 INITCAP@-1 W=and@-2 W=in W=Knowledge@1 W=-@2 W=Discovery@-1 
+note/booktitle* [Knowledge]* INITCAP INITCAP@2 INITCAP@-2 W=in@-1 W=Knowledge W=-@1 W=Discovery@-2 W=Based@2 
+note/booktitle* [-]* INITCAP@1 INITCAP@2 INITCAP@-1 W=in@-2 W=Knowledge@-1 W=- W=Databases@2 W=Based@1 
+note/booktitle* [Based]* PUNC@2 INITCAP@1 INITCAP W=.@2 CONTAINSDOTS@2 INITCAP@-2 W=Knowledge@-2 W=-@-1 W=Databases@1 W=Based 
+note/booktitle* [Databases]* INITCAP PUNC@1 INITCAP@-1 W=.@1 CONTAINSDOTS@1 W=-@-2 <END0>@2 W=Databases W=Based@-1 
+note/booktitle* [.]* INITCAP@-1 INITCAP@-2 PUNC CONTAINSDOTS W=. <END1>@2 <END0>@1 W=Databases@-1 W=Based@-2 
+
+402:402
+editor/editor: [In]: W=,@2 PUNC@2 INITCAP@1 <START0>@-1 <START1>@-2 INITCAP W=In W=Bouma@1 
+editor/editor: [Bouma]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 INITCAP@-1 <START0>@-2 W=In@-1 W=H@2 W=Bouma 
+editor/editor: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 INITCAP@-2 PUNC W=, W=In@-2 W=H@1 W=Bouma@-1 
+editor/editor: [H]: W=,@2 PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=H W=Bouma@-2 
+editor/editor: [.]: W=,@1 PUNC@1 INITCAP@-1 PUNC W=&@2 ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=H@-1 
+editor/editor: [,]: INITCAP@2 INITCAP@-2 PUNC W=, PUNC@-1 W=&@1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=H@-2 W=Elsendoorn@2 
+editor/editor: [&]: W=,@2 PUNC@2 INITCAP@1 W=,@-1 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=& W=Elsendoorn@1 
+editor/editor: [Elsendoorn]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=,@-2 PUNC@-2 W=&@-1 W=A@2 W=Elsendoorn 
+editor/editor: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=&@-2 W=A@1 W=Elsendoorn@-1 
+editor/editor: [A]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=A W=G@2 W=Elsendoorn@-2 
+editor/editor: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=A@-1 W=G@1 
+editor/editor: [G]: PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=(@2 W=A@-2 W=G 
+editor/editor: [.]: INITCAP@2 PUNC@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=(@1 W=Eds@2 W=G@-1 
+editor/editor: [(]: PUNC@2 INITCAP@1 W=.@2 CONTAINSDOTS@2 INITCAP@-2 PUNC PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=( W=Eds@1 W=G@-2 
+editor/editor: [Eds]: PUNC@2 INITCAP PUNC@1 W=.@1 CONTAINSDOTS@1 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=)@2 W=(@-1 W=Eds 
+editor/editor: [.]: W=,@2 PUNC@2 PUNC@1 INITCAP@-1 PUNC PUNC@-2 CONTAINSDOTS W=. W=)@1 W=(@-2 W=Eds@-1 
+editor/editor: [)]: INITCAP@2 W=,@1 PUNC@1 INITCAP@-2 PUNC PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=) W=Eds@-2 W=Working@2 
+editor/editor: [,]: INITCAP@1 INITCAP@2 PUNC W=, PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=)@-1 W=Models@2 W=Working@1 
+title/booktitle* [Working]* INITCAP@1 INITCAP W=,@-1 PUNC@-1 PUNC@-2 W=)@-2 W=of@2 W=Models@1 W=Working 
+title/booktitle* [Models]* INITCAP INITCAP@2 INITCAP@-1 W=,@-2 PUNC@-2 W=of@1 W=Models W=Human@2 W=Working@-1 
+title/booktitle* [of]* INITCAP@1 INITCAP@2 INITCAP@-1 INITCAP@-2 W=of W=Models@-1 W=Human@1 W=Working@-2 W=Perception@2 
+title/booktitle* [Human]* W=,@2 PUNC@2 INITCAP@1 INITCAP INITCAP@-2 W=of@-1 W=Models@-2 W=Human W=Perception@1 
+title/booktitle* [Perception]* INITCAP W=,@1 PUNC@1 INITCAP@-1 W=of@-2 W=pp@2 W=Human@-1 W=Perception 
+title/booktitle* [,]* PUNC@2 INITCAP@-1 W=.@2 CONTAINSDOTS@2 INITCAP@-2 PUNC W=, W=pp@1 W=Human@-2 W=Perception@-1 
+pages/pages: [pp]: PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 ALLDIGITS@2 CONTAINSDIGITS@2 W=pp W=391@2 W=Perception@-2 
+pages/pages: [.]: PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@1 CONTAINSDIGITS@1 W=-@2 W=pp@-1 W=391@1 
+pages/pages: [391]: PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS CONTAINSDIGITS W=-@1 W=pp@-2 W=410@2 W=391 
+pages/pages: [-]: PUNC@2 W=.@2 CONTAINSDOTS@2 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=- W=410@1 W=391@-1 
+pages/pages: [410]: INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 W=-@-1 W=Academic@2 W=391@-2 W=410 
+pages/pages: [.]: INITCAP@1 INITCAP@2 PUNC CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 W=-@-2 W=Press@2 W=Academic@1 W=410@-1 
+publisher/publisher: [Academic]: W=,@2 PUNC@2 INITCAP@1 INITCAP PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=Press@1 W=Academic W=410@-2 
+publisher/publisher: [Press]: INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=Press W=Academic@-1 W=London@2 
+publisher/publisher: [,]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 INITCAP@-2 PUNC W=, W=Press@-1 W=Academic@-2 W=London@1 
+location/location: [London]: INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-2 W=,@-1 PUNC@-1 W=Press@-2 W=London W=England@2 
+location/location: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 PUNC W=, W=,@-2 PUNC@-2 W=London@-1 W=England@1 
+location/location: [England]: INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 <END0>@2 W=London@-2 W=England 
+location/location: [.]: INITCAP@-1 PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. <END1>@2 <END0>@1 W=England@-1 
+
+427:427
+author/author: [Panario]: <START0>@-1 <START1>@-2 INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=D@2 W=Panario 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 <START0>@-2 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=D@1 W=Panario@-1 
+author/author: [D]: W=,@2 PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=D W=Panario@-2 
+author/author: [.]: INITCAP@2 W=,@1 PUNC@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=D@-1 W=Gourdon@2 
+author/author: [,]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-2 PUNC W=, PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=D@-2 W=Gourdon@1 
+author/author: [Gourdon]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=,@-1 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=X@2 W=Gourdon 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=,@-2 PUNC@-2 W=X@1 W=Gourdon@-1 
+author/author: [X]: W=,@2 PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=Gourdon@-2 W=X 
+author/author: [.]: W=,@1 PUNC@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=and@2 W=X@-1 
+author/author: [,]: INITCAP@2 INITCAP@-2 PUNC W=, PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=and@1 W=X@-2 W=Flajolet@2 
+author/author: [and]: W=,@2 PUNC@2 INITCAP@1 W=,@-1 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=and W=Flajolet@1 
+author/author: [Flajolet]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=,@-2 PUNC@-2 W=and@-1 W=P@2 W=Flajolet 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=and@-2 W=P@1 W=Flajolet@-1 
+author/author: [P]: INITCAP INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=P W=An@2 W=Flajolet@-2 
+author/author: [.]: INITCAP@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=P@-1 W=An@1 W=analytic@2 
+title/title: [An]: INITCAP INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=P@-2 W=An W=approach@2 W=analytic@1 
+title/title: [analytic]: INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=An@-1 W=to@2 W=approach@1 W=analytic 
+title/title: [approach]: INITCAP@-2 W=An@-2 W=to@1 W=approach W=smooth@2 W=analytic@-1 
+title/title: [to]: W=polynomials@2 W=to W=approach@-1 W=smooth@1 W=analytic@-2 
+title/title: [smooth]: PUNC@2 W=.@2 CONTAINSDOTS@2 W=polynomials@1 W=to@-1 W=approach@-2 W=smooth 
+title/title: [polynomials]: INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 W=polynomials W=to@-2 W=Submitted@2 W=smooth@-1 
+title/title: [.]: W=,@2 PUNC@2 INITCAP@1 PUNC CONTAINSDOTS W=. W=polynomials@-1 W=Submitted@1 W=smooth@-2 
+note/tech* [Submitted]* INITCAP W=,@1 PUNC@1 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLDIGITS@2 CONTAINSDIGITS@2 W=polynomials@-2 W=Submitted W=1998@2 
+note/tech* [,]* PUNC@2 INITCAP@-1 W=.@2 CONTAINSDOTS@2 PUNC W=, PUNC@-2 W=.@-2 CONTAINSDOTS@-2 ALLDIGITS@1 CONTAINSDIGITS@1 W=Submitted@-1 W=1998@1 
+date/date: [1998]: PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 ALLDIGITS CONTAINSDIGITS <END0>@2 W=Submitted@-2 W=1998 
+date/date: [.]: PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 <END1>@2 <END0>@1 W=1998@-1 
+
+27:27
+author/author: [P]: <START0>@-1 <START1>@-2 INITCAP INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 CAPLETTER SINGLECHAR ALLCAPS W=P W=Yang@2 
+author/author: [.]: INITCAP@1 INITCAP@-1 <START0>@-2 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 CONTAINSDOTS W=. W=and@2 W=P@-1 W=Yang@1 
+author/author: [Yang]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=and@1 W=P@-2 W=J@2 W=Yang 
+author/author: [and]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=and W=J@1 W=Yang@-1 
+author/author: [J]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 CAPLETTER SINGLECHAR ALLCAPS W=and@-1 W=J W=H@2 W=Yang@-2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 CONTAINSDOTS W=. W=and@-2 W=J@-1 W=H@1 
+author/author: [H]: INITCAP INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=H W=J@-2 W=Chern@2 
+author/author: [.]: INITCAP@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=H@-1 W="@2 W=Chern@1 
+author/title* [Chern]* INITCAP INITCAP@2 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=H@-2 W="@1 W=Design@2 W=Chern 
+title/title: ["]: INITCAP@1 INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=for@2 W=" W=Design@1 W=Chern@-1 
+title/title: [Design]: INITCAP INITCAP@2 INITCAP@-2 W=for@1 W="@-1 W=Design W=Reliability@2 W=Chern@-2 
+title/title: [for]: PUNC@2 INITCAP@1 INITCAP@-1 W=:@2 W=for W="@-2 W=Design@-1 W=Reliability@1 
+title/title: [Reliability]: INITCAP INITCAP@2 PUNC@1 INITCAP@-2 W=:@1 W=for@-1 W=The@2 W=Design@-2 W=Reliability 
+title/title: [:]: INITCAP@1 INITCAP@2 INITCAP@-1 PUNC W=: W=for@-2 W=The@1 W=Major@2 W=Reliability@-1 
+title/title: [The]: INITCAP@1 INITCAP INITCAP@2 INITCAP@-2 PUNC@-1 W=:@-1 W=The W=Challenge@2 W=Major@1 W=Reliability@-2 
+title/title: [Major]: INITCAP@1 INITCAP INITCAP@-1 PUNC@-2 W=for@2 W=:@-2 W=The@-1 W=Challenge@1 W=Major 
+title/title: [Challenge]: INITCAP INITCAP@2 ALLCAPS@2 INITCAP@-1 INITCAP@-2 W=for@1 W=VLSI@2 W=The@-2 W=Challenge W=Major@-1 
+title/title: [for]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 ALLCAPS@1 INITCAP@-2 W=for W=VLSI@1 W=Challenge@-1 W=Major@-2 
+title/title: [VLSI]: INITCAP W=,@1 PUNC@1 INITCAP@-2 ALLCAPS W=for@-1 W="@2 W=VLSI W=Challenge@-2 
+title/title: [,]: INITCAP@2 INITCAP@-1 PUNC W=, ALLCAPS@-1 W=Proceedings@2 W=for@-2 W="@1 W=VLSI@-1 
+title/title: ["]: INITCAP@1 INITCAP@-2 W=,@-1 PUNC@-1 ALLCAPS@-2 W=of@2 W=Proceedings@1 W=" W=VLSI@-2 
+journal/booktitle* [Proceedings]* INITCAP INITCAP@2 ALLCAPS@2 W=,@-2 PUNC@-2 W=IEEE@2 W=of@1 W=Proceedings W="@-1 
+journal/booktitle* [of]* W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 ALLCAPS@1 W=IEEE@1 W=of W=Proceedings@-1 W="@-2 
+journal/booktitle* [IEEE]* INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-2 ALLCAPS W=IEEE W=of@-1 W=Proceedings@-2 W=Vol@2 
+journal/booktitle* [,]* PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 PUNC W=, ALLCAPS@-1 W=IEEE@-1 W=of@-2 W=Vol@1 
+volume/volume: [Vol]: INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 ALLCAPS@-2 ALLDIGITS@2 CONTAINSDIGITS@2 W=IEEE@-2 W=Vol W=81@2 
+volume/volume: [.]: W=,@2 PUNC@2 INITCAP@-1 PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@1 CONTAINSDIGITS@1 W=Vol@-1 W=81@1 
+volume/volume: [81]: INITCAP@2 W=,@1 PUNC@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLDIGITS CONTAINSDIGITS W=Vol@-2 W=No@2 W=81 
+volume/volume: [,]: PUNC@2 INITCAP@1 W=.@2 CONTAINSDOTS@2 PUNC W=, PUNC@-2 W=.@-2 CONTAINSDOTS@-2 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=No@1 W=81@-1 
+volume/volume: [No]: INITCAP PUNC@1 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=No W=5@2 W=81@-2 
+volume/volume: [.]: W=,@2 PUNC@2 INITCAP@-1 PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@1 CONTAINSDIGITS@1 W=No@-1 W=5@1 
+volume/volume: [5]: W=,@1 PUNC@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLDIGITS CONTAINSDIGITS W=pp@2 W=No@-2 W=5 
+volume/volume: [,]: PUNC@2 W=.@2 CONTAINSDOTS@2 PUNC W=, PUNC@-2 W=.@-2 CONTAINSDOTS@-2 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=pp@1 W=5@-1 
+pages/pages: [pp]: PUNC@1 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=pp W=5@-2 W=730@2 
+pages/pages: [.]: PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@1 CONTAINSDIGITS@1 W=-@2 W=pp@-1 W=730@1 
+pages/pages: [730]: PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS CONTAINSDIGITS W=-@1 W=pp@-2 W=744@2 W=730 
+pages/pages: [-]: W=,@2 PUNC@2 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=- W=744@1 W=730@-1 
+pages/pages: [744]: INITCAP@2 W=,@1 PUNC@1 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 W=-@-1 W=May@2 W=730@-2 W=744 
+pages/pages: [,]: INITCAP@1 PUNC W=, ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=-@-2 W=1993@2 W=May@1 W=744@-1 
+date/date: [May]: PUNC@2 INITCAP W=.@2 CONTAINSDOTS@2 W=,@-1 PUNC@-1 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=1993@1 W=May W=744@-2 
+date/date: [1993]: PUNC@1 INITCAP@-1 W=.@1 CONTAINSDOTS@1 W=,@-2 PUNC@-2 ALLDIGITS CONTAINSDIGITS <END0>@2 W=1993 W=May@-1 
+date/date: [.]: INITCAP@-2 PUNC CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 <END1>@2 <END0>@1 W=1993@-1 W=May@-2 
+
+418:418
+author/author: [Baral]: <START0>@-1 <START1>@-2 INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=C@2 W=Baral 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 <START0>@-2 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=C@1 W=Baral@-1 
+author/author: [C]: W=,@2 PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=C W=Baral@-2 
+author/author: [.]: W=,@1 PUNC@1 INITCAP@-1 PUNC W=&@2 ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=C@-1 
+author/author: [,]: INITCAP@2 INITCAP@-2 PUNC W=, PUNC@-1 W=&@1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=C@-2 W=Subrahmanian@2 
+author/author: [&]: W=,@2 PUNC@2 INITCAP@1 W=,@-1 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=& W=Subrahmanian@1 
+author/author: [Subrahmanian]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=,@-2 PUNC@-2 W=&@-1 W=V@2 W=Subrahmanian 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=&@-2 W=V@1 W=Subrahmanian@-1 
+author/author: [V]: PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=(@2 W=V W=Subrahmanian@-2 
+author/author: [.]: PUNC@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@2 CONTAINSDIGITS@2 W=(@1 W=1991@2 W=V@-1 
+date/date: [(]: PUNC@2 INITCAP@-2 PUNC PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=)@2 ALLDIGITS@1 CONTAINSDIGITS@1 W=( W=1991@1 W=V@-2 
+date/date: [1991]: PUNC@2 PUNC@1 W=.@2 CONTAINSDOTS@2 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=)@1 W=(@-1 ALLDIGITS CONTAINSDIGITS W=1991 
+date/date: [)]: INITCAP@2 PUNC@1 PUNC W=.@1 CONTAINSDOTS@1 PUNC@-2 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=(@-2 W=) W=1991@-1 W=Duality@2 
+date/date: [.]: INITCAP@1 PUNC PUNC@-1 CONTAINSDOTS W=. W=)@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=1991@-2 W=between@2 W=Duality@1 
+title/title: [Duality]: INITCAP PUNC@-1 PUNC@-2 W=.@-1 CONTAINSDOTS@-1 W=)@-2 W=between@1 W=alternative@2 W=Duality 
+title/title: [between]: INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=between W=alternative@1 W=semantics@2 W=Duality@-1 
+title/title: [alternative]: INITCAP@-2 W=of@2 W=between@-1 W=alternative W=semantics@1 W=Duality@-2 
+title/title: [semantics]: W=of@1 W=between@-2 W=logic@2 W=alternative@-1 W=semantics 
+title/title: [of]: W=of W=programs@2 W=logic@1 W=alternative@-2 W=semantics@-1 
+title/title: [logic]: W=and@2 W=of@-1 W=programs@1 W=logic W=semantics@-2 
+title/title: [programs]: W=and@1 W=of@-2 W=programs W=logic@-1 W=nonmonotonic@2 
+title/title: [and]: W=and W=programs@-1 W=logic@-2 W=nonmonotonic@1 W=formalisms@2 
+title/title: [nonmonotonic]: PUNC@2 W=.@2 CONTAINSDOTS@2 W=and@-1 W=programs@-2 W=nonmonotonic W=formalisms@1 
+title/title: [formalisms]: INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 W=and@-2 W=In@2 W=nonmonotonic@-1 W=formalisms 
+title/title: [.]: INITCAP@1 INITCAP@2 PUNC CONTAINSDOTS W=. W=In@1 W=Proc@2 W=nonmonotonic@-2 W=formalisms@-1 
+booktitle/booktitle: [In]: PUNC@2 INITCAP@1 INITCAP W=.@2 CONTAINSDOTS@2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=In W=Proc@1 W=formalisms@-2 
+booktitle/booktitle: [Proc]: INITCAP INITCAP@2 PUNC@1 INITCAP@-1 W=.@1 CONTAINSDOTS@1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=In@-1 W=Proc W=Intl@2 
+booktitle/booktitle: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 INITCAP@-2 PUNC CONTAINSDOTS W=. W=In@-2 W=Proc@-1 W=Intl@1 
+booktitle/booktitle: [Intl]: INITCAP INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=Workshop@2 W=Proc@-2 W=Intl 
+booktitle/booktitle: [.]: INITCAP@1 INITCAP@-1 PUNC PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=on@2 W=Workshop@1 W=Intl@-1 
+booktitle/booktitle: [Workshop]: INITCAP INITCAP@2 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=on@1 W=Workshop W=Logic@2 W=Intl@-2 
+booktitle/booktitle: [on]: INITCAP@1 INITCAP@2 INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=on W=Workshop@-1 W=Programming@2 W=Logic@1 
+booktitle/booktitle: [Logic]: INITCAP@1 INITCAP INITCAP@-2 W=and@2 W=on@-1 W=Workshop@-2 W=Programming@1 W=Logic 
+booktitle/booktitle: [Programming]: INITCAP INITCAP@2 INITCAP@-1 W=and@1 W=on@-2 W=Programming W=Logic@-1 W=Nonmonotonic@2 
+booktitle/booktitle: [and]: INITCAP@1 INITCAP@2 INITCAP@-1 INITCAP@-2 W=and W=Programming@-1 W=Logic@-2 W=Reasoning@2 W=Nonmonotonic@1 
+booktitle/booktitle: [Nonmonotonic]: PUNC@2 INITCAP@1 INITCAP W=.@2 CONTAINSDOTS@2 INITCAP@-2 W=and@-1 W=Programming@-2 W=Reasoning@1 W=Nonmonotonic 
+booktitle/booktitle: [Reasoning]: INITCAP INITCAP@2 PUNC@1 INITCAP@-1 W=.@1 CONTAINSDOTS@1 W=and@-2 W=Springer@2 W=Reasoning W=Nonmonotonic@-1 
+booktitle/booktitle: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 INITCAP@-2 PUNC CONTAINSDOTS W=. W=Springer@1 W=Reasoning@-1 W=Nonmonotonic@-2 
+publisher/booktitle* [Springer]* INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 <END0>@2 W=Springer W=Reasoning@-2 
+publisher/booktitle* [.]* INITCAP@-1 PUNC PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 <END1>@2 <END0>@1 W=Springer@-1 
+
+94:94
+author/author: [Ling]: <START0>@-1 <START1>@-2 INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=C@2 W=Ling 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 <START0>@-2 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=C@1 W=Ling@-1 
+author/author: [C]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=C W=X@2 W=Ling@-2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=C@-1 W=X@1 
+author/author: [X]: PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=(@2 W=C@-2 W=X 
+author/author: [.]: PUNC@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 ALLDIGITS@2 CONTAINSDIGITS@2 W=(@1 W=1995@2 W=X@-1 
+date/date: [(]: PUNC@2 INITCAP@-2 PUNC PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=)@2 ALLDIGITS@1 CONTAINSDIGITS@1 W=( W=1995@1 W=X@-2 
+date/date: [1995]: PUNC@2 PUNC@1 W=.@2 CONTAINSDOTS@2 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=)@1 W=(@-1 ALLDIGITS CONTAINSDIGITS W=1995 
+date/date: [)]: INITCAP@2 PUNC@1 PUNC W=.@1 CONTAINSDOTS@1 PUNC@-2 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=(@-2 W=) W=1995@-1 W=Personal@2 
+date/date: [.]: INITCAP@1 PUNC PUNC@-1 CONTAINSDOTS W=. W=)@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=1995@-2 W=communication@2 W=Personal@1 
+tech/title* [Personal]* PUNC@2 INITCAP W=.@2 CONTAINSDOTS@2 PUNC@-1 PUNC@-2 W=.@-1 CONTAINSDOTS@-1 W=)@-2 W=communication@1 W=Personal 
+tech/title* [communication]* PUNC@1 INITCAP@-1 W=.@1 CONTAINSDOTS@1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 <END0>@2 W=communication W=Personal@-1 
+tech/title* [.]* INITCAP@-2 PUNC CONTAINSDOTS W=. <END1>@2 <END0>@1 W=communication@-1 W=Personal@-2 
+
+283:283
+author/author: [Boddy]: <START0>@-1 <START1>@-2 INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=M@2 W=Boddy 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 <START0>@-2 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=M@1 W=Boddy@-1 
+author/author: [M]: W=,@2 PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=M W=Boddy@-2 
+author/author: [.]: W=,@1 PUNC@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@2 CONTAINSDIGITS@2 W=M@-1 W=1991@2 
+author/author: [,]: PUNC@2 W=.@2 CONTAINSDOTS@2 INITCAP@-2 PUNC W=, PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 ALLDIGITS@1 CONTAINSDIGITS@1 W=M@-2 W=1991@1 
+date/date: [1991]: INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 ALLDIGITS CONTAINSDIGITS W=1991 W=Any@2 
+date/date: [.]: INITCAP@1 INITCAP@2 PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 W=1991@-1 W=Time@2 W=Any@1 
+title/title: [Any]: INITCAP@1 INITCAP INITCAP@2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=Problem@2 W=1991@-2 W=Time@1 W=Any 
+title/title: [Time]: INITCAP@1 INITCAP INITCAP@2 INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=Solving@2 W=Problem@1 W=Time W=Any@-1 
+title/title: [Problem]: INITCAP@1 INITCAP INITCAP@2 INITCAP@-1 INITCAP@-2 W=Solving@1 W=Problem W=Time@-1 W=Using@2 W=Any@-2 
+title/title: [Solving]: INITCAP@1 INITCAP INITCAP@2 INITCAP@-1 INITCAP@-2 W=Solving W=Problem@-1 W=Time@-2 W=Using@1 W=Dynamic@2 
+title/title: [Using]: INITCAP@1 INITCAP INITCAP@2 INITCAP@-1 INITCAP@-2 W=Solving@-1 W=Problem@-2 W=Programming@2 W=Using W=Dynamic@1 
+title/title: [Dynamic]: PUNC@2 INITCAP@1 INITCAP INITCAP@-1 W=.@2 CONTAINSDOTS@2 INITCAP@-2 W=Solving@-2 W=Programming@1 W=Using@-1 W=Dynamic 
+title/title: [Programming]: INITCAP INITCAP@2 PUNC@1 INITCAP@-1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=In@2 W=Programming W=Using@-2 W=Dynamic@-1 
+title/title: [.]: INITCAP@1 INITCAP@2 INITCAP@-1 INITCAP@-2 PUNC CONTAINSDOTS W=. W=Proceedings@2 W=In@1 W=Programming@-1 W=Dynamic@-2 
+booktitle/booktitle: [In]: INITCAP@1 INITCAP INITCAP@2 ALLCAPS@2 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=Proceedings@1 W=In W=Programming@-2 W=AAAI@2 
+booktitle/booktitle: [Proceedings]: INITCAP@1 INITCAP INITCAP@-1 ALLCAPS@1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=-@2 W=In@-1 W=Proceedings W=AAAI@1 
+booktitle/booktitle: [AAAI]: INITCAP INITCAP@-1 INITCAP@-2 ALLCAPS ALLDIGITS@2 CONTAINSDIGITS@2 W=-@1 W=Proceedings@-1 W=In@-2 W=AAAI W=91@2 
+booktitle/booktitle: [-]: PUNC@2 INITCAP@-1 W=.@2 CONTAINSDOTS@2 INITCAP@-2 ALLCAPS@-1 ALLDIGITS@1 CONTAINSDIGITS@1 W=- W=Proceedings@-2 W=AAAI@-1 W=91@1 
+booktitle/booktitle: [91]: INITCAP@2 ALLCAPS@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 ALLCAPS@-2 ALLDIGITS CONTAINSDIGITS W=-@-1 W=AAAI@2 W=AAAI@-2 W=91 
+booktitle/booktitle: [.]: PUNC@2 INITCAP@1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 PUNC CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 W=-@-2 W=AAAI@1 W=91@-1 
+publisher/booktitle* [AAAI]* INITCAP PUNC@1 W=.@1 CONTAINSDOTS@1 PUNC@-1 ALLCAPS W=.@-1 CONTAINSDOTS@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 <END0>@2 W=AAAI W=91@-2 
+publisher/booktitle* [.]* INITCAP@-1 PUNC ALLCAPS@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 <END1>@2 <END0>@1 W=AAAI@-1 
+
+487:487
+author/author: [M]: <START0>@-1 <START1>@-2 INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC@1 W=.@1 CONTAINSDOTS@1 CAPLETTER SINGLECHAR ALLCAPS W=M W=V@2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 <START0>@-2 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 CONTAINSDOTS W=. W=M@-1 W=V@1 
+author/author: [V]: INITCAP INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=M@-2 W=V W=Solodov@2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=V@-1 W=Solodov@1 
+author/author: [Solodov]: INITCAP INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=V@-2 W=Some@2 W=Solodov 
+author/author: [.]: INITCAP@1 INITCAP@-1 PUNC PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=optimization@2 W=Some@1 W=Solodov@-1 
+title/title: [Some]: INITCAP INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=optimization@1 W=Some W=reformulations@2 W=Solodov@-2 
+title/title: [optimization]: INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=of@2 W=optimization W=Some@-1 W=reformulations@1 
+title/title: [reformulations]: INITCAP@-2 W=the@2 W=of@1 W=optimization@-1 W=Some@-2 W=reformulations 
+title/title: [of]: W=the@1 W=of W=optimization@-2 W=extended@2 W=reformulations@-1 
+title/title: [the]: W=the W=of@-1 W=linear@2 W=extended@1 W=reformulations@-2 
+title/title: [extended]: W=the@-1 W=of@-2 W=complementarity@2 W=linear@1 W=extended 
+title/title: [linear]: W=the@-2 W=problems@2 W=complementarity@1 W=linear W=extended@-1 
+title/title: [complementarity]: W=,@2 PUNC@2 W=problems@1 W=complementarity W=linear@-1 W=extended@-2 
+title/title: [problems]: W=,@1 PUNC@1 ALLDIGITS@2 CONTAINSDIGITS@2 W=problems W=complementarity@-1 W=linear@-2 W=1997@2 
+title/title: [,]: PUNC@2 W=.@2 CONTAINSDOTS@2 PUNC W=, ALLDIGITS@1 CONTAINSDIGITS@1 W=problems@-1 W=complementarity@-2 W=1997@1 
+date/title* [1997]* INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 ALLDIGITS CONTAINSDIGITS W=problems@-2 W=Computational@2 W=1997 
+date/title* [.]* INITCAP@1 INITCAP@2 PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 W=Computational@1 W=Optimization@2 W=1997@-1 
+journal/journal: [Computational]: INITCAP@1 INITCAP PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=and@2 W=Computational W=Optimization@1 W=1997@-2 
+journal/journal: [Optimization]: INITCAP INITCAP@2 INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=and@1 W=Applications@2 W=Computational@-1 W=Optimization 
+journal/journal: [and]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 INITCAP@-2 W=and W=Applications@1 W=Computational@-2 W=Optimization@-1 
+journal/journal: [Applications]: INITCAP W=,@1 PUNC@1 INITCAP@-2 W=and@-1 W=to@2 W=Applications W=Optimization@-2 
+journal/journal: [,]: INITCAP@-1 PUNC W=, W=and@-2 W=to@1 W=Applications@-1 W=appear@2 
+note/note: [to]: PUNC@2 W=.@2 CONTAINSDOTS@2 INITCAP@-2 W=,@-1 PUNC@-1 W=to W=Applications@-2 W=appear@1 
+note/note: [appear]: PUNC@1 W=.@1 CONTAINSDOTS@1 W=,@-2 PUNC@-2 <END0>@2 W=to@-1 W=appear 
+note/note: [.]: PUNC CONTAINSDOTS W=. <END1>@2 <END0>@1 W=to@-2 W=appear@-1 
+
+423:423
+author/author: [Puterman]: <START0>@-1 <START1>@-2 INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=M@2 W=Puterman 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 <START0>@-2 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=M@1 W=Puterman@-1 
+author/author: [M]: INITCAP W=L@2 INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=M W=Puterman@-2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 W=L@1 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=M@-1 
+author/author: [L]: PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=L W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=(@2 W=M@-2 
+author/author: [.]: PUNC@1 INITCAP@-1 PUNC W=L@-1 ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 ALLDIGITS@2 CONTAINSDIGITS@2 W=(@1 W=1994@2 
+date/date: [(]: PUNC@2 INITCAP@-2 PUNC PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=L@-2 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=)@2 ALLDIGITS@1 CONTAINSDIGITS@1 W=( W=1994@1 
+date/date: [1994]: PUNC@2 PUNC@1 W=.@2 CONTAINSDOTS@2 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=)@1 W=(@-1 ALLDIGITS CONTAINSDIGITS W=1994 
+date/date: [)]: INITCAP@2 PUNC@1 PUNC W=.@1 CONTAINSDOTS@1 PUNC@-2 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=(@-2 W=) W=1994@-1 W=Markov@2 
+date/date: [.]: INITCAP@1 INITCAP@2 PUNC PUNC@-1 CONTAINSDOTS W=. W=)@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=1994@-2 W=Markov@1 W=Decision@2 
+title/publisher* [Markov]* INITCAP@1 INITCAP INITCAP@2 PUNC@-1 PUNC@-2 W=.@-1 CONTAINSDOTS@-1 W=)@-2 W=Markov W=Decision@1 W=Problems@2 
+title/publisher* [Decision]* PUNC@2 INITCAP@1 INITCAP INITCAP@-1 W=.@2 CONTAINSDOTS@2 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=Markov@-1 W=Decision W=Problems@1 
+title/publisher* [Problems]* INITCAP INITCAP@2 PUNC@1 INITCAP@-1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=Markov@-2 W=Decision@-1 W=Wiley@2 W=Problems 
+title/publisher* [.]* W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 INITCAP@-2 PUNC CONTAINSDOTS W=. W=Decision@-2 W=Wiley@1 W=Problems@-1 
+publisher/publisher: [Wiley]: INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=New@2 W=Wiley W=Problems@-2 
+publisher/publisher: [,]: INITCAP@1 INITCAP@2 INITCAP@-1 PUNC W=, PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=York@2 W=New@1 W=Wiley@-1 
+location/location: [New]: PUNC@2 INITCAP@1 INITCAP W=.@2 CONTAINSDOTS@2 INITCAP@-2 W=,@-1 PUNC@-1 W=York@1 W=New W=Wiley@-2 
+location/location: [York]: INITCAP PUNC@1 INITCAP@-1 W=.@1 CONTAINSDOTS@1 W=,@-2 PUNC@-2 <END0>@2 W=New@-1 W=York 
+location/location: [.]: INITCAP@-1 INITCAP@-2 PUNC CONTAINSDOTS W=. <END1>@2 <END0>@1 W=York@-1 W=New@-2 
+
+445:445
+author/author: [Grosz]: <START0>@-1 <START1>@-2 INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=B@2 W=Grosz 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 <START0>@-2 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=B@1 W=Grosz@-1 
+author/author: [B]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=J@2 W=B W=Grosz@-2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=J@1 W=B@-1 
+author/author: [J]: W=,@2 PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=J W=B@-2 
+author/author: [.]: W=,@1 PUNC@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=and@2 W=J@-1 
+author/author: [,]: INITCAP@2 INITCAP@-2 PUNC W=, PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=and@1 W=J@-2 W=Sidner@2 
+author/author: [and]: W=,@2 PUNC@2 INITCAP@1 W=,@-1 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=and W=Sidner@1 
+author/author: [Sidner]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=,@-2 PUNC@-2 W=and@-1 W=C@2 W=Sidner 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=and@-2 W=C@1 W=Sidner@-1 
+author/author: [C]: INITCAP W=L@2 INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=C W=Sidner@-2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 W=L@1 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=C@-1 
+author/author: [L]: INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=L W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 ALLDIGITS@2 CONTAINSDIGITS@2 W=C@-2 W=1986@2 
+author/author: [.]: PUNC@2 INITCAP@-1 W=.@2 CONTAINSDOTS@2 PUNC W=L@-1 ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 ALLDIGITS@1 CONTAINSDIGITS@1 W=1986@1 
+date/date: [1986]: INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=L@-2 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 ALLDIGITS CONTAINSDIGITS W=1986 W=Attention@2 
+date/date: [.]: W=,@2 PUNC@2 INITCAP@1 PUNC PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=1986@-1 W=Attention@1 
+title/title: [Attention]: INITCAP W=,@1 PUNC@1 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=1986@-2 W=intention@2 W=Attention 
+title/title: [,]: W=,@2 PUNC@2 INITCAP@-1 PUNC W=, PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=intention@1 W=Attention@-1 
+title/title: [intention]: W=,@1 PUNC@1 INITCAP@-2 W=,@-1 PUNC@-1 W=and@2 W=Attention@-2 W=intention 
+title/title: [,]: PUNC W=, W=,@-2 PUNC@-2 W=and@1 W=the@2 W=intention@-1 
+title/title: [and]: W=,@-1 PUNC@-1 W=and W=the@1 W=structure@2 W=intention@-2 
+title/title: [the]: W=,@-2 PUNC@-2 W=and@-1 W=the W=of@2 W=structure@1 
+title/title: [structure]: W=and@-2 W=the@-1 W=of@1 W=discourse@2 W=structure 
+title/title: [of]: PUNC@2 W=.@2 CONTAINSDOTS@2 W=the@-2 W=of W=discourse@1 W=structure@-1 
+title/title: [discourse]: INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 W=of@-1 W=discourse W=Computational@2 W=structure@-2 
+title/title: [.]: INITCAP@1 INITCAP@2 PUNC CONTAINSDOTS W=. W=of@-2 W=discourse@-1 W=Linguistics@2 W=Computational@1 
+journal/journal: [Computational]: INITCAP@1 INITCAP PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLDIGITS@2 CONTAINSDIGITS@2 W=discourse@-2 W=Linguistics@1 W=Computational W=12@2 
+journal/journal: [Linguistics]: PUNC@2 INITCAP INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=(@2 ALLDIGITS@1 CONTAINSDIGITS@1 W=Computational@-1 W=Linguistics W=12@1 
+volume/volume: [12]: PUNC@1 INITCAP@-1 INITCAP@-2 ALLDIGITS@2 CONTAINSDIGITS@2 W=(@1 ALLDIGITS CONTAINSDIGITS W=3@2 W=Linguistics@-1 W=Computational@-2 W=12 
+volume/volume: [(]: PUNC@2 INITCAP@-2 PUNC W=)@2 ALLDIGITS@1 CONTAINSDIGITS@1 W=( ALLDIGITS@-1 CONTAINSDIGITS@-1 W=3@1 W=Linguistics@-2 W=12@-1 
+volume/volume: [3]: PUNC@1 PUNC@-1 ALLDIGITS@2 CONTAINSDIGITS@2 W=)@1 W=(@-1 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 W=3 W=12@-2 W=175@2 
+volume/volume: [)]: PUNC PUNC@-2 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=(@-2 W=) W=-@2 W=3@-1 W=175@1 
+pages/pages: [175]: PUNC@-1 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS CONTAINSDIGITS W=)@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=-@1 W=3@-2 W=175 W=204@2 
+pages/pages: [-]: PUNC@2 W=.@2 CONTAINSDOTS@2 PUNC@-2 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=)@-2 W=- W=175@-1 W=204@1 
+pages/pages: [204]: PUNC@1 W=.@1 CONTAINSDOTS@1 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 W=-@-1 <END0>@2 W=175@-2 W=204 
+O/pages* [.]* PUNC CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 W=-@-2 <END1>@2 <END0>@1 W=204@-1 
+
+362:362
+editor/author* [Mark]* W=,@2 PUNC@2 INITCAP@1 <START0>@-1 <START1>@-2 INITCAP W=Mark W=Keane@1 
+editor/author* [Keane]* INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-1 <START0>@-2 W=Mark@-1 W=Keane W=Padraig@2 
+editor/author* [,]* INITCAP@1 INITCAP@2 INITCAP@-1 INITCAP@-2 PUNC W=, W=Mark@-2 W=Keane@-1 W=Cunningham@2 W=Padraig@1 
+editor/author* [Padraig]* W=,@2 PUNC@2 INITCAP@1 INITCAP INITCAP@-2 W=,@-1 PUNC@-1 W=Keane@-2 W=Cunningham@1 W=Padraig 
+editor/author* [Cunningham]* INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-1 W=,@-2 PUNC@-2 W=Mike@2 W=Padraig@-1 W=Cunningham 
+editor/author* [,]* INITCAP@1 INITCAP@2 INITCAP@-1 INITCAP@-2 PUNC W=, W=Brady@2 W=Mike@1 W=Cunningham@-1 W=Padraig@-2 
+editor/author* [Mike]* W=,@2 PUNC@2 INITCAP@1 INITCAP INITCAP@-2 W=,@-1 PUNC@-1 W=Brady@1 W=Cunningham@-2 W=Mike 
+editor/author* [Brady]* INITCAP W=,@1 PUNC@1 INITCAP@-1 W=,@-2 PUNC@-2 W=and@2 W=Brady W=Mike@-1 
+editor/author* [,]* INITCAP@2 INITCAP@-1 INITCAP@-2 PUNC W=, W=and@1 W=Brady@-1 W=Ruth@2 W=Mike@-2 
+editor/author* [and]* INITCAP@1 INITCAP@2 INITCAP@-2 W=,@-1 PUNC@-1 W=and W=Brady@-2 W=Byrne@2 W=Ruth@1 
+editor/author* [Ruth]* W=,@2 PUNC@2 INITCAP@1 INITCAP W=,@-2 PUNC@-2 W=and@-1 W=Ruth W=Byrne@1 
+editor/author* [Byrne]* INITCAP W=,@1 PUNC@1 INITCAP@-1 W=and@-2 W=editors@2 W=Ruth@-1 W=Byrne 
+editor/author* [,]* PUNC@2 INITCAP@-1 W=.@2 CONTAINSDOTS@2 INITCAP@-2 PUNC W=, W=editors@1 W=Ruth@-2 W=Byrne@-1 
+editor/author* [editors]* INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 W=editors W=Proc@2 W=Byrne@-2 
+editor/author* [.]* PUNC@2 INITCAP@1 W=.@2 CONTAINSDOTS@2 PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=editors@-1 W=Proc@1 
+booktitle/author* [Proc]* INITCAP INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=editors@-2 W=Proc W=Seventh@2 
+booktitle/author* [.]* INITCAP@1 INITCAP@2 INITCAP@-1 PUNC PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=Proc@-1 W=Seventh@1 W=Irish@2 
+booktitle/title* [Seventh]* INITCAP@1 INITCAP INITCAP@2 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=Annual@2 W=Proc@-2 W=Seventh W=Irish@1 
+booktitle/title* [Irish]* INITCAP@1 INITCAP INITCAP@2 INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=Conference@2 W=Annual@1 W=Seventh@-1 W=Irish 
+booktitle/title* [Annual]* INITCAP@1 INITCAP INITCAP@-1 INITCAP@-2 W=of@2 W=Conference@1 W=Annual W=Seventh@-2 W=Irish@-1 
+booktitle/title* [Conference]* INITCAP INITCAP@2 ALLCAPS@2 INITCAP@-1 INITCAP@-2 W=of@1 W=Conference W=Annual@-1 W=AI@2 W=Irish@-2 
+booktitle/title* [of]* INITCAP@1 INITCAP@-1 ALLCAPS@1 INITCAP@-2 W=and@2 W=of W=Conference@-1 W=Annual@-2 W=AI@1 
+booktitle/title* [AI]* INITCAP INITCAP@2 INITCAP@-2 ALLCAPS W=and@1 W=of@-1 W=Conference@-2 W=Cognitive@2 W=AI 
+booktitle/title* [and]* INITCAP@1 INITCAP@2 INITCAP@-1 ALLCAPS@-1 W=and W=of@-2 W=Science@2 W=Cognitive@1 W=AI@-1 
+booktitle/title* [Cognitive]* PUNC@2 INITCAP@1 INITCAP W=.@2 CONTAINSDOTS@2 INITCAP@-2 ALLCAPS@-2 W=and@-1 W=Science@1 W=Cognitive W=AI@-2 
+booktitle/title* [Science]* INITCAP INITCAP@2 PUNC@1 INITCAP@-1 W=.@1 CONTAINSDOTS@1 W=and@-2 W=Science W=Cognitive@-1 W=Dublin@2 
+booktitle/title* [.]* INITCAP@1 INITCAP@2 INITCAP@-1 INITCAP@-2 PUNC CONTAINSDOTS W=. W=University@2 W=Science@-1 W=Cognitive@-2 W=Dublin@1 
+publisher/publisher: [Dublin]: INITCAP@1 INITCAP INITCAP@2 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=University@1 W=Science@-2 W=Press@2 W=Dublin 
+publisher/publisher: [University]: W=,@2 PUNC@2 INITCAP@1 INITCAP INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=University W=Press@1 W=Dublin@-1 
+publisher/publisher: [Press]: INITCAP W=,@1 PUNC@1 INITCAP@-1 INITCAP@-2 ALLDIGITS@2 CONTAINSDIGITS@2 W=1994@2 W=University@-1 W=Press W=Dublin@-2 
+publisher/publisher: [,]: PUNC@2 INITCAP@-1 W=.@2 CONTAINSDOTS@2 INITCAP@-2 PUNC W=, ALLDIGITS@1 CONTAINSDIGITS@1 W=1994@1 W=University@-2 W=Press@-1 
+date/date: [1994]: PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 ALLDIGITS CONTAINSDIGITS <END0>@2 W=1994 W=Press@-2 
+date/date: [.]: PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 <END1>@2 <END0>@1 W=1994@-1 
+
+168:168
+author/author: [Azer]: INITCAP@1 <START0>@-1 <START1>@-2 INITCAP W=and@2 W=Bestavros@1 W=Azer 
+author/author: [Bestavros]: INITCAP INITCAP@2 INITCAP@-1 <START0>@-2 W=and@1 W=Carlos@2 W=Azer@-1 W=Bestavros 
+author/author: [and]: INITCAP@1 INITCAP@2 INITCAP@-1 INITCAP@-2 W=and W=Cunha@2 W=Carlos@1 W=Bestavros@-1 W=Azer@-2 
+author/author: [Carlos]: PUNC@2 INITCAP@1 INITCAP W=.@2 CONTAINSDOTS@2 INITCAP@-2 W=and@-1 W=Cunha@1 W=Bestavros@-2 W=Carlos 
+author/author: [Cunha]: INITCAP INITCAP@2 PUNC@1 INITCAP@-1 W=.@1 CONTAINSDOTS@1 W=and@-2 W=Server@2 W=Carlos@-1 W=Cunha 
+author/author: [.]: INITCAP@1 INITCAP@-1 INITCAP@-2 PUNC CONTAINSDOTS W=. W=-@2 W=Server@1 W=Cunha@-1 W=Carlos@-2 
+title/title: [Server]: INITCAP INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=-@1 W=initiated@2 W=Cunha@-2 W=Server 
+title/title: [-]: INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=- W=document@2 W=initiated@1 W=Server@-1 
+title/title: [initiated]: INITCAP@-2 W=-@-1 W=document@1 W=dissemination@2 W=Server@-2 W=initiated 
+title/title: [document]: W=-@-2 W=for@2 W=document W=dissemination@1 W=initiated@-1 
+title/title: [dissemination]: W=the@2 W=for@1 W=document@-1 W=initiated@-2 W=dissemination 
+title/title: [for]: W=the@1 W=for W=www@2 W=document@-2 W=dissemination@-1 
+title/title: [the]: PUNC@2 W=.@2 CONTAINSDOTS@2 W=the W=for@-1 W=www@1 W=dissemination@-2 
+title/title: [www]: INITCAP@2 ALLCAPS@2 PUNC@1 W=.@1 CONTAINSDOTS@1 W=the@-1 W=IEEE@2 W=for@-2 W=www 
+title/title: [.]: INITCAP@1 INITCAP@2 ALLCAPS@1 PUNC CONTAINSDOTS W=. W=the@-2 W=IEEE@1 W=Data@2 W=www@-1 
+journal/journal: [IEEE]: INITCAP@1 INITCAP INITCAP@2 PUNC@-1 ALLCAPS W=.@-1 CONTAINSDOTS@-1 W=IEEE W=Engineering@2 W=Data@1 W=www@-2 
+journal/journal: [Data]: INITCAP@1 INITCAP INITCAP@2 INITCAP@-1 ALLCAPS@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=IEEE@-1 W=Engineering@1 W=Data W=Bulletin@2 
+journal/journal: [Engineering]: W=,@2 PUNC@2 INITCAP@1 INITCAP INITCAP@-1 INITCAP@-2 ALLCAPS@-2 W=IEEE@-2 W=Engineering W=Data@-1 W=Bulletin@1 
+journal/journal: [Bulletin]: INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-1 INITCAP@-2 W=September@2 W=Engineering@-1 W=Data@-2 W=Bulletin 
+journal/journal: [,]: INITCAP@1 INITCAP@-1 INITCAP@-2 PUNC W=, ALLDIGITS@2 CONTAINSDIGITS@2 W=1996@2 W=September@1 W=Engineering@-2 W=Bulletin@-1 
+date/note* [September]* PUNC@2 INITCAP W=.@2 CONTAINSDOTS@2 INITCAP@-2 W=,@-1 PUNC@-1 ALLDIGITS@1 CONTAINSDIGITS@1 W=1996@1 W=September W=Bulletin@-2 
+date/note* [1996]* INITCAP@2 PUNC@1 INITCAP@-1 W=.@1 CONTAINSDOTS@1 W=,@-2 PUNC@-2 ALLDIGITS CONTAINSDIGITS W=1996 W=September@-1 W=Page@2 
+date/note* [.]* INITCAP@1 INITCAP@-2 PUNC CONTAINSDOTS W=. ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=1996@-1 W=September@-2 W=15@2 W=Page@1 
+pages/note* [Page]* INITCAP PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-2 CONTAINSDIGITS@-2 <END0>@2 W=1996@-2 W=15@1 W=Page 
+pages/note* [15]* INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 ALLDIGITS CONTAINSDIGITS <END1>@2 <END0>@1 W=15 W=Page@-1 
+
+301:301
+author/author: [D]: <START0>@-1 <START1>@-2 INITCAP INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 CAPLETTER SINGLECHAR ALLCAPS W=D W=Haussler@2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 <START0>@-2 W=.@2 CONTAINSDOTS@2 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 CONTAINSDOTS W=. W=D@-1 W=Haussler@1 
+author/author: [Haussler]: INITCAP INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=D@-2 W=Haussler W=Quantifying@2 
+author/author: [.]: INITCAP@1 INITCAP@-1 PUNC PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=inductive@2 W=Haussler@-1 W=Quantifying@1 
+title/title: [Quantifying]: INITCAP INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=bias@2 W=inductive@1 W=Haussler@-2 W=Quantifying 
+title/title: [inductive]: PUNC@2 INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=bias@1 W=inductive W=:@2 W=Quantifying@-1 
+title/title: [bias]: INITCAP@2 ALLCAPS@2 PUNC@1 INITCAP@-2 W=bias W=inductive@-1 W=:@1 W=AI@2 W=Quantifying@-2 
+title/title: [:]: INITCAP@1 ALLCAPS@1 PUNC W=bias@-1 W=learning@2 W=inductive@-2 W=: W=AI@1 
+title/title: [AI]: INITCAP PUNC@-1 ALLCAPS W=bias@-2 W=learning@1 W=:@-1 W=algorithms@2 W=AI 
+title/title: [learning]: INITCAP@-1 ALLCAPS@-1 PUNC@-2 W=and@2 W=learning W=:@-2 W=algorithms@1 W=AI@-1 
+title/title: [algorithms]: INITCAP@2 INITCAP@-2 ALLCAPS@-2 W=and@1 W=learning@-1 W=algorithms W=AI@-2 W=Valiant@2 
+title/title: [and]: INITCAP@1 W=and W=learning@-2 W='@2 W=algorithms@-1 W=Valiant@1 
+title/title: [Valiant]: INITCAP SINGLECHAR@2 W=and@-1 W='@1 W=algorithms@-2 W=s@2 W=Valiant 
+title/title: [']: INITCAP@-1 SINGLECHAR@1 W=and@-2 W=learning@2 W=' W=s@1 W=Valiant@-1 
+title/title: [s]: INITCAP@-2 SINGLECHAR W=learning@1 W='@-1 W=framework@2 W=s W=Valiant@-2 
+title/title: [learning]: PUNC@2 W=.@2 CONTAINSDOTS@2 SINGLECHAR@-1 W=learning W='@-2 W=framework@1 W=s@-1 
+title/title: [framework]: INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 SINGLECHAR@-2 W=learning@-1 W=Artificial@2 W=framework W=s@-2 
+title/title: [.]: INITCAP@1 INITCAP@2 PUNC CONTAINSDOTS W=. W=learning@-2 W=Intelligence@2 W=Artificial@1 W=framework@-1 
+journal/journal: [Artificial]: W=,@2 PUNC@2 INITCAP@1 INITCAP PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=Intelligence@1 W=Artificial W=framework@-2 
+journal/journal: [Intelligence]: INITCAP W=,@1 PUNC@1 INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 ALLDIGITS@2 CONTAINSDIGITS@2 W=1988@2 W=Artificial@-1 W=Intelligence 
+journal/journal: [,]: PUNC@2 INITCAP@-1 W=.@2 CONTAINSDOTS@2 INITCAP@-2 PUNC W=, ALLDIGITS@1 CONTAINSDIGITS@1 W=1988@1 W=Intelligence@-1 W=Artificial@-2 
+date/volume* [1988]* PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 ALLDIGITS CONTAINSDIGITS <END0>@2 W=1988 W=Intelligence@-2 
+date/volume* [.]* PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 <END1>@2 <END0>@1 W=1988@-1 
+
+482:482
+author/author: [Marr]: <START0>@-1 <START1>@-2 INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=D@2 W=Marr 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 <START0>@-2 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=D@1 W=Marr@-1 
+author/author: [D]: W=,@2 PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=D W=Marr@-2 
+author/author: [.]: W=,@1 PUNC@1 INITCAP@-1 PUNC W=&@2 ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=D@-1 
+author/author: [,]: INITCAP@2 INITCAP@-2 PUNC W=, PUNC@-1 W=&@1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=D@-2 W=Nishihara@2 
+author/author: [&]: W=,@2 PUNC@2 INITCAP@1 W=,@-1 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=& W=Nishihara@1 
+author/author: [Nishihara]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=,@-2 PUNC@-2 W=&@-1 W=H@2 W=Nishihara 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=&@-2 W=H@1 W=Nishihara@-1 
+author/author: [H]: PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=(@2 W=H W=Nishihara@-2 
+author/author: [.]: PUNC@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@2 CONTAINSDIGITS@2 W=(@1 W=H@-1 W=1978@2 
+date/date: [(]: PUNC@2 INITCAP@-2 PUNC PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=)@2 ALLDIGITS@1 CONTAINSDIGITS@1 W=( W=H@-2 W=1978@1 
+date/date: [1978]: PUNC@2 PUNC@1 W=.@2 CONTAINSDOTS@2 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=)@1 W=(@-1 ALLDIGITS CONTAINSDIGITS W=1978 
+date/date: [)]: INITCAP@2 PUNC@1 PUNC W=.@1 CONTAINSDOTS@1 PUNC@-2 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=(@-2 W=) W=Representation@2 W=1978@-1 
+date/date: [.]: INITCAP@1 PUNC PUNC@-1 CONTAINSDOTS W=. W=)@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=and@2 W=Representation@1 W=1978@-2 
+title/title: [Representation]: INITCAP PUNC@-1 PUNC@-2 W=.@-1 CONTAINSDOTS@-1 W=)@-2 W=and@1 W=recognition@2 W=Representation 
+title/title: [and]: INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=and W=of@2 W=recognition@1 W=Representation@-1 
+title/title: [recognition]: INITCAP@-2 W=and@-1 W=the@2 W=of@1 W=recognition W=Representation@-2 
+title/title: [of]: W=and@-2 W=the@1 W=of W=recognition@-1 W=spatial@2 
+title/title: [the]: W=the W=of@-1 W=recognition@-2 W=organisation@2 W=spatial@1 
+title/title: [spatial]: W=the@-1 W=of@2 W=of@-2 W=organisation@1 W=spatial 
+title/title: [organisation]: W=the@-2 W=of@1 W=three@2 W=spatial@-1 W=organisation 
+title/title: [of]: W=-@2 W=of W=three@1 W=organisation@-1 W=spatial@-2 
+title/title: [three]: W=-@1 W=of@-1 W=dimensional@2 W=three W=organisation@-2 
+title/title: [-]: W=- W=of@-2 W=dimensional@1 W=three@-1 W=shapes@2 
+title/title: [dimensional]: PUNC@2 W=.@2 CONTAINSDOTS@2 W=-@-1 W=dimensional W=three@-2 W=shapes@1 
+title/title: [shapes]: INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 W=-@-2 W=Proceedings@2 W=dimensional@-1 W=shapes 
+title/title: [.]: INITCAP@1 PUNC CONTAINSDOTS W=. W=of@2 W=Proceedings@1 W=dimensional@-2 W=shapes@-1 
+journal/booktitle* [Proceedings]* INITCAP PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=the@2 W=of@1 W=Proceedings W=shapes@-2 
+journal/booktitle* [of]* INITCAP@2 INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=the@1 W=of W=Proceedings@-1 W=Royal@2 
+journal/booktitle* [the]* INITCAP@1 INITCAP@2 INITCAP@-2 W=the W=of@-1 W=Proceedings@-2 W=Society@2 W=Royal@1 
+journal/booktitle* [Royal]* INITCAP@1 INITCAP W=the@-1 W=of@2 W=of@-2 W=Society@1 W=Royal 
+journal/booktitle* [Society]* INITCAP INITCAP@2 INITCAP@-1 W=the@-2 W=of@1 W=Society W=Royal@-1 W=London@2 
+journal/booktitle* [of]* W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 INITCAP@-2 W=of W=Society@-1 W=Royal@-2 W=London@1 
+journal/booktitle* [London]* INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 INITCAP@-2 W=of@-1 W=Society@-2 W=B@2 W=London 
+journal/booktitle* [,]* INITCAP@1 INITCAP@-1 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, ALLDIGITS@2 CONTAINSDIGITS@2 W=of@-2 W=B@1 W=London@-1 W=200@2 
+volume/booktitle* [B]* W=,@2 PUNC@2 INITCAP INITCAP@-2 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS ALLDIGITS@1 CONTAINSDIGITS@1 W=B W=London@-2 W=200@1 
+volume/booktitle* [200]* W=,@1 PUNC@1 INITCAP@-1 ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS CONTAINSDIGITS W=B@-1 W=269@2 W=200 
+volume/booktitle* [,]* INITCAP@-2 PUNC W=, ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=-@2 W=B@-2 W=269@1 W=200@-1 
+pages/pages: [269]: W=,@-1 PUNC@-1 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 W=-@1 W=269 W=294@2 W=200@-2 
+pages/pages: [-]: PUNC@2 W=.@2 CONTAINSDOTS@2 W=,@-2 PUNC@-2 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=- W=269@-1 W=294@1 
+pages/pages: [294]: PUNC@1 W=.@1 CONTAINSDOTS@1 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 W=-@-1 <END0>@2 W=269@-2 W=294 
+pages/pages: [.]: PUNC CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 W=-@-2 <END1>@2 <END0>@1 W=294@-1 
+
+341:341
+author/author: [A]: <START0>@-1 <START1>@-2 INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC@1 W=.@1 CONTAINSDOTS@1 CAPLETTER SINGLECHAR ALLCAPS W=A W=J@2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 <START0>@-2 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 CONTAINSDOTS W=. W=A@-1 W=J@1 
+author/author: [J]: INITCAP INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=A@-2 W=J W=Bernstein@2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=J@-1 W=Bernstein@1 
+author/author: [Bernstein]: INITCAP INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=J@-2 W=Analysis@2 W=Bernstein 
+author/author: [.]: INITCAP@1 INITCAP@-1 PUNC PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=of@2 W=Analysis@1 W=Bernstein@-1 
+title/title: [Analysis]: INITCAP INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=of@1 W=programs@2 W=Analysis W=Bernstein@-2 
+title/title: [of]: INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=of W=for@2 W=programs@1 W=Analysis@-1 
+title/title: [programs]: INITCAP@-2 W=of@-1 W=for@1 W=parallel@2 W=programs W=Analysis@-2 
+title/title: [for]: W=of@-2 W=for W=parallel@1 W=programs@-1 W=processing@2 
+title/title: [parallel]: PUNC@2 W=.@2 CONTAINSDOTS@2 W=for@-1 W=parallel W=programs@-2 W=processing@1 
+title/title: [processing]: INITCAP@2 ALLCAPS@2 PUNC@1 W=.@1 CONTAINSDOTS@1 W=IEEE@2 W=for@-2 W=parallel@-1 W=processing 
+title/title: [.]: INITCAP@1 INITCAP@2 ALLCAPS@1 PUNC CONTAINSDOTS W=. W=Transactions@2 W=IEEE@1 W=parallel@-2 W=processing@-1 
+journal/booktitle* [IEEE]* INITCAP@1 INITCAP PUNC@-1 ALLCAPS W=.@-1 CONTAINSDOTS@-1 W=on@2 W=Transactions@1 W=IEEE W=processing@-2 
+journal/booktitle* [Transactions]* INITCAP INITCAP@2 INITCAP@-1 ALLCAPS@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=on@1 W=IEEE@-1 W=Transactions W=Electronic@2 
+journal/booktitle* [on]* INITCAP@1 INITCAP@2 INITCAP@-1 INITCAP@-2 ALLCAPS@-2 W=Transactions@-1 W=IEEE@-2 W=on W=Computers@2 W=Electronic@1 
+journal/booktitle* [Electronic]* W=,@2 PUNC@2 INITCAP@1 INITCAP INITCAP@-2 W=on@-1 W=Transactions@-2 W=Computers@1 W=Electronic 
+journal/booktitle* [Computers]* INITCAP W=,@1 PUNC@1 INITCAP@-1 W=on@-2 W=pages@2 W=Computers W=Electronic@-1 
+journal/booktitle* [,]* INITCAP@-1 INITCAP@-2 PUNC W=, ALLDIGITS@2 CONTAINSDIGITS@2 W=pages@1 W=Computers@-1 W=Electronic@-2 W=757@2 
+pages/pages: [pages]: INITCAP@-2 W=,@-1 PUNC@-1 ALLDIGITS@1 CONTAINSDIGITS@1 W=-@2 W=pages W=Computers@-2 W=757@1 
+pages/pages: [757]: W=,@-2 PUNC@-2 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS CONTAINSDIGITS W=-@1 W=pages@-1 W=763@2 W=757 
+pages/pages: [-]: W=,@2 PUNC@2 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=- W=pages@-2 W=763@1 W=757@-1 
+pages/pages: [763]: INITCAP@2 W=,@1 PUNC@1 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 W=-@-1 W=October@2 W=757@-2 W=763 
+pages/pages: [,]: INITCAP@1 PUNC W=, ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=-@-2 W=October@1 W=1966@2 W=763@-1 
+date/date: [October]: PUNC@2 INITCAP W=.@2 CONTAINSDOTS@2 W=,@-1 PUNC@-1 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=October W=1966@1 W=763@-2 
+date/date: [1966]: PUNC@1 INITCAP@-1 W=.@1 CONTAINSDOTS@1 W=,@-2 PUNC@-2 ALLDIGITS CONTAINSDIGITS <END0>@2 W=October@-1 W=1966 
+date/date: [.]: INITCAP@-2 PUNC CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 <END1>@2 <END0>@1 W=October@-2 W=1966@-1 
+
+156:156
+editor/author* [D]* <START0>@-1 <START1>@-2 INITCAP INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 CAPLETTER SINGLECHAR ALLCAPS W=D W=Borman@2 
+editor/author* [.]* W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 <START0>@-2 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 CONTAINSDOTS W=. W=D@-1 W=Borman@1 
+editor/author* [Borman]* INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=D@-2 W=Editor@2 W=Borman 
+editor/author* [,]* W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 PUNC W=, PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=Editor@1 W=Borman@-1 
+editor/author* [Editor]* INITCAP W=,@1 PUNC@1 INITCAP@-2 W=,@-1 PUNC@-1 W=`@2 W=Borman@-2 W=Editor 
+editor/author* [,]* INITCAP@-1 PUNC W=, W=,@-2 PUNC@-2 W=`@2 W=`@1 W=Editor@-1 
+title/title: [`]: INITCAP@2 INITCAP@-2 W=,@-1 PUNC@-1 W=`@1 W=` W=Telnet@2 W=Editor@-2 
+title/title: [`]: INITCAP@1 INITCAP@2 W=,@-2 PUNC@-2 W=` W=`@-1 W=Encryption@2 W=Telnet@1 
+title/title: [Telnet]: INITCAP@1 INITCAP INITCAP@2 W=`@-1 W=`@-2 W=Option@2 W=Encryption@1 W=Telnet 
+title/title: [Encryption]: W=,@2 PUNC@2 INITCAP@1 INITCAP INITCAP@-1 W=`@-2 W=Option@1 W=Telnet@-1 W=Encryption 
+title/title: [Option]: INITCAP W=,@1 PUNC@1 INITCAP@-1 INITCAP@-2 W='@2 W=Encryption@-1 W=Telnet@-2 W=Option 
+title/title: [,]: INITCAP@-1 INITCAP@-2 PUNC W=, W='@2 W='@1 W=Option@-1 W=Encryption@-2 
+title/title: [']: INITCAP@2 INITCAP@-2 W=,@-1 PUNC@-1 W='@1 W=' W=Internet@2 W=Option@-2 
+title/title: [']: INITCAP@1 W=,@-2 PUNC@-2 W=-@2 W=' W='@-1 W=Internet@1 
+tech/title* [Internet]* INITCAP INITCAP@2 W=-@1 W='@-1 W='@-2 W=Internet W=Draft@2 
+tech/title* [-]* W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 W=- W='@-2 W=Internet@-1 W=Draft@1 
+tech/title* [Draft]* INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-2 W=-@-1 W=Internet@2 W=Internet@-2 W=Draft 
+tech/title* [,]* INITCAP@1 INITCAP@2 INITCAP@-1 PUNC W=, W=-@-2 W=Engineering@2 W=Internet@1 W=Draft@-1 
+institution/institution: [Internet]: INITCAP@1 INITCAP INITCAP@2 INITCAP@-2 W=,@-1 PUNC@-1 W=Engineering@1 W=Task@2 W=Internet W=Draft@-2 
+institution/institution: [Engineering]: INITCAP@1 INITCAP INITCAP@2 INITCAP@-1 W=,@-2 PUNC@-2 W=Engineering W=Task@1 W=Internet@-1 W=Force@2 
+institution/institution: [Task]: W=,@2 PUNC@2 INITCAP@1 INITCAP INITCAP@-1 INITCAP@-2 W=Engineering@-1 W=Task W=Internet@-2 W=Force@1 
+institution/institution: [Force]: INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-1 INITCAP@-2 W=Engineering@-2 W=Task@-1 W=Telnet@2 W=Force 
+institution/institution: [,]: INITCAP@1 INITCAP@2 INITCAP@-1 INITCAP@-2 PUNC W=, W=Task@-2 W=Working@2 W=Telnet@1 W=Force@-1 
+institution/institution: [Telnet]: INITCAP@1 INITCAP INITCAP@2 INITCAP@-2 W=,@-1 PUNC@-1 W=Working@1 W=Telnet W=Group@2 W=Force@-2 
+institution/institution: [Working]: PUNC@2 INITCAP@1 INITCAP INITCAP@-1 W=,@-2 PUNC@-2 W=(@2 W=Working W=Telnet@-1 W=Group@1 
+institution/institution: [Group]: INITCAP INITCAP@2 PUNC@1 INITCAP@-1 INITCAP@-2 W=(@1 W=July@2 W=Working@-1 W=Telnet@-2 W=Group 
+date/institution* [(]* INITCAP@1 INITCAP@-1 INITCAP@-2 PUNC ALLDIGITS@2 CONTAINSDIGITS@2 W=( W=July@1 W=1991@2 W=Working@-2 W=Group@-1 
+date/date: [July]: PUNC@2 INITCAP INITCAP@-2 PUNC@-1 W=)@2 ALLDIGITS@1 CONTAINSDIGITS@1 W=(@-1 W=July W=1991@1 W=Group@-2 
+date/date: [1991]: PUNC@2 PUNC@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 PUNC@-2 W=)@1 ALLDIGITS CONTAINSDIGITS W=(@-2 W=July@-1 W=1991 
+date/date: [)]: PUNC@1 INITCAP@-2 PUNC W=.@1 CONTAINSDOTS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=) <END0>@2 W=July@-2 W=1991@-1 
+date/date: [.]: PUNC PUNC@-1 CONTAINSDOTS W=. W=)@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 <END1>@2 <END0>@1 W=1991@-2 
+
+177:177
+editor/author* [Rees]* <START0>@-1 <START1>@-2 INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=J@2 W=Rees 
+editor/author* [,]* PUNC@2 INITCAP@1 INITCAP@-1 <START0>@-2 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=J@1 W=Rees@-1 
+editor/author* [J]* INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=and@2 W=J W=Rees@-2 
+editor/author* [.]* INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=and@1 W=W@2 W=J@-1 
+editor/author* [and]* PUNC@2 INITCAP@1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=and W=W@1 W=J@-2 
+editor/author* [W]* INITCAP INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 CAPLETTER SINGLECHAR ALLCAPS PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=and@-1 W=W W=Clinger@2 
+editor/author* [.]* PUNC@2 INITCAP@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 CONTAINSDOTS W=. W=(@2 W=and@-2 W=W@-1 W=Clinger@1 
+editor/author* [Clinger]* INITCAP INITCAP@2 PUNC@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=(@1 W=Eds@2 W=W@-2 W=Clinger 
+editor/author* [(]* PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 PUNC PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=( W=Eds@1 W=Clinger@-1 
+editor/author* [Eds]* PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 W=)@2 W=(@-1 W=Eds W=Clinger@-2 
+editor/author* [.]* PUNC@2 PUNC@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 PUNC PUNC@-2 CONTAINSDOTS W=. W=)@1 W=(@-2 W=Eds@-1 
+editor/author* [)]* INITCAP@2 PUNC@1 INITCAP@-2 PUNC W=.@1 CONTAINSDOTS@1 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=) W=Eds@-2 W=The@2 
+editor/author* [.]* INITCAP@1 PUNC PUNC@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=)@-1 W=The@1 W=revised@2 
+title/title: [The]: INITCAP PUNC@-1 PUNC@-2 W=.@-1 CONTAINSDOTS@-1 ALLDIGITS@2 CONTAINSDIGITS@2 W=)@-2 W=3@2 W=The W=revised@1 
+title/title: [revised]: INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 ALLDIGITS@1 CONTAINSDIGITS@1 W=3@1 W=The@-1 W=report@2 W=revised 
+title/title: [3]: INITCAP@-2 ALLDIGITS CONTAINSDIGITS W=on@2 W=3 W=The@-2 W=report@1 W=revised@-1 
+title/title: [report]: ALLDIGITS@-1 CONTAINSDIGITS@-1 W=the@2 W=on@1 W=3@-1 W=report W=revised@-2 
+title/title: [on]: ALLDIGITS@-2 CONTAINSDIGITS@-2 W=the@1 W=on W=3@-2 W=report@-1 W=algorithmic@2 
+title/title: [the]: W=the W=on@-1 W=language@2 W=report@-2 W=algorithmic@1 
+title/title: [algorithmic]: INITCAP@2 W=the@-1 W=on@-2 W=language@1 W=Scheme@2 W=algorithmic 
+title/title: [language]: PUNC@2 INITCAP@1 W=.@2 CONTAINSDOTS@2 W=the@-2 W=language W=Scheme@1 W=algorithmic@-1 
+title/title: [Scheme]: INITCAP INITCAP@2 ALLCAPS@2 PUNC@1 W=.@1 CONTAINSDOTS@1 W=language@-1 W=SIGPLAN@2 W=Scheme W=algorithmic@-2 
+title/title: [.]: INITCAP@1 INITCAP@2 INITCAP@-1 ALLCAPS@1 PUNC CONTAINSDOTS W=. W=language@-2 W=Notices@2 W=SIGPLAN@1 W=Scheme@-1 
+journal/journal: [SIGPLAN]: INITCAP@1 INITCAP INITCAP@-2 PUNC@-1 ALLCAPS W=.@-1 CONTAINSDOTS@-1 ALLDIGITS@2 CONTAINSDIGITS@2 W=21@2 W=Notices@1 W=SIGPLAN W=Scheme@-2 
+journal/journal: [Notices]: PUNC@2 INITCAP INITCAP@-1 ALLCAPS@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=(@2 ALLDIGITS@1 CONTAINSDIGITS@1 W=21@1 W=SIGPLAN@-1 W=Notices 
+volume/volume: [21]: PUNC@1 INITCAP@-1 INITCAP@-2 ALLCAPS@-2 ALLDIGITS@2 CONTAINSDIGITS@2 W=(@1 ALLDIGITS CONTAINSDIGITS W=21 W=12@2 W=Notices@-1 W=SIGPLAN@-2 
+volume/volume: [(]: PUNC@2 INITCAP@-2 PUNC W=)@2 ALLDIGITS@1 CONTAINSDIGITS@1 W=( ALLDIGITS@-1 CONTAINSDIGITS@-1 W=21@-1 W=12@1 W=Notices@-2 
+volume/volume: [12]: W=,@2 PUNC@2 PUNC@1 PUNC@-1 W=)@1 W=(@-1 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 W=21@-2 W=12 
+volume/volume: [)]: W=,@1 PUNC@1 PUNC PUNC@-2 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=(@-2 W=) W=12@-1 W=1986@2 
+volume/volume: [,]: W=,@2 PUNC@2 PUNC W=, PUNC@-1 ALLDIGITS@1 CONTAINSDIGITS@1 W=)@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=12@-2 W=1986@1 
+date/volume* [1986]* W=,@1 PUNC@1 W=,@-1 PUNC@-1 PUNC@-2 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS CONTAINSDIGITS W=)@-2 W=1986 W=37@2 
+date/volume* [,]* PUNC W=, W=,@-2 PUNC@-2 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=-@2 W=1986@-1 W=37@1 
+pages/pages: [37]: W=,@-1 PUNC@-1 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 W=-@1 W=1986@-2 W=37 W=79@2 
+pages/pages: [-]: PUNC@2 W=.@2 CONTAINSDOTS@2 W=,@-2 PUNC@-2 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=- W=37@-1 W=79@1 
+pages/pages: [79]: PUNC@1 W=.@1 CONTAINSDOTS@1 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 W=-@-1 <END0>@2 W=37@-2 W=79 
+pages/pages: [.]: PUNC CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 W=-@-2 <END1>@2 <END0>@1 W=79@-1 
+
+425:425
+author/author: [Foley]: <START0>@-1 <START1>@-2 INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=J@2 W=Foley 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 <START0>@-2 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=J@1 W=Foley@-1 
+author/author: [J]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=D@2 W=J W=Foley@-2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=D@1 W=J@-1 
+author/author: [D]: W=,@2 PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=D W=J@-2 
+author/author: [.]: W=,@1 PUNC@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=D@-1 W=van@2 
+author/author: [,]: INITCAP@2 INITCAP@-2 PUNC W=, PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=D@-2 W=van@1 W=Dam@2 
+author/author: [van]: W=,@2 PUNC@2 INITCAP@1 W=,@-1 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=van W=Dam@1 
+author/author: [Dam]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=,@-2 PUNC@-2 W=A@2 W=van@-1 W=Dam 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=A@1 W=van@-2 W=Dam@-1 
+author/author: [A]: W=,@2 PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=A W=Dam@-2 
+author/author: [.]: INITCAP@2 W=,@1 PUNC@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=A@-1 W=Feiner@2 
+author/author: [,]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-2 PUNC W=, PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=A@-2 W=Feiner@1 
+author/author: [Feiner]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=,@-1 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=S@2 W=Feiner 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=,@-2 PUNC@-2 W=S@1 W=Feiner@-1 
+author/author: [S]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=S W=K@2 W=Feiner@-2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=S@-1 W=K@1 
+author/author: [K]: W=,@2 PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=S@-2 W=K 
+author/author: [.]: INITCAP@2 W=,@1 PUNC@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=K@-1 W=Hughes@2 
+author/author: [,]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-2 PUNC W=, PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=K@-2 W=Hughes@1 
+author/author: [Hughes]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=,@-1 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=J@2 W=Hughes 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=,@-2 PUNC@-2 W=J@1 W=Hughes@-1 
+author/author: [J]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=F@2 W=J W=Hughes@-2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=F@1 W=J@-1 
+author/author: [F]: W=,@2 PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=F W=J@-2 
+author/author: [.]: INITCAP@2 W=,@1 PUNC@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=F@-1 W=Computer@2 
+author/author: [,]: INITCAP@1 INITCAP@2 INITCAP@-2 PUNC W=, PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=F@-2 W=Computer@1 W=Graphics@2 
+title/booktitle* [Computer]* PUNC@2 INITCAP@1 INITCAP W=,@-1 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=:@2 W=Computer W=Graphics@1 
+title/booktitle* [Graphics]* INITCAP INITCAP@2 PUNC@1 INITCAP@-1 W=,@-2 PUNC@-2 W=:@1 W=Computer@-1 W=Principles@2 W=Graphics 
+title/booktitle* [:]* INITCAP@1 INITCAP@-1 INITCAP@-2 PUNC W=and@2 W=: W=Computer@-2 W=Principles@1 W=Graphics@-1 
+title/booktitle* [Principles]* INITCAP INITCAP@2 INITCAP@-2 PUNC@-1 W=and@1 W=:@-1 W=Principles W=Graphics@-2 W=Practice@2 
+title/booktitle* [and]* W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 PUNC@-2 W=and W=:@-2 W=Principles@-1 W=Practice@1 
+title/booktitle* [Practice]* INITCAP W=,@1 PUNC@1 INITCAP@-2 W=and@-1 W=pp@2 W=Principles@-2 W=Practice 
+title/booktitle* [,]* PUNC@2 INITCAP@-1 W=.@2 CONTAINSDOTS@2 PUNC W=, W=and@-2 W=pp@1 W=Practice@-1 
+pages/pages: [pp]: PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 ALLDIGITS@2 CONTAINSDIGITS@2 W=pp W=Practice@-2 W=992@2 
+pages/pages: [.]: PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@1 CONTAINSDIGITS@1 W=-@2 W=pp@-1 W=992@1 
+pages/pages: [992]: PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS CONTAINSDIGITS W=-@1 W=pp@-2 W=996@2 W=992 
+pages/pages: [-]: W=,@2 PUNC@2 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=- W=996@1 W=992@-1 
+pages/pages: [996]: INITCAP@2 W=,@1 PUNC@1 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 W=-@-1 W=Addison@2 W=992@-2 W=996 
+pages/pages: [,]: INITCAP@1 PUNC W=, ALLDIGITS@-1 CONTAINSDIGITS@-1 W=-@2 W=-@-2 W=Addison@1 W=996@-1 
+publisher/publisher: [Addison]: INITCAP INITCAP@2 W=,@-1 PUNC@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=-@1 W=Wesley@2 W=Addison W=996@-2 
+publisher/publisher: [-]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 W=,@-2 PUNC@-2 W=- W=Wesley@1 W=Addison@-1 
+publisher/publisher: [Wesley]: INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-2 W=-@-1 W=Addison@-2 W=Wesley W=Massachusetts@2 
+publisher/publisher: [,]: INITCAP@1 INITCAP@-1 PUNC W=, W=1990@2 ALLDIGITS@2 CONTAINSDIGITS@2 W=-@-2 W=Wesley@-1 W=Massachusetts@1 
+location/date* [Massachusetts]* PUNC@2 INITCAP W=.@2 CONTAINSDOTS@2 INITCAP@-2 W=,@-1 PUNC@-1 W=1990@1 ALLDIGITS@1 CONTAINSDIGITS@1 W=Wesley@-2 W=Massachusetts 
+date/date: [1990]: PUNC@1 INITCAP@-1 W=.@1 CONTAINSDOTS@1 W=,@-2 PUNC@-2 ALLDIGITS CONTAINSDIGITS W=1990 <END0>@2 W=Massachusetts@-1 
+date/date: [.]: INITCAP@-2 PUNC CONTAINSDOTS W=. W=1990@-1 ALLDIGITS@-1 CONTAINSDIGITS@-1 <END1>@2 <END0>@1 W=Massachusetts@-2 
+
+493:493
+author/author: [DeWitt]: <START0>@-1 <START1>@-2 INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=D@2 W=DeWitt 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 <START0>@-2 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=D@1 W=DeWitt@-1 
+author/author: [D]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=D W=J@2 W=DeWitt@-2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=D@-1 W=J@1 
+author/author: [J]: W=,@2 PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=D@-2 W=J 
+author/author: [.]: W=,@1 PUNC@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=J@-1 W="@2 
+author/author: [,]: INITCAP@2 ALLCAPS@2 INITCAP@-2 PUNC W=, PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=J@-2 W="@1 W=DIRECT@2 
+title/title: ["]: INITCAP@1 INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 ALLCAPS@1 W=,@-1 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=A@2 W=" W=DIRECT@1 
+title/title: [DIRECT]: INITCAP@1 INITCAP INITCAP@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 ALLCAPS W=,@-2 PUNC@-2 W=A@1 W="@-1 W=Multiprocessor@2 W=DIRECT 
+title/title: [A]: INITCAP@1 INITCAP INITCAP@2 INITCAP@-1 CAPLETTER SINGLECHAR ALLCAPS ALLCAPS@-1 W=A W="@-2 W=Multiprocessor@1 W=Organization@2 W=DIRECT@-1 
+title/title: [Multiprocessor]: INITCAP@1 INITCAP INITCAP@-1 INITCAP@-2 ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 ALLCAPS@-2 W=A@-1 W=for@2 W=Multiprocessor W=Organization@1 W=DIRECT@-2 
+title/title: [Organization]: INITCAP INITCAP@2 INITCAP@-1 INITCAP@-2 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=A@-2 W=for@1 W=Multiprocessor@-1 W=Supporting@2 W=Organization 
+title/title: [for]: INITCAP@1 INITCAP@2 INITCAP@-1 INITCAP@-2 W=for W=Multiprocessor@-2 W=Supporting@1 W=Relational@2 W=Organization@-1 
+title/title: [Supporting]: INITCAP@1 INITCAP INITCAP@2 INITCAP@-2 W=for@-1 W=Database@2 W=Supporting W=Relational@1 W=Organization@-2 
+title/title: [Relational]: INITCAP@1 INITCAP INITCAP@2 INITCAP@-1 W=for@-2 W=Database@1 W=Supporting@-1 W=Management@2 W=Relational 
+title/title: [Database]: INITCAP@1 INITCAP INITCAP@2 INITCAP@-1 INITCAP@-2 W=Systems@2 W=Database W=Supporting@-2 W=Management@1 W=Relational@-1 
+title/title: [Management]: W=,@2 PUNC@2 INITCAP@1 INITCAP INITCAP@-1 INITCAP@-2 W=Systems@1 W=Database@-1 W=Management W=Relational@-2 
+title/title: [Systems]: INITCAP W=,@1 PUNC@1 INITCAP@-1 INITCAP@-2 W=Systems W="@2 W=Database@-2 W=Management@-1 
+title/title: [,]: INITCAP@2 ALLCAPS@2 INITCAP@-1 INITCAP@-2 PUNC W=, W=IEEE@2 W=Systems@-1 W="@1 W=Management@-2 
+title/title: ["]: INITCAP@1 INITCAP@2 ALLCAPS@1 INITCAP@-2 W=,@-1 PUNC@-1 W=Transactions@2 W=IEEE@1 W=Systems@-2 W=" 
+journal/journal: [IEEE]: INITCAP@1 INITCAP ALLCAPS W=,@-2 PUNC@-2 W=on@2 W=Transactions@1 W=IEEE W="@-1 
+journal/journal: [Transactions]: INITCAP INITCAP@2 INITCAP@-1 ALLCAPS@-1 W=on@1 W=IEEE@-1 W=Transactions W="@-2 W=Computers@2 
+journal/journal: [on]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 INITCAP@-2 ALLCAPS@-2 W=Transactions@-1 W=IEEE@-2 W=on W=Computers@1 
+journal/journal: [Computers]: INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-2 W=on@-1 W=Transactions@-2 W=Computers W=June@2 
+journal/journal: [,]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 PUNC W=, W=on@-2 W=Computers@-1 W=June@1 
+date/journal* [June]* INITCAP W=,@1 PUNC@1 INITCAP@-2 W=,@-1 PUNC@-1 ALLDIGITS@2 CONTAINSDIGITS@2 W=1979@2 W=Computers@-2 W=June 
+date/journal* [,]* PUNC@2 INITCAP@-1 W=.@2 CONTAINSDOTS@2 PUNC W=, W=,@-2 PUNC@-2 ALLDIGITS@1 CONTAINSDIGITS@1 W=1979@1 W=June@-1 
+date/volume* [1979]* PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 ALLDIGITS CONTAINSDIGITS <END0>@2 W=1979 W=June@-2 
+date/volume* [.]* PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 <END1>@2 <END0>@1 W=1979@-1 
+
+72:72
+author/author: [Barry]: W=,@2 PUNC@2 INITCAP@1 <START0>@-1 <START1>@-2 INITCAP W=Wilkinson@1 W=Barry 
+author/author: [Wilkinson]: INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-1 <START0>@-2 W=Digital@2 W=Barry@-1 W=Wilkinson 
+author/author: [,]: INITCAP@1 INITCAP@2 INITCAP@-1 INITCAP@-2 PUNC W=, W=System@2 W=Digital@1 W=Wilkinson@-1 W=Barry@-2 
+booktitle/author* [Digital]* INITCAP@1 INITCAP INITCAP@2 INITCAP@-2 W=,@-1 PUNC@-1 W=System@1 W=Design@2 W=Wilkinson@-2 W=Digital 
+booktitle/author* [System]* INITCAP@1 INITCAP INITCAP@2 INITCAP@-1 W=,@-2 PUNC@-2 W=System W=Design@1 W=Prentice@2 W=Digital@-1 
+booktitle/author* [Design]* INITCAP@1 INITCAP INITCAP@2 INITCAP@-1 INITCAP@-2 W=System@-1 W=Design W=Prentice@1 W=Hall@2 W=Digital@-2 
+publisher/author* [Prentice]* INITCAP@1 INITCAP INITCAP@-1 INITCAP@-2 ALLDIGITS@2 CONTAINSDIGITS@2 W=1987@2 W=System@-2 W=Design@-1 W=Prentice W=Hall@1 
+publisher/date* [Hall]* PUNC@2 INITCAP INITCAP@-1 W=.@2 CONTAINSDOTS@2 INITCAP@-2 ALLDIGITS@1 CONTAINSDIGITS@1 W=1987@1 W=Design@-2 W=Prentice@-1 W=Hall 
+date/date: [1987]: PUNC@1 INITCAP@-1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 ALLDIGITS CONTAINSDIGITS <END0>@2 W=1987 W=Prentice@-2 W=Hall@-1 
+date/date: [.]: INITCAP@-2 PUNC CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 <END1>@2 <END0>@1 W=1987@-1 W=Hall@-2 
+
+403:403
+author/author: [J]: <START0>@-1 <START1>@-2 INITCAP INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 CAPLETTER SINGLECHAR ALLCAPS W=J W=Fortes@2 
+author/author: [.]: INITCAP@1 INITCAP@-1 <START0>@-2 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 CONTAINSDOTS W=. W=and@2 W=J@-1 W=Fortes@1 
+author/author: [Fortes]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=and@1 W=J@-2 W=B@2 W=Fortes 
+author/author: [and]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=and W=B@1 W=Fortes@-1 
+author/author: [B]: INITCAP INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 CAPLETTER SINGLECHAR ALLCAPS W=and@-1 W=B W=Wah@2 W=Fortes@-2 
+author/author: [.]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 CONTAINSDOTS W=. W=and@-2 W=B@-1 W=Wah@1 
+author/author: [Wah]: INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=B@-2 W=Systolic@2 W=Wah 
+author/author: [,]: INITCAP@1 INITCAP@2 INITCAP@-1 PUNC W=, PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=Arrays@2 W=Systolic@1 W=Wah@-1 
+title/title: [Systolic]: INITCAP@1 INITCAP INITCAP@-2 W=,@-1 PUNC@-1 W=|@2 W=Arrays@1 W=Wah@-2 W=Systolic 
+title/title: [Arrays]: INITCAP INITCAP@-1 W=,@-2 PUNC@-2 W=from@2 W=|@1 W=Systolic@-1 W=Arrays 
+title/title: [|]: INITCAP@2 INITCAP@-1 INITCAP@-2 W=from@1 W=Concept@2 W=| W=Arrays@-1 W=Systolic@-2 
+title/title: [from]: INITCAP@1 INITCAP@-2 W=from W=to@2 W=Concept@1 W=|@-1 W=Arrays@-2 
+title/title: [Concept]: INITCAP INITCAP@2 W=from@-1 W=to@1 W=Implementation@2 W=Concept W=|@-2 
+title/title: [to]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 W=from@-2 W=to W=Implementation@1 W=Concept@-1 
+title/title: [Implementation]: INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-2 W=Computer@2 W=to@-1 W=Implementation W=Concept@-2 
+title/title: [,]: INITCAP@1 INITCAP@-1 PUNC W=, ALLDIGITS@2 CONTAINSDIGITS@2 W=Computer@1 W=to@-2 W=20@2 W=Implementation@-1 
+journal/date* [Computer]* PUNC@2 INITCAP INITCAP@-2 W=,@-1 PUNC@-1 W=(@2 ALLDIGITS@1 CONTAINSDIGITS@1 W=Computer W=20@1 W=Implementation@-2 
+volume/date* [20]* PUNC@1 INITCAP@-1 W=,@-2 PUNC@-2 ALLDIGITS@2 CONTAINSDIGITS@2 W=(@1 ALLDIGITS CONTAINSDIGITS W=Computer@-1 W=1987@2 W=20 
+date/date: [(]: PUNC@2 INITCAP@-2 PUNC W=)@2 ALLDIGITS@1 CONTAINSDIGITS@1 W=( ALLDIGITS@-1 CONTAINSDIGITS@-1 W=Computer@-2 W=1987@1 W=20@-1 
+date/date: [1987]: W=,@2 PUNC@2 PUNC@1 PUNC@-1 W=)@1 W=(@-1 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 W=1987 W=20@-2 
+date/date: [)]: W=,@1 PUNC@1 PUNC PUNC@-2 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=(@-2 W=) <END0>@2 W=1987@-1 
+date/date: [,]: PUNC W=, PUNC@-1 W=)@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 <END1>@2 <END0>@1 W=1987@-2 
+
+472:472
+author/author: [P]: <START0>@-1 <START1>@-2 INITCAP INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 CAPLETTER SINGLECHAR ALLCAPS W=P W=Perez@2 
+author/author: [.]: INITCAP@1 INITCAP@-1 <START0>@-2 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 CONTAINSDOTS W=. W=and@2 W=P@-1 W=Perez@1 
+author/author: [Perez]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=and@1 W=F@2 W=P@-2 W=Perez 
+author/author: [and]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=and W=F@1 W=Perez@-1 
+author/author: [F]: INITCAP INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 CAPLETTER SINGLECHAR ALLCAPS W=and@-1 W=F W=Heitz@2 W=Perez@-2 
+author/author: [.]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 CONTAINSDOTS W=. W=and@-2 W=F@-1 W=Heitz@1 
+author/author: [Heitz]: INITCAP W=,@1 PUNC@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=F@-2 W="@2 W=Heitz 
+author/author: [,]: INITCAP@2 INITCAP@-1 PUNC W=, PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W="@1 W=Multiscale@2 W=Heitz@-1 
+title/title: ["]: INITCAP@1 INITCAP@2 INITCAP@-2 W=,@-1 PUNC@-1 W=" W=Markov@2 W=Multiscale@1 W=Heitz@-2 
+title/title: [Multiscale]: INITCAP@1 INITCAP INITCAP@2 W=,@-2 PUNC@-2 W="@-1 W=Random@2 W=Markov@1 W=Multiscale 
+title/title: [Markov]: INITCAP@1 INITCAP INITCAP@2 INITCAP@-1 W="@-2 W=Random@1 W=Markov W=Fields@2 W=Multiscale@-1 
+title/title: [Random]: INITCAP@1 INITCAP INITCAP@-1 INITCAP@-2 W=and@2 W=Random W=Markov@-1 W=Fields@1 W=Multiscale@-2 
+title/title: [Fields]: INITCAP INITCAP@2 INITCAP@-1 INITCAP@-2 W=and@1 W=Random@-1 W=Markov@-2 W=Fields W=Constrained@2 
+title/title: [and]: INITCAP@1 INITCAP@2 INITCAP@-1 INITCAP@-2 W=and W=Random@-2 W=Fields@-1 W=Relaxation@2 W=Constrained@1 
+title/title: [Constrained]: INITCAP@1 INITCAP INITCAP@-2 W=in@2 W=and@-1 W=Fields@-2 W=Relaxation@1 W=Constrained 
+title/title: [Relaxation]: INITCAP INITCAP@2 INITCAP@-1 W=in@1 W=and@-2 W=Relaxation W=Low@2 W=Constrained@-1 
+title/title: [in]: INITCAP@1 INITCAP@2 INITCAP@-1 INITCAP@-2 W=in W=Relaxation@-1 W=Level@2 W=Low@1 W=Constrained@-2 
+title/title: [Low]: INITCAP@1 INITCAP INITCAP@2 INITCAP@-2 W=in@-1 W=Image@2 W=Relaxation@-2 W=Level@1 W=Low 
+title/title: [Level]: INITCAP@1 INITCAP INITCAP@2 INITCAP@-1 W=in@-2 W=Analysis@2 W=Image@1 W=Low@-1 W=Level 
+title/title: [Image]: W=,@2 PUNC@2 INITCAP@1 INITCAP INITCAP@-1 INITCAP@-2 W=Analysis@1 W=Image W=Level@-1 W=Low@-2 
+title/title: [Analysis]: INITCAP W=,@1 PUNC@1 INITCAP@-1 INITCAP@-2 W="@2 W=Analysis W=Image@-1 W=Level@-2 
+title/title: [,]: INITCAP@2 ALLCAPS@2 INITCAP@-1 INITCAP@-2 PUNC W=, W=IEEE@2 W="@1 W=Analysis@-1 W=Image@-2 
+title/title: ["]: INITCAP@1 INITCAP@2 ALLCAPS@1 INITCAP@-2 W=,@-1 PUNC@-1 W=IEEE@1 W=" W=International@2 W=Analysis@-2 
+booktitle/journal* [IEEE]* INITCAP@1 INITCAP INITCAP@2 ALLCAPS W=,@-2 PUNC@-2 W=IEEE W="@-1 W=International@1 W=Conf@2 
+booktitle/journal* [International]* PUNC@2 INITCAP@1 INITCAP INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@-1 W=IEEE@-1 W="@-2 W=International W=Conf@1 
+booktitle/journal* [Conf]* INITCAP PUNC@1 INITCAP@-1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 ALLCAPS@-2 W=on@2 W=IEEE@-2 W=International@-1 W=Conf 
+booktitle/journal* [.]* INITCAP@2 INITCAP@-1 INITCAP@-2 PUNC CONTAINSDOTS W=. W=on@1 W=International@-2 W=Conf@-1 W=Acoustics@2 
+booktitle/journal* [on]* W=,@2 PUNC@2 INITCAP@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=on W=Conf@-2 W=Acoustics@1 
+booktitle/journal* [Acoustics]* INITCAP INITCAP@2 W=,@1 PUNC@1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=on@-1 W=Speech@2 W=Acoustics 
+booktitle/journal* [,]* W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 PUNC W=, W=on@-2 W=Speech@1 W=Acoustics@-1 
+booktitle/journal* [Speech]* INITCAP W=,@1 PUNC@1 INITCAP@-2 W=,@-1 PUNC@-1 W=and@2 W=Speech W=Acoustics@-2 
+booktitle/journal* [,]* INITCAP@2 INITCAP@-1 PUNC W=, W=,@-2 PUNC@-2 W=and@1 W=Signal@2 W=Speech@-1 
+booktitle/journal* [and]* INITCAP@1 INITCAP@2 INITCAP@-2 W=,@-1 PUNC@-1 W=and W=Processing@2 W=Signal@1 W=Speech@-2 
+booktitle/journal* [Signal]* W=,@2 PUNC@2 INITCAP@1 INITCAP W=,@-2 PUNC@-2 W=and@-1 W=Processing@1 W=Signal 
+booktitle/journal* [Processing]* INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-1 W=and@-2 W=Signal@-1 W=Processing W=Vol@2 
+booktitle/journal* [,]* PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 INITCAP@-2 PUNC W=, W=Processing@-1 W=Signal@-2 W=Vol@1 
+volume/volume: [Vol]: INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 ALLDIGITS@2 CONTAINSDIGITS@2 W=Processing@-2 W=Vol W=3@2 
+volume/volume: [.]: W=,@2 PUNC@2 INITCAP@-1 PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@1 CONTAINSDIGITS@1 W=Vol@-1 W=3@1 
+volume/volume: [3]: W=,@1 PUNC@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLDIGITS CONTAINSDIGITS W=pp@2 W=Vol@-2 W=3 
+volume/volume: [,]: PUNC@2 W=.@2 CONTAINSDOTS@2 PUNC W=, PUNC@-2 W=.@-2 CONTAINSDOTS@-2 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=pp@1 W=3@-1 
+pages/pages: [pp]: PUNC@1 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=pp W=3@-2 W=61@2 
+pages/pages: [.]: PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@1 CONTAINSDIGITS@1 W=-@2 W=pp@-1 W=61@1 
+pages/pages: [61]: PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS CONTAINSDIGITS W=-@1 W=pp@-2 W=61 W=64@2 
+pages/pages: [-]: W=,@2 PUNC@2 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=- W=61@-1 W=64@1 
+pages/pages: [64]: W=,@1 PUNC@1 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 W=-@-1 W=1992@2 W=61@-2 W=64 
+pages/pages: [,]: PUNC@2 W=.@2 CONTAINSDOTS@2 PUNC W=, ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=-@-2 W=1992@1 W=64@-1 
+date/date: [1992]: PUNC@1 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 <END0>@2 W=1992 W=64@-2 
+date/date: [.]: PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 <END1>@2 <END0>@1 W=1992@-1 
+
+476:476
+author/author: [Remler]: <START0>@-1 <START1>@-2 INITCAP INITCAP@2 W=,@1 PUNC@1 W=Jane@2 W=Remler 
+author/author: [,]: INITCAP@1 INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 INITCAP@-1 <START0>@-2 PUNC W=, W=E@2 W=Jane@1 W=Remler@-1 
+author/author: [Jane]: PUNC@2 INITCAP@1 INITCAP W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 INITCAP@-2 W=,@-1 PUNC@-1 W=E@1 W=Remler@-2 W=Jane 
+author/author: [E]: PUNC@2 INITCAP PUNC@1 INITCAP@-1 W=.@1 CONTAINSDOTS@1 CAPLETTER SINGLECHAR ALLCAPS W=,@-2 PUNC@-2 W=(@2 W=E W=Jane@-1 
+author/author: [.]: PUNC@1 INITCAP@-1 INITCAP@-2 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 CONTAINSDOTS W=. ALLDIGITS@2 CONTAINSDIGITS@2 W=(@1 W=E@-1 W=1978@2 W=Jane@-2 
+date/date: [(]: PUNC@2 INITCAP@-2 PUNC PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=)@2 ALLDIGITS@1 CONTAINSDIGITS@1 W=( W=E@-2 W=1978@1 
+date/date: [1978]: PUNC@2 PUNC@1 W=.@2 CONTAINSDOTS@2 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=)@1 W=(@-1 ALLDIGITS CONTAINSDIGITS W=1978 
+date/date: [)]: INITCAP@2 PUNC@1 PUNC W=.@1 CONTAINSDOTS@1 PUNC@-2 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=(@-2 W=) W=1978@-1 W=Some@2 
+date/date: [.]: INITCAP@1 PUNC PUNC@-1 CONTAINSDOTS W=. W=)@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=1978@-2 W=Some@1 W=repairs@2 
+title/title: [Some]: INITCAP PUNC@-1 PUNC@-2 W=.@-1 CONTAINSDOTS@-1 W=)@-2 W=on@2 W=Some W=repairs@1 
+title/title: [repairs]: INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=the@2 W=on@1 W=Some@-1 W=repairs 
+title/title: [on]: INITCAP@-2 W=the@1 W=on W=Some@-2 W=notion@2 W=repairs@-1 
+title/title: [the]: W=the W=on@-1 W=of@2 W=notion@1 W=repairs@-2 
+title/title: [notion]: W=the@-1 W=on@-2 W=of@1 W=repairs@2 W=notion 
+title/title: [of]: W=in@2 W=the@-2 W=of W=repairs@1 W=notion@-1 
+title/title: [repairs]: W=in@1 W=the@2 W=of@-1 W=repairs W=notion@-2 
+title/title: [in]: W=in W=the@1 W=of@-2 W=repairs@-1 W=interest@2 
+title/title: [the]: W=in@-1 W=the W=of@2 W=repairs@-2 W=interest@1 
+title/title: [interest]: W=relevance@2 W=in@-2 W=the@-1 W=of@1 W=interest 
+title/title: [of]: PUNC@2 W=.@2 CONTAINSDOTS@2 W=relevance@1 W=the@-2 W=of W=interest@-1 
+title/title: [relevance]: INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 W=relevance W=of@-1 W=In@2 W=interest@-2 
+title/title: [.]: INITCAP@1 INITCAP@2 PUNC CONTAINSDOTS W=. W=relevance@-1 W=of@-2 W=In@1 W=Farkas@2 
+editor/editor: [In]: W=,@2 PUNC@2 INITCAP@1 INITCAP PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=relevance@-2 W=In W=Farkas@1 
+editor/editor: [Farkas]: INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=In@-1 W=Donka@2 W=Farkas 
+editor/editor: [,]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 INITCAP@-2 PUNC W=, W=In@-2 W=Donka@1 W=Farkas@-1 
+editor/editor: [Donka]: INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-2 W=,@-1 PUNC@-1 W=Jacobsen@2 W=Farkas@-2 W=Donka 
+editor/editor: [,]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 PUNC W=, W=,@-2 PUNC@-2 W=Jacobsen@1 W=Donka@-1 
+editor/editor: [Jacobsen]: INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-2 W=,@-1 PUNC@-1 W=Wesley@2 W=Donka@-2 W=Jacobsen 
+editor/editor: [,]: INITCAP@1 INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 INITCAP@-1 PUNC W=, W=,@-2 PUNC@-2 W=M@2 W=Wesley@1 W=Jacobsen@-1 
+editor/editor: [Wesley]: PUNC@2 INITCAP@1 INITCAP W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 INITCAP@-2 W=,@-1 PUNC@-1 W=M@1 W=Wesley W=Jacobsen@-2 
+editor/editor: [M]: W=,@2 PUNC@2 INITCAP PUNC@1 INITCAP@-1 W=.@1 CONTAINSDOTS@1 CAPLETTER SINGLECHAR ALLCAPS W=,@-2 PUNC@-2 W=M W=Wesley@-1 
+editor/editor: [.]: W=,@1 PUNC@1 INITCAP@-1 INITCAP@-2 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 CONTAINSDOTS W=. W=M@-1 W=and@2 W=Wesley@-2 
+editor/editor: [,]: INITCAP@2 INITCAP@-2 PUNC W=, PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=M@-2 W=and@1 W=Todrys@2 
+editor/editor: [and]: W=,@2 PUNC@2 INITCAP@1 W=,@-1 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=and W=Todrys@1 
+editor/editor: [Todrys]: INITCAP INITCAP@2 W=,@1 PUNC@1 W=,@-2 PUNC@-2 W=and@-1 W=Karol@2 W=Todrys 
+editor/editor: [,]: INITCAP@1 INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 INITCAP@-1 PUNC W=, W=and@-2 W=W@2 W=Karol@1 W=Todrys@-1 
+editor/editor: [Karol]: PUNC@2 INITCAP@1 INITCAP W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 INITCAP@-2 W=,@-1 PUNC@-1 W=W@1 W=Karol W=Todrys@-2 
+editor/editor: [W]: W=,@2 PUNC@2 INITCAP PUNC@1 INITCAP@-1 W=.@1 CONTAINSDOTS@1 CAPLETTER SINGLECHAR ALLCAPS W=,@-2 PUNC@-2 W=W W=Karol@-1 
+editor/editor: [.]: W=,@1 PUNC@1 INITCAP@-1 INITCAP@-2 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 CONTAINSDOTS W=. W=W@-1 W=editors@2 W=Karol@-2 
+editor/editor: [,]: W=,@2 PUNC@2 INITCAP@-2 PUNC W=, PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=W@-2 W=editors@1 
+editor/editor: [editors]: INITCAP@2 W=,@1 PUNC@1 W=,@-1 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=editors W=Papers@2 
+editor/editor: [,]: INITCAP@1 PUNC W=, W=,@-2 PUNC@-2 W=from@2 W=editors@-1 W=Papers@1 
+booktitle/title* [Papers]* INITCAP W=,@-1 PUNC@-1 W=the@2 W=from@1 W=editors@-2 W=Papers 
+booktitle/title* [from]* INITCAP@2 INITCAP@-1 W=,@-2 PUNC@-2 W=the@1 W=from W=Fourteenth@2 W=Papers@-1 
+booktitle/title* [the]* INITCAP@1 INITCAP@2 INITCAP@-2 W=the W=from@-1 W=Fourteenth@1 W=Regional@2 W=Papers@-2 
+booktitle/title* [Fourteenth]* INITCAP@1 INITCAP INITCAP@2 W=the@-1 W=from@-2 W=Fourteenth W=Meeting@2 W=Regional@1 
+booktitle/title* [Regional]* INITCAP@1 INITCAP INITCAP@-1 W=the@-2 W=of@2 W=Fourteenth@-1 W=Meeting@1 W=Regional 
+booktitle/title* [Meeting]* INITCAP INITCAP@-1 INITCAP@-2 W=the@2 W=of@1 W=Fourteenth@-2 W=Regional@-1 W=Meeting 
+booktitle/title* [of]* INITCAP@2 INITCAP@-1 INITCAP@-2 W=the@1 W=of W=Chicago@2 W=Meeting@-1 W=Regional@-2 
+booktitle/title* [the]* INITCAP@1 INITCAP@2 INITCAP@-2 W=the W=of@-1 W=Linguistic@2 W=Chicago@1 W=Meeting@-2 
+booktitle/title* [Chicago]* INITCAP@1 INITCAP INITCAP@2 W=the@-1 W=of@-2 W=Society@2 W=Linguistic@1 W=Chicago 
+booktitle/title* [Linguistic]* W=,@2 PUNC@2 INITCAP@1 INITCAP INITCAP@-1 W=the@-2 W=Society@1 W=Chicago@-1 W=Linguistic 
+booktitle/title* [Society]* INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-1 INITCAP@-2 W=Society W=Chicago@2 W=Linguistic@-1 W=Chicago@-2 
+booktitle/title* [,]* W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 INITCAP@-2 PUNC W=, W=Society@-1 W=Chicago@1 W=Linguistic@-2 
+location/title* [Chicago]* INITCAP INITCAP@2 ALLCAPS@2 W=,@1 PUNC@1 INITCAP@-2 W=,@-1 PUNC@-1 W=Society@-2 W=Chicago W=IL@2 
+location/title* [,]* PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 PUNC W=, W=,@-2 PUNC@-2 W=Chicago@-1 W=IL@1 
+location/booktitle* [IL]* INITCAP INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 ALLCAPS W=Chicago@2 W=Chicago@-2 W=IL 
+location/booktitle* [.]* INITCAP@1 INITCAP@2 INITCAP@-1 PUNC ALLCAPS@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=Linguistic@2 W=Chicago@1 W=IL@-1 
+publisher/booktitle* [Chicago]* INITCAP@1 INITCAP INITCAP@2 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 W=Society@2 W=Linguistic@1 W=Chicago W=IL@-2 
+publisher/booktitle* [Linguistic]* W=,@2 PUNC@2 INITCAP@1 INITCAP INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=Society@1 W=Chicago@-1 W=Linguistic 
+publisher/booktitle* [Society]* INITCAP W=,@1 PUNC@1 INITCAP@-1 INITCAP@-2 W=pages@2 W=Society W=Linguistic@-1 W=Chicago@-2 
+publisher/booktitle* [,]* INITCAP@-1 INITCAP@-2 PUNC W=, ALLDIGITS@2 CONTAINSDIGITS@2 W=pages@1 W=Society@-1 W=391@2 W=Linguistic@-2 
+pages/pages: [pages]: INITCAP@-2 W=,@-1 PUNC@-1 ALLDIGITS@1 CONTAINSDIGITS@1 W=-@2 W=pages W=Society@-2 W=391@1 
+pages/pages: [391]: W=,@-2 PUNC@-2 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS CONTAINSDIGITS W=-@1 W=pages@-1 W=502@2 W=391 
+pages/pages: [-]: PUNC@2 W=.@2 CONTAINSDOTS@2 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=- W=pages@-2 W=502@1 W=391@-1 
+pages/pages: [502]: PUNC@1 W=.@1 CONTAINSDOTS@1 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 W=-@-1 <END0>@2 W=502 W=391@-2 
+pages/pages: [.]: PUNC CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 W=-@-2 <END1>@2 <END0>@1 W=502@-1 
+
+140:140
+author/author: [Raab]: <START0>@-1 <START1>@-2 INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=F@2 W=Raab 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 <START0>@-2 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=F@1 W=Raab@-1 
+author/author: [F]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=F W=H@2 W=Raab@-2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=F@-1 W=H@1 
+author/author: [H]: W=,@2 PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=F@-2 W=H 
+author/author: [.]: W=,@1 PUNC@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=H@-1 W="@2 
+author/author: [,]: INITCAP@2 INITCAP@-2 PUNC W=, PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=H@-2 W="@1 W=Remote@2 
+title/title: ["]: INITCAP@1 W=,@-1 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=" W=object@2 W=Remote@1 
+title/title: [Remote]: INITCAP W=,@-2 PUNC@-2 W="@-1 W=object@1 W=position@2 W=Remote 
+title/title: [object]: INITCAP@-1 W="@-2 W=object W=locator@2 W=position@1 W=Remote@-1 
+title/title: [position]: INITCAP@-2 W="@2 W=object@-1 W=locator@1 W=Remote@-2 W=position 
+title/title: [locator]: PUNC@2 W=.@2 CONTAINSDOTS@2 W="@1 W=object@-2 W=position@-1 W=locator 
+title/title: ["]: INITCAP@2 ALLCAPS@2 PUNC@1 W=.@1 CONTAINSDOTS@1 W=" W=US@2 W=locator@-1 W=position@-2 
+title/title: [.]: INITCAP@1 ALLCAPS@1 PUNC CONTAINSDOTS W=. W="@-1 W=patent@2 W=US@1 W=locator@-2 
+tech/journal* [US]* INITCAP PUNC@-1 ALLCAPS W=.@-1 CONTAINSDOTS@-1 ALLDIGITS@2 CONTAINSDIGITS@2 W=4@2 W="@-2 W=patent@1 W=US 
+tech/journal* [patent]* INITCAP@-1 ALLCAPS@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS@1 CONTAINSDIGITS@1 W=4@1 W=0054@2 W=US@-1 W=patent 
+tech/volume* [4]* INITCAP@-2 ALLCAPS@-2 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS CONTAINSDIGITS W=4 W=881@2 W=0054@1 W=patent@-1 W=US@-2 
+tech/volume* [0054]* INITCAP@2 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-1 CONTAINSDIGITS@-1 W=4@-1 W=October@2 W=881@1 W=patent@-2 W=0054 
+tech/pages* [881]* INITCAP@1 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-1 CONTAINSDIGITS@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=4@-2 W=October@1 W=18@2 W=0054@-1 W=881 
+date/pages* [October]* W=,@2 PUNC@2 INITCAP ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=October W=18@1 W=881@-1 W=0054@-2 
+date/pages* [18]* W=,@1 PUNC@1 INITCAP@-1 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 W=1977@2 W=October@-1 W=18 W=881@-2 
+date/pages* [,]* PUNC@2 W=.@2 CONTAINSDOTS@2 INITCAP@-2 PUNC W=, ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=1977@1 W=October@-2 W=18@-1 
+date/date: [1977]: PUNC@1 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 <END0>@2 W=1977 W=18@-2 
+date/date: [.]: PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 <END1>@2 <END0>@1 W=1977@-1 
+
+317:317
+author/author: [S]: <START0>@-1 <START1>@-2 INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC@1 W=.@1 CONTAINSDOTS@1 CAPLETTER SINGLECHAR ALLCAPS W=S W=P@2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 <START0>@-2 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 CONTAINSDOTS W=. W=S@-1 W=P@1 
+author/author: [P]: INITCAP INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=S@-2 W=P W=Amarasinghe@2 
+author/author: [.]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=P@-1 W=Amarasinghe@1 
+author/author: [Amarasinghe]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=P@-2 W=J@2 W=Amarasinghe 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=J@1 W=Amarasinghe@-1 
+author/author: [J]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=M@2 W=J W=Amarasinghe@-2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=M@1 W=J@-1 
+author/author: [M]: INITCAP INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=M W=J@-2 W=Anderson@2 
+author/author: [.]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=M@-1 W=Anderson@1 
+author/author: [Anderson]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=M@-2 W=C@2 W=Anderson 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=C@1 W=Anderson@-1 
+author/author: [C]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=S@2 W=C W=Anderson@-2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=S@1 W=C@-1 
+author/author: [S]: INITCAP INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=S W=C@-2 W=Wilson@2 
+author/author: [.]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=S@-1 W=Wilson@1 
+author/author: [Wilson]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=S@2 W=S@-2 W=Wilson 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=S@1 W=Wilson@-1 
+author/author: [S]: INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=-@2 W=S W=Wilson@-2 
+author/author: [.]: INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=-@1 W=S@-1 W=W@2 
+author/author: [-]: PUNC@2 INITCAP@1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=- W=S@-2 W=W@1 
+author/author: [W]: INITCAP INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 CAPLETTER SINGLECHAR ALLCAPS PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=-@-1 W=W W=Liao@2 
+author/author: [.]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 CONTAINSDOTS W=. W=-@-2 W=W@-1 W=Liao@1 
+author/author: [Liao]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=W@-2 W=B@2 W=Liao 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=B@1 W=Liao@-1 
+author/author: [B]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=M@2 W=B W=Liao@-2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=M@1 W=B@-1 
+author/author: [M]: INITCAP INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=M W=B@-2 W=Murphy@2 
+author/author: [.]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=M@-1 W=Murphy@1 
+author/author: [Murphy]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=M@-2 W=R@2 W=Murphy 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=R@1 W=Murphy@-1 
+author/author: [R]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=S@2 W=R W=Murphy@-2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=S@1 W=R@-1 
+author/author: [S]: INITCAP INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=S W=R@-2 W=French@2 
+author/author: [.]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=S@-1 W=French@1 
+author/author: [French]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=M@2 W=S@-2 W=French 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=M@1 W=French@-1 
+author/author: [M]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=M W=S@2 W=French@-2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=M@-1 W=S@1 
+author/author: [S]: INITCAP INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=M@-2 W=S W=Lam@2 
+author/author: [.]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=S@-1 W=Lam@1 
+author/author: [Lam]: INITCAP W=,@1 PUNC@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=and@2 W=S@-2 W=Lam 
+author/author: [,]: INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 INITCAP@-1 PUNC W=, PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=M@2 W=and@1 W=Lam@-1 
+author/author: [and]: PUNC@2 INITCAP@1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 INITCAP@-2 W=,@-1 PUNC@-1 W=M@1 W=and W=Lam@-2 
+author/author: [M]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC@1 W=.@1 CONTAINSDOTS@1 CAPLETTER SINGLECHAR ALLCAPS W=,@-2 PUNC@-2 W=M W=and@-1 W=W@2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 CONTAINSDOTS W=. W=M@-1 W=and@-2 W=W@1 
+author/author: [W]: INITCAP INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=M@-2 W=W W=Hall@2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=W@-1 W=Hall@1 
+author/author: [Hall]: INITCAP INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=W@-2 W=Multiprocessors@2 W=Hall 
+author/author: [.]: INITCAP@1 INITCAP@-1 PUNC PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=from@2 W=Multiprocessors@1 W=Hall@-1 
+title/title: [Multiprocessors]: INITCAP SINGLECHAR@2 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=a@2 W=from@1 W=Multiprocessors W=Hall@-2 
+title/title: [from]: INITCAP@-1 SINGLECHAR@1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=a@1 W=from W=Multiprocessors@-1 W=software@2 
+title/title: [a]: INITCAP@-2 SINGLECHAR W=from@-1 W=a W=Multiprocessors@-2 W=perspective@2 W=software@1 
+title/title: [software]: PUNC@2 W=.@2 CONTAINSDOTS@2 SINGLECHAR@-1 W=a@-1 W=from@-2 W=perspective@1 W=software 
+title/title: [perspective]: INITCAP@2 ALLCAPS@2 PUNC@1 W=.@1 CONTAINSDOTS@1 SINGLECHAR@-2 W=IEEE@2 W=a@-2 W=software@-1 W=perspective 
+title/title: [.]: INITCAP@1 INITCAP@2 ALLCAPS@1 PUNC CONTAINSDOTS W=. W=IEEE@1 W=Micro@2 W=perspective@-1 W=software@-2 
+journal/booktitle* [IEEE]* W=,@2 PUNC@2 INITCAP@1 INITCAP PUNC@-1 ALLCAPS W=.@-1 CONTAINSDOTS@-1 W=IEEE W=Micro@1 W=perspective@-2 
+journal/booktitle* [Micro]* INITCAP W=,@1 PUNC@1 INITCAP@-1 ALLCAPS@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=IEEE@-1 W=pages@2 W=Micro 
+journal/booktitle* [,]* INITCAP@-1 INITCAP@-2 PUNC W=, ALLCAPS@-2 ALLDIGITS@2 CONTAINSDIGITS@2 W=IEEE@-2 W=pages@1 W=5261@2 W=Micro@-1 
+pages/pages: [pages]: W=,@2 PUNC@2 INITCAP@-2 W=,@-1 PUNC@-1 ALLDIGITS@1 CONTAINSDIGITS@1 W=pages W=5261@1 W=Micro@-2 
+pages/pages: [5261]: INITCAP@2 W=,@1 PUNC@1 W=,@-2 PUNC@-2 ALLDIGITS CONTAINSDIGITS W=pages@-1 W=June@2 W=5261 
+pages/pages: [,]: INITCAP@1 PUNC W=, ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=pages@-2 W=1996@2 W=June@1 W=5261@-1 
+date/date: [June]: PUNC@2 INITCAP W=.@2 CONTAINSDOTS@2 W=,@-1 PUNC@-1 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=1996@1 W=June W=5261@-2 
+date/date: [1996]: PUNC@1 INITCAP@-1 W=.@1 CONTAINSDOTS@1 W=,@-2 PUNC@-2 ALLDIGITS CONTAINSDIGITS <END0>@2 W=1996 W=June@-1 
+date/date: [.]: INITCAP@-2 PUNC CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 <END1>@2 <END0>@1 W=1996@-1 W=June@-2 
+
+458:458
+institution/author* [CONVEX]* INITCAP@1 <START0>@-1 <START1>@-2 INITCAP INITCAP@2 ALLCAPS W=Computer@1 W=Corporation@2 W=CONVEX 
+institution/author* [Computer]* W=,@2 PUNC@2 INITCAP@1 INITCAP INITCAP@-1 <START0>@-2 ALLCAPS@-1 W=Computer W=Corporation@1 W=CONVEX@-1 
+institution/author* [Corporation]* INITCAP W=,@1 PUNC@1 INITCAP@-1 INITCAP@-2 ALLCAPS@-2 W=Computer@-1 W="@2 W=CONVEX@-2 W=Corporation 
+institution/author* [,]* INITCAP@2 INITCAP@-1 INITCAP@-2 PUNC W=, W=Computer@-2 W="@1 W=Exemplar@2 W=Corporation@-1 
+title/title: ["]: INITCAP@1 INITCAP@2 INITCAP@-2 W=,@-1 PUNC@-1 W=" W=Programming@2 W=Exemplar@1 W=Corporation@-2 
+title/title: [Exemplar]: INITCAP@1 INITCAP INITCAP@2 W=,@-2 PUNC@-2 W="@-1 W=Programming@1 W=Guide@2 W=Exemplar 
+title/title: [Programming]: W=,@2 PUNC@2 INITCAP@1 INITCAP INITCAP@-1 W="@-2 W=Programming W=Guide@1 W=Exemplar@-1 
+title/title: [Guide]: INITCAP W=,@1 PUNC@1 INITCAP@-1 INITCAP@-2 W="@2 W=Programming@-1 W=Guide W=Exemplar@-2 
+title/title: [,]: INITCAP@2 INITCAP@-1 INITCAP@-2 PUNC W=, W="@1 W=Programming@-2 W=Guide@-1 W=Richardson@2 
+title/title: ["]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-2 W=,@-1 PUNC@-1 W=" W=Guide@-2 W=Richardson@1 
+location/location: [Richardson]: INITCAP INITCAP@2 ALLCAPS@2 W=,@1 PUNC@1 W=,@-2 PUNC@-2 W="@-1 W=TX@2 W=Richardson 
+location/location: [,]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 ALLCAPS@1 PUNC W=, W="@-2 W=TX@1 W=Richardson@-1 
+location/location: [TX]: INITCAP W=,@1 PUNC@1 INITCAP@-2 W=,@-1 PUNC@-1 ALLCAPS ALLDIGITS@2 CONTAINSDIGITS@2 W=1993@2 W=Richardson@-2 W=TX 
+location/location: [,]: PUNC@2 INITCAP@-1 W=.@2 CONTAINSDOTS@2 PUNC W=, ALLCAPS@-1 W=,@-2 PUNC@-2 ALLDIGITS@1 CONTAINSDIGITS@1 W=1993@1 W=TX@-1 
+date/date: [1993]: PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 ALLCAPS@-2 ALLDIGITS CONTAINSDIGITS <END0>@2 W=1993 W=TX@-2 
+date/date: [.]: PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 <END1>@2 <END0>@1 W=1993@-1 
+
+162:162
+author/author: [Ripley]: <START0>@-1 <START1>@-2 INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=B@2 W=Ripley 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 <START0>@-2 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=B@1 W=Ripley@-1 
+author/author: [B]: PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=(@2 W=B W=Ripley@-2 
+author/author: [.]: PUNC@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@2 CONTAINSDIGITS@2 W=(@1 W=1992@2 W=B@-1 
+date/date: [(]: PUNC@2 INITCAP@-2 PUNC PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=)@2 ALLDIGITS@1 CONTAINSDIGITS@1 W=( W=1992@1 W=B@-2 
+date/date: [1992]: PUNC@2 PUNC@1 W=.@2 CONTAINSDOTS@2 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=)@1 W=(@-1 ALLDIGITS CONTAINSDIGITS W=1992 
+date/date: [)]: INITCAP@2 PUNC@1 PUNC W=.@1 CONTAINSDOTS@1 PUNC@-2 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=(@-2 W=) W=1992@-1 W=Statistical@2 
+date/date: [.]: INITCAP@1 PUNC PUNC@-1 CONTAINSDOTS W=. W=)@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=1992@-2 W=Statistical@1 W=aspects@2 
+title/title: [Statistical]: INITCAP PUNC@-1 PUNC@-2 W=.@-1 CONTAINSDOTS@-1 W=)@-2 W=of@2 W=Statistical W=aspects@1 
+title/title: [aspects]: INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=of@1 W=neural@2 W=Statistical@-1 W=aspects 
+title/title: [of]: INITCAP@-2 W=of W=networks@2 W=neural@1 W=Statistical@-2 W=aspects@-1 
+title/title: [neural]: PUNC@2 W=.@2 CONTAINSDOTS@2 W=of@-1 W=networks@1 W=neural W=aspects@-2 
+title/title: [networks]: INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 W=of@-2 W=networks W=neural@-1 W=Invited@2 
+title/title: [.]: INITCAP@1 PUNC CONTAINSDOTS W=. W=networks@-1 W=neural@-2 W=lectures@2 W=Invited@1 
+tech/title* [Invited]* INITCAP PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=networks@-2 W=for@2 W=lectures@1 W=Invited 
+tech/title* [lectures]* INITCAP@2 INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=for@1 W=SemStat@2 W=Invited@-1 W=lectures 
+tech/title* [for]* PUNC@2 INITCAP@1 INITCAP@-2 W=(@2 W=for W=SemStat@1 W=lectures@-1 W=Invited@-2 
+tech/title* [SemStat]* INITCAP INITCAP@2 PUNC@1 W=(@1 W=for@-1 W=Seminaire@2 W=lectures@-2 W=SemStat 
+tech/title* [(]* INITCAP@1 INITCAP@2 INITCAP@-1 PUNC W=( W=for@-2 W=Europeen@2 W=Seminaire@1 W=SemStat@-1 
+tech/title* [Seminaire]* INITCAP@1 INITCAP INITCAP@-2 PUNC@-1 W=(@-1 W=de@2 W=Europeen@1 W=SemStat@-2 W=Seminaire 
+tech/title* [Europeen]* INITCAP INITCAP@2 INITCAP@-1 PUNC@-2 W=(@-2 W=de@1 W=Statistique@2 W=Seminaire@-1 W=Europeen 
+tech/title* [de]* W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 INITCAP@-2 W=de W=Statistique@1 W=Europeen@-1 W=Seminaire@-2 
+tech/title* [Statistique]* INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-2 W=de@-1 W=Sandbjerg@2 W=Europeen@-2 W=Statistique 
+tech/title* [,]* W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 PUNC W=, W=de@-2 W=Sandbjerg@1 W=Statistique@-1 
+location/journal* [Sandbjerg]* INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-2 W=,@-1 PUNC@-1 W=Denmark@2 W=Statistique@-2 W=Sandbjerg 
+location/journal* [,]* W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 PUNC W=, W=,@-2 PUNC@-2 W=Denmark@1 W=Sandbjerg@-1 
+location/volume* [Denmark]* INITCAP W=,@1 PUNC@1 INITCAP@-2 W=,@-1 PUNC@-1 ALLDIGITS@2 CONTAINSDIGITS@2 W=25@2 W=Sandbjerg@-2 W=Denmark 
+location/volume* [,]* INITCAP@-1 PUNC W=, W=,@-2 PUNC@-2 ALLDIGITS@1 CONTAINSDIGITS@1 W=-@2 W=25@1 W=Denmark@-1 
+date/pages* [25]* INITCAP@-2 W=,@-1 PUNC@-1 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS CONTAINSDIGITS W=-@1 W=30@2 W=25 W=Denmark@-2 
+date/pages* [-]* INITCAP@2 W=,@-2 PUNC@-2 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=- W=30@1 W=April@2 W=25@-1 
+date/pages* [30]* INITCAP@1 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 W=-@-1 W=1992@2 W=30 W=April@1 W=25@-2 
+date/date: [April]: PUNC@2 INITCAP W=)@2 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=-@-2 W=1992@1 W=30@-1 W=April 
+date/date: [1992]: PUNC@2 PUNC@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 W=)@1 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 W=1992 W=April@-1 W=30@-2 
+date/date: [)]: PUNC@1 INITCAP@-2 PUNC W=.@1 CONTAINSDOTS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=) <END0>@2 W=1992@-1 W=April@-2 
+date/date: [.]: PUNC PUNC@-1 CONTAINSDOTS W=. W=)@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 <END1>@2 <END0>@1 W=1992@-2 
+
+189:189
+author/author: [William]: PUNC@2 INITCAP@1 <START0>@-1 <START1>@-2 INITCAP W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 W=G@1 W=William 
+author/author: [G]: INITCAP INITCAP@2 PUNC@1 INITCAP@-1 <START0>@-2 W=.@1 CONTAINSDOTS@1 CAPLETTER SINGLECHAR ALLCAPS W=G W=William@-1 W=Cochran@2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 INITCAP@-2 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 CONTAINSDOTS W=. W=G@-1 W=William@-2 W=Cochran@1 
+author/author: [Cochran]: INITCAP INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=G@-2 W=Sampling@2 W=Cochran 
+author/author: [.]: INITCAP@1 INITCAP@2 INITCAP@-1 PUNC PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=Sampling@1 W=Techniques@2 W=Cochran@-1 
+title/title: [Sampling]: PUNC@2 INITCAP@1 INITCAP W=.@2 CONTAINSDOTS@2 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=Sampling W=Techniques@1 W=Cochran@-2 
+title/title: [Techniques]: INITCAP INITCAP@2 PUNC@1 INITCAP@-1 W=.@1 CONTAINSDOTS@1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=Sampling@-1 W=John@2 W=Techniques 
+title/title: [.]: INITCAP@1 INITCAP@2 INITCAP@-1 INITCAP@-2 PUNC CONTAINSDOTS W=. W=Sampling@-2 W=John@1 W=Techniques@-1 W=Wiley@2 
+publisher/publisher: [John]: INITCAP@1 INITCAP INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=and@2 W=John W=Techniques@-2 W=Wiley@1 
+publisher/publisher: [Wiley]: INITCAP INITCAP@2 INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=and@1 W=John@-1 W=Sons@2 W=Wiley 
+publisher/publisher: [and]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 INITCAP@-2 W=and W=John@-2 W=Sons@1 W=Wiley@-1 
+publisher/publisher: [Sons]: INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-2 W=and@-1 W=Inc@2 W=Wiley@-2 W=Sons 
+publisher/publisher: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 PUNC W=, W=and@-2 W=Inc@1 W=Sons@-1 
+publisher/publisher: [Inc]: W=,@2 PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 W=Inc W=Sons@-2 
+publisher/publisher: [.]: INITCAP@2 W=,@1 PUNC@1 INITCAP@-1 PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=New@2 W=Inc@-1 
+publisher/publisher: [,]: INITCAP@1 INITCAP@2 INITCAP@-2 PUNC W=, PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=York@2 W=New@1 W=Inc@-2 
+location/location: [New]: W=,@2 PUNC@2 INITCAP@1 INITCAP W=,@-1 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=York@1 W=New 
+location/location: [York]: INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-1 W=,@-2 PUNC@-2 W=New@2 W=New@-1 W=York 
+location/location: [,]: INITCAP@1 INITCAP@2 INITCAP@-1 INITCAP@-2 PUNC W=, W=York@2 W=New@1 W=York@-1 W=New@-2 
+location/location: [New]: W=,@2 PUNC@2 INITCAP@1 INITCAP INITCAP@-2 W=,@-1 PUNC@-1 W=York@1 W=New W=York@-2 
+location/location: [York]: INITCAP W=,@1 PUNC@1 INITCAP@-1 W=,@-2 PUNC@-2 ALLDIGITS@2 CONTAINSDIGITS@2 W=New@-1 W=York W=3@2 
+location/location: [,]: INITCAP@-1 INITCAP@-2 PUNC W=, ALLDIGITS@1 CONTAINSDIGITS@1 W=York@-1 W=New@-2 W=3@1 W=edition@2 
+location/date* [3]* W=,@2 PUNC@2 INITCAP@-2 W=,@-1 PUNC@-1 ALLDIGITS CONTAINSDIGITS W=3 W=York@-2 W=edition@1 
+location/date* [edition]* W=,@1 PUNC@1 W=,@-2 PUNC@-2 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=3@-1 W=1977@2 W=edition 
+location/date* [,]* PUNC@2 W=.@2 CONTAINSDOTS@2 PUNC W=, ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=3@-2 W=1977@1 W=edition@-1 
+date/date: [1977]: PUNC@1 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 ALLDIGITS CONTAINSDIGITS <END0>@2 W=1977 W=edition@-2 
+date/date: [.]: PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 <END1>@2 <END0>@1 W=1977@-1 
+
+87:87
+author/author: [Moggi]: <START0>@-1 <START1>@-2 INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=E@2 W=Moggi 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 <START0>@-2 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=E@1 W=Moggi@-1 
+author/author: [E]: INITCAP INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=E W=Computational@2 W=Moggi@-2 
+author/author: [.]: INITCAP@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=E@-1 W=Computational@1 W=lambda@2 
+title/title: [Computational]: INITCAP INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=-@2 W=E@-2 W=Computational W=lambda@1 
+title/title: [lambda]: INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=-@1 W=Computational@-1 W=lambda W=calculus@2 
+title/title: [-]: INITCAP@-2 W=and@2 W=- W=Computational@-2 W=lambda@-1 W=calculus@1 
+title/title: [calculus]: W=and@1 W=-@-1 W=lambda@-2 W=monads@2 W=calculus 
+title/title: [and]: PUNC@2 W=.@2 CONTAINSDOTS@2 W=and W=-@-2 W=monads@1 W=calculus@-1 
+title/title: [monads]: INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 W=and@-1 W=In@2 W=calculus@-2 W=monads 
+title/title: [.]: INITCAP@1 INITCAP@2 PUNC CONTAINSDOTS W=. W=and@-2 W=In@1 W=Proc@2 W=monads@-1 
+booktitle/booktitle: [In]: PUNC@2 INITCAP@1 INITCAP W=.@2 CONTAINSDOTS@2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=In W=Proc@1 W=monads@-2 
+booktitle/booktitle: [Proc]: INITCAP INITCAP@2 PUNC@1 INITCAP@-1 W=.@1 CONTAINSDOTS@1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=In@-1 W=Symposium@2 W=Proc 
+booktitle/booktitle: [.]: INITCAP@1 INITCAP@-1 INITCAP@-2 PUNC CONTAINSDOTS W=. W=on@2 W=In@-2 W=Symposium@1 W=Proc@-1 
+booktitle/booktitle: [Symposium]: INITCAP INITCAP@2 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=on@1 W=Symposium W=Proc@-2 W=Logic@2 
+booktitle/booktitle: [on]: INITCAP@1 INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=in@2 W=on W=Symposium@-1 W=Logic@1 
+booktitle/booktitle: [Logic]: INITCAP INITCAP@2 INITCAP@-2 W=in@1 W=on@-1 W=Computer@2 W=Symposium@-2 W=Logic 
+booktitle/booktitle: [in]: INITCAP@1 INITCAP@2 INITCAP@-1 W=in W=on@-2 W=Computer@1 W=Science@2 W=Logic@-1 
+booktitle/booktitle: [Computer]: W=,@2 PUNC@2 INITCAP@1 INITCAP INITCAP@-2 W=in@-1 W=Computer W=Science@1 W=Logic@-2 
+booktitle/booktitle: [Science]: INITCAP W=,@1 PUNC@1 INITCAP@-1 ALLDIGITS@2 CONTAINSDIGITS@2 W=in@-2 W=1989@2 W=Computer@-1 W=Science 
+booktitle/booktitle: [,]: W=,@2 PUNC@2 INITCAP@-1 INITCAP@-2 PUNC W=, ALLDIGITS@1 CONTAINSDIGITS@1 W=1989@1 W=Computer@-2 W=Science@-1 
+date/volume* [1989]* W=,@1 PUNC@1 INITCAP@-2 W=,@-1 PUNC@-1 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS CONTAINSDIGITS W=1989 W=14@2 W=Science@-2 
+date/volume* [,]* PUNC W=, W=,@-2 PUNC@-2 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=-@2 W=1989@-1 W=14@1 
+pages/pages: [14]: W=,@-1 PUNC@-1 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 W=-@1 W=1989@-2 W=23@2 W=14 
+pages/pages: [-]: PUNC@2 W=.@2 CONTAINSDOTS@2 W=,@-2 PUNC@-2 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=- W=23@1 W=14@-1 
+pages/pages: [23]: PUNC@1 W=.@1 CONTAINSDOTS@1 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 W=-@-1 <END0>@2 W=23 W=14@-2 
+pages/pages: [.]: PUNC CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 W=-@-2 <END1>@2 <END0>@1 W=23@-1 
+
+237:237
+author/author: [Rao]: <START0>@-1 <START1>@-2 INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=A@2 W=Rao 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 <START0>@-2 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=A@1 W=Rao@-1 
+author/author: [A]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=A W=S@2 W=Rao@-2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=A@-1 W=S@1 
+author/author: [S]: W=,@2 PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=A@-2 W=S 
+author/author: [.]: INITCAP@2 W=,@1 PUNC@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=S@-1 W=Georgeff@2 
+author/author: [,]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-2 PUNC W=, PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=S@-2 W=Georgeff@1 
+author/author: [Georgeff]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=,@-1 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=M@2 W=Georgeff 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=,@-2 PUNC@-2 W=M@1 W=Georgeff@-1 
+author/author: [M]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=M W=P@2 W=Georgeff@-2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=M@-1 W=P@1 
+author/author: [P]: W=,@2 PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=M@-2 W=P 
+author/author: [.]: W=,@1 PUNC@1 INITCAP@-1 PUNC W=&@2 ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=P@-1 
+author/author: [,]: INITCAP@2 INITCAP@-2 PUNC W=, PUNC@-1 W=&@1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=P@-2 W=Sonenberg@2 
+author/author: [&]: W=,@2 PUNC@2 INITCAP@1 W=,@-1 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=& W=Sonenberg@1 
+author/author: [Sonenberg]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=,@-2 PUNC@-2 W=&@-1 W=E@2 W=Sonenberg 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=&@-2 W=E@1 W=Sonenberg@-1 
+author/author: [E]: PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=(@2 W=E W=Sonenberg@-2 
+author/author: [.]: PUNC@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@2 CONTAINSDIGITS@2 W=(@1 W=E@-1 W=1991@2 
+date/date: [(]: PUNC@2 INITCAP@-2 PUNC PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=)@2 ALLDIGITS@1 CONTAINSDIGITS@1 W=( W=E@-2 W=1991@1 
+date/date: [1991]: PUNC@2 PUNC@1 W=.@2 CONTAINSDOTS@2 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=)@1 W=(@-1 ALLDIGITS CONTAINSDIGITS W=1991 
+date/date: [)]: INITCAP@2 PUNC@1 PUNC W=.@1 CONTAINSDOTS@1 PUNC@-2 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=(@-2 W=) W=1991@-1 W=Social@2 
+date/date: [.]: INITCAP@1 PUNC PUNC@-1 CONTAINSDOTS W=. W=)@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=1991@-2 W=Social@1 W=plans@2 
+title/title: [Social]: PUNC@2 INITCAP PUNC@-1 PUNC@-2 W=.@-1 CONTAINSDOTS@-1 W=)@-2 W=:@2 W=Social W=plans@1 
+title/title: [plans]: SINGLECHAR@2 PUNC@1 INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=:@1 W=a@2 W=Social@-1 W=plans 
+title/title: [:]: SINGLECHAR@1 INITCAP@-2 PUNC W=: W=a@1 W=Social@-2 W=plans@-1 W=preliminary@2 
+title/title: [a]: PUNC@-1 SINGLECHAR W=:@-1 W=a W=report@2 W=plans@-2 W=preliminary@1 
+title/title: [preliminary]: PUNC@2 W=.@2 CONTAINSDOTS@2 SINGLECHAR@-1 PUNC@-2 W=:@-2 W=a@-1 W=report@1 W=preliminary 
+title/title: [report]: INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 SINGLECHAR@-2 W=In@2 W=a@-2 W=report W=preliminary@-1 
+title/title: [.]: INITCAP@1 INITCAP@2 PUNC CONTAINSDOTS W=. W=In@1 W=report@-1 W=preliminary@-2 W=Pre@2 
+booktitle/booktitle: [In]: INITCAP@1 INITCAP PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=-@2 W=In W=report@-2 W=Pre@1 
+booktitle/booktitle: [Pre]: INITCAP INITCAP@2 INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=-@1 W=Proceedings@2 W=In@-1 W=Pre 
+booktitle/booktitle: [-]: INITCAP@1 INITCAP@-1 INITCAP@-2 W=- W=of@2 W=Proceedings@1 W=In@-2 W=Pre@-1 
+booktitle/booktitle: [Proceedings]: INITCAP INITCAP@-2 W=-@-1 W=the@2 W=of@1 W=Proceedings W=Pre@-2 
+booktitle/booktitle: [of]: INITCAP@2 INITCAP@-1 W=-@-2 W=the@1 W=of W=Proceedings@-1 W=Third@2 
+booktitle/booktitle: [the]: INITCAP@1 INITCAP@2 INITCAP@-2 W=the W=of@-1 W=Proceedings@-2 W=European@2 W=Third@1 
+booktitle/booktitle: [Third]: INITCAP@1 INITCAP INITCAP@2 W=the@-1 W=of@-2 W=Workshop@2 W=European@1 W=Third 
+booktitle/booktitle: [European]: INITCAP@1 INITCAP INITCAP@-1 W=the@-2 W=on@2 W=Workshop@1 W=European W=Third@-1 
+booktitle/booktitle: [Workshop]: INITCAP INITCAP@2 INITCAP@-1 INITCAP@-2 W=on@1 W=Workshop W=European@-1 W=Modeling@2 W=Third@-2 
+booktitle/booktitle: [on]: INITCAP@1 INITCAP@2 INITCAP@-1 INITCAP@-2 W=on W=Workshop@-1 W=European@-2 W=Modeling@1 W=Autonomous@2 
+booktitle/booktitle: [Modeling]: INITCAP@1 INITCAP INITCAP@2 INITCAP@-2 W=on@-1 W=Workshop@-2 W=Modeling W=Agents@2 W=Autonomous@1 
+booktitle/booktitle: [Autonomous]: INITCAP@1 INITCAP INITCAP@-1 W=and@2 W=on@-2 W=Modeling@-1 W=Agents@1 W=Autonomous 
+booktitle/booktitle: [Agents]: INITCAP INITCAP@2 INITCAP@-1 INITCAP@-2 W=and@1 W=Modeling@-2 W=Agents W=Multi@2 W=Autonomous@-1 
+booktitle/booktitle: [and]: INITCAP@1 INITCAP@-1 INITCAP@-2 W=and W=-@2 W=Agents@-1 W=Multi@1 W=Autonomous@-2 
+booktitle/booktitle: [Multi]: INITCAP INITCAP@2 INITCAP@-2 W=and@-1 W=-@1 W=Agents@-2 W=Agent@2 W=Multi 
+booktitle/booktitle: [-]: INITCAP@1 INITCAP@2 INITCAP@-1 W=and@-2 W=- W=Worlds@2 W=Agent@1 W=Multi@-1 
+booktitle/booktitle: [Agent]: INITCAP@1 INITCAP INITCAP@2 INITCAP@-2 W=-@-1 W=Germany@2 W=Worlds@1 W=Multi@-2 W=Agent 
+booktitle/booktitle: [Worlds]: PUNC@2 INITCAP@1 INITCAP INITCAP@-1 W=.@2 CONTAINSDOTS@2 W=-@-2 W=Germany@1 W=Agent@-1 W=Worlds 
+location/booktitle* [Germany]* INITCAP PUNC@1 INITCAP@-1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 <END0>@2 W=Germany W=Worlds@-1 W=Agent@-2 
+location/booktitle* [.]* INITCAP@-1 INITCAP@-2 PUNC CONTAINSDOTS W=. <END1>@2 <END0>@1 W=Germany@-1 W=Worlds@-2 
+
+275:275
+author/author: [Jeffay]: <START0>@-1 <START1>@-2 INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=K@2 W=Jeffay 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 <START0>@-2 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=K@1 W=Jeffay@-1 
+author/author: [K]: W=,@2 PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=K W=Jeffay@-2 
+author/author: [.]: INITCAP@2 W=,@1 PUNC@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=K@-1 W=Stone@2 
+author/author: [,]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-2 PUNC W=, PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=K@-2 W=Stone@1 
+author/author: [Stone]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=,@-1 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=D@2 W=Stone 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=,@-2 PUNC@-2 W=D@1 W=Stone@-1 
+author/author: [D]: INITCAP W=L@2 INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=D W=Stone@-2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 W=L@1 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=D@-1 
+author/author: [L]: W=,@2 PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=L W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=D@-2 
+author/author: [.]: INITCAP@2 W=,@1 PUNC@1 INITCAP@-1 PUNC W=L@-1 ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=Smith@2 
+author/author: [,]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-2 PUNC W=, PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=L@-2 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=Smith@1 
+author/author: [Smith]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=,@-1 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=F@2 W=Smith 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=,@-2 PUNC@-2 W=F@1 W=Smith@-1 
+author/author: [F]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=D@2 W=F W=Smith@-2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=D@1 W=F@-1 
+author/author: [D]: W=,@2 PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=D W=F@-2 
+author/author: [.]: INITCAP@2 W=,@1 PUNC@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=D@-1 W=Kernel@2 
+author/author: [,]: INITCAP@1 INITCAP@2 INITCAP@-2 PUNC W=, PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=D@-2 W=Support@2 W=Kernel@1 
+title/title: [Kernel]: INITCAP@1 INITCAP W=,@-1 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=for@2 W=Support@1 W=Kernel 
+title/title: [Support]: INITCAP INITCAP@2 INITCAP@-1 W=,@-2 PUNC@-2 W=for@1 W=Support W=Kernel@-1 W=Live@2 
+title/title: [for]: INITCAP@1 INITCAP@2 INITCAP@-1 INITCAP@-2 W=for W=Support@-1 W=Kernel@-2 W=Digital@2 W=Live@1 
+title/title: [Live]: INITCAP@1 INITCAP INITCAP@2 INITCAP@-2 W=for@-1 W=Support@-2 W=Digital@1 W=Audio@2 W=Live 
+title/title: [Digital]: INITCAP@1 INITCAP INITCAP@-1 W=and@2 W=for@-2 W=Digital W=Audio@1 W=Live@-1 
+title/title: [Audio]: INITCAP INITCAP@2 INITCAP@-1 INITCAP@-2 W=and@1 W=Digital@-1 W=Video@2 W=Live@-2 W=Audio 
+title/title: [and]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 INITCAP@-2 W=and W=Digital@-2 W=Video@1 W=Audio@-1 
+title/title: [Video]: INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-2 W=and@-1 W=Computer@2 W=Audio@-2 W=Video 
+title/title: [,]: INITCAP@1 INITCAP@2 INITCAP@-1 PUNC W=, W=and@-2 W=Computer@1 W=Communications@2 W=Video@-1 
+journal/journal: [Computer]: W=,@2 PUNC@2 INITCAP@1 INITCAP INITCAP@-2 W=,@-1 PUNC@-1 W=Computer W=Communications@1 W=Video@-2 
+journal/journal: [Communications]: INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-1 W=,@-2 PUNC@-2 W=Vol@2 W=Computer@-1 W=Communications 
+journal/journal: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 INITCAP@-2 PUNC W=, W=Vol@1 W=Computer@-2 W=Communications@-1 
+volume/volume: [Vol]: INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 ALLDIGITS@2 CONTAINSDIGITS@2 W=Vol W=Communications@-2 W=15@2 
+volume/volume: [.]: W=,@2 PUNC@2 INITCAP@-1 PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@1 CONTAINSDIGITS@1 W=Vol@-1 W=15@1 
+volume/volume: [15]: INITCAP@2 W=,@1 PUNC@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLDIGITS CONTAINSDIGITS W=Vol@-2 W=No@2 W=15 
+volume/volume: [,]: PUNC@2 INITCAP@1 W=.@2 CONTAINSDOTS@2 PUNC W=, PUNC@-2 W=.@-2 CONTAINSDOTS@-2 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=No@1 W=15@-1 
+volume/volume: [No]: INITCAP PUNC@1 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=No W=6@2 W=15@-2 
+volume/volume: [.]: PUNC@2 INITCAP@-1 PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=(@2 ALLDIGITS@1 CONTAINSDIGITS@1 W=No@-1 W=6@1 
+volume/volume: [6]: INITCAP@2 PUNC@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=(@1 ALLDIGITS CONTAINSDIGITS W=No@-2 W=July@2 W=6 
+date/volume* [(]* INITCAP@1 PUNC PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=( ALLDIGITS@-1 CONTAINSDIGITS@-1 W=July@1 W=6@-1 W=/@2 
+date/location* [July]* INITCAP INITCAP@2 PUNC@-1 W=(@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=July W=6@-2 W=/@1 W=August@2 
+date/location* [/]* INITCAP@1 INITCAP@-1 PUNC@-2 ALLDIGITS@2 CONTAINSDIGITS@2 W=(@-2 W=1992@2 W=July@-1 W=/ W=August@1 
+date/date: [August]: PUNC@2 INITCAP INITCAP@-2 W=)@2 ALLDIGITS@1 CONTAINSDIGITS@1 W=1992@1 W=July@-2 W=/@-1 W=August 
+date/date: [1992]: W=,@2 PUNC@2 PUNC@1 INITCAP@-1 W=)@1 ALLDIGITS CONTAINSDIGITS W=1992 W=/@-2 W=August@-1 
+date/date: [)]: W=,@1 PUNC@1 INITCAP@-2 PUNC ALLDIGITS@-1 CONTAINSDIGITS@-1 W=) W=1992@-1 W=pp@2 W=August@-2 
+date/date: [,]: PUNC@2 W=.@2 CONTAINSDOTS@2 PUNC W=, PUNC@-1 W=)@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=pp@1 W=1992@-2 
+pages/pages: [pp]: PUNC@1 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 PUNC@-2 ALLDIGITS@2 CONTAINSDIGITS@2 W=)@-2 W=pp W=388@2 
+pages/pages: [.]: PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@1 CONTAINSDIGITS@1 W=-@2 W=pp@-1 W=388@1 
+pages/pages: [388]: PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS CONTAINSDIGITS W=-@1 W=pp@-2 W=395@2 W=388 
+pages/pages: [-]: PUNC@2 W=.@2 CONTAINSDOTS@2 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=- W=395@1 W=388@-1 
+pages/pages: [395]: PUNC@1 W=.@1 CONTAINSDOTS@1 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 W=-@-1 <END0>@2 W=395 W=388@-2 
+pages/pages: [.]: PUNC CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 W=-@-2 <END1>@2 <END0>@1 W=395@-1 
+
+306:306
+author/author: [Webber]: <START0>@-1 <START1>@-2 INITCAP INITCAP@2 W=,@1 PUNC@1 W=Bonnie@2 W=Webber 
+author/author: [,]: INITCAP@1 INITCAP@2 INITCAP@-1 <START0>@-2 PUNC W=, W=Lynn@2 W=Bonnie@1 W=Webber@-1 
+author/author: [Bonnie]: INITCAP@1 INITCAP INITCAP@-2 W=,@-1 PUNC@-1 W=and@2 W=Lynn@1 W=Webber@-2 W=Bonnie 
+author/author: [Lynn]: INITCAP INITCAP@2 INITCAP@-1 W=,@-2 PUNC@-2 W=and@1 W=Mays@2 W=Bonnie@-1 W=Lynn 
+author/author: [and]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 INITCAP@-2 W=and W=Mays@1 W=Lynn@-1 W=Bonnie@-2 
+author/author: [Mays]: INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-2 W=and@-1 W=Eric@2 W=Lynn@-2 W=Mays 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 PUNC W=, W=(@2 W=and@-2 W=Eric@1 W=Mays@-1 
+title/author* [Eric]* INITCAP PUNC@1 INITCAP@-2 W=,@-1 PUNC@-1 ALLDIGITS@2 CONTAINSDIGITS@2 W=(@1 W=1983@2 W=Mays@-2 W=Eric 
+date/date: [(]: PUNC@2 INITCAP@-1 PUNC W=,@-2 PUNC@-2 W=)@2 ALLDIGITS@1 CONTAINSDIGITS@1 W=( W=1983@1 W=Eric@-1 
+date/date: [1983]: PUNC@2 PUNC@1 W=.@2 CONTAINSDOTS@2 INITCAP@-2 PUNC@-1 W=)@1 W=(@-1 ALLDIGITS CONTAINSDIGITS W=1983 W=Eric@-2 
+date/date: [)]: INITCAP@2 PUNC@1 PUNC W=.@1 CONTAINSDOTS@1 PUNC@-2 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=(@-2 W=) W=1983@-1 W=Varieties@2 
+date/date: [.]: INITCAP@1 PUNC PUNC@-1 CONTAINSDOTS W=. W=)@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=of@2 W=1983@-2 W=Varieties@1 
+title/title: [Varieties]: INITCAP PUNC@-1 PUNC@-2 W=.@-1 CONTAINSDOTS@-1 W=)@-2 W=of@1 W=user@2 W=Varieties 
+title/title: [of]: INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=of W=misconceptions@2 W=user@1 W=Varieties@-1 
+title/title: [user]: PUNC@2 INITCAP@-2 W=of@-1 W=:@2 W=misconceptions@1 W=Varieties@-2 W=user 
+title/title: [misconceptions]: INITCAP@2 PUNC@1 W=of@-2 W=:@1 W=Detection@2 W=user@-1 W=misconceptions 
+title/title: [:]: INITCAP@1 PUNC W=and@2 W=: W=Detection@1 W=misconceptions@-1 W=user@-2 
+title/title: [Detection]: INITCAP PUNC@-1 W=and@1 W=:@-1 W=correction@2 W=misconceptions@-2 W=Detection 
+title/title: [and]: PUNC@2 INITCAP@-1 W=.@2 CONTAINSDOTS@2 PUNC@-2 W=and W=:@-2 W=correction@1 W=Detection@-1 
+title/title: [correction]: INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=and@-1 W=In@2 W=Detection@-2 W=correction 
+title/title: [.]: INITCAP@1 INITCAP@2 PUNC CONTAINSDOTS W=. W=and@-2 W=Proceedings@2 W=In@1 W=correction@-1 
+booktitle/booktitle: [In]: INITCAP@1 INITCAP PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=of@2 W=Proceedings@1 W=In W=correction@-2 
+booktitle/booktitle: [Proceedings]: INITCAP INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=the@2 W=of@1 W=In@-1 W=Proceedings 
+booktitle/booktitle: [of]: INITCAP@2 INITCAP@-1 INITCAP@-2 W=the@1 W=of W=Proceedings@-1 W=In@-2 W=Eighth@2 
+booktitle/booktitle: [the]: INITCAP@1 INITCAP@2 INITCAP@-2 W=the W=of@-1 W=Proceedings@-2 W=International@2 W=Eighth@1 
+booktitle/booktitle: [Eighth]: INITCAP@1 INITCAP INITCAP@2 W=the@-1 W=of@-2 W=International@1 W=Eighth W=Joint@2 
+booktitle/booktitle: [International]: INITCAP@1 INITCAP INITCAP@2 INITCAP@-1 W=the@-2 W=International W=Conference@2 W=Eighth@-1 W=Joint@1 
+booktitle/booktitle: [Joint]: INITCAP@1 INITCAP INITCAP@-1 INITCAP@-2 W=on@2 W=International@-1 W=Conference@1 W=Eighth@-2 W=Joint 
+booktitle/booktitle: [Conference]: INITCAP INITCAP@2 INITCAP@-1 INITCAP@-2 W=on@1 W=Artificial@2 W=International@-2 W=Conference W=Joint@-1 
+booktitle/booktitle: [on]: INITCAP@1 INITCAP@2 INITCAP@-1 INITCAP@-2 W=on W=Intelligence@2 W=Artificial@1 W=Conference@-1 W=Joint@-2 
+booktitle/booktitle: [Artificial]: W=,@2 PUNC@2 INITCAP@1 INITCAP INITCAP@-2 W=on@-1 W=Intelligence@1 W=Artificial W=Conference@-2 
+booktitle/booktitle: [Intelligence]: INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-1 W=on@-2 W=Artificial@-1 W=Intelligence W=Karlsruhe@2 
+booktitle/booktitle: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 INITCAP@-2 PUNC W=, W=Intelligence@-1 W=Artificial@-2 W=Karlsruhe@1 
+location/booktitle* [Karlsruhe]* INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 W=pages@2 W=Intelligence@-2 W=Karlsruhe 
+location/booktitle* [.]* INITCAP@-1 PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@2 CONTAINSDIGITS@2 W=pages@1 W=650@2 W=Karlsruhe@-1 
+pages/pages: [pages]: INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLDIGITS@1 CONTAINSDIGITS@1 W=-@2 W=pages W=650@1 W=Karlsruhe@-2 
+pages/pages: [650]: PUNC@-2 W=.@-2 CONTAINSDOTS@-2 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS CONTAINSDIGITS W=-@1 W=pages@-1 W=652@2 W=650 
+pages/pages: [-]: PUNC@2 W=.@2 CONTAINSDOTS@2 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=- W=pages@-2 W=652@1 W=650@-1 
+pages/pages: [652]: PUNC@1 W=.@1 CONTAINSDOTS@1 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 W=-@-1 <END0>@2 W=650@-2 W=652 
+pages/pages: [.]: PUNC CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 W=-@-2 <END1>@2 <END0>@1 W=652@-1 
+
+243:243
+author/author: [Roland]: PUNC@2 INITCAP@1 <START0>@-1 <START1>@-2 INITCAP W=.@2 CONTAINSDOTS@2 W=Wismuller@1 W=Roland 
+author/author: [Wismuller]: INITCAP INITCAP@2 PUNC@1 INITCAP@-1 <START0>@-2 W=.@1 CONTAINSDOTS@1 W=Debugging@2 W=Roland@-1 W=Wismuller 
+author/author: [.]: INITCAP@1 INITCAP@-1 INITCAP@-2 PUNC CONTAINSDOTS W=. W=of@2 W=Debugging@1 W=Wismuller@-1 W=Roland@-2 
+title/title: [Debugging]: INITCAP INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=of@1 W=globally@2 W=Wismuller@-2 W=Debugging 
+title/title: [of]: INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=of W=optimized@2 W=globally@1 W=Debugging@-1 
+title/title: [globally]: INITCAP@-2 W=of@-1 W=programs@2 W=optimized@1 W=Debugging@-2 W=globally 
+title/title: [optimized]: W=of@-2 W=using@2 W=programs@1 W=globally@-1 W=optimized 
+title/title: [programs]: W=data@2 W=using@1 W=programs W=optimized@-1 W=globally@-2 
+title/title: [using]: W=flow@2 W=data@1 W=using W=programs@-1 W=optimized@-2 
+title/title: [data]: W=analysis@2 W=flow@1 W=data W=using@-1 W=programs@-2 
+title/title: [flow]: PUNC@2 W=.@2 CONTAINSDOTS@2 W=analysis@1 W=data@-1 W=flow W=using@-2 
+title/title: [analysis]: INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 W=In@2 W=flow@-1 W=data@-2 W=analysis 
+title/title: [.]: INITCAP@1 INITCAP@2 PUNC CONTAINSDOTS W=. W=Proceedings@2 W=In@1 W=analysis@-1 W=flow@-2 
+booktitle/booktitle: [In]: INITCAP@1 INITCAP PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=of@2 W=Proceedings@1 W=In W=analysis@-2 
+booktitle/booktitle: [Proceedings]: INITCAP INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=the@2 W=of@1 W=In@-1 W=Proceedings 
+booktitle/booktitle: [of]: INITCAP@2 ALLCAPS@2 INITCAP@-1 INITCAP@-2 W=the@1 W=ACM@2 W=of W=Proceedings@-1 W=In@-2 
+booktitle/booktitle: [the]: INITCAP@1 ALLCAPS@1 INITCAP@-2 W=the W=ACM@1 W=of@-1 W=Proceedings@-2 W=/@2 
+booktitle/booktitle: [ACM]: INITCAP INITCAP@2 ALLCAPS@2 ALLCAPS W=the@-1 W=of@-2 W=ACM W=/@1 W=SIGPLAN@2 
+booktitle/booktitle: [/]: INITCAP@1 INITCAP@2 INITCAP@-1 ALLCAPS@1 ALLCAPS@-1 W=the@-2 W=ACM@-1 W=Conference@2 W=/ W=SIGPLAN@1 
+booktitle/booktitle: [SIGPLAN]: INITCAP@1 INITCAP INITCAP@-2 ALLCAPS ALLCAPS@-2 W=on@2 W=ACM@-2 W=Conference@1 W=/@-1 W=SIGPLAN 
+booktitle/booktitle: [Conference]: INITCAP INITCAP@2 INITCAP@-1 ALLCAPS@-1 W=on@1 W=Programming@2 W=Conference W=/@-2 W=SIGPLAN@-1 
+booktitle/booktitle: [on]: INITCAP@1 INITCAP@2 INITCAP@-1 INITCAP@-2 ALLCAPS@-2 W=on W=Programming@1 W=Conference@-1 W=Language@2 W=SIGPLAN@-2 
+booktitle/booktitle: [Programming]: INITCAP@1 INITCAP INITCAP@2 INITCAP@-2 W=on@-1 W=Programming W=Conference@-2 W=Design@2 W=Language@1 
+booktitle/booktitle: [Language]: INITCAP@1 INITCAP INITCAP@-1 W=and@2 W=on@-2 W=Programming@-1 W=Design@1 W=Language 
+booktitle/booktitle: [Design]: INITCAP INITCAP@2 INITCAP@-1 INITCAP@-2 W=and@1 W=Programming@-2 W=Design W=Implementation@2 W=Language@-1 
+booktitle/booktitle: [and]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 INITCAP@-2 W=and W=Design@-1 W=Implementation@1 W=Language@-2 
+booktitle/booktitle: [Implementation]: INITCAP W=,@1 PUNC@1 INITCAP@-2 W=and@-1 W=pages@2 W=Design@-2 W=Implementation 
+booktitle/booktitle: [,]: INITCAP@-1 PUNC W=, ALLDIGITS@2 CONTAINSDIGITS@2 W=and@-2 W=pages@1 W=Implementation@-1 W=278@2 
+pages/pages: [pages]: INITCAP@-2 W=,@-1 PUNC@-1 ALLDIGITS@1 CONTAINSDIGITS@1 W=-@2 W=pages W=Implementation@-2 W=278@1 
+pages/pages: [278]: W=,@-2 PUNC@-2 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS CONTAINSDIGITS W=-@1 W=pages@-1 W=289@2 W=278 
+pages/pages: [-]: PUNC@2 W=.@2 CONTAINSDOTS@2 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=- W=pages@-2 W=289@1 W=278@-1 
+pages/pages: [289]: INITCAP@2 ALLCAPS@2 PUNC@1 W=.@1 CONTAINSDOTS@1 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 W=-@-1 W=ACM@2 W=278@-2 W=289 
+pages/pages: [.]: W=,@2 PUNC@2 INITCAP@1 ALLCAPS@1 PUNC CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 W=-@-2 W=ACM@1 W=289@-1 
+publisher/location* [ACM]* INITCAP INITCAP@2 W=,@1 PUNC@1 PUNC@-1 ALLCAPS W=.@-1 CONTAINSDOTS@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=ACM W=June@2 W=289@-2 
+publisher/location* [,]* INITCAP@1 INITCAP@-1 PUNC W=, ALLCAPS@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 ALLDIGITS@2 CONTAINSDIGITS@2 W=ACM@-1 W=1994@2 W=June@1 
+date/date: [June]: PUNC@2 INITCAP W=.@2 CONTAINSDOTS@2 INITCAP@-2 W=,@-1 PUNC@-1 ALLCAPS@-2 ALLDIGITS@1 CONTAINSDIGITS@1 W=ACM@-2 W=1994@1 W=June 
+date/date: [1994]: INITCAP@2 PUNC@1 INITCAP@-1 W=.@1 CONTAINSDOTS@1 W=,@-2 PUNC@-2 ALLDIGITS CONTAINSDIGITS W=1994 W=June@-1 W=Available@2 
+date/date: [.]: INITCAP@1 INITCAP@-2 PUNC CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 W=via@2 W=1994@-1 W=June@-2 W=Available@1 
+note/title* [Available]* INITCAP INITCAP@2 ALLCAPS@2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=via@1 W=1994@-2 W=WWW@2 W=Available 
+note/title* [via]* INITCAP@1 INITCAP@-1 ALLCAPS@1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=from@2 W=via W=WWW@1 W=Available@-1 
+note/title* [WWW]* INITCAP INITCAP@-2 ALLCAPS W=from@1 W=via@-1 W=http@2 W=Available@-2 W=WWW 
+note/title* [from]* PUNC@2 INITCAP@-1 ALLCAPS@-1 W=:@2 W=from W=via@-2 W=http@1 W=WWW@-1 
+note/title* [http]* PUNC@1 INITCAP@-2 ALLCAPS@-2 W=:@1 W=from@-1 W=/@2 W=http W=WWW@-2 
+note/title* [:]* PUNC W=: W=from@-2 W=/@2 W=/@1 W=http@-1 
+note/title* [/]* PUNC@-1 W=:@-1 W=/@1 W=/ W=http@-2 W=wwwbode@2 
+note/title* [/]* PUNC@2 W=.@2 CONTAINSDOTS@2 PUNC@-2 W=:@-2 W=/ W=/@-1 W=wwwbode@1 
+note/title* [wwwbode]* PUNC@1 W=.@1 CONTAINSDOTS@1 W=/@-1 W=/@-2 W=informatik@2 W=wwwbode 
+note/title* [.]* PUNC@2 W=.@2 CONTAINSDOTS@2 PUNC CONTAINSDOTS W=. W=/@-2 W=informatik@1 W=wwwbode@-1 
+note/title* [informatik]* PUNC@1 W=.@1 CONTAINSDOTS@1 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=tu@2 W=wwwbode@-2 W=informatik 
+note/title* [.]* PUNC PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=-@2 W=tu@1 W=informatik@-1 
+note/title* [tu]* PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=-@1 W=muenchen@2 W=informatik@-2 W=tu 
+note/title* [-]* PUNC@2 W=.@2 CONTAINSDOTS@2 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=- W=muenchen@1 W=tu@-1 
+note/title* [muenchen]* PUNC@1 W=.@1 CONTAINSDOTS@1 W=-@-1 W=de@2 W=tu@-2 W=muenchen 
+note/title* [.]* PUNC CONTAINSDOTS W=. W=-@-2 W=/@2 W=de@1 W=muenchen@-1 
+note/title* [de]* PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=/@1 W=~@2 W=de W=muenchen@-2 
+note/title* [/]* PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=/ W=~@1 W=de@-1 W=wismuell@2 
+note/title* [~]* W=/@2 W=/@-1 W=~ W=de@-2 W=wismuell@1 
+note/title* [wismuell]* W=/@1 W=/@-2 W=~@-1 W=publications@2 W=wismuell 
+note/title* [/]* PUNC@2 W=.@2 CONTAINSDOTS@2 W=/ W=~@-2 W=publications@1 W=wismuell@-1 
+note/title* [publications]* PUNC@1 W=.@1 CONTAINSDOTS@1 W=/@-1 W=html@2 W=wismuell@-2 W=publications 
+note/title* [.]* PUNC CONTAINSDOTS W=. <END0>@2 W=/@-2 W=html@1 W=publications@-1 
+note/tech* [html]* PUNC@-1 W=.@-1 CONTAINSDOTS@-1 <END1>@2 <END0>@1 W=publications@-2 W=html 
+
+291:291
+author/author: [S]: <START0>@-1 <START1>@-2 INITCAP W=L@2 INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC@1 W=.@1 CONTAINSDOTS@1 CAPLETTER SINGLECHAR ALLCAPS W=S 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 <START0>@-2 W=.@2 CONTAINSDOTS@2 W=L@1 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 CONTAINSDOTS W=. W=S@-1 
+author/author: [L]: INITCAP INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=L W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=S@-2 W=Peyton@2 
+author/author: [.]: INITCAP@1 INITCAP@2 INITCAP@-1 PUNC W=L@-1 ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=Jones@2 W=Peyton@1 
+author/author: [Peyton]: INITCAP@1 INITCAP INITCAP@-2 PUNC@-1 W=&@2 W=.@-1 CONTAINSDOTS@-1 W=L@-2 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=Jones@1 W=Peyton 
+author/author: [Jones]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 INITCAP@-1 PUNC@-2 W=&@1 W=.@-2 CONTAINSDOTS@-2 W=P@2 W=Peyton@-1 W=Jones 
+author/author: [&]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 INITCAP@-2 W=& W=P@1 W=Jones@-1 W=Peyton@-2 
+author/author: [P]: INITCAP W=L@2 INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 CAPLETTER SINGLECHAR ALLCAPS W=&@-1 W=P W=Jones@-2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 W=L@1 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 CONTAINSDOTS W=. W=&@-2 W=P@-1 
+author/author: [L]: INITCAP INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=L W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=P@-2 W=Wadler@2 
+author/author: [.]: INITCAP@1 INITCAP@-1 PUNC W=L@-1 ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=Wadler@1 W=[@2 
+author/title* [Wadler]* INITCAP INITCAP@2 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=L@-2 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=Wadler W=Jan@2 W=[@1 
+date/title* [[]* INITCAP@1 INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 ALLDIGITS@2 CONTAINSDIGITS@2 W=1993@2 W=Wadler@-1 W=Jan@1 W=[ 
+date/title* [Jan]* INITCAP INITCAP@-2 ALLDIGITS@1 CONTAINSDIGITS@1 W=1993@1 W=Wadler@-2 W=Jan W=]@2 W=[@-1 
+date/title* [1993]* W=,@2 PUNC@2 INITCAP@-1 ALLDIGITS CONTAINSDIGITS W=1993 W=Jan@-1 W=]@1 W=[@-2 
+date/title* []]* W=,@1 PUNC@1 INITCAP@-2 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=1993@-1 W="@2 W=Jan@-2 W=] 
+date/title* [,]* INITCAP@2 PUNC W=, ALLDIGITS@-2 CONTAINSDIGITS@-2 W=1993@-2 W="@1 W=]@-1 W=Imperative@2 
+title/title: ["]: INITCAP@1 W=,@-1 PUNC@-1 W=" W=functional@2 W=]@-2 W=Imperative@1 
+title/title: [Imperative]: INITCAP W=,@-2 PUNC@-2 W="@-1 W=functional@1 W=programming@2 W=Imperative 
+title/title: [functional]: W=,@2 PUNC@2 INITCAP@-1 W="@-2 W=functional W=programming@1 W=Imperative@-1 
+title/title: [programming]: W=,@1 PUNC@1 INITCAP@-2 W="@2 W=functional@-1 W=programming W=Imperative@-2 
+title/title: [,]: PUNC W=, W=in@2 W="@1 W=functional@-2 W=programming@-1 
+title/title: ["]: W=,@-1 PUNC@-1 ALLDIGITS@2 CONTAINSDIGITS@2 W=in@1 W=" W=20@2 W=programming@-2 
+booktitle/booktitle: [in]: W=,@-2 PUNC@-2 ALLDIGITS@1 CONTAINSDIGITS@1 W=in W=th@2 W="@-1 W=20@1 
+booktitle/booktitle: [20]: INITCAP@2 ALLCAPS@2 ALLDIGITS CONTAINSDIGITS W=in@-1 W=ACM@2 W=th@1 W="@-2 W=20 
+booktitle/booktitle: [th]: INITCAP@1 INITCAP@2 ALLCAPS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=in@-2 W=ACM@1 W=Symposium@2 W=th W=20@-1 
+booktitle/booktitle: [ACM]: INITCAP@1 INITCAP ALLCAPS ALLDIGITS@-2 CONTAINSDIGITS@-2 W=on@2 W=ACM W=Symposium@1 W=th@-1 W=20@-2 
+booktitle/booktitle: [Symposium]: INITCAP INITCAP@2 INITCAP@-1 ALLCAPS@-1 W=on@1 W=ACM@-1 W=Symposium W=th@-2 W=Principles@2 
+booktitle/booktitle: [on]: INITCAP@1 INITCAP@-1 INITCAP@-2 ALLCAPS@-2 W=on W=of@2 W=ACM@-2 W=Symposium@-1 W=Principles@1 
+booktitle/booktitle: [Principles]: INITCAP INITCAP@2 INITCAP@-2 W=on@-1 W=of@1 W=Symposium@-2 W=Programming@2 W=Principles 
+booktitle/booktitle: [of]: INITCAP@1 INITCAP@2 INITCAP@-1 W=on@-2 W=of W=Languages@2 W=Programming@1 W=Principles@-1 
+booktitle/booktitle: [Programming]: W=,@2 PUNC@2 INITCAP@1 INITCAP INITCAP@-2 W=of@-1 W=Languages@1 W=Programming W=Principles@-2 
+booktitle/booktitle: [Languages]: INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-1 W=of@-2 W=Languages W=Programming@-1 W=Charleston@2 
+booktitle/booktitle: [,]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 INITCAP@-2 PUNC W=, W=Languages@-1 W=Programming@-2 W=Charleston@1 
+location/booktitle* [Charleston]* INITCAP INITCAP@2 ALLCAPS@2 W=,@1 PUNC@1 INITCAP@-2 W=,@-1 PUNC@-1 W=ACM@2 W=Languages@-2 W=Charleston 
+location/booktitle* [,]* W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 ALLCAPS@1 PUNC W=, W=,@-2 PUNC@-2 W=ACM@1 W=Charleston@-1 
+publisher/booktitle* [ACM]* INITCAP W=,@1 PUNC@1 INITCAP@-2 W=,@-1 PUNC@-1 ALLCAPS ALLDIGITS@2 CONTAINSDIGITS@2 W=ACM W=71@2 W=Charleston@-2 
+publisher/booktitle* [,]* INITCAP@-1 PUNC W=, ALLCAPS@-1 W=,@-2 PUNC@-2 ALLDIGITS@1 CONTAINSDIGITS@1 W=-@2 W=ACM@-1 W=71@1 
+pages/pages: [71]: INITCAP@-2 W=,@-1 PUNC@-1 ALLCAPS@-2 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS CONTAINSDIGITS W=-@1 W=ACM@-2 W=84@2 W=71 
+pages/pages: [-]: PUNC@2 W=.@2 CONTAINSDOTS@2 W=,@-2 PUNC@-2 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=- W=84@1 W=71@-1 
+pages/pages: [84]: PUNC@1 W=.@1 CONTAINSDOTS@1 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 W=-@-1 <END0>@2 W=84 W=71@-2 
+pages/pages: [.]: PUNC CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 W=-@-2 <END1>@2 <END0>@1 W=84@-1 
+
+434:434
+author/author: [R]: <START0>@-1 <START1>@-2 INITCAP INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 CAPLETTER SINGLECHAR ALLCAPS W=R W=Gupta@2 
+author/author: [.]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 <START0>@-2 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 CONTAINSDOTS W=. W=R@-1 W=Gupta@1 
+author/author: [Gupta]: INITCAP W=,@1 PUNC@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=R@-2 W="@2 W=Gupta 
+author/author: [,]: INITCAP@2 INITCAP@-1 PUNC W=, PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W="@1 W=Gupta@-1 W=Optimizing@2 
+title/title: ["]: INITCAP@1 INITCAP@2 INITCAP@-2 W=,@-1 PUNC@-1 W=" W=Gupta@-2 W=Optimizing@1 W=Array@2 
+title/title: [Optimizing]: INITCAP@1 INITCAP INITCAP@2 W=,@-2 PUNC@-2 W="@-1 W=Optimizing W=Bound@2 W=Array@1 
+title/title: [Array]: INITCAP@1 INITCAP INITCAP@2 INITCAP@-1 W="@-2 W=Optimizing@-1 W=Bound@1 W=Checks@2 W=Array 
+title/title: [Bound]: INITCAP@1 INITCAP INITCAP@-1 INITCAP@-2 W=using@2 W=Optimizing@-2 W=Bound W=Checks@1 W=Array@-1 
+title/title: [Checks]: INITCAP INITCAP@2 INITCAP@-1 INITCAP@-2 W=using@1 W=Flow@2 W=Bound@-1 W=Array@-2 W=Checks 
+title/title: [using]: INITCAP@1 INITCAP@2 INITCAP@-1 INITCAP@-2 W=using W=Analysis@2 W=Flow@1 W=Bound@-2 W=Checks@-1 
+title/title: [Flow]: W=,@2 PUNC@2 INITCAP@1 INITCAP INITCAP@-2 W=using@-1 W=Analysis@1 W=Flow W=Checks@-2 
+title/title: [Analysis]: INITCAP W=,@1 PUNC@1 INITCAP@-1 W="@2 W=using@-2 W=Analysis W=Flow@-1 
+title/title: [,]: INITCAP@2 ALLCAPS@2 INITCAP@-1 INITCAP@-2 PUNC W=, W=ACM@2 W="@1 W=Analysis@-1 W=Flow@-2 
+title/title: ["]: INITCAP@1 INITCAP@2 ALLCAPS@1 INITCAP@-2 W=,@-1 PUNC@-1 W=ACM@1 W=Letters@2 W=" W=Analysis@-2 
+journal/journal: [ACM]: INITCAP@1 INITCAP ALLCAPS W=,@-2 PUNC@-2 W=on@2 W=ACM W=Letters@1 W="@-1 
+journal/journal: [Letters]: INITCAP INITCAP@2 INITCAP@-1 ALLCAPS@-1 W=on@1 W=ACM@-1 W=Letters W="@-2 W=Programming@2 
+journal/journal: [on]: INITCAP@1 INITCAP@2 INITCAP@-1 INITCAP@-2 ALLCAPS@-2 W=on W=ACM@-2 W=Letters@-1 W=Languages@2 W=Programming@1 
+journal/journal: [Programming]: INITCAP@1 INITCAP INITCAP@-2 W=and@2 W=on@-1 W=Letters@-2 W=Languages@1 W=Programming 
+journal/journal: [Languages]: INITCAP INITCAP@2 INITCAP@-1 W=and@1 W=on@-2 W=Systems@2 W=Languages W=Programming@-1 
+journal/journal: [and]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 INITCAP@-2 W=and W=Systems@1 W=Languages@-1 W=Programming@-2 
+journal/journal: [Systems]: INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-2 W=and@-1 W=Vol@2 W=Systems W=Languages@-2 
+journal/journal: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 PUNC W=, W=and@-2 W=Vol@1 W=Systems@-1 
+volume/volume: [Vol]: INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 ALLDIGITS@2 CONTAINSDIGITS@2 W=2@2 W=Systems@-2 W=Vol 
+volume/volume: [.]: W=,@2 PUNC@2 INITCAP@-1 PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@1 CONTAINSDIGITS@1 W=2@1 W=Vol@-1 
+volume/volume: [2]: INITCAP@2 W=,@1 PUNC@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLDIGITS CONTAINSDIGITS W=2 W=Vol@-2 W=Nos@2 
+volume/volume: [,]: PUNC@2 INITCAP@1 W=.@2 CONTAINSDOTS@2 PUNC W=, PUNC@-2 W=.@-2 CONTAINSDOTS@-2 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=2@-1 W=Nos@1 
+volume/volume: [Nos]: INITCAP PUNC@1 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=2@-2 W=1@2 W=Nos 
+volume/volume: [.]: INITCAP@-1 PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@1 CONTAINSDIGITS@1 W=-@2 W=1@1 W=Nos@-1 
+volume/volume: [1]: INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS CONTAINSDIGITS W=-@1 W=4@2 W=1 W=Nos@-2 
+volume/volume: [-]: W=,@2 PUNC@2 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=- W=4@1 W=1@-1 
+volume/volume: [4]: W=,@1 PUNC@1 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 W=-@-1 W=4 W=1@-2 W=pages@2 
+volume/volume: [,]: PUNC W=, ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=-@-2 W=4@-1 W=pages@1 W=135@2 
+pages/pages: [pages]: W=,@-1 PUNC@-1 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=-@2 W=4@-2 W=pages W=135@1 
+pages/pages: [135]: W=,@-2 PUNC@-2 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS CONTAINSDIGITS W=-@1 W=pages@-1 W=150@2 W=135 
+pages/pages: [-]: W=,@2 PUNC@2 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=- W=pages@-2 W=150@1 W=135@-1 
+pages/pages: [150]: INITCAP@2 W=,@1 PUNC@1 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 W=-@-1 W=March@2 W=135@-2 W=150 
+pages/pages: [,]: INITCAP@1 PUNC W=, ALLDIGITS@-1 CONTAINSDIGITS@-1 W=-@2 W=-@-2 W=March@1 W=150@-1 
+date/note* [March]* INITCAP INITCAP@2 W=,@-1 PUNC@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=-@1 W=March W=December@2 W=150@-2 
+date/note* [-]* INITCAP@1 INITCAP@-1 W=,@-2 PUNC@-2 ALLDIGITS@2 CONTAINSDIGITS@2 W=- W=1994@2 W=March@-1 W=December@1 
+date/note* [December]* PUNC@2 INITCAP W=.@2 CONTAINSDOTS@2 INITCAP@-2 ALLDIGITS@1 CONTAINSDIGITS@1 W=-@-1 W=1994@1 W=March@-2 W=December 
+date/note* [1994]* PUNC@1 INITCAP@-1 W=.@1 CONTAINSDOTS@1 ALLDIGITS CONTAINSDIGITS W=-@-2 <END0>@2 W=1994 W=December@-1 
+date/note* [.]* INITCAP@-2 PUNC CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 <END1>@2 <END0>@1 W=1994@-1 W=December@-2 
+
+307:307
+author/author: [C]: <START0>@-1 <START1>@-2 INITCAP INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 CAPLETTER SINGLECHAR ALLCAPS W=C W=Baru@2 
+author/author: [.]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 <START0>@-2 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 CONTAINSDOTS W=. W=C@-1 W=Baru@1 
+author/author: [Baru]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=C@-2 W=O@2 W=Baru 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=O@1 W=Baru@-1 
+author/author: [O]: INITCAP INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=O W=Frieder@2 W=Baru@-2 
+author/author: [.]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=O@-1 W=Frieder@1 
+author/author: [Frieder]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=D@2 W=O@-2 W=Frieder 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=D@1 W=Frieder@-1 
+author/author: [D]: INITCAP INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=D W=Kandlur@2 W=Frieder@-2 
+author/author: [.]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=D@-1 W=Kandlur@1 
+author/author: [Kandlur]: INITCAP W=,@1 PUNC@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=and@2 W=D@-2 W=Kandlur 
+author/author: [,]: INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 INITCAP@-1 PUNC W=, PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=M@2 W=and@1 W=Kandlur@-1 
+author/author: [and]: PUNC@2 INITCAP@1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 INITCAP@-2 W=,@-1 PUNC@-1 W=M@1 W=and W=Kandlur@-2 
+author/author: [M]: INITCAP INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 CAPLETTER SINGLECHAR ALLCAPS W=,@-2 PUNC@-2 W=M W=and@-1 W=Segal@2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 CONTAINSDOTS W=. W=M@-1 W=and@-2 W=Segal@1 
+author/author: [Segal]: INITCAP INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=M@-2 W=Segal W=Join@2 
+author/author: [.]: INITCAP@1 INITCAP@-1 PUNC PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=on@2 W=Segal@-1 W=Join@1 
+title/title: [Join]: INITCAP SINGLECHAR@2 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=on@1 W=a@2 W=Segal@-2 W=Join 
+title/title: [on]: INITCAP@-1 SINGLECHAR@1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=on W=a@1 W=cube@2 W=Join@-1 
+title/title: [a]: PUNC@2 INITCAP@-2 SINGLECHAR W=on@-1 W=:@2 W=a W=cube@1 W=Join@-2 
+title/title: [cube]: INITCAP@2 PUNC@1 SINGLECHAR@-1 W=on@-2 W=:@1 W=a@-1 W=Analysis@2 W=cube 
+title/title: [:]: W=,@2 PUNC@2 INITCAP@1 PUNC SINGLECHAR@-2 W=: W=a@-2 W=Analysis@1 W=cube@-1 
+title/title: [Analysis]: INITCAP W=,@1 PUNC@1 PUNC@-1 W=:@-1 W=Analysis W=simulation@2 W=cube@-2 
+title/title: [,]: W=,@2 PUNC@2 INITCAP@-1 PUNC W=, PUNC@-2 W=:@-2 W=Analysis@-1 W=simulation@1 
+title/title: [simulation]: W=,@1 PUNC@1 INITCAP@-2 W=,@-1 PUNC@-1 W=and@2 W=Analysis@-2 W=simulation 
+title/title: [,]: PUNC W=, W=,@-2 PUNC@-2 W=and@1 W=implementation@2 W=simulation@-1 
+title/title: [and]: PUNC@2 W=.@2 CONTAINSDOTS@2 W=,@-1 PUNC@-1 W=and W=implementation@1 W=simulation@-2 
+title/title: [implementation]: INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 W=,@-2 PUNC@-2 W=and@-1 W=In@2 W=implementation 
+title/title: [.]: INITCAP@1 INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC CONTAINSDOTS W=. W=M@2 W=and@-2 W=In@1 W=implementation@-1 
+editor/editor: [In]: PUNC@2 INITCAP@1 INITCAP W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=M@1 W=In W=implementation@-2 
+editor/editor: [M]: INITCAP INITCAP@2 PUNC@1 INITCAP@-1 W=.@1 CONTAINSDOTS@1 CAPLETTER SINGLECHAR ALLCAPS PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=M W=In@-1 W=Kitsuregawa@2 
+editor/editor: [.]: INITCAP@1 INITCAP@-1 INITCAP@-2 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 CONTAINSDOTS W=. W=M@-1 W=and@2 W=In@-2 W=Kitsuregawa@1 
+editor/editor: [Kitsuregawa]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=M@-2 W=and@1 W=H@2 W=Kitsuregawa 
+editor/editor: [and]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=and W=H@1 W=Kitsuregawa@-1 
+editor/editor: [H]: INITCAP INITCAP@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 CAPLETTER SINGLECHAR ALLCAPS W=and@-1 W=H W=Tanaka@2 W=Kitsuregawa@-2 
+editor/editor: [.]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 CONTAINSDOTS W=. W=and@-2 W=H@-1 W=Tanaka@1 
+editor/editor: [Tanaka]: INITCAP W=,@1 PUNC@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=H@-2 W=editors@2 W=Tanaka 
+editor/editor: [,]: W=,@2 PUNC@2 INITCAP@-1 PUNC W=, PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=editors@1 W=Tanaka@-1 
+editor/editor: [editors]: INITCAP@2 W=,@1 PUNC@1 INITCAP@-2 W=,@-1 PUNC@-1 W=editors W=Database@2 W=Tanaka@-2 
+editor/editor: [,]: INITCAP@1 INITCAP@2 PUNC W=, W=,@-2 PUNC@-2 W=editors@-1 W=Database@1 W=Machines@2 
+booktitle/title* [Database]* INITCAP@1 INITCAP W=,@-1 PUNC@-1 W=and@2 W=editors@-2 W=Database W=Machines@1 
+booktitle/title* [Machines]* INITCAP INITCAP@2 INITCAP@-1 W=,@-2 PUNC@-2 W=and@1 W=Knowledge@2 W=Database@-1 W=Machines 
+booktitle/title* [and]* INITCAP@1 INITCAP@2 INITCAP@-1 INITCAP@-2 W=and W=Knowledge@1 W=Database@-2 W=Base@2 W=Machines@-1 
+booktitle/title* [Knowledge]* INITCAP@1 INITCAP INITCAP@2 INITCAP@-2 W=and@-1 W=Knowledge W=Machines@2 W=Base@1 W=Machines@-2 
+booktitle/title* [Base]* PUNC@2 INITCAP@1 INITCAP INITCAP@-1 W=.@2 CONTAINSDOTS@2 W=and@-2 W=Knowledge@-1 W=Machines@1 W=Base 
+booktitle/title* [Machines]* INITCAP INITCAP@2 PUNC@1 INITCAP@-1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=Knowledge@-2 W=Kluwer@2 W=Machines W=Base@-1 
+booktitle/title* [.]* INITCAP@1 INITCAP@2 INITCAP@-1 INITCAP@-2 PUNC CONTAINSDOTS W=. W=Academic@2 W=Kluwer@1 W=Machines@-1 W=Base@-2 
+publisher/publisher: [Kluwer]: INITCAP@1 INITCAP INITCAP@2 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=Publishers@2 W=Academic@1 W=Kluwer W=Machines@-2 
+publisher/publisher: [Academic]: W=,@2 PUNC@2 INITCAP@1 INITCAP INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=Publishers@1 W=Kluwer@-1 W=Academic 
+publisher/publisher: [Publishers]: INITCAP W=,@1 PUNC@1 INITCAP@-1 INITCAP@-2 ALLDIGITS@2 CONTAINSDIGITS@2 W=1987@2 W=Academic@-1 W=Kluwer@-2 W=Publishers 
+publisher/publisher: [,]: PUNC@2 INITCAP@-1 W=.@2 CONTAINSDOTS@2 INITCAP@-2 PUNC W=, ALLDIGITS@1 CONTAINSDIGITS@1 W=1987@1 W=Publishers@-1 W=Academic@-2 
+date/date: [1987]: PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 ALLDIGITS CONTAINSDIGITS <END0>@2 W=1987 W=Publishers@-2 
+date/date: [.]: PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 <END1>@2 <END0>@1 W=1987@-1 
+
+50:50
+author/author: [Ostroff]: <START0>@-1 <START1>@-2 INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=J@2 W=Ostroff 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 <START0>@-2 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=J@1 W=Ostroff@-1 
+author/author: [J]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=S@2 W=J W=Ostroff@-2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=S@1 W=J@-1 
+author/author: [S]: W=,@2 PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=S W=J@-2 
+author/author: [.]: W=,@1 PUNC@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=S@-1 W="@2 
+author/author: [,]: INITCAP@2 INITCAP@-2 PUNC W=, PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=S@-2 W="@1 W=Temporal@2 
+title/title: ["]: INITCAP@1 INITCAP@2 W=,@-1 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=" W=Logic@2 W=Temporal@1 
+title/title: [Temporal]: INITCAP@1 INITCAP W=,@-2 PUNC@-2 W=for@2 W="@-1 W=Logic@1 W=Temporal 
+title/title: [Logic]: INITCAP INITCAP@2 INITCAP@-1 W=for@1 W="@-2 W=Real@2 W=Logic W=Temporal@-1 
+title/title: [for]: INITCAP@1 INITCAP@-1 INITCAP@-2 W=-@2 W=for W=Real@1 W=Logic@-1 W=Temporal@-2 
+title/title: [Real]: INITCAP INITCAP@2 INITCAP@-2 W=-@1 W=for@-1 W=Time@2 W=Real W=Logic@-2 
+title/title: [-]: INITCAP@1 INITCAP@2 INITCAP@-1 W=- W=for@-2 W=Systems@2 W=Time@1 W=Real@-1 
+title/title: [Time]: INITCAP@1 INITCAP INITCAP@-2 W=-@-1 W=Systems@1 W="@2 W=Real@-2 W=Time 
+title/title: [Systems]: W=,@2 PUNC@2 INITCAP INITCAP@-1 W=-@-2 W=Systems W="@1 W=Time@-1 
+title/title: ["]: INITCAP@2 W=,@1 PUNC@1 INITCAP@-1 INITCAP@-2 W=Systems@-1 W=" W=Time@-2 W=Advanced@2 
+title/title: [,]: INITCAP@1 INITCAP@2 INITCAP@-2 PUNC W=, W=Systems@-2 W="@-1 W=Software@2 W=Advanced@1 
+booktitle/publisher* [Advanced]* INITCAP@1 INITCAP INITCAP@2 W=,@-1 PUNC@-1 W="@-2 W=Software@1 W=Advanced W=Development@2 
+booktitle/publisher* [Software]* INITCAP@1 INITCAP INITCAP@2 INITCAP@-1 W=,@-2 PUNC@-2 W=Software W=Advanced@-1 W=Series@2 W=Development@1 
+booktitle/publisher* [Development]* W=,@2 PUNC@2 INITCAP@1 INITCAP INITCAP@-1 INITCAP@-2 W=Software@-1 W=Advanced@-2 W=Series@1 W=Development 
+booktitle/publisher* [Series]* INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-1 INITCAP@-2 W=Software@-2 W=Series W=Development@-1 W=England@2 
+booktitle/publisher* [,]* W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 INITCAP@-2 PUNC W=, W=Series@-1 W=Development@-2 W=England@1 
+location/location: [England]: INITCAP W=,@1 PUNC@1 INITCAP@-2 W=,@-1 PUNC@-1 ALLDIGITS@2 CONTAINSDIGITS@2 W=1989@2 W=Series@-2 W=England 
+location/location: [,]: PUNC@2 INITCAP@-1 W=.@2 CONTAINSDOTS@2 PUNC W=, W=,@-2 PUNC@-2 ALLDIGITS@1 CONTAINSDIGITS@1 W=1989@1 W=England@-1 
+date/date: [1989]: PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 ALLDIGITS CONTAINSDIGITS <END0>@2 W=1989 W=England@-2 
+date/date: [.]: PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. ALLDIGITS@-1 CONTAINSDIGITS@-1 <END1>@2 <END0>@1 W=1989@-1 
+
+17:17
+author/author: [Larry]: PUNC@2 INITCAP@1 <START0>@-1 <START1>@-2 INITCAP W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 W=D@1 W=Larry 
+author/author: [D]: INITCAP INITCAP@2 PUNC@1 INITCAP@-1 <START0>@-2 W=.@1 CONTAINSDOTS@1 CAPLETTER SINGLECHAR ALLCAPS W=D W=Wittie@2 W=Larry@-1 
+author/author: [.]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 INITCAP@-2 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 CONTAINSDOTS W=. W=D@-1 W=Wittie@1 W=Larry@-2 
+author/author: [Wittie]: INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=D@-2 W=Gudjun@2 W=Wittie 
+author/author: [,]: INITCAP@1 INITCAP@2 INITCAP@-1 PUNC W=, PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=Hermannsson@2 W=Gudjun@1 W=Wittie@-1 
+author/author: [Gudjun]: W=,@2 PUNC@2 INITCAP@1 INITCAP INITCAP@-2 W=,@-1 PUNC@-1 W=Hermannsson@1 W=Wittie@-2 W=Gudjun 
+author/author: [Hermannsson]: INITCAP W=,@1 PUNC@1 INITCAP@-1 W=,@-2 PUNC@-2 W=and@2 W=Gudjun@-1 W=Hermannsson 
+author/author: [,]: INITCAP@2 INITCAP@-1 INITCAP@-2 PUNC W=, W=and@1 W=Ai@2 W=Hermannsson@-1 W=Gudjun@-2 
+author/author: [and]: INITCAP@1 INITCAP@2 INITCAP@-2 W=,@-1 PUNC@-1 W=and W=Li@2 W=Ai@1 W=Hermannsson@-2 
+author/author: [Ai]: PUNC@2 INITCAP@1 INITCAP W=.@2 CONTAINSDOTS@2 W=,@-2 PUNC@-2 W=and@-1 W=Li@1 W=Ai 
+author/author: [Li]: INITCAP INITCAP@2 PUNC@1 INITCAP@-1 W=.@1 CONTAINSDOTS@1 W=and@-2 W=Li W=Eager@2 W=Ai@-1 
+author/author: [.]: INITCAP@1 INITCAP@-1 INITCAP@-2 PUNC CONTAINSDOTS W=. W=Li@-1 W=Eager@1 W=sharing@2 W=Ai@-2 
+title/title: [Eager]: INITCAP INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=for@2 W=Li@-2 W=Eager W=sharing@1 
+title/title: [sharing]: INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=for@1 W=Eager@-1 W=efficient@2 W=sharing 
+title/title: [for]: INITCAP@-2 W=for W=Eager@-2 W=efficient@1 W=massive@2 W=sharing@-1 
+title/title: [efficient]: W=for@-1 W=efficient W=parallelism@2 W=massive@1 W=sharing@-2 
+title/title: [massive]: PUNC@2 W=.@2 CONTAINSDOTS@2 W=for@-2 W=efficient@-1 W=parallelism@1 W=massive 
+title/title: [parallelism]: INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 W=In@2 W=efficient@-2 W=massive@-1 W=parallelism 
+title/title: [.]: INITCAP@1 PUNC CONTAINSDOTS W=. ALLDIGITS@2 CONTAINSDIGITS@2 W=1992@2 W=In@1 W=parallelism@-1 W=massive@-2 
+booktitle/booktitle: [In]: INITCAP INITCAP@2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLDIGITS@1 CONTAINSDIGITS@1 W=1992@1 W=In W=International@2 W=parallelism@-2 
+booktitle/booktitle: [1992]: INITCAP@1 INITCAP@2 INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 ALLDIGITS CONTAINSDIGITS W=1992 W=In@-1 W=International@1 W=Conference@2 
+booktitle/booktitle: [International]: INITCAP@1 INITCAP INITCAP@-2 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=on@2 W=1992@-1 W=In@-2 W=International W=Conference@1 
+booktitle/booktitle: [Conference]: INITCAP INITCAP@2 INITCAP@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=on@1 W=1992@-2 W=International@-1 W=Conference W=Parallel@2 
+booktitle/booktitle: [on]: INITCAP@1 INITCAP@2 INITCAP@-1 INITCAP@-2 W=Processing@2 W=on W=International@-2 W=Conference@-1 W=Parallel@1 
+booktitle/booktitle: [Parallel]: W=,@2 PUNC@2 INITCAP@1 INITCAP INITCAP@-2 W=Processing@1 W=on@-1 W=Conference@-2 W=Parallel 
+booktitle/booktitle: [Processing]: INITCAP W=,@1 PUNC@1 INITCAP@-1 W=on@-2 W=Processing W=pages@2 W=Parallel@-1 
+booktitle/booktitle: [,]: INITCAP@-1 INITCAP@-2 PUNC W=, ALLDIGITS@2 CONTAINSDIGITS@2 W=Processing@-1 W=pages@1 W=Parallel@-2 W=251@2 
+pages/pages: [pages]: INITCAP@-2 W=,@-1 PUNC@-1 ALLDIGITS@1 CONTAINSDIGITS@1 W=-@2 W=Processing@-2 W=pages W=251@1 
+pages/pages: [251]: W=,@-2 PUNC@-2 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS CONTAINSDIGITS W=-@1 W=pages@-1 W=251 W=255@2 
+pages/pages: [-]: W=,@2 PUNC@2 ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=- W=pages@-2 W=251@-1 W=255@1 
+pages/pages: [255]: INITCAP@2 W=,@1 PUNC@1 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 W=-@-1 W=251@-2 W=St@2 W=255 
+pages/pages: [,]: PUNC@2 INITCAP@1 W=.@2 CONTAINSDOTS@2 PUNC W=, ALLDIGITS@-1 CONTAINSDIGITS@-1 W=-@-2 W=St@1 W=255@-1 
+location/location: [St]: INITCAP INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=Charles@2 W=255@-2 W=St 
+location/location: [.]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 PUNC W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=Charles@1 W=St@-1 
+location/location: [Charles]: INITCAP INITCAP@2 ALLCAPS@2 W=,@1 PUNC@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 W=IL@2 W=Charles W=St@-2 
+location/location: [,]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 ALLCAPS@1 PUNC W=, PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=IL@1 W=Charles@-1 
+location/location: [IL]: INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-2 W=,@-1 PUNC@-1 ALLCAPS W=August@2 W=IL W=Charles@-2 
+location/location: [,]: INITCAP@1 INITCAP@-1 PUNC W=, ALLCAPS@-1 W=,@-2 PUNC@-2 ALLDIGITS@2 CONTAINSDIGITS@2 W=1992@2 W=August@1 W=IL@-1 
+date/date: [August]: PUNC@2 INITCAP W=.@2 CONTAINSDOTS@2 INITCAP@-2 W=,@-1 PUNC@-1 ALLCAPS@-2 ALLDIGITS@1 CONTAINSDIGITS@1 W=1992@1 W=August W=IL@-2 
+date/date: [1992]: PUNC@1 INITCAP@-1 W=.@1 CONTAINSDOTS@1 W=,@-2 PUNC@-2 ALLDIGITS@2 CONTAINSDIGITS@2 ALLDIGITS CONTAINSDIGITS W=1992 W=11@2 W=August@-1 
+date/date: [.]: INITCAP@-2 PUNC CONTAINSDOTS W=. ALLDIGITS@1 CONTAINSDIGITS@1 ALLDIGITS@-1 CONTAINSDIGITS@-1 <END0>@2 W=1992@-1 W=11@1 W=August@-2 
+pages/date* [11]* PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLDIGITS CONTAINSDIGITS ALLDIGITS@-2 CONTAINSDIGITS@-2 <END1>@2 <END0>@1 W=1992@-2 W=11 
+
+55:55
+author/author: [Cleveland]: <START0>@-1 <START1>@-2 INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 W=,@1 PUNC@1 W=W@2 W=Cleveland 
+author/author: [,]: PUNC@2 INITCAP@1 INITCAP@-1 <START0>@-2 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC W=, W=W@1 W=Cleveland@-1 
+author/author: [W]: INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 W=,@-1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=S@2 W=W W=Cleveland@-2 
+author/author: [.]: PUNC@2 INITCAP@1 INITCAP@-1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=,@-2 PUNC@-2 CONTAINSDOTS W=. W=S@1 W=W@-1 
+author/author: [S]: W=,@2 PUNC@2 INITCAP PUNC@1 INITCAP@-2 W=.@1 CONTAINSDOTS@1 PUNC@-1 CAPLETTER SINGLECHAR ALLCAPS W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=S W=W@-2 
+author/author: [.]: W=,@1 PUNC@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 PUNC@-2 CONTAINSDOTS W=. W=.@-2 CONTAINSDOTS@-2 W=and@2 W=S@-1 
+author/author: [,]: INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 INITCAP@-2 PUNC W=, PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=and@1 W=S@-2 W=C@2 
+author/author: [and]: PUNC@2 INITCAP@1 W=.@2 CONTAINSDOTS@2 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 W=,@-1 PUNC@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=and W=C@1 
+author/author: [C]: INITCAP INITCAP@2 PUNC@1 W=.@1 CONTAINSDOTS@1 CAPLETTER SINGLECHAR ALLCAPS W=,@-2 PUNC@-2 W=and@-1 W=C W=Loader@2 
+author/author: [.]: W=,@2 PUNC@2 INITCAP@1 INITCAP@-1 PUNC ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 CONTAINSDOTS W=. W=and@-2 W=C@-1 W=Loader@1 
+author/author: [Loader]: PUNC@2 INITCAP W=,@1 PUNC@1 INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=(@2 W=C@-2 W=Loader 
+author/author: [,]: PUNC@1 INITCAP@-1 PUNC W=, PUNC@-2 W=.@-2 CONTAINSDOTS@-2 ALLDIGITS@2 CONTAINSDIGITS@2 W=(@1 W=1994@2 W=Loader@-1 
+date/date: [(]: PUNC@2 INITCAP@-2 PUNC W=,@-1 PUNC@-1 W=)@2 ALLDIGITS@1 CONTAINSDIGITS@1 W=( W=1994@1 W=Loader@-2 
+date/date: [1994]: PUNC@2 PUNC@1 W=.@2 CONTAINSDOTS@2 PUNC@-1 W=,@-2 PUNC@-2 W=)@1 W=(@-1 ALLDIGITS CONTAINSDIGITS W=1994 
+date/date: [)]: INITCAP@2 PUNC@1 PUNC W=.@1 CONTAINSDOTS@1 PUNC@-2 ALLDIGITS@-1 CONTAINSDIGITS@-1 W=(@-2 W=) W=1994@-1 W=Computational@2 
+date/date: [.]: INITCAP@1 INITCAP@2 PUNC PUNC@-1 CONTAINSDOTS W=. W=)@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=1994@-2 W=Computational@1 W=Methods@2 
+title/title: [Computational]: INITCAP@1 INITCAP PUNC@-1 PUNC@-2 W=.@-1 CONTAINSDOTS@-1 W=)@-2 W=for@2 W=Computational W=Methods@1 
+title/title: [Methods]: INITCAP INITCAP@2 INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 W=for@1 W=Computational@-1 W=Methods W=Local@2 
+title/title: [for]: INITCAP@1 INITCAP@2 INITCAP@-1 INITCAP@-2 W=for W=Computational@-2 W=Methods@-1 W=Regression@2 W=Local@1 
+title/title: [Local]: PUNC@2 INITCAP@1 INITCAP W=.@2 CONTAINSDOTS@2 INITCAP@-2 W=for@-1 W=Methods@-2 W=Regression@1 W=Local 
+title/title: [Regression]: INITCAP INITCAP@2 PUNC@1 INITCAP@-1 W=.@1 CONTAINSDOTS@1 W=for@-2 W=Technical@2 W=Regression W=Local@-1 
+title/title: [.]: INITCAP@1 INITCAP@2 INITCAP@-1 INITCAP@-2 PUNC CONTAINSDOTS W=. W=Report@2 W=Technical@1 W=Regression@-1 W=Local@-2 
+tech/tech: [Technical]: INITCAP@1 INITCAP INITCAP@-2 PUNC@-1 W=.@-1 CONTAINSDOTS@-1 ALLDIGITS@2 CONTAINSDIGITS@2 W=Report@1 W=Technical W=11@2 W=Regression@-2 
+tech/tech: [Report]: W=,@2 PUNC@2 INITCAP INITCAP@-1 PUNC@-2 W=.@-2 CONTAINSDOTS@-2 ALLDIGITS@1 CONTAINSDIGITS@1 W=Report W=Technical@-1 W=11@1 
+tech/tech: [11]: INITCAP@2 W=,@1 PUNC@1 INITCAP@-1 INITCAP@-2 ALLDIGITS CONTAINSDIGITS W=Report@-1 W=Technical@-2 W=11 W=Murray@2 
+tech/tech: [,]: INITCAP@1 INITCAP@2 INITCAP@-2 PUNC W=, ALLDIGITS@-1 CONTAINSDIGITS@-1 W=Report@-2 W=11@-1 W=Hill@2 W=Murray@1 
+location/location: [Murray]: W=,@2 PUNC@2 INITCAP@1 INITCAP W=,@-1 PUNC@-1 ALLDIGITS@-2 CONTAINSDIGITS@-2 W=11@-2 W=Hill@1 W=Murray 
+location/location: [Hill]: INITCAP INITCAP@2 ALLCAPS@2 W=,@1 PUNC@1 INITCAP@-1 W=,@-2 PUNC@-2 W=Hill W=NJ@2 W=Murray@-1 
+location/location: [,]: PUNC@2 INITCAP@1 INITCAP@-1 ALLCAPS@1 INITCAP@-2 PUNC W=, W=:@2 W=Hill@-1 W=NJ@1 W=Murray@-2 
+location/location: [NJ]: INITCAP INITCAP@2 ALLCAPS@2 PUNC@1 INITCAP@-2 W=,@-1 PUNC@-1 ALLCAPS W=:@1 W=AT@2 W=Hill@-2 W=NJ 
+location/location: [:]: INITCAP@1 INITCAP@-1 ALLCAPS@1 PUNC W=&@2 ALLCAPS@-1 W=,@-2 PUNC@-2 W=: W=AT@1 W=NJ@-1 
+institution/publisher* [AT]* INITCAP INITCAP@2 ALLCAPS@2 SINGLECHAR@2 CAPLETTER@2 INITCAP@-2 PUNC@-1 ALLCAPS W=&@1 ALLCAPS@-2 W=:@-1 W=T@2 W=AT W=NJ@-2 
+institution/publisher* [&]* INITCAP@1 INITCAP@2 INITCAP@-1 ALLCAPS@1 SINGLECHAR@1 CAPLETTER@1 ALLCAPS@-1 PUNC@-2 W=& W=:@-2 W=T@1 W=AT@-1 W=Bell@2 
+institution/publisher* [T]* INITCAP@1 INITCAP INITCAP@2 INITCAP@-2 CAPLETTER SINGLECHAR ALLCAPS ALLCAPS@-2 W=&@-1 W=T W=AT@-2 W=Laboratories@2 W=Bell@1 
+institution/publisher* [Bell]* W=,@2 PUNC@2 INITCAP@1 INITCAP INITCAP@-1 ALLCAPS@-1 SINGLECHAR@-1 CAPLETTER@-1 W=&@-2 W=T@-1 W=Laboratories@1 W=Bell 
+institution/publisher* [Laboratories]* INITCAP INITCAP@2 W=,@1 PUNC@1 INITCAP@-1 INITCAP@-2 ALLCAPS@-2 SINGLECHAR@-2 CAPLETTER@-2 W=T@-2 W=Statistics@2 W=Bell@-1 W=Laboratories 
+institution/publisher* [,]* INITCAP@1 INITCAP@2 INITCAP@-1 INITCAP@-2 PUNC W=, W=Department@2 W=Statistics@1 W=Laboratories@-1 W=Bell@-2 
+institution/location* [Statistics]* PUNC@2 INITCAP@1 INITCAP W=.@2 CONTAINSDOTS@2 INITCAP@-2 W=,@-1 PUNC@-1 W=Department@1 W=Statistics W=Laboratories@-2 
+institution/location* [Department]* INITCAP PUNC@1 INITCAP@-1 W=.@1 CONTAINSDOTS@1 W=,@-2 PUNC@-2 <END0>@2 W=Department W=Statistics@-1 
+institution/location* [.]* INITCAP@-1 INITCAP@-2 PUNC CONTAINSDOTS W=. <END1>@2 <END0>@1 W=Department@-1 W=Statistics@-2 
+
