@@ -71,8 +71,10 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Inserts a user into the database.
 	 */
-	public void createUser(final User user, final DBSession session) {
+	public String createUser(final User user, final DBSession session) {
 		this.insertUser(user, session);
+		// if we don't get an exception here, we assume the user has been created successfully
+		return user.getName();
 	}
 
 	/**

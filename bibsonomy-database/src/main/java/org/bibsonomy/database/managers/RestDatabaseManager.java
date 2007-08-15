@@ -309,7 +309,7 @@ public class RestDatabaseManager implements DBLogicInterface {
 	/*
 	 * Adds/updates a user in the database.
 	 */
-	public void storeUser(final String authUserName, final User user, boolean update) {
+	public String storeUser(final String authUserName, final User user, boolean update) {
 		final DBSession session = this.openSession();
 		try {
 			String errorMsg = null;
@@ -333,10 +333,9 @@ public class RestDatabaseManager implements DBLogicInterface {
 				throw new IllegalStateException(errorMsg);
 			}
 			if (update == false) {
-				this.userDBManager.createUser(user, session);
-			} else {
-				throw new UnsupportedOperationException("update user not implemented yet");
+				return this.userDBManager.createUser(user, session);
 			}
+			throw new UnsupportedOperationException("update user not implemented yet");
 		} finally {
 			session.close();
 		}
@@ -345,7 +344,7 @@ public class RestDatabaseManager implements DBLogicInterface {
 	/*
 	 * Adds/updates a post in the database.
 	 */
-	public <T extends Resource> void storePost(final String userName, Post<T> post, boolean update) {
+	public <T extends Resource> String storePost(final String userName, Post<T> post, boolean update) {
 		final DBSession session = this.openSession();
 		try {
 			final CrudableContent<T, GenericParam> man = getFittingDatabaseManager(post);
@@ -353,6 +352,8 @@ public class RestDatabaseManager implements DBLogicInterface {
 			post.getResource().recalculateHashes();			
 			post = this.validateGroups(post, session);			
 			man.storePost(userName, post, oldIntraHash, update, session);
+			// if we don't get an exception here, we assume the resource has been successfully stored
+			return post.getResource().getIntraHash();
 		} finally {
 			session.close();
 		}
@@ -413,7 +414,7 @@ public class RestDatabaseManager implements DBLogicInterface {
 	/*
 	 * Adds/updates a group in the database.
 	 */
-	public void storeGroup(final String authUserName, final Group group, boolean update) {
+	public String storeGroup(final String authUserName, final Group group, boolean update) {
 		/* FIXME: unsure who may change a group -> better doing nothing
 		final DBSession session = this.openSession();
 		try {
@@ -422,6 +423,7 @@ public class RestDatabaseManager implements DBLogicInterface {
 			session.close();
 		}
 		*/
+		throw new UnsupportedOperationException("StoreGroup is not yet implemented.");
 	}
 
 	/*

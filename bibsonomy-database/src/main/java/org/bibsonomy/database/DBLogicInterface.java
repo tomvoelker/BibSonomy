@@ -225,8 +225,9 @@ public interface DBLogicInterface {
 	 * @param authUserName  currently logged in user's name
 	 * @param user  the user to store
 	 * @param update  if true, an exception is thrown if the user does not exist. If false one is thrown if the user exists.
+	 * @return userId the user id of the created / updated user
 	 */
-	public void storeUser(String authUserName, User user, boolean update);
+	public String storeUser(String authUserName, User user, boolean update);
 
 	/**
 	 * Adds/updates a post in the database.
@@ -234,8 +235,9 @@ public interface DBLogicInterface {
 	 * @param userName  name of the user who posts this post
 	 * @param post  the post to be postet
 	 * @param update  if true, an exception is thrown if the post does not exist. If false one is thrown if the post exists.
+	 * @return resourceHash the resource hash of the created / updated post
 	 */
-	public <T extends Resource> void storePost(String userName, Post<T> post, boolean update);
+	public <T extends Resource> String storePost(String userName, Post<T> post, boolean update);
 
 	/**
 	 * Adds/updates a group in the database.
@@ -243,8 +245,9 @@ public interface DBLogicInterface {
 	 * @param authUserName  currently logged in user's name
 	 * @param group  the group to add
 	 * @param update  if true, an exception is thrown if the group does not exist. If false one is thrown if the group exists.
+	 * @return groupId the if of the created / updated group
 	 */
-	public void storeGroup(String authUserName, Group group, boolean update);
+	public String storeGroup(String authUserName, Group group, boolean update);
 
 	/**
 	 * Adds an existing user to an existing group.

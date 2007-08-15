@@ -108,37 +108,37 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 	
-	public void createGroup(Group group) {
+	public String createGroup(Group group) {
 		ensureLoggedIn();
-		this.dbLogic.storeGroup(this.loginUserName, group, false);
+		return this.dbLogic.storeGroup(this.loginUserName, group, false);
 	}
 	
-	public void updateGroup(Group group) {
+	public String updateGroup(Group group) {
 		ensureLoggedIn();
-		this.dbLogic.storeGroup(this.loginUserName, group, true);
+		return this.dbLogic.storeGroup(this.loginUserName, group, true);
 	}
 
-	public void createPost(Post<?> post) {
+	public String  createPost(Post<?> post) {
 		ensureLoggedIn();
-		this.dbLogic.storePost(this.loginUserName, post, false);
+		return this.dbLogic.storePost(this.loginUserName, post, false);
 	}
 	
-	public void updatePost(Post<?> post) {
+	public String updatePost(Post<?> post) {
 		ensureLoggedIn();
-		this.dbLogic.storePost(this.loginUserName, post, true);
+		return this.dbLogic.storePost(this.loginUserName, post, true);
 	}
 
-	public void createUser(User user) {
-		this.dbLogic.storeUser(this.loginUserName, user, false);
+	public String createUser(User user) {
+		return this.dbLogic.storeUser(this.loginUserName, user, false);
 	}
 	
-	public void updateUser(User user) {
+	public String updateUser(User user) {
 		if ((this.loginUserName == null) || (this.loginUserName.equals(user.getName()) == false)) {
 			final String errorMsg = "user " + ((this.loginUserName != null) ? this.loginUserName : "anonymous") + " is not authorized to change user " + user.getName();
 			log.warn(errorMsg);
 			throw new ValidationException(errorMsg);
 		}
-		this.dbLogic.storeUser(this.loginUserName, user, true);
+		return this.dbLogic.storeUser(this.loginUserName, user, true);
 	}
 
 	public String getAuthenticatedUser() {
