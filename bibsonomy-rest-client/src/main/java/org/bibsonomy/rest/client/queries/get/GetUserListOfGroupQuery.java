@@ -21,7 +21,6 @@ public final class GetUserListOfGroupQuery extends AbstractQuery<List<User>> {
 	private final String groupname;
 	private final int start;
 	private final int end;
-	private Reader downloadedDocument;
 
 	/**
 	 * Gets an user list of a group

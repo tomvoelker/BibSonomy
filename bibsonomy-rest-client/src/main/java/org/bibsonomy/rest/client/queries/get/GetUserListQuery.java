@@ -19,7 +19,6 @@ public final class GetUserListQuery extends AbstractQuery<List<User>> {
 
 	private final int start;
 	private final int end;
-	private Reader downloadedDocument;
 
 	/**
 	 * Gets bibsonomy's user list

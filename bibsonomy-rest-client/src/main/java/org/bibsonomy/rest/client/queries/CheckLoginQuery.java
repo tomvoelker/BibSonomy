@@ -12,6 +12,6 @@ public class CheckLoginQuery extends AbstractQuery<String> {
 
 	@Override
 	protected String doExecute() throws ErrorPerformingRequestException {
-		return performRequest(HttpMethod.HEAD, URL_GROUPS, null);
+		return performRequest(HttpMethod.HEAD, URL_GROUPS, null).toString();
 	}
 }

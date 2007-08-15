@@ -2,6 +2,8 @@ package org.bibsonomy.rest.client;
 
 import java.io.Reader;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpStatus;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.client.worker.HttpWorker;
@@ -13,6 +15,8 @@ import org.bibsonomy.rest.client.worker.impl.PutWorker;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.enums.RenderingFormat;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.renderer.RendererFactory;
+import org.bibsonomy.rest.renderer.xml.StatType;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -33,6 +37,8 @@ public abstract class AbstractQuery<T> {
 	private RenderingFormat renderingFormat = RenderingFormat.XML;
 	private ProgressCallback callback;
 	
+	protected Reader downloadedDocument;
+	
 	private T result;
 	private boolean executed = false;
 
@@ -43,9 +49,9 @@ public abstract class AbstractQuery<T> {
 		return downloadedDocument;
 	}
 
-	protected final String performRequest(final HttpMethod method, final String url, final String requestBody) throws ErrorPerformingRequestException {
+	protected final Reader performRequest(final HttpMethod method, final String url, final String requestBody) throws ErrorPerformingRequestException {
 		final HttpWorker worker;
-		final String result;
+		final Reader result;
 		final String absoluteUrl;
 		absoluteUrl = apiURL + url;
 
@@ -73,7 +79,6 @@ public abstract class AbstractQuery<T> {
 		}
 
 		this.statusCode = worker.getHttpResult();
-
 		return result;
 	}
 
@@ -156,4 +161,16 @@ public abstract class AbstractQuery<T> {
 	void setProgressCallback(final ProgressCallback callback) {
 		this.callback = callback;
 	}
+	
+	public boolean isSuccess() {
+		if (this.getHttpStatusCode() == HttpStatus.SC_OK)
+			return true;
+		return false;						
+	}
+	
+	public String getError() {
+		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
+		return RendererFactory.getRenderer(getRenderingFormat()).parseError(this.downloadedDocument);
+	}	
+	
 }

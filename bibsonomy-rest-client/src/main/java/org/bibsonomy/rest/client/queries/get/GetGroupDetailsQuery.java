@@ -17,7 +17,6 @@ import org.bibsonomy.rest.renderer.RendererFactory;
 public final class GetGroupDetailsQuery extends AbstractQuery<Group> {
 
 	private final String groupname;
-	private Reader downloadedDocument;
 
 	/**
 	 * Gets details of a group.

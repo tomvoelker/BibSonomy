@@ -16,7 +16,6 @@ import org.bibsonomy.rest.renderer.RendererFactory;
  */
 public final class GetTagDetailsQuery extends AbstractQuery<Tag> {
 	private final String tagName;
-	private Reader downloadedDocument;
 
 	public GetTagDetailsQuery(final String tagName) {
 		this.tagName = tagName;this.downloadedDocument = null;

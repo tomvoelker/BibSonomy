@@ -17,7 +17,6 @@ import org.bibsonomy.rest.renderer.RendererFactory;
 public final class GetUserDetailsQuery extends AbstractQuery<User> {
 
 	private final String username;
-	private Reader downloadedDocument;
 
 	/**
 	 * Gets details of a user.

@@ -1,9 +1,13 @@
 package org.bibsonomy.rest.client.worker.impl;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.logging.Level;
 
 import org.apache.commons.httpclient.methods.DeleteMethod;
+import org.bibsonomy.rest.client.ProgressCallback;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.client.worker.HttpWorker;
 
@@ -17,7 +21,7 @@ public final class DeleteWorker extends HttpWorker {
 		super(username, apiKey);
 	}
 
-	public String perform(final String url) throws ErrorPerformingRequestException {
+	public Reader perform(final String url) throws ErrorPerformingRequestException {
 		LOGGER.log(Level.INFO, "DELETE: URL: " + url);
 
 		final DeleteMethod delete = new DeleteMethod(url);
@@ -28,7 +32,7 @@ public final class DeleteWorker extends HttpWorker {
 		try {
 			this.httpResult = getHttpClient().executeMethod(delete);
 			LOGGER.log(Level.INFO, "Result: " + this.httpResult);
-			return delete.getResponseBodyAsString();
+			return new StringReader(delete.getResponseBodyAsString());
 		} catch (final IOException e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			throw new ErrorPerformingRequestException(e);

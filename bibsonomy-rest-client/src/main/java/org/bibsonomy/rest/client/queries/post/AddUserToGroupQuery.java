@@ -2,10 +2,12 @@ package org.bibsonomy.rest.client.queries.post;
 
 import java.io.StringWriter;
 
+import org.bibsonomy.common.enums.Status;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.RendererFactory;
 
 /**
@@ -44,6 +46,14 @@ public final class AddUserToGroupQuery extends AbstractQuery<String> {
 	protected String doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		RendererFactory.getRenderer(getRenderingFormat()).serializeUser(sw, user, null);
-		return performRequest(HttpMethod.POST, URL_GROUPS + "/" + this.groupName + "/" + URL_USERS + "?format=" + getRenderingFormat().toString().toLowerCase(), sw.toString());
+		this.downloadedDocument = performRequest(HttpMethod.POST, URL_GROUPS + "/" + this.groupName + "/" + URL_USERS + "?format=" + getRenderingFormat().toString().toLowerCase(), sw.toString());
+		return null;
+	}
+	
+	@Override
+	public String getResult() throws BadRequestOrResponseException, IllegalStateException {				
+		if (this.isSuccess())
+			return Status.OK.getMessage();
+		return this.getError();
 	}
 }

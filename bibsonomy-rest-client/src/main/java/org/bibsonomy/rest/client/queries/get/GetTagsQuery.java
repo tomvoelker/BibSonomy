@@ -20,7 +20,6 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>> {
 
 	private final int start;
 	private final int end;
-	private Reader downloadedDocument;
 	private String filter = null;
 	private GroupingEntity grouping = GroupingEntity.ALL;
 	private String groupingValue;

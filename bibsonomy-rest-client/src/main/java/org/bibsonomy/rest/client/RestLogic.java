@@ -132,30 +132,30 @@ public class RestLogic implements LogicInterface {
 		execute(new RemoveUserFromGroupQuery(userName, groupName));
 	}
 
-	public void createGroup(Group group) {
-		execute(new CreateGroupQuery(group));
+	public String createGroup(Group group) {
+		return execute(new CreateGroupQuery(group));
 	}
 
-	public void createPost(Post<?> post) {
-		execute(new CreatePostQuery(this.authUserName, post));
+	public String createPost(Post<?> post) {
+		return execute(new CreatePostQuery(this.authUserName, post));
 	}
 
-	public void createUser(User user) {
-		execute(new CreateUserQuery(user));
+	public String createUser(User user) {
+		return execute(new CreateUserQuery(user));
 	}
 
-	public void updateGroup(final Group group) {
+	public String updateGroup(final Group group) {
 		// groups cannot be renamed
-		execute(new ChangeGroupQuery(group.getName(), group));
+		return execute(new ChangeGroupQuery(group.getName(), group));
 	}
 
-	public void updatePost(final Post<?> post) {
+	public String updatePost(final Post<?> post) {
 		// hashes are recalculated by the server
-		execute(new ChangePostQuery(this.authUserName, post.getResource().getIntraHash(), post));
+		return execute(new ChangePostQuery(this.authUserName, post.getResource().getIntraHash(), post));
 	}
 
-	public void updateUser(User user) {
+	public String updateUser(User user) {
 		// accounts cannot be renamed
-		execute(new ChangeUserQuery(user.getName(), user));
+		return execute(new ChangeUserQuery(user.getName(), user));
 	}
 }

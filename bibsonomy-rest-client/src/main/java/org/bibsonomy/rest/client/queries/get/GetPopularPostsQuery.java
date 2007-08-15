@@ -21,7 +21,6 @@ public final class GetPopularPostsQuery extends AbstractQuery<List<Post<? extend
 
 	private final int start;
 	private final int end;
-	private Reader downloadedDocument;
 	private Class<? extends Resource> resourceType;
 	private GroupingEntity grouping = GroupingEntity.ALL;
 	private String groupingValue;

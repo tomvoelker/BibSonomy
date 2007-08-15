@@ -22,7 +22,6 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 
 	private final int start;
 	private final int end;
-	private Reader downloadedDocument;
 	private Class<? extends Resource> resourceType;
 	private List<String> tags;
 	private GroupingEntity grouping = GroupingEntity.ALL;

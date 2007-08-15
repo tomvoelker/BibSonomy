@@ -1,6 +1,9 @@
 package org.bibsonomy.rest.client.worker.impl;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.logging.Level;
 
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -18,7 +21,7 @@ public final class PostWorker extends HttpWorker {
 		super(username, apiKey);
 	}
 
-	public String perform(final String url, final String requestBody) throws ErrorPerformingRequestException {
+	public Reader perform(final String url, final String requestBody) throws ErrorPerformingRequestException {
 		LOGGER.log(Level.INFO, "POST: URL: " + url);
 
 		final PostMethod post = new PostMethod(url);
@@ -31,7 +34,7 @@ public final class PostWorker extends HttpWorker {
 		try {
 			this.httpResult = getHttpClient().executeMethod(post);
 			LOGGER.log(Level.INFO, "Result: " + this.httpResult);
-			return post.getResponseBodyAsString();
+			return new StringReader(post.getResponseBodyAsString());
 		} catch (final IOException e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			throw new ErrorPerformingRequestException(e);

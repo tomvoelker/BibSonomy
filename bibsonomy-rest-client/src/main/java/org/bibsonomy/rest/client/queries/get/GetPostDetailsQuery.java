@@ -19,7 +19,6 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post<? extends Reso
 
 	private final String username;
 	private final String resourceHash;
-	private Reader downloadedDocument;
 
 	/**
 	 * Gets details of a post of an user.

@@ -29,7 +29,7 @@ public abstract class HttpWorker {
 
 	protected final String username;
 	protected final String apiKey;
-
+		
 	public HttpWorker(final String username, final String apiKey) {
 		this.username = username;
 		this.apiKey = apiKey;

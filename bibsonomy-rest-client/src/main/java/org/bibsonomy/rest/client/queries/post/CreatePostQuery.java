@@ -10,6 +10,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.RendererFactory;
 
 /**
@@ -67,6 +68,14 @@ public final class CreatePostQuery extends AbstractQuery<String> {
 	protected String doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		RendererFactory.getRenderer(getRenderingFormat()).serializePost(sw, this.post, null);
-		return performRequest(HttpMethod.POST, URL_USERS + "/" + this.username + "/" + URL_POSTS + "?format=" + getRenderingFormat().toString().toLowerCase(), sw.toString());
+		this.downloadedDocument = performRequest(HttpMethod.POST, URL_USERS + "/" + this.username + "/" + URL_POSTS + "?format=" + getRenderingFormat().toString().toLowerCase(), sw.toString());
+		return null;
 	}
+	
+	@Override
+	public String getResult() throws BadRequestOrResponseException, IllegalStateException {
+		if (this.isSuccess())
+			return RendererFactory.getRenderer(getRenderingFormat()).parseResourceHash(this.downloadedDocument); 
+		return this.getError();
+	}	
 }

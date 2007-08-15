@@ -1,8 +1,10 @@
 package org.bibsonomy.rest.client.queries.delete;
 
+import org.bibsonomy.common.enums.Status;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 
 /**
  * Use this Class to remove an user from a group.
@@ -34,6 +36,14 @@ public final class RemoveUserFromGroupQuery extends AbstractQuery<String> {
 
 	@Override
 	protected String doExecute() throws ErrorPerformingRequestException {
-		return performRequest(HttpMethod.DELETE, URL_GROUPS + "/" + this.groupName + "/" + URL_USERS + "/" + this.userName, null);
+		this.downloadedDocument = performRequest(HttpMethod.DELETE, URL_GROUPS + "/" + this.groupName + "/" + URL_USERS + "/" + this.userName, null);
+		return null;
 	}
+	
+	@Override
+	public String getResult() throws BadRequestOrResponseException, IllegalStateException {
+		if (this.isSuccess())
+			return Status.OK.getMessage();
+		return this.getError();
+	}	
 }

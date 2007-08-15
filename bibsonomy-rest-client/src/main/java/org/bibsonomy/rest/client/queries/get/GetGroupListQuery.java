@@ -19,7 +19,6 @@ public final class GetGroupListQuery extends AbstractQuery<List<Group>> {
 
 	private final int start;
 	private final int end;
-	private Reader downloadedDocument;
 
 	/**
 	 * Gets bibsonomy's group list
