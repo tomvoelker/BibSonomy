@@ -131,6 +131,52 @@ public interface Renderer {
 	 *            the error message to send.
 	 */
 	public void serializeError(Writer writer, String errorMessage);
+	
+	/**
+	 * Serializes a plain OK.
+	 * 
+	 * @param writer
+	 *            the {@link Writer} to use.
+	 */
+	public void serializeOK(Writer writer);
+	
+	/**
+	 * Serializes a failure status.
+	 * 
+	 * @param writer
+	 *            the {@link Writer} to use.
+	 */
+	public void serializeFail(Writer writer);		
+	
+	/**
+	 * Serializes a resourcehash.
+	 * 
+	 * @param writer
+	 *            the {@link Writer} to use.
+	 * @param errorMessage
+	 *            the error message to send.
+	 */
+	public void serializeResourceHash(Writer writer, String hash);
+	
+	/**
+	 * Serializes a userid.
+	 * 
+	 * @param writer
+	 *            the {@link Writer} to use.
+	 * @param errorMessage
+	 *            the error message to send.
+	 */
+	public void serializeUserId(Writer writer, String userId);
+	
+	/**
+	 * Serializes a groupid.
+	 * 
+	 * @param writer
+	 *            the {@link Writer} to use.
+	 * @param errorMessage
+	 *            the error message to send.
+	 */
+	public void serializeGroupId(Writer writer, String groupId);	
 
 	/**
 	 * Reads an errormessage from a {@link Reader}
@@ -141,7 +187,51 @@ public interface Renderer {
 	 * @throws BadRequestOrResponseException
 	 *             if the document within the reader is errorenous.
 	 */
-	public String parseError(Reader reader) throws BadRequestOrResponseException;	
+	public String parseError(Reader reader) throws BadRequestOrResponseException;
+	
+	/**
+	 * Reads an resource hash from a {@link Reader}
+	 * 
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return an resource hash
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public String parseResourceHash(Reader reader) throws BadRequestOrResponseException;
+	
+	/**
+	 * Reads an user id from a {@link Reader}
+	 * 
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return an resource hash
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public String parseUserId(Reader reader) throws BadRequestOrResponseException;
+	
+	/**
+	 * Reads a group id from a {@link Reader}
+	 * 
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return an resource hash
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public String parseGroupId(Reader reader) throws BadRequestOrResponseException;	
+	
+	/**
+	 * Reads the status from a {@link Reader}
+	 * 
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return the status ("ok" or "fail")
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public String parseStat(Reader reader) throws BadRequestOrResponseException;	
 	
 	/**
 	 * Reads a List of {@link User}s from a {@link Reader}.

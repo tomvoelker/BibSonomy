@@ -1,16 +1,14 @@
 package org.bibsonomy.rest.strategy.users;
 
-import java.io.Writer;
-
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.rest.strategy.AbstractDeleteStrategy;
 import org.bibsonomy.rest.strategy.Context;
-import org.bibsonomy.rest.strategy.Strategy;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public class DeletePostStrategy extends Strategy {
+public class DeletePostStrategy extends AbstractDeleteStrategy {
 
 	private final String userName;
 	private final String resourceHash;
@@ -22,12 +20,14 @@ public class DeletePostStrategy extends Strategy {
 	}
 
 	@Override
-	public void perform(final Writer writer) throws InternServerException {
-		this.getLogic().deletePost(this.userName, this.resourceHash);
+	public String getContentType() {
+		return null;
 	}
 
 	@Override
-	public String getContentType() {
-		return null;
+	protected boolean delete() throws InternServerException {
+		this.getLogic().deletePost(this.userName, this.resourceHash);
+		// no exception -> assume success
+		return true;
 	}
 }

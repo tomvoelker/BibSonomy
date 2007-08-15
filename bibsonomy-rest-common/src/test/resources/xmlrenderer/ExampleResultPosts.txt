@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<bibsonomy>
+<bibsonomy stat="ok">
     <posts start="0" next="www.bibsonomy.org/foo/bar" end="10">
         <post>
             <user name="foo" href="http://localhost:8080/restTomcat/api/users/foo"/>

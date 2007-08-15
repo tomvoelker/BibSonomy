@@ -1,16 +1,14 @@
 package org.bibsonomy.rest.strategy.groups;
 
-import java.io.Writer;
-
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.rest.strategy.AbstractDeleteStrategy;
 import org.bibsonomy.rest.strategy.Context;
-import org.bibsonomy.rest.strategy.Strategy;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public class DeleteGroupStrategy extends Strategy {
+public class DeleteGroupStrategy extends AbstractDeleteStrategy {
 	private final String groupName;
 
 	public DeleteGroupStrategy(final Context context, final String groupName) {
@@ -19,13 +17,15 @@ public class DeleteGroupStrategy extends Strategy {
 	}
 
 	@Override
-	public void perform(final Writer writer) throws InternServerException {
-		this.getLogic().deleteGroup(this.groupName);
-	}
-
-	@Override
 	public String getContentType() {
 		// TODO no content-contenttype
 		return null;
+	}
+
+	@Override
+	protected boolean delete() throws InternServerException {
+		this.getLogic().deleteGroup(this.groupName);
+		// no exceptions at this point - assume success
+		return true;
 	}
 }

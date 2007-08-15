@@ -660,13 +660,16 @@ public class TestDatabase implements DBLogicInterface {
 	public void removeUserFromGroup(String groupName, String userName) {
 	}
 
-	public void storeGroup(final String authUserName, Group group, boolean update) {
+	public String storeGroup(final String authUserName, Group group, boolean update) {
+		return null;
 	}
 
-	public <T extends Resource> void storePost(String userName, Post<T> post, boolean update) {
+	public <T extends Resource> String storePost(String userName, Post<T> post, boolean update) {
+		return null;
 	}
 
-	public void storeUser(final String authUserName,  User user, boolean update) {
+	public String storeUser(final String authUserName,  User user, boolean update) {
 		this.dbUsers.put(user.getName(), user);
+		return null;
 	}
 }

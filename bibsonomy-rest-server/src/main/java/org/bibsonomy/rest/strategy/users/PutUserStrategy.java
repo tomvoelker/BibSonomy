@@ -6,14 +6,14 @@ import java.io.Writer;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.User;
+import org.bibsonomy.rest.strategy.AbstractUpdateStrategy;
 import org.bibsonomy.rest.strategy.Context;
-import org.bibsonomy.rest.strategy.Strategy;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public class PutUserStrategy extends Strategy {
+public class PutUserStrategy extends AbstractUpdateStrategy {
 	private final Reader doc;
 	private final String userName;
 
@@ -30,16 +30,21 @@ public class PutUserStrategy extends Strategy {
 	}
 
 	@Override
-	public void perform(final Writer writer) throws InternServerException {
-		final User user = this.getRenderer().parseUser(this.doc);
-		// ensure to use the right user name
-		user.setName(this.userName);
-		this.getLogic().updateUser(user);
-	}
-
-	@Override
 	public String getContentType() {
 		// TODO no content-contenttype
 		return null;
+	}
+
+	@Override
+	protected void render(Writer writer, String userID) {
+		this.getRenderer().serializeUserId(writer, userID);
+	}
+
+	@Override
+	protected String update() throws InternServerException {
+		final User user = this.getRenderer().parseUser(this.doc);
+		// ensure to use the right user name
+		user.setName(this.userName);
+		return this.getLogic().updateUser(user);
 	}
 }

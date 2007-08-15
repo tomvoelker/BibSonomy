@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<bibsonomy>
+<bibsonomy stat="fail">
     <users start="0" end="3">
         <user realname="Manuel Bork" name="mbork" href="http://localhost:8080/restTomcat/api/users/mbork" homepage="http://www.manuelbork.de" email="manuel.bork@uni-kassel.de"/>
         <user realname="Andreas Hotho" name="hotho" href="http://localhost:8080/restTomcat/api/users/hotho" homepage="http://www.bibsonomy.org" email="andreas.hotho@uni-kassel.de"/>

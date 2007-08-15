@@ -1,6 +1,5 @@
 package org.bibsonomy.rest.strategy.users;
 
-import java.io.Reader;
 import java.io.Writer;
 import java.util.Date;
 
@@ -9,20 +8,18 @@ import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.strategy.AbstractCreateStrategy;
 import org.bibsonomy.rest.strategy.Context;
-import org.bibsonomy.rest.strategy.Strategy;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public class PostPostStrategy extends Strategy {
-	private final Reader doc;
+public class PostPostStrategy extends AbstractCreateStrategy {
 	private final String userName;
 
 	public PostPostStrategy(final Context context, final String userName) {
 		super(context);
-		this.doc = context.getDocument();
 		this.userName = userName;
 	}
 
@@ -32,11 +29,17 @@ public class PostPostStrategy extends Strategy {
 	}
 
 	@Override
-	public void perform(final Writer writer) throws InternServerException {
+	public String getContentType() {
+		// TODO no content-contenttype
+		return null;
+	}
+
+	@Override
+	protected String create() throws InternServerException, BadRequestOrResponseException {
 		final Post<?> post = this.getRenderer().parsePost(this.doc);
 		post.setDate(new Date(System.currentTimeMillis()));
 		try {
-			this.getLogic().createPost(post);
+			return this.getLogic().createPost(post);
 		}
 		catch (InvalidModelException ex) {
 			throw new BadRequestOrResponseException(ex);
@@ -44,8 +47,7 @@ public class PostPostStrategy extends Strategy {
 	}
 
 	@Override
-	public String getContentType() {
-		// TODO no content-contenttype
-		return null;
+	protected void render(Writer writer, String resourceHash) {
+		this.getRenderer().serializeResourceHash(writer, resourceHash);		
 	}
 }

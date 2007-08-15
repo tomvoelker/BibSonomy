@@ -23,6 +23,8 @@ public class RemoveUserFromGroupStrategy extends Strategy {
 	@Override
 	public void perform(final Writer writer) throws InternServerException {
 		this.getLogic().removeUserFromGroup(this.groupName, this.userName);
+		// no exception -> assume success
+		this.getRenderer().serializeOK(writer);
 	}
 
 	@Override

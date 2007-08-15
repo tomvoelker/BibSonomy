@@ -50,6 +50,7 @@ import org.bibsonomy.rest.renderer.xml.ModelFactory;
 import org.bibsonomy.rest.renderer.xml.ObjectFactory;
 import org.bibsonomy.rest.renderer.xml.PostType;
 import org.bibsonomy.rest.renderer.xml.PostsType;
+import org.bibsonomy.rest.renderer.xml.StatType;
 import org.bibsonomy.rest.renderer.xml.TagType;
 import org.bibsonomy.rest.renderer.xml.TagsType;
 import org.bibsonomy.rest.renderer.xml.UserType;
@@ -106,12 +107,14 @@ public class XMLRenderer implements Renderer {
 			xmlPosts.getPost().add(xmlPost);
 		}
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
+		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setPosts(xmlPosts);
 		serialize(writer, xmlDoc);
 	}
 
 	public void serializePost(final Writer writer, final Post<? extends Resource> post, final ViewModel model) throws InternServerException {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
+		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setPost(createXmlPost(post));
 		serialize(writer, xmlDoc);
 	}
@@ -231,12 +234,14 @@ public class XMLRenderer implements Renderer {
 			xmlUsers.getUser().add(createXmlUser(user));
 		}
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
+		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setUsers(xmlUsers);
 		serialize(writer, xmlDoc);
 	}
 
 	public void serializeUser(final Writer writer, final User user, final ViewModel viewModel) throws InternServerException {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
+		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setUser(createXmlUser(user));
 		serialize(writer, xmlDoc);
 	}
@@ -266,12 +271,14 @@ public class XMLRenderer implements Renderer {
 			xmlTags.getTag().add(createXmlTag(tag));
 		}
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
+		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setTags(xmlTags);
 		serialize(writer, xmlDoc);
 	}
 
 	public void serializeTag(final Writer writer, final Tag tag, final ViewModel model) throws InternServerException {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
+		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setTag(createXmlTag(tag));
 		serialize(writer, xmlDoc);
 	}
@@ -312,12 +319,14 @@ public class XMLRenderer implements Renderer {
 			xmlGroups.getGroup().add(createXmlGroup(group));
 		}
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
+		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setGroups(xmlGroups);
 		serialize(writer, xmlDoc);
 	}
 
 	public void serializeGroup(final Writer writer, final Group group, final ViewModel model) throws InternServerException {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
+		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setGroup(createXmlGroup(group));
 		serialize(writer, xmlDoc);
 	}
@@ -335,15 +344,49 @@ public class XMLRenderer implements Renderer {
 		}
 		return xmlGroup;
 	}
-
+	
+	public void serializeOK(final Writer writer) {
+		final BibsonomyXML xmlDoc = new BibsonomyXML();
+		xmlDoc.setStat(StatType.OK);
+		serialize(writer, xmlDoc);
+	}
+	
+	public void serializeFail(final Writer writer) {
+		final BibsonomyXML xmlDoc = new BibsonomyXML();
+		xmlDoc.setStat(StatType.FAIL);
+		serialize(writer, xmlDoc);
+	}	
+	
 	public void serializeError(final Writer writer, final String errorMessage) {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
+		xmlDoc.setStat(StatType.FAIL);
 		xmlDoc.setError(errorMessage);
 		serialize(writer, xmlDoc);
 	}
 	
+	public void serializeGroupId(Writer writer, String groupId) {
+		final BibsonomyXML xmlDoc = new BibsonomyXML();
+		xmlDoc.setStat(StatType.OK);
+		xmlDoc.setGroupid(groupId);
+		serialize(writer, xmlDoc);		
+	}
+
+	public void serializeResourceHash(Writer writer, String hash) {
+		final BibsonomyXML xmlDoc = new BibsonomyXML();
+		xmlDoc.setStat(StatType.OK);
+		xmlDoc.setResourcehash(hash);
+		serialize(writer, xmlDoc);		
+	}
+
+	public void serializeUserId(Writer writer, String userId) {
+		final BibsonomyXML xmlDoc = new BibsonomyXML();
+		xmlDoc.setStat(StatType.OK);
+		xmlDoc.setUserid(userId);
+		serialize(writer, xmlDoc);		
+	}	
+	
 	public String parseError(final Reader reader) throws BadRequestOrResponseException {
-		if (reader == null) throw new BadRequestOrResponseException("The body part of the received document is missing");
+		checkReader(reader);
 		final BibsonomyXML xmlDoc = parse(reader);
 		if (xmlDoc.getError() != null) {
 			return xmlDoc.getError();
@@ -352,7 +395,7 @@ public class XMLRenderer implements Renderer {
 	}
 	
 	public User parseUser(final Reader reader) throws BadRequestOrResponseException {
-		if (reader == null) throw new BadRequestOrResponseException("The body part of the received document is missing");
+		checkReader(reader);
 
 		final BibsonomyXML xmlDoc = parse(reader);
 
@@ -364,7 +407,7 @@ public class XMLRenderer implements Renderer {
 	}
 
 	public Post<? extends Resource> parsePost(final Reader reader) throws BadRequestOrResponseException {
-		if (reader == null) throw new BadRequestOrResponseException("The body part of the received document is missing");
+		checkReader(reader);
 
 		final BibsonomyXML xmlDoc = parse(reader);
 
@@ -376,7 +419,7 @@ public class XMLRenderer implements Renderer {
 	}
 
 	public Group parseGroup(final Reader reader) throws BadRequestOrResponseException {
-		if (reader == null) throw new BadRequestOrResponseException("The body part of the received document is missing");
+		checkReader(reader);
 
 		final BibsonomyXML xmlDoc = parse(reader);
 
@@ -388,7 +431,7 @@ public class XMLRenderer implements Renderer {
 	}
 
 	public List<Group> parseGroupList(final Reader reader) throws BadRequestOrResponseException {
-		if (reader == null) throw new BadRequestOrResponseException("The body part of the received document is missing");
+		checkReader(reader);
 		final BibsonomyXML xmlDoc = parse(reader);
 		if (xmlDoc.getGroups() != null) {
 			final List<Group> groups = new LinkedList<Group>();
@@ -403,7 +446,7 @@ public class XMLRenderer implements Renderer {
 	}
 
 	public List<Post<? extends Resource>> parsePostList(final Reader reader) throws BadRequestOrResponseException {
-		if (reader == null) throw new BadRequestOrResponseException("The body part of the received document is missing");
+		checkReader(reader);
 		final BibsonomyXML xmlDoc = parse(reader);
 		if (xmlDoc.getPosts() != null) {
 			final List<Post<? extends Resource>> posts = new LinkedList<Post<? extends Resource>>();
@@ -418,7 +461,7 @@ public class XMLRenderer implements Renderer {
 	}
 
 	public List<Tag> parseTagList(final Reader reader) throws BadRequestOrResponseException {
-		if (reader == null) throw new BadRequestOrResponseException("The body part of the received document is missing");
+		checkReader(reader);
 		final BibsonomyXML xmlDoc = parse(reader);
 		if (xmlDoc.getTags() != null) {
 			final List<Tag> tags = new LinkedList<Tag>();
@@ -433,7 +476,7 @@ public class XMLRenderer implements Renderer {
 	}
 
 	public List<User> parseUserList(final Reader reader) throws BadRequestOrResponseException {
-		if (reader == null) throw new BadRequestOrResponseException("The body part of the received document is missing");
+		checkReader(reader);
 		final BibsonomyXML xmlDoc = parse(reader);
 		if (xmlDoc.getUsers() != null) {
 			final List<User> users = new LinkedList<User>();
@@ -532,12 +575,56 @@ public class XMLRenderer implements Renderer {
 	}
 
 	public Tag parseTag(Reader reader) throws BadRequestOrResponseException {
-		if (reader == null) throw new BadRequestOrResponseException("The body part of the received document is missing");
+		checkReader(reader);
 		final BibsonomyXML xmlDoc = parse(reader);
 		if (xmlDoc.getTag() != null) {
 			return ModelFactory.getInstance().createTag(xmlDoc.getTag());
 		}
 		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no tag defined.");
+	}
+
+	public String parseStat(Reader reader) throws BadRequestOrResponseException {
+		checkReader(reader);		
+		final BibsonomyXML xmlDoc = parse(reader);
+		if (xmlDoc.getStat() != null) {
+			return xmlDoc.getStat().value();
+		}
+		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no status defined.");
+	}
+
+	public String parseGroupId(Reader reader) throws BadRequestOrResponseException {
+		checkReader(reader);
+		final BibsonomyXML xmlDoc = parse(reader);
+		if (xmlDoc.getGroupid() != null) {
+			return xmlDoc.getGroupid();
+		}
+		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no group id.");
+	}
+
+	public String parseResourceHash(Reader reader) throws BadRequestOrResponseException {
+		checkReader(reader);
+		final BibsonomyXML xmlDoc = parse(reader);
+		if (xmlDoc.getResourcehash() != null) {
+			return xmlDoc.getResourcehash();
+		}
+		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no resource hash defined.");
+	}
+
+	public String parseUserId(Reader reader) throws BadRequestOrResponseException {
+		checkReader(reader);
+		final BibsonomyXML xmlDoc = parse(reader);
+		if (xmlDoc.getUserid() != null) {
+			return xmlDoc.getUserid();
+		}
+		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no user id defined.");
+	}
+	
+	private void checkReader(Reader reader) throws BadRequestOrResponseException {
+		if (reader == null) throw new BadRequestOrResponseException("The body part of the received document is missing");
 	}
 }

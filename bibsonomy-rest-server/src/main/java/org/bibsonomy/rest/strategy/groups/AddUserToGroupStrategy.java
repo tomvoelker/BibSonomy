@@ -26,6 +26,8 @@ public class AddUserToGroupStrategy extends Strategy {
 	public void perform(final Writer writer) throws InternServerException {
 		final User user = this.getRenderer().parseUser(this.doc);
 		this.getLogic().addUserToGroup(this.groupName, user.getName());
+		// no exception -> assume success
+		this.getRenderer().serializeOK(writer);
 	}
 
 	@Override

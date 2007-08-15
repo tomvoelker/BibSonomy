@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<bibsonomy>
+<bibsonomy stat="ok">
     <user name="foo" href="http://localhost:8080/restTomcat/api/users/foo"/>
 </bibsonomy>
