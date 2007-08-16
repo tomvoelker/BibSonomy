@@ -40,7 +40,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	private final DatabasePluginRegistry plugins;
 	private static final BibTexChain chain = new BibTexChain();
 
-	public BibTexDatabaseManager() {
+	private BibTexDatabaseManager() {
 		this.generalDb = GeneralDatabaseManager.getInstance();
 		this.tagDb = TagDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();

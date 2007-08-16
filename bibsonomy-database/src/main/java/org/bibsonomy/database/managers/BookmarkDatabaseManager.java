@@ -37,7 +37,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	private final DatabasePluginRegistry plugins;
 	private static final BookmarkChain chain = new BookmarkChain();
 
-	public BookmarkDatabaseManager() {
+	private BookmarkDatabaseManager() {
 		this.generalDb = GeneralDatabaseManager.getInstance();
 		this.tagDb = TagDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
