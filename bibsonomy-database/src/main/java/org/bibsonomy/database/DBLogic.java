@@ -107,22 +107,22 @@ public class DBLogic implements LogicInterface {
 			throw new ValidationException("You are not authorized to perform the requested operation");
 		}
 	}
-	
+
 	public String createGroup(Group group) {
 		ensureLoggedIn();
 		return this.dbLogic.storeGroup(this.loginUserName, group, false);
 	}
-	
+
 	public String updateGroup(Group group) {
 		ensureLoggedIn();
 		return this.dbLogic.storeGroup(this.loginUserName, group, true);
 	}
 
-	public String  createPost(Post<?> post) {
+	public String createPost(Post<?> post) {
 		ensureLoggedIn();
 		return this.dbLogic.storePost(this.loginUserName, post, false);
 	}
-	
+
 	public String updatePost(Post<?> post) {
 		ensureLoggedIn();
 		return this.dbLogic.storePost(this.loginUserName, post, true);
@@ -131,7 +131,7 @@ public class DBLogic implements LogicInterface {
 	public String createUser(User user) {
 		return this.dbLogic.storeUser(this.loginUserName, user, false);
 	}
-	
+
 	public String updateUser(User user) {
 		if ((this.loginUserName == null) || (this.loginUserName.equals(user.getName()) == false)) {
 			final String errorMsg = "user " + ((this.loginUserName != null) ? this.loginUserName : "anonymous") + " is not authorized to change user " + user.getName();
