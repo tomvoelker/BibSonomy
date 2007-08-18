@@ -74,8 +74,9 @@ public final class CreatePostQuery extends AbstractQuery<String> {
 	
 	@Override
 	public String getResult() throws BadRequestOrResponseException, IllegalStateException {
-		if (this.isSuccess())
-			return RendererFactory.getRenderer(getRenderingFormat()).parseResourceHash(this.downloadedDocument); 
+		if (this.isSuccess()) {
+			return RendererFactory.getRenderer(getRenderingFormat()).parseResourceHash(this.downloadedDocument);
+		}
 		return this.getError();
 	}	
 }
