@@ -57,9 +57,10 @@ public final class ChangePostQuery extends AbstractQuery<String> {
 
 		if (post.getResource() instanceof BibTex) {
 			final BibTex bibtex = (BibTex) post.getResource();
-			if (bibtex.getInterHash() == null || bibtex.getInterHash().length() == 0) {
-				throw new IllegalArgumentException("found an bibtex without interhash assigned.");
-			}
+// INTRAhash is enough information when changing a post			
+//			if (bibtex.getInterHash() == null || bibtex.getInterHash().length() == 0) {
+//				throw new IllegalArgumentException("found an bibtex without interhash assigned.");
+//			}
 			if (bibtex.getIntraHash() == null || bibtex.getIntraHash().length() == 0) {
 				throw new IllegalArgumentException("found an bibtex without intrahash assigned.");
 			}
