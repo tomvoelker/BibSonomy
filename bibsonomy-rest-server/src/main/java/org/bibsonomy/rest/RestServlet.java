@@ -139,7 +139,7 @@ public final class RestServlet extends HttpServlet {
 	 */
 	private void handle(final HttpServletRequest request, final HttpServletResponse response, final HttpMethod method) throws IOException {
 
-		log.debug("Incoming URL:" + request.getRequestURL());
+		log.debug("Incoming URL:" + request.getRequestURL() + " from IP " + request.getRemoteAddr());
 		Long start = System.currentTimeMillis();
 
 		try {
