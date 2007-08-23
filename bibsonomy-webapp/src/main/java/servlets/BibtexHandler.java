@@ -86,11 +86,11 @@ public class BibtexHandler extends HttpServlet {
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		try {
-			((Context) new InitialContext().lookup("java:/comp/env")).bind("ieScraperCrfPath", getServletContext().getRealPath("/crfBibsonomy/crf.dat"));
-		} catch (NamingException ex) {
-			throw new ServletException("Cannot bind java:/comp/env/ieScraperCrfPath", ex);
-		}
+//		try {
+//			((Context) new InitialContext().lookup("java:/comp/env")).bind("ieScraperCrfPath", getServletContext().getRealPath("/crfBibsonomy/crf.dat"));
+//		} catch (NamingException ex) {
+//			throw new ServletException("Cannot bind java:/comp/env/ieScraperCrfPath", ex);
+//		}
 		try {
 			dataSource = (DataSource) ((Context) new InitialContext().lookup("java:/comp/env")).lookup("jdbc/bibsonomy");
 			tempPath   = config.getServletContext().getInitParameter("rootPath") + "bibsonomy_temp";

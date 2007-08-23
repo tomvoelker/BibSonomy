@@ -33,7 +33,6 @@ import edu.umass.cs.mallet.base.pipe.iterator.*;
 import edu.umass.cs.mallet.base.pipe.tsf.*;
 import edu.umass.cs.mallet.base.util.*;
 
-import junit.framework.*;
 
 import java.util.HashMap;
 import java.util.Iterator;

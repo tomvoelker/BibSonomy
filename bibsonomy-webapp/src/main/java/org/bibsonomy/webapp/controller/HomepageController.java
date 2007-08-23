@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.RestDatabaseManager;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -26,7 +27,7 @@ public class HomepageController implements Controller {
 		final Map<String, Object> model = new HashMap<String, Object>();
 		model.put("projectName", "BibSonomy");
 
-		final List<Post<Bookmark>> bookmarks = RestDatabaseManager.getInstance().getPosts("cschenk", Bookmark.class, null, null, null, null, null, 0, 10);
+		final List<Post<Bookmark>> bookmarks = RestDatabaseManager.getInstance().getPosts("cschenk", Bookmark.class, GroupingEntity.ALL, null, null, null, null, 0, 10);
 		model.put("bookmarks", bookmarks);
 
 		return new ModelAndView("home", model);
