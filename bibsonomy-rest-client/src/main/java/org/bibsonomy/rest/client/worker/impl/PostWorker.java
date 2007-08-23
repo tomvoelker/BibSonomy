@@ -1,10 +1,8 @@
 package org.bibsonomy.rest.client.worker.impl;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.logging.Level;
 
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
@@ -22,7 +20,7 @@ public final class PostWorker extends HttpWorker {
 	}
 
 	public Reader perform(final String url, final String requestBody) throws ErrorPerformingRequestException {
-		LOGGER.log(Level.INFO, "POST: URL: " + url);
+		LOGGER.debug("POST: URL: " + url);
 
 		final PostMethod post = new PostMethod(url);
 		post.addRequestHeader(HEADER_AUTHORIZATION, encodeForAuthorization());
@@ -33,10 +31,12 @@ public final class PostWorker extends HttpWorker {
 
 		try {
 			this.httpResult = getHttpClient().executeMethod(post);
-			LOGGER.log(Level.INFO, "Result: " + this.httpResult);
+			LOGGER.debug("HTTP result: " + this.httpResult);
+			LOGGER.debug("XML response:\n" + post.getResponseBodyAsString());
+			LOGGER.debug("===================================================");			
 			return new StringReader(post.getResponseBodyAsString());
 		} catch (final IOException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.debug(e.getMessage(), e);
 			throw new ErrorPerformingRequestException(e);
 		} finally {
 			post.releaseConnection();

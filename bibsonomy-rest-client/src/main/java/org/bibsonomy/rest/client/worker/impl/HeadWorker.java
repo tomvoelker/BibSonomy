@@ -20,7 +20,7 @@ public class HeadWorker extends HttpWorker {
 	}
 
 	public Reader perform(final String url) throws ErrorPerformingRequestException {
-		LOGGER.log(Level.INFO, "HEAD: URL: " + url);
+		LOGGER.debug("HEAD: URL: " + url);
 
 		final HeadMethod head = new HeadMethod(url);
 		head.addRequestHeader(HEADER_AUTHORIZATION, encodeForAuthorization());
@@ -29,10 +29,10 @@ public class HeadWorker extends HttpWorker {
 
 		try {
 			this.httpResult = getHttpClient().executeMethod(head);
-			LOGGER.log(Level.INFO, "Result: " + this.httpResult);
+			LOGGER.debug("Result: " + this.httpResult);
 			return new StringReader( head.getStatusText() );
 		} catch (final IOException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.debug(e.getMessage(), e);
 			throw new ErrorPerformingRequestException(e);
 		} finally {
 			head.releaseConnection();

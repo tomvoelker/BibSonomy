@@ -22,7 +22,7 @@ public final class DeleteWorker extends HttpWorker {
 	}
 
 	public Reader perform(final String url) throws ErrorPerformingRequestException {
-		LOGGER.log(Level.INFO, "DELETE: URL: " + url);
+		LOGGER.debug("DELETE: URL: " + url);
 
 		final DeleteMethod delete = new DeleteMethod(url);
 		delete.addRequestHeader(HEADER_AUTHORIZATION, encodeForAuthorization());
@@ -31,10 +31,12 @@ public final class DeleteWorker extends HttpWorker {
 
 		try {
 			this.httpResult = getHttpClient().executeMethod(delete);
-			LOGGER.log(Level.INFO, "Result: " + this.httpResult);
+			LOGGER.debug("HTTP result: " + this.httpResult);
+			LOGGER.debug("XML response:\n" + delete.getResponseBodyAsString());
+			LOGGER.debug("===================================================");
 			return new StringReader(delete.getResponseBodyAsString());
 		} catch (final IOException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			throw new ErrorPerformingRequestException(e);
 		} finally {
 			delete.releaseConnection();

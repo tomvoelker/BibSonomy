@@ -1,6 +1,6 @@
 package org.bibsonomy.rest.client.worker;
 
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
@@ -33,7 +33,7 @@ public abstract class HttpWorker {
 	public HttpWorker(final String username, final String apiKey) {
 		this.username = username;
 		this.apiKey = apiKey;
-
+		
 		this.httpClient = new HttpClient();
 		final HttpClientParams httpClientParams = new HttpClientParams();
 		final DefaultHttpMethodRetryHandler defaultHttpMethodRetryHandler = new DefaultHttpMethodRetryHandler(0, false);

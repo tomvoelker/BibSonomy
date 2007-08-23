@@ -22,7 +22,7 @@ public final class PutWorker extends HttpWorker {
 	}
 
 	public Reader perform(final String url, final String requestBody) throws ErrorPerformingRequestException {
-		LOGGER.log(Level.INFO, "PUT: URL: " + url);
+		LOGGER.debug("PUT: URL: " + url);
 
 		final PutMethod put = new PutMethod(url);
 		put.addRequestHeader(HEADER_AUTHORIZATION, encodeForAuthorization());
@@ -33,10 +33,12 @@ public final class PutWorker extends HttpWorker {
 
 		try {
 			this.httpResult = getHttpClient().executeMethod(put);
-			LOGGER.log(Level.INFO, "Result: " + this.httpResult);
+			LOGGER.debug("Result: " + this.httpResult);
+			LOGGER.debug("XML response:\n" + put.getResponseBodyAsString());
+			LOGGER.debug("===================================================");			
 			return new StringReader(put.getResponseBodyAsString());
 		} catch (final IOException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.debug(e.getMessage(), e);
 			throw new ErrorPerformingRequestException(e);
 		} finally {
 			put.releaseConnection();

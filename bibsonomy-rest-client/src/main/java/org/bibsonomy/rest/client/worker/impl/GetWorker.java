@@ -27,7 +27,7 @@ public final class GetWorker extends HttpWorker {
 	}
 
 	public Reader perform(final String url) throws ErrorPerformingRequestException {
-		LOGGER.log(Level.INFO, "GET: URL: " + url);
+		LOGGER.debug("GET: URL: " + url);
 
 		final GetMethod get = new GetMethod(url);
 		get.addRequestHeader(HEADER_AUTHORIZATION, encodeForAuthorization());
@@ -36,12 +36,14 @@ public final class GetWorker extends HttpWorker {
 
 		try {
 			this.httpResult = getHttpClient().executeMethod(get);
-			LOGGER.log(Level.INFO, "Result: " + this.httpResult);
+			LOGGER.debug("HTTP result: " + this.httpResult);
+			LOGGER.debug("XML response:\n" + get.getResponseBodyAsString());
+			LOGGER.debug("===================================================");			
 			if (get.getResponseBodyAsStream() != null) {
 				return performDownload(get.getResponseBodyAsStream(), get.getResponseContentLength());
 			}
 		} catch (final IOException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			LOGGER.debug(e.getMessage(), e);
 			throw new ErrorPerformingRequestException(e);
 		} finally {
 			get.releaseConnection();
