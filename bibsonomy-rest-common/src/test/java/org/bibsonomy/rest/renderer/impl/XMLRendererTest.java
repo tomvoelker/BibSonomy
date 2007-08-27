@@ -180,13 +180,16 @@ public class XMLRendererTest {
 	@Test
 	public void testSerializeTags() throws Exception {
 		StringWriter sw = new StringWriter(100);
+		
+		// empty list without start-/end-values 
+		final LinkedList<Tag> tags = new LinkedList<Tag>();
+		try {
+			this.renderer.serializeTags(sw, tags, null);
+			fail("exception should have been thrown: no start-/end-values given");
+		} catch (final InternServerException e) {
+		}
 
 		// empty list
-		final LinkedList<Tag> tags = new LinkedList<Tag>();
-		this.renderer.serializeTags(sw, tags, null);
-		compareWithFile(sw, "ExampleResultTags0.txt");
-
-		// empty list 2
 		final ViewModel vm = new ViewModel();
 		vm.setStartValue(0);
 		vm.setEndValue(10);
@@ -241,8 +244,11 @@ public class XMLRendererTest {
 
 		// empty user
 		final LinkedList<User> users = new LinkedList<User>();
-		this.renderer.serializeUsers(sw, users, null);
-		compareWithFile(sw, "ExampleResultUsers0.txt");
+		try {
+			this.renderer.serializeUsers(sw, users, null);
+			fail("exception should have been thrown: no start-/end values specified");
+		} catch (final InternServerException e) {
+		}
 
 		//
 		final ViewModel vm = new ViewModel();
@@ -290,11 +296,15 @@ public class XMLRendererTest {
 		StringWriter sw = new StringWriter(100);
 
 		// empty group
-		final LinkedList<Group> groups = new LinkedList<Group>();
-		this.renderer.serializeGroups(sw, groups, null);
-		compareWithFile(sw, "ExampleResultGroups0.txt");
+		final LinkedList<Group> groups = new LinkedList<Group>();		
+		try {
+			this.renderer.serializeGroups(sw, groups, null);
+			fail("exception should have been thrown: no start-/end values specified");
+		}
+		catch (InternServerException ex) {			
+		}
 
-		//
+		// empty group
 		final ViewModel vm = new ViewModel();
 		vm.setStartValue(20);
 		vm.setEndValue(30);
@@ -319,6 +329,7 @@ public class XMLRendererTest {
 
 	@Test
 	public void testSerializeGroup() throws Exception {
+			
 		// empty group
 		final StringWriter sw = new StringWriter(100);
 		final Group group = new Group();
@@ -337,7 +348,13 @@ public class XMLRendererTest {
 	public void testSerializePosts() throws Exception {
 		StringWriter sw = new StringWriter(100);
 		final List<Post<? extends Resource>> posts = new LinkedList<Post<? extends Resource>>();
-		this.renderer.serializePosts(sw, posts, null);
+		try {
+			this.renderer.serializePosts(sw, posts, null);
+			fail ("Exception should have been trown: no start-/end-values specified");
+		}
+		catch (InternServerException ex) {			
+		}
+		
 		sw = new StringWriter(100);
 		final ViewModel vm = new ViewModel();
 		vm.setStartValue(0);
@@ -364,6 +381,7 @@ public class XMLRendererTest {
 		bookmark.setInterHash("12345678");
 		bookmark.setIntraHash("12345678");
 		bookmark.setUrl("www.foobar.de");
+		bookmark.setTitle("bookmarktitle");
 		final Post<Resource> post2 = new Post<Resource>();
 		post2.setResource(bookmark);
 		post2.setUser(user);
@@ -408,6 +426,7 @@ public class XMLRendererTest {
 		} catch (final InvalidModelException e) {
 		}
 		bookmark.setUrl("www.foobar.org");
+		bookmark.setTitle("bookmarktitle");
 		bookmark.setIntraHash("aabbcc");
 		bookmark.setInterHash("1324356789");
 		this.renderer.serializePost(sw, post, null);
@@ -430,6 +449,7 @@ public class XMLRendererTest {
 		final Bookmark bookmark = new Bookmark();
 		post.setResource(bookmark);
 		bookmark.setUrl("www.foobar.org");
+		bookmark.setTitle("bookmarktitle");
 		bookmark.setIntraHash("aabbcc");
 		bookmark.setInterHash("1324356789");
 		final ViewModel vm = new ViewModel();
