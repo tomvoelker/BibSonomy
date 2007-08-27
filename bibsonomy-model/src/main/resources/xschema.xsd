@@ -101,8 +101,8 @@
 			<xsd:element maxOccurs="unbounded" minOccurs="0" name="superTags" type="TagsType"/>
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string" use="required"/>
-		<xsd:attribute name="globalcount" type="xsd:positiveInteger"/>
-		<xsd:attribute name="usercount" type="xsd:positiveInteger"/>
+		<xsd:attribute name="globalcount" type="positiveIntegerIncludingZero"/>
+		<xsd:attribute name="usercount" type="positiveIntegerIncludingZero"/>
 	</xsd:complexType>
 
 	<!--
