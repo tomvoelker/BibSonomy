@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.DBLogic;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -187,7 +188,7 @@ public final class RestServlet extends HttpServlet {
 			sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
 		} catch (final ValidationException e) {
 			log.error(e,e);
-			sendError(request, response, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+			sendError(request, response, HttpServletResponse.SC_FORBIDDEN, e.getMessage());			
 		} catch (final Exception e) {
 			log.error(e,e);
 			// well, lets fetch each and every error...

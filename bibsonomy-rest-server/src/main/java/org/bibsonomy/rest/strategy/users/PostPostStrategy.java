@@ -5,9 +5,11 @@ import java.util.Date;
 
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.InvalidModelException;
+import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.AbstractCreateStrategy;
 import org.bibsonomy.rest.strategy.Context;
 
@@ -41,8 +43,11 @@ public class PostPostStrategy extends AbstractCreateStrategy {
 		try {
 			return this.getLogic().createPost(post);
 		}
-		catch (InvalidModelException ex) {
+		catch ( InvalidModelException ex ) {
 			throw new BadRequestOrResponseException(ex);
+		}
+		catch ( ResourceNotFoundException ex ) {
+			throw new NoSuchResourceException(ex.getMessage());
 		}
 	}
 

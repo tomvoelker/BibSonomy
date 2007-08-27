@@ -4,9 +4,11 @@ import java.io.Writer;
 
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.InvalidModelException;
+import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.AbstractUpdateStrategy;
 import org.bibsonomy.rest.strategy.Context;
 
@@ -53,5 +55,8 @@ public class PutPostStrategy extends AbstractUpdateStrategy {
 		catch (InvalidModelException ex) {
 			throw new BadRequestOrResponseException(ex);
 		}
+		catch ( ResourceNotFoundException ex ) {
+			throw new NoSuchResourceException(ex.getMessage());
+		}		
 	}
 }
