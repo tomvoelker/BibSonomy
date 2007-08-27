@@ -81,7 +81,7 @@ public class XMLRenderer implements Renderer {
 		this.postsUrlDelimiter = "/" + properties.get(URL_POSTS) + "/";
 		
 		try {
-			SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(this.getClass().getClassLoader().getResource("xschema.xsd"));
+			schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(this.getClass().getClassLoader().getResource("xschema.xsd"));
 		}
 		catch (Exception e) {
 			log.error("Failed to load XML schema", e);
