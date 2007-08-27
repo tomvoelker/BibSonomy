@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChain;
@@ -404,9 +405,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 				this.deletePost(userName, oldBookmarkPost.getResource().getIntraHash(), true, session);
 			} else {
 				if (update == true) {
-					final String errorMsg = "cannot update nonexisting BOOKMARK-post with intrahash " + oldIntraHash + " for user " + userName;
-					log.warn(errorMsg);
-					throw new ValidationException(errorMsg);
+					log.warn("Bookmark with hash " + oldIntraHash + " does not exist for user " + userName);
+					throw new ResourceNotFoundException(oldIntraHash);
 				}
 				update = false;
 			}

@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChain;
@@ -520,9 +521,8 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 												
 			} else {
 				if (update == true) {
-					final String errorMsg = "The requested resource (with ID " + oldIntraHash + ") does not exist for user " + userName + ". \nMaybe it has been deleted or its ID has changed, because it has been modfied via the webinterface or another application.";
-					log.warn(errorMsg);
-					throw new ValidationException(errorMsg);											
+					log.warn("Bibtex with intrahash " + oldIntraHash + " does not exist for user " + userName);
+					throw new ResourceNotFoundException(oldIntraHash);	
 				}
 				update = false;
 				
