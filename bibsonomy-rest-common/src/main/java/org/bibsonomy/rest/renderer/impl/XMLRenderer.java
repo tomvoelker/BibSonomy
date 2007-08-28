@@ -510,9 +510,7 @@ public class XMLRenderer implements Renderer {
 			// create a marshaller
 			final Marshaller marshaller = jc.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-			
-			marshaller.marshal( webserviceElement, System.out );
-			
+					
 			// validate the XML produced by the marshaller
 			marshaller.setSchema(schema);
 			marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.FALSE);
