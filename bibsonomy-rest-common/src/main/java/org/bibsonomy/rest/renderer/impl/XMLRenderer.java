@@ -292,7 +292,7 @@ public class XMLRenderer implements Renderer {
 		
 		// add sub-/supertags - dbe, 20070718
 		if (tag.getSubTags() != null && tag.getSubTags().size() > 0) {			
-			xmlTag.getSubTags().add(createXmlTags(tag.getSubTags()));
+			xmlTag.getSubTags().add(createXmlTags(tag.getSubTags()));		
 		}
 		if (tag.getSuperTags() != null && tag.getSuperTags().size() > 0) {
 			xmlTag.getSuperTags().add(createXmlTags(tag.getSuperTags()));
@@ -305,6 +305,8 @@ public class XMLRenderer implements Renderer {
 		for (final Tag tag : tags) {
 			xmlTags.getTag().add(createXmlTag(tag));				
 		}
+		xmlTags.setStart(BigInteger.valueOf(0));
+		xmlTags.setEnd(BigInteger.valueOf(tags.size()));		
 		return xmlTags;
 	}
 
@@ -508,6 +510,8 @@ public class XMLRenderer implements Renderer {
 			// create a marshaller
 			final Marshaller marshaller = jc.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			
+			marshaller.marshal( webserviceElement, System.out );
 			
 			// validate the XML produced by the marshaller
 			marshaller.setSchema(schema);
