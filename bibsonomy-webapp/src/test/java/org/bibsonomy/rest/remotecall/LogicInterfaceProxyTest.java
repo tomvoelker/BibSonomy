@@ -165,9 +165,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		createPost(ModelUtils.generatePost(BibTex.class));
 	}
 	public String createPost(Post<?> post) {
-		EasyMock.expect(serverLogic.createPost(PropertyEqualityArgumentMatcher.eq(post,"date", "user.apiKey", "user.email", "user.homepage", "user.password", "user.realname", "resource.scraperId"))).andReturn(post.getResource().getIntraHash() + "-new");
+		EasyMock.expect(serverLogic.createPost(PropertyEqualityArgumentMatcher.eq(post,"date", "user.apiKey", "user.email", "user.homepage", "user.password", "user.realname", "resource.scraperId"))).andReturn(post.getResource().getIntraHash());
 		EasyMock.replay(serverLogic);
-		Assert.assertEquals(post.getResource().getIntraHash() + "-new", clientLogic.createPost(post));
+		Assert.assertEquals(post.getResource().getIntraHash(), clientLogic.createPost(post));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return null;
@@ -457,9 +457,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		updatePost(ModelUtils.generatePost(Bookmark.class));
 	}
 	public String updatePost(Post<?> post) {
-		EasyMock.expect(serverLogic.updatePost(PropertyEqualityArgumentMatcher.eq(post,"date", "user.apiKey", "user.email", "user.homepage", "user.password", "user.realname", "resource.scraperId"))).andReturn(post.getResource().getIntraHash() + "-new");
+		EasyMock.expect(serverLogic.updatePost(PropertyEqualityArgumentMatcher.eq(post,"date", "user.apiKey", "user.email", "user.homepage", "user.password", "user.realname", "resource.scraperId"))).andReturn(post.getResource().getIntraHash());
 		EasyMock.replay(serverLogic);
-		Assert.assertEquals(post.getResource().getIntraHash() + "-new", clientLogic.updatePost(post));
+		Assert.assertEquals(post.getResource().getIntraHash(), clientLogic.updatePost(post));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return null;
