@@ -344,56 +344,67 @@ public class TestDatabase implements DBLogicInterface {
 		// this.dbResources
 		final Bookmark spiegelOnlineResource = new Bookmark();
 		spiegelOnlineResource.setIntraHash("111111111111111111111111111111111");
+		spiegelOnlineResource.setTitle("Spiegel");
 		spiegelOnlineResource.setUrl("http://www.spiegel.de");
 		this.dbResources.put(spiegelOnlineResource.getIntraHash(), spiegelOnlineResource);
 
 		final Bookmark hostingprojectResource = new Bookmark();
 		hostingprojectResource.setIntraHash("22222222222222222222222222222222");
+		hostingprojectResource.setTitle("Hostingproject");
 		hostingprojectResource.setUrl("http://www.hostingproject.de");
 		this.dbResources.put(hostingprojectResource.getIntraHash(), hostingprojectResource);
 
 		final Bookmark klabusterbeereResource = new Bookmark();
 		klabusterbeereResource.setIntraHash("33333333333333333333333333333333");
+		klabusterbeereResource.setTitle("Klabusterbeere");
 		klabusterbeereResource.setUrl("http://www.klabusterbeere.net");
 		this.dbResources.put(klabusterbeereResource.getIntraHash(), klabusterbeereResource);
 
 		final Bookmark bildschirmarbeiterResource = new Bookmark();
 		bildschirmarbeiterResource.setIntraHash("44444444444444444444444444444444");
+		bildschirmarbeiterResource.setTitle("Bildschirmarbeiter");
 		bildschirmarbeiterResource.setUrl("http://www.bildschirmarbeiter.com");
 		this.dbResources.put(bildschirmarbeiterResource.getIntraHash(), bildschirmarbeiterResource);
 
 		final Bookmark semwebResource = new Bookmark();
 		semwebResource.setIntraHash("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+		semwebResource.setTitle("Semantic Web Seminar");
 		semwebResource.setUrl("http://www.kde.cs.uni-kassel.de/lehre/ws2005-06/Semantic_Web");
 		this.dbResources.put(semwebResource.getIntraHash(), semwebResource);
 
 		final Bookmark butonicResource = new Bookmark();
 		butonicResource.setIntraHash("55555555555555555555555555555555");
+		butonicResource.setTitle("Butonic");
 		butonicResource.setUrl("http://www.butonic.de");
 		this.dbResources.put(butonicResource.getIntraHash(), butonicResource);
 
 		final Bookmark wowResource = new Bookmark();
 		wowResource.setIntraHash("66666666666666666666666666666666");
+		wowResource.setTitle("Worldofwarcraft");
 		wowResource.setUrl("http://www.worldofwarcraft.com");
 		this.dbResources.put(wowResource.getIntraHash(), wowResource);
 
 		final Bookmark dunkleResource = new Bookmark();
 		dunkleResource.setIntraHash("77777777777777777777777777777777");
+		dunkleResource.setTitle("Dunkleherzen");
 		dunkleResource.setUrl("http://www.dunkleherzen.de");
 		this.dbResources.put(dunkleResource.getIntraHash(), dunkleResource);
 
 		final Bookmark w3cResource = new Bookmark();
 		w3cResource.setIntraHash("88888888888888888888888888888888");
+		w3cResource.setTitle("W3C");
 		w3cResource.setUrl("http://www.w3.org/2001/sw/");
 		this.dbResources.put(w3cResource.getIntraHash(), w3cResource);
 
 		final Bookmark wikipediaResource = new Bookmark();
 		wikipediaResource.setIntraHash("99999999999999999999999999999999");
+		wikipediaResource.setTitle("Wikipedia");
 		wikipediaResource.setUrl("http://de.wikipedia.org/wiki/Semantic_Web");
 		this.dbResources.put(wikipediaResource.getIntraHash(), wikipediaResource);
 
 		final Bookmark kddResource = new Bookmark();
 		kddResource.setIntraHash("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+		kddResource.setTitle("KDD Seminar");
 		kddResource.setUrl("http://www.kde.cs.uni-kassel.de/lehre/ss2006/kdd");
 		this.dbResources.put(kddResource.getIntraHash(), kddResource);
 

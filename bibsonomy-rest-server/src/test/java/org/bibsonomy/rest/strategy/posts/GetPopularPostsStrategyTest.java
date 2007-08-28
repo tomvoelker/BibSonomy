@@ -25,7 +25,7 @@ public class GetPopularPostsStrategyTest extends AbstractContextTest {
 
 		// just test length, because the detail rendering output is tested by
 		// the renderer test
-		assertEquals(10075, sw.toString().length());
+		assertEquals(10333, sw.toString().length());
 		assertEquals("text/xml", c.getContentType("firefox"));
 		assertEquals("bibsonomy/posts+XML", c.getContentType(RestProperties.getInstance().getApiUserAgent()));
 	}
