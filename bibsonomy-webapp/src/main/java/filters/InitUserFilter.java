@@ -101,7 +101,18 @@ public class InitUserFilter implements Filter {
 			 * user has Cookie set: try to authenticate 
 			 */
 			String userCookieParts[] = userCookie.split("%20");
-			user = DBUserManager.getSettingsForUser(userCookieParts[0], userCookieParts[1]);
+			if (userCookieParts.length >= 2) {
+				/*
+				 * all two parts of cookie available
+				 */
+				user = DBUserManager.getSettingsForUser(userCookieParts[0], userCookieParts[1]);
+			} else {
+				/*
+				 * something is wrong with the cookie: log!
+				 */
+				String ip_address = ((HttpServletRequest)request).getHeader("x-forwarded-for");
+				log.warn("Someone manipulated the user cookie (IP: " + ip_address + ") : " + userCookie);
+			}
 		} 
 		
 		if (user == null) {
