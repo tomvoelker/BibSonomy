@@ -160,7 +160,7 @@ public class DBTagManager {
 		Iterator<String> it1, it2;
 		String lower, upper;
 		int tasId;
-		HashMap<String,Integer> tasIDs = new HashMap<String,Integer>(); // FIXME: is this really needed? actually it isn't even read
+		HashMap<String,Integer> tasIDs = new HashMap<String,Integer>();
 		Set<String>allTags = r.getTags();
 		if (allTags.size() > MAX_TAGS_TO_INSERT) {
 			/*

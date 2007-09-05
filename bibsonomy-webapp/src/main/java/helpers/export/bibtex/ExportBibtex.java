@@ -6,11 +6,14 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import net.sf.jabref.BibtexDatabase;
 import net.sf.jabref.BibtexEntry;
@@ -28,6 +31,7 @@ import org.apache.log4j.Logger;
 import resources.Bibtex;
 import resources.Resource;
 import servlets.DocumentUploadHandler;
+import servlets.listeners.InitialConfigListener;
 
 /**
  * This Singleton provides methods to export BibTeX entries
@@ -42,7 +46,7 @@ public final class ExportBibtex {
 	private final static String _layoutFileExtension = ".layout";
 
 	private static String _rootPath			         = null;
-	//private static String _bibDefLayoutPath          = null;
+	private static String _bibDefLayoutPath          = null;
 	private static final String message_no_custom_layout = "You don't have a custom filter installed. Please go to the settings page and install one.";
 
 
@@ -51,16 +55,16 @@ public final class ExportBibtex {
 
 
 	/** Only on instance will be instantiated during the very first access. */
-	private static ExportBibtex instance;
+	private static final ExportBibtex instance = new ExportBibtex();
 
 	/** Constructor collects all needed infos and data.*/
-	private ExportBibtex(final URI bibDefLayoutPath) {
-		/*try {
+	private ExportBibtex(){
+		try {
 			_bibDefLayoutPath = ((String) ((Context) new InitialContext().lookup("java:/comp/env")).lookup("bibLayoutPath"));
 			_rootPath = InitialConfigListener.getInitParam("rootPath");//((String) ((Context) new InitialContext().lookup("java:/comp/env")).lookup("rootPath"));			
 		} catch (NamingException e) {
 			log.fatal(e);
-		}*/
+		}
 		/* 
 		 * initialize JabRef preferences. This is neccessary ... because they use global 
 		 * preferences and if we don't initialize them, we get NullPointerExceptions later 
@@ -68,21 +72,14 @@ public final class ExportBibtex {
 		
 		Globals.prefs = JabRefPreferences.getInstance();
 		// load default filters 
-		loadDefaultFilters(bibDefLayoutPath);
+		loadDefaultFilters();
 	}
 
-	public static ExportBibtex getInstance(URI bibDefLayoutPath) {
-		if (instance == null) {
-			if (bibDefLayoutPath == null) {
-				throw new IllegalStateException("getInstance must be called with bibDefLayoutPath first");
-			}
-			ExportBibtex.instance = new ExportBibtex(bibDefLayoutPath); 
-		}
+	public static ExportBibtex getInstance() {
 		return instance;
 	}
 
-	@Override
-	public Object clone() throws CloneNotSupportedException {
+	public Object clone()throws CloneNotSupportedException {
 		throw new CloneNotSupportedException(); 
 	}
 
@@ -211,9 +208,7 @@ public final class ExportBibtex {
 		try {
 			result = BibtexParser.parse(new StringReader(bibtexStrings.toString()));
 		} catch (IOException e) {
-			final String msg = "error parsing bibtex objects for JabRef output: " + e.getMessage();
-			log.fatal(msg, e);
-			throw new RuntimeException(msg,e);
+			log.fatal("error parsing bibtex objects for JabRef output: " + e);
 		}
 
 		return result.getDatabase();
@@ -223,11 +218,11 @@ public final class ExportBibtex {
 	 * Loads default filters (xxx.xxx.layout and xxx.layout) from BibSonomy`s default layout directory into a map.
 	 * @throws Exception
 	 */
-	private void loadDefaultFilters(final URI bibDefLayoutPath) {
+	private void loadDefaultFilters(){
 		
 		Stack<File> dirs = new Stack<File>();
 		//start searching in default layout directory
-		final File startdir = new File(bibDefLayoutPath);
+		final File startdir = new File(_bibDefLayoutPath);
 
 		if (startdir.isDirectory())
 			dirs.push(startdir);

@@ -111,8 +111,8 @@ tryAgain:
 		int _saveIndex;
 		
 		{
-		int _cnt12=0;
-		_loop12:
+		int _cnt33=0;
+		_loop33:
 		do {
 			switch ( LA(1)) {
 			case ' ':
@@ -127,10 +127,10 @@ tryAgain:
 			}
 			default:
 			{
-				if ( _cnt12>=1 ) { break _loop12; } else {throw new NoViableAltForCharException((char)LA(1), getFilename(), getLine(), getColumn());}
+				if ( _cnt33>=1 ) { break _loop33; } else {throw new NoViableAltForCharException((char)LA(1), getFilename(), getLine(), getColumn());}
 			}
 			}
-			_cnt12++;
+			_cnt33++;
 		} while (true);
 		}
 		if ( _createToken && _token==null && _ttype!=Token.SKIP ) {
@@ -172,8 +172,8 @@ tryAgain:
 		int _saveIndex;
 		
 		{
-		int _cnt18=0;
-		_loop18:
+		int _cnt39=0;
+		_loop39:
 		do {
 			if ((_tokenSet_1.member(LA(1)))) {
 				{
@@ -187,10 +187,10 @@ tryAgain:
 				match('<');
 			}
 			else {
-				if ( _cnt18>=1 ) { break _loop18; } else {throw new NoViableAltForCharException((char)LA(1), getFilename(), getLine(), getColumn());}
+				if ( _cnt39>=1 ) { break _loop39; } else {throw new NoViableAltForCharException((char)LA(1), getFilename(), getLine(), getColumn());}
 			}
 			
-			_cnt18++;
+			_cnt39++;
 		} while (true);
 		}
 		if ( _createToken && _token==null && _ttype!=Token.SKIP ) {

@@ -20,11 +20,11 @@ public class DBBookmarkManager {
 	private static final Logger log = Logger.getLogger(DBBookmarkManager.class);
 	
 	private static final String SQL_INSERT_BOOKMARK = "INSERT INTO bookmark " 
-		+ "(content_id,book_url_hash,book_description,book_extended,`group`,date,user_name) "
-		+ "VALUES (?, ?, ?, ?, ?, ?, ?)";
+		+ "(content_id,book_url_hash,book_description,book_extended,`group`,date,user_name, rating) "
+		+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 	private static final String SQL_LOG_BOOKMARK = "INSERT INTO log_bookmark "
-		+ "(content_id,book_url_hash,book_description,book_extended,`group`,date,user_name) "
-		+ "SELECT content_id,book_url_hash,book_description,book_extended,`group`,date,user_name FROM bookmark where content_id = ?";
+		+ "(rating, content_id,book_url_hash,book_description,book_extended,`group`,date,user_name) "
+		+ "SELECT rating, content_id,book_url_hash,book_description,book_extended,`group`,date,user_name FROM bookmark where content_id = ?";
 	private static final String SQL_LOG_BOOKMARK_UPDATE = "UPDATE log_bookmark SET new_content_id = ? "
 		+ "WHERE content_id = ?";
 	
@@ -263,6 +263,7 @@ public class DBBookmarkManager {
 						stmtP_insert_bookmark.setInt(5, bookmark.getGroupid());
 						stmtP_insert_bookmark.setTimestamp(6, new Timestamp(bookmark.getDate().getTime()));
 						stmtP_insert_bookmark.setString(7, bookmark.getUser());
+						stmtP_insert_bookmark.setInt(8, bookmark.getRating());
 						stmtP_insert_bookmark.executeUpdate();
 						
 						/* increment URL counter */

@@ -99,9 +99,7 @@ public class DBExtendedFieldManager extends DBManager {
 			}
 		} catch (SQLException e) {
 			try {
-				if (c.conn != null) {
-					c.conn.rollback();
-				}
+				c.conn.rollback();
 			} catch (SQLException ex) {
 				log.fatal("Could not roll back transaction for group " + group + ": " + ex.getMessage());
 			}

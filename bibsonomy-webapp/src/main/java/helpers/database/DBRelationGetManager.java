@@ -4,6 +4,8 @@ import helpers.database.DBManager.DBContext;
 
 import java.sql.*;
 import java.util.LinkedList;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,6 +21,8 @@ import resources.TagRelation;
  *
  */
 public abstract class DBRelationGetManager {
+
+	private static final Log log = LogFactory.getLog(DBRelationGetManager.class);
 
 	
 	/**
@@ -56,11 +60,6 @@ public abstract class DBRelationGetManager {
 			}
 			
 		} catch (SQLException e) {
-			/*
-			 * TODO: first attempt to do logging when exceptions are thrown - code "stolen" from Jens'
-			 * Database backend classes
-			 */
-			final Log log = LogFactory.getLog(DBRelationGetManager.class);
 			log.fatal("could not get relations for user : " + e.getMessage());
 		} finally {
 			c.close(); // close database connection
@@ -126,11 +125,6 @@ public abstract class DBRelationGetManager {
 			bean.setRelations(relations);
 						
 		} catch (SQLException e) {
-			/*
-			 * TODO: first attempt to do logging when exceptions are thrown - code "stolen" from Jens'
-			 * Database backend classes
-			 */
-			final Log log = LogFactory.getLog(DBRelationGetManager.class);
 			log.fatal("could not get relations for user : " + e.getMessage());
 		} finally {
 			c.close(); // close database connection
@@ -164,15 +158,53 @@ public abstract class DBRelationGetManager {
 			}
 			
 		} catch (SQLException e) {
-			/*
-			 * TODO: first attempt to do logging when exceptions are thrown - code "stolen" from Jens'
-			 * Database backend classes
-			 */
-			final Log log = LogFactory.getLog(DBRelationGetManager.class);
 			log.fatal("could not get all (top 50) relations :" + e.getMessage());
 		} finally {
 			c.close(); // close database connection
 		}
 		return relations;
+	}
+
+	/**
+	 * Gets the relations of the given uppertag(s) stored in referenced RelationBean 
+	 * @param bean RelationBean
+	 * @param supertag the uppertag for which reations should be found
+	 */
+	public static void getChosenRelations(RelationBean bean) {
+		LinkedList<TagRelation> relations = new LinkedList<TagRelation>(); 
+		Vector<String> supertags = new Vector<String>();
+		DBContext c = new DBContext();
+		
+		try {
+			c.init();
+			
+			// tokenize the tag string
+			StringTokenizer s = new StringTokenizer(bean.getRequSuperTag());
+			while (s.hasMoreTokens())
+				supertags.add(s.nextToken());
+			
+			// concat SQL query
+			StringBuffer query = new StringBuffer();
+			query.append("SELECT LCASE(upper) AS upper, LCASE(lower) AS lower "
+					+ "		FROM tagtagrelations "
+					+ "		WHERE LCASE(upper) IN (LCASE(?)");
+			for (int i=1; i<supertags.size(); i++)
+				query.append(",LCASE(?)");
+			query.append(") GROUP BY 1,2 ORDER BY 1 DESC");			
+			c.stmt = c.conn.prepareStatement(query.toString());
+			
+			for (int paramPos=1; paramPos<=supertags.size(); paramPos++) {
+				c.stmt.setString(paramPos, supertags.get(paramPos-1));
+			}					
+			c.rst = c.stmt.executeQuery();			
+			while(c.rst.next()){
+				relations.add(new TagRelation(c.rst.getString("lower"), c.rst.getString("upper")));
+			}
+			bean.setRelations(relations);
+		} catch (SQLException e) {
+			log.fatal("could not get choosen relations :" + e.getMessage());
+		} finally {
+			c.close(); // close database connection
+		}		
 	}
 }

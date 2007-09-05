@@ -1,14 +1,12 @@
 package helpers.database;
 
 
-import java.sql.Date;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
 
-import tags.Functions;
 import beans.SettingsBean;
 import beans.UserBean;
 
@@ -34,9 +32,9 @@ public class DBUserManager extends DBManager {
 			if (c.init()) { // initialize database
 				// prepare Statement
 				c.stmt = c.conn.prepareStatement(" 	SELECT user_email,user_homepage,user_realname,openurl," 
-											+ "			birthday,gender,country,profession,interests,hobbies,profilegroup " 
+											+ "			birthday,gender,hobbies,place,profession,interests,place,profilegroup " 
 											+ " 	FROM user WHERE user_name = ?");
-				c.stmt.setString(1, bean.getUsername());
+				c.stmt.setString(1, bean.getName());
 				c.rst = c.stmt.executeQuery();
 				
 				if (c.rst.next()) {
@@ -47,23 +45,45 @@ public class DBUserManager extends DBManager {
 					bean.setOpenurl(c.rst.getString("openurl"));
 					bean.setBirthday(c.rst.getDate("birthday"));
 					bean.setGender(c.rst.getString("gender"));
-					bean.setCountry(c.rst.getString("country"));
+					bean.setPlace(c.rst.getString("place"));
 					bean.setProfession(c.rst.getString("profession"));
 					bean.setInterests(c.rst.getString("interests"));
 					bean.setHobbies(c.rst.getString("hobbies"));	
 					bean.setProfileGroup(c.rst.getInt("profilegroup"));
 				}
+				
+				// get friends of user
+				c.stmt = c.conn.prepareStatement("SELECT f_user_name FROM friends WHERE user_name = ? ");
+				c.stmt.setString(1, bean.getName());
+				c.rst = c.stmt.executeQuery();
+				
+				while(c.rst.next()) {					
+					bean.addFriend(c.rst.getString("f_user_name"));
+				}
+				
+//				// get groups the user is in
+//				c.stmt = c.conn.prepareStatement("(SELECT i.group_name,i.group FROM groups g, groupids i WHERE g.user_name = ? AND g.group=i.group) " 
+//				   + " UNION " 
+//				   + " (SELECT i.group_name,i.group FROM groupids i WHERE i.group < 3 AND i.group >= 0) " 
+//				   + " ORDER BY `group` ");
+//				c.stmt.setString(1, bean.getName());
+//
+//				while(c.rst.next()) {					
+//					bean.addGroup(c.rst.getString("group_name"));
+//				}
+
+				
 			}
 		} catch (SQLException e) {
-			log.fatal("Could not get settings for user " + bean.getUsername() + ": " + e);
+			log.fatal("Could not get settings for user " + bean.getName() + ": " + e);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.fatal("Could not get settings for user " + bean.getName() + ": " + e);
 		} finally {
 			c.close(); // close database connection
 		}
 		
 	}
+	
 	
 	/** Checks, if user exists in database and returns information about the user.
 	 *  
@@ -200,47 +220,91 @@ public class DBUserManager extends DBManager {
 				
 				// prepare Statement
 				c.stmt = c.conn.prepareStatement("	UPDATE user SET user_email = ?, user_homepage = ?, user_realname = ?, openurl = ?, birthday = ?," 
-											+ "		gender = ?, country = ?, profession = ?, interests = ?, hobbies = ? , profilegroup = ?"	
+											+ "		gender = ?, place = ?, profession = ?, interests = ?, hobbies = ? , profilegroup = ?"	
 						 					+ "		WHERE user_name = ?");
 				c.stmt.setString(1, bean.getEmail());
 				c.stmt.setString(2, bean.getHomepage());
 				c.stmt.setString(3, bean.getRealname());
 				c.stmt.setString(4, bean.getOpenurl());
-				c.stmt.setDate(5, (Date) bean.getBirthdayAsSQLDate());
+				c.stmt.setDate(5, bean.getBirthdayAsDate());
 				c.stmt.setString(6, bean.getGender());
-				c.stmt.setString(7, bean.getCountry());
+				c.stmt.setString(7, bean.getPlace());
 				c.stmt.setString(8, bean.getProfession());
 				c.stmt.setString(9, bean.getInterests());
 				c.stmt.setString(10, bean.getHobbies());
 				c.stmt.setInt(11, bean.getProfileGroup());
 				
 				
-				c.stmt.setString(12, bean.getUsername());
+				c.stmt.setString(12, bean.getName());
 				return c.stmt.executeUpdate() == 1; // return true, if exactly one row got updated 
 			}
 		} catch (SQLException e) {
-			System.out.println("fatal");
-			log.fatal("Could not set settings for user " + bean.getUsername() + ": " + e);
+			log.fatal("Could not set settings for user " + bean.getName() + ": " + e);
 		} finally {
 			c.close(); // close database connection
 		}
 		return false;
 	}
 
-	public static boolean isValidCredential (String user, String key) {
+	/*
+	 * TODO: rja, 2007-09-04, uncommented because it is unused
+	 */
+//	public static boolean isValidCredential (String user, String key) {
+//		DBContext c = new DBContext();
+//		try {
+//			if (c.init()) { // initialize database
+//				// prepare Statement
+//				c.stmt = c.conn.prepareStatement("SELECT user_password FROM user WHERE user_name = ?");
+//				c.stmt.setString(1, user);
+//				c.rst = c.stmt.executeQuery();
+//				return c.rst.next() && Functions.makeCredential(c.rst.getString("user_password")).equals(key);
+//			}
+//		} catch (SQLException e) {
+//			log.fatal("Could not check credentials for user " + user + ": " + e);
+//		} finally {
+//			c.close(); // close database connection
+//		}
+//		return false;
+//	}
+	
+
+	
+	/**	
+	 * checks if userprofile of requsted user is visible for given user 
+	 * @param currUser name of the user who wants to see the profile
+	 * @param requUser name of the user whose profile is requested
+	 * @return <code>true</code> if the user is allowed to see the others userprofile
+	 * 		   <code>false</code> user is not allowed to see the requested profile 
+	 */
+	public static boolean isProfileViewable(String currUser, String requUser) {
+		if (currUser.equals(requUser)) return true;
 		DBContext c = new DBContext();
+		
 		try {
-			if (c.init()) { // initialize database
-				// prepare Statement
-				c.stmt = c.conn.prepareStatement("SELECT user_password FROM user WHERE user_name = ?");
-				c.stmt.setString(1, user);
+			if (c.init()) {
+				c.stmt = c.conn.prepareStatement("SELECT profilegroup FROM user WHERE user_name = ?");
+				c.stmt.setString(1, requUser);
 				c.rst = c.stmt.executeQuery();
-				return c.rst.next() && Functions.makeCredential(c.rst.getString("user_password")).equals(key);
+				if (c.rst.next()) {
+					int group = c.rst.getInt("profilegroup");
+					if (group == 0) return true; // requested profile is public visible
+					if (group == 1) return false; // requested profile is private
+				}
+				
+				/*
+				 * check if requUser has currUser as friend
+				 * (the other way around is not allowed, since currUser could declare everybody as
+				 * his friend!)
+				 */
+				c.stmt = c.conn.prepareStatement("SELECT friends_id FROM friends WHERE user_name = ? AND f_user_name = ?");
+				c.stmt.setString(1, requUser);
+				c.stmt.setString(2, currUser);
+				c.rst = c.stmt.executeQuery();
+				// if a row is returned, they're friends
+				return c.rst.next();
 			}
 		} catch (SQLException e) {
-			log.fatal("Could not check credentials for user " + user + ": " + e);
-		} finally {
-			c.close(); // close database connection
+			log.fatal("Cannot check if " + currUser + " is friend of " + requUser);
 		}
 		return false;
 	}

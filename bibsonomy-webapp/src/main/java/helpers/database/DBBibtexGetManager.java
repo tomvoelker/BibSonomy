@@ -77,6 +77,7 @@ public class DBBibtexGetManager {
 			bibtex.setUrl(rst.getString("url"));
 			bibtex.setVolume(rst.getString("volume"));
 			bibtex.setYear(rst.getString("year"));
+			bibtex.setRating(rst.getInt("rating"));
 			
 			bibtex.setUser(user);
 			bibtex.setGroupid(rst.getInt("group"));

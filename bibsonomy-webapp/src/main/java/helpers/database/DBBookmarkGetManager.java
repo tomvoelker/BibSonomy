@@ -64,6 +64,7 @@ public class DBBookmarkGetManager {
 			bookmark.setGroup(rst.getString("group_name"));
 			bookmark.setGroupid(rst.getInt("group"));
 			bookmark.setContentID(rst.getInt("content_id"));
+			bookmark.setRating(rst.getInt("rating"));
 			bookmark.setUser(user);
 
 			int content_id = rst.getInt("content_id");
