@@ -1,0 +1,17 @@
+TUI_IE_CRF
+
+used for training and testing CRF
+
+eclipse run config:
+	programm arguments:
+		--head-or-ref 1 --input-file pathInput --use-cluster-features false --training-pct 0.7 --testing-pct 0.3 --output-prefix destination
+
+		pathInput = path to "tagged_ie_references_newreference_start_newline_meta_reference_count_cluster_count.txt"
+		destination = destination directory for trained CRF
+
+		like: --head-or-ref 1 --input-file tagged_ie_references_newreference_start_newline_meta_reference_count_cluster_count.txt --use-cluster-features false --training-pct 0.7 --testing-pct 0.3 --output-prefix crfBibsonomy
+
+	VM arguments:
+		-Xmx600m
+
+		with 600 MB memory it works fine

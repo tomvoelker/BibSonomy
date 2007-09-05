@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project name="bibsonomy" default="usage" basedir=".">
+
+
+
+   <description>
+      Manages the update of the local bibsonomy from cvs at gforge.cs.uni-kassel.de
+   </description>	
+	
+        <property name="java.home" value="/usr/java/jdk1.5.0_05/"/> 
+        
+	<property name="catalina.dir" value="/home/bibsonomy/tomcat"/>
+	<property name="tomcat.server" value="localhost"/>
+        <property name="tomcat.port" value="8080"/>
+       
+	<property name="bibsonomy.home" value="/home/bibsonomy/"/>
+
+	
+	<target name="usage">
+        <echo message=""/>
+        <echo message="-----------------------------------"/>
+        <echo message=""/>
+        <echo message="Available targets are:"/>
+        <echo message=""/>
+        <echo message="start     --> Start Tomcat application"/>
+        <echo message="stop      --> Stop Tomcat application"/>
+        <echo message=""/>
+        </target>
+   
+	
+<!-- ============================================================== -->
+<!--                       Tomcat tasks                             -->
+<!-- ============================================================== -->
+	
+         <!-- check whether server is already running -->
+    <target name="-started">
+        <condition property="server.started">
+            <and>
+                <socket port="${tomcat.port}" server="${tomcat.server}"/>
+            </and>
+        </condition>
+    </target>
+    
+    <!-- start tomcat -->
+    <target name="start" depends="-started" description="start tomcat server"
+        unless="server.started">
+        <echo message="Starting tomcat servlet engine..."/>
+            <java classname="org.apache.catalina.startup.Bootstrap" fork="yes">
+          <!-- jvmarg value="-Xrunhprof:net=localhost:7777,format=b"/ --> 
+            <jvmarg value="-Xmx1000m"/>
+            <jvmarg value="-Djava.endorsed.dirs=${catalina.dir}/common/endorsed"/>
+            <jvmarg value="-Dcatalina.base=${catalina.dir}"/>
+            <jvmarg value="-Dcatalina.home=${catalina.dir}"/>
+            <jvmarg value="-Djava.io.tmpdir=${catalina.dir}/temp"/>
+            <arg value="start"/>
+            <classpath>
+                <pathelement location="${java.home}/lib/tools.jar"/>
+                <pathelement location="${catalina.dir}/bin/bootstrap.jar"/>
+            </classpath>
+        </java>
+    </target>
+    
+    <!-- check whether server is still running -->
+    <target name="-stopped">
+        <condition property="server.stopped">
+            <and>
+                <socket port="${tomcat.port}" server="${tomcat.server}"/>
+                <not>
+                    <isset property="server.started"/>
+                </not>
+            </and>
+        </condition>
+    </target>
+    
+    <!-- stop tomcat -->
+    <target name="stop" depends="-stopped" description="stop tomcat server"
+        if="server.stopped">
+        <echo message="Stopping tomcat servlet engine..."/>
+        <java classname="org.apache.catalina.startup.Bootstrap" fork="yes">
+            <jvmarg value="-Djava.endorsed.dirs=${catalina.dir}/common/endorsed"/>
+            <jvmarg value="-Dcatalina.base=${catalina.dir}"/>
+            <jvmarg value="-Dcatalina.home=${catalina.dir}"/>
+            <jvmarg value="-Djava.io.tmpdir=${catalina.dir}/temp"/>
+            <arg value="stop"/>
+            <classpath>
+                <pathelement location="${java.home}/lib/tools.jar"/>
+                <pathelement location="${catalina.dir}/bin/bootstrap.jar"/>
+            </classpath>
+        </java>
+    </target>
+	
+  
+</project> 

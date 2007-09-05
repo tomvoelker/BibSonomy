@@ -1,0 +1,15 @@
+
+Relationen:
+
+Die Relationen-Tabelle hat sich grundlegend geändert: 
+* Relationen werden jetzt nur noch Benutzer-gebunden (nicht mehr Post-gebunden) abgespeichert. 
+* es werden keine TAS-ids und auch keine TAG-ids gespeichert, sondern direkt die Tags
+---> am besten die Tabelle neu erstellen!
+DITO für log_tagtagrelations_tabelle!
+
+
+UNBEDINGT nochmal das Anpassungs-SQL-Skript durchsehen, das dürfte obsolet sein; 
+am besten selber eins erstellen: durch ein diff der SHOW CREAE TABLE * Statements
+auf daffy und gromit
+
+picked_concepts Tabelle hinzufügen
