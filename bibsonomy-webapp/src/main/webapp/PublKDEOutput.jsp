@@ -9,7 +9,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="f" %>
-<%@ taglib uri="/WEB-INF/src/tags/mytaglib.tld" prefix="mtl" %>
+<%@ taglib uri="/WEB-INF/taglibs/mytaglib.tld" prefix="mtl" %>
 
 <%-- Bean einbinden --%>
 <jsp:useBean id="ResourceBean" class="beans.ResourceBean" scope="request"/>
