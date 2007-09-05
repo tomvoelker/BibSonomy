@@ -10,7 +10,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="f" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ taglib uri="/WEB-INF/src/tags/mytaglib.tld" prefix="mtl" %>
+<%@ taglib uri="/WEB-INF/taglibs/mytaglib.tld" prefix="mtl" %>
 
 <!DOCTYPE rdf:RDF [
  <!ENTITY rdf 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>

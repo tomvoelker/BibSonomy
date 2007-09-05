@@ -8,7 +8,7 @@
 <%@ page isELIgnored="false"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
-<%@ taglib uri="/WEB-INF/src/tags/mytaglib.tld" prefix="mtl"%>
+<%@ taglib uri="/WEB-INF/taglibs/mytaglib.tld" prefix="mtl"%>
 <sql:setDataSource dataSource="jdbc/bibsonomy" var="dataSource"/>
 <jsp:useBean id="ResourceBean" class="beans.ResourceBean" scope="request" />
 <jsp:useBean id="bean" class="beans.ExtendedFieldsBean" scope="request"/>

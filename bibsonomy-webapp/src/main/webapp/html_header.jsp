@@ -21,7 +21,7 @@
 
 <%@ page import="servlets.listeners.*" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="/WEB-INF/src/tags/mytaglib.tld" prefix="mtl" %>
+<%@ taglib uri="/WEB-INF/taglibs/mytaglib.tld" prefix="mtl" %>
 
 <%--
 	HTML starts here
