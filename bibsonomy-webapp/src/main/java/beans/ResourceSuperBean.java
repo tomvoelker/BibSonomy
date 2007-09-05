@@ -106,11 +106,18 @@ public abstract class ResourceSuperBean<T extends Resource> implements Serializa
 		}
 	}
 	
-
 	
 	/*
 	 * delegated methods from Resource object
 	 */
+	
+	public void setRating(String r) {
+		resource.setRating(r);
+	}
+	public String getRating() {
+		return Integer.toString(resource.getRating());
+	}
+	
 	public void addTag(String t) {
 		resource.addTag(t);
 	}

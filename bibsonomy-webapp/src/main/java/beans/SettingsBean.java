@@ -7,26 +7,26 @@ package beans;
 import helpers.database.DBUserManager;
 
 import java.io.Serializable;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Hashtable;
 
 
-public class SettingsBean implements Serializable {
+public class SettingsBean extends UserBean implements Serializable {
 	
 	private static final long serialVersionUID = 3835150662295433527L;
 	
 	public static final String CREDENTIAL_KEY="ckey";
 	
-	private String username  = ""; // is not written to DB, just for querying
-	private String homepage  = "";
-	private String email     = "";
-	private String realname  = "";
-	private String openurl   = ""; // BASE_URL for this users openURL service (http://www.exlibrisgroup.com/sfx_openurl_syntax.htm)
+	// user who wants to get foaf file
+	private String currUser	= "";
+	
 	private String birthday	 = ""; // FIXME: change to date format
 	private String gender	 = "";
-	private String country	 = "";
+	private String place 	 = "";
 	private String profession= "";
 	private String interests = "";
 	private String hobbies	 = "";
@@ -36,13 +36,33 @@ public class SettingsBean implements Serializable {
 	private final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 	private Hashtable<String,String> errors;
 	
-	// gets settings from DB, if we are not doing an update
-	private void getSettingsFromDB () {
-		// email empty (got not filled from DB) and we don't do an update
-		if (email.equals("") && !action.equals("update")) {
+	public void queryDBFOAF() {
+		if (DBUserManager.isProfileViewable(currUser,name)) {
+			DBUserManager.getSettingsForUser(this);
+		} else {			
+			errors.put("general", "You are not a friend of this user");
+		}
+	}
+	
+	// inserts the data into the DB, if everything is valid
+	public void queryDB() {
+		if (action.equals("update")) {
+			// user wants to update his data
+			if (isValidEmail(this.email) && 
+				isValidHomepage(this.homepage) &&
+				isValidOpenurl(this.openurl) &&
+				isValidBirthday(this.birthday)
+			) {
+				// data is valid! write data into database
+				if (!DBUserManager.setSettingsForUser(this)) {
+					errors.put("general", "Could not update your settings.");
+				}
+			}
+		} else {
 			DBUserManager.getSettingsForUser(this);
 		}
 	}
+	
 	
 	private boolean isValidEmail (String e) {
 		if (e.equals("") || 
@@ -75,6 +95,10 @@ public class SettingsBean implements Serializable {
 		}
 	}
 	private boolean isValidBirthday(String birthday) {
+	        // allow empty birthday field
+		if (birthday != null || birthday.trim().equals("")) return true;
+
+		// if not empty, try to parse date
 		try {
 			df.setLenient( false );
 			df.parse(birthday);			
@@ -85,77 +109,36 @@ public class SettingsBean implements Serializable {
 		}
 	}
 	
-	// inserts the data into the DB, if everything is valid
-	public void queryDB() {
-		if (action.equals("update") && 
-				isValidEmail(this.email) && 
-				isValidHomepage(this.homepage) &&
-				isValidOpenurl(this.openurl) &&
-				isValidBirthday(this.birthday)
-				) {
-			// write data into database
-			if (!DBUserManager.setSettingsForUser(this)) {
-				errors.put("general", "Could not update your settings. Please check your password.");
-			}
-		}
-	}
-	
+
 	public SettingsBean() {
-		errors = new Hashtable<String,String>();
+		errors  = new Hashtable<String,String>();
 	}
 	
 	public Hashtable getErrors() {
 		return errors;
 	}
 	
-	// email 
-	public String getEmail() {
-		getSettingsFromDB();
-		return email;
-	}	
-	public void setEmail(String e) {
-		this.email = e.trim();
+		
+	public void setEmail(String email) {
+		super.setEmail(email);
 	}
 	
-	// home page
-	public String getHomepage() {
-		getSettingsFromDB();
-		return homepage;
-	}
 	public void setHomepage(String homepage) {
-		this.homepage = homepage.trim();
-	}
-
-	// real name
-	public String getRealname() {
-		getSettingsFromDB();
-		return realname;
-	}
-	public void setRealname(String realname) {
-		this.realname = realname;
-	}
-
-	// user name
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
+		super.setHomepage(homepage.trim());
 	}
 	
-//	 birthday
+	// birthday
 	public String getBirthday() {
-		getSettingsFromDB();
 		return birthday;
 	}
 	
-	public Date getBirthdayAsSQLDate() {		
+	public Date getBirthdayAsDate() {
+		if (birthday == null || birthday.trim().equals("")) return null;
 		try {
-			return new java.sql.Date(df.parse(birthday).getTime());
+			return new Date(df.parse(birthday).getTime());
 		} catch (ParseException e) {			
-			e.printStackTrace();
 		}
-		return new java.sql.Date(0);
+		return null;
 	}
 	
 	public void setBirthday(String birthday) {
@@ -168,28 +151,35 @@ public class SettingsBean implements Serializable {
 	}
 
 	// homecountry
-	public String getCountry() {
-		getSettingsFromDB();
-		return country;
+	public String getPlace() {
+		return place;
 	}
 
-	public void setCountry(String country) {
-		this.country = country;
+	public void setPlace(String place) {
+		this.place = place;
 	}
 	
 	// gender
 	public String getGender() {
-		getSettingsFromDB();
 		return gender;
 	}
 
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
+	
+	public String getGenderLong() {
+		if ("m".equals(gender))
+			return "male";
+		else if ("f".equals(gender))
+			return "female";
+		else
+			return "unknown";			
+	}
+
 
 	// hobbies
 	public String getHobbies() {
-		getSettingsFromDB();
 		return hobbies;
 	}
 
@@ -199,7 +189,6 @@ public class SettingsBean implements Serializable {
 
 	// interests
 	public String getInterests() {
-		getSettingsFromDB();
 		return interests;
 	}
 
@@ -209,7 +198,6 @@ public class SettingsBean implements Serializable {
 
 	// profession
 	public String getProfession() {
-		getSettingsFromDB();
 		return profession;
 	}
 
@@ -219,7 +207,6 @@ public class SettingsBean implements Serializable {
 
 	// profile group
 	public int getProfileGroup() {
-		getSettingsFromDB();
 		return profileGroup;
 	}
 
@@ -232,20 +219,49 @@ public class SettingsBean implements Serializable {
 		this.action = action;
 	}
 
-	public String getOpenurl() {
-		getSettingsFromDB();
-		return openurl;
-	}
-
-	public void setOpenurl(String openurl) {
-		this.openurl = openurl;
-	}
-
 	public boolean isValidCkey() {
 		return validCkey;
 	}
 
 	public void setValidCkey(boolean validCkey) {
 		this.validCkey = validCkey;
-	}	
+	}
+
+	public String getCurrUser() {
+		return currUser;
+	}
+
+	public void setCurrUser(String currUser) {
+		this.currUser = currUser;
+	}
+	
+	// email as SHA1 Hash
+	public String getSHA1Email() {
+		return getSHA1Hash(email);
+	}
+	
+	/**
+	 * returns SHA-1 Hash of given String
+	 * @param str the string to be encoded
+	 * @return SHA-1 sum
+	 */
+	private String getSHA1Hash(String str) {
+		String s = "";
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-1");
+			byte [] buffer = md.digest(str.getBytes());
+			
+	    	for (int i = 0; i < buffer.length; i++) {
+	    		String hex = Integer.toHexString ((int) buffer[i]);
+	    		if (hex.length() == 1) {
+	    			hex = "0" + hex;
+	    		}
+	    		s += hex.substring(hex.length() - 2);
+	    	}		
+		} catch (NoSuchAlgorithmException e) {			
+			e.printStackTrace();
+		}		
+		return s;
+	}
+	
 }

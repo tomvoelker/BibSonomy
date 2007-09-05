@@ -169,5 +169,5 @@ public class BibtexHandlerBean extends ResourceSuperBean<Bibtex> {
 	public void setBibtexAbstract(String ba) {resource.setBibtexAbstract(ba);}
 	public void setEntrytype     (String et) {resource.setEntrytype(et);	   }
 	public void setScraperid     (int si) {resource.setScraperid(si);}
-		
+	
 }

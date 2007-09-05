@@ -144,7 +144,7 @@ public class BookmarkHandlerBean extends ResourceSuperBean<Bookmark> {
 	public void setJump(boolean j) {
 		this.jump = j;
 	}
-
+	
 	/*
 	 * the old url is the url before the user changed it
 	 * i.e. the user presses postBookmark on the page
@@ -162,8 +162,7 @@ public class BookmarkHandlerBean extends ResourceSuperBean<Bookmark> {
 	public void setOldurl(String oldurl) {
 		resource.setOldurl(oldurl);
 	}
-
-
+	
 	/*
 	 * remembers the way how the user wants to "tag a tag"
 	 * i.e., if the tagged tag should be a supertag or a subtag

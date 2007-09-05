@@ -10,12 +10,12 @@ public class UserBean implements Serializable {
 
 	private static final long serialVersionUID = -7295358376819936465L;
 	
-	private String name 	    = null;
-	private String homepage     = "";
-	private String email        = "";
-	private String realname     = "";
-	private String openurl      = "";
-	private int postsInBasket   = 0;
+	protected String name 	      = null;
+	protected String homepage     = "";
+	protected String email        = "";
+	protected String realname     = "";
+	protected String openurl      = ""; // BASE_URL for this users openURL service (http://www.exlibrisgroup.com/sfx_openurl_syntax.htm)
+	protected int postsInBasket   = 0;
 	
 	
 	private int tagboxStyle     = 0;  // 0 = cloud, 1 = list
@@ -24,9 +24,9 @@ public class UserBean implements Serializable {
 	private int tagboxTooltip   = 0;  // 0 = don't show, 1 = show (TODO: what does this mean?)
 	private int itemcount       = 10; // how many posts to show in post lists?  
 
-	
-	
 	private Set<String> groups = new HashSet<String>(); // groups the user is in
+	private List<String> friends = new LinkedList<String>(); // the friends of the user	
+
 	
 	private final int MAX_ITEMCOUNT = 1000; // maximal number of items shown (inclusive)
 	
@@ -131,4 +131,16 @@ public class UserBean implements Serializable {
 	public void setPostsInBasket(int postsInBasket) {
 		this.postsInBasket = postsInBasket;
 	}
+
+	public List<String> getFriends() {
+		return friends;
+	}
+	public void setFriends(List<String> friends) {
+		this.friends = friends;
+	}
+	public void addFriend(String name) {		
+		friends.add(name);
+	}
+
+	
 }

@@ -34,6 +34,11 @@ public class RelationBean implements Serializable {
 	 */
 	private int items = 10;
 	
+	/**
+	 * the supertag(s) for which the subtags should be shown
+	 */
+	private String requSuperTag;
+	
 	public RelationBean() {
 		relations = null;
 	}
@@ -94,6 +99,17 @@ public class RelationBean implements Serializable {
 	public LinkedList<TagRelation> getLimitedRelations() {
 		if (relations == null) {
 			DBRelationGetManager.getRelations(this);
+		}
+		return relations;
+	}
+	
+	/**
+	 * Get relations of uppertags which are stored in <code>requSuperTag</code> 
+	 * @return uppertag <- lower tag relations of the requestes uppertag(s)
+	 */
+	public LinkedList<TagRelation> getChosenRelations() {
+		if (relations == null && requSuperTag != null) {
+			DBRelationGetManager.getChosenRelations(this);
 		}
 		return relations;
 	}
@@ -162,6 +178,14 @@ public class RelationBean implements Serializable {
 
 	public boolean isHaveRelRows () {
 		return relations.size() > 0;
+	}
+	
+	public String getRequSuperTag() {
+		return requSuperTag;
+	}
+	
+	public void setRequSuperTag(String requSuperTag) {
+		this.requSuperTag = requSuperTag;
 	}
 	
 }// end class

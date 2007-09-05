@@ -147,23 +147,25 @@ public class AdvancedSearchBean implements Serializable {
 	 * @param list the set
 	 * @return a string of the elements
 	 */
-	public String getArrayToString(SortedSet[] list) {
+	private String getArrayToString(SortedSet[] list) {
 		StringBuffer buf = new StringBuffer();
 		
-		buf.append("[");		
-		for (int i=0; i<list.length; i++) {
-			buf.append("[");
-			
-			Iterator iter = list[i].iterator();			
-			while(iter.hasNext()) {			
-				buf.append(iter.next());				
-				if(iter.hasNext())
-					buf.append(",");				
+		buf.append("[");
+		if (list != null) {
+			for (int i=0; i<list.length; i++) {
+				buf.append("[");
+
+				Iterator iter = list[i].iterator();			
+				while(iter.hasNext()) {			
+					buf.append(iter.next());				
+					if(iter.hasNext())
+						buf.append(",");				
+				}
+
+				buf.append("]");
+				if (i != (list.length -1))
+					buf.append(",");
 			}
-			
-			buf.append("]");
-			if (i != (list.length -1))
-				buf.append(",");
 		}
 		buf.append("]");		
 		
