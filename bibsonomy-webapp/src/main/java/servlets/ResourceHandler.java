@@ -124,9 +124,7 @@ public class ResourceHandler extends HttpServlet{
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("calling doGet");
 		doGet(request, response);
-
 	}
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
