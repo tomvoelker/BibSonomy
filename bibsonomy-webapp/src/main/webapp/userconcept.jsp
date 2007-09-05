@@ -24,7 +24,7 @@
 </div>
 
 <ul id="sidebar">
-    <li><a href="/tag/<mtl:encode value='${param.requTag}'/>"><c:out value="${param.requTag}"/></a> from all users</li>
+    <li><a href="/concept/tag/<mtl:encode value='${param.requTag}'/>"><c:out value="${param.requTag}"/></a> as concept from all users</li>
     <li><a href="/user/<mtl:encode value='${param.requUser}'/>/<mtl:encode value='${param.requTag}'/>"><c:out value="${param.requTag}"/></a> as tag</li>
 
     <%-- @include file="/boxes/relatedusertags.jsp" --%>

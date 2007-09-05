@@ -15,18 +15,9 @@
   
   
   <%@include file="/boxes/nextprevbook.jsp" %>     
-  <ul class="bblist"><c:forEach var="book" items="${ResourceBean.bookmarks}">
+  <ul class="bblist"><c:forEach var="resource" items="${ResourceBean.bookmarks}">
 
-   <c:choose>
-     <c:when test="${user.name eq book.user}">
-       <li class="bm bmown">
-     </c:when>
-     <c:otherwise>
-   <li class="bm">
-      </c:otherwise>
-    </c:choose>
-      
-      
+      <%@include file="/boxes/resource_own_entry_mark.jsp" %>
       <%@include file="/boxes/bookmark_desc.jsp" %>     
       <%@include file="/boxes/bookmark_action.jsp" %>     
     </li>

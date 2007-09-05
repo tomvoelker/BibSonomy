@@ -20,6 +20,17 @@
 <h1><a href="/" rel="Start">${projectName}</a> :: <a href="/tags">tag</a> :: 
 <form action="/tag/" method="GET" class="smallform">
   <input id="inpf" type="text" size="20" name="tag" value="<c:out value='${param.requTag}'/>"/>
+  <span style="font-size: 65%">
+  <c:choose>
+	<c:when test="${not empty param.order && param.order eq 'folkrank'}">
+		order by (<a href="/tag/<mtl:encode value='${param.requTag}'/>">date</a> | folkrank)
+		<input type="hidden" name="order" value="folkrank"/>
+	</c:when>
+	<c:otherwise>
+		order by (date | <a href="/tag/<mtl:encode value='${param.requTag}'/>?order=folkrank">folkrank</a>)
+	</c:otherwise> 
+  </c:choose>
+  </span>
 </form>
 </h1> 
 
@@ -31,6 +42,8 @@
 </div>
 
 <ul id="sidebar">
+	<li><a href="/concept/tag/<mtl:encode value='${param.requTag}'/>"><c:out value="${param.requTag}"/></a> as concept from all users</li>
+    <br/>
   <%@include file="/boxes/tags/relatedtags.jsp"%>
 </ul>
 

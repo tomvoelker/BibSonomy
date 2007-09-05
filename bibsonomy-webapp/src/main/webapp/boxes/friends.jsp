@@ -25,7 +25,7 @@
 <ul><c:forEach var="row" items="${f.rows}">
   <li>
     <a href="/user/<mtl:encode value='${row.f_user_name}'/>"><c:out value='${row.f_user_name}'/></a> 
-    <a class="bmaction" href="/SettingsHandler?ckey=${ckey}&amp;del_friend=<mtl:encode value='${row.f_user_name}'/>" title="remove <c:out value='${row.f_user_name}'/> from your friend list">delete</a>
+    <a class="action" href="/SettingsHandler?ckey=${ckey}&amp;del_friend=<mtl:encode value='${row.f_user_name}'/>" title="remove <c:out value='${row.f_user_name}'/> from your friend list">delete</a>
   </li>
 </c:forEach></ul>
 

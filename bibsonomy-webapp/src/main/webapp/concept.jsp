@@ -5,13 +5,12 @@
 
 <%-- include HTML header --%>
 <jsp:include page="html_header.jsp">
-  <jsp:param name="title" value="user::${param.requUser}::${param.requTag}" />
+  <jsp:param name="title" value="concept::${param.requTag}" />
 </jsp:include>
 
 <%-------------------------- Heading -----------------------%>
-<h1><a href="/" rel="Start">${projectName}</a> :: user :: 
-<a href="/user/<mtl:encode value='${param.requUser}'/>"><c:out value='${param.requUser}'/></a> ::
-<form action="/user/<mtl:encode value='${param.requUser}'/>" method="GET" class="smallform">
+<h1><a href="/" rel="Start">${projectName}</a> :: concept ::
+<form action="/concept/tag/" method="GET" class="smallform">
   <input type="text" id="inpf" size="20" name="tag" value="<c:out value='${param.requTag}'/>"/>
 </form>
 </h1> 
@@ -24,16 +23,14 @@
 </div>
 
 <ul id="sidebar">
-    <li><a href="/tag/<mtl:encode value='${param.requTag}'/>"><c:out value="${param.requTag}"/></a> from all users</li>
-    <li><a href="/concept/user/<mtl:encode value='${param.requUser}'/>/<mtl:encode value='${param.requTag}'/>"><c:out value="${param.requTag}"/></a> as concept</li>
-
-    <%@include file="/boxes/tags/relatedusertags.jsp"%>
-
-    <%@include file="/boxes/tags/usersrelations.jsp" %>
-  
-    <c:set var="markSuperTags" value="true"/>
-    <%@include file="/boxes/tags/userstags.jsp"%>
+    <c:if test="${not empty user.name}">
+    	<li><a href="/concept/user/<mtl:encode value='${user.name}'/>/<mtl:encode value='${param.requTag}'/>"><c:out value="${param.requTag}"/></a> as concept from <c:out value="${user.name}"/></li>
+    </c:if>
+    <li><a href="/tag/<mtl:encode value='${param.requTag}'/>"><c:out value="${param.requTag}"/></a> as tag</li>
+    <br/>
+    <%@include file="/boxes/tags/conceptrelations.jsp" %>
+   
+    <c:set var="markSuperTags" value="true"/>    
 </ul>
-
 
 <%@ include file="/footer.jsp" %>

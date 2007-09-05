@@ -3,18 +3,21 @@ var tag_hint    = "<enter tag(s) here>";
 var user_hint   = "<enter user here>";
 var group_hint  = "<enter group here>";
 var author_hint = "<enter author(s) here>";
+var concept_hint = "<enter concept tag(s) here>";
 var activeField = null;
 var sidebar     = null;
 var tagbox      = null;
 var tags_toggle = 0;
 var tags_filter = null;
 var ckey        = null;
+var currUser    = null;
 
-function init (tagbox_style, tagbox_sort, tagbox_minfreq, requUser, lckey) {
+function init (tagbox_style, tagbox_sort, tagbox_minfreq, requUser, lcurrUser, lckey) {
   add_hints();
   sidebar = document.getElementById("sidebar");
   tagbox  = document.getElementById("tagbox");
   ckey = lckey;
+  currUser = lcurrUser;
 
   if (tagbox) {
     init_tagbox(tagbox_style, tagbox_sort, tagbox_minfreq, requUser);
@@ -97,6 +100,17 @@ function hideNextList() {
   }
 }
 
+// textarea resize
+function sz(t) {
+	a=t.value.split('\n');
+	b=0;
+	for (x=0; x<a.length; x++) {
+		if (a[x].length >= t.cols) b+= Math.floor(a[x].length/t.cols);
+	}
+	b+= a.length;
+	if (b>t.rows) t.rows=b;
+}
+
 // if window is small, maximizes "general" div to 95%
 function maximizeById(id) {
   if (window.innerWidth < 1200) {
@@ -124,7 +138,8 @@ function add_hints() {
     el.onkeypress  = clear_input;
   }
   // specialsearch (tag, user, group, author, relation)
-  if (el && el.name == "q" && (el.value == "" || el.value == author_hint || el.value == tag_hint || el.value == user_hint || el.value == group_hint)) {
+  if (el && el.name == "q" && (el.value == "" || el.value == author_hint || el.value == tag_hint 
+  		|| el.value == user_hint || el.value == group_hint || el.value == concept_hint) || el.value == search_hint) {
     var scope = document.getElementById("scope");
     // add call to this method to dropdown box, so that hint changes, when box changes
     scope.onmouseup = add_hints;
@@ -137,7 +152,11 @@ function add_hints() {
       el.value = group_hint;
     } else if (scope.value == "author") {
       el.value = author_hint;
-    }
+    } else if (scope.value == "concept") {
+      el.value = concept_hint;
+    } else if (scope.value.indexOf("user") != -1 || scope.value == "all") {
+      el.value = search_hint;
+    }    
     el.style.color = "#aaaaaa";
     el.onmousedown = clear_input;
     el.onkeypress  = clear_input;        
@@ -1327,13 +1346,7 @@ function unicodeCollation(ersterWert, zweiterWert){
 	        }
 	    }
     } 
-    
-    
-    /* ********************************************************
-     * picking/(unpicking) of publications
-     * ********************************************************/
-    
-
+        
     
     // this picks or unpicks a publication
     function pickUnpickPublication(evt){

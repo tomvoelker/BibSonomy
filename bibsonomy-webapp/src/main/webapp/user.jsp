@@ -44,7 +44,7 @@
       </div>
       <div id="bibbox">
         <h2>publications</h2>
-        <p style="padding: 4em;">- no personal bookmarks at the moment -</p>
+        <p style="padding: 4em;">- no personal publication posts at the moment -</p>
         <p>To add a publication <a href="/post_bibtex">go here</a>.</p>
       </div>  
     </c:when>

@@ -7,7 +7,7 @@
 <%@ page pageEncoding="UTF-8" %>
 <%@ page session="true" %>
 <%@ page isELIgnored="false" %>
-<%@ taglib uri="/WEB-INF/taglibs/mytaglib.tld" prefix="mtl" %>
+<%@ taglib uri="/WEB-INF/src/tags/mytaglib.tld" prefix="mtl" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="f" %>

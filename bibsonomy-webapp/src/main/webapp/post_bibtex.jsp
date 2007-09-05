@@ -81,8 +81,7 @@
   <tr>
     <td class="expl">BibTeX snippet*</td>
     <td>
-    	<textarea name="selection" cols="60" rows="10"  class="reqinput"></textarea>
-    	<img align="right" style="display:inline; cursor:pointer" src="/resources/image/resize.gif" onclick="TxtRsz.init()"/>
+    	<textarea name="selection" cols="60" rows="10"  class="reqinput" onkeyup="sz(this);"></textarea>
     </td>
     <td rowspan="3" class="expl_s">
     Just copy and paste any valid BibTeX snippet or publication reference into
@@ -113,7 +112,7 @@
 
 
 <%-- ---------------- BIBTEX UPLOAD INPUT ---------------- --%>
-<h2>Upload your BibTeX file here:</h2>
+<h2>Upload your BibTeX or EndNote file here:</h2>
 
 <form method="post" enctype="multipart/form-data" action='<%=response.encodeURL("/BibtexHandler?requTask=upload")%>'>
 <table>

@@ -8,7 +8,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="f" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ taglib uri="/WEB-INF/taglibs/mytaglib.tld" prefix="mtl" %>
+<%@ taglib uri="/WEB-INF/src/tags/mytaglib.tld" prefix="mtl" %>
 
 
 <rdf:RDF
@@ -34,22 +34,22 @@
   <%-------------------------- bookmarks -----------------------%>
   <items>
     <rdf:Seq>
-      <c:forEach var="book" items="${ResourceBean.bookmarks}">
-        <rdf:li rdf:resource="<c:out value='${book.url}' />"/>
+      <c:forEach var="resource" items="${ResourceBean.bookmarks}">
+        <rdf:li rdf:resource="<c:out value='${resource.url}' />"/>
       </c:forEach>
     </rdf:Seq>
   </items>
 </channel>
 
-<c:forEach var="book" items="${ResourceBean.bookmarks}">
-  <item rdf:about="<c:out value='${book.url}' />">
-    <title><c:out value="${book.title}"/></title>
-    <description><c:out value="${book.extended}"/></description>
-    <link><c:out value='${book.url}' /></link>
-    <dc:creator><c:out value="${book.user}" /></dc:creator>
-    <dc:date><mtl:formatDate value="${book.date}"/></dc:date>
+<c:forEach var="resource" items="${ResourceBean.bookmarks}">
+  <item rdf:about="<c:out value='${resource.url}' />">
+    <title><c:out value="${resource.title}"/></title>
+    <description><c:out value="${resource.extended}"/></description>
+    <link><c:out value='${resource.url}' /></link>
+    <dc:creator><c:out value="${resource.user}" /></dc:creator>
+    <dc:date><mtl:formatDate value="${resource.date}"/></dc:date>
     <dc:subject>
-      <c:forEach var="tag" items="${book.tags}"><c:out value='${tag} '/> </c:forEach>  
+      <c:forEach var="tag" items="${resource.tags}"><c:out value='${tag} '/> </c:forEach>  
     </dc:subject>
     <content:encoded><![CDATA[
     <link rel="stylesheet" href="${projectHome}resources/css/rss.css" type="text/css"/>
@@ -60,7 +60,7 @@
     </content:encoded>
     <taxo:topics>
       <rdf:Bag>
-        <c:forEach var="tag" items="${book.tags}">
+        <c:forEach var="tag" items="${resource.tags}">
           <rdf:li rdf:resource="${projectHome}tag/<c:out value='${tag}' />" />
         </c:forEach>  
       </rdf:Bag>

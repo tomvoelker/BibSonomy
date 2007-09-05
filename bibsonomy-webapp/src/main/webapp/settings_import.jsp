@@ -1,0 +1,91 @@
+	<%-- ############################################# import tab ############################################# --%>
+		<%-- ------------------------ firefox import -------------------------- --%>
+		<h2>import your bookmarks from Firefox:</h2>
+		<form enctype="multipart/form-data" method="POST" action="/bookmarkHandler?import=firefox">
+		  <table> 
+		   <tr>
+		   <td>select your file:</td>
+		   <td><input name="file" type="file"  size="20"/></td></tr>
+		   <tr>
+		      <td>viewable for</td>
+		      <td><select name="group"><c:forEach var="group" items="${user.allGroups}">
+		         <option value="${group}">${group}</option>
+		      </c:forEach></select></td>
+		    </tr>
+		   <tr><td></td><td><input type="checkbox" name="overwrite" value="yes">Firefox bookmarks overwrite ${projectName} bookmarks</td></tr>
+		   <tr><td><input type="submit" value="import bookmarks"></td><td></td></tr>
+		  </table> 
+		</form>
+		
+		<hr/>
+		
+		<%-- ------------------------ delicious import -------------------------- --%>
+		<h2>import your del.icio.us data:</h2>
+		<form method="POST" action="/bookmarkHandler">
+	  	<table>
+	    	<tr><td>username</td><td><input type="text" name="username" size="30"/></td></tr>
+	    	<tr><td>password</td><td><input type="password" name="password" size="30"/></td></tr>
+	    	<tr>
+	      		<td>viewable for</td>
+	      		<td><select name="group"><c:forEach var="group" items="${user.allGroups}">
+	         	<option value="${group}">${group}</option>
+	      		</c:forEach></select></td>
+	    	</tr>
+	    	<tr><td></td><td><input type="checkbox" name="overwrite" value="yes">del.icio.us bookmarks overwrite ${projectName} bookmarks</td></tr>
+	    	<tr><td>
+	      		<input type="hidden" name="ckey" value="${ckey}"/>
+	      		<input type="hidden" name="import" value="delicious"/>
+	      		<input type="submit" value="import bookmarks"/>
+	    	</td><td></td></tr>
+	  	</table>
+	  	</form>
+	  
+		<hr/>
+
+		<%-- ------------------------ handle layout file ------------------------ ---%>
+		<jsp:useBean id="layoutBean" class="beans.LayoutBean" scope="request">
+		  <jsp:setProperty name="layoutBean" property="username" value="${user.name}"/>
+		</jsp:useBean>
+		
+		<a name="layout"></a>
+		
+		<h2>JabRef layout file</h2>
+		
+		<p>
+		For an explanation on how to write such export filters, have a look at 
+		<a href="http://jabref.sourceforge.net/help/CustomExports.html">the JabRef page</a>.
+		You (and only you!) can use these layouts to show ${projectName}'s publication lists
+		in a format of your choice. After uploading the correct file(s) have a look at
+		<a href="/layout/custom/user/<c:out value='${user.name}'/>">my${projectName}</a> to see 
+		how it looks.
+		</p>
+		
+		<form enctype="multipart/form-data" method="post" action="/LayoutHandler" style="display:inline;">
+		  <table>
+		    <tr> 
+		      <td>begin.layout</td>
+		      <td><c:choose>
+		        <c:when test="${empty layoutBean.beginName}"><input name="file.begin" type="file" size="20"/></c:when>
+		        <c:otherwise><c:out value="${layoutBean.beginName} "/><a class="action" href="/LayoutHandler?hash=${layoutBean.beginHash}&amp;action=delete">delete</a></c:otherwise>
+		      </c:choose></td>
+		      <td>(appears at the beginning of the output, optional)</td>
+		    </tr><tr>
+		      <td>item.layout</td>
+		      <td><c:choose>
+		        <c:when test="${empty layoutBean.itemName}"><input name="file.item" type="file" size="20"/></c:when>
+		        <c:otherwise><c:out value="${layoutBean.itemName} "/><a class="action" href="/LayoutHandler?hash=${layoutBean.itemHash}&amp;action=delete">delete</a></c:otherwise>
+		      </c:choose></td>
+		      <td>(used to render each publication item)</td>
+		    </tr><tr>
+		      <td>end.layout</td>
+		      <td><c:choose>
+		        <c:when test="${empty layoutBean.endName}"><input name="file.end" type="file" size="20"/></c:when>
+		        <c:otherwise><c:out value="${layoutBean.endName} "/><a class="action" href="/LayoutHandler?hash=${layoutBean.endHash}&amp;action=delete">delete</a></c:otherwise>
+		      </c:choose></td>
+		      <td>(appears at the end of the output, optional)</td>
+		    </tr><tr>
+		      <td><input type="submit" value="upload" /><div class="errmsg"><c:out value="${layoutBean.error}"/></div></td>
+		      <td></td>
+		    </tr>
+		  </table>
+		</form>	

@@ -21,7 +21,7 @@
 
 <%@ page import="servlets.listeners.*" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="/WEB-INF/taglibs/mytaglib.tld" prefix="mtl" %>
+<%@ taglib uri="/WEB-INF/src/tags/mytaglib.tld" prefix="mtl" %>
 
 <%--
 	HTML starts here
@@ -36,6 +36,7 @@
     <script type="text/javascript" src="/resources/javascript/functions.js"></script>
     <script type="text/javascript" src="/resources/javascript/tooltip.js"></script>
     <script type="text/javascript" src="/resources/javascript/style.js"></script>
+    <script type="text/javascript" src="/resources/javascript/chrome.js"></script>
     <meta name="author" content="Knowledge and Data Engineering Group, University of Kassel, Germany">
     <meta name="copyright" content="Knowledge and Data Engineering Group, University of Kassel, Germany">
     <meta name="email" content="webmaster@bibsonomy.org">

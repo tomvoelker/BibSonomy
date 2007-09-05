@@ -38,17 +38,15 @@
          
 
          <%-- show Name of group  --%>
-         <c:if test="${!empty row.user_realname}">
-           <c:out value="${row.user_realname} "/>
+         <c:if test="${not empty row.user_realname}">
+           <c:out value="${row.user_realname} "/> <strong>::</strong>
          </c:if>
 
-         <span class="bmaction">         
          <%-- show URL of group  --%>
-         <c:if test="${!empty row.user_homepage}"><a href="<c:out value='${row.user_homepage}'/>"> URL </a></c:if>
+         <c:if test="${not empty row.user_homepage}"><a href="<c:out value='${row.user_homepage}'/>"> URL </a></c:if>
 
          <%-- show form to join group --%>
          <c:if test="${not empty user.name}"><a href="/join_group?group=<mtl:encode value='${row.group_name}'/>">join</a></c:if>
-         </span>
 
        </li>
     </c:forEach>

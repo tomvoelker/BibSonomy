@@ -17,13 +17,6 @@
   
   
   <%@include file="/boxes/nextprevbib.jsp" %>  
-  <ul class="bblist"><c:forEach var="bib" items="${ResourceBean.bibtex}">
-  
-      <%@ include file="/boxes/bibtex_own_entry_mark.jsp" %>
-      <%@ include file="/boxes/bibtex_desc.jsp" %>
-      <%@ include file="/boxes/bibtex_desc2.jsp" %>
-      <%@ include file="/boxes/bibtex_action.jsp" %>
-    </li>
-  </c:forEach></ul>
+  <%@include file="/boxes/bibtex_list.jsp" %>  
   <%@include file="/boxes/nextprevbib.jsp" %>  
 </div>

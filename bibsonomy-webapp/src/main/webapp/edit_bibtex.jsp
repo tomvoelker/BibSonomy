@@ -62,6 +62,7 @@
 
 <form name="post_bibtex" method="post" action="/bibtex_posting_process">
   <input type="hidden" name="oldhash" value="${bibtexHandlerBean.oldhash}"/>
+  <input type="hidden" name="rating" value="${bibtexHandlerBean.rating}"/>
   <input type="hidden" value="${ckey}" name="ckey"/>
   <table>
     
@@ -81,8 +82,7 @@
 <tr>
   <td class="expl">description,<br>comment</td>
   <td>
-    <textarea name="description" cols="60" rows="3"><c:out value="${bibtexHandlerBean.description}"/></textarea>
-    <img align="right" style=" display:inline; cursor:pointer" src="/resources/image/resize.gif" onclick="TxtRsz.init()" />
+    <textarea name="description" cols="60" rows="3" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.description}"/></textarea>
     <div class="errmsg">${bibtexHandlerBean.errors.description}</div>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.description}"/></div>
   </td>
@@ -184,8 +184,7 @@
 <tr>
   <td class="expl">title*</td>
   <td>
-    <textarea class="reqinput" name="title" cols="60" rows="3"><c:out value="${bibtexHandlerBean.title}"/></textarea>
-        <img align="right" style="display:inline; cursor:pointer" src="/resources/image/resize.gif" onclick="TxtRsz.init()" />
+    <textarea class="reqinput" name="title" cols="60" rows="3" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.title}"/></textarea>
     <div class="errmsg">${bibtexHandlerBean.errors.title}</div>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.title}"/></div>
   </td>
@@ -195,8 +194,7 @@
 <tr>
   <td class="expl">authors*</td>
   <td>
-    <textarea class="reqinput" name="author" id="lauthor" onkeyup="toggle_required_author_editor()" rows="3" cols="60" ><c:out value="${bibtexHandlerBean.authorLineBreak}"/></textarea>
-        <img align="right" style="display:inline; cursor:pointer" src="/resources/image/resize.gif" onclick="TxtRsz.init()" />
+    <textarea class="reqinput" name="author" id="lauthor" onkeyup="toggle_required_author_editor(); sz(this);"" rows="3" cols="60"><c:out value="${bibtexHandlerBean.authorLineBreak}"/></textarea>
     <div class="errmsg">${bibtexHandlerBean.errors.author}</div>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.author}"/></div>
   </td>
@@ -208,8 +206,7 @@
 <tr>
   <td valign="top" class="expl">editors*</td>
   <td>
-    <textarea class="reqinput" name="editor" id="leditor" onkeyup="toggle_required_author_editor()" rows="3" cols="60"><c:out value="${bibtexHandlerBean.editorLineBreak}"/></textarea>
-        <img align="right" style="display:inline; cursor:pointer" src="/resources/image/resize.gif" onclick="TxtRsz.init()" />
+    <textarea class="reqinput" name="editor" id="leditor" onkeyup="toggle_required_author_editor(); sz(this);" rows="3" cols="60"><c:out value="${bibtexHandlerBean.editorLineBreak}"/></textarea>
     <div class="errmsg">${bibtexHandlerBean.errors.editor}</div>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.editor}"/></div>
     <script type="text/javascript">toggle_required_author_editor();</script>    
@@ -371,8 +368,7 @@
 <tr id="annoteR">
   <td class="expl">annote</td>
   <td>
-    <textarea name="annote" rows="3" cols="60"><c:out value="${bibtexHandlerBean.annote}"/></textarea>
-        <img align="right" style="display:inline; cursor:pointer" src="/resources/image/resize.gif" onclick="TxtRsz.init()" />
+    <textarea name="annote" rows="3" cols="60" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.annote}"/></textarea>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.annote}"/></div>    
   </td>
   <td></td>
@@ -381,8 +377,7 @@
 <tr id="noteR">
   <td class="expl">note</td>
   <td>
-    <textarea name="note" rows="3" cols="60"><c:out value="${bibtexHandlerBean.note}"/></textarea>
-        <img align="right" style="display:inline; cursor:pointer" src="/resources/image/resize.gif" onclick="TxtRsz.init()" />
+    <textarea name="note" rows="3" cols="60" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.note}"/></textarea>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.note}"/></div>    
   </td>
   <td class="expl_s">additional information which could help the reader</td>
@@ -448,8 +443,7 @@
 <tr id="miscR">
   <td class="expl">misc</td>
   <td>
-    <textarea name="misc" cols="60" rows="3"><c:out value="${bibtexHandlerBean.misc}"/></textarea>
-    <img align="right" style="display:inline; cursor:pointer" src="/resources/image/resize.gif" onclick="TxtRsz.init()" />
+    <textarea name="misc" cols="60" rows="3" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.misc}"/></textarea>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.misc}"/></div>    
   </td>
   <td class="expl_s">this field can be used to import nonstandard fields in addition to the predefined ones. please use BibTeX compliant syntax.</td>
@@ -458,8 +452,7 @@
 <tr>
   <td class="expl">abstract</td>
   <td>
-    <textarea name="bibtexAbstract" cols="60" rows="3"><c:out value="${bibtexHandlerBean.bibtexAbstract}"/></textarea>
-    <img align="right" style="display:inline; cursor:pointer" src="/resources/image/resize.gif" onclick="TxtRsz.init()" />
+    <textarea name="bibtexAbstract" cols="60" rows="3" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.bibtexAbstract}"/></textarea>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.bibtexAbstract}"/></div>    
   </td>
   <td></td>

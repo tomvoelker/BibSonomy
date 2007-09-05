@@ -103,6 +103,7 @@ td.chunkybib {
 
 .bibentry {
   font-family: monospace;
+  font-size:90%;
 }
 
 div.bibentry {
@@ -368,6 +369,11 @@ html>body #sidebar li {
   color: #069;
 }
 
+.tagcloud a:hover, .taglist a:hover {
+  color: #f00;
+  text-decoration: none;
+}
+
 .taglist {
   font-size: 70%;
 }
@@ -395,13 +401,13 @@ li.bm {
   display: block;
 }
 
-.bmdesc {
+.bmtitle {
   font-size: 100%;
   font-weight: bold;
 }
 
-.bmext {
-  font-size: 72%;
+.bmdesc {
+  font-size: 70%;
   color: #aaa;
 }
 
@@ -411,17 +417,33 @@ li.bm {
 }
 
 .bmtags {
-  font-size: 80%;
+//  font-weight:bold;
+}
+
+.bmfoot {
+  color: #aaa;
+  font-size: 70%;
+  border-bottom: 1px solid #eee;
+  clear: left;
 }
 
 .bmaction {
-  font-size: 80%;
-  background-color: #eee;
+  float:left;
 }
+
+.bmrating {
+  float:right;
+}
+
 
 .bmown {
   border-left: 3px solid #aaa;
   padding-left: 0.3em;
+}
+
+.action {
+  font-size: 80%;
+  background-color: #eee;
 }
 
 .tags_first {
@@ -449,16 +471,8 @@ li.bm {
   line-height: 1.1em;
 }
 
-.upperconcept {
-  display: inline;
-  font-size: 120%;
-  line-height: 1.2em;
-}
-
-.lowerconcept {
-  display: inline;
-  font-size: 75%;
-  line-height: 1.1em;
+td.upperconcept {
+  text-align: right;
 }
 
 .box_upperconcept {
@@ -645,28 +659,35 @@ span.info:hover span{
 	border-top: 1px solid #AAA; 
 }
 
-/* hover menu */
+/* Drop Down Menu */
 
-.menuContainer{
-	position: relative;
+.dropmenudiv{
+	position:absolute;
+	top: 0;
+	border: 1px solid #ccc; 
+	background-color: #eee;
+	border-bottom-width: 0;
+	line-height:18px;
+	z-index:100;
+	visibility: hidden;
+	padding-left: 7px;
+	padding-right: 7px;
 }
 
-.menu .options {
-	margin-right:1px;
-	margin-bottom:1px;
-	border:1px solid #ccc;
-	background-color:#eee;
-}
-.menu a {
-	color:#069;
-	display:block;
-	padding:2px 10px;
-	text-decoration:none;
-	font-weight: normal;
-	font-size: 140%;
-	background-color:transparent;
-}
-.menu a:hover {
-//	font-size: 160%;
+.dropmenudiv a{
+	width: auto;
+	display: block;
+	text-indent: 3px;
+	border-bottom: 1px solid #ccc;
+	text-decoration: none;
 	font-weight: bold;
+	color: #069;
+}
+
+* html .dropmenudiv a{ /*IE only hack*/
+	width: 100%;
+}
+
+.dropmenudiv a:hover{
+	color: red;
 }

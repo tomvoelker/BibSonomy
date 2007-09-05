@@ -1,49 +1,62 @@
+
+<div class="bmfoot">
+
+
 <span class="bmaction">
   <c:if test="${not empty user.name}">
+    
     <%-- PICK --%>
-    <a onclick="pickUnpickPublication(event);" title="add this entry to your basket" href="/Collector?pick=${bib.hash}&amp;user=<mtl:encode value='${bib.user}'/>&amp;ckey=${ckey}">pick</a> 
- 
-    <%-- user.name == bib.User ? --%>
     <c:choose>
-      <c:when test="${user.name ne bib.user}">
+      <c:when test="${empty unpick}">
+        <a onclick="pickUnpickPublication(event);" title="add this post to your basket" href="/Collector?pick=${resource.hash}&amp;user=<mtl:encode value='${resource.user}'/>&amp;ckey=${ckey}">pick</a>
+      </c:when>
+      <c:otherwise>
+        <a title="remove this post from your basket" href="/Collector?unpick=${resource.hash}&amp;user=<mtl:encode value='${resource.user}'/>&amp;ckey=${ckey}">unpick</a>
+      </c:otherwise>
+    </c:choose>
+    <%-- user.name == resource.User ? --%>
+    <c:choose>
+      <c:when test="${user.name ne resource.user}">
         <%-- different users -- COPY --%>
         <c:url var="copy_url" value="${projectHome}ShowBibtexEntry">
-	      <c:param name="hash" value="${bib.hash}"/>
-		  <c:param name="user" value="${bib.user}"/>
-		  <c:param name="copytag" value="${bib.tagString}"/>
+	      <c:param name="hash" value="${resource.hash}"/>
+		  <c:param name="user" value="${resource.user}"/>
+		  <c:param name="copytag" value="${resource.tagString}"/>
 	    </c:url>
-        <a href="<c:out value='${copy_url}'/>" title="copy this entry to your repository">copy</a><%-- 
+        | <a href="<c:out value='${copy_url}'/>" title="copy this entry to your repository">copy</a><%-- 
   --%></c:when>
       <c:otherwise>
         <%-- same user -- EDIT, DELETE, ... --%>
         <%-- (FAST TAG) EDIT --%>
         <span><c:choose>
           <c:when test="${not empty noedittags}">
-            <a href="/ShowBibtexEntry?hash=${bib.hash}" title="edit this entry">edit</a>
+            | <a href="/ShowBibtexEntry?hash=${resource.hash}" title="edit this entry">edit</a>
           </c:when>
           <c:otherwise>
-            <a onclick="editTags(this,'${ckey}');return false;" tags='<c:out value="${bib.fullTagString}"/>' hashsum="${bib.hash}" href="/ShowBibtexEntry?hash=${bib.hash}" title="edit this entry">edit</a>
+            | <a onclick="editTags(this,'${ckey}');return false;" tags='<c:out value="${resource.fullTagString}"/>' hashsum="${resource.hash}" href="/ShowBibtexEntry?hash=${resource.hash}" title="edit this entry">edit</a>
           </c:otherwise>
         </c:choose></span>
         <%-- DELETE --%>          
-        <a href="/BibtexHandler?hash=${bib.hash}&amp;requTask=delete&amp;ckey=${ckey}" title="delete this entry from your repository">delete</a><%-- 
+        | <a href="/BibtexHandler?hash=${resource.hash}&amp;requTask=delete&amp;ckey=${ckey}" title="delete this entry from your repository">delete</a><%-- 
   --%></c:otherwise>
     </c:choose>
 </c:if>
-</span>
-      
-<span class="bmmeta">
 
   <%-- URL --%>
-  <c:if test="${not empty bib.cleanurl}">
-    <a href="<c:out value='${bib.cleanurl}'/>" title="this entry contains an URL which is linked here">URL</a>        
+  <c:if test="${not empty resource.cleanurl}">
+    | <a href="<c:out value='${resource.cleanurl}'/>" title="this entry contains an URL which is linked here">URL</a>        
   </c:if>
   
-  <a href="/bib/bibtex/<%=Bibtex.INTRA_HASH %>${bib.hash}/<mtl:encode value='${bib.user}'/>" title="show this entry in BibTeX format">BibTeX</a>
+  | <a href="/bib/bibtex/<%=Bibtex.INTRA_HASH %>${resource.hash}/<mtl:encode value='${resource.user}'/>" title="show this entry in BibTeX format">BibTeX</a>
 
   <%-- OPENURL --%>
   <c:if test="${!empty user.openurl}">
-    <a href="<c:out value='${user.openurl}'/>?<c:out value='${bib.openurl}'/>">OpenURL</a>
+    | <a href="<c:out value='${user.openurl}'/>?<c:out value='${resource.openurl}'/>">OpenURL</a>
   </c:if>
   
 </span>
+
+  <%@include file="/boxes/resource_rating.jsp" %> 
+
+  &nbsp;
+</div>

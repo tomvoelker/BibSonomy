@@ -9,7 +9,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="f" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ taglib uri="/WEB-INF/taglibs/mytaglib.tld" prefix="mtl" %>
+<%@ taglib uri="/WEB-INF/src/tags/mytaglib.tld" prefix="mtl" %>
 
 
 <rdf:RDF
@@ -37,30 +37,30 @@
   <%-------------------------- bookmarks -----------------------%>
   <items>
     <rdf:Seq>
-      <c:forEach var="bib" items="${ResourceBean.bibtex}"><rdf:li rdf:resource="${projectHome}bibtex/<%=Bibtex.INTRA_HASH %><c:out value='${bib.hash}'/>/<mtl:encode value='${bib.user}'/>"/>
+      <c:forEach var="resource" items="${ResourceBean.bibtex}"><rdf:li rdf:resource="${projectHome}bibtex/<%=Bibtex.INTRA_HASH %><c:out value='${resource.hash}'/>/<mtl:encode value='${resource.user}'/>"/>
       </c:forEach>
     </rdf:Seq>
   </items>
 </channel>
 
-<c:forEach var="bib" items="${ResourceBean.bibtex}">
-  <item rdf:about="${projectHome}bibtex/<%=Bibtex.INTRA_HASH %><c:out value='${bib.hash}'/>/<mtl:encode value='${bib.user}'/>">
-    <title><mtl:bibclean value="${bib.title}"/></title>
-    <link>${projectHome}bibtex/<%=Bibtex.INTRA_HASH %><c:out value='${bib.hash}'/>/<mtl:encode value='${bib.user}'/></link>
-    <dc:creator><c:out value="${bib.user}" /></dc:creator>
-    <dc:date><mtl:formatDate value="${bib.date}"/></dc:date>
-    <dc:subject><c:forEach var="tag" items="${bib.tags}"><c:out value='${tag} '/> </c:forEach></dc:subject>
+<c:forEach var="resource" items="${ResourceBean.bibtex}">
+  <item rdf:about="${projectHome}bibtex/<%=Bibtex.INTRA_HASH %><c:out value='${resource.hash}'/>/<mtl:encode value='${resource.user}'/>">
+    <title><mtl:bibclean value="${resource.title}"/></title>
+    <link>${projectHome}bibtex/<%=Bibtex.INTRA_HASH %><c:out value='${resource.hash}'/>/<mtl:encode value='${resource.user}'/></link>
+    <dc:creator><c:out value="${resource.user}" /></dc:creator>
+    <dc:date><mtl:formatDate value="${resource.date}"/></dc:date>
+    <dc:subject><c:forEach var="tag" items="${resource.tags}"><c:out value='${tag} '/> </c:forEach></dc:subject>
     <description><![CDATA[
     <div class="block">
       <%@ include file="/boxes/bibtex_desc.jsp" %>
-      <div class="abstract"><c:out value="${bib.bibtexAbstract}"/></div>
+      <div class="abstract"><c:out value="${resource.bibtexAbstract}"/></div>
       <%@ include file="/boxes/bibtex_desc2.jsp" %>
     </div>
     ]]>
     </description>
     <taxo:topics>
       <rdf:Bag>
-        <c:forEach var="tag" items="${bib.tags}"><rdf:li rdf:resource="${projectHome}tag/<c:out value='${tag}' />" /></c:forEach>  
+        <c:forEach var="tag" items="${resource.tags}"><rdf:li rdf:resource="${projectHome}tag/<c:out value='${tag}' />" /></c:forEach>  
       </rdf:Bag>
     </taxo:topics>
   </item>

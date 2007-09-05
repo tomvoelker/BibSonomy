@@ -20,26 +20,16 @@
 <%----------------------collected bibtex entries - extra meta handling without pick button--------------------%>
 <div id="bibbox">
   
-  <p>Here you can manage publication entries you picked with the "pick" button. For details see <a href="/help/basic/firststeps#basket">here</a>.</p>
+  <p>Here you can manage publication posts you picked with the "pick" button. For details see <a href="/help/basic/firststeps#basket">here</a>.</p>
 
   <%@ include file="/boxes/basket_actions.jsp" %>
   
   <%-------------------- Publication entries -----------------------%>
   <c:set var="basePath" value="/"/>
-  <ul class="bblist">
-    <c:forEach var="bib" items="${ResourceBean.bibtex}">
-        <%@ include file="/boxes/bibtex_own_entry_mark.jsp" %>
-        <%@ include file="/boxes/bibtex_desc.jsp" %>
-        <%@ include file="/boxes/bibtex_desc2.jsp" %> 
-        <%@ include file="/boxes/bibtex_action.jsp" %>
-        <%-- unpick publication entry --%>
-        <span class="bmaction">
-	      <a href="/Collector?unpick=${bib.hash}&user=<mtl:encode value='${bib.user}'/>&amp;ckey=${ckey}" title="remove this entry from the basket">remove from basket</a>  
-        </span>
-      </li>
-    </c:forEach>
-  </ul>
-
+  <c:set var="unpick" value="yes"/>  
+  
+  <%@include file="/boxes/bibtex_list.jsp" %>  
+  
   <%@ include file="/boxes/basket_actions.jsp" %>
 
 </div>

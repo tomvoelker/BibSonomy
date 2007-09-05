@@ -7,12 +7,28 @@
 
 <jsp:useBean id="RelationBean" class="beans.RelationBean" scope="request"/>
 
-<h1><a href="/" rel="Start">${projectName}</a> :: <a href="/relations">relations</a></h1>
+<h1><a href="/" rel="Start">${projectName}</a> :: <a href="/relations">relations</a>
+:: <form action="/concept/tag/" method="GET" class="smallform">
+  <input type="text" size="20" name="tag" id="inpf" value="<c:out value='${param.requTag}'/>"/>
+</form>
+</h1>
 
 <%@include file="/boxes/navi.jsp" %> 
 
-<div id="outer">
 <div id="general">
+
+<p>
+  Here you can see the most popular relations of our users.
+
+  <c:if test="${not empty user.name}">
+    You can access your own relations via 
+    <a href="/relations/<mtl:encode value='${user.name}'/>">myRelations</a> and edit them on the
+    <a href="/edit_tags">edit tags</a> page.
+  </c:if>
+
+</p>
+
+
 <%--
 
 shows the list of relations:
@@ -24,33 +40,37 @@ SUPERTAG3 <-- subtag31 subtag32 subtag33
 --%>
  
   <%-- duplicated and only slightly changed code from /boxes/relationlist.jsp --%>
-  <ul style="font-size:140%;">
+  <table>
     <c:set var="lastupper" value="" />
     <c:forEach var="relation" items="${RelationBean.allRelations}">
       <c:if test="${relation.upper ne lastupper}">
         <c:if test="${!empty lastupper}">
   	    <%-- not the first supertag --> close list of former supertag --%>
-          </ul>
-        </li>
+          </ul><%-- close subtag list --%>
+        </td></tr><%-- close table row--%>
   	    </c:if>
 	    <%-- new supertag --%>
 	    <c:set var="lastupper" value="${relation.upper}" />
-        <li class="box_upperconcept">
-		  <a style="font-size:${(relation.count * 10) + 80}%" title="${relation.count} users"  href="/tag/<mtl:encode value='${relation.upper}'/>"><c:out value="${relation.upper}"/></a>
-		  &larr;
-  	  	  <ul id="<c:out value='${relation.upper}'/>" class="box_lowerconcept_elements">
+        <tr><td class="upperconcept">
+		  <a style="font-size:${(relation.count * 10) + 80}%" title="${relation.count} users"  href="/concept/tag/<mtl:encode value='${relation.upper}'/>"><c:out value="${relation.upper}"/></a>
+		  <td>&larr;</td>
+  	  	  <td><ul id="<c:out value='${relation.upper}'/>" class="box_lowerconcept_elements">
       </c:if>
           <%-- subtags --%>
           <li class="box_lowerconcept"> 
     	    <a href="/tag/<mtl:encode value='${relation.lower}'/>"><c:out value="${relation.lower}"/></a>
           </li>
     </c:forEach>
+    <%-- close last super-concept --%>
         </ul>
-      </li>
-    </ul>
+      </td></tr>
+    </table>
 
 </div>
-</div>
+
+<script type="text/javascript">
+maximizeById("general");
+</script>
 
 
 <%@ include file="footer.jsp" %>

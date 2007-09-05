@@ -1,5 +1,5 @@
 <%@include file="/include_jsp_head.jsp"%>
-<%@ taglib uri="/WEB-INF/taglibs/myajaxtaglib.tld" prefix="ajax" %>
+<%@ taglib uri="/WEB-INF/src/tags/myajaxtaglib.tld" prefix="ajax" %>
 
 <%@include file="/boxes/admin/login.jsp"%>
 

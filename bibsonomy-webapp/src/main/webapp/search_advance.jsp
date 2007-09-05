@@ -260,7 +260,7 @@
 	* checks the form before submitting
 	**/		
 	function checkForm(bibtexhash) {
-		var url = "/bibtex/2" + bibtexhash + "/${user.name}";	
+		var url = "/bibtex/<%=Bibtex.INTRA_HASH %>" + bibtexhash + "/<c:out value='${user.name}'/>";	
 		document.location.href = url;	
 		return false;
 	}
@@ -346,7 +346,7 @@
 		linktd.style.fontSize = "70%";	
 				
 		var link = document.createElement("a");	
-		link.href = "/bib/bibtex/2" + bibtexhash + "/${user.name}";
+		link.href = "/bib/bibtex/<%=Bibtex.INTRA_HASH %>" + bibtexhash + "/<c:out value='${user.name}'/>";
 		link.innerHTML = "BibTeX";
 		
 		if (url != "") {

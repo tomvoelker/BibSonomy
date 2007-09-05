@@ -71,15 +71,15 @@
 <hr>
 <c:set var="counter" value="0"/>
 <ul class="bblist">
-<c:forEach items="${resources}" var="bib">
+<c:forEach items="${resources}" var="resource">
   <li class="bm">
     <div style="background: #fafafa;"><%@include file="/boxes/bibtex_desc.jsp" %></div>
-    <input type="hidden" name="${bib.hash}" value="${counter}"/>
+    <input type="hidden" name="${resource.hash}" value="${counter}"/>
     <table>
     <c:forEach items="${extended_fields_map}" var="efm">
       <tr>
         <td><c:out value="${efm.key}"/>:</td>
-        <td><input type="text" size="40" name="${counter}_${efm.order}" value="<c:out value='${bib.extended_fields[efm.key]}'/>"/></td>
+        <td><input type="text" size="40" name="${counter}_${efm.order}" value="<c:out value='${resource.extended_fields[efm.key]}'/>"/></td>
         <td><c:out value="${efm.description}"/></td>
       </tr>
     </c:forEach>
@@ -100,7 +100,7 @@
 <ul class="bblist"><c:forEach items="${nonown}" var="bib">
   <li class="bm">
     <%@include file="/boxes/bibtex_desc.jsp" %>
-    by <a href="/user/${bib.user}">${bib.user}</a>
+    by <a href="/user/${resource.user}">${resource.user}</a>
     <%@ include file="/boxes/bibtex_action.jsp" %>
   </li>
 </c:forEach></ul>

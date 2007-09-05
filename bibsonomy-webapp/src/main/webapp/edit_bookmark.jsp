@@ -63,6 +63,7 @@
   <%-- -------------------------------- Bookmark edit form ------------------------- --%>
   <form method="POST" action="/bookmark_posting_process">
     <input type="hidden" name="oldurl" value="<c:out value='${bookmarkHandlerBean.oldurl}'/>">
+    <input type="hidden" name="rating" value="<c:out value='${bookmarkHandlerBean.rating}'/>">
     <input type="hidden" name="jump" value="${bookmarkHandlerBean.jump}">
     <input type="hidden" value="${ckey}" name="ckey"/>
     
@@ -85,10 +86,7 @@
 	<tr>
 	  <td><label for="lext">description,<br>comment</label></td>
 	  <td>
-	    <textarea id="lext" tabindex="3" name="extended" cols="60" rows="3">
-	    	<c:out value='${bookmarkHandlerBean.extended}' />
-	    </textarea>
-	    <img align="right" style="display:inline; cursor:pointer" src="/resources/image/resize.gif" onclick="TxtRsz.init()"/>
+	    <textarea id="lext" tabindex="3" name="extended" cols="60" rows="3" onkeyup="sz(this);"><c:out value='${bookmarkHandlerBean.extended}' /></textarea>
 		<div class="errmsg">${bookmarkHandlerBean.errors.extended}</div>
 	  </td>
 	  <td></td>
@@ -146,7 +144,7 @@
   	<tr>
  	  <td><label for="lgroup">viewable for</label></td>
 	  <td>
-        <%@include file="/boxes/groupselection.jsp" %> 
+        <%@include file="/boxes/groupselection.jsp" %>
 		<input tabindex="5" type="submit" name="submit" value="save" onclick="clear_tags()"/>
 	  </td>
 	  <td></td>

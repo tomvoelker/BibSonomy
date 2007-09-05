@@ -16,9 +16,14 @@
     <option value="tag">tag</option>
     <option value="user">user</option>
     <option value="group">group</option>
-    <option value="author">author</option>    
+    <option value="author">author</option> 
+    <option value="concept">concept</option> 
+    <option value="all">search:all</option> 
+    <c:if test="${not empty user.name}">
+    	<option value="user:<c:out value='${user.name}'/>">search:<c:out value="${user.name}"/></option> 
+    </c:if>       
   </select>  ::
-  <input type="text" id="inpf" name="q" size="25"/>
+  <input type="text" id="inpf" name="q" size="30"/>  
 </form>
 </h1>
 
