@@ -38,11 +38,6 @@
 		<to>/brokenurl.html</to>
 	</rule>
 
-    <rule>
-      <from>^/+api/+v0.1/+users/+([^/]+?)/+community(\?(.*))?$</from>
-      <to>/APIHandler?entity=community&amp;user=$1&amp;$3</to>
-    </rule>
-
 
 <!-- ############## feeds ############### -->
     <!-- FEED overview page -->
@@ -170,19 +165,19 @@
 
 
 <!-- ############## user pages ############### -->
-    <rule>
-        <from>^/+concept/+user/+([^/]+?)/(.+?)(\?(.*))?$</from>
-        <to>/ResourceHandler?page=concept&amp;requUser=$1&amp;requTag=$2&amp;$4</to>
-    </rule>
     <!-- redirect for tag formular on /concept/user/USER/TAG page -->
     <rule>
-        <from>^/+concept/+user/+([^/]+?)(\?tag=(.*))$</from>
+        <from>^/+concept/+user/+([^/?]+?)/(.+?)(\?(.*))?$</from>
+        <to>/ResourceHandler?page=concept&amp;requUser=$1&amp;requTag=$2&amp;$4</to>
+    </rule>    
+    <rule>
+        <from>^/+concept/+user/+([^/?]+?)(\?tag=(.*))$</from>
         <to type="redirect">/concept/user/$1/$3</to>
     </rule>
     
    	<!-- redirect for tag formular on /user/USER/TAG page -->
     <rule>
-      <from>^/+user/+([^/]+?)(\?tag=(.*))$</from>
+      <from>^/+user/+([^/?]+?)(\?tag=(.*))$</from>
       <to type="redirect">/user/$1/$3</to>
     </rule>
     <!-- redirect for user formular on /user/USER page -->
@@ -191,49 +186,59 @@
       <to type="redirect">/user/$2</to>
     </rule>
     <rule>
-        <from>^/+user/+([^/]+?)/(.+?)(\?(.*))?$</from>
+        <from>^/+user/+([^/?]+?)/(.+?)(\?(.*))?$</from>
         <to>/ResourceHandler?page=usertag&amp;requUser=$1&amp;requTag=$2&amp;$4</to>
     </rule>
 	<rule>
-		<from>^/+user/+([^/]+?)(\?(.*))?$</from>
+		<from>^/+user/+([^/?]+?)(\?(.*))?$</from>
 		<to>/ResourceHandler?page=user&amp;requUser=$1&amp;$3</to>
 	</rule>
 	<rule>
-		<from>^/+user/+([^/]+?)/$</from>
+		<from>^/+user/+([^/?]+?)/$</from>
 		<to type="redirect">/user/$1</to>
 	</rule>
+	<!-- redirect for FOAF Output of user profile on /foaf/user/USER page -->
+    <rule>
+      <from>^/+foaf/+user/(\?user=(.*))$</from>
+      <to type="redirect">/foaf/user/$2</to>
+    </rule>
+    <rule>
+      <from>^/+foaf/+user/+([^/?]+?)(\?(.*))?$</from>
+      <to>/UserFOAFOutput.jsp?requUser=$1&amp;$3</to>
+    </rule>
+	
 		
 <!-- ############## viewable pages ############### -->	
     <rule> <!-- /viewable/GROUP/TAG -->
-        <from>^/+viewable/+([^/]+?)/(.+?)(\?(.*))?$</from>
+        <from>^/+viewable/+([^/?]+?)/(.+?)(\?(.*))?$</from>
         <to>/ResourceHandler?page=viewabletag&amp;requGroup=$1&amp;requTag=$2&amp;$4</to>
     </rule>
     <!-- redirect for tag formular on /viewable/GROUP/TAG page -->
     <rule>
-      <from>^/+viewable/+([^/]+?)(\?tag=(.*))$</from>
+      <from>^/+viewable/+([^/?]+?)(\?tag=(.*))$</from>
       <to type="redirect">/viewable/$1/$3</to>
     </rule>
 	<rule> <!-- /viewable/GROUP -->
-		<from>^/+viewable/+([^/]+?)(\?(.*))?$</from>
+		<from>^/+viewable/+([^/?]+?)(\?(.*))?$</from>
 		<to>/ResourceHandler?page=viewable&amp;requGroup=$1&amp;$3</to>
 	</rule>
 	<rule>
-	  <from>^/+viewable/+([^/]+?)/$</from>
+	  <from>^/+viewable/+([^/?]+?)/$</from>
 	  <to type="redirect">/viewable/$1</to>
 	</rule>
 
 <!-- ############## group pages ############### -->
     <rule> <!-- /group/GROUP/TAG -->
-        <from>^/+group/+([^/]+?)/(.+?)(\?(.*))?$</from>
+        <from>^/+group/+([^/?]+?)/(.+?)(\?(.*))?$</from>
         <to>/ResourceHandler?page=grouptag&amp;requGroup=$1&amp;requTag=$2&amp;$4</to>
     </rule>
     <!-- redirect for tag formular on /group/GROUP/TAG page -->
     <rule>
-      <from>^/+group/+([^/]+?)(\?tag=(.*))$</from>
+      <from>^/+group/+([^/?]+?)(\?tag=(.*))$</from>
       <to type="redirect">/group/$1/$3</to>
     </rule>
 	<rule> <!-- /group/GROUP -->
-		<from>^/+group/+([^/]+?)(\?(.*))?$</from>
+		<from>^/+group/+([^/?]+?)(\?(.*))?$</from>
 		<to>/ResourceHandler?page=group&amp;requGroup=$1&amp;$3</to>
 	</rule>
 	<!-- /groups -->
@@ -250,22 +255,22 @@
 	    <to>/groups.jsp</to>
 	</rule>
 	<rule>
-	  <from>^/+group/+([^/]+?)/$</from>
+	  <from>^/+group/+([^/?]+?)/$</from>
 	  <to type="redirect">/group/$1</to>
 	</rule>
 
 <!-- ############## friends pages ############### -->
     <rule> <!-- /friend/USER/TAG -->
-        <from>^/+friend/+([^/]+?)/(.+?)(\?(.*))?$</from>
+        <from>^/+friend/+([^/?]+?)/(.+?)(\?(.*))?$</from>
         <to>/ResourceHandler?page=frienduser&amp;requUser=$1&amp;requTag=$2&amp;$4</to>
     </rule>
     <!-- redirect for tag formular on /friend/USER/TAG page -->
     <rule>
-      <from>^/+friend/+([^/]+?)(\?tag=(.*))$</from>
+      <from>^/+friend/+([^/?]+?)(\?tag=(.*))$</from>
       <to type="redirect">/friend/$1/$3</to>
     </rule>
 	<rule> <!-- /friend/USER -->
-		<from>^/+friend/+([^/]+?)(\?(.*))?$</from>
+		<from>^/+friend/+([^/?]+?)(\?(.*))?$</from>
 		<to>/ResourceHandler?page=frienduser&amp;requUser=$1&amp;$3</to>
 	</rule>
 	<!-- /friends -->
@@ -282,7 +287,7 @@
   		<to>/ResourceHandler?page=friend&amp;$2</to>	    
 	</rule>
 	<rule>
-	  <from>^/+friend/+([^/]+?)/$</from>
+	  <from>^/+friend/+([^/?]+?)/$</from>
 	  <to type="redirect">/friend/$1</to>
 	</rule>
 
@@ -305,15 +310,25 @@
 		<from>^/+tag/(.+?)(\?(.*))?$</from>
 		<to>/ResourceHandler?page=tag&amp;requTag=$1&amp;$3</to> 
 	</rule>
+	    
+    <!-- redirect for tag formular on /concept/tag/TAG page -->
+    <rule>
+        <from>^/+concept/+tag/(\?tag=(.*))$</from>
+        <to type="redirect">/concept/tag/$2</to>
+    </rule>
+    <rule>
+        <from>^/+concept/+tag/(.+?)(\?(.*))?$</from>
+        <to>/ResourceHandler?page=concept&amp;requTag=$1&amp;$3</to>
+    </rule>    
 	
 <!-- ############## author pages ############### -->
 	<rule> <!-- /author/AUTHOR/TAG -->
-        <from>^/+author/+([^/]+?)/(.+?)(\?(.*))?$</from>
+        <from>^/+author/+([^/?]+?)/(.+?)(\?(.*))?$</from>
         <to>/ResourceHandler?page=authortag&amp;requAuthor=$1&amp;requTag=$2&amp;$4</to>
     </rule>
     <!-- redirect for tag formular on /author/AUTHOR/TAG page -->
     <rule>
-      <from>^/+author/+([^/]+?)(\?tag=(.*))$</from>
+      <from>^/+author/+([^/?]+?)(\?tag=(.*))$</from>
       <to type="redirect">/author/$1/$3</to>
     </rule>	
 	<!-- redirect for author formular on /author/AUTHORNAME page -->
@@ -411,7 +426,7 @@
 
 <!-- ############## other pages ############### -->
 	<rule>
-		<from>^/+relations/+([^/]+?)(\?(.*))?$</from>
+		<from>^/+relations/+([^/?]+?)(\?(.*))?$</from>
 		<to>/userRelations?requUser=$1&amp;$3</to>
 	</rule>
 	<rule>
