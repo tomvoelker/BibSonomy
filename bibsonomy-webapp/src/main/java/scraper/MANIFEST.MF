@@ -1,4 +1,0 @@
-Manifest-Version: 0.1
-Main-Class: scraper.TestScraper
-Class-Path: commons-logging.jar log4j-1.2.11.jar Tidy.jar
-Created-By: 0.1 KDE
