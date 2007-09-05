@@ -108,13 +108,14 @@ public class BibtexShowHandler extends HttpServlet{
 			/* generate a new bean and fill it with the request-parameters
 			 * this way (with a filled bean) we can get the apropriate hash
 			 * and can ask the database just for the hash */
-			BibtexHandlerBean bean = new BibtexHandlerBean();
-			bean.setTitle(requTitle);
-			bean.setAuthor(request.getParameter("author"));
-			bean.setEditor(request.getParameter("editor"));
-			bean.setYear(request.getParameter("year"));
-			bean.setEntrytype(request.getParameter("entrytype"));
+			Bibtex bibtex = new Bibtex();
+			BibtexHandlerBean bean = new BibtexHandlerBean(bibtex);
 			
+			bibtex.setTitle(requTitle);
+			bibtex.setAuthor(request.getParameter("author"));
+			bibtex.setEditor(request.getParameter("editor"));
+			bibtex.setYear(request.getParameter("year"));
+			bibtex.setEntrytype(request.getParameter("entrytype"));
 			/* the user entered data in a form therefore we have at least the title 
 			 * and can look up the database, if the entry exists*/
 			if (requTitle != null) {
@@ -124,7 +125,7 @@ public class BibtexShowHandler extends HttpServlet{
 					+ "  AND b.user_name = ? "             // from this user
 					+ "  AND b.group = i.group ";          // join groupname
 				stmtP = conn.prepareStatement(showBibEntry);
-				stmtP.setString(1, bean.getHash());
+				stmtP.setString(1, bibtex.getHash());
 				stmtP.setString(2, currUser);
 			}
 			
@@ -155,64 +156,67 @@ public class BibtexShowHandler extends HttpServlet{
 				stmtP.setString(2, requUser);
 			}
 			
+			
 
 			/* get the entry from the database */
 			rst = stmtP.executeQuery();
 			if (rst.next()) {
 				// found entry in database --> fill bean
-				bean.setAddress(rst.getString("address"));
-				bean.setBibtexAbstract(rst.getString("bibtexAbstract"));
-				bean.setAnnote(rst.getString("annote"));
-				bean.setAuthor(rst.getString("author"));
-				bean.setBooktitle(rst.getString("bookTitle"));
-				bean.setChapter(rst.getString("chapter"));
-				bean.setCrossref(rst.getString("crossref"));
-				bean.setEdition(rst.getString("edition"));
-				bean.setEditor(rst.getString("editor"));
-				bean.setHowpublished(rst.getString("howpublished"));
-				bean.setInstitution(rst.getString("institution"));
-				bean.setJournal(rst.getString("journal"));
-				bean.setKey(rst.getString("bKey"));
-				bean.setMonth(rst.getString("month"));
-				bean.setNote(rst.getString("note"));
-				bean.setNumber(rst.getString("number"));
-				bean.setOrganization(rst.getString("organization"));
-				bean.setPages(rst.getString("pages"));
-				bean.setPublisher(rst.getString("publisher"));
-				bean.setSchool(rst.getString("school"));
-				bean.setSeries(rst.getString("series"));
-				bean.setTitle(rst.getString("title"));
-				bean.setType(rst.getString("type"));
-				bean.setVolume(rst.getString("volume"));
-				bean.setYear(rst.getString("year"));
-				bean.setUrl(rst.getString("url"));
-				bean.setDay(rst.getString("day"));
+				bibtex.setAddress(rst.getString("address"));
+				bibtex.setBibtexAbstract(rst.getString("bibtexAbstract"));
+				bibtex.setAnnote(rst.getString("annote"));
+				bibtex.setAuthor(rst.getString("author"));
+				bibtex.setBooktitle(rst.getString("bookTitle"));
+				bibtex.setChapter(rst.getString("chapter"));
+				bibtex.setCrossref(rst.getString("crossref"));
+				bibtex.setEdition(rst.getString("edition"));
+				bibtex.setEditor(rst.getString("editor"));
+				bibtex.setHowpublished(rst.getString("howpublished"));
+				bibtex.setInstitution(rst.getString("institution"));
+				bibtex.setJournal(rst.getString("journal"));
+				bibtex.setKey(rst.getString("bKey"));
+				bibtex.setMonth(rst.getString("month"));
+				bibtex.setNote(rst.getString("note"));
+				bibtex.setNumber(rst.getString("number"));
+				bibtex.setOrganization(rst.getString("organization"));
+				bibtex.setPages(rst.getString("pages"));
+				bibtex.setPublisher(rst.getString("publisher"));
+				bibtex.setSchool(rst.getString("school"));
+				bibtex.setSeries(rst.getString("series"));
+				bibtex.setTitle(rst.getString("title"));
+				bibtex.setType(rst.getString("type"));
+				bibtex.setVolume(rst.getString("volume"));
+				bibtex.setYear(rst.getString("year"));
+				bibtex.setUrl(rst.getString("url"));
+				bibtex.setDay(rst.getString("day"));
+				bibtex.setRating(rst.getInt("rating"));
 				
-				bean.setMisc(rst.getString("misc"));
-				bean.setBibtexKey(rst.getString("bibtexKey"));		                   				        	    
-				bean.setGroup(rst.getString("group_name"));
-				bean.setDescription(rst.getString("description"));
-				bean.setEntrytype(rst.getString("entrytype"));
+				bibtex.setMisc(rst.getString("misc"));
+				bibtex.setBibtexKey(rst.getString("bibtexKey"));		                   				        	    
+				bibtex.setGroup(rst.getString("group_name"));
+				bibtex.setDescription(rst.getString("description"));
+				bibtex.setEntrytype(rst.getString("entrytype"));
 
 				int content_id  = rst.getInt("content_id");
 				
 
 				// TODO: this tag stuff should be moved to DBTagManager (also tag managing in ResourceHandler) 
 				// get all tags for this entry
+
 				if (!copy) {
 					// remember old hash to do "move" operation
-					bean.setOldhash(bean.getHash());
+					bean.setOldhash(bibtex.getHash());
 					
 					stmtP = conn.prepareStatement("SELECT tag_name FROM tas WHERE content_id = ?");
 					stmtP.setInt(1, content_id);
 					rst = stmtP.executeQuery ();
 					while (rst.next()) {
-						bean.addTag(rst.getString("tag_name"));
+						bibtex.addTag(rst.getString("tag_name"));
 					}					
 				}
 			}
 			
-			bean.setRecommendedTags( RecommenderFrontEnd.getRecommendation( currUser, bean.getHash(), Bibtex.class, bean.getTitle()) );
+			bean.setRecommendedTags( RecommenderFrontEnd.getRecommendation( currUser, bibtex.getHash(), Bibtex.class, bibtex.getTitle()) );
 			//bean.setJump(request.getParameter("jump")); // TODO: what was this good for? rja, 02.12.2005
 			bean.setCopytag(request.getParameter("copytag"));
 			

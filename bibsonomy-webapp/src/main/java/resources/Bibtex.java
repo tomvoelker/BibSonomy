@@ -231,12 +231,7 @@ public class Bibtex extends Resource {
 		return super.cleanUrl(this.getUrl());
 	}
 	
-	
-	/** Generates a bibtex key of the form
-	 * firstauthorslastnameYEARfirstrelevantwordoftitle
-	 * @return a bibtex key
-	 */
-	public String getGeneratedBibtexKey () {
+	public static String generateBibtexKey(String authors, String editors, String year, String title) {
 		/*
 		 * todo: pick either author or editor. DON'T use getAuthorlist (it sorts alphabetically!). CHECK for null values.
 		 * What to do with Chinese authors and other broken names?
@@ -247,23 +242,31 @@ public class Bibtex extends Resource {
 		/*
 		 * get author
 		 */
-		String first = getFirstPersonsLastName(getAuthor());
+		String first = getFirstPersonsLastName(authors);
 		if (first == null) {
-			first = getFirstPersonsLastName(getEditor());
+			first = getFirstPersonsLastName(editors);
 			if (first == null) {
 				first = "noauthororeditor";
 			}
 		}
 		b.append(first);
 		/* the year */ 
-		if (getYear() != null) {
-			b.append(getYear().trim());
+		if (year != null) {
+			b.append(year.trim());
 		}
 		/* first relevant word of the title */
-		if (getTitle() != null) {
+		if (title != null) {
 			/* best guess: pick first word with more than 4 characters, longest first word */
 		}
 		return b.toString().toLowerCase();
+	}
+	
+	/** Generates a bibtex key of the form
+	 * firstauthorslastnameYEARfirstrelevantwordoftitle
+	 * @return a bibtex key
+	 */
+	public String getGeneratedBibtexKey () {
+		return generateBibtexKey(getAuthor(), getEditor(), getYear(), getTitle());
 	}
 	
 	/**
@@ -491,7 +494,7 @@ public class Bibtex extends Resource {
 	 *  
 	 * @return the last name of the first person
 	 */
-	public String getFirstPersonsLastName (String person) {
+	public static String getFirstPersonsLastName (String person) {
 		if (person != null) {
 			String firstauthor;
 			/*

@@ -27,6 +27,7 @@ import resources.Bibtex;
 import resources.Bookmark;
 import resources.SplittedAuthors;
 import resources.SplittedConcepts;
+import resources.SplittedEntireConcepts;
 import resources.SplittedTags;
 import beans.ResourceBean;
 import beans.UserBean;
@@ -34,7 +35,7 @@ import filters.SessionSettingsFilter;
 
 public class ResourceHandler extends HttpServlet{ 
 	private static final Logger log = Logger.getLogger(ResourceHandler.class);
-	
+
 	private static final long serialVersionUID = 3833747689652301876L;
 	private DataSource dataSource;
 	/* page requests encoded as parameter (through UrlRewriteFilter) in request */
@@ -61,6 +62,7 @@ public class ResourceHandler extends HttpServlet{
 	/* servlet-mappings for JSPs to forward */
 	private static final String JSP_BASKET = "basket.jsp";
 	private static final String JSP_USER = "user.jsp";
+	private static final String JSP_USER_FILTER = "userFilter.jsp";
 	private static final String JSP_URL = "url.jsp";
 	private static final String JSP_BIBTEX = "bibtex.jsp";
 	private static final String JSP_USERBIBTEX = "bibtex_entry.jsp";
@@ -69,6 +71,7 @@ public class ResourceHandler extends HttpServlet{
 	private static final String JSP_AUTHORTAG = "authortag.jsp";
 	private static final String JSP_USERTAG = "usertag.jsp";
 	private static final String JSP_USERCONCEPT = "userconcept.jsp";
+	private static final String JSP_CONCEPT = "concept.jsp";
 	private static final String JSP_HOME = "home.jsp";
 	private static final String JSP_FRIEND = "friend.jsp";
 	private static final String JSP_FRIENDUSER = "frienduser.jsp";
@@ -92,7 +95,9 @@ public class ResourceHandler extends HttpServlet{
 	private static final String REQ_PARAM_ACTION="action";
 	private static final String REQ_PARAM_START_BOOK="startBook";
 	private static final String REQ_PARAM_START_BIB="startBib";
-	private static final String REQ_PARAM_SHOW_PDF = "showPdf";
+	private static final String REQ_PARAM_SHOW_PDF = "myPDF";
+	private static final String REQ_PARAM_DUPLICATES = "myDuplicates";
+
 	/* request attributes */
 	private static final String REQ_ATTRIB_START_BOOK="startBook";
 	private static final String REQ_ATTRIB_START_BIB="startBib";
@@ -104,8 +109,8 @@ public class ResourceHandler extends HttpServlet{
 	private static final String REQ_ATTRIB_BEAN="ResourceBean";
 	private static final String REQ_ATTRIB_IS_USERPAGE="isUserPage";
 	private static final String REQ_ATTRIB_WARNING = "warning";
-		
-	
+
+
 	public void init(ServletConfig config) throws ServletException{	
 		super.init(config); 
 		try {
@@ -116,20 +121,25 @@ public class ResourceHandler extends HttpServlet{
 			throw new ServletException("Cannot retrieve java:/comp/env/bibsonomy",ex);
 		}
 	}
-	
-	public void doGet(HttpServletRequest request, HttpServletResponse response) 
-	throws ServletException, IOException {
-		doPost(request,response);
+
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("calling doGet");
+		doGet(request, response);
+
 	}
-	
-	
-	public void doPost(HttpServletRequest request, HttpServletResponse response) 
-	throws ServletException, IOException {
-		
+
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
 		ResultSet rst = null;
 		DBContext c   = new DBContext();
-		
-		
+
+		/* *************************************************************************
+		 * get user info
+		 * *************************************************************************/
+		UserBean user = SessionSettingsFilter.getUser(request); 
+		String currUser = user.getName();
+
+
 		/* *************************************************************************
 		 *                Request Parameter Handling
 		 * *************************************************************************/
@@ -143,14 +153,10 @@ public class ResourceHandler extends HttpServlet{
 		String requAction   = request.getParameter(REQ_PARAM_ACTION);
 		String requGroup    = request.getParameter(REQ_PARAM_GROUP);
 		String search       = request.getParameter(REQ_PARAM_SEARCH);
-		boolean showPdf  = "true".equals(request.getParameter(REQ_PARAM_SHOW_PDF));
+		String requFilter   = request.getParameter("filter");
 		
-		/* *************************************************************************
-		 * get user info
-		 * *************************************************************************/
-		UserBean user = SessionSettingsFilter.getUser(request); 
-		String currUser = user.getName();
-		
+		boolean showPdf     = REQ_PARAM_SHOW_PDF.equals(requFilter) && requUser != null && requUser.equals(currUser);
+
 		/* *************************************************************************
 		 * some other settings
 		 * *************************************************************************/
@@ -176,7 +182,7 @@ public class ResourceHandler extends HttpServlet{
 		boolean isBurstFeed   = "burst".equals(requType);
 		boolean isLayoutFeed  = "layout".equals(requType);
 		boolean isNRLFeed     = "nrl".equals(requType);
-		
+
 		/*  
 		 * TODO: currently every page can be edited and in batchedit.jsp only the users own entries are shown
 		 * Nevertheless they're gotten from the database, which is not neccessary at all --> maybe there should
@@ -185,20 +191,20 @@ public class ResourceHandler extends HttpServlet{
 		boolean isBatchEditUrl= "batchediturl".equals(requType);  
 		boolean isBatchEditBib= "batcheditbib".equals(requType);  
 		boolean isUserPage    = false; // only posts of one user on page?
-		
+
 		boolean getOnlyBibtex = isBibFeed || isPublFeed || isPublKDEFeed || isPublCSVFeed ||isPublRSSNepoFeed || isPublRssFeed || isLayoutFeed || isBurstFeed || isBatchEditBib || isEndFeed || isSWRCFeed;
-		
+
 		/* *************************************************************************
 		 *  get/set value of maximal number of rows to retrieve from database
 		 * *************************************************************************/
 		int itemCount = user.getItemcount();
 		int startBook = 0;
 		int startBib  = 0; 
-		
+
 
 		// add one element, so that we can check, if more rows follow
 		itemCount++;
-		
+
 		/*
 		 * get startBook Parameter to calculate an OFFSET for database
 		 */			
@@ -208,7 +214,7 @@ public class ResourceHandler extends HttpServlet{
 			startBook = 0;
 		}
 		request.setAttribute(REQ_ATTRIB_START_BOOK, startBook);
-		
+
 		/*
 		 * get startBib Parameter to calculate an OFFSET for database
 		 */
@@ -218,8 +224,8 @@ public class ResourceHandler extends HttpServlet{
 			startBib = 0;
 		}
 		request.setAttribute(REQ_ATTRIB_START_BIB, startBib);
-		
-		
+
+
 		/* *************************************************************************
 		 *                               do database queries
 		 * *************************************************************************/
@@ -231,16 +237,16 @@ public class ResourceHandler extends HttpServlet{
 					throw new SQLException("No Datasource");
 				}
 			}
-			
-			
-			
+
+
+
 			// all Sites are ResourceSites
 			request.setAttribute(REQ_ATTRIB_IS_RESOURCE_SITE, "yes");			
-			
+
 			// query database depending on the requested page
 			if (requPage.equals(PAGE_HOME)) {
 				// handle /
-				queryPageHome (c, request.getParameter("filter"));
+				queryPageHome (c, requFilter);
 				request.setAttribute(REQ_ATTRIB_ALL_BIB, "y"); // disable "next" Button
 				request.setAttribute(REQ_ATTRIB_ALL_BOOKS, "y"); // disable "next" Button
 			} else { 
@@ -249,26 +255,39 @@ public class ResourceHandler extends HttpServlet{
 					forwPage   = JSP_USER;
 					requPath   = PAGE_USER + "/" + URLEncoder.encode(requUser, "UTF-8");
 					isUserPage = true;
-					if ("duplicate".equals(request.getParameter("filter"))) {
-						queryPageDuplicate (c, currUser, requUser);
+					if (REQ_PARAM_DUPLICATES.equals(requFilter)) {
+						itemCount = Integer.MAX_VALUE; 
+						forwPage = JSP_USER_FILTER;
 						request.setAttribute(REQ_ATTRIB_ALL_BIB, "y"); // disable "next" Button
-						request.setAttribute(REQ_ATTRIB_ALL_BOOKS, "y"); // disable "next" Button
-						/* TODO: dirty hack, this ensures that last entry is shown and not thrown 
-						 * away when filling bean. Of course, this does not work when there are 
-						 * more than 1000 duplicates ...
+						queryPageDuplicate (c, currUser);
+					} else if (showPdf) {
+						/*
+						 * user wants to see all bibtex posts, which have a document attached
 						 */
-						itemCount = 1000; 
+						itemCount = Integer.MAX_VALUE;
+						forwPage = JSP_USER_FILTER;
+						request.setAttribute(REQ_ATTRIB_ALL_BIB, "y"); // disable "next" Button
+						queryPageUserPDF (c, currUser);
 					} else {
-						queryPageUser (c, currUser, requUser, -1, itemCount, startBook, startBib, showPdf);
+						queryPageUser (c, currUser, requUser, -1, itemCount, startBook, startBib);	
 					}
+
 				}
 				if (requPage.equals(PAGE_CONCEPT)){
-					// handle /concept/user/USER/TAG
 					request.setAttribute(REQ_ATTRIB_IS_USERPAGE, "1");
-					forwPage = JSP_USERCONCEPT;
-					requPath = PAGE_CONCEPT + "/" + PAGE_USER + "/" + URLEncoder.encode(requUser, "UTF-8") + "/" + URLEncoder.encode(requTag, "UTF-8"); 
-					queryPageUserConcept (c, currUser, requUser, requTag, itemCount, startBook, startBib);
-					isUserPage = true;
+					//	handle /concept/user/USER/TAG
+					if (requUser != null) {
+						forwPage = JSP_USERCONCEPT;
+						requPath = PAGE_CONCEPT + "/" + PAGE_USER + "/" + URLEncoder.encode(requUser, "UTF-8") + "/" + URLEncoder.encode(requTag, "UTF-8"); 
+						queryPageUserConcept (c, currUser, requUser, requTag, itemCount, startBook, startBib);						
+						isUserPage = true;
+					} 
+					// handle /concept/tag/TAG
+					else {
+						forwPage = JSP_CONCEPT;
+						requPath = PAGE_CONCEPT + "/" + PAGE_TAG + "/" + URLEncoder.encode(requTag, "UTF-8"); 
+						queryPageConcept(c, currUser, requTag, itemCount, startBook, startBib);						
+					}	
 				}
 				if (requPage.equals(PAGE_USERTAG)) {
 					// handle /user/USER/TAG
@@ -281,7 +300,12 @@ public class ResourceHandler extends HttpServlet{
 					// handle /tag/TAG
 					forwPage = JSP_TAG;
 					requPath = PAGE_TAG +  "/" + URLEncoder.encode(requTag, "UTF-8");
-					queryPageTag (c, requTag, constants.SQL_CONST_GROUP_PUBLIC, itemCount, startBook, startBib, request.getParameter("order"));
+					String order = request.getParameter("order");
+					if("folkrank".equals(order)) {
+						request.setAttribute(REQ_ATTRIB_ALL_BIB, "y"); // disable "next" Button
+						request.setAttribute(REQ_ATTRIB_ALL_BOOKS, "y"); // disable "next" Button
+					}
+					queryPageTag (c, requTag, constants.SQL_CONST_GROUP_PUBLIC, itemCount, startBook, startBib, order);
 				} 
 				if (requPage.equals(PAGE_AUTHOR) || requPage.equals(PAGE_AUTHORTAG)) {
 					if (requPage.equals(PAGE_AUTHOR)) {
@@ -294,7 +318,7 @@ public class ResourceHandler extends HttpServlet{
 						queryPageAuthorTag(c, requAuthor, requTag, itemCount, startBib);
 					}					
 				}
-				
+
 				if (requPage.equals(PAGE_URL)) {
 					// handle /url/HASH
 					forwPage = JSP_URL;
@@ -383,7 +407,7 @@ public class ResourceHandler extends HttpServlet{
 						// user is friend
 						// is a tag given?
 						if (requTag == null) {
-							queryPageUser (c, currUser, requUser, constants.SQL_CONST_GROUP_FRIENDS, itemCount, startBook, startBib, showPdf);
+							queryPageUser (c, currUser, requUser, constants.SQL_CONST_GROUP_FRIENDS, itemCount, startBook, startBib);
 						} else {
 							queryPageUserTag (c, currUser, requUser, constants.SQL_CONST_GROUP_FRIENDS, requTag, itemCount, startBook, startBib);
 							// set page
@@ -418,7 +442,7 @@ public class ResourceHandler extends HttpServlet{
 						if (requPage.equals(PAGE_VIEWABLETAG)) {
 							queryPageUserTag (c, currUser, currUser, group, requTag, itemCount, startBook, startBib);
 						} else {
-							queryPageUser (c, currUser, currUser, group, itemCount, startBook, startBib, showPdf);
+							queryPageUser (c, currUser, currUser, group, itemCount, startBook, startBib);
 						}
 						// add group id to request (to get tags for this group)
 						request.setAttribute("group", new Integer(group));
@@ -439,7 +463,7 @@ public class ResourceHandler extends HttpServlet{
 
 					}
 				} // PAGE_VIEWABLE and PAGE_VIEWABLETAG
-				
+
 				if (requPage.equals(PAGE_GROUP) || requPage.equals(PAGE_GROUPTAG)) {
 					// handle /group/GROUP and /group/GROUP/TAG (aggregation over users of group)
 					if (requPage.equals(PAGE_GROUPTAG)) {
@@ -472,24 +496,24 @@ public class ResourceHandler extends HttpServlet{
 					}
 				} // PAGE_GROUP and PAGE_GROUPTAG
 			} // PAGE_HOME
-						
+
 			// initialize variables
 			ResourceBean bean = new ResourceBean();
 			int contentID;
 			int count;
-			
-			
-			
+
+
+
 			/* *************************************************************************
 			 * get Bookmark rows
 			 * *************************************************************************/
 			if (c.bookStmtP    != null && !getOnlyBibtex) { 
-				
+
 				rst           = c.bookStmtP.executeQuery();
 				Bookmark book = new Bookmark();
 				count         = 1;
 				contentID     = Bookmark.UNDEFINED_CONTENT_ID;
-			
+
 				while (rst != null && rst.next()) {
 					if (contentID == rst.getInt("content_id")) {
 						// the same content_id as before --> just add tags
@@ -510,6 +534,7 @@ public class ResourceHandler extends HttpServlet{
 						book.setExtended(rst.getString("book_extended"));
 						book.setDate(rst.getTimestamp("date"));
 						book.setUrl(rst.getString("book_url"));
+						book.setRating(rst.getInt("rating"));
 						// set URL counter
 						if (! requPage.equals(PAGE_URL)) {
 							book.setCtr(rst.getInt("book_url_ctr"));
@@ -544,12 +569,12 @@ public class ResourceHandler extends HttpServlet{
 			 BIBTEX PART
 			 ************************************************************************************************************ */		    
 			if (c.bibStmtP     != null && !isXmlFeed && !isRssFeed && !isBatchEditUrl && !isNRLFeed) { 
-				
+
 				rst        = c.bibStmtP.executeQuery();
 				Bibtex bib = new Bibtex();
 				contentID  = Bibtex.UNDEFINED_CONTENT_ID;
 				count      = 1;
-				
+
 				while (rst != null && rst.next()) {
 					if (contentID == rst.getInt("content_id")) {
 						// the same content_id as before --> just add tags
@@ -579,6 +604,8 @@ public class ResourceHandler extends HttpServlet{
 						bib.setEntrytype(rst.getString("entrytype"));
 						bib.setUrl(rst.getString("url"));
 						bib.setDescription(rst.getString("description"));
+						bib.setRating(rst.getInt("rating"));
+
 						// set counter
 						if (! requPage.equals(PAGE_BIBTEX)) {
 							bib.setCtr(rst.getInt("ctr"));
@@ -623,19 +650,19 @@ public class ResourceHandler extends HttpServlet{
 							bib.setDocName(rst.getString("name"));
 							bib.setPrivnote(rst.getString("privnote"));
 						}
-						
+
 						// To link the document on the user page we need some additional data
-						if (requPage.equals(PAGE_USER) && showPdf && requUser.equals(currUser)) {
+						if (requPage.equals(PAGE_USER) && showPdf) {
 							bib.setDocHash(rst.getString("hash"));
 							bib.setDocName(rst.getString("name"));
 						}
-						
-						
+
+
 						bib.setDate(rst.getTimestamp("date"));
 						//bib.setContentID(rst.getInt("content_id"));
 						// add tag to bibtex
 						bib.addTag(rst.getString("tag_name"));
-						
+
 						// remember contentID
 						contentID = rst.getInt("content_id");
 					}
@@ -649,9 +676,9 @@ public class ResourceHandler extends HttpServlet{
 						bean.setTitle(rst.getString("title"));
 					}
 				}
-				
+
 			}
-			
+
 			// get total counts of bookmark / bibtex
 			if (c.bookTCStmtP  != null) { 
 				rst = c.bookTCStmtP.executeQuery();
@@ -665,6 +692,24 @@ public class ResourceHandler extends HttpServlet{
 					bean.setBibtexTotalCount(rst.getInt(1));
 				}
 			}
+
+
+			// empty URL? allow user to enter this as a new bookmark
+//			if (currUser != null && forwPage == JSP_URL 
+//					&& (bean.getBookmarkTotalCount() == 0 && bean.getBookmarkCount() == 0)) {
+//				/*
+//				 * TODO: how to implement? Immediate redirect or only a small snippet which
+//				 * shows a link to edit_bookmark with appropriate URL?
+//			     * Problem: how to get URL (HERE we get only a hash!)
+//				 */ 
+//
+//				String redirectURL = (String)request.getSession(true).getAttribute("url");
+//				request.getSession(true).removeAttribute("url");
+//
+//				response.sendRedirect("/ShowBookmarkEntry?url=" + URLEncoder.encode(redirectURL, "UTF-8"));
+//
+//			}
+			
 			
 			/*
 			 * remember path
@@ -674,10 +719,10 @@ public class ResourceHandler extends HttpServlet{
 				requPath = requPath + "?startBib=" + startBib + "&startBook=" + startBook;
 			}
 			request.setAttribute("requPath", requPath);			
-			
+
 			request.setAttribute(REQ_ATTRIB_IS_USERPAGE, isUserPage); // only posts from one user on page?
 			request.setAttribute(REQ_ATTRIB_BEAN, bean);		// put bean (Model) into request
-			
+
 			if (isRssFeed) forwPage = "RSSFeed"; 				// RSS Feed handling
 			if (isXmlFeed) forwPage = "XMLOutput"; 				// XML Feed handling
 			if (isNRLFeed) forwPage = "NRLOutput.jsp"; 				// NRL Feed handling
@@ -693,32 +738,32 @@ public class ResourceHandler extends HttpServlet{
 			if (isSWRCFeed) forwPage = "SWRCoutput.jsp"; 		// SWRC Feed Handling
 			if (isLayoutFeed) forwPage = "LayoutHandler"; 	// JabRef Layout Feed Handling 
 			if (isBatchEditBib || isBatchEditUrl) forwPage = JSP_BATCHEDIT;          // for batch editing tags
-			
+
 			/*
 			 * pick/unpick action handling
 			 */ 
 			if (currUser != null && "pick".equals(requAction)) { 
-			    Iterator it = bean.getBibtex().iterator();
-			    while (it.hasNext()) {
-			    	Bibtex bib = (Bibtex)it.next();
-			    	DBPickManager.pickEntryForUser(bib.getHash(), bib.getUser(), currUser);
-			    }
+				Iterator it = bean.getBibtex().iterator();
+				while (it.hasNext()) {
+					Bibtex bib = (Bibtex)it.next();
+					DBPickManager.pickEntryForUser(bib.getHash(), bib.getUser(), currUser);
+				}
 				// sets the current pick count for the user bean
-			    user.setPostsInBasket(DBPickManager.getPickCount(currUser));
+				user.setPostsInBasket(DBPickManager.getPickCount(currUser));
 			} else if(currUser != null && "unpick".equals(requAction)) {
-			    Iterator it = bean.getBibtex().iterator();
-			    while (it.hasNext()) {
-			    	Bibtex bib = (Bibtex)it.next();
-			    	DBPickManager.unPickEntryForUser(bib.getHash(), bib.getUser(), currUser);
-			    }
-			    // sets the current pick count for the user bean
-			    user.setPostsInBasket(DBPickManager.getPickCount(currUser));
+				Iterator it = bean.getBibtex().iterator();
+				while (it.hasNext()) {
+					Bibtex bib = (Bibtex)it.next();
+					DBPickManager.unPickEntryForUser(bib.getHash(), bib.getUser(), currUser);
+				}
+				// sets the current pick count for the user bean
+				user.setPostsInBasket(DBPickManager.getPickCount(currUser));
 			}
-			
+
 			// forward to JSP (View)
 			getServletContext().getRequestDispatcher("/" + forwPage).forward(request, response);
-			
-			
+
+
 		} catch (SQLException e) {
 			log.fatal(e);
 			getServletConfig().getServletContext().getRequestDispatcher("/errors/databaseError.jsp").forward(request, response);
@@ -781,7 +826,7 @@ public class ResourceHandler extends HttpServlet{
 		c.bookStmtP = null;			
 		return isFriend;
 	}
-	
+
 	/**
 	 * Holds database statements which are prepared in queryPage* methods and used to retrieve bibtex and bookmark lists. 
 	 *
@@ -793,7 +838,7 @@ public class ResourceHandler extends HttpServlet{
 		public PreparedStatement bookTCStmtP = null;  // total count of bookmarks for query
 		public PreparedStatement bibTCStmtP = null;   // total count of bibtex for query
 	}
-	
+
 	/*
 	 * return appropriate select query string for different tables
 	 */
@@ -802,7 +847,7 @@ public class ResourceHandler extends HttpServlet{
 				"howpublished","institution","journal","bkey","month","note","number","organization",
 				"pages","publisher","school","series","type","volume","day","url", 
 				"content_id", "description", "bibtexKey", "misc", "bibtexAbstract", "user_name", "date",
-				"title","author", "editor", "year", "entrytype"};
+				"title","author", "editor", "year", "entrytype", "rating"};
 		StringBuffer select = new StringBuffer();
 		for (String col:columns) {
 			select.append(table + "." + col + ",");
@@ -810,7 +855,7 @@ public class ResourceHandler extends HttpServlet{
 		select.deleteCharAt(select.length()-1);
 		return select.toString();		
 	}
-	
+
 	/** PAGE_BASKET
 	 * 
 	 * This method prepares a query which retrieves all publications the user 
@@ -834,8 +879,8 @@ public class ResourceHandler extends HttpServlet{
 				+ "  ORDER BY c.date DESC, content_id DESC");
 		c.bibStmtP.setString(1, currUser);	
 	}
-	
-	
+
+
 	/** PAGE_HOME
 	 * 
 	 * This method prepares queries which retrieve all bookmarks and publications 
@@ -847,35 +892,35 @@ public class ResourceHandler extends HttpServlet{
 	 * @throws SQLException
 	 */
 	private void queryPageHome (DBContext c, String filter) throws SQLException {
-		
-		String query = "SELECT bbb.content_id,bbb.book_url_hash,bbb.book_description,bbb.book_extended,bbb.date,"
-					+ " bbb.user_name,u.book_url,u.book_url_ctr,tt.tag_name "
-					+ " FROM ("
-					+ "		SELECT"
-					+ "			bb.content_id,bb.book_url_hash,bb.book_description,bb.book_extended,bb.date,"
-					+ "			bb.user_name"
-					+ "		FROM ("
-					+ "			SELECT"
-					+ "				b.content_id,b.book_url_hash,b.book_description,b.book_extended,b.date,"
-					+ "				b.user_name"
-					+ "	 		FROM bookmark b"
-					+ "	 		WHERE b.group = " + constants.SQL_CONST_GROUP_PUBLIC
-					+ "	 		ORDER BY date DESC"
-					+ "	 		LIMIT 100"
-					+ "		) AS bb"
-					+ "		LEFT JOIN tas AS t ON bb.content_id=t.content_id"
-					+ "		LEFT JOIN spammer_tags AS s ON s.tag_name=t.tag_name" 
-					+ "		GROUP BY bb.content_id"
-					+ "		HAVING COUNT(s.tag_name) = 0"
-					+ "		ORDER BY date DESC"
-					+ "		LIMIT 20) AS bbb"
-					+ "	LEFT JOIN tas AS tt USING (content_id) " 
-					+ " JOIN urls u USING (book_url_hash)"
-					+ "	ORDER BY bbb.date DESC, bbb.content_id DESC";
-		
-		String unfilteredQuery = "SELECT bb.content_id,bb.book_url_hash,bb.book_description,bb.book_extended,bb.date,bb.user_name,bb.book_url,bb.book_url_ctr,t.tag_name"
+
+		String query = "SELECT bbb.content_id,bbb.book_url_hash,bbb.book_description,bbb.book_extended,bbb.date,bbb.rating,"
+			+ " bbb.user_name,u.book_url,u.book_url_ctr,tt.tag_name "
+			+ " FROM ("
+			+ "		SELECT"
+			+ "			bb.content_id,bb.book_url_hash,bb.book_description,bb.book_extended,bb.date,"
+			+ "			bb.user_name, bb.rating"
+			+ "		FROM ("
+			+ "			SELECT"
+			+ "				b.content_id,b.book_url_hash,b.book_description,b.book_extended,b.date,"
+			+ "				b.user_name, b.rating"
+			+ "	 		FROM bookmark b"
+			+ "	 		WHERE b.group = " + constants.SQL_CONST_GROUP_PUBLIC
+			+ "	 		ORDER BY date DESC"
+			+ "	 		LIMIT 100"
+			+ "		) AS bb"
+			+ "		LEFT JOIN tas AS t ON bb.content_id=t.content_id"
+			+ "		LEFT JOIN spammer_tags AS s ON s.tag_name=t.tag_name" 
+			+ "		GROUP BY bb.content_id"
+			+ "		HAVING COUNT(s.tag_name) = 0"
+			+ "		ORDER BY date DESC"
+			+ "		LIMIT 20) AS bbb"
+			+ "	LEFT JOIN tas AS tt USING (content_id) " 
+			+ " JOIN urls u USING (book_url_hash)"
+			+ "	ORDER BY bbb.date DESC, bbb.content_id DESC";
+
+		String unfilteredQuery = "SELECT bb.content_id,bb.book_url_hash,bb.book_description,bb.book_extended,bb.date,bb.user_name,bb.rating,bb.book_url,bb.book_url_ctr,t.tag_name"
 			+ "  FROM "
-			+ "    (SELECT b.content_id,b.book_url_hash,b.book_description,b.book_extended,b.date,b.user_name,u.book_url,u.book_url_ctr" 
+			+ "    (SELECT b.content_id,b.book_url_hash,b.book_description,b.book_extended,b.date,b.user_name,b.rating,u.book_url,u.book_url_ctr" 
 			+ "       FROM bookmark b, urls u" 
 			+ "       WHERE b.group = " + constants.SQL_CONST_GROUP_PUBLIC  
 			+ "         AND u.book_url_hash = b.book_url_hash" 
@@ -891,7 +936,7 @@ public class ResourceHandler extends HttpServlet{
 		} else {
 			c.bookStmtP = c.conn.prepareStatement(query);
 		}
-		
+
 		String bibQuery = "SELECT " + getBibtexSelect ("b") + ",t.tag_name,b.ctr "
 		+ "  FROM "
 		+ "    (SELECT " + getBibtexSelect ("b") + ", h.ctr"
@@ -917,7 +962,7 @@ public class ResourceHandler extends HttpServlet{
 	 * @throws SQLException
 	 */
 	private void queryPagePopular (DBContext c) throws SQLException {
-		String query = "SELECT bb.content_id,bb.book_url_hash,bb.book_description,bb.book_extended,bb.date,bb.user_name,u.book_url,u.book_url_ctr,t.tag_name"
+		String query = "SELECT bb.content_id,bb.book_url_hash,bb.book_description,bb.book_extended,bb.date,bb.user_name,bb.rating,u.book_url,u.book_url_ctr,t.tag_name"
 			+ "  FROM temp_bookmark bb "
 			+ "    LEFT OUTER JOIN tas AS t ON t.content_id=bb.content_id, urls u"
 			+ "    WHERE u.book_url_hash = bb.book_url_hash"
@@ -930,8 +975,8 @@ public class ResourceHandler extends HttpServlet{
 				+ "      AND h.type = " + Bibtex.INTER_HASH
 				+ "  ORDER BY b.rank");
 	}
-	
-	
+
+
 	/** PAGE_USER (also used for PAGE_FRIENDUSER and PAGE_VIEWABLE) /user/MaxMustermann
 	 *  
 	 *  This method prepares queries which retrieve all bookmarks and publications 
@@ -950,7 +995,8 @@ public class ResourceHandler extends HttpServlet{
 	 * @param startBib with which bibtex entry to start
 	 * @throws SQLException
 	 */
-	private void queryPageUser (DBContext c, String currUser, String requUser, int requGroup, int itemCount, int startBook, int startBib, boolean showPdf) throws SQLException {
+	private void queryPageUser (DBContext c, String currUser, String requUser, int requGroup, int itemCount, int startBook, int startBib) throws SQLException {
+
 		String groupWhereQuery;
 		if (requGroup == -1) {
 			// check, which group the user may see
@@ -959,10 +1005,11 @@ public class ResourceHandler extends HttpServlet{
 			// we want to see a certain group (used for /friend/USER)
 			groupWhereQuery = " AND b.group = " + requGroup;
 		}
+
 		// bookmark query 
-		String query = "SELECT bb.content_id,bb.book_url_hash,bb.book_description,bb.book_extended,bb.date,bb.book_url,bb.book_url_ctr,t.tag_name,g.group_name"
+		String query = "SELECT bb.content_id,bb.book_url_hash,bb.book_description,bb.book_extended,bb.date,bb.rating,bb.book_url,bb.book_url_ctr,t.tag_name,g.group_name"
 			+ "  FROM" 
-			+ "    (SELECT b.content_id,b.book_url_hash,b.book_description,b.book_extended,b.date,u.book_url,u.book_url_ctr,b.group" 
+			+ "    (SELECT b.content_id,b.book_url_hash,b.book_description,b.book_extended,b.date,b.rating,u.book_url,u.book_url_ctr,b.group" 
 			+ "       FROM bookmark b, urls u" 
 			+ "       WHERE u.book_url_hash=b.book_url_hash "
 			+ "         AND b.user_name = ? "
@@ -976,60 +1023,64 @@ public class ResourceHandler extends HttpServlet{
 		c.bookStmtP.setString(1, requUser);
 		c.bookStmtP.setInt(2, itemCount);
 		c.bookStmtP.setInt(3, startBook);
-		
-		String bibQuery = null;
-		// bibtex query
-		//Just checking if the user wants to see his private document 
-		//and if he really is the user he requested
-		if(showPdf && requUser.equals(currUser)) {
-			bibQuery = "SELECT " + getBibtexSelect("bb") + ",t.tag_name,g.group_name, bb.ctr, bb.hash, bb.name"
-			+ "  FROM" 
-			+ "    (SELECT " + getBibtexSelect ("b") + ",b.group, h.ctr, d.hash, d.name" 
-			+ "       FROM bibtex b, bibhash h, document d" 
-			+ "       WHERE b.simhash" + Bibtex.INTER_HASH + " = h.hash "
-			+ "         AND h.type = " + Bibtex.INTER_HASH
-			+ "         AND b.user_name = ? "
-			+ "			AND d.content_id = b.content_id"
-			+ groupWhereQuery
-			+ "       ORDER BY date DESC" 
-			+ "       LIMIT ? OFFSET ?) AS bb" 
-			+ "    LEFT OUTER JOIN tas AS t ON bb.content_id=t.content_id, groupids AS g"
-			+ "    WHERE bb.group = g.group"
-			+ "    ORDER BY bb.date DESC, bb.content_id DESC";
-		} else {		
-			bibQuery = "SELECT " + getBibtexSelect("bb") + ",t.tag_name,g.group_name, bb.ctr"
-			+ "  FROM" 
-			+ "    (SELECT " + getBibtexSelect ("b") + ",b.group, h.ctr" 
-			+ "       FROM bibtex b, bibhash h" 
-			+ "       WHERE b.simhash" + Bibtex.INTER_HASH + " = h.hash "
-			+ "         AND h.type = " + Bibtex.INTER_HASH
-			+ "         AND b.user_name = ? "
-			+ groupWhereQuery
-			+ "       ORDER BY date DESC" 
-			+ "       LIMIT ? OFFSET ?) AS bb" 
-			+ "    LEFT OUTER JOIN tas AS t ON bb.content_id=t.content_id, groupids AS g"
-			+ "    WHERE bb.group = g.group "
-			+ "    ORDER BY bb.date DESC, bb.content_id DESC";
-		}
-		
-		c.bibStmtP = c.conn.prepareStatement(bibQuery);
+
+		c.bibStmtP = c.conn.prepareStatement("SELECT " + getBibtexSelect("bb") + ",t.tag_name,g.group_name, bb.ctr"
+				+ "  FROM" 
+				+ "    (SELECT " + getBibtexSelect ("b") + ",b.group, h.ctr" 
+				+ "       FROM bibtex b, bibhash h" 
+				+ "       WHERE b.simhash" + Bibtex.INTER_HASH + " = h.hash "
+				+ "         AND h.type = " + Bibtex.INTER_HASH
+				+ "         AND b.user_name = ? "
+				+ groupWhereQuery
+				+ "       ORDER BY date DESC" 
+				+ "       LIMIT ? OFFSET ?) AS bb" 
+				+ "    LEFT OUTER JOIN tas AS t ON bb.content_id=t.content_id, groupids AS g"
+				+ "    WHERE bb.group = g.group "
+				+ "    ORDER BY bb.date DESC, bb.content_id DESC");
+
 		c.bibStmtP.setString(1, requUser);
 		c.bibStmtP.setInt(2, itemCount);
 		c.bibStmtP.setInt(3, startBib);
+
 		// counts
 		c.bookTCStmtP = c.conn.prepareStatement("SELECT count(*) from bookmark b WHERE b.user_name = ? " + groupWhereQuery);
 		c.bookTCStmtP.setString(1, requUser);
-		
-		// When showing private documents we have to check the count of the private documents
-		if(showPdf && requUser.equals(currUser)) {
-			c.bibTCStmtP = c.conn.prepareStatement("SELECT count(*) from document d WHERE d.user_name = ? " + groupWhereQuery);
-		} else {
-			c.bibTCStmtP = c.conn.prepareStatement("SELECT count(*) from bibtex b WHERE b.user_name = ? " + groupWhereQuery);
-		}
-		
+
+		c.bibTCStmtP = c.conn.prepareStatement("SELECT count(*) from bibtex b WHERE b.user_name = ? " + groupWhereQuery);
 		c.bibTCStmtP.setString(1, requUser);
+
+
 	}
-	
+
+	/** Shows all bibtex posts of the user, which have a document attached (PDF, PS, DJVU)
+	 * @param c
+	 * @param currUser
+	 * @throws SQLException
+	 */
+	private void queryPageUserPDF (DBContext c, String currUser) throws SQLException {
+		// bibtex query
+		// Just checking if the user wants to see his private document 
+		// and if he really is the user he requested
+		c.bibStmtP = c.conn.prepareStatement("SELECT " + getBibtexSelect("bb") + ",t.tag_name,g.group_name, bb.ctr, bb.hash, bb.name"
+				+ "  FROM" 
+				+ "    (SELECT " + getBibtexSelect ("b") + ",b.group, h.ctr, d.hash, d.name" 
+				+ "       FROM bibtex b, bibhash h, document d" 
+				+ "       WHERE b.simhash" + Bibtex.INTER_HASH + " = h.hash "
+				+ "         AND h.type = " + Bibtex.INTER_HASH
+				+ "         AND b.user_name = ? "
+				+ "			AND d.content_id = b.content_id"
+				+ "       ORDER BY d.date DESC) AS bb" 
+				+ "    LEFT OUTER JOIN tas AS t ON bb.content_id=t.content_id, groupids AS g"
+				+ "    WHERE bb.group = g.group"
+				+ "    ORDER BY bb.date DESC, bb.content_id DESC");
+
+		c.bibStmtP.setString(1, currUser);
+
+//		c.bibTCStmtP = c.conn.prepareStatement("SELECT count(*) from document d WHERE d.user_name = ? AND content_id != 0");
+//		c.bibTCStmtP.setString(1, requUser);
+
+	}
+
 	/** PAGE_USERTAG /user/MaxMustermann/EinTag
 	 * 
 	 * 	This method prepares queries which retrieve all bookmarks and publications 
@@ -1065,9 +1116,9 @@ public class ResourceHandler extends HttpServlet{
 		}
 		int queryParamPos      = 1;
 		String tag;
-		String query = "SELECT a.content_id,t.tag_name,a.book_url,a.book_url_hash,a.book_description,a.book_extended,a.date,a.book_url_ctr,g.group_name"
+		String query = "SELECT a.content_id,t.tag_name,a.book_url,a.book_url_hash,a.book_description,a.book_extended,a.date,a.rating,a.book_url_ctr,g.group_name"
 			+ "  FROM " 
-			+ "    (SELECT b.content_id,u.book_url,b.book_url_hash,b.book_description,b.book_extended,b.date,u.book_url_ctr,b.group"
+			+ "    (SELECT b.content_id,u.book_url,b.book_url_hash,b.book_description,b.book_extended,b.date,b.rating,u.book_url_ctr,b.group"
 			+ "      FROM bookmark b, urls u, "
 			+ tagWhereQuery + " "
 			+ groupWhereQuery
@@ -1081,19 +1132,19 @@ public class ResourceHandler extends HttpServlet{
 			+ "  ORDER BY a.date DESC, a.content_id DESC";
 		c.bookStmtP = c.conn.prepareStatement(query);
 		String bibQuery = "SELECT " + getBibtexSelect ("b") + ",t.tag_name, g.group_name, h.ctr  "
-		    + "  FROM bibtex b, tas t, groupids g, bibhash h,"
-            + "    (SELECT t1.content_id FROM "
-            + tagWhereQuery + " "
-            + groupWhereQuery
-            + "        AND t1.content_type = " + Bibtex.CONTENT_TYPE
-            + "        AND t1.user_name = ?"
-            + "      ORDER BY t1.date DESC LIMIT ? OFFSET ?) AS tt"
-            + "  WHERE tt.content_id=b.content_id"
-            + "    AND tt.content_id=t.content_id"
-            + "    AND b.simhash" + Bibtex.INTER_HASH + " = h.hash"
-			+ "    AND h.type = " + Bibtex.INTER_HASH
-            + "    AND g.group = b.group"
-            + "  ORDER BY b.date DESC, b.content_id DESC;";
+		+ "  FROM bibtex b, tas t, groupids g, bibhash h,"
+		+ "    (SELECT t1.content_id FROM "
+		+ tagWhereQuery + " "
+		+ groupWhereQuery
+		+ "        AND t1.content_type = " + Bibtex.CONTENT_TYPE
+		+ "        AND t1.user_name = ?"
+		+ "      ORDER BY t1.date DESC LIMIT ? OFFSET ?) AS tt"
+		+ "  WHERE tt.content_id=b.content_id"
+		+ "    AND tt.content_id=t.content_id"
+		+ "    AND b.simhash" + Bibtex.INTER_HASH + " = h.hash"
+		+ "    AND h.type = " + Bibtex.INTER_HASH
+		+ "    AND g.group = b.group"
+		+ "  ORDER BY b.date DESC, b.content_id DESC;";
 		c.bibStmtP = c.conn.prepareStatement(bibQuery);
 		Iterator it = tags.iterator();
 		while (it.hasNext()) {
@@ -1111,7 +1162,84 @@ public class ResourceHandler extends HttpServlet{
 		c.bookStmtP.setInt(queryParamPos, startBook);
 		c.bibStmtP.setInt(queryParamPos, startBib);
 	}
-	
+
+	/** PAGE_CONCEPT
+	 * Shows the page /concept/tag/TAG(S)
+	 * 
+	 * This method prepares queries which retrieve all bookmarks and publications
+	 * for given tags. These tags are interpreted as supertags and the queries are built 
+	 * in a way that they results reflect the semantics of 
+	 * http://www.bibsonomy.org/bibtex/1d28c9f535d0f24eadb9d342168836199 p. 91, formular (4).
+	 * At the moment there are only public recources are retrieved.
+	 * 
+	 * @param c the context for the DB, containing the queries
+	 * @param requTag the string of supertags given by the user.
+	 *                The string is parsed with the helps of SplittedEntireConcepts and used to
+	 *                construct the JOIN for the tag selection.
+	 * @param itemCount number of posts to retrieve
+	 * @param startBook with which bookmark post to start 
+	 * @param startBib with which bibtex post to start
+	 * @throws SQLException
+	 */
+	private void queryPageConcept(DBContext c, String currUser, String requTag, int itemCount, int startbook, int startbib) throws SQLException {
+		SplittedEntireConcepts tags = new SplittedEntireConcepts(requTag, "", true);		
+		int queryParamPos      		= 1;
+
+		// bookmarks
+		String conceptBookmarkQuery = tags.getQuery(Bookmark.CONTENT_TYPE);
+		String bookQuery = "SELECT "
+			+ "				a.content_id,t.tag_name,a.book_url,a.book_url_hash,a.book_description, "
+			+ "				a.book_extended,a.date,a.book_url_ctr,a.user_name,a.rating "
+			+ "			FROM "
+			+ "			( "
+			+ "				SELECT 	" 
+			+ "					b.content_id,u.book_url,b.book_url_hash,b.book_description, "
+			+ "					b.book_extended,b.date,u.book_url_ctr,b.group, b.user_name, b.rating "
+			+ conceptBookmarkQuery 
+			+ " 			ORDER BY t.date DESC "
+			+ "				LIMIT ? OFFSET ? "
+			+ "			) AS a "
+			+ "			JOIN tas t ON a.content_id = t.content_id "
+			+ " 		ORDER BY a.date DESC";			
+		c.bookStmtP = c.conn.prepareStatement(bookQuery);
+
+		String conceptBibtexQuery = tags.getQuery(Bibtex.CONTENT_TYPE);
+		String bibQuery = "	SELECT " + getBibtexSelect("a") + ", t.tag_name, a.ctr "
+		+ "			FROM ( "  
+		+ "				SELECT " + getBibtexSelect("b") + ", h.ctr, b.simhash1 "
+		+ conceptBibtexQuery
+		+ "				ORDER BY t.date DESC "
+		+ "				LIMIT ? OFFSET ? "
+		+ "			) AS a " 	
+		+ "			JOIN tas t ON a.content_id = t.content_id "
+		+ "			ORDER BY a.date DESC";
+		c.bibStmtP = c.conn.prepareStatement(bibQuery);
+
+		// set tags
+		Iterator iter = tags.iterator();
+		while (iter.hasNext()) {
+			String tag = (String) iter.next();			
+			c.bibStmtP.setString(queryParamPos, tag);			
+			c.bookStmtP.setString(queryParamPos++, tag);
+		}
+
+		// set tags
+		Iterator iter2 = tags.iterator();
+		while (iter2.hasNext()) {
+			String tag = (String) iter2.next();
+			for (int i = 0; i < 3; i++) {				
+				c.bibStmtP.setString(queryParamPos, tag);
+				c.bookStmtP.setString(queryParamPos++, tag);
+			}			
+		}
+
+		c.bibStmtP.setInt(queryParamPos, itemCount);
+		c.bookStmtP.setInt(queryParamPos++, itemCount);
+
+		c.bibStmtP.setInt(queryParamPos, startbib);
+		c.bookStmtP.setInt(queryParamPos, startbook);			
+	}
+
 	/** PAGE_CONCEPT
 	 * Shows the page /concept/user/MaxMustermann/EinTag
 	 * 
@@ -1141,9 +1269,9 @@ public class ResourceHandler extends HttpServlet{
 		String groupWhereQuery = getQueryForGroups (c.conn, currUser, requUser, "b");
 		int queryParamPos      = 1;
 		String tag;
-		String query = "SELECT a.content_id,t.tag_name,a.book_url,a.book_url_hash,a.book_description,a.book_extended,a.date,a.book_url_ctr,gi.group_name"
+		String query = "SELECT a.content_id,t.tag_name,a.book_url,a.book_url_hash,a.book_description,a.book_extended,a.date,a.rating,a.book_url_ctr,gi.group_name"
 			+ "  FROM " 
-			+ "    (SELECT DISTINCT b.content_id,u.book_url,b.book_url_hash,b.book_description,b.book_extended,b.date,u.book_url_ctr,b.group"
+			+ "    (SELECT DISTINCT b.content_id,u.book_url,b.book_url_hash,b.book_description,b.book_extended,b.date,b.rating,u.book_url_ctr,b.group"
 			+ "      FROM bookmark b, urls u "
 			+ tagWhereQuery + " "
 			+ groupWhereQuery
@@ -1156,24 +1284,24 @@ public class ResourceHandler extends HttpServlet{
 			+ "  WHERE a.group = gi.group "
 			+ "  ORDER BY a.date DESC, a.content_id DESC";
 		c.bookStmtP = c.conn.prepareStatement(query);
-		
+
 		String bibQuery = "SELECT " + getBibtexSelect("b") + ",t.tag_name,g.group_name,h.ctr  "
-		    + "  FROM bibtex b, tas t, groupids g, bibhash h, "
-            + "    (SELECT DISTINCT b.content_id " +
-            		"FROM bibtex b "
-            + tagWhereQuery + " "
-            + groupWhereQuery
-            + "        AND t1.content_type = " + Bibtex.CONTENT_TYPE
-            + "        AND t1.user_name = ?"
-            + "        AND t1.content_id = b.content_id"
-            + "      GROUP BY b.content_id ORDER BY t1.date DESC LIMIT ? OFFSET ?) AS tt"
-            + "  WHERE tt.content_id=b.content_id"
-            + "    AND b.simhash" + Bibtex.INTER_HASH + " = h.hash"
-			+ "    AND h.type = " + Bibtex.INTER_HASH
-            + "    AND tt.content_id=t.content_id"
-            + "    AND g.group = b.group"
-//            + "    AND b.group IN (0,1,2)" TODO: WOZU sollte das gut sein?? bei der Bookmark Query war es auch drin!
-            + "  ORDER BY b.date DESC, b.content_id DESC;";
+		+ "  FROM bibtex b, tas t, groupids g, bibhash h, "
+		+ "    (SELECT DISTINCT b.content_id " +
+		"FROM bibtex b "
+		+ tagWhereQuery + " "
+		+ groupWhereQuery
+		+ "        AND t1.content_type = " + Bibtex.CONTENT_TYPE
+		+ "        AND t1.user_name = ?"
+		+ "        AND t1.content_id = b.content_id"
+		+ "      GROUP BY b.content_id ORDER BY t1.date DESC LIMIT ? OFFSET ?) AS tt"
+		+ "  WHERE tt.content_id=b.content_id"
+		+ "    AND b.simhash" + Bibtex.INTER_HASH + " = h.hash"
+		+ "    AND h.type = " + Bibtex.INTER_HASH
+		+ "    AND tt.content_id=t.content_id"
+		+ "    AND g.group = b.group"
+//		+ "    AND b.group IN (0,1,2)" TODO: WOZU sollte das gut sein?? bei der Bookmark Query war es auch drin!
+		+ "  ORDER BY b.date DESC, b.content_id DESC;";
 		c.bibStmtP = c.conn.prepareStatement(bibQuery);
 		Iterator it = tags.iterator();
 		while (it.hasNext()) {
@@ -1198,7 +1326,7 @@ public class ResourceHandler extends HttpServlet{
 		c.bibStmtP.setInt(queryParamPos, startBib);
 
 	}
-	
+
 	/** PAGE_TAG and PAGE_VIEWABLETAG
 	 * 
 	 * Prepares the queries for the pages /tag/EinTag and /viewable/EineGruppe/EinTag
@@ -1222,13 +1350,13 @@ public class ResourceHandler extends HttpServlet{
 		SplittedTags tags      = new SplittedTags(requTag, "", true);		
 		int queryParamPos      = 1;
 		// TODO: avoid "FORCE INDEX (content_type_group_tag_name_date_content_id_idx)"
-		
+
 		if ("folkrank".equals(order)) {			
 			String folkrankQuery   = tags.getFolkrankQuery();
-			
+
 			String query = "SELECT "
 				+ "				b.content_id, t.tag_name, b.book_description, b.book_extended, b.user_name, "
-				+ "				b.date, b.book_url_hash, u.book_url, u.book_url_ctr, tt.weight "
+				+ "				b.date, b.book_url_hash, b.rating, u.book_url, u.book_url_ctr, tt.weight "
 				+ "			FROM " 
 				+ "				tas t, urls u, bookmark b, "
 				+ "				(SELECT " 
@@ -1250,32 +1378,32 @@ public class ResourceHandler extends HttpServlet{
 				+ "				AND u.book_url_hash = tt.book_url_hash "
 				+ "				AND b.content_id = tt.content_id";			
 			c.bookStmtP = c.conn.prepareStatement(query);				
-			
+
 			c.bibStmtP = c.conn.prepareStatement("SELECT " + getBibtexSelect("b") + ",t.tag_name, h.ctr " 
-				+ " 		FROM bibtex b, tas t, bibhash h, "
-				+ "				(SELECT b.simhash" + Bibtex.INTER_HASH + ", MIN(b.content_id) AS content_id, xy.weight "
-				+ "			 	FROM bibtex b, "
-				+ "					(SELECT w.item, SUM(weight) AS weight "
-				+ "				 	FROM rankings r "
-				+ "						JOIN weights w USING (id) "
-				+ "				 	WHERE r.dim = 0 AND (" + folkrankQuery + ") "
-				+ "						AND w.dim = 2 AND w.itemtype =" + Bibtex.CONTENT_TYPE
-				+ "				 	GROUP BY w.item "
-				+ "				 	ORDER BY 2 DESC "
-				+ "				 	LIMIT ? OFFSET ?) AS xy "
-				+ "				WHERE xy.item = b.simhash" + Bibtex.INTER_HASH
-				+ "					AND b.group = " + group
-				+ "				GROUP BY b.simhash" + Bibtex.INTER_HASH + " "
-				+ "				ORDER BY weight DESC) AS tt "
-				+ "			WHERE tt.content_id = b.content_id "
-				+ "				AND t.content_id = b.content_id "
-				+ "				AND b.simhash" + Bibtex.INTER_HASH + " = h.hash "
-				+ "				AND h.type = " + Bibtex.INTER_HASH);						
+					+ " 		FROM bibtex b, tas t, bibhash h, "
+					+ "				(SELECT b.simhash" + Bibtex.INTER_HASH + ", MIN(b.content_id) AS content_id, xy.weight "
+					+ "			 	FROM bibtex b, "
+					+ "					(SELECT w.item, SUM(weight) AS weight "
+					+ "				 	FROM rankings r "
+					+ "						JOIN weights w USING (id) "
+					+ "				 	WHERE r.dim = 0 AND (" + folkrankQuery + ") "
+					+ "						AND w.dim = 2 AND w.itemtype =" + Bibtex.CONTENT_TYPE
+					+ "				 	GROUP BY w.item "
+					+ "				 	ORDER BY 2 DESC "
+					+ "				 	LIMIT ? OFFSET ?) AS xy "
+					+ "				WHERE xy.item = b.simhash" + Bibtex.INTER_HASH
+					+ "					AND b.group = " + group
+					+ "				GROUP BY b.simhash" + Bibtex.INTER_HASH + " "
+					+ "				ORDER BY weight DESC) AS tt "
+					+ "			WHERE tt.content_id = b.content_id "
+					+ "				AND t.content_id = b.content_id "
+					+ "				AND b.simhash" + Bibtex.INTER_HASH + " = h.hash "
+					+ "				AND h.type = " + Bibtex.INTER_HASH);						
 		} else {
 			String tagWhereQuery   = tags.getQuery();
-			
+
 			//TODO: avoid "FORCE INDEX (content_type_group_tag_name_date_content_id_idx)"
-			String query = "SELECT b.content_id,t.tag_name,b.book_description,b.book_extended,b.user_name,b.date,b.book_url_hash,u.book_url,u.book_url_ctr"
+			String query = "SELECT b.content_id,t.tag_name,b.book_description,b.book_extended,b.user_name,b.date,b.book_url_hash,b.rating,u.book_url,u.book_url_ctr"
 				+ "  FROM bookmark b, urls u, tas t, "
 				+ "    (SELECT t1.content_id"
 				+ "      FROM "
@@ -1302,7 +1430,7 @@ public class ResourceHandler extends HttpServlet{
 					+ "      AND t.content_id=tt.content_id"
 					+ "      ORDER BY b.date DESC,b.content_id DESC");			
 		}
-		
+
 		for (String tag: tags) {
 			c.bookStmtP.setString(queryParamPos, tag);
 			c.bibStmtP.setString(queryParamPos++, tag);
@@ -1312,8 +1440,8 @@ public class ResourceHandler extends HttpServlet{
 		c.bookStmtP.setInt(queryParamPos, startBook);
 		c.bibStmtP.setInt(queryParamPos, startBib);
 	}
-	
-		
+
+
 	/** PAGE_AUTHOR
 	 * 
 	 * Prepares the query for the pages /author/EinAutor
@@ -1332,26 +1460,26 @@ public class ResourceHandler extends HttpServlet{
 		SplittedAuthors authors = new SplittedAuthors(requAuthor);
 		String authorMatch = authors.getQuery();		
 		int argCtr = 1;
-		
+
 		String userSearch = "";
 		if (requUser != null && !requUser.trim().equals("")) {
 			userSearch = " AND s.user_name = ? ";
 		}
-		
+
 		String query = "SELECT " + getBibtexSelect("b") + ", t.tag_name, h.ctr" 
-				+ "		FROM bibtex b , tas t, bibhash h,"    
-				+ "			(SELECT content_id FROM search s " 
-				+"			WHERE MATCH(s.author) AGAINST (? IN BOOLEAN MODE) " 
-				+" 			AND s.content_type= " + Bibtex.CONTENT_TYPE
-				+ " 		AND s.group = " + constants.SQL_CONST_GROUP_PUBLIC
-				+ userSearch
-				+ "			ORDER BY s.date DESC LIMIT ? OFFSET ?) AS tt " 
-				+ "		WHERE b.content_id = tt.content_id "    
-				+ " 		AND t.content_id=tt.content_id " 
-				+ "			AND b.simhash" + Bibtex.INTER_HASH +" = h.hash "    
-				+ "			AND h.type = " + Bibtex.INTER_HASH      
-				+ "			ORDER BY b.date DESC,b.content_id DESC";
-				
+		+ "		FROM bibtex b , tas t, bibhash h,"    
+		+ "			(SELECT content_id FROM search s " 
+		+"			WHERE MATCH(s.author) AGAINST (? IN BOOLEAN MODE) " 
+		+" 			AND s.content_type= " + Bibtex.CONTENT_TYPE
+		+ " 		AND s.group = " + constants.SQL_CONST_GROUP_PUBLIC
+		+ userSearch
+		+ "			ORDER BY s.date DESC LIMIT ? OFFSET ?) AS tt " 
+		+ "		WHERE b.content_id = tt.content_id "    
+		+ " 		AND t.content_id=tt.content_id " 
+		+ "			AND b.simhash" + Bibtex.INTER_HASH +" = h.hash "    
+		+ "			AND h.type = " + Bibtex.INTER_HASH      
+		+ "			ORDER BY b.date DESC,b.content_id DESC";
+
 		c.bibStmtP = c.conn.prepareStatement(query);
 		c.bibStmtP.setString(argCtr++, authorMatch);
 		if (requUser != null) {
@@ -1359,20 +1487,20 @@ public class ResourceHandler extends HttpServlet{
 		}
 		c.bibStmtP.setInt(argCtr++, itemCount);
 		c.bibStmtP.setInt(argCtr++, startBib);
-		
+
 		//	 count
 		c.bibTCStmtP = c.conn.prepareStatement("SELECT count(*) FROM search s " 
-											+ " WHERE MATCH(s.author) AGAINST (? IN BOOLEAN MODE) " 
-											+ " AND s.content_type = " + Bibtex.CONTENT_TYPE 
-											+ " AND s.group = " + constants.SQL_CONST_GROUP_PUBLIC
-											+ userSearch);
+				+ " WHERE MATCH(s.author) AGAINST (? IN BOOLEAN MODE) " 
+				+ " AND s.content_type = " + Bibtex.CONTENT_TYPE 
+				+ " AND s.group = " + constants.SQL_CONST_GROUP_PUBLIC
+				+ userSearch);
 		c.bibTCStmtP.setString(1,authorMatch);
 		if (requUser != null) {
 			c.bibTCStmtP.setString(2, requUser);
 		}
-		
+
 	}
-	
+
 	/** PAGE_AUTHOR_TAG 
 	 * 
 	 * /author/AUTHORS/TAG
@@ -1391,38 +1519,38 @@ public class ResourceHandler extends HttpServlet{
 	private void queryPageAuthorTag(DBContext c, String requAuthor, String requTag, int itemCount, int startBib) throws SQLException {
 		SplittedAuthors authors = new SplittedAuthors(requAuthor);
 		String authorMatch = authors.getQuery();
-		
+
 		String query = "SELECT " + getBibtexSelect("b") + ", t.tag_name, h.ctr"		
-				+ "		FROM bibtex b , tas t, bibhash h,"			
-				+ "			(SELECT s.content_id FROM search s, tas t1"
-				+ "			 WHERE MATCH(s.author) AGAINST (? IN BOOLEAN MODE)"
-				+ " 		 	AND s.content_type = " + Bibtex.CONTENT_TYPE
-				+ "			 	AND s.group = " + constants.SQL_CONST_GROUP_PUBLIC
-				+ "			 	AND s.content_id = t1.content_id"
-				+ "			 	AND t1.tag_name = ? ORDER BY s.date DESC LIMIT ? OFFSET ?) AS tt" 		
-				+ "		WHERE b.content_id = tt.content_id"  		
-				+ "			AND t.content_id=tt.content_id" 		
-				+ "			AND b.simhash" + Bibtex.INTER_HASH +" = h.hash" 			
-				+ "			AND h.type = " + Bibtex.INTER_HASH			
-				+ "		ORDER BY b.date DESC,b.content_id DESC";
-	
+		+ "		FROM bibtex b , tas t, bibhash h,"			
+		+ "			(SELECT s.content_id FROM search s, tas t1"
+		+ "			 WHERE MATCH(s.author) AGAINST (? IN BOOLEAN MODE)"
+		+ " 		 	AND s.content_type = " + Bibtex.CONTENT_TYPE
+		+ "			 	AND s.group = " + constants.SQL_CONST_GROUP_PUBLIC
+		+ "			 	AND s.content_id = t1.content_id"
+		+ "			 	AND t1.tag_name = ? ORDER BY s.date DESC LIMIT ? OFFSET ?) AS tt" 		
+		+ "		WHERE b.content_id = tt.content_id"  		
+		+ "			AND t.content_id=tt.content_id" 		
+		+ "			AND b.simhash" + Bibtex.INTER_HASH +" = h.hash" 			
+		+ "			AND h.type = " + Bibtex.INTER_HASH			
+		+ "		ORDER BY b.date DESC,b.content_id DESC";
+
 		c.bibStmtP = c.conn.prepareStatement(query);
 		c.bibStmtP.setString(1, authorMatch);		
 		c.bibStmtP.setString(2, requTag);
 		c.bibStmtP.setInt(3, itemCount);
 		c.bibStmtP.setInt(4, startBib);
-		
+
 		// count 
 		c.bibTCStmtP = c.conn.prepareStatement(" SELECT count(*) FROM search s, tas t1"
-									+ "			 WHERE MATCH(s.author) AGAINST (? IN BOOLEAN MODE)"
-									+ " 		 	AND s.content_type = " + Bibtex.CONTENT_TYPE
-									+ "			 	AND s.group = " + constants.SQL_CONST_GROUP_PUBLIC
-									+ "			 	AND s.content_id = t1.content_id AND t1.tag_name = ?");
+				+ "			 WHERE MATCH(s.author) AGAINST (? IN BOOLEAN MODE)"
+				+ " 		 	AND s.content_type = " + Bibtex.CONTENT_TYPE
+				+ "			 	AND s.group = " + constants.SQL_CONST_GROUP_PUBLIC
+				+ "			 	AND s.content_id = t1.content_id AND t1.tag_name = ?");
 		c.bibTCStmtP.setString(1, authorMatch);
 		c.bibTCStmtP.setString(2, requTag);
-		
+
 	}
-	
+
 	/** PAGE_URL
 	 * 
 	 * Prepares a query which retrieves all bookmarks which are represented by the given hash.
@@ -1435,9 +1563,9 @@ public class ResourceHandler extends HttpServlet{
 	 * @throws SQLException
 	 */
 	private void queryPageUrl (DBContext c, String requUrl, int itemCount, int startBook) throws SQLException {
-		String query = "SELECT b.content_id,t.tag_name,b.book_description,b.book_extended,b.user_name,b.date,b.book_url_hash,u.book_url,u.book_url_ctr"
+		String query = "SELECT b.content_id,t.tag_name,b.book_description,b.book_extended,b.user_name,b.rating,b.date,b.book_url_hash,u.book_url,u.book_url_ctr"
 			+ "  FROM"
-			+ "    (SELECT book_url_hash,book_description,book_extended,user_name,date,content_id"
+			+ "    (SELECT book_url_hash,book_description,book_extended,user_name,date,rating,content_id"
 			+ "      FROM bookmark "
 			+ "      WHERE book_url_hash=? "
 			+ "        AND bookmark.group = " + constants.SQL_CONST_GROUP_PUBLIC
@@ -1471,9 +1599,9 @@ public class ResourceHandler extends HttpServlet{
 	 */
 	private void queryPageUserUrl (DBContext c, String requUrl, String requUser, String currUser) throws SQLException {
 		String groupWhereQuery = getQueryForGroups (c.conn, currUser, requUser, "bb");
-		String query = "SELECT b.content_id,t.tag_name,b.book_description,b.book_extended,b.user_name,b.date,b.book_url_hash,u.book_url,u.book_url_ctr,g.group_name"
+		String query = "SELECT b.content_id,t.tag_name,b.book_description,b.book_extended,b.user_name,b.rating,b.date,b.book_url_hash,u.book_url,u.book_url_ctr,g.group_name"
 			+ "  FROM"
-			+ "    (SELECT book_url_hash,book_description,book_extended,user_name,date,content_id,bb.group"
+			+ "    (SELECT book_url_hash,book_description,book_extended,user_name,rating,date,content_id,bb.group"
 			+ "      FROM bookmark bb"
 			+ "      WHERE book_url_hash = ? "
 			+ groupWhereQuery
@@ -1489,7 +1617,7 @@ public class ResourceHandler extends HttpServlet{
 	}
 
 	/** PAGE_BIBTEX
-     * /bibtex/023847123ffa8976a969786f876f78e68
+	 * /bibtex/023847123ffa8976a969786f876f78e68
 	 * 
 	 * Prepares a query which retrieves all bibtex posts whose hash no. requSim is 
 	 * equal to requBibtex.
@@ -1506,17 +1634,17 @@ public class ResourceHandler extends HttpServlet{
 	 */
 	private void queryPageBibtex (DBContext c, String requBibtex, String requSim, int itemCount, int startBib) throws SQLException {
 		String query = "SELECT " + getBibtexSelect("b") + ",t.tag_name, h.ctr"
-			+ "  FROM"
-			+ "    (SELECT " + getBibtexSelect("bibtex") + ",bibtex.simhash" + Bibtex.INTER_HASH
-			+ "      FROM bibtex"
-			+ "      WHERE simhash" + requSim + " = ? "
-			+ "        AND bibtex.group = " + constants.SQL_CONST_GROUP_PUBLIC
-			+ "      ORDER BY date DESC"
-			+ "      LIMIT ? OFFSET ?) AS b"
-			+ "  LEFT OUTER JOIN tas t ON b.content_id=t.content_id, bibhash h"
-			+ "    WHERE b.simhash" + Bibtex.INTER_HASH + " = h.hash"
-			+ "      AND h.type = " + Bibtex.INTER_HASH
-			+ "    ORDER BY b.date DESC,b.content_id DESC";
+		+ "  FROM"
+		+ "    (SELECT " + getBibtexSelect("bibtex") + ",bibtex.simhash" + Bibtex.INTER_HASH
+		+ "      FROM bibtex"
+		+ "      WHERE simhash" + requSim + " = ? "
+		+ "        AND bibtex.group = " + constants.SQL_CONST_GROUP_PUBLIC
+		+ "      ORDER BY date DESC"
+		+ "      LIMIT ? OFFSET ?) AS b"
+		+ "  LEFT OUTER JOIN tas t ON b.content_id=t.content_id, bibhash h"
+		+ "    WHERE b.simhash" + Bibtex.INTER_HASH + " = h.hash"
+		+ "      AND h.type = " + Bibtex.INTER_HASH
+		+ "    ORDER BY b.date DESC,b.content_id DESC";
 		c.bibStmtP = c.conn.prepareStatement(query);
 		c.bibStmtP.setString (1, requBibtex);
 		c.bibStmtP.setInt(2, itemCount);
@@ -1590,17 +1718,17 @@ public class ResourceHandler extends HttpServlet{
 	 * @throws SQLException
 	 */
 	private void queryPageSearch (DBContext c, String search, String requUser, int itemCount, int startBook, int startBib) throws SQLException {
-	
+
 		search = search.replaceAll("([\\s]|^)([\\S&&[^-]])"," +$2");
-        // to search just inside a users bookmarks
+		// to search just inside a users bookmarks
 		String usersearch = "";
 		int argCtr = 1;
 		if (requUser != null) {
-		  usersearch = " AND s.user_name = ? ";
+			usersearch = " AND s.user_name = ? ";
 		}
-		String bookQuery = "SELECT bb.content_id,bb.book_url_hash,bb.book_description,bb.book_extended,bb.date,bb.user_name,bb.book_url,bb.book_url_ctr,t.tag_name"
+		String bookQuery = "SELECT bb.content_id,bb.book_url_hash,bb.book_description,bb.book_extended,bb.date,bb.user_name,bb.rating,bb.book_url,bb.book_url_ctr,t.tag_name"
 			+ "  FROM "
-			+ "    (SELECT b.content_id,b.book_url_hash,b.book_description,b.book_extended,b.date,b.user_name,u.book_url,u.book_url_ctr" 
+			+ "    (SELECT b.content_id,b.book_url_hash,b.book_description,b.book_extended,b.date,b.user_name,b.rating,u.book_url,u.book_url_ctr" 
 			+ "       FROM bookmark b, urls u, search s" 
 			+ "       WHERE s.group = " + constants.SQL_CONST_GROUP_PUBLIC 
 			+ "         AND MATCH (s.content) AGAINST (? IN BOOLEAN MODE) "
@@ -1619,7 +1747,7 @@ public class ResourceHandler extends HttpServlet{
 		}
 		c.bookStmtP.setInt(argCtr++, itemCount);
 		c.bookStmtP.setInt(argCtr, startBook);
-		
+
 		c.bibStmtP = c.conn.prepareStatement("SELECT " + getBibtexSelect ("bb") + ",t.tag_name, bb.ctr"
 				+ "  FROM "
 				+ "    (SELECT " + getBibtexSelect ("b") + ", h.ctr"
@@ -1669,9 +1797,9 @@ public class ResourceHandler extends HttpServlet{
 	 */
 	private void queryPageViewable (DBContext c, int group, int itemCount, int startBook, int startBib) throws SQLException {
 		// group query 
-		String query = "SELECT bb.content_id,bb.user_name,bb.book_url_hash,bb.book_description,bb.book_extended,bb.date,bb.book_url,bb.book_url_ctr,t.tag_name"
+		String query = "SELECT bb.content_id,bb.user_name,bb.book_url_hash,bb.book_description,bb.book_extended,bb.date,bb.rating,bb.book_url,bb.book_url_ctr,t.tag_name"
 			+ "  FROM" 
-			+ "    (SELECT b.content_id,b.user_name,b.book_url_hash,b.book_description,b.book_extended,b.date,u.book_url,u.book_url_ctr,b.group" 
+			+ "    (SELECT b.content_id,b.user_name,b.book_url_hash,b.book_description,b.book_extended,b.date,b.rating,u.book_url,u.book_url_ctr,b.group" 
 			+ "       FROM bookmark b, urls u" 
 			+ "       WHERE u.book_url_hash=b.book_url_hash "
 			+ "         AND b.group = ?"
@@ -1740,9 +1868,9 @@ public class ResourceHandler extends HttpServlet{
 			+ "    LEFT OUTER JOIN tas AS t ON bb.content_id=t.content_id, groupids AS g"
 			+ "    WHERE bb.group = g.group "
 			+ "    ORDER BY bb.date DESC, bb.content_id DESC";
- 		 * 
+		 * 
 		 */
-		String query = "SELECT bb.content_id,b.book_url_hash,b.book_description,b.book_extended,bb.date,u.book_url,u.book_url_ctr,t.tag_name,g.group_name,t.user_name"
+		String query = "SELECT bb.content_id,b.book_url_hash,b.book_description,b.book_extended,b.rating,bb.date,u.book_url,u.book_url_ctr,t.tag_name,g.group_name,t.user_name"
 			+ "  FROM urls u, bookmark b, " 
 			+ "		   ((SELECT content_id, date "   				// bookmarks from users of group which currUser may see
 			+ "            FROM bookmark b, groups g "
@@ -1758,7 +1886,7 @@ public class ResourceHandler extends HttpServlet{
 			+ "              AND g.group = ?"                       
 			+ "              AND b.group = " + constants.SQL_CONST_GROUP_FRIENDS // bookmark is only for friends
 			+ "         )UNION("
-            + "          SELECT content_id, date"                   // currUsers bookmarks, ...
+			+ "          SELECT content_id, date"                   // currUsers bookmarks, ...
 			+ "            FROM bookmark b, groups g"
 			+ "            WHERE b.user_name = ?" 
 			+ "              AND g.user_name = b.user_name"         // only, if currUser ...
@@ -1771,7 +1899,7 @@ public class ResourceHandler extends HttpServlet{
 			+ "      AND u.book_url_hash=b.book_url_hash "                                 // join url
 			+ "      AND b.content_id=bb.content_id "                                      // join title, description, ...
 			+ "    ORDER BY bb.date DESC, bb.content_id DESC";
- 
+
 		c.bookStmtP = c.conn.prepareStatement(query);
 		c.bookStmtP.setInt(1, group);			// the group we are looking for
 		c.bookStmtP.setString(2, currUser);  	// to see, which users have currUser as friend
@@ -1858,36 +1986,36 @@ public class ResourceHandler extends HttpServlet{
 		 * - from currUser, if in the group
 		 */
 		String selectContentIDs = 			
-		  "((SELECT t1.content_id, t1.date "   				// items from users of group which currUser may see
-		+ "    FROM groups g, "
-		+      tagWhereQuery
-		+ "      AND g.group = ? "
-		+ "      AND g.user_name = t1.user_name "        // user owns this item
-		+        groupWhereQuery
-		+ "      AND t1.content_type = ?"
-		+ " )UNION("
-		+ "  SELECT t1.content_id, t1.date"                    // items from users of group which have currUser as friend
-		+ "    FROM groups g, friends f, "
-		+      tagWhereQuery
-		+ "      AND g.group = ?"
-		+ "      AND f.f_user_name = ?"                  // currUser is friend
-		+ "      AND g.user_name = f.user_name"          // user is in group
-		+ "      AND t1.user_name = f.user_name"         // user owns this item                       
-		+ "      AND t1.group = " + constants.SQL_CONST_GROUP_FRIENDS // item is only for friends
-		+ "      AND t1.content_type = ?"
-		+ " )UNION("
-        + "  SELECT t1.content_id, t1.date"                    // currUsers items, ...
-		+ "    FROM groups g, "
-		+      tagWhereQuery
-		+ "      AND g.group = ?"                        // if in this group ...
-		+ "      AND g.user_name = t1.user_name"         // is currUser
-		+ "      AND t1.user_name = ?"
-		+ "      AND t1.content_type = ?"
-		+ " ) "
-		+ "   ORDER BY date DESC" 
-		+ "   LIMIT ? OFFSET ?) AS bb";
+			"((SELECT t1.content_id, t1.date "   				// items from users of group which currUser may see
+			+ "    FROM groups g, "
+			+      tagWhereQuery
+			+ "      AND g.group = ? "
+			+ "      AND g.user_name = t1.user_name "        // user owns this item
+			+        groupWhereQuery
+			+ "      AND t1.content_type = ?"
+			+ " )UNION("
+			+ "  SELECT t1.content_id, t1.date"                    // items from users of group which have currUser as friend
+			+ "    FROM groups g, friends f, "
+			+      tagWhereQuery
+			+ "      AND g.group = ?"
+			+ "      AND f.f_user_name = ?"                  // currUser is friend
+			+ "      AND g.user_name = f.user_name"          // user is in group
+			+ "      AND t1.user_name = f.user_name"         // user owns this item                       
+			+ "      AND t1.group = " + constants.SQL_CONST_GROUP_FRIENDS // item is only for friends
+			+ "      AND t1.content_type = ?"
+			+ " )UNION("
+			+ "  SELECT t1.content_id, t1.date"                    // currUsers items, ...
+			+ "    FROM groups g, "
+			+      tagWhereQuery
+			+ "      AND g.group = ?"                        // if in this group ...
+			+ "      AND g.user_name = t1.user_name"         // is currUser
+			+ "      AND t1.user_name = ?"
+			+ "      AND t1.content_type = ?"
+			+ " ) "
+			+ "   ORDER BY date DESC" 
+			+ "   LIMIT ? OFFSET ?) AS bb";
 		// bookmark query
-		String query = "SELECT bb.content_id,b.book_url_hash,b.book_description,b.book_extended,bb.date,u.book_url,u.book_url_ctr,t.tag_name,g.group_name,t.user_name"
+		String query = "SELECT bb.content_id,b.book_url_hash,b.book_description,b.book_extended,b.rating,bb.date,u.book_url,u.book_url_ctr,t.tag_name,g.group_name,t.user_name"
 			+ "  FROM urls u, bookmark b, " 
 			+ selectContentIDs
 			+ "    LEFT OUTER JOIN tas AS t ON bb.content_id=t.content_id, groupids AS g"  // join with tas
@@ -1897,15 +2025,15 @@ public class ResourceHandler extends HttpServlet{
 			+ "    ORDER BY bb.date DESC, bb.content_id DESC"; 
 		// bibtex query
 		String bibQuery = "SELECT " + getBibtexSelect("b") + ",t.tag_name,g.group_name, h.ctr"
-		    + "  FROM bibtex b, bibhash h, "
-		    + selectContentIDs
-		    + "  LEFT OUTER JOIN tas AS t ON bb.content_id=t.content_id, groupids AS g"  // join with tas (get tags)
-		    + "  WHERE t.group = g.group "                                               // join groupname
-			+ "    AND h.type = " + Bibtex.INTER_HASH
-		    + "    AND b.simhash" + Bibtex.INTER_HASH + " = h.hash "                       // join counts, ...
-		    + "    AND b.content_id = bb.content_id"                                     // join rest of entry
-		    + "    ORDER BY bb.date DESC, bb.content_id DESC";
-		
+		+ "  FROM bibtex b, bibhash h, "
+		+ selectContentIDs
+		+ "  LEFT OUTER JOIN tas AS t ON bb.content_id=t.content_id, groupids AS g"  // join with tas (get tags)
+		+ "  WHERE t.group = g.group "                                               // join groupname
+		+ "    AND h.type = " + Bibtex.INTER_HASH
+		+ "    AND b.simhash" + Bibtex.INTER_HASH + " = h.hash "                       // join counts, ...
+		+ "    AND b.content_id = bb.content_id"                                     // join rest of entry
+		+ "    ORDER BY bb.date DESC, bb.content_id DESC";
+
 		/* *********************************************************************
 		 *                           prepare statements
 		 * *********************************************************************/
@@ -1985,7 +2113,7 @@ public class ResourceHandler extends HttpServlet{
 	 * @throws SQLException
 	 */
 	private void queryPageFriend (DBContext c, String currUser, int itemCount, int startBook, int startBib) throws SQLException {
-		String query = "SELECT bb.content_id,b.book_url_hash,b.book_description,b.book_extended,bb.date,u.book_url,u.book_url_ctr,t.tag_name,g.group_name,t.user_name"
+		String query = "SELECT bb.content_id,b.book_url_hash,b.book_description,b.book_extended,b.rating,bb.date,u.book_url,u.book_url_ctr,t.tag_name,g.group_name,t.user_name"
 			+ "  FROM urls u, bookmark b, " 
 			+ "		   (SELECT content_id, date "   				// bookmarks from users of group which currUser may see
 			+ "           FROM bookmark b, friends f"
@@ -1999,7 +2127,7 @@ public class ResourceHandler extends HttpServlet{
 			+ "      AND u.book_url_hash=b.book_url_hash "                                 // join url
 			+ "      AND b.content_id=bb.content_id "                                      // join title, description, ...
 			+ "    ORDER BY bb.date DESC, bb.content_id DESC";
- 
+
 		c.bookStmtP = c.conn.prepareStatement(query);
 		c.bookStmtP.setString(1, currUser);  	// to see, which users have currUser as friend
 		c.bookStmtP.setInt(2, itemCount);
@@ -2037,9 +2165,8 @@ public class ResourceHandler extends HttpServlet{
 	 * @param requUser
 	 * @throws SQLException
 	 */
-	private void queryPageDuplicate (DBContext c, String currUser, String requUser) throws SQLException {
-		String groupWhereQuery = getQueryForGroups (c.conn, currUser, requUser, "b");
-				
+	private void queryPageDuplicate (DBContext c, String currUser) throws SQLException {
+
 		String bibQuery = "SELECT " + getBibtexSelect("b") + ",t.tag_name,g.group_name, h.ctr"
 		+ "  FROM bibtex b, bibhash h,"
 		+ "    (SELECT b2.content_id,b2.date FROM "
@@ -2048,20 +2175,14 @@ public class ResourceHandler extends HttpServlet{
 		+ "    ) AS bb" 
 		+ "  LEFT OUTER JOIN tas AS t ON bb.content_id=t.content_id, groupids AS g"  // join with tas (get tags)
 		+ "  WHERE t.group = g.group " // join groupname         
-		+ groupWhereQuery
 		+ "    AND h.type = " + Bibtex.INTER_HASH
 		+ "    AND b.simhash" + Bibtex.INTER_HASH + " = h.hash "                       // join counts, ...
 		+ "    AND b.content_id = bb.content_id"                                     // join rest of entry
 		+ "    ORDER BY b.simhash" + Bibtex.INTER_HASH + " DESC, bb.date DESC";
-		
+
 		c.bibStmtP = c.conn.prepareStatement(bibQuery);
-		c.bibStmtP.setString(1, requUser);
-		c.bibStmtP.setString(2, requUser);
-		
-		String bibCtrQuery = "SELECT count(*) FROM (SELECT b0.simhash" + Bibtex.INTER_HASH + ",count(b0.simhash" + Bibtex.INTER_HASH + ") AS ctr FROM bibtex b0 WHERE b0.user_name = ? GROUP BY b0.simhash" + Bibtex.INTER_HASH + " HAVING ctr > 1) AS duplicates";
-		c.bibTCStmtP = c.conn.prepareStatement(bibCtrQuery);
-		c.bibTCStmtP.setString(1, requUser);
-		
+		c.bibStmtP.setString(1, currUser);
+		c.bibStmtP.setString(2, currUser);
 	}
 	/* 
 	 * returns a String for the Query of groups the user is in (including "friends", if she is a friend of the requested user 

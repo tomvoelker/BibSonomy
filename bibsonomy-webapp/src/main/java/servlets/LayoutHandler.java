@@ -36,24 +36,17 @@ public class LayoutHandler extends HttpServlet {
 
 	private static String documentPath = null;
 	private static String rootPath = null;
-	private static ExportBibtex export;
+	private static final ExportBibtex export = ExportBibtex.getInstance();
 	private static HashMap<String,OutputType> typemap = new HashMap<String,OutputType>();
 
 
-	@Override
 	public void init(ServletConfig config) throws ServletException {	
-		super.init(config);
-		try {
-			export = ExportBibtex.getInstance(getServletContext().getResource("/jabrefExportFilter/layout").toURI());
-		} catch (Exception ex) {
-			throw new ServletException("unable to intitialize " + ExportBibtex.class.getSimpleName(), ex);
-		}
+		super.init(config); 
 		rootPath = InitialConfigListener.getInitParam("rootPath");
 		documentPath = rootPath + "bibsonomy_docs/";
 		initTypeMap(); // initialize mapping of type names to content-type/file-ending 
 	}
 
-	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
 		/* Get the session attribute of current user  */
 		UserBean user = SessionSettingsFilter.getUser(request);
@@ -130,7 +123,6 @@ public class LayoutHandler extends HttpServlet {
 	}
 
 
-	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		UserBean user = SessionSettingsFilter.getUser(request);

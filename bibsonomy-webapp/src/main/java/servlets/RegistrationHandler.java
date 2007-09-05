@@ -290,14 +290,14 @@ public class RegistrationHandler extends HttpServlet {
 					 * handle Statphys23 registration: add user automatically to statphys group
 					 * 
 					 */
-					String referer = request.getHeader("referer");
-					if ("statphys23".equals(request.getParameter("event")) && referer != null && referer.contains("/events/statphys23/")) {
-						/*
-						 * add user to statphys23 group
-						 */
-						SettingsHandler.addUserToGroup(username, "statphys23", stmt, rst, conn);
-						log.fatal("user " + username + " registered for statphys23 group!");
-					}
+//					String referer = request.getHeader("referer");
+//					if ("statphys23".equals(request.getParameter("event")) && referer != null && referer.contains("/events/statphys23/")) {
+//						/*
+//						 * add user to statphys23 group
+//						 */
+//						SettingsHandler.addUserToGroup(username, "statphys23", stmt, rst, conn);
+//						log.fatal("user " + username + " registered for statphys23 group!");
+//					}
 					 
 					/* ******************************************************************/
 					

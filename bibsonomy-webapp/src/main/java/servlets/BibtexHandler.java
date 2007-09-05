@@ -51,6 +51,7 @@ import scraper.KDEScraperFactory;
 import scraper.Scraper;
 import scraper.ScrapingContext;
 import scraper.ScrapingException;
+import scraper.url.EndnoteToBibtexConverter;
 import beans.BibtexHandlerBean;
 import beans.UploadBean;
 import beans.UserBean;
@@ -83,14 +84,8 @@ public class BibtexHandler extends HttpServlet {
 	 * The dataSource lookup code is added to the init() method to avoid the
 	 * costly JNDI operations for every HTTP request.
 	 */
-	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-//		try {
-//			((Context) new InitialContext().lookup("java:/comp/env")).bind("ieScraperCrfPath", getServletContext().getRealPath("/crfBibsonomy/crf.dat"));
-//		} catch (NamingException ex) {
-//			throw new ServletException("Cannot bind java:/comp/env/ieScraperCrfPath", ex);
-//		}
 		try {
 			dataSource = (DataSource) ((Context) new InitialContext().lookup("java:/comp/env")).lookup("jdbc/bibsonomy");
 			tempPath   = config.getServletContext().getInitParameter("rootPath") + "bibsonomy_temp";
@@ -99,7 +94,6 @@ public class BibtexHandler extends HttpServlet {
 		}
 	}
 	
-	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
 		/*
 		 * forward all GET-requests to doPost to handle them
@@ -107,7 +101,6 @@ public class BibtexHandler extends HttpServlet {
 		doPost(request, response);
 	}
 
-	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		UserBean user = SessionSettingsFilter.getUser(request);
@@ -162,6 +155,7 @@ public class BibtexHandler extends HttpServlet {
 				String delimiter     = null;
 				String whitespace    = null;
 				boolean substitute   = false;
+				int rating = 0;
 				int scraperid        = -1;        // database id of scraping metadata row
 				
 				if (bean != null) {
@@ -180,6 +174,8 @@ public class BibtexHandler extends HttpServlet {
 					group      = bib.getGroup();
 					oldhash    = bean.getOldhash(); // remember oldhash for "move" operation
 					scraperid  = bean.getScraperid();
+					
+					rating     = bib.getRating();
 					
 					// get description
 					if (bib.getDescription() != null) { description = bib.getDescription().trim();	}
@@ -234,6 +230,7 @@ public class BibtexHandler extends HttpServlet {
 					}
 					items.clear();
 					
+					
 					description = getParameter(fieldMap, "description");
 					group       = getParameter(fieldMap, "group"); // TODO: necessary: groupid = getGroup(stmtP_select_group, currUser, groupString); ?
 					// get parameters for substitution of comma, semicolon, etc. in tagstring
@@ -252,18 +249,28 @@ public class BibtexHandler extends HttpServlet {
 						encoding = "UTF-8";
 					}
 
+					final String fileExtension = currFile.substring(currFile.lastIndexOf(".") + 1);
+					
 					// check validity of file --> on error, throw exception (handling below)
 					if ("".equals(currFile)) {
-						throw new BibUploadException ("Please choose a BibTeX file!");
-					} else if (!currFile.substring(currFile.lastIndexOf(".") + 1).equals("bib")) {
-						throw new BibUploadException ("Please check your file. Our parser accepts only \".bib\" extensions!");
+						throw new BibUploadException ("Please choose a BibTeX or EndNote file!");
+					} else if (!fileExtension.equals("bib") && !fileExtension.equals("endnote")) {
+						throw new BibUploadException ("Please check your file. Our parser accepts only \".bib\" and \".endnote\" extensions!");
 					}
 					if (upFile.getSize() < 1) {
 						throw new BibUploadException ("Your file is empty or does not exist!");
 					}
 					
-					bibReader = new BufferedReader(new InputStreamReader(upFile.getInputStream(), encoding));
-					
+					/*
+					 * check if the user "checked" the checkbox that he is uploading an EndNote-file
+					 * else nothing will be done
+					 */
+					if ("endnote".equals(fileExtension)){
+						bibReader = new EndnoteToBibtexConverter().EndnoteToBibtex(new BufferedReader(new InputStreamReader(upFile.getInputStream(), encoding)));
+					} else {
+						bibReader = new BufferedReader(new InputStreamReader(upFile.getInputStream(), encoding));
+					}
+
 					fieldMap.clear();
 					upFile.delete();
 					
@@ -295,7 +302,7 @@ public class BibtexHandler extends HttpServlet {
 				 * parse the BibTeX entries
 				 * *****************************************************************/
 				LinkedList<Bibtex> bibtexList = new LinkedList<Bibtex>();
-				int bibTotalCounter = parseBibtex(currUser, warnings, bibtexList, bibReader, description, group, substitute, delimiter, whitespace);
+				int bibTotalCounter = parseBibtex(currUser, warnings, bibtexList, bibReader, description, group, substitute, delimiter, whitespace, rating);
 
 				// TODO: a lot of comments removed, have look into versions 1.146 or 1.145 which contains the comments
 				if (isSnippet) {
@@ -312,6 +319,7 @@ public class BibtexHandler extends HttpServlet {
 				if (bibtexList.size() + warnings.getIncompleteCount() == 1 && (isSnippet || isFileUpload)) {
 					
 					Bibtex bibtex;
+					
 					if (bibtexList.size() == 1) {
 						// entry is valid (in bibtexList)
 						bibtex = bibtexList.getFirst();						
@@ -321,7 +329,6 @@ public class BibtexHandler extends HttpServlet {
 					}
 					
 					bibtex.setScraperid(scraperid);
-					
 					// put bibtex object into bean
 					BibtexHandlerBean bibBean = new BibtexHandlerBean (bibtex);
 
@@ -570,7 +577,7 @@ public class BibtexHandler extends HttpServlet {
 	 * @throws ParseException
 	 * @throws IOException
 	 */
-	private int parseBibtex(String currUser, WarningBean warnings, LinkedList<Bibtex> bibtexList, Reader bibReader, String description, String group, boolean substitute, String delimiter, String whitespace) throws ParseException, IOException {
+	private int parseBibtex(String currUser, WarningBean warnings, LinkedList<Bibtex> bibtexList, Reader bibReader, String description, String group, boolean substitute, String delimiter, String whitespace, int rating) throws ParseException, IOException {
 		/* **************************************************
 		 * BibTeX file parsing starts here
 		 * **************************************************/
@@ -652,6 +659,7 @@ public class BibtexHandler extends HttpServlet {
 			bib.setDescription(description);
 			bib.setGroup(group);
 			bib.setUser(currUser);
+			bib.setRating(rating);
 			
 
 			// fill other fields from entry
@@ -827,7 +835,8 @@ public class BibtexHandler extends HttpServlet {
 		field = (BibtexString) entry.getFieldValue("volume");		if (field != null) bib.setVolume(field.getContent());        
 		field = (BibtexString) entry.getFieldValue("abstract");		if (field != null) bib.setBibtexAbstract(field.getContent());
 		field = (BibtexString) entry.getFieldValue("type");  		if (field != null) bib.setType(field.getContent());          
-		field = (BibtexString) entry.getFieldValue("description");	if (field != null) bib.setDescription(field.getContent());   
+		field = (BibtexString) entry.getFieldValue("description");	if (field != null) bib.setDescription(field.getContent());
+
 		
 		/* ************************************************
 		 * author
@@ -1006,7 +1015,6 @@ public class BibtexHandler extends HttpServlet {
 		 */
 		// TODO: change keywords here
 		HashSet<String> fields = new HashSet<String>();
-		
 		fields.add("abstract");
 		fields.add("address");
 		fields.add("annote");

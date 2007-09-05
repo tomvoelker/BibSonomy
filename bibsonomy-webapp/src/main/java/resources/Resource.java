@@ -30,6 +30,10 @@ public abstract class Resource implements Cloneable {
 	private Date date = null;
 	private int ctr;
     protected Tag tag       = new Tag();
+    
+    private int rating = 0; // rating of user
+    
+    
 	/* every subclass of Resource has a unique content_type 
 	 * in the subclasses it should not be possible to change the content_type (it is fixed)
 	 * so overload setContentType to not change the type
@@ -186,6 +190,8 @@ public abstract class Resource implements Cloneable {
 		if (url == null) {
 			return null;
 		} else {
+			// remove linebreaks, etc.
+			url = url.replaceAll("\\n|\\r", "");;
 			// this should be the most common case: a valid URL
 			if (url.startsWith("http://") || 
 				url.startsWith("ftp://") ||
@@ -398,4 +404,24 @@ public abstract class Resource implements Cloneable {
 		}
 		extended_fields.put(key, value);
 	}
+
+	public int getRating() {
+		return rating;
+	}
+	
+	public void setRating(String rating) {
+		try {
+			this.setRating(Integer.parseInt(rating));
+		} catch (NumberFormatException e) {
+		}
+	}
+	
+	public void setRating(int rating) {
+		if (rating < 0 || rating > 5) {
+			this.rating = 0;
+		} else {
+			this.rating = rating;
+		}
+	}
+
 }

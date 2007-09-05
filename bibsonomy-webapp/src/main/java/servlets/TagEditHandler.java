@@ -255,7 +255,6 @@ public class TagEditHandler extends HttpServlet {
 								delTag = tag;
 							}	
 							
-							System.out.println("updating relations: " + delTag + " changes to " + addTag);
 							
 							// update upper tags
 							stmtp_select_tas = conn.prepareStatement("UPDATE IGNORE tagtagrelations SET upper = ? WHERE user_name = ? AND upper = ?");

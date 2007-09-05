@@ -14,7 +14,7 @@ import resources.Resource;
 public class RedirectHandler extends HttpServlet {
 	
 	// bibsonomy URLs for several formats
-	private static final String[][] formatURLs = new String[][] {
+	private static final String[][] FORMAT_URLS = new String[][] {
 			{"html", 	null, 	null},
 			{"rss", 	"rss", 	"publrss"},
 			{"xml", 	"xml",	"layout/dblp"},
@@ -49,6 +49,7 @@ public class RedirectHandler extends HttpServlet {
 		 * redirect queries for /url?... to /url/
 		 */
 		if ("url".equals(requPage)) {
+			request.getSession(true).setAttribute("url",request.getParameter("requUrl"));
 			response.sendRedirect("/url/" + Resource.hash(request.getParameter("requUrl")));
 		} else
 		/*
@@ -64,7 +65,7 @@ public class RedirectHandler extends HttpServlet {
 			response.sendRedirect("/search/" + URLEncoder.encode(search, "UTF-8"));
 		} else
 		/*
-		 * redirect either to /user/* or to /tag/* page 
+		 * redirect either to /user/*, to /author/*, to /tag/* or to /concept/tag/* page 
 		 */
 		if (requPage.equals("specialsearch")) {
 			String search = request.getParameter("q");     /* what do we search */
@@ -83,7 +84,14 @@ public class RedirectHandler extends HttpServlet {
 					} else {
 						response.sendRedirect("/author/" + URLEncoder.encode(search,"UTF-8"));
 					}
-				}			
+				} else if ("concept".equals(scope)) {
+					response.sendRedirect("/concept/tag/" + URLEncoder.encode(search,"UTF-8"));
+				} else if ("all".equals(scope)) {					
+					response.sendRedirect("/search/" + URLEncoder.encode(search, "UTF-8"));						
+				} else if (scope.startsWith("user"))  {
+					search = search + " " + scope;					
+					response.sendRedirect("/search/" + URLEncoder.encode(search, "UTF-8"));
+				}
 		} else 
 		/* ********************************************************************************
 		 * CONTENT NEGOTIATION
@@ -96,20 +104,20 @@ public class RedirectHandler extends HttpServlet {
 			String accept		= request.getHeader("accept").toLowerCase();	
 			
 			int i=0;			
-			while (i < formatURLs.length) {
-				if (accept.indexOf(formatURLs[i][0].toLowerCase()) > -1) 					
+			while (i < FORMAT_URLS.length) {
+				if (accept.indexOf(FORMAT_URLS[i][0].toLowerCase()) > -1) 					
 					break;				
 				i++;
 			}
 			
 			// no correct format found --> send to standard HTML page
-			if (i >= formatURLs.length)
+			if (i >= FORMAT_URLS.length)
 				i = 0;
 			
 			// build redirectURL
 			StringBuffer redirectURL = new StringBuffer();
-			if (formatURLs[i][contentType] != null) {
-				redirectURL.append("/" + formatURLs[i][contentType]);
+			if (FORMAT_URLS[i][contentType] != null) {
+				redirectURL.append("/" + FORMAT_URLS[i][contentType]);
 			}			
 			redirectURL.append("/" + requResource + "/" + requHash);
 			

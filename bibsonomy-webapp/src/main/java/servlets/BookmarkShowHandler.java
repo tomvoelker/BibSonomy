@@ -130,7 +130,6 @@ public class BookmarkShowHandler extends HttpServlet{
 			bean.setCopytag(request.getParameter("copytag"));
 			bean.setJump(request.getParameter("jump"));
 			bean.setRecommendedTags( RecommenderFrontEnd.getRecommendation(currUser,bookmark.getHash(),Bookmark.class,bookmark.getTitle()) );
-
 			/*
 			 * tagging of tags
 			 * 
