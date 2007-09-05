@@ -44,9 +44,9 @@ xml:base="${projectHome}<c:out value='${requPath}'/>"
  
 
 
-<c:forEach var="bib" items="${ResourceBean.bibtex}" >
-  <rdf:Description rdf:about="${projectHome}bibtex/<%=Bibtex.INTRA_HASH %><c:out value='${bib.hash}'/>/<mtl:encode value='${bib.user}'/>">
-    <rdf:type rdf:resource="&swrc;<mtl:entrytype value='${bib.entrytype}'/>"/>
+<c:forEach var="resource" items="${ResourceBean.bibtex}" >
+  <rdf:Description rdf:about="${projectHome}bibtex/<%=Bibtex.INTRA_HASH %><c:out value='${resource.hash}'/>/<mtl:encode value='${resource.user}'/>">
+    <rdf:type rdf:resource="&swrc;<mtl:entrytype value='${resource.entrytype}'/>"/>
     <%@include file="SWRCoutput_item.jsp" %>
   </rdf:Description>
 </c:forEach>

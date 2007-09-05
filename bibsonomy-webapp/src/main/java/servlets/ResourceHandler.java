@@ -1,5 +1,6 @@
 package servlets;
 
+import helpers.MySqlError;
 import helpers.constants;
 import helpers.database.DBPickManager;
 
@@ -766,6 +767,16 @@ public class ResourceHandler extends HttpServlet{
 
 		} catch (SQLException e) {
 			log.fatal(e);
+			/*
+			 * special handling for interrupted queries
+			 */
+			if (e.getErrorCode() == MySqlError.ER_QUERY_INTERRUPTED) {
+				/*
+				 * TODO: improve this special error handling!
+				 */
+				request.setAttribute("error", "timeout");
+				getServletConfig().getServletContext().getRequestDispatcher("/errors/error.jsp").forward(request, response);
+			}
 			getServletConfig().getServletContext().getRequestDispatcher("/errors/databaseError.jsp").forward(request, response);
 			//response.sendRedirect("/errors/databaseError.jsp");
 		}
@@ -1181,10 +1192,18 @@ public class ResourceHandler extends HttpServlet{
 	 * @param startBib with which bibtex post to start
 	 * @throws SQLException
 	 */
-	private void queryPageConcept(DBContext c, String currUser, String requTag, int itemCount, int startbook, int startbib) throws SQLException {
+	private void queryPageConcept(DBContext c, String currUser, String requTag, int itemCount, int startBook, int startBib) throws SQLException {
 		SplittedEntireConcepts tags = new SplittedEntireConcepts(requTag, "", true);		
-		int queryParamPos      		= 1;
 
+		/*
+		 * FIXME: special handling for dblp tag
+		 */
+		if (tags.contains("dblp")) {
+			queryPageTag(c, requTag, constants.SQL_CONST_GROUP_PUBLIC, itemCount, startBook, startBib, "date");
+			return;
+		}
+		
+		int queryParamPos      		= 1;
 		// bookmarks
 		String conceptBookmarkQuery = tags.getQuery(Bookmark.CONTENT_TYPE);
 		String bookQuery = "SELECT "
@@ -1236,8 +1255,14 @@ public class ResourceHandler extends HttpServlet{
 		c.bibStmtP.setInt(queryParamPos, itemCount);
 		c.bookStmtP.setInt(queryParamPos++, itemCount);
 
-		c.bibStmtP.setInt(queryParamPos, startbib);
-		c.bookStmtP.setInt(queryParamPos, startbook);			
+		c.bibStmtP.setInt(queryParamPos, startBib);
+		c.bookStmtP.setInt(queryParamPos, startBook);	
+		
+		/*
+		 * set query timeout to stop long queries (e.g. for dblp)
+		 */
+		c.bibStmtP.setQueryTimeout(10); // 10 seconds
+		c.bookStmtP.setQueryTimeout(10); // 10 seconds
 	}
 
 	/** PAGE_CONCEPT
