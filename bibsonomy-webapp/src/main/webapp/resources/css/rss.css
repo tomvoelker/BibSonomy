@@ -39,34 +39,17 @@ a:hover{
   width: 400px;
 }
 
-
-
-/* gesamtes Bookmark */
-.bm {
-	margin-bottom:1.5em;
-	line-height:1em;
-    display: block;
+.bmtitle {
+  font-size: 100%;
+  font-weight: bold;
 }
 
-/* Titel/Description */
 .bmdesc {
-	font-size: 100%;
-	font-weight: bold;
+  font-size: 70%;
+  color: #aaa;
 }
 
-/* extended/erweiterte Beschreibung */
-.bmext {
-	font-size: 72%;
-	color: #aaaaaa;
-}
-
-/* Meta-Angaben */
 .bmmeta {
-	color: #555555;
-	font-size: 70%;
-}
-
-/* Tags */
-.bmtags {
-	font-size: 80%;
+  color: #555;
+  font-size: 70%;
 }
