@@ -1,4 +1,4 @@
-package scraper.test;
+package scraper;
 
 import junit.framework.TestCase;
 import junit.framework.TestResult;

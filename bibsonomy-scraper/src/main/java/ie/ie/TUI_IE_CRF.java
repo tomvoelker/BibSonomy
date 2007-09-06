@@ -6,21 +6,8 @@
    information, see the file `LICENSE' included with this distribution. */
 package ie.ie;
 
-import bsh.EvalError;
-import edu.umass.cs.mallet.base.fst.*;
-import edu.umass.cs.mallet.base.pipe.*;
-import edu.umass.cs.mallet.base.pipe.iterator.AbstractPipeInputIterator;
-import edu.umass.cs.mallet.base.pipe.iterator.LineGroupIterator;
-import edu.umass.cs.mallet.base.pipe.tsf.LexiconMembership;
-import edu.umass.cs.mallet.base.pipe.tsf.OffsetConjunctions;
-import edu.umass.cs.mallet.base.pipe.tsf.RegexMatches;
-import edu.umass.cs.mallet.base.pipe.tsf.TokenText;
-import edu.umass.cs.mallet.base.types.*;
-import edu.umass.cs.mallet.base.util.CharSequenceLexer;
-import edu.umass.cs.mallet.base.util.CommandOption;
-import edu.umass.cs.mallet.base.util.MalletLogger;
+import gnu.trove.TIntArrayList;
 import ie.BaseTUICRF;
-
 import ie.clustering.LineGroupIterator2;
 import ie.clustering.SGML2FieldsPipe;
 
@@ -28,12 +15,45 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Reader;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 
-import gnu.trove.TIntArrayList;
+import bsh.EvalError;
+import edu.umass.cs.mallet.base.fst.CRF4;
+import edu.umass.cs.mallet.base.fst.InstanceAccuracyEvaluator;
+import edu.umass.cs.mallet.base.fst.PerClassAccuracyEvaluator;
+import edu.umass.cs.mallet.base.fst.TokenAccuracyEvaluator;
+import edu.umass.cs.mallet.base.fst.TransducerEvaluator;
+import edu.umass.cs.mallet.base.pipe.Input2CharSequence;
+import edu.umass.cs.mallet.base.pipe.Noop;
+import edu.umass.cs.mallet.base.pipe.Pipe;
+import edu.umass.cs.mallet.base.pipe.SGML2TokenSequence;
+import edu.umass.cs.mallet.base.pipe.SerialPipes;
+import edu.umass.cs.mallet.base.pipe.Target2LabelSequence;
+import edu.umass.cs.mallet.base.pipe.TokenSequence2FeatureVectorSequence;
+import edu.umass.cs.mallet.base.pipe.iterator.AbstractPipeInputIterator;
+import edu.umass.cs.mallet.base.pipe.iterator.LineGroupIterator;
+import edu.umass.cs.mallet.base.pipe.tsf.LexiconMembership;
+import edu.umass.cs.mallet.base.pipe.tsf.OffsetConjunctions;
+import edu.umass.cs.mallet.base.pipe.tsf.RegexMatches;
+import edu.umass.cs.mallet.base.pipe.tsf.TokenText;
+import edu.umass.cs.mallet.base.types.Alphabet;
+import edu.umass.cs.mallet.base.types.Instance;
+import edu.umass.cs.mallet.base.types.InstanceList;
+import edu.umass.cs.mallet.base.types.Sequence;
+import edu.umass.cs.mallet.base.types.Token;
+import edu.umass.cs.mallet.base.types.TokenSequence;
+import edu.umass.cs.mallet.base.util.CharSequenceLexer;
+import edu.umass.cs.mallet.base.util.CommandOption;
+import edu.umass.cs.mallet.base.util.MalletLogger;
 
 
 /**

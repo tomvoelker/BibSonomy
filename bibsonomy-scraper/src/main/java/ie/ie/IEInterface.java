@@ -26,22 +26,32 @@
 
 package ie.ie;
 
-import edu.umass.cs.mallet.base.types.*;
-import edu.umass.cs.mallet.base.fst.*;
-import edu.umass.cs.mallet.base.pipe.*;
-import edu.umass.cs.mallet.base.pipe.iterator.*;
-import edu.umass.cs.mallet.base.pipe.tsf.*;
-import edu.umass.cs.mallet.base.util.*;
-
-import junit.framework.*;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Random;
-import java.util.regex.*;
-import java.io.*;
-import java.util.logging.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.PrintStream;
+import java.io.Reader;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
+
+import edu.umass.cs.mallet.base.fst.CRF4;
+import edu.umass.cs.mallet.base.fst.Transducer;
+import edu.umass.cs.mallet.base.pipe.Pipe;
+import edu.umass.cs.mallet.base.pipe.SerialPipes;
+import edu.umass.cs.mallet.base.pipe.iterator.FileIterator;
+import edu.umass.cs.mallet.base.pipe.iterator.LineGroupIterator;
+import edu.umass.cs.mallet.base.types.Alphabet;
+import edu.umass.cs.mallet.base.types.Instance;
+import edu.umass.cs.mallet.base.types.InstanceList;
+import edu.umass.cs.mallet.base.types.Sequence;
+import edu.umass.cs.mallet.base.types.Token;
+import edu.umass.cs.mallet.base.types.TokenSequence;
 
 
 public class IEInterface{

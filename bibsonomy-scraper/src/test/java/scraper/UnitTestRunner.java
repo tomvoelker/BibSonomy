@@ -1,4 +1,4 @@
-package scraper.test;
+package scraper;
 
 import java.net.URL;
 import java.util.List;
@@ -7,8 +7,8 @@ import junit.framework.TestResult;
 
 import org.apache.log4j.PropertyConfigurator;
 
-import scraper.test.importer.IUnitTestImporter;
-import scraper.test.importer.xml.XMLUnitTestImporter;
+import scraper.importer.IUnitTestImporter;
+import scraper.importer.xml.XMLUnitTestImporter;
 
 /**
  * Main class which starts the scraper unit test.

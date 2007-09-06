@@ -1,30 +1,27 @@
-package scraper.test.URLTest;
+package scraper.URLTest;
 
-import java.io.FileWriter;
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.io.StringReader;
 import java.io.StringWriter;
-import java.lang.annotation.Inherited;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.log4j.Logger;
-
-import junit.framework.TestCase;
 import junit.framework.TestResult;
 
+import org.apache.log4j.Logger;
+import org.junit.Ignore;
+
 import scraper.Scraper;
+import scraper.ScraperUnitTest;
 import scraper.ScrapingContext;
 import scraper.ScrapingException;
-import scraper.test.ParseFailureMessage;
-import scraper.test.ScraperUnitTest;
 
 /**
  * ScraperUnitTest which represents a URLTest.
  * @author tst
  *
  */
+@Ignore
 public class URLScraperUnitTest extends ScraperUnitTest {
 	
 	private static final Logger log = Logger.getLogger(URLScraperUnitTest.class);

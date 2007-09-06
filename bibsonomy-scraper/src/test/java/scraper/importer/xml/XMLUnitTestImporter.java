@@ -1,23 +1,23 @@
-package scraper.test.importer.xml;
+package scraper.importer.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.lang.annotation.Inherited;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import scraper.ParseFailureMessage;
 import scraper.Scraper;
-import scraper.test.ParseFailureMessage;
-import scraper.test.URLTest.URLScraperUnitTest;
-import scraper.test.importer.IUnitTestImporter;
+import scraper.URLTest.URLScraperUnitTest;
+import scraper.importer.IUnitTestImporter;
+
+import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 
 /**
  * Importer for XML and bib sources.

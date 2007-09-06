@@ -1,11 +1,9 @@
-package scraper.test;
+package scraper;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import org.apache.log4j.Logger;
-
-import scraper.url.kde.acm.ACMBasicScraper;
 
 /**
  * This class implements the standard output for occcured Exceptions outside the testing.

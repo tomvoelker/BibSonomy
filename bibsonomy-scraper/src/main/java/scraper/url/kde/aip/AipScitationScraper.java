@@ -1,5 +1,7 @@
 package scraper.url.kde.aip;
 
+import ie.ie.BibExtraction;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +19,6 @@ import java.util.regex.Pattern;
 import scraper.Scraper;
 import scraper.ScrapingContext;
 import scraper.ScrapingException;
-import servlets.BibtexHandler;
 
 /**
  * Scraper for scitation.aip.org
@@ -315,7 +316,7 @@ public class AipScitationScraper implements Scraper {
 			keywords = keywords.substring(12, keywords.length()-1);
 			
 			// clean tag string
-			keywords = BibtexHandler.cleanTags(keywords, true, ";", "_");
+			keywords = BibExtraction.cleanTags(keywords, true, ";", "_");
 			
 			// join the parts back to a complete bibtex reference
 			result = firstPart + "keywords = {" + keywords + "}" + secondPart;

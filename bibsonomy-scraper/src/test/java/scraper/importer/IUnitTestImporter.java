@@ -1,8 +1,8 @@
-package scraper.test.importer;
+package scraper.importer;
 
 import java.util.List;
 
-import scraper.test.ScraperUnitTest;
+import scraper.ScraperUnitTest;
 
 /**
  * interface which descripes all needed methods for Importer 

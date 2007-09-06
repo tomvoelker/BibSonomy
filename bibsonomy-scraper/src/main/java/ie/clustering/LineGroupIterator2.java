@@ -11,13 +11,13 @@
 
 package ie.clustering;
 
-import edu.umass.cs.mallet.base.pipe.iterator.AbstractPipeInputIterator;
-import edu.umass.cs.mallet.base.pipe.Pipe;
-import edu.umass.cs.mallet.base.types.*;
-import java.io.*;
+import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
-import java.util.regex.*;
+import java.util.regex.Pattern;
+
+import edu.umass.cs.mallet.base.pipe.iterator.AbstractPipeInputIterator;
+import edu.umass.cs.mallet.base.types.Instance;
 
 
 /** Iterate over groups of lines of text, separated by lines that
