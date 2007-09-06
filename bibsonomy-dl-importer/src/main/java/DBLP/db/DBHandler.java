@@ -5,16 +5,15 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import DBLP.DBLPEvaluation;
-import DBLP.constants.DBLPConstantsResult;
-import DBLP.parser.DBLPEntry;
-
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import resources.Bibtex;
+import org.bibsonomy.common.enums.HashID;
+
+import DBLP.DBLPEvaluation;
+import DBLP.constants.DBLPConstantsResult;
+import DBLP.parser.DBLPEntry;
 
 
 /*
@@ -41,7 +40,7 @@ public class DBHandler{
 	
 	private static final String SQL_GET_BIBKEYS_BOOKMARK = "SELECT book_extended FROM bookmark WHERE user_name=?";	
 	
-	private static final String SQL_GET_BIBHASH = "SELECT simhash" + Bibtex.INTRA_HASH + " FROM bibtex WHERE user_name=? AND bibtexKey=?";
+	private static final String SQL_GET_BIBHASH = "SELECT simhash" + HashID.INTRA_HASH.getId() + " FROM bibtex WHERE user_name=? AND bibtexKey=?";
 	
 	private static final String SQL_GET_LAST_UPDATE = "SELECT lastupdate FROM DBLP ORDER BY lastupdate DESC LIMIT 1";
 	
@@ -238,7 +237,7 @@ public class DBHandler{
        		rst = stmtp.executeQuery();
        		
        		if(rst.next())
-       			bibhash = rst.getString("simhash" + Bibtex.INTRA_HASH);
+       			bibhash = rst.getString("simhash" + HashID.INTRA_HASH.getId());
        	}else
        		throw new SQLException("Cannot connect to database server");
 		return bibhash;
