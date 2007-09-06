@@ -98,6 +98,7 @@
   <c:set var="usercount" value="${param.usercount}"/>
 </c:if>
 
+
 <c:choose>
   <c:when test="${not empty param.frequent}">
     <%-- show most frequent IPs  --%>
@@ -108,8 +109,7 @@
   <c:otherwise>
     <%-- do SQL query to get new users --%>
     <sql:query var="rs" dataSource="${dataSource}">
-      SELECT user_name, spammer, trim(trailing ', 141.51.167.67, 141.51.167.67' from trim(trailing ', 141.51.167.67, 141.51.167.130' from ip_address)) as ip_address, user_realname, user_email, date_format(reg_date,'%d.%c.%y_%H:%i') as reg_date1 FROM user ORDER BY reg_date DESC LIMIT ?
-      <sql:param value="${usercount}" />  
+      SELECT user_name, spammer, trim(trailing ', 141.51.167.67, 141.51.167.67' from trim(trailing ', 141.51.167.67, 141.51.167.130' from ip_address)) as ip_address, user_realname, user_email, date_format(reg_date,'%d.%c.%y_%H:%i') as reg_date1 FROM user ORDER BY reg_date DESC LIMIT 100
     </sql:query>
   </c:otherwise>
 </c:choose>

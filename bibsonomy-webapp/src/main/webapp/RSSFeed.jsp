@@ -24,7 +24,8 @@
 
 <%-- Bean einbinden --%>
 <jsp:useBean id="ResourceBean" class="beans.ResourceBean" scope="request"/>
- 
+
+<c:set var="basePath" value="${projectHome}"/>
 
 <channel rdf:about="${projectHome}<c:out value='${requPath}'/>">
   <title>${projectName} bookmarks for /<c:out value='${requPath}'/></title>
