@@ -36,11 +36,11 @@
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
+		<!-- dependency>
 			<groupId>de.innofinity</groupId>
 			<artifactId>beanhandling</artifactId>
 			<version>0.0.1</version>
-		</dependency>
+		</dependency -->
 		<dependency>
 			<groupId>org.mortbay.jetty</groupId>
 			<artifactId>jetty-embedded</artifactId>
