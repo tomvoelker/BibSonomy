@@ -125,6 +125,8 @@
 	<modules>
 		<module>bibsonomy-common</module>
 		<module>bibsonomy-model</module>
+		<module>bibsonomy-dl-importer</module>
+		<module>bibsonomy-scraper</module>
 		<module>bibsonomy-database</module>
 		<module>bibsonomy-rest-client</module>
 		<module>bibsonomy-rest-common</module>
@@ -240,6 +242,16 @@
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-spielwiese</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-scraper</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-dl-importer</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
