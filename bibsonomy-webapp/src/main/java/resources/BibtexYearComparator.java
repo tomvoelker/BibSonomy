@@ -5,8 +5,10 @@ import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.util.BibtexUtils;
+
 public class BibtexYearComparator implements Comparator<Bibtex>, Serializable {
-	
+
 	private static final long serialVersionUID = 4735362385246669491L;
 
 	/** Compares two bibtex objects by the year of the publication
@@ -26,10 +28,10 @@ public class BibtexYearComparator implements Comparator<Bibtex>, Serializable {
 			/*
 			 * compare by authors and editors;
 			 */
-			String p1 = o1.getFirstPersonsLastName(o1.getAuthor());
-			String p2 = o1.getFirstPersonsLastName(o2.getAuthor());
-			if (p1 == null) p1 = o1.getFirstPersonsLastName(o1.getEditor());
-			if (p2 == null) p2 = o1.getFirstPersonsLastName(o2.getEditor());
+			String p1 = BibtexUtils.getFirstPersonsLastName(o1.getAuthor());
+			String p2 = BibtexUtils.getFirstPersonsLastName(o2.getAuthor());
+			if (p1 == null) p1 = BibtexUtils.getFirstPersonsLastName(o1.getEditor());
+			if (p2 == null) p2 = BibtexUtils.getFirstPersonsLastName(o2.getEditor());
 			comp = secureCompareTo(p1, p2);
 			if (comp == 0) {
 				/* 
@@ -42,9 +44,10 @@ public class BibtexYearComparator implements Comparator<Bibtex>, Serializable {
 				 */
 				if (o1.getSimHash(Bibtex.SIM_HASH_1).equals(o2.getSimHash(Bibtex.SIM_HASH_1))) {
 					return o1.getEntrytype().compareTo(o2.getEntrytype());
-				} else {
-					return o1.getTitle().compareTo(o2.getTitle());
-				}
+				} 
+
+				return o1.getTitle().compareTo(o2.getTitle());
+
 				//return -1;
 			}
 		}
@@ -73,7 +76,7 @@ public class BibtexYearComparator implements Comparator<Bibtex>, Serializable {
 		}
 		return Integer.MAX_VALUE;
 	}
-	
+
 	/** Compares two Strings like compareTo but with additional checks, if one of the strings is NULL.
 	 * @param s1
 	 * @param s2
@@ -86,25 +89,24 @@ public class BibtexYearComparator implements Comparator<Bibtex>, Serializable {
 				 * null = s1 = s2 = null
 				 */
 				return 0;
-			} else {
-				/*
-				 * null = s1 < s2 != null
-				 */
-				return -1;
-			}
-		} else {
-			if (s2 == null) {
-				/*
-				 * null != s1 > s2 = null
-				 */
-				return 1;
-			} else {
-				/*
-				 * null != s1 ? s2 != null
-				 */
-				return s1.compareTo(s2);
-			}
+			} 
+			/*
+			 * null = s1 < s2 != null
+			 */
+			return -1;
+
 		}
+
+		if (s2 == null) {
+			/*
+			 * null != s1 > s2 = null
+			 */
+			return 1;
+		}
+		/*
+		 * null != s1 ? s2 != null
+		 */
+		return s1.compareTo(s2);
 	}
 
 }
