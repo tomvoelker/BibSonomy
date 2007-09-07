@@ -36,6 +36,10 @@
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-common</artifactId>
+		</dependency>
 		<!-- dependency>
 			<groupId>de.innofinity</groupId>
 			<artifactId>beanhandling</artifactId>

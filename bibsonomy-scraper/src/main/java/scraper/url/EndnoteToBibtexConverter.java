@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.util.BibtexUtils;
 
 import resources.Bibtex;
 
@@ -134,7 +135,7 @@ public class EndnoteToBibtexConverter {
 			/*
 			 * build the bibtex key
 			 */
-			_resultBibtexFields.put("key", Bibtex.generateBibtexKey(_resultBibtexFields.get("author"), _resultBibtexFields.get("editor"), _resultBibtexFields.get("year"), _resultBibtexFields.get("title")));
+			_resultBibtexFields.put("key", BibtexUtils.generateBibtexKey(_resultBibtexFields.get("author"), _resultBibtexFields.get("editor"), _resultBibtexFields.get("year"), _resultBibtexFields.get("title")));
 
 			
 		} catch (Exception e){

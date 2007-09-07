@@ -6,6 +6,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.util.BibtexUtils;
+
 import helpers.url;
 
 public class Bibtex extends Resource {
@@ -231,42 +233,14 @@ public class Bibtex extends Resource {
 		return super.cleanUrl(this.getUrl());
 	}
 	
-	public static String generateBibtexKey(String authors, String editors, String year, String title) {
-		/*
-		 * todo: pick either author or editor. DON'T use getAuthorlist (it sorts alphabetically!). CHECK for null values.
-		 * What to do with Chinese authors and other broken names?
-		 * How to extract the first RELEVANT word of the title?
-		 * remove Sonderzeichen, LaTeX markup!
-		 */
-		StringBuffer b = new StringBuffer();
-		/*
-		 * get author
-		 */
-		String first = getFirstPersonsLastName(authors);
-		if (first == null) {
-			first = getFirstPersonsLastName(editors);
-			if (first == null) {
-				first = "noauthororeditor";
-			}
-		}
-		b.append(first);
-		/* the year */ 
-		if (year != null) {
-			b.append(year.trim());
-		}
-		/* first relevant word of the title */
-		if (title != null) {
-			/* best guess: pick first word with more than 4 characters, longest first word */
-		}
-		return b.toString().toLowerCase();
-	}
+	
 	
 	/** Generates a bibtex key of the form
 	 * firstauthorslastnameYEARfirstrelevantwordoftitle
 	 * @return a bibtex key
 	 */
 	public String getGeneratedBibtexKey () {
-		return generateBibtexKey(getAuthor(), getEditor(), getYear(), getTitle());
+		return BibtexUtils.generateBibtexKey(getAuthor(), getEditor(), getYear(), getTitle());
 	}
 	
 	/**
@@ -374,10 +348,10 @@ public class Bibtex extends Resource {
 	
 	/* change Map */
 	public String getEntry (String entry) {		
-		if(entries==null){
+		if (entries == null) {
 			return null;
-		}else{
-			return (String)entries.get(entry);	
+		} else {
+			return entries.get(entry);	
 		}
 	}
 	
@@ -389,7 +363,7 @@ public class Bibtex extends Resource {
 		entries.put(entry,value);
 		setHashesToNull(); // this way hashes are regenerated the next time getHash() is called 	
 	}
-	public Map getEntries() {
+	public Map<String,String> getEntries() {
 		return entries;
 	}
 	
@@ -490,36 +464,7 @@ public class Bibtex extends Resource {
 	}
 		
 
-	/**  Tries to extract the last name of the first person.
-	 *  
-	 * @return the last name of the first person
-	 */
-	public static String getFirstPersonsLastName (String person) {
-		if (person != null) {
-			String firstauthor;
-			/*
-			 * check, if there is more than one author
-			 */
-			int firstand = person.indexOf(" and ");
-			if (firstand < 0) {
-				firstauthor = person;
-			} else {
-				firstauthor = person.substring(0, firstand);				
-			}
-			/*
-			 * first author extracted, get its last name
-			 */
-			int lastspace = firstauthor.lastIndexOf(' ');
-			String lastname;
-			if (lastspace < 0) {
-				lastname = firstauthor;
-			} else {
-				lastname = firstauthor.substring(lastspace + 1, firstauthor.length());
-			}
-			return lastname;
-		}
-		return null;
-	}
+	
 	
 	public int getContentType () {
 		return Bibtex.CONTENT_TYPE;
