@@ -8,20 +8,18 @@
 
 package ie.ie;
 
+import edu.umass.cs.mallet.base.types.*;
+import edu.umass.cs.mallet.base.fst.*;
+import edu.umass.cs.mallet.base.pipe.CharSequence2TokenSequence;
+
 import ie.CRFSingleton;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.regex.Pattern;
+import java.util.regex.*;
+import java.io.*;
 
 import javax.naming.NamingException;
-
-import edu.umass.cs.mallet.base.pipe.CharSequence2TokenSequence;
-import edu.umass.cs.mallet.base.types.Instance;
-import edu.umass.cs.mallet.base.types.TokenSequence;
 
 
 
@@ -183,48 +181,6 @@ public class BibExtraction
 
 	private static Pattern regex = Pattern.compile ("\\p{Alpha}+|\\p{Digit}+|\\p{Punct}");
 
-	
-	/** Allows in a string of tags to change the delimiter to space. Additionally, tags consisting of
-	 * more than one word (separated by whitespace) can be joined with whitespaceSub.
-	 * 
-	 *  Example:
-	 *  
-	 *  with the delimiter = "," and whitespace = "_"
-	 *  the string 
-	 *    computer algebra, maple, math
-	 *  would be changed to
-	 *    computer_algebra maple math
-	 *  
-	 * @param tagstring - a string of tags.
-	 * @param substitute - <code>true</code>, if the tag string should be modified.
-	 * @param delimiter - the character which separates the tags in the tag string.
-	 * @param whitespaceSub - the character with which whitespace should be separated. 
-	 * This allows to merge tags with more than one word into a tag with one word.
-	 *   
-	 * @return The cleaned string of tags.
-	 */
-	public static String cleanTags(String tagstring, boolean substitute, String delimiter, String whitespaceSub) {
-		if (tagstring != null) {
-			if (substitute && delimiter != null && delimiter.length() == 1 && !delimiter.trim().equals("")) {
-				String tmpTags = tagstring.trim();
-
-				// remove whitespace around delimiter
-				tmpTags = tmpTags.replaceAll("\\s*" + Pattern.quote(delimiter) + "\\s*", delimiter);
-
-				// substitute whitespace inside tags
-				if (whitespaceSub != null && whitespaceSub.length() <= 1) {
-					tmpTags = tmpTags.replaceAll("\\s+", whitespaceSub);
-				}
-
-				// user wants to have another delimiter than whitespace
-				return tmpTags.replaceAll(Pattern.quote(delimiter), " ");
-			}
-			return tagstring;
-		} else {
-			return "";
-		}
-	}
-	
 	public HashMap<String, String> extraction(String fileName, String reference){
 		IEInterface ieInterface = new IEInterface();//crf #2
 
