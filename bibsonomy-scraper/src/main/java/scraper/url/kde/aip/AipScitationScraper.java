@@ -14,10 +14,11 @@ import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.util.TagStringUtils;
+
 import scraper.Scraper;
 import scraper.ScrapingContext;
 import scraper.ScrapingException;
-import servlets.BibtexHandler;
 
 /**
  * Scraper for scitation.aip.org
@@ -315,7 +316,7 @@ public class AipScitationScraper implements Scraper {
 			keywords = keywords.substring(12, keywords.length()-1);
 			
 			// clean tag string
-			keywords = BibtexHandler.cleanTags(keywords, true, ";", "_");
+			keywords = TagStringUtils.cleanTags(keywords, true, ";", "_");
 			
 			// join the parts back to a complete bibtex reference
 			result = firstPart + "keywords = {" + keywords + "}" + secondPart;

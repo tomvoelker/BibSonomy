@@ -12,8 +12,6 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.bibsonomy.util.BibtexUtils;
 
-import resources.Bibtex;
-
 
 public class EndnoteToBibtexConverter {
 	
