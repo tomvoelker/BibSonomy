@@ -9,7 +9,7 @@
 	<packaging>jar</packaging>
 	<name>Bibsonomy-Scraper</name>
 	<version>2.0.1-SNAPSHOT</version>
-	<description>BibTex scrapers for Bibsonomy.</description>
+	<description>Web page scrapers returning BibTeX for BibSonomy.</description>
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
@@ -56,6 +56,10 @@
 	</build>
 
 	<dependencies>
+		<dependency>
+			<groupId>bibtex</groupId>
+			<artifactId>bibsonomy-bibtex-parser</artifactId>
+		</dependency>	
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-common</artifactId>

@@ -123,6 +123,7 @@
 	</pluginRepositories>
 	-->
 	<modules>
+		<module>bibsonomy-bibtex-parser</module>
 		<module>bibsonomy-common</module>
 		<module>bibsonomy-model</module>
 		<module>bibsonomy-dl-importer</module>
@@ -198,6 +199,11 @@
 	</distributionManagement>
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>bibtex</groupId>
+				<artifactId>bibsonomy-bibtex-parser</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-common</artifactId>
