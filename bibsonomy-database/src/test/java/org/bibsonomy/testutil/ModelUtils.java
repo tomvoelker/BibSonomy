@@ -158,7 +158,7 @@ public class ModelUtils {
 			return "test-" + name;
 		}
 		if ((int.class == type) || (Integer.class == type)) {
-			return name.hashCode();
+			return Math.abs(name.hashCode());
 		}
 		if ((boolean.class == type) || (Boolean.class == type)) {
 			return (name.hashCode() % 2 == 0);
