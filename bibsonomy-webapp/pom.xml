@@ -15,6 +15,39 @@
 		<groupId>org.bibsonomy</groupId>
 		<version>2.0.1-SNAPSHOT</version>
 	</parent>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<configuration>
+							<tasks>
+								<java classname="antlr.Tool" classpathref="maven.plugin.classpath" fork="true" dir="src/main/antlr">
+									<arg line="-o ${project.build.directory}/generated-sources/antlr/helpers/parser/" />
+									<arg value="helpers/parser/TagString.g" />
+								</java>
+							</tasks>
+							<sourceRoot>${project.build.directory}/generated-sources/antlr</sourceRoot>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>antlr</groupId>
+						<artifactId>antlr</artifactId>
+						<version>2.7.7</version>
+						<scope>compile</scope>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+	</build>
 
 	<dependencies>
 		<dependency>
@@ -43,7 +76,7 @@
 		<dependency>
 			<groupId>bibtex</groupId>
 			<artifactId>bibsonomy-bibtex-parser</artifactId>
-		</dependency>	
+		</dependency>
 		<!-- dependency>
 			<groupId>de.innofinity</groupId>
 			<artifactId>beanhandling</artifactId>

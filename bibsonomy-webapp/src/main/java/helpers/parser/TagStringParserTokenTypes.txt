@@ -1,7 +1,0 @@
-// $ANTLR : TagString.g -> TagStringParserTokenTypes.txt$
-TagStringParser    // output token vocab name
-SPACE=4
-LEFTARROW=5
-RIGHTARROW=6
-TAG=7
-WS=8
