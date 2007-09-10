@@ -774,6 +774,7 @@ public class ResourceHandler extends HttpServlet{
 				 */
 				request.setAttribute("error", "timeout");
 				getServletConfig().getServletContext().getRequestDispatcher("/errors/error.jsp").forward(request, response);
+				return;
 			}
 			getServletConfig().getServletContext().getRequestDispatcher("/errors/databaseError.jsp").forward(request, response);
 			//response.sendRedirect("/errors/databaseError.jsp");
