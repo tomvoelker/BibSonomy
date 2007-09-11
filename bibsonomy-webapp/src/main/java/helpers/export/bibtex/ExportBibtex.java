@@ -6,14 +6,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import net.sf.jabref.BibtexDatabase;
 import net.sf.jabref.BibtexEntry;
@@ -46,7 +44,7 @@ public final class ExportBibtex {
 	private final static String _layoutFileExtension = ".layout";
 
 	private static String _rootPath			         = null;
-	private static String _bibDefLayoutPath          = null;
+	private static String _layoutDirectory          = "layout";
 	private static final String message_no_custom_layout = "You don't have a custom filter installed. Please go to the settings page and install one.";
 
 
@@ -59,20 +57,20 @@ public final class ExportBibtex {
 
 	/** Constructor collects all needed infos and data.*/
 	private ExportBibtex(){
-		try {
-			_bibDefLayoutPath = ((String) ((Context) new InitialContext().lookup("java:/comp/env")).lookup("bibLayoutPath"));
-			_rootPath = InitialConfigListener.getInitParam("rootPath");//((String) ((Context) new InitialContext().lookup("java:/comp/env")).lookup("rootPath"));			
-		} catch (NamingException e) {
-			log.fatal(e);
-		}
+		_rootPath = InitialConfigListener.getInitParam("rootPath");//((String) ((Context) new InitialContext().lookup("java:/comp/env")).lookup("rootPath"));			
+
 		/* 
 		 * initialize JabRef preferences. This is neccessary ... because they use global 
 		 * preferences and if we don't initialize them, we get NullPointerExceptions later 
 		 */
-		
 		Globals.prefs = JabRefPreferences.getInstance();
+		
 		// load default filters 
-		loadDefaultFilters();
+		try {
+			loadDefaultFilters();
+		} catch (URISyntaxException ex) {
+			log.fatal("could not load default layout files");
+		}
 	}
 
 	public static ExportBibtex getInstance() {
@@ -203,7 +201,7 @@ public final class ExportBibtex {
 
 		for(Bibtex b: bibtexList){
 			bibtexStrings.append(" " + b.getBibtex());
-		}
+		} 
 
 		try {
 			result = BibtexParser.parse(new StringReader(bibtexStrings.toString()));
@@ -216,17 +214,25 @@ public final class ExportBibtex {
 
 	/**
 	 * Loads default filters (xxx.xxx.layout and xxx.layout) from BibSonomy`s default layout directory into a map.
+	 * @throws URISyntaxException 
 	 * @throws Exception
 	 */
-	private void loadDefaultFilters(){
+	private void loadDefaultFilters() throws URISyntaxException{
 		
 		Stack<File> dirs = new Stack<File>();
-		//start searching in default layout directory
-		final File startdir = new File(_bibDefLayoutPath);
+		
+		/*
+		 * start searching in default layout directory
+		 */
+		final Class<ExportBibtex> myClass = ExportBibtex.class;
+		final URL url = myClass.getResource(_layoutDirectory); // URL to layout directory
+		final File startdir = new File(url.toURI());
 
-		if (startdir.isDirectory())
+		// add first directory to stack
+		if (startdir.isDirectory()) 
 			dirs.push(startdir);
-		while (dirs.size() > 0){
+		
+		while (dirs.size() > 0) {
 			for (File file : dirs.pop().listFiles()){
 				if (file.isDirectory()){	        
 					dirs.push( file );
