@@ -512,8 +512,8 @@ public class XMLRenderer implements Renderer {
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 					
 			// validate the XML produced by the marshaller
-			marshaller.setSchema(schema);
-			marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.FALSE);
+			// marshaller.setSchema(schema);
+			// marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.FALSE);
 
 			// marshal to the writer
 			marshaller.marshal(webserviceElement, writer);
