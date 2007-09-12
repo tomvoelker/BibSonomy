@@ -203,7 +203,7 @@ public class JoinGroupHandler extends HttpServlet {
 							String message = "\nHello " + requGroup + "\n" +
 							"\n" +currUser+" has send a request to join your group." + "\n" +
 							"\nReason: " + reason + "\n" + 
-							"\nVisit " + projectHome + "settings.jsp?group="+URLEncoder.encode(requGroup, "UTF-8").toLowerCase()+"&user="+URLEncoder.encode(currUser, "UTF-8").toLowerCase()+
+							"\nVisit " + projectHome + "settings.jsp?group="+URLEncoder.encode(requGroup, "UTF-8").toLowerCase()+"&user="+URLEncoder.encode(currUser, "UTF-8").toLowerCase()+"&seltab=2"+
 							"\n"+
 							"\nHave a look on the help page and the FAQ:" +
 							"\n" + projectHome + "help" +
