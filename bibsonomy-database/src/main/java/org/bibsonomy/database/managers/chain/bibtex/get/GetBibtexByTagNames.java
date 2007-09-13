@@ -14,8 +14,6 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.logic.Order;
 
 /**
- * TODO implement compartible method for concept structure
- * 
  * @author Miranda Grahl
  * @version $Id$
  */

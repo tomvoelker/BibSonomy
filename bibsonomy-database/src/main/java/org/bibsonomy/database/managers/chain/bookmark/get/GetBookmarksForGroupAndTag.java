@@ -20,8 +20,6 @@ public class GetBookmarksForGroupAndTag extends BookmarkChainElement {
 	/**
 	 * return a list of bookmark by a given group and common tags of a group.
 	 * Following arguments have to be given:
-	 * 
-	 * grouping:group name:given tags:given hash:null popular:false added:false
 	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
