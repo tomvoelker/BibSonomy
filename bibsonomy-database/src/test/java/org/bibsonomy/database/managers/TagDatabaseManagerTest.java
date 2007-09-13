@@ -92,5 +92,13 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.resetParameters();			
 	}		
 	
+	@Test
+	public void getTagsByAuthor() {
+		this.tagParam.setSearch("stumme");
+	    this.tagDb.getTagsAuthor(this.tagParam, this.dbSession);
+		//System.out.println(tags.size());
+		//assertEquals(10, tags.size());
+	}
+
 	
 }

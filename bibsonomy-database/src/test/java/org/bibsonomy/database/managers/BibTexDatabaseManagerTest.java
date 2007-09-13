@@ -39,6 +39,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getBibTexByHash() {
 		final List<Post<BibTex>> posts = this.bibTexDb.getBibTexByHash(this.bibtexParam, this.dbSession);
+		
 		assertNotNull(posts);
 		assertEquals(1, posts.get(0).getGroups().size());
 		assertEquals(1, posts.size());
@@ -292,7 +293,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.bibTexDb.insertBibTexPost(toInsert, this.dbSession);
 	}
 
-	@Test
+	/*@Test
 	public void deleteBibTex() {
 		// deleting a bibtex post (group is public)
 		this.bibtexParam.setHash("65dd8521862eca7c81bd6ba32d0f0433"); // INTRAHASH
@@ -310,7 +311,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertFalse(plugin.isOnBibTexDelete());
 		this.assertDeleteBibTex();
 		assertTrue(plugin.isOnBibTexDelete());
-	}
+	}*/
 
 	private void assertDeleteBibTex() {
 		assertEquals(1, this.bibTexDb.getBibTexByHashForUser(this.bibtexParam, this.dbSession).size());
@@ -434,4 +435,25 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		extras = this.bibTexExtraDb.getURL(BIB_TEST_HASH, TEST_USER, this.dbSession);
 		assertEquals(2, extras.size());
 	}
+	
+	@Test
+	public void getBibTexByAuthor() {
+		this.bibtexParam.setSearch("stumme");
+		this.bibtexParam.setUserName("grahl");
+		this.bibtexParam.setRequestedUserName("grahl"); 
+		//this.bibTexDb.getBibTexByAuthor(this.bibtexParam, this.dbSession);
+		final List<Post<BibTex>> post=this.bibTexDb.getBibTexByAuthor(this.bibtexParam, this.dbSession);		
+	}
+	
+	@Test
+	public void getBibTexByAuthorAndTag() {
+		this.bibtexParam.setSearch("stumme");
+		this.bibtexParam.setUserName("grahl");
+		this.bibtexParam.setRequestedUserName("grahl"); 
+		//this.bibTexDb.getBibTexByAuthorAndTag(this.bibtexParam, this.dbSession);
+		final List <Post<BibTex>> post=this.bibTexDb.getBibTexByAuthorAndTag(this.bibtexParam, this.dbSession);
+		System.out.println("Anzahl der Post: "+post.size());
+	}
+	
+	
 }
