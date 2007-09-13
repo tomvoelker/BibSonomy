@@ -2,6 +2,8 @@ package org.bibsonomy.database.managers.chain.bibtex;
 
 import org.bibsonomy.database.managers.chain.ChainElement;
 import org.bibsonomy.database.managers.chain.FirstChainElement;
+import org.bibsonomy.database.managers.chain.bibtex.get.GetBibTexByAuthor;
+import org.bibsonomy.database.managers.chain.bibtex.get.GetBibTexByAuthorAndTag;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByConceptForUser;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByFriends;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByHash;
@@ -40,6 +42,8 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByUserFriends;
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByUserAndTagsFriends;
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByFriends;
+	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByAuthor;
+	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByAuthorAndTag;
 
 	public BibTexChain() {
 		this.getBibTexByHash = new GetBibtexByHash();
@@ -56,7 +60,9 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 		this.getBibTexByUserFriends = new GetBibtexOfFriendsByUser();
 		this.getBibTexByUserAndTagsFriends = new GetBibtexOfFriendsByTags();
 		this.getBibTexByFriends = new GetBibtexByFriends();
-
+		this.getBibTexByAuthor=new GetBibTexByAuthor();
+		this.getBibTexByAuthorAndTag=new GetBibTexByAuthorAndTag();
+		
 		this.getBibTexForHomePage.setNext(this.getBibTexForPopular);
 		this.getBibTexForPopular.setNext(this.getBibTexForUser);
 		this.getBibTexForUser.setNext(this.getBibTexByTagNames);
@@ -68,8 +74,12 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 		this.getBibTexForGroupAndTag.setNext(this.getBibTexViewable);
 		this.getBibTexViewable.setNext(this.getBibTexByConceptForUser);
 		this.getBibTexByConceptForUser.setNext(this.getBibTexByUserFriends);
+		
 		this.getBibTexByUserFriends.setNext(this.getBibTexByUserAndTagsFriends);
 		this.getBibTexByUserAndTagsFriends.setNext(this.getBibTexByFriends);
+		this.getBibTexByFriends.setNext(this.getBibTexByAuthor);
+		this.getBibTexByAuthor.setNext(this.getBibTexByAuthorAndTag);
+		
 	}
 
 	public ChainElement<Post<BibTex>, BibTexParam> getFirstElement() {
