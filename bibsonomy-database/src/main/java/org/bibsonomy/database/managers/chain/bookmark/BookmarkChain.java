@@ -3,6 +3,7 @@ package org.bibsonomy.database.managers.chain.bookmark;
 import org.bibsonomy.database.managers.chain.ChainElement;
 import org.bibsonomy.database.managers.chain.FirstChainElement;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByConceptForUser;
+import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByFriends;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByHash;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByHashForUser;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByTagNames;
@@ -38,7 +39,8 @@ public class BookmarkChain implements FirstChainElement<Post<Bookmark>, Bookmark
 	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByConcept;
 	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByUserFriends;
 	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByUserAndTagsFriends;
-
+	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByFriends;
+	
 	public BookmarkChain() {
 		this.getBookmarksForUser = new GetBookmarksForUser();
 		this.getBookmarksByHash = new GetBookmarksByHash();
@@ -53,7 +55,8 @@ public class BookmarkChain implements FirstChainElement<Post<Bookmark>, Bookmark
 		this.getBookmarksByConcept = new GetBookmarksByConceptForUser();
 		this.getBookmarksByUserFriends = new GetBookmarksOfFriendsByUser();
 		this.getBookmarksByUserAndTagsFriends = new GetBookmarksOfFriendsByTags();
-
+		this.getBookmarksByFriends=new GetBookmarksByFriends();
+		
 		this.getBookmarksForHomePage.setNext(this.getBookmarksForPopular);
 		this.getBookmarksForPopular.setNext(this.getBookmarksForUser);
 		this.getBookmarksForUser.setNext(this.getBookmarksByTagNames);
@@ -66,6 +69,7 @@ public class BookmarkChain implements FirstChainElement<Post<Bookmark>, Bookmark
 		this.getBookmarksViewable.setNext(this.getBookmarksByConcept);
 		this.getBookmarksByConcept.setNext(this.getBookmarksByUserFriends);
 		this.getBookmarksByUserFriends.setNext(this.getBookmarksByUserAndTagsFriends);
+		this.getBookmarksByUserAndTagsFriends.setNext(this.getBookmarksByFriends);
 	}
 
 	public ChainElement<Post<Bookmark>, BookmarkParam> getFirstElement() {
