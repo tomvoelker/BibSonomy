@@ -21,11 +21,7 @@ public class GetBookmarksViewable extends BookmarkChainElement {
 
 	/**
 	 * return a list of bookmark by a given group (which is only viewable for
-	 * groupmembers excluded public option regarding setting a post). Following
-	 * arguments have to be given:
-	 * 
-	 * grouping:viewable name:given tags:NULL hash:NULL popular:falses
-	 * added:false
+	 * groupmembers excluded public option regarding setting a post)
 	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {

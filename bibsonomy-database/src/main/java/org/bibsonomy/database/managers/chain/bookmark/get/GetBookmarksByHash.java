@@ -20,9 +20,6 @@ public class GetBookmarksByHash extends BookmarkChainElement {
 	/**
 	 * return a list of bookmark by a given hash. Following arguments have to be
 	 * given:
-	 * 
-	 * grouping:all name:irrelevant tags:NULL hash:given popular:false
-	 * added:false
 	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {

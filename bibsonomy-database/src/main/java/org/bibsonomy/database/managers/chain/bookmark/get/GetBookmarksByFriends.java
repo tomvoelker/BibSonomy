@@ -12,7 +12,6 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 
 /**
- * TODO check... what?
  * 
  * @author Miranda Grahl
  * @version $Id$
@@ -20,11 +19,10 @@ import org.bibsonomy.model.Post;
 public class GetBookmarksByFriends extends BookmarkChainElement {
 
 	/**
+	 * return a list of bookmark entries of your friends in bibSonomy
 	 * TODO extension with user restriction rearding returned bookmarks and
 	 * appropriate naming of URL in REST interface
 	 * 
-	 * grouping:friend name:given tags:NULL hash:NULL popular:false added:false
-	 * /user/friend
 	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
@@ -36,6 +34,6 @@ public class GetBookmarksByFriends extends BookmarkChainElement {
 	 */
 	@Override
 	protected boolean canHandle(final BookmarkParam param) {
-		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.FRIEND) && present(param.getRequestedGroupName()) && !present(param.getTagIndex()) && !present(param.getHash()) && !present(param.getOrder());
+		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.FRIEND) && present(param.getRequestedGroupName()) && present(param.getRequestedUserName()) && !present(param.getTagIndex()) && !present(param.getHash()) && !present(param.getOrder());
 	}
 }

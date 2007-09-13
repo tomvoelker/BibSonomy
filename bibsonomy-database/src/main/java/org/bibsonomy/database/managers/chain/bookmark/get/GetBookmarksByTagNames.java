@@ -22,11 +22,7 @@ import org.bibsonomy.model.logic.Order;
 public class GetBookmarksByTagNames extends BookmarkChainElement {
 
 	/**
-	 * return a list of bookmark by given tag/tags. Following arguments have to
-	 * be given:
-	 * 
-	 * grouping:all name:irrelevant tags:given hash:null popular:false
-	 * added:false
+	 * return a list of bookmark entries by given tag/tags
 	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {

@@ -20,10 +20,7 @@ import org.bibsonomy.model.logic.Order;
 public class GetBookmarksForUser extends BookmarkChainElement {
 
 	/**
-	 * return a list of bookmark by a logged user. Following arguments have to
-	 * be given:
-	 * 
-	 * grouping:user name:given tags:NULL hash:NULL popular:false added:false
+	 * return a list of bookmark by a logged user
 	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {

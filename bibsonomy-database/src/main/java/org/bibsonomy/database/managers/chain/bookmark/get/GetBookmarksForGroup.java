@@ -18,10 +18,7 @@ import org.bibsonomy.model.Post;
 public class GetBookmarksForGroup extends BookmarkChainElement {
 
 	/**
-	 * return a list of bookmark by a given group. Following arguments have to
-	 * be given:
-	 * 
-	 * grouping:group name:given tags:NULL hash:null popular:false added:false
+	 * return a list of bookmark entries by a given group
 	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {

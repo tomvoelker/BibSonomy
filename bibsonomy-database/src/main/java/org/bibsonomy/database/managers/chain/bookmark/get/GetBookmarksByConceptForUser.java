@@ -22,8 +22,6 @@ public class GetBookmarksByConceptForUser extends BookmarkChainElement {
 	/**
 	 * return a list of bookmarks by a tag-concept. All bookmarks will be return
 	 * for a given "super-tag". Following arguments have to be given:
-	 * 
-	 * grouping:user name:given tags:given hash:null popular:false added:true
 	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
@@ -33,6 +31,6 @@ public class GetBookmarksByConceptForUser extends BookmarkChainElement {
 
 	@Override
 	protected boolean canHandle(final BookmarkParam param) {
-		return present(param.getUserName()) && param.getGrouping() == GroupingEntity.USER && present(param.getRequestedGroupName()) && present(param.getTagIndex()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED);
+		return present(param.getUserName()) && param.getGrouping() == GroupingEntity.USER && present(param.getRequestedGroupName())&& !present(param.getRequestedUserName()) && present(param.getTagIndex()) && (param.getNumSimpleConcepts() > 0) && (param.getNumSimpleTags() == 0) && (param.getNumTransitiveConcepts() == 0)&& !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED);
 	}
 }

@@ -20,11 +20,7 @@ import org.bibsonomy.model.logic.Order;
 public class GetBookmarksPopular extends BookmarkChainElement {
 
 	/**
-	 * return a list of bookmark by a logged user. Following arguments have to
-	 * be given:
-	 * 
-	 * grouping:irrelevant name:irrelevant tags:irrelevant hash:irrelevant
-	 * popular:true added:false
+	 * return a list of of most bookmark entries in BibSonomy .
 	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
