@@ -52,7 +52,7 @@ public abstract class GenericParam {
 	 * List of (tagname, index)-pairs, where tagname can be both a name of a tag
 	 * or concept.
 	 */
-	private final List<TagIndex> tagIndex;
+	private  List<TagIndex> tagIndex;
 	
 	/**
 	 * corresponds to -->[tagName]
