@@ -20,7 +20,7 @@ import org.bibsonomy.model.logic.Order;
 public class GetBibtexByTagNamesAndUser extends BibTexChainElement {
 
 	/**
-	 * return a list of bibtex by given tag/tags and User.
+	 * return a list of bibtex entries by given tag/tags and User.
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {

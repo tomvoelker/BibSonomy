@@ -23,18 +23,11 @@ import org.bibsonomy.model.logic.Order;
 public class GetBibtexOfFriendsByUser extends BibTexChainElement {
 
 	/**
-	 * return a list of bibtex by given friends of a user (this friends also
-	 * posted this bibtex to group friends, made bibtex viewable for friends).
-	 * 
-	 * at first all bibtex of user x are returned, sencondly this list is
-	 * restricted by those post which are posted to group friend, respectively
-	 * are viewable for friends e.g. mgr/friend/stumme
-	 * 
-	 * bibtex are listed which record me as friend and also posted this record
-	 * to the group friend
-	 * 
-	 * /user/friend
+	 * return a list of bibtex entries by given friend of a user (this friends also
+	 * posted this bibtex to group friends (made bibtex viewable for
+	 * friends)).
 	 */
+	
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		if (this.generalDb.isFriendOf(param, session) == true) {

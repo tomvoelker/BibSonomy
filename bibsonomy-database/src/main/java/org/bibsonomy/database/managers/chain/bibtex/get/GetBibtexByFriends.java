@@ -21,13 +21,15 @@ import org.bibsonomy.model.logic.Order;
 public class GetBibtexByFriends extends BibTexChainElement {
 
 	/**
+	 * return all bibtex entries of your friends
 	 * TODO extension with user restriction rearding returned bibtex and
-	 * appropriate namming of URL in REST interface
+	 * appropriate naming of URL in REST interface
 	 * 
 	 * /user/friend
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
+		System.out.println("rufe GetBibtexByFriends auf");
 		return this.db.getBibTexByUserFriends(param, session);
 	}
 

@@ -20,7 +20,7 @@ import org.bibsonomy.model.logic.Order;
 public class GetBibtexPopular extends BibTexChainElement {
 
 	/**
-	 * return a list of bibtex by a logged user.
+	 * return all popular bibtex entries of bibSonomy.
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {

@@ -16,19 +16,20 @@ import org.bibsonomy.model.logic.Order;
 
 /**
  * @author Miranda Grahl
- * @version $Id$
+ * @version 
  */
-public class GetBibtexForUser extends BibTexChainElement {
+public class GetBibTexByAuthor extends BibTexChainElement {
 	/**
-	 * return a list of bibtex entries by a user
+	 * return a list of bibtex entries by given author.
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		return this.db.getBibTexForUser(param, session);
+		return this.db.getBibTexByAuthor(param, session);
 	}
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.USER) && present(param.getRequestedUserName()) && !presentValidGroupId(param.getGroupId()) && !present(param.getTagIndex()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED);
+		return present(param.getGrouping() == GroupingEntity.VIEWABLE) && !present(param.getRequestedUserName()) && !presentValidGroupId(param.getGroupId()) && !present(param.getTagIndex()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED);
 	}
+	
 }

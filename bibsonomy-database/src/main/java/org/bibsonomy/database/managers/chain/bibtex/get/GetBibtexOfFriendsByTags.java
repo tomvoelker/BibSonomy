@@ -23,17 +23,10 @@ import org.bibsonomy.model.logic.Order;
 public class GetBibtexOfFriendsByTags extends BibTexChainElement {
 
 	/**
-	 * return a list of bibtex by given friends of a user (this friends also
-	 * posted this bookmarks to group friends, made bookmarks viewable for
-	 * friends).
-	 * 
-	 * /user/friend at first all bibtex of user(which add me as friend) x are
-	 * returned, sencondly this list is restricted by those post which are
-	 * posted to group friend, respectively are viewable for friends e.g.
-	 * mgr/friend/stumme
-	 * 
-	 * bibtex are listed which record me as friend and also posted this record
-	 * to the group friend
+	 * return a list of bibtex entries by given friend of a user (this friends also
+	 * posted this bookmarks to group friends (made bookmarks viewable for
+	 * friends)).
+	 * bibtex entries are restricted by a chosen tag 
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {

@@ -18,7 +18,9 @@ import org.bibsonomy.model.logic.Order;
  * @version $Id$
  */
 public class GetBibtexForHomePage extends BibTexChainElement {
-
+	/**
+	 * return a list of bibtex entries given by homepage.
+	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		return this.db.getBibTexForHomePage(param, session);

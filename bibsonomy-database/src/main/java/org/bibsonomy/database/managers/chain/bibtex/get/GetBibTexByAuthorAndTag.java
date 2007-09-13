@@ -2,7 +2,6 @@ package org.bibsonomy.database.managers.chain.bibtex.get;
 
 import static org.bibsonomy.util.ValidationUtils.nullOrEqual;
 import static org.bibsonomy.util.ValidationUtils.present;
-import static org.bibsonomy.util.ValidationUtils.presentValidGroupId;
 
 import java.util.List;
 
@@ -16,19 +15,21 @@ import org.bibsonomy.model.logic.Order;
 
 /**
  * @author Miranda Grahl
- * @version $Id$
+ * @version 
  */
-public class GetBibtexForUser extends BibTexChainElement {
+public class GetBibTexByAuthorAndTag extends BibTexChainElement{
+
 	/**
-	 * return a list of bibtex entries by a user
+	 * return a list of bibtex by given tag/tags and author.
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		return this.db.getBibTexForUser(param, session);
+		return this.db.getBibTexByAuthorAndTag(param, session);
 	}
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.USER) && present(param.getRequestedUserName()) && !presentValidGroupId(param.getGroupId()) && !present(param.getTagIndex()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED);
+		return present(param.getGrouping() == GroupingEntity.VIEWABLE) &&present(param.getRequestedUserName())&& !present(param.getRequestedGroupName()) && present(param.getTagIndex()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED);
 	}
+	
 }

@@ -31,6 +31,6 @@ public class GetBibtexByConceptForUser extends BibTexChainElement {
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.USER) && present(param.getRequestedUserName()) && present(param.getTagIndex()) && (param.getNumSimpleConcepts() > 0) && (param.getNumSimpleTags() == 0) && (param.getNumTransitiveConcepts() == 0) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED);
+		return !present(param.getUserName()) && (param.getGrouping() == GroupingEntity.USER) && present(param.getRequestedUserName()) && present(param.getTagIndex()) && (param.getNumSimpleConcepts() > 0) && (param.getNumSimpleTags() == 0) && (param.getNumTransitiveConcepts() == 0) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED);
 	}
 }
