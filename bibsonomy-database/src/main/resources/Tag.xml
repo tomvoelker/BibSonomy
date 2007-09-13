@@ -60,7 +60,7 @@
 		GROUP BY t.tag_name LIMIT #limit# OFFSET #offset#
 	</select>
 
-	<select id="getTagsByUser" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+	<select id="getTagsByUser" resultMap="Common.tag" parameterClass="tagParam">
 		SELECT tag_name, count(tag_name) AS tag_ctr FROM tas t WHERE t.user_name = #requestedUserName#
 		<include refid="getTagForUser"/> GROUP BY t.tag_name LIMIT #limit# OFFSET #offset#
 	</select>
@@ -126,8 +126,9 @@
 		UPDATE tags SET tag_ctr = tag_ctr - 1 WHERE tag_name = #tagName#
 	</update>
 	
-
-	
-	
-
+	<select id="getTagsByAuthor" resultMap="Common.tag" parameterClass="tagParam">
+	SELECT tag_name, count(tag_name) AS tag_count FROM tas t, search s 
+	WHERE MATCH(s.author) AGAINST (#search# IN BOOLEAN MODE) AND s.content_type = #contentType# AND s.group =#groupType#
+	AND t.content_id = s.content_id GROUP BY t.tag_name ORDER BY tag_name COLLATE utf8_unicode_ci;
+	</select>
 </sqlMap>

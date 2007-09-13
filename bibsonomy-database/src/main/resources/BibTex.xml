@@ -37,12 +37,12 @@
 					AND t1.content_type = #contentType#
 					AND t1.user_name = #requestedUserName#
 				ORDER BY t1.date DESC
-			LIMIT #limit# OFFSET #offset#) AS tt
-		WHERE tt.content_id=b.content_id
-			AND tt.content_id=t.content_id
-			AND <include refid="bibtexSimHash"/>
-			AND g.group = b.group
-		ORDER BY b.date DESC, b.content_id DESC
+				LIMIT #limit# OFFSET #offset#) AS tt
+				WHERE tt.content_id=b.content_id
+				AND tt.content_id=t.content_id
+				AND <include refid="bibtexSimHash"/>
+				AND g.group = b.group
+				ORDER BY b.date DESC, b.content_id DESC;
 	</select>
 	
 	<select id="getBibTexByConceptForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
@@ -312,5 +312,36 @@
 	<delete id="deleteBibTex">
 		DELETE FROM bibtex WHERE content_id = #requestedContentId#
 	</delete>
+
+<select id="getBibTexByAuthor" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr as count,NULL AS `group`, NULL AS group_name
+		FROM bibtex b,tas t,bibhash h,   
+							(SELECT content_id FROM search s
+							WHERE MATCH (s.author) AGAINST (#search# IN BOOLEAN MODE) 
+				 			AND s.content_type= #contentType#
+							AND s.group = #groupType#
+						    AND s.user_name =#requestedUserName#
+							ORDER BY s.date DESC LIMIT #limit# OFFSET #offset#) AS tt 
+							WHERE b.content_id = tt.content_id    
+					 		AND t.content_id=tt.content_id 
+							AND <include refid="bibtexSimHash"/>
+							ORDER BY b.date DESC,b.content_id DESC;
+	</select>
+	
+	
+	 <select id="getBibTexByAuthorAndTag" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr as count,NULL AS `group`, NULL AS group_name
+		FROM bibtex b,tas t,bibhash h,
+							(SELECT s.content_id FROM search s, tas t1
+							 WHERE MATCH(s.author) AGAINST (#search# IN BOOLEAN MODE)
+				 		 	 AND s.content_type =#contentType#
+							 AND s.group =#groupType#
+							 AND s.content_id = t1.content_id
+							 AND t1.tag_name = <include refid="tagWhereQuery"/> ORDER BY s.date DESC LIMIT #limit# OFFSET #offset#) AS tt 		
+							WHERE b.content_id = tt.content_id  		
+							AND t.content_id=tt.content_id 		
+							AND <include refid="bibtexSimHash"/> 
+							ORDER BY b.date DESC,b.content_id DESC;
+	</select>
 
 </sqlMap>
