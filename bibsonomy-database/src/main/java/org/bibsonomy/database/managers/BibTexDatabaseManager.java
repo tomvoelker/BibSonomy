@@ -516,6 +516,11 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 //				if (update == true && !present(post.getGroups())) {										
 //					post.setGroups(this.groupDb.getGroupsForContentId(oldBibTexPost.getContentId(), session));
 //				}				
+				
+				/*TODO nicht fertig*/
+				/** insert addition bibtex attributes into the search table*/
+				//this.plugins.onBibTexInsertintoSearch(post.getContentId(), session);
+				
 				this.plugins.onBibTexUpdate(post.getContentId(), oldBibTexPost.getContentId(), session);
 				this.deletePost(userName, oldBibTexPost.getResource().getIntraHash(), update, session);
 												
@@ -592,4 +597,24 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	private void updateBibTexHash(final BibTexParam param, final DBSession session) {
 		this.update("updateBibTexHash", param, session);
 	}
+	
+	/**
+	 * <em>/author/MaxMustermann</em><br/><br/>
+	 * This method prepares queries which retrieve all publications for a given
+	 * author name (restricted by group public).
+	 */
+	
+	public List<Post<BibTex>> getBibTexByAuthor(final BibTexParam param, final DBSession session){
+		return this.bibtexList("getBibTexByAuthor",param,session);
+	}
+	/**
+	 * <em>/author/MaxMustermann</em><br/><br/>
+	 * This method prepares queries which retrieve all publications for a given
+	 * author name and TagName(restricted by group public).
+	 */
+    public List<Post<BibTex>> getBibTexByAuthorAndTag(final BibTexParam param, final DBSession session){
+		return this.bibtexList("getBibTexByAuthorAndTag",param,session);
+	}
+	
+	
 }
