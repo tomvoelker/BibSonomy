@@ -24,6 +24,7 @@ import org.bibsonomy.model.logic.Order;
  * 
  * @author Dominik Benz
  * @author Christian Schenk
+ * @author miranda
  * @version $Id$
  */
 public abstract class GenericParam {
@@ -100,7 +101,6 @@ public abstract class GenericParam {
 	 * resource-specific and shouldn't it be set in the resource-field?
 	 */
 	private String hash;
-	/** RegEx search pattern */
 	private String search;
 	/** This is the current user. */
 	private String userName;
@@ -205,9 +205,13 @@ public abstract class GenericParam {
 	}	
 
 	public List<TagIndex> getTagIndex() {
-		return Collections.unmodifiableList(this.tagIndex);
+		//return Collections.unmodifiableList(this.tagIndex);
+		return tagIndex=this.tagIndex;
 	}
 
+	public void setTagIndex(List<TagIndex> tagIndex) {
+		this.tagIndex = tagIndex;
+	}
 	/**
 	 * This is used to determine the max. amount of join-indices for the
 	 * iteration of the join-index; e.g. if we're searching for tag names. If we
@@ -485,4 +489,18 @@ public abstract class GenericParam {
 	public int getNumSimpleConceptsWithAncestors() {
 		return this.numSimpleConceptsWithAncestors;
 	}
+
+	public void setNumTransitiveConcepts(int numTransitiveConcepts) {
+		this.numTransitiveConcepts = numTransitiveConcepts;
+	}
+
+	public void setNumSimpleConcepts(int numSimpleConcepts) {
+		this.numSimpleConcepts = numSimpleConcepts;
+	}
+
+	public void setNumSimpleTags(int numSimpleTags) {
+		this.numSimpleTags = numSimpleTags;
+	}
+
+	
 }
