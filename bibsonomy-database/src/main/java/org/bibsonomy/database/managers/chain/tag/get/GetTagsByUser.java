@@ -18,10 +18,7 @@ import org.bibsonomy.model.Tag;
 public class GetTagsByUser extends TagChainElement {
 
 	/**
-	 * return a list of tags by a logged user. Following arguments have to be
-	 * given:
-	 * 
-	 * grouping:user name:given regex: irrelevant
+	 * return a list of tags by a logged user
 	 */
 	@Override
 	protected List<Tag> handle(final TagParam param, final DBSession session) {

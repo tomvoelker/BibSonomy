@@ -17,12 +17,6 @@ import org.bibsonomy.model.Tag;
  */
 public class GetTagsViewable extends TagChainElement {
 
-	/**
-	 * return a list of tags by a logged user. Following arguments have to be
-	 * given:
-	 * 
-	 * grouping:viewable name:given regex: irrelevant
-	 */
 	@Override
 	protected List<Tag> handle(final TagParam param, final DBSession session) {
 		param.setGroupId(this.generalDb.getGroupIdByGroupNameAndUserName(param, session));
@@ -33,6 +27,6 @@ public class GetTagsViewable extends TagChainElement {
 
 	@Override
 	protected boolean canHandle(final TagParam param) {
-		return present(param.getUserName()) && param.getGrouping() == GroupingEntity.VIEWABLE && present(param.getRequestedGroupName());
+		return present(param.getUserName()) && param.getGrouping() == GroupingEntity.VIEWABLE && present(param.getRequestedGroupName())&& !present(param.getSearch());
 	}
 }

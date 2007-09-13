@@ -18,10 +18,7 @@ import org.bibsonomy.model.Tag;
 public class GetTagsByGroup extends TagChainElement {
 
 	/**
-	 * return a list of tags by a given group. Following arguments have to be
-	 * given:
-	 * 
-	 * grouping:group name:given regex:irrelevant
+	 * return a list of tags by a given group
 	 */
 	@Override
 	protected List<Tag> handle(final TagParam param, final DBSession session) {

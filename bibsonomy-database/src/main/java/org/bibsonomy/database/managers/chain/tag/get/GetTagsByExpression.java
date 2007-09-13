@@ -4,6 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.tag.TagChainElement;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.util.DBSession;
@@ -29,6 +30,6 @@ public class GetTagsByExpression extends TagChainElement {
 
 	@Override
 	protected boolean canHandle(final TagParam param) {
-		return present(param.getRegex());
+		return present(param.getRegex()) && present(param.getGrouping() == GroupingEntity.ALL);
 	}
 }
