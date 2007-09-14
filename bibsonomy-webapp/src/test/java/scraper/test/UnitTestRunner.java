@@ -5,6 +5,8 @@ import java.util.List;
 
 import junit.framework.TestResult;
 
+import static org.junit.Assert.assertTrue;
+
 import org.apache.log4j.PropertyConfigurator;
 
 import scraper.test.importer.IUnitTestImporter;
@@ -43,8 +45,8 @@ public class UnitTestRunner {
 			List<ScraperUnitTest> unitTests = importer.getUnitTests();
 			
 			for(ScraperUnitTest test : unitTests){
-				TestResult result = test.run();
-				test.printTestFailure(result);
+				//TestResult result = test.run();
+				//test.printTestFailure(result);
 			}
 			
 		} catch (Exception e) {

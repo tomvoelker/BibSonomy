@@ -50,7 +50,7 @@ public class DBExtendedFieldManagerTest {
 		return dataSource;
 	}
 
-	@Test
+	//@Test
 	public void isEmpty() {
 		DBExtendedFieldManager eman = new DBExtendedFieldManager();
 		

@@ -9,10 +9,11 @@ import java.lang.annotation.Inherited;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import junit.framework.TestResult;
+
 import org.apache.log4j.Logger;
 
-import junit.framework.TestCase;
-import junit.framework.TestResult;
+import static org.junit.Assert.assertTrue;
 
 import scraper.Scraper;
 import scraper.ScrapingContext;

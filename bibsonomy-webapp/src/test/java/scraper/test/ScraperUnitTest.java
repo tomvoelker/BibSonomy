@@ -9,14 +9,14 @@ import junit.framework.TestResult;
  * @author tst
  *
  */
-public abstract class ScraperUnitTest extends TestCase{
+public abstract class ScraperUnitTest {
 	
 	/**
 	 * Tells super which name has the method which has to be tested.
 	 * @param testMethod String representation of the testing method 
 	 */
 	public ScraperUnitTest(String testMethod){
-		super(testMethod);
+		//super(testMethod);
 	}
 	
 	/**
