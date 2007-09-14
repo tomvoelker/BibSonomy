@@ -12,6 +12,8 @@ import java.net.URL;
 import junit.framework.TestResult;
 
 import org.apache.log4j.Logger;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
@@ -72,10 +74,15 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 		this.id = id;
 	}
 	
+	@Test
+	public void dummy() {		
+	}
+	
 	/**
 	 * Method which execute the URLTest.
 	 *
 	 */
+	@Ignore
 	public void runUnitTest(){
 		// prepare testURL
 		URL testURL = null;

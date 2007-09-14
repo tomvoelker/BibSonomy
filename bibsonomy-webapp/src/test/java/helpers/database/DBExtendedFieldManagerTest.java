@@ -11,6 +11,7 @@ import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockejb.jndi.MockContextFactory;
 
@@ -50,7 +51,11 @@ public class DBExtendedFieldManagerTest {
 		return dataSource;
 	}
 
-	//@Test
+	@Test
+	public void dummy() {		
+	}
+	
+	@Ignore
 	public void isEmpty() {
 		DBExtendedFieldManager eman = new DBExtendedFieldManager();
 		
