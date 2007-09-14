@@ -86,11 +86,12 @@
 		</developer>
 	</developers>
 	<repositories>
+
 		<repository>
 			<id>ibiblio</id>
 			<name>ibiblio</name>
 			<url>http://www.ibiblio.org/maven2</url>
-		</repository>
+		</repository>		
 		<repository>
 			<id>innofinity</id>
 			<name>Innofinity-Repository</name>
@@ -107,6 +108,11 @@
 			<name>se@uni-kassel.de</name>
 			<url>http://www.se.eecs.uni-kassel.de/~maven/repository/</url>
 		</repository>
+		<repository>
+			<id>gromit</id>
+			<name>gromit</name>
+			<url>http://www.biblicious.org:8088/artifactory/repo</url>
+		</repository>		
 	</repositories>
 	<!--
 	<pluginRepositories>
@@ -181,6 +187,7 @@
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-ssh-external</artifactId>
+				<version>1.0-alpha-4</version>	
 			</extension>
 		</extensions>
 	</build>
