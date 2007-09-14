@@ -52,6 +52,15 @@
 			</roles>
 		</developer>
 		<developer>
+			<name>Dominik Benz</name>
+			<id>dbe</id>
+			<email>dbe@cs.uni-kassel.de</email>
+			<roles>
+				<role>Project leader</role>
+				<role>Developer</role>
+			</roles>
+		</developer		
+		<developer>
 			<name>Robert Jaeschke</name>
 			<id>rja</id>
 			<email>jaeschke@cs.uni-kassel.de</email>
@@ -86,48 +95,19 @@
 		</developer>
 	</developers>
 	<repositories>
-
 		<repository>
-			<id>ibiblio</id>
-			<name>ibiblio</name>
-			<url>http://www.ibiblio.org/maven2</url>
-		</repository>		
-		<repository>
-			<id>innofinity</id>
-			<name>Innofinity-Repository</name>
-			<url>http://www.innofinity.de/maven2</url>
-		</repository>
-		<repository>
-			<id>java.net</id>
-			<name>java.net Maven Repository</name>
-			<url>https://maven-repository.dev.java.net/nonav/repository</url>
-			<layout>legacy</layout>
-		</repository>
-		<repository>
-			<id>se.uni-kassel.de</id>
-			<name>se@uni-kassel.de</name>
-			<url>http://www.se.eecs.uni-kassel.de/~maven/repository/</url>
-		</repository>
-		<repository>
-			<id>gromit</id>
-			<name>gromit</name>
+			<id>biblicious</id>
+			<name>Artifactory-Maven-Proxy auf biblicious.org</name>
 			<url>http://www.biblicious.org:8088/artifactory/repo</url>
-		</repository>		
+		</repository>	
 	</repositories>
-	<!--
 	<pluginRepositories>
 		<pluginRepository>
-			<id>ibiblio</id>
-			<name>ibiblio</name>
-			<url>http://www.ibiblio.org/maven2</url>
-		</pluginRepository>
-		<pluginRepository>
-			<id>apache.snapshots</id>
-			<name>Apache Snapshot Repository</name>
-			<url>http://people.apache.org/repo/m2-snapshot-repository</url>
+			<id>biblicious</id>
+			<name>Artifactory-Maven-Proxy auf biblicious.org</name>
+			<url>http://www.biblicious.org:8088/artifactory/repo</url>
 		</pluginRepository>
 	</pluginRepositories>
-	-->
 	<modules>
 		<module>bibsonomy-bibtex-parser</module>
 		<module>bibsonomy-common</module>
