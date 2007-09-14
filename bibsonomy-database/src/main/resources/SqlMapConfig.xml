@@ -2,22 +2,13 @@
 <!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
 
 <sqlMapConfig>
-	<properties resource="database.properties" />
-
 	<typeAlias alias="date" type="java.util.Date" />
 	<typeAlias alias="url" type="java.net.URL" />
 	<typeHandler javaType="url" callback="org.bibsonomy.database.typehandler.UrlTypeHandlerCallback" />
 
 	<transactionManager type="JDBC">
-		<dataSource type="DBCP">
-			<property name="JDBC.Driver" value="${driver}" />
-			<property name="JDBC.ConnectionURL" value="${url}" />
-			<property name="JDBC.Username" value="${username}" />
-			<property name="JDBC.Password" value="${password}" />
-			<property name="maxWait" value="6000"/>
-			<property name="Pool.MaximumWait" value="6000"/>
-			<property name="Pool.MaximumActiveConnections" value="250"/>
-			<property name="Pool.MaximumIdleConnections" value="250"/>
+		<dataSource type="JNDI">
+			<property name="DataSource" value="java:comp/env/jdbc/bibsonomy"/>
 		</dataSource>
 	</transactionManager>
 
