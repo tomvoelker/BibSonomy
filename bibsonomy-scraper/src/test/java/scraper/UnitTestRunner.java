@@ -6,6 +6,7 @@ import java.util.List;
 import junit.framework.TestResult;
 
 import org.apache.log4j.PropertyConfigurator;
+import org.junit.Test;
 
 import scraper.importer.IUnitTestImporter;
 import scraper.importer.xml.XMLUnitTestImporter;
@@ -33,7 +34,8 @@ public class UnitTestRunner {
 	/**
 	 * This Method reads and runs the unit tests.
 	 */
-	private void run(){
+	@Test
+	public void run(){
 		URL log4j = new UnitTestRunner().getClass().getResource("log4j.properties");
 		PropertyConfigurator.configure(log4j);
 		try {
