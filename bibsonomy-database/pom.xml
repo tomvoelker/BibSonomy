@@ -59,7 +59,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-		</dependency>
+		</dependency>		
 		<dependency>
 			<groupId>dom4j</groupId>
 			<artifactId>dom4j</artifactId>
@@ -75,5 +75,15 @@
 			<artifactId>commons-dbcp</artifactId>
 			<version>1.2.1</version>
 		</dependency>
+		<dependency>
+			<groupId>com.sun.jndi</groupId>
+			<artifactId>fscontext</artifactId>
+			<version>1.2-beta-3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jndi</groupId>
+			<artifactId>providerutil</artifactId>
+			<version>1.2</version>
+		</dependency>				
 	</dependencies>
 </project>

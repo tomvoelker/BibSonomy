@@ -9,6 +9,7 @@ import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DBSessionFactory;
+import org.bibsonomy.testutil.JNDITestDatabaseBinder;
 import org.bibsonomy.testutil.ParamUtils;
 import org.bibsonomy.testutil.SandboxDBSessionFactory;
 import org.junit.After;
@@ -59,6 +60,9 @@ public abstract class AbstractDatabaseManagerTest {
 			this.groupDb = GroupDatabaseManager.getInstance();
 
 			this.resetParameters();
+			
+			// bind datasource access via JNDI
+			JNDITestDatabaseBinder.bind();
 
 			// testcases shouldn't write into the db
 			this.dbSessionFactory = new SandboxDBSessionFactory();
