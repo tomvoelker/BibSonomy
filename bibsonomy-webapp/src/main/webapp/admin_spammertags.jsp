@@ -104,8 +104,7 @@
       FROM spammer_tags
       WHERE spammer = 1
       ORDER BY LOWER(tag_name) ASC
-      LIMIT ?
-	<sql:param value="${tagcount}" />	
+      LIMIT 25
 </sql:query>
 <c:choose>
 	<c:when test="${rs.rowCount eq 0}">
@@ -172,8 +171,7 @@
         AND t.group = -2147483648 
       GROUP BY t.tag_name
       ORDER BY tag_count DESC
-      LIMIT ?
-	<sql:param value="${sugcount}" />	
+      LIMIT 25
 </sql:query>
 <c:set var="poptags" value="${querypoptags}" scope="session"/>
 </c:if>
