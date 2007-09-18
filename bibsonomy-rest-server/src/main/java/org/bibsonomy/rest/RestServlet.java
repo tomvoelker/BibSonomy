@@ -175,7 +175,10 @@ public final class RestServlet extends HttpServlet {
 			response.getOutputStream().print(cachingStream.toString("UTF-8"));
 		} catch (final AuthenticationException e) {
 			log.error(e,e);
-			response.setHeader("WWW-Authenticate", "Basic realm=\"BibsonomyWebService\"");
+			/*
+			 * FIXME: string "BibSonomy" should never occur in source code!
+			 */
+			response.setHeader("WWW-Authenticate", "Basic realm=\"BibSonomyWebService\"");
 			sendError(request, response, HttpURLConnection.HTTP_UNAUTHORIZED, e.getMessage());
 		} catch (final InternServerException e) {
 			log.error(e,e);

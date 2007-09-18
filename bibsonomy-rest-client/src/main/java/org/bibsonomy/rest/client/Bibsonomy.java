@@ -5,6 +5,12 @@ import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.client.queries.get.GetPostsQuery;
 import org.bibsonomy.rest.enums.RenderingFormat;
 
+/*
+ * FIXME: naming this class "Bibsonomy" is bad (large "S" is missing anyway ;-) - 
+ * BibSonomy should never be found in the source code (package names are no problem,
+ * of course).
+ */
+
 /**
  * This is a class for accessing the <a
  * href="http://www.bibsonomy.org/api/">Bibsonomy REST API</a>.

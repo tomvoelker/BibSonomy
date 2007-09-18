@@ -6,6 +6,10 @@ import static org.junit.Assert.fail;
 import org.bibsonomy.rest.client.queries.get.GetUserDetailsQuery;
 import org.junit.Test;
 
+/*
+ * FIXME: please don't use "BibSonomy" as name for classes, variables, methods, etc.
+ */
+
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$

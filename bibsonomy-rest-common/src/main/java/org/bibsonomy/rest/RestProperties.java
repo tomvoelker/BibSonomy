@@ -26,6 +26,10 @@ public class RestProperties {
 	private final Properties properties;
 	private final Context jndiCtx;
 	
+	/*
+	 * FIXME: first: BibSonomy NOT Bibsonomy!
+	 * second: is seems not to be correct, that this is hard-coded in this class!
+	 */
 	public static enum Property {
 		CONFIGFILE("RestConfig.cfg"),
 		API_URL("http://localhost:8080/restTomcat/api/"),
