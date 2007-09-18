@@ -7,3 +7,4 @@ mvn install:install-file -Dfile=lsimplecaptcha-20060705.jar -DgroupId=net.sf.sim
 #mvn install:install-file -Dfile=slide-roles.jar -DgroupId=slide -DartifactId=slide-roles -Dversion=2.2pre1 -Dpackaging=jar -DgeneratePom=true
 #mvn install:install-file -Dfile=slide-stores.jar -DgroupId=slide -DartifactId=slide-stores -Dversion=2.2pre1 -Dpackaging=jar -DgeneratePom=true
 #mvn install:install-file -Dfile=slide-webdavservlet.jar -DgroupId=slide -DartifactId=slide-webdavservlet -Dversion=2.2pre1 -Dpackaging=jar -DgeneratePom=true
+mvn install:install-file -DgroupId=org.tuckey -DartifactId=urlrewrite -Dfile=urlrewrite-2.6.1.jar -Dversion=2.6.1 -Dpackaging=jar -DgeneratePom=true
