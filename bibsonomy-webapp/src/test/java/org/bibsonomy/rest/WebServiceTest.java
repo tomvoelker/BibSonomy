@@ -43,7 +43,7 @@ import org.junit.Test;
  */
 public class WebServiceTest extends AbstractWebServiceTest {
 
-	@Ignore
+	@Test
 	public void aGetRequestWithoutAuthentication() throws HttpException, IOException {
 		this.doc = this.getDocumentForWebServiceAction("posts?resourcetype=bibtex", HttpServletResponse.SC_UNAUTHORIZED, false);
 	}
