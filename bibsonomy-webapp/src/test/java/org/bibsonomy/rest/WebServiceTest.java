@@ -32,6 +32,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -42,18 +43,18 @@ import org.junit.Test;
  */
 public class WebServiceTest extends AbstractWebServiceTest {
 
-	@Test
+	@Ignore
 	public void aGetRequestWithoutAuthentication() throws HttpException, IOException {
 		this.doc = this.getDocumentForWebServiceAction("posts?resourcetype=bibtex", HttpServletResponse.SC_UNAUTHORIZED, false);
 	}
 
-	@Test
+	@Ignore
 	public void requestWithoutAction() throws IOException {
 		this.doc = this.getDocumentForWebServiceAction("", HttpServletResponse.SC_FORBIDDEN, true);
 		assertEquals(1, doc.selectObject("count(//error)"));
 	}
 
-	@Test
+	@Ignore
 	public void getPosts() throws IOException {
 		for (final String resourcetype : new String[] { "bibtex"/* TODO: , "bookmark" */}) {
 			this.doc = this.getDocumentForWebServiceAction("posts?resourcetype=" + resourcetype, HttpServletResponse.SC_OK, true);
