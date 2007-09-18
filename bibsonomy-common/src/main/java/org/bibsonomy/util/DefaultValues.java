@@ -14,6 +14,9 @@ public class DefaultValues {
 	private static final DefaultValues singleton = new DefaultValues();
 	private static URL bibsonomyURL;
 
+	/*
+	 * FIXME: hard coded URLs are BAD; please remove them
+	 */
 	private DefaultValues() {
 		try {
 			bibsonomyURL = new URL("http://www.bibsonomy.org");
@@ -24,6 +27,9 @@ public class DefaultValues {
 		return singleton;
 	}
 
+	/*
+	 * FIXME: BibSonomy should never occur in this way in the source code
+	 */
 	public URL getBibsonomyURL() {
 		return bibsonomyURL;
 	}
