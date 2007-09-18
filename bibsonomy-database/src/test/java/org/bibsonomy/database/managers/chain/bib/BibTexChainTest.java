@@ -15,18 +15,13 @@ package org.bibsonomy.database.managers.chain.bib;
  * 
  */
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.AbstractChainTest;
-import org.bibsonomy.database.params.TagParam;
-import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.logic.Order;
-import org.bibsonomy.testutil.ParamUtils;
 import org.junit.Test;
 
           
