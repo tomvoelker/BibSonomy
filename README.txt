@@ -1,3 +1,9 @@
+
+
+Notice: this README is probably out of date. Please use 
+https://www.bibsonomy.org/BibWiki/SetupBibsonomy2 instead.
+
+
 Bibsonomy README
 
 1.) Getting Started
