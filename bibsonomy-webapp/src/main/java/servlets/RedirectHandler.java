@@ -100,7 +100,7 @@ public class RedirectHandler extends HttpServlet {
 		if ("uri".equals(requPage)) {
 			String requResource = request.getParameter("requResource");
 			int contentType 	= ("url".equals(requResource)) ? 1 : 2;
-			String requHash		= request.getParameter("requHash");			
+			String requContent	= request.getParameter("requContent");			
 			String accept		= request.getHeader("accept").toLowerCase();	
 			
 			int i=0;			
@@ -119,8 +119,8 @@ public class RedirectHandler extends HttpServlet {
 			if (FORMAT_URLS[i][contentType] != null) {
 				redirectURL.append("/" + FORMAT_URLS[i][contentType]);
 			}			
-			redirectURL.append("/" + requResource + "/" + requHash);
-			
+			redirectURL.append("/" + requResource + "/" + URLEncoder.encode(requContent,"UTF-8"));
+					
 			response.sendRedirect(redirectURL.toString());			
 		} else {
 			response.sendRedirect("/");
