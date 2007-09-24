@@ -41,7 +41,7 @@ public class DBAdvancedSearchManager extends DBManager {
 				SortedSet<String> tags 	  = new TreeSet<String>();
 				SortedSet<String> authors = new TreeSet<String>();				
 
-				String query = "SELECT s.content_id, s.author, t.tag_name, b.title, b.simhash2, b.url "
+				String query = "SELECT s.content_id, b.author, b.editor, t.tag_name, b.title, b.simhash2, b.url "
 					+ "		FROM search s "
 					+ "			JOIN tas t USING (content_id) "
 					+ "			JOIN bibtex b USING (content_id) "
@@ -55,8 +55,8 @@ public class DBAdvancedSearchManager extends DBManager {
 				while(rst.next()) {
 					String title 	= rst.getString("title").replaceAll("\\n|\\r", "");
 					String tag 		= rst.getString("tag_name"); //lower case?
-					String author 	= rst.getString("author");
-
+					String author	= buildAuthorsAndEditors(rst.getString("author"), rst.getString("editor"));
+					
 					if (rst.getInt("content_id") == contentID) {
 						// just add tag					
 						tags.add(tag);						
@@ -124,10 +124,10 @@ public class DBAdvancedSearchManager extends DBManager {
 			// read values from resultset
 			String title 	= rst.getString("title").replaceAll("\\n|\\r", "");
 			String tag 		= rst.getString("tag_name"); //lower case?
-			String author 	= rst.getString("author");	
 			String hash 	= rst.getString("simhash2");
 			String url		= rst.getString("url");
-
+			String author	= buildAuthorsAndEditors(rst.getString("author"), rst.getString("editor"));
+						
 			// tag --> title relation			 			
 			if (tagTitle[tagList.indexOf(tag)] == null) {				
 				SortedSet<Integer> v = new TreeSet<Integer>();				
@@ -250,5 +250,26 @@ public class DBAdvancedSearchManager extends DBManager {
 			authorsList.add(lastName.toString().trim());
 		}			
 		return authorsList;
+	}
+	
+	/**
+	 * builds a string of author- and editornames separated by "and"
+	 * @param author authornames
+	 * @param editor editornames
+	 * @return 
+	 */
+	private static String buildAuthorsAndEditors(String author, String editor) {
+		StringBuffer authors = new StringBuffer();
+		
+		if (author != null) 
+			authors.append(author);
+		
+		if (editor != null) {
+			if (author != null)
+				authors.append(" and ");
+			authors.append(editor);
+		}		
+		
+		return authors.toString();
 	}
 }
