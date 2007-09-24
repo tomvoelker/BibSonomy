@@ -396,7 +396,7 @@
 	</rule>	
 	<rule><!-- /uri/bibtex/hash/username -->
 		<from>^/+uri/+bibtex/+([0-3])([0-9a-fA-F]{32})/+(.+?)(\?(.*))?$</from>
-		<to>/RedirectHandler?page=uri&amp;requResource=bibtex&amp;requContent=$1$2&amp;$5</to> 
+		<to>/RedirectHandler?page=uri&amp;requResource=bibtex&amp;requContent=$1$2&amp;requContent2=$3&amp;$5</to> 
 	</rule>
 	
 	<!-- Bookmarks -->
@@ -406,14 +406,18 @@
 	</rule>
 	<rule><!-- /uri/url/hash/username -->
 		<from>^/+uri/+url/([0-9a-fA-F]{32})/+(.+?)(\?(.*))?$</from>
-		<to>/RedirectHandler?page=uri&amp;requResource=url&amp;requContent=$1&amp;$4</to> 
+		<to>/RedirectHandler?page=uri&amp;requResource=url&amp;requContent=$1&amp;requContent2=$2&amp;$4</to> 
 	</rule>
 	
 	<!-- Authors -->
+	<rule><!-- /uri/author/authorname/tagname -->
+		<from>^/+uri/+author/+([^/?]+?)/(.+?)(\?(.*))?$</from>
+		<to>/RedirectHandler?page=uri&amp;requResource=author&amp;requContent=$1&amp;requContent2=$2&amp;$4</to>
+	</rule>
 	<rule><!-- /uri/author/authorname -->
 		<from>^/+uri/+author/(.+?)(\?(.*))?$</from>
 		<to>/RedirectHandler?page=uri&amp;requResource=author&amp;requContent=$1&amp;$3</to>
-	</rule>
+	</rule>	
 
 <!-- ############## other pages ############### -->
 	<rule>
