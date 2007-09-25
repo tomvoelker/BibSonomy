@@ -183,6 +183,7 @@
 		<from>^/+user/+([^/?]+?)/$</from>
 		<to type="redirect">/user/$1</to>
 	</rule>
+	
 	<!-- redirect for FOAF Output of user profile on /foaf/user/USER page -->
     <rule>
       <from>^/+foaf/+user/(\?user=(.*))$</from>
@@ -191,6 +192,12 @@
     <rule>
       <from>^/+foaf/+user/+([^/?]+?)(\?(.*))?$</from>
       <to>/UserFOAFOutput.jsp?requUser=$1&amp;$3</to>
+    </rule>
+    
+    <!-- redirect for /bibtexkey/BIBTEXKEY/USER -->
+    <rule>
+      <from>^/+bibtexkey/+([^/?]+?)/(.+?)(\?(.*))?$</from>
+      <to>/ResourceHandler?page=bibtexkey&amp;requKey=$1&amp;requUser=$2&amp;$3</to>
     </rule>
 	
 		
@@ -397,6 +404,10 @@
 	<rule><!-- /uri/bibtex/hash/username -->
 		<from>^/+uri/+bibtex/+([0-3])([0-9a-fA-F]{32})/+(.+?)(\?(.*))?$</from>
 		<to>/RedirectHandler?page=uri&amp;requResource=bibtex&amp;requContent=$1$2&amp;requContent2=$3&amp;$5</to> 
+	</rule>
+	<rule><!-- /uri/bibtexkey/key/user -->
+		<from>^/+uri/+bibtexkey/+([^/?]+?)/+(.+?)(\?(.*))?$</from>
+		<to>/RedirectHandler?page=uri&amp;requResource=bibtexkey&amp;requContent=$1&amp;requContent2=$2&amp;$4</to> 
 	</rule>
 	
 	<!-- Bookmarks -->

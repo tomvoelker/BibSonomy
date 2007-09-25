@@ -60,6 +60,7 @@ public class ResourceHandler extends HttpServlet{
 	private static final String PAGE_FRIEND = "friend";
 	private static final String PAGE_FRIENDUSER = "frienduser";
 	private static final String PAGE_CONCEPT = "concept";
+	private static final String PAGE_BIBTEXKEY = "bibtexkey";
 	/* servlet-mappings for JSPs to forward */
 	private static final String JSP_BASKET = "basket.jsp";
 	private static final String JSP_USER = "user.jsp";
@@ -83,6 +84,7 @@ public class ResourceHandler extends HttpServlet{
 	private static final String JSP_SEARCH = "search.jsp";
 	private static final String JSP_POPULAR = "popular.jsp";
 	private static final String JSP_BATCHEDIT = "batchedit.jsp";
+	private static final String JSP_BIBTEXKEY = "bibtexkey.jsp";
 	/* parameter names */
 	private static final String REQ_PARAM_PAGE="page";
 	private static final String REQ_PARAM_USER="requUser";
@@ -98,6 +100,7 @@ public class ResourceHandler extends HttpServlet{
 	private static final String REQ_PARAM_START_BIB="startBib";
 	private static final String REQ_PARAM_SHOW_PDF = "myPDF";
 	private static final String REQ_PARAM_DUPLICATES = "myDuplicates";
+	private static final String REQ_PARAM_BIBTEXKEY = "requKey";
 
 	/* request attributes */
 	private static final String REQ_ATTRIB_START_BOOK="startBook";
@@ -151,6 +154,7 @@ public class ResourceHandler extends HttpServlet{
 		String requAuthor   = request.getParameter(REQ_PARAM_AUTHOR);
 		String requAction   = request.getParameter(REQ_PARAM_ACTION);
 		String requGroup    = request.getParameter(REQ_PARAM_GROUP);
+		String requBibtexkey= request.getParameter(REQ_PARAM_BIBTEXKEY);
 		String search       = request.getParameter(REQ_PARAM_SEARCH);
 		String requFilter   = request.getParameter("filter");
 		
@@ -350,6 +354,12 @@ public class ResourceHandler extends HttpServlet{
 					isUserPage = true;
 					queryPageUserBibtex (c, requBibtex, requSim, requUser, currUser);
 				} 
+				if (requPage.equals(PAGE_BIBTEXKEY)) {
+					// handle /bibtexkey/[BIBTEXKEY]/[USERNAME]
+					forwPage = JSP_BIBTEXKEY;
+					requPath = PAGE_BIBTEXKEY + "/" + URLEncoder.encode(requBibtexkey,"UTF-8") + "/" + URLEncoder.encode(requUser,"UTF-8");
+					queryPageUserBibtexKey(c, requUser, requBibtexkey, itemCount, startBib);
+				}				
 				if (requPage.equals(PAGE_SEARCH)) {
 					// handle /search
 					/*
@@ -1349,6 +1359,42 @@ public class ResourceHandler extends HttpServlet{
 		c.bookStmtP.setInt(queryParamPos, startBook);
 		c.bibStmtP.setInt(queryParamPos, startBib);
 
+	}
+	
+	/**
+	 * PAGE_USER_BIBTEXKEY
+	 * 
+	 * shows the page /bibtexkey/[BIBTEXKEY]/[USERNAME]
+	 * 
+	 * Shows all bibtex entries of the user with the given BibTeX-Key
+	 * 
+	 * @param c 
+	 * 			the database context
+	 * @param requUser
+	 * 			the requested username
+	 * @param requBibtexKey
+	 * 			the BibTeX-Key
+	 * @param itemCount
+	 * 			number of bibtex to retrieve
+	 * @param startBib
+	 * 			startposition of bibtex entries
+	 * @throws SQLException
+	 */
+	private void queryPageUserBibtexKey(DBContext c, String requUser, String requBibtexKey, int itemCount, int startBib) throws SQLException {
+		String bibQuery = "	SELECT " + getBibtexSelect("b") + ", t.tag_name,h.ctr "
+				+ "			FROM bibtex b, tas t, bibhash h "
+				+ "			WHERE "				
+				+ "			b.content_id = t.content_id AND"
+				+ "			b.simhash" + Bibtex.INTER_HASH + " = h.hash AND"
+				+ "			b.user_name = ? AND b.bibtexKey = ? "
+				+ "			ORDER BY date DESC "
+				+ "			LIMIT ? OFFSET ?";		
+		
+		c.bibStmtP = c.conn.prepareStatement(bibQuery);
+		c.bibStmtP.setString(1, requUser);
+		c.bibStmtP.setString(2, requBibtexKey);	
+		c.bibStmtP.setInt(3, itemCount);
+		c.bibStmtP.setInt(4, startBib);
 	}
 
 	/** PAGE_TAG and PAGE_VIEWABLETAG
