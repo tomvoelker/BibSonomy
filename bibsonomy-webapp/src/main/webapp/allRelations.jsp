@@ -7,12 +7,16 @@
 
 <jsp:useBean id="RelationBean" class="beans.RelationBean" scope="request"/>
 
-<h1><a href="/" rel="Start">${projectName}</a> :: <a href="/relations">relations</a>
+<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="/relations">relations&nbsp;<img src="/resources/image/box_arrow.png"></a>
 :: <form action="/concept/tag/" method="GET" class="smallform">
   <input type="text" size="20" name="tag" id="inpf" value="<c:out value='${param.requTag}'/>"/>
 </form>
 </h1>
 
+<%-------------------------- Path Navigation -----------------------%>
+<%@include file="/boxes/path_navi.jsp" %>
+
+<%-------------------------- Navigation -----------------------%>
 <%@include file="/boxes/navi.jsp" %> 
 
 <div id="general">

@@ -10,12 +10,14 @@
 
 
 <%-------------------------- Heading -----------------------%>
-<h1><a href="/" rel="Start">${projectName}</a> :: <a href="/friend">friend</a> :: 
+<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="/friend">friend&nbsp;<img src="/resources/image/box_arrow.png"></a> :: 
 <form action="/friends/" method="GET" class="smallform">
   <input type="text" size="20" name="user"/>
 </form>
 </h1> 
 
+<%-------------------------- Path Navigation -----------------------%>
+<%@include file="/boxes/path_navi.jsp" %>
  
 <%@include file="/boxes/navi.jsp" %>    <%-------------------------- Navigation -----------------------%>
 <div id="outer">

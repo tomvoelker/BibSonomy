@@ -10,13 +10,15 @@
 
 
 <%-------------------------- Heading -----------------------%>
-<h1><a href="/" rel="Start">${projectName}</a> :: viewable :: 
+<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a href="#" rel="path_menu">viewable&nbsp;<img src="/resources/image/box_arrow.png"></a> :: 
 <a href="/viewable/<mtl:encode value='${param.requGroup}'/>"><c:out value="${param.requGroup}"/></a> ::
 <form action="/viewable/<mtl:encode value='${param.requGroup}'/>" method="GET" class="smallform">
   <input type="text" size="20" name="tag" id="inpf" value="<c:out value='${param.requTag}'/>"/>
 </form>
 </h1> 
 
+<%-------------------------- Path Navigation -----------------------%>
+<%@include file="/boxes/path_navi.jsp" %>
  
 <%@include file="/boxes/navi.jsp" %>    <%-------------------------- Navigation -----------------------%>
 <div id="outer">

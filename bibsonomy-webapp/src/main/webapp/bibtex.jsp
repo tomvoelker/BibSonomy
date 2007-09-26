@@ -9,13 +9,15 @@
 </jsp:include>
 
 <%-------------------------- Heading -----------------------%>
-<h1>
-  <a href="/" rel="Start">${projectName}</a> :: bibtex :: 
+<h1 id="menu">
+  <a href="/" rel="Start">${projectName}</a> :: <a href="#" rel="path_menu">bibtex&nbsp;<img src="/resources/image/box_arrow.png"></a> :: 
   <form class="smallform" method="get" action="/search">
     <input type="text" name="q" value="<mtl:bibclean value='${ResourceBean.title}'/>" size="30"/>
   </form>
 </h1> 
 
+<%-------------------------- Path Navigation -----------------------%>
+<%@include file="/boxes/path_navi.jsp" %>
 
 <%@include file="/boxes/navi.jsp" %>    <%-------------------------- Navigation -----------------------%>
 

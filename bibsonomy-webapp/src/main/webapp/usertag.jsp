@@ -9,12 +9,15 @@
 </jsp:include>
 
 <%-------------------------- Heading -----------------------%>
-<h1><a href="/" rel="Start">${projectName}</a> :: user :: 
+<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a href="#" rel="path_menu">user&nbsp;<img src="/resources/image/box_arrow.png"></a> :: 
 <a href="/user/<mtl:encode value='${param.requUser}'/>"><c:out value='${param.requUser}'/></a> ::
 <form action="/user/<mtl:encode value='${param.requUser}'/>" method="GET" class="smallform">
   <input type="text" id="inpf" size="20" name="tag" value="<c:out value='${param.requTag}'/>"/>
 </form>
 </h1> 
+
+<%-------------------------- Path Navigation -----------------------%>
+<%@include file="/boxes/path_navi.jsp" %>
 
 <%@include file="/boxes/navi.jsp" %>    <%-------------------------- Navigation -----------------------%>
 <div id="outer">

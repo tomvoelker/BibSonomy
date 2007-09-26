@@ -84,5 +84,5 @@
 
 <script type="text/javascript">
   cssdropdown.startchrome("upper_menu");
-  cssdropdown.startchrome("lower_menu")
+  cssdropdown.startchrome("lower_menu");
 </script>

@@ -9,13 +9,15 @@
 </jsp:include>
 
 <%-------------------------- Heading -----------------------%>
-<h1> 
-  <a href="/" rel="Start">${projectName}</a> :: url :: 
+<h1 id="path"> 
+  <a href="/" rel="Start">${projectName}</a> :: <a href="#" rel="path_menu">url&nbsp;<img src="/resources/image/box_arrow.png"></a> :: 
   <form action="/url" method="GET" class="smallform">
     <input type="text" size="50" name="url" id="inpf" value="<c:out value='${ResourceBean.title}'/>" />
   </form>
 </h1> 
 
+<%-------------------------- Path Navigation -----------------------%>
+<%@include file="/boxes/path_navi.jsp" %>
 
 <%@include file="/boxes/navi.jsp" %>    <%-------------------------- Navigation -----------------------%>
 <div id="outer">

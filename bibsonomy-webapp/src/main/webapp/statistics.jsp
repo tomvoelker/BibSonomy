@@ -10,8 +10,12 @@
 </jsp:include>
 
 <%-------------------------- Heading -----------------------%>
-<h1><a href="/" rel="Start">${projectName}</a> :: <a href="/statistics">statistics</a></h1> 
+<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="/statistics">statistics&nbsp;<img src="/resources/image/box_arrow.png"></a></h1> 
 
+<%-------------------------- Path Navigation -----------------------%>
+<%@include file="/boxes/path_navi.jsp" %>
+
+<%-------------------------- Navigation -----------------------%>
 <%@include file="/boxes/navi.jsp" %> 
 <%-- count rows --%>
 <%-- batch jobs  --%><sql:query var="tagtag_batch" dataSource="${dataSource}">SELECT count(*) AS ctr FROM tagtag_batch</sql:query>

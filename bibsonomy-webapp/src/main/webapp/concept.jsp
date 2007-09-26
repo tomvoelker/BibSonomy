@@ -9,11 +9,14 @@
 </jsp:include>
 
 <%-------------------------- Heading -----------------------%>
-<h1><a href="/" rel="Start">${projectName}</a> :: concept ::
+<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a href="#" rel="path_menu">concept&nbsp;<img src="/resources/image/box_arrow.png"></a> ::
 <form action="/concept/tag/" method="GET" class="smallform">
   <input type="text" id="inpf" size="20" name="tag" value="<c:out value='${param.requTag}'/>"/>
 </form>
 </h1> 
+
+<%-------------------------- Path Navigation -----------------------%>
+<%@include file="/boxes/path_navi.jsp" %>
 
 <%@include file="/boxes/navi.jsp" %>    <%-------------------------- Navigation -----------------------%>
 <div id="outer">

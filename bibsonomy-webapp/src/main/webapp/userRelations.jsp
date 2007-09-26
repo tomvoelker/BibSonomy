@@ -10,10 +10,13 @@
 </jsp:useBean>
 
 <%-- heading --%>
-<h1><a href="/" rel="Start">${projectName}</a> :: relations :: 
+<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="#">relations&nbsp;<img src="/resources/image/box_arrow.png"></a> :: 
 <a href="/relations/<mtl:encode value='${param.requUser}'/>"><c:out value='${param.requUser}'/></a></h1> 
 
+<%-------------------------- Path Navigation -----------------------%>
+<%@include file="/boxes/path_navi.jsp" %>
 
+<%-------------------------- Navigation -----------------------%>
 <%@include file="/boxes/navi.jsp" %> 
 
 <%-- show relations of the requested user --%>

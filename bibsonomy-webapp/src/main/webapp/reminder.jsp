@@ -15,8 +15,12 @@
 <%   }  %>
 
 <%-------------------------- Heading -----------------------%>
-<h1><a href="/" rel="Start">${projectName}</a> :: <a href="/reminder">reminder</a></h1> 
+<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="/reminder">reminder&nbsp;<img src="/resources/image/box_arrow.png"></a></h1> 
 
+<%-------------------------- Path Navigation -----------------------%>
+<%@include file="/boxes/path_navi.jsp" %>
+
+<%-------------------------- Navigation -----------------------%>
 <%@include file="/boxes/navi.jsp"%>
 
 <div id="general">

@@ -9,10 +9,14 @@
 </jsp:include>
 
 <%-------------------------- Heading -----------------------%>
-<h1>
-  <a href="/" rel="Start">${projectName}</a> :: bibtexkey :: <c:out value='${ResourceBean.bibtex[0].bibtexKey}'/>
+<h1 id="path">
+  <a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="#">bibtexkey&nbsp;<img src="/resources/image/box_arrow.png"></a> :: <c:out value='${ResourceBean.bibtex[0].bibtexKey}'/>
 </h1> 
 
+<%-------------------------- Path Navigation -----------------------%>
+<%@include file="/boxes/path_navi.jsp" %>
+
+<%-------------------------- Navigation -----------------------%>
 <%@include file="/boxes/navi.jsp" %>    <%-------------------------- Navigation -----------------------%>
 
 <div id="outer">

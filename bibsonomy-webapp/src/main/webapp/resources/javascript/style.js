@@ -297,3 +297,97 @@ function minUsertags(minfreq, currUser) {
 	sendMinfreqRequ(minfreq, currUser)
 	showMinfreq(minfreq, currUser);
 }
+
+// switches page default path to full navigation path
+function naviSwitchSpecial(projectName, username, target) {
+
+	// obtain fundamental informations
+	var body = document.getElementsByTagName("body")[0];
+	var bar = document.getElementById("path");
+
+	// create headline node as container for following stuff 
+	var headlineNode = document.createElement("h1");
+	headlineNode.setAttribute("id", "path");
+
+	// create a node with projectname default values
+	var projectNode = document.createElement("a");
+	projectNode.setAttribute("href", "/");
+	projectNode.setAttribute("rel", "Start_js");
+	projectNode.appendChild(document.createTextNode(projectName));
+	headlineNode.appendChild(projectNode);
+	headlineNode.appendChild(document.createTextNode(" :: "));
+
+	// create form as container for dropdown- and textfields
+	var formNode = document.createElement("form");
+	formNode.setAttribute("id", "specialsearch");
+	formNode.setAttribute("method", "get");
+	formNode.setAttribute("action", "/specialsearch");
+
+	// create dropdown box
+	var selectNode = document.createElement("select");
+	selectNode.setAttribute("name", "scope");
+	selectNode.setAttribute("size", "1");
+	selectNode.setAttribute("id", "scope");
+	
+	// select options
+	var options = new Array("tag", "user", "group", "author", "concept", "all", "explicit_user");
+	
+	// fill select dropdown box with options
+	for(var i = 0; i < options.length; i++) {
+		var optionNode = document.createElement("option");
+		
+		// exception for 'all' case
+		if(options[i] == "all") {
+			optionNode.setAttribute("value", options[i]);
+			optionNode.appendChild(document.createTextNode("search:all"));
+		} else if(options[i] == "explicit_user" && username != "" && username != null) {
+			optionNode.setAttribute("value", "user:" + username);
+			optionNode.appendChild(document.createTextNode("search:" + username));
+		} else {
+			optionNode.setAttribute("value", options[i]);
+			optionNode.appendChild(document.createTextNode(options[i]));
+		}
+		
+		if(options[i] == target) {
+			optionNode.setAttribute("selected", "");
+		}
+		
+		selectNode.appendChild(optionNode);		
+	}
+	
+	// append dropdown box and spacer
+	formNode.appendChild(selectNode);
+	formNode.appendChild(document.createTextNode(" :: "));
+	
+	// create and append textfield and spacer
+	var inpfNode = document.createElement("input");
+	inpfNode.setAttribute("type", "text");
+	inpfNode.setAttribute("id", "inpf");
+	inpfNode.setAttribute("name", "q");
+	inpfNode.setAttribute("size", "30");
+	inpfNode.value = document.getElementById("inpf").value;
+	inpfNode.value = inpfNode.value;
+   	formNode.appendChild(inpfNode);
+	headlineNode.appendChild(formNode);
+	headlineNode.appendChild(document.createTextNode(" "));
+
+	// insert new navi
+	body.insertBefore(headlineNode, bar);
+
+	// clone old navigation path and save it in a global variable for later restoring
+	curr_navi = bar.cloneNode(true);
+
+	// remove old navigation path
+	body.removeChild(bar);
+	
+	// set focus to the input field
+	inpfNode.focus();
+	
+	// if the user uses opera, there is a workaround to set the cursor position
+	if(window.opera)
+		inpfNode.select(); 
+	
+	// unselect text
+	inpfNode.value = inpfNode.value;
+	
+}

@@ -9,7 +9,10 @@
   <jsp:param name="title" value="${param.requUser}" />
 </jsp:include>
 
-<h1><a href="/" rel="Start">${projectName}</a> :: <a href="/edittag">edit tags</a></h1>
+<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu "href="/edittag">edit tags&nbsp;<img src="/resources/image/box_arrow.png"></a></h1>
+
+<%-------------------------- Path Navigation -----------------------%>
+<%@include file="/boxes/path_navi.jsp" %>
 
 <%@include file="/boxes/navi.jsp" %>    <%-------------------------- Navigation -----------------------%>
 
