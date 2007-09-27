@@ -21,6 +21,8 @@
 	</c:if>
 </div>
 
+<div id="Start"></div>
+
 <script type="text/javascript">
   cssdropdown.startchrome("path");
 </script>

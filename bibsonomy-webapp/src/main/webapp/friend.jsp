@@ -12,7 +12,7 @@
 <%-------------------------- Heading -----------------------%>
 <h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="/friend">friend&nbsp;<img src="/resources/image/box_arrow.png"></a> :: 
 <form action="/friends/" method="GET" class="smallform">
-  <input type="text" size="20" name="user"/>
+  <input type="text" size="20" name="user" id="inpf"/>
 </form>
 </h1> 
 

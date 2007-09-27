@@ -131,15 +131,15 @@ function add_hints() {
   }
   // for tag input field
   el = document.getElementById("inpf");
-  if (el && (el.name == "tag" || el.name == "tags") && (el.value == "" || el.value == tag_hint)) {
+  if (el != null && (el.name == "tag" || el.name == "tags") && (el.value == "" || el.value == tag_hint)) {
     el.value = tag_hint;
     el.style.color = "#aaaaaa";
     el.onmousedown = clear_input;
     el.onkeypress  = clear_input;
   }
   // specialsearch (tag, user, group, author, relation)
-  if (el && el.name == "q" && (el.value == "" || el.value == author_hint || el.value == tag_hint 
-  		|| el.value == user_hint || el.value == group_hint || el.value == concept_hint) || el.value == search_hint) {
+  if (el != null && el.name == "q" && (el.value == "" || el.value == author_hint || el.value == tag_hint 
+  		|| el.value == user_hint || el.value == group_hint || el.value == concept_hint) || (el != null && el.value == search_hint)) {
     var scope = document.getElementById("scope");
     // add call to this method to dropdown box, so that hint changes, when box changes
     scope.onmouseup = add_hints;
@@ -1460,4 +1460,8 @@ function setTut(tutName) {
 	w = window.open("http://" + window.location.host + "/tutorial/" + tutName + '.htm', "_blank", "width=915, height=735, scrollbars=no");
 	w.focus();
 
+}
+
+String.prototype.startsWith = function(s) { 
+	return this.indexOf(s) == 0; 
 }

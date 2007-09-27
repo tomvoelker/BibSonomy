@@ -365,8 +365,19 @@ function naviSwitchSpecial(projectName, username, target) {
 	inpfNode.setAttribute("id", "inpf");
 	inpfNode.setAttribute("name", "q");
 	inpfNode.setAttribute("size", "30");
-	inpfNode.value = document.getElementById("inpf").value;
-	inpfNode.value = inpfNode.value;
+	
+	if(document.getElementById("inpf") != null) {
+		inpfValue = document.getElementById("inpf").value;
+		
+		if(inpfValue != search_hint && inpfValue != tag_hint
+			&& inpfValue != user_hint && inpfValue != group_hint
+			&& inpfValue != author_hint && inpfValue != concept_hint) {
+			
+			inpfNode.value = inpfValue;
+			inpfNode.value = inpfNode.value;
+		}
+	}
+	
    	formNode.appendChild(inpfNode);
 	headlineNode.appendChild(formNode);
 	headlineNode.appendChild(document.createTextNode(" "));
