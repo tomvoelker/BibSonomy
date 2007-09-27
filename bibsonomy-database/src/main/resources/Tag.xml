@@ -60,7 +60,16 @@
 		GROUP BY t.tag_name LIMIT #limit# OFFSET #offset#
 	</select>
 
-	<select id="getTagsByUser" resultMap="Common.tag" parameterClass="tagParam">
+	<!--
+		ATTENTION: for the query 'getTagsByUser', the resultMap 'TagCommon.tagWithGlobalCount'
+	 	might be a bit misleading, als the 'global' count here is not the total number of posts
+	 	_in the system_ which are annotated by this tag, but the total number of posts
+	 	_of a single user_ annotated by this tag.
+	 	We should rename the attribute 'globalcount' to 'resourcecount' to make it better 
+	 	understandable- (see https://gforge.cs.uni-kassel.de/tracker/index.php?func=detail&aid=433&group_id=52&atid=278)
+	 	dbe, 2007/09/27
+	-->
+	<select id="getTagsByUser" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
 		SELECT tag_name, count(tag_name) AS tag_ctr FROM tas t WHERE t.user_name = #requestedUserName#
 		<include refid="getTagForUser"/> GROUP BY t.tag_name LIMIT #limit# OFFSET #offset#
 	</select>
