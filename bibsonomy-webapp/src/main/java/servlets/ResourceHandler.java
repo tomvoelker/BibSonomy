@@ -1386,6 +1386,7 @@ public class ResourceHandler extends HttpServlet{
 				+ "			WHERE "				
 				+ "			b.content_id = t.content_id AND"
 				+ "			b.simhash" + Bibtex.INTER_HASH + " = h.hash AND"
+				+ "			h.type=" + Bibtex.INTER_HASH + " AND "
 				+ "			b.user_name = ? AND b.bibtexKey = ? "
 				+ "			ORDER BY date DESC "
 				+ "			LIMIT ? OFFSET ?";		
