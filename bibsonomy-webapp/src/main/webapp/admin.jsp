@@ -88,7 +88,7 @@
 <c:if test="${param.userinfo != null }">
 	<%-- do SQL query to get new users --%>
 	<sql:query var="rsInfo" dataSource="${dataSource}">
-	  SELECT user_name, spammer, trim(trailing ', 141.51.167.67, 141.51.167.67' from trim(trailing ', 141.51.167.67, 141.51.167.130' from ip_address)) as ip_address, user_realname, user_email, date_format(reg_date,'%d.%c.%y_%H:%i') as reg_date2 FROM user WHERE user_name= ?
+	  SELECT user_name, spammer, trim(trailing ', 141.51.167.67' from trim(trailing ', 141.51.167.67' from ip_address)) as ip_address, user_realname, user_email, date_format(reg_date,'%d.%c.%y_%H:%i') as reg_date2 FROM user WHERE user_name= ?
 	  <sql:param value="${param.userinfo}" />
 	</sql:query> 
 </c:if>
@@ -107,13 +107,13 @@
   <c:when test="${not empty param.frequent}">
     <%-- show most frequent IPs  --%>
     <sql:query var="rs" dataSource="${dataSource}">
-      SELECT a.user_name, a.spammer, trim(trailing ', 141.51.167.67, 141.51.167.67' from trim(trailing ', 141.51.167.67, 141.51.167.130' from ip_address)) as ip_address, a.user_realname, a.user_email, date_format(a.reg_date, '%d.%c.%y_%H:%i') as reg_date1 FROM (SELECT ips.ip_address,count(ip_address) AS ipctr FROM (SELECT u.ip_address,u.user_name FROM user u JOIN user u2 USING (ip_address) WHERE u.spammer = 0) AS ips group by ips.ip_address having ipctr > 2) AS u JOIN user a USING(ip_address) ORDER BY ipctr, ip_address, reg_date DESC ;
+      SELECT a.user_name, a.spammer, trim(trailing ', 141.51.167.67, 141.51.167.67' from trim(trailing ', 141.51.167.67' from ip_address)) as ip_address, a.user_realname, a.user_email, date_format(a.reg_date, '%d.%c.%y_%H:%i') as reg_date1 FROM (SELECT ips.ip_address,count(ip_address) AS ipctr FROM (SELECT u.ip_address,u.user_name FROM user u JOIN user u2 USING (ip_address) WHERE u.spammer = 0) AS ips group by ips.ip_address having ipctr > 2) AS u JOIN user a USING(ip_address) ORDER BY ipctr, ip_address, reg_date DESC ;
     </sql:query>
   </c:when>
   <c:otherwise>
     <%-- do SQL query to get new users --%>
     <sql:query var="rs" dataSource="${dataSource}">
-      SELECT user_name, spammer, trim(trailing ', 141.51.167.67, 141.51.167.67' from trim(trailing ', 141.51.167.67, 141.51.167.130' from ip_address)) as ip_address, user_realname, user_email, date_format(reg_date,'%d.%c.%y_%H:%i') as reg_date1 FROM user ORDER BY reg_date DESC LIMIT 100
+      SELECT user_name, spammer, trim(trailing ', 141.51.167.67, 141.51.167.67' from trim(trailing ', 141.51.167.67' from ip_address)) as ip_address, user_realname, user_email, date_format(reg_date,'%d.%c.%y_%H:%i') as reg_date1 FROM user ORDER BY reg_date DESC LIMIT 100
     </sql:query>
   </c:otherwise>
 </c:choose>
