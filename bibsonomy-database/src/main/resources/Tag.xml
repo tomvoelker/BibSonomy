@@ -36,7 +36,7 @@
 		<!--  up to now, a user can see his own tags as well as public tags -->
 		SELECT TAS.tag_name, count(TAS.tag_name) as tag_ctr 
 		FROM tas TAS 
-		WHERE TAS.user_name=#requestedUserName# OR
+		WHERE TAS.user_name=#userName# OR
 			  TAS.group=0
 		GROUP BY TAS.tag_name
 		HAVING tag_ctr > 0
