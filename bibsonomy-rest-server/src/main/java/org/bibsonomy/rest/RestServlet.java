@@ -174,7 +174,7 @@ public final class RestServlet extends HttpServlet {
 			
 			response.getOutputStream().print(cachingStream.toString("UTF-8"));
 		} catch (final AuthenticationException e) {
-			log.error(e,e);
+			log.warn(e,e);
 			/*
 			 * FIXME: string "BibSonomy" should never occur in source code!
 			 */
