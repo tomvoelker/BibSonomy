@@ -196,7 +196,7 @@
     
     <!-- redirect for /bibtexkey/BIBTEXKEY/USER -->
     <rule>
-      <from>^/+bibtexkey/+([^/?]+?)/(.+?)(\?(.*))?$</from>
+      <from>^/+bibtexkey/+(.+)/(.+?)(\?(.*))?$</from>
       <to>/ResourceHandler?page=bibtexkey&amp;requKey=$1&amp;requUser=$2&amp;$3</to>
     </rule>
 	
@@ -406,7 +406,8 @@
 		<to>/RedirectHandler?page=uri&amp;requResource=bibtex&amp;requContent=$1$2&amp;requContent2=$3&amp;$5</to> 
 	</rule>
 	<rule><!-- /uri/bibtexkey/key/user -->
-		<from>^/+uri/+bibtexkey/+([^/?]+?)/+(.+?)(\?(.*))?$</from>
+		<!--  <from>^/+uri/+bibtexkey/+([^/?]+?)/+(.+?)(\?(.*))?$</from> -->
+		<from>^/+uri/+bibtexkey/+(.+)/+(.+?)(\?(.*))?$</from>
 		<to>/RedirectHandler?page=uri&amp;requResource=bibtexkey&amp;requContent=$1&amp;requContent2=$2&amp;$4</to> 
 	</rule>
 	
