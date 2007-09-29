@@ -67,7 +67,7 @@
 		<p>		
 			<div id='numresult' style="text-align:right; font-size:70%; padding-bottom:2px; color:gray;">&nbsp;</div>	
 			<div class="scroller">
-				<table width="100%" class="result_table"><tbody id="resultlist"></tbody></table>
+				<table class="result_table"><tbody id="resultlist"></tbody></table>
 			</div>			
 		</p>						
 	</fieldset>		
