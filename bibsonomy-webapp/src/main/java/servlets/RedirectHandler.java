@@ -1,6 +1,14 @@
 package servlets;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Scanner;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.Vector;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -104,34 +112,107 @@ public class RedirectHandler extends HttpServlet {
 			String requContent2	= request.getParameter("requContent2");
 			String accept		= request.getHeader("accept").toLowerCase();	
 			
-			int i=0;			
-			while (i < FORMAT_URLS.length) {
-				if (accept.indexOf(FORMAT_URLS[i][0].toLowerCase()) > -1) 					
-					break;				
-				i++;
-			}
-			
-			// no correct format found --> send to standard HTML page
-			if (i >= FORMAT_URLS.length)
-				i = 0;
-			
+			// get response format
+			int index = getResponseFormat(accept, contentType);
+					
 			// build redirectURL
 			StringBuffer redirectURL = new StringBuffer();
-			if (FORMAT_URLS[i][contentType] != null) {
-				redirectURL.append("/" + FORMAT_URLS[i][contentType]);
-			}	
-			
+			if (FORMAT_URLS[index][contentType] != null) 
+				redirectURL.append("/" + FORMAT_URLS[index][contentType]);							
 						
-			if (requContent2 == null || requContent2.equals("")) {
+			if (requContent2 == null || requContent2.equals("")) 
 				redirectURL.append("/" + requResource + "/" + URLEncoder.encode(requContent,"UTF-8"));
-			} else {
+			else 
 				redirectURL.append("/" + requResource + "/" + URLEncoder.encode(requContent,"UTF-8") + "/" + URLEncoder.encode(requContent2,"UTF-8"));
-				
-			}
-					
-			response.sendRedirect(redirectURL.toString());			
+								
+			// send HTTP 303 redirect
+			response.setStatus(HttpServletResponse.SC_SEE_OTHER);
+			response.setHeader("Location", redirectURL.toString());			
 		} else {
 			response.sendRedirect("/");
 		}
 	}	
+	
+	/**
+	 * gets the preferred response format which is supported in 
+	 * dependence of the 'q-Value' (similar to a priority)
+	 *
+	 * @param acceptHeader 
+	 * 			the HTML ACCEPT Header
+	 * 			(example: 
+	 * 				<code>ACCEPT: text/xml,text/html;q=0.9,text/plain;q=0.8,image/png</code>
+	 * 				would be interpreted in the following precedence:
+	 * 				1) text/xml
+	 * 				2) image/png
+	 * 				3) text/html
+	 * 				4) text/plain)
+	 * 			) 	
+	 * @param contentType
+	 * 			the contentType of the requested resource 
+	 * 			<code>0</code> for bookmarks
+	 * 			<code>1</code> for BibTeX
+	 * @return 
+	 * 			an index for access to the FORMAT_URLS array with the 
+	 * 			url for redirect
+	 */
+	private int getResponseFormat(final String acceptHeader, int contentType) {		
+		// maps the q-value to output format
+		SortedMap<Double,Vector<String>> preferredTypes = new TreeMap<Double,Vector<String>>(new Comparator<Double>() {
+			public int compare(Double o1, Double o2) {
+				if (o1.doubleValue() > o2.doubleValue())
+					return -1;
+				else if (o1.doubleValue() < o2.doubleValue())
+					return 1;
+				else
+					return o1.hashCode() - o2.hashCode();
+			}				
+		});		
+		
+		// fill map with q-values an formats
+		Scanner scanner = new Scanner(acceptHeader);
+		scanner.useDelimiter(",");
+			
+		while(scanner.hasNext()) {
+			String[] types = scanner.next().split(";");
+			String type = types[0];
+			double qValue = 1;
+			
+			if (types.length != 1) 
+				qValue = Double.parseDouble(types[1].split("=")[1]);
+			
+			if (!preferredTypes.containsKey(qValue)) {
+				Vector<String> v = new Vector<String>();
+				v.add(type);				
+				preferredTypes.put(qValue, v);
+			} else {
+				preferredTypes.get(qValue).add(type);					
+			}
+		}
+					
+		List<String> formatOrder = new ArrayList<String>();			
+		for (Entry<Double, Vector<String>> entry: preferredTypes.entrySet()) {								
+			for (String type: entry.getValue()) {				
+				formatOrder.add(type);					
+			}
+		}
+		
+		// check for supported formats
+		int i = 0;
+		boolean found = false;
+		for (String type: formatOrder) {
+			if (found) break;
+			
+			for (int j=0; j<FORMAT_URLS.length; j++) {					
+				String checkType = FORMAT_URLS[j][0];				
+				if (type.indexOf(checkType) != -1) {						
+					if (FORMAT_URLS[j][contentType] != null || checkType == "html") {
+						i = j;
+						found = true;
+						break;	
+					}
+				}
+			}
+		}		
+		return i;
+	}
 }
