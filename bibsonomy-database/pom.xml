@@ -76,14 +76,9 @@
 			<version>1.2.1</version>
 		</dependency>
 		<dependency>
-			<groupId>com.sun.jndi</groupId>
-			<artifactId>fscontext</artifactId>
-			<version>1.2-beta-3</version>
+			<groupId>org.mockejb</groupId>
+			<artifactId>mockejb</artifactId>
+			<version>0.6-beta2</version>
 		</dependency>
-		<dependency>
-			<groupId>com.sun.jndi</groupId>
-			<artifactId>providerutil</artifactId>
-			<version>1.2</version>
-		</dependency>				
 	</dependencies>
 </project>

@@ -3,13 +3,14 @@ package org.bibsonomy.testutil;
 import java.io.IOException;
 import java.util.Properties;
 
-import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.naming.Reference;
-import javax.naming.StringRefAddr;
+import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
+import org.mockejb.jndi.MockContextFactory;
+
+import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 
 /**
  * Helper class for binding a test database resource via JNDI to enable database access
@@ -28,31 +29,42 @@ public class JNDITestDatabaseBinder {
 	 * 
 	 * @author dbenz
 	 */
-	public static final void bind() {		
-		try {
-			// read database properties
-			Properties prop = new Properties();
-			prop.load(JNDITestDatabaseBinder.class.getClassLoader().getResourceAsStream("database.properties"));
-	
-			// Construct Reference to Database Resource
-			Reference ref = new Reference("javax.sql.DataSource", "org.apache.commons.dbcp.BasicDataSourceFactory", null);
-			ref.add(new StringRefAddr("com.mysql.jdbc.Driver", "org.apache.commons.dbcp.TesterDriver"));
-			ref.add(new StringRefAddr("url", prop.getProperty("url")));
-			ref.add(new StringRefAddr("username", prop.getProperty("username")));
-			ref.add(new StringRefAddr("password", prop.getProperty("password")));
-			ref.add(new StringRefAddr("driverClassName", prop.getProperty("driverClassName")));
-	
-			// register database resource via JNDI
-			Context ctx = new InitialContext();
-			ctx.rebind(prop.getProperty("JNDIName"), ref);		
-		}
-		catch (IOException ex) {
-			log.error("I/O-Error when reading test database connection properties file");
-			log.error(ex.getMessage());
+	public static final void bind() {
+		final InitialContext ctx;
+		final DataSource ds = getDataSource();
+		try {			
+			// create Mock JNDI context
+			MockContextFactory.setAsInitial();
+			ctx = new InitialContext();
+			ctx.bind("java:comp/env/jdbc/bibsonomy", ds);
 		}
 		catch (NamingException ex) {
 			log.error("Error when trying to bind test database connection via JNDI");
 			log.error(ex.getMessage());
 		}
 	}
+	
+	/**
+	 * go back to original state
+	 */
+	public static void unbind() {
+		MockContextFactory.revertSetAsInitial();
+	}
+	
+
+	private static DataSource getDataSource() {
+		final Properties props = new Properties();		
+		try {
+			// read database properties
+			props.load(JNDITestDatabaseBinder.class.getClassLoader().getResourceAsStream("database.properties"));		
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
+		final MysqlConnectionPoolDataSource dataSource = new MysqlConnectionPoolDataSource();
+		dataSource.setUrl(props.getProperty("url"));
+		dataSource.setUser(props.getProperty("username"));
+		dataSource.setPassword(props.getProperty("password"));
+		return dataSource;
+	}	
+	
 }

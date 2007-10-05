@@ -90,6 +90,8 @@ public abstract class AbstractDatabaseManagerTest {
 		this.userParam = null;
 		this.tagParam = null;
 		this.groupParam = null;
+		
+		JNDITestDatabaseBinder.unbind();		
 	}
 
 	/**
