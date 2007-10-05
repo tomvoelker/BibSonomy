@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.bibsonomy.testutil.JNDITestDatabaseBinder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,12 +21,14 @@ public class DBSessionImplTest {
 
 	@Before
 	public void setUp() {
+		JNDITestDatabaseBinder.bind();
 		this.session = (DBSessionImpl) DatabaseUtils.getDBSessionFactory().getDatabaseSession();
 	}
 
 	@After
 	public void tearDown() {
 		this.session.close();
+		JNDITestDatabaseBinder.unbind();
 	}
 
 	@Test
