@@ -140,7 +140,7 @@ public final class RestServlet extends HttpServlet {
 	 */
 	private void handle(final HttpServletRequest request, final HttpServletResponse response, final HttpMethod method) throws IOException {
 
-		log.debug("Incoming URL:" + request.getRequestURL() + " from IP " + request.getRemoteAddr());
+		log.debug("Incoming Request: " + method.name() + " " + request.getRequestURL() + " from IP " + request.getRemoteAddr());
 		Long start = System.currentTimeMillis();
 
 		try {
@@ -174,7 +174,7 @@ public final class RestServlet extends HttpServlet {
 			
 			response.getOutputStream().print(cachingStream.toString("UTF-8"));
 		} catch (final AuthenticationException e) {
-			log.warn(e,e);
+			log.warn(e.getMessage());
 			/*
 			 * FIXME: string "BibSonomy" should never occur in source code!
 			 */
@@ -254,6 +254,7 @@ public final class RestServlet extends HttpServlet {
 
 		// check username and password
 		final String username = basicCookie.substring(0, i);
+		log.debug("Username: " + username);
 		final String apiKey = basicCookie.substring(i + 1);
 		try {
 			return logicFactory.getLogicAccess(username, apiKey);
