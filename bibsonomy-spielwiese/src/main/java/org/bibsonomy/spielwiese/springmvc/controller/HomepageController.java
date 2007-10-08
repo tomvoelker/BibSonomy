@@ -26,7 +26,7 @@ public class HomepageController implements Controller {
 		final Map<String, Object> model = new HashMap<String, Object>();
 		model.put("projectName", "BibSonomy");
 
-		final List<Post<Bookmark>> bookmarks = RestDatabaseManager.getInstance().getPosts("cschenk", Bookmark.class, null, null, null, null, null, 0, 10);
+		final List<Post<Bookmark>> bookmarks = RestDatabaseManager.getInstance().getPosts("cschenk", Bookmark.class, null, null, null, null, null, 0, 10, null);
 		model.put("bookmarks", bookmarks);
 
 		return new ModelAndView("home", model);
