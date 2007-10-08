@@ -147,8 +147,9 @@ public class TestDatabase implements DBLogicInterface {
 
 	/**
 	 * note: popular and added are not considered
+	 * @param search TODO
 	 */
-	public <T extends Resource> List<Post<T>> getPosts(String authUser, Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, int start, int end) {
+	public <T extends Resource> List<Post<T>> getPosts(String authUser, Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, int start, int end, String search) {
 		final List<Post<? extends Resource>> posts = new LinkedList<Post<? extends Resource>>();
 		// do grouping stuff
 		switch (grouping) {

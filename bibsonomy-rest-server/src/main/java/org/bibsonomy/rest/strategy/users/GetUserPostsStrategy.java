@@ -19,6 +19,7 @@ public class GetUserPostsStrategy extends AbstractGetListStrategy<List<? extends
 	private final String userName;
 	private final List<String> tags;
 	private final String tagString;
+	private final String search;
 	private final Class<? extends Resource> resourceType;
 
 	public GetUserPostsStrategy(final Context context, final String userName) {
@@ -26,6 +27,7 @@ public class GetUserPostsStrategy extends AbstractGetListStrategy<List<? extends
 		this.userName = userName;
 		this.tags = context.getTags("tags");
 		this.tagString = context.getStringAttribute("tags", null);
+		this.search = context.getStringAttribute("search", null);
 		this.resourceType = Resource.getResource(context.getStringAttribute("resourcetype", "all"));
 	}
 
@@ -48,7 +50,7 @@ public class GetUserPostsStrategy extends AbstractGetListStrategy<List<? extends
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		return this.getLogic().getPosts(resourceType, GroupingEntity.USER, userName, this.tags, null, null, this.getView().getStartValue(), this.getView().getEndValue());
+		return this.getLogic().getPosts(resourceType, GroupingEntity.USER, userName, this.tags, null, null, this.getView().getStartValue(), this.getView().getEndValue(), search);
 	}
 
 	@Override

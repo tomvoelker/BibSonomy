@@ -20,12 +20,14 @@ public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrateg
 	protected final String groupingValue;
 	protected final String tagString;
 	protected final List<String> tags;
+	protected final String search;
 	
 	public AbstractListOfPostsStrategy(final Context context) {
 		super(context);
 		this.tagString = context.getStringAttribute("tags", null);
 		this.resourceType = Resource.getResource(context.getStringAttribute("resourcetype", "all"));
 		this.hash = context.getStringAttribute("resource", null);
+		this.search = context.getStringAttribute("search", null);
 		this.grouping = chooseGroupingEntity();
 		this.tags = context.getTags("tags");
 		if (grouping != GroupingEntity.ALL) {
@@ -66,5 +68,8 @@ public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrateg
 		if (this.grouping != GroupingEntity.ALL && this.groupingValue != null) {
 			sb.append('&').append(this.grouping.toString().toLowerCase()).append('=').append(this.groupingValue);
 		}
+		if (this.search != "" && this.search != null) {
+			sb.append("&search=").append(this.search);
+		}		
 	}
 }
