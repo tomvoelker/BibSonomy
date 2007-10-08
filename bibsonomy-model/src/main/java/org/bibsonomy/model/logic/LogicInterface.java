@@ -75,6 +75,9 @@ public interface LogicInterface {
 	 *            hash value of a resource, if one would like to get a list of
 	 *            all posts belonging to a given resource. if unused, its empty
 	 *            but not null.
+	 * @param start
+	 * @param end
+	 * @param search TODO
 	 * @param added
 	 *            a flag indicating the way of sorting: if true, sort by
 	 *            adding-time. both flags cannot be true at the same time; an
@@ -83,11 +86,9 @@ public interface LogicInterface {
 	 *            a flag indicating the way of sorting: if true, sort by
 	 *            popularity. both flags cannot be true at the same time; an
 	 *            {@link IllegalArgumentException} is expected to be thrown
-	 * @param start
-	 * @param end
 	 * @return a set of posts, an empty set else
 	 */
-	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, int start, int end);
+	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, int start, int end, String search);
 
 	/**
 	 * Returns details to a post. A post is uniquely identified by a hash of the
