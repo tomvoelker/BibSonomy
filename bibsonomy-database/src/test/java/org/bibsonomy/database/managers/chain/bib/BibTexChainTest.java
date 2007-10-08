@@ -15,6 +15,8 @@ package org.bibsonomy.database.managers.chain.bib;
  * 
  */
 
+import static org.junit.Assert.*;
+
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -165,13 +167,14 @@ public class BibTexChainTest extends AbstractChainTest {
 	
 	@Test
 	public void getBibtexByAuthor() {
-	this.bibtexParam.setGrouping(GroupingEntity.VIEWABLE);
-	this.bibtexParam.setRequestedUserName(null);
-	this.bibtexParam.setHash(null);
-	this.bibtexParam.setOrder(null);	
-	this.bibtexParam.setTagIndex(null);
-	this.bibtexParam.setGroupId(-1);
-	final List<Post<BibTex>> posts=this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
+		this.bibtexParam.setGrouping(GroupingEntity.VIEWABLE);
+		this.bibtexParam.setRequestedUserName(null);
+		this.bibtexParam.setHash(null);
+		this.bibtexParam.setOrder(null);	
+		this.bibtexParam.setTagIndex(null);
+		this.bibtexParam.setGroupId(-1);
+		this.bibtexParam.setSearch("Grahl");
+		final List<Post<BibTex>> posts = this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
 	}
 	
 	@Test
@@ -180,8 +183,20 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setHash(null);
 		this.bibtexParam.setOrder(null);
 		this.bibtexParam.setRequestedGroupName(null);
+		this.bibtexParam.setSearch("Grahl");
 		final List<Post<BibTex>> posts=this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
 	}
+	
+	@Test
+	public void getBibtexBySearch() {
+		this.bibtexParam.setGrouping(GroupingEntity.ALL);
+		this.bibtexParam.setSearch("Hotho");
+		this.bibtexParam.setGroupId(0); // group = public
+		this.bibtexParam.setRequestedUserName(null);
+		this.bibtexParam.setLimit(350);
+		final List<Post<BibTex>> posts = this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
+		assertEquals(333, posts.size());
+	}	
 	
 
 }

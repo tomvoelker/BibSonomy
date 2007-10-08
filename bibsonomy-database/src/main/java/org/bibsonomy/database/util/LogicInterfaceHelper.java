@@ -22,11 +22,15 @@ public class LogicInterfaceHelper {
 
 	/**
 	 * Builds a param object for the given parameters from the LogicInterface.
+	 * @param search TODO
 	 */
-	public static <T extends GenericParam> T buildParam(final Class<T> type, final String authUser, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end) {
+	public static <T extends GenericParam> T buildParam(final Class<T> type, final String authUser, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end, String search) {
 		final T param = getParam(type);
 		param.setUserName(authUser);
 		param.setGrouping(grouping);
+		if (search != null) {
+			param.setSearch(search);
+		}
 		if (grouping != GroupingEntity.GROUP) {
 			param.setRequestedUserName(groupingName);
 		}

@@ -1,5 +1,7 @@
 package org.bibsonomy.database.managers.chain.bookmark;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -148,5 +150,14 @@ public class BookmarkChainTest extends AbstractChainTest {
 		
 		final List<Post<Bookmark>> posts=this.bookmarkChain.getFirstElement().perform(bookmarkParam,dbSession);
 	}
+	
+	@Test
+	public void getBookmarkSearch() {
+		this.bookmarkParam.setGrouping(GroupingEntity.ALL);
+		this.bookmarkParam.setRequestedUserName(null);
+		this.bookmarkParam.setSearch("\"www.ubuntuusers.de\"");		
+		final List<Post<Bookmark>> posts = this.bookmarkChain.getFirstElement().perform(bookmarkParam,dbSession);
+		assertEquals(4, posts.size());
+	}	
 
 }

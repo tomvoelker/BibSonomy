@@ -17,18 +17,18 @@ import org.bibsonomy.model.logic.Order;
  * @author Miranda Grahl
  * @version $Id$
  */
-public class GetBibtexPopular extends BibTexChainElement {
+public class GetBibtexSearch extends BibTexChainElement {
 
 	/**
 	 * return all popular bibtex entries of bibSonomy.
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		return this.db.getBibTexPopular(param, session);
+		return this.db.getBibTexSearch(param, session);
 	}
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return (param.getGrouping() == GroupingEntity.ALL) && !present(param.getTagIndex()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.POPULAR) && !present(param.getSearch());
+		return (param.getGrouping() == GroupingEntity.ALL) && present(param.getSearch());
 	}
 }

@@ -37,7 +37,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * Returns all users.
 	 */
 	public List<User> getAllUsers(final int start, final int end, final DBSession session) {
-		final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, null, null, null, null, null, null, start, end);
+		final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, null, null, null, null, null, null, start, end, null);
 		return this.queryForList("getAllUsers", param, User.class, session);
 	}
 

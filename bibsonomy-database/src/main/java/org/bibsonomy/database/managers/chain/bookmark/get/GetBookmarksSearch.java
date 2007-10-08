@@ -1,5 +1,6 @@
 package org.bibsonomy.database.managers.chain.bookmark.get;
 
+import static org.bibsonomy.util.ValidationUtils.nullOrEqual;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
@@ -10,26 +11,24 @@ import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.logic.Order;
 
 /**
- * @author Miranda Grahl
+ * @author Dominik Benz
  * @version $Id$
  */
-public class GetBookmarksForGroup extends BookmarkChainElement {
+public class GetBookmarksSearch extends BookmarkChainElement {
 
 	/**
-	 * return a list of bookmark entries by a given group
+	 * return a list of bookmarks by a given fulltext search string
 	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
-		param.setGroupId(this.generalDb.getGroupIdByGroupNameAndUserName(param, session));
-		// TODO: is this needed?  param.setGroups(this.generalDb.getGroupsForUser(param, session));
-
-		return this.db.getBookmarkForGroup(param, session);
+		return this.db.getBookmarkSearch(param, session);
 	}
 
 	@Override
 	protected boolean canHandle(final BookmarkParam param) {
-		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.GROUP) && present(param.getRequestedGroupName()) &&  !present(param.getTagIndex()) && !present(param.getHash()) && !present(param.getOrder()) && !present(param.getSearch());
+		return (param.getGrouping() == GroupingEntity.ALL) && present(param.getSearch());
 	}
 }

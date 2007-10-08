@@ -29,12 +29,11 @@ public class GetBibtexByFriends extends BibTexChainElement {
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		System.out.println("rufe GetBibtexByFriends auf");
 		return this.db.getBibTexByUserFriends(param, session);
 	}
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.FRIEND) && !present(param.getRequestedGroupName()) && !present(param.getRequestedUserName()) && !present(param.getTagIndex()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED);
+		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.FRIEND) && !present(param.getRequestedGroupName()) && !present(param.getRequestedUserName()) && !present(param.getTagIndex()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED) && !present(param.getSearch());
 	}
 }

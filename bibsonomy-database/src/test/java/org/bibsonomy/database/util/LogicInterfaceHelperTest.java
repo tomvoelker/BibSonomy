@@ -21,19 +21,19 @@ public class LogicInterfaceHelperTest {
 	public void buildParam() {
 		GenericParam param = null;
 
-		param = LogicInterfaceHelper.buildParam(BookmarkParam.class, "", null, "", null, "", null, 0, 10);
+		param = LogicInterfaceHelper.buildParam(BookmarkParam.class, "", null, "", null, "", null, 0, 10, null);
 		assertEquals(BookmarkParam.class, param.getClass());
 
-		param = LogicInterfaceHelper.buildParam(BibTexParam.class, "", null, "", null, "", null, 0, 10);
+		param = LogicInterfaceHelper.buildParam(BibTexParam.class, "", null, "", null, "", null, 0, 10, null);
 		assertEquals(BibTexParam.class, param.getClass());
 
-		param = LogicInterfaceHelper.buildParam(TagParam.class, "", null, "", null, "", null, 0, 10);
+		param = LogicInterfaceHelper.buildParam(TagParam.class, "", null, "", null, "", null, 0, 10, null);
 		assertEquals(TagParam.class, param.getClass());
 
-		param = LogicInterfaceHelper.buildParam(UserParam.class, "", null, "", null, "", null, 0, 10);
+		param = LogicInterfaceHelper.buildParam(UserParam.class, "", null, "", null, "", null, 0, 10, null);
 		assertEquals(UserParam.class, param.getClass());
 
-		param = LogicInterfaceHelper.buildParam(GroupParam.class, "", null, "", null, "", null, 0, 10);
+		param = LogicInterfaceHelper.buildParam(GroupParam.class, "", null, "", null, "", null, 0, 10, null);
 		assertEquals(GroupParam.class, param.getClass());
 	}
 }

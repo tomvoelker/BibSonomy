@@ -29,6 +29,6 @@ public class GetBookmarksPopular extends BookmarkChainElement {
 
 	@Override
 	protected boolean canHandle(final BookmarkParam param) {
-		return (param.getGrouping() == GroupingEntity.ALL) && !present(param.getTagIndex()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.POPULAR);
+		return (param.getGrouping() == GroupingEntity.ALL) && !present(param.getTagIndex()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.POPULAR) && !present(param.getSearch());
 	}
 }

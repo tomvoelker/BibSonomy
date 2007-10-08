@@ -71,8 +71,8 @@ public class DBLogic implements LogicInterface {
 		return this.dbLogic.getPostDetails(this.loginUserName, resourceHash, userName);
 	}
 
-	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, int start, int end) {
-		return this.dbLogic.getPosts(this.loginUserName, resourceType, grouping, groupingName, tags, hash, order, start, end);
+	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, int start, int end, String search) {
+		return this.dbLogic.getPosts(this.loginUserName, resourceType, grouping, groupingName, tags, hash, order, start, end, search);
 	}
 
 	public Tag getTagDetails(String tagName) {

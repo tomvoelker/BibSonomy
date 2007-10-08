@@ -29,7 +29,7 @@ public class GetBibTexByAuthorAndTag extends BibTexChainElement{
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return present(param.getGrouping() == GroupingEntity.VIEWABLE) &&present(param.getRequestedUserName())&& !present(param.getRequestedGroupName()) && present(param.getTagIndex()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED);
+		return present(param.getGrouping() == GroupingEntity.VIEWABLE) &&present(param.getRequestedUserName())&& !present(param.getRequestedGroupName()) && present(param.getTagIndex()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED)  && present(param.getSearch());
 	}
 	
 }

@@ -123,7 +123,7 @@ public class RestDatabaseManager implements DBLogicInterface {
 	 * Returns a list of posts; the list can be filtered.
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Resource> List<Post<T>> getPosts(final String authUser, final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end) {
+	public <T extends Resource> List<Post<T>> getPosts(final String authUser, final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end, String search) {
 		final List<Post<T>> result;
 		final DBSession session = this.openSession();
 		try {
@@ -140,11 +140,11 @@ public class RestDatabaseManager implements DBLogicInterface {
 				 * 
 			} else */
 			if (resourceType == BibTex.class) {
-				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, authUser, grouping, groupingName, tags, hash, order, start, end);
+				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, authUser, grouping, groupingName, tags, hash, order, start, end, search);
 				// this is save because of RTTI-check of resourceType argument which is of class T
 				result = ((List) this.bibtexDBManager.getPosts(param, session));
 			} else if (resourceType == Bookmark.class) {
-				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, authUser, grouping, groupingName, tags, hash, order, start, end);
+				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, authUser, grouping, groupingName, tags, hash, order, start, end, search);
 				// this is save because of RTTI-check of resourceType argument which is of class T
 				result = ((List) this.bookmarkDBManager.getPosts(param, session));
 			} else {
@@ -206,7 +206,7 @@ public class RestDatabaseManager implements DBLogicInterface {
 	public List<Tag> getTags(final String authUser, final GroupingEntity grouping, final String groupingName, final String regex, final int start, final int end) {
 		final DBSession session = this.openSession();
 		try {
-			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, authUser, grouping, groupingName, null, null, null, start, end);
+			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, authUser, grouping, groupingName, null, null, null, start, end, null);
 			param.setRegex(regex);
 			return this.tagDBManager.getTags(param, session);
 		} finally {
@@ -220,7 +220,7 @@ public class RestDatabaseManager implements DBLogicInterface {
 	public Tag getTagDetails(final String authUser, final String tagName) {
 		final DBSession session = this.openSession();
 		try {
-			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, authUser, null, authUser, Arrays.asList(tagName), null, null, 0, 1);
+			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, authUser, null, authUser, Arrays.asList(tagName), null, null, 0, 1, null);
 			return this.tagDBManager.getTagDetails(param, session); 
 		} finally {
 			session.close();

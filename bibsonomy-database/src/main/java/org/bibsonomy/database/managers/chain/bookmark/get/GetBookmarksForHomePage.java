@@ -29,6 +29,6 @@ public class GetBookmarksForHomePage extends BookmarkChainElement {
 
 	@Override
 	protected boolean canHandle(final BookmarkParam param) {
-		return present(param.getGrouping()) && param.getGrouping() == GroupingEntity.ALL && !present(param.getTagIndex()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED);
+		return present(param.getGrouping()) && param.getGrouping() == GroupingEntity.ALL && !present(param.getTagIndex()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED) && !present(param.getSearch());
 	}
 }

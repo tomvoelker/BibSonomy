@@ -27,6 +27,6 @@ public class GetBibtexByHash extends BibTexChainElement {
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return present(param.getHash()) && (param.getGrouping() == GroupingEntity.ALL) && !present(param.getTagIndex()) && !present(param.getOrder());
+		return present(param.getHash()) && (param.getGrouping() == GroupingEntity.ALL) && !present(param.getTagIndex()) && !present(param.getOrder())  && !present(param.getSearch());
 	}
 }

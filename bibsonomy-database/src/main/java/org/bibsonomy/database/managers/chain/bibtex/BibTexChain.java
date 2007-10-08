@@ -17,6 +17,7 @@ import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexForUser;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexOfFriendsByTags;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexOfFriendsByUser;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexPopular;
+import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexSearch;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexViewable;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.model.BibTex;
@@ -42,6 +43,7 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByUserFriends;
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByUserAndTagsFriends;
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByFriends;
+	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexSearch;	
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByAuthor;
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByAuthorAndTag;
 
@@ -60,8 +62,9 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 		this.getBibTexByUserFriends = new GetBibtexOfFriendsByUser();
 		this.getBibTexByUserAndTagsFriends = new GetBibtexOfFriendsByTags();
 		this.getBibTexByFriends = new GetBibtexByFriends();
-		this.getBibTexByAuthor=new GetBibTexByAuthor();
-		this.getBibTexByAuthorAndTag=new GetBibTexByAuthorAndTag();
+		this.getBibTexByAuthor = new GetBibTexByAuthor();
+		this.getBibTexByAuthorAndTag = new GetBibTexByAuthorAndTag();
+		this.getBibTexSearch = new GetBibtexSearch();
 		
 		this.getBibTexForHomePage.setNext(this.getBibTexForPopular);
 		this.getBibTexForPopular.setNext(this.getBibTexForUser);
@@ -77,7 +80,8 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 		
 		this.getBibTexByUserFriends.setNext(this.getBibTexByUserAndTagsFriends);
 		this.getBibTexByUserAndTagsFriends.setNext(this.getBibTexByFriends);
-		this.getBibTexByFriends.setNext(this.getBibTexByAuthor);
+		this.getBibTexByFriends.setNext(this.getBibTexSearch);
+		this.getBibTexSearch.setNext(getBibTexByAuthor);
 		this.getBibTexByAuthor.setNext(this.getBibTexByAuthorAndTag);
 		
 	}

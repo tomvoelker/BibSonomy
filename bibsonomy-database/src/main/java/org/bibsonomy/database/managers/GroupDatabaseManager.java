@@ -42,7 +42,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * Returns a list of all groups
 	 */
 	public List<Group> getAllGroups(final int start, final int end, final DBSession session) {
-		final GroupParam param = LogicInterfaceHelper.buildParam(GroupParam.class, null, null, null, null, null, null, start, end);
+		final GroupParam param = LogicInterfaceHelper.buildParam(GroupParam.class, null, null, null, null, null, null, start, end, null);
 		return this.queryForList("getAllGroups", param, Group.class, session);
 	}
 
