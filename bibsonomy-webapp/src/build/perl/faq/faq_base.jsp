@@ -354,12 +354,12 @@
 	    </dd>
 	    <dt>Can I use the dataset for publications?</dt>
 	    <dd>Of course, you can! We are quite interested in results, therefore
-	        please inform us about your publications by using the BibSonomy dataset.
+	        please inform us about your publications by using the ${projectName} dataset.
 	        Concerning citing this data in publications,
 	        please refer to the following reference:
 	        
             <p> Knowledge and Data Engineering Group, University of Kassel: Benchmark
-            Folksonomy Data from ${projectName}, version of June 31st, 2007.</p>
+            Folksonomy Data from ${projectName}, version of December 31st, 2006.</p>
             
             If you want to refer to the system, please use the 
             <a href="/bibtex/1d28c9f535d0f24eadb9d342168836199">following publication</a>:
