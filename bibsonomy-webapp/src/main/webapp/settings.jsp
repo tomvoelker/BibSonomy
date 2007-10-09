@@ -40,6 +40,12 @@
   <sql:param>${user.name}</sql:param>
 </sql:query>
 
+<%-- get API key of user --%>
+<sql:query var="apiKey" dataSource="${dataSource}">
+  SELECT api_key FROM user WHERE user_name = ?
+  <sql:param value="${user.name}"/>  
+</sql:query>
+
 <%-- ------------------------ get users for own group  -------------------------- --%>
 
 <c:set var="hasOwnGroup" value="false"/>
