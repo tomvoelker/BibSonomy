@@ -18,7 +18,7 @@
     <option value="group">group</option>
     <option value="author">author</option> 
     <option value="concept">concept</option> 
-    <option value="all">search:all</option> 
+    <option value="all" selected="selected">search:all</option> 
     <c:if test="${not empty user.name}">
     	<option value="user:<c:out value='${user.name}'/>">search:<c:out value="${user.name}"/></option> 
     </c:if>       
