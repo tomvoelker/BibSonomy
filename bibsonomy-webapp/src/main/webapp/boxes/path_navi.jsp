@@ -16,7 +16,7 @@
 		<c:set var="mode" value="requUser" />
 	</c:if>
 	<c:if test="${not empty user.name and empty param.requUser}">
-		<a onclick="naviSwitchSpecial('<c:out value='${user.name}'/>','<c:out value='${user.name}'/>','explicit_user')" style="cursor:pointer">search:${user.name}</a>
+		<a onclick="naviSwitchSpecial('<c:out value='${projectName}'/>','<c:out value='${user.name}'/>','explicit_user')" style="cursor:pointer">search:${user.name}</a>
 		<c:set var="mode" value="requUser" />
 	</c:if>
 </div>
