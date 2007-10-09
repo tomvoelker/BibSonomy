@@ -342,25 +342,46 @@ function naviSwitchSpecial(target) {
 	
 	// fill select dropdown box with options
 	for(var i = 0; i < options.length; i++) {
-		var optionNode = document.createElement("option");
 		
 		// exception for 'all' case
 		if(options[i] == "all") {
+			
+			var optionNode = document.createElement("option");
 			optionNode.setAttribute("value", options[i]);
 			optionNode.appendChild(document.createTextNode("search:all"));
-		} else if(options[i] == "explicit_user" && username != "" && username != null) {
-			optionNode.setAttribute("value", "user:" + username);
-			optionNode.appendChild(document.createTextNode("search:" + username));
+			
+			if(options[i] == target) {
+				optionNode.setAttribute("selected", "");
+			}
+		
+			selectNode.appendChild(optionNode);
+			
+		} else if(options[i] == "explicit_user") {
+			
+			if(username != "" && username != null) {
+				var optionNode = document.createElement("option");
+				optionNode.setAttribute("value", "user:" + username);
+				optionNode.appendChild(document.createTextNode("search:" + username));
+			
+				if(options[i] == target) {
+					optionNode.setAttribute("selected", "");
+				}
+		
+				selectNode.appendChild(optionNode);
+			}
+			
 		} else {
+			
+			var optionNode = document.createElement("option");
 			optionNode.setAttribute("value", options[i]);
 			optionNode.appendChild(document.createTextNode(options[i]));
-		}
+			
+			if(options[i] == target) {
+				optionNode.setAttribute("selected", "");
+			}
 		
-		if(options[i] == target) {
-			optionNode.setAttribute("selected", "");
-		}
-		
-		selectNode.appendChild(optionNode);		
+			selectNode.appendChild(optionNode);
+		}		
 	}
 	
 	// append dropdown box and spacer

@@ -20,7 +20,11 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
   tagbox  = document.getElementById("tagbox");
   ckey = lckey;
   currUser = lcurrUser;
-  requUser = lrequUser;
+  
+  if(lrequUser != "") {
+  	requUser = lrequUser;
+  }
+  
   projectName = lprojectName;
 
   if (tagbox) {
