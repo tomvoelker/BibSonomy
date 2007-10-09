@@ -11,16 +11,20 @@ var tags_toggle = 0;
 var tags_filter = null;
 var ckey        = null;
 var currUser    = null;
+var requUser	= null;
+var projectName = null;
 
-function init (tagbox_style, tagbox_sort, tagbox_minfreq, requUser, lcurrUser, lckey) {
+function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, lckey, lprojectName) {
   add_hints();
   sidebar = document.getElementById("sidebar");
   tagbox  = document.getElementById("tagbox");
   ckey = lckey;
   currUser = lcurrUser;
+  requUser = lrequUser;
+  projectName = lprojectName;
 
   if (tagbox) {
-    init_tagbox(tagbox_style, tagbox_sort, tagbox_minfreq, requUser);
+    init_tagbox(tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser);
   }
   
   if (sidebar) {  

@@ -299,8 +299,16 @@ function minUsertags(minfreq, currUser) {
 }
 
 // switches page default path to full navigation path
-function naviSwitchSpecial(projectName, username, target) {
-
+function naviSwitchSpecial(target) {
+	
+	var username = null;
+	
+	if(requUser != null) {
+		username = requUser;
+	} else if(currUser != null) {
+		username = currUser;
+	}
+	
 	// obtain fundamental informations
 	var body = document.getElementsByTagName("body")[0];
 	var bar = document.getElementById("path");
