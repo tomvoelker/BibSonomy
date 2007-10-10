@@ -24,9 +24,6 @@
 
 	  <!--             General             -->
 
-
-
-
 	  <div class="section">
 	    <h3 id="faq-general">General</h3>
 	    <a class="up" href="#top" >[up]</a></div>
@@ -43,12 +40,9 @@
 	  </dl>
 	  <!--             Importing and Exporting              -->
 
-
-
 	  <div class="section">
 	    <h3 id="faq-import">Importing and Exporting
 	      Data</h3>
-
 	    <a class="up" href="#top" >[up]</a></div>
 
 	  <dl class="faq">
@@ -75,7 +69,7 @@
 		  select who may view the BibTeX items. If a BibTeX entry has a field
 		  <code>tag = "tagA tagB tagC"</code> or <code>keywords = "tagA tagB tagC"</code>
           then these tags are imported and show up on the summary page which appears after 
-          uploading the file. There you can enter a set of tags for every imported BibTeX entry. 
+	  uploading the file. There you can enter a set of tags for every imported BibTeX entry. 
           The system assigns the tag <em>imported</em> to every BibTeX entry without a tag.
           <br clear="none" />
           If the tags in your BibTeX file are not separated by whitespace (but by comma, e.g.) you
@@ -83,18 +77,7 @@
           the <a href="/post_bibtex" >post bibtex page</a>.
 	    </dd>
 	  </dl>
-
-
-
-
-
 	  <!--              User Interface              -->
-
-
-
-
-
-
 	  <div class="section">
 	    <h3 id="faq-ui">User Interface</h3>
 	    
@@ -140,16 +123,12 @@
 	    will be shown in the cloud.</dd>
 	</dl>
       </dd>
-
-
       <dt>Can I search for multiple terms or tags at the same time?<a name="faq-ui-4" ></a></dt>
       <dd>
 	Yes. Just type more than one tag or term in the tag search field (top left)
 	or the fulltext search field (top right). The search results will include all
 	posts that contain <em>all</em> of the tags or terms.
       </dd>
-
-
       <dt>What does the <a href="/basket" >basket</a> menu item do?<a name="faq-ui-5" ></a></dt>
       <dd>
 	You may have noticed the button titled <em>pick</em> below 
@@ -170,30 +149,19 @@
 
 
     </dl>
-
-
-
-
       <!--              Groups and Privacy              -->
-
-
-
-
 
       <div class="section">
 	<h3 id="faq-privacy">Groups and Privacy</h3>
 	<a class="up" href="#top" >[up]</a></div>
-
       <dl class="faq">
 	<dt>Is it possible to have private posts?<a name="faq-privacy-1" ></a></dt>
-
 	<dd>
 	    Yes, just select <em>private</em> in the <em>viewable for</em> dropdown box
 	    when you post a <a href="/post_bookmark" >bookmark</a> or
 	    a <a href="/post_bibtex" >publication</a>. Private posts
 	    will only be visible to the user who posted them.
 	</dd>
-
 	<dt>Is it possible to have a group of users sharing public and
 	  private resources?<a name="faq-privacy-2" ></a></dt>
 
@@ -267,10 +235,6 @@
 
       <!--              Handling Publications              -->
 
-
-
-
-
       <div class="section">
 	<h3 id="faq-pub">Handling Publications</h3>
 
@@ -332,8 +296,6 @@
           <!--            Bechmark DataSet            -->
 
 
-
-
 	  <div class="section">
 	    <h3 id="faq-dataset">Get a benchmark dataset of ${projectName}</h3>
 	    <a class="up" href="#top" >[up]</a></div>
@@ -342,19 +304,19 @@
 	    <dt>How can I get a dataset of ${projectName}?<a name="faq-dataset-1" ></a></dt>
 	    <dd>We offer a benchmark dataset in form of an SQL dump to interested people.
 	     Before you get access to our dataset, you have to sign up our 
-         <a href="/help/BibSonomy_Agreement.pdf" >data agreement</a>
+         <a href="/help/BibSonomy_Agreement.pdf" >licence agreement</a>
 	     and send it via fax to our office.
 	    </dd>
 	    <dt>Can I use the dataset for publications?<a name="faq-dataset-2" ></a></dt>
-	    <dd>Of course, you can! Concerning citing this data in publications,
-	        please refer to the following reference:
+	    <dd>Of course, you can! Please drop us a line at <jsp:directive.include file="/boxes/emailaddress.jsp" /> once your publication is accepted.
+	        Concerning citing this data in publications, please refer to the following reference:
 	        
             <p> Knowledge and Data Engineering Group, University of Kassel: Benchmark
-            Folksonomy Data from ${projectName}, version of June 31st, 2007.</p>
+            Folksonomy Data from ${projectName}, version of June 30th, 2007.</p>
             
             If you want to refer to the system, please use the 
             <a href="/bibtex/1d28c9f535d0f24eadb9d342168836199" >following publication</a>:
-            
+        
             <p>Andreas Hotho, Robert Jäschke, Christoph Schmitz, and Gerd
             Stumme. BibSonomy: A Social Bookmark and Publication Sharing System. In
             Aldo de Moor, Simon Polovina, and Harry Delugach, editors, <em>Proceedings
@@ -363,8 +325,5 @@
             July 2006. Aalborg University Press.</p>
 	    </dd>
 	  </dl>
-
-
-
     </li>
   </div>
