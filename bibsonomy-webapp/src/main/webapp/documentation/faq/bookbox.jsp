@@ -350,7 +350,7 @@
 	        please refer to the following reference:
 	        
             <p> Knowledge and Data Engineering Group, University of Kassel: Benchmark
-            Folksonomy Data from ${projectName}, version of December 31st, 2006.</p>
+            Folksonomy Data from ${projectName}, version of June 31st, 2007.</p>
             
             If you want to refer to the system, please use the 
             <a href="/bibtex/1d28c9f535d0f24eadb9d342168836199" >following publication</a>:
