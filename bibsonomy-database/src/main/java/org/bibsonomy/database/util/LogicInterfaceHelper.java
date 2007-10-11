@@ -38,7 +38,12 @@ public class LogicInterfaceHelper {
 		param.setHash(hash);
 		param.setOrder(order);
 		param.setOffset(start);
-		param.setLimit(end - start);
+		if (end - start < 0 ) {
+			param.setLimit(0);
+		}
+		else {
+			param.setLimit(end - start);
+		}
 		if (tags != null) {
 			for (String tag : tags) {
 				tag = tag.trim();
