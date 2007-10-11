@@ -2,6 +2,15 @@
 <!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
 
 <sqlMapConfig>
+
+	<!-- 
+		define query timeout - works only with mysql-connector-java
+		version 5.0.5+ (dbe, 20071010)
+	-->	
+	<settings
+		defaultStatementTimeout="15"
+	/>
+
 	<typeAlias alias="date" type="java.util.Date" />
 	<typeAlias alias="url" type="java.net.URL" />
 	<typeHandler javaType="url" callback="org.bibsonomy.database.typehandler.UrlTypeHandlerCallback" />
