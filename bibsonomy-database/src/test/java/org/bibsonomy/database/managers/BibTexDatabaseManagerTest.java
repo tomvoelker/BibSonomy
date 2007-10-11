@@ -24,6 +24,7 @@ import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.testutil.DatabasePluginMock;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.testutil.ParamUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -454,6 +455,28 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final List <Post<BibTex>> post=this.bibTexDb.getBibTexByAuthorAndTag(this.bibtexParam, this.dbSession);
 		System.out.println("Anzahl der Post: "+post.size());
 	}
+	
+	/**
+	 * tests whether the query timeout specified in SqlMapConfig.xml works
+	 * done by retrieving all bibtex entries of user dblp, which will take longer
+	 * than 10 seconds
+	 */
+	@Ignore // we don't want to wait 10 seconds each time we run the tests
+	public void testQueryTimeout() {
+		this.resetParameters();
+		this.bibtexParam.setUserName("dblp");
+		this.bibtexParam.setRequestedUserName("dblp");
+		this.bibtexParam.setLimit(100000000); 
+		this.bibtexParam.setOffset(0);
+		this.bibtexParam.setGroupId(GroupID.PUBLIC.getId());
+		//this.bibTexDb.getBibTexByAuthorAndTag(this.bibtexParam, this.dbSession);
+		try {
+			final List <Post<BibTex>> posts = this.bibTexDb.getBibTexForUser(this.bibtexParam, this.dbSession);
+			fail();
+		} catch (Exception e) {
+			// timeout
+		}
+	}	
 	
 	
 }
