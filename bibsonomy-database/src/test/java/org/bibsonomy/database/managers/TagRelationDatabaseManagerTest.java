@@ -44,7 +44,7 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	@Test
 	public void testInsertNewRelations() {
 		final Integer newId1 = this.generalDb.getNewContentId(ConstantID.IDS_TAGREL_ID, this.dbSession);
-		this.tagRelDb.insertRelations(tag, this.getClass().getName() + "-user", this.dbSession);
+		this.tagRelDb.insertRelations(tag, "test-user", this.dbSession);
 		final Integer newId2 = this.generalDb.getNewContentId(ConstantID.IDS_TAGREL_ID, this.dbSession);
 		assertEquals(newId1 + 3, newId2);
 	}
@@ -52,8 +52,8 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	@Test
 	public void testInsertExistingRelations() {
 		final Integer newId1 = this.generalDb.getNewContentId(ConstantID.IDS_TAGREL_ID, this.dbSession);
-		this.tagRelDb.insertRelations(tag, this.getClass().getName() + "-user", this.dbSession);
-		this.tagRelDb.insertRelations(tag, this.getClass().getName() + "-user", this.dbSession);
+		this.tagRelDb.insertRelations(tag, "test-user", this.dbSession);
+		this.tagRelDb.insertRelations(tag, "test-user", this.dbSession);
 		final Integer newId2 = this.generalDb.getNewContentId(ConstantID.IDS_TAGREL_ID, this.dbSession);
 		assertEquals(newId1 + 3, newId2);
 	}
