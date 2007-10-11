@@ -158,7 +158,13 @@ public final class RestServlet extends HttpServlet {
 			response.setCharacterEncoding("UTF-8");
 
 			// send answer
-			response.setStatus(HttpServletResponse.SC_OK);
+			if (method.equals(HttpMethod.POST)) {
+				// if a POST request completes successfully this means that a resource has been created
+				response.setStatus(HttpServletResponse.SC_CREATED);
+			}
+			else {
+				response.setStatus(HttpServletResponse.SC_OK);
+			}
 			final ByteArrayOutputStream cachingStream = new ByteArrayOutputStream();
 			final Writer writer = new OutputStreamWriter(cachingStream, Charset.forName("UTF-8"));
 
