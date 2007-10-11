@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.AbstractDatabaseManager;
@@ -464,8 +465,8 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * Inserts a post with a publication into the database.
 	 */
 	protected void insertBibTexPost(final Post<BibTex> post, final DBSession session) {
-		if (present(post.getResource()) == false) throw new RuntimeException("There is no resource for this post.");
-		if (present(post.getGroups()) == false) throw new RuntimeException("There are no groups for this post.");
+		if (present(post.getResource()) == false) throw new InvalidModelException("There is no resource for this post.");
+		if (present(post.getGroups()) == false) throw new InvalidModelException("There are no groups for this post.");
 
 		final BibTexParam param = new BibTexParam();
 		param.setResource(post.getResource());
