@@ -44,7 +44,7 @@ public class PostPostStrategy extends AbstractCreateStrategy {
 			return this.getLogic().createPost(post);
 		}
 		catch ( InvalidModelException ex ) {
-			throw new BadRequestOrResponseException(ex);
+			throw new BadRequestOrResponseException(ex.getMessage());
 		}
 		catch ( ResourceNotFoundException ex ) {
 			throw new NoSuchResourceException(ex.getMessage());
