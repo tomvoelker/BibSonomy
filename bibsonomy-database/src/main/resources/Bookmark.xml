@@ -100,8 +100,8 @@
 
 	<select id="getBookmarkByHash" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT b.content_id, t.tag_name, title, description, b.user_name, b.date, 
-		       b.book_url_hash AS interHash, b.book_url_hash AS intraHash, u.book_url, u.book_url_ctr AS count, NULL AS group_name, NULL AS `group`
-		FROM (SELECT book_url_hash, book_description AS title, book_extended AS description, user_name, date,content_id
+		       b.book_url_hash AS interHash, b.book_url_hash AS intraHash, u.book_url, u.book_url_ctr AS count, NULL AS group_name, t.group AS `group`
+		FROM (SELECT book_url_hash, book_description AS title, book_extended AS description, user_name, date, content_id
 		      FROM bookmark
 		      WHERE book_url_hash = #hash#
 		            AND bookmark.group = #groupType#
