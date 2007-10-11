@@ -1,11 +1,14 @@
 package org.bibsonomy.database.managers;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.AbstractDatabaseManager;
@@ -293,6 +296,9 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * Inserts a post with a bookmark into the database.
 	 */
 	protected void insertBookmarkPost(final Post<Bookmark> post, final DBSession session) {
+		if (present(post.getResource()) == false) throw new InvalidModelException("There is no resource for this post.");
+		if (present(post.getGroups()) == false) throw new InvalidModelException("There are no groups for this post.");
+		
 		final BookmarkParam param = new BookmarkParam();
 		param.setResource(post.getResource());
 		param.setDate(post.getDate());
@@ -361,14 +367,13 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 			}
 			// Delete al tags according bookmark
 			this.tagDb.deleteTags(oneBookmark, session);
-			// Update SimHashes
-			for (final int i : new int[] { 0, 1 }) {
-				final HashID simHash = HashID.getSimHash(i);
-				param.setRequestedSimHash(simHash);
-				param.setHash(SimHash.getSimHash(((Bookmark) oneBookmark.getResource()), simHash));
-				// Decrement counter in url table
-				this.updateBookmarkHash(param, session);
-			}
+			// Update SimHashes - as for bookmarks currently all simhashes are the same, 
+			// we only update one and are done			
+			final HashID simHash = HashID.getSimHash(0);
+			param.setRequestedSimHash(simHash);
+			param.setHash(SimHash.getSimHash(((Bookmark) oneBookmark.getResource()), simHash));
+			// Decrement counter in url table
+			this.updateBookmarkHash(param, session);
 			// Delete entry from table bookmark
 			this.deleteBookmark(param, session);
 
