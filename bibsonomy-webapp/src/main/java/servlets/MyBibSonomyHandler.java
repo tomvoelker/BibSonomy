@@ -30,9 +30,25 @@ public class MyBibSonomyHandler extends HttpServlet {
 	}
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		 
 		UserBean user = SessionSettingsFilter.getUser(request);
+		
 		if (user.getName() != null) {
-			response.sendRedirect("/user/" + URLEncoder.encode(user.getName(), "UTF-8"));
+				if (request.getRequestURI().equals("/myBibSonomy")){
+					response.sendRedirect("/user/" + URLEncoder.encode(user.getName(), "UTF-8"));
+				}
+				if (request.getRequestURI().equals("/myBibTeX")){
+					response.sendRedirect("/user/" + URLEncoder.encode(user.getName(), "UTF-8") + "?items=1000");
+				}
+				if (request.getRequestURI().equals("/myRelations")){
+					response.sendRedirect("/relations/" + URLEncoder.encode(user.getName(), "UTF-8"));
+				}
+				if (request.getRequestURI().equals("/myPDF")){
+					response.sendRedirect("/user/" + URLEncoder.encode(user.getName(), "UTF-8") + "?filter=myPDF");
+				}
+				if (request.getRequestURI().equals("/myDuplicates")){
+					response.sendRedirect("/user/" + URLEncoder.encode(user.getName(), "UTF-8") + "?filter=myDuplicates");
+				}
 		} else {
 			response.sendRedirect("/login");
 		}
