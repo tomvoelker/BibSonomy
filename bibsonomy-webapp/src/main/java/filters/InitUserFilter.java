@@ -154,6 +154,15 @@ public class InitUserFilter implements Filter {
 			// get password sent by client in HTTP Authentication Header
 			String userpassDecoded = getUserPassFromHTTPBasicAuthHeader(httpServletRequest);
 			    
+			/*
+			 * FIXME: The password is expected to be already MD5-encoded (as in the cookie).
+			 * This is typically not the case (i.e., user enters password in browser), but 
+			 * we decided to do it this way because we implemented this mechanism exclusively
+			 * for integration of publication lists into CMS. There cookie handling is often
+			 * difficult and one does not want the cleartext password to be written into the 
+			 * CMS (at least in our (eecs) scenario).
+			 */
+			
 			// try to authenticate user
 			user = DBUserManager.getSettingsForUser(httpServletRequest.getRemoteUser(), userpassDecoded);
 		}
