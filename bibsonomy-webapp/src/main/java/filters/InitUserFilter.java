@@ -145,6 +145,17 @@ public class InitUserFilter implements Filter {
 			} catch (Exception e)  {
 				log.info("certificate authentication failed");
 			}
+		} else if (HttpServletRequest.BASIC_AUTH.equals(httpServletRequest.getAuthType())) {
+			/*
+			 * HTTP BASIC AUTHENTICATION
+			 */
+			log.info("auth via http basic auth");
+			
+			// get password sent by client in HTTP Authentication Header
+			String userpassDecoded = getUserPassFromHTTPBasicAuthHeader(httpServletRequest);
+			    
+			// try to authenticate user
+			user = DBUserManager.getSettingsForUser(httpServletRequest.getRemoteUser(), userpassDecoded);
 		}
 
 		if (user == null) {
@@ -183,6 +194,30 @@ public class InitUserFilter implements Filter {
 		// Pass control on to the next filter
 		chain.doFilter(request, response);		
 
+	}
+
+
+	/** Returns the password contained in a HTTP (Basic) authentication header.
+	 * 
+	 * @author rja
+	 * @param httpServletRequest
+	 * @return
+	 * @throws IOException
+	 */
+	private String getUserPassFromHTTPBasicAuthHeader(HttpServletRequest httpServletRequest) {
+		// get the user:password from the header
+		final String userpassEncoded = httpServletRequest.getHeader("Authentication").substring(6);
+
+		// Decode it, using any base 64 decoder
+		final String userpassDecoded = new String (Base64.decodeBase64(userpassEncoded.getBytes()));
+		
+		// extract password from string
+		int p = userpassDecoded.indexOf(":");
+		if (p != -1) {
+			// password after :
+			return userpassDecoded.substring(p+1);
+		}
+		return null; 
 	}
 
 	/**
