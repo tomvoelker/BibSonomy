@@ -145,8 +145,7 @@ public abstract class AbstractQuery<T> {
 	protected RenderingFormat getRenderingFormat() {
 		return this.renderingFormat;
 	}
-
-	/**
+    /*
 	 * @param renderingFormat
 	 *            the {@link RenderingFormat} to use.
 	 */
@@ -163,7 +162,7 @@ public abstract class AbstractQuery<T> {
 	}
 	
 	public boolean isSuccess() {
-		if (this.getHttpStatusCode() == HttpStatus.SC_OK)
+		if (this.getHttpStatusCode() == HttpStatus.SC_OK || this.getHttpStatusCode() == HttpStatus.SC_CREATED)
 			return true;
 		return false;						
 	}
