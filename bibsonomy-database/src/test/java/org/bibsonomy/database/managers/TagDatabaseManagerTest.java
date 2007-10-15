@@ -65,7 +65,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getTagsByExpression() {
 		this.tagParam.setLimit(1000);
 		List<Tag> tags = this.tagDb.getTagsByExpression(this.tagParam, this.dbSession);
-		assertEquals(161,tags.size());
+		assertEquals(162,tags.size());
 		this.resetParameters();		
 	}
 
@@ -88,7 +88,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getTags() {
 		this.tagParam.setLimit(1000);
 		List<Tag> tags = this.tagDb.getTags(this.tagParam, this.dbSession);		
-		assertEquals(161,tags.size());
+		assertEquals(162,tags.size());
 		this.resetParameters();			
 	}		
 	

@@ -32,7 +32,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getBookmarkByTagNames() {
 		final List<Post<Bookmark>> posts = this.bookmarkDb.getBookmarkByTagNames(this.bookmarkParam, this.dbSession);
-		assertEquals(9, posts.size());
+		assertEquals(10, posts.size());
 	}
 
 	@Test
@@ -221,8 +221,8 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getPosts() {
-		this.bookmarkParam.setHash("");
+		this.bookmarkParam.setHash(null);
 		final List<Post<Bookmark>> posts = this.bookmarkDb.getPosts(this.bookmarkParam, this.dbSession);
-		assertEquals(9, posts.size());
+		assertEquals(10, posts.size());
 	}
 }
