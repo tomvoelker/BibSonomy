@@ -31,7 +31,7 @@ ctag
 	String t;
 	if (tagobj.tagCount() > Tag.MAX_TAGS_ALLOWED) return;
 }
-    :    t = tag {lasttag=t;} (uprel | lorel)*  
+    :    lasttag = tag (uprel | lorel)*  
     ;
  
 //	<- tag
@@ -39,7 +39,7 @@ uprel
 {
 	String t;
 }
-    :    LEFTARROW t = tag  {tagobj.addTagRelation(t, lasttag); tagobj.addTag(t); tagobj.addTag(lasttag); lasttag=t;}
+    :    LEFTARROW t = tag  {tagobj.addTagRelation(t, lasttag); lasttag=t;}
     ;
 
 // 	-> tag
@@ -47,7 +47,7 @@ lorel
 {
 	String t;
 }
-    :    RIGHTARROW t = tag {tagobj.addTagRelation(lasttag, t); tagobj.addTag(t); tagobj.addTag(lasttag); lasttag=t;}
+    :    RIGHTARROW t = tag {tagobj.addTagRelation(lasttag, t); lasttag=t;}
     ;
 
 // 	TAG

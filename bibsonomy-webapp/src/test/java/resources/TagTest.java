@@ -1,5 +1,7 @@
 package resources;
 
+import static org.junit.Assert.*;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
@@ -11,10 +13,10 @@ public class TagTest {
 	@Test
 	public void isEmpty() {
 		Tag t = new Tag();
-		assert t.getTagrelations().isEmpty();
-		assert t.getTags().isEmpty();
-		assert t.getForUsers().isEmpty();
-		assert t.getTagString() == null || t.getTagString().trim().equals("");
+		assertTrue(t.getTagrelations().isEmpty());
+		assertTrue(t.getTags().isEmpty());
+		assertTrue(t.getForUsers().isEmpty());
+		assertTrue(t.getTagString() == null || t.getTagString().trim().equals(""));
 	}
 
 	/*
@@ -33,9 +35,9 @@ public class TagTest {
 
 		Set<String> realSet = t.getTags();
 
-		assert testSet.equals(realSet);
-		assert t.getTagrelations().isEmpty();
-		assert t.getForUsers().isEmpty();
+		assertEquals(realSet, testSet);
+		assertTrue(t.getTagrelations().isEmpty());
+		assertTrue(t.getForUsers().isEmpty());
 	}
 
 	/*
@@ -51,9 +53,9 @@ public class TagTest {
 		t.setTags("foo bar");
 		Set<String> realSet = t.getTags();
 
-		assert testSet.equals(realSet);
-		assert t.getTagrelations().isEmpty();
-		assert t.getForUsers().isEmpty();
+		assertEquals(realSet, testSet);
+		assertTrue(t.getTagrelations().isEmpty());
+		assertTrue(t.getForUsers().isEmpty());
 	}
 
 	/*
@@ -72,27 +74,27 @@ public class TagTest {
 		testSet.add("bar");
 		testSet.add("eins");
 		testSet.add("zwei");
-		assert t.getTags().equals(testSet);
+		assertEquals(t.getTags(), testSet);
 
 		// check tagrelations
 		HashSet<TagRelation> testSet2 = new HashSet<TagRelation>();
 		testSet2.add(new TagRelation("bar", "foo"));
 		testSet2.add(new TagRelation("foo", "bar"));
 
-		assert t.getTagrelations().equals(testSet2);
+		assertEquals(testSet2, t.getTagrelations());
 
 		// check for:users
 		HashSet<String> testSet3 = new HashSet<String>();
 		testSet3.add("klaus");
 		testSet3.add("manni");
-		assert t.getForUsers().equals(testSet3);
+		assertEquals(testSet3, t.getForUsers());
 
 		// adding user names to tag set
 		t.addForTag("klaus");
 		t.addForTag("manni");
 		testSet.add("for:klaus");
 		testSet.add("for:manni");
-		assert t.getTags().equals(testSet);
+		assertEquals(t.getTags(), testSet);
 	}
 
 	/*
@@ -107,22 +109,22 @@ public class TagTest {
 		// check tags
 		TreeSet<String> testSet = new TreeSet<String>();
 		testSet.add("foo");
-		assert t.getTags().equals(testSet);
+		assertEquals(t.getTags(), testSet);
 		
 		// check relations
 		HashSet<TagRelation> testSet2 = new HashSet<TagRelation>();
 		testSet2.add(new TagRelation("bar", "foo"));
-		assert t.getTagrelations().equals(testSet2);
+		assertEquals(t.getTagrelations(), testSet2);
 		
 		// check users
 		HashSet<String> testSet3 = new HashSet<String>();
 		testSet3.add("klaus");
-		assert t.getForUsers().equals(testSet3);
+		assertEquals(t.getForUsers(), testSet3);
 	
 		// adding user names to tag set
 		testSet.add("for:klaus");
 		t.addForTag("klaus");
-		assert t.getTags().equals(testSet);
+		assertEquals(t.getTags(), testSet);
 	}
 	
 	/*
@@ -144,13 +146,13 @@ public class TagTest {
 		// check tags
 		TreeSet<String> testSet = new TreeSet<String>();
 		testSet.add("foo");
-		assert neu.getTags().equals(testSet);
+		assertEquals(neu.getTags(), testSet);
 		
 		// check relations
-		assert neu.getTagrelations().isEmpty();
+		assertTrue(neu.getTagrelations().isEmpty());
 		
 		// check users
-		assert neu.getForUsers().isEmpty();
+		assertTrue(neu.getForUsers().isEmpty());
 	
 	}
 	
@@ -172,8 +174,8 @@ public class TagTest {
 		testSet.add(r);
 		testSet.add(u);
 		
-		assert t.getTags().isEmpty();
-		assert t.getTagrelations().equals(testSet);
+		assertTrue(t.getTags().isEmpty());
+		assertEquals(t.getTagrelations(), testSet);
 		
 	}
 	
@@ -183,7 +185,7 @@ public class TagTest {
 	@Test
 	public void setTag2Works (){
 		Tag t = new Tag();
-		t.setTags("graphtheory evolution graph graphgenerator network researcher<-dorogovtsev");
+		t.setTags("graphtheory evolution graph graphgenerator network researcher<-dorogovtsev brocken->berg");
 		
 		// check tags by constructing similar tag set
 		TreeSet<String> testSet = new TreeSet<String>();
@@ -194,15 +196,18 @@ public class TagTest {
 		testSet.add("researcher");
 		testSet.add("dorogovtsev");
 		testSet.add("graphgenerator");
-		assert t.getTags().equals(testSet);
+		testSet.add("brocken");
+		testSet.add("berg");
+		assertEquals(t.getTags(), testSet);
 
 		// check tagrelations
 		HashSet<TagRelation> testSet2 = new HashSet<TagRelation>();
 		testSet2.add(new TagRelation("dorogovtsev", "researcher"));
+		testSet2.add(new TagRelation("brocken", "berg"));
 
 		System.out.println(testSet2);
 		System.out.println(t.getTagrelations());
 		
-		assert t.getTagrelations().equals(testSet2);
+		assertEquals(t.getTagrelations(), testSet2);
 	}
 }
