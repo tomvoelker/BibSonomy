@@ -28,7 +28,6 @@ tagstring
 //	tag (uprel|lorel)*
 ctag
 {
-	String t;
 	if (tagobj.tagCount() > Tag.MAX_TAGS_ALLOWED) return;
 }
     :    lasttag = tag (uprel | lorel)*  
