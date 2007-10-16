@@ -6,6 +6,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.model.Author;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.util.BibtexUtils;
 
 import helpers.url;
@@ -379,12 +381,12 @@ public class Bibtex extends Resource {
 	
 	private List<String> getPersonlist (String s) {
 		List<String> persons = new LinkedList<String>();
-		if (s != null) {
-			Scanner t = new Scanner(s);
-			t.useDelimiter(" and ");
-			while (t.hasNext()) {
-				persons.add(t.next());
-			}
+		if (s == null) {
+			return persons;
+		}
+		final List<Author> authors = BibTex.getAuthorList(s);
+		for (final Author a : authors) {
+			persons.add(a.getName());
 		}
 		return persons;
 	}
@@ -394,56 +396,12 @@ public class Bibtex extends Resource {
 	 * @return List of names separated to the firstname and lastname
 	 */
 	private List<String[]> getNamesSeparated(String s) {
-		List<String[]> authors = new LinkedList<String[]>();		
-				
+		final List<String[]> authors = new LinkedList<String[]>();
 		if (s != null) {
-			/*
-			 * all persons
-			 */
-			List<String> names = getPersonlist(s);
-			Pattern pattern = Pattern.compile("[0-9]+"); // only numbers
-
-			
-			for (String person:names) {
-				/*
-				 * extract all parts of a name
-				 */
-				List<String> nameList = new LinkedList<String>();
-				StringTokenizer token = new StringTokenizer(person);
-				while (token.hasMoreTokens()) {
-					/*
-					 * ignore numbers (from DBLP author names) 
-					 */
-					final String part = token.nextToken();
-					if (!pattern.matcher(part).matches()) {
-						nameList.add(part);	
-					}
-				}
-
-				/*
-				 * detect firstname and lastname
-				 */
-				StringBuffer firstName = new StringBuffer();
-				int i = 0;
-				while (i < nameList.size() - 1) { // iterate up to the last but one part
-					final String part = nameList.get(i++);
-					firstName.append(part + " ");
-					/*
-					 * stop, if this is the last abbreviated forename 
-					 */
-					if (part.contains(".") && !nameList.get(i).contains(".")) {
-						break;
-					}
-				}				
-
-				StringBuffer lastName = new StringBuffer();
-				while (i < nameList.size()) {
-					lastName.append(nameList.get(i++) + " ");
-				}
-
-				// add name to list
-				authors.add(new String[]{firstName.toString().trim(), lastName.toString().trim()});
-			}			
+			final Collection<Author> authorObjs = BibTex.getAuthorList(s);
+			for (final Author a : authorObjs) {
+				authors.add(new String[] {a.getFirstName(), a.getLastName()});
+			}
 		}		
 		return authors;	
 	}	
