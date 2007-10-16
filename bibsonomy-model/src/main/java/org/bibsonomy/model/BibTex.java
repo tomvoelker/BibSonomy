@@ -1,5 +1,9 @@
 package org.bibsonomy.model;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Scanner;
+
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.util.SimHash;
 
@@ -33,12 +37,14 @@ public class BibTex extends Resource {
 	private String address;
 	private String annote;
 	private String author;
+	private List<Author> authorList;
 	private String title;
 	private String booktitle;
 	private String chapter;
 	private String crossref;
 	private String edition;
 	private String editor;
+	private List<Author> editorList;
 	private String howpublished;
 	private String institution;
 	private String organization;
@@ -88,6 +94,28 @@ public class BibTex extends Resource {
 
 	public void setAuthor(String author) {
 		this.author = author;
+		this.authorList = null;
+	}
+	
+	public List<Author> getAuthorList() {
+		if (this.authorList == null) {
+			this.authorList = getAuthorList(this.author);
+		}
+		return this.authorList;
+	}
+	
+	public static List<Author> getAuthorList(String authorField) {
+		List<Author> authors = new LinkedList<Author>();
+		if (authorField != null) {
+			Scanner t = new Scanner(authorField);
+			t.useDelimiter(" and ");
+			while (t.hasNext()) {
+				final Author a = new Author();
+				a.setName(t.next());
+				authors.add(a);
+			}
+		}
+		return authors;
 	}
 
 	public String getBibtexAbstract() {
@@ -160,6 +188,14 @@ public class BibTex extends Resource {
 
 	public void setEditor(String editor) {
 		this.editor = editor;
+		this.editorList = null;
+	}
+	
+	public List<Author> getEditorList() {
+		if (this.editorList == null) {
+			this.editorList = getAuthorList(this.editor);
+		}
+		return this.editorList;
 	}
 
 	public String getEntrytype() {
