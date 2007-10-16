@@ -3,21 +3,43 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="homepage" class="org.bibsonomy.webapp.controller.HomepageController" />
-	<bean id="posts" class="org.bibsonomy.webapp.controller.PostsController" />
-
-	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-		<property name="urlMap">
-			<map>
-				<entry key="/new/"><ref bean="homepage" /></entry>
-				<entry key="/new/posts/*"><ref bean="posts" /></entry>
-			</map>
-		</property>
+	<bean id="controllerBase" class="org.bibsonomy.webapp.util.spring.controller.MinimalisticControllerSpringWrapper" abstract="true">
 	</bean>
 
+	<bean id="urlMapping" class="org.bibsonomy.webapp.util.spring.handler.RoundTripELHandlerMapping">
+		<constructor-arg>
+			<map>
+				<entry key="/new(/${requestedUser})">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="homepageController"/>
+					</bean>
+				</entry>
+			</map>
+		</constructor-arg>
+	</bean>
+	
+	<bean id="requestHolder" class="org.bibsonomy.webapp.util.spring.factorybeans.Holder" scope="request"/>
+	
+	<bean id="homepageController" class="org.bibsonomy.webapp.controller.HomepageController" scope="request">
+		<property name="postLogic" ref="postLogic"/>
+		<property name="userSettings" ref="userSettings"/>
+	</bean>
+
+	<bean id="request" class="org.bibsonomy.webapp.util.spring.factorybeans.RequestFactoryBean" scope="request">
+		<property name="requestHolder"><ref bean="requestHolder"/></property>
+	</bean>
+	
+	<bean id="postLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.PostLogicFactoryBean" scope="request">
+		<property name="request" ref="request"/>
+	</bean>
+	
+	<bean id="userSettings" class="org.bibsonomy.webapp.util.spring.factorybeans.UserSettingsFactoryBean" scope="request">
+		<property name="request" ref="request"/>
+	</bean>
+	
 	<bean id="viewResolver"	class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
 		<property name="prefix" value="/WEB-INF/jsp/" />
-		<property name="suffix" value=".jsp" />
+		<property name="suffix" value=".jspx" />
 	</bean>
 </beans>
