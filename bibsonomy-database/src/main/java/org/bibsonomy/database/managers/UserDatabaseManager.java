@@ -97,6 +97,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Authenticate a user by comparing his submitted Api key with the one
 	 * stored in the database.
+	 * TODO: rename
 	 * 
 	 * @return boolean true if the Api key is correct, otherwise false
 	 */
@@ -105,5 +106,18 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		final String currentApiKey = this.getApiKeyForUser(username, session);
 		if (currentApiKey == null) return false;
 		return apiKey.equals(currentApiKey);
+	}
+	
+	/**
+	 * Authenticate a user by comparing his submitted password with the one
+	 * stored in the database.
+	 * TODO: rename
+	 * 
+	 * @return boolean true if the password is correct, otherwise false
+	 */
+	public boolean validateUserUserAccess(final String username, final String password, final DBSession session) {
+		if (present(password) == false || present(username) == false) return false;
+		final User found = getUserDetails(username, session);
+		return ((found != null) && (found.getPassword().equals(password)));
 	}
 }
