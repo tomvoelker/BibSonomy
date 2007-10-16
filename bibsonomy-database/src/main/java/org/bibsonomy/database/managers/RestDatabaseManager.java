@@ -227,13 +227,27 @@ public class RestDatabaseManager implements DBLogicInterface {
 		}
 	}
 
-	/*
-	 * Validates user access.
+	/**
+	 * Validates user access via apikey.
+	 * TODO: rename
 	 */
 	public boolean validateUserAccess(final String username, final String apiKey) {
 		final DBSession session = this.openSession();
 		try {
 			return this.userDBManager.validateUserAccess(username, apiKey, session);
+		} finally {
+			session.close();
+		}
+	}
+	
+	/**
+	 * Validates user access via password
+	 * TODO: rename
+	 */
+	public boolean validateUserUserAccess(final String username, final String password) {
+		final DBSession session = this.openSession();
+		try {
+			return this.userDBManager.validateUserUserAccess(username, password, session);
 		} finally {
 			session.close();
 		}
