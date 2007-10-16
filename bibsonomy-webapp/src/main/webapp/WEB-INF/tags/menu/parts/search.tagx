@@ -1,0 +1,22 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+	
+	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="searchString" type="java.lang.String" required="true"/>
+	
+	<c:url var="searchUrl" value="/search"/>
+	<form id="search" method="get" action="${searchUrl}">
+		<c:if test="${!empty loginUserName}">
+			<select name="scope" size="1">
+				<option value="all">all</option>
+				<option>user:<c:out value='${loginUserName}'/></option>
+			</select>  
+		</c:if>
+		<c:set var="escapedSearchString"><c:out value="${searchString}" escapeXml="true"/></c:set>
+		<input type="text" name="q" value="${escapedSearchString}" size="25" id="se"/>
+		<input type="submit" value="search"/>
+	</form>
+</jsp:root>

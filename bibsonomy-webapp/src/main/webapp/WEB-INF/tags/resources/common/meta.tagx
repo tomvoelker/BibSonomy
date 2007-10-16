@@ -1,0 +1,66 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true" />
+	
+
+	<fmt:bundle basename="messages"/>
+
+	<!-- the tags of a resource -->
+	<fmt:message key="tagged.to" />
+	<span class="bmtags">
+		<c:forEach var="tag" items="${post.tags}">
+			<c:set var="tagUrlTemplate">/user/${post.user.name}/<mtl:encode value='${tag.name}'/></c:set>
+			<c:url var="tagUrl" value="${tagUrlTemplate}"/>
+			<a href="${tagUrl}"><c:out value="${tag.name}"/></a>
+			<jsp:text> </jsp:text>
+		</c:forEach>
+		<!-- TODO: add "for:" tags  -->
+		<!-- c:if test="${loginUserName eq post.user.name}">
+			<c:forEach var="foruser" items="${resource.usersToPost}">
+				<a href='${basePath}user/<mtl:encode value="${resource.user}" />/for:<mtl:encode value="${foruser}" />'>for:<c:out value='${foruser}' /></a>
+			</c:forEach>
+		</c:if -->
+	</span>
+	<!-- group of a resource -->
+	<c:forEach var="group" items="${post.groups}">
+		<c:if test="${!empty group.name and group.name ne 'public'}">
+			<c:choose>
+				<c:when test="${group.name eq 'friends'}">
+					<c:set var="groupUrlTemplate">/friend/<mtl:encode value='${post.user.name}'/></c:set>
+					<c:url var="groupUrl" value="${groupUrlTemplate}"/>
+					<fmt:message key="group.as"/> <a href="${groupUrl}"><fmt:message key="friends"/></a>
+				</c:when>
+				<c:otherwise>
+					<c:set var="groupUrlTemplate">/viewable/<mtl:encode value='${group.name}'/></c:set>
+					<c:url var="groupUrl" value="${groupUrlTemplate}"/>
+					<fmt:message key="group.as"/> <a href="${groupUrl}"><c:out value="${resource.group}" /></a>
+				</c:otherwise>
+			</c:choose>
+		</c:if>	
+	</c:forEach>
+
+	<!-- user name of a resource -->
+	<c:if test="${!isUserPage}">
+		<c:url var="taggedByUrl" value="/user/${post.user.name}"/>
+		<fmt:message key="tagged.by" /> <a href="${taggedByUrl}"><c:out value="${post.user.name}" escapeXml="true"/></a>
+	</c:if>
+
+	<c:if test="${!empty post.resource.interHash and fn:length(post.resource.posts) > 2}">
+		<c:set var="style"><mtl:xOtherPersonsStyle value="${fn:length(post.resource.posts)}"/></c:set>
+		<c:url var="otherPeopleUrl" value="${otherPostsUrlPrefix}${post.resource.interHash}"/>
+		<fmt:message key="and" /> <a style="${style}" href="${otherPeopleUrl}">${fn:length(post.resource.posts)-1} <fmt key="other.people"/></a>
+	</c:if>
+	<c:if test="${!empty post.resource.interHash and fn:length(post.resource.posts) == 2}">
+		<c:url var="otherPeopleUrl" value="${otherPostsUrlPrefix}${post.resource.interHash}"/>
+		<fmt:message key="and" /> <a style="background-color:rgb(97%,97%,97%);" href="${otherPeopleUrl}">1 <fmt key="other.person"/></a>
+	</c:if>
+	<fmt:message key="tagged.time.on"/> <fmt:formatDate type="both" pattern="yyyy-MM-dd HH:mm:ss " value="${post.date}"/>
+
+</jsp:root>

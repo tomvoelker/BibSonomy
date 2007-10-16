@@ -1,0 +1,87 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:mtl="/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="basketSize" type="java.lang.Integer" required="true"/>
+	<jsp:directive.attribute name="searchString" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
+	<jsp:directive.attribute name="content" fragment="true" required="true"/>
+	<jsp:directive.attribute name="headerExt" fragment="true" />
+	<jsp:directive.attribute name="sidebar" fragment="true" />
+
+	<fmt:setBundle basename="messages" scope="request"/>
+	
+	<jsp:output doctype-root-element="html"	doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3c.org/TR/xhtml1/DTD/xhtml1-strict.dtd" />
+	<html>
+		<head>
+			<c:url var="resdir" value="/resources"/>
+			<meta http-equiv="content-Type" content="text/html; charset=UTF-8" />
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/style.css" />
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/faq.css" />
+			<link rel="icon" href="${resdir}/image/favicon.png" type="image/png" />
+			<script type="text/javascript" src="${resdir}/javascript/functions.js">&#160;</script>
+			<script type="text/javascript" src="${resdir}/javascript/tooltip.js">&#160;</script>
+			<script type="text/javascript" src="${resdir}/javascript/style.js">&#160;</script>
+			<meta name="author" content="Knowledge and Data Engineering Group, University of Kassel, Germany" />
+			<meta name="copyright" content="Knowledge and Data Engineering Group, University of Kassel, Germany" />
+			<meta name="email" content="webmaster@bibsonomy.org" />
+			<meta name="keywords" lang="de" content="BibTeX, Bookmarks, Folksonomy, Tagging, Wissensverarbeitung, Wissensmanagement, Data Mining, Informatik, Universität Kassel" />
+			<meta name="keywords" lang="en" content="BibTeX, bookmarks, knowledge discovery, folksonomy, tagging, knowledge management, data mining, computer science, University of Kassel" />
+			<meta name="description" lang="de" content="Webapplikation des Fachgebiets Wissensverarbeitung, Universität Kassel" />
+			<meta name="description" lang="en" content="Webapplication of the Knowledge and Data Engineering Group, University of Kassel, Germany" />
+			
+			<link rel="alternate" type="application/atom+xml" title="BibSonomy Blog - Atom" href="http://bibsonomy.blogspot.com/feeds/posts/default" />
+			<link rel="alternate" type="application/rss+xml"  title="BibSonomy Blog - RSS"  href="http://bibsonomy.blogspot.com/feeds/posts/default?alt=rss" />
+			<title><fmt:message key="system.name"/> :: <c:out value="${pageTitle}"/></title>
+			<jsp:invoke fragment="headerExt"/>
+		</head>
+		<body>
+			<h1>
+				<c:url var="root" value="/"/>
+				<a href="${root}" rel="Start"><fmt:message key="system.name"/></a> :: <jsp:invoke fragment="heading"/>
+			</h1>
+			
+			<menu:navi loginUserName="${loginUserName}" searchString="${searchString}" basketSize="${basketSize}" />
+			
+			<div id="outer">
+				<c:if test="${empty user.name}">
+					<div id="general">
+						<p class="smalltext">
+							${projectName} is a system for sharing bookmarks and lists of literature. When 
+							discovering a bookmark or a publication on the web, you can store it on our 
+							server. You can add tags to your entry to retrieve it more easily. This is 
+							very similar to the bookmarks/favorites that you store within your browser. 
+							The advantage of ${projectName} is that you can access your data from  whereever 
+							you are. Furthermore, you can discover more bookmarks and publications from 
+							your friends and other people.
+						</p>
+						<p class="smalltext">
+							This page shows you the latest updates of ${projectName}. Why don't you just 
+							try it yourself? After a free <a href="/register">registration</a>, you can 
+							organise your own bookmarks and publications, and discover related entries.
+						</p>
+					</div>
+				</c:if>
+				<jsp:invoke fragment="content"/>
+			</div>
+			<c:if test="${sidebar != null}">
+				<ul id="sidebar">
+					<jsp:invoke fragment="sidebar"/>
+				</ul>
+			</c:if>
+			<div id="footer"> 
+				<fmt:message key="system.name"/> is offered by the <a href="http://www.kde.cs.uni-kassel.de/index_en.html">Knowledge and Data Engineering Group</a> 
+				of the University of Kassel, Germany.
+				Contact: <!--@include file="/boxes/emailaddress.jsp" -->
+				<script type="text/javascript">init(${user.tagboxStyle}, ${user.tagboxSort}, ${user.tagboxMinfreq}, "<c:out value='${param.requUser}'/>", "${ckey}");</script>  
+			</div>
+		</body>
+	</html>
+
+</jsp:root>

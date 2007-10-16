@@ -1,0 +1,38 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout">
+
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.RessourceViewCommand" required="true"/>	
+	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
+	<jsp:directive.attribute name="sidebar" fragment="true" required="true"/>
+	
+	<c:choose>
+		<c:when test="${command.loginUser != null}">
+			<c:set var="loginUserName" value="${command.loginUser.name}"/>
+		</c:when>
+		<c:otherwise>
+			<c:set var="loginUserName" value="${null}"/>
+		</c:otherwise>
+	</c:choose>
+	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>
+	<layout:layout loginUserName="${loginUserName}" searchString="hurz" basketSize="${1}" pageTitle="${pageTitle}" heading="${heading}" sidebar="${sidebar}">
+		<jsp:attribute name="headerExt">
+			<c:set var="bookRssUrl" value="/rss/${requPath}"/>
+			<link rel="alternate" type="application/rss+xml" title="Bookmark RSS feed for /${requPath}" href="${bookRssUrl}" />
+			<c:set var="bibRssUrl" value="/publrss/${requPath}"/>
+			<link rel="alternate" type="application/rss+xml" title="Publication RSS feed for /${requPath}" href="${bibRssUrl}" />
+			<c:set var="burstUrl" value="/burst/${requPath}"/>
+			<link rel="alternate" type="application/rss+xml" title="BuRST RSS feed for /${requPath}" href="${burstUrl}" />
+		</jsp:attribute>
+		<jsp:attribute name="content">
+			<resources:bookmarks listView="${command.bookmark}" loginUserName="${loginUserName}" otherParams="bibtex.start=${command.bibtex.start}" disableActions="${false}" requPath="${requPath}"/>
+			<resources:bibtexs listView="${command.bibtex}" loginUserName="${loginUserName}" otherParams="bookmark.start=${command.bookmark.start}" disableActions="${false}" requPath="${requPath}"/>
+		</jsp:attribute>
+	</layout:layout>
+</jsp:root>

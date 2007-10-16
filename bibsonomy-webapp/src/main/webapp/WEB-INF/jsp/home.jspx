@@ -1,0 +1,29 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout">
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="/new/">
+		<jsp:attribute name="heading">
+			<c:url var="specialSearchUrl" value="/specialsearch"/>
+			<form id="specialsearch" method="get" action="${specialSearchUrl}">
+				<select name="scope" size="1" id="scope">
+					<option value="tag">tag</option>
+					<option value="user">user</option>
+					<option value="group">group</option>
+					<option value="author">author</option>    
+				</select>
+				::
+				<input type="text" id="inpf" name="q" size="25" />
+			</form>
+		</jsp:attribute>
+		<jsp:attribute name="sidebar">
+			<!--@include file="/boxes/tags/busytags.jsp"-->
+		</jsp:attribute>
+	</layout:resourceLayout>
+
+</jsp:root>

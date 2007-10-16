@@ -1,0 +1,86 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+	
+	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListView" required="true"/>
+	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="otherParams" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="true"/>
+	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
+	
+	<rc:list
+		titleKey="publications" 
+		loginUserName="${loginUserName}"
+		listViewStartParamName="bibtex.start"
+		otherParams="${otherParams}"
+		otherPostsUrlPrefix="/url/"
+		disableActions="${disableActions}"
+		listView="${listView}">
+		<jsp:attribute name="formatButtons">
+			<!-- Buttons to show content of page in different formats -->
+			<c:url var="rssPath" value="/publrss/${requPath}"/>
+			<a href="${rssPath}"><img alt="RSS" src="/resources/image/rss.png"/></a>
+			<c:url var="bibPath" value="/bib/${requPath}"/>
+			<a href="${bibPath}"><img alt="BibTeX" src="/resources/image/bibtex.png"/></a>
+			<c:url var="burstPath" value="/burst/${requPath}"/>
+			<a href="${burstPath}"><img alt="RDF" src="/resources/image/rdf.png"/></a>
+			<c:url var="exportPath" value="/export/${requPath}"/>
+			<a href="${exportPath}"><img alt="other export options" src="/resources/image/more.png"/></a>
+		</jsp:attribute>
+		<jsp:attribute name="title">
+			<!-- c:if test='${not empty post.resource.docHash}'> 
+				<a href="/documents/${resource.docHash}"><img alt="PDF" src="/resources/image/document-txt-blue.png" style="float: left;"/></a>
+			</c:if -->
+			<c:set var="bibUrlTemplate">/bibtex/2${post.resource.intraHash}/<mtl:encode value='${post.user.name}'/></c:set>
+			<c:url var="bibUrl" value="${bibUrlTemplate}"/>
+			<a href="${bibUrl}"><mtl:bibclean value="${post.resource.title}" /></a>
+		</jsp:attribute>
+		<jsp:attribute name="desc">
+			<span style="color:#555555;"> 
+				<c:choose>
+					<c:when test="${not empty post.resource.author}">
+						<c:forEach var="author" items="${post.resource.authorList}" varStatus="loopStatus">
+							<c:out value="${author.firstName}" />
+							<c:set var="authorUrlTemplate">/author/<mtl:encode value='${author.lastName}'/></c:set>
+							<c:url var="authorUrl" value="${authorUrlTemplate}"/>
+							<a href="${authorUrl}"><c:out value="${author.lastName}" /></a>         	     	 
+							<c:if test="${not loopStatus.last}">&#160;<fmt:message key="and"/>&#160;</c:if>
+						</c:forEach>
+					</c:when>
+					<c:otherwise>
+						<c:forEach var="editor" items="${post.resource.editorList}" varStatus="loopStatus">        	 
+							<c:out value="${editor.firstName} " />
+							<c:set var="authorUrlTemplate">/author/<mtl:encode value='${editor.lastName}'/></c:set>
+							<c:url var="authorUrl" value="${authorUrlTemplate}"/>
+							<a href="${authorUrl}"><c:out value="${editor.lastName}" /></a>
+							<c:if test="${not loopStatus.last}">&#160;<fmt:message key="and"/>&#160;</c:if>
+						</c:forEach>
+						(eds.).
+					</c:otherwise>
+				</c:choose> 
+			</span> 
+			<c:choose>
+				<c:when test="${not empty post.resource.journal}">
+					<em><c:out value="${post.resource.journal}" /></em>
+					<c:if test="${not empty post.resource.volume}">
+						<b><c:out value="${post.resource.volume}"/></b>
+					</c:if>
+				</c:when>
+				<c:otherwise>
+					<em><c:out value="${post.resource.booktitle}" /></em>
+				</c:otherwise>
+			</c:choose> 
+			<c:if test="${not empty post.resource.pages}">
+				<c:out value="${post.resource.pages}"/>
+			</c:if>
+			(<c:out value="${post.resource.year}"/>)
+		</jsp:attribute>
+		<jsp:attribute name="actions">
+			aaannndd ACTION!
+		</jsp:attribute>
+	</rc:list>
+
+</jsp:root>
