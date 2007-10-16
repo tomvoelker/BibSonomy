@@ -36,6 +36,14 @@ public class DBLogic implements LogicInterface {
 		}
 		return new DBLogic(username, restDbM);
 	}
+	
+	public static DBLogic getUserAccess(String username, final String password) {
+		final RestDatabaseManager restDbM = RestDatabaseManager.getInstance();
+		if (restDbM.validateUserUserAccess(username, password) == false) {
+			username = null; // guest access
+		}
+		return new DBLogic(username, restDbM);
+	}
 
 	public void addUserToGroup(String groupName, String userName) {
 		this.dbLogic.addUserToGroup(groupName, userName);
