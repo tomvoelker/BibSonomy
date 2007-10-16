@@ -1,35 +1,63 @@
 package org.bibsonomy.webapp.controller;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.managers.RestDatabaseManager;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
+import org.bibsonomy.model.UserSettings;
+import org.bibsonomy.model.logic.PostLogicInterface;
+import org.bibsonomy.webapp.command.ListView;
+import org.bibsonomy.webapp.command.RessourceViewCommand;
+import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.Views;
 
-public class HomepageController implements Controller {
-
+public class HomepageController implements MinimalisticController<RessourceViewCommand> {
 	private static final Logger log = Logger.getLogger(HomepageController.class);
-
-	public ModelAndView handleRequest(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
-		log.debug(this.getClass().getSimpleName());
-		log.debug("Path: " + request.getRequestURI());
-
-		final Map<String, Object> model = new HashMap<String, Object>();
-		model.put("projectName", "BibSonomy");
-
-		final List<Post<Bookmark>> bookmarks = RestDatabaseManager.getInstance().getPosts("cschenk", Bookmark.class, GroupingEntity.ALL, null, null, null, null, 0, 10, null);
-		model.put("bookmarks", bookmarks);
-
-		return new ModelAndView("home", model);
+	
+	private PostLogicInterface postLogic;
+	private UserSettings userSettings;
+	
+	/*public HomepageController(final PostLogicInterface postLogic, final UserSettings userSettings) {
+		this.postLogic = postLogic;
+		this.userSettings = userSettings;
+	}*/
+	
+	public RessourceViewCommand instantiateCommand() {
+		return new RessourceViewCommand();
 	}
+
+	public View workOn(RessourceViewCommand command) {
+		log.debug(this.getClass().getSimpleName());
+		final GroupingEntity groupingEntity;
+		final String groupingName;
+		if (command.getRequestedUser() != null) {
+			groupingEntity = GroupingEntity.USER;
+			groupingName = command.getRequestedUser();
+		} else {
+			groupingEntity = GroupingEntity.ALL;
+			groupingName = null;
+		}
+		
+		command.getBookmark().setEntriesPerPage(userSettings.getItemsPerPage());
+		command.getBookmark().setList( postLogic.getPosts(Bookmark.class, groupingEntity, groupingName, null, null, null, command.getBookmark().getStart(), command.getBookmark().getStart() + userSettings.getItemsPerPage(), null) );
+		
+		command.getBibtex().setEntriesPerPage(userSettings.getItemsPerPage());
+		command.getBibtex().setList( postLogic.getPosts(BibTex.class, groupingEntity, groupingName, null, null, null, command.getBibtex().getStart(), command.getBibtex().getStart() + userSettings.getItemsPerPage(), null) );
+
+		return Views.HOMEPAGE;
+	}
+
+	public void setPostLogic(PostLogicInterface postLogic) {
+		this.postLogic = postLogic;
+	}
+
+	public void setUserSettings(UserSettings userSettings) {
+		this.userSettings = userSettings;
+	}
+
 }
