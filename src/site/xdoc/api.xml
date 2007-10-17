@@ -15,7 +15,7 @@
 			<p>
 				You can use the provided client library, written in Java, to access the API or you
 				can directly interact with the webservice if you would like to write a client in a
-				language other than Java:
+				language other than Java. Furthermore, there is a customized JabRef-Client available:
 				<ul>
 					<li>
 						<a href="javaclient.html">Java client library</a>
@@ -23,6 +23,9 @@
 					<li>
 						<a href="genericclient.html">direct access</a>
 					</li>
+					<li>
+						<a href="jabrefclient.html">JabRef client</a>
+					</li>					
 				</ul>
 			</p>
 			<subsection name="Methods">
@@ -71,7 +74,7 @@
 							<td>GET</td>
 							<td>/users/[username]</td>
 							<td>
-								<img src="images/icon_error_sml.gif" />
+								<img src="images/icon_success_sml.gif" />
 							</td>
 						</tr>
 						<tr>
@@ -208,7 +211,7 @@
 							<td>GET</td>
 							<td>/groups/[groupname]/users</td>
 							<td>
-								<img src="images/icon_error_sml.gif" />
+								<img src="images/icon_success_sml.gif" />
 							</td>
 						</tr>
 						<tr>
@@ -242,18 +245,18 @@
 								/tags ?filter=[regex] ?(user|group|viewable)=[username/groupname]
 							</td>
 							<td>
-								<img src="images/icon_error_sml.gif" />
+								<img src="images/icon_success_sml.gif" />
 							</td>
 						</tr>
 						<tr>
 							<td>
-								Details for a tag ; details for a list of
+								Details for a tag; details for a list of
 								sub-/super-/correlated-tags
 							</td>
 							<td>GET</td>
 							<td>/tags/[tag]</td>
 							<td>
-								<img src="images/icon_error_sml.gif" />
+								<img src="images/icon_success_sml.gif" />
 							</td>
 						</tr>
 						<tr>
@@ -271,7 +274,7 @@
 							<td>GET</td>
 							<td>
 								/posts ?tags=[t1+t2+...+tn] ?resourcetype=(bibtex|bookmark)
-								?(user|group|viewable)=[username/groupname] ?resource=[hash]
+								?(user|group|viewable)=[username/groupname] ?resource=[hash] ?search=[search_string]
 							</td>
 							<td>
 								<img src="images/icon_success_sml.gif" />
@@ -321,6 +324,48 @@
 						<li>&lt;-&gt;[tag] tag and its correlated tags</li>
 					</ul>
 				</p>
+				<p>
+					<b>Fulltext search</b> on publications or bookmarks can be done via 
+					<tt>/posts?search=[search_string]&amp;resourcetype=(bibtex|bookmark)</tt>, see above.
+					The search covers all available metadata for a post (e.g. title, authors, ISBN, DOI, ...)
+					as well as associated tags.
+
+					The standard behaviour when you supply more than one search term (separated by + or spaces)					 	
+					is that matches will be returned which contain both terms, i.e.
+					<tt>/posts?resourcetype=bibtex&amp;search=folksonomy+folksonomies</tt>
+
+					will return publications which contain both <em>folksonomy</em> and 
+					<em>folksonomies</em> in any metadata field.
+
+					Apart from this, you can enhance your search in the following ways:
+
+					<ul>
+						<li><em>exclude terms:</em><tt>/posts/?search=folksonomy -ontology</tt>
+						    will return matches that contain folksonomy, but not ontology
+					   	 </li>
+						 <li><em>phrase search</em><tt>/posts/?search="folksonomies are cool"</tt>
+							will return matches that contain the whole phrase "folksonomies are cool",
+							but not matches that contain e.g. "folksonomies are not cool".
+						</li>					    
+						<li><em>wildcards:</em><tt>/posts/?search=folksonom*</tt>
+							will return matches that contain "folksonomy, folksonomies, ...".
+						</li>					    						
+					</ul>
+
+					<b>Special characters in search terms:</b> Please note that all special 
+					(i.e. non-alphanumeric) characters occuring in search terms apart from "_" and "'"
+					are treated as search term separators - if you search e.g. for an ISBN like 
+					<tt>/posts?search=978-0-387-71000-6</tt>						
+					, then you also an entry with ISBN 387-0-978-71000-6 will be matched, because the
+					number blocks are treated as distinct search terms, which is not what you want. In
+					such a case, phrase search will yield the expected result:
+
+					<ul>
+						<li><tt>/posts?search="978-0-387-71000-6"</tt></li>						
+					</ul>					
+			
+					
+				</p>				
             <p>
               <em>*)</em> Please note: RDF and OWL are not supported at the moment.<br/>
               <em>**)</em> ?start=0&amp;end=20 is a list of the first 20 entities (exclusively the 'end'-value).
@@ -330,12 +375,16 @@
             <p>
                In case of an error the API sends the appropriate HTTP 
                status code (please see the details of each request) and a XML 
-               document including a description of the error that occurred:
+	       document including a description of the error that occurred.
+	       
+	       In addition to that, the XML root element contains an attribute <em>stat</em>,
+	       whose value will be <em>"fail"</em> in case of an error, and <em>"ok"</em> 
+	       otherwise.
             </p>
             <br/>
             <p>
                <em>
-                  <br/>&lt;bibsonomy>
+                  <br/>&lt;bibsonomy stat="fail">
                   <br/>   &lt;error>some error message&lt;/error>
                   <br/>&lt;/bibsonomy>
                </em>

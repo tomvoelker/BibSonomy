@@ -28,7 +28,8 @@ POST www.bibsonomy.org/api/users/mbork/posts
     <tag name="tag1"/>
     <tag name="tag2"/>
     <tag name="tag3"/>
-    <bookmark url="www.google.de"/>
+    <group name="public"/>
+    <bookmark url="www.google.de" title="Google"/>
   </post>
 </bibsonomy>
 ---

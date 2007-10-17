@@ -2,9 +2,11 @@ Change group
 
   <<Hint: you can't change the group's name.>>
 
-  Method: PUT
-
-  URL: www.bibsonomy.org/api/groups/[groupname]
+*--+--+
+|  <<Method:>> | PUT |
+*--+--+
+|  <<URL:>> | www.bibsonomy.org/api/groups/[groupname] |
+*--+--+
 
   Status codes:
 
@@ -18,25 +20,28 @@ Change group
 500 Internal Server Error
 ---
 
-  Example:
+*  Example:
+
+    Request:
 
 ---
 PUT www.bibsonomy.org/api/groups/group1
+---
 
+    Request Body:
+
+---
 <?xml version="1.0"?>
 <bibsonomy>
   <group name="group1" description="This is a very special new group - updated."/>
 </bibsonomy>
 ---
 
-  XML Schema:
+    Response Body:
 
 ---
-<!--
-  a group
--->
-<xsd:complexType name="GroupType">
-  <xsd:attribute name="name" type="xsd:string" use="required"/>
-  <xsd:attribute name="description" type="xsd:string"/>
-</xsd:complexType>
+<?xml version="1.0"?>
+<bibsonomy stat="ok">
+  <groupid>group1</groupid>
+</bibsonomy>
 ---

@@ -28,8 +28,11 @@
 
 		<menu name="Documentation">
 			<item name="API" href="/api.html" />
+			<item name="Getting access" href="/gettingaccess.html" />
 			<item name="Java client library" href="/javaclient.html" />
 			<item name="Generic client" href="/genericclient.html" />
+			<item name="JabRef client" href="/jabrefclient.html" />
+			<item name="XML Schema" href="/xmlschema.html" />
 		</menu>
 	</body>
 </project>

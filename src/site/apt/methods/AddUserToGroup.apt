@@ -2,9 +2,11 @@ Add a user to a group
 
   Adds an <<existing>> user to a group.
 
-  Method: POST
-
-  URL: www.bibsonomy.org/api/groups/[groupname]/users
+*--+--+
+| <<URL:>> | www.bibsonomy.org/api/groups/[groupname]/users |
+*--+--+
+| <<Method:>> | POST |
+*--+--+
 
   Status codes:
 
@@ -18,21 +20,28 @@ Add a user to a group
 500 Internal Server Error
 ---
 
-  Example:
+* Example 
+
+   Request URL:
 
 ---
 POST www.bibsonomy.org/api/groups/group1/users
+---
 
+   Request Body:
+
+---
 <?xml version="1.0"?>
 <bibsonomy>
   <user name="hotho"/>
 </bibsonomy>
 ---
 
-  XML Schema:
+   Response Body:
 
 ---
-<xsd:complexType name="UserType">
-  <xsd:attribute name="name" type="xsd:string" use="required"/>
-</xsd:complexType>
+<?xml version="1.0"?>
+<bibsonomy stat="ok">
+  <groupid>group1</groupid>
+</bibsonomy>
 ---

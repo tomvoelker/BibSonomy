@@ -1,10 +1,12 @@
 Change user details
 
-  Method: PUT
+*--+--+
+| <<Method:>> | PUT |
+*--+--+
+| <<URL:>> | www.bibsonomy.org/api/users/[username] |
+*--+--+
 
-  URL: www.bibsonomy.org/api/users/[username]
-
-  Status codes:
+ Status codes:
 
 ---
 200 ok
@@ -16,10 +18,14 @@ Change user details
 500 Internal Server Error
 ---
 
-  Example:
+*  Example:
 
+    Request URL:
 ---
 PUT www.bibsonomy.org/api/users/mbork
+---
+
+    Request 
 
 <?xml version="1.0"?>
 <bibsonomy>
