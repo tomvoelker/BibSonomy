@@ -18,8 +18,10 @@
 	margin-left: 60px;
 	width: 160px;
 	border: none;
-	color: #fff;
-	background: #a3004e;
+	/* color: #fff; */
+	color: #aaa;
+	/* background: #a3004e; */
+	background: #eee
 }
 
 #navcolumn ul li {
@@ -30,12 +32,14 @@
 #navcolumn h5 {
 	padding-bottom: 0.2em;
 	font-size: medium;
-	color: #fff;
+	/* color: #fff */
+	color: #aaa;
 	border: none;
 }
 
 #navcolumn a {
-	color: #fff;
+	/* color: #fff; */
+	color: #3399cc;
 }
 
 #bodyColumn {
@@ -45,15 +49,17 @@
 }
 
 #bodyColumn a {
-	color: #a3004e;
+	/* color: #a3004e; */
+	color:#3399cc
 }
 
 .section h2, h3 {
 	padding: 0px;
 	font-family: sans-serif;
 	border: none;
-	border-bottom: #efd0d5 1px solid;
+	border-bottom: #eee 1px solid;
 	background: #fff;
+	color:#aaa;
 }
 
 #footer {
