@@ -10,7 +10,8 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
 public interface PostLogicInterface {
-	 /* Returns a list of posts which can be filtered.
+	/**  
+	 * Returns a list of posts which can be filtered.
 	 * 
 	 * @param resourceType resource type to be shown.
 	 * @param grouping
