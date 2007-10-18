@@ -498,10 +498,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			// the bookmark with the "new" intrahash, i.e. the one that was recalculated
 			// based on the bookmark's fields			
 			final List<Post<BibTex>> isNewBibTexInDb;
-			
+									
 			// check if a user is trying to create a bibtex that already exists
-			isNewBibTexInDb = this.getBibTexByHashForUser(userName, oldIntraHash, userName, session, HashID.INTRA_HASH);
-			if ((isNewBibTexInDb != null) && (isNewBibTexInDb.size() > 0) && update == false) {
+			isNewBibTexInDb = this.getBibTexByHashForUser(userName, post.getResource().getIntraHash(), userName, session, HashID.INTRA_HASH);
+			if (isNewBibTexInDb != null && isNewBibTexInDb.size() > 0 && update == false) {
 				throw new IllegalArgumentException("Could not create new bibtex entry: This bibtex entry already exists in your collection (intrahash: " + post.getResource().getIntraHash() + ")");
 			}			
 			
