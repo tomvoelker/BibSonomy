@@ -110,7 +110,7 @@ public class RedirectHandler extends HttpServlet {
 			int contentType 	= ("url".equals(requResource)) ? 1 : 2;
 			String requContent	= request.getParameter("requContent");	
 			String requContent2	= request.getParameter("requContent2");
-			String accept		= request.getHeader("accept").toLowerCase();	
+			String accept		= request.getHeader("accept");	
 			
 			// get response format
 			int index = getResponseFormat(accept, contentType);
@@ -155,7 +155,13 @@ public class RedirectHandler extends HttpServlet {
 	 * 			an index for access to the FORMAT_URLS array with the 
 	 * 			url for redirect
 	 */
-	private int getResponseFormat(final String acceptHeader, int contentType) {		
+	private int getResponseFormat(final String acceptHeader, int contentType) {
+		
+		int responseFormat = 0;
+
+		// if no acceptHeader is set, return default (= 0);
+		if (acceptHeader == null) return responseFormat;
+		
 		// maps the q-value to output format
 		SortedMap<Double,Vector<String>> preferredTypes = new TreeMap<Double,Vector<String>>(new Comparator<Double>() {
 			public int compare(Double o1, Double o2) {
@@ -169,7 +175,7 @@ public class RedirectHandler extends HttpServlet {
 		});		
 		
 		// fill map with q-values an formats
-		Scanner scanner = new Scanner(acceptHeader);
+		Scanner scanner = new Scanner(acceptHeader.toLowerCase());
 		scanner.useDelimiter(",");
 			
 		while(scanner.hasNext()) {
@@ -197,7 +203,6 @@ public class RedirectHandler extends HttpServlet {
 		}
 		
 		// check for supported formats
-		int i = 0;
 		boolean found = false;
 		for (String type: formatOrder) {
 			if (found) break;
@@ -206,13 +211,13 @@ public class RedirectHandler extends HttpServlet {
 				String checkType = FORMAT_URLS[j][0];				
 				if (type.indexOf(checkType) != -1) {						
 					if (FORMAT_URLS[j][contentType] != null || checkType == "html") {
-						i = j;
+						responseFormat = j;
 						found = true;
 						break;	
 					}
 				}
 			}
 		}		
-		return i;
+		return responseFormat;
 	}
 }
