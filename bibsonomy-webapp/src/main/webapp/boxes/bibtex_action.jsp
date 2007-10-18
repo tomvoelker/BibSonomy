@@ -23,34 +23,34 @@
 		  <c:param name="user" value="${resource.user}"/>
 		  <c:param name="copytag" value="${resource.tagString}"/>
 	    </c:url>
-        | <a href="<c:out value='${copy_url}'/>" title="copy this entry to your repository">copy</a><%-- 
+        | <a href="<c:out value='${copy_url}'/>" title="copy this post to your repository">copy</a><%-- 
   --%></c:when>
       <c:otherwise>
         <%-- same user -- EDIT, DELETE, ... --%>
         <%-- (FAST TAG) EDIT --%>
         <span><c:choose>
           <c:when test="${not empty noedittags}">
-            | <a href="/ShowBibtexEntry?hash=${resource.hash}" title="edit this entry">edit</a>
+            | <a href="/ShowBibtexEntry?hash=${resource.hash}" title="edit this post">edit</a>
           </c:when>
           <c:otherwise>
             | <a onclick="editTags(this,'${ckey}');return false;" tags='<c:out value="${resource.fullTagString}"/>' hashsum="${resource.hash}" href="/ShowBibtexEntry?hash=${resource.hash}" title="edit this entry">edit</a>
           </c:otherwise>
         </c:choose></span>
         <%-- DELETE --%>          
-        | <a href="/BibtexHandler?hash=${resource.hash}&amp;requTask=delete&amp;ckey=${ckey}" title="delete this entry from your repository">delete</a><%-- 
+        | <a href="/BibtexHandler?hash=${resource.hash}&amp;requTask=delete&amp;ckey=${ckey}" title="delete this post from your repository">delete</a><%-- 
   --%></c:otherwise>
     </c:choose>
 </c:if>
 
   <%-- URL --%>
   <c:if test="${not empty resource.cleanurl}">
-    | <a href="<c:out value='${resource.cleanurl}'/>" title="this entry contains an URL which is linked here">URL</a>        
+    | <a href="<c:out value='${resource.cleanurl}'/>" title="this post contains a URL which is linked here">URL</a>        
   </c:if>
   
-  | <a href="/bib/bibtex/<%=Bibtex.INTRA_HASH %>${resource.hash}/<mtl:encode value='${resource.user}'/>" title="show this entry in BibTeX format">BibTeX</a>
+  | <a href="/bib/bibtex/<%=Bibtex.INTRA_HASH %>${resource.hash}/<mtl:encode value='${resource.user}'/>" title="show this post in BibTeX format">BibTeX</a>
 
   <%-- OPENURL --%>
-  <c:if test="${!empty user.openurl}">
+  <c:if test="${not empty user.openurl}">
     | <a href="<c:out value='${user.openurl}'/>?<c:out value='${resource.openurl}'/>">OpenURL</a>
   </c:if>
   
