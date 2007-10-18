@@ -27,7 +27,7 @@
 				<xsd:element name="groupid" type="xsd:string"/>
 			</xsd:choice>
 		</xsd:sequence>
-		<xsd:attribute name="stat" type="statType" use="required"/>
+		<xsd:attribute name="stat" type="statType"/>
 	</xsd:complexType>
 
 	<!--
@@ -127,8 +127,8 @@
 			<!-- Note: a post must have at least one tag -->
 			<xsd:element maxOccurs="unbounded" name="tag" type="TagType"/>
 			<xsd:choice>
-				<xsd:element name="bookmark" type="BookmarkType"/>
-				<xsd:element name="bibtex" type="BibtexType"/>
+				<xsd:element name="bookmark" maxOccurs="1" type="BookmarkType"/>
+				<xsd:element name="bibtex" maxOccurs="1" type="BibtexType"/>
 			</xsd:choice>
 		</xsd:sequence>
 		<xsd:attribute name="description" type="xsd:string"/>
