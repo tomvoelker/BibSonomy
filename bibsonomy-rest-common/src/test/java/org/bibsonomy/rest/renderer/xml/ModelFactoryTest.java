@@ -38,7 +38,7 @@ public class ModelFactoryTest {
 			this.modelFactory.createUser(xmlUser);
 			fail("exception should have been thrown.");
 		} catch (final InvalidModelException e) {
-			if (!(this.XML_IS_INVALID_MSG + "username is missing").equals(e.getMessage())) fail("wrong exception thrown: " + e.getMessage());
+			if (!(this.XML_IS_INVALID_MSG + "username is missing in element 'user'").equals(e.getMessage())) fail("wrong exception thrown: " + e.getMessage());
 		}
 
 		// check valid user
@@ -55,7 +55,7 @@ public class ModelFactoryTest {
 			this.modelFactory.createGroup(xmlGroup);
 			fail("exception should have been thrown.");
 		} catch (final InvalidModelException e) {
-			if (!(this.XML_IS_INVALID_MSG + "groupname is missing").equals(e.getMessage())) fail("wrong exception thrown: " + e.getMessage());
+			if (!(this.XML_IS_INVALID_MSG + "groupname is missing in element 'group'").equals(e.getMessage())) fail("wrong exception thrown: " + e.getMessage());
 		}
 
 		// check valid group
@@ -71,7 +71,7 @@ public class ModelFactoryTest {
 		try {
 			this.modelFactory.createTag(xmlTag);
 		} catch (InvalidModelException e) {
-			if (!(this.XML_IS_INVALID_MSG + "tag name is missing").equals(e.getMessage())) fail("wrong exception thrown: " + e.getMessage());
+			if (!(this.XML_IS_INVALID_MSG + "tag name is missing in element 'tag'").equals(e.getMessage())) fail("wrong exception thrown: " + e.getMessage());
 		}
 
 		// check valid tag
@@ -96,15 +96,17 @@ public class ModelFactoryTest {
 		final UserType xmlUser = new UserType();
 		xmlUser.setName("tuser");
 		xmlPost.setUser(xmlUser);
-		checkInvalidPost(xmlPost, this.XML_IS_INVALID_MSG + "resource is missing");
+		checkInvalidPost(xmlPost, this.XML_IS_INVALID_MSG + "resource is missing inside element 'post'");
 		final BookmarkType xmlBookmark = new BookmarkType();
 		xmlPost.setBookmark(xmlBookmark);
-		checkInvalidPost(xmlPost, this.XML_IS_INVALID_MSG + "tag name is missing");
+		checkInvalidPost(xmlPost, this.XML_IS_INVALID_MSG + "tag name is missing in element 'tag'");
 		xmlTag.setName("testtag");
-		checkInvalidPost(xmlPost, this.XML_IS_INVALID_MSG + "url is missing");
+		checkInvalidPost(xmlPost, this.XML_IS_INVALID_MSG + "url is missing in element 'bookmark'");
 		xmlBookmark.setUrl("http://www.google.de");
+		xmlBookmark.setTitle("Google search engine");
+		xmlPost.setBookmark(xmlBookmark);
 		xmlPost.setBibtex(new BibtexType());
-		checkInvalidPost(xmlPost, this.XML_IS_INVALID_MSG + "only one resource is allowed");
+		checkInvalidPost(xmlPost, this.XML_IS_INVALID_MSG + "only one resource type is allowed inside element 'post'");
 		xmlPost.setBibtex(null);
 
 		// check valid post with bookmark
@@ -117,8 +119,12 @@ public class ModelFactoryTest {
 		xmlPost.setBookmark(null);
 		final BibtexType xmlBibtex = new BibtexType();
 		xmlPost.setBibtex(xmlBibtex);
-		checkInvalidPost(xmlPost, this.XML_IS_INVALID_MSG + "title is missing");
+		checkInvalidPost(xmlPost, this.XML_IS_INVALID_MSG + "title is missing in element 'bibtex'");
 		xmlBibtex.setTitle("foo bar");
+		xmlBibtex.setYear("2005");
+		xmlBibtex.setBibtexKey("myBibtexKey");
+		xmlBibtex.setEntrytype("inproceedings");
+		xmlBibtex.setAuthor("Hans Dampf");
 
 		// check valid post with bibtex
 		post = this.modelFactory.createPost(xmlPost);

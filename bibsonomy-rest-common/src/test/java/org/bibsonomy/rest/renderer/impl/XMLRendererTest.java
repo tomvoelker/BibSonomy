@@ -163,6 +163,7 @@ public class XMLRendererTest {
 		xmlPost.setBookmark(xmlBookmark);
 		xmlTag.setName("testtag");
 		xmlBookmark.setUrl("http://www.google.de");
+		xmlBookmark.setTitle("Google Search engine");
 		bibXML.setPost(xmlPost);
 		tmpFile = File.createTempFile("bibsonomy", "junit");
 		marshalToFile(bibXML, tmpFile);
@@ -187,6 +188,8 @@ public class XMLRendererTest {
 			this.renderer.serializeTags(sw, tags, null);
 			//fail("exception should have been thrown: no start-/end-values given");
 		} catch (final InternServerException e) {
+		}
+		catch (final BadRequestOrResponseException e) {			
 		}
 
 		// empty list
@@ -249,6 +252,8 @@ public class XMLRendererTest {
 			// fail("exception should have been thrown: no start-/end values specified");
 		} catch (final InternServerException e) {
 		}
+		catch (final BadRequestOrResponseException e) {			
+		}		
 
 		//
 		final ViewModel vm = new ViewModel();
@@ -303,6 +308,8 @@ public class XMLRendererTest {
 		}
 		catch (InternServerException ex) {			
 		}
+		catch (final BadRequestOrResponseException e) {			
+		}		
 
 		// empty group
 		final ViewModel vm = new ViewModel();
@@ -354,6 +361,8 @@ public class XMLRendererTest {
 		}
 		catch (InternServerException ex) {			
 		}
+		catch (final BadRequestOrResponseException e) {			
+		}		
 		
 		sw = new StringWriter(100);
 		final ViewModel vm = new ViewModel();

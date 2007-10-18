@@ -9,6 +9,9 @@ import static org.bibsonomy.rest.RestProperties.Property.API_URL;
 import static org.bibsonomy.rest.RestProperties.Property.URL_GROUPS;
 import static org.bibsonomy.rest.RestProperties.Property.URL_POSTS;
 import static org.bibsonomy.rest.RestProperties.Property.URL_USERS;
+import static org.bibsonomy.rest.RestProperties.Property.VALIDATE_XML_INPUT;
+import static org.bibsonomy.rest.RestProperties.Property.VALIDATE_XML_OUTPUT;
+
 
 import java.io.Reader;
 import java.io.Writer;
@@ -55,6 +58,7 @@ import org.bibsonomy.rest.renderer.xml.TagType;
 import org.bibsonomy.rest.renderer.xml.TagsType;
 import org.bibsonomy.rest.renderer.xml.UserType;
 import org.bibsonomy.rest.renderer.xml.UsersType;
+import org.xml.sax.SAXParseException;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
@@ -70,7 +74,9 @@ public class XMLRenderer implements Renderer {
 	private static XMLRenderer renderer;
 	private final String userUrlPrefix;
 	private final String groupUrlPrefix;
-	private final String postsUrlDelimiter;	
+	private final String postsUrlDelimiter;
+	private final Boolean validateXMLInput;
+	private final Boolean validateXMLOutput;
 	private static Schema schema;
 
 	private XMLRenderer() {
@@ -79,12 +85,21 @@ public class XMLRenderer implements Renderer {
 		this.userUrlPrefix = apiUrl + properties.get(URL_USERS) + "/";
 		this.groupUrlPrefix = apiUrl + properties.get(URL_GROUPS) + "/";
 		this.postsUrlDelimiter = "/" + properties.get(URL_POSTS) + "/";
-		
-		try {
-			schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(this.getClass().getClassLoader().getResource("xschema.xsd"));
+		this.validateXMLInput = (properties.get(VALIDATE_XML_INPUT) == "true" ? true : false);
+		this.validateXMLOutput = (properties.get(VALIDATE_XML_OUTPUT) == "true" ? true : false);
+
+		// we only need to load the XML schema if we validate input or output
+		if (this.validateXMLInput || this.validateXMLOutput) {
+			try {
+				schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(this.getClass().getClassLoader().getResource("xschema.xsd"));
+			}
+			catch (Exception e) {
+				log.error("Failed to load XML schema", e);
+				schema = null;
+			}
 		}
-		catch (Exception e) {
-			log.error("Failed to load XML schema", e);
+		else {
+			schema = null;
 		}
 	}
 
@@ -219,7 +234,7 @@ public class XMLRenderer implements Renderer {
 	private void checkPost(final Post<? extends Resource> post) throws InternServerException {
 		if (post.getUser() == null) throw new InternServerException("error no user assigned!");
 		// there may be posts whithout tags
-		// if( post.getTags() == null || post.getTags().size() == 0 ) throw new InternServerException( "error no tags assigned!" );
+		if( post.getTags() == null || post.getTags().size() == 0 ) throw new InternServerException( "error no tags assigned!" );
 		if (post.getResource() == null) throw new InternServerException("error no ressource assigned!");
 	}
 
@@ -511,15 +526,25 @@ public class XMLRenderer implements Renderer {
 			final Marshaller marshaller = jc.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 					
-			// validate the XML produced by the marshaller
-			// marshaller.setSchema(schema);
-			// marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.FALSE);
+			if (this.validateXMLOutput) {
+				// validate the XML produced by the marshaller
+				marshaller.setSchema(schema);
+			}
 
 			// marshal to the writer
 			marshaller.marshal(webserviceElement, writer);
 			// TODO log
 			// marshaller.marshal( webserviceElement, System.out );
 		} catch (final JAXBException e) {
+			if (e.getLinkedException().getClass() == SAXParseException.class) {
+				SAXParseException ex = (SAXParseException) e.getLinkedException();
+				throw new BadRequestOrResponseException(
+						"Error while parsing XML (Line " 
+						+ ex.getLineNumber() + ", Column "
+						+ ex.getColumnNumber() + ": "
+						+ ex.getMessage()
+						);				
+			}						
 			throw new InternServerException(e.toString());
 		}
 	}
@@ -552,6 +577,11 @@ public class XMLRenderer implements Renderer {
 
 			// create an Unmarshaller
 			final Unmarshaller u = jc.createUnmarshaller();
+			
+			// set schema to validate input documents
+			if (this.validateXMLInput) {
+				u.setSchema(schema);
+			}
 
 			/*
 			 * unmarshal a xml instance document into a tree of Java content
@@ -560,6 +590,15 @@ public class XMLRenderer implements Renderer {
 			final JAXBElement<?> xmlDoc = (JAXBElement<?>) u.unmarshal(reader);
 			return (BibsonomyXML) xmlDoc.getValue();
 		} catch (final JAXBException e) {
+			if (e.getLinkedException().getClass() == SAXParseException.class) {
+				SAXParseException ex = (SAXParseException) e.getLinkedException();
+				throw new BadRequestOrResponseException(
+						"Error while parsing XML (Line " 
+						+ ex.getLineNumber() + ", Column "
+						+ ex.getColumnNumber() + ": "
+						+ ex.getMessage()
+						);				
+			}			
 			throw new InternServerException(e.toString());
 		}
 	}

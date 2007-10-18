@@ -40,7 +40,9 @@ public class RestProperties {
 		URL_GROUPS("groups"),
 		URL_POSTS("posts"),
 		URL_ADDED_POSTS("added"),
-		URL_POPULAR_POSTS("popular");
+		URL_POPULAR_POSTS("popular"),
+		VALIDATE_XML_INPUT("false"),
+		VALIDATE_XML_OUTPUT("false");
 
 		private final String defaultValue;
 		private Property(final String defaultValue) {
