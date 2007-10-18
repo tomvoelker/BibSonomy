@@ -32,7 +32,7 @@ public class DBLogic implements LogicInterface {
 	public static DBLogic getApiAccess(final String username, final String apiKey) {
 		final RestDatabaseManager restDbM = RestDatabaseManager.getInstance();
 		if (restDbM.validateUserAccess(username, apiKey) == false) {
-			throw new ValidationException("Please authenticate yourself.");
+			throw new ValidationException("Username and / or API-key were incorrect.");
 		}
 		return new DBLogic(username, restDbM);
 	}
