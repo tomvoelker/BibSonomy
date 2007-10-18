@@ -140,7 +140,7 @@ public final class RestServlet extends HttpServlet {
 	 */
 	private void handle(final HttpServletRequest request, final HttpServletResponse response, final HttpMethod method) throws IOException {
 
-		log.debug("Incoming Request: " + method.name() + " " + request.getRequestURL() + " from IP " + request.getRemoteAddr());
+		log.debug("Incoming Request: " + method.name() + " " + request.getRequestURL() + " from IP " + request.getHeader("x-forwarded-for"));
 		Long start = System.currentTimeMillis();
 
 		try {
@@ -265,7 +265,7 @@ public final class RestServlet extends HttpServlet {
 		try {
 			return logicFactory.getLogicAccess(username, apiKey);
 		} catch (ValidationException ve) {
-			throw new AuthenticationException("Please authenticate yourself: " + ve.getClass().getSimpleName() + ": " + ve.getMessage());
+			throw new AuthenticationException("Authentication failure: " + ve.getMessage());
 		}
 	}
 }
