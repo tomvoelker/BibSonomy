@@ -384,28 +384,50 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		return true;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.managers.CrudableContent#storePost(java.lang.String, org.bibsonomy.model.Post, java.lang.String, boolean, org.bibsonomy.database.util.DBSession)
+	 */
 	public boolean storePost(final String userName, final Post<Bookmark> post, final String oldIntraHash, boolean update, final DBSession session)  {
 		session.beginTransaction();
 		try {
-			final List<Post<Bookmark>> isBookmarkInDb;
+			// the bookmark with the "old" intrahash, i.e. the one that was sent
+			// within the create/update bookmark request
+			final List<Post<Bookmark>> isOldBookmarkInDb;
+			
+			// the bookmark with the "new" intrahash, i.e. the one that was recalculated
+			// based on the bookmark's fields
+			final List<Post<Bookmark>> isNewBookmarkInDb;
+			
+			// check if user is trying to create a bookmark that already exists
+			isNewBookmarkInDb = this.getBookmarkByHashForUser(userName, post.getResource().getIntraHash(), userName, session, HashID.INTRA_HASH);
+			if ((isNewBookmarkInDb != null) && (isNewBookmarkInDb.size() > 0) && update == false) {
+				throw new IllegalArgumentException("Could not create new bookmark: This bookmark already exists in your collection (intrahash: " + post.getResource().getIntraHash() + ")");
+			}
+			
 			if (oldIntraHash != null) {
+				// check if the hash sent within the request is correct
 				if ((update == false) && (oldIntraHash.equals(post.getResource().getIntraHash()) == false)) {
-					throw new IllegalArgumentException("cannot create new resource/BOOKMARK with an old hash value");
+					throw new IllegalArgumentException(
+							"Could not create new bookmark: The requested intrahash " 
+							+ oldIntraHash + " is not correct for this bookmark (correct intrahash is " 
+							+ post.getResource().getIntraHash() + ")."
+					);
 				}
-				isBookmarkInDb = this.getBookmarkByHashForUser(userName, oldIntraHash, userName,session,HashID.INTRA_HASH);
+				// if yes, check if a bookmark exists with the old intrahash				
+				isOldBookmarkInDb = this.getBookmarkByHashForUser(userName, oldIntraHash, userName, session, HashID.INTRA_HASH);
 			} else {
 				if (update == true) {
-					throw new IllegalArgumentException("cannot update/BOOKMARK without old hash value");
+					throw new IllegalArgumentException("Could not update bookmark: no intrahash specified.");
 				}
-				isBookmarkInDb = null;
+				isOldBookmarkInDb = null;
 			}
-
+						
 			// ALWAYS get a new contentId
 			post.setContentId(this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, session));
-			if ((isBookmarkInDb != null) && (isBookmarkInDb.size() > 0)) {
+			if ((isOldBookmarkInDb != null) && (isOldBookmarkInDb.size() > 0)) {
 				update = true;
 				// Bookmark entry DOES EXIST for this user -> delete old Bookmark post
-				final Post<?> oldBookmarkPost = isBookmarkInDb.get(0);
+				final Post<?> oldBookmarkPost = isOldBookmarkInDb.get(0);
 				this.plugins.onBookmarkUpdate(post.getContentId(), oldBookmarkPost.getContentId(), session);
 				this.deletePost(userName, oldBookmarkPost.getResource().getIntraHash(), true, session);
 			} else {
@@ -420,8 +442,6 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 
 			// add the tags
 			this.tagDb.insertTags(post, session);
-
-			// TODO: update: log, doc, col, ext, url
 
 			session.commitTransaction();
 		} finally {

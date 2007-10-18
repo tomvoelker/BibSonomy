@@ -491,25 +491,42 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		// TODO: test insertion (tas, bibtex, ...)
 		session.beginTransaction();
 		try {
-			final List<Post<BibTex>> isBibTexInDb;
+			// the bibtex with the "old" intrahash, i.e. the one that was sent
+			// within the create/update bibtex request
+			final List<Post<BibTex>> isOldBibTexInDb;
+
+			// the bookmark with the "new" intrahash, i.e. the one that was recalculated
+			// based on the bookmark's fields			
+			final List<Post<BibTex>> isNewBibTexInDb;
+			
+			// check if a user is trying to create a bibtex that already exists
+			isNewBibTexInDb = this.getBibTexByHashForUser(userName, oldIntraHash, userName, session, HashID.INTRA_HASH);
+			if ((isNewBibTexInDb != null) && (isNewBibTexInDb.size() > 0) && update == false) {
+				throw new IllegalArgumentException("Could not create new bibtex entry: This bibtex entry already exists in your collection (intrahash: " + post.getResource().getIntraHash() + ")");
+			}			
+			
 			if (oldIntraHash != null) {
 				if ((update == false) && (oldIntraHash.equals(post.getResource().getIntraHash()) == false)) {
-					throw new IllegalArgumentException("The requested resource (with ID " + oldIntraHash + ") already exists.");
+					throw new IllegalArgumentException(
+							"Could not create new bibtex: The requested intrahash " 
+							+ oldIntraHash + " is not correct for this bibtex (correct intrahash is " 
+							+ post.getResource().getIntraHash() + ")."
+					);					
 				}
-				isBibTexInDb = this.getBibTexByHashForUser(userName, oldIntraHash, userName, session, HashID.INTRA_HASH);
+				isOldBibTexInDb = this.getBibTexByHashForUser(userName, oldIntraHash, userName, session, HashID.INTRA_HASH);
 			} else {
 				if (update == true) {
-					throw new IllegalArgumentException("Cannot update the requested resource due to missing ID.");
+					throw new IllegalArgumentException("Could not update bibtex entry: no intrahash specified.");
 				}
-				isBibTexInDb = null;
+				isOldBibTexInDb = null;
 			}
 
 			// ALWAYS get a new contentId
 			post.setContentId(this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, session));
 
-			if (present(isBibTexInDb)) {
+			if (present(isOldBibTexInDb)) {
 				// BibTex entry DOES EXIST for this user -> delete old BibTex post
-				final Post<BibTex> oldBibTexPost = isBibTexInDb.get(0);
+				final Post<BibTex> oldBibTexPost = isOldBibTexInDb.get(0);
 				
 				// if no groups are specified for an existing bibtex when updating -> take over existing groups
 				// this is kind of a hack, as the JabRef-Client does not store group information so far :(
@@ -548,7 +565,6 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			this.insertBibTexPost(post, session);			
 			// add the tags
 			this.tagDb.insertTags(post, session);
-			// TODO: update: log, doc, col, ext, url
 
 			session.commitTransaction();
 		} finally {
