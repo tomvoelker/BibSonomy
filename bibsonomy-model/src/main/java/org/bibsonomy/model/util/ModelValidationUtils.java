@@ -71,19 +71,19 @@ public class ModelValidationUtils {
 
 	public static void checkTag(final TagType xmlTag) throws InvalidModelException {
 		if (xmlTag.getName() == null || xmlTag.getName().length() == 0) {
-			throw new InvalidModelException(XML_IS_INVALID_MSG + "tag name is missing");
+			throw new InvalidModelException(XML_IS_INVALID_MSG + "tag name is missing in element 'tag'");
 		}
 	}
 
 	public static void checkUser(final UserType xmlUser) throws InvalidModelException {
 		if (xmlUser.getName() == null || xmlUser.getName().length() == 0) {
-			throw new InvalidModelException(XML_IS_INVALID_MSG + "username is missing");
+			throw new InvalidModelException(XML_IS_INVALID_MSG + "username is missing in element 'user'");
 		}
 	}
 
 	public static void checkGroup(final GroupType xmlGroup) throws InvalidModelException {
 		if (xmlGroup.getName() == null || xmlGroup.getName().length() == 0) {
-			throw new InvalidModelException(XML_IS_INVALID_MSG + "groupname is missing");
+			throw new InvalidModelException(XML_IS_INVALID_MSG + "groupname is missing in element 'group'");
 		}
 	}
 
@@ -95,9 +95,9 @@ public class ModelValidationUtils {
 		final BibtexType xmlBibtex = xmlPost.getBibtex();
 		final BookmarkType xmlBookmark = xmlPost.getBookmark();
 		if (xmlBibtex == null && xmlBookmark == null) {
-			throw new InvalidModelException(XML_IS_INVALID_MSG + "resource is missing");
+			throw new InvalidModelException(XML_IS_INVALID_MSG + "resource is missing inside element 'post'");
 		} else if (xmlBibtex != null && xmlBookmark != null) {
-			throw new InvalidModelException(XML_IS_INVALID_MSG + "only one resource is allowed");
+			throw new InvalidModelException(XML_IS_INVALID_MSG + "only one resource type is allowed inside element 'post'");
 		} else {
 			// just fine (bibtex xor bookmark):
 			// ( xmlBibtex == null && xmlBookmark != null ) || ( xmlBibtex != null || xmlBookmark == null )
@@ -105,7 +105,8 @@ public class ModelValidationUtils {
 	}
 
 	public static void checkBookmark(final BookmarkType xmlBookmark) throws InvalidModelException {
-		if (xmlBookmark.getUrl() == null) throw new InvalidModelException(XML_IS_INVALID_MSG + "url is missing");
+		if (xmlBookmark.getUrl() == null) throw new InvalidModelException(XML_IS_INVALID_MSG + "url is missing in element 'bookmark'");
+		if (xmlBookmark.getTitle() == null) throw new InvalidModelException(XML_IS_INVALID_MSG + "title is missing in element 'bookmark'");
 		// do not test hash value - it depends on the request if its available,
 		// so we check it later
 		// if( xmlBookmark.getIntrahash() == null ) throw new
@@ -113,7 +114,12 @@ public class ModelValidationUtils {
 	}
 
 	public static void checkBibTex(final BibtexType xmlBibtex) throws InvalidModelException {
-		if (xmlBibtex.getTitle() == null) throw new InvalidModelException(XML_IS_INVALID_MSG + "title is missing");
+		if (xmlBibtex.getTitle() == null) throw new InvalidModelException(XML_IS_INVALID_MSG + "title is missing in element 'bibtex'");
+		if (xmlBibtex.getYear() == null) throw new InvalidModelException(XML_IS_INVALID_MSG + "year is missing in element 'bibtex'");
+		if (xmlBibtex.getBibtexKey() == null) throw new InvalidModelException(XML_IS_INVALID_MSG + "bibtex key is missing in element 'bibtex'");
+		if (xmlBibtex.getEntrytype() == null) throw new InvalidModelException(XML_IS_INVALID_MSG + "bibtex entry type is missing in element 'bibtex'");
+		if (xmlBibtex.getAuthor() == null && xmlBibtex.getEditor() == null) 
+			throw new InvalidModelException(XML_IS_INVALID_MSG + "editor(s) and author(s) are missing (one of the two is required) in element 'bibtex'");
 		// do not test hash value - it depends on the request if its available,
 		// so we check it later
 		// if( xmlBibtex.getIntrahash() == null ) throw new InvalidXMLException(
