@@ -57,6 +57,12 @@ my $stm_select_bib  = $dbh->prepare ("
    FROM bibtex b
    WHERE b.content_id > ?");
 
+# get all relevant data from tas table
+my $stm_select_tas = $dbh->prepare ("
+  SELECT content_id, tag_name
+    FROM tas
+    WHERE content_id > ?");
+
 # insert into search table
 my $stm_insert = $dbh->prepare ("INSERT INTO $table (content_id, content, author, `group`, `date`, content_type, user_name) VALUES (?,?,?,?,?,?,?)");
 
@@ -86,6 +92,17 @@ $stm_select_content_id->finish();
 
 
 
+#################################
+# retrieve tas rows
+#################################
+my %tag_hash;
+
+$stm_select_tas->execute($last_content_id);
+while (@row = $stm_select_tas->fetchrow_array) {
+    $tag_hash{$row[0]} .= " $row[1]";
+}
+$stm_select_book->finish();
+
 
 
 #################################
@@ -96,8 +113,8 @@ $stm_select_book->execute($last_content_id);
 
 while (@row = $stm_select_book->fetchrow_array) {
     $ctr++;
-    $content = clean_string("$row[4] $row[5] $row[6]");
-    
+    $content = clean_string("$row[4] $row[5] $row[6] $tag_hash{$row[0]}");
+      
     # save data
     my @array = ($row[0], $content, "", $row[1], $row[2], $CONTENT_TYPE_BOOKMARK, $row[3]); 
     push (@data, \@array);
@@ -119,7 +136,7 @@ while (@row = $stm_select_bib->fetchrow_array) {
     for (my $i=4; $i<35; $i++) {
 	  $content = $content." ".$row[$i];
     }
-    $content = clean_bibtex_string($content);
+    $content = clean_bibtex_string("$content $tag_hash{$row[0]}");
 
     # save data
     my @array = ($row[0], $content, "$row[4] $row[5]", $row[1], $row[2], $CONTENT_TYPE_BIBTEX, $row[3]); 
