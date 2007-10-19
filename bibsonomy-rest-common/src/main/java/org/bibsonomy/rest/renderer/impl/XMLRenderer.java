@@ -85,8 +85,8 @@ public class XMLRenderer implements Renderer {
 		this.userUrlPrefix = apiUrl + properties.get(URL_USERS) + "/";
 		this.groupUrlPrefix = apiUrl + properties.get(URL_GROUPS) + "/";
 		this.postsUrlDelimiter = "/" + properties.get(URL_POSTS) + "/";
-		this.validateXMLInput = (properties.get(VALIDATE_XML_INPUT) == "true" ? true : false);
-		this.validateXMLOutput = (properties.get(VALIDATE_XML_OUTPUT) == "true" ? true : false);
+		this.validateXMLInput = ( "true".equals( properties.get(VALIDATE_XML_INPUT) )  ? true : false );
+		this.validateXMLOutput = ( "true".equals( properties.get(VALIDATE_XML_OUTPUT) ) ? true : false );
 
 		// we only need to load the XML schema if we validate input or output
 		if (this.validateXMLInput || this.validateXMLOutput) {
