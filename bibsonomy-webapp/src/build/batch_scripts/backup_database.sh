@@ -10,7 +10,7 @@ BINLOG_DIR=$HOME_DIR/mysql-var/data
 # document dir
 DOC_DIR=$HOME_DIR/bibsonomy_docs
 # rsync options
-RHOST=daffy.kde.informatik.uni-kassel.de
+RHOST=daffy.cs.uni-kassel.de
 RUSER=bibbackup
 RDIR=backup
 ROPTIONS="-av --rsh=ssh"
