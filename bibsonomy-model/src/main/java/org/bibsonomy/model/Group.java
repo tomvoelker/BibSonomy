@@ -45,7 +45,12 @@ public class Group {
 		this.groupId = GroupID.PUBLIC.getId();
 		this.privlevel = Privlevel.MEMBERS;
 	}
-
+	
+	public Group(GroupID groupid) {
+		this.groupId = groupid.getId();
+		this.privlevel = Privlevel.MEMBERS; 
+	}
+	
 	public int getGroupId() {
 		return this.groupId;
 	}
