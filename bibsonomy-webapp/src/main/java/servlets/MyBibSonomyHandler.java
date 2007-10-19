@@ -38,17 +38,9 @@ public class MyBibSonomyHandler extends HttpServlet {
 		UserBean user = SessionSettingsFilter.getUser(request);
 
 		if (user.getName() != null) {
-
+			
+			// we have to remove the context path from request.getRequestURI()
 			final String requestURI = request.getRequestURI().substring(request.getContextPath().length());
-			
-			
-			log.fatal(requestURI);
-			log.fatal(request.getRequestURL());
-			log.fatal(request.getPathInfo());
-			log.fatal(request.getPathTranslated());
-			log.fatal(request.getContextPath());
-			//log.fatal(requestURI.substring(request.getContextPath().length()));
-			
 			
 			if ("/myBibSonomy".equals(requestURI)) {
 				response.sendRedirect("/user/" + URLEncoder.encode(user.getName(), "UTF-8"));
