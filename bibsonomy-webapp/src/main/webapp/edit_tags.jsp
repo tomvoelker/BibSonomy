@@ -60,8 +60,10 @@
       </tr>
       <tr>
         <td>also update relations: </td>
-        <td><input type="checkbox" name="updaterelations" value="yes" tabindex="3"/></td>
-        <td>NOTE: <em>This works only, when exactly one tag is substituted by another.</em></td>
+        <td colspan="2">
+          <input type="checkbox" name="updaterelations" value="yes" tabindex="3"/>
+          NOTE: <em>This works only, when exactly one tag is substituted by another.</em>
+        </td>
       </tr>
       <tr>
         <td>
