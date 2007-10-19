@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.exceptions.InternServerException;
-import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.DBLogic;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -219,7 +218,6 @@ public final class RestServlet extends HttpServlet {
 	 * @throws IOException
 	 */
 	private void sendError(final HttpServletRequest request, final HttpServletResponse response, final int code, final String message) throws IOException {
-		log.error(message);
 		// get renderer
 		final String renderingFormatName = Context.getStringAttribute(request.getParameterMap(), "format", "xml");
 		final RenderingFormat renderingFormat = RenderingFormat.getRenderingFormat(renderingFormatName);
