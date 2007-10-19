@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 import beans.UserBean;
 import filters.SessionSettingsFilter;
 
@@ -21,6 +23,8 @@ public class MyBibSonomyHandler extends HttpServlet {
 
 	private static final long serialVersionUID = 3691036578076309554L;
 
+	private static final Logger log = Logger.getLogger(MyBibSonomyHandler.class);
+	
 	public void init(ServletConfig config) throws ServletException{	
 		super.init(config); 
 	}	
@@ -34,15 +38,27 @@ public class MyBibSonomyHandler extends HttpServlet {
 		UserBean user = SessionSettingsFilter.getUser(request);
 
 		if (user.getName() != null) {
-			if ("/myBibSonomy".equals(request.getRequestURI())) {
+
+			final String requestURI = request.getRequestURI().substring(request.getContextPath().length());
+			
+			
+			log.fatal(requestURI);
+			log.fatal(request.getRequestURL());
+			log.fatal(request.getPathInfo());
+			log.fatal(request.getPathTranslated());
+			log.fatal(request.getContextPath());
+			//log.fatal(requestURI.substring(request.getContextPath().length()));
+			
+			
+			if ("/myBibSonomy".equals(requestURI)) {
 				response.sendRedirect("/user/" + URLEncoder.encode(user.getName(), "UTF-8"));
-			} else if ("/myBibTeX".equals(request.getRequestURI())) {
+			} else if ("/myBibTeX".equals(requestURI)) {
 				response.sendRedirect("/bib/user/" + URLEncoder.encode(user.getName(), "UTF-8") + "?items=1000");
-			} else if ("/myRelations".equals(request.getRequestURI())) {
+			} else if ("/myRelations".equals(requestURI)) {
 				response.sendRedirect("/relations/" + URLEncoder.encode(user.getName(), "UTF-8"));
-			} else if ("/myPDF".equals(request.getRequestURI())) {
+			} else if ("/myPDF".equals(requestURI)) {
 				response.sendRedirect("/user/" + URLEncoder.encode(user.getName(), "UTF-8") + "?filter=myPDF");
-			} else if ("/myDuplicates".equals(request.getRequestURI())) {
+			} else if ("/myDuplicates".equals(requestURI)) {
 				response.sendRedirect("/user/" + URLEncoder.encode(user.getName(), "UTF-8") + "?filter=myDuplicates");
 			}
 		} else {
