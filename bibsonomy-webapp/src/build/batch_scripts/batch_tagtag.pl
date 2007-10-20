@@ -25,7 +25,8 @@ my $password = $ENV{'DB_PASS'};
 
 # connect to database
 #my $dbh = DBI->connect("DBI:mysql:database=$database;host=localhost:3306;mysql_socket=/mnt/raid-db/mysql/run/mysqld.sock", "bibsonomy", $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});
-my $dbh = DBI->connect("DBI:mysql:database=$database;host=localhost:6033;mysql_socket=/home/bibsonomy/mysql-var/mysql.sock", "bibsonomy", $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});
+#my $dbh = DBI->connect("DBI:mysql:database=$database;host=localhost:6033;mysql_socket=/home/bibsonomy/mysql-var/mysql.sock", "bibsonomy", $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});
+my $dbh = DBI->connect("DBI:mysql:database=$database;host=localhost:6033;mysql_socket=/home/bibsonomy/mysql-var/mysql.sock", "bibsonomy", $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1, "transaction-isolation" => "READ-UNCOMMITTED"});
 #################################
 # prepare statements
 #################################
