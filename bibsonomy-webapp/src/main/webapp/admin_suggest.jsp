@@ -11,10 +11,21 @@
 	</sql:query>
 </c:if>
 
-<c:if test="${param.user != null }">
+<c:if test="${param.user != null and param.type == 0}">
 	<sql:query var="name" dataSource="jdbc/bibsonomy">
 		SELECT user_name FROM user
 		WHERE user_name LIKE ?
+		AND spammer = 0
+		LIMIT 10
+		<sql:param value="${param.user}%"/>
+	</sql:query>
+</c:if>
+
+<c:if test="${param.user != null and param.type == 1}">
+	<sql:query var="name" dataSource="jdbc/bibsonomy">
+		SELECT user_name FROM user
+		WHERE user_name LIKE ?
+		AND spammer = 1
 		LIMIT 10
 		<sql:param value="${param.user}%"/>
 	</sql:query>

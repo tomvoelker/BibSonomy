@@ -15,7 +15,7 @@
 	<c:forEach items="${tag.rows}" var="n">
 		<li style="text-align:left;">${n.tag_name}</li>
 	</c:forEach>
-</ul>
+	</ul>
 </c:if>
 
 <%-- spammer-tag list entries --%>
@@ -34,57 +34,58 @@
 </ul>
 </c:if>
 
-<%-- related (folkrank) tags to chosen spammertag --%>
+<%-- related tags to chosen spammertag --%>
 <c:if test="${param.tag != null and param.type == 3}">
-	<sql:query var="queryreltags" dataSource="jdbc/bibsonomy">
-		SELECT w.item AS sug_tag, ROUND(w.weight,5) AS weight
-		FROM rankings r 
-			JOIN weights w USING (id)
-			LEFT JOIN spammer_tags s ON s.tag_name = w.item 
-		WHERE r.dim = 0 and r.item = ?
-			AND w.dim = 0 AND w.item <> r.item
-			AND ISNULL(s.tag_name)
-		ORDER BY w.weight DESC
-		LIMIT ?
-		<sql:param value="${param.tag}"/>
-		<sql:param value="${sugcount}"/>			
+	<sql:query var="reltags" dataSource="jdbc/bibsonomy">
+		SELECT t2 AS tag, ctr_public AS ctr, s.tag_name 
+		FROM tagtag tt LEFT JOIN spammer_tags s ON (s.tag_name = tt.t2)
+		WHERE t1 = ? AND ctr_public > 0 AND ISNULL(s.tag_name) 
+		ORDER BY ctr_public DESC LIMIT 25
+		<sql:param value="${param.tag}"/>					
 	</sql:query>	
 	
-	<c:choose>
+	<div style="width:100%; font-size:0.7em; text-align:right;"><a href="javascript:ajax_hideTooltip()">close</a></div>
 	
-		<c:when test="${queryreltags.rowCount eq 0}">
-		<h3>related tags to chosen spammertag <c:out value="${param.tag}"/></h3>
-		<br>
+	<c:choose>	
+		<c:when test="${reltags.rowCount eq 0}">		
 		- no related tags found for <c:out value="${param.tag}"/> - 		
-		<c:set var="reltags" value="" scope="session"/>	
-		<c:set var="reltag" value="${param.tag}" scope="session"/>	
 		</c:when>
 		
-		<c:otherwise>
-			<h3>related tags to chosen spammertag <c:out value="${param.tag}"/></h3>
-			<br>
+		<c:otherwise>			
 			<table class="taglist">
 			<tr>
-				<th>tag</th>
-				<th>weight</th>
+				<th>tag</th>	
+				<th>count</th>			
 				<th colspan="2">action</th>
 			</tr>
-			<c:forEach var="tag" items="${queryreltags.rows}">
-				<tr>
-					<td><a href="/tag/<mtl:encode value='${tag.sug_tag}'/>"><c:out value="${tag.sug_tag}"/></a></td>
-					<td align="center"><c:out value="${tag.weight}"/></td>
-					<td align="center" style="background-color:#eeeeee">
-						<a href="admin_spammertags.jsp?tag=<mtl:encode value='${tag.sug_tag}'/>&action=addtag">ADD</a>
-					</td>
-					<td align="center" style="background-color:#eeeeee">
-						<a href="admin_spammertags.jsp?tag=<mtl:encode value='${tag.sug_tag}'/>&action=cleantag">REMOVE</a>
+			<tbody id="relatedlist">
+			<c:forEach var="row" items="${reltags.rows}" varStatus="status">
+				<tr id="rt<c:out value='${status.count}'/>">
+					<td><a href="/tag/<mtl:encode value='${row.tag}'/>"><c:out value="${row.tag}"/></a></td>
+					<td align="center"><c:out value="${row.ctr}"/></td>					
+					<td>
+						<a href="javascript:addSpammertag('<c:out value="${row.tag}"/>','relatedlist','rt<c:out value='${status.count}'/>')" title="mark as spammertag"><img src="/resources/image/plus.png"/></a>
+						<a href="javascript:cleanTag('<c:out value="${row.tag}"/>','relatedlist','rt<c:out value='${status.count}'/>')" title="remove tag from suggestion list"><img src="/resources/image/minus.png"/></a>
 					</td>
 				</tr>
 			</c:forEach>
-		</table> 		
-		<c:set var="reltags" value="${queryreltags}" scope="session"/>	
-		<c:set var="reltag" value="${param.tag}" scope="session"/>							
-		</c:otherwise>	
-		
+			</tbody>
+		</table> 								
+		</c:otherwise>		
 	</c:choose>	
+</c:if>
+
+<!-- handle request on spammertag page -->
+<c:if test="${param.type == 0}">
+	<jsp:useBean id="adminBean" class="beans.AdminBean">
+		<jsp:setProperty name="adminBean" property="*"/>
+	</jsp:useBean>
+
+	<% adminBean.queryDB(); %>
+	<c:forEach var="info" items="${adminBean.infos}">
+		<li><c:out value="${info}"/></li>
+	</c:forEach>
+	<c:forEach var="error" items="${adminBean.errors}">
+		<li><c:out value="${error}"/></li>
+	</c:forEach>
 </c:if>

@@ -54,7 +54,7 @@
 
 <div id="autocomplete_spam" class="autocomplete"></div>
 <script type="text/javascript">
-  new Ajax.Autocompleter("acl_spam","autocomplete_spam","admin_suggest.jsp");
+  new Ajax.Autocompleter("acl_spam","autocomplete_spam","admin_suggest.jsp?type=0");
 </script>
 
 <form action="/admin.jsp">
@@ -65,7 +65,7 @@
 
 <div id="autocomplete_unspam" class="autocomplete"></div>
 <script type="text/javascript">
-  new Ajax.Autocompleter("acl_unspam","autocomplete_unspam","admin_suggest.jsp");
+  new Ajax.Autocompleter("acl_unspam","autocomplete_unspam","admin_suggest.jsp?type=1");
 </script>
 
 <hr>
