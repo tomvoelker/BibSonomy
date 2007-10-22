@@ -4,6 +4,7 @@ package org.bibsonomy.common.enums;
  * Constants that are used in SQL statements
  *
  * @author Christian Schenk
+ * @author Christian Kramer
  * @version $Id$
  */
 public enum ConstantID {
@@ -14,6 +15,8 @@ public enum ConstantID {
 	BOOKMARK_CONTENT_TYPE(1),
 	/** Contenttype for BibTeX */
 	BIBTEX_CONTENT_TYPE(2),
+	/** Contenttype for ALL contents */
+	ALL_CONTENT_TYPE(0),
 
 	/* names for ids table */
 	IDS_CONTENT_ID(0),
