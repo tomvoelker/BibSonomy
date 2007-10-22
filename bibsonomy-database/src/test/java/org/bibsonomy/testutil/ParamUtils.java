@@ -13,6 +13,7 @@ import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 
@@ -130,9 +131,10 @@ public class ParamUtils {
 		param.setGroups(Arrays.asList(new Integer[] { 1, 5 }));
 		param.setRegex("web");
 		param.setCount(100);
-		param.setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
 		param.setTagName("Test");
-		return param;
+		// nee to set the default resourcetype to all so bibtex and bookmark tags will be displayed
+		param.setContentType(ConstantID.ALL_CONTENT_TYPE);
+		return param; 
 	}
 
 	/**
