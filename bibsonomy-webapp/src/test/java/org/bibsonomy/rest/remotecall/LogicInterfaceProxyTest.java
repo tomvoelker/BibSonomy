@@ -42,6 +42,7 @@ import org.mortbay.resource.Resource;
  * Remote Call Tests
  * 
  * @author Jens Illig
+ * @author Christian Kramer
  *
  */
 public class LogicInterfaceProxyTest implements LogicInterface {
@@ -348,14 +349,14 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	
 	@Test
 	public void getTagsTest() {
-		getTags(GroupingEntity.GROUP, "testGroup", "regex", 4, 22);
+		getTags(GroupingEntity.GROUP, "testGroup", "regex", org.bibsonomy.model.Resource.class, 4, 22);
 	}
-	public List<Tag> getTags(GroupingEntity grouping, String groupingName, String regex, int start, int end) {
+	public <T extends org.bibsonomy.model.Resource> List<Tag> getTags(GroupingEntity grouping, String groupingName, String regex, Class<T> resourceType, int start, int end) {
 		final List<Tag> expected = ModelUtils.buildTagList(3, "testPrefix", 1);		
-		EasyMock.expect(serverLogic.getTags(grouping, groupingName, regex, start, end)).andReturn(expected);
+		EasyMock.expect(serverLogic.getTags(grouping, groupingName, regex, resourceType, start, end)).andReturn(expected);
 		EasyMock.replay(serverLogic);
 		
-		final List<Tag> returned = clientLogic.getTags(grouping, groupingName, regex, start, end);
+		final List<Tag> returned = clientLogic.getTags(grouping, groupingName, regex, resourceType, start, end);
 		ModelUtils.assertPropertyEquality(expected, returned, 5, Pattern.compile("(.*\\.)?(id|stem)"));
 		EasyMock.verify(serverLogic);
 		assertLogin();
