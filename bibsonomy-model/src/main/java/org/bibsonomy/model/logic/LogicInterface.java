@@ -23,6 +23,7 @@ import org.bibsonomy.model.User;
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @author Jens Illig <illig@innofinity.de>
+ * @author Christian Kramer
  * @version $Id$
  */
 public interface LogicInterface extends PostLogicInterface {
@@ -85,11 +86,14 @@ public interface LogicInterface extends PostLogicInterface {
 	 *            then its an empty string!
 	 * @param regex
 	 *            a regular expression used to filter the tagnames
+	 * @param resourceType
+	 * 			  a resourceType (i.e. Bibtex or Bookmark) to get tags
+	 *  		  only from a bookmark or a bibtex entry
 	 * @param start
 	 * @param end
 	 * @return a set of tags, en empty set else
 	 */
-	public List<Tag> getTags(GroupingEntity grouping, String groupingName, String regex, int start, int end);
+	public <T extends Resource> List<Tag> getTags(GroupingEntity grouping, String groupingName, String regex, Class<T> resourceType, int start, int end);
 
 	/**
 	 * Returns details about a tag. Those details are:
