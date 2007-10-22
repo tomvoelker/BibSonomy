@@ -195,6 +195,14 @@
 		  t1.group = #groupId#
 		</isGreaterThan>
 	</sql>
+	
+	<sql id="getTagsByResourceType">
+		<isNotNull property="contentType">
+			<isGreaterThan property="contentType" compareValue="0" prepend="AND">
+				t.content_type = #contentType#
+			</isGreaterThan>
+		</isNotNull>
+	</sql>
 
 	<sql id="getTagForUser">
    <!-- TODO this did not work for me .. (manu)

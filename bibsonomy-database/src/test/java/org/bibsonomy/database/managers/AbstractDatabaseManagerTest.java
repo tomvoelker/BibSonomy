@@ -93,7 +93,8 @@ public abstract class AbstractDatabaseManagerTest {
 		
 		JNDITestDatabaseBinder.unbind();		
 	}
-
+	
+	
 	/**
 	 * Resets the parameter objects, which can be useful inside one method of a
 	 * testcase. On some occasions we need to do this, e.g. when more than one

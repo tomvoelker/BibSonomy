@@ -16,6 +16,7 @@ import org.bibsonomy.model.logic.Order;
 
 /**
  * @author Jens Illig
+ * @author Christian Kramer
  * @version $Id$
  */
 public class DBLogic implements LogicInterface {
@@ -87,8 +88,8 @@ public class DBLogic implements LogicInterface {
 		return this.dbLogic.getTagDetails(this.loginUserName, tagName);
 	}
 
-	public List<Tag> getTags(GroupingEntity grouping, String groupingName, String regex, int start, int end) {
-		return this.dbLogic.getTags(this.loginUserName, grouping, groupingName, regex, start, end);
+	public <T extends Resource> List<Tag> getTags(GroupingEntity grouping, String groupingName, String regex, Class<T> resourceType, int start, int end) {
+		return this.dbLogic.getTags(this.loginUserName, grouping, groupingName, regex, resourceType, start, end);
 	}
 
 	public User getUserDetails(String userName) {

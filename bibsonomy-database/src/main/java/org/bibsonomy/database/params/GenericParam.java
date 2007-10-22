@@ -25,6 +25,7 @@ import org.bibsonomy.model.logic.Order;
  * @author Dominik Benz
  * @author Christian Schenk
  * @author miranda
+ * @author Christian Kramer
  * @version $Id$
  */
 public abstract class GenericParam {
@@ -421,6 +422,8 @@ public abstract class GenericParam {
 			setContentType(ConstantID.BIBTEX_CONTENT_TYPE);
 		} else if (Bookmark.class.isAssignableFrom(nativeContentType)) {
 			setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
+		} else if (Resource.class.isAssignableFrom(nativeContentType)) {
+			setContentType(ConstantID.ALL_CONTENT_TYPE);
 		} else {
 			throw new UnsupportedResourceTypeException();
 		}

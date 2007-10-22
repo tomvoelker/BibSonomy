@@ -38,8 +38,10 @@ import org.bibsonomy.model.logic.Order;
  * @author Miranda Grahl
  * @author Jens Illig
  * @author Christian Schenk
+ * @author Christian Kramer
  * @version $Id$
  */
+
 public class RestDatabaseManager implements DBLogicInterface {
 
 	private static final Logger log = Logger.getLogger(RestDatabaseManager.class);
@@ -200,18 +202,45 @@ public class RestDatabaseManager implements DBLogicInterface {
 		}
 	}
 
-	/*
+	/**
 	 * Returns a list of tags; the list can be filtered.
+	 * 
+	 * @param authUser
+	 * @param grouping
+	 * @param groupingName
+	 * @param regex
+	 * @param resourceType which indicates the resource of tags (0 All, 1 Bookmark, 2 Bibtex)
+	 * @param start
+	 * @param end
+	 * @return result List of tags
 	 */
-	public List<Tag> getTags(final String authUser, final GroupingEntity grouping, final String groupingName, final String regex, final int start, final int end) {
+	public <T extends Resource> List<Tag> getTags(final String authUser, final GroupingEntity grouping, final String groupingName, final String regex, final Class<T> resourceType, final int start, final int end) {
 		final DBSession session = this.openSession();
+		final List<Tag> result;
+		
 		try {
 			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, authUser, grouping, groupingName, null, null, null, start, end, null);
-			param.setRegex(regex);
-			return this.tagDBManager.getTags(param, session);
+			
+			if (resourceType == BibTex.class || resourceType == Bookmark.class) {
+				// this is save because of RTTI-check of resourceType argument which is of class T
+				param.setRegex(regex);
+				// need to switch from class to string to ensure legibility of Tags.xml
+				param.setContentTypeByClass(resourceType);
+				result = this.tagDBManager.getTags(param, session);
+			} else if (resourceType == Resource.class){
+				// this is save because of RTTI-check of resourceType argument which is of class T
+				param.setRegex(regex);
+				// need to switch from class to string to ensure legibility of Tags.xml
+				param.setContentTypeByClass(resourceType);
+				result = this.tagDBManager.getTags(param, session);
+			} else {
+				throw new UnsupportedResourceTypeException();
+			}
+			
 		} finally {
 			session.close();
-		}	
+		}
+		return result;
 	}
 
 	/*
@@ -381,6 +410,9 @@ public class RestDatabaseManager implements DBLogicInterface {
 	 * @return post the incoming post with the groupIDs filled in
 	 */
 	private <T extends Resource> Post<T> validateGroups(Post<T> post, DBSession session) {
+		if (post.getGroups() == null) {
+			throw new InvalidModelException("No groups assigned to post");
+		}
 
 		// retrieve the user's groups
 		final List<Integer> groupIds = this.generalDBManager.getGroupIdsForUser(post.getUser().getName(), session);
@@ -400,14 +432,8 @@ public class RestDatabaseManager implements DBLogicInterface {
 				throw new ValidationException("User " + post.getUser().getName() + " is not a member of group " + group.getName());
 			}
 			group.setGroupId(testGroup.getGroupId());
-		}				
-		
-		// no group specified -> make it public
-		if (post.getGroups().size() == 0) {
-			post.getGroups().add(new Group(GroupID.PUBLIC));
-		}
-		
-		return post;		
+		}		
+		return post;
 	}
 
 	@SuppressWarnings("unchecked")

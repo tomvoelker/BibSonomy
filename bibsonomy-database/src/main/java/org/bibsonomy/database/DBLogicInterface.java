@@ -20,6 +20,7 @@ import org.bibsonomy.model.logic.Order;
  * it properly! Try to check each possibility with a test-case.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
+ * @author Christian Kramer
  * @version $Id$
  */
 public interface DBLogicInterface {
@@ -146,7 +147,7 @@ public interface DBLogicInterface {
 	 * @param end
 	 * @return a set of tags, en empty set else
 	 */
-	public List<Tag> getTags(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end);
+	public <T extends Resource> List<Tag> getTags(String authUser, GroupingEntity grouping, String groupingName, String regex, Class<T> resourceType, int start, int end);
 
 	/**
 	 * Returns details about a tag. Those details are:

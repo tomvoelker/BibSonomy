@@ -2,6 +2,8 @@ package org.bibsonomy.database.managers;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Tag;
 import org.junit.Test;
 
@@ -16,6 +18,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Miranda Grahl
  * @author Jens Illig
  * @author Christian Schenk
+ * @author Christian Kramer
  * @version $Id$
  */
 public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
@@ -54,11 +57,49 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final List<Tag> tags = this.tagDb.getTagsByUser(this.tagParam, this.dbSession);
 		assertEquals(10, tags.size());
 	}
+	
+	@Test
+	public void getTagsByBookmarkResource() {
+		// declare the resource type
+		this.tagParam.setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
+		this.tagParam.setRequestedUserName("hotho");
+		this.tagParam.setGrouping(GroupingEntity.USER);
+
+		final List<Tag> tags = this.tagDb.getTagsByUser(this.tagParam, this.dbSession);
+
+		assertEquals(10, tags.size());
+		
+		// some spot tests to verify tags with bookmark as content type
+		assertEquals(tags.get(0).getName(), "****");
+		assertEquals(tags.get(1).getName(), "*****");
+		assertEquals(tags.get(2).getName(), "1999");
+		assertEquals(tags.get(3).getName(), "2.0");
+	}
+	
+	
+	@Test
+	public void getTagsByBibtexResource() {
+		// declare the resource type
+		this.tagParam.setContentType(ConstantID.BIBTEX_CONTENT_TYPE);
+		this.tagParam.setRequestedUserName("hotho");
+		this.tagParam.setGrouping(GroupingEntity.USER);
+
+		final List<Tag> tags = this.tagDb.getTagsByUser(this.tagParam, this.dbSession);
+
+		assertEquals(10, tags.size());
+		
+		// some spot tests to verify tags with bibtex as content type
+		assertEquals(tags.get(4).getName(), "2001");
+		assertEquals(tags.get(5).getName(), "2002");
+		assertEquals(tags.get(6).getName(), "2003");
+		assertEquals(tags.get(7).getName(), "2004");
+	}
 
 	@Test
 	public void getTagsByGroup() {
 		final List<Tag> tags = this.tagDb.getTagsByGroup(this.tagParam, this.dbSession);
 		assertEquals(10, tags.size());
+		Tag tag = tags.get(0);
 	}
 
 	@Test
