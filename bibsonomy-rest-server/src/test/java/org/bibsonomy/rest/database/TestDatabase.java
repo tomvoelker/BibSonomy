@@ -36,6 +36,7 @@ import org.junit.Ignore;
  * </ul>
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
+ * @author Christian Kramer
  * @version $Id$
  */
 @Ignore
@@ -113,7 +114,7 @@ public class TestDatabase implements DBLogicInterface {
 	/**
 	 * note: the regex is currently not considered
 	 */
-	public List<Tag> getTags(String authUser, GroupingEntity grouping, String groupingName, String regex, int start, int end) {
+	public <T extends Resource> List<Tag> getTags(String authUser, GroupingEntity grouping, String groupingName, String regex, Class<T> resourceType, int start, int end) {
 		final List<Tag> tags = new LinkedList<Tag>();
 
 		switch (grouping) {

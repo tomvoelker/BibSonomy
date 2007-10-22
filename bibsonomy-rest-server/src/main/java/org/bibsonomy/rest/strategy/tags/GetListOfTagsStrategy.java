@@ -4,6 +4,7 @@ import java.io.Writer;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
@@ -11,16 +12,19 @@ import org.bibsonomy.rest.strategy.Context;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
+ * @author Christian Kramer
  * @version $Id$
  */
 public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
+	protected final Class<? extends Resource> resourceType;
 	private final GroupingEntity grouping;
 	private final String groupingValue;
 	private final String regex;
-
+	
 	public GetListOfTagsStrategy(final Context context) {
 		super(context);
 		this.grouping = chooseGroupingEntity();
+		this.resourceType = Resource.getResource(context.getStringAttribute("resourcetype", "all"));
 		
 		if (this.grouping != GroupingEntity.ALL) {
 			this.groupingValue = context.getStringAttribute(this.grouping.toString().toLowerCase(), null);
@@ -39,6 +43,9 @@ public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
 		if (regex != null) {
 			sb.append("&").append("filter=").append(regex);
 		}
+		if (this.resourceType != Resource.class) {
+			sb.append("&resourcetype=").append(Resource.toString(this.resourceType).toLowerCase());
+		}
 	}
 
 	@Override
@@ -48,7 +55,7 @@ public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
 
 	@Override
 	protected List<Tag> getList() {
-		return this.getLogic().getTags(grouping, groupingValue, regex, this.getView().getStartValue(), this.getView().getEndValue());
+		return this.getLogic().getTags(grouping, groupingValue, regex, resourceType, this.getView().getStartValue(), this.getView().getEndValue());
 	}
 
 	@Override
