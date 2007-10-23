@@ -410,10 +410,7 @@ public class RestDatabaseManager implements DBLogicInterface {
 	 * @return post the incoming post with the groupIDs filled in
 	 */
 	private <T extends Resource> Post<T> validateGroups(Post<T> post, DBSession session) {
-		if (post.getGroups() == null) {
-			throw new InvalidModelException("No groups assigned to post");
-		}
-
+		
 		// retrieve the user's groups
 		final List<Integer> groupIds = this.generalDBManager.getGroupIdsForUser(post.getUser().getName(), session);
 		// each user can post as public / private / friends
@@ -433,6 +430,12 @@ public class RestDatabaseManager implements DBLogicInterface {
 			}
 			group.setGroupId(testGroup.getGroupId());
 		}		
+		
+		// no group specified -> make it public
+		if (post.getGroups().size() == 0) {
+			post.getGroups().add(new Group(GroupID.PUBLIC));
+		}
+		
 		return post;
 	}
 
