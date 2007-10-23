@@ -590,7 +590,7 @@ public class XMLRenderer implements Renderer {
 			final JAXBElement<?> xmlDoc = (JAXBElement<?>) u.unmarshal(reader);
 			return (BibsonomyXML) xmlDoc.getValue();
 		} catch (final JAXBException e) {
-			if (e.getLinkedException().getClass() == SAXParseException.class) {
+			if (e.getLinkedException() != null && e.getLinkedException().getClass() == SAXParseException.class) {
 				SAXParseException ex = (SAXParseException) e.getLinkedException();
 				throw new BadRequestOrResponseException(
 						"Error while parsing XML (Line " 
