@@ -65,7 +65,10 @@ public class ModelUtils {
 	public static BibTex getBibTex() {
 		final BibTex bibtex = new BibTex();
 		setBeanPropertiesOn(bibtex);
-		setResourceDefaults(bibtex);
+		setResourceDefaults(bibtex);		
+		bibtex.setEntrytype("inproceedings");
+		bibtex.setAuthor("Hans Testauthor and Liese Testauthorin");
+		bibtex.setEditor("Peter Silie");
 		bibtex.recalculateHashes();
 		return bibtex;
 	}
