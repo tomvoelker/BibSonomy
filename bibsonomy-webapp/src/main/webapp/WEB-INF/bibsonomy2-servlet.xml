@@ -6,21 +6,20 @@
 	<bean id="controllerBase" class="org.bibsonomy.webapp.util.spring.controller.MinimalisticControllerSpringWrapper" abstract="true">
 	</bean>
 
-	<bean id="urlMapping" class="org.bibsonomy.webapp.util.spring.handler.RoundTripELHandlerMapping">
-		<constructor-arg>
+	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="urlMap">
 			<map>
-				<entry key="/new(/${requestedUser})">
+				<entry key="/homepage/">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="homepageController"/>
 					</bean>
 				</entry>
 			</map>
-		</constructor-arg>
+		</property>
 	</bean>
 	
 	<bean id="requestHolder" class="org.bibsonomy.webapp.util.spring.factorybeans.Holder" scope="request"/>
-	
-	<bean id="homepageController" class="org.bibsonomy.webapp.controller.HomepageController" scope="request">
+		<bean id="homepageController" class="org.bibsonomy.webapp.controller.HomepageController" scope="request">
 		<property name="postLogic" ref="postLogic"/>
 		<property name="userSettings" ref="userSettings"/>
 	</bean>
