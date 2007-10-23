@@ -15,6 +15,8 @@ import java.util.List;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.bibsonomy.bibtex.util.BibtexParserUtils;
+import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -179,6 +181,11 @@ public class ModelFactory {
 			bibtex.setYear(xmlBibtex.getYear());
 			bibtex.setPrivnote(xmlBibtex.getPrivnote());
 
+			// parse Bibtex so see whether the entry is valid
+			BibtexParserUtils bibutil = new BibtexParserUtils( bibtex.toBibtexString() );						
+			bibtex.setAuthor( bibutil.getFormattedAuthorString() );
+			bibtex.setEditor( bibutil.getFormattedEditorString() );
+						
 			post.setResource(bibtex);
 		}
 		if (xmlPost.getBookmark() != null) {
