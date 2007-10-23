@@ -1,5 +1,11 @@
 package org.bibsonomy.model;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -370,5 +376,44 @@ public class BibTex extends Resource {
 	public void recalculateHashes() {
 		this.setIntraHash(SimHash.getSimHash(this, HashID.INTRA_HASH));
 		this.setInterHash(SimHash.getSimHash(this, HashID.INTER_HASH));
+	}
+	
+	/**
+	 * return a bibtex string representation of this BibTex Object
+	 * 
+	 * @return String bibtexString
+	 */
+	public String toBibtexString() {
+		try {
+			final BeanInfo bi = Introspector.getBeanInfo(this.getClass());
+			
+			StringBuffer sb = new StringBuffer();
+			sb.append("@");
+			sb.append(this.getEntrytype());
+			sb.append("{");
+			sb.append(this.getBibtexKey());
+			sb.append(",\n");
+			for (final PropertyDescriptor d : bi.getPropertyDescriptors()) {
+				final Method getter = d.getReadMethod();
+				// loop over all String attributes
+				if (d.getPropertyType().equals(String.class) 
+						&& getter.invoke(this, (Object[]) null) != null) {
+					sb.append(d.getName());
+					sb.append(" = ");
+					sb.append("{");
+					sb.append( (String) getter.invoke(this, (Object[]) null) );
+					sb.append("}, \n");					
+				}
+			}				
+			sb.append("}");	
+			return sb.toString();
+		} catch (IntrospectionException ex) {
+			ex.printStackTrace();
+		} catch (InvocationTargetException ex) {
+			ex.printStackTrace();
+		} catch (IllegalAccessException ex) {
+			ex.printStackTrace();
+		}		
+		return null;
 	}
 }
