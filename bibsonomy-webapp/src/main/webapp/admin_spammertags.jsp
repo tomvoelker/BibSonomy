@@ -22,23 +22,10 @@
 <%-------------------------- Navigation -----------------------%>
 <%@include file="/boxes/navi.jsp"%>
 
-<%-- ------------------------ change settings -------------------------- --%>
-<jsp:useBean id="adminBean" class="beans.AdminBean">
-	<jsp:setProperty name="adminBean" property="*"/>
-</jsp:useBean>
-
-<% adminBean.queryDB(); %>
-
+<%-------------------------- Content Area (3 columns) -----------------------%>
 <div id="fullscreen">
 
 <%@include file="/boxes/admin/navi.jsp"%>
-
-<%--------------------------infos/errors -----------------------%>
-<p style="font-weight:bold; color:#ff0000;">
-	<c:forEach var="info" items="${adminBean.infos}">Info: <c:out value="${info}"/></c:forEach>
-	<c:forEach var="error" items="${adminBean.errors}">Error: <c:out value="${error}"/></c:forEach>
-</p>
-
 <%-------------------------- add / remove tags or spammers -----------------------%>
 <table width="100%">
 	<tr>
@@ -46,9 +33,8 @@
 			<h2>add/remove spammertags</h2>
 			<form action="/admin_spammertags.jsp">
 			<b>spammertag</b>:		
-			<input type="text" name="tag" id="acl_spamtag1" />
-			<input type="hidden" name="action" value="addtag"/>
-			<input type="submit" value=" OK " />		
+			<input type="text" name="tag" id="acl_spamtag1" />			
+			<input type="button" value=" OK " onclick="addSpammertag(document.getElementsByName('tag')[0].value,null,null);clearFields();" />		
 			</form>	
 			<div id="autocomplete_spammertag" class="autocomplete"></div>
 			<script type="text/javascript">
@@ -57,9 +43,8 @@
 		
 			<form action="/admin_spammertags.jsp">
 			<b style="text-decoration:line-through;">spammertag</b>: 		
-			<input type="text" name="tag" id="acl_spamtag2" />
-			<input type="hidden" name="action" value="rmvtag"/>
-			<input type="submit" value=" OK " />	
+			<input type="text" name="tag" id="acl_spamtag2" />			
+			<input type="button" value=" OK " onclick="removeSpammertag(document.getElementsByName('tag')[1].value,null,null);clearFields();"/>	
 			</form>
 			<div id="autocomplete_spammertag2" class="autocomplete"></div>
 			<script type="text/javascript">
@@ -70,9 +55,8 @@
 			<h2>flag/unflag a spammer</h2>	
 			<%-- spammer form  --%>
 			<form action="/admin_spammertags.jsp">
-			  <b>spammer:</b> user name <input type="text" name="user" id="acl_spam" />
-			  <input type="hidden" name="action" value="flag_spammer"/>
-			  <input type="submit" value=" OK "/>
+			  <b>spammer:</b> user name <input type="text" name="user" id="acl_spam" />			  
+			  <input type="button" value=" OK " onclick="addSpammer(document.getElementsByName('user')[0].value,null,null);clearFields();"/>
 			</form>			
 			<div id="autocomplete_spam" class="autocomplete"></div>
 			<script type="text/javascript">
@@ -80,9 +64,8 @@
 			</script>
 			
 			<form action="/admin_spammertags.jsp">
-			  <b style="text-decoration:line-through;">spammer:</b> user name <input type="text" name="user" id="acl_unspam"/>
-			  <input type="hidden" name="action" value="unflag_spammer"/>
-			  <input type="submit" value=" OK "/>
+			  <b style="text-decoration:line-through;">spammer:</b> user name <input type="text" name="user" id="acl_unspam"/>			  
+			  <input type="button" value=" OK " onclick="unflagSpammer(document.getElementsByName('user')[1].value,null,null);clearFields();"/>
 			</form>
 			
 			<div id="autocomplete_unspam" class="autocomplete"></div>
@@ -129,8 +112,7 @@
 
 <div class="threecolbox">
 <h2>list of spammertags (<c:out value="${count.rows[0].anz}"/>)</h2>
-<br>
-<% System.out.println("0"); %>
+<h5>most used spammertags (last 1000 posts)</h5><br/>
 
 <table cellpadding="2" class="taglist" >	
 	<tr>
@@ -157,33 +139,26 @@
 
 <%-------------------------- busy spammertags (tags of last 10000 tas which  
 							 have a spammer group but not listed in spammer tags yet) -----%>
-<div class="threecolbox">
-<h2>tag suggestions</h2>
-
-<sql:query var="busytags" dataSource="${dataSource}">
-	SELECT tag_name, tag_anzahl
-	FROM
-	(
-	   SELECT
-	   t.tag_name, COUNT(t.tag_name) AS tag_anzahl
-	   FROM
-	   (
-	      SELECT
-	      t.tag_name
-	      FROM tas t
-	      LEFT JOIN spammer_tags s ON (t.tag_name = s.tag_name AND s.spammer = 1)
-	      WHERE ISNULL(s.tag_name)
-	      AND t.group = -2147483648
-	      ORDER BY date DESC LIMIT 10000
-	   )
-	   AS t
-	   GROUP BY t.tag_name
-	   ORDER BY 2 DESC LIMIT 30
-	)
-	AS t1
-	ORDER BY 1
+<sql:query var="busytags" dataSource="${dataSource}">	
+   SELECT
+   t.tag_name, COUNT(t.tag_name) AS tag_anzahl
+   FROM
+   (
+      SELECT t.tag_name
+      FROM tas t
+      LEFT JOIN spammer_tags s ON (t.tag_name = s.tag_name)
+      WHERE ISNULL(s.tag_name)
+      AND t.group = -2147483648
+      ORDER BY date DESC LIMIT 10000
+   )
+   AS t
+   GROUP BY t.tag_name
+   ORDER BY 2 DESC LIMIT 30	
 </sql:query>
 
+<div class="threecolbox">
+<h2>tag suggestions</h2>
+<h5>tags used by spammers but not marked as spammertags (last 1000 tas)</h5><br/>
 <table cellpadding="2" class="taglist">
 	<tr>
 		<th>tag</th>
@@ -206,10 +181,6 @@
 </div>
 
 <%-------------------------- list of users not marked as spammers but post spammertags -----------------------%>
-<div class="threecolbox">
-
-<h2>spammer suggestions</h2>
-
 <sql:query var="spammers" dataSource="${dataSource}">
 	SELECT t.user_name AS user, t.tag_name AS tag 
 	FROM (
@@ -227,6 +198,10 @@
 	GROUP BY t.user_name
 	ORDER BY MAX(t.date) DESC  
 </sql:query>
+
+<div class="threecolbox">
+<h2>spammer suggestions</h2>
+<h5>users not flagged as spammers but used spammertags</h5><br/>
 
 <table cellpadding="2" class="taglist">
 	<tr>
@@ -276,8 +251,15 @@
     }	
 	
 	function addSpammertag(name, parentId, rowId) {		
+		if (name == null || name == "") {
+			addLogMessage("please specify a tag");
+			return;
+		}
+		
 		/* remove item from old list */
-		removeItem(rowId, parentId);	
+		if (parentId != null && rowId != null) {
+			removeItem(rowId, parentId);	
+		}
 			
 		/* add spammertga in db via AJAX*/
 		runAjax("tag=" + name, "addtag");
@@ -315,38 +297,70 @@
 	}	
 	
 	function removeSpammertag(name, parentId, rowId) {		
+		if (name == null || name == "") {
+			addLogMessage("please specify a tag");
+			return;
+		}
+		
 		/* remove item from old list */
-		removeItem(rowId, parentId);	
-			
+		if (parentId != null && rowId != null) {			
+			removeItem(rowId, parentId);	
+		}
+		
 		/* remove spammertag from db via AJAX*/
 		runAjax("tag=" + name, "rmvtag");
 	}	
 	
+	/* remove tag from suggestion list */
 	function cleanTag(name, parentId, rowId) {		
 		/* remove item from old list */
 		removeItem(rowId, parentId);	
 			
-		/* remove spammertag from db via AJAX*/
+		/* remove tag from db via AJAX*/
 		runAjax("tag=" + name, "cleantag");
 	}
 	
 	function addSpammer(name, parentId, rowId) {		
+		if (name == null || name == "") {
+			addLogMessage("please specify a user");
+			return;
+		}
 		/* remove item from old list */
-		removeItem(rowId, parentId);	
+		if (parentId != null && rowId != null) {			
+			removeItem(rowId, parentId);
+		}	
 			
-		/* remove spammertag from db via AJAX*/
+		/* add spammer to db via AJAX*/
 		runAjax("user=" + name, "flag_spammer");
 	}
 	
+	function unflagSpammer(name, parentId, rowId) {		
+		if (name == null || name == "") {
+			addLogMessage("please specify a user");
+			return;
+		}
+		
+		/* remove item from old list */
+		if (parentId != null && rowId != null) {			
+			removeItem(rowId, parentId);
+		}	
+			
+		/* remove spammer from db via AJAX*/
+		runAjax("user=" + name, "unflag_spammer");
+	}
+	
+	/* remove user from spammer suggestion list */
 	function removeUser(name, parentId, rowId) {		
 		/* remove item from old list */
-		removeItem(rowId, parentId);	
+		if (parentId != null && rowId != null) {
+			removeItem(rowId, parentId);
+		}	
 			
 		/* remove spammertag from db via AJAX*/
 		runAjax("user=" + name, "remove_user");
 	}
 	
-	
+	/* function interacts with server via ajax */
 	function runAjax(parameter,action) {
 		var request = initRequest(); 
 		var url = "admin_tag_suggest.jsp?" + parameter;	   
@@ -358,22 +372,30 @@
 	   	}    	
 	}
 	
+	/* handler function */
 	function ajax_updateLog(request) {   			
 		return function() {			
 			if (4 == request.readyState) {    	
-		    	var division = document.getElementById("log");
-		    	var li = document.createElement("LI");
-		    	li.innerHTML = request.responseText;
-		    	division.insertBefore(li,division.firstChild);		    	   
+		    	addLogMessage(request.responseText);		    			    	   
 		    }
 		}
 	}
 	
+	/* add a message to log box */
+	function addLogMessage(msg) {
+		var division = document.getElementById("log");
+		var li = document.createElement("LI");
+		li.innerHTML = msg;
+		division.insertBefore(li,division.firstChild);
+	}
+	
+	/* remove dom item */
 	function removeItem(item) {
 		var item = document.getElementById(item);		
 		item.style.display = "none";		
 	}
 	
+	/* add dom item */
 	function addItem(item, parent, pos) {
 		var parent = document.getElementById(parent);		
 				
@@ -383,6 +405,14 @@
 			parent.insertBefore(item,parent.firstChild);
 		}	
 	}	
+	
+	/* resets input fields */
+	function clearFields() {
+		document.getElementsByName("tag")[0].value = "";
+		document.getElementsByName("tag")[1].value = "";
+		document.getElementsByName("user")[0].value = "";
+		document.getElementsByName("user")[1].value = "";
+	}
 </script>
 
 <%-------------------------- footer -----------------------%>

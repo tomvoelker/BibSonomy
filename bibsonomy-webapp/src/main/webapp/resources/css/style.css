@@ -742,7 +742,7 @@ span.info:hover span{
 	left:18px;	/* Same as border thickness */
 	top:0px;
 	position:absolute;
-	width:230px;	 /*Width of tooltip content */
+	width: 450px;	 /*Width of tooltip content */
 	background-color:#FFF;	/* Background color */
 	padding:5px;	/* Space between border and content */
 	font-size:0.9em;	/* Font size of content */
