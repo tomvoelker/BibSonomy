@@ -185,7 +185,7 @@ public class ResourceHandler extends HttpServlet{
 		boolean isBurstFeed   = "burst".equals(requType);
 		boolean isLayoutFeed  = "layout".equals(requType);
 		boolean isNRLFeed     = "nrl".equals(requType);
-
+		boolean isjsonFeed    = "json".equals(requType); 
 		/*  
 		 * TODO: currently every page can be edited and in batchedit.jsp only the users own entries are shown
 		 * Nevertheless they're gotten from the database, which is not neccessary at all --> maybe there should
@@ -195,7 +195,7 @@ public class ResourceHandler extends HttpServlet{
 		boolean isBatchEditBib= "batcheditbib".equals(requType);  
 		boolean isUserPage    = false; // only posts of one user on page?
 
-		boolean getOnlyBibtex = isBibFeed || isPublFeed || isPublKDEFeed || isPublCSVFeed ||isPublRSSNepoFeed || isPublRssFeed || isLayoutFeed || isBurstFeed || isBatchEditBib || isEndFeed || isSWRCFeed;
+		boolean getOnlyBibtex = isBibFeed || isPublFeed || isPublKDEFeed || isPublCSVFeed ||isPublRSSNepoFeed || isPublRssFeed || isLayoutFeed || isBurstFeed || isBatchEditBib || isEndFeed || isSWRCFeed || isjsonFeed;
 
 		/* *************************************************************************
 		 *  get/set value of maximal number of rows to retrieve from database
@@ -747,6 +747,7 @@ public class ResourceHandler extends HttpServlet{
 			if (isSWRCFeed) forwPage = "SWRCoutput.jsp"; 		// SWRC Feed Handling
 			if (isLayoutFeed) forwPage = "LayoutHandler"; 	// JabRef Layout Feed Handling 
 			if (isBatchEditBib || isBatchEditUrl) forwPage = JSP_BATCHEDIT;          // for batch editing tags
+			if (isjsonFeed) forwPage = "JSONOutput.jsp";		// Publ Html Feed Handling
 
 			/*
 			 * pick/unpick action handling

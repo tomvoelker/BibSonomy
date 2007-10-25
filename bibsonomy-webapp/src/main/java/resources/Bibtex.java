@@ -229,6 +229,7 @@ public class Bibtex extends Resource {
 	public String getUrl ()           {	return getEntry("url");	        }
 	public String getVolume ()        {	return getEntry("volume");	    }
 	public String getYear ()          {	return getEntry("year");	    }
+	public String getAbstract ()      {	return getEntry("abstract");	    }
 	
 	/* return an URL, which is not broken, i.e. it is valid */
 	public String getCleanurl () {
@@ -411,7 +412,7 @@ public class Bibtex extends Resource {
 	 * returns a list of authornames separated to firstname and lastname
 	 */
 	public List<String[]> getAuthornamesseparated() {		
-		return getNamesSeparated(this.getAuthor());
+		return getNamesSeparated(this.getAuthor()); 
 	}
 	
 	/*
