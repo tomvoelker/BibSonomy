@@ -1,5 +1,6 @@
 package DBLP;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.util.Date;
 
@@ -27,8 +28,6 @@ public class DBLPUpdater {
 	private final static Logger log = Logger.getLogger(DBLPUpdater.class);
 
 	
-	public static final String constantsXML = "/home/rja/eclipse-ws/bibsonomy/WEB-INF/src/DBLP/DBLPConstants.xml";
-
 	public static void main(String[] args) throws MalformedURLException {
 
 		// get application constants
@@ -38,10 +37,13 @@ public class DBLPUpdater {
 		try {
 			conReader = new DBLPConstantsReader();
 
-			if (args.length == 0)
-				conReader.readConstants(constantsXML);// default setting
-			else
-				conReader.readConstants(args[0]);// user input
+			if (args.length == 0) {
+				System.err.println("Please specify a configuration file!");
+				System.err.println("usage:");
+				System.err.println("java -Xmx2000M " + DBLPUpdater.class.getName() + " DBLPConstants.xml");
+				System.exit(1);
+			} else
+				conReader.readConstants(new File(args[0]));// user input
 
 			log.info("DBLP UPDATE started");
 
