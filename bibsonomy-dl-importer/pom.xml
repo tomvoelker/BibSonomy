@@ -30,6 +30,10 @@
 			<artifactId>jtidy</artifactId>
 			<version>4aug2000r7-dev</version>
 		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
 	</dependencies>
 	<properties>
 		<wtpversion>1.5</wtpversion>
