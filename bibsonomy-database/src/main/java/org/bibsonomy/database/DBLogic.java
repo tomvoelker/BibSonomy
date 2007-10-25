@@ -116,6 +116,12 @@ public class DBLogic implements LogicInterface {
 			throw new ValidationException("You are not authorized to perform the requested operation");
 		}
 	}
+	
+	private void ensureWriteAccess(Post<?> post) {
+		if (this.loginUserName.equals(post.getUser().getName()) == false) {
+			throw new ValidationException("You are not authorized to perform the requested operation");
+		}
+	}
 
 	public String createGroup(Group group) {
 		ensureLoggedIn();
@@ -129,11 +135,13 @@ public class DBLogic implements LogicInterface {
 
 	public String createPost(Post<?> post) {
 		ensureLoggedIn();
+		ensureWriteAccess(post);
 		return this.dbLogic.storePost(this.loginUserName, post, false);
 	}
 
 	public String updatePost(Post<?> post) {
 		ensureLoggedIn();
+		ensureWriteAccess(post);
 		return this.dbLogic.storePost(this.loginUserName, post, true);
 	}
 
