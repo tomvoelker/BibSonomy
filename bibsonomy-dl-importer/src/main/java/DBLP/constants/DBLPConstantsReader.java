@@ -1,5 +1,6 @@
 package DBLP.constants;
 
+import java.io.File;
 import java.io.FileReader;
 
 import org.xml.sax.InputSource;
@@ -17,13 +18,13 @@ public class DBLPConstantsReader{
 		handler = null;
 	}
 
-	public void readConstants(String constantsXML) throws Exception{
+	public void readConstants(File constantsXML) throws Exception{
 		//prepare parse xml
 		XMLReader xmlreader = XMLReaderFactory.createXMLReader(); 	
 		handler = new DBLPConstantsHandler();
 		xmlreader.setContentHandler(handler);
 		xmlreader.setErrorHandler(handler);
-			
+
 		// parse XML
 		xmlreader.parse(new InputSource(new FileReader(constantsXML)));
 	}
