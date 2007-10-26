@@ -221,20 +221,14 @@ public class RestDatabaseManager implements DBLogicInterface {
 		try {
 			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, authUser, grouping, groupingName, null, null, null, start, end, null);
 			
-			if (resourceType == BibTex.class || resourceType == Bookmark.class) {
-				// this is save because of RTTI-check of resourceType argument which is of class T
-				param.setRegex(regex);
-				// need to switch from class to string to ensure legibility of Tags.xml
-				param.setContentTypeByClass(resourceType);
-				result = this.tagDBManager.getTags(param, session);
-			} else if (resourceType == Resource.class){
+			if (resourceType == BibTex.class || resourceType == Bookmark.class || resourceType == Resource.class) {
 				// this is save because of RTTI-check of resourceType argument which is of class T
 				param.setRegex(regex);
 				// need to switch from class to string to ensure legibility of Tags.xml
 				param.setContentTypeByClass(resourceType);
 				result = this.tagDBManager.getTags(param, session);
 			} else {
-				throw new UnsupportedResourceTypeException();
+				throw new UnsupportedResourceTypeException("The requested resourcetype (" + resourceType.getClass().getName() + ") is not supported.");
 			}
 			
 		} finally {
