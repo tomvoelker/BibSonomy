@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
+	<!--
+		root element
+	-->
 	<xsd:element name="bibsonomy" type="bibsonomyXML"/>
 
+
+	<!--
+		root element type
+	-->
 	<xsd:complexType name="bibsonomyXML">
 		<xsd:sequence>
 			<xsd:choice>
@@ -27,6 +34,7 @@
 				<xsd:element name="groupid" type="xsd:string"/>
 			</xsd:choice>
 		</xsd:sequence>
+		<!-- status flag: contains "ok" when request was successful, "fail" otherwise -->
 		<xsd:attribute name="stat" type="statType"/>
 	</xsd:complexType>
 
@@ -193,19 +201,28 @@
 		<xsd:attribute name="href" type="xsd:anyURI"/>
 	</xsd:complexType>
 	
+	<!--
+		helper type, as xsd:positiveInteger alone does not include zero
+	-->	
 	<xsd:simpleType name="positiveIntegerIncludingZero">
 		<xsd:restriction base="xsd:integer">
     		<xsd:minInclusive value="0"/>
     	</xsd:restriction>
 	</xsd:simpleType>
-	
+
+	<!--
+		type for resource hashes
+	-->	
 	<xsd:simpleType name="hashType">
 		<xsd:restriction base="xsd:string">
     		<xsd:length value="32"/>
     		<xsd:pattern value="([a-z]|[0-9])*"/>
     	</xsd:restriction>
 	</xsd:simpleType>
-	
+
+	<!--
+		type for status message
+	-->	
 	<xsd:simpleType name="statType">
 		<xsd:restriction base="xsd:string">
       		<xsd:enumeration value="ok"/>
