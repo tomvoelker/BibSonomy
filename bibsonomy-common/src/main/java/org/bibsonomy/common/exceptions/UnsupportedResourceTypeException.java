@@ -11,4 +11,8 @@ public class UnsupportedResourceTypeException extends RuntimeException {
 	public UnsupportedResourceTypeException() {
 		super("Please specify a resource-type by appending '?resourcetype=bibtex' or '?resourcetype=bookmark' to the requested URL");
 	}
+	
+	public UnsupportedResourceTypeException(String message) {
+		super(message);
+	}	
 }
