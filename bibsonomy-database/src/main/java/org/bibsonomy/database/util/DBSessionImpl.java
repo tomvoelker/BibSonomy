@@ -160,6 +160,10 @@ public class DBSessionImpl implements DBSession {
 			return this.executeQuery(this.getSqlMapExecutor(), query, param, statementType, queryFor);
 		} catch (final Exception ex) {
 			String msg = "Couldn't execute query '" + query + "'";
+			/*
+			 * check for query interruption because of time limits
+			 * TODO: don't use equals() on getMessage() but on Message Error Code (MySQL-specific :-()
+			 */
 			if (ex.getMessage().equals("Query execution was interrupted")) {
 				msg += " (Query time limit exceeded)";
 			}			
