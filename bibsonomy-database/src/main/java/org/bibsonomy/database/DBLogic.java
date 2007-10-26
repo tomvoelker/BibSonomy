@@ -113,13 +113,13 @@ public class DBLogic implements LogicInterface {
 
 	private void ensureLoggedIn() {
 		if (this.loginUserName == null) {
-			throw new ValidationException("You are not authorized to perform the requested operation");
+			throw new ValidationException("You are not authorized to perform the requested operation.");
 		}
 	}
 	
 	private void ensureWriteAccess(Post<?> post) {
 		if (this.loginUserName.equals(post.getUser().getName()) == false) {
-			throw new ValidationException("You are not authorized to perform the requested operation");
+			throw new ValidationException("You are not authorized to perform the requested operation.");
 		}
 	}
 
