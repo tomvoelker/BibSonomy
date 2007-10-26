@@ -160,9 +160,12 @@ public class DBSessionImpl implements DBSession {
 			return this.executeQuery(this.getSqlMapExecutor(), query, param, statementType, queryFor);
 		} catch (final Exception ex) {
 			String msg = "Couldn't execute query '" + query + "'";
+			if (ex.getMessage().equals("Query execution was interrupted")) {
+				msg += " (Query time limit exceeded)";
+			}			
 			if (ignoreException == false) {
 				this.somethingWentWrong();
-				ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't execute query '" + query + "'");
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, msg);
 			} else {
 				msg += " (ignored): " + ex.getMessage();
 				log.debug(msg);
