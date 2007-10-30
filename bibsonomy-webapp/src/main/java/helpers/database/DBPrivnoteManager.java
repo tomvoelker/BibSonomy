@@ -13,6 +13,9 @@ import resources.Bibtex;
 
 public class DBPrivnoteManager extends DBManager {
 
+	private final static Log log = LogFactory.getLog(DBPrivnoteManager.class);
+
+	
 	/**
 	 * Sets the private note of a users bibtex entry.
 	 * 
@@ -35,7 +38,6 @@ public class DBPrivnoteManager extends DBManager {
 			 * TODO: first attempt to do logging when exceptions are thrown - code "stolen" from Jens'
 			 * Database backend classes
 			 */
-			final Log log = LogFactory.getLog(DBPrivnoteManager.class);
 			log.fatal("could not set the private not for the user " + e.getMessage());
 		} finally {
 			c.close(); // close database connection
