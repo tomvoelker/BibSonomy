@@ -13,6 +13,9 @@ import org.junit.Test;
  */
 public class GroupingEntityTest {
 
+	/**
+	 * tests getGroupingEntity what else ?
+	 */
 	@Test
 	public void testGetGroupingEntity() {
 		assertEquals(GroupingEntity.ALL, GroupingEntity.getGroupingEntity("all"));
@@ -48,6 +51,9 @@ public class GroupingEntityTest {
 	/*
 	 * We want to make sure that this is the case, because we are relying on it
 	 * in our testcases.
+	 */
+	/**
+	 * tests toString what else ?
 	 */
 	@Test
 	public void testToString() {

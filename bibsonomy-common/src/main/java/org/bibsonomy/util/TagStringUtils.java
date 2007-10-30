@@ -2,9 +2,13 @@ package org.bibsonomy.util;
 
 import java.util.regex.Pattern;
 
+/**
+ * home of static methods for dealing with string representations of tags
+ */
 public class TagStringUtils {
 
-	/** Allows in a string of tags to change the delimiter to space. Additionally, tags consisting of
+	/**
+	 * Allows in a string of tags to change the delimiter to space. Additionally, tags consisting of
 	 * more than one word (separated by whitespace) can be joined with whitespaceSub.
 	 * 
 	 *  Example:

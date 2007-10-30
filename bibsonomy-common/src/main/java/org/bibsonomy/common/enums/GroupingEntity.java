@@ -3,16 +3,51 @@ package org.bibsonomy.common.enums;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.UnsupportedGroupingException;
 
+/* TODO: what is "grouped" by these entities? isn't it filtering? */
 /**
+ * defines possible entities for which query constraints can be set
+ * (someone called this "grouping")
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
 public enum GroupingEntity {
-
-	USER, GROUP, VIEWABLE, ALL, FRIEND;
+	/**
+	 * for constrainting the user which is somehow related to the entities
+	 * in a list which is to be filtered.
+	 */
+	USER,
+	
+	/**
+	 * for constraints on the filtered entity's owning user's group membership
+	 * regardless of whether the actual group of the entity is public or
+	 * friend or the constraintgroup, as long as some unspecified kind of
+	 * authorization for seeing the entity is present.
+	 */
+	GROUP,
+	
+	/* TODO: describe why this is called "viewable" */
+	/**
+	 * for constraints on the <b>explicit</b> group-association of
+	 * the entities in a list which is to be filtered. This is
+	 * <b>NOT</b> viewability through <b>any</b> group membership
+	 * but "ownership of the entity by the group" in the current
+	 * bibsonomy-schema-speaking.
+	 */
+	VIEWABLE,
+	
+	/**
+	 * for no constraints on the entities in a list which is to be filtered
+	 */
+	ALL,
+	
+	/**
+	 * for constrainting the associated groups of the entities in the list, which is to be filtered, to contain the group 'friends' and the requesting user is in that "friends-group".  
+	 */
+	FRIEND;
 
 	/**
-	 * Returns the corresponding GroupingEntity-enum for the given string.
+	 * @param groupingEntity name of the GroupingEntity Instance to retrieve
+	 * @return the corresponding GroupingEntity-enum for the given string argument.
 	 */
 	public static GroupingEntity getGroupingEntity(final String groupingEntity) {
 		if (groupingEntity == null) throw new InternServerException("GroupingEntity is null");

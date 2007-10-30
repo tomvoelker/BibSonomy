@@ -12,8 +12,12 @@ package org.bibsonomy.common.enums;
  * @version $Id$
  */
 public enum Privlevel {
-
-	PUBLIC(0), HIDDEN(1), MEMBERS(2);
+	/** the member list is public */
+	PUBLIC(0),
+	/** the member list is hidden */
+	HIDDEN(1),
+	/** only members can see members */
+	MEMBERS(2);
 
 	private final int id;
 
@@ -21,12 +25,16 @@ public enum Privlevel {
 		this.id = id;
 	}
 
+	/**
+	 * @return constant value behind the symbol 
+	 */
 	public int getId() {
 		return this.id;
 	}
 
 	/**
-	 * Returns the corresponding Privlevel-enum for the given int.
+	 * @param privlevel constant value behind the Privlevel symbol to retrieve
+	 * @return the corresponding Privlevel-enum for the given int.
 	 */
 	public static Privlevel getPrivlevel(final int privlevel) {
 		if (privlevel > 2 || privlevel < 0) throw new RuntimeException("Privlevel is out of bounds (" + privlevel + ")");

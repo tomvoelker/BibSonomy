@@ -11,6 +11,9 @@ import org.junit.Test;
  */
 public class HashIDTest {
 
+	/**
+	 * tests getSimHash what else ?
+	 */
 	@Test
 	public void getSimHash() {
 		assertEquals(HashID.SIM_HASH0, HashID.getSimHash(0));
@@ -25,6 +28,9 @@ public class HashIDTest {
 		}
 	}
 
+	/**
+	 * tests getHashRange what else ?
+	 */
 	@Test
 	public void getHashRange() {
 		assertEquals(4, HashID.getHashRange().length);

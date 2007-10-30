@@ -4,13 +4,15 @@ import java.util.Collection;
 import java.util.Iterator;
 
 /**
- * Some methods to handle string.
+ * Some methods for handling strings.
  */
 public class StringUtils {
 
 	/**
 	 * All strings in the collection are concatenated and returned as one single
 	 * string, i.e. like <code>[item1,item2,item3,...]</code>.
+	 * @param collection collection of strings to be concatenated
+	 * @return concatenated string, i.e. like <code>[item1,item2,item3,...]</code>.
 	 */
 	public static String getStringFromList(final Collection<String> collection) {
 		if (collection.isEmpty()) {
@@ -26,7 +28,9 @@ public class StringUtils {
 	}
 
 	/**
-	 * Remove everything, but numbers.
+	 * Removes everything, but numbers.
+	 * @param str source string
+	 * @return result
 	 */
 	public static String removeNonNumbers(final String str) {
 		if (str != null) {
@@ -37,6 +41,8 @@ public class StringUtils {
 
 	/**
 	 * Removes everything which is neither a number nor a letter.
+	 * @param str source string
+	 * @return result
 	 */
 	public static String removeNonNumbersOrLetters(final String str) {
 		if (str != null) {
@@ -48,6 +54,8 @@ public class StringUtils {
 	/**
 	 * Removes everything which is neither a number nor a letter nor a dot (.)
 	 * nor space.
+	 * @param str source string
+	 * @return result
 	 */
 	public static String removeNonNumbersOrLettersOrDotsOrSpace(final String str) {
 		if (str != null) {
@@ -58,6 +66,8 @@ public class StringUtils {
 
 	/**
 	 * Removes all whitespace.
+	 * @param str source string
+	 * @return result
 	 */
 	public static String removeWhitespace(final String str) {
 		if (str != null) {
@@ -68,6 +78,8 @@ public class StringUtils {
 
 	/**
 	 * Substitutes all whitespace with " "
+	 * @param str source string
+	 * @return result
 	 */
 	public static String normalizeWhitespace(final String str) {
 		if (str != null) {

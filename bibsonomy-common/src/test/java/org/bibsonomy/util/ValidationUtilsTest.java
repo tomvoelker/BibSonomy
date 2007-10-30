@@ -16,6 +16,9 @@ import org.junit.Test;
  */
 public class ValidationUtilsTest {
 
+	/**
+	 * tests present method what else ?
+	 */
 	@Test
 	public void present() {
 		// String
@@ -41,6 +44,9 @@ public class ValidationUtilsTest {
 		}
 	}
 
+	/**
+	 * tests nullOrEqual method what else ?
+	 */
 	@Test
 	public void nullOrEqual() {
 		assertFalse(ValidationUtils.nullOrEqual("", "hurz"));

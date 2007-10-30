@@ -1,7 +1,17 @@
 package org.bibsonomy.util;
 
+/**
+ * Home of some static utility methods for bibtex resources
+ */
 public class BibtexUtils {
 
+	/** 
+	 * @param authors some string representation of the list of authors with their first- and lastnames
+	 * @param editors some string representation of the list of editors with their first- and lastnames
+	 * @param year
+	 * @param title
+	 * @return a bibtex key for a bibtex with the fieldvalues given by arguments
+	 */
 	public static String generateBibtexKey(String authors, String editors, String year, String title) {
 		/*
 		 * todo: pick either author or editor. DON'T use getAuthorlist (it sorts alphabetically!). CHECK for null values.
@@ -32,8 +42,10 @@ public class BibtexUtils {
 		return b.toString().toLowerCase();
 	}
 	
-	/**  Tries to extract the last name of the first person.
-	 *  
+	/**
+	 * Tries to extract the last name of the first person.
+	 * 
+	 * @param person some string representation of a list of persons with their first- and lastnames  
 	 * @return the last name of the first person
 	 */
 	public static String getFirstPersonsLastName (String person) {

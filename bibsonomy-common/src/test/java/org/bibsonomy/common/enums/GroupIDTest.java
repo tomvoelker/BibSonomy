@@ -13,6 +13,9 @@ import org.junit.Test;
  */
 public class GroupIDTest {
 
+	/**
+	 * tests getSpecialGroup what else ?
+	 */
 	@Test
 	public void getSpecialGroup() {
 		assertEquals(GroupID.PUBLIC, GroupID.getSpecialGroup("PUBLIC"));
@@ -33,6 +36,9 @@ public class GroupIDTest {
 		}
 	}
 
+	/**
+	 * tests isSpecialGroupId what else ?
+	 */
 	@Test
 	public void isSpecialGroupId() {
 		for (final int groupId : new int[] { 0, 1, 2 }) {

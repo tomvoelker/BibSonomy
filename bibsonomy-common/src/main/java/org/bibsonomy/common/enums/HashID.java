@@ -6,12 +6,19 @@ package org.bibsonomy.common.enums;
  */
 public enum HashID {
 
+	/** some special hash. Try to use INTRA_HASH or INTER_HASH instead */
 	SIM_HASH0(0),
+	/** some special hash. Try to use INTRA_HASH or INTER_HASH instead */
 	SIM_HASH1(1),
+	/** some special hash. Try to use INTRA_HASH or INTER_HASH instead */
 	SIM_HASH2(2),
+	/** some special hash. Try to use INTRA_HASH or INTER_HASH instead */
 	SIM_HASH3(3),
+	/** some special default hash. Try to use INTRA_HASH or INTER_HASH instead */
 	SIM_HASH(SIM_HASH1),
-	INTRA_HASH(SIM_HASH2),  
+	/** hash over more fields */
+	INTRA_HASH(SIM_HASH2),
+	/** hash over less fields */
 	INTER_HASH(SIM_HASH);
 
 	private final int id;
@@ -24,12 +31,16 @@ public enum HashID {
 		this.id = id.getId();
 	}
 
+	/**
+	 * @return constant value behind the symbol 
+	 */
 	public int getId() {
 		return this.id;
 	}
 
 	/**
-	 * Returns the corresponding simhash.
+	 * @param simHash constant value of the HashID symbol to retrieve
+	 * @return the corresponding simhash.
 	 */
 	public static HashID getSimHash(final int simHash) {
 		switch (simHash) {
@@ -47,7 +58,7 @@ public enum HashID {
 	}
 
 	/**
-	 * Returns an integer array that contains all ids.
+	 * @return an integer array that contains all ids.
 	 */
 	public static int[] getHashRange() {
 		return new int[] { 0, 1, 2, 3 };

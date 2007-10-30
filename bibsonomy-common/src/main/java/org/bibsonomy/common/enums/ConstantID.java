@@ -19,18 +19,22 @@ public enum ConstantID {
 	ALL_CONTENT_TYPE(0),
 
 	/* names for ids table */
+	/** id of the contentId in ids table */
 	IDS_CONTENT_ID(0),
+	/** id of the tasId in ids table */
 	IDS_TAS_ID(1),
+	/** id of the tagRelId in ids table */
 	IDS_TAGREL_ID(2),
+	/** id of the quastionId in ids table */
 	IDS_QUESTION_ID(3),
+	/** id of the cycleId in ids table */
 	IDS_CYCLE_ID(4),
+	/** id of the exgtendedFieldsId in ids table */
 	IDS_EXTENDED_FIELDS(5),
+	/** id of the scraperMetadataId in ids table */
 	IDS_SCRAPER_METADATA(7),
-	IDS_UNDEFINED_CONTENT_ID(-1),
-
-	/* Spammer ids */
-	SPAMMER_TRUE(1),
-	SPAMMER_FALSE(0);
+	/** marks that no special content type has yet been assigned */
+	IDS_UNDEFINED_CONTENT_ID(-1);
 
 	private final int id;
 
@@ -38,6 +42,9 @@ public enum ConstantID {
 		this.id = id;
 	}
 
+	/**
+	 * @return the id constant behind the symbol
+	 */
 	public int getId() {
 		return this.id;
 	}

@@ -11,6 +11,9 @@ import org.junit.Test;
  */
 public class PrivlevelTest {
 
+	/**
+	 * tests getPrivlevel what else ?
+	 */
 	@Test
 	public void getPrivlevel() {
 		assertEquals(Privlevel.PUBLIC, Privlevel.getPrivlevel(0));

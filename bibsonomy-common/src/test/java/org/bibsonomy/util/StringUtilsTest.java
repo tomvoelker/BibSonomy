@@ -8,8 +8,14 @@ import java.util.List;
 
 import org.junit.Test;
 
+/**
+ * Testcase for the StringUtils class
+ */
 public class StringUtilsTest {
 
+	/**
+	 * tests getStringFromList what else ?
+	 */
 	@Test
 	public void getStringFromList() {
 		assertEquals("[]", StringUtils.getStringFromList(Collections.<String> emptyList()));
