@@ -368,7 +368,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 			// Delete al tags according bookmark
 			this.tagDb.deleteTags(oneBookmark, session);
 			// Update SimHashes - as for bookmarks currently all simhashes are the same, 
-			// we only update one and are done			
+			// we only update one and are done		
+			// TODO: isn't it better to replace this zero by a constant?
 			final HashID simHash = HashID.getSimHash(0);
 			param.setRequestedSimHash(simHash);
 			param.setHash(SimHash.getSimHash(((Bookmark) oneBookmark.getResource()), simHash));
