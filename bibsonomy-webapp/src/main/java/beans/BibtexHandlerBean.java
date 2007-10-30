@@ -116,6 +116,7 @@ public class BibtexHandlerBean extends ResourceSuperBean<Bibtex> {
 	public String getUser() 		  {return resource.getUser();			 }
 	public String getHash()			  {return resource.getHash();          }
 	public int getScraperid()         {return resource.getScraperid();}
+	public String getPrivnote()       {return resource.getPrivnote();}
 	
 	// getter with " and " subtituted by linebreaks - for nicer output in textbox
 	public String getAuthorLineBreak () {
@@ -168,6 +169,7 @@ public class BibtexHandlerBean extends ResourceSuperBean<Bibtex> {
 	public void setPages         (String pa) {resource.setPages(pa);	       }
 	public void setBibtexAbstract(String ba) {resource.setBibtexAbstract(ba);}
 	public void setEntrytype     (String et) {resource.setEntrytype(et);	   }
-	public void setScraperid     (int si) {resource.setScraperid(si);}
+	public void setScraperid     (int si)    {resource.setScraperid(si);}
+	public void setPrivnote      (String pn) {resource.setPrivnote(pn);}
 	
 }
