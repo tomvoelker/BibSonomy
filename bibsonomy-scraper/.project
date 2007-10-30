@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>bibsonomy-scraper</name>
-	<comment>BibTex scrapers for Bibsonomy.</comment>
+	<comment>Web page scrapers returning BibTeX for BibSonomy.</comment>
 	<projects>
 	</projects>
 	<buildSpec>
