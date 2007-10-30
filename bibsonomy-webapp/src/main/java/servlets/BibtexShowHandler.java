@@ -191,6 +191,11 @@ public class BibtexShowHandler extends HttpServlet{
 				bibtex.setDay(rst.getString("day"));
 				bibtex.setRating(rst.getInt("rating"));
 				
+				// set privnote only, if this is the same user!
+				if (currUser.equals(rst.getString("user_name"))) {
+					bibtex.setPrivnote(rst.getString("privnote"));
+				}
+				
 				bibtex.setMisc(rst.getString("misc"));
 				bibtex.setBibtexKey(rst.getString("bibtexKey"));		                   				        	    
 				bibtex.setGroup(rst.getString("group_name"));

@@ -464,8 +464,8 @@
 <tr id="miscR">
   <td class="expl">private note</td>
   <td>
-    <textarea name="misc" cols="60" rows="3" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.privateNote}"/></textarea>
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.privateNote}"/></div>    
+    <textarea name="privnote" cols="60" rows="3" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.privnote}"/></textarea>
+    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.privnote}"/></div>    
   </td>
   <td class="expl_s">here you can enter a private note which is not visible to other users</td>
 </tr>

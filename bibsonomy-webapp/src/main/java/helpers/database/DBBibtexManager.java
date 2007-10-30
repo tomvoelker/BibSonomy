@@ -30,11 +30,11 @@ public class DBBibtexManager {
 	private static final String SQL_INSERT_BIBTEX = "INSERT INTO bibtex "
 		+ "(title,entrytype,author,editor,year,content_id,journal,volume,chapter,edition,month,bookTitle, "
 		+ "howpublished,institution,organization,publisher,address,school,series,bibtexKey,`group`, "
-		+ "date,user_name,url,description,annote,note,pages,bKey,number,crossref,misc,bibtexAbstract,type,day,scraperid,rating,simhash"+Bibtex.SIM_HASH_0 
+		+ "date,user_name,url,description,annote,note,pages,bKey,number,crossref,misc,bibtexAbstract,type,day,scraperid,rating,privnote,simhash"+Bibtex.SIM_HASH_0 
 		+																						           ", simhash"+Bibtex.SIM_HASH_1 
 	    +																						           ", simhash"+Bibtex.SIM_HASH_2 
 	    +																						           ", simhash"+Bibtex.SIM_HASH_3 + ")"  		                                                              
-		+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
+		+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	
 	private static final String SQL_LOG_BIBTEX = "INSERT INTO log_bibtex "
 		+ "(rating, title,entrytype,author,editor,year,content_id,journal,volume,chapter,edition,month,bookTitle, "
@@ -411,11 +411,12 @@ public class DBBibtexManager {
 		stmtP_insert_bibtex.setString(34, bib.getType());
 		stmtP_insert_bibtex.setString(35, bib.getDay());
 		stmtP_insert_bibtex.setInt(36, bib.getScraperid());
-		stmtP_insert_bibtex.setInt(37, bib.getRating());		
-		stmtP_insert_bibtex.setString(38, bib.getSimHash(Bibtex.SIM_HASH_0));
-		stmtP_insert_bibtex.setString(39, bib.getSimHash(Bibtex.SIM_HASH_1));
-		stmtP_insert_bibtex.setString(40, bib.getSimHash(Bibtex.SIM_HASH_2));
-		stmtP_insert_bibtex.setString(41, bib.getSimHash(Bibtex.SIM_HASH_3));
+		stmtP_insert_bibtex.setInt(37, bib.getRating());
+		stmtP_insert_bibtex.setString(38, bib.getPrivnote());
+		stmtP_insert_bibtex.setString(39, bib.getSimHash(Bibtex.SIM_HASH_0));
+		stmtP_insert_bibtex.setString(40, bib.getSimHash(Bibtex.SIM_HASH_1));
+		stmtP_insert_bibtex.setString(41, bib.getSimHash(Bibtex.SIM_HASH_2));
+		stmtP_insert_bibtex.setString(42, bib.getSimHash(Bibtex.SIM_HASH_3));
 		stmtP_insert_bibtex.executeUpdate();
 		
 		/* increment similarity hash counter 0 */

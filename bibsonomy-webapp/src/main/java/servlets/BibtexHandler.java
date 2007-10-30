@@ -153,6 +153,7 @@ public class BibtexHandler extends HttpServlet {
 				String oldhash       = ""; 		// to remember old hash from bean for "move" operation				
 				String group         = "public"; 	// default group setting
 				String description   = ""; 		// default description setting
+				String privnote      = "";
 				String delimiter     = null;
 				String whitespace    = null;
 				boolean substitute   = false;
@@ -180,6 +181,7 @@ public class BibtexHandler extends HttpServlet {
 					
 					// get description
 					if (bib.getDescription() != null) { description = bib.getDescription().trim();	}
+					if (bib.getPrivnote() != null) { privnote = bib.getPrivnote().trim();}
 
 					// get string representation of this object
 					StringBuffer entryBuffer = getBibtexString(bib);
@@ -303,7 +305,7 @@ public class BibtexHandler extends HttpServlet {
 				 * parse the BibTeX entries
 				 * *****************************************************************/
 				LinkedList<Bibtex> bibtexList = new LinkedList<Bibtex>();
-				int bibTotalCounter = parseBibtex(currUser, warnings, bibtexList, bibReader, description, group, substitute, delimiter, whitespace, rating);
+				int bibTotalCounter = parseBibtex(currUser, warnings, bibtexList, bibReader, description, group, substitute, delimiter, whitespace, rating, privnote);
 
 				// TODO: a lot of comments removed, have look into versions 1.146 or 1.145 which contains the comments
 				if (isSnippet) {
@@ -574,11 +576,12 @@ public class BibtexHandler extends HttpServlet {
 	 * @param bibtexList
 	 * @param bibReader
 	 * @param description
+	 * @param privnote TODO
 	 * @return
 	 * @throws ParseException
 	 * @throws IOException
 	 */
-	private int parseBibtex(String currUser, WarningBean warnings, LinkedList<Bibtex> bibtexList, Reader bibReader, String description, String group, boolean substitute, String delimiter, String whitespace, int rating) throws ParseException, IOException {
+	private int parseBibtex(String currUser, WarningBean warnings, LinkedList<Bibtex> bibtexList, Reader bibReader, String description, String group, boolean substitute, String delimiter, String whitespace, int rating, String privnote) throws ParseException, IOException {
 		/* **************************************************
 		 * BibTeX file parsing starts here
 		 * **************************************************/
@@ -658,6 +661,7 @@ public class BibtexHandler extends HttpServlet {
 			bibTotalCounter++;
 			Bibtex bib = new Bibtex();
 			bib.setDescription(description);
+			bib.setPrivnote(privnote);
 			bib.setGroup(group);
 			bib.setUser(currUser);
 			bib.setRating(rating);
