@@ -30,6 +30,7 @@ import resources.SplittedAuthors;
 import resources.SplittedConcepts;
 import resources.SplittedEntireConcepts;
 import resources.SplittedTags;
+import resources.SystemTags;
 import beans.ResourceBean;
 import beans.UserBean;
 import filters.SessionSettingsFilter;
@@ -1530,6 +1531,7 @@ public class ResourceHandler extends HttpServlet{
 	 */
 	private void queryPageAuthor(DBContext c, String requAuthor, String requUser, int itemCount, int startBib) throws SQLException {
 		SplittedAuthors authors = new SplittedAuthors(requAuthor);
+		SystemTags systemTags   = new SystemTags(requAuthor);
 		String authorMatch = authors.getQuery();		
 		int argCtr = 1;
 
@@ -1538,20 +1540,21 @@ public class ResourceHandler extends HttpServlet{
 			userSearch = " AND s.user_name = ? ";
 		}
 
-		String query = "SELECT " + getBibtexSelect("b") + ", t.tag_name, h.ctr" 
-		+ "		FROM bibtex b , tas t, bibhash h,"    
-		+ "			(SELECT content_id FROM search s " 
-		+"			WHERE MATCH(s.author) AGAINST (? IN BOOLEAN MODE) " 
-		+" 			AND s.content_type= " + Bibtex.CONTENT_TYPE
-		+ " 		AND s.group = " + constants.SQL_CONST_GROUP_PUBLIC
-		+ userSearch
-		+ "			ORDER BY s.date DESC LIMIT ? OFFSET ?) AS tt " 
-		+ "		WHERE b.content_id = tt.content_id "    
-		+ " 		AND t.content_id=tt.content_id " 
-		+ "			AND b.simhash" + Bibtex.INTER_HASH +" = h.hash "    
-		+ "			AND h.type = " + Bibtex.INTER_HASH      
-		+ "			ORDER BY b.date DESC,b.content_id DESC";
-
+		String query = "SELECT " + getBibtexSelect("tt") + ", t.tag_name, h.ctr"
+				   + "     FROM tas t, bibhash h,"    
+			       + "         (SELECT " + getBibtexSelect("b") + ",b.simhash" + Bibtex.INTER_HASH
+				   + "         FROM search s JOIN bibtex b ON (s.content_id = b.content_id "
+				   + systemTags.getQuery(SystemTags.BIBTEX_YEAR) + ")"
+				   + "         WHERE MATCH(s.author) AGAINST (? IN BOOLEAN MODE) " 
+				   + "         AND s.content_type= " + Bibtex.CONTENT_TYPE
+				   + "         AND s.group = " + constants.SQL_CONST_GROUP_PUBLIC
+				   + userSearch
+				   + "         ORDER BY s.date DESC LIMIT ? OFFSET ?) AS tt " 
+				   + "     WHERE t.content_id=tt.content_id " 
+				   + "         AND tt.simhash" + Bibtex.INTER_HASH +" = h.hash "    
+				   + "         AND h.type = " + Bibtex.INTER_HASH          
+				   + "         ORDER BY tt.date DESC,tt.content_id DESC ";     
+		
 		c.bibStmtP = c.conn.prepareStatement(query);
 		c.bibStmtP.setString(argCtr++, authorMatch);
 		if (requUser != null) {
@@ -1560,12 +1563,13 @@ public class ResourceHandler extends HttpServlet{
 		c.bibStmtP.setInt(argCtr++, itemCount);
 		c.bibStmtP.setInt(argCtr++, startBib);
 
-		//	 count
+		//  counts
 		c.bibTCStmtP = c.conn.prepareStatement("SELECT count(*) FROM search s " 
-				+ " WHERE MATCH(s.author) AGAINST (? IN BOOLEAN MODE) " 
-				+ " AND s.content_type = " + Bibtex.CONTENT_TYPE 
-				+ " AND s.group = " + constants.SQL_CONST_GROUP_PUBLIC
-				+ userSearch);
+			            + " JOIN bibtex b USING (content_id)"
+				        + " WHERE MATCH(s.author) AGAINST (? IN BOOLEAN MODE) " 
+				        + " AND s.content_type = " + Bibtex.CONTENT_TYPE 
+				        + " AND s.group = " + constants.SQL_CONST_GROUP_PUBLIC
+				        + userSearch + systemTags.getQuery(SystemTags.BIBTEX_YEAR));
 		c.bibTCStmtP.setString(1,authorMatch);
 		if (requUser != null) {
 			c.bibTCStmtP.setString(2, requUser);
@@ -1590,22 +1594,26 @@ public class ResourceHandler extends HttpServlet{
 	 */
 	private void queryPageAuthorTag(DBContext c, String requAuthor, String requTag, int itemCount, int startBib) throws SQLException {
 		SplittedAuthors authors = new SplittedAuthors(requAuthor);
+		SystemTags systemTags = new SystemTags(requAuthor);
 		String authorMatch = authors.getQuery();
 
-		String query = "SELECT " + getBibtexSelect("b") + ", t.tag_name, h.ctr"		
-		+ "		FROM bibtex b , tas t, bibhash h,"			
-		+ "			(SELECT s.content_id FROM search s, tas t1"
+		String query = "SELECT " + getBibtexSelect("tt") + ", t.tag_name, h.ctr"		
+		+ "		FROM tas t, bibhash h,"			
+		+ "			(SELECT " + getBibtexSelect("b") + ", b.simhash" + Bibtex.INTER_HASH
+		+ "			 FROM search s, tas t1, bibtex b"
 		+ "			 WHERE MATCH(s.author) AGAINST (? IN BOOLEAN MODE)"
 		+ " 		 	AND s.content_type = " + Bibtex.CONTENT_TYPE
 		+ "			 	AND s.group = " + constants.SQL_CONST_GROUP_PUBLIC
 		+ "			 	AND s.content_id = t1.content_id"
-		+ "			 	AND t1.tag_name = ? ORDER BY s.date DESC LIMIT ? OFFSET ?) AS tt" 		
-		+ "		WHERE b.content_id = tt.content_id"  		
-		+ "			AND t.content_id=tt.content_id" 		
-		+ "			AND b.simhash" + Bibtex.INTER_HASH +" = h.hash" 			
+		+ "				AND b.content_id = s.content_id"			
+		+ "			 	AND t1.tag_name = ? "
+		+ systemTags.getQuery(SystemTags.BIBTEX_YEAR)
+		+ "				ORDER BY s.date DESC LIMIT ? OFFSET ?) AS tt" 		
+		+ "		WHERE t.content_id = tt.content_id" 		
+		+ "			AND tt.simhash" + Bibtex.INTER_HASH +" = h.hash" 			
 		+ "			AND h.type = " + Bibtex.INTER_HASH			
-		+ "		ORDER BY b.date DESC,b.content_id DESC";
-
+		+ "		ORDER BY tt.date DESC, tt.content_id DESC";
+		System.out.println(query);
 		c.bibStmtP = c.conn.prepareStatement(query);
 		c.bibStmtP.setString(1, authorMatch);		
 		c.bibStmtP.setString(2, requTag);
@@ -1613,11 +1621,14 @@ public class ResourceHandler extends HttpServlet{
 		c.bibStmtP.setInt(4, startBib);
 
 		// count 
-		c.bibTCStmtP = c.conn.prepareStatement(" SELECT count(*) FROM search s, tas t1"
+		c.bibTCStmtP = c.conn.prepareStatement(" SELECT count(*) FROM search s, tas t1, bibtex b"
 				+ "			 WHERE MATCH(s.author) AGAINST (? IN BOOLEAN MODE)"
 				+ " 		 	AND s.content_type = " + Bibtex.CONTENT_TYPE
 				+ "			 	AND s.group = " + constants.SQL_CONST_GROUP_PUBLIC
-				+ "			 	AND s.content_id = t1.content_id AND t1.tag_name = ?");
+				+ "			 	AND s.content_id = t1.content_id "
+				+ "				AND s.content_id = b.content_id "	
+				+ systemTags.getQuery(SystemTags.BIBTEX_YEAR)
+				+ "				AND t1.tag_name = ?");
 		c.bibTCStmtP.setString(1, authorMatch);
 		c.bibTCStmtP.setString(2, requTag);
 

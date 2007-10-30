@@ -29,11 +29,14 @@ public class SplittedAuthors extends LinkedList<String> {
 		this.query = null;
 		
 		Scanner s = new Scanner(authors);
-		s.useDelimiter(" ");
-		while(s.hasNext()) {
-			String author = s.next();
-			this.add(author);
-		}		
+        s.useDelimiter(" ");
+        while(s.hasNext()) {
+            String author = s.next();
+            
+            // not consider system tags
+            if (author.indexOf("system:") == -1)
+                this.add(author);
+        }       	
 	}
 	
 	/**
