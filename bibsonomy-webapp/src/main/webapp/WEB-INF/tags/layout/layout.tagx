@@ -18,6 +18,21 @@
 	<fmt:setBundle basename="messages" scope="request"/>
 	
 	<jsp:output doctype-root-element="html"	doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3c.org/TR/xhtml1/DTD/xhtml1-strict.dtd" />
+  
+    <%--
+    
+    TODO: 
+    Probably we should try to do XHTML. Then we would need a <?xml version="1.0" ?> tag 
+    at the beginning of each page and a namespace declaration inside the <html> tag:
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    
+    Unfortunately, I didn't manage to get this into the output.
+
+    see also: http://de.selfhtml.org/html/allgemein/grundgeruest.htm
+    
+    Robert
+    
+     --%>
 	<html>
 		<head>
 			<c:url var="resdir" value="/resources"/>
@@ -25,9 +40,9 @@
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/style.css" />
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/faq.css" />
 			<link rel="icon" href="${resdir}/image/favicon.png" type="image/png" />
-			<script type="text/javascript" src="${resdir}/javascript/functions.js">&#160;</script>
-			<script type="text/javascript" src="${resdir}/javascript/tooltip.js">&#160;</script>
-			<script type="text/javascript" src="${resdir}/javascript/style.js">&#160;</script>
+			<script type="text/javascript" src="${resdir}/javascript/functions.js">&nbsp;</script>
+			<script type="text/javascript" src="${resdir}/javascript/tooltip.js">&nbsp;</script>
+			<script type="text/javascript" src="${resdir}/javascript/style.js">&nbsp;</script>
 			<meta name="author" content="Knowledge and Data Engineering Group, University of Kassel, Germany" />
 			<meta name="copyright" content="Knowledge and Data Engineering Group, University of Kassel, Germany" />
 			<meta name="email" content="webmaster@bibsonomy.org" />
