@@ -32,7 +32,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		for (final Group group : allGroups) {
 			final String realname = group.getUsers().get(0).getRealname();
-			final String homepage = group.getUsers().get(0).getHomepage().toString();
+			final String homepage = (group.getUsers().get(0).getHomepage() != null) ? group.getUsers().get(0).getHomepage().toString() : null;
 
 			if (group.getName().equals("kde")) {
 				assertEquals(GroupID.KDE.getId(), group.getGroupId());
