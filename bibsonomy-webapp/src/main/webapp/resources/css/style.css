@@ -14,7 +14,8 @@ a:hover {
   text-decoration: none;
 }
 
-h1 {
+h1,
+div.h1 {
   font-family: Verdana, Arial, sans-serif;
   font-size: 120%;
   color: #334d55;
@@ -158,7 +159,9 @@ div.bibentry {
 
 
 
-#bookbox,#bibbox {
+#bookbox,
+#bibbox,
+.bookbox {
   margin: 5px 1% 2% 1%;
   width: 45%;
   float: left;
