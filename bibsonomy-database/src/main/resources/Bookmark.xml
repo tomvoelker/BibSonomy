@@ -66,7 +66,7 @@
 		      WHERE b.group = #groupType#
 		            AND u.book_url_hash = b.book_url_hash
 		      ORDER BY date DESC
-		      LIMIT 20) AS bb
+		      LIMIT #limit#) AS bb
 		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
