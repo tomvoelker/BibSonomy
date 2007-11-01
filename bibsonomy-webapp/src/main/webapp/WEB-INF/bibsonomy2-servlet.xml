@@ -19,9 +19,15 @@
 	</bean>
 	
 	<bean id="requestHolder" class="org.bibsonomy.webapp.util.spring.factorybeans.Holder" scope="request"/>
-		<bean id="homepageController" class="org.bibsonomy.webapp.controller.HomepageController" scope="request">
+		<bean id="homepageController" class="org.bibsonomy.webapp.controller.MultiResourceListController" scope="request">
 		<property name="postLogic" ref="postLogic"/>
 		<property name="userSettings" ref="userSettings"/>
+		<property name="listsToInitialise">
+			<list>
+				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
+			</list>
+		</property>
 	</bean>
 
 	<bean id="request" class="org.bibsonomy.webapp.util.spring.factorybeans.RequestFactoryBean" scope="request">
