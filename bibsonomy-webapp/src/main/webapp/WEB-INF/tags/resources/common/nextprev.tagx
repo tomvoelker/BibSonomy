@@ -18,7 +18,7 @@
 				<c:choose>
 					<c:when test="${listView.previousPage != null}">
 						<fmt:message var="gotoPrevious" key="goto.previous"/>
-						<a href="?${listViewStartParamName}=${listView.previousPage.start}&amp;${otherParams}" title="${gotoPrevious}" rel="Prev"> <fmt:message key="previous"/></a>
+						<a href="?${listViewStartParamName}=${listView.previousPage.start}&amp;amp;${otherParams}" title="${gotoPrevious}" rel="Prev"> <fmt:message key="previous"/></a>
 					</c:when>
 					<c:otherwise>
 						<fmt:message key="previous"/>
@@ -27,7 +27,7 @@
 				|
 				<c:if test="${not empty listView.previousPages}">
 					<c:forEach var="page" items="${listView.previousPages}">
-						<a href="?${listViewStartParamName}=${page.start}&amp;${otherParams}">${page.number}</a>
+						<a href="?${listViewStartParamName}=${page.start}&amp;amp;${otherParams}">${page.number}</a>
 					</c:forEach>
 					|
 				</c:if>
@@ -35,14 +35,14 @@
 				|
 				<c:if test="${not empty listView.nextPages}">
 					<c:forEach var="page" items="${listView.nextPages}">
-						<a href="?${listViewStartParamName}=${page.start}&amp;${otherParams}">${page.number}</a>
+						<a href="?${listViewStartParamName}=${page.start}&amp;amp;${otherParams}">${page.number}</a>
 					</c:forEach>
 					|
 				</c:if>
 				
 				<c:choose>
 					<c:when test="${listView.nextPage != null}">
-						<a href="?${listViewStartParamName}=${listView.nextPage.start}&amp;${otherParams}" title="${gotoNext}" rel="Next"> <fmt:message key="next"/></a>
+						<a href="?${listViewStartParamName}=${listView.nextPage.start}&amp;amp;${otherParams}" title="${gotoNext}" rel="Next"> <fmt:message key="next"/></a>
 					</c:when>
 					<c:otherwise>
 						<fmt:message key="next"/>

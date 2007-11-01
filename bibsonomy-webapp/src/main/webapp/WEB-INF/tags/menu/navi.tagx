@@ -12,7 +12,7 @@
 
 	<menuparts:search loginUserName="${loginUserName}" searchString="${searchString}" />
 	
-	<div id="welcomeTop"><fmt:message key="bibsonomy.desc"/></div>
+	<div id="welcomeTop"><fmt:message key="system.desc"/></div>
 
 	<table id="tnav">
 		<tr>

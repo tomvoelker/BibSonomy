@@ -6,7 +6,7 @@
 	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout">
 
-	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.RessourceViewCommand" required="true"/>	
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.ResourceViewCommand" required="true"/>	
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>

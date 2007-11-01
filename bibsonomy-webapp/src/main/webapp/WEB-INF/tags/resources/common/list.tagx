@@ -19,7 +19,7 @@
 	
 	<fmt:bundle basename="messages"/>
 
-	<div id="bookbox">
+	<div class="bookbox">
 		<h2 class="listh"><fmt:message key="${titleKey}" /></h2> 
 	
 		<div class="listh">

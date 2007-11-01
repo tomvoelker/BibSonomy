@@ -21,9 +21,9 @@
 		<jsp:attribute name="formatButtons">
 			<!-- Buttons to show content of page in different formats -->
 			<c:url var="rssPath" value="/rss/${requPath}"/>
-			<a href="${rssPath}"><img alt="RSS" src="resources/image/rss.png"/></a>
+			<a href="${rssPath}"><img alt="RSS" src="${pageContext.request.contextPath}/resources/image/rss.png"/></a>
 			<c:url var="xmlPath" value="/cml/${requPath}"/>
-			<a href="${xmlPath}"><img alt="XML" src="resources/image/xml.png"/></a>
+			<a href="${xmlPath}"><img alt="XML" src="${pageContext.request.contextPath}/resources/image/xml.png"/></a>
 		</jsp:attribute>
 		<jsp:attribute name="title">
 			<c:set var="bookUrl"><c:out value="${post.resource.url}" escapeXml="true" /></c:set>

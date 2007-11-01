@@ -22,17 +22,17 @@
 		<jsp:attribute name="formatButtons">
 			<!-- Buttons to show content of page in different formats -->
 			<c:url var="rssPath" value="/publrss/${requPath}"/>
-			<a href="${rssPath}"><img alt="RSS" src="/resources/image/rss.png"/></a>
+			<a href="${rssPath}"><img alt="RSS" src="${pageContext.request.contextPath}/resources/image/rss.png"/></a>
 			<c:url var="bibPath" value="/bib/${requPath}"/>
-			<a href="${bibPath}"><img alt="BibTeX" src="/resources/image/bibtex.png"/></a>
+			<a href="${bibPath}"><img alt="BibTeX" src="${pageContext.request.contextPath}/resources/image/bibtex.png"/></a>
 			<c:url var="burstPath" value="/burst/${requPath}"/>
-			<a href="${burstPath}"><img alt="RDF" src="/resources/image/rdf.png"/></a>
+			<a href="${burstPath}"><img alt="RDF" src="${pageContext.request.contextPath}/resources/image/rdf.png"/></a>
 			<c:url var="exportPath" value="/export/${requPath}"/>
-			<a href="${exportPath}"><img alt="other export options" src="/resources/image/more.png"/></a>
+			<a href="${exportPath}"><img alt="other export options" src="${pageContext.request.contextPath}/resources/image/more.png"/></a>
 		</jsp:attribute>
 		<jsp:attribute name="title">
 			<!-- c:if test='${not empty post.resource.docHash}'> 
-				<a href="/documents/${resource.docHash}"><img alt="PDF" src="/resources/image/document-txt-blue.png" style="float: left;"/></a>
+				<a href="/documents/${resource.docHash}"><img alt="PDF" src="${pageContext.request.contextPath}/resources/image/document-txt-blue.png" style="float: left;"/></a>
 			</c:if -->
 			<c:set var="bibUrlTemplate">/bibtex/2${post.resource.intraHash}/<mtl:encode value='${post.user.name}'/></c:set>
 			<c:url var="bibUrl" value="${bibUrlTemplate}"/>
