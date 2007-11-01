@@ -6,8 +6,9 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bibsonomy.model.Author;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.util.BibtexUtils;
 
 import helpers.url;
@@ -385,8 +386,8 @@ public class Bibtex extends Resource {
 		if (s == null) {
 			return persons;
 		}
-		final List<Author> authors = BibTex.getAuthorList(s);
-		for (final Author a : authors) {
+		final List<PersonName> authors = PersonNameUtils.extractList(s);
+		for (final PersonName a : authors) {
 			persons.add(a.getName());
 		}
 		return persons;
@@ -399,8 +400,8 @@ public class Bibtex extends Resource {
 	private List<String[]> getNamesSeparated(String s) {
 		final List<String[]> authors = new LinkedList<String[]>();
 		if (s != null) {
-			final Collection<Author> authorObjs = BibTex.getAuthorList(s);
-			for (final Author a : authorObjs) {
+			final Collection<PersonName> authorObjs = PersonNameUtils.extractList(s);
+			for (final PersonName a : authorObjs) {
 				authors.add(new String[] {a.getFirstName(), a.getLastName()});
 			}
 		}		
