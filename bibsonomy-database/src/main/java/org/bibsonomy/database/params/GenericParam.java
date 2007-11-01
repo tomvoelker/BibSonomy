@@ -122,8 +122,6 @@ public abstract class GenericParam {
 	private int limit;
 	/** The SQL-Offset which is by default 0 */
 	private int offset;
-	/** Is user a spammer; by default false */
-	private ConstantID spammer;
 	/*is a user a friend of person x, true will be true*/
 	private  boolean friendOf;
 	/** The type of a ID is by default DS_CONTENT_ID * */
@@ -151,7 +149,6 @@ public abstract class GenericParam {
 		this.idsType = ConstantID.IDS_UNDEFINED_CONTENT_ID;
 		this.limit = 10;
 		this.offset = 0;
-		this.spammer = ConstantID.SPAMMER_FALSE;
 		this.friendOf=false;
 		
 		this.grouping = GroupingEntity.ALL;
@@ -318,14 +315,6 @@ public abstract class GenericParam {
 
 	public void setRequestedGroupName(String requestedGroupName) {
 		this.requestedGroupName = requestedGroupName;
-	}
-
-	public int getSpammer() {
-		return this.spammer.getId();
-	}
-
-	public void setSpammer(ConstantID spammer) {
-		this.spammer = spammer;
 	}
 
 	public int getRequestedContentId() {
