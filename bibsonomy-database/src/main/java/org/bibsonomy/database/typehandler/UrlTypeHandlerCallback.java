@@ -5,7 +5,8 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import org.bibsonomy.util.DefaultValues;
+import org.apache.log4j.Logger;
+
 import com.ibatis.sqlmap.client.extensions.ParameterSetter;
 import com.ibatis.sqlmap.client.extensions.ResultGetter;
 import com.ibatis.sqlmap.client.extensions.TypeHandlerCallback;
@@ -24,6 +25,7 @@ import com.ibatis.sqlmap.client.extensions.TypeHandlerCallback;
  * @version $Id$
  */
 public class UrlTypeHandlerCallback implements TypeHandlerCallback {
+	private static final Logger log = Logger.getLogger(UrlTypeHandlerCallback.class);
 
 	public Object getResult(final ResultGetter getter) throws SQLException {
 		final String value = getter.getString();
@@ -43,12 +45,11 @@ public class UrlTypeHandlerCallback implements TypeHandlerCallback {
 	}
 
 	public Object valueOf(final String str) {
-		URL url;
 		try {
-			url = new URL(str);
+			return new URL(str);
 		} catch (final MalformedURLException ex) {
-			url = DefaultValues.getInstance().getBibsonomyURL();
+			log.warn("'" + str + "' is not a valid URL");
+			return null;
 		}
-		return url;
 	}
 }
