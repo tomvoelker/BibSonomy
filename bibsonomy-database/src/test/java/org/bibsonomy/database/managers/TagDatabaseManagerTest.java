@@ -99,7 +99,6 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getTagsByGroup() {
 		final List<Tag> tags = this.tagDb.getTagsByGroup(this.tagParam, this.dbSession);
 		assertEquals(10, tags.size());
-		Tag tag = tags.get(0);
 	}
 
 	@Test
