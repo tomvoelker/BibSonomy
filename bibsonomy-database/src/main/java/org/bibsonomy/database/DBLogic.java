@@ -30,6 +30,11 @@ public class DBLogic implements LogicInterface {
 		this.dbLogic = dbLogic;
 	}
 
+	/**
+	 * @param username
+	 * @param apiKey 
+	 * @return instance of this class with the authorization of the user in the argument if athenticated successfully
+	 */
 	public static DBLogic getApiAccess(final String username, final String apiKey) {
 		final RestDatabaseManager restDbM = RestDatabaseManager.getInstance();
 		if (restDbM.validateUserAccess(username, apiKey) == false) {
@@ -38,6 +43,11 @@ public class DBLogic implements LogicInterface {
 		return new DBLogic(username, restDbM);
 	}
 	
+	/**
+	 * @param username
+	 * @param password
+	 * @return instance of this class with the authorization of the user in the argument if athenticated successfully
+	 */
 	public static DBLogic getUserAccess(String username, final String password) {
 		final RestDatabaseManager restDbM = RestDatabaseManager.getInstance();
 		if (restDbM.validateUserUserAccess(username, password) == false) {
@@ -88,7 +98,7 @@ public class DBLogic implements LogicInterface {
 		return this.dbLogic.getTagDetails(this.loginUserName, tagName);
 	}
 
-	public <T extends Resource> List<Tag> getTags(GroupingEntity grouping, String groupingName, String regex, Class<T> resourceType, int start, int end) {
+	public List<Tag> getTags(GroupingEntity grouping, String groupingName, String regex, Class<? extends Resource> resourceType, int start, int end) {
 		return this.dbLogic.getTags(this.loginUserName, grouping, groupingName, regex, resourceType, start, end);
 	}
 
