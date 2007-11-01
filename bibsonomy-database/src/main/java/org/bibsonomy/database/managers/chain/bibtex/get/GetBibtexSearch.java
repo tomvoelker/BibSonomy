@@ -1,6 +1,5 @@
 package org.bibsonomy.database.managers.chain.bibtex.get;
 
-import static org.bibsonomy.util.ValidationUtils.nullOrEqual;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
@@ -11,7 +10,6 @@ import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.logic.Order;
 
 /**
  * @author Miranda Grahl
