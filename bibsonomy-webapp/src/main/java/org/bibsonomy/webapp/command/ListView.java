@@ -4,9 +4,14 @@
 package org.bibsonomy.webapp.command;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
+/**
+ * bean for listviews across multiple browsable pages 
+ * 
+ * @param <T> type of the entities in the list 
+ * @author Jens Illig
+ */
 public class ListView<T> {
 	private int numPreviousPages = 2;
 	private int numNextPages = 2;
@@ -14,55 +19,88 @@ public class ListView<T> {
 	private final Page curPage = new Page();
 	private List<Page> previousPages;
 	private List<Page> nextPages;
-	private int totalCount = 100; // TODO: 0 nehmen?
+	private int totalCount = 100; // TODO: use 0 instead?
 	private List<T> list;
 	
+	/**
+	 * @return the sublistlist on the current page
+	 */
 	public List<T> getList() {
 		return this.list;
 	}
+	/**
+	 * @param list the sublistlist on the current page
+	 */
 	public void setList(List<T> list) {
 		this.list = list;
 	}
+	/**
+	 * @return inclusive start index of the current page
+	 */
 	public int getStart() {
 		return this.curPage.getStart();
 	}
+	/**
+	 * @param start inclusive start index of the current page
+	 */
 	public void setStart(int start) {
 		this.curPage.setStart(start);
+		this.curPage.setNumber(null);
 		this.previousPages = null;
 		this.nextPages = null;
 	}
 	
+	/**
+	 * @param totalCount size of the list without window limits or offsets
+	 */
 	public void setTotalCount(int totalCount) {
 		this.totalCount = totalCount;
 		this.previousPages = null;
 		this.nextPages = null;
 	}
+	/**
+	 * @return size of the list without window limits or offsets
+	 */
+	public int getTotalCount() {
+		return this.totalCount;
+	}
 	
+	/**
+	 * @return list of available pages before the current page. An upper
+	 *         limit on the previous pages can be specified by
+	 *         {@link #setNumPreviousPages(int)} 
+	 */
 	public List<Page> getPreviousPages() {
 		if (this.previousPages == null) {
 			this.previousPages = new ArrayList<Page>();
-			for (int i = this.curPage.getNumber() - this.numPreviousPages; i > 0; --i) {
-				final int start = this.curPage.getStart() - i * this.entriesPerPage;
-				if (start >= 0) {
-					this.previousPages.add(new Page(this.curPage.getNumber() - i, start));
-				}
+			for (int i = (this.numPreviousPages >= this.getCurPage().getNumber()) ? 1 : this.getCurPage().getNumber() - this.numPreviousPages; i < this.getCurPage().getNumber(); ++i) {
+				final int start = (i - 1) * this.entriesPerPage;
+				this.previousPages.add(new Page(i, start));
 			}
 		}
 		return this.previousPages;
 	}
+	/**
+	 * @return list of available pages following the current page. An upper
+	 *         limit on the next pages can be specified by
+	 *         {@link #setNumNextPages(int)} 
+	 */
 	public List<Page> getNextPages() {
 		if (this.nextPages == null) {
 			this.nextPages = new ArrayList<Page>();
 			for (int i = 1; i <= this.numNextPages; ++i) {
 				final int start = this.curPage.getStart() + i * this.entriesPerPage;
 				if (start < this.totalCount) {
-					this.nextPages.add(new Page(this.curPage.getNumber() + i, start));
+					this.nextPages.add(new Page(this.getCurPage().getNumber() + i, start));
 				}
 			}
 		}
 		return this.nextPages;
 	}
 	
+	/**
+	 * @return the page before the current page. null if the current page is the first one. 
+	 */
 	public Page getPreviousPage() {
 		final List<Page> prev = this.getPreviousPages();
 		if (prev.size() > 0) {
@@ -71,6 +109,10 @@ public class ListView<T> {
 		return null;
 	}
 	
+	/**
+	 * @return the page following the current page. null if the current page
+	 *         is the last one.
+	 */
 	public Page getNextPage() {
 		final List<Page> next = this.getNextPages();
 		if (next.size() > 0) {
@@ -79,19 +121,38 @@ public class ListView<T> {
 		return null;
 	}
 	
+	/**
+	 * @param numNextPages an upper limit for the size of the list returned
+	 *        by {@link #getNextPages()}
+	 */
 	public void setNumNextPages(int numNextPages) {
 		this.numNextPages = numNextPages;
 	}
+	/**
+	 * @param numPreviousPages an upper limit for the size of the list returned
+	 *        by {@link #getPreviousPages()}
+	 */
 	public void setNumPreviousPages(int numPreviousPages) {
 		this.numPreviousPages = numPreviousPages;
 	}
+	
+	/**
+	 * @param entriesPerPage number of entities to be diplayed on one page
+	 */
 	public void setEntriesPerPage(int entriesPerPage) {
 		this.entriesPerPage = entriesPerPage;
+		this.curPage.setNumber(null);
+		this.previousPages = null;
+		this.nextPages = null;
 	}
-	public int getTotalCount() {
-		return this.totalCount;
-	}
+	
+	/**
+	 * @return the current page
+	 */
 	public Page getCurPage() {
+		if (this.curPage.getNumber() == null) {
+			this.curPage.setNumber( (this.curPage.getStart() + this.entriesPerPage - 1) / this.entriesPerPage + 1);
+		}
 		return this.curPage;
 	}
 }
