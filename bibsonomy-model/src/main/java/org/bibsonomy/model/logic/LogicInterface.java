@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
@@ -19,7 +18,9 @@ import org.bibsonomy.model.User;
  * result. If you have to change a convention, check all occurences and document
  * it properly! Try to check each possibility with a test-case.
  * 
- * TODO: split this interface as it might grow too much
+ * BE AWARE that this might grow very much. So distribute methods across
+ * classes or at least interfaces (like it has been done with
+ * PostLogicInterface) and use these in your code.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @author Jens Illig <illig@innofinity.de>
@@ -28,6 +29,9 @@ import org.bibsonomy.model.User;
  */
 public interface LogicInterface extends PostLogicInterface {
 
+	/**
+	 * @return the name of the authenticated user
+	 */
 	public String getAuthenticatedUser();
 	
 	/**
@@ -76,7 +80,6 @@ public interface LogicInterface extends PostLogicInterface {
 
 	/**
 	 * Returns a list of tags which can be filtered.
-	 * 
 	 * @param grouping
 	 *            grouping tells whom tags are to be shown: the tags of a user,
 	 *            of a group or of the viewables.
@@ -93,7 +96,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @param end
 	 * @return a set of tags, en empty set else
 	 */
-	public <T extends Resource> List<Tag> getTags(GroupingEntity grouping, String groupingName, String regex, Class<T> resourceType, int start, int end);
+	public List<Tag> getTags(GroupingEntity grouping, String groupingName, String regex, Class<? extends Resource> resourceType, int start, int end);
 
 	/**
 	 * Returns details about a tag. Those details are:
@@ -104,7 +107,6 @@ public interface LogicInterface extends PostLogicInterface {
 	 * <li>list of correlated tags</li>
 	 * </ul>
 	 * 
-	 * @param authUserName name of the authenticated user
 	 * @param tagName name of the tag
 	 * @return the tag's details, null else
 	 */
@@ -168,7 +170,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * Adds an existing user to an existing group.
 	 * 
 	 * @param groupName  name of the existing group
-	 * @param user  user to add
+	 * @param userName  user to add
 	 */
 	public void addUserToGroup(String groupName, String userName);
 }
