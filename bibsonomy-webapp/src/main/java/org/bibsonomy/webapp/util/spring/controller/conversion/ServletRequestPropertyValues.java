@@ -12,9 +12,19 @@ import org.springframework.beans.MutablePropertyValues;
 import org.springframework.util.Assert;
 import org.springframework.web.util.WebUtils;
 
+/**
+ * 
+ * @author Jens Illig
+ */
 public class ServletRequestPropertyValues extends MutablePropertyValues {
 	private static final long serialVersionUID = 2531207290915126465L;
 
+	/**
+	 * runs {@link MutablePropertyValues#MutablePropertyValues(Map)} with a
+	 * map that also contains attributes.
+	 * 
+	 * @param request the request
+	 */
 	public ServletRequestPropertyValues(ServletRequest request) {
 		super(getParametersAndAttributesStartingWith(request, null));
 	}
@@ -43,7 +53,7 @@ public class ServletRequestPropertyValues extends MutablePropertyValues {
 	 */
 	public static void addAttributesStartingWith(final Map<? super String, Object> params, final ServletRequest request, String prefix) {
 		Assert.notNull(request, "Request must not be null");
-		Enumeration paramNames = request.getAttributeNames();
+		Enumeration<?> paramNames = request.getAttributeNames();
 		if (prefix == null) {
 			prefix = "";
 		}

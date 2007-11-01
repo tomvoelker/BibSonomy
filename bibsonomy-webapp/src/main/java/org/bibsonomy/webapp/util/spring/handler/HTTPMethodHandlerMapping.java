@@ -8,6 +8,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.HandlerMapping;
 
+/**
+ * extends spring-mvc with the possibility to map request to controllers not
+ * only based upon URIs but also HTTP-Methods. 
+ * 
+ * @author Jens Illig
+ */
 public class HTTPMethodHandlerMapping implements HandlerMapping {
 	private Object onGet;
 	private Object onPost;
@@ -30,39 +36,60 @@ public class HTTPMethodHandlerMapping implements HandlerMapping {
 		}
 		return new HandlerExecutionChain(handler,null);
 	}
-
+	
+	/**
+	 * @return object (typically controller) that is mapped to delete requests
+	 */
 	public Object getOnDelete() {
 		return this.onDelete;
 	}
 
+	/** 
+	 * @param onDelete object (typically controller) that shall be mapped to delete requests
+	 */
 	public void setOnDelete(Object onDelete) {
 		this.onDelete = onDelete;
 	}
 
+	/** 
+	 * @return object (typically controller) that is mapped to get requests
+	 */
 	public Object getOnGet() {
 		return this.onGet;
 	}
 
+	/**
+	 * @param onGet object (typically controller) that shall be mapped to get request
+	 */
 	public void setOnGet(Object onGet) {
 		this.onGet = onGet;
 	}
 
+	/** 
+	 * @return object (typically controller) that is mapped to post requests
+	 */
 	public Object getOnPost() {
 		return this.onPost;
 	}
 
+	/**
+	 * @param onPost object (typically controller) that shall be mapped to post request
+	 */
 	public void setOnPost(Object onPost) {
 		this.onPost = onPost;
 	}
 
+	/** 
+	 * @return object (typically controller) that is mapped to put request
+	 */
 	public Object getOnPut() {
 		return this.onPut;
 	}
 
+	/**
+	 * @param onPut object (typically controller) that shall be mapped to put request
+	 */
 	public void setOnPut(Object onPut) {
 		this.onPut = onPut;
 	}
-
-	
-	
 }

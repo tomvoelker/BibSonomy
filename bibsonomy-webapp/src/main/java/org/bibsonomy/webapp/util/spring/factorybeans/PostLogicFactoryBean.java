@@ -12,10 +12,20 @@ import org.springframework.beans.factory.FactoryBean;
 import beans.UserBean;
 import filters.InitUserFilter;
 
+/**
+ * lets {@link DBLogicInterfaceFactory} appear as a FactoryBean, which itself
+ * is customizable in the spring context.
+ *  
+ * @see FactoryBean
+ * @author Jens Illig
+ */
 public class PostLogicFactoryBean extends DBLogicInterfaceFactory implements FactoryBean {
 	private HttpServletRequest request;
 	private PostLogicInterface instance;
 	
+	/**
+	 * @param request
+	 */
 	public void setRequest(final HttpServletRequest request) {
 		this.request = request;
 	}
@@ -34,7 +44,11 @@ public class PostLogicFactoryBean extends DBLogicInterfaceFactory implements Fac
 		return true;
 	}
 
-	protected UserBean getLoginUser(final HttpServletRequest req) {
+	/**
+	 * @param req
+	 * @return the user that is logged in
+	 */
+	protected UserBean getLoginUser(@SuppressWarnings("unused")	final HttpServletRequest req) {
 		// FIXME: IoC break: use user object instead of accessing request
 		// FIXME: use bibsonomy2 user object and check password again
 		return (UserBean) this.request.getAttribute(InitUserFilter.REQ_ATTRIB_USER); 
