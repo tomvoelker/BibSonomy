@@ -55,7 +55,8 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getBookmarkForHomepage() {
-		this.bookmarkDb.getBookmarkForHomepage(this.bookmarkParam, this.dbSession);
+		final List<Post<Bookmark>> posts = this.bookmarkDb.getBookmarkForHomepage(this.bookmarkParam, this.dbSession); 
+		assertEquals(10, posts.size());
 	}
 
 	@Test
