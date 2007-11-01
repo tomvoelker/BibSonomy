@@ -39,7 +39,19 @@ import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.resource.Resource;
 
 /**
- * Remote Call Tests
+ * Tests remote calls via an LogicInterface remote proxy.
+ * This test starts the whole rest-server webapplication in its own servlet
+ * container. It initializes the RestServlet with a special
+ * LogicInterfaceFactory-backend, which actually is an easymock object that
+ * is used to check if all calls on the remote proxy go through the REST
+ * based protocol without being harmed and trigger the same calls on the
+ * server side LogicInterface mock as expected. The returnvalues also get
+ * recorded into the mock object on the server and are compared with the
+ * actual returnvalues of the remote proxy on the client side.
+ * 
+ * The class itself implements LogicInterface to ensure all methods are
+ * contained in this test and to allow testruns of the methods with
+ * different arguments passed by method calls in the test methods. 
  * 
  * @author Jens Illig
  * @author Christian Kramer
@@ -56,6 +68,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	private LogicInterface clientLogic;
 	private LogicInterface serverLogic;
 	
+	/**
+	 * configures the server and the webapp and starts the server
+	 */
 	@BeforeClass
 	public static void initServer() {
 		try {
@@ -84,6 +99,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		}
 	}
 	
+	/**
+	 * builds a new mock backend on the serer and a new remote proxy on the client for each test-run
+	 */
 	@Before
 	public void setUp() {
 		this.clientLogic = clientLogicFactory.getLogicAccess(LOGIN_USER_NAME, API_KEY);
@@ -91,7 +109,10 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		EasyMock.expect(serverLogic.getAuthenticatedUser()).andReturn(LOGIN_USER_NAME).anyTimes();
 		MockLogicFactory.init(serverLogic);
 	}
-	
+
+	/**
+	 * resets the mock object on the server
+	 */
 	@After
 	public void tearDown() {
 		EasyMock.reset(this.serverLogic);
@@ -103,6 +124,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		System.out.println(API_KEY + " +++ " + MockLogicFactory.getRequestedApiKey());
 	}
 	
+	/** IArgumentMatcher Implementation that wraps an object and compares it with another */
 	private static class PropertyEqualityArgumentMatcher<T> implements IArgumentMatcher {
 		private final T a;
 		private final String[] excludeProperties; 
@@ -126,12 +148,22 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			return true;
 		}
 		
+		/**
+		 * tells easymock how the next argument has to be compared and returns the next argument itself
+		 * @param <T> Type of the argument
+		 * @param a the argument
+		 * @param excludeProperties array of propertynames, which shall be left out in comparison 
+		 * @return the next argument
+		 */
 		public static <T> T eq(final T a, final String... excludeProperties) {
 			EasyMock.reportMatcher(new PropertyEqualityArgumentMatcher<T>(a, excludeProperties));
 			return a;
 		}
 	}
 	
+	/**
+	 * runs the test defined by {@link #addUserToGroup(String, String)} with certain arguments
+	 */
 	@Test
 	public void addUserToGroupTest() {
 		this.addUserToGroup("groupName", "userName");
@@ -144,6 +176,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		assertLogin();
 	}
 
+	/**
+	 * runs the test defined by {@link #createGroup(Group)} with certain arguments
+	 */
 	@Test
 	public void createGroupTest() {
 		createGroup(ModelUtils.getGroup());
@@ -157,10 +192,16 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		return null;
 	}
 	
+	/**
+	 * runs the test defined by {@link #createPost(Post)} with a populated Bookmark Post as the argument
+	 */
 	@Test
 	public void createPostTestBookmark() {
 		createPost(ModelUtils.generatePost(Bookmark.class));
 	}
+	/**
+	 * runs the test defined by {@link #createPost(Post)} with a populated BibTex Post as the argument
+	 */
 	@Test
 	public void createPostTestBibtex() {
 		createPost(ModelUtils.generatePost(BibTex.class));
@@ -174,6 +215,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		return null;
 	}
 	
+	/**
+	 * runs the test defined by {@link #createUser(User)} with a certain argument
+	 */
 	@Test
 	public void createUserTest() {
 		createUser(ModelUtils.getUser());
@@ -187,6 +231,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		return null;
 	}
 
+	/**
+	 * runs the test defined by {@link #deleteGroup(String)} with a certain argument
+	 */
 	@Test
 	public void deleteGroupTest() {
 		deleteGroup("hurzelGroupName");
@@ -199,7 +246,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		assertLogin();
 	}
 
-	
+	/**
+	 * runs the test defined by {@link #deletePost(String, String)} with certain arguments
+	 */
 	@Test
 	public void deletePostTest() {
 		deletePost("hurzelUserName", ModelUtils.getBookmark().getIntraHash());
@@ -212,6 +261,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		assertLogin();
 	}
 
+	/**
+	 * runs the test defined by {@link #deleteUser(String)} with a certain argument
+	 */
 	@Test
 	public void deleteUserTest() {
 		deleteUser("hurzelUserName");
@@ -229,6 +281,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		return null;
 	}
 
+	/**
+	 * runs the test defined by {@link #getGroupDetails(String)} with a certain argument
+	 */
 	@Test
 	public void getGroupDetailsTest() {
 		getGroupDetails("hurzelGroupName");
@@ -252,7 +307,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		return returnedGroup;
 	}
 	
-	
+	/**
+	 * runs the test defined by {@link #getGroups(int, int)} with certain arguments
+	 */
 	@Test
 	public void getGroupsTest() {
 		getGroups(64, 129);
@@ -273,7 +330,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		return returnedGroups;
 	}
 	
-	
+	/**
+	 * runs the test defined by {@link #getPostDetails(String, String)} with certain arguments
+	 */
 	@Test
 	public void getPostDetailsTest() {
 		getPostDetails(ModelUtils.getBibTex().getIntraHash(), "testUser");
@@ -296,15 +355,23 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		return returnedBibtexPost;
 	}
 	
-	
+	/**
+	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)} with arguments as used for the getBookmarkByTagName query
+	 */
 	@Test
 	public void getPostsTestBookmarkByTag() {
 		getPosts(Bookmark.class, GroupingEntity.ALL, null, Arrays.asList("bla", "blub"), null, null /* must be null because order is inferred and not transmitted */, 7, 1264, null);
 	}
+	/**
+	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)} with arguments as used for the getBibtexForGroupAndTag query
+	 */
 	@Test
 	public void getPostsTestBibtexByGroupAndTag() {
 		getPosts(BibTex.class, GroupingEntity.GROUP, "testGroup", Arrays.asList("blub", "bla"), null, null, 0, 1, null);
 	}
+	/**
+	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)} with arguments as used for the getBibtexByHashForUser query 
+	 */
 	@Test
 	public void getPostsTestBibtexByUserAndHash() {
 		getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), null, 0, 5, null);
@@ -330,6 +397,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 
+	/**
+	 * runs the test defined by {@link #getTagDetails(String)} with a certain argument
+	 */
 	@Test
 	public void getTagDetailsTest() {
 		getTagDetails("testzeug");
@@ -347,11 +417,14 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	
+	/**
+	 * runs the test defined by {@link #getTags(GroupingEntity, String, String, Class, int, int)} with certain arguments
+	 */
 	@Test
 	public void getTagsTest() {
 		getTags(GroupingEntity.GROUP, "testGroup", "regex", org.bibsonomy.model.Resource.class, 4, 22);
 	}
-	public <T extends org.bibsonomy.model.Resource> List<Tag> getTags(GroupingEntity grouping, String groupingName, String regex, Class<T> resourceType, int start, int end) {
+	public List<Tag> getTags(GroupingEntity grouping, String groupingName, String regex, Class<? extends org.bibsonomy.model.Resource> resourceType, int start, int end) {
 		final List<Tag> expected = ModelUtils.buildTagList(3, "testPrefix", 1);		
 		EasyMock.expect(serverLogic.getTags(grouping, groupingName, regex, resourceType, start, end)).andReturn(expected);
 		EasyMock.replay(serverLogic);
@@ -363,7 +436,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		return returned;
 	}
 
-	
+	/**
+	 * runs the test defined by {@link #getUserDetails(String)} with a certain arguments
+	 */
 	@Test
 	public void getUserDetailsTest() {
 		getUserDetails("usrName");
@@ -381,6 +456,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 	
 
+	/**
+	 * runs the test defined by {@link #getUsers(int, int)} with certain arguments
+	 */
 	@Test
 	public void getUsersTest() {
 		getUsers(1,56);
@@ -401,6 +479,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		return returned;
 	}
 
+	/**
+	 * runs the test defined by {@link #getUsers(String, int, int)} with certain arguments
+	 */
 	@Test
 	public void getUsersTestWithGroup() {
 		getUsers("grpX",1,56);
@@ -421,7 +502,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		return returned;
 	}
 
-	
+	/**
+	 * runs the test defined by {@link #removeUserFromGroup(String, String)} with certain arguments
+	 */
 	@Test
 	public void removeUserFromGroupTest() {
 		removeUserFromGroup("grooouuup!", "userTest");
@@ -434,7 +517,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		assertLogin();
 	}
 
-	
+	/**
+	 * runs the test defined by {@link #updateGroup(Group)} with certain group argument
+	 */	
 	@Test
 	public void updateGroupTest() {
 		updateGroup(ModelUtils.getGroup());
@@ -448,11 +533,16 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		return null;
 	}
 
-	
+	/**
+	 * runs the test defined by {@link #updatePost(Post)} with a fully populated Bibtex Post as argument
+	 */
 	@Test
 	public void updatePostTestBibtex() {
 		updatePost(ModelUtils.generatePost(BibTex.class));
 	}
+	/**
+	 * runs the test defined by {@link #updatePost(Post)} with a fully populated Bookmark Post as argument
+	 */
 	@Test
 	public void updatePostTestBookmark() {
 		updatePost(ModelUtils.generatePost(Bookmark.class));
@@ -466,7 +556,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		return null;
 	}
 
-	
+	/**
+	 * runs the test defined by {@link #updateUser(User)} with a certain argument
+	 */
 	@Test
 	public void updateUserTest() {
 		createUser(ModelUtils.getUser());
@@ -480,6 +572,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		return null;
 	}
 	
+	/**
+	 * stops the servlet container after all tests have been run
+	 */
 	@AfterClass
 	public static void shutdown() {
 		try {
