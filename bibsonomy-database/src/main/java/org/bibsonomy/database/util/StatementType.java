@@ -8,5 +8,12 @@ package org.bibsonomy.database.util;
  * @version $Id$
  */
 public enum StatementType {
-	SELECT, INSERT, UPDATE, DELETE;
+	/** for SELECT statements */
+	SELECT,
+	/** for INSERT statements */
+	INSERT,
+	/** for UPDATE statements */
+	UPDATE,
+	/** for DELETE statements */
+	DELETE;
 }

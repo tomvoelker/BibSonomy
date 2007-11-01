@@ -5,5 +5,8 @@ package org.bibsonomy.database.util;
  * @version $Id$
  */
 public interface DBSessionFactory {
+	/**
+	 * @return the produced DBSession
+	 */
 	public DBSession getDatabaseSession();
 }

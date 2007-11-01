@@ -32,6 +32,9 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	private GeneralDatabaseManager() {
 	}
 
+	/**
+	 * @return the singleton instance
+	 */
 	public static GeneralDatabaseManager getInstance() {
 		return singleton;
 	}
@@ -39,8 +42,8 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Checks whether two users are friends.
 	 * 
-	 * @param param
-	 *            Database-Properties used: userName, requestedUserName
+	 * @param param Database-Properties used: userName, requestedUserName
+	 * @param session a db session
 	 * @return true if the users are friends, false otherwise
 	 */
 	public Boolean isFriendOf(final GenericParam param, final DBSession session) {
@@ -55,8 +58,8 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 * requestedUserName is set to null the default behaviour is to return
 	 * false, i.e. no spammer.
 	 * 
-	 * @param param
-	 *            Database-Properties used: requestedUserName
+	 * @param param Database-Properties used: requestedUserName
+	 * @param session a db session
 	 * @return true if the user is a spammer, false otherwise
 	 */
 	public Boolean isSpammer(final GenericParam param, final DBSession session) {
@@ -67,14 +70,9 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Gets all the groupIds of the given users groups.
 	 * 
-	 * @param param
-	 *            Database-Properties used: userName
+	 * @param userName userName to get the groupids for
+	 * @param session a db session
 	 * @return A list of groupids
-	 */
-	/**
-	 * @param param
-	 * @param session
-	 * @return
 	 */
 	public List<Integer> getGroupIdsForUser(final String userName, final DBSession session) {
 		return this.queryForList("getGroupIdsForUser", userName, Integer.class, session);
@@ -83,8 +81,8 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Checks if group exists.
 	 * 
-	 * @param param
-	 *            Database-Properties used: requestedGroupName
+	 * @param param Database-Properties used: requestedGroupName
+	 * @param session a db session
 	 * @return groupid of group, GroupID.GROUP_INVALID otherwise
 	 */
 	public Integer getGroupIdByGroupName(final GenericParam param, final DBSession session) {
@@ -100,8 +98,8 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Checks if a given user is in the given group.
 	 * 
-	 * @param param
-	 *            Database-Properties used: requestedGroupName, userName
+	 * @param param Database-Properties used: requestedGroupName, userName
+	 * @param session a db session
 	 * @return groupid if user is in group, GroupID.GROUP_INVALID otherwise
 	 */
 	public Integer getGroupIdByGroupNameAndUserName(final GenericParam param, final DBSession session) {
@@ -116,6 +114,10 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Gets the next database-ID for inserting an entity with the type specified
 	 * by the idsType argument. Updates the ID generator.
+	 * 
+	 * @param idsType type of the id to be created
+	 * @param session a db session
+	 * @return the next database-ID
 	 */
 	public Integer getNewContentId(final ConstantID idsType, final DBSession session) {
 		this.updateIds(idsType, session);

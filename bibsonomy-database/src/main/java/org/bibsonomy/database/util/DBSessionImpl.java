@@ -142,12 +142,18 @@ public class DBSessionImpl implements DBSession {
 		super.finalize();
 	}
 
+	/**
+	 * marks this session to have a failed job
+	 */
 	public void somethingWentWrong() {
 		if (this.transactionDepth > 0) {
 			this.aborted = true;
 		}
 	}
 
+	/**
+	 * @return whether this session has an aborted transaction 
+	 */
 	public boolean isAborted() {
 		return this.aborted;
 	}

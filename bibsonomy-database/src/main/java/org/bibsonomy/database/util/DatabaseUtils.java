@@ -94,6 +94,9 @@ public class DatabaseUtils {
 		}
 	}
 
+	/**
+	 * @return a {@link DBSessionFactory}
+	 */
 	public static DBSessionFactory getDBSessionFactory() {
 		return new DBSessionFactory() {
 

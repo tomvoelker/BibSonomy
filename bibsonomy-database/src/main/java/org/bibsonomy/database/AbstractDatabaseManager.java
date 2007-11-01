@@ -21,10 +21,7 @@ import org.bibsonomy.database.util.StatementType;
 public class AbstractDatabaseManager {
 
 	/**
-	 * Can be used to start a query that retrieves a list of Integers.
-	 * 
-	 * @see intList(final String query, final Object param, final DBSession
-	 *      session)
+	 * Can be used to start a query that retrieves a list of objectf of a certain type.
 	 */
 	@SuppressWarnings("unchecked")
 	protected <T> List<T> queryForList(final String query, final Object param, @SuppressWarnings("unused") final Class<T> type, final boolean ignoreException, final DBSession session) {
@@ -66,7 +63,7 @@ public class AbstractDatabaseManager {
 	}
 
 	/**
-	 * @see queryForObject(final String query, final Object param)
+	 * @see #queryForObject(String, Object, DBSession)
 	 */
 	protected Object queryForObject(final String query, final Object param, final boolean ignoreException, final DBSession session) {
 		return this.queryForAnything(query, param, QueryFor.OBJECT, ignoreException, session);

@@ -8,5 +8,8 @@ package org.bibsonomy.database.util;
  * @version $Id$
  */
 public enum QueryFor {
-	OBJECT, LIST;
+	/** for queries that return a single object */
+	OBJECT,
+	/** for queries that return a list of objects */
+	LIST;
 }

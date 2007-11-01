@@ -10,6 +10,7 @@ import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.logic.Order;
+import org.bibsonomy.model.logic.PostLogicInterface;
 
 /**
  * Supplies methods to adapt the LogicInterface to the database layer.
@@ -22,7 +23,20 @@ public class LogicInterfaceHelper {
 
 	/**
 	 * Builds a param object for the given parameters from the LogicInterface.
-	 * @param search TODO
+	 * 
+	 * @param <T> the type of param object to be build
+	 * @param type the type of param object to be build
+	 * @param authUser name of logged in user as specified for {@link PostLogicInterface#getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)}
+	 * @param grouping as specified for {@link PostLogicInterface#getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)}
+	 * @param groupingName as specified for {@link PostLogicInterface#getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)} 
+	 * @param tags as specified for {@link PostLogicInterface#getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)} 
+	 * @param hash as specified for {@link PostLogicInterface#getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)}
+	 * @param order as specified for {@link PostLogicInterface#getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)}
+	 * @param start as specified for {@link PostLogicInterface#getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)} 
+	 * @param end as specified for {@link PostLogicInterface#getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)}
+	 * @param search as specified for {@link PostLogicInterface#getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)} 
+	 * 
+	 * @return the fresh param object 
 	 */
 	public static <T extends GenericParam> T buildParam(final Class<T> type, final String authUser, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end, String search) {
 		final T param = getParam(type);
