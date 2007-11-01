@@ -11,7 +11,6 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
-import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChain;
 import org.bibsonomy.database.params.BibTexParam;
@@ -487,6 +486,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		this.insert("insertBibTexHash", param, session);
 	}
 
+	@SuppressWarnings("null") // because eclipse's checks are not intelligent enough for checks in methods
 	public boolean storePost(final String userName, final Post<BibTex> post, final String oldIntraHash, boolean update, final DBSession session) {
 		// TODO: test insertion (tas, bibtex, ...)
 		session.beginTransaction();
