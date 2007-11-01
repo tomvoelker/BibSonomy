@@ -9,6 +9,8 @@ import org.bibsonomy.database.util.DBSession;
 
 /**
  * Represents one element in the chain of responsibility.
+ * @param <L> Type of the fetched result entities
+ * @param <P> Type of the param object
  * 
  * @author Miranda Grahl
  * @author Jens Illig
@@ -22,6 +24,9 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 	/** The next element of the chain */
 	private ChainElement<L, P> next;
 
+	/**
+	 * abstract base constructs for a chain element (surprise, surprise)
+	 */
 	public ChainElement() {
 		this.generalDb = GeneralDatabaseManager.getInstance();
 		this.next = null;
@@ -29,6 +34,7 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 
 	/**
 	 * Sets the next element in the chain.
+	 * @param nextElement the next element following this element
 	 */
 	public final void setNext(final ChainElement<L, P> nextElement) {
 		this.next = nextElement;

@@ -24,6 +24,9 @@ public class TagChain implements FirstChainElement<Tag, TagParam> {
 	private final ChainElement<Tag, TagParam> getAllTags;
 	private final ChainElement<Tag, TagParam> getTagsByAuthor;
 
+	/**
+	 * Constructs the chain
+	 */
 	public TagChain() {
 		this.getTagsByUser = new GetTagsByUser();
 		this.getTagsByGroup = new GetTagsByGroup();

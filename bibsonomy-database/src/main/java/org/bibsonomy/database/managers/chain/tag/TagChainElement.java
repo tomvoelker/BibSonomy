@@ -16,6 +16,9 @@ public abstract class TagChainElement extends ChainElement<Tag, TagParam> {
 
 	protected final TagDatabaseManager db;
 
+	/**
+	 * Constructs a chain element
+	 */
 	public TagChainElement() {
 		this.db = TagDatabaseManager.getInstance();
 	}

@@ -43,6 +43,9 @@ public class BookmarkChain implements FirstChainElement<Post<Bookmark>, Bookmark
 	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByFriends;
 	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksSearch;
 	
+	/**
+	 * Constructs the chain
+	 */
 	public BookmarkChain() {
 		this.getBookmarksForUser = new GetBookmarksForUser();
 		this.getBookmarksByHash = new GetBookmarksByHash();

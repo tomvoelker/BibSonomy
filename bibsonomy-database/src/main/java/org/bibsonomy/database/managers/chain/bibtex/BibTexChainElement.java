@@ -17,6 +17,9 @@ public abstract class BibTexChainElement extends ChainElement<Post<BibTex>, BibT
 
 	protected final BibTexDatabaseManager db;
 
+	/**
+	 * Constructs a chain element
+	 */
 	public BibTexChainElement() {
 		this.db = BibTexDatabaseManager.getInstance();
 	}

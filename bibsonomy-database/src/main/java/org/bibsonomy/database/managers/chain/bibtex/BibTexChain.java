@@ -47,6 +47,9 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByAuthor;
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByAuthorAndTag;
 
+	/**
+	 * Constructs the chain
+	 */
 	public BibTexChain() {
 		this.getBibTexByHash = new GetBibtexByHash();
 		this.getBibTexByHashForUser = new GetBibtexByHashForUser();

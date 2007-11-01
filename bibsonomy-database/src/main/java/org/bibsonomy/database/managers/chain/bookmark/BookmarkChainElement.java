@@ -17,6 +17,9 @@ public abstract class BookmarkChainElement extends ChainElement<Post<Bookmark>, 
 
 	protected final BookmarkDatabaseManager db;
 
+	/**
+	 * Constructs a chain element
+	 */
 	public BookmarkChainElement() {
 		this.db = BookmarkDatabaseManager.getInstance();
 	}
