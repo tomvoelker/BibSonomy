@@ -13,6 +13,12 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Filter sets everything in the response what could make clients
+ * not cache it.
+ * 
+ * @author Jens Illig
+ */
 public class NoCacheFilter implements Filter {
 
 	public void destroy() {

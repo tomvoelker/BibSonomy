@@ -4,6 +4,19 @@
 package org.bibsonomy.webapp.util;
 
 
+/**
+ * extended MinimalisticControllers interface which can be optionally implemented
+ * to tell about whether validation is required or not
+ * 
+ * @param <T> type of the command object
+ * 
+ * @author Jens Illig
+ */
 public interface ValidationAwareController<T> extends MinimalisticController<T> {
+	/**
+	 * @param command a command object initialized by the framework based on
+	 *                the parameters of som request-event like a http-request
+	 * @return decision whether validation for this request is required or not
+	 */
 	public boolean isValidationRequired(T command);
 }
