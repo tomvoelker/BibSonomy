@@ -17,7 +17,9 @@ import org.bibsonomy.util.StringUtils;
 public class SimHash {
 
 	/**
-	 * Returns the corresponding simhash for a bookmark.
+	 * @param bibtex the object whose hash is to be calculated
+	 * @param simHash the type of hash to be calculated
+	 * @return the corresponding simhash for a bookmark.
 	 */
 	public static String getSimHash(final BibTex bibtex, final HashID simHash) {
 		if (simHash.getId() == HashID.SIM_HASH0.getId()) {
@@ -33,10 +35,12 @@ public class SimHash {
 		}
 	}
 
-	/**
-	 * Returns the corresponding simhash for a bookmark.
-	 */
 	// FIXME: HashID was meant for BibTexs only - we should create a new enum for Bookmarks
+	/**
+	 * @param bookmark the object whose hash is to be calculated
+	 * @param simHash the type of hash to be calculated
+	 * @return the corresponding simhash for a bookmark.
+	 */
 	public static String getSimHash(final Bookmark bookmark, final HashID simHash) {
 		if (simHash.getId() == HashID.SIM_HASH0.getId()) {
 			// XXX: do we want to return simHash1 for SIM_HASH0?
@@ -50,27 +54,48 @@ public class SimHash {
 	}
 
 	/**
-	 * Calculates the simHash0,1,2,3 for a bookmark, which consideres: url of a bookmark
-	 * Currently, all hashes for bookmark are equal
+	 * Calculates the simHash0 for a bookmark, which consideres: url of a bookmark
+	 * Currently, all hashes for bookmark are equal.
+	 * @param bookmark the object whose hash is to be calculated
+	 * @return the calculated hash
 	 */
 	public static String getSimHash0(final Bookmark bookmark) {
 		return ResourceUtils.hash(bookmark.getUrl());
 	}
 
+	/**
+	 * Calculates the simHash1 for a bookmark, which consideres: url of a bookmark
+	 * Currently, all hashes for bookmark are equal.
+	 * @param bookmark the object whose hash is to be calculated
+	 * @return the calculated hash
+	 */
 	public static String getSimHash1(final Bookmark bookmark) {
 		return ResourceUtils.hash(bookmark.getUrl());
 	}
 
+	/**
+	 * Calculates the simHash2 for a bookmark, which consideres: url of a bookmark
+	 * Currently, all hashes for bookmark are equal.
+	 * @param bookmark the object whose hash is to be calculated
+	 * @return the calculated hash
+	 */
 	public static String getSimHash2(final Bookmark bookmark) {
 		return ResourceUtils.hash(bookmark.getUrl());
 	}
 
+	/**
+	 * Calculates the simHash3 for a bookmark, which consideres: url of a bookmark
+	 * Currently, all hashes for bookmark are equal.
+	 * @param bookmark the object whose hash is to be calculated
+	 * @return the calculated hash
+	 */
 	public static String getSimHash3(final Bookmark bookmark) {
 		return ResourceUtils.hash(bookmark.getUrl());
 	}
 
 	/**
-	 * Calculates the simHash0, which consideres: title, author, editor, year,
+	 * @param bibtex the object whose hash is to be calculated
+	 * @return the calculated simHash0, which consideres: title, author, editor, year,
 	 * entrytype, journal, booktitle.
 	 */
 	public static String getSimHash0(final BibTex bibtex) {
@@ -83,6 +108,10 @@ public class SimHash {
 				StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(bibtex.getBooktitle()));
 	}
 
+	/**
+	 * @param bibtex the object whose hash is to be calculated
+	 * @return the calculated simHash0, which consideres: title, author/editor, year.
+	 */
 	public static String getSimHash1(final BibTex bibtex) {	
 		if (StringUtils.removeNonNumbersOrLetters(bibtex.getAuthor()).equals("")) {
 			// no author set --> take editor
@@ -111,6 +140,10 @@ public class SimHash {
 	 have a look at SIM_HASH and INTRA_HASH - where are they used and should they be changed?
 
 	*/
+	/**
+	 * @param bibtex the object whose hash is to be calculated
+	 * @return the calculated simHash0, which consideres: author, editor, year, entryType, journal, booktitle, volume, number.
+	 */
 	public static String getSimHash2(final BibTex bibtex) {
 		return ResourceUtils.hash(StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(bibtex.getTitle())     + " " + 
 				StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(bibtex.getAuthor())    + " " + 
@@ -127,6 +160,7 @@ public class SimHash {
 	/**
 	 * Reproduces the behaviour of the former BibTex-model, where simHash3 was
 	 * always an empty string.
+	 * @return an empty String
 	 */
 	public static String getSimHash3() {
 		return "";

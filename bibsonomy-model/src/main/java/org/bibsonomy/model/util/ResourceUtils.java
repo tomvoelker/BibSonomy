@@ -4,6 +4,9 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * place for statis util methods regarding multiple types of resources
+ */
 public class ResourceUtils {
 
 	/** To set groupId in case of spam detection. Use logical OR to set 2nd bit */
@@ -15,8 +18,7 @@ public class ResourceUtils {
 	 * Calculates the MD5-Hash of a String s and returns it encoded as a hex
 	 * string of 32 characters length.
 	 * 
-	 * @param s
-	 *            the string to be hashed
+	 * @param s the string to be hashed
 	 * @return the MD5 hash of s as a 32 character string
 	 */
 	public static String hash(final String s) {
@@ -53,7 +55,10 @@ public class ResourceUtils {
 	}
 
 	/**
-	 * In case of spam detection
+	 * merges spaminformation into the groupId (MSB set iff isSpammer == true)
+	 * @param groupId the original groupId
+	 * @param isSpammer
+	 * @return groupId with potentially modified MSB
 	 */
 	public static int getGroupId(final int groupId, final boolean isSpammer) {
 		if (isSpammer) return groupId | CONST_SET_1ST_BIT;

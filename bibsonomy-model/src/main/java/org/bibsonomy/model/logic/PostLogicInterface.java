@@ -9,10 +9,17 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
+/**
+ * Access interface from applications (client and server) to
+ * the core functionality regarding posts.
+ * 
+ * @author Jens Illig
+ */
 public interface PostLogicInterface {
 	/**  
-	 * Returns a list of posts which can be filtered.
+	 * retrieves a filterable list of posts.
 	 * 
+	 * @param <T> resource type to be shown.
 	 * @param resourceType resource type to be shown.
 	 * @param grouping
 	 *            grouping tells whom posts are to be shown: the posts of a
@@ -29,18 +36,11 @@ public interface PostLogicInterface {
 	 *            hash value of a resource, if one would like to get a list of
 	 *            all posts belonging to a given resource. if unused, its empty
 	 *            but not null.
-	 * @param start
-	 * @param end
-	 * @param search TODO
-	 * @param added
-	 *            a flag indicating the way of sorting: if true, sort by
-	 *            adding-time. both flags cannot be true at the same time; an
-	 *            {@link IllegalArgumentException} is expected to be thrown
-	 * @param popular
-	 *            a flag indicating the way of sorting: if true, sort by
-	 *            popularity. both flags cannot be true at the same time; an
-	 *            {@link IllegalArgumentException} is expected to be thrown
-	 * @return a set of posts, an empty set else
+	 * @param start inclusive start index of the view window
+	 * @param end exclusive end index of the view window
+	 * @param search free text search
+	 * @param order a flag indicating the way of sorting
+	 * @return a filtered list of posts. may be empty but not null
 	 */
 	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, int start, int end, String search);
 

@@ -24,24 +24,40 @@ public class ModelValidationUtils {
 
 	private static final String XML_IS_INVALID_MSG = "The body part of the received XML document is not valid: ";
 
+	/**
+	 * @param tag the object to run sanity checks on
+	 * @throws InvalidModelException if there is a lack of sanity
+	 */
 	public static void checkTag(final Tag tag) throws InvalidModelException {
 		if (tag.getName() == null || tag.getName().length() == 0) {
 			throw new InvalidModelException("found a tag without tagname assigned.");
 		}
 	}
 
+	/**
+	 * @param user the object to run sanity checks on
+	 * @throws InvalidModelException if there is a lack of sanity
+	 */
 	public static void checkUser(final User user) throws InvalidModelException {
 		if (user.getName() == null || user.getName().length() == 0) {
 			throw new InvalidModelException("found an user without username assigned.");
 		}
 	}
 
+	/**
+	 * @param group the object to run sanity checks on
+	 * @throws InvalidModelException if there is a lack of sanity
+	 */
 	public static void checkGroup(final Group group) throws InvalidModelException {
 		if (group.getName() == null || group.getName().length() == 0) {
 			throw new InvalidModelException("found a group without groupname assigned.");
 		}
 	}
 
+	/**
+	 * @param bookmark the object to run sanity checks on
+	 * @throws InvalidModelException if there is a lack of sanity
+	 */
 	public static void checkBookmark(final Bookmark bookmark) throws InvalidModelException {
 		if (bookmark.getUrl() == null || bookmark.getUrl().length() == 0) {
 			throw new InvalidModelException("found a bookmark without url assigned.");
@@ -51,6 +67,10 @@ public class ModelValidationUtils {
 		}
 	}
 
+	/**
+	 * @param bibtex the object to run sanity checks on
+	 * @throws InvalidModelException if there is a lack of sanity
+	 */
 	public static void checkBibtex(final BibTex bibtex) {
 		if (bibtex.getTitle() == null || bibtex.getTitle().length() == 0) {
 			throw new InvalidModelException("found a bibtex without title assigned.");
@@ -68,25 +88,40 @@ public class ModelValidationUtils {
 	 * ValidationException and an InvalidModelException and InvalidXMLException
 	 * inheriting from that.
 	 */
-
+	/**
+	 * @param xmlTag the object to run sanity checks on
+	 * @throws InvalidModelException if there is a lack of sanity
+	 */
 	public static void checkTag(final TagType xmlTag) throws InvalidModelException {
 		if (xmlTag.getName() == null || xmlTag.getName().length() == 0) {
 			throw new InvalidModelException(XML_IS_INVALID_MSG + "tag name is missing in element 'tag'");
 		}
 	}
 
+	/**
+	 * @param xmlUser the object to run sanity checks on
+	 * @throws InvalidModelException if there is a lack of sanity
+	 */
 	public static void checkUser(final UserType xmlUser) throws InvalidModelException {
 		if (xmlUser.getName() == null || xmlUser.getName().length() == 0) {
 			throw new InvalidModelException(XML_IS_INVALID_MSG + "username is missing in element 'user'");
 		}
 	}
 
+	/**
+	 * @param xmlGroup the object to run sanity checks on
+	 * @throws InvalidModelException if there is a lack of sanity
+	 */
 	public static void checkGroup(final GroupType xmlGroup) throws InvalidModelException {
 		if (xmlGroup.getName() == null || xmlGroup.getName().length() == 0) {
 			throw new InvalidModelException(XML_IS_INVALID_MSG + "groupname is missing in element 'group'");
 		}
 	}
 
+	/**
+	 * @param xmlPost the object to run sanity checks on
+	 * @throws InvalidModelException if there is a lack of sanity
+	 */
 	public static void checkPost(final PostType xmlPost) throws InvalidModelException {
 		if (xmlPost.getTag() == null) throw new InvalidModelException(XML_IS_INVALID_MSG + "list of tags is missing");
 		if (xmlPost.getTag().size() == 0) throw new InvalidModelException(XML_IS_INVALID_MSG + "no tags specified");
@@ -104,6 +139,10 @@ public class ModelValidationUtils {
 		}
 	}
 
+	/**
+	 * @param xmlBookmark the object to run sanity checks on
+	 * @throws InvalidModelException if there is a lack of sanity
+	 */
 	public static void checkBookmark(final BookmarkType xmlBookmark) throws InvalidModelException {
 		if (xmlBookmark.getUrl() == null) throw new InvalidModelException(XML_IS_INVALID_MSG + "url is missing in element 'bookmark'");
 		if (xmlBookmark.getTitle() == null) throw new InvalidModelException(XML_IS_INVALID_MSG + "title is missing in element 'bookmark'");
@@ -113,6 +152,10 @@ public class ModelValidationUtils {
 		// InvalidXMLException( "hash is missing" );
 	}
 
+	/**
+	 * @param xmlBibtex the object to run sanity checks on
+	 * @throws InvalidModelException if there is a lack of sanity
+	 */
 	public static void checkBibTex(final BibtexType xmlBibtex) throws InvalidModelException {
 		if (xmlBibtex.getTitle() == null) throw new InvalidModelException(XML_IS_INVALID_MSG + "title is missing in element 'bibtex'");
 		if (xmlBibtex.getYear() == null) throw new InvalidModelException(XML_IS_INVALID_MSG + "year is missing in element 'bibtex'");
