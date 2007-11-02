@@ -92,7 +92,7 @@ public class SystemTags {
             StringBuffer sql = new StringBuffer(" AND");
             
             // BibTeX year
-            if (systemTag.equals(SYSTEM_TAGS[BIBTEX_YEAR])) {
+            if (SYSTEM_TAGS[BIBTEX_YEAR].equals(systemTag)) {
                 sql.append(" CAST(year AS SIGNED)");
                 
                 // 1st case: only year (e.g. 2005)
