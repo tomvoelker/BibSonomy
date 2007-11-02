@@ -7,6 +7,18 @@ import java.util.Scanner;
  * Builds from a string containing white space separated author names
  * a subquery which selects all publications which are published by the given authors.
  *
+ * TODO: There are several issues:
+ * 
+ * 1. This class "knows" system tags. That should not be neccessary, when those
+ *    tags are removed before giving the tags to this class.
+ * 2. Similiarly, this class and other classes parse - again and again - the (tag)
+ *    string. This should be done only once (i.e., breaking the string into tokens
+ *    and such).
+ * 3. I'm not sure, but aren't authors searched in a separate box? Why can I enter 
+ *    tags in that box? I think we're mixing there stuff. There are tags and there
+ *    is fulltext search. If we want to merge that, we should think of how to do it
+ *    in general and not just mix it halfhearted.
+ *
  */
 public class SplittedAuthors extends LinkedList<String> {
 
