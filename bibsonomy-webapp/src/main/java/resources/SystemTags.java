@@ -19,7 +19,7 @@ public class SystemTags {
     /**
      * prefix for each system tag
      **/
-    public final String SYSTEM_PREFIX = "system:";
+    public static final String SYSTEM_PREFIX = "system:";
     
     /**
      *  requested search string

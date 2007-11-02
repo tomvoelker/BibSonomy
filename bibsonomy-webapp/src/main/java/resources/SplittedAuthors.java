@@ -1,6 +1,5 @@
 package resources;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -33,14 +32,14 @@ public class SplittedAuthors extends LinkedList<String> {
         while(s.hasNext()) {
             String author = s.next();
             
-            // not consider system tags
-            if (author.indexOf("system:") == -1)
+            // ignore system tags
+            if (author.indexOf(SystemTags.SYSTEM_PREFIX) == -1)
                 this.add(author);
         }       	
 	}
 	
 	/**
-	 * generates the substring of the database query which mathes the author names
+	 * generates the substring of the database query which matches the author names
 	 * against author attribute
 	 *
 	 */
