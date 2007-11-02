@@ -122,6 +122,7 @@ public abstract class GenericParam {
 	private int limit;
 	/** The SQL-Offset which is by default 0 */
 	private int offset;
+	/* FIXME: what the hell does the following comment mean? */
 	/*is a user a friend of person x, true will be true*/
 	private  boolean friendOf;
 	/** The type of a ID is by default DS_CONTENT_ID * */
