@@ -29,7 +29,7 @@ public class SplittedAuthors extends LinkedList<String> {
 		this.query = null;
 		
 		Scanner s = new Scanner(authors);
-        s.useDelimiter(" ");
+        // s.useDelimiter(" "); FIXME: default delimiter is whitespace, which should be sufficient, right?
         while(s.hasNext()) {
             String author = s.next();
             
