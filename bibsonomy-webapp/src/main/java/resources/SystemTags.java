@@ -41,7 +41,7 @@ public class SystemTags {
     /**
      * array of all possible system tags
      */
-    public final String[] SYSTEM_TAGS = new String[] {SYSTEM_PREFIX + "year:"    /* bibtex year */};
+    private static final String[] SYSTEM_TAGS = new String[] {SYSTEM_PREFIX + "year:"    /* bibtex year */};
         
     /**
      * constants for each system tag
