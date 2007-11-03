@@ -6,6 +6,13 @@ package org.bibsonomy.rest.remotecall;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 
+/**
+ * this class is used to test if the system delegates the right login-data
+ * to the (this) {@link LogicInterfaceFactory} and for injecting a
+ * {@link LogicInterface}-mock-implementation into the system. 
+ * 
+ * @author Jens Illig
+ */
 public class MockLogicFactory implements LogicInterfaceFactory {
 	private static String requestedLoginName = null;
 	private static String requestedApiKey = null;
@@ -20,10 +27,6 @@ public class MockLogicFactory implements LogicInterfaceFactory {
 	public LogicInterface getLogicAccess(String loginName, String apiKey) {
 		requestedLoginName = loginName;
 		requestedApiKey = apiKey;
-		return logic;
-	}
-
-	public static LogicInterface getLogic() {
 		return logic;
 	}
 
