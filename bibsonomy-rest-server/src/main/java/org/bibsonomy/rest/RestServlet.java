@@ -15,7 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ValidationException;
-import org.bibsonomy.database.DBLogic;
+import org.bibsonomy.database.DBLogicApiInterfaceFactory;
+import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.rest.enums.HttpMethod;
@@ -39,6 +40,7 @@ public final class RestServlet extends HttpServlet {
 
 	private static final Logger log = Logger.getLogger(RestServlet.class);
 
+	/** name of the servlet-parameter that configures the logicFactoryClass to use */
 	public static final String PARAM_LOGICFACTORY_CLASS = "logicFactoryClass";
 
 	private LogicInterfaceFactory logicFactory;
@@ -63,12 +65,11 @@ public final class RestServlet extends HttpServlet {
 			}
 			log.info("using logicFactoryClass '" + logicFactoryClassName + "'");
 		} else {
-			log.info("no 'logicFactoryClass' initParameter -> using default");
-			this.logicFactory = new LogicInterfaceFactory() {
-				public LogicInterface getLogicAccess(final String loginName, final String apiKey) {
-					return DBLogic.getApiAccess(loginName, apiKey);
-				}
-			};
+			final String errorMsg = "no 'logicFactoryClass' initParameter -> using default";
+			log.info(errorMsg);
+			DBLogicApiInterfaceFactory logicFactory = new DBLogicApiInterfaceFactory();
+			logicFactory.setDbSessionFactory(new IbatisDBSessionFactory());
+			this.logicFactory = logicFactory;
 		}
 	}
 
