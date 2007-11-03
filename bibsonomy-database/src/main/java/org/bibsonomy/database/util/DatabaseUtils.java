@@ -98,15 +98,6 @@ public class DatabaseUtils {
 	 * @return a {@link DBSessionFactory}
 	 */
 	public static DBSessionFactory getDBSessionFactory() {
-		return new DBSessionFactory() {
-
-			/**
-			 * Returns a database transaction.
-			 */
-			public DBSession getDatabaseSession() {
-				return new DBSessionImpl(getSqlMap());
-			}
-			
-		};
+		return new IbatisDBSessionFactory();
 	}
 }

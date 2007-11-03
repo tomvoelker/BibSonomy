@@ -1,4 +1,4 @@
-package org.bibsonomy.database.managers;
+package org.bibsonomy.database;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -14,11 +14,15 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.DBLogic;
+import org.bibsonomy.database.DBLogicApiInterfaceFactory;
+import org.bibsonomy.database.managers.AbstractDBLogicBase;
+import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.model.logic.Order;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.After;
@@ -29,9 +33,9 @@ import org.junit.Test;
  * @author Jens Illig
  * @version $Id$
  */
-public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
+public class DBLogicTest extends AbstractDBLogicBase {
 
-	private static final Logger log = Logger.getLogger(RestDatabaseManagerTest.class);
+	private static final Logger log = Logger.getLogger(DBLogicTest.class);
 
 	private LogicInterface dbLogic;
 	private List<Post<BibTex>> bibTexPostsList;
@@ -55,10 +59,7 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	protected LogicInterface getDbLogic(final String userName) {
-		final RestDatabaseManager restDbM = RestDatabaseManager.getInstance();
-		restDbM.setDbSessionFactory(this.getDbSessionFactory());
-		final DBLogic dbl = new DBLogic(userName, restDbM) {
-		};
+		final DBLogic dbl = new DBLogic(userName, this.getDbSessionFactory());
 		return dbl;
 	}
 
@@ -193,7 +194,7 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getPostsByViewable() {
 		final Set<Integer> mustGroupIds = new HashSet<Integer>();
 		final HashSet<String> usersInGroup = new HashSet<String>();
-		usersInGroup.addAll( userDb.getUserNamesByGroupId( GroupID.KDE.getId(), this.dbSession) );
+		usersInGroup.addAll( this.getUserNamesByGroupId( GroupID.KDE, this.dbSession) );
 		mustGroupIds.add(GroupID.KDE.getId());
 		this.bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.VIEWABLE, "kde", new ArrayList<String>(), "", Order.ADDED, 0, 3, null);
 		assertEquals(3, this.bibTexPostsList.size());
@@ -206,7 +207,7 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getPostsForUsersInGroup() {
 		final HashSet<String> usersInGroup = new HashSet<String>();
-		usersInGroup.addAll( userDb.getUserNamesByGroupId( GroupID.KDE.getId(), this.dbSession) );
+		usersInGroup.addAll( this.getUserNamesByGroupId( GroupID.KDE, this.dbSession) );
 		this.bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.GROUP, "kde", null, "", null, 0, 10, null);
 		assertEquals(10, this.bibTexPostsList.size());
 		assertList(usersInGroup, null, null, null, null, null);
@@ -219,7 +220,7 @@ public class RestDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getPostsForGroupByTag() {
 		final LogicInterface anonymousAccess = getDbLogic("");
 		final HashSet<String> usersInGroup = new HashSet<String>();
-		usersInGroup.addAll( userDb.getUserNamesByGroupId( GroupID.KDE.getId(), this.dbSession) );
+		usersInGroup.addAll( this.getUserNamesByGroupId( GroupID.KDE, this.dbSession) );
 		this.bibTexPostsList = anonymousAccess.getPosts(BibTex.class, GroupingEntity.GROUP, "kde", taglist, "", null, 0, 9, null);
 		assertEquals(9, this.bibTexPostsList.size());
 		assertList(usersInGroup, null, this.tagSet, null, null, null);
