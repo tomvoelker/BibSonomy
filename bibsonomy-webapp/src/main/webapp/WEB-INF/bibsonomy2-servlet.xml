@@ -36,6 +36,10 @@
 	
 	<bean id="postLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.PostLogicFactoryBean" scope="request">
 		<property name="request" ref="request"/>
+		<property name="dbSessionFactory" ref="dbSessionFactory"/>
+	</bean>
+	
+	<bean id="dbSessionFactory" class="org.bibsonomy.database.util.IbatisDBSessionFactory">
 	</bean>
 	
 	<bean id="userSettings" class="org.bibsonomy.webapp.util.spring.factorybeans.UserSettingsFactoryBean" scope="request">

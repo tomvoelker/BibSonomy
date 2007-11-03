@@ -5,7 +5,7 @@ package org.bibsonomy.webapp.util.spring.factorybeans;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.bibsonomy.database.DBLogicInterfaceFactory;
+import org.bibsonomy.database.DBLogicUserInterfaceFactory;
 import org.bibsonomy.model.logic.PostLogicInterface;
 import org.springframework.beans.factory.FactoryBean;
 
@@ -13,13 +13,13 @@ import beans.UserBean;
 import filters.InitUserFilter;
 
 /**
- * lets {@link DBLogicInterfaceFactory} appear as a FactoryBean, which itself
+ * lets {@link DBLogicUserInterfaceFactory} appear as a FactoryBean, which itself
  * is customizable in the spring context.
  *  
  * @see FactoryBean
  * @author Jens Illig
  */
-public class PostLogicFactoryBean extends DBLogicInterfaceFactory implements FactoryBean {
+public class PostLogicFactoryBean extends DBLogicUserInterfaceFactory implements FactoryBean {
 	private HttpServletRequest request;
 	private PostLogicInterface instance;
 	
