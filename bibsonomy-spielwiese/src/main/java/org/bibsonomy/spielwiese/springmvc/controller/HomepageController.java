@@ -1,6 +1,7 @@
 package org.bibsonomy.spielwiese.springmvc.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.bibsonomy.database.managers.RestDatabaseManager;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.springframework.web.servlet.ModelAndView;
@@ -26,7 +26,7 @@ public class HomepageController implements Controller {
 		final Map<String, Object> model = new HashMap<String, Object>();
 		model.put("projectName", "BibSonomy");
 
-		final List<Post<Bookmark>> bookmarks = RestDatabaseManager.getInstance().getPosts("cschenk", Bookmark.class, null, null, null, null, null, 0, 10, null);
+		final List<Post<Bookmark>> bookmarks = new ArrayList<Post<Bookmark>>(); // FIXME: RestDatabaseManager.getInstance().getPosts("cschenk", Bookmark.class, null, null, null, null, null, 0, 10, null);
 		model.put("bookmarks", bookmarks);
 
 		return new ModelAndView("home", model);
