@@ -1,9 +1,9 @@
 package org.bibsonomy.rest.client.queries.get;
 
-import java.io.Reader;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.ResourceType;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
@@ -23,6 +23,7 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>> {
 	private String filter = null;
 	private GroupingEntity grouping = GroupingEntity.ALL;
 	private String groupingValue;
+	private ResourceType resourceType = ResourceType.ALL;
 
 	/**
 	 * Gets bibsonomy's tags list
@@ -67,6 +68,16 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>> {
 		this.grouping = grouping;
 		this.groupingValue = groupingValue;
 	}
+	
+	/**
+	 * Set the content type of this query, i.e. whether to retrieve only tags 
+	 * beloning to bookmarks or bibtexs
+	 * 
+	 * @param contentType
+	 */
+	public void setResourceType(final ResourceType resourceType) {
+		this.resourceType = resourceType;
+	}
 
 	/**
 	 * @param filter
@@ -101,6 +112,10 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>> {
 		if (this.filter != null && this.filter.length() > 0) {
 			url += "&filter=" + this.filter;
 		}
+		
+		if (! (this.resourceType == null && this.resourceType.equals(ResourceType.ALL)) ) {
+			url += "&resourcetype=" + this.resourceType.getLabel();
+		}		
 		this.downloadedDocument = performGetRequest(url + "&format=" + getRenderingFormat().toString().toLowerCase());
 		return null;
 	}
