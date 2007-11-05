@@ -592,6 +592,8 @@ CREATE TABLE `user` (
   `interests` varchar(255) default NULL, 
   `hobbies` varchar(255) default NULL,
   `profilegroup` tinyint(1) default '1',
+  `updated_by` varchar(30) default NULL,
+  `updated_at` datetime default '1815-12-10 00:00:00',
   PRIMARY KEY  (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
