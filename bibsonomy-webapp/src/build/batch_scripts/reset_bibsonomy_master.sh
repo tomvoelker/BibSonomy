@@ -1,5 +1,12 @@
 #!/bin/sh
 
+# options: 
+# action database
+#
+# action is either "full" or "incr"
+#   full dumps the SQL CREATE statements (nothing more!) and resets the 
+#   bin logs (AND ALSO notifies the SLAVES about that!)
+
 # get current day of year
 CURRENT_DAY=`date +%j`
 # location of directories
@@ -21,13 +28,11 @@ OPTIONS="--add-drop-table \
          --delete-master-logs\
          --single-transaction\
          --result-file=$BACK_DIR/dump_$CURRENT_DAY.sql"
-# needed to get binlog names (improvement: give binlog generic name)
-DBHOST=`hostname`
 
 # check number of arguments
 if [ $# -ne 2 ]; then
   echo "usage:"
-  echo "  SKRIPT action database"
+  echo "  $0 action database"
   echo "where action is either full or incr"
   exit
 fi
@@ -37,6 +42,8 @@ DB=$2
 #########################################################################
 # FULL backup
 if [ $ACTION = "full" ]; then
+  # delete binlogs and start a new binlog
+  # also notifies slaves about new binlog position!
   $MYSQLDUMP $OPTIONS $DB
 fi
 

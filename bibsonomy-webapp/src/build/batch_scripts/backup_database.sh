@@ -23,6 +23,7 @@ DB_MYSQLDUMP_OPTIONS="\
          --quote-names\
          --flush-logs\
          --no-autocommit\
+         --master-data=1\ 
          --delete-master-logs\
          --single-transaction\
          --result-file=$BACKUP_DIR/dump_$CURRENT_DAY.sql"

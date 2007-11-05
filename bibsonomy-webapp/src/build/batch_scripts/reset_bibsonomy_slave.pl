@@ -7,7 +7,7 @@ use strict;
 # since the master resets its log files once a week, we use this 
 # script for the slaves to reset their master log position
 #
-# NOTE: this should not be neccessary, if mysqldump on the master is 
+# NOTE: this is not neccessary, if mysqldump on the master is 
 # run with the --master-data=1 option (see man mysqldump)
 #
 #
