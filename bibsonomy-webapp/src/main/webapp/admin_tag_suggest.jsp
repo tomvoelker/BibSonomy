@@ -122,6 +122,7 @@
 <c:if test="${param.type == 0}">
 	<jsp:useBean id="adminBean" class="beans.AdminBean">
 		<jsp:setProperty name="adminBean" property="*"/>
+        <jsp:setProperty name="adminBean" property="currUser" value="${user.name}"/>
 	</jsp:useBean>
 
 	<% adminBean.queryDB(); %>
