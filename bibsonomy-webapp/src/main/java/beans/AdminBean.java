@@ -21,6 +21,7 @@ public class AdminBean implements Serializable {
 	private String action = ""; // what this bean shall do, at the moment only "update" (i.e. write values to DB)
 	private String tag = ""; // tag to add or remove from spammertag list
 	private int privlevel = constants.SQL_CONST_PRIVLEVEL_MEMBERS;
+	private String currUser;
 	
 	private LinkedList<String> errors;
 	private LinkedList<String> infos;
@@ -127,6 +128,14 @@ public class AdminBean implements Serializable {
 
 	public void setTag(String tag) {		
 			this.tag = tag;
+	}
+
+	public String getCurrUser() {
+		return this.currUser;
+	}
+
+	public void setCurrUser(String currUser) {
+		this.currUser = currUser;
 	}
 	
 	

@@ -5,7 +5,9 @@ import helpers.constants;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.*;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,7 +16,6 @@ import org.apache.commons.logging.LogFactory;
 
 import scraper.ScrapingContext;
 import scraper.ScrapingException;
-
 import beans.AdminBean;
 
 
@@ -96,17 +97,21 @@ public class DBAdminManager extends DBManager {
 				 * update user table
 				 */
 				if (spammer) {
-					c.stmt = c.conn.prepareStatement("UPDATE user SET spammer = " + constants.SQL_CONST_SPAMMER_TRUE  + " WHERE user_name = ? AND spammer = " + constants.SQL_CONST_SPAMMER_FALSE);	
+					c.stmt = c.conn.prepareStatement("UPDATE user SET spammer = " + constants.SQL_CONST_SPAMMER_TRUE + ", updated_by = ?, updated_at = ?" +
+							                         " WHERE user_name = ? AND spammer = " + constants.SQL_CONST_SPAMMER_FALSE);	
 				} else {
-					c.stmt = c.conn.prepareStatement("UPDATE user SET spammer = " + constants.SQL_CONST_SPAMMER_FALSE + " WHERE user_name = ? AND spammer = " + constants.SQL_CONST_SPAMMER_TRUE);
+					c.stmt = c.conn.prepareStatement("UPDATE user SET spammer = " + constants.SQL_CONST_SPAMMER_FALSE + ", updated_by = ?, updated_at = ?" +
+							                         " WHERE user_name = ? AND spammer = " + constants.SQL_CONST_SPAMMER_TRUE);
 				}
 				/*
 				 * update resource tables
 				 */
-				c.stmt.setString(1, bean.getUser());
+				c.stmt.setString(1, bean.getCurrUser());
+				c.stmt.setTimestamp(2, new Timestamp(new Date().getTime()));
+				c.stmt.setString(3, bean.getUser());
 				if(c.stmt.executeUpdate() == 1) {
 					/*
-					 * use has been (un)flagged as spammer ... set info output and change his posts
+					 * user has been (un)flagged as spammer ... set info output and change his posts
 					 */
 					if (spammer) 
 						bean.addInfo("user `" + bean.getUser() + "` flagged as spammer!"); 
@@ -164,8 +169,10 @@ public class DBAdminManager extends DBManager {
 
 		try {
 			if (c.init()) {
-				c.stmt = c.conn.prepareStatement("UPDATE user SET spammer_suggest = 0 WHERE user_name = ?");				
-				c.stmt.setString(1, bean.getUser());
+				c.stmt = c.conn.prepareStatement("UPDATE user SET spammer_suggest = 0, updated_by = ?, updated_at = ? WHERE user_name = ?");
+				c.stmt.setString(1, bean.getCurrUser());
+				c.stmt.setTimestamp(2, new Timestamp(new Date().getTime()));
+				c.stmt.setString(3, bean.getUser());
 
 				if(c.stmt.executeUpdate() == 1) {
 					bean.addInfo("user '" + bean.getUser() + "' was removed from spammer suggestion list.");

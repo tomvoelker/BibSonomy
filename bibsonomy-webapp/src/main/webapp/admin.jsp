@@ -25,6 +25,7 @@
 <%-- ------------------------ change settings -------------------------- --%>
 <jsp:useBean id="adminBean" class="beans.AdminBean" scope="request">
   <jsp:setProperty name="adminBean" property="*"/>
+  <jsp:setProperty name="adminBean" property="currUser" value="${user.name}"/>
 </jsp:useBean>
 
 <% adminBean.queryDB(); %> <%-- write data to database (if neccessary) --%>
