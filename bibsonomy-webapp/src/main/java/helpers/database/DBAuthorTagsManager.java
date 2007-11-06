@@ -55,7 +55,7 @@ public class DBAuthorTagsManager extends DBManager{
 			SystemTags systemTags = new SystemTags(requAuthor);
 			
 			// show only public tags
-			String selectPart = SQL_SELECT_TAS_PUBLIC + systemTags.getQuery(SystemTags.BIBTEX_YEAR) + SQL_GROUP_STMT;
+			String selectPart = SQL_SELECT_TAS_PUBLIC + systemTags.generateSqlQuery(SystemTags.BIBTEX_YEAR, "b") + SQL_GROUP_STMT;
 			
 			if (sortOrder == 1) {
 				c.stmt = c.conn.prepareStatement(selectPart + SQL_SELECT_TAS_FREQ);

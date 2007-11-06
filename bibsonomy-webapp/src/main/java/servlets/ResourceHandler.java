@@ -358,7 +358,7 @@ public class ResourceHandler extends HttpServlet{
 				if (requPage.equals(PAGE_BIBTEXKEY)) {
 					// handle /bibtexkey/[BIBTEXKEY]/[USERNAME]
 					forwPage = JSP_BIBTEXKEY;
-					requPath = PAGE_BIBTEXKEY + "/" + URLEncoder.encode(requBibtexkey,"UTF-8") + "/" + URLEncoder.encode(requUser,"UTF-8");
+					requPath = PAGE_BIBTEXKEY + "/" + URLEncoder.encode(requBibtexkey,"UTF-8");
 					queryPageUserBibtexKey(c, requUser, requBibtexkey, itemCount, startBib);
 				}				
 				if (requPage.equals(PAGE_SEARCH)) {
@@ -1383,21 +1383,28 @@ public class ResourceHandler extends HttpServlet{
 	 * @throws SQLException
 	 */
 	private void queryPageUserBibtexKey(DBContext c, String requUser, String requBibtexKey, int itemCount, int startBib) throws SQLException {
+		SystemTags systemTags = new SystemTags(requBibtexKey);
+		int counter = 1;	
+	
 		String bibQuery = "	SELECT " + getBibtexSelect("b") + ", t.tag_name,h.ctr "
 				+ "			FROM bibtex b, tas t, bibhash h "
 				+ "			WHERE "				
-				+ "			b.content_id = t.content_id AND"
-				+ "			b.simhash" + Bibtex.INTER_HASH + " = h.hash AND"
-				+ "			h.type=" + Bibtex.INTER_HASH + " AND "
-				+ "			b.user_name = ? AND b.bibtexKey = ? "
+				+ "			b.content_id = t.content_id "
+				+ "			AND b.simhash" + Bibtex.INTER_HASH + " = h.hash"
+				+ "			AND h.type=" + Bibtex.INTER_HASH 
+				+ systemTags.generateSqlQuery(SystemTags.USER_NAME, "b") 
+				+ "			AND b.bibtexKey = ? "
 				+ "			ORDER BY date DESC "
 				+ "			LIMIT ? OFFSET ?";		
 		
 		c.bibStmtP = c.conn.prepareStatement(bibQuery);
-		c.bibStmtP.setString(1, requUser);
-		c.bibStmtP.setString(2, requBibtexKey);	
-		c.bibStmtP.setInt(3, itemCount);
-		c.bibStmtP.setInt(4, startBib);
+		
+		if (systemTags.isUsed(SystemTags.USER_NAME)) {			
+			c.bibStmtP.setString(counter++, systemTags.getValue(SystemTags.USER_NAME));			
+		}		
+		c.bibStmtP.setString(counter++, systemTags.getCleanedString());	
+		c.bibStmtP.setInt(counter++, itemCount);
+		c.bibStmtP.setInt(counter++, startBib);
 	}
 
 	/** PAGE_TAG and PAGE_VIEWABLETAG
@@ -1544,7 +1551,7 @@ public class ResourceHandler extends HttpServlet{
 				   + "     FROM tas t, bibhash h,"    
 			       + "         (SELECT " + getBibtexSelect("b") + ",b.simhash" + Bibtex.INTER_HASH
 				   + "         FROM search s JOIN bibtex b ON (s.content_id = b.content_id "
-				   + systemTags.getQuery(SystemTags.BIBTEX_YEAR) + ")"
+				   + systemTags.generateSqlQuery(SystemTags.BIBTEX_YEAR, "b") + ")"
 				   + "         WHERE MATCH(s.author) AGAINST (? IN BOOLEAN MODE) " 
 				   + "         AND s.content_type= " + Bibtex.CONTENT_TYPE
 				   + "         AND s.group = " + constants.SQL_CONST_GROUP_PUBLIC
@@ -1569,7 +1576,7 @@ public class ResourceHandler extends HttpServlet{
 				        + " WHERE MATCH(s.author) AGAINST (? IN BOOLEAN MODE) " 
 				        + " AND s.content_type = " + Bibtex.CONTENT_TYPE 
 				        + " AND s.group = " + constants.SQL_CONST_GROUP_PUBLIC
-				        + userSearch + systemTags.getQuery(SystemTags.BIBTEX_YEAR));
+				        + userSearch + systemTags.generateSqlQuery(SystemTags.BIBTEX_YEAR,"b"));
 		c.bibTCStmtP.setString(1,authorMatch);
 		if (requUser != null) {
 			c.bibTCStmtP.setString(2, requUser);
@@ -1607,13 +1614,13 @@ public class ResourceHandler extends HttpServlet{
 		+ "			 	AND s.content_id = t1.content_id"
 		+ "				AND b.content_id = s.content_id"			
 		+ "			 	AND t1.tag_name = ? "
-		+ systemTags.getQuery(SystemTags.BIBTEX_YEAR)
+		+ systemTags.generateSqlQuery(SystemTags.BIBTEX_YEAR,"b")
 		+ "				ORDER BY s.date DESC LIMIT ? OFFSET ?) AS tt" 		
 		+ "		WHERE t.content_id = tt.content_id" 		
 		+ "			AND tt.simhash" + Bibtex.INTER_HASH +" = h.hash" 			
 		+ "			AND h.type = " + Bibtex.INTER_HASH			
 		+ "		ORDER BY tt.date DESC, tt.content_id DESC";
-		System.out.println(query);
+		
 		c.bibStmtP = c.conn.prepareStatement(query);
 		c.bibStmtP.setString(1, authorMatch);		
 		c.bibStmtP.setString(2, requTag);
@@ -1627,7 +1634,7 @@ public class ResourceHandler extends HttpServlet{
 				+ "			 	AND s.group = " + constants.SQL_CONST_GROUP_PUBLIC
 				+ "			 	AND s.content_id = t1.content_id "
 				+ "				AND s.content_id = b.content_id "	
-				+ systemTags.getQuery(SystemTags.BIBTEX_YEAR)
+				+ systemTags.generateSqlQuery(SystemTags.BIBTEX_YEAR,"b")
 				+ "				AND t1.tag_name = ?");
 		c.bibTCStmtP.setString(1, authorMatch);
 		c.bibTCStmtP.setString(2, requTag);

@@ -2,6 +2,7 @@ package resources;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 import org.apache.log4j.Logger;
 
@@ -19,34 +20,30 @@ public class SystemTags {
     /**
      * prefix for each system tag
      **/
-    public static final String SYSTEM_PREFIX = "system:";
+    public static final String SYSTEM_PREFIX = "sys:";
     
     /**
      *  requested search string
      **/
     private String requestString;   
     
-    /** 
-     * maps system tag ID -> value 
-     * (e.g. BIBTEX_YEAR -> 2005) 
-     **/
-    private Map<Integer,String> paramQueries;
-    
     /**
      *  maps system tag to generated SQL subquery 
-     * (e.g system:year: -> CAST(year AS SIGNED) = 2005 
+     * (e.g system:year: -> CAST(year AS SIGNED) = 2005 )
      **/
     private Map<String,String>  paramValues;     
     
     /**
      * array of all possible system tags
      */
-    private static final String[] SYSTEM_TAGS = new String[] {SYSTEM_PREFIX + "year:"    /* bibtex year */};
+    private static final String[] SYSTEM_TAGS = new String[] {	SYSTEM_PREFIX + "year:",  /* bibtex year */
+    															SYSTEM_PREFIX + "user:"	  /* user name */ };
         
     /**
      * constants for each system tag
      */
     public static final int BIBTEX_YEAR = 0;
+    public static final int USER_NAME 	= 1;    
     
     /**
      * default constructor
@@ -54,12 +51,10 @@ public class SystemTags {
      * 			the requested search string for extracting system tags 
      */
     public SystemTags(String requestString) {
-        this.requestString = requestString;        
-        paramValues 	= new HashMap<String, String>();
-        paramQueries 	= new HashMap<Integer, String>();
+        this.requestString 	= requestString;        
+        paramValues 		= new HashMap<String, String>();       
                         
         parse();
-        generateSqlQueries();
     }
     
     /**
@@ -82,60 +77,96 @@ public class SystemTags {
     }
     
     /**
-     * generates SQL subqueries for each parsed 
-     * system tag 
-     */
-    private void generateSqlQueries() {
-        LOGGER.debug("generate SQL queries");       
-        for (String systemTag: paramValues.keySet()) {
-            String value = paramValues.get(systemTag).trim();
-            StringBuffer sql = new StringBuffer(" AND");
-            
-            // BibTeX year
-            if (SYSTEM_TAGS[BIBTEX_YEAR].equals(systemTag)) {
-                sql.append(" CAST(year AS SIGNED)");
-                
-                // 1st case: only year (e.g. 2005)
-                if (value.matches("[12]{1}[0-9]{3}")) {
-                    sql.append(" = " + value);
-                } 
-                // 2nd case: range (e.g. 2001-2006)
-                else if (value.matches("[12]{1}[0-9]{3}-[12]{1}[0-9]{3}")) {
-                    String[] years = value.split("-");
-                    sql.append(" BETWEEN " + years[0] + " AND " + years[1]);
-                }
-                // 3rd case: upper bound (e.g -2005) means all years before 2005 
-                else if(value.matches("-[12]{1}[0-9]{3}")) {
-                    sql.append(" <= " + value.substring(1,value.length()));
-                }
-                // 4th case: lower bound (e.g 1998-) means all years since 1998 
-                else if(value.matches("[12]{1}[0-9]{3}-")) {
-                    sql.append(" >= " + value.substring(0,(value.length())-1));
-                }
-                paramQueries.put(BIBTEX_YEAR, sql.toString());
-            }   
-            
-        }       
-    }
-    
-    /**
-     * returns subquery for requested system tag
+     * returnes if specified tag is was used in request
      * @param tag
-     * 			system tag ID (e.g. BIBTEX_YEAR)
-     * @return SQL subquery
+     * 			the id of the tag
+     * @return
+     * 			<code>true</code> if tag was used <br>
+     * 			<code>false</code> if not
      */
-    public String getQuery(final int tag) {
-        if (paramQueries.keySet().contains(tag) && paramQueries.get(tag) != null)
-            return paramQueries.get(tag);
-        else
-            return "";
+    public boolean isUsed(final int tag) {
+    	return paramValues.keySet().contains(SYSTEM_TAGS[tag]);
     }
     
     /**
-     * returns map of systemtag ID and subqueries
-     * @return hashmap
+     * generates the sql subquery for the specified tag 
+     * @param tag
+     * 			the id of the tag
+     * @param tableName
+     * 			the tablename
+     * @return
+     * 			the sql string
      */
-    public Map<Integer,String> getParamQueries() {
-        return paramQueries;
+    public String generateSqlQuery(final int tag, String tableName) {
+        LOGGER.debug("generate SQL query for " + tag);          
+        String systemTag = SYSTEM_TAGS[tag];
+        
+        if (paramValues.keySet().contains(systemTag)) {
+	        String value = paramValues.get(systemTag).trim();
+	        StringBuffer sql = new StringBuffer(" AND ");
+	        
+	        // BibTeX year
+	        if (SYSTEM_TAGS[BIBTEX_YEAR].equals(systemTag)) {
+	            sql.append("CAST(" + tableName + ".year AS SIGNED)");
+	            
+	            // 1st case: only year (e.g. 2005)
+	            if (value.matches("[12]{1}[0-9]{3}")) {
+	                sql.append(" = " + value);
+	            } 
+	            // 2nd case: range (e.g. 2001-2006)
+	            else if (value.matches("[12]{1}[0-9]{3}-[12]{1}[0-9]{3}")) {
+	                String[] years = value.split("-");
+	                sql.append(" BETWEEN " + years[0] + " AND " + years[1]);
+	            }
+	            // 3rd case: upper bound (e.g -2005) means all years before 2005 
+	            else if(value.matches("-[12]{1}[0-9]{3}")) {
+	                sql.append(" <= " + value.substring(1,value.length()));
+	            }
+	            // 4th case: lower bound (e.g 1998-) means all years since 1998 
+	            else if(value.matches("[12]{1}[0-9]{3}-")) {
+	                sql.append(" >= " + value.substring(0,(value.length())-1));
+	            }
+	            
+	            return sql.toString();
+	        }  
+	        
+	        // User Name
+	        if (SYSTEM_TAGS[USER_NAME].equals(systemTag)) {
+	        	sql.append(tableName + ".user_name = ?");        	
+	        	return sql.toString();
+	        }
+        }        
+		return "";              
+    }
+    
+    /**
+     * returns the value of the specified system tag
+     * @param tag
+     * 			the id of the tag
+     * @return value of the system tag
+     */
+    public String getValue(final int tag) {
+    	if (isUsed(tag))
+    		return paramValues.get(SYSTEM_TAGS[tag]);
+    	else
+    		return "";
+    }
+    
+    /**
+     * returns a cleaned request string. 
+     * this means all systemtags are removed.
+     * @return
+     */
+    public String getCleanedString() {    		
+		Scanner s = new Scanner(requestString);
+		StringBuffer buf = new StringBuffer();
+		
+		while(s.hasNext()) {
+            String token = s.next();           
+           
+            if (token.indexOf(SystemTags.SYSTEM_PREFIX) == -1)
+                buf.append(token + " ");
+        }   		
+		return buf.toString().trim();
     }
 }

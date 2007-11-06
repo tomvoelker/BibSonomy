@@ -92,6 +92,8 @@ public class RedirectHandler extends HttpServlet {
 					} else {
 						response.sendRedirect("/author/" + URLEncoder.encode(search,"UTF-8"));
 					}
+				} else if ("bibtexkey".equals(scope)) {
+					response.sendRedirect("/bibtexkey/" + URLEncoder.encode(search,"UTF-8"));
 				} else if ("concept".equals(scope)) {
 					response.sendRedirect("/concept/tag/" + URLEncoder.encode(search,"UTF-8"));
 				} else if ("all".equals(scope)) {					

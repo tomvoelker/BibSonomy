@@ -200,10 +200,10 @@
       <to>/UserFOAFOutput.jsp?requUser=$1&amp;$3</to>
     </rule>
     
-    <!-- redirect for /bibtexkey/BIBTEXKEY/USER -->
+    <!-- redirect for /bibtexkey/BIBTEXKEY -->
     <rule>
-      <from>^/+bibtexkey/+(.+)/(.+?)(\?(.*))?$</from>
-      <to>/ResourceHandler?page=bibtexkey&amp;requKey=$1&amp;requUser=$2&amp;$3</to>
+      <from>^/+bibtexkey/+(.+)(\?(.*))?$</from>
+      <to>/ResourceHandler?page=bibtexkey&amp;requKey=$1&amp;$2</to>
     </rule>
 	
 		
