@@ -192,6 +192,9 @@ public class RDFRepository {
     	// build and add bibtexkey
     	publication.setBibtexkey(BibtexHelper.buildBibtexKey(list.get(0), publication.getYear(), publication.getTitle()));
 
+    	// init entrytype
+    	publication.setEntrytype("inproceedings");
+    	
     	// add last publication to map
 		publicationMap.put(currentPubl, publication);
 
