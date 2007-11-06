@@ -81,10 +81,6 @@ do this with JavaScript and two checkboxes
     <a href="http://www.microsoft.com/word">Microsoft Word</a>. It is formatted according to the 
     Harvard bibliography style guidelines.</dd>
 
-    <dt><a href="/endnote/<c:out value='${requPath}'/>">EndNote</a></dt>
-    <dd>This is an output in <a href="http://en.wikipedia.org/wiki/RIS_%28file_format%29">RIS</a> which is used
-    by EndNote, another bibliography management tool.</dd>
-
     <dt><a href="/publ/<c:out value='${requPath}'/>">HTML</a></dt>
     <dd>This gives you a simple <a href="http://en.wikipedia.org/wiki/HTML">HTML</a> formatted page which you can include into your homepage.</dd>
        
@@ -135,7 +131,7 @@ do this with JavaScript and two checkboxes
     <a href="http://en.wikipedia.org/wiki/XML">XML</a> output according to the <a href="http://en.wikipedia.org/wiki/DocBook">DocBook</a> schema.</dd>
     
     <dt><a href="/layout/endnote/<c:out value='${requPath}'/>">EndNote</a> <a href="#jabref">*</a></dt>
-    <dd>This is another output in <a href="http://en.wikipedia.org/wiki/RIS_%28file_format%29">RIS</a> which is used
+    <dd>This is an output in <a href="http://en.wikipedia.org/wiki/RIS_%28file_format%29">RIS</a> which is used
     by EndNote, another bibliography management tool.</dd>
     
     <dt><a href="/layout/openoffice-csv/<c:out value='${requPath}'/>">OpenOffice-CSV</a> <a href="#jabref">*</a></dt>
