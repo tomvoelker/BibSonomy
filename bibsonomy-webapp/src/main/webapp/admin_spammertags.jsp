@@ -7,6 +7,8 @@
 <script type="text/javascript" src="/resources/javascript/ajax-dynamic-content.js"></script>
 <script type="text/javascript" src="/resources/javascript/ajax.js"></script>
 <script type="text/javascript" src="/resources/javascript/ajax-tooltip.js"></script>
+<link rel="stylesheet" type="text/css" href="/resources/css/spammer.css">
+    
 
 <%-- include HTML header --%>
 <jsp:include page="html_header.jsp">
