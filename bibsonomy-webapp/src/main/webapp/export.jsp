@@ -41,7 +41,7 @@ do this with JavaScript and two checkboxes
   <ul>
     <li><a href="/bib/<c:out value='${requPath}'/>">BibTeX</a> <b>&middot;</b></li>
     <li><a href="/layout/harvard/<c:out value='${requPath}'/>">RTF</a> <b>&middot;</b></li>
-    <li><a href="/endnote/<c:out value='${requPath}'/>">EndNote</a> <b>&middot;</b></li>
+    <li><a href="/layout/endnote/<c:out value='${requPath}'/>">EndNote</a> <b>&middot;</b></li>
     <li><a href="/publ/<c:out value='${requPath}'/>">HTML</a> <b>&middot;</b></li>
     <li><a href="/publrss/<c:out value='${requPath}'/>">RSS</a> <b>&middot;</b></li>
     <li><a href="/swrc/<c:out value='${requPath}'/>">SWRC</a> <b>&middot;</b></li>
@@ -55,8 +55,7 @@ do this with JavaScript and two checkboxes
     <li><a href="/layout/html/<c:out value='${requPath}'/>">HTML</a> <b>&middot;</b></li>
     <li><a href="/layout/tablerefs/<c:out value='${requPath}'/>">TableRefs</a> <b>&middot;</b></li>
     <li><a href="/layout/tablerefsabsbib/<c:out value='${requPath}'/>">TableRefsAbsBib</a> <b>&middot;</b></li>
-    <li><a href="/layout/docbook/<c:out value='${requPath}'/>">DocBook</a> <b>&middot;</b></li>
-    <li><a href="/layout/endnote/<c:out value='${requPath}'/>">EndNote</a> <b>&middot;</b></li>
+    <li><a href="/layout/docbook/<c:out value='${requPath}'/>">DocBook</a> <b>&middot;</b></li> 
     <li><a href="/layout/openoffice-csv/<c:out value='${requPath}'/>">OpenOffice-CSV</a> <b>&middot;</b></li>
     <li><a href="/layout/dblp/<c:out value='${requPath}'/>">DBLP</a> <b>&middot;</b></li>
     <li><a href="/layout/text/<c:out value='${requPath}'/>">Text</a></li>
