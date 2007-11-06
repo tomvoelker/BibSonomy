@@ -58,7 +58,6 @@ if [ $ACTION = "full" ]; then
   # create new backup dir
   mkdir $BACKUP_DIR
   # do full backup
-  echo $DB_MYSQLDUMP $DB_MYSQLDUMP_OPTIONS $DB
   $DB_MYSQLDUMP $DB_MYSQLDUMP_OPTIONS $DB
 fi
 
