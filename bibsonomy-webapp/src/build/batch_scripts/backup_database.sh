@@ -7,25 +7,31 @@ CURRENT_DAY=`date +%j`
 BACKUP_DIR=$HOME/backup/database_backup
 
 # database specific paths
-DB_BINLOG_DIR=/var/mysql/data/        # binlog directory
-DB_BINLOG_NAME=mysql-bin              # name (prefix) of binlog files
+DB_DATA_DIR=/var/mysql/data               # bin-/relay-log directory
+DB_RELAY_LOG=mysqld-relay-bin             # prefix of relay log files
+DB_RELAY_LOG_INDEX=mysqld-relay-bin.index # NOTE: configure those variables
+DB_RELAY_LOG_INFO=relay-log.info          # in my.cnf accordingly!
+DB_MASTER_INFO_FILE=master.info           #
+DB_BIN_LOG=mysql-bin                      # here the crucial data is!
+DB_BIN_LOG_INDEX=mysql-bin.index          #
+
+
 DB_SOCKET=/var/mysql/run/mysqld.sock  # MySQL socket file
 DB_MYSQLDUMP=/usr/bin/mysqldump       # location of mysqldump
 DB_MYSQLADMIN=/usr/bin/mysqladmin     # location of mysqladim
 
 # options for mysqldump
-DB_MYSQLDUMP_OPTIONS="\
-         --add-drop-table \
+DB_MYSQLDUMP_OPTIONS="--add-drop-table \
          --add-locks \
-         --create-options\
-         --disable-keys\
-         --quick\
-         --quote-names\
-         --flush-logs\
-         --no-autocommit\
-         --master-data=1\ 
-         --delete-master-logs\
-         --single-transaction\
+         --create-options \
+         --disable-keys \
+         --quick \
+         --quote-names \
+         --flush-logs \
+         --no-autocommit \
+         --master-data=1 \
+         --delete-master-logs \
+         --single-transaction \
          --result-file=$BACKUP_DIR/dump_$CURRENT_DAY.sql"
 
 # check number of arguments
@@ -52,28 +58,47 @@ if [ $ACTION = "full" ]; then
   # create new backup dir
   mkdir $BACKUP_DIR
   # do full backup
-  $MYSQLDUMP $DB_MYSQLDUMP_OPTIONS $DB
+  echo $DB_MYSQLDUMP $DB_MYSQLDUMP_OPTIONS $DB
+  $DB_MYSQLDUMP $DB_MYSQLDUMP_OPTIONS $DB
 fi
 
 #########################################################################
 # INCREMENTAL backup
 if [ $ACTION = "incr" ]; then
+
   # if not exists, create BACKUP DIRECTORY
   if [ ! -d $BACKUP_DIR ]; then
     mkdir $BACKUP_DIR
   fi
+
   # flush logs
   $DB_MYSQLADMIN flush-logs
-  # copy every non-existing file 
-  for i in $DB_BINLOG_DIR/$DB_BINLOG_NAME.*; do
+
+  # copy every non-existing bin log file 
+  for i in $DB_DATA_DIR/$DB_BIN_LOG.*; do
     FILE=$(echo $i | sed "s/.*\///")
     if [ ! -f $BACKUP_DIR/$FILE ]; then
       cp $i $BACKUP_DIR/$FILE
     fi
   done 
-  # delete last two files (index and current binlog) from backup dir
-  for i in $(ls $DB_BINLOG_DIR/$DB_BINLOG_NAME.* | tail -n 2); do
+  # delete last bin log (will be copied at next run)
+  for i in $(ls $DB_DATA_DIR/$DB_BIN_LOG.0* | tail -n 1); do
     FILE=$(echo $i | sed "s/.*\///")
     rm $BACKUP_DIR/$FILE
   done
+
+  # copy every non-existing relay log file 
+  for i in $DB_DATA_DIR/$DB_RELAY_LOG.*; do
+    FILE=$(echo $i | sed "s/.*\///")
+    if [ ! -f $BACKUP_DIR/$FILE ]; then
+      cp $i $BACKUP_DIR/$FILE
+    fi
+  done 
+
+  # copy remaining files (index, info, etc)
+  cp $DB_DATA_DIR/$DB_RELAY_LOG_INDEX $BACKUP_DIR/$DB_RELAY_LOG_INDEX
+  cp $DB_DATA_DIR/$DB_RELAY_LOG_INFO $BACKUP_DIR/$DB_RELAY_LOG_INFO
+  cp $DB_DATA_DIR/$DB_MASTER_INFO_FILE $BACKUP_DIR/$DB_MASTER_INFO_FILE
+  cp $DB_DATA_DIR/$DB_BIN_LOG_INDEX $BACKUP_DIR/$DB_BIN_LOG_INDEX
+
 fi
