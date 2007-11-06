@@ -45,7 +45,7 @@ public class DBAdvancedSearchManager extends DBManager {
 					+ "		FROM search s "
 					+ "			JOIN tas t USING (content_id) "
 					+ "			JOIN bibtex b USING (content_id) "
-					+ "		WHERE user_name = ? AND content_type = 2 "
+					+ "		WHERE s.user_name = ? AND s.content_type = 2 "
 					+ "		ORDER BY title ASC";			
 				c.stmt = c.conn.prepareStatement(query);	
 				c.stmt.setString(1, bean.getUser());
