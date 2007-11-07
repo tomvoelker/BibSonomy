@@ -9,10 +9,12 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.bibsonomy.importer.event.iswc.BibtexHelper;
 import org.bibsonomy.importer.event.iswc.exceptions.RepositoryException;
 import org.bibsonomy.importer.event.iswc.model.Publication;
+import org.bibsonomy.importer.event.iswc.wordnet.WhiteListReader;
 import org.openrdf.model.Value;
 import org.openrdf.sesame.Sesame;
 import org.openrdf.sesame.admin.DummyAdminListener;
@@ -57,6 +59,7 @@ public class RDFRepository {
 			// load RDF file into repository
 			repository.addData(new File(rdfPath), "", RDFFormat.RDFXML, false, new DummyAdminListener());
 			
+			
 		} catch (FileNotFoundException e) {
 			throw new RepositoryException(e);
 		} catch (IOException e) {
@@ -72,8 +75,9 @@ public class RDFRepository {
 	 * Getting the inproceedings from the repository.
 	 * @return A list with all inproceedings as {@link Publication}s.
 	 * @throws RepositoryException Failure during accessing the repository
+	 * @throws IOException 
 	 */
-	public List<Publication> getInproceedings() throws RepositoryException{
+	public List<Publication> getInproceedings() throws RepositoryException, IOException{
 		
 		// init result list
 		LinkedList<Publication> result = new LinkedList<Publication>();
@@ -220,6 +224,22 @@ public class RDFRepository {
 			if(inproceeding != null)
 				inproceeding.setKeywords(inproceeding.getKeywords() + " " + publSession.get(publ));
 		}
+		
+		/*
+		 * add keywords from title
+		 */
+		// initialize whitelist
+		String whiteListFile = "/home/bkr/projects/wordnet/whitelist_sorted"; 
+		WhiteListReader whiteList = new WhiteListReader(whiteListFile); 
+		whiteList.readList(); 
+		
+		for (String publ: publicationMap.keySet()){
+			if(publicationMap.get(publ).getTitle() != null){
+			    Publication inproceeding = publicationMap.get(publ);
+				String keywords = getTitleKeywords(inproceeding.getTitle(), whiteList);
+				inproceeding.setKeywords(inproceeding.getKeywords().trim() + " " + keywords.trim()); 
+			}
+		}
 
 		/*
 		 * build result list
@@ -295,6 +315,7 @@ public class RDFRepository {
 	        }else if(!currentPubl.equals(publ.toString())){
 
 	        	// build editors
+	        	
 	        	ArrayList<String> list = new ArrayList<String>(editors.size());
 	        	for(Integer position: editors.keySet()){
 	        		list.add(position.intValue()-1, editors.get(position.intValue()));
@@ -338,8 +359,6 @@ public class RDFRepository {
 	        	publication.setVolume(object.toString());
 	        if(predicate.toString().equals("http://swrc.ontoware.org/ontology#year"))
 	        	publication.setYear(object.toString());
-
-	        
 	        
 	        // add editor and position to map
 	        editors.put(Integer.parseInt(editorPosition.toString().substring(44)), editor.toString());
@@ -418,6 +437,21 @@ public class RDFRepository {
 		}
 		
 		return result;
+	}
+	
+	public String getTitleKeywords(String title, WhiteListReader whiteList){
+		// init result map
+		StringBuffer result = new StringBuffer();
+		StringTokenizer tokenizer = new StringTokenizer(title);
+		while(tokenizer.hasMoreTokens()){
+			String tag = tokenizer.nextToken();
+			if (!whiteList.exists(tag.toLowerCase())){
+				continue; 
+			}else{
+				result.append(" " + tag);
+			}
+		}
+		return result.toString(); 
 	}
 	
 	/**
