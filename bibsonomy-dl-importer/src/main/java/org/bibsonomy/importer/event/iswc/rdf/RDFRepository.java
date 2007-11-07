@@ -39,6 +39,7 @@ public class RDFRepository {
 	 * Sesame Repository which contains the RDF data. 
 	 */
 	private LocalRepository repository;
+	private String whiteListFile; 
 	
 	/**
 	 * Init the repository with the given RDF file. The backend of this Sesame store is the
@@ -46,11 +47,11 @@ public class RDFRepository {
 	 * @param rdfPath Path to the RDF file, which will be loaded into the Sesame repository.
 	 * @throws RepositoryException Failure druing building and accessing the repository. 
 	 */
-	public RDFRepository(String rdfPath) throws RepositoryException{
+	public RDFRepository(String rdfPath, String whiteListFile) throws RepositoryException{
 		
 		// init sesame
-		LocalService service = Sesame.getService();
-
+		LocalService service = Sesame.getService(); 
+		this.whiteListFile = whiteListFile; 
 		// create and init new LocalRepository
 		try {
 			// building new sesame repository
@@ -229,7 +230,7 @@ public class RDFRepository {
 		 * add keywords from title
 		 */
 		// initialize whitelist
-		String whiteListFile = "/home/bkr/projects/wordnet/whitelist_sorted"; 
+	
 		WhiteListReader whiteList = new WhiteListReader(whiteListFile); 
 		whiteList.readList(); 
 		
