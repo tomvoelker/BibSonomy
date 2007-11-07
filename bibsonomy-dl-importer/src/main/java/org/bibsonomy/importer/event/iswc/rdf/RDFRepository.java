@@ -446,13 +446,12 @@ public class RDFRepository {
 		StringTokenizer tokenizer = new StringTokenizer(title);
 		while(tokenizer.hasMoreTokens()){
 			String tag = tokenizer.nextToken();
-			if (!whiteList.exists(tag.toLowerCase())){
-				continue; 
-			}else{
-				result.append(" " + tag);
+			String normalizedTag = whiteList.getNormalizedTag(tag.toLowerCase());
+			if (normalizedTag != null){
+				result.append(" " + normalizedTag);
 			}
 		}
-		return result.toString(); 
+		return result.toString().toLowerCase(); 
 	}
 	
 	/**
