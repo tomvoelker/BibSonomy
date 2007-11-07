@@ -445,7 +445,7 @@ public class RDFRepository {
 		}
 		
 		// hashset for tags
-		HashSet<String> tags = null;
+		HashSet<String> tags = new HashSet<String>();
 		
 		// current proccessed publication (key and publication itself
 		String currentPubl = null;
