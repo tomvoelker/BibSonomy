@@ -324,8 +324,10 @@ public class RDFRepository {
 	        // check which predicate is used and add it's content to publication
 	        if(predicate.toString().equals("http://swrc.ontoware.org/ontology#address"))
 	        	publication.setAddress(object.toString());
-	        if(predicate.toString().equals("http://swrc.ontoware.org/ontology#booktitle"))
+	        if(predicate.toString().equals("http://swrc.ontoware.org/ontology#booktitle")) {
 	        	publication.setBooktitle(object.toString());
+	        	publication.setTitle(object.toString());
+	        }
 	        if(predicate.toString().equals("http://swrc.ontoware.org/ontology#month"))
 	        	publication.setMonth(object.toString());
 	        if(predicate.toString().equals("http://swrc.ontoware.org/ontology#publisher"))
