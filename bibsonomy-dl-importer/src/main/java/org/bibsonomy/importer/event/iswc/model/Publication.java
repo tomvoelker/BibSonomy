@@ -307,7 +307,7 @@ public class Publication {
 	 * @param keywords new value for the field keywords
 	 */
 	public void setKeywords(String keywords) {
-		this.keywords = keywords;
+		this.keywords = keywords.toLowerCase();
 	}
 	
 	/**
