@@ -24,23 +24,25 @@ public class SWRCtoBibtexConverter {
 	 */
 	public static void main(String[] args) {
 		
-		if (args.length < 1) {
+		if (args.length < 3) {
 			System.err.println("usage:");
 			System.err.println("  " + SWRCtoBibtexConverter.class.getName() + " file");
+			System.err.println("directory");
+			System.err.println("white list path");
 			System.exit(1);
 		}
 		
 		// init parameters
 		String rdfPath = null;
 		rdfPath = args[0];
-		String dir = null;
-		dir = args[1]; 
+		String dir = args[1]; 
+		String whiteListFile = args[2]; 
 		
 
 		// start convertion
 		SWRCtoBibtexConverter converter = new SWRCtoBibtexConverter();
 		try {
-			converter.convertToBibtex(rdfPath, dir);
+			converter.convertToBibtex(rdfPath, dir, whiteListFile);
 		} catch (RepositoryException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -56,9 +58,9 @@ public class SWRCtoBibtexConverter {
 	 * @throws RepositoryException Failure during processing the RDF data
 	 * @throws IOException error during writing the bibtex files 
 	 */
-	public void convertToBibtex(String rdfPath, String dir) throws RepositoryException, IOException{
+	public void convertToBibtex(String rdfPath, String dir, String whiteListFile) throws RepositoryException, IOException{
 		
-		RDFRepository repository = new RDFRepository(rdfPath);
+		RDFRepository repository = new RDFRepository(rdfPath, whiteListFile);
 		
 		// get proceedings
 		List<Publication> proceedings = repository.getProceedings();
