@@ -33,12 +33,14 @@ public class SWRCtoBibtexConverter {
 		// init parameters
 		String rdfPath = null;
 		rdfPath = args[0];
+		String dir = null;
+		dir = args[1]; 
 		
 
 		// start convertion
 		SWRCtoBibtexConverter converter = new SWRCtoBibtexConverter();
 		try {
-			converter.convertToBibtex(rdfPath);
+			converter.convertToBibtex(rdfPath, dir);
 		} catch (RepositoryException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -54,7 +56,7 @@ public class SWRCtoBibtexConverter {
 	 * @throws RepositoryException Failure during processing the RDF data
 	 * @throws IOException error during writing the bibtex files 
 	 */
-	public void convertToBibtex(String rdfPath) throws RepositoryException, IOException{
+	public void convertToBibtex(String rdfPath, String dir) throws RepositoryException, IOException{
 		
 		RDFRepository repository = new RDFRepository(rdfPath);
 		
@@ -71,7 +73,7 @@ public class SWRCtoBibtexConverter {
 			 * write proceeding with its inproceedings in a file with a modified proceeding URI
 			 * (cut off http:// and replace all "/" with "_")
 			 */ 
-			File proceedingFile = new File(proceeding.getBibtexkey().substring(7).replaceAll("/", "_") + ".bib");
+			File proceedingFile = new File(dir + "/" + proceeding.getBibtexkey().substring(7).replaceAll("/", "_") + ".bib");
 			Writer writer = new OutputStreamWriter(new FileOutputStream(proceedingFile), "utf-8");
 			
 
@@ -88,12 +90,11 @@ public class SWRCtoBibtexConverter {
 		}
 
 		// write into: rest_with_invalid_crossref.bib
-		File inproceedingFile = new File("rest_with_invalid_crossref.bib");
+		File inproceedingFile = new File(dir + "/rest_with_invalid_crossref.bib");
 		Writer writer = new OutputStreamWriter(new FileOutputStream(inproceedingFile), "utf-8");
 
 		// write all inproceedings without a valid proceedings in extra file
 		for(Publication inproceeding: inproceedings){
-			
 			// check if inproceeding has a extracted proceeding
 			boolean hasProceeding = false;
 			for(Publication proceeding: proceedings)
