@@ -36,6 +36,7 @@
 		<!--  up to now, a user can see his own tags as well as public tags -->
 		SELECT t.tag_name, count(t.tag_name) as tag_ctr 
 		FROM tas t 
+		USE INDEX (tag_name_user_name_idx)
 		WHERE (t.user_name=#userName# OR
 			  t.group=0)
 			  <include refid="getTagsByResourceType"/>
@@ -46,7 +47,8 @@
 
 	<select id="getTagsByExpression" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
 		SELECT t.tag_name, count(t.tag_name) as tag_ctr 
-		FROM tas t 
+		FROM tas t
+		USE INDEX (tag_name_user_name_idx) 
 		WHERE (t.user_name=#requestedUserName# OR
 			  t.group=0) AND
 			  t.tag_name REGEXP #regex#
