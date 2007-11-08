@@ -2,7 +2,7 @@
 
 
 <%-------------------------- Heading -----------------------%>
-<h1><a href="/" rel="Start">${projectName}</a> :: ISWC 2007
+<h1><a href="/" rel="Start">${projectName}</a> :: ISWC+ASWC 2007
 <form id="specialsearch" method="get" action="/specialsearch">
   <select name="scope" size="1" id="scope">
     <option value="tag">tag</option>
