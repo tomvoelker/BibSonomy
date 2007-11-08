@@ -26,4 +26,3 @@
       <div class="tag_in_use_4b"><a class="link" href="/user/iswc2007/in_use_4?items=50">[in_use_4]</a> Bringing Research To Industrial Usefulness.</div>
             
       <div class="tag_doctoral_consortiumb"><a class="link" href="/user/iswc2007/doctoral_consortium?items=50">[doctoral_consortium]</a> Doctoral Consortium.</div>
-
