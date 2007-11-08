@@ -26,6 +26,12 @@
   <div id="full">
 
     <div class="topic">ISWC 2007. In Keywords.</div>
+    
+    <div id="logos">
+      <a href="http://iswc2007.semanticweb.org/"><img src="/resources/image/iswc_flash.jpg"></a>
+    </div>
+  
+    
 
     <div class="explanation">
         This page leads you to <a href="${projectHome}">${projectName}</a>, a social bookmark and publication 

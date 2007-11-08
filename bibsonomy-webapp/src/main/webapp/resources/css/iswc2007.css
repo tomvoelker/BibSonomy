@@ -1,5 +1,5 @@
 .topic {
-	font-size: 200%;
+	font-size: 230%;
 	font-weight: bold;
 	padding: 0;
 	margin: 20px 0px 15px 0px;
@@ -8,8 +8,8 @@
 
 div.explanation {
 	text-align: justify;
-	margin-left: 30px;
-	margin-right: 30px;
+	margin-left: 40px;
+	margin-right: 40px;
     padding: 10px 10px 0px 10px;
 }
 
@@ -35,8 +35,8 @@ div.linkbox {
 }
 
 div.linkbox2 {
-	margin-left: 30px;
-	margin-right: 30px;
+	margin-left: 40px;
+	margin-right: 40px;
 }
 
 div.linkbox a {
@@ -49,15 +49,15 @@ div.linkbox a {
 }
 
 div.linkbox a:hover {
-	background-color: #FFFFCC;
+	background-color: #f4f4f4;
 	color: black;
 }
 
 #credits {
 	font-size: 100%;
-	margin-left: 30px;
-	margin-right: 30px;
-	padding-bottom: 30px;
+	margin-left: 40px;
+	margin-right: 40px;
+	padding: 10px 10px 30px 10px;
 }
 
 #credits a {
@@ -87,8 +87,17 @@ div.linkbox a:hover {
 }
 
 a.link {
-	color: white; 
+	color: white;
+	font-weight: bold;
+	text-decoration: none; 
+	padding: 0px 10px 0px 10px;
 }
+
+a.link:hover {
+	background-color: #f4f4f4;
+	color: black;
+}
+
 
 
 #tagcloudy .tag_in_use_1 {color: #ff0000;}
@@ -124,13 +133,13 @@ a.link {
 .tag_in_use_1b {background-color: #ff0000;}
 .tag_in_use_2b {background-color: #ee0000;}
 .tag_in_use_3b {background-color: #dd0000;}
-.tag_in_use_4b {background-color: #cc0000;}
+.tag_in_use_4b {background-color: #cc0000; margin-bottom: 5px;}
 
 .tag_workshop_esoeb  {background-color: #00ff00;}
 .tag_workshop_fewsb  {background-color: #00ee00;}
 .tag_workshop_firstb {background-color: #00dd00;}
 .tag_workshop_omb    {background-color: #00cc00;}
-.tag_workshop_peasb  {background-color: #00bb00;}
+.tag_workshop_peasb  {background-color: #00bb00; margin-bottom: 5px;}
 
 .tag_doctoral_consortiumb {background-color: #fac714;}
 
@@ -148,15 +157,19 @@ a.link {
 .tag_research_12b {background-color: #000093;}
 .tag_research_13b {background-color: #000089;}
 .tag_research_14b {background-color: #00007f;}
-.tag_research_15b {background-color: #000075;}
+.tag_research_15b {background-color: #000075; margin-bottom: 5px;}
 
 #topics {
 	font-size: 100%; 
 	color: white;
-	margin: 30px;
+	margin: 40px;
 }
 
-
+#topics .track {
+  color: black; 
+  padding: 0px 10px 0px 10px;
+  font-face: bold;
+}
 
 #tagcloudy {
 	text-align: justify;
