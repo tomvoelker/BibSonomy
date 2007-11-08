@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 public class TagCloudBuilder {
 
 	private static final MyLogger log = new MyLogger();
+	//private static final Logger log = Logger.getLogger(TagCloudBuilder.class);
 	
 	public static void main(String[] args) {
 		
@@ -119,7 +120,7 @@ public class TagCloudBuilder {
 							/*
 							 * remember count
 							 */
-							matrix.get(tag2).add(new TagWithCount(tag1, count, 0));
+							matrix.get(tag2).add(new TagWithCount(tag1, count));
 						} else {
 							absences.add(tag2);
 						}
@@ -149,10 +150,13 @@ public class TagCloudBuilder {
 						 */
 						TagWithCount trackTag = matrix.get(tag).first();
 						
-						int fontSize = counts.get(tag) + 100; 
+						
+						
+						final Integer globalCount = counts.get(tag);
+						int fontSize = globalCount + 100; 
 						
 						String href  = " href=\"/user/" + requUser + "/" + tag + "?items=50\""; 
-						String title = " title=\"" + trackTag.globalCount + " posts\"";
+						String title = " title=\"" + globalCount + " posts\"";
 						String clazz = " class=\"tag_" + trackTag.tag + "\"";
 						String style = " style=\"font-size:" + fontSize + "%;\"";
 						
@@ -188,17 +192,17 @@ public class TagCloudBuilder {
 	
 	private static class MyLogger {
 
+		
 		public void info(String e) {
-			System.err.println(e);
+		//	System.err.println(e);
 		}
-
 		
 		public void fatal(String e) {
-			System.err.println(e);
+		//	System.err.println(e);
 		}
 		
 		public void fatal(Exception e) {
-			System.err.println(e);
+		//	System.err.println(e);
 		}
 		
 		
@@ -215,13 +219,11 @@ public class TagCloudBuilder {
 	private static class TagWithCount {
 		public String tag;
 		public int count;
-		public int globalCount;
-		
-		public TagWithCount(String tag, int count, int globalCount) {
+
+		public TagWithCount(String tag, int count) {
 			super();
 			this.tag = tag;
 			this.count = count;
-			this.globalCount = globalCount;
 		}
 		
 	}
