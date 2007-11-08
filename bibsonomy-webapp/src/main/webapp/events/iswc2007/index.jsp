@@ -25,7 +25,7 @@
 
   <div id="full">
 
-    <div class="topic">ISWC 2007. As Tagcloud.</div>
+    <div class="topic">ISWC+ASWC 2007. As Tagcloud.</div>
     
     <div id="logos">
       <a href="http://iswc2007.semanticweb.org/"><img src="/resources/image/iswc_flash.jpg"></a>
@@ -36,7 +36,7 @@
     <div class="explanation">
     
       This service is provided by <a href="http://www.bibsonomy.org/">BibSonomy</a>, a social bookmark and
-      publication sharing system. It contains all accepted papers of the <a href="http://iswc2007.semanticweb.org/">ISWC 2007 conference</a> and its
+      publication sharing system. It contains all accepted papers of the <a href="http://iswc2007.semanticweb.org/">ISWC+ASWC 2007 conference</a> and its
       workshops, together with the keywords (tags) that authors have
       associated with their papers or that show up in the paper titles.
 
