@@ -290,13 +290,14 @@ public class RegistrationHandler extends HttpServlet {
 					 * handle ISWC 2007 registration: add user automatically to statphys group
 					 * 
 					 */
+					String event = "iswc2007";
 					String referer = request.getHeader("referer");
-					if ("iswc2007".equals(request.getParameter("event")) && referer != null && referer.contains("/events/iswc2007/")) {
+					if (event.equals(request.getParameter("event")) && referer != null && referer.contains("/events/" + event + "/")) {
 						/*
 						 * add user to iswc2007 group
 						 */
-						SettingsHandler.addUserToGroup(username, "iswc2007", stmt, rst, conn);
-						log.fatal("user " + username + " registered for iswc2007 group!");
+						SettingsHandler.addUserToGroup(username, event, stmt, rst, conn);
+						log.fatal("user " + username + " registered for " + event + " group!");
 					}
 					 
 					/* ******************************************************************/
