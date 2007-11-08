@@ -1,13 +1,21 @@
-<%@include file="standard_header.jsp" %>
-  
-<body>
+<%@include file="/include_jsp_head.jsp" %>
+
+<jsp:useBean id="registrationHandlerBean" class="beans.RegistrationHandlerBean" scope="request"/>
+
+<%-- include HTML header --%>
+<jsp:include page="/html_header.jsp">
+  <jsp:param name="title" value="register" />
+</jsp:include>
 
 <%-------------------------- Heading -----------------------%>
-<h1><a href="/" rel="Start">${projectName}</a> :: register</h1>
+<h1 id="path"><a href="/">${projectName}</a> :: <a rel="path_menu" href="/register">register&nbsp;<img src="/resources/image/box_arrow.png"></a></h1> 
 
-<%@include file="/boxes/navi.jsp" %>
+<%-------------------------- Path Navigation -----------------------%>
+<%@include file="/boxes/path_navi.jsp" %>
 
-<div id="full">
+<%-------------------------- Navigation -----------------------%>
+<%@include file="/boxes/navi.jsp" %> 
+<div id="general">
 
 <h2>Get a ${projectName} account!</h2>
 
@@ -91,4 +99,4 @@ After registration you can remember the interesting papers of the conference by 
 
 </div>
 
-<%@include file="footer.jsp" %>
+<%@include file="/footer.jsp" %>
