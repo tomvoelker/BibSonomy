@@ -6,11 +6,9 @@
    
   <a href="http://www.kde.cs.uni-kassel.de/index_en.html">Knowledge & Data Engineering Group, University of Kassel
   </a>. 
-  Special thanks to: Robert Jäschke, Andreas Hotho, Gerd Stumme.
+  Special thanks to: Robert Jäschke, Beate Krause, Andreas Hotho, Gerd Stumme.
 
   <div id="logos">
-    <a href="http://www.tagora-project.eu/"><img src="http://pil.phys.uniroma1.it/~ciro/tagora_logo_small.png" 
-    alt="TAGora project"></a>
     <a href="http://iswc2007.semanticweb.org/"><img src="/resources/image/iswc_flash.jpg"></a>
   </div>
 
