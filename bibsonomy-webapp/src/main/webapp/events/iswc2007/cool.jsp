@@ -19,7 +19,15 @@
 <c:set var="requGroup" value="iswc2007"/>
 
 
-<center><h2>all tags of all users in the group ${requGroup}</h2></center>
+<center>
+  <h2>all tags of all users in the group ${requGroup}</h2>
+  Here you can see a live view of all tags used by the users of the 
+  <a href="/group/<c:out value='${requGroup}'/>">ISWC+ASWC 2007 group</a>. 
+  Feel free to <a href="/events/iswc2007/register.jsp">join</a> the group, 
+  such that your tags become a part of it. 
+  
+</center>
+
 
 
 
