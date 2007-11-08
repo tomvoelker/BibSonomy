@@ -1,18 +1,26 @@
-<%@include file="standard_header.jsp" %>
-  
-<body>
+<%@include file="/include_jsp_head.jsp" %>
+
+<%-- include HTML header --%>
+<jsp:include page="/html_header.jsp">
+  <jsp:param name="title" value="cool" />
+</jsp:include>
 
 <%-------------------------- Heading -----------------------%>
-<h1><a href="/" rel="Start">${projectName}</a> :: register</h1>
+<h1 id="path"><a href="/">${projectName}</a> :: <a rel="path_menu" href="/register">cool&nbsp;<img src="/resources/image/box_arrow.png"></a></h1> 
 
-<%@include file="/boxes/navi.jsp" %>
+<%-------------------------- Path Navigation -----------------------%>
+<%@include file="/boxes/path_navi.jsp" %>
+
+<%-------------------------- Navigation -----------------------%>
+<%@include file="/boxes/navi.jsp" %> 
+<div id="general">
+
 
 <c:set var="requGroup" value="iswc2007"/>
 
 
 <center><h2>all tags of all users in the group ${requGroup}</h2></center>
 
-<div id="full">
 
 
     <sql:query var="rst" dataSource="${dataSource}">
@@ -32,7 +40,7 @@
     
     
     <%@include file="/boxes/tagboxstyle.jsp" %> 
-</ul>
+    </ul>
 
     <ul id="tagcloudy">
     <c:forEach var="row" items="${rst.rows}">
@@ -46,4 +54,4 @@
 
 </div>
 
-<%@include file="footer.jsp" %>
+<%@include file="/footer.jsp" %>
