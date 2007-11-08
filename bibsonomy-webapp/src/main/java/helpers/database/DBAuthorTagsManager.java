@@ -55,7 +55,10 @@ public class DBAuthorTagsManager extends DBManager{
 			SystemTags systemTags = new SystemTags(requAuthor);
 			
 			// show only public tags
-			String selectPart = SQL_SELECT_TAS_PUBLIC + systemTags.generateSqlQuery(SystemTags.BIBTEX_YEAR, "b") + SQL_GROUP_STMT;
+			String selectPart = SQL_SELECT_TAS_PUBLIC 
+								+ systemTags.generateSqlQuery(SystemTags.BIBTEX_YEAR, "b") 
+								+ systemTags.generateSqlQuery(SystemTags.USER_NAME, "s")
+								+ SQL_GROUP_STMT;
 			
 			if (sortOrder == 1) {
 				c.stmt = c.conn.prepareStatement(selectPart + SQL_SELECT_TAS_FREQ);
@@ -65,7 +68,9 @@ public class DBAuthorTagsManager extends DBManager{
 			
 			SplittedAuthors authors = new SplittedAuthors(requAuthor);
 			String subquery = authors.getQuery();
-			c.stmt.setString(1, subquery);				
+			c.stmt.setString(1, subquery);	
+			if (systemTags.isUsed(SystemTags.USER_NAME))
+				c.stmt.setString(2, systemTags.getValue(SystemTags.USER_NAME));				
 			
 			c.rst = c.stmt.executeQuery();			
 			

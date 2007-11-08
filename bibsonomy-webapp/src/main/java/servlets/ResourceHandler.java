@@ -315,7 +315,7 @@ public class ResourceHandler extends HttpServlet{
 					if (requPage.equals(PAGE_AUTHOR)) {
 						forwPage = JSP_AUTHOR;	
 						requPath = PAGE_AUTHOR +  "/" + URLEncoder.encode(requAuthor, "UTF-8");						
-						queryPageAuthor(c, requAuthor, requUser, itemCount, startBib);
+						queryPageAuthor(c, requAuthor, itemCount, startBib);
 					} else {
 						forwPage = JSP_AUTHORTAG;	
 						requPath = PAGE_AUTHOR +  "/" + URLEncoder.encode(requAuthor, "UTF-8") + "/" + URLEncoder.encode(requTag, "UTF-8");			
@@ -1530,22 +1530,16 @@ public class ResourceHandler extends HttpServlet{
 	 * which all are published by the given author.
 	 *  
 	 * @param c the context for the DB, containing the queries
-	 * @param requAuthor the string contains the authors name
-	 * @param group the group the posts should belong to. 
+	 * @param requAuthor the string contains the authors name	 
 	 * @param itemCount	
 	 * @param startBib
 	 * @throws SQLException
 	 */
-	private void queryPageAuthor(DBContext c, String requAuthor, String requUser, int itemCount, int startBib) throws SQLException {
+	private void queryPageAuthor(DBContext c, String requAuthor, int itemCount, int startBib) throws SQLException {
 		SplittedAuthors authors = new SplittedAuthors(requAuthor);
 		SystemTags systemTags   = new SystemTags(requAuthor);
 		String authorMatch = authors.getQuery();		
 		int argCtr = 1;
-
-		String userSearch = "";
-		if (requUser != null && !requUser.trim().equals("")) {
-			userSearch = " AND s.user_name = ? ";
-		}
 
 		String query = "SELECT " + getBibtexSelect("tt") + ", t.tag_name, h.ctr"
 				   + "     FROM tas t, bibhash h,"    
@@ -1555,7 +1549,7 @@ public class ResourceHandler extends HttpServlet{
 				   + "         WHERE MATCH(s.author) AGAINST (? IN BOOLEAN MODE) " 
 				   + "         AND s.content_type= " + Bibtex.CONTENT_TYPE
 				   + "         AND s.group = " + constants.SQL_CONST_GROUP_PUBLIC
-				   + userSearch
+				   + systemTags.generateSqlQuery(SystemTags.USER_NAME, "s")
 				   + "         ORDER BY s.date DESC LIMIT ? OFFSET ?) AS tt " 
 				   + "     WHERE t.content_id=tt.content_id " 
 				   + "         AND tt.simhash" + Bibtex.INTER_HASH +" = h.hash "    
@@ -1564,9 +1558,10 @@ public class ResourceHandler extends HttpServlet{
 		
 		c.bibStmtP = c.conn.prepareStatement(query);
 		c.bibStmtP.setString(argCtr++, authorMatch);
-		if (requUser != null) {
-			c.bibStmtP.setString(argCtr++, requUser);
+		if (systemTags.isUsed(SystemTags.USER_NAME) ) {
+			c.bibStmtP.setString(argCtr++, systemTags.getValue(SystemTags.USER_NAME));
 		}
+		
 		c.bibStmtP.setInt(argCtr++, itemCount);
 		c.bibStmtP.setInt(argCtr++, startBib);
 
@@ -1576,10 +1571,11 @@ public class ResourceHandler extends HttpServlet{
 				        + " WHERE MATCH(s.author) AGAINST (? IN BOOLEAN MODE) " 
 				        + " AND s.content_type = " + Bibtex.CONTENT_TYPE 
 				        + " AND s.group = " + constants.SQL_CONST_GROUP_PUBLIC
-				        + userSearch + systemTags.generateSqlQuery(SystemTags.BIBTEX_YEAR,"b"));
+				        + systemTags.generateSqlQuery(SystemTags.USER_NAME, "s") 
+				        + systemTags.generateSqlQuery(SystemTags.BIBTEX_YEAR,"b"));
 		c.bibTCStmtP.setString(1,authorMatch);
-		if (requUser != null) {
-			c.bibTCStmtP.setString(2, requUser);
+		if (systemTags.isUsed(SystemTags.USER_NAME)) {
+			c.bibTCStmtP.setString(2, systemTags.getValue(SystemTags.USER_NAME));
 		}
 
 	}
@@ -1593,8 +1589,7 @@ public class ResourceHandler extends HttpServlet{
 	 * 
 	 * @param c the context for the DB, containing the queries.
 	 * @param requAuthor the string contains the authors name(s)
-	 * @param requTag tag 
-	 * @param group requested group over which we aggregate the posts
+	 * @param requTag tag 	 
 	 * @param itemCount	 
 	 * @param startBib
 	 * @throws SQLException
@@ -1603,6 +1598,7 @@ public class ResourceHandler extends HttpServlet{
 		SplittedAuthors authors = new SplittedAuthors(requAuthor);
 		SystemTags systemTags = new SystemTags(requAuthor);
 		String authorMatch = authors.getQuery();
+		int argCtr = 1;
 
 		String query = "SELECT " + getBibtexSelect("tt") + ", t.tag_name, h.ctr"		
 		+ "		FROM tas t, bibhash h,"			
@@ -1615,6 +1611,7 @@ public class ResourceHandler extends HttpServlet{
 		+ "				AND b.content_id = s.content_id"			
 		+ "			 	AND t1.tag_name = ? "
 		+ systemTags.generateSqlQuery(SystemTags.BIBTEX_YEAR,"b")
+		+ systemTags.generateSqlQuery(SystemTags.USER_NAME, "s")
 		+ "				ORDER BY s.date DESC LIMIT ? OFFSET ?) AS tt" 		
 		+ "		WHERE t.content_id = tt.content_id" 		
 		+ "			AND tt.simhash" + Bibtex.INTER_HASH +" = h.hash" 			
@@ -1622,10 +1619,13 @@ public class ResourceHandler extends HttpServlet{
 		+ "		ORDER BY tt.date DESC, tt.content_id DESC";
 		
 		c.bibStmtP = c.conn.prepareStatement(query);
-		c.bibStmtP.setString(1, authorMatch);		
-		c.bibStmtP.setString(2, requTag);
-		c.bibStmtP.setInt(3, itemCount);
-		c.bibStmtP.setInt(4, startBib);
+		c.bibStmtP.setString(argCtr++, authorMatch);		
+		c.bibStmtP.setString(argCtr++, requTag);
+		if (systemTags.isUsed(SystemTags.USER_NAME)) {
+			c.bibStmtP.setString(argCtr++, systemTags.getValue(SystemTags.USER_NAME));
+		}
+		c.bibStmtP.setInt(argCtr++, itemCount);
+		c.bibStmtP.setInt(argCtr++, startBib);
 
 		// count 
 		c.bibTCStmtP = c.conn.prepareStatement(" SELECT count(*) FROM search s, tas t1, bibtex b"
@@ -1634,10 +1634,14 @@ public class ResourceHandler extends HttpServlet{
 				+ "			 	AND s.group = " + constants.SQL_CONST_GROUP_PUBLIC
 				+ "			 	AND s.content_id = t1.content_id "
 				+ "				AND s.content_id = b.content_id "	
+				+ "				AND t1.tag_name = ?"
 				+ systemTags.generateSqlQuery(SystemTags.BIBTEX_YEAR,"b")
-				+ "				AND t1.tag_name = ?");
+				+ systemTags.generateSqlQuery(SystemTags.USER_NAME, "s"));
 		c.bibTCStmtP.setString(1, authorMatch);
 		c.bibTCStmtP.setString(2, requTag);
+		if (systemTags.isUsed(SystemTags.USER_NAME)) {
+			c.bibTCStmtP.setString(3, systemTags.getValue(SystemTags.USER_NAME));
+		}
 
 	}
 
