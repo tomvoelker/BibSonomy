@@ -1,4 +1,4 @@
-      <div class="tag_research_01b"><a class ="link" href="/user/iswc2007/research_01?items=50">[research_01]</a>Information Integration.</div>
+      <div class="tag_research_01b"><a class ="link" href="/user/iswc2007/research_01?items=50">[research_01]</a> Information Integration.</div>
       <div class="tag_research_02b"><a class ="link" href="/user/iswc2007/research_02?items=50">[research_02]</a> Reasoning.</div>
       <div class="tag_research_03b"><a class ="link" href="/user/iswc2007/research_03?items=50">[research_03]</a> Similarities and Deltas.</div>
       <div class="tag_research_04b"><a class ="link" href="/user/iswc2007/research_04?items=50">[research_04]</a> Creating Semantic Web Content.</div>
