@@ -25,7 +25,7 @@
 
   <div id="full">
 
-    <div class="topic">ISWC 2007. In Keywords.</div>
+    <div class="topic">ISWC 2007. As Tagcloud.</div>
     
     <div id="logos">
       <a href="http://iswc2007.semanticweb.org/"><img src="/resources/image/iswc_flash.jpg"></a>
@@ -34,10 +34,15 @@
     
 
     <div class="explanation">
-        This page leads you to <a href="${projectHome}">${projectName}</a>, a social bookmark and publication 
-        sharing system. All contributions submitted to the <a href="http://iswc2007.semanticweb.org/">ISWC 2007 conference</a>  
-        have been loaded into the system, together with the keywords (tags) that authors have associated with their papers. 
-        Tags can be used to navigate through the conference proceedings.
+    
+      This service is provided by <a href="http://www.bibsonomy.org/">BibSonomy</a>, a social bookmark and
+      publication sharing system. It contains all accepted papers of the <a href="http://iswc2007.semanticweb.org/">ISWC 2007 conference</a> and its
+      workshops, together with the keywords (tags) that authors have
+      associated with their papers or that show up in the paper titles.
+
+      <b>Want to organize your conference visit? Just <a href="/events/iswc2007/register.jsp">get a BibSonomy account</a> and
+      start copying and annoting the papers you are interested in!</b>
+
     </div>
 
     <div class="linkbox">
@@ -48,12 +53,12 @@
 
 
     <div class="explanation">
-      Below, the tags (keywords) most frequently used by ISWC authors are shown. The size of each tag (keyword) is 
-      proportional to the logarithm of the number of abstracts that have been tagged with it. The number of abstracts 
-      associated with a tag (keyword) is displayed when hovering over it. Colors encode topics (tracks) of the ISWC2007 
-      conference, as shown at the bottom of this page. The color of each tag indicates the topic to which most abstracts 
-      annotated with that tag belong to. Clicking on a tag (keyword) will retrieve from BibSonomy a list of the abstracts 
-      that have been tagged with it. The full abstract of each contribution is available in BibTeX format.
+      The color of each tag indicates the track (as shown at the bottom of
+      this page) to which most abstracts annotated with that tag belong to.
+      Clicking on a tag (keyword) will retrieve from BibSonomy the abstracts
+      that have been tagged with it. 
+
+      The publication metadata are <a href="http://www.bibsonomy.org/export/user/iswc2007">available in many formats</a>, including BibTeX and RDF.
     </div>
 
 
