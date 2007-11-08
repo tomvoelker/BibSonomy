@@ -29,26 +29,28 @@ div.linkbox {
 	margin-right: 40px;
 	margin-top: 1em;
 	margin-bottom: 1em;
-	background-color: #fc0;
+	color: white;
+	background-color: #0000CC;
 	padding: 5px;
 }
 
 div.linkbox2 {
-    margin-left: 30px; 
-    margin-right: 30px; 
+	margin-left: 30px;
+	margin-right: 30px;
 }
 
 div.linkbox a {
 	font-weight: bold;
 	font-size: 120%;
 	text-decoration: none;
-	color: black;
+	color: white;
 	padding: 2px 15px 2px 15px;
 	white-space: nowrap;
 }
 
 div.linkbox a:hover {
-	background-color: white;
+	background-color: #FFFFCC;
+	color: black;
 }
 
 #credits {
@@ -82,6 +84,10 @@ div.linkbox a:hover {
 #logos img {
 	border: 0;
 	vertical-align: top;
+}
+
+a.link {
+	color: white; 
 }
 
 
@@ -143,7 +149,6 @@ div.linkbox a:hover {
 .tag_research_13b {background-color: #000089;}
 .tag_research_14b {background-color: #00007f;}
 .tag_research_15b {background-color: #000075;}
-
 
 #topics {
 	font-size: 100%; 
