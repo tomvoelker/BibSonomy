@@ -15,6 +15,7 @@ import org.bibsonomy.database.managers.BookmarkDatabaseManager;
 import org.bibsonomy.database.managers.CrudableContent;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
+import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.managers.UserDatabaseManager;
 import org.bibsonomy.database.params.BibTexParam;
@@ -45,6 +46,7 @@ public class DBLogic implements LogicInterface {
 
 	private final Map<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>> allDatabaseManagers;
 	private final GeneralDatabaseManager generalDBManager;
+	private final PermissionDatabaseManager permissionDBManager;
 	private final BookmarkDatabaseManager bookmarkDBManager;
 	private final BibTexDatabaseManager bibtexDBManager;
 	private final UserDatabaseManager userDBManager;
@@ -67,6 +69,7 @@ public class DBLogic implements LogicInterface {
 		userDBManager = UserDatabaseManager.getInstance();
 		groupDBManager = GroupDatabaseManager.getInstance();
 		tagDBManager = TagDatabaseManager.getInstance();
+		permissionDBManager = PermissionDatabaseManager.getInstance();
 
 		this.dbSessionFactory = dbSessionFactory;		
 
@@ -83,6 +86,7 @@ public class DBLogic implements LogicInterface {
 	 * Returns all users of the system
 	 */
 	public List<User> getUsers(final int start, final int end) {
+		this.permissionDBManager.checkStartEnd(start, end, "user");
 		final DBSession session = openSession();
 		try {
 			return userDBManager.getAllUsers(start, end, session);
@@ -125,6 +129,11 @@ public class DBLogic implements LogicInterface {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end, String search) {
+		
+		if (grouping.equals(GroupingEntity.ALL)) {
+			this.permissionDBManager.checkStartEnd(start, end, "post");
+		}
+		
 		final List<Post<T>> result;
 		final DBSession session = openSession();
 		try {
@@ -202,6 +211,11 @@ public class DBLogic implements LogicInterface {
 	}
 
 	public List<Tag> getTags(final GroupingEntity grouping, final String groupingName, final String regex, final Class<? extends Resource> resourceType, final int start, final int end) {
+		
+		if (grouping.equals(GroupingEntity.ALL)) {
+			this.permissionDBManager.checkStartEnd(start, end, "Tag");
+		}		
+		
 		final DBSession session = openSession();
 		final List<Tag> result;
 		
