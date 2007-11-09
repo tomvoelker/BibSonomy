@@ -38,7 +38,7 @@ public class LoginHandler extends HttpServlet {
 	/*
 	 * how long is the temporary password of the password reminder function valid?
 	 */
-	private static final int MAX_TIME_IN_MINUTES = 15; 
+	private static final int MAX_TIME_IN_MINUTES = 60; 
 
 	public void init(ServletConfig config) throws ServletException{	
 		super.init(config);

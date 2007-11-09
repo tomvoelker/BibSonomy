@@ -136,6 +136,10 @@ public class RegistrationHandler extends HttpServlet {
 				 * By forwarding the user back to the registration form, a new captcha code will be 
 				 * created automatically, Turing-Test, immer neues Bild.
 				 */
+				/*
+				 * TODO: possibly we should remove the captcha from the session after we have used it,
+				 * such that re-posting the page does not work. 
+				 */
 				String captcha = (String)session.getAttribute(nl.captcha.servlet.Constants.SIMPLE_CAPCHA_SESSION_KEY) ;
 				if (captcha == null) { 
 					/* We could not get the original captcha. 
@@ -143,12 +147,12 @@ public class RegistrationHandler extends HttpServlet {
 					 * we can't track his session and get the captcha.
 					 */
 					bean.setErrors("general", "Please enable cookies in your browser for the system to work.");
-					getServletConfig().getServletContext().getRequestDispatcher("/register").forward(request, response);
+					getServletConfig().getServletContext().getRequestDispatcher("/reminder").forward(request, response);
 					return;					
 				} else if (!captcha.equals(bean.getCaptcha())){
 					// entered code is false, send user back
 					bean.setErrors("captcha","Wrong code: Please try again");
-					getServletConfig().getServletContext().getRequestDispatcher("/register").forward(request, response);
+					getServletConfig().getServletContext().getRequestDispatcher("/reminder").forward(request, response);
 					return;
 				}
 				
@@ -290,8 +294,8 @@ public class RegistrationHandler extends HttpServlet {
 					 * handle ISWC 2007 registration: add user automatically to statphys group
 					 * 
 					 */
-					String event = "iswc2007";
-					String referer = request.getHeader("referer");
+					final String event = "iswc2007";
+					final String referer = request.getHeader("referer");
 					if (event.equals(request.getParameter("event")) && referer != null && referer.contains("/events/" + event + "/")) {
 						/*
 						 * add user to iswc2007 group
