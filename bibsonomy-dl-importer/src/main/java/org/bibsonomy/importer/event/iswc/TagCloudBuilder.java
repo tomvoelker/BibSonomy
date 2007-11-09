@@ -54,8 +54,8 @@ public class TagCloudBuilder {
 				"doctoral_consortium"
 			};
 		final String requUser = "iswc2007";
-		final String username = "rja";
-		final String password = "IchSchonWieder";
+		final String username = "";
+		final String password = "";
 		final String dbUrl = "jdbc:mysql://gandalf:6033/bibsonomy?useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8";
 		
 		/*
