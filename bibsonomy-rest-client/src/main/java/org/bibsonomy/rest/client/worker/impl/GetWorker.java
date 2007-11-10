@@ -55,7 +55,7 @@ public final class GetWorker extends HttpWorker {
 		if (responseContentLength > Integer.MAX_VALUE) throw new ErrorPerformingRequestException("The response is to long: " + responseContentLength);
 
 		final StringBuilder sb = new StringBuilder((int) responseContentLength);
-		final BufferedReader br = new BufferedReader(new InputStreamReader(responseBodyAsStream));
+		final BufferedReader br = new BufferedReader(new InputStreamReader(responseBodyAsStream, "UTF-8"));
 		int bytesRead = 0;
 		String line = null;
 		while ((line = br.readLine()) != null) {
