@@ -210,7 +210,7 @@ public class RegistrationHandler extends HttpServlet {
 						}
 
 						request.setAttribute("success", "We've send you an e-mail with a new temporary password. The password is\n" +
-						"just valid for 15 minutes. Please make sure to use it now to change your old password.");
+						"just valid for 60 minutes. Please make sure to use it now to change your old password.");
 						getServletConfig().getServletContext().getRequestDispatcher("/success").forward(request, response);					
 
 					} else {
