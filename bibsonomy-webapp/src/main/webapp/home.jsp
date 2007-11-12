@@ -17,7 +17,8 @@
     <option value="user">user</option>
     <option value="group">group</option>
     <option value="author">author</option> 
-    <option value="concept">concept</option> 
+    <option value="concept">concept</option>
+    <option value="bibtexkey">BibTeX key</option> 
     <option value="all" selected="selected">search:all</option> 
     <c:if test="${not empty user.name}">
     	<option value="user:<c:out value='${user.name}'/>">search:<c:out value="${user.name}"/></option> 

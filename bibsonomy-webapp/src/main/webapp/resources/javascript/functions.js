@@ -4,6 +4,7 @@ var user_hint   = "<enter user here>";
 var group_hint  = "<enter group here>";
 var author_hint = "<enter author(s) here>";
 var concept_hint = "<enter concept tag(s) here>";
+var bibtexkey_hint = "<enter BibTeX key here>";
 var activeField = null;
 var sidebar     = null;
 var tagbox      = null;
@@ -147,7 +148,7 @@ function add_hints() {
   }
   // specialsearch (tag, user, group, author, relation)
   if (el != null && el.name == "q" && (el.value == "" || el.value == author_hint || el.value == tag_hint 
-  		|| el.value == user_hint || el.value == group_hint || el.value == concept_hint) || (el != null && el.value == search_hint)) {
+  		|| el.value == user_hint || el.value == group_hint || el.value == concept_hint || bibtexkey_hint) || (el != null && el.value == search_hint)) {
     var scope = document.getElementById("scope");
     // add call to this method to dropdown box, so that hint changes, when box changes
     scope.onmouseup = add_hints;
@@ -162,6 +163,8 @@ function add_hints() {
       el.value = author_hint;
     } else if (scope.value == "concept") {
       el.value = concept_hint;
+    } else if (scope.value == "bibtexkey") {
+      el.value = bibtexkey_hint;
     } else if (scope.value.indexOf("user") != -1 || scope.value == "all") {
       el.value = search_hint;
     }    

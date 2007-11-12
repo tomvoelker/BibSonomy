@@ -338,7 +338,7 @@ function naviSwitchSpecial(target) {
 	selectNode.setAttribute("id", "scope");
 	
 	// select options
-	var options = new Array("tag", "user", "group", "author", "concept", "all", "explicit_user");
+	var options = new Array("tag", "user", "group", "author", "concept", "bibtexkey", "all", "explicit_user");
 	
 	// fill select dropdown box with options
 	for(var i = 0; i < options.length; i++) {
@@ -349,6 +349,18 @@ function naviSwitchSpecial(target) {
 			var optionNode = document.createElement("option");
 			optionNode.setAttribute("value", options[i]);
 			optionNode.appendChild(document.createTextNode("search:all"));
+			
+			if(options[i] == target) {
+				optionNode.setAttribute("selected", "");
+			}
+		
+			selectNode.appendChild(optionNode);
+			
+		} else if(options[i] == "bibtexkey") {
+			
+			var optionNode = document.createElement("option");
+			optionNode.setAttribute("value", options[i]);
+			optionNode.appendChild(document.createTextNode("BibTeX key"));
 			
 			if(options[i] == target) {
 				optionNode.setAttribute("selected", "");
