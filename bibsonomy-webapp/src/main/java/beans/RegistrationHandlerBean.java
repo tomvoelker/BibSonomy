@@ -42,7 +42,7 @@ public class RegistrationHandlerBean implements Serializable {
 	public boolean isValidReminder() {
 		if(action.equals("reminder")) {
 			passwordReminder = true;
-			return isValidUserName() & isValidEmail() & isValidCaptcha();
+			return isValidUserName() & isValidEmail() & isValidCaptcha() && errors.isEmpty();
 		} else
 			return false;
 	}

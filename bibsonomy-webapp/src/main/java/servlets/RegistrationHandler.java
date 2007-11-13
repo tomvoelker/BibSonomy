@@ -218,8 +218,8 @@ public class RegistrationHandler extends HttpServlet {
 						getServletConfig().getServletContext().getRequestDispatcher("/error.jsp").forward(request, response);
 					}
 				} else {
-					request.setAttribute("error", "Sorry, user name and e-mail don't match.");
-					getServletConfig().getServletContext().getRequestDispatcher("/error.jsp").forward(request, response);	
+					bean.setErrors("general", "Sorry, user name and e-mail don't match.");
+					getServletConfig().getServletContext().getRequestDispatcher("/reminder").forward(request, response);	
 				}
 			} else {
 				/* a new user wants to register */

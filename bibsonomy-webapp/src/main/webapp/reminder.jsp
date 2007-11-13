@@ -26,6 +26,7 @@
 <div id="general">
 	
 	<form method="post" action="/reminder">
+        <div class="errmsg">${registrationHandlerBean.errors.general}</div>
 		<table>
 			<tr>
 				<td>username</td>
