@@ -21,6 +21,7 @@ public class RDFRepositoryTest {
 	 * standard test RDF file
 	 */
 	public static final String TEST_RDF_FILE = "src/test/resources/conferenceTest.rdf";
+	public static final String TEST_WHITELIST_FILE = "whitelist.txt";
 
 	/**
 	 * checks if the RDF file is successfull loaded and checks if inproceedings can be extracted. 
@@ -29,7 +30,7 @@ public class RDFRepositoryTest {
 		try {
 			
 			// first check repository
-			RDFRepository repository = new RDFRepository(TEST_RDF_FILE, "");
+			RDFRepository repository = new RDFRepository(TEST_RDF_FILE, TEST_WHITELIST_FILE);
 			assertNotNull(repository);
 
 			// build and check inproceedings result
@@ -51,7 +52,7 @@ public class RDFRepositoryTest {
 		try {
 			
 			// first check repository
-			RDFRepository repository = new RDFRepository(TEST_RDF_FILE, "");
+			RDFRepository repository = new RDFRepository(TEST_RDF_FILE, TEST_WHITELIST_FILE);
 			assertNotNull(repository);
 
 			// build and check proceedings result
