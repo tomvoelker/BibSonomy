@@ -248,10 +248,14 @@ public final class Context {
 	 * @return 
 	 */
 	public Reader getDocument()  {
-		// TODO: check if the correct encoding is used here for the InputStream,
-		// maybe here lies the root of the special character problem when 
-		// importing / exporting from jabref
-		// into jabref
-		return new InputStreamReader(this.doc);
+		try {
+			// returns InputStream with correct encoding
+			return new InputStreamReader(this.doc, "UTF-8");
+		} catch (UnsupportedEncodingException ex) {
+			// returns InputStream with default encoding if a exception
+			// is thrown with utf-8 support
+			log.fatal(ex.getStackTrace());
+			return new InputStreamReader(this.doc);
+		}
 	}
 }
