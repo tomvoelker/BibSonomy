@@ -169,6 +169,14 @@ public interface Renderer {
 	public void serializeUserId(Writer writer, String userId);
 	
 	/**
+	 * Serializes an uri of an resource
+	 * 
+	 * @param writer
+	 * @param uri
+	 */
+	public void serializeURI(Writer writer, String uri);
+	
+	/**
 	 * Serializes a groupid.
 	 * 
 	 * @param writer

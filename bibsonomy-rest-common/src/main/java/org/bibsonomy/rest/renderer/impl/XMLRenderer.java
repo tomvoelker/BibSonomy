@@ -400,6 +400,13 @@ public class XMLRenderer implements Renderer {
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setUserid(userId);
 		serialize(writer, xmlDoc);		
+	}
+	
+	public void serializeURI(Writer writer, String uri) {
+		final BibsonomyXML xmlDoc = new BibsonomyXML();
+		xmlDoc.setStat(StatType.OK);
+		xmlDoc.setUri(uri);
+		serialize(writer, xmlDoc);		
 	}	
 	
 	public String parseError(final Reader reader) throws BadRequestOrResponseException {

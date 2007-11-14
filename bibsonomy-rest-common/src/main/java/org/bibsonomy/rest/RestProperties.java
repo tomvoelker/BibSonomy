@@ -41,6 +41,7 @@ public class RestProperties {
 		URL_POSTS("posts"),
 		URL_ADDED_POSTS("added"),
 		URL_POPULAR_POSTS("popular"),
+		URL_DOCUMENTS("documents"),
 		VALIDATE_XML_INPUT("false"),
 		VALIDATE_XML_OUTPUT("false");
 
@@ -149,6 +150,10 @@ public class RestProperties {
 
 	public String getPostsUrl() {
 		return this.get(Property.URL_POSTS);
+	}
+	
+	public String getDocumentsUrl() {
+		return this.get(Property.URL_DOCUMENTS);
 	}
 
 	public String getAddedPostsUrl() {
