@@ -14,6 +14,7 @@
 	<typeAlias alias="resource"           type="org.bibsonomy.model.Resource" />
 	<typeAlias alias="user"               type="org.bibsonomy.model.User" />
 	<typeAlias alias="group"              type="org.bibsonomy.model.Group" />
+	<typeAlias alias="document"           type="org.bibsonomy.model.Document" />
 	<!-- Extras -->
 	<typeAlias alias="bibtexExtra"        type="org.bibsonomy.model.extra.BibTexExtra" />
 	<typeAlias alias="extendedFields"     type="org.bibsonomy.model.extra.ExtendedFields" />
@@ -28,5 +29,6 @@
 	<typeAlias alias="tagParam"           type="org.bibsonomy.database.params.TagParam" />	
 	<typeAlias alias="tagTagBatchParam"   type="org.bibsonomy.database.params.beans.TagTagBatchParam" />
 	<typeAlias alias="tagRelationParam"   type="org.bibsonomy.database.params.beans.TagRelationParam" />
+	<typeAlias alias="documentParam"      type="org.bibsonomy.database.params.DocumentParam" />	
 
 </sqlMap>

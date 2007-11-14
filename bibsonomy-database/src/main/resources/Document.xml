@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Document">
+
+    <select id="getUserByResourceHash" resultClass="String" parameterClass="documentParam">
+		SELECT b.user_name 
+		FROM bibtex b 
+		WHERE simhash$requestedSimHash$=#resourceHash#
+	</select>
+	
+	<select id="checkContentId" resultClass="String" parameterClass="documentParam">
+		SELECT d.hash
+		FROM document d
+		WHERE content_id=#contentId#
+	</select>
+	
+	<insert id="insertDoc" parameterClass="documentParam">
+		INSERT INTO document (hash, content_id, name, user_name, date)
+		VALUES (#fileHash#, #contentId#, #fileName#, #userName#, NOW())
+	</insert>
+	
+	<update id="updateDoc" parameterClass="documentParam">
+		UPDATE document d 
+		SET d.name=#fileName#, d.hash=#fileHash#, d.date=NOW()
+		WHERE d.content_id = #contentId# 
+	</update>
+	
+	<select id="getContentIdByHash" resultClass="int" parameterClass="documentParam">
+		SELECT b.content_id
+		FROM bibtex b
+		WHERE simhash$requestedSimHash$=#resourceHash#
+	</select>
+	
+	<select id="getDocument" resultMap="DocumentCommon.document" parameterClass="documentParam">
+		SELECT d.hash, d.name 
+		FROM document d, bibtex b 
+		WHERE b.simhash$requestedSimHash$ = #resourceHash#
+			AND d.content_id = b.content_id
+			AND d.name = #fileName#
+			AND d.user_name = #userName# 
+	</select>
+
+</sqlMap>

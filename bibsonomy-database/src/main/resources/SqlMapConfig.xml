@@ -29,6 +29,7 @@
 	<sqlMap resource="common/UserCommon.xml" />
 	<sqlMap resource="common/GroupCommon.xml" />
 	<sqlMap resource="common/TagCommon.xml" />
+	<sqlMap resource="common/DocumentCommon.xml" />
 
 	<sqlMap resource="General.xml" />
 	<sqlMap resource="Tag.xml" />
@@ -38,6 +39,7 @@
 	<sqlMap resource="BibTexExtra.xml"/>
 	<sqlMap resource="User.xml"/>
 	<sqlMap resource="Group.xml"/>
+	<sqlMap resource="Document.xml"/>
 
 	<!-- Plugins -->
 	<sqlMap resource="plugins/Logging.xml"/>

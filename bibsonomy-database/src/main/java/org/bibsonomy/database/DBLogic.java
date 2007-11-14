@@ -13,6 +13,7 @@ import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.BookmarkDatabaseManager;
 import org.bibsonomy.database.managers.CrudableContent;
+import org.bibsonomy.database.managers.DocumentDatabaseManager;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
@@ -20,6 +21,7 @@ import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.managers.UserDatabaseManager;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
+import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.util.DBSession;
@@ -27,6 +29,7 @@ import org.bibsonomy.database.util.DBSessionFactory;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -46,6 +49,7 @@ public class DBLogic implements LogicInterface {
 
 	private final Map<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>> allDatabaseManagers;
 	private final GeneralDatabaseManager generalDBManager;
+	private final DocumentDatabaseManager docDBManager;
 	private final PermissionDatabaseManager permissionDBManager;
 	private final BookmarkDatabaseManager bookmarkDBManager;
 	private final BibTexDatabaseManager bibtexDBManager;
@@ -65,7 +69,8 @@ public class DBLogic implements LogicInterface {
 		allDatabaseManagers.put(BibTex.class, this.bibtexDBManager);
 		bookmarkDBManager = BookmarkDatabaseManager.getInstance();
 		allDatabaseManagers.put(Bookmark.class, this.bookmarkDBManager);
-
+		
+		docDBManager = DocumentDatabaseManager.getInstance();
 		userDBManager = UserDatabaseManager.getInstance();
 		groupDBManager = GroupDatabaseManager.getInstance();
 		tagDBManager = TagDatabaseManager.getInstance();
@@ -509,5 +514,111 @@ public class DBLogic implements LogicInterface {
 
 	public String getAuthenticatedUser() {
 		return this.loginUserName;
+	}
+	
+	/**
+	 * Checks if the username of the api equals to the username given in the path.
+	 * (Maybe we could equalize the params to change the method param to Object<?> obj
+	 * if thats passible)
+	 * 
+	 * @param document
+	 */
+	private void ensureWriteAccess(final Document document) {
+		if (this.loginUserName.equals(document.getUserName()) == false) {
+			throw new ValidationException("You are not authorized to perform the requested operation.");
+		}
+	}
+        
+        public String addDocument(Document doc) {
+		ensureLoggedIn();
+		ensureWriteAccess(doc);
+		return this.storeDocument(doc).getFileHash();
+	}
+	/**
+	 * @param doc
+	 * @return doc
+	 */
+	public Document storeDocument(final Document doc){
+		final DBSession session = openSession();
+		
+		try {
+			//create the docParam object
+			DocumentParam docParam = new DocumentParam();
+			
+			/*
+			 * store all necessary informations in the docParam object
+			 * i think its not needed to create a method because there are only
+			 * 4 fields to save. 
+			 */
+			docParam.setUserName(doc.getUserName());
+			docParam.setResourceHash(doc.getResourceHash());
+			docParam.setFileHash(doc.getFileHash());
+			docParam.setFileName(doc.getFileName());
+			
+			final boolean valid = docDBManager.validateResource(docParam, session);
+			final boolean existingDoc = docDBManager.checkForExistingDocuments(docParam, session);
+			
+			/*
+			 * valid means that the resource is a bibtex entry and the given user is
+			 * the owner of this entry.
+			 */
+			if (valid){
+				/*
+				 * we have to handle if there is an existing document or not.
+				 * if there is an existing document for this resource we have to update it,
+				 * if not just write it to the db.
+				 */
+				if (existingDoc){
+					//update
+					docDBManager.updateDocument(docParam, session);
+				} else {
+					//add
+					docDBManager.addDocument(docParam, session);
+				}
+			} else {
+				throw new ValidationException("You are not authorized to perform the requested operation.");
+			}
+		} finally {
+			session.close();
+		}
+		log.info("API - New file added to db: " + doc.getFileName() + " from User: " + doc.getUserName());
+		return doc;
+	}
+
+	public Document getDocument(final String userName, final String resourceHash, final String fileName) {
+		ensureLoggedIn();
+		
+		final DBSession session = openSession();
+		Document doc;
+		
+		try {
+			//create the docParam object
+			DocumentParam docParam = new DocumentParam();
+			
+			//fill the docParam object
+			docParam.setFileName(fileName);
+			docParam.setResourceHash(resourceHash);
+			docParam.setUserName(userName);
+			
+			final boolean valid = docDBManager.validateResource(docParam, session);
+			
+			/*
+			 * valid means that the resource is a bibtex entry and the given user is
+			 * the owner of this entry.
+			 */
+			if (valid){
+				// get the requested document
+				doc = docDBManager.getDocument(docParam, session);
+				if (doc == null){
+					throw new IllegalStateException("No such document for this bibtex entry");
+				}
+			} else {
+				throw new ValidationException("You are not authorized to perform the requested operation.");
+			}
+		} finally {
+			session.close();
+		}
+		log.info("API - New filerequest: " + doc.getFileName() + " from User: " + doc.getUserName());
+		return doc;
 	}
 }
