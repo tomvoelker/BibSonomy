@@ -3,6 +3,7 @@ package org.bibsonomy.model.logic;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -173,4 +174,23 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @param userName  user to add
 	 */
 	public void addUserToGroup(String groupName, String userName);
+	
+
+	/**
+	 * Adds a document to an existing bibtex entry
+	 * 
+	 * @param doc
+	 * @return String
+	 */
+	public String addDocument(Document doc);
+	
+	/**
+	 * Get a document from an existing Bibtex entry
+	 * @param userName 
+	 * @param resourceHash 
+	 * @param fileName 
+	 * 
+	 * @return document
+	 */
+	public Document getDocument(String userName, String resourceHash, String fileName);
 }

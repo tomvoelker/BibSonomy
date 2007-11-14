@@ -32,6 +32,8 @@
 				<!-- user-/group-ids to return wehn creating / updating users / groups -->
 				<xsd:element name="userid" type="xsd:string"/>
 				<xsd:element name="groupid" type="xsd:string"/>
+				<!-- uri to return (i.e. on uploading documents) -->
+				<xsd:element name="uri" type="xsd:anyURI"/>
 			</xsd:choice>
 		</xsd:sequence>
 		<!-- status flag: contains "ok" when request was successful, "fail" otherwise -->
