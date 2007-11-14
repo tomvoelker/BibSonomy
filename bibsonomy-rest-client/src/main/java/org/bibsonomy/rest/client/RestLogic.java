@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -157,5 +158,15 @@ public class RestLogic implements LogicInterface {
 	public String updateUser(User user) {
 		// accounts cannot be renamed
 		return execute(new ChangeUserQuery(user.getName(), user));
+	}
+
+	public String addDocument(Document doc) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document getDocument(final String userName, final String resourceHash, final String fileName) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
