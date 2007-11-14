@@ -149,7 +149,7 @@
 				<artifactId>tomcat-maven-plugin</artifactId>
 				<configuration>
 					<server>tomcat_gromit</server>
-					<url>http://gromit:8080/manager</url>
+					<url>http://gromit.cs.uni-kassel.de:8080/manager</url>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -260,7 +260,7 @@
 			<dependency>
 				<groupId>mysql</groupId>
 				<artifactId>mysql-connector-java</artifactId>
-				<version>3.1.12</version>
+				<version>5.0.5</version>
 			</dependency>
 			<!-- dependency>
 				<groupId>com.ibatis</groupId>
