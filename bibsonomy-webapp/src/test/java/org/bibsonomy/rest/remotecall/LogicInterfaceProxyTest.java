@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
@@ -584,4 +585,15 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			throw new RuntimeException(ex);
 		}
 	}
+
+	public String addDocument(Document doc) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Document getDocument(String userName, String resourceHash, String fileName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
