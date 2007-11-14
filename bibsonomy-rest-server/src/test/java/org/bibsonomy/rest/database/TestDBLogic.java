@@ -13,6 +13,7 @@ import java.util.Map;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -708,6 +709,14 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	public String updatePost(Post<?> post) {
+		return null;
+	}
+
+	public String addDocument(Document doc) {
+		return null;
+	}
+
+	public Document getDocument(final String userName, final String resourceHash, final String fileName) {
 		return null;
 	}
 }

@@ -8,16 +8,19 @@ import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
 import org.bibsonomy.rest.strategy.users.DeletePostStrategy;
 import org.bibsonomy.rest.strategy.users.DeleteUserStrategy;
 import org.bibsonomy.rest.strategy.users.GetPostDetailsStrategy;
+import org.bibsonomy.rest.strategy.users.GetPostDocumentStrategy;
 import org.bibsonomy.rest.strategy.users.GetUserListStrategy;
 import org.bibsonomy.rest.strategy.users.GetUserPostsStrategy;
 import org.bibsonomy.rest.strategy.users.GetUserStrategy;
 import org.bibsonomy.rest.strategy.users.PostPostStrategy;
 import org.bibsonomy.rest.strategy.users.PostUserStrategy;
+import org.bibsonomy.rest.strategy.users.PostPostDocumentStrategy;
 import org.bibsonomy.rest.strategy.users.PutPostStrategy;
 import org.bibsonomy.rest.strategy.users.PutUserStrategy;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
+ * @author Christian Kramer
  * @version $Id$
  */
 public class UsersHandler implements ContextHandler {
@@ -34,10 +37,10 @@ public class UsersHandler implements ContextHandler {
 			// /users/[username]
 			return createUserStrategy(context, httpMethod, urlTokens.nextToken());
 		case 2:
+			// /users/[username]/posts
 			userName = urlTokens.nextToken();
 			final String req = urlTokens.nextToken();
 			if (RestProperties.getInstance().getPostsUrl().equalsIgnoreCase(req)) {
-				// /users/[username]/posts
 				return createUserPostsStrategy(context, httpMethod, userName);
 			}
 			break;
@@ -49,7 +52,31 @@ public class UsersHandler implements ContextHandler {
 				return createUserPostStrategy(context, httpMethod, userName, resourceHash);
 			}
 			break;
+		case 4:
+			// /users/[username]/posts/[resourcehash]/documents
+			userName = urlTokens.nextToken();
+			if (RestProperties.getInstance().getPostsUrl().equalsIgnoreCase(urlTokens.nextToken())) {
+				final String resourceHash = urlTokens.nextToken();
+
+				if (RestProperties.getInstance().getDocumentsUrl().equalsIgnoreCase(urlTokens.nextToken())){
+					return createDocumentPostStrategy(context, httpMethod, userName, resourceHash);
+				}
+			}
+			break;
+		case 5:
+			// /users/[username]/posts/[resourcehash]/documents/[filename]
+			userName = urlTokens.nextToken();
+			if (RestProperties.getInstance().getPostsUrl().equalsIgnoreCase(urlTokens.nextToken())) {
+				final String resourceHash = urlTokens.nextToken();
+
+				if (RestProperties.getInstance().getDocumentsUrl().equalsIgnoreCase(urlTokens.nextToken())){
+					String filename = urlTokens.nextToken();
+					return createDocumentPostStrategy(context, httpMethod, userName, resourceHash, filename);
+				}
+			}
+			break;
 		}
+			
 		throw new UnsupportedOperationException("no strategy for url ");
 	}
 
@@ -98,6 +125,24 @@ public class UsersHandler implements ContextHandler {
 			return new DeletePostStrategy(context, userName, resourceHash);
 		default:
 			throw new UnsupportedHttpMethodException(httpMethod, "User");
+		}
+	}
+	
+	private Strategy createDocumentPostStrategy(final Context context, final HttpMethod httpMethod, final String userName, final String resourceHash) {
+		switch (httpMethod) {
+		case POST:
+			return new PostPostDocumentStrategy(context, userName, resourceHash);
+		default:
+			throw new UnsupportedHttpMethodException(httpMethod, "User-Post-Document");
+		}
+	}
+	
+	private Strategy createDocumentPostStrategy(final Context context, final HttpMethod httpMethod, final String userName, final String resourceHash, final String filename) {
+		switch (httpMethod) {
+		case GET:
+			return new GetPostDocumentStrategy(context, userName, resourceHash, filename);
+		default:
+			throw new UnsupportedHttpMethodException(httpMethod, "User-Get-Document");
 		}
 	}
 }

@@ -74,6 +74,8 @@ public class TestRestServlet {
 
 		this.servlet.doGet(this.request, this.response);
 		compareWithFile(this.response.getContent(), "exampleComplexResult1.txt");
+		System.out.println(this.response.getContentLength());
+		System.out.println( this.response.getContent().length());
 		assertEquals(this.response.getContentLength(), this.response.getContent().length());
 	}
 

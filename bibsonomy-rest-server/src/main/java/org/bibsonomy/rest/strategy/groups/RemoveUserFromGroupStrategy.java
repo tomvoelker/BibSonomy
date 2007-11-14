@@ -1,5 +1,6 @@
 package org.bibsonomy.rest.strategy.groups;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Writer;
 
 import org.bibsonomy.common.exceptions.InternServerException;
@@ -13,6 +14,7 @@ import org.bibsonomy.rest.strategy.Strategy;
 public class RemoveUserFromGroupStrategy extends Strategy {
 	private String groupName;
 	private String userName;
+	private Writer writer;
 
 	public RemoveUserFromGroupStrategy(final Context context, final String groupName, final String userName) {
 		super(context);
@@ -21,7 +23,7 @@ public class RemoveUserFromGroupStrategy extends Strategy {
 	}
 
 	@Override
-	public void perform(final Writer writer) throws InternServerException {
+	public void perform(final ByteArrayOutputStream outStream) throws InternServerException {
 		this.getLogic().removeUserFromGroup(this.groupName, this.userName);
 		// no exception -> assume success
 		this.getRenderer().serializeOK(writer);

@@ -1,5 +1,6 @@
 package org.bibsonomy.rest.strategy;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Writer;
 
 import org.bibsonomy.common.exceptions.InternServerException;
@@ -9,13 +10,14 @@ import org.bibsonomy.common.exceptions.InternServerException;
  * @version $Id$
  */
 public abstract class AbstractDeleteStrategy extends Strategy {
+	protected Writer writer;
 	
 	public AbstractDeleteStrategy(final Context context) {
 		super(context);
 	}
 
 	@Override
-	public final void perform(final Writer writer) throws InternServerException {
+	public final void perform(final ByteArrayOutputStream outStream) throws InternServerException {
 		final boolean deleted = delete();
 		if (deleted == true)
 			this.getRenderer().serializeOK(writer);

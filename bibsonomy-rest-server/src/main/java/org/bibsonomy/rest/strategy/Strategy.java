@@ -1,6 +1,6 @@
 package org.bibsonomy.rest.strategy;
 
-import java.io.Writer;
+import java.io.ByteArrayOutputStream;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.InternServerException;
@@ -19,6 +19,9 @@ public abstract class Strategy {
 	private final Context context;
 	private final Renderer renderer;
 
+	/**
+	 * @param context
+	 */
 	public Strategy(final Context context) {
 		this.context = context;
 		this.logic = context.getLogic();
@@ -33,7 +36,12 @@ public abstract class Strategy {
 	public void validate() throws ValidationException {
 	}
 
-	public abstract void perform(final Writer writer) throws InternServerException, NoSuchResourceException;
+	/**
+	 * @param outStream
+	 * @throws InternServerException
+	 * @throws NoSuchResourceException
+	 */
+	public abstract void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException;
 
 	/**
 	 * @param userAgent

@@ -2,7 +2,7 @@ package org.bibsonomy.rest.strategy.users;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.StringWriter;
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 
 import org.bibsonomy.rest.RestProperties;
@@ -17,11 +17,14 @@ import org.junit.Test;
  */
 public class GetUserPostsStrategyTest extends AbstractContextTest {
 
+	/**
+	 * 
+	 */
 	@Test
 	public void testGetUserPostsStrategy() {
-		final Context ctx = new Context(this.is, this.db, HttpMethod.GET, "/users/mbork/posts", new HashMap<String, String>());
-		final StringWriter sw = new StringWriter();
-		ctx.perform(sw);
+		final Context ctx = new Context(this.is, this.db, HttpMethod.GET, "/users/mbork/posts", new HashMap<String, String>(), null, null);
+		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ctx.perform(baos);
 
 		// just test length, because the detail rendering output is tested by
 		// the renderer test

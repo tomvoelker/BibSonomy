@@ -21,6 +21,9 @@ public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
 	private final String groupingValue;
 	private final String regex;
 	
+	/**
+	 * @param context
+	 */
 	public GetListOfTagsStrategy(final Context context) {
 		super(context);
 		this.grouping = chooseGroupingEntity();

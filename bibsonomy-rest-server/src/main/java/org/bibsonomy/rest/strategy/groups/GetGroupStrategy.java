@@ -1,5 +1,7 @@
 package org.bibsonomy.rest.strategy.groups;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
 import java.io.Writer;
 
 import org.bibsonomy.common.exceptions.InternServerException;
@@ -16,14 +18,20 @@ import org.bibsonomy.rest.strategy.Strategy;
 public class GetGroupStrategy extends Strategy {
 
 	private final String groupName;
+	private Writer writer;
 
+	/**
+	 * @param context
+	 * @param groupName
+	 */
 	public GetGroupStrategy(final Context context, final String groupName) {
 		super(context);
 		this.groupName = groupName;
 	}
 
 	@Override
-	public void perform(final Writer writer) throws InternServerException, NoSuchResourceException {
+	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException {
+		writer = new PrintWriter(outStream);
 		// delegate to the renderer
 		final Group group = this.getLogic().getGroupDetails(this.groupName);
 		if (group == null) {

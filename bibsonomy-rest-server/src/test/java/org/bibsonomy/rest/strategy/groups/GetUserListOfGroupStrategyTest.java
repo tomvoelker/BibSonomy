@@ -2,7 +2,7 @@ package org.bibsonomy.rest.strategy.groups;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.StringWriter;
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 
 import org.bibsonomy.rest.RestProperties;
@@ -17,15 +17,18 @@ import org.junit.Test;
  */
 public class GetUserListOfGroupStrategyTest extends AbstractContextTest {
 
+	/**
+	 * 
+	 */
 	@Test
 	public void testGetUserListOfGroupStrategy() {
-		final Context c = new Context(this.is, this.db, HttpMethod.GET, "/groups/public/users", new HashMap<String, String>());
-		final StringWriter sw = new StringWriter();
-		c.perform(sw);
+		final Context c = new Context(this.is, this.db, HttpMethod.GET, "/groups/public/users", new HashMap<String, String>(), null, null);
+		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		c.perform(baos);
 
 		// just test length, because the detail rendering output is tested by
 		// the renderer test
-		assertEquals(676, sw.toString().length());
+		assertEquals(676, baos.toString().length());
 		assertEquals("text/xml", c.getContentType("firefox"));
 		assertEquals("bibsonomy/users+XML", c.getContentType(RestProperties.getInstance().getApiUserAgent()));
 	}

@@ -1,5 +1,7 @@
 package org.bibsonomy.rest.strategy.users;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
 import java.io.Writer;
 
 import org.bibsonomy.common.exceptions.InternServerException;
@@ -18,7 +20,13 @@ public class GetPostDetailsStrategy extends Strategy {
 
 	private final String userName;
 	private final String resourceHash;
+	private Writer writer;
 
+	/**
+	 * @param context
+	 * @param userName
+	 * @param resourceHash
+	 */
 	public GetPostDetailsStrategy(final Context context, final String userName, final String resourceHash) {
 		super(context);
 		this.userName = userName;
@@ -26,7 +34,8 @@ public class GetPostDetailsStrategy extends Strategy {
 	}
 
 	@Override
-	public void perform(final Writer writer) throws InternServerException, NoSuchResourceException {
+	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException {
+		writer = new PrintWriter(outStream);
 		// delegate to the renderer
 		final Post<? extends Resource> post = this.getLogic().getPostDetails(this.resourceHash, this.userName);
 		if (post == null) {

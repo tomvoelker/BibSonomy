@@ -1,5 +1,6 @@
 package org.bibsonomy.rest.strategy;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -63,6 +64,17 @@ public final class Context {
 	private final RenderingFormat renderingFormat;
 
 	/**
+	 * the list with all items out of the http request
+	 */
+	private List items = null;
+	
+	/**
+	 * this should hold all additional infos of the webservice or request
+	 * i.e. the rootpath which have been declared in the web.xml
+	 */
+	private HashMap<String, String> additionalInfos;
+
+	/**
 	 * @param authUserName  The authUserName to set.
 	 * @param url
 	 * @param httpMethod
@@ -74,12 +86,15 @@ public final class Context {
 	 * @throws ValidationException
 	 *             if '/' is requested
 	 */
-	public Context(final InputStream doc, final LogicInterface logic, final HttpMethod httpMethod, final String url, final Map<?, ?> parameterMap) throws ValidationException, NoSuchResourceException {
+	public Context(final InputStream doc, final LogicInterface logic, final HttpMethod httpMethod, final String url, final Map<?, ?> parameterMap, final List<?> items, final HashMap<String, String> additionalInfos) throws ValidationException, NoSuchResourceException {
 		this.doc = doc;
 		this.logic = logic;
 		// FIXME this.httpMethod = httpMethod;
 		if (parameterMap == null) throw new RuntimeException("Parameter map is null");
 		this.parameterMap = parameterMap;
+		
+		this.items = items;
+		this.additionalInfos = additionalInfos;
 
 		if (url == null || "/".equals(url)) throw new ValidationException("It is forbidden to access '/'.");
 		this.urlTokens = new StringTokenizer(url, "/");
@@ -113,15 +128,13 @@ public final class Context {
 	}
 
 	/**
-	 * @param request
-	 *            the request
-	 * @param responseAdapter
-	 *            the response
+	 * @param stream
 	 * @throws InternServerException
 	 */
-	public void perform(final Writer writer) throws InternServerException {
-		this.strategy.perform(writer);
+	public void perform(final ByteArrayOutputStream outStream) throws InternServerException {
+		this.strategy.perform(outStream);
 	}
+
 
 	/**
 	 * @param userAgent
@@ -257,5 +270,21 @@ public final class Context {
 			log.fatal(ex.getStackTrace());
 			return new InputStreamReader(this.doc);
 		}
+	}
+	
+	/**
+	 * 
+	 * @return additionalInfos
+	 */
+	public HashMap<String, String> getAdditionalInfos() {
+		return this.additionalInfos;
+	}
+	
+	/**
+	 * 
+	 * @return the previously committed item list parsed out of a http request object
+	 */
+	public List<?> getItemList(){
+		return this.items;
 	}
 }

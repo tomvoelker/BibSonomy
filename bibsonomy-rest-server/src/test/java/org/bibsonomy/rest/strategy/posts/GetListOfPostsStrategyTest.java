@@ -2,7 +2,7 @@ package org.bibsonomy.rest.strategy.posts;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.StringWriter;
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 
 import org.bibsonomy.rest.RestProperties;
@@ -17,15 +17,18 @@ import org.junit.Test;
  */
 public class GetListOfPostsStrategyTest extends AbstractContextTest {
 
+	/**
+	 * 
+	 */
 	@Test
 	public void testGetListOfPostsStrategy() {
-		final Context ctx = new Context(this.is, this.db, HttpMethod.GET, "/posts", new HashMap<String, String>());
-		final StringWriter sw = new StringWriter();
-		ctx.perform(sw);
+		final Context ctx = new Context(this.is, this.db, HttpMethod.GET, "/posts", new HashMap<String, String>(), null, null);
+		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ctx.perform(baos);
 
 		// just test length, because the detail rendering output is tested by
 		// the renderer test
-		assertEquals(10333, sw.toString().length());
+		assertEquals(10333, baos.toString().length());
 		assertEquals("text/xml", ctx.getContentType("firefox"));
 		assertEquals("bibsonomy/posts+XML", ctx.getContentType(RestProperties.getInstance().getApiUserAgent()));
 	}

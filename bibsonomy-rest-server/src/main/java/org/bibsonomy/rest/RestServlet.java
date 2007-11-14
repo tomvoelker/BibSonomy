@@ -3,11 +3,15 @@ package org.bibsonomy.rest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.HttpURLConnection;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,11 +31,13 @@ import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.strategy.Context;
+import org.bibsonomy.util.fileutil.MultiPartRequestParser;
 
 import sun.misc.BASE64Decoder;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
+ * @author Christian Kramer
  * @version $Id$
  */
 public final class RestServlet extends HttpServlet {
@@ -44,12 +50,22 @@ public final class RestServlet extends HttpServlet {
 	public static final String PARAM_LOGICFACTORY_CLASS = "logicFactoryClass";
 
 	private LogicInterfaceFactory logicFactory;
+	
+	// store some infos about the specific request or the webservice (i.e. rootPath)
+	private final HashMap<String, String> additionalInfos = new HashMap<String, String>();
 
 	@Override
 	public void init() throws ServletException {
 		super.init();
 		// instantiate the bibsonomy database connection
 		final String logicFactoryClassName = this.getServletConfig().getInitParameter(PARAM_LOGICFACTORY_CLASS);
+		// get the roopath of bibsonomy out of the web.xml
+		additionalInfos.put("rootPath", getServletContext().getInitParameter("rootPath"));
+		// declare the path where all documents will be stored
+		additionalInfos.put("docPath", "bibsonomy_docs/");
+		// get the projectHome out of the web.xml
+		additionalInfos.put("projectHome", getServletContext().getInitParameter("projectHome"));
+		
 		if (logicFactoryClassName != null) {
 			Object logicFactoryObj;
 			try {
@@ -146,9 +162,12 @@ public final class RestServlet extends HttpServlet {
 		try {
 			// validate the requesting user's authorization
 			final LogicInterface logic = validateAuthorization(request.getHeader("Authorization"));
-
+			
+			// parse the request object to retrieve a list with all items of the http request
+			MultiPartRequestParser parser = new MultiPartRequestParser(request);
+			
 			// create Context
-			final Context context = new Context(request.getInputStream(), logic, method, request.getPathInfo(), request.getParameterMap());
+			final Context context = new Context(request.getInputStream(), logic, method, request.getPathInfo(), request.getParameterMap(), parser.getList(), additionalInfos);
 
 			// validate request
 			context.validate();
@@ -165,10 +184,12 @@ public final class RestServlet extends HttpServlet {
 			else {
 				response.setStatus(HttpServletResponse.SC_OK);
 			}
+			
+			//just define an ByteArrayOutputStream to store all outgoing data
 			final ByteArrayOutputStream cachingStream = new ByteArrayOutputStream();
-			final Writer writer = new OutputStreamWriter(cachingStream, Charset.forName("UTF-8"));
-
-			context.perform(writer);
+			
+			
+			context.perform(cachingStream);
 			// XXX: cachingStream.size() != cachingStream.toString().length() !!
 			// the correct value is the first one!
 			response.setContentLength(cachingStream.size());
@@ -178,7 +199,8 @@ public final class RestServlet extends HttpServlet {
 			Long elapsed = System.currentTimeMillis() - start;
 			log.debug("Processing time: " + elapsed + " ms");
 			
-			response.getOutputStream().print(cachingStream.toString("UTF-8"));
+
+			cachingStream.writeTo(response.getOutputStream());
 		} catch (final AuthenticationException e) {
 			log.warn(e.getMessage());
 			/*

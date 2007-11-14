@@ -1,5 +1,7 @@
 package org.bibsonomy.rest.strategy;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.List;
 
@@ -13,6 +15,7 @@ import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
  */
 public abstract class AbstractGetListStrategy<L extends List<?>> extends Strategy {
 	private final ViewModel view;
+	protected Writer writer;
 
 	public AbstractGetListStrategy(final Context context) {
 		super(context);
@@ -25,7 +28,8 @@ public abstract class AbstractGetListStrategy<L extends List<?>> extends Strateg
 	}
 
 	@Override
-	public final void perform(final Writer writer) throws InternServerException {
+	public final void perform(final ByteArrayOutputStream outStream) throws InternServerException {
+		writer = new PrintWriter(outStream);
 		final L resultList = getList();
 		
 		if (resultList.size() != (getView().getEndValue() - getView().getStartValue())) {

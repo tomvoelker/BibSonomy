@@ -28,61 +28,61 @@ public class ContextUserTest extends AbstractContextTest {
 
 	@Test
 	public void testGetListOfUsersStrategy() throws Exception {
-		final Context ctx = new Context(this.is, this.db, HttpMethod.GET, "/users", new HashMap<Object, Object>());
+		final Context ctx = new Context(this.is, this.db, HttpMethod.GET, "/users", new HashMap<Object, Object>(), null, null);
 		assertTrue("failure initializing GetUserListStrategy", ctx.getStrategy() instanceof GetUserListStrategy);
 	}
 
 	@Test
 	public void testPostUserStrategy() throws Exception {
-		final Context ctx = new Context(this.is, this.db, HttpMethod.POST, "/users", new HashMap<Object, Object>());
+		final Context ctx = new Context(this.is, this.db, HttpMethod.POST, "/users", new HashMap<Object, Object>(), null, null);
 		assertTrue("failure initializing PostUserStrategy", ctx.getStrategy() instanceof PostUserStrategy);
 	}
 
 	@Test
 	public void testGetDetailsOfUserStrategy() throws Exception {
-		final Context ctx = new Context(this.is, this.db, HttpMethod.GET, "/users/testuser", new HashMap<Object, Object>());
+		final Context ctx = new Context(this.is, this.db, HttpMethod.GET, "/users/testuser", new HashMap<Object, Object>(), null, null);
 		assertTrue("failure initializing GetUserStrategy", ctx.getStrategy() instanceof GetUserStrategy);
 	}
 
 	@Test
 	public void testPutDetailsOfUserStrategy() throws Exception {
-		final Context ctx = new Context(this.is, this.db, HttpMethod.PUT, "/users/testuser", new HashMap<Object, Object>());
+		final Context ctx = new Context(this.is, this.db, HttpMethod.PUT, "/users/testuser", new HashMap<Object, Object>(), null, null);
 		assertTrue("failure initializing PutUserStrategy", ctx.getStrategy() instanceof PutUserStrategy);
 	}
 
 	@Test
 	public void testDeleteUserStrategy() throws Exception {
-		final Context ctx = new Context(this.is, this.db, HttpMethod.DELETE, "/users/testuser", new HashMap<Object, Object>());
+		final Context ctx = new Context(this.is, this.db, HttpMethod.DELETE, "/users/testuser", new HashMap<Object, Object>(), null, null);
 		assertTrue("failure initializing DeleteUserStrategy", ctx.getStrategy() instanceof DeleteUserStrategy);
 	}
 
 	@Test
 	public void testGetUserPostsStrategy() throws Exception {
-		final Context ctx = new Context(this.is, this.db, HttpMethod.GET, "/users/testuser/posts", new HashMap<Object, Object>());
+		final Context ctx = new Context(this.is, this.db, HttpMethod.GET, "/users/testuser/posts", new HashMap<Object, Object>(), null, null);
 		assertTrue("failure initializing GetUserPostsStrategy", ctx.getStrategy() instanceof GetUserPostsStrategy);
 	}
 
 	@Test
 	public void testPostPostStrategy() throws Exception {
-		final Context ctx = new Context(this.is, this.db, HttpMethod.POST, "/users/testuser/posts", new HashMap<Object, Object>());
+		final Context ctx = new Context(this.is, this.db, HttpMethod.POST, "/users/testuser/posts", new HashMap<Object, Object>(), null, null);
 		assertTrue("failure initializing PostPostStrategy", ctx.getStrategy() instanceof PostPostStrategy);
 	}
 
 	@Test
 	public void testGetPostDetailsStrategy() throws Exception {
-		final Context ctx = new Context(this.is, this.db, HttpMethod.GET, "/users/testuser/posts/asdfsadf012312", new HashMap<Object, Object>());
+		final Context ctx = new Context(this.is, this.db, HttpMethod.GET, "/users/testuser/posts/asdfsadf012312", new HashMap<Object, Object>(), null, null);
 		assertTrue("failure initializing GetPostDetailsStrategy", ctx.getStrategy() instanceof GetPostDetailsStrategy);
 	}
 
 	@Test
 	public void testPutPostStrategy() throws Exception {
-		final Context ctx = new Context(this.is, this.db, HttpMethod.PUT, "/users/testuser/posts/asdfsadf012312", new HashMap<Object, Object>());
+		final Context ctx = new Context(this.is, this.db, HttpMethod.PUT, "/users/testuser/posts/asdfsadf012312", new HashMap<Object, Object>(), null, null);
 		assertTrue("failure initializing PutPostStrategy", ctx.getStrategy() instanceof PutPostStrategy);
 	}
 
 	@Test
 	public void testDeletePostStrategy() throws Exception {
-		final Context ctx = new Context(this.is, this.db, HttpMethod.DELETE, "/users/testuser/posts/asdfsadf012312", new HashMap<Object, Object>());
+		final Context ctx = new Context(this.is, this.db, HttpMethod.DELETE, "/users/testuser/posts/asdfsadf012312", new HashMap<Object, Object>(), null, null);
 		assertTrue("failure initializing DeletePostStrategy", ctx.getStrategy() instanceof DeletePostStrategy);
 	}
 }

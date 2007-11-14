@@ -1,5 +1,7 @@
 package org.bibsonomy.rest.strategy;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
 
@@ -10,8 +12,8 @@ import org.bibsonomy.common.exceptions.InternServerException;
  * @version $Id$
  */
 public abstract class AbstractUpdateStrategy extends Strategy {
-
 	protected final Reader doc;
+	protected Writer writer;
 	
 	public AbstractUpdateStrategy(final Context context) {
 		super(context);
@@ -19,7 +21,8 @@ public abstract class AbstractUpdateStrategy extends Strategy {
 	}
 
 	@Override
-	public final void perform(final Writer writer) throws InternServerException {
+	public final void perform(final ByteArrayOutputStream outStream) throws InternServerException {
+		writer = new PrintWriter(outStream);
 		final String resourceID = update();		
 		render(writer, resourceID);
 	}

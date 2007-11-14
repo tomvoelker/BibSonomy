@@ -14,7 +14,7 @@ public class StrategyTest {
 	@Test
 	public void testChooseGroupingEntity() {
 		final Map<String, String[]> parameterMap = new HashMap<String, String[]>();
-		final Context ctx = new Context(null, null, HttpMethod.GET, "/users/egal/posts", parameterMap);
+		final Context ctx = new Context(null, null, HttpMethod.GET, "/users/egal/posts", parameterMap, null, null);
 
 		parameterMap.put("user", new String[] { "" });
 		assertEquals(GroupingEntity.USER, ctx.getStrategy().chooseGroupingEntity());

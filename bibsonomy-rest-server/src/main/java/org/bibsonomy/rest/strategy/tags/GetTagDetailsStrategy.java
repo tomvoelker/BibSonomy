@@ -1,5 +1,7 @@
 package org.bibsonomy.rest.strategy.tags;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
 import java.io.Writer;
 
 import org.bibsonomy.common.exceptions.InternServerException;
@@ -15,7 +17,12 @@ import org.bibsonomy.rest.strategy.Strategy;
 public class GetTagDetailsStrategy extends Strategy {
 	private final Tag tag;
 	private final String tagName;
+	private Writer writer;
 
+	/**
+	 * @param context
+	 * @param tag
+	 */
 	public GetTagDetailsStrategy(final Context context, final String tag) {
 		super(context);
 		this.tagName = tag;
@@ -23,7 +30,8 @@ public class GetTagDetailsStrategy extends Strategy {
 	}
 
 	@Override
-	public void perform(final Writer writer) throws InternServerException {
+	public void perform(final ByteArrayOutputStream outStream) throws InternServerException {
+		writer = new PrintWriter(outStream);
 		// delegate to the renderer
 		this.getRenderer().serializeTag(writer, this.tag, new ViewModel());
 	}
