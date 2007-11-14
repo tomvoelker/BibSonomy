@@ -10,6 +10,7 @@ import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.ExceptionUtils;
@@ -43,5 +44,17 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		if ( end > 1000 ) {
 			throw new ValidationException("You are not authorized to retrieve more than the last 1000 " + itemType + " items.");
 		}
+	}
+	
+	/**
+	 * Check if the logged in user has write access to the given Post
+	 * 
+	 * @param post
+	 * @param loginUserName
+	 */
+	public void ensureWriteAccess(Post<?> post, String loginUserName) {
+		if (loginUserName.equals(post.getUser().getName()) == false) {
+			throw new ValidationException("You are not authorized to perform the requested operation.");
+		}		
 	}
 }
