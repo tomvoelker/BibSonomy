@@ -59,10 +59,10 @@
   <body>
   
   
-
+<%--
 <div style="position:absolute; top:40px; left:10px;  z-index:1; background:#ffb6c1; border:solid 1px #334d55; font-family: Verdana, Arial, sans-serif; font-size: small; vertical-align: center; padding: 1px 1px 1px 1px;"><a href="http://www.bibsonomy.org/help/doc/api.html">API</a> has been released. Beta Tests start right now.</div>    
+--%>
   
 <%--  
-
 <div style="position:absolute; top:40px; left:10px;  z-index:1; background:#ffb6c1; border:solid 1px #334d55; font-family: Verdana, Arial, sans-serif; font-size: small; vertical-align: center; padding: 1px 1px 1px 1px;">${projectName} will be temporarily unavailable due to maintenance at 2007-02-21 between 7:00am and 19:00am CET.</div>    
 --%>
