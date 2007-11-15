@@ -136,14 +136,22 @@
 	or the fulltext search field (top right). The search results will include all
 	posts that contain <em>all</em> of the tags or terms.
       </dd>
-      <dt>What does the <a href="/basket">basket</a> menu item do?</dt>
-      <dd>
+	<dt>Can I search for multiple terms using disjunction?</dt>
+    <dd>
+	  Yes. Though this feature is not provided by a specific URL scheme, it can be achieved by invoking BibSonomy's concept
+	  functionality. You can define relations between tags in the form of SUPERTAG &lt; - SUBTAG. These relations can be used 
+	  to retrieve resources. For example, the URL <a href="http://www.bibsonomy.org/concept/tag/ontology">
+	  http://www.bibsonomy.org/concept/tag/ontology</a> returns all posts, which are tagged with ontology OR one 
+	  of its subtags, a disjunctive search. A more detailed explanation can be found in our 
+	  <a href="http://bibsonomy.blogspot.com/search/label/disjunction">Feature of the Week</a> posts.
+	</dd>  
+	<dt>What does the <a href="/basket">basket</a> menu item do?</dt>
+    <dd>
 	You may have noticed the button titled <em>pick</em> below 
 	publication posts. You can use this button to collect a number of
 	publications, which can then be downloaded as one BibTeX file from the <a href="/basket">basket</a>
-      </dd>
-
-      <dt>Can I rename tags in batch mode?</dt>
+    </dd>
+    <dt>Can I rename tags in batch mode?</dt>
       <dd>Yes, by using the <a href="/edit_tags">edit tags</a> page.</dd>
 
       <dt>Which items appear on the <a href="/popular">popular</a> page?</dt>
@@ -295,8 +303,8 @@
 	<dd>
     A user who is logged in can use the BibTeX button at the top of 
 	the page to download the currently selected number of his BibTeX entries 
-	as one file. To get all (e.g., 10000) entries just append 
-	<code>'?items=10000'</code> 
+	as one file. To get all (e.g., 1000) entries just append 
+	<code>'?items=1000'</code> 
 	at the end of the current URL.</dd>
       </dl>
 
