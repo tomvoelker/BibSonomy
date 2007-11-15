@@ -9,7 +9,7 @@
       <a id="top" name="top"  ></a> 
       <h3 id="faq-overview">FAQ Overview</h3>
 
-      <ul class="faq" id="faqbase"><li>General<ul><li><a href="#faq-general-1">What if I have forgotten my password?</a></li></ul></li><li>Importing and Exporting Data<ul><li><a href="#faq-import-1">Is it possible to import my data from del.icio.us?</a></li><li><a href="#faq-import-2">Is it possible to import my Firefox bookmarks?</a></li><li><a href="#faq-import-3">Is it possible to import my local BibTeX files?</a></li></ul></li><li>User Interface<ul><li><a href="#faq-ui-1">Is the bookmark/publication entry directly usable after the upload into the system?</a></li><li><a href="#faq-ui-2">Do I have to type every tag I want to use each time?</a></li><li><a href="#faq-ui-3">What are those input fields used for?</a></li><li><a href="#faq-ui-4">Can I search for multiple terms or tags at the same time?</a></li><li><a href="#faq-ui-5">What does the basket menu item do?</a></li><li><a href="#faq-ui-6">Can I rename tags in batch mode?</a></li><li><a href="#faq-ui-7">Which items appear on the popular page?</a></li></ul></li><li>Groups and Privacy<ul><li><a href="#faq-privacy-1">Is it possible to have private posts?</a></li><li><a href="#faq-privacy-2">Is it possible to have a group of users sharing public and private resources?</a></li><li><a href="#faq-privacy-3">What do you mean by friends?</a></li><li><a href="#faq-privacy-4">Why are my private posts not visible on some pages?</a></li><li><a href="#faq-privacy-5">Can I make posts available for multiple groups?</a></li><li><a href="#faq-privacy-6">Will the posts be lost for a group if the user leaves?</a></li><li><a href="#faq-privacy-7">Can I post to a particular group by default?</a></li></ul></li><li>Handling Publications<ul><li><a href="#faq-pub-1">Is it possible to upload a BibTeX snippet from a web site?</a></li><li><a href="#faq-pub-2">Is there a way to get a nicely formatted output for my publication?</a></li><li><a href="#faq-pub-3">What if I post the same BibTeX entry twice?</a></li><li><a href="#faq-pub-4">Can I download all of my publications at once?</a></li></ul></li><li>Get a benchmark dataset of ${projectName}<ul><li><a href="#faq-dataset-1">How can I get a dataset of ${projectName}?</a></li><li><a href="#faq-dataset-2">Can I use the dataset for publications?</a></li></ul></li></ul>
+      <ul class="faq" id="faqbase"><li>General<ul><li><a href="#faq-general-1">What if I have forgotten my password?</a></li></ul></li><li>Importing and Exporting Data<ul><li><a href="#faq-import-1">Is it possible to import my data from del.icio.us?</a></li><li><a href="#faq-import-2">Is it possible to import my Firefox bookmarks?</a></li><li><a href="#faq-import-3">Is it possible to import my local BibTeX files?</a></li></ul></li><li>User Interface<ul><li><a href="#faq-ui-1">Is the bookmark/publication entry directly usable after the upload into the system?</a></li><li><a href="#faq-ui-2">Do I have to type every tag I want to use each time?</a></li><li><a href="#faq-ui-3">What are those input fields used for?</a></li><li><a href="#faq-ui-4">Can I search for multiple terms or tags at the same time?</a></li><li><a href="#faq-ui-5">Can I search for multiple terms using disjunction?</a></li><li><a href="#faq-ui-6">What does the basket menu item do?</a></li><li><a href="#faq-ui-7">Can I rename tags in batch mode?</a></li><li><a href="#faq-ui-8">Which items appear on the popular page?</a></li></ul></li><li>Groups and Privacy<ul><li><a href="#faq-privacy-1">Is it possible to have private posts?</a></li><li><a href="#faq-privacy-2">Is it possible to have a group of users sharing public and private resources?</a></li><li><a href="#faq-privacy-3">What do you mean by friends?</a></li><li><a href="#faq-privacy-4">Why are my private posts not visible on some pages?</a></li><li><a href="#faq-privacy-5">Can I make posts available for multiple groups?</a></li><li><a href="#faq-privacy-6">Will the posts be lost for a group if the user leaves?</a></li><li><a href="#faq-privacy-7">Can I post to a particular group by default?</a></li></ul></li><li>Handling Publications<ul><li><a href="#faq-pub-1">Is it possible to upload a BibTeX snippet from a web site?</a></li><li><a href="#faq-pub-2">Is there a way to get a nicely formatted output for my publication?</a></li><li><a href="#faq-pub-3">What if I post the same BibTeX entry twice?</a></li><li><a href="#faq-pub-4">Can I download all of my publications at once?</a></li></ul></li><li>Get a benchmark dataset of ${projectName}<ul><li><a href="#faq-dataset-1">How can I get a dataset of ${projectName}?</a></li><li><a href="#faq-dataset-2">Can I use the dataset for publications?</a></li></ul></li></ul>
 	<!-- This element should look like this:
 
         li Importing and Exporting Data
@@ -129,17 +129,25 @@
 	or the fulltext search field (top right). The search results will include all
 	posts that contain <em>all</em> of the tags or terms.
       </dd>
-      <dt>What does the <a href="/basket" >basket</a> menu item do?<a name="faq-ui-5" ></a></dt>
-      <dd>
+	<dt>Can I search for multiple terms using disjunction?<a name="faq-ui-5" ></a></dt>
+    <dd>
+	  Yes. Though this feature is not provided by a specific URL scheme, it can be achieved by invoking BibSonomy's concept
+	  functionality. You can define relations between tags in the form of SUPERTAG < - SUBTAG. These relations can be used 
+	  to retrieve resources. For example, the URL <a href="http://www.bibsonomy.org/concept/tag/ontology" >
+	  http://www.bibsonomy.org/concept/tag/ontology</a> returns all posts, which are tagged with ontology OR one 
+	  of its subtags, a disjunctive search. A more detailed explanation can be found in our 
+	  <a href="http://bibsonomy.blogspot.com/search/label/disjunction" >Feature of the Week</a> posts.
+	</dd>  
+	<dt>What does the <a href="/basket" >basket</a> menu item do?<a name="faq-ui-6" ></a></dt>
+    <dd>
 	You may have noticed the button titled <em>pick</em> below 
 	publication posts. You can use this button to collect a number of
 	publications, which can then be downloaded as one BibTeX file from the <a href="/basket" >basket</a>
-      </dd>
-
-      <dt>Can I rename tags in batch mode?<a name="faq-ui-6" ></a></dt>
+    </dd>
+    <dt>Can I rename tags in batch mode?<a name="faq-ui-7" ></a></dt>
       <dd>Yes, by using the <a href="/edit_tags" >edit tags</a> page.</dd>
 
-      <dt>Which items appear on the <a href="/popular" >popular</a> page?<a name="faq-ui-7" ></a></dt>
+      <dt>Which items appear on the <a href="/popular" >popular</a> page?<a name="faq-ui-8" ></a></dt>
       <dd>The <a href="/popular" >popular</a> page shows those 100 items which 
       have been tagged most often within the last 5,000 posts and is updated
 	every 15 minutes. This means that the absolute counts of posts for the items
@@ -288,8 +296,8 @@
 	<dd>
     A user who is logged in can use the BibTeX button at the top of 
 	the page to download the currently selected number of his BibTeX entries 
-	as one file. To get all (e.g., 10000) entries just append 
-	<code>'?items=10000'</code> 
+	as one file. To get all (e.g., 1000) entries just append 
+	<code>'?items=1000'</code> 
 	at the end of the current URL.</dd>
       </dl>
 
@@ -308,8 +316,10 @@
 	     and send it via fax to our office.
 	    </dd>
 	    <dt>Can I use the dataset for publications?<a name="faq-dataset-2" ></a></dt>
-	    <dd>Of course, you can! Please drop us a line at <jsp:directive.include file="/boxes/emailaddress.jsp" /> once your publication is accepted.
-	        Concerning citing this data in publications, please refer to the following reference:
+	    <dd>Of course, you can! We are quite interested in results, therefore
+	        please inform us about your publications by using the ${projectName} dataset.
+	        Concerning citing this data in publications,
+	        please refer to the following reference:
 	        
             <p> Knowledge and Data Engineering Group, University of Kassel: Benchmark
             Folksonomy Data from ${projectName}, version of June 30th, 2007.</p>
