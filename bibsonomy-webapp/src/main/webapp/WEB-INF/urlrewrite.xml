@@ -201,10 +201,14 @@
     </rule>
     
     <!-- redirect for /bibtexkey/BIBTEXKEY -->
+    <rule><!-- /bibtexkey/?key=BIBTEXKEY -->
+      <from>^/+bibtexkey/(\?key=(.*))$</from>
+      <to type="redirect">/bibtexkey/$2</to>
+    </rule>	
     <rule>
       <from>^/+bibtexkey/+(.+)(\?(.*))?$</from>
       <to>/ResourceHandler?page=bibtexkey&amp;requKey=$1&amp;$2</to>
-    </rule>
+    </rule>    
 	
 		
 <!-- ############## viewable pages ############### -->	
