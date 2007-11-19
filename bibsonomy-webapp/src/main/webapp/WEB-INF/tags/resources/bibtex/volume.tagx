@@ -1,0 +1,17 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"	
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>	
+	
+	<c:choose>
+		<c:when test="${not empty post.resource.volume}">		
+			<em>volume <c:out value="${post.resource.volume}"/>.&#160;</em>		
+		</c:when>
+		<c:otherwise>
+			<c:if test="${not empty post.resource.number}">		
+				<em><c:out value="${post.resource.number}"/>.&#160;</em>		
+			</c:if>
+		</c:otherwise>
+	</c:choose>
+</jsp:root>
