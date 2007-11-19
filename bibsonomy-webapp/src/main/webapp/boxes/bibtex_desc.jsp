@@ -31,13 +31,13 @@
   </span> 
   <c:choose>
     <c:when test="${not empty resource.journal}">
-      <em><c:out value="${resource.journal}" /></em>
+      <em><mtl:bibclean value="${resource.journal}" /></em>
       <c:if test="${not empty resource.volume}">
         <b><c:out value="${resource.volume}"/></b>
       </c:if>
     </c:when>
     <c:otherwise>
-      <em><c:out value="${resource.booktitle}" /></em>
+      <em><mtl:bibclean value="${resource.booktitle}" /></em>
     </c:otherwise>
   </c:choose> 
   <c:if test="${not empty resource.pages}">
