@@ -11,6 +11,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,9 +37,11 @@ public class AipScitationScraper implements Scraper {
 	 * urls and parts of urls
 	 */
 	private static final String URL_AIP_HOST = "aip.org";
-	private static final String URL_AIP_CITATION_HOST = "scitation.aip.org";
+	private static final String URL_AIP_CITATION_PAGE = "http://scitation.aip.org/";
 	private static final String URL_AIP_CITATION_BIBTEX_PAGE_PATH = "/getabs/servlet/GetCitation";
 	private static final String URL_AIP_CITATION_BIBTEX_PAGE = "http://scitation.aip.org/getabs/servlet/GetCitation?";
+	private static final String URL_SPIE_AIP_CITATION_BIBTEX_PAGE = "http://spiedl.aip.org/getabs/servlet/GetCitation?";
+	private static final String URL_DOI = "http://dx.doi.org/";
 	
 	/*
 	 * supported mime types
@@ -67,7 +70,12 @@ public class AipScitationScraper implements Scraper {
 	private static final String HTML_INPUT_NAME_PREFTYPE = "PrefType";
 	private static final String HTML_INPUT_NAME_PREFACTION = "PrefAction";
 	private static final String HTML_INPUT_NAME_SELECTCHECK = "SelectCheck";
-		
+
+	/*
+	 * link bevor doi 
+	 */
+	private static final String LINK_BEVOR_DOI = "<a href=\"http://scitation.aip.org/jhtml/doi.jsp\">doi:</a>";
+	
 	/**
 	 * Extract snippets from a bibtex page and single references from overview pages 
 	 */
@@ -114,59 +122,26 @@ public class AipScitationScraper implements Scraper {
 					 */
 					}else if(urlConn.getContentType().startsWith(AIP_CONTENT_TYPE_HTML)){
 						
-						// sarch input fields
-						Pattern inputPattern = Pattern.compile(PATTERN_INPUT);
-						Matcher inputMatcher = inputPattern.matcher(aipContent);
+						StringBuffer bibtexLink = getBibtexFromAIP(aipContent, URL_AIP_CITATION_BIBTEX_PAGE);
 						
-						String prefaction = null;
-						String preftype = null;
-						String selectcheck = null;
-						String source = null;
-						
-						//check all input fields
-						while(inputMatcher.find()){
+						// may be a spie link
+						if(bibtexLink == null){
+							//extract doi
+							int indexOfDOILink = aipContent.indexOf(LINK_BEVOR_DOI) + LINK_BEVOR_DOI.length();
+							String startDOI = aipContent.substring(indexOfDOILink);
+							String doi = startDOI.substring(0, startDOI.indexOf("\n"));
 							
-							String input = inputMatcher.group();
-
-							// check name values
-							Pattern namePattern = Pattern.compile(PATTERN_NAME);
-							Matcher nameMatcher = namePattern.matcher(input);
+							URL doiURL = new URL(URL_DOI + doi);
+							HttpURLConnection doiConn = (HttpURLConnection) doiURL.openConnection();
+							URL spieURL = new URL(getSpieLink(doiConn));
+							URL spieURL2 = new URL(getSpieLink((HttpURLConnection) spieURL.openConnection()));
 							
-							if(nameMatcher.find()){
-								
-								String name = nameMatcher.group();
-								name = name.substring(6, name.length()-1);
-								
-								// if name is supported, then extract its value
-								if(name.contains(HTML_INPUT_NAME_PREFACTION)){
-									prefaction = getInputValue(input, HTML_INPUT_NAME_PREFACTION);
-								}else if(name.contains(HTML_INPUT_NAME_PREFTYPE)){
-									preftype = getInputValue(input, HTML_INPUT_NAME_PREFTYPE);
-								}else if(name.contains(HTML_INPUT_NAME_SELECTCHECK)){
-									selectcheck = getInputValue(input, HTML_INPUT_NAME_SELECTCHECK);
-								}else if(name.contains(HTML_INPUT_NAME_SOURCE)){
-									source = getInputValue(input, HTML_INPUT_NAME_SOURCE);
-								}
-							}
-						}
-						
-						/*
-						 * build bibtex link
-						 */
-						StringBuffer bibtexLink = null;
-						if(source != null && preftype != null && prefaction != null && selectcheck != null){
-							bibtexLink = new StringBuffer(URL_AIP_CITATION_BIBTEX_PAGE);
-							bibtexLink.append(HTML_INPUT_NAME_FN_AND_VALUE);
-							bibtexLink.append("&");
-							bibtexLink.append(prefaction);
-							bibtexLink.append("&");
-							bibtexLink.append(preftype);
-							bibtexLink.append("&");
-							bibtexLink.append(selectcheck);
-							bibtexLink.append("&");
-							bibtexLink.append(source);
-							bibtexLink.append("&");
-							bibtexLink.append(HTML_INPUT_NAME_DOWNLOADCITATION_AND_VALUE);
+							// build cookie
+							cookie = getCookie((HttpURLConnection) spieURL2.openConnection());
+							
+							// get SPIE Page which is referenced by DOI
+							String spieContent = getAipContent((HttpURLConnection) spieURL2.openConnection(), cookie);
+							bibtexLink = getBibtexFromAIP(spieContent, URL_SPIE_AIP_CITATION_BIBTEX_PAGE);
 						}
 						
 						/*
@@ -179,6 +154,7 @@ public class AipScitationScraper implements Scraper {
 							sc.setScraper(this);
 							return true;
 						}
+						
 					}
 				} catch (ConnectException cex) {
 					throw new ScrapingException(cex);
@@ -242,8 +218,9 @@ public class AipScitationScraper implements Scraper {
 		urlConn.connect();
 		
 		// extract cookie from header
-		cookie = urlConn.getHeaderField("Set-Cookie"); 
-		if(cookie.indexOf(";") >= 0)
+		Map map = urlConn.getHeaderFields();
+		cookie = urlConn.getHeaderField("Set-Cookie");
+		if(cookie != null && cookie.indexOf(";") >= 0)
 			cookie = cookie.substring(0, cookie.indexOf(";"));
 		
 		urlConn.disconnect();		
@@ -324,7 +301,85 @@ public class AipScitationScraper implements Scraper {
 		
 		return result;
 	}
+	
+	private StringBuffer getBibtexFromAIP(String aipContent, String aipPath) throws UnsupportedEncodingException{
+		// sarch input fields
+		Pattern inputPattern = Pattern.compile(PATTERN_INPUT);
+		Matcher inputMatcher = inputPattern.matcher(aipContent);
+		
+		String prefaction = null;
+		String preftype = null;
+		String selectcheck = null;
+		String source = null;
+		
+		//check all input fields
+		while(inputMatcher.find()){
+			
+			String input = inputMatcher.group();
 
+			// check name values
+			Pattern namePattern = Pattern.compile(PATTERN_NAME);
+			Matcher nameMatcher = namePattern.matcher(input);
+			
+			if(nameMatcher.find()){
+				
+				String name = nameMatcher.group();
+				name = name.substring(6, name.length()-1);
+				
+				// if name is supported, then extract its value
+				if(name.contains(HTML_INPUT_NAME_PREFACTION)){
+					prefaction = getInputValue(input, HTML_INPUT_NAME_PREFACTION);
+				}else if(name.contains(HTML_INPUT_NAME_PREFTYPE)){
+					preftype = getInputValue(input, HTML_INPUT_NAME_PREFTYPE);
+				}else if(name.contains(HTML_INPUT_NAME_SELECTCHECK)){
+					selectcheck = getInputValue(input, HTML_INPUT_NAME_SELECTCHECK);
+				}else if(name.contains(HTML_INPUT_NAME_SOURCE)){
+					source = getInputValue(input, HTML_INPUT_NAME_SOURCE);
+				}
+			}
+		}
+		
+		/*
+		 * build bibtex link
+		 */
+		StringBuffer bibtexLink = null;
+		if(source != null && preftype != null && prefaction != null && selectcheck != null){
+			bibtexLink = new StringBuffer(aipPath);
+			bibtexLink.append(HTML_INPUT_NAME_FN_AND_VALUE);
+			bibtexLink.append("&");
+			bibtexLink.append(prefaction);
+			bibtexLink.append("&");
+			bibtexLink.append(preftype);
+			bibtexLink.append("&");
+			bibtexLink.append(selectcheck);
+			bibtexLink.append("&");
+			bibtexLink.append(source);
+			bibtexLink.append("&");
+			bibtexLink.append(HTML_INPUT_NAME_DOWNLOADCITATION_AND_VALUE);
+		}
+		
+		return bibtexLink;
+	}
+
+	private String getSpieLink(HttpURLConnection urlConn) throws IOException{
+		urlConn.setAllowUserInteraction(true);
+		urlConn.setDoInput(true);
+		urlConn.setDoOutput(false);
+		urlConn.setUseCaches(false);
+		urlConn.setFollowRedirects(true);
+		urlConn.setInstanceFollowRedirects(false);
+
+		urlConn.setRequestProperty(
+				"User-Agent",
+				"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
+		urlConn.connect();
+		
+		String spieLink = urlConn.getHeaderField("Location");
+		urlConn.disconnect();
+		
+		return spieLink;
+	}
+	
 	public String getInfo() {
 		return INFO;
 	}
