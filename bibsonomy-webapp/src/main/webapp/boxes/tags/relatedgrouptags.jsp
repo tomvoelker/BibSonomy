@@ -23,7 +23,7 @@
   <%@include file="/boxes/tagboxstyle.jsp" %> 
   <c:forEach var="row" items="${rst.rows}">
     <li>
-      <a title="${param.requTag}+${row.tag_name}" href="/group/<mtl:encode value='${param.requGroup}' />/<mtl:encode value='${param.requTag}' />+<mtl:encode value='${row.tag_name}' />">+</a>
+      <a title="<c:out value='${param.requTag}+${row.tag_name}'/>" href="/group/<mtl:encode value='${param.requGroup}' />/<mtl:encode value='${param.requTag}' />+<mtl:encode value='${row.tag_name}' />">+</a>
       <a title="${row.tag_anzahl} posts" href="/group/<mtl:encode value='${param.requGroup}' />/<mtl:encode value='${row.tag_name}' />"><c:out value="${row.tag_name}" /></a>
     </li>
   </c:forEach></ul> 
