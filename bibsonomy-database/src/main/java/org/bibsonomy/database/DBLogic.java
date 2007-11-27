@@ -122,6 +122,8 @@ public class DBLogic implements LogicInterface {
 			final User user = userDBManager.getUserDetails(userName, session);
 			if (userName.equals(this.loginUserName) == false) {
 				user.setEmail(null);
+				user.setRealname(null);
+				user.setHomepage(null);
 			}
 			return user;
 		} finally {
