@@ -11,6 +11,7 @@ import scraper.url.kde.bibsonomy.BibSonomyScraper;
 import scraper.url.kde.citebase.CiteBaseScraper;
 import scraper.url.kde.citeseer.CiteseerBasicScraper;
 import scraper.url.kde.highwire.HighwireScraper;
+import scraper.url.kde.ieee.IEEEComputerSocietyScraper;
 import scraper.url.kde.ieee.IEEEXploreScraper;
 import scraper.url.kde.ingenta.IngentaconnectScraper;
 import scraper.url.kde.iop.IOPScraper;
@@ -54,6 +55,7 @@ public class URLCompositeScraper extends CompositeScraper {
 		addScraper(new IOPScraper());
 		addScraper(new ProlaScraper());
 		addScraper(new BibSonomyScraper());
+		addScraper(new IEEEComputerSocietyScraper());
 		addScraper(new ScrapingService());
 	}
 }
