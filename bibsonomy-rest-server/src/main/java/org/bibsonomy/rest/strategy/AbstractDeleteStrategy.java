@@ -1,6 +1,7 @@
 package org.bibsonomy.rest.strategy;
 
 import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
 import java.io.Writer;
 
 import org.bibsonomy.common.exceptions.InternServerException;
@@ -18,6 +19,7 @@ public abstract class AbstractDeleteStrategy extends Strategy {
 
 	@Override
 	public final void perform(final ByteArrayOutputStream outStream) throws InternServerException {
+		writer = new PrintWriter(outStream);
 		final boolean deleted = delete();
 		if (deleted == true)
 			this.getRenderer().serializeOK(writer);
