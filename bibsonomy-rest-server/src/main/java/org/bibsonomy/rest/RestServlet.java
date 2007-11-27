@@ -277,9 +277,9 @@ public final class RestServlet extends HttpServlet {
 		}
 
 		// check username and password
-		final String username = basicCookie.substring(0, i);
-		log.debug("Username: " + username);
+		final String username = basicCookie.substring(0, i);		
 		final String apiKey = basicCookie.substring(i + 1);
+		log.debug("Username/API-key: " + username + " / " + apiKey);
 		try {
 			return logicFactory.getLogicAccess(username, apiKey);
 		} catch (ValidationException ve) {
