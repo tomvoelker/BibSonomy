@@ -1,5 +1,6 @@
 package scraper.importer.xml;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -25,6 +26,11 @@ import com.sun.org.apache.xerces.internal.parsers.DOMParser;
  *
  */
 public class XMLUnitTestImporter implements IUnitTestImporter {
+	
+	/**
+	 * 
+	 */
+	private static final String PATH_TO_BIBS = "src/test/resources/scraper/data/";
 	
 	/*
 	 * Names from XML elements and attributes
@@ -125,7 +131,7 @@ public class XMLUnitTestImporter implements IUnitTestImporter {
 	 * @throws IOException
 	 */
 	private String getExpectedReference(String bibFile) throws IOException{
-		InputStream is = ClassLoader.getSystemResourceAsStream("scraper/test/data/" + bibFile);
+		InputStream is = new FileInputStream(PATH_TO_BIBS + bibFile);
 		StringWriter writer = new StringWriter();
 		
 		int read = is.read();
