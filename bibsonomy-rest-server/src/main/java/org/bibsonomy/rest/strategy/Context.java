@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.apache.commons.fileupload.FileItem;
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ValidationException;
@@ -66,7 +67,7 @@ public final class Context {
 	/**
 	 * the list with all items out of the http request
 	 */
-	private List items = null;
+	private List<FileItem> items = null;
 	
 	/**
 	 * this should hold all additional infos of the webservice or request
@@ -86,7 +87,7 @@ public final class Context {
 	 * @throws ValidationException
 	 *             if '/' is requested
 	 */
-	public Context(final InputStream doc, final LogicInterface logic, final HttpMethod httpMethod, final String url, final Map<?, ?> parameterMap, final List<?> items, final HashMap<String, String> additionalInfos) throws ValidationException, NoSuchResourceException {
+	public Context(final InputStream doc, final LogicInterface logic, final HttpMethod httpMethod, final String url, final Map<?, ?> parameterMap, final List<FileItem> items, final HashMap<String, String> additionalInfos) throws ValidationException, NoSuchResourceException {
 		this.doc = doc;
 		this.logic = logic;
 		// FIXME this.httpMethod = httpMethod;
@@ -284,7 +285,7 @@ public final class Context {
 	 * 
 	 * @return the previously committed item list parsed out of a http request object
 	 */
-	public List<?> getItemList(){
+	public List<FileItem> getItemList(){
 		return this.items;
 	}
 }

@@ -3,6 +3,7 @@ package org.bibsonomy.rest.strategy.users;
 import java.io.Writer;
 import java.util.List;
 
+import org.apache.commons.fileupload.FileItem;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -21,7 +22,7 @@ import org.bibsonomy.util.fileutil.HandleFileUpload;
 public class PostPostDocumentStrategy extends AbstractCreateStrategy{
 	private final String userName;
 	private final String resourceHash;
-	private final List items;
+	private final List<FileItem> items;
 	private final String rootPath;
 	private final String docPath;
 	private final String projectHome;
