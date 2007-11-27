@@ -104,13 +104,13 @@
 	</URLTest>
 	<URLTest id="url_18">
 		<TestDescription>URL test for work-info pages from librarything (no standard language)</TestDescription>
-		<URL>http://www.librarything.de/work-info.php?book=10481522</URL>
+		<URL>http://www.librarything.de/work/details/10481522</URL>
 		<BibFile>LibrarythingScraperUnitURLTest1.bib</BibFile>
 		<Scraper>scraper.url.kde.librarything.LibrarythingScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_19">
 		<TestDescription>URL test for work-info pages from librarything (standard language)</TestDescription>
-		<URL>http://www.librarything.com/work-info.php?book=10481522</URL>
+		<URL>http://www.librarything.com/work/details/10481522</URL>
 		<BibFile>LibrarythingScraperUnitURLTest2.bib</BibFile>
 		<Scraper>scraper.url.kde.librarything.LibrarythingScraper</Scraper>
 	</URLTest>
@@ -233,5 +233,11 @@
 		<URL>http://www.bibsonomy.org/bib/bibtex/2101efca8c9368b56d680ce92329784e5/jaeschke</URL>
 		<BibFile>BibSonomyScraperUnitURLTest.bib</BibFile>
 		<Scraper>scraper.url.kde.bibsonomy.BibSonomyScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_40">
+		<TestDescription>Scraping test for IEEE computer society scraper</TestDescription>
+		<URL>http://csdl2.computer.org/persagen/DLAbsToc.jsp?resourcePath=/dl/proceedings/&amp;toc=comp/proceedings/dexa/2006/2641/00/2641toc.xml&amp;DOI=10.1109/DEXA.2006.148#top</URL>
+		<BibFile>IEEEComputerSocietyScraperUnitURLTest.bib</BibFile>
+		<Scraper>scraper.url.kde.ieee.IEEEComputerSocietyScraper</Scraper>
 	</URLTest>
 </test:Tests>

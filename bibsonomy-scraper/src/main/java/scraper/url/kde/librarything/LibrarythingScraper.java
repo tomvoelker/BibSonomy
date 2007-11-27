@@ -36,12 +36,9 @@ public class LibrarythingScraper implements Scraper {
 	private static final String URL_LIBRARYTHING_PAGE_HOST = "librarything.com";
 
 	/*
-	 * supported URLs
+	 * URL suffix which is needed for detail view
 	 */
-
-	private static final String PATH_LIBRARYTHING_WORKINFO_PAGE = "/work-info";
-	
-	private static final String PATH_LIBRARYTHING_WORK_PAGE = "/work";
+	private static final String PATH_LIBRARYTHING_DETAILS = "details";
 	
 
 	/*
@@ -68,7 +65,7 @@ public class LibrarythingScraper implements Scraper {
 	
 	private static final String HTML_ELEMENT_DIV = "div";
 	
-	private static final String HTML_ELEMENT_H2 = "h2";
+	private static final String HTML_ELEMENT_H3 = "h3";
 	
 	private static final String HTML_ELEMENT_TABEL = "table";
 	
@@ -80,7 +77,7 @@ public class LibrarythingScraper implements Scraper {
 	
 	private static final String HTML_ATTRIBUTE_CLASS = "class";
 	
-	private static final String HTML_ATTRIBUTE_CLASS_VALUE = "middlecolumn";
+	private static final String HTML_ATTRIBUTE_CLASS_VALUE = "sectionTitle";
 	
 	/*
 	 * librarything publication elements
@@ -159,18 +156,17 @@ public class LibrarythingScraper implements Scraper {
 			/*
 			 * check if www.librarything.com URL is supported
 			 */
-			if(url.getPath().startsWith(PATH_LIBRARYTHING_WORKINFO_PAGE)){
+			if(!url.getPath().contains(PATH_LIBRARYTHING_DETAILS)){
 				try {
-					libraryThingDocument = getDOMDocument(sc.getContentAsString(url));
+					libraryThingDocument = getDOMDocument(sc.getContentAsString(new URL(url.toString() + "/details")));
 				} catch (ScrapingException e) {
 					throw e;
 				} catch (IOException e) {
 					throw new ScrapingException("LibrarythingScraper: failure during reading data from www.librarything.com");
 				}
-			}else if(url.getPath().startsWith(PATH_LIBRARYTHING_WORK_PAGE)){
+			}else{
 				try {
-					String urlWorkInfo = url.toString().replaceFirst(WORK, WORK_INFO);
-					libraryThingDocument = getDOMDocument(sc.getContentAsString(new URL(urlWorkInfo)));
+					libraryThingDocument = getDOMDocument(sc.getContentAsString(url));
 				} catch (MalformedURLException e) {
 					throw new ScrapingException("LibrarythingScraper: failure during building new URL. " + e.getMessage());
 				} catch (ScrapingException e) {
@@ -178,8 +174,6 @@ public class LibrarythingScraper implements Scraper {
 				} catch (IOException e) {
 					throw new ScrapingException("LibrarythingScraper: failure during reading data from www.librarything.com");
 				}
-			}else{
-				throw new ScrapingException("LibrarythingScraper: not supported librarything URL.");
 			}
 			
 			try{
@@ -259,35 +253,35 @@ public class LibrarythingScraper implements Scraper {
 	private Element getTabelWithPublication(Document dom){
 		Element result = null;
 		
-		NodeList divs = dom.getElementsByTagName(HTML_ELEMENT_DIV);
+		NodeList tables = dom.getElementsByTagName(HTML_ELEMENT_TABEL);
 		
 		//possible publication tabels
 		Element this_book = null;
 		Element about_the_work = null;
 		
-		for(int i=0; i<divs.getLength(); i++){
-			// check all h2 elements which are childs from a div element.
-			Element div = (Element)divs.item(i);
+		for(int i=0; i<tables.getLength(); i++){
+			// check all h3 elements which are childs from a table element.
+			Element table = (Element)tables.item(i);
 			
-			// work only with div which has the class attribute value "middlecolumn"
-			Attr classAttr = div.getAttributeNode(HTML_ATTRIBUTE_CLASS);
-			if(classAttr != null && classAttr.getValue().equals(HTML_ATTRIBUTE_CLASS_VALUE)){
+			// work only with table which has the class attribute value "middlecolumn"
+			String classAttr = table.getAttribute(HTML_ATTRIBUTE_CLASS);
+			if(classAttr != null && classAttr.equals(HTML_ATTRIBUTE_CLASS_VALUE)){
 			
-				NodeList h2s = div.getElementsByTagName(HTML_ELEMENT_H2);
+				NodeList h3s = table.getElementsByTagName(HTML_ELEMENT_H3);
 				
 				/*
 				 * search h2 element which match to one of the supported headlines
 				 */
-				for(int j=0; j<h2s.getLength(); j++){
-					Element h2 = (Element) h2s.item(j);		
+				for(int j=0; j<h3s.getLength(); j++){
+					Element h3 = (Element) h3s.item(j);		
 					
 					// Headline "This books" occurs befor "About the work". If "This book" exist use that tabel else...
-					if(h2.getChildNodes().item(0).getNodeValue().equals(TABEL_HEADLINE_THIS_BOOK)){
-						this_book = (Element) h2.getNextSibling();
+					if(h3.getChildNodes().item(0).getNodeValue().equals(TABEL_HEADLINE_THIS_BOOK)){
+						this_book = (Element) table.getNextSibling().getFirstChild();
 					}
 					// ... use the tabel with headline "About the work".
-					else if(h2.getChildNodes().item(0).getNodeValue().equals(TABEL_HEADLINE_ABOUT_THE_WORK)){
-						about_the_work = (Element) h2.getNextSibling();
+					else if(h3.getChildNodes().item(0).getNodeValue().equals(TABEL_HEADLINE_ABOUT_THE_WORK)){
+						about_the_work = (Element) table.getNextSibling().getFirstChild();
 					}
 				}
 				
