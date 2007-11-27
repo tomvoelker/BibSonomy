@@ -4,12 +4,12 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.io.FilenameUtils;
 
 /**
  * Handles the file upload
@@ -21,7 +21,6 @@ import org.apache.commons.fileupload.FileItem;
 public class HandleFileUpload implements FileUploadInterface {
 	
 	private static Map<String, FileItem> fieldMap;
-	private final List items;
 	
 	private static String fileHash;
 	private final String fileName;
@@ -31,23 +30,26 @@ public class HandleFileUpload implements FileUploadInterface {
 	 * @param items
 	 * @throws Exception
 	 */
-	public HandleFileUpload(final List items) throws Exception{
-		this.items = items;
+	public HandleFileUpload(final List<FileItem> items) throws Exception{
 		FileUtils util = new FileUtils();
 		
 		fieldMap = new HashMap<String, FileItem>();
-		Iterator iter = items.iterator();
 		
-		while (iter.hasNext()) {
-			FileItem temp = (FileItem) iter.next();
+		for (FileItem temp : items) {
 			if (("file").equals(temp.getFieldName())){
 				fieldMap.put(temp.getFieldName(), temp);
-			}
+			}			
 		}
 		
 		
-		upFile = (FileItem) fieldMap.get("file");
-		this.fileName = upFile.getName();
+		upFile = fieldMap.get("file");
+		String filename = upFile.getName();
+		if (filename != null) {
+			this.fileName = FilenameUtils.getName(filename);
+		}
+		else {
+			this.fileName = "";
+		}
 		
 		/*
 		 * check file extensions which we accept
@@ -62,7 +64,7 @@ public class HandleFileUpload implements FileUploadInterface {
 		df.setTimeZone(TimeZone.getDefault());
 		String currDateFormatted = df.format(currDate);
 		
-		this.fileHash = util.getMD5Hash(upFile.getFieldName() + Math.random() + currDateFormatted);
+		fileHash = util.getMD5Hash(upFile.getFieldName() + Math.random() + currDateFormatted);
 	}
 	
 	/* (non-Javadoc)
@@ -77,7 +79,7 @@ public class HandleFileUpload implements FileUploadInterface {
 	 * @see org.bibsonomy.util.fileutil.FileUploadInterface#getFileHash()
 	 */
 	public String getFileHash() {
-		return this.fileHash;
+		return fileHash;
 	}
 
 	/* (non-Javadoc)
