@@ -150,9 +150,24 @@
   
   <tr class="upload_option">
     <td class="expl">character encoding</td>
+    <%-- TODO: probably we should only list (ideally automatically) character sets supported #
+               by Java --%>
     <td><select name="encoding" id="lencoding">
       <option value="UTF-8">UTF-8</option>
       <option value="ISO-8859-1">ISO-8859-1</option>
+      <option value="ISO-8859-2">ISO-8859-2</option>
+      <option value="ISO-8859-3">ISO-8859-3</option>
+      <option value="ISO-8859-4">ISO-8859-4</option>
+      <option value="ISO-8859-5">ISO-8859-5</option>
+      <option value="ISO-8859-6">ISO-8859-6</option>
+      <option value="ISO-8859-7">ISO-8859-7</option>
+      <option value="ISO-8859-8">ISO-8859-8</option>
+      <option value="ISO-8859-9">ISO-8859-9</option>
+      <option value="ISO-8859-10">ISO-8859-10</option>
+      <option value="ISO-8859-13">ISO-8859-13</option>
+      <option value="ISO-8859-14">ISO-8859-14</option>
+      <option value="ISO-8859-15">ISO-8859-15</option>
+      <option value="ISO-8859-16">ISO-8859-16</option>
       <option value="US-ASCII">US-ASCII</option>
       <option value="UTF-16">UTF-16</option>
       <option value="UTF-16BE">UTF-16BE</option>
