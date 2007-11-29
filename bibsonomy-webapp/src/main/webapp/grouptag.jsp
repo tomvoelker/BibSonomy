@@ -27,6 +27,10 @@
 </div>
 
 <ul id="sidebar">
+
+  <li><a href="/tag/<mtl:encode value='${param.requTag}'/>"><c:out value="${param.requTag}"/></a> as tag from all users</li>
+  <li style="margin-bottom: 1ex;"><a href="/concept/tag/<mtl:encode value='${param.requTag}'/>"><c:out value="${param.requTag}"/></a> as concept from all users</li>
+     	
   <%@include file="/boxes/tags/relatedgrouptags.jsp"%>
   <%@include file="/boxes/tags/grouptags.jsp" %>  
 </ul>

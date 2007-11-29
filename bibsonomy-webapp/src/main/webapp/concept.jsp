@@ -28,9 +28,10 @@
 <ul id="sidebar">
     <c:if test="${not empty user.name}">
     	<li><a href="/concept/user/<mtl:encode value='${user.name}'/>/<mtl:encode value='${param.requTag}'/>"><c:out value="${param.requTag}"/></a> as concept from <c:out value="${user.name}"/></li>
+   		<li><a href="/user/<c:out value="${user.name}"/>/<mtl:encode value='${param.requTag}'/>"><c:out value="${param.requTag}"/></a> as tag from <c:out value="${user.name}"/></li>    
     </c:if>
-    <li><a href="/tag/<mtl:encode value='${param.requTag}'/>"><c:out value="${param.requTag}"/></a> as tag</li>
-    <br/>
+    <li style="margin-bottom: 1ex;"><a href="/tag/<mtl:encode value='${param.requTag}'/>"><c:out value="${param.requTag}"/></a> as tag from all users</li>
+    
     <%@include file="/boxes/tags/conceptrelations.jsp" %>
    
     <c:set var="markSuperTags" value="true"/>    

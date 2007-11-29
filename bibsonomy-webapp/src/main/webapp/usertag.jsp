@@ -26,10 +26,13 @@
   <%@include file="/boxes/itemcount.jsp" %>
 </div>
 
-<ul id="sidebar">
-    <li><a href="/tag/<mtl:encode value='${param.requTag}'/>"><c:out value="${param.requTag}"/></a> from all users</li>
-    <li><a href="/concept/user/<mtl:encode value='${param.requUser}'/>/<mtl:encode value='${param.requTag}'/>"><c:out value="${param.requTag}"/></a> as concept</li>
-
+<ul id="sidebar">    
+    <li><a href="/tag/<mtl:encode value='${param.requTag}'/>"><c:out value="${param.requTag}"/></a> as tag from all users</li>
+    <c:if test="${not empty user.name}">
+    	<li><a href="/concept/user/<mtl:encode value='${param.requUser}'/>/<mtl:encode value='${param.requTag}'/>"><c:out value="${param.requTag}"/></a> as concept from <c:out value="${user.name}"/></li>	
+	</c:if>
+	<li style="margin-bottom: 1ex;"><a href="/concept/tag/<mtl:encode value='${param.requTag}'/>"><c:out value="${param.requTag}"/></a> as concept from all users</li>
+    
     <%@include file="/boxes/tags/relatedusertags.jsp"%>
 
     <%@include file="/boxes/tags/usersrelations.jsp" %>

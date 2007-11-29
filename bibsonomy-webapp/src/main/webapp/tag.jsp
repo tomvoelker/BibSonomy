@@ -45,8 +45,12 @@
 </div>
 
 <ul id="sidebar">
-	<li><a href="/concept/tag/<mtl:encode value='${param.requTag}'/>"><c:out value="${param.requTag}"/></a> as concept from all users</li>
-    <br/>
+	 <c:if test="${not empty user.name}">
+    	<li><a href="/user/<c:out value="${user.name}"/>/<mtl:encode value='${param.requTag}'/>"><c:out value="${param.requTag}"/></a> as tag from <c:out value="${user.name}"/></li>
+   		<li><a href="/concept/user/<c:out value="${user.name}"/>/<mtl:encode value='${param.requTag}'/>"><c:out value="${param.requTag}"/></a> as concept from <c:out value="${user.name}"/></li>    
+    </c:if>	
+	<li style="margin-bottom: 1ex;"><a href="/concept/tag/<mtl:encode value='${param.requTag}'/>"><c:out value="${param.requTag}"/></a> as concept from all users</li>
+   
   <%@include file="/boxes/tags/relatedtags.jsp"%>
 </ul>
 
