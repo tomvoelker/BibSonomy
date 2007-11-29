@@ -1,5 +1,17 @@
 #!/bin/sh
 
+#
+# Makes full and incremental backups of a bibsonomy database.
+#
+# Changes:
+#   2007-11-29
+#   - adopted to odie
+#   2007-11-20
+#   - cleaned paths and file names
+#
+#
+
+
 # get current day of year (to name SQL dump)
 CURRENT_DAY=`date +%j`
 
@@ -7,16 +19,17 @@ CURRENT_DAY=`date +%j`
 BACKUP_DIR=$HOME/backup/database_backup
 
 # database specific paths
-DB_DATA_DIR=/var/mysql/data               # bin-/relay-log directory
-DB_RELAY_LOG=mysqld-relay-bin             # prefix of relay log files
-DB_RELAY_LOG_INDEX=mysqld-relay-bin.index # NOTE: configure those variables
-DB_RELAY_LOG_INFO=relay-log.info          # in my.cnf accordingly!
-DB_MASTER_INFO_FILE=master.info           #
-DB_BIN_LOG=mysql-bin                      # here the crucial data is!
-DB_BIN_LOG_INDEX=mysql-bin.index          #
+DB_DIR=/var/mysql
+DB_DATA_DIR=$DB_DIR/data                               # bin-/relay-log directory
+DB_RELAY_LOG=$DB_DATA_DIR/mysqld-relay-bin             # prefix of relay log files
+DB_RELAY_LOG_INDEX=$DB_DATA_DIR/mysqld-relay-bin.index # NOTE: configure those variables
+DB_RELAY_LOG_INFO=$DB_DATA_DIR/relay-log.info          # in my.cnf accordingly!
+DB_MASTER_INFO_FILE=$DB_DATA_DIR/master.info           #
+DB_BIN_LOG=$DB_DATA_DIR/mysql-bin                      # here the crucial data is!
+DB_BIN_LOG_INDEX=$DB_DATA_DIR/mysql-bin.index          #
 
 
-DB_SOCKET=/var/mysql/run/mysqld.sock  # MySQL socket file
+DB_SOCKET=$DB_DIR/run/mysqld.sock     # MySQL socket file
 DB_MYSQLDUMP=/usr/bin/mysqldump       # location of mysqldump
 DB_MYSQLADMIN=/usr/bin/mysqladmin     # location of mysqladim
 
@@ -74,30 +87,27 @@ if [ $ACTION = "incr" ]; then
   $DB_MYSQLADMIN flush-logs
 
   # copy every non-existing bin log file 
-  for i in $DB_DATA_DIR/$DB_BIN_LOG.*; do
-    FILE=$(echo $i | sed "s/.*\///")
-    if [ ! -f $BACKUP_DIR/$FILE ]; then
-      cp $i $BACKUP_DIR/$FILE
+  for i in $DB_BIN_LOG.*; do
+    if [ ! -f $BACKUP_DIR/`basename $i` ]; then
+      cp $i $BACKUP_DIR
     fi
   done 
   # delete last bin log (will be copied at next run)
-  for i in $(ls $DB_DATA_DIR/$DB_BIN_LOG.0* | tail -n 1); do
-    FILE=$(echo $i | sed "s/.*\///")
-    rm $BACKUP_DIR/$FILE
+  for i in $(ls $DB_BIN_LOG.0* | tail -n 1); do
+    rm $BACKUP_DIR/`basename $i`
   done
 
   # copy every non-existing relay log file 
-  for i in $DB_DATA_DIR/$DB_RELAY_LOG.*; do
-    FILE=$(echo $i | sed "s/.*\///")
-    if [ ! -f $BACKUP_DIR/$FILE ]; then
-      cp $i $BACKUP_DIR/$FILE
+  for i in $DB_RELAY_LOG.*; do
+    if [ ! -f $BACKUP_DIR/`basename $i` ]; then
+      cp $i $BACKUP_DIR
     fi
   done 
 
   # copy remaining files (index, info, etc)
-  cp $DB_DATA_DIR/$DB_RELAY_LOG_INDEX $BACKUP_DIR/$DB_RELAY_LOG_INDEX
-  cp $DB_DATA_DIR/$DB_RELAY_LOG_INFO $BACKUP_DIR/$DB_RELAY_LOG_INFO
-  cp $DB_DATA_DIR/$DB_MASTER_INFO_FILE $BACKUP_DIR/$DB_MASTER_INFO_FILE
-  cp $DB_DATA_DIR/$DB_BIN_LOG_INDEX $BACKUP_DIR/$DB_BIN_LOG_INDEX
+  cp $DB_RELAY_LOG_INDEX  $BACKUP_DIR
+  cp $DB_RELAY_LOG_INFO   $BACKUP_DIR
+  cp $DB_MASTER_INFO_FILE $BACKUP_DIR
+  cp $DB_BIN_LOG_INDEX    $BACKUP_DIR
 
 fi
