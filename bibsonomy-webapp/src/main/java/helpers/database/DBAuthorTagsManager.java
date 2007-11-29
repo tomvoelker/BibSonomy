@@ -48,7 +48,7 @@ public class DBAuthorTagsManager extends DBManager{
 		
 		DBContext c = new DBContext();		
 		SortedSet<TagConcept> tags  = new TreeSet<TagConcept>();
-		
+		int argCtr = 1;
 		try {		
 			
 			c.init();
@@ -58,19 +58,21 @@ public class DBAuthorTagsManager extends DBManager{
 			String selectPart = SQL_SELECT_TAS_PUBLIC 
 								+ systemTags.generateSqlQuery(SystemTags.BIBTEX_YEAR, "b") 
 								+ systemTags.generateSqlQuery(SystemTags.USER_NAME, "s")
+								+ systemTags.generateSqlQuery(SystemTags.GROUP_NAME, "s")
 								+ SQL_GROUP_STMT;
 			
-			if (sortOrder == 1) {
+			if (sortOrder == 1) 
 				c.stmt = c.conn.prepareStatement(selectPart + SQL_SELECT_TAS_FREQ);
-			} else {
+			else 
 				c.stmt = c.conn.prepareStatement(selectPart + SQL_SELECT_TAS_ALPH);
-			}
-			
+						
 			SplittedAuthors authors = new SplittedAuthors(requAuthor);
 			String subquery = authors.getQuery();
-			c.stmt.setString(1, subquery);	
+			c.stmt.setString(argCtr++, subquery);	
 			if (systemTags.isUsed(SystemTags.USER_NAME))
-				c.stmt.setString(2, systemTags.getValue(SystemTags.USER_NAME));				
+				c.stmt.setString(argCtr++, systemTags.getValue(SystemTags.USER_NAME));	
+			if (systemTags.isUsed(SystemTags.GROUP_NAME))
+				c.stmt.setString(argCtr++, systemTags.getValue(SystemTags.GROUP_NAME));
 			
 			c.rst = c.stmt.executeQuery();			
 			

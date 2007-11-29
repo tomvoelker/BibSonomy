@@ -1538,6 +1538,7 @@ public class ResourceHandler extends HttpServlet{
 	private void queryPageAuthor(DBContext c, String requAuthor, int itemCount, int startBib) throws SQLException {
 		SplittedAuthors authors = new SplittedAuthors(requAuthor);
 		SystemTags systemTags   = new SystemTags(requAuthor);
+		System.err.println("STRING: " + requAuthor);
 		String authorMatch = authors.getQuery();		
 		int argCtr = 1;
 
@@ -1549,6 +1550,7 @@ public class ResourceHandler extends HttpServlet{
 				   + "         WHERE MATCH(s.author) AGAINST (? IN BOOLEAN MODE) " 
 				   + "         AND s.content_type= " + Bibtex.CONTENT_TYPE
 				   + "         AND s.group = " + constants.SQL_CONST_GROUP_PUBLIC
+				   + systemTags.generateSqlQuery(SystemTags.GROUP_NAME, "s")	
 				   + systemTags.generateSqlQuery(SystemTags.USER_NAME, "s")
 				   + "         ORDER BY s.date DESC LIMIT ? OFFSET ?) AS tt " 
 				   + "     WHERE t.content_id=tt.content_id " 
@@ -1558,26 +1560,29 @@ public class ResourceHandler extends HttpServlet{
 		
 		c.bibStmtP = c.conn.prepareStatement(query);
 		c.bibStmtP.setString(argCtr++, authorMatch);
-		if (systemTags.isUsed(SystemTags.USER_NAME) ) {
+		if (systemTags.isUsed(SystemTags.GROUP_NAME) ) 
+			c.bibStmtP.setString(argCtr++, systemTags.getValue(SystemTags.GROUP_NAME));		
+		if (systemTags.isUsed(SystemTags.USER_NAME) ) 
 			c.bibStmtP.setString(argCtr++, systemTags.getValue(SystemTags.USER_NAME));
-		}
-		
+				
 		c.bibStmtP.setInt(argCtr++, itemCount);
 		c.bibStmtP.setInt(argCtr++, startBib);
 
+		argCtr = 1;
 		//  counts
 		c.bibTCStmtP = c.conn.prepareStatement("SELECT count(*) FROM search s " 
 			            + " JOIN bibtex b USING (content_id)"
 				        + " WHERE MATCH(s.author) AGAINST (? IN BOOLEAN MODE) " 
 				        + " AND s.content_type = " + Bibtex.CONTENT_TYPE 
 				        + " AND s.group = " + constants.SQL_CONST_GROUP_PUBLIC
-				        + systemTags.generateSqlQuery(SystemTags.USER_NAME, "s") 
+				        + systemTags.generateSqlQuery(SystemTags.USER_NAME, "s") 	
+				        + systemTags.generateSqlQuery(SystemTags.GROUP_NAME, "s")
 				        + systemTags.generateSqlQuery(SystemTags.BIBTEX_YEAR,"b"));
-		c.bibTCStmtP.setString(1,authorMatch);
-		if (systemTags.isUsed(SystemTags.USER_NAME)) {
-			c.bibTCStmtP.setString(2, systemTags.getValue(SystemTags.USER_NAME));
-		}
-
+		c.bibTCStmtP.setString(argCtr++,authorMatch);
+		if (systemTags.isUsed(SystemTags.USER_NAME)) 
+			c.bibTCStmtP.setString(argCtr++, systemTags.getValue(SystemTags.USER_NAME));	
+		if (systemTags.isUsed(SystemTags.GROUP_NAME)) 
+			c.bibTCStmtP.setString(argCtr++, systemTags.getValue(SystemTags.GROUP_NAME));	
 	}
 
 	/** PAGE_AUTHOR_TAG 
@@ -1611,6 +1616,7 @@ public class ResourceHandler extends HttpServlet{
 		+ "				AND b.content_id = s.content_id"			
 		+ "			 	AND t1.tag_name = ? "
 		+ systemTags.generateSqlQuery(SystemTags.BIBTEX_YEAR,"b")
+		+ systemTags.generateSqlQuery(SystemTags.GROUP_NAME, "s")
 		+ systemTags.generateSqlQuery(SystemTags.USER_NAME, "s")
 		+ "				ORDER BY s.date DESC LIMIT ? OFFSET ?) AS tt" 		
 		+ "		WHERE t.content_id = tt.content_id" 		
@@ -1621,12 +1627,14 @@ public class ResourceHandler extends HttpServlet{
 		c.bibStmtP = c.conn.prepareStatement(query);
 		c.bibStmtP.setString(argCtr++, authorMatch);		
 		c.bibStmtP.setString(argCtr++, requTag);
-		if (systemTags.isUsed(SystemTags.USER_NAME)) {
-			c.bibStmtP.setString(argCtr++, systemTags.getValue(SystemTags.USER_NAME));
-		}
+		if (systemTags.isUsed(SystemTags.GROUP_NAME)) 
+			c.bibStmtP.setString(argCtr++, systemTags.getValue(SystemTags.GROUP_NAME));		
+		if (systemTags.isUsed(SystemTags.USER_NAME)) 
+			c.bibStmtP.setString(argCtr++, systemTags.getValue(SystemTags.USER_NAME));		
 		c.bibStmtP.setInt(argCtr++, itemCount);
 		c.bibStmtP.setInt(argCtr++, startBib);
 
+		argCtr = 1;
 		// count 
 		c.bibTCStmtP = c.conn.prepareStatement(" SELECT count(*) FROM search s, tas t1, bibtex b"
 				+ "			 WHERE MATCH(s.author) AGAINST (? IN BOOLEAN MODE)"
@@ -1636,13 +1644,15 @@ public class ResourceHandler extends HttpServlet{
 				+ "				AND s.content_id = b.content_id "	
 				+ "				AND t1.tag_name = ?"
 				+ systemTags.generateSqlQuery(SystemTags.BIBTEX_YEAR,"b")
+				+ systemTags.generateSqlQuery(SystemTags.GROUP_NAME, "s")
 				+ systemTags.generateSqlQuery(SystemTags.USER_NAME, "s"));
-		c.bibTCStmtP.setString(1, authorMatch);
-		c.bibTCStmtP.setString(2, requTag);
-		if (systemTags.isUsed(SystemTags.USER_NAME)) {
+		
+		c.bibTCStmtP.setString(argCtr++, authorMatch);
+		c.bibTCStmtP.setString(argCtr++, requTag);
+		if (systemTags.isUsed(SystemTags.GROUP_NAME)) 
+			c.bibTCStmtP.setString(3, systemTags.getValue(SystemTags.GROUP_NAME));
+		if (systemTags.isUsed(SystemTags.USER_NAME)) 
 			c.bibTCStmtP.setString(3, systemTags.getValue(SystemTags.USER_NAME));
-		}
-
 	}
 
 	/** PAGE_URL

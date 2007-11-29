@@ -12,19 +12,14 @@ import org.apache.log4j.Logger;
  * @version: $Id$
  * @author:  Stefan Stuetzer (sts)
  * $Author$
- *
  */
 public class SystemTags {
     private static final Logger LOGGER = Logger.getLogger(SystemTags.class);
     
-    /**
-     * prefix for each system tag
-     **/
+    /** prefix for each system tag */
     public static final String SYSTEM_PREFIX = "sys:";
     
-    /**
-     *  requested search string
-     **/
+    /** requested search string */
     private String requestString;   
     
     /**
@@ -33,18 +28,18 @@ public class SystemTags {
      **/
     private Map<String,String>  paramValues;     
     
-    /**
-     * array of all possible system tags
-     */
+    /** array of all possible system tags */
     private static final String[] SYSTEM_TAGS = new String[] {	SYSTEM_PREFIX + "year:",  /* bibtex year */
-    															SYSTEM_PREFIX + "user:"	  /* user name */ };
+    															SYSTEM_PREFIX + "user:",  /* user name */ 
+    															SYSTEM_PREFIX + "group:"  /* group name */};
         
     /**
      * constants for each system tag
      */
     public static final int BIBTEX_YEAR = 0;
-    public static final int USER_NAME 	= 1;    
-    
+    public static final int USER_NAME 	= 1; 
+    public static final int GROUP_NAME	= 2; 
+        
     /**
      * default constructor
      * @param requestString
@@ -52,8 +47,7 @@ public class SystemTags {
      */
     public SystemTags(String requestString) {
         this.requestString 	= requestString;        
-        paramValues 		= new HashMap<String, String>();       
-                        
+        paramValues 		= new HashMap<String, String>();                           
         parse();
     }
     
@@ -77,7 +71,7 @@ public class SystemTags {
     }
     
     /**
-     * returnes if specified tag is was used in request
+     * returnes if specified tag is used in the request
      * @param tag
      * 			the id of the tag
      * @return
@@ -99,7 +93,7 @@ public class SystemTags {
      */
     public String generateSqlQuery(final int tag, String tableName) {
         LOGGER.debug("generate SQL query for " + tag);          
-        String systemTag = SYSTEM_TAGS[tag];
+        final String systemTag = SYSTEM_TAGS[tag];
         
         if (paramValues.keySet().contains(systemTag)) {
 	        String value = paramValues.get(systemTag).trim();
@@ -133,6 +127,14 @@ public class SystemTags {
 	        // User Name
 	        if (SYSTEM_TAGS[USER_NAME].equals(systemTag)) {
 	        	sql.append(tableName + ".user_name = ?");        	
+	        	return sql.toString();
+	        }
+	        
+	        // group name
+	        if (SYSTEM_TAGS[GROUP_NAME].equals(systemTag)) {
+	        	sql.append(tableName + ".user_name IN ("
+	        			+ " SELECT user_name FROM groupids g JOIN groups gs ON (g.group = gs.group) "
+	        			+ " WHERE g.group_name = ?)");	        		        	
 	        	return sql.toString();
 	        }
         }        
