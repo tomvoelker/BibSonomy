@@ -47,6 +47,9 @@ public abstract class AbstractDatabaseManagerTest {
 	protected DBSession dbSession;
 	private SandboxDBSessionFactory dbSessionFactory;
 
+	/**
+	 * Setup
+	 */
 	@Before
 	public void setUp() {
 		try {
@@ -72,6 +75,9 @@ public abstract class AbstractDatabaseManagerTest {
 		}
 	}
 
+	/**
+	 * Tear down
+	 */
 	@After
 	public void tearDown() {
 		this.dbSessionFactory.endTest();
