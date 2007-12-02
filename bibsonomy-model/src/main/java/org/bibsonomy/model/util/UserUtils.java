@@ -4,6 +4,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
+import org.bibsonomy.util.StringUtils;
+
 /**
  * @author Miranda Grahl
  * @version $Id$
@@ -19,7 +21,7 @@ public class UserUtils {
 		try {
 			final byte[] randomArray = generateRandom();
 			final MessageDigest md = MessageDigest.getInstance("MD5");
-			return ResourceUtils.toHexString(md.digest(randomArray));
+			return StringUtils.toHexString(md.digest(randomArray));
 		} catch (final NoSuchAlgorithmException e) {
 			// should never happen
 			throw new RuntimeException(e);

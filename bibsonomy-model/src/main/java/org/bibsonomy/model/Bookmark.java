@@ -3,6 +3,7 @@ package org.bibsonomy.model;
 import java.net.URL;
 
 import org.bibsonomy.model.util.ResourceUtils;
+import org.bibsonomy.util.StringUtils;
 
 /**
  * This is a bookmark, which is derived from {@link Resource} like all
@@ -38,7 +39,7 @@ public class Bookmark extends Resource {
 	}
 
 	/**
-	 * bookmarks use the same hash value for both intrahash and interhash
+	 * Bookmarks use the same hash value for both intrahash and interhash
 	 */
 	@Override
 	public String getInterHash() {
@@ -46,7 +47,7 @@ public class Bookmark extends Resource {
 	}
 
 	public String getHash() {
-		return ResourceUtils.hash(this.url);
+		return StringUtils.getMD5Hash(this.url);
 	}
 
 	@Override

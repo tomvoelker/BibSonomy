@@ -6,9 +6,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Scanner;
 
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.util.PersonNameUtils;

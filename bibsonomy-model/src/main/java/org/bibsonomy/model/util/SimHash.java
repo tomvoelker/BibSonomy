@@ -60,7 +60,7 @@ public class SimHash {
 	 * @return the calculated hash
 	 */
 	public static String getSimHash0(final Bookmark bookmark) {
-		return ResourceUtils.hash(bookmark.getUrl());
+		return StringUtils.getMD5Hash(bookmark.getUrl());
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class SimHash {
 	 * @return the calculated hash
 	 */
 	public static String getSimHash1(final Bookmark bookmark) {
-		return ResourceUtils.hash(bookmark.getUrl());
+		return StringUtils.getMD5Hash(bookmark.getUrl());
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class SimHash {
 	 * @return the calculated hash
 	 */
 	public static String getSimHash2(final Bookmark bookmark) {
-		return ResourceUtils.hash(bookmark.getUrl());
+		return StringUtils.getMD5Hash(bookmark.getUrl());
 	}
 
 	/**
@@ -90,7 +90,7 @@ public class SimHash {
 	 * @return the calculated hash
 	 */
 	public static String getSimHash3(final Bookmark bookmark) {
-		return ResourceUtils.hash(bookmark.getUrl());
+		return StringUtils.getMD5Hash(bookmark.getUrl());
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class SimHash {
 	 * entrytype, journal, booktitle.
 	 */
 	public static String getSimHash0(final BibTex bibtex) {
-		return ResourceUtils.hash(StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(bibtex.getTitle()) + " " + 
+		return StringUtils.getMD5Hash(StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(bibtex.getTitle()) + " " + 
 				StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(bibtex.getAuthor())    + " " +
 				StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(bibtex.getEditor())    + " " +
 				StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(bibtex.getYear())      + " " +
@@ -115,12 +115,12 @@ public class SimHash {
 	public static String getSimHash1(final BibTex bibtex) {	
 		if (StringUtils.removeNonNumbersOrLetters(bibtex.getAuthor()).equals("")) {
 			// no author set --> take editor
-			return ResourceUtils.hash(getNormalizedTitle(bibtex.getTitle()) + " " +
+			return StringUtils.getMD5Hash(getNormalizedTitle(bibtex.getTitle()) + " " +
 					getNormalizedEditor(bibtex.getEditor())            + " " +
 					getNormalizedYear(bibtex.getYear()));				
 		}
 		// author set
-		return ResourceUtils.hash(getNormalizedTitle(bibtex.getTitle()) + " " + 
+		return StringUtils.getMD5Hash(getNormalizedTitle(bibtex.getTitle()) + " " + 
 				getNormalizedAuthor(bibtex.getAuthor())            + " " + 
 				getNormalizedYear(bibtex.getYear()));
 	}
@@ -145,7 +145,7 @@ public class SimHash {
 	 * @return the calculated simHash0, which consideres: author, editor, year, entryType, journal, booktitle, volume, number.
 	 */
 	public static String getSimHash2(final BibTex bibtex) {
-		return ResourceUtils.hash(StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(bibtex.getTitle())     + " " + 
+		return StringUtils.getMD5Hash(StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(bibtex.getTitle())     + " " + 
 				StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(bibtex.getAuthor())    + " " + 
 				StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(bibtex.getEditor())    + " " + 
 				StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(bibtex.getYear())      + " " + 

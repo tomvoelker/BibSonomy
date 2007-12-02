@@ -6,8 +6,14 @@ import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.BibTex;
 import org.junit.Test;
 
+/**
+ * Testcase for the SimHash class
+ */
 public class SimHashTest {
 
+	/**
+	 * tests getSimHash what else ?
+	 */
 	@Test
 	public void getSimHash() {
 		final BibTex bibTex = new BibTex();		
