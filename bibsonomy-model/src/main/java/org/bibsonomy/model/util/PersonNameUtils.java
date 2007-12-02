@@ -6,17 +6,16 @@ import java.util.Scanner;
 
 import org.bibsonomy.model.PersonName;
 
-
 /**
- * Nice place be for static util methods regarding names of persons
+ * Nice place for static util methods regarding names of persons.
  *
- * @version $Id$
  * @author  Jens Illig
- * $Author$
+ * @version $Id$
  */
 public class PersonNameUtils {
 	/**
-	 * analyses a string of name of the form J. T. Kirk and M. Scott and ...
+	 * Analyses a string of name of the form "J. T. Kirk" and "M. Scott"
+	 * 
 	 * @param authorField the source string 
 	 * @return the result
 	 */

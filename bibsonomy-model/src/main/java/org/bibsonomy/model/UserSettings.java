@@ -1,6 +1,3 @@
-/*
- * Created on 08.10.2007
- */
 package org.bibsonomy.model;
 
 public class UserSettings {

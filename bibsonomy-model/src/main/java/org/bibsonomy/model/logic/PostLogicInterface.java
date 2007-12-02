@@ -1,6 +1,3 @@
-/*
- * Created on 08.10.2007
- */
 package org.bibsonomy.model.logic;
 
 import java.util.List;
@@ -14,6 +11,7 @@ import org.bibsonomy.model.Resource;
  * the core functionality regarding posts.
  * 
  * @author Jens Illig
+ * @version $Id$
  */
 public interface PostLogicInterface {
 	/**  

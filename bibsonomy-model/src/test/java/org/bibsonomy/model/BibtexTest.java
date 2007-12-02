@@ -10,7 +10,7 @@ import org.junit.Test;
 public class BibtexTest {
 
 	private final static Logger log = Logger.getLogger(BibtexTest.class);
-	
+
 	/**
 	 * check toBibTex String method
 	 */

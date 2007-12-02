@@ -1,6 +1,3 @@
-/*
- * Created on 15.10.2007
- */
 package org.bibsonomy.model;
 
 import java.util.LinkedList;
@@ -16,32 +13,32 @@ import java.util.regex.Pattern;
 public class PersonName {
 	/** pattern that matches only on positive numbers */
 	private static final Pattern numbersPattern = Pattern.compile("[0-9]+");
-	
+
 	private String name;
 	private String firstName;
 	private String lastName;
-	
+
 	/**
 	 * @return the firstname(s) of the person
 	 */
 	public String getFirstName() {
 		return this.firstName;
 	}
-	
+
 	/**
 	 * @return the lastname(s) of the person
 	 */
 	public String getLastName() {
 		return this.lastName;
 	}
-	
+
 	/**
 	 * @return the full name of the person
 	 */
 	public String getName() {
 		return this.name;
 	}
-	
+
 	/**
 	 * sets the full name and tries to set first- and lastname from extracted values also. 
 	 * @param name the full name of the person
@@ -50,7 +47,7 @@ public class PersonName {
 		this.name = name;
 		this.discoverFirstAnLastName();
 	}
-	
+
 	/**
 	 * Tries to detect the firstname and lastname of each author or editor.
 	 * Firstnames must be abbreviated with a '.' to be identified as firstnames.
