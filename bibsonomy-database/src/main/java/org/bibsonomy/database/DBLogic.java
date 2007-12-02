@@ -57,19 +57,19 @@ public class DBLogic implements LogicInterface {
 	private final GroupDatabaseManager groupDBManager;
 	private final TagDatabaseManager tagDBManager;
 	private final DBSessionFactory dbSessionFactory;
-	
+
 	private final String loginUserName;
 
-	protected DBLogic(final String loginUserName, DBSessionFactory dbSessionFactory) {
+	protected DBLogic(final String loginUserName, final DBSessionFactory dbSessionFactory) {
 		this.loginUserName = loginUserName;
-		
+
 		generalDBManager = GeneralDatabaseManager.getInstance();
 		allDatabaseManagers = new HashMap<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>>();
 		bibtexDBManager = BibTexDatabaseManager.getInstance();
 		allDatabaseManagers.put(BibTex.class, this.bibtexDBManager);
 		bookmarkDBManager = BookmarkDatabaseManager.getInstance();
 		allDatabaseManagers.put(Bookmark.class, this.bookmarkDBManager);
-		
+
 		docDBManager = DocumentDatabaseManager.getInstance();
 		userDBManager = UserDatabaseManager.getInstance();
 		groupDBManager = GroupDatabaseManager.getInstance();
@@ -77,7 +77,6 @@ public class DBLogic implements LogicInterface {
 		permissionDBManager = PermissionDatabaseManager.getInstance();
 
 		this.dbSessionFactory = dbSessionFactory;		
-
 	}
 
 	/**
@@ -517,7 +516,7 @@ public class DBLogic implements LogicInterface {
 	public String getAuthenticatedUser() {
 		return this.loginUserName;
 	}
-	
+
 	/**
 	 * Checks if the username of the api equals to the username given in the path.
 	 * (Maybe we could equalize the params to change the method param to Object<?> obj
@@ -530,12 +529,13 @@ public class DBLogic implements LogicInterface {
 			throw new ValidationException("You are not authorized to perform the requested operation.");
 		}
 	}
-        
-        public String addDocument(Document doc) {
+
+	public String addDocument(Document doc) {
 		ensureLoggedIn();
 		ensureWriteAccess(doc);
 		return this.storeDocument(doc).getFileHash();
 	}
+
 	/**
 	 * @param doc
 	 * @return doc

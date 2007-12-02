@@ -1,7 +1,6 @@
 package org.bibsonomy.database.params;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -23,9 +22,9 @@ import org.bibsonomy.model.logic.Order;
  * of ?-marks.
  * 
  * @author Dominik Benz
- * @author Christian Schenk
- * @author miranda
+ * @author Miranda Grahl
  * @author Christian Kramer
+ * @author Christian Schenk
  * @version $Id$
  */
 public abstract class GenericParam {
@@ -494,6 +493,4 @@ public abstract class GenericParam {
 	public void setNumSimpleTags(int numSimpleTags) {
 		this.numSimpleTags = numSimpleTags;
 	}
-
-	
 }

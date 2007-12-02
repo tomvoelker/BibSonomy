@@ -1,6 +1,3 @@
-/*
- * Created on 16.07.2007
- */
 package org.bibsonomy.testutil;
 
 import java.util.regex.Pattern;
@@ -12,11 +9,11 @@ import org.bibsonomy.model.Post;
 import org.junit.Test;
 
 public class ModelUtilsTest {
-	
+
 	@Test
 	public void assertPropertyEquality() {
-		Post<BibTex> postA = ModelUtils.generatePost(BibTex.class);
-		Post<BibTex> postB = ModelUtils.generatePost(BibTex.class);
+		final Post<BibTex> postA = ModelUtils.generatePost(BibTex.class);
+		final Post<BibTex> postB = ModelUtils.generatePost(BibTex.class);
 		ModelUtils.assertPropertyEquality(postA, postB, Integer.MAX_VALUE, null, "date");
 		postB.getTags().clear();
 		try {

@@ -1,19 +1,8 @@
 package org.bibsonomy.database.managers;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.util.List;
-
-import org.apache.log4j.Logger;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.AbstractDatabaseManager;
-import org.bibsonomy.database.params.UserParam;
-import org.bibsonomy.database.util.DBSession;
-import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.User;
-import org.bibsonomy.model.util.UserUtils;
-import org.bibsonomy.util.ExceptionUtils;
 
 /**
  * Database Manager for permissions
@@ -23,12 +12,14 @@ import org.bibsonomy.util.ExceptionUtils;
  */
 public class PermissionDatabaseManager extends AbstractDatabaseManager {
 
-	private static final Logger log = Logger.getLogger(PermissionDatabaseManager.class);
 	private final static PermissionDatabaseManager singleton = new PermissionDatabaseManager();
 
 	private PermissionDatabaseManager() {
 	}
 
+	/**
+	 * @return PermissionDatabaseManager
+	 */
 	public static PermissionDatabaseManager getInstance() {
 		return singleton;
 	}
@@ -40,21 +31,21 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param end
 	 * @param itemType
 	 */
-	public void checkStartEnd(Integer start, Integer end, String itemType) {				
-		if ( end > 1000 ) {
+	public void checkStartEnd(final Integer start, final Integer end, final String itemType) {
+		if (end > 1000) {
 			throw new ValidationException("You are not authorized to retrieve more than the last 1000 " + itemType + " items.");
 		}
 	}
-	
+
 	/**
 	 * Check if the logged in user has write access to the given Post
 	 * 
 	 * @param post
 	 * @param loginUserName
 	 */
-	public void ensureWriteAccess(Post<?> post, String loginUserName) {
+	public void ensureWriteAccess(final Post<?> post, final String loginUserName) {
 		if (loginUserName.equals(post.getUser().getName()) == false) {
 			throw new ValidationException("You are not authorized to perform the requested operation.");
-		}		
+		}
 	}
 }

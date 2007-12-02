@@ -1,12 +1,10 @@
 package org.bibsonomy.database.util;
 
-
 /**
  * Factory for real database sessions via IBATIS
  *
- * @version $Id$
  * @author  Jens Illig
- * $Author$
+ * @version $Id$
  */
 public class IbatisDBSessionFactory implements DBSessionFactory {
 	

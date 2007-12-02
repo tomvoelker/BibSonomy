@@ -16,18 +16,16 @@ import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
  * Helper class for binding a test database resource via JNDI to enable database access
  * without a running application server, which usually provides the JNDI tree.
  * 
- * @author dbenz
+ * @author Dominik Benz
+ * @version $Id$
  */
 public class JNDITestDatabaseBinder {
 
-	// log4j
 	private static final Logger log = Logger.getLogger(JNDITestDatabaseBinder.class);
-		
+
 	/**
 	 * Main method: read configuration file 'database.properties', create SQL Data Source and
 	 * register it via JNDI
-	 * 
-	 * @author dbenz
 	 */
 	public static final void bind() {
 		final InitialContext ctx;
@@ -43,14 +41,13 @@ public class JNDITestDatabaseBinder {
 			log.error(ex.getMessage());
 		}
 	}
-	
+
 	/**
-	 * go back to original state
+	 * Go back to original state
 	 */
 	public static void unbind() {
 		MockContextFactory.revertSetAsInitial();
 	}
-	
 
 	private static DataSource getDataSource() {
 		final Properties props = new Properties();		
@@ -66,5 +63,4 @@ public class JNDITestDatabaseBinder {
 		dataSource.setPassword(props.getProperty("password"));
 		return dataSource;
 	}	
-	
 }

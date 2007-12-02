@@ -10,10 +10,8 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.util.ExceptionUtils;
 
 /**
- * 
- * @version $Id$
  * @author Christian Kramer
- *
+ * @version $Id$
  */
 public class DocumentDatabaseManager extends AbstractDatabaseManager{
 	

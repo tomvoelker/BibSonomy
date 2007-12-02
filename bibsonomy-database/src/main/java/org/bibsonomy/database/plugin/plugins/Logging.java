@@ -44,7 +44,6 @@ public class Logging extends AbstractDatabasePlugin {
 		};
 	}
 
-
 	@Override
 	public Runnable onBookmarkDelete(final int contentId, final DBSession session) {
 		return new Runnable() {
@@ -55,7 +54,6 @@ public class Logging extends AbstractDatabasePlugin {
 			}
 		};
 	}
-
 
 	@Override
 	public Runnable onBookmarkUpdate(final int newContentId, final int contentId, final DBSession session) {

@@ -1,6 +1,3 @@
-/*
- * Created on 30.08.2007
- */
 package org.bibsonomy.database;
 
 import org.bibsonomy.database.util.DBSession;

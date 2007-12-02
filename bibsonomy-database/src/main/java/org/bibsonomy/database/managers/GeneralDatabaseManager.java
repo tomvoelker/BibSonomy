@@ -127,15 +127,15 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	protected void updateIds(final ConstantID idsType, final DBSession session) {
 		this.insert("updateIds", idsType.getId(), session);
 	}
-	
+
 	public Integer getCurrentContentId(final ConstantID idsType, final DBSession session) {
 		return this.queryForObject("getCurrentContentId", idsType.getId(), Integer.class, session);
 	}
-	
+
 	public Integer countNewContentIdFromBibTex(final BibTexParam param, final DBSession session) {
 		return this.queryForObject("countNewContentIdFromBibTex", param, Integer.class, session);
 	}
-	
+
 	public Integer countRequestedContentIdFromBibTex(final BibTexParam param, final DBSession session) {
 		return this.queryForObject("countRequestedContentIdFromBibTex", param, Integer.class, session);
 	}
@@ -147,19 +147,19 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	public Integer countRequestedContentIdFromBookmark(final BookmarkParam param, final DBSession session) {
 		return this.queryForObject("countRequestedContentIdFromBookmark", param, Integer.class, session);
 	}
-	
+
 	public Integer countTasIds(final TagParam param, final DBSession session) {
 		return this.queryForObject("countTasIds", param, Integer.class, session);
 	}
-	
+
 	public Integer countLoggedTasIds(final TagParam param, final DBSession session) {
 		return this.queryForObject("countLoggedTasIds", param, Integer.class, session);
 	}
-	
+
 	public Integer countTagRelation(final TagRelationParam param, final DBSession session) {
 		return this.queryForObject("countTagRelation", param, Integer.class, session);
 	}
-	
+
 	public Integer countGroup(final GroupParam param, final DBSession session) {
 		return this.queryForObject("countGroup", param, Integer.class, session);
 	}

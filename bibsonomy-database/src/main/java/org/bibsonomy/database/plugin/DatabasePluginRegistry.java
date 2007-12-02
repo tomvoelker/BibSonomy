@@ -84,7 +84,7 @@ public class DatabasePluginRegistry {
 			this.executeRunnable(plugin.onBookmarkInsert(contentId, session));
 		}
 	}
-	
+
 	public void onBookmarkDelete(final int contentId, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
 			this.executeRunnable(plugin.onBookmarkDelete(contentId, session));
@@ -102,17 +102,16 @@ public class DatabasePluginRegistry {
 			this.executeRunnable(plugin.onTagRelationDelete(upperTagName, lowerTagName, userName, session));
 		}
 	}
-	
-	public void onTagDelete(final int contentId, final DBSession session){
+
+	public void onTagDelete(final int contentId, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
 			this.executeRunnable(plugin.onTagDelete(contentId, session));
 		}
 	}
-	
-	public void onRemoveUserFromGroup(final String username, final int groupId, DBSession session){
+
+	public void onRemoveUserFromGroup(final String username, final int groupId, DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
 			this.executeRunnable(plugin.onRemoveUserFromGroup(username, groupId, session));
 		}
 	}
-	
 }
