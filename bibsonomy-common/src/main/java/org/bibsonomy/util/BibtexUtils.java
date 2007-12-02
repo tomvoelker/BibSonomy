@@ -12,14 +12,14 @@ public class BibtexUtils {
 	 * @param title
 	 * @return a bibtex key for a bibtex with the fieldvalues given by arguments
 	 */
-	public static String generateBibtexKey(String authors, String editors, String year, String title) {
+	public static String generateBibtexKey(final String authors, final String editors, final String year, final String title) {
 		/*
-		 * todo: pick either author or editor. DON'T use getAuthorlist (it sorts alphabetically!). CHECK for null values.
+		 * TODO: pick either author or editor. DON'T use getAuthorlist (it sorts alphabetically!). CHECK for null values.
 		 * What to do with Chinese authors and other broken names?
 		 * How to extract the first RELEVANT word of the title?
 		 * remove Sonderzeichen, LaTeX markup!
 		 */
-		StringBuffer b = new StringBuffer();
+		final StringBuffer b = new StringBuffer();
 		/*
 		 * get author
 		 */
@@ -38,6 +38,7 @@ public class BibtexUtils {
 		/* first relevant word of the title */
 		if (title != null) {
 			/* best guess: pick first word with more than 4 characters, longest first word */
+			// FIXME: what do we want to do inside this if statement?
 		}
 		return b.toString().toLowerCase();
 	}
@@ -48,13 +49,13 @@ public class BibtexUtils {
 	 * @param person some string representation of a list of persons with their first- and lastnames  
 	 * @return the last name of the first person
 	 */
-	public static String getFirstPersonsLastName (String person) {
+	public static String getFirstPersonsLastName(final String person) {
 		if (person != null) {
-			String firstauthor;
+			final String firstauthor;
 			/*
 			 * check, if there is more than one author
 			 */
-			int firstand = person.indexOf(" and ");
+			final int firstand = person.indexOf(" and ");
 			if (firstand < 0) {
 				firstauthor = person;
 			} else {
@@ -63,8 +64,8 @@ public class BibtexUtils {
 			/*
 			 * first author extracted, get its last name
 			 */
-			int lastspace = firstauthor.lastIndexOf(' ');
-			String lastname;
+			final int lastspace = firstauthor.lastIndexOf(' ');
+			final String lastname;
 			if (lastspace < 0) {
 				lastname = firstauthor;
 			} else {
@@ -74,5 +75,4 @@ public class BibtexUtils {
 		}
 		return null;
 	}
-	
 }

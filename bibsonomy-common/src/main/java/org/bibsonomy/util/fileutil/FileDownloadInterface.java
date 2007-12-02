@@ -2,16 +2,14 @@ package org.bibsonomy.util.fileutil;
 
 import java.io.BufferedInputStream;
 
-import org.apache.log4j.Logger;
-
 /**
- *
- * @version $Id$
  * @author  Christian Kramer
- *
+ * @version $Id$
  */
 public interface FileDownloadInterface {
 
+	/**
+	 * @return bis
+	 */
 	public abstract BufferedInputStream getBuf();
-
 }

@@ -3,7 +3,7 @@ package org.bibsonomy.util;
 import java.util.regex.Pattern;
 
 /**
- * home of static methods for dealing with string representations of tags
+ * Home of static methods for dealing with string representations of tags
  */
 public class TagStringUtils {
 
@@ -27,7 +27,7 @@ public class TagStringUtils {
 	 *   
 	 * @return The cleaned string of tags.
 	 */
-	public static String cleanTags(String tagstring, boolean substitute, String delimiter, String whitespaceSub) {
+	public static String cleanTags(final String tagstring, final boolean substitute, final String delimiter, final String whitespaceSub) {
 		if (tagstring != null) {
 			if (substitute && delimiter != null && delimiter.length() == 1 && !delimiter.trim().equals("")) {
 				String tmpTags = tagstring.trim();
@@ -45,8 +45,6 @@ public class TagStringUtils {
 			}
 			return tagstring;
 		} 
-		
 		return "";
 	}
-	
 }

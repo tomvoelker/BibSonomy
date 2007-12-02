@@ -48,12 +48,9 @@ public class GroupingEntityTest {
 		}
 	}
 
-	/*
+	/**
 	 * We want to make sure that this is the case, because we are relying on it
 	 * in our testcases.
-	 */
-	/**
-	 * tests toString what else ?
 	 */
 	@Test
 	public void testToString() {
