@@ -10,83 +10,76 @@ import java.util.TimeZone;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.FilenameUtils;
+import org.bibsonomy.util.StringUtils;
 
 /**
  * Handles the file upload
  * 
- * @version $Id$
  * @author Christian Kramer
- *
+ * @version $Id$
  */
 public class HandleFileUpload implements FileUploadInterface {
-	
-	private static Map<String, FileItem> fieldMap;
-	
-	private static String fileHash;
+
+	private final Map<String, FileItem> fieldMap;
+	private final String fileHash;
 	private final String fileName;
-	private static FileItem upFile;
-	
+	private final FileItem upFile;
+
 	/**
 	 * @param items
 	 * @throws Exception
 	 */
-	public HandleFileUpload(final List<FileItem> items) throws Exception{
-		FileUtils util = new FileUtils();
-		
-		fieldMap = new HashMap<String, FileItem>();
-		
-		for (FileItem temp : items) {
-			if (("file").equals(temp.getFieldName())){
-				fieldMap.put(temp.getFieldName(), temp);
-			}			
+	public HandleFileUpload(final List<FileItem> items) throws Exception {
+		this.fieldMap = new HashMap<String, FileItem>();
+
+		// copy items into global field map
+		for (final FileItem temp : items) {
+			if ("file".equals(temp.getFieldName())) {
+				this.fieldMap.put(temp.getFieldName(), temp);
+			}
 		}
-		
-		
-		upFile = fieldMap.get("file");
-		String filename = upFile.getName();
+
+		this.upFile = this.fieldMap.get("file");
+		final String filename = this.upFile.getName();
 		if (filename != null) {
 			this.fileName = FilenameUtils.getName(filename);
-		}
-		else {
+		} else {
 			this.fileName = "";
 		}
-		
-		/*
-		 * check file extensions which we accept
-		 */
-		if (fileName.equals("") || !FileUtils.matchExtension(fileName, "pdf", "ps", "djv", "djvu")) {
-			throw new Exception ("Please check your file. Only PDF, PS or DJVU files are accepted.");
-		}
-		
-		// format date
-		Date currDate = new Date();
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		df.setTimeZone(TimeZone.getDefault());
-		String currDateFormatted = df.format(currDate);
-		
-		fileHash = util.getMD5Hash(upFile.getFieldName() + Math.random() + currDateFormatted);
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.util.fileutil.FileUploadInterface#writeUploadedFiles(java.lang.String, java.lang.String)
-	 */
-	public void writeUploadedFiles(final String rootPath, final String docPath) throws Exception{
-		upFile.write(new File((rootPath + docPath + fileHash.substring(0, 2).toLowerCase()), fileHash));
-	}
-	
 
-	/* (non-Javadoc)
+		// check file extensions which we accept
+		if (this.fileName.equals("") || !StringUtils.matchExtension(this.fileName, "pdf", "ps", "djv", "djvu")) {
+			throw new Exception("Please check your file. Only PDF, PS or DJVU files are accepted.");
+		}
+
+		// format date
+		final Date currDate = new Date();
+		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		df.setTimeZone(TimeZone.getDefault());
+		final String currDateFormatted = df.format(currDate);
+
+		this.fileHash = StringUtils.getMD5Hash(this.upFile.getFieldName() + Math.random() + currDateFormatted);
+	}
+
+	/*
+	 * @see org.bibsonomy.util.fileutil.FileUploadInterface#writeUploadedFiles(java.lang.String,
+	 *      java.lang.String)
+	 */
+	public void writeUploadedFiles(final String rootPath, final String docPath) throws Exception {
+		this.upFile.write(new File((rootPath + docPath + this.fileHash.substring(0, 2).toLowerCase()), this.fileHash));
+	}
+
+	/*
 	 * @see org.bibsonomy.util.fileutil.FileUploadInterface#getFileHash()
 	 */
 	public String getFileHash() {
-		return fileHash;
+		return this.fileHash;
 	}
 
-	/* (non-Javadoc)
+	/*
 	 * @see org.bibsonomy.util.fileutil.FileUploadInterface#getFileName()
 	 */
 	public String getFileName() {
 		return this.fileName;
 	}
-	
 }

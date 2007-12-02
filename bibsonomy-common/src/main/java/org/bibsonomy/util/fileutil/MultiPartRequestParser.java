@@ -1,7 +1,6 @@
 package org.bibsonomy.util.fileutil;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,48 +13,45 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 /**
  * Parses the request items
  * 
- * @version $Id$
  * @author Christian Kramer
- *
+ * @version $Id$
  */
 public class MultiPartRequestParser {
 
-	private Map<String, FileItem> fieldMap;
-	private boolean isMultipart = false;
+	// initialize the max size ~50MB
+	final int MAX_REQUEST_SIZE = 1024 * 1024 * 51;
 	private List<FileItem> items;
 
 	/**
 	 * @param request
 	 * @throws FileUploadException
 	 */
-	public MultiPartRequestParser(final HttpServletRequest request) throws FileUploadException{
-		
+	@SuppressWarnings("static-access")
+	public MultiPartRequestParser(final HttpServletRequest request) throws FileUploadException {
 		// the factory to hold the file
-		FileItemFactory factory = new DiskFileItemFactory();
-		ServletFileUpload upload = new ServletFileUpload(factory);
-		
+		final FileItemFactory factory = new DiskFileItemFactory();
+		final ServletFileUpload upload = new ServletFileUpload(factory);
+
 		/*
-		 * need to check if the request content-type isn't null
-		 * because the apache.commons.fileupload doesn't to that
-		 * so the junit tests will fail with a nullpointer exception
+		 * need to check if the request content-type isn't null because the
+		 * apache.commons.fileupload doesn't to that so the junit tests will
+		 * fail with a nullpointer exception
 		 */
-		if(request.getContentType() != null) {
+		boolean isMultipart = false;
+		if (request.getContentType() != null) {
 			isMultipart = upload.isMultipartContent(request);
 		}
-		
+
 		// online parse the items if the content-type is multipart
-		if (isMultipart)
-		{	
-			// initialize the max size ~50MB
-			int maxRequestSize = 1024 * 1024 * 51;
-			upload.setSizeMax(maxRequestSize);
-			
+		if (isMultipart) {
+			upload.setSizeMax(MAX_REQUEST_SIZE);
+
 			// parse the items
-			items = upload.parseRequest(request);
+			this.items = upload.parseRequest(request);
 		}
 	}
-	
-	public List<FileItem> getList(){
+
+	public List<FileItem> getList() {
 		return this.items;
 	}
 }
