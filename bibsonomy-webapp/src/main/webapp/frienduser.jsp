@@ -13,7 +13,7 @@
 <h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="/friend">friend&nbsp;<img src="/resources/image/box_arrow.png"></a> :: 
 <a href="/friend/<mtl:encode value='${param.requUser}'/>"><c:out value="${param.requUser}"/></a> ::
 <form action="/friend/<mtl:encode value='${param.requUser}'/>" method="GET" class="smallform">
-  <input type="text" size="20" name="tag" value="<c:out value='${param.requTag}'/>"/>
+  <input type="text" size="20" id="inpf" name="tag" value="<c:out value='${param.requTag}'/>"/>
 </form>
 </h1> 
 

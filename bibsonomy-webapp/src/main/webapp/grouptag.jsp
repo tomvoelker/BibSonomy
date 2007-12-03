@@ -12,7 +12,7 @@
 <h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="/groups">group&nbsp;<img src="/resources/image/box_arrow.png"></a> :: 
 <a href="/group/<mtl:encode value='${param.requGroup}'/>"><c:out value="${param.requGroup}"/></a> ::
 <form action="/group/<mtl:encode value='${param.requGroup}'/>" method="GET" class="smallform">
-  <input type="text" size="20" name="tag" value="<c:out value='${param.requTag}'/>"/>
+  <input type="text" size="20" name="tag" id="inpf" value="<c:out value='${param.requTag}'/>"/>
 </form>
 </h1> 
 
