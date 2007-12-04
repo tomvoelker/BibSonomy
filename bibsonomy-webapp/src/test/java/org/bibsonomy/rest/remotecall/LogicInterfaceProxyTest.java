@@ -419,18 +419,18 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 
 	
 	/**
-	 * runs the test defined by {@link #getTags(GroupingEntity, String, String, Class, int, int)} with certain arguments
+	 * runs the test defined by {@link #getTags(Class, GroupingEntity, String, String, int, int)} with certain arguments
 	 */
 	@Test
 	public void getTagsTest() {
-		getTags(GroupingEntity.GROUP, "testGroup", "regex", org.bibsonomy.model.Resource.class, 4, 22);
+		getTags(org.bibsonomy.model.Resource.class, GroupingEntity.GROUP, "testGroup", "regex", 4, 22);
 	}
-	public List<Tag> getTags(GroupingEntity grouping, String groupingName, String regex, Class<? extends org.bibsonomy.model.Resource> resourceType, int start, int end) {
+	public List<Tag> getTags(Class<? extends org.bibsonomy.model.Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, int start, int end) {
 		final List<Tag> expected = ModelUtils.buildTagList(3, "testPrefix", 1);		
-		EasyMock.expect(serverLogic.getTags(grouping, groupingName, regex, resourceType, start, end)).andReturn(expected);
+		EasyMock.expect(serverLogic.getTags(resourceType, grouping, groupingName, regex, start, end)).andReturn(expected);
 		EasyMock.replay(serverLogic);
 		
-		final List<Tag> returned = clientLogic.getTags(grouping, groupingName, regex, resourceType, start, end);
+		final List<Tag> returned = clientLogic.getTags(resourceType, grouping, groupingName, regex, start, end);
 		ModelUtils.assertPropertyEquality(expected, returned, 5, Pattern.compile("(.*\\.)?(id|stem)"));
 		EasyMock.verify(serverLogic);
 		assertLogin();
