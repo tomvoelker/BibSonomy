@@ -58,7 +58,7 @@ public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
 
 	@Override
 	protected List<Tag> getList() {
-		return this.getLogic().getTags(resourceType, grouping, groupingValue, regex, this.getView().getStartValue(), this.getView().getEndValue());
+		return this.getLogic().getTags(resourceType, grouping, groupingValue, regex, null, this.getView().getStartValue(), this.getView().getEndValue());
 	}
 
 	@Override
