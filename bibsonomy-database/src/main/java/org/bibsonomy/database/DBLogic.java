@@ -216,8 +216,7 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final int start, final int end) {
-		
+	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final int start, final int end) {
 		if (grouping.equals(GroupingEntity.ALL)) {
 			this.permissionDBManager.checkStartEnd(start, end, "Tag");
 		}		
@@ -226,13 +225,13 @@ public class DBLogic implements LogicInterface {
 		final List<Tag> result;
 		
 		try {
-			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, this.loginUserName, grouping, groupingName, null, null, null, start, end, null);
+			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, this.loginUserName, grouping, groupingName, tags, null, null, start, end, null);
 			
 			if (resourceType == BibTex.class || resourceType == Bookmark.class || resourceType == Resource.class) {
 				// this is save because of RTTI-check of resourceType argument which is of class T
 				param.setRegex(regex);
 				// need to switch from class to string to ensure legibility of Tags.xml
-				param.setContentTypeByClass(resourceType);
+				param.setContentTypeByClass(resourceType);				
 				result = tagDBManager.getTags(param, session);
 			} else {
 				throw new UnsupportedResourceTypeException("The requested resourcetype (" + resourceType.getClass().getName() + ") is not supported.");

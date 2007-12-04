@@ -365,6 +365,13 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	public List<Tag> getTagsViewable(final TagParam param, final DBSession session) {
 		return this.queryForList("getTagsViewable", param, Tag.class, session);
 	}
+	
+	/**
+	 * Get related tags for a given tag or list of tags for a specified group
+	 */
+	public List<Tag> getRelatedTagsForGroup(TagParam param, DBSession session) {
+		return this.queryForList("getRelatedTagsForGroup", param, Tag.class, session);
+	}	
 
 	public List<Tag> getTags(final TagParam param, final DBSession session) {
 		
@@ -399,5 +406,6 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		for (final Tag tag : tags) {
 			System.out.println(tag.getName());
 		}
-	}	
+	}
+
 }
