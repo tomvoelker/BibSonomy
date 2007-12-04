@@ -81,6 +81,9 @@ public interface LogicInterface extends PostLogicInterface {
 
 	/**
 	 * Returns a list of tags which can be filtered.
+	 * @param resourceType
+	 * 			  a resourceType (i.e. Bibtex or Bookmark) to get tags
+	 *  		  only from a bookmark or a bibtex entry
 	 * @param grouping
 	 *            grouping tells whom tags are to be shown: the tags of a user,
 	 *            of a group or of the viewables.
@@ -90,14 +93,11 @@ public interface LogicInterface extends PostLogicInterface {
 	 *            then its an empty string!
 	 * @param regex
 	 *            a regular expression used to filter the tagnames
-	 * @param resourceType
-	 * 			  a resourceType (i.e. Bibtex or Bookmark) to get tags
-	 *  		  only from a bookmark or a bibtex entry
 	 * @param start
 	 * @param end
 	 * @return a set of tags, en empty set else
 	 */
-	public List<Tag> getTags(GroupingEntity grouping, String groupingName, String regex, Class<? extends Resource> resourceType, int start, int end);
+	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, int start, int end);
 
 	/**
 	 * Returns details about a tag. Those details are:
