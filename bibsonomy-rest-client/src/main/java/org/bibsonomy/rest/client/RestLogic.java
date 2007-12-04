@@ -110,7 +110,7 @@ public class RestLogic implements LogicInterface {
 		return execute(new GetTagDetailsQuery(tagName));
 	}
 
-	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, int start, int end) {
+	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, int start, int end) {
 		GetTagsQuery query = new GetTagsQuery(start, end);
 		query.setGrouping(grouping, groupingName);
 		query.setFilter(regex);
