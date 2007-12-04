@@ -216,7 +216,7 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	public List<Tag> getTags(final GroupingEntity grouping, final String groupingName, final String regex, final Class<? extends Resource> resourceType, final int start, final int end) {
+	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final int start, final int end) {
 		
 		if (grouping.equals(GroupingEntity.ALL)) {
 			this.permissionDBManager.checkStartEnd(start, end, "Tag");
