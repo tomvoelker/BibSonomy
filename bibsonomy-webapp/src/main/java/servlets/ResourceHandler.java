@@ -1537,8 +1537,7 @@ public class ResourceHandler extends HttpServlet{
 	 */
 	private void queryPageAuthor(DBContext c, String requAuthor, int itemCount, int startBib) throws SQLException {
 		SplittedAuthors authors = new SplittedAuthors(requAuthor);
-		SystemTags systemTags   = new SystemTags(requAuthor);
-		System.err.println("STRING: " + requAuthor);
+		SystemTags systemTags   = new SystemTags(requAuthor);		
 		String authorMatch = authors.getQuery();		
 		int argCtr = 1;
 

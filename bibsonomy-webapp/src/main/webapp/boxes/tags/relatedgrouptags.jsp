@@ -1,31 +1,18 @@
-
 <li><span class="sidebar_h">related tags</span>
 
-  <%-- standard database query --%>
-  <%-- Query --%>   
-  <sql:query var="rst" dataSource="${dataSource}">
-    SELECT tt.tag_name,count(tt.tag_name) AS tag_anzahl
-      FROM tas t, tas tt, groups g, groupids i
-      WHERE tt.content_id=t.content_id
-        AND t.tag_name=?
-        AND tt.tag_name!=?
-        AND i.group_name = ?
-        AND i.group = g.group 
-        AND g.user_name = t.user_name
-      GROUP BY tt.tag_name
-      ORDER BY tag_anzahl DESC 
-      LIMIT 10
-    <sql:param value="${param.requTag}"/>
-    <sql:param value="${param.requTag}"/>
-    <sql:param value="${param.requGroup}"/>
-  </sql:query>
-  
-  <%@include file="/boxes/tagboxstyle.jsp" %> 
-  <c:forEach var="row" items="${rst.rows}">
-    <li>
-      <a title="<c:out value='${param.requTag}+${row.tag_name}'/>" href="/group/<mtl:encode value='${param.requGroup}' />/<mtl:encode value='${param.requTag}' />+<mtl:encode value='${row.tag_name}' />">+</a>
-      <a title="${row.tag_anzahl} posts" href="/group/<mtl:encode value='${param.requGroup}' />/<mtl:encode value='${row.tag_name}' />"><c:out value="${row.tag_name}" /></a>
+<jsp:useBean id="tagCloudBean" class="beans.TagCloudBean" scope="request">
+	<jsp:setProperty name="tagCloudBean" property="groupingName" value="${param.requGroup}"/>
+	<jsp:setProperty name="tagCloudBean" property="requTags" value="${param.requTag}"/>	
+	<c:if test="${user.name != null}">
+		<jsp:setProperty name="tagCloudBean" property="username" value="${user.name}"/>
+	</c:if>
+</jsp:useBean>
+
+<%@include file="/boxes/tagboxstyle.jsp" %> 
+<c:forEach var="tag" items="${tagCloudBean.tags}">
+	<li>
+      <a title="<c:out value='${param.requTag}+${tag.name}'/>" href="/group/<mtl:encode value='${param.requGroup}' />/<mtl:encode value='${param.requTag}'/>+<mtl:encode value='${tag.name}'/>">+</a>
+      <a href="/group/<mtl:encode value='${param.requGroup}'/>/<mtl:encode value='${tag.name}' />"> <c:out value="${tag.name}" /> </a>
     </li>
-  </c:forEach></ul> 
-  
+</c:forEach></ul> 
 </li>
