@@ -97,7 +97,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @param end
 	 * @return a set of tags, en empty set else
 	 */
-	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, int start, int end);
+	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, int start, int end);
 
 	/**
 	 * Returns details about a tag. Those details are:
