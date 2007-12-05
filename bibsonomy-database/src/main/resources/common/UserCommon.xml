@@ -3,13 +3,53 @@
 
 <sqlMap namespace="UserCommon">
 	<resultMap id="userForGroup" class="user">
+		<result property="homepage"   column="user_homepage"  javaType="url"  />
 		<result property="name"       column="user_name"      javaType="string" />
 		<result property="realname"   column="user_realname"  javaType="string" />
-		<result property="homepage"   column="user_homepage"  javaType="url"  />
 	</resultMap>
 
 	<resultMap id="user" class="user" extends="userForGroup">
-		<result property="email"      column="user_email"     javaType="string" />
-		<result property="apiKey"     column="api_key"        javaType="string" />
+		<result property="apiKey"           column="api_key"       javaType="string" />
+		<result property="birthday"         column="birthday"      javaType="date" />
+		<result property="email"            column="user_email"    javaType="string" />				
+		<result property="gender"           column="gender"        javaType="string" />
+		<result property="hobbies"          column="hobbies"       javaType="string" />
+		<result property="interests"        column="interests"     javaType="string" />
+		<result property="IPAddress"        column="ip_address"    javaType="string" />
+		<result property="openURL"          column="openurl"       javaType="string" />
+		<result property="password"         column="user_password" javaType="string" />
+		<result property="place"            column="place"         javaType="string" />
+		<result property="profession"       column="profession"    javaType="string" />
+		<result property="registrationDate" column="reg_date"      javaType="date" />
+		<result property="spammer"          column="spammer"       javaType="integer" />
 	</resultMap>
+
+	<resultMap id="userWithSettings"  class="user" extends="user"> 
+		<result property="settings"   resultMap="UserCommon.userSettings"/>
+	</resultMap>
+	
+	<resultMap id="userSettings" class="userSettings">
+		<result property="listItemcount" column="list_itemcount" javaType="integer" />	
+		<result property="tagboxMinfreq" column="tagbox_minfreq" javaType="integer" />
+		<result property="tagboxSort"    column="tagbox_sort"    javaType="integer" />
+		<result property="tagboxStyle"   column="tagbox_style"   javaType="integer" />
+		<result property="tagboxTooltip" column="tagbox_tooltip" javaType="integer" />		
+	</resultMap>	
+	 
+	<sql id="allUserAttributes">
+		<include refid="commonUserAttributes"/>,
+		<include refid="userSettingsAttributes"/> 
+	</sql>
+		
+	<sql id="commonUserAttributes">
+		user_name, user_email, user_homepage, user_realname, user_password, 
+		api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, 
+		reg_date, spammer 
+	</sql>
+	
+	<sql id="userSettingsAttributes">
+		tagbox_style, tagbox_sort, tagbox_minfreq, tagbox_tooltip, list_itemcount 
+	</sql>	
+	
 </sqlMap>
+

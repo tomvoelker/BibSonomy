@@ -4,29 +4,53 @@
 <sqlMap namespace="User">
 
 	<select id="getAllUsers" resultMap="Common.user" parameterClass="userParam">
-		SELECT user_name FROM user WHERE spammer = 0 LIMIT #limit# OFFSET #offset#
+		SELECT <include refid="commonUserAttributes"/> 
+		FROM user 
+		WHERE spammer = 0 LIMIT #limit# OFFSET #offset#
 	</select>
 
 	<select id="getApiKeyForUser" resultClass="string" parameterClass="string">
-		SELECT api_key FROM user where user_name = #userName#
+		SELECT api_key 
+		FROM user 
+		WHERE user_name = #userName#
 	</select>
 
 	<update id="updateApiKeyForUser" parameterClass="user">
-		UPDATE user SET api_key = #apiKey# WHERE user_name = #name#
+		UPDATE user 
+		SET api_key = #apiKey# 
+		WHERE user_name = #name#
 	</update>
 
-	<select id="getUserDetails" resultMap="UserCommon.user" parameterClass="string">
-		SELECT user_name, user_email, user_homepage, user_realname, openUrl, api_key
-		FROM user WHERE user_name = #username#
+	<select id="getUserDetails" resultMap="UserCommon.userWithSettings" parameterClass="string">
+		SELECT <include refid="allUserAttributes"/>
+		FROM user 
+		WHERE user_name = #username#
 	</select>
 
 	<select id="getUserNamesByGroupId" resultClass="string" parameterClass="int">
-		SELECT user_name FROM groups WHERE `group` = $groupId$
+		SELECT user_name 
+		FROM groups 
+		WHERE `group` = $groupId$
 	</select>
 
+	<!-- TODO: insert other attributes (see allUserAtributes in UserCommon.xml); dbe 20071119 -->
 	<insert id="insertUser" parameterClass="user">
-		INSERT INTO user (user_name, user_email, user_password, user_realname, user_homepage, api_key)
-		VALUES (#name#, #email#, #password#, #realname#, #homepage#, #apiKey#)
+		INSERT INTO user ( 
+			user_name, user_email, user_password, user_realname, user_homepage, 
+			api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, reg_date, spammer,
+			tagbox_style, tagbox_sort, tagbox_minfreq, tagbox_tooltip, list_itemcount			   
+			)
+		VALUES (
+			#name#, #email#, #password#, #realname#, #homepage#, 
+			#apiKey#, #birthday#, #gender#, #hobbies#, #interests#, #IPAddress#, #openURL#, #place#, #profession#, #registrationDate#, #spammer#,
+			#settings.tagboxStyle#, #settings.tagboxSort#, #settings.tagboxMinfreq#, #settings.tagboxTooltip#, #settings.listItemcount#
+			)
 	</insert>
+	
+	<select id="getUserSettings" resultMap="Common.user" parameterClass="userParam">
+		SELECT <include refid="userSettingsAttributes"/> 
+		FROM user 
+		WHERE user_name = #userName#
+	</select>	
 
 </sqlMap>

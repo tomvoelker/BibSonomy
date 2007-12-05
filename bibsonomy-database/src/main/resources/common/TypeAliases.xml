@@ -13,6 +13,7 @@
 	<typeAlias alias="post"               type="org.bibsonomy.model.Post" />
 	<typeAlias alias="resource"           type="org.bibsonomy.model.Resource" />
 	<typeAlias alias="user"               type="org.bibsonomy.model.User" />
+	<typeAlias alias="userSettings"       type="org.bibsonomy.model.UserSettings" />
 	<typeAlias alias="group"              type="org.bibsonomy.model.Group" />
 	<typeAlias alias="document"           type="org.bibsonomy.model.Document" />
 	<!-- Extras -->

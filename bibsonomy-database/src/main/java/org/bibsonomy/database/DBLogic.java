@@ -123,7 +123,8 @@ public class DBLogic implements LogicInterface {
 				user.setEmail(null);
 				user.setRealname(null);
 				user.setHomepage(null);
-			}
+			}			
+			user.setGroups(this.groupDBManager.getGroupsForUser(userName, session));
 			return user;
 		} finally {
 			session.close();

@@ -15,6 +15,7 @@ import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.UserSettings;
 
 /**
  * Provides methods to build parameter-objects.
@@ -109,6 +110,9 @@ public class ParamUtils {
 		user.setName("hotho");
 		user.setRealname("Andreas Hotho");
 		user.setEmail("aho@cs.uni-kassel.de");
+		user.setGender("m");
+		user.setOpenURL("http://sfxserv.rug.ac.be:8888/rug");
+		user.setSettings(new UserSettings());
 		param.setUser(user);
 		return param;
 	}

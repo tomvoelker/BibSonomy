@@ -61,6 +61,7 @@ public class JNDITestDatabaseBinder {
 		dataSource.setUrl(props.getProperty("url"));
 		dataSource.setUser(props.getProperty("username"));
 		dataSource.setPassword(props.getProperty("password"));
+		dataSource.setZeroDateTimeBehavior(props.getProperty("zeroDateTimeBehaviour"));
 		return dataSource;
 	}	
 }

@@ -9,7 +9,9 @@ import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.ExceptionUtils;
 
@@ -25,8 +27,10 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 
 	private static final Logger log = Logger.getLogger(UserDatabaseManager.class);
 	private final static UserDatabaseManager singleton = new UserDatabaseManager();
+	private final BasketDatabaseManager basketDb;
 
 	private UserDatabaseManager() {
+		this.basketDb = BasketDatabaseManager.getInstance();
 	}
 
 	public static UserDatabaseManager getInstance() {
@@ -42,12 +46,20 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Get details for a given user
+	 * Get details for a given user, along with settings
 	 */
 	public User getUserDetails(final String username, final DBSession session) {
-		return this.queryForObject("getUserDetails", username, User.class, session);
+		User user = this.queryForObject("getUserDetails", username, User.class, session);
+		int numPosts = this.basketDb.getNumBasketEntries(username, session);
+		user.getBasket().setNumPosts(numPosts);
+		return user;
 	}
 
+	
+	private UserSettings getUserSettings(final String username, final DBSession session) {
+		return this.queryForObject("getUserSettings", username, UserSettings.class, session);		
+	}
+	
 	/**
 	 * Get Api key for given user.
 	 */
