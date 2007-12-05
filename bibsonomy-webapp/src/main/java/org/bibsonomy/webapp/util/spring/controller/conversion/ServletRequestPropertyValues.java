@@ -26,12 +26,13 @@ public class ServletRequestPropertyValues extends MutablePropertyValues {
 	 * @param request the request
 	 */
 	public ServletRequestPropertyValues(ServletRequest request) {
-		super(getParametersAndAttributesStartingWith(request, null));
+		super(getParametersAndAttributesStartingWith(request, ""));
 	}
 
 	private static Map<String,Object> getParametersAndAttributesStartingWith(final ServletRequest request, final String prefix) {
-		final Map<String, Object> m = (Map<String, Object>) WebUtils.getParametersStartingWith(request, null);
-		addAttributesStartingWith(m, request, null);
+		final Map<String, Object> m = (Map<String, Object>) WebUtils.getParametersStartingWith(request, prefix);
+		addAttributesStartingWith(m, request, prefix);
+		addParametersStartingWith(m, request, prefix);
 		return m;
 	}
 	
@@ -63,6 +64,27 @@ public class ServletRequestPropertyValues extends MutablePropertyValues {
 			if ((prefixLength == 0) || paramName.startsWith(prefix)) {
 				String unprefixed = paramName.substring(prefixLength);
 				params.put(unprefixed, request.getAttribute(paramName));
+			}
+		}
+	}
+	
+	/**
+	 * @param params
+	 * @param request
+	 * @param prefix
+	 */
+	public static void addParametersStartingWith(final Map<? super String, Object> params, final ServletRequest request, String prefix) {
+		Assert.notNull(request, "Request must not be null");
+		Enumeration<?> paramNames = request.getParameterNames();
+		if (prefix == null) {
+			prefix = "";
+		}
+		final int prefixLength = prefix.length();
+		while (paramNames != null && paramNames.hasMoreElements()) {
+			String paramName = (String) paramNames.nextElement();
+			if ((prefixLength == 0) || paramName.startsWith(prefix)) {
+				String unprefixed = paramName.substring(prefixLength);
+				params.put(unprefixed, request.getParameter(paramName));
 			}
 		}
 	}
