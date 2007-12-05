@@ -169,7 +169,7 @@
 		             b.date, u.book_url, u.book_url_ctr, b.group
 		      FROM bookmark b, urls u
 		      WHERE u.book_url_hash=b.book_url_hash
-		            AND b.group = #groupType#
+		            AND b.group = #groupId#
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS bb
 		LEFT OUTER JOIN tas AS t ON t.content_id = bb.content_id

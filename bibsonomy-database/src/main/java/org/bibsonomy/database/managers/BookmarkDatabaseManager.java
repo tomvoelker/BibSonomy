@@ -208,6 +208,11 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * Prepares queries to retrieve posts which are set viewable to group.
 	 */
 	public List<Post<Bookmark>> getBookmarkViewable(final BookmarkParam param, final DBSession session) {
+		if (GroupID.isSpecialGroupId(param.getGroupId()) == true) {
+			// show users own bookmarks, which are private, public or for friends
+			param.setRequestedUserName(param.getUserName());
+			return getBookmarkForUser(param, session);
+		}				
 		return this.bookmarkList("getBookmarkViewable", param, session);
 	}
 
