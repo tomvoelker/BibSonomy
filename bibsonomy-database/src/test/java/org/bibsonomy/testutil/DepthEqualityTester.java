@@ -63,61 +63,60 @@ public class DepthEqualityTester  {
 		
 		if ((shouldType == String.class) || (shouldType.isPrimitive() == true) || (Number.class.isAssignableFrom(shouldType) == true) || (shouldType == Date.class) || (shouldType == URL.class)) {
 			return checker.checkEquals(should, is, path);
-		} else {
-			if (remainingDepth <= 0) {
-				return true;
-			}
-			if (visited.contains(should) == true) {
-				return true;
-			}
-			visited.add(should);
-			
-			if (Iterable.class.isAssignableFrom(shouldType) == true) {
-				final Iterable shouldIterable = (Iterable) should;
-				final Iterator isIterator = ((Iterable) is).iterator();
-				int i = 0;
-				for (Object shouldEntry : shouldIterable) {
-					final String entryPath = path + "[" + i + "]";
-					if (checker.checkTrue(isIterator.hasNext(), entryPath, "should be present") == false) {
-						return false;
-					}
-					if (assertPropertyEquality(shouldEntry, isIterator.next(), checker, remainingDepth - 1, exclusionPattern, excludeProperties, entryPath, visited) == false) {
-						return false;
-					}
-					i++;
-				}
-				if (checker.checkTrue(isIterator.hasNext() == false, path, "should not be present") == false) {
+		} 
+		if (remainingDepth <= 0) {
+			return true;
+		}
+		if (visited.contains(should) == true) {
+			return true;
+		}
+		visited.add(should);
+		
+		if (Iterable.class.isAssignableFrom(shouldType) == true) {
+			final Iterable shouldIterable = (Iterable) should;
+			final Iterator isIterator = ((Iterable) is).iterator();
+			int i = 0;
+			for (Object shouldEntry : shouldIterable) {
+				final String entryPath = path + "[" + i + "]";
+				if (checker.checkTrue(isIterator.hasNext(), entryPath, "should be present") == false) {
 					return false;
 				}
-			} else {
-				try {
-					final BeanInfo bi = Introspector.getBeanInfo(should.getClass());
-					for (final PropertyDescriptor d : bi.getPropertyDescriptors()) {
-						final String propertyPath = (path.length() > 0) ? (path + "." + d.getName()) : d.getName();
-						Exception catched = null;
-						try {
-							if ("class".equals(d.getName()) == false) {
-								final Method getter = d.getReadMethod();
-								if (getter != null) {
-									if (assertPropertyEquality(getter.invoke(should, (Object[]) null), getter.invoke(is, (Object[]) null), checker, remainingDepth - 1, exclusionPattern, excludeProperties, propertyPath, visited) == false) {
-										return false;
-									}
+				if (assertPropertyEquality(shouldEntry, isIterator.next(), checker, remainingDepth - 1, exclusionPattern, excludeProperties, entryPath, visited) == false) {
+					return false;
+				}
+				i++;
+			}
+			if (checker.checkTrue(isIterator.hasNext() == false, path, "should not be present") == false) {
+				return false;
+			}
+		} else {
+			try {
+				final BeanInfo bi = Introspector.getBeanInfo(should.getClass());
+				for (final PropertyDescriptor d : bi.getPropertyDescriptors()) {
+					final String propertyPath = (path.length() > 0) ? (path + "." + d.getName()) : d.getName();
+					Exception catched = null;
+					try {
+						if ("class".equals(d.getName()) == false) {
+							final Method getter = d.getReadMethod();
+							if (getter != null) {
+								if (assertPropertyEquality(getter.invoke(should, (Object[]) null), getter.invoke(is, (Object[]) null), checker, remainingDepth - 1, exclusionPattern, excludeProperties, propertyPath, visited) == false) {
+									return false;
 								}
 							}
-						} catch (final IllegalArgumentException ex) {
-							catched = ex;
-						} catch (final IllegalAccessException ex) {
-							catched = ex;
-						} catch (final InvocationTargetException ex) {
-							catched = ex;
 						}
-						if (catched != null) {
-							ExceptionUtils.logErrorAndThrowRuntimeException(log, catched, "could not invoke getter of property '" + propertyPath + "'");
-						}
+					} catch (final IllegalArgumentException ex) {
+						catched = ex;
+					} catch (final IllegalAccessException ex) {
+						catched = ex;
+					} catch (final InvocationTargetException ex) {
+						catched = ex;
 					}
-				} catch (final IntrospectionException ex) {
-					ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "could not introspect object of class '" + should.getClass().getName() + "'");
+					if (catched != null) {
+						ExceptionUtils.logErrorAndThrowRuntimeException(log, catched, "could not invoke getter of property '" + propertyPath + "'");
+					}
 				}
+			} catch (final IntrospectionException ex) {
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "could not introspect object of class '" + should.getClass().getName() + "'");
 			}
 		}
 		return true;
