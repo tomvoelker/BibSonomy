@@ -6,6 +6,10 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.HashID;
@@ -68,6 +72,16 @@ public class BibTex extends Resource {
 	private int scraperId;
 	private String url;
 	private String privnote;
+	private HashMap<String,String> miscFields;
+	private String openURL; // this field holds the description part of an openURL to this bibtex object
+
+	public String getOpenURL() {
+		return this.openURL;
+	}
+
+	public void setOpenURL(String openURL) {
+		this.openURL = openURL;
+	}
 
 	public String getPrivnote() {
 		return this.privnote;
@@ -401,4 +415,32 @@ public class BibTex extends Resource {
 		}		
 		return null;
 	}
+	
+	/**
+	 * Access a 
+	 * 
+	 * @param key
+	 * @return String
+	 */
+	public String getMiscField(String key) {
+		if (this.miscFields == null) {
+			return null;
+		}
+		if (this.miscFields.containsKey(key)) {
+			return this.miscFields.get(key);
+		}
+		return null;
+	}
+	
+
+	/**
+	 * @param key
+	 * @param value
+	 */
+	public void addMiscField(String key, String value) {
+		if (this.miscFields == null) {
+			this.miscFields = new HashMap<String, String>();
+		}
+		this.miscFields.put(key, value);
+	}		
 }
