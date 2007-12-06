@@ -3,6 +3,9 @@ var style_list = null;
 var style_sort = new Array("alph", "freq");
 var style_show = new Array("cloud", "list");
 
+// var style_sort = new Array(getString("tagbox.sort.alpha"), getString("tagbox.sort.freq"));
+// var style_show = new Array(getString("tagbox.style.cloud"), getString("tagbox.style.list"));
+
 function init_tagbox(show, sort, minfreq, requUser) {
 
   style_list = document.createElement("ul");
@@ -51,17 +54,17 @@ function getStyleItem(style, style_arr) {
 	
 	style_sort.appendChild(document.createTextNode(" ("));
 	if(style == style_arr[0]) {
-		style_sort.appendChild(document.createTextNode(style_arr[0] + " | "));
+		style_sort.appendChild(document.createTextNode(getString("tagbox." + style_arr[0]) + " | "));
 
 		node.onclick = attachChangeTagBox(style_arr[1]);
-		node.appendChild(document.createTextNode(style_arr[1]));
+		node.appendChild(document.createTextNode(getString("tagbox." + style_arr[1])));
 		style_sort.appendChild(node);
 	} else {
 		node.onclick = attachChangeTagBox(style_arr[0]);
-		node.appendChild(document.createTextNode(style_arr[0]));
+		node.appendChild(document.createTextNode(getString("tagbox." + style_arr[0])));
 		style_sort.appendChild(node);
 
-		style_sort.appendChild(document.createTextNode(" | " + style_arr[1]));
+		style_sort.appendChild(document.createTextNode(" | " + getString("tagbox." + style_arr[1])));
 	}
 	style_sort.appendChild(document.createTextNode(") "));
 	
@@ -79,7 +82,7 @@ function getMinUsertagsLink (count, requUser) {
 function showMinfreq(count, currUser) {
 	var minfreqList = document.createElement("li")
 
-	minfreqList.appendChild(document.createTextNode(" (minfreq "));
+	minfreqList.appendChild(document.createTextNode(" (" + getString("tagbox.minfreq") + "  "));
 	
 	if (count == 1) {
 		minfreqList.appendChild(document.createTextNode("1 | "));
@@ -174,7 +177,9 @@ function setTagBoxFreq(){
 			collection_tagname.push(tagname);
 			collection_li[tagname] = litags[x].cloneNode(true);
 			var title = tags[0].getAttribute("title");
-			var numberofpost = title.substring(0, title.length-6);
+			var titleParts = title.split(" ");
+			var numberofpost = parseInt(titleParts[0]);
+			// var numberofpost = title.substring(0, title.length-6);
 			collection_tagposts[tagname] = numberofpost;
 			var newnumberofposts = true;
 			for(y=0; y<collection_numberofposts.length; y++){
@@ -190,7 +195,9 @@ function setTagBoxFreq(){
 			collection_tagname.push(tagname);
 			collection_li[tagname] = litags[x].cloneNode(true);
 			var title = tags[2].getAttribute("title");
-			var numberofpost = title.substring(0, title.length-6);
+			var titleParts = title.split(" ");
+			var numberofpost = parseInt(titleParts[0]);			
+			// var numberofpost = title.substring(0, title.length-6);
 			collection_tagposts[tagname] = numberofpost;
 			var newnumberofposts = true;
 			for(y=0; y<collection_numberofposts.length; y++){
@@ -249,7 +256,7 @@ function sendMinfreqRequ(minfreq, currUser) {
  	if(request) {
  		if(minfreq == null)	minfreq = 1;
 
-		request.open('GET', "/ajax/subTagList.jsp?requUser=" + currUser + "&minfreq=" + minfreq + "&ckey=" + ckey, true);
+		request.open('GET', "/ajax/subTagList.jsp?requUser=" + currUser + "&minfreq=" + minfreq + "&ckey=" + ckey + "&tagMaxFreq=" + tagMaxFreq, true);
 		request.onreadystatechange = handleMinfreqResponse(request);
 		request.send(null);
 	}
@@ -310,8 +317,12 @@ function naviSwitchSpecial(target) {
 	}
 	
 	// obtain fundamental informations
-	var body = document.getElementsByTagName("body")[0];
-	var bar = document.getElementById("path");
+	var body = document.getElementsByTagName("body")[0];	
+	var bar = document.getElementById("heading");
+	if(bar == null) { 
+		// backwards compatibility
+		bar = document.getElementById("path");
+	}
 
 	// create headline node as container for following stuff 
 	var headlineNode = document.createElement("h1");
@@ -340,18 +351,22 @@ function naviSwitchSpecial(target) {
 	// select options
 	var options = new Array("tag", "user", "group", "author", "concept", "bibtexkey", "all", "explicit_user");
 	
+	// hint for input field
+	var hint = "";
+	
 	// fill select dropdown box with options
 	for(var i = 0; i < options.length; i++) {
-		
+						
 		// exception for 'all' case
 		if(options[i] == "all") {
 			
 			var optionNode = document.createElement("option");
 			optionNode.setAttribute("value", options[i]);
-			optionNode.appendChild(document.createTextNode("search:all"));
-			
+			optionNode.appendChild(document.createTextNode(getString("navi.search") + ":" + getString("navi.all")));
+						
 			if(options[i] == target) {
 				optionNode.setAttribute("selected", "");
+				hint = getString("navi.search.hint");
 			}
 		
 			selectNode.appendChild(optionNode);
@@ -360,10 +375,11 @@ function naviSwitchSpecial(target) {
 			
 			var optionNode = document.createElement("option");
 			optionNode.setAttribute("value", options[i]);
-			optionNode.appendChild(document.createTextNode("BibTeX key"));
+			optionNode.appendChild(document.createTextNode(getString("navi.bibtexKey")));			
 			
 			if(options[i] == target) {
 				optionNode.setAttribute("selected", "");
+				hint = getString("navi.bibtexkey.hint");
 			}
 		
 			selectNode.appendChild(optionNode);
@@ -373,10 +389,11 @@ function naviSwitchSpecial(target) {
 			if(username != "" && username != null) {
 				var optionNode = document.createElement("option");
 				optionNode.setAttribute("value", "user:" + username);
-				optionNode.appendChild(document.createTextNode("search:" + username));
+				optionNode.appendChild(document.createTextNode(getString("navi.search") + ":" + username));							
 			
 				if(options[i] == target) {
 					optionNode.setAttribute("selected", "");
+					hint = getString("navi.search.hint");	
 				}
 		
 				selectNode.appendChild(optionNode);
@@ -386,10 +403,11 @@ function naviSwitchSpecial(target) {
 			
 			var optionNode = document.createElement("option");
 			optionNode.setAttribute("value", options[i]);
-			optionNode.appendChild(document.createTextNode(options[i]));
+			optionNode.appendChild(document.createTextNode(getString("navi." + options[i])));			
 			
 			if(options[i] == target) {
 				optionNode.setAttribute("selected", "");
+				hint = getString("navi." + options[i] + ".hint");
 			}
 		
 			selectNode.appendChild(optionNode);
@@ -409,14 +427,24 @@ function naviSwitchSpecial(target) {
 	
 	if(document.getElementById("inpf") != null) {
 		inpfValue = document.getElementById("inpf").value;
-		
-		if(inpfValue != search_hint && inpfValue != tag_hint
-			&& inpfValue != user_hint && inpfValue != group_hint
-			&& inpfValue != author_hint && inpfValue != concept_hint) {
+						
+//		if(inpfValue != getString("navi.search.hint") && inpfValue != getString("navi.tag.hint")
+//			&& inpfValue != getString("navi.user.hint") && inpfValue != getString("navi.group.hint")
+//			&& inpfValue != getString("navi.author.hint") && inpfValue != getString("navi.concept.hint")) {
+
+		if(inpfValue == getString("navi.search.hint") || inpfValue == getString("navi.tag.hint")
+			|| inpfValue == getString("navi.user.hint") || inpfValue == getString("navi.group.hint")
+			|| inpfValue == getString("navi.author.hint") || inpfValue == getString("navi.concept.hint")
+			|| !inpfValue) {
 			
-			inpfNode.value = inpfValue;
-			inpfNode.value = inpfNode.value;
+			inpfValue = hint;
+    		inpfNode.style.color = "#aaaaaa";
+    		inpfNode.onmousedown = clear_input;
+    		inpfNode.onkeypress  = clear_input;					
 		}
+			
+		inpfNode.value = inpfValue;
+		inpfNode.value = inpfNode.value;
 	}
 	
    	formNode.appendChild(inpfNode);
@@ -437,7 +465,7 @@ function naviSwitchSpecial(target) {
 	
 	// if the user uses opera, there is a workaround to set the cursor position
 	if(window.opera)
-		inpfNode.select(); 
+		inpfNode.select();
 	
 	// unselect text
 	inpfNode.value = inpfNode.value;

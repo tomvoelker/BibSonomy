@@ -1,10 +1,3 @@
-var search_hint = "<fulltext search here>";
-var tag_hint    = "<enter tag(s) here>";
-var user_hint   = "<enter user here>";
-var group_hint  = "<enter group here>";
-var author_hint = "<enter author(s) here>";
-var concept_hint = "<enter concept tag(s) here>";
-var bibtexkey_hint = "<enter BibTeX key here>";
 var activeField = null;
 var sidebar     = null;
 var tagbox      = null;
@@ -131,42 +124,42 @@ function maximizeById(id) {
 function add_hints() {
   // for search input field
   var el = document.getElementById("se");
-  if (el && (el.value == "" || el.value == search_hint)) {
+  if (el && (el.value == "" || el.value == getString("navi.search.hint"))) {
     // add hint
-    el.value       = search_hint;
+    el.value       = getString("navi.search.hint");
     el.style.color = "#aaaaaa";
     el.onmousedown = clear_input;
     el.onkeypress  = clear_input;
   }
   // for tag input field
   el = document.getElementById("inpf");
-  if (el != null && (el.name == "tag" || el.name == "tags") && (el.value == "" || el.value == tag_hint)) {
-    el.value = tag_hint;
+  if (el != null && (el.name == "tag" || el.name == "tags") && (el.value == "" || el.value == getString("navi.tag.hint"))) {
+    el.value = getString("navi.tag.hint");
     el.style.color = "#aaaaaa";
     el.onmousedown = clear_input;
     el.onkeypress  = clear_input;
   }
   // specialsearch (tag, user, group, author, relation)
-  if (el != null && el.name == "q" && (el.value == "" || el.value == author_hint || el.value == tag_hint 
-  		|| el.value == user_hint || el.value == group_hint || el.value == concept_hint || bibtexkey_hint) || (el != null && el.value == search_hint)) {
+  if (el != null && el.name == "q" && (el.value == "" || el.value == getString("navi.author.hint") || el.value == getString("navi.tag.hint") 
+  		|| el.value == getString("navi.user.hint") || el.value == getString("navi.group.hint") || el.value == getString("navi.concept.hint") || getString("navi.bibtexkey.hint")) || (el != null && el.value == getString("navi.search.hint"))) {
     var scope = document.getElementById("scope");
     // add call to this method to dropdown box, so that hint changes, when box changes
     scope.onmouseup = add_hints;
     scope.onkeyup   = add_hints;
     if (scope.value == "tag") {
-      el.value = tag_hint;
+      el.value = getString("navi.tag.hint");
     } else if (scope.value == "user") {
-      el.value = user_hint;
+      el.value = getString("navi.user.hint");
     } else if (scope.value == "group") {
-      el.value = group_hint;
+      el.value = getString("navi.group.hint");
     } else if (scope.value == "author") {
-      el.value = author_hint;
+      el.value = getString("navi.author.hint");
     } else if (scope.value == "concept") {
-      el.value = concept_hint;
+      el.value = getString("navi.concept.hint");
     } else if (scope.value == "bibtexkey") {
-      el.value = bibtexkey_hint;
+      el.value = getString("navi.bibtexkey.hint");
     } else if (scope.value.indexOf("user") != -1 || scope.value == "all") {
-      el.value = search_hint;
+      el.value = getString("navi.search.hint");
     }    
     el.style.color = "#aaaaaa";
     el.onmousedown = clear_input;
@@ -191,7 +184,7 @@ function clear_input (event) {
 /* clear_node for inpf (tags) - is toggled, when submit button gets pressed */
 function clear_tags () {
   var tag = document.getElementById("inpf");
-  if (tag.value == tag_hint) {
+  if (tag.value == getString("navi.tag.hint")) {
     clear_node(tag);
   }
 }
@@ -291,7 +284,7 @@ function setActiveInputField(id) {
 
 function toggle(event) {
 		
-		clear_tags(); // remove tag_hint 
+		clear_tags(); // remove getString("navi.tag.hint") 
         var tagn = xget_event(event);
         var tag = tagn.childNodes[0].nodeValue;
         tag = tag.replace(/ /,"");
@@ -1475,4 +1468,11 @@ function setTut(tutName) {
 
 String.prototype.startsWith = function(s) { 
 	return this.indexOf(s) == 0; 
+}
+
+function getString( key ) {
+  if ( !LocalizedStrings ) return "???"+key+"???"; 
+  var s = LocalizedStrings[key];
+  if( !s ) return "???"+key+"???";
+  return s;
 }
