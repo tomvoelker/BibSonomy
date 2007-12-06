@@ -28,6 +28,6 @@ public class GetTagsByUser extends TagChainElement {
 
 	@Override
 	protected boolean canHandle(final TagParam param) {
-		return present(param.getUserName()) && param.getGrouping() == GroupingEntity.USER && present(param.getRequestedGroupName());
+		return param.getGrouping() == GroupingEntity.USER && present(param.getRequestedGroupName());
 	}
 }

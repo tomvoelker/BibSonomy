@@ -32,17 +32,23 @@
 	</select>
 
 	<select id="getAllTags" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
-		<!--  SELECT tag_name, count(tag_name) AS tag_count FROM tas t GROUP BY t.tag_name LIMIT #limit# OFFSET #offset# -->
-		<!--  up to now, a user can see his own tags as well as public tags -->
-		SELECT t.tag_name, count(t.tag_name) as tag_ctr 
-		FROM tas t 
-		USE INDEX (tag_name_user_name_idx)
-		WHERE (t.user_name=#userName# OR
-			  t.group=0)
-			  <include refid="getTagsByResourceType"/>
-		GROUP BY t.tag_name
-		HAVING tag_ctr > 0
-		LIMIT #limit# OFFSET #offset#
+		<!-- we only give out the 100 most frequent tags from the last 10000 ones -->
+   		SELECT tag_name, lower(tag_name) as x, tag_ctr
+    	FROM ( 
+    		SELECT tt.tag_name, count(tt.tag_name) AS tag_ctr
+      		FROM 
+        		(SELECT tag_name 
+          		FROM tas t
+          		USE INDEX (tag_name_user_name_idx) 
+          		WHERE (t.user_name=#userName# OR t.group=0)
+          			<include refid="getTagsByResourceType"/>
+          		ORDER BY date desc
+          		LIMIT 10000) AS tt
+      		GROUP BY tt.tag_name
+      		ORDER BY 2 desc
+      		LIMIT #limit#
+      	) as t1
+      	order by 2;		 
 	</select>
 
 	<select id="getTagsByExpression" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
