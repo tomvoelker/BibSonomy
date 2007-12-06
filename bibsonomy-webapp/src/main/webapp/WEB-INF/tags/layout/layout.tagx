@@ -4,7 +4,9 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
-	xmlns:mtl="/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:lp="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:mtl="/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="basketSize" type="java.lang.Integer" required="true"/>
@@ -39,50 +41,71 @@
 		<jsp:body>
 			<head>
 				<c:set var="resdir" value="${pageContext.request.contextPath}/resources" /><!-- TODO: if sessionid is appended this leads to problems -->
+				<c:set var="locale">
+					<fmt:message key="meta.lang"/>
+				</c:set>
 				<meta http-equiv="content-Type" content="text/html; charset=UTF-8" />
 				<link rel="stylesheet" type="text/css" href="${resdir}/css/style.css" />
 				<link rel="stylesheet" type="text/css" href="${resdir}/css/faq.css" />
 				<link rel="icon" href="${resdir}/image/favicon.png" type="image/png" />
+				<!-- localized javascript messages -->
+				<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale}.js">&amp;nbsp;</script>				
 				<script type="text/javascript" src="${resdir}/javascript/functions.js">&amp;nbsp;</script>
 				<script type="text/javascript" src="${resdir}/javascript/tooltip.js">&amp;nbsp;</script>
 				<script type="text/javascript" src="${resdir}/javascript/style.js">&amp;nbsp;</script>
-				<meta name="author" content="Knowledge and Data Engineering Group, University of Kassel, Germany" />
-				<meta name="copyright" content="Knowledge and Data Engineering Group, University of Kassel, Germany" />
-				<meta name="email" content="webmaster@bibsonomy.org" />
-				<meta name="keywords" lang="de" content="BibTeX, Bookmarks, Folksonomy, Tagging, Wissensverarbeitung, Wissensmanagement, Data Mining, Informatik, Universität Kassel" />
-				<meta name="keywords" lang="en" content="BibTeX, bookmarks, knowledge discovery, folksonomy, tagging, knowledge management, data mining, computer science, University of Kassel" />
-				<meta name="description" lang="de" content="Webapplikation des Fachgebiets Wissensverarbeitung, Universität Kassel" />
-				<meta name="description" lang="en" content="Webapplication of the Knowledge and Data Engineering Group, University of Kassel, Germany" />
-				
-				<link rel="alternate" type="application/atom+xml" title="BibSonomy Blog - Atom" href="http://bibsonomy.blogspot.com/feeds/posts/default" />
-				<link rel="alternate" type="application/rss+xml"  title="BibSonomy Blog - RSS"  href="http://bibsonomy.blogspot.com/feeds/posts/default?alt=rss" />
-				<title><fmt:message key="system.name"/> :: <c:out value="${pageTitle}"/></title>
+				<script type="text/javascript" src="${resdir}/javascript/chrome.js">&amp;nbsp;</script>
+				<lp:meta fieldName="author"/>
+				<lp:meta fieldName="copyright"/>
+				<lp:meta fieldName="email"/>
+				<lp:meta fieldName="keywords"/>
+				<lp:meta fieldName="description"/>				
+				<link rel="alternate" type="application/atom+xml" title="${systemName} Blog - Atom" href="http://bibsonomy.blogspot.com/feeds/posts/default" />
+				<link rel="alternate" type="application/rss+xml"  title="${systemName} Blog - RSS"  href="http://bibsonomy.blogspot.com/feeds/posts/default?alt=rss" />
+				<title><fmt:message key="system.name"/> <fmt:message key="system.path.delim"/> <c:out value="${pageTitle}"/></title>
 				<jsp:invoke fragment="headerExt"/>
 			</head>
 			<body>
-				<div class="h1">
+				<div id="heading">
+					<h1>
 					<c:url var="root" value="/"/>
-					<a href="${root}" rel="Start"><fmt:message key="system.name"/></a> :: <jsp:invoke fragment="heading"/>
+					<a href="${root}" rel="Start">${projectName}</a> :: <jsp:invoke fragment="heading"/>
+					</h1>
+					<!-- dropdown menu for BibSonomy Path -->  
+					<div id="path_menu" class="dropmenudiv">
+						<a onclick="naviSwitchSpecial('tag')" style="cursor:pointer"><fmt:message key="navi.tag"/></a>
+						<a onclick="naviSwitchSpecial('user')" style="cursor:pointer"><fmt:message key="navi.user"/></a>
+						<a onclick="naviSwitchSpecial('group')" style="cursor:pointer"><fmt:message key="navi.group"/></a>
+						<a onclick="naviSwitchSpecial('author')" style="cursor:pointer"><fmt:message key="navi.author"/></a>
+						<a onclick="naviSwitchSpecial('concept')" style="cursor:pointer"><fmt:message key="navi.concept"/></a>
+						<a onclick="naviSwitchSpecial('bibtexkey')" style="cursor:pointer"><fmt:message key="navi.bibtexKey"/></a>
+						<a onclick="naviSwitchSpecial('all')" style="cursor:pointer"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></a>
+						<c:if test="${not empty command.requestedUser}">
+							<c:set var="requUser" value="${command.requestedUser}" />						
+							<a onclick="naviSwitchSpecial('explicit_user')" style="cursor:pointer"><fmt:message key="navi.search"/>:<c:out value='${command.requestedUser}'/></a>
+							<c:set var="mode" value="requUser" />
+						</c:if>
+						<c:if test="${not empty loginUser.name and empty command.requestedUser}">
+							<c:set var="requUser" value="${command.requestedUser}" />
+							<a onclick="naviSwitchSpecial('explicit_user')" style="cursor:pointer"><fmt:message key="navi.search"/>:<c:out value='${loginUser.name}'/></a>
+						<c:set var="mode" value="requUser" />
+					</c:if>
+				</div>
+								
+				<script type="text/javascript">
+				  cssdropdown.startchrome("heading");
+				</script>					
 				</div>
 				
 				<menu:navi loginUserName="${loginUserName}" searchString="${searchString}" basketSize="${basketSize}" />
 				
 				<div id="outer">
-					<c:if test="${empty user.name}">
+					<c:if test="${empty loginUserName}">
 						<div id="general">
 							<p class="smalltext">
-								<fmt:message key="system.name"/> is a system for sharing bookmarks and lists of literature. When 
-								discovering a bookmark or a publication on the web, you can store it on our 
-								server. You can add tags to your entry to retrieve it more easily. This is 
-								very similar to the bookmarks/favorites that you store within your browser. 
-								The advantage of <fmt:message key="system.name"/> is that you can access your data from  whereever 
-								you are. Furthermore, you can discover more bookmarks and publications from 
-								your friends and other people.
+								<fmt:message key="system.about"/>
 							</p>
 							<p class="smalltext">
-								This page shows you the latest updates of <fmt:message key="system.name"/>. Why don't you just 
-								try it yourself? After a free <a href="/register">registration</a>, you can 
-								organise your own bookmarks and publications, and discover related entries.
+								<fmt:message key="system.introduction"/>								
 							</p>
 						</div>
 					</c:if>
@@ -93,11 +116,20 @@
 						<jsp:invoke fragment="sidebar"/>
 					</ul>
 				</c:if>
-				<div id="footer"> 
-					<fmt:message key="system.name"/> is offered by the <a href="http://www.kde.cs.uni-kassel.de/index_en.html">Knowledge and Data Engineering Group</a> 
-					of the University of Kassel, Germany.
-					Contact: <!--@include file="/boxes/emailaddress.jsp" -->
-					<script type="text/javascript">init(${user.tagboxStyle}, ${user.tagboxSort}, ${user.tagboxMinfreq}, "<c:out value='${param.requUser}'/>", "${ckey}");</script>  
+				<div id="footer">
+					<fmt:message key="system.offeredBy"/>
+					<jsp:text> </jsp:text>
+					<fmt:message key="system.contact"/>
+					<jsp:text> </jsp:text>
+					<lp:email>
+						<jsp:attribute name="userName">
+							<fmt:message key="system.contact.email.username"/>
+						</jsp:attribute>
+						<jsp:attribute name="hostName">
+							<fmt:message key="system.contact.email.hostname"/>
+						</jsp:attribute>						
+					</lp:email> 
+					<script type="text/javascript">init(${user.tagboxStyle}, ${user.tagboxSort}, ${user.tagboxMinfreq}, "${command.requestedUser}", "${loginUserName}", "${ckey}", "${projectName}");</script>  
 				</div>
 			</body>
 		</jsp:body>

@@ -3,9 +3,10 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
-	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListView" required="true"/>
+	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="otherParams" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="true"/>
@@ -41,12 +42,12 @@
 		
 		<!-- Bibtex description -->
 		<jsp:attribute name="desc">
-			<rc:bibtexDesc post="${post}"/>
+			<bib:desc post="${post}"/>
 		</jsp:attribute>
 		
 		<!-- BibTeX action -->
 		<jsp:attribute name="actions">
-			aaannndd ACTION!
+			<bib:actions loginUserName="${loginUserName}" post="${post}"/>
 		</jsp:attribute>
 		
 	</rc:list>

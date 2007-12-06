@@ -21,7 +21,7 @@ public class ListViewTest {
 	 */
 	@Test
 	public void testCurPageNumber() {
-		ListView<Integer> lv = new ListView<Integer>();
+		ListCommand<Integer> lv = new ListCommand<Integer>();
 		lv.setEntriesPerPage(15);
 		lv.setStart(0);
 		Assert.assertEquals(new Integer(1), lv.getCurPage().getNumber());
@@ -38,11 +38,11 @@ public class ListViewTest {
 	 */
 	@Test
 	public void testPreviousPages() {
-		ListView<Integer> lv = new ListView<Integer>();
+		ListCommand<Integer> lv = new ListCommand<Integer>();
 		lv.setEntriesPerPage(15);
 		lv.setStart(60);
 		lv.setNumPreviousPages(2);
-		List<Page> prevPages = lv.getPreviousPages();
+		List<PageCommand> prevPages = lv.getPreviousPages();
 		Assert.assertEquals(2, prevPages.size());
 		
 		Assert.assertEquals(30, prevPages.get(0).getStart());
@@ -64,12 +64,12 @@ public class ListViewTest {
 	 */
 	@Test
 	public void testNextPages() {
-		ListView<Integer> lv = new ListView<Integer>();
+		ListCommand<Integer> lv = new ListCommand<Integer>();
 		lv.setEntriesPerPage(15);
 		lv.setTotalCount(91);
 		lv.setStart(60);
 		lv.setNumNextPages(2);
-		List<Page> nextPages = lv.getNextPages();
+		List<PageCommand> nextPages = lv.getNextPages();
 		Assert.assertEquals(2, nextPages.size());
 		
 		Assert.assertEquals(75, nextPages.get(0).getStart());

@@ -25,6 +25,13 @@
 	</rule>
 
 
+<!--  store requested path for each query -->
+	<rule>
+		<from>^/+(.+)$</from>		
+		<set name="requPath">$1</set>		
+	</rule>
+
+
 <!-- ############## feeds ############### -->
     <!-- FEED overview page -->
 	<rule>
@@ -177,14 +184,20 @@
       <from>^/+user/(\?user=(.*))$</from>
       <to type="redirect">/user/$2</to>
     </rule>
+    <!-- /user/USER/TAG -->
     <rule>
         <from>^/+user/+([^/?]+?)/(.+?)(\?(.*))?$</from>
         <to>/ResourceHandler?page=usertag&amp;requUser=$1&amp;requTag=$2&amp;$4</to>
     </rule>
+    <!-- /user/USER -->
 	<rule>
 		<from>^/+user/+([^/?]+?)(\?(.*))?$</from>
+		<!-- 
 		<to>/ResourceHandler?page=user&amp;requUser=$1&amp;$3</to>
+		 -->
+		<to>/user?requestedUser=$1&amp;$3</to>
 	</rule>
+	
 	<rule>
 		<from>^/+user/+([^/?]+?)/$</from>
 		<to type="redirect">/user/$1</to>

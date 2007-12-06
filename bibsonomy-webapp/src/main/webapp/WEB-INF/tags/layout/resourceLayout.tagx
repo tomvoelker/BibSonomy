@@ -12,23 +12,31 @@
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="sidebar" fragment="true" required="true"/>
 	
+	<!-- 
+		store some locale messages in variables to be
+	    able to access them inside element attributes
+	-->
+	<c:set var="bookmarkRssFeed"><fmt:message key="feeds.bookmark"/></c:set>
+	<c:set var="publicationRssFeed"><fmt:message key="feeds.publication"/></c:set>
+	<c:set var="burstRssFeed"><fmt:message key="feeds.burst"/></c:set>
+	
 	<c:choose>
-		<c:when test="${command.loginUser != null}">
-			<c:set var="loginUserName" value="${command.loginUser.name}"/>
+		<c:when test="${command.user != null}">
+			<c:set var="loginUserName" value="${command.user.name}"/>
 		</c:when>
 		<c:otherwise>
 			<c:set var="loginUserName" value="${null}"/>
 		</c:otherwise>
 	</c:choose>
 	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>
-	<layout:layout loginUserName="${loginUserName}" searchString="hurz" basketSize="${1}" pageTitle="${pageTitle}" heading="${heading}" sidebar="${sidebar}">
+	<layout:layout loginUserName="${loginUserName}" searchString="hurz" basketSize="${loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" sidebar="${sidebar}">
 		<jsp:attribute name="headerExt">
 			<c:set var="bookRssUrl" value="/rss/${requPath}"/>
-			<link rel="alternate" type="application/rss+xml" title="Bookmark RSS feed for /${requPath}" href="${bookRssUrl}" />
+			<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${requPath}" href="${bookRssUrl}" />
 			<c:set var="bibRssUrl" value="/publrss/${requPath}"/>
-			<link rel="alternate" type="application/rss+xml" title="Publication RSS feed for /${requPath}" href="${bibRssUrl}" />
+			<link rel="alternate" type="application/rss+xml" title="${publicationRssFeed} /${requPath}" href="${bibRssUrl}" />
 			<c:set var="burstUrl" value="/burst/${requPath}"/>
-			<link rel="alternate" type="application/rss+xml" title="BuRST RSS feed for /${requPath}" href="${burstUrl}" />
+			<link rel="alternate" type="application/rss+xml" title="${burstRssFeed} /${requPath}" href="${burstUrl}" />
 		</jsp:attribute>
 		<jsp:attribute name="content">
 			<resources:bookmarks listView="${command.bookmark}" loginUserName="${loginUserName}" otherParams="bibtex.start=${command.bibtex.start}" disableActions="${false}" requPath="${requPath}"/>

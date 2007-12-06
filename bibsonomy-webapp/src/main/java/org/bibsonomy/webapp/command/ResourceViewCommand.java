@@ -12,12 +12,17 @@ import org.bibsonomy.model.Resource;
 /**
  * command with fields for the resource lists.
  * 
+ * is mainly a container for two list commands (bookmarks & bibtexs), the requested username
+ * and a list of tags associated with the bookmarks / bibtexs
+ * 
  * @see BaseCommand
  * @author Jens Illig
+ * @author Dominik Benz
  */
 public class ResourceViewCommand extends BaseCommand {
-	private ListView<Post<Bookmark>> bookmark = new ListView<Post<Bookmark>>();
-	private ListView<Post<BibTex>> bibtex = new ListView<Post<BibTex>>();
+	private ListCommand<Post<Bookmark>> bookmark = new ListCommand<Post<Bookmark>>();
+	private ListCommand<Post<BibTex>> bibtex = new ListCommand<Post<BibTex>>();
+	private TagCloudCommand tagcloud = new TagCloudCommand();
 	private String requestedUser;
 	
 	/**
@@ -26,11 +31,11 @@ public class ResourceViewCommand extends BaseCommand {
 	 * @return the list with entities of type resourceType
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Resource> ListView<Post<T>> getListView(Class<T> resourceType) {
+	public <T extends Resource> ListCommand<Post<T>> getListCommand(Class<T> resourceType) {
 		if (resourceType == BibTex.class) {
-			return (ListView) getBibtex();
+			return (ListCommand) getBibtex();
 		} else if (resourceType == Bookmark.class) {
-			return (ListView) getBookmark();
+			return (ListCommand) getBookmark();
 		}
 		throw new UnsupportedResourceTypeException(resourceType.getName());
 	}
@@ -38,25 +43,25 @@ public class ResourceViewCommand extends BaseCommand {
 	/**
 	 * @return the bibtex ListView
 	 */
-	public ListView<Post<BibTex>> getBibtex() {
+	public ListCommand<Post<BibTex>> getBibtex() {
 		return this.bibtex;
 	}
 	/**
 	 * @param bibtex the bibtex ListView
 	 */
-	public void setBibtex(ListView<Post<BibTex>> bibtex) {
+	public void setBibtex(ListCommand<Post<BibTex>> bibtex) {
 		this.bibtex = bibtex;
 	}
 	/**
 	 * @return the bookmark ListView
 	 */
-	public ListView<Post<Bookmark>> getBookmark() {
+	public ListCommand<Post<Bookmark>> getBookmark() {
 		return this.bookmark;
 	}
 	/**
 	 * @param bookmark the bookmark ListView
 	 */
-	public void setBookmark(ListView<Post<Bookmark>> bookmark) {
+	public void setBookmark(ListCommand<Post<Bookmark>> bookmark) {
 		this.bookmark = bookmark;
 	}
 	/**
@@ -71,6 +76,19 @@ public class ResourceViewCommand extends BaseCommand {
 	public void setRequestedUser(String requestedUser) {
 		this.requestedUser = requestedUser;
 	}
-	
-	
+
+	/**
+	 * @return the tagcloud command
+	 */
+	public TagCloudCommand getTagcloud() {
+		return this.tagcloud;
+	}
+
+	/**
+	 * @param tagcloud the tagcloud command
+	 */
+	public void setTagcloud(TagCloudCommand tagcloud) {
+		this.tagcloud = tagcloud;
+	}
+		
 }

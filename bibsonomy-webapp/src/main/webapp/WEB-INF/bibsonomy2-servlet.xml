@@ -7,6 +7,11 @@
 	</bean>
 
 	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="interceptors">
+			<list>
+				<ref local="localeChangeInterceptor"/>
+			</list>
+		</property>	
 		<property name="urlMap">
 			<map>
 				<entry key="/homepage/">
@@ -14,13 +19,16 @@
 						<property name="controllerBeanName" value="homepageController"/>
 					</bean>
 				</entry>
+				<entry key="/user/">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="userPageController"/>
+					</bean>
+				</entry>				
 			</map>
 		</property>
 	</bean>
-	
-	<bean id="requestHolder" class="org.bibsonomy.webapp.util.spring.factorybeans.Holder" scope="request"/>
-		<bean id="homepageController" class="org.bibsonomy.webapp.controller.MultiResourceListController" scope="request">
-		<property name="postLogic" ref="postLogic"/>
+			<bean id="homepageController" class="org.bibsonomy.webapp.controller.HomepageController" scope="request">
+		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
 		<property name="listsToInitialise">
 			<list>
@@ -30,25 +38,58 @@
 		</property>
 	</bean>
 
+	<bean id="userPageController" class="org.bibsonomy.webapp.controller.UserPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+		<property name="listsToInitialise">
+			<list>
+				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="requestHolder" class="org.bibsonomy.webapp.util.spring.factorybeans.Holder" scope="request"/>
+
 	<bean id="request" class="org.bibsonomy.webapp.util.spring.factorybeans.RequestFactoryBean" scope="request">
 		<property name="requestHolder"><ref bean="requestHolder"/></property>
 	</bean>
 	
 	<bean id="postLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.PostLogicFactoryBean" scope="request">
-		<property name="request" ref="request"/>
+		<property name="user" ref="loginUser"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 	</bean>
+	
+	<bean id="logic" class="org.bibsonomy.webapp.util.spring.factorybeans.LogicFactoryBean" scope="request">
+		<property name="user" ref="loginUser"/>
+		<property name="dbSessionFactory" ref="dbSessionFactory"/>
+	</bean>	
 	
 	<bean id="dbSessionFactory" class="org.bibsonomy.database.util.IbatisDBSessionFactory">
 	</bean>
 	
 	<bean id="userSettings" class="org.bibsonomy.webapp.util.spring.factorybeans.UserSettingsFactoryBean" scope="request">
-		<property name="request" ref="request"/>
+		<property name="user" ref="loginUser"/>
 	</bean>
 	
+	<bean id="loginUser" class="org.bibsonomy.webapp.util.spring.factorybeans.UserFactoryBean" scope="request">
+		<property name="request" ref="request"/>
+	</bean>	
+	
+	<bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+		<property name="paramName" value ="lang" />
+	</bean>	
+	
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver"/>
+	
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basenames" value="messages"/>
+	</bean>	
+	  
 	<bean id="viewResolver"	class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
 		<property name="prefix" value="/WEB-INF/jsp/" />
 		<property name="suffix" value=".jspx" />
 	</bean>
+		
 </beans>

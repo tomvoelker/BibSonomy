@@ -5,7 +5,7 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
 	<jsp:directive.attribute name="titleKey" type="java.lang.String" required="true"/>
-	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListView" required="true"/>
+	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="otherParams" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
@@ -24,7 +24,7 @@
 	
 		<div class="listh">
 			<c:if test="${listView.totalCount != 0}">
-				<c:set var="totalTitle"><fmt:message key="total" /> <c:out value="${listView.totalCount}"/> <fmt:message key="${messageKey}" /></c:set>
+				<c:set var="totalTitle"><fmt:message key="list.total" /> <c:out value="${listView.totalCount}"/> <fmt:message key="${titleKey}" /></c:set>
 				<span title="${totalTitle}">(${listView.totalCount})</span>
 			</c:if>
 			<jsp:invoke fragment="formatButtons"/>
@@ -35,7 +35,7 @@
 		<ul class="bblist">
 			<c:forEach var="post" items="${listView.list}">
 				<c:choose>
-					<c:when test="${loginUserName eq res.user.name}">
+					<c:when test="${loginUserName eq post.user.name}">
 						<c:set var="liClass" value="bm bmown"/>
 					</c:when>
 					<c:otherwise>
@@ -60,8 +60,7 @@
 					</div>   
 				</li>
 			</c:forEach>
-		</ul>
-		
+		</ul>		
 		<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}" loginUserName="${loginUserName}" otherParams="${otherParams}" disableActions="${disableActions}" formatButtons="${formatButtons}"/>
 	</div>
 

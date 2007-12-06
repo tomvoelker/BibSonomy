@@ -124,12 +124,36 @@
     <name>decodeURI</name>
     <function-class>tags.Functions</function-class>
     <function-signature>String decodeURI (java.lang.String)</function-signature>
+  </function>
+  
+  <function>
+    <name>encodeURI</name>
+    <function-class>tags.Functions</function-class>
+    <function-signature>String encodeURI (java.lang.String)</function-signature>
   </function> 
   
   <function>
     <name>makeCredential</name>
     <function-class>tags.Functions</function-class>
     <function-signature>String makeCredential (java.lang.String)</function-signature>
+  </function>
+  
+  <function>
+    <name>toTagString</name>
+    <function-class>tags.Functions</function-class>
+    <function-signature>String toTagString (java.util.List)</function-signature>
+  </function>
+  
+  <function>
+    <name>getPath</name>
+    <function-class>tags.Functions</function-class>
+    <function-signature>String getPath (java.lang.String)</function-signature>
   </function> 
+  
+  <function>
+    <name>getQuery</name>
+    <function-class>tags.Functions</function-class>
+    <function-signature>String getQuery (java.lang.String)</function-signature>
+  </function>   
   
 </taglib>

@@ -2,9 +2,10 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:bm="urn:jsptagdir:/WEB-INF/tags/resources/bookmark"
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
-	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListView" required="true"/>
+	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="otherParams" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="true"/>
@@ -30,10 +31,10 @@
 			<a href="${bookUrl}"><c:out value='${post.resource.title}' /></a>
 		</jsp:attribute>
 		<jsp:attribute name="desc">
-			<c:out value="${post.description}"/>-trallala
+			<bm:desc post="${post}"/>
 		</jsp:attribute>
 		<jsp:attribute name="actions">
-			aaannndd ACTION!
+			<bm:actions post="${post}" loginUserName="${loginUserName}"/>
 		</jsp:attribute>
 	</rc:list>
 

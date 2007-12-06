@@ -1,0 +1,121 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post"
+		required="true" />
+	<jsp:directive.attribute name="loginUserName" type="java.lang.String"
+		required="true" />
+
+	<c:if test="${not empty loginUserName}">
+
+		<!-- PICK / UNPICK -->
+		<c:choose>
+			<c:when test="${pick == post.resource.intraHash}">
+				<!-- this means we just picked this resource -->
+				<c:url var="unpick_url" value="/Collector">
+					<c:param name="unpick" value="${post.resource.intraHash}" />
+					<c:param name="user" value="${post.user.name}" />
+					<c:param name="ckey" value="${ckey}" />
+				</c:url>
+				<c:set var="unpickTitle"><fmt:message key="bibtex.actions.unpick.title"/></c:set>
+				<a title="${unpickTitle}" href="${unpick_url}">
+					<fmt:message key="bibtex.actions.unpick"/>
+				</a>
+			</c:when>
+			<c:otherwise>
+				<c:url var="pick_url" value="/Collector">
+					<c:param name="pick" value="${post.resource.intraHash}" />
+					<c:param name="user" value="${post.user.name}" />
+					<c:param name="ckey" value="${ckey}" />
+				</c:url>
+				<c:set var="pickTitle"><fmt:message key="bibtex.actions.pick.title"/></c:set>
+				<a onclick="pickUnpickPublication(event);"
+					title="${pickTitle}" href="${pick_url}">
+					<fmt:message key="bibtex.actions.pick"/>
+				</a>
+			</c:otherwise>
+		</c:choose>
+
+		<!-- COPY -->
+		<c:choose>
+			<c:when test="${loginUserName ne post.user.name}">
+				<!-- different users - COPY -->
+				<c:url var="copy_url" value="${projectHome}ShowBibtexEntry">
+					<c:param name="hash" value="${post.resource.intraHash}" />
+					<c:param name="user" value="${post.user.name}" />
+					<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
+				</c:url>
+				<c:set var="copyTitle"><fmt:message key="bibtex.actions.copy.title"/></c:set>
+				|
+         		<a href="${copy_url}'"	title="${copyTitle}">
+					<fmt:message key="bibtex.actions.copy"/>
+				</a>
+
+			</c:when>
+			<c:otherwise>
+				<!-- same user - EDIT, DELETE, ... -->
+				<span>
+				<c:choose>
+					<c:when test="${not empty noedittags}">
+						| 
+						<c:set var="editTitle"><fmt:message key="bibtex.actions.edit.title"/></c:set>
+             			<a href="/ShowBibtexEntry?hash=${resource.hash}"
+							title="${editTitle}">
+							<fmt:message key="bibtex.actions.edit"/>
+						</a>
+					</c:when>
+					<c:otherwise>
+						|
+						<c:set var="editTagsTitle"><fmt:message key="bibtex.actions.editTags.title"/></c:set>
+             			<a onclick="editTags(this,'${ckey}');return false;"
+							tags="${mtl:toTagString(post.tags)}"
+							hashsum="${post.resource.intraHash}"
+							href="/ShowBibtexEntry?hash=${post.resource.intraHash}"
+							title="${editTagsTitle}">
+							<fmt:message key="bibtex.actions.editTags"/>
+						</a>
+					</c:otherwise>
+				</c:choose>
+				</span>
+				<!-- DELETE -->
+					|          
+				<c:set var="deleteTitle"><fmt:message key="bibtex.actions.delete.title"/></c:set>
+         		<a
+					href="/BibtexHandler?hash=${post.resource.intraHash}&amp;requTask=delete&amp;ckey=${ckey}"
+					title="${deleteTitle}">
+					<fmt:message key="bibtex.actions.delete"/>
+				</a>
+			</c:otherwise>
+		</c:choose>
+	</c:if>
+
+	<!-- URL -->
+	<c:if test="${not empty post.resource.url}">
+		|
+		<c:set var="urlTitle"><fmt:message key="bibtex.actions.url.title"/></c:set>
+    	<a href="${post.resource.url}" title="${urlTitle}">
+			<fmt:message key="bibtex.actions.url"/>
+		</a>
+	</c:if>
+	
+	<!-- BIBTEX -->
+    | 
+    <c:set var="bibtexTitle"><fmt:message key="bibtex.actions.bibtex.title"/></c:set>
+    <a href="/bib/bibtex/2${post.resource.intraHash}/${post.user.name}"
+		title="${bibtexTitle}">
+		<fmt:message key="bibtex.actions.bibtex"/>
+	</a>
+
+	<!-- OPENURL -->
+	<c:if test="${not empty loginUser.openURL}">
+    	| 
+    	<c:set var="openurlTitle"><fmt:message key="bibtex.actions.openurl.title"/></c:set>
+    	<a href="${loginUser.openURL}?${post.resource.openURL}"
+    	   title="${openurlTitle}">
+    		<fmt:message key="bibtex.actions.openurl"/>
+    	</a>
+	</c:if>
+
+</jsp:root>

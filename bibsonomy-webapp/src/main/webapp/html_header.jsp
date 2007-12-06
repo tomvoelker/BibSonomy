@@ -37,6 +37,7 @@
     <script type="text/javascript" src="/resources/javascript/tooltip.js"></script>
     <script type="text/javascript" src="/resources/javascript/style.js"></script>
     <script type="text/javascript" src="/resources/javascript/chrome.js"></script>
+    <script type="text/javascript" src="/resources/javascript/localized_strings_en.js"></script >
     <meta name="author" content="Knowledge and Data Engineering Group, University of Kassel, Germany">
     <meta name="copyright" content="Knowledge and Data Engineering Group, University of Kassel, Germany">
     <meta name="email" content="webmaster@bibsonomy.org">

@@ -3,12 +3,14 @@
  */
 package org.bibsonomy.webapp.util.spring.controller;
 
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.ValidationAwareController;
@@ -32,6 +34,7 @@ import org.springframework.web.servlet.mvc.BaseCommandController;
 public class MinimalisticControllerSpringWrapper<T> extends BaseCommandController {
 	private static final String CONTROLLER_ATTR_NAME = "minctrlatrr";
 	private String controllerBeanName;
+	private static final Logger LOGGER = Logger.getLogger(MinimalisticControllerSpringWrapper.class);
 	
 	
 	/**
@@ -60,6 +63,10 @@ public class MinimalisticControllerSpringWrapper<T> extends BaseCommandControlle
 		((Holder<HttpServletRequest>) getApplicationContext().getBean("requestHolder")).setObj(request); // hack but thats springs fault
 		final MinimalisticController<T> controller = (MinimalisticController<T>) getApplicationContext().getBean(controllerBeanName);
 		request.setAttribute(CONTROLLER_ATTR_NAME, controller);
+		Enumeration e = request.getAttributeNames();
+		while (e.hasMoreElements()) {
+			LOGGER.debug(e.nextElement().toString());			
+		}
 		final T command = controller.instantiateCommand();
 		ServletRequestDataBinder binder = bindAndValidate(request, command);
 		BindException errors = new BindException(binder.getBindingResult());

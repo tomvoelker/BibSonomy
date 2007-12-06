@@ -1,0 +1,17 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+
+	<jsp:directive.attribute name="userName" type="java.lang.String"
+		required="true" />
+	<jsp:directive.attribute name="hostName" type="java.lang.String"
+		required="true" />		
+	
+	<script type="text/javascript">
+		<![CDATA[
+    	{at="@"; q='"'; document.write("<a href=" + q + "mailto:${userName}" + at + "${hostName}" + q + ">${userName}" + at + "${hostName}<\/a>"); }
+    	]]>
+  	</script>
+	<noscript>
+    	${userName} at ${hostName}
+	</noscript>
+</jsp:root>

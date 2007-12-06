@@ -14,7 +14,12 @@ public enum Views implements View {
 	/**
 	 * the first page you see when entering the application
 	 */
-	HOMEPAGE("home");
+	HOMEPAGE("home"),
+	
+	/**
+	 * user page displaying the resources of a single user
+	 */
+	USERPAGE("user");
 	
 	private final String name;
 	private Views(final String name) {

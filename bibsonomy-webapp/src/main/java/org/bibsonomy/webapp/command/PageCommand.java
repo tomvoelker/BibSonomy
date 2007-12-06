@@ -8,14 +8,14 @@ package org.bibsonomy.webapp.command;
  * 
  * @author Jens Illig
  */
-public class Page {
+public class PageCommand {
 	private Integer number;
 	private int start;
 	
 	/**
 	 * default bean constructor
 	 */
-	public Page() {
+	public PageCommand() {
 	}
 	
 	/**
@@ -24,7 +24,7 @@ public class Page {
 	 * @param start index of the first entity in the sublist on this page
 	 *        (starting with 0)
 	 */
-	public Page(Integer number, int start) {
+	public PageCommand(Integer number, int start) {
 		this.number = number;
 		this.start = start;
 	}

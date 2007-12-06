@@ -3,7 +3,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
-	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListView" required="true"/>
+	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="otherParams" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="formatButtons" fragment="true" required="true"/>
@@ -24,22 +24,21 @@
 						<fmt:message key="previous"/>
 					</c:otherwise>
 				</c:choose>
-				|
+				&#160;
 				<c:if test="${not empty listView.previousPages}">
 					<c:forEach var="page" items="${listView.previousPages}">
 						<a href="?${listViewStartParamName}=${page.start}&amp;amp;${otherParams}">${page.number}</a>
-					</c:forEach>
-					|
+						|
+					</c:forEach>					
 				</c:if>
 				${listView.curPage.number}
-				|
 				<c:if test="${not empty listView.nextPages}">
 					<c:forEach var="page" items="${listView.nextPages}">
+						|
 						<a href="?${listViewStartParamName}=${page.start}&amp;amp;${otherParams}">${page.number}</a>
-					</c:forEach>
-					|
+					</c:forEach>					
 				</c:if>
-				
+				&#160;
 				<c:choose>
 					<c:when test="${listView.nextPage != null}">
 						<a href="?${listViewStartParamName}=${listView.nextPage.start}&amp;amp;${otherParams}" title="${gotoNext}" rel="Next"> <fmt:message key="next"/></a>

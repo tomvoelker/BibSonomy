@@ -12,13 +12,13 @@ import java.util.List;
  * @param <T> type of the entities in the list 
  * @author Jens Illig
  */
-public class ListView<T> {
+public class ListCommand<T> {
 	private int numPreviousPages = 2;
 	private int numNextPages = 2;
 	private int entriesPerPage = 20;
-	private final Page curPage = new Page();
-	private List<Page> previousPages;
-	private List<Page> nextPages;
+	private final PageCommand curPage = new PageCommand();
+	private List<PageCommand> previousPages;
+	private List<PageCommand> nextPages;
 	private int totalCount = 100; // TODO: use 0 instead?
 	private List<T> list;
 	
@@ -34,6 +34,7 @@ public class ListView<T> {
 	public void setList(List<T> list) {
 		this.list = list;
 	}
+	
 	/**
 	 * @return inclusive start index of the current page
 	 */
@@ -70,12 +71,12 @@ public class ListView<T> {
 	 *         limit on the previous pages can be specified by
 	 *         {@link #setNumPreviousPages(int)} 
 	 */
-	public List<Page> getPreviousPages() {
+	public List<PageCommand> getPreviousPages() {
 		if (this.previousPages == null) {
-			this.previousPages = new ArrayList<Page>();
+			this.previousPages = new ArrayList<PageCommand>();
 			for (int i = (this.numPreviousPages >= this.getCurPage().getNumber()) ? 1 : this.getCurPage().getNumber() - this.numPreviousPages; i < this.getCurPage().getNumber(); ++i) {
 				final int start = (i - 1) * this.entriesPerPage;
-				this.previousPages.add(new Page(i, start));
+				this.previousPages.add(new PageCommand(i, start));
 			}
 		}
 		return this.previousPages;
@@ -85,13 +86,13 @@ public class ListView<T> {
 	 *         limit on the next pages can be specified by
 	 *         {@link #setNumNextPages(int)} 
 	 */
-	public List<Page> getNextPages() {
+	public List<PageCommand> getNextPages() {
 		if (this.nextPages == null) {
-			this.nextPages = new ArrayList<Page>();
+			this.nextPages = new ArrayList<PageCommand>();
 			for (int i = 1; i <= this.numNextPages; ++i) {
 				final int start = this.curPage.getStart() + i * this.entriesPerPage;
 				if (start < this.totalCount) {
-					this.nextPages.add(new Page(this.getCurPage().getNumber() + i, start));
+					this.nextPages.add(new PageCommand(this.getCurPage().getNumber() + i, start));
 				}
 			}
 		}
@@ -101,8 +102,8 @@ public class ListView<T> {
 	/**
 	 * @return the page before the current page. null if the current page is the first one. 
 	 */
-	public Page getPreviousPage() {
-		final List<Page> prev = this.getPreviousPages();
+	public PageCommand getPreviousPage() {
+		final List<PageCommand> prev = this.getPreviousPages();
 		if (prev.size() > 0) {
 			return prev.get(prev.size() - 1);
 		}
@@ -113,8 +114,8 @@ public class ListView<T> {
 	 * @return the page following the current page. null if the current page
 	 *         is the last one.
 	 */
-	public Page getNextPage() {
-		final List<Page> next = this.getNextPages();
+	public PageCommand getNextPage() {
+		final List<PageCommand> next = this.getNextPages();
 		if (next.size() > 0) {
 			return next.get(0);
 		}
@@ -149,7 +150,7 @@ public class ListView<T> {
 	/**
 	 * @return the current page
 	 */
-	public Page getCurPage() {
+	public PageCommand getCurPage() {
 		if (this.curPage.getNumber() == null) {
 			this.curPage.setNumber( (this.curPage.getStart() + this.entriesPerPage - 1) / this.entriesPerPage + 1);
 		}

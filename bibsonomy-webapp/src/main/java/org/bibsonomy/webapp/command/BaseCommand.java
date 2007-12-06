@@ -5,6 +5,8 @@ package org.bibsonomy.webapp.command;
 
 import org.bibsonomy.model.User;
 
+import beans.UserBean;
+
 /**
  * Base class for command objects. Contains request and response fields
  * that are commonly used across a lot of controllers.
@@ -17,9 +19,24 @@ import org.bibsonomy.model.User;
  */
 public class BaseCommand {
 	private String ckey;
-	private User loginUser;
+	private UserBean user;
 	private String pageTitle;
+	private String requPath;
 	
+	/**
+	 * @return the requested path
+	 */
+	public String getRequPath() {
+		return this.requPath;
+	}
+
+	/**
+	 * @param requPath the requested path
+	 */
+	public void setRequPath(String requPath) {
+		this.requPath = requPath;
+	}
+
 	/**
 	 * @return the page title
 	 */
@@ -50,13 +67,13 @@ public class BaseCommand {
 	/**
 	 * @return the user, who is currently logged in
 	 */
-	public User getLoginUser() {
-		return this.loginUser;
+	public UserBean getUser() {
+		return this.user;
 	}
 	/**
 	 * @param loginUser the user, who is currently logged in
 	 */
-	public void setLoginUser(User loginUser) {
-		this.loginUser = loginUser;
+	public void setUser(UserBean loginUser) {
+		this.user = loginUser;
 	}
 }

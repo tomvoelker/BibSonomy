@@ -1,0 +1,66 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post"
+		required="true" />
+	<jsp:directive.attribute name="loginUserName" type="java.lang.String"
+		required="true" />
+
+	<c:if test="${not empty user.name}">
+		<span class="bmaction">
+		
+		<c:if test="${loginUserName eq post.user.name}">
+
+			<!-- EDIT link -->
+			<c:url var="url_edit" value="/ShowBookmarkEntry">
+				<c:param name="url" value="${post.resource.url}" />
+				<c:param name="user" value="${post.user.name}" />
+				<c:param name="jump" value="no" />
+			</c:url>
+			<c:set var="editTitle"><fmt:message key="bookmark.actions.editTags.title"/></c:set>
+
+			<!-- DELETE link -->
+			<c:url var="url_delete" value="/bookmarkHandler">
+				<c:param name="delete" value="${post.resource.hash}" />
+				<c:param name="user" value="${post.user.name}" />
+				<c:param name="ckey" value="${ckey}" />
+			</c:url>
+			<c:set var="deleteTitle"><fmt:message key="bookmark.actions.delete.title"/></c:set>
+
+			<span>
+			<a onclick="editTags(this,'${ckey}');return false;"
+				tags="${fn:escapeXml(mtl:toTagString(post.tags))}"
+				hashsum="${post.resource.hash}" user="${fn:escapeXml(post.user.name)}"
+				title="${editTitle}"
+				href="${fn:escapeXml(url_edit)}">
+				<fmt:message key="bookmark.actions.editTags"/>
+			</a>
+			</span>
+            |
+		    <a href="${fn:escapeXml(url_delete)}"
+		       title="${deleteTitle}">		       
+		       <fmt:message key="bookmark.actions.delete"/>
+		    </a>
+		</c:if>
+
+		<c:if test="${loginUserName ne post.user.name}">
+			<!-- COPY link -->
+			<c:set var="copyTitle"><fmt:message key="bookmark.actions.copy.title"/></c:set>
+			<a
+				href="/ShowBookmarkEntry?c=b&amp;jump=no&amp;url=${mtl:encodeURI(post.resource.url)}&amp;description=${mtl:encodeURI(post.resource.title)}&amp;extended=${mtl:encodeURI(post.description)}&amp;copytag=${mtl:encodeURI(mtl:toTagString(post.tags))}"
+				title="${copyTitle}">
+				<fmt:message key="bookmark.actions.copy"/>
+			</a>
+		</c:if>
+
+		</span>
+      <!-- &nbsp;  -->
+  </c:if>
+
+	<!--  <%@include file="/boxes/resource_rating.jsp" %> -->
+
+</jsp:root>

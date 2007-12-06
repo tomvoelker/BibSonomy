@@ -1,7 +1,14 @@
 package tags;
 
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.net.URI;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.bibsonomy.model.Tag;
 
 import resources.Resource;
 
@@ -43,6 +50,16 @@ public class Functions  {
 		}
 		return null;
 	}
+	
+	public static String encodeURI (String URI) {
+		if (URI != null) {
+			try {
+				return URLEncoder.encode(URI, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+			}
+		}
+		return null;
+	}	
 
 	public static String makeCredential (String input) {
 		if (input != null) {
@@ -53,5 +70,49 @@ public class Functions  {
 		}
 		return null;
 	}
-
+	
+	/**
+	 * @param tags
+	 * @return
+	 */
+	public static String toTagString (List<Tag> tags) {		
+		StringBuffer sb = new StringBuffer();
+		for (Tag tag : tags) {
+			sb.append(tag.getName());
+			sb.append(" ");
+		}
+		return sb.toString().substring(0, sb.length() - 1);
+	}
+	
+	/**
+	 * @param tags
+	 * @return
+	 */
+	public static String getPath (String uriString) {
+		URI uri;
+		try {
+			uri = new URI(uriString);
+			return uri.getPath();
+		} catch (Exception ex) {
+			throw new RuntimeException(ex.getMessage());
+		}		
+	}
+	
+	/**
+	 * @param tags
+	 * @return
+	 */
+	public static String getQuery (String uriString) {
+		URI uri;
+		try {
+			uri = new URI(uriString);
+			if (uri.getQuery() != null && ! uri.getQuery().equals("")) { 
+				return "?" + uri.getQuery();
+			}
+			return "";
+		} catch (Exception ex) {
+			throw new RuntimeException(ex.getMessage());
+		}		
+	}	
+	
 }

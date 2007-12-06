@@ -141,8 +141,8 @@ public class SettingsBean extends UserBean implements Serializable {
 		return null;
 	}
 	
-	public void setBirthday(String birthday) {
-		this.birthday = birthday;		
+	private void setBirthday(String hdaybirthday) {
+		this.birthday = hdaybirthday;		
 	}
 	
 	public void setBirthday(Date birthday) throws ParseException {		

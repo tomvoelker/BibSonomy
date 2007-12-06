@@ -5,7 +5,7 @@ package org.bibsonomy.webapp.util.spring.factorybeans;
 
 import org.bibsonomy.database.DBLogicUserInterfaceFactory;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.logic.PostLogicInterface;
+import org.bibsonomy.model.logic.LogicInterface;
 import org.springframework.beans.factory.FactoryBean;
 
 /**
@@ -15,10 +15,10 @@ import org.springframework.beans.factory.FactoryBean;
  * @see FactoryBean
  * @author Jens Illig
  */
-public class PostLogicFactoryBean extends DBLogicUserInterfaceFactory implements FactoryBean {
+public class LogicFactoryBean extends DBLogicUserInterfaceFactory implements FactoryBean {
 
 	private User user;
-	private PostLogicInterface instance;
+	private LogicInterface instance;
 	
 	public Object getObject() throws Exception {
 		if (instance == null) {
@@ -34,7 +34,7 @@ public class PostLogicFactoryBean extends DBLogicUserInterfaceFactory implements
 	}
 
 	public Class<?> getObjectType() {
-		return PostLogicInterface.class;
+		return LogicInterface.class;
 	}
 
 	public boolean isSingleton() {
