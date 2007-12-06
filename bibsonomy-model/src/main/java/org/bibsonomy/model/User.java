@@ -125,19 +125,6 @@ public class User {
 	}
 	
 	/**
-	 * @param spammer
-	 */
-	public void setSpammer(boolean spammer) {
-		if ( spammer == true) {
-			this.spammer = 1;
-		}
-		else {
-			this.spammer = 0;
-		}
-		
-	}
-
-	/**
 	 * @return
 	 */
 	public String getEmail() {
