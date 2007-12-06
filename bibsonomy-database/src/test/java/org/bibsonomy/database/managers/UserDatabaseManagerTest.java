@@ -55,6 +55,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void createUser() {
 		final User newUser = this.userParam.getUser();
 		newUser.setName("test-name");
+		newUser.setSpammer(0);
 		this.userDb.createUser(newUser, this.dbSession);
 		final User user = this.userDb.getUserDetails(this.userParam.getUser().getName(), this.dbSession);
 		ModelUtils.assertPropertyEquality(newUser, user, Integer.MAX_VALUE, null, new String[] { "password", "registrationDate", "basket"});
