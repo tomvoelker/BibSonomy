@@ -12,7 +12,7 @@
 			<c:forEach var="author" items="${post.resource.authorList}" varStatus="loopStatus">
 				<c:out value="${author.firstName}"/>
 				<c:set var="authorUrlTemplate">/author/<mtl:encode value='${author.lastName}'/></c:set>
-				<c:url var="authorUrl" value="${authorUrlTemplate}"/>
+				<c:url var="authorUrl" value="${authorUrlTemplate}" context="${projectContext}"/>
 				<a href="${authorUrl}">&#160;<c:out value="${author.lastName}" /></a>         	     	 
 				<c:if test="${not loopStatus.last}">&#160;<fmt:message key="and"/>&#160;</c:if>
 			</c:forEach>
@@ -21,7 +21,7 @@
 			<c:forEach var="editor" items="${post.resource.editorList}" varStatus="loopStatus">        	 
 				<c:out value="${editor.firstName} " />
 				<c:set var="authorUrlTemplate">/author/<mtl:encode value='${editor.lastName}'/></c:set>
-				<c:url var="authorUrl" value="${authorUrlTemplate}"/>
+				<c:url var="authorUrl" value="${authorUrlTemplate}" context="${projectContext}"/>
 				<a href="${authorUrl}"><c:out value="${editor.lastName}" /></a>
 				<c:if test="${not loopStatus.last}">&#160;<fmt:message key="and"/>&#160;</c:if>
 			</c:forEach>

@@ -7,7 +7,7 @@
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="searchString" type="java.lang.String" required="true"/>
 	
-	<c:url var="searchUrl" value="/search"/>
+	<c:url var="searchUrl" value="/search" context="${projectContext}"/>
 	<form id="search" method="get" action="${searchUrl}">
 		<c:if test="${!empty loginUserName}">
 			<select name="scope" size="1">

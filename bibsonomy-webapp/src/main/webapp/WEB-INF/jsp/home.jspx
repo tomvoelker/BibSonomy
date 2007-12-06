@@ -11,7 +11,7 @@
 
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="/">
 		<jsp:attribute name="heading">
-			<c:url var="specialSearchUrl" value="/specialsearch"/>
+			<c:url var="specialSearchUrl" value="/specialsearch" context="${projectContext}"/>
 			<form id="specialsearch" method="get" action="${specialSearchUrl}">
 				<select name="scope" size="1" id="scope">
 					<option value="tag"><fmt:message key="navi.tag"/></option>

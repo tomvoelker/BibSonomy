@@ -40,7 +40,8 @@
 		<jsp:attribute name="xmlns">http://www.w3.org/1999/xhtml</jsp:attribute>
 		<jsp:body>
 			<head>
-				<c:set var="resdir" value="${pageContext.request.contextPath}/resources" /><!-- TODO: if sessionid is appended this leads to problems -->
+				<!-- <c:set var="resdir" value="${pageContext.request.contextPath}/resources" /> TODO: if sessionid is appended this leads to problems -->
+				<c:set var="resdir" value="/resources" />
 				<c:set var="locale">
 					<fmt:message key="meta.lang"/>
 				</c:set>
@@ -54,20 +55,20 @@
 				<script type="text/javascript" src="${resdir}/javascript/tooltip.js">&amp;nbsp;</script>
 				<script type="text/javascript" src="${resdir}/javascript/style.js">&amp;nbsp;</script>
 				<script type="text/javascript" src="${resdir}/javascript/chrome.js">&amp;nbsp;</script>
+				<meta name="email" content="${projectEmail}"/>
 				<lp:meta fieldName="author"/>
 				<lp:meta fieldName="copyright"/>
-				<lp:meta fieldName="email"/>
 				<lp:meta fieldName="keywords"/>
 				<lp:meta fieldName="description"/>				
 				<link rel="alternate" type="application/atom+xml" title="${systemName} Blog - Atom" href="http://bibsonomy.blogspot.com/feeds/posts/default" />
 				<link rel="alternate" type="application/rss+xml"  title="${systemName} Blog - RSS"  href="http://bibsonomy.blogspot.com/feeds/posts/default?alt=rss" />
-				<title><fmt:message key="system.name"/> <fmt:message key="system.path.delim"/> <c:out value="${pageTitle}"/></title>
+				<title>${projectName} :: <c:out value="${pageTitle}"/></title>
 				<jsp:invoke fragment="headerExt"/>
 			</head>
 			<body>
 				<div id="heading">
 					<h1>
-					<c:url var="root" value="/"/>
+					<c:url var="root" value="/" context="${projectContext}"/>
 					<a href="${root}" rel="Start">${projectName}</a> :: <jsp:invoke fragment="heading"/>
 					</h1>
 					<!-- dropdown menu for BibSonomy Path -->  
@@ -102,10 +103,14 @@
 					<c:if test="${empty loginUserName}">
 						<div id="general">
 							<p class="smalltext">
-								<fmt:message key="system.about"/>
+								<fmt:message key="system.about">
+									<fmt:param value="${projectName}"/>
+								</fmt:message>
 							</p>
 							<p class="smalltext">
-								<fmt:message key="system.introduction"/>								
+								<fmt:message key="system.introduction">
+									<fmt:param value="${projectName}"/>
+								</fmt:message>									
 							</p>
 						</div>
 					</c:if>
@@ -117,18 +122,14 @@
 					</ul>
 				</c:if>
 				<div id="footer">
-					<fmt:message key="system.offeredBy"/>
+					<fmt:message key="system.offeredBy">
+						<fmt:param value="${projectName}"/>
+						<fmt:param value="${kdeHome}"/>
+					</fmt:message>
 					<jsp:text> </jsp:text>
 					<fmt:message key="system.contact"/>
 					<jsp:text> </jsp:text>
-					<lp:email>
-						<jsp:attribute name="userName">
-							<fmt:message key="system.contact.email.username"/>
-						</jsp:attribute>
-						<jsp:attribute name="hostName">
-							<fmt:message key="system.contact.email.hostname"/>
-						</jsp:attribute>						
-					</lp:email> 
+					<lp:email address="${projectEmail}"/>
 					<script type="text/javascript">init(${user.tagboxStyle}, ${user.tagboxSort}, ${user.tagboxMinfreq}, "${command.requestedUser}", "${loginUserName}", "${ckey}", "${projectName}");</script>  
 				</div>
 			</body>

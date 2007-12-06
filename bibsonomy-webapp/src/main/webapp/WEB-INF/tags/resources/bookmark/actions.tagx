@@ -16,7 +16,7 @@
 		<c:if test="${loginUserName eq post.user.name}">
 
 			<!-- EDIT link -->
-			<c:url var="url_edit" value="/ShowBookmarkEntry">
+			<c:url var="url_edit" value="/ShowBookmarkEntry" context="${projectContext}">
 				<c:param name="url" value="${post.resource.url}" />
 				<c:param name="user" value="${post.user.name}" />
 				<c:param name="jump" value="no" />
@@ -24,7 +24,7 @@
 			<c:set var="editTitle"><fmt:message key="bookmark.actions.editTags.title"/></c:set>
 
 			<!-- DELETE link -->
-			<c:url var="url_delete" value="/bookmarkHandler">
+			<c:url var="url_delete" value="/bookmarkHandler" context="${projectContext}">
 				<c:param name="delete" value="${post.resource.hash}" />
 				<c:param name="user" value="${post.user.name}" />
 				<c:param name="ckey" value="${ckey}" />

@@ -52,7 +52,7 @@
 			<c:if test="${not empty loginUserName and empty disableActions}">
 				<span class="actions">
 					<c:set var="editUrlTemplate">/bediturl/<c:out value='${requPath}' escapeXml="true"/></c:set>
-					<c:url var="editUrl" value="${editUrlTemplate}"/>
+					<c:url var="editUrl" value="${editUrlTemplate}" context="${projectContext}"/>
 					<fmt:message var="editPageTags" key="page.edit.tags"/>
 					<a href="${editUrl}" title="${editPageTags}"><fmt:message key="edit"/></a>
 				</span>

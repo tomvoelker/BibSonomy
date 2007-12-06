@@ -8,7 +8,7 @@
 		<fmt:message key="navi.login"/>
 	</c:set>
 
-	<c:url var="loginUrl" value="/login_process"/>
+	<c:url var="loginUrl" value="/login_process" context="${projectContext}"/>
 	<form method="post" action="${loginUrl}" style="display:inline">
 		<label for="un"><fmt:message key="navi.username"/>:</label> <input type="text" size="10" name="userName" id="un" />
 		<label for="pw"><fmt:message key="navi.password"/>:</label> <input type="password" size="10" name="loginPassword" id="pw" />

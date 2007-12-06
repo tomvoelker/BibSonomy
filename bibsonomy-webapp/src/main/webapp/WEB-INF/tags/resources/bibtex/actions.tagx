@@ -14,7 +14,7 @@
 		<c:choose>
 			<c:when test="${pick == post.resource.intraHash}">
 				<!-- this means we just picked this resource -->
-				<c:url var="unpick_url" value="/Collector">
+				<c:url var="unpick_url" value="/Collector" context="${projectContext}">
 					<c:param name="unpick" value="${post.resource.intraHash}" />
 					<c:param name="user" value="${post.user.name}" />
 					<c:param name="ckey" value="${ckey}" />
@@ -25,7 +25,7 @@
 				</a>
 			</c:when>
 			<c:otherwise>
-				<c:url var="pick_url" value="/Collector">
+				<c:url var="pick_url" value="/Collector" context="${projectContext}">
 					<c:param name="pick" value="${post.resource.intraHash}" />
 					<c:param name="user" value="${post.user.name}" />
 					<c:param name="ckey" value="${ckey}" />
@@ -42,7 +42,7 @@
 		<c:choose>
 			<c:when test="${loginUserName ne post.user.name}">
 				<!-- different users - COPY -->
-				<c:url var="copy_url" value="${projectHome}ShowBibtexEntry">
+				<c:url var="copy_url" value="${projectHome}ShowBibtexEntry" context="${projectContext}">
 					<c:param name="hash" value="${post.resource.intraHash}" />
 					<c:param name="user" value="${post.user.name}" />
 					<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />

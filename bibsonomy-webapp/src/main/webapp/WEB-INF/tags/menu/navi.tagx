@@ -16,11 +16,11 @@
 	<table id="tnav">
 		<tr>
 			<td class="tleft" id="upper_menu">
-				<c:url var="tagsUrl" value="/tags"/>
+				<c:url var="tagsUrl" value="/tags" context="${projectContext}"/>
 				<a href="${tagsUrl}"><fmt:message key="navi.tags"/></a> &#183;
-				<c:url var="relationsUrl" value="/relations"/>
+				<c:url var="relationsUrl" value="/relations" context="${projectContext}"/>
 				<a href="${relationsUrl}"><fmt:message key="navi.relations"/></a> &#183;								
-				<c:url var="groupsUrl" value="/groups"/>
+				<c:url var="groupsUrl" value="/groups" context="${projectContext}"/>
 				<a href="${groupsUrl}" rel="grp_menu"><fmt:message key="navi.groups"/></a> &#183;
 				<!-- dropdown menu for groups -->					
 			  	<div id="grp_menu" class="dropmenudiv">
@@ -28,20 +28,20 @@
 						<a href="/group/${fn:escapeXml(grp.name)}"><c:out value='${grp.name}'/></a>
 					</c:forEach>  	
 				</div>											
-				<c:url var="popularUrl" value="/popular"/>
+				<c:url var="popularUrl" value="/popular" context="${projectContext}"/>
 				<a href="${popularUrl}"><fmt:message key="navi.popular"/></a>
 			</td>
 			<td class="tright">
 				<c:if test="${!empty loginUserName}"><!-- show user name, if available -->
 					<fmt:message key="navi.loggedInAs"/>&#160;
-					<c:url var="userUrl" value="/user/${loginUserName}" />
+					<c:url var="userUrl" value="/user/${loginUserName}" context="${projectContext}"/>
 					<a href="${userUrl}"><c:out value="${loginUserName}" /></a>
 					&#183;
 				</c:if>
-				<c:url var="helpUrl" value="/help"/>
+				<c:url var="helpUrl" value="/help" context="${projectContext}"/>
 				<a href="${helpUrl}" rel="Help"><fmt:message key="navi.help"/></a> &#183;
 				<a href="http://bibsonomy.blogspot.com/"><fmt:message key="navi.blog"/></a> &#183;
-				<c:url var="aboutUrl" value="/help/about/"/>
+				<c:url var="aboutUrl" value="/help/about/" context="${projectContext}"/>
 				<a href="${aboutUrl}"><fmt:message key="navi.about"/></a>
 			</td>
 		</tr>
@@ -49,7 +49,7 @@
 			<td class="tleft" id="lower_menu">
 				<c:choose>
 					<c:when test="${!empty loginUserName}">
-						<c:url var="userUrl" value="/user/${loginUserName}" />
+						<c:url var="userUrl" value="/user/${loginUserName}" context="${projectContext}"/>
 						<a href="${userUrl}" rel="my_menu"><fmt:message key="navi.my"/>${projectName}</a> &#183;
 						
 				      <!-- dropdown menu for myBibSonomy -->  
@@ -80,9 +80,9 @@
 				        </a>
 					  </div>						
 						
-						<c:url var="postBookUrl" value="/post_bookmark" />
+						<c:url var="postBookUrl" value="/post_bookmark" context="${projectContext}"/>
 						<a href="${postBookUrl}"><fmt:message key="navi.postBookmark"/></a> &#183;
-						<c:url var="postBibUrl" value="/post_bibtex" />
+						<c:url var="postBibUrl" value="/post_bibtex" context="${projectContext}"/>
 						<a href="${postBibUrl}"><fmt:message key="navi.postPublication"/></a> 
 					</c:when>
 					<c:otherwise>
@@ -93,23 +93,23 @@
 			<td class="tright">
 				<c:choose>
 					<c:when test="${!empty loginUserName}">
-						<c:url var="basketUrl" value="/basket" />
+						<c:url var="basketUrl" value="/basket" context="${projectContext}"/>
 						<span id="pickctr">${basketSize}</span>&#160;
 						<fmt:message key="navi.pickedIn"/>&#160;
 						<a href="${basketUrl}"><fmt:message key="navi.basket"/></a> &#183;
-						<c:url var="editTagsUrl" value="/edit_tags" />
+						<c:url var="editTagsUrl" value="/edit_tags" context="${projectContext}"/>
 						<a href="${editTagsUrl}"><fmt:message key="navi.editTags"/></a> &#183;
-						<c:url var="friendsUrl" value="/friends" />
+						<c:url var="friendsUrl" value="/friends" context="${projectContext}"/>
 						<a href="${friends}"><fmt:message key="navi.friends"/></a> &#183;
-						<c:url var="settingsUrl" value="/settings" />        
+						<c:url var="settingsUrl" value="/settings" context="${projectContext}"/>        
 						<a href="${settingsUrl}"><fmt:message key="navi.settings"/></a> &#183;
-						<c:url var="logoutUrl" value="/logout" />
+						<c:url var="logoutUrl" value="/logout" context="${projectContext}"/>
 						<a href="${logoutUrl}"><fmt:message key="navi.logout"/></a>
 					</c:when>
 					<c:otherwise>
-						<c:url var="loginUrl" value="/login" />
+						<c:url var="loginUrl" value="/login" context="${projectContext}"/>
 						<a href="${loginUrl}"><fmt:message key="navi.login"/></a> &#183;
-						<c:url var="registerUrl" value="/register" />
+						<c:url var="registerUrl" value="/register" context="${projectContext}"/>
 						<a href="${registerUrl}"><fmt:message key="navi.register"/></a>
 					</c:otherwise>
 				</c:choose>
