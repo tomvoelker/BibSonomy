@@ -1,10 +1,11 @@
 <jsp:root version="2.0" 
 	xmlns:c="http://java.sun.com/jsp/jstl/core"	
-	xmlns:jsp="http://java.sun.com/JSP/Page">
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>	
 	
 	<c:if test="${not empty post.resource.address}">		
-		<em><c:out value="${post.resource.address}"/>,&#160;</em>		
+		<em><c:out value="${post.resource.address}"/>,${mtl:ch('nbsp')}</em>		
 	</c:if>
 </jsp:root>

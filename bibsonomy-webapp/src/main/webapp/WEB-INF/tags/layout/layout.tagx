@@ -5,7 +5,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
 	xmlns:lp="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-	xmlns:mtl="/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>

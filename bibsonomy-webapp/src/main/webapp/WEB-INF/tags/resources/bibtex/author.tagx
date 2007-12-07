@@ -13,8 +13,8 @@
 				<c:out value="${author.firstName}"/>
 				<c:set var="authorUrlTemplate">/author/<mtl:encode value='${author.lastName}'/></c:set>
 				<c:url var="authorUrl" value="${authorUrlTemplate}" context="${projectContext}"/>
-				<a href="${authorUrl}">&#160;<c:out value="${author.lastName}" /></a>         	     	 
-				<c:if test="${not loopStatus.last}">&#160;<fmt:message key="and"/>&#160;</c:if>
+				<a href="${authorUrl}">${mtl:ch('nbsp')}<c:out value="${author.lastName}" /></a>         	     	 
+				<c:if test="${not loopStatus.last}">${mtl:ch('nbsp')}<fmt:message key="and"/>${mtl:ch('nbsp')}</c:if>
 			</c:forEach>
 		</c:when>
 		<c:otherwise>
@@ -23,10 +23,10 @@
 				<c:set var="authorUrlTemplate">/author/<mtl:encode value='${editor.lastName}'/></c:set>
 				<c:url var="authorUrl" value="${authorUrlTemplate}" context="${projectContext}"/>
 				<a href="${authorUrl}"><c:out value="${editor.lastName}" /></a>
-				<c:if test="${not loopStatus.last}">&#160;<fmt:message key="and"/>&#160;</c:if>
+				<c:if test="${not loopStatus.last}">${mtl:ch('nbsp')}<fmt:message key="and"/>${mtl:ch('nbsp')}</c:if>
 			</c:forEach>
 			(eds.).
 		</c:otherwise>
-	</c:choose>&#160;
+	</c:choose>${mtl:ch('nbsp')}
 	</span>		
 </jsp:root>

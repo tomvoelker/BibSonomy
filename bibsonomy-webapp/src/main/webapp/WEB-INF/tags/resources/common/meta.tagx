@@ -76,6 +76,6 @@
 	<jsp:text> </jsp:text>
 	<fmt:message key="tagged.time.on"/> 
 	<jsp:text> </jsp:text>
-	<fmt:formatDate type="both" pattern="yyyy-MM-dd HH:mm:ss " value="${post.date}"/>
+	<fmt:formatDate type="date" dateStyle="medium" value="${post.date}"/>, <fmt:formatDate type="time" timeStyle="short" value="${post.date}"/>
 
 </jsp:root>

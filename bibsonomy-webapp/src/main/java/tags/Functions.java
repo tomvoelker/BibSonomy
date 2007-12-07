@@ -1,23 +1,54 @@
 package tags;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.net.URI;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 
 import org.bibsonomy.model.Tag;
 
 import resources.Resource;
 
+
 /**
- * replaces occurrences of whitespace in the by only one occurrence of the 
- * respective whitespace character  
+ * Some taglib functions
+ * 
+ * @author dbenz
  */
 public class Functions  {
 
+	// contains special characters, symbols, etc...
+	private static Properties chars = new Properties(); 
+		
+	// load special characters
+	static {
+	    try {
+	        chars.load(Functions.class.getClassLoader().getResourceAsStream("chars.properties"));
+	    } catch (IOException e) {
+	    	throw new RuntimeException(e.getMessage());
+	    }	    	    		
+	}
+	
+	/**
+	 * lookup a special character
+	 * 
+	 * @param key
+	 * @return String 
+	 */
+	public static String ch (String key) {
+		if (chars.getProperty(key) != null) {
+			return chars.getProperty(key);
+		}
+		return "???" + key + "???";
+	}
+	
+	/**
+	 * replaces occurrences of whitespace in the by only one occurrence of the 
+	 * respective whitespace character  
+	 */	
 	public static String trimWhiteSpace (String s) {
 		/*
 		 * remove empty lines

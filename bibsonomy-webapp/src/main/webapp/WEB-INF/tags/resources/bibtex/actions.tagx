@@ -48,7 +48,7 @@
 					<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
 				</c:url>
 				<c:set var="copyTitle"><fmt:message key="bibtex.actions.copy.title"/></c:set>
-				|
+				${mtl:ch('post.actions.delim')}
          		<a href="${copy_url}'"	title="${copyTitle}">
 					<fmt:message key="bibtex.actions.copy"/>
 				</a>
@@ -59,7 +59,7 @@
 				<span>
 				<c:choose>
 					<c:when test="${not empty noedittags}">
-						| 
+						${mtl:ch('post.actions.delim')} 
 						<c:set var="editTitle"><fmt:message key="bibtex.actions.edit.title"/></c:set>
              			<a href="/ShowBibtexEntry?hash=${resource.hash}"
 							title="${editTitle}">
@@ -67,7 +67,7 @@
 						</a>
 					</c:when>
 					<c:otherwise>
-						|
+						${mtl:ch('post.actions.delim')}
 						<c:set var="editTagsTitle"><fmt:message key="bibtex.actions.editTags.title"/></c:set>
              			<a onclick="editTags(this,'${ckey}');return false;"
 							tags="${mtl:toTagString(post.tags)}"
@@ -80,7 +80,7 @@
 				</c:choose>
 				</span>
 				<!-- DELETE -->
-					|          
+					${mtl:ch('post.actions.delim')}          
 				<c:set var="deleteTitle"><fmt:message key="bibtex.actions.delete.title"/></c:set>
          		<a
 					href="/BibtexHandler?hash=${post.resource.intraHash}&amp;requTask=delete&amp;ckey=${ckey}"
@@ -93,7 +93,7 @@
 
 	<!-- URL -->
 	<c:if test="${not empty post.resource.url}">
-		|
+		${mtl:ch('post.actions.delim')}
 		<c:set var="urlTitle"><fmt:message key="bibtex.actions.url.title"/></c:set>
     	<a href="${post.resource.url}" title="${urlTitle}">
 			<fmt:message key="bibtex.actions.url"/>
@@ -101,7 +101,7 @@
 	</c:if>
 	
 	<!-- BIBTEX -->
-    | 
+    ${mtl:ch('post.actions.delim')} 
     <c:set var="bibtexTitle"><fmt:message key="bibtex.actions.bibtex.title"/></c:set>
     <a href="/bib/bibtex/2${post.resource.intraHash}/${post.user.name}"
 		title="${bibtexTitle}">
@@ -110,7 +110,7 @@
 
 	<!-- OPENURL -->
 	<c:if test="${not empty loginUser.openURL}">
-    	| 
+    	${mtl:ch('post.actions.delim')} 
     	<c:set var="openurlTitle"><fmt:message key="bibtex.actions.openurl.title"/></c:set>
     	<a href="${loginUser.openURL}?${post.resource.openURL}"
     	   title="${openurlTitle}">

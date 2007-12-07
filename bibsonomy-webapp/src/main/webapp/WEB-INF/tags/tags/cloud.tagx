@@ -53,7 +53,7 @@
 			<!-- display the tag -->
 			<c:if test="${tag.usercount >= cmd.minFreq}">
 				<li class="${tagclass}">
-				<a title="${tag.usercount}&#160;${posts}"
+				<a title="${tag.usercount}${mtl:ch('nbsp')}${posts}"
 				    style="font-size:${fontsize}%" 
 					href="/${mtl:getPath(requPath)}/${fn:escapeXml(tag.name)}${mtl:getQuery(requPath)}">${tag.name}</a>
 					<jsp:text> </jsp:text>
