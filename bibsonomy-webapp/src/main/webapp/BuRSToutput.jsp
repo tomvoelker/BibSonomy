@@ -40,7 +40,7 @@
 <jsp:useBean id="now" class="java.util.Date" />
 <c:set var="basePath" value="${projectHome}"/> 
 
-<channel rdf:about="${projectHome}<c:out value='${requPath}'/>">
+<channel rdf:about="${projectHome}uri/<c:out value='${requPath}'/>">
   <title>${projectName} publications for /<c:out value='${requPath}'/></title>
   <link>${projectHome}burst/<c:out value="${requPath}"/></link>
   <description>${projectName} BuRST Feed for /<c:out value='${requPath}'/></description>
@@ -50,14 +50,14 @@
   <items>
     <rdf:Seq>
       <c:forEach var="bib" items="${ResourceBean.bibtex}">
-        <rdf:li rdf:resource="${projectHome}bibtex/<%=Bibtex.INTRA_HASH %><c:out value='${bib.hash}'/>/<mtl:encode value='${bib.user}'/>"/>
+        <rdf:li rdf:resource="${projectHome}uri/bibtex/<%=Bibtex.INTRA_HASH %><c:out value='${bib.hash}'/>/<mtl:encode value='${bib.user}'/>"/>
       </c:forEach>
     </rdf:Seq>
   </items>
 </channel>
 
 <c:forEach var="resource" items="${ResourceBean.bibtex}">
-  <item rdf:about="${projectHome}bibtex/<%=Bibtex.INTRA_HASH %><c:out value='${resource.hash}'/>/<mtl:encode value='${resource.user}'/>">
+  <item rdf:about="${projectHome}uri/bibtex/<%=Bibtex.INTRA_HASH %><c:out value='${resource.hash}'/>/<mtl:encode value='${resource.user}'/>">
     <title><mtl:bibclean value="${resource.title}"/></title>
     <c:if test ="${!empty resource.description}"><description><c:out value ='${resource.description}'/></description></c:if>
     <link>${projectHome}bibtex/<%=Bibtex.INTRA_HASH %><c:out value='${resource.hash}'/>/<mtl:encode value='${resource.user}'/></link>

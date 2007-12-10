@@ -23,11 +23,14 @@ public class RedirectHandler extends HttpServlet {
 	
 	// bibsonomy URLs for several formats
 	private static final String[][] FORMAT_URLS = new String[][] {
-			{"html", 	null, 	null},
-			{"rss", 	"rss", 	"publrss"},
-			{"xml", 	"xml",	"layout/dblp"},
-			{"rdf",		null,	"burst"},
-			{"bibtex",	null,	"bib"}
+			{"html", 		null, 	null		},
+			{"rss", 		"rss", 	"publrss"	},
+			{"rdf+xml",		null,	"swrc"		},
+			{"text/plain",  null, 	"bib"		},
+			{"plain", 		null, 	"bib"		},
+			{"xml", 		"xml",	"layout/dblp"},
+			{"rdf",			null,	"burst"		},
+			{"bibtex",		null,	"bib"		}
 	};	
 	
 	private static final long serialVersionUID = 3691036578076309554L;	
@@ -157,14 +160,13 @@ public class RedirectHandler extends HttpServlet {
 	 * 			an index for access to the FORMAT_URLS array with the 
 	 * 			url for redirect
 	 */
-	private int getResponseFormat(final String acceptHeader, int contentType) {
-		
+	private int getResponseFormat(final String acceptHeader, int contentType) {		
 		int responseFormat = 0;
 
 		// if no acceptHeader is set, return default (= 0);
 		if (acceptHeader == null) return responseFormat;
 		
-		// maps the q-value to output format
+		// maps the q-value to output format (reverse order)
 		SortedMap<Double,Vector<String>> preferredTypes = new TreeMap<Double,Vector<String>>(new Comparator<Double>() {
 			public int compare(Double o1, Double o2) {
 				if (o1.doubleValue() > o2.doubleValue())
@@ -176,7 +178,7 @@ public class RedirectHandler extends HttpServlet {
 			}				
 		});		
 		
-		// fill map with q-values an formats
+		// fill map with q-values and formats
 		Scanner scanner = new Scanner(acceptHeader.toLowerCase());
 		scanner.useDelimiter(",");
 			
@@ -199,7 +201,7 @@ public class RedirectHandler extends HttpServlet {
 					
 		List<String> formatOrder = new ArrayList<String>();			
 		for (Entry<Double, Vector<String>> entry: preferredTypes.entrySet()) {								
-			for (String type: entry.getValue()) {				
+			for (String type: entry.getValue()) {					
 				formatOrder.add(type);					
 			}
 		}
@@ -208,7 +210,6 @@ public class RedirectHandler extends HttpServlet {
 		boolean found = false;
 		for (String type: formatOrder) {
 			if (found) break;
-			
 			for (int j=0; j<FORMAT_URLS.length; j++) {					
 				String checkType = FORMAT_URLS[j][0];				
 				if (type.indexOf(checkType) != -1) {						
