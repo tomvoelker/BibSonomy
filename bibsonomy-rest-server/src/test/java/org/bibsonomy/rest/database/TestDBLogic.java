@@ -719,4 +719,9 @@ public class TestDBLogic implements LogicInterface {
 	public Document getDocument(final String userName, final String resourceHash, final String fileName) {
 		return null;
 	}
+
+	public void deleteDocument(String userName, String resourceHash, String fileName) {
+		// TODO Auto-generated method stub
+		
+	}
 }

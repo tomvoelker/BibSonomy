@@ -5,6 +5,7 @@ import java.util.StringTokenizer;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
+import org.bibsonomy.rest.strategy.users.DeleteDocumentStrategy;
 import org.bibsonomy.rest.strategy.users.DeletePostStrategy;
 import org.bibsonomy.rest.strategy.users.DeleteUserStrategy;
 import org.bibsonomy.rest.strategy.users.GetPostDetailsStrategy;
@@ -141,8 +142,10 @@ public class UsersHandler implements ContextHandler {
 		switch (httpMethod) {
 		case GET:
 			return new GetPostDocumentStrategy(context, userName, resourceHash, filename);
+		case DELETE:
+			return new DeleteDocumentStrategy(context, userName, resourceHash, filename);
 		default:
-			throw new UnsupportedHttpMethodException(httpMethod, "User-Get-Document");
+			throw new UnsupportedHttpMethodException(httpMethod, "Document-Get-Delete-Document");
 		}
 	}
 }
