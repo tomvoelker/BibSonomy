@@ -3,6 +3,7 @@ package org.bibsonomy.database.managers;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.util.DBSession;
@@ -126,5 +127,27 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager{
 	 */
 	public Document getDocument(final DocumentParam docParam, final DBSession session){
 		return this.queryForObject("getDocument", docParam,Document.class, session);
+	}
+	
+	/**
+	 * This method deletes an existing document
+	 * 
+	 * @param docParam
+	 * @param session
+	 */
+	public void deleteDocument(final DocumentParam docParam, final DBSession session){
+		try {
+			// check for an existing document
+			if (checkForExistingDocuments(docParam, session)){
+				//get the content_id of the bibtex entry
+				docParam.setContentId(getContentIdByHash(docParam,session));
+				//finally delete the document
+				this.delete("deleteDoc", docParam, session);
+			} else {
+				throw new IllegalStateException("No document for this bibtex entry");
+			}
+		} catch (NullPointerException e){
+			throw new ResourceNotFoundException("Bibtex resource doesn't exists.");
+		}
 	}
 }

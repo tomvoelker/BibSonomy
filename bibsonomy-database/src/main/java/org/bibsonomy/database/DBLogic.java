@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.managers.BibTexDatabaseManager;
@@ -517,22 +518,9 @@ public class DBLogic implements LogicInterface {
 		return this.loginUserName;
 	}
 
-	/**
-	 * Checks if the username of the api equals to the username given in the path.
-	 * (Maybe we could equalize the params to change the method param to Object<?> obj
-	 * if thats passible)
-	 * 
-	 * @param document
-	 */
-	private void ensureWriteAccess(final Document document) {
-		if (this.loginUserName.equals(document.getUserName()) == false) {
-			throw new ValidationException("You are not authorized to perform the requested operation.");
-		}
-	}
-
 	public String addDocument(Document doc) {
 		ensureLoggedIn();
-		ensureWriteAccess(doc);
+		permissionDBManager.ensureWriteAccess(doc, loginUserName);
 		return this.storeDocument(doc).getFileHash();
 	}
 
@@ -612,7 +600,7 @@ public class DBLogic implements LogicInterface {
 				// get the requested document
 				doc = docDBManager.getDocument(docParam, session);
 				if (doc == null){
-					throw new IllegalStateException("No such document for this bibtex entry");
+					throw new IllegalStateException("No document for this bibtex entry");
 				}
 			} else {
 				throw new ValidationException("You are not authorized to perform the requested operation.");
@@ -622,5 +610,45 @@ public class DBLogic implements LogicInterface {
 		}
 		log.info("API - New filerequest: " + doc.getFileName() + " from User: " + doc.getUserName());
 		return doc;
+	}
+	
+	/**
+	 * @param userName
+	 * @param resourceHash
+	 * @param fileName
+	 */
+	public void deleteDocument(final String userName, final String resourceHash, final String fileName){
+		ensureLoggedIn();
+	
+		permissionDBManager.ensureWriteAccess(loginUserName, userName);
+		
+		final DBSession session = openSession();
+		
+		try {
+			//create the docParam object
+			DocumentParam docParam = new DocumentParam();
+			
+			//fill the docParam object
+			docParam.setFileName(fileName);
+			docParam.setResourceHash(resourceHash);
+			docParam.setUserName(userName);
+			
+			final boolean valid = docDBManager.validateResource(docParam, session);
+			
+			/*
+			 * valid means that the resource is a bibtex entry and the given user is
+			 * the owner of this entry.
+			 */
+			if (valid){
+				docDBManager.deleteDocument(docParam, session);
+			} else {
+				throw new ValidationException("You are not authorized to perform the requested operation.");
+			}
+		} catch (NullPointerException e) {
+			throw new ResourceNotFoundException("The requested bibtex resource doesn't exists.");
+		} finally {
+			session.close();
+		}
+		log.info("API - Document deleted: " + fileName + " from User: " + userName);
 	}
 }

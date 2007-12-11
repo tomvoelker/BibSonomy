@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers;
 
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
 
 /**
@@ -48,4 +49,25 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 			throw new ValidationException("You are not authorized to perform the requested operation.");
 		}
 	}
+	
+	/**
+	 * @param loginUserName
+	 * @param userName 
+	 */
+	public void ensureWriteAccess(final String loginUserName, final String userName){
+		if (!loginUserName.toLowerCase().equals(userName.toLowerCase())){
+			throw new ValidationException("You are not authorized to perform the requested operation.");
+		}
+	}
+	
+	/**
+	 * @param document
+	 * @param loginUserName
+	 */
+	public void ensureWriteAccess(final Document document, final String loginUserName) {
+		if (loginUserName.equals(document.getUserName()) == false) {
+			throw new ValidationException("You are not authorized to perform the requested operation.");
+		}
+	}
+
 }

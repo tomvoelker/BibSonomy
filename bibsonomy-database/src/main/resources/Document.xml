@@ -40,5 +40,11 @@
 			AND d.name = #fileName#
 			AND d.user_name = #userName# 
 	</select>
-
+	
+	<delete id="deleteDoc" parameterClass="documentParam">
+		DELETE FROM document 
+		WHERE content_id = #contentId# 
+		AND user_name = #userName#
+		AND name = #fileName#
+	</delete>
 </sqlMap>
