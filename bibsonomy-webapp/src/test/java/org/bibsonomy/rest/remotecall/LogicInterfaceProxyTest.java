@@ -598,4 +598,8 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		return null;
 	}
 
+	public void deleteDocument(String userName, String resourceHash, String fileName) {
+		// TODO Auto-generated method stub
+		
+	}
 }
