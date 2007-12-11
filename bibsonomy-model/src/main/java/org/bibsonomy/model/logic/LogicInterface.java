@@ -193,4 +193,13 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @return document
 	 */
 	public Document getDocument(String userName, String resourceHash, String fileName);
+	
+	/**
+	 * Deletes an existing document out of the DB
+	 * 
+	 * @param userName
+	 * @param resourceHash
+	 * @param fileName
+	 */
+	public void deleteDocument(String userName, String resourceHash, String fileName);
 }
