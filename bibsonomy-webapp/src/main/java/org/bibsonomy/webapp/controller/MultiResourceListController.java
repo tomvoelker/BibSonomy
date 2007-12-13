@@ -9,12 +9,15 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.TagCloudStyle;
 import org.bibsonomy.common.enums.TagCloudSort;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.Order;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.TagUtils;
+import org.bibsonomy.webapp.view.Views;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.ResourceViewCommand;
 import org.bibsonomy.webapp.command.TagCloudCommand;
@@ -83,11 +86,11 @@ public abstract class MultiResourceListController {
 	 * @param itemsPerPage number of items to be displayed on each page
 	 * @param totalCount total number of items in the list
 	 */
-	protected <T extends Resource, V extends ResourceViewCommand> void setList(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, int itemsPerPage, int totalCount) {
-		ListCommand<Post<T>> listCommand = cmd.getListCommand(resourceType); 
+	protected <T extends Resource, V extends ResourceViewCommand> void setList(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, List<String> tags, String hash, Order order, String search, int itemsPerPage, int totalCount) {
+		ListCommand<Post<T>> listCommand = cmd.getListCommand(resourceType);
 		// retrieve posts		
-		listCommand.setList( this.logic.getPosts(resourceType, groupingEntity, groupingName, null, null, null, listCommand.getStart(), listCommand.getStart() + userSettings.getListItemcount(), null) );
-		log.debug("getPosts " + resourceType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + userSettings.getListItemcount());
+		listCommand.setList( this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, order, listCommand.getStart(), listCommand.getStart() + itemsPerPage, search) );
+		log.debug("getPosts " + resourceType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage);
 		// list settings
 		listCommand.setEntriesPerPage(itemsPerPage);
 		listCommand.setTotalCount(totalCount);
@@ -112,5 +115,21 @@ public abstract class MultiResourceListController {
 	 */
 	public void setLogic(LogicInterface logic) {
 		this.logic = logic;
+	}
+	
+	/**
+	 * @param format
+	 * @param resourcetype
+	 */
+	protected void chooseListsToInitialize(String format, String resourcetype) {
+		format = format.toLowerCase();
+		if (Views.isBibtexView(format.toLowerCase()) 
+				|| (resourcetype != null && resourcetype.toLowerCase().equals("bibtex"))) {
+			this.listsToInitialise.remove(Bookmark.class);
+		}
+		if (Views.isBookmarkView(format.toLowerCase()) 
+				|| (resourcetype != null && resourcetype.toLowerCase().equals("bookmark"))) {
+			this.listsToInitialise.remove(BibTex.class);
+		}
 	}	
 }

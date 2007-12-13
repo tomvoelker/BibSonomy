@@ -8,7 +8,8 @@
 	<jsp:directive.attribute name="titleKey" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
-	<jsp:directive.attribute name="otherParams" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="otherParamsNextprev" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="otherParamsNumEntries" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="formatButtons" fragment="true" required="true"/>
@@ -20,49 +21,63 @@
 	
 	<fmt:bundle basename="messages"/>
 
-	<div class="bookbox">
-		<h2 class="listh"><fmt:message key="${titleKey}" /></h2> 
-	
-		<div class="listh">
-			<c:if test="${listView.totalCount != 0}">
-				<c:set var="totalTitle"><fmt:message key="list.total" /> <c:out value="${listView.totalCount}"/> <fmt:message key="${titleKey}" /></c:set>
-				<span title="${totalTitle}">(${listView.totalCount})</span>
-			</c:if>
-			<jsp:invoke fragment="formatButtons"/>
-		</div>
-	
-		<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}" loginUserName="${loginUserName}" otherParams="${otherParams}" disableActions="${disableActions}" formatButtons="${formatButtons}"/>
+	<c:if test="${!empty listView.list}">
+		<div class="bookbox">
+			<h2 class="listh"><fmt:message key="${titleKey}" /></h2> 
 		
-		<ul class="bblist">
-			<c:forEach var="post" items="${listView.list}">
-				<c:choose>
-					<c:when test="${loginUserName eq post.user.name}">
-						<c:set var="liClass" value="bm bmown"/>
-					</c:when>
-					<c:otherwise>
-						<c:set var="liClass" value="bm"/>
-					</c:otherwise>
-				</c:choose>
-				<li class="${liClass}">
-					<div class="bmtitle">
-						<jsp:invoke fragment="title"/>
-					</div>
-					<div class="bmdesc">
-						<jsp:invoke fragment="desc"/>
-					</div>
-					<span class="bmmeta">
-						<rc:meta post="${post}" loginUserName="${loginUserName}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
-					</span>
-					<div class="bmfoot">
-						<span class="bmaction">
-							<jsp:invoke fragment="actions"/>
+			<div class="listh">
+				<c:if test="${listView.totalCount != 0}">
+					<c:set var="totalTitle"><fmt:message key="list.total" /> <c:out value="${listView.totalCount}"/> <fmt:message key="${titleKey}" /></c:set>
+					<span title="${totalTitle}">(${listView.totalCount})</span>
+				</c:if>
+				<jsp:invoke fragment="formatButtons"/>
+			</div>
+		
+			
+			<div class="kiste">		
+				<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}" loginUserName="${loginUserName}" otherParams="${otherParamsNextprev}" disableActions="${disableActions}"/>
+				<rc:actions loginUserName="${loginUserName}" resourceType="${listView.resourcetype}"/>				
+				${mtl:ch('nbsp')}
+			</div>
+			
+			
+			<ul class="bblist">
+				<c:forEach var="post" items="${listView.list}">
+					<c:choose>
+						<c:when test="${loginUserName eq post.user.name}">
+							<c:set var="liClass" value="bm bmown"/>
+						</c:when>
+						<c:otherwise>
+							<c:set var="liClass" value="bm"/>
+						</c:otherwise>
+					</c:choose>
+					<li class="${liClass}">
+						<div class="bmtitle">
+							<jsp:invoke fragment="title"/>
+						</div>
+						<div class="bmdesc">
+							<jsp:invoke fragment="desc"/>
+						</div>
+						<span class="bmmeta">
+							<rc:meta post="${post}" loginUserName="${loginUserName}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
 						</span>
-						${mtl:ch('nbsp')}
-					</div>   
-				</li>
-			</c:forEach>
-		</ul>		
-		<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}" loginUserName="${loginUserName}" otherParams="${otherParams}" disableActions="${disableActions}" formatButtons="${formatButtons}"/>
-	</div>
+						<div class="bmfoot">
+							<span class="bmaction">
+								<jsp:invoke fragment="actions"/>
+							</span>
+							${mtl:ch('nbsp')}
+						</div>   
+					</li>
+				</c:forEach>
+			</ul>
+			
+			<div class="kiste">		
+				<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}" loginUserName="${loginUserName}" otherParams="${otherParams}" disableActions="${disableActions}"/>
+				<rc:itemcount entriesPerPage="${listView.entriesPerPage}" entryType="${listView.resourcetype}" otherParams="${otherParamsNumEntries}" titleKey="${titleKey}"/>
+				${mtl:ch('nbsp')}
+			</div>
+			
+		</div>
+	</c:if>
 
 </jsp:root>

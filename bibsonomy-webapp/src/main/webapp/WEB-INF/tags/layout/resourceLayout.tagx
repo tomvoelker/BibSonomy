@@ -40,8 +40,8 @@
 			<link rel="alternate" type="application/rss+xml" title="${burstRssFeed} /${requPath}" href="${burstUrl}" />
 		</jsp:attribute>
 		<jsp:attribute name="content">
-			<resources:bookmarks listView="${command.bookmark}" loginUserName="${loginUserName}" otherParams="bibtex.start=${command.bibtex.start}" disableActions="${false}" requPath="${requPath}"/>
-			<resources:bibtexs listView="${command.bibtex}" loginUserName="${loginUserName}" otherParams="bookmark.start=${command.bookmark.start}" disableActions="${false}" requPath="${requPath}"/>
+			<resources:bookmarks listView="${command.bookmark}" loginUserName="${loginUserName}" otherParamsNextprev="bibtex.start=${command.bibtex.start}&amp;amp;bookmark.entriesPerPage=${command.bookmark.entriesPerPage}&amp;amp;bibtex.entriesPerPage=${command.bibtex.entriesPerPage}" otherParamsNumEntries="bibtex.entriesPerPage=${command.bibtex.entriesPerPage}" disableActions="${false}" requPath="${requPath}"/>
+			<resources:bibtexs listView="${command.bibtex}" loginUserName="${loginUserName}" otherParamsNextprev="bookmark.start=${command.bookmark.start}&amp;amp;bookmark.entriesPerPage=${command.bookmark.entriesPerPage}&amp;amp;bibtex.entriesPerPage=${command.bibtex.entriesPerPage}" otherParamsNumEntries="bookmark.entriesPerPage=${command.bookmark.entriesPerPage}" disableActions="${false}" requPath="${requPath}"/>
 		</jsp:attribute>
 	</layout:layout>
 </jsp:root>

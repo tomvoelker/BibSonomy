@@ -6,6 +6,8 @@ package org.bibsonomy.webapp.command;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bibsonomy.model.Post;
+
 /**
  * bean for listviews across multiple browsable pages 
  * 
@@ -15,7 +17,7 @@ import java.util.List;
 public class ListCommand<T> {
 	private int numPreviousPages = 2;
 	private int numNextPages = 2;
-	private int entriesPerPage = 20;
+	private int entriesPerPage = 20; 
 	private final PageCommand curPage = new PageCommand();
 	private List<PageCommand> previousPages;
 	private List<PageCommand> nextPages;
@@ -155,5 +157,25 @@ public class ListCommand<T> {
 			this.curPage.setNumber( (this.curPage.getStart() + this.entriesPerPage - 1) / this.entriesPerPage + 1);
 		}
 		return this.curPage;
+	}
+	/**
+	 * @return
+	 */
+	public int getEntriesPerPage() {
+		return this.entriesPerPage;
+	}
+	
+	/**
+	 * @return
+	 */
+	public String getResourcetype() {
+		if (list.get(0) != null) {
+			T item = list.get(0);
+			if (item instanceof Post) {
+				Post postItem = (Post) item;
+				return postItem.getResource().getClass().getSimpleName().toLowerCase();
+			}
+		}
+		return null;
 	}
 }

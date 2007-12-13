@@ -3,10 +3,12 @@
  */
 package org.bibsonomy.webapp.view;
 
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.webapp.util.View;
 
 /**
- * some symbols for views in the application
+ * some symbols for views in the application, along with information 
+ * which views are capable to display bibtex / bookmark only
  * 
  * @author Jens Illig
  */
@@ -19,9 +21,15 @@ public enum Views implements View {
 	/**
 	 * user page displaying the resources of a single user
 	 */
-	USERPAGE("user");
+	USERPAGE("user"),
+	
+	/**
+	 * bibtex output
+	 */
+	BIBTEX("export/bibtex/bibtex");
 	
 	private final String name;
+	
 	private Views(final String name) {
 		this.name = name;
 	}
@@ -29,5 +37,28 @@ public enum Views implements View {
 	public String getName() {
 		return this.name;
 	}
-
+	
+	public static Boolean isBibtexView(String name) {
+		if (name.equals("bibtex")) {
+			return true;
+		}
+		return false;
+	}
+	
+	public static Boolean isBookmarkView(String name) {
+		if (false) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * @param format
+	 * @return
+	 */
+	public static Views getViewByFormat(String format) {
+		if (format.equals("bibtex"))
+			return BIBTEX;
+		throw new BadRequestOrResponseException("Invalid format specification.");
+	}
 }

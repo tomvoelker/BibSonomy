@@ -24,6 +24,9 @@ public class ResourceViewCommand extends BaseCommand {
 	private ListCommand<Post<BibTex>> bibtex = new ListCommand<Post<BibTex>>();
 	private TagCloudCommand tagcloud = new TagCloudCommand();
 	private String requestedUser;
+	private String resourcetype;
+	private String format = "html";
+	
 	
 	/**
 	 * @param <T> type of the entities in the list
@@ -90,5 +93,27 @@ public class ResourceViewCommand extends BaseCommand {
 	public void setTagcloud(TagCloudCommand tagcloud) {
 		this.tagcloud = tagcloud;
 	}
+
+	/**
+	 * @return
+	 */
+	public String getFormat() {
+		return this.format;
+	}
+	
+	/**
+	 * @param format
+	 */
+	public void setFormat(String format) {
+		this.format = format;
+	}
+
+	public String getResourcetype() {
+		return this.resourcetype;
+	}
+
+	public void setResourcetype(String resourcetype) {
+		this.resourcetype = resourcetype;
+	}	
 		
 }

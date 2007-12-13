@@ -25,7 +25,7 @@ public class HomepageController extends MultiResourceListController implements M
 
 		// retrieve and setthe requested resource lists
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {
-			setList(command, resourceType, GroupingEntity.ALL, null, userSettings.getListItemcount(), 100);
+			setList(command, resourceType, GroupingEntity.ALL, null, null, null, null, null, userSettings.getListItemcount(), 100);
 			postProcessList(command, resourceType);
 		}
 		
