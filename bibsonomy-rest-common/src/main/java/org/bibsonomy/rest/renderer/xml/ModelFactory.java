@@ -24,6 +24,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.BibTexUtils;
 
 /**
  * Produces objects from the model based on objects from the XML model generated
@@ -182,7 +183,7 @@ public class ModelFactory {
 			bibtex.setPrivnote(xmlBibtex.getPrivnote());
 
 			// parse Bibtex so see whether the entry is valid
-			BibtexParserUtils bibutil = new BibtexParserUtils( bibtex.toBibtexString() );						
+			BibtexParserUtils bibutil = new BibtexParserUtils( BibTexUtils.toBibtexString(bibtex) );						
 			bibtex.setAuthor( bibutil.getFormattedAuthorString() );
 			bibtex.setEditor( bibutil.getFormattedEditorString() );
 						
