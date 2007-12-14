@@ -104,8 +104,10 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getTagsByExpression() {
 		this.tagParam.setLimit(1000);
+		this.tagParam.setRegex("web");
+		this.tagParam.setRequestedUserName("hotho");
 		List<Tag> tags = this.tagDb.getTagsByExpression(this.tagParam, this.dbSession);
-		assertEquals(162,tags.size());
+		assertEquals(12,tags.size());
 		this.resetParameters();		
 	}
 
@@ -126,9 +128,16 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
 	@Test
 	public void getTags() {
-		this.tagParam.setLimit(1000);
+		this.tagParam.setLimit(1500);
+		this.tagParam.setRegex(null);
+		this.tagParam.setRequestedUserName("hotho");
+		this.tagParam.setGrouping(GroupingEntity.USER);
+		this.tagParam.setUserName("hotho");
 		List<Tag> tags = this.tagDb.getTags(this.tagParam, this.dbSession);		
-		assertEquals(162,tags.size());
+		assertEquals(1408,tags.size());
+		this.tagParam.setUserName("some_other_user");
+		tags = this.tagDb.getTags(this.tagParam, this.dbSession);		
+		assertEquals(1408,tags.size());		
 		this.resetParameters();			
 	}		
 	

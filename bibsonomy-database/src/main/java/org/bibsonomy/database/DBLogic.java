@@ -272,28 +272,33 @@ public class DBLogic implements LogicInterface {
 	 * Removes the given user.
 	 */
 	public void deleteUser(final String userName) {
-		if ((this.loginUserName == null) || (this.loginUserName.equals(userName) == false)) {
-			throw new ValidationException("You are not authorized to perform the requested operation");
-		}
 		
-		final DBSession session = openSession();
-		try {
-			userDBManager.deleteUser(userName, session);
-		} finally {
-			session.close();
-		}
+		throw new UnsupportedOperationException("not yet available");
+		
+//		if ((this.loginUserName == null) || (this.loginUserName.equals(userName) == false)) {
+//			throw new ValidationException("You are not authorized to perform the requested operation");
+//		}		
+//		final DBSession session = openSession();
+//		try {
+//			userDBManager.deleteUser(userName, session);
+//		} finally {
+//			session.close();
+//		}
 	}
 
 	/*
 	 * Removes the given group.
 	 */
 	public void deleteGroup(final String groupName) {
-		final DBSession session = openSession();
-		try {
-			groupDBManager.deleteGroup(groupName, session);
-		} finally {
-			session.close();
-		}
+		
+		throw new UnsupportedOperationException("not yet available");
+		
+//		final DBSession session = openSession();
+//		try {
+//			groupDBManager.deleteGroup(groupName, session);
+//		} finally {
+//			session.close();
+//		}
 	}
 
 	/*
@@ -302,13 +307,13 @@ public class DBLogic implements LogicInterface {
 	public void removeUserFromGroup(final String groupName, final String userName) {
 		// FIXME: IMPORTANT: not everybody may do this!
 		// better do nothing than anything horribly wrong:
-		throw new RuntimeException("Not implemented yet");
-		/*final DBSession session = openSession();
-		try {
-			groupDBManager.removeUserFromGroup(groupName, userName, session);
-		} finally {
-			session.close();
-		}*/
+		throw new UnsupportedOperationException("not yet available");
+//		final DBSession session = openSession();
+//		try {
+//			groupDBManager.removeUserFromGroup(groupName, userName, session);
+//		} finally {
+//			session.close();
+//		}
 	}
 
 	/*
@@ -342,35 +347,40 @@ public class DBLogic implements LogicInterface {
 	 * Adds/updates a user in the database.
 	 */
 	private String storeUser(final User user, boolean update) {
-		final DBSession session = openSession();
-		try {
-			String errorMsg = null;
-			
-			final User existingUser = userDBManager.getUserDetails(user.getName(), session);
-			if (existingUser != null) {
-				if (update == false) {
-					errorMsg = "user " + existingUser.getName() + " already exists";
-				} else if (existingUser.getName().equals(this.loginUserName) == false) {
-					errorMsg = "user " + this.loginUserName + " is not authorized to change user " + existingUser.getName();
-					log.warn(errorMsg);
-					throw new ValidationException(errorMsg);
-				}
-			} else {
-				if (update == true) {
-					errorMsg = "user " + user.getName() + " does not exist";
-				}
-			}
-			if (errorMsg != null) {
-				log.warn(errorMsg);
-				throw new IllegalStateException(errorMsg);
-			}
-			if (update == false) {
-				return userDBManager.createUser(user, session);
-			}
-			throw new UnsupportedOperationException("update user not implemented yet");
-		} finally {
-			session.close();
-		}
+		
+		throw new UnsupportedOperationException("not yet available");
+		
+// TODO check if the following is correct
+// 
+//		final DBSession session = openSession();
+//		try {
+//			String errorMsg = null;
+//			
+//			final User existingUser = userDBManager.getUserDetails(user.getName(), session);
+//			if (existingUser != null) {
+//				if (update == false) {
+//					errorMsg = "user " + existingUser.getName() + " already exists";
+//				} else if (existingUser.getName().equals(this.loginUserName) == false) {
+//					errorMsg = "user " + this.loginUserName + " is not authorized to change user " + existingUser.getName();
+//					log.warn(errorMsg);
+//					throw new ValidationException(errorMsg);
+//				}
+//			} else {
+//				if (update == true) {
+//					errorMsg = "user " + user.getName() + " does not exist";
+//				}
+//			}
+//			if (errorMsg != null) {
+//				log.warn(errorMsg);
+//				throw new IllegalStateException(errorMsg);
+//			}
+//			if (update == false) {
+//				return userDBManager.createUser(user, session);
+//			}
+//			throw new UnsupportedOperationException("update user not implemented yet");
+//		} finally {
+//			session.close();
+//		}
 	}
 
 	/*
@@ -450,27 +460,31 @@ public class DBLogic implements LogicInterface {
 	 * Adds/updates a group in the database.
 	 */
 	private String storeGroup(@SuppressWarnings("unused") final Group group, @SuppressWarnings("unused") boolean update) {
-		/* FIXME: unsure who may change a group -> better doing nothing
-		final DBSession session = this.openSession();
-		try {
-			this.groupDBManager.storeGroup(group, update, session);
-		} finally {
-			session.close();
-		}
-		*/
-		throw new UnsupportedOperationException("StoreGroup is not yet implemented.");
+		
+		throw new UnsupportedOperationException("not yet available");
+		
+//		FIXME: unsure who may change a group -> better doing nothing
+//		final DBSession session = this.openSession();
+//		try {
+//			this.groupDBManager.storeGroup(group, update, session);
+//		} finally {
+//			session.close();
+//		}		
 	}
 
 	/*
 	 * Adds an existing user to an existing group.
 	 */
 	public void addUserToGroup(final String groupName, final String userName) {
-		final DBSession session = openSession();
-		try {
-			groupDBManager.addUserToGroup(groupName, userName, session);
-		} finally {
-			session.close();
-		}
+		
+		throw new UnsupportedOperationException("not yet available");
+		
+//		final DBSession session = openSession();
+//		try {
+//			groupDBManager.addUserToGroup(groupName, userName, session);
+//		} finally {
+//			session.close();
+//		}
 	}
 
 	private void ensureLoggedIn() {

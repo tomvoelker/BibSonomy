@@ -13,6 +13,7 @@ import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.logic.Order;
 
@@ -32,18 +33,24 @@ public class GetBibtexViewable extends BibTexChainElement {
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		final Integer groupId;
-		final GroupID specialGroup = GroupID.getSpecialGroup(param.getRequestedGroupName());
-		if (specialGroup != null) {
-			groupId = specialGroup.getId();
-		} else {
-			groupId = this.generalDb.getGroupIdByGroupNameAndUserName(param, session);
+		try {
+			final GroupID specialGroup = GroupID.getSpecialGroup(param.getRequestedGroupName());
+			if (specialGroup != null) {
+				groupId = specialGroup.getId();
+			} else {
+				groupId = this.generalDb.getGroupIdByGroupNameAndUserName(param, session);
+			}
+			if (groupId == null) {
+				log.debug("groupId not found");
+				return new ArrayList<Post<BibTex>>(0);
+			}
+			log.debug("groupId=" + groupId);
+			param.setGroupId(groupId);
 		}
-		if (groupId == null) {
+		catch (IllegalArgumentException ex) {
 			log.debug("groupId not found");
-			return new ArrayList<Post<BibTex>>(0);
+			return new ArrayList<Post<BibTex>>(0);			
 		}
-		log.debug("groupId=" + groupId);
-		param.setGroupId(groupId);
 
 		if (present(param.getTagIndex()) == true) return this.db.getBibTexViewableByTag(param, session);
 		return this.db.getBibTexViewable(param, session);

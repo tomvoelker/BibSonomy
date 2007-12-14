@@ -54,9 +54,8 @@
 	<select id="getTagsByExpression" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
 		SELECT t.tag_name, count(t.tag_name) as tag_ctr 
 		FROM tas t
-		USE INDEX (tag_name_user_name_idx) 
-		WHERE (t.user_name=#requestedUserName# OR
-			  t.group=0) AND
+		WHERE t.user_name=#requestedUserName# 
+			  AND
 			  t.tag_name REGEXP #regex#
 			  <include refid="getTagsByResourceType"/>
 		GROUP BY t.tag_name
@@ -66,7 +65,8 @@
  	<select id="getTagsViewable" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
 		SELECT tag_name, count(tag_name) AS tag_ctr 
 		FROM tas t
-		WHERE t.group = #groupType#
+		WHERE t.group = #groupId# 
+		  AND t.user_name=#userName#
 		<include refid="getTagsByResourceType"/>
 		GROUP BY t.tag_name LIMIT #limit# OFFSET #offset#
 	</select>
@@ -160,9 +160,9 @@
 	<select id="getTagsByAuthor" resultMap="Common.tag" parameterClass="tagParam">
 		SELECT tag_name, count(tag_name) AS tag_count 
 		FROM tas t, search s 
-		WHERE MATCH(s.author) AGAINST (#search# IN BOOLEAN MODE) 
-			AND s.content_type = #contentType# 
+		WHERE MATCH(s.author) AGAINST (#search# IN BOOLEAN MODE) 			 
 			AND s.group =#groupType#
+			AND t.content_type = #contentType#
 			AND t.content_id = s.content_id 
 		GROUP BY t.tag_name ORDER BY tag_name COLLATE utf8_unicode_ci;
 	</select>

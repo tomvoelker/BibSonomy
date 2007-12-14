@@ -29,13 +29,20 @@ public class GetBookmarksViewable extends BookmarkChainElement {
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
 		final Integer groupId;
-		final GroupID specialGroup = GroupID.getSpecialGroup(param.getRequestedGroupName());
-		if (specialGroup != null) {
-			groupId = specialGroup.getId();
-		} else {
-			groupId = this.generalDb.getGroupIdByGroupNameAndUserName(param, session);
+		try {
+			final GroupID specialGroup = GroupID.getSpecialGroup(param.getRequestedGroupName());
+		
+			if (specialGroup != null) {
+				groupId = specialGroup.getId();
+			} else {
+				groupId = this.generalDb.getGroupIdByGroupNameAndUserName(param, session);
+			}
+			if (groupId == null) {
+				log.debug("groupId not found");
+				return new ArrayList<Post<Bookmark>>(0);
+			}
 		}
-		if (groupId == null) {
+		catch (IllegalArgumentException e) {
 			log.debug("groupId not found");
 			return new ArrayList<Post<Bookmark>>(0);
 		}

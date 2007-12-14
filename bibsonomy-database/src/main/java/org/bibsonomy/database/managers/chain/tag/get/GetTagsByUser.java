@@ -22,12 +22,11 @@ public class GetTagsByUser extends TagChainElement {
 	 */
 	@Override
 	protected List<Tag> handle(final TagParam param, final DBSession session) {
-		// TODO: is this needed?  param.setGroups(this.generalDb.getGroupsForUser(param, session));
 		return this.db.getTagsByUser(param, session);
 	}
 
 	@Override
 	protected boolean canHandle(final TagParam param) {
-		return param.getGrouping() == GroupingEntity.USER && present(param.getRequestedGroupName());
+		return param.getGrouping() == GroupingEntity.USER && present(param.getRequestedUserName()) && !present(param.getRegex());
 	}
 }
