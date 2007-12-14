@@ -5,6 +5,7 @@ import static org.junit.Assert.fail;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.junit.Test;
 
 
@@ -21,7 +22,7 @@ public class BibtexParserUtilsTest {
 	private static final Logger log = Logger.getLogger(BibtexParserUtilsTest.class);
 	
 	private String bibString() {
-		return this.bib.toBibtexString();
+		return BibTexUtils.toBibtexString(this.bib);
 	}
 	
 	private void initBibtex() {
@@ -35,13 +36,13 @@ public class BibtexParserUtilsTest {
 	public void testFormatAuthors() {
 		this.initBibtex();
 		
-		this.bib.setAuthor("Silie, Peter and Dampf, Hans and Schüble, Fritz");
+		this.bib.setAuthor("Silie, Peter and Dampf, Hans and Schï¿½ble, Fritz");
 		BibtexParserUtils bibutils = new BibtexParserUtils(this.bibString());
-		assertEquals("Peter Silie and Hans Dampf and Fritz Schüble", bibutils.getFormattedAuthorString());
+		assertEquals("Peter Silie and Hans Dampf and Fritz Schï¿½ble", bibutils.getFormattedAuthorString());
 		
-		this.bib.setAuthor("Peter Silie and Hans Dampf and Fritz Schüble");
+		this.bib.setAuthor("Peter Silie and Hans Dampf and Fritz Schï¿½ble");
 		bibutils = new BibtexParserUtils(this.bibString());
-		assertEquals("Peter Silie and Hans Dampf and Fritz Schüble", bibutils.getFormattedAuthorString());		
+		assertEquals("Peter Silie and Hans Dampf and Fritz Schï¿½ble", bibutils.getFormattedAuthorString());		
 	}
 	
 	@Test // check if Editors are correctly formatted
@@ -52,9 +53,9 @@ public class BibtexParserUtilsTest {
 		BibtexParserUtils bibutils = new BibtexParserUtils(this.bibString());
 		assertEquals("Peter Silie and Hans Dampf and Jean-Jaques de La Rue", bibutils.getFormattedEditorString());
 		
-		this.bib.setEditor("Peter Silie and Hans Dampf and Fritz Schüble");
+		this.bib.setEditor("Peter Silie and Hans Dampf and Fritz Schï¿½ble");
 		bibutils = new BibtexParserUtils(this.bibString());
-		assertEquals("Peter Silie and Hans Dampf and Fritz Schüble", bibutils.getFormattedEditorString());		
+		assertEquals("Peter Silie and Hans Dampf and Fritz Schï¿½ble", bibutils.getFormattedEditorString());		
 	}	
 
 	@Test // check if exception is thrown when authors are malformed
