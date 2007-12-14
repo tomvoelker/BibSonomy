@@ -8,6 +8,9 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -152,9 +155,11 @@ public class BibTexUtils {
 	 * TODO: check handling  of misc = {}... field
 	 * 
 	 */
-	public String toBibtexString(BibTex bib) {
+	public static String toBibtexString(BibTex bib) {
 		try {
-			final BeanInfo bi = Introspector.getBeanInfo(this.getClass());
+			final BeanInfo bi = Introspector.getBeanInfo(bib.getClass());
+			
+			String[] excludeFields = {"simHash0", "simHash1", "simHash2", "simHash3", "entrytype", "bibtexKey"};
 			
 			StringBuffer sb = new StringBuffer();
 			sb.append("@");
@@ -166,14 +171,16 @@ public class BibTexUtils {
 				final Method getter = d.getReadMethod();
 				// loop over all String attributes
 				if (d.getPropertyType().equals(String.class) 
-						&& getter.invoke(this, (Object[]) null) != null) {
+						&& getter.invoke(bib, (Object[]) null) != null 
+					    && ! Arrays.asList(excludeFields).contains(d.getName()) ) {
 					sb.append(d.getName());
 					sb.append(" = ");
 					sb.append("{");
-					sb.append( (String) getter.invoke(this, (Object[]) null) );
-					sb.append("}, \n");					
+					sb.append( (String) getter.invoke(bib, (Object[]) null) );
+					sb.append("},\n");					
 				}
-			}				
+			}
+			sb.delete(sb.length()-2, sb.length()-1); // remove last comma
 			sb.append("}");	
 			return sb.toString();
 		} catch (IntrospectionException ex) {
@@ -191,5 +198,76 @@ public class BibTexUtils {
 			s.append("&" + name + "=" + URLEncoder.encode(value.trim(), "UTF-8"));
 		}
 	}
+	
+	/** 
+	 * @param authors some string representation of the list of authors with their first- and lastnames
+	 * @param editors some string representation of the list of editors with their first- and lastnames
+	 * @param year
+	 * @param title
+	 * @return a bibtex key for a bibtex with the fieldvalues given by arguments
+	 */
+	public static String generateBibtexKey(final String authors, final String editors, final String year, final String title) {
+		/*
+		 * TODO: pick either author or editor. DON'T use getAuthorlist (it sorts alphabetically!). CHECK for null values.
+		 * What to do with Chinese authors and other broken names?
+		 * How to extract the first RELEVANT word of the title?
+		 * remove Sonderzeichen, LaTeX markup!
+		 */
+		final StringBuffer b = new StringBuffer();
+		/*
+		 * get author
+		 */
+		String first = getFirstPersonsLastName(authors);
+		if (first == null) {
+			first = getFirstPersonsLastName(editors);
+			if (first == null) {
+				first = "noauthororeditor";
+			}
+		}
+		b.append(first);
+		/* the year */ 
+		if (year != null) {
+			b.append(year.trim());
+		}
+		/* first relevant word of the title */
+		if (title != null) {
+			/* best guess: pick first word with more than 4 characters, longest first word */
+			// FIXME: what do we want to do inside this if statement?
+		}
+		return b.toString().toLowerCase();
+	}
+	
+	/**
+	 * Tries to extract the last name of the first person.
+	 * 
+	 * @param person some string representation of a list of persons with their first- and lastnames  
+	 * @return the last name of the first person
+	 */
+	public static String getFirstPersonsLastName(final String person) {
+		if (person != null) {
+			final String firstauthor;
+			/*
+			 * check, if there is more than one author
+			 */
+			final int firstand = person.indexOf(" and ");
+			if (firstand < 0) {
+				firstauthor = person;
+			} else {
+				firstauthor = person.substring(0, firstand);				
+			}
+			/*
+			 * first author extracted, get its last name
+			 */
+			final int lastspace = firstauthor.lastIndexOf(' ');
+			final String lastname;
+			if (lastspace < 0) {
+				lastname = firstauthor;
+			} else {
+				lastname = firstauthor.substring(lastspace + 1, firstauthor.length());
+			}
+			return lastname;
+		}
+		return null;
+	}	
 	
 }
