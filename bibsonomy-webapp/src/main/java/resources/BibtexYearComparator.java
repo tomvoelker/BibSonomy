@@ -5,7 +5,7 @@ import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bibsonomy.util.BibtexUtils;
+import org.bibsonomy.model.util.BibTexUtils;
 
 public class BibtexYearComparator implements Comparator<Bibtex>, Serializable {
 
@@ -28,10 +28,10 @@ public class BibtexYearComparator implements Comparator<Bibtex>, Serializable {
 			/*
 			 * compare by authors and editors;
 			 */
-			String p1 = BibtexUtils.getFirstPersonsLastName(o1.getAuthor());
-			String p2 = BibtexUtils.getFirstPersonsLastName(o2.getAuthor());
-			if (p1 == null) p1 = BibtexUtils.getFirstPersonsLastName(o1.getEditor());
-			if (p2 == null) p2 = BibtexUtils.getFirstPersonsLastName(o2.getEditor());
+			String p1 = BibTexUtils.getFirstPersonsLastName(o1.getAuthor());
+			String p2 = BibTexUtils.getFirstPersonsLastName(o2.getAuthor());
+			if (p1 == null) p1 = BibTexUtils.getFirstPersonsLastName(o1.getEditor());
+			if (p2 == null) p2 = BibTexUtils.getFirstPersonsLastName(o2.getEditor());
 			comp = secureCompareTo(p1, p2);
 			if (comp == 0) {
 				/* 

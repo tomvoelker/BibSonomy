@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.util.PersonNameUtils;
-import org.bibsonomy.util.BibtexUtils;
+import org.bibsonomy.model.util.BibTexUtils;
 
 import helpers.url;
 
@@ -244,7 +244,7 @@ public class Bibtex extends Resource {
 	 * @return a bibtex key
 	 */
 	public String getGeneratedBibtexKey () {
-		return BibtexUtils.generateBibtexKey(getAuthor(), getEditor(), getYear(), getTitle());
+		return BibTexUtils.generateBibtexKey(getAuthor(), getEditor(), getYear(), getTitle());
 	}
 	
 	/**
