@@ -109,7 +109,8 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getBookmarkForGroup() {
-		this.bookmarkDb.getBookmarkForGroup(this.bookmarkParam, this.dbSession);
+		List<Post<Bookmark>> bm = this.bookmarkDb.getBookmarkForGroup(this.bookmarkParam, this.dbSession);
+		assertEquals(10, bm.size());
 	}
 
 	@Test

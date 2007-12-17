@@ -23,7 +23,8 @@ public class GetBookmarksForGroupAndTag extends BookmarkChainElement {
 	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
-		param.setGroupId(this.generalDb.getGroupIdByGroupNameAndUserName(param, session));
+		param.setGroupId(this.generalDb.getGroupIdByGroupName(param, session));
+		//param.setGroupId(this.generalDb.getGroupIdByGroupNameAndUserName(param, session));
 		// TODO: is this needed?  param.setGroups(this.generalDb.getGroupsForUser(param, session));
 
 		return this.db.getBookmarkForGroupByTag(param, session);
