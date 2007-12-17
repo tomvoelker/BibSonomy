@@ -246,7 +246,8 @@
 <!-- ############## group pages ############### -->
     <rule> <!-- /group/GROUP/TAG -->
         <from>^/+group/+([^/?]+?)/(.+?)(\?(.*))?$</from>
-        <to>/ResourceHandler?page=grouptag&amp;requGroup=$1&amp;requTag=$2&amp;$4</to>
+         <to>/group?requestedGroup=$1&amp;requestedTags=$2&amp;$4</to> 
+         <!-- <to>/ResourceHandler?page=grouptag&amp;requGroup=$1&amp;requTag=$2&amp;$4</to> -->
     </rule>
     <!-- redirect for tag formular on /group/GROUP/TAG page -->
     <rule>
@@ -255,7 +256,8 @@
     </rule>
 	<rule> <!-- /group/GROUP -->
 		<from>^/+group/+([^/?]+?)(\?(.*))?$</from>
-		<to>/ResourceHandler?page=group&amp;requGroup=$1&amp;$3</to>
+		<to>/group?requestedGroup=$1&amp;$3</to>
+		<!--<to>/ResourceHandler?page=group&amp;requGroup=$1&amp;$3</to>-->
 	</rule>
 	<!-- /groups -->
     <rule>

@@ -24,6 +24,16 @@ public enum Views implements View {
 	USERPAGE("user"),
 	
 	/**
+	 * group page showing all resources of a specified group
+	 */
+	GROUPPAGE("group"),
+	
+	/**
+	 * group page showing all resources of a specified group and a given tag or list of tags
+	 */	
+	GROUPTAGPAGE("grouptag"),
+	
+	/**
 	 * bibtex output
 	 */
 	BIBTEX("export/bibtex/bibtex");
