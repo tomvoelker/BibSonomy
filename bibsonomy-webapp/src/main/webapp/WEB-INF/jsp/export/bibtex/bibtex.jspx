@@ -9,29 +9,42 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
-	<jsp:directive.page contentType="text/plain; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	
-
-	
-	<c:forEach var="post" items="${command.bibtex.list}">
-	
-	
-	<c:set var="bibtex" value="${post.resource}"/>
-	
-			
-@${bibtex.entrytype}{${bibtex.bibtexKey},
-	<c:if test="${not empty bibtex.title}">
-    title   = { ${bibtex.title} },
-    </c:if>
-    <c:if test="${!bibtex.author eq ''}">
-    author = ${bibtex.author}
-    </c:if>
-    <c:if test="${!bibtex.privnote eq ''}">
-    privnote = { ${bibtex.privnote} }
-    </c:if>
-} 
-		<jsp:text> 
-		</jsp:text>
-		
+<jsp:directive.page contentType="text/plain; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+<c:set var="entries" value="title,address,annote,author,booktitle,chapter,crossref,edition,editor,howpublished,institution,journal,month,note,number,organization,pages,publisher,school,series,type,volume,year,day,url,BKey,bibtexAbstract,entrytype"/>
+<c:forEach var="post" items="${command.bibtex.list}">
+	<c:set var="bibtex" value="${post.resource}"/> 
+	<c:out value="@${bibtex.entrytype}{${bibtex.bibtexKey},"/>
+	<c:forEach var="entry" items="${fn:split(entries,',')}">
+		<c:if test="${not empty bibtex[entry]}">
+			<c:choose>
+				<c:when test="${mtl:isNumeric(bibtex[entry])}">
+					<jsp:text>
+	${entry} = ${bibtex[entry]},</jsp:text>
+				</c:when>
+				<c:otherwise>
+					<jsp:text>
+	${entry} = {${bibtex[entry]}},</jsp:text>
+				</c:otherwise>
+			</c:choose>
+		</c:if>
 	</c:forEach>
+	<c:if test="${not empty bibtex['misc']}">
+		<c:forEach var="miscentry" items="${fn:split(bibtex['misc'],',')}">
+			<c:choose>
+				<c:when test="${fn:contains(miscentry,'=')}">
+					<jsp:text>
+	${fn:trim(miscentry)},</jsp:text>
+				</c:when>
+				<c:otherwise>
+					<c:out value="${fn:trim(miscentry)},"/>
+				</c:otherwise>
+			</c:choose>
+		</c:forEach>
+	</c:if>
+	<jsp:text>
+	biburl = {${projectHome}bibtex/2${bibtex['intraHash']}/${post.user['name']}}
+</jsp:text>
+<jsp:text>}
+</jsp:text>
+</c:forEach>
 </jsp:root>
