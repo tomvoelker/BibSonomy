@@ -1,5 +1,8 @@
 package resources;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class Bookmark extends Resource {
 	public static final int CONTENT_TYPE=1;
 	
@@ -17,6 +20,20 @@ public class Bookmark extends Resource {
 	public void setUrl (String url) {
 		super.setUrl(url);
 		this.hash = hash(super.getUrl());
+	}
+	
+	public String getUrlHost () {
+		String url = super.getUrl();
+		URL u = null;
+		try {
+			u = new URL(url);
+		} catch (Exception e) {
+			try {
+				u = new URL("http://brokenurl.local");
+			} catch (MalformedURLException ex) {
+			}
+		}
+		return u.getHost();
 	}
 	
 	public String toString () {

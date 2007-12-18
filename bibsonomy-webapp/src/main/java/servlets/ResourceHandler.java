@@ -174,6 +174,7 @@ public class ResourceHandler extends HttpServlet{
 		String requType       = (String)request.getAttribute("type");
 		boolean isRssFeed     = "rss".equals(requType); 
 		boolean isXmlFeed     = "xml".equals(requType);
+		boolean isBookBibFeed = "bookbib".equals(requType);
 		boolean isPublFeed    = "publ".equals(requType); 
 		boolean isPublKDEFeed = "publkde".equals(requType);
 		boolean isPublCSVFeed = "publcsv".equals(requType);
@@ -578,7 +579,7 @@ public class ResourceHandler extends HttpServlet{
 			/* ************************************************************************************************************ 		    
 			 BIBTEX PART
 			 ************************************************************************************************************ */		    
-			if (c.bibStmtP     != null && !isXmlFeed && !isRssFeed && !isBatchEditUrl && !isNRLFeed) { 
+			if (c.bibStmtP     != null && !isXmlFeed && !isBookBibFeed && !isRssFeed && !isBatchEditUrl && !isNRLFeed) { 
 
 				rst        = c.bibStmtP.executeQuery();
 				Bibtex bib = new Bibtex();
@@ -735,7 +736,8 @@ public class ResourceHandler extends HttpServlet{
 
 			if (isRssFeed) forwPage = "RSSFeed"; 				// RSS Feed handling
 			if (isXmlFeed) forwPage = "XMLOutput"; 				// XML Feed handling
-			if (isNRLFeed) forwPage = "NRLOutput.jsp"; 				// NRL Feed handling
+			if (isBookBibFeed) forwPage = "BibBookOutput.jsp";	// BibTeX for bookmarks handling
+			if (isNRLFeed) forwPage = "NRLOutput.jsp"; 			// NRL Feed handling
 			if (isBibFeed) forwPage = "BIBOutput.jsp"; 			// Bib Feed Handling 
 			if (isPublFeed) forwPage = "PublOutput.jsp";		// Publ Html Feed Handling
 			if (isPublKDEFeed) forwPage = "PublKDEOutput.jsp";  // Publ KDE Html Feed Handling
