@@ -7,6 +7,12 @@ import java.io.StringReader;
 import java.util.TreeSet;
 import java.util.Set;
 
+// These imports are necessary for Antlr 3.0.1 (3.05b)
+import java.io.IOException;
+import org.antlr.runtime.ANTLRReaderStream;
+import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.RecognitionException;
+
 /**
  * This class stores tag assignments to resources, this includes
  * <ul>
@@ -90,6 +96,28 @@ public class Tag implements Cloneable {
 			}
 		}
 	}
+	
+	/*
+	 * This method you need for Antlr 3.0.1 (3.05b)
+	 * 
+	private void parse(String tagString) {
+        if (tagString != null) {
+                StringReader reader = new StringReader (tagString);
+                try {
+                        CommonTokenStream tokens = new CommonTokenStream();
+                        tokens.setTokenSource(new TagStringLexer(new ANTLRReaderStream(reader)));
+                        TagStringParser parser = new TagStringParser(tokens, this);
+                        parser.tagstring();
+                } catch (RecognitionException e) {
+                        System.out.println(e);
+                        e.printStackTrace();
+                } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                }
+        }
+	}
+	*/
 	
 	/* ******************************************************* * 
 	 * these methods are used to implement the tagging of tags *
