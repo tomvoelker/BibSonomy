@@ -146,4 +146,17 @@ public class Functions  {
 		}		
 	}	
 	
+	/**
+	 * @param input - string that will be tested of numbers
+	 * @return true in case of parameter input is a number otherwise return false
+	 */
+	public static Boolean isNumeric(String input){	
+		try{
+			Integer.parseInt(input);
+		}catch(NumberFormatException nfe){
+			return false;
+		}
+		return true;
+	}
+	
 }
