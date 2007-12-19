@@ -8,7 +8,7 @@ Add a user to a group
 | <<Method:>> | POST |
 *--+--+
 
-  Status codes:
+* Status codes
 
 ---
 201 created
@@ -22,22 +22,16 @@ Add a user to a group
 
 * Example 
 
-   Request URL:
-
 ---
 POST www.bibsonomy.org/api/groups/group1/users
----
 
-   Request Body:
-
----
 <?xml version="1.0"?>
 <bibsonomy>
   <user name="hotho"/>
 </bibsonomy>
 ---
 
-   Response Body:
+* Response
 
 ---
 <?xml version="1.0"?>

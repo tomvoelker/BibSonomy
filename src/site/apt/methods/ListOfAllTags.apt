@@ -1,10 +1,12 @@
 List of all tags
 
-  Method: GET
+*--+--+
+| <<Method:>> | GET |
+*--+--+
+| <<URL:>> | www.bibsonomy.org/api/tags |
+*--+--+
 
-  URL: www.bibsonomy.org/api/tags
-
-  Query string:
+* Query string
 
 ---
 ?format=(xml|rdf|html)
@@ -14,7 +16,7 @@ List of all tags
 ?(user|group|viewable)=[username/groupname], tags are owned by specific user or group
 ---
 
-  Status codes:
+* Status codes
 
 ---
 200 ok + bibsonomy/tags+xml
@@ -26,7 +28,7 @@ List of all tags
 500 Internal Server Error
 ---
 
-  Example:
+* Example
 
 ---
 GET www.bibsonomy.org/api/tags?end=1&user=mbork
@@ -40,7 +42,7 @@ GET www.bibsonomy.org/api/tags?end=1&user=mbork
 </bibsonomy>
 ---
 
-  XML Schema:
+* XML Schema
 
 ---
 <!--

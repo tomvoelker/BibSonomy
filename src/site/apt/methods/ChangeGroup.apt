@@ -1,14 +1,14 @@
 Change group
 
-  <<Hint: you can't change the group's name.>>
-
 *--+--+
 |  <<Method:>> | PUT |
 *--+--+
 |  <<URL:>> | www.bibsonomy.org/api/groups/[groupname] |
 *--+--+
 
-  Status codes:
+  <<Hint: you can't change the group's name.>>
+
+* Status codes
 
 ---
 200 ok
@@ -20,24 +20,18 @@ Change group
 500 Internal Server Error
 ---
 
-*  Example:
-
-    Request:
+* Example
 
 ---
 PUT www.bibsonomy.org/api/groups/group1
----
 
-    Request Body:
-
----
 <?xml version="1.0"?>
 <bibsonomy>
   <group name="group1" description="This is a very special new group - updated."/>
 </bibsonomy>
 ---
 
-    Response Body:
+* Response
 
 ---
 <?xml version="1.0"?>
