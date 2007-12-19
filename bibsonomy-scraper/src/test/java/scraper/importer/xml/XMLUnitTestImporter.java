@@ -3,6 +3,7 @@ package scraper.importer.xml;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.List;
@@ -131,7 +132,7 @@ public class XMLUnitTestImporter implements IUnitTestImporter {
 	 * @throws IOException
 	 */
 	private String getExpectedReference(String bibFile) throws IOException{
-		InputStream is = new FileInputStream(PATH_TO_BIBS + bibFile);
+		InputStreamReader is = new InputStreamReader(new FileInputStream(PATH_TO_BIBS + bibFile), "UTF-8");
 		StringWriter writer = new StringWriter();
 		
 		int read = is.read();

@@ -1,12 +1,13 @@
 package scraper;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -102,8 +103,29 @@ public class ScrapingContext {
 					"User-Agent",
 			"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
 			urlConn.connect();
+			
+			// extract encoding from header
+			String charSet = null;
+			String contentType = urlConn.getContentType();
+			if(contentType != null){
+				int charsetPosition = contentType.indexOf("charset=");
+				if(charsetPosition > -1){
+					charSet = contentType.substring(charsetPosition + 8);
+					
+					// get only charset
+					int charsetEnding = charSet.indexOf(";");
+					if(charsetEnding > -1)
+						charSet = contentType.substring(0, charsetEnding);
+					// default encoding
+				}else
+					charSet = "UTF-8";
+	
+			// default encoding
+			}else
+				charSet = "UTF-8";
+			
 			StringWriter out = new StringWriter();
-			InputStream in = new BufferedInputStream(urlConn.getInputStream());
+			InputStreamReader in = new InputStreamReader(urlConn.getInputStream(), charSet.trim().toUpperCase());
 			int b;
 			while ((b = in.read()) >= 0) {
 				out.write(b);

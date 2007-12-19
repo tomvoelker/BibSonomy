@@ -177,7 +177,7 @@
 	<URLTest id="url_30">
 		<TestDescription>URL scraping test with publication from springerlink</TestDescription>
 		<URL>http://springerlink.com/content/r8313654k80v7231/?p=73a60ef9936f4d92b2b6d147273e3f7d&amp;pi=4</URL>
-		<BibFile>SpringerLinkScraperUnitURLTest.bib</BibFile>
+		<BibFile>SpringerLinkScraperUnitURLTest1.bib</BibFile>
 		<Scraper>scraper.url.kde.springer.SpringerLinkScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_31">
@@ -239,5 +239,11 @@
 		<URL>http://csdl2.computer.org/persagen/DLAbsToc.jsp?resourcePath=/dl/proceedings/&amp;toc=comp/proceedings/dexa/2006/2641/00/2641toc.xml&amp;DOI=10.1109/DEXA.2006.148#top</URL>
 		<BibFile>IEEEComputerSocietyScraperUnitURLTest.bib</BibFile>
 		<Scraper>scraper.url.kde.ieee.IEEEComputerSocietyScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_41">
+		<TestDescription>char-encoding test for SpringerLinkScraper</TestDescription>
+		<URL>http://www.springerlink.com/content/p871073356835258/</URL>
+		<BibFile>SpringerLinkScraperUnitURLTest2.bib</BibFile>
+		<Scraper>scraper.url.kde.springer.SpringerLinkScraper</Scraper>
 	</URLTest>
 </test:Tests>

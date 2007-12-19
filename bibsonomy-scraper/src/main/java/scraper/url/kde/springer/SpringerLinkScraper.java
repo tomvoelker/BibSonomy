@@ -1,8 +1,7 @@
 package scraper.url.kde.springer;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -115,7 +114,7 @@ public class SpringerLinkScraper implements Scraper {
 		urlConn.setRequestProperty("Cookie", cookie);
 		urlConn.connect();
 		StringWriter out = new StringWriter();
-		InputStream in = new BufferedInputStream(urlConn.getInputStream());
+		InputStreamReader in = new InputStreamReader(urlConn.getInputStream(), "UTF-8");
 		int b;
 		while ((b = in.read()) >= 0) {
 			out.write(b);
