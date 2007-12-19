@@ -34,8 +34,9 @@
     <p>
      <c:choose>
        <c:when test="${not empty user.name}">
-         <a name="button_postbookmark"></a>Drag the <%@include file="boxes/button_postbookmark.jsp" %>
-         button to the links toolbar of your browser once. (If you use Internet Explorer you 
+         <a name="button_postbookmark"></a>Drag the <%@include file="boxes/button_postbookmark.jsp" %> 
+         button to the links toolbar of your browser once. If you are a friend of popup windows,
+         you can also use the <%@include file="boxes/button_postbookmark_popup.jsp" %> button. (If you use Internet Explorer you 
          have to right-click on the button and select "add to favorites".)
        </c:when>
        <c:otherwise>
@@ -52,7 +53,9 @@
     <p>
      <c:if test="${not empty user.name}">
      <a name="button_postbibtex"></a>Drag the  <%@include file="boxes/button_postbibtex.jsp" %>
-      button to the links toolbar of your browser once. (If you use Internet Explorer you have to right-click on the button and select "add to favorites".)
+      button to the links toolbar of your browser once. If you are a friend of popup windows,
+      you can also use the <%@include file="boxes/button_postbibtex_popup.jsp" %> button. (If you use Internet Explorer you 
+      have to right-click on the button and select "add to favorites".)
       Then you just need to <em>select</em> (highlight) publication entries you find on web 
       pages and after clicking on that button the entries will be stored within ${projectName}. 
     </c:if>

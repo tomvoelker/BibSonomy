@@ -22,8 +22,8 @@
 <div id="general">
 
   <c:if test="${not empty user.name}">
-    <p>Posting could be so easy: just <strong>drag and drop</strong> the button to your bookmark toolbar:
-    <%@include file="boxes/button_postbibtex.jsp" %> (IE users <a href="/help/basic/buttons">look here</a>)
+    <p>Posting could be so easy: just <strong>drag and drop</strong> our <a href="/buttons">buttons</a> to your bookmark toolbar.
+    (IE users <a href="/help#button_postbookmark">look here</a>)
     </p>
   </c:if>
 
