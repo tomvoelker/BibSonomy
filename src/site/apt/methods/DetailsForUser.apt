@@ -1,16 +1,18 @@
 Details for user
 
-  Method: GET
+*--+--+
+| <<Method:>> | GET |
+*--+--+
+| <<URL:>> | www.bibsonomy.org/api/users/[username] |
+*--+--+
 
-  URL: www.bibsonomy.org/api/users/[username]
-
-  Query string:
+* Query string
 
 ---
 ?format=(xml|rdf|html)
 ---
 
-  Status codes:
+* Status codes
 
 ---
 200 ok + bibsonomy/user+xml
@@ -22,18 +24,19 @@ Details for user
 500 Internal Server Error
 ---
 
-  Example:
+* Example
 
 ---
 GET www.bibsonomy.org/api/users/hotho
 
 <?xml version="1.0"?>
 <bibsonomy>
-  <user name="hotho" realname="Andreas Hotho" email="hotho@cs.uni-kassel.de" homepage="www.kde.cs.uni-kassel.de/hotho"/>
+  <user name="hotho" realname="Andreas Hotho" email="hotho@cs.uni-kassel.de"
+        homepage="http://www.kde.cs.uni-kassel.de/hotho"/>
 </bibsonomy>
 ---
 
-  XML Schema:
+* XML Schema
 
 ---
 <!--

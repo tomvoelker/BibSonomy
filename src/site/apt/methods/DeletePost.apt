@@ -2,11 +2,13 @@ Delete post
 
   The <<<intrahash>>> of the resource is a unique reference for a post.
 
-  Method: DELETE
+*--+--+
+| <<Method:>> | DELETE |
+*--+--+
+| <<URL:>> | www.bibsonomy.org/api/users/[username]/posts/[resourceHash] |
+*--+--+
 
-  URL: www.bibsonomy.org/api/users/[username]/posts/[resourceHash]
-
-  Status codes:
+* Status codes
 
 ---
 200 ok
@@ -18,7 +20,7 @@ Delete post
 500 Internal Server Error
 ---
 
-  Example:
+* Example
 
 ---
 DELETE www.bibsonomy.org/api/users/mbork/posts/aabbcdef01244432

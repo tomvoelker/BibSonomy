@@ -1,10 +1,12 @@
 List of all users
 
-  Method: GET
+*--+--+
+| <<Method:>> | GET |
+*--+--+
+| <<URL:>> | www.bibsonomy.org/api/users |
+*--+--+
 
-  URL: www.bibsonomy.org/api/users
-
-  Query string:
+* Query string
 
 ---
 ?format=(xml|rdf|html)
@@ -12,7 +14,7 @@ List of all users
 ?end=[int], starting with 0, default 20
 ---
 
-  Status codes:
+* Status codes
 
 ---
 200 ok + bibsonomy/users+xml
@@ -24,21 +26,23 @@ List of all users
 500 Internal Server Error
 ---
 
-  Example:
+* Example
 
 ---
-GET www.bibsonomy.org/api/users?end=1
+GET www.bibsonomy.org/api/users?end=2
 
 <?xml version="1.0"?>
 <bibsonomy>
   <users start="0" end="1" next="http://www.bibsonomy.org/api/users?start=2&end=3">
-    <user name="mbork" realname="Manuel Bork" email="manuel.bork@uni-kassel.de" href="www.bibsonomy.org/users/mbork"/>
-    <user name="hotho" realname="Andreas Hotho" email="hotho@cs.uni-kassel.de" href="www.bibsonomy.org/users/hotho"/> 
+    <user name="mbork" realname="Manuel Bork" email="manuel.bork@uni-kassel.de"
+          href="http://www.bibsonomy.org/users/mbork"/>
+    <user name="hotho" realname="Andreas Hotho" email="hotho@cs.uni-kassel.de"
+          href="http://www.bibsonomy.org/users/hotho"/> 
   </users>
 </bibsonomy>
 ---
 
-  XML Schema:
+* XML Schema
 
 ---
 <!--

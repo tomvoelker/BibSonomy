@@ -6,7 +6,7 @@ Change user details
 | <<URL:>> | www.bibsonomy.org/api/users/[username] |
 *--+--+
 
- Status codes:
+* Status codes
 
 ---
 200 ok
@@ -18,22 +18,19 @@ Change user details
 500 Internal Server Error
 ---
 
-*  Example:
+* Example
 
-    Request URL:
 ---
 PUT www.bibsonomy.org/api/users/mbork
----
-
-    Request 
 
 <?xml version="1.0"?>
 <bibsonomy>
-  <user name="mbork" realname="Manuel Bork" password="newPass" email="manuel.bork@uni-kassel.de" homepage="www.manuelbork.de"/>
+  <user name="mbork" realname="Manuel Bork" password="newPass" email="manuel.bork@uni-kassel.de"
+        homepage="http://www.manuelbork.de"/>
 </bibsonomy>
 ---
 
-  XML Schema:
+* XML Schema
 
 ---
 <!--

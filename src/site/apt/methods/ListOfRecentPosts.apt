@@ -1,10 +1,12 @@
 List of recent posts
 
-  Method: GET
+*--+--+
+| <<Method:>> | GET |
+*--+--+
+| <<URL:>> | www.bibsonomy.org/api/posts/added |
+*--+--+
 
-  URL: www.bibsonomy.org/api/posts/added
-
-  Query string:
+* Query string
 
 ---
 ?format=(xml|rdf|html)
@@ -14,7 +16,7 @@ List of recent posts
 ?(user|group|viewable)=[username/groupname], posts are owned by specific user or group
 ---
 
-  Status codes:
+* Status codes
 
 ---
 200 ok + bibsonomy/posts+xml
@@ -26,7 +28,7 @@ List of recent posts
 500 Internal Server Error
 ---
 
-  Example:
+* Example
 
 ---
 GET www.bibsonomy.org/api/posts/added?start=0&end=1
@@ -39,13 +41,14 @@ GET www.bibsonomy.org/api/posts/added?start=0&end=1
       <tag name="tag1"/>
       <tag name="tag2"/>
       <tag name="tag3"/>
-      <bookmark url="www.google.de" intrahash="aaaaaaabbbbbbbbcccccccc" href="www.bibsonomy.org/api/posts?resource=aaaaaaabbbbbbbbcccccccc"/>
+      <bookmark url="http://www.google.de" intrahash="aaaaaaabbbbbbbbcccccccc"
+                href="http://www.bibsonomy.org/api/posts?resource=aaaaaaabbbbbbbbcccccccc"/>
     </post>
   <posts>
 </bibsonomy>
 ---
 
-  XML Schema:
+* XML Schema
 
 ---
 <!--

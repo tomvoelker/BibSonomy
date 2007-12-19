@@ -1,10 +1,12 @@
 List of users for a group
 
-  Method: GET
+*--+--+
+| <<Method:>> | GET |
+*--+--+
+| <<URL:>> | www.bibsonomy.org/api/groups/[groupname]/users/ |
+*--+--+
 
-  URL: www.bibsonomy.org/api/groups/[groupname]/users/
-
-  Query string:
+* Query string
 
 ---
 ?format=(xml|rdf|html)
@@ -12,7 +14,7 @@ List of users for a group
 ?end=[int], starting with 0, default 20
 ---
 
-  Status codes:
+* Status codes
 
 ---
 200 ok + bibsonomy/users+xml
@@ -24,7 +26,7 @@ List of users for a group
 500 Internal Server Error
 ---
 
-  Example:
+* Example
 
 ---
 GET www.bibsonomy.org/api/groups/group1/users/
@@ -32,16 +34,16 @@ GET www.bibsonomy.org/api/groups/group1/users/
 <?xml version="1.0"?>
 <bibsonomy>
   <users start="0" end="5">
-    <user name="mbork" href="www.bibsonomy.org/users/mbork"/>
-    <user name="user1" href="www.bibsonomy.org/users/user1"/>
-    <user name="user2" href="www.bibsonomy.org/users/user2"/>
-    <user name="user3" href="www.bibsonomy.org/users/user3"/>
-    <user name="user4" href="www.bibsonomy.org/users/user4"/>
+    <user name="mbork" href="http://www.bibsonomy.org/users/mbork"/>
+    <user name="user1" href="http://www.bibsonomy.org/users/user1"/>
+    <user name="user2" href="http://www.bibsonomy.org/users/user2"/>
+    <user name="user3" href="http://www.bibsonomy.org/users/user3"/>
+    <user name="user4" href="http://www.bibsonomy.org/users/user4"/>
   </users>
 </bibsonomy>
 ---
 
-  XML Schema:
+* XML Schema
 
 ---
 <!--

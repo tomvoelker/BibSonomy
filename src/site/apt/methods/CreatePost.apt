@@ -1,10 +1,12 @@
 Add post
 
-  Method: POST
+*--+--+
+| <<Method:>> | POST |
+*--+--+
+| <<URL:>> | www.bibsonomy.org/api/users/[username]/posts |
+*--+--+
 
-  URL: www.bibsonomy.org/api/users/[username]/posts
-
-  Status codes:
+* Status codes
 
 ---
 201 created
@@ -16,7 +18,7 @@ Add post
 500 Internal Server Error
 ---
 
-  Example:
+* Example
 
 ---
 POST www.bibsonomy.org/api/users/mbork/posts
@@ -29,12 +31,12 @@ POST www.bibsonomy.org/api/users/mbork/posts
     <tag name="tag2"/>
     <tag name="tag3"/>
     <group name="public"/>
-    <bookmark url="www.google.de" title="Google"/>
+    <bookmark url="http://www.google.de" title="Google"/>
   </post>
 </bibsonomy>
 ---
 
-  XML Schema:
+* XML Schema
 
 ---
 <!--

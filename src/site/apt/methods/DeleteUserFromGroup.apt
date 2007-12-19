@@ -1,10 +1,12 @@
 Remove user from a group
 
-  Method: DELETE
+*--+--+
+| <<Method:>> | DELETE |
+*--+--+
+| <<URL:>> | www.bibsonomy.org/api/groups/[groupname]/users/[username] |
+*--+--+
 
-  URL: www.bibsonomy.org/api/groups/[groupname]/users/[username]
-
-  Status codes:
+* Status codes
 
 ---
 200 ok
@@ -16,7 +18,7 @@ Remove user from a group
 500 Internal Server Error
 ---
 
-  Example:
+* Example
 
 ---
 DELETE www.bibsonomy.org/api/groups/group1/users/mbork

@@ -1,10 +1,12 @@
 Details for group
 
-  Method: GET
+*--+--+
+| <<Method:>> | GET |
+*--+--+
+| <<URL:>> | www.bibsonomy.org/api/groups/[groupname] |
+*--+--+
 
-  URL: www.bibsonomy.org/api/groups/[groupname]
-
-  Query string:
+* Query string
 
 ---
 ?format=(xml|rdf|html)
@@ -12,7 +14,7 @@ Details for group
 ?end=[int], starting with 0, default 20
 ---
 
-  Status codes:
+* Status codes
 
 ---
 200 ok + bibsonomy/group+xml
@@ -24,18 +26,19 @@ Details for group
 500 Internal Server Error
 ---
 
-  Example:
+* Example
 
 ---
 GET www.bibsonomy.org/api/groups/group1
 
 <?xml version="1.0"?>
 <bibsonomy>
-  <group name="group1" description="this is a demo group" href="www.bibsonomy.org/groups/group1"/>
+  <group name="group1" description="this is a demo group"
+         href="http://www.bibsonomy.org/groups/group1"/>
 </bibsonomy>
 ---
 
-  XML Schema:
+* XML Schema
 
 ---
 <!--

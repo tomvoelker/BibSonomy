@@ -1,16 +1,18 @@
 Details for post
 
-  Method: GET
+*--+--+
+| <<Method:>> | GET |
+*--+--+
+| <<URL:>> | www.bibsonomy.org/api/users/[username]/posts/[resourcehash] |
+*--+--+
 
-  URL: www.bibsonomy.org/api/users/[username]/posts/[resourcehash]
-
-  Query string:
+* Query string
 
 ---
 ?format=(xml|rdf|html)
 ---
 
-  Status codes:
+* Status codes
 
 ---
 200 ok + bibsonomy/post+xml
@@ -22,7 +24,7 @@ Details for post
 500 Internal Server Error
 ---
 
-  Example:
+* Example
 
 ---
 GET www.bibsonomy.org/api/users/mbork/posts/aaaaaaabbbbbbbbcccccccc
@@ -34,12 +36,13 @@ GET www.bibsonomy.org/api/users/mbork/posts/aaaaaaabbbbbbbbcccccccc
     <tag name="tag1"/>
     <tag name="tag2"/>
     <tag name="tag3"/>
-    <bookmark url="www.google.de" intrahash="aaaaaaabbbbbbbbcccccccc" href="www.bibsonomy.org/api/posts?resource=aaaaaaabbbbbbbbcccccccc"/>
+    <bookmark url="http://www.google.de" intrahash="aaaaaaabbbbbbbbcccccccc"
+              href="http://www.bibsonomy.org/api/posts?resource=aaaaaaabbbbbbbbcccccccc"/>
   </post>
 </bibsonomy>
 ---
 
-  XML Schema:
+* XML Schema
 
 ---
 <!--

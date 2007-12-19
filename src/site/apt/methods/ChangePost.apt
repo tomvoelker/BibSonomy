@@ -1,14 +1,14 @@
 Change post
 
-  <<Hint: you can't change the user's name.>>
-
 *--+--+
 |  <<Method:>> | PUT |
 *--+--+
 |  <<URL:>> | www.bibsonomy.org/api/users/[username]/posts/[resourceHash] |
 *--+--+
 
-  Status codes:
+  <<Hint: you can't change the user's name.>>
+
+* Status codes
 
 ---
 200 ok
@@ -20,16 +20,11 @@ Change post
 500 Internal Server Error
 ---
 
-* Example:
+* Example
 
-    Request URL:
 ---
 PUT www.bibsonomy.org/api/users/mbork/posts/aabbccddeeff01234
----
 
-    Request Body:
-
----
 <?xml version="1.0"?>
 <bibsonomy>
   <post description="some important bookmark!">
@@ -38,15 +33,17 @@ PUT www.bibsonomy.org/api/users/mbork/posts/aabbccddeeff01234
     <tag name="tag2"/>
     <tag name="tag3"/>
     <tag name="tag4"/>
-    <bookmark url="http://www.google.de" intrahash="ed646a3334ca891fd3467db131372140" interhash="ed646a3334ca891fd3467db131372140"/>
+    <bookmark url="http://www.google.de" intrahash="ed646a3334ca891fd3467db131372140"
+              interhash="ed646a3334ca891fd3467db131372140"/>
   </post>
 </bibsonomy>
 ---
 
-    Response Body:
+* Response
+
 ---
 <?xml version="1.0"?>
 <bibsonomy stat="ok">
   <resourcehash>ed646a3334ca891fd3467db131372140</resourcehash>
 </bibsonomy>
---
+---

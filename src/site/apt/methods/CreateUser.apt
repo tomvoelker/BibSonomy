@@ -1,12 +1,14 @@
 Create user
 
+*--+--+
+| <<Method:>> | POST |
+*--+--+
+| <<URL:>> | www.bibsonomy.org/api/users |
+*--+--+
+
   <<Hint: you can't change the user's name once its created.>>
 
-  Method: POST
-
-  URL: www.bibsonomy.org/api/users
-
-  Status codes:
+* Status codes
 
 ---
 201 created
@@ -18,18 +20,19 @@ Create user
 500 Internal Server Error
 ---
 
-  Example:
+* Example
 
 ---
 POST www.bibsonomy.org/api/users
 
 <?xml version="1.0"?>
 <bibsonomy>
-  <user name="hotho" realname="Andreas Hotho" password="secret" email="hotho@cs.uni-kassel.de" homepage="www.kde.cs.uni-kassel.de/hotho"/>
+  <user name="hotho" realname="Andreas Hotho" password="secret" email="hotho@cs.uni-kassel.de"
+        homepage="http://www.kde.cs.uni-kassel.de/hotho"/>
 </bibsonomy>
 ---
 
-  XML Schema:
+* XML Schema
 
 ---
 <!--

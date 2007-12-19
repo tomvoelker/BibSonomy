@@ -1,10 +1,12 @@
 List of all groups
 
-  Method: GET
+*--+--+
+| <<Method:>> | GET |
+*--+--+
+| <<URL:>> | www.bibsonomy.org/api/groups |
+*--+--+
 
-  URL: www.bibsonomy.org/api/groups
-
-  Query string:
+* Query string
 
 ---
 ?format=(xml|rdf|html)
@@ -12,7 +14,7 @@ List of all groups
 ?end=[int], starting with 0, default 20
 ---
 
-  Status codes:
+* Status codes
 
 ---
 200 ok + bibsonomy/groups+xml
@@ -24,7 +26,7 @@ List of all groups
 500 Internal Server Error
 ---
 
-  Example:
+* Example
 
 ---
 GET www.bibsonomy.org/api/groups
@@ -32,16 +34,16 @@ GET www.bibsonomy.org/api/groups
 <?xml version="1.0"?>
 <bibsonomy>
   <groups start="0" end="5">
-    <group name="group1" description="demo group" href="www.bibsonomy.org/groups/group1"/>
-    <group name="group2" description="demo group" href="www.bibsonomy.org/groups/group2"/>
-    <group name="group3" description="demo group" href="www.bibsonomy.org/groups/group3"/>
-    <group name="group4" description="demo group" href="www.bibsonomy.org/groups/group4"/>
-    <group name="group5" description="demo group" href="www.bibsonomy.org/groups/group5"/>
+    <group name="group1" description="demo group" href="http://www.bibsonomy.org/groups/group1"/>
+    <group name="group2" description="demo group" href="http://www.bibsonomy.org/groups/group2"/>
+    <group name="group3" description="demo group" href="http://www.bibsonomy.org/groups/group3"/>
+    <group name="group4" description="demo group" href="http://www.bibsonomy.org/groups/group4"/>
+    <group name="group5" description="demo group" href="http://www.bibsonomy.org/groups/group5"/>
   </groups>
 </bibsonomy>
 ---
 
-  XML Schema:
+* XML Schema
 
 ---
 <!--

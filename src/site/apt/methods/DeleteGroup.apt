@@ -1,10 +1,12 @@
 Delete group
 
-  Method: DELETE
+*--+--+
+| <<Method:>> | DELETE |
+*--+--+
+| <<URL:>> | www.bibsonomy.org/api/groups/[groupname] |
+*--+--+
 
-  URL: www.bibsonomy.org/api/groups/[groupname]
-
-  Status codes:
+* Status codes
 
 ---
 200 ok
@@ -16,7 +18,7 @@ Delete group
 500 Internal Server Error
 ---
 
-  Example:
+* Example
 
 ---
 DELETE www.bibsonomy.org/api/groups/group1
