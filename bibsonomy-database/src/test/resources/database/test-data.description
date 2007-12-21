@@ -1,0 +1,22 @@
+Test data description
+---------------------
+
+Here you can find some information about the test data created
+by the script tables-and-test-data.sql.
+
+Users:
+- testuser1 (API key: yes, spammer: no)
+- testuser2 (API key: yes, spammer: no)
+- testuser3 (API key: yes, spammer: no)
+- testspammer  (API key: no, spammer: yes)
+
+Friends:
+- testuser1 is a friend of testuser2 and testuser3
+- testuser2 is a friend of testuser1
+- testuser3 has no friends at all
+
+Groups:
+- testgroup1 (id 3, privlevel 2)
+  - member: testuser1, testuser2
+- testgroup2 (id 4, privlevel 2)
+  - member: testuser1
