@@ -2,12 +2,12 @@ package org.bibsonomy.model;
 
 import java.net.URL;
 
-import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.util.StringUtils;
 
 /**
- * This is a bookmark, which is derived from {@link Resource} like all
- * resources.
+ * This is a bookmark, which is derived from {@link Resource}.
+ * 
+ * @version $Id$
  */
 public class Bookmark extends Resource {
 
@@ -22,18 +22,30 @@ public class Bookmark extends Resource {
 	 */
 	private String title;
 
+	/**
+	 * @return url
+	 */
 	public String getUrl() {
 		return this.url;
 	}
 
+	/**
+	 * @param url
+	 */
 	public void setUrl(String url) {
 		this.url = url;
 	}
 
+	/**
+	 * @return title
+	 */
 	public String getTitle() {
 		return this.title;
 	}
 	
+	/**
+	 * @param title
+	 */
 	public void setTitle(String title) {
 		this.title = title;
 	}
@@ -46,6 +58,9 @@ public class Bookmark extends Resource {
 		return super.getIntraHash();
 	}
 
+	/**
+	 * @return hash
+	 */
 	public String getHash() {
 		return StringUtils.getMD5Hash(this.url);
 	}

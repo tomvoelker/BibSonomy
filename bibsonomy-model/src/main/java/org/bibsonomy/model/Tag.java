@@ -5,6 +5,8 @@ import java.util.List;
 
 /**
  * This class represents a tag.
+ * 
+ * @version $Id$
  */
 public class Tag {
 
@@ -56,6 +58,9 @@ public class Tag {
 	 */
 	private List<Post<? extends Resource>> posts;
 
+	/**
+	 * @return posts
+	 */
 	public List<Post<? extends Resource>> getPosts() {
 		if (this.posts == null) {
 			this.posts = new LinkedList<Post<? extends Resource>>();
@@ -63,10 +68,16 @@ public class Tag {
 		return this.posts;
 	}
 
+	/**
+	 * @param posts
+	 */
 	public void setPosts(List<Post<? extends Resource>> posts) {
 		this.posts = posts;
 	}
 
+	/**
+	 * @return subTags
+	 */
 	public List<Tag> getSubTags() {
 		if (this.subTags == null) {
 			this.subTags = new LinkedList<Tag>();
@@ -74,10 +85,16 @@ public class Tag {
 		return this.subTags;
 	}
 
+	/**
+	 * @param subTags
+	 */
 	public void setSubTags(List<Tag> subTags) {
 		this.subTags = subTags;
 	}
 
+	/**
+	 * @return superTags
+	 */
 	public List<Tag> getSuperTags() {
 		if (this.subTags == null) {
 			this.subTags = new LinkedList<Tag>();
@@ -85,46 +102,79 @@ public class Tag {
 		return this.superTags;
 	}
 
+	/**
+	 * @param superTags
+	 */
 	public void setSuperTags(List<Tag> superTags) {
 		this.superTags = superTags;
 	}
 
+	/**
+	 * @return usercount
+	 */
 	public int getUsercount() {
 		return this.usercount;
 	}
 
+	/**
+	 * @param usercount
+	 */
 	public void setUsercount(int usercount) {
 		this.usercount = usercount;
 	}
 
+	/**
+	 * @return id
+	 */
 	public int getId() {
 		return this.id;
 	}
 
+	/**
+	 * @param id
+	 */
 	public void setId(int id) {
 		this.id = id;
 	}
 
+	/**
+	 * @return count
+	 */
 	public int getGlobalcount() {
 		return this.globalcount;
 	}
 
+	/**
+	 * @param count
+	 */
 	public void setGlobalcount(int count) {
 		this.globalcount = count;
 	}
 
+	/**
+	 * @return name
+	 */
 	public String getName() {
 		return this.name;
 	}
 
+	/**
+	 * @param name
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * @return stem
+	 */
 	public String getStem() {
 		return this.stem;
 	}
 
+	/**
+	 * @param stem
+	 */
 	public void setStem(String stem) {
 		this.stem = stem;
 	}

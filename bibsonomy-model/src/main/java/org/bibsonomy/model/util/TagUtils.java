@@ -2,38 +2,30 @@ package org.bibsonomy.model.util;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 import org.bibsonomy.model.Tag;
 
-
 /**
- *
- * @version: $Id$
- * @author:  dbenz
- * $Author$
- *
+ * @author Dominik Benz
+ * @version $Id$
  */
 public class TagUtils {
-	
-	private static final Logger LOGGER = Logger.getLogger(TagUtils.class);
-	
+
 	/**
 	 * Get the maximum user count of all tags contained in a list
 	 * 
 	 * @param tags a list of tags
-	 * @return the maximum user count 
+	 * @return the maximum user count
 	 */
 	public static int getMaxUserCount(List<Tag> tags) {
 		int maxUserCount = 0;
-		for (Tag tag : tags) {
+		for (final Tag tag : tags) {
 			if (tag.getUsercount() > maxUserCount) {
 				maxUserCount = tag.getUsercount();
 			}
 		}
 		return maxUserCount;
 	}
-	
+
 	/**
 	 * Get the maximum global count of all tags contained in a list
 	 * 
@@ -42,11 +34,11 @@ public class TagUtils {
 	 */
 	public static int getMaxGlobalcountCount(List<Tag> tags) {
 		int maxGlobalCount = 0;
-		for (Tag tag : tags) {
+		for (final Tag tag : tags) {
 			if (tag.getGlobalcount() > maxGlobalCount) {
 				maxGlobalCount = tag.getGlobalcount();
 			}
 		}
 		return maxGlobalCount;
-	}	
+	}
 }

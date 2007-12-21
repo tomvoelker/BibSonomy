@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
  * Name of a person
  * 
  * @author Jens Illig
+ * @version $Id$
  */
 public class PersonName {
 	/** pattern that matches only on positive numbers */

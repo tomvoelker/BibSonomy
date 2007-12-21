@@ -11,27 +11,27 @@ import org.bibsonomy.common.enums.GroupID;
 public class ValidationUtils {
 
 	/**
-	 * @param s argument to check
+	 * @param string argument to check
 	 * @return false iff the argument is null or has zero trimmed length
 	 */
-	public static boolean present(final String s) {
-		return ((s != null) && (s.trim().length() > 0));
-	}
-	
-	/**
-	 * @param c argument to check
-	 * @return false iff the argument is null or has zero size
-	 */
-	public static boolean present(final Collection<?> c) {
-		return ((c != null) && (c.size() > 0));
+	public static boolean present(final String string) {
+		return ((string != null) && (string.trim().length() > 0));
 	}
 
 	/**
-	 * @param o argument to check
+	 * @param collection argument to check
+	 * @return false iff the argument is null or has zero size
+	 */
+	public static boolean present(final Collection<?> collection) {
+		return ((collection != null) && (collection.size() > 0));
+	}
+
+	/**
+	 * @param object argument to check
 	 * @return false iff the argument is null
 	 */
-	public static boolean present(final Object o) {
-		return (o != null);
+	public static boolean present(final Object object) {
+		return (object != null);
 	}
 
 	/**

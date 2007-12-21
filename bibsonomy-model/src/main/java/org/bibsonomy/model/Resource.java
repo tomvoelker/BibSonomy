@@ -9,12 +9,14 @@ import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 
 /**
- * Everything, which can be tagged in BibSonomy, is derived from this class.
+ * Everything, which can be tagged, is derived from this class.
  * 
  * What may be accurate for representing the type of a Resource?
  * -> naturally its class! (which is lighter, more intuitive and flexible
  *    (eg reflective instantiation) and most notably more precise in
  *    type-safe generic methods than an enum).
+ * 
+ * @version $Id$
  */
 public abstract class Resource {
 
@@ -47,22 +49,37 @@ public abstract class Resource {
 	 */
 	public abstract void recalculateHashes();
 
+	/**
+	 * @return interHash
+	 */
 	public String getInterHash() {
 		return this.interHash;
 	}
 
+	/**
+	 * @param interHash
+	 */
 	public void setInterHash(String interHash) {
 		this.interHash = interHash;
 	}
 
+	/**
+	 * @return intraHash
+	 */
 	public String getIntraHash() {
 		return this.intraHash;
 	}
 
+	/**
+	 * @param intraHash
+	 */
 	public void setIntraHash(String intraHash) {
 		this.intraHash = intraHash;
 	}
 
+	/**
+	 * @return posts
+	 */
 	public List<Post<? extends Resource>> getPosts() {
 		if (this.posts == null) {
 			this.posts = new LinkedList<Post<? extends Resource>>();
@@ -70,14 +87,23 @@ public abstract class Resource {
 		return this.posts;
 	}
 
+	/**
+	 * @param posts
+	 */
 	public void setPosts(List<Post<? extends Resource>> posts) {
 		this.posts = posts;
 	}
 
+	/**
+	 * @return count
+	 */
 	public int getCount() {
 		return this.count;
 	}
 
+	/**
+	 * @param count
+	 */
 	public void setCount(int count) {
 		this.count = count;
 	}
@@ -93,6 +119,10 @@ public abstract class Resource {
 		}
 	}
 
+	/**
+	 * @param resourceType
+	 * @return resource
+	 */
 	public static Class<? extends Resource> getResource(final String resourceType) {
 		if (resourceType == null) throw new InternServerException("ResourceType is null");
 		Class<? extends Resource> rVal = byStringMap.get(resourceType);
@@ -105,6 +135,10 @@ public abstract class Resource {
 		return rVal;
 	}
 
+	/**
+	 * @param clazz
+	 * @return string
+	 */
 	public static String toString(final Class<? extends Resource> clazz) {
 		final String rVal = toStringMap.get(clazz);
 		if (rVal == null) {

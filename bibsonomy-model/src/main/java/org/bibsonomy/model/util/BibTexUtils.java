@@ -8,25 +8,18 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
 import org.bibsonomy.model.BibTex;
 
 /**
- *
- * @version: $Id$
- * @author:  dbenz
- * $Author$
- *
+ * @author Dominik Benz
+ * @version $Id$
  */
 public class BibTexUtils {
-	private static final Logger LOGGER = Logger.getLogger(BibTexUtils.class);
-		
+
 	/**
 	 * Builds a string from a given bibtex object which can be used to build an OpenURL
 	 * see http://www.exlibrisgroup.com/sfx_openurl.htm
@@ -34,7 +27,6 @@ public class BibTexUtils {
 	 * @param bib the bibtex object
 	 * @return the DESCRIPTION part of the OpenURL of this BibTeX object
 	 */
-
 	public static String getOpenurl (BibTex bib) {
 		
 		// stores the completed URL (just the DESCRIPTION part)
@@ -144,8 +136,7 @@ public class BibTexUtils {
 			}
 		}
 	}
-	
-	
+
 	/**
 	 * return a bibtex string representation of the given bibtex object
 	 * 
@@ -269,5 +260,4 @@ public class BibTexUtils {
 		}
 		return null;
 	}	
-	
 }

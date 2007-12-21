@@ -93,6 +93,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 *            then its an empty string!
 	 * @param regex
 	 *            a regular expression used to filter the tagnames
+	 * @param tags
 	 * @param start
 	 * @param end
 	 * @return a set of tags, en empty set else

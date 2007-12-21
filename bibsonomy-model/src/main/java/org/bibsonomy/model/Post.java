@@ -12,6 +12,9 @@ import org.bibsonomy.model.User;
 
 /**
  * A post connects a given resource with a user and a certain date.
+ * 
+ * @version $Id$
+ * @param <T> resouce type
  */
 public class Post<T extends Resource> {
 
@@ -54,18 +57,30 @@ public class Post<T extends Resource> {
 	 */
 	private String description;
 
+	/**
+	 * constructor
+	 */
 	public Post() {
 		this.tags = new ArrayList<Tag>();
 	}
 
+	/**
+	 * @return contentId
+	 */
 	public Integer getContentId() {
 		return this.contentId;
 	}
 
+	/**
+	 * @param contentId
+	 */
 	public void setContentId(Integer contentId) {
 		this.contentId = contentId;
 	}
 
+	/**
+	 * @return groups
+	 */
 	public List<Group> getGroups() {
 		if (this.groups == null) {
 			this.groups = new LinkedList<Group>();
@@ -73,26 +88,44 @@ public class Post<T extends Resource> {
 		return this.groups;
 	}
 
+	/**
+	 * @param groups
+	 */
 	public void setGroups(List<Group> groups) {
 		this.groups = groups;
 	}
 
+	/**
+	 * @return postingDate
+	 */
 	public Date getDate() {
 		return this.date;
 	}
 
+	/**
+	 * @param postingDate
+	 */
 	public void setDate(Date postingDate) {
 		this.date = postingDate;
 	}
 
+	/**
+	 * @return resource
+	 */
 	public T getResource() {
 		return this.resource;
 	}
 
+	/**
+	 * @param resource
+	 */
 	public void setResource(T resource) {
 		this.resource = resource;
 	}
 
+	/**
+	 * @return tags
+	 */
 	public List<Tag> getTags() {
 		if (this.tags == null) {
 			this.tags = new LinkedList<Tag>();
@@ -100,24 +133,39 @@ public class Post<T extends Resource> {
 		return this.tags;
 	}
 
+	/**
+	 * @param tags
+	 */
 	public void setTags(List<Tag> tags) {
 		this.tags = tags;
 	}
 
+	/**
+	 * @return user
+	 */
 	public User getUser() {
 		return this.user;
 	}
 
+	/**
+	 * @param user
+	 */
 	public void setUser(User user) {
 		this.user = user;
 	}
 
+	/**
+	 * @param tagName
+	 */
 	public void addTag(final String tagName) {
 		final Tag tag = new Tag();
 		tag.setName(tagName);
 		this.tags.add(tag);
 	}
 
+	/**
+	 * @param groupName
+	 */
 	public void addGroup(final String groupName) {
 		final Group group = new Group();
 		group.setName(groupName);
