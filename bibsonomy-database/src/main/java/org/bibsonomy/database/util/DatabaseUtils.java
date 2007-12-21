@@ -61,12 +61,12 @@ public class DatabaseUtils {
 		
 		if (present(param.getUserName()) && present(param.getRequestedUserName())) {
 			// If userName and requestedUserName are the same -> add private and friends
-			// otherwise: if they're friends -> add friends
+			// otherwise: if they're friends -> only add friends
 			if (param.getUserName().equals(param.getRequestedUserName())) {
 				groupIds.add(GroupID.PRIVATE.getId());
 				groupIds.add(GroupID.FRIENDS.getId());
 			} else {
-				final boolean friends = db.isFriendOf(param, session);
+				final boolean friends = db.isFriendOf(param.getUserName(), param.getRequestedUserName(), session);
 				if (friends) groupIds.add(GroupID.FRIENDS.getId());
 			}
 		}

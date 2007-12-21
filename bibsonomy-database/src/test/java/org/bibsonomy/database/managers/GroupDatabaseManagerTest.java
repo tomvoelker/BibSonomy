@@ -26,6 +26,9 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	private final int NUM_KDE_GROUP_MEMBERS = 13;
 
+	/**
+	 * tests getAllGroups
+	 */
 	@Test
 	public void getAllGroups() {
 		final List<Group> allGroups = this.groupDb.getAllGroups(0, 100, this.dbSession);
@@ -49,6 +52,9 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(5, this.groupDb.getAllGroups(0, 5, this.dbSession).size());
 	}
 
+	/**
+	 * tests getGroupByName
+	 */
 	@Test
 	public void getGroupByName() {
 		final Group kdeGroup = this.groupDb.getGroupByName("kde", this.dbSession);
@@ -68,6 +74,9 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertNull(this.groupDb.getGroupByName(ParamUtils.NOGROUP_NAME, this.dbSession));
 	}
 
+	/**
+	 * tests getGroupMembers
+	 */
 	@Test
 	public void getGroupMembers() {
 		final Group kdeGroup = this.groupDb.getGroupMembers("stumme", "kde", this.dbSession);
@@ -96,6 +105,9 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		}
 	}
 
+	/**
+	 * tests getGroupsForUser
+	 */
 	@Test
 	public void getGroupsForUser() {
 		List<Group> groups = this.groupDb.getGroupsForUser("stumme", this.dbSession);
@@ -122,6 +134,9 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertTrue(found.contains(GroupID.FRIENDS.getId()));
 	}
 
+	/**
+	 * tests storeGroup
+	 */
 	@Test
 	public void storeGroup() {
 		final Group newGroup = new Group();
@@ -146,6 +161,9 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		}
 	}
 
+	/**
+	 * tests deleteGroup
+	 */
 	@Test
 	public void deleteGroup() {
 		final Group group = this.groupDb.getGroupMembers("stumme", "kde", this.dbSession);
@@ -171,6 +189,9 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		}
 	}
 
+	/**
+	 * tests addUserToGroupANDremoveUserFromGroup
+	 */
 	@Test
 	public void addUserToGroupANDremoveUserFromGroup() {
 		// adds and then removes a user "cschenk" to the group "kde" and checks
@@ -208,11 +229,66 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		}
 	}
 	
+	/**
+	 * tests getGroupsByContentId
+	 */
 	@Test
 	public void getGroupsByContentId() {
 		List<Group> groups = this.groupDb.getGroupsForContentId(688174, this.dbSession);
 		assertEquals(1,groups.size());
 		assertEquals("kde", groups.get(0).getName());
 		assertEquals(3, groups.get(0).getGroupId()); 
+	}
+
+	/**
+	 * tests getGroupIdsForUser
+	 */
+	@Test
+	public void getGroupIdsForUser() {
+		// testuser1 is a member of 2 groups, testuser2 a member of 1 group and
+		// testuser3 isn't a member of any group
+		for (final int i : new int[] { 1, 2, 3 }) {
+			assertEquals(3 - i, this.generalDb.getGroupIdsForUser("testuser" + i, this.dbSession).size());
+		}
+
+		for (final String userName : new String[] { "", " ", null, "unknownuser" }) {
+			assertEquals(0, this.generalDb.getGroupIdsForUser(userName, this.dbSession).size());
+		}
+	}
+
+	/**
+	 * tests getGroupIdByGroupNameAndUserName
+	 */
+	/*
+	 * Hint: we have to call the more generic method before the specific one,
+	 * i.e. getGroupIdByGroupNameAndUserName before getGroupIdByGroupName,
+	 * because the latter will have side effects.
+	 */
+	@Test
+	public void getGroupIdByGroupNameAndUserName() {
+		// group exists
+		this.generalParam.setRequestedGroupName("testgruppe1");
+		assertEquals(3, this.generalDb.getGroupIdByGroupNameAndUserName(this.generalParam, this.dbSession));
+		assertEquals(3, this.generalDb.getGroupIdByGroupName(this.generalParam, this.dbSession));
+
+		// group doesn't exist
+		this.resetParameters();
+		this.generalParam.setRequestedGroupName("this-group-doesnt-exists");
+		assertEquals(GroupID.INVALID.getId(), this.generalDb.getGroupIdByGroupNameAndUserName(this.generalParam, this.dbSession));
+		assertEquals(GroupID.INVALID.getId(), this.generalDb.getGroupIdByGroupName(this.generalParam, this.dbSession));
+
+		// groupname is null
+		this.resetParameters();
+		this.generalParam.setRequestedGroupName(null);
+		try {
+			this.generalDb.getGroupIdByGroupNameAndUserName(this.generalParam, this.dbSession);
+			fail("Exception should be thrown");
+		} catch (final Exception ex) {
+		}
+		try {
+			this.generalDb.getGroupIdByGroupName(this.generalParam, this.dbSession);
+			fail("Exception should be thrown");
+		} catch (final Exception ex) {
+		}
 	}
 }

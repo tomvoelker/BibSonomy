@@ -34,12 +34,19 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		this.plugins = DatabasePluginRegistry.getInstance();
 	}
 
+	/**
+	 * @return GroupDatabaseManager
+	 */
 	public static GroupDatabaseManager getInstance() {
 		return singleton;
 	}
 
 	/**
 	 * Returns a list of all groups
+	 * @param start 
+	 * @param end 
+	 * @param session 
+	 * @return a list of all groups
 	 */
 	public List<Group> getAllGroups(final int start, final int end, final DBSession session) {
 		final GroupParam param = LogicInterfaceHelper.buildParam(GroupParam.class, null, null, null, null, null, null, start, end, null);
@@ -49,6 +56,8 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Returns a specific group
 	 * 
+	 * @param groupname 
+	 * @param session 
 	 * @return Returns a {@link Group} object if the group exists otherwise null.
 	 */
 	public Group getGroupByName(final String groupname, final DBSession session) {
@@ -67,15 +76,6 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForObject("getGroupByName", groupname, Group.class, session);
 	}
 
-	private static Group getFriendsGroup() {
-		final Group friends = new Group();
-		friends.setDescription("group of all your bibsonomy-friends");
-		friends.setGroupId(GroupID.FRIENDS.getId());
-		friends.setName("friends");
-		friends.setPrivlevel(Privlevel.HIDDEN);
-		return friends;
-	}
-	
 	private static Group getPublicGroup() {
 		final Group pub = new Group();
 		pub.setDescription("public group");
@@ -84,18 +84,32 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		pub.setPrivlevel(Privlevel.PUBLIC);
 		return pub;
 	}
-	
+
 	private static Group getPrivateGroup() {
 		final Group priv = new Group();
-		priv.setDescription("private groiup");
+		priv.setDescription("private group");
 		priv.setGroupId(GroupID.PRIVATE.getId());
 		priv.setName("private");
 		priv.setPrivlevel(Privlevel.HIDDEN);
 		return priv;
-	}	
+	}
+
+	private static Group getFriendsGroup() {
+		final Group friends = new Group();
+		friends.setDescription("group of all your bibsonomy-friends");
+		friends.setGroupId(GroupID.FRIENDS.getId());
+		friends.setName("friends");
+		friends.setPrivlevel(Privlevel.HIDDEN);
+		return friends;
+	}
 
 	/**
 	 * Returns a group with all its members if the user is allowed to see them.
+	 * 
+	 * @param authUser 
+	 * @param groupname 
+	 * @param session 
+	 * @return group 
 	 */
 	public Group getGroupMembers(final String authUser, final String groupname, final DBSession session) {
 		final Group group;
@@ -104,7 +118,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			group.setUsers(getFriendsOfUser(authUser,session));
 			return group;
 		}
-		
+
 		group = this.queryForObject("getGroupMembers", groupname, Group.class, session);
 		if (group == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist");
@@ -124,6 +138,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		return group;
 	}
 
+	/**
+	 * @param authUser
+	 * @param session
+	 * @return a list of users
+	 */
 	@SuppressWarnings("unchecked")
 	public List<User> getFriendsOfUser(final String authUser, final DBSession session) {
 		return queryForList("getFriendsOfUser", authUser, session);
@@ -149,6 +168,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Returns a a list of groups for a given user
+	 * 
+	 * @param username 
+	 * @param session 
+	 * @return a list of groups
 	 */
 	public List<Group> getGroupsForUser(final String username, final DBSession session) {
 		return this.queryForList("getGroupsForUser", username, Group.class, session);
@@ -156,6 +179,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	
 	/**
 	 * Returns a a list of groups for a given content ID
+	 * 
+	 * @param contentId 
+	 * @param session 
+	 * @return a list of groups
 	 */
 	public List<Group> getGroupsForContentId(final Integer contentId, final DBSession session) {
 		return this.queryForList("getGroupsForContentId", contentId, Group.class, session);
@@ -165,6 +192,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * Stores a group in the database.
 	 * 
 	 * FIXME: update isn't implemented.
+	 * 
+	 * @param group 
+	 * @param update 
+	 * @param session 
 	 */
 	public void storeGroup(final Group group, final boolean update, final DBSession session) {
 		if (update) {
@@ -202,6 +233,9 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Delete a group from the database.
+	 * 
+	 * @param groupname 
+	 * @param session 
 	 */
 	public void deleteGroup(final String groupname, final DBSession session) {
 		// make sure that the group exists
@@ -215,6 +249,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Adds a user to a group.
+	 * 
+	 * @param groupname 
+	 * @param username 
+	 * @param session 
 	 */
 	public void addUserToGroup(final String groupname, final String username, final DBSession session) {
 		// check if a user exists with that name
@@ -237,6 +275,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Removes a user from a group.
+	 * 
+	 * @param groupname 
+	 * @param username 
+	 * @param session 
 	 */
 	public void removeUserFromGroup(final String groupname, final String username, final DBSession session) {
 		// make sure that the group exists

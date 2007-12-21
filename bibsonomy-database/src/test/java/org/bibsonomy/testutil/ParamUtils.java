@@ -26,8 +26,13 @@ import org.bibsonomy.model.UserSettings;
  */
 public class ParamUtils {
 
+	/** username of a user who doesn't exist */
 	public static final String NOUSER_NAME = "this-user-doesnt-exist";
+	/** groupname of a group who doesn't exist */
 	public static final String NOGROUP_NAME = "this-group-doesnt-exist";
+	/** the id of testgroup1 */
+	public static final int TESTGROUP1_ID = 3;
+
 	private static final Date date;
 
 	static {
@@ -107,9 +112,9 @@ public class ParamUtils {
 		final UserParam param = new UserParam();
 		setDefaults(param);
 		final User user = ModelUtils.getUser();
-		user.setName("hotho");
-		user.setRealname("Andreas Hotho");
-		user.setEmail("aho@cs.uni-kassel.de");
+		user.setName("testuser1");
+		user.setRealname("Test User 1");
+		user.setEmail("testuser1@bibsonomy.org");
 		user.setGender("m");
 		user.setOpenURL("http://sfxserv.rug.ac.be:8888/rug");
 		user.setSettings(new UserSettings());

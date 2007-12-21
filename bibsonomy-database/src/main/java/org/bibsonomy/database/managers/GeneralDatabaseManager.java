@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -15,6 +16,7 @@ import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.beans.TagRelationParam;
 import org.bibsonomy.database.util.DBSession;
+import org.bibsonomy.model.User;
 import org.bibsonomy.util.ExceptionUtils;
 
 /**
@@ -40,31 +42,38 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Checks whether two users are friends.
+	 * Checks whether two users are friends. If one of the usernames is empty
+	 * the result will be <code>false</code>. In case both usernames are
+	 * equal <code>true</code> will be returned, i.e. every user is his own
+	 * friend.
 	 * 
-	 * @param param Database-Properties used: userName, requestedUserName
-	 * @param session a db session
+	 * @param userName
+	 *            the username whose friend should be checked
+	 * @param friendUserName
+	 *            the username of a possible friend
+	 * @param session
+	 *            a db session
 	 * @return true if the users are friends, false otherwise
 	 */
-	public Boolean isFriendOf(final GenericParam param, final DBSession session) {
-		if (present(param.getUserName()) == false) return false;
-		if (present(param.getRequestedUserName()) == false) return false;
-		if (param.getUserName().equals(param.getRequestedUserName())) return true;
-		return this.queryForObject("isFriendOf", param, Boolean.class, session);
+	public boolean isFriendOf(final String userName, final String friendUserName, final DBSession session) {
+		if (present(userName) == false || present(friendUserName) == false) return false;
+		if (userName.equals(friendUserName)) return true;
+		final User user = new User(userName);
+		user.addFriend(new User(friendUserName));
+		return this.queryForObject("isFriendOf", user, Boolean.class, session);
 	}
 
 	/**
-	 * Checks whether a user, given by requestedUserName, is a spammer. If
-	 * requestedUserName is set to null the default behaviour is to return
-	 * false, i.e. no spammer.
+	 * Checks whether a user, given by userName, is a spammer. If userName is
+	 * set to null the default behaviour is to return false, i.e. no spammer.
 	 * 
-	 * @param param Database-Properties used: requestedUserName
+	 * @param userName check the user with this name
 	 * @param session a db session
 	 * @return true if the user is a spammer, false otherwise
 	 */
-	public Boolean isSpammer(final GenericParam param, final DBSession session) {
-		if (present(param.getRequestedUserName()) == false) return false;
-		return this.queryForObject("isSpammer", param, Boolean.class, session);
+	public Boolean isSpammer(final String userName, final DBSession session) {
+		if (present(userName) == false) return false;
+		return this.queryForObject("isSpammer", userName, Boolean.class, session);
 	}
 
 	/**
@@ -75,6 +84,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 * @return A list of groupids
 	 */
 	public List<Integer> getGroupIdsForUser(final String userName, final DBSession session) {
+		if (present(userName) == false) return Collections.emptyList();
 		return this.queryForList("getGroupIdsForUser", userName, Integer.class, session);
 	}
 

@@ -2,28 +2,14 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="General">
-	<select id="isFriendOf" resultClass="boolean" parameterClass="genericParam">
+	<select id="isFriendOf" resultClass="boolean" parameterClass="user">
 		SELECT count(user_name)
 		FROM friends
-		WHERE user_name = #requestedUserName# AND f_user_name = #userName#
+		WHERE user_name = #name# AND f_user_name = #friend.name#
 	</select>
 
-	<select id="isSpammer" resultClass="boolean" parameterClass="genericParam">
-		SELECT spammer FROM user WHERE user_name = #requestedUserName#
-	</select>
-
-	<select id="getGroupIdsForUser" resultClass="int" parameterClass="String">
-		SELECT `group` FROM groups WHERE user_name = #userName#
-	</select>
-
-	<select id="getGroupIdByGroupNameAndUserName" resultClass="int" parameterClass="genericParam">
-		SELECT g.group
-		FROM groupids g <isNotNull property="userName" prepend=",">groups i</isNotNull>
-		WHERE g.group_name = #requestedGroupName#
-		      <isNotNull property="userName" prepend="AND">
-		        i.user_name = #userName#
-		        AND i.group = g.group
-		      </isNotNull>
+	<select id="isSpammer" resultClass="boolean" parameterClass="string">
+		SELECT spammer FROM user WHERE user_name = #userName#
 	</select>
 
 	<select id="getNewContentId" resultClass="int" parameterClass="int">

@@ -27,10 +27,9 @@ public class GetBibtexOfFriendsByUser extends BibTexChainElement {
 	 * posted this bibtex to group friends (made bibtex viewable for
 	 * friends)).
 	 */
-	
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		if (this.generalDb.isFriendOf(param, session) == true) {
+		if (this.generalDb.isFriendOf(param.getRequestedUserName(), param.getUserName(), session) == true) {
 			param.setGroupId(GroupID.FRIENDS.getId());
 			return this.db.getBibTexForUser(param, session);
 		}
