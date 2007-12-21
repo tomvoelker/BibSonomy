@@ -1,15 +1,13 @@
 package org.bibsonomy.model;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * This class defines a user.
- * 
- * TODO document
- * @author dbe
  */
 public class User {
 
@@ -62,60 +60,82 @@ public class User {
 	 * Indicates if this user is a spammer.
 	 */
 	private Integer spammer;
-		
+
 	/**
 	 * the settings of this user
 	 */
 	private UserSettings settings = new UserSettings();
-	
+
 	/**
 	 * OpenURL url
 	 */
 	private String openURL;
-	
+
 	/**
 	 * IP Address
 	 */
 	private String IPAddress;
-	
+
 	/**
 	 * birthday
 	 */
 	private Date birthday;
-	
+
 	/**
 	 * Gender
 	 */
 	private String gender;
-	
+
 	/**
 	 * Profession
 	 */
 	private String profession;
-	
+
 	/**
 	 * Interests
 	 */
 	private String interests;
-	
+
 	/**
 	 * Hobbies
 	 */
 	private String hobbies;
-	
+
 	/**
 	 * Location of this user
 	 */
 	private String place;
-	
+
 	/**
 	 * Basket of this user where he can pick some entries
 	 */
-	private Basket basket = new Basket();
-		
-		
+	private Basket basket;
+
 	/**
-	 * @return
+	 * Holds the friends of this user
+	 */
+	private final List<User> friends;
+
+	/**
+	 * constructor
+	 */
+	public User() {
+		this(null);
+	}
+
+	/**
+	 * constructor
+	 * 
+	 * @param name
+	 */
+	public User(final String name) {
+		this.setName(name); 
+		this.basket = new Basket();
+		this.friends = new ArrayList<User>();
+	}
+
+	/**
+	 * @return true if this user is a spammer false otherwise
 	 */
 	public boolean isSpammer() {
 		if (this.spammer == null) {
@@ -123,9 +143,9 @@ public class User {
 		}
 		return 1 == this.spammer;
 	}
-	
+
 	/**
-	 * @return
+	 * @return email
 	 */
 	public String getEmail() {
 		return email;
@@ -139,7 +159,7 @@ public class User {
 	}
 
 	/**
-	 * @return
+	 * @return homepage
 	 */
 	public URL getHomepage() {
 		return this.homepage;
@@ -153,7 +173,7 @@ public class User {
 	}
 
 	/**
-	 * @return
+	 * @return name
 	 */
 	public String getName() {
 		return name;
@@ -167,7 +187,7 @@ public class User {
 	}
 
 	/**
-	 * @return
+	 * @return realname
 	 */
 	public String getRealname() {
 		return realname;
@@ -181,7 +201,7 @@ public class User {
 	}
 
 	/**
-	 * @return
+	 * @return registrationDate
 	 */
 	public Date getRegistrationDate() {
 		return registrationDate;
@@ -195,7 +215,7 @@ public class User {
 	}
 
 	/**
-	 * @return
+	 * @return groups
 	 */
 	public List<Group> getGroups() {
 		if (this.groups == null) {
@@ -212,7 +232,7 @@ public class User {
 	}
 
 	/**
-	 * @return
+	 * @return password
 	 */
 	public String getPassword() {
 		return this.password;
@@ -226,7 +246,7 @@ public class User {
 	}
 
 	/**
-	 * @return
+	 * @return posts
 	 */
 	public List<Post<? extends Resource>> getPosts() {
 		if (this.posts == null) {
@@ -243,7 +263,7 @@ public class User {
 	}
 
 	/**
-	 * @return
+	 * @return apiKey
 	 */
 	public String getApiKey() {
 		return this.apiKey;
@@ -257,7 +277,7 @@ public class User {
 	}
 
 	/**
-	 * @return
+	 * @return settings
 	 */
 	public UserSettings getSettings() {
 		return this.settings;
@@ -271,21 +291,21 @@ public class User {
 	}
 
 	/**
-	 * @return
+	 * @return IPAddress
 	 */
 	public String getIPAddress() {
 		return this.IPAddress;
 	}
 
 	/**
-	 * @param address
+	 * @param IPAddress
 	 */
-	public void setIPAddress(String address) {
-		this.IPAddress = address;
+	public void setIPAddress(String IPAddress) {
+		this.IPAddress = IPAddress;
 	}
 
 	/**
-	 * @return
+	 * @return birthday
 	 */
 	public Date getBirthday() {
 		return this.birthday;
@@ -299,7 +319,7 @@ public class User {
 	}
 
 	/**
-	 * @return
+	 * @return gender
 	 */
 	public String getGender() {
 		return this.gender;
@@ -313,7 +333,7 @@ public class User {
 	}
 
 	/**
-	 * @return
+	 * @return profession
 	 */
 	public String getProfession() {
 		return this.profession;
@@ -327,7 +347,7 @@ public class User {
 	}
 
 	/**
-	 * @return
+	 * @return interests
 	 */
 	public String getInterests() {
 		return this.interests;
@@ -341,7 +361,7 @@ public class User {
 	}
 
 	/**
-	 * @return
+	 * @return hobbies
 	 */
 	public String getHobbies() {
 		return this.hobbies;
@@ -355,7 +375,7 @@ public class User {
 	}
 
 	/**
-	 * @return
+	 * @return place
 	 */
 	public String getPlace() {
 		return this.place;
@@ -369,7 +389,7 @@ public class User {
 	}
 
 	/**
-	 * @return
+	 * @return spammer
 	 */
 	public Integer getSpammer() {
 		return this.spammer;
@@ -382,19 +402,57 @@ public class User {
 		this.spammer = spammer;
 	}
 
+	/**
+	 * @return openURL
+	 */
 	public String getOpenURL() {
 		return this.openURL;
 	}
 
+	/**
+	 * @param openURL
+	 */
 	public void setOpenURL(String openURL) {
 		this.openURL = openURL;
 	}
 
+	/**
+	 * @return basket
+	 */
 	public Basket getBasket() {
 		return this.basket;
 	}
 
+	/**
+	 * @param basket
+	 */
 	public void setBasket(Basket basket) {
 		this.basket = basket;
+	}
+
+	/**
+	 * @return a List of friends
+	 */
+	public List<User> getFriends() {
+		return this.friends;
+	}
+
+	/**
+	 * Returns the first friend of this user
+	 * 
+	 * @return friend
+	 */
+	public User getFriend() {
+		if (this.friends.size() < 1) return null;
+		// XXX: iBatis should support this: "friends[0].name", which should
+		// return the name of the first friend - but this doesn't seem to work
+		return this.friends.get(0);
+	}
+
+	/**
+	 * @param friend
+	 */
+	public void addFriend(final User friend) {
+		this.friends.add(friend);
 	}
 }
