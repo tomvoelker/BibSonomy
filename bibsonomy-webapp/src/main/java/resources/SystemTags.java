@@ -7,11 +7,10 @@ import java.util.Scanner;
 import org.apache.log4j.Logger;
 
 /**
- * class for handling system tags. 
+ * Class for handling system tags. 
  *
- * @version: $Id$
- * @author:  Stefan Stuetzer (sts)
- * $Author$
+ * @author Stefan Stuetzer
+ * @version $Id$
  */
 public class SystemTags {
     private static final Logger LOGGER = Logger.getLogger(SystemTags.class);
@@ -32,25 +31,26 @@ public class SystemTags {
     private static final String[] SYSTEM_TAGS = new String[] {	SYSTEM_PREFIX + "year:",  /* bibtex year */
     															SYSTEM_PREFIX + "user:",  /* user name */ 
     															SYSTEM_PREFIX + "group:"  /* group name */};
-        
-    /**
-     * constants for each system tag
-     */
+
+    /** constants for system tag: bibtex year */
     public static final int BIBTEX_YEAR = 0;
-    public static final int USER_NAME 	= 1; 
-    public static final int GROUP_NAME	= 2; 
-        
+    /** constants for system tag: username */
+    public static final int USER_NAME 	= 1;
+    /** constants for system tag: groupname */
+    public static final int GROUP_NAME	= 2;
+
     /**
      * default constructor
+     * 
      * @param requestString
      * 			the requested search string for extracting system tags 
      */
-    public SystemTags(String requestString) {
-        this.requestString 	= requestString;        
-        paramValues 		= new HashMap<String, String>();                           
-        parse();
+    public SystemTags(final String requestString) {
+        this.requestString = requestString;        
+        this.paramValues   = new HashMap<String, String>();                           
+        this.parse();
     }
-    
+
     /**
      * parses the search string for all known system tags
      * and fills value map with system tag and value
@@ -148,27 +148,27 @@ public class SystemTags {
      * @return value of the system tag
      */
     public String getValue(final int tag) {
-    	if (isUsed(tag))
-    		return paramValues.get(SYSTEM_TAGS[tag]);
-    	else
-    		return "";
+    	if (isUsed(tag)) return paramValues.get(SYSTEM_TAGS[tag]);
+    	return "";
     }
-    
+
     /**
      * returns a cleaned request string. 
      * this means all systemtags are removed.
-     * @return
+     * 
+     * @return clean string
      */
     public String getCleanedString() {    		
-		Scanner s = new Scanner(requestString);
-		StringBuffer buf = new StringBuffer();
-		
-		while(s.hasNext()) {
-            String token = s.next();           
-           
+		final Scanner scan = new Scanner(requestString);
+		final StringBuffer buf = new StringBuffer();
+
+		while(scan.hasNext()) {
+            final String token = scan.next();           
+
             if (token.indexOf(SystemTags.SYSTEM_PREFIX) == -1)
                 buf.append(token + " ");
-        }   		
+        }
+
 		return buf.toString().trim();
     }
 }

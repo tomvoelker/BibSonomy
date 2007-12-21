@@ -13,14 +13,13 @@ import org.bibsonomy.webapp.view.Views;
 /**
  * Controller for Homepage * 
  *
- * @version: $Id$
- * @author:  dbenz
- *
+ * @author Dominik Benz
+ * @version $Id$
  */
 public class HomepageController extends MultiResourceListController implements MinimalisticController<ResourceViewCommand> {
 	private static final Logger LOGGER = Logger.getLogger(HomepageController.class);
 
-	public View workOn(ResourceViewCommand command) {
+	public View workOn(final ResourceViewCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
 
 		// retrieve and setthe requested resource lists

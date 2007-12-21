@@ -7,13 +7,12 @@ import org.junit.Test;
 
 /**
  * JUnit test for SystemTags class 
- * @version: $Id$
- * @author:  Stefan Stuetzer (sts)
- * $Author$
+ *
+ * @author Stefan Stuetzer
+ * @version $Id$
  */
 public class SystemTagsTest {
-    private static final Logger LOGGER = Logger.getLogger(SystemTagsTest.class);
-    
+
     @Test
     public void testBibtexYearSingle() {
         SystemTags st = new SystemTags("Stumme Hotho sys:year:2005");        

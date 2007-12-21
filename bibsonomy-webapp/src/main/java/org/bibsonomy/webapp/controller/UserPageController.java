@@ -14,16 +14,15 @@ import org.bibsonomy.webapp.view.Views;
  * Controller for user pages 
  * /user/USERNAME
  *
- * @version: $Id$
- * @author:  dbenz
- *
+ * @author Dominik Benz
+ * @version $Id$
  */
 public class UserPageController extends MultiResourceListController implements MinimalisticController<ResourceViewCommand> {
 	private static final Logger LOGGER = Logger.getLogger(UserPageController.class);
 
-	public View workOn(ResourceViewCommand command) {
+	public View workOn(final ResourceViewCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
-		
+
 		// set grouping entity and grouping name
 		final GroupingEntity groupingEntity;
 		final String groupingName;
@@ -32,23 +31,23 @@ public class UserPageController extends MultiResourceListController implements M
 		}
 		groupingEntity = GroupingEntity.USER;
 		groupingName = command.getRequestedUser();
-		
+
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
-		
+
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {
 			this.setList(command, resourceType, groupingEntity, groupingName, null, null, null, null, command.getListCommand(resourceType).getEntriesPerPage(), 100);
 			this.postProcessList(command, resourceType);
 		}
-		
+
 		// html format - retrieve tags and return HTML view
 		if (command.getFormat().equals("html")) {
 			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, 0, 1000);
 			return Views.USERPAGE;			
 		}
-		
+
 		// export - return the appropriate view
 		return Views.getViewByFormat(command.getFormat());		
 	}

@@ -9,14 +9,11 @@ import org.apache.log4j.Logger;
 /**
  * Bean for Group-Sites
  *
- * @version: $Id$
- * @author:  Stefan Stuetzer
- * $Author$
- *
+ * @author  Stefan Stuetzer
+ * @version $Id$
  */
 public class GroupResourceViewCommand extends ResourceViewCommand {
-	private static final Logger LOGGER = Logger.getLogger(GroupResourceViewCommand.class);
-	
+
 	/** the group whode resources are requested*/
 	private String requestedGroup = "";
 	
@@ -84,5 +81,4 @@ public class GroupResourceViewCommand extends ResourceViewCommand {
 	public void setRelatedTagCommand(RelatedTagCommand relatedTagCommand) {
 		this.relatedTagCommand = relatedTagCommand;
 	}
-
 }

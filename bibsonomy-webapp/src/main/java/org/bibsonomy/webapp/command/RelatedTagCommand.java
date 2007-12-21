@@ -10,14 +10,11 @@ import org.bibsonomy.model.Tag;
  * Bean for related tags of a single tag or a list
  * of tags
  * 
- * @version: $Id$
- * @author:  Stefan Stuetzer
- * $Author$
- *
+ * @author Stefan Stuetzer
+ * @version $Id$
  */
 public class RelatedTagCommand extends BaseCommand {
-	private static final Logger LOGGER = Logger.getLogger(RelatedTagCommand.class);
-		
+
 	/** the requested tag(s) for whose to find related tags*/
 	String requestedTags;	
 	

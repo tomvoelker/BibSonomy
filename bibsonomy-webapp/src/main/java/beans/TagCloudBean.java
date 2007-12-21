@@ -19,10 +19,8 @@ import org.bibsonomy.model.logic.LogicInterfaceFactory;
  * Bean for retrieving Tags using the logicinterface 
  * TODO: Delete this class when start using the spring framework
  * 
- * @version: $Id$
- * @author: Stefan Stuetzer 
- * $Author$
- * 
+ * @author Stefan Stuetzer 
+ * @version $Id$
  */
 public class TagCloudBean {
 	private static final Logger LOGGER = Logger.getLogger(TagCloudBean.class);

@@ -16,10 +16,8 @@ import org.bibsonomy.webapp.view.Views;
  * 
  * group/GROUP and group/GROUP/TAGS
  * 
- * @version: $Id$
- * @author:  Stefan Stuetzer
- * $Author$
- *
+ * @author Stefan Stuetzer
+ * @version $Id$
  */
 public class GroupPageController extends MultiResourceListController implements MinimalisticController<GroupResourceViewCommand> {
 	private static final Logger LOGGER = Logger.getLogger(GroupPageController.class);
