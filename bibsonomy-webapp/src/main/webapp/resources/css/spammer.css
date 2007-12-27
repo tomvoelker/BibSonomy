@@ -1,4 +1,4 @@
-/* elements for spammertag page */
+/* elements for admin pages */
 .logbox {
 	height:100px;
 	width:300px;
@@ -11,13 +11,39 @@
 	font-size: 0.8em;
 	padding: 2px;
 }
+
+.spammertable {
+	font-size:70%;
+	border-collapse:collapse;
+	empty-cells:show;	
+	margin-top: 15px;	
+}
+
+.spammertable th {
+	font-weight:bold;	
+	background-color:#EEEEEE;
+	border: 1px solid #CCCCCC;	
+	padding: 2px;
+}
+
+.spammertable td {		
+	border: 1px solid #CCCCCC;	
+	padding: 2px;
+}
+
+.spammer {
+	background-color: #ffeeee;	
+}
+
 #ajax_tooltipObj{
 	z-index:1000000;
 	text-align:left;
 }
+
 #ajax_tooltipObj div{
 	position:relative;
 }
+
 #ajax_tooltipObj .ajax_tooltip_arrow{	/* Left div for the small arrow */
 	background-image:url('../image/arrow.png');
 	width:20px;
@@ -29,6 +55,7 @@
 	z-index:1000005;
 	height:60px;
 }
+
 #ajax_tooltipObj .ajax_tooltip_content{
 	border:2px solid #069;	/* Border width */
 	left:18px;	/* Same as border thickness */
