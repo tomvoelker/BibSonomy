@@ -31,9 +31,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
+import net.tanesha.recaptcha.ReCaptcha;
+import net.tanesha.recaptcha.ReCaptchaFactory;
+import net.tanesha.recaptcha.ReCaptchaResponse;
+
 import org.apache.log4j.Logger;
 
 import resources.Resource;
+import servlets.listeners.InitialConfigListener;
 import beans.RegistrationHandlerBean;
 import beans.UserBean;
 import filters.SessionSettingsFilter;
@@ -47,6 +52,9 @@ public class RegistrationHandler extends HttpServlet {
 	private static String projectHome = null;
 	private static String projectName = null;
 
+	private static final String reCaptchaPublicKey = InitialConfigListener.getInitParam("ReCaptchaPublicKey");
+	private static final String reCaptchaPrivateKey = InitialConfigListener.getInitParam("ReCaptchaPrivateKey");
+	
 	/*
 	 * how long is the temporary password of the password reminder function valid?
 	 */
@@ -140,8 +148,11 @@ public class RegistrationHandler extends HttpServlet {
 				 * TODO: possibly we should remove the captcha from the session after we have used it,
 				 * such that re-posting the page does not work. 
 				 */
-				String captcha = (String)session.getAttribute(nl.captcha.servlet.Constants.SIMPLE_CAPCHA_SESSION_KEY) ;
-				if (captcha == null) { 
+			     // check captcha (see http://tanesha.net/projects/recaptcha4j/)
+		        ReCaptcha captcha = ReCaptchaFactory.newReCaptcha(reCaptchaPublicKey, reCaptchaPrivateKey, false);
+		        ReCaptchaResponse captchaAnswer = captcha.checkAnswer(request.getRemoteAddr(), request.getParameter("recaptcha_challenge_field"), request.getParameter("recaptcha_response_field"));
+
+				if (captchaAnswer == null) { 
 					/* We could not get the original captcha. 
 					 * The most likely error is that the user has disabled Cookies and therefore
 					 * we can't track his session and get the captcha.
@@ -149,9 +160,9 @@ public class RegistrationHandler extends HttpServlet {
 					bean.setErrors("general", "Please enable cookies in your browser for the system to work.");
 					getServletConfig().getServletContext().getRequestDispatcher("/reminder").forward(request, response);
 					return;					
-				} else if (!captcha.equals(bean.getCaptcha())){
+				} else if (!captchaAnswer.isValid()){
 					// entered code is false, send user back
-					bean.setErrors("captcha","Wrong code: Please try again");
+					bean.setErrors("captcha",captchaAnswer.getErrorMessage()); // TODO: is it possible to get a localized message?
 					getServletConfig().getServletContext().getRequestDispatcher("/reminder").forward(request, response);
 					return;
 				}
@@ -224,13 +235,11 @@ public class RegistrationHandler extends HttpServlet {
 			} else {
 				/* a new user wants to register */
 
-				/* Check captcha first - you can access the current captcha value through 
-				 * "session.getAttribute(nl.captcha.servlet.Constants.SIMPLE_CAPCHA_SESSION_KEY)"
-				 * By forwarding the user back to the registration form, a new captcha code will be 
-				 * created automatically, Turing-Test, immer neues Bild.
-				 */
-				String captcha = (String)session.getAttribute(nl.captcha.servlet.Constants.SIMPLE_CAPCHA_SESSION_KEY) ;
-				if (captcha == null) { 
+		        // check captcha (see http://tanesha.net/projects/recaptcha4j/)
+		        ReCaptcha captcha = ReCaptchaFactory.newReCaptcha(reCaptchaPublicKey, reCaptchaPrivateKey, false);
+		        ReCaptchaResponse captchaAnswer = captcha.checkAnswer(request.getRemoteAddr(), request.getParameter("recaptcha_challenge_field"), request.getParameter("recaptcha_response_field"));
+
+				if (captchaAnswer == null) { 
 					/* We could not get the original captcha. 
 					 * The most likely error is that the user has disabled Cookies and therefore
 					 * we can't track his session and get the captcha.
@@ -238,9 +247,9 @@ public class RegistrationHandler extends HttpServlet {
 					bean.setErrors("general", "Please enable cookies in your browser for the system to work.");
 					getServletConfig().getServletContext().getRequestDispatcher("/register").forward(request, response);
 					return;					
-				} else if (!captcha.equals(bean.getCaptcha())){
+				} else if (!captchaAnswer.isValid()){
 					// entered code is false, send user back
-					bean.setErrors("captcha","Wrong code: Please try again");
+					bean.setErrors("captcha", captchaAnswer.getErrorMessage()); // TODO: is it possible to get a localized message?
 					getServletConfig().getServletContext().getRequestDispatcher("/register").forward(request, response);
 					return;
 				}

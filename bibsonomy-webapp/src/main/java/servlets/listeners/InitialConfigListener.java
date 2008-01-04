@@ -68,7 +68,7 @@ public class InitialConfigListener implements ServletContextListener {
 	 * attribute named "projectName" if it is available.
 	 * Returns a default value if the attribute is unavailable.
 	 */
-	public static String getProjectName (ServletContext context) {
+	public static String getProjectName () {
 		String name = getInitParam("projectName");
 		if (name == null) {
 			name = DEFAULT_PROJECT_NAME;
@@ -83,7 +83,7 @@ public class InitialConfigListener implements ServletContextListener {
 	 * unavailable.
 	 */
 
-	public static String getProjectHome (ServletContext context) {
+	public static String getProjectHome () {
 		String name = getInitParam("projectHome");
 		if (name == null) {
 			name = "";

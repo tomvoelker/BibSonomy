@@ -33,14 +33,14 @@
     <td>Justify, why you want to join this group. (first 200 characters are accepted)</td>
   </tr>
   <tr>
-      <td>code</td>
-      <td><img src="Captcha.jpg"></td>
-      <td></td>
-  </tr>
-  <tr>
-	<td></td>
-	<td><input type="text" size="10" maxlength="5" name="captcha"></td>
-    <td>Please confirm the 5 digit security code.</td>
+      <td>Captcha</td>
+      <td colspan="2">
+      
+        <%-- ReCaptcha to fight spammers --%>
+        <%@ include file="/boxes/captcha.jsp" %>
+        <div class="errmsg">${error}</div>
+      </td>
+      
   </tr>
   <tr>
     <td></td>

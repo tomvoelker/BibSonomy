@@ -29,31 +29,29 @@
         <div class="errmsg">${registrationHandlerBean.errors.general}</div>
 		<table>
 			<tr>
-				<td>username</td>
+			  <td>username</td>
 			  <td> 
-		     <input type="hidden" name="action" value="reminder"/>
-				 <input type="text" size="30" name="userName" id="inpf"  value="<c:out value='${registrationHandlerBean.userName}'/>"> 			  
-		     <div class="errmsg">${registrationHandlerBean.errors.userName}</div>				 
+		        <input type="hidden" name="action" value="reminder"/>
+				<input type="text" size="30" name="userName" id="inpf"  value="<c:out value='${registrationHandlerBean.userName}'/>"> 			  
+		        <div class="errmsg">${registrationHandlerBean.errors.userName}</div>				 
 			  </td>
 			</tr>
 			<tr>
-				<td>emailaddress</td>
-				<td>
-				  <input type="text" size="30" name="email" v value="<c:out value='${registrationHandlerBean.email}'/>">
+			  <td>email address</td>
+			  <td>
+				<input type="text" size="30" name="email" v value="<c:out value='${registrationHandlerBean.email}'/>">
  			    <div class="errmsg">${registrationHandlerBean.errors.email}</div>
-	      </td>		
+	          </td>
 			</tr>
 			<tr>
-		    <td>Please confirm the 5 digit security code:</td>
-		   	<td><img src="Captcha.jpg"></td>
-			</tr>		
-			<tr>
-		    <td></td>
-		    <td>
-			    <input type="text" size="10" maxlength="5" name="captcha">
-			    <div class="errmsg">${registrationHandlerBean.errors.captcha}</div>
-			  </td>
-			</tr>		
+    	      <td></td>
+    	      <td>
+      
+                <%-- ReCaptcha to fight spammers --%>
+                <%@ include file="/boxes/captcha.jsp" %>
+                <div class="errmsg">${registrationHandlerBean.errors.captcha}</div>
+              </td>
+	        </tr>
 			<tr> 
 		    <td>
 		      <input type="submit" value="remind me">

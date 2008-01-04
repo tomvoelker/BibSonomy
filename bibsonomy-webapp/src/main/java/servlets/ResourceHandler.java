@@ -1885,6 +1885,12 @@ public class ResourceHandler extends HttpServlet{
 			c.bookTCStmtP.setString(2, requUser);
 			c.bibTCStmtP.setString(2, requUser);
 		}
+		
+		/*
+		 * set query timeout to stop long queries (e.g. for dblp)
+		 */
+		c.bibStmtP.setQueryTimeout(10); // 10 seconds
+		c.bookStmtP.setQueryTimeout(10); // 10 seconds
 
 	}
 

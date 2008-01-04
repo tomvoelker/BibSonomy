@@ -23,7 +23,6 @@ public class RegistrationHandlerBean implements Serializable {
 	private String currPass  = "";
 	private String password1 = "";
 	private String password2 = "";
-	private String captcha   = "";
 	private String action 	 = "";
 	
 	private Hashtable<String,String> errors;
@@ -33,7 +32,7 @@ public class RegistrationHandlerBean implements Serializable {
 
 	
 	public boolean isValid() {
-		return isValidUserName() & isValidEmail() & isValidPassword1() & isValidPassword2() & isValidHomepage() & isValidCaptcha();
+		return isValidUserName() & isValidEmail() & isValidPassword1() & isValidPassword2() & isValidHomepage();
 	}
 	
 	/*
@@ -42,7 +41,7 @@ public class RegistrationHandlerBean implements Serializable {
 	public boolean isValidReminder() {
 		if(action.equals("reminder")) {
 			passwordReminder = true;
-			return isValidUserName() & isValidEmail() & isValidCaptcha() && errors.isEmpty();
+			return isValidUserName() & isValidEmail() && errors.isEmpty();
 		} else
 			return false;
 	}
@@ -142,15 +141,6 @@ public class RegistrationHandlerBean implements Serializable {
 		return true;
 	}
 	
-	private boolean isValidCaptcha () {
-		if (captcha == null || captcha.equals("")) {
-			errors.put("captcha","Please confirm the security code!");
-			captcha="";
-			return false;
-		}
-		return true;
-	}
-	
 	public RegistrationHandlerBean() {
 		errors = new Hashtable<String,String>();
 	}
@@ -228,14 +218,6 @@ public class RegistrationHandlerBean implements Serializable {
 		this.realName = realName;
 	}
 
-	public String getCaptcha() {
-		return captcha;
-	}
-
-	public void setCaptcha(String captcha) {
-		this.captcha = captcha;
-	}
-	
 	public boolean isPasswordReminder() {
 		return passwordReminder;
 	}

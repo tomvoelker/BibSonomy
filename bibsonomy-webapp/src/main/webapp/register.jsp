@@ -1,3 +1,4 @@
+<%@ page import="net.tanesha.recaptcha.*" %>
 <%@include file="include_jsp_head.jsp" %>
 
 <jsp:useBean id="registrationHandlerBean" class="beans.RegistrationHandlerBean" scope="request"/>
@@ -62,7 +63,6 @@
 	  </td>
 	  <td>(required :: without spaces)</td>
 	</tr>
-    </tr>
 	<tr>
 	  <td>password2</td>
 	  <td>
@@ -72,15 +72,13 @@
 	  <td>(please confirm password)</td>
 	</tr>
 	<tr>
-    	<td>Please confirm the 5 digit security code:</td>
-    	<td><img src="Captcha.jpg"></td>
-	</tr>
-	<tr>
-	    <td></td>
-	    <td>
-	   <input type="text" size="10" maxlength="5" name="captcha">
-	   <div class="errmsg">${registrationHandlerBean.errors.captcha}</div>
-	    </td>
+    	<td></td>
+    	<td colspan="2">
+      
+        <%-- ReCaptcha to fight spammers --%>
+        <%@ include file="/boxes/captcha.jsp" %>
+        <div class="errmsg">${registrationHandlerBean.errors.captcha}</div>
+        </td>
 	</tr>
 	<tr>
 	  <td><input type=submit value='register'></td>
@@ -91,4 +89,4 @@
 </div>
 
 
-<%@ include file="footer.jsp" %>
+<%@ include file="/footer.jsp" %>
