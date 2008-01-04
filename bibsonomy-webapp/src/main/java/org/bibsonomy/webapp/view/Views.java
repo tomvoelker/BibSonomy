@@ -36,7 +36,22 @@ public enum Views implements View {
 	/**
 	 * bibtex output
 	 */
-	BIBTEX("export/bibtex/bibtex");
+	BIBTEX("export/bibtex/bibtex"),
+	
+	/**
+	 * burst output
+	 */
+	BURST("export/bibtex/burst"),
+	
+	/**
+	 * rss bookmark outout
+	 */
+	RSS("export/bookmark/rssfeed"),
+	
+	/**
+	 * rss output for publications
+	 */
+	PUBLRSS("export/bibtex/rssfeed");
 	
 	private final String name;
 	
@@ -69,6 +84,13 @@ public enum Views implements View {
 	public static Views getViewByFormat(String format) {
 		if (format.equals("bibtex"))
 			return BIBTEX;
+		if (format.equals("burst"))
+			return BURST;
+		if (format.equals("rss"))
+			return RSS;
+		if (format.equals("publrss"))
+			return PUBLRSS;
+		
 		throw new BadRequestOrResponseException("Invalid format specification.");
 	}
 }
