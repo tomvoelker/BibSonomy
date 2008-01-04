@@ -152,13 +152,13 @@
 		</swrc:abstract>
 	</c:if>
 	
-	<!--  <c:if test="${!empty post.resource.miscFields}">
+	<c:if test="${!empty post.resource.miscFields}">
 		<c:forEach var="misc" items="${post.resource.miscFields}">
 		  <swrc:hasExtraField>
 		    <swrc:Field swrc:key="${misc.key}" swrc:value="${misc.value}"/>
 		  </swrc:hasExtraField>
 		</c:forEach>
-	</c:if>-->
+	</c:if>
 
 	<c:if test="${!empty post.resource.authorList}">
 		<swrc:author>
