@@ -53,7 +53,7 @@
 		
 		<p>
 		For an explanation on how to write such export filters, have a look at 
-		<a href="http://jabref.sourceforge.net/help/CustomExports.html">the JabRef page</a>.
+		<a href="http://jabref.sourceforge.net/help/CustomExports.php">the JabRef page</a>.
 		You (and only you!) can use these layouts to show ${projectName}'s publication lists
 		in a format of your choice. After uploading the correct file(s) have a look at
 		<a href="/layout/custom/user/<c:out value='${user.name}'/>">my${projectName}</a> to see 
