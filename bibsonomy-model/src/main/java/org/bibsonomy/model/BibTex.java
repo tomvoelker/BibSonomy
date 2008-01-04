@@ -603,5 +603,14 @@ public class BibTex extends Resource {
 			this.miscFields = new HashMap<String, String>();
 		}
 		this.miscFields.put(key, value);
+	}
+
+	/**
+	 * Getter for MiscFields
+	 * 
+	 * @return a HashMap containing the miscFields
+	 */
+	public HashMap<String, String> getMiscFields() {
+		return this.miscFields;
 	}		
 }
