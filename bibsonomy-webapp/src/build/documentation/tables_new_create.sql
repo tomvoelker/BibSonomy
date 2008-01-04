@@ -264,7 +264,7 @@ CREATE TABLE `log_bibtex` (
   `edition` varchar(255) default NULL,
   `month` varchar(45) default NULL,
   `day` varchar(45) default NULL,
-  `bookTitle` varchar(255) default NULL,
+  `bookTitle` text,
   `howPublished` varchar(255) default NULL,
   `institution` varchar(255) default NULL,
   `organization` varchar(255) default NULL,
