@@ -23,6 +23,6 @@
    </c:if>
    hash="<c:out value='${book.hash}' />"
    user="<c:out value='${book.user}' />"
-   tag="<c:forEach var="tag" items='${book.tags}'><c:out value='${tag}' /> </c:forEach>"
+   tag="<c:forEach var="tag" items='${book.tags}'><c:out value='${tag} ' /> </c:forEach>"
    time="<fmt:formatDate type='both' pattern="yyyy-MM-dd'T'HH:mm:ssZ" value='${book.date}'/>" />
 </c:forEach></posts>
