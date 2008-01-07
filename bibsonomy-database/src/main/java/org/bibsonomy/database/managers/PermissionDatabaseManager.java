@@ -4,6 +4,7 @@ import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.User;
 
 /**
  * Database Manager for permissions
@@ -42,36 +43,36 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * Check if the logged in user has write access to the given Post
 	 * 
 	 * @param post
-	 * @param loginUserName
+	 * @param loginUser
 	 */
-	public void ensureWriteAccess(final Post<?> post, final String loginUserName) {
+	public void ensureWriteAccess(final Post<?> post, final User loginUser) {
 		// delegate write access check		
-		ensureWriteAccess(loginUserName, post.getUser().getName());
+		ensureWriteAccess(loginUser, post.getUser().getName());
 	}
 	
 	/**
-	 * @param loginUserName
+	 * @param loginUser
 	 * @param userName 
 	 */
-	public void ensureWriteAccess(final String loginUserName, final String userName){
-		if (!loginUserName.toLowerCase().equals(userName.toLowerCase())){
+	public void ensureWriteAccess(final User loginUser, final String userName){
+		if (loginUser.getName() == null || !loginUser.getName().toLowerCase().equals(userName.toLowerCase())){
 			throw new ValidationException("You are not authorized to perform the requested operation.");
 		}
 	}
 	
 	/**
 	 * @param document
-	 * @param loginUserName
+	 * @param loginUser
 	 */
-	public void ensureWriteAccess(final Document document, final String loginUserName) {
+	public void ensureWriteAccess(final Document document, final User loginUser) {
 		// delegate write access check
-		ensureWriteAccess(loginUserName, document.getUserName());
+		ensureWriteAccess(loginUser, document.getUserName());
 	}
 	
 	/** Ensures that the user is an admin.
-	 * @param loginUserName
+	 * @param loginUser
 	 */
-	public void ensureAdminAccess(final String loginUserName) {
+	public void ensureAdminAccess(final User loginUser) {
 		// TODO: implement.
 	}
 

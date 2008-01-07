@@ -141,29 +141,55 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param username 
 	 * @param apiKey 
 	 * @param session 
-	 * @return boolean true if the Api key is correct, otherwise false
+	 * @return A User object containing the user if the login succeeded. If not, 
+	 * the object contains a <code>null</code> user name. 
 	 */
-	public boolean validateUserAccess(final String username, final String apiKey, final DBSession session) {
-		if (present(apiKey) == false || present(username) == false) return false;
-		final String currentApiKey = this.getApiKeyForUser(username, session);
-		if (currentApiKey == null) return false;
-		return apiKey.equals(currentApiKey);
+	public User validateUserAccess(final String username, final String apiKey, final DBSession session) {
+		// empty user object for not-logged in users
+		final User notLoggedInUser = new User();
+		
+		// either username or password not given -> user is not logged in
+		if (present(apiKey) == false || present(username) == false) return notLoggedInUser;
+		
+		// get user from database
+		final User foundUser = getUserDetails(username, session);
+		
+		// user exists and password is correct
+		if ((foundUser != null) && (foundUser.getApiKey().equals(apiKey))) return foundUser;
+		
+		// fallback: user is not logged in
+		return notLoggedInUser;
 	}
 
 	/**
 	 * Authenticate a user by comparing his submitted password with the one
-	 * stored in the database.
+	 * stored in the database. If the user exists and the password is correct,
+	 * the returned object contains the users details (including his name). If
+	 * the user does not exist or the password is wrong, the user name of the 
+	 * returned object is NULL. 
 	 * 
 	 * TODO: rename
 	 * 
 	 * @param username 
 	 * @param password 
 	 * @param session 
-	 * @return boolean true if the password is correct, otherwise false
+	 * @return A User object containing the user if the login succeeded. If not, 
+	 * the object contains a <code>null</code> user name. 
 	 */
-	public boolean validateUserUserAccess(final String username, final String password, final DBSession session) {
-		if (present(password) == false || present(username) == false) return false;
-		final User found = getUserDetails(username, session);
-		return ((found != null) && (found.getPassword().equals(password)));
+	public User validateUserUserAccess(final String username, final String password, final DBSession session) {
+		// empty user object for not-logged in users
+		final User notLoggedInUser = new User();
+		
+		// either username or password not given -> user is not logged in
+		if (present(password) == false || present(username) == false) return notLoggedInUser;
+		
+		// get user from database
+		final User foundUser = getUserDetails(username, session);
+		
+		// user exists and password is correct
+		if ((foundUser != null) && (foundUser.getPassword().equals(password))) return foundUser;
+		
+		// fallback: user is not logged in
+		return notLoggedInUser;
 	}
 }

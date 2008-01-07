@@ -1,6 +1,7 @@
 package org.bibsonomy.database;
 
 import org.bibsonomy.database.util.DBSession;
+import org.bibsonomy.model.User;
 
 /**
  * This class produces DBLogic instances with API authentication
@@ -10,7 +11,7 @@ import org.bibsonomy.database.util.DBSession;
 public class DBLogicApiInterfaceFactory extends DBLogicUserInterfaceFactory {
 
 	@Override
-	protected boolean isValidLogin(String loginName, String password) {
+	protected User getLoggedInUser(String loginName, String password) {
 		final DBSession session = openSession();
 		try {
 			return userDBManager.validateUserAccess(loginName, password, session);

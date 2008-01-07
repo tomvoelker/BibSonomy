@@ -5,6 +5,7 @@ package org.bibsonomy.database;
 
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DBSessionFactory;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 
@@ -24,9 +25,16 @@ public class DBLogicNoAuthInterfaceFactory implements LogicInterfaceFactory {
 	
 	public LogicInterface getLogicAccess(final String loginName, final String password) {
 		if (loginName != null) {
-			return new DBLogic(loginName, dbSessionFactory);
+			/*
+			 * In this case we don't fill the user object completely, but set it's 
+			 * name such that the user is seen as logged in (users which are not logged in
+			 * cause a user object with empty name).
+			 */
+			final User loggedInUser = new User();
+			loggedInUser.setName(loginName);
+			return new DBLogic(loggedInUser, dbSessionFactory);
 		}
-		return new DBLogic(null, dbSessionFactory);  // guest access
+		return new DBLogic(new User(), dbSessionFactory);  // guest access
 	}
 
 	/**

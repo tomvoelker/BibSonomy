@@ -4,6 +4,7 @@ import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.managers.UserDatabaseManager;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DBSessionFactory;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 
@@ -19,15 +20,23 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 	
 	public LogicInterface getLogicAccess(final String loginName, final String password) {
 		if (loginName != null) {
-			if (isValidLogin(loginName, password) == true) {
-				return new DBLogic(loginName, dbSessionFactory);
+			final User loggedInUser = getLoggedInUser(loginName, password); 
+			if (loggedInUser.getName() != null) {
+				return new DBLogic(loggedInUser, dbSessionFactory);
 			}
 			throw new ValidationException("Wrong Authentication.");
 		}
-		return new DBLogic(null, dbSessionFactory);  // guest access
+		return new DBLogic(new User(), dbSessionFactory);  // guest access
 	}
 
-	protected boolean isValidLogin(String loginName, String password) {
+	/** Returns a user object containing the details of the user, if he is logged in
+	 * correctly. If not, the returned user object is empty and it's user name NULL. 
+	 *  
+	 * @param loginName
+	 * @param password
+	 * @return
+	 */
+	protected User getLoggedInUser(String loginName, String password) {
 		final DBSession session = openSession();
 		try {
 			return userDBManager.validateUserUserAccess(loginName, password, session);

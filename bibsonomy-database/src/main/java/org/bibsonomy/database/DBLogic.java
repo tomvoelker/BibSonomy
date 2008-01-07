@@ -1,5 +1,6 @@
 package org.bibsonomy.database;
 
+import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
@@ -59,10 +61,10 @@ public class DBLogic implements LogicInterface {
 	private final TagDatabaseManager tagDBManager;
 	private final DBSessionFactory dbSessionFactory;
 
-	private final String loginUserName;
+	private final User loginUser;
 
-	protected DBLogic(final String loginUserName, final DBSessionFactory dbSessionFactory) {
-		this.loginUserName = loginUserName;
+	protected DBLogic(final User loginUser, final DBSessionFactory dbSessionFactory) {
+		this.loginUser = loginUser;
 
 		generalDBManager = GeneralDatabaseManager.getInstance();
 		allDatabaseManagers = new HashMap<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>>();
@@ -106,7 +108,7 @@ public class DBLogic implements LogicInterface {
 	public List<User> getUsers(final String groupName, final int start, final int end) {
 		final DBSession session = openSession();
 		try {
-			return groupDBManager.getGroupMembers(this.loginUserName, groupName, session).getUsers();
+			return groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, session).getUsers();
 		} finally {
 			session.close();
 		}
@@ -115,15 +117,19 @@ public class DBLogic implements LogicInterface {
 	/*
 	 * Returns details about the specified user and makes sure that we don't
 	 * leak private information like the e-mail-address.
+	 * 
+	 * TODO: if userName = loginUser.getName() we could just return loginUser.
 	 */
 	public User getUserDetails(final String userName) {
 		final DBSession session = openSession();
 		try {
 			final User user = userDBManager.getUserDetails(userName, session);
-			if (userName.equals(this.loginUserName) == false) {
+			if (userName.equals(this.loginUser.getName()) == false) {
 				user.setEmail(null);
 				user.setRealname(null);
 				user.setHomepage(null);
+				user.setPassword(null);
+				user.setApiKey(null);
 			}			
 			user.setGroups(this.groupDBManager.getGroupsForUser(userName, session));
 			return user;
@@ -158,11 +164,11 @@ public class DBLogic implements LogicInterface {
 				 * 
 			} else */
 			if (resourceType == BibTex.class) {
-				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, this.loginUserName, grouping, groupingName, tags, hash, order, start, end, search);
+				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search);
 				// this is save because of RTTI-check of resourceType argument which is of class T
 				result = ((List) bibtexDBManager.getPosts(param, session));
 			} else if (resourceType == Bookmark.class) {
-				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, this.loginUserName, grouping, groupingName, tags, hash, order, start, end, search);
+				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search);
 				// this is save because of RTTI-check of resourceType argument which is of class T
 				result = ((List) bookmarkDBManager.getPosts(param, session));
 			} else {
@@ -183,7 +189,7 @@ public class DBLogic implements LogicInterface {
 		try {
 			Post<? extends Resource> rVal;
 			for (final CrudableContent<? extends Resource, ? extends GenericParam> manager : allDatabaseManagers.values()) {
-				rVal = manager.getPostDetails(this.loginUserName, resourceHash, userName, session);
+				rVal = manager.getPostDetails(this.loginUser.getName(), resourceHash, userName, session);
 				if (rVal != null) {
 					return rVal;
 				}
@@ -227,7 +233,7 @@ public class DBLogic implements LogicInterface {
 		final List<Tag> result;
 		
 		try {
-			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, this.loginUserName, grouping, groupingName, tags, null, null, start, end, null);
+			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, this.loginUser.getName(), grouping, groupingName, tags, null, null, start, end, null);
 			
 			if (resourceType == BibTex.class || resourceType == Bookmark.class || resourceType == Resource.class) {
 				// this is save because of RTTI-check of resourceType argument which is of class T
@@ -251,7 +257,7 @@ public class DBLogic implements LogicInterface {
 	public Tag getTagDetails(final String tagName) {
 		final DBSession session = openSession();
 		try {
-			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, this.loginUserName, null, this.loginUserName, Arrays.asList(tagName), null, null, 0, 1, null);
+			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, this.loginUser.getName(), null, this.loginUser.getName(), Arrays.asList(tagName), null, null, 0, 1, null);
 			return tagDBManager.getTagDetails(param, session); 
 		} finally {
 			session.close();
@@ -321,7 +327,7 @@ public class DBLogic implements LogicInterface {
 	 * from the user.
 	 */
 	public void deletePost(final String userName, final String resourceHash) {
-		if ((this.loginUserName == null) || (this.loginUserName.equals(userName) == false)) {
+		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(userName) == false)) {
 			throw new ValidationException("You are not authorized to perform the requested operation");
 		}
 		
@@ -393,7 +399,7 @@ public class DBLogic implements LogicInterface {
 			final String oldIntraHash = post.getResource().getIntraHash();
 			post.getResource().recalculateHashes();			
 			post = this.validateGroups(post, session);			
-			man.storePost(this.loginUserName, post, oldIntraHash, update, session);
+			man.storePost(this.loginUser.getName(), post, oldIntraHash, update, session);
 			// if we don't get an exception here, we assume the resource has been successfully stored
 			return post.getResource().getIntraHash();
 		} finally {
@@ -488,7 +494,7 @@ public class DBLogic implements LogicInterface {
 	}
 
 	private void ensureLoggedIn() {
-		if (this.loginUserName == null) {
+		if (this.loginUser.getName() == null) {
 			throw new ValidationException("You are not authorized to perform the requested operation.");
 		}
 	}
@@ -505,13 +511,13 @@ public class DBLogic implements LogicInterface {
 
 	public String createPost(Post<?> post) {
 		ensureLoggedIn();
-		this.permissionDBManager.ensureWriteAccess(post, this.loginUserName);
+		this.permissionDBManager.ensureWriteAccess(post, this.loginUser);
 		return this.storePost(post, false);
 	}
 
 	public String updatePost(Post<?> post) {
 		ensureLoggedIn();
-		this.permissionDBManager.ensureWriteAccess(post, this.loginUserName);
+		this.permissionDBManager.ensureWriteAccess(post, this.loginUser);
 		return this.storePost(post, true);
 	}
 
@@ -520,21 +526,26 @@ public class DBLogic implements LogicInterface {
 	}
 
 	public String updateUser(User user) {
-		if ((this.loginUserName == null) || (this.loginUserName.equals(user.getName()) == false)) {
-			final String errorMsg = "user " + ((this.loginUserName != null) ? this.loginUserName : "anonymous") + " is not authorized to change user " + user.getName();
+		// TODO: could we re-use this.permissionDBManager.ensureWriteAccess(post, this.loginUser) here?
+		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(user.getName()) == false)) {
+			final String errorMsg = "user " + ((this.loginUser.getName() != null) ? this.loginUser.getName() : "anonymous") + " is not authorized to change user " + user.getName();
 			log.warn(errorMsg);
 			throw new ValidationException(errorMsg);
 		}
 		return this.storeUser(user, true);
 	}
 
+	
 	public String getAuthenticatedUser() {
-		return this.loginUserName;
+		/* TODO: we should either rename this method to getAuthenticatedUserName or 
+		 * return the user directly.
+		 */
+		return this.loginUser.getName();
 	}
 
 	public String addDocument(Document doc) {
 		ensureLoggedIn();
-		permissionDBManager.ensureWriteAccess(doc, loginUserName);
+		permissionDBManager.ensureWriteAccess(doc, loginUser);
 		return this.storeDocument(doc).getFileHash();
 	}
 
@@ -634,7 +645,7 @@ public class DBLogic implements LogicInterface {
 	public void deleteDocument(final String userName, final String resourceHash, final String fileName){
 		ensureLoggedIn();
 	
-		permissionDBManager.ensureWriteAccess(loginUserName, userName);
+		permissionDBManager.ensureWriteAccess(loginUser, userName);
 		
 		final DBSession session = openSession();
 		
@@ -665,4 +676,24 @@ public class DBLogic implements LogicInterface {
 		}
 		log.info("API - Document deleted: " + fileName + " from User: " + userName);
 	}
+	
+	
+	
+	
+	public void addInetAddressStatus(InetAddress address, InetAddressStatus status) {
+		ensureLoggedIn();
+		permissionDBManager.ensureAdminAccess(loginUser);
+	}
+
+	public void deleteInetAdressStatus(InetAddress address) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public InetAddressStatus getInetAddressStatus(InetAddress address) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
 }
