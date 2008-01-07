@@ -33,7 +33,8 @@
 		<result property="tagboxMinfreq" column="tagbox_minfreq" javaType="integer" />
 		<result property="tagboxSort"    column="tagbox_sort"    javaType="integer" />
 		<result property="tagboxStyle"   column="tagbox_style"   javaType="integer" />
-		<result property="tagboxTooltip" column="tagbox_tooltip" javaType="integer" />		
+		<result property="tagboxTooltip" column="tagbox_tooltip" javaType="integer" />	
+		<result property="defaultLanguage" column="lang" 	     javaType="string" />			
 	</resultMap>	
 	 
 	<sql id="allUserAttributes">
@@ -48,7 +49,7 @@
 	</sql>
 	
 	<sql id="userSettingsAttributes">
-		tagbox_style, tagbox_sort, tagbox_minfreq, tagbox_tooltip, list_itemcount 
+		tagbox_style, tagbox_sort, tagbox_minfreq, tagbox_tooltip, list_itemcount, lang
 	</sql>	
 	
 </sqlMap>
