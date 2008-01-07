@@ -74,7 +74,7 @@ public class LayoutHandler extends HttpServlet {
 			 */
 
 			String layout = (String) request.getAttribute("layout");
-			OutputType t = typemap.get(layout.toLowerCase().toLowerCase());
+			OutputType t = typemap.get(layout.toLowerCase());
 			if (t != null) {
 				StringBuffer exportStringBuffer = null;
 				try {
@@ -200,6 +200,8 @@ public class LayoutHandler extends HttpServlet {
 		 * 
 		 * TODO: if you add/change something here, you have to also add/change this on exports.jsp! 
 		 * 
+		 * TODO: please rewrite this using a configuration file! changing sourcecode is awkward
+		 * 
 		 *  NOTE: case is ignored
 		 */
 		typemap.put("html",            new OutputType(null, "text/html"));
@@ -218,6 +220,9 @@ public class LayoutHandler extends HttpServlet {
 		typemap.put("text",            new OutputType(null, "text/plain"));
 
 		typemap.put("openoffice-csv",  new OutputType("csv", "text/comma-separated-values"));
+		
+		// additional layouts, installed by us
+		typemap.put("se",          new OutputType(null, "text/html"));
 	}
 
 	private static class OutputType {

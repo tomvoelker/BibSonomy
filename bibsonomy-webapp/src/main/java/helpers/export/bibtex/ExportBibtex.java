@@ -49,7 +49,7 @@ public final class ExportBibtex {
 
 
 	// this Map saves all loaded layouts (html, bibtexml, tablerefs, hash(user.username),...)
-	private static HashMap<String,Layout> _layouts   = new HashMap<String, Layout>();
+	private static HashMap<String,Layout> _layouts = null;
 
 
 	/** Only on instance will be instantiated during the very first access. */
@@ -212,12 +212,22 @@ public final class ExportBibtex {
 		return result.getDatabase();
 	}
 
+	/** Removes all filters from the cache and loads the default filters.
+	 * @throws URISyntaxException
+	 */
+	public void resetFilters() throws URISyntaxException {
+		loadDefaultFilters();
+	}
+	
 	/**
 	 * Loads default filters (xxx.xxx.layout and xxx.layout) from BibSonomy`s default layout directory into a map.
 	 * @throws URISyntaxException 
 	 * @throws Exception
 	 */
-	private void loadDefaultFilters() throws URISyntaxException{
+	private void loadDefaultFilters() throws URISyntaxException {
+
+		// create new hashmap for filters
+		_layouts = new HashMap<String, Layout>();
 		
 		Stack<File> dirs = new Stack<File>();
 		
@@ -239,13 +249,14 @@ public final class ExportBibtex {
 				}else{
 					//check extension
 					if (DocumentUploadHandler.matchExtension(file.getName(), _layoutFileExtension)){
-						try{
+						try {
 							LayoutHelper layoutHelper = new LayoutHelper(new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8")));
 							synchronized(_layouts){
 								// NOTE: now case of layouts is ignored
 								_layouts.put(file.getName().toLowerCase(), layoutHelper.getLayoutFromText(Globals.FORMATTER_PACKAGE));
 							}
-						}catch (Exception e) {
+							log.info("loaded filter " + file.getName());
+						} catch (Exception e) {
 							log.fatal("error loading default filters: " + e);
 						}
 					}//if	
