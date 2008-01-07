@@ -45,9 +45,8 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param loginUserName
 	 */
 	public void ensureWriteAccess(final Post<?> post, final String loginUserName) {
-		if (loginUserName.equals(post.getUser().getName()) == false) {
-			throw new ValidationException("You are not authorized to perform the requested operation.");
-		}
+		// delegate write access check		
+		ensureWriteAccess(loginUserName, post.getUser().getName());
 	}
 	
 	/**
@@ -65,9 +64,15 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param loginUserName
 	 */
 	public void ensureWriteAccess(final Document document, final String loginUserName) {
-		if (loginUserName.equals(document.getUserName()) == false) {
-			throw new ValidationException("You are not authorized to perform the requested operation.");
-		}
+		// delegate write access check
+		ensureWriteAccess(loginUserName, document.getUserName());
+	}
+	
+	/** Ensures that the user is an admin.
+	 * @param loginUserName
+	 */
+	public void ensureAdminAccess(final String loginUserName) {
+		// TODO: implement.
 	}
 
 }
