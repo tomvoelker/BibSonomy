@@ -7,12 +7,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * This class defines a user.
+ * This class defines a user. An unknown user has an empty (<code>null</code>) name.
  */
 public class User {
 
 	/**
-	 * The (nick-)name of this user.
+	 * The (nick-)name of this user. Is <code>null</code> if the user is not logged in (unknown). 
 	 */
 	private String name;
 
