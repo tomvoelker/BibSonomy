@@ -18,6 +18,8 @@ public class DBUserManager extends DBManager {
 	private final static String COL_TAGBOX_MINFREQ = "tagbox_minfreq";
 	private final static String COL_TAGBOX_TOOLTIP = "tagbox_tooltip";
 	private final static String COL_LIST_ITEMCOUNT = "list_itemcount";
+	private final static String COL_DEFAULT_LANG   = "lang";
+	
 	
 	private final static Logger log = Logger.getLogger(DBUserManager.class); 
 	
@@ -189,14 +191,16 @@ public class DBUserManager extends DBManager {
 						                              COL_TAGBOX_SORT    + " = ?, " +
 						                              COL_TAGBOX_MINFREQ + " = ?, " +
 						                              COL_TAGBOX_TOOLTIP + " = ?, " +
- 						                              COL_LIST_ITEMCOUNT + " = ?  " +
+ 						                              COL_LIST_ITEMCOUNT + " = ?,  " +
+ 						                              COL_DEFAULT_LANG + " = ? " +
 						                         "  WHERE user_name = ?");
 				c.stmt.setInt(1, user.getTagboxStyle());
 				c.stmt.setInt(2, user.getTagboxSort());
 				c.stmt.setInt(3, user.getTagboxMinfreq());
 				c.stmt.setInt(4, user.getTagboxTooltip());
 				c.stmt.setInt(5, user.getItemcount());
-				c.stmt.setString(6, user.getName());
+				c.stmt.setString(6, user.getDefaultLanguage());
+				c.stmt.setString(7, user.getName());
 				return c.stmt.executeUpdate() == 1; // return true, if exactly one row got updated 
 			}
 		} catch (SQLException e) {

@@ -215,6 +215,12 @@ public class SessionSettingsFilter implements Filter {
 			update = true;
 		}
 		
+		// default language
+		paramValue = httpServletRequest.getParameter("lang");
+		if (paramValue != null) {
+			user.setDefaultLanguage(paramValue);
+			update = true;
+		}
 		
 		return update;
 	}

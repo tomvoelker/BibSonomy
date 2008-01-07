@@ -66,7 +66,7 @@
 				<jsp:invoke fragment="headerExt"/>
 			</head>
 			<body>
-				<div id="heading">
+				<div id="heading" style="float:left">
 					<h1>
 					<c:url var="root" value="/" context="${projectContext}"/>
 					<a href="${root}" rel="Start">${projectName}</a> :: <jsp:invoke fragment="heading"/>
@@ -90,11 +90,16 @@
 							<a onclick="naviSwitchSpecial('explicit_user')" style="cursor:pointer"><fmt:message key="navi.search"/>:<c:out value='${loginUser.name}'/></a>
 						<c:set var="mode" value="requUser" />
 					</c:if>
-				</div>
+					</div>				
 								
-				<script type="text/javascript">
-				  cssdropdown.startchrome("heading");
-				</script>					
+					<script type="text/javascript">
+					  cssdropdown.startchrome("heading");
+					</script>					
+				</div>
+				
+				<div id="languagebox" style="text-align: right;">
+					<a href="?lang=de"><img src="${resdir}/image/lang_de.jpg"/></a>
+					<a href="?lang=en"><img src="${resdir}/image/lang_en.jpg"/></a>					
 				</div>
 				
 				<menu:navi loginUserName="${loginUserName}" searchString="${searchString}" basketSize="${basketSize}" />

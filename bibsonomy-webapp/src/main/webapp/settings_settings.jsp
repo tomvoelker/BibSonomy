@@ -44,12 +44,24 @@
 		           <input type="text" name="items" size="3" value="<c:out value='${user.itemcount}'/>" />
 		        </td>
 		      </tr> 
+		      
+		       <tr>
+		        <td>default language</td>
+		        <td>
+		           <select name="lang">
+		            <option <c:if test="${user.defaultLanguage == 'en'}">selected="true"</c:if> value="en">english</option>
+		            <option <c:if test="${user.defaultLanguage == 'de'}">selected="true"</c:if> value="de">german</option>
+		          </select>
+		        </td>
+		      </tr> 
+		      
 		      <tr>
 		        <td>
 		          <input type="submit" name="tagbox_style" value="set layout"/>
 		          <input type="hidden" name="ckey" value="${ckey}"/>
 		        </td>
-		    </tr>       
+		    </tr>    	   
+		      
 		  </table>
 		</form>
 		

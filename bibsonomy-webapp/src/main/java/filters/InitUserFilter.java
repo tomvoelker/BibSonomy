@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Locale;
 import java.util.StringTokenizer;
 
 import javax.servlet.Filter;
@@ -21,12 +22,11 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.DBLogicUserInterfaceFactory;
 import org.bibsonomy.database.util.IbatisDBSessionFactory;
-
-import org.bibsonomy.model.User;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
-import beans.SettingsBean;
 import beans.UserBean;
 
 /**
@@ -52,6 +52,7 @@ public class InitUserFilter implements Filter {
 	public static final String USER_COOKIE_NAME     	   = "_currUser";
 	public static final String SETTINGS_COOKIE_NAME		   = "_styleSettings";
 	public static final String REQ_ATTRIB_USER      	   = "user";
+	public static final String REQ_ATTRIB_LANGUAGE         =  SessionLocaleResolver.class.getName() + ".LOCALE";	
 	public static final String REQ_ATTRIB_LOGIN_USER       = "loginUser";
 	public static final String BIBTEX_NUM_ENTRIES_PER_PAGE = "bibtex.entriesPerPage";
 	public static final String BOOKMARK_NUM_ENTRIES_PER_PAGE = "bookmark.entriesPerPage";
@@ -234,7 +235,11 @@ public class InitUserFilter implements Filter {
 		 * "BibSonomy 1" UserBean Object
 		 */				
 		// TODO copy contents loginUser -> user
-		httpServletRequest.setAttribute(REQ_ATTRIB_USER, createUserBean(loginUser));
+		UserBean userBean = createUserBean(loginUser);
+		httpServletRequest.setAttribute(REQ_ATTRIB_USER, userBean);
+
+		// add default language to request		
+		httpServletRequest.getSession().setAttribute(REQ_ATTRIB_LANGUAGE, new Locale(userBean.getDefaultLanguage()));
 		
 		log.info("finished: " + loginUser);
 
@@ -360,6 +365,7 @@ public class InitUserFilter implements Filter {
 		userBean.setTagboxStyle(loginUser.getSettings().getTagboxStyle());
 		userBean.setTagboxTooltip(loginUser.getSettings().getTagboxTooltip());
 		userBean.setItemcount(loginUser.getSettings().getListItemcount());
+		userBean.setDefaultLanguage(loginUser.getSettings().getDefaultLanguage());
 		
 		//basket size
 		userBean.setPostsInBasket(loginUser.getBasket().getNumPosts());

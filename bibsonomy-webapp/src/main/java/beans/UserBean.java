@@ -23,6 +23,7 @@ public class UserBean implements Serializable {
 	private int tagboxMinfreq   = 0;  // minimal freq a tag must have to be shown
 	private int tagboxTooltip   = 0;  // 0 = don't show, 1 = show (TODO: what does this mean?)
 	private int itemcount       = 10; // how many posts to show in post lists?  
+	private String defaultLanguage = "en"; // the default language
 
 	private Set<String> groups = new HashSet<String>(); // groups the user is in
 	private List<String> friends = new LinkedList<String>(); // the friends of the user	
@@ -141,6 +142,10 @@ public class UserBean implements Serializable {
 	public void addFriend(String name) {		
 		friends.add(name);
 	}
-
-	
+	public String getDefaultLanguage() {
+		return this.defaultLanguage;
+	}
+	public void setDefaultLanguage(String defaultLanguage) {
+		this.defaultLanguage = defaultLanguage;
+	}	
 }
