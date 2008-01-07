@@ -112,14 +112,17 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void validateUserAccess() {
-		assertFalse(this.userDb.validateUserAccess("testuser1", "ThisIsJustAFakeAPIKey", this.dbSession));
+		// create an unknown user
+		User unknownUser = new User();
+		// not logged in (wrong apikey) = unknown user
+		assertEquals(unknownUser, this.userDb.validateUserAccess("testuser1", "ThisIsJustAFakeAPIKey", this.dbSession));
 		// the correct key
-		assertTrue(this.userDb.validateUserAccess("testuser1", "11111111111111111111111111111111", this.dbSession));
+		assertEquals("testuser1", this.userDb.validateUserAccess("testuser1", "11111111111111111111111111111111", this.dbSession).getName());
 
 		// the user "testspammer" hasn't got an Api key
 		for (final String name : new String[] { "", " ", null, "testspammer" }) {
 			for (final String key : new String[] { "", " ", null, "hurz" }) {
-				assertFalse(this.userDb.validateUserAccess(name, key, this.dbSession));
+				assertEquals(unknownUser, this.userDb.validateUserAccess(name, key, this.dbSession));
 			}
 		}
 	}

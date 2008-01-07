@@ -18,6 +18,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.Order;
 import org.bibsonomy.testutil.ModelUtils;
@@ -55,7 +56,9 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	}
 
 	protected LogicInterface getDbLogic(final String userName) {
-		final DBLogic dbl = new DBLogic(userName, this.getDbSessionFactory());
+		final User user = new User();
+		user.setName(userName);
+		final DBLogic dbl = new DBLogic(user, this.getDbSessionFactory());
 		return dbl;
 	}
 
