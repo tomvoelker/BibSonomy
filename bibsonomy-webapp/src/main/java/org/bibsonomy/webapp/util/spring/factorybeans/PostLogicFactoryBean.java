@@ -28,9 +28,9 @@ public class PostLogicFactoryBean extends DBLogicUserInterfaceFactory implements
 	}
 	
 	@Override
-	protected boolean isValidLogin(String loginName, String password) {
+	protected User getLoggedInUser(String loginName, String password) {
 		// can always return true because user object attribute in request is always valid;
-		return true;
+		return user;
 	}
 
 	public Class<?> getObjectType() {
