@@ -30,6 +30,11 @@ public class UserSettings {
 	 * number of list items per page; how many posts to show in post lists
 	 */
 	private int listItemcount = 10;
+	
+	/**
+	 * the default language for i18n
+	 */
+	private String defaultLanguage = "en";
 
 	/**
 	 * @return tagboxStyle
@@ -100,4 +105,18 @@ public class UserSettings {
 	public void setListItemcount(int listItemcount) {
 		this.listItemcount = listItemcount;
 	}
+
+	/**
+	 * @return the default language
+	 */
+	public String getDefaultLanguage() {
+		return this.defaultLanguage;
+	}
+
+	/**
+	 * @param defaultLanguage the default language
+	 */
+	public void setDefaultLanguage(String defaultLanguage) {
+		this.defaultLanguage = defaultLanguage;
+	}	
 }
