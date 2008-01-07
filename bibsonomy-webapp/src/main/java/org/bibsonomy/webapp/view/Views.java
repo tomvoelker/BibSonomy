@@ -39,19 +39,24 @@ public enum Views implements View {
 	BIBTEX("export/bibtex/bibtex"),
 	
 	/**
-	 * burst output
+	 * burst output for publications
 	 */
 	BURST("export/bibtex/burst"),
 	
 	/**
-	 * rss bookmark outout
+	 * rss bookmark outout for bookmarks
 	 */
 	RSS("export/bookmark/rssfeed"),
 	
 	/**
 	 * rss output for publications
 	 */
-	PUBLRSS("export/bibtex/rssfeed");
+	PUBLRSS("export/bibtex/rssfeed"),
+	
+	/**
+	 * swrc output for publications
+	 */
+	SWRC("export/bibtex/swrc");
 	
 	private final String name;
 	
@@ -90,6 +95,8 @@ public enum Views implements View {
 			return RSS;
 		if (format.equals("publrss"))
 			return PUBLRSS;
+		if (format.equals("swrc"))
+			return SWRC;
 		
 		throw new BadRequestOrResponseException("Invalid format specification.");
 	}
