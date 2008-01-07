@@ -56,7 +56,12 @@ public enum Views implements View {
 	/**
 	 * swrc output for publications
 	 */
-	SWRC("export/bibtex/swrc");
+	SWRC("export/bibtex/swrc"),
+	
+	/**
+	 * html output for publications
+	 */
+	PUBL("export/bibtex/htmlOutput");
 	
 	private final String name;
 	
@@ -97,6 +102,8 @@ public enum Views implements View {
 			return PUBLRSS;
 		if (format.equals("swrc"))
 			return SWRC;
+		if (format.equals("publ"))
+			return PUBL;
 		
 		throw new BadRequestOrResponseException("Invalid format specification.");
 	}
