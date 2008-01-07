@@ -28,6 +28,6 @@ public class GetBibtexForGroup extends BibTexChainElement {
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.GROUP) && present(param.getRequestedGroupName()) &&  !present(param.getRequestedUserName()) && !present(param.getTagIndex()) && !present(param.getHash()) && !present(param.getOrder()) && !present(param.getSearch());
+		return (param.getGrouping() == GroupingEntity.GROUP) && present(param.getRequestedGroupName()) &&  !present(param.getRequestedUserName()) && !present(param.getTagIndex()) && !present(param.getHash()) && !present(param.getOrder()) && !present(param.getSearch());
 	}
 }

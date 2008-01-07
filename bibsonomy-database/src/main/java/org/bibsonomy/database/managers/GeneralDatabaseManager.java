@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -84,7 +85,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 * @return A list of groupids
 	 */
 	public List<Integer> getGroupIdsForUser(final String userName, final DBSession session) {
-		if (present(userName) == false) return Collections.emptyList();
+		if (present(userName) == false) return new ArrayList<Integer>();
 		return this.queryForList("getGroupIdsForUser", userName, Integer.class, session);
 	}
 

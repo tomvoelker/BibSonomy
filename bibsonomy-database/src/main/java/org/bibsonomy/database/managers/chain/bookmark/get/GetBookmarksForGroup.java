@@ -30,7 +30,7 @@ public class GetBookmarksForGroup extends BookmarkChainElement {
 	}
 
 	@Override
-	protected boolean canHandle(final BookmarkParam param) {
-		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.GROUP) && present(param.getRequestedGroupName()) &&  !present(param.getTagIndex()) && !present(param.getHash()) && !present(param.getOrder()) && !present(param.getSearch());
+	protected boolean canHandle(final BookmarkParam param) {		
+		return (param.getGrouping() == GroupingEntity.GROUP) && present(param.getRequestedGroupName()) &&  !present(param.getTagIndex()) && !present(param.getHash()) && !present(param.getOrder()) && !present(param.getSearch());
 	}
 }

@@ -30,6 +30,6 @@ public class GetTagsByGroup extends TagChainElement {
 
 	@Override
 	protected boolean canHandle(final TagParam param) {
-		return present(param.getUserName()) && param.getGrouping() == GroupingEntity.GROUP && present(param.getRequestedGroupName()) && !present(param.getTagIndex()) && !present(param.getRegex());
+		return (param.getGrouping() == GroupingEntity.GROUP) && present(param.getRequestedGroupName()) && !present(param.getTagIndex()) && !present(param.getRegex());
 	}
 }
