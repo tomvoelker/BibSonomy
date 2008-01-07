@@ -5,6 +5,8 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.User;
+import org.bibsonomy.webapp.command.GroupMemberCommand;
 import org.bibsonomy.webapp.command.GroupResourceViewCommand;
 import org.bibsonomy.webapp.command.RelatedTagCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -46,6 +48,7 @@ public class GroupPageController extends MultiResourceListController implements 
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(command.getFormat())) {
 			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, 0, 1000);
+			this.setGroupMembers(command, groupingName);
 			
 			if (requTags.size() > 0) {
 				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, 0, 20);
@@ -82,5 +85,20 @@ public class GroupPageController extends MultiResourceListController implements 
 	protected <T extends Resource, V extends GroupResourceViewCommand> void setRelatedTags(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, int start, int end) {
 		RelatedTagCommand relatedTagCommand = cmd.getRelatedTagCommand();
 		relatedTagCommand.setRelatedTags(this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, start, end));		
+	}
+	
+	/**
+	 * Retrieve all members of the given group in dependece of the group privacy level
+	 * @param <V> extends ResourceViewCommand, the command
+	 * @param cmd the command
+	 * @param groupName the name of the group
+	 */
+	protected <V extends GroupResourceViewCommand> void setGroupMembers(V cmd, String groupName) {
+		GroupMemberCommand memberCommand = cmd.getMemberCommand();
+		List<User> members = this.logic.getUsers(groupName, 0, 100);
+		memberCommand.setGroup(groupName);
+		for (User u: members) {
+			memberCommand.addMember(u.getName());
+		}		
 	}
 }

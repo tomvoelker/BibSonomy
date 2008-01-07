@@ -128,6 +128,17 @@ public class Functions  {
 			throw new RuntimeException(ex.getMessage());
 		}		
 	}
+
+	public static String getLowerPath (String uriString) {
+		URI uri; 
+		uriString = uriString.substring(0, uriString.lastIndexOf("/"));
+		try {
+			uri = new URI(uriString);
+			return uri.getPath();
+		} catch (Exception ex) {
+			throw new RuntimeException(ex.getMessage());
+		}	
+	}
 	
 	/**
 	 * @param tags

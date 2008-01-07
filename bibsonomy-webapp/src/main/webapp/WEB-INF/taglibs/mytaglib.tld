@@ -151,6 +151,12 @@
   </function> 
   
   <function>
+    <name>getLowerPath</name>
+    <function-class>tags.Functions</function-class>
+    <function-signature>String getLowerPath (java.lang.String)</function-signature>
+  </function> 
+  
+  <function>
     <name>getQuery</name>
     <function-class>tags.Functions</function-class>
     <function-signature>String getQuery (java.lang.String)</function-signature>

@@ -23,6 +23,9 @@ public class GroupResourceViewCommand extends ResourceViewCommand {
 	/** bean for related tags */
 	private RelatedTagCommand relatedTagCommand = new RelatedTagCommand();
 	
+	/** bean for group members */
+	private GroupMemberCommand memberCommand = new GroupMemberCommand();
+	
 	/**
 	 * @return requestedGroup name of the group whose resources are requested
 	 */
@@ -81,4 +84,18 @@ public class GroupResourceViewCommand extends ResourceViewCommand {
 	public void setRelatedTagCommand(RelatedTagCommand relatedTagCommand) {
 		this.relatedTagCommand = relatedTagCommand;
 	}
+
+	/**
+	 *  @return command with all group members (in dependence of the group privacy level)
+	 */
+	public GroupMemberCommand getMemberCommand() {
+		return this.memberCommand;
+	}
+
+	/**
+	 * @param memberCommand command with group members
+	 */
+	public void setMemberCommand(GroupMemberCommand memberCommand) {
+		this.memberCommand = memberCommand;
+	}	
 }
