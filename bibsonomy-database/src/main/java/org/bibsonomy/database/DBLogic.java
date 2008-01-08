@@ -13,6 +13,7 @@ import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.database.managers.AdminDatabaseManager;
 import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.BookmarkDatabaseManager;
 import org.bibsonomy.database.managers.CrudableContent;
@@ -59,6 +60,7 @@ public class DBLogic implements LogicInterface {
 	private final UserDatabaseManager userDBManager;
 	private final GroupDatabaseManager groupDBManager;
 	private final TagDatabaseManager tagDBManager;
+	private final AdminDatabaseManager adminDBManager;
 	private final DBSessionFactory dbSessionFactory;
 
 	private final User loginUser;
@@ -77,6 +79,7 @@ public class DBLogic implements LogicInterface {
 		userDBManager = UserDatabaseManager.getInstance();
 		groupDBManager = GroupDatabaseManager.getInstance();
 		tagDBManager = TagDatabaseManager.getInstance();
+		adminDBManager = AdminDatabaseManager.getInstance();
 		permissionDBManager = PermissionDatabaseManager.getInstance();
 
 		this.dbSessionFactory = dbSessionFactory;		
@@ -683,17 +686,26 @@ public class DBLogic implements LogicInterface {
 	public void addInetAddressStatus(InetAddress address, InetAddressStatus status) {
 		ensureLoggedIn();
 		permissionDBManager.ensureAdminAccess(loginUser);
+		final DBSession session = openSession();
+		adminDBManager.addInetAddressStatus(address, status, session);
+		session.close();
 	}
 
 	public void deleteInetAdressStatus(InetAddress address) {
-		// TODO Auto-generated method stub
-		
+		ensureLoggedIn();
+		permissionDBManager.ensureAdminAccess(loginUser);
+		final DBSession session = openSession();
+		adminDBManager.deleteInetAdressStatus(address, session);
+		session.close();
 	}
 
 	public InetAddressStatus getInetAddressStatus(InetAddress address) {
-		// TODO Auto-generated method stub
-		return null;
+		ensureLoggedIn();
+		permissionDBManager.ensureAdminAccess(loginUser);
+		final DBSession session = openSession();
+		final InetAddressStatus inetAddressStatus = adminDBManager.getInetAddressStatus(address, session);
+		session.close();
+		return inetAddressStatus;
 	}
-
 	
 }
