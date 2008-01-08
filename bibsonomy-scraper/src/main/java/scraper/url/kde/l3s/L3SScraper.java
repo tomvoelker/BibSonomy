@@ -17,6 +17,8 @@ public class L3SScraper implements Scraper {
 	   									  "extracts the adequate BibTeX entry. Author: KDE";
 	
 	private static final String L3S_URL = "l3s.de";
+	
+	private static final String PATTERN_HTML_TD = "<td class=\" value\">([^<]*)</td>";
 
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		
@@ -25,13 +27,22 @@ public class L3SScraper implements Scraper {
 			try {
 				String bibtexresult = null;
 				
-				//create the regex pattern to indicate if the content is bibtex or not 
-				Pattern p = Pattern.compile("@\\w+\\{.+,");
-				Matcher m = p.matcher(sc.getPageContent());
+				Pattern patternTd = Pattern.compile(PATTERN_HTML_TD, Pattern.MULTILINE | Pattern.DOTALL);
+				Matcher matcherTd = patternTd.matcher(sc.getPageContent());
+				while(matcherTd.find()){
+					
+					String td = matcherTd.group();
+					td = td.substring(19, td.length()-5);
 				
-				//if its a bibtex entry then extract it
-				if (m.find()){
-					bibtexresult = sc.getPageContent();
+					//create the regex pattern to indicate if the content is bibtex or not 
+					Pattern p = Pattern.compile("@\\w+\\{.+,");
+					Matcher m = p.matcher(td);
+					
+					//if its a bibtex entry then extract it
+					if (m.find()){
+						bibtexresult = td;
+						break;
+					}
 				}
 
 				

@@ -98,7 +98,7 @@
 	</URLTest>
 	<URLTest id="url_17">
 		<TestDescription>URL test for the L3S scraper</TestDescription>
-		<URL>http://www.l3s.de/web/page59a.do?dau63a.oid=486</URL>
+		<URL>http://www.l3s.de/web/page25g.do?kcond12g.att1=782</URL>
 		<BibFile>L3SScraperUnitURLTest.bib</BibFile>
 		<Scraper>scraper.url.kde.l3s.L3SScraper</Scraper>
 	</URLTest>
