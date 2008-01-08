@@ -35,7 +35,8 @@
   <items>
     <rdf:Seq>
       <c:forEach var="post" items="${command.bookmark.list}">
-        <rdf:li rdf:resource="${post.resource.url}"/>
+      <!-- post.resource.url can contain xml invalid characters -->
+      <rdf:li rdf:resource="${fn:escapeXml(post.resource.url)}"/>
       </c:forEach>
     </rdf:Seq>
   </items>
@@ -43,7 +44,8 @@
 
 <c:forEach var="post" items="${command.bookmark.list}">
   <c:set var="bookmark" value="${post.resource}"/>
-  <item rdf:about="${bookmark.url}">
+  <!-- bookmark.url can contain xml invalid characters -->
+  <item rdf:about="${fn:escapeXml(bookmark.url)}">
     <title><c:out value="${bookmark.title}"/></title>
     <description><c:out value="${post.description}"/></description>
     <link><c:out value='${bookmark.url}'/></link>
@@ -53,7 +55,9 @@
       <c:forEach var="tag" items="${post.tags}"><c:out value='${tag.name}'/> </c:forEach>  
     </dc:subject>
     <content:encoded>
-	    <bmark:desc post="${post}"/>
+	    <c:set var="desc"><bmark:desc post="${post}"/></c:set>
+	    <!-- <bmark:desc> contains xml invalid characters -->
+	    ${fn:escapeXml(desc)}
     </content:encoded>
     <taxo:topics>
       <rdf:Bag>
