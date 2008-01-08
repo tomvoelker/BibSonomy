@@ -1,7 +1,6 @@
 package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -9,6 +8,7 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.testutil.ParamUtils;
@@ -48,6 +48,15 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertNotNull(user.getBasket());
 	}
 
+	/**
+	 * test if getUserDetails returns the (correct) role of the user
+	 */
+	@Test
+	public void getUserDetailsRole() {
+		final User user = this.userDb.getUserDetails("jaeschke", this.dbSession);
+		assertEquals(Role.ADMIN, user.getRole());
+	}
+	
 	/**
 	 * Retrieve the names of users present in a group with given group ID
 	 */

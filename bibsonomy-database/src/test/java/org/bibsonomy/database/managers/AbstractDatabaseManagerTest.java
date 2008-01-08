@@ -36,6 +36,8 @@ public abstract class AbstractDatabaseManagerTest {
 	protected TagDatabaseManager tagDb;
 	protected TagRelationDatabaseManager tagRelDb;
 	protected GroupDatabaseManager groupDb;
+	protected AdminDatabaseManager adminDb;
+	protected PermissionDatabaseManager permissionDb;
 
 	protected GenericParam generalParam;
 	protected BookmarkParam bookmarkParam;
@@ -61,6 +63,8 @@ public abstract class AbstractDatabaseManagerTest {
 			this.tagDb = TagDatabaseManager.getInstance();
 			this.tagRelDb = TagRelationDatabaseManager.getInstance();
 			this.groupDb = GroupDatabaseManager.getInstance();
+			this.adminDb = AdminDatabaseManager.getInstance();
+			this.permissionDb = PermissionDatabaseManager.getInstance();
 
 			this.resetParameters();
 			
@@ -89,6 +93,8 @@ public abstract class AbstractDatabaseManagerTest {
 		this.tagDb = null;
 		this.userDb = null;
 		this.groupDb = null;
+		this.adminDb = null;
+		this.permissionDb = null;
 
 		this.generalParam = null;
 		this.bookmarkParam = null;
