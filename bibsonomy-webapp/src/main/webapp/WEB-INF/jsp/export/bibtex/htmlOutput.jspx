@@ -7,7 +7,8 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:output="urn:jsptagdir:/WEB-INF/tags/export/bibtex"> 
 	
 <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
@@ -45,13 +46,9 @@
         <!-- publisher --><c:if test="${!empty bib.publisher}"><span class="entry_publisher"><mtl:bibclean value="${bib.publisher}"/>,</span></c:if>
         <!-- address   --><c:if test="${!empty bib.address}"><span class="entry_address"><mtl:bibclean value="${bib.address}"/>,</span></c:if>
         <!-- year      --><c:if test="${!empty bib.year}"><span class="entry_year"><mtl:bibclean value="${bib.year}"/>.</span></c:if>
-        <c:if test="${empty param.notags}">
-          [<a href="${projectHome}">${projectName}</a>:<c:forEach var="tag" items="${post.tags}"><a href="${projectHome}user/'${post.user.name}/${tag.name}">${tag.name}</a></c:forEach>]
-          <!-- download URL -->
-          <c:if test="${!empty bib.url}">
-            <a href="${bib.url}">URL</a>        
-          </c:if>
-        </c:if>
+       
+        <!-- tags & url -->
+   		<output:tagsUrl post="${post}"/>
       </p>
     </c:forEach>
   

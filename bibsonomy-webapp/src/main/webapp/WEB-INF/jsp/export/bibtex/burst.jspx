@@ -74,7 +74,9 @@
 		      </rdf:Bag>
 		    </taxo:topics>    
 		    <burst:publication>
-		    	<swrctags:swrcOutput post="${post}"/>
+		    	<c:set var="output"><swrctags:swrcOutput post="${post}"/></c:set>
+			    <!-- <swrctags:swrcOutput can contain xml invalid characters -->
+			    ${fn:escapeXml(output)}
 		    </burst:publication>
 		</item>
 	</c:forEach>

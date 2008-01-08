@@ -40,7 +40,9 @@
   <c:set var="bibtex" value="${post.resource}"/> 
   <rdf:Description rdf:about="${projectHome}bibtex/2${bibtex.intraHash}/${post.user.name}">
     <rdf:type rdf:resource="${swrc}${bibtex.entrytype}"/>
-    <swrctags:swrcOutput post="${post}"/>
+    <c:set var="output"><swrctags:swrcOutput post="${post}"/></c:set>
+    <!-- <swrctags:swrcOutput can contain xml invalid characters -->
+    ${fn:escapeXml(output)}
   </rdf:Description>
 </c:forEach>		 
 	  
