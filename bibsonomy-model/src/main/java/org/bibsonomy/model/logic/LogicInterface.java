@@ -1,8 +1,10 @@
 package org.bibsonomy.model.logic;
 
+import java.net.InetAddress;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
@@ -203,4 +205,38 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @param fileName
 	 */
 	public void deleteDocument(String userName, String resourceHash, String fileName);
+	
+	
+
+	/**
+	 * Adds an InetAddress (IP) with the given status to the list of addresses.
+	 * Note that an InetAddress has exactly one status - so adding the status 
+	 * really means setting it. TODO: this should be cleaned - either by renaming 
+	 * the method to "setInetAddressStatus" or by allowing several states for an 
+	 * InetAddress (use case?).
+	 * 
+	 * @param address - the address for which we want to set the status
+	 * @param status  - the status of the address (e.g. "blocked") 
+	 * @author rja
+	 */
+	public void addInetAddressStatus (InetAddress address, InetAddressStatus status);
+	
+	/** 
+	 * Returns the current status of an InetAddress.
+	 * 
+	 * @param address - the InetAddress which status to get
+	 * @return The status of the given address.
+	 * @author rja
+	 */
+	public InetAddressStatus getInetAddressStatus (InetAddress address);
+	
+	/** Removes the address from the the list of stati for InetAddresses. Since
+	 * currently one address can have only one status, it is not neccessary to
+	 * say which status for that address should be removed. TODO: see comment 
+	 * for {@link #addInetAddressStatus(InetAddress, InetAddressStatus)}.
+	 * 
+	 * @param address - the InetAddress which should be removed from the status list.
+	 * @author rja
+	 */
+	public void deleteInetAdressStatus (InetAddress address);
 }

@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bibsonomy.common.enums.Role;
+
 /**
  * This class defines a user. An unknown user has an empty (<code>null</code>) name.
  */
@@ -115,6 +117,11 @@ public class User {
 	 * Holds the friends of this user
 	 */
 	private final List<User> friends;
+	
+	/**
+	 * Which role the user has in the system (e.g. admin, ...)
+	 */
+	private Role role;
 
 	/**
 	 * constructor
@@ -454,5 +461,19 @@ public class User {
 	 */
 	public void addFriend(final User friend) {
 		this.friends.add(friend);
+	}
+
+	/**
+	 * @return The role of the user.
+	 */
+	public Role getRole() {
+		return this.role;
+	}
+
+	/**
+	 * @param role
+	 */
+	public void setRole(Role role) {
+		this.role = role;
 	}
 }
