@@ -22,6 +22,7 @@
 		<result property="profession"       column="profession"    javaType="string" />
 		<result property="registrationDate" column="reg_date"      javaType="date" />
 		<result property="spammer"          column="spammer"       javaType="integer" />
+		<result property="role"             column="role"          javaType="Role" />
 	</resultMap>
 
 	<resultMap id="userWithSettings"  class="user" extends="user"> 
@@ -45,7 +46,7 @@
 	<sql id="commonUserAttributes">
 		user_name, user_email, user_homepage, user_realname, user_password, 
 		api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, 
-		reg_date, spammer 
+		reg_date, spammer, role
 	</sql>
 	
 	<sql id="userSettingsAttributes">
