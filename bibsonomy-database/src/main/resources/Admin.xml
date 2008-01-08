@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Admin">
+
+<!-- 
+
+  CREATE TABLE inetAddressStates (address char(15), status tinyint, primary key (address));
+  
+  ALTER TABLE user ADD COLUMN role TINYINT NOT NULL DEFAULT 1;
+  
+ -->
+
+	<select id="getInetAddressStatus" resultClass="InetAddressStatus" parameterClass="InetAddress">
+		SELECT status FROM inetAddressStates 
+		WHERE address = #address#
+	</select>
+
+	<insert id="addInetAddressStatus" parameterClass="adminParam">
+		INSERT INTO inetAddressStates (address, status) VALUES (#inetAddress#, #inetAddressStatus#); 
+	</insert>
+
+	<delete id="deleteInetAddressStatus" parameterClass="InetAddress">
+		DELETE FROM inetAddressStates WHERE address = #address#
+	</delete>
+
+</sqlMap>

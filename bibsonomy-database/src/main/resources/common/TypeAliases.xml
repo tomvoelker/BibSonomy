@@ -31,5 +31,6 @@
 	<typeAlias alias="tagTagBatchParam"   type="org.bibsonomy.database.params.beans.TagTagBatchParam" />
 	<typeAlias alias="tagRelationParam"   type="org.bibsonomy.database.params.beans.TagRelationParam" />
 	<typeAlias alias="documentParam"      type="org.bibsonomy.database.params.DocumentParam" />	
+	<typeAlias alias="adminParam"         type="org.bibsonomy.database.params.AdminParam" />
 
 </sqlMap>

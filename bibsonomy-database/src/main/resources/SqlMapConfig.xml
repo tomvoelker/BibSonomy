@@ -13,8 +13,15 @@
 
 	<typeAlias alias="date" type="java.util.Date" />
 	<typeAlias alias="url" type="java.net.URL" />
-	<typeHandler javaType="url" callback="org.bibsonomy.database.typehandler.UrlTypeHandlerCallback" />
+	<typeAlias alias="InetAddress" type="java.net.InetAddress" />
+	<typeAlias alias="InetAddressStatus" type="org.bibsonomy.common.enums.InetAddressStatus" />
+	<typeAlias alias="Role" type="org.bibsonomy.common.enums.Role" />
 
+	<typeHandler javaType="url" callback="org.bibsonomy.database.typehandler.UrlTypeHandlerCallback" />
+	<typeHandler javaType="InetAddress" callback="org.bibsonomy.database.typehandler.InetAddressTypeHandlerCallback" />
+    <typeHandler javaType="InetAddressStatus" callback="org.bibsonomy.database.typehandler.InetAddressStatusTypeHandlerCallback" />
+    <typeHandler javaType="Role" callback="org.bibsonomy.database.typehandler.RoleTypeHandlerCallback" />
+    
 	<transactionManager type="JDBC">
 		<dataSource type="JNDI">
 			<property name="DataSource" value="java:comp/env/jdbc/bibsonomy"/>
@@ -41,6 +48,7 @@
 	<sqlMap resource="Group.xml"/>
 	<sqlMap resource="Document.xml"/>
 	<sqlMap resource="Basket.xml"/>
+	<sqlMap resource="Admin.xml"/>
 
 	<!-- Plugins -->
 	<sqlMap resource="plugins/Logging.xml"/>
