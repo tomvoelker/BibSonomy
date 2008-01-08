@@ -1,9 +1,11 @@
 package org.bibsonomy.rest.client;
 
+import java.net.InetAddress;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -174,4 +176,22 @@ public class RestLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 		
 	}
+
+	
+	
+	public void addInetAddressStatus(InetAddress address, InetAddressStatus status) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void deleteInetAdressStatus(InetAddress address) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public InetAddressStatus getInetAddressStatus(InetAddress address) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
