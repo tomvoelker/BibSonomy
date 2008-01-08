@@ -98,8 +98,8 @@
 				</div>
 				
 				<div id="languagebox" style="text-align: right;">
-					<a href="?lang=de"><img src="${resdir}/image/lang_de.jpg"/></a>
-					<a href="?lang=en"><img src="${resdir}/image/lang_en.jpg"/></a>					
+					<a href="?lang=de"><img src="${resdir}/image/lang_de.png"/></a>
+					<a href="?lang=en"><img src="${resdir}/image/lang_en.png"/></a>					
 				</div>
 				
 				<menu:navi loginUserName="${loginUserName}" searchString="${searchString}" basketSize="${basketSize}" />
