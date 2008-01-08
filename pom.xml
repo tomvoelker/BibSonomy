@@ -105,7 +105,7 @@
 		<pluginRepository>
 			<id>biblicious</id>
 			<name>Artifactory-Maven-Proxy auf biblicious.org</name>
-			<url>http://www.biblicious.org:8088/artifactory/repo</url>
+			<url>http://www.biblicious.org:8088/artifactory/plugins-releases</url>
 		</pluginRepository>
 	</pluginRepositories>
 	<modules>
