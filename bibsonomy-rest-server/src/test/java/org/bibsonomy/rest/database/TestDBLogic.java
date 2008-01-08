@@ -1,5 +1,6 @@
 package org.bibsonomy.rest.database;
 
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
@@ -724,4 +726,20 @@ public class TestDBLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 		
 	}
+
+	public void addInetAddressStatus(InetAddress address, InetAddressStatus status) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void deleteInetAdressStatus(InetAddress address) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public InetAddressStatus getInetAddressStatus(InetAddress address) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
