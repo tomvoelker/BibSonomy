@@ -3,6 +3,7 @@ package filters;
 import helpers.database.DBUserManager;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -219,6 +220,7 @@ public class SessionSettingsFilter implements Filter {
 		paramValue = httpServletRequest.getParameter("lang");
 		if (paramValue != null) {
 			user.setDefaultLanguage(paramValue);
+			httpServletRequest.getSession().setAttribute(InitUserFilter.REQ_ATTRIB_LANGUAGE, new Locale(paramValue));
 			update = true;
 		}
 		

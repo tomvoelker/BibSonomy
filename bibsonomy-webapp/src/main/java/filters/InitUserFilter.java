@@ -238,8 +238,9 @@ public class InitUserFilter implements Filter {
 		UserBean userBean = createUserBean(loginUser);
 		httpServletRequest.setAttribute(REQ_ATTRIB_USER, userBean);
 
-		// add default language to request		
-		httpServletRequest.getSession().setAttribute(REQ_ATTRIB_LANGUAGE, new Locale(userBean.getDefaultLanguage()));
+		// add default language to request if no language is set	
+		if (httpServletRequest.getSession().getAttribute(REQ_ATTRIB_LANGUAGE) == null)
+			httpServletRequest.getSession().setAttribute(REQ_ATTRIB_LANGUAGE, new Locale(userBean.getDefaultLanguage()));
 		
 		log.info("finished: " + loginUser);
 
