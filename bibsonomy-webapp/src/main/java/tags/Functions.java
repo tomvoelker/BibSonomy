@@ -128,7 +128,7 @@ public class Functions  {
 			throw new RuntimeException(ex.getMessage());
 		}		
 	}
-
+	// TODO: please comment!
 	public static String getLowerPath (String uriString) {
 		URI uri; 
 		uriString = uriString.substring(0, uriString.lastIndexOf("/"));
