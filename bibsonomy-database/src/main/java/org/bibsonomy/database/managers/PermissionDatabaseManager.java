@@ -1,5 +1,6 @@
 package org.bibsonomy.database.managers;
 
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.model.Document;
@@ -73,7 +74,9 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param loginUser
 	 */
 	public void ensureAdminAccess(final User loginUser) {
-		// TODO: implement.
+		if (loginUser.getName() == null || !loginUser.getRole().equals(Role.ADMIN)) { 
+			throw new ValidationException("You are not authorized to perform the requested operation.");
+		}
 	}
 
 }
