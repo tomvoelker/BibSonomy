@@ -17,6 +17,7 @@ import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -340,8 +341,16 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		return chain.getFirstElement().perform(param, session);
 	}
 
-	// TODO implement me...
 	public Post<Bookmark> getPostDetails(String authUser, String resourceHash, String userName, final DBSession session) {
+		final List<Post<Bookmark>> list = getBookmarkByHashForUser(authUser, resourceHash, userName, session, HashID.INTRA_HASH);
+		if (list.size() >= 1) {
+			if (list.size() > 1) {
+				log.warn("multiple Bookmark-posts from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' found ->returning first");
+			}
+			return list.get(0);
+		}
+
+		log.debug("Bookmark-post from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' not found");
 		return null;
 	}
 
