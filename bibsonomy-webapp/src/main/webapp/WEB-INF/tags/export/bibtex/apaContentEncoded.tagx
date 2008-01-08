@@ -1,0 +1,45 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"	
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:swrc="http://swrc.ontoware.org/ontology#"
+	xmlns:output="urn:jsptagdir:/WEB-INF/tags/export/bibtex">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+	
+	<!-- autors -->
+    <bib:author post="${post}"/>
+
+	<!-- year -->
+	<bib:year post="${post}" braces="true"/>
+	
+	<!-- title -->    
+   	<a href="${projectHome}bibtex/${bibtex.intraHash}/${post.user.name}"><i><mtl:bibclean value="${bibtex.title}"/>.</i></a>
+
+	<!-- inbook / incollection data -->
+  	<c:choose>
+    	<c:when test="${not empty bibtex.journal}">
+      		<bib:journal post="${post}"/>      		
+      		<bib:volume post="${post}"/>
+      		<bib:series post="${post}"/>
+    	</c:when>
+    	<c:otherwise>
+      		<bib:booktitle post="${post}"/>
+    	</c:otherwise>
+  	</c:choose> 
+  	
+  	<!-- pages -->
+  	<bib:page post="${post}"/>
+	  
+    <!-- address -->
+   <bib:address post="${post}"/>
+       
+    <!-- publisher -->
+    <bib:publisher post="${post}"/>
+    
+    <!-- tags & url -->
+    <output:tagsUrl post="${post}"/>
+     
+</jsp:root>
