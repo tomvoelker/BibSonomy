@@ -685,6 +685,7 @@ public class DBLogic implements LogicInterface {
 	
 	public void addInetAddressStatus(InetAddress address, InetAddressStatus status) {
 		ensureLoggedIn();
+		// only admins are allowed to change the status of an address
 		permissionDBManager.ensureAdminAccess(loginUser);
 		final DBSession session = openSession();
 		adminDBManager.addInetAddressStatus(address, status, session);
@@ -693,6 +694,7 @@ public class DBLogic implements LogicInterface {
 
 	public void deleteInetAdressStatus(InetAddress address) {
 		ensureLoggedIn();
+		// only admins are allowed to change the status of an address
 		permissionDBManager.ensureAdminAccess(loginUser);
 		final DBSession session = openSession();
 		adminDBManager.deleteInetAdressStatus(address, session);
@@ -700,8 +702,13 @@ public class DBLogic implements LogicInterface {
 	}
 
 	public InetAddressStatus getInetAddressStatus(InetAddress address) {
-		ensureLoggedIn();
-		permissionDBManager.ensureAdminAccess(loginUser);
+		// everybody is allowed to ask for the status of an address
+		/*
+		 * TODO: is this really OK? At least it is neccessary, because otherwise the 
+		 * RegistrationHandler can not check the status of an address.
+		 */
+//		ensureLoggedIn();
+//		permissionDBManager.ensureAdminAccess(loginUser);
 		final DBSession session = openSession();
 		final InetAddressStatus inetAddressStatus = adminDBManager.getInetAddressStatus(address, session);
 		session.close();
