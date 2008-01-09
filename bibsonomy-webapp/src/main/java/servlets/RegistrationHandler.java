@@ -10,6 +10,8 @@ import helpers.Spammer;
 import helpers.mail;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -36,6 +38,10 @@ import net.tanesha.recaptcha.ReCaptchaFactory;
 import net.tanesha.recaptcha.ReCaptchaResponse;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.common.enums.InetAddressStatus;
+import org.bibsonomy.database.DBLogicUserInterfaceFactory;
+import org.bibsonomy.database.util.IbatisDBSessionFactory;
+import org.bibsonomy.model.logic.LogicInterface;
 
 import resources.Resource;
 import servlets.listeners.InitialConfigListener;
@@ -54,7 +60,7 @@ public class RegistrationHandler extends HttpServlet {
 
 	private static final String reCaptchaPublicKey = InitialConfigListener.getInitParam("ReCaptchaPublicKey");
 	private static final String reCaptchaPrivateKey = InitialConfigListener.getInitParam("ReCaptchaPrivateKey");
-	
+
 	/*
 	 * how long is the temporary password of the password reminder function valid?
 	 */
@@ -77,7 +83,7 @@ public class RegistrationHandler extends HttpServlet {
 		ResultSet         rst  = null;
 		PreparedStatement stmt = null;
 		HttpSession session = request.getSession(true);
-		
+
 		try {
 			synchronized(dataSource) {
 				if(dataSource != null){
@@ -137,7 +143,7 @@ public class RegistrationHandler extends HttpServlet {
 				/*
 				 * user wants to get a password reminder
 				 */
-				
+
 				/* 
 				 * Check captcha first - you can access the current captcha value through 
 				 * "session.getAttribute(nl.captcha.servlet.Constants.SIMPLE_CAPCHA_SESSION_KEY)"
@@ -148,9 +154,9 @@ public class RegistrationHandler extends HttpServlet {
 				 * TODO: possibly we should remove the captcha from the session after we have used it,
 				 * such that re-posting the page does not work. 
 				 */
-			     // check captcha (see http://tanesha.net/projects/recaptcha4j/)
-		        ReCaptcha captcha = ReCaptchaFactory.newReCaptcha(reCaptchaPublicKey, reCaptchaPrivateKey, false);
-		        ReCaptchaResponse captchaAnswer = captcha.checkAnswer(request.getRemoteAddr(), request.getParameter("recaptcha_challenge_field"), request.getParameter("recaptcha_response_field"));
+				// check captcha (see http://tanesha.net/projects/recaptcha4j/)
+				ReCaptcha captcha = ReCaptchaFactory.newReCaptcha(reCaptchaPublicKey, reCaptchaPrivateKey, false);
+				ReCaptchaResponse captchaAnswer = captcha.checkAnswer(request.getRemoteAddr(), request.getParameter("recaptcha_challenge_field"), request.getParameter("recaptcha_response_field"));
 
 				if (captchaAnswer == null) { 
 					/* We could not get the original captcha. 
@@ -166,9 +172,9 @@ public class RegistrationHandler extends HttpServlet {
 					getServletConfig().getServletContext().getRequestDispatcher("/reminder").forward(request, response);
 					return;
 				}
-				
+
 				String userName = bean.getUserName();
-				
+
 				/*
 				 * check if username and email match
 				 */
@@ -233,11 +239,30 @@ public class RegistrationHandler extends HttpServlet {
 					getServletConfig().getServletContext().getRequestDispatcher("/reminder").forward(request, response);	
 				}
 			} else {
-				/* a new user wants to register */
+				/* 
+				 * a new user wants to register  
+				 */
 
-		        // check captcha (see http://tanesha.net/projects/recaptcha4j/)
-		        ReCaptcha captcha = ReCaptchaFactory.newReCaptcha(reCaptchaPublicKey, reCaptchaPrivateKey, false);
-		        ReCaptchaResponse captchaAnswer = captcha.checkAnswer(request.getRemoteAddr(), request.getParameter("recaptcha_challenge_field"), request.getParameter("recaptcha_response_field"));
+				// TODO: problem: this is the proxy servers address!? :-(
+				String inetAddress = request.getHeader("x-forwarded-for");
+
+				/*
+				 * check, if IP is blocked from registration or
+				 *        if user has spammer cookie set
+				 * if one of the conditions is true, the user is silently blocked and has to re-enter
+				 * the captcha again and again.
+				 */
+				if (InetAddressStatus.WRITEBLOCKED.equals(getInetAddressStatus(inetAddress)) || Spammer.hasSpammerCookie(request)) {
+					log.warn("Host " + request.getRemoteHost() + " (" + inetAddress + ") with SPAMMER cookie/blocked IP tried to register as user " + bean.getUserName());
+					bean.setErrors("captcha","Wrong code: Please try again"); // TODO: hhhnmmm, this message is different from the wrong captcha message!
+					getServletConfig().getServletContext().getRequestDispatcher("/register").forward(request, response);
+					return;
+				}
+
+
+				// check captcha (see http://tanesha.net/projects/recaptcha4j/)
+				ReCaptcha captcha = ReCaptchaFactory.newReCaptcha(reCaptchaPublicKey, reCaptchaPrivateKey, false);
+				ReCaptchaResponse captchaAnswer = captcha.checkAnswer(request.getRemoteAddr(), request.getParameter("recaptcha_challenge_field"), request.getParameter("recaptcha_response_field"));
 
 				if (captchaAnswer == null) { 
 					/* We could not get the original captcha. 
@@ -253,17 +278,6 @@ public class RegistrationHandler extends HttpServlet {
 					getServletConfig().getServletContext().getRequestDispatcher("/register").forward(request, response);
 					return;
 				}
-				String ip_address = request.getHeader("x-forwarded-for");
-				/*
-				 * check, if user has spammer cookie set, if yes: don't let him proceed
-				 */
-				if (Spammer.hasSpammerCookie(request)) {
-					log.warn("Host " + request.getRemoteHost() + " (" + ip_address + ") with SPAMMER cookie set tried to register as user " + bean.getUserName());
-					bean.setErrors("captcha","Wrong code: Please try again");
-					getServletConfig().getServletContext().getRequestDispatcher("/register").forward(request, response);
-					return;
-				}
-
 
 
 				boolean userExists = false;
@@ -290,7 +304,7 @@ public class RegistrationHandler extends HttpServlet {
 					stmt.setString(3, Resource.hash(bean.getPassword1()));
 					stmt.setString(4, bean.getRealName());
 					stmt.setString(5, bean.getHomepage());
-					stmt.setString(6, ip_address);
+					stmt.setString(6, inetAddress);
 					if (stmt.executeUpdate() != 1) {
 						log.fatal("Error registering user: row count != 1");
 					}
@@ -312,9 +326,9 @@ public class RegistrationHandler extends HttpServlet {
 						SettingsHandler.addUserToGroup(username, event, stmt, rst, conn);
 						log.fatal("user " + username + " registered for " + event + " group!");
 					}
-					 
+
 					/* ******************************************************************/
-					
+
 					// send a mail to the user
 					String message = "\nThank you for using " + projectName + "\n" +
 					"\nyour username is " + username + 
@@ -330,7 +344,7 @@ public class RegistrationHandler extends HttpServlet {
 					String recipients2[] = new String[] {"bibsonomy_reg@cs.uni-kassel.de"};
 					try {
 						mail.sendMail(recipients,  "Your " + projectName + " Registration", message, "register@bibsonomy.org");
-						mail.sendMail(recipients2, "Registered user " + username, bean.getRealName() + " : " + bean.getEmail() + ", IP " + ip_address, "register@bibsonomy.org");
+						mail.sendMail(recipients2, "Registered user " + username, bean.getRealName() + " : " + bean.getEmail() + ", IP " + inetAddress, "register@bibsonomy.org");
 					} catch (MessagingException e) {
 						log.fatal("Could not send registration mail: " + e.getMessage());
 					}
@@ -351,6 +365,35 @@ public class RegistrationHandler extends HttpServlet {
 			if (stmt != null) {try {stmt.close();} catch (SQLException e) {}stmt = null;}
 			if (conn != null) {try {conn.close();} catch (SQLException e) {}conn = null;}
 		}
+	}
+
+
+	/** Queries the database for the status of the given inetAddress.
+	 * 
+	 * @param inetAddress
+	 * @return The status of the given inetAddress.
+	 * @throws UnknownHostException
+	 */
+	private InetAddressStatus getInetAddressStatus(String inetAddress) throws UnknownHostException {
+		if (inetAddress != null) {
+			// remove proxy servers from address
+			final int proxyStartPos = inetAddress.indexOf(",");
+			if (log.isDebugEnabled()) log.debug("inetAddress = " + inetAddress + ", proxyStartPos = " + proxyStartPos);
+			if (proxyStartPos > 0) { 
+				inetAddress = inetAddress.substring(0, proxyStartPos);
+			}
+			if (log.isDebugEnabled()) log.debug("inetAddress = " + inetAddress + " (cutted)");
+
+			// get an instance of the LogicInterface
+			final DBLogicUserInterfaceFactory dbLogicFactory = new DBLogicUserInterfaceFactory();
+			dbLogicFactory.setDbSessionFactory(new IbatisDBSessionFactory());
+			final LogicInterface logic = dbLogicFactory.getLogicAccess(null, null); // we don't know any user or password
+			// query the DB for the status of address 
+			return logic.getInetAddressStatus(InetAddress.getByName(inetAddress));
+
+		}
+		// fallback: unknown
+		return InetAddressStatus.UNKNOWN;
 	}
 
 	/*
