@@ -10,20 +10,41 @@
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
 	
 	<c:if test="${not empty loginUserName}">
-	
-		<c:choose>
-			<c:when test="${resourceType eq 'bibtex'}">
-				<c:url var="editUrl" value="/beditbib/${fn:escapeXml(requPath)}" context="${projectContext}"/>
-			</c:when>
-			<c:otherwise>
-				<c:url var="editUrl" value="/bediturl/${fn:escapeXml(requPath)}" context="${projectContext}"/>
-			</c:otherwise>
+
+      <span class="actions">
+        <c:choose>
+
+
+          <!-- ****************************** BibTeX *************************** -->
+          <c:when test="${resourceType eq 'bibtex'}">
+            <c:url var="editUrl"   value="/beditbib/${fn:escapeXml(requPath)}"          context="${projectContext}"/>
+            <fmt:message var="editPageTags"       key="page.edit.tags"/>
+            <a href="${editUrl}" title="${editPageTags}"><fmt:message key="edit"/></a>
+
+            ${mtl:ch('post.actions.delim')}
+
+            <c:url var="pickUrl"   value="/${fn:escapeXml(requPath)}&amp;action=pick"   context="${projectContext}"/>
+            <fmt:message var="pickPublications"   key="page.pick.publications"/>
+            <a href="${pickUrl}" title="${pickPublications}"><fmt:message key="pick"/></a>
+
+            ${mtl:ch('post.actions.delim')}
+
+            <c:url var="unPickUrl" value="/${fn:escapeXml(requPath)}&amp;action=unpick" context="${projectContext}"/>
+            <fmt:message var="unPickPublications" key="page.unpick.publications"/>
+            <a href="${unPickUrl}" title="${unPickPublications}"><fmt:message key="unpick"/></a>
+            
+		  </c:when>
+
+
+	      <!-- ****************************** Bookmarks *************************** -->
+          <c:otherwise>
+			<c:url var="editUrl" value="/bediturl/${fn:escapeXml(requPath)}" context="${projectContext}"/>
+            <fmt:message var="editPageTags" key="page.edit.tags"/>
+            <a href="${editUrl}" title="${editPageTags}"><fmt:message key="edit"/></a>
+		  </c:otherwise>
+
 		</c:choose>
-		
-		<span class="actions">
-			<fmt:message var="editPageTags" key="page.edit.tags"/>
-			<a href="${editUrl}" title="${editPageTags}"><fmt:message key="edit"/></a>
-		</span>
+      </span>
 		
 	</c:if>
 
