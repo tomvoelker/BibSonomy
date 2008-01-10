@@ -31,7 +31,7 @@
 	<!-- the current date -->
 	<jsp:useBean id="now" class="java.util.Date"/>
 
-	<channel rdf:about="${projectHome}burst/${requPath}">
+	<channel rdf:about="${projectHome}burst/${fn:escapeXml(requPath)}">
 	  <title>${projectName} publications for /<c:out value='${requPath}'/></title>
 	  <link>${projectHome}burst/<c:out value='${requPath}'/></link>
 	  <description>${projectName} BuRST Feed for /<c:out value='${requPath}'/></description>
@@ -74,9 +74,7 @@
 		      </rdf:Bag>
 		    </taxo:topics>    
 		    <burst:publication>
-		    	<c:set var="output"><swrctags:swrcOutput post="${post}"/></c:set>
-			    <!-- <swrctags:swrcOutput can contain xml invalid characters -->
-			    ${fn:escapeXml(output)}
+		    	<swrctags:swrcOutput post="${post}"/>
 		    </burst:publication>
 		</item>
 	</c:forEach>

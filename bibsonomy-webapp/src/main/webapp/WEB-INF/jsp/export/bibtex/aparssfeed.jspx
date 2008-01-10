@@ -29,7 +29,7 @@
 		 xmlns:burst="http://xmlns.com/burst/0.1/"> 
 		 
 
-<channel rdf:about="${projectHome}${requPath}">
+<channel rdf:about="${projectHome}${fn:escapeXml(requPath)}">
   <title>${projectName} publications for /<c:out value='${requPath}'/></title>
   <link>${projectName}<c:out value='${requPath}'/></link>
   <description>${projectName} RSS Feed for /<c:out value='${requPath}'/></description>

@@ -13,7 +13,7 @@
 <jsp:directive.page contentType="application/xml; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" isELIgnored="false"/>	
 
 <rdf:RDF 
-		 xml:base="${projectHome}${requPath}"
+		 xml:base="${projectHome}${fn:escapeXml(requPath)}"
 		 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 		 xmlns="http://purl.org/rss/1.0/"
 		 xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
@@ -25,7 +25,6 @@
 		 xmlns:syn="http://purl.org/rss/1.0/modules/syndication/"
 		 xmlns:content="http://purl.org/rss/1.0/modules/content/"
 		 xmlns:admin="http://webns.net/mvcb/"
-		 xmlns:burst="http://xmlns.com/burst/0.1/"
 		 xmlns:owl="http://www.w3.org/2002/07/owl#"> 
 	 
 <owl:Ontology rdf:about="">
@@ -40,9 +39,7 @@
   <c:set var="bibtex" value="${post.resource}"/> 
   <rdf:Description rdf:about="${projectHome}bibtex/2${bibtex.intraHash}/${post.user.name}">
     <rdf:type rdf:resource="${swrc}${bibtex.entrytype}"/>
-    <c:set var="output"><swrctags:swrcOutput post="${post}"/></c:set>
-    <!-- <swrctags:swrcOutput can contain xml invalid characters -->
-    ${fn:escapeXml(output)}
+      <swrctags:swrcOutput post="${post}"/>
   </rdf:Description>
 </c:forEach>		 
 	  
