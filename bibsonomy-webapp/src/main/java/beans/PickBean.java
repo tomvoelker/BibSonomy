@@ -18,11 +18,11 @@ public class PickBean implements Serializable {
 	
 	public int getPickCount () {
 		/* pick */
-		if (pick != null && user != null && currUser != null) {
+		if (pick != null && currUser != null) {
 			DBPickManager.pickEntryForUser(pick, user, currUser);
 		}
 		/* unpick */
-		if (unpick != null && user != null && currUser != null) {
+		if (unpick != null && currUser != null) {
 			DBPickManager.unPickEntryForUser(unpick, user, currUser);
 		}
 		

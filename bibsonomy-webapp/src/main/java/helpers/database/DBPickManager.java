@@ -3,10 +3,24 @@ package helpers.database;
 import helpers.constants;
 
 import java.sql.*;
+import java.util.HashMap;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import resources.Bibtex;
 
 
+/** Allows to pick or unpick publication posts for the basket.
+ * @author rja
+ *
+ */
 public class DBPickManager extends DBManager {
+	
+	/**
+	 * Logger 
+	 */
+	private static final Log log = LogFactory.getLog(DBPickManager.class);
 	
 	/*
 	 * SQL Statements
@@ -34,126 +48,161 @@ public class DBPickManager extends DBManager {
 	
 	/** 
 	 * Puts the publication with the given hash (from owner) into user's collector table.
+	 * 
+	 * TODO: this method has been hacked to allow several hashes to be picked at once.
+	 * This is possible by giving a loooong string full of hashes and user names as 
+	 * hash and giving a null owner.
+	 * 
 	 *  
-	 * @param hash hash of the publication
-	 * @param owner owner of this particular publication
+	 * @param oneOrMoreHashes hash of the publication
+	 * @param ownerInCaseOfOneHash owner of this particular publication
 	 * @param user user for which we want to pick the entry
 	 */
-	public static void pickEntryForUser (String hash, String owner, String user) {
+	public static void pickEntryForUser (final String oneOrMoreHashes, final String ownerInCaseOfOneHash, final String user) {
 		DBContext c = new DBContext();
 		try {
 			if (c.init()) { // initialize database
 				
 				try {
 					c.conn.setAutoCommit(false);
+
+					/*
+					 * hack to allow several hashes to be picked at once
+					 */
+					HashMap<String, String> map = extractHashes(oneOrMoreHashes, ownerInCaseOfOneHash);
 					
-					// test, if hash exists and get content id of hash
-					c.stmt = c.conn.prepareStatement(SQL_SELECT_ID);
-					c.stmt.setString(1, hash);
-					c.stmt.setString(2, owner);
-					c.rst = c.stmt.executeQuery();
-					if(c.rst.next()) {
-						// hash found in database, remember content_id and group 
-						int content_id = c.rst.getInt("content_id");
-						int groupid    = c.rst.getInt("group"); // group id of content        	      	  	    
-						
-						// test for duplicate in collector table 
-						c.stmt = c.conn.prepareStatement(SQL_TEST_DUPLICATE);
-						c.stmt.setString(1, user);
-						c.stmt.setInt(2, content_id);	        	      	  
-						c.rst = c.stmt.executeQuery();
-						
-						if(!c.rst.next()) {
-							// user did not already pick this item  
-							
-							boolean pickOk = false;
-							// check, if user may pick this item (group access rights)
-							if (groupid == constants.SQL_CONST_GROUP_PUBLIC || user.equals(owner)) { 
-								// content is public or currUser is owner		        	      	  	 	        	      	    
-								pickOk = true;
-							} else { 
-								// check table groups for user+groupid
-								if (groupid == constants.SQL_CONST_GROUP_FRIENDS) {
-									// check if currUser is friend of owner
-									c.stmt = c.conn.prepareStatement(SQL_TEST_FRIEND);
-									c.stmt.setString(1, owner);
-									c.stmt.setString(2, user);
-									c.rst = c.stmt.executeQuery();
-									
-									pickOk = c.rst.next(); // currUser is friend of owner -> insert
-								} else {
-									// test whether user is in group belonging to item
-									c.stmt = c.conn.prepareStatement(SQL_TEST_GROUP);
-									c.stmt.setString(1, user);
-									c.stmt.setInt(2, groupid);
-									c.rst = c.stmt.executeQuery();
-									
-									pickOk = c.rst.next(); // user is part of this group -> insert
-								}
-							} // checking of group access rights
-							
-							if (pickOk) {
-								// insert content_id into collector table		        	      	   	
-								c.stmt = c.conn.prepareStatement(SQL_PICK_ID);
-								c.stmt.setString(1, user);
-								c.stmt.setInt(2, content_id);
-								c.stmt.executeUpdate();
-							}
-							
-							
-						} // checking, if already picked
-					} // checking, if hash exists
+					pickHashes(user, c, map);
 					
 					c.conn.commit();	
 				} catch(SQLException e) {
-					System.out.println("DBPM:" + e);
-					e.printStackTrace();
+					log.fatal("could not pick post " + oneOrMoreHashes + "(" + ownerInCaseOfOneHash + ") for user " + user);
 					c.conn.rollback();     //rollback all queries
 				}
 			} // if (c.init())
 		} catch (SQLException e) {
-			System.out.println("DBPM: " + e);
-			e.printStackTrace();
+			log.fatal("could not pick post " + oneOrMoreHashes + "(" + ownerInCaseOfOneHash + ") for user " + user);
 		} finally {
 			c.close(); // close database connection
 		}
 		
 	}
+
+	private static HashMap<String, String> extractHashes(final String oneOrMoreHashes, final String ownerInCaseOfOneHash) {
+		HashMap<String,String> map = new HashMap<String,String>();
+		if (oneOrMoreHashes.length() > 33 && ownerInCaseOfOneHash == null) {
+			String[] hashesAndUsers = oneOrMoreHashes.split(" ");
+			for (String hashAndUser: hashesAndUsers) {
+				String[] singledOut = hashAndUser.split("/");
+				map.put(singledOut[0].substring(1, singledOut[0].length()), singledOut[1]);
+			}
+		} else {
+			map.put(oneOrMoreHashes, ownerInCaseOfOneHash);
+		}
+		return map;
+	}
+
+	private static void pickHashes(final String currUser, DBContext context, HashMap<String, String> hashes) throws SQLException {
+		for (final String hash:hashes.keySet()) {
+			final String owner = hashes.get(hash); 
+
+			// test, if hash exists and get content id of hash
+			context.stmt = context.conn.prepareStatement(SQL_SELECT_ID);
+			context.stmt.setString(1, hash);
+			context.stmt.setString(2, owner);
+			context.rst = context.stmt.executeQuery();
+			if(context.rst.next()) {
+				// hash found in database, remember content_id and group 
+				int content_id = context.rst.getInt("content_id");
+				int groupid    = context.rst.getInt("group"); // group id of content        	      	  	    
+
+				// test for duplicate in collector table 
+				context.stmt = context.conn.prepareStatement(SQL_TEST_DUPLICATE);
+				context.stmt.setString(1, currUser);
+				context.stmt.setInt(2, content_id);	        	      	  
+				context.rst = context.stmt.executeQuery();
+
+				if(!context.rst.next()) {
+					// user did not already pick this item  
+
+					boolean pickOk = false;
+					// check, if user may pick this item (group access rights)
+					if (groupid == constants.SQL_CONST_GROUP_PUBLIC || currUser.equals(owner)) { 
+						// content is public or currUser is owner		        	      	  	 	        	      	    
+						pickOk = true;
+					} else { 
+						// check table groups for user+groupid
+						if (groupid == constants.SQL_CONST_GROUP_FRIENDS) {
+							// check if currUser is friend of owner
+							context.stmt = context.conn.prepareStatement(SQL_TEST_FRIEND);
+							context.stmt.setString(1, owner);
+							context.stmt.setString(2, currUser);
+							context.rst = context.stmt.executeQuery();
+
+							pickOk = context.rst.next(); // currUser is friend of owner -> insert
+						} else {
+							// test whether user is in group belonging to item
+							context.stmt = context.conn.prepareStatement(SQL_TEST_GROUP);
+							context.stmt.setString(1, currUser);
+							context.stmt.setInt(2, groupid);
+							context.rst = context.stmt.executeQuery();
+
+							pickOk = context.rst.next(); // user is part of this group -> insert
+						}
+					} // checking of group access rights
+
+					if (pickOk) {
+						// insert content_id into collector table		        	      	   	
+						context.stmt = context.conn.prepareStatement(SQL_PICK_ID);
+						context.stmt.setString(1, currUser);
+						context.stmt.setInt(2, content_id);
+						context.stmt.executeUpdate();
+					}
+
+
+				} // checking, if already picked
+			} // checking, if hash exists
+		}
+	}
 	
-	/*
+	/**
 	 * removes the entry with hash from owner from user's collector table
+	 * 
+ 	 * TODO: this method has been hacked to allow several hashes to be unpicked at once.
+	 * This is possible by giving a loooong string full of hashes and user names as 
+	 * hash and giving a null owner.
 	 */
-	public static boolean unPickEntryForUser (String hash, String owner, String user) {
+	public static boolean unPickEntryForUser (String oneOrMoreHashes, String ownerInCaseOfOneHash, String user) {
 		DBContext c = new DBContext();
 		try {
 			if (c.init()) { // initialize database
 				try {
 					c.conn.setAutoCommit(false);
 
-					// log 
-					c.stmt = c.conn.prepareStatement(SQL_LOG_UNPICK_HASH);
-					c.stmt.setString(1, hash);
-					c.stmt.setString(2, owner);
-					c.stmt.setString(3, user);
-					c.stmt.executeUpdate();
-					
-					// delete one entry from list
-					c.stmt = c.conn.prepareStatement(SQL_UNPICK_HASH);
-					c.stmt.setString(1, hash);
-					c.stmt.setString(2, owner);
-					c.stmt.setString(3, user);
-					c.stmt.executeUpdate();
-					
+					HashMap<String, String> map = extractHashes(oneOrMoreHashes, ownerInCaseOfOneHash);
+					for (String hash:map.keySet()) {
+						String owner = map.get(hash);
+						// log 
+						c.stmt = c.conn.prepareStatement(SQL_LOG_UNPICK_HASH);
+						c.stmt.setString(1, hash);
+						c.stmt.setString(2, owner);
+						c.stmt.setString(3, user);
+						c.stmt.executeUpdate();
+
+						// delete one entry from list
+						c.stmt = c.conn.prepareStatement(SQL_UNPICK_HASH);
+						c.stmt.setString(1, hash);
+						c.stmt.setString(2, owner);
+						c.stmt.setString(3, user);
+						c.stmt.executeUpdate();
+					}
 					c.conn.commit();
 				} catch (SQLException e) {
-					System.out.println("DBPM:" + e);
-					e.printStackTrace();
+					log.fatal("could not unpick post " + oneOrMoreHashes + "(" + ownerInCaseOfOneHash + ") for user " + user);
 					c.conn.rollback();
 				}
 			}
 		} catch (SQLException e) {
-			System.out.println("DBPM: " + e);
-			e.printStackTrace();
+			log.fatal("could not unpick post " + oneOrMoreHashes + "(" + ownerInCaseOfOneHash + ") for user " + user);
 		} finally {
 			c.close(); // close database connection
 		}
@@ -193,8 +242,7 @@ public class DBPickManager extends DBManager {
 				}
 			}
 		} catch (SQLException e) {
-			System.out.println("DBPM: " + e);
-			e.printStackTrace();
+			log.fatal("could not unpick all posts from user " + user);
 		} finally {
 			c.close(); // close database connection
 		}
@@ -218,8 +266,7 @@ public class DBPickManager extends DBManager {
 				}
 			}
 		} catch (SQLException e) {
-			System.out.println("DBPM: " + e);
-			e.printStackTrace();
+			log.fatal("could not get pick count for user " + user);
 		} finally {
 			c.close(); // close database connection
 		}
