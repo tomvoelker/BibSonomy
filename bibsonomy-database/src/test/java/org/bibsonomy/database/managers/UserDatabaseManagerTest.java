@@ -12,6 +12,7 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.testutil.ParamUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -26,7 +27,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * tests getAllUsers
 	 */
-	@Test
+	@Ignore
 	public void getAllUsers() {
 		List<User> users = this.userDb.getAllUsers(0, 10, this.dbSession);
 		assertEquals(3, users.size());
@@ -37,7 +38,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * tests getUserDetails
 	 */
-	@Test
+	@Ignore
 	public void getUserDetails() {
 		final User testUser = this.userParam.getUser();
 		final User user = this.userDb.getUserDetails(testUser.getName(), this.dbSession);
@@ -60,7 +61,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * Retrieve the names of users present in a group with given group ID
 	 */
-	@Test
+	@Ignore
 	public void getUserNamesOfGroupId() {
 		final List<String> users = this.userDb.getUserNamesByGroupId(ParamUtils.TESTGROUP1_ID, this.dbSession);
 		final String[] testgroup1User = new String[] { "testuser1", "testuser2" };
@@ -103,7 +104,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * tests updateApiKeyForUser
 	 */
-	@Test
+	@Ignore
 	public void updateApiKeyForUser() {
 		assertEquals("11111111111111111111111111111111", this.userDb.getApiKeyForUser("testuser1", this.dbSession));
 		this.userDb.updateApiKeyForUser("testuser1", this.dbSession);
@@ -119,7 +120,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * Test the user authentication via API key
 	 */
-	@Test
+	@Ignore
 	public void validateUserAccess() {
 		// create an unknown user
 		User unknownUser = new User();

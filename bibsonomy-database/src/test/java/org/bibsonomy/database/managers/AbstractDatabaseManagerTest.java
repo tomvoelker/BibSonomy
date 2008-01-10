@@ -5,6 +5,7 @@ import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.GroupParam;
+import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.util.DBSession;
@@ -38,6 +39,7 @@ public abstract class AbstractDatabaseManagerTest {
 	protected GroupDatabaseManager groupDb;
 	protected AdminDatabaseManager adminDb;
 	protected PermissionDatabaseManager permissionDb;
+	protected StatisticsDatabaseManager statisticsDb;
 
 	protected GenericParam generalParam;
 	protected BookmarkParam bookmarkParam;
@@ -45,6 +47,7 @@ public abstract class AbstractDatabaseManagerTest {
 	protected UserParam userParam;
 	protected TagParam tagParam;
 	protected GroupParam groupParam;
+	protected StatisticsParam statisticsParam;
 
 	protected DBSession dbSession;
 	private SandboxDBSessionFactory dbSessionFactory;
@@ -65,6 +68,8 @@ public abstract class AbstractDatabaseManagerTest {
 			this.groupDb = GroupDatabaseManager.getInstance();
 			this.adminDb = AdminDatabaseManager.getInstance();
 			this.permissionDb = PermissionDatabaseManager.getInstance();
+			this.statisticsDb = StatisticsDatabaseManager.getInstance();
+
 
 			this.resetParameters();
 			
@@ -102,6 +107,7 @@ public abstract class AbstractDatabaseManagerTest {
 		this.userParam = null;
 		this.tagParam = null;
 		this.groupParam = null;
+		this.statisticsParam = null;
 		
 		JNDITestDatabaseBinder.unbind();		
 	}
@@ -125,6 +131,7 @@ public abstract class AbstractDatabaseManagerTest {
 		this.userParam = ParamUtils.getDefaultUserParam();
 		this.tagParam = ParamUtils.getDefaultTagParam();
 		this.groupParam = ParamUtils.getDefaultGroupParam();
+		this.statisticsParam = new StatisticsParam();
 	}
 
 	protected DBSessionFactory getDbSessionFactory() {

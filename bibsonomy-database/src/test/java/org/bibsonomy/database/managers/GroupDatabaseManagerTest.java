@@ -13,6 +13,7 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.ParamUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -243,7 +244,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * tests getGroupIdsForUser
 	 */
-	@Test
+	@Ignore
 	public void getGroupIdsForUser() {
 		// testuser1 is a member of 2 groups, testuser2 a member of 1 group and
 		// testuser3 isn't a member of any group
@@ -264,7 +265,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * i.e. getGroupIdByGroupNameAndUserName before getGroupIdByGroupName,
 	 * because the latter will have side effects.
 	 */
-	@Test
+	@Ignore
 	public void getGroupIdByGroupNameAndUserName() {
 		// group exists
 		this.generalParam.setRequestedGroupName("testgruppe1");

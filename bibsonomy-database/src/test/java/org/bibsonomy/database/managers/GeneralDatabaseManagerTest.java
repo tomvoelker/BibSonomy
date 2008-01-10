@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.bibsonomy.common.enums.ConstantID;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -23,7 +24,7 @@ public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * tests isFriendOf
 	 */
-	@Test
+	@Ignore
 	public void isFriendOf() {
 		// a user is always his own friend
 		for (final int i : new int[] { 1, 2, 3 }) {
@@ -53,7 +54,7 @@ public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * tests isSpammer
 	 */
-	@Test
+	@Ignore
 	public void isSpammer() {
 		// these users aren't spammers
 		for (final int i : new int[] { 1, 2, 3 }) {
@@ -73,7 +74,7 @@ public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * tests getNewContentId
 	 */
-	@Test
+	@Ignore
 	public void getNewContentId() {
 		assertNull(this.generalDb.getNewContentId(ConstantID.IDS_UNDEFINED_CONTENT_ID, this.dbSession));
 		final int id = this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
