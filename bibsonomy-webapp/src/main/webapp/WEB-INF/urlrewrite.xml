@@ -144,18 +144,35 @@
     	<set name="type">publrssN</set>
     </rule>
 
+
+
     <!-- page where user can edit all tags in a batch  -->
+    
+    <!-- two intermediate rules to redirect EDIT on new user pages to old EDIT page -->
+    <rule>
+   		<from>^/+bediturl/+user/+([^/?]+?)(\?(.*))?$</from>
+		<to last="true">/ResourceHandler?page=user&amp;requUser=$1&amp;$3</to>
+    	<set name="type">batchediturl</set>
+    </rule>
+    <rule>
+   		<from>^/+beditbib/+user/+([^/?]+?)(\?(.*))?$</from>
+		<to last="true">/ResourceHandler?page=user&amp;requUser=$1&amp;$3</to>
+    	<set name="type">batcheditbib</set>
+    </rule>
+
+    <!-- default rules for other pages -->    
     <rule>
     	<from>^/+bediturl/+(.*)$</from>
     	<to last="false">/$1</to>
     	<set name="type">batchediturl</set>
     </rule>
     <rule>
-
     	<from>^/+beditbib/+(.*)$</from>
     	<to last="false">/$1</to>
     	<set name="type">batcheditbib</set>
     </rule>
+
+
 
 
 <!--  store requested path for each query -->
