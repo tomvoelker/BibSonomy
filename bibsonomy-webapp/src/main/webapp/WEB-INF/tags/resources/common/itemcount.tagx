@@ -15,20 +15,17 @@
 		required="true"/>		
 
 	<!-- define selection of list lengts -->
-	<c:set var="allEntryCounts" value="0,10,20,50,100"/>
+	<c:set var="allEntryCounts" value="5,10,20,50,100"/>
 	
 	<span class="actions">
 		<fmt:message key="${titleKey}"/>${mtl:ch('nbsp')}<fmt:message key="list.entriesPerPage" />:${mtl:ch('nbsp')}
 		<c:forEach var="num" items="${fn:split(allEntryCounts, ',')}">
 		
-			<!-- build url -->
+			<!-- build url --> 
 			<c:set var="numListUrl">
 				<c:url value="/${mtl:getPath(requPath)}?${otherParams}" context="${projectContext}">
 					<c:param name="${entryType}.entriesPerPage" value="${num}" />
-					<c:if test="${not empty ckey}">
-						<c:param name="ckey" value="${ckey}" />
-					</c:if>
-				</c:url>				
+				</c:url>
 			</c:set>
 	
 			<!-- display link or current number of entries per page -->

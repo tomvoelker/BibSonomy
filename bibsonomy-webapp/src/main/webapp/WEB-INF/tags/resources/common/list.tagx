@@ -12,6 +12,7 @@
 	<jsp:directive.attribute name="otherParamsNumEntries" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="true"/>
+	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="formatButtons" fragment="true" required="true"/>
 	<jsp:directive.attribute name="title" fragment="true" required="true"/>
 	<jsp:directive.attribute name="desc" fragment="true" required="true"/>
@@ -35,7 +36,7 @@
 		
 			
 			<div class="kiste">		
-				<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}" loginUserName="${loginUserName}" otherParams="${otherParamsNextprev}" disableActions="${disableActions}"/>
+				<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}" loginUserName="${loginUserName}" otherParams="${otherParamsNextprev}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}"/>
 				<rc:actions loginUserName="${loginUserName}" resourceType="${listView.resourcetype}"/>				
 				${mtl:ch('nbsp')}
 			</div>
@@ -65,15 +66,16 @@
 							<span class="bmaction">
 								<jsp:invoke fragment="actions"/>
 							</span>
-							${mtl:ch('nbsp')}
 						</div>   
 					</li>
 				</c:forEach>
 			</ul>
 			
 			<div class="kiste">		
-				<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}" loginUserName="${loginUserName}" otherParams="${otherParams}" disableActions="${disableActions}"/>
-				<rc:itemcount entriesPerPage="${listView.entriesPerPage}" entryType="${listView.resourcetype}" otherParams="${otherParamsNumEntries}" titleKey="${titleKey}"/>
+				<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}" loginUserName="${loginUserName}" otherParams="${otherParams}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}"/>
+				<c:if test="${disableListNavigation == false}">
+					<rc:itemcount entriesPerPage="${listView.entriesPerPage}" entryType="${listView.resourcetype}" otherParams="${otherParamsNumEntries}" titleKey="${titleKey}"/>
+				</c:if>
 				${mtl:ch('nbsp')}
 			</div>
 			

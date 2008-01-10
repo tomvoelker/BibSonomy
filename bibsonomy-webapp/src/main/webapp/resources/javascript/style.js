@@ -17,7 +17,9 @@ function init_tagbox(show, sort, minfreq, requUser) {
 
   style_list.replaceChild(getStyleItem(style_sort[sort], style_sort), style_list.childNodes[0]);
   style_list.replaceChild(getStyleItem(style_show[show], style_show), style_list.childNodes[1]);
-  showMinfreq(minfreq, requUser);
+  if (!disable_tagbox_minfreq) {
+  	showMinfreq(minfreq, requUser);
+  }
 
   var span = document.createElement("span");
   span.appendChild(style_list);  
