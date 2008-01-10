@@ -8,11 +8,11 @@
 	
 	<c:choose>
 		<c:when test="${not empty post.resource.volume}">		
-			<em><fmt:message key="bibtex.volume"/>${mtl:ch('nbsp')}<c:out value="${post.resource.volume}"/>.${mtl:ch('nbsp')}</em>		
+			<em><fmt:message key="bibtex.volume"/> <c:out value=" ${post.resource.volume}"/>. </em>		
 		</c:when>
 		<c:otherwise>
 			<c:if test="${not empty post.resource.number}">		
-				<em><c:out value="${post.resource.number}"/>.${mtl:ch('nbsp')}</em>		
+				<em><c:out value="${post.resource.number}"/>. </em>		
 			</c:if>
 		</c:otherwise>
 	</c:choose>

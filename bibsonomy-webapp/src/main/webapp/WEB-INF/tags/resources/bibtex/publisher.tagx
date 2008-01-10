@@ -6,6 +6,6 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	
 	<c:if test="${not empty post.resource.publisher}">
-		<em><c:out value="${post.resource.publisher}" /></em>,${mtl:ch('nbsp')}
+		<em><c:out value="${post.resource.publisher}" />, </em>
 	</c:if>
 </jsp:root>

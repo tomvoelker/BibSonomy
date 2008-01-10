@@ -9,12 +9,12 @@
 	
 	<c:choose>
 		<c:when test="${not empty post.resource.month and month == true}">
-			<em><c:out value="${post.resource.month}"/>${mtl:ch('nbsp')}<c:out value="${post.resource.year}"/>.${mtl:ch('nbsp')}</em>
+			<em><c:out value="${post.resource.month}"/> <c:out value=" ${post.resource.year}"/>. </em>
 		</c:when>
 	<c:otherwise>
 		<c:if test="${braces == true}"><c:out value="("/></c:if>
 			<em><c:out value="${post.resource.year}"/></em>
-		<c:if test="${braces == true}"><c:out value=")"/>${mtl:ch('nbsp')}</c:if>
+		<c:if test="${braces == true}"><c:out value=") "/> </c:if>
 	</c:otherwise>	
 	</c:choose>	
 </jsp:root>

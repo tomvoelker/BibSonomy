@@ -10,10 +10,10 @@
 	<c:choose>
 		<c:when test="${not empty post.resource.author}">
 			<c:forEach var="author" items="${post.resource.authorList}" varStatus="loopStatus">
-				<c:out value="${author.firstName}"/>
+				<c:out value="${author.firstName} "/>
 				<c:set var="authorUrlTemplate">/author/<mtl:encode value='${author.lastName}'/></c:set>
 				<c:url var="authorUrl" value="${authorUrlTemplate}" context="${projectContext}"/>
-				<a href="${authorUrl}">${mtl:ch('nbsp')}<c:out value="${author.lastName}" /></a>         	     	 
+				<a href="${authorUrl}"><c:out value="${author.lastName}" /></a>         	     	 
 				<c:if test="${not loopStatus.last}"><jsp:text> </jsp:text><fmt:message key="and"/><jsp:text> </jsp:text></c:if>
 			</c:forEach>
 		</c:when>
@@ -27,6 +27,6 @@
 			</c:forEach>
 			(eds.).
 		</c:otherwise>
-	</c:choose>${mtl:ch('nbsp')}
+	</c:choose>
 	</span>
 </jsp:root>
