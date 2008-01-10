@@ -27,11 +27,11 @@
 		<jsp:attribute name="formatButtons">
 			<!-- Buttons to show content of page in different formats -->
 			<c:url var="rssPath" value="/publrss/${requPath}" context="${projectContext}"/>
-			<a href="${rssPath}"><img alt="RSS" src="${projectContext}resources/image/rss.png"/></a>
+			<a href="${rssPath}"><img alt="RSS" src="${projectContext}resources/image/rss.png"/></a>${mtl:ch('nbsp')}
 			<c:url var="bibPath" value="/bib/${requPath}" context="${projectContext}"/>
-			<a href="${bibPath}"><img alt="BibTeX" src="${projectContext}resources/image/bibtex.png"/></a>
+			<a href="${bibPath}"><img alt="BibTeX" src="${projectContext}resources/image/bibtex.png"/></a>${mtl:ch('nbsp')}
 			<c:url var="burstPath" value="/burst/${requPath}" context="${projectContext}"/>
-			<a href="${burstPath}"><img alt="RDF" src="${projectContext}resources/image/rdf.png"/></a>
+			<a href="${burstPath}"><img alt="RDF" src="${projectContext}resources/image/rdf.png"/></a>${mtl:ch('nbsp')}
 			<c:url var="exportPath" value="/export/${requPath}" context="${projectContext}"/>
 			<a href="${exportPath}"><img alt="other export options" src="${projectContext}resources/image/more.png"/></a>
 		</jsp:attribute>

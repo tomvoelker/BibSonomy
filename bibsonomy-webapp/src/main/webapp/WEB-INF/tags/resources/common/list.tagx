@@ -28,7 +28,7 @@
 		
 			<div class="listh">
 				<c:if test="${listView.totalCount != 0}">
-					<c:set var="totalTitle"><fmt:message key="list.total" /> <c:out value="${listView.totalCount}"/> <fmt:message key="${titleKey}" /></c:set>
+					<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${listView.totalCount} "/> <fmt:message key="${titleKey}" /></c:set>
 					<span title="${totalTitle}">(${listView.totalCount})</span>
 				</c:if>
 				<jsp:invoke fragment="formatButtons"/>
