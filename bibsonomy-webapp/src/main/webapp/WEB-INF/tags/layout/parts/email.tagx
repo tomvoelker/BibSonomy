@@ -3,15 +3,14 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
-	<jsp:directive.attribute name="address" type="java.lang.String"
-		required="true" />
+	<jsp:directive.attribute name="address" type="java.lang.String" required="true" />
 		
 	<c:set var="username" value="${fn:split(address, '@')[0]}"/>
 	<c:set var="hostname" value="${fn:split(address, '@')[1]}"/>
 		
 	<script type="text/javascript">
 		<![CDATA[
-    	{at="@"; q='"'; document.write("<a href=" + q + "mailto:${username}" + at + "${hostname}" + q + ">${username}" + at + "${hostname}<\/a>"); }
+    	{at="@"; q='"'; l = String.fromCharCode(60); r = String.fromCharCode(62); document.write(l + "a href=" + q + "mailto:${username}" + at + "${hostname}" + q + r + "${username}" + at + "${hostname}" + l + "\/a" + r); }
     	]]>
   	</script>
 	<noscript>
