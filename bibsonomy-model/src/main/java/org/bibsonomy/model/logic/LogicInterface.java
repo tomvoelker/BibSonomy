@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
+import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
@@ -239,4 +240,15 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @author rja
 	 */
 	public void deleteInetAdressStatus (InetAddress address);
+	
+	/**
+	 * Retrieve statistics
+	 * 
+	 * @param resourceType
+	 * @param grouping
+	 * @param groupingName
+	 * @param constraint
+	 * @return
+	 */
+	public int getStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, StatisticsConstraint constraint, String search);
 }
