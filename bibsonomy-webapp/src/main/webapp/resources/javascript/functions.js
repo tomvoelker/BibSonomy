@@ -1360,27 +1360,27 @@ function unicodeCollation(ersterWert, zweiterWert){
     function unpickAll(evt) {
        pickUnpickAll(evt, "unpick");
     }
-    
-    
+
     function pickUnpickAll(evt, pickUnpick) {
     	// get user names/hashes to pick
-    	var bibtex = document.getElementById("bibtex").getElementsByTagName("li");
+    	var bibtex = document.getElementById("bibtex")
+    	var lis    = bibtex.getElementsByTagName("li");
+    	var param  = "";
     	
-    	for(x=0; x<bibtex.length; x++) {
-    	    var divs = bibtex[x].getElementsByTagName("div");
+    	for(x=0; x<lis.length; x++) {
+    	    var divs = lis[x].getElementsByTagName("div");
     	    for (y=0; y<divs.length; y++) {
-    	       if (divs[y].getAttribute("class") == "bmfoot") {
+    	       if (divs[y].getAttribute("class") == "bmtitle") {
     	          var spans = divs[y].getElementsByTagName("a");
     	          for (z=0; z<spans.length; z++) {
-    	             if (spans[z].getAttribute("href").match("pick=")) {
-						var action = spans[z].getAttribute("href").replace(/^.*?\?/, "").replace(/pick=/, pickUnpick + "=");
-						// pick/unpick publication
-						updateCollector(action);
-		   	         }
+					var post = spans[z].getAttribute("href").replace(/^.*bibtex./, "");
+					param += post + " ";
     	          }
     	       }
     	    }
     	}
+    	updateCollector(pickUnpick + "=" + encodeURI(param));
+    	
     	breakEvent(evt);    	
     }    
 
@@ -1409,19 +1409,18 @@ function unicodeCollation(ersterWert, zweiterWert){
 
 	   
     // picks/unpicks publications in AJAX style
-	function updateCollector (action) {
+	function updateCollector (param) {
 		// do AJAX stuff
     	var request = ajaxInit();
     	if(request){
 	    	// build URL for AJAX request
-			var url = "/ajax/pickUnpickPublication?" + action;
-			request.open('GET', url, true);
-			request.setRequestHeader("Content-Type", "text/xml");
-			request.setRequestHeader('If-Modified-Since', 'Sat, 1 Jan 2000 00:00:00 GMT');
-			// attach function which handles the request
-			var handler = ajax_updateCollector(request);
-			request.onreadystatechange = handler;
-			request.send(null);
+			var url = "/ajax/pickUnpickPublication?ckey=" + ckey;
+			request.open('POST', url, true);
+			request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			request.setRequestHeader("Content-length", param.length);
+      		request.setRequestHeader("Connection", "close");
+			request.onreadystatechange = ajax_updateCollector(request);
+			request.send(param);
 		}
     } 
     
