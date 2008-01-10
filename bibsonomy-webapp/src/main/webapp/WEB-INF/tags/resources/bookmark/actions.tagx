@@ -58,7 +58,6 @@
 		</c:if>
 
 		</span>
-      <!-- &nbsp;  -->
   </c:if>
 
 	<!--  <%@include file="/boxes/resource_rating.jsp" %> -->

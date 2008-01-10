@@ -5,14 +5,10 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
-	<jsp:directive.attribute name="entriesPerPage" type="java.lang.String"
-		required="true" />
-	<jsp:directive.attribute name="entryType" type="java.lang.String"
-		required="true" />		
-	<jsp:directive.attribute name="otherParams" type="java.lang.String" 
-		required="true"/>
-	<jsp:directive.attribute name="titleKey" type="java.lang.String" 
-		required="true"/>		
+	<jsp:directive.attribute name="entriesPerPage" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="entryType" type="java.lang.String" required="true" />		
+	<jsp:directive.attribute name="otherParams" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="titleKey" type="java.lang.String" required="true"/>		
 
 	<!-- define selection of list lengts -->
 	<c:set var="allEntryCounts" value="5,10,20,50,100"/>
