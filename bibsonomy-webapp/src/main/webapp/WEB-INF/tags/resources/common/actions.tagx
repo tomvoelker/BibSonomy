@@ -23,15 +23,13 @@
 
             ${mtl:ch('post.actions.delim')}
 
-            <c:url var="pickUrl"   value="/${fn:escapeXml(requPath)}&amp;action=pick"   context="${projectContext}"/>
             <fmt:message var="pickPublications"   key="page.pick.publications"/>
-            <a href="${pickUrl}" title="${pickPublications}"><fmt:message key="pick"/></a>
+            <a href="" title="${pickPublications}" onclick="pickAll(event);"><fmt:message key="pick"/></a>
 
             ${mtl:ch('post.actions.delim')}
 
-            <c:url var="unPickUrl" value="/${fn:escapeXml(requPath)}&amp;action=unpick" context="${projectContext}"/>
             <fmt:message var="unPickPublications" key="page.unpick.publications"/>
-            <a href="${unPickUrl}" title="${unPickPublications}"><fmt:message key="unpick"/></a>
+            <a href="" title="${unPickPublications}" onclick="unpickAll(event);"><fmt:message key="unpick"/></a>
             
 		  </c:when>
 

@@ -42,7 +42,7 @@
 			</div>
 			
 			
-			<ul class="bblist">
+			<ul id="${listView.resourcetype}">
 				<c:forEach var="post" items="${listView.list}">
 					<c:choose>
 						<c:when test="${loginUserName eq post.user.name}">
