@@ -170,4 +170,25 @@ public class Functions  {
 		return true;
 	}
 	
+	/**
+	 * Computes font size for given tag frequency and maximum tag frequency inside tag cloud
+	 * 
+	 * this is used as attribute font-size=X%, hence values between 100 and 300 are returned
+	 * 
+	 * @param tagFrequency
+	 * @param tagMaxFrequency
+	 * @param mode
+	 * @return
+	 */
+	public static Integer computeTagFontsize(Integer tagFrequency, Integer tagMaxFrequency, String tagSizeMode) {
+		// round(log(if(tag_anzahl>100, 100, tag_anzahl+6)/6))*60+40
+		if ("home".equals(tagSizeMode)) {
+			Double t = (tagFrequency > 100 ? 100.0 : tagFrequency.doubleValue() + 6);
+			t /= 6;
+			t = Math.log(t) * 60 + 40;
+			return t.intValue();
+		}		
+		return 100 + (tagFrequency / tagMaxFrequency * 200);
+	}
+	
 }
