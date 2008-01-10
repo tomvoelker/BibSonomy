@@ -159,7 +159,7 @@
 		<to last="true">/ResourceHandler?page=user&amp;requUser=$1&amp;$3</to>
     	<set name="type">batcheditbib</set>
     </rule>
-
+    
     <!-- default rules for other pages -->    
     <rule>
     	<from>^/+bediturl/+(.*)$</from>
@@ -175,7 +175,7 @@
 
 
 
-<!--  store requested path for each query -->
+	<!--  store requested path for each query -->
 	<rule>
 		<from>^/+(.+)$</from>		
 		<set name="requPath">$1</set>		
@@ -228,6 +228,14 @@
         <from>^/+user/+([^/?]+?)/(.+?)(\?(.*))?$</from>
         <to>/ResourceHandler?page=usertag&amp;requUser=$1&amp;requTag=$2&amp;$4</to>
     </rule>
+
+    <!-- workaround to redirect filter= pages (myPDF, myDuplicates) to old Resource Handler -->
+	<!-- /user/USER?filter=... -->
+	<rule>
+		<from>^/+user/+([^/?]+?)(\?(.*filter=.*))?$</from>
+		<to>/ResourceHandler?page=user&amp;requUser=$1&amp;$3</to>
+	</rule>
+
     <!-- /user/USER -->
 	<rule>
 		<from>^/+user/+([^/?]+?)(\?(.*))?$</from>
@@ -236,7 +244,6 @@
 		 -->
 		<to>/user?requestedUser=$1&amp;$3</to>
 	</rule>
-	
 	<rule>
 		<from>^/+user/+([^/?]+?)/$</from>
 		<to type="redirect">/user/$1</to>
