@@ -32,5 +32,6 @@
 	<typeAlias alias="tagRelationParam"   type="org.bibsonomy.database.params.beans.TagRelationParam" />
 	<typeAlias alias="documentParam"      type="org.bibsonomy.database.params.DocumentParam" />	
 	<typeAlias alias="adminParam"         type="org.bibsonomy.database.params.AdminParam" />
+	<typeAlias alias="statisticsParam"    type="org.bibsonomy.database.params.StatisticsParam" />	
 
 </sqlMap>
