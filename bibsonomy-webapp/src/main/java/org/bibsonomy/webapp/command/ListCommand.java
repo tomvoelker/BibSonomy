@@ -21,7 +21,7 @@ public class ListCommand<T> {
 	private final PageCommand curPage = new PageCommand();
 	private List<PageCommand> previousPages;
 	private List<PageCommand> nextPages;
-	private int totalCount = 100; // TODO: use 0 instead?
+	private int totalCount = 0;
 	private List<T> list;
 	
 	/**
@@ -66,6 +66,16 @@ public class ListCommand<T> {
 	 */
 	public int getTotalCount() {
 		return this.totalCount;
+	}
+	
+	/**
+	 * @return the last starting index
+	 */
+	public int getLast() {
+		if (this.totalCount % this.entriesPerPage == 0) {
+			return this.totalCount - this.entriesPerPage;
+		}		
+		return this.totalCount - (this.totalCount % this.entriesPerPage);
 	}
 	
 	/**

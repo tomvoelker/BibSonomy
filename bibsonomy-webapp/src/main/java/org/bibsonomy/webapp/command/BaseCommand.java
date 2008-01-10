@@ -22,7 +22,22 @@ public class BaseCommand {
 	private UserBean user;
 	private String pageTitle;
 	private String requPath;
+	private String error;
 	
+	/**
+	 * @return error message
+	 */
+	public String getError() {
+		return this.error;
+	}
+
+	/**
+	 * @param error an error message
+	 */
+	public void setError(String error) {
+		this.error = error;
+	}
+
 	/**
 	 * @return the requested path
 	 */

@@ -13,6 +13,12 @@ import org.bibsonomy.webapp.util.View;
  * @author Jens Illig
  */
 public enum Views implements View {
+		
+	/**
+	 * error page
+	 */
+	ERROR("error"),
+	
 	/**
 	 * the first page you see when entering the application
 	 */

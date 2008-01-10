@@ -22,16 +22,29 @@ public class HomepageController extends MultiResourceListController implements M
 	public View workOn(final ResourceViewCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
 
-		// retrieve and setthe requested resource lists
+		// determine which lists to initalize depending on the output format 
+		// and the requested resourcetype
+		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());		
+		
+		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {
-			setList(command, resourceType, GroupingEntity.ALL, null, null, null, null, null, userSettings.getListItemcount(), 100);
+			// disable manual setting of start value for homepage
+			command.getListCommand(resourceType).setStart(0);
+			setList(command, resourceType, GroupingEntity.ALL, null, null, null, null, null, 20, 0);
 			postProcessList(command, resourceType);
 		}
 		
 		// retrieve and set tags
 		setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, 0, 100);
-						
-		return Views.HOMEPAGE;
+										
+		// html format - retrieve tags and return HTML view
+		if (command.getFormat().equals("html")) {
+			setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, 0, 100);
+			return Views.HOMEPAGE;		
+		}
+
+		// export - return the appropriate view
+		return Views.getViewByFormat(command.getFormat());	
 	}
 
 	public ResourceViewCommand instantiateCommand() {
