@@ -27,9 +27,13 @@ picks or unpicks a document
     initiates the corresponding action
   
   --%>
-  <jsp:useBean id="PickBean" class="beans.PickBean" scope="request">
-    <jsp:setProperty name="PickBean" property="currUser" value="${user.name}" />
-    <jsp:setProperty name="PickBean" property="*" />
-  </jsp:useBean> 
   
-  <result count="${PickBean.pickCount}" /> 
+  <c:if test="${validckey}">
+
+    <jsp:useBean id="PickBean" class="beans.PickBean" scope="request">
+      <jsp:setProperty name="PickBean" property="currUser" value="${user.name}" />
+      <jsp:setProperty name="PickBean" property="*" />
+    </jsp:useBean> 
+  
+    <result count="${PickBean.pickCount}" /> 
+  </c:if>
