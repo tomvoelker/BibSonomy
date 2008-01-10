@@ -274,7 +274,7 @@ li.uploadinfo {
   padding: 0px;
 }
 
-ul.bblist {
+#bibtex, #bookmark, ul.bblist {
   clear: both;
   margin-top: 1em;
 }

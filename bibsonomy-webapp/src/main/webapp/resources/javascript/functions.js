@@ -1350,29 +1350,63 @@ function unicodeCollation(ersterWert, zweiterWert){
 	        }
 	    }
     } 
-        
+    
+    
+    
+    function pickAll(evt) {
+       pickUnpickAll(evt, "pick");
+    }
+    
+    function unpickAll(evt) {
+       pickUnpickAll(evt, "unpick");
+    }
+    
+    
+    function pickUnpickAll(evt, pickUnpick) {
+    	// get user names/hashes to pick
+    	var bibtex = document.getElementById("bibtex").getElementsByTagName("li");
+    	
+    	for(x=0; x<bibtex.length; x++) {
+    	    var divs = bibtex[x].getElementsByTagName("div");
+    	    for (y=0; y<divs.length; y++) {
+    	       if (divs[y].getAttribute("class") == "bmfoot") {
+    	          var spans = divs[y].getElementsByTagName("a");
+    	          for (z=0; z<spans.length; z++) {
+    	             if (spans[z].getAttribute("href").match("pick=")) {
+						var action = spans[z].getAttribute("href").replace(/^.*?\?/, "").replace(/pick=/, pickUnpick + "=");
+						// pick/unpick publication
+						updateCollector(action);
+		   	         }
+    	          }
+    	       }
+    	    }
+    	}
+    	breakEvent(evt);    	
+    }    
+
+	function breakEvent(evt) {
+		// break link
+		if (evt.stopPropagation) {
+		    evt.stopPropagation();
+		    evt.preventDefault();
+		} else if (window.event){
+		    window.event.cancelBubble = true;
+		    window.event.returnValue = false;
+		}
+	}
     
     // this picks or unpicks a publication
     function pickUnpickPublication(evt){
     	// get parameters from URL
-	    var link = xget_event(evt);
-		var action = link.getAttribute("href").replace(/\/.*?\?/, "");
-		action = action.replace(/http:/,"");
-		
-			// break link
-			if (evt.stopPropagation) {
-			    evt.stopPropagation();
-			    evt.preventDefault();
-			} else if (window.event){
-			    window.event.cancelBubble = true;
-			    window.event.returnValue = false;
-			}
+	    var action = xget_event(evt).getAttribute("href").replace(/^.*?\?/, "");
 		
 		// pick/unpick publication
 		updateCollector(action);
+				   	            
+   		breakEvent(evt);
 	}
 	   
-	       
+
 	   
     // picks/unpicks publications in AJAX style
 	function updateCollector (action) {
