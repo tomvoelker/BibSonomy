@@ -97,9 +97,10 @@
 					</script>					
 				</div>
 				
+                <!-- TODO: Links are missing existing parameters! Built URLs correctly. -->
 				<div id="languagebox" style="text-align: right;">
-					<a href="?lang=de"><img src="${resdir}/image/lang_de.png"/></a>
-					<a href="?lang=en"><img src="${resdir}/image/lang_en.png"/></a>					
+					<a href="?lang=de"><img alt="de" src="${resdir}/image/lang_de.png"/></a>
+					<a href="?lang=en"><img alt="en" src="${resdir}/image/lang_en.png"/></a>					
 				</div>
 				
 				<menu:navi loginUserName="${loginUserName}" searchString="${searchString}" basketSize="${basketSize}" />
