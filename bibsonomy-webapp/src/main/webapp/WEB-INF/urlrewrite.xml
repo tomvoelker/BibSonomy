@@ -230,13 +230,13 @@
     <!-- workaround to redirect filter= pages (myPDF, myDuplicates) to old Resource Handler -->
 	<!-- /user/USER?filter=... -->
 	<rule>
-		<from>^/+user/+([^/?]+?)(\?(.*filter=.*))?$</from>
+		<from>^/+user/+([^/?]+?)(\?(.*filter=.*))$</from>
 		<to>/ResourceHandler?page=user&amp;requUser=$1&amp;$3</to>
 	</rule>
 
     <!-- /user/USER -->
 	<rule>
-		<from>^/+user/+([^/?]++)(\?(.*))?$</from>
+		<from>^/+user/+([^/?]+?)(\?(.*))?$</from>
 		<!-- 
 		<to>/ResourceHandler?page=user&amp;requUser=$1&amp;$3</to>
 		 -->
