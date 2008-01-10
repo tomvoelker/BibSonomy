@@ -97,8 +97,13 @@ public class ResourceHandler extends HttpServlet{
 	private static final String REQ_PARAM_SEARCH="requSearch";
 	private static final String REQ_PARAM_GROUP="requGroup";
 	private static final String REQ_PARAM_ACTION="action";
+	
 	private static final String REQ_PARAM_START_BOOK="startBook";
 	private static final String REQ_PARAM_START_BIB="startBib";
+	private static final String REQ_PARAM_START_BOOK_NEW="bookmark.start";
+	private static final String REQ_PARAM_START_BIB_NEW="bibtex.start";
+	private static final String REQ_PARAM_PPP_BOOK="bookmark.postsPerPage";
+	private static final String REQ_PARAM_PPP_BIBTEX="bibtex.postsPerPage";
 	private static final String REQ_PARAM_SHOW_PDF = "myPDF";
 	private static final String REQ_PARAM_DUPLICATES = "myDuplicates";
 	private static final String REQ_PARAM_BIBTEXKEY = "requKey";
@@ -206,9 +211,27 @@ public class ResourceHandler extends HttpServlet{
 		int startBook = 0;
 		int startBib  = 0; 
 
-
+		
+		/*
+		 * TODO: workaround to recognize new style parameters
+		 */
+		int bookmarkPostsPerPage;
+		try {
+			bookmarkPostsPerPage = Math.abs(Integer.parseInt(request.getParameter(REQ_PARAM_PPP_BOOK)));
+		} catch (Exception e) {
+			bookmarkPostsPerPage = itemCount;
+		}
+		int bibtexPostsPerPage;
+		try {
+			bibtexPostsPerPage = Math.abs(Integer.parseInt(request.getParameter(REQ_PARAM_PPP_BIBTEX)));
+		} catch (Exception e) {
+			bibtexPostsPerPage = itemCount;
+		}
+		
 		// add one element, so that we can check, if more rows follow
 		itemCount++;
+		bookmarkPostsPerPage++;
+		bibtexPostsPerPage++;
 
 		/*
 		 * get startBook Parameter to calculate an OFFSET for database
@@ -218,16 +241,38 @@ public class ResourceHandler extends HttpServlet{
 		} catch (Exception e) {
 			startBook = 0;
 		}
+		/*
+		 * TODO: workaround to recognize new style parameters (neccessary for /bediturl)
+		 */
+		try {
+			int temp = Math.abs(Integer.parseInt(request.getParameter(REQ_PARAM_START_BOOK_NEW)));
+			if (temp >= 0) startBook = temp;
+		} catch (Exception e) {
+			// ignore
+		}
+
+		
 		request.setAttribute(REQ_ATTRIB_START_BOOK, startBook);
 
+		
 		/*
 		 * get startBib Parameter to calculate an OFFSET for database
 		 */
 		try {
-			startBib = Math.abs(Integer.parseInt(request.getParameter(REQ_PARAM_START_BIB)));
+			startBib = Math.abs(Integer.parseInt(request.getParameter(REQ_PARAM_START_BIB)));			
 		} catch (Exception e) {
 			startBib = 0;
 		}
+		/*
+		 * TODO: workaround to recognize new style parameters (neccessary for /beditbib)
+		 */
+		try {
+			int temp = Math.abs(Integer.parseInt(request.getParameter(REQ_PARAM_START_BIB_NEW)));
+			if (temp >= 0) startBib = temp;
+		} catch (Exception e) {
+			// ignore
+		}
+		
 		request.setAttribute(REQ_ATTRIB_START_BIB, startBib);
 
 
@@ -274,7 +319,7 @@ public class ResourceHandler extends HttpServlet{
 						request.setAttribute(REQ_ATTRIB_ALL_BIB, "y"); // disable "next" Button
 						queryPageUserPDF (c, currUser);
 					} else {
-						queryPageUser (c, currUser, requUser, -1, itemCount, startBook, startBib);	
+						queryPageUser (c, currUser, requUser, -1, bookmarkPostsPerPage, bibtexPostsPerPage, startBook, startBib);	
 					}
 
 				}
@@ -418,7 +463,7 @@ public class ResourceHandler extends HttpServlet{
 						// user is friend
 						// is a tag given?
 						if (requTag == null) {
-							queryPageUser (c, currUser, requUser, constants.SQL_CONST_GROUP_FRIENDS, itemCount, startBook, startBib);
+							queryPageUser (c, currUser, requUser, constants.SQL_CONST_GROUP_FRIENDS, bookmarkPostsPerPage, bibtexPostsPerPage, startBook, startBib);
 						} else {
 							queryPageUserTag (c, currUser, requUser, constants.SQL_CONST_GROUP_FRIENDS, requTag, itemCount, startBook, startBib);
 							// set page
@@ -453,7 +498,7 @@ public class ResourceHandler extends HttpServlet{
 						if (requPage.equals(PAGE_VIEWABLETAG)) {
 							queryPageUserTag (c, currUser, currUser, group, requTag, itemCount, startBook, startBib);
 						} else {
-							queryPageUser (c, currUser, currUser, group, itemCount, startBook, startBib);
+							queryPageUser (c, currUser, currUser, group, bookmarkPostsPerPage, bibtexPostsPerPage, startBook, startBib);
 						}
 						// add group id to request (to get tags for this group)
 						request.setAttribute("group", new Integer(group));
@@ -565,7 +610,7 @@ public class ResourceHandler extends HttpServlet{
 						book.addTag(rst.getString("tag_name"));
 						contentID = rst.getInt("content_id");
 					}
-					if (rst.isLast() && count < itemCount) {
+					if (rst.isLast() && count < bookmarkPostsPerPage) {
 						bean.addBookmark(book);
 						// fetched less than itemCount rows --> no more rows in Query 
 						request.setAttribute(REQ_ATTRIB_ALL_BOOKS, "y");
@@ -677,7 +722,7 @@ public class ResourceHandler extends HttpServlet{
 						// remember contentID
 						contentID = rst.getInt("content_id");
 					}
-					if (rst.isLast() && count < itemCount) {
+					if (rst.isLast() && count < bibtexPostsPerPage) {
 						bean.addBibtex(bib);
 						// fetched less than itemCount rows --> no more rows in Query 
 						request.setAttribute(REQ_ATTRIB_ALL_BIB, "y");
@@ -756,17 +801,17 @@ public class ResourceHandler extends HttpServlet{
 			 * pick/unpick action handling
 			 */ 
 			if (currUser != null && "pick".equals(requAction)) { 
-				Iterator it = bean.getBibtex().iterator();
+				Iterator<Bibtex> it = bean.getBibtex().iterator();
 				while (it.hasNext()) {
-					Bibtex bib = (Bibtex)it.next();
+					Bibtex bib = it.next();
 					DBPickManager.pickEntryForUser(bib.getHash(), bib.getUser(), currUser);
 				}
 				// sets the current pick count for the user bean
 				user.setPostsInBasket(DBPickManager.getPickCount(currUser));
 			} else if(currUser != null && "unpick".equals(requAction)) {
-				Iterator it = bean.getBibtex().iterator();
+				Iterator<Bibtex> it = bean.getBibtex().iterator();
 				while (it.hasNext()) {
-					Bibtex bib = (Bibtex)it.next();
+					Bibtex bib = it.next();
 					DBPickManager.unPickEntryForUser(bib.getHash(), bib.getUser(), currUser);
 				}
 				// sets the current pick count for the user bean
@@ -863,7 +908,7 @@ public class ResourceHandler extends HttpServlet{
 		public PreparedStatement bibTCStmtP = null;   // total count of bibtex for query
 	}
 
-	/*
+	/**
 	 * return appropriate select query string for different tables
 	 */
 	public static String getBibtexSelect (String table) {	
@@ -1019,7 +1064,7 @@ public class ResourceHandler extends HttpServlet{
 	 * @param startBib with which bibtex entry to start
 	 * @throws SQLException
 	 */
-	private void queryPageUser (DBContext c, String currUser, String requUser, int requGroup, int itemCount, int startBook, int startBib) throws SQLException {
+	private void queryPageUser (DBContext c, String currUser, String requUser, int requGroup, int bookmarkPostsPerPage, int bibtexPostsPerPage, int startBook, int startBib) throws SQLException {
 
 		String groupWhereQuery;
 		if (requGroup == -1) {
@@ -1045,7 +1090,7 @@ public class ResourceHandler extends HttpServlet{
 			+ "    ORDER BY bb.date DESC, bb.content_id DESC";
 		c.bookStmtP = c.conn.prepareStatement(query);
 		c.bookStmtP.setString(1, requUser);
-		c.bookStmtP.setInt(2, itemCount);
+		c.bookStmtP.setInt(2, bookmarkPostsPerPage);
 		c.bookStmtP.setInt(3, startBook);
 
 		c.bibStmtP = c.conn.prepareStatement("SELECT " + getBibtexSelect("bb") + ",t.tag_name,g.group_name, bb.ctr"
@@ -1063,7 +1108,7 @@ public class ResourceHandler extends HttpServlet{
 				+ "    ORDER BY bb.date DESC, bb.content_id DESC");
 
 		c.bibStmtP.setString(1, requUser);
-		c.bibStmtP.setInt(2, itemCount);
+		c.bibStmtP.setInt(2, bibtexPostsPerPage);
 		c.bibStmtP.setInt(3, startBib);
 
 		// counts
