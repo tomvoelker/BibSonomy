@@ -9,6 +9,7 @@
 	<jsp:directive.attribute name="requPath" type="java.lang.String"
 		required="true" />
 	<jsp:directive.attribute name="disableTagboxMinfreq" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="tagSizeMode" type="java.lang.String" required="false"/>
 
 	<!-- tagcloud styles: 0 cloud, 1 list (see org.bibsonomy.common.enums.TagCloudStyle) -->
 	<c:choose>
@@ -35,12 +36,7 @@
 	
 		<!-- loop over tags -->
 		<c:forEach var="tag" items="${cmd.tags}">
-		
-			<!-- determine tag font size -->
-			<c:set var="fontsize">
-				${100 + (tag.usercount / cmd.maxFreq * 250)}		
-			</c:set>
-		
+								
 			<c:set var="posts">
 				<fmt:message key="posts" /> <!-- plural -->
 			</c:set>		
@@ -62,13 +58,32 @@
 			</c:choose>
 			
 			<!-- display the tag -->
+			<!-- 
+				 this is horrible copy & paste code - we should remove this as soon as we've found
+			     a better way to compute the tag sizes
+			     dbe, 20070110 
+			-->
 			<c:if test="${tag.usercount >= cmd.minFreq}">
 				<li class="${tagclass}">
-				<a title="${tag.usercount}${mtl:ch('nbsp')}${posts}"
-				    style="font-size:${fontsize}%" 
-					href="/${mtl:getPath(requPath)}/${fn:escapeXml(tag.name)}${mtl:getQuery(requPath)}">${tag.name}</a>
-					<jsp:text> </jsp:text>
-				</li>			
+					<c:choose>
+						<c:when test="${tagSizeMode eq 'home'}">						
+							<a title="${tag.usercount} ${posts}"
+								style="font-size:${mtl:computeTagFontsize(tag.usercount, cmd.maxFreq, tagSizeMode)}%" 
+								href="/${mtl:getPath(requPath)}/${fn:escapeXml(tag.name)}${mtl:getQuery(requPath)}">					
+								${tag.name}
+							</a>
+						</c:when>
+						<c:otherwise>
+							<a title="${tag.usercount} ${posts}" 
+								href="/${mtl:getPath(requPath)}/${fn:escapeXml(tag.name)}${mtl:getQuery(requPath)}">					
+								${tag.name}
+							</a>												
+						</c:otherwise>		
+					</c:choose>
+					<jsp:text> </jsp:text>									
+				</li>
+
+							
 			</c:if>
 			
 		</c:forEach>

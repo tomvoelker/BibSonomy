@@ -17,13 +17,13 @@
 	<c:if test="${disableListNavigation == false}">
 		<span class="nextprev">
 			<fmt:message var="gotoFirst" key="goto.first"/>
-			<a href="?${listViewStartParamName}=0&amp;amp;${otherParams}" title="${gotoFirst}" rel="First"> <fmt:message key="first"/></a>
+			<a href="?${listViewStartParamName}=0&amp;${otherParams}" title="${gotoFirst}" rel="First"> <fmt:message key="first"/></a>
 			<jsp:text> </jsp:text>
 					
 			<c:choose>				
 				<c:when test="${listView.previousPage != null}">
 					<fmt:message var="gotoPrevious" key="goto.previous"/>
-					<a href="?${listViewStartParamName}=${listView.previousPage.start}&amp;amp;${otherParams}" title="${gotoPrevious}" rel="Prev"> <fmt:message key="previous"/></a>
+					<a href="?${listViewStartParamName}=${listView.previousPage.start}&amp;${otherParams}" title="${gotoPrevious}" rel="Prev"> <fmt:message key="previous"/></a>
 				</c:when>
 				<c:otherwise>
 					<fmt:message key="previous"/>
@@ -32,7 +32,7 @@
 			<jsp:text> </jsp:text>
 			<c:if test="${not empty listView.previousPages}">
 				<c:forEach var="page" items="${listView.previousPages}">
-					<a href="?${listViewStartParamName}=${page.start}&amp;amp;${otherParams}">${page.number}</a>
+					<a href="?${listViewStartParamName}=${page.start}&amp;${otherParams}">${page.number}</a>
 					${mtl:ch('list.pagenumber.delim')}
 				</c:forEach>					
 			</c:if>
@@ -40,13 +40,13 @@
 			<c:if test="${not empty listView.nextPages}">
 				<c:forEach var="page" items="${listView.nextPages}">
 					${mtl:ch('list.pagenumber.delim')}
-					<a href="?${listViewStartParamName}=${page.start}&amp;amp;${otherParams}">${page.number}</a>
+					<a href="?${listViewStartParamName}=${page.start}&amp;${otherParams}">${page.number}</a>
 				</c:forEach>					
 			</c:if>
 			<jsp:text> </jsp:text>
 			<c:choose>
 				<c:when test="${listView.nextPage != null}">
-					<a href="?${listViewStartParamName}=${listView.nextPage.start}&amp;amp;${otherParams}" title="${gotoNext}" rel="Next"> <fmt:message key="next"/></a>
+					<a href="?${listViewStartParamName}=${listView.nextPage.start}&amp;${otherParams}" title="${gotoNext}" rel="Next"> <fmt:message key="next"/></a>
 				</c:when>
 				<c:otherwise>
 					<fmt:message key="next"/>
@@ -55,7 +55,7 @@
 			
 			<jsp:text> </jsp:text>
 			<fmt:message var="gotoLast" key="goto.last"/>
-			<a href="?${listViewStartParamName}=${listView.last}&amp;amp;${otherParams}" title="${gotoLast}" rel="Last"> <fmt:message key="last"/></a>
+			<a href="?${listViewStartParamName}=${listView.last}&amp;${otherParams}" title="${gotoLast}" rel="Last"> <fmt:message key="last"/></a>
 						
 		</span>
 	</c:if>

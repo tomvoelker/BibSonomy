@@ -173,6 +173,12 @@
     <function-class>tags.Functions</function-class>
     <function-signature>Boolean isNumeric (java.lang.String)</function-signature>
   </function>  
+  
+    <function>
+    <name>computeTagFontsize</name>
+    <function-class>tags.Functions</function-class>
+    <function-signature>java.lang.Integer computeTagFontsize (java.lang.Integer, java.lang.Integer, java.lang.String)</function-signature>
+  </function>  
 
 
 </taglib>

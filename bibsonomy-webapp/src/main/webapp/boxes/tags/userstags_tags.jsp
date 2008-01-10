@@ -33,9 +33,11 @@
       <%-- TODO: here ${tag.name} is not properly quoted --%>
       onmouseover="javascript:preDoTooltip(event)" onmouseout="javascript:hideTip()"
     </c:if>
+    <%--
 	<c:if test="${param.tagMaxFreq != null}">
-		style="font-size:${100 + (tag.count / param.tagMaxFreq * 250)}%"
-	</c:if>    
+		style="font-size:${100 + (tag.count / param.tagMaxFreq * 200)}%"
+	</c:if>
+	--%>    
     href="${urlPrefix}/<mtl:encode value='${requestedUserName}' />/<mtl:encode value='${tag.name}' />"
   ><c:out value="${tag.name}" /></a></li>
   

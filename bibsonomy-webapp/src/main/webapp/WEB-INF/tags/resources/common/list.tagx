@@ -72,7 +72,7 @@
 			</ul>
 			
 			<div class="kiste">		
-				<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}" loginUserName="${loginUserName}" otherParams="${otherParams}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}"/>
+				<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}" loginUserName="${loginUserName}" otherParams="${otherParamsNextprev}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}"/>
 				<c:if test="${disableListNavigation == false}">
 					<rc:itemcount entriesPerPage="${listView.entriesPerPage}" entryType="${listView.resourcetype}" otherParams="${otherParamsNumEntries}" titleKey="${titleKey}"/>
 				</c:if>
