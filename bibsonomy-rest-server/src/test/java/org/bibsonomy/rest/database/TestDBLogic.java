@@ -13,6 +13,7 @@ import java.util.Map;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
+import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
@@ -740,6 +741,11 @@ public class TestDBLogic implements LogicInterface {
 	public InetAddressStatus getInetAddressStatus(InetAddress address) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public int getStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, StatisticsConstraint constraint, String search) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }
