@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
+import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -193,5 +194,10 @@ public class RestLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public int getStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, StatisticsConstraint constraint, String search) {
+		// TODO Auto-generated method stub
+		return 0;
+	}	
 
 }
