@@ -49,6 +49,7 @@
 	<sqlMap resource="Document.xml"/>
 	<sqlMap resource="Basket.xml"/>
 	<sqlMap resource="Admin.xml"/>
+	<sqlMap resource="Statistics.xml"/>
 
 	<!-- Plugins -->
 	<sqlMap resource="plugins/Logging.xml"/>

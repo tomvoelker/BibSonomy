@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
+import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
@@ -21,6 +22,7 @@ import org.bibsonomy.database.managers.DocumentDatabaseManager;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
+import org.bibsonomy.database.managers.StatisticsDatabaseManager;
 import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.managers.UserDatabaseManager;
 import org.bibsonomy.database.params.BibTexParam;
@@ -62,6 +64,7 @@ public class DBLogic implements LogicInterface {
 	private final TagDatabaseManager tagDBManager;
 	private final AdminDatabaseManager adminDBManager;
 	private final DBSessionFactory dbSessionFactory;
+	private final StatisticsDatabaseManager statisticsDBManager;
 
 	private final User loginUser;
 
@@ -81,6 +84,7 @@ public class DBLogic implements LogicInterface {
 		tagDBManager = TagDatabaseManager.getInstance();
 		adminDBManager = AdminDatabaseManager.getInstance();
 		permissionDBManager = PermissionDatabaseManager.getInstance();
+		statisticsDBManager = StatisticsDatabaseManager.getInstance();
 
 		this.dbSessionFactory = dbSessionFactory;		
 	}
@@ -714,5 +718,28 @@ public class DBLogic implements LogicInterface {
 		session.close();
 		return inetAddressStatus;
 	}
+	
+	/** 
+	 * Query statistical information
+	 * 
+	 * TODO: as soon as more statistics are added, a chain should be defined
+	 * 
+	 * @see org.bibsonomy.model.logic.LogicInterface#getStatistics(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, org.bibsonomy.common.enums.StatisticsConstraint, java.lang.String)
+	 */
+	public int getStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, StatisticsConstraint constraint, String search) {
+		final DBSession session = openSession();
+		int statistics = 0;
+		try {
+			if (grouping.equals(GroupingEntity.USER) && groupingName != null && groupingName != "") {
+				statistics = this.statisticsDBManager.getNumberOfResourcesForUser(groupingName, this.loginUser.getName(), resourceType, session);
+			}
+			else {
+				throw new RuntimeException("Can't handle request");
+			}
+		} finally {
+			session.close();			
+		}
+		return statistics;		
+	}		
 	
 }

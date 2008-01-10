@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Statistics">
+
+	<select id="getNumPublicationsForUser" resultClass="Integer" parameterClass="statisticsParam">
+		SELECT count(*) AS count
+		FROM bibtex b 
+		WHERE b.user_name = #requestedUserName#
+			<include refid="inGroups"/>
+	</select>
+	
+	<select id="getNumBookmarksForUser" resultClass="Integer" parameterClass="statisticsParam">
+		SELECT count(*) AS count
+		FROM bookmark b 
+		WHERE b.user_name = #requestedUserName#
+		  <include refid="inGroups"/> 
+	</select>	
+</sqlMap>
