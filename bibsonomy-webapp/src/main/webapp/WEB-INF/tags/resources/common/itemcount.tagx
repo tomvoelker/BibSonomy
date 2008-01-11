@@ -18,11 +18,9 @@
 		<c:forEach var="num" items="${fn:split(allEntryCounts, ',')}">
 		
 			<!-- build url --> 
-			<c:set var="numListUrl">
-				<c:url value="/${mtl:getPath(requPath)}?${otherParams}" context="${projectContext}">
-					<c:param name="${entryType}.entriesPerPage" value="${num}" />
-				</c:url>
-			</c:set>
+			<c:url var="numListUrl" value="/${mtl:getPath(requPath)}?${otherParams}" context="${projectContext}">
+				<c:param name="${entryType}.entriesPerPage" value="${num}" />
+			</c:url>
 	
 			<!-- display link or current number of entries per page -->
 			<c:choose>
