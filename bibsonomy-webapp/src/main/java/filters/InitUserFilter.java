@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.DBLogicUserInterfaceFactory;
 import org.bibsonomy.database.util.IbatisDBSessionFactory;
@@ -373,7 +374,15 @@ public class InitUserFilter implements Filter {
 				
 		//groups
 		for(Group g : loginUser.getGroups()) {
-			userBean.addGroup(g.getName());
+			/* 
+			 * Ignore public, private, friends - because we don't want to see 
+             * them on the basket page and also not in the "groups" menu. The 
+             * UserBean contains a method "getAllGroups" to get those groups, 
+             * too.
+			 */
+			if (!GroupID.isSpecialGroupId(g.getGroupId())) {
+				userBean.addGroup(g.getName());
+			}
 		}
 		return userBean;
 	}
