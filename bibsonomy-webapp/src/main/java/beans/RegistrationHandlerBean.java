@@ -133,6 +133,10 @@ public class RegistrationHandlerBean implements Serializable {
 				userName.indexOf(':') != -1 ||
 				userName.indexOf('&') != -1 ||
 				userName.indexOf('?') != -1 ||
+				userName.indexOf('"') != -1 ||
+				userName.indexOf('\'') != -1 ||
+				userName.indexOf('>') != -1 ||
+				userName.indexOf('<') != -1 ||
 				userName.indexOf('%') != -1) {
 			errors.put("userName","Please enter a valid username");
 			userName = "";
