@@ -69,13 +69,13 @@
 						<c:when test="${tagSizeMode eq 'home'}">						
 							<a title="${tag.usercount} ${posts}"
 								style="font-size:${mtl:computeTagFontsize(tag.usercount, cmd.maxFreq, tagSizeMode)}%" 
-								href="/${mtl:getPath(requPath)}/${fn:escapeXml(tag.name)}${mtl:getQuery(requPath)}">					
+								href="/${mtl:getPath(requPath)}/${fn:escapeXml(tag.name)}">					
 								${tag.name}
 							</a>
 						</c:when>
 						<c:otherwise>
 							<a title="${tag.usercount} ${posts}" 
-								href="/${mtl:getPath(requPath)}/${fn:escapeXml(tag.name)}${mtl:getQuery(requPath)}">					
+								href="/${mtl:getPath(requPath)}/${fn:escapeXml(tag.name)}">					
 								${tag.name}
 							</a>												
 						</c:otherwise>		
@@ -89,8 +89,9 @@
 		</c:forEach>
 	</ul>
 
-	<!-- this is just a hack to expose the maximum number of tags for "old" ajax components -->
+	<!-- this is just a hack to expose the maximum number of tags for "old" ajax components 
 	<script type="text/javascript">
 		var tagMaxFreq = ${cmd.maxFreq};
 	</script>
+	-->
 </jsp:root>
