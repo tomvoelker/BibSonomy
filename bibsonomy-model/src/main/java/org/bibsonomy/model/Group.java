@@ -14,7 +14,7 @@ import org.bibsonomy.common.enums.Privlevel;
 public class Group {
 
 	/**
-	 * The internal id of this group.
+	 * The internal id of this group. TODO: shouldn't this be a {@link GroupID}?!
 	 */
 	private int groupId;
 
