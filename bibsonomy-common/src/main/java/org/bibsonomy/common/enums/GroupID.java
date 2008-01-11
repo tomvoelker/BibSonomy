@@ -41,9 +41,18 @@ public enum GroupID {
 	/**
 	 * categorizes groupIds between special and nonspecial groups. special groups are groups, that are not created by users.
 	 * @param groupId the groupId to check
-	 * @return true if the groupId argument is a specil group
+	 * @return true if the groupId argument is a special group
 	 */
 	public static boolean isSpecialGroupId(final int groupId) {
 		return ((groupId < 3) && (groupId >= 0));
+	}
+	
+	/**
+	 * categorizes groupIds between special and nonspecial groups. special groups are groups, that are not created by users.
+	 * @param groupId the groupId to check
+	 * @return true if the groupId argument is a special group
+	 */
+	public static boolean isSpecialGroupId(final GroupID groupId) {
+		return isSpecialGroupId(groupId.getId());
 	}
 }
