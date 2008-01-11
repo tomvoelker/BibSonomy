@@ -1,6 +1,7 @@
 <jsp:root version="2.0" 
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"		
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
@@ -13,7 +14,7 @@
 				<c:out value="${author.firstName} "/>
 				<c:set var="authorUrlTemplate">/author/<mtl:encode value='${author.lastName}'/></c:set>
 				<c:url var="authorUrl" value="${authorUrlTemplate}" context="${projectContext}"/>
-				<a href="${authorUrl}"><c:out value="${author.lastName}" /></a>         	     	 
+				<a href="${fn:escapeXml(authorUrl)}"><c:out value="${author.lastName}" /></a>         	     	 
 				<c:if test="${not loopStatus.last}"><jsp:text> </jsp:text><fmt:message key="and"/><jsp:text> </jsp:text></c:if>
 			</c:forEach>
 		</c:when>
@@ -22,7 +23,7 @@
 				<c:out value="${editor.firstName} " />
 				<c:set var="authorUrlTemplate">/author/<mtl:encode value='${editor.lastName}'/></c:set>
 				<c:url var="authorUrl" value="${authorUrlTemplate}" context="${projectContext}"/>
-				<a href="${authorUrl}"><c:out value="${editor.lastName}" /></a>
+				<a href="${fn:escapeXml(authorUrl)}"><c:out value="${editor.lastName}" /></a>
 				<c:if test="${not loopStatus.last}"><jsp:text> </jsp:text><fmt:message key="and"/><jsp:text> </jsp:text></c:if>
 			</c:forEach>
 			(eds.).

@@ -17,9 +17,9 @@
 
           <!-- ****************************** BibTeX *************************** -->
           <c:when test="${resourceType eq 'bibtex'}">
-            <c:url var="editUrl"   value="/beditbib/${fn:escapeXml(requPath)}"          context="${projectContext}"/>
+            <c:url var="editUrl"   value="/beditbib/${requPath}"          context="${projectContext}"/>
             <fmt:message var="editPageTags"       key="page.edit.tags"/>
-            <a href="${editUrl}" title="${editPageTags}"><fmt:message key="edit"/></a>
+            <a href="${fn:escapeXml(editUrl)}" title="${editPageTags}"><fmt:message key="edit"/></a>
 
             ${mtl:ch('post.actions.delim')}
 
@@ -36,9 +36,9 @@
 
 	      <!-- ****************************** Bookmarks *************************** -->
           <c:otherwise>
-			<c:url var="editUrl" value="/bediturl/${fn:escapeXml(requPath)}" context="${projectContext}"/>
+			<c:url var="editUrl" value="/bediturl/${requPath}" context="${projectContext}"/>
             <fmt:message var="editPageTags" key="page.edit.tags"/>
-            <a href="${editUrl}" title="${editPageTags}"><fmt:message key="edit"/></a>
+            <a href="${fn:escapeXml(editUrl)}" title="${editPageTags}"><fmt:message key="edit"/></a>
 		  </c:otherwise>
 
 		</c:choose>
