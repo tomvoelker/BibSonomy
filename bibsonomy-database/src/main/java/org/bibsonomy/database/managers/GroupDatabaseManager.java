@@ -203,7 +203,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		}
 
 		// check if a user exists with that name
-		if (this.userDb.getUserDetails(group.getName(), session) == null) {
+		if (this.userDb.getUserDetails(group.getName(), session).getName() == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There's no user with this name - can't create a group with this name");
 		}
 		// check if a group exists with that name
@@ -256,7 +256,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void addUserToGroup(final String groupname, final String username, final DBSession session) {
 		// check if a user exists with that name
-		if (this.userDb.getUserDetails(username, session) == null) {
+		if (this.userDb.getUserDetails(username, session).getName() == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There's no user with this name ('" + username + "')");
 		}
 		// make sure that the group exists

@@ -53,16 +53,28 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Get details for a given user, along with settings
+	 * Get details for a given user, along with settings. 
+	 * If the user does not exist, an empty user object (not <code>null</code>!) is returned. 
+	 * The user name of that object will be <code>null</code> instead.
 	 * 
 	 * @param username 
 	 * @param session 
 	 * @return user object
 	 */
 	public User getUserDetails(final String username, final DBSession session) {
-		final User user = this.queryForObject("getUserDetails", username, User.class, session);
-		final int numPosts = this.basketDb.getNumBasketEntries(username, session);
-		user.getBasket().setNumPosts(numPosts);
+		User user = this.queryForObject("getUserDetails", username, User.class, session);
+		if (user == null) {
+			/*
+			 * user does not exist -> create an empty (=unknown) user
+			 */
+			user = new User();
+		} else {
+			/*
+			 * user exists: get number of posts in his basket
+			 */
+			final int numPosts = this.basketDb.getNumBasketEntries(username, session);
+			user.getBasket().setNumPosts(numPosts);
+		}
 		return user;
 	}
 
@@ -90,7 +102,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void updateApiKeyForUser(final String username, final DBSession session) {
 		final User user = new User(username);
-		if (this.getUserDetails(user.getName(), session) == null) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update API key for nonexistent user");
+		if (this.getUserDetails(user.getName(), session).getName() == null) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update API key for nonexistent user");
 		user.setApiKey(UserUtils.generateApiKey());
 		this.update("updateApiKeyForUser", user, session);
 	}
@@ -155,7 +167,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		final User foundUser = getUserDetails(username, session);
 		
 		// user exists and password is correct
-		if ((foundUser != null) && (foundUser.getApiKey().equals(apiKey))) return foundUser;
+		if ((foundUser.getName() != null) && (foundUser.getApiKey().equals(apiKey))) return foundUser;
 		
 		// fallback: user is not logged in
 		return notLoggedInUser;
@@ -187,7 +199,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		final User foundUser = getUserDetails(username, session);
 		
 		// user exists and password is correct
-		if ((foundUser != null) && (foundUser.getPassword().equals(password))) return foundUser;
+		if ((foundUser.getName() != null) && (foundUser.getPassword().equals(password))) return foundUser;
 		
 		// fallback: user is not logged in
 		return notLoggedInUser;
