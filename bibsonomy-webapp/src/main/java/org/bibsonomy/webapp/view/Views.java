@@ -76,7 +76,12 @@ public enum Views implements View {
 	/**
 	 * aparss output for publications
 	 */
-	APARSS("export/bibtex/aparssfeed");
+	APARSS("export/bibtex/aparssfeed"),
+	
+	/**
+	 * xml output for bookmarks
+	 */
+	XML("export/bookmark/xmlOutput");
 	
 	private final String name;
 	
@@ -121,6 +126,8 @@ public enum Views implements View {
 			return PUBL;
 		if (format.equals("aparss"))
 			return APARSS;
+		if (format.equals("xml"))
+			return XML;
 		
 		throw new BadRequestOrResponseException("Invalid format specification.");
 	}
