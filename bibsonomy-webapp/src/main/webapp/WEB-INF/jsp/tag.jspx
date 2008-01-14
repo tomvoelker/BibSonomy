@@ -15,10 +15,9 @@
 	
 		<jsp:attribute name="heading">
 		<a rel="path_menu" href="#"><fmt:message key="navi.tag"/>${mtl:ch('nbsp')}<img alt="" src="/resources/image/box_arrow.png"/></a> :: 
-		<a href="/tag/${fn:escapeXml(command.requestedTags)}"><c:out value='${command.requestedTags}'/></a> ::
 		<form action="/tag/${fn:escapeXml(command.requestedTags)}" method="get" class="smallform">
-		  <input type="text" size="20" name="tag" id="inpf"/>
-		</form>										
+		  <input type="text" size="20" name="tag" id="inpf" value="${command.requestedTags}"/>
+		</form>							
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
