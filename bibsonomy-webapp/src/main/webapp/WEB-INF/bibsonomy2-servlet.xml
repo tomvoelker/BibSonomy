@@ -28,6 +28,11 @@
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="groupPageController"/>
 					</bean>
+				</entry>	
+				<entry key="/tag/">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="tagPageController"/>
+					</bean>
 				</entry>				
 			</map>
 		</property>
@@ -55,6 +60,17 @@
 	</bean>
 	
 	<bean id="groupPageController" class="org.bibsonomy.webapp.controller.GroupPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+		<property name="listsToInitialise">
+			<list>
+				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="tagPageController" class="org.bibsonomy.webapp.controller.TagPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
 		<property name="listsToInitialise">

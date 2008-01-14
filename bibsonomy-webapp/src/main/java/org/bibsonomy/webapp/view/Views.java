@@ -40,6 +40,10 @@ public enum Views implements View {
 	GROUPTAGPAGE("grouptag"),
 	
 	/**
+	 * tag page show all resources with a given tag or a list of tags
+	 */
+	TAGPAGE("tag"),
+	/**
 	 * bibtex output
 	 */
 	BIBTEX("export/bibtex/bibtex"),

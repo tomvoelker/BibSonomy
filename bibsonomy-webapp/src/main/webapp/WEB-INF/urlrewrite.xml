@@ -363,9 +363,14 @@
 <!-- ############## tag pages ############### -->
 	<!-- redirect for tag formular on /tag page -->
     <rule>
-      <from>^/+tag/(\?tag=(.*))$</from>
-      <to type="redirect">/tag/$2</to>
+		<from>^/+tag/(.+?)(\?(.*))?$</from>
+		<to>/tag?requestedTags=$1</to> 
+	</rule>
+    <rule>
+     	<from>^/+tag/(\?tag=(.*))$</from>
+     	<to type="redirect">/tag/$2</to>
     </rule>
+    <!-- tags -->
 	<rule>
 	    <from>^/+tags/*$</from>
 	    <to>/tags.jsp</to>
@@ -373,10 +378,6 @@
 	<rule>
 	    <from>^/+tag/*$</from>
 	    <to type="redirect">/tags</to>
-	</rule>
-    <rule>
-		<from>^/+tag/(.+?)(\?(.*))?$</from>
-		<to>/ResourceHandler?page=tag&amp;requTag=$1&amp;$3</to> 
 	</rule>
 	    
     <!-- redirect for tag formular on /concept/tag/TAG page -->
