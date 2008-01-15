@@ -31,7 +31,7 @@ public class PubMedCentralScraper implements Scraper {
 				String _origUrl = sc.getUrl().toString();
 				
 				//find the string in the content that contains the list_uid for hubmed.org
-				p = Pattern.compile("list_uids=(\\d+)\">PubMed record");
+				p = Pattern.compile("pubmed/(\\d+)\">PubMed record");
 				m = p.matcher(sc.getPageContent());
 
 				//if the uid will be found, the bibtex string would be extracted from hubmed
