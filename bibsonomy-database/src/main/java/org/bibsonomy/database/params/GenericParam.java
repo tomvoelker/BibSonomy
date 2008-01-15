@@ -246,8 +246,8 @@ public abstract class GenericParam {
 		return userName;
 	}
 
-	public void setUserName(String user) {
-		this.userName = user;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	public int getLimit() {
@@ -296,8 +296,8 @@ public abstract class GenericParam {
 		return this.hash;
 	}
 
-	public void setHash(String requBibtex) {
-		this.hash = requBibtex;
+	public void setHash(String hash) {
+		this.hash = hash;
 	}
 
 	// TODO: why in genericparam and not in resource-field?

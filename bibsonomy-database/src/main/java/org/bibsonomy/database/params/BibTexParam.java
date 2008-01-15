@@ -57,7 +57,7 @@ public class BibTexParam extends ResourcesParam<BibTex> {
 		return this.requestedSimHash.getId();
 	}
 
-	public void setRequestedSimHash(HashID requSim) {
-		this.requestedSimHash = requSim;
+	public void setRequestedSimHash(HashID requestedSimHash) {
+		this.requestedSimHash = requestedSimHash;
 	}
 }
