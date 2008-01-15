@@ -26,4 +26,5 @@ public abstract class ScraperUnitTest extends TestCase{
 	 */
 	public abstract void printTestFailure(TestResult result) throws Exception;
 
+	public abstract String getScraperTestId();
 }

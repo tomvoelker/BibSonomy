@@ -137,14 +137,6 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 	}
 	
 	/**
-	 * id from test
-	 * @return as String
-	 */
-	public String getTestId(){
-		return id;
-	}
-
-	/**
 	 * Exception which is occured during test
 	 * @return occured Exception
 	 */
@@ -174,7 +166,7 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 		
 		if(result.errorCount() > 0 || result.failureCount() > 0){
 			stream.println("*******************************************************************************");
-			stream.println("failure in: " + getScraperClass().getName() + "test: " + getTestId());
+			stream.println("failure in: " + getScraperClass().getName() + "test: " + getScraperTestId());
 			stream.println("test description: " + getDescription());
 			stream.println("url to tested reference: " + getURL());
 			if(getException() != null){
@@ -202,7 +194,7 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 			
 			pwriter.println();
 			pwriter.println("*******************************************************************************");
-			pwriter.println("failure in: " + getScraperClass().getName() + "test: " + getTestId());
+			pwriter.println("failure in: " + getScraperClass().getName() + "test: " + getScraperTestId());
 			pwriter.println("test description: " + getDescription());
 			pwriter.println("url to tested reference: " + getURL());
 			if(getException() != null){
@@ -218,5 +210,10 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 
 			log.error(swriter.toString());
 		}
+	}
+
+	@Override
+	public String getScraperTestId() {
+		return id;
 	}
 }
