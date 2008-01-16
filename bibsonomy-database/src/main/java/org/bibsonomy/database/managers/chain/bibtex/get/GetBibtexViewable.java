@@ -32,26 +32,12 @@ public class GetBibtexViewable extends BibTexChainElement {
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		final Integer groupId;
-		try {
-			final GroupID specialGroup = GroupID.getSpecialGroup(param.getRequestedGroupName());
-			if (specialGroup != null) {
-				groupId = specialGroup.getId();
-			} else {
-				groupId = this.generalDb.getGroupIdByGroupNameAndUserName(param, session);
-			}
-			if (groupId == null) {
-				log.debug("groupId not found");
-				return new ArrayList<Post<BibTex>>(0);
-			}
-			log.debug("groupId=" + groupId);
-			param.setGroupId(groupId);
-		}
-		catch (IllegalArgumentException ex) {
-			log.debug("groupId not found");
+		final Integer groupId = this.generalDb.getGroupIdByGroupNameAndUserName(param, session);
+		if (groupId == GroupID.INVALID.getId()) {
+			log.debug("groupId " +  param.getRequestedGroupName() + " not found" );
 			return new ArrayList<Post<BibTex>>(0);			
 		}
-
+		param.setGroupId(groupId);
 		if (present(param.getTagIndex()) == true) return this.db.getBibTexViewableByTag(param, session);
 		return this.db.getBibTexViewable(param, session);
 	}

@@ -23,29 +23,12 @@ public class GetTagsViewable extends TagChainElement {
 
 	@Override
 	protected List<Tag> handle(final TagParam param, final DBSession session) {		
-		final Integer groupId;
-		try {
-			final GroupID specialGroup = GroupID.getSpecialGroup(param.getRequestedGroupName());
-			if (specialGroup != null) {
-				groupId = specialGroup.getId();
-			} else {
-				groupId = this.generalDb.getGroupIdByGroupNameAndUserName(param, session);
-			}
-			if (groupId == null) {
-				log.debug("groupId not found");
-				return new ArrayList<Tag>(0);
-			}
+		final Integer groupId = this.generalDb.getGroupIdByGroupNameAndUserName(param, session);
+		if (groupId == GroupID.INVALID.getId()) {
+			log.debug("groupId " + param.getRequestedGroupName() + " not found");
+			return new ArrayList<Tag>(0);			
 		}
-		catch (IllegalArgumentException e) {
-			log.debug("groupId not found");
-			return new ArrayList<Tag>(0);
-		}
-		
-		log.debug("groupId=" + groupId);
 		param.setGroupId(groupId);
-		
-		// TODO: is this needed?  param.setGroups(this.generalDb.getGroupsForUser(param, session));
-		// param.setGroupId(this.generalDb.getGroupIdByGroupNameAndUserName(param, session));
 		return this.db.getTagsViewable(param, session);
 	}
 

@@ -28,30 +28,12 @@ public class GetBookmarksViewable extends BookmarkChainElement {
 	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
-		final Integer groupId;
-		try {
-			final GroupID specialGroup = GroupID.getSpecialGroup(param.getRequestedGroupName());
-		
-			if (specialGroup != null) {
-				groupId = specialGroup.getId();
-			} else {
-				groupId = this.generalDb.getGroupIdByGroupNameAndUserName(param, session);
-			}
-			if (groupId == null) {
-				log.debug("groupId not found");
-				return new ArrayList<Post<Bookmark>>(0);
-			}
+		final Integer groupId = this.generalDb.getGroupIdByGroupNameAndUserName(param, session);
+		if (groupId == GroupID.INVALID.getId()) {
+			log.debug("groupId " + param.getRequestedGroupName() + "not found");
+			return new ArrayList<Post<Bookmark>>(0);			
 		}
-		catch (IllegalArgumentException e) {
-			log.debug("groupId not found");
-			return new ArrayList<Post<Bookmark>>(0);
-		}
-		log.debug("groupId=" + groupId);
-		param.setGroupId(groupId);	
-		
-		// param.setGroupId(this.generalDb.getGroupIdByGroupNameAndUserName(param, session));
-		// TODO: is this needed?  param.setGroups(this.generalDb.getGroupsForUser(param, session));
-
+		param.setGroupId(groupId);		
 		return this.db.getBookmarkViewable(param, session);
 	}
 

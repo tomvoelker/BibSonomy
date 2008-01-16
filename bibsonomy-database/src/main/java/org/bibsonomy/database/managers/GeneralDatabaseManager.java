@@ -96,7 +96,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 * @param session a db session
 	 * @return groupid of group, GroupID.GROUP_INVALID otherwise
 	 */
-	public Integer getGroupIdByGroupName(final GenericParam param, final DBSession session) {
+	public Integer getGroupIdByGroupName(final GenericParam param, final DBSession session) {		
 		final String oldUserName = param.getUserName();
 		param.setUserName(null);
 		try {
@@ -116,6 +116,15 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	public Integer getGroupIdByGroupNameAndUserName(final GenericParam param, final DBSession session) {
 		if (present(param.getRequestedGroupName()) == false) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "requestedGroupName isn't set");
+		}
+		try {
+			final GroupID specialGroup = GroupID.getSpecialGroup(param.getRequestedGroupName());
+			if (specialGroup != null) {
+				return specialGroup.getId();
+			}
+		}
+		catch (IllegalArgumentException ex) {
+			// do nothing - this simply means that the given group is not a special group
 		}
 		final Integer rVal = this.queryForObject("getGroupIdByGroupNameAndUserName", param, Integer.class, session);
 		if (rVal == null) return GroupID.INVALID.getId();
