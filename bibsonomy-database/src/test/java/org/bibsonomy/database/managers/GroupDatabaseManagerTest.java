@@ -94,16 +94,13 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		// "hotho", a member of "kde_stud", can see all members
 		Group memberOnlyGroup = this.groupDb.getGroupMembers("hotho", "kde_stud", this.dbSession);
-		assertEquals(6, memberOnlyGroup.getUsers().size());
+		assertEquals(7, memberOnlyGroup.getUsers().size());
 		// "xamde" isn't a member of "kde_stud" and can't see the members
 		memberOnlyGroup = this.groupDb.getGroupMembers("xamde", "kde_stud", this.dbSession);
 		assertEquals(0, memberOnlyGroup.getUsers().size());
 
-		try {
-			this.groupDb.getGroupMembers(ParamUtils.NOUSER_NAME, ParamUtils.NOGROUP_NAME, this.dbSession);
-			fail("Should throw an exception");
-		} catch (final RuntimeException ex) {
-		}
+		Group invalidGroup = this.groupDb.getGroupMembers(ParamUtils.NOUSER_NAME, ParamUtils.NOGROUP_NAME, this.dbSession);
+		assertEquals(GroupID.INVALID.getId(), invalidGroup.getGroupId());
 	}
 
 	/**

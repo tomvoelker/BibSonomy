@@ -1,5 +1,6 @@
 package org.bibsonomy.database.managers;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,10 +29,15 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	private final static GroupDatabaseManager singleton = new GroupDatabaseManager();
 	private final UserDatabaseManager userDb;
 	private final DatabasePluginRegistry plugins;
+	private final List<Group> specialGroups;
 
 	private GroupDatabaseManager() {
 		this.userDb = UserDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
+		this.specialGroups = new ArrayList<Group>();
+		this.specialGroups.add(getPrivateGroup());
+		this.specialGroups.add(getPublicGroup());
+		this.specialGroups.add(getFriendsGroup());
 	}
 
 	/**
@@ -102,6 +108,39 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		friends.setPrivlevel(Privlevel.HIDDEN);
 		return friends;
 	}
+	
+	private static Group getInvalidGroup() {
+		final Group invalid = new Group();
+		invalid.setDescription("invalid group");
+		invalid.setGroupId(GroupID.INVALID.getId());
+		invalid.setName("invalid");
+		invalid.setPrivlevel(Privlevel.HIDDEN);
+		return invalid;		
+	}
+	
+	/**
+	 * Returns a list with all special groups of the system
+	 * 
+	 * @return a list with all special groups of the system
+	 */
+	public List<Group> getSpecialGroups() {
+		return this.specialGroups;
+	}
+	
+	/**
+	 * Helper function to remove special groups from a List of groups
+	 * 
+	 * @param groups a list of groups 
+	 * @return a new list of groups with special groups removed
+	 */
+	public List<Group> removeSpecialGroups(List<Group> groups) {
+		ArrayList<Group> newGroups = new ArrayList<Group>();
+		for (Group g : groups) {
+			if (!GroupID.isSpecialGroupId(g.getGroupId()))
+				newGroups.add(g);
+		}
+		return newGroups;
+	}
 
 	/**
 	 * Returns a group with all its members if the user is allowed to see them.
@@ -112,16 +151,30 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @return group 
 	 */
 	public Group getGroupMembers(final String authUser, final String groupname, final DBSession session) {
-		final Group group;
+		log.debug("getGroupMembers " + groupname);
+		Group group;		
 		if ("friends".equals(groupname) == true) {
 			group = getFriendsGroup();
 			group.setUsers(getFriendsOfUser(authUser,session));
 			return group;
 		}
+		if ("public".equals(groupname)) {
+			group = getPrivateGroup();
+			group.setUsers(Collections.<User> emptyList());
+			return group;
+		}
+		if ("private".equals(groupname)) {
+			group = getPublicGroup();
+			group.setUsers(Collections.<User> emptyList());
+			return group;
+		}
 
 		group = this.queryForObject("getGroupMembers", groupname, Group.class, session);
 		if (group == null) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist");
+			log.debug("group " + groupname + " does not exist");
+			group = getInvalidGroup();
+			group.setUsers(Collections.<User> emptyList());
+			return group;
 		}
 		final int groupId = this.getGroupByName(groupname, session).getGroupId();
 		final int privlevel = this.getPrivlevelForGroup(groupId, session);
@@ -175,6 +228,21 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public List<Group> getGroupsForUser(final String username, final DBSession session) {
 		return this.queryForList("getGroupsForUser", username, Group.class, session);
+	}
+	
+	/**
+	 * get all groups a user is member of, with or without special groups
+	 * 
+	 * @param userName
+	 * @param removeSpecialGroups
+	 * @param session
+	 * @return a list of groups the user is member of
+	 */
+	public List<Group> getGroupsForUser(final String userName, final boolean removeSpecialGroups, final DBSession session) {
+		if (removeSpecialGroups) {
+			return this.removeSpecialGroups(this.getGroupsForUser(userName, session));
+		}
+		return this.getGroupsForUser(userName, session);
 	}
 	
 	/**

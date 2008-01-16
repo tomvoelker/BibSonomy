@@ -30,10 +30,13 @@
 	</select>
 
 	<select id="getFriendsOfUser" resultMap="UserCommon.user" parameterClass="string">
-		SELECT u.user_name, u.user_email, u.user_homepage, u.user_realname, u.openUrl, u.api_key
-		FROM user u, friends f
-		WHERE f.user_name = #requestedUserName# AND u.user_name=f.f_user_name
-		ORDER BY u.user_name
+		SELECT <include refid="commonUserAttributes"/> 
+		FROM (
+		  SELECT u.*
+		  FROM user u, friends f
+		  WHERE f.user_name = #requestedUserName# AND u.user_name=f.f_user_name
+		  ORDER BY u.user_name
+		) AS uf
 	</select>
 
 	<select id="getPrivlevelForGroup" resultClass="int" parameterClass="int">
