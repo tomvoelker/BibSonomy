@@ -14,7 +14,7 @@ import org.junit.Before;
  * @author Dominik Benz
  * @version $Id$
  */
-public class AbstractChainTest extends AbstractDatabaseManagerTest {
+public abstract class AbstractChainTest extends AbstractDatabaseManagerTest {
 
 	protected BookmarkChain bookmarkChain;
 	protected BibTexChain bibtexChain;
