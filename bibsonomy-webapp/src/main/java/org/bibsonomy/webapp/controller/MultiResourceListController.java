@@ -51,8 +51,8 @@ public abstract class MultiResourceListController {
 	protected <T extends Resource, V extends ResourceViewCommand> void setTags(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, int start, int end) {
 		TagCloudCommand tagCloudCommand = cmd.getTagcloud();
 		// retrieve tags
-		tagCloudCommand.setTags( this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, start, end));
 		log.debug("getTags " + " " + groupingEntity + " " + groupingName);
+		tagCloudCommand.setTags( this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, start, end));		
 		// retrieve tag cloud settings
 		tagCloudCommand.setStyle(TagCloudStyle.getStyle(userSettings.getTagboxStyle()));
 		tagCloudCommand.setSort(TagCloudSort.getSort(userSettings.getTagboxSort()));
@@ -84,16 +84,14 @@ public abstract class MultiResourceListController {
 	 * @param groupingEntity the grouping entity
 	 * @param groupingName the grouping name
 	 * @param itemsPerPage number of items to be displayed on each page
-	 * @param totalCount total number of items in the list
 	 */
-	protected <T extends Resource, V extends ResourceViewCommand> void setList(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, List<String> tags, String hash, Order order, String search, int itemsPerPage, int totalCount) {
+	protected <T extends Resource, V extends ResourceViewCommand> void setList(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, List<String> tags, String hash, Order order, String search, int itemsPerPage) {
 		ListCommand<Post<T>> listCommand = cmd.getListCommand(resourceType);
 		// retrieve posts		
-		listCommand.setList( this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, order, listCommand.getStart(), listCommand.getStart() + itemsPerPage, search) );
 		log.debug("getPosts " + resourceType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage);
+		listCommand.setList( this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, order, listCommand.getStart(), listCommand.getStart() + itemsPerPage, search) );
 		// list settings
 		listCommand.setEntriesPerPage(itemsPerPage);
-		listCommand.setTotalCount(totalCount);
 	}
 
 	/**

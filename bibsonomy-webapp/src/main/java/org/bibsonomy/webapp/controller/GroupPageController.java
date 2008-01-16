@@ -3,6 +3,7 @@ package org.bibsonomy.webapp.controller;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
@@ -29,11 +30,14 @@ public class GroupPageController extends MultiResourceListController implements 
 		
 		// if no group given return 
 		if (command.getRequestedGroup() == null) return null;
-		
+				
 		// set grouping entity and grouping name
 		final GroupingEntity groupingEntity = GroupingEntity.GROUP;
 		final String groupingName = command.getRequestedGroup();
 		final List<String> requTags = command.getRequestedTagsList();
+		
+		// special group given - return empty page
+		if (GroupID.isSpecialGroup(groupingName)) return Views.GROUPPAGE;
 		
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype
@@ -41,8 +45,14 @@ public class GroupPageController extends MultiResourceListController implements 
 		
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {			
-			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, command.getListCommand(resourceType).getEntriesPerPage(), 100);
+			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, command.getListCommand(resourceType).getEntriesPerPage());
 			this.postProcessList(command, resourceType);
+			
+			// retrieve resource counts, if no tags are given
+			if (requTags.size() == 0) { 
+				int totalCount = this.logic.getStatistics(resourceType, groupingEntity, groupingName, null, null);
+				command.getListCommand(resourceType).setTotalCount(totalCount);				
+			}
 		}		
 		
 		// html format - retrieve tags and return HTML view
@@ -99,6 +109,6 @@ public class GroupPageController extends MultiResourceListController implements 
 		memberCommand.setGroup(groupName);
 		for (User u: members) {
 			memberCommand.addMember(u.getName());
-		}		
+		}
 	}
 }

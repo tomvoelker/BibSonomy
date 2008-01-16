@@ -38,7 +38,7 @@ public class TagPageController extends MultiResourceListController implements Mi
 		
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {			
-			this.setList(command, resourceType, GroupingEntity.ALL, null, requTags, null, null, null, command.getListCommand(resourceType).getEntriesPerPage(), 100);
+			this.setList(command, resourceType, GroupingEntity.ALL, null, requTags, null, null, null, command.getListCommand(resourceType).getEntriesPerPage());
 			this.postProcessList(command, resourceType);
 		}	
 		
