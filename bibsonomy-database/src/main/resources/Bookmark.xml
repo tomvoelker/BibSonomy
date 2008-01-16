@@ -250,7 +250,7 @@
 		WHERE b.user_name = #requestedUserName#
 		      <include refid="getPostForUser"/>
 	</select>
-
+	
     <insert id="insertBookmark" parameterClass="bookmarkParam">
 		INSERT INTO bookmark (content_id, book_url_hash, book_description, book_extended, `group`, date, user_name)
 		VALUES (#requestedContentId#,#hash#,#resource.title#,#description#,#groupId#,#date#,#userName#)

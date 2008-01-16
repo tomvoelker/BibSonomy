@@ -28,9 +28,13 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager{
 	private static final Logger log = Logger.getLogger(UserDatabaseManager.class);
 	private final static StatisticsDatabaseManager singleton = new StatisticsDatabaseManager();
 	private final GeneralDatabaseManager generalDBManager;
+	private final BibTexDatabaseManager bibtexDBManager;
+	private final BookmarkDatabaseManager bookmarkDBManager;
 
 	private StatisticsDatabaseManager() {
 		generalDBManager = GeneralDatabaseManager.getInstance();
+		bibtexDBManager = BibTexDatabaseManager.getInstance();
+		bookmarkDBManager = BookmarkDatabaseManager.getInstance();
 	}
 
 	/**
@@ -39,53 +43,43 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager{
 	public static StatisticsDatabaseManager getInstance() {
 		return singleton;
 	}
-	
-	/**
-	 * @param userName
-	 * @param session
-	 * @return
-	 */
-	private int getNumBookmarksForUser(final StatisticsParam param, final DBSession session){
-		return this.queryForObject("getNumBookmarksForUser", param, int.class, session);
-	}
-	
-	/**
-	 * @param userName
-	 * @param session
-	 * @return
-	 */
-	private int getNumPublicationsForUser(final StatisticsParam param, final DBSession session){
-		return this.queryForObject("getNumPublicationsForUser", param, int.class, session);
-	}
-	
+		
 	/**
 	 * @param userName
 	 * @param resourceType
 	 * @param session
 	 * @return a statistical number (int)
 	 */
-	public int getNumberOfResourcesForUser(final String requestedUserName, final String loginUserName, Class<? extends Resource> resourceType, final DBSession session) {
-		
-		// check which groups this user is allowed to see
-		List<Integer> groups = generalDBManager.getGroupIdsForUser(loginUserName, session);
-		groups.add(GroupID.PUBLIC.getId());
-		if (requestedUserName.equals(loginUserName)) {
-			groups.add(GroupID.PRIVATE.getId());
-			groups.add(GroupID.FRIENDS.getId());
-		}
-		
-		StatisticsParam param = new StatisticsParam();
-		param.setGroups(groups);
-		param.setRequestedUserName(requestedUserName);
-		
+	public Integer getNumberOfResourcesForUser(Class<? extends Resource> resourceType, final String requestedUserName, final String loginUserName, final DBSession session) {				
 		if (resourceType == BibTex.class) {
-			return this.getNumPublicationsForUser(param, session);
+			return this.bibtexDBManager.getBibTexForUserCount(requestedUserName, loginUserName, session);
 		}
 		else if (resourceType == Bookmark.class) {
-			return this.getNumBookmarksForUser(param, session);
+			return this.bookmarkDBManager.getBookmarkForUserCount(requestedUserName, loginUserName, session);
 		}
 		else {
 			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
 		}
+	}
+	
+	/**
+	 * Returns the number of resources of the given group
+	 * 
+	 * @param resourceType
+	 * @param groupId
+	 * @param loginUserName
+	 * @param session
+	 * @return
+	 */
+	public Integer getNumberOfResourcesForGroup(Class<? extends Resource> resourceType, final int groupId, final String loginUserName, final DBSession session) {
+		if (resourceType == BibTex.class) {
+			return this.bibtexDBManager.getBibTexForGroupCount(groupId, loginUserName, session);
+		}
+		else if (resourceType == Bookmark.class) {
+			return this.bookmarkDBManager.getBookmarkForGroupCount(groupId, loginUserName, session);
+		}
+		else {
+			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
+		}		
 	}
 }

@@ -244,6 +244,23 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		DatabaseUtils.setGroups(this.generalDb, param, session);
 		return this.queryForObject("getBookmarkForGroupCount", param, Integer.class, session);
 	}
+	
+	/**
+	 * Returns the number of bookmarks belonging to this group
+	 * 
+	 * @see BookmarkDatabaseManager.getBookmarkForFGroupCount
+	 * 
+	 * @param groupId
+	 * @param loginUserName
+	 * @param session
+	 * @return the (approximated) number of bookmarks for the given group
+	 */
+	public Integer getBookmarkForGroupCount(final int groupId, final String loginUserName, final DBSession session) {
+		BookmarkParam param = new BookmarkParam();
+		param.setUserName(loginUserName);
+		param.setGroupId(groupId);
+		return this.getBookmarkForGroupCount(param, session);
+	}
 
 	/**
 	 * <em>/group/EineGruppe/EinTag+NochEinTag</em><br/><br/>
@@ -274,8 +291,23 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * Returns the number of bookmarks for a given user.
 	 */
 	public Integer getBookmarkForUserCount(final BookmarkParam param, final DBSession session) {
-		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session); // set groups
 		return this.queryForObject("getBookmarkForUserCount", param, Integer.class, session);
+	}
+	
+	/**
+	 * returns the number of bookmarks for a given user
+	 * 
+	 * @param requestedUserName
+	 * @param loginUserName
+	 * @param session
+	 * @return the number of bookmarks of the requested User which the logged in user is allowed to see
+	 */
+	public Integer getBookmarkForUserCount(final String requestedUserName, final String loginUserName, final DBSession session) {
+		BookmarkParam param = new BookmarkParam();
+		param.setUserName(loginUserName);
+		param.setRequestedUserName(requestedUserName);
+		return this.getBookmarkForUserCount(param, session);
 	}
 
 	/**

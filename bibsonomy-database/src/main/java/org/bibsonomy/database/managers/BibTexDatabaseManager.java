@@ -290,6 +290,21 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		DatabaseUtils.setGroups(this.generalDb, param, session);
 		return this.queryForObject("getBibTexForGroupCount", param, Integer.class, session);
 	}
+	
+	/**
+	 * Returns the number of publications
+	 * 
+	 * @param groupID
+	 * @param loginUserName
+	 * @param session
+	 * @return the (approximated) number of resources posted to the group with the given groupID
+	 */
+	public Integer getBibTexForGroupCount(final int groupID, final String loginUserName, final DBSession session) {
+		BibTexParam param = new BibTexParam();
+		param.setUserName(loginUserName);
+		param.setGroupId(groupID);
+		return this.getBibTexForGroupCount(param, session);
+	}
 
 	/**
 	 * <em>/group/EineGruppe/EinTag+NochEinTag</em><br/><br/>
@@ -325,6 +340,21 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	public Integer getBibTexForUserCount(final BibTexParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		return this.queryForObject("getBibTexForUserCount", param, Integer.class, session);
+	}
+	
+	/**
+	 * Returns the number of publications for a given user
+	 * 
+	 * @param requestedUserName
+	 * @param loginUserName
+	 * @param session
+	 * @return the number of publications of the requested user which the logged in user is allowed to see
+	 */
+	public Integer getBibTexForUserCount(final String requestedUserName, final String loginUserName, final DBSession session) {
+		BibTexParam param = new BibTexParam();
+		param.setUserName(loginUserName);
+		param.setRequestedUserName(requestedUserName);
+		return this.getBibTexForUserCount(param, session);
 	}
 
 	/**

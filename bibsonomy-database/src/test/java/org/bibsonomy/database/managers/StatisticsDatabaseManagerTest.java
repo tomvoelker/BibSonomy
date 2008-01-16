@@ -24,10 +24,8 @@ public class StatisticsDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getNumResourcesForUser() {
-		int numPublications = this.statisticsDb.getNumberOfResourcesForUser(TEST_REQUESTED_USER, TEST_LOGIN_USER, BibTex.class, this.dbSession);
-		int numBookmarks = this.statisticsDb.getNumberOfResourcesForUser(TEST_REQUESTED_USER, TEST_LOGIN_USER, Bookmark.class, this.dbSession);
-		System.out.println(numPublications);
-		System.out.println(numBookmarks);
+		int numPublications = this.statisticsDb.getNumberOfResourcesForUser(BibTex.class, TEST_REQUESTED_USER, TEST_LOGIN_USER, this.dbSession);
+		int numBookmarks = this.statisticsDb.getNumberOfResourcesForUser(Bookmark.class, TEST_REQUESTED_USER, TEST_LOGIN_USER, this.dbSession);
 	}
 
 }
