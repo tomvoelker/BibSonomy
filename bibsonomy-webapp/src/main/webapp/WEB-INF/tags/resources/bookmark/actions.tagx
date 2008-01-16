@@ -21,7 +21,7 @@
 				<c:param name="user" value="${post.user.name}" />
 				<c:param name="jump" value="no" />
 			</c:url>
-			<c:set var="editTitle"><fmt:message key="bookmark.actions.editTags.title"/></c:set>
+			<c:set var="edit"><fmt:message key="bookmark.actions.edit.title"/></c:set>
 
 			<!-- DELETE link -->
 			<c:url var="url_delete" value="/bookmarkHandler" context="${projectContext}">
@@ -37,7 +37,7 @@
 				hashsum="${post.resource.hash}" user="${fn:escapeXml(post.user.name)}"
 				title="${editTitle}"
 				href="${fn:escapeXml(url_edit)}">
-				<fmt:message key="bookmark.actions.editTags"/>
+				<fmt:message key="bookmark.actions.edit"/>
 			</a>
 			</span>
             ${mtl:ch('post.actions.delim')}
