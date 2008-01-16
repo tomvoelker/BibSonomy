@@ -55,4 +55,19 @@ public enum GroupID {
 	public static boolean isSpecialGroupId(final GroupID groupId) {
 		return isSpecialGroupId(groupId.getId());
 	}
+	
+	/**
+	 * wrapper function to check if a given groupname represents a special group
+	 * 
+	 * @param groupName
+	 * @return true if the given group is a special group, false otherwise
+	 */
+	public static boolean isSpecialGroup(final String groupName) {
+		try {
+			return isSpecialGroupId(valueOf(groupName.toUpperCase()));
+		}
+		catch (IllegalArgumentException ex) {
+			return false;
+		}
+	}
 }
