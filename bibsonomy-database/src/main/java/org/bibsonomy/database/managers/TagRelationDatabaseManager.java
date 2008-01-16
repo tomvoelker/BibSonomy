@@ -89,12 +89,32 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 		trp.setUpperTagName(upperTagName);
 		delete("deleteTagRelation", trp, session);
 	}
-
-	/*public List<Tag> getSubtagsOfTag(final Tag tag, final DBSession session) {
-		return this.queryForList("getSubtagsOfTag", tag, Tag.class, session);
+	
+	/**
+	 * @param userName
+	 * @return
+	 */
+	public List<Tag> getAllConceptsForUser(final String userName, final DBSession session) {
+		return queryForList("getAllConceptsForUser", userName, session);
 	}
-
-	public List<Tag> getSupertagsOfTag(final Tag tag, final DBSession session) {
-		return this.queryForList("getSupertagsOfTag", tag, Tag.class, session);
-	}*/
+	
+	/**
+	 * @param userName
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	public List<Tag> getConceptsForuser(final String userName, final int start, final int end, final DBSession session) {
+		return null;
+	}
+	
+	/**
+	 * @param userName
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Tag> getPickedConceptsForUser(final String userName, final DBSession session) {
+		return queryForList("getPickedConceptsForUser", userName, session);
+	}
+	
 }

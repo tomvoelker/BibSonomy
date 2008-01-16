@@ -7,6 +7,10 @@
 	<resultMap id="tagWithGlobalCount" class="tag" extends="Common.tag">
 	    <result property="globalcount" column="tag_ctr" javaType="int" />
 	</resultMap>
+	
+	<resultMap id="tagWithSubtags" class="tag" extends="Common.tag">
+	    <result property="subtagsString" column="subtags" javaType="String" />
+	</resultMap>	
 
 	<!-- tag name with its usercount, i.e. the number of users that have used it -->
 	<resultMap id="tagWithUserCount" class="tag" extends="Common.tag">

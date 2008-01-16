@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConstantID;
@@ -75,4 +76,24 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 
 		assertTrue(plugin.isOnTagRelationDelete());
 	}
+	
+	/**
+	 * get picked concepts for User
+	 */
+	@Test
+	public void getPickedConceptsForUser() {
+		List<Tag> relations = this.tagRelDb.getPickedConceptsForUser("hotho", this.dbSession);
+		// hotho has six concepts
+		assertEquals(6, relations.size());
+	}
+	
+	/**
+	 * retrieve all concepts for a user
+	 */
+	@Test
+	public void getAllConceptsForUser() {
+		List<Tag> relations = this.tagRelDb.getAllConceptsForUser("hotho", this.dbSession);
+		// hotho has six concepts
+		assertEquals(6, relations.size());	
+	}	
 }
