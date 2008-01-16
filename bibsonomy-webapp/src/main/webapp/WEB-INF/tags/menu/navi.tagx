@@ -99,8 +99,6 @@
 						<a href="${basketUrl}"><fmt:message key="navi.basket"/></a> ${mtl:ch('menu.delim')}
 						<c:url var="editTagsUrl" value="/edit_tags" context="${projectContext}"/>
 						<a href="${editTagsUrl}"><fmt:message key="navi.editTags"/></a> ${mtl:ch('menu.delim')}
-						<c:url var="friendsUrl" value="/friends" context="${projectContext}"/>
-						<a href="${friends}"><fmt:message key="navi.friends"/></a> ${mtl:ch('menu.delim')}
 						<c:url var="settingsUrl" value="/settings" context="${projectContext}"/>        
 						<a href="${settingsUrl}"><fmt:message key="navi.settings"/></a> ${mtl:ch('menu.delim')}
 						<c:url var="logoutUrl" value="/logout" context="${projectContext}"/>
