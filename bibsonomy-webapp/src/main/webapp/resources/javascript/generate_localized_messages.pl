@@ -26,15 +26,22 @@ foreach my $file (@files) {
 
 	open(M, "< $file");
 
+    my $pairs = "";
+
 	# parse properties file and write contents into javascript array
 	foreach my $line (<M>) {
 		chomp($line);
 		my @keyValuePair = split("=", $line);
 		if (scalar @keyValuePair == 2) {
-			print JS '   "'.$keyValuePair[0].'" : "' . $keyValuePair[1] . '",' . "\n";
+			$pairs .= '   "'.$keyValuePair[0].'" : "' . $keyValuePair[1] . '",' . "\n";
 		}
 	}
-
+	
+	# remove last comma
+	$pairs = substr($pairs, 0, length($pairs) - 2 );
+	
+	print JS $pairs;
+	
 	print JS "\n\}\n";
 	print "\n done.\n\n";
 	close JS;
