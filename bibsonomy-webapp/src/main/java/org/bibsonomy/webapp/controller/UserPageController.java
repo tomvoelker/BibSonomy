@@ -1,16 +1,20 @@
 package org.bibsonomy.webapp.controller;
 
 import java.net.MalformedURLException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.webapp.command.PageCommand;
 import org.bibsonomy.webapp.command.ResourceViewCommand;
+import org.bibsonomy.webapp.command.UserResourceViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
@@ -22,10 +26,10 @@ import org.bibsonomy.webapp.view.Views;
  * @author Dominik Benz
  * @version $Id$
  */
-public class UserPageController extends MultiResourceListController implements MinimalisticController<ResourceViewCommand>{
+public class UserPageController extends MultiResourceListController implements MinimalisticController<UserResourceViewCommand>{
 	private static final Logger LOGGER = Logger.getLogger(UserPageController.class);
 
-	public View workOn(final ResourceViewCommand command) {
+	public View workOn(final UserResourceViewCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
 
 		// set grouping entity and grouping name
@@ -44,12 +48,17 @@ public class UserPageController extends MultiResourceListController implements M
 
 		// retrieve and set the requested resource lists, along with total counts
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {
-			this.setList(command, resourceType, groupingEntity, groupingName, null, null, null, null, command.getListCommand(resourceType).getEntriesPerPage(), 100);
+			this.setList(command, resourceType, groupingEntity, groupingName, null, null, null, null, command.getListCommand(resourceType).getEntriesPerPage());
 			this.postProcessList(command, resourceType);
 			
 			int totalCount = this.logic.getStatistics(resourceType, groupingEntity, groupingName, null, null);
 			command.getListCommand(resourceType).setTotalCount(totalCount);
 		}
+		
+		// retrieve concepts
+		List<Tag> concepts = this.logic.getConcepts(null, groupingEntity, groupingName, null, null, ConceptStatus.PICKED, 0, Integer.MAX_VALUE);
+		command.getConcepts().setConceptList(concepts);
+		command.getConcepts().setNumConcepts(concepts.size());
 
 		// html format - retrieve tags and return HTML view
 		if (command.getFormat().equals("html")) {
@@ -61,7 +70,7 @@ public class UserPageController extends MultiResourceListController implements M
 		return Views.getViewByFormat(command.getFormat());		
 	}
 
-	public ResourceViewCommand instantiateCommand() {
-		return new ResourceViewCommand();
+	public UserResourceViewCommand instantiateCommand() {
+		return new UserResourceViewCommand();
 	}
 }
