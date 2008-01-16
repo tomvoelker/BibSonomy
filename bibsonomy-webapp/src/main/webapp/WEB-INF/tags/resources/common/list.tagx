@@ -20,66 +20,69 @@
 	<jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true"/>
 	<jsp:directive.variable name-given="post" scope="NESTED"/>
 	
-	<fmt:bundle basename="messages"/>
+	<div class="bookbox">
+	
+		<h2 class="listh"><fmt:message key="${titleKey}" /></h2> 
 
-	<c:if test="${!empty listView.list}">
-		<div class="bookbox">
-			<h2 class="listh"><fmt:message key="${titleKey}" /></h2> 
-		
-			<div class="listh">
-				<c:if test="${listView.totalCount != 0}">
-					<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${listView.totalCount} "/> <fmt:message key="${titleKey}" /></c:set>
-					<span title="${totalTitle}">(${listView.totalCount})</span>
-				</c:if>
-				<jsp:invoke fragment="formatButtons"/>
-			</div>
-		
+		<c:if test="${!empty listView.list}">
 			
-			<div class="kiste">		
-				<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}" loginUserName="${loginUserName}" otherParams="${otherParamsNextprev}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}"/>
-				<rc:actions loginUserName="${loginUserName}" resourceType="${listView.resourcetype}"/>				
-				${mtl:ch('nbsp')}
-			</div>
+				<div class="listh">
+					<c:if test="${listView.totalCount != 0}">
+						<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${listView.totalCount} "/> <fmt:message key="${titleKey}" /></c:set>
+						<span title="${totalTitle}">(${listView.totalCount})</span>
+					</c:if>
+					<jsp:invoke fragment="formatButtons"/>
+				</div>
 			
-			
-			<ul id="${listView.resourcetype}">
-				<c:forEach var="post" items="${listView.list}">
-					<c:choose>
-						<c:when test="${loginUserName eq post.user.name}">
-							<c:set var="liClass" value="bm bmown"/>
-						</c:when>
-						<c:otherwise>
-							<c:set var="liClass" value="bm"/>
-						</c:otherwise>
-					</c:choose>
-					<li class="${liClass}">
-						<div class="bmtitle">
-							<jsp:invoke fragment="title"/>
-						</div>
-						<div class="bmdesc">
-							<jsp:invoke fragment="desc"/>
-						</div>
-						<span class="bmmeta">
-							<rc:meta post="${post}" loginUserName="${loginUserName}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
-						</span>
-						<div class="bmfoot">
-							<span class="bmaction">
-								<jsp:invoke fragment="actions"/>
+				
+				<div class="kiste">		
+					<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}" loginUserName="${loginUserName}" otherParams="${otherParamsNextprev}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}"/>
+					<rc:actions loginUserName="${loginUserName}" resourceType="${listView.resourcetype}"/>				
+					${mtl:ch('nbsp')}
+				</div>
+				
+	
+				
+				<ul id="${listView.resourcetype}">
+					<c:forEach var="post" items="${listView.list}">
+						<c:choose>
+							<c:when test="${loginUserName eq post.user.name}">
+								<c:set var="liClass" value="bm bmown"/>
+							</c:when>
+							<c:otherwise>
+								<c:set var="liClass" value="bm"/>
+							</c:otherwise>
+						</c:choose>
+						<li class="${liClass}">
+							<div class="bmtitle">
+								<jsp:invoke fragment="title"/>
+							</div>
+							<div class="bmdesc">
+								<jsp:invoke fragment="desc"/>
+							</div>
+							<span class="bmmeta">
+								<rc:meta post="${post}" loginUserName="${loginUserName}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
 							</span>
-						</div>   
-					</li>
-				</c:forEach>
-			</ul>
+							<div class="bmfoot">
+								<span class="bmaction">
+									<jsp:invoke fragment="actions"/>
+								</span>
+							</div>   
+						</li>
+					</c:forEach>
+				</ul>
+	
+		</c:if>
 			
-			<div class="kiste">		
-				<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}" loginUserName="${loginUserName}" otherParams="${otherParamsNextprev}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}"/>
-				<c:if test="${disableListNavigation == false}">
-					<rc:itemcount entriesPerPage="${listView.entriesPerPage}" entryType="${listView.resourcetype}" otherParams="${otherParamsNumEntries}" titleKey="${titleKey}"/>
-				</c:if>
-				${mtl:ch('nbsp')}
-			</div>
-			
+		<div class="kiste">		
+			<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}" loginUserName="${loginUserName}" otherParams="${otherParamsNextprev}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}"/>
+			<c:if test="${disableListNavigation == false}">
+				<rc:itemcount entriesPerPage="${listView.entriesPerPage}" entryType="${listView.resourcetype}" otherParams="${otherParamsNumEntries}" titleKey="${titleKey}"/>
+			</c:if>
+			${mtl:ch('nbsp')}
 		</div>
-	</c:if>
+		
+	</div>
+
 
 </jsp:root>

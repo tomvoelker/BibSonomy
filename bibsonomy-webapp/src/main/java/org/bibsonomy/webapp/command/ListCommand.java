@@ -103,7 +103,7 @@ public class ListCommand<T> {
 			this.nextPages = new ArrayList<PageCommand>();
 			for (int i = 1; i <= this.numNextPages; ++i) {
 				final int start = this.curPage.getStart() + i * this.entriesPerPage;
-				if (start < this.totalCount) {
+				if (start < this.totalCount || this.totalCount == 0) {
 					this.nextPages.add(new PageCommand(this.getCurPage().getNumber() + i, start));
 				}
 			}
@@ -179,13 +179,28 @@ public class ListCommand<T> {
 	 * @return
 	 */
 	public String getResourcetype() {
-		if (list.get(0) != null) {
-			T item = list.get(0);
-			if (item instanceof Post) {
-				Post postItem = (Post) item;
-				return postItem.getResource().getClass().getSimpleName().toLowerCase();
+		try {
+			if (list.get(0) != null) {
+				T item = list.get(0);
+				if (item instanceof Post) {
+					Post postItem = (Post) item;
+					return postItem.getResource().getClass().getSimpleName().toLowerCase();
+				}
 			}
 		}
+		catch (Exception ex) {
+			return null;
+		}
 		return null;
+	}
+	
+	/**
+	 * @return
+	 */
+	public int getNumCurrentItems() {
+		if (this.list != null) {
+			return this.list.size();
+		}
+		return 0;
 	}
 }

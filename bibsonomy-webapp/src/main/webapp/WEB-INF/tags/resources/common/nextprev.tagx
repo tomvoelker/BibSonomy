@@ -13,38 +13,39 @@
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true"/>
 
-	<fmt:bundle basename="messages"/>
-
-	<c:if test="${disableListNavigation == false}">
+	<c:if test="${disableListNavigation == false}">	
 		<span class="nextprev">
 		
             <!-- ********** FIRST ************** -->
-            <c:url var="firstUrl" value="/${mtl:getPath(requPath)}?${otherParams}" context="${projectContext}">
-               <c:param name="${listViewStartParamName}" value="0" />
-            </c:url>
-            <fmt:message var="gotoFirst" key="goto.first"/>
-            <a href="${fn:escapeXml(firstUrl)}" title="${gotoFirst}" rel="First"><fmt:message key="first"/></a>
-			<jsp:text> </jsp:text>
+	        <c:if test="${listView.totalCount > 0}">
+	            <c:url var="firstUrl" value="/${mtl:getPath(requPath)}?${otherParams}" context="${projectContext}">
+	               <c:param name="${listViewStartParamName}" value="0" />
+	            </c:url>
+	            <fmt:message var="gotoFirst" key="goto.first"/>
+	            <a href="${fn:escapeXml(firstUrl)}" title="${gotoFirst}" rel="First"><fmt:message key="first"/></a>
+				<jsp:text> </jsp:text>
+			</c:if>
 			
-      
-      
+            
             <!-- ********** PREVIOUS ************** -->
-			<c:choose>				
-				<c:when test="${listView.previousPage != null}">
-			       <c:url var="previousUrl" value="/${mtl:getPath(requPath)}?${otherParams}" context="${projectContext}">
-                      <c:param name="${listViewStartParamName}" value="${listView.previousPage.start}" />
-                   </c:url>
-                   <fmt:message var="gotoPrevious" key="goto.previous"/>
-                   <a href="${fn:escapeXml(previousUrl)}" title="${gotoPrevious}" rel="Prev"> <fmt:message key="previous"/></a>
-				</c:when>
-				<c:otherwise>
-					<fmt:message key="previous"/>
-				</c:otherwise>
-			</c:choose>
+            <c:if test="${!(listView.numCurrentItems == 0 and listView.curPage.start == 0)}">
+				<c:choose>				
+					<c:when test="${listView.previousPage != null}">
+				       <c:url var="previousUrl" value="/${mtl:getPath(requPath)}?${otherParams}" context="${projectContext}">
+	                      <c:param name="${listViewStartParamName}" value="${listView.previousPage.start}" />
+	                   </c:url>
+	                   <fmt:message var="gotoPrevious" key="goto.previous"/>
+	                   <a href="${fn:escapeXml(previousUrl)}" title="${gotoPrevious}" rel="Prev"> <fmt:message key="previous"/></a>
+					</c:when>
+					<c:otherwise>
+						<fmt:message key="previous"/>
+					</c:otherwise>
+				</c:choose>
+			</c:if>
 			<jsp:text> </jsp:text>
       
             <!-- ********** PREVIOUS PAGES ************** -->
-			<c:if test="${not empty listView.previousPages}">
+			<c:if test="${not empty listView.previousPages and listView.totalCount > 0}">
 				<c:forEach var="page" items="${listView.previousPages}">
                     <c:url var="previousPagesUrl" value="/${mtl:getPath(requPath)}?${otherParams}" context="${projectContext}">
                         <c:param name="${listViewStartParamName}" value="${page.start}"/>
@@ -54,10 +55,17 @@
 				</c:forEach>					
 			</c:if>
 			
-            ${listView.curPage.number}
+			<c:choose>
+				<c:when test="${listView.totalCount > 0}">
+	            	${listView.curPage.number}
+	            </c:when>
+	            <c:otherwise>
+	            	<jsp:text> </jsp:text>
+	            </c:otherwise>
+            </c:choose>
             
             <!-- ********** NEXT PAGES ************** -->
-			<c:if test="${not empty listView.nextPages}">
+			<c:if test="${not empty listView.nextPages and listView.totalCount > 0}">
 				<c:forEach var="page" items="${listView.nextPages}">
 					${mtl:ch('list.pagenumber.delim')}
                     <c:url var="nextPagesUrl" value="/${mtl:getPath(requPath)}?${otherParams}" context="${projectContext}">
@@ -70,29 +78,32 @@
       
       
             <!-- ********** NEXT ************** -->
-			<c:choose>
-				<c:when test="${listView.nextPage != null}">
-                   <c:url var="nextUrl" value="/${mtl:getPath(requPath)}?${otherParams}" context="${projectContext}">
-                      <c:param name="${listViewStartParamName}" value="${listView.nextPage.start}" />
-                   </c:url>
-                   <fmt:message var="gotoNext" key="goto.next"/>
-                   <a href="${fn:escapeXml(nextUrl)}" title="${gotoNext}" rel="Next"> <fmt:message key="next"/></a>
-				</c:when>
-				<c:otherwise>
-					<fmt:message key="next"/>
-				</c:otherwise>
-			</c:choose>
+            <c:if test="${listView.numCurrentItems > 0}">
+				<c:choose>
+					<c:when test="${listView.nextPage != null}">
+	                   <c:url var="nextUrl" value="/${mtl:getPath(requPath)}?${otherParams}" context="${projectContext}">
+	                      <c:param name="${listViewStartParamName}" value="${listView.nextPage.start}" />
+	                   </c:url>
+	                   <fmt:message var="gotoNext" key="goto.next"/>
+	                   <a href="${fn:escapeXml(nextUrl)}" title="${gotoNext}" rel="Next"> <fmt:message key="next"/></a>
+					</c:when>
+					<c:otherwise>
+						<fmt:message key="next"/>
+					</c:otherwise>
+				</c:choose>
+			</c:if>
 			
 			<jsp:text> </jsp:text>
       
             <!-- ********** LAST ************** -->
-            <c:url var="lastUrl" value="/${mtl:getPath(requPath)}?${otherParams}" context="${projectContext}">
-               <c:param name="${listViewStartParamName}" value="${listView.last}" />
-            </c:url>
-            <fmt:message var="gotoLast" key="goto.last"/>
-            <a href="${fn:escapeXml(lastUrl)}" title="${gotoLast}" rel="Last"><fmt:message key="last"/></a>
-      
-						
+            <c:if test="${listView.totalCount > 0}">
+	            <c:url var="lastUrl" value="/${mtl:getPath(requPath)}?${otherParams}" context="${projectContext}">
+	               <c:param name="${listViewStartParamName}" value="${listView.last}" />
+	            </c:url>
+	            <fmt:message var="gotoLast" key="goto.last"/>
+	            <a href="${fn:escapeXml(lastUrl)}" title="${gotoLast}" rel="Last"><fmt:message key="last"/></a>
+            </c:if>
+                  						
 		</span>
 	</c:if>
 
