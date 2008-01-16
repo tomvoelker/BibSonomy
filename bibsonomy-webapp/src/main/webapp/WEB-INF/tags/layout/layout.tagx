@@ -11,7 +11,8 @@
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="basketSize" type="java.lang.Integer" required="true"/>
 	<jsp:directive.attribute name="searchString" type="java.lang.String" required="true"/>
-	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>	
+	<jsp:directive.attribute name="displayIntroduction" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>	
 	<jsp:directive.attribute name="headerExt" fragment="true" />
@@ -106,7 +107,7 @@
 				<menu:navi loginUserName="${loginUserName}" searchString="${searchString}" basketSize="${basketSize}" />
 				
 				<div id="outer">
-					<c:if test="${empty loginUserName and empty command.error}">
+					<c:if test="${empty loginUserName and empty command.error and displayIntroduction}">
 						<div id="general">
 							<p class="smalltext">
 								<fmt:message key="system.about">

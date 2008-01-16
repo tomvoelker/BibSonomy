@@ -12,6 +12,7 @@
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="displayIntroduction" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="sidebar" fragment="true" required="true"/>	
 	
@@ -30,7 +31,7 @@
 	<c:if test="${empty disableListNavigation}">
 		<c:set var="disableListNavigation" value="${false}"/>
 	</c:if>	
-	
+		
 	<c:choose>
 		<c:when test="${command.user != null}">
 			<c:set var="loginUserName" value="${command.user.name}"/>
@@ -40,7 +41,7 @@
 		</c:otherwise>
 	</c:choose>
 	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>
-	<layout:layout loginUserName="${loginUserName}" searchString="hurz" basketSize="${loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" sidebar="${sidebar}">
+	<layout:layout loginUserName="${loginUserName}" searchString="hurz" basketSize="${loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}">
 		<jsp:attribute name="headerExt">
 			<c:set var="bookRssUrl" value="/rss/${requPath}"/>
 			<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${requPath}" href="${bookRssUrl}" />
