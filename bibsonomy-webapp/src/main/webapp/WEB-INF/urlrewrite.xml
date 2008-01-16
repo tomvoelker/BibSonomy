@@ -368,11 +368,7 @@
 
 <!-- ############## tag pages ############### -->
 	<!-- redirect for tag formular on /tag page -->
-    <rule>
-		<from>^/+tag/(.+?)(\?(.*))?$</from>
-		<to>/tag?requestedTags=$1</to> 
-	</rule>
-    <rule>
+	<rule>
      	<from>^/+tag/(\?tag=(.*))$</from>
      	<to type="redirect">/tag/$2</to>
     </rule>
@@ -384,6 +380,15 @@
 	<rule>
 	    <from>^/+tag/*$</from>
 	    <to type="redirect">/tags</to>
+	</rule>
+	<rule>
+		<from>^/+tag/(.+?)(\?(.*))?$</from>
+		<!-- 
+		    uncomment the following to use the new tag page from mwa 
+		    dbe, 20070115
+			<to>/tag?requestedTags=$1&amp;$3</to>
+		-->
+		<to>/ResourceHandler?page=tag&amp;requTag=$1&amp;$3</to>
 	</rule>
 	    
     <!-- redirect for tag formular on /concept/tag/TAG page -->
