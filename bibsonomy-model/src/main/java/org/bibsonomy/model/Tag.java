@@ -183,4 +183,18 @@ public class Tag {
 	public String toString() {
 		return this.id + " '" + this.name + "' '" + this.stem + "' " + this.globalcount;
 	}
+	
+	/**
+	 * A little helper function to add a list of subtags 
+	 * as a space-separated string
+	 * @param subtags
+	 */
+	public void setSubtagsString(String subtags) {
+		String [] st = subtags.split(" ");
+		for (String subtag : st) {
+			Tag s = new Tag();
+			s.setName(subtag);
+			this.getSubTags().add(s);
+		}
+	}
 }
