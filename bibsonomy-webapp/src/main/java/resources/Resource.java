@@ -195,6 +195,7 @@ public abstract class Resource implements Cloneable {
 			// this should be the most common case: a valid URL
 			if (url.startsWith("http://") || 
 				url.startsWith("ftp://") ||
+				url.startsWith("file://") ||
 				url.startsWith(BROKEN_URL) ||
 				url.startsWith("gopher://") ||
 				url.startsWith("https://")) {
