@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
+import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
@@ -244,11 +245,27 @@ public interface LogicInterface extends PostLogicInterface {
 	/**
 	 * Retrieve statistics
 	 * 
-	 * @param resourceType
-	 * @param grouping
-	 * @param groupingName
-	 * @param constraint
-	 * @return
+	 * @param resourceType - the requested resource type
+	 * @param grouping - grouping entity
+	 * @param groupingName - the grouping name
+	 * @param constraint - a possible contstraint on the statistics
+	 * @return an int representing a statistical information
+     * @author dbe
 	 */
 	public int getStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, StatisticsConstraint constraint, String search);
+	
+	/**
+	 * Retrieve relations
+	 * 
+	 * @param resourceType - the reqtested resourcetype
+	 * @param grouping - grouping entitity
+	 * @param groupingName - the grouping name
+	 * @param regex - a regex to possibly filter the relatons retrieved
+	 * @param tags - a list of tags which shall be part of the relations
+	 * @param start - start index
+	 * @param end - end index
+	 * @return a list of concepts, i.e. tags containing their assigned subtags
+     * @author dbe
+	 */
+	public List<Tag> getConcepts(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end);
 }
