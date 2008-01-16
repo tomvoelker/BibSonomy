@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
+import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
@@ -24,6 +25,7 @@ import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.managers.StatisticsDatabaseManager;
 import org.bibsonomy.database.managers.TagDatabaseManager;
+import org.bibsonomy.database.managers.TagRelationDatabaseManager;
 import org.bibsonomy.database.managers.UserDatabaseManager;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
@@ -65,6 +67,7 @@ public class DBLogic implements LogicInterface {
 	private final AdminDatabaseManager adminDBManager;
 	private final DBSessionFactory dbSessionFactory;
 	private final StatisticsDatabaseManager statisticsDBManager;
+	private final TagRelationDatabaseManager tagRelationsDBManager;
 
 	private final User loginUser;
 
@@ -85,6 +88,7 @@ public class DBLogic implements LogicInterface {
 		adminDBManager = AdminDatabaseManager.getInstance();
 		permissionDBManager = PermissionDatabaseManager.getInstance();
 		statisticsDBManager = StatisticsDatabaseManager.getInstance();
+		tagRelationsDBManager = TagRelationDatabaseManager.getInstance();
 
 		this.dbSessionFactory = dbSessionFactory;		
 	}
@@ -138,7 +142,7 @@ public class DBLogic implements LogicInterface {
 				user.setPassword(null);
 				user.setApiKey(null);
 			}			
-			user.setGroups(this.groupDBManager.getGroupsForUser(userName, session));
+			user.setGroups(this.groupDBManager.getGroupsForUser(userName, true, session));
 			return user;
 		} finally {
 			session.close();
@@ -234,8 +238,7 @@ public class DBLogic implements LogicInterface {
 	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final int start, final int end) {
 		if (grouping.equals(GroupingEntity.ALL)) {
 			this.permissionDBManager.checkStartEnd(start, end, "Tag");
-		}		
-		
+		}				
 		final DBSession session = openSession();
 		final List<Tag> result;
 		
@@ -538,6 +541,7 @@ public class DBLogic implements LogicInterface {
 			final String errorMsg = "user " + ((this.loginUser.getName() != null) ? this.loginUser.getName() : "anonymous") + " is not authorized to change user " + user.getName();
 			log.warn(errorMsg);
 			throw new ValidationException(errorMsg);
+			
 		}
 		return this.storeUser(user, true);
 	}
@@ -731,7 +735,49 @@ public class DBLogic implements LogicInterface {
 		int statistics = 0;
 		try {
 			if (grouping.equals(GroupingEntity.USER) && groupingName != null && groupingName != "") {
-				statistics = this.statisticsDBManager.getNumberOfResourcesForUser(groupingName, this.loginUser.getName(), resourceType, session);
+				statistics = this.statisticsDBManager.getNumberOfResourcesForUser(resourceType, groupingName, this.loginUser.getName(), session);
+			}
+			else if (grouping.equals(GroupingEntity.GROUP) && groupingName != null && groupingName != "") {
+				Group group = this.groupDBManager.getGroupByName(groupingName, session);
+				if (group == null) {
+					log.debug("group " + groupingName + " does not exist");
+					return 0;
+				}
+				return this.statisticsDBManager.getNumberOfResourcesForGroup(resourceType, group.getGroupId(), this.loginUser.getName(), session);
+			}
+			else {
+				throw new RuntimeException("Can't handle statistics request");
+			}
+		} finally {
+			session.close();			
+		}
+		return statistics;		
+	}
+
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getConcepts(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.common.enums.ConceptStatus, int, int)
+	 */
+	public List<Tag> getConcepts(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end) {
+		final DBSession session = openSession();
+		List<Tag> relations;
+		try {
+			if (grouping.equals(GroupingEntity.USER) && groupingName != null && groupingName != "") {
+				
+				// if looking at pages of other users, retrieve all concepts
+				if (!groupingName.equals(this.loginUser.getName())) {
+					status = ConceptStatus.ALL;
+				}
+				
+				if (status.equals(ConceptStatus.PICKED)) {
+					relations = this.tagRelationsDBManager.getPickedConceptsForUser(groupingName, session);
+				}
+				else if (status.equals(ConceptStatus.ALL)) {
+					relations = this.tagRelationsDBManager.getAllConceptsForUser(groupingName, session);
+				}
+				else {
+					throw new RuntimeException("Can't handle request");
+				}
 			}
 			else {
 				throw new RuntimeException("Can't handle request");
@@ -739,7 +785,7 @@ public class DBLogic implements LogicInterface {
 		} finally {
 			session.close();			
 		}
-		return statistics;		
-	}		
+		return relations;
+	}
 	
 }
