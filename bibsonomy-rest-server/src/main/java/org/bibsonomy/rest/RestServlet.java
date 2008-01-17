@@ -206,16 +206,16 @@ public final class RestServlet extends HttpServlet {
 			response.setHeader("WWW-Authenticate", "Basic realm=\"BibSonomyWebService\"");
 			sendError(request, response, HttpURLConnection.HTTP_UNAUTHORIZED, e.getMessage());
 		} catch (final InternServerException e) {
-			log.error(e,e);
+			log.error(e.getMessage());
 			sendError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 		} catch (final NoSuchResourceException e) {
-			log.error(e,e);
+			log.error(e.getMessage());
 			sendError(request, response, HttpServletResponse.SC_NOT_FOUND, e.getMessage());
 		} catch (final BadRequestOrResponseException e) {
-			log.error(e,e);
+			log.error(e.getMessage());
 			sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
 		} catch (final ValidationException e) {
-			log.error(e,e);
+			log.error(e.getMessage());
 			sendError(request, response, HttpServletResponse.SC_FORBIDDEN, e.getMessage());			
 		} catch (final Exception e) {
 			log.error(e,e);
