@@ -1366,11 +1366,11 @@ function unicodeCollation(ersterWert, zweiterWert){
     	var bibtex = document.getElementById("bibtex")
     	var lis    = bibtex.getElementsByTagName("li");
     	var param  = "";
-    	
+    	   	
     	for(x=0; x<lis.length; x++) {
     	    var divs = lis[x].getElementsByTagName("div");
     	    for (y=0; y<divs.length; y++) {
-    	       if (divs[y].getAttribute("class") == "bmtitle") {
+    	       if (divs[y].className == "bmtitle") {
     	          var spans = divs[y].getElementsByTagName("a");
     	          for (z=0; z<spans.length; z++) {
 					var post = spans[z].getAttribute("href").replace(/^.*bibtex./, "");
@@ -1504,7 +1504,7 @@ String.prototype.startsWith = function(s) {
 }
 
 function getString( key ) {
-  if ( !LocalizedStrings ) return "???"+key+"???"; 
+  if ( typeof LocalizedStrings == "undefined" ) return "???"+key+"???"; 
   var s = LocalizedStrings[key];
   if( !s ) return "???"+key+"???";
   return s;
