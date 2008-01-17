@@ -24,10 +24,10 @@
 	<!-- display of minfreq links is disabled by default -->
 	<c:choose>
 		<c:when test="${empty disableTagboxMinfreq or disableTagboxMinfreq == true}">
-			<script type="text/javascript">disable_tagbox_minfreq = true;</script>
+			<script type="text/javascript">disable_tagbox_minfreq = 'true';</script>
 		</c:when>
 		<c:otherwise>
-			<script type="text/javascript">disable_tagbox_minfreq = false;</script>
+			<script type="text/javascript">disable_tagbox_minfreq = 'false';</script>
 		</c:otherwise>
 	</c:choose>
 
