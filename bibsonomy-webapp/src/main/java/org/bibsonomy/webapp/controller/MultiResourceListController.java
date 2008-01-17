@@ -33,6 +33,7 @@ public abstract class MultiResourceListController {
 	protected LogicInterface logic;
 	protected UserSettings userSettings;
 	protected Collection<Class<? extends Resource>> listsToInitialise;
+	private Long startTime;
 			
 	/**
      * Retrieve a set of tags from the database logic and add them to the command object
@@ -130,4 +131,14 @@ public abstract class MultiResourceListController {
 			this.listsToInitialise.remove(BibTex.class);
 		}
 	}	
+	
+	protected void startTiming(Class<? extends MultiResourceListController> controller, String format) {
+		log.info("Handling Controller: " + controller.getSimpleName() + ", format: " + format);
+		this.startTime = System.currentTimeMillis();
+	}
+	
+	protected void endTiming() {
+		Long elapsed = System.currentTimeMillis() - this.startTime;
+		log.info("Processing time: " + elapsed + " ms");
+	}
 }

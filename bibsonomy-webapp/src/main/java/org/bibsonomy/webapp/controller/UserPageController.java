@@ -31,6 +31,7 @@ public class UserPageController extends MultiResourceListController implements M
 
 	public View workOn(final UserResourceViewCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
+		this.startTiming(this.getClass(), command.getFormat());
 
 		// set grouping entity and grouping name
 		final GroupingEntity groupingEntity;
@@ -63,9 +64,10 @@ public class UserPageController extends MultiResourceListController implements M
 		// html format - retrieve tags and return HTML view
 		if (command.getFormat().equals("html")) {
 			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, 0, 1000);
+			this.endTiming();
 			return Views.USERPAGE;			
 		}
-
+		this.endTiming();
 		// export - return the appropriate view
 		return Views.getViewByFormat(command.getFormat());		
 	}

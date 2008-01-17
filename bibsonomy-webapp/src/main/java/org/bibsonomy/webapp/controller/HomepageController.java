@@ -21,6 +21,7 @@ public class HomepageController extends MultiResourceListController implements M
 
 	public View workOn(final ResourceViewCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
+		this.startTiming(this.getClass(), command.getFormat());
 
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype
@@ -40,9 +41,11 @@ public class HomepageController extends MultiResourceListController implements M
 		// html format - retrieve tags and return HTML view
 		if (command.getFormat().equals("html")) {
 			setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, 0, 100);
+			this.endTiming();
 			return Views.HOMEPAGE;		
 		}
-
+		
+		this.endTiming();
 		// export - return the appropriate view
 		return Views.getViewByFormat(command.getFormat());	
 	}

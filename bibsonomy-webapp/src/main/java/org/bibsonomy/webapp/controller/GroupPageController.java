@@ -27,6 +27,7 @@ public class GroupPageController extends MultiResourceListController implements 
 
 	public View workOn(GroupResourceViewCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
+		this.startTiming(this.getClass(), command.getFormat());
 		
 		// if no group given return 
 		if (command.getRequestedGroup() == null) return null;
@@ -62,11 +63,14 @@ public class GroupPageController extends MultiResourceListController implements 
 			
 			if (requTags.size() > 0) {
 				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, 0, 20);
+				this.endTiming();
 				return Views.GROUPTAGPAGE;
 			}
+			this.endTiming();
 			return Views.GROUPPAGE;			
 		}
 		
+		this.endTiming();
 		// export - return the appropriate view
 		return Views.getViewByFormat(command.getFormat());		
 	}
