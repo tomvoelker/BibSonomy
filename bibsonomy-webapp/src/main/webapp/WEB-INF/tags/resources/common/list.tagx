@@ -3,7 +3,8 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
 	<jsp:directive.attribute name="titleKey" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
@@ -67,6 +68,15 @@
 								<span class="bmaction">
 									<jsp:invoke fragment="actions"/>
 								</span>
+								
+								<!-- ugly hack to circumvent IEs clearfix bug -->
+								<c:set var="act">
+									<jsp:invoke fragment="actions"/>
+								</c:set>
+								<c:if test="${not (fn:trim(act) eq '')}">
+									<jsp:text>${mtl:ch('nbsp')}</jsp:text>
+								</c:if>
+								<!-- end ugly hack (dbe) -->
 							</div>   
 						</li>
 					</c:forEach>
