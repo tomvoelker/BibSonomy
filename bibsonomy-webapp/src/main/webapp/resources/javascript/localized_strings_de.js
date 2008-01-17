@@ -136,5 +136,5 @@ var LocalizedStrings = {
    "tagrelations.showPostsForConcept.title" : "Alle Eintr&auml;ge anzeigen, die mit {0} oder dessen Subtag bezeichnet sind",
    "related.concept" : "als Konzept",
    "related.tag" : "als Tag",
-
+   "error.user_page_without_username" : "Diese Seite existiert leider nicht auf unserem Server. Um auf eine Benutzerseite zuzugreifen, verwenden Sie bitte das URL-Schema /user/USERNAME."
 }

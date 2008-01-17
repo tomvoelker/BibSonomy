@@ -137,6 +137,5 @@ var LocalizedStrings = {
    "tagrelations.showPostsForConcept.title" : "show all posts which have {1} or one of its subtags attached",
    "related.concept" : "as concept",
    "related.tag" : "as tag",
-   "error.user_page_without_username" : "Sorry, this page does not exist on our server. If you want to access a user page, please specify a username like /user/USERNAME.",
-
+   "error.user_page_without_username" : "Sorry, this page does not exist on our server. If you want to access a user page, please specify a username like /user/USERNAME."
 }
