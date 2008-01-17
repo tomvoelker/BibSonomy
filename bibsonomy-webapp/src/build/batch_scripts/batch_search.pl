@@ -152,7 +152,9 @@ $stm_select_bib->finish();
 #################################
 # insert rows
 #################################
-#$stm_disable_keys->execute();     # enable this, when building table from scratch
+if ($database eq "search2") {
+  $stm_disable_keys->execute();     # enable this, when building table from scratch
+}
 
 $ctr = 0;
 while ($#data > -1) {
@@ -167,7 +169,10 @@ while ($#data > -1) {
 }
 
 $dbh->commit;
-#$stm_enable_keys->execute();      # enable this, when building table from scratch
+
+if ($database eq "search2") {
+  $stm_enable_keys->execute();      # enable this, when building table from scratch
+}
 
 
 
