@@ -115,11 +115,12 @@
 		</tr>
 	</table>
 	
-	<script type="text/javascript">
-		<![CDATA[
-	  		cssdropdown.startchrome("upper_menu");
-	  		cssdropdown.startchrome("lower_menu");
-	  	]]>
-	</script>  
-
+	<c:if test="${!empty loginUserName}">
+		<script type="text/javascript">
+			<![CDATA[
+		  		cssdropdown.startchrome("upper_menu");
+		  		cssdropdown.startchrome("lower_menu");
+		  	]]>
+		</script>  
+	</c:if>
 </jsp:root>
