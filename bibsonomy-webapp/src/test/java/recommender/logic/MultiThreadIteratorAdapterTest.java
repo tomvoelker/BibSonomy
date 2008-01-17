@@ -13,7 +13,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import junit.framework.TestCase;
+import org.junit.Ignore;
 
+@Ignore
 public class MultiThreadIteratorAdapterTest extends TestCase {
 
 	
