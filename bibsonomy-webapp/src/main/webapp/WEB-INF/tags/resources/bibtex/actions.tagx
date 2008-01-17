@@ -37,6 +37,8 @@
 				</a>
 			</c:otherwise>
 		</c:choose>
+		
+		${mtl:ch('post.actions.delim')}
 
 		<!-- COPY -->
 		<c:choose>
@@ -47,8 +49,7 @@
 					<c:param name="user" value="${post.user.name}" />
 					<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
 				</c:url>
-				<c:set var="copyTitle"><fmt:message key="bibtex.actions.copy.title"/></c:set>
-				${mtl:ch('post.actions.delim')}
+				<c:set var="copyTitle"><fmt:message key="bibtex.actions.copy.title"/></c:set>				
          		<a href="${fn:escapeXml(copy_url)}'" title="${copyTitle}">
 					<fmt:message key="bibtex.actions.copy"/>
 				</a>
@@ -59,14 +60,12 @@
 				<span>
 				<c:choose>
 					<c:when test="${not empty noedittags}">
-						${mtl:ch('post.actions.delim')} 
 						<c:set var="editTitle"><fmt:message key="bibtex.actions.edit.title"/></c:set>
              			<a href="/ShowBibtexEntry?hash=${resource.hash}" title="${editTitle}">
 							<fmt:message key="bibtex.actions.edit"/>
 						</a>
 					</c:when>
-					<c:otherwise>
-						${mtl:ch('post.actions.delim')}
+					<c:otherwise>						
 						<c:set var="editTitle"><fmt:message key="bibtex.actions.edit.title"/></c:set>
              			<a onclick="editTags(this,'${ckey}');return false;"
 							tags="${fn:escapeXml(mtl:toTagString(post.tags))}"
@@ -77,9 +76,10 @@
 						</a>
 					</c:otherwise>
 				</c:choose>
+				${mtl:ch('post.actions.delim')}
 				</span>
-				<!-- DELETE -->
-					${mtl:ch('post.actions.delim')}          
+				
+				<!-- DELETE -->					         
 				<c:set var="deleteTitle"><fmt:message key="bibtex.actions.delete.title"/></c:set>
                 
                 <c:url var="deleteUrl" value="/BibtexHandler" context="${projectContext}">
@@ -89,23 +89,22 @@
                 </c:url>
                <a href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}">
                   <fmt:message key="bibtex.actions.delete"/>
-               </a>
-
+               </a>                
 			</c:otherwise>
 		</c:choose>
+		${mtl:ch('post.actions.delim')}
 	</c:if>
 
 	<!-- URL -->
 	<c:if test="${not empty post.resource.url}">
-		${mtl:ch('post.actions.delim')}
 		<c:set var="urlTitle"><fmt:message key="bibtex.actions.url.title"/></c:set>
     	<a href="${fn:escapeXml(post.resource.url)}" title="${urlTitle}">
 			<fmt:message key="bibtex.actions.url"/>
 		</a>
+		${mtl:ch('post.actions.delim')}
 	</c:if>
 	
 	<!-- BIBTEX -->
-    ${mtl:ch('post.actions.delim')}
     <c:set var="bibtexTitle"><fmt:message key="bibtex.actions.bibtex.title"/></c:set>
     <a href="/bib/bibtex/2${post.resource.intraHash}/${post.user.name}"	title="${bibtexTitle}">
 		<fmt:message key="bibtex.actions.bibtex"/>

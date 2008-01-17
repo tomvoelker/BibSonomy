@@ -71,7 +71,7 @@
 				<div id="heading" style="float:left">
 					<h1>
 						<c:url var="root" value="/" context="${projectContext}"/>
-						<a href="${root}" rel="Start">${projectName}</a> :: <jsp:invoke fragment="heading"/>
+						<a href="${root}">${projectName}</a> :: <jsp:invoke fragment="heading"/>
 					</h1>															
 				</div>
 				
