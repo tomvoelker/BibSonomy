@@ -144,26 +144,28 @@ function add_hints() {
   		|| el.value == getString("navi.user.hint") || el.value == getString("navi.group.hint") || el.value == getString("navi.concept.hint") || getString("navi.bibtexkey.hint")) || (el != null && el.value == getString("navi.search.hint"))) {
     var scope = document.getElementById("scope");
     // add call to this method to dropdown box, so that hint changes, when box changes
-    scope.onmouseup = add_hints;
-    scope.onkeyup   = add_hints;
-    if (scope.value == "tag") {
-      el.value = getString("navi.tag.hint");
-    } else if (scope.value == "user") {
-      el.value = getString("navi.user.hint");
-    } else if (scope.value == "group") {
-      el.value = getString("navi.group.hint");
-    } else if (scope.value == "author") {
-      el.value = getString("navi.author.hint");
-    } else if (scope.value == "concept") {
-      el.value = getString("navi.concept.hint");
-    } else if (scope.value == "bibtexkey") {
-      el.value = getString("navi.bibtexkey.hint");
-    } else if (scope.value.indexOf("user") != -1 || scope.value == "all") {
-      el.value = getString("navi.search.hint");
-    }    
-    el.style.color = "#aaaaaa";
-    el.onmousedown = clear_input;
-    el.onkeypress  = clear_input;        
+    if (scope) {
+	    scope.onmouseup = add_hints;
+	    scope.onkeyup   = add_hints;
+	    if (scope.value == "tag") {
+	      el.value = getString("navi.tag.hint");
+	    } else if (scope.value == "user") {
+	      el.value = getString("navi.user.hint");
+	    } else if (scope.value == "group") {
+	      el.value = getString("navi.group.hint");
+	    } else if (scope.value == "author") {
+	      el.value = getString("navi.author.hint");
+	    } else if (scope.value == "concept") {
+	      el.value = getString("navi.concept.hint");
+	    } else if (scope.value == "bibtexkey") {
+	      el.value = getString("navi.bibtexkey.hint");
+	    } else if (scope.value.indexOf("user") != -1 || scope.value == "all") {
+	      el.value = getString("navi.search.hint");
+	    }    
+	    el.style.color = "#aaaaaa";
+	    el.onmousedown = clear_input;
+	    el.onkeypress  = clear_input;
+    }        
   }  
 }
 
