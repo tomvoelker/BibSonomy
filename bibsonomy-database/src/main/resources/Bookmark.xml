@@ -58,19 +58,29 @@
 		ORDER BY a.date DESC, a.content_id DESC
 	</select>
 
+    <!-- This query has to respect spammer tags, i.e. it does not show posts, which contain
+         a tag from the spammer_tags table	 -->
 	<select id="getBookmarkForHomepage" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT bb.content_id, bb.intraHash, bb.interHash, title, description, bb.date, bb.user_name,
-		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, NULL AS `group`, NULL AS group_name
-		FROM (SELECT <include refid="bookmarkAttributes"/>, u.book_url, u.book_url_ctr 
-		      FROM bookmark b, urls u
-		      WHERE b.group = #groupType#
-		            AND u.book_url_hash = b.book_url_hash
-		      ORDER BY date DESC
-		      LIMIT #limit#) AS bb
-		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id
-		ORDER BY bb.date DESC, bb.content_id DESC
+		SELECT <include refid="bookmarkAttributes"/>,
+		       u.book_url, u.book_url_ctr AS count, t.tag_name, NULL AS `group`, NULL AS group_name
+		FROM (SELECT b.content_id, b.book_description, b.book_extended, b.user_name, b.date, b.book_url_hash
+		      FROM (SELECT b.content_id, b.book_description, b.book_extended, b.user_name, b.date, b.book_url_hash
+		      		FROM bookmark b
+		      		WHERE b.group = #groupType#
+		      		ORDER BY date DESC
+		      		LIMIT 100
+		     ) AS b
+		     LEFT JOIN tas AS t USING (content_id)
+		     LEFT JOIN spammer_tags AS s USING (tag_name)
+		     GROUP BY b.content_id
+		     HAVING COUNT(s.tag_name) = 0
+		     ORDER BY date DESC
+		     LIMIT 20) as b
+		LEFT JOIN tas AS t USING (content_id)
+		JOIN urls u USING (book_url_hash)
+		ORDER BY b.date DESC, b.content_id DESC
 	</select>
-
+	
 	<select id="getBookmarkPopular" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT <include refid="bookmarkAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name
 		FROM temp_bookmark b
