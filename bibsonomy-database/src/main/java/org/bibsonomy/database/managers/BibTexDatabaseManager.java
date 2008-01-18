@@ -235,7 +235,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			param.setRequestedUserName(param.getUserName());
 			return getBibTexByTagNamesForUser(param, session);
 		}
-		return getBibTexByTagNames(param, session);
+		return this.bibtexList("getBibTexViewableByTag", param, session);
 	}
 
 	/**

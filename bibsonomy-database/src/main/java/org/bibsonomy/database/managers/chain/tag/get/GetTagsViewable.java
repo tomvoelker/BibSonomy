@@ -29,11 +29,12 @@ public class GetTagsViewable extends TagChainElement {
 			return new ArrayList<Tag>(0);			
 		}
 		param.setGroupId(groupId);
+		if (present(param.getTagIndex()) == true) return this.db.getRelatedTagsViewable(param ,session);
 		return this.db.getTagsViewable(param, session);
 	}
 
 	@Override
 	protected boolean canHandle(final TagParam param) {
-		return present(param.getUserName()) && param.getGrouping() == GroupingEntity.VIEWABLE && present(param.getRequestedGroupName())&& !present(param.getSearch()) && !present(param.getRegex());
+		return (present(param.getUserName()) && param.getGrouping() == GroupingEntity.VIEWABLE && present(param.getRequestedGroupName())&& !present(param.getSearch()) && !present(param.getRegex()));
 	}
 }

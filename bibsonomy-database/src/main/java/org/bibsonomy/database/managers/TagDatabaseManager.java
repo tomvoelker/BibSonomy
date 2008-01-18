@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.tag.TagChain;
 import org.bibsonomy.database.params.TagParam;
@@ -357,19 +358,50 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Get all tags of a given regular expression
+	 * @param param 
+	 * @param session 
+	 * @return list of tags
 	 */
 	public List<Tag> getTagsByExpression(final TagParam param, final DBSession session) {
 		return this.queryForList("getTagsByExpression", param, Tag.class, session);
 	}
 
+	/**
+	 * @param param
+	 * @param session
+	 * @return list of tags
+	 */
 	public List<Tag> getTagsViewable(final TagParam param, final DBSession session) {
+		if (GroupID.isSpecialGroupId(param.getGroupId()) == true) {
+			// show users own tags, which are private, public or for friends
+			param.setRequestedUserName(param.getUserName());
+			return this.queryForList("getTagsViewableBySpecialGroup", param, Tag.class, session);
+		}
 		return this.queryForList("getTagsViewable", param, Tag.class, session);
 	}
 	
 	/**
 	 * Get related tags for a given tag or list of tags for a specified group
+	 * @param param 
+	 * @param session 
+	 * @return list of tags
 	 */
 	public List<Tag> getRelatedTagsForGroup(TagParam param, DBSession session) {
+		return this.queryForList("getRelatedTagsForGroup", param, Tag.class, session);
+	}	
+	
+	/**
+	 * Get related tags for a given tag 
+	 * @param param
+	 * @param session
+	 * @return list of tags
+	 */
+	public List<Tag> getRelatedTagsViewable(TagParam param, DBSession session) {
+		if (GroupID.isSpecialGroupId(param.getGroupId()) == true) {
+			// show users own tags, which are private, public or for friends
+			param.setRequestedUserName(param.getUserName());
+			return this.queryForList("getRelatedTagsForSpecialGroup", param, Tag.class, session);
+		}
 		return this.queryForList("getRelatedTagsForGroup", param, Tag.class, session);
 	}	
 

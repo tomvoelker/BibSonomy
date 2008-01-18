@@ -185,6 +185,22 @@
 		LEFT OUTER JOIN tas AS t ON t.content_id = bb.content_id
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
+	
+	<select id="getBookmarkViewableByTag" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+		SELECT <include refid="bookmarkAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name
+		FROM bookmark b, urls u, tas t,
+		     (SELECT t1.content_id 
+		      FROM <include refid="tagFromQuery"/>
+		      WHERE <include refid="tagWhereQuery"/>
+			        AND t1.content_type = #contentType#
+			        AND t1.group = #groupId#
+		      ORDER BY t1.date DESC
+		      LIMIT #limit# OFFSET #offset#) AS tt
+		WHERE b.content_id = tt.content_id 
+		      AND t.content_id = tt.content_id 
+			  AND b.book_url_hash = u.book_url_hash
+		ORDER BY b.date DESC, b.content_id DESC
+	</select>
 
 	<select id="getBookmarkForGroup" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT bb.content_id, b.book_url_hash AS interHash,b.book_url_hash AS intraHash, b.book_description AS title, b.book_extended AS description, bb.date, u.book_url,

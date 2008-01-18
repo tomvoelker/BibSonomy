@@ -13,6 +13,7 @@ import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChain;
+import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
@@ -207,6 +208,9 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * <em>/viewable/EineGruppe</em><br/><br/>
 	 * 
 	 * Prepares queries to retrieve posts which are set viewable to group.
+	 * @param param 
+	 * @param session 
+	 * @return list of bookmarks
 	 */
 	public List<Post<Bookmark>> getBookmarkViewable(final BookmarkParam param, final DBSession session) {
 		if (GroupID.isSpecialGroupId(param.getGroupId()) == true) {
@@ -215,6 +219,20 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 			return getBookmarkForUser(param, session);
 		}				
 		return this.bookmarkList("getBookmarkViewable", param, session);
+	}
+	
+	/**
+	 * @param param
+	 * @param session
+	 * @return list of bookmarks
+	 */
+	public List<Post<Bookmark>> getBookmarkViewableByTag(final BookmarkParam param, final DBSession session) {
+		if (GroupID.isSpecialGroupId(param.getGroupId()) == true) {
+			// show users own bookmarks, which are private, public or for friends
+			param.setRequestedUserName(param.getUserName());
+			return getBookmarkByTagNamesForUser(param, session);
+		}
+		return this.bookmarkList("getBookmarkViewableByTag", param, session);
 	}
 
 	/**

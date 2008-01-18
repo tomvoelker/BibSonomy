@@ -33,12 +33,13 @@ public class GetBookmarksViewable extends BookmarkChainElement {
 			log.debug("groupId " + param.getRequestedGroupName() + "not found");
 			return new ArrayList<Post<Bookmark>>(0);			
 		}
-		param.setGroupId(groupId);		
+		param.setGroupId(groupId);
+		if (present(param.getTagIndex()) == true) return this.db.getBookmarkViewableByTag(param, session);
 		return this.db.getBookmarkViewable(param, session);
 	}
 
 	@Override
 	protected boolean canHandle(final BookmarkParam param) {
-		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.VIEWABLE) && present(param.getRequestedGroupName()) && !present(param.getTagIndex()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED) && !present(param.getSearch());
+		return (present(param.getUserName()) && (param.getGrouping() == GroupingEntity.VIEWABLE) && present(param.getRequestedGroupName()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED) && !present(param.getSearch()));
 	}
 }

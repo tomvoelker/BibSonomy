@@ -64,12 +64,20 @@
  	<select id="getTagsViewable" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
 		SELECT tag_name, count(tag_name) AS tag_ctr 
 		FROM tas t
-		WHERE t.group = #groupId# 
-		  AND t.user_name=#userName#
+		WHERE t.group = #groupId#
 		<include refid="getTagsByResourceType"/>
 		GROUP BY t.tag_name LIMIT #limit# OFFSET #offset#
 	</select>
 
+	<select id="getTagsViewableBySpecialGroup" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT tag_name, count(tag_name) AS tag_ctr 
+		FROM tas t
+		WHERE t.group = #groupId# 
+		AND t.user_name = #requestedUserName#
+		<include refid="getTagsByResourceType"/>
+		GROUP BY t.tag_name LIMIT #limit# OFFSET #offset#
+	</select>
+	
 	<!--
 		ATTENTION: for the query 'getTagsByUser', the resultMap 'TagCommon.tagWithGlobalCount'
 	 	might be a bit misleading, als the 'global' count here is not the total number of posts
@@ -173,6 +181,19 @@
 		AND i.group_name = #requestedGroupName#		
 		AND i.group = g.group 
 		AND g.user_name = t.user_name
+		AND (<iterate property="tagIndex" conjunction=" OR ">t.tag_name = #tagIndex[].tagName#</iterate>)
+		AND (<iterate property="tagIndex" conjunction=" AND ">tt.tag_name != #tagIndex[].tagName#</iterate>)	
+		GROUP BY tt.tag_name
+		ORDER BY tag_anzahl DESC 
+		LIMIT 10
+	</select>
+	
+	<select id="getRelatedTagsForSpecialGroup" resultMap="Common.tag" parameterClass="tagParam">
+		SELECT tt.tag_name, COUNT(tt.tag_name) AS tag_anzahl
+		FROM tas t, tas tt
+		WHERE tt.content_id = t.content_id
+		AND t.user_name = #requestedUserName#
+		AND t.user_name = tt.user_name
 		AND (<iterate property="tagIndex" conjunction=" OR ">t.tag_name = #tagIndex[].tagName#</iterate>)
 		AND (<iterate property="tagIndex" conjunction=" AND ">tt.tag_name != #tagIndex[].tagName#</iterate>)	
 		GROUP BY tt.tag_name
