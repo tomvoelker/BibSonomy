@@ -81,7 +81,18 @@ public enum Views implements View {
 	/**
 	 * xml output for bookmarks
 	 */
-	XML("export/bookmark/xmlOutput");
+	XML("export/bookmark/xmlOutput"),
+	
+	/**
+	 * viewable page
+	 */
+	VIEWABLEPAGE("viewable"),
+	
+	/**
+	 * viewable page showing all resources of a specified group and a given tag or list of tags
+	 */	
+	VIEWABLETAGPAGE("viewabletag");
+	
 	
 	private final String name;
 	

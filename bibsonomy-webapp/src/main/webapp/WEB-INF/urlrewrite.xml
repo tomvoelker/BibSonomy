@@ -284,7 +284,7 @@
 <!-- ############## viewable pages ############### -->	
     <rule> <!-- /viewable/GROUP/TAG -->
         <from>^/+viewable/+([^/?]+?)/(.+?)(\?(.*))?$</from>
-        <to>/ResourceHandler?page=viewabletag&amp;requGroup=$1&amp;requTag=$2&amp;$4</to>
+        <to>/viewable?requestedGroup=$1&amp;requestedTags=$2&amp;$4</to>
     </rule>
     <!-- redirect for tag formular on /viewable/GROUP/TAG page -->
     <rule>
@@ -293,7 +293,7 @@
     </rule>
 	<rule> <!-- /viewable/GROUP -->
 		<from>^/+viewable/+([^/?]+?)(\?(.*))?$</from>
-		<to>/ResourceHandler?page=viewable&amp;requGroup=$1&amp;$3</to>
+		<to>/viewable?requestedGroup=$1&amp;$3</to>
 	</rule>
 	<rule>
 	  <from>^/+viewable/+([^/?]+?)/$</from>
