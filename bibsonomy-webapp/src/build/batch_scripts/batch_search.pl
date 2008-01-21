@@ -22,8 +22,10 @@ my $table    = shift @ARGV;
 my $password = $ENV{'DB_PASS'};
 
 
-# connect to database
-my $dbh = DBI->connect("DBI:mysql:database=$database;host=localhost:6033;mysql_socket=/home/bibsonomy/mysql-var/mysql.sock", "bibsonomy", $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});
+# connect to database (read uncommited added by aho and mysql_use_result
+my $dbh = DBI->connect("DBI:mysql:database=$database;host=localhost:6033;mysql_socket=/home/bibsonomy/mysql-var/mysql.sock", "bibsonomy", $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1, "transaction-isolation" => "READ-UNCOMMITTED"});
+#my $dbh = DBI->connect("DBI:mysql:database=$database;host=localhost:6033;mysql_socket=/home/bibsonomy/mysql-var/mysql.sock", "bibsonomy", $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});
+
 #my $dbh = DBI->connect("DBI:mysql:database=$database;host=gandalf", "bibsonomy", $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});
 
 
@@ -44,6 +46,7 @@ my $stm_select_book = $dbh->prepare ("
   SELECT b.content_id, b.group, b.date, b.user_name, b.book_description, b.book_extended, u.book_url    
     FROM bookmark b JOIN urls u USING (book_url_hash)
     WHERE b.content_id > ?");
+   $stm_select_book->{"mysql_use_result"} = 1;
 
 # get all relevant bibtex from bibtex table
 my $stm_select_bib  = $dbh->prepare ("
@@ -56,12 +59,14 @@ my $stm_select_bib  = $dbh->prepare ("
          b.number,       b.crossref,    b.misc,         b.bibtexAbstract, b.year
    FROM bibtex b
    WHERE b.content_id > ?");
+   $stm_select_bib->{"mysql_use_result"} = 1;
 
 # get all relevant data from tas table
 my $stm_select_tas = $dbh->prepare ("
   SELECT content_id, tag_name
     FROM tas
     WHERE content_id > ?");
+   $stm_select_tas->{"mysql_use_result"} = 1;
 
 # insert into search table
 my $stm_insert = $dbh->prepare ("INSERT INTO $table (content_id, content, author, `group`, `date`, content_type, user_name) VALUES (?,?,?,?,?,?,?)");
