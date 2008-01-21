@@ -12,7 +12,7 @@
 			<li>
 		      <a title="${cmd.requestedTags} ${tag.name}" href="/${mtl:getLowerPath(requPath)}/${mtl:encodeURI(cmd.requestedTags)}+${tag.name}">+${mtl:ch('nbsp')}</a>
 		      <a href="/${mtl:getLowerPath(requPath)}/${tag.name}">${tag.name}</a>
-		      <jsp:text> </jsp:text>
+		      <c:out value=" "/>
 		    </li>
 		</c:forEach>
 	</ul> 	

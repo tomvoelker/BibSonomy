@@ -17,11 +17,11 @@
 		<tr>
 			<td class="tleft" id="upper_menu">
 				<c:url var="tagsUrl" value="/tags" context="${projectContext}"/>
-				<a href="${tagsUrl}"><fmt:message key="navi.tags"/></a> ${mtl:ch('menu.delim')}
+				<a href="${tagsUrl}"><fmt:message key="navi.tags"/></a><c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
 				<c:url var="relationsUrl" value="/relations" context="${projectContext}"/>
-				<a href="${relationsUrl}"><fmt:message key="navi.relations"/></a> ${mtl:ch('menu.delim')}								
+				<a href="${relationsUrl}"><fmt:message key="navi.relations"/></a><c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>								
 				<c:url var="groupsUrl" value="/groups" context="${projectContext}"/>
-				<a href="${groupsUrl}" rel="grp_menu"><fmt:message key="navi.groups"/></a> ${mtl:ch('menu.delim')}
+				<a href="${groupsUrl}" rel="grp_menu"><fmt:message key="navi.groups"/></a><c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
 				<!-- dropdown menu for groups -->					
 			  	<div id="grp_menu" class="dropmenudiv">
 					<c:forEach var="grp" items="${loginUser.groups}">
@@ -36,11 +36,11 @@
 					<fmt:message key="navi.loggedInAs"/>${mtl:ch('nbsp')}
 					<c:url var="userUrl" value="/user/${loginUserName}" context="${projectContext}"/>
 					<a href="${userUrl}"><c:out value="${loginUserName}" /></a>
-					${mtl:ch('menu.delim')}
+					<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
 				</c:if>
 				<c:url var="helpUrl" value="/help" context="${projectContext}"/>
-				<a href="${helpUrl}" rel="Help"><fmt:message key="navi.help"/></a> ${mtl:ch('menu.delim')}
-				<a href="http://bibsonomy.blogspot.com/"><fmt:message key="navi.blog"/></a> ${mtl:ch('menu.delim')}
+				<a href="${helpUrl}" rel="Help"><fmt:message key="navi.help"/></a><c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
+				<a href="http://bibsonomy.blogspot.com/"><fmt:message key="navi.blog"/></a><c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
 				<c:url var="aboutUrl" value="/help/about/" context="${projectContext}"/>
 				<a href="${aboutUrl}"><fmt:message key="navi.about"/></a>
 			</td>
@@ -50,7 +50,7 @@
 				<c:choose>
 					<c:when test="${!empty loginUserName}">
 						<c:url var="userUrl" value="/user/${loginUserName}" context="${projectContext}"/>
-						<a href="${userUrl}" rel="my_menu"><fmt:message key="navi.my"/>${projectName}</a> ${mtl:ch('menu.delim')}
+						<a href="${userUrl}" rel="my_menu"><fmt:message key="navi.my"/>${projectName}</a><c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
 						
 				      <!-- dropdown menu for myBibSonomy -->  
 					  <div id="my_menu" class="dropmenudiv">
@@ -81,7 +81,7 @@
 					  </div>						
 						
 						<c:url var="postBookUrl" value="/post_bookmark" context="${projectContext}"/>
-						<a href="${postBookUrl}"><fmt:message key="navi.postBookmark"/></a> ${mtl:ch('menu.delim')}
+						<a href="${postBookUrl}"><fmt:message key="navi.postBookmark"/></a><c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
 						<c:url var="postBibUrl" value="/post_bibtex" context="${projectContext}"/>
 						<a href="${postBibUrl}"><fmt:message key="navi.postPublication"/></a> 
 					</c:when>
@@ -96,17 +96,17 @@
 						<c:url var="basketUrl" value="/basket" context="${projectContext}"/>
 						<span id="pickctr">${basketSize}</span>${mtl:ch('nbsp')}
 						<fmt:message key="navi.pickedIn"/>${mtl:ch('nbsp')}
-						<a href="${basketUrl}"><fmt:message key="navi.basket"/></a> ${mtl:ch('menu.delim')}
+						<a href="${basketUrl}"><fmt:message key="navi.basket"/></a><c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
 						<c:url var="editTagsUrl" value="/edit_tags" context="${projectContext}"/>
-						<a href="${editTagsUrl}"><fmt:message key="navi.editTags"/></a> ${mtl:ch('menu.delim')}
+						<a href="${editTagsUrl}"><fmt:message key="navi.editTags"/></a><c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
 						<c:url var="settingsUrl" value="/settings" context="${projectContext}"/>        
-						<a href="${settingsUrl}"><fmt:message key="navi.settings"/></a> ${mtl:ch('menu.delim')}
+						<a href="${settingsUrl}"><fmt:message key="navi.settings"/></a><c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
 						<c:url var="logoutUrl" value="/logout" context="${projectContext}"/>
 						<a href="${logoutUrl}"><fmt:message key="navi.logout"/></a>
 					</c:when>
 					<c:otherwise>
 						<c:url var="loginUrl" value="/login" context="${projectContext}"/>
-						<a href="${loginUrl}"><fmt:message key="navi.login"/></a> ${mtl:ch('menu.delim')}
+						<a href="${loginUrl}"><fmt:message key="navi.login"/></a><c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
 						<c:url var="registerUrl" value="/register" context="${projectContext}"/>
 						<a href="${registerUrl}"><fmt:message key="navi.register"/></a>
 					</c:otherwise>

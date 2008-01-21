@@ -23,7 +23,7 @@
 	            </c:url>
 	            <fmt:message var="gotoFirst" key="goto.first"/>
 	            <a href="${fn:escapeXml(firstUrl)}" title="${gotoFirst}" rel="First"><fmt:message key="first"/></a>
-				<jsp:text> </jsp:text>
+				<c:out value=" "/>
 			</c:if>
 			
             
@@ -42,7 +42,7 @@
 					</c:otherwise>
 				</c:choose>
 			</c:if>
-			<jsp:text> </jsp:text>
+			<c:out value=" "/>
       
             <!-- ********** PREVIOUS PAGES ************** -->
 			<c:if test="${not empty listView.previousPages and listView.totalCount > 0}">
@@ -51,7 +51,7 @@
                         <c:param name="${listViewStartParamName}" value="${page.start}"/>
                     </c:url>
 					<a href="${fn:escapeXml(previousPagesUrl)}">${page.number}</a>
-					${mtl:ch('list.pagenumber.delim')}
+					<c:out value=" "/>${mtl:ch('list.pagenumber.delim')}<c:out value=" "/>
 				</c:forEach>					
 			</c:if>
 			
@@ -60,21 +60,21 @@
 	            	${listView.curPage.number}
 	            </c:when>
 	            <c:otherwise>
-	            	<jsp:text> </jsp:text>
+	            	<c:out value=" "/>
 	            </c:otherwise>
             </c:choose>
             
             <!-- ********** NEXT PAGES ************** -->
 			<c:if test="${not empty listView.nextPages and listView.totalCount > 0}">
 				<c:forEach var="page" items="${listView.nextPages}">
-					${mtl:ch('list.pagenumber.delim')}
+					<c:out value=" "/>${mtl:ch('list.pagenumber.delim')}<c:out value=" "/>
                     <c:url var="nextPagesUrl" value="/${mtl:getPath(requPath)}?${otherParams}" context="${projectContext}">
                         <c:param name="${listViewStartParamName}" value="${page.start}"/>
                     </c:url>
                     <a href="${fn:escapeXml(nextPagesUrl)}">${page.number}</a>
 				</c:forEach>					
 			</c:if>
-			<jsp:text> </jsp:text>
+			<c:out value=" "/>
       
       
             <!-- ********** NEXT ************** -->
@@ -93,7 +93,7 @@
 				</c:choose>
 			</c:if>
 			
-			<jsp:text> </jsp:text>
+			<c:out value=" "/>
       
             <!-- ********** LAST ************** -->
             <c:if test="${listView.totalCount > 0}">
@@ -112,7 +112,7 @@
 			<c:set var="editUrlTemplate">/bediturl/<c:out value='${requPath}' escapeXml="true"/></c:set>
 			<c:url var="editUrl" value="${editUrlTemplate}" context="${projectContext}"/>
 			<fmt:message var="editPageTags" key="page.edit.tags"/>
-			<a href="${editUrl}" title="${editPageTags}"><fmt:message key="edit"/></a>
+			<a href="${editUrl}" title="${editPageTags}"><fmt:message key="post.meta.edit"/></a>
 		</span>
 	</c:if>
 												

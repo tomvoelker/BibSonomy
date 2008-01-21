@@ -38,7 +38,7 @@
 			</c:otherwise>
 		</c:choose>
 		
-		${mtl:ch('post.actions.delim')}
+		<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 
 		<!-- COPY -->
 		<c:choose>
@@ -76,7 +76,7 @@
 						</a>
 					</c:otherwise>
 				</c:choose>
-				${mtl:ch('post.actions.delim')}
+				<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 				</span>
 				
 				<!-- DELETE -->					         
@@ -92,7 +92,7 @@
                </a>                
 			</c:otherwise>
 		</c:choose>
-		${mtl:ch('post.actions.delim')}
+		<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 	</c:if>
 
 	<!-- URL -->
@@ -101,7 +101,7 @@
     	<a href="${fn:escapeXml(post.resource.url)}" title="${urlTitle}">
 			<fmt:message key="bibtex.actions.url"/>
 		</a>
-		${mtl:ch('post.actions.delim')}
+		<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 	</c:if>
 	
 	<!-- BIBTEX -->
@@ -112,7 +112,7 @@
 
 	<!-- OPENURL -->
 	<c:if test="${not empty loginUser.openURL}">
-    	${mtl:ch('post.actions.delim')} 
+    	<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
     	<c:set var="openurlTitle"><fmt:message key="bibtex.actions.openurl.title"/></c:set>
     	<a href="${fn:escapeXml(loginUser.openURL)}?${fn:escapeXml(post.resource.openURL)}" title="${openurlTitle}">
     		<fmt:message key="bibtex.actions.openurl"/>

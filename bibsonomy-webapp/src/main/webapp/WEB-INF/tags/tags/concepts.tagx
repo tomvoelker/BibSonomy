@@ -54,7 +54,7 @@
 						title="${hideRelationTitle}">
 						<fmt:message key="tagrelations.hide"/>
 					</a>
-					<jsp:text> </jsp:text>
+					<c:out value=" "/>
 				</c:if>
 				
 				<!-- display supertag -->
@@ -64,20 +64,21 @@
 					</fmt:message>
 				</c:set>
 				<a href="/concept/user/${requestedUserName}/${fn:escapeXml(concept.name)}" title="${showPostsForConceptTitle}">${fn:escapeXml(concept.name)}</a>
-				${mtl:ch('tagrelations.superConceptOf')}  
+				<c:out value=" "/>${mtl:ch('tagrelations.superConceptOf')}<c:out value=" "/>
+				<c:out value=" "/>
 				
 				<!-- display subtags -->
 				<ul id="${concept.name}" class="box_lowerconcept_elements">
 					<c:forEach var="subtag" items="${concept.subTags}">
 						<li class="box_lowerconcept"> 
 	    	    			<a href="/user/${requestedUserName}/${fn:escapeXml(subtag.name)}">${fn:escapeXml(subtag.name)}</a>
-	    	    			<jsp:text> </jsp:text>
 	          			</li>
+	          			<c:out value=" "/>
 					</c:forEach>
 				</ul>
 			</li>
 		</c:forEach>
-		<jsp:text> </jsp:text>
+		<c:out value=" "/>
 	</ul>
 
 </jsp:root>

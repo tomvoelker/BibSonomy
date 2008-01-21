@@ -23,7 +23,7 @@
 			<c:forEach var="member" items="${cmd.members}">
 				<li>
 			      <a href="/user/${fn:escapeXml(member)}">${member}</a>
-			      <jsp:text> </jsp:text>
+			      <c:out value=" "/>
 			    </li>
 			</c:forEach>
 		</ul> 

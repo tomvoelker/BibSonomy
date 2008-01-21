@@ -40,7 +40,7 @@
 				<fmt:message key="bookmark.actions.edit"/>
 			</a>
 			</span>
-            ${mtl:ch('post.actions.delim')}
+            <c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 		    <a href="${fn:escapeXml(url_delete)}"
 		       title="${deleteTitle}">		       
 		       <fmt:message key="bookmark.actions.delete"/>

@@ -13,14 +13,14 @@
 	<fmt:bundle basename="messages"/>
 
 	<!-- the tags of a resource -->
-	<fmt:message key="tagged.to" />
-	<jsp:text> </jsp:text>
+	<fmt:message key="post.meta.taggedTo" />
+	<c:out value=" "/>
 	<span class="bmtags">
 		<c:forEach var="tag" items="${post.tags}">
 			<c:set var="tagUrlTemplate">/user/${post.user.name}/<mtl:encode value='${tag.name}'/></c:set>
 			<c:url var="tagUrl" value="${tagUrlTemplate}" context="${projectContext}"/>
 			<a href="${tagUrl}"><c:out value="${tag.name}"/></a>
-			<jsp:text> </jsp:text>
+			<c:out value=" "/>
 		</c:forEach>
 		<!-- TODO: add "for:" tags  -->
 		<!-- c:if test="${loginUserName eq post.user.name}">
@@ -33,20 +33,20 @@
 	<!-- group of a resource -->
 	<c:forEach var="group" items="${post.groups}">
 		<c:if test="${!empty group.name and group.name ne 'public'}">
-		<jsp:text> </jsp:text>
+		<c:out value=" "/>
 			<c:choose>
 				<c:when test="${group.name eq 'friends'}">
 					<c:set var="groupUrlTemplate">/friend/<mtl:encode value='${post.user.name}'/></c:set>
 					<c:url var="groupUrl" value="${groupUrlTemplate}" context="${projectContext}"/>
-					<fmt:message key="group.as"/> 
-					<jsp:text> </jsp:text>
+					<fmt:message key="post.meta.asGroup"/> 
+					<c:out value=" "/>
 					<a href="${groupUrl}"><fmt:message key="friends"/></a>
 				</c:when>
 				<c:otherwise>
 					<c:set var="groupUrlTemplate">/viewable/<mtl:encode value='${group.name}'/></c:set>
 					<c:url var="groupUrl" value="${groupUrlTemplate}" context="${projectContext}"/>
-					<fmt:message key="group.as"/> 
-					<jsp:text> </jsp:text>
+					<fmt:message key="post.meta.asGroup"/> 
+					<c:out value=" "/>
 					<a href="${groupUrl}"><c:out value="${group.name}" /></a>
 				</c:otherwise>
 			</c:choose>
@@ -56,26 +56,28 @@
 	<!-- user name of a resource -->
 	<c:if test="${!isUserPage}">	
 		<c:url var="taggedByUrl" value="/user/${post.user.name}" context="${projectContext}"/>
-		<jsp:text> </jsp:text>
-		<fmt:message key="tagged.by" />
-		<jsp:text> </jsp:text>
+		<c:out value=" "/>
+		<fmt:message key="post.meta.taggedBy" />
+		<c:out value=" "/>
 		<a href="${taggedByUrl}"><c:out value="${post.user.name}" escapeXml="true"/></a>
 	</c:if>
 
-	<c:if test="${!empty post.resource.interHash and fn:length(post.resource.posts) > 2}">
-		<c:set var="style"><mtl:xOtherPersonsStyle value="${fn:length(post.resource.posts)}"/></c:set>
+	<c:if test="${!empty post.resource.interHash and post.resource.count > 2}">
+		<c:set var="style"><mtl:xOtherPersonsStyle value="${post.resource.count}"/></c:set>
 		<c:url var="otherPeopleUrl" value="${otherPostsUrlPrefix}${post.resource.interHash}" context="${projectContext}"/>
-		<fmt:message key="and" /> <a style="${style}" href="${otherPeopleUrl}">${fn:length(post.resource.posts)-1} <fmt key="other.people"/></a>
+		<c:out value= " "/><fmt:message key="and" /><c:out value= " "/>
+		<a style="${style}" href="${otherPeopleUrl}">${post.resource.count-1}<c:out value= " "/><fmt:message key="post.meta.otherPeople"/></a>
 	</c:if>
-	<c:if test="${!empty post.resource.interHash and fn:length(post.resource.posts) == 2}">
+	<c:if test="${!empty post.resource.interHash and post.resource.count == 2}">
 		<c:url var="otherPeopleUrl" value="${otherPostsUrlPrefix}${post.resource.interHash}" context="${projectContext}"/>
-		<fmt:message key="and" /> <a style="background-color:rgb(97%,97%,97%);" href="${otherPeopleUrl}">1 <fmt key="other.person"/></a>
+		<c:out value= " "/><fmt:message key="and" /><c:out value= " "/>
+		<a style="background-color:rgb(97%,97%,97%);" href="${otherPeopleUrl}">1<c:out value= " "/><c:out value= " "/><fmt:message key="post.meta.otherPerson"/></a>
 	</c:if>
 	
 	<!-- tagging date -->
-	<jsp:text> </jsp:text>
-	<fmt:message key="tagged.time.on"/> 
-	<jsp:text> </jsp:text>
+	<c:out value=" "/>
+	<fmt:message key="post.meta.taggedOn"/> 
+	<c:out value=" "/>
 	<fmt:formatDate type="date" dateStyle="medium" value="${post.date}"/>, <fmt:formatDate type="time" timeStyle="short" value="${post.date}"/>
 
 </jsp:root>

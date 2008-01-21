@@ -21,6 +21,8 @@
 		</c:otherwise>
 	</c:choose>
 	
+	<c:set var="space" value=" "/>
+	
 	<!-- display of minfreq links is disabled by default -->
 	<c:choose>
 		<c:when test="${empty disableTagboxMinfreq or disableTagboxMinfreq == true}">
@@ -79,13 +81,10 @@
 								${tag.name}
 							</a>												
 						</c:otherwise>		
-					</c:choose>
-					<jsp:text> </jsp:text>									
+					</c:choose>													
 				</li>
-
-							
-			</c:if>
-			
+				<c:out value=" "/>						
+			</c:if>			
 		</c:forEach>
 	</ul>
 

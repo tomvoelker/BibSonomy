@@ -19,17 +19,17 @@
           <c:when test="${resourceType eq 'bibtex'}">
             <c:url var="editUrl"   value="/beditbib/${requPath}"          context="${projectContext}"/>
             <fmt:message var="editPageTags"       key="page.edit.tags"/>
-            <a href="${fn:escapeXml(editUrl)}" title="${editPageTags}"><fmt:message key="edit"/></a>
+            <a href="${fn:escapeXml(editUrl)}" title="${editPageTags}"><fmt:message key="post.meta.edit"/></a>
 
-            ${mtl:ch('post.actions.delim')}
+            <c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 
             <fmt:message var="pickPublications"   key="page.pick.publications"/>
-            <a href="" title="${pickPublications}" onclick="pickAll(event);"><fmt:message key="pick"/></a>
+            <a href="" title="${pickPublications}" onclick="pickAll(event);"><fmt:message key="post.meta.pick"/></a>
 
-            ${mtl:ch('post.actions.delim')}
+            <c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 
             <fmt:message var="unPickPublications" key="page.unpick.publications"/>
-            <a href="" title="${unPickPublications}" onclick="unpickAll(event);"><fmt:message key="unpick"/></a>
+            <a href="" title="${unPickPublications}" onclick="unpickAll(event);"><fmt:message key="post.meta.unpick"/></a>
             
 		  </c:when>
 
@@ -38,7 +38,7 @@
           <c:otherwise>
 			<c:url var="editUrl" value="/bediturl/${requPath}" context="${projectContext}"/>
             <fmt:message var="editPageTags" key="page.edit.tags"/>
-            <a href="${fn:escapeXml(editUrl)}" title="${editPageTags}"><fmt:message key="edit"/></a>
+            <a href="${fn:escapeXml(editUrl)}" title="${editPageTags}"><fmt:message key="post.meta.edit"/></a>
 		  </c:otherwise>
 
 		</c:choose>

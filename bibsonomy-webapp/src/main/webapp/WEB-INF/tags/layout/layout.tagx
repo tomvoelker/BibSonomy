@@ -142,9 +142,9 @@
 						<fmt:param value="${projectName}"/>
 						<fmt:param value="${kdeHome}"/>
 					</fmt:message>
-					<jsp:text> </jsp:text>
+					<c:out value=" "/>
 					<fmt:message key="system.contact"/>
-					<jsp:text> </jsp:text>
+					<c:out value=" "/>
 					<lp:email address="${projectEmail}"/>
 					<script type="text/javascript">init(${user.tagboxStyle}, ${user.tagboxSort}, ${user.tagboxMinfreq}, "${command.requestedUser}", "${loginUserName}", "${ckey}", "${projectName}");</script>  
 				</div>

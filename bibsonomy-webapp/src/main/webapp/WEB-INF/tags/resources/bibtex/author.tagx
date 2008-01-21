@@ -15,7 +15,7 @@
 				<c:set var="authorUrlTemplate">/author/<mtl:encode value='${author.lastName}'/></c:set>
 				<c:url var="authorUrl" value="${authorUrlTemplate}" context="${projectContext}"/>
 				<a href="${fn:escapeXml(authorUrl)}"><c:out value="${author.lastName}" /></a>         	     	 
-				<c:if test="${not loopStatus.last}"><jsp:text> </jsp:text><fmt:message key="and"/><jsp:text> </jsp:text></c:if>
+				<c:if test="${not loopStatus.last}"><c:out value=" "/><fmt:message key="and"/><c:out value=" "/></c:if>
 			</c:forEach>
 		</c:when>
 		<c:otherwise>
@@ -24,7 +24,7 @@
 				<c:set var="authorUrlTemplate">/author/<mtl:encode value='${editor.lastName}'/></c:set>
 				<c:url var="authorUrl" value="${authorUrlTemplate}" context="${projectContext}"/>
 				<a href="${fn:escapeXml(authorUrl)}"><c:out value="${editor.lastName}" /></a>
-				<c:if test="${not loopStatus.last}"><jsp:text> </jsp:text><fmt:message key="and"/><jsp:text> </jsp:text></c:if>
+				<c:if test="${not loopStatus.last}"><c:out value=" "/><fmt:message key="and"/><c:out value=" "/></c:if>
 			</c:forEach>
 			(eds.).
 		</c:otherwise>
