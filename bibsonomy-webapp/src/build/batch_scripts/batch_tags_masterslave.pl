@@ -12,7 +12,7 @@
 # Command line arguments:
 #   database - name of the database (same for SLAVE and MASTER)
 # Environment variables:
-#   DB_PASS
+#   DB_PASS_BATCH
 #
 # Changes:
 #   2008-01-23: (rja)
@@ -28,7 +28,7 @@ if ($#ARGV != 0) {
 
 # don't run twice ...
 if (am_i_running($ENV{'TMP'}."/batch_tags.pid")) {
-  print "another instance of batch_tags.pl is running on $ENV{'hostname'}. Aborting this job.\n";
+  print "another instance of " . $PROGRAM_NAME . " is running on $ENV{'hostname'}. Aborting this job.\n";
   exit;
 }
 
@@ -37,7 +37,7 @@ if (am_i_running($ENV{'TMP'}."/batch_tags.pid")) {
 ########################################################
 my $database = shift @ARGV;     # same db name on all hosts
 my $user     = "batch";         # same user name on all databases
-my $password = $ENV{'DB_PASS'}; # same password on all databases
+my $password = $ENV{'DB_PASS_BATCH'}; # same password on all databases
 # fit to slave
 my $slave    = "DBI:mysql:database=$database;host=localhost:3306;mysql_socket=/var/mysql/run/mysqld.sock"
 # fit to master
