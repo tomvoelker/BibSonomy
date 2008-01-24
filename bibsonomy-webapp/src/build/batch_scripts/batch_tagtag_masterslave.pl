@@ -21,6 +21,7 @@
 use DBI();
 use strict;
 use Data::Dumper;
+use English;
 
 use DBI qw(:utils);
  
@@ -40,11 +41,11 @@ if (am_i_running($ENV{'TMP'}."/batch_tagtag.pid")) {
 #######################################################
 my $database = shift @ARGV;     # same db name on all hosts
 my $user     = "batch";         # same user name on all databases
-my $password = $ENV{'DB_PASS_BATCH'}; # same password on all databases
+my $password = $ENV{'DB_PASS'}; # same password on all databases
 # fit to slave
-my $slave    = "DBI:mysql:database=$database;host=localhost:3306;mysql_socket=/var/mysql/run/mysqld.sock"
+my $slave    = "DBI:mysql:database=$database;host=localhost:3306;mysql_socket=/var/mysql/run/mysqld.sock";
 # fit to master
-my $master   = "DBI:mysql:database=$database;host=gandalf:6033"
+my $master   = "DBI:mysql:database=$database;host=gandalf:6033";
 
 my %tagtag_ctr_hash=();
 
