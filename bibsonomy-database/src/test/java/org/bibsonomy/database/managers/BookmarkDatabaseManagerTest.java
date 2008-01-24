@@ -55,8 +55,10 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getBookmarkForHomepage() {
-		final List<Post<Bookmark>> posts = this.bookmarkDb.getBookmarkForHomepage(this.bookmarkParam, this.dbSession); 
-		assertEquals(10, posts.size());
+		final List<Post<Bookmark>> posts = this.bookmarkDb.getBookmarkForHomepage(this.bookmarkParam, this.dbSession);
+		// parameter limit is set to 10 in the param object, but this query ignores this
+		// setting and returns always the 20 most recent bookmarks
+		assertEquals(20, posts.size());
 	}
 
 	@Test
