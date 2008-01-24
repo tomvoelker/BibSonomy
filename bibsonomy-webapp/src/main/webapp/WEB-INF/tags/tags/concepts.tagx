@@ -60,7 +60,7 @@
 				<!-- display supertag -->
 				<c:set var="showPostsForConceptTitle">
 					<fmt:message key="tagrelations.showPostsForConcept.title">
-					<fmt:param value="${concept.name}"/>		
+						<fmt:param value="${fn:escapeXml(concept.name)}"/>		
 					</fmt:message>
 				</c:set>
 				<a href="/concept/user/${requestedUserName}/${fn:escapeXml(concept.name)}" title="${showPostsForConceptTitle}">${fn:escapeXml(concept.name)}</a>
@@ -70,8 +70,32 @@
 				<!-- display subtags -->
 				<ul id="${concept.name}" class="box_lowerconcept_elements">
 					<c:forEach var="subtag" items="${concept.subTags}">
-						<li class="box_lowerconcept"> 
-	    	    			<a href="/user/${requestedUserName}/${fn:escapeXml(subtag.name)}">${fn:escapeXml(subtag.name)}</a>
+						<li class="box_lowerconcept">
+							<!--
+							    TODO:
+								for the time being, we do not retrive the usage count
+								for subtags, hence we do not display this count in the title
+								attribute of the link. If the DB query has been changed to 
+								retrieve the counts, uncommment the following and add
+								  title="${subtag.usercount} ${posts}"
+								as attribute to the href below.
+								  dbe, 20070124
+							-->
+							<!--  
+							<c:choose>
+								<c:when test="${subtag.usercount == 1}">
+									<c:set var="posts">
+										<fmt:message key="post" />
+									</c:set>				
+								</c:when>
+								<c:otherwise>
+									<c:set var="posts">
+										<fmt:message key="posts" />
+									</c:set>	
+								</c:otherwise>
+							</c:choose>
+							 -->																		 
+	    	    			<a href="/user/${requestedUserName}/${fn:escapeXml(subtag.name)}" title="">${fn:escapeXml(subtag.name)}</a>
 	          			</li>
 	          			<c:out value=" "/>
 					</c:forEach>
