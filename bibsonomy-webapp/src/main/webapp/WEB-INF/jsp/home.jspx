@@ -21,7 +21,7 @@
 					<option value="author"><fmt:message key="navi.author"/></option>
 					<option value="concept"><fmt:message key="navi.concept"/></option>
 					<option value="bibtexkey"><fmt:message key="navi.bibtexKey"/></option>
-					<option value="all"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></option>
+					<option value="all" selected="selected"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></option>
 					<c:if test="${loginUser.name != null}">
 						<option value="user:${loginUser.name}"><fmt:message key="navi.search"/>:${loginUser.name}</option>
 					</c:if>					
