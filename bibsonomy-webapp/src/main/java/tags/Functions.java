@@ -186,6 +186,8 @@ public class Functions  {
 			Double t = (tagFrequency > 100 ? 100.0 : tagFrequency.doubleValue() + 6);
 			t /= 6;
 			t = Math.log(t) * 60 + 40;
+			if (t.intValue() < 100) 
+					return 100;
 			return t.intValue();
 		}		
 		return 100 + (tagFrequency / tagMaxFrequency * 200);
