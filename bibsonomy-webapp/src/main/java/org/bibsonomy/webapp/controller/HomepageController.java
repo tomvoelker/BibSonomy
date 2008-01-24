@@ -34,10 +34,7 @@ public class HomepageController extends MultiResourceListController implements M
 			setList(command, resourceType, GroupingEntity.ALL, null, null, null, null, null, 20);
 			postProcessList(command, resourceType);
 		}
-		
-		// retrieve and set tags
-		setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, 0, 100);
-										
+												
 		// html format - retrieve tags and return HTML view
 		if (command.getFormat().equals("html")) {
 			setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, 0, 100);
