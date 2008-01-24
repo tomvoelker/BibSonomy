@@ -10,6 +10,7 @@
 		required="true" />
 	<jsp:directive.attribute name="disableTagboxMinfreq" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="tagSizeMode" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="showTooltips" type="java.lang.Integer" required="false"/>
 
 	<!-- tagcloud styles: 0 cloud, 1 list (see org.bibsonomy.common.enums.TagCloudStyle) -->
 	<c:choose>
@@ -21,8 +22,6 @@
 		</c:otherwise>
 	</c:choose>
 	
-	<c:set var="space" value=" "/>
-	
 	<!-- display of minfreq links is disabled by default -->
 	<c:choose>
 		<c:when test="${empty disableTagboxMinfreq or disableTagboxMinfreq == true}">
@@ -32,6 +31,16 @@
 			<script type="text/javascript">disable_tagbox_minfreq = 'false';</script>
 		</c:otherwise>
 	</c:choose>
+	
+	<!-- display of tag tooltips is disabled by default -->
+	<c:choose>
+		<c:when test="${empty showTooltips or showTooltips == 0}">
+			<c:set var="showTooltips" value="${false}"/>
+		</c:when>
+		<c:otherwise>
+			<c:set var="showTooltips" value="${true}"/>
+		</c:otherwise>
+	</c:choose>	
 
 	
 	<ul class="${style}" id="tagbox">
@@ -65,8 +74,10 @@
 			     a better way to compute the tag sizes
 			     dbe, 20070110 
 			-->
+						
 			<c:if test="${tag.usercount >= cmd.minFreq}">
 				<li class="${tagclass}">
+				<!--  
 					<c:choose>
 						<c:when test="${tagSizeMode eq 'home'}">						
 							<a title="${tag.usercount} ${posts}"
@@ -78,11 +89,35 @@
 						<c:otherwise>
 							<a title="${tag.usercount} ${posts}" 
 								href="/${mtl:getPath(requPath)}/${fn:escapeXml(tag.name)}">					
-								${tag.name}
+								
 							</a>												
 						</c:otherwise>		
 					</c:choose>													
 				</li>
+				-->
+						<jsp:element name="a">
+							<jsp:attribute name="href">
+								/${mtl:getPath(requPath)}/${fn:escapeXml(tag.name)}
+							</jsp:attribute>
+							<jsp:attribute name="title">
+								${tag.usercount}<c:out value=" "/>${posts}
+							</jsp:attribute>				
+							<jsp:attribute name="style">
+								<c:if test="${tagSizeMode eq 'home'}">
+									font-size:${mtl:computeTagFontsize(tag.usercount, cmd.maxFreq, tagSizeMode)}%
+								</c:if>
+							</jsp:attribute>							
+							<jsp:attribute name="onmouseover">
+								<c:if test="${showTooltips}">javascript:preDoTooltip(event)</c:if>
+							</jsp:attribute>
+							<jsp:attribute name="onmouseout">
+								<c:if test="${showTooltips}">javascript:hideTip()</c:if>
+							</jsp:attribute>						
+							<jsp:body>
+								${tag.name}
+							</jsp:body>
+						</jsp:element>
+					</li>
 				<c:out value=" "/>						
 			</c:if>			
 		</c:forEach>
