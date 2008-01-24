@@ -41,10 +41,6 @@ public class BibtexHandlerBean extends ResourceSuperBean<Bibtex> {
 		if (!resource.isValidtitle()) {
 			addError("title", "please enter a valid title");
 		}
-		if (!resource.isValidauthor() && !resource.isValideditor()) {
-			addError ("author", "please enter valid authors or editors");
-			addError ("editor", "please enter valid authors or editors");
-		}
 		if (!resource.isValidyear()) {
 			addError("year", "please enter the year of publication");
 		}

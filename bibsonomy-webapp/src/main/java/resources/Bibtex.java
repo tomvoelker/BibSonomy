@@ -15,12 +15,12 @@ import helpers.url;
 
 public class Bibtex extends Resource {
 	public static final int CONTENT_TYPE=2;
-	public static final int MAX_LEN_AUTHOR = 6000;
-	public static final int MAX_LEN_EDITOR = 6000;
-	public static final int MAX_LEN_YEAR   =   45;
-	public static final int MAX_LEN_ENTRYTYPE =30;
-	public static final int MAX_LEN_JOURNAL = 6000;
-	public static final int MAX_LEN_BOOKTITLE=6000;
+	private static final int MAX_LEN_AUTHOR = 6000;
+	private static final int MAX_LEN_EDITOR = 6000;
+	private static final int MAX_LEN_YEAR   =   45;
+	private static final int MAX_LEN_ENTRYTYPE =30;
+	private static final int MAX_LEN_JOURNAL = 6000;
+	private static final int MAX_LEN_BOOKTITLE=6000;
 	
 	// similarity hashes
 	public static final int SIM_HASH_0 = 0; // OLD intra-user hash
@@ -66,9 +66,9 @@ public class Bibtex extends Resource {
 
 	public String toString () {
 		return super.toString() + 
-			"[BibTeX: authors = " + entries.get("author") + ", " +
-					 "editors = " + entries.get("editor") + 
-					 "year = "    + entries.get("year") + "]";
+			"[BibTeX: authors = " + getAuthor() + ", " +
+					 "editors = " + getEditor() + 
+					 "year = "    + getYear() + "]";
 	}
 
 	
@@ -145,8 +145,6 @@ public class Bibtex extends Resource {
 	 * return validity-identifier
 	 */
 	public boolean isValidbibtexkey() {return validB;}
-	public boolean isValidauthor   () {return validA;}
-	public boolean isValideditor   () {return validE;}
 	public boolean isValidyear     () {return validY;}
 	public boolean isValidentrytype() {return validT;}
 	
@@ -155,11 +153,10 @@ public class Bibtex extends Resource {
 		return (tag.isValid() && isValidBibtex());
 	}
 	public boolean isValidBibtex () {
-		return ((isValidauthor() || isValideditor()) &&
-				 isValidyear() &&
-				 isValidtitle() &&
-				 isValidentrytype() &&
-				 isValidbibtexkey());
+		return (isValidyear() &&
+				isValidtitle() &&
+				isValidentrytype() &&
+				isValidbibtexkey());
 	}
 	
 	/*
@@ -267,7 +264,9 @@ public class Bibtex extends Resource {
 		if (author == null) {
 			author = getEditor();
 		}
-		// TODO: this is only neccessary because of broken (DBLP) entries which have neither author nor editor!
+		/*
+		 *  This is neccessary because of posts which have neither author nor editor!
+		 */
 		if (author == null) {
 			author = "";
 		}
@@ -409,15 +408,17 @@ public class Bibtex extends Resource {
 	}	
 	
 	
-	/*
+	/**
 	 * returns a list of authornames separated to firstname and lastname
+	 * @return A list of author names.
 	 */
 	public List<String[]> getAuthornamesseparated() {		
 		return getNamesSeparated(this.getAuthor()); 
 	}
 	
-	/*
+	/**
 	 * returns a list of editornames separated to firstname and lastname
+	 * @return A list of editor names.
 	 */
 	public List<String[]> getEditornamesseparated() {		
 		return getNamesSeparated(this.getEditor());
