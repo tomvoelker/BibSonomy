@@ -18,17 +18,17 @@
           <!-- ****************************** BibTeX *************************** -->
           <c:when test="${resourceType eq 'bibtex'}">
             <c:url var="editUrl"   value="/beditbib/${requPath}"          context="${projectContext}"/>
-            <fmt:message var="editPageTags"       key="page.edit.tags"/>
+            <fmt:message var="editPageTags"       key="post.meta.edit.title"/>
             <a href="${fn:escapeXml(editUrl)}" title="${editPageTags}"><fmt:message key="post.meta.edit"/></a>
 
             <c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 
-            <fmt:message var="pickPublications"   key="page.pick.publications"/>
+            <fmt:message var="pickPublications"   key="post.meta.pick.title"/>
             <a href="" title="${pickPublications}" onclick="pickAll(event);"><fmt:message key="post.meta.pick"/></a>
 
             <c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 
-            <fmt:message var="unPickPublications" key="page.unpick.publications"/>
+            <fmt:message var="unPickPublications" key="post.meta.unpick.title"/>
             <a href="" title="${unPickPublications}" onclick="unpickAll(event);"><fmt:message key="post.meta.unpick"/></a>
             
 		  </c:when>
@@ -37,7 +37,7 @@
 	      <!-- ****************************** Bookmarks *************************** -->
           <c:otherwise>
 			<c:url var="editUrl" value="/bediturl/${requPath}" context="${projectContext}"/>
-            <fmt:message var="editPageTags" key="page.edit.tags"/>
+            <fmt:message var="editPageTags" key="post.meta.edit.title"/>
             <a href="${fn:escapeXml(editUrl)}" title="${editPageTags}"><fmt:message key="post.meta.edit"/></a>
 		  </c:otherwise>
 
