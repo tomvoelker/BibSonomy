@@ -56,9 +56,11 @@ public class TagChainTest extends AbstractChainTest {
 		 this.tagParam.setUserName("hotho");
 		 this.tagParam.setRegex(null);
 		 this.tagParam.setRequestedGroupName("kde");
+		 this.tagParam.setTagIndex(null);
 		 this.tagParam.setLimit(1000);
+		 this.tagParam.setOffset(0);
 		 final List<Tag> tags = this.tagChain.getFirstElement().perform(this.tagParam, this.dbSession);
-		 assertEquals(139, tags.size());		 
+		 assertEquals(333, tags.size());		 
 		 this.resetParameters();
 	}
 
