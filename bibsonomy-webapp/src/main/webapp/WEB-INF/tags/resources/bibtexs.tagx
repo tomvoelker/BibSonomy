@@ -20,7 +20,7 @@
 		listViewStartParamName="bibtex.start"
 		otherParamsNextprev="${otherParamsNextprev}"
 		otherParamsNumEntries="${otherParamsNumEntries}"
-		otherPostsUrlPrefix="/url/"
+		otherPostsUrlPrefix="/bibtex/1"
 		disableActions="${disableActions}"
 		disableListNavigation="${disableListNavigation}"
 		listView="${listView}">
