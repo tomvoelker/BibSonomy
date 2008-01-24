@@ -8,6 +8,7 @@ import java.util.Scanner;
 import org.apache.log4j.Logger;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.StatementType;
+import org.junit.Ignore;
 
 /**
  * This class loads the SQL script for the test database. This should be
@@ -16,6 +17,7 @@ import org.bibsonomy.database.util.StatementType;
  * @author Christian Schenk
  * @version $Id$
  */
+@Ignore
 public class TestDatabaseLoader {
 
 	private final static Logger log = Logger.getLogger(TestDatabaseLoader.class);
