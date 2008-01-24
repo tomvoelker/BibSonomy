@@ -22,9 +22,21 @@
 <%-------------------------- Navigation -----------------------%>
 <%@include file="/boxes/navi.jsp"%>
 
+<%-- ------------------------ change settings -------------------------- --%>
+<jsp:useBean id="adminBean" class="beans.AdminBean" scope="request">
+  <jsp:setProperty name="adminBean" property="*"/>
+  <jsp:setProperty name="adminBean" property="currUser" value="${user.name}"/>
+</jsp:useBean>
+
+<% adminBean.queryDB(); %> <%-- write data to database (if neccessary) --%>
+
 <%-------------------------- Content -----------------------%>
 <div id="general">
 <%@include file="/boxes/admin/navi.jsp"%>
+<p style="font-weight: bold; color: #ff0000; ">
+  <c:forEach var="info" items="${adminBean.infos}">Info: ${info}<br></c:forEach>
+  <c:forEach var="error" items="${adminBean.errors}">Error: ${error}<br></c:forEach>
+</p>
 
 <table width="100%">
 	<tr>
