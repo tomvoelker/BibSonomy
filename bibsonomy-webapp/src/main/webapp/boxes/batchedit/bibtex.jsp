@@ -54,6 +54,7 @@
   <ul class="bblist"><c:forEach var="bib" items="${ResourceBean.bibtex}">
 
    <c:if test="${bib.user ne user.name}">
+   <c:set var="resource" value="${bib}"/>
    <li class="bm">
       <%@include file="/boxes/bibtex_desc.jsp" %>
       <%@include file="/boxes/bibtex_desc2.jsp" %>

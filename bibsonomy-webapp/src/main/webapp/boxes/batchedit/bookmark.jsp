@@ -53,6 +53,7 @@
   <ul class="bblist"><c:forEach var="book" items="${ResourceBean.bookmarks}">
 
    <c:if test="${book.user ne user.name}">
+   <c:set var="resource" value="${book}"/>
    <li class="bm">
       <%@include file="/boxes/bookmark_desc.jsp" %>     
       <%@include file="/boxes/bookmark_action.jsp" %>     
