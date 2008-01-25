@@ -177,22 +177,24 @@ public class ResourceHandler extends HttpServlet{
 		}
 		// check type of feed
 		String requType       = (String)request.getAttribute("type");
-		boolean isRssFeed     = "rss".equals(requType); 
-		boolean isXmlFeed     = "xml".equals(requType);
-		boolean isBookBibFeed = "bookbib".equals(requType);
-		boolean isPublFeed    = "publ".equals(requType); 
-		boolean isPublKDEFeed = "publkde".equals(requType);
-		boolean isPublCSVFeed = "publcsv".equals(requType);
-		boolean isPublRSSNepoFeed = "publrssN".equals(requType);
-		boolean isBibFeed     = "bib".equals(requType);
-		boolean isSWRCFeed    = "swrc".equals(requType);
-		boolean isEndFeed     = "endnote".equals(requType); 
-		boolean isPublRssFeed = "publrss".equals(requType);
-		boolean isPublApaRss  = "aparss".equals(requType);
-		boolean isBurstFeed   = "burst".equals(requType);
-		boolean isLayoutFeed  = "layout".equals(requType);
-		boolean isNRLFeed     = "nrl".equals(requType);
-		boolean isjsonFeed    = "json".equals(requType); 
+		// compatibility hack with new system
+		String format         = (String)request.getAttribute("format");
+		boolean isRssFeed     = "rss".equals(requType) || "rss".equals(format); 
+		boolean isXmlFeed     = "xml".equals(requType) || "xml".equals(format);
+		boolean isBookBibFeed = "bookbib".equals(requType) || "bookbib".equals(format);
+		boolean isPublFeed    = "publ".equals(requType) || "publ".equals(format);
+		boolean isPublKDEFeed = "publkde".equals(requType) || "publkde".equals(format);
+		boolean isPublCSVFeed = "publcsv".equals(requType) || "publcsv".equals(format);
+		boolean isPublRSSNepoFeed = "publrssN".equals(requType) || "publrssN".equals(format);
+		boolean isBibFeed     = "bib".equals(requType) || "bibtex".equals(format);
+		boolean isSWRCFeed    = "swrc".equals(requType) || "swrc".equals(format);
+		boolean isEndFeed     = "endnote".equals(requType) || "endnote".equals(format); 
+		boolean isPublRssFeed = "publrss".equals(requType) || "publrss".equals(format);
+		boolean isPublApaRss  = "aparss".equals(requType) || "aparss".equals(format);
+		boolean isBurstFeed   = "burst".equals(requType) || "burst".equals(format);
+		boolean isLayoutFeed  = "layout".equals(requType) || "layout".equals(format);
+		boolean isNRLFeed     = "nrl".equals(requType) || "nrl".equals(format);
+		boolean isjsonFeed    = "json".equals(requType) || "json".equals(format); 
 		/*  
 		 * TODO: currently every page can be edited and in batchedit.jsp only the users own entries are shown
 		 * Nevertheless they're gotten from the database, which is not neccessary at all --> maybe there should
