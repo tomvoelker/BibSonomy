@@ -29,5 +29,6 @@
 			(eds.).
 		</c:otherwise>
 	</c:choose>
+	<c:out value=" "/>
 	</span>
 </jsp:root>
