@@ -11,36 +11,36 @@
 	
 	<c:if test ="${!empty post.resource.address}">
 		<swrc:address>
-			<c:out value ='${post.resource.address}'/>
+			<c:out value="${fn:escapeXml(post.resource.address)}"/>
 		</swrc:address>
 	</c:if>
 	
 	<c:if test ="${!empty post.resource.booktitle}">
 		<swrc:booktitle>
-			<c:out value ='${post.resource.booktitle}'/>
+			<c:out value="${fn:escapeXml(post.resource.booktitle)}"/>
 		</swrc:booktitle>
 	</c:if>
 	
 	<c:if test ="${!empty post.resource.chapter}">
 		<swrc:chapter>
-			<c:out value ='${post.resource.chapter}'/>
+			<c:out value="${fn:escapeXml(post.resource.chapter)}"/>
 		</swrc:chapter>
 	</c:if>
 	
 	<c:if test ="${!empty post.resource.crossref}">
 		<swrc:crossref>
-			<c:out value ='${post.resource.crossref}'/>
+			<c:out value="${fn:escapeXml(post.resource.crossref)}"/>
 		</swrc:crossref>
 	</c:if>
 	<c:if test ="${!empty post.resource.edition}">
 		<swrc:edition>
-			<c:out value ='${post.resource.edition}'/>
+			<c:out value="${fn:escapeXml(post.resource.edition)}"/>
 		</swrc:edition>
 	</c:if>
 	
 	<c:if test ="${!empty post.resource.howpublished}">
 		<swrc:howpublished>
-			<c:out value ='${post.resource.howpublished}'/>
+			<c:out value="${fn:escapeXml(post.resource.howpublished)}"/>
 		</swrc:howpublished>
 	</c:if>
 	
@@ -52,31 +52,31 @@
 	
 	<c:if test ="${!empty post.resource.journal}">
 		<swrc:journal>
-			<c:out value ='${post.resource.journal}'/>
+			<c:out value="${fn:escapeXml(post.resource.journal)}"/>
 		</swrc:journal>
 	</c:if>
 	
 	<c:if test ="${!empty post.resource.BKey}">
 		<swrc:key>
-			<c:out value ='${post.resource.BKey}'/>
+			<c:out value="${fn:escapeXml(post.resource.BKey)}"/>
 		</swrc:key>
 	</c:if>
 	
 	<c:if test ="${!empty post.resource.month}">
 		<swrc:month>
-			<c:out value ='${post.resource.month}'/>
+			<c:out value="${fn:escapeXml(post.resource.month)}"/>
 		</swrc:month>
 	</c:if>
 	
 	<c:if test ="${!empty post.resource.note}">
 		<swrc:note>
-			<c:out value ='${post.resource.note}'/>
+			<c:out value="${fn:escapeXml(post.resource.note)}"/>
 		</swrc:note>
 	</c:if>
 	
 	<c:if test ="${!empty post.resource.number}">
 		<swrc:number>
-			<c:out value ='${post.resource.number}'/>
+			<c:out value="${fn:escapeXml(post.resource.number)}"/>
 		</swrc:number>
 	</c:if>
 	
@@ -88,7 +88,7 @@
 	
 	<c:if test ="${!empty post.resource.pages}">
 		<swrc:pages>
-			<c:out value ='${post.resource.pages}'/>
+			<c:out value="${fn:escapeXml(post.resource.pages)}"/>
 		</swrc:pages>
 	</c:if>
 	
@@ -106,31 +106,31 @@
 	
 	<c:if test ="${!empty post.resource.series}">
 		<swrc:series>
-			<c:out value ='${post.resource.series}'/>
+			<c:out value="${fn:escapeXml(post.resource.series)}"/>
 		</swrc:series>
 	</c:if>
 	
 	<c:if test ="${!empty post.resource.title}">
 		<swrc:title>
-			<c:out value ='${post.resource.title}'/>
+			<c:out value="${fn:escapeXml(post.resource.title)}"/>
 		</swrc:title>
 	</c:if>
 	
 	<c:if test ="${!empty post.resource.type}">
 		<swrc:type>
-			<c:out value ='${post.resource.type}'/>
+			<c:out value="${fn:escapeXml(post.resource.type)}"/>
 		</swrc:type>
 	</c:if>
 	
 	<c:if test ="${!empty post.resource.volume}">
 		<swrc:volume>
-			<c:out value ='${post.resource.volume}'/>
+			<c:out value="${fn:escapeXml(post.resource.volume)}"/>
 		</swrc:volume>
 	</c:if>
 	
 	<c:if test ="${!empty post.resource.year}">
 		<swrc:year>
-			<c:out value ='${post.resource.year}'/>
+			<c:out value="${fn:escapeXml(post.resource.year)}"/>
 		</swrc:year>
 	</c:if>
 	
@@ -142,13 +142,13 @@
 	
 	<c:if test ="${!empty post.resource.day}">
 		<swrc:day>
-			<c:out value ='${post.resource.day}'/>
+			<c:out value="${fn:escapeXml(post.resource.day)}"/>
 		</swrc:day>
 	</c:if>
 	
 	<c:if test ="${!empty post.resource.bibtexAbstract}">
 		<swrc:abstract>
-			<c:out value ='${post.resource.bibtexAbstract}'/>
+			<c:out value="${fn:escapeXml(post.resource.bibtexAbstract)}"/>
 		</swrc:abstract>
 	</c:if>
 	
@@ -164,7 +164,7 @@
 		<swrc:author>
 		  <rdf:Seq>
 		  <c:forEach var="person" varStatus="status" items="${post.resource.authorList}">
-		    <![CDATA[<rdf:_${status.index + 1}><swrc:Person swrc:name="${person.name}"/></rdf:_${status.index + 1}>]]>
+		    <![CDATA[<rdf:_${status.index + 1}><swrc:Person swrc:name="${fn:escapeXml(person.name)}"/></rdf:_${status.index + 1}>]]>
 		  </c:forEach>
 		  </rdf:Seq>
 		</swrc:author>
@@ -174,7 +174,7 @@
 		<swrc:editor>
 		  <rdf:Seq>
 		  <c:forEach var="person" varStatus="status" items="${post.resource.editorList}">
-		     <![CDATA[<rdf:_${status.index + 1}><swrc:Person swrc:name="${person.name}"/></rdf:_${status.index + 1}>]]>
+		     <![CDATA[<rdf:_${status.index + 1}><swrc:Person swrc:name="${fn:escapeXml(person.name)}"/></rdf:_${status.index + 1}>]]>
 		  </c:forEach>
 		  </rdf:Seq>
 		</swrc:editor>	
