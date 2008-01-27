@@ -61,6 +61,10 @@ public class UserPageController extends MultiResourceListController implements M
 		command.getConcepts().setConceptList(concepts);
 		command.getConcepts().setNumConcepts(concepts.size());
 
+		// set page title
+	    command.setPageTitle("user :: "+groupingName);
+		
+		
 		// html format - retrieve tags and return HTML view
 		if (command.getFormat().equals("html")) {
 			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, 0, 1000);
