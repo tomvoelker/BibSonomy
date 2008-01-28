@@ -111,13 +111,12 @@
 
 	<!-- Refactor b to t1, and delete this snippet -->
 	<sql id="inGroups">
-		<!-- FIXME isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND"-->
-		AND
+		<isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">		
 		  b.group in (0
 		  <iterate property="groups" conjunction="," prepend=",">
 		    $groups[]$
 		  </iterate>)
-		<!-- /isNotEqual-->
+		</isNotEqual>
 	</sql>
 
 	<sql id="inGroups2">
