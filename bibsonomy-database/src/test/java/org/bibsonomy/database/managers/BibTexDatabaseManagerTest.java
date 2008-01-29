@@ -84,15 +84,20 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertNotNull(posts);
 		assertTrue(posts.size() == 0);
 
-		// user == friend, existing hash and spammer
-		// FIXME: Should we add Integer.MIN_VALUE to the groups? This way we could retrive spam-posts
+		// user == friend, existing hash and spammer		
 		this.resetParameters();
 		this.bibtexParam.setUserName("hotho");
+		// spammers are able to see their own posts
 		this.bibtexParam.setRequestedUserName("hotho");
 		this.bibtexParam.setHash("0154d8012c1773a0a9a54576b0e317bf");
 		posts = this.bibTexDb.getBibTexByHashForUser(this.bibtexParam, this.dbSession);
 		assertNotNull(posts);
-		assertTrue(posts.size() == 0);
+		assertTrue(posts.size() == 1);
+		// but other users should not see spammer posts
+		this.bibtexParam.setUserName("dbenz");
+		posts = this.bibTexDb.getBibTexByHashForUser(this.bibtexParam, this.dbSession);
+		assertNotNull(posts);
+		assertTrue(posts.size() == 0);		
 
 		// user == friend, existing hash and no spammer
 		this.resetParameters();
@@ -313,11 +318,26 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.assertDeleteBibTex();
 		assertTrue(plugin.isOnBibTexDelete());
 	}*/
-
-	private void assertDeleteBibTex() {
-		assertEquals(1, this.bibTexDb.getBibTexByHashForUser(this.bibtexParam, this.dbSession).size());
-		this.bibTexDb.deletePost(this.bibtexParam.getRequestedUserName(), this.bibtexParam.getHash(), this.dbSession);
-		assertEquals(0, this.bibTexDb.getBibTexByHashForUser(this.bibtexParam, this.dbSession).size());
+	
+	@Test
+	public void assertDeleteBibTex() {
+		
+		BibTexParam param = new BibTexParam();
+		param.setUserName("dblp");
+		param.setRequestedUserName("dblp");
+		param.setHash("9ad22a9cbce2cb8c10fb5d95903ceeff");
+		param.setRequestedSimHash(HashID.INTRA_HASH);
+		List<Post<BibTex>> posts = this.bibTexDb.getBibTexByHashForUser(param, this.dbSession);
+		assertNotNull(posts);
+		assertTrue(posts.size() == 1);
+		Boolean succ = this.bibTexDb.deletePost(param.getRequestedUserName(), param.getHash(), this.dbSession);
+		
+		if (succ) {
+			assertEquals(0, this.bibTexDb.getBibTexByHashForUser(param, this.dbSession).size());
+		}
+		else {
+			fail("Post could not be deleted");
+		}
 	}
 
 	@Test
