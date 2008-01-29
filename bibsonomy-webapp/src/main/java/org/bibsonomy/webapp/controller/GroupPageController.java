@@ -31,11 +31,16 @@ public class GroupPageController extends MultiResourceListController implements 
 		
 		// if no group given return 
 		if (command.getRequestedGroup() == null) return null;
-				
+		
+
 		// set grouping entity and grouping name
 		final GroupingEntity groupingEntity = GroupingEntity.GROUP;
 		final String groupingName = command.getRequestedGroup();
 		final List<String> requTags = command.getRequestedTagsList();
+
+		// set title
+		// TODO: localize
+		command.setPageTitle("group :: " + groupingName);		
 		
 		// special group given - return empty page
 		if (GroupID.isSpecialGroup(groupingName)) return Views.GROUPPAGE;
