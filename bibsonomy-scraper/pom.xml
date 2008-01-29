@@ -34,6 +34,20 @@
 			<artifactId>junit</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>amazon</groupId>
+			<artifactId>amazon-a2s-java-library</artifactId>
+			<version>2007-10-29</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>jtidy</groupId>
 			<artifactId>jtidy</artifactId>
 			<version>4aug2000r7-dev</version>
