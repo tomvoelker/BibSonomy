@@ -611,19 +611,15 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		// TODO: test removal (tas and bibtex ...)
 		session.beginTransaction();
 		try {
-			// Used for userName, hash and contentId
-			final BibTexParam param = new BibTexParam();
-			param.setUserName(userName);
-			param.setRequestedUserName(userName); // FIXME: grmpf.
-			param.setHash(resourceHash);
-
 			final List<Post<BibTex>> bibtexs = this.getBibTexByHashForUser(userName, resourceHash, userName, session, HashID.INTRA_HASH);
 			if (bibtexs.size() == 0) {
 				// BibTex doesn't exist
+				log.debug("post not found");
 				return false;
 			}
 
 			final Post<? extends Resource> oneBibtex = bibtexs.get(0);
+			final BibTexParam param = new BibTexParam();
 			param.setRequestedContentId(oneBibtex.getContentId());
 			if (update == false) this.plugins.onBibTexDelete(param.getRequestedContentId(), session);
 			this.tagDb.deleteTags(oneBibtex, session);
