@@ -246,4 +246,58 @@
 		<BibFile>SpringerLinkScraperUnitURLTest2.bib</BibFile>
 		<Scraper>scraper.url.kde.springer.SpringerLinkScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_42">
+		<TestDescription>Amazon.com scraping test</TestDescription>
+		<URL>http://www.amazon.com/Semantic-Primer-Cooperative-Information-Systems/dp/0262012103/ref=pd_bbs_sr_1?ie=UTF8&amp;s=books&amp;qid=1200485020&amp;sr=1-1</URL>
+		<BibFile>AmazonScraperUnitURLTest1.bib</BibFile>
+		<Scraper>scraper.url.kde.amazon.AmazonScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_43">
+		<TestDescription>scraping test for jornal page from plos.org</TestDescription>
+		<URL>http://biology.plosjournals.org/perlserv/?request=get-document&amp;doi=10.1371/journal.pbio.0060010</URL>
+		<BibFile>PlosScraperUnitURLTest1.bib</BibFile>
+		<Scraper>scraper.url.kde.plos.PlosScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_44">
+		<TestDescription>scraping test for jornal page from plos.org</TestDescription>
+		<URL>http://biology.plosjournals.org/perlserv/?request=cite-builder&amp;doi=10.1371/journal.pbio.0060010</URL>
+		<BibFile>PlosScraperUnitURLTest1.bib</BibFile>
+		<Scraper>scraper.url.kde.plos.PlosScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_45">
+		<TestDescription>test for nature.com</TestDescription>
+		<URL>http://www.nature.com/bdj/journal/vaop/ncurrent/abs/bdj.2008.21.html</URL>
+		<BibFile>NatureScraperUnitURLTest1.bib</BibFile>
+		<Scraper>scraper.url.kde.nature.NatureScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_46">
+		<TestDescription>Amazon.de scraping test</TestDescription>
+		<URL>http://www.amazon.de/gp/product//3827415020/ref=br_fq_2</URL>
+		<BibFile>AmazonScraperUnitURLTest2.bib</BibFile>
+		<Scraper>scraper.url.kde.amazon.AmazonScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_47">
+		<TestDescription>Amazon.ca scraping test</TestDescription>
+		<URL>http://www.amazon.ca/Digital-Photography-Book-Scott-Kelby/dp/032147404X/ref=sr_1_3?ie=UTF8&amp;s=books&amp;qid=1201615938&amp;sr=1-3</URL>
+		<BibFile>AmazonScraperUnitURLTest3.bib</BibFile>
+		<Scraper>scraper.url.kde.amazon.AmazonScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_48">
+		<TestDescription>Amazon.fr scraping test</TestDescription>
+		<URL>http://www.amazon.fr/Mac-programmation-AppleScript-Dashboard-Core-Animation/dp/2100500767/ref=sr_1_5?ie=UTF8&amp;s=books&amp;qid=1201616015&amp;sr=1-5</URL>
+		<BibFile>AmazonScraperUnitURLTest4.bib</BibFile>
+		<Scraper>scraper.url.kde.amazon.AmazonScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_49">
+		<TestDescription>Amazon.jp scraping test</TestDescription>
+		<URL>http://www.amazon.co.jp/Programming-Collective-Intelligence-Building-Applications/dp/0596529325/ref=sr_1_1/249-7857785-0612358?ie=UTF8&amp;s=gateway&amp;qid=1201616160&amp;sr=8-1</URL>
+		<BibFile>AmazonScraperUnitURLTest5.bib</BibFile>
+		<Scraper>scraper.url.kde.amazon.AmazonScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_50">
+		<TestDescription>Amazon.co.uk scraping test</TestDescription>
+		<URL>http://www.amazon.co.uk/Pro-2008-NET-Platform-Fourth/dp/1590598849/ref=sr_1_1?ie=UTF8&amp;s=books&amp;qid=1201616235&amp;sr=1-1</URL>
+		<BibFile>AmazonScraperUnitURLTest6.bib</BibFile>
+		<Scraper>scraper.url.kde.amazon.AmazonScraper</Scraper>
+	</URLTest>
 </test:Tests>
