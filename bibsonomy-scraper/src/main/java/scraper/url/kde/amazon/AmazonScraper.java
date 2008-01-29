@@ -165,7 +165,7 @@ public class AmazonScraper implements Scraper {
 									};
 									if (date != null) {
 										// try to find the year only if not just copy all info.
-									    Pattern datePattern = Pattern.compile(".*(\\d{4}).*");
+									    Pattern datePattern = Pattern.compile(".*([0-9]{4}).*");
 									    Matcher dateMatcher = datePattern.matcher(date);
 									    if (dateMatcher.find())
 									    {
