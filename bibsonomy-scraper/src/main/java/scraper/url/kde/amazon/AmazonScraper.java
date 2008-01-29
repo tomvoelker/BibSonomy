@@ -35,7 +35,7 @@ public class AmazonScraper implements Scraper {
 	/**
 	 * access key for the amazon web service (aws)
 	 */
-	private static final String AMAZON_ACCESS_KEY = "****";
+	private static final String AMAZON_ACCESS_KEY = "13CT5CVB80YFWJEPWS02";
 	
 	/**
 	 * regex for searching the key of the current product
@@ -160,14 +160,22 @@ public class AmazonScraper implements Scraper {
 			                        
 			                        // build publication date
 			                        String date = itemAttributes.getPublicationDate();
-			                        if(date != null)
-			                        	bibtex.append("year = {" + date +"},\n");
-			                        else{
+			                        if(date == null) {
 			                        	date = itemAttributes.getReleaseDate();
-				                        if(date != null)
-				                        	bibtex.append("year = {" + date +"},\n");
+									};
+									if (date != null) {
+										// try to find the year only if not just copy all info.
+									    Pattern datePattern = Pattern.compile(".*(\\d{4}).*");
+									    Matcher dateMatcher = datePattern.matcher(date);
+									    if (dateMatcher.find())
+									    {
+									    	bibtex.append("year = {" + dateMatcher.group(1) +"},\n");
+									    } else {
+											bibtex.append("year = {" + date +"},\n");
+									    }
 			                        }
-		
+
+			                        
 			                        // add URL to product page
 			                        String url = item.getDetailPageURL();
 			                        if(url != null)
