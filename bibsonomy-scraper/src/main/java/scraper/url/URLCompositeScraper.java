@@ -6,6 +6,7 @@ package scraper.url;
 import scraper.CompositeScraper;
 import scraper.url.kde.acm.ACMBasicScraper;
 import scraper.url.kde.aip.AipScitationScraper;
+import scraper.url.kde.amazon.AmazonScraper;
 import scraper.url.kde.arxiv.ArxivScraper;
 import scraper.url.kde.bibsonomy.BibSonomyScraper;
 import scraper.url.kde.citebase.CiteBaseScraper;
@@ -22,6 +23,8 @@ import scraper.url.kde.librarything.LibrarythingScraper;
 import scraper.url.kde.mathscinet.MathSciNetScraper;
 import scraper.url.kde.multiple.ScrapingService;
 import scraper.url.kde.nasa.ads.NasaAdsScraper;
+import scraper.url.kde.nature.NatureScraper;
+import scraper.url.kde.plos.PlosScraper;
 import scraper.url.kde.prola.ProlaScraper;
 import scraper.url.kde.pubmed.PubMedScraper;
 import scraper.url.kde.pubmedcentral.PubMedCentralScraper;
@@ -56,6 +59,9 @@ public class URLCompositeScraper extends CompositeScraper {
 		addScraper(new ProlaScraper());
 		addScraper(new BibSonomyScraper());
 		addScraper(new IEEEComputerSocietyScraper());
+		addScraper(new AmazonScraper());
+		addScraper(new PlosScraper());
+		addScraper(new NatureScraper());
 		addScraper(new ScrapingService());
 	}
 }

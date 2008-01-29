@@ -61,7 +61,7 @@ public class EndnoteToBibtexConverter {
 	}
 	
 	//main method to process the data
-	private String processEntry(String entry){
+	public String processEntry(String entry){
 		
 		//initialise all necessary vars
 		String _tempLine = null;
