@@ -19,6 +19,8 @@ Direct access
   us your files, so that other programmers can benefit from your work.
   Thank you in advance.
 
+* Perl
+
   A minimal Perl example how to access our API is the following:
 
 +------------------------------------+
@@ -36,3 +38,17 @@ my $response = $http_client->get($url);           # send request to API
 
 print $response->content;			  # print result
 +------------------------------------+
+
+* Python
+
+  There's a Python script available that helps you to interact with the webservice like so:
+
++---+
+bibsonomy = BibSonomy('YOUR_USERNAME', 'YOUR_APIKEY')
+posts = bibsonomy.getPosts('bibtex')
+# do something with the posts...
+for post in posts:
+  print post.resource.title
++---+
+
+  You can download the script {{{download.html}here}}.
