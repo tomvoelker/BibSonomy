@@ -9,6 +9,7 @@ import scraper.url.kde.aip.AipScitationScraper;
 import scraper.url.kde.amazon.AmazonScraper;
 import scraper.url.kde.arxiv.ArxivScraper;
 import scraper.url.kde.bibsonomy.BibSonomyScraper;
+import scraper.url.kde.blackwell.BlackwellSynergyScraper;
 import scraper.url.kde.citebase.CiteBaseScraper;
 import scraper.url.kde.citeseer.CiteseerBasicScraper;
 import scraper.url.kde.highwire.HighwireScraper;
@@ -62,6 +63,7 @@ public class URLCompositeScraper extends CompositeScraper {
 		addScraper(new AmazonScraper());
 		addScraper(new PlosScraper());
 		addScraper(new NatureScraper());
+		addScraper(new BlackwellSynergyScraper());
 		addScraper(new ScrapingService());
 	}
 }
