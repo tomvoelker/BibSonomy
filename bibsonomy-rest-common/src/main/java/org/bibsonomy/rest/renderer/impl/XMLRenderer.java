@@ -272,6 +272,12 @@ public class XMLRenderer implements Renderer {
 		xmlUser.setRealname(user.getRealname());
 		xmlUser.setHref(createHrefForUser(user.getName()));
 		xmlUser.setPassword(user.getPassword());
+		if (user.getSpammer() != null)
+			xmlUser.setSpammer(BigInteger.valueOf(user.getSpammer()));
+		if (user.getPrediction() != null)
+			xmlUser.setPrediction(BigInteger.valueOf(user.getPrediction()));
+		xmlUser.setAlgorithm(user.getAlgorithm());
+		xmlUser.setCount(BigInteger.valueOf(user.getCount()));
 		return xmlUser;
 	}
 
