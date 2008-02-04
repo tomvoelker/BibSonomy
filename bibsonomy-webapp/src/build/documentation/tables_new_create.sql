@@ -365,6 +365,44 @@ CREATE TABLE `log_tas` (
   PRIMARY KEY  (`tas_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+CREATE TABLE `log_user` (
+  `user_name` varchar(30) NOT NULL,
+  `user_email` varchar(255) NOT NULL,
+  `user_password` char(32) NOT NULL,
+  `user_homepage` varchar(255) NOT NULL,
+  `user_realname` varchar(255) NOT NULL,
+  `spammer` tinyint(1) NOT NULL default '0',
+  `openurl` varchar(255) default NULL,
+  `reg_date` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `ip_address` varchar(255) default NULL,
+  `tmp_password` char(32) default NULL,
+  `tmp_request_date` datetime NOT NULL default '1815-12-10 00:00:00' ,
+  `tagbox_style` tinyint(4) default '0',
+  `tagbox_sort` tinyint(4) default '0',
+  `tagbox_minfreq` tinyint(4) default '0',
+  `tagbox_tooltip` tinyint(4) default '0',
+  `list_itemcount` smallint(6) default '10',
+  `spammer_suggest` tinyint(1) NOT NULL default '1',
+  `birthday` date default NULL, 
+  `gender` char(1) default NULL,  
+  `place` varchar(255) default NULL, 
+  `profession` varchar(255) default NULL,  
+  `interests` varchar(255) default NULL, 
+  `hobbies` varchar(255) default NULL,
+  `profilegroup` tinyint(1) default '1',
+  `updated_by` varchar(30) default NULL,
+  `updated_at` datetime default '1815-12-10 00:00:00',
+  `api_key` varchar(32) default NULL,
+  `lang` char(2) default 'en',
+  `role` tinyint(3) NOT NULL,
+  `prediction` int(10) default '9',
+  `algorithm` varchar(255),
+  `count` int(10) default '0',
+  `timestamp` mediumtext not null,
+  PRIMARY KEY  (`user_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `picked_concepts` (
   `upper` varchar(255) character set utf8 collate utf8_bin NOT NULL default '',
   `user_name` varchar(30) NOT NULL,
@@ -594,6 +632,12 @@ CREATE TABLE `user` (
   `profilegroup` tinyint(1) default '1',
   `updated_by` varchar(30) default NULL,
   `updated_at` datetime default '1815-12-10 00:00:00',
+  `api_key` varchar(32) default NULL,
+  `lang` char(2) default 'en',
+  `role` tinyint(3) NOT NULL,
+  `prediction` int(10) default '9',
+  `algorithm` varchar(255),
+  `count` int(10) default '0',
   PRIMARY KEY  (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
