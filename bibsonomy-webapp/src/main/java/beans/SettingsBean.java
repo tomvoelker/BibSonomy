@@ -237,7 +237,7 @@ public class SettingsBean extends UserBean implements Serializable {
 	
 	// email as SHA1 Hash
 	public String getSHA1Email() {
-		return getSHA1Hash(email);
+		return getSHA1Hash("mailto:" + email);
 	}
 	
 	/**
@@ -245,10 +245,10 @@ public class SettingsBean extends UserBean implements Serializable {
 	 * @param str the string to be encoded
 	 * @return SHA-1 sum
 	 */
-	private String getSHA1Hash(String str) {
+	private String getSHA1Hash(final String str) {
 		String s = "";
 		try {
-			MessageDigest md = MessageDigest.getInstance("SHA-1");
+			final MessageDigest md = MessageDigest.getInstance("SHA-1");
 			byte [] buffer = md.digest(str.getBytes());
 			
 	    	for (int i = 0; i < buffer.length; i++) {
