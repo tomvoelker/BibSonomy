@@ -122,7 +122,27 @@ public class User {
 	 * Which role the user has in the system (e.g. admin, ...)
 	 */
 	private Role role;
+	
+	/**
+	 * Default language for i18n
+	 */
+	private String language;
 
+	/**
+	 * The spammer prediction of the classifier
+	 */
+	private Integer prediction;
+	
+	/**
+	 * The classification algortihm the user was classified with
+	 */
+	private String algorithm;
+	
+	/**
+	 * How many times the user was classified
+	 */
+	private Integer count;
+	
 	/**
 	 * constructor
 	 */
@@ -476,4 +496,60 @@ public class User {
 	public void setRole(Role role) {
 		this.role = role;
 	}
+
+	/**
+	 * @return The default language the user set for i18n
+	 */
+	public String getLanguage() {
+		return this.language;
+	}
+
+	/**
+	 * @param language language
+	 */
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	/**
+	 * @return prediction of classifier
+	 */
+	public Integer getPrediction() {
+		return this.prediction;
+	}
+
+	/**
+	 * @param prediction Prediction
+	 */
+	public void setPrediction(Integer prediction) {
+		this.prediction = prediction;
+	}
+
+	/**
+	 * @return Classification algorithm the user was classified with
+	 */
+	public String getAlgorithm() {
+		return this.algorithm;
+	}
+
+	/**
+	 * @param algorithm classification algorithm
+	 */
+	public void setAlgorithm(String algorithm) {
+		this.algorithm = algorithm;
+	}
+
+	/**
+	 * @return How many times the user was classified
+	 */
+	public Integer getCount() {
+		return this.count;
+	}
+
+	/**
+	 * @param count Count
+	 */
+	public void setCount(Integer count) {
+		this.count = count;
+	}	
 }
