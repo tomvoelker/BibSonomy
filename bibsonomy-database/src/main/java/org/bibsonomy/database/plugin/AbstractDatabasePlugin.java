@@ -11,6 +11,7 @@ import org.bibsonomy.database.util.DBSession;
  * @author Jens Illig
  * @author Christian Schenk
  * @author Anton Wilhelm
+ * @author Stefan Stützer
  * @version $Id$
  */
 public class AbstractDatabasePlugin extends AbstractDatabaseManager implements DatabasePlugin {
@@ -48,6 +49,18 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	}
 
 	public Runnable onRemoveUserFromGroup(final String userName, final int groupId, final DBSession session) {
+		return null;
+	}
+
+	public Runnable onUserDelete(String userName, DBSession session) {
+		return null;
+	}
+
+	public Runnable onUserInsert(String userName, DBSession session) {
+		return null;
+	}
+
+	public Runnable onUserUpdate(String userName, DBSession session) {
 		return null;
 	}
 }

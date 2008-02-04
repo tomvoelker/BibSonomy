@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
@@ -362,9 +363,19 @@ public class DBLogic implements LogicInterface {
 	/*
 	 * Adds/updates a user in the database.
 	 */
-	private String storeUser(final User user, boolean update) {
+	private String storeUser(final User user, boolean update) {	
 		
-		throw new UnsupportedOperationException("not yet available");
+		if (update == true) {
+			final DBSession session = openSession();			
+			
+			if(user.getName().equals(this.loginUser.getName()) && user.getSpammer() == null && user.getPrediction() == null) {
+				return userDBManager.changeUser(user, session);						
+			}
+			permissionDBManager.ensureAdminAccess(this.loginUser);
+			return userDBManager.changeUser(user, session);			
+		}
+		throw new UnsupportedOperationException("not yet available");		
+		
 		
 // TODO check if the following is correct
 // 
@@ -537,11 +548,10 @@ public class DBLogic implements LogicInterface {
 
 	public String updateUser(User user) {
 		// TODO: could we re-use this.permissionDBManager.ensureWriteAccess(post, this.loginUser) here?
-		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(user.getName()) == false)) {
+		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(user.getName()) == false && this.loginUser.getRole() != Role.ADMIN)) {
 			final String errorMsg = "user " + ((this.loginUser.getName() != null) ? this.loginUser.getName() : "anonymous") + " is not authorized to change user " + user.getName();
 			log.warn(errorMsg);
 			throw new ValidationException(errorMsg);
-			
 		}
 		return this.storeUser(user, true);
 	}
@@ -723,7 +733,7 @@ public class DBLogic implements LogicInterface {
 		return inetAddressStatus;
 	}
 	
-	/** 
+		/** 
 	 * Query statistical information
 	 * 
 	 * TODO: as soon as more statistics are added, a chain should be defined

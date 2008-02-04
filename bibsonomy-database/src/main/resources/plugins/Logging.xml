@@ -48,6 +48,20 @@
 		FROM groups g WHERE g.user_name = #userName# AND g.group = #groupId#
 	</insert>
 	
+	<insert id="logUser" parameterClass="String">
+		INSERT INTO log_user (	user_name,  user_email, user_password, user_homepage, user_realname, spammer,  
+								openurl, reg_date, ip_address, id, tmp_password, tmp_request_date, tagbox_style, 
+								tagbox_sort, tagbox_minfreq, tagbox_tooltip, list_itemcount, spammer_suggest, 
+								birthday, gender, profession, interests, hobbies, place,  profilegroup, api_key, 
+								updated_by, updated_at, lang, role, prediction, algorithm, count, timestamp) 
+		(SELECT user_name,  user_email, user_password, user_homepage, user_realname, spammer,  
+				openurl, reg_date, ip_address, id, tmp_password, tmp_request_date, tagbox_style, 
+				tagbox_sort, tagbox_minfreq, tagbox_tooltip, list_itemcount, spammer_suggest, 
+				birthday, gender, profession, interests, hobbies, place,  profilegroup, api_key, 
+				updated_by, updated_at, lang, role, prediction, algorithm, count, UNIX_TIMESTAMP(NOW()) 
+				FROM user WHERE user_name = #userName#) 
+	</insert>
+	
 	<select id="countNewContentIdFromBibTex" resultClass="int" parameterClass="bibtexParam">
 		SELECT COUNT(*)	AS count FROM log_bibtex LB WHERE LB.new_content_id=#newContentId#
 	</select>

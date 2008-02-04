@@ -31,6 +31,12 @@ public interface DatabasePlugin {
 	public Runnable onTagRelationDelete(String upperTagName, String lowerTagName, String userName, DBSession session);
 
 	public Runnable onTagDelete(int contentId, DBSession session);
+	
+	public Runnable onUserInsert(String userName, DBSession session);
+
+	public Runnable onUserDelete(String userName, DBSession session);
+
+	public Runnable onUserUpdate(String userName, DBSession session);	
 
 	public Runnable onRemoveUserFromGroup(String userName, int groupId, DBSession session);
 }

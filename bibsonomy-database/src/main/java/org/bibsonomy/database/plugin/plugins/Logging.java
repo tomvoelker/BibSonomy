@@ -104,4 +104,15 @@ public class Logging extends AbstractDatabasePlugin {
 			}
 		};
 	}
+
+	@Override
+	public Runnable onUserUpdate(final String userName, final DBSession session) {
+		return new Runnable() {
+			public void run() {
+				insert("logUser", userName, session);
+			}
+		};
+	}
+	
+	
 }

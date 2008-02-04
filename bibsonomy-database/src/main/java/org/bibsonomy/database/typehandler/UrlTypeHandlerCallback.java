@@ -38,6 +38,7 @@ public class UrlTypeHandlerCallback implements TypeHandlerCallback {
 	public void setParameter(final ParameterSetter setter, final Object parameter) throws SQLException {
 		if (parameter == null) {
 			setter.setNull(Types.VARCHAR);
+			setter.setString("");
 		} else {
 			final URL url = (URL) parameter;
 			setter.setString(url.toExternalForm());

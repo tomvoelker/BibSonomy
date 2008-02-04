@@ -2,11 +2,14 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.User;
@@ -27,9 +30,11 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	private static final Logger log = Logger.getLogger(UserDatabaseManager.class);
 	private final static UserDatabaseManager singleton = new UserDatabaseManager();
 	private final BasketDatabaseManager basketDb;
+	private final DatabasePluginRegistry plugins;
 
 	private UserDatabaseManager() {
 		this.basketDb = BasketDatabaseManager.getInstance();
+		this.plugins = DatabasePluginRegistry.getInstance();
 	}
 
 	/**
@@ -132,6 +137,55 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		user.setApiKey(UserUtils.generateApiKey());
 		this.insert("insertUser", user, session);
 	}
+	
+	/**
+	 * Change the user details
+	 * @param user
+	 * @param session
+	 * @return the username
+	 */
+	public String changeUser(final User user, final DBSession session) {
+		this.updateUser(user, session);
+		return user.getName();
+	}
+	
+	/**
+	 * Updates a user
+	 * @param user the user
+	 * @param session
+	 */
+	private void updateUser(final User user, final DBSession session) {
+		User existingUser = this.getUserDetails(user.getName(), session);
+		
+		if (existingUser == null)
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "user does not exist");
+			
+		
+		existingUser.setEmail(!present(user.getEmail()) 		? existingUser.getEmail() 		: user.getEmail());
+		existingUser.setPassword(!present(user.getPassword()) 	? existingUser.getPassword() 	: user.getPassword());		
+		existingUser.setRealname(!present(user.getRealname()) 	? existingUser.getRealname() 	: user.getRealname());		
+		existingUser.setHomepage(!present(user.getHomepage()) 	? existingUser.getHomepage() 	: user.getHomepage());		
+		existingUser.setApiKey(!present(user.getApiKey()) 		? existingUser.getApiKey()	 	: user.getApiKey());		
+		existingUser.setBirthday(!present(user.getBirthday()) 	? existingUser.getBirthday() 	: user.getBirthday());
+		existingUser.setGender(!present(user.getGender()) 		? existingUser.getGender() 		: user.getGender());
+		existingUser.setHobbies(!present(user.getHobbies()) 	? existingUser.getHobbies() 	: user.getHobbies());
+		existingUser.setInterests(!present(user.getInterests()) ? existingUser.getInterests() 	: user.getInterests());
+		existingUser.setSpammer(!present(user.getSpammer()) 	? existingUser.getSpammer() 	: user.getSpammer());
+		existingUser.setIPAddress(!present(user.getIPAddress()) ? existingUser.getIPAddress() 	: user.getIPAddress());
+		existingUser.setOpenURL(!present(user.getOpenURL()) 	? existingUser.getOpenURL() 	: user.getOpenURL());
+		existingUser.setPlace(!present(user.getPlace()) 		? existingUser.getPlace() 		: user.getPlace());
+		existingUser.setProfession(!present(user.getProfession()) ? existingUser.getProfession(): user.getProfession());
+		existingUser.setRegistrationDate(!present(user.getRegistrationDate()) ? existingUser.getRegistrationDate() : user.getRegistrationDate());
+		existingUser.setPrediction(!present(user.getPrediction()) 	? existingUser.getPrediction() 	: user.getPrediction());
+		existingUser.setAlgorithm(!present(user.getAlgorithm()) 	? existingUser.getAlgorithm() 	: user.getAlgorithm());
+		existingUser.setCount(!present(user.getCount()) 	? existingUser.getCount() 	: user.getCount());
+		
+		System.err.println("update user " + existingUser.getName() + ", spammer: " + existingUser.getSpammer() + ", pred: " + existingUser.getPrediction());
+
+		this.plugins.onUserUpdate(existingUser.getName(), session);
+		this.deleteUser(existingUser.getName(), session);
+		this.insert("insertUser", existingUser, session);
+	}
 
 	/**
 	 * Delete a user.
@@ -141,7 +195,8 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void deleteUser(final String userName, final DBSession session) {
 		// TODO this should also delete tas entries
-		throw new UnsupportedOperationException("Not implemented");
+		this.delete("deleteUser", userName, session);
+		//throw new UnsupportedOperationException("Not implemented");
 	}
 
 	/**

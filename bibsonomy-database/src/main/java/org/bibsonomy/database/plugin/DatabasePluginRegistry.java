@@ -114,4 +114,22 @@ public class DatabasePluginRegistry {
 			this.executeRunnable(plugin.onRemoveUserFromGroup(username, groupId, session));
 		}
 	}
+	
+	public void onUserDelete(String userName, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			this.executeRunnable(plugin.onUserDelete(userName, session));
+		}
+	}
+
+	public void onUserInsert(String userName, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			this.executeRunnable(plugin.onUserInsert(userName, session));
+		}
+	}
+
+	public void onUserUpdate(String userName, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			this.executeRunnable(plugin.onUserUpdate(userName, session));
+		}
+	}
 }
