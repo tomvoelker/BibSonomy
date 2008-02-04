@@ -85,7 +85,6 @@ public class ScrapingContext {
 	 * @param url the url to scrape
 	 * @return String which holds the page content.
 	 * @throws ScrapingException 
-	 * @throws Exception  
 	 */
 	public String getContentAsString(URL url) throws ScrapingException {
 		HttpURLConnection urlConn = null;
