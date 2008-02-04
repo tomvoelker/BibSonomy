@@ -26,7 +26,9 @@ public class PutUserStrategy extends AbstractUpdateStrategy {
 	@Override
 	public void validate() throws ValidationException {
 		// ensure username equals auth-username
-		if (!this.userName.equals(this.getLogic().getAuthenticatedUser())) throw new ValidationException("The operation is not permitted for the logged-in user.");
+		// FIXME: there is no chance to retrieve the role of the user from here, but only the name (so I check admin access via name)
+		if (!this.userName.equals(this.getLogic().getAuthenticatedUser()) && !this.getLogic().getAuthenticatedUser().equals("classifier")) 
+			throw new ValidationException("The operation is not permitted for the logged-in user.");
 	}
 
 	@Override
