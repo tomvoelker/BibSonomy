@@ -180,8 +180,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		existingUser.setAlgorithm(!present(user.getAlgorithm()) 	? existingUser.getAlgorithm() 	: user.getAlgorithm());
 		existingUser.setCount(!present(user.getCount()) 	? existingUser.getCount() 	: user.getCount());
 		
-		System.err.println("update user " + existingUser.getName() + ", spammer: " + existingUser.getSpammer() + ", pred: " + existingUser.getPrediction());
-
 		this.plugins.onUserUpdate(existingUser.getName(), session);
 		this.deleteUser(existingUser.getName(), session);
 		this.insert("insertUser", existingUser, session);
