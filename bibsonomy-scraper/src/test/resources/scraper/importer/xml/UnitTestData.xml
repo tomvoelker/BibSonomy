@@ -318,4 +318,16 @@
 		<BibFile>BlackwellSynergyScraperUnitURLTest3.bib</BibFile>
 		<Scraper>scraper.url.kde.blackwell.BlackwellSynergyScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_54">
+		<TestDescription>D-Lib scraping test (html page)</TestDescription>
+		<URL>http://www.dlib.org/dlib/january08/smith/01smith.html</URL>
+		<BibFile>DLibScraperUnitURLTest1.bib</BibFile>
+		<Scraper>scraper.url.kde.dlib.DLibScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_55">
+		<TestDescription>D-Lib scraping test (xml page)</TestDescription>
+		<URL>http://www.dlib.org/dlib/january08/smith/01smith.html</URL>
+		<BibFile>DLibScraperUnitURLTest1.bib</BibFile>
+		<Scraper>scraper.url.kde.dlib.DLibScraper</Scraper>
+	</URLTest>
 </test:Tests>
