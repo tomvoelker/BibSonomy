@@ -42,7 +42,7 @@ public class UBKAScraper implements Scraper {
 	//query id (user dependent value)
 	private static final String UBKA_PARAM_ND    	= "nd";
 	
-	private static final String  UBKA_BIB_PATTERN   = ".*<td valign=\"top\"\\s*>\\s*(@[A-Za-z]+&nbsp;\\s*\\{.+<br>\\s*<br>).*";
+	private static final String  UBKA_BIB_PATTERN   = ".*<td valign=\"top\"\\s*>\\s*(@[A-Za-z]+&nbsp;\\s*\\{.+}\\s).*";
 	private static final String  UBKA_COMMA_PATTERN = "(.*keywords\\s*=\\s*\\{)(.*?)(\\},?<br>.*)";	
 	private static final String  UBKA_SPACE_PATTERN = "&nbsp;";
 	private static final String  UBKA_BREAK_PATTERN = "<br>";
@@ -97,8 +97,13 @@ public class UBKAScraper implements Scraper {
 	 */
 	private String extractBibtexFromUBKA(String pageContent) throws ScrapingException{
 		try{
-		Pattern p = Pattern.compile(UBKA_BIB_PATTERN, Pattern.MULTILINE | Pattern.DOTALL);
-		Matcher m = p.matcher(pageContent);	
+	    //replace <br>
+		Pattern p = Pattern.compile(UBKA_BREAK_PATTERN);
+		Matcher m = p.matcher(pageContent);
+		pageContent = m.replaceAll("");
+	    
+	    p = Pattern.compile(UBKA_BIB_PATTERN, Pattern.MULTILINE | Pattern.DOTALL);
+		m = p.matcher(pageContent);	
 		if (m.matches()) {//we got the entry
 			String bib = m.group(1);
            
@@ -113,12 +118,6 @@ public class UBKAScraper implements Scraper {
 	        if (m.matches()){
 	        	bib = m.group(1) + m.group(2).replaceAll(",", " ") + m.group(3);	        
 	        }
-	        
-	        //replace <br>
-	        p = Pattern.compile(UBKA_BREAK_PATTERN);
-	        m = p.matcher(bib);
-	        bib = m.replaceAll("");
-	        
 	        
             return bib;			
 		}
