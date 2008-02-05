@@ -62,7 +62,7 @@ my %tag_hash;            # stores tags
 # SLAVE
 #########################################################
 # connect to database
-my $dbh = DBI->connect($slave, $user, $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});
+my $dbh = DBI->connect($slave, $user, $password, {RaiseError => 1, "mysql_auto_reconnect" => 1, "mysql_enable_utf8" => 1});
 # prepare statements
 # get last content_id from search table
 my $stm_select_content_id = $dbh->prepare ("SELECT content_id FROM $table ORDER BY content_id DESC LIMIT 1");
@@ -91,8 +91,6 @@ my $stm_select_tas = $dbh->prepare ("
     FROM tas
     WHERE content_id > ?");
 
-# select content ids which can be deleted
-my $stm_get = $dbh->prepare ("SELECT s.content_id FROM $table s LEFT JOIN tas b USING (content_id) WHERE b.content_id IS NULL;");
 
 
 #################################
@@ -115,7 +113,7 @@ $stm_select_tas->execute($last_content_id);
 while (@row = $stm_select_tas->fetchrow_array) {
     $tag_hash{$row[0]} .= " $row[1]";
 }
-$stm_select_book->finish();
+$stm_select_tas->finish();
 
 
 
@@ -194,6 +192,9 @@ $dbh_master->commit;
 $stm_enable_keys->execute() if ($database eq "search2");   # enable this, when building table from scratch
 
 
+
+# select content ids which can be deleted
+my $stm_get = $dbh->prepare ("SELECT s.content_id FROM $table s LEFT JOIN tas b USING (content_id) WHERE b.content_id IS NULL;");
 
 #################################
 # delete old rows
