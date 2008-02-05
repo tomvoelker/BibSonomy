@@ -17,7 +17,7 @@ public class BlackwellSynergyScraperTest {
 	 * starts URL test with id url_51
 	 */
 	@Test
-	//@Ignore
+	@Ignore
 	public void url1TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_51"));
@@ -27,7 +27,7 @@ public class BlackwellSynergyScraperTest {
 	 * starts URL test with id url_52
 	 */
 	@Test
-	//@Ignore
+	@Ignore
 	public void url2TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_52"));
@@ -37,7 +37,7 @@ public class BlackwellSynergyScraperTest {
 	 * starts URL test with id url_53
 	 */
 	@Test
-	//@Ignore
+	@Ignore
 	public void url3TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_53"));
