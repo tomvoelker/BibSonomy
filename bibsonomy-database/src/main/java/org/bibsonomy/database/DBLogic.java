@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
@@ -364,19 +364,15 @@ public class DBLogic implements LogicInterface {
 	 * Adds/updates a user in the database.
 	 */
 	private String storeUser(final User user, boolean update) {	
-		
-		if (update == true) {
-			final DBSession session = openSession();			
-			
-			if(user.getName().equals(this.loginUser.getName()) && user.getSpammer() == null && user.getPrediction() == null) {
-				return userDBManager.changeUser(user, session);						
-			}
-			permissionDBManager.ensureAdminAccess(this.loginUser);
-			return userDBManager.changeUser(user, session);			
+		if (update == false) throw new UnsupportedOperationException("not yet available");
+
+		final DBSession session = openSession();
+		if(user.getName().equals(this.loginUser.getName()) && user.getSpammer() == null && user.getPrediction() == null) {
+			return this.userDBManager.changeUser(user, session);
 		}
-		throw new UnsupportedOperationException("not yet available");		
-		
-		
+		this.permissionDBManager.ensureAdminAccess(this.loginUser);
+		return this.userDBManager.changeUser(user, session);
+
 // TODO check if the following is correct
 // 
 //		final DBSession session = openSession();
@@ -556,7 +552,6 @@ public class DBLogic implements LogicInterface {
 		return this.storeUser(user, true);
 	}
 
-	
 	public String getAuthenticatedUser() {
 		/* TODO: we should either rename this method to getAuthenticatedUserName or 
 		 * return the user directly.
@@ -566,7 +561,7 @@ public class DBLogic implements LogicInterface {
 
 	public String addDocument(Document doc) {
 		ensureLoggedIn();
-		permissionDBManager.ensureWriteAccess(doc, loginUser);
+		this.permissionDBManager.ensureWriteAccess(doc, this.loginUser);
 		return this.storeDocument(doc).getFileHash();
 	}
 
@@ -579,7 +574,7 @@ public class DBLogic implements LogicInterface {
 		
 		try {
 			//create the docParam object
-			DocumentParam docParam = new DocumentParam();
+			final DocumentParam docParam = new DocumentParam();
 			
 			/*
 			 * store all necessary informations in the docParam object
@@ -591,8 +586,8 @@ public class DBLogic implements LogicInterface {
 			docParam.setFileHash(doc.getFileHash());
 			docParam.setFileName(doc.getFileName());
 			
-			final boolean valid = docDBManager.validateResource(docParam, session);
-			final boolean existingDoc = docDBManager.checkForExistingDocuments(docParam, session);
+			final boolean valid = this.docDBManager.validateResource(docParam, session);
+			final boolean existingDoc = this.docDBManager.checkForExistingDocuments(docParam, session);
 			
 			/*
 			 * valid means that the resource is a bibtex entry and the given user is
@@ -606,10 +601,10 @@ public class DBLogic implements LogicInterface {
 				 */
 				if (existingDoc){
 					//update
-					docDBManager.updateDocument(docParam, session);
+					this.docDBManager.updateDocument(docParam, session);
 				} else {
 					//add
-					docDBManager.addDocument(docParam, session);
+					this.docDBManager.addDocument(docParam, session);
 				}
 			} else {
 				throw new ValidationException("You are not authorized to perform the requested operation.");
@@ -629,14 +624,14 @@ public class DBLogic implements LogicInterface {
 		
 		try {
 			//create the docParam object
-			DocumentParam docParam = new DocumentParam();
+			final DocumentParam docParam = new DocumentParam();
 			
 			//fill the docParam object
 			docParam.setFileName(fileName);
 			docParam.setResourceHash(resourceHash);
 			docParam.setUserName(userName);
 			
-			final boolean valid = docDBManager.validateResource(docParam, session);
+			final boolean valid = this.docDBManager.validateResource(docParam, session);
 			
 			/*
 			 * valid means that the resource is a bibtex entry and the given user is
@@ -644,7 +639,7 @@ public class DBLogic implements LogicInterface {
 			 */
 			if (valid){
 				// get the requested document
-				doc = docDBManager.getDocument(docParam, session);
+				doc = this.docDBManager.getDocument(docParam, session);
 				if (doc == null){
 					throw new IllegalStateException("No document for this bibtex entry");
 				}
@@ -666,27 +661,27 @@ public class DBLogic implements LogicInterface {
 	public void deleteDocument(final String userName, final String resourceHash, final String fileName){
 		ensureLoggedIn();
 	
-		permissionDBManager.ensureWriteAccess(loginUser, userName);
+		this.permissionDBManager.ensureWriteAccess(this.loginUser, userName);
 		
 		final DBSession session = openSession();
 		
 		try {
 			//create the docParam object
-			DocumentParam docParam = new DocumentParam();
+			final DocumentParam docParam = new DocumentParam();
 			
 			//fill the docParam object
 			docParam.setFileName(fileName);
 			docParam.setResourceHash(resourceHash);
 			docParam.setUserName(userName);
 			
-			final boolean valid = docDBManager.validateResource(docParam, session);
+			final boolean valid = this.docDBManager.validateResource(docParam, session);
 			
 			/*
 			 * valid means that the resource is a bibtex entry and the given user is
 			 * the owner of this entry.
 			 */
 			if (valid){
-				docDBManager.deleteDocument(docParam, session);
+				this.docDBManager.deleteDocument(docParam, session);
 			} else {
 				throw new ValidationException("You are not authorized to perform the requested operation.");
 			}
@@ -697,25 +692,22 @@ public class DBLogic implements LogicInterface {
 		}
 		log.info("API - Document deleted: " + fileName + " from User: " + userName);
 	}
-	
-	
-	
-	
+
 	public void addInetAddressStatus(InetAddress address, InetAddressStatus status) {
 		ensureLoggedIn();
 		// only admins are allowed to change the status of an address
-		permissionDBManager.ensureAdminAccess(loginUser);
+		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		final DBSession session = openSession();
-		adminDBManager.addInetAddressStatus(address, status, session);
+		this.adminDBManager.addInetAddressStatus(address, status, session);
 		session.close();
 	}
 
 	public void deleteInetAdressStatus(InetAddress address) {
 		ensureLoggedIn();
 		// only admins are allowed to change the status of an address
-		permissionDBManager.ensureAdminAccess(loginUser);
+		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		final DBSession session = openSession();
-		adminDBManager.deleteInetAdressStatus(address, session);
+		this.adminDBManager.deleteInetAdressStatus(address, session);
 		session.close();
 	}
 
@@ -732,8 +724,8 @@ public class DBLogic implements LogicInterface {
 		session.close();
 		return inetAddressStatus;
 	}
-	
-		/** 
+
+	/** 
 	 * Query statistical information
 	 * 
 	 * TODO: as soon as more statistics are added, a chain should be defined
@@ -764,7 +756,6 @@ public class DBLogic implements LogicInterface {
 		return statistics;		
 	}
 
-	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getConcepts(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.common.enums.ConceptStatus, int, int)
 	 */

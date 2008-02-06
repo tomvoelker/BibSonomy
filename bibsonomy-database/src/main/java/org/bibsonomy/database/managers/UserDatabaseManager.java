@@ -2,8 +2,6 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -137,7 +135,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		user.setApiKey(UserUtils.generateApiKey());
 		this.insert("insertUser", user, session);
 	}
-	
+
 	/**
 	 * Change the user details
 	 * @param user
@@ -148,19 +146,22 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		this.updateUser(user, session);
 		return user.getName();
 	}
-	
+
 	/**
 	 * Updates a user
 	 * @param user the user
 	 * @param session
 	 */
 	private void updateUser(final User user, final DBSession session) {
-		User existingUser = this.getUserDetails(user.getName(), session);
-		
+		final User existingUser = this.getUserDetails(user.getName(), session);
+
 		if (existingUser == null)
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "user does not exist");
-			
-		
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User " + user.getName() + "does not exist");
+
+		// FIXME if this should copy all properties from the one bean to the
+		// other we might want to come up with a more generic version of this
+		// code block - so if we add a field to the User bean we don't have to
+		// remember adding it here
 		existingUser.setEmail(!present(user.getEmail()) 		? existingUser.getEmail() 		: user.getEmail());
 		existingUser.setPassword(!present(user.getPassword()) 	? existingUser.getPassword() 	: user.getPassword());		
 		existingUser.setRealname(!present(user.getRealname()) 	? existingUser.getRealname() 	: user.getRealname());		
@@ -179,8 +180,9 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		existingUser.setPrediction(!present(user.getPrediction()) 	? existingUser.getPrediction() 	: user.getPrediction());
 		existingUser.setAlgorithm(!present(user.getAlgorithm()) 	? existingUser.getAlgorithm() 	: user.getAlgorithm());
 		existingUser.setCount(!present(user.getCount()) 	? existingUser.getCount() 	: user.getCount());
-		
+
 		this.plugins.onUserUpdate(existingUser.getName(), session);
+
 		this.deleteUser(existingUser.getName(), session);
 		this.insert("insertUser", existingUser, session);
 	}

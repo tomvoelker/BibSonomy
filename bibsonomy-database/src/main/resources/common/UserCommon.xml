@@ -27,14 +27,12 @@
 		<result property="algorithm"        column="algorithm"     javaType="string" />
 		<result property="count"            column="count"         javaType="integer" />
 		<result property="language"         column="lang"          javaType="string" />
-		
-		
 	</resultMap>
 
 	<resultMap id="userWithSettings"  class="user" extends="user"> 
 		<result property="settings"   resultMap="UserCommon.userSettings"/>
 	</resultMap>
-	
+
 	<resultMap id="userSettings" class="userSettings">
 		<result property="listItemcount" column="list_itemcount" javaType="integer" />	
 		<result property="tagboxMinfreq" column="tagbox_minfreq" javaType="integer" />
@@ -43,21 +41,20 @@
 		<result property="tagboxTooltip" column="tagbox_tooltip" javaType="integer" />	
 		<result property="defaultLanguage" column="lang" 	     javaType="string" />			
 	</resultMap>	
-	 
+
 	<sql id="allUserAttributes">
 		<include refid="commonUserAttributes"/>,
 		<include refid="userSettingsAttributes"/> 
 	</sql>
-		
+
 	<sql id="commonUserAttributes">
 		user_name, user_email, user_homepage, user_realname, user_password, 
 		api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, 
 		reg_date, spammer, prediction, algorithm, count, role
 	</sql>
-	
+
 	<sql id="userSettingsAttributes">
 		tagbox_style, tagbox_sort, tagbox_minfreq, tagbox_tooltip, list_itemcount, lang
 	</sql>	
-	
-</sqlMap>
 
+</sqlMap>

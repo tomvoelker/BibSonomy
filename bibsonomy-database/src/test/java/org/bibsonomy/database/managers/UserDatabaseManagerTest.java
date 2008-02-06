@@ -91,6 +91,22 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
+	 * tests updateUser
+	 */
+	@Test
+	@Ignore
+	// FIXME doesn't work... ("Unknown column 'id' in 'field list'")
+	public void changeUser() {
+		User testuser1 = this.userDb.getUserDetails("testuser1", this.dbSession);
+
+		// you can't change the user's name
+		testuser1.setName("testuser1-changed");
+		this.userDb.changeUser(testuser1, this.dbSession);
+		testuser1 = this.userDb.getUserDetails("testuser1", this.dbSession);
+		assertEquals("testuser1", testuser1.getName());
+	}
+
+	/**
 	 * tests deleteUser
 	 */
 	@Test
