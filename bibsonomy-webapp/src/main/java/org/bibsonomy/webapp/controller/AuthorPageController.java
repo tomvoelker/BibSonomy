@@ -55,27 +55,4 @@ public class AuthorPageController extends MultiResourceListController implements
 	public AuthorResourceCommand instantiateCommand() {
 		return new AuthorResourceCommand();
 	}
-	
-	/**
-     * Retrieve a set of related tags to a list of given tags 
-     * from the database logic and add them to the command object
-     * 
-	 * @param <T> extends Resource, the resource type
-	 * @param <V> extends ResourceViewCommand, the command
-	 * @param cmd the command
-	 * @param resourceType the resource type
-	 * @param groupingEntity the grouping entity
-	 * @param groupingName the grouping name
-	 * @param regex regular expression for tag filtering
-	 * @param tags list of tags
-	 * @param start start parameter
-	 * @param end end parameter
-	 * 
-	 * TODO: move this in MultiResourceListController?
-	 */
-	protected <T extends Resource, V extends AuthorResourceCommand> void setRelatedTags(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, int start, int end, String search) {
-		RelatedTagCommand relatedTagCommand = cmd.getRelatedTagCommand();
-		relatedTagCommand.setRelatedTags(this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, start, end, search));		
-	}
-
 }
