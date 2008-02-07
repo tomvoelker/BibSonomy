@@ -91,7 +91,12 @@ public enum Views implements View {
 	/**
 	 * viewable page showing all resources of a specified group and a given tag or list of tags
 	 */	
-	VIEWABLETAGPAGE("viewabletag");
+	VIEWABLETAGPAGE("viewabletag"),
+	
+	/**
+	 * author page
+	 */
+	AUTHORPAGE("author");
 	
 	
 	private final String name;

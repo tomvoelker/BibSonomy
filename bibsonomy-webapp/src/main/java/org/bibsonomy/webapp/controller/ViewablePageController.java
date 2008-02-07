@@ -29,6 +29,10 @@ public class ViewablePageController extends MultiResourceListController implemen
 		final String groupingName = command.getRequestedGroup();
 		final List<String> requTags = command.getRequestedTagsList();
 		
+		// set title
+		// TODO: localize
+		command.setPageTitle("viewable :: " + groupingName);	
+		
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
@@ -41,10 +45,10 @@ public class ViewablePageController extends MultiResourceListController implemen
 		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(command.getFormat())) {
-			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, 0, 1000);
+			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, 0, 1000, null);
 			
 			if (requTags.size() > 0) {
-				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, 0, 20);
+				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, 0, 20, null);
 				return Views.VIEWABLETAGPAGE;
 			}
 			return Views.VIEWABLEPAGE;			
@@ -75,8 +79,8 @@ public class ViewablePageController extends MultiResourceListController implemen
 	 * 
 	 * TODO: move this in MultiResourceListController?
 	 */
-	protected <T extends Resource, V extends GroupResourceViewCommand> void setRelatedTags(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, int start, int end) {
+	protected <T extends Resource, V extends GroupResourceViewCommand> void setRelatedTags(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, int start, int end, String search) {
 		RelatedTagCommand relatedTagCommand = cmd.getRelatedTagCommand();
-		relatedTagCommand.setRelatedTags(this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, start, end));		
+		relatedTagCommand.setRelatedTags(this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, start, end, search));		
 	}
 }

@@ -67,7 +67,7 @@ public class UserPageController extends MultiResourceListController implements M
 		
 		// html format - retrieve tags and return HTML view
 		if (command.getFormat().equals("html")) {
-			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, 0, 1000);
+			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, 0, 1000, null);
 			this.endTiming();
 			return Views.USERPAGE;			
 		}

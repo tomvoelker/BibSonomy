@@ -63,11 +63,11 @@ public class GroupPageController extends MultiResourceListController implements 
 		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(command.getFormat())) {
-			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, 0, 1000);
+			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, 0, 1000, null);
 			this.setGroupMembers(command, groupingName);
 			
 			if (requTags.size() > 0) {
-				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, 0, 20);
+				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, 0, 20, null);
 				this.endTiming();
 				return Views.GROUPTAGPAGE;
 			}
@@ -101,9 +101,9 @@ public class GroupPageController extends MultiResourceListController implements 
 	 * 
 	 * TODO: move this in MultiResourceListController?
 	 */
-	protected <T extends Resource, V extends GroupResourceViewCommand> void setRelatedTags(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, int start, int end) {
+	protected <T extends Resource, V extends GroupResourceViewCommand> void setRelatedTags(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, int start, int end, String search) {
 		RelatedTagCommand relatedTagCommand = cmd.getRelatedTagCommand();
-		relatedTagCommand.setRelatedTags(this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, start, end));		
+		relatedTagCommand.setRelatedTags(this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, start, end, search));		
 	}
 	
 	/**

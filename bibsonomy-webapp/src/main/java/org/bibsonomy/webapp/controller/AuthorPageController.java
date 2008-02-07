@@ -4,32 +4,31 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.webapp.command.AuthorResourceCommand;
 import org.bibsonomy.webapp.command.RelatedTagCommand;
-import org.bibsonomy.webapp.command.TagResourceViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 /**
- * Controller for tag pages
- * /tag/TAGNAME
- * 
- * 
- * @author Michael Wagner
+ * @author daill
  * @version $Id$
  */
+public class AuthorPageController extends MultiResourceListController implements MinimalisticController<AuthorResourceCommand>{
+	private static final Logger LOGGER = Logger.getLogger(AuthorPageController.class);
 
-public class TagPageController extends MultiResourceListController implements MinimalisticController<TagResourceViewCommand>{
-	private static final Logger LOGGER = Logger.getLogger(TagPageController.class);
-
-	
-	public View workOn(final TagResourceViewCommand command) {
+	public View workOn(AuthorResourceCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
+		this.startTiming(this.getClass(), command.getFormat());
 		
-		//if no tags given return
-		if(command.getRequestedTags().length() == 0) return null;
-		
+		// if no group given return 
+		if (command.getRequestedAuthor() == null) return null;
+				
+		// set grouping entity and grouping name
+		final GroupingEntity groupingEntity = GroupingEntity.VIEWABLE;
+		final String authorName = command.getRequestedAuthor();
 		final List<String> requTags = command.getRequestedTagsList();
 		
 		// determine which lists to initalize depending on the output format 
@@ -37,24 +36,24 @@ public class TagPageController extends MultiResourceListController implements Mi
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
 		
 		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : listsToInitialise) {			
-			this.setList(command, resourceType, GroupingEntity.ALL, null, requTags, null, null, null, command.getListCommand(resourceType).getEntriesPerPage());
+		for (final Class<? extends Resource> resourceType : listsToInitialise) {
+			this.setList(command, resourceType, groupingEntity, null, requTags, null, null, authorName, command.getListCommand(resourceType).getEntriesPerPage());
 			this.postProcessList(command, resourceType);
-		}	
+		}		
 		
 		// html format - retrieve tags and return HTML view
-		if (command.getFormat().equals("html")) {
-			this.setRelatedTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, 0, 20, null);
-			return Views.TAGPAGE;			
+		if ("html".equals(command.getFormat())) {
+			this.setTags(command, BibTex.class, groupingEntity, null, null, null, 0, 1000, authorName);
+			
+			return Views.AUTHORPAGE;			
 		}
-
-		// export - return the appropriate view
-		return Views.getViewByFormat(command.getFormat());
 		
+		// export - return the appropriate view
+		return Views.getViewByFormat(command.getFormat());		
 	}
 	
-	public TagResourceViewCommand instantiateCommand() {
-		return new TagResourceViewCommand();
+	public AuthorResourceCommand instantiateCommand() {
+		return new AuthorResourceCommand();
 	}
 	
 	/**
@@ -71,11 +70,12 @@ public class TagPageController extends MultiResourceListController implements Mi
 	 * @param tags list of tags
 	 * @param start start parameter
 	 * @param end end parameter
-	 **/
-	 
-	protected <T extends Resource, V extends TagResourceViewCommand> void setRelatedTags(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, int start, int end, String search) {
+	 * 
+	 * TODO: move this in MultiResourceListController?
+	 */
+	protected <T extends Resource, V extends AuthorResourceCommand> void setRelatedTags(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, int start, int end, String search) {
 		RelatedTagCommand relatedTagCommand = cmd.getRelatedTagCommand();
 		relatedTagCommand.setRelatedTags(this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, start, end, search));		
 	}
-	
+
 }

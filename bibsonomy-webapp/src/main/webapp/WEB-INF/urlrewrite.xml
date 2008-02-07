@@ -310,36 +310,36 @@
     </rule>    
 	
 		
-<!-- ############## viewable pages ############### -->	
-    <rule> <!-- /viewable/GROUP/TAG -->
-        <from>^/+viewable/+([^/?]+?)/(.+?)(\?(.*))?$</from>
-        <!-- OLD PAGE -->
-        <to>/ResourceHandler?page=viewabletag&amp;requGroup=$1&amp;requTag=$2&amp;$4</to>
-    </rule>
+<!-- ############## viewable pages ############### -->
     <rule> 
     	<condition type="parameter" name="filter" operator="notequal"/>
 		<condition type="attribute" name="type" operator="notequal"/>  
         <from>^/+viewable/+([^/?]+?)/(.+?)(\?(.*))?$</from>
         <!-- NEW PAGE -->
         <to>/viewable?requestedGroup=$1&amp;requestedTags=$2&amp;$4</to>
-    </rule>   
+    </rule>   	
+    <rule> <!-- /viewable/GROUP/TAG -->
+        <from>^/+viewable/+([^/?]+?)/(.+?)(\?(.*))?$</from>
+        <!-- OLD PAGE -->
+        <to>/ResourceHandler?page=viewabletag&amp;requGroup=$1&amp;requTag=$2&amp;$4</to>
+    </rule>
     <!-- redirect for tag formular on /viewable/GROUP/TAG page -->
     <rule>
       <from>^/+viewable/+([^/?]+?)(\?tag=(.*))$</from>
       <to type="redirect">/viewable/$1/$3</to>
     </rule>
-	<rule> <!-- /viewable/GROUP -->
-		<from>^/+viewable/+([^/?]+?)(\?(.*))?$</from>
-		<!-- OLD PAGE -->
-		<to>/ResourceHandler?page=viewable&amp;requGroup=$1&amp;$3</to>
-	</rule>	    
-	<rule> 
+    <rule> 
 	    <condition type="parameter" name="filter" operator="notequal"/>
 		<condition type="attribute" name="type" operator="notequal"/>  
 		<from>^/+viewable/+([^/?]+?)(\?(.*))?$</from>
 		<!-- NEW PAGE -->
 		<to>/viewable?requestedGroup=$1&amp;$3</to>
 	</rule>
+	<rule> <!-- /viewable/GROUP -->
+		<from>^/+viewable/+([^/?]+?)(\?(.*))?$</from>
+		<!-- OLD PAGE -->
+		<to>/ResourceHandler?page=viewable&amp;requGroup=$1&amp;$3</to>
+	</rule>	    
 	<rule>
 	  <from>^/+viewable/+([^/?]+?)/$</from>
 	  <to type="redirect">/viewable/$1</to>
@@ -466,11 +466,21 @@
         <to>/ResourceHandler?page=concept&amp;requTag=$1&amp;$3</to>
     </rule>    
 	
-<!-- ############## author pages ############### -->
-	<rule> <!-- /author/AUTHOR/TAG -->
-        <from>^/+author/+([^/?]+?)/(.+?)(\?(.*))?$</from>
-        <to>/ResourceHandler?page=authortag&amp;requAuthor=$1&amp;requTag=$2&amp;$4</to>
+<!-- ############## author pages ############### -->    
+    <rule> <!-- /author/AUTHOR/TAG -->
+    	<!-- workaround to redirect not-yet-supported features to old resource handler -->
+		<condition type="parameter" name="filter" operator="notequal"/>
+		<condition type="attribute" name="type" operator="notequal"/>     
+        <from>^/+author/+([^/?]+?)/(.+?)(\?(.*))?$</from> 
+		<!-- NEW PAGE -->      
+         <to>/author?requestedAuthor=$1&amp;requestedTags=$2&amp;$4</to>
     </rule>
+    <rule> 
+        <from>^/+author/+([^/?]+?)/(.+?)(\?(.*))?$</from>
+        <!-- OLD PAGE -->
+        <to>/ResourceHandler?page=authortag&amp;requAuthor=$1&amp;requTag=$2&amp;$4</to>
+    </rule>   
+    
     <!-- redirect for tag formular on /author/AUTHOR/TAG page -->
     <rule>
       <from>^/+author/+([^/?]+?)(\?tag=(.*))$</from>
@@ -483,7 +493,7 @@
     </rule>	
     <rule>
 		<from>^/+author/(.+?)(\?(.*))?$</from>
-		<to>/ResourceHandler?page=author&amp;requAuthor=$1&amp;$3</to> 
+		<to>/author?requestedAuthor=$1&amp;$3</to> 
 	</rule>
 	
 

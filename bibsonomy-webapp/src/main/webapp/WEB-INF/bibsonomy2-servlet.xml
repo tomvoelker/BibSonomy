@@ -38,7 +38,12 @@
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="tagPageController"/>
 					</bean>
-				</entry>				
+				</entry>
+				<entry key="/author/">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="authorPageController"/>
+					</bean>
+				</entry>			
 			</map>
 		</property>
 	</bean>
@@ -93,6 +98,16 @@
 			<list>
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
 				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="authorPageController" class="org.bibsonomy.webapp.controller.AuthorPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+		<property name="listsToInitialise">
+			<list>
+				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
 			</list>
 		</property>
 	</bean>
