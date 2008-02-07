@@ -187,6 +187,18 @@
 		ORDER BY tag_anzahl DESC 
 		LIMIT 10
 	</select>
+
+	<select id="getRelatedTagsViewable" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT tt.tag_name, COUNT(tt.tag_name) AS tag_ctr
+		FROM tas t, tas tt
+		WHERE tt.content_id = t.content_id	
+		AND t.group = #groupId#
+		AND (<iterate property="tagIndex" conjunction=" OR ">t.tag_name = #tagIndex[].tagName#</iterate>)
+		AND (<iterate property="tagIndex" conjunction=" AND ">tt.tag_name != #tagIndex[].tagName#</iterate>)	
+		GROUP BY tt.tag_name
+		ORDER BY tag_ctr DESC 
+		LIMIT 10
+	</select>
 	
 	<select id="getRelatedTagsForSpecialGroup" resultMap="Common.tag" parameterClass="tagParam">
 		SELECT tt.tag_name, COUNT(tt.tag_name) AS tag_anzahl

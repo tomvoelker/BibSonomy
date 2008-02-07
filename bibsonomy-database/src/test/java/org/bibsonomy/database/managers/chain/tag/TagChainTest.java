@@ -95,6 +95,7 @@ public class TagChainTest extends AbstractChainTest {
 	 */
 	@Test
 	public void GetTagsByAuthor(){
+		this.tagParam.setTagIndex(null);
 		this.tagParam.setGrouping(GroupingEntity.VIEWABLE);
 		this.tagParam.setSearch("Stumme");
 		this.tagParam.setContentTypeByClass(BibTex.class);

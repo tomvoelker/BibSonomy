@@ -342,6 +342,9 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	
 	/**
 	 * Get all tags of a an author, which assigned to the authors entries/currently, the cloud is ordered alphabetically
+	 * @param param 
+	 * @param session 
+	 * @return list of tags
 	 */
 	public List<Tag> getTagsAuthor(final TagParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
@@ -402,7 +405,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			param.setRequestedUserName(param.getUserName());
 			return this.queryForList("getRelatedTagsForSpecialGroup", param, Tag.class, session);
 		}
-		return this.queryForList("getRelatedTagsForGroup", param, Tag.class, session);
+		return this.queryForList("getRelatedTagsViewable", param, Tag.class, session);
 	}	
 
 	public List<Tag> getTags(final TagParam param, final DBSession session) {

@@ -202,6 +202,51 @@
 			</isGreaterThan>
 		</isNotNull>
 	</sql>
+	
+	<!-- necessary to decide the 4 types of system tag year request
+	1. 2007
+	2. 2005-2007
+	3. -2005
+	4. 2005-
+	 -->
+	<sql id="sysTagsYear">
+		<dynamic prepend="AND">
+			<isNotNull property="year">		
+				CAST(b.year AS SIGNED) = #year#
+			</isNotNull>
+			<isNotNull property="firstYear">
+				<isNotNull property="lastYear">
+				CAST(b.year AS SIGNED) BETWEEN #firstYear# AND #lastYear#
+				</isNotNull>
+			</isNotNull>
+			<isNotNull property="firstYear">
+				CAST(b.year AS SIGNED) >= #firstYear#
+			</isNotNull>
+			<isNotNull property="lastYear">
+				CAST(b.year AS SIGNED) &lt;= #lastYear#
+			</isNotNull>
+		</dynamic>
+	</sql>
+	
+	<!-- dynamic AND for systag user -->
+	<sql id="sysTagsUser">
+		<dynamic prepend="AND">
+			<isNotNull property="requestedUserName">		
+				s.user_name = #requestedUserName#
+			</isNotNull>
+		</dynamic>
+	</sql>
+	
+	<!-- dynamic AND for systag group -->
+	<sql id="sysTagsGroup">
+		<dynamic prepend="AND">
+			<isNotNull property="requestedGroupName">		
+				s.user_name IN (SELECT user_name 
+								FROM groupids g JOIN groups gs ON (g.group = gs.group)
+	        					WHERE g.group_name = #requestedGroupName#)
+			</isNotNull>
+		</dynamic>
+	</sql>
 
 	<sql id="getTagForUser">
    <!-- TODO this did not work for me .. (manu)

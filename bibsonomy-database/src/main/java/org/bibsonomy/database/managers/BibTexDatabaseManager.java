@@ -645,8 +645,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * <em>/author/MaxMustermann</em><br/><br/>
 	 * This method prepares queries which retrieve all publications for a given
 	 * author name (restricted by group public).
+	 * @param param 
+	 * @param session 
+	 * @return list of bibtex entries
 	 */
-	
 	public List<Post<BibTex>> getBibTexByAuthor(final BibTexParam param, final DBSession session){
 		return this.bibtexList("getBibTexByAuthor",param,session);
 	}
@@ -654,6 +656,9 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * <em>/author/MaxMustermann</em><br/><br/>
 	 * This method prepares queries which retrieve all publications for a given
 	 * author name and TagName(restricted by group public).
+	 * @param param 
+	 * @param session 
+	 * @return list of bibtex entries
 	 */
     public List<Post<BibTex>> getBibTexByAuthorAndTag(final BibTexParam param, final DBSession session){
 		return this.bibtexList("getBibTexByAuthorAndTag",param,session);
