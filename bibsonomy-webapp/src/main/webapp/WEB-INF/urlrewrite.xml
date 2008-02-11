@@ -468,6 +468,11 @@
 	
 <!-- ############## author pages ############### -->    
     <rule> <!-- /author/AUTHOR/TAG -->
+        <from>^/+author/+([^/?]+?)/(.+?)(\?(.*))?$</from>
+        <!-- OLD PAGE -->
+        <to>/ResourceHandler?page=authortag&amp;requAuthor=$1&amp;requTag=$2&amp;$4</to>
+    </rule>   
+    <rule> 
     	<!-- workaround to redirect not-yet-supported features to old resource handler -->
 		<condition type="parameter" name="filter" operator="notequal"/>
 		<condition type="attribute" name="type" operator="notequal"/>     
@@ -475,11 +480,6 @@
 		<!-- NEW PAGE -->      
          <to>/author?requestedAuthor=$1&amp;requestedTags=$2&amp;$4</to>
     </rule>
-    <rule> 
-        <from>^/+author/+([^/?]+?)/(.+?)(\?(.*))?$</from>
-        <!-- OLD PAGE -->
-        <to>/ResourceHandler?page=authortag&amp;requAuthor=$1&amp;requTag=$2&amp;$4</to>
-    </rule>   
     
     <!-- redirect for tag formular on /author/AUTHOR/TAG page -->
     <rule>
@@ -487,12 +487,18 @@
       <to type="redirect">/author/$1/$3</to>
     </rule>	
 	<!-- redirect for author formular on /author/AUTHORNAME page -->
-    <rule><!-- /author/AUTHOR -->
+    <rule>
       <from>^/+author/(\?author=(.*))$</from>
       <to type="redirect">/author/$2</to>
     </rule>	
+    <rule><!-- /author/AUTHOR -->
+		<from>^/+author/(.+?)(\?(.*))?$</from>
+		<!-- OLD PAGE -->
+		<to>/ResourceHandler?page=author&amp;requAuthor=$1&amp;$3</to>
+	</rule>    
     <rule>
 		<from>^/+author/(.+?)(\?(.*))?$</from>
+		<!-- NEW PAGE -->
 		<to>/author?requestedAuthor=$1&amp;$3</to> 
 	</rule>
 	
