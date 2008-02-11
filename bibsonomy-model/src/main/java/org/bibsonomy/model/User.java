@@ -123,10 +123,7 @@ public class User {
 	 */
 	private Role role;
 	
-	/**
-	 * Default language for i18n
-	 */
-	private String language;
+
 
 	/**
 	 * The spammer prediction of the classifier
@@ -497,19 +494,6 @@ public class User {
 		this.role = role;
 	}
 
-	/**
-	 * @return The default language the user set for i18n
-	 */
-	public String getLanguage() {
-		return this.language;
-	}
-
-	/**
-	 * @param language language
-	 */
-	public void setLanguage(String language) {
-		this.language = language;
-	}
 
 	/**
 	 * @return prediction of classifier
