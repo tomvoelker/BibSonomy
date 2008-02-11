@@ -151,8 +151,12 @@ public class InitUserFilter implements Filter {
 					 *  FIXME: here we should put user into DB, if not already contained, i.e., 
 					 *  INSERT IGNORE INTO user VALUES ...  
 					 */
-					LogicInterface logic = dbLogicFactory.getLogicAccess(uname, "*");
-					loginUser = logic.getUserDetails(uname);					
+					try {
+						LogicInterface logic = dbLogicFactory.getLogicAccess(uname, "*");
+						loginUser = logic.getUserDetails(uname);
+					} catch (ValidationException e) {
+					}
+										
 					/*
 					 * this should not be neccessary, if we got the user from the database ...
 					 */
@@ -161,7 +165,7 @@ public class InitUserFilter implements Filter {
 						loginUser.setName(uname);
 					}
 				} catch (Exception e)  {
-					log.info("certificate authentication failed");
+					log.info("certificate authentication failed: " + e);
 				}				
 			} else if (HttpServletRequest.BASIC_AUTH.equals(httpServletRequest.getAuthType())) {
 				/*
