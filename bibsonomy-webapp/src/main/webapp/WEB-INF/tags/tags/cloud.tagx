@@ -68,56 +68,32 @@
 				</c:otherwise>
 			</c:choose>
 			
-			<!-- display the tag -->
-			<!-- 
-				 this is horrible copy & paste code - we should remove this as soon as we've found
-			     a better way to compute the tag sizes
-			     dbe, 20070110 
-			-->
-						
+			<!-- display the tag -->						
 			<c:if test="${tag.usercount >= cmd.minFreq}">
 				<li class="${tagclass}">
-				<!--  
-					<c:choose>
-						<c:when test="${tagSizeMode eq 'home'}">						
-							<a title="${tag.usercount} ${posts}"
-								style="font-size:${mtl:computeTagFontsize(tag.usercount, cmd.maxFreq, tagSizeMode)}%" 
-								href="/${mtl:getPath(requPath)}/${fn:escapeXml(tag.name)}">					
-								${tag.name}
-							</a>
-						</c:when>
-						<c:otherwise>
-							<a title="${tag.usercount} ${posts}" 
-								href="/${mtl:getPath(requPath)}/${fn:escapeXml(tag.name)}">					
-								
-							</a>												
-						</c:otherwise>		
-					</c:choose>													
+					<jsp:element name="a">
+						<jsp:attribute name="href">
+							/${mtl:getPath(requPath)}/${fn:escapeXml(tag.name)}
+						</jsp:attribute>
+						<jsp:attribute name="title">
+							${tag.usercount}<c:out value=" "/>${posts}
+						</jsp:attribute>				
+						<jsp:attribute name="style">
+							<c:if test="${tagSizeMode eq 'home'}">
+								font-size:${mtl:computeTagFontsize(tag.usercount, cmd.maxFreq, tagSizeMode)}%
+							</c:if>
+						</jsp:attribute>							
+						<jsp:attribute name="onmouseover">
+							<c:if test="${showTooltips}">javascript:preDoTooltip(event)</c:if>
+						</jsp:attribute>
+						<jsp:attribute name="onmouseout">
+							<c:if test="${showTooltips}">javascript:hideTip()</c:if>
+						</jsp:attribute>						
+						<jsp:body>
+							${fn:escapeXml(tag.name)}
+						</jsp:body>
+					</jsp:element>
 				</li>
-				-->
-						<jsp:element name="a">
-							<jsp:attribute name="href">
-								/${mtl:getPath(requPath)}/${fn:escapeXml(tag.name)}
-							</jsp:attribute>
-							<jsp:attribute name="title">
-								${tag.usercount}<c:out value=" "/>${posts}
-							</jsp:attribute>				
-							<jsp:attribute name="style">
-								<c:if test="${tagSizeMode eq 'home'}">
-									font-size:${mtl:computeTagFontsize(tag.usercount, cmd.maxFreq, tagSizeMode)}%
-								</c:if>
-							</jsp:attribute>							
-							<jsp:attribute name="onmouseover">
-								<c:if test="${showTooltips}">javascript:preDoTooltip(event)</c:if>
-							</jsp:attribute>
-							<jsp:attribute name="onmouseout">
-								<c:if test="${showTooltips}">javascript:hideTip()</c:if>
-							</jsp:attribute>						
-							<jsp:body>
-								${tag.name}
-							</jsp:body>
-						</jsp:element>
-					</li>
 				<c:out value=" "/>						
 			</c:if>			
 		</c:forEach>
