@@ -212,7 +212,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		createPost(ModelUtils.generatePost(BibTex.class));
 	}
 	public String createPost(Post<?> post) {
-		EasyMock.expect(serverLogic.createPost(PropertyEqualityArgumentMatcher.eq(post,"date", "user.apiKey", "user.email", "user.homepage", "user.password", "user.realname", "resource.scraperId", "resource.openURL", "user.IPAddress", "user.basket", "user.gender", "user.interests", "user.hobbies", "user.profession", "user.openURL", "user.place", "user.spammer", "user.settings"))).andReturn(post.getResource().getIntraHash());
+		EasyMock.expect(serverLogic.createPost(PropertyEqualityArgumentMatcher.eq(post,"date", "user.apiKey", "user.email", "user.homepage", "user.password", "user.realname", "resource.scraperId", "resource.openURL", "user.IPAddress", "user.basket", "user.gender", "user.interests", "user.hobbies", "user.profession", "user.openURL", "user.place", "user.spammer", "user.settings", "user.algorithm", "user.prediction", "user.count"))).andReturn(post.getResource().getIntraHash());
 		EasyMock.replay(serverLogic);
 		Assert.assertEquals(post.getResource().getIntraHash(), clientLogic.createPost(post));
 		EasyMock.verify(serverLogic);
@@ -350,7 +350,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		EasyMock.expect(serverLogic.getPostDetails(resourceHash, userName)).andReturn((Post) expectedBookmarkPost);
 		EasyMock.replay(serverLogic);
 		
-		final String[] ignoreProperties = new String[] {"date", "user.apiKey", "user.email", "user.homepage", "user.password", "user.realname", "resource.scraperId", "resource.openURL", "user.IPAddress", "user.basket", "user.gender", "user.interests", "user.hobbies", "user.profession", "user.openURL", "user.place", "user.spammer", "user.settings"};
+		final String[] ignoreProperties = new String[] {"date", "user.apiKey", "user.email", "user.homepage", "user.password", "user.realname", "resource.scraperId", "resource.openURL", "user.IPAddress", "user.basket", "user.gender", "user.interests", "user.hobbies", "user.profession", "user.openURL", "user.place", "user.spammer", "user.settings", "user.algorithm", "user.prediction", "user.count"};
 		final Post<? extends org.bibsonomy.model.Resource> returnedBibtexPost = clientLogic.getPostDetails(resourceHash,userName);
 		ModelUtils.assertPropertyEquality(expectedBibtexPost, returnedBibtexPost, 5, null, ignoreProperties);
 		final Post<? extends org.bibsonomy.model.Resource> returnedBookmarkPost = clientLogic.getPostDetails(resourceHash,userName);
@@ -395,7 +395,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		EasyMock.replay(serverLogic);
 
 		final List<Post<T>> returnedPosts = clientLogic.getPosts(resourceType, grouping, groupingName, tags, hash, order, start, end, search);
-		ModelUtils.assertPropertyEquality(expectedPosts, returnedPosts, 5, Pattern.compile(".*\\.user\\.(apiKey|homepage|realname|email|password|date|openURL|gender|place|interests|hobbies|IPAddress|basket|profession|place|spammer|settings)|.*\\.date|.*\\.scraperId|.*\\.openURL"));
+		ModelUtils.assertPropertyEquality(expectedPosts, returnedPosts, 5, Pattern.compile(".*\\.user\\.(apiKey|homepage|realname|email|password|date|openURL|gender|place|interests|hobbies|IPAddress|basket|profession|place|spammer|settings|prediction|algorithm|count)|.*\\.date|.*\\.scraperId|.*\\.openURL"));
 		// "user.apiKey", "user.email", "user.homepage", "user.password", "user.realname", "resource.scraperId", "resource.openURL", "user.IPAddress", "user.basket", "user.gender", "user.interests", "user.hobbies", "user.profession", "user.openURL", "user.place", "user.spammer", "user.settings"
 		EasyMock.verify(serverLogic);
 		assertLogin();
@@ -555,7 +555,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		updatePost(ModelUtils.generatePost(Bookmark.class));
 	}
 	public String updatePost(Post<?> post) {
-		EasyMock.expect(serverLogic.updatePost(PropertyEqualityArgumentMatcher.eq(post,"date", "user.apiKey", "user.email", "user.homepage", "user.password", "user.realname", "resource.scraperId", "resource.openURL", "user.IPAddress", "user.basket", "user.gender", "user.interests", "user.hobbies", "user.profession", "user.openURL", "user.place", "user.spammer", "user.settings"))).andReturn(post.getResource().getIntraHash());
+		EasyMock.expect(serverLogic.updatePost(PropertyEqualityArgumentMatcher.eq(post,"date", "user.apiKey", "user.email", "user.homepage", "user.password", "user.realname", "resource.scraperId", "resource.openURL", "user.IPAddress", "user.basket", "user.gender", "user.interests", "user.hobbies", "user.profession", "user.openURL", "user.place", "user.spammer", "user.settings", "user.algorithm", "user.prediction", "user.count"))).andReturn(post.getResource().getIntraHash());
 		EasyMock.replay(serverLogic);
 		Assert.assertEquals(post.getResource().getIntraHash(), clientLogic.updatePost(post));
 		EasyMock.verify(serverLogic);
