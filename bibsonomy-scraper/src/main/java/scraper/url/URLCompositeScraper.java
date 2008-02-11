@@ -64,6 +64,5 @@ public class URLCompositeScraper extends CompositeScraper {
 		addScraper(new PlosScraper());
 		addScraper(new NatureScraper());
 		addScraper(new BlackwellSynergyScraper());
-		addScraper(new ScrapingService());
 	}
 }
