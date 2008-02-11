@@ -178,7 +178,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 */
 	public List<Post<BibTex>> getBibTexForHomePage(final BibTexParam param, final DBSession session) {
 		param.setGroupType(GroupID.PUBLIC);
-		param.setSimHash(HashID.INTRA_HASH);
+		param.setSimHash(HashID.INTER_HASH);
 		return this.bibtexList("getBibTexForHomePage", param, session);
 	}
 
