@@ -65,7 +65,9 @@ public class ModelFactory {
 		if (xmlUser.getPrediction() != null)
 			user.setPrediction(xmlUser.getPrediction().intValue());
 		user.setAlgorithm(xmlUser.getAlgorithm());
-		user.setCount(xmlUser.getCount().intValue());		
+		if (xmlUser.getCount() != null) {
+			user.setCount(xmlUser.getCount().intValue());
+		}
 
 		return user;
 	}
