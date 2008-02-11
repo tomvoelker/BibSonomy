@@ -76,6 +76,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void createUser() {
 		final User newUser = this.userParam.getUser();
 		newUser.setName("new-testuser");
+		newUser.getSettings().setDefaultLanguage("zv");
 		newUser.setSpammer(0);
 		newUser.setRole(Role.DEFAULT);
 		this.userDb.createUser(newUser, this.dbSession);
@@ -110,6 +111,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * tests deleteUser
 	 */
 	@Test
+	@Ignore // TODO: test this function as soon as new test database is done
 	public void deleteUser() {
 		try {
 			this.userDb.deleteUser("", this.dbSession);
