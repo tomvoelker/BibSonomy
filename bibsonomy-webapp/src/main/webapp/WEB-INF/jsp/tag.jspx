@@ -21,9 +21,19 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-			<li><a href="/concept/tag/${fn:escapeXml(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>${mtl:ch('nbsp')}<fmt:message key="related.concept"/></li>
-			<li><a href="/tag/${fn:escapeXml(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>${mtl:ch('nbsp')}<fmt:message key="related.tag"/></li>
-			<li><tags:related requPath="${requPath}" cmd="${command.relatedTagCommand}"/></li>
+			<li>
+				<a href="/concept/tag/${fn:escapeXml(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+				<c:out value=" "/>
+				<fmt:message key="related.concept"/>
+			</li>
+			<li>
+				<a href="/tag/${fn:escapeXml(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+				<c:out value=" "/>
+				<fmt:message key="related.tag"/>
+			</li>
+			<li>
+				<tags:related requPath="${requPath}" cmd="${command.relatedTagCommand}"/>
+			</li>
 		</jsp:attribute>
 		
 	</layout:resourceLayout>
