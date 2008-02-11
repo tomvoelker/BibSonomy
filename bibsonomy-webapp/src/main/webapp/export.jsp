@@ -151,7 +151,7 @@ do this with JavaScript and two checkboxes
   the desktop. It includes a mechanism to write layout files which allow the export of references in a nicely
   formatted way. ${projectName} includes some of these layout filters and additionally allows you to upload
   your own custom filter on the <a href="/settings">settings</a> page. Information on how to write such a
-  layout filter can be found <a href="http://jabref.sourceforge.net/help/CustomExports.html">here</a>.
+  layout filter can be found <a href="http://jabref.sourceforge.net/help/CustomExports.php">here</a>.
   </p>
 </div>
 
