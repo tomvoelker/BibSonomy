@@ -23,6 +23,9 @@ function init_tagbox(show, sort, minfreq, requUser) {
 
   var span = document.createElement("span");
   span.appendChild(style_list);  
+  
+  changeTagBox(style_show[show]);
+  changeTagBox(style_sort[sort]);
 
   tagbox.parentNode.insertBefore(span, tagbox);
 }
@@ -149,11 +152,13 @@ function setTagBoxAlph(){
 	}
 	
 	/* build new tagbox */
+	var space = document.createTextNode(" ");
 	collection_tagname.sort(unicodeCollation);
 	for(x=0; x<collection_tagname.length; x++){
 		/* build new li */
 		var tagname = collection_tagname[x];
 		var newli = collection_li[tagname];
+		newli.appendChild(space.cloneNode(true));
 		ultag.appendChild(newli);
 	}
 	
@@ -173,7 +178,7 @@ function setTagBoxFreq(){
 	var ultag = document.getElementById("tagbox");
 	var litags = ultag.getElementsByTagName("li");
 	for(x=0; x<litags.length; x++){
-		var tags = litags[x].getElementsByTagName("a");
+		var tags = litags[x].getElementsByTagName("a");		
 		if(tags.length==1){
 			var tagname = tags[0].firstChild.nodeValue;
 			collection_tagname.push(tagname);
@@ -192,8 +197,8 @@ function setTagBoxFreq(){
 			if(newnumberofposts){
 				collection_numberofposts.push(numberofpost);
 			}
-		}else if(tags.length>=2){
-			var tagname = tags[2].firstChild.nodeValue;
+		}else if(tags.length>=2){			
+			var tagname = tags[2].firstChild.nodeValue;			
 			collection_tagname.push(tagname);
 			collection_li[tagname] = litags[x].cloneNode(true);
 			var title = tags[2].getAttribute("title");
@@ -237,10 +242,12 @@ function setTagBoxFreq(){
 			}
 		}
 		tags.sort(unicodeCollation);
+		var space = document.createTextNode(" ");
 		for(y=0; y<tags.length; y++){
 			/* build new li */
 			var tagname = tags[y];
 			var newli = collection_li[tagname];
+			newli.appendChild(space.cloneNode(true));
 			ultag.appendChild(newli);
 		}
 		delete tags;
@@ -264,14 +271,17 @@ function sendMinfreqRequ(minfreq, currUser) {
 	}
 }
 
+// FXME: why do we need this? We only display the links to change tagbox
+// styles via Javascript... dbe, 20080211
 function sendStyleRequ(mode, style) {
+/*
  	var request = ajaxInit();
  	if(request){
  		if(style == null) style = 0;
-
 		request.open('GET', "?" + mode + "=" + style + "&ckey=" + ckey, true);
 		request.send(null);
 	}
+*/
 }
 
 
