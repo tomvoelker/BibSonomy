@@ -13,17 +13,20 @@
 <c:set var="entries" value="title,address,annote,author,booktitle,chapter,crossref,edition,editor,howpublished,institution,journal,month,note,number,organization,pages,publisher,school,series,type,volume,year,day,url,BKey,bibtexAbstract,entrytype"/>
 <c:forEach var="post" items="${command.bibtex.list}">
 	<c:set var="bibtex" value="${post.resource}"/> 
-	<c:out value="@${bibtex.entrytype}{${bibtex.bibtexKey},"/>
+<jsp:text>@${bibtex.entrytype}{${bibtex.bibtexKey},
+        </jsp:text>
 	<c:forEach var="entry" items="${fn:split(entries,',')}">
 		<c:if test="${not empty bibtex[entry]}">
 			<c:choose>
 				<c:when test="${mtl:isNumeric(bibtex[entry])}">
 					<jsp:text>
-	${entry} = ${bibtex[entry]},</jsp:text>
+	${entry} = ${bibtex[entry]},
+        </jsp:text>
 				</c:when>
 				<c:otherwise>
 					<jsp:text>
-	${entry} = {${bibtex[entry]}},</jsp:text>
+	${entry} = {${bibtex[entry]}},
+        </jsp:text>
 				</c:otherwise>
 			</c:choose>
 		</c:if>
@@ -33,16 +36,21 @@
 			<c:choose>
 				<c:when test="${fn:contains(miscentry,'=')}">
 					<jsp:text>
-	${fn:trim(miscentry)},</jsp:text>
+	${fn:trim(miscentry)},
+	</jsp:text>
 				</c:when>
+				<!-- 
+				    this cannot happen, as we allow ONLY input in the form key = {value}, ...
+				    when creating a misc field. dbe, 20070211
+				
 				<c:otherwise>
-					<c:out value="${fn:trim(miscentry)},"/>
+					misc = {<c:out value="${fn:trim(miscentry)},"/>}
 				</c:otherwise>
+				-->
 			</c:choose>
 		</c:forEach>
 	</c:if>
-	<jsp:text>
-	biburl = {${projectHome}bibtex/2${bibtex['intraHash']}/${post.user['name']}}
+	<jsp:text>biburl = {${projectHome}bibtex/2${bibtex['intraHash']}/${post.user['name']}}
 </jsp:text>
 <jsp:text>}
 </jsp:text>
