@@ -44,6 +44,7 @@ import org.junit.Test;
 public class WebServiceTest extends AbstractWebServiceTest {
 
 	@Test
+	@Ignore // FXME: test which depend on www.biblicous.org are suboptimal...
 	public void aGetRequestWithoutAuthentication() throws HttpException, IOException {
 		this.doc = this.getDocumentForWebServiceAction("posts?resourcetype=bibtex", HttpServletResponse.SC_UNAUTHORIZED, false);
 	}
