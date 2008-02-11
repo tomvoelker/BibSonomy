@@ -17,8 +17,7 @@
 	<c:out value=" "/>
 	<span class="bmtags">
 		<c:forEach var="tag" items="${post.tags}">
-			<c:set var="tagUrlTemplate">/user/${post.user.name}/<mtl:encode value='${tag.name}'/></c:set>
-			<c:url var="tagUrl" value="${tagUrlTemplate}" context="${projectContext}"/>
+			<c:url var="tagUrl" value="/user/${post.user.name}/${fn:escapeXml(tag.name)}" context="${projectContext}"/>
 			<a href="${tagUrl}"><c:out value="${tag.name}"/></a>
 			<c:out value=" "/>
 		</c:forEach>
@@ -36,15 +35,13 @@
 		<c:out value=" "/>
 			<c:choose>
 				<c:when test="${group.name eq 'friends'}">
-					<c:set var="groupUrlTemplate">/friend/<mtl:encode value='${post.user.name}'/></c:set>
-					<c:url var="groupUrl" value="${groupUrlTemplate}" context="${projectContext}"/>
+					<c:url var="groupUrl" value="/friend/${fn:escapeXml(post.user.name)}" context="${projectContext}"/>
 					<fmt:message key="post.meta.asGroup"/> 
 					<c:out value=" "/>
 					<a href="${groupUrl}"><fmt:message key="friends"/></a>
 				</c:when>
 				<c:otherwise>
-					<c:set var="groupUrlTemplate">/viewable/<mtl:encode value='${group.name}'/></c:set>
-					<c:url var="groupUrl" value="${groupUrlTemplate}" context="${projectContext}"/>
+					<c:url var="groupUrl" value="/viewable/${fn:escapeXml(group.name)}" context="${projectContext}"/>
 					<fmt:message key="post.meta.asGroup"/> 
 					<c:out value=" "/>
 					<a href="${groupUrl}"><c:out value="${group.name}" /></a>
