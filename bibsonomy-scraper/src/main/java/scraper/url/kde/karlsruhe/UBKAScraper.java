@@ -119,6 +119,8 @@ public class UBKAScraper implements Scraper {
 	        	bib = m.group(1) + m.group(2).replaceAll(",", " ") + m.group(3);	        
 	        }
 	        
+	        bib = bib.substring(0, bib.lastIndexOf(",")) + bib.substring(bib.lastIndexOf(",")+1, bib.length());
+	        
             return bib;			
 		}
 		}catch(PatternSyntaxException pse){
