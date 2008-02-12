@@ -32,23 +32,11 @@
 		</c:if>
 	</c:forEach>
 	<c:if test="${not empty bibtex['misc']}">
-		<c:forEach var="miscentry" items="${fn:split(bibtex['misc'],',')}">
-			<c:choose>
-				<c:when test="${fn:contains(miscentry,'=')}">
-					<jsp:text>
-	${fn:trim(miscentry)},
+	<c:forEach var="miscField" items="${mtl:miscFieldToArray(bibtex['misc'])}">
+		<jsp:text>
+	${miscField},
 	</jsp:text>
-				</c:when>
-				<!-- 
-				    this cannot happen, as we allow ONLY input in the form key = {value}, ...
-				    when creating a misc field. dbe, 20070211
-				
-				<c:otherwise>
-					misc = {<c:out value="${fn:trim(miscentry)},"/>}
-				</c:otherwise>
-				-->
-			</c:choose>
-		</c:forEach>
+	</c:forEach>
 	</c:if>
 	<jsp:text>biburl = {${projectHome}bibtex/2${bibtex['intraHash']}/${post.user['name']}}
 </jsp:text>

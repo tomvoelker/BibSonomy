@@ -5,8 +5,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bibsonomy.model.Tag;
 
@@ -168,6 +171,22 @@ public class Functions  {
 			return false;
 		}
 		return true;
+	}
+	
+	/**
+	 * 
+	 * @param misc miscfield of a bibtex entry
+	 * @return array of key value entrys
+	 */
+	public static ArrayList<String> miscFieldToArray(String misc){
+		ArrayList<String> formattedMiscFields = new ArrayList<String>();
+		if (misc != null) {
+			Matcher m = Pattern.compile("([a-zA-Z]+)\\s*=\\s*\\{(.+?)\\}").matcher(misc);
+			while (m.find()) {
+				formattedMiscFields.add(m.group(1)+" = {"+m.group(2)+"}");	
+			}
+		}
+		return formattedMiscFields;
 	}
 	
 	/**
