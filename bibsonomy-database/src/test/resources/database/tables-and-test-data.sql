@@ -313,6 +313,16 @@ CREATE TABLE `bookmark` (
 -- Data for table `bookmark`
 -- 
 
+INSERT INTO `bookmark` (`content_id`, `book_url_hash`, `book_description`, `book_extended`, `group`, `date`, `user_name`, `to_bib`, `change_date`, `rating`) VALUES
+(1, '6f372faea7ff92eedf52f597090a6291', 'test bookmark descripton', 'test bookmark extended', 0, '1815-12-10 00:00:00', 'testuser1', 0, '2008-01-18 10:17:10', 0),
+(2, '108eca7b644e2c5e09853619bc416ed0', 'Google', 'bekannteste Suchmaschine', 0, '1815-12-10 00:00:00', 'testuser1', 0, '2008-01-18 10:34:17', 0),
+(3, '7eda282d1d604c702597600a06f8a6b0', 'Yahoo', 'Yahoo Suchmaschine', 0, '1815-12-10 00:00:00', 'testuser2', 0, '2008-01-18 10:16:55', 0),
+(4, 'b7aa3a91885e432c6c95bec0145c3968', 'FriendScout24', 'Seite f√ºr einen "friend"', 2, '1815-12-10 00:00:00', 'testuser1', 0, '2008-01-18 10:16:46', 0),
+(5, '965a65fdc161e354f3828050390e2b06', 'web.de', 'WEB.de Freemail', 0, '1815-12-10 00:00:00', 'testuser3', 0, '2008-01-18 10:16:39', 0),
+(6, '20592a292e53843965c1bb42bfd51876', 'uni-kassel', 'UniK', 0, '1815-12-10 00:00:00', 'testuser2', 0, '2008-01-18 11:29:03', 0),
+(7, '16dfed76f9d846056a6a3c0d022c3493', 'finetune', 'finetune.com', 4, '1815-12-10 00:00:00', 'testuser1', 0, '2008-01-21 13:14:33', 0),
+(8, 'e9ea2574c49c3778f166e8b4b6ed63dd', 'apple', 'apple.com', 4, '1815-12-10 00:00:00', 'testuser1', 0, '2008-01-21 13:20:57', 0),
+(9, '294a9e1d594297e7bb9da9e11229c5d7', 'fireball.com', 'fireball', 1, '1815-12-10 00:00:00', 'testuser1', 0, '2008-01-29 10:36:06', 0);
 
 -- --------------------------------------------------------
 
@@ -509,8 +519,8 @@ CREATE TABLE `ids` (
 -- Data for table `ids`
 -- 
 
-INSERT INTO `ids` VALUES (0, 0, 'content_id');
-INSERT INTO `ids` VALUES (1, 0, 'tas id');
+INSERT INTO `ids` VALUES (0, 9, 'content_id');
+INSERT INTO `ids` VALUES (1, 17, 'tas id');
 INSERT INTO `ids` VALUES (2, 0, 'relation id');
 INSERT INTO `ids` VALUES (3, 0, 'question id');
 INSERT INTO `ids` VALUES (4, 1, 'cycle id');
@@ -852,6 +862,8 @@ CREATE TABLE `search` (
 -- Data for table `search`
 -- 
 
+INSERT INTO `search` (`content_id`, `content`, `author`, `group`, `date`, `content_type`, `user_name`) VALUES
+(2, 'google suchmaschine gmail earth sketchup maps news images bot adwords', 'testauthor', 0, '1815-12-10 00:00:00', 1, 'testuser1');
 
 -- --------------------------------------------------------
 
@@ -898,6 +910,21 @@ CREATE TABLE `tags` (
 -- Data for table `tags`
 -- 
 
+INSERT INTO `tags` (`tag_id`, `tag_name`, `tag_stem`, `tag_ctr`, `tag_ctr_public`, `waiting_content_sim`) VALUES
+(1, 'testtag', '', 2, 1, 0),
+(2, 'suchmaschine', '', 4, 4, 0),
+(3, 'google', '', 1, 1, 0),
+(4, 'yahoo', '', 1, 1, 0),
+(5, 'friends', '', 1, 1, 0),
+(6, 'friendscout', '', 1, 1, 0),
+(7, 'web', '', 1, 1, 0),
+(8, 'freemail', '', 1, 1, 0),
+(9, 'uni', '', 1, 1, 0),
+(10, 'kassel', '', 1, 1, 0),
+(11, 'finetune', '', 1, 1, 0),
+(12, 'radio', '', 1, 1, 0),
+(13, 'apple', '', 1, 1, 0),
+(14, 'fireball', '', 1, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -1021,6 +1048,24 @@ CREATE TABLE `tas` (
 -- Data for table `tas`
 -- 
 
+INSERT INTO `tas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `content_type`, `user_name`, `date`, `group`, `change_date`) VALUES
+(1, 'testtag', 'testtag', 1, 1, 'testuser1', '1815-12-10 00:00:00', 0, '2008-01-18 10:20:07'),
+(2, 'google', 'google', 2, 1, 'testuser1', '1815-12-10 00:00:00', 0, '2008-01-18 10:20:17'),
+(3, 'suchmaschine', 'suchmaschine', 2, 1, 'testuser1', '1815-12-10 00:00:00', 0, '2008-01-18 10:19:51'),
+(4, 'yahoo', 'yahoo', 3, 1, 'testuser2', '1815-12-10 00:00:00', 0, '2008-01-18 10:21:12'),
+(5, 'suchmaschine', 'suchmaschine', 3, 1, 'testuser2', '1815-12-10 00:00:00', 0, '2008-01-18 10:21:47'),
+(6, 'friends', 'friends', 4, 1, 'testuser1', '1815-12-10 00:00:00', 2, '2008-01-18 10:24:31'),
+(7, 'friendscout', 'friendscout', 4, 1, 'testuser1', '1815-12-10 00:00:00', 2, '2008-01-18 10:24:44'),
+(8, 'web', 'web', 5, 1, 'testuser3', '1815-12-10 00:00:00', 0, '2008-01-18 10:24:14'),
+(9, 'freemail', 'freemail', 5, 1, 'testuser3', '1815-12-10 00:00:00', 0, '2008-01-18 10:24:14'),
+(10, 'suchmaschine', 'suchmaschine', 5, 1, 'testuser3', '1815-12-10 00:00:00', 0, '2008-01-18 10:24:14'),
+(11, 'uni', 'uni', 6, 1, 'testuser2', '1815-12-10 00:00:00', 0, '2008-01-18 11:30:05'),
+(12, 'kassel', 'kassel', 6, 1, 'testuser2', '0000-00-00 00:00:00', 0, '2008-01-18 11:30:05'),
+(13, 'finetune', 'finetune', 7, 1, 'testuser1', '1815-12-10 00:00:00', 4, '2008-01-21 13:22:09'),
+(14, 'radio', 'radio', 7, 1, 'testuser1', '1815-12-10 00:00:00', 4, '2008-01-21 13:22:20'),
+(15, 'apple', 'apple', 8, 1, 'testuser1', '1815-12-10 00:00:00', 4, '2008-01-21 13:20:37'),
+(16, 'suchmaschine', 'suchmaschine', 9, 1, 'testuser1', '1815-12-10 00:00:00', 1, '2008-01-29 10:39:17'),
+(17, 'fireball', 'fireball', 9, 1, 'testuser1', '1815-12-10 00:00:00', 1, '2008-01-29 10:39:17');
 
 -- --------------------------------------------------------
 
@@ -1103,6 +1148,8 @@ CREATE TABLE `temp_bookmark` (
 -- Data for table `temp_bookmark`
 -- 
 
+INSERT INTO `temp_bookmark` (`content_id`, `book_description`, `book_extended`, `book_url_hash`, `date`, `user_name`, `book_url_ctr`, `rank`, `rating`) VALUES
+(1, 'test bookmark descripton	', 'test bookmark extended	', '6f372faea7ff92eedf52f597090a6291', '1815-12-10 00:00:00', 'testuser1', 1, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -1124,6 +1171,16 @@ CREATE TABLE `urls` (
 -- Data for table `urls`
 -- 
 
+INSERT INTO `urls` (`book_url_hash`, `book_url`, `book_url_ctr`) VALUES
+('108eca7b644e2c5e09853619bc416ed0', 'http://www.google.de', 1),
+('16dfed76f9d846056a6a3c0d022c3493', 'http://www.finetune.com', 1),
+('20592a292e53843965c1bb42bfd51876', 'http://www.uni-kassel.de', 1),
+('294a9e1d594297e7bb9da9e11229c5d7', 'http://www.fireball.com\r\n', 1),
+('6f372faea7ff92eedf52f597090a6291', 'http://www.testurl.org', 1),
+('7eda282d1d604c702597600a06f8a6b0', 'http://www.yahoo.de', 1),
+('965a65fdc161e354f3828050390e2b06', 'http://www.web.de', 1),
+('b7aa3a91885e432c6c95bec0145c3968', 'http://www.friendscout24.de', 1),
+('e9ea2574c49c3778f166e8b4b6ed63dd', 'http://www.apple.com\r\n', 1);
 
 -- --------------------------------------------------------
 
