@@ -9,7 +9,7 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<!-- tags & URL-->
 	<c:if test="${not empty post.tags}">
-	     [<a href="${projectHome}">${projectName}</a>:<c:forEach var="tag" items="${post.tags}"><a href="${projectHome}user/'${post.user.name}/${tag.name}">${mtl:ch('nbsp')}${tag.name}</a></c:forEach>]
+	     [<a href="${projectHome}">${projectName}</a>:<c:forEach var="tag" items="${post.tags}"><a href="${projectHome}user/${post.user.name}/${tag.name}">${mtl:ch('nbsp')}${tag.name}</a></c:forEach>]
 	     <!-- download URL -->
 	     <c:if test="${not empty post.resource.url}">
 	      <a href="${post.resource.url}">URL</a>   
