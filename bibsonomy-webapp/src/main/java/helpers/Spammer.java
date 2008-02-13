@@ -31,9 +31,11 @@ public class Spammer {
 	 * @return
 	 */
 	public static String getCookie (HttpServletRequest request, String name) {
-		for (Cookie cookie:request.getCookies()) {
-			if (name.equals(cookie.getName())) {
-				return cookie.getValue();
+		if (request.getCookies() != null) {			
+			for (Cookie cookie:request.getCookies()) {
+				if (name.equals(cookie.getName())) {
+					return cookie.getValue();
+				}
 			}
 		}
 		return null;
