@@ -58,7 +58,7 @@
 	  		<link>${projectHome}bibtex/2${bibtex.intraHash}/<mtl:encode value='${post.user.name}'/></link>
 	  		<dc:creator>${post.user.name}</dc:creator>
 	  		<dc:date><mtl:formatDate value="${post.date}"/></dc:date>
-	  		<dc:subject><c:forEach var="tag" items="${post.tags}">${tag.name}</c:forEach></dc:subject>
+	  		<dc:subject><c:forEach var="tag" items="${post.tags}">${fn:escapeXml(tag.name)}</c:forEach></dc:subject>
 	   		<content:encoded>
 	        <c:set var="desc"><bib:desc post="${post}"/></c:set>
 		    
@@ -69,7 +69,7 @@
 		    <taxo:topics>
 		      <rdf:Bag>
 		        <c:forEach var="tag" items="${post.tags}">
-		         <rdf:li rdf:resource="${projectHome}tag/${tag.name}"/>
+		           <rdf:li rdf:resource="${projectHome}tag/${fn:escapeXml(tag.name)}"/>
 		        </c:forEach>  
 		      </rdf:Bag>
 		    </taxo:topics>    
