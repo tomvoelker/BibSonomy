@@ -37,7 +37,7 @@ public class GetConceptDetailsQuery extends AbstractQuery<Tag> {
 			//url = URL_GROUPS + "/" + this.groupingName + "/" + URL_CONCEPTS + "/" + this.conceptname;
 			//break;
 		case ALL:
-			url = URL_TAGS + "/" + "-%3E" + this.conceptname;  
+			url = URL_CONCEPTS + "/" + this.conceptname;  
 			break;			
 		default:
 			throw new UnsupportedOperationException("Grouping " + grouping + " is not available for concept details query");

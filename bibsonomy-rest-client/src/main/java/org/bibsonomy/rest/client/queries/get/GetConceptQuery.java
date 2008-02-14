@@ -45,9 +45,8 @@ public class GetConceptQuery extends AbstractQuery<List<Tag>> {
 			//url = URL_GROUPS + "/" + this.groupingName + "/" + URL_CONCEPTS;
 			//break;
 		case ALL:
-			throw new UnsupportedOperationException("Grouping " + grouping + " is not implemented yet");
-			//url = URL_CONCEPTS;
-			//break;
+			url = URL_CONCEPTS;
+			break;
 		default:
 			throw new UnsupportedOperationException("Grouping " + grouping + " is not available for concept query");
 		}
