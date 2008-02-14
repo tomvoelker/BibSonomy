@@ -36,6 +36,7 @@ public class RestProperties {
 		CONTENT_TYPE("text/xml"),
 		API_USER_AGENT("BibsonomyWebServiceClient"),
 		URL_TAGS("tags"),
+		URL_CONCEPTS("concepts"),
 		URL_USERS("users"),
 		URL_GROUPS("groups"),
 		URL_POSTS("posts"),
@@ -138,6 +139,10 @@ public class RestProperties {
 
 	public String getTagsUrl() {
 		return this.get(Property.URL_TAGS);
+	}
+	
+	public String getConceptUrl() {
+		return this.get(Property.URL_CONCEPTS);
 	}
 
 	public String getUsersUrl() {
