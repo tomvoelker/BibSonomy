@@ -16,6 +16,7 @@ import org.bibsonomy.database.util.DBSession;
  * @author Jens Illig
  * @author Christian Schenk
  * @author Anton Wilhelm
+ * @author Stefan Stützer
  * @version $Id$
  */
 public class Logging extends AbstractDatabasePlugin {
@@ -80,6 +81,18 @@ public class Logging extends AbstractDatabasePlugin {
 			}
 		};
 	}
+	
+	@Override
+	public Runnable onConceptDelete(final String conceptName, final String userName, final DBSession session) {
+		return new Runnable() {
+			public void run() {
+				final TagRelationParam trp = new TagRelationParam();
+				trp.setOwnerUserName(userName);
+				trp.setUpperTagName(conceptName);
+				insert("logConcept", trp, session);
+			}
+		};
+	}
 
 	@Override
 	public Runnable onTagDelete(final int contentId, final DBSession session) {
@@ -112,7 +125,5 @@ public class Logging extends AbstractDatabasePlugin {
 				insert("logUser", userName, session);
 			}
 		};
-	}
-	
-	
+	}	
 }

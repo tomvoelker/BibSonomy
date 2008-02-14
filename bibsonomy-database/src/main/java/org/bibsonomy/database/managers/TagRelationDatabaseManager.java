@@ -64,7 +64,9 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 			} else if (rel == Relation.SUB) {
 				trp.setLowerTagName(tag.getName());
 			}
-			this.insertIfNotPresent(trp, session);
+			if (!isRelationPresent(trp, session)) {
+				this.insertIfNotPresent(trp, session);
+			}
 		}
 	}
 
@@ -80,7 +82,28 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 			session.endTransaction();
 		}
 	}
-
+	
+	/**
+	 * Deletes a whole concept
+	 * @param upperTagName - the concept name
+	 * @param userName - the owner of the concept
+	 * @param session - the session
+	 */
+	public void deleteConcept(final String upperTagName, final String userName, final DBSession session) {
+		this.plugins.onConceptDelete(upperTagName, userName, session);
+		final TagRelationParam trp = new TagRelationParam();
+		trp.setOwnerUserName(userName);
+		trp.setUpperTagName(upperTagName);
+		delete("deleteConcept", trp, session);
+	}
+	
+	/**
+	 * Deletes a single relation
+	 * @param upperTagName - supertag name
+	 * @param lowerTagName -  subtag name
+	 * @param userName - the owners name
+	 * @param session - the session
+	 */
 	public void deleteRelation(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
 		this.plugins.onTagRelationDelete(upperTagName, lowerTagName, userName, session);
 		final TagRelationParam trp = new TagRelationParam();
@@ -88,7 +111,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 		trp.setLowerTagName(lowerTagName);
 		trp.setUpperTagName(upperTagName);
 		delete("deleteTagRelation", trp, session);
-	}
+	}	
 	
 	/**
 	 * @param userName
@@ -108,6 +131,13 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 		return null;
 	}
 	
+	public Tag getConceptForUser(final String conceptName, final String userName, final DBSession session) {
+		final TagRelationParam trp = new TagRelationParam();
+		trp.setOwnerUserName(userName);
+		trp.setUpperTagName(conceptName);
+		return this.queryForObject("getConceptForUser",trp, Tag.class, session);
+	}
+	
 	/**
 	 * @param userName
 	 * @return
@@ -115,6 +145,20 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	@SuppressWarnings("unchecked")
 	public List<Tag> getPickedConceptsForUser(final String userName, final DBSession session) {
 		return queryForList("getPickedConceptsForUser", userName, session);
+	}
+	
+	/**
+	 * Checks if the given relation already exists for the user
+	 * @param param -  TagRelationParam
+	 * @param session -  the session
+	 * @return <code>true</code> if relation already exists else <code>false</code>
+	 */
+	public boolean isRelationPresent(TagRelationParam param, final DBSession session) {
+		String relationID = queryForObject("getRelationID", param, String.class, session);
+		
+		if (relationID == null)
+			return false;		
+		return true;
 	}
 	
 }

@@ -12,6 +12,7 @@ import org.bibsonomy.database.util.DBSession;
  * @author Jens Illig
  * @author Christian Schenk
  * @author Anton Wilhelm
+ * @author Stefan Stützer
  * @version $Id$
  */
 public interface DatabasePlugin {
@@ -29,7 +30,9 @@ public interface DatabasePlugin {
 	public Runnable onBookmarkUpdate(int newNontentId, int contentId, DBSession session);
 
 	public Runnable onTagRelationDelete(String upperTagName, String lowerTagName, String userName, DBSession session);
-
+	
+	public Runnable onConceptDelete(String conceptName, String userName, DBSession session);
+	
 	public Runnable onTagDelete(int contentId, DBSession session);
 	
 	public Runnable onUserInsert(String userName, DBSession session);

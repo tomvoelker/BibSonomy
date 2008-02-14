@@ -44,6 +44,10 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 		return null;
 	}
 
+	public Runnable onConceptDelete(String conceptName, String userName, DBSession session) {
+		return null;
+	}
+	
 	public Runnable onTagDelete(final int contentId, final DBSession session) {
 		return null;
 	}

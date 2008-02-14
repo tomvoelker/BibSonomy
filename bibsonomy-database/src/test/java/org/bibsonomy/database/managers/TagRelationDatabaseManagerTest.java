@@ -58,7 +58,7 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 		final Integer newId2 = this.generalDb.getNewContentId(ConstantID.IDS_TAGREL_ID, this.dbSession);
 		assertEquals(newId1 + 3, newId2);
 	}
-
+	
 	@Test
 	public void testDeleteRelation() {
 		// FIXME: this boilerplate code could be removed with a DI-framework (i.e. next three lines)

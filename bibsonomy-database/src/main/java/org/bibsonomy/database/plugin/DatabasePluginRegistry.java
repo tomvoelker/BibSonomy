@@ -102,6 +102,12 @@ public class DatabasePluginRegistry {
 			this.executeRunnable(plugin.onTagRelationDelete(upperTagName, lowerTagName, userName, session));
 		}
 	}
+	
+	public void onConceptDelete(String conceptName, String userName, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			this.executeRunnable(plugin.onConceptDelete(conceptName, userName, session));
+		}
+	}
 
 	public void onTagDelete(final int contentId, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {

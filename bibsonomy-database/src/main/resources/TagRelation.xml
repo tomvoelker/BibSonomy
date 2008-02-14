@@ -11,6 +11,10 @@
 		DELETE FROM tagtagrelations WHERE lower=#lowerTagName# AND upper=#upperTagName# AND user_name=#ownerUserName#
 	</delete>
 	
+	<delete id="deleteConcept" parameterClass="tagRelationParam">
+		DELETE FROM tagtagrelations WHERE upper=#upperTagName# AND user_name=#ownerUserName#
+	</delete>	
+	
 	<select id="getPickedConceptsForUser" parameterClass="String" resultMap="TagCommon.tagWithSubtags">
 		SELECT r.upper AS tag_name, GROUP_CONCAT(r.lower ORDER BY r.lower SEPARATOR ' ') AS subtags 
 		FROM tagtagrelations r, picked_concepts p 
@@ -25,5 +29,18 @@
 		WHERE user_name=#userName# 
 		GROUP BY upper 
 		ORDER BY upper
+	</select>
+	
+	<select id="getConceptForUser" parameterClass="tagRelationParam" resultMap="TagCommon.tagWithSubtags">
+		SELECT upper AS tag_name, GROUP_CONCAT(lower ORDER BY lower SEPARATOR ' ') AS subtags 
+		FROM tagtagrelations 
+		WHERE upper=#upperTagName#
+		AND user_name=#ownerUserName# 		
+		GROUP BY upper 
+		ORDER BY upper
+	</select>
+	
+	<select id="getRelationID" parameterClass="tagRelationParam" resultClass="string">
+		SELECT relationID FROM tagtagrelations where user_name = #ownerUserName# and lower = #lowerTagName# and upper = #upperTagName# 
 	</select>
 </sqlMap>

@@ -35,6 +35,12 @@
 		SELECT relationID, lower, upper, date_of_create, user_name
 		FROM tagtagrelations WHERE lower=#lowerTagName# AND upper=#upperTagName# AND user_name=#ownerUserName#
 	</insert>
+	
+	<insert id="logConcept" parameterClass="tagRelationParam">	
+		INSERT INTO log_tagtagrelations (relationID, lower, upper, date_of_create, user_name) 
+		SELECT relationID, lower, upper, date_of_create, user_name
+		FROM tagtagrelations WHERE upper=#upperTagName# AND user_name=#ownerUserName#
+	</insert>
 
 	<insert id="logTasDelete" parameterClass="tagParam">
 		INSERT INTO log_tas (tas_id, tag_name, content_id, content_type, date, change_date)

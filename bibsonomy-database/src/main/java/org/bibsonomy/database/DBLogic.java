@@ -799,5 +799,60 @@ public class DBLogic implements LogicInterface {
 		}
 		return relations;
 	}
+
+	public Tag getConceptDetails(String conceptName, GroupingEntity grouping, String groupingName) {
+		final DBSession session = openSession();
+		Tag concept = null;
+		try {
+			if (grouping.equals(GroupingEntity.USER) && groupingName != null && groupingName != "") {
+				concept = this.tagRelationsDBManager.getConceptForUser(conceptName, groupingName, session);		
+			}
+		} finally {
+			session.close();
+		}
+		return concept;
+	}
+
+	public String createConcept(Tag concept, GroupingEntity grouping, String groupingName) {
+		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(groupingName) == false)) {
+			throw new ValidationException("You are not authorized to perform the requested operation");
+		}
+		return this.storeConcept(concept, grouping, groupingName, false);			
+	}
+
+	public void deleteConcept(String concept, GroupingEntity grouping, String groupingName) {
+		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(groupingName) == false)) {
+			throw new ValidationException("You are not authorized to perform the requested operation");
+		}
+		
+		final DBSession session = openSession();
+		tagRelationsDBManager.deleteConcept(concept, groupingName, session);		
+	}
+
+	public void deleteRelation(String upper, String lower, GroupingEntity grouping, String groupingName) {
+		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(groupingName) == false)) {
+			throw new ValidationException("You are not authorized to perform the requested operation");
+		}
+		
+		final DBSession session = openSession();
+		tagRelationsDBManager.deleteRelation(upper, lower, groupingName, session);	
+	}
+
+	public String updateConcept(Tag concept, GroupingEntity grouping, String groupingName) {
+		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(groupingName) == false)) {
+			throw new ValidationException("You are not authorized to perform the requested operation");
+		}
+		return this.storeConcept(concept, grouping, groupingName, true);
+	}	
 	
+	private String storeConcept(Tag concept, GroupingEntity grouping, String groupingName, boolean update) {		
+		final DBSession session = openSession();
+		if (update) {
+			tagRelationsDBManager.insertRelations(concept, groupingName, session);			
+		} else {
+			this.deleteConcept(concept.getName(), grouping, groupingName);
+			tagRelationsDBManager.insertRelations(concept, groupingName, session);
+		}		
+		return concept.getName();
+	}
 }
