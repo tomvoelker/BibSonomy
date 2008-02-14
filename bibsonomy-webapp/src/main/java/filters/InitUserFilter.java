@@ -66,24 +66,19 @@ public class InitUserFilter implements Filter {
 		this.filterConfig = null;		
 	}
 
-
-	/** Returns the value of a cookie with the given name.
-	 * 
-	 * @param request
-	 * @param cookieName
-	 * @return
+	/**
+	 * Place this filter into service.
+	 *
+	 * @param filterConfig The filter configuration object
 	 */
-	public static String getCookie (HttpServletRequest request, String cookieName) {
-		Cookie cookieList[] = request.getCookies();
-		if (cookieList != null) {
-			for (Cookie theCookie:cookieList) {
-				if (theCookie.getName().equals(cookieName)) {
-					return theCookie.getValue();
-				}
-			}
-		}
-		return null;
+	public void init(FilterConfig filterConfig) throws ServletException {
+		this.filterConfig = filterConfig;
+		/*
+		 * if true, we use X.509 certificates instead of passwords in DB for authentication
+		 */
+		this.useX509forAuth = "true".equals(this.filterConfig.getInitParameter("useX509forAuth"));
 	}
+
 
 
 	/** 
@@ -254,6 +249,25 @@ public class InitUserFilter implements Filter {
 
 	}
 
+	
+	/** Returns the value of a cookie with the given name.
+	 * 
+	 * @param request
+	 * @param cookieName
+	 * @return
+	 */
+	public static String getCookie (HttpServletRequest request, String cookieName) {
+		Cookie cookieList[] = request.getCookies();
+		if (cookieList != null) {
+			for (Cookie theCookie:cookieList) {
+				if (theCookie.getName().equals(cookieName)) {
+					return theCookie.getValue();
+				}
+			}
+		}
+		return null;
+	}
+
 
 	/** Returns the password contained in a HTTP (Basic) authentication header.
 	 * 
@@ -276,19 +290,6 @@ public class InitUserFilter implements Filter {
 			return userpassDecoded.substring(p+1);
 		}
 		return null; 
-	}
-
-	/**
-	 * Place this filter into service.
-	 *
-	 * @param filterConfig The filter configuration object
-	 */
-	public void init(FilterConfig filterConfig) throws ServletException {
-		this.filterConfig = filterConfig;
-		/*
-		 * if true, we use X.509 certificates instead of passwords in DB for authentication
-		 */
-		this.useX509forAuth = "true".equals(this.filterConfig.getInitParameter("useX509forAuth"));
 	}
 
 
