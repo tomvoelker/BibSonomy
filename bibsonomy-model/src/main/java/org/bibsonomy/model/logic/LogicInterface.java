@@ -100,6 +100,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @param tags
 	 * @param start
 	 * @param end
+	 * @param search - search string
 	 * @return a set of tags, en empty set else
 	 */
 	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, int start, int end, String search);
@@ -249,8 +250,9 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @param grouping - grouping entity
 	 * @param groupingName - the grouping name
 	 * @param constraint - a possible contstraint on the statistics
+	 * @param search - search string
 	 * @return an int representing a statistical information
-     * @author dbe
+	 * @author dbe
 	 */
 	public int getStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, StatisticsConstraint constraint, String search);
 	
@@ -258,14 +260,71 @@ public interface LogicInterface extends PostLogicInterface {
 	 * Retrieve relations
 	 * 
 	 * @param resourceType - the reqtested resourcetype
-	 * @param grouping - grouping entitity
+	 * @param grouping - grouping entity
 	 * @param groupingName - the grouping name
 	 * @param regex - a regex to possibly filter the relatons retrieved
 	 * @param tags - a list of tags which shall be part of the relations
+	 * @param status - the conceptstatus, i.e. all, picked or unpicked
 	 * @param start - start index
 	 * @param end - end index
 	 * @return a list of concepts, i.e. tags containing their assigned subtags
      * @author dbe
 	 */
 	public List<Tag> getConcepts(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end);
+	
+	/**
+	 * Retrieve relations
+	 * 
+	 * @param conceptName - the supertag of the concept
+	 * @param grouping - grouping entity
+	 * @param groupingName - the grouping name	
+	 * @return a concept, i.e. a tag containing its assigned subtags
+     * @author sts
+	 */
+	public Tag getConceptDetails(String conceptName, GroupingEntity grouping, String groupingName);
+	
+	
+	/**
+	 * Create a new relation/concept
+	 * 
+	 * @param concept - the new concept
+	 * @param grouping - grouping entity
+	 * @param groupingName - the grouping name
+	 * @return the name of the superconcept-tag, note: if a concept already exists with the given name
+	 * it will be replaced
+	 * @author sts
+	 */
+	public String createConcept(Tag concept, GroupingEntity grouping, String groupingName);
+	
+	/**
+	 * Update an existing relation/concept
+	 * 
+	 * @param concept - the concept to update
+	 * @param grouping - grouping entity
+	 * @param groupingName - the grouping name	
+	 * @return the name of the superconcept-tag 
+	 * @author sts
+	 */
+	public String updateConcept(Tag concept, GroupingEntity grouping, String groupingName);
+	
+	/**
+	 * Delete an existing concept
+	 * 
+	 * @param concept - the concept to delete
+	 * @param grouping - grouping entity
+	 * @param groupingName - the grouping name	 
+     * @author sts
+	 */
+	public void deleteConcept(String concept, GroupingEntity grouping, String groupingName);
+	
+	/**
+	 * Delete an existing relation
+	 * 
+	 * @param upper - the concept to delete
+	 * @param lower - the subtag of the conceptname
+	 * @param grouping - grouping entity
+	 * @param groupingName - the grouping name	 
+     * @author sts
+	 */
+	public void deleteRelation(String upper, String lower, GroupingEntity grouping, String groupingName);	
 }
