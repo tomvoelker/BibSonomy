@@ -50,11 +50,11 @@
 	<c:set var="bibtex" value="${post.resource}"/> 
 	<item rdf:about="${projectHome}bibtex/2${bibtex.intraHash}/${post.user.name}">
     	<title><mtl:bibclean value="${bibtex.title}"/></title>
-		<c:if test ="${!empty post.description}"><description>${post.description}</description></c:if>	
+		<c:if test ="${!empty post.description}"><description>${fn:escapeXml(post.description)}</description></c:if>	
   		<link>${projectHome}bibtex/2${bibtex.intraHash}/<mtl:encode value='${post.user.name}'/></link>
   		<dc:creator>${post.user.name}</dc:creator>
   		<dc:date><mtl:formatDate value="${post.date}"/></dc:date>
-  		<dc:subject><c:forEach var="tag" items="${post.tags}">${tag.name}</c:forEach></dc:subject>
+  		<dc:subject><c:forEach var="tag" items="${post.tags}">${fn:escapeXml(tag.name)}</c:forEach></dc:subject>
   		<content:encoded>
 	    <c:set var="content"><output:apaContentEncoded post="${post}"/></c:set>
   		<!-- <output:apaContentEncoded> contains xml invalid characters -->
@@ -63,7 +63,7 @@
   		<taxo:topics>
 	      <rdf:Bag>
 	        <c:forEach var="tag" items="${post.tags}">
-	         <rdf:li rdf:resource="${projectHome}tag/${tag.name}"/>
+	         <rdf:li rdf:resource="${projectHome}tag/${fn:escapeXml(tag.name)}"/>
 	        </c:forEach>  
 	      </rdf:Bag>
 	    </taxo:topics>    
