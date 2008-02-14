@@ -189,7 +189,7 @@
 		<dependency>
 			<groupId>jabref</groupId>
 			<artifactId>jabref</artifactId>
-			<version>2.2</version>
+			<version>2.3.1</version>
 		</dependency>
 		<dependency>
                 <groupId>net.tanesha.recaptcha4j</groupId>

@@ -133,7 +133,7 @@ public final class ExportBibtex {
 			/* *************** Printing the header ******************/
 			Layout beginLayout = _layouts.get(format + ".begin" + _layoutFileExtension);
 			if (beginLayout != null) {
-				output.append(beginLayout.doLayout(database));
+				output.append(beginLayout.doLayout(database, "UTF-8"));
 			}
 
 			/* *************** Printing the entries ******************/ 
@@ -157,7 +157,7 @@ public final class ExportBibtex {
 			/* *************** Printing the footer ******************/
 			Layout endLayout = _layouts.get(format + ".end" + _layoutFileExtension);
 			if (endLayout != null) {
-				output.append(endLayout.doLayout(database));
+				output.append(endLayout.doLayout(database, "UTF-8"));
 			}
 		}
 		return output;

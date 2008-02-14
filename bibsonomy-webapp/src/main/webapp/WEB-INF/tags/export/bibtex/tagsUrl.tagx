@@ -4,15 +4,20 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"	
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
-	xmlns:swrc="http://swrc.ontoware.org/ontology#">
+	xmlns:swrc="http://swrc.ontoware.org/ontology#"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<!-- tags & URL-->
 	<c:if test="${not empty post.tags}">
-	     [<a href="${projectHome}">${projectName}</a>:<c:forEach var="tag" items="${post.tags}"><a href="${projectHome}user/${post.user.name}/${tag.name}">${mtl:ch('nbsp')}${tag.name}</a></c:forEach>]
+	     [<a href="${projectHome}">${projectName}</a>:
+            <!--  tags  -->
+            <c:forEach var="tag" items="${post.tags}">
+               <c:out value=" "/><a href="${projectHome}user/${post.user.name}/${fn:escapeXml(tag.name)}">${fn:escapeXml(tag.name)}</a>
+            </c:forEach>]
 	     <!-- download URL -->
 	     <c:if test="${not empty post.resource.url}">
-	      <a href="${post.resource.url}">URL</a>   
+	        <a href="${fn:escapeXml(post.resource.url)}">URL</a>   
 	     </c:if>
 	</c:if>
 </jsp:root>
