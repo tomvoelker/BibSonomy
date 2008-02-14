@@ -790,8 +790,9 @@ public class DBLogic implements LogicInterface {
 				else {
 					throw new RuntimeException("Can't handle request");
 				}
-			}
-			else {
+			} else if (grouping.equals(GroupingEntity.ALL)) {
+				relations = tagRelationsDBManager.getAllConcepts(session);
+			} else {
 				throw new RuntimeException("Can't handle request");
 			}
 		} finally {
@@ -806,6 +807,10 @@ public class DBLogic implements LogicInterface {
 		try {
 			if (grouping.equals(GroupingEntity.USER) && groupingName != null && groupingName != "") {
 				concept = this.tagRelationsDBManager.getConceptForUser(conceptName, groupingName, session);		
+			} else if (grouping.equals(GroupingEntity.ALL)) {
+				concept = tagRelationsDBManager.getGlobalConceptByName(conceptName, session);
+			} else {
+				throw new RuntimeException("Can't handle request");
 			}
 		} finally {
 			session.close();

@@ -148,6 +148,23 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	/**
+	 * @param session - the db session
+	 * @return all concepts (50 most popular)
+	 */
+	public List<Tag> getAllConcepts(final DBSession session) {
+		return queryForList("getAllConcepts", null, session);
+	}
+	
+	/**
+	 * @param session - the db session
+	 * @return a global concept by name
+	 */
+	public Tag getGlobalConceptByName(final String conceptName, final DBSession session) {
+		return queryForObject("getGlobalConceptByName", conceptName, Tag.class, session);
+	}
+	
+	
+	/**
 	 * Checks if the given relation already exists for the user
 	 * @param param -  TagRelationParam
 	 * @param session -  the session
