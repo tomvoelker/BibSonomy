@@ -177,9 +177,7 @@ public class RestLogic implements LogicInterface {
 	public void deleteDocument(String userName, String resourceHash, String fileName) {
 		// TODO Auto-generated method stub
 		
-	}
-
-	
+	}	
 	
 	public void addInetAddressStatus(InetAddress address, InetAddressStatus status) {
 		// TODO Auto-generated method stub
@@ -202,6 +200,36 @@ public class RestLogic implements LogicInterface {
 	}
 
 	public List<Tag> getConcepts(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String createConcept(Tag concept, GroupingEntity grouping, String groupingName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void deleteConcept(Tag concept, GroupingEntity grouping, String groupingName) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public String updateConcept(Tag concept, GroupingEntity grouping, String groupingName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void deleteConcept(String concept, GroupingEntity grouping, String groupingName) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void deleteRelation(String upper, String lower, GroupingEntity grouping, String groupingName) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public Tag getConceptDetails(String conceptName, GroupingEntity grouping, String groupingName) {
 		// TODO Auto-generated method stub
 		return null;
 	}

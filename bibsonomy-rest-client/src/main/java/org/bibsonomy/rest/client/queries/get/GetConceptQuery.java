@@ -1,0 +1,114 @@
+package org.bibsonomy.rest.client.queries.get;
+
+import java.util.List;
+
+import org.bibsonomy.common.enums.ConceptStatus;
+import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.rest.client.AbstractQuery;
+import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.renderer.RendererFactory;
+
+/**
+ * Use this Class to get concepts 
+ * 1) from all users
+ * 2) from a specified group or
+ * 3) from a specified user
+ * 
+ * @author Stefan Stützer
+ * @version $Id$
+ */
+public class GetConceptQuery extends AbstractQuery<List<Tag>> {
+	protected Class<? extends Resource> resourceType;
+	private String groupingName;
+	private ConceptStatus status = ConceptStatus.ALL;
+	private String regex;	
+	private GroupingEntity grouping = GroupingEntity.ALL;	
+	private List<String> tags;	
+	
+	public GetConceptQuery() {
+		this.downloadedDocument = null;		
+	}
+	
+	@Override
+	protected List<Tag> doExecute() throws ErrorPerformingRequestException {
+		String url;
+		
+		switch (this.grouping) {
+		case USER:
+			url = URL_USERS + "/" + this.groupingName + "/" + URL_CONCEPTS;			
+			break;
+		case GROUP:
+			throw new UnsupportedOperationException("Grouping " + grouping + " is not implemented yet");
+			//url = URL_GROUPS + "/" + this.groupingName + "/" + URL_CONCEPTS;
+			//break;
+		case ALL:
+			throw new UnsupportedOperationException("Grouping " + grouping + " is not implemented yet");
+			//url = URL_CONCEPTS;
+			//break;
+		default:
+			throw new UnsupportedOperationException("Grouping " + grouping + " is not available for concept query");
+		}
+				
+		if (this.status != null) {
+			url += "?status=" + this.status.toString().toLowerCase();
+		}
+
+		if (this.resourceType != null) {
+			url += "&resourcetype=" + Resource.toString(this.resourceType).toLowerCase();
+		}
+		
+		if (this.regex != null) {
+			url += "?filter=" + this.regex;
+		}		
+		
+		if (this.tags != null && this.tags.size() > 0) {
+			boolean first = true;
+			for (final String tag : tags) {
+				if (first) {
+					url += "&tags=" + tag;
+					first = false;
+				} else {
+					url += "+" + tag;
+				}
+			}
+		}			
+		
+		this.downloadedDocument = performGetRequest(url + "&format=" + getRenderingFormat().toString().toLowerCase());
+		return null;
+	}
+
+	@Override
+	public List<Tag> getResult() throws BadRequestOrResponseException, IllegalStateException {
+		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
+		return RendererFactory.getRenderer(getRenderingFormat()).parseTagList(this.downloadedDocument);
+	}
+
+	public void setResourceType(Class<? extends Resource> resourceType) {
+		this.resourceType = resourceType;
+	}
+
+	public void setUserName(final String userName) {
+		this.groupingName = userName;
+		this.grouping = GroupingEntity.USER;
+	}
+
+	public void setGroupName(final String groupName) {
+		this.groupingName = groupName;
+		this.grouping = GroupingEntity.GROUP;
+	}
+	
+	public void setStatus(ConceptStatus status) {
+		this.status = status;
+	}
+
+	public void setRegex(String regex) {
+		this.regex = regex;
+	}	
+
+	public void setTags(List<String> tags) {
+		this.tags = tags;
+	}	
+}

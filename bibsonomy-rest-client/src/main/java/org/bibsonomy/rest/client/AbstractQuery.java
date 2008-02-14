@@ -2,7 +2,6 @@ package org.bibsonomy.rest.client;
 
 import java.io.Reader;
 
-import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
@@ -16,7 +15,6 @@ import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.enums.RenderingFormat;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.RendererFactory;
-import org.bibsonomy.rest.renderer.xml.StatType;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -29,7 +27,8 @@ public abstract class AbstractQuery<T> {
 	protected static final String URL_POSTS = RestProperties.getInstance().getPostsUrl();
 	protected static final String URL_POSTS_ADDED = RestProperties.getInstance().getAddedPostsUrl();
 	protected static final String URL_POSTS_POPULAR = RestProperties.getInstance().getPopularPostsUrl();
-
+	protected static final String URL_CONCEPTS = RestProperties.getInstance().getConceptUrl();
+	
 	private String apiKey;
 	private String username;
 	private String apiURL;
