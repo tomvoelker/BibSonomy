@@ -39,6 +39,7 @@ public final class Context {
 		Context.urlHandlers.put(RestProperties.getInstance().getUsersUrl(), new UsersHandler());
 		Context.urlHandlers.put(RestProperties.getInstance().getGroupsUrl(), new GroupsHandler());
 		Context.urlHandlers.put(RestProperties.getInstance().getPostsUrl(), new PostsHandler());
+		Context.urlHandlers.put(RestProperties.getInstance().getConceptUrl(), new ConceptsHandler());		
 	}
 
 	private final InputStream doc;
