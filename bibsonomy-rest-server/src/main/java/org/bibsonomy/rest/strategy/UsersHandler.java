@@ -7,16 +7,21 @@ import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
 import org.bibsonomy.rest.strategy.users.DeleteDocumentStrategy;
 import org.bibsonomy.rest.strategy.users.DeletePostStrategy;
+import org.bibsonomy.rest.strategy.users.DeleteUserConceptStrategy;
 import org.bibsonomy.rest.strategy.users.DeleteUserStrategy;
 import org.bibsonomy.rest.strategy.users.GetPostDetailsStrategy;
 import org.bibsonomy.rest.strategy.users.GetPostDocumentStrategy;
+import org.bibsonomy.rest.strategy.users.GetUserConceptStrategy;
+import org.bibsonomy.rest.strategy.users.GetUserConceptsStrategy;
 import org.bibsonomy.rest.strategy.users.GetUserListStrategy;
 import org.bibsonomy.rest.strategy.users.GetUserPostsStrategy;
 import org.bibsonomy.rest.strategy.users.GetUserStrategy;
 import org.bibsonomy.rest.strategy.users.PostPostStrategy;
+import org.bibsonomy.rest.strategy.users.PostUserConceptStrategy;
 import org.bibsonomy.rest.strategy.users.PostUserStrategy;
 import org.bibsonomy.rest.strategy.users.PostPostDocumentStrategy;
 import org.bibsonomy.rest.strategy.users.PutPostStrategy;
+import org.bibsonomy.rest.strategy.users.PutUserConceptStrategy;
 import org.bibsonomy.rest.strategy.users.PutUserStrategy;
 
 /**
@@ -29,6 +34,7 @@ public class UsersHandler implements ContextHandler {
 	public Strategy createStrategy(final Context context, final StringTokenizer urlTokens, final HttpMethod httpMethod) {
 		final int numTokensLeft = urlTokens.countTokens();
 		final String userName;
+		final String req;
 
 		switch (numTokensLeft) {
 		case 0:
@@ -38,20 +44,34 @@ public class UsersHandler implements ContextHandler {
 			// /users/[username]
 			return createUserStrategy(context, httpMethod, urlTokens.nextToken());
 		case 2:
-			// /users/[username]/posts
 			userName = urlTokens.nextToken();
-			final String req = urlTokens.nextToken();
+			req = urlTokens.nextToken();
+			
+			// /users/[username]/posts
 			if (RestProperties.getInstance().getPostsUrl().equalsIgnoreCase(req)) {
 				return createUserPostsStrategy(context, httpMethod, userName);
 			}
+			
+			// /users/[username]/concepts
+			if (RestProperties.getInstance().getConceptUrl().equalsIgnoreCase(req)) {
+				return createUserConceptsStrategy(context, httpMethod, userName);
+			}
 			break;
 		case 3:
-			// /users/[username]/posts/[resourceHash]
 			userName = urlTokens.nextToken();
-			if (RestProperties.getInstance().getPostsUrl().equalsIgnoreCase(urlTokens.nextToken())) {
+			req = urlTokens.nextToken();
+			
+			// /users/[username]/posts/[resourceHash]
+			if (RestProperties.getInstance().getPostsUrl().equalsIgnoreCase(req)) {
 				final String resourceHash = urlTokens.nextToken();
 				return createUserPostStrategy(context, httpMethod, userName, resourceHash);
 			}
+			
+			// /users/[username]/concepts/[conceptName]
+			if (RestProperties.getInstance().getConceptUrl().equalsIgnoreCase(req)) {
+				final String conceptName = urlTokens.nextToken();
+				return createUserConceptsStrategy(context, httpMethod, userName, conceptName);
+			}			
 			break;
 		case 4:
 			// /users/[username]/posts/[resourcehash]/documents
@@ -146,6 +166,31 @@ public class UsersHandler implements ContextHandler {
 			return new DeleteDocumentStrategy(context, userName, resourceHash, filename);
 		default:
 			throw new UnsupportedHttpMethodException(httpMethod, "Document-Get-Delete-Document");
+		}
+	}
+	
+	private Strategy createUserConceptsStrategy(final Context context, final HttpMethod httpMethod, final String userName) {
+		switch(httpMethod) {
+		case GET: 
+			return new GetUserConceptsStrategy(context, userName);
+		default:
+			throw new UnsupportedHttpMethodException(httpMethod, "Concepts");
+				
+		}
+	}
+	
+	private Strategy createUserConceptsStrategy(final Context context, final HttpMethod httpMethod, final String userName, final String conceptName) {
+		switch(httpMethod) {
+		case GET: 
+			return new GetUserConceptStrategy(context, conceptName, userName);
+		case PUT: 
+			return new PutUserConceptStrategy(context, userName);
+		case POST: 
+			return new PostUserConceptStrategy(context, userName);
+		case DELETE: 
+			return new DeleteUserConceptStrategy(context, conceptName, userName);
+		default:
+			throw new UnsupportedHttpMethodException(httpMethod, "Concept-Conceptname");				
 		}
 	}
 }

@@ -1,0 +1,50 @@
+package org.bibsonomy.rest.strategy.users;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
+import java.io.Writer;
+import java.util.List;
+
+import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.rest.ViewModel;
+import org.bibsonomy.rest.exceptions.NoSuchResourceException;
+import org.bibsonomy.rest.strategy.Context;
+import org.bibsonomy.rest.strategy.Strategy;
+
+/**
+ * Handle user concept request
+ * 
+ * @author Stefan Stützer
+ * @version $Id$
+ */
+public class GetUserConceptStrategy extends Strategy {
+
+	private final String conceptName; 
+	private final String userName; 	
+	private Writer writer;	
+
+	/**
+	 * @param context -  the context
+	 * @param conceptName - the name of the supertag to retrieve the subtags for
+	 * @param userName - the owner of the concept
+	 */
+	public GetUserConceptStrategy(Context context, String conceptName, String userName) {
+		super(context);
+		this.conceptName = conceptName;
+		this.userName = userName;
+	}
+
+	@Override
+	public void perform(ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException {
+		writer = new PrintWriter(outStream);
+		Tag concept = this.getLogic().getConceptDetails(this.conceptName, GroupingEntity.USER, userName);
+		this.getRenderer().serializeTag(writer, concept, new ViewModel());		
+	}
+	
+	@Override
+	protected String getContentType() {
+		return "tag";
+	}
+}
