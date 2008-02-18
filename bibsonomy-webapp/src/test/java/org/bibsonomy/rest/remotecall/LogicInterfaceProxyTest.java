@@ -632,4 +632,28 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		return null;
 	}
 
+	public String createConcept(Tag concept, GroupingEntity grouping, String groupingName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void deleteConcept(String concept, GroupingEntity grouping, String groupingName) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void deleteRelation(String upper, String lower, GroupingEntity grouping, String groupingName) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public Tag getConceptDetails(String conceptName, GroupingEntity grouping, String groupingName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String updateConcept(Tag concept, GroupingEntity grouping, String groupingName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
