@@ -1,10 +1,10 @@
-[\format[RTFChars,AuthorLastFirstAbbrCommas]{\author} \year]{ }
+[\format[RTFChars,AuthorNatBib]{\author} \year]{ }
 
-\format[RTFChars,AuthorLastFirstAbbrCommas]{\author} (\year).
-\format[RTFChars]{\title}.
+\format[RTFChars,AuthorLastFirstAbbrCommas]{\author}:{ }
+"\format[RTFChars]{\title}"
 
 \begin{journal}
-}{\\i \format[RTFChars]{\journal}}{ }{\\b \volume}{
+};{ }{\\i \format[RTFChars]{\journal}}{ }{\\b \volume}{
 \end{journal}
 
 \begin{number}
@@ -16,7 +16,7 @@
 \end{editor}
 
 \begin{booktitle}
-}{\\i \format[RTFChars]{\booktitle}}{
+};{ }{\\i \format[RTFChars]{\booktitle}}{
 \end{booktitle}
 
 \begin{organization}
@@ -42,6 +42,10 @@
 \begin{note}
 , \note
 \end{note}
+
+\begin{year}
+ (\year)
+\end{year}
 
 \begin{pages}
 , \pages
