@@ -58,7 +58,7 @@ do this with JavaScript and two checkboxes
     <li><a href="/layout/docbook/<c:out value='${requPath}'/>">DocBook</a> <b>&middot;</b></li> 
     <li><a href="/layout/openoffice-csv/<c:out value='${requPath}'/>">OpenOffice-CSV</a> <b>&middot;</b></li>
     <li><a href="/layout/dblp/<c:out value='${requPath}'/>">DBLP</a> <b>&middot;</b></li>
-    <li><a href="/layout/text/<c:out value='${requPath}'/>">Text</a></li>
+    <li><a href="/layout/text/<c:out value='${requPath}'/>">Text</a> <b>&middot;</b></li>
     <li><a href="/layout/jucs/<c:out value='${requPath}'/>">JUCS</a></li>
   </ul>
 </div>
