@@ -218,11 +218,12 @@ public class LayoutHandler extends HttpServlet {
 
 		typemap.put("endnote",         new OutputType(null, "text/plain"));
 		typemap.put("text",            new OutputType(null, "text/plain"));
-
+		
 		typemap.put("openoffice-csv",  new OutputType("csv", "text/comma-separated-values"));
 		
 		// additional layouts, installed by us
-		typemap.put("se",          new OutputType(null, "text/html"));
+		typemap.put("se",          	   new OutputType(null, "text/html"));
+		typemap.put("jucs", 		   new OutputType("rtf", "text/rtf"));
 	}
 
 	private static class OutputType {

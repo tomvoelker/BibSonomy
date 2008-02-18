@@ -59,6 +59,7 @@ do this with JavaScript and two checkboxes
     <li><a href="/layout/openoffice-csv/<c:out value='${requPath}'/>">OpenOffice-CSV</a> <b>&middot;</b></li>
     <li><a href="/layout/dblp/<c:out value='${requPath}'/>">DBLP</a> <b>&middot;</b></li>
     <li><a href="/layout/text/<c:out value='${requPath}'/>">Text</a></li>
+    <li><a href="/layout/jucs/<c:out value='${requPath}'/>">JUCS</a></li>
   </ul>
 </div>
 
@@ -142,6 +143,10 @@ do this with JavaScript and two checkboxes
 
     <dt><a href="/layout/text/<c:out value='${requPath}'/>">Text</a> <a href="#jabref">*</a></dt>
     <dd>This is another <a href="http://en.wikipedia.org/wiki/BibTeX">BibTeX</a> output.</dd>
+    
+    <dt><a href="/layout/jucs/<c:out value='${requPath}'/>">JUCS</a> <a href="#jabref">*</a></dt>
+    <dd>Output formatted according to the guidelines of the <a href="http://www.jucs.org/">Journal of Universal 
+    Computer Science</a>.</dd>    
   </dl>
 
   <h3><a name="jabref">JabRef</a></h3>
