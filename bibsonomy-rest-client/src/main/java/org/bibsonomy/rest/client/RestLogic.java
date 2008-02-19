@@ -114,7 +114,7 @@ public class RestLogic implements LogicInterface {
 		return execute(new GetTagDetailsQuery(tagName));
 	}
 
-	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, int start, int end, String search) {
+	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, Order order, int start, int end, String search) {
 		GetTagsQuery query = new GetTagsQuery(start, end);
 		query.setGrouping(grouping, groupingName);
 		query.setFilter(regex);
@@ -230,6 +230,11 @@ public class RestLogic implements LogicInterface {
 	}
 
 	public Tag getConceptDetails(String conceptName, GroupingEntity grouping, String groupingName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public List<User> getUsers(List<String> tags, Order order, int start, int end) {
 		// TODO Auto-generated method stub
 		return null;
 	}
