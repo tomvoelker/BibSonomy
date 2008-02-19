@@ -248,7 +248,7 @@ public class DBStatisticsManager extends DBManager {
 	private static int getCtr (String query) {
 		DBContext c = new DBContext();
 		try {
-			if (c.init()) { // initialize database
+			if (c.initSlave()) { // initialize slave database
 				c.stmt = c.conn.prepareStatement(query);
 				c.rst = c.stmt.executeQuery();
 				if (c.rst.next()) {
@@ -267,7 +267,7 @@ public class DBStatisticsManager extends DBManager {
 		SortedMap<Integer, Integer> map = new TreeMap<Integer, Integer>();
 		DBContext c = new DBContext();
 		try {
-			if (c.init()) { // initialize database
+			if (c.initSlave()) { // initialize slave database
 				c.stmt = c.conn.prepareStatement(query);
 				c.rst = c.stmt.executeQuery();
 				while (c.rst.next()) {

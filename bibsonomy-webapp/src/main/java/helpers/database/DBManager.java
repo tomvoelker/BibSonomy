@@ -30,6 +30,11 @@ public abstract class DBManager {
 	 */
 	private static DataSource dataSource = null;
 	
+	/**
+	 * the same for the database slave
+	 */
+	private static DataSource slaveDataSource = null;
+	
 	
 	/**
 	 * Checks, if the datasource class variable has been initalized, if not, initializes it. 
@@ -42,7 +47,18 @@ public abstract class DBManager {
 			dataSource = (DataSource) envContext.lookup("jdbc/bibsonomy");
 		}
 	}
-	
+
+	/**
+	 * Checks, if the slave datasource class variable has been initalized, if not, initializes it. 
+	 * @throws NamingException
+	 */
+	private static synchronized void checkSlaveDataSource() throws NamingException {
+		if (slaveDataSource == null) {
+			Context initContext = new InitialContext();
+			Context envContext = (Context) initContext.lookup("java:/comp/env");
+			slaveDataSource = (DataSource) envContext.lookup("jdbc/bibsonomy_slave");			
+		}
+	}
 	
 	// class to save some typing work for parameters
 	
@@ -86,10 +102,30 @@ public abstract class DBManager {
 				if(dataSource != null){
 					conn = dataSource.getConnection();
 					return true;
-				} else {
-					throw new SQLException("Could not get datasource");
 				}
+				throw new SQLException("Could not get datasources");
+			}			
+		}
+		
+		/**
+		 * Checks, if the slave datasource is available and gets a connection from it.
+		 * 
+		 * @return <code>true</code> if a connection is available.
+		 * @throws SQLException
+		 */
+		public boolean initSlave () throws SQLException {
+			try {
+				checkSlaveDataSource();
+			} catch (NamingException e) {
+				throw new SQLException("Could not get datasource: " + e);
 			}
+			synchronized(slaveDataSource) {
+				if(slaveDataSource != null){
+					conn = slaveDataSource.getConnection();
+					return true;
+				}
+				throw new SQLException("Could not get slave datasources");
+			}			
 		}
 		
 		// closes all connections, statements and result sets
