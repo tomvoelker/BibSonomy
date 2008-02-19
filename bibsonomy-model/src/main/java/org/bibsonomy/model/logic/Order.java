@@ -10,5 +10,7 @@ public enum Order {
 	/** for ordering by adding time (desc) */
 	ADDED,
 	/** for ordering by popularity (desc) */
-	POPULAR
+	POPULAR, 
+	/** for ordering by folkrank (desc) */
+	FOLKRANK
 }

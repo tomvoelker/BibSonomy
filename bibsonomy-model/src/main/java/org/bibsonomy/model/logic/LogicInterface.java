@@ -98,12 +98,13 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @param regex
 	 *            a regular expression used to filter the tagnames
 	 * @param tags
+	 * @param order 
 	 * @param start
 	 * @param end
 	 * @param search - search string
 	 * @return a set of tags, en empty set else
 	 */
-	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, int start, int end, String search);
+	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, Order order, int start, int end, String search);
 
 	/**
 	 * Returns details about a tag. Those details are:
@@ -326,5 +327,14 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @param groupingName - the grouping name	 
      * @author sts
 	 */
-	public void deleteRelation(String upper, String lower, GroupingEntity grouping, String groupingName);	
+	public void deleteRelation(String upper, String lower, GroupingEntity grouping, String groupingName);
+	
+	/**
+	 * @param tags
+	 * @param order
+	 * @param start
+	 * @param end TODO
+	 * @return list of user
+	 */
+	public List<User> getUsers (List<String> tags, Order order, final int start, int end);
 }
