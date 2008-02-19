@@ -24,8 +24,8 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.logic.Order;
 import org.bibsonomy.model.util.SimHash;
-import org.bibsonomy.rest.renderer.xml.GroupType;
 
 /**
  * Used to CRUD bookmarks from the database.
@@ -72,6 +72,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * the given group and which have all of the given tags attached. 
 	 */
 	public List<Post<Bookmark>> getBookmarkByTagNames(final BookmarkParam param, final DBSession session) {
+		if (Order.FOLKRANK.equals(param.getOrder())){
+			param.setGroupId(GroupID.PUBLIC.getId());
+			return this.bookmarkList("getBookmarkByTagNamesAndFolkrank", param, session);
+		}
 		return this.bookmarkList("getBookmarkByTagNames", param, session);
 	}
 

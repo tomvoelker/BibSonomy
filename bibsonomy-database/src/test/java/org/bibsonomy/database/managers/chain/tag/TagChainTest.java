@@ -85,6 +85,8 @@ public class TagChainTest extends AbstractChainTest {
 	public void GetAllTags() {
 		this.tagParam.setGrouping(GroupingEntity.ALL);
 		this.tagParam.setLimit(100);
+		this.tagParam.setTagIndex(null);
+		System.out.println("getAllTags");
 		final List<Tag> tags = this.tagChain.getFirstElement().perform(this.tagParam, this.dbSession);
 		assertEquals(1, tags.size()); // only 'dblp' in the current test database
 		this.resetParameters();

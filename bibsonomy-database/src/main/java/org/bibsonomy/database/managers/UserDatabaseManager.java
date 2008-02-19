@@ -259,4 +259,14 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		// fallback: user is not logged in
 		return notLoggedInUser;
 	}
+	
+	
+	/**
+	 * @param param
+	 * @param session
+	 * @return list of users
+	 */
+	public List<User> getUserByFolkrank(final UserParam param, final DBSession session){
+		return this.queryForList("getUsersOrderedByFolkrank", param, User.class, session);
+	}
 }

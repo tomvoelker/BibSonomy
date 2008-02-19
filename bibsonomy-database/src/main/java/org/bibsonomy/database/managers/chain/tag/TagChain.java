@@ -3,6 +3,7 @@ package org.bibsonomy.database.managers.chain.tag;
 import org.bibsonomy.database.managers.chain.ChainElement;
 import org.bibsonomy.database.managers.chain.FirstChainElement;
 import org.bibsonomy.database.managers.chain.tag.get.GetAllTags;
+import org.bibsonomy.database.managers.chain.tag.get.GetRelatedTags;
 import org.bibsonomy.database.managers.chain.tag.get.GetRelatedTagsForGroup;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByAuthor;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByExpression;
@@ -26,6 +27,7 @@ public class TagChain implements FirstChainElement<Tag, TagParam> {
 	private final ChainElement<Tag, TagParam> getTagsByAuthor;
 	
 	private final ChainElement<Tag, TagParam> getRelatedTagsForGroup;
+	private final ChainElement<Tag, TagParam> getRelatedTags;
 
 	/**
 	 * Constructs the chain
@@ -38,13 +40,15 @@ public class TagChain implements FirstChainElement<Tag, TagParam> {
 		this.getTagsByRegularExpression = new GetTagsByExpression();
 		this.getTagsByAuthor=new GetTagsByAuthor();
 		this.getRelatedTagsForGroup = new GetRelatedTagsForGroup();
+		this.getRelatedTags = new GetRelatedTags();
 
 		this.getTagsByUser.setNext(this.getTagsByGroup);
 		this.getTagsByGroup.setNext(this.getAllTags);
-		this.getAllTags.setNext(this.getTagsByAuthor);
+		this.getAllTags.setNext(this.getRelatedTags);
+		this.getRelatedTags.setNext(this.getTagsByAuthor);
 		this.getTagsByAuthor.setNext(getTagsViewable);
 		this.getTagsViewable.setNext(this.getTagsByRegularExpression);
-		this.getTagsByRegularExpression.setNext(getRelatedTagsForGroup);
+		this.getTagsByRegularExpression.setNext(this.getRelatedTagsForGroup);
 	}
 
 	public ChainElement<Tag, TagParam> getFirstElement() {

@@ -338,4 +338,12 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		assertEquals( 1, testClassAccess.getPosts(BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null, 0, 100, null).size() );
 		assertEquals( 0, this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null, 0, 100, null).size() );
 	}
+	
+	@Test
+	public void testGetUsersByFolkrank(){
+		List<String> tags = new ArrayList<String>();
+		tags.add("folksonomy");
+		List<User> user = this.getDbLogic().getUsers(tags, Order.FOLKRANK, 0, 50);
+		assertEquals(50, user.size());
+	}
 }

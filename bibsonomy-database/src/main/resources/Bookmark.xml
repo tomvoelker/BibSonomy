@@ -18,6 +18,28 @@
 			  AND b.book_url_hash = u.book_url_hash
 		ORDER BY b.date DESC, b.content_id DESC
 	</select>
+	
+	<select id="getBookmarkByTagNamesAndFolkrank" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+		SELECT <include refid="bookmarkAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name
+		FROM bookmark b, urls u, tas t,
+		     (SELECT b.book_url_hash, MIN(b.content_id) AS content_id, xy.weight
+		     FROM  bookmark b,
+			     (SELECT w.item, SUM(weight) AS weight
+			     FROM rankings r
+			     	JOIN weights w USING (id)
+			     WHERE r.dim = 0 AND (<iterate property="tagIndex" conjunction=" OR ">r.item = #tagIndex[].tagName#</iterate>)
+			     		AND w.dim = 2 AND w.itemtype = #contentType#
+			     	GROUP BY w.item
+			     	ORDER BY 2 DESC
+			     	LIMIT #limit# OFFSET #offset#) AS xy
+		    WHERE xy.item = b.book_url_hash
+		     	AND b.group = #groupId#
+		    GROUP BY b.book_url_hash
+			ORDER BY weight DESC) AS tt
+		WHERE t.content_id = tt.content_id
+			AND u.book_url_hash = tt.book_url_hash
+			AND b.content_id = tt.content_id
+	</select>
 
 	<select id="getBookmarkByTagNamesForUser" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT a.content_id, t.tag_name, a.book_url, a.book_url_hash AS interHash,a.book_url_hash AS intraHash,title, description,

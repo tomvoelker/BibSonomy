@@ -442,5 +442,12 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			System.out.println(tag.getName());
 		}
 	}
+	
+	public List<Tag> getRelatedTags(TagParam param, DBSession session){
+		return this.queryForList("getRelatedTags", param, Tag.class, session);
+	}
 
+	public List<Tag> getRelatedTagsOrderedByFolkrank(TagParam param, DBSession session){
+		return this.queryForList("getRelatedTagsOrderedByFolkrank", param, Tag.class, session);
+	}
 }

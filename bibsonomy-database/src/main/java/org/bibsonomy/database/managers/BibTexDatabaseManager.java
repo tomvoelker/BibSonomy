@@ -21,6 +21,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.logic.Order;
 import org.bibsonomy.model.util.SimHash;
 
 /**
@@ -98,6 +99,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * the given group and which have all of the given tags attached.
 	 */
 	public List<Post<BibTex>> getBibTexByTagNames(final BibTexParam param, final DBSession session) {
+		if (Order.FOLKRANK.equals(param.getOrder())){
+			param.setGroupId(GroupID.PUBLIC.getId());
+			return this.bibtexList("getBibTexByTagNamesAndFolkrank", param, session);
+		}
 		return this.bibtexList("getBibTexByTagNames", param, session);
 	}
 
@@ -663,6 +668,4 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
     public List<Post<BibTex>> getBibTexByAuthorAndTag(final BibTexParam param, final DBSession session){
 		return this.bibtexList("getBibTexByAuthorAndTag",param,session);
 	}
-	
-	
 }

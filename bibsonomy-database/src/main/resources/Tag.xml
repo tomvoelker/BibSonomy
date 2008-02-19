@@ -212,4 +212,26 @@
 		ORDER BY tag_anzahl DESC 
 		LIMIT 10
 	</select>
+	
+	<select id="getRelatedTags" resultMap="Common.tag" parameterClass="tagParam">
+		SELECT t2 AS tag_name, ctr_public
+		FROM tagtag 
+		WHERE <iterate property="tagIndex" conjunction=" OR ">t1 = #tagIndex[].tagName#</iterate>
+		AND ctr_public > 0 
+		ORDER BY ctr_public 
+		DESC LIMIT #limit#
+	</select>
+	
+	<select id="getRelatedTagsOrderedByFolkrank" resultMap="Common.tag" parameterClass="tagParam">
+		SELECT w.item AS tag_name , ROUND(SUM(weight),5) AS weight
+		FROM rankings r
+			JOIN weights w USING (id)
+		WHERE (<iterate property="tagIndex" conjunction=" OR ">r.item = #tagIndex[].tagName#</iterate>) 
+			AND r.dim = 0
+			AND w.dim = 0 
+			AND w.itemtype = 0
+		GROUP BY w.item
+		ORDER BY 2 DESC
+		LIMIT #limit#
+	</select>
 </sqlMap>

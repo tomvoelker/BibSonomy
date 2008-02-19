@@ -26,6 +26,29 @@
 		      AND <include refid="bibtexSimHash"/>
 		ORDER BY b.date DESC, b.content_id DESC
 	</select>
+	
+	<select id="getBibTexByTagNamesAndFolkrank" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name
+		FROM bibtex b, tas t, bibhash h,
+				(SELECT b.simhash$simHash$ , MIN(b.content_id) AS content_id, xy.weight
+				FROM bibtex b,
+					(SELECT w.item, SUM(weight) AS weight 
+					FROM rankings r
+						JOIN weights w USING (id)
+						WHERE r.dim = 0 AND (<iterate property="tagIndex" conjunction=" OR ">r.item = #tagIndex[].tagName#</iterate>)
+						AND w.dim = 2 AND w.itemtype = #contentType#
+						GROUP BY w.item
+						ORDER BY 2 DESC
+						LIMIT #limit# OFFSET #offset#) AS xy
+					WHERE xy.item = b.simhash$simHash$
+						AND b.group = #groupId#
+					GROUP BY b.simhash$simHash$
+					ORDER BY weight DESC) AS tt
+		WHERE tt.content_id = b.content_id 
+		AND t.content_id = b.content_id 
+		AND <include refid="bibtexSimHash"/>
+	</select>
+	
 
 	<select id="getBibTexByTagNamesForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, g.group, g.group_name
