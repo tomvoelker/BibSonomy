@@ -63,7 +63,7 @@ public class GroupPageController extends MultiResourceListController implements 
 		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(command.getFormat())) {
-			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, 0, 1000, null);
+			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, 0, 1000, null);
 			this.setGroupMembers(command, groupingName);
 			
 			if (requTags.size() > 0) {
@@ -103,7 +103,7 @@ public class GroupPageController extends MultiResourceListController implements 
 	 */
 	protected <T extends Resource, V extends GroupResourceViewCommand> void setRelatedTags(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, int start, int end, String search) {
 		RelatedTagCommand relatedTagCommand = cmd.getRelatedTagCommand();
-		relatedTagCommand.setRelatedTags(this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, start, end, search));		
+		relatedTagCommand.setRelatedTags(this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, null, start, end, search));		
 	}
 	
 	/**

@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.logic.Order;
 import org.bibsonomy.webapp.command.GroupResourceViewCommand;
 import org.bibsonomy.webapp.command.RelatedTagCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -45,10 +46,10 @@ public class ViewablePageController extends MultiResourceListController implemen
 		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(command.getFormat())) {
-			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, 0, 1000, null);
+			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, 0, 1000, null);
 			
 			if (requTags.size() > 0) {
-				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, 0, 20, null);
+				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, null,  0, 20, null);
 				return Views.VIEWABLETAGPAGE;
 			}
 			return Views.VIEWABLEPAGE;			
@@ -79,8 +80,8 @@ public class ViewablePageController extends MultiResourceListController implemen
 	 * 
 	 * TODO: move this in MultiResourceListController?
 	 */
-	protected <T extends Resource, V extends GroupResourceViewCommand> void setRelatedTags(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, int start, int end, String search) {
+	protected <T extends Resource, V extends GroupResourceViewCommand> void setRelatedTags(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, Order order, int start, int end, String search) {
 		RelatedTagCommand relatedTagCommand = cmd.getRelatedTagCommand();
-		relatedTagCommand.setRelatedTags(this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, start, end, search));		
+		relatedTagCommand.setRelatedTags(this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, order, start, end, search));		
 	}
 }

@@ -5,7 +5,9 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.logic.Order;
 import org.bibsonomy.webapp.command.RelatedTagCommand;
+import org.bibsonomy.webapp.command.RelatedUserCommand;
 import org.bibsonomy.webapp.command.TagResourceViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -38,13 +40,14 @@ public class TagPageController extends MultiResourceListController implements Mi
 		
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {			
-			this.setList(command, resourceType, GroupingEntity.ALL, null, requTags, null, null, null, command.getListCommand(resourceType).getEntriesPerPage());
+			this.setList(command, resourceType, GroupingEntity.ALL, null, requTags, null, Order.FOLKRANK, null, command.getListCommand(resourceType).getEntriesPerPage());
 			this.postProcessList(command, resourceType);
 		}	
 		
 		// html format - retrieve tags and return HTML view
 		if (command.getFormat().equals("html")) {
-			this.setRelatedTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, 0, 20, null);
+			this.setRelatedTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, Order.FOLKRANK, 0, 20, null);
+			this.setRelatedUser(command, requTags, Order.FOLKRANK, 0, 50);
 			return Views.TAGPAGE;			
 		}
 
@@ -72,10 +75,25 @@ public class TagPageController extends MultiResourceListController implements Mi
 	 * @param start start parameter
 	 * @param end end parameter
 	 **/
-	 
-	protected <T extends Resource, V extends TagResourceViewCommand> void setRelatedTags(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, int start, int end, String search) {
+	protected <T extends Resource, V extends TagResourceViewCommand> void setRelatedTags(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, Order order, int start, int end, String search) {
 		RelatedTagCommand relatedTagCommand = cmd.getRelatedTagCommand();
-		relatedTagCommand.setRelatedTags(this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, start, end, search));		
+		relatedTagCommand.setRelatedTags(this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, order, start, end, search));		
+	}
+	
+	/**
+	 * retrieve related user by tag
+	 * 
+	 * @param <T>
+	 * @param <V>
+	 * @param cmd
+	 * @param tags
+	 * @param order
+	 * @param start
+	 * @param end
+	 */
+	protected <T extends Resource, V extends TagResourceViewCommand> void setRelatedUser(V cmd, List<String> tags, Order order, int start, int end) {
+		RelatedUserCommand relatedUserCommand = cmd.getRelatedUserCommand();
+		relatedUserCommand.setRelatedUser(this.logic.getUsers(tags,order,start,end));
 	}
 	
 }
