@@ -25,7 +25,7 @@ public class BookmarkChainTest extends AbstractChainTest {
 		this.bookmarkParam.setGrouping(GroupingEntity.USER);
 		this.bookmarkParam.setHash(null);
 		this.bookmarkParam.setOrder(null);
-		this.bookmarkParam.setRequestedUserName(null);
+		this.bookmarkParam.setRequestedUserName("hotho");
 		this.bookmarkParam.setNumSimpleConcepts(3);
 		this.bookmarkParam.setNumSimpleTags(0);
 		this.bookmarkParam.setNumTransitiveConcepts(0);
