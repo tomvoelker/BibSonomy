@@ -96,4 +96,22 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 		// hotho has six concepts
 		assertEquals(6, relations.size());	
 	}	
+	
+	/**
+	 * Retrive all global concepts
+	 */
+	@Test
+	public void testGetAllConcepts() {
+		List<Tag> concepts = this.tagRelDb.getAllConcepts(this.dbSession);
+		assertEquals(50, concepts.size());
+	}
+	
+	/**
+	 * Retrives a global cocept by name
+	 */
+	@Test
+	public void testGetGlobalConceptByName() {
+		Tag concept = this.tagRelDb.getGlobalConceptByName("programming", this.dbSession);
+		assertEquals(9, concept.getSubTags().size());
+	}
 }
