@@ -49,7 +49,7 @@
   		<link>${projectHome}bibtex/2${bibtex.intraHash}/<mtl:encode value='${post.user.name}'/></link>
   		<dc:creator>${post.user.name}</dc:creator>
   		<dc:date><mtl:formatDate value="${post.date}"/></dc:date>
-  		<dc:subject><c:forEach var="tag" items="${post.tags}">${fn:escapeXml(tag.name)}</c:forEach></dc:subject>
+  		<dc:subject><c:forEach var="tag" items="${post.tags}">${fn:escapeXml(tag.name)}<c:out value=" "/></c:forEach></dc:subject>
    		<content:encoded>
 	    <c:set var="desc"><bib:desc post="${post}"/></c:set>
 		
