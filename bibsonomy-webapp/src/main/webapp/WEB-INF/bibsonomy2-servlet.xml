@@ -43,6 +43,26 @@
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="authorPageController"/>
 					</bean>
+				</entry>	
+				<entry key="/concept/">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="conceptPageController"/>
+					</bean>
+				</entry>	
+				<entry key="/friends/">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="friendsPageController"/>
+					</bean>
+				</entry>	
+				<entry key="/friend/">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="friendPageController"/>
+					</bean>
+				</entry>
+				<entry key="/bibtex/">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="bibtexPageController"/>
+					</bean>
 				</entry>			
 			</map>
 		</property>
@@ -112,6 +132,50 @@
 		</property>
 	</bean>
 
+	<bean id="conceptPageController" class="org.bibsonomy.webapp.controller.ConceptPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+		<property name="listsToInitialise">
+			<list>
+				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="friendsPageController" class="org.bibsonomy.webapp.controller.FriendsPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+		<property name="listsToInitialise">
+			<list>
+				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="friendPageController" class="org.bibsonomy.webapp.controller.FriendPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+		<property name="listsToInitialise">
+			<list>
+				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="bibtexPageController" class="org.bibsonomy.webapp.controller.BibtexPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+		<property name="listsToInitialise">
+			<list>
+				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
+			</list>
+		</property>
+	</bean>
+	
 	<bean id="requestHolder" class="org.bibsonomy.webapp.util.spring.factorybeans.Holder" scope="request"/>
 
 	<bean id="request" class="org.bibsonomy.webapp.util.spring.factorybeans.RequestFactoryBean" scope="request">

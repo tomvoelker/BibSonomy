@@ -43,6 +43,27 @@ public enum Views implements View {
 	 * tag page show all resources with a given tag or a list of tags
 	 */
 	TAGPAGE("tag"),
+	
+	/**
+	 * concept page shows all suptags of an requested tag
+	 */
+	CONCEPTPAGE("concept"),
+	
+	/**
+	 * friends page show all tags whose are viewable for friends by a friend of you
+	 */
+	FRIENDSPAGE("friends"),
+	
+	/**
+	 * friend page shows all posts which are set viewable for friends of the requested user
+	 */
+	FRIENDPAGE("friend"),
+	
+	/**
+	 * bibtex page shows all publications with the given inter-/intrahash
+	 */
+	BIBTEXPAGE("bibtex"),
+	
 	/**
 	 * bibtex output
 	 */
