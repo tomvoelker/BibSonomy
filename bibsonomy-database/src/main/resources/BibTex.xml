@@ -387,5 +387,31 @@
 							AND <include refid="bibtexSimHash"/> 
 							ORDER BY b.date DESC,b.content_id DESC;
 	</select>
+	
+	<select id="getBibTexByConceptByTag" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+		SELECT <include refid ="allBibtexAttributes"/>, b.interHash, b.intraHash, t.tag_name, b.ctr AS count, NULL AS `group`, NULL AS group_name
+			   FROM (SELECT <include refid="bibtexAttributes2"/>, h.ctr
+							<iterate property="tagIndex" conjunction=",">
+								, MAX(IF (upper = LCASE(#tagIndex[].tagName#), 1, 0)) AS s$tagIndex[].index$
+							</iterate>
+					 FROM(
+							<iterate property="tagIndex" conjunction="UNION">
+								SELECT LCASE(upper) AS upper, LCASE(lower) AS lower, user_name FROM tagtagrelations t WHERE LCASE(upper) = LCASE(#tagIndex[].tagName#) UNION SELECT LCASE(#tagIndex[].tagName#),LCASE(#tagIndex[].tagName#),NULL
+							</iterate>
+					 ) AS tags JOIN tas t FORCE INDEX (tag_lower_idx) 
+					   		   ON (t.tag_lower = tags.lower
+					 			   AND (t.user_name = tags.user_name OR ISNULL(tags.user_name))
+					 			   AND t.content_type = 2
+					 			   AND t.group = 0)
+					 JOIN bibtex b2 USING(content_id) JOIN bibhash h ON (h.hash = b2.simhash1 AND h.type = 1)
+					 GROUP BY t.content_id HAVING 
+					 <iterate property="tagIndex" conjunction="AND">
+								s$tagIndex[].index$ > 0
+					 </iterate>
+			   		 ORDER BY t.date DESC
+			   		 LIMIT #limit# OFFSET #offset# ) AS b 
+			   JOIN tas t ON b.content_id = t.content_id
+			   ORDER BY b.date DESC;	
+	</select>
 
 </sqlMap>
