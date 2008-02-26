@@ -30,6 +30,6 @@ public class GetBookmarksByTagNamesAndUser extends BookmarkChainElement {
 
 	@Override
 	protected boolean canHandle(final BookmarkParam param) {
-		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.USER) && present(param.getTagIndex()) && present(param.getRequestedUserName()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED) && !present(param.getSearch());
+		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.USER) && present(param.getTagIndex()) && present(param.getRequestedUserName()) && !present(param.getHash()) && (param.getNumSimpleConcepts() == 0) && (param.getNumSimpleTags() > 0) && (param.getNumTransitiveConcepts() == 0) && nullOrEqual(param.getOrder(), Order.ADDED) && !present(param.getSearch());
 	}
 }

@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers.chain.bookmark;
 
 import org.bibsonomy.database.managers.chain.ChainElement;
 import org.bibsonomy.database.managers.chain.FirstChainElement;
+import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByConceptByTag;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByConceptForUser;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByFriends;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByHash;
@@ -42,6 +43,7 @@ public class BookmarkChain implements FirstChainElement<Post<Bookmark>, Bookmark
 	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByUserAndTagsFriends;
 	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByFriends;
 	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksSearch;
+	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByConceptByTag;
 	
 	/**
 	 * Constructs the chain
@@ -62,6 +64,7 @@ public class BookmarkChain implements FirstChainElement<Post<Bookmark>, Bookmark
 		this.getBookmarksByUserAndTagsFriends = new GetBookmarksOfFriendsByTags();
 		this.getBookmarksByFriends = new GetBookmarksByFriends();
 		this.getBookmarksSearch = new GetBookmarksSearch();
+		this.getBookmarksByConceptByTag = new GetBookmarksByConceptByTag();
 		
 		this.getBookmarksForHomePage.setNext(this.getBookmarksForPopular);
 		this.getBookmarksForPopular.setNext(this.getBookmarksForUser);
@@ -77,6 +80,7 @@ public class BookmarkChain implements FirstChainElement<Post<Bookmark>, Bookmark
 		this.getBookmarksByUserFriends.setNext(this.getBookmarksByUserAndTagsFriends);
 		this.getBookmarksByUserAndTagsFriends.setNext(this.getBookmarksByFriends);
 		this.getBookmarksByFriends.setNext(this.getBookmarksSearch);
+		this.getBookmarksSearch.setNext(this.getBookmarksByConceptByTag);
 	}
 
 	public ChainElement<Post<Bookmark>, BookmarkParam> getFirstElement() {

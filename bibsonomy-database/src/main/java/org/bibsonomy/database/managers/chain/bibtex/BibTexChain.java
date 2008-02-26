@@ -4,6 +4,7 @@ import org.bibsonomy.database.managers.chain.ChainElement;
 import org.bibsonomy.database.managers.chain.FirstChainElement;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibTexByAuthor;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibTexByAuthorAndTag;
+import org.bibsonomy.database.managers.chain.bibtex.get.GetBibTexByConceptByTag;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByConceptForUser;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByFriends;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByHash;
@@ -46,7 +47,8 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexSearch;	
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByAuthor;
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByAuthorAndTag;
-
+	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByConceptByTag;
+	
 	/**
 	 * Constructs the chain
 	 */
@@ -68,6 +70,7 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 		this.getBibTexByAuthor = new GetBibTexByAuthor();
 		this.getBibTexByAuthorAndTag = new GetBibTexByAuthorAndTag();
 		this.getBibTexSearch = new GetBibtexSearch();
+		this.getBibTexByConceptByTag = new GetBibTexByConceptByTag();
 		
 		this.getBibTexForHomePage.setNext(this.getBibTexForPopular);
 		this.getBibTexForPopular.setNext(this.getBibTexForUser);
@@ -86,6 +89,7 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 		this.getBibTexByFriends.setNext(this.getBibTexSearch);
 		this.getBibTexSearch.setNext(getBibTexByAuthor);
 		this.getBibTexByAuthor.setNext(this.getBibTexByAuthorAndTag);
+		this.getBibTexByAuthorAndTag.setNext(getBibTexByConceptByTag);
 		
 	}
 

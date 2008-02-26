@@ -668,4 +668,15 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
     public List<Post<BibTex>> getBibTexByAuthorAndTag(final BibTexParam param, final DBSession session){
 		return this.bibtexList("getBibTexByAuthorAndTag",param,session);
 	}
+    
+    /**
+     * <em>/concept/tag/TAGNAME</em>
+   	 * --
+     * @param param
+     * @param session
+     * @return
+     */
+	public List<Post<BibTex>> getBibTexByConceptByTag(final BibTexParam param, final DBSession session){
+		return this.bibtexList("getBibTexByConceptByTag",param,session);
+	}
 }

@@ -778,4 +778,12 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		}
 		return update;
 	}
+	
+	/**
+	 * @return
+	 */
+	public List<Post<Bookmark>> getBookmarksByConceptByTag(final BookmarkParam param, final DBSession session){
+		return this.bookmarkList("getBookmarksByConceptByTag", param, session);
+		
+	}
 }
