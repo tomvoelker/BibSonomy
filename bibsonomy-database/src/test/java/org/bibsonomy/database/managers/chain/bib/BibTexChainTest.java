@@ -26,22 +26,22 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.logic.Order;
 import org.junit.Test;
 
-          
+
 public class BibTexChainTest extends AbstractChainTest {
-	
+
 	@Test
 	public void getBibtexByConceptForUser() {
-	this.bibtexParam.setGrouping(GroupingEntity.USER);
-	this.bibtexParam.setHash(null);
-	this.bibtexParam.setOrder(null);
-	this.bibtexParam.setNumSimpleConcepts(3);
-	this.bibtexParam.setNumSimpleTags(0);
-	this.bibtexParam.setNumTransitiveConcepts(0);
-	
-	final List<Post<BibTex>> posts=this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
-	
+		this.bibtexParam.setGrouping(GroupingEntity.USER);
+		this.bibtexParam.setHash(null);
+		this.bibtexParam.setOrder(null);
+		this.bibtexParam.setNumSimpleConcepts(3);
+		this.bibtexParam.setNumSimpleTags(0);
+		this.bibtexParam.setNumTransitiveConcepts(0);
+
+		final List<Post<BibTex>> posts=this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
+
 	}
-	
+
 	@Test
 	public void getBibtexByFriends() {
 		this.bibtexParam.setGrouping(GroupingEntity.FRIEND);
@@ -50,9 +50,9 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setHash(null);
 		this.bibtexParam.setOrder(null);
 		this.bibtexParam.setTagIndex(null);
-		
+
 		final List<Post<BibTex>> posts=this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);	
-		
+
 	}
 	@Test
 	public void getBibtexByHash() {
@@ -60,14 +60,14 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setTagIndex(null);
 		final List<Post<BibTex>> posts=this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
 	}
-	
+
 	@Test
 	public void getBibtexByHashForUser() {
 		this.bibtexParam.setGrouping(GroupingEntity.USER);
 		this.bibtexParam.setOrder(null);
 		this.bibtexParam.setTagIndex(null);
 		final List<Post<BibTex>> posts=this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
-	
+
 	}
 	@Test
 	public void getBibtexByTagNames() {
@@ -92,7 +92,7 @@ public class BibTexChainTest extends AbstractChainTest {
 	}
 	@Test
 	public void getBibtexForGroup() {
-	
+
 		this.bibtexParam.setGrouping(GroupingEntity.GROUP);
 		this.bibtexParam.setHash(null);
 		this.bibtexParam.setOrder(null);
@@ -110,7 +110,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setNumSimpleTags(3);
 		this.bibtexParam.setNumTransitiveConcepts(0);
 		final List<Post<BibTex>> posts=this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
-	
+
 	}
 	@Test
 	public void getBibtexForHomePage() {
@@ -119,8 +119,8 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setOrder(null);
 		this.bibtexParam.setTagIndex(null);
 		final List<Post<BibTex>> posts=this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
-	
-	
+
+
 	}
 	@Test
 	public void getBibtexForUser() {
@@ -164,7 +164,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setOrder(null);
 		final List<Post<BibTex>> posts=this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
 	}
-	
+
 	@Test
 	public void getBibtexByAuthor() {
 		this.bibtexParam.setGrouping(GroupingEntity.VIEWABLE);
@@ -176,7 +176,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setSearch("Grahl");
 		final List<Post<BibTex>> posts = this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
 	}
-	
+
 	@Test
 	public void getBibtexByAuthorAndTag() {
 		this.bibtexParam.setGrouping(GroupingEntity.VIEWABLE);
@@ -186,7 +186,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setSearch("Grahl");
 		final List<Post<BibTex>> posts=this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
 	}
-	
+
 	@Test
 	public void getBibtexBySearch() {
 		this.bibtexParam.setGrouping(GroupingEntity.ALL);
@@ -197,6 +197,6 @@ public class BibTexChainTest extends AbstractChainTest {
 		final List<Post<BibTex>> posts = this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
 		assertEquals(333, posts.size());
 	}	
-	
+
 
 }
