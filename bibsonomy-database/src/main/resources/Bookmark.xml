@@ -48,7 +48,7 @@
 		             b.date, u.book_url_ctr, b.group
 		      FROM bookmark b, urls u, <include refid="tagFromQuery"/>
 		      WHERE <include refid="tagWhereQuery"/>
-		            <include refid="getPostForUser2"/>
+		            <include refid="restrictToGroups"/>
 		            AND t1.content_type = #contentType#
 		            AND t1.user_name = #requestedUserName#
 		            AND b.book_url_hash = u.book_url_hash
@@ -151,8 +151,8 @@
 	<select id="getBookmarkByHashForUser" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT g.*,bb.content_id, t.tag_name, title, description, bb.user_name, bb.date,
 		       bb.book_url_hash AS interhash,bb.book_url_hash AS intrahash, u.book_url, u.book_url_ctr AS count, g.group_name
-		FROM (SELECT book_url_hash, book_description AS title, book_extended AS description, user_name, date, content_id, b.group
-		      FROM bookmark b
+		FROM (SELECT book_url_hash, book_description AS title, book_extended AS description, user_name, date, content_id, t1.group
+		      FROM bookmark t1
 		      WHERE book_url_hash = #hash#
 		            <include refid="inGroups"/>
 		            AND user_name = #requestedUserName#
@@ -229,9 +229,9 @@
 		       u.book_url_ctr AS count, t.tag_name, g.group_name, t.user_name, g.group
 		FROM urls u, bookmark b,
 		     ((SELECT content_id, date                <!-- bookmarks from users of group which currUser may see -->
-		       FROM bookmark b, groups g
+		       FROM bookmark t1, groups g
 		       WHERE g.group = #groupId#
-		             AND g.user_name = b.user_name    <!-- user owns this bookmark -->
+		             AND g.user_name = t1.user_name    <!-- user owns this bookmark -->
 		             <include refid="inGroups"/>
 		      )UNION(
 		       SELECT content_id, date                <!-- bookmarks from users of group which have currUser as friend -->
@@ -259,9 +259,9 @@
 
 	<select id="getBookmarkForGroupCount" resultClass="int" parameterClass="bookmarkParam">
 		SELECT count(*)
-		FROM bookmark b, groups g
+		FROM bookmark t1, groups g
 		WHERE g.group = #groupId#
-		      AND b.user_name = g.user_name
+		      AND t1.user_name = g.user_name
 		      <include refid="inGroups"/>
 	</select>
 
@@ -279,12 +279,12 @@
 	<select id="getBookmarkForUser" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
 		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, t.user_name
-		FROM (SELECT b.content_id, b.book_url_hash, b.book_description AS title, b.book_extended AS description, b.date,
-		             u.book_url, u.book_url_ctr, b.group
-		      FROM bookmark b, urls u
-		      WHERE u.book_url_hash = b.book_url_hash
-		            AND b.user_name = #requestedUserName#
-		            <include refid="getPostForUser"/>
+		FROM (SELECT t1.content_id, t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.date,
+		             u.book_url, u.book_url_ctr, t1.group
+		      FROM bookmark t1, urls u
+		      WHERE u.book_url_hash = t1.book_url_hash
+		            AND t1.user_name = #requestedUserName#
+		            <include refid="restrictToGroups"/>
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS bb
 		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g
@@ -294,9 +294,9 @@
 
 	<select id="getBookmarkForUserCount" resultClass="int" parameterClass="bookmarkParam">
 		SELECT count(*)
-		FROM bookmark b
-		WHERE b.user_name = #requestedUserName#
-		      <include refid="getPostForUser"/>
+		FROM bookmark t1
+		WHERE t1.user_name = #requestedUserName#
+		      <include refid="restrictToGroups"/>
 	</select>
 	
     <insert id="insertBookmark" parameterClass="bookmarkParam">

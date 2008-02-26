@@ -88,20 +88,20 @@
 	 	dbe, 2007/09/27
 	-->
 	<select id="getTagsByUser" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
-		SELECT tag_name, count(tag_name) AS tag_ctr FROM tas t 
-		WHERE t.user_name = #requestedUserName#
+		SELECT tag_name, count(tag_name) AS tag_ctr FROM tas t1 
+		WHERE t1.user_name = #requestedUserName#
 		<include refid="getTagsByResourceType"/>
-		<include refid="getTagForUser"/> 
-		GROUP BY t.tag_name LIMIT #limit# OFFSET #offset#
+		<include refid="restrictToGroups"/> 
+		GROUP BY t1.tag_name LIMIT #limit# OFFSET #offset#
 	</select>
 
 	<select id="getTagsByGroup" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
 		SELECT tag_name, count(tag_name) AS tag_ctr FROM 
 		((SELECT tag_name 
-		  FROM tas t, groups g
-		  WHERE g.group = #groupId# AND g.user_name=t.user_name
+		  FROM tas t1, groups g
+		  WHERE g.group = #groupId# AND g.user_name=t1.user_name
 		  <include refid="getTagsByResourceType"/>
-		  <include refid="lookinGroupsForTags"/>) 
+		  <include refid="inGroups"/>) 
 		 UNION ALL
 		 (SELECT tag_name 
 		  FROM tas t, groups g, friends f
@@ -175,15 +175,16 @@
 	</select>
 	
 	<select id="getRelatedTagsForGroup" resultMap="Common.tag" parameterClass="tagParam">
-		SELECT tt.tag_name, COUNT(tt.tag_name) AS tag_anzahl
-		FROM tas t, tas tt, groups g, groupids i
-		WHERE tt.content_id = t.content_id
+		SELECT t1.tag_name, COUNT(t1.tag_name) AS tag_anzahl
+		FROM tas t, tas t1, groups g, groupids i
+		WHERE t1.content_id = t.content_id
 		AND i.group_name = #requestedGroupName#		
 		AND i.group = g.group 
 		AND g.user_name = t.user_name
+		<include refid="restrictToGroups"/>
 		AND (<iterate property="tagIndex" conjunction=" OR ">t.tag_name = #tagIndex[].tagName#</iterate>)
-		AND (<iterate property="tagIndex" conjunction=" AND ">tt.tag_name != #tagIndex[].tagName#</iterate>)	
-		GROUP BY tt.tag_name
+		AND (<iterate property="tagIndex" conjunction=" AND ">t1.tag_name != #tagIndex[].tagName#</iterate>)	
+		GROUP BY t1.tag_name
 		ORDER BY tag_anzahl DESC 
 		LIMIT 10
 	</select>
@@ -218,8 +219,8 @@
 		FROM tagtag 
 		WHERE <iterate property="tagIndex" conjunction=" OR ">t1 = #tagIndex[].tagName#</iterate>
 		AND ctr_public > 0 
-		ORDER BY ctr_public 
-		DESC LIMIT #limit#
+		ORDER BY ctr_public DESC 
+		LIMIT #limit#
 	</select>
 	
 	<select id="getRelatedTagsOrderedByFolkrank" resultMap="Common.tag" parameterClass="tagParam">

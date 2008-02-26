@@ -109,35 +109,6 @@
 		</iterate>
 	</sql>
 
-	<!-- Refactor b to t1, and delete this snippet -->
-	<sql id="inGroups">
-		<isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">		
-		  b.group in (0
-		  <iterate property="groups" conjunction="," prepend=",">
-		    $groups[]$
-		  </iterate>)
-		</isNotEqual>
-	</sql>
-
-	<sql id="inGroups2">
-		<isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">
-		  t1.group in (0
-		  <iterate property="groups" conjunction="," prepend=",">
-		    $groups[]$
-		  </iterate>)
-		</isNotEqual>
-	</sql>
-
-	<!-- vorläufig für Tag anfragen -->
-	<sql id="lookinGroupsForTags">
-		<isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">
-		  t.group in (0
-		  <iterate property="groups" conjunction="," prepend=",">
-		    $groups[]$
-		  </iterate>)
-		</isNotEqual>
-	</sql>
-
 	<!--
 	   This query is used for get*ForGroupByTag
 	   It selects all content ids (for the specific content type)
@@ -151,7 +122,7 @@
 		  WHERE <include refid="tagWhereQuery"/>
 		        AND g.group = #groupId#
 		        AND g.user_name = t1.user_name      <!-- user owns this item -->
-		        <include refid="inGroups2"/>
+		        <include refid="inGroups"/>
 		        AND t1.content_type = #contentType#
 		 )UNION(
 		  SELECT t1.content_id, t1.date             <!-- items from users of group which have currUser as friend -->
@@ -176,29 +147,49 @@
 		LIMIT #limit# OFFSET #offset#) AS bb
 	</sql>
 
-	<!-- This query is used for get*ForUser* -->
-	<sql id="getPostForUser">
+	<!-- 
+		restrict visibility of retrieved items to
+		* an explicitly given group (groupId given) or
+		* all groups the user may see (inclusion of inGroups)
+	 -->
+	<sql id="restrictToGroups">
 		<isEqual property="groupId" compareValue="-1">
 		  <include refid="inGroups"/>
 		</isEqual>
 		<isGreaterThan property="groupId" compareValue="-1" prepend="AND">
-		  b.group = #groupId#
-		</isGreaterThan>
-	</sql>
-
-	<sql id="getPostForUser2">
-		<isEqual property="groupId" compareValue="-1">
-		  <include refid="inGroups2"/>
-		</isEqual>
-		<isGreaterThan property="groupId" compareValue="-1" prepend="AND">
 		  t1.group = #groupId#
-		</isGreaterThan>
+		</isGreaterThan>	
 	</sql>
 	
+	<!-- restrict visibility of retrieved items to the groups a user may see -->	
+	<sql id="inGroups">
+		<isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">		
+		  t1.group in (0
+		  <iterate property="groups" conjunction="," prepend=",">
+		    $groups[]$
+		  </iterate>)
+		</isNotEqual>
+	</sql>	
+	
+	<!-- 
+		 this only needed for getBibTexDuplicate, as refactoring that query to
+	     use t1 as table alias instead of b would have had some unwanted side-effects
+	     dbe, 20080220
+	-->
+	<sql id="inGroups2">
+		<isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">
+		  b.group in (0
+		  <iterate property="groups" conjunction="," prepend=",">
+		    $groups[]$
+		  </iterate>)
+		</isNotEqual>
+	</sql>	
+
+	<!-- retrieve items by resource type -->
 	<sql id="getTagsByResourceType">
 		<isNotNull property="contentType">
 			<isGreaterThan property="contentType" compareValue="0" prepend="AND">
-				t.content_type = #contentType#
+				t1.content_type = #contentType#
 			</isGreaterThan>
 		</isNotNull>
 	</sql>
@@ -247,15 +238,5 @@
 			</isNotNull>
 		</dynamic>
 	</sql>
-
-	<sql id="getTagForUser">
-   <!-- TODO this did not work for me .. (manu)
-		<isEqual property="groupId" compareValue="-1">
-		  <include refid="inGroups"/>
-		</isEqual>
-		<isGreaterThan property="groupId" compareValue="-1" prepend="AND">
-		  t.group = #groupId#
-		</isGreaterThan>
-   -->
-	</sql>
+	
 </sqlMap>

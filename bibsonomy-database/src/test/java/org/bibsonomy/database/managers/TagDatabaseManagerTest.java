@@ -3,6 +3,7 @@ package org.bibsonomy.database.managers;
 import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Tag;
 import org.junit.Test;
@@ -64,6 +65,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.tagParam.setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
 		this.tagParam.setRequestedUserName("hotho");
 		this.tagParam.setGrouping(GroupingEntity.USER);
+		this.tagParam.setGroupId(GroupID.INVALID.getId());
 
 		final List<Tag> tags = this.tagDb.getTagsByUser(this.tagParam, this.dbSession);
 
@@ -83,6 +85,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.tagParam.setContentType(ConstantID.BIBTEX_CONTENT_TYPE);
 		this.tagParam.setRequestedUserName("hotho");
 		this.tagParam.setGrouping(GroupingEntity.USER);
+		this.tagParam.setGroupId(GroupID.INVALID.getId());
 
 		final List<Tag> tags = this.tagDb.getTagsByUser(this.tagParam, this.dbSession);
 
@@ -133,11 +136,13 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.tagParam.setRequestedUserName("hotho");
 		this.tagParam.setGrouping(GroupingEntity.USER);
 		this.tagParam.setUserName("hotho");
+		this.tagParam.setGroupId(GroupID.INVALID.getId());
 		List<Tag> tags = this.tagDb.getTags(this.tagParam, this.dbSession);		
 		assertEquals(1408,tags.size());
+		// hotho is a spammer, so some other user shouldn't see his tags
 		this.tagParam.setUserName("some_other_user");
 		tags = this.tagDb.getTags(this.tagParam, this.dbSession);		
-		assertEquals(1408,tags.size());		
+		assertEquals(0,tags.size());		
 		this.resetParameters();			
 	}		
 	

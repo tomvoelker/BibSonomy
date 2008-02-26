@@ -86,6 +86,10 @@
 	<sql id="bibtexSimHash2">
 		b2.simhash$simHash$ = h.hash AND h.type = $simHash$
 	</sql>
+	
+	<sql id="bibtexSimHash3">
+		t1.simhash$simHash$ = h.hash AND h.type = $simHash$
+	</sql>	
 
 	<sql id="duplicatesCount">
 		SELECT b0.simhash1,count(b0.simhash1) AS ctr

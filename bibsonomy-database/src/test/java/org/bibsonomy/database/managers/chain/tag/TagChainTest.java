@@ -26,6 +26,8 @@ public class TagChainTest extends AbstractChainTest {
 	public void GetTagsByUser() {
 		this.tagParam.setGrouping(GroupingEntity.USER);
 		this.tagParam.setRequestedUserName("hotho");
+		this.tagParam.setUserName("hotho");
+		this.tagParam.setGroupId(GroupID.INVALID.getId());
 		this.tagParam.setRegex(null);
 		this.tagParam.setLimit(1500);
 		 //start chain
@@ -41,6 +43,7 @@ public class TagChainTest extends AbstractChainTest {
 	public void GetTagsByGroup() {
 		 this.tagParam.setGrouping(GroupingEntity.GROUP);
 		 this.tagParam.setLimit(10);
+		 this.tagParam.setGroupId(GroupID.INVALID.getId());
     	 final List<Tag> tags = this.tagChain.getFirstElement().perform(this.tagParam, this.dbSession);         
 		 assertEquals(10, tags.size());
 		 this.resetParameters();
