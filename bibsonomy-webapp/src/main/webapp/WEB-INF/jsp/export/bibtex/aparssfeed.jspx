@@ -18,7 +18,6 @@
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 		 xmlns="http://purl.org/rss/1.0/"
 		 xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-		 xmlns:swrc="http://swrc.ontoware.org/ontology#"
 		 xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
 		 xmlns:cc="http://web.resource.org/cc/"
 		 xmlns:taxo="http://purl.org/rss/1.0/modules/taxonomy/"
@@ -26,35 +25,33 @@
 		 xmlns:syn="http://purl.org/rss/1.0/modules/syndication/"
 		 xmlns:content="http://purl.org/rss/1.0/modules/content/"
 		 xmlns:admin="http://webns.net/mvcb/"
-		 xmlns:burst="http://xmlns.com/burst/0.1/"> 
+		 > 
 		 
 
 <channel rdf:about="${projectHome}${fn:escapeXml(requPath)}">
   <title>${projectName} publications for /<c:out value='${requPath}'/></title>
-  <link>${projectName}<c:out value='${requPath}'/></link>
+  <link>${projectHome}<c:out value='${requPath}'/></link>
   <description>${projectName} RSS Feed for /<c:out value='${requPath}'/></description>
 
 	<!-- Bookmarks -->
 	<items>
 	    <rdf:Seq>
 	 	  <c:forEach var="post" items="${command.bibtex.list}">
-	  		<c:set var="bibtex" value="${post.resource}"/> 
 	  	 	<!-- the intraHash of a bibtex entry -->
-	  	 	<rdf:li rdf:resource="${projectHome}bibtex/2${bibtex.intraHash}/${post.user.name}"/>
-	 	  </c:forEach> 
+	  	 	<rdf:li rdf:resource="${projectHome}bibtex/2${post.resource.intraHash}/${post.user.name}"/>
+	 	  </c:forEach>
 	    </rdf:Seq>
 	  </items>
 </channel>
 
 <c:forEach var="post" items="${command.bibtex.list}">
-	<c:set var="bibtex" value="${post.resource}"/> 
-	<item rdf:about="${projectHome}bibtex/2${bibtex.intraHash}/${post.user.name}">
-    	<title><mtl:bibclean value="${bibtex.title}"/></title>
+	<item rdf:about="${projectHome}bibtex/2${post.resource.intraHash}/${post.user.name}">
+    	<title><mtl:bibclean value="${post.resource.title}"/></title>
 		<c:if test ="${!empty post.description}"><description>${fn:escapeXml(post.description)}</description></c:if>	
-  		<link>${projectHome}bibtex/2${bibtex.intraHash}/<mtl:encode value='${post.user.name}'/></link>
+  		<link>${projectHome}bibtex/2${post.resource.intraHash}/<mtl:encode value='${post.user.name}'/></link>
   		<dc:creator>${post.user.name}</dc:creator>
   		<dc:date><mtl:formatDate value="${post.date}"/></dc:date>
-  		<dc:subject><c:forEach var="tag" items="${post.tags}">${fn:escapeXml(tag.name)}</c:forEach></dc:subject>
+  		<dc:subject><c:forEach var="tag" items="${post.tags}">${fn:escapeXml(tag.name)}<c:out value=" "/></c:forEach></dc:subject>
   		<content:encoded>
 	    <c:set var="content"><output:apaContentEncoded post="${post}"/></c:set>
   		<!-- <output:apaContentEncoded> contains xml invalid characters -->
