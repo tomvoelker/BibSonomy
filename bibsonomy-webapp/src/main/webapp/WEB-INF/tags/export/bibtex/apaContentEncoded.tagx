@@ -16,11 +16,11 @@
 	<bib:year post="${post}" braces="true"/>
 	
 	<!-- title -->    
-   	<a href="${projectHome}bibtex/${bibtex.intraHash}/${post.user.name}"><i><mtl:bibclean value="${bibtex.title}"/>.</i></a>
+   	<a href="${projectHome}bibtex/2${post.resource.intraHash}/${post.user.name}"><i><mtl:bibclean value="${post.resource.title}"/>.</i></a>
 
 	<!-- inbook / incollection data -->
   	<c:choose>
-    	<c:when test="${not empty bibtex.journal}">
+    	<c:when test="${not empty post.resource.journal}">
       		<bib:journal post="${post}"/>      		
       		<bib:volume post="${post}"/>
       		<bib:series post="${post}"/>
