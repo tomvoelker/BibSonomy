@@ -32,8 +32,11 @@
 
 	<!-- Should be used in conjunction with tagWhereQuery. -->
 	<sql id="tagFromQuery">
-		<iterate property="tagIndex" conjunction=",">
-		  tas t$tagIndex[].index$
+	    tas t1
+		<iterate property="tagIndex">
+			<isGreaterThan property="tagIndex[].index" compareValue="1">
+				JOIN tas t$tagIndex[].index$ USING (content_id)
+			</isGreaterThan>
 		</iterate>
 	</sql>
 
@@ -55,12 +58,6 @@
 		  <isEqual property="caseSensitiveTagNames" compareValue="false">
 		    t$tagIndex[].index$.tag_lower = lower(#tagIndex[].tagName#)
 		  </isEqual>
-		</iterate>
-		<!-- Self-Join -->
-		<iterate property="tagIndex" prepend="AND" conjunction="AND">
-		  <isLessThan property="tagIndex[].index" compareProperty="maxTagIndex">
-		    t$tagIndex[].index$.content_id = t$tagIndex[].index2$.content_id
-		  </isLessThan>
 		</iterate>
 	</sql>
 
