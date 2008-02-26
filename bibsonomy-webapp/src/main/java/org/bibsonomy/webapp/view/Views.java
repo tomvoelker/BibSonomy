@@ -117,7 +117,12 @@ public enum Views implements View {
 	/**
 	 * author page
 	 */
-	AUTHORPAGE("author");
+	AUTHORPAGE("author"),
+	
+	/**
+	 * html output for bookmarks
+	 */
+	BOOKPUBL("export/bookmark/bookpubl");
 	
 	
 	private final String name;
@@ -165,6 +170,8 @@ public enum Views implements View {
 			return APARSS;
 		if (format.equals("xml"))
 			return XML;
+		if (format.equals("bookpubl"))
+			return BOOKPUBL;
 		
 		throw new BadRequestOrResponseException("Invalid format specification.");
 	}
