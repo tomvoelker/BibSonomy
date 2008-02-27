@@ -13,17 +13,12 @@ public class Document{
 	private String fileName;
 	
 	/**
-	 * the hash to the bibtex resource
-	 */
-	private String resourceHash;
-	
-	/**
-	 * stores the username of the request
+	 * the username of the document
 	 */
 	private String userName;
 	
 	/**
-	 * stores the hash of the file
+	 * the hash of the file
 	 */
 	private String fileHash;
 
@@ -39,20 +34,6 @@ public class Document{
 	 */
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
-	}
-
-	/**
-	 * @return resourceHash
-	 */
-	public String getResourceHash() {
-		return this.resourceHash;
-	}
-
-	/**
-	 * @param resourceHash
-	 */
-	public void setResourceHash(String resourceHash) {
-		this.resourceHash = resourceHash;
 	}
 
 	/**
