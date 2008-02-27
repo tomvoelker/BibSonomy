@@ -42,6 +42,13 @@ public class Group {
 	 * The privacy level of this group.
 	 */
 	private Privlevel privlevel;
+	
+	/**
+	 * If <code>true</code>, other group members can access documents 
+	 * attached to BibTeX posts, if the post is viewable for the group
+	 * or public.
+	 */
+	private boolean sharedDocuments;
 
 	/**
 	 * constructor
@@ -49,6 +56,7 @@ public class Group {
 	public Group() {
 		this.groupId = GroupID.PUBLIC.getId();
 		this.privlevel = Privlevel.MEMBERS;
+		this.sharedDocuments = false;
 	}
 
 	/**
@@ -57,7 +65,8 @@ public class Group {
 	 */
 	public Group(GroupID groupid) {
 		this.groupId = groupid.getId();
-		this.privlevel = Privlevel.MEMBERS; 
+		this.privlevel = Privlevel.MEMBERS;
+		this.sharedDocuments = false;
 	}
 	
 	/**
@@ -139,8 +148,8 @@ public class Group {
 	/**
 	 * @return privlevel
 	 */
-	public int getPrivlevel() {
-		return this.privlevel.getId();
+	public Privlevel getPrivlevel() {
+		return this.privlevel;
 	}
 
 	/**
@@ -148,5 +157,44 @@ public class Group {
 	 */
 	public void setPrivlevel(Privlevel privlevel) {
 		this.privlevel = privlevel;
+	}
+
+	/**
+	 * If <code>true</code>, other group members can access documents 
+	 * attached to BibTeX posts, if the post is viewable for the group
+	 * or public.
+	 * 
+	 * @return The truth value regarding shared documents for this group.
+	 */
+	public boolean isSharedDocuments() {
+		return this.sharedDocuments;
+	}
+
+	/**
+	 * @param sharedDocuments
+	 */
+	public void setSharedDocuments(boolean sharedDocuments) {
+		this.sharedDocuments = sharedDocuments;
+	}
+	
+	@Override
+	public boolean equals(final Object obj) {
+		if (! (obj instanceof Group)) {
+			return false;
+		}
+		return equals((Group) obj);
+	}
+	
+	/** Compares two groups. Two groups are equal, if their groupId is equal.
+	 * @param other
+	 * @return <code>true</code> if the two groups are equal.
+	 */
+	public boolean equals (Group other) {
+		return this.groupId == other.groupId;
+	}
+	
+	@Override
+	public int hashCode() {
+		return groupId;
 	}
 }
