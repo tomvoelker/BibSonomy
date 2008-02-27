@@ -164,7 +164,7 @@ public class RestLogic implements LogicInterface {
 		return execute(new ChangeUserQuery(user.getName(), user));
 	}
 
-	public String addDocument(Document doc) {
+	public String addDocument(Document doc, String resourceHash) {
 		// TODO Auto-generated method stub
 		return null;
 	}
