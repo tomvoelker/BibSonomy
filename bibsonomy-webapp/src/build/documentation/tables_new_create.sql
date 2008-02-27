@@ -219,6 +219,7 @@ CREATE TABLE `groupids` (
   `group_name` varchar(30) NOT NULL default '',
   `group` int(10) NOT NULL default '0',
   `privlevel` tinyint(3) unsigned default '1',
+  `sharedDocuments` tinyint(1) default '0',
   PRIMARY KEY  (`group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
