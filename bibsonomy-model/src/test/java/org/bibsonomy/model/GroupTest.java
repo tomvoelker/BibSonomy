@@ -18,6 +18,7 @@ public class GroupTest {
 	public void getPrivlevel() {
 		final Group group = new Group();
 		assertEquals(GroupID.PUBLIC.getId(), group.getGroupId());
-		assertEquals(Privlevel.MEMBERS.getId(), group.getPrivlevel());
+		assertEquals(Privlevel.MEMBERS, group.getPrivlevel());
+		assertEquals(false, group.isSharedDocuments());
 	}
 }
