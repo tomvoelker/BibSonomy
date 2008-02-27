@@ -592,7 +592,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		}
 	}
 
-	public String addDocument(Document doc) {
+	public String addDocument(Document doc, String resourceHash) {
 		// TODO Auto-generated method stub
 		return null;
 	}
