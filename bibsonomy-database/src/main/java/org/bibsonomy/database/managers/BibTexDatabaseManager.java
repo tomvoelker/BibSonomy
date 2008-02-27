@@ -436,13 +436,40 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		return posts;
 	} 
 
+	/**
+	 * Gets the details of a post, including all extra data like (TODO!) 
+	 * given the INTRA-HASH of the post and the user name.
+	 * 
+	 * <ul>
+	 * <li>extra URLs</li>
+	 * <li>private notes (if userName = loginUserName)</li>
+	 * <li>private PDFs (if requirements are met)<li>
+	 * </ul>
+	 * 
+	 */
 	public Post<BibTex> getPostDetails(final String authUser, final String resourceHash, final String userName, final DBSession session) {
+		/*
+		 * get post from database
+		 */
 		final List<Post<BibTex>> list = getBibTexByHashForUser(authUser, resourceHash, userName, session, HashID.INTRA_HASH);
 		if (list.size() >= 1) {
 			if (list.size() > 1) {
-				log.warn("multiple BibTex-posts from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' found ->returning first");
+				/*
+				 * user has multiple posts with the same hash
+				 */
+				log.warn("multiple BibTeX-posts from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' found ->returning first");
 			}
-			return list.get(0);
+			/*
+			 * just take first post
+			 */
+			final Post<BibTex> post = list.get(0);
+			/*
+			 * attach additional information to post 
+			 */
+			
+			
+			
+			return post;
 		}
 
 		log.debug("BibTex-post from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' not found");
