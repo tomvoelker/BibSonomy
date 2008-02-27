@@ -15,6 +15,7 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.AbstractDBLogicBase;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
@@ -186,9 +187,10 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		this.bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, new ArrayList<String>(), TEST_REQUEST_HASH, null, 0, 19, null);
 		assertEquals(1, this.bibTexPostsList.size());
 		assertEquals(1, this.bibTexPostsList.get(0).getGroups().size());
+		assertEquals(null, this.bibTexPostsList.get(0).getResource().getDocuments());
 		assertList(testUserNameSet, null, null, TEST_REQUEST_HASH, null, null);
 	}
-
+	
 	@Test
 	public void getPostsByViewable() {
 		final Set<Integer> mustGroupIds = new HashSet<Integer>();
@@ -338,6 +340,13 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		assertEquals( 1, testClassAccess.getPosts(BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null, 0, 100, null).size() );
 		assertEquals( 0, this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null, 0, 100, null).size() );
 	}
+	
+	@Test
+	public void getDocument() {
+		Document document = this.getDbLogic().getDocument(TEST_REQUEST_USER_NAME, TEST_REQUEST_HASH, null);
+		assertEquals(null, document);
+	}
+
 	
 	@Test
 	public void testGetUsersByFolkrank(){

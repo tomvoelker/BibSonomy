@@ -63,7 +63,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(GroupID.KDE.getId(), kdeGroup.getGroupId());
 		assertEquals("Knowledge and Data Engineering Group", kdeGroup.getUsers().get(0).getRealname());
 		assertEquals("http://www.kde.cs.uni-kassel.de/", kdeGroup.getUsers().get(0).getHomepage().toString());
-
+		assertEquals(true, kdeGroup.isSharedDocuments());
 		for (final String groupname : new String[] { "", " ", null }) {
 			try {
 				this.groupDb.getGroupByName(groupname, this.dbSession);
