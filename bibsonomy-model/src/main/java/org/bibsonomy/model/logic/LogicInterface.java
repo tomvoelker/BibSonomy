@@ -187,9 +187,10 @@ public interface LogicInterface extends PostLogicInterface {
 	 * Adds a document to an existing bibtex entry
 	 * 
 	 * @param doc
-	 * @return String
+	 * @param resourceHash
+	 * @return The hash of the created document.
 	 */
-	public String addDocument(Document doc);
+	public String addDocument(Document doc, String resourceHash);
 	
 	/**
 	 * Get a document from an existing Bibtex entry
