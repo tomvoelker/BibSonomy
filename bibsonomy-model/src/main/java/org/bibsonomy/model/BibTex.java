@@ -66,6 +66,11 @@ public class BibTex extends Resource {
 	private HashMap<String, String> miscFields;
 	// this field holds the description part of an openURL to this bibtex object
 	private String openURL;
+	
+	/**
+	 * A document attached to this bibtex resource.
+	 */
+	private List<Document> documents;
 
 	/**
 	 * @return openURL
@@ -612,5 +617,19 @@ public class BibTex extends Resource {
 	 */
 	public HashMap<String, String> getMiscFields() {
 		return this.miscFields;
+	}
+
+	/** 
+	 * @return The list of documents associated with this BibTeX post.
+	 */
+	public List<Document> getDocuments() {
+		return this.documents;
+	}
+
+	/**
+	 * @param documents
+	 */
+	public void setDocuments(List<Document> documents) {
+		this.documents = documents;
 	}		
 }
