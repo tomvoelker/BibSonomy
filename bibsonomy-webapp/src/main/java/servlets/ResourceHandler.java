@@ -1174,7 +1174,9 @@ public class ResourceHandler extends HttpServlet{
 	 * @param startBib with which bibtex entry to start
 	 * @throws SQLException
 	 */
+	@Deprecated
 	private void queryPageUserTag (DBContext c, String currUser, String requUser, int requGroup, String requTag, int itemCount, int startBook, int startBib) throws SQLException {
+		log.fatal("queryPageUserTag: should never be called");
 		SplittedTags tags      = new SplittedTags(requTag, "", true);
 		String tagWhereQuery   = tags.getQuery();
 		String groupWhereQuery;
@@ -1252,7 +1254,9 @@ public class ResourceHandler extends HttpServlet{
 	 * @param startBib with which bibtex post to start
 	 * @throws SQLException
 	 */
+	@Deprecated
 	private void queryPageConcept(DBContext c, String currUser, String requTag, int itemCount, int startBook, int startBib) throws SQLException {
+		log.fatal("queryPageConcept: should never be called");
 		SplittedEntireConcepts tags = new SplittedEntireConcepts(requTag, "", true);		
 
 		/*
@@ -1324,7 +1328,7 @@ public class ResourceHandler extends HttpServlet{
 		c.bibStmtP.setQueryTimeout(10); // 10 seconds
 		c.bookStmtP.setQueryTimeout(10); // 10 seconds
 	}
-
+	
 	/** PAGE_CONCEPT
 	 * Shows the page /concept/user/MaxMustermann/EinTag
 	 * 
@@ -1348,7 +1352,9 @@ public class ResourceHandler extends HttpServlet{
 	 * @param startBib with which bibtex post to start
 	 * @throws SQLException
 	 */
+	@Deprecated
 	private void queryPageUserConcept (DBContext c, String currUser, String requUser, String requTag, int itemCount, int startBook, int startBib) throws SQLException {
+		log.fatal("queryPageUserConcept: should never be called");
 		SplittedConcepts tags  = new SplittedConcepts(requTag, "", true);
 		String tagWhereQuery   = tags.getQuery();
 		String groupWhereQuery = getQueryForGroups (c.conn, currUser, requUser, "b");
@@ -2006,7 +2012,9 @@ public class ResourceHandler extends HttpServlet{
 	 * @param startBib
 	 * @throws SQLException
 	 */
+	@Deprecated
 	private void queryPageGroup (DBContext c, String currUser, int group, int itemCount, int startBook, int startBib) throws SQLException {
+		log.fatal("queryPageGroup: should never be called");
 		String groupWhereQuery = getQueryForGroups (c.conn, currUser, null, "b");
 		// bookmark query 
 		/* because MySQL 5.0 optimizes subqueries badly, we reformulated this query to use JOINs and UNION instead of a subquery:
@@ -2128,7 +2136,9 @@ public class ResourceHandler extends HttpServlet{
 	 * @param startBib
 	 * @throws SQLException
 	 */
+	@Deprecated
 	private void queryPageGroupTag (DBContext c, String requTag, String currUser, int group, int itemCount, int startBook, int startBib) throws SQLException {
+		log.fatal("queryPageCroupTag: should never be called");
 		String groupWhereQuery = getQueryForGroups (c.conn, currUser, null, "t1");
 		SplittedTags tags      = new SplittedTags(requTag, "", true);
 		String tagWhereQuery   = tags.getQuery();
