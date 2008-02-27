@@ -18,6 +18,7 @@ import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -38,6 +39,8 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 
 	private static final BibTexDatabaseManager singleton = new BibTexDatabaseManager();
 	private final GeneralDatabaseManager generalDb;
+	private final PermissionDatabaseManager permissionDb;
+	private final DocumentDatabaseManager docDb;
 	private final TagDatabaseManager tagDb;
 	private final DatabasePluginRegistry plugins;
 	private static final BibTexChain chain = new BibTexChain();
@@ -46,6 +49,8 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		this.generalDb = GeneralDatabaseManager.getInstance();
 		this.tagDb = TagDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
+		this.permissionDb = PermissionDatabaseManager.getInstance();
+		this.docDb = DocumentDatabaseManager.getInstance();
 	}
 
 	public static BibTexDatabaseManager getInstance() {
@@ -464,11 +469,11 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			 */
 			final Post<BibTex> post = list.get(0);
 			/*
-			 * attach additional information to post 
+			 * attach document hash 
 			 */
-			
-			
-			
+			if (permissionDb.isAllowedToAccessPostsDocuments(userName, post, session)) {
+				post.getResource().setDocuments(docDb.getDocuments(userName, resourceHash, session));
+			}
 			return post;
 		}
 
