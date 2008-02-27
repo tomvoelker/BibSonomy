@@ -2,6 +2,8 @@ package org.bibsonomy.database;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -341,10 +343,52 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		assertEquals( 0, this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null, 0, 100, null).size() );
 	}
 	
+	/**
+	 * We give a null document name, hence we should get a null document ... 
+	 */
 	@Test
-	public void getDocument() {
-		Document document = this.getDbLogic().getDocument(TEST_REQUEST_USER_NAME, TEST_REQUEST_HASH, null);
-		assertEquals(null, document);
+	public void getDocumentNull() {
+		final Document document = this.getDbLogic().getDocument(TEST_REQUEST_USER_NAME, TEST_REQUEST_HASH, null);
+		assertNull(document);
+	}
+	
+	/**
+	 * A user wants to get his own document ... should be possible! :-)
+	 */
+	@Test
+	public void getDocumentOwn() {
+		final String resourceHash = "4b020083ca0aca3d285569e5fbd0f5b7";
+		final String documentFileName = "p16-gifford.pdf";
+		final String documentHash = "0a7dbd07302ec230ca63bfaad4b94b42";
+		final Document document = this.getDbLogic().getDocument(TEST_REQUEST_USER_NAME, resourceHash, documentFileName);
+		assertNotNull(document);
+		assertEquals(documentHash, document.getFileHash());
+		assertEquals(documentFileName, document.getFileName());
+	}
+	
+	/**
+	 * A user wants to get another users document ... should be NOT possible! :-)
+	 */
+	@Test
+	public void getDocumentNotOwn() {
+		final String resourceHash = "4b020083ca0aca3d285569e5fbd0f5b7";
+		final String documentFileName = "p16-gifford.pdf";
+		final Document document = this.getDbLogic().getDocument("hotho", resourceHash, documentFileName);
+		assertNull(document);
+	}
+	
+	/**
+	 * A user wants to get another users document ... should be possible, if a group allows this! :-)
+	 */
+	@Test
+	public void getDocumentNotOwnButSharedDocuments() {
+		final String resourceHash = "dcf8eef77a3dfbc75f5e5ace931308a1";
+		final String documentFileName = "interest.pdf";
+		final String documentHash = "3ff32569c76b03ea1701e6ba436ffc63";
+		final Document document = this.getDbLogic().getDocument("gromgull", resourceHash, documentFileName);
+		assertNotNull(document);
+		assertEquals(documentHash, document.getFileHash());
+		assertEquals(documentFileName, document.getFileName());
 	}
 
 	
