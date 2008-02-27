@@ -4,7 +4,7 @@
 <sqlMap namespace="Group">
 
 	<select id="getAllGroups" resultMap="GroupCommon.group" parameterClass="groupParam">
-		SELECT i.group, i.group_name, u.user_realname, u.user_homepage, u.user_name
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, u.user_realname, u.user_homepage, u.user_name
 		FROM groupids i, user u
 		WHERE i.group > 2
 		      AND i.group_name = u.user_name
@@ -13,14 +13,14 @@
 	</select>
 
 	<select id="getGroupByName" resultMap="GroupCommon.group" parameterClass="string">
-		SELECT i.group, i.group_name, u.user_realname, u.user_homepage, u.user_name
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, u.user_realname, u.user_homepage, u.user_name
 		FROM groupids i, user u
 		WHERE i.group_name = #groupname#
 		      AND i.group_name = u.user_name
 	</select>
 
 	<select id="getGroupMembers" resultMap="GroupCommon.group" parameterClass="string">
-		SELECT i.group, i.group_name, u.user_realname, u.user_homepage, u.user_name
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, u.user_realname, u.user_homepage, u.user_name
 		FROM groupids i, groups g, user u
 		WHERE group_name = #groupname#
 		      AND i.group = g.group
@@ -39,27 +39,27 @@
 		) AS uf
 	</select>
 
-	<select id="getPrivlevelForGroup" resultClass="int" parameterClass="int">
+	<select id="getPrivlevelForGroup" resultClass="Privlevel" parameterClass="int">
 		SELECT privlevel FROM groupids WHERE `group` = #groupId#
 	</select>
 
 	<select id="getGroupsForUser" resultMap="GroupCommon.group_basic" parameterClass="string">
-		(SELECT i.group_name, i.group
+		(SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments
 		 FROM groups g, groupids i
 		 WHERE g.user_name = #username#
 		       AND g.group=i.group)
 		UNION
-		(SELECT i.group_name, i.group
+		(SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments
 		 FROM groupids i
 		 WHERE i.group BETWEEN 0 AND 2)
 		ORDER BY `group`
 	</select>
 
 	<select id="getGroupsForContentId" resultMap="GroupCommon.group_basic" parameterClass="int">
-		SELECT DISTINCT G.group, G.group_name 
-		FROM groupids G, tas T 
+		SELECT DISTINCT i.group, i.group_name, i.privlevel, i.sharedDocuments 
+		FROM groupids i, tas T 
 		WHERE T.content_id = #contentId# 
-		      AND T.group = G.group 
+		      AND T.group = i.group 
 	</select>	
 
 	<select id="getNewGroupId" resultClass="int">

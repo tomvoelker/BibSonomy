@@ -2,16 +2,16 @@ package org.bibsonomy.database.typehandler;
 
 import java.sql.SQLException;
 
-import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.enums.Privlevel;
 
 import com.ibatis.sqlmap.client.extensions.ParameterSetter;
 import com.ibatis.sqlmap.client.extensions.ResultGetter;
 import com.ibatis.sqlmap.client.extensions.TypeHandlerCallback;
 
 /**
- * An iBATIS type handler callback for {@link Role}es that are mapped to Strings
- * in the database. If a Role cannot be constructed based on the String, then the
- * Role will be set to <code>DEFAULT</code>.<br/>
+ * An iBATIS type handler callback for {@link Privlevel}es that are mapped to Strings
+ * in the database. If the {@link Privlevel} cannot be constructed based on the String, then the
+ * Privlevel will be set to <code>MEMBERS</code>.<br/>
  * 
  * Almost copied from <a
  * href="http://opensource.atlassian.com/confluence/oss/display/IBATIS/Type+Handler+Callbacks">Atlassian -
@@ -22,8 +22,8 @@ import com.ibatis.sqlmap.client.extensions.TypeHandlerCallback;
  * @author rja
  * @version $Id$
  */
-public class RoleTypeHandlerCallback implements TypeHandlerCallback {
-
+public class PrivlevelTypeHandlerCallback implements TypeHandlerCallback {
+	
 	public Object getResult(final ResultGetter getter) throws SQLException {
 		final String value = getter.getString();
 		if (getter.wasNull()) {
@@ -34,18 +34,19 @@ public class RoleTypeHandlerCallback implements TypeHandlerCallback {
 
 	public void setParameter(final ParameterSetter setter, final Object parameter) throws SQLException {
 		if (parameter == null) {
-			setter.setInt(Role.DEFAULT.getRole());
+			setter.setInt(Privlevel.MEMBERS.getPrivlevel());
 		} else {
-			final Role role = (Role) parameter;
-			setter.setInt(role.getRole());
+			System.out.println("############################# parameter = " + parameter);
+			final Privlevel privlevel = (Privlevel) parameter;
+			setter.setInt(privlevel.getPrivlevel());
 		}
 	}
 
 	public Object valueOf(final String str) {
 		try {
-			return Role.getRole(str);
+			return Privlevel.getPrivlevel(Integer.parseInt(str));
 		} catch (NumberFormatException ex) {
-			return Role.DEFAULT; 
+			return Privlevel.MEMBERS;
 		}
 	}
 }

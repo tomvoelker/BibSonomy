@@ -12,6 +12,7 @@ import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.extra.ExtendedFields;
+import org.bibsonomy.model.logic.LogicInterface;
 
 /**
  * @author Christian Schenk
@@ -95,14 +96,23 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Returns the filename for the document with the given hash.
+	 * @deprecated Documents are contained in BibTeX posts now. Access is now 
+	 * possible via the more general method {@link LogicInterface#getDocument(String, String, String)}.
+	 * 
 	 */
+	@Deprecated
 	public String getDocumentByHash(final String hash, final DBSession session) {
 		return this.getDocumentByHashAndUser(hash, null, session);
 	}
 
 	/**
 	 * Returns the filename for the document with the given hash and username.
+	 * 
+	 * @deprecated Documents are contained in BibTeX posts now. Access is now 
+	 * possible via the more general method {@link LogicInterface#getDocument(String, String, String)}.
+	 * 
 	 */
+	@Deprecated
 	public String getDocumentByHashAndUser(final String hash, final String username, final DBSession session) {
 		if (present(hash) == false) throw new RuntimeException("Hash must be present.");
 		// if all documents are public -> return them

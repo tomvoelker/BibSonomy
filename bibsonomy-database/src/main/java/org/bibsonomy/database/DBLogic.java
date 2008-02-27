@@ -156,25 +156,25 @@ public class DBLogic implements LogicInterface {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end, String search) {
-		
+
 		if (grouping.equals(GroupingEntity.ALL)) {
 			this.permissionDBManager.checkStartEnd(start, end, "post");
 		}
-		
+
 		final List<Post<T>> result;
 		final DBSession session = openSession();
 		try {
 			/*if (resourceType == Resource.class) {
-				 * yes, this IS unsave and indeed it BREAKS restrictions on generic-constraints.
-				 * it is the result of two designs:
-				 *  1. @ibatis: database-results should be accessible as a stream or should at least be saved using the visitor pattern (collection<? super X> arguments would do fine)
-				 *  2. @bibsonomy: this method needs runtime-type-checking which is not supported by generics
-				 *  so what: copy each and every entry manually or split this method to become
-				 *           type-safe WITHOUT falling back to <? extends Resource> (which
-				 *           means read-only) in the whole project
-				 * result = bibtexDBManager.getPosts(authUser, grouping, groupingName, tags, hash, popular, added, start, end, false);			
-				 * // TODO: solve problem with limit+offset:  result.addAll(bookmarkDBManager.getPosts(authUser, grouping, groupingName, tags, hash, popular, added, start, end, false));
-				 * 
+			 * yes, this IS unsave and indeed it BREAKS restrictions on generic-constraints.
+			 * it is the result of two designs:
+			 *  1. @ibatis: database-results should be accessible as a stream or should at least be saved using the visitor pattern (collection<? super X> arguments would do fine)
+			 *  2. @bibsonomy: this method needs runtime-type-checking which is not supported by generics
+			 *  so what: copy each and every entry manually or split this method to become
+			 *           type-safe WITHOUT falling back to <? extends Resource> (which
+			 *           means read-only) in the whole project
+			 * result = bibtexDBManager.getPosts(authUser, grouping, groupingName, tags, hash, popular, added, start, end, false);			
+			 * // TODO: solve problem with limit+offset:  result.addAll(bookmarkDBManager.getPosts(authUser, grouping, groupingName, tags, hash, popular, added, start, end, false));
+			 * 
 			} else */
 			if (resourceType == BibTex.class) {
 				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search);
@@ -254,10 +254,10 @@ public class DBLogic implements LogicInterface {
 		}				
 		final DBSession session = openSession();
 		final List<Tag> result;
-		
+
 		try {
 			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, this.loginUser.getName(), grouping, groupingName, tags, null, order, start, end, search);
-			
+
 			if (resourceType == BibTex.class || resourceType == Bookmark.class || resourceType == Resource.class) {
 				// this is save because of RTTI-check of resourceType argument which is of class T
 				param.setRegex(regex);
@@ -267,7 +267,7 @@ public class DBLogic implements LogicInterface {
 			} else {
 				throw new UnsupportedResourceTypeException("The requested resourcetype (" + resourceType.getClass().getName() + ") is not supported.");
 			}
-			
+
 		} finally {
 			session.close();
 		}
@@ -301,17 +301,17 @@ public class DBLogic implements LogicInterface {
 	 * Removes the given user.
 	 */
 	public void deleteUser(final String userName) {
-		
+
 		throw new UnsupportedOperationException("not yet available");
-		
+
 //		if ((this.loginUserName == null) || (this.loginUserName.equals(userName) == false)) {
-//			throw new ValidationException("You are not authorized to perform the requested operation");
+//		throw new ValidationException("You are not authorized to perform the requested operation");
 //		}		
 //		final DBSession session = openSession();
 //		try {
-//			userDBManager.deleteUser(userName, session);
+//		userDBManager.deleteUser(userName, session);
 //		} finally {
-//			session.close();
+//		session.close();
 //		}
 	}
 
@@ -319,14 +319,14 @@ public class DBLogic implements LogicInterface {
 	 * Removes the given group.
 	 */
 	public void deleteGroup(final String groupName) {
-		
+
 		throw new UnsupportedOperationException("not yet available");
-		
+
 //		final DBSession session = openSession();
 //		try {
-//			groupDBManager.deleteGroup(groupName, session);
+//		groupDBManager.deleteGroup(groupName, session);
 //		} finally {
-//			session.close();
+//		session.close();
 //		}
 	}
 
@@ -339,9 +339,9 @@ public class DBLogic implements LogicInterface {
 		throw new UnsupportedOperationException("not yet available");
 //		final DBSession session = openSession();
 //		try {
-//			groupDBManager.removeUserFromGroup(groupName, userName, session);
+//		groupDBManager.removeUserFromGroup(groupName, userName, session);
 //		} finally {
-//			session.close();
+//		session.close();
 //		}
 	}
 
@@ -353,7 +353,7 @@ public class DBLogic implements LogicInterface {
 		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(userName) == false)) {
 			throw new ValidationException("You are not authorized to perform the requested operation");
 		}
-		
+
 		final DBSession session = openSession();
 		try {
 			boolean resourceFound = false;
@@ -385,36 +385,36 @@ public class DBLogic implements LogicInterface {
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		return this.userDBManager.changeUser(user, session);
 
-// TODO check if the following is correct
-// 
+//		TODO check if the following is correct
+
 //		final DBSession session = openSession();
 //		try {
-//			String errorMsg = null;
-//			
-//			final User existingUser = userDBManager.getUserDetails(user.getName(), session);
-//			if (existingUser != null) {
-//				if (update == false) {
-//					errorMsg = "user " + existingUser.getName() + " already exists";
-//				} else if (existingUser.getName().equals(this.loginUserName) == false) {
-//					errorMsg = "user " + this.loginUserName + " is not authorized to change user " + existingUser.getName();
-//					log.warn(errorMsg);
-//					throw new ValidationException(errorMsg);
-//				}
-//			} else {
-//				if (update == true) {
-//					errorMsg = "user " + user.getName() + " does not exist";
-//				}
-//			}
-//			if (errorMsg != null) {
-//				log.warn(errorMsg);
-//				throw new IllegalStateException(errorMsg);
-//			}
-//			if (update == false) {
-//				return userDBManager.createUser(user, session);
-//			}
-//			throw new UnsupportedOperationException("update user not implemented yet");
+//		String errorMsg = null;
+
+//		final User existingUser = userDBManager.getUserDetails(user.getName(), session);
+//		if (existingUser != null) {
+//		if (update == false) {
+//		errorMsg = "user " + existingUser.getName() + " already exists";
+//		} else if (existingUser.getName().equals(this.loginUserName) == false) {
+//		errorMsg = "user " + this.loginUserName + " is not authorized to change user " + existingUser.getName();
+//		log.warn(errorMsg);
+//		throw new ValidationException(errorMsg);
+//		}
+//		} else {
+//		if (update == true) {
+//		errorMsg = "user " + user.getName() + " does not exist";
+//		}
+//		}
+//		if (errorMsg != null) {
+//		log.warn(errorMsg);
+//		throw new IllegalStateException(errorMsg);
+//		}
+//		if (update == false) {
+//		return userDBManager.createUser(user, session);
+//		}
+//		throw new UnsupportedOperationException("update user not implemented yet");
 //		} finally {
-//			session.close();
+//		session.close();
 //		}
 	}
 
@@ -435,7 +435,7 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
-	
+
 	/**
 	 * Check for each group of a post if the groups actually exist and if the posting user is allowed to post.  
 	 * If yes, insert the correct group ID
@@ -444,7 +444,7 @@ public class DBLogic implements LogicInterface {
 	 * @return post the incoming post with the groupIDs filled in
 	 */
 	private <T extends Resource> Post<T> validateGroups(Post<T> post, DBSession session) {
-		
+
 		// retrieve the user's groups
 		final List<Integer> groupIds = generalDBManager.getGroupIdsForUser(post.getUser().getName(), session);
 		// each user can post as public / private / friends
@@ -464,12 +464,12 @@ public class DBLogic implements LogicInterface {
 			}
 			group.setGroupId(testGroup.getGroupId());
 		}		
-		
+
 		// no group specified -> make it public
 		if (post.getGroups().size() == 0) {
 			post.getGroups().add(new Group(GroupID.PUBLIC));
 		}
-		
+
 		return post;
 	}
 
@@ -495,15 +495,15 @@ public class DBLogic implements LogicInterface {
 	 * Adds/updates a group in the database.
 	 */
 	private String storeGroup(@SuppressWarnings("unused") final Group group, @SuppressWarnings("unused") boolean update) {
-		
+
 		throw new UnsupportedOperationException("not yet available");
-		
+
 //		FIXME: unsure who may change a group -> better doing nothing
 //		final DBSession session = this.openSession();
 //		try {
-//			this.groupDBManager.storeGroup(group, update, session);
+//		this.groupDBManager.storeGroup(group, update, session);
 //		} finally {
-//			session.close();
+//		session.close();
 //		}		
 	}
 
@@ -511,14 +511,14 @@ public class DBLogic implements LogicInterface {
 	 * Adds an existing user to an existing group.
 	 */
 	public void addUserToGroup(final String groupName, final String userName) {
-		
+
 		throw new UnsupportedOperationException("not yet available");
-		
+
 //		final DBSession session = openSession();
 //		try {
-//			groupDBManager.addUserToGroup(groupName, userName, session);
+//		groupDBManager.addUserToGroup(groupName, userName, session);
 //		} finally {
-//			session.close();
+//		session.close();
 //		}
 	}
 
@@ -527,7 +527,7 @@ public class DBLogic implements LogicInterface {
 			throw new ValidationException("You are not authorized to perform the requested operation.");
 		}
 	}
-	
+
 	public String createGroup(Group group) {
 		ensureLoggedIn();		
 		return this.storeGroup(group, false);
@@ -571,36 +571,39 @@ public class DBLogic implements LogicInterface {
 		return this.loginUser.getName();
 	}
 
-	public String addDocument(Document doc) {
+	public String addDocument(final Document doc, final String resourceHash) {
 		ensureLoggedIn();
 		this.permissionDBManager.ensureWriteAccess(doc, this.loginUser);
-		return this.storeDocument(doc).getFileHash();
+		return this.storeDocument(doc, resourceHash).getFileHash();
 	}
 
 	/**
+	 * TODO: this method is very probably broken and allows EVERYBODY to upload 
+	 * documents for other users.
+	 * 
 	 * @param doc
 	 * @return doc
 	 */
-	public Document storeDocument(final Document doc){
+	public Document storeDocument(final Document doc, final String resourceHash){
 		final DBSession session = openSession();
-		
+
 		try {
 			//create the docParam object
 			final DocumentParam docParam = new DocumentParam();
-			
+
 			/*
 			 * store all necessary informations in the docParam object
 			 * i think its not needed to create a method because there are only
 			 * 4 fields to save. 
 			 */
 			docParam.setUserName(doc.getUserName());
-			docParam.setResourceHash(doc.getResourceHash());
+			docParam.setResourceHash(resourceHash);
 			docParam.setFileHash(doc.getFileHash());
 			docParam.setFileName(doc.getFileName());
-			
+
 			final boolean valid = this.docDBManager.validateResource(docParam, session);
 			final boolean existingDoc = this.docDBManager.checkForExistingDocuments(docParam, session);
-			
+
 			/*
 			 * valid means that the resource is a bibtex entry and the given user is
 			 * the owner of this entry.
@@ -628,43 +631,32 @@ public class DBLogic implements LogicInterface {
 		return doc;
 	}
 
+	/**
+	 * Returns the named document for the given userName and resourceHash.
+	 */
 	public Document getDocument(final String userName, final String resourceHash, final String fileName) {
 		ensureLoggedIn();
-		
+
 		final DBSession session = openSession();
-		Document doc;
-		
 		try {
-			//create the docParam object
-			final DocumentParam docParam = new DocumentParam();
-			
-			//fill the docParam object
-			docParam.setFileName(fileName);
-			docParam.setResourceHash(resourceHash);
-			docParam.setUserName(userName);
-			
-			final boolean valid = this.docDBManager.validateResource(docParam, session);
-			
 			/*
-			 * valid means that the resource is a bibtex entry and the given user is
-			 * the owner of this entry.
+			 * we just forward this task to getPostDetails from the 
+			 * BibTeXDatabaseManager and extract the documents.
 			 */
-			if (valid){
-				// get the requested document
-				doc = this.docDBManager.getDocument(docParam, session);
-				if (doc == null){
-					throw new IllegalStateException("No document for this bibtex entry");
+			final Post<BibTex> post = bibtexDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, session);
+			if (post != null) {
+				for (final Document document:post.getResource().getDocuments()) {
+					if (document.getFileName().equals(fileName)) {
+						return document;
+					}
 				}
-			} else {
-				throw new ValidationException("You are not authorized to perform the requested operation.");
 			}
 		} finally {
 			session.close();
 		}
-		log.info("API - New filerequest: " + doc.getFileName() + " from User: " + doc.getUserName());
-		return doc;
+		return null;
 	}
-	
+
 	/**
 	 * @param userName
 	 * @param resourceHash
@@ -672,22 +664,22 @@ public class DBLogic implements LogicInterface {
 	 */
 	public void deleteDocument(final String userName, final String resourceHash, final String fileName){
 		ensureLoggedIn();
-	
+
 		this.permissionDBManager.ensureWriteAccess(this.loginUser, userName);
-		
+
 		final DBSession session = openSession();
-		
+
 		try {
 			//create the docParam object
 			final DocumentParam docParam = new DocumentParam();
-			
+
 			//fill the docParam object
 			docParam.setFileName(fileName);
 			docParam.setResourceHash(resourceHash);
 			docParam.setUserName(userName);
-			
+
 			final boolean valid = this.docDBManager.validateResource(docParam, session);
-			
+
 			/*
 			 * valid means that the resource is a bibtex entry and the given user is
 			 * the owner of this entry.
@@ -776,12 +768,12 @@ public class DBLogic implements LogicInterface {
 		List<Tag> relations;
 		try {
 			if (grouping.equals(GroupingEntity.USER) && groupingName != null && groupingName != "") {
-				
+
 				// if looking at pages of other users, retrieve all concepts
 				if (!groupingName.equals(this.loginUser.getName())) {
 					status = ConceptStatus.ALL;
 				}
-				
+
 				if (status.equals(ConceptStatus.PICKED)) {
 					relations = this.tagRelationsDBManager.getPickedConceptsForUser(groupingName, session);
 				}
@@ -830,7 +822,7 @@ public class DBLogic implements LogicInterface {
 		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(groupingName) == false)) {
 			throw new ValidationException("You are not authorized to perform the requested operation");
 		}
-		
+
 		final DBSession session = openSession();
 		tagRelationsDBManager.deleteConcept(concept, groupingName, session);		
 	}
@@ -839,7 +831,7 @@ public class DBLogic implements LogicInterface {
 		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(groupingName) == false)) {
 			throw new ValidationException("You are not authorized to perform the requested operation");
 		}
-		
+
 		final DBSession session = openSession();
 		tagRelationsDBManager.deleteRelation(upper, lower, groupingName, session);	
 	}
@@ -850,7 +842,7 @@ public class DBLogic implements LogicInterface {
 		}
 		return this.storeConcept(concept, grouping, groupingName, true);
 	}	
-	
+
 	private String storeConcept(Tag concept, GroupingEntity grouping, String groupingName, boolean update) {		
 		final DBSession session = openSession();
 		if (update) {
@@ -861,14 +853,14 @@ public class DBLogic implements LogicInterface {
 		}		
 		return concept.getName();
 	}
-	
+
 	/**
 	 * retrieve related user
 	 */
 	public List<User> getUsers (List<String> tags, Order order, final int start, int end){
 		final DBSession session = openSession();
 		final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, null, null, null, tags, null, order, start, end, null);
-		
+
 		try {
 			return this.userDBManager.getUserByFolkrank(param, session);
 		} finally {

@@ -1,10 +1,16 @@
 package org.bibsonomy.database.managers;
 
+import java.util.List;
+
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Document;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 
 /**
@@ -16,8 +22,10 @@ import org.bibsonomy.model.User;
 public class PermissionDatabaseManager extends AbstractDatabaseManager {
 
 	private final static PermissionDatabaseManager singleton = new PermissionDatabaseManager();
-
+	private final GroupDatabaseManager groupDb;
+	
 	private PermissionDatabaseManager() {
+		this.groupDb = GroupDatabaseManager.getInstance();
 	}
 
 	/**
@@ -68,6 +76,52 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	public void ensureWriteAccess(final Document document, final User loginUser) {
 		// delegate write access check
 		ensureWriteAccess(loginUser, document.getUserName());
+	}
+	
+	/** This method checks, whether the user is allowed to access the posts documents.
+	 * The user is allowed to access the documents, 
+	 * 
+	 * <ul>
+	 * <li>if the post is public and the posts 
+	 * user is together with the user in a group, which allows to share documents, or 
+	 * <li>if the post is viewable for a specific group, in which both users are and 
+	 * which allows to share documents.
+	 * </ul>  
+	 * 
+	 * TODO: eventually, we don't want to have the post as parameter, but only
+	 * its groups?
+	 * 
+	 * @param userName - the name of the user which wants to access the posts documents.
+	 * @param post - the post which contains the documents the user wants to access.
+	 * @param session - a DBSession.
+	 * @return <code>true</code> if the user is allowed to access the documents of the post.
+	 */
+	public boolean isAllowedToAccessPostsDocuments(final String userName, final Post<? extends Resource> post, final DBSession session) {
+		final String postUserName = post.getUser().getName();
+		final List<Group> postGroups = post.getGroups();
+		/*
+		 * Get the groups in which both users are.
+		 */
+		final List<Group> commonGroups = groupDb.getCommonGroups(userName, postUserName, session);
+		/*
+		 * Construct the public group. TODO: this should better be done in a GroupFactory!
+		 */
+		final Group publicGroup = new Group();
+		publicGroup.setGroupId(GroupID.PUBLIC.getId());
+		/*
+		 * Find a common group of both users, which allows to share documents. 
+		 */
+		for (final Group group: commonGroups) {
+			if (group.isSharedDocuments()) {
+				/*
+				 * both users are in a group which allows to share documents
+				 */
+				if (postGroups.contains(publicGroup) || postGroups.contains(group)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	/** Ensures that the user is an admin.

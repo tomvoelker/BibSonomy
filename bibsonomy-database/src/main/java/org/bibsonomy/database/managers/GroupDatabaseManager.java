@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -177,9 +178,9 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			return group;
 		}
 		final int groupId = this.getGroupByName(groupname, session).getGroupId();
-		final int privlevel = this.getPrivlevelForGroup(groupId, session);
+		final Privlevel privlevel = this.getPrivlevelForGroup(groupId, session);
 		// remove members as necessary
-		switch (Privlevel.getPrivlevel(privlevel)) {
+		switch (privlevel) {
 		case MEMBERS:
 			// if the user isn't a member of the group he can't see other
 			// members -> and we'll fall through to HIDDEN
@@ -204,8 +205,8 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Returns the privlevel for a group.
 	 */
-	private Integer getPrivlevelForGroup(final int groupId, final DBSession session) {
-		return this.queryForObject("getPrivlevelForGroup", groupId, Integer.class, session);
+	private Privlevel getPrivlevelForGroup(final int groupId, final DBSession session) {
+		return this.queryForObject("getPrivlevelForGroup", groupId, Privlevel.class, session);
 	}
 
 	/**
@@ -243,6 +244,33 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			return this.removeSpecialGroups(this.getGroupsForUser(userName, session));
 		}
 		return this.getGroupsForUser(userName, session);
+	}
+	
+	/** Gets all groups in which both user A and user B are in. 
+	 * 
+	 * @param userNameA - name of the first user.
+	 * @param userNameB - name of the second user.
+	 * @param session
+	 * @return The list of groups both given users are in.
+	 */
+	public List<Group> getCommonGroups(final String userNameA, final String userNameB, final DBSession session) {
+		final List<Group> userAGroups = this.getGroupsForUser(userNameA, true, session);
+		final List<Group> userBGroups = this.getGroupsForUser(userNameB, true, session);
+	
+		/*
+		 * It is not very efficient, to do this in two cascaded loops, but users are 
+		 * typically in very few groups and with linked lists there is probably no much
+		 * more efficient way to do it. 
+		 */
+		final List<Group> commonGroups = new LinkedList<Group>();
+		for (final Group a:userAGroups) {
+			for (final Group b:userBGroups) {
+				if (a.getGroupId() == b.getGroupId()) {
+					commonGroups.add(a);
+				}
+			}
+		}
+		return commonGroups;
 	}
 	
 	/**
