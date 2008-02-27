@@ -19,17 +19,17 @@ public enum Privlevel {
 	/** only members can see members */
 	MEMBERS(2);
 
-	private final int id;
+	private final int privlevel;
 
-	private Privlevel(final int id) {
-		this.id = id;
+	private Privlevel(final int privlevel) {
+		this.privlevel = privlevel;
 	}
 
 	/**
 	 * @return constant value behind the symbol 
 	 */
-	public int getId() {
-		return this.id;
+	public int getPrivlevel() {
+		return this.privlevel;
 	}
 
 	/**
