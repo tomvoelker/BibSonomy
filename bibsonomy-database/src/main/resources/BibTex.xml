@@ -76,7 +76,7 @@
 		      WHERE <include refid="conceptWhereQuery"/>
 		            <include refid="inGroups"/>
 		            AND t1.content_type = #contentType#
-		            AND t1.user_name = #userName#
+		            AND t1.user_name = #requestedUserName#
 		            AND t1.content_id = b.content_id
 		      GROUP BY b.content_id
 		      ORDER BY t1.date DESC
