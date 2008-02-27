@@ -58,15 +58,14 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy{
 			
 			// fill the document object with all necessary informations
 			doc.setUserName(this.userName);
-			doc.setResourceHash(this.resourceHash);
 			doc.setFileName(up.getFileName());
 			doc.setFileHash(up.getFileHash());
 			
-			final String fileHash = this.getLogic().addDocument(doc);
+			final String fileHash = this.getLogic().addDocument(doc, this.resourceHash);
 			
 			// write the file to the hdd
 			up.writeUploadedFiles(this.rootPath, this.docPath);
-			uri = this.projectHome + "api/users/" + doc.getUserName() + "/posts/" + doc.getResourceHash() + "/documents/" + doc.getFileName(); 
+			uri = this.projectHome + "api/users/" + doc.getUserName() + "/posts/" + this.resourceHash + "/documents/" + doc.getFileName(); 
 			
 			return uri;
 		} catch (Exception ex) {

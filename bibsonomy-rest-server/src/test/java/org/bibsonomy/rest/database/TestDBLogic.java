@@ -716,7 +716,7 @@ public class TestDBLogic implements LogicInterface {
 		return null;
 	}
 
-	public String addDocument(Document doc) {
+	public String addDocument(Document doc, String resourceHash) {
 		return null;
 	}
 
