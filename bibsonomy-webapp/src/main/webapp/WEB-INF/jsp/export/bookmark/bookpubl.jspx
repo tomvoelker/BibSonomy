@@ -19,11 +19,11 @@
   </head>
   <body>
   
-  <h1>Bookmarks</h1>
+  <h1><fmt:message key="bookmarks"/></h1>
   
   <c:forEach var="post" items="${command.bookmark.list}">
   ${post.resource.title}
-  <br><a href="${post.resource.url}">${post.resource.url}</a></br>
+  <br>${mtl:ch('nbsp')}${mtl:ch('nbsp')}<a href="${post.resource.url}">${post.resource.url}</a></br>
   </c:forEach>
  </body>
 </html>
