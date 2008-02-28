@@ -81,7 +81,7 @@
 	</select>
 
 	<insert id="insertGroup" parameterClass="group">
-		INSERT INTO groupids (group_name, `group`, privlevel) VALUES (#name#, #groupId#, #privlevel#)
+		INSERT INTO groupids (group_name, `group`, privlevel, sharedDocuments) VALUES (#name#, #groupId#, #privlevel#, #sharedDocuments#)
 	</insert>
 
 	<delete id="deleteGroup" parameterClass="int">
