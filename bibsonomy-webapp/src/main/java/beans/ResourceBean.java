@@ -17,7 +17,7 @@ public class ResourceBean implements Serializable {
 	 */
 	private static final long serialVersionUID = 3257854931056922929L;
 	
-	private static final int MAX_ELEMENTS_TO_SORT = 500;
+	private static final int MAX_ELEMENTS_TO_SORT = 1000;
 	
 	private LinkedList <Bookmark>bookmarks;
 	private LinkedList <Bibtex>bibtex;
