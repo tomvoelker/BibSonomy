@@ -20,6 +20,7 @@ public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
 	private final GroupingEntity grouping;
 	private final String groupingValue;
 	private final String regex;
+	private final String hash;
 	
 	/**
 	 * @param context
@@ -28,6 +29,7 @@ public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
 		super(context);
 		this.grouping = chooseGroupingEntity();
 		this.resourceType = Resource.getResource(context.getStringAttribute("resourcetype", "all"));
+		this.hash = context.getStringAttribute("resource", null);
 		
 		if (this.grouping != GroupingEntity.ALL) {
 			this.groupingValue = context.getStringAttribute(this.grouping.toString().toLowerCase(), null);
@@ -46,9 +48,12 @@ public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
 		if (regex != null) {
 			sb.append("&").append("filter=").append(regex);
 		}
-		if (this.resourceType != Resource.class) {
-			sb.append("&resourcetype=").append(Resource.toString(this.resourceType).toLowerCase());
+		if (resourceType != Resource.class) {
+			sb.append("&resourcetype=").append(Resource.toString(resourceType).toLowerCase());
 		}
+		if (hash != null) {
+			sb.append("&resource=").append(hash);
+		}		
 	}
 
 	@Override
@@ -58,7 +63,7 @@ public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
 
 	@Override
 	protected List<Tag> getList() {
-		return this.getLogic().getTags(resourceType, grouping, groupingValue, regex, null, null, this.getView().getStartValue(), this.getView().getEndValue(), null);
+		return this.getLogic().getTags(resourceType, grouping, groupingValue, regex, null, hash, null, this.getView().getStartValue(), this.getView().getEndValue(), null);
 	}
 
 	@Override

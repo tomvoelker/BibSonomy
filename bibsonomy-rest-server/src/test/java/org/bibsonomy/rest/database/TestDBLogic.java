@@ -129,7 +129,7 @@ public class TestDBLogic implements LogicInterface {
 	/**
 	 * note: the regex is currently not considered
 	 */
-	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags_, Order order, int start, int end, String search) {
+	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags_, String hash, Order order, int start, int end, String search) {
 		final List<Tag> tags = new LinkedList<Tag>();
 
 		switch (grouping) {
