@@ -98,13 +98,15 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @param regex
 	 *            a regular expression used to filter the tagnames
 	 * @param tags
+	 * @param hash
+				  a resource hash (bibtex or bookmark)
 	 * @param order 
 	 * @param start
 	 * @param end
 	 * @param search - search string
 	 * @return a set of tags, en empty set else
 	 */
-	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, Order order, int start, int end, String search);
+	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, String hash, Order order, int start, int end, String search);
 
 	/**
 	 * Returns details about a tag. Those details are:
