@@ -67,7 +67,7 @@ public class TagCloudBean {
 
 	public List<Tag> getTags() {
 		if (logic != null && tags == null) {			
-			tags = logic.getTags(Resource.class, GroupingEntity.GROUP, groupingName , "", requTagsList, null, 0, 25, null);			
+			tags = logic.getTags(Resource.class, GroupingEntity.GROUP, groupingName , "", requTagsList, null, null, 0, 25, null);			
 		}
 		return tags;
 	}
