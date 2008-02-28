@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.tag.TagChain;
 import org.bibsonomy.database.params.TagParam;
@@ -450,4 +451,92 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	public List<Tag> getRelatedTagsOrderedByFolkrank(TagParam param, DBSession session){
 		return this.queryForList("getRelatedTagsOrderedByFolkrank", param, Tag.class, session);
 	}
+	
+	/**
+	 * retrieve tags attached to a bookmark with a given hash
+	 * 
+	 * @param loginUserName
+	 * @param hash
+	 * @param limit
+	 * @param offset
+	 * @param session
+	 * @return a list of tags attached to the bookmark with the given hash
+	 */
+	public List<Tag> getTagsByBookmarkHash(final String loginUserName, final String hash, int limit, int offset, final DBSession session) {
+		TagParam param = new TagParam();
+		param.setHash(hash);
+		param.setUserName(loginUserName);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
+		return this.queryForList("getTagsByBookmarkHash", param, Tag.class, session);
+	}
+	
+	/**
+	 * retrieve tags attached to a bookmark with a given hash for a given user
+	 * 
+	 * @param loginUserName
+	 * @param requestedUserName
+	 * @param hash
+	 * @param limit
+	 * @param offset
+	 * @param session
+	 * @return a list of tags attached to the given user's bookmark with the given hash
+	 */
+	public List<Tag> getTagsByBookmarkHashForUser(final String loginUserName, final String requestedUserName, final String hash, int limit, int offset, final DBSession session) {
+		TagParam param = new TagParam();
+		param.setHash(hash);
+		param.setUserName(loginUserName);
+		param.setRequestedUserName(requestedUserName);
+		param.setLimit(limit);
+		param.setOffset(offset);		
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
+		return this.queryForList("getTagsByBookmarkHash", param, Tag.class, session);
+	}
+	
+	/**
+	 * retrieve tags attached to a bibtex with the given hash
+	 * 
+	 * @param loginUserName
+	 * @param hash
+	 * @param hashId
+	 * @param limit
+	 * @param offset
+	 * @param session
+	 * @return a list of tags attached to a bibtex with the given hash
+	 */
+	public List<Tag> getTagsByBibtexHash(final String loginUserName, final String hash, final HashID hashId, int limit, int offset, final DBSession session) {
+		TagParam param = new TagParam();
+		param.setHash(hash);
+		param.setHashId(hashId);
+		param.setUserName(loginUserName);
+		param.setLimit(limit);
+		param.setOffset(offset);		
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
+		return this.queryForList("getTagsByBibtexHash", param, Tag.class, session);
+	}
+	
+	/**
+	 * retrieve tags attached to a bibtex of a given user with the given hash
+	 * 
+	 * @param loginUserName
+	 * @param requestedUserName
+	 * @param hash
+	 * @param hashId
+	 * @param limit
+	 * @param offset
+	 * @param session
+	 * @return a list of tags attached to a given user's bibtex with the given hash
+	 */
+	public List<Tag> getTagsByBibtexHashForUser(final String loginUserName, final String requestedUserName, final String hash, final HashID hashId, int limit, int offset, final DBSession session) {
+		TagParam param = new TagParam();
+		param.setHash(hash);
+		param.setHashId(hashId);
+		param.setUserName(loginUserName);
+		param.setRequestedUserName(requestedUserName);
+		param.setLimit(limit);
+		param.setOffset(offset);		
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
+		return this.queryForList("getTagsByBibtexHash", param, Tag.class, session);
+	}	
 }

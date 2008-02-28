@@ -35,6 +35,10 @@ public class GetTagsViewable extends TagChainElement {
 
 	@Override
 	protected boolean canHandle(final TagParam param) {
-		return (present(param.getUserName()) && param.getGrouping() == GroupingEntity.VIEWABLE && present(param.getRequestedGroupName())&& !present(param.getSearch()) && !present(param.getRegex()));
+		return present(param.getUserName()) && 
+			   param.getGrouping() == GroupingEntity.VIEWABLE && 
+			   present(param.getRequestedGroupName())&& 
+			   !present(param.getSearch()) && 
+			   !present(param.getRegex());
 	}
 }

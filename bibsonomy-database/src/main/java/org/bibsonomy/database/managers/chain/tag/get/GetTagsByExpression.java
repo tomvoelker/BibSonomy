@@ -30,6 +30,9 @@ public class GetTagsByExpression extends TagChainElement {
 
 	@Override
 	protected boolean canHandle(final TagParam param) {
-		return present(param.getRegex()) && present(param.getGrouping()) && param.getGrouping() == GroupingEntity.USER && present(param.getRequestedUserName());
+		return present(param.getRegex()) && 
+		       present(param.getGrouping()) && 
+		       param.getGrouping() == GroupingEntity.USER && 
+		       present(param.getRequestedUserName());
 	}
 }

@@ -235,4 +235,42 @@
 		ORDER BY 2 DESC
 		LIMIT #limit#
 	</select>
+	
+
+	<select id="getTagsByBookmarkHash" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+    	SELECT t.tag_name, count(t.tag_name) AS tag_ctr
+      	FROM (
+      		SELECT t1.tag_name 
+          	FROM tas t1, bookmark b
+          	WHERE t1.content_id = b.content_id
+			<isNotEmpty prepend="AND" property="requestedUserName">
+				t1.user_name=#requestedUserName#
+			</isNotEmpty>            	
+          	AND b.book_url_hash = #hash#
+          	<include refid="restrictToGroups"/>
+        ) AS t      
+      	GROUP BY t.tag_name
+      	ORDER BY 2 desc
+      	LIMIT #limit#
+      	OFFSET #offset#		
+	</select>
+		
+	<select id="getTagsByBibtexHash" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+    	SELECT t.tag_name, count(t.tag_name) AS tag_ctr
+      	FROM (
+        	SELECT t1.tag_name 
+          	FROM tas t1, bibtex b
+          	WHERE t1.content_id=b.content_id
+			<isNotEmpty prepend="AND" property="requestedUserName">
+				t1.user_name=#requestedUserName#
+			</isNotEmpty>          	
+          	AND b.simhash#hashId# = #hash#
+          	<include refid="restrictToGroups"/>
+        ) AS t      
+      	GROUP BY t.tag_name
+      	ORDER BY 2 desc
+      	LIMIT #limit#
+      	OFFSET #offset#
+	</select>
+	
 </sqlMap>

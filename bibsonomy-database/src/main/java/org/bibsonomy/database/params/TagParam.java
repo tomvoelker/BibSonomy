@@ -2,6 +2,7 @@ package org.bibsonomy.database.params;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
@@ -24,6 +25,7 @@ public class TagParam extends GenericParam {
 	private String stem;
 	private int count;
 	private int usercount;
+	private HashID hashId;
 
 	/**
 	 * Decides whether to retrieve the subtags of the current tag
@@ -139,4 +141,13 @@ public class TagParam extends GenericParam {
 	public void setRetrieveSuperTags(boolean retrieveSuperTags) {
 		this.retrieveSuperTags = retrieveSuperTags;
 	}
+
+	public int getHashId() {
+		return this.hashId.getId();
+	}
+
+	public void setHashId(HashID hashId) {
+		this.hashId = hashId;
+	}
+
 }

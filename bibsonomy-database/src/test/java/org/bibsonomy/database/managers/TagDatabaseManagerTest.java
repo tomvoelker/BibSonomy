@@ -5,6 +5,8 @@ import java.util.List;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.model.Tag;
 import org.junit.Test;
 
@@ -60,7 +62,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 	
 	@Test
-	public void getTagsByBookmarkResource() {
+	public void getTagsByBookmarkResourceType() {
 		// declare the resource type
 		this.tagParam.setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
 		this.tagParam.setRequestedUserName("hotho");
@@ -80,7 +82,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
 	
 	@Test
-	public void getTagsByBibtexResource() {
+	public void getTagsByBibtexResourceType() {
 		// declare the resource type
 		this.tagParam.setContentType(ConstantID.BIBTEX_CONTENT_TYPE);
 		this.tagParam.setRequestedUserName("hotho");
@@ -152,6 +154,57 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	    this.tagDb.getTagsAuthor(this.tagParam, this.dbSession);
 		//System.out.println(tags.size());
 		//assertEquals(10, tags.size());
+	}
+	
+
+	/**
+	 * this is just a dummy test to check if the function works; please adapt
+	 * it to check it the correct tags are returned when migrating to the new 
+	 * test framwork (dbe)
+	 */
+	@Test
+	public void getTagsByBibtexHash() {
+		String loginUserName = "hotho";
+		String hash = "palim palim";
+		List<Tag> tags = this.tagDb.getTagsByBibtexHash(loginUserName, hash, HashID.INTER_HASH, 0, 20, this.dbSession);
+	}
+	
+	/**
+	 * this is just a dummy test to check if the function works; please adapt
+	 * it to check it the correct tags are returned when migrating to the new 
+	 * test framwork (dbe)
+	 */
+	@Test
+	public void getTagsByBibtexHashForUser() {
+		final String loginUserName = "hotho";
+		final String requestedUserName = "hotho";
+		final String hash = "palim palim";
+		List<Tag> tags = this.tagDb.getTagsByBibtexHashForUser(loginUserName, requestedUserName, hash, HashID.INTER_HASH, 0, 20, this.dbSession);	
+	}
+	
+	/**
+	 * this is just a dummy test to check if the function works; please adapt
+	 * it to check it the correct tags are returned when migrating to the new 
+	 * test framwork (dbe)
+	 */
+	@Test
+	public void getTagsByBookmarkHash() {
+		String loginUserName = "hotho";
+		String hash = "palim palim";
+		List<Tag> tags = this.tagDb.getTagsByBookmarkHash(loginUserName, hash, 0, 20, this.dbSession);
+	}
+	
+	/**
+	 * this is just a dummy test to check if the function works; please adapt
+	 * it to check it the correct tags are returned when migrating to the new 
+	 * test framwork (dbe)
+	 */
+	@Test
+	public void getTagsByBookmarkHashForUser() {
+		final String loginUserName = "hotho";
+		final String requestedUserName = "hotho";
+		final String hash = "palim palim";		
+		List<Tag> tags = this.tagDb.getTagsByBookmarkHashForUser(loginUserName, requestedUserName, hash, 0, 20, this.dbSession);
 	}
 
 	

@@ -23,6 +23,8 @@ public class GetRelatedTagsForGroup extends TagChainElement {
 	
 	@Override
 	protected boolean canHandle(TagParam param) {
-		return present(param.getRequestedGroupName()) && param.getGrouping() == GroupingEntity.GROUP && present(param.getTagIndex());
+		return present(param.getRequestedGroupName()) && 
+		       param.getGrouping() == GroupingEntity.GROUP && 
+		       present(param.getTagIndex());
 	}
 }

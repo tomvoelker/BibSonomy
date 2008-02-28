@@ -24,6 +24,8 @@ public class GetAllTags extends TagChainElement {
 
 	@Override
 	protected boolean canHandle(final TagParam param) {
-		return param.getGrouping() == GroupingEntity.ALL && !present(param.getTagIndex());
+		return param.getGrouping() == GroupingEntity.ALL && 
+			   !present(param.getTagIndex()) &&
+			   !present(param.getHash());
 	}
 }

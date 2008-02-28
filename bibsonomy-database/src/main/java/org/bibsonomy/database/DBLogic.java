@@ -248,7 +248,7 @@ public class DBLogic implements LogicInterface {
 	 * @param search
 	 * @return list of tags
 	 */
-	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final Order order, final int start, final int end, String search) {
+	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final String hash, final Order order, final int start, final int end, String search) {
 		if (grouping.equals(GroupingEntity.ALL)) {
 			this.permissionDBManager.checkStartEnd(start, end, "Tag");
 		}				
@@ -256,7 +256,7 @@ public class DBLogic implements LogicInterface {
 		final List<Tag> result;
 
 		try {
-			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, this.loginUser.getName(), grouping, groupingName, tags, null, order, start, end, search);
+			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search);
 
 			if (resourceType == BibTex.class || resourceType == Bookmark.class || resourceType == Resource.class) {
 				// this is save because of RTTI-check of resourceType argument which is of class T
