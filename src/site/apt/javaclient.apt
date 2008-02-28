@@ -7,35 +7,39 @@ Java client library
   The client library consists of multiple jars which must be added to your
   Java project's classpath. Those jars are: 
 
-  * <<Bibsonomy webservice>>:\
-    The webservice client itself consists of four jars:
+  * <<Bibsonomy webservice>>:
+    The webservice client itself consists of five jars:
 
     * <<<bibsonomy-rest-client.jar>>> (client library classes)
     
     * <<<bibsonomy-rest-common.jar>>> (REST API core classes)
+
+    * <<<bibsonomy-bibtex-parser.jar>>> (BibTeX parsing module)
     
     * <<<bibsonomy-model.jar>>> (bibsonomy data model classes)
 
     * <<<bibsonomy-common.jar>>> (shared library of bibsonomy).
 
-  * <<Apache HTTP-Client>>:\
+  * <<Apache HTTP-Client>>:
     The HTTP client libraries by the apache software foundation are used for the
-    HTTP communication:
+    HTTP communication, log4j is used for logging:
 
-    * <<<commons-httpclient.jar>>> which uses 
+    * <<<commons-httpclient-3.0.jar>>> which uses 
     
-    * <<<commons-codec.jar>>> and
+    * <<<commons-codec-1.2.jar>>> and
     
-    * <<<commons-logging.jar>>>.
+    * <<<commons-logging-1.1.jar>>>
+
+    * <<<log4j-1.2.14.jar>>>.
     
-  * <<Java Architecture for XML Binding>> (JAXB):\
+  * <<Java Architecture for XML Binding>> (JAXB):
     The client uses JAXB to (de)serialize the XML exchange documents:
 
-    * <<<jaxb-api.jar>>>
+    * <<<jaxb-api-2.0.jar>>>
 
-    * <<<jsr173_api.jar>>>
+    * <<<jsr173_api-1.0.jar>>>
 
-    * <<<activation.jar>>>
+    * <<<activation-1.1.jar>>>
 
 
 * Using the client library
@@ -54,38 +58,59 @@ Java client library
   object (use the <<<ProgressCallback>>> interface). The return values of your query are
   available via the <<<getResult>>> and <<<getHttpStatusCode>>> methods of the <<<AbstractQuery>>>. 
 
-  Here is a simple example of how to use the client library:
+  Here is a simple example class that demonstrates how to use the client library:
 
 --------------------------------------------
-  // create webservice client object
-  Bibsonomy bib = new Bibsonomy( "myUserName", "mySecretPassword" );
 
-  // instantiate query object
-  GetPostsQuery gpq = new GetPostsQuery();
+import java.util.List;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.rest.client.Bibsonomy;
+import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
+import org.bibsonomy.rest.client.queries.get.GetPostsQuery;
 
-  // some queries can be parametrized
-  // -> in this example we want to fetch only bibtex entries
-  gpq.setResourceType( BibTex.class );
+public class apitest {
 
-  try {
-    // perform query
-    bib.executeQuery( gpq );
+	public static void main(String[] args) {
+		
+		// BasicConfigurator.configure();
+		
+		// create webservice client object with credentials, set API URL
+		Bibsonomy bib = new Bibsonomy("username", "api-key");
+		bib.setApiURL("http://www.bibsonomy.org/api");
 
-    // on success, read results
-    if( gpq.getHttpStatusCode() == 200 ) {
-      List<Post> posts = gpq.getResult();
+		// instantiate query object
+		GetPostsQuery gpq = new GetPostsQuery();
 
-      for( Post post: posts ) {
-      /*
-       * now do something with your posts :)
-       */
-      }
-    }
-  } catch( ErrorPerformingRequestException e ) {
-    /*
-     * happens on network failure for example
-     */
-  }
+		// some queries can be parametrized
+		// -> in this example we want to fetch only bibtex entries
+		gpq.setResourceType(BibTex.class);
+
+		try {
+			// perform query
+			bib.executeQuery(gpq);
+
+			// on success, read results
+			if (gpq.getHttpStatusCode() == 200) {
+				List<Post<?>> posts = gpq.getResult();
+
+				for (Post post : posts) {
+					/*
+					 * now do something with your posts :)
+					 * e.g. print the bibtex keys
+					 */					
+					BibTex bibEntry = (BibTex) post.getResource();
+					System.out.println(bibEntry.getBibtexKey());
+				}
+			}
+		} catch (ErrorPerformingRequestException e) {
+			/*
+			 * happens on network failure for example
+			 */
+		}
+	}
+}
+
 --------------------------------------------
 
   A whole example application for managing bookmarks and publications, demonstrating the 
