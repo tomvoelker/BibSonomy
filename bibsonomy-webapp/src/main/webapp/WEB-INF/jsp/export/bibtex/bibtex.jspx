@@ -10,7 +10,9 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 <jsp:directive.page contentType="text/plain; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-<c:set var="entries" value="title,address,annote,author,booktitle,chapter,crossref,edition,editor,howpublished,institution,journal,month,note,number,organization,pages,publisher,school,series,type,volume,year,day,url,BKey,bibtexAbstract,entrytype"/>
+
+<c:set var="entries" value="title,address,annote,author,booktitle,chapter,crossref,edition,editor,howpublished,institution,journal,month,note,number,organization,pages,publisher,school,series,type,volume,year,day,url,BKey,bibtexAbstract"/>
+
 <c:forEach var="post" items="${command.bibtex.list}">
 	<c:set var="bibtex" value="${post.resource}"/> 
 <jsp:text>@${bibtex.entrytype}{${bibtex.bibtexKey},
@@ -38,9 +40,16 @@
 	</jsp:text>
 	</c:forEach>
 	</c:if>
-	<jsp:text>biburl = {${projectHome}bibtex/2${bibtex['intraHash']}/${post.user['name']}}
+	<c:if test="${not empty post.description}">
+	<jsp:text>description = {${post.description}},
+	</jsp:text>
+	</c:if>
+	<jsp:text>biburl = {${projectHome}bibtex/2${bibtex['intraHash']}/${post.user['name']}},
+	</jsp:text>
+	<jsp:text>keywords = {${mtl:toTagString(post.tags)}}
 </jsp:text>
 <jsp:text>}
+
 </jsp:text>
 </c:forEach>
 </jsp:root>
