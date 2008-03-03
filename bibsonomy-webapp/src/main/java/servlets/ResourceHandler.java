@@ -102,8 +102,8 @@ public class ResourceHandler extends HttpServlet{
 	private static final String REQ_PARAM_START_BIB="startBib";
 	private static final String REQ_PARAM_START_BOOK_NEW="bookmark.start";
 	private static final String REQ_PARAM_START_BIB_NEW="bibtex.start";
-	private static final String REQ_PARAM_PPP_BOOK="bookmark.postsPerPage";
-	private static final String REQ_PARAM_PPP_BIBTEX="bibtex.postsPerPage";
+	private static final String REQ_PARAM_PPP_BOOK="bookmark.entriesPerPage";
+	private static final String REQ_PARAM_PPP_BIBTEX="bibtex.entriesPerPage";
 	private static final String REQ_PARAM_SHOW_PDF = "myPDF";
 	private static final String REQ_PARAM_DUPLICATES = "myDuplicates";
 	private static final String REQ_PARAM_BIBTEXKEY = "requKey";
