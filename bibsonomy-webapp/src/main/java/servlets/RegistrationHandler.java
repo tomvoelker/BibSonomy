@@ -82,7 +82,7 @@ public class RegistrationHandler extends HttpServlet {
 		Connection        conn = null;
 		ResultSet         rst  = null;
 		PreparedStatement stmt = null;
-		HttpSession session = request.getSession(true);
+		final HttpSession session = request.getSession(true);
 
 		try {
 			synchronized(dataSource) {
@@ -242,7 +242,6 @@ public class RegistrationHandler extends HttpServlet {
 				/* 
 				 * a new user wants to register  
 				 */
-
 				// TODO: problem: this is the proxy servers address!? :-(
 				String inetAddress = request.getHeader("x-forwarded-for");
 
@@ -259,17 +258,26 @@ public class RegistrationHandler extends HttpServlet {
 					return;
 				}
 
+				/*
+				 * check, if user has cookies enabled (there should be at least a "JSESSIONID" cookie)
+				 */
+				if (request.getCookies() == null || request.getCookies().length < 1) {
+					bean.setErrors("general", "Please enable cookies in your browser.");
+					getServletConfig().getServletContext().getRequestDispatcher("/register").forward(request, response);
+					return;					
+				}
 
 				// check captcha (see http://tanesha.net/projects/recaptcha4j/)
-				ReCaptcha captcha = ReCaptchaFactory.newReCaptcha(reCaptchaPublicKey, reCaptchaPrivateKey, false);
-				ReCaptchaResponse captchaAnswer = captcha.checkAnswer(request.getRemoteAddr(), request.getParameter("recaptcha_challenge_field"), request.getParameter("recaptcha_response_field"));
+				final ReCaptcha captcha = ReCaptchaFactory.newReCaptcha(reCaptchaPublicKey, reCaptchaPrivateKey, false);
+				final ReCaptchaResponse captchaAnswer = captcha.checkAnswer(request.getRemoteAddr(), request.getParameter("recaptcha_challenge_field"), request.getParameter("recaptcha_response_field"));
 
+				
+				
 				if (captchaAnswer == null) { 
-					/* We could not get the original captcha. 
-					 * The most likely error is that the user has disabled Cookies and therefore
-					 * we can't track his session and get the captcha.
+					/* 
+					 * We could not get the original captcha. 
 					 */
-					bean.setErrors("general", "Please enable cookies in your browser for the system to work.");
+					bean.setErrors("general", "Sorry, we could not get check your code. Please try again.");
 					getServletConfig().getServletContext().getRequestDispatcher("/register").forward(request, response);
 					return;					
 				} else if (!captchaAnswer.isValid()){
@@ -279,10 +287,11 @@ public class RegistrationHandler extends HttpServlet {
 					return;
 				}
 
+				
 
 				boolean userExists = false;
-				String username = bean.getUserName();
-
+				final String username = bean.getUserName();
+				
 				/* check, if username is already in database */
 				stmt = conn.prepareStatement("SELECT user_name FROM user WHERE user_name = ?");
 				stmt.setString(1, bean.getUserName());
