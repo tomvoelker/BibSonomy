@@ -161,8 +161,8 @@ public class ModelValidationUtils {
 		if (xmlBibtex.getYear() == null) throw new InvalidModelException(XML_IS_INVALID_MSG + "year is missing in element 'bibtex'");
 		if (xmlBibtex.getBibtexKey() == null) throw new InvalidModelException(XML_IS_INVALID_MSG + "bibtex key is missing in element 'bibtex'");
 		if (xmlBibtex.getEntrytype() == null) throw new InvalidModelException(XML_IS_INVALID_MSG + "bibtex entry type is missing in element 'bibtex'");
-		if (xmlBibtex.getAuthor() == null && xmlBibtex.getEditor() == null) 
-			throw new InvalidModelException(XML_IS_INVALID_MSG + "editor(s) and author(s) are missing (one of the two is required) in element 'bibtex'");
+		// if (xmlBibtex.getAuthor() == null && xmlBibtex.getEditor() == null) 
+			// throw new InvalidModelException(XML_IS_INVALID_MSG + "editor(s) and author(s) are missing (one of the two is required) in element 'bibtex'");
 		// do not test hash value - it depends on the request if its available,
 		// so we check it later
 		// if( xmlBibtex.getIntrahash() == null ) throw new InvalidXMLException(
