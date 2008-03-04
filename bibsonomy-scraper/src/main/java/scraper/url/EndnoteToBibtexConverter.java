@@ -20,8 +20,7 @@ public class EndnoteToBibtexConverter {
 	private static Map<String,String> endnoteToBibtexEntryTypeMap = new HashMap<String,String>();
 	private static Map<String,String> endnoteToBibtexFieldMap     = new HashMap<String,String>();
 	
-	private static final Pattern _eachLinePattern       = Pattern.compile("(?s)%\\w{1}\\s{1}.+?(?=%\\w{1}\\s{1})|%\\w{1}\\s{1}.++");
-	private static final Pattern _dataExtractionPattern = Pattern.compile("(?s)(?<=%\\w{1}\\s{1}).+");
+	private static final Pattern _eachLinePattern       = Pattern.compile("(?s)((%\\S)\\s*(([^%]|%\\s)*))");
 
 	
 	static {
@@ -66,6 +65,8 @@ public class EndnoteToBibtexConverter {
 		//initialise all necessary vars
 		String _tempLine = null;
 		String _tempData = null;
+		
+		String _endnoteType = null;
 		Map<String,String> _resultBibtexFields = new HashMap<String,String>();
 		
 		try {
@@ -75,9 +76,13 @@ public class EndnoteToBibtexConverter {
 			//process each line
 			while (_eachLineMatcher.find()){
 				
-				//temporarily save the line in a String var
 				_tempLine = _eachLineMatcher.group(0).trim();
+				_endnoteType = _eachLineMatcher.group(2).trim();
+				_tempData = _eachLineMatcher.group(3).trim();
 				
+				if (_tempData == null){
+					continue;
+				}
 				
 				/*
 				 * map the reference type
@@ -86,34 +91,20 @@ public class EndnoteToBibtexConverter {
 					_resultBibtexFields.put("type", endnoteToBibtexEntryTypeMap.get(_tempLine));
 				} else {
 					/*
-					 * extract all other data
-					 * 
-					 * /(?s)(?<=%\\w{1}\\s{1}).+/
-					 * 
+					 * handle standard fields
 					 */
-					Matcher _dataExtractionMatcher = _dataExtractionPattern.matcher(_eachLineMatcher.group(0));
-					
-					if (_dataExtractionMatcher.find()){
-						_tempData = _dataExtractionMatcher.group(0).trim();
-						
-						/*
-						 * handle standard fields
-						 */
-						String firstWord = _tempLine.substring(0, _tempLine.indexOf(" ")); // TODO: aus Matcher holen
-						if (endnoteToBibtexFieldMap.containsKey(firstWord)) {
-							final String bibtexFieldName = endnoteToBibtexFieldMap.get(firstWord);
-							
-							if (_resultBibtexFields.containsKey(bibtexFieldName)) {
-								/*
-								 * field already contained: special handling!
-								 */
-								if ("author".equals(bibtexFieldName)) {
-									final String newAuthor = _resultBibtexFields.get(bibtexFieldName) + " and " + _tempData;
-									_resultBibtexFields.put(bibtexFieldName, newAuthor);
-								}
-							} else {
-								_resultBibtexFields.put(bibtexFieldName, _tempData);
+					if (endnoteToBibtexFieldMap.containsKey(_endnoteType)) {
+						final String bibtexFieldName = endnoteToBibtexFieldMap.get(_endnoteType);
+						if (_resultBibtexFields.containsKey(bibtexFieldName)) {
+							/*
+							 * field already contained: special handling!
+							 */
+							if ("author".equals(bibtexFieldName)) {
+								final String newAuthor = _resultBibtexFields.get(bibtexFieldName) + " and " + _tempData;
+								_resultBibtexFields.put(bibtexFieldName, newAuthor);
 							}
+						} else {
+							_resultBibtexFields.put(bibtexFieldName, _tempData);
 						}
 					}
 				}
@@ -133,8 +124,8 @@ public class EndnoteToBibtexConverter {
 			/*
 			 * build the bibtex key
 			 */
+			
 			_resultBibtexFields.put("key", BibTexUtils.generateBibtexKey(_resultBibtexFields.get("author"), _resultBibtexFields.get("editor"), _resultBibtexFields.get("year"), _resultBibtexFields.get("title")));
-
 			
 		} catch (Exception e){
 			log.fatal("Could not process the data: " + e);
