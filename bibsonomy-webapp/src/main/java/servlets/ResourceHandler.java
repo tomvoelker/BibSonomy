@@ -1887,10 +1887,9 @@ public class ResourceHandler extends HttpServlet{
 		String bookQuery = "SELECT bb.content_id,bb.book_url_hash,bb.book_description,bb.book_extended,bb.date,bb.user_name,bb.rating,bb.book_url,bb.book_url_ctr,t.tag_name"
 			+ "  FROM "
 			+ "    (SELECT b.content_id,b.book_url_hash,b.book_description,b.book_extended,b.date,b.user_name,b.rating,u.book_url,u.book_url_ctr" 
-			+ "       FROM bookmark b, urls u, search s" 
+			+ "       FROM bookmark b, urls u, search_bookmark s" 
 			+ "       WHERE s.group = " + constants.SQL_CONST_GROUP_PUBLIC 
 			+ "         AND MATCH (s.content) AGAINST (? IN BOOLEAN MODE) "
-			+ "         AND s.content_type = " + Bookmark.CONTENT_TYPE
 			+ "         AND u.book_url_hash = b.book_url_hash"
 			+ "         AND s.content_id = b.content_id "
 			+ usersearch
@@ -1909,10 +1908,9 @@ public class ResourceHandler extends HttpServlet{
 		c.bibStmtP = c.conn.prepareStatement("SELECT " + getBibtexSelect ("bb") + ",t.tag_name, bb.ctr"
 				+ "  FROM "
 				+ "    (SELECT " + getBibtexSelect ("b") + ", h.ctr"
-				+ "       FROM bibtex b, bibhash h, search s " 
+				+ "       FROM bibtex b, bibhash h, search_bibtex s " 
 				+ "       WHERE s.group = " + constants.SQL_CONST_GROUP_PUBLIC
 				+ "         AND MATCH (s.content) AGAINST (? IN BOOLEAN MODE)"
-				+ "         AND s.content_type = " + Bibtex.CONTENT_TYPE
 				+ "         AND b.simhash" + Bibtex.INTER_HASH + " = h.hash"
 				+ "         AND h.type = " + Bibtex.INTER_HASH
 				+ "         AND b.content_id = s.content_id "
@@ -1930,9 +1928,9 @@ public class ResourceHandler extends HttpServlet{
 		c.bibStmtP.setInt(argCtr, startBib);
 
 		// counts 
-		c.bookTCStmtP = c.conn.prepareStatement("SELECT count(*) from search s WHERE s.group = " + constants.SQL_CONST_GROUP_PUBLIC + " AND MATCH (s.content) AGAINST (? IN BOOLEAN MODE) AND s.content_type = " + Bookmark.CONTENT_TYPE + usersearch);
+		c.bookTCStmtP = c.conn.prepareStatement("SELECT count(*) from search_bookmark s WHERE s.group = " + constants.SQL_CONST_GROUP_PUBLIC + " AND MATCH (s.content) AGAINST (? IN BOOLEAN MODE) " + usersearch);
 		c.bookTCStmtP.setString(1, search);
-		c.bibTCStmtP = c.conn.prepareStatement("SELECT count(*) from search s WHERE s.group = " + constants.SQL_CONST_GROUP_PUBLIC + " AND MATCH (s.content) AGAINST (? IN BOOLEAN MODE) AND s.content_type = " + Bibtex.CONTENT_TYPE + usersearch);
+		c.bibTCStmtP = c.conn.prepareStatement("SELECT count(*) from search_bibtex s WHERE s.group = " + constants.SQL_CONST_GROUP_PUBLIC + " AND MATCH (s.content) AGAINST (? IN BOOLEAN MODE) " + usersearch);
 		c.bibTCStmtP.setString(1, search);
 		if (requUser != null) {
 			c.bookTCStmtP.setString(2, requUser);
