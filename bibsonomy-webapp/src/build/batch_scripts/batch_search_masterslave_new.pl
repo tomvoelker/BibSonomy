@@ -90,7 +90,8 @@ my $stm_select_bibtex_content_id = $dbh->prepare ("SELECT content_id FROM $bibte
 my $stm_select_book = $dbh->prepare ("
   SELECT b.content_id, b.group, b.date, b.user_name, b.book_description, b.book_extended, u.book_url    
     FROM bookmark b JOIN urls u USING (book_url_hash)
-    WHERE b.content_id > ?");
+    WHERE b.content_id > ? 
+    AND b.group >= 0");
 
 # get all relevant bibtex from bibtex table
 my $stm_select_bib  = $dbh->prepare ("
@@ -102,14 +103,16 @@ my $stm_select_bib  = $dbh->prepare ("
          b.description,  b.annote,      b.note,         b.pages,          b.bKey, 
          b.number,       b.crossref,    b.misc,         b.bibtexAbstract, b.year
    FROM bibtex b
-   WHERE b.content_id > ?");
+   WHERE b.content_id > ? 
+   AND b.group >= 0");
 
 # get all relevant data from tas table
 my $stm_select_tas = $dbh->prepare ("
   SELECT content_id, tag_name
     FROM tas
     WHERE content_type = ? 
-    AND content_id > ?");
+    AND content_id > ? 
+    AND `group` >= 0");
 
 
 #################################
@@ -154,7 +157,7 @@ $stm_select_tas->finish();
 $stm_select_book->execute($last_bookmark_content_id);
 while (@row = $stm_select_book->fetchrow_array) {
     $ctr++;
-    my $content = clean_string("$row[4] $row[5] $row[6] $bookmark_tag_hash{$row[0]}");
+    my $content = clean_string("$row[4] $row[5] " . clean_url($row[6]) . " $bookmark_tag_hash{$row[0]}");
       
     # save data
     my @array = ($row[0], $content, $row[1], $row[2], $row[3]); 
@@ -312,6 +315,17 @@ sub clean_bibtex_string {
     $s = decode('latex', $s);
     return $s;
 }
+
+# some simple URL processing
+sub clean_url {
+    my $s = shift;
+    $s =~ s/.+\:\/\///g;                      # remove protocol
+    $s =~ s/www[0-9]*\.//g;                   # remove www.  www1. www2. ...
+    # remove frequent file extensions, index pages
+    $s =~ s/(index)*\.(html|htm|shtm|shtml|php|php3|php4|asp|cgi|pl|js|cfm|cfml|txt|text|ppt|pps)//g;
+    return $s;
+}
+
 
 # INPUT: location of lockfile
 # OUTPUT: 1, if a lockfile exists and a program with the pid inside 
