@@ -43,7 +43,7 @@ public class EndnoteToBibtexConverter {
 			String _fileToString = readLines(in);
 			
 			// split the endnote entry by 2 blank lines
-			String[] _endNoteParts = _fileToString.split("(?m)^\\n{2,}(?=%\\w{1}\\s{1})");
+			String[] _endNoteParts = _fileToString.split("(?m)^\\n{1}(?=%\\w{1}\\s{1})");
 			
 			// process each endnote entry
 			for (String part: _endNoteParts){
