@@ -174,7 +174,7 @@ my $stm_del = $dbh_master->prepare ("DELETE FROM $table WHERE content_id = ?");
 #################################
 # insert rows
 #################################
-$stm_disable_keys->execute() if ($database eq "search2");  # enable this, when building table from scratch
+$stm_disable_keys->execute() if ($table eq "search2");  # enable this, when building table from scratch
 
 $ctr = 0;
 while ($#data > -1) {
@@ -189,7 +189,7 @@ while ($#data > -1) {
 }
 
 $dbh_master->commit;
-$stm_enable_keys->execute() if ($database eq "search2");   # enable this, when building table from scratch
+$stm_enable_keys->execute() if ($table eq "search2");   # enable this, when building table from scratch
 
 
 
