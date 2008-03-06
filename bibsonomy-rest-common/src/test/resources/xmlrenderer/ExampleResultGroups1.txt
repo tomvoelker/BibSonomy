@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <bibsonomy stat="ok">
     <groups start="20" next="http://www.bibsonomy.org/api/foo/bar" end="30">
-        <group name="testName" href="http://localhost:8080/restTomcat/api/groups/testName" description="foo bar ..."/>
-        <group name="testName2" href="http://localhost:8080/restTomcat/api/groups/testName2"/>
+        <group name="testName" href="http://www.bibsonomy.org/api/groups/testName" description="foo bar ..."/>
+        <group name="testName2" href="http://www.bibsonomy.org/api/groups/testName2"/>
     </groups>
 </bibsonomy>

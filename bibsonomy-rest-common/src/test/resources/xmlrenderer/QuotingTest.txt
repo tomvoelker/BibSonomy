@@ -2,9 +2,9 @@
 <bibsonomy stat="ok">
     <posts start="0" next="http://foo.bar/posts?start=1&amp;end=2&amp;resourcetype=bookmark&amp;tags=a+-&gt;b+&lt;-c+&lt;-&gt;d&amp;hash=asd&amp;&amp;&amp;kjalsjdf" end="1">
         <post>
-            <user name="foo" href="http://localhost:8080/restTomcat/api/users/foo"/>
-            <tag name="bar"/>
-            <bookmark url="www.foobar.org" title="bookmarktitle" intrahash="aabbcc" interhash="aabbcc" href="http://localhost:8080/restTomcat/api/users/foo/posts/aabbcc"/>
+            <user name="foo" href="http://www.bibsonomy.org/api/users/foo"/>
+            <tag name="bar" href="http://www.bibsonomy.org/api/tags/bar"/>
+            <bookmark url="www.foobar.org" title="bookmarktitle" intrahash="aabbcc" interhash="aabbcc" href="http://www.bibsonomy.org/api/users/foo/posts/aabbcc"/>
         </post>
     </posts>
 </bibsonomy>

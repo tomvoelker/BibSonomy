@@ -9,6 +9,7 @@ import static org.bibsonomy.rest.RestProperties.Property.API_URL;
 import static org.bibsonomy.rest.RestProperties.Property.URL_GROUPS;
 import static org.bibsonomy.rest.RestProperties.Property.URL_POSTS;
 import static org.bibsonomy.rest.RestProperties.Property.URL_USERS;
+import static org.bibsonomy.rest.RestProperties.Property.URL_TAGS;
 import static org.bibsonomy.rest.RestProperties.Property.VALIDATE_XML_INPUT;
 import static org.bibsonomy.rest.RestProperties.Property.VALIDATE_XML_OUTPUT;
 
@@ -74,6 +75,7 @@ public class XMLRenderer implements Renderer {
 	private static XMLRenderer renderer;
 	private final String userUrlPrefix;
 	private final String groupUrlPrefix;
+	private final String tagUrlPrefix;
 	private final String postsUrlDelimiter;
 	private final Boolean validateXMLInput;
 	private final Boolean validateXMLOutput;
@@ -84,6 +86,7 @@ public class XMLRenderer implements Renderer {
 		final String apiUrl = properties.get(API_URL);
 		this.userUrlPrefix = apiUrl + properties.get(URL_USERS) + "/";
 		this.groupUrlPrefix = apiUrl + properties.get(URL_GROUPS) + "/";
+		this.tagUrlPrefix = apiUrl + properties.get(URL_TAGS) + "/";
 		this.postsUrlDelimiter = "/" + properties.get(URL_POSTS) + "/";
 		this.validateXMLInput = "true".equals( properties.get(VALIDATE_XML_INPUT) );
 		this.validateXMLOutput = "true".equals( properties.get(VALIDATE_XML_OUTPUT) );
@@ -152,6 +155,7 @@ public class XMLRenderer implements Renderer {
 				checkTag(t);
 				final TagType xmlTag = new TagType();
 				xmlTag.setName(t.getName());
+				xmlTag.setHref(this.createHrefForTag(t.getName()));
 				xmlPost.getTag().add(xmlTag);
 			}
 		}
@@ -310,8 +314,13 @@ public class XMLRenderer implements Renderer {
 		final TagType xmlTag = new TagType();
 		checkTag(tag);
 		xmlTag.setName(tag.getName());
-		xmlTag.setGlobalcount(BigInteger.valueOf(tag.getGlobalcount()));
-		xmlTag.setUsercount(BigInteger.valueOf(tag.getUsercount()));
+		xmlTag.setHref(createHrefForTag(tag.getName()));
+		// if (tag.getGlobalcount() > 0) {
+			xmlTag.setGlobalcount(BigInteger.valueOf(tag.getGlobalcount()));
+		// }
+		// if (tag.getUsercount() > 0) {
+			xmlTag.setUsercount(BigInteger.valueOf(tag.getUsercount()));
+		// }
 		
 		// add sub-/supertags - dbe, 20070718
 		if (tag.getSubTags() != null && tag.getSubTags().size() > 0) {			
@@ -621,6 +630,10 @@ public class XMLRenderer implements Renderer {
 	private String createHrefForUser(final String name) {
 		return this.userUrlPrefix + name;
 	}
+	
+	private String createHrefForTag(final String tag) {
+		return this.tagUrlPrefix + tag;
+	}	
 
 	private String createHrefForGroup(final String name) {
 		return this.groupUrlPrefix + name;
