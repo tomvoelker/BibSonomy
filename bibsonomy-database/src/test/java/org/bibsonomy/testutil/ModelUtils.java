@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -172,6 +173,9 @@ public class ModelUtils {
 			} catch (final MalformedURLException ex) {
 				throw new RuntimeException(ex);
 			}
+		}
+		if (Privlevel.class == type) {
+			return Privlevel.MEMBERS;
 		}
 		log.debug("no dummy value for type '" + type.getName() + "'");
 		return null;
