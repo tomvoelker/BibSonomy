@@ -1598,10 +1598,9 @@ public class ResourceHandler extends HttpServlet{
 		String query = "SELECT " + getBibtexSelect("tt") + ", t.tag_name, h.ctr"
 				   + "     FROM tas t, bibhash h,"    
 			       + "         (SELECT " + getBibtexSelect("b") + ",b.simhash" + Bibtex.INTER_HASH
-				   + "         FROM search s JOIN bibtex b ON (s.content_id = b.content_id "
+				   + "         FROM search_bibtex s JOIN bibtex b ON (s.content_id = b.content_id "
 				   + systemTags.generateSqlQuery(SystemTags.BIBTEX_YEAR, "b") + ")"
 				   + "         WHERE MATCH(s.author) AGAINST (? IN BOOLEAN MODE) " 
-				   + "         AND s.content_type= " + Bibtex.CONTENT_TYPE
 				   + "         AND s.group = " + constants.SQL_CONST_GROUP_PUBLIC
 				   + systemTags.generateSqlQuery(SystemTags.GROUP_NAME, "s")	
 				   + systemTags.generateSqlQuery(SystemTags.USER_NAME, "s")
@@ -1623,10 +1622,9 @@ public class ResourceHandler extends HttpServlet{
 
 		argCtr = 1;
 		//  counts
-		c.bibTCStmtP = c.conn.prepareStatement("SELECT count(*) FROM search s " 
+		c.bibTCStmtP = c.conn.prepareStatement("SELECT count(*) FROM search_bibtex s " 
 			            + " JOIN bibtex b USING (content_id)"
 				        + " WHERE MATCH(s.author) AGAINST (? IN BOOLEAN MODE) " 
-				        + " AND s.content_type = " + Bibtex.CONTENT_TYPE 
 				        + " AND s.group = " + constants.SQL_CONST_GROUP_PUBLIC
 				        + systemTags.generateSqlQuery(SystemTags.USER_NAME, "s") 	
 				        + systemTags.generateSqlQuery(SystemTags.GROUP_NAME, "s")
@@ -1661,9 +1659,8 @@ public class ResourceHandler extends HttpServlet{
 		String query = "SELECT " + getBibtexSelect("tt") + ", t.tag_name, h.ctr"		
 		+ "		FROM tas t, bibhash h,"			
 		+ "			(SELECT " + getBibtexSelect("b") + ", b.simhash" + Bibtex.INTER_HASH
-		+ "			 FROM search s, tas t1, bibtex b"
+		+ "			 FROM search_bibtex s, tas t1, bibtex b"
 		+ "			 WHERE MATCH(s.author) AGAINST (? IN BOOLEAN MODE)"
-		+ " 		 	AND s.content_type = " + Bibtex.CONTENT_TYPE
 		+ "			 	AND s.group = " + constants.SQL_CONST_GROUP_PUBLIC
 		+ "			 	AND s.content_id = t1.content_id"
 		+ "				AND b.content_id = s.content_id"			
@@ -1689,9 +1686,8 @@ public class ResourceHandler extends HttpServlet{
 
 		argCtr = 1;
 		// count 
-		c.bibTCStmtP = c.conn.prepareStatement(" SELECT count(*) FROM search s, tas t1, bibtex b"
+		c.bibTCStmtP = c.conn.prepareStatement(" SELECT count(*) FROM search_bibtex s, tas t1, bibtex b"
 				+ "			 WHERE MATCH(s.author) AGAINST (? IN BOOLEAN MODE)"
-				+ " 		 	AND s.content_type = " + Bibtex.CONTENT_TYPE
 				+ "			 	AND s.group = " + constants.SQL_CONST_GROUP_PUBLIC
 				+ "			 	AND s.content_id = t1.content_id "
 				+ "				AND s.content_id = b.content_id "	
