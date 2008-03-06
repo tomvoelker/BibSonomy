@@ -32,7 +32,7 @@ public class RestProperties {
 	 */
 	public static enum Property {
 		CONFIGFILE("RestConfig.cfg"),
-		API_URL("http://localhost:8080/restTomcat/api/"),
+		API_URL("http://www.bibsonomy.org/api/"),
 		CONTENT_TYPE("text/xml"),
 		API_USER_AGENT("BibsonomyWebServiceClient"),
 		URL_TAGS("tags"),
