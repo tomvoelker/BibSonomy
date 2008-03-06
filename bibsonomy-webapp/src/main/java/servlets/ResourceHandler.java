@@ -1174,9 +1174,8 @@ public class ResourceHandler extends HttpServlet{
 	 * @param startBib with which bibtex entry to start
 	 * @throws SQLException
 	 */
-	@Deprecated
 	private void queryPageUserTag (DBContext c, String currUser, String requUser, int requGroup, String requTag, int itemCount, int startBook, int startBib) throws SQLException {
-		log.fatal("queryPageUserTag: should never be called");
+		// log.fatal("queryPageUserTag: should never be called");
 		SplittedTags tags      = new SplittedTags(requTag, "", true);
 		String tagWhereQuery   = tags.getQuery();
 		String groupWhereQuery;
