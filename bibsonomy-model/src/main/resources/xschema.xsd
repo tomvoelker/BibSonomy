@@ -118,6 +118,8 @@
 		<xsd:attribute name="name" type="xsd:string" use="required"/>
 		<xsd:attribute name="globalcount" type="positiveIntegerIncludingZero"/>
 		<xsd:attribute name="usercount" type="positiveIntegerIncludingZero"/>
+		<!-- link to details page -->
+		<xsd:attribute name="href" type="xsd:anyURI"/>		
 	</xsd:complexType>
 
 	<!--
