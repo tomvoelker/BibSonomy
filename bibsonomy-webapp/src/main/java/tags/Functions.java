@@ -131,7 +131,11 @@ public class Functions  {
 			throw new RuntimeException(ex.getMessage());
 		}		
 	}
-	// TODO: please comment!
+	
+	/**
+	 * Cuts the last segment of the url string until last slash
+	 * @param uriString the url
+	 */
 	public static String getLowerPath (String uriString) {
 		URI uri; 
 		uriString = uriString.substring(0, uriString.lastIndexOf("/"));

@@ -13,10 +13,10 @@
 	
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
 	
-		<jsp:attribute name="heading">
+		<jsp:attribute name="heading">		
 		<a rel="path_menu" href="#"><fmt:message key="navi.concept"/>${mtl:ch('nbsp')}<img alt="" src="/resources/image/box_arrow.png"/></a> :: 
 		<c:if test="${not empty command.requestedUser}">user :: <a href="/concept/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> :: </c:if>
-		<form action="/tag/${fn:escapeXml(command.requestedTags)}" method="get" class="smallform">
+		<form action="/concept/tag/" method="get" class="smallform">
 		  <input type="text" size="20" name="tag" id="inpf" value="${command.requestedTags}"/>
 		</form>										
 		</jsp:attribute>
