@@ -65,8 +65,8 @@
 		       a.date, a.book_url_ctr AS count, gi.group_name, t.user_name, gi.group
 		FROM (SELECT DISTINCT b.content_id, u.book_url, b.book_url_hash, b.book_description AS title, b.book_extended AS description,
 		                      b.date, u.book_url_ctr, b.group
-		      FROM bookmark b, urls u, <include refid="tagFromQuery"/>
-		      WHERE <include refid="tagWhereQuery"/>
+		      FROM bookmark b, urls u, <include refid="conceptFromQuery"/>
+		      WHERE <include refid="conceptWhereQuery"/>
 		            <include refid="inGroups"/>
 		            AND t1.content_type = #contentType#
 		            AND t1.user_name = #requestedUserName#
