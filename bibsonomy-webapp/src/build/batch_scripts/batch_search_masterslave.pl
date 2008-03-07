@@ -17,6 +17,11 @@
 # Changes:
 #   2008-01-23: (rja)
 #   - initial version
+#   2008-02-28: (sts)
+#   - split search table 
+#   2008-03-07: (dbe)
+#   - removed spammers
+#   - added preprocessing of URLs
 #
 use DBI();
 use TeX::Encode;
@@ -25,10 +30,14 @@ use English;
 use strict;
 
 my $CONTENT_TYPE_BOOKMARK = 1;
-my $CONTENT_TYPE_BIBTEX = 2;
+my $CONTENT_TYPE_BIBTEX   = 2;
 
-if ($#ARGV != 1) {
-    print "please enter database name as first, and table name as second argument\n";
+# set to 1 to enable informative output - should be off when running as cron, because 
+# a mail is sent in case of script output
+my $enable_output = 0;
+
+if ($#ARGV != 2) {
+    print "please enter database name as first, bookmark table name as second and bibtex table name as last argument\n";
     exit;
 }
 
@@ -40,38 +49,57 @@ if (am_i_running($ENV{'TMP'}."/batch_search.pid")) {
 ########################################################
 # configuration
 ########################################################
-my $database = shift @ARGV;     # same db name on all hosts
-my $table    = shift @ARGV;     # same table name on all hosts
-my $user     = "batch";         # same user name on all databases
-my $password = $ENV{'DB_PASS'}; # same password on all databases
-# fit to slave
-my $slave    = "DBI:mysql:database=$database;host=localhost:3306;mysql_socket=/var/mysql/run/mysqld.sock";
-# fit to master
-my $master   = "DBI:mysql:database=$database;host=gandalf:6033";
+my $database       = shift @ARGV;     # same db name on all hosts
+my $bookmark_table = shift @ARGV;     # bookmark table name 
+my $bibtex_table   = shift @ARGV;     # bibtex table name 
 
+my $user     = "batch";         # same user name on all databases
+#my $password = $ENV{'DB_PASS'}; # same password on all databases
+my $password = "iphi5EeM";
+
+# master and slave databases 
+my $slave    = "DBI:mysql:database=$database;host=odie:3306;mysql_socket=/var/mysql/run/mysqld.sock";
+my $master   = "DBI:mysql:database=$database;host=gandalf:6033";
+#my $master  = "DBI:mysql:database=$database;host=localhost:3306;mysql_socket=/mnt/raid-db/mysql/run/mysqld.sock"; # for the local case
 
 # temporary variables
-my @row;                 # temporary rows from queries
-my @data = ();           # temporary data for search table
-my $last_content_id = 0; # default for populating table the first time
+my @row;                 			# temporary rows from queries
 my $ctr = 0;
-my %tag_hash;            # stores tags
+
+my @bookmark_data = ();          	# temporary data for search table
+my @bibtex_data   = ();            	# temporary data for search table
+
+my $last_bookmark_content_id = 0; 	# default for populating table the first time
+my $last_bibtex_content_id   = 0;   # default for populating table the first time
+
+my %bookmark_tag_hash;          	# stores tags of new bookmarks
+my %bibtex_tag_hash;            	# stores tags of new bibtex
 
 
 ########################################################
 # SLAVE
 #########################################################
+
+print "\n\n#################################\nStart script...\n#################################\n\n" if ($enable_output == 1);
+
+print "connect to db-slave and prepare statements...\n" if ($enable_output == 1);
 # connect to database
-my $dbh = DBI->connect($slave, $user, $password, {RaiseError => 1, "mysql_auto_reconnect" => 1, "mysql_enable_utf8" => 1});
-# prepare statements
-# get last content_id from search table
-my $stm_select_content_id = $dbh->prepare ("SELECT content_id FROM $table ORDER BY content_id DESC LIMIT 1");
+my $dbh = DBI->connect($slave, "sts", "Unterhaltungs_Branche", {RaiseError => 1, "mysql_auto_reconnect" => 1, "mysql_enable_utf8" => 1});
+
+### prepare statements ###
+
+# get last bookmark content_id from bookmark search table
+my $stm_select_bookmark_content_id = $dbh->prepare ("SELECT content_id FROM $bookmark_table ORDER BY content_id DESC LIMIT 1");
+
+# get last bibtex content_id from bibtex search table
+my $stm_select_bibtex_content_id = $dbh->prepare ("SELECT content_id FROM $bibtex_table ORDER BY content_id DESC LIMIT 1");
 
 # get all relevant bookmarks from bookmark table
 my $stm_select_book = $dbh->prepare ("
   SELECT b.content_id, b.group, b.date, b.user_name, b.book_description, b.book_extended, u.book_url    
     FROM bookmark b JOIN urls u USING (book_url_hash)
-    WHERE b.content_id > ?");
+    WHERE b.content_id > ? 
+    AND b.group >= 0");
 
 # get all relevant bibtex from bibtex table
 my $stm_select_bib  = $dbh->prepare ("
@@ -83,76 +111,88 @@ my $stm_select_bib  = $dbh->prepare ("
          b.description,  b.annote,      b.note,         b.pages,          b.bKey, 
          b.number,       b.crossref,    b.misc,         b.bibtexAbstract, b.year
    FROM bibtex b
-   WHERE b.content_id > ?");
+   WHERE b.content_id > ? 
+   AND b.group >= 0");
 
 # get all relevant data from tas table
 my $stm_select_tas = $dbh->prepare ("
   SELECT content_id, tag_name
     FROM tas
-    WHERE content_id > ?");
-
+    WHERE content_type = ? 
+    AND content_id > ? 
+    AND `group` >= 0");
 
 
 #################################
-# get last content_id
+# get last content_ids
 #################################
 
-$stm_select_content_id->execute();
-if (@row = $stm_select_content_id->fetchrow_array) {
-    $last_content_id = $row[0];
+# bookmark
+$stm_select_bookmark_content_id->execute();
+if (@row = $stm_select_bookmark_content_id->fetchrow_array) {
+    $last_bookmark_content_id = $row[0];
 } 
-$stm_select_content_id->finish();
+$stm_select_bookmark_content_id->finish();
 
+# bibtex
+$stm_select_bibtex_content_id->execute();
+if (@row = $stm_select_bibtex_content_id->fetchrow_array) {
+    $last_bibtex_content_id = $row[0];
+} 
+$stm_select_bibtex_content_id->finish();
 
 
 #################################
 # retrieve tas rows
 #################################
 
-$stm_select_tas->execute($last_content_id);
+$stm_select_tas->execute($CONTENT_TYPE_BOOKMARK, $last_bookmark_content_id);
 while (@row = $stm_select_tas->fetchrow_array) {
-    $tag_hash{$row[0]} .= " $row[1]";
+    $bookmark_tag_hash{$row[0]} .= " $row[1]";
 }
 $stm_select_tas->finish();
 
+$stm_select_tas->execute($CONTENT_TYPE_BIBTEX, $last_bibtex_content_id);
+while (@row = $stm_select_tas->fetchrow_array) {
+    $bibtex_tag_hash{$row[0]} .= " $row[1]";
+}
+$stm_select_tas->finish();
 
 
 #################################
 # retrieve all bookmark rows
 #################################
-$stm_select_book->execute($last_content_id);
+$stm_select_book->execute($last_bookmark_content_id);
 while (@row = $stm_select_book->fetchrow_array) {
     $ctr++;
-    my $content = clean_string("$row[4] $row[5] $row[6] $tag_hash{$row[0]}");
+    my $content = clean_string("$row[4] $row[5] " . clean_url($row[6]) . " $bookmark_tag_hash{$row[0]}");
       
     # save data
-    my @array = ($row[0], $content, "", $row[1], $row[2], $CONTENT_TYPE_BOOKMARK, $row[3]); 
-    push (@data, \@array);
+    my @array = ($row[0], $content, $row[1], $row[2], $row[3]); 
+    push (@bookmark_data, \@array);
     
-    print "read url $ctr\n" if ($ctr % 10000 == 0);
+    print "read bookmark $ctr\n" if ($ctr % 1000 == 0 and $enable_output == 1);
 }
 $stm_select_book->finish();
-
-
 
 
 #################################
 # retrieve bibtex rows
 #################################
-$stm_select_bib->execute($last_content_id);
+$stm_select_bib->execute($last_bibtex_content_id);
 while (@row = $stm_select_bib->fetchrow_array) {
     $ctr++;
     my $content = "";
     for (my $i=4; $i<35; $i++) {
 	  $content = $content." ".$row[$i];
     }
-    $content = clean_bibtex_string("$content $tag_hash{$row[0]}");
+    $content = clean_bibtex_string("$content $bibtex_tag_hash{$row[0]}");
 
     # save data
-    my @array = ($row[0], $content, "$row[4] $row[5]", $row[1], $row[2], $CONTENT_TYPE_BIBTEX, $row[3]); 
-    push (@data, \@array);
+    my @array = ($row[0], $content, "$row[4] $row[5]", $row[1], $row[2], $row[3]); 
+    push (@bibtex_data, \@array);
     
-    print "read bib $ctr\n" if ($ctr % 10000 == 0);
+    print "read bibtex $ctr\n" if ($ctr % 1000 == 0 and $enable_output == 1);
 }
 $stm_select_bib->finish();
 
@@ -160,57 +200,103 @@ $stm_select_bib->finish();
 ########################################################
 # MASTER
 ########################################################
+print "\nconnect to master-db and fill search tables" if ($enable_output == 1);
+
 # connect to database
 my $dbh_master = DBI->connect($master, $user, $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});
+
 # prepare statements
-my $stm_disable_keys = $dbh_master->prepare ("ALTER TABLE search2 DISABLE KEYS");
-my $stm_enable_keys = $dbh_master->prepare ("ALTER TABLE search2 ENABLE KEYS");
-# insert into search table
-my $stm_insert = $dbh_master->prepare ("INSERT INTO $table (content_id, content, author, `group`, `date`, content_type, user_name) VALUES (?,?,?,?,?,?,?)");
-# delete content_ids
-my $stm_del = $dbh_master->prepare ("DELETE FROM $table WHERE content_id = ?");
+my $stm_disable_bookmark_keys = $dbh_master->prepare ("ALTER TABLE $bookmark_table DISABLE KEYS");
+my $stm_disable_bibtex_keys = $dbh_master->prepare ("ALTER TABLE $bibtex_table DISABLE KEYS");
+
+my $stm_enable_bookmark_keys = $dbh_master->prepare ("ALTER TABLE $bookmark_table ENABLE KEYS");
+my $stm_enable_bibtex_keys = $dbh_master->prepare ("ALTER TABLE $bibtex_table ENABLE KEYS");
+
+# insert bookmarks into bookmark search table
+my $stm_bookmark_insert = $dbh_master->prepare ("INSERT INTO $bookmark_table (content_id, content, `group`, `date`, user_name) VALUES (?,?,?,?,?)");
+
+# insert bibtex into bibtex search table
+my $stm_bibtex_insert = $dbh_master->prepare ("INSERT INTO $bibtex_table (content_id, content, author, `group`, `date`, user_name) VALUES (?,?,?,?,?,?)");
 
 
 #################################
 # insert rows
 #################################
-$stm_disable_keys->execute() if ($table eq "search2");  # enable this, when building table from scratch
 
+# enable this, when building table from scratch
+if ($bookmark_table eq "search2_bookmark" && $bibtex_table eq "search2_bibtex") 
+{
+	print "\nDisable indexes\n" if ($enable_output == 1);
+	$stm_disable_bookmark_keys->execute();  
+	$stm_disable_bibtex_keys->execute(); 
+}
+
+# insert bookmarks
 $ctr = 0;
-while ($#data > -1) {
-    my @feld = @{pop(@data)};
+while ($#bookmark_data > -1) {
+    my @feld = @{pop(@bookmark_data)};
 
-    $stm_insert->execute($feld[0], $feld[1], $feld[2], $feld[3], $feld[4], $feld[5], $feld[6]);
+    $stm_bookmark_insert->execute($feld[0], $feld[1], $feld[2], $feld[3], $feld[4]);
     $ctr++;
-    if ($ctr % 10000 == 0) {
-	print "write $ctr\n";
+    if ($ctr % 1000 == 0) {
+	print "write bookmark $ctr\n" if ($enable_output == 1);
+	$dbh_master->commit();
+    }
+}
+
+# insert bibtex
+$ctr = 0;
+while ($#bibtex_data > -1) {
+    my @feld = @{pop(@bibtex_data)};
+
+    $stm_bibtex_insert->execute($feld[0], $feld[1], $feld[2], $feld[3], $feld[4], $feld[5]);
+    $ctr++;
+    if ($ctr % 1000 == 0) {
+	print "write bibtex $ctr\n" if ($enable_output == 1);
 	$dbh_master->commit();
     }
 }
 
 $dbh_master->commit;
-$stm_enable_keys->execute() if ($table eq "search2");   # enable this, when building table from scratch
 
+# enable this, when building table from scratch
+$stm_enable_bookmark_keys->execute() if ($bookmark_table eq "search2_bookmark");
+$stm_enable_bibtex_keys->execute() if ($bibtex_table eq "search2_bibtex");
+  
+# select bookmark content ids which can be deleted
+my $stm_bookmark_get = $dbh->prepare ("SELECT s.content_id FROM $bookmark_table s LEFT JOIN tas b USING (content_id) WHERE b.content_id IS NULL;");
 
+# select bibtex content ids which can be deleted
+my $stm_bibtex_get = $dbh->prepare ("SELECT s.content_id FROM $bibtex_table s LEFT JOIN tas b USING (content_id) WHERE b.content_id IS NULL;");
 
-# select content ids which can be deleted
-my $stm_get = $dbh->prepare ("SELECT s.content_id FROM $table s LEFT JOIN tas b USING (content_id) WHERE b.content_id IS NULL;");
+# delete bookmark content_ids
+my $stm_bookmark_del = $dbh_master->prepare ("DELETE FROM $bookmark_table WHERE content_id = ?");
+
+# delete bibtex content_ids
+my $stm_bibtex_del = $dbh_master->prepare ("DELETE FROM $bibtex_table WHERE content_id = ?");
+
 
 #################################
 # delete old rows
 #################################
-# delete entries which do not exist any longer
-$stm_get->execute();
 
-while (@row = $stm_get->fetchrow_array) {
-    $stm_del->execute($row[0]);
+# delete bookmark entries which do not exist any longer
+$stm_bookmark_get->execute();
+while (@row = $stm_bookmark_get->fetchrow_array) {
+    $stm_bookmark_del->execute($row[0]);
 }
+
+# delete bibtex entries which do not exist any longer
+$stm_bibtex_get->execute();
+while (@row = $stm_bibtex_get->fetchrow_array) {
+    $stm_bibtex_del->execute($row[0]);
+}
+
 $dbh_master->commit;
-$stm_get->finish;
-$stm_del->finish;
-
-
-
+$stm_bookmark_get->finish;
+$stm_bibtex_get->finish;
+$stm_bookmark_del->finish;
+$stm_bibtex_del->finish;
 
 
 #################################
@@ -219,13 +305,6 @@ $stm_del->finish;
 
 $dbh->disconnect();
 $dbh_master->disconnect();
-
-
-
-
-
-
-
 
 
 #################################
@@ -244,6 +323,17 @@ sub clean_bibtex_string {
     $s = decode('latex', $s);
     return $s;
 }
+
+# some simple URL processing
+sub clean_url {
+    my $s = shift;
+    $s =~ s/.+\:\/\///g;                      # remove protocol
+    $s =~ s/www[0-9]*\.//g;                   # remove www.  www1. www2. ...
+    # remove frequent file extensions, index pages
+    $s =~ s/(index)*\.(html|htm|shtm|shtml|php|php3|php4|asp|cgi|pl|js|cfm|cfml|txt|text|ppt|pps)//g;
+    return $s;
+}
+
 
 # INPUT: location of lockfile
 # OUTPUT: 1, if a lockfile exists and a program with the pid inside 
