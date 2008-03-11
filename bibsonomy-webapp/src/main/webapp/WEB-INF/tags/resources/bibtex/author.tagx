@@ -12,18 +12,18 @@
 		<c:when test="${not empty post.resource.author}">
 			<c:forEach var="author" items="${post.resource.authorList}" varStatus="loopStatus">
 				<c:out value="${author.firstName} "/>
-				<c:set var="authorUrlTemplate">/author/<mtl:encode value='${author.lastName}'/></c:set>
-				<c:url var="authorUrl" value="${authorUrlTemplate}" context="${projectContext}"/>
-				<a href="${fn:escapeXml(authorUrl)}"><c:out value="${author.lastName}" /></a>         	     	 
+				<!--<c:set var="authorUrlTemplate">/author/<mtl:encode value='${author.lastName}'/></c:set>-->
+				<c:url var="authorUrl" value="${projectHome}author/${fn:escapeXml(author.lastName)}"/>
+				<a href="${authorUrl}"><c:out value="${author.lastName}" /></a>         	     	 
 				<c:if test="${not loopStatus.last}"><c:out value=" "/><fmt:message key="and"/><c:out value=" "/></c:if>
 			</c:forEach>
 		</c:when>
 		<c:otherwise>
 			<c:forEach var="editor" items="${post.resource.editorList}" varStatus="loopStatus">        	 
 				<c:out value="${editor.firstName} " />
-				<c:set var="authorUrlTemplate">/author/<mtl:encode value='${editor.lastName}'/></c:set>
-				<c:url var="authorUrl" value="${authorUrlTemplate}" context="${projectContext}"/>
-				<a href="${fn:escapeXml(authorUrl)}"><c:out value="${editor.lastName}" /></a>
+				<!--<c:set var="authorUrlTemplate">/author/<mtl:encode value='${editor.lastName}'/></c:set>-->
+				<c:url var="authorUrl" value="${projectHome}author/${fn:escapeXml(author.lastName)}"/>
+				<a href="${authorUrl}"><c:out value="${editor.lastName}" /></a>
 				<c:if test="${not loopStatus.last}"><c:out value=" "/><fmt:message key="and"/><c:out value=" "/></c:if>
 			</c:forEach>
 			(eds.).
