@@ -263,7 +263,14 @@
         <from>^/+concept/+user/+([^/?]+?)(\?tag=(.*))$</from>
         <to type="redirect">/concept/user/$1/$3</to>
     </rule> 
-
+    
+     <!-- redirect for tag formular on /concept/group/GROUPNAME/TAG page -->
+    <rule>
+    <!-- workaround to redirect not-yet-supported features to old resource handler -->		
+        <from>^/+concept/+group/+([^/?]+?)/(.+?)(\?(.*))?$</from>
+        <to>/concept?requestedGroup=$1&amp;requestedTags=$2</to>
+    </rule>    
+    
    	<!-- redirect for tag formular on /user/USER/TAG page -->
     <rule>
       <from>^/+user/+([^/?]+?)(\?tag=(.*))$</from>

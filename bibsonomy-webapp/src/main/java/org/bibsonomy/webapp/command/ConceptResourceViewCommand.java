@@ -6,12 +6,17 @@ package org.bibsonomy.webapp.command;
  * @author Michael Wagner
  * @version $Id$
  */
-public class ConceptResourceViewCommand extends TagResourceViewCommand{
+public class ConceptResourceViewCommand extends TagResourceViewCommand {
 	
 	/** the user whose resources are requested */
 	private String requestedUser = "";
+	
+	/** the group which resources are requested */
+	private String requestedGroup = "";
 
+	/** bean for concepts */
 	private ConceptsCommand concepts = new ConceptsCommand();
+	
 	/**
 	 * @return requestedUser the name of the user whose resources are requested
 	 */
@@ -26,6 +31,20 @@ public class ConceptResourceViewCommand extends TagResourceViewCommand{
 		this.requestedUser = requestedUser;
 	}
 	
+	/**	
+	 * @return the name of the group that resources are requested
+	 */
+	public String getRequestedGroup() {
+		return this.requestedGroup;
+	}
+
+	/**
+	 * @param requestedGroup the group
+	 */
+	public void setRequestedGroup(String requestedGroup) {
+		this.requestedGroup = requestedGroup;
+	}
+
 	/**
 	 * @return
 	 */

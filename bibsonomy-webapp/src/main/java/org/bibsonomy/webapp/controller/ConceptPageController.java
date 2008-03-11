@@ -29,17 +29,26 @@ public class ConceptPageController  extends MultiResourceListController implemen
 		final List<String> requTags = command.getRequestedTagsList();
 
 		for(int i = 0; i < requTags.size(); i++){
-			String conceptTag = "->"+requTags.get(i);
+			String conceptTag = "->" + requTags.get(i);
 			requTags.set(i, conceptTag);
 		}
 		
 		final String requUser = command.getRequestedUser();
+		final String requGroup = command.getRequestedGroup();
+		
 		GroupingEntity groupingEntity = GroupingEntity.ALL;
 		String groupingName = null;
+		
 		//if URI looks like concept/USER/USERNAME/TAGNAME, change GroupingEntity to USER
 		if(requUser.length() > 0){
 			groupingEntity = GroupingEntity.USER;
 			groupingName = requUser;
+		}
+		
+		//if URI looks like concept/GROUP/GROUPNAME/TAGNAME, change GroupingEntity to GROUP 
+		if (requGroup.length() > 0) {
+			groupingEntity = GroupingEntity.GROUP;
+			groupingName = requGroup;
 		}
 	
 		// determine which lists to initalize depending on the output format 
