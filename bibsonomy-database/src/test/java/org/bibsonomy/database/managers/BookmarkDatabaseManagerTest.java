@@ -13,16 +13,13 @@ import java.util.List;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.DatabasePluginMock;
@@ -411,4 +408,18 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(3, posts2.size());
 	}
 	
+	@Test
+	public void getBookmarksByConceptForGroup() {
+		final BookmarkParam param = new BookmarkParam();
+		
+		param.addSimpleConceptName("clustering");
+		//param.addSimpleConceptName("software");		
+		param.setUserName("hotho");
+		param.setRequestedGroupName("kde");
+		param.setGrouping(GroupingEntity.GROUP);
+		param.setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
+		
+		final List<Post<Bookmark>> posts2 = this.bookmarkDb.getPosts(param, this.dbSession);
+		assertEquals(10, posts2.size());
+	}	
 }

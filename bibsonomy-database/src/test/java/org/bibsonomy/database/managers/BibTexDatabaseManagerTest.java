@@ -7,9 +7,11 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
@@ -498,5 +500,18 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		}
 	}	
 	
-	
+	@Test
+	public void getBibtexByConceptForGroup() {
+		final BibTexParam param = new BibTexParam();
+		
+		param.addSimpleConceptName("clustering");
+		param.setRequestedGroupName("kde");
+		param.setUserName("hotho");
+		
+		param.setGrouping(GroupingEntity.GROUP);
+		param.setContentType(ConstantID.BIBTEX_CONTENT_TYPE);
+		
+		final List<Post<BibTex>> posts2 = this.bibTexDb.getPosts(param, this.dbSession);
+		assertEquals(10, posts2.size());
+	}		
 }

@@ -390,9 +390,9 @@
 	
 	<select id="getBibTexByConceptByTag" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributes"/>, b.interHash, b.intraHash, t.tag_name, b.ctr AS count, NULL AS `group`, NULL AS group_name
-			   FROM (SELECT <include refid="bibtexAttributes2"/>, h.ctr
+			   FROM (SELECT <include refid="bibtexAttributes2"/>, h.ctr,
 							<iterate property="tagIndex" conjunction=",">
-								, MAX(IF (upper = LCASE(#tagIndex[].tagName#), 1, 0)) AS s$tagIndex[].index$
+								MAX(IF (upper = LCASE(#tagIndex[].tagName#), 1, 0)) AS s$tagIndex[].index$
 							</iterate>
 					 FROM(
 							<iterate property="tagIndex" conjunction="UNION">
@@ -412,6 +412,43 @@
 			   		 LIMIT #limit# OFFSET #offset# ) AS b 
 			   JOIN tas t ON b.content_id = t.content_id
 			   ORDER BY b.date DESC;	
+	</select>
+	
+	<select id="getBibTexByConceptForGroup" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+		SELECT <include refid ="allBibtexAttributes"/>, b.interHash, b.intraHash, t.tag_name, b.ctr AS count, NULL AS `group`, NULL AS group_name
+		FROM (
+				SELECT <include refid="bibtexAttributes2"/>, h.ctr,
+				<iterate property="tagIndex" conjunction=",">
+					MAX(IF (LCASE(upper) = LCASE(#tagIndex[].tagName#), 1, 0)) AS s$tagIndex[].index$
+				</iterate>
+				FROM (
+					<iterate property="tagIndex" conjunction="UNION">
+						SELECT LCASE(upper) AS upper, LCASE(lower) AS lower 
+						FROM tagtagrelations t 
+						WHERE LCASE(upper) = LCASE(#tagIndex[].tagName#) 
+						AND t.user_name = #requestedGroupName# 
+						UNION 
+						SELECT LCASE(#tagIndex[].tagName#), LCASE(#tagIndex[].tagName#)
+					</iterate>
+				) AS tags JOIN tas t1  
+				ON 
+				(
+					t1.tag_lower = tags.lower
+					AND t1.content_type = 2
+					<include refid="restrictToGroups"/>
+				)
+				JOIN bibtex b2 USING(content_id) 
+				JOIN bibhash h ON (h.hash = b2.simhash1 AND h.type = 1)
+				JOIN (<include refid ="selectGroupMembers"/>) AS groupmembers ON (groupmembers.user_name = t1.user_name)
+				GROUP BY t1.content_id HAVING 
+				<iterate property="tagIndex" conjunction="AND">
+					s$tagIndex[].index$ > 0
+				</iterate>
+			   	ORDER BY t1.date DESC
+			   	LIMIT #limit# OFFSET #offset# 
+		) AS b 
+		JOIN tas t ON b.content_id = t.content_id
+		ORDER BY b.date DESC;	
 	</select>
 
 </sqlMap>

@@ -148,6 +148,18 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		return this.bibtexList("getBibTexByConceptForUser", param, session);
 	}
 	
+	/**
+	 * <em>/concept/group/EineGruppe/EinTag</em><br/><br/>
+	 * 
+	 * This method retrieves all bibtex of all group members of the given group
+	 * which are tagged at least with one of the concept tags or its subtags 	 
+	 */
+	public List<Post<BibTex>> getBibTexByConceptForGroup(final BibTexParam param, final DBSession session) {
+//		DatabaseUtils.setGroups(this.generalDb, param, session);
+		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
+		return this.bibtexList("getBibTexByConceptForGroup", param, session);
+	}
+	
 	public List<Post<BibTex>> getBibTexByConceptForUser(final String loginUser, final String conceptName, final String requestedUser, final int limit, final int offset, final DBSession session) {
 		final BibTexParam param = new BibTexParam();
 		param.setUserName(loginUser);

@@ -766,6 +766,7 @@ public class DBLogic implements LogicInterface {
 	public List<Tag> getConcepts(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end) {
 		final DBSession session = openSession();
 		List<Tag> relations;
+		// TODO: build chain for handling
 		try {
 			if (grouping.equals(GroupingEntity.USER) && groupingName != null && groupingName != "") {
 
@@ -782,7 +783,7 @@ public class DBLogic implements LogicInterface {
 				}
 				else {
 					throw new RuntimeException("Can't handle request");
-				}
+				}									
 			} else if (grouping.equals(GroupingEntity.ALL)) {
 				relations = tagRelationsDBManager.getAllConcepts(session);
 			} else {
@@ -798,7 +799,8 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = openSession();
 		Tag concept = null;
 		try {
-			if (grouping.equals(GroupingEntity.USER) && groupingName != null && groupingName != "") {
+			if (grouping.equals(GroupingEntity.USER) || grouping.equals(GroupingEntity.GROUP) && 
+					groupingName != null && groupingName != "") {
 				concept = this.tagRelationsDBManager.getConceptForUser(conceptName, groupingName, session);		
 			} else if (grouping.equals(GroupingEntity.ALL)) {
 				concept = tagRelationsDBManager.getGlobalConceptByName(conceptName, session);

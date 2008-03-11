@@ -156,6 +156,18 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		DatabaseUtils.setGroups(this.generalDb, param, session);
 		return this.bookmarkList("getBookmarkByConceptForUser", param, session);
 	}
+	
+	/**
+	 * <em>/concept/group/GruppenName/EinTag</em><br/><br/>
+	 * 
+	 * This method retrieves all bookmarks of all group members of the given group
+	 * which are tagged at least with one of the concept tags or its subtags
+	 */
+	public List<Post<Bookmark>> getBookmarkByConceptForGroup(final BookmarkParam param, final DBSession session) {
+		//DatabaseUtils.setGroups(this.generalDb, param, session);
+		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
+		return this.bookmarkList("getBookmarkByConceptForGroup", param, session);
+	}
 
 	/**
 	 * @param loginUser

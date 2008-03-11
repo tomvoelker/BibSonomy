@@ -236,4 +236,11 @@
 		</dynamic>
 	</sql>
 	
+	<!-- retrieves names of groupmembers of specified group -->
+	<sql id="selectGroupMembers">
+		SELECT g.user_name
+      	FROM groupids gi JOIN groups g ON (gi.group = g.group)
+      	WHERE group_name = #requestedGroupName#
+	</sql>
+	
 </sqlMap>
