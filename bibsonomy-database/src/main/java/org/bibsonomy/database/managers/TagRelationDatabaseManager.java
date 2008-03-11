@@ -6,7 +6,9 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.database.AbstractDatabaseManager;
-import org.bibsonomy.database.params.beans.TagRelationParam;
+import org.bibsonomy.database.managers.chain.bookmark.BookmarkChain;
+import org.bibsonomy.database.managers.chain.concept.ConceptChain;
+import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Tag;
@@ -24,6 +26,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	private final static TagRelationDatabaseManager singleton = new TagRelationDatabaseManager();
 	private final GeneralDatabaseManager generalDb;
 	private final DatabasePluginRegistry plugins;
+	private static final ConceptChain chain = new ConceptChain();
 
 	private static enum Relation {
 		SUPER,
@@ -37,6 +40,15 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 
 	public static TagRelationDatabaseManager getInstance() {
 		return singleton;
+	}
+	
+	/**
+	 * Performs the chain
+	 * @param param
+	 * @param session
+	 */
+	public List<Tag> getConcepts(TagRelationParam param, DBSession session) {
+		return chain.getFirstElement().perform(param, session);
 	}
 
 	public void insertRelations(final Tag tag, final String userName, final DBSession session) {

@@ -33,6 +33,7 @@ import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.TagParam;
+import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DBSessionFactory;
@@ -765,34 +766,14 @@ public class DBLogic implements LogicInterface {
 	 */
 	public List<Tag> getConcepts(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end) {
 		final DBSession session = openSession();
-		List<Tag> relations;
-		// TODO: build chain for handling
+		
 		try {
-			if (grouping.equals(GroupingEntity.USER) && groupingName != null && groupingName != "") {
-
-				// if looking at pages of other users, retrieve all concepts
-				if (!groupingName.equals(this.loginUser.getName())) {
-					status = ConceptStatus.ALL;
-				}
-
-				if (status.equals(ConceptStatus.PICKED)) {
-					relations = this.tagRelationsDBManager.getPickedConceptsForUser(groupingName, session);
-				}
-				else if (status.equals(ConceptStatus.ALL)) {
-					relations = this.tagRelationsDBManager.getAllConceptsForUser(groupingName, session);
-				}
-				else {
-					throw new RuntimeException("Can't handle request");
-				}									
-			} else if (grouping.equals(GroupingEntity.ALL)) {
-				relations = tagRelationsDBManager.getAllConcepts(session);
-			} else {
-				throw new RuntimeException("Can't handle request");
-			}
+			TagRelationParam param = LogicInterfaceHelper.buildParam(TagRelationParam.class, this.loginUser.getName(), grouping, groupingName, tags, null, null, start, end, null);
+			param.setConceptStatus(status);
+			return this.tagRelationsDBManager.getConcepts(param, session);
 		} finally {
-			session.close();			
-		}
-		return relations;
+			session.close();
+		}		
 	}
 
 	public Tag getConceptDetails(String conceptName, GroupingEntity grouping, String groupingName) {

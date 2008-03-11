@@ -1,18 +1,21 @@
-package org.bibsonomy.database.params.beans;
+package org.bibsonomy.database.params;
 
 import java.util.Date;
+
+import org.bibsonomy.common.enums.ConceptStatus;
 
 /**
  * @author Jens Illig
  * @version $Id$
  */
-public class TagRelationParam {
+public class TagRelationParam extends GenericParam {
 
 	private Integer relationId;
 	private String lowerTagName;
 	private String upperTagName;
 	private Date creationDate;
 	private String ownerUserName;
+	private ConceptStatus conceptStatus;
 
 	public Date getCreationDate() {
 		return this.creationDate;
@@ -53,4 +56,12 @@ public class TagRelationParam {
 	public void setUpperTagName(String upperTagName) {
 		this.upperTagName = upperTagName;
 	}
+
+	public ConceptStatus getConceptStatus() {
+		return this.conceptStatus;
+	}
+
+	public void setConceptStatus(ConceptStatus conceptStatus) {
+		this.conceptStatus = conceptStatus;
+	}	
 }

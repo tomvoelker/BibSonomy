@@ -15,7 +15,7 @@ import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
-import org.bibsonomy.database.params.beans.TagRelationParam;
+import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.ExceptionUtils;

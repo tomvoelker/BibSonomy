@@ -9,7 +9,7 @@ import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
-import org.bibsonomy.database.params.beans.TagRelationParam;
+import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.plugin.AbstractDatabasePluginTest;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
