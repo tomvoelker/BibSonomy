@@ -207,6 +207,18 @@ public static String getInterHash(final BibTeX bibtex) {
 				</p> 
 						
 			</subsection>
+			
+			 <subsection name="Screen Scrapers for Digital Libraries">
+			 
+			 <p>An overview of BibSonomy's screen scrapers is given on the
+			 <a href="http://www.bibsonomy.org/scraperinfo">scraperinfo</a> page. 
+			 The source code of the scraper interface is contained in the 
+			 <a href="http://www.bibsonomy.org/help/downloads/org.bibsonomy.scraper_0.2.jar">org.bibsonomy.scraper_0.2.jar</a> JAR. 
+			 </p>
+			 
+			 
+			 </subsection>
+			
 		</section>
 	</body>
 </document>
