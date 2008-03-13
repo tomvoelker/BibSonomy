@@ -17,7 +17,7 @@
 <div id="general">
   <h2>Scrapers used within ${projectName}</h2>
   
-  <jsp:useBean id="factory" class="scraper.KDEScraperFactory" scope="request"/>
+  <jsp:useBean id="factory" class="org.bibsonomy.scraper.KDEScraperFactory" scope="request"/>
 
   <dl><c:forEach var="scraper" items="${factory.scraper.scraper}">
     <dt style="padding-top: 1em;">${scraper.class.name}:</dt> 
