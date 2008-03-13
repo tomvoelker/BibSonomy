@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="BibSonomy">
 	<bannerLeft>
-		<name>UniK</name>
+		<name>UniKassel</name>
 		<src>images/unilogo_klein.png</src>
 		<href>http://www.uni-kassel.de/</href>
 	</bannerLeft>
@@ -33,6 +33,7 @@
 			<item name="Generic client" href="/genericclient.html" />
 			<item name="JabRef client" href="/jabrefclient.html" />
 			<item name="XML Schema" href="/xmlschema.html" />
+			<item name="Inside BibSonomy" href="/inside.html"/>
 		</menu>
 	</body>
 </project>
