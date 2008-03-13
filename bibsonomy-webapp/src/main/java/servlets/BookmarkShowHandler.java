@@ -25,11 +25,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.url.URLCompositeScraper;
 
 import recommender.RecommenderFrontEnd;
 import resources.Bookmark;
-import scraper.ScrapingContext;
-import scraper.url.URLCompositeScraper;
 import beans.BookmarkHandlerBean;
 import beans.UserBean;
 

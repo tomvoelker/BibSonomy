@@ -13,9 +13,9 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.ScrapingException;
 
-import scraper.ScrapingContext;
-import scraper.ScrapingException;
 import beans.AdminBean;
 
 

@@ -5,8 +5,8 @@ import helpers.constants;
 import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.scraper.ScrapingContext;
 
-import scraper.ScrapingContext;
 
 public class DBScraperMetadataManager extends DBManager {
 

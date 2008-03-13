@@ -27,7 +27,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -44,15 +43,15 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.log4j.Logger;
+import org.bibsonomy.scraper.KDEScraperFactory;
+import org.bibsonomy.scraper.Scraper;
+import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.ScrapingException;
+import org.bibsonomy.scraper.url.EndnoteToBibtexConverter;
 import org.bibsonomy.util.TagStringUtils;
 
 import resources.Bibtex;
 import resources.Tag;
-import scraper.KDEScraperFactory;
-import scraper.Scraper;
-import scraper.ScrapingContext;
-import scraper.ScrapingException;
-import scraper.url.EndnoteToBibtexConverter;
 import beans.BibtexHandlerBean;
 import beans.UploadBean;
 import beans.UserBean;
