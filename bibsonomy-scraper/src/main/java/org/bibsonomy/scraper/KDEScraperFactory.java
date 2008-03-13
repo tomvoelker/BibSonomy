@@ -1,0 +1,22 @@
+package org.bibsonomy.scraper;
+
+import org.bibsonomy.scraper.InformationExtraction.IEScraper;
+import org.bibsonomy.scraper.snippet.SnippetScraper;
+import org.bibsonomy.scraper.url.URLCompositeScraper;
+import org.bibsonomy.scraper.url.kde.highwire.HighwireScraper;
+
+public class KDEScraperFactory {
+
+	public CompositeScraper getScraper () {
+		final CompositeScraper scraper = new CompositeScraper();
+		scraper.addScraper(new URLCompositeScraper());
+		
+		//temporary solution to avoid manifold content download 
+		scraper.addScraper(new HighwireScraper());
+		
+		scraper.addScraper(new SnippetScraper());		
+		scraper.addScraper(new IEScraper());
+		return scraper;
+	}
+
+}
