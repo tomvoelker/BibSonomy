@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 
 /**
@@ -124,7 +123,7 @@ public abstract class Resource {
 	 * @return resource
 	 */
 	public static Class<? extends Resource> getResource(final String resourceType) {
-		if (resourceType == null) throw new InternServerException("ResourceType is null");
+		if (resourceType == null) throw new UnsupportedResourceTypeException("ResourceType is null");
 		Class<? extends Resource> rVal = byStringMap.get(resourceType);
 		if (rVal == null) {
 			rVal = byStringMap.get(resourceType.trim().toUpperCase());
