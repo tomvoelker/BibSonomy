@@ -23,15 +23,7 @@ calculates the resulting hashes for you.</p>
 
 
 <jsp:useBean id="bibtex" class="org.bibsonomy.model.BibTex" scope="request">
-  <jsp:setProperty name="bibtex" property="title"     value="${param.title}"/>
-  <jsp:setProperty name="bibtex" property="author"    value="${param.author}"/>
-  <jsp:setProperty name="bibtex" property="editor"    value="${param.editor}"/>
-  <jsp:setProperty name="bibtex" property="year"      value="${param.year}"/>
-  <jsp:setProperty name="bibtex" property="entrytype" value="${param.entrytype}"/>
-  <jsp:setProperty name="bibtex" property="journal"   value="${param.journal}"/>
-  <jsp:setProperty name="bibtex" property="booktitle" value="${param.booktitle}"/>
-  <jsp:setProperty name="bibtex" property="volume"    value="${param.volume}"/>
-  <jsp:setProperty name="bibtex" property="number"    value="${param.number}"/>
+  <jsp:setProperty name="bibtex" property="*"/>
 </jsp:useBean>
 
 
