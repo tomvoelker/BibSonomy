@@ -7,7 +7,7 @@ Java client library
   The client library consists of multiple jars which must be added to your
   Java project's classpath. Those jars are: 
 
-  * <<Bibsonomy webservice>>:
+  * <<BibSonomy webservice>>:
     The webservice client itself consists of five jars:
 
     * <<<bibsonomy-rest-client.jar>>> (client library classes)
