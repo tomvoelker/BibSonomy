@@ -131,8 +131,9 @@ public final class BibtexParser {
             bibtexFile.addEntry(bibtexFile.makePreamble(value));
             // read the comment field but try to ignore all content
         } else if (entryType.equals("comment")) {
-            BibtexAbstractValue value = parseValue();
-            // ignore the rest (aho)
+        	// scan until next @ and then jump back to entry scanning (rja)
+        	lexer.scanTopLevelCommentOrAtOrEOF();
+            return;
         } else { // all others
             lexer.skipWhitespace();
             String bibkey = (lexer.currentInputChar() == ',') ? "" : lexer.scanLiteral(new char[] { ',' }, true, true);
