@@ -1,6 +1,9 @@
 package org.bibsonomy.util;
 
+import java.sql.SQLException;
+
 import org.apache.log4j.Logger;
+import org.bibsonomy.common.exceptions.QueryTimeoutException;
 
 /**
  * Convenience methods to throw exceptions.
@@ -22,4 +25,17 @@ public class ExceptionUtils {
 		log.error(error + " - throwing RuntimeException" + ((ex != null) ? ("\n" + ex.toString()) : ""), ex );
 		throw new RuntimeException(error, ex);
 	}
+	
+	/**
+	 * throw query timeout exception
+	 * 
+	 * @param log
+	 * @param ex
+	 * @param query
+	 * @throws QueryTimeoutException
+	 */
+	public static void logErrorAndThrowQueryTimeoutException(final Logger log, final Exception ex, final String query) throws QueryTimeoutException {
+		log.debug("Query timeout for query: " + query);
+		throw new QueryTimeoutException(ex, query);
+	} 
 }
