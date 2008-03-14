@@ -3,7 +3,6 @@ package org.bibsonomy.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.junit.Test;
 
@@ -38,7 +37,7 @@ public class ResourceTest {
 		try {
 			Resource.getResource(null);
 			fail("Should throw exception");
-		} catch (final InternServerException ex) {
+		} catch (final UnsupportedResourceTypeException ex) {
 		}
 	}
 
