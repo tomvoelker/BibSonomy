@@ -123,12 +123,21 @@ public class User {
 	 */
 	private Role role;
 	
-
-
 	/**
-	 * The spammer prediction of the classifier
+	 * who updated state of the user
 	 */
-	private Integer prediction;
+	private String updatedBy;
+	
+	/**
+	 * date of update
+	 */
+	private Date updatedAt; 
+	
+	/**
+	 * flag if the classifier should take this user
+	 * into account for classification
+	 */
+	private Integer toClassify;
 	
 	/**
 	 * The classification algortihm the user was classified with
@@ -136,9 +145,9 @@ public class User {
 	private String algorithm;
 	
 	/**
-	 * How many times the user was classified
+	 * The spammer prediction of the classifier
 	 */
-	private Integer count;
+	private Integer prediction;
 	
 	/**
 	 * constructor
@@ -493,7 +502,20 @@ public class User {
 	public void setRole(Role role) {
 		this.role = role;
 	}
+		
+	/**
+	 * @return Classification algorithm the user was classified with
+	 */
+	public String getAlgorithm() {
+		return this.algorithm;
+	}
 
+	/**
+	 * @param algorithm classification algorithm
+	 */
+	public void setAlgorithm(String algorithm) {
+		this.algorithm = algorithm;
+	}
 
 	/**
 	 * @return prediction of classifier
@@ -510,30 +532,44 @@ public class User {
 	}
 
 	/**
-	 * @return Classification algorithm the user was classified with
+	 * @return if user is considered for classification
 	 */
-	public String getAlgorithm() {
-		return this.algorithm;
+	public Integer getToClassify() {
+		return this.toClassify;
 	}
 
 	/**
-	 * @param algorithm classification algorithm
+	 * @param toClassify if user should be classified
 	 */
-	public void setAlgorithm(String algorithm) {
-		this.algorithm = algorithm;
+	public void setToClassify(Integer toClassify) {
+		this.toClassify = toClassify;
 	}
 
 	/**
-	 * @return How many times the user was classified
+	 * @return person who updates user dataset
 	 */
-	public Integer getCount() {
-		return this.count;
+	public String getUpdatedBy() {
+		return this.updatedBy;
 	}
 
 	/**
-	 * @param count Count
+	 * @param updatedBy person who updates user dataset
 	 */
-	public void setCount(Integer count) {
-		this.count = count;
-	}	
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	/**
+	 * @return Date of update
+	 */
+	public Date getUpdatedAt() {
+		return this.updatedAt;
+	}
+
+	/**
+	 * @param updatetAt date of update
+	 */
+	public void setUpdatedAt(Date updatetAt) {
+		this.updatedAt = updatetAt;
+	}			
 }

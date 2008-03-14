@@ -38,4 +38,23 @@ public class UserUtils {
 		}
 		return randomBytes;
 	}
+		
+	/**
+	 * Transforms groupid in dependence of spammer status of a user
+	 * @param groupid Id to transform
+	 * @param isSpammer
+	 * @return new groupId
+	 */
+	public static int getGroupId(int groupid, boolean isSpammer) {
+		/*const to set/clear first bit of an integer*/
+		final int CONST_SET_1ST_BIT    = 0x80000000; //use logical OR  (|) to set second bit
+		final int CONST_CLEAR_1ST_BIT  = 0x7FFFFFFF; //use logical AND (&) to clear second bit
+		
+		if (isSpammer) {
+			return groupid | CONST_SET_1ST_BIT;			
+		} else {
+			// NOTE: "return groupid" is not enough, since we want to use that to unflag spammers posts, as well 
+			return groupid & CONST_CLEAR_1ST_BIT;
+		}
+	}
 }
