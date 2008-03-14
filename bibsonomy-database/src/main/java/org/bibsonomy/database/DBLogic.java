@@ -47,8 +47,8 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.Order;
 
 /**
  * @author Jens Illig
@@ -563,6 +563,15 @@ public class DBLogic implements LogicInterface {
 			log.warn(errorMsg);
 			throw new ValidationException(errorMsg);
 		}
+		
+		// update spammer settings 
+		if ((user.getPrediction() != null || user.getSpammer() != null)) {
+			// only admins are allowed to change spammer settings
+			this.permissionDBManager.ensureAdminAccess(this.loginUser);
+			DBSession session = this.openSession();
+			adminDBManager.flagSpammer(user, this.getAuthenticatedUser(), session);			
+		}
+		
 		return this.storeUser(user, true);
 	}
 

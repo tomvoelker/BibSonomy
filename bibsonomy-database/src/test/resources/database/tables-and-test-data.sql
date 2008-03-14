@@ -1219,9 +1219,7 @@ CREATE TABLE `user` (
   `api_key` varchar(32) default NULL,
   `lang` char(2) default 'en',
   `role` tinyint(3) NOT NULL,
-  `prediction` int(10) default '9',
-  `algorithm` varchar(255),
-  `count` int(10) default '0',
+  `to_classify` tinyint(1) default '1',
   PRIMARY KEY  (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1229,10 +1227,10 @@ CREATE TABLE `user` (
 -- Data for table `user`
 -- 
 
-INSERT INTO `user` VALUES ('testuser1', 'testuser1@bibsonomy.org', 'test123', 'http://www.bibsonomy.org/', 'Test User 1', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, '1815-12-10 00:00:00', 0, 0, 0, 0, 10, 1, NULL, 'm', 'test-place', 'test-profession', 'test-interests', 'test-hobbies', 1, NULL, '1815-12-10 00:00:00', '11111111111111111111111111111111', 'en', 0, 9, '', 0);
-INSERT INTO `user` VALUES ('testuser2', 'testuser2@bibsonomy.org', 'test123', 'http://www.bibsonomy.org/', 'Test User 2', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, '1815-12-10 00:00:00', 0, 0, 0, 0, 10, 1, NULL, 'm', 'test-place', 'test-profession', 'test-interests', 'test-hobbies', 1, NULL, '1815-12-10 00:00:00', '22222222222222222222222222222222', 'en', 0, 9, '', 0);
-INSERT INTO `user` VALUES ('testuser3', 'testuser3@bibsonomy.org', 'test123', 'http://www.bibsonomy.org/', 'Test User 3', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, '1815-12-10 00:00:00', 0, 0, 0, 0, 10, 1, NULL, 'm', 'test-place', 'test-profession', 'test-interests', 'test-hobbies', 1, NULL, '1815-12-10 00:00:00', '33333333333333333333333333333333', 'en', 0, 9, '', 0);
-INSERT INTO `user` VALUES ('testspammer', 'testspammer@bibsonomy.org', 'test123', 'http://www.bibsonomy.org/', 'Test Spammer', 1, 'http://sfxserv.rug.ac.be:8888/rug', '2007-02-02 02:02:02', '0.0.0.0', NULL, '1815-12-10 00:00:00', 0, 0, 0, 0, 10, 1, NULL, 'm', 'test-place', 'test-profession', 'test-interests', 'test-hobbies', 1, NULL, '1815-12-10 00:00:00', '', 'en', 0, 9, '', 0);
+INSERT INTO `user` VALUES ('testuser1', 'testuser1@bibsonomy.org', 'test123', 'http://www.bibsonomy.org/', 'Test User 1', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, '1815-12-10 00:00:00', 0, 0, 0, 0, 10, 1, NULL, 'm', 'test-place', 'test-profession', 'test-interests', 'test-hobbies', 1, NULL, '1815-12-10 00:00:00', '11111111111111111111111111111111', 'en', 0, 1);
+INSERT INTO `user` VALUES ('testuser2', 'testuser2@bibsonomy.org', 'test123', 'http://www.bibsonomy.org/', 'Test User 2', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, '1815-12-10 00:00:00', 0, 0, 0, 0, 10, 1, NULL, 'm', 'test-place', 'test-profession', 'test-interests', 'test-hobbies', 1, NULL, '1815-12-10 00:00:00', '22222222222222222222222222222222', 'en', 0, 1);
+INSERT INTO `user` VALUES ('testuser3', 'testuser3@bibsonomy.org', 'test123', 'http://www.bibsonomy.org/', 'Test User 3', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, '1815-12-10 00:00:00', 0, 0, 0, 0, 10, 1, NULL, 'm', 'test-place', 'test-profession', 'test-interests', 'test-hobbies', 1, NULL, '1815-12-10 00:00:00', '33333333333333333333333333333333', 'en', 1, 0);
+INSERT INTO `user` VALUES ('testspammer', 'testspammer@bibsonomy.org', 'test123', 'http://www.bibsonomy.org/', 'Test Spammer', 1, 'http://sfxserv.rug.ac.be:8888/rug', '2007-02-02 02:02:02', '0.0.0.0', NULL, '1815-12-10 00:00:00', 0, 0, 0, 0, 10, 1, NULL, 'm', 'test-place', 'test-profession', 'test-interests', 'test-hobbies', 1, NULL, '1815-12-10 00:00:00', '', 'en', 0, 1);
 
 -- --------------------------------------------------------
 

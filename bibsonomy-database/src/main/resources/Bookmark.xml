@@ -326,7 +326,7 @@
 			   FROM (SELECT b.content_id, u.book_url, b.book_url_hash, b.book_description AS title, b.book_extended AS description,
 		                      b.date, u.book_url_ctr,
 							<iterate property="tagIndex" conjunction=",">
-								MAX(IF (upper = LCASE(#tagIndex[].tagName#), 1, 0)) AS s$tagIndex[].index$
+								MAX(IF (LCASE(upper) = LCASE(#tagIndex[].tagName#), 1, 0)) AS s$tagIndex[].index$
 							</iterate>
 					 FROM(
 							<iterate property="tagIndex" conjunction="UNION">

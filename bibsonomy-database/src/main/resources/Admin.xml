@@ -23,5 +23,29 @@
 	<delete id="deleteInetAddressStatus" parameterClass="InetAddress">
 		DELETE FROM inetAddressStates WHERE address = #address#
 	</delete>
+	
+	<update id="flagSpammer" parameterClass="adminParam">
+		UPDATE user SET spammer = #spammer#, updated_by = #updatedBy#, updated_at = #updatedAt# WHERE user_name = #userName# 
+	</update>
+	
+	<update id="updateTasGroupIds" parameterClass="adminParam">
+		UPDATE tas SET `group` = #newGroupId# WHERE user_name = #userName# AND `group` = #oldGroupId#
+	</update> 
+	
+	<update id="updateBookmarkGroupIds" parameterClass="adminParam">
+		UPDATE bookmark SET `group` = #newGroupId# WHERE user_name = #userName# AND `group` = #oldGroupId#
+	</update> 
+	
+	<update id="updateBibtexGroupIds" parameterClass="adminParam">
+		UPDATE bibtex SET `group` = #newGroupId# WHERE user_name = #userName# AND `group` = #oldGroupId#
+	</update> 
+	
+	<update id="updateSearchBookmarkGroupIds" parameterClass="adminParam">
+		UPDATE search_bookmark SET `group` = #newGroupId# WHERE user_name = #userName# AND `group` = #oldGroupId#
+	</update> 
+	
+	<update id="updateSearchBibtexGroupIds" parameterClass="adminParam">
+		UPDATE search_bibtex SET `group` = #newGroupId# WHERE user_name = #userName# AND `group` = #oldGroupId#
+	</update> 
 
 </sqlMap>

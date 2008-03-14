@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -177,14 +178,15 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		existingUser.setPlace(!present(user.getPlace()) 		? existingUser.getPlace() 		: user.getPlace());
 		existingUser.setProfession(!present(user.getProfession()) ? existingUser.getProfession(): user.getProfession());
 		existingUser.setRegistrationDate(!present(user.getRegistrationDate()) ? existingUser.getRegistrationDate() : user.getRegistrationDate());
-		existingUser.setPrediction(!present(user.getPrediction()) 	? existingUser.getPrediction() 	: user.getPrediction());
-		existingUser.setAlgorithm(!present(user.getAlgorithm()) 	? existingUser.getAlgorithm() 	: user.getAlgorithm());
-		existingUser.setCount(!present(user.getCount()) 	? existingUser.getCount() 	: user.getCount());
-
+		
+		existingUser.setUpdatedBy(!present(user.getUpdatedBy()) 	? existingUser.getUpdatedBy() 	: user.getUpdatedBy());
+		existingUser.setUpdatedAt(!present(user.getUpdatedAt()) 	? existingUser.getUpdatedAt() 	: user.getUpdatedAt());
+		
 		this.plugins.onUserUpdate(existingUser.getName(), session);
 
+		// TODO: update existing dataset instead of delete and re-insert
 		this.deleteUser(existingUser.getName(), session);
-		this.insert("insertUser", existingUser, session);
+		this.insert("insertUser", existingUser, session);	
 	}
 
 	/**
