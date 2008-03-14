@@ -139,7 +139,7 @@ public class SnippetScraperTest {
 			fail("exception thrown");
 		}
 	}
-	
+
 
 	/** Works with full-fledged entry parsing
 	 * @throws MalformedURLException
@@ -158,6 +158,33 @@ public class SnippetScraperTest {
 
 		try {
 			assertTrue(scraper.scrape(context));
+		} catch (final ScrapingException e) {
+			e.printStackTrace();
+			fail("exception thrown");
+		}
+	}
+
+	/** Works with full-fledged entry parsing
+	 * @throws MalformedURLException
+	 */
+	@Test
+	public void testScrape7() throws MalformedURLException {
+
+		final String bibtex = 
+			"  @COMMENT{meta_data,\n" + 
+			"    INDEX     = {META},\n" + 
+			"    TYPE      = {Research links},\n" + 
+			"       TITLE = {peters research links},\n" + 
+			"      HEADING = {links and info collected by plr},\n" + 
+			"      SOURCE = {entered by plr}\n" + 
+			"  }\n";
+
+		final ScrapingContext context = new ScrapingContext(new URL("http://ffo.bar"));
+		context.setSelectedText(bibtex);
+		final SnippetScraper scraper = new SnippetScraper();
+
+		try {
+			assertFalse(scraper.scrape(context));
 		} catch (final ScrapingException e) {
 			e.printStackTrace();
 			fail("exception thrown");
