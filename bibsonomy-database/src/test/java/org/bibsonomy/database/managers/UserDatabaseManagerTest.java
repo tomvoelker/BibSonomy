@@ -81,7 +81,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		newUser.setRole(Role.DEFAULT);
 		this.userDb.createUser(newUser, this.dbSession);
 		final User user = this.userDb.getUserDetails(this.userParam.getUser().getName(), this.dbSession);
-		ModelUtils.assertPropertyEquality(newUser, user, Integer.MAX_VALUE, null, new String[] { "password", "registrationDate", "basket"});
+		ModelUtils.assertPropertyEquality(newUser, user, Integer.MAX_VALUE, null, new String[] { "password", "registrationDate", "basket", "algorithm", "prediction", "count"});
 		// assertEquals(null, user.getPassword()); FIXME: why? is not rendered anyway
 
 		try {
