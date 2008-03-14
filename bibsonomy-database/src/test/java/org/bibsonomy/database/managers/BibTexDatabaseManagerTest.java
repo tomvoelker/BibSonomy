@@ -119,9 +119,11 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getBibTexByTagNames() {
+		this.bibtexParam.setGroupId(GroupID.INVALID.getId());
 		final List<Post<BibTex>> posts = this.bibTexDb.getBibTexByTagNames(this.bibtexParam, this.dbSession);
 		assertEquals(this.bibtexParam.getLimit(), posts.size());
 		this.assertByTagNames(posts);
+		this.resetParameters();
 	}
 
 	@Test
@@ -289,9 +291,11 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getPosts() {
 		this.bibtexParam.setHash("");
+		this.bibtexParam.setGroupId(GroupID.INVALID.getId());
 		final List<Post<BibTex>> posts = this.bibTexDb.getPosts(this.bibtexParam, this.dbSession);
 		assertEquals(this.bibtexParam.getLimit(), posts.size());
 		this.assertByTagNames(posts);
+		this.resetParameters();
 	}
 
 	@Test
