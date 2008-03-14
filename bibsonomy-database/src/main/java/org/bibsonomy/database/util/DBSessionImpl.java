@@ -3,6 +3,7 @@ package org.bibsonomy.database.util;
 import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.common.exceptions.QueryTimeoutException;
 import org.bibsonomy.util.ExceptionUtils;
 
 import com.ibatis.sqlmap.client.SqlMapExecutor;
@@ -170,8 +171,9 @@ public class DBSessionImpl implements DBSession {
 			 * check for query interruption because of time limits
 			 * TODO: don't use equals() on getMessage() but on Message Error Code (MySQL-specific :-()
 			 */
-			if (ex.getMessage().equals("Query execution was interrupted")) {
-				msg += " (Query time limit exceeded)";
+			if (ex.getCause().getClass().equals(SQLException.class) && 
+					"Query execution was interrupted".equals(ex.getCause().getMessage()) ) {
+				ExceptionUtils.logErrorAndThrowQueryTimeoutException(log, ex, query);
 			}			
 			if (ignoreException == false) {
 				this.somethingWentWrong();

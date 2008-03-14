@@ -13,6 +13,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.StatisticsConstraint;
+import org.bibsonomy.common.exceptions.QueryTimeoutException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
@@ -46,8 +47,8 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.logic.Order;
 
 /**
  * @author Jens Illig
@@ -755,7 +756,12 @@ public class DBLogic implements LogicInterface {
 			else {
 				throw new RuntimeException("Can't handle statistics request");
 			}
-		} finally {
+		} 
+		catch (QueryTimeoutException ex) {
+			// if a query times out, we return 0
+			return 0;			
+		}		
+		finally {
 			session.close();			
 		}
 		return statistics;		

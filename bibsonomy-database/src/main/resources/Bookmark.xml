@@ -257,7 +257,7 @@
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 
-	<select id="getBookmarkForGroupCount" resultClass="int" parameterClass="bookmarkParam">
+	<select id="getBookmarkForGroupCount" resultClass="int" parameterClass="bookmarkParam" timeout="1">
 		SELECT count(*)
 		FROM bookmark t1, groups g
 		WHERE g.group = #groupId#
@@ -292,7 +292,7 @@
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 
-	<select id="getBookmarkForUserCount" resultClass="int" parameterClass="bookmarkParam">
+	<select id="getBookmarkForUserCount" resultClass="int" parameterClass="bookmarkParam" timeout="1">
 		SELECT count(*)
 		FROM bookmark t1
 		WHERE t1.user_name = #requestedUserName#
@@ -320,7 +320,7 @@
 		SELECT content_id FROM bookmark WHERE book_url_hash = #hash# AND user_name = #userName#
 	</select>
 	
-	<select id="getBookmarksByConceptByTag" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+	<select id="getBookmarkByConceptByTag" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT a.content_id, t.tag_name, a.book_url, a.book_url_hash AS interhash, a.book_url_hash AS intrahash, title, description,
 		       a.date, a.book_url_ctr AS count, t.user_name, NULL AS `group`, NULL AS group_name
 			   FROM (SELECT b.content_id, u.book_url, b.book_url_hash, b.book_description AS title, b.book_extended AS description,
