@@ -38,13 +38,13 @@
 		INSERT INTO user ( 
 			user_name, user_email, user_password, user_realname, user_homepage, 
 			api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, reg_date, 
-			spammer, prediction, algorithm, count,
+			spammer, 
 			lang, tagbox_style, tagbox_sort, tagbox_minfreq, tagbox_tooltip, list_itemcount			   
 			)
 		VALUES (
 			#name#, #email#, #password#, #realname#, #homepage#, 
 			#apiKey#, #birthday#, #gender#, #hobbies#, #interests#, #IPAddress#, #openURL#, #place#, #profession#, #registrationDate#, 
-			#spammer#, #prediction#, #algorithm#, #count#, 
+			#spammer#,  
 			#settings.defaultLanguage#, #settings.tagboxStyle#, #settings.tagboxSort#, #settings.tagboxMinfreq#, #settings.tagboxTooltip#, #settings.listItemcount#
 			)
 	</insert>

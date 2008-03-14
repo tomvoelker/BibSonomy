@@ -23,9 +23,6 @@
 		<result property="registrationDate" column="reg_date"      javaType="date" />
 		<result property="spammer"          column="spammer"       javaType="integer" />
 		<result property="role"             column="role"          javaType="Role" />
-		<result property="prediction"       column="prediction"    javaType="integer" />
-		<result property="algorithm"        column="algorithm"     javaType="string" />
-		<result property="count"            column="count"         javaType="integer" />
 	</resultMap>
 
 	<resultMap id="userWithSettings"  class="user" extends="user"> 
@@ -49,7 +46,7 @@
 	<sql id="commonUserAttributes">
 		user_name, user_email, user_homepage, user_realname, user_password, 
 		api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, 
-		reg_date, spammer, prediction, algorithm, count, role
+		reg_date, spammer, role
 	</sql>
 
 	<sql id="userSettingsAttributes">
