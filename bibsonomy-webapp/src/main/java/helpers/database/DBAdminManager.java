@@ -132,7 +132,7 @@ public class DBAdminManager extends DBManager {
 					/*
 					 * modify all groupids in tables
 					 */
-					String[] tables = {"bookmark", "bibtex", "tas", "search"};
+					String[] tables = {"bookmark", "bibtex", "tas", "search", "search_bibtex", "search_bookmark"};
 					for (int i = 0; i<tables.length; i++) {
 						c.stmt = c.conn.prepareStatement("UPDATE " + tables[i] + " SET `group` = "  + newPriv + " WHERE user_name = ? AND `group` = " + oldPriv);
 						c.stmt.setString(1, bean.getUser());
