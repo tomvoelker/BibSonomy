@@ -636,9 +636,7 @@ CREATE TABLE `user` (
   `api_key` varchar(32) default NULL,
   `lang` char(2) default 'en',
   `role` tinyint(3) NOT NULL,
-  `prediction` int(10) default '9',
-  `algorithm` varchar(255),
-  `count` int(10) default '0',
+  `to_classify` tinyint(1) NOT NULL default '1',
   PRIMARY KEY  (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
