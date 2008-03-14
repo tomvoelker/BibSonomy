@@ -5,7 +5,7 @@ use DBI();
 use Data::Dumper;
 
 # Maximales Alter in Sekunden
-my $MAXTIME = 100;
+my $MAXTIME = 30;
 
 my $msg = "";
 
@@ -39,9 +39,10 @@ if (@tobekilled) {
 $dbh->disconnect();
 
 if ($msg) {
-	open MAIL, "| mail -s \"Queries gekillt\" bibsonomy\@cs.uni-kassel.de" or die;
-	print MAIL $msg;
-	close MAIL;
+#	open MAIL, "| mail -s \"Queries gekillt\" bibsonomy\@cs.uni-kassel.de" or die;
+#	print MAIL $msg;
+#	close MAIL;
+    print STDERR $msg;
 }
 
 
