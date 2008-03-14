@@ -18,7 +18,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>bibtex</groupId>
+			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-bibtex-parser</artifactId>
 		</dependency>	
 		<dependency>
