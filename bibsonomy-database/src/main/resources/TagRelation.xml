@@ -34,9 +34,9 @@
 	<select id="getConceptForUser" parameterClass="tagRelationParam" resultMap="TagCommon.tagWithSubtags">
 		SELECT upper AS tag_name, GROUP_CONCAT(lower ORDER BY lower SEPARATOR ' ') AS subtags 
 		FROM tagtagrelations 
-		WHERE upper=#upperTagName#
+		WHERE LCASE(upper)=LCASE(#upperTagName#)
 		AND user_name=#ownerUserName# 		
-		GROUP BY upper 
+		GROUP BY LCASE(upper) 
 		ORDER BY upper
 	</select>
 	
@@ -55,8 +55,8 @@
 	<select id="getGlobalConceptByName" parameterClass="String" resultMap="TagCommon.tagWithSubtags">
 		SELECT r.upper AS tag_name,  GROUP_CONCAT(DISTINCT r.lower ORDER BY r.lower SEPARATOR ' ') AS subtags
 		FROM tagtagrelations r
-		WHERE r.upper = #conceptName#
-		GROUP BY r.upper
+		WHERE LCASE(r.upper) = LCASE(#conceptName#)
+		GROUP BY LCASE(r.upper)
 		ORDER BY r.upper
 		COLLATE utf8_unicode_ci, r.lower COLLATE utf8_unicode_ci 
 	</select>

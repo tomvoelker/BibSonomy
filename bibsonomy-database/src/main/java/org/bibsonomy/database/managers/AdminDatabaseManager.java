@@ -8,7 +8,6 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.AdminParam;
-import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.UserUtils;
@@ -72,6 +71,12 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		this.updateGroupIds(param, session);
 	}
 	
+	/**
+	 * Updates the groupids of a user to set its posts
+	 * viewable or not in dependence of its spammer status
+	 * @param param 
+	 * @param session
+	 */
 	public void updateGroupIds(AdminParam param, DBSession session) {
 		boolean spammer = (param.getSpammer() == 1) ? true : false;
 		

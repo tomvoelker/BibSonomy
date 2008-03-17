@@ -18,16 +18,22 @@ public class AdminParam {
 	/** Status of the corresponding inetAddress */
 	private InetAddressStatus inetAddressStatus;
 	
+	/** The name of the flagged user */
 	private String userName;
 	
+	/** The spammer status of the user */
 	private Integer spammer;
 	
+	/** The group id of the posts before flagging  */
 	private int oldGroupId;
 	
+	/** The group id after flagging */
 	private int newGroupId;
 	
+	/** The time of the update  */
 	private Date updatedAt;
 	
+	/** The username of the admin who executes the update */
 	private String updatedBy;
 	
 	public InetAddress getInetAddress() {
