@@ -1,7 +1,5 @@
 package org.bibsonomy.util;
 
-import java.sql.SQLException;
-
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.exceptions.QueryTimeoutException;
 

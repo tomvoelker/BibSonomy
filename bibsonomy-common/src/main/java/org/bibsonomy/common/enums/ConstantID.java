@@ -2,7 +2,7 @@ package org.bibsonomy.common.enums;
 
 /**
  * Constants that are used in SQL statements
- *
+ * 
  * @author Christian Schenk
  * @author Christian Kramer
  * @version $Id$
@@ -33,7 +33,7 @@ public enum ConstantID {
 	IDS_EXTENDED_FIELDS(5),
 	/** id of the scraperMetadataId in ids table */
 	IDS_SCRAPER_METADATA(7),
-	
+
 	/* other ids (not related to SQL tables! */
 	/** marks that no special content type has yet been assigned */
 	IDS_UNDEFINED_CONTENT_ID(-1);

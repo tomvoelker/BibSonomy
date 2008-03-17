@@ -1,7 +1,7 @@
 package org.bibsonomy.common.enums;
 
 /**
- * @author rja
+ * @author Robert Jäschke
  * @version $Id$
  */
 public enum InetAddressStatus {
@@ -43,5 +43,4 @@ public enum InetAddressStatus {
 	public static InetAddressStatus getInetAddressStatus(final int inetAddressStatus) {
 		return map[inetAddressStatus];
 	}
-
 }

@@ -26,14 +26,15 @@ public enum Privlevel {
 	}
 
 	/**
-	 * @return constant value behind the symbol 
+	 * @return constant value behind the symbol
 	 */
 	public int getPrivlevel() {
 		return this.privlevel;
 	}
 
 	/**
-	 * @param privlevel constant value behind the Privlevel symbol to retrieve
+	 * @param privlevel
+	 *            constant value behind the Privlevel symbol to retrieve
 	 * @return the corresponding Privlevel-enum for the given int.
 	 */
 	public static Privlevel getPrivlevel(final int privlevel) {

@@ -14,7 +14,7 @@ import org.junit.Test;
  * Testcase for the StringUtils class
  */
 public class StringUtilsTest {
-	
+
 	private final String SPECIAL_CHARS = "üöä!\"§$%&/()=,.-+#'´`";
 
 	/**
@@ -34,7 +34,7 @@ public class StringUtilsTest {
 	public void toHexString() {
 		assertEquals("74657374", StringUtils.toHexString("test".getBytes()));
 		assertEquals("6875727a", StringUtils.toHexString("hurz".getBytes()));
-		// assertEquals("9f9a8a2122a42425262f28293d2c2e2d2b2327ab60", StringUtils.toHexString(this.SPECIAL_CHARS.getBytes()));
+		assertEquals("9f9a8a2122a42425262f28293d2c2e2d2b2327ab60", StringUtils.toHexString(this.SPECIAL_CHARS.getBytes()));
 	}
 
 	/**

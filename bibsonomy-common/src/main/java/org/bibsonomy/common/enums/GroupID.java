@@ -29,8 +29,10 @@ public enum GroupID {
 	}
 
 	/**
-	 * @param name the groupname to look up
-	 * @return GroupID representation of a special group which name correspond to the argument 
+	 * @param name
+	 *            the groupname to look up
+	 * @return GroupID representation of a special group which name correspond
+	 *         to the argument
 	 */
 	public static GroupID getSpecialGroup(final String name) {
 		final GroupID group = valueOf(name.toUpperCase());
@@ -39,23 +41,29 @@ public enum GroupID {
 	}
 
 	/**
-	 * categorizes groupIds between special and nonspecial groups. special groups are groups, that are not created by users.
-	 * @param groupId the groupId to check
+	 * categorizes groupIds between special and nonspecial groups. special
+	 * groups are groups, that are not created by users.
+	 * 
+	 * @param groupId
+	 *            the groupId to check
 	 * @return true if the groupId argument is a special group
 	 */
 	public static boolean isSpecialGroupId(final int groupId) {
 		return ((groupId < 3) && (groupId >= 0));
 	}
-	
+
 	/**
-	 * categorizes groupIds between special and nonspecial groups. special groups are groups, that are not created by users.
-	 * @param groupId the groupId to check
+	 * categorizes groupIds between special and nonspecial groups. special
+	 * groups are groups, that are not created by users.
+	 * 
+	 * @param groupId
+	 *            the groupId to check
 	 * @return true if the groupId argument is a special group
 	 */
 	public static boolean isSpecialGroupId(final GroupID groupId) {
 		return isSpecialGroupId(groupId.getId());
 	}
-	
+
 	/**
 	 * wrapper function to check if a given groupname represents a special group
 	 * 
@@ -65,8 +73,7 @@ public enum GroupID {
 	public static boolean isSpecialGroup(final String groupName) {
 		try {
 			return isSpecialGroupId(valueOf(groupName.toUpperCase()));
-		}
-		catch (IllegalArgumentException ex) {
+		} catch (IllegalArgumentException ex) {
 			return false;
 		}
 	}

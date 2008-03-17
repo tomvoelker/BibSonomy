@@ -14,7 +14,7 @@ import org.junit.Test;
 public class GroupingEntityTest {
 
 	/**
-	 * tests getGroupingEntity what else ?
+	 * tests getGroupingEntity
 	 */
 	@Test
 	public void testGetGroupingEntity() {

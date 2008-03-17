@@ -2,21 +2,26 @@ package org.bibsonomy.common.enums;
 
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.UnsupportedConceptStatusException;
-import org.bibsonomy.common.exceptions.UnsupportedGroupingException;
 
 /**
- * defines possible statusses of tag relations
+ * Defines possible statuses of tag relations.
  * 
  * @author Dominik Benz
  * @author Stefan Stützer
  * @version $Id$
  */
 public enum ConceptStatus {
-	PICKED, UNPICKED, ALL;
-	
+	/** Concept is picked */
+	PICKED,
+	/** Concept is unpicked */
+	UNPICKED,
+	/** Concept is all */
+	ALL;
+
 	/**
-	 * @param conceptStatus - name of the ConceptStatus to retrieve
-	 * @return the corresponding ConceptStatus-enum 
+	 * @param conceptStatus -
+	 *            name of the ConceptStatus to retrieve
+	 * @return the corresponding ConceptStatus-enum
 	 */
 	public static ConceptStatus getConceptStatus(final String conceptStatus) {
 		if (conceptStatus == null) throw new InternServerException("ConceptStatus is null");
@@ -26,7 +31,7 @@ public enum ConceptStatus {
 		} else if ("unpicked".equals(status)) {
 			return UNPICKED;
 		} else if ("all".equals(status)) {
-			return ALL;		
+			return ALL;
 		} else {
 			throw new UnsupportedConceptStatusException(conceptStatus);
 		}
@@ -34,13 +39,6 @@ public enum ConceptStatus {
 
 	@Override
 	public String toString() {
-		if (this.equals(PICKED)) {
-			return "picked";
-		} else if (this.equals(UNPICKED)) {
-			return "unpicked";
-		} else if (this.equals(ALL)) {
-			return "all";
-		}
-		return super.toString();
-	}	
+		return this.name().toLowerCase();
+	}
 }

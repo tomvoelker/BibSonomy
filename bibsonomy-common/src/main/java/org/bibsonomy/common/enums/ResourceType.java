@@ -6,17 +6,11 @@ package org.bibsonomy.common.enums;
  */
 public enum ResourceType {
 	/** Bookmark */
-	BOOKMARK("bookmark"),
+	BOOKMARK,
 	/** BibTex */
-	BIBTEX("bibtex"),
+	BIBTEX,
 	/** All */
-	ALL("all");
-
-	private final String label;
-
-	private ResourceType(final String label) {
-		this.label = label;
-	}
+	ALL;
 
 	/**
 	 * Returns the label for this resource, i.e.:
@@ -30,6 +24,6 @@ public enum ResourceType {
 	 * @return an all lowercase string for this resource
 	 */
 	public String getLabel() {
-		return this.label;
+		return this.name().toLowerCase();
 	}
 }

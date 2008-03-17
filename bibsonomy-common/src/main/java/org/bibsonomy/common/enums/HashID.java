@@ -32,14 +32,15 @@ public enum HashID {
 	}
 
 	/**
-	 * @return constant value behind the symbol 
+	 * @return constant value behind the symbol
 	 */
 	public int getId() {
 		return this.id;
 	}
 
 	/**
-	 * @param simHash constant value of the HashID symbol to retrieve
+	 * @param simHash
+	 *            constant value of the HashID symbol to retrieve
 	 * @return the corresponding simhash.
 	 */
 	public static HashID getSimHash(final int simHash) {

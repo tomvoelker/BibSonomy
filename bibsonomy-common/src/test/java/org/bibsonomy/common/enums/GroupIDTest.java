@@ -14,7 +14,7 @@ import org.junit.Test;
 public class GroupIDTest {
 
 	/**
-	 * tests getSpecialGroup what else ?
+	 * tests getSpecialGroup
 	 */
 	@Test
 	public void getSpecialGroup() {
@@ -37,7 +37,7 @@ public class GroupIDTest {
 	}
 
 	/**
-	 * tests isSpecialGroupId what else ?
+	 * tests isSpecialGroupId
 	 */
 	@Test
 	public void isSpecialGroupId() {
