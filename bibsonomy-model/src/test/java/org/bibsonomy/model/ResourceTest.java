@@ -12,8 +12,11 @@ import org.junit.Test;
  */
 public class ResourceTest {
 
+	/**
+	 * tests getResource
+	 */
 	@Test
-	public void testGetResourceType() {
+	public void getResource() {
 		assertEquals(Resource.class, Resource.getResource("all"));
 		assertEquals(BibTex.class, Resource.getResource("bibtex"));
 		assertEquals(Bookmark.class, Resource.getResource("bookmark"));
@@ -41,7 +44,7 @@ public class ResourceTest {
 		}
 	}
 
-	/*
+	/**
 	 * We want to make sure that this is the case, because we are relying on it
 	 * in our testcases.
 	 */

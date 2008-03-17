@@ -1,28 +1,18 @@
 package org.bibsonomy.model.util;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
 import org.bibsonomy.model.BibTex;
 import org.junit.Test;
-
-import sun.security.action.GetLongAction;
 
 /**
  * Testcase for the Bibtex Utils class
  * 
+ * @author Dominik Benz
  * @version $Id$
- * @author dbenz
  */
 public class BibtexUtilsTest {
 
-	private static final Logger LOGGER = Logger.getLogger(BibtexUtilsTest.class);
-	
 	/**
 	 * tests generation of bibtex string
 	 */

@@ -12,7 +12,7 @@ import org.junit.Test;
 public class GroupTest {
 
 	/**
-	 * tests getPrivlevel what else ?
+	 * tests getPrivlevel
 	 */
 	@Test
 	public void getPrivlevel() {

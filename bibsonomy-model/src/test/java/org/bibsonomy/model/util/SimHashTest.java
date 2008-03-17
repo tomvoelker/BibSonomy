@@ -12,7 +12,7 @@ import org.junit.Test;
 public class SimHashTest {
 
 	/**
-	 * tests getSimHash what else ?
+	 * tests getSimHash
 	 */
 	@Test
 	public void getSimHash() {
