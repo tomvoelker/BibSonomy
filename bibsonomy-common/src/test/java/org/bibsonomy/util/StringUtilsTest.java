@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,7 +19,7 @@ public class StringUtilsTest {
 	private final String SPECIAL_CHARS = "üöä!\"§$%&/()=,.-+#'´`";
 
 	/**
-	 * tests getMD5Hash what else ?
+	 * tests getMD5Hash
 	 */
 	@Test
 	public void getMD5Hash() {
@@ -28,17 +29,18 @@ public class StringUtilsTest {
 	}
 
 	/**
-	 * tests toHexString what else ?
+	 * tests toHexString
+	 * @throws UnsupportedEncodingException 
 	 */
 	@Test
-	public void toHexString() {
-		assertEquals("74657374", StringUtils.toHexString("test".getBytes()));
-		assertEquals("6875727a", StringUtils.toHexString("hurz".getBytes()));
-		assertEquals("9f9a8a2122a42425262f28293d2c2e2d2b2327ab60", StringUtils.toHexString(this.SPECIAL_CHARS.getBytes()));
+	public void toHexString() throws UnsupportedEncodingException {
+		assertEquals("74657374", StringUtils.toHexString("test".getBytes("UTF-8")));
+		assertEquals("6875727a", StringUtils.toHexString("hurz".getBytes("UTF-8")));
+		assertEquals("c3bcc3b6c3a42122c2a72425262f28293d2c2e2d2b2327c2b460", StringUtils.toHexString(this.SPECIAL_CHARS.getBytes("UTF-8")));
 	}
 
 	/**
-	 * tests matchExtension what else ?
+	 * tests matchExtension
 	 */
 	@Test
 	public void matchExtension() {
@@ -50,7 +52,7 @@ public class StringUtilsTest {
 	}
 
 	/**
-	 * tests getStringFromList what else ?
+	 * tests getStringFromList
 	 */
 	@Test
 	public void getStringFromList() {
