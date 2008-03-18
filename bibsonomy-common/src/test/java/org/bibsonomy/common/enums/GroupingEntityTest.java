@@ -29,22 +29,18 @@ public class GroupingEntityTest {
 		assertEquals(GroupingEntity.VIEWABLE, GroupingEntity.getGroupingEntity("ViewAble"));
 		assertEquals(GroupingEntity.FRIEND, GroupingEntity.getGroupingEntity("FrIend"));
 
+		for (final String test : new String[] { "", " ", null }) {
+			try {
+				ConceptStatus.getConceptStatus(test);
+				fail("Should throw exception");
+			} catch (InternServerException ignore) {
+			}
+		}
+
 		try {
 			GroupingEntity.getGroupingEntity("foo bar");
 			fail("Should throw exception");
 		} catch (final UnsupportedGroupingException ex) {
-		}
-
-		try {
-			GroupingEntity.getGroupingEntity("");
-			fail("Should throw exception");
-		} catch (final UnsupportedGroupingException ex) {
-		}
-
-		try {
-			GroupingEntity.getGroupingEntity(null);
-			fail("Should throw exception");
-		} catch (final InternServerException ex) {
 		}
 	}
 

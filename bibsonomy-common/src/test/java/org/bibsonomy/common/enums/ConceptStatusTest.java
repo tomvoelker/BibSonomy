@@ -24,14 +24,16 @@ public class ConceptStatusTest {
 		assertEquals(ConceptStatus.UNPICKED, ConceptStatus.getConceptStatus("UnPiCkEd"));
 		assertEquals(ConceptStatus.ALL, ConceptStatus.getConceptStatus("all"));
 		assertEquals(ConceptStatus.ALL, ConceptStatus.getConceptStatus("AlL"));
-		
-		try {
-			ConceptStatus.getConceptStatus(null);
-			fail("Should throw exception");
-		} catch (InternServerException ignore) {
+
+		for (final String test : new String[] { "", " ", null }) {
+			try {
+				ConceptStatus.getConceptStatus(test);
+				fail("Should throw exception");
+			} catch (InternServerException ignore) {
+			}
 		}
 
-		for (final String test : new String[] {"", " ", "test"}) {
+		for (final String test : new String[] { "test", "picked-1" }) {
 			try {
 				ConceptStatus.getConceptStatus(test);
 				fail("Should throw exception");

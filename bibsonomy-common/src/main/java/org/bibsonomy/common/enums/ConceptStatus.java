@@ -1,7 +1,7 @@
 package org.bibsonomy.common.enums;
 
-import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.UnsupportedConceptStatusException;
+import org.bibsonomy.util.EnumUtils;
 
 /**
  * Defines possible statuses of tag relations.
@@ -24,17 +24,9 @@ public enum ConceptStatus {
 	 * @return the corresponding ConceptStatus-enum
 	 */
 	public static ConceptStatus getConceptStatus(final String conceptStatus) {
-		if (conceptStatus == null) throw new InternServerException("ConceptStatus is null");
-		final String status = conceptStatus.toLowerCase().trim();
-		if ("picked".equals(status)) {
-			return PICKED;
-		} else if ("unpicked".equals(status)) {
-			return UNPICKED;
-		} else if ("all".equals(status)) {
-			return ALL;
-		} else {
-			throw new UnsupportedConceptStatusException(conceptStatus);
-		}
+		final ConceptStatus cs = EnumUtils.searchEnumByName(ConceptStatus.values(), conceptStatus);
+		if (cs == null) throw new UnsupportedConceptStatusException(conceptStatus);
+		return cs;
 	}
 
 	@Override
