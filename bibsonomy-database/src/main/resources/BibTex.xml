@@ -189,7 +189,7 @@
 		ORDER BY b.date DESC, b.content_id
 	</select>
 
-	<select id="getBibTexSearchCount" resultClass="int" parameterClass="bibtexParam">
+	<select id="getBibTexSearchCount" resultClass="int" parameterClass="bibtexParam" timeout="1">
 		SELECT count(*)
 		FROM search s
 		WHERE s.group = #groupType#

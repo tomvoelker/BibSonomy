@@ -183,7 +183,7 @@
 		ORDER BY bb.date DESC, bb.content_id
 	</select>
 
-	<select id="getBookmarkSearchCount" resultClass="int" parameterClass="bookmarkParam">
+	<select id="getBookmarkSearchCount" resultClass="int" parameterClass="bookmarkParam" timeout="1">
 		SELECT count(*)
 		FROM search s
 		WHERE s.group = #groupType#
