@@ -10,8 +10,8 @@
 	<ul class="tagcloud">
 		<c:forEach var="tag" items="${cmd.relatedTags}">
 			<li>
-		      <a title="${cmd.requestedTags} ${tag.name}" href="/${mtl:getLowerPath(requPath)}/${mtl:encodeURI(cmd.requestedTags)}+${tag.name}">+${mtl:ch('nbsp')}</a>
-		      <a href="/${mtl:getLowerPath(requPath)}/${tag.name}">${tag.name}</a>
+		      <a title="${cmd.requestedTags} ${fn:escapeXml(tag.name)}" href="/${mtl:getLowerPath(requPath)}/${mtl:encodeURI(cmd.requestedTags)}+${fn:escapeXml(tag.name)}">+${mtl:ch('nbsp')}</a>
+		      <a href="/${mtl:getLowerPath(requPath)}/${fn:escapeXml(tag.name)}">${fn:escapeXml(tag.name)}</a>
 		      <c:out value=" "/>
 		    </li>
 		</c:forEach>

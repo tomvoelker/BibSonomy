@@ -95,7 +95,7 @@
 								</c:otherwise>
 							</c:choose>
 							 -->																		 
-	    	    			<a href="/user/${requestedUserName}/${fn:escapeXml(subtag.name)}" title="">${fn:escapeXml(subtag.name)}</a>
+	    	    			<a href="/user/${fn:escapeXml(requestedUserName)}/${fn:escapeXml(subtag.name)}" title="">${fn:escapeXml(subtag.name)}</a>
 	          			</li>
 	          			<c:out value=" "/>
 					</c:forEach>
