@@ -80,29 +80,29 @@
 
       <tr>
         <td width="51%"><textarea name="text_area1" rows="10" cols="40">
-&lt;!-- BibSonomy link code --&gt;
-&lt;script type=\&quot;text/JavaScript\&quot;&gt;
+&lt;!-- post bookmark to ${projectName} link code --&gt;
+&lt;script type=&quot;text/JavaScript&quot;&gt;
 &lt;!--
 var url=encodeURIComponent(document.location.href);
 var title=encodeURIComponent(document.title);
-document.write(&quot;<a href=\&quot;http://www.bibsonomy.org/ShowBookmarkEntry?c=b&amp;jump=yes&amp;url=\&quot;+url+ \&quot;&amp;description=\&quot;+title +\&quot;\\&quot; title=\\&quot;Bookmark this page.\\&quot;>Bookmark it to BibSonony!&lt;/a&gt;&quot;);
+document.write(&quot;&lt;a href=\&quot;${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;url=&quot;+url+ &quot;&amp;description=&quot;+title +&quot;\&quot; title=\&quot;Bookmark this page to ${projectName}.\&quot;&gt;Bookmark to ${projectHome}!&lt;/a&gt;");
 //--&gt;
 &lt;/script&gt;
-&lt;!-- end BibsonomyBookmark code --&gt;
+&lt;!-- end post bookmark to ${projectName} link code --&gt;
 </textarea>
 <input type="button" value="Highlight Text" onClick="javascript:this.form.text_area1.focus();this.form.text_area1.select();">
 
 </td>
         <td width="49%"><div align="center">
-<!-- BibSonomy link code -->
+<!-- post bookmark to ${projectName} link code -->
 <script type="text/JavaScript">
 <!--
 var url=encodeURIComponent(document.location.href);
 var title=encodeURIComponent(document.title);
-document.write("<a href=\"http://www.bibsonomy.org/ShowBookmarkEntry?c=b&jump=yes&url="+url+ "&description="+title +"\" title=\"Bookmark this page.\">Bookmark to BibSonony!</a>");
+document.write("<a href=\"${projectHome}ShowBookmarkEntry?c=b&jump=yes&url="+url+ "&description="+title +"\" title=\"Bookmark this page to ${projectName}.\">Bookmark to ${projectName}!</a>");
 //-->
 </script>
-<!-- end BibsonomyBookmark code -->
+<!-- end post bookmark to ${projectName} link code -->
 		
 		</div></td>
 
