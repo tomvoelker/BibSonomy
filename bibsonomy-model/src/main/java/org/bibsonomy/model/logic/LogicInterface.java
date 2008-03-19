@@ -12,6 +12,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.Order;
 
 /**
  * This interface is an adapter to the bibsonomys core functionality. <br/>
