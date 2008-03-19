@@ -12,26 +12,26 @@ import org.bibsonomy.model.User;
 public class RelatedUserCommand extends BaseCommand{
 	
 	// list of user to show
-	List<User> relatedUser = new ArrayList<User>();
+	List<User> relatedUsers = new ArrayList<User>();
 	
 	public RelatedUserCommand() {}
 	
-	RelatedUserCommand (List<User> relatedUser){
-		this.relatedUser = relatedUser;
+	RelatedUserCommand (List<User> relatedUsers){
+		this.relatedUsers = relatedUsers;
 	}
 
 	/**
 	 * @return list of user
 	 */
-	public List<User> getRelatedUser() {
-		return this.relatedUser;
+	public List<User> getRelatedUsers() {
+		return this.relatedUsers;
 	}
 
 	/**
 	 * @param relatedUser
 	 */
-	public void setRelatedUser(final List<User> relatedUser) {
-		this.relatedUser = relatedUser;
+	public void setRelatedUsers(final List<User> relatedUsers) {
+		this.relatedUsers = relatedUsers;
 	}
 
 }
