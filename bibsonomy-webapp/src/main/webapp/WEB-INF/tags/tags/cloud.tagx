@@ -33,14 +33,7 @@
 	</c:choose>
 	
 	<!-- display of tag tooltips is disabled by default -->
-	<c:choose>
-		<c:when test="${empty showTooltips or showTooltips == 0}">
-			<c:set var="showTooltips" value="${false}"/>
-		</c:when>
-		<c:otherwise>
-			<c:set var="showTooltips" value="${true}"/>
-		</c:otherwise>
-	</c:choose>	
+    <c:set var="showTooltips" value="${not (empty showTooltips or showTooltips == 0)}"/>
 
 	
 	<ul class="${style}" id="tagbox">
