@@ -76,7 +76,7 @@ public class ConceptPageController  extends MultiResourceListController implemen
 		// html format - retrieve tags and return HTML view
 		if (command.getFormat().equals("html")) {
 			if(groupingEntity != GroupingEntity.ALL) {
-				xthis.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, 0, 1000, null);
+				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, 0, 1000, null);
 			}
 			return Views.CONCEPTPAGE;			
 		}
