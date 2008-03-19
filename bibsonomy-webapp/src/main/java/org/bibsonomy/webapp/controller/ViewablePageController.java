@@ -5,9 +5,10 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.logic.Order;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.webapp.command.GroupResourceViewCommand;
 import org.bibsonomy.webapp.command.RelatedTagCommand;
+import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
@@ -22,9 +23,14 @@ public class ViewablePageController extends MultiResourceListController implemen
 	public View workOn(GroupResourceViewCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
 		
-		// if no group given return 
-		if (command.getRequestedGroup() == null) return null;
-				
+		// we need to be logged in, and a group needs to be present
+		if (command.userLoggedIn() == false) {
+			throw new MalformedURLSchemeException("error.viewable_page_not_logged_in");
+		}				
+		if (command.getRequestedGroup() == null || "".equals(command.getRequestedGroup())) {
+			throw new MalformedURLSchemeException("error.viewable_page_without_group");
+		}		
+						
 		// set grouping entity and grouping name
 		final GroupingEntity groupingEntity = GroupingEntity.VIEWABLE;
 		final String groupingName = command.getRequestedGroup();
