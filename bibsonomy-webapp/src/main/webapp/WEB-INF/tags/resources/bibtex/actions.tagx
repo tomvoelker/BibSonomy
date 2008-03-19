@@ -98,7 +98,7 @@
 	<!-- URL -->
 	<c:if test="${not empty post.resource.url}">
 		<c:set var="urlTitle"><fmt:message key="bibtex.actions.url.title"/></c:set>
-    	<a href="${fn:escapeXml(post.resource.url)}" title="${urlTitle}">
+    	<a href="${fn:escapeXml(mtl:cleanUrl(post.resource.url))}" title="${urlTitle}">
 			<fmt:message key="bibtex.actions.url"/>
 		</a>
 		<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
