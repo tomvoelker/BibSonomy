@@ -91,4 +91,21 @@ public class BaseCommand {
 	public void setUser(UserBean loginUser) {
 		this.user = loginUser;
 	}
+	
+	/**
+	 * helper function to ease checking if a logged in user exists
+	 * @return true if a user is logged in, false otherwise
+	 */
+	public Boolean userLoggedIn() {
+		return this.user.getName() != null;
+	}
+	
+	/**
+	 * wrapper for function userLoggedIn to enable access from JSPs
+	 * @see BaseCommand.userLoggedIn()
+	 * @return true if a user is logged in, false otherwise 
+	 */
+	public Boolean getUserLoggedIn() {
+		return this.userLoggedIn();
+	}
 }
