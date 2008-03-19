@@ -147,4 +147,18 @@ public class StringUtils {
 		}
 		return "";
 	}
+	
+	/**
+	 * crops s to length if it is longer than length
+	 * 
+	 * @param s String to crop
+	 * @param length maximum length
+	 * @return s the (eventually) cropped String s
+	 */
+	public static String cropToLength (String s, int length) {
+		if (s != null && s.length() > length) {
+			return s.substring(0, length);
+		}
+		return s;
+	}	
 }
