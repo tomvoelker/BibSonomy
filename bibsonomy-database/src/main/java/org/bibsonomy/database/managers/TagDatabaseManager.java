@@ -336,8 +336,16 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * Get all tags of a given user
 	 */
 	public List<Tag> getTagsByUser(final TagParam param, final DBSession session) {
-		// another DBLP extra sausage - don't query DB for tags (as only "dblp"
-		// will be returned anyways), but return that directly
+		/* 
+         * another DBLP extra sausage - don't query DB for tags (as only "dblp"
+		 * will be returned anyways), but return that directly
+         *
+		 * TODO: maybe we put all the DBLP stuff into one class?
+         * Then we could do here:
+         * if (DBLP.isDBLPUser(param.getRequestedUserName()) {
+         *    return DBLP.getDBLPTag();
+         * }
+		 */
 		if ("dblp".equals(param.getRequestedUserName().toLowerCase())) {
 			ArrayList<Tag> tags = new ArrayList<Tag>();
 			Tag dblp = new Tag();
@@ -456,7 +464,6 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	public List<Tag> getRelatedTags(TagParam param, DBSession session){
-		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		return this.queryForList("getRelatedTags", param, Tag.class, session);
 	}
 
