@@ -586,14 +586,24 @@
 	</rule>
 
 <!-- ############## search pages ############### -->
+    <!-- redirect for search formular on /search/SEARCHTERM page -->
+    <rule>
+      <from>^/+search(\?search=(.*))$</from>
+      <to type="redirect">/search/$2</to>
+    </rule>	
     <rule>
 		<from>^/+search\?(.*)$</from>
-		<to>/RedirectHandler?page=search&amp;$1</to> 
+		<!-- NEW PAGE -->
+		<to>/search?requestedSearch=$1</to> 
 	</rule>
   	<rule>
 		<from>^/+search/(.+?)(\?(.*))?$</from>
-		<to>/ResourceHandler?page=search&amp;requSearch=$1&amp;$3</to> 
+		<!-- NEW PAGE -->
+		<to>/search?requestedSearch=$1&amp;$3</to> 
 	</rule>
+	
+
+	
 	<!-- search for tags or users -->
     <rule>
 		<from>^/+specialsearch\?(.*)$</from>
