@@ -1,0 +1,80 @@
+package org.bibsonomy.webapp.controller;
+
+import java.net.URLEncoder;
+
+import org.apache.log4j.Logger;
+import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.webapp.command.SearchViewCommand;
+import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
+import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.Views;
+
+/**
+ * Controller for search page
+ * 
+ * @author Beate Krause
+ * @version $Id$
+ */
+public class SearchPageController extends MultiResourceListController implements MinimalisticController<SearchViewCommand>{
+	private static final Logger LOGGER = Logger.getLogger(SearchPageController.class);
+
+	public View workOn(SearchViewCommand command) {
+		
+		LOGGER.debug(this.getClass().getSimpleName());
+		this.startTiming(this.getClass(), command.getFormat());
+		
+		// determine which lists to initalize depending on the output format 
+		if (command.getRequestedSearch() == null) return null;
+		String search = command.getRequestedSearch();
+		GroupingEntity groupingEntity = GroupingEntity.ALL;
+		String groupingName = null;
+		
+		// search in a specific user's entries
+		
+		if (search.matches(".*user:.*")) {
+			// get username of first user
+			int start = search.indexOf("user:");
+			int ende  = search.indexOf(" ", start);
+			if (ende == -1) {ende = search.length();} // if user:* is last word
+			groupingName = search.substring(start + "user:".length(), ende);
+			
+			//warning if more than one user in search string
+			if (search.replaceFirst("user:[^\\s]*", "").matches(".*user:.*")){
+				throw new MalformedURLSchemeException("error.search_more_than_one_user");
+			}
+			// replace all occurences of "user:*"
+			search = search.replaceAll("user:[^\\s]*", "").trim();
+		}
+		
+		// and the requested resourcetype
+		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
+		// set grouping entity and grouping name
+		
+		// retrieve and set the requested resource lists
+		for (final Class<? extends Resource> resourceType : listsToInitialise) {
+			this.setList(command, resourceType, groupingEntity, groupingName, null, null, null, search, command.getListCommand(resourceType).getEntriesPerPage());
+			this.postProcessList(command, resourceType);
+			
+		}
+		
+		// html format - retrieve tags and return HTML view
+		if ("html".equals(command.getFormat())) {
+			return Views.SEARCHPAGE;			
+		}
+		
+		// export - return the appropriate view
+		return Views.getViewByFormat(command.getFormat());		
+	}
+
+	public SearchViewCommand instantiateCommand() {
+		return new SearchViewCommand();
+	}
+
+	
+	
+	
+
+
+}
