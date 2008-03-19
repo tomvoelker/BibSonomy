@@ -5,10 +5,11 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.logic.Order;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.webapp.command.RelatedTagCommand;
 import org.bibsonomy.webapp.command.RelatedUserCommand;
 import org.bibsonomy.webapp.command.TagResourceViewCommand;
+import org.bibsonomy.webapp.config.Parameters;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
@@ -24,7 +25,6 @@ import org.bibsonomy.webapp.view.Views;
 
 public class TagPageController extends MultiResourceListController implements MinimalisticController<TagResourceViewCommand>{
 	private static final Logger LOGGER = Logger.getLogger(TagPageController.class);
-
 	
 	public View workOn(final TagResourceViewCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
@@ -32,6 +32,9 @@ public class TagPageController extends MultiResourceListController implements Mi
 		//if no tags given return
 		if(command.getRequestedTags().length() == 0) return null;
 		
+		// requested order
+		Order order = Order.getOrderByName(command.getOrder());
+
 		final List<String> requTags = command.getRequestedTagsList();
 		
 		// determine which lists to initalize depending on the output format 
@@ -40,14 +43,16 @@ public class TagPageController extends MultiResourceListController implements Mi
 		
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {			
-			this.setList(command, resourceType, GroupingEntity.ALL, null, requTags, null, Order.FOLKRANK, null, command.getListCommand(resourceType).getEntriesPerPage());
+			this.setList(command, resourceType, GroupingEntity.ALL, null, requTags, null, order, null, command.getListCommand(resourceType).getEntriesPerPage());
 			this.postProcessList(command, resourceType);
 		}	
 		
 		// html format - retrieve tags and return HTML view
 		if (command.getFormat().equals("html")) {
-			this.setRelatedTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, Order.FOLKRANK, 0, 20, null);
-			this.setRelatedUser(command, requTags, Order.FOLKRANK, 0, 50);
+			this.setRelatedTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, order, 0, Parameters.NUM_RELATED_TAGS, null);
+			if (order.equals(Order.FOLKRANK)) {
+				this.setRelatedUsers(command, requTags, order, 0, Parameters.NUM_RELATED_USERS);
+			}
 			return Views.TAGPAGE;			
 		}
 
@@ -91,9 +96,9 @@ public class TagPageController extends MultiResourceListController implements Mi
 	 * @param start
 	 * @param end
 	 */
-	protected <T extends Resource, V extends TagResourceViewCommand> void setRelatedUser(V cmd, List<String> tags, Order order, int start, int end) {
+	protected <T extends Resource, V extends TagResourceViewCommand> void setRelatedUsers(V cmd, List<String> tags, Order order, int start, int end) {
 		RelatedUserCommand relatedUserCommand = cmd.getRelatedUserCommand();
-		relatedUserCommand.setRelatedUser(this.logic.getUsers(tags,order,start,end));
+		relatedUserCommand.setRelatedUsers(this.logic.getUsers(tags,order,start,end));
 	}
 	
 }

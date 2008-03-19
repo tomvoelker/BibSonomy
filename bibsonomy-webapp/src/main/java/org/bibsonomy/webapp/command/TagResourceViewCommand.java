@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.bibsonomy.model.logic.Order;
-
 /**
  * Bean for Tag Sites
  * 
@@ -18,7 +16,7 @@ public class TagResourceViewCommand extends ResourceViewCommand{
 	private String requestedTags = "";
 	
 	/** the specified order */
-	private Order requestedOrder;
+	private String order = "added";
 		
 	/** bean for related tags */
 	private RelatedTagCommand relatedTagCommand = new RelatedTagCommand();
@@ -86,15 +84,15 @@ public class TagResourceViewCommand extends ResourceViewCommand{
 	/**
 	 * @return order
 	 */
-	public Order getRequestedOrder() {
-		return this.requestedOrder;
+	public String getOrder() {
+		return this.order;
 	}
 
 	/**
 	 * @param requestedOrder
 	 */
-	public void setRequestedOrder(final Order requestedOrder) {
-		this.requestedOrder = requestedOrder;
+	public void setOrder(final String order) {
+		this.order = order;
 	}
 	
 }
