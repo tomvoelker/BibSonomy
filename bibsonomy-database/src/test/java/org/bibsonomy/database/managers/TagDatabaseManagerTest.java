@@ -206,6 +206,14 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final String hash = "palim palim";		
 		List<Tag> tags = this.tagDb.getTagsByBookmarkHashForUser(loginUserName, requestedUserName, hash, 0, 20, this.dbSession);
 	}
+	
+	@Test
+	public void getRelatedTags() {
+		final TagParam param = new TagParam();
+		param.addTagName("web");
+		param.addTagName("semantic");
+		List<Tag> tags = this.tagDb.getRelatedTags(param, this.dbSession);
+	}
 
 	
 }
