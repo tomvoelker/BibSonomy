@@ -10,7 +10,7 @@ import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
-import org.bibsonomy.model.logic.Order;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.PostLogicInterface;
 
 /**

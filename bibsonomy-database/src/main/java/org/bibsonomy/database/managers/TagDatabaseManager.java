@@ -9,6 +9,7 @@ import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.tag.TagChain;
 import org.bibsonomy.database.params.TagParam;
+import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.params.beans.TagTagBatchParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
@@ -40,12 +41,18 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 */
 	// private static final int MAX_TAGS_TO_INSERT = 10;
 
+	/**
+	 * Constructor
+	 */
 	private TagDatabaseManager() {
 		this.generalDb = GeneralDatabaseManager.getInstance();
 		this.tagRelDb = TagRelationDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
 	}
 
+	/**
+	 * @return a singleton instance of the TagDatabaseManager
+	 */
 	public static TagDatabaseManager getInstance() {
 		return singleton;
 	}
@@ -410,6 +417,10 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @return list of tags
 	 */
 	public List<Tag> getRelatedTagsForGroup(TagParam param, DBSession session) {
+		// check maximum number of tags
+		if (this.exceedsMaxSize(param.getTagIndex())) {
+			return new ArrayList<Tag>();
+		}		
 		return this.queryForList("getRelatedTagsForGroup", param, Tag.class, session);
 	}	
 	
@@ -420,14 +431,26 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @return list of tags
 	 */
 	public List<Tag> getRelatedTagsViewable(TagParam param, DBSession session) {
+		// check maximum number of tags
+		if (this.exceedsMaxSize(param.getTagIndex())) {
+			return new ArrayList<Tag>();
+		}		
 		if (GroupID.isSpecialGroupId(param.getGroupId()) == true) {
-			// show users own tags, which are private, public or for friends
+			// for special groups, check additionally if tag is "owned"
+			// by the logged-in user
 			param.setRequestedUserName(param.getUserName());
-			return this.queryForList("getRelatedTagsForSpecialGroup", param, Tag.class, session);
 		}
 		return this.queryForList("getRelatedTagsViewable", param, Tag.class, session);
 	}	
 
+	/**
+	 * Main function (called from the Logic Interface) to retrieve tags - this function
+	 * actually starts the chain of responsibility
+	 * 
+	 * @param param
+	 * @param session
+	 * @return
+	 */
 	public List<Tag> getTags(final TagParam param, final DBSession session) {
 		
 		final List<Tag> tags;
@@ -463,11 +486,34 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		}
 	}
 	
+	/**
+	 * Retrieve related tags
+	 * 
+	 * @param param
+	 * @param session
+	 * @return
+	 */
 	public List<Tag> getRelatedTags(TagParam param, DBSession session){
+		// check maximum number of tags
+		if (this.exceedsMaxSize(param.getTagIndex())) {
+			return new ArrayList<Tag>();
+		}
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);		
 		return this.queryForList("getRelatedTags", param, Tag.class, session);
 	}
 
+	/**
+	 * Retrieve related tags orderey by folkrank
+	 * 
+	 * @param param
+	 * @param session
+	 * @return
+	 */
 	public List<Tag> getRelatedTagsOrderedByFolkrank(TagParam param, DBSession session){
+		// check maximum number of tags
+		if (this.exceedsMaxSize(param.getTagIndex())) {
+			return new ArrayList<Tag>();
+		}		
 		return this.queryForList("getRelatedTagsOrderedByFolkrank", param, Tag.class, session);
 	}
 	
@@ -558,4 +604,15 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		return this.queryForList("getTagsByBibtexHash", param, Tag.class, session);
 	}	
+	
+	/**
+	 * helper function to check maximum number of tags for which
+	 * related tags are to be computed
+	 * 
+	 * @param index
+	 * @return true if maximum number is exeeded, false otherwise
+	 */
+	private Boolean exceedsMaxSize(List<TagIndex> index) {
+		return index != null && index.size() > 10;
+	}
 }

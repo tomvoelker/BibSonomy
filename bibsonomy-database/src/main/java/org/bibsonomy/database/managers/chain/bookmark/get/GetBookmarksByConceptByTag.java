@@ -11,7 +11,7 @@ import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.logic.Order;
+import org.bibsonomy.model.enums.Order;
 
 /**
  * @author mwa
@@ -21,7 +21,7 @@ public class GetBookmarksByConceptByTag extends BookmarkChainElement{
 
 	@Override
 	protected List<Post<Bookmark>> handle(BookmarkParam param, DBSession session) {
-		return this.db.getBookmarksByConceptByTag(param, session);
+		return this.db.getBookmarkByConceptByTag(param, session);
 	}
 
 	@Override

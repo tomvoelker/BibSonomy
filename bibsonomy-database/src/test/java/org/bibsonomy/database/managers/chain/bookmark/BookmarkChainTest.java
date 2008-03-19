@@ -8,7 +8,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.AbstractChainTest;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.logic.Order;
+import org.bibsonomy.model.enums.Order;
 import org.junit.Test;
 
 /**

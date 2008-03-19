@@ -11,7 +11,7 @@ import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.logic.Order;
+import org.bibsonomy.model.enums.Order;
 
 /**
  * @author Miranda Grahl

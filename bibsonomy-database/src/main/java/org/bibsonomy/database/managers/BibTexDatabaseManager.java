@@ -22,7 +22,7 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.logic.Order;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.SimHash;
 
 /**

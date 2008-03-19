@@ -24,7 +24,7 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.logic.Order;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.SimHash;
 
 /**
@@ -794,7 +794,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	/**
 	 * @return
 	 */
-	public List<Post<Bookmark>> getBookmarksByConceptByTag(final BookmarkParam param, final DBSession session){
+	public List<Post<Bookmark>> getBookmarkByConceptByTag(final BookmarkParam param, final DBSession session){
 		return this.bookmarkList("getBookmarkByConceptByTag", param, session);
 		
 	}

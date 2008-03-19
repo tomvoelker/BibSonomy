@@ -12,7 +12,7 @@ import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.logic.Order;
+import org.bibsonomy.model.enums.Order;
 
 /**
  * @author Miranda Grahl

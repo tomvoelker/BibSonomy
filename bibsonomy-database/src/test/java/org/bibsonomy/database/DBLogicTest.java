@@ -22,8 +22,8 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.logic.Order;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -395,8 +395,8 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	@Test
 	public void testGetUsersByFolkrank(){
 		List<String> tags = new ArrayList<String>();
-		tags.add("folksonomy");
-		List<User> user = this.getDbLogic().getUsers(tags, Order.FOLKRANK, 0, 50);
-		assertEquals(50, user.size());
+		tags.add("web");
+		List<User> user = this.getDbLogic().getUsers(tags, Order.FOLKRANK, 0, 20);
+		assertEquals(20, user.size());
 	}
 }

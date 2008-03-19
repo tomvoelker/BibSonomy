@@ -13,7 +13,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.logic.Order;
+import org.bibsonomy.model.enums.Order;
 
 /**
  * This is the most generic param. All fields which are not specific to

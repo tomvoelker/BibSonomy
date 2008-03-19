@@ -9,7 +9,7 @@ import org.bibsonomy.database.managers.chain.tag.TagChainElement;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.logic.Order;
+import org.bibsonomy.model.enums.Order;
 
 /**
  * @author daill

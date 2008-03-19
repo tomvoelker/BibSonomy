@@ -1,6 +1,7 @@
 package org.bibsonomy.database;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +49,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.logic.Order;
+import org.bibsonomy.model.enums.Order;
 
 /**
  * @author Jens Illig
@@ -159,8 +160,13 @@ public class DBLogic implements LogicInterface {
 	@SuppressWarnings("unchecked")
 	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end, String search) {
 
+		// check allowed start-/end-values 
 		if (grouping.equals(GroupingEntity.ALL)) {
 			this.permissionDBManager.checkStartEnd(start, end, "post");
+		}
+		// check maximum number f allowed tags
+		if (this.permissionDBManager.exceedsMaxmimumSize(tags)) {
+			return new ArrayList<Post<T>>();
 		}
 
 		final List<Post<T>> result;
