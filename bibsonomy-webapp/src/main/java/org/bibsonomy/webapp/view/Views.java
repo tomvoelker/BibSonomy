@@ -120,6 +120,11 @@ public enum Views implements View {
 	AUTHORPAGE("author"),
 	
 	/**
+	 * search page
+	 */
+	SEARCHPAGE("search"),
+	
+	/**
 	 * html output for bookmarks
 	 */
 	BOOKPUBL("export/bookmark/bookpubl");
