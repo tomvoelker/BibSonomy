@@ -7,6 +7,10 @@
 		<result property="name"       column="user_name"      javaType="string" />
 		<result property="realname"   column="user_realname"  javaType="string" />
 	</resultMap>
+	
+	<resultMap id="userWithWeight" extends="Common.user" class="user">
+		<result property="prediction" column="weight"         javaType="integer"/>
+	</resultMap>
 
 	<resultMap id="user" class="user" extends="userForGroup">
 		<result property="apiKey"           column="api_key"       javaType="string" />

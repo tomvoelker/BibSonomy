@@ -59,13 +59,14 @@
 		DELETE FROM user WHERE user_name = #userName#
 	</delete>
 	
-	<select id="getUsersOrderedByFolkrank" resultMap="Common.user" parameterClass="userParam"> 
-		SELECT w.item AS user_name, ROUND(SUM(weight),5) AS weight
+	<select id="getUsersOrderedByFolkrank" resultMap="UserCommon.userWithWeight" parameterClass="userParam"> 
+		SELECT w.item AS user_name, ROUND(SUM(weight),5) * 10000 AS weight
 		FROM rankings r
 			JOIN weights w USING (id)
 			WHERE (<iterate property="tagIndex" conjunction=" OR ">r.item = #tagIndex[].tagName#</iterate>) AND r.dim = 0
 			AND w.dim = 1 AND w.itemtype = 0
 		GROUP BY w.item
+		HAVING weight > 1
 		ORDER BY 2 DESC
 		LIMIT #limit#
 	</select>
