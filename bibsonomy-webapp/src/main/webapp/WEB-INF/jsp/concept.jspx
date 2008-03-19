@@ -27,18 +27,18 @@
 			<c:choose>
 				<c:when test="${not empty command.user.name}">
 					<c:if test="${empty command.requestedUser}">
-						<c:set var="conceptlinkname"><fmt:message key="related.conceptfrom"/>${mtl:ch('nbsp')}${command.user.name}</c:set>
+						<c:set var="conceptlinkname"><fmt:message key="tag.asConceptFrom"/>${mtl:ch('nbsp')}${command.user.name}</c:set>
 						<c:set var="conceptlink">/concept/user/${command.user.name}/${fn:escapeXml(command.requestedTags)}</c:set>
 					</c:if>
 					<c:if test="${not empty command.requestedUser}">
-						<c:set var="conceptlinkname"><fmt:message key="related.concept"/></c:set>
+						<c:set var="conceptlinkname"><fmt:message key="tag.asConceptFromAll"/></c:set>
 						<c:set var="conceptlink">/concept/tag/${fn:escapeXml(command.requestedTags)}</c:set>
 					</c:if>
 				</c:when>
 				<c:otherwise>
 					<c:set var="conceptlinkname"></c:set>
 					<c:if test="${not empty command.requestedUser}">
-						<c:set var="conceptlinkname"><fmt:message key="related.concept"/></c:set>
+						<c:set var="conceptlinkname"><fmt:message key="tag.asConceptFromAll"/></c:set>
 						<c:set var="conceptlink">/concept/tag/${fn:escapeXml(command.requestedTags)}</c:set>
 					</c:if>
 				</c:otherwise>
@@ -52,13 +52,13 @@
 			<!-- display the link to the userpage-->
 			<c:if test="${not empty command.user.name}">
 				<li>
-					<a href="/user/${command.user.name}/${fn:escapeXml(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>${mtl:ch('nbsp')}<fmt:message key="related.tagfrom"/>${mtl:ch('nbsp')}${command.user.name}
+					<a href="/user/${command.user.name}/${fn:escapeXml(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>${mtl:ch('nbsp')}<fmt:message key="tag.asTagFrom"/>${mtl:ch('nbsp')}${command.user.name}
 				</li>
 			</c:if>
 			
 			<!-- display the link to the tag page -->
 			<li>
-				<a href="/tag/${fn:escapeXml(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>${mtl:ch('nbsp')}<fmt:message key="related.tag"/>
+				<a href="/tag/${fn:escapeXml(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>${mtl:ch('nbsp')}<fmt:message key="tag.asTagFromAll"/>
 			</li>
 			
 			<!-- display user's tag relations -->			
