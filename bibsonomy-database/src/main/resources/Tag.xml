@@ -194,18 +194,23 @@
 		FROM tas t, tas tt
 		WHERE tt.content_id = t.content_id	
 		AND t.group = #groupId#
+		<isNotNull property="requestedUserName">
+			AND t.user_name = #requestedUserName#
+		</isNotNull>
 		AND (<iterate property="tagIndex" conjunction=" OR ">t.tag_name = #tagIndex[].tagName#</iterate>)
 		AND (<iterate property="tagIndex" conjunction=" AND ">tt.tag_name != #tagIndex[].tagName#</iterate>)	
 		GROUP BY tt.tag_name
 		ORDER BY tag_ctr DESC 
 		LIMIT 10
 	</select>
-	
+
+	<!-- 	
 	<select id="getRelatedTagsForSpecialGroup" resultMap="Common.tag" parameterClass="tagParam">
 		SELECT tt.tag_name, COUNT(tt.tag_name) AS tag_anzahl
 		FROM tas t, tas tt
 		WHERE tt.content_id = t.content_id
 		AND t.user_name = #requestedUserName#
+		AND t.
 		AND t.user_name = tt.user_name
 		AND (<iterate property="tagIndex" conjunction=" OR ">t.tag_name = #tagIndex[].tagName#</iterate>)
 		AND (<iterate property="tagIndex" conjunction=" AND ">tt.tag_name != #tagIndex[].tagName#</iterate>)	
@@ -213,24 +218,46 @@
 		ORDER BY tag_anzahl DESC 
 		LIMIT 10
 	</select>
+	 -->
 	
-	<select id="getRelatedTags" resultMap="Common.tag" parameterClass="tagParam">
-		SELECT t2 AS tag_name, ctr_public
-		FROM tagtag 
-		WHERE <iterate property="tagIndex" conjunction=" OR ">t1 = #tagIndex[].tagName#</iterate>
-		AND ctr_public > 0 
-		ORDER BY ctr_public DESC 
-		LIMIT #limit#
+	<select id="getRelatedTags" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+	    <!-- single tag requested: query tagtag table -->
+		<isEqual property="maxTagIndex" compareValue="1">
+			SELECT TT.t2 AS tag_name, TT.ctr_public AS tag_ctr
+			FROM tagtag TT
+			WHERE TT.t1 = #tagIndex[0].tagName#
+			  AND TT.ctr_public > 0
+			  AND TT.t2 != #tagIndex[0].tagName# <!-- exclude requested tag -->
+			ORDER BY TT.ctr_public DESC
+			LIMIT #limit# OFFSET #offset#
+		</isEqual>
+		<!-- more than one tag requested: query tas -->
+		<isGreaterThan property="maxTagIndex" compareValue="1">		
+		    SELECT t.tag_name AS tag_name, count(t.tag_name) as tag_ctr
+	      	FROM tas t, <include refid="tagFromQuery"/> <!-- a TAS join (t1, t2, ...) for each requested tag -->
+	      	WHERE t.content_id=t1.content_id 
+	          AND <include refid="tagWhereQuery"/>
+	              <iterate property="tagIndex" conjunction=" AND " prepend=" AND ">
+	              <!-- exclude requested tags -->
+	              t.tag_name != #tagIndex[].tagName#
+	              </iterate>
+	          <!-- restrict to visible tags - not using restrictToGroups because of different table alias -->
+			  AND t.group IN (0 <iterate property="groups" conjunction="," prepend=",">$groups[]$</iterate>) 
+	      	GROUP BY t.tag_name
+	      	ORDER BY tag_ctr DESC
+	      	LIMIT #limit# OFFSET #offset#
+	    </isGreaterThan>
 	</select>
 	
-	<select id="getRelatedTagsOrderedByFolkrank" resultMap="Common.tag" parameterClass="tagParam">
-		SELECT w.item AS tag_name , ROUND(SUM(weight),5) AS weight
+	<select id="getRelatedTagsOrderedByFolkrank" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT w.item AS tag_name , ROUND(SUM(weight),5) * 10000 AS tag_ctr
 		FROM rankings r
 			JOIN weights w USING (id)
 		WHERE (<iterate property="tagIndex" conjunction=" OR ">r.item = #tagIndex[].tagName#</iterate>) 
 			AND r.dim = 0
 			AND w.dim = 0 
 			AND w.itemtype = 0
+			AND <iterate property="tagIndex" conjunction=" AND ">w.item != #tagIndex[].tagName#</iterate>
 		GROUP BY w.item
 		ORDER BY 2 DESC
 		LIMIT #limit#
