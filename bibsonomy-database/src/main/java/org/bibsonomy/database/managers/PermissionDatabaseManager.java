@@ -132,5 +132,15 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 			throw new ValidationException("You are not authorized to perform the requested operation.");
 		}
 	}
+	
+	/**
+	 * Check maximum number of allowed tags per request
+	 * 
+	 * @param tags
+	 * @return true if maximum size is exceeded, false otherwise
+	 */
+	public Boolean exceedsMaxmimumSize (List<String> tags) {
+		return tags != null && tags.size() > 10;
+	}
 
 }
