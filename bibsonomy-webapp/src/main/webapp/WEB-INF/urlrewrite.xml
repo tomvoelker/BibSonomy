@@ -469,13 +469,17 @@
 	    <from>^/+tag/*$</from>
 	    <to type="redirect">/tags</to>
 	</rule>
-	<rule>
+	<rule> <!-- /tag/TAG -->
+    	<!-- workaround to redirect not-yet-supported features to old resource handler -->
+		<condition type="parameter" name="filter" operator="notequal"/>
+		<condition type="attribute" name="type" operator="notequal"/>    	
 		<from>^/+tag/(.+?)(\?(.*))?$</from>
-		<!-- 
-		    uncomment the following to use the new tag page from mwa 
-		    dbe, 20070115
-			<to>/tag?requestedTags=$1&amp;$3</to>
-		-->
+		<!-- NEW PAGE -->
+		<to>/tag?requestedTags=$1&amp;$3</to>
+	</rule>
+	<rule>
+		<!-- OLD PAGE -->
+		<from>^/+tag/(.+?)(\?(.*))?$</from>
 		<to>/ResourceHandler?page=tag&amp;requTag=$1&amp;$3</to>
 	</rule>
 	    
@@ -485,11 +489,12 @@
         <to type="redirect">/concept/tag/$2</to>
     </rule>
     
-    <rule>
+    <rule> <!-- /concept/tag/CONCEPT -->
     <!-- workaround to redirect not-yet-supported features to old resource handler -->
 		<condition type="parameter" name="filter" operator="notequal"/>
 		<condition type="attribute" name="type" operator="notequal"/>
         <from>^/+concept/+tag/(.+?)(\?(.*))?$</from>
+        <!-- NEW PAGE -->
         <to>/concept?requestedTags=$1&amp;$3</to>
     </rule>     
     <!-- OLD PAGE -->

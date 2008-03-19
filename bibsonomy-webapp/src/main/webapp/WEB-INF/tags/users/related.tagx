@@ -1,0 +1,40 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+	<jsp:directive.attribute name="cmd" type="org.bibsonomy.webapp.command.RelatedUserCommand" required="true" />
+
+	<ul class="taglist">
+		<c:forEach var="user" items="${cmd.relatedUsers}">
+
+			<!-- determine user css depending on its frequency -->
+			<c:choose>
+				<c:when test="${user.prediction > 10}">
+					<c:set var="userclass" value="tagten" />
+				</c:when>			
+				<c:when test="${user.prediction > 5}">
+					<c:set var="userclass" value="tagone" />				
+				</c:when>							
+				<c:otherwise>
+					<c:set var="userclass" value="" />
+				</c:otherwise>
+			</c:choose>
+		
+			<!-- title -->
+			<c:set var="userTitle">
+				<fmt:message key="sort.folkrank.weight"/>:
+				${user.prediction} <!-- we misuse the prediction field here, which is normally user for spammer predictions -->
+			</c:set>	
+			
+			<!-- url -->
+			<c:url var="userUrl" context="${projectContext}" value="/user/${fn:escapeXml(user.name)}"/>		
+							
+			<li class="${userclass}">			  
+		      <a title="${userTitle}" href="${userUrl}">${fn:escapeXml(user.name)}</a>
+		      <c:out value=" "/>
+		    </li>
+		</c:forEach>
+	</ul> 	
+</jsp:root>

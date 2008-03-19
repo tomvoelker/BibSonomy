@@ -6,6 +6,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
@@ -17,23 +18,77 @@
 		<a rel="path_menu" href="#"><fmt:message key="navi.tag"/>${mtl:ch('nbsp')}<img alt="" src="/resources/image/box_arrow.png"/></a> :: 
 		<form action="/tag/${fn:escapeXml(command.requestedTags)}" method="get" class="smallform">
 		  <input type="text" size="20" name="tag" id="inpf" value="${command.requestedTags}"/>
-		</form>							
+		</form>
+				
+		<!--  sorting options -->
+		<c:out value=" "/>
+		<c:url context="${projectContext}" var="tagUrl" value="/tag/${mtl:encodeURI(command.requestedTags)}"/>
+		<span style="font-size: 65%">
+			<fmt:message key="sort.orderBy"/>
+			(
+			<c:out value=" "/>
+			<c:choose>
+				<c:when test="${command.order eq 'added'}">
+					<fmt:message key="sort.date"/>
+				</c:when>
+				<c:otherwise>
+					<a href="${tagUrl}"><fmt:message key="sort.date"/></a>
+				</c:otherwise>
+			</c:choose>
+			|
+			<c:choose>
+				<c:when test="${command.order eq 'folkrank'}">
+					<fmt:message key="sort.folkrank"/>
+				</c:when>
+				<c:otherwise>
+					<a href="${tagUrl}?order=folkrank"><fmt:message key="sort.folkrank"/></a>
+				</c:otherwise>
+			</c:choose>
+			)							
+		</span>		
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-			<li>
-				<a href="/concept/tag/${fn:escapeXml(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+		
+			<!-- links to user's  or global concept / tag pages -->
+			<c:if test="${not empty command.user.name}">
+				<li>
+					<a href="/user/${command.user.name}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+					<c:out value=" "/>
+					<fmt:message key="tag.asTagFrom"/>
+					<c:out value=" "/>
+					${fn:escapeXml(command.user.name)}						
+				</li>					
+				<li>
+					<a href="/concept/user/${command.user.name}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+					<c:out value=" "/>
+					<fmt:message key="tag.asConceptFrom"/>
+					<c:out value=" "/>
+					${fn:escapeXml(command.user.name)}
+				</li>				
+			</c:if>
+
+			<li style="margin-bottom: 1ex;">
+				<a href="/concept/tag/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 				<c:out value=" "/>
-				<fmt:message key="related.concept"/>
+				<fmt:message key="tag.asConceptFromAll"/>
 			</li>
-			<li>
-				<a href="/tag/${fn:escapeXml(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
-				<c:out value=" "/>
-				<fmt:message key="related.tag"/>
-			</li>
-			<li>
-				<tags:related requPath="${requPath}" cmd="${command.relatedTagCommand}"/>
-			</li>
+			
+			<!-- related tags -->
+			<c:if test="${not empty command.relatedTagCommand.relatedTags}">
+				<li>
+					<span class="sidebar_h"><fmt:message key="relatedtags"/></span>
+					<tags:related requPath="${requPath}" cmd="${command.relatedTagCommand}" order="${command.order}"/>
+				</li>
+			</c:if>
+			
+			<!-- related users -->
+			<c:if test="${not empty command.relatedUserCommand.relatedUsers}">
+				<li>
+					<span class="sidebar_h"><fmt:message key="relatedusers"/></span>
+					<users:related cmd="${command.relatedUserCommand}"/>
+				</li>			
+			</c:if>
 		</jsp:attribute>
 		
 	</layout:resourceLayout>
