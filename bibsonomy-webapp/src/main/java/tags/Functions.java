@@ -12,6 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.util.UrlUtils;
 
 import resources.Resource;
 
@@ -214,6 +215,17 @@ public class Functions  {
 			return t.intValue();
 		}		
 		return 100 + (tagFrequency / tagMaxFrequency * 200);
+	}
+	
+	/**
+	 * Wrapper for org.bibsonomy.util.UrlUtils.cleanUrl
+	 * 
+	 * @see org.bibsonomy.util.UrlUtils.cleanUrl
+	 * @param url
+	 * @return the cleaned url
+	 */
+	public static String cleanUrl(String url) {
+		return UrlUtils.cleanUrl(url);
 	}
 	
 }
