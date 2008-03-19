@@ -94,7 +94,7 @@
 		</td>
 		<td style="padding-left:10px">	
 			<table class="taglist">
-			<tr>				
+			<tr>				http://localhost:8080/admin.jsp
 				<th colspan="3">private</th>				
 			</tr>
 			<tr>
@@ -118,7 +118,7 @@
 	</c:choose>	
 </c:if>
 
-<!-- handle request on spammertag page -->
+<!-- handle request on spammer and spammertag page -->
 <c:if test="${param.type == 0}">
 	<jsp:useBean id="adminBean" class="beans.AdminBean">
 		<jsp:setProperty name="adminBean" property="*"/>

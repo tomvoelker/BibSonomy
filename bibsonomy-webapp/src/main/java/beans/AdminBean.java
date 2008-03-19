@@ -51,6 +51,8 @@ public class AdminBean implements Serializable {
 			DBAdminManager.flagSpammerTag(this, false, 1);
 		}else if (action.equals("cleantag")) {
 			DBAdminManager.flagSpammerTag(this, true, 0);
+		} else if (action.equals("gen_api_key")) {
+			DBAdminManager.updateApiKey(this);
 		}
 	}
 	

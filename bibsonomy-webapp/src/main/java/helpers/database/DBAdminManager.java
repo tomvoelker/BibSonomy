@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.ScrapingException;
 
@@ -265,5 +266,28 @@ public class DBAdminManager extends DBManager {
 		} catch (ScrapingException e) {
 			bean.addError("Sorry, an error occured: " + e);
 		}		
+	}
+	
+	/**
+	 * Generate an API key for the given user
+	 * @param bean The AdminBean
+	 * @author sts
+	 */
+	public static void updateApiKey(AdminBean bean) {
+		DBContext c = new DBContext();
+		String apiKey = UserUtils.generateApiKey();
+		
+		try {
+			if (c.init()) {
+				c.stmt = c.conn.prepareStatement("UPDATE user SET api_key = ? WHERE user_name = ?");
+				c.stmt.setString(1, apiKey);
+				c.stmt.setString(2, bean.getUser());
+				if (c.stmt.executeUpdate() == 1)
+					bean.addInfo("Generated api key '" + apiKey + "' for user " + bean.getUser());
+			}
+		} catch (SQLException ex) {
+			bean.addError("Sorry, an error occured during api key generation: " + ex);
+			ex.printStackTrace();
+		}				
 	}
 }

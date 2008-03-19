@@ -236,6 +236,20 @@
 </ul>
 <hr/>
 
+<%-- API key management --%>
+<span class="sidebar_h">API key</span><br>
+<c:choose>	
+	<c:when test="${param.userinfo != null}">
+		user name: <c:out value="${rsInfo.rows[0].user_name}"/>
+		<input type="button" value="Generate key" onclick="javascript:generateApiKey('<mtl:encode value="${rsInfo.rows[0].user_name}"/>')"/>	
+	</c:when>
+	<c:otherwise>
+		please select a user
+	</c:otherwise>
+</c:choose> 	
+
+<hr/>
+
 <%-- group management  --%>
 <span class="sidebar_h">add a group to the system</span>
 
@@ -290,7 +304,6 @@
 
 </ul>
 
-
 <!-- TODO: in functions.js Datei auslagern -->
 <script type="text/javascript">  
 	function initRequest(){
@@ -337,6 +350,14 @@
 			
 		/* remove spammer from db via AJAX*/
 		runAjax("user=" + name, "unflag_spammer");
+	}
+	
+	function generateApiKey(name) {
+		if (name == null || name == "") {
+			addLogMessage("please specify a user");
+			return;
+		}
+		runAjax("user=" + name, "gen_api_key");
 	}
 		
 	/* function interacts with server via ajax */
