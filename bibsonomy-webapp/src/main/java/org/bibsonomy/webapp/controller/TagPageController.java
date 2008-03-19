@@ -28,6 +28,7 @@ public class TagPageController extends MultiResourceListController implements Mi
 	
 	public View workOn(final TagResourceViewCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
+		this.startTiming(this.getClass(), command.getFormat());
 		
 		//if no tags given return
 		if(command.getRequestedTags().length() == 0) return null;
@@ -53,9 +54,11 @@ public class TagPageController extends MultiResourceListController implements Mi
 			if (order.equals(Order.FOLKRANK)) {
 				this.setRelatedUsers(command, requTags, order, 0, Parameters.NUM_RELATED_USERS);
 			}
+			this.endTiming();
 			return Views.TAGPAGE;			
 		}
-
+		
+		this.endTiming();
 		// export - return the appropriate view
 		return Views.getViewByFormat(command.getFormat());
 		

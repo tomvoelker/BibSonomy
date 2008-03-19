@@ -44,10 +44,10 @@ public class AuthorPageController extends MultiResourceListController implements
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(command.getFormat())) {
 			this.setTags(command, BibTex.class, groupingEntity, null, null, null, null, 0, 1000, authorName);
-			
+			this.endTiming();
 			return Views.AUTHORPAGE;			
 		}
-		
+		this.endTiming();
 		// export - return the appropriate view
 		return Views.getViewByFormat(command.getFormat());		
 	}

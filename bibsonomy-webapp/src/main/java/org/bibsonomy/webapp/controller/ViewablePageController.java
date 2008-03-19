@@ -22,6 +22,7 @@ public class ViewablePageController extends MultiResourceListController implemen
 	
 	public View workOn(GroupResourceViewCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
+		this.startTiming(this.getClass(), command.getFormat());
 		
 		// we need to be logged in, and a group needs to be present
 		if (command.userLoggedIn() == false) {
@@ -56,11 +57,13 @@ public class ViewablePageController extends MultiResourceListController implemen
 			
 			if (requTags.size() > 0) {
 				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, null,  0, 20, null);
+				this.endTiming();
 				return Views.VIEWABLETAGPAGE;
 			}
+			this.endTiming();
 			return Views.VIEWABLEPAGE;			
 		}
-		
+		this.endTiming();
 		// export - return the appropriate view
 		return Views.getViewByFormat(command.getFormat());		
 	}

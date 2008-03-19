@@ -24,6 +24,9 @@ public class ConceptPageController  extends MultiResourceListController implemen
 	private static final Logger LOGGER = Logger.getLogger(ConceptPageController.class);
 
 	public View workOn(ConceptResourceViewCommand command) {
+		LOGGER.debug(this.getClass().getSimpleName());
+		this.startTiming(this.getClass(), command.getFormat());
+		
 		//if no tags given return
 		if(command.getRequestedTags().length() == 0) return null;
 		final List<String> requTags = command.getRequestedTagsList();
@@ -78,9 +81,10 @@ public class ConceptPageController  extends MultiResourceListController implemen
 			if(groupingEntity != GroupingEntity.ALL) {
 				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, 0, 1000, null);
 			}
+			this.endTiming();
 			return Views.CONCEPTPAGE;			
 		}
-
+		this.endTiming();
 		// export - return the appropriate view
 		return Views.getViewByFormat(command.getFormat());
 	}
