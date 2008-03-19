@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.logic.Order;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.strategy.Context;
 
