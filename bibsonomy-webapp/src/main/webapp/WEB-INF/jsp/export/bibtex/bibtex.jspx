@@ -34,7 +34,7 @@
 		</c:if>
 	</c:forEach>
 	
-	<!-- special fields -->
+	<!-- special fields: misc, key, description, abstract, keywords, biburl -->
 	
 	<c:if test="${not empty bibtex['misc']}">
 	<c:forEach var="miscField" items="${mtl:miscFieldToArray(bibtex['misc'])}">
