@@ -26,7 +26,9 @@ public class SearchPageController extends MultiResourceListController implements
 		this.startTiming(this.getClass(), command.getFormat());
 		
 		// determine which lists to initalize depending on the output format 
-		if (command.getRequestedSearch() == null) return null;
+		if (command.getRequestedSearch().length() == 0){
+			throw new MalformedURLSchemeException("error.search_page_without_search");	
+		}
 		String search = command.getRequestedSearch();
 		GroupingEntity groupingEntity = GroupingEntity.ALL;
 		String groupingName = null;
@@ -50,7 +52,6 @@ public class SearchPageController extends MultiResourceListController implements
 		
 		// and the requested resourcetype
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
-		// set grouping entity and grouping name
 		
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {
@@ -64,6 +65,8 @@ public class SearchPageController extends MultiResourceListController implements
 			return Views.SEARCHPAGE;			
 		}
 		
+		this.endTiming();
+		
 		// export - return the appropriate view
 		return Views.getViewByFormat(command.getFormat());		
 	}
@@ -71,10 +74,5 @@ public class SearchPageController extends MultiResourceListController implements
 	public SearchViewCommand instantiateCommand() {
 		return new SearchViewCommand();
 	}
-
-	
-	
-	
-
 
 }
