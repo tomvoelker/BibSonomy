@@ -1,6 +1,5 @@
 package org.bibsonomy.util;
 
-
 /**
  * Convenience methods to work with URLs
  *
@@ -30,7 +29,7 @@ public class UrlUtils {
 			return null;
 		}
 		// remove linebreaks, etc.
-		url = url.replaceAll("\\n|\\r", "");;
+		url = url.replaceAll("\\n|\\r", "");
 		// this should be the most common case: a valid URL
 		if (url.startsWith("http://") || 
 			url.startsWith("ftp://") ||
@@ -41,7 +40,7 @@ public class UrlUtils {
 			return StringUtils.cropToLength(url, MAX_LEN_URL);
 		} else if (url.startsWith("\\url{") && url.endsWith("}")) {
 			// remove \\url{...}
-			return StringUtils.cropToLength(url.substring(5,url.length()-1), MAX_LEN_URL);
+			return StringUtils.cropToLength(url.substring(5, url.length() - 1), MAX_LEN_URL);
 		} else if (url.trim().equals("")){
 			// handle an empty URL
 			return "";

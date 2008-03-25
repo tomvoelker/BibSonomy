@@ -30,7 +30,8 @@ public class StringUtilsTest {
 
 	/**
 	 * tests toHexString
-	 * @throws UnsupportedEncodingException 
+	 * 
+	 * @throws UnsupportedEncodingException
 	 */
 	@Test
 	public void toHexString() throws UnsupportedEncodingException {
@@ -62,5 +63,59 @@ public class StringUtilsTest {
 		for (final int i : new int[] { 1, 2, 3 })
 			someStrings.add("test" + i);
 		assertEquals("[test1,test2,test3]", StringUtils.getStringFromList(someStrings));
+	}
+
+	/**
+	 * tests removeNonNumbers
+	 */
+	@Test
+	public void removeNonNumbers() {
+		for (final String str : new String[] { "123test", "test123", "t1e2s3t" }) {
+			assertEquals("123", StringUtils.removeNonNumbers(str));
+		}
+	}
+
+	/**
+	 * tests removeNonNumbersOrLetters
+	 */
+	@Test
+	public void removeNonNumbersOrLetters() {
+		assertEquals("test", StringUtils.removeNonNumbersOrLetters("!-test-!"));
+		assertEquals("test", StringUtils.removeNonNumbersOrLetters(" !-test-! "));
+	}
+
+	/**
+	 * tests removeNonNumbersOrLettersOrDotsOrSpace
+	 */
+	@Test
+	public void removeNonNumbersOrLettersOrDotsOrSpace() {
+		assertEquals("test", StringUtils.removeNonNumbersOrLetters("...!-test-!..."));
+		assertEquals("test", StringUtils.removeNonNumbersOrLetters(". . .!-test-!. . ."));
+	}
+
+	/**
+	 * tests removeWhitespace
+	 */
+	@Test
+	public void removeWhitespace() {
+		assertEquals("Theansweris42", StringUtils.removeWhitespace("The answer is 42"));
+	}
+
+	/**
+	 * tests normalizeWhitespace
+	 */
+	@Test
+	public void normalizeWhitespace() {
+		assertEquals("The answer is 42", StringUtils.normalizeWhitespace("The  answer    is  42"));
+	}
+
+	/**
+	 * tests cropToLength
+	 */
+	@Test
+	public void cropToLength() {
+		assertEquals("42", StringUtils.cropToLength("42", 2));
+		assertEquals("42", StringUtils.cropToLength("42", 42));
+		assertEquals("test", StringUtils.cropToLength("test test", 4));
 	}
 }

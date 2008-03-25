@@ -71,8 +71,11 @@ public class StringUtils {
 	/**
 	 * All strings in the collection are concatenated and returned as one single
 	 * string, i.e. like <code>[item1,item2,item3,...]</code>.
-	 * @param collection collection of strings to be concatenated
-	 * @return concatenated string, i.e. like <code>[item1,item2,item3,...]</code>.
+	 * 
+	 * @param collection
+	 *            collection of strings to be concatenated
+	 * @return concatenated string, i.e. like
+	 *         <code>[item1,item2,item3,...]</code>.
 	 */
 	public static String getStringFromList(final Collection<String> collection) {
 		if (collection.isEmpty()) {
@@ -89,7 +92,9 @@ public class StringUtils {
 
 	/**
 	 * Removes everything, but numbers.
-	 * @param str source string
+	 * 
+	 * @param str
+	 *            source string
 	 * @return result
 	 */
 	public static String removeNonNumbers(final String str) {
@@ -101,7 +106,9 @@ public class StringUtils {
 
 	/**
 	 * Removes everything which is neither a number nor a letter.
-	 * @param str source string
+	 * 
+	 * @param str
+	 *            source string
 	 * @return result
 	 */
 	public static String removeNonNumbersOrLetters(final String str) {
@@ -114,7 +121,9 @@ public class StringUtils {
 	/**
 	 * Removes everything which is neither a number nor a letter nor a dot (.)
 	 * nor space.
-	 * @param str source string
+	 * 
+	 * @param str
+	 *            source string
 	 * @return result
 	 */
 	public static String removeNonNumbersOrLettersOrDotsOrSpace(final String str) {
@@ -126,7 +135,9 @@ public class StringUtils {
 
 	/**
 	 * Removes all whitespace.
-	 * @param str source string
+	 * 
+	 * @param str
+	 *            source string
 	 * @return result
 	 */
 	public static String removeWhitespace(final String str) {
@@ -138,7 +149,9 @@ public class StringUtils {
 
 	/**
 	 * Substitutes all whitespace with " "
-	 * @param str source string
+	 * 
+	 * @param str
+	 *            source string
 	 * @return result
 	 */
 	public static String normalizeWhitespace(final String str) {
@@ -147,18 +160,20 @@ public class StringUtils {
 		}
 		return "";
 	}
-	
+
 	/**
-	 * crops s to length if it is longer than length
+	 * Crops s to length if it is longer than length
 	 * 
-	 * @param s String to crop
-	 * @param length maximum length
+	 * @param s
+	 *            String to crop
+	 * @param length
+	 *            maximum length
 	 * @return s the (eventually) cropped String s
 	 */
-	public static String cropToLength (String s, int length) {
+	public static String cropToLength(final String s, final int length) {
 		if (s != null && s.length() > length) {
 			return s.substring(0, length);
 		}
 		return s;
-	}	
+	}
 }
