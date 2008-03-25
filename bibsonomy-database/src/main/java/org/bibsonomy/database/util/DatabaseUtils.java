@@ -4,6 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -55,9 +56,10 @@ public class DatabaseUtils {
 	 */
 	public static void setGroups(final GeneralDatabaseManager db, final GenericParam param, final DBSession session) {
 		final List<Integer> groupIds = db.getGroupIdsForUser(param.getUserName(), session);
-
-		// each user is allowed to see public posts
-		groupIds.add(GroupID.PUBLIC.getId());
+		
+		// PLEASE NOTE: as public stuff (tags, posts, ...) can be seen by everyone,
+		// the PUBLIC group is present by default in the param object (see constructor
+		// of GenericParam
 		
 		if (present(param.getUserName()) && present(param.getRequestedUserName())) {
 			// If userName and requestedUserName are the same -> add private and friends
@@ -70,8 +72,9 @@ public class DatabaseUtils {
 				if (friends) groupIds.add(GroupID.FRIENDS.getId());
 			}
 		}
-
-		param.setGroups(groupIds);
+		
+		// add the groups
+		param.addGroups(groupIds);
 	}
 
 	/**

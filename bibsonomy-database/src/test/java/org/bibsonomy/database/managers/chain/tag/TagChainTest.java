@@ -44,6 +44,7 @@ public class TagChainTest extends AbstractChainTest {
 		 this.tagParam.setGrouping(GroupingEntity.GROUP);
 		 this.tagParam.setLimit(10);
 		 this.tagParam.setGroupId(GroupID.INVALID.getId());
+		 this.tagParam.addGroup(GroupID.PUBLIC.getId());
     	 final List<Tag> tags = this.tagChain.getFirstElement().perform(this.tagParam, this.dbSession);         
 		 assertEquals(10, tags.size());
 		 this.resetParameters();

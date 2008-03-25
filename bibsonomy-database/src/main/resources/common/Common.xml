@@ -162,8 +162,8 @@
 	
 	<!-- restrict visibility directly, i.e. without checking for user's own items -->
 	<sql id="inGroupsUnchecked">
-		t1.group in (0
-		<iterate property="groups" conjunction="," prepend=",">
+		t1.group in (
+		<iterate property="groups" conjunction=",">
 		    $groups[]$
 		</iterate>)	
 	</sql>
@@ -175,8 +175,8 @@
 	-->
 	<sql id="inGroups2">
 		<isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">
-		  b.group in (0
-		  <iterate property="groups" conjunction="," prepend=",">
+		  b.group in (
+		  <iterate property="groups" conjunction=",">
 		    $groups[]$
 		  </iterate>)
 		</isNotEqual>

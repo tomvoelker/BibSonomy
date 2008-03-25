@@ -242,7 +242,7 @@
 	              t.tag_name != #tagIndex[].tagName#
 	              </iterate>
 	          <!-- restrict to visible tags - not using restrictToGroups because of different table alias -->
-			  AND t.group IN (0 <iterate property="groups" conjunction="," prepend=",">$groups[]$</iterate>) 
+			  AND t.group IN (<iterate property="groups" conjunction=",">$groups[]$</iterate>)         			   
 	      	GROUP BY t.tag_name
 	      	ORDER BY tag_ctr DESC
 	      	LIMIT #limit# OFFSET #offset#

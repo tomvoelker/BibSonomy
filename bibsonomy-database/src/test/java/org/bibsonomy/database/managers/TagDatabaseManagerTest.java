@@ -1,5 +1,6 @@
 package org.bibsonomy.database.managers;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
@@ -138,11 +139,12 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.tagParam.setRequestedUserName("hotho");
 		this.tagParam.setGrouping(GroupingEntity.USER);
 		this.tagParam.setUserName("hotho");
-		this.tagParam.setGroupId(GroupID.INVALID.getId());
+		this.tagParam.setGroupId(GroupID.INVALID.getId());		
 		List<Tag> tags = this.tagDb.getTags(this.tagParam, this.dbSession);		
 		assertEquals(1408,tags.size());
 		// hotho is a spammer, so some other user shouldn't see his tags
 		this.tagParam.setUserName("some_other_user");
+		this.tagParam.setGroups(Arrays.asList(new Integer[] {0}));
 		tags = this.tagDb.getTags(this.tagParam, this.dbSession);		
 		assertEquals(0,tags.size());		
 		this.resetParameters();			

@@ -1,8 +1,11 @@
 package org.bibsonomy.database.params;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
@@ -84,8 +87,15 @@ public abstract class GenericParam {
 	 */
 	private int numCorrelatedConcepts;
 	
-	/** List of the groups the user belongs to */
-	private List<Integer> groups;
+	/** 
+	 * List of the groups the user belongs to 
+	 * 
+	 * we store this as a set, because a user can of course 
+	 * be only just once a member of each group; but as IBATIS
+	 * expects a List to loop over, getGroups returns a List
+	 * 
+	 * */
+	private HashSet<Integer> groups;
 	/**
 	 * Should tagnames (names of tags and concepts) be case sensitive; by
 	 * default this is false, i.e. tagnames aren't case sensitive.
@@ -153,7 +163,10 @@ public abstract class GenericParam {
 		
 		this.grouping = GroupingEntity.ALL;
 		
-		this.groups =  new ArrayList<Integer>();
+		this.groups =  new HashSet<Integer>();
+		
+		// public posts are always visible
+		this.groups.add(GroupID.PUBLIC.getId());
 	}
 
 	/**
@@ -274,13 +287,35 @@ public abstract class GenericParam {
 		this.date = date;
 	}
 
+	/**
+	 * returns the list of groups a user is member of
+	 * 
+	 * ATTENTION: this is not just a plain getter - we transform 
+	 * the set of groups into a list of groups for IBATIS compatibility
+	 * 
+	 * @return a list of groups
+	 */
 	public List<Integer> getGroups() {
-		return this.groups;
+		return new ArrayList<Integer>(this.groups);
 	}
 
-	public void setGroups(List<Integer> groups) {
-		this.groups = groups;
+	/**
+	 * set the groups
+	 * 
+	 * @param groups a SET of group ids
+	 */
+	public void setGroups(Set<Integer> groups) {
+		this.groups = new HashSet(groups);
 	}
+	
+	/**
+	 * wrapper method for setting the groups set by a list
+	 * 
+	 * @param groups a LIST of group ids
+	 */
+	public void setGroups(List<Integer> groups) {
+		this.groups = new HashSet<Integer>(groups);
+	}	
 
 	public int getGroupId() {
 		return this.groupId;
@@ -493,4 +528,12 @@ public abstract class GenericParam {
 	public void setNumSimpleTags(int numSimpleTags) {
 		this.numSimpleTags = numSimpleTags;
 	}
+	
+	public void addGroup(Integer groupId) {
+		this.groups.add(groupId);
+	}
+	
+	public void addGroups(Collection<Integer> groups) {
+		this.groups.addAll(groups);
+	}	
 }
