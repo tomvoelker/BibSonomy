@@ -49,4 +49,28 @@ public class UrlUtils {
 			return StringUtils.cropToLength(BROKEN_URL + url, MAX_LEN_URL);
 		}
 	}
+	
+	/**
+	 * Set a parameter in a given URL-String
+	 * 
+	 * @param urlString the URL string
+	 * @param paramName the parameter name
+	 * @param paramValue the parameter value
+	 * @return the given URL string with the parameter set
+	 */
+	public static String setParam(String urlString, String paramName, String paramValue) {
+					
+		if (urlString.matches(".*([&\\?])" + paramName +  "\\=[^&#$]+.*")) {
+			// parameter is already present - replace its value
+			return urlString.replaceAll("([&\\?])" + paramName +  "\\=[^&#$]+", "$1" + paramName + "=" + paramValue);
+		}
+		else if (urlString.matches(".*\\?.*")) {
+			// parameter not presetn, but query present in url -> append &param=value;
+			return urlString + "&" + paramName + "=" + paramValue;
+		}
+		else {
+			// no query at all present in url -> append ?param=value
+			return urlString + "?" + paramName + "=" + paramValue;
+		}
+	}	
 }
