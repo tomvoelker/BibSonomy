@@ -125,6 +125,13 @@
       JOIN user a USING(ip_address) ORDER BY ipctr, ip_address, reg_date DESC ;
     </sql:query>
   </c:when>
+  <c:when test="${param.usercount eq 1000}">
+    <sql:query var="rs" dataSource="${dataSource}">
+      SELECT user_name, spammer, TRIM(trailing ', 141.51.167.67, 141.51.167.67' FROM TRIM(trailing ', 141.51.167.67' from ip_address)) AS ip_address, 
+      	user_realname, user_email, date_format(reg_date,'%d.%c.%y_%H:%i') AS reg_date1, updated_by, updated_at
+      FROM user ORDER BY reg_date DESC LIMIT 1000
+    </sql:query>  
+  </c:when>
   <c:otherwise>
     <%-- do SQL query to get new users --%>
     <sql:query var="rs" dataSource="${dataSource}">
