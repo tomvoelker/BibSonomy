@@ -8,9 +8,10 @@ import org.bibsonomy.common.enums.InetAddressStatus;
 /** Holds parameters for admin specific things (e.g. blocking an IP, marking a spammer).
  * 
  * @author rja
+ * @author sts
  * @version $Id$
  */
-public class AdminParam {
+public class AdminParam extends GenericParam {
 	
 	/** An inetAddress whose status should be get/set/deleted. */
 	private InetAddress inetAddress = null;
@@ -24,6 +25,18 @@ public class AdminParam {
 	/** The spammer status of the user */
 	private Integer spammer;
 	
+	/** flag if user should by classified any longer */
+	private Integer toClassify;	
+	
+	/** The prediction of the classifier */
+	private Integer prediction;
+	
+	/** The classifier algorithm */
+	private String algorithm;
+	
+	/** The mode of the classiefier (day or night) */
+	private String mode;
+	
 	/** The group id of the posts before flagging  */
 	private int oldGroupId;
 	
@@ -35,6 +48,7 @@ public class AdminParam {
 	
 	/** The username of the admin who executes the update */
 	private String updatedBy;
+	
 	
 	public InetAddress getInetAddress() {
 		return this.inetAddress;
@@ -65,6 +79,12 @@ public class AdminParam {
 	}
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}	
+	public Integer getToClassify() {
+		return this.toClassify;
+	}
+	public void setToClassify(Integer toClassify) {
+		this.toClassify = toClassify;
 	}
 	public int getOldGroupId() {
 		return this.oldGroupId;
@@ -83,5 +103,23 @@ public class AdminParam {
 	}
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
-	}	
+	}
+	public Integer getPrediction() {
+		return this.prediction;
+	}
+	public void setPrediction(Integer prediction) {
+		this.prediction = prediction;
+	}
+	public String getAlgorithm() {
+		return this.algorithm;
+	}
+	public void setAlgorithm(String algorithm) {
+		this.algorithm = algorithm;
+	}
+	public String getMode() {
+		return this.mode;
+	}
+	public void setMode(String mode) {
+		this.mode = mode;
+	}		
 }

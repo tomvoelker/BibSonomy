@@ -2,12 +2,16 @@ package org.bibsonomy.database.managers;
 
 import java.net.InetAddress;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.InetAddressStatus;
+import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.AdminParam;
+import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.UserUtils;
@@ -24,9 +28,11 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 
 	
 	private static final Logger LOGGER = Logger.getLogger(AdminDatabaseManager.class);
+	private final DatabasePluginRegistry plugins;
 	private final static AdminDatabaseManager singleton = new AdminDatabaseManager();
 
 	private AdminDatabaseManager() {
+		plugins = DatabasePluginRegistry.getInstance();
 	}
 
 	/**
@@ -59,16 +65,24 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	 * @param updatedBy the admin who flags the user
 	 * @param session
 	 */
-	public void flagSpammer(User user, String updatedBy, DBSession session) {
+	public String flagSpammer(User user, String updatedBy, DBSession session) {
 		final AdminParam param = new AdminParam();
 		
 		param.setUserName(user.getName());
 		param.setSpammer(user.getSpammer());
+		param.setToClassify(user.getToClassify());
+		
+		param.setPrediction(user.getPrediction() != null ? user.getPrediction() : user.getSpammer());
+		param.setMode(user.getMode());
+		param.setAlgorithm(user.getAlgorithm());
 		param.setUpdatedBy(updatedBy);
 		param.setUpdatedAt(new Date());
 		
 		this.update("flagSpammer", param, session);		
 		this.updateGroupIds(param, session);
+		
+		this.insert("logPrediction", param, session);		
+		return user.getName();
 	}
 	
 	/**
@@ -102,5 +116,27 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		this.update("updateBibtexGroupIds", param, session);
 		this.update("updateSearchBookmarkGroupIds", param, session);
 		this.update("updateSearchBibtexGroupIds", param, session);		
+	}
+
+	/**
+	 * Returns all users that are classified to the specified state by
+	 * the given classifier 
+	 * 
+	 * @param classifier something that classfied the user
+	 * @param status the state to which the user was classified
+	 * @param session the db session
+	 */
+	public List<User> getClassifiedUsers(Classifier classifier, SpamStatus status, DBSession session) {
+		AdminParam param = new AdminParam();
+		param.setLimit(50);
+		
+		if (classifier.equals(Classifier.ADMIN) && (status.equals(SpamStatus.SPAMMER) || status.equals(SpamStatus.NO_SPAMMER))) {
+			param.setPrediction(status.getId());
+			return this.queryForList("getAdminClassifiedUsers", param, User.class, session);			
+		} else if (classifier.equals(Classifier.CLASSIFIER)) {
+			param.setPrediction(status.getId());
+			return this.queryForList("getClassifiedUsers", param, User.class, session);			
+		}		
+		return null;
 	}
 }

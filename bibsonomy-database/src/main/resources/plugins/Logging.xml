@@ -68,6 +68,11 @@
 				FROM user WHERE user_name = #userName#) 
 	</insert>
 	
+	<insert id="logPrediction" parameterClass="adminParam">
+		INSERT INTO log_prediction (`user_name`, `prediction`, `timestamp`, `updated_at`, `algorithm` , `mode`)
+		VALUES (#userName#, #prediction#, UNIX_TIMESTAMP(NOW()), #updatedAt#, #algorithm#, #mode#)
+	</insert>
+	
 	<select id="countNewContentIdFromBibTex" resultClass="int" parameterClass="bibtexParam">
 		SELECT COUNT(*)	AS count FROM log_bibtex LB WHERE LB.new_content_id=#newContentId#
 	</select>

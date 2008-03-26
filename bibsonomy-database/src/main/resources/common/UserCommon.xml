@@ -31,6 +31,12 @@
 		<result property="updatedAt"	    column="updated_at"    javaType="date" />
 		<result property="toClassify"       column="to_classify"   javaType="integer" />			
 	</resultMap>
+	
+	<resultMap id="userWithPrediction" extends="user" class="user">
+		<result property="prediction" 	column="prediction" javaType="integer"/>
+		<result property="mode" 		column="mode"       javaType="string"/>
+		<result property="algorithm" 	column="algorithm"	javaType="string"/>
+	</resultMap>
 
 	<resultMap id="userWithSettings"  class="user" extends="user"> 
 		<result property="settings"   resultMap="UserCommon.userSettings"/>

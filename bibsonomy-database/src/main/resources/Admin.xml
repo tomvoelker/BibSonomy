@@ -25,8 +25,21 @@
 	</delete>
 	
 	<update id="flagSpammer" parameterClass="adminParam">
-		UPDATE user SET spammer = #spammer#, updated_by = #updatedBy#, updated_at = #updatedAt# WHERE user_name = #userName# 
+		UPDATE user SET spammer = #spammer#, updated_by = #updatedBy#, updated_at = #updatedAt#, to_classify = #toClassify# 
+		WHERE user_name = #userName# 
 	</update>
+	
+	<select id="getAdminClassifiedUsers" resultMap="UserCommon.user" parameterClass="adminParam">
+		SELECT <include refid="commonUserAttributes"/>  
+		FROM user WHERE (updated_by != 'classifier' OR ISNULL(updated_by)) AND spammer = #prediction# 
+		LIMIT #limit#
+	</select>
+	
+	<select id="getClassifiedUsers" resultMap="UserCommon.userWithPrediction" parameterClass="adminParam">
+		SELECT *  
+		FROM user u JOIN log_prediction p ON (u.user_name = p.user_name AND u.updated_at = p.updated_at)
+		WHERE updated_by = 'classifier' AND prediction = #prediction# 
+	</select>
 	
 	<update id="updateTasGroupIds" parameterClass="adminParam">
 		UPDATE tas SET `group` = #newGroupId# WHERE user_name = #userName# AND `group` = #oldGroupId#

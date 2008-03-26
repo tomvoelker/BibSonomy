@@ -8,11 +8,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.exceptions.QueryTimeoutException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
@@ -575,7 +577,7 @@ public class DBLogic implements LogicInterface {
 			// only admins are allowed to change spammer settings
 			this.permissionDBManager.ensureAdminAccess(this.loginUser);
 			DBSession session = this.openSession();
-			adminDBManager.flagSpammer(user, this.getAuthenticatedUser(), session);			
+			return adminDBManager.flagSpammer(user, this.getAuthenticatedUser(), session);			
 		}
 		
 		return this.storeUser(user, true);
@@ -869,6 +871,17 @@ public class DBLogic implements LogicInterface {
 			return this.userDBManager.getUserByFolkrank(param, session);
 		} finally {
 			session.close();
+		}
+	}
+
+	public List<User> getClassifiedUsers(Classifier classifier, SpamStatus status) {
+		permissionDBManager.ensureAdminAccess(this.loginUser);
+		final DBSession session = openSession();
+
+		try {			
+			return this.adminDBManager.getClassifiedUsers(classifier, status, session);
+		} finally {
+			session.close();			
 		}
 	}
 }
