@@ -281,6 +281,8 @@ public class XMLRenderer implements Renderer {
 		if (user.getPrediction() != null)
 			xmlUser.setPrediction(BigInteger.valueOf(user.getPrediction()));
 		xmlUser.setAlgorithm(user.getAlgorithm());
+		xmlUser.setClassifierMode(user.getMode());
+		xmlUser.setToClassify(BigInteger.valueOf(user.getToClassify()));
 		return xmlUser;
 	}
 

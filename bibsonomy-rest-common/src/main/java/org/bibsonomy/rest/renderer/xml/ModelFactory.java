@@ -65,6 +65,8 @@ public class ModelFactory {
 		if (xmlUser.getPrediction() != null)
 			user.setPrediction(xmlUser.getPrediction().intValue());
 		user.setAlgorithm(xmlUser.getAlgorithm());
+		user.setMode(xmlUser.getClassifierMode());
+		user.setToClassify(xmlUser.getToClassify().intValue());
 		return user;
 	}
 
