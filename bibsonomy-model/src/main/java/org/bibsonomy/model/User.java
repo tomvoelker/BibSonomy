@@ -149,6 +149,9 @@ public class User {
 	 */
 	private Integer prediction;
 	
+	/** The mode of the classiefier (day or night) */ 
+	private String mode;
+	
 	/**
 	 * constructor
 	 */
@@ -571,5 +574,13 @@ public class User {
 	 */
 	public void setUpdatedAt(Date updatetAt) {
 		this.updatedAt = updatetAt;
+	}
+
+	public String getMode() {
+		return this.mode;
+	}
+
+	public void setMode(String mode) {
+		this.mode = mode;
 	}			
 }

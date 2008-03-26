@@ -3,9 +3,11 @@ package org.bibsonomy.model.logic;
 import java.net.InetAddress;
 import java.util.List;
 
+import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.ConceptStatus;
+import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
@@ -341,4 +343,14 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @return list of user
 	 */
 	public List<User> getUsers (List<String> tags, Order order, final int start, int end);
+	
+	/**
+	 * Returns all users that are classified to the specified state by
+	 * the given classifier 
+	 * 
+	 * @param classifier something that classfied the user
+	 * @param status the state to which the user was classified
+	 * @return list of classified users
+	 */
+	public List<User> getClassifiedUsers(Classifier classifier, SpamStatus status);
 }
