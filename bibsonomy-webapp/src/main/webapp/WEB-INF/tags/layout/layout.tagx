@@ -11,7 +11,8 @@
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="basketSize" type="java.lang.Integer" required="true"/>
 	<jsp:directive.attribute name="searchString" type="java.lang.String" required="true"/>
-	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>	
+	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>	
 	<jsp:directive.attribute name="displayIntroduction" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>	
@@ -60,7 +61,7 @@
 				<lp:meta fieldName="author"/>
 				<lp:meta fieldName="copyright"/>
 				<lp:meta fieldName="keywords"/>
-				<lp:meta fieldName="description"/>				
+				<lp:meta fieldName="description"/>
 				<link rel="alternate" type="application/atom+xml" title="${systemName} Blog - Atom" href="http://bibsonomy.blogspot.com/feeds/posts/default" />
 				<link rel="alternate" type="application/rss+xml"  title="${systemName} Blog - RSS"  href="http://bibsonomy.blogspot.com/feeds/posts/default?alt=rss" />
 				<title>${projectName} :: <c:out value="${pageTitle}"/></title>
@@ -74,7 +75,7 @@
 						<a href="${root}">${projectName}</a> :: <jsp:invoke fragment="heading"/>
 					</h1>															
 				</div>
-				
+								
 				<!-- dropdown menu for BibSonomy Path -->  
 				<div id="path_menu" class="dropmenudiv">
 					<a onclick="naviSwitchSpecial('tag')" style="cursor:pointer"><fmt:message key="navi.tag"/></a>
@@ -101,10 +102,12 @@
 				  cssdropdown.startchrome("heading");
 				</script>
 				
-                <!-- TODO: Links are missing existing parameters! Built URLs correctly. -->
+                <!-- links to change language --> 
 				<div id="languagebox" style="text-align: right;">
-					<a href="?lang=de"><img alt="de" src="${resdir}/image/lang_de.png"/></a>
-					<a href="?lang=en"><img alt="en" src="${resdir}/image/lang_en.png"/></a>					
+					<c:url var="langUrlDe" value="/${mtl:setParam(requPath, 'lang', 'de')}" context="${projectContext}"/>
+					<c:url var="langUrlEn" value="/${mtl:setParam(requPath, 'lang', 'en')}" context="${projectContext}"/>					
+					<a href="${langUrlDe}"><img alt="de" src="${resdir}/image/lang_de.png"/></a>
+					<a href="${langUrlEn}"><img alt="en" src="${resdir}/image/lang_en.png"/></a>					
 				</div>
 				
 				<!-- Navigation -->

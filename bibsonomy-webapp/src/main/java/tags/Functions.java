@@ -228,4 +228,17 @@ public class Functions  {
 		return UrlUtils.cleanUrl(url);
 	}
 	
+
+	/**
+	 * wrapper for for org.bibsonomy.util.UrlUtils.setParam
+	 * 
+	 * @param url an url string
+	 * @param paramName parameter name
+	 * @param paramValue parameter value
+	 * @return an url string with the requested parameter set
+	 */
+	public static String setParam(String url, String paramName, String paramValue) {
+		return UrlUtils.setParam(url, paramName, paramValue); 
+	}
+	
 }
