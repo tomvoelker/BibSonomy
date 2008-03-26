@@ -1,0 +1,29 @@
+package org.bibsonomy.common.enums;
+
+/**
+ * The working mode of an automatic classify 
+ * algorithm 
+ * 
+ * @author Stefan Stützer
+ *
+ */
+public enum ClassifierMode {
+	/** day mode */
+	DAY("D"),
+	
+	/** night mode */
+	NIGHT("N");
+	
+	private String abbreviation;
+		
+	private ClassifierMode(String abbr) {
+		this.abbreviation = abbr;
+	}
+	
+	/**
+	 * @return abbreviation of the specified mode
+	 */
+	public String getAbbreviation() {
+		return abbreviation;
+	}
+}
