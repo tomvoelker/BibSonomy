@@ -1,0 +1,72 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+	<layout:tabLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
+		<jsp:attribute name="heading">		
+			<fmt:message key="navi.admin"/>									
+		</jsp:attribute>	
+		
+		<jsp:attribute name="topcontent">
+			<!-- Admin Navigation -->
+			<menu:adminNavi/>	
+					
+			<parts:logbox initialValue="no log messages"/>
+			<hr/>					
+		</jsp:attribute>
+		
+		<jsp:attribute name="tabcontent">		
+			<!-- spammer js -->
+			<script type="text/javascript" src="/resources/javascript/spammer.js">&amp;nbsp;</script>				
+					
+			<c:if test="${!empty command.content}">
+				<table id="spammers" class="spammertable">
+				    <tr style="font-size:120%">
+				    	<th>Spammer?</th>
+				    	<th>Username</th>
+				    	<th>Spammer</th>
+				    	<th>Realname</th>
+				    	<th>E-Mail</th>
+				    	<th>Algorithm</th>
+				    	<th>Mode</th>
+				    	<th>Date</th>
+				    	<th>updated by</th>
+				    	<th>updated at</th>
+				    </tr>
+				    				    
+				    <!-- user list -->
+					<c:forEach var="user" items="${command.content}" varStatus="status">
+				      <tr id="sl${status.count}">				
+				       <td>
+					     <a href="javascript:addSpammer('${user.name}','sl${status.count}',true)" title="flag this user as spammer">YES</a>
+					     <a href="javascript:unflagSpammer('${user.name}','sl${status.count}', true)" title="unflag this user as spammer">NO</a>
+				       </td>
+				       <td><a href="/user/${user.name}"><c:out value="${user.name}"/></a></td>
+				       <td><c:out value="${user.spammer}"/></td>
+				       <td><c:out value="${user.realname}"/></td>
+				       <td><c:out value="${user.email}"/></td>
+				       <td><c:out value="${user.algorithm}"/></td>
+				       <td><c:out value="${user.mode}"/></td>			       
+					   <td><c:out value="${user.registrationDate}"/></td>
+					   <td><c:out value="${user.updatedBy}"/></td>
+					   <td><c:out value="${user.updatedAt}"/></td>
+				       </tr>
+				    </c:forEach>
+				  </table>
+			</c:if>		
+			
+		</jsp:attribute>								
+	</layout:tabLayout>
+
+</jsp:root>

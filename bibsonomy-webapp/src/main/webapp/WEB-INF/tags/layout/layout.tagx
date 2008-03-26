@@ -11,7 +11,8 @@
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="basketSize" type="java.lang.Integer" required="true"/>
 	<jsp:directive.attribute name="searchString" type="java.lang.String" required="true"/>
-	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false"/>	
+	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>	
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>	
 	<jsp:directive.attribute name="displayIntroduction" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
@@ -50,6 +51,7 @@
 				<meta http-equiv="content-Type" content="text/html; charset=UTF-8" />
 				<link rel="stylesheet" type="text/css" href="${resdir}/css/style.css" />
 				<link rel="stylesheet" type="text/css" href="${resdir}/css/faq.css" />
+				<link rel="stylesheet" type="text/css" href="${resdir}/css/spammer.css" />
 				<link rel="icon" href="${resdir}/image/favicon.png" type="image/png" />
 				<!-- localized javascript messages -->
 				<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale}.js">&amp;nbsp;</script>				
@@ -85,13 +87,13 @@
 					<a onclick="naviSwitchSpecial('concept')" style="cursor:pointer"><fmt:message key="navi.concept"/></a>
 					<a onclick="naviSwitchSpecial('bibtexkey')" style="cursor:pointer"><fmt:message key="navi.bibtexKey"/></a>
 					<a onclick="naviSwitchSpecial('all')" style="cursor:pointer"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></a>
-					<c:if test="${not empty command.requestedUser}">
-						<c:set var="requUser" value="${command.requestedUser}" />						
-						<a onclick="naviSwitchSpecial('explicit_user')" style="cursor:pointer"><fmt:message key="navi.search"/>:<c:out value='${command.requestedUser}'/></a>
+					<c:if test="${not empty requestedUser}">
+						<c:set var="requUser" value="${requestedUser}" />						
+						<a onclick="naviSwitchSpecial('explicit_user')" style="cursor:pointer"><fmt:message key="navi.search"/>:<c:out value='${requestedUser}'/></a>
 						<c:set var="mode" value="requUser" />
 					</c:if>
-					<c:if test="${not empty loginUser.name and empty command.requestedUser}">
-						<c:set var="requUser" value="${command.requestedUser}" />
+					<c:if test="${not empty loginUser.name and empty requestedUser}">
+						<c:set var="requUser" value="${requestedUser}" />
 						<a onclick="naviSwitchSpecial('explicit_user')" style="cursor:pointer"><fmt:message key="navi.search"/>:<c:out value='${loginUser.name}'/></a>
 						<c:set var="mode" value="requUser" />
 					</c:if>
@@ -149,7 +151,7 @@
 					<fmt:message key="system.contact"/>
 					<c:out value=" "/>
 					<lp:email address="${projectEmail}"/>
-					<script type="text/javascript">init(${user.tagboxStyle}, ${user.tagboxSort}, ${user.tagboxMinfreq}, "${command.requestedUser}", "${loginUserName}", "${ckey}", "${projectName}");</script>  
+					<script type="text/javascript">init(${user.tagboxStyle}, ${user.tagboxSort}, ${user.tagboxMinfreq}, "${requestedUser}", "${loginUserName}", "${ckey}", "${projectName}");</script>  
 				</div>
 			</body>
 		</jsp:body>

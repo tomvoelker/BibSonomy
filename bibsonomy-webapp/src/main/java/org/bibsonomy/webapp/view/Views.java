@@ -127,8 +127,17 @@ public enum Views implements View {
 	/**
 	 * html output for bookmarks
 	 */
-	BOOKPUBL("export/bookmark/bookpubl");
+	BOOKPUBL("export/bookmark/bookpubl"),
 	
+	/**
+	 * admin page
+	 */
+	ADMINPAGE("admin"),
+	
+	/**
+	 * response page snippet for ajax requests
+	 */
+	AJAX("ajax");	
 	
 	private final String name;
 	

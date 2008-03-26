@@ -602,6 +602,19 @@
 		<to>/search?requestedSearch=$1&amp;$3</to> 
 	</rule>
 	
+	
+	<!-- ############## admin pages ############### -->
+	<rule>     	
+        <from>^/+admin(\?(.*))?$</from> 
+         <to>/admin?$2</to>
+    </rule>
+    
+    <!-- ############## ajax ############### -->
+	<rule>     	
+        <from>^/+ajax(\?(.*))?$</from> 
+         <to>/ajax?$2</to>
+    </rule>
+
 
 	
 	<!-- search for tags or users -->

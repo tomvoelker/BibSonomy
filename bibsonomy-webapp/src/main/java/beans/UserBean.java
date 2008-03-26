@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.bibsonomy.common.enums.Role;
+
 public class UserBean implements Serializable {
 
 	private static final long serialVersionUID = -7295358376819936465L;
@@ -16,6 +18,7 @@ public class UserBean implements Serializable {
 	protected String realname     = "";
 	protected String openurl      = ""; // BASE_URL for this users openURL service (http://www.exlibrisgroup.com/sfx_openurl_syntax.htm)
 	protected int postsInBasket   = 0;
+	protected Role role			  = Role.DEFAULT; 
 	
 	
 	private int tagboxStyle     = 0;  // 0 = cloud, 1 = list
@@ -147,5 +150,11 @@ public class UserBean implements Serializable {
 	}
 	public void setDefaultLanguage(String defaultLanguage) {
 		this.defaultLanguage = defaultLanguage;
-	}	
+	}
+	public Role getRole() {
+		return this.role;
+	}
+	public void setRole(Role role) {
+		this.role = role;
+	}		
 }

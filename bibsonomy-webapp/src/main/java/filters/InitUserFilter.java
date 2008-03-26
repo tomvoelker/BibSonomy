@@ -365,6 +365,7 @@ public class InitUserFilter implements Filter {
 		userBean.setName(loginUser.getName());
 		userBean.setOpenurl(loginUser.getOpenURL());
 		userBean.setRealname(loginUser.getRealname());
+		userBean.setRole(loginUser.getRole());
 		
 		//settings
 		userBean.setTagboxMinfreq(loginUser.getSettings().getTagboxMinfreq());

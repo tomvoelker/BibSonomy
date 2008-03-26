@@ -1,0 +1,90 @@
+package org.bibsonomy.webapp.controller;
+
+import org.apache.log4j.Logger;
+import org.bibsonomy.common.enums.Classifier;
+import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.enums.SpamStatus;
+import org.bibsonomy.model.User;
+import org.bibsonomy.model.UserSettings;
+import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.webapp.command.AdminViewCommand;
+import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.Views;
+
+import beans.UserBean;
+
+/**
+ * Controller for admin page
+ * 
+ * @author Stefan Stützer
+ * @version $Id$
+ */
+public class AdminPageController implements MinimalisticController<AdminViewCommand> {
+
+	private static final Logger log = Logger.getLogger(AdminPageController.class);
+	
+	private LogicInterface logic;
+	
+	private UserSettings userSettings;
+	
+	public View workOn(AdminViewCommand command) {
+		log.debug(this.getClass().getSimpleName());
+		
+		final UserBean user = command.getUser();		
+		if (user.getRole().equals(Role.DEFAULT)) {
+			/** TODO: redirect to login page as soon as it is available */
+		}		
+		
+		command.setPageTitle("admin");
+		this.setUsers(command);
+	
+		return Views.ADMINPAGE;				
+	}
+
+	public AdminViewCommand instantiateCommand() {
+		return new AdminViewCommand();
+	}
+
+	public void setLogic(LogicInterface logic) {
+		this.logic = logic;
+	}
+
+	public void setUserSettings(UserSettings userSettings) {
+		this.userSettings = userSettings;
+	}	
+	
+	public void setUsers(AdminViewCommand cmd) {
+		Classifier classifier = null;
+		SpamStatus status = null;
+		
+		switch(cmd.getSelTab()) {
+		case AdminViewCommand.ADMIN_SPAMMER_INDEX:
+			classifier = Classifier.ADMIN;
+			status = SpamStatus.SPAMMER;
+			break;
+		case AdminViewCommand.ADMIN_NOSPAMMER_INDEX:
+			classifier = Classifier.ADMIN;
+			status = SpamStatus.NO_SPAMMER;
+			break;
+		case AdminViewCommand.CLASSIFIER_SPAMMER_INDEX:
+			classifier = Classifier.CLASSIFIER;
+			status = SpamStatus.SPAMMER;
+			break;
+		case AdminViewCommand.CLASSIFIER_SPAMMER_UNSURE_INDEX:
+			classifier = Classifier.CLASSIFIER;
+			status = SpamStatus.SPAMMER_NOT_SURE;
+			break;
+		case AdminViewCommand.CLASSIFIER_NOSPAMMER_INDEX:
+			classifier = Classifier.CLASSIFIER;
+			status = SpamStatus.NO_SPAMMER;
+			break;
+		case AdminViewCommand.CLASSIFIER_NOSPAMMER_UNSURE_INDEX:
+			classifier = Classifier.CLASSIFIER;
+			status = SpamStatus.NO_SPAMMER_NOT_SURE;
+			break;
+		}		
+		
+		cmd.setContent(this.logic.getClassifiedUsers(classifier, status));		
+	}
+}

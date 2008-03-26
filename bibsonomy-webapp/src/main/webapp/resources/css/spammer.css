@@ -17,6 +17,7 @@
 	border-collapse:collapse;
 	empty-cells:show;	
 	margin-top: 15px;	
+	width: 100%;
 }
 
 .spammertable th {

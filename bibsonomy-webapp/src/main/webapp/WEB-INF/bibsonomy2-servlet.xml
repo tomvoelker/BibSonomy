@@ -68,7 +68,17 @@
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="searchPageController"/>
 					</bean>
-				</entry>				
+				</entry>
+				<entry key="/admin/">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="adminPageController"/>
+					</bean>
+				</entry>	
+				<entry key="/ajax/">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="ajaxController"/>
+					</bean>
+				</entry>					
 			</map>
 		</property>
 	</bean>
@@ -192,6 +202,15 @@
 		</property>
 	</bean>
 	
+	<bean id="adminPageController" class="org.bibsonomy.webapp.controller.AdminPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+	</bean>
+	
+	<bean id="ajaxController" class="org.bibsonomy.webapp.controller.AjaxController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+	</bean>	
 	
 	<bean id="requestHolder" class="org.bibsonomy.webapp.util.spring.factorybeans.Holder" scope="request"/>
 
