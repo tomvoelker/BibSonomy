@@ -19,14 +19,16 @@
 			</c:forEach>
 		</c:when>
 		<c:otherwise>
-			<c:forEach var="editor" items="${post.resource.editorList}" varStatus="loopStatus">        	 
-				<c:out value="${editor.firstName} " />
-				<!--<c:set var="authorUrlTemplate">/author/<mtl:encode value='${editor.lastName}'/></c:set>-->
-				<c:url var="authorUrl" value="${projectHome}author/${fn:escapeXml(author.lastName)}"/>
-				<a href="${authorUrl}"><c:out value="${editor.lastName}" /></a>
-				<c:if test="${not loopStatus.last}"><c:out value=" "/><fmt:message key="and"/><c:out value=" "/></c:if>
-			</c:forEach>
-			(eds.).
+			<c:if test="${not empty post.resource.editor}">
+				<c:forEach var="editor" items="${post.resource.editorList}" varStatus="loopStatus">        	 
+					<c:out value="${editor.firstName} " />
+					<!--<c:set var="authorUrlTemplate">/author/<mtl:encode value='${editor.lastName}'/></c:set>-->
+					<c:url var="authorUrl" value="${projectHome}author/${fn:escapeXml(author.lastName)}"/>
+					<a href="${authorUrl}"><c:out value="${editor.lastName}" /></a>
+					<c:if test="${not loopStatus.last}"><c:out value=" "/><fmt:message key="and"/><c:out value=" "/></c:if>
+				</c:forEach>
+				(eds.).
+			</c:if>
 		</c:otherwise>
 	</c:choose>
 	<c:out value=" "/>
