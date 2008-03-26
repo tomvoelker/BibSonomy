@@ -10,6 +10,7 @@ import org.bibsonomy.webapp.command.RelatedTagCommand;
 import org.bibsonomy.webapp.command.RelatedUserCommand;
 import org.bibsonomy.webapp.command.TagResourceViewCommand;
 import org.bibsonomy.webapp.config.Parameters;
+import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
@@ -34,7 +35,12 @@ public class TagPageController extends MultiResourceListController implements Mi
 		if(command.getRequestedTags().length() == 0) return null;
 		
 		// requested order
-		Order order = Order.getOrderByName(command.getOrder());
+		Order order = Order.ADDED;
+		try {
+			order = Order.getOrderByName(command.getOrder());
+		} catch (IllegalArgumentException ex) {
+			throw new MalformedURLSchemeException("error.order_not_supported");
+		}
 
 		final List<String> requTags = command.getRequestedTagsList();
 		
