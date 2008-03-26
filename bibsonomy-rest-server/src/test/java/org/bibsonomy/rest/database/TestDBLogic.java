@@ -11,9 +11,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
+import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -785,6 +787,11 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	public List<User> getUsers(List<String> tags, Order order, int start, int end) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<User> getClassifiedUsers(Classifier classifier, SpamStatus status) {
 		// TODO Auto-generated method stub
 		return null;
 	}
