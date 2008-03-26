@@ -53,6 +53,8 @@ public class UrlUtils {
 	/**
 	 * Set a parameter in a given URL-String
 	 * 
+	 * ATTENTION: to ease parsing, fragment identifiers are not supported
+	 * 
 	 * @param urlString the URL string
 	 * @param paramName the parameter name
 	 * @param paramValue the parameter value
@@ -64,13 +66,13 @@ public class UrlUtils {
 			// parameter is already present - replace its value
 			return urlString.replaceAll("([&\\?])" + paramName +  "\\=[^&#$]+", "$1" + paramName + "=" + paramValue);
 		}
-		else if (urlString.matches(".*\\?.*")) {
-			// parameter not presetn, but query present in url -> append &param=value;
+				
+		if (urlString.matches(".*\\?.*")) {
+			// parameter not present, but query present in url -> append &param=value;
 			return urlString + "&" + paramName + "=" + paramValue;
 		}
-		else {
-			// no query at all present in url -> append ?param=value
-			return urlString + "?" + paramName + "=" + paramValue;
-		}
+		
+		// no query at all present in url -> append ?param=value
+		return urlString + "?" + paramName + "=" + paramValue;
 	}	
 }
