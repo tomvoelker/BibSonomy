@@ -25,6 +25,22 @@
 					</c:otherwise>
 				</c:choose>
 			</c:if>
+			<!--  determine css depending on co-occurrence counts -->
+			<c:if test="${order eq 'added'}">
+				<c:set var="relatedness" value="${tag.usercount / cmd.tagGlobalCount}"/>
+				<c:choose>
+					<c:when test="${relatedness > 0.1 and cmd.tagGlobalCount > 1}">
+						<c:set var="tagclass" value="tagten" />
+					</c:when>			
+					<c:when test="${relatedness > 0.03 and cmd.tagGlobalCount > 1}">
+						<c:set var="tagclass" value="tagone" />				
+					</c:when>							
+					<c:otherwise>
+						<c:set var="tagclass" value="" />
+					</c:otherwise>
+				</c:choose>			
+			</c:if>
+			
 		
 			<!-- localized messages -->
 			<c:set var="posts">

@@ -20,6 +20,9 @@ public class RelatedTagCommand extends BaseCommand {
 	/**  the related tags of the requested tag(s) */
 	List<Tag> relatedTags = new ArrayList<Tag>();
 	
+	/** the global count of the tag these tags are related to */
+	Integer tagGlobalCount = 1;
+	
 	public RelatedTagCommand() {}
 	
 	RelatedTagCommand(List<Tag> relatedTags) {
@@ -40,5 +43,13 @@ public class RelatedTagCommand extends BaseCommand {
 
 	public void setRelatedTags(List<Tag> relatedTags) {
 		this.relatedTags = relatedTags;
+	}
+
+	public Integer getTagGlobalCount() {
+		return this.tagGlobalCount;
+	}
+
+	public void setTagGlobalCount(Integer tagGlobalCount) {
+		this.tagGlobalCount = tagGlobalCount;
 	}	
 }
