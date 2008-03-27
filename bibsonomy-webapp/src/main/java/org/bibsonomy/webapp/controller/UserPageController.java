@@ -52,7 +52,7 @@ public class UserPageController extends MultiResourceListController implements M
 			this.setList(command, resourceType, groupingEntity, groupingName, null, null, null, null, command.getListCommand(resourceType).getEntriesPerPage());
 			this.postProcessList(command, resourceType);
 			
-			int totalCount = this.logic.getStatistics(resourceType, groupingEntity, groupingName, null, null);
+			int totalCount = this.logic.getStatistics(resourceType, groupingEntity, groupingName, null, null, null);
 			command.getListCommand(resourceType).setTotalCount(totalCount);
 		}
 		

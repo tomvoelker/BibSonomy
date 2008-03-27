@@ -56,7 +56,7 @@ public class GroupPageController extends MultiResourceListController implements 
 			
 			// retrieve resource counts, if no tags are given
 			if (requTags.size() == 0) { 
-				int totalCount = this.logic.getStatistics(resourceType, groupingEntity, groupingName, null, null);
+				int totalCount = this.logic.getStatistics(resourceType, groupingEntity, groupingName, null, null, null);
 				command.getListCommand(resourceType).setTotalCount(totalCount);				
 			}
 		}		
