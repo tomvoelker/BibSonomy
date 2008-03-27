@@ -17,6 +17,9 @@ public class AdminViewCommand extends TabsCommand<User> {
 	public final static int CLASSIFIER_SPAMMER_UNSURE_INDEX = 4;
 	public final static int CLASSIFIER_NOSPAMMER_INDEX	= 5;
 	public final static int CLASSIFIER_NOSPAMMER_UNSURE_INDEX = 6;
+	
+	/** whether the page contains spammers or nonspammers */
+	public boolean isSpammerPage = true;
 		
 	public AdminViewCommand() {				
 		addTab(ADMIN_SPAMMER_INDEX, "Admin: Spammer");
@@ -25,5 +28,24 @@ public class AdminViewCommand extends TabsCommand<User> {
 		addTab(CLASSIFIER_SPAMMER_UNSURE_INDEX, "Classifier: Spammer (U)");
 		addTab(CLASSIFIER_NOSPAMMER_INDEX, "Classifier: No Spammer");
 		addTab(CLASSIFIER_NOSPAMMER_UNSURE_INDEX, "Classifier: No Spammer (U)");
-	}		
+		
+		System.out.println("TAB: " + selTab);
+		
+	}
+	
+	@Override
+	public void setSelTab(Integer selectedTab) {
+		super.setSelTab(selectedTab);
+		if (selTab == ADMIN_NOSPAMMER_INDEX ||
+				selTab == CLASSIFIER_NOSPAMMER_INDEX ||
+				selTab == CLASSIFIER_NOSPAMMER_UNSURE_INDEX) {
+				isSpammerPage = false;
+		}
+	}
+
+
+
+	public boolean isSpammerPage() {
+		return this.isSpammerPage;
+	}	
 }

@@ -33,7 +33,7 @@ function addSpammer(name, rowId, disable) {
 	if (rowId != null && !disable) {			
 		document.getElementById(rowId).className="spammer";
 	} else {
-		//document.getElementById("spammers").removeChild(document.getElementById(rowId)) 
+		document.getElementById(rowId).style.display = "none";
 	}
 		
 	/* add spammer to db via AJAX*/
@@ -56,7 +56,7 @@ function unflagSpammer(name, rowId, disable) {
 	if (rowId != null && !disable) {			
 		document.getElementById(rowId).className="";
 	} else {
-		//document.getElementById("spammers").removeChild(document.getElementById(rowId)) 
+		document.getElementById(rowId).style.display = "none"; 
 	}
 		
 	/* remove spammer from db via AJAX*/

@@ -397,12 +397,21 @@ CREATE TABLE `log_user` (
   `api_key` varchar(32) default NULL,
   `lang` char(2) default 'en',
   `role` tinyint(3) NOT NULL,
-  `prediction` int(10) default '9',
-  `algorithm` varchar(255),
-  `count` int(10) default '0',
+  `to_classify` tinyint(4),
   `timestamp` mediumtext not null,
   PRIMARY KEY  (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `log_prediction` (
+  `ID` int(11) NOT NULL auto_increment,
+  `user_name` varchar(30) NOT NULL,
+  `prediction` tinyint(4) NOT NULL,
+  `timestamp` bigint(20) default NULL,
+  `updated_at` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `algorithm` varchar(100) default NULL,
+  `mode` char(1) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8
 
 CREATE TABLE `picked_concepts` (
   `upper` varchar(255) character set utf8 collate utf8_bin NOT NULL default '',

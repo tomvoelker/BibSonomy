@@ -49,8 +49,14 @@
 					<c:forEach var="user" items="${command.content}" varStatus="status">
 				      <tr id="sl${status.count}">				
 				       <td>
-					     <a href="javascript:addSpammer('${user.name}','sl${status.count}',true)" title="flag this user as spammer">YES</a>
-					     <a href="javascript:unflagSpammer('${user.name}','sl${status.count}', true)" title="unflag this user as spammer">NO</a>
+					     <c:choose>
+					     	<c:when test="${command.spammerPage}">
+							     <a href="javascript:unflagSpammer('${user.name}','sl${status.count}', true)" title="unflag this user as spammer">NO</a>
+					     	</c:when>
+							<c:otherwise>
+							     <a href="javascript:addSpammer('${user.name}','sl${status.count}',true)" title="flag this user as spammer">YES</a>
+							</c:otherwise>			     
+					     </c:choose>
 				       </td>
 				       <td><a href="/user/${user.name}"><c:out value="${user.name}"/></a></td>
 				       <td><c:out value="${user.spammer}"/></td>
