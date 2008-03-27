@@ -35,6 +35,12 @@ public enum SpamStatus {
 			return "yes";
 		return "unknown";
 	}
+	
+	public static boolean isSpammer(SpamStatus status) {
+		if (status.equals(SPAMMER) || status.equals(SPAMMER_NOT_SURE))
+			return true;		
+		return false;		
+	}
 
 	public int getId() {
 		return this.id;
