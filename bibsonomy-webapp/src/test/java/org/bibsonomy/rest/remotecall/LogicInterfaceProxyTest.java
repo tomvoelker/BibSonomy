@@ -624,11 +624,6 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		return null;
 	}
 	
-	public int getStatistics(Class<? extends org.bibsonomy.model.Resource> resourceType, GroupingEntity grouping, String groupingName, StatisticsConstraint constraint, String search) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 	public List<Tag> getConcepts(Class<? extends org.bibsonomy.model.Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end) {
 		// TODO Auto-generated method stub
 		return null;
@@ -668,4 +663,11 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public int getStatistics(Class<? extends org.bibsonomy.model.Resource> arg0, GroupingEntity arg1, String arg2, StatisticsConstraint arg3, String arg4, List<String> arg5) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
 }
