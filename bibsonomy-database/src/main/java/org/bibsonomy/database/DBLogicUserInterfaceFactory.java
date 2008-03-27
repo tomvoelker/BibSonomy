@@ -1,12 +1,14 @@
 package org.bibsonomy.database;
 
 import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.managers.UserDatabaseManager;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DBSessionFactory;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
+import org.bibsonomy.model.util.UserUtils;
 
 /**
  * This class produces DBLogic instances with user authentication
@@ -15,6 +17,7 @@ import org.bibsonomy.model.logic.LogicInterfaceFactory;
  */
 public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 	protected final UserDatabaseManager userDBManager = UserDatabaseManager.getInstance();
+	protected final GeneralDatabaseManager generalDB = GeneralDatabaseManager.getInstance();
 	
 	private DBSessionFactory dbSessionFactory;
 	
@@ -39,7 +42,9 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 	protected User getLoggedInUser(String loginName, String password) {
 		final DBSession session = openSession();
 		try {
-			return userDBManager.validateUserUserAccess(loginName, password, session);
+			User loggedInUser = userDBManager.validateUserUserAccess(loginName, password, session);
+			UserUtils.setGroupsByGroupIDs(loggedInUser, generalDB.getGroupIdsForUser(loggedInUser.getName(), session));		
+			return loggedInUser;
 		} finally {
 			session.close();
 		}

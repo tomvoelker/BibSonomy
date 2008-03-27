@@ -14,6 +14,7 @@ import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChain;
 import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
@@ -109,6 +110,23 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			return this.bibtexList("getBibTexByTagNamesAndFolkrank", param, session);
 		}
 		return this.bibtexList("getBibTexByTagNames", param, session);
+	}
+	
+	/**
+	 * Counts the number of visible bibtex entries for a given list of tags
+	 * 
+	 * @param tags a list of tags
+	 * @param session DB session
+	 * @param visibleGroupIDs a list of groupIDs 
+	 * @return the number of visible bibtex entries
+	 */
+	public Integer getBibtexByTagNamesCount(final List<String> tags, final List<Integer> visibleGroupIDs, final DBSession session) {
+		BibTexParam param = new BibTexParam();
+		param.addGroups(visibleGroupIDs);
+		for (String tagName : tags) {
+			param.addTagName(tagName);
+		}
+		return this.queryForObject("getBibTexByTagNamesCount", param, Integer.class, session);
 	}
 
 	/**

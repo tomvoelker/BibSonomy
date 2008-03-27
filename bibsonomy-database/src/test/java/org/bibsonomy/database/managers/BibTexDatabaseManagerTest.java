@@ -125,6 +125,21 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.assertByTagNames(posts);
 		this.resetParameters();
 	}
+	
+	@Test
+	public void getBibtexByTagNamesCount() {
+		ArrayList<String> tags = new ArrayList<String>();
+		ArrayList<Integer> groups = new ArrayList<Integer>();
+		tags.add("community");
+		Integer count = this.bibTexDb.getBibtexByTagNamesCount(tags, groups, this.dbSession);
+		assertEquals(215, count);
+		tags.add("social");
+		count = this.bibTexDb.getBibtexByTagNamesCount(tags, groups, this.dbSession);
+		assertEquals(8, count);
+		tags.add("web2.0");
+		count = this.bibTexDb.getBibtexByTagNamesCount(tags, groups, this.dbSession);
+		assertEquals(0, count);
+	}
 
 	@Test
 	public void getBibTexByTagNamesForUser() {
@@ -356,7 +371,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final String BIBTEX_TEST_HASH = "41b80148937cf74ad9b07ed4b227345a"; // INTRA-hash
 
 		this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, null, false, this.dbSession);
-		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { ModelUtils.class.getName(), "hurz" }), "", null, 0, 50, null);
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { ModelUtils.class.getName(), "hurz" }), "", null, 0, 50, null, toInsert.getUser());
 		param.setRequestedSimHash(HashID.INTRA_HASH);
 		final List<Post<BibTex>> posts = this.bibTexDb.getPosts(param, this.dbSession);
 		assertEquals(1, posts.size());

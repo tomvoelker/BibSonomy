@@ -19,6 +19,14 @@
 		ORDER BY b.date DESC, b.content_id DESC
 	</select>
 	
+	<select id="getBookmarkByTagNamesCount" resultClass="Integer" timeout="1" parameterClass="bookmarkParam">
+		SELECT count(*) as count
+		FROM <include refid="tagFromQuery"/>
+		WHERE <include refid="tagWhereQuery"/>
+			AND t1.content_type = #contentType#
+			<include refid="restrictToGroups"/>
+	</select>
+	
 	<select id="getBookmarkByTagNamesAndFolkrank" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT <include refid="bookmarkAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name
 		FROM bookmark b, urls u, tas t,

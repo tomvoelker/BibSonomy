@@ -59,6 +59,22 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final List<Post<Bookmark>> posts2 = this.bookmarkDb.getBookmarkByTagNames(GroupID.PUBLIC, tagIndex2, 10, 0, this.dbSession);
 		assertEquals(1, posts2.size());
 	}
+	
+	// TODO: adapt values new test database as soon as it's finalized, and replace @Ignore by @Test
+	@Ignore
+	public void getBookmarkByTagNamesCount() {
+		ArrayList<String> tags = new ArrayList<String>();
+		ArrayList<Integer> groups = new ArrayList<Integer>();
+		tags.add("community");
+		Integer count = this.bookmarkDb.getBookmarkByTagNamesCount(tags, groups, this.dbSession);
+		assertEquals(515, count);
+		tags.add("social");
+		count = this.bookmarkDb.getBookmarkByTagNamesCount(tags, groups, this.dbSession);
+		assertEquals(86, count);
+		tags.add("web2.0");
+		count = this.bookmarkDb.getBookmarkByTagNamesCount(tags, groups, this.dbSession);
+		assertEquals(46, count);
+	}	
 
 	@Test
 	public void getBookmarkByTagNamesForUser() {
@@ -368,7 +384,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// no oldIntraHash and no update
 		this.bookmarkDb.storePost(toInsert.getUser().getName(), toInsert, null, false, this.dbSession);
 		// parameter: class, authuser, grouping, groupname, tags, hash, order, start, end, search
-		final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { ModelUtils.class.getName(), "testtag" }), "", null, 0, 50, null);
+		final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { ModelUtils.class.getName(), "testtag" }), "", null, 0, 50, null, toInsert.getUser());
 		final List<Post<Bookmark>> posts = this.bookmarkDb.getPosts(param, this.dbSession);
 		assertEquals(1, posts.size());
 		ModelUtils.assertPropertyEquality(toInsert, posts.get(0), Integer.MAX_VALUE, null, new String[] { "resource", "tags", "user", "date" });

@@ -51,6 +51,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.model.enums.Order;
 
 /**
@@ -187,11 +188,11 @@ public class DBLogic implements LogicInterface {
 			 * 
 			} else */
 			if (resourceType == BibTex.class) {
-				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search);
+				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, loginUser);
 				// this is save because of RTTI-check of resourceType argument which is of class T
 				result = ((List) bibtexDBManager.getPosts(param, session));
 			} else if (resourceType == Bookmark.class) {
-				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search);
+				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, loginUser);
 				// this is save because of RTTI-check of resourceType argument which is of class T
 				result = ((List) bookmarkDBManager.getPosts(param, session));
 			} else {
@@ -266,7 +267,7 @@ public class DBLogic implements LogicInterface {
 		final List<Tag> result;
 
 		try {
-			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search);
+			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, loginUser);
 
 			if (resourceType == BibTex.class || resourceType == Bookmark.class || resourceType == Resource.class) {
 				// this is save because of RTTI-check of resourceType argument which is of class T
@@ -290,7 +291,7 @@ public class DBLogic implements LogicInterface {
 	public Tag getTagDetails(final String tagName) {
 		final DBSession session = openSession();
 		try {
-			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, this.loginUser.getName(), null, this.loginUser.getName(), Arrays.asList(tagName), null, null, 0, 1, null);
+			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, this.loginUser.getName(), null, this.loginUser.getName(), Arrays.asList(tagName), null, null, 0, 1, null, loginUser);
 			return tagDBManager.getTagDetails(param, session); 
 		} finally {
 			session.close();
@@ -753,9 +754,9 @@ public class DBLogic implements LogicInterface {
 	 * 
 	 * TODO: as soon as more statistics are added, a chain should be defined
 	 * 
-	 * @see org.bibsonomy.model.logic.LogicInterface#getStatistics(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, org.bibsonomy.common.enums.StatisticsConstraint, java.lang.String)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getStatistics(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, org.bibsonomy.common.enums.StatisticsConstraint, java.lang.String, List)
 	 */
-	public int getStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, StatisticsConstraint constraint, String search) {
+	public int getStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, StatisticsConstraint constraint, String search, List<String> tags) {
 		final DBSession session = openSession();
 		int statistics = 0;
 		try {
@@ -769,6 +770,9 @@ public class DBLogic implements LogicInterface {
 					return 0;
 				}
 				return this.statisticsDBManager.getNumberOfResourcesForGroup(resourceType, group.getGroupId(), this.loginUser.getName(), session);
+			}
+			else if (grouping.equals(GroupingEntity.ALL) && tags != null) {
+				return this.statisticsDBManager.getNumberOfResourcesForTags(resourceType, tags, UserUtils.getListOfGroupIDs(this.loginUser), session);
 			}
 			else {
 				throw new RuntimeException("Can't handle statistics request");
@@ -791,7 +795,7 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = openSession();
 		
 		try {
-			TagRelationParam param = LogicInterfaceHelper.buildParam(TagRelationParam.class, this.loginUser.getName(), grouping, groupingName, tags, null, null, start, end, null);
+			TagRelationParam param = LogicInterfaceHelper.buildParam(TagRelationParam.class, this.loginUser.getName(), grouping, groupingName, tags, null, null, start, end, null, loginUser);
 			param.setConceptStatus(status);
 			return this.tagRelationsDBManager.getConcepts(param, session);
 		} finally {
@@ -865,7 +869,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	public List<User> getUsers (List<String> tags, Order order, final int start, int end){
 		final DBSession session = openSession();
-		final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, null, null, null, tags, null, order, start, end, null);
+		final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, null, null, null, tags, null, order, start, end, null, loginUser);
 
 		try {
 			return this.userDBManager.getUserByFolkrank(param, session);

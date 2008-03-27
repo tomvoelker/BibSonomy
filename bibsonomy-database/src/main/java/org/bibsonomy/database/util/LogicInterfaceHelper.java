@@ -10,8 +10,10 @@ import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.PostLogicInterface;
+import org.bibsonomy.model.util.UserUtils;
 
 /**
  * Supplies methods to adapt the LogicInterface to the database layer.
@@ -36,10 +38,10 @@ public class LogicInterfaceHelper {
 	 * @param start as specified for {@link PostLogicInterface#getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)} 
 	 * @param end as specified for {@link PostLogicInterface#getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)}
 	 * @param search as specified for {@link PostLogicInterface#getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)} 
-	 * 
+	 * @param loginUser TODO
 	 * @return the fresh param object 
 	 */
-	public static <T extends GenericParam> T buildParam(final Class<T> type, final String authUser, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end, String search) {
+	public static <T extends GenericParam> T buildParam(final Class<T> type, final String authUser, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end, String search, User loginUser) {
 		final T param = getParam(type);
 		param.setUserName(authUser);
 		param.setGrouping(grouping);
@@ -51,6 +53,10 @@ public class LogicInterfaceHelper {
 		}
 		param.setRequestedGroupName(groupingName);
 		param.setHash(hash);
+		
+		// set the groupIDs a user is member of
+		param.addGroups(UserUtils.getListOfGroupIDs(loginUser));
+				
 		param.setOrder(order);
 		param.setOffset(start);
 		if (end - start < 0 ) {

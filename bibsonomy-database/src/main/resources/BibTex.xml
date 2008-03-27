@@ -27,6 +27,14 @@
 		ORDER BY b.date DESC, b.content_id DESC
 	</select>
 	
+	<select id="getBibTexByTagNamesCount" resultClass="int" timeout="1" parameterClass="bibtexParam">
+		SELECT count(*)
+		FROM <include refid="tagFromQuery"/>
+		WHERE <include refid="tagWhereQuery"/>
+			AND t1.content_type = #contentType#
+			<include refid="restrictToGroups"/>
+	</select>
+	
 	<select id="getBibTexByTagNamesAndFolkrank" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name
 		FROM bibtex b, tas t, bibhash h,

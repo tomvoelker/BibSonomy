@@ -82,4 +82,29 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager{
 			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
 		}		
 	}
+	
+	/**
+	 * Returns the number of resources for a list of tags
+	 * 
+	 * @param resourceType
+	 * @param tags
+	 * @param visibleGroupIDs
+	 * @param session
+	 * @return
+	 */
+	public Integer getNumberOfResourcesForTags(Class<? extends Resource> resourceType, final List<String> tags, List<Integer> visibleGroupIDs, final DBSession session) {
+		if (resourceType == BibTex.class) {
+			return this.bibtexDBManager.getBibtexByTagNamesCount(tags, visibleGroupIDs, session);
+		}
+		else if (resourceType == Bookmark.class) {
+			return this.bookmarkDBManager.getBookmarkByTagNamesCount(tags, visibleGroupIDs, session);
+		}
+		else {
+			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
+		}			
+	}
+	
+	public Integer getTagGlobalCount(String tagName) {
+		return null;
+	}
 }

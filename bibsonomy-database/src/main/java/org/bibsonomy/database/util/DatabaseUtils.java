@@ -51,17 +51,23 @@ public class DatabaseUtils {
 	}
 
 	/**
-	 * Gets all groups of the user and puts them in the param. If the two given
-	 * users are friends the groupId for friends is also appended.
+	 * Checks if the logged-in user may see private / friends posts
+	 * 
+	 * PLEASE NOTE: as public stuff (tags, posts, ...) can be seen by everyone,
+	 * the PUBLIC group is present by default in the param object (see constructor
+ 	 * of GenericParam
+ 	 * 
+ 	 * Furthermore, the groups the logged-in user is explitely member of (e.g. KDE)
+ 	 * are retrieved when getting access to the LogicInterface and are
+ 	 * set in the param object by the LogicInterfaceHelper.buildParam(... method
+	 * 
+	 * @param db
+	 * @param param
+	 * @param session
 	 */
-	public static void setGroups(final GeneralDatabaseManager db, final GenericParam param, final DBSession session) {
-		final List<Integer> groupIds = db.getGroupIdsForUser(param.getUserName(), session);
-		
-		// PLEASE NOTE: as public stuff (tags, posts, ...) can be seen by everyone,
-		// the PUBLIC group is present by default in the param object (see constructor
-		// of GenericParam
-		
+	public static void setGroups(final GeneralDatabaseManager db, final GenericParam param, final DBSession session) {		 				
 		if (present(param.getUserName()) && present(param.getRequestedUserName())) {
+			final ArrayList<Integer> groupIds = new ArrayList<Integer>();
 			// If userName and requestedUserName are the same -> add private and friends
 			// otherwise: if they're friends -> only add friends
 			if (param.getUserName().equals(param.getRequestedUserName())) {
@@ -71,10 +77,9 @@ public class DatabaseUtils {
 				final boolean friends = db.isFriendOf(param.getUserName(), param.getRequestedUserName(), session);
 				if (friends) groupIds.add(GroupID.FRIENDS.getId());
 			}
-		}
-		
-		// add the groups
-		param.addGroups(groupIds);
+			// add the groups
+			param.addGroups(groupIds);			
+		}		
 	}
 
 	/**

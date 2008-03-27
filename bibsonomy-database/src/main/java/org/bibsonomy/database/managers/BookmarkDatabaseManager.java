@@ -97,6 +97,23 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setOffset(offset);
 		return getBookmarkByTagNames(param, session);
 	}
+	
+	/**
+	 * Counts the number of visible bookmark entries for a given list of tags
+	 * 
+	 * @param tags a list of tags
+	 * @param session DB session
+	 * @param visibleGroupIDs a list of visible group IDs
+	 * @return the number of visible bookmark entries
+	 */
+	public Integer getBookmarkByTagNamesCount(final List<String> tags, final List<Integer> visibleGroupIDs, final DBSession session) {
+		BookmarkParam param = new BookmarkParam();
+		param.addGroups(visibleGroupIDs);
+		for (String tagName : tags) {
+			param.addTagName(tagName);
+		}
+		return this.queryForObject("getBookmarkByTagNamesCount", param, Integer.class, session);
+	}	
 
 	/**
 	 * <em>/user/MaxMustermann/EinTag</em><br/><br/>
