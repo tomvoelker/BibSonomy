@@ -32,6 +32,7 @@
 	<select id="getAdminClassifiedUsers" resultMap="UserCommon.user" parameterClass="adminParam">
 		SELECT <include refid="commonUserAttributes"/>  
 		FROM user WHERE (updated_by != 'classifier' OR ISNULL(updated_by)) AND spammer = #prediction# 
+		ORDER BY updated_at DESC
 		LIMIT #limit#
 	</select>
 	
@@ -39,6 +40,8 @@
 		SELECT *  
 		FROM user u JOIN log_prediction p ON (u.user_name = p.user_name AND u.updated_at = p.updated_at)
 		WHERE updated_by = 'classifier' AND prediction = #prediction# 
+		ORDER BY u.updated_at DESC
+		LIMIT #limit#
 	</select>
 	
 	<update id="updateTasGroupIds" parameterClass="adminParam">

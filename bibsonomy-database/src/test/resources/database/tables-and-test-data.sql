@@ -754,9 +754,7 @@ CREATE TABLE `log_user` (
   `api_key` varchar(32) default NULL,
   `lang` char(2) default 'en',
   `role` tinyint(3) NOT NULL,
-  `prediction` int(10) default '9',
-  `algorithm` varchar(255),
-  `count` int(10) default '0',
+  `to_classify` tinyint(4),
   `timestamp` mediumtext not null,
   PRIMARY KEY  (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -764,6 +762,29 @@ CREATE TABLE `log_user` (
 -- 
 -- Data for table `log_user`
 -- 
+
+
+-- --------------------------------------------------------
+
+-- 
+-- Structure for table `log_prediction`
+-- 
+
+CREATE TABLE `log_prediction` (
+  `ID` int(11) NOT NULL auto_increment,
+  `user_name` varchar(30) NOT NULL,
+  `prediction` tinyint(4) NOT NULL,
+  `timestamp` bigint(20) default NULL,
+  `updated_at` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `algorithm` varchar(100) default NULL,
+  `mode` char(1) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8
+
+-- 
+-- Data for table `log_prediction`
+-- 
+
 
 -- --------------------------------------------------------
 
@@ -1219,7 +1240,7 @@ CREATE TABLE `user` (
   `api_key` varchar(32) default NULL,
   `lang` char(2) default 'en',
   `role` tinyint(3) NOT NULL,
-  `to_classify` tinyint(1) default '1',
+  `to_classify` tinyint(4) default '1',
   PRIMARY KEY  (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
