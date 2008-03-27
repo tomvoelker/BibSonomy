@@ -583,4 +583,16 @@ public class User {
 	public void setMode(String mode) {
 		this.mode = mode;
 	}			
+	
+	/**
+	 * convenience method to add a group
+	 * 
+	 * @param group
+	 */
+	public void addGroup(Group group) {
+		if (this.groups == null) {
+			this.groups = new ArrayList<Group>();
+		}
+		this.groups.add(group);
+	}
 }

@@ -2,8 +2,12 @@ package org.bibsonomy.model.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.User;
 import org.bibsonomy.util.StringUtils;
 
 /**
@@ -53,5 +57,36 @@ public class UserUtils {
 		if (isSpammer) return groupid | CONST_SET_1ST_BIT;
 		// NOTE: "return groupid" is not enough, since we want to use that to unflag spammers posts, as well 
 		return groupid & CONST_CLEAR_1ST_BIT;
+	}
+	
+	/**
+	 * Helper function to set a user's groups by a list of group IDs
+	 * 
+	 * @param user
+	 * @param groupIDs
+	 * @return
+	 */
+	public static User setGroupsByGroupIDs(User user, List<Integer> groupIDs) {
+		for (Integer groupID: groupIDs) {
+			user.addGroup(new Group(groupID));
+		}
+		return user;		
+	}
+	
+	/**
+	 * Helper function to get a list of group IDs from a user object
+	 * 
+	 * @param user
+	 * @return
+	 */
+	public static List<Integer> getListOfGroupIDs(User user) {
+		ArrayList<Integer> groupIDs = new ArrayList<Integer>();
+		if (user == null) {
+			return groupIDs;
+		}
+		for (Group group : user.getGroups()) {
+			groupIDs.add(group.getGroupId());
+		}
+		return groupIDs;
 	}
 }

@@ -70,6 +70,16 @@ public class Group {
 	}
 	
 	/**
+	 * constructor
+	 * @param groupid
+	 */
+	public Group(Integer groupid) {
+		this.groupId = groupid;
+		this.privlevel = Privlevel.MEMBERS;
+		this.sharedDocuments = false;		
+	}
+	
+	/**
 	 * @return groupId
 	 */
 	public int getGroupId() {
