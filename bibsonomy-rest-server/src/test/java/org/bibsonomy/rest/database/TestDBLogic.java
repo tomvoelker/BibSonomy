@@ -746,7 +746,7 @@ public class TestDBLogic implements LogicInterface {
 		return null;
 	}
 	
-	public int getStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, StatisticsConstraint constraint, String search) {
+	public int getStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, StatisticsConstraint constraint, String search, List<String> tags) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
