@@ -171,7 +171,8 @@ public class DBSessionImpl implements DBSession {
 			 * check for query interruption because of time limits
 			 * TODO: don't use equals() on getMessage() but on Message Error Code (MySQL-specific :-()
 			 */
-			if (ex.getCause().getClass().equals(SQLException.class) && 
+			if (ex.getCause() != null && 
+					ex.getCause().getClass().equals(SQLException.class) && 
 					"Query execution was interrupted".equals(ex.getCause().getMessage()) ) {
 				ExceptionUtils.logErrorAndThrowQueryTimeoutException(log, ex, query);
 			}			
