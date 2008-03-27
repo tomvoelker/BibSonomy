@@ -43,20 +43,28 @@ public class TagPageController extends MultiResourceListController implements Mi
 		}
 
 		final List<String> requTags = command.getRequestedTagsList();
-		
+				
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
+		
+		Integer totalNumPosts = 1; 
 		
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {			
 			this.setList(command, resourceType, GroupingEntity.ALL, null, requTags, null, order, null, command.getListCommand(resourceType).getEntriesPerPage());
 			this.postProcessList(command, resourceType);
+			int totalCount = this.logic.getStatistics(resourceType, GroupingEntity.ALL, null, null, null, requTags);
+			command.getListCommand(resourceType).setTotalCount(totalCount);
+			// sum up
+			totalNumPosts += totalCount;
 		}	
 		
-		// html format - retrieve tags and return HTML view
+		// html format - retrieve relted tags (and evtl. users) and return HTML view
 		if (command.getFormat().equals("html")) {
 			this.setRelatedTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, order, 0, Parameters.NUM_RELATED_TAGS, null);
+			// set total nr. of posts 
+			command.getRelatedTagCommand().setTagGlobalCount(totalNumPosts);
 			if (order.equals(Order.FOLKRANK)) {
 				this.setRelatedUsers(command, requTags, order, 0, Parameters.NUM_RELATED_USERS);
 			}
