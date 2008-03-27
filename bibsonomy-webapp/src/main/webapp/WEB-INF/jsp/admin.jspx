@@ -50,7 +50,7 @@
 				      <tr id="sl${status.count}">				
 				       <td>
 					     <c:choose>
-					     	<c:when test="${command.spammerPage}">
+					     	<c:when test="${user.spammer}">
 							     <a href="javascript:unflagSpammer('${user.name}','sl${status.count}', true)" title="unflag this user as spammer">NO</a>
 					     	</c:when>
 							<c:otherwise>

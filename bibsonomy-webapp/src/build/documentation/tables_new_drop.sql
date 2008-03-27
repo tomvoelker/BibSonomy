@@ -41,3 +41,5 @@ DROP TABLE `temp_bookmark`;
 DROP TABLE `urls`;
 DROP TABLE `weights`;
 DROP TABLE `user`;
+DROP TABLE `log_prediction`;
+DROP TABLE `classifier_settings`;

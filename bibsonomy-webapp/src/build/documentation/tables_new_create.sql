@@ -373,7 +373,7 @@ CREATE TABLE `log_user` (
   `user_password` char(32) NOT NULL,
   `user_homepage` varchar(255) NOT NULL,
   `user_realname` varchar(255) NOT NULL,
-  `spammer` tinyint(1) NOT NULL default '0',
+  `spammer` tinyint(1) NOT NULL default '9',
   `openurl` varchar(255) default NULL,
   `reg_date` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `ip_address` varchar(255) default NULL,
@@ -621,7 +621,7 @@ CREATE TABLE `user` (
   `user_password` char(32) NOT NULL,
   `user_homepage` varchar(255) NOT NULL,
   `user_realname` varchar(255) NOT NULL,
-  `spammer` tinyint(1) NOT NULL default '0',
+  `spammer` tinyint(1) NOT NULL default '9',
   `openurl` varchar(255) default NULL,
   `reg_date` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `ip_address` varchar(255) default NULL,
@@ -660,3 +660,9 @@ CREATE TABLE `weights` (
   CONSTRAINT `weights_ibfk_1` FOREIGN KEY (`id`) REFERENCES `rankings` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `classifier_settings` (
+  `ID` tinyint(4) NOT NULL auto_increment,
+  `key` varchar(255) default NULL,
+  `value` varchar(255) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 
