@@ -122,7 +122,7 @@ document.write("<a href=\"${projectHome}ShowBookmarkEntry?c=b&jump=yes&url="+url
 	</tr>
 
 	<tr>
-		<td width="51%"><textarea name="text_area1" rows="10" cols="40">
+		<td width="51%"><textarea name="text_area2" rows="10" cols="40">
 &lt;!-- post bookmark to ${projectName} link code --&gt;
 &lt;script type=&quot;text/JavaScript&quot;&gt;
 &lt;!--
@@ -134,7 +134,7 @@ document.write(&quot;&lt;a href=\&quot;${projectHome}ShowBookmarkEntry?c=b&amp;j
 &lt;!-- end post bookmark to ${projectName} link code --&gt;
 </textarea> <input
 			type="button" value="Highlight Text"
-			onClick="javascript:this.form.text_area1.focus();this.form.text_area1.select();">
+			onClick="javascript:this.form.text_area2.focus();this.form.text_area2.select();">
 		</td>
 		<td width="49%">
 		<div align="center"><!-- BibSonomy link code --> <script
