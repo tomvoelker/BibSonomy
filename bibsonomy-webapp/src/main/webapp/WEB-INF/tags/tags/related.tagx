@@ -68,6 +68,12 @@
 						<c:out value=" "/>
 						${tag.usercount} <!-- this field is misused for folkrank weights in this case -->
 					</c:when>
+					<c:when test="${order eq 'added'}">
+						${fn:escapeXml(tag.name)}
+						<c:out value=" "/>
+						(<fmt:message key="tag.relatedness"/>:
+						${fn:substring(relatedness,0,4)})
+					</c:when>
 					<c:otherwise>${fn:escapeXml(tag.name)}</c:otherwise>
 				</c:choose>
 			</c:set>			
