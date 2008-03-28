@@ -24,7 +24,7 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 
-public class TagPageController extends MultiResourceListController implements MinimalisticController<TagResourceViewCommand>{
+public class TagPageController extends MultiResourceListControllerWithTags implements MinimalisticController<TagResourceViewCommand>{
 	private static final Logger LOGGER = Logger.getLogger(TagPageController.class);
 	
 	public View workOn(final TagResourceViewCommand command) {
@@ -81,27 +81,7 @@ public class TagPageController extends MultiResourceListController implements Mi
 	public TagResourceViewCommand instantiateCommand() {
 		return new TagResourceViewCommand();
 	}
-	
-	/**
-     * Retrieve a set of related tags to a list of given tags 
-     * from the database logic and add them to the command object
-     * 
-	 * @param <T> extends Resource, the resource type
-	 * @param <V> extends ResourceViewCommand, the command
-	 * @param cmd the command
-	 * @param resourceType the resource type
-	 * @param groupingEntity the grouping entity
-	 * @param groupingName the grouping name
-	 * @param regex regular expression for tag filtering
-	 * @param tags list of tags
-	 * @param start start parameter
-	 * @param end end parameter
-	 **/
-	protected <T extends Resource, V extends TagResourceViewCommand> void setRelatedTags(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, Order order, int start, int end, String search) {
-		RelatedTagCommand relatedTagCommand = cmd.getRelatedTagCommand();
-		relatedTagCommand.setRelatedTags(this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, null, order, start, end, search));		
-	}
-	
+		
 	/**
 	 * retrieve related user by tag
 	 * 

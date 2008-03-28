@@ -6,7 +6,7 @@ package org.bibsonomy.webapp.command;
  * @author  Dominik Benz
  * @version $Id$
  */
-public class UserResourceViewCommand extends ResourceViewCommand {
+public class UserResourceViewCommand extends TagResourceViewCommand {
 
 	/** the group whode resources are requested*/
 	private ConceptsCommand concepts = new ConceptsCommand();
@@ -24,4 +24,5 @@ public class UserResourceViewCommand extends ResourceViewCommand {
 	public void setConcepts(ConceptsCommand concepts) {
 		this.concepts = concepts;
 	}	
+	
 }

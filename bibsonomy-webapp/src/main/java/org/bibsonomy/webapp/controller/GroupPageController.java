@@ -7,6 +7,7 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.webapp.command.GroupMemberCommand;
 import org.bibsonomy.webapp.command.GroupResourceViewCommand;
 import org.bibsonomy.webapp.command.RelatedTagCommand;
@@ -22,7 +23,7 @@ import org.bibsonomy.webapp.view.Views;
  * @author Stefan Stuetzer
  * @version $Id$
  */
-public class GroupPageController extends MultiResourceListController implements MinimalisticController<GroupResourceViewCommand> {
+public class GroupPageController extends MultiResourceListControllerWithTags implements MinimalisticController<GroupResourceViewCommand> {
 	private static final Logger LOGGER = Logger.getLogger(GroupPageController.class);
 
 	public View workOn(GroupResourceViewCommand command) {
@@ -67,7 +68,7 @@ public class GroupPageController extends MultiResourceListController implements 
 			this.setGroupMembers(command, groupingName);
 			
 			if (requTags.size() > 0) {
-				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, 0, 20, null);
+				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, Order.ADDED, 0, 20, null);
 				this.endTiming();
 				return Views.GROUPTAGPAGE;
 			}
@@ -84,27 +85,6 @@ public class GroupPageController extends MultiResourceListController implements 
 		return new GroupResourceViewCommand();
 	}	
 	
-	/**
-     * Retrieve a set of related tags to a list of given tags 
-     * from the database logic and add them to the command object
-     * 
-	 * @param <T> extends Resource, the resource type
-	 * @param <V> extends ResourceViewCommand, the command
-	 * @param cmd the command
-	 * @param resourceType the resource type
-	 * @param groupingEntity the grouping entity
-	 * @param groupingName the grouping name
-	 * @param regex regular expression for tag filtering
-	 * @param tags list of tags
-	 * @param start start parameter
-	 * @param end end parameter
-	 * 
-	 * TODO: move this in MultiResourceListController?
-	 */
-	protected <T extends Resource, V extends GroupResourceViewCommand> void setRelatedTags(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, int start, int end, String search) {
-		RelatedTagCommand relatedTagCommand = cmd.getRelatedTagCommand();
-		relatedTagCommand.setRelatedTags(this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, null, null, start, end, search));		
-	}
 	
 	/**
 	 * Retrieve all members of the given group in dependece of the group privacy level

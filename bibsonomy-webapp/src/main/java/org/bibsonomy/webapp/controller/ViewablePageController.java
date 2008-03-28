@@ -17,7 +17,7 @@ import org.bibsonomy.webapp.view.Views;
  * @author Christian Kramer
  * @version $Id$
  */
-public class ViewablePageController extends MultiResourceListController implements MinimalisticController<GroupResourceViewCommand>{
+public class ViewablePageController extends MultiResourceListControllerWithTags implements MinimalisticController<GroupResourceViewCommand>{
 	private static final Logger LOGGER = Logger.getLogger(GroupPageController.class);
 	
 	public View workOn(GroupResourceViewCommand command) {
@@ -72,25 +72,4 @@ public class ViewablePageController extends MultiResourceListController implemen
 		return new GroupResourceViewCommand();
 	}	
 	
-	/**
-     * Retrieve a set of related tags to a list of given tags 
-     * from the database logic and add them to the command object
-     * 
-	 * @param <T> extends Resource, the resource type
-	 * @param <V> extends ResourceViewCommand, the command
-	 * @param cmd the command
-	 * @param resourceType the resource type
-	 * @param groupingEntity the grouping entity
-	 * @param groupingName the grouping name
-	 * @param regex regular expression for tag filtering
-	 * @param tags list of tags
-	 * @param start start parameter
-	 * @param end end parameter
-	 * 
-	 * TODO: move this in MultiResourceListController?
-	 */
-	protected <T extends Resource, V extends GroupResourceViewCommand> void setRelatedTags(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, Order order, int start, int end, String search) {
-		RelatedTagCommand relatedTagCommand = cmd.getRelatedTagCommand();
-		relatedTagCommand.setRelatedTags(this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, null, order, start, end, search));		
-	}
 }

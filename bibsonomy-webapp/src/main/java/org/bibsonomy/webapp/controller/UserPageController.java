@@ -1,20 +1,14 @@
 package org.bibsonomy.webapp.controller;
 
-import java.net.MalformedURLException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.ConceptStatus;
-import org.bibsonomy.common.exceptions.ResourceNotFoundException;
-import org.bibsonomy.common.exceptions.ValidationException;
-import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
-import org.bibsonomy.webapp.command.PageCommand;
-import org.bibsonomy.webapp.command.ResourceViewCommand;
 import org.bibsonomy.webapp.command.UserResourceViewCommand;
+import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
@@ -26,7 +20,7 @@ import org.bibsonomy.webapp.view.Views;
  * @author Dominik Benz
  * @version $Id$
  */
-public class UserPageController extends MultiResourceListController implements MinimalisticController<UserResourceViewCommand>{
+public class UserPageController extends MultiResourceListControllerWithTags implements MinimalisticController<UserResourceViewCommand>{
 	private static final Logger LOGGER = Logger.getLogger(UserPageController.class);
 
 	public View workOn(final UserResourceViewCommand command) {
