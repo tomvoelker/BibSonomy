@@ -29,7 +29,15 @@ public class GetBibtexByTagNamesAndUser extends BibTexChainElement {
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.USER) && present(param.getTagIndex())&& (param.getNumSimpleConcepts() == 0) && (param.getNumSimpleTags() > 0) && (param.getNumTransitiveConcepts() == 0) && present(param.getRequestedUserName()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED) && !present(param.getSearch());
+		return param.getGrouping() == GroupingEntity.USER && 
+			   present(param.getTagIndex())&& 
+			   param.getNumSimpleConcepts() == 0 && 
+			   param.getNumSimpleTags() > 0 && 
+			   param.getNumTransitiveConcepts() == 0 && 
+			   present(param.getRequestedUserName()) && 
+			   !present(param.getHash()) && 
+			   nullOrEqual(param.getOrder(), Order.ADDED) && 
+			   !present(param.getSearch());
 	}
 
 }
