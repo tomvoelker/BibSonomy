@@ -65,7 +65,7 @@ public class DatabaseUtils {
 	 * @param param
 	 * @param session
 	 */
-	public static void setGroups(final GeneralDatabaseManager db, final GenericParam param, final DBSession session) {		 				
+	public static void checkPrivateFriendsGroup(final GeneralDatabaseManager db, final GenericParam param, final DBSession session) {		 				
 		if (present(param.getUserName()) && present(param.getRequestedUserName())) {
 			final ArrayList<Integer> groupIds = new ArrayList<Integer>();
 			// If userName and requestedUserName are the same -> add private and friends
@@ -86,7 +86,7 @@ public class DatabaseUtils {
 	 * This needs to be done for all get*ForGroup* queries.
 	 */
 	public static void prepareGetPostForGroup(final GeneralDatabaseManager db, final GenericParam param, final DBSession session) {
-		DatabaseUtils.setGroups(db, param, session);
+		DatabaseUtils.checkPrivateFriendsGroup(db, param, session);
 		// the group type needs to be set to friends because of the second union
 		// in the SQL statement
 		param.setGroupType(GroupID.FRIENDS);
@@ -98,7 +98,7 @@ public class DatabaseUtils {
 	public static void prepareGetPostForUser(final GeneralDatabaseManager db, final GenericParam param, final DBSession session) {
 		// if the groupId is invalid we have to check for groups manually
 		if (param.getGroupId() == GroupID.INVALID.getId()) {
-			DatabaseUtils.setGroups(db, param, session);
+			DatabaseUtils.checkPrivateFriendsGroup(db, param, session);
 		}
 	}
 

@@ -2,6 +2,7 @@ package org.bibsonomy.database.util;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
@@ -54,8 +55,13 @@ public class LogicInterfaceHelper {
 		param.setRequestedGroupName(groupingName);
 		param.setHash(hash);
 		
-		// set the groupIDs a user is member of
+		// set the groupIDs the logged-in user may see 
+		//  - everybody may see public posts
+		param.addGroup(GroupID.PUBLIC.getId());
+		//  - groups the logged-in user is explicitely member of
 		param.addGroups(UserUtils.getListOfGroupIDs(loginUser));
+		//  - private / friends groups are set later on 
+		//    (@see org.bibsonomy.database.util.DatabaseUtils.prepareGetPostForUser)
 				
 		param.setOrder(order);
 		param.setOffset(start);

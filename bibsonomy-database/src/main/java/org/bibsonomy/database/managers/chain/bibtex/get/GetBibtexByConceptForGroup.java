@@ -20,8 +20,7 @@ import org.bibsonomy.model.enums.Order;;
 public class GetBibtexByConceptForGroup extends BibTexChainElement {
 
 	@Override
-	protected List<Post<BibTex>> handle(BibTexParam param, DBSession session) {
-		//param.setGroups(this.generalDb.getGroupIdsForUser(param.getUserName(), session)); // TODO: is this needed? 
+	protected List<Post<BibTex>> handle(BibTexParam param, DBSession session) { 
 		return this.db.getBibTexByConceptForGroup(param, session);
 	}
 	

@@ -130,6 +130,32 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		return this.bookmarkList("getBookmarkByTagNamesForUser", param, session);
 	}
+	
+	/**
+	 * Retrieves the number of bookmark items tagged by the tags present in tagIndex by user requestedUserName
+	 * being visible to the logged in user
+	 * 
+	 * @param requestedUserName
+	 * 			owner of the bookmark items
+	 * @param loginUserName
+	 * 			logged in user
+	 * @param tags
+	 * 			a list of tags
+	 * @param visibleGroupIDs
+	 * 			a list of groupIDs the logged in user is member of
+	 * @param session
+	 * 			DB session
+	 * @return the corresponding number of visible bibtex items
+	 */
+	public Integer getBookmarkByTagNamesForUserCount(final String requestedUserName, final String loginUserName, final List<String> tags, final List<Integer> visibleGroupIDs, final DBSession session) {
+		BookmarkParam param = new BookmarkParam();
+		param.setRequestedUserName(requestedUserName);
+		param.setUserName(loginUserName);
+		for (String tag : tags) {
+			param.addTagName(tag);
+		}
+		return this.queryForObject("getBookmarkByTagNamesForUserCount", param, Integer.class, session);
+	}	
 
 	/**
 	 * @see BookmarkDatabaseManager.getBookmarkByTagNamesForUser
@@ -170,7 +196,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * to see them.
 	 */
 	public List<Post<Bookmark>> getBookmarkByConceptForUser(final BookmarkParam param, final DBSession session) {
-		DatabaseUtils.setGroups(this.generalDb, param, session);
+		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
 		return this.bookmarkList("getBookmarkByConceptForUser", param, session);
 	}
 	
@@ -181,7 +207,6 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * which are tagged at least with one of the concept tags or its subtags
 	 */
 	public List<Post<Bookmark>> getBookmarkByConceptForGroup(final BookmarkParam param, final DBSession session) {
-		//DatabaseUtils.setGroups(this.generalDb, param, session);
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
 		return this.bookmarkList("getBookmarkByConceptForGroup", param, session);
 	}
@@ -322,7 +347,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * checking is done, i.e. everbody who may see the bookmark will see it.
 	 */
 	public List<Post<Bookmark>> getBookmarkByHashForUser(final BookmarkParam param, final DBSession session) {
-		DatabaseUtils.setGroups(this.generalDb, param, session);
+		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
 		return this.bookmarkList("getBookmarkByHashForUser", param, session);
 	}
 
@@ -504,7 +529,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * and friends bookmarks are not included (same for publications)
 	 */
 	public Integer getBookmarkForGroupCount(final BookmarkParam param, final DBSession session) {
-		DatabaseUtils.setGroups(this.generalDb, param, session);
+		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
 		return this.queryForObject("getBookmarkForGroupCount", param, Integer.class, session);
 	}
 	

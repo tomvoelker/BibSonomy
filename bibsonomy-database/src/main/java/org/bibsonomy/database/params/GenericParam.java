@@ -96,6 +96,7 @@ public abstract class GenericParam {
 	 * 
 	 * */
 	private HashSet<Integer> groups;
+	
 	/**
 	 * Should tagnames (names of tags and concepts) be case sensitive; by
 	 * default this is false, i.e. tagnames aren't case sensitive.
@@ -165,8 +166,6 @@ public abstract class GenericParam {
 		
 		this.groups =  new HashSet<Integer>();
 		
-		// public posts are always visible
-		this.groups.add(GroupID.PUBLIC.getId());
 	}
 
 	/**
@@ -305,7 +304,7 @@ public abstract class GenericParam {
 	 * @param groups a SET of group ids
 	 */
 	public void setGroups(Set<Integer> groups) {
-		this.groups = new HashSet(groups);
+		this.groups = new HashSet<Integer>(groups);
 	}
 	
 	/**

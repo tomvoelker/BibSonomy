@@ -24,8 +24,7 @@ public class GetBibtexByConceptForUser extends BibTexChainElement {
 	 * for a given "super-tag".
 	 */
 	@Override
-	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		param.setGroups(this.generalDb.getGroupIdsForUser(param.getUserName(), session)); // TODO: is this needed? 
+	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) { 
 		return this.db.getBibTexByConceptForUser(param, session);
 	}
 
