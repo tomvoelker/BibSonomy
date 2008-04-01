@@ -7,7 +7,7 @@ package org.bibsonomy.util;
  * @version $Id$
  */
 public class UrlUtils {
-	
+
 	private static final int MAX_LEN_TITLE       = 6000;
 	private static final int MAX_LEN_URL         = 6000;
 	private static final String BROKEN_URL       = "/brokenurl#";	
@@ -61,17 +61,16 @@ public class UrlUtils {
 	 * @return the given URL string with the parameter set
 	 */
 	public static String setParam(String urlString, String paramName, String paramValue) {
-					
 		if (urlString.matches(".*([&\\?])" + paramName +  "\\=[^&#$]+.*")) {
 			// parameter is already present - replace its value
 			return urlString.replaceAll("([&\\?])" + paramName +  "\\=[^&#$]+", "$1" + paramName + "=" + paramValue);
 		}
-				
+
 		if (urlString.matches(".*\\?.*")) {
 			// parameter not present, but query present in url -> append &param=value;
 			return urlString + "&" + paramName + "=" + paramValue;
 		}
-		
+
 		// no query at all present in url -> append ?param=value
 		return urlString + "?" + paramName + "=" + paramValue;
 	}	

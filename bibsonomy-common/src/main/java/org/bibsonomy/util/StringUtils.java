@@ -162,13 +162,13 @@ public class StringUtils {
 	}
 
 	/**
-	 * Crops s to length if it is longer than length
+	 * Crops a string s to length if it is longer than length
 	 * 
 	 * @param s
-	 *            String to crop
+	 *            string to crop
 	 * @param length
 	 *            maximum length
-	 * @return s the (eventually) cropped String s
+	 * @return the string s which may be cropped
 	 */
 	public static String cropToLength(final String s, final int length) {
 		if (s != null && s.length() > length) {

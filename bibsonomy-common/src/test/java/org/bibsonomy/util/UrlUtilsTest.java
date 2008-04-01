@@ -47,22 +47,18 @@ public class UrlUtilsTest {
 		assertEquals("testxx", generateStringWithNChars("test", 2));
 		assertEquals(1000, generateStringWithNChars("test", 996).length());
 	}
-	
+
 	/**
 	 * tests setParam
 	 */
 	@Test
 	public void setParam() {
 		// modifying existing parameter
-		assertEquals("http://www.test.com?lang=en", 
-					UrlUtils.setParam("http://www.test.com?lang=de", "lang", "en"));
-		assertEquals("http://www.test.com?bla=blub&param=newValue&pi=po#anchor1", 
-				UrlUtils.setParam("http://www.test.com?bla=blub&param=oldValue&pi=po#anchor1", "param", "newValue"));		
+		assertEquals("http://www.test.com?lang=en", UrlUtils.setParam("http://www.test.com?lang=de", "lang", "en"));
+		assertEquals("http://www.test.com?bla=blub&param=newValue&pi=po#anchor1", UrlUtils.setParam("http://www.test.com?bla=blub&param=oldValue&pi=po#anchor1", "param", "newValue"));
 		// append parameter when no query exists
-		assertEquals("http://www.test.123.com?param=value", 
-				UrlUtils.setParam("http://www.test.123.com", "param", "value"));
+		assertEquals("http://www.test.123.com?param=value", UrlUtils.setParam("http://www.test.123.com", "param", "value"));
 		// append parameter when query exists
-		assertEquals("http://www.test.123.com?bla=blub&param=value", 
-				UrlUtils.setParam("http://www.test.123.com?bla=blub", "param", "value"));
+		assertEquals("http://www.test.123.com?bla=blub&param=value", UrlUtils.setParam("http://www.test.123.com?bla=blub", "param", "value"));
 	}
 }
