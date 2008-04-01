@@ -30,6 +30,11 @@ public enum Views implements View {
 	USERPAGE("user"),
 	
 	/**
+	 * user page displaying the resources of a single user tagged with a given list of tags
+	 */
+	USERTAGPAGE("usertag"),	
+	
+	/**
 	 * group page showing all resources of a specified group
 	 */
 	GROUPPAGE("group"),

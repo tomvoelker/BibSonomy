@@ -264,7 +264,7 @@
         <to type="redirect">/concept/user/$1/$3</to>
     </rule> 
     
-     <!-- redirect for tag formular on /concept/group/GROUPNAME/TAG page -->
+    <!-- redirect for tag formular on /concept/group/GROUPNAME/TAG page -->
     <rule>
     <!-- workaround to redirect not-yet-supported features to old resource handler -->		
         <from>^/+concept/+group/+([^/?]+?)/(.+?)(\?(.*))?$</from>
@@ -283,7 +283,16 @@
     </rule>
     <!-- /user/USER/TAG -->
     <rule>
+    	<!-- workaround to redirect not-yet-supported features to old resource handler -->
+		<condition type="parameter" name="filter" operator="notequal"/>
+		<condition type="attribute" name="type" operator="notequal"/>    
+    	<from>^/+user/+([^/?]+?)/(.+?)(\?(.*))?$</from>
+    	<!-- NEW PAGE -->
+    	<to>/user?requestedUser=$1&amp;requestedTags=$2&amp;$4</to> 
+    </rule>
+    <rule>
         <from>^/+user/+([^/?]+?)/(.+?)(\?(.*))?$</from>
+        <!-- OLD PAGE -->
         <to>/ResourceHandler?page=usertag&amp;requUser=$1&amp;requTag=$2&amp;$4</to>
     </rule>
 
