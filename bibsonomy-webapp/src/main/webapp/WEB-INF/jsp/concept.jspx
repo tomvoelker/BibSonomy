@@ -15,8 +15,8 @@
 	
 		<jsp:attribute name="heading">		
 			<a rel="path_menu" href="#"><fmt:message key="navi.concept"/>${mtl:ch('nbsp')}<img alt="" src="/resources/image/box_arrow.png"/></a> :: 
-			<c:if test="${not empty command.requestedUser}"><fmt:message key="navi.user"/> :: <a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> :: </c:if>
-			<c:if test="${not empty command.requestedGroup}"><fmt:message key="navi.group"/> :: <a href="/group/${fn:escapeXml(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a> :: </c:if>
+			<c:if test="${not empty command.requestedUser}"><fmt:message key="navi.user"/> :: <a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${fn:escapeXml(command.requestedUser)}'/></a> :: </c:if>
+			<c:if test="${not empty command.requestedGroup}"><fmt:message key="navi.group"/> :: <a href="/group/${fn:escapeXml(command.requestedGroup)}"><c:out value='${fn:escapeXml(command.requestedGroup)}'/></a> :: </c:if>
 			<form action="/concept/tag/" method="get" class="smallform">
 			  <input type="text" size="20" name="tag" id="inpf" value="${command.requestedTags}"/>
 			</form>										
@@ -74,10 +74,16 @@
 
 			<!-- if requestedUser is set, show the tag cloud -->			
 			<c:if test="${(not empty command.requestedUser) or (not empty command.requestedGroup)}">
+				<c:if test="${not empty command.requestedUser}">
+					<c:set var="requPathTagCloud" value="user/${fn:escapeXml(command.requestedUser)}"/>
+				</c:if>
+				<c:if test="${not empty command.requestedGroup}">
+					<c:set var="requPathTagCloud" value="group/${fn:escapeXml(command.requestedGroup)}"/>
+				</c:if>				
 				<!-- display tags -->
 				<li>
 					<span class="sidebar_h"><fmt:message key="tags"/></span>
-					<tags:cloud requPath="user/${command.requestedUser}" cmd="${command.tagcloud}" disableTagboxMinfreq="${false}"/>
+					<tags:cloud requPath="${requPathTagCloud}" cmd="${command.tagcloud}" disableTagboxMinfreq="${false}"/>
 				</li>
 			</c:if>
 			
