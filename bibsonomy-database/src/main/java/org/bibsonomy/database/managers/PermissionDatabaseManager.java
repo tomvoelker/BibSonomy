@@ -140,7 +140,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @return true if maximum size is exceeded, false otherwise
 	 */
 	public Boolean exceedsMaxmimumSize (List<String> tags) {
-		return tags != null && tags.size() > 10;
+		return tags != null && tags.size() >= 10;
 	}
 
 }
