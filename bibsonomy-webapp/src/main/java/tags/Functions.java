@@ -126,7 +126,7 @@ public class Functions  {
 	public static String getPath (String uriString) {
 		URI uri;
 		try {
-			uri = new URI(uriString);
+			uri = new URI(encodeURI(uriString));
 			return uri.getPath();
 		} catch (Exception ex) {
 			throw new RuntimeException(ex.getMessage());
@@ -141,7 +141,7 @@ public class Functions  {
 		URI uri; 
 		uriString = uriString.substring(0, uriString.lastIndexOf("/"));
 		try {
-			uri = new URI(uriString);
+			uri = new URI(encodeURI(uriString));
 			return uri.getPath();
 		} catch (Exception ex) {
 			throw new RuntimeException(ex.getMessage());
