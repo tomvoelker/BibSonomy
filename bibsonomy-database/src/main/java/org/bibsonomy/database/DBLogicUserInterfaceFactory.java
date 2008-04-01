@@ -21,6 +21,9 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 	
 	private DBSessionFactory dbSessionFactory;
 	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterfaceFactory#getLogicAccess(java.lang.String, java.lang.String)
+	 */
 	public LogicInterface getLogicAccess(final String loginName, final String password) {
 		if (loginName != null) {
 			final User loggedInUser = getLoggedInUser(loginName, password); 
@@ -28,7 +31,7 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 				return new DBLogic(loggedInUser, dbSessionFactory);
 			}
 			throw new ValidationException("Wrong Authentication.");
-		}
+		}		
 		return new DBLogic(new User(), dbSessionFactory);  // guest access
 	}
 
@@ -43,7 +46,9 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 		final DBSession session = openSession();
 		try {
 			User loggedInUser = userDBManager.validateUserUserAccess(loginName, password, session);
-			UserUtils.setGroupsByGroupIDs(loggedInUser, generalDB.getGroupIdsForUser(loggedInUser.getName(), session));		
+			if (loggedInUser.getName() != null) {
+				UserUtils.setGroupsByGroupIDs(loggedInUser, generalDB.getGroupIdsForUser(loggedInUser.getName(), session));
+			}
 			return loggedInUser;
 		} finally {
 			session.close();

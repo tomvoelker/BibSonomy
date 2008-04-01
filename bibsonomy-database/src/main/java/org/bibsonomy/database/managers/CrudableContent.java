@@ -13,16 +13,21 @@ import org.bibsonomy.model.Resource;
  * 
  * @author Christian Schenk
  * @version $Id$
+ * @param <T> extends Resource
+ * @param <P> extends GenericParam
  */
 public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	// read
 	public List<Post<T>> getPosts(P param, DBSession session);
 
 	// read
-	public Post<T> getPostDetails(String authUser, String resourceHash, String userName, DBSession session);
+	public Post<T> getPostDetails(String authUser, String resourceHash, String userName, List<Integer> visibleGroupIDs, DBSession session);
 
 	/**
 	 * delete
+	 * @param userName 
+	 * @param resourceHash 
+	 * @param session 
 	 * 
 	 * @return true, if entry existed and was deleted
 	 */
@@ -30,6 +35,11 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 
 	/**
 	 * create, update
+	 * @param userName 
+	 * @param post 
+	 * @param oldHash 
+	 * @param update 
+	 * @param session 
 	 * 
 	 * @return true, if entry existed and was updated
 	 */

@@ -80,6 +80,8 @@ public class DBLogic implements LogicInterface {
 	private final User loginUser;
 
 	protected DBLogic(final User loginUser, final DBSessionFactory dbSessionFactory) {
+		// each user is a member of the public group
+		loginUser.addGroup(new Group(GroupID.PUBLIC));
 		this.loginUser = loginUser;
 
 		generalDBManager = GeneralDatabaseManager.getInstance();
@@ -213,7 +215,7 @@ public class DBLogic implements LogicInterface {
 		try {
 			Post<? extends Resource> rVal;
 			for (final CrudableContent<? extends Resource, ? extends GenericParam> manager : allDatabaseManagers.values()) {
-				rVal = manager.getPostDetails(this.loginUser.getName(), resourceHash, userName, session);
+				rVal = manager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
 				if (rVal != null) {
 					return rVal;
 				}
@@ -602,6 +604,7 @@ public class DBLogic implements LogicInterface {
 	 * documents for other users.
 	 * 
 	 * @param doc
+	 * @param resourceHash 
 	 * @return doc
 	 */
 	public Document storeDocument(final Document doc, final String resourceHash){
@@ -663,7 +666,7 @@ public class DBLogic implements LogicInterface {
 			 * we just forward this task to getPostDetails from the 
 			 * BibTeXDatabaseManager and extract the documents.
 			 */
-			final Post<BibTex> post = bibtexDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, session);
+			final Post<BibTex> post = bibtexDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
 			if (post != null) {
 				for (final Document document:post.getResource().getDocuments()) {
 					if (document.getFileName().equals(fileName)) {
@@ -758,10 +761,12 @@ public class DBLogic implements LogicInterface {
 	 */
 	public int getStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, StatisticsConstraint constraint, String search, List<String> tags) {
 		final DBSession session = openSession();
-		int statistics = 0;
 		try {
 			if (grouping.equals(GroupingEntity.USER) && groupingName != null && groupingName != "") {
-				statistics = this.statisticsDBManager.getNumberOfResourcesForUser(resourceType, groupingName, this.loginUser.getName(), session);
+				if (tags != null && tags.size() > 0) {
+					return this.statisticsDBManager.getNumberOfResourcesForUserAndTags(resourceType, tags, groupingName, this.loginUser.getName(), UserUtils.getListOfGroupIDs(this.loginUser), session);
+				}
+				return this.statisticsDBManager.getNumberOfResourcesForUser(resourceType, groupingName, this.loginUser.getName(), UserUtils.getListOfGroupIDs(this.loginUser), session);
 			}
 			else if (grouping.equals(GroupingEntity.GROUP) && groupingName != null && groupingName != "") {
 				Group group = this.groupDBManager.getGroupByName(groupingName, session);
@@ -769,7 +774,7 @@ public class DBLogic implements LogicInterface {
 					log.debug("group " + groupingName + " does not exist");
 					return 0;
 				}
-				return this.statisticsDBManager.getNumberOfResourcesForGroup(resourceType, group.getGroupId(), this.loginUser.getName(), session);
+				return this.statisticsDBManager.getNumberOfResourcesForGroup(resourceType, group.getGroupId(), UserUtils.getListOfGroupIDs(this.loginUser), session);
 			}
 			else if (grouping.equals(GroupingEntity.ALL) && tags != null) {
 				return this.statisticsDBManager.getNumberOfResourcesForTags(resourceType, tags, UserUtils.getListOfGroupIDs(this.loginUser), session);
@@ -784,8 +789,7 @@ public class DBLogic implements LogicInterface {
 		}		
 		finally {
 			session.close();			
-		}
-		return statistics;		
+		}	
 	}
 
 	/* (non-Javadoc)

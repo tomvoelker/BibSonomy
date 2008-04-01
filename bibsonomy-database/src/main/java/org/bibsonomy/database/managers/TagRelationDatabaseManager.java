@@ -127,21 +127,13 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	
 	/**
 	 * @param userName
+	 * @param session 
 	 * @return
 	 */
 	public List<Tag> getAllConceptsForUser(final String userName, final DBSession session) {
 		return queryForList("getAllConceptsForUser", userName, session);
 	}
 	
-	/**
-	 * @param userName
-	 * @param start
-	 * @param end
-	 * @return
-	 */
-	public List<Tag> getConceptsForuser(final String userName, final int start, final int end, final DBSession session) {
-		return null;
-	}
 	
 	/**
 	 * Retrieve concepts for users as well as groups
@@ -159,6 +151,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	
 	/**
 	 * @param userName
+	 * @param session 
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
@@ -175,6 +168,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	}	
 	
 	/**
+	 * @param conceptName 
 	 * @param session - the db session
 	 * @return a global concept by name
 	 */

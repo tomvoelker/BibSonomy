@@ -2,6 +2,8 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -79,6 +81,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	
 	/**
 	 * wrapper for {@see getBibTexByHash(final BibTexParam param, final DBSession session)}
+	 * @param hash 
+	 * @param hashId 
+	 * @param session 
+	 * @return 
 	 */
 	public List<Post<BibTex>> getBibTexByHash(final String hash, final HashID hashId, final DBSession session) {
 		BibTexParam param = new BibTexParam();
@@ -164,6 +170,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 */
 	public Integer getBibTexByTagNamesForUserCount(final String requestedUserName, final String loginUserName, final List<String> tags, final List<Integer> visibleGroupIDs, final DBSession session) {
 		BibTexParam param = new BibTexParam();
+		param.addGroups(visibleGroupIDs);
 		param.setRequestedUserName(requestedUserName);
 		param.setUserName(loginUserName);
 		for (String tag : tags) {
@@ -338,13 +345,6 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		return this.bibtexList("getBibTexForUsersInGroup", param, session);
 	}
 	
-	public List<Post<BibTex>> getBibTexForUsersInGroup(final String loginUserName, final Integer groupId, final DBSession session) {
-		final BibTexParam param = new BibTexParam();
-		param.setUserName(loginUserName);
-		param.setGroupId(groupId);
-		return getBibTexForUsersInGroup(param, session);
-	}
-
 	/**
 	 * Returns the number of publications belonging to the group.<br/><br/>
 	 * 
@@ -360,14 +360,14 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * Returns the number of publications
 	 * 
 	 * @param groupID
-	 * @param loginUserName
 	 * @param session
+     * @param visibleGroupIDs
 	 * @return the (approximated) number of resources posted to the group with the given groupID
 	 */
-	public Integer getBibTexForGroupCount(final int groupID, final String loginUserName, final DBSession session) {
+	public Integer getBibTexForGroupCount(final int groupID, final List<Integer> visibleGroupIDs, final DBSession session) {
 		BibTexParam param = new BibTexParam();
-		param.setUserName(loginUserName);
 		param.setGroupId(groupID);
+		param.addGroups(visibleGroupIDs);
 		return this.getBibTexForGroupCount(param, session);
 	}
 
@@ -412,11 +412,13 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * 
 	 * @param requestedUserName
 	 * @param loginUserName
+	 * @param visibleGroupIDs 
 	 * @param session
 	 * @return the number of publications of the requested user which the logged in user is allowed to see
 	 */
-	public Integer getBibTexForUserCount(final String requestedUserName, final String loginUserName, final DBSession session) {
+	public Integer getBibTexForUserCount(final String requestedUserName, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session) {
 		BibTexParam param = new BibTexParam();
+		param.addGroups(visibleGroupIDs);
 		param.setUserName(loginUserName);
 		param.setRequestedUserName(requestedUserName);
 		return this.getBibTexForUserCount(param, session);
@@ -443,16 +445,29 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * @param loginUserName
 	 * @param interHash
 	 * @param requestedUserName
+	 * @param visibleGroupIDs 
 	 * @param session
 	 * @return List<Post<BibTex>> a list of BibTeX posts
 	 */
-	public List<Post<BibTex>> getBibTexByHashForUser(final String loginUserName, final String interHash, final String requestedUserName, final DBSession session) {
-		return this.getBibTexByHashForUser(loginUserName, interHash, requestedUserName, session, HashID.INTER_HASH);
+	public List<Post<BibTex>> getBibTexByHashForUser(final String loginUserName, final String interHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final DBSession session) {
+		return this.getBibTexByHashForUser(loginUserName, interHash, requestedUserName, visibleGroupIDs, session, HashID.INTER_HASH);
 	}
 
-	public List<Post<BibTex>> getBibTexByHashForUser(final String loginUserName, final String intraHash, final String requestedUserName, final DBSession session, final HashID hashType) {
+	/**
+	 * Returns a list containg BibTeX posts by hash for a user
+	 * 
+	 * @param loginUserName
+	 * @param intraHash
+	 * @param requestedUserName
+	 * @param visibleGroupIDs
+	 * @param session
+	 * @param hashType
+	 * @return List<Post<BibTex>> a list of BibTeX posts
+	 */
+	public List<Post<BibTex>> getBibTexByHashForUser(final String loginUserName, final String intraHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final DBSession session, final HashID hashType) {
 		final BibTexParam param = new BibTexParam();
 		param.setUserName(loginUserName);
+		param.addGroups(visibleGroupIDs);
 		param.setRequestedUserName(requestedUserName);
 		param.setHash(intraHash);
 		param.setRequestedSimHash(hashType);
@@ -507,11 +522,11 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * </ul>
 	 * 
 	 */
-	public Post<BibTex> getPostDetails(final String authUser, final String resourceHash, final String userName, final DBSession session) {
+	public Post<BibTex> getPostDetails(final String authUser, final String resourceHash, final String userName, final List<Integer> visibleGroupIDs, final DBSession session) {
 		/*
 		 * get post from database
 		 */
-		final List<Post<BibTex>> list = getBibTexByHashForUser(authUser, resourceHash, userName, session, HashID.INTRA_HASH);
+		final List<Post<BibTex>> list = getBibTexByHashForUser(authUser, resourceHash, userName, visibleGroupIDs, session, HashID.INTRA_HASH);
 		if (list.size() >= 1) {
 			if (list.size() > 1) {
 				/*
@@ -622,7 +637,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			final List<Post<BibTex>> isNewBibTexInDb;
 									
 			// check if a user is trying to create a bibtex that already exists
-			isNewBibTexInDb = this.getBibTexByHashForUser(userName, post.getResource().getIntraHash(), userName, session, HashID.INTRA_HASH);
+			isNewBibTexInDb = this.getBibTexByHashForUser(userName, post.getResource().getIntraHash(), userName, new ArrayList<Integer>(), session, HashID.INTRA_HASH);
 			if (isNewBibTexInDb != null && isNewBibTexInDb.size() > 0 && update == false) {
 				throw new IllegalArgumentException("Could not create new bibtex entry: This bibtex entry already exists in your collection (intrahash: " + post.getResource().getIntraHash() + ")");
 			}			
@@ -635,7 +650,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 							+ post.getResource().getIntraHash() + ")."
 					);					
 				}
-				isOldBibTexInDb = this.getBibTexByHashForUser(userName, oldIntraHash, userName, session, HashID.INTRA_HASH);
+				isOldBibTexInDb = this.getBibTexByHashForUser(userName, oldIntraHash, userName, new ArrayList<Integer>(), session, HashID.INTRA_HASH);
 			} else {
 				if (update == true) {
 					throw new IllegalArgumentException("Could not update bibtex entry: no intrahash specified.");
@@ -703,7 +718,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		// TODO: test removal (tas and bibtex ...)
 		session.beginTransaction();
 		try {
-			final List<Post<BibTex>> bibtexs = this.getBibTexByHashForUser(userName, resourceHash, userName, session, HashID.INTRA_HASH);
+			final List<Post<BibTex>> bibtexs = this.getBibTexByHashForUser(userName, resourceHash, userName, new ArrayList<Integer>(), session, HashID.INTRA_HASH);
 			if (bibtexs.size() == 0) {
 				// BibTex doesn't exist
 				log.debug("post not found");

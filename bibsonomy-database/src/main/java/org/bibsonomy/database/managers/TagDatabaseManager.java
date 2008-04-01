@@ -57,7 +57,13 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		return singleton;
 	}
 
-	/** Return tag for given tagId */
+	/** 
+	 * Return tag for given tagId
+	 *  
+	 * @param tagId 
+	 * @param session 
+	 * @return 
+	 */
 	public Tag getTagById(final Integer tagId, final DBSession session) {
 		return this.queryForObject("getTagById", tagId, Tag.class, session);
 	}
@@ -244,6 +250,9 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Increases the tag counter in the tag table for the given tag. If this tag
 	 * does not exist inside the tag table, inserts it with count 1.
+	 * 
+	 * @param tag 
+	 * @param session 
 	 */
 	public void insertTag(final Tag tag, final DBSession session) {
 		// TODO not tested
@@ -422,7 +431,24 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			return new ArrayList<Tag>();
 		}		
 		return this.queryForList("getRelatedTagsForGroup", param, Tag.class, session);
-	}	
+	}
+	
+	/**
+	 * get related tags from a given user and a given list of tags
+	 * 
+	 * @param requestedUserName
+	 * @param tagIndex
+	 * @param visibleGroupIDs 
+	 * @param session
+	 * @return
+	 */
+	public List<Tag> getRelatedTagsForUser(final String requestedUserName, final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, final DBSession session) {
+		TagParam param = new TagParam();
+		param.setRequestedUserName(requestedUserName);
+		param.addGroups(visibleGroupIDs);
+		param.setTagIndex(tagIndex);
+		return this.queryForList("getRelatedTagsRestricted", param, Tag.class, session);
+	}
 	
 	/**
 	 * Get related tags for a given tag 
@@ -522,15 +548,17 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 * @param loginUserName
 	 * @param hash
+	 * @param visibleGroupIDs 
 	 * @param limit
 	 * @param offset
 	 * @param session
 	 * @return a list of tags attached to the bookmark with the given hash
 	 */
-	public List<Tag> getTagsByBookmarkHash(final String loginUserName, final String hash, int limit, int offset, final DBSession session) {
+	public List<Tag> getTagsByBookmarkHash(final String loginUserName, final String hash, final List<Integer> visibleGroupIDs, int limit, int offset, final DBSession session) {
 		TagParam param = new TagParam();
 		param.setHash(hash);
 		param.setUserName(loginUserName);
+		param.addGroups(visibleGroupIDs);
 		param.setLimit(limit);
 		param.setOffset(offset);
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
@@ -565,16 +593,18 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param loginUserName
 	 * @param hash
 	 * @param hashId
+	 * @param visibleGroupIDs 
 	 * @param limit
 	 * @param offset
 	 * @param session
 	 * @return a list of tags attached to a bibtex with the given hash
 	 */
-	public List<Tag> getTagsByBibtexHash(final String loginUserName, final String hash, final HashID hashId, int limit, int offset, final DBSession session) {
+	public List<Tag> getTagsByBibtexHash(final String loginUserName, final String hash, final HashID hashId, final List<Integer> visibleGroupIDs, int limit, int offset, final DBSession session) {
 		TagParam param = new TagParam();
 		param.setHash(hash);
 		param.setHashId(hashId);
 		param.setUserName(loginUserName);
+		param.addGroups(visibleGroupIDs);
 		param.setLimit(limit);
 		param.setOffset(offset);		
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);

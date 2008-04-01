@@ -40,6 +40,7 @@ public class DatabasePluginRegistry {
 	/**
 	 * Plugins can be added with this method.
 	 * FIXME: will be removed with the introduction of a DI-framework
+	 * @param plugin 
 	 */
 	public void add(final DatabasePlugin plugin) {
 		final String key = plugin.getClass().getName();

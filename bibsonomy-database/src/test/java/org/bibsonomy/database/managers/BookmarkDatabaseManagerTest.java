@@ -156,11 +156,12 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final String requBibtex = "294a9e1d594297e7bb9da9e11229c5d7";
 		String requestedUserName = "testuser2";
 		final String userName = "testuser1";
-		final List<Post<Bookmark>> post = this.bookmarkDb.getBookmarkByHashForUser(userName, requBibtex, requestedUserName, this.dbSession, null);
+		final ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>(0); //public group
+		final List<Post<Bookmark>> post = this.bookmarkDb.getBookmarkByHashForUser(userName, requBibtex, requestedUserName, visibleGroupIDs, this.dbSession, null);
 		assertEquals(0, post.size());
 
 		requestedUserName = "testuser1";
-		final List<Post<Bookmark>> post2 = this.bookmarkDb.getBookmarkByHashForUser(userName, requBibtex, requestedUserName, this.dbSession, null);
+		final List<Post<Bookmark>> post2 = this.bookmarkDb.getBookmarkByHashForUser(userName, requBibtex, requestedUserName, visibleGroupIDs, this.dbSession, null);
 		assertEquals(1, post2.size());
 	}
 
@@ -235,13 +236,18 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getBookmarkForGroupCount() {
 		//approximated number of bookmarks, users own private/friends bookmarks are not included
 		Integer count = -1;
-		count = this.bookmarkDb.getBookmarkForGroupCount(3, "testuser1", this.dbSession);
+		ArrayList<Integer> groupsOfTestuser1 = new ArrayList<Integer>();
+		groupsOfTestuser1.add(0);
+		count = this.bookmarkDb.getBookmarkForGroupCount(3, groupsOfTestuser1, this.dbSession);
 		assertEquals(6, count);
 
-		count = this.bookmarkDb.getBookmarkForGroupCount(3, "testuser2", this.dbSession);
+		ArrayList<Integer> groupsOfTestuser2 = new ArrayList<Integer>();
+		groupsOfTestuser1.add(0);		
+		
+		count = this.bookmarkDb.getBookmarkForGroupCount(3, groupsOfTestuser2, this.dbSession);
 		assertEquals(4, count);
 		
-		count = this.bookmarkDb.getBookmarkForGroupCount(4, "testuser2", this.dbSession);
+		count = this.bookmarkDb.getBookmarkForGroupCount(4, groupsOfTestuser2, this.dbSession);
 		assertEquals(2, count);
 	}
 
@@ -296,15 +302,15 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final String requestedUserName = "testuser1";
 		
 		String userName = "testuser3";
-		count =  this.bookmarkDb.getBookmarkForUserCount(requestedUserName, userName, this.dbSession);	
+		count =  this.bookmarkDb.getBookmarkForUserCount(requestedUserName, userName, null, this.dbSession);	
 		assertEquals(2, count);
 		
 		userName = "testuser2";
-		count =  this.bookmarkDb.getBookmarkForUserCount(requestedUserName, userName, this.dbSession);	
+		count =  this.bookmarkDb.getBookmarkForUserCount(requestedUserName, userName, null, this.dbSession);	
 		assertEquals(3, count);
 		
 		userName = "testuser1";
-		count =  this.bookmarkDb.getBookmarkForUserCount(requestedUserName, userName, this.dbSession);	
+		count =  this.bookmarkDb.getBookmarkForUserCount(requestedUserName, userName, null, this.dbSession);	
 		assertEquals(6, count);
 	}
 	

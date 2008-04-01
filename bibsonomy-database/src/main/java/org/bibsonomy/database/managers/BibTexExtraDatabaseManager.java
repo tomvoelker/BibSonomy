@@ -53,6 +53,8 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Doesn't delete <em>all</em> URLs, but only those for the resource with
 	 * the given hash.
+	 * @param contentId 
+	 * @param session 
 	 */
 	public void deleteAllURLs(final int contentId, final DBSession session) {
 		this.delete("deleteAllBibTexExtraURLs", contentId, session);
@@ -96,6 +98,9 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Returns the filename for the document with the given hash.
+	 * @param hash 
+	 * @param session 
+	 * @return 
 	 * @deprecated Documents are contained in BibTeX posts now. Access is now 
 	 * possible via the more general method {@link LogicInterface#getDocument(String, String, String)}.
 	 * 

@@ -55,6 +55,7 @@ public class ParamUtils {
 		param.setDate(date);
 		// param.setCaseSensitiveTagNames(true);
 		param.addTagName("community");
+		param.addGroup(GroupID.PUBLIC.getId());
 	}
 
 	/**

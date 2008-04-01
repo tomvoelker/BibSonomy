@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -51,6 +52,11 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		this.plugins = DatabasePluginRegistry.getInstance();
 	}
 
+	/**
+	 * Return singleton instance
+	 * 
+	 * @return
+	 */
 	public static BookmarkDatabaseManager getInstance() {
 		return singleton;
 	}
@@ -80,7 +86,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	}
 
 	/**
-	 * @see BookmarkDatabaseManager.getBookmarkByTagNames
+	 * @see org.bibsonomy.database.manager.BookmarkDatabaseManager.getBookmarkByTagNames
 	 * 
 	 * @param groupType
 	 * @param tagIndex
@@ -149,6 +155,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 */
 	public Integer getBookmarkByTagNamesForUserCount(final String requestedUserName, final String loginUserName, final List<String> tags, final List<Integer> visibleGroupIDs, final DBSession session) {
 		BookmarkParam param = new BookmarkParam();
+		param.addGroups(visibleGroupIDs);
 		param.setRequestedUserName(requestedUserName);
 		param.setUserName(loginUserName);
 		for (String tag : tags) {
@@ -158,7 +165,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	}	
 
 	/**
-	 * @see BookmarkDatabaseManager.getBookmarkByTagNamesForUser
+	 * @see org.bibsonomy.database.manager.BookmarkDatabaseManager.getBookmarkByTagNamesForUser
 	 * 
 	 * @param requestedUserName
 	 * @param userName
@@ -355,13 +362,15 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @param userName
 	 * @param requBibtex
 	 * @param requestedUserName
+     * @param visibleGroupIDs
 	 * @param session
 	 * @param hashType
 	 * @return see at param method
 	 */
-	public List<Post<Bookmark>> getBookmarkByHashForUser(final String userName, final String requBibtex, final String requestedUserName, final DBSession session, final HashID hashType) {
+	public List<Post<Bookmark>> getBookmarkByHashForUser(final String userName, final String requBibtex, final String requestedUserName, final List<Integer> visibleGroupIDs, final DBSession session, final HashID hashType) {
 		final BookmarkParam param = new BookmarkParam();
 		param.setUserName(userName);
+		param.addGroups(visibleGroupIDs);
 		param.setHash(requBibtex);
 		param.setRequestedUserName(requestedUserName);
 		param.setRequestedSimHash(hashType);
@@ -375,11 +384,12 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @param userName
 	 * @param requBibtex
 	 * @param requestedUserName
+	 * @param visibleGroupIDs 
 	 * @param session
 	 * @return see at param method
 	 */
-	public List<Post<Bookmark>> getBookmarkHashForUser(final String userName, final String requBibtex, final String requestedUserName, final DBSession session) {
-		return getBookmarkByHashForUser(userName, requBibtex, requestedUserName, session, HashID.INTER_HASH);
+	public List<Post<Bookmark>> getBookmarkHashForUser(final String userName, final String requBibtex, final String requestedUserName, final List<Integer> visibleGroupIDs, final DBSession session) {
+		return getBookmarkByHashForUser(userName, requBibtex, requestedUserName, visibleGroupIDs, session, HashID.INTER_HASH);
 	}
 
 	/**
@@ -546,13 +556,14 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 
 	/**
 	 * @param groupId
+	 * @param visibleGroupIDs 
 	 * @param userName
 	 * @param session
 	 * @return see at param method
 	 */
-	public Integer getBookmarkForGroupCount(final int groupId, final String userName, final DBSession session) {
+	public Integer getBookmarkForGroupCount(final int groupId, final List<Integer> visibleGroupIDs, final DBSession session) {
 		BookmarkParam param = new BookmarkParam();
-		param.setUserName(userName);
+		param.addGroups(visibleGroupIDs);
 		param.setGroupId(groupId);
 		return this.getBookmarkForGroupCount(param, session);
 	}
@@ -629,12 +640,14 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * 
 	 * @param requestedUserName
 	 * @param loginUserName
+	 * @param visibleGroupIDs 
 	 * @param session
 	 * @return the number of bookmarks of the requested User which the logged in user is allowed to see
 	 */
-	public Integer getBookmarkForUserCount(final String requestedUserName, final String userName, final DBSession session) {
+	public Integer getBookmarkForUserCount(final String requestedUserName, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session) {
 		BookmarkParam param = new BookmarkParam();
-		param.setUserName(userName);
+		param.setUserName(loginUserName);
+		param.addGroups(visibleGroupIDs);
 		param.setRequestedUserName(requestedUserName);
 		return this.getBookmarkForUserCount(param, session);
 	}
@@ -709,8 +722,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		return chain.getFirstElement().perform(param, session);
 	}
 
-	public Post<Bookmark> getPostDetails(String authUser, String resourceHash, String userName, final DBSession session) {
-		final List<Post<Bookmark>> list = getBookmarkByHashForUser(authUser, resourceHash, userName, session, HashID.INTRA_HASH);
+	public Post<Bookmark> getPostDetails(String authUser, String resourceHash, String userName, final List<Integer> visibleGroupIDs, final DBSession session) {
+		final List<Post<Bookmark>> list = getBookmarkByHashForUser(authUser, resourceHash, userName, visibleGroupIDs, session, HashID.INTRA_HASH);
 		if (list.size() >= 1) {
 			if (list.size() > 1) {
 				log.warn("multiple Bookmark-posts from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' found ->returning first");
@@ -733,6 +746,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 			// Used for userName, hash and contentId
 			final BookmarkParam param = new BookmarkParam();
 			param.setRequestedUserName(userName);
+			param.setUserName(userName);
 			param.setHash(resourceHash);
 			
 			final List<Post<Bookmark>> bookmarks = this.getBookmarkByHashForUser(param, session);
@@ -782,7 +796,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 			final List<Post<Bookmark>> isNewBookmarkInDb;
 			
 			// check if user is trying to create a bookmark that already exists
-			isNewBookmarkInDb = this.getBookmarkByHashForUser(userName, post.getResource().getIntraHash(), userName, session, HashID.INTRA_HASH);
+			isNewBookmarkInDb = this.getBookmarkByHashForUser(userName, post.getResource().getIntraHash(), userName, new ArrayList<Integer>(), session, HashID.INTRA_HASH);
 			if ((isNewBookmarkInDb != null) && (isNewBookmarkInDb.size() > 0) && update == false) {
 				throw new IllegalArgumentException("Could not create new bookmark: This bookmark already exists in your collection (intrahash: " + post.getResource().getIntraHash() + ")");
 			}
@@ -797,7 +811,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 					);
 				}
 				// if yes, check if a bookmark exists with the old intrahash				
-				isOldBookmarkInDb = this.getBookmarkByHashForUser(userName, oldIntraHash, userName, session, HashID.INTRA_HASH);
+				isOldBookmarkInDb = this.getBookmarkByHashForUser(userName, oldIntraHash, userName, new ArrayList<Integer>(), session, HashID.INTRA_HASH);
 			} else {
 				if (update == true) {
 					throw new IllegalArgumentException("Could not update bookmark: no intrahash specified.");

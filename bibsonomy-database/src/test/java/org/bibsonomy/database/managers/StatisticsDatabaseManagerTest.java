@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bibsonomy.model.extra.BibTexExtra;
@@ -24,8 +25,10 @@ public class StatisticsDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getNumResourcesForUser() {
-		int numPublications = this.statisticsDb.getNumberOfResourcesForUser(BibTex.class, TEST_REQUESTED_USER, TEST_LOGIN_USER, this.dbSession);
-		int numBookmarks = this.statisticsDb.getNumberOfResourcesForUser(Bookmark.class, TEST_REQUESTED_USER, TEST_LOGIN_USER, this.dbSession);
+		List<Integer> visibleGroupIDs = new ArrayList<Integer>();
+		visibleGroupIDs.add(0); // public group
+		int numPublications = this.statisticsDb.getNumberOfResourcesForUser(BibTex.class, TEST_REQUESTED_USER, TEST_LOGIN_USER, visibleGroupIDs, this.dbSession);
+		int numBookmarks = this.statisticsDb.getNumberOfResourcesForUser(Bookmark.class, TEST_REQUESTED_USER, TEST_LOGIN_USER, visibleGroupIDs, this.dbSession);
 	}
 
 }

@@ -56,8 +56,7 @@ public class LogicInterfaceHelper {
 		param.setHash(hash);
 		
 		// set the groupIDs the logged-in user may see 
-		//  - everybody may see public posts
-		param.addGroup(GroupID.PUBLIC.getId());
+		//  - every user may see public posts - this one is added in the constructor of DBLogic
 		//  - groups the logged-in user is explicitely member of
 		param.addGroups(UserUtils.getListOfGroupIDs(loginUser));
 		//  - private / friends groups are set later on 

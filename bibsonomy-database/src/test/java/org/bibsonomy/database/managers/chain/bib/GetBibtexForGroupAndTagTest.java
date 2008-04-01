@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.PropertyConfigurator;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexForGroupAndTag;
@@ -72,6 +73,7 @@ public class GetBibtexForGroupAndTagTest extends AbstractDatabaseManagerTest {
 		p.setNumSimpleConcepts(0);
 		p.setNumSimpleTags(NUMBER_OF_TAGS);
 		p.setNumTransitiveConcepts(0);
+		p.addGroup(GroupID.PUBLIC.getId());
 
 		GetBibtexForGroupAndTag handler = new GetBibtexForGroupAndTag();
 

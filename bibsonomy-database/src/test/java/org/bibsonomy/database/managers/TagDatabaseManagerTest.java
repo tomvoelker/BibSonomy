@@ -1,5 +1,6 @@
 package org.bibsonomy.database.managers;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -139,7 +140,8 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.tagParam.setRequestedUserName("hotho");
 		this.tagParam.setGrouping(GroupingEntity.USER);
 		this.tagParam.setUserName("hotho");
-		this.tagParam.setGroupId(GroupID.INVALID.getId());		
+		this.tagParam.setGroupId(GroupID.INVALID.getId());
+		this.tagParam.setTagIndex(null);
 		List<Tag> tags = this.tagDb.getTags(this.tagParam, this.dbSession);		
 		assertEquals(1408,tags.size());
 		// hotho is a spammer, so some other user shouldn't see his tags
@@ -168,7 +170,9 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getTagsByBibtexHash() {
 		String loginUserName = "hotho";
 		String hash = "palim palim";
-		List<Tag> tags = this.tagDb.getTagsByBibtexHash(loginUserName, hash, HashID.INTER_HASH, 0, 20, this.dbSession);
+		ArrayList<Integer> visibleGroups = new ArrayList<Integer>();
+		visibleGroups.add(0);		
+		List<Tag> tags = this.tagDb.getTagsByBibtexHash(loginUserName, hash, HashID.INTER_HASH, visibleGroups, 0, 20, this.dbSession);
 	}
 	
 	/**
@@ -193,7 +197,9 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getTagsByBookmarkHash() {
 		String loginUserName = "hotho";
 		String hash = "palim palim";
-		List<Tag> tags = this.tagDb.getTagsByBookmarkHash(loginUserName, hash, 0, 20, this.dbSession);
+		ArrayList<Integer> visibleGroups = new ArrayList<Integer>();
+		visibleGroups.add(0);
+		List<Tag> tags = this.tagDb.getTagsByBookmarkHash(loginUserName, hash, visibleGroups, 0, 20, this.dbSession);
 	}
 	
 	/**
@@ -214,7 +220,18 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final TagParam param = new TagParam();
 		param.addTagName("web");
 		param.addTagName("semantic");
+		param.addGroup(GroupID.PUBLIC.getId());
 		List<Tag> tags = this.tagDb.getRelatedTags(param, this.dbSession);
+	}
+	
+	@Test
+	public void getRelatedTagsForUser() {
+		TagParam param = new TagParam();
+		param.addTagName("clustering");
+		param.addTagName("text");
+		ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
+		visibleGroupIDs.add(0);
+		List<Tag> tags = this.tagDb.getRelatedTagsForUser("hotho", param.getTagIndex(), visibleGroupIDs, this.dbSession);	
 	}
 
 	

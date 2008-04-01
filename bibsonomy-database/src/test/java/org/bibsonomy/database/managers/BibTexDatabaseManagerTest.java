@@ -113,7 +113,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals("9ad22a9cbce2cb8c10fb5d95903ceeff", posts.get(0).getResource().getIntraHash());
 		
 		// nonpublic personal group
-		posts = this.bibTexDb.getBibTexByHashForUser("tausendeins", "10ec64d80b0ac085328a953bb494fb89", "tausendeins", this.dbSession);
+		posts = this.bibTexDb.getBibTexByHashForUser("tausendeins", "10ec64d80b0ac085328a953bb494fb89", "tausendeins", new ArrayList<Integer>(), this.dbSession);
 		assertEquals(1, posts.size());
 	}
 
@@ -257,7 +257,6 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getBibTexForUsersInGroup() {
 		this.bibTexDb.getBibTexForUsersInGroup(this.bibtexParam, this.dbSession);
-		this.bibTexDb.getBibTexForUsersInGroup("jaeschke", GroupID.KDE.getId(), this.dbSession);
 	}
 
 	@Test
@@ -526,6 +525,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		param.addSimpleConceptName("clustering");
 		param.setRequestedGroupName("kde");
 		param.setUserName("hotho");
+		param.addGroup(GroupID.PUBLIC.getId());
 		
 		param.setGrouping(GroupingEntity.GROUP);
 		param.setContentType(ConstantID.BIBTEX_CONTENT_TYPE);

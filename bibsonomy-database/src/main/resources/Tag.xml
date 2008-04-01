@@ -203,23 +203,47 @@
 		ORDER BY tag_ctr DESC 
 		LIMIT 10
 	</select>
-
-	<!-- 	
-	<select id="getRelatedTagsForSpecialGroup" resultMap="Common.tag" parameterClass="tagParam">
-		SELECT tt.tag_name, COUNT(tt.tag_name) AS tag_anzahl
-		FROM tas t, tas tt
-		WHERE tt.content_id = t.content_id
-		AND t.user_name = #requestedUserName#
-		AND t.
-		AND t.user_name = tt.user_name
-		AND (<iterate property="tagIndex" conjunction=" OR ">t.tag_name = #tagIndex[].tagName#</iterate>)
-		AND (<iterate property="tagIndex" conjunction=" AND ">tt.tag_name != #tagIndex[].tagName#</iterate>)	
-		GROUP BY tt.tag_name
-		ORDER BY tag_anzahl DESC 
-		LIMIT 10
+	 
+	<!-- 
+		query to retrieve related tags restricted to groups, users or viewable pages
+	-->
+	<select id="getRelatedTagsRestricted" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		    SELECT t.tag_name AS tag_name, count(t.tag_name) as tag_ctr
+	      	FROM tas t, <include refid="tagFromQuery"/> <!-- a TAS join (t1, t2, ...) for each requested tag -->
+	      		<isNotEmpty property="requestedGroupName">
+	      		<!-- get related tas for group (group/GROUPNAME/tag) -->
+	      		, groups g, groupids i
+	      		</isNotEmpty>
+	      	WHERE t.content_id=t1.content_id 
+	          AND <include refid="tagWhereQuery"/>
+	              <iterate property="tagIndex" conjunction=" AND " prepend=" AND ">
+	              <!-- exclude requested tags -->
+	              t.tag_name != #tagIndex[].tagName#
+	              </iterate>
+	          <isNotEmpty property="requestedUserName">
+	          	  <!-- get related tags for user (user/USERNAME/tag) -->
+	          	  AND t.user_name = #requestedUserName#
+	          	  <include refid="restrictToGroups"/>	
+	          </isNotEmpty>
+	          <isNotEqual property="groupId" compareValue="-1">
+	          	  <!-- get related tags for viewable page (viewable/GROUPNAME/tag -->
+				  AND t.group = #groupID#	          	  
+	          </isNotEqual>	   
+	          <isNotEmpty property="requestedGroupName">
+	          	  <!-- get related tas for group (group/GROUPNAME/tag) -->
+				  AND i.group_name = #requestedGroupName#		
+				  AND i.group = g.group 
+				  AND g.user_name = t.user_name
+				  <include refid="restrictToGroups"/>	          
+	          </isNotEmpty>	             			   
+	      	GROUP BY t.tag_name
+	      	ORDER BY tag_ctr DESC
+	      	LIMIT #limit# OFFSET #offset#
 	</select>
-	 -->
 	
+	<!-- 
+		query to retrieve globally related tags 
+	-->
 	<select id="getRelatedTags" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
 	    <!-- single tag requested: query tagtag table -->
 		<isEqual property="maxTagIndex" compareValue="1">

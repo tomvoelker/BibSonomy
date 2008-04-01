@@ -84,6 +84,9 @@ public class DatabaseUtils {
 
 	/**
 	 * This needs to be done for all get*ForGroup* queries.
+	 * @param db 
+	 * @param param 
+	 * @param session 
 	 */
 	public static void prepareGetPostForGroup(final GeneralDatabaseManager db, final GenericParam param, final DBSession session) {
 		DatabaseUtils.checkPrivateFriendsGroup(db, param, session);
@@ -94,6 +97,9 @@ public class DatabaseUtils {
 
 	/**
 	 * This needs to be done for all get*ForUser* queries.
+	 * @param db 
+	 * @param param 
+	 * @param session 
 	 */
 	public static void prepareGetPostForUser(final GeneralDatabaseManager db, final GenericParam param, final DBSession session) {
 		// if the groupId is invalid we have to check for groups manually

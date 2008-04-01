@@ -30,6 +30,7 @@ public class TagChainTest extends AbstractChainTest {
 		this.tagParam.setGroupId(GroupID.INVALID.getId());
 		this.tagParam.setRegex(null);
 		this.tagParam.setLimit(1500);
+		this.tagParam.setTagIndex(null);
 		 //start chain
 		final List<Tag> tags = this.tagChain.getFirstElement().perform(this.tagParam, this.dbSession);		
 		assertEquals(1408, tags.size());

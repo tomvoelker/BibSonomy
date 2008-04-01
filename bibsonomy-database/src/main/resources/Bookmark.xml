@@ -67,6 +67,15 @@
 		WHERE a.group = g.group
 		ORDER BY a.date DESC, a.content_id DESC
 	</select>
+	
+	<select id="getBookmarkByTagNamesForUserCount" resultClass="int" parameterClass="bookmarkParam">
+		SELECT count(*) AS count
+		FROM <include refid="tagFromQuery"/>
+		WHERE <include refid="tagWhereQuery"/>
+			<include refid="restrictToGroups"/>
+			AND t1.content_type = #contentType#
+			AND t1.user_name = #requestedUserName#	
+	</select>
 
 	<select id="getBookmarkByConceptForUser" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT a.content_id, t.tag_name, a.book_url, a.book_url_hash AS interhash, a.book_url_hash AS intrahash, title, description,
