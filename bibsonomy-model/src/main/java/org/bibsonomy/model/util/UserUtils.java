@@ -64,7 +64,7 @@ public class UserUtils {
 	 * 
 	 * @param user
 	 * @param groupIDs
-	 * @return
+	 * @return user with groups set
 	 */
 	public static User setGroupsByGroupIDs(User user, List<Integer> groupIDs) {
 		for (Integer groupID: groupIDs) {
@@ -77,7 +77,7 @@ public class UserUtils {
 	 * Helper function to get a list of group IDs from a user object
 	 * 
 	 * @param user
-	 * @return
+	 * @return a list of group IDs
 	 */
 	public static List<Integer> getListOfGroupIDs(User user) {
 		ArrayList<Integer> groupIDs = new ArrayList<Integer>();
