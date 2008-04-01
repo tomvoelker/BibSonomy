@@ -10,6 +10,8 @@ import org.bibsonomy.common.enums.Role;
 
 /**
  * This class defines a user. An unknown user has an empty (<code>null</code>) name.
+ * 
+ * @version $Id$
  */
 public class User {
 
@@ -576,10 +578,16 @@ public class User {
 		this.updatedAt = updatetAt;
 	}
 
+	/**
+	 * @return mode
+	 */
 	public String getMode() {
 		return this.mode;
 	}
 
+	/**
+	 * @param mode
+	 */
 	public void setMode(String mode) {
 		this.mode = mode;
 	}			

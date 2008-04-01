@@ -11,6 +11,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.util.StringUtils;
 
 /**
+ * @author Dominik Benz
  * @author Miranda Grahl
  * @version $Id$
  */
@@ -45,46 +46,49 @@ public class UserUtils {
 
 	/**
 	 * Transforms groupid in dependence of spammer status of a user
-	 * @param groupid Id to transform
-	 * @param isSpammer true if the user is a spammer, otherwise false
+	 * 
+	 * @param groupid
+	 *            Id to transform
+	 * @param isSpammer
+	 *            true if the user is a spammer, otherwise false
 	 * @return new groupId
 	 */
-	public static int getGroupId(int groupid, boolean isSpammer) {
-		/*const to set/clear first bit of an integer*/
-		final int CONST_SET_1ST_BIT    = 0x80000000; //use logical OR  (|) to set second bit
-		final int CONST_CLEAR_1ST_BIT  = 0x7FFFFFFF; //use logical AND (&) to clear second bit
+	public static int getGroupId(final int groupid, final boolean isSpammer) {
+		// use logical OR (|) to set first bit
+		final int CONST_SET_1ST_BIT = 0x80000000;
+		// use logical AND (&) to clear first bit
+		final int CONST_CLEAR_1ST_BIT = 0x7FFFFFFF;
 
 		if (isSpammer) return groupid | CONST_SET_1ST_BIT;
-		// NOTE: "return groupid" is not enough, since we want to use that to unflag spammers posts, as well 
+		// Note: "return groupid" is not enough, since we want to use that to
+		// unflag spammers posts, as well
 		return groupid & CONST_CLEAR_1ST_BIT;
 	}
-	
+
 	/**
 	 * Helper function to set a user's groups by a list of group IDs
 	 * 
 	 * @param user
 	 * @param groupIDs
-	 * @return user with groups set
 	 */
-	public static User setGroupsByGroupIDs(User user, List<Integer> groupIDs) {
-		for (Integer groupID: groupIDs) {
+	public static void setGroupsByGroupIDs(final User user, final List<Integer> groupIDs) {
+		for (final int groupID : groupIDs) {
 			user.addGroup(new Group(groupID));
 		}
-		return user;		
 	}
-	
+
 	/**
-	 * Helper function to get a list of group IDs from a user object
+	 * Helper function to get a list of group IDs from an user object
 	 * 
 	 * @param user
-	 * @return a list of group IDs
+	 * @return list of groupIDs extracted from the given user object
 	 */
-	public static List<Integer> getListOfGroupIDs(User user) {
-		ArrayList<Integer> groupIDs = new ArrayList<Integer>();
+	public static List<Integer> getListOfGroupIDs(final User user) {
+		final ArrayList<Integer> groupIDs = new ArrayList<Integer>();
 		if (user == null) {
 			return groupIDs;
 		}
-		for (Group group : user.getGroups()) {
+		for (final Group group : user.getGroups()) {
 			groupIDs.add(group.getGroupId());
 		}
 		return groupIDs;
