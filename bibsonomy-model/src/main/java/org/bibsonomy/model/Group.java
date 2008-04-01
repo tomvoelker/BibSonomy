@@ -42,11 +42,11 @@ public class Group {
 	 * The privacy level of this group.
 	 */
 	private Privlevel privlevel;
-	
+
 	/**
-	 * If <code>true</code>, other group members can access documents 
-	 * attached to BibTeX posts, if the post is viewable for the group
-	 * or public.
+	 * If <code>true</code>, other group members can access documents
+	 * attached to BibTeX posts, if the post is viewable for the group or
+	 * public.
 	 */
 	private boolean sharedDocuments;
 
@@ -54,31 +54,31 @@ public class Group {
 	 * constructor
 	 */
 	public Group() {
-		this.groupId = GroupID.PUBLIC.getId();
+		this(GroupID.PUBLIC);
+	}
+
+	/**
+	 * constructor
+	 * 
+	 * @param groupid
+	 */
+	public Group(final GroupID groupid) {
+		this.groupId = groupid.getId();
 		this.privlevel = Privlevel.MEMBERS;
 		this.sharedDocuments = false;
 	}
 
 	/**
 	 * constructor
-	 * @param groupid 
-	 */
-	public Group(GroupID groupid) {
-		this.groupId = groupid.getId();
-		this.privlevel = Privlevel.MEMBERS;
-		this.sharedDocuments = false;
-	}
-	
-	/**
-	 * constructor
+	 * 
 	 * @param groupid
 	 */
 	public Group(Integer groupid) {
 		this.groupId = groupid;
 		this.privlevel = Privlevel.MEMBERS;
-		this.sharedDocuments = false;		
+		this.sharedDocuments = false;
 	}
-	
+
 	/**
 	 * @return groupId
 	 */
@@ -170,9 +170,9 @@ public class Group {
 	}
 
 	/**
-	 * If <code>true</code>, other group members can access documents 
-	 * attached to BibTeX posts, if the post is viewable for the group
-	 * or public.
+	 * If <code>true</code>, other group members can access documents
+	 * attached to BibTeX posts, if the post is viewable for the group or
+	 * public.
 	 * 
 	 * @return The truth value regarding shared documents for this group.
 	 */
@@ -186,23 +186,25 @@ public class Group {
 	public void setSharedDocuments(boolean sharedDocuments) {
 		this.sharedDocuments = sharedDocuments;
 	}
-	
+
 	@Override
 	public boolean equals(final Object obj) {
-		if (! (obj instanceof Group)) {
+		if (!(obj instanceof Group)) {
 			return false;
 		}
 		return equals((Group) obj);
 	}
-	
-	/** Compares two groups. Two groups are equal, if their groupId is equal.
+
+	/**
+	 * Compares two groups. Two groups are equal, if their groupId is equal.
+	 * 
 	 * @param other
 	 * @return <code>true</code> if the two groups are equal.
 	 */
-	public boolean equals (Group other) {
+	public boolean equals(Group other) {
 		return this.groupId == other.groupId;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return groupId;
