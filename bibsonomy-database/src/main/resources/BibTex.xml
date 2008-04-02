@@ -27,7 +27,7 @@
 		ORDER BY b.date DESC, b.content_id DESC
 	</select>
 	
-	<select id="getBibTexByTagNamesCount" resultClass="int" timeout="1" parameterClass="bibtexParam">
+	<select id="getBibTexByTagNamesCount" resultClass="int" timeout="2" parameterClass="bibtexParam">
 		SELECT count(*)
 		FROM <include refid="tagFromQuery"/>
 		WHERE <include refid="tagWhereQuery"/>
