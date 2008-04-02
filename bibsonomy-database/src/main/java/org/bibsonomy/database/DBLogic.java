@@ -54,6 +54,8 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.model.enums.Order;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 /**
  * @author Jens Illig
  * @author Christian Kramer
@@ -166,7 +168,7 @@ public class DBLogic implements LogicInterface {
 	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end, String search) {
 
 		// check allowed start-/end-values 
-		if (grouping.equals(GroupingEntity.ALL)) {
+		if (grouping.equals(GroupingEntity.ALL) && !present(tags)) {
 			this.permissionDBManager.checkStartEnd(start, end, "post");
 		}
 		// check maximum number f allowed tags
