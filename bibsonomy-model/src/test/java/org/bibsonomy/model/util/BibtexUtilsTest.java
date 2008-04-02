@@ -37,4 +37,14 @@ public class BibtexUtilsTest {
 
 		assertEquals(expectedBibtex, BibTexUtils.toBibtexString(bib));
 	}
+	
+	/**
+	 * tests cleanBibTex
+	 */
+	@Test
+	public void cleanBibTex() {
+		assertEquals("M&#252;ller", BibTexUtils.cleanBibTex("M{\\\"u}ller"));
+		assertEquals("M&#252;ller", BibTexUtils.cleanBibTex("M\\\"{u}ller"));
+		assertEquals("M&#252;ller", BibTexUtils.cleanBibTex("M\"uller"));
+	}
 }
