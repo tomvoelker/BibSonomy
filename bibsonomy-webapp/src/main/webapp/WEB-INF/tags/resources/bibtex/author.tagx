@@ -11,20 +11,24 @@
 	<c:choose>
 		<c:when test="${not empty post.resource.author}">
 			<c:forEach var="author" items="${post.resource.authorList}" varStatus="loopStatus">
-				<c:out value="${author.firstName} "/>
+				${mtl:cleanBibtex(author.firstName)}
+				<c:out value=" "/>
 				<!--<c:set var="authorUrlTemplate">/author/<mtl:encode value='${author.lastName}'/></c:set>-->
 				<c:url var="authorUrl" value="${projectHome}author/${fn:escapeXml(author.lastName)}"/>
-				<a href="${authorUrl}"><c:out value="${author.lastName}" /></a>         	     	 
+				<a href="${authorUrl}">${mtl:cleanBibtex(author.lastName)}</a>
+				<c:out value=" "/>         	     	 
 				<c:if test="${not loopStatus.last}"><c:out value=" "/><fmt:message key="and"/><c:out value=" "/></c:if>
 			</c:forEach>
 		</c:when>
 		<c:otherwise>
 			<c:if test="${not empty post.resource.editor}">
 				<c:forEach var="editor" items="${post.resource.editorList}" varStatus="loopStatus">        	 
-					<c:out value="${editor.firstName} " />
+					${mtl:cleanBibtex(editor.firstName)}
+					<c:out value=" "/>
 					<!--<c:set var="authorUrlTemplate">/author/<mtl:encode value='${editor.lastName}'/></c:set>-->
 					<c:url var="authorUrl" value="${projectHome}author/${fn:escapeXml(author.lastName)}"/>
-					<a href="${authorUrl}"><c:out value="${editor.lastName}" /></a>
+					<a href="${authorUrl}">${mtl:cleanBibtex(editor.lastName)}</a>
+					<c:out value=" "/>
 					<c:if test="${not loopStatus.last}"><c:out value=" "/><fmt:message key="and"/><c:out value=" "/></c:if>
 				</c:forEach>
 				(eds.).
