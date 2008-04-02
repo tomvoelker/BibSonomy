@@ -9,11 +9,11 @@
 	
 	<c:choose>
 		<c:when test="${not empty post.resource.month and month == true}">
-			<em><c:out value="${post.resource.month}"/> <c:out value=" ${post.resource.year}"/>. </em>
+			<em>${mtl:cleanBibtex({post.resource.month)} ${mtl:cleanBibtex({post.resource.year)}. </em>
 		</c:when>
 	<c:otherwise>
 		<c:if test="${braces == true}"><c:out value="("/></c:if>
-			<em><c:out value="${post.resource.year}"/></em>
+			<em>${mtl:cleanBibtex({post.resource.year)}</em>
 		<c:if test="${braces == true}"><c:out value=") "/> </c:if>
 	</c:otherwise>	
 	</c:choose>	
