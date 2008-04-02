@@ -269,5 +269,15 @@ public class Functions  {
 	public static String setParam(String url, String paramName, String paramValue) {
 		return UrlUtils.setParam(url, paramName, paramValue); 
 	}
+	
+	/**
+	 * wrapper for org.bibsonomy.model.util.BibTexUtils.cleanBibtex
+	 * 
+	 * @see org.bibsonomy.model.util.BibTexUtils
+	 * @param bibtex
+	 */
+	public static String cleanBibtex(String bibtex) {
+		return BibTexUtils.cleanBibTex(bibtex);
+	}
 		
 }
