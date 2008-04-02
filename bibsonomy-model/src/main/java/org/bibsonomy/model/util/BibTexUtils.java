@@ -9,12 +9,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLEncoder;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.model.BibTex;
 
 /**
+ * Some BibTex utility functions
+ * 
  * @author Dominik Benz
  * @version $Id$
  */
@@ -135,6 +138,19 @@ public class BibTexUtils {
 				bib.addMiscField(m.group(1), m.group(2));
 			}
 		}
+	}
+	
+	/**
+	 * helper method to parse misc field of a bibtex entry
+	 * 
+	 * @param misc String value of misc field
+	 * @return the parsed misc fields as a hashmap
+	 */
+	public static HashMap<String, String> parseMiscField(String misc) {
+		BibTex bib = new BibTex();
+		bib.setMisc(misc);
+		parseMiscField(bib);
+		return bib.getMiscFields();
 	}
 
 	/**
@@ -260,4 +276,55 @@ public class BibTexUtils {
 		}
 		return null;
 	}	
+	
+	/**
+	 * Cleans up a string containing LaTeX markup and converts special chars to HTML special chars.
+	 * 
+	 * @param bibtex a bibtex string
+	 * @return the cleaned bibtex string
+	 */
+	public static String cleanBibTex(String bibtex) {
+		
+		bibtex = bibtex.replaceAll("\\{|\\}","").
+	       replaceAll("\\s+"," ").
+	       replaceAll("\\\\\"o", "ö").
+	       replaceAll("\\\\\"u", "ü").
+	       replaceAll("\\\\\"a", "ä").
+	       replaceAll("\\\\\"O", "Ö").
+	       replaceAll("\\\\\"U", "Ü").
+	       replaceAll("\\\\\"A", "Ä").
+	       replaceAll("\\\\\"s", "ß").
+	       trim();		
+
+		//System.out.println(bibtex.replaceAll("\\{|\\}",""));
+		
+		StringBuffer sb = new StringBuffer(bibtex.length());
+		char c;		
+		for (int i = 0; i < bibtex.length(); i++) {
+			c = bibtex.charAt(i);
+			
+			// HTML Special Chars
+			if (c == '"')
+				sb.append("&quot;");
+			else if (c == '&')
+				sb.append("&amp;");
+			else if (c == '<')
+				sb.append("&lt;");
+			else if (c == '>')
+				sb.append("&gt;");
+			else {
+				int ci = 0xffff & c;
+				if (ci < 160 )
+					// nothing special only 7 Bit
+					sb.append(c);
+				else {
+					// Not 7 Bit use the unicode system
+					sb.append("&#");
+					sb.append(new Integer(ci).toString());
+					sb.append(';');
+				}
+			}
+		}
+		return sb.toString();
+	} 
 }
