@@ -16,7 +16,7 @@
 			    ${mtl:cleanBibtex(post.resource.note)}
 		      </c:when>
 		      <c:otherwise>
-		        <c:out value="${fn:substring(mtl:cleanBibtex(post.resource.note))}, 0, 155)}" />
+		        <c:out value="${fn:substring(mtl:cleanBibtex(post.resource.note), 0, 155)}" />
 		        <span class="info">...<span>${mtl:cleanBibtex(post.resource.note)}</span></span>
 		      </c:otherwise>
 		    </c:choose>
