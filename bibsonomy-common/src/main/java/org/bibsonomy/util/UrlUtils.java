@@ -1,5 +1,8 @@
 package org.bibsonomy.util;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 /**
  * Convenience methods to work with URLs
  *
@@ -74,4 +77,34 @@ public class UrlUtils {
 		// no query at all present in url -> append ?param=value
 		return urlString + "?" + paramName + "=" + paramValue;
 	}	
+	
+	/**
+	 * When using URLEncoder.encode, also 'reserved' characters defining the structure of
+	 * a URL are encoded; these are:
+	 * 
+	 * $ & + , / : ; ? @
+	 *   
+	 * This is a helper function to directly encode URLs, while retaining those characters
+	 * in order to enable parsing of the encoded URL string
+	 * 
+	 * @param url an URl string
+	 * @return an encoded URL string with reserved characters ($&+,/:;?@) preserved
+	 */
+	public static String encodeURLExceptReservedChars(String url) {
+		try {
+			String encodedURL = URLEncoder.encode(url, "UTF-8");
+			return encodedURL.replaceAll("\\%24", "\\$").
+			 				  replaceAll("\\%26", "\\&").
+			 				  replaceAll("\\%2B", "\\+").
+			 				  replaceAll("\\%2C", "\\,").
+			 				  replaceAll("\\%2F", "\\/").
+			 				  replaceAll("\\%3A", "\\:").
+			 				  replaceAll("\\%3B", "\\;").
+			 				  replaceAll("\\%3D", "\\=").
+			 				  replaceAll("\\%3F", "\\?").
+			 				  replaceAll("\\%40", "\\@");
+		} catch (UnsupportedEncodingException ex) {
+			throw new RuntimeException(ex.getMessage());
+		}
+	}
 }
