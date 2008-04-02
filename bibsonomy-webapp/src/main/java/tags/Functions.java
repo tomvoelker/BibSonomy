@@ -6,12 +6,12 @@ import java.net.URI;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.UrlUtils;
 
 import resources.Resource;
@@ -20,7 +20,8 @@ import resources.Resource;
 /**
  * Some taglib functions
  * 
- * @author dbenz
+ * @author Dominik Benz
+ * @version $Id$
  */
 public class Functions  {
 
@@ -52,6 +53,9 @@ public class Functions  {
 	/**
 	 * replaces occurrences of whitespace in the by only one occurrence of the 
 	 * respective whitespace character  
+	 * 
+	 * @param s a String
+	 * @return trimmed String
 	 */	
 	public static String trimWhiteSpace (String s) {
 		/*
@@ -62,8 +66,8 @@ public class Functions  {
 
 	/** Removes all "non-trivial" characters from the file name.
 	 * If the file name is empty "export" is returned
-	 * @param file
-	 * @return
+	 * @param file a file name
+	 * @return cleaned file name
 	 */
 	public static String makeCleanFileName (String file) {
 		if (file == null || file.trim().equals("")) {
@@ -76,6 +80,12 @@ public class Functions  {
 		}
 	}
 
+	/**
+	 * wrapper for URLDecoder.decode(URI, "UTF-8");
+	 * 
+	 * @param URI a URI string
+	 * @return the decoded URI string
+	 */
 	public static String decodeURI (String URI) {
 		if (URI != null) {
 			try {
@@ -86,6 +96,12 @@ public class Functions  {
 		return null;
 	}
 	
+	/**
+	 * wrapper for URLEncoder.encode(URI, "UTF-8");
+	 * 
+	 * @param URI a URI string
+	 * @return the encoded URI string
+	 */
 	public static String encodeURI (String URI) {
 		if (URI != null) {
 			try {
@@ -96,6 +112,10 @@ public class Functions  {
 		return null;
 	}	
 
+	/**
+	 * @param input
+	 * @return credential
+	 */
 	public static String makeCredential (String input) {
 		if (input != null) {
 			/*
@@ -107,8 +127,10 @@ public class Functions  {
 	}
 	
 	/**
-	 * @param tags
-	 * @return
+	 * converts a list of tags in a space-separated string of tags 
+	 * 
+	 * @param tags a list of tags
+	 * @return a space-separated string of tags
 	 */
 	public static String toTagString (List<Tag> tags) {		
 		StringBuffer sb = new StringBuffer();
@@ -120,13 +142,15 @@ public class Functions  {
 	}
 	
 	/**
-	 * @param tags
-	 * @return
+	 * get the Path component of a URI string
+	 * 
+	 * @param uriString a URI string
+	 * @return the path component of the given URI string
 	 */
 	public static String getPath (String uriString) {
 		URI uri;
 		try {
-			uri = new URI(encodeURI(uriString));
+			uri = new URI(UrlUtils.encodeURLExceptReservedChars(uriString));
 			return uri.getPath();
 		} catch (Exception ex) {
 			throw new RuntimeException(ex.getMessage());
@@ -135,13 +159,15 @@ public class Functions  {
 	
 	/**
 	 * Cuts the last segment of the url string until last slash
+	 * 
 	 * @param uriString the url
+	 * @return last segment of the url string until last slash
 	 */
 	public static String getLowerPath (String uriString) {
 		URI uri; 
 		uriString = uriString.substring(0, uriString.lastIndexOf("/"));
 		try {
-			uri = new URI(encodeURI(uriString));
+			uri = new URI(UrlUtils.encodeURLExceptReservedChars(uriString));
 			return uri.getPath();
 		} catch (Exception ex) {
 			throw new RuntimeException(ex.getMessage());
@@ -149,13 +175,15 @@ public class Functions  {
 	}
 	
 	/**
-	 * @param tags
-	 * @return
+	 * extract query part of given URI string, within a leading "?"
+	 * 
+	 * @param uriString a URI string
+	 * @return query part of the given URI string, within a leading "?"
 	 */
 	public static String getQuery (String uriString) {
 		URI uri;
 		try {
-			uri = new URI(uriString);
+			uri = new URI(UrlUtils.encodeURLExceptReservedChars(uriString));
 			if (uri.getQuery() != null && ! uri.getQuery().equals("")) { 
 				return "?" + uri.getQuery();
 			}
@@ -166,6 +194,8 @@ public class Functions  {
 	}	
 	
 	/**
+	 * checks if a given String is numeric
+	 * 
 	 * @param input - string that will be tested of numbers
 	 * @return true in case of parameter input is a number otherwise return false
 	 */
@@ -179,17 +209,16 @@ public class Functions  {
 	}
 	
 	/**
+	 * parses a String of misc field entries
 	 * 
 	 * @param misc miscfield of a bibtex entry
 	 * @return array of key value entrys
 	 */
 	public static ArrayList<String> miscFieldToArray(String misc){
 		ArrayList<String> formattedMiscFields = new ArrayList<String>();
-		if (misc != null) {
-			Matcher m = Pattern.compile("([a-zA-Z]+)\\s*=\\s*\\{(.+?)\\}").matcher(misc);
-			while (m.find()) {
-				formattedMiscFields.add(m.group(1)+" = {"+m.group(2)+"}");	
-			}
+		HashMap<String, String> miscFields = BibTexUtils.parseMiscField(misc);
+		for (String fieldName : miscFields.keySet()) {
+			formattedMiscFields.add(fieldName + " = {" + miscFields.get(fieldName) + "}");
 		}
 		return formattedMiscFields;
 	}
@@ -201,8 +230,8 @@ public class Functions  {
 	 * 
 	 * @param tagFrequency
 	 * @param tagMaxFrequency
-	 * @param mode
-	 * @return
+	 * @param tagSizeMode 
+	 * @return font size for the tag cloud with the given parameters
 	 */
 	public static Integer computeTagFontsize(Integer tagFrequency, Integer tagMaxFrequency, String tagSizeMode) {
 		// round(log(if(tag_anzahl>100, 100, tag_anzahl+6)/6))*60+40
@@ -220,7 +249,7 @@ public class Functions  {
 	/**
 	 * Wrapper for org.bibsonomy.util.UrlUtils.cleanUrl
 	 * 
-	 * @see org.bibsonomy.util.UrlUtils.cleanUrl
+	 * @see org.bibsonomy.util.UrlUtils
 	 * @param url
 	 * @return the cleaned url
 	 */
@@ -240,5 +269,5 @@ public class Functions  {
 	public static String setParam(String url, String paramName, String paramValue) {
 		return UrlUtils.setParam(url, paramName, paramValue); 
 	}
-	
+		
 }
