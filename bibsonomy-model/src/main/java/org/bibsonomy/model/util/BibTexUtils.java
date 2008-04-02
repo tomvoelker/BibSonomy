@@ -284,19 +284,19 @@ public class BibTexUtils {
 	 * @return the cleaned bibtex string
 	 */
 	public static String cleanBibTex(String bibtex) {
-		
-		bibtex = bibtex.replaceAll("\\{|\\}","").
-	       replaceAll("\\s+"," ").
-	       replaceAll("\\\\\"o", "ö").
-	       replaceAll("\\\\\"u", "ü").
-	       replaceAll("\\\\\"a", "ä").
-	       replaceAll("\\\\\"O", "Ö").
-	       replaceAll("\\\\\"U", "Ü").
-	       replaceAll("\\\\\"A", "Ä").
-	       replaceAll("\\\\\"s", "ß").
-	       trim();		
 
-		//System.out.println(bibtex.replaceAll("\\{|\\}",""));
+		// replace special character sequences for umlauts
+		// NOTE: this is just a small subset - could / should be extended to french, ...
+		bibtex = bibtex.replaceAll("\\{|\\}|\\\\", ""). // remove '\','{' and '\'
+	       replaceAll("\\s+"," ").
+	       replaceAll("\\\"o", "ö").
+	       replaceAll("\\\"u", "ü").
+	       replaceAll("\\\"a", "ä").
+	       replaceAll("\\\"O", "Ö").
+	       replaceAll("\\\"U", "Ü").
+	       replaceAll("\\\"A", "Ä").
+	       replaceAll("\\\"s", "ß").
+	       trim();		
 		
 		StringBuffer sb = new StringBuffer(bibtex.length());
 		char c;		
