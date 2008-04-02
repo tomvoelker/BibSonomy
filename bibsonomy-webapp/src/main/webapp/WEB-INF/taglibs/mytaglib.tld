@@ -197,5 +197,11 @@
     <function-class>tags.Functions</function-class>
     <function-signature>String setParam(java.lang.String, java.lang.String, java.lang.String)</function-signature>
   </function>   
+  
+  <function>
+  	<name>cleanBibtex</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String cleanBibtex(java.lang.String)</function-signature>
+  </function>
 
 </taglib>
