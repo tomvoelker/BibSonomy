@@ -49,6 +49,14 @@ public class AdminParam extends GenericParam {
 	/** The username of the admin who executes the update */
 	private String updatedBy;
 	
+	/** key for classifier settings */
+	private String key;
+	
+	/** Corresponding value for classifier settings */
+	private String value;	
+	
+	/** Interval in hours for retrieve latest classifications */
+	private int interval;
 	
 	public InetAddress getInetAddress() {
 		return this.inetAddress;
@@ -121,5 +129,23 @@ public class AdminParam extends GenericParam {
 	}
 	public void setMode(String mode) {
 		this.mode = mode;
+	}
+	public String getKey() {
+		return this.key;
+	}
+	public void setKey(String key) {
+		this.key = key;
+	}
+	public String getValue() {
+		return this.value;
+	}
+	public void setValue(String value) {
+		this.value = value;
+	}
+	public int getInterval() {
+		return this.interval;
+	}
+	public void setInterval(int interval) {
+		this.interval = interval;
 	}		
 }

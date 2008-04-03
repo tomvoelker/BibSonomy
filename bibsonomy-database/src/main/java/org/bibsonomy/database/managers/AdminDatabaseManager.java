@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.Classifier;
+import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.SpamStatus;
@@ -22,6 +23,7 @@ import org.bibsonomy.model.util.UserUtils;
  * InetAddress (IP), and other things.
  * 
  * @author rja
+ * @author sts
  * @version $Id$
  */
 public class AdminDatabaseManager extends AbstractDatabaseManager {
@@ -126,8 +128,9 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	 * @param status the state to which the user was classified
 	 * @param session the db session
 	 */
-	public List<User> getClassifiedUsers(Classifier classifier, SpamStatus status, DBSession session) {
+	public List<User> getClassifiedUsers(final Classifier classifier, final SpamStatus status, final int interval, DBSession session) {
 		AdminParam param = new AdminParam();
+		param.setInterval(interval);
 		param.setLimit(50);
 		
 		if (classifier.equals(Classifier.ADMIN) && (status.equals(SpamStatus.SPAMMER) || status.equals(SpamStatus.NO_SPAMMER))) {
@@ -138,5 +141,67 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 			return this.queryForList("getClassifiedUsers", param, User.class, session);			
 		}		
 		return null;
+	}
+	
+	/**
+	 * Retrieves the setting value for the specified setting 
+	 * 
+	 * @param settingsKey the setting
+	 * @param session db session
+	 * @return current value for setting
+	 */
+	public String getClassifierSettings(final ClassifierSettings settingsKey, final DBSession session) {
+		String key = settingsKey.toString();
+		return this.queryForObject("getClassifierSettings", key , String.class, session);	
+	}
+	
+	/**
+	 * Updtaes a setting value
+	 * 
+	 * @param key setting
+	 * @param value the new value
+	 * @param session db session
+	 */
+	public void updateClassifierSettings(final ClassifierSettings key, final String value, final DBSession session) {
+		AdminParam param = new AdminParam();
+		param.setKey(key.toString());
+		param.setValue(value);
+		
+		this.update("updateClassifierSettings", param, session);
+	}
+
+	/**
+	 * Returns number of classfied user
+	 * 
+	 * @param classifier the classifier
+	 * @param status the status classifed
+	 * @param interval the time period of classifications 
+	 * @param session db session
+	 * @return count of users
+	 */
+	public Integer getClassifiedUserCount(final Classifier classifier, final SpamStatus status, final int interval, final DBSession session) {
+		AdminParam param = new AdminParam();
+		param.setInterval(interval);
+		
+		if (classifier.equals(Classifier.ADMIN) && (status.equals(SpamStatus.SPAMMER) || status.equals(SpamStatus.NO_SPAMMER))) {
+			param.setPrediction(status.getId());
+			return this.queryForObject("getAdminClassifiedUsersCount", param, Integer.class, session);			
+		} else if (classifier.equals(Classifier.CLASSIFIER)) {
+			param.setPrediction(status.getId());
+			return this.queryForObject("getClassifiedUsersCount", param, Integer.class, session);			
+		}		
+		return null;
+	}
+	
+	/**
+	 * Returns the history of classifier predictions
+	 * 
+	 * @param userName the username
+	 * @param session db session
+	 * @return the prediction history
+	 */
+	public List<User> getClassifierHistory(final String userName, final DBSession session) {		
+		return this.queryForList("getClassifierHistory", userName, User.class, session);
+		
 	}
 }

@@ -32,16 +32,51 @@
 	<select id="getAdminClassifiedUsers" resultMap="UserCommon.user" parameterClass="adminParam">
 		SELECT <include refid="commonUserAttributes"/>  
 		FROM user WHERE (updated_by != 'classifier' OR ISNULL(updated_by)) AND spammer = #prediction# 
+		<isGreaterThan property="interval" compareValue="0" prepend="AND">
+			updated_at > NOW() - INTERVAL #interval# HOUR		
+	    </isGreaterThan>
 		ORDER BY updated_at DESC
 		LIMIT #limit#
+	</select>
+	
+	<select id="getAdminClassifiedUsersCount" resultClass="integer" parameterClass="adminParam">
+		SELECT COUNT(*) 
+		FROM user WHERE (updated_by != 'classifier' OR ISNULL(updated_by)) AND spammer = #prediction# 
+		<isGreaterThan property="interval" compareValue="0" prepend="AND">
+			updated_at > NOW() - INTERVAL #interval# HOUR		
+	    </isGreaterThan>
 	</select>
 	
 	<select id="getClassifiedUsers" resultMap="UserCommon.userWithPrediction" parameterClass="adminParam">
 		SELECT *  
 		FROM user u JOIN log_prediction p ON (u.user_name = p.user_name AND u.updated_at = p.updated_at)
 		WHERE updated_by = 'classifier' AND prediction = #prediction# 
+		<isGreaterThan property="interval" compareValue="0" prepend="AND">
+			p.updated_at > NOW() - INTERVAL #interval# HOUR		
+	    </isGreaterThan>
 		ORDER BY u.updated_at DESC
 		LIMIT #limit#
+	</select>
+	
+	<select id="getClassifiedUsersCount" resultClass="integer" parameterClass="adminParam">
+		SELECT COUNT(*)  
+		FROM user u JOIN log_prediction p ON (u.user_name = p.user_name AND u.updated_at = p.updated_at)
+		WHERE updated_by = 'classifier' AND prediction = #prediction#		
+	   <isGreaterThan property="interval" compareValue="0" prepend="AND">	
+			p.updated_at > NOW() - INTERVAL #interval# HOUR		
+		</isGreaterThan>
+	</select>	
+	
+	<select id="getClassifierSettings" resultClass="string" parameterClass="string">
+		SELECT value FROM classifier_settings cs WHERE cs.key = #key#		
+	</select>	
+	
+	<update id="updateClassifierSettings" parameterClass="adminParam">
+		UPDATE classifier_settings cs SET value = #value# WHERE cs.key = #key# 
+	</update>
+	
+	<select id="getClassifierHistory" resultMap="AdminCommon.userPrediction" parameterClass="string">
+		SELECT <include refid="commonPredictionAttributes"/>  FROM log_prediction WHERE user_name  = #userName# ORDER BY updated_at DESC
 	</select>
 	
 	<update id="updateTasGroupIds" parameterClass="adminParam">

@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.Classifier;
+import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -884,14 +885,58 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	public List<User> getClassifiedUsers(Classifier classifier, SpamStatus status) {
+	public List<User> getClassifiedUsers(Classifier classifier, SpamStatus status, int interval) {
 		permissionDBManager.ensureAdminAccess(this.loginUser);
 		final DBSession session = openSession();
 
 		try {			
-			return this.adminDBManager.getClassifiedUsers(classifier, status, session);
+			return this.adminDBManager.getClassifiedUsers(classifier, status, interval, session);
 		} finally {
 			session.close();			
 		}
 	}
+
+	public String getClassifierSettings(ClassifierSettings key) {
+		permissionDBManager.ensureAdminAccess(this.loginUser);
+		final DBSession session = openSession();
+
+		try {			
+			return this.adminDBManager.getClassifierSettings(key, session);
+		} finally {
+			session.close();			
+		}
+	}
+
+	public void updateClassifierSettings(ClassifierSettings key, String value) {
+		permissionDBManager.ensureAdminAccess(this.loginUser);
+		final DBSession session = openSession();
+
+		try {			
+			this.adminDBManager.updateClassifierSettings(key, value, session);
+		} finally {
+			session.close();			
+		}
+	}
+
+	public int getClassifiedUserCount(final Classifier classifier, final SpamStatus status, final int interval) {
+		permissionDBManager.ensureAdminAccess(this.loginUser);
+		final DBSession session = openSession();
+
+		try {			
+			return this.adminDBManager.getClassifiedUserCount(classifier, status, interval, session);
+		} finally {
+			session.close();			
+		}
+	}
+
+	public List<User> getClassifierHistory(String userName) {
+		permissionDBManager.ensureAdminAccess(this.loginUser);
+		final DBSession session = openSession();
+
+		try {			
+			return this.adminDBManager.getClassifierHistory(userName, session);
+		} finally {
+			session.close();			
+		}
+	}		
 }
