@@ -12,9 +12,10 @@ public enum Classifier {
 
 	/** An administrator */
 	ADMIN(1);
-
-	private final int id;
-
+	
+	/** the id */
+	private int id;
+	
 	private Classifier(int id) {
 		this.id = id;
 	}
@@ -25,14 +26,14 @@ public enum Classifier {
 	public int getId() {
 		return this.id;
 	}
-
+	
 	/**
-	 * @param id
-	 * @return an enum for the given id, null if there's no such enum
+	 * @param id of the Classifier to retrieve
+	 * @return the corresponding Classifier enum
 	 */
 	public static Classifier getClassifier(final int id) {
-		switch (id) {
-		case 0:
+		switch(id) {
+		case 0: 
 			return CLASSIFIER;
 		case 1:
 			return ADMIN;
