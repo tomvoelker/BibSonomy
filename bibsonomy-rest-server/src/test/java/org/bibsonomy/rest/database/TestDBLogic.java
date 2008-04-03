@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.enums.Classifier;
+import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
@@ -791,7 +792,27 @@ public class TestDBLogic implements LogicInterface {
 		return null;
 	}
 
-	public List<User> getClassifiedUsers(Classifier classifier, SpamStatus status) {
+	public String getClassifierSettings(ClassifierSettings key) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void updateClassifierSettings(ClassifierSettings key, String value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public int getClassifiedUserCount(Classifier classifier, SpamStatus status, int interval) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public List<User> getClassifiedUsers(Classifier classifier, SpamStatus status, int interval) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<User> getClassifierHistory(String userName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
