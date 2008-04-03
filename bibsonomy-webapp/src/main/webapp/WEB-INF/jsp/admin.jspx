@@ -12,24 +12,38 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<c:set var="settingsCommand" value="${command.settingsCommand}" />
+	<c:set var="statisticsCommand" value="${command.statisticsCommand}" />
+	<c:if test="${command.interval > 0}">
+		<c:set var="interval" value="${command.interval}" scope="session"/>
+	</c:if>
 
-	<layout:tabLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
+	<layout:tabLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">		
 		<jsp:attribute name="heading">		
 			<fmt:message key="navi.admin"/>									
 		</jsp:attribute>	
 		
 		<jsp:attribute name="topcontent">
 			<!-- Admin Navigation -->
-			<menu:adminNavi/>	
-					
-			<parts:logbox initialValue="no log messages"/>
-			<hr/>					
+			<menu:adminNavi/>		
+			
+			<form action="/admin" method="get" class="smallform">
+				<table class="stattable">
+					<tr>
+					<td>Filter: Last <input type="text" name="interval" id="interval" value="${interval}" size="4"/>  hours</td>
+					</tr>
+				</table>
+			</form>				
 		</jsp:attribute>
 		
 		<jsp:attribute name="tabcontent">		
 			<!-- spammer js -->
 			<script type="text/javascript" src="/resources/javascript/spammer.js">&amp;nbsp;</script>				
-					
+			<script type="text/javascript" src="/resources/javascript/ajax-dynamic-content.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="/resources/javascript/ajax.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="/resources/javascript/ajax-tooltip.js">&amp;nbsp;</script>
+				
 			<c:if test="${!empty command.content}">
 				<table id="spammers" class="spammertable">
 				    <tr style="font-size:120%">
@@ -58,7 +72,10 @@
 							</c:otherwise>			     
 					     </c:choose>
 				       </td>
-				       <td><a href="/user/${user.name}"><c:out value="${user.name}"/></a></td>
+				       <td>
+				       	<a href="/user/${user.name}"><c:out value="${user.name}"/></a>
+				       	<a onclick="javascript:ajax_showTooltip('ajax?action=latest_posts&amp;userName=${user.name}',this);return false;" style="cursor:pointer" title="show latest posts"><img src="/resources/image/info.png"/></a>
+				        <a onclick="javascript:ajax_showTooltip('ajax?action=prediction_history&amp;userName=${user.name}',this);return false;" style="cursor:pointer" title="show latest user predictions"><img src="/resources/image/history.png"/></a></td>
 				       <td><c:out value="${user.spammer}"/></td>
 				       <td><c:out value="${user.realname}"/></td>
 				       <td><c:out value="${user.email}"/></td>
@@ -70,9 +87,80 @@
 				       </tr>
 				    </c:forEach>
 				  </table>
-			</c:if>		
+			</c:if>					
+		</jsp:attribute>		
+		
+		<jsp:attribute name="sidebar">			
+			<span class="sidebar_h">logging</span>	
+			<parts:logbox initialValue="no log messages"/>
+			<br/>
 			
-		</jsp:attribute>								
+			<span class="sidebar_h"><fmt:message key="navi.settings"/></span>			
+			<table class="stattable">
+				<tr>
+					<td>mode:</td>
+					<td>
+						<select name="mode" id="mode" size="1">
+							<!-- TODO: preselect current -->
+							<option value="D">DAY</option>
+							<option value="N">NIGHT</option>
+						</select>
+					</td>
+					<td><input type="button" value="update" onclick="javascript:updateSettings('mode', document.getElementById('mode').value)"/></td>
+				</tr>
+				<tr>
+					<td>algorithm:</td>
+					<td>
+						<select name="algorithm" id="algorithm" size="1">
+							<!-- TODO: preselect current -->
+							<option value="weka.classifiers.lazy.IBk">IBk</option>
+							<option value="weka.classifiers.trees.J48">J48</option>
+							<option value="weka.classifiers.bayes.NaiveBayes">Naive Bayes</option>
+						</select>
+					</td>
+					<td><input type="button" value="update" onclick="javascript:updateSettings('algorithm', document.getElementById('algorithm').value)"/></td>
+				</tr>
+				<tr>
+					<td>training period:</td>
+					<td><input type="text" id="training_period" size="7" value="${settingsCommand.trainingPeriod}"/> sec</td>
+					<td><input type="button" value="update" onclick="javascript:updateSettings('training_period', document.getElementById('training_period').value)"/></td>
+				</tr>
+				<tr>
+					<td>classify period:</td>
+					<td><input type="text" id="classify_period" size="7" value="${settingsCommand.classifyPeriod}"/> sec</td>
+					<td><input type="button" value="update" onclick="javascript:updateSettings('classify_period', document.getElementById('classify_period').value)"/></td>
+				</tr>
+				<tr>
+					<td>probability limit:</td>
+					<td><input type="text" id="probability_limit"  size="7" value="${settingsCommand.probabilityLimit}"/> %</td>
+					<td><input type="button" value="update" onclick="javascript:updateSettings('probability_limit', document.getElementById('probability_limit').value)"/></td>
+				</tr>
+			</table>
+			<br/>
+			
+			<span class="sidebar_h"><fmt:message key="statistic"/></span>
+			<table class="stattable">
+				<tr><th></th><th>Count</th></tr>
+				<tr>
+					<td>Spammers by Admin</td><td><c:out value="${statisticsCommand.numAdminSpammers}"/></td>
+				</tr>	
+				<tr>
+					<td>No Spammers by Admin</td><td><c:out value="${statisticsCommand.numAdminNoSpammer}"/></td>
+				</tr>
+				<tr>
+					<td>Spammers by Classifier</td><td><c:out value="${statisticsCommand.numClassifierSpammer}"/></td>
+				</tr>
+				<tr>
+					<td>Spammers by Classifier (unsure)</td><td><c:out value="${statisticsCommand.numClassifierSpammerUnsure}"/></td>
+				</tr>
+				<tr>
+					<td>No Spammers by Classifier</td><td><c:out value="${statisticsCommand.numClassifierNoSpammer}"/></td>
+				</tr>
+				<tr>
+					<td>No Spammers by Classifier (unsure)</td><td><c:out value="${statisticsCommand.numClassifierNoSpammerUnsure}"/></td>
+				</tr>		
+			</table>											
+		</jsp:attribute>
+									
 	</layout:tabLayout>
-
 </jsp:root>

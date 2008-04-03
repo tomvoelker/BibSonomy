@@ -211,7 +211,7 @@
 		<property name="userSettings" ref="userSettings"/>
 	</bean>
 	
-	<bean id="ajaxController" class="org.bibsonomy.webapp.controller.AjaxController" scope="request">
+	<bean id="ajaxController" class="org.bibsonomy.webapp.controller.AdminAjaxController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
 	</bean>	

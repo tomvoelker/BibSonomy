@@ -63,6 +63,15 @@ function unflagSpammer(name, rowId, disable) {
 	runAjax("userName=" + name, "unflag_spammer");
 }
 
+/** saves the settings on admin page */
+function updateSettings(key, value) {
+	if (key == null || value == null || key == "" || value == "") {
+		addLogMessage("please enter a valid value");
+		return;
+	}
+	runAjax("key=" + key + "&value=" + value,"update_settings");	
+}
+
 /** 
 * Generates an API key for the specified user
 */
@@ -79,7 +88,7 @@ function runAjax(parameter,action) {
 	var request = initRequest(); 
 	var url = "ajax?" + parameter;	   
    	if (request) {    	   		
-   		request.open('GET',url + "&action=" + action + "&type=0",true);	
+   		request.open('GET',url + "&action=" + action,true);	
    		var handle = ajax_updateLog(request); 	   		
    		request.onreadystatechange = handle;
    		request.send(null);		   		

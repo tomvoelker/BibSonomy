@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.command;
 
+import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.model.User;
 
 /**
@@ -18,6 +19,14 @@ public class AdminViewCommand extends TabsCommand<User> {
 	public final static int CLASSIFIER_NOSPAMMER_INDEX	= 5;
 	public final static int CLASSIFIER_NOSPAMMER_UNSURE_INDEX = 6;
 	
+	/** Command containing current admin settings */
+	private AdminSettingsCommand settingsCommand = new AdminSettingsCommand();
+	
+	private AdminStatisticsCommand statisticsCommand = new AdminStatisticsCommand();	
+	
+	/** the time interval for retrieving spammers */
+	private Integer interval = -1;
+	
 	public AdminViewCommand() {				
 		addTab(ADMIN_SPAMMER_INDEX, "Admin: Spammer");
 		addTab(ADMIN_NOSPAMMER_INDEX, "Admin: No Spammer");
@@ -25,5 +34,35 @@ public class AdminViewCommand extends TabsCommand<User> {
 		addTab(CLASSIFIER_SPAMMER_UNSURE_INDEX, "Classifier: Spammer (U)");
 		addTab(CLASSIFIER_NOSPAMMER_INDEX, "Classifier: No Spammer");
 		addTab(CLASSIFIER_NOSPAMMER_UNSURE_INDEX, "Classifier: No Spammer (U)");		
+	}		
+		
+	public AdminSettingsCommand getSettingsCommand() {
+		return this.settingsCommand;
+	}
+
+	public void setSettingsCommand(AdminSettingsCommand settingsCommand) {
+		this.settingsCommand = settingsCommand;
+	}	
+
+	public AdminStatisticsCommand getStatisticsCommand() {
+		return this.statisticsCommand;
+	}
+
+	public void setStatisticsCommand(AdminStatisticsCommand statisticsCommand) {
+		this.statisticsCommand = statisticsCommand;
+	}
+
+	public void setClassifierSetting(final ClassifierSettings setting, final String value) {
+		settingsCommand.setAdminSetting(setting, value);
+	}
+
+	public Integer getInterval() {
+		System.out.println("get interval " + this.interval);
+		return this.interval;
+	}
+
+	public void setInterval(Integer interval) {
+		this.interval = interval;
+		System.out.println("---------> "  + this.interval);
 	}	
 }

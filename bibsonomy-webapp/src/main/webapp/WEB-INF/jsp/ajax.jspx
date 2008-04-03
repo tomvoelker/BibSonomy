@@ -10,5 +10,5 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 <jsp:directive.page contentType="text/plain; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<c:out value="${command.response}"/>
+	<c:out value="${command.responseString}"/>	
 </jsp:root>

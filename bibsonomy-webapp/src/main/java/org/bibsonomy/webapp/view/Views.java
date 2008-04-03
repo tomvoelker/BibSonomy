@@ -142,7 +142,17 @@ public enum Views implements View {
 	/**
 	 * response page snippet for ajax requests
 	 */
-	AJAX("ajax");	
+	AJAX("ajax"),
+	
+	/**
+	 * posts 
+	 */
+	AJAX_POSTS("ajaxPosts"),
+	
+	/**
+	 * spammer predictions 
+	 */
+	AJAX_PREDICTIONS("ajaxPredictions");
 	
 	private final String name;
 	

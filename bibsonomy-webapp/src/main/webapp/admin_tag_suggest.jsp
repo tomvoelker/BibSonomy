@@ -94,7 +94,7 @@
 		</td>
 		<td style="padding-left:10px">	
 			<table class="taglist">
-			<tr>				http://localhost:8080/admin.jsp
+			<tr>				
 				<th colspan="3">private</th>				
 			</tr>
 			<tr>

@@ -2,11 +2,13 @@ package org.bibsonomy.webapp.controller;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.Classifier;
+import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SpamStatus;
-import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.webapp.command.AdminSettingsCommand;
+import org.bibsonomy.webapp.command.AdminStatisticsCommand;
 import org.bibsonomy.webapp.command.AdminViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -38,6 +40,11 @@ public class AdminPageController implements MinimalisticController<AdminViewComm
 		
 		command.setPageTitle("admin");
 		this.setUsers(command);
+		this.setStatistics(command);
+		
+		for (ClassifierSettings s: ClassifierSettings.values()) {
+			command.setClassifierSetting(s, this.logic.getClassifierSettings(s));
+		}
 	
 		return Views.ADMINPAGE;				
 	}
@@ -54,10 +61,23 @@ public class AdminPageController implements MinimalisticController<AdminViewComm
 		this.userSettings = userSettings;
 	}	
 	
+	public void setStatistics(AdminViewCommand cmd) {
+		AdminStatisticsCommand command = cmd.getStatisticsCommand();
+		
+		command.setNumAdminSpammers(this.logic.getClassifiedUserCount(Classifier.ADMIN, SpamStatus.SPAMMER, cmd.getInterval()));
+		command.setNumAdminNoSpammer(this.logic.getClassifiedUserCount(Classifier.ADMIN, SpamStatus.NO_SPAMMER, cmd.getInterval()));
+		command.setNumClassifierSpammer(this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.SPAMMER, cmd.getInterval()));
+		command.setNumClassifierSpammerUnsure(this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.SPAMMER_NOT_SURE, cmd.getInterval()));
+		command.setNumClassifierNoSpammer(this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.NO_SPAMMER, cmd.getInterval()));
+		command.setNumClassifierNoSpammerUnsure(this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.NO_SPAMMER_NOT_SURE, cmd.getInterval()));
+				
+	}
+	
 	public void setUsers(AdminViewCommand cmd) {
 		Classifier classifier = null;
 		SpamStatus status = null;
 		
+		/* set content in dependence of the selected tab */
 		switch(cmd.getSelTab()) {
 		case AdminViewCommand.ADMIN_SPAMMER_INDEX:
 			classifier = Classifier.ADMIN;
@@ -83,8 +103,9 @@ public class AdminPageController implements MinimalisticController<AdminViewComm
 			classifier = Classifier.CLASSIFIER;
 			status = SpamStatus.NO_SPAMMER_NOT_SURE;
 			break;
-		}		
-		
-		cmd.setContent(this.logic.getClassifiedUsers(classifier, status));		
+		}			
+		cmd.setContent(this.logic.getClassifiedUsers(classifier, status, cmd.getInterval()));		
 	}
+	
+	
 }

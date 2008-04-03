@@ -10,6 +10,25 @@
 	border: 1px solid #069;
 	font-size: 0.8em;
 	padding: 2px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.stattable {
+	font-size:90%;
+	border-collapse: collapse;
+	empty-cells:show;	
+	margin-top: 10px;	
+	width: 90%;
+}
+
+.stattable th {
+	font-weight:bold;	
+	padding: 2px;	
+}
+
+.stattable td {		
+	padding: 2px;
 }
 
 .spammertable {
@@ -25,11 +44,38 @@
 	background-color:#EEEEEE;
 	border: 1px solid #CCCCCC;	
 	padding: 2px;
+	text-align: center;
 }
 
 .spammertable td {		
 	border: 1px solid #CCCCCC;	
 	padding: 2px;
+}
+
+.poststable {
+	font-size:70%;
+	border-collapse:collapse;
+	empty-cells:show;	
+	margin-top: 15px;	
+	width: 100%;
+}
+
+.poststable th {
+	font-weight:bold;	
+	background-color:#EEEEEE;
+	border: 1px solid #CCCCCC;	
+	padding: 2px;
+	text-align: center;
+}
+
+.poststable td {		
+	border-left: 1px solid #CCCCCC;	
+	border-right: 1px solid #CCCCCC;		
+	padding: 2px;
+}
+
+tr.lastrow {
+	border-bottom: 1px solid #CCCCCC;
 }
 
 .spammer {

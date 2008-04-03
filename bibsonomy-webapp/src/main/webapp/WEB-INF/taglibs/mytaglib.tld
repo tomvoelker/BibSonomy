@@ -203,5 +203,11 @@
   	<function-class>tags.Functions</function-class>
   	<function-signature>String cleanBibtex(java.lang.String)</function-signature>
   </function>
+  
+    <function>
+  	<name>predictionString</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String getPredictionString(java.lang.Integer)</function-signature>
+  </function>
 
 </taglib>

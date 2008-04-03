@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
+import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.UrlUtils;
@@ -281,5 +282,13 @@ public class Functions  {
 	public static String cleanBibtex(String bibtex) {
 		return BibTexUtils.cleanBibTex(bibtex);
 	}
-		
+	
+	/**
+	 * returns the SpamStatus as string for admin pages
+	 * @param id id of the spammer state
+	 * @return string representation
+	 */
+	public static String getPredictionString(final Integer id) {
+		return SpamStatus.getStatus(id).toString();
+	}		
 }
