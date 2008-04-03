@@ -217,8 +217,10 @@ public class Functions  {
 	public static ArrayList<String> miscFieldToArray(String misc){
 		ArrayList<String> formattedMiscFields = new ArrayList<String>();
 		HashMap<String, String> miscFields = BibTexUtils.parseMiscField(misc);
-		for (String fieldName : miscFields.keySet()) {
-			formattedMiscFields.add(fieldName + " = {" + miscFields.get(fieldName) + "}");
+		if (miscFields != null) {
+			for (String fieldName : miscFields.keySet()) {
+				formattedMiscFields.add(fieldName + " = {" + miscFields.get(fieldName) + "}");
+			}
 		}
 		return formattedMiscFields;
 	}
