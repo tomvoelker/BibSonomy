@@ -59,11 +59,13 @@
 						<property name="controllerBeanName" value="friendPageController"/>
 					</bean>
 				</entry>
+				<!-- 
 				<entry key="/bibtex/">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="bibtexPageController"/>
 					</bean>
 				</entry>
+				 -->
 				<entry key="/search/">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="searchPageController"/>
@@ -180,6 +182,7 @@
 		</property>
 	</bean>
 	
+	<!-- 
 	<bean id="bibtexPageController" class="org.bibsonomy.webapp.controller.BibtexPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
@@ -190,6 +193,7 @@
 			</list>
 		</property>
 	</bean>
+	 -->
 	
 	<bean id="searchPageController" class="org.bibsonomy.webapp.controller.SearchPageController" scope="request">
 		<property name="logic" ref="logic"/>
