@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.Classifier;
+import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
@@ -239,9 +240,28 @@ public class RestLogic implements LogicInterface {
 	public List<User> getUsers(List<String> tags, Order order, int start, int end) {
 		// TODO Auto-generated method stub
 		return null;
+	}	
+
+	public String getClassifierSettings(ClassifierSettings key) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	public List<User> getClassifiedUsers(Classifier classifier, SpamStatus status) {
+	public void updateClassifierSettings(ClassifierSettings key, String value) {
+		// TODO Auto-generated method stub
+	}
+
+	public int getClassifiedUserCount(Classifier classifier, SpamStatus status, int interval) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public List<User> getClassifiedUsers(Classifier classifier, SpamStatus status, int interval) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<User> getClassifierHistory(String userName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
