@@ -2,8 +2,10 @@ package org.bibsonomy.model.logic;
 
 import java.net.InetAddress;
 import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.common.enums.Classifier;
+import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.ConceptStatus;
@@ -352,6 +354,41 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @param classifier something that classfied the user
 	 * @param status the state to which the user was classified
 	 * @return list of classified users
+	 * @author sts
 	 */
-	public List<User> getClassifiedUsers(Classifier classifier, SpamStatus status);
+	public List<User> getClassifiedUsers(Classifier classifier, SpamStatus status, int interval);
+	
+	/**
+	 * Returns number of classfied user 
+	 * 
+	 * @param classifier the classifier
+	 * @param status the status classifed
+	 * @param interval the time period of classifications 
+	 * @return count of users
+	 */
+	public int getClassifiedUserCount(Classifier classifier, SpamStatus status, int interval);
+	
+	/**
+	 * Returns the value of the specified classifier setting
+	 * 
+	 * @param key The key for which to retrieve the value for
+	 * @return The setting value
+	 */
+	public String getClassifierSettings(ClassifierSettings key);
+	
+	/**
+	 * Updates the specified classifier setting
+	 * 
+	 * @param key the setting to update
+	 * @param value the new setting value
+	 */
+	public void updateClassifierSettings(ClassifierSettings key, final String value);	
+	
+	/**
+	 * Returns the history of classifier predictions 
+	 * 
+	 * @param userName the user  
+	 * @return prediction history
+	 */
+	public List<User> getClassifierHistory(String userName);
 }
