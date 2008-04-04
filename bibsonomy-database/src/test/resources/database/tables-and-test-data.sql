@@ -770,6 +770,7 @@ CREATE TABLE `log_user` (
 -- Structure for table `log_prediction`
 -- 
 
+DROP TABLE IF EXISTS `log_prediction`;
 CREATE TABLE `log_prediction` (
   `ID` int(11) NOT NULL auto_increment,
   `user_name` varchar(30) NOT NULL,
@@ -779,7 +780,7 @@ CREATE TABLE `log_prediction` (
   `algorithm` varchar(100) default NULL,
   `mode` char(1) default NULL,
   PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8
+) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8;
 
 -- 
 -- Data for table `log_prediction`
@@ -1287,12 +1288,13 @@ ALTER TABLE `weights`
 -- Structure for table `classifier_settings`
 -- 
  
+DROP TABLE IF EXISTS `classifier_settings`;
 CREATE TABLE `classifier_settings` (
   `ID` tinyint(4) NOT NULL auto_increment,
   `key` varchar(255) default NULL,
   `value` varchar(255) default NULL,
   PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
  
 -- 
 -- Data for table `classifier_settings`
