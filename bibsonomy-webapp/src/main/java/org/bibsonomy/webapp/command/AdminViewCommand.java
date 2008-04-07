@@ -18,6 +18,8 @@ public class AdminViewCommand extends TabsCommand<User> {
 	public final static int CLASSIFIER_SPAMMER_UNSURE_INDEX = 4;
 	public final static int CLASSIFIER_NOSPAMMER_INDEX	= 5;
 	public final static int CLASSIFIER_NOSPAMMER_UNSURE_INDEX = 6;
+	public final static int CLASSIFIER_EVALUATE = 7;
+	
 	
 	/** Command containing current admin settings */
 	private AdminSettingsCommand settingsCommand = new AdminSettingsCommand();
@@ -33,7 +35,8 @@ public class AdminViewCommand extends TabsCommand<User> {
 		addTab(CLASSIFIER_SPAMMER_INDEX, "Classifier: Spammer");
 		addTab(CLASSIFIER_SPAMMER_UNSURE_INDEX, "Classifier: Spammer (U)");
 		addTab(CLASSIFIER_NOSPAMMER_INDEX, "Classifier: No Spammer");
-		addTab(CLASSIFIER_NOSPAMMER_UNSURE_INDEX, "Classifier: No Spammer (U)");		
+		addTab(CLASSIFIER_NOSPAMMER_UNSURE_INDEX, "Classifier: No Spammer (U)");	
+		addTab(CLASSIFIER_EVALUATE, "Classifier Evaluation");			
 	}		
 		
 	public AdminSettingsCommand getSettingsCommand() {

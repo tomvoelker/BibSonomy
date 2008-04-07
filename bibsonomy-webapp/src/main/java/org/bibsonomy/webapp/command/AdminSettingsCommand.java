@@ -19,6 +19,8 @@ public class AdminSettingsCommand {
 	private String classifyPeriod;
 	
 	private String probabilityLimit;
+	
+	private String testing;
 
 	public void setAdminSetting(final ClassifierSettings setting, final String value) {
 		if (setting.equals(ClassifierSettings.ALGORITHM)) {
@@ -31,6 +33,8 @@ public class AdminSettingsCommand {
 			this.classifyPeriod = value;
 		} else if (setting.equals(ClassifierSettings.PROBABILITY_LIMIT)) {
 			this.probabilityLimit = value;
+		} else if (setting.equals(ClassifierSettings.TESTING)) {
+			this.testing = value;
 		}
 	}
 
@@ -52,5 +56,9 @@ public class AdminSettingsCommand {
 
 	public String getProbabilityLimit() {
 		return this.probabilityLimit;
+	}
+
+	public String getTesting() {
+		return this.testing;
 	}	
 }

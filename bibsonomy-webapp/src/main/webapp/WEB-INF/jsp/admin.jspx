@@ -15,9 +15,7 @@
 	
 	<c:set var="settingsCommand" value="${command.settingsCommand}" />
 	<c:set var="statisticsCommand" value="${command.statisticsCommand}" />
-	<c:if test="${command.interval > 0}">
-		<c:set var="interval" value="${command.interval}" scope="session"/>
-	</c:if>
+
 
 	<layout:tabLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">		
 		<jsp:attribute name="heading">		
@@ -31,7 +29,7 @@
 			<form action="/admin" method="get" class="smallform">
 				<table class="stattable">
 					<tr>
-					<td>Filter: Last <input type="text" name="interval" id="interval" value="${interval}" size="4"/>  hours</td>
+					<td>Filter: Last <input type="text" name="interval" id="interval" value="${command.interval}" size="4"/>  hours</td>
 					</tr>
 				</table>
 			</form>				
@@ -54,7 +52,7 @@
 				    	<th>E-Mail</th>
 				    	<th>Algorithm</th>
 				    	<th>Mode</th>
-				    	<th>Date</th>
+				    	<th>Regdate</th>
 				    	<th>updated by</th>
 				    	<th>updated at</th>
 				    </tr>
@@ -101,10 +99,10 @@
 					<td>mode:</td>
 					<td>
 						<select name="mode" id="mode" size="1">
-							<!-- TODO: preselect current -->
-							<option value="D">DAY</option>
-							<option value="N">NIGHT</option>
-						</select>
+							<!-- TODO: preselect current -->							
+							<option id="D" value="D">Day</option>
+							<option id="N" value="N">Night</option>						
+						</select>						
 					</td>
 					<td><input type="button" value="update" onclick="javascript:updateSettings('mode', document.getElementById('mode').value)"/></td>
 				</tr>
@@ -113,9 +111,8 @@
 					<td>
 						<select name="algorithm" id="algorithm" size="1">
 							<!-- TODO: preselect current -->
-							<option value="weka.classifiers.lazy.IBk">IBk</option>
-							<option value="weka.classifiers.trees.J48">J48</option>
-							<option value="weka.classifiers.bayes.NaiveBayes">Naive Bayes</option>
+							<option id="weka.classifiers.lazy.IBk" value="weka.classifiers.lazy.IBk">IBk</option>
+							<option id="weka.classifiers.bayes.NaiveBayes" value="weka.classifiers.bayes.NaiveBayes">Naive Bayes</option>
 						</select>
 					</td>
 					<td><input type="button" value="update" onclick="javascript:updateSettings('algorithm', document.getElementById('algorithm').value)"/></td>
@@ -134,6 +131,16 @@
 					<td>probability limit:</td>
 					<td><input type="text" id="probability_limit"  size="7" value="${settingsCommand.probabilityLimit}"/> %</td>
 					<td><input type="button" value="update" onclick="javascript:updateSettings('probability_limit', document.getElementById('probability_limit').value)"/></td>
+				</tr>
+				<tr>
+					<td>testing mode:</td>
+					<td>
+						<select name="testing" id="testing" size="1">
+							<!-- TODO: preselect current -->
+							<option id="on" value="on">On</option>
+							<option id="off" value="off">Off</option>
+						</select></td>
+					<td><input type="button" value="update" onclick="javascript:updateSettings('testing', document.getElementById('testing').value)"/></td>
 				</tr>
 			</table>
 			<br/>
@@ -159,7 +166,22 @@
 				<tr>
 					<td>No Spammers by Classifier (unsure)</td><td><c:out value="${statisticsCommand.numClassifierNoSpammerUnsure}"/></td>
 				</tr>		
-			</table>											
+			</table>
+			
+			<script type="text/javascript">
+				/** hack for preselect options in combobox */
+				function preselect() {
+					var mode = "${settingsCommand.mode}";
+					var algorithm = "${settingsCommand.algorithm}";
+					var testing = "${settingsCommand.testing}";					
+					
+					document.getElementById(mode).selected = true;
+					document.getElementById(algorithm).selected = true;
+					document.getElementById(testing).selected = true;
+				}
+				
+				preselect();
+			</script>											
 		</jsp:attribute>
 									
 	</layout:tabLayout>

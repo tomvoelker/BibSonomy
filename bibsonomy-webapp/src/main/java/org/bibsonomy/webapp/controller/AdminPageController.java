@@ -30,6 +30,11 @@ public class AdminPageController implements MinimalisticController<AdminViewComm
 	
 	private UserSettings userSettings;
 	
+	public AdminPageController() {
+		System.err.println("instantiate");
+		// TODO Auto-generated constructor stub
+	}
+	
 	public View workOn(AdminViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		
