@@ -24,7 +24,10 @@ public enum ClassifierSettings {
 	CLASSIFY_PERIOD,
 	
 	/** probability to seperate sure from unsure classifications */
-	PROBABILITY_LIMIT;
+	PROBABILITY_LIMIT,
+	
+	/** testing mode will not effect user table */
+	TESTING;
 	
 	/**
 	 * @param setting name of the setting enum to retrieve
