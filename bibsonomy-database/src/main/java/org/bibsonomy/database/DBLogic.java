@@ -583,7 +583,9 @@ public class DBLogic implements LogicInterface {
 			// only admins are allowed to change spammer settings
 			this.permissionDBManager.ensureAdminAccess(this.loginUser);
 			DBSession session = this.openSession();
-			return adminDBManager.flagSpammer(user, this.getAuthenticatedUser(), session);			
+			
+			String mode = adminDBManager.getClassifierSettings(ClassifierSettings.TESTING, session);
+			return adminDBManager.flagSpammer(user, this.getAuthenticatedUser(), mode, session);			
 		}
 		
 		return this.storeUser(user, true);

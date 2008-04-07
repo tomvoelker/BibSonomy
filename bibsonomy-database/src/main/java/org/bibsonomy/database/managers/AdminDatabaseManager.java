@@ -68,6 +68,10 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public String flagSpammer(User user, String updatedBy, DBSession session) {
+		return this.flagSpammer(user, updatedBy, "off", session);
+	}
+	
+	public String flagSpammer(User user, String updatedBy, String testMode, DBSession session) {
 		final AdminParam param = new AdminParam();
 		
 		param.setUserName(user.getName());
@@ -80,11 +84,13 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		param.setUpdatedBy(updatedBy);
 		param.setUpdatedAt(new Date());
 		
-		this.update("flagSpammer", param, session);		
-		this.updateGroupIds(param, session);
+		if (!updatedBy.equals("classifier") || testMode.equals("off")) {
+			this.update("flagSpammer", param, session);		
+			this.updateGroupIds(param, session);
+		}
 		
 		this.insert("logPrediction", param, session);		
-		return user.getName();
+		return user.getName();		
 	}
 	
 	/**
