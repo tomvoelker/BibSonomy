@@ -20,8 +20,16 @@ import org.bibsonomy.scraper.ScrapingException;
 import beans.AdminBean;
 
 
+/**
+ * Provides methods only available for admins (like handling spammers, groups, api keys).
+ * 
+ * @author rja
+ * @version $Id$
+ */
 public class DBAdminManager extends DBManager {
-
+	
+	private static final String[] spammerUpdateTables = {"bookmark", "bibtex", "tas", "search", "search_bibtex", "search_bookmark"};
+	
 	/*
 	 * gets settings for this user and saves them in bean
 	 */
@@ -85,13 +93,15 @@ public class DBAdminManager extends DBManager {
 
 	}
 
-	/*
-	 * We flag user as spammer and change group settings of 
-	 * all his posts to make sure they do not show up on 
-	 * Home&Popular-Page.  
+	/**
+	 * We flag a user as spammer and change group settings of 
+	 * all his posts to make sure they do not show up.
+	 *   
+	 * @param bean
+	 * @param spammer
 	 */
-	public static void flagSpammer (AdminBean bean, boolean spammer) {
-		DBContext c = new DBContext();
+	public static void flagSpammer (final AdminBean bean, final boolean spammer) {
+		final DBContext c = new DBContext();
 		try {
 			if (c.init()) {//initialize database
 				/*
@@ -132,16 +142,26 @@ public class DBAdminManager extends DBManager {
 
 					/*
 					 * modify all groupids in tables
+					 * 
+					 * The updates are done with LOW_PRIORITY. This only affects MyISAM tables and helps 
+					 * to prevent locking of SELECT statements.
+					 * see also http://dev.mysql.com/doc/refman/5.1/en/table-locking.html
+					 * 
+					 * This may delay spammer flagging and therefore slow it down. However, this is really
+					 * only relevant for the SpammerKickerButton and not for the admin page, since the 
+					 * latter uses AJAX.   
 					 */
-					String[] tables = {"bookmark", "bibtex", "tas", "search", "search_bibtex", "search_bookmark"};
-					for (int i = 0; i<tables.length; i++) {
-						c.stmt = c.conn.prepareStatement("UPDATE " + tables[i] + " SET `group` = "  + newPriv + " WHERE user_name = ? AND `group` = " + oldPriv);
+					for (int i = 0; i < spammerUpdateTables.length; i++) {
+						// private
+						c.stmt = c.conn.prepareStatement("UPDATE LOW_PRIORITY " + spammerUpdateTables[i] + " SET `group` = "  + newPriv + " WHERE user_name = ? AND `group` = " + oldPriv);
 						c.stmt.setString(1, bean.getUser());
 						c.stmt.executeUpdate();
-						c.stmt = c.conn.prepareStatement("UPDATE " + tables[i] + " SET `group` = "  + newPubl + " WHERE user_name = ? AND `group` = " + oldPubl);
+						// public
+						c.stmt = c.conn.prepareStatement("UPDATE LOW_PRIORITY " + spammerUpdateTables[i] + " SET `group` = "  + newPubl + " WHERE user_name = ? AND `group` = " + oldPubl);
 						c.stmt.setString(1, bean.getUser());
 						c.stmt.executeUpdate();
-						c.stmt = c.conn.prepareStatement("UPDATE " + tables[i] + " SET `group` = "  + newFrnd + " WHERE user_name = ? AND `group` = " + oldFrnd);
+						// friends
+						c.stmt = c.conn.prepareStatement("UPDATE LOW_PRIORITY " + spammerUpdateTables[i] + " SET `group` = "  + newFrnd + " WHERE user_name = ? AND `group` = " + oldFrnd);
 						c.stmt.setString(1, bean.getUser());
 						c.stmt.executeUpdate();					
 					}
@@ -154,7 +174,7 @@ public class DBAdminManager extends DBManager {
 				}
 
 			}
-		}catch (SQLException e) {
+		}catch (final SQLException e) {
 			bean.addError("Sorry, an error occured: " + e);
 		} finally {
 			c.close(); // close database connection
