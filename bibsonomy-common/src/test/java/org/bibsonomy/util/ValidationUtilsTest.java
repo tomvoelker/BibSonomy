@@ -17,7 +17,7 @@ import org.junit.Test;
 public class ValidationUtilsTest {
 
 	/**
-	 * tests present method what else ?
+	 * tests present
 	 */
 	@Test
 	public void present() {
@@ -45,14 +45,32 @@ public class ValidationUtilsTest {
 	}
 
 	/**
-	 * tests nullOrEqual method what else ?
+	 * tests nullOrEqual
 	 */
 	@Test
 	public void nullOrEqual() {
+		// one ...
 		assertFalse(ValidationUtils.nullOrEqual("", "hurz"));
 		assertFalse(ValidationUtils.nullOrEqual("hurz", ""));
-		assertTrue(ValidationUtils.nullOrEqual(null, null));
+		assertTrue(ValidationUtils.nullOrEqual(null, (Object[]) null));
 		assertTrue(ValidationUtils.nullOrEqual(null, "hurz"));
 		assertTrue(ValidationUtils.nullOrEqual("hurz", "hurz"));
+
+		// two ...
+		assertFalse(ValidationUtils.nullOrEqual("", "hurz", "hurz"));
+		assertFalse(ValidationUtils.nullOrEqual("hurz", "", "test"));
+		assertTrue(ValidationUtils.nullOrEqual(null, "", ""));
+		assertTrue(ValidationUtils.nullOrEqual("", "", ""));
+		assertTrue(ValidationUtils.nullOrEqual("hurz", "hurz", ""));
+		assertTrue(ValidationUtils.nullOrEqual("hurz", "", "hurz"));
+
+		// ... or even three
+		assertFalse(ValidationUtils.nullOrEqual("", "hurz", "hurz", "test"));
+		assertFalse(ValidationUtils.nullOrEqual("hurz", "", "test", "42"));
+		assertTrue(ValidationUtils.nullOrEqual(null, "", "", ""));
+		assertTrue(ValidationUtils.nullOrEqual("", "", "", ""));
+		assertTrue(ValidationUtils.nullOrEqual("", "", "test", ""));
+		assertTrue(ValidationUtils.nullOrEqual("hurz", "hurz", "", "test"));
+		assertTrue(ValidationUtils.nullOrEqual("hurz", "", "hurz", "42"));
 	}
 }

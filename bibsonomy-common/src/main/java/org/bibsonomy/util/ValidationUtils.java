@@ -53,22 +53,13 @@ public class ValidationUtils {
 	/**
 	 * @param requested argument to check
 	 * @param supported reference argument for comparison
-	 * @return true if the first argument requested is null or equals the second argument
+	 * @return true if <code>requested</code> is null or equals to one of the following arguments
 	 */
-	public static boolean nullOrEqual(final Object requested, final Object supported) {
-		return ((requested == null) || (requested == supported));
-	}
-	
-	
-	/**
-	 * Build this method to make it possible to have i.e. two different order values ADDED & FOLKRANK
-	 * 
-	 * @param requested
-	 * @param supported1
-	 * @param supported2
-	 * @return true if the first argument requested is null or equals the second or third argument
-	 */
-	public static boolean nullOrEqual(final Object requested, final Object supported1, final Object supported2) {
-		return ((requested == null) || (requested == supported1) || (requested == supported2));
+	public static boolean nullOrEqual(final Object requested, final Object... supported) {
+		if (requested == null) return true;
+		for (final Object support : supported) {
+			if (requested == support) return true;
+		}
+		return false;
 	}
 }
