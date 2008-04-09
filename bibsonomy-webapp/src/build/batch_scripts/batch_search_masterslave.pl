@@ -22,6 +22,8 @@
 #   2008-03-07: (dbe)
 #   - removed spammers
 #   - added preprocessing of URLs
+#   2008-04-09: (dbe)
+#   - extended preprocessing of URLs
 #
 use DBI();
 use TeX::Encode;
@@ -165,7 +167,12 @@ $stm_select_tas->finish();
 $stm_select_book->execute($last_bookmark_content_id);
 while (@row = $stm_select_book->fetchrow_array) {
     $ctr++;
-    my $content = clean_string("$row[4] $row[5] " . clean_url($row[6]) . " $bookmark_tag_hash{$row[0]}");
+    
+    # special handling for fields containg URLs
+    $row[6] = clean_url($row[6]); # book_url field
+    $row[5] = clean_url($row[5]); # book_extended field
+    
+    my $content = clean_string("$row[4] $row[5] $row[6] $bookmark_tag_hash{$row[0]}");
       
     # save data
     my @array = ($row[0], $content, $row[1], $row[2], $row[3]); 
@@ -183,6 +190,11 @@ $stm_select_bib->execute($last_bibtex_content_id);
 while (@row = $stm_select_bib->fetchrow_array) {
     $ctr++;
     my $content = "";
+    
+    # special handling for fields containing URLs
+    $row[23] = clean_url($row[23]); # url field
+    $row[32] = clean_url($row[32]); # misc field
+    
     for (my $i=4; $i<35; $i++) {
 	  $content = $content." ".$row[$i];
     }
@@ -327,7 +339,7 @@ sub clean_bibtex_string {
 # some simple URL processing
 sub clean_url {
     my $s = shift;
-    $s =~ s/.+\:\/\///g;                      # remove protocol
+    $s =~ s/(^|\W)[\w]+\:\/\///g;             # remove protocol
     $s =~ s/www[0-9]*\.//g;                   # remove www.  www1. www2. ...
     # remove frequent file extensions, index pages
     $s =~ s/(index)*\.(html|htm|shtm|shtml|php|php3|php4|asp|cgi|pl|js|cfm|cfml|txt|text|ppt|pps)//g;
