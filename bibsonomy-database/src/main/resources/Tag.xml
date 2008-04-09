@@ -166,7 +166,7 @@
 
 	<select id="getTagsByAuthor" resultMap="Common.tag" parameterClass="tagParam">
 		SELECT tag_name, count(tag_name) AS tag_count 
-		FROM tas t, search s 
+		FROM tas t, search_bibtex s 
 		WHERE MATCH(s.author) AGAINST (#search# IN BOOLEAN MODE) 			 
 			AND s.group =#groupType#
 			AND t.content_type = #contentType#
