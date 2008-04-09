@@ -52,7 +52,7 @@ public class ValidationUtilsTest {
 		// one ...
 		assertFalse(ValidationUtils.nullOrEqual("", "hurz"));
 		assertFalse(ValidationUtils.nullOrEqual("hurz", ""));
-		assertTrue(ValidationUtils.nullOrEqual(null, (Object[]) null));
+		assertTrue(ValidationUtils.nullOrEqual(null, new Object[] { null }));
 		assertTrue(ValidationUtils.nullOrEqual(null, "hurz"));
 		assertTrue(ValidationUtils.nullOrEqual("hurz", "hurz"));
 
