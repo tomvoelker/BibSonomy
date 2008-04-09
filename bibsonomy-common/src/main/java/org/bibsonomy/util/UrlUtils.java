@@ -11,9 +11,8 @@ import java.net.URLEncoder;
  */
 public class UrlUtils {
 
-	private static final int MAX_LEN_TITLE       = 6000;
-	private static final int MAX_LEN_URL         = 6000;
-	private static final String BROKEN_URL       = "/brokenurl#";	
+	private static final int MAX_LEN_URL   = 6000;
+	private static final String BROKEN_URL = "/brokenurl#";	
 
 	/**
 	 * Cleans a URL and makes it valid. This includes 
@@ -27,7 +26,7 @@ public class UrlUtils {
 	 * @param url the URL which should be checked and cleaned
 	 * @return the checked and cleaned URL
 	 */
-	public static String cleanUrl (String url) {
+	public static String cleanUrl(String url) {
 		if (url == null) {
 			return null;
 		}
@@ -63,7 +62,7 @@ public class UrlUtils {
 	 * @param paramValue the parameter value
 	 * @return the given URL string with the parameter set
 	 */
-	public static String setParam(String urlString, String paramName, String paramValue) {
+	public static String setParam(final String urlString, final String paramName, final String paramValue) {
 		if (urlString.matches(".*([&\\?])" + paramName +  "\\=[^&#$]+.*")) {
 			// parameter is already present - replace its value
 			return urlString.replaceAll("([&\\?])" + paramName +  "\\=[^&#$]+", "$1" + paramName + "=" + paramValue);
@@ -90,9 +89,9 @@ public class UrlUtils {
 	 * @param url an URl string
 	 * @return an encoded URL string with reserved characters ($&+,/:;?@) preserved
 	 */
-	public static String encodeURLExceptReservedChars(String url) {
+	public static String encodeURLExceptReservedChars(final String url) {
 		try {
-			String encodedURL = URLEncoder.encode(url, "UTF-8");
+			final String encodedURL = URLEncoder.encode(url, "UTF-8");
 			return encodedURL.replaceAll("\\%24", "\\$").
 			 				  replaceAll("\\%26", "\\&").
 			 				  replaceAll("\\%2B", "\\+").
@@ -103,7 +102,7 @@ public class UrlUtils {
 			 				  replaceAll("\\%3D", "\\=").
 			 				  replaceAll("\\%3F", "\\?").
 			 				  replaceAll("\\%40", "\\@");
-		} catch (UnsupportedEncodingException ex) {
+		} catch (final UnsupportedEncodingException ex) {
 			throw new RuntimeException(ex.getMessage());
 		}
 	}

@@ -8,8 +8,6 @@ import java.net.URLEncoder;
 
 import org.junit.Test;
 
-import com.sun.jndi.toolkit.url.UrlUtil;
-
 /**
  * @author Christian Schenk
  * @version $Id$
@@ -67,25 +65,25 @@ public class UrlUtilsTest {
 		// append parameter when query exists
 		assertEquals("http://www.test.123.com?bla=blub&param=value", UrlUtils.setParam("http://www.test.123.com?bla=blub", "param", "value"));
 	}
-	
+
 	/**
 	 * tests encodeURLExceptReservedChars
 	 */
 	@Test
 	public void encodeURLExceptReservedChars() {
-		assertEquals("$&+,/:;?@",  // these characters shouldn't be encoded 
-				UrlUtils.encodeURLExceptReservedChars("$&+,/:;?@"));		
-		assertEquals("$+&+++,+/+:+;+?+@", // but spaces should
-				UrlUtils.encodeURLExceptReservedChars("$ & + , / : ; ? @"));
+		// these characters shouldn't be encoded
+		assertEquals("$&+,/:;?@", UrlUtils.encodeURLExceptReservedChars("$&+,/:;?@"));
+		// but spaces should
+		assertEquals("$+&+++,+/+:+;+?+@", UrlUtils.encodeURLExceptReservedChars("$ & + , / : ; ? @"));
+
 		try {
-			assertEquals(URLEncoder.encode("should_be_same_as_plain_encoded_']} §°^äöü*ÄÖU", "UTF-8"),
-					UrlUtils.encodeURLExceptReservedChars("should_be_same_as_plain_encoded_']} §°^äöü*ÄÖU"));
+			assertEquals(URLEncoder.encode("should_be_same_as_plain_encoded_']} §°^äöü*ÄÖU", "UTF-8"), UrlUtils.encodeURLExceptReservedChars("should_be_same_as_plain_encoded_']} §°^äöü*ÄÖU"));
 		} catch (UnsupportedEncodingException ex) {
 			ex.printStackTrace();
 			fail();
 		}
-		assertEquals("http://www.bibsonomy.org/user/%7Cthe_man%7C/?bookmark.start=10&bibtex.start=0",
-					UrlUtils.encodeURLExceptReservedChars("http://www.bibsonomy.org/user/|the_man|/?bookmark.start=10&bibtex.start=0"));
+
+		assertEquals("http://www.bibsonomy.org/user/%7Cthe_man%7C/?bookmark.start=10&bibtex.start=0", UrlUtils.encodeURLExceptReservedChars("http://www.bibsonomy.org/user/|the_man|/?bookmark.start=10&bibtex.start=0"));
 	}
-	
+
 }

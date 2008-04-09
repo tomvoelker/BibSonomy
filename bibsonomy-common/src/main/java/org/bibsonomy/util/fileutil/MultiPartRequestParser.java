@@ -51,6 +51,9 @@ public class MultiPartRequestParser {
 		}
 	}
 
+	/**
+	 * @return a list fo FileItem's
+	 */
 	public List<FileItem> getList() {
 		return this.items;
 	}
