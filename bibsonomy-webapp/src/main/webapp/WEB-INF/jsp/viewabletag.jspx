@@ -23,7 +23,7 @@
 		
 		<jsp:attribute name="sidebar">
 		
-			<div style="smalltext">
+			<div class="smalltext">
 		
 			<!-- links to user's  or global concept / tag pages -->
 			<li>
