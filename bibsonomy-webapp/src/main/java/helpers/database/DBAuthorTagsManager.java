@@ -22,9 +22,8 @@ public class DBAuthorTagsManager extends DBManager{
 	private static final Log log = LogFactory.getLog(DBAuthorTagsManager.class);
 	
 	private static final String SQL_SELECT_TAS_PUBLIC       = "	SELECT tag_name, count(tag_name) AS tag_count "
-														+ "		FROM search s, tas t, bibtex b " 
+														+ "		FROM search_bibtex s, tas t, bibtex b " 
 														+ "		WHERE MATCH(s.author) AGAINST (? IN BOOLEAN MODE) "
-														+ "		AND s.content_type = " + Bibtex.CONTENT_TYPE
 														+ " 	AND s.group = " + constants.SQL_CONST_GROUP_PUBLIC
 														+ "		AND s.content_id = t.content_id "
 														+ "		AND s.content_id = b.content_id ";
