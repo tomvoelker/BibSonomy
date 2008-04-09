@@ -28,7 +28,7 @@ import beans.AdminBean;
  */
 public class DBAdminManager extends DBManager {
 	
-	private static final String[] spammerUpdateTables = {"bookmark", "bibtex", "tas", "search", "search_bibtex", "search_bookmark"};
+	private static final String[] spammerUpdateTables = {"bookmark", "bibtex", "tas", "search_bibtex", "search_bookmark"};
 	
 	/*
 	 * gets settings for this user and saves them in bean
