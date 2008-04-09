@@ -444,6 +444,7 @@ CREATE TABLE `groupids` (
   `group_name` varchar(30) NOT NULL default '',
   `group` int(10) NOT NULL default '0',
   `privlevel` tinyint(3) unsigned default '1',
+  `sharedDocuments` tinyint(1) default '0',
   PRIMARY KEY  (`group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -451,14 +452,14 @@ CREATE TABLE `groupids` (
 -- Data for table `groupids`
 -- 
 
-INSERT INTO `groupids` VALUES ('public', -2147483648, 1);
-INSERT INTO `groupids` VALUES ('private', -2147483647, 1);
-INSERT INTO `groupids` VALUES ('friends', -2147483646, 1);
-INSERT INTO `groupids` VALUES ('public', 0, 1);
-INSERT INTO `groupids` VALUES ('private', 1, 1);
-INSERT INTO `groupids` VALUES ('friends', 2, 1);
-INSERT INTO `groupids` VALUES ('testgroup1', 3, 2);
-INSERT INTO `groupids` VALUES ('testgroup2', 4, 2);
+INSERT INTO `groupids` VALUES ('public', -2147483648, 1, 0);
+INSERT INTO `groupids` VALUES ('private', -2147483647, 1, 0);
+INSERT INTO `groupids` VALUES ('friends', -2147483646, 1, 0);
+INSERT INTO `groupids` VALUES ('public', 0, 1, 0);
+INSERT INTO `groupids` VALUES ('private', 1, 1, 0);
+INSERT INTO `groupids` VALUES ('friends', 2, 1, 0);
+INSERT INTO `groupids` VALUES ('testgroup1', 3, 2, 0);
+INSERT INTO `groupids` VALUES ('testgroup2', 4, 2, 0);
 
 -- --------------------------------------------------------
 
@@ -724,6 +725,7 @@ CREATE TABLE `log_tas` (
 -- Structure for table `log_user`
 -- 
 
+DROP TABLE IF EXISTS `log_user`;
 CREATE TABLE `log_user` (
   `user_name` varchar(30) NOT NULL,
   `user_email` varchar(255) NOT NULL,
@@ -1287,14 +1289,14 @@ ALTER TABLE `weights`
 -- 
 -- Structure for table `classifier_settings`
 -- 
- 
+
 DROP TABLE IF EXISTS `classifier_settings`;
 CREATE TABLE `classifier_settings` (
   `ID` tinyint(4) NOT NULL auto_increment,
   `key` varchar(255) default NULL,
   `value` varchar(255) default NULL,
   PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
  
 -- 
 -- Data for table `classifier_settings`
