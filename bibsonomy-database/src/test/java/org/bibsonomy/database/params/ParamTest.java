@@ -15,6 +15,7 @@ public class ParamTest {
 
 	/**
 	 * Generic tests.
+	 * @param param a param object
 	 */
 	public void genericTest(final GenericParam param) {
 		assertEquals(0, param.getTagIndex().size());
@@ -38,6 +39,9 @@ public class ParamTest {
 		assertEquals(" +test1 +test2", param.getSearch());
 	}
 
+	/**
+	 * tests bookmark
+	 */
 	@Test
 	public void testBookmark() {
 		final BookmarkParam param = new BookmarkParam();
@@ -46,6 +50,9 @@ public class ParamTest {
 		assertEquals(ConstantID.BOOKMARK_CONTENT_TYPE.getId(), param.getContentType());
 	}
 
+	/**
+	 * tests bibtex
+	 */
 	@Test
 	public void testBibtex() {
 		final BibTexParam param = new BibTexParam();
@@ -54,6 +61,9 @@ public class ParamTest {
 		assertEquals(ConstantID.BIBTEX_CONTENT_TYPE.getId(), param.getContentType());
 	}
 
+	/**
+	 * tests tag
+	 */
 	@Test
 	public void testTag() {
 		final TagParam param = new TagParam();

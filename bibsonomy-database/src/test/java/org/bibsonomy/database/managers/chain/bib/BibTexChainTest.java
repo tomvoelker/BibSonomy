@@ -1,21 +1,6 @@
 package org.bibsonomy.database.managers.chain.bib;
 
-/*
- * @author Miranda Grahl 
- */
-
-
-
-/* default values
- * userName:hotho
- * requestedUserName:grahl
- * grouping:all
- * RequestedGroupingName:kde
- * Hash:0000175071e6141a7d36835489f922ef
- * 
- */
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
@@ -27,9 +12,19 @@ import org.bibsonomy.model.enums.Order;
 import org.junit.Ignore;
 import org.junit.Test;
 
-
+/**
+ * Tests related to the bibtex chain.
+ * 
+ * TODO: the tests should have asserts
+ * 
+ * @author Miranda Grahl
+ * @version $Id$
+ */
 public class BibTexChainTest extends AbstractChainTest {
 
+	/**
+	 * tests getBibtexByConceptForUser
+	 */
 	@Test
 	public void getBibtexByConceptForUser() {
 		this.bibtexParam.setGrouping(GroupingEntity.USER);
@@ -38,11 +33,12 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setNumSimpleConcepts(3);
 		this.bibtexParam.setNumSimpleTags(0);
 		this.bibtexParam.setNumTransitiveConcepts(0);
-
-		final List<Post<BibTex>> posts=this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
-
+		this.bibtexChain.getFirstElement().perform(bibtexParam, dbSession);
 	}
 
+	/**
+	 * tests getBibtexByFriends
+	 */
 	@Test
 	public void getBibtexByFriends() {
 		this.bibtexParam.setGrouping(GroupingEntity.FRIEND);
@@ -51,25 +47,33 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setHash(null);
 		this.bibtexParam.setOrder(null);
 		this.bibtexParam.setTagIndex(null);
-
-		final List<Post<BibTex>> posts=this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);	
-
+		this.bibtexChain.getFirstElement().perform(bibtexParam, dbSession);
 	}
+
+	/**
+	 * tests getBibtexByHash
+	 */
 	@Test
 	public void getBibtexByHash() {
 		this.bibtexParam.setOrder(null);
 		this.bibtexParam.setTagIndex(null);
-		final List<Post<BibTex>> posts=this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
+		this.bibtexChain.getFirstElement().perform(bibtexParam, dbSession);
 	}
 
+	/**
+	 * tests getBibtexByHashForUser
+	 */
 	@Test
 	public void getBibtexByHashForUser() {
 		this.bibtexParam.setGrouping(GroupingEntity.USER);
 		this.bibtexParam.setOrder(null);
 		this.bibtexParam.setTagIndex(null);
-		final List<Post<BibTex>> posts=this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
-
+		this.bibtexChain.getFirstElement().perform(bibtexParam, dbSession);
 	}
+
+	/**
+	 * tests getBibtexByTagNames
+	 */
 	@Test
 	public void getBibtexByTagNames() {
 		this.bibtexParam.setHash(null);
@@ -77,8 +81,12 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setNumSimpleConcepts(0);
 		this.bibtexParam.setNumSimpleTags(3);
 		this.bibtexParam.setNumTransitiveConcepts(0);
-		final List<Post<BibTex>> posts=this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
+		this.bibtexChain.getFirstElement().perform(bibtexParam, dbSession);
 	}
+
+	/**
+	 * tests getBibtexByTagNamesAndUser
+	 */
 	@Test
 	public void getBibtexByTagNamesAndUser() {
 		this.bibtexParam.setUserName("grahl");
@@ -89,18 +97,25 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setNumSimpleConcepts(0);
 		this.bibtexParam.setNumSimpleTags(3);
 		this.bibtexParam.setNumTransitiveConcepts(0);
-		final List<Post<BibTex>> posts=this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
+		this.bibtexChain.getFirstElement().perform(bibtexParam, dbSession);
 	}
+
+	/**
+	 * tests getBibtexForGroup
+	 */
 	@Test
 	public void getBibtexForGroup() {
-
 		this.bibtexParam.setGrouping(GroupingEntity.GROUP);
 		this.bibtexParam.setHash(null);
 		this.bibtexParam.setOrder(null);
 		this.bibtexParam.setRequestedUserName(null);
 		this.bibtexParam.setTagIndex(null);
-		final List<Post<BibTex>> posts=this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
+		this.bibtexChain.getFirstElement().perform(bibtexParam, dbSession);
 	}
+
+	/**
+	 * tests getBibtexForGroupAndTag
+	 */
 	@Test
 	public void getBibtexForGroupAndTag() {
 		this.bibtexParam.setGrouping(GroupingEntity.GROUP);
@@ -110,19 +125,26 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setNumSimpleConcepts(0);
 		this.bibtexParam.setNumSimpleTags(3);
 		this.bibtexParam.setNumTransitiveConcepts(0);
-		final List<Post<BibTex>> posts=this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
+		this.bibtexChain.getFirstElement().perform(bibtexParam, dbSession);
 
 	}
+
+	/**
+	 * tests getBibtexForHomePage
+	 */
 	@Test
 	public void getBibtexForHomePage() {
 		this.bibtexParam.setGrouping(GroupingEntity.ALL);
 		this.bibtexParam.setHash(null);
 		this.bibtexParam.setOrder(null);
 		this.bibtexParam.setTagIndex(null);
-		final List<Post<BibTex>> posts=this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
-
+		this.bibtexChain.getFirstElement().perform(bibtexParam, dbSession);
 
 	}
+
+	/**
+	 * tests getBibtexForUser
+	 */
 	@Test
 	public void getBibtexForUser() {
 		this.bibtexParam.setGrouping(GroupingEntity.USER);
@@ -130,15 +152,23 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setOrder(null);
 		this.bibtexParam.setTagIndex(null);
 		this.bibtexParam.setGroupId(-1);
-		final List<Post<BibTex>> posts=this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
+		this.bibtexChain.getFirstElement().perform(bibtexParam, dbSession);
 	}
+
+	/**
+	 * tests getBibtexofFriendsByTags
+	 */
 	@Test
 	public void getBibtexofFriendsByTags() {
 		this.bibtexParam.setGrouping(GroupingEntity.FRIEND);
 		this.bibtexParam.setHash(null);
 		this.bibtexParam.setOrder(null);
-		final List<Post<BibTex>> posts=this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
+		this.bibtexChain.getFirstElement().perform(bibtexParam, dbSession);
 	}
+
+	/**
+	 * tests getBibtexofFriendsByUser
+	 */
 	@Test
 	public void getBibtexofFriendsByUser() {
 		this.bibtexParam.setGrouping(GroupingEntity.FRIEND);
@@ -148,36 +178,50 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setNumSimpleConcepts(0);
 		this.bibtexParam.setNumSimpleTags(3);
 		this.bibtexParam.setNumTransitiveConcepts(0);
-		final List<Post<BibTex>> posts=this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
+		this.bibtexChain.getFirstElement().perform(bibtexParam, dbSession);
 	}
+
+	/**
+	 * tests getBibtexPopular
+	 */
 	@Test
 	public void getBibtexPopular() {
 		this.bibtexParam.setGrouping(GroupingEntity.ALL);
 		this.bibtexParam.setHash(null);
 		this.bibtexParam.setOrder(Order.POPULAR);
 		this.bibtexParam.setTagIndex(null);
-		final List<Post<BibTex>> posts=this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
+		this.bibtexChain.getFirstElement().perform(bibtexParam, dbSession);
 	}
+
+	/**
+	 * tests getBibtexViewable
+	 */
 	@Test
 	public void getBibtexViewable() {
 		this.bibtexParam.setGrouping(GroupingEntity.VIEWABLE);
 		this.bibtexParam.setHash(null);
 		this.bibtexParam.setOrder(null);
-		final List<Post<BibTex>> posts=this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
+		this.bibtexChain.getFirstElement().perform(bibtexParam, dbSession);
 	}
 
+	/**
+	 * tests getBibtexByAuthor
+	 */
 	@Test
 	public void getBibtexByAuthor() {
 		this.bibtexParam.setGrouping(GroupingEntity.VIEWABLE);
 		this.bibtexParam.setRequestedUserName(null);
 		this.bibtexParam.setHash(null);
-		this.bibtexParam.setOrder(null);	
+		this.bibtexParam.setOrder(null);
 		this.bibtexParam.setTagIndex(null);
 		this.bibtexParam.setGroupId(-1);
 		this.bibtexParam.setSearch("Grahl");
-		final List<Post<BibTex>> posts = this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
+		this.bibtexChain.getFirstElement().perform(bibtexParam, dbSession);
 	}
 
+	/**
+	 * tests getBibtexByAuthorAndTag
+	 */
 	@Test
 	public void getBibtexByAuthorAndTag() {
 		this.bibtexParam.setGrouping(GroupingEntity.VIEWABLE);
@@ -185,10 +229,12 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setOrder(null);
 		this.bibtexParam.setRequestedGroupName(null);
 		this.bibtexParam.setSearch("Grahl");
-		final List<Post<BibTex>> posts=this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
+		this.bibtexChain.getFirstElement().perform(bibtexParam, dbSession);
 	}
 
 	/**
+	 * tests getBibtexBySearch
+	 *
 	 * TODO: adapt to new test-DB
 	 */
 	@Ignore
@@ -198,9 +244,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setGroupId(0); // group = public
 		this.bibtexParam.setRequestedUserName(null);
 		this.bibtexParam.setLimit(350);
-		final List<Post<BibTex>> posts = this.bibtexChain.getFirstElement().perform(bibtexParam,dbSession);
+		final List<Post<BibTex>> posts = this.bibtexChain.getFirstElement().perform(bibtexParam, dbSession);
 		assertEquals(333, posts.size());
-	}	
-
-
+	}
 }

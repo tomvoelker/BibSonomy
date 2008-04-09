@@ -2,14 +2,22 @@ package org.bibsonomy.testutil;
 
 import java.util.regex.Pattern;
 
-import junit.framework.Assert;
+import static junit.framework.Assert.fail;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.junit.Test;
 
+/**
+ * 
+ * @author Jens Illig
+ * @version $Id$
+ */
 public class ModelUtilsTest {
 
+	/**
+	 * tests assertPropertyEquality
+	 */
 	@Test
 	public void assertPropertyEquality() {
 		final Post<BibTex> postA = ModelUtils.generatePost(BibTex.class);
@@ -18,13 +26,13 @@ public class ModelUtilsTest {
 		postB.getTags().clear();
 		try {
 			ModelUtils.assertPropertyEquality(postA, postB, Integer.MAX_VALUE, null);
-			Assert.fail();
-		} catch (Throwable t) {
+			fail();
+		} catch (Throwable ignored) {
 		}
 		try {
 			ModelUtils.assertPropertyEquality(postA, postB, Integer.MAX_VALUE, Pattern.compile(".ate"));
-			Assert.fail();
-		} catch (Throwable t) {
+			fail();
+		} catch (Throwable ignored) {
 		}
 		postB.setDate(postA.getDate());
 		ModelUtils.assertPropertyEquality(postA, postB, 1, null);

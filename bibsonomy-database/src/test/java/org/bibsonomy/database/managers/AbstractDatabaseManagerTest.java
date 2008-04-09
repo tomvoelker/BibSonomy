@@ -70,9 +70,8 @@ public abstract class AbstractDatabaseManagerTest {
 			this.permissionDb = PermissionDatabaseManager.getInstance();
 			this.statisticsDb = StatisticsDatabaseManager.getInstance();
 
-
 			this.resetParameters();
-			
+
 			// bind datasource access via JNDI
 			JNDITestDatabaseBinder.bind();
 
@@ -108,11 +107,10 @@ public abstract class AbstractDatabaseManagerTest {
 		this.tagParam = null;
 		this.groupParam = null;
 		this.statisticsParam = null;
-		
-		JNDITestDatabaseBinder.unbind();		
+
+		JNDITestDatabaseBinder.unbind();
 	}
-	
-	
+
 	/**
 	 * Resets the parameter objects, which can be useful inside one method of a
 	 * testcase. On some occasions we need to do this, e.g. when more than one

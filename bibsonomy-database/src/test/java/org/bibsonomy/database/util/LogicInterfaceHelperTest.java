@@ -17,6 +17,9 @@ import org.junit.Test;
  */
 public class LogicInterfaceHelperTest {
 
+	/**
+	 * tests buildParam
+	 */
 	@Test
 	public void buildParam() {
 		GenericParam param = null;

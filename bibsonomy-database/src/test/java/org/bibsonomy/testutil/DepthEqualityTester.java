@@ -17,15 +17,20 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.bibsonomy.util.ExceptionUtils;
 
+/**
+ * @author Jens Illig
+ * @version $Id$
+ */
 public class DepthEqualityTester  {
+
 	private static final Logger log = Logger.getLogger(DepthEqualityTester.class);
-	
+
 	public static interface EqualityChecker {
 		public boolean checkEquals(Object should, Object is, String path);
 		public boolean checkTrue(boolean value, String path, String checkName);
 	}
 
-	private static Set<String> toSet(String[] excludeProperties) {
+	private static Set<String> toSet(final String[] excludeProperties) {
 		final Set<String> skip;
 		if (excludeProperties != null || excludeProperties.length > 0) {
 			skip = new HashSet<String>();
@@ -35,15 +40,15 @@ public class DepthEqualityTester  {
 		}
 		return skip;
 	}
-	
+
 	public static boolean areEqual(Object should, Object is, final EqualityChecker checker, final int maxDepth, final Pattern exclusionPattern, final String... excludeProperties) {
 		return areEqual(should, is, checker, maxDepth, exclusionPattern, toSet(excludeProperties));
 	}
-	
+
 	public static boolean areEqual(Object should, Object is, final EqualityChecker checker, final int maxDepth, final Pattern exclusionPattern, final Set<String> excludeProperties) {
 		return assertPropertyEquality(should, is, checker, maxDepth, exclusionPattern, excludeProperties, "", new HashSet<Object>());
 	}
-	
+
 	private static boolean assertPropertyEquality(final Object should, final Object is, final EqualityChecker checker, final int remainingDepth, final Pattern exclusionPattern, final Set<String> excludeProperties, final String path, final Set<Object> visited) {
 		if (remainingDepth < 0) {
 			return true;
@@ -56,11 +61,11 @@ public class DepthEqualityTester  {
 		if ((is == null) || (should == null)) {
 			return checker.checkEquals(should, is, path);
 		}
-		final Class shouldType = should.getClass();
+		final Class<?> shouldType = should.getClass();
 		/*if (checker.checkTrue(shouldType.isAssignableFrom(is.getClass()), path, "should be " + shouldType.getName()) == false) {
 			return false;
 		}*/
-		
+
 		if ((shouldType == String.class) || (shouldType.isPrimitive() == true) || (Number.class.isAssignableFrom(shouldType) == true) || (shouldType == Date.class) || (shouldType == URL.class)) {
 			return checker.checkEquals(should, is, path);
 		} 
@@ -71,10 +76,10 @@ public class DepthEqualityTester  {
 			return true;
 		}
 		visited.add(should);
-		
+
 		if (Iterable.class.isAssignableFrom(shouldType) == true) {
-			final Iterable shouldIterable = (Iterable) should;
-			final Iterator isIterator = ((Iterable) is).iterator();
+			final Iterable<?> shouldIterable = (Iterable<?>) should;
+			final Iterator<?> isIterator = ((Iterable<?>) is).iterator();
 			int i = 0;
 			for (Object shouldEntry : shouldIterable) {
 				final String entryPath = path + "[" + i + "]";

@@ -13,6 +13,9 @@ import org.junit.Test;
  */
 public class DatabasePluginRegistryTest extends AbstractDatabasePluginTest {
 
+	/**
+	 * tests that the plugins are called
+	 */
 	@Test
 	public void testThatPluginsAreCalled() {
 		final DatabasePluginMock plugin = new DatabasePluginMock();
@@ -41,6 +44,9 @@ public class DatabasePluginRegistryTest extends AbstractDatabasePluginTest {
 		assertTrue(plugin.isOnTagRelationDelete());
 	}
 
+	/**
+	 * tests that only one plugin instance per type is allowed
+	 */
 	@Test
 	public void onlyOnePluginInstancePerTypeAllowed() {
 		final DatabasePluginMock plugin = new DatabasePluginMock();

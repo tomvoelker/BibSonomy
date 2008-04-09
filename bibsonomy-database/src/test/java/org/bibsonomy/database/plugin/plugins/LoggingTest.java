@@ -28,48 +28,72 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 
 	private Integer anyContentId;
 
+	/**
+	 * tests whether we can add this plugin to the registry
+	 */
 	@Test
 	public void addLoggingPlugin() {
 		this.plugins.clearPlugins();
 		this.plugins.add(new Logging());
 	}
 
+	/**
+	 * tests onBibTexDelete
+	 */
 	@Test
 	public void onBibTexDelete() {
 		anyContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
 		this.plugins.onBibTexDelete(anyContentId, dbSession);
 	}
 
+	/**
+	 * tests onBibTexUpdate
+	 */
 	@Test
 	public void onBibTexUpdate() {
 		anyContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
 		this.plugins.onBibTexUpdate(anyContentId, anyContentId - 1, dbSession);
 	}
 
+	/**
+	 * tests onBookmarkDelete
+	 */
 	@Test
 	public void onBookmarkDelete() {
 		anyContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
 		this.plugins.onBookmarkDelete(anyContentId, dbSession);
 	}
 
+	/**
+	 * tests onBookmarkUpdate
+	 */
 	@Test
 	public void onBookmarkUpdate() {
 		anyContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
 		this.plugins.onBookmarkUpdate(anyContentId, anyContentId - 1, dbSession);
 	}
 
+	/**
+	 * tests onTagRelationDelete
+	 */
 	@Test
 	public void onTagRelationDelete() {
 		anyContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
 		this.plugins.onTagRelationDelete("upperTagName", "lowerTagName", "userName", dbSession);
 	}
 
+	/**
+	 * tests onTagDelete
+	 */
 	@Test
 	public void onTagDelete() {
 		anyContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
 		this.plugins.onTagDelete(anyContentId, dbSession);
 	}
 
+	/**
+	 * tests removeUserFromGroup
+	 */
 	@Test
 	public void removeUserFromGroup() {
 		anyContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
@@ -102,6 +126,9 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 	 * storePost() method
 	 */
 
+	/**
+	 * tests onBibTexUpdateSQL
+	 */
 	@Test
 	public void onBibTexUpdateSQL() {
 		// this is an INTER-hash
@@ -124,6 +151,9 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 		assertEquals(1, result);
 	}
 
+	/**
+	 * tests onBibTexDeleteSQL
+	 */
 	@Test
 	public void onBibTexDeleteSQL() {
 		// final String HASH = "00078c9690694eb9a56ca7866b5101c6"; INTERHASH
@@ -145,6 +175,9 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 		assertEquals(1, result);
 	}
 
+	/**
+	 * tests onBookmarkUpdateSQL
+	 */
 	@Test
 	public void onBookmarkUpdateSQL() {
 		final String HASH = "0008bae834cc2af4a63fead1fd04b3e1";
@@ -165,6 +198,9 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 		assertEquals(1, result);
 	}
 
+	/**
+	 * tests onBookmarkDeleteSQL
+	 */
 	@Test
 	public void onBookmarkDeleteSQL() {
 		final String HASH = "00319006d9b0105704533e49661ffab6";
@@ -245,6 +281,9 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 		assertEquals(1, result);
 	}
 
+	/**
+	 * tests onRemoveUserFromGroupSQL
+	 */
 	@Test
 	public void onRemoveUserFromGroupSQL() {
 		final String USER = "jaeschke", GROUPNAME = "kde";

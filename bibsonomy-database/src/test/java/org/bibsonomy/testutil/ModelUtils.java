@@ -50,6 +50,7 @@ public class ModelUtils {
 
 	/**
 	 * Creates a bookmark with all properties set.
+	 * @return bookmark object filled with defaults
 	 */
 	public static Bookmark getBookmark() {
 		final Bookmark bookmark = new Bookmark();
@@ -62,6 +63,7 @@ public class ModelUtils {
 
 	/**
 	 * Creates a BibTex with all properties set.
+	 * @return bibtex object filled with defaults
 	 */
 	public static BibTex getBibTex() {
 		final BibTex bibtex = new BibTex();
@@ -74,6 +76,9 @@ public class ModelUtils {
 		return bibtex;
 	}
 
+	/**
+	 * @return user object filled with defaults
+	 */
 	public static User getUser() {
 		final User user = new User();
 		setBeanPropertiesOn(user);
@@ -81,12 +86,31 @@ public class ModelUtils {
 		return user;
 	}
 	
+	/**
+	 * @return group object filled with defaults
+	 */
 	public static Group getGroup() {
 		final Group group = new Group();
 		setBeanPropertiesOn(group);
 		return group;
 	}
 
+	/**
+	 * @return tag object filled with defaults
+	 */
+	public static Tag getTag() {
+		final Tag tag = new Tag();
+		setBeanPropertiesOn(tag);
+		tag.setSubTags(buildTagList(3, "subtag", 0));
+		tag.setSuperTags(buildTagList(3, "supertag", 0));
+		return tag;
+	}
+
+	/**
+	 * @param <T> any resource type
+	 * @param resourceType
+	 * @return a post object with the given resource type
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T extends Resource> Post<T> generatePost(final Class<T> resourceType) {
 		final Post<T> post = new Post<T>();
@@ -121,6 +145,9 @@ public class ModelUtils {
 		return post;
 	}
 
+	/**
+	 * Calls every setter on an object and fills it wiht dummy values.
+	 */
 	private static void setBeanPropertiesOn(final Object obj) {
 		try {
 			final BeanInfo bi = Introspector.getBeanInfo(obj.getClass());
@@ -140,23 +167,9 @@ public class ModelUtils {
 		}
 	}
 
-	public static void assertPropertyEquality(final Object should, final Object is, final int maxDepth, final Pattern excludePropertiesPattern, final String... excludeProperties) {
-		final EqualityChecker checker = new EqualityChecker() {
-
-			public boolean checkEquals(Object should, Object is, String path) {
-				assertEquals(path, should,is);
-				return true;
-			}
-
-			public boolean checkTrue(boolean value, String path, String checkName) {
-				assertTrue(path + " " + checkName, value);
-				return true;
-			}
-			
-		};
-		DepthEqualityTester.areEqual(should, is, checker, maxDepth, excludePropertiesPattern, excludeProperties);
-	}
-	
+	/**
+	 * Returns dummy values for some primitive types and classes
+	 */
 	private static Object getDummyValue(final Class<?> type, final String name) {
 		if (String.class == type) {
 			return "test-" + name;
@@ -181,6 +194,39 @@ public class ModelUtils {
 		return null;
 	}
 
+	/**
+	 * Checks whether every property of two objects (should and is) match.
+	 * 
+	 * @param should
+	 * @param is
+	 * @param maxDepth
+	 * @param excludePropertiesPattern
+	 * @param excludeProperties
+	 */
+	public static void assertPropertyEquality(final Object should, final Object is, final int maxDepth, final Pattern excludePropertiesPattern, final String... excludeProperties) {
+		final EqualityChecker checker = new EqualityChecker() {
+
+			public boolean checkEquals(Object should, Object is, String path) {
+				assertEquals(path, should, is);
+				return true;
+			}
+
+			public boolean checkTrue(boolean value, String path, String checkName) {
+				assertTrue(path + " " + checkName, value);
+				return true;
+			}
+
+		};
+		DepthEqualityTester.areEqual(should, is, checker, maxDepth, excludePropertiesPattern, excludeProperties);
+	}
+
+	/**
+	 * Retruns a HashSet built from an array of strings that are all converted
+	 * to lowercase.
+	 * 
+	 * @param values
+	 * @return HashSet
+	 */
 	public static HashSet<String> buildLowerCaseHashSet(final String... values) {
 		final HashSet<String> rVal = new HashSet<String>();
 		for (final String value : values) {
@@ -189,6 +235,12 @@ public class ModelUtils {
 		return rVal;
 	}
 
+	/**
+	 * Convenience method for buildLowerCaseHashSet(final String... values).
+	 * 
+	 * @param values
+	 * @return HashSet
+	 */
 	public static HashSet<String> buildLowerCaseHashSet(final Collection<String> values) {
 		return buildLowerCaseHashSet(values.toArray(new String[values.size()]));
 	}
@@ -202,8 +254,8 @@ public class ModelUtils {
 			}
 		}
 		if (required > 0) return false;
-			return true;
-		}
+		return true;
+	}
 
 	public static boolean checkGroups(final Post<?> post, final Set<Integer> mustBeInGroups, final Set<Integer> mustNotBeInGroups) {
 		int required = (mustBeInGroups != null) ? mustBeInGroups.size() : 0;
@@ -237,13 +289,5 @@ public class ModelUtils {
 			}
 		}
 		return tags;
-	}
-	
-	public static Tag getTag() {
-		final Tag tag = new Tag();
-		setBeanPropertiesOn(tag);
-		tag.setSubTags(buildTagList(3, "subtag", 0));
-		tag.setSuperTags(buildTagList(3, "supertag", 0));
-		return tag;
 	}
 }

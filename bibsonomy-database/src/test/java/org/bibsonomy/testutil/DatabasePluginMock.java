@@ -29,6 +29,9 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 
 	private boolean onTagRelationDelete;
 
+	/**
+	 * The constructor initializes every boolean member variable with false.
+	 */
 	public DatabasePluginMock() {
 		// make sure that all fields are initialized with "false"
 		try {
@@ -40,6 +43,12 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 		}
 	}
 
+	/**
+	 * Makes sure that every field is initializes with false.
+	 * 
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 */
 	@Test
 	public void test() throws IllegalArgumentException, IllegalAccessException {
 		final DatabasePluginMock plugin = new DatabasePluginMock();
@@ -86,26 +95,44 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 		return null;
 	}
 
+	/**
+	 * @return true if onBibTexInsert was called, otherwise false
+	 */
 	public boolean isOnBibTexInsert() {
 		return this.onBibTexInsert;
 	}
 
+	/**
+	 * @return true if onBibTexDelete was called, otherwise false
+	 */
 	public boolean isOnBibTexDelete() {
 		return this.onBibTexDelete;
 	}
 
+	/**
+	 * @return true if onBibTexUpdate was called, otherwise false
+	 */
 	public boolean isOnBibTexUpdate() {
 		return this.onBibTexUpdate;
 	}
 
+	/**
+	 * @return true if onBookmarkInsert was called, otherwise false
+	 */
 	public boolean isOnBookmarkInsert() {
 		return this.onBookmarkInsert;
 	}
 
+	/**
+	 * @return true if onBookmarkUpdate was called, otherwise false
+	 */
 	public boolean isOnBookmarkUpdate() {
 		return this.onBookmarkUpdate;
 	}
 
+	/**
+	 * @return true if onTagRelationDelete was called, otherwise false
+	 */
 	public boolean isOnTagRelationDelete() {
 		return this.onTagRelationDelete;
 	}

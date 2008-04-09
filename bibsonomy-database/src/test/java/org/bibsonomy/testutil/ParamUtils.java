@@ -60,6 +60,7 @@ public class ParamUtils {
 
 	/**
 	 * Retrieves a GenericParam.
+	 * @return GenericParam
 	 */
 	public static GenericParam getDefaultGeneralParam() {
 		final GenericParam rVal = getDefaultBookmarkParam();
@@ -70,6 +71,7 @@ public class ParamUtils {
 
 	/**
 	 * Retrieves a BookmarkParam.
+	 * @return BookmarkParam
 	 */
 	public static BookmarkParam getDefaultBookmarkParam() {
 		final BookmarkParam rVal = new BookmarkParam();
@@ -82,6 +84,7 @@ public class ParamUtils {
 
 	/**
 	 * Retrieves a BibTexParam.
+	 * @return BibTexParam
 	 */
 	public static BibTexParam getDefaultBibTexParam() {
 		final BibTexParam rVal = new BibTexParam();
@@ -108,6 +111,7 @@ public class ParamUtils {
 
 	/**
 	 * Retrieve a UserParam.
+	 * @return UserParam
 	 */
 	public static UserParam getDefaultUserParam() {
 		final UserParam param = new UserParam();
@@ -125,6 +129,7 @@ public class ParamUtils {
 
 	/**
 	 * Retrieve a TagParam
+	 * @return TagParam
 	 */
 	public static TagParam getDefaultTagParam() {
 		final TagParam param = new TagParam();
@@ -148,6 +153,7 @@ public class ParamUtils {
 
 	/**
 	 * Retrieve a GroupParam
+	 * @return GroupParam
 	 */
 	public static GroupParam getDefaultGroupParam() {
 		final GroupParam param = new GroupParam();

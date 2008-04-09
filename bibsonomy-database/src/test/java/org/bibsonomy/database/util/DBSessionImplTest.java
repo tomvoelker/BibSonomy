@@ -19,29 +19,44 @@ public class DBSessionImplTest {
 
 	private DBSessionImpl session;
 
+	/**
+	 * setUp
+	 */
 	@Before
 	public void setUp() {
 		JNDITestDatabaseBinder.bind();
 		this.session = (DBSessionImpl) DatabaseUtils.getDBSessionFactory().getDatabaseSession();
 	}
 
+	/**
+	 * tearDown
+	 */
 	@After
 	public void tearDown() {
 		this.session.close();
 		JNDITestDatabaseBinder.unbind();
 	}
 
+	/**
+	 * tests getSqlMapExecutor
+	 */
 	@Test
 	public void getSqlMapExecutor() {
 		assertNotNull(this.session.getSqlMapExecutor());
 	}
 
+	/**
+	 * tests normalCycleWithEndTransaction
+	 */
 	@Test
 	public void normalCycleWithEndTransaction() {
 		this.session.beginTransaction();
 		this.session.endTransaction();
 	}
 
+	/**
+	 * tests normalCycleWithCommitTransaction
+	 */
 	@Test
 	public void normalCycleWithCommitTransaction() {
 		this.session.beginTransaction();
@@ -49,6 +64,9 @@ public class DBSessionImplTest {
 		this.session.endTransaction();
 	}
 
+	/**
+	 * tests nestedCycleWithAbort
+	 */
 	@Test
 	public void nestedCycleWithAbort() {
 		assertFalse(this.session.isAborted());
@@ -78,6 +96,9 @@ public class DBSessionImplTest {
 		assertFalse(this.session.isAborted());
 	}
 
+	/**
+	 * tests multipleTimesBeginTransaction
+	 */
 	@Test
 	public void multipleTimesBeginTransaction() {
 		this.session.beginTransaction();
@@ -85,6 +106,9 @@ public class DBSessionImplTest {
 		this.session.beginTransaction();
 	}
 
+	/**
+	 * tests multipleTimesEndTransaction
+	 */
 	@Test
 	public void multipleTimesEndTransaction() {
 		this.session.beginTransaction();
@@ -98,6 +122,9 @@ public class DBSessionImplTest {
 		}
 	}
 
+	/**
+	 * tests multipleTimesCommitTransaction
+	 */
 	@Test
 	public void multipleTimesCommitTransaction() {
 		this.session.beginTransaction();

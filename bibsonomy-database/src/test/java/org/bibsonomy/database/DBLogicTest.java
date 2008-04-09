@@ -129,6 +129,9 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		}
 	}
 
+	/**
+	 * tests getPostsByTagName
+	 */
 	@Test
 	public void getPostsByTagName() {
 		LogicInterface anonymousAccess = this.getDbLogic(null);
@@ -141,6 +144,9 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		assertList(null, null, this.tagSet, null, null, null);
 	}
 
+	/**
+	 * tests getPostsByTagNameForUser
+	 */
 	@Test
 	public void getPostsByTagNameForUser() {
 		this.bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, taglist, "", null, 0, 10, null);
@@ -151,6 +157,9 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		assertList(testUserNameSet, null, this.tagSet, null, null, null);
 	}
 
+	/**
+	 * tests getPostsByConceptForUser
+	 */
 	@Test
 	public void getPostsByConceptForUser() {
 		this.taglist = Arrays.asList(new String[] { "->researcher" });
@@ -162,6 +171,9 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		assertList(testUserNameSet, Order.ADDED, null, null, null, null);
 	}
 
+	/**
+	 * tests getPostsForUser
+	 */
 	@Test
 	public void getPostsForUser() {
 		this.bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, null, "", null, 0, 10, null);
@@ -172,6 +184,9 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		assertList(testUserNameSet, null, null, null, null, null);
 	}
 
+	/**
+	 * tests getPostsByHash
+	 */
 	@Test
 	public void getPostsByHash() {
 		this.bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, "", new ArrayList<String>(), TEST_REQUEST_HASH, null, 0, 5, null);
@@ -184,6 +199,9 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		assertEquals(0, this.bibTexPostsList.size());
 	}
 
+	/**
+	 * tests getPostsByHashForUser
+	 */
 	@Test
 	public void getPostsByHashForUser() {
 		this.bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, new ArrayList<String>(), TEST_REQUEST_HASH, null, 0, 19, null);
@@ -193,6 +211,9 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		assertList(testUserNameSet, null, null, TEST_REQUEST_HASH, null, null);
 	}
 	
+	/**
+	 * tests getPostsByViewable
+	 */
 	@Test
 	public void getPostsByViewable() {
 		final Set<Integer> mustGroupIds = new HashSet<Integer>();
@@ -207,6 +228,9 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		assertList(usersInGroup, Order.ADDED, null, null, mustGroupIds, null);
 	}
 
+	/**
+	 * tests getPostsForUsersInGroup
+	 */
 	@Test
 	public void getPostsForUsersInGroup() {
 		final HashSet<String> usersInGroup = new HashSet<String>();
@@ -219,6 +243,9 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		assertList(usersInGroup, null, null, null, null, null);
 	}
 
+	/**
+	 * tests getPostsForGroupByTag
+	 */
 	@Test
 	public void getPostsForGroupByTag() {
 		final LogicInterface anonymousAccess = getDbLogic("");
@@ -232,6 +259,9 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		assertList(usersInGroup, null, this.tagSet, null, null, null);
 	}
 
+	/**
+	 * tests getBibtexOfFriendByTags
+	 */
 	@Test
 	public void getBibtexOfFriendByTags() {
 		final LogicInterface buzzsAccess = getDbLogic("buzz");
@@ -253,6 +283,9 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		assertEquals(0, this.bibTexPostsList.size());
 	}
 	
+	/**
+	 * tests getBibtexOfFriendByUser
+	 */
 	@Test
 	public void getBibtexOfFriendByUser() {
 		final LogicInterface buzzsAccess = getDbLogic("buzz");
@@ -271,6 +304,9 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		assertEquals(0, this.bibTexPostsList.size());
 	}
 	
+	/**
+	 * tests getPosts with friends
+	 */
 	@Test
 	public void getBibtexByFriends() {
 		final LogicInterface mwkustersAccess = getDbLogic("mwkuster");
@@ -288,6 +324,9 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		assertList(null, Order.ADDED, null, null, mustGroups, mustNotGroups);
 	}
 
+	/**
+	 * tests getPosts with popular
+	 */
 	@Test
 	public void getPostsPopular() {
 		this.bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, "", null, null, Order.POPULAR, 0, 10, null);
@@ -298,6 +337,9 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		assertList(null, Order.POPULAR, null, null, null, null);
 	}
 
+	/**
+	 * TODO fix this comment
+	 */
 	@Test
 	public void getPostsHome() {
 		this.bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, TEST_REQUEST_USER_NAME, taglist, null, null, 0, 15, null);
@@ -305,6 +347,9 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		// TODO: test something
 	}
 
+	/**
+	 * tests concept store
+	 */
 	@Test
 	public void testConceptStore() {
 		final Post<BibTex> post = ModelUtils.generatePost(BibTex.class);
@@ -353,7 +398,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	}
 	
 	/**
-	 * A user wants to get his own document ... should be possible! :-)
+	 * A user wants to get his own document: should be possible.
 	 */
 	@Test
 	public void getDocumentOwn() {
@@ -367,7 +412,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	}
 	
 	/**
-	 * A user wants to get another users document ... should be NOT possible! :-)
+	 * A user wants to get another users document: should NOT be possible.
 	 */
 	@Test
 	public void getDocumentNotOwn() {
@@ -378,7 +423,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	}
 	
 	/**
-	 * A user wants to get another users document ... should be possible, if a group allows this! :-)
+	 * A user wants to get another users document: should be possible, if a group allows this.
 	 */
 	@Test
 	public void getDocumentNotOwnButSharedDocuments() {
@@ -392,6 +437,9 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	}
 
 	
+	/**
+	 * tests getUsers by folkrank
+	 */
 	@Test
 	public void testGetUsersByFolkrank(){
 		List<String> tags = new ArrayList<String>();
