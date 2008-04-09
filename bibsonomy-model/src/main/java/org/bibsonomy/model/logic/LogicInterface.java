@@ -2,13 +2,12 @@ package org.bibsonomy.model.logic;
 
 import java.net.InetAddress;
 import java.util.List;
-import java.util.Map;
 
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
+import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
-import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.model.Document;
@@ -156,7 +155,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @return userid the user id of the created user
 	 */
 	public String createUser(User user);
-	
+
 	/**
 	 * Updates a user to the database.
 	 * 
@@ -164,7 +163,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @return userid the user id of the updated user
 	 */
 	public String updateUser(User user);
-	
+
 	/**
 	 * Adds a group to the database.
 	 * 
@@ -172,7 +171,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @return groupID the group id of the created group
 	 */
 	public String createGroup(Group group);
-	
+
 	/**
 	 * Updates a group in the database.
 	 * 
@@ -180,7 +179,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @return groupID the group id of the updated group
 	 */
 	public String updateGroup(Group group);
-		
+
 	/**
 	 * Adds an existing user to an existing group.
 	 * 
@@ -188,7 +187,6 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @param userName  user to add
 	 */
 	public void addUserToGroup(String groupName, String userName);
-	
 
 	/**
 	 * Adds a document to an existing bibtex entry
@@ -198,7 +196,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @return The hash of the created document.
 	 */
 	public String addDocument(Document doc, String resourceHash);
-	
+
 	/**
 	 * Get a document from an existing Bibtex entry
 	 * @param userName 
@@ -208,7 +206,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @return document
 	 */
 	public Document getDocument(String userName, String resourceHash, String fileName);
-	
+
 	/**
 	 * Deletes an existing document out of the DB
 	 * 
@@ -217,8 +215,6 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @param fileName
 	 */
 	public void deleteDocument(String userName, String resourceHash, String fileName);
-	
-	
 
 	/**
 	 * Adds an InetAddress (IP) with the given status to the list of addresses.
@@ -232,7 +228,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @author rja
 	 */
 	public void addInetAddressStatus (InetAddress address, InetAddressStatus status);
-	
+
 	/** 
 	 * Returns the current status of an InetAddress.
 	 * 
@@ -241,7 +237,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @author rja
 	 */
 	public InetAddressStatus getInetAddressStatus (InetAddress address);
-	
+
 	/** Removes the address from the the list of stati for InetAddresses. Since
 	 * currently one address can have only one status, it is not neccessary to
 	 * say which status for that address should be removed. TODO: see comment 
@@ -251,7 +247,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @author rja
 	 */
 	public void deleteInetAdressStatus (InetAddress address);
-	
+
 	/**
 	 * Retrieve statistics
 	 * 
@@ -265,7 +261,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @author dbe
 	 */
 	public int getStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, StatisticsConstraint constraint, String search, List<String> tags);
-	
+
 	/**
 	 * Retrieve relations
 	 * 
@@ -281,7 +277,7 @@ public interface LogicInterface extends PostLogicInterface {
      * @author dbe
 	 */
 	public List<Tag> getConcepts(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end);
-	
+
 	/**
 	 * Retrieve relations
 	 * 
@@ -292,8 +288,7 @@ public interface LogicInterface extends PostLogicInterface {
      * @author sts
 	 */
 	public Tag getConceptDetails(String conceptName, GroupingEntity grouping, String groupingName);
-	
-	
+
 	/**
 	 * Create a new relation/concept
 	 * 
@@ -305,7 +300,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @author sts
 	 */
 	public String createConcept(Tag concept, GroupingEntity grouping, String groupingName);
-	
+
 	/**
 	 * Update an existing relation/concept
 	 * 
@@ -316,7 +311,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @author sts
 	 */
 	public String updateConcept(Tag concept, GroupingEntity grouping, String groupingName);
-	
+
 	/**
 	 * Delete an existing concept
 	 * 
@@ -326,7 +321,7 @@ public interface LogicInterface extends PostLogicInterface {
      * @author sts
 	 */
 	public void deleteConcept(String concept, GroupingEntity grouping, String groupingName);
-	
+
 	/**
 	 * Delete an existing relation
 	 * 
@@ -337,7 +332,7 @@ public interface LogicInterface extends PostLogicInterface {
      * @author sts
 	 */
 	public void deleteRelation(String upper, String lower, GroupingEntity grouping, String groupingName);
-	
+
 	/**
 	 * @param tags
 	 * @param order
@@ -346,7 +341,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @return list of user
 	 */
 	public List<User> getUsers (List<String> tags, Order order, final int start, int end);
-	
+
 	/**
 	 * Returns all users that are classified to the specified state by
 	 * the given classifier 
@@ -354,10 +349,11 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @param classifier something that classfied the user
 	 * @param status the state to which the user was classified
 	 * @return list of classified users
+	 * @param interval 
 	 * @author sts
 	 */
 	public List<User> getClassifiedUsers(Classifier classifier, SpamStatus status, int interval);
-	
+
 	/**
 	 * Returns number of classfied user 
 	 * 
@@ -367,7 +363,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @return count of users
 	 */
 	public int getClassifiedUserCount(Classifier classifier, SpamStatus status, int interval);
-	
+
 	/**
 	 * Returns the value of the specified classifier setting
 	 * 
@@ -375,7 +371,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @return The setting value
 	 */
 	public String getClassifierSettings(ClassifierSettings key);
-	
+
 	/**
 	 * Updates the specified classifier setting
 	 * 
@@ -383,7 +379,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @param value the new setting value
 	 */
 	public void updateClassifierSettings(ClassifierSettings key, final String value);	
-	
+
 	/**
 	 * Returns the history of classifier predictions 
 	 * 
