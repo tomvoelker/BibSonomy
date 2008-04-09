@@ -50,6 +50,8 @@
 		
 		<jsp:attribute name="sidebar">
 		
+			<div style="smalltext">
+		
 			<!-- links to user's  or global concept / tag pages -->
 			<c:if test="${not empty command.user.name}">
 				<li>
@@ -73,6 +75,8 @@
 				<c:out value=" "/>
 				<fmt:message key="tag.asConceptFromAll"/>
 			</li>
+			
+			</div>
 			
 			<!-- related tags -->
 			<c:if test="${not empty command.relatedTagCommand.relatedTags}">

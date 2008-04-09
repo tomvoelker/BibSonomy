@@ -24,6 +24,9 @@
 		
 		<jsp:attribute name="sidebar">
 		
+			<!--  links to tag / concept pages -->
+			<div class="smalltext">
+			
 			<c:choose>
 				<c:when test="${not empty command.user.name}">
 					<c:if test="${empty command.requestedUser}">
@@ -57,15 +60,20 @@
 			</c:if>
 			
 			<!-- display the link to the tag page -->
-			<li>
+			<li style="margin-bottom: 1ex;">
 				<a href="/tag/${fn:escapeXml(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>${mtl:ch('nbsp')}<fmt:message key="tag.asTagFromAll"/>
 			</li>
 			
+			</div>			
+			
 			<!-- display user's tag relations -->			
 			<li>
-				<c:set var="tagRelationsTitle"><fmt:message key="tagrelations.title"/></c:set>
+				<c:set var="tagRelationsTitle">
+					<fmt:message key="${(not empty command.requestedUser ? 'tagrelations.user.title' : 'tagrelations.group.title')}"/>
+				</c:set>
 				<span class="sidebar_h">
-					<a href="/relations/${fn:escapeXml(command.requestedUser)}" title="${tagRelationsTitle}">
+					<c:url var="relationsUrl" value="/relations/${(not empty command.requestedUser ? command.requestedUser : command.requestedGroup)}" context="${projectContext}"/>
+					<a href="${relationsUrl}" title="${tagRelationsTitle}">
 						<fmt:message key="tagrelations"/>
 					</a>
 				</span>	

@@ -23,6 +23,8 @@
 		
 		<jsp:attribute name="sidebar">
 		
+			<div style="smalltext">
+		
 			<!-- links to user's  or global concept / tag pages -->
 			<li>
 				<a href="/tag/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
@@ -45,11 +47,14 @@
 					${fn:escapeXml(command.user.name)}
 				</li>				
 			</c:if>
+			
 			<li style="margin-bottom: 1ex;">
 				<a href="/concept/tag/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 				<c:out value=" "/>
 				<fmt:message key="tag.asConceptFromAll"/>
-			</li>									
+			</li>					
+			
+			</div>				
 			
 			<!-- group members -->
 			<rc:members requPath="${requPath}" cmd="${command.memberCommand}"/>
