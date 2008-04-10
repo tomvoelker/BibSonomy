@@ -30,6 +30,7 @@ import org.bibsonomy.scraper.url.kde.pubmedcentral.PubMedCentralScraper;
 import org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper;
 import org.bibsonomy.scraper.url.kde.spires.SpiresScraper;
 import org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper;
+import org.bibsonomy.scraper.url.kde.trier.DBLPScraper;
 import org.bibsonomy.scraper.url.kde.wiley.intersience.WileyIntersienceScraper;
 
 
@@ -63,5 +64,6 @@ public class URLCompositeScraper extends CompositeScraper {
 		addScraper(new PlosScraper());
 		addScraper(new NatureScraper());
 		addScraper(new BlackwellSynergyScraper());
+		addScraper(new DBLPScraper());
 	}
 }
