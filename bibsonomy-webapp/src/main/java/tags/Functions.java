@@ -290,5 +290,15 @@ public class Functions  {
 	 */
 	public static String getPredictionString(final Integer id) {
 		return SpamStatus.getStatus(id).toString();
-	}		
+	}	
+	
+	/**
+	 * Retrieves if given status is a spammer status
+	 * @param id
+	 * @return 
+	 */
+	public static Boolean isSpammer(final Integer id) {
+		SpamStatus status = SpamStatus.getStatus(id);
+		return SpamStatus.isSpammer(status);
+	}
 }

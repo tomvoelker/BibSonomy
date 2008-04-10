@@ -646,8 +646,8 @@ span.info:hover span{
 	text-decoration: none;
 	display: block;
 	background: #EEE;
-	padding: 0.24em 1em;
-	width: 8em;
+	padding: 3px;
+	width: 7em;
 	text-align: center;
 	font-size: 80%;		
 }
@@ -661,8 +661,7 @@ span.info:hover span{
 	position: relative;
 	top: 1px;
 	background: white;
-	color: black;
-	font-weight: bold;		
+	color: #069;
 }
 #tab_content {
 	border: 1px solid #069;

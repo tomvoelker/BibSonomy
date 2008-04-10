@@ -687,5 +687,10 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	public List<User> getClassifierHistory(String userName) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public List<User> getClassifierComparison(int interval) {
+		// TODO Auto-generated method stub
+		return null;
 	}	
 }

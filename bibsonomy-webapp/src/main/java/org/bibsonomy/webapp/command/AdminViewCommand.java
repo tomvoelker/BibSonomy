@@ -60,12 +60,10 @@ public class AdminViewCommand extends TabsCommand<User> {
 	}
 
 	public Integer getInterval() {
-		System.out.println("get interval " + this.interval);
 		return this.interval;
 	}
 
 	public void setInterval(Integer interval) {
 		this.interval = interval;
-		System.out.println("---------> "  + this.interval);
 	}	
 }

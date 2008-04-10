@@ -1,10 +1,13 @@
 package org.bibsonomy.webapp.controller;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SpamStatus;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.AdminSettingsCommand;
@@ -74,14 +77,20 @@ public class AdminPageController implements MinimalisticController<AdminViewComm
 		command.setNumClassifierSpammer(this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.SPAMMER, cmd.getInterval()));
 		command.setNumClassifierSpammerUnsure(this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.SPAMMER_NOT_SURE, cmd.getInterval()));
 		command.setNumClassifierNoSpammer(this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.NO_SPAMMER, cmd.getInterval()));
-		command.setNumClassifierNoSpammerUnsure(this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.NO_SPAMMER_NOT_SURE, cmd.getInterval()));
-				
+		command.setNumClassifierNoSpammerUnsure(this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.NO_SPAMMER_NOT_SURE, cmd.getInterval()));				
 	}
 	
 	public void setUsers(AdminViewCommand cmd) {
 		Classifier classifier = null;
-		SpamStatus status = null;
+		SpamStatus status 	  = null;
 		
+		if (cmd.getSelTab() == AdminViewCommand.CLASSIFIER_EVALUATE) {
+			List<User> u = this.logic.getClassifierComparison(cmd.getInterval());
+			cmd.setContent(u);
+			System.out.println(u.get(0).getName());
+			return;
+		}		
+			
 		/* set content in dependence of the selected tab */
 		switch(cmd.getSelTab()) {
 		case AdminViewCommand.ADMIN_SPAMMER_INDEX:
@@ -110,7 +119,5 @@ public class AdminPageController implements MinimalisticController<AdminViewComm
 			break;
 		}			
 		cmd.setContent(this.logic.getClassifiedUsers(classifier, status, cmd.getInterval()));		
-	}
-	
-	
+	}	
 }

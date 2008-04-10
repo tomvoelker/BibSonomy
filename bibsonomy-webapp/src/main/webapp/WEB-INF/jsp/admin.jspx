@@ -43,24 +43,30 @@
 			<script type="text/javascript" src="/resources/javascript/ajax-tooltip.js">&amp;nbsp;</script>
 				
 			<c:if test="${!empty command.content}">
+				
+				<c:choose>
+				
+				<!-- classifier results tabs -->
+				<c:when test="${command.selTab &lt; 7}">				
 				<table id="spammers" class="spammertable">
 				    <tr style="font-size:120%">
-				    	<th>Spammer?</th>
-				    	<th>Username</th>
-				    	<th>Spammer</th>
-				    	<th>Realname</th>
-				    	<th>E-Mail</th>
+				    	<th>Spam?</th><th>Username</th><th>Spammer</th><th>Realname</th><th>Regdate</th>    	
+				   		<c:choose>
+				   		<c:when test="${command.selTab > 2}">
 				    	<th>Algorithm</th>
 				    	<th>Mode</th>
-				    	<th>Regdate</th>
+				    	</c:when>
+				    	<c:otherwise>
 				    	<th>updated by</th>
+				    	</c:otherwise>
+				    	</c:choose>
 				    	<th>updated at</th>
 				    </tr>
 				    				    
 				    <!-- user list -->
 					<c:forEach var="user" items="${command.content}" varStatus="status">
 				      <tr id="sl${status.count}">				
-				       <td>
+				       <td style="text-align: center">
 					     <c:choose>
 					     	<c:when test="${user.spammer}">
 							     <a href="javascript:unflagSpammer('${user.name}','sl${status.count}', true)" title="unflag this user as spammer">NO</a>
@@ -75,16 +81,54 @@
 				       	<a onclick="javascript:ajax_showTooltip('ajax?action=latest_posts&amp;userName=${user.name}',this);return false;" style="cursor:pointer" title="show latest posts"><img src="/resources/image/info.png"/></a>
 				        <a onclick="javascript:ajax_showTooltip('ajax?action=prediction_history&amp;userName=${user.name}',this);return false;" style="cursor:pointer" title="show latest user predictions"><img src="/resources/image/history.png"/></a></td>
 				       <td><c:out value="${user.spammer}"/></td>
-				       <td><c:out value="${user.realname}"/></td>
-				       <td><c:out value="${user.email}"/></td>
+				       <td><c:out value="${user.realname}"/></td>	
+					   <td><c:out value="${user.registrationDate}"/></td>					   
+				 	   <c:choose>
+				       <c:when test="${command.selTab > 2}">				    				       
 				       <td><c:out value="${user.algorithm}"/></td>
-				       <td><c:out value="${user.mode}"/></td>			       
-					   <td><c:out value="${user.registrationDate}"/></td>
-					   <td><c:out value="${user.updatedBy}"/></td>
+				       <td><c:out value="${user.mode}"/></td>	
+				       </c:when>
+				       <c:otherwise>
+				       <td><c:out value="${user.updatedBy}"/></td>	
+				       </c:otherwise>	
+				       </c:choose>	       
 					   <td><c:out value="${user.updatedAt}"/></td>
 				       </tr>
 				    </c:forEach>
-				  </table>
+				</table>
+				</c:when>
+				
+				<!-- evaluation tab -->
+				<c:otherwise>
+				<table id="spammers" class="spammertable">
+			    <tr style="font-size:120%">
+			    	<th>Username</th><th>Admin</th><th>Spammer</th><th>Algorithm</th><th>Prediction</th><th></th>
+			    </tr>
+				
+				<c:forEach var="user" items="${command.content}" varStatus="status">
+				<tr>
+					<td>
+						<a href="/user/${user.name}"><c:out value="${user.name}"/></a>
+						<a onclick="javascript:ajax_showTooltip('ajax?action=latest_posts&amp;userName=${user.name}',this);return false;" style="cursor:pointer" title="show latest posts"><img src="/resources/image/info.png"/></a>
+				        <a onclick="javascript:ajax_showTooltip('ajax?action=prediction_history&amp;userName=${user.name}',this);return false;" style="cursor:pointer" title="show latest user predictions"><img src="/resources/image/history.png"/></a>
+				  	</td>
+				    <td><c:out value="${user.updatedBy}"/></td>	
+					<td><c:out value="${user.spammer}"/></td>
+					<td><c:out value="${user.algorithm}"/></td>	
+					<td><c:out value="${mtl:predictionString(user.prediction)}"/></td>	
+					<c:choose>
+						<c:when test="${user.spammer == mtl:isSpammer(user.prediction)}">
+							<td style="background: green"></td>					
+						</c:when>
+						<c:otherwise>
+							<td style="background: red"></td>	
+						</c:otherwise>
+					</c:choose>
+				</tr>				
+				</c:forEach>	
+				</table>			
+				</c:otherwise>				
+				</c:choose>				
 			</c:if>					
 		</jsp:attribute>		
 		
@@ -99,7 +143,6 @@
 					<td>mode:</td>
 					<td>
 						<select name="mode" id="mode" size="1">
-							<!-- TODO: preselect current -->							
 							<option id="D" value="D">Day</option>
 							<option id="N" value="N">Night</option>						
 						</select>						
@@ -110,7 +153,6 @@
 					<td>algorithm:</td>
 					<td>
 						<select name="algorithm" id="algorithm" size="1">
-							<!-- TODO: preselect current -->
 							<option id="weka.classifiers.lazy.IBk" value="weka.classifiers.lazy.IBk">IBk</option>
 							<option id="weka.classifiers.bayes.NaiveBayes" value="weka.classifiers.bayes.NaiveBayes">Naive Bayes</option>
 						</select>
@@ -129,14 +171,13 @@
 				</tr>
 				<tr>
 					<td>probability limit:</td>
-					<td><input type="text" id="probability_limit"  size="7" value="${settingsCommand.probabilityLimit}"/> %</td>
+					<td><input type="text" id="probability_limit"  size="7" value="${settingsCommand.probabilityLimit}"/></td>
 					<td><input type="button" value="update" onclick="javascript:updateSettings('probability_limit', document.getElementById('probability_limit').value)"/></td>
 				</tr>
 				<tr>
 					<td>testing mode:</td>
 					<td>
 						<select name="testing" id="testing" size="1">
-							<!-- TODO: preselect current -->
 							<option id="on" value="on">On</option>
 							<option id="off" value="off">Off</option>
 						</select></td>
