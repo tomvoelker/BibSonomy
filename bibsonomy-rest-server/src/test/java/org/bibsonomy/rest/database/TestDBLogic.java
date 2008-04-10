@@ -816,4 +816,9 @@ public class TestDBLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public List<User> getClassifierComparison(int interval) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
