@@ -940,5 +940,16 @@ public class DBLogic implements LogicInterface {
 		} finally {
 			session.close();			
 		}
+	}
+
+	public List<User> getClassifierComparison(int interval) {
+		permissionDBManager.ensureAdminAccess(this.loginUser);
+		final DBSession session = openSession();
+
+		try {			
+			return this.adminDBManager.getClassifierComparison(interval, session);
+		} finally {
+			session.close();			
+		}
 	}		
 }

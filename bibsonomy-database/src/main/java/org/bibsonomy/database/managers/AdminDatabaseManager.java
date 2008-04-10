@@ -65,12 +65,21 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	 * Flags or unflags a user as a spammer
 	 * @param user the user to flag
 	 * @param updatedBy the admin who flags the user
-	 * @param session
+	 * @param session db session
+	 * @return user name
 	 */
 	public String flagSpammer(User user, String updatedBy, DBSession session) {
 		return this.flagSpammer(user, updatedBy, "off", session);
 	}
 	
+	/**
+	 * Flags or unflags a user as a spammer
+	 * @param user the user to flag
+	 * @param updatedBy the admin who flags the user
+	 * @param testMode testmode active/inactive
+	 * @param session db session
+	 * @return user name
+	 */
 	public String flagSpammer(User user, String updatedBy, String testMode, DBSession session) {
 		final AdminParam param = new AdminParam();
 		
@@ -209,5 +218,20 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	public List<User> getClassifierHistory(final String userName, final DBSession session) {		
 		return this.queryForList("getClassifierHistory", userName, User.class, session);
 		
+	}
+
+	/**
+	 * Retrieves a comparison of classification results
+	 * of admins and the automatic classifier
+	 * 
+	 * @param interval the time period of classifications
+	 * @param session db session
+	 * @return Userlist with spammer flag of admin and prediction of classifier 
+	 */
+	public List<User> getClassifierComparison(int interval, DBSession session) {
+		AdminParam param = new AdminParam();
+		param.setInterval(interval);
+		param.setLimit(50);
+		return this.queryForList("getClassifierComparison", param, User.class, session);			
 	}
 }
