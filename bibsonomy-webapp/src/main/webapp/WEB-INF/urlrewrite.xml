@@ -213,6 +213,12 @@
 		<to last="false">/$1&amp;bookmark.entriesPerPage=$2&amp;bibtex.entriesPerPage=$2</to>
 	</rule>
 
+        <!-- necessary to keep jabref exports valid until they are migrated -->
+        <rule>
+                <from>^/+(.*bibtex.entriesPerPage=(\d+).*)$</from>
+                <to last="false">/$1&amp;items=$2</to>
+        </rule>
+
 <!-- ############## general pages ############### -->
 
 	<!-- homepage -->
