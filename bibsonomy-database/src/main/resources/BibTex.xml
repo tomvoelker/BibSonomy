@@ -18,7 +18,7 @@
 		      FROM <include refid="tagFromQuery"/>
 		      WHERE <include refid="tagWhereQuery"/>
 			        AND t1.content_type = #contentType#
-			        <include refid="restrictToGroups"/>
+			        AND t1.group = #groupType#
 		      ORDER BY t1.date DESC
 		      LIMIT #limit# OFFSET #offset#) AS tt
 		WHERE b.content_id = tt.content_id
