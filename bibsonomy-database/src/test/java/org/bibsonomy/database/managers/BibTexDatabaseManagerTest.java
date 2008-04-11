@@ -132,7 +132,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		ArrayList<Integer> groups = new ArrayList<Integer>();
 		tags.add("community");
 		Integer count = this.bibTexDb.getBibtexByTagNamesCount(tags, groups, this.dbSession);
-		assertEquals(215, count);
+		assertEquals(179, count);
 		tags.add("social");
 		count = this.bibTexDb.getBibtexByTagNamesCount(tags, groups, this.dbSession);
 		assertEquals(8, count);

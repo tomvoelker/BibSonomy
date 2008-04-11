@@ -24,7 +24,7 @@
 		FROM <include refid="tagFromQuery"/>
 		WHERE <include refid="tagWhereQuery"/>
 			AND t1.content_type = #contentType#
-			<include refid="restrictToGroups"/>
+			AND t1.group = #groupType#
 	</select>
 	
 	<select id="getBookmarkByTagNamesAndFolkrank" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">

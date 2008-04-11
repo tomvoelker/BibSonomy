@@ -146,7 +146,14 @@
 	 -->
 	<sql id="restrictToGroups">
 		<isEqual property="groupId" compareValue="-1">
-		  <include refid="inGroups"/>
+		  <!-- no user logged in -> only public posts -->
+		  <isEmpty property="userName" prepend="AND">
+		  	t1.group = 0 
+		  </isEmpty>
+		  <!-- user logged in -> check his groups -->
+		  <isNotEmpty property="userName">
+		  	<include refid="inGroups"/>
+		  </isNotEmpty>
 		</isEqual>
 		<isGreaterThan property="groupId" compareValue="-1" prepend="AND">
 		  t1.group = #groupId#
