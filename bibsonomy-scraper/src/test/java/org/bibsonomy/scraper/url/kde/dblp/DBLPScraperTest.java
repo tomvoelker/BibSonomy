@@ -1,4 +1,4 @@
-package org.bibsonomy.scraper.url.kde.trier;
+package org.bibsonomy.scraper.url.kde.dblp;
 
 import org.junit.Ignore;
 import org.junit.Test;
