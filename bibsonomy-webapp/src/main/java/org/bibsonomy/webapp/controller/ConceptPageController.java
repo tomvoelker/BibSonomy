@@ -61,7 +61,7 @@ public class ConceptPageController  extends MultiResourceListController implemen
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {			
 			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, command.getListCommand(resourceType).getEntriesPerPage());
-			this.postProcessList(command, resourceType);
+			this.postProcessAndSortList(command, resourceType);
 		}	
 		
 		// retrieve concepts

@@ -48,7 +48,7 @@ public class ViewablePageController extends MultiResourceListControllerWithTags 
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {			
 			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, command.getListCommand(resourceType).getEntriesPerPage());
-			this.postProcessList(command, resourceType);
+			this.postProcessAndSortList(command, resourceType);
 		}		
 		
 		// html format - retrieve tags and return HTML view

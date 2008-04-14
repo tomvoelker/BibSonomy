@@ -4,6 +4,7 @@ package org.bibsonomy.webapp.controller;
 import java.util.Collection;
 import java.util.List;
 
+
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.TagCloudStyle;
@@ -17,6 +18,7 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.TagUtils;
+import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.webapp.view.Views;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.ResourceViewCommand;
@@ -66,11 +68,17 @@ public abstract class MultiResourceListController {
 	 * 
 	 * @param cmd
 	 */
-	protected <T extends ResourceViewCommand> void postProcessList(T cmd, Class<? extends Resource> resourceType) {				
+	protected <T extends ResourceViewCommand> void postProcessAndSortList(T cmd, Class<? extends Resource> resourceType) {				
 		if ( resourceType == BibTex.class ) {
 			for (Post<BibTex> post : cmd.getBibtex().getList()) {
 				// insert openURL into bibtex objects
 				post.getResource().setOpenURL(BibTexUtils.getOpenurl(post.getResource()));
+			}
+			if ("no".equals(cmd.getDuplicates())) {
+				BibTexUtils.removeDuplicates(cmd.getBibtex().getList());
+			}
+			if (!"none".equals(cmd.getSortPage())) {
+				BibTexUtils.sortBibTexList(cmd.getBibtex().getList(), SortUtils.parseSortKeys(cmd.getSortPage()), SortUtils.parseSortOrders(cmd.getSortPageOrder()) );
 			}
 		}
 	}

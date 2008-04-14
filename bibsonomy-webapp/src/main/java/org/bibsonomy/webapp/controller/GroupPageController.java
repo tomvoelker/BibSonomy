@@ -53,7 +53,7 @@ public class GroupPageController extends MultiResourceListControllerWithTags imp
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {			
 			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, command.getListCommand(resourceType).getEntriesPerPage());
-			this.postProcessList(command, resourceType);
+			this.postProcessAndSortList(command, resourceType);
 			
 			// retrieve resource counts, if no tags are given
 			if (requTags.size() == 0) { 

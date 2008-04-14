@@ -26,8 +26,19 @@ public class ResourceViewCommand extends BaseCommand {
 	private String requestedUser;
 	private String resourcetype;
 	private String format = "html";
+	private String sortPage = "none";
+	private String sortPageOrder = "asc";
+	private String duplicates = "yes";
 	
 	
+	public String getDuplicates() {
+		return this.duplicates;
+	}
+
+	public void setDuplicates(String duplicates) {
+		this.duplicates = duplicates;
+	}
+
 	/**
 	 * @param <T> type of the entities in the list
 	 * @param resourceType type of the entities in the list
@@ -114,6 +125,22 @@ public class ResourceViewCommand extends BaseCommand {
 
 	public void setResourcetype(String resourcetype) {
 		this.resourcetype = resourcetype;
+	}
+
+	public String getSortPage() {
+		return this.sortPage;
+	}
+
+	public void setSortPage(String sortPage) {
+		this.sortPage = sortPage;
+	}
+
+	public String getSortPageOrder() {
+		return this.sortPageOrder;
+	}
+
+	public void setSortPageOrder(String sortPageOrder) {
+		this.sortPageOrder = sortPageOrder;
 	}	
 		
 }

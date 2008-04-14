@@ -32,7 +32,7 @@ public class HomepageController extends MultiResourceListController implements M
 			// disable manual setting of start value for homepage
 			command.getListCommand(resourceType).setStart(0);
 			setList(command, resourceType, GroupingEntity.ALL, null, null, null, null, null, 20);
-			postProcessList(command, resourceType);
+			postProcessAndSortList(command, resourceType);
 		}
 												
 		// html format - retrieve tags and return HTML view
