@@ -9,11 +9,22 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLEncoder;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.comparators.BibTexPostComparator;
+import org.bibsonomy.model.comparators.BibTexPostInterhashComparator;
+
 
 /**
  * Some BibTex utility functions
@@ -327,4 +338,54 @@ public class BibTexUtils {
 		}
 		return sb.toString();
 	} 
+	
+	/**
+	 * Tries to find a year (four connected digits) in a string and returns them as int.
+	 * If it fails, returns Integer.MAX_VALUE.
+	 * 
+	 * @param year
+	 * @return an integer representation of the year, or Integer.MAX_VALUE if it fails
+	 */
+	public static int getYear (String year) {
+		try {
+			return Integer.parseInt(year);
+		} catch (NumberFormatException e) {
+			/*
+			 * try to get four digits ...
+			 */
+			Pattern p = Pattern.compile("\\d{4}");
+			Matcher m = p.matcher(year);
+			if (m.find()) {
+				return Integer.parseInt(m.group());
+			}
+		}
+		return Integer.MAX_VALUE;
+	}	
+
+	/**
+	 * sort a list of bibtex posts (and eventually remove duplicates)
+	 * 
+	 * @param bibtexList
+	 * @param sortKeys
+	 * @param sortOrders
+	 * @param removeDuplicates
+	 */
+	public static void sortBibTexList (List<Post<BibTex>> bibtexList, List<SortKey> sortKeys, List<SortOrder> sortOrders) {
+		Collections.sort(bibtexList, new BibTexPostComparator(sortKeys, sortOrders));
+	}
+	
+	/**
+	 * sort a list of bibtex posts and remove duplicates
+	 * 
+	 * @param bibtexList
+	 * @param comp
+	 */
+	public static void removeDuplicates (List<Post<BibTex>> bibtexList) {
+		TreeSet<Post<BibTex>> temp = new TreeSet<Post<BibTex>>(new BibTexPostInterhashComparator());
+		temp.addAll(bibtexList);
+		// FIXME: a bit cumbersome at this point - but we need to work on the bibtexList
+		bibtexList.clear();
+		bibtexList.addAll(temp);
+	}
+
 }
