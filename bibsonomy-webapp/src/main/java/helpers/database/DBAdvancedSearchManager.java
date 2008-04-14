@@ -42,10 +42,10 @@ public class DBAdvancedSearchManager extends DBManager {
 				SortedSet<String> authors = new TreeSet<String>();				
 
 				String query = "SELECT s.content_id, b.author, b.editor, t.tag_name, b.title, b.simhash2, b.url "
-					+ "		FROM search s "
+					+ "		FROM search_bibtex s "
 					+ "			JOIN tas t USING (content_id) "
 					+ "			JOIN bibtex b USING (content_id) "
-					+ "		WHERE s.user_name = ? AND s.content_type = 2 "
+					+ "		WHERE s.user_name = ?"
 					+ "		ORDER BY s.content_id";			
 				c.stmt = c.conn.prepareStatement(query);	
 				c.stmt.setString(1, bean.getUser());
