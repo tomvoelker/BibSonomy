@@ -71,5 +71,15 @@ public class AmazonScraperTest {
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_50"));
 	}
+	
+	/**
+	 * starts URL test with id url_57
+	 */
+	@Test
+	@Ignore
+	public void url7TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_57"));
+	}
 
 }

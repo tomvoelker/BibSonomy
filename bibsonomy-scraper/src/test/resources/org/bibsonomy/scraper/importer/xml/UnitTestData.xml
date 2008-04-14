@@ -334,6 +334,13 @@
 		<TestDescription>DBLP scraping test (html page)</TestDescription>
 		<URL>http://search.mpi-inf.mpg.de/dblp/show.php?key=journals/ws/JaschkeHSGS08</URL>
 		<BibFile>DBLPScraperUnitTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.trier.DBLPScraper</Scraper>
+		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_57">
+		<TestDescription>failure with amazon.com</TestDescription>
+		<URL>http://www.amazon.com/Text-Mining-Predictive-Unstructured-Information/dp/0387954333</URL>
+		<BibFile>AmazonScraperUnitURLTest7.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.amazon.AmazonScraper</Scraper>
+	</URLTest>
+	
 </test:Tests>
