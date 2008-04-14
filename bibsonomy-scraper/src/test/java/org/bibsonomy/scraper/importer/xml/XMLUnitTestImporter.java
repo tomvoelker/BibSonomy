@@ -32,7 +32,7 @@ public class XMLUnitTestImporter implements IUnitTestImporter {
 	/**
 	 * 
 	 */
-	private static final String PATH_TO_BIBS = "src/test/resources/scraper/data/";
+	private static final String PATH_TO_BIBS = "src/test/resources/org/bibsonomy/scraper/data/";
 	
 	/*
 	 * Names from XML elements and attributes
