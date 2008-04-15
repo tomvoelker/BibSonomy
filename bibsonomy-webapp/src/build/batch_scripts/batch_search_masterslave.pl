@@ -56,8 +56,7 @@ my $bookmark_table = shift @ARGV;     # bookmark table name
 my $bibtex_table   = shift @ARGV;     # bibtex table name 
 
 my $user     = "batch";         # same user name on all databases
-#my $password = $ENV{'DB_PASS'}; # same password on all databases
-my $password = "iphi5EeM";
+my $password = $ENV{'DB_PASS'}; # same password on all databases
 
 # master and slave databases 
 my $slave    = "DBI:mysql:database=$database;host=odie:3306;mysql_socket=/var/mysql/run/mysqld.sock";
@@ -86,7 +85,7 @@ print "\n\n#################################\nStart script...\n#################
 
 print "connect to db-slave and prepare statements...\n" if ($enable_output == 1);
 # connect to database
-my $dbh = DBI->connect($slave, "sts", "Unterhaltungs_Branche", {RaiseError => 1, "mysql_auto_reconnect" => 1, "mysql_enable_utf8" => 1});
+my $dbh = DBI->connect($slave, $user, $password, {RaiseError => 1, "mysql_auto_reconnect" => 1, "mysql_enable_utf8" => 1});
 
 ### prepare statements ###
 
