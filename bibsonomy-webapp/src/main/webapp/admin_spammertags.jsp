@@ -87,15 +87,18 @@
 
 <hr>
 
-<sql:setDataSource dataSource="jdbc/bibsonomy" var="dataSource"/>
+<!-- 
+	<sql:setDataSource dataSource="jdbc/bibsonomy" var="dataSource"/>
+ -->
+<sql:setDataSource dataSource="jdbc/bibsonomy_slave" var="slaveDataSource"/>
 
 <%-------------------------- list of marked spammer tags (ordered by
 							 count of usage in last 1000 posts) ----------%>	
-<sql:query var="count" dataSource="${dataSource}">
+<sql:query var="count" dataSource="${slaveDataSource}">
 	SELECT COUNT(*) AS anz FROM spammer_tags WHERE spammer = 1
 </sql:query>
 
-<sql:query var="rs" dataSource="${dataSource}">
+<sql:query var="rs" dataSource="${slaveDataSource}">
 	SELECT tas_tags.tag_name, COUNT(*) AS anz_tags FROM  
 	(
 	    SELECT tag_name FROM  
@@ -141,7 +144,7 @@
 
 <%-------------------------- busy spammertags (tags of last 10000 tas which  
 							 have a spammer group but not listed in spammer tags yet) -----%>
-<sql:query var="busytags" dataSource="${dataSource}">	
+<sql:query var="busytags" dataSource="${slaveDataSource}">	
    SELECT
    t.tag_name, COUNT(t.tag_name) AS tag_anzahl
    FROM
@@ -183,7 +186,7 @@
 </div>
 
 <%-------------------------- list of users not marked as spammers but post spammertags -----------------------%>
-<sql:query var="spammers" dataSource="${dataSource}">
+<sql:query var="spammers" dataSource="${slaveDataSource}">
 	SELECT t.user_name AS user, t.tag_name AS tag 
 	FROM (
 		SELECT user_name, MAX(t.date) AS date 
