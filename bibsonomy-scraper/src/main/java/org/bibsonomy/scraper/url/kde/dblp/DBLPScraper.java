@@ -20,10 +20,16 @@ public class DBLPScraper implements Scraper {
 
 	private static final String DBLP_HOST_NAME1  = "http://dblp.uni-trier.de";
 	private static final String DBLP_HOST_NAME2  = "http://search.mpi-inf.mpg.de/dblp/";
+	/*
+	 * These are no mirrors, they just link to above hosts
+	 */
+	/*
 	private static final String DBLP_HOST_NAME3  = "http://www.sigmod.org/dblp/";
 	private static final String DBLP_HOST_NAME4  = "http://www.vldb.org/dblp/";
 	private static final String DBLP_HOST_NAME5  = "http://sunsite.informatik.rwth-aachen.de/dblp/";
+	*/
 	private static final Pattern DBLP_PATTERN = Pattern.compile(".*<pre>\\s*(@[A-Za-z]+\\s*\\{.+?\\})\\s*</pre>.*", Pattern.MULTILINE | Pattern.DOTALL);
+	
 	
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		/*
@@ -35,12 +41,19 @@ public class DBLPScraper implements Scraper {
 			 */
 			final String url = sc.getUrl().toString();
 			if (url.startsWith(DBLP_HOST_NAME1) || 
-					url.startsWith(DBLP_HOST_NAME2) ||
+					url.startsWith(DBLP_HOST_NAME2) /*||
 					url.startsWith(DBLP_HOST_NAME3) ||
 					url.startsWith(DBLP_HOST_NAME4) ||
-					url.startsWith(DBLP_HOST_NAME5)) { 
+					url.startsWith(DBLP_HOST_NAME5)*/) { 
 
-				final Matcher m = DBLP_PATTERN.matcher(sc.getPageContent());	
+				//Filtering the <a href="...">DBLP</a>: links out of the content
+				int beginDBLPLink = sc.getPageContent().indexOf("<a href=\"http://www.informatik.uni-trier.de/~ley/db/about/bibtex.html\">");
+				int endDBLPLink = sc.getPageContent().indexOf("DBLP</a>:");
+				
+				String pageContent = new String(sc.getPageContent().substring(0, beginDBLPLink) + sc.getPageContent().substring(endDBLPLink+9));
+		
+				
+				final Matcher m = DBLP_PATTERN.matcher(pageContent);	
 				if (m.matches()) {
 					sc.setBibtexResult(m.group(1));
 					/*
