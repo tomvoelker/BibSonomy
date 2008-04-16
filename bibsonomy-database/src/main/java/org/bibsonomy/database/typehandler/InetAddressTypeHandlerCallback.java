@@ -12,9 +12,9 @@ import com.ibatis.sqlmap.client.extensions.ResultGetter;
 import com.ibatis.sqlmap.client.extensions.TypeHandlerCallback;
 
 /**
- * An iBATIS type handler callback for {@link InetAddress}es that are mapped to Strings
- * in the database. If an InetAddress cannot be constructed based on the String, then the
- * InetAddress will be set to <code>null</code>.<br/>
+ * An iBATIS type handler callback for {@link InetAddress}es that are mapped to
+ * Strings in the database. If an InetAddress cannot be constructed based on the
+ * String, then the InetAddress will be set to <code>null</code>.<br/>
  * 
  * Almost copied from <a
  * href="http://opensource.atlassian.com/confluence/oss/display/IBATIS/Type+Handler+Callbacks">Atlassian -
@@ -22,10 +22,11 @@ import com.ibatis.sqlmap.client.extensions.TypeHandlerCallback;
  * 
  * @author Ken Weiner
  * @author Christian Schenk
- * @author rja
+ * @author Robert Jaeschke
  * @version $Id$
  */
 public class InetAddressTypeHandlerCallback implements TypeHandlerCallback {
+
 	private static final Logger log = Logger.getLogger(InetAddressTypeHandlerCallback.class);
 
 	public Object getResult(final ResultGetter getter) throws SQLException {

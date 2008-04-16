@@ -9,9 +9,9 @@ import com.ibatis.sqlmap.client.extensions.ResultGetter;
 import com.ibatis.sqlmap.client.extensions.TypeHandlerCallback;
 
 /**
- * An iBATIS type handler callback for {@link Privlevel}es that are mapped to Strings
- * in the database. If the {@link Privlevel} cannot be constructed based on the String, then the
- * Privlevel will be set to <code>MEMBERS</code>.<br/>
+ * An iBATIS type handler callback for {@link Privlevel}es that are mapped to
+ * Strings in the database. If the {@link Privlevel} cannot be constructed based
+ * on the String, then the Privlevel will be set to <code>MEMBERS</code>.<br/>
  * 
  * Almost copied from <a
  * href="http://opensource.atlassian.com/confluence/oss/display/IBATIS/Type+Handler+Callbacks">Atlassian -
@@ -19,11 +19,11 @@ import com.ibatis.sqlmap.client.extensions.TypeHandlerCallback;
  * 
  * @author Ken Weiner
  * @author Christian Schenk
- * @author rja
+ * @author Robert Jaeschke
  * @version $Id$
  */
 public class PrivlevelTypeHandlerCallback implements TypeHandlerCallback {
-	
+
 	public Object getResult(final ResultGetter getter) throws SQLException {
 		final String value = getter.getString();
 		if (getter.wasNull()) {
@@ -36,7 +36,7 @@ public class PrivlevelTypeHandlerCallback implements TypeHandlerCallback {
 		if (parameter == null) {
 			setter.setInt(Privlevel.MEMBERS.getPrivlevel());
 		} else {
-			System.out.println("############################# parameter = " + parameter);
+			// System.out.println("############################# parameter = " + parameter);
 			final Privlevel privlevel = (Privlevel) parameter;
 			setter.setInt(privlevel.getPrivlevel());
 		}

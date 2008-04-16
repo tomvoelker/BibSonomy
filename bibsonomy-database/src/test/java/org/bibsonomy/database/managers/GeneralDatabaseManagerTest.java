@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.testutil.ParamUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -42,7 +43,7 @@ public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		// with no users set or a not existing one, no exception should be
 		// thrown and the result should just be "false"
-		final String[] combinations = new String[] { "", " ", null, "unknownuser" };
+		final String[] combinations = new String[] { "", " ", null, ParamUtils.NOUSER_NAME };
 		for (final String userName : combinations) {
 			for (final String friendUserName : combinations) {
 				if (present(userName) && present(friendUserName) && userName.equals(friendUserName)) continue;

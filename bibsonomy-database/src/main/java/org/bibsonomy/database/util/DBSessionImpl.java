@@ -3,7 +3,6 @@ package org.bibsonomy.database.util;
 import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
-import org.bibsonomy.common.exceptions.QueryTimeoutException;
 import org.bibsonomy.util.ExceptionUtils;
 
 import com.ibatis.sqlmap.client.SqlMapExecutor;

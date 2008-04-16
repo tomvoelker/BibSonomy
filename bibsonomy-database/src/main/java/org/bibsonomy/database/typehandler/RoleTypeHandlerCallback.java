@@ -9,9 +9,9 @@ import com.ibatis.sqlmap.client.extensions.ResultGetter;
 import com.ibatis.sqlmap.client.extensions.TypeHandlerCallback;
 
 /**
- * An iBATIS type handler callback for {@link Role}es that are mapped to Strings
- * in the database. If a Role cannot be constructed based on the String, then the
- * Role will be set to <code>DEFAULT</code>.<br/>
+ * An iBATIS type handler callback for {@link Role}es that are mapped to
+ * Strings in the database. If a Role cannot be constructed based on the String,
+ * then the Role will be set to <code>DEFAULT</code>.<br/>
  * 
  * Almost copied from <a
  * href="http://opensource.atlassian.com/confluence/oss/display/IBATIS/Type+Handler+Callbacks">Atlassian -
@@ -19,7 +19,7 @@ import com.ibatis.sqlmap.client.extensions.TypeHandlerCallback;
  * 
  * @author Ken Weiner
  * @author Christian Schenk
- * @author rja
+ * @author Robert Jaeschke
  * @version $Id$
  */
 public class RoleTypeHandlerCallback implements TypeHandlerCallback {
@@ -45,7 +45,7 @@ public class RoleTypeHandlerCallback implements TypeHandlerCallback {
 		try {
 			return Role.getRole(str);
 		} catch (NumberFormatException ex) {
-			return Role.DEFAULT; 
+			return Role.DEFAULT;
 		}
 	}
 }

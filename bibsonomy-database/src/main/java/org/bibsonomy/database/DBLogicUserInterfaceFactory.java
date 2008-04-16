@@ -33,12 +33,12 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 		if (loginName != null) {
 			final User loggedInUser = getLoggedInUser(loginName, password);
 			if (loggedInUser.getName() != null) {
-				return new DBLogic(loggedInUser, dbSessionFactory);
+				return new DBLogic(loggedInUser, this.dbSessionFactory);
 			}
-			throw new ValidationException("Wrong Authentication.");
+			throw new ValidationException("Wrong Authentication ('" + loginName + "'/'" + password + "')");
 		}
 		// guest access
-		return new DBLogic(new User(), dbSessionFactory);
+		return new DBLogic(new User(), this.dbSessionFactory);
 	}
 
 	/**
@@ -75,6 +75,6 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 	 * Returns a new database session.
 	 */
 	protected DBSession openSession() {
-		return dbSessionFactory.getDatabaseSession();
+		return this.dbSessionFactory.getDatabaseSession();
 	}
 }

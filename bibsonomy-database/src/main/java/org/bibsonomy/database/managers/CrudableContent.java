@@ -17,14 +17,30 @@ import org.bibsonomy.model.Resource;
  * @param <P> extends GenericParam
  */
 public interface CrudableContent<T extends Resource, P extends GenericParam> {
-	// read
+	/**
+	 * Read
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of posts
+	 */
 	public List<Post<T>> getPosts(P param, DBSession session);
 
-	// read
+	/**
+	 * Read
+	 * 
+	 * @param authUser
+	 * @param resourceHash
+	 * @param userName
+	 * @param visibleGroupIDs
+	 * @param session
+	 * @return list of posts
+	 */
 	public Post<T> getPostDetails(String authUser, String resourceHash, String userName, List<Integer> visibleGroupIDs, DBSession session);
 
 	/**
-	 * delete
+	 * Delete
+	 * 
 	 * @param userName 
 	 * @param resourceHash 
 	 * @param session 
@@ -34,7 +50,8 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	public boolean deletePost(String userName, String resourceHash, DBSession session);
 
 	/**
-	 * create, update
+	 * Create and update
+	 * 
 	 * @param userName 
 	 * @param post 
 	 * @param oldHash 

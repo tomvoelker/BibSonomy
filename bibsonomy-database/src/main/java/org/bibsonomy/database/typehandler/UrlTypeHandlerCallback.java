@@ -25,6 +25,7 @@ import com.ibatis.sqlmap.client.extensions.TypeHandlerCallback;
  * @version $Id$
  */
 public class UrlTypeHandlerCallback implements TypeHandlerCallback {
+
 	private static final Logger log = Logger.getLogger(UrlTypeHandlerCallback.class);
 
 	public Object getResult(final ResultGetter getter) throws SQLException {

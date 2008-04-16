@@ -16,11 +16,15 @@ import org.bibsonomy.database.util.DatabaseUtils;
  * with transaction management. Instead of calling certain methods this
  * implementation circumvents transaction management and prevents write access
  * to the database. This way it's well suited for test cases which shouldn't
- * alter the database.
+ * alter the database.<br/>
+ * 
+ * Since the test cases should write to the database too this implementation is
+ * obsolete. It may just stay here because of its elegance ;-).
  * 
  * @author Jens Illig
  * @version $Id$
  */
+@Deprecated
 public class SandboxDBSessionFactory extends DatabaseUtils implements DBSessionFactory {
 
 	private static final Logger log = Logger.getLogger(SandboxDBSessionFactory.class);
@@ -55,6 +59,10 @@ public class SandboxDBSessionFactory extends DatabaseUtils implements DBSessionF
 		return this.dbSessionProxy;
 	}
 
+	/**
+	 * Ends the transaction and closes the connection to the database. Should be
+	 * called in a <code>tearDown</code> method.
+	 */
 	public void endTest() {
 		if (this.realDbSession != null) {
 			this.realDbSession.endTransaction();

@@ -134,11 +134,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @param groups a list of groups 
 	 * @return a new list of groups with special groups removed
 	 */
-	public List<Group> removeSpecialGroups(List<Group> groups) {
-		ArrayList<Group> newGroups = new ArrayList<Group>();
-		for (Group g : groups) {
-			if (!GroupID.isSpecialGroupId(g.getGroupId()))
-				newGroups.add(g);
+	public List<Group> removeSpecialGroups(final List<Group> groups) {
+		final ArrayList<Group> newGroups = new ArrayList<Group>();
+		for (final Group group : groups) {
+			if (!GroupID.isSpecialGroupId(group.getGroupId()))
+				newGroups.add(group);
 		}
 		return newGroups;
 	}
@@ -153,7 +153,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public Group getGroupMembers(final String authUser, final String groupname, final DBSession session) {
 		log.debug("getGroupMembers " + groupname);
-		Group group;		
+		Group group;
 		if ("friends".equals(groupname) == true) {
 			group = getFriendsGroup();
 			group.setUsers(getFriendsOfUser(authUser,session));
@@ -177,6 +177,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			group.setUsers(Collections.<User> emptyList());
 			return group;
 		}
+
 		final int groupId = this.getGroupByName(groupname, session).getGroupId();
 		final Privlevel privlevel = this.getPrivlevelForGroup(groupId, session);
 		// remove members as necessary
@@ -189,6 +190,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			group.setUsers(Collections.<User> emptyList());
 			break;
 		}
+
 		return group;
 	}
 

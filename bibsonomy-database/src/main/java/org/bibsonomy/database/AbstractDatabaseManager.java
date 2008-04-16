@@ -34,6 +34,8 @@ public class AbstractDatabaseManager {
 
 	/**
 	 * short form of queryForList without Type argument
+	 * 
+	 * XXX: do we really want to use these?
 	 */
 	@SuppressWarnings("unchecked")
 	protected List queryForList(final String query, final Object param, final boolean ignoreException, final DBSession session) {

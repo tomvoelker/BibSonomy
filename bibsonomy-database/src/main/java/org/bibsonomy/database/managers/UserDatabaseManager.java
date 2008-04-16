@@ -2,7 +2,6 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -261,8 +260,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		// fallback: user is not logged in
 		return notLoggedInUser;
 	}
-	
-	
+
 	/**
 	 * @param param
 	 * @param session
