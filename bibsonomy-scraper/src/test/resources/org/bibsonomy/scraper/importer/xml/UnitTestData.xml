@@ -164,7 +164,7 @@
 	</URLTest>
 	<URLTest id="url_28">
 		<TestDescription>URL scraping test with publication from siencedirect</TestDescription>
-		<URL>http://www.sciencedirect.com/science?_ob=ArticleURL&amp;_udi=B6TYF-4NB99GY-1&amp;_user=4861060&amp;_coverDate=06%2F30%2F2007&amp;_rdoc=2&amp;_fmt=summary&amp;_orig=browse&amp;_srch=doc-info(%23toc%235617%232007%23998289991%23659499%23FLP%23display%23Volume)&amp;_cdi=5617&amp;_sort=d&amp;_docanchor=&amp;_ct=8&amp;_acct=C000065416&amp;_version=1&amp;_urlVersion=0&amp;_userid=4861060&amp;md5=f8655a77c67090a29bbdaeec1fb59fd3</URL>
+		<URL>http://www.sciencedirect.com/science?_ob=ArticleURL&amp;_udi=B6TYF-4NB99GY-1&amp;_user=4861060&amp;_coverDate=06%2F30%2F2007&amp;_alid=724597580&amp;_rdoc=1&amp;_fmt=high&amp;_orig=search&amp;_cdi=5617&amp;_sort=d&amp;_st=4&amp;_docanchor=&amp;_ct=1&amp;_acct=C000065416&amp;_version=1&amp;_urlVersion=0&amp;_userid=4861060&amp;md5=7adb7eb1b4e2ed495f2b202e7e608c0d</URL>
 		<BibFile>ScienceDirectScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper</Scraper>
 	</URLTest>
@@ -342,5 +342,10 @@
 		<BibFile>AmazonScraperUnitURLTest7.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.amazon.AmazonScraper</Scraper>
 	</URLTest>
-	
+	<URLTest id="url_58">
+		<TestDescription>failue with building from bibtex</TestDescription>
+		<URL>http://www.springer.com/computer/database+management+&amp;+information+retrieval/book/978-0-387-95433-2</URL>
+		<BibFile>SpringerLinkScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
+	</URLTest>
 </test:Tests>

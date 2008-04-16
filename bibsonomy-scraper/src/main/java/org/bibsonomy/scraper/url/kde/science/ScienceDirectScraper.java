@@ -16,6 +16,7 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.ScrapingException;
 import org.bibsonomy.scraper.url.RisToBibtexConverter;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -67,8 +68,6 @@ public class ScienceDirectScraper implements Scraper {
 				}
 				exportpage = sc.getContentAsString(new URL(SCIENCE_HOST_NAME + NextUrl));
 
-				
-				
 				//retrieve all elements for the post request from the page
 				SortedMap<String,String> paramap = new TreeMap<String,String>();
 				for (String key: PARAMS1) {
@@ -151,14 +150,11 @@ public class ScienceDirectScraper implements Scraper {
 	private String extractSinglePath(Document doc, String SearchString) {
 		NodeList as = doc.getElementsByTagName("a");
 		for (int i = 0; i < as.getLength(); i++) {
-			Node currNode = as.item(i);
-			NodeList childnodes = currNode.getChildNodes();
+			Element currNode = (Element) as.item(i);
 			
-			if (childnodes.getLength() > 0) {
-				NamedNodeMap attr = currNode.getAttributes();
-				if (attr.getNamedItem("href").getNodeValue().indexOf(SearchString) != -1) {
-					return attr.getNamedItem("href").getNodeValue();
-				}
+			String attr = currNode.getAttribute("href");
+			if (attr.contains(SearchString)) {
+				return attr;
 			}
 		}
 		// nothing found
