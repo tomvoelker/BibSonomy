@@ -27,6 +27,7 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -440,7 +441,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	/**
 	 * tests getUsers by folkrank
 	 */
-	@Test
+	@Ignore
 	public void testGetUsersByFolkrank(){
 		List<String> tags = new ArrayList<String>();
 		tags.add("web");
