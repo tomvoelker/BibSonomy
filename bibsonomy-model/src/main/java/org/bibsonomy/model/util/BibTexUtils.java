@@ -10,9 +10,7 @@ import java.lang.reflect.Method;
 import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
@@ -24,7 +22,6 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.comparators.BibTexPostComparator;
 import org.bibsonomy.model.comparators.BibTexPostInterhashComparator;
-
 
 /**
  * Some BibTex utility functions
@@ -41,11 +38,10 @@ public class BibTexUtils {
 	 * @param bib the bibtex object
 	 * @return the DESCRIPTION part of the OpenURL of this BibTeX object
 	 */
-	public static String getOpenurl (BibTex bib) {
-		
+	public static String getOpenurl(final BibTex bib) {
 		// stores the completed URL (just the DESCRIPTION part)
-		StringBuffer openurl = new StringBuffer();
-		
+		final StringBuffer openurl = new StringBuffer();
+
 		/*
 		 * extract first authors parts of the name
 		 */
@@ -76,12 +72,12 @@ public class BibTexUtils {
 		String doi = bib.getMiscField("doi");
 		if (doi != null) {
 			// TODO: urls rausfiltern testen
-			Matcher m = Pattern.compile("http://.+/(.+?/.+?$)").matcher(doi);
+			final Matcher m = Pattern.compile("http://.+/(.+?/.+?$)").matcher(doi);
 			if (m.find()) {
 				doi = m.group(1);
 			}
 		}
-			 
+
 		try {
 			// append year (always given!)
 			openurl.append("date=" + bib.getYear().trim());
@@ -121,17 +117,20 @@ public class BibTexUtils {
 			}
 			appendOpenURL(openurl, "volume", bib.getVolume());
 			appendOpenURL(openurl, "issue", bib.getNumber());
-			
-
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+		} catch (final UnsupportedEncodingException ex) {
+			// TODO please improve me ASAP...
+			ex.printStackTrace();
 		}
-		
-		
-		return openurl.toString();	
+
+		return openurl.toString();
 	}
-	
-	
+
+	private static void appendOpenURL(final StringBuffer buffer, final String name, final String value) throws UnsupportedEncodingException {
+		if (value != null && !value.trim().equals("")) {
+			buffer.append("&" + name + "=" + URLEncoder.encode(value.trim(), "UTF-8"));
+		}
+	}
+
 	/**
 	 * This is a helper method to parse the misc-field of a bibtex object
 	 * and store the   
@@ -142,23 +141,23 @@ public class BibTexUtils {
 	 * 
 	 * @param bib the bibtex object
 	 */
-	public static void parseMiscField (BibTex bib) {
+	public static void parseMiscField(final BibTex bib) {
 		if (bib.getMisc() != null) {
-			Matcher m = Pattern.compile("([a-zA-Z]+)\\s*=\\s*\\{(.+?)\\}").matcher(bib.getMisc());
+			final Matcher m = Pattern.compile("([a-zA-Z]+)\\s*=\\s*\\{(.+?)\\}").matcher(bib.getMisc());
 			while (m.find()) {
 				bib.addMiscField(m.group(1), m.group(2));
 			}
 		}
 	}
-	
+
 	/**
 	 * helper method to parse misc field of a bibtex entry
 	 * 
 	 * @param misc String value of misc field
 	 * @return the parsed misc fields as a hashmap
 	 */
-	public static HashMap<String, String> parseMiscField(String misc) {
-		BibTex bib = new BibTex();
+	public static HashMap<String, String> parseMiscField(final String misc) {
+		final BibTex bib = new BibTex();
 		bib.setMisc(misc);
 		parseMiscField(bib);
 		return bib.getMiscFields();
@@ -177,30 +176,30 @@ public class BibTexUtils {
 		try {
 			final BeanInfo bi = Introspector.getBeanInfo(bib.getClass());
 			
-			String[] excludeFields = {"simHash0", "simHash1", "simHash2", "simHash3", "entrytype", "bibtexKey"};
+			final String[] excludeFields = { "simHash0", "simHash1", "simHash2", "simHash3", "entrytype", "bibtexKey" };
 			
-			StringBuffer sb = new StringBuffer();
-			sb.append("@");
-			sb.append(bib.getEntrytype());
-			sb.append("{");
-			sb.append(bib.getBibtexKey());
-			sb.append(",\n");
+			final StringBuffer buffer = new StringBuffer();
+			buffer.append("@");
+			buffer.append(bib.getEntrytype());
+			buffer.append("{");
+			buffer.append(bib.getBibtexKey());
+			buffer.append(",\n");
 			for (final PropertyDescriptor d : bi.getPropertyDescriptors()) {
 				final Method getter = d.getReadMethod();
 				// loop over all String attributes
 				if (d.getPropertyType().equals(String.class) 
 						&& getter.invoke(bib, (Object[]) null) != null 
 					    && ! Arrays.asList(excludeFields).contains(d.getName()) ) {
-					sb.append(d.getName());
-					sb.append(" = ");
-					sb.append("{");
-					sb.append( (String) getter.invoke(bib, (Object[]) null) );
-					sb.append("},\n");					
+					buffer.append(d.getName());
+					buffer.append(" = ");
+					buffer.append("{");
+					buffer.append( (String) getter.invoke(bib, (Object[]) null) );
+					buffer.append("},\n");					
 				}
 			}
-			sb.delete(sb.length()-2, sb.length()-1); // remove last comma
-			sb.append("}");	
-			return sb.toString();
+			buffer.delete(buffer.length()-2, buffer.length()-1); // remove last comma
+			buffer.append("}");	
+			return buffer.toString();
 		} catch (IntrospectionException ex) {
 			ex.printStackTrace();
 		} catch (InvocationTargetException ex) {
@@ -210,16 +209,17 @@ public class BibTexUtils {
 		}		
 		return null;
 	}
-	
-	private static void appendOpenURL(StringBuffer s, String name, String value) throws UnsupportedEncodingException {
-		if (value != null && !value.trim().equals("")) {
-			s.append("&" + name + "=" + URLEncoder.encode(value.trim(), "UTF-8"));
-		}
-	}
-	
-	/** 
-	 * @param authors some string representation of the list of authors with their first- and lastnames
-	 * @param editors some string representation of the list of editors with their first- and lastnames
+
+	/**
+	 * Generates a bibtex key of the form "first persons lastname from authors
+	 * or editors" or "noauthororeditor" concatenated with year.
+	 * 
+	 * @param authors
+	 *            some string representation of the list of authors with their
+	 *            first- and lastnames
+	 * @param editors
+	 *            some string representation of the list of editors with their
+	 *            first- and lastnames
 	 * @param year
 	 * @param title
 	 * @return a bibtex key for a bibtex with the fieldvalues given by arguments
@@ -231,10 +231,9 @@ public class BibTexUtils {
 		 * How to extract the first RELEVANT word of the title?
 		 * remove Sonderzeichen, LaTeX markup!
 		 */
-		final StringBuffer b = new StringBuffer();
-		/*
-		 * get author
-		 */
+		final StringBuffer buffer = new StringBuffer();
+
+		/* get author */
 		String first = getFirstPersonsLastName(authors);
 		if (first == null) {
 			first = getFirstPersonsLastName(editors);
@@ -242,19 +241,22 @@ public class BibTexUtils {
 				first = "noauthororeditor";
 			}
 		}
-		b.append(first);
+		buffer.append(first);
+
 		/* the year */ 
 		if (year != null) {
-			b.append(year.trim());
+			buffer.append(year.trim());
 		}
+
 		/* first relevant word of the title */
 		if (title != null) {
 			/* best guess: pick first word with more than 4 characters, longest first word */
 			// FIXME: what do we want to do inside this if statement?
 		}
-		return b.toString().toLowerCase();
+
+		return buffer.toString().toLowerCase();
 	}
-	
+
 	/**
 	 * Tries to extract the last name of the first person.
 	 * 
@@ -287,7 +289,7 @@ public class BibTexUtils {
 		}
 		return null;
 	}	
-	
+
 	/**
 	 * Cleans up a string containing LaTeX markup and converts special chars to HTML special chars.
 	 * 
@@ -295,7 +297,6 @@ public class BibTexUtils {
 	 * @return the cleaned bibtex string
 	 */
 	public static String cleanBibTex(String bibtex) {
-
 		// replace special character sequences for umlauts
 		// NOTE: this is just a small subset - could / should be extended to french, ...
 		bibtex = bibtex.replaceAll("\\{|\\}|\\\\", ""). // remove '\','{' and '\'
@@ -309,36 +310,36 @@ public class BibTexUtils {
 	       replaceAll("\\\"s", "ß").
 	       trim();		
 		
-		StringBuffer sb = new StringBuffer(bibtex.length());
+		final StringBuffer buffer = new StringBuffer(bibtex.length());
 		char c;		
 		for (int i = 0; i < bibtex.length(); i++) {
 			c = bibtex.charAt(i);
 			
 			// HTML Special Chars
 			if (c == '"')
-				sb.append("&quot;");
+				buffer.append("&quot;");
 			else if (c == '&')
-				sb.append("&amp;");
+				buffer.append("&amp;");
 			else if (c == '<')
-				sb.append("&lt;");
+				buffer.append("&lt;");
 			else if (c == '>')
-				sb.append("&gt;");
+				buffer.append("&gt;");
 			else {
 				int ci = 0xffff & c;
 				if (ci < 160 )
 					// nothing special only 7 Bit
-					sb.append(c);
+					buffer.append(c);
 				else {
 					// Not 7 Bit use the unicode system
-					sb.append("&#");
-					sb.append(new Integer(ci).toString());
-					sb.append(';');
+					buffer.append("&#");
+					buffer.append(new Integer(ci).toString());
+					buffer.append(';');
 				}
 			}
 		}
-		return sb.toString();
+		return buffer.toString();
 	} 
-	
+
 	/**
 	 * Tries to find a year (four connected digits) in a string and returns them as int.
 	 * If it fails, returns Integer.MAX_VALUE.
@@ -346,21 +347,21 @@ public class BibTexUtils {
 	 * @param year
 	 * @return an integer representation of the year, or Integer.MAX_VALUE if it fails
 	 */
-	public static int getYear (String year) {
+	public static int getYear(final String year) {
 		try {
 			return Integer.parseInt(year);
-		} catch (NumberFormatException e) {
+		} catch (final NumberFormatException ignore) {
 			/*
 			 * try to get four digits ...
 			 */
-			Pattern p = Pattern.compile("\\d{4}");
-			Matcher m = p.matcher(year);
+			final Pattern p = Pattern.compile("\\d{4}");
+			final Matcher m = p.matcher(year);
 			if (m.find()) {
 				return Integer.parseInt(m.group());
 			}
 		}
 		return Integer.MAX_VALUE;
-	}	
+	}
 
 	/**
 	 * sort a list of bibtex posts (and eventually remove duplicates)
@@ -368,24 +369,21 @@ public class BibTexUtils {
 	 * @param bibtexList
 	 * @param sortKeys
 	 * @param sortOrders
-	 * @param removeDuplicates
 	 */
-	public static void sortBibTexList (List<Post<BibTex>> bibtexList, List<SortKey> sortKeys, List<SortOrder> sortOrders) {
+	public static void sortBibTexList(final List<Post<BibTex>> bibtexList, final List<SortKey> sortKeys, final List<SortOrder> sortOrders) {
 		Collections.sort(bibtexList, new BibTexPostComparator(sortKeys, sortOrders));
 	}
-	
+
 	/**
-	 * sort a list of bibtex posts and remove duplicates
+	 * Sorts a list of bibtex posts and removes duplicates.
 	 * 
 	 * @param bibtexList
-	 * @param comp
 	 */
-	public static void removeDuplicates (List<Post<BibTex>> bibtexList) {
-		TreeSet<Post<BibTex>> temp = new TreeSet<Post<BibTex>>(new BibTexPostInterhashComparator());
+	public static void removeDuplicates(final List<Post<BibTex>> bibtexList) {
+		final TreeSet<Post<BibTex>> temp = new TreeSet<Post<BibTex>>(new BibTexPostInterhashComparator());
 		temp.addAll(bibtexList);
 		// FIXME: a bit cumbersome at this point - but we need to work on the bibtexList
 		bibtexList.clear();
 		bibtexList.addAll(temp);
 	}
-
 }

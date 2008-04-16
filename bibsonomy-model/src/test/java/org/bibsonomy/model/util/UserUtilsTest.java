@@ -20,9 +20,12 @@ public class UserUtilsTest {
 	public void generateApiKey() {
 		assertEquals(32, UserUtils.generateApiKey().length());
 
-		// generate some keys and make sure that they're all different
+		/*
+		 * generate some keys and make sure that they're all different
+		 */
 		final Set<String> keys = new HashSet<String>();
-		final int NUMBER_OF_KEYS = 65536;
+		// supporting 2^16 users with different keys should be enough for now
+		final int NUMBER_OF_KEYS = (int) Math.pow(2, 16);
 		for (int i = 0; i < NUMBER_OF_KEYS; i++) {
 			final int oldSize = keys.size();
 			keys.add(UserUtils.generateApiKey());

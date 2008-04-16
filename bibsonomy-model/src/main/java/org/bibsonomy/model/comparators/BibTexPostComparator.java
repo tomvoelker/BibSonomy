@@ -17,21 +17,25 @@ import static org.bibsonomy.util.ValidationUtils.present;
 /**
  * Comparator used to sort bibtex posts
  * 
- * @author dbenz
+ * @author Dominik Benz
  * @version $Id$
  */
 public class BibTexPostComparator implements Comparator<Post<BibTex>>, Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
 	private List<SortCriterium> sortCriteria = new ArrayList<SortCriterium>();
-	
+
 	/** helper structure to bind a sort key to a sort order */
 	private class SortCriterium {
 		/** sort key */
 		public SortKey sortKey;
 		/** sort order */
 		public SortOrder sortOrder;
-		/** constructor */
+		/**
+		 * Constructor 
+		 * @param key 
+		 * @param order
+		 */
 		public SortCriterium(final SortKey key, final SortOrder order) {
 			this.sortKey = key;
 			this.sortOrder = order;
@@ -112,8 +116,7 @@ public class BibTexPostComparator implements Comparator<Post<BibTex>>, Serializa
 		}
 		return 0;
 	}
-	
-	
+
 	/**
 	 * compare two strings following a specified order
 	 * 
@@ -123,7 +126,7 @@ public class BibTexPostComparator implements Comparator<Post<BibTex>>, Serializa
 	 * @return an int comparison value
 	 * @throws sortKeyIsEqualException 
 	 */
-	private int nomalizeAndCompare (String s1, String s2, final SortOrder order) throws sortKeyIsEqualException {
+	private int nomalizeAndCompare(String s1, String s2, final SortOrder order) throws sortKeyIsEqualException {
 		// normalization
 		if (present(s1)) s1 = BibTexUtils.cleanBibTex(s1).trim();
 		if (present(s2)) s2 = BibTexUtils.cleanBibTex(s2).trim();
@@ -131,14 +134,13 @@ public class BibTexPostComparator implements Comparator<Post<BibTex>>, Serializa
 		int comp = 0;
 		if (order.equals(SortOrder.ASC)) {
 			comp = StringUtils.secureCompareTo(s1, s2);
-		}
-		else {
+		} else {
 			comp = StringUtils.secureCompareTo(s2, s1);
 		}
-		if ( comp == 0 ) throw new sortKeyIsEqualException();
+		if (comp == 0) throw new sortKeyIsEqualException();
 		return comp;
 	}
-	
+
 	/**
 	 * compare two integers following a specified order
 	 * 
@@ -158,7 +160,5 @@ public class BibTexPostComparator implements Comparator<Post<BibTex>>, Serializa
 		}
 		if ( comp == 0 ) throw new sortKeyIsEqualException();
 		return comp;
-	}
-
-	
+	}	
 }

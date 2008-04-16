@@ -1,7 +1,7 @@
 package org.bibsonomy.model.logic;
 
 /**
- * Common interface of factories for objects of a LogicInterface implementations
+ * Common interface of factories for objects of a LogicInterface implementation.
  * 
  * @author Jens Illig
  * @version $Id$

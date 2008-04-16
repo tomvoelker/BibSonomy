@@ -17,8 +17,7 @@ public class BibTexPostInterhashComparator implements Comparator<Post<BibTex>>, 
 
 	private static final long serialVersionUID = -8523955200241922144L;
 
-	public int compare(Post<BibTex> o1, Post<BibTex> o2) {
-		return StringUtils.secureCompareTo(o1.getResource().getInterHash(), o2.getResource().getInterHash());
+	public int compare(final Post<BibTex> post1, final Post<BibTex> post2) {
+		return StringUtils.secureCompareTo(post1.getResource().getInterHash(), post2.getResource().getInterHash());
 	}
-
 }
