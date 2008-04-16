@@ -176,38 +176,22 @@ public class StringUtils {
 		}
 		return s;
 	}
-	
+
 	/** 
 	 * Compares two Strings like compareTo but with additional checks, if one of the strings is NULL.
 	 * 
 	 * @param s1
 	 * @param s2
-	 * @return
+	 * @return 0 if s1 == null and s2 == null, -1 if s1 == null, 1 if s2 == null
 	 */
-	public static int secureCompareTo (String s1, String s2) {
-		if (s1 == null) {
-			if (s2 == null) {
-				/*
-				 * null = s1 = s2 = null
-				 */
-				return 0;
-			} 
-			/*
-			 * null = s1 < s2 != null
-			 */
-			return -1;
-
-		}
-
-		if (s2 == null) {
-			/*
-			 * null != s1 > s2 = null
-			 */
-			return 1;
-		}
-		/*
-		 * null != s1 ? s2 != null
-		 */
+	public static int secureCompareTo(final String s1, final String s2) {
+		// null = s1 = s2 = null
+		if (s1 == null && s2 == null) return 0;
+		// null = s1 < s2 != null
+		if (s1 == null) return -1;
+		// null != s1 > s2 = null
+		if (s2 == null) return 1;
+		// null != s1 ? s2 != null
 		return s1.compareToIgnoreCase(s2);
-	}	
+	}
 }

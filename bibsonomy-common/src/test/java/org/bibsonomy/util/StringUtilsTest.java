@@ -118,4 +118,19 @@ public class StringUtilsTest {
 		assertEquals("42", StringUtils.cropToLength("42", 42));
 		assertEquals("test", StringUtils.cropToLength("test test", 4));
 	}
+
+	/**
+	 * tests secureCompareTo
+	 */
+	@Test
+	public void secureCompareTo() {
+		assertEquals(0, StringUtils.secureCompareTo(null, null));
+		assertEquals(1, StringUtils.secureCompareTo("", null));
+		assertEquals(-1, StringUtils.secureCompareTo(null, ""));
+
+		assertEquals(0, StringUtils.secureCompareTo("", ""));
+		assertEquals(0, StringUtils.secureCompareTo("a", "a"));
+		assertEquals(1, StringUtils.secureCompareTo("a", ""));
+		assertEquals(-1, StringUtils.secureCompareTo("", "a"));
+	}
 }

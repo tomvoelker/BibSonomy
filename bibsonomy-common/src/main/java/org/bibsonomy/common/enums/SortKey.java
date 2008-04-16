@@ -1,9 +1,9 @@
 package org.bibsonomy.common.enums;
 
 /**
- * Defines sorting criteria (aka sort keys) for displayed lists
+ * Defines sorting criteria (aka sort keys) for displayed lists.
  * 
- * the difference between this enum and the one defined in 
+ * The difference between this enum and the one defined in 
  *   org.bibsonomy.model.enums.Order
  * is that the latter defines sorting criteria which are applied when
  * retrieving items from the database (i.e. arguments to ORDER BY..). This
