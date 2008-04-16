@@ -348,4 +348,16 @@
 		<BibFile>SpringerLinkScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_59">
+		<TestDescription>Test for worldcat publication page</TestDescription>
+		<URL>http://www.worldcat.org/oclc/37212333</URL>
+		<BibFile>WorldCatScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper</Scraper>
+	</URLTest>http://www.worldcat.org/oclc/85511690
+	<URLTest id="url_60">
+		<TestDescription>Test for worldcat publication (series) page</TestDescription>
+		<URL>http://www.worldcat.org/oclc/85511690</URL>
+		<BibFile>WorldCatScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper</Scraper>
+	</URLTest>
 </test:Tests>
