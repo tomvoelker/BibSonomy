@@ -6,6 +6,7 @@ import java.util.List;
 
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.TagCloudStyle;
 import org.bibsonomy.common.enums.TagCloudSort;
@@ -94,11 +95,11 @@ public abstract class MultiResourceListController {
 	 * @param groupingName the grouping name
 	 * @param itemsPerPage number of items to be displayed on each page
 	 */
-	protected <T extends Resource, V extends ResourceViewCommand> void setList(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, List<String> tags, String hash, Order order, String search, int itemsPerPage) {
+	protected <T extends Resource, V extends ResourceViewCommand> void setList(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, String search, int itemsPerPage) {
 		ListCommand<Post<T>> listCommand = cmd.getListCommand(resourceType);
 		// retrieve posts		
 		log.debug("getPosts " + resourceType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage);
-		listCommand.setList( this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, order, listCommand.getStart(), listCommand.getStart() + itemsPerPage, search) );
+		listCommand.setList( this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, order, filter, listCommand.getStart(), listCommand.getStart() + itemsPerPage, search) );
 		// list settings
 		listCommand.setEntriesPerPage(itemsPerPage);
 	}

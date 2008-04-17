@@ -47,7 +47,7 @@ public class UserPageController extends MultiResourceListControllerWithTags impl
 
 		// retrieve and set the requested resource lists, along with total counts
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {
-			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, command.getListCommand(resourceType).getEntriesPerPage());
+			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, command.getListCommand(resourceType).getEntriesPerPage());
 			this.postProcessAndSortList(command, resourceType);
 			
 			int totalCount = this.logic.getStatistics(resourceType, groupingEntity, groupingName, null, null, requTags);

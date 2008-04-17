@@ -67,7 +67,7 @@ public class AdminAjaxController extends AjaxController implements MinimalisticC
 	
 	private void setLatestPosts(AdminAjaxCommand command) {
 		if (command.getUserName() != null && command.getUserName() != "") {
-			List<Post<Bookmark>> bookmarks = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, Order.ADDED, 0, 5, null);
+			List<Post<Bookmark>> bookmarks = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, Order.ADDED, null, 0, 5, null);
 			command.setBookmarks(bookmarks);
 		}
 	}	

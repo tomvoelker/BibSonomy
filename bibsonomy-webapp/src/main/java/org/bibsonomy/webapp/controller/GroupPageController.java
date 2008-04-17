@@ -3,6 +3,7 @@ package org.bibsonomy.webapp.controller;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
@@ -31,14 +32,20 @@ public class GroupPageController extends MultiResourceListControllerWithTags imp
 		this.startTiming(this.getClass(), command.getFormat());
 		
 		// if no group given return 
-		if (command.getRequestedGroup() == null) return null;
-		
+		if (command.getRequestedGroup() == null) return null;		
 
 		// set grouping entity and grouping name
 		final GroupingEntity groupingEntity = GroupingEntity.GROUP;
 		final String groupingName = command.getRequestedGroup();
 		final List<String> requTags = command.getRequestedTagsList();
-
+		FilterEntity filter = null;
+		
+		if (command.getShowPDF().equals("true")) {
+			filter = FilterEntity.PDF;
+		} else if (command.getFilter().equals("myGroupPDF")) {
+			filter = FilterEntity.JUST_PDF;
+		}	
+		
 		// set title
 		// TODO: localize
 		command.setPageTitle("group :: " + groupingName);		
@@ -52,11 +59,11 @@ public class GroupPageController extends MultiResourceListControllerWithTags imp
 		
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {			
-			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, command.getListCommand(resourceType).getEntriesPerPage());
+			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, filter, null, command.getListCommand(resourceType).getEntriesPerPage());
 			this.postProcessAndSortList(command, resourceType);
 			
 			// retrieve resource counts, if no tags are given
-			if (requTags.size() == 0) { 
+			if (requTags.size() == 0 && filter != FilterEntity.JUST_PDF) { 
 				int totalCount = this.logic.getStatistics(resourceType, groupingEntity, groupingName, null, null, null);
 				command.getListCommand(resourceType).setTotalCount(totalCount);				
 			}

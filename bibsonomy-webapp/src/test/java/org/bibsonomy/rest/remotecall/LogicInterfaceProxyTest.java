@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
+import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.SpamStatus;
@@ -368,23 +369,23 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 */
 	@Test
 	public void getPostsTestBookmarkByTag() {
-		getPosts(Bookmark.class, GroupingEntity.ALL, null, Arrays.asList("bla", "blub"), null, null /* must be null because order is inferred and not transmitted */, 7, 1264, null);
+		getPosts(Bookmark.class, GroupingEntity.ALL, null, Arrays.asList("bla", "blub"), null, null /* must be null because order is inferred and not transmitted */, null,  7, 1264, null);
 	}
 	/**
 	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)} with arguments as used for the getBibtexForGroupAndTag query
 	 */
 	@Test
 	public void getPostsTestBibtexByGroupAndTag() {
-		getPosts(BibTex.class, GroupingEntity.GROUP, "testGroup", Arrays.asList("blub", "bla"), null, null, 0, 1, null);
+		getPosts(BibTex.class, GroupingEntity.GROUP, "testGroup", Arrays.asList("blub", "bla"), null, null, null, 0, 1, null);
 	}
 	/**
 	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)} with arguments as used for the getBibtexByHashForUser query 
 	 */
 	@Test
 	public void getPostsTestBibtexByUserAndHash() {
-		getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), null, 0, 5, null);
+		getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), null, null, 0, 5, null);
 	}
-	public <T extends org.bibsonomy.model.Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, int start, int end, String search) {
+	public <T extends org.bibsonomy.model.Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search) {
 		final List<Post<T>> expectedPosts = new ArrayList<Post<T>>();
 		expectedPosts.add(ModelUtils.generatePost(resourceType));
 		expectedPosts.get(0).setDescription("erstes");
@@ -394,10 +395,10 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			expectedPosts.add( (Post) ModelUtils.generatePost(BibTex.class));
 		}
 		
-		EasyMock.expect(serverLogic.getPosts(resourceType, grouping, groupingName, tags, hash, order, start, end, search)).andReturn(expectedPosts);
+		EasyMock.expect(serverLogic.getPosts(resourceType, grouping, groupingName, tags, hash, order, filter, start, end, search)).andReturn(expectedPosts);
 		EasyMock.replay(serverLogic);
 
-		final List<Post<T>> returnedPosts = clientLogic.getPosts(resourceType, grouping, groupingName, tags, hash, order, start, end, search);
+		final List<Post<T>> returnedPosts = clientLogic.getPosts(resourceType, grouping, groupingName, tags, hash, order, filter, start, end, search);
 		ModelUtils.assertPropertyEquality(expectedPosts, returnedPosts, 5, Pattern.compile(".*\\.user\\.(apiKey|homepage|realname|email|password|date|openURL|gender|place|interests|hobbies|IPAddress|basket|profession|place|spammer|settings|prediction|algorithm|mode|toClassify|updatedBy)|.*\\.date|.*\\.scraperId|.*\\.openURL"));
 		// "user.apiKey", "user.email", "user.homepage", "user.password", "user.realname", "resource.scraperId", "resource.openURL", "user.IPAddress", "user.basket", "user.gender", "user.interests", "user.hobbies", "user.profession", "user.openURL", "user.place", "user.spammer", "user.settings"
 		EasyMock.verify(serverLogic);
