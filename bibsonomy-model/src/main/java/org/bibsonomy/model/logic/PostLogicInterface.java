@@ -2,6 +2,7 @@ package org.bibsonomy.model.logic;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -41,7 +42,7 @@ public interface PostLogicInterface {
 	 * @param order a flag indicating the way of sorting
 	 * @return a filtered list of posts. may be empty but not null
 	 */
-	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, int start, int end, String search);
+	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search);
 
 	/**
 	 * Returns details to a post. A post is uniquely identified by a hash of the
