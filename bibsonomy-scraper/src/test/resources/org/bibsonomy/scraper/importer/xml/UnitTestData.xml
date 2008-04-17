@@ -353,11 +353,23 @@
 		<URL>http://www.worldcat.org/oclc/37212333</URL>
 		<BibFile>WorldCatScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper</Scraper>
-	</URLTest>http://www.worldcat.org/oclc/85511690
+	</URLTest>
 	<URLTest id="url_60">
 		<TestDescription>Test for worldcat publication (series) page</TestDescription>
 		<URL>http://www.worldcat.org/oclc/85511690</URL>
 		<BibFile>WorldCatScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_61">
+		<TestDescription>BioMed Central Url 1</TestDescription>
+		<URL>http://www.biomedcentral.com/1471-2326/6/7</URL>
+		<BibFile>BioMedCentralScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.biomed.BioMedCentralScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_62">
+		<TestDescription>BioMed Central Url 2</TestDescription>
+		<URL>http://www.biomedcentral.com/1471-2326/6/7/citation</URL>
+		<BibFile>BioMedCentralScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.biomed.BioMedCentralScraper</Scraper>
 	</URLTest>
 </test:Tests>

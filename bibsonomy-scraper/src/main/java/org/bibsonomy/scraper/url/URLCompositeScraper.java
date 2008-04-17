@@ -9,6 +9,7 @@ import org.bibsonomy.scraper.url.kde.aip.AipScitationScraper;
 import org.bibsonomy.scraper.url.kde.amazon.AmazonScraper;
 import org.bibsonomy.scraper.url.kde.arxiv.ArxivScraper;
 import org.bibsonomy.scraper.url.kde.bibsonomy.BibSonomyScraper;
+import org.bibsonomy.scraper.url.kde.biomed.BioMedCentralScraper;
 import org.bibsonomy.scraper.url.kde.blackwell.BlackwellSynergyScraper;
 import org.bibsonomy.scraper.url.kde.citebase.CiteBaseScraper;
 import org.bibsonomy.scraper.url.kde.citeseer.CiteseerBasicScraper;
@@ -65,5 +66,6 @@ public class URLCompositeScraper extends CompositeScraper {
 		addScraper(new NatureScraper());
 		addScraper(new BlackwellSynergyScraper());
 		addScraper(new DBLPScraper());
+		addScraper(new BioMedCentralScraper());
 	}
 }
