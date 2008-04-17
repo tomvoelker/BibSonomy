@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.Vector;
 
 import javax.naming.Context;
@@ -555,8 +556,24 @@ public class BookmarkHandler extends HttpServlet{
 						}
 					}
 					else{
-						//link found in "root-folder" -> no tags found
-						bookmark.setTags(Tag.IMPORTED_TAG);
+						/* 
+						 * link found in "root-folder" -> no folder hierarchy found
+						 *
+						 * check for "TAGS" attribute (common in del.icio.us export)
+						 */
+						final Node tagNode = currentNode.getFirstChild().getAttributes().getNamedItem("tags");
+						if (tagNode != null) {
+							/*
+							 * del.icio.us export tags are comma-separated
+							 */
+							final StringTokenizer token = new StringTokenizer(tagNode.getNodeValue(), ",");
+							while (token.hasMoreTokens()) {
+								bookmark.addTag(token.nextToken());
+							}
+						} else {
+							// really no tags found -> set imported tag
+							bookmark.setTags(Tag.IMPORTED_TAG);
+						}
 					}
 					bookmark.setDate(fakeDate);
 					bookmark.setToIns(true);
