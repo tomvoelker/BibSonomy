@@ -387,7 +387,7 @@
 <!-- ############## group pages ############### -->
     <rule> <!-- /group/GROUP/TAG -->
     	<!-- workaround to redirect not-yet-supported features to old resource handler -->
-		<condition type="parameter" name="filter" operator="notequal"/>
+		<condition type="parameter" name="filter" operator="notequal"/> 
 		<condition type="attribute" name="type" operator="notequal"/>     
         <from>^/+group/+([^/?]+?)/(.+?)(\?(.*))?$</from> 
 		<!-- NEW PAGE -->      
@@ -406,7 +406,7 @@
     </rule>
 	<rule> <!-- /group/GROUP -->
     	<!-- workaround to redirect not-yet-supported features to old resource handler -->
-		<condition type="parameter" name="filter" operator="notequal"/>
+		<!-- <condition type="parameter" name="filter" operator="notequal"/> -->
 		<condition type="attribute" name="type" operator="notequal"/>    	
 		<from>^/+group/+([^/?]+?)(\?(.*))?$</from>
 		<!-- NEW PAGE -->
