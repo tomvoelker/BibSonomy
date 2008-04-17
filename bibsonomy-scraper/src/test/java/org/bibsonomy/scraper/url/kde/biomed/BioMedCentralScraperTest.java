@@ -14,23 +14,23 @@ import static org.junit.Assert.assertTrue;
 public class BioMedCentralScraperTest {
 	
 	/**
-	 * starts URL test with id url_58
+	 * starts URL test with id url_61
 	 */
 	@Test
 	@Ignore
 	public void url1TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_58"));
+		assertTrue(runner.runSingleTest("url_61"));
 	}
 	
 	/**
-	 * starts URL test with id url_59
+	 * starts URL test with id url_62
 	 */
 	@Test
 	@Ignore
 	public void url2TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_59"));
+		assertTrue(runner.runSingleTest("url_62"));
 	}
 	
 }
