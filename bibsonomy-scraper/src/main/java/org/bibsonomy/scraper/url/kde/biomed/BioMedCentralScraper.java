@@ -83,14 +83,4 @@ public class BioMedCentralScraper implements Scraper {
 		}
 		return false;
 	}
-	
-	public static String readerToString (BufferedReader reader) throws IOException {
-	    StringBuffer buffer = new StringBuffer();
-	    String line;
-	    while ((line = reader.readLine()) != null) {
-	            buffer.append(line).append("\n");
-	    }
-	    return buffer.toString();
-	}
-
 }
