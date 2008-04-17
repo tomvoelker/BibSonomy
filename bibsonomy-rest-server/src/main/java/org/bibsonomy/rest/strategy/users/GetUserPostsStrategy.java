@@ -50,7 +50,7 @@ public class GetUserPostsStrategy extends AbstractGetListStrategy<List<? extends
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		return this.getLogic().getPosts(resourceType, GroupingEntity.USER, userName, this.tags, null, null, this.getView().getStartValue(), this.getView().getEndValue(), search);
+		return this.getLogic().getPosts(resourceType, GroupingEntity.USER, userName, this.tags, null, null, null, this.getView().getStartValue(), this.getView().getEndValue(), search);
 	}
 
 	@Override
