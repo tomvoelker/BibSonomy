@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
+import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
@@ -166,7 +167,7 @@ public class DBLogic implements LogicInterface {
 	 * Returns a list of posts; the list can be filtered.
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end, String search) {
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, String search) {
 
 		// check allowed start-/end-values 
 		if (grouping.equals(GroupingEntity.ALL) && !present(tags)) {
@@ -194,6 +195,8 @@ public class DBLogic implements LogicInterface {
 			} else */
 			if (resourceType == BibTex.class) {
 				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, loginUser);
+				if (filter != null)
+					param.setFilter(filter);
 				// this is save because of RTTI-check of resourceType argument which is of class T
 				result = ((List) bibtexDBManager.getPosts(param, session));
 			} else if (resourceType == Bookmark.class) {

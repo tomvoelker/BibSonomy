@@ -339,6 +339,11 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 */
 	public List<Post<BibTex>> getBibTexForUsersInGroup(final BibTexParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
+		
+		// if user wants to retrieve documents
+		if (present(param.getFilter()) && param.getGroups().contains(param.getGroupId()))
+				return this.bibtexList("getBibTexForGroupWithPDF", param, session);
+		
 		return this.bibtexList("getBibTexForUsersInGroup", param, session);
 	}
 	

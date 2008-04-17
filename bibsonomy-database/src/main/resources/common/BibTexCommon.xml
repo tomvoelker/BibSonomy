@@ -38,10 +38,18 @@
 	<resultMap id="bibtex" class="bibtex" extends="bibtex_common">
 		<result property="scraperId"      column="scraperid"      javaType="int" />
 	</resultMap>
+	
+	<resultMap id="bibtexWithDocuments" class="bibtex" extends="bibtex_common">
+		<result property="documents"      resultMap="DocumentCommon.document" />
+	</resultMap>	
 
 	<resultMap id="bibtexPost" class="post" extends="Common.posts">
 		<result property="resource"   resultMap="BibTexCommon.bibtex" />
 	</resultMap>
+	
+	<resultMap id="bibtexPostWithDocuments" class="post" extends="Common.posts">
+		<result property="resource"   resultMap="BibTexCommon.bibtexWithDocuments" />
+	</resultMap>	
 
 	<sql id="commonBibtexAttributes">
 		b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,

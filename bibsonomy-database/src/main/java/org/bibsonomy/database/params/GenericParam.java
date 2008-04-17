@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
@@ -145,6 +146,7 @@ public abstract class GenericParam {
 	
 	private Order order;
 	private GroupingEntity grouping;
+	private FilterEntity filter;
 
 	public GenericParam() {
 		this.tagIndex = new ArrayList<TagIndex>();
@@ -490,6 +492,14 @@ public abstract class GenericParam {
 
 	public void setOrder(Order order) {
 		this.order = order;
+	}	
+
+	public FilterEntity getFilter() {
+		return this.filter;
+	}
+
+	public void setFilter(FilterEntity filter) {
+		this.filter = filter;
 	}
 
 	public Integer getNumSimpleConcepts() {

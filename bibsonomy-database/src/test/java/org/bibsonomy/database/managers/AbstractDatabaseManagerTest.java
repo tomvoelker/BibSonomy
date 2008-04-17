@@ -50,7 +50,7 @@ public abstract class AbstractDatabaseManagerTest {
 	protected StatisticsParam statisticsParam;
 
 	protected DBSession dbSession;
-	private SandboxDBSessionFactory dbSessionFactory;
+	protected SandboxDBSessionFactory dbSessionFactory;
 
 	/**
 	 * Setup

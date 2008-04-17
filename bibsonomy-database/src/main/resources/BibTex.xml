@@ -292,6 +292,45 @@
 		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
+	
+	<select id="getBibTexForGroupWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, h.ctr as count, g.group,
+		bb.hash, bb.name
+		FROM bibtex b, bibhash h,
+		     (
+		     SELECT ids.content_id, ids.date, name, hash FROM  
+		     ((SELECT content_id, date                <!-- publications from users of group which currUser may see -->
+		       FROM bibtex t1, groups g
+		       WHERE g.group = #groupId#
+		             AND g.user_name = t1.user_name    <!-- user owns this publication -->
+		             <include refid="inGroups"/>
+		      )UNION(
+		       SELECT content_id, date                <!-- publications from users of group which have currUser as friend -->
+		       FROM bibtex b, groups g, friends f
+		       WHERE f.f_user_name = #userName#       <!-- currUser is friend -->
+		             AND g.user_name = f.user_name    <!-- user is in group -->
+		             AND b.user_name = f.user_name    <!-- user owns this publication -->
+		             AND g.group = #groupId#
+		             AND b.group = $groupType$        <!-- publication is only for friends -->
+		      )UNION(
+		       SELECT content_id, date                <!-- currUsers publications, ... -->
+		       FROM bibtex b, groups g
+		       WHERE b.user_name = #userName#
+		             AND g.user_name = b.user_name    <!-- only, if currUser ... -->
+		             AND g.group = #groupId#          <!-- is in this group       -->
+		      )) as ids		
+		      <isEqual property="filter" compareValue="PDF">
+		      LEFT
+		      </isEqual>      
+   			  JOIN document d USING(content_id) 
+		      ORDER BY date DESC
+		      LIMIT #limit# OFFSET #offset#) AS bb		
+		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas (get tags) -->
+		WHERE t.group = g.group                                                  <!-- join groupname -->
+		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
+		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
+		ORDER BY bb.date DESC, bb.content_id DESC
+	</select>
 
 	<select id="getBibTexForGroupCount" resultClass="int" parameterClass="bibtexParam" timeout="1">
 		SELECT count(*)
