@@ -17,7 +17,7 @@ public class L3SScraper implements Scraper {
 	
 	private static final String L3S_URL = "l3s.de";
 	
-	private static final String PATTERN_HTML_TD = "<td class=\" value\">([^<]*)</td>";
+	private static final String PATTERN_HTML_TD = "<td class=\" value text\">([^<]*)</td>";
 
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		
@@ -31,7 +31,7 @@ public class L3SScraper implements Scraper {
 				while(matcherTd.find()){
 					
 					String td = matcherTd.group();
-					td = td.substring(19, td.length()-5);
+					td = td.substring(24, td.length()-5);
 				
 					//create the regex pattern to indicate if the content is bibtex or not 
 					Pattern p = Pattern.compile("@\\w+\\{.+,");
