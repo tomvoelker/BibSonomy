@@ -31,7 +31,7 @@ public class WorldCatScraper implements Scraper {
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith("worldcat.org")){
 			if(sc.getUrl().getPath().startsWith("/oclc/")){
 				try {
-					String bibtex = getBibtex(sc.getUrl(), sc);
+					String bibtex = getBibtex(sc.getUrl(), sc, false);
 					
 					if(bibtex != null){
 						sc.setBibtexResult(bibtex);
@@ -62,13 +62,18 @@ public class WorldCatScraper implements Scraper {
 		isbn = isbn.replace("-", ""); 
 
 		URL searchURL = new URL("http://www.worldcat.org/search?qt=worldcat_org_all&q=" + isbn); 
-		bibtex = getBibtex(searchURL, sc);
+		bibtex = getBibtex(searchURL, sc, true);
 		
 		return bibtex;
 	}
 	
-	private String getBibtex(URL publPageURL, ScrapingContext sc) throws MalformedURLException, ScrapingException{
-		String exportUrl = publPageURL.getProtocol() + "://" + publPageURL.getHost() + publPageURL.getPath() + "?page=endnote&client=worldcat.org-detailed_record";
+	private String getBibtex(URL publPageURL, ScrapingContext sc, boolean search) throws MalformedURLException, ScrapingException{
+		String exportUrl = null;
+		if(search)
+			exportUrl = publPageURL.getProtocol() + "://" + publPageURL.getHost() + publPageURL.getPath() + "?" + publPageURL.getQuery() + "&page=endnote&client=worldcat.org-detailed_record";
+		else
+			exportUrl = publPageURL.getProtocol() + "://" + publPageURL.getHost() + publPageURL.getPath() + "?page=endnote&client=worldcat.org-detailed_record";
+		
 		String endnote = sc.getContentAsString(new URL(exportUrl));
 		
 		RisToBibtexConverter converter = new RisToBibtexConverter();

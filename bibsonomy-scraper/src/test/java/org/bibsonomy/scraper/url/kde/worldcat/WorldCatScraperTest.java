@@ -27,7 +27,7 @@ public class WorldCatScraperTest {
 	 * starts URL test with id url_60
 	 */
 	@Test
-	//@Ignore
+	@Ignore
 	public void url2TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_60"));
