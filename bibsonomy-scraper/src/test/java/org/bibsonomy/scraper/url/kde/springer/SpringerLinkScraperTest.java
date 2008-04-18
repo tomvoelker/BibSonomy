@@ -33,5 +33,4 @@ public class SpringerLinkScraperTest {
 		assertTrue(runner.runSingleTest("url_41"));
 	}
 
-	
 }

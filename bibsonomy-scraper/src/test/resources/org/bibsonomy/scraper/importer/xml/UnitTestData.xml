@@ -343,10 +343,10 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.amazon.AmazonScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_58">
-		<TestDescription>failue with building from bibtex</TestDescription>
+		<TestDescription>springer.com url test</TestDescription>
 		<URL>http://www.springer.com/computer/database+management+&amp;+information+retrieval/book/978-0-387-95433-2</URL>
-		<BibFile>SpringerLinkScraperUnitURLTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
+		<BibFile>SpringerScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_59">
 		<TestDescription>Test for worldcat publication page</TestDescription>
