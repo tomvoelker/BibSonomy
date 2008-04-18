@@ -30,6 +30,9 @@ public class ResourceViewCommand extends BaseCommand {
 	private String sortPageOrder = "asc";
 	private String duplicates = "yes";
 	
+	/** retrieve only tags without resources */
+	private String restrictToTags = "no";
+	
 	
 	public String getDuplicates() {
 		return this.duplicates;
@@ -141,6 +144,13 @@ public class ResourceViewCommand extends BaseCommand {
 
 	public void setSortPageOrder(String sortPageOrder) {
 		this.sortPageOrder = sortPageOrder;
-	}	
-		
+	}
+
+	public String getRestrictToTags() {
+		return this.restrictToTags;
+	}
+
+	public void setRestrictToTags(String restrictToTags) {
+		this.restrictToTags = restrictToTags;
+	}		
 }

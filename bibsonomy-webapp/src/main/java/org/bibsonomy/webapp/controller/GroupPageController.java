@@ -71,7 +71,7 @@ public class GroupPageController extends MultiResourceListControllerWithTags imp
 		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(command.getFormat())) {
-			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, 0, 1000, null);
+			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, 1000, null);
 			this.setGroupMembers(command, groupingName);
 			
 			if (requTags.size() > 0) {

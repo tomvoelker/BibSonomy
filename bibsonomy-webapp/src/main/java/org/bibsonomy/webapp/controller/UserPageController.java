@@ -68,7 +68,7 @@ public class UserPageController extends MultiResourceListControllerWithTags impl
 		
 		// html format - retrieve tags and return HTML view
 		if (command.getFormat().equals("html")) {
-			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, 0, 1000, null);
+			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, 1000, null);
 			if (requTags.size() > 0) {
 				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, Order.ADDED, 0, 20, null);
 				command.getRelatedTagCommand().setTagGlobalCount(totalNumPosts);

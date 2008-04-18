@@ -70,10 +70,15 @@ public enum Views implements View {
 	BIBTEXPAGE("bibtex"),
 	
 	/**
+	 * details of a publication 
+	 */
+	BIBTEXDETAILS("bibtexdetails"),
+	
+	/**
 	 * bibtexkey page does something with the bibtexkey, perhaps shows the details for a given bibtexkex  
 	 */
 	BIBTEXKEYPAGE("bibtexkey"),
-	
+		
 	/**
 	 * bibtex output
 	 */
@@ -157,7 +162,12 @@ public enum Views implements View {
 	/**
 	 * spammer predictions 
 	 */
-	AJAX_PREDICTIONS("ajaxPredictions");
+	AJAX_PREDICTIONS("ajaxPredictions"), 
+	
+	/**
+	 * A json output tag page 
+	 */
+	JSONTAGS("export/bibtex/jsonTags");
 	
 	private final String name;
 	
