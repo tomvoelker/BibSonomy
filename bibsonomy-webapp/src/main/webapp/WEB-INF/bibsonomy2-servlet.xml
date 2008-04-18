@@ -59,6 +59,11 @@
 						<property name="controllerBeanName" value="friendPageController"/>
 					</bean>
 				</entry>
+				<entry key="/bibtexkey/">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="bibtexkeyPageController"/>
+					</bean>
+				</entry>
 				<!-- 
 				<entry key="/bibtex/">
 					<bean parent="controllerBase">
@@ -194,6 +199,17 @@
 		</property>
 	</bean>
 	 -->
+	 
+	 <bean id="bibtexkeyPageController" class="org.bibsonomy.webapp.controller.BibtexkeyPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+		<property name="listsToInitialise">
+			<list>
+				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+			</list>
+		</property>
+	</bean>
+	 
 	
 	<bean id="searchPageController" class="org.bibsonomy.webapp.controller.SearchPageController" scope="request">
 		<property name="logic" ref="logic"/>

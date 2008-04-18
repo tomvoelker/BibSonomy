@@ -85,7 +85,7 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 		View view;
 		
 		try {
-			view = controller.workOn(command);		
+			view = controller.workOn(command);
 		}
 		catch (MalformedURLSchemeException malformed) {
 			response.setStatus(HttpStatus.SC_NOT_FOUND);
@@ -108,6 +108,7 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 		
 		final Map<String, Object> model = new HashMap<String, Object>();
 		model.put(getCommandName(), command);
+		
 		return new ModelAndView(view.getName(), model);			
 	}
 

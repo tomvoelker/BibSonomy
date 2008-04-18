@@ -70,6 +70,11 @@ public enum Views implements View {
 	BIBTEXPAGE("bibtex"),
 	
 	/**
+	 * bibtexkey page does something with the bibtexkey, perhaps shows the details for a given bibtexkex  
+	 */
+	BIBTEXKEYPAGE("bibtexkey"),
+	
+	/**
 	 * bibtex output
 	 */
 	BIBTEX("export/bibtex/bibtex"),

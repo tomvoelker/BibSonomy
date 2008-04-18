@@ -344,7 +344,8 @@
     </rule>	
     <rule>
       <from>^/+bibtexkey/+(.+)(\?(.*))?$</from>
-      <to>/ResourceHandler?page=bibtexkey&amp;requKey=$1&amp;$2</to>
+ <!--     <to>/ResourceHandler?page=bibtexkey&amp;requestKey=$1&amp;$2</to> -->
+ 		<to>/bibtexkey?requestKey=$1&amp;$2</to> 
     </rule>    
 	
 		
