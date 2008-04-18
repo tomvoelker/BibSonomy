@@ -88,7 +88,6 @@ public class BlackwellSynergyScraper implements Scraper {
 								value = value.substring(7,value.length()-1);
 								// store doi
 								dois.add(value);
-								break;
 							}
 						}
 					}
