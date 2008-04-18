@@ -70,10 +70,17 @@ public class LogicInterfaceHelper {
 			param.setLimit(end - start);
 		}
 		if (tags != null) {
+			
 			for (String tag : tags) {
 				tag = tag.trim();
 				
 				if (tag.length() > 2) {
+					if (tag.length() > 14 &&  tag.substring(0,14).equals("sys:bibtexkey:")) {
+						//:bibtexkey:
+						((BibTexParam)param).setBibtexKey(tag.substring(14).trim());
+						continue;
+					}
+					
 					if (tag.charAt(0) != '-' && tag.charAt(0) != '<' && tag.charAt(tag.length() - 1) != '>') {
 						param.addTagName(tag);
 						continue;

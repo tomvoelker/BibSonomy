@@ -10,6 +10,7 @@ import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByConceptForUse
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByFriends;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByHash;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByHashForUser;
+import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByKey;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByTagNames;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByTagNamesAndUser;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexForGroup;
@@ -33,6 +34,7 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByHash;
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByHashForUser;
+	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByKey;
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByTagNames;
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByTagNamesAndUser;
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexForGroup;
@@ -74,6 +76,7 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 		this.getBibTexSearch = new GetBibtexSearch();
 		this.getBibTexByConceptByTag = new GetBibTexByConceptByTag();
 		this.getBibTexByConceptForGroup = new GetBibtexByConceptForGroup();
+		this.getBibTexByKey = new GetBibtexByKey();
 		
 		this.getBibTexForHomePage.setNext(this.getBibTexForPopular);
 		this.getBibTexForPopular.setNext(this.getBibTexForUser);
@@ -93,7 +96,9 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 		this.getBibTexSearch.setNext(getBibTexByAuthor);
 		this.getBibTexByAuthor.setNext(this.getBibTexByAuthorAndTag);
 		this.getBibTexByAuthorAndTag.setNext(getBibTexByConceptByTag);
-		this.getBibTexByConceptByTag.setNext(this.getBibTexByConceptForGroup);		
+		this.getBibTexByConceptByTag.setNext(this.getBibTexByConceptForGroup);
+		this.getBibTexByConceptForGroup.setNext(this.getBibTexByKey);		
+		
 	}
 
 	public ChainElement<Post<BibTex>, BibTexParam> getFirstElement() {

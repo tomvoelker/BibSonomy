@@ -10,6 +10,20 @@
 		WHERE <include refid="bibtexSimHash"/>
 		ORDER BY b.rank
 	</select>
+	
+	
+	<select id="getBibTexByKey" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name
+		FROM bibtex b, tas t, bibhash h 
+		WHERE
+			b.content_id = t.content_id
+			AND b.simhash$requestedSimHash$ = h.hash
+			AND h.type= $requestedSimHash$
+			AND b.bibtexKey = #bibtexKey# 
+			ORDER BY date DESC 
+			LIMIT #limit# OFFSET #offset#	
+	</select>	
+	
 
 	<select id="getBibTexByTagNames" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name
@@ -145,7 +159,10 @@
 		LEFT OUTER JOIN tas t ON b.content_id=t.content_id
 		ORDER BY b.date DESC, b.content_id DESC 
 	</select>
+	
+	
 
+		
 	<select id="getBibTexByHash" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, b.`group`, NULL AS group_name
 		FROM (SELECT b2.*

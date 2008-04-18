@@ -28,6 +28,13 @@ public class GetBibtexForHomePage extends BibTexChainElement {
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return present(param.getGrouping()) && param.getGrouping().equals(GroupingEntity.ALL) && !present(param.getTagIndex()) && !(present(param.getHash())) && nullOrEqual(param.getOrder(), Order.ADDED) && !present(param.getSearch());
+		return  present(param.getGrouping()) && 
+				!present(param.getBibtexKey()) && 
+				!present(param.getBibtexKey()) && 
+				param.getGrouping().equals(GroupingEntity.ALL) && 
+				!present(param.getTagIndex()) && 
+				!(present(param.getHash())) && 
+				nullOrEqual(param.getOrder(), Order.ADDED) && 
+				!present(param.getSearch());
 	}
 }

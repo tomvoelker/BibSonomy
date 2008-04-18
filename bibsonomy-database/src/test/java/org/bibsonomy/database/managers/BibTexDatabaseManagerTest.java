@@ -9,6 +9,7 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
@@ -48,6 +49,26 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(1, posts.size());
 		assertEquals("0000175071e6141a7d36835489f922ef", posts.get(0).getResource().getInterHash());
 		assertEquals("43ef2a4cc61e40a8999b132631e63bc4", posts.get(0).getResource().getIntraHash());
+	}
+	
+	
+	/**
+	 * Check if the getBibTexByKey() method returns the correct
+	 * bibtexkey from the database.
+	 * 
+	 * The test search the bibtexkey 'bre' and passes, if one bibtexentry with
+	 * the contentId 692511 is returned.
+	 */
+	@Test
+	public void getBibTexByKey() {
+		final BibTexParam  bibtexparam = new BibTexParam();
+		bibtexparam.setBibtexKey("BRE");
+		final List<Post<BibTex>> posts = this.bibTexDb.getBibTexByKey(bibtexparam, this.dbSession);
+		
+		assertNotNull(posts);
+		//assert that the contentID for the bibtexkey: 'BRE' matches this id: 692511
+		assertEquals(692511, posts.get(0).getContentId());
+		assertEquals(1, posts.size());
 	}
 
 	@Test

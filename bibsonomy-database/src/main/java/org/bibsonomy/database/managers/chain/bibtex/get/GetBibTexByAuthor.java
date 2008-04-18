@@ -2,7 +2,6 @@ package org.bibsonomy.database.managers.chain.bibtex.get;
 
 import static org.bibsonomy.util.ValidationUtils.nullOrEqual;
 import static org.bibsonomy.util.ValidationUtils.present;
-import static org.bibsonomy.util.ValidationUtils.presentValidGroupId;
 
 import java.util.List;
 
@@ -29,7 +28,12 @@ public class GetBibTexByAuthor extends BibTexChainElement {
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return present(param.getGrouping() == GroupingEntity.VIEWABLE) && !present(param.getTagIndex()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED) && present(param.getSearch());
+		return  present(param.getGrouping() == GroupingEntity.VIEWABLE) && 
+				!present(param.getBibtexKey()) && 
+				!present(param.getTagIndex()) && 
+				!present(param.getHash()) && 
+				nullOrEqual(param.getOrder(), Order.ADDED) && 
+				present(param.getSearch());
 	}
 	
 }

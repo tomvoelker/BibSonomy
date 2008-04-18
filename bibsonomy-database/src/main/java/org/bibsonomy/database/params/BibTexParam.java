@@ -44,6 +44,9 @@ public class BibTexParam extends ResourcesParam<BibTex> {
 	private String firstYear;
 	private String lastYear;
 	private String year;
+	
+	
+	private String bibtexKey;
 
 	public BibTexParam() {
 		this.simHash = HashID.SIM_HASH;
@@ -52,6 +55,7 @@ public class BibTexParam extends ResourcesParam<BibTex> {
 		this.firstYear = null;
 		this.lastYear = null;
 		this.year = null;
+		this.bibtexKey = null;
 	}
 
 	@Override
@@ -106,5 +110,13 @@ public class BibTexParam extends ResourcesParam<BibTex> {
 
 	public void setYear(String year) {
 		this.year = year;
+	}
+
+	public String getBibtexKey() {
+		return this.bibtexKey;
+	}
+
+	public void setBibtexKey(String requestedBibtexkey) {
+		this.bibtexKey = requestedBibtexkey;
 	}
 }

@@ -35,6 +35,16 @@ public class GetBibtexForGroupAndTag extends BibTexChainElement {
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return (param.getGrouping() == GroupingEntity.GROUP) && present(param.getRequestedGroupName()) && !present(param.getRequestedUserName()) && present(param.getTagIndex())&& (param.getNumSimpleConcepts() == 0) && (param.getNumSimpleTags() > 0) && (param.getNumTransitiveConcepts() == 0) && !present(param.getHash()) && !present(param.getOrder()) && !present(param.getSearch());
+		return  (param.getGrouping() == GroupingEntity.GROUP) &&
+				!present(param.getBibtexKey()) && 
+				present(param.getRequestedGroupName()) && 
+				!present(param.getRequestedUserName()) && 
+				present(param.getTagIndex())&& 
+				(param.getNumSimpleConcepts() == 0) && 
+				(param.getNumSimpleTags() > 0) && 
+				(param.getNumTransitiveConcepts() == 0) && 
+				!present(param.getHash()) && 
+				!present(param.getOrder()) && 
+				!present(param.getSearch());
 	}
 }

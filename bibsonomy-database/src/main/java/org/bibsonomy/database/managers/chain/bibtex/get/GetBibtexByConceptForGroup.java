@@ -11,7 +11,7 @@ import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.enums.Order;;
+import org.bibsonomy.model.enums.Order;
 
 /**
  * @author Stefan Stützer
@@ -26,7 +26,8 @@ public class GetBibtexByConceptForGroup extends BibTexChainElement {
 	
 	@Override
 	protected boolean canHandle(BibTexParam param) {
-		return 	present(param.getGrouping() == GroupingEntity.GROUP) && 
+		return 	present(param.getGrouping() == GroupingEntity.GROUP) &&
+				!present(param.getBibtexKey()) && 
 				present(param.getRequestedGroupName()) && 
 				present(param.getTagIndex()) && 
 				(param.getNumSimpleConcepts() > 0) && 

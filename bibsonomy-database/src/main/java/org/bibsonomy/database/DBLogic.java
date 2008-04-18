@@ -211,7 +211,7 @@ public class DBLogic implements LogicInterface {
 		}
 		return result;
 	}
-
+	
 	/*
 	 * Returns details to a post. A post is uniquely identified by a hash of the
 	 * corresponding resource and a username.

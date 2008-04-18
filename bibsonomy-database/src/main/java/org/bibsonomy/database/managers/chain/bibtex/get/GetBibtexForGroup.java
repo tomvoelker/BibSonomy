@@ -36,6 +36,7 @@ public class GetBibtexForGroup extends BibTexChainElement {
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
 		return 	(param.getGrouping() == GroupingEntity.GROUP) && 
+				!present(param.getBibtexKey()) && 
 				present(param.getRequestedGroupName()) &&  
 				!present(param.getRequestedUserName()) && 
 				!present(param.getTagIndex()) && 

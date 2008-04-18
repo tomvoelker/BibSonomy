@@ -5,7 +5,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.DBSession;
@@ -14,26 +13,23 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
 
 /**
- * @author Miranda Grahl
+ * @author Flori
  * @version $Id$
  */
-public class GetBibtexByTagNames extends BibTexChainElement {
+public class GetBibtexByKey extends BibTexChainElement {
 
 	/**
-	 * Returns a list of posts (bibtex) tagged with the given tags.
+	 * return a list of bibtex by a given key.
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		return this.db.getBibTexByTagNames(param, session);
+		return this.db.getBibTexByKey(param, session);
 	}
-	
+
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return  (param.getGrouping() == GroupingEntity.ALL) &&
-				!present(param.getBibtexKey()) && 
-				present(param.getTagIndex()) && 
+		return  present(param.getBibtexKey()) &&
 				(param.getNumSimpleConcepts() == 0) && 
-				(param.getNumSimpleTags() > 0) && 
 				(param.getNumTransitiveConcepts() == 0) && 
 				!present(param.getHash()) && 
 				nullOrEqual(param.getOrder(), Order.ADDED, Order.FOLKRANK) && 

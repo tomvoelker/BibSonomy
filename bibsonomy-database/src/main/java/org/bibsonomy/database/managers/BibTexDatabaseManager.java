@@ -506,6 +506,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		final BibTexExtraDatabaseManager bibtexExtraDb = BibTexExtraDatabaseManager.getInstance();
 		for (final Iterator<Post<BibTex>> postsIterator = posts.iterator(); postsIterator.hasNext();) {
 			final Post<BibTex> post = postsIterator.next();
+			
 			if (post.getUser().getName().equals(param.getUserName())) {
 				post.getResource().setPrivnote(bibtexExtraDb.getBibTexPrivnoteForUser(post.getResource().getIntraHash(), param.getUserName(), session));
 			}
@@ -782,5 +783,17 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
      */
 	public List<Post<BibTex>> getBibTexByConceptByTag(final BibTexParam param, final DBSession session){
 		return this.bibtexList("getBibTexByConceptByTag",param,session);
+	}
+
+	/**
+	 * <em>/bibtexkey/KEY</em>
+	 * Returns a list of bibtex entries for a given bibtexKey
+	 * 
+	 * @param param a bibtex parameter object
+	 * @param session a database session
+	 * @return list of bibtex entries
+	 */
+	public List<Post<BibTex>> getBibTexByKey(BibTexParam param, DBSession session) {
+		return this.bibtexList("getBibTexByKey",param,session);
 	}
 }

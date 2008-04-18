@@ -38,6 +38,13 @@ public class GetBibtexOfFriendsByUser extends BibTexChainElement {
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.FRIEND) && present(param.getRequestedUserName()) && !present(param.getTagIndex()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED) && !present(param.getSearch());
+		return  present(param.getUserName()) && 
+				!present(param.getBibtexKey()) && 
+				(param.getGrouping() == GroupingEntity.FRIEND) && 
+				present(param.getRequestedUserName()) && 
+				!present(param.getTagIndex()) && 
+				!present(param.getHash()) && 
+				nullOrEqual(param.getOrder(), Order.ADDED) && 
+				!present(param.getSearch());
 	}
 }

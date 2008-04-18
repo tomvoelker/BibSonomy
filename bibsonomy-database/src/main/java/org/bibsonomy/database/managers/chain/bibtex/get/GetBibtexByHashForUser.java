@@ -27,6 +27,12 @@ public class GetBibtexByHashForUser extends BibTexChainElement {
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return present(param.getHash()) && (param.getGrouping() == GroupingEntity.USER) && present(param.getRequestedGroupName()) && !present(param.getTagIndex()) && !present(param.getOrder()) && !present(param.getSearch());
+		return  present(param.getHash()) && 
+				!present(param.getBibtexKey()) && 
+				(param.getGrouping() == GroupingEntity.USER) && 
+				present(param.getRequestedGroupName()) && 
+				!present(param.getTagIndex()) && 
+				!present(param.getOrder()) && 
+				!present(param.getSearch());
 	}
 }
