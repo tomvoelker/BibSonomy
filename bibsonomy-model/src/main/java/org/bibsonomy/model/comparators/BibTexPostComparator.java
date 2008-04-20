@@ -41,9 +41,9 @@ public class BibTexPostComparator implements Comparator<Post<BibTex>>, Serializa
 			this.sortOrder = order;
 		}
 	}	
-	
+
 	/** helper exception */
-	private class sortKeyIsEqualException extends Exception {
+	private class SortKeyIsEqualException extends Exception {
 		private static final long serialVersionUID = 1L;		
 	}
 	
@@ -52,7 +52,6 @@ public class BibTexPostComparator implements Comparator<Post<BibTex>>, Serializa
 	 * 
 	 * @param sortKeys
 	 * @param sortOrders
-	 * 
 	 */
 	public BibTexPostComparator(final List<SortKey> sortKeys, final List<SortOrder> sortOrders) {
 		for (int i = 0; i <= sortKeys.size() - 1; i++) {
@@ -110,7 +109,7 @@ public class BibTexPostComparator implements Comparator<Post<BibTex>>, Serializa
 					return 0;
 				}
 			}
-			catch (sortKeyIsEqualException e) {
+			catch (SortKeyIsEqualException e) {
 				// the for-loop will jump to the next sort criterium in this case
 			}
 		}
@@ -124,9 +123,9 @@ public class BibTexPostComparator implements Comparator<Post<BibTex>>, Serializa
 	 * @param s2 second string
 	 * @param order sort order
 	 * @return an int comparison value
-	 * @throws sortKeyIsEqualException 
+	 * @throws SortKeyIsEqualException 
 	 */
-	private int nomalizeAndCompare(String s1, String s2, final SortOrder order) throws sortKeyIsEqualException {
+	private int nomalizeAndCompare(String s1, String s2, final SortOrder order) throws SortKeyIsEqualException {
 		// normalization
 		if (present(s1)) s1 = BibTexUtils.cleanBibTex(s1).trim();
 		if (present(s2)) s2 = BibTexUtils.cleanBibTex(s2).trim();
@@ -137,7 +136,7 @@ public class BibTexPostComparator implements Comparator<Post<BibTex>>, Serializa
 		} else {
 			comp = StringUtils.secureCompareTo(s2, s1);
 		}
-		if (comp == 0) throw new sortKeyIsEqualException();
+		if (comp == 0) throw new SortKeyIsEqualException();
 		return comp;
 	}
 
@@ -148,9 +147,9 @@ public class BibTexPostComparator implements Comparator<Post<BibTex>>, Serializa
 	 * @param i2 second integer
 	 * @param order sort order
 	 * @return an int comparison value
-	 * @throws sortKeyIsEqualException 
+	 * @throws SortKeyIsEqualException 
 	 */
-	private int compare (final int i1, final int i2, final SortOrder order) throws sortKeyIsEqualException {
+	private int compare(final int i1, final int i2, final SortOrder order) throws SortKeyIsEqualException {
 		int comp = 0;
 		if (order.equals(SortOrder.ASC)) {
 			comp = i1 - i2;
@@ -158,7 +157,7 @@ public class BibTexPostComparator implements Comparator<Post<BibTex>>, Serializa
 		else {
 			comp = i2 - i1;
 		}
-		if ( comp == 0 ) throw new sortKeyIsEqualException();
+		if ( comp == 0 ) throw new SortKeyIsEqualException();
 		return comp;
 	}	
 }

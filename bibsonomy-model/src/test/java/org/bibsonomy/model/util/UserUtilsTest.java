@@ -1,11 +1,17 @@
 package org.bibsonomy.model.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.bibsonomy.model.User;
 import org.junit.Test;
 
 /**
@@ -47,5 +53,36 @@ public class UserUtilsTest {
 			// unflag
 			assertEquals(i, UserUtils.getGroupId(UserUtils.getGroupId(i, true), false));
 		}
+	}
+
+	/**
+	 * tests setGroupsByGroupIDs
+	 */
+	@Test
+	public void setGroupsByGroupIDs() {
+		final User user = new User();
+		assertEquals(0, user.getGroups().size());
+		UserUtils.setGroupsByGroupIDs(user, Arrays.asList(1, 2, 3));
+		assertEquals(3, user.getGroups().size());
+	}
+
+	/**
+	 * tests getListOfGroupIDs
+	 */
+	@Test
+	public void getListOfGroupIDs() {
+		final User user = new User();
+		UserUtils.setGroupsByGroupIDs(user, Arrays.asList(1, 2, 3));
+		assertEquals(3, user.getGroups().size());
+		final List<Integer> groups = UserUtils.getListOfGroupIDs(user);
+		assertTrue(groups.contains(1));
+		assertTrue(groups.contains(2));
+		assertTrue(groups.contains(3));
+		assertFalse(groups.contains(23));
+		assertFalse(groups.contains(42));
+
+		// invalid user object returns an empty list
+		assertNotNull(UserUtils.getListOfGroupIDs(null));
+		assertEquals(0, UserUtils.getListOfGroupIDs(null).size());
 	}
 }

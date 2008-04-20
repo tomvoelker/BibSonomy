@@ -46,14 +46,14 @@ public class PersonName {
 	 */
 	public void setName(String name) {
 		this.name = name;
-		this.discoverFirstAnLastName();
+		this.discoverFirstAndLastName();
 	}
 
 	/**
 	 * Tries to detect the firstname and lastname of each author or editor.
 	 * Firstnames must be abbreviated with a '.' to be identified as firstnames.
 	 */
-	private void discoverFirstAnLastName() {
+	private void discoverFirstAndLastName() {
 		if (this.name != null) {
 			/*
 			 * extract all parts of a name

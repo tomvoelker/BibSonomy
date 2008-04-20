@@ -1,20 +1,15 @@
 package org.bibsonomy.model;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
 
 /**
  * A post connects a given resource with a user and a certain date.
  * 
  * @version $Id$
- * @param <T> resouce type
+ * @param <T>
+ *            resouce type
  */
 public class Post<T extends Resource> {
 
@@ -51,18 +46,13 @@ public class Post<T extends Resource> {
 	private Date date;
 
 	/**
-	 * This is a text describing the post. <br/> The description should be part
-	 * of the post because it's a description individually made by one user for
-	 * his post - another user may describe the post with another text
+	 * This is a text describing the post. <br/>
+	 * 
+	 * The description should be part of the post because it's a description
+	 * individually made by one user for his post - another user may describe
+	 * the post with another text.
 	 */
 	private String description;
-
-	/**
-	 * constructor
-	 */
-	public Post() {
-		this.tags = new ArrayList<Tag>();
-	}
 
 	/**
 	 * @return contentId
@@ -155,18 +145,28 @@ public class Post<T extends Resource> {
 	}
 
 	/**
+	 * Convenience method to add a tag.
+	 * 
 	 * @param tagName
 	 */
 	public void addTag(final String tagName) {
+		// call getTags to initialize this.tags
+		this.getTags();
+
 		final Tag tag = new Tag();
 		tag.setName(tagName);
 		this.tags.add(tag);
 	}
 
 	/**
+	 * Convenience method to add a group.
+	 * 
 	 * @param groupName
 	 */
 	public void addGroup(final String groupName) {
+		// call getGroups to initialize this.groups
+		this.getGroups();
+
 		final Group group = new Group();
 		group.setName(groupName);
 		this.groups.add(group);

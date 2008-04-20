@@ -1,7 +1,6 @@
 package org.bibsonomy.model;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -68,7 +67,7 @@ public class User {
 	/**
 	 * the settings of this user
 	 */
-	private UserSettings settings = new UserSettings();
+	private UserSettings settings;
 
 	/**
 	 * OpenURL url
@@ -118,58 +117,58 @@ public class User {
 	/**
 	 * Holds the friends of this user
 	 */
-	private final List<User> friends;
-	
+	private List<User> friends;
+
 	/**
 	 * Which role the user has in the system (e.g. admin, ...)
 	 */
 	private Role role;
-	
+
 	/**
 	 * who updated state of the user
 	 */
 	private String updatedBy;
-	
+
 	/**
 	 * date of update
 	 */
 	private Date updatedAt; 
-	
+
 	/**
 	 * flag if the classifier should take this user
 	 * into account for classification
 	 */
 	private Integer toClassify;
-	
+
 	/**
 	 * The classification algortihm the user was classified with
 	 */
 	private String algorithm;
-	
+
 	/**
 	 * The spammer prediction of the classifier
 	 */
 	private Integer prediction;
-	
+
 	/** The mode of the classiefier (day or night) */ 
 	private String mode;
-	
+
 	/**
-	 * constructor
+	 * Constructor
 	 */
 	public User() {
 		this(null);
 	}
 
 	/**
-	 * constructor
+	 * Constructor
 	 * 
 	 * @param name
 	 */
 	public User(final String name) {
 		this.setName(name); 
 		this.basket = new Basket();
-		this.friends = new ArrayList<User>();
+		this.settings = new UserSettings();
 	}
 
 	/**
@@ -267,6 +266,17 @@ public class User {
 	 */
 	public void setGroups(List<Group> groups) {
 		this.groups = groups;
+	}
+
+	/**
+	 * Convenience method to add a group.
+	 * 
+	 * @param group
+	 */
+	public void addGroup(final Group group) {
+		// call getGroups to initialize this.groups
+		this.getGroups();
+		this.groups.add(group);
 	}
 
 	/**
@@ -472,18 +482,25 @@ public class User {
 	 * @return a List of friends
 	 */
 	public List<User> getFriends() {
+		if (this.friends == null) {
+			this.friends = new LinkedList<User>();
+		}
 		return this.friends;
 	}
 
 	/**
-	 * Returns the first friend of this user
+	 * Returns the first friend of this user.<br/>
+	 * 
+	 * XXX: iBatis should support this: "friends[0].name", which should return
+	 * the name of the first friend - but this doesn't seem to work so we need
+	 * this extra method.
+	 * 
+	 * FIXME: maybe we should put this inside a param object
 	 * 
 	 * @return friend
 	 */
 	public User getFriend() {
-		if (this.friends.size() < 1) return null;
-		// XXX: iBatis should support this: "friends[0].name", which should
-		// return the name of the first friend - but this doesn't seem to work
+		if (this.getFriends().size() < 1) return null;
 		return this.friends.get(0);
 	}
 
@@ -491,6 +508,8 @@ public class User {
 	 * @param friend
 	 */
 	public void addFriend(final User friend) {
+		// call getFriends to initialize this.friends
+		this.getFriends();
 		this.friends.add(friend);
 	}
 
@@ -590,17 +609,5 @@ public class User {
 	 */
 	public void setMode(String mode) {
 		this.mode = mode;
-	}			
-	
-	/**
-	 * convenience method to add a group
-	 * 
-	 * @param group
-	 */
-	public void addGroup(Group group) {
-		if (this.groups == null) {
-			this.groups = new ArrayList<Group>();
-		}
-		this.groups.add(group);
 	}
 }

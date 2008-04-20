@@ -6,17 +6,17 @@ package org.bibsonomy.model;
  * @author Christian Kramer
  * @version $Id$
  */
-public class Document{
+public class Document {
 	/**
 	 * the filename
 	 */
 	private String fileName;
-	
+
 	/**
 	 * the username of the document
 	 */
 	private String userName;
-	
+
 	/**
 	 * the hash of the file
 	 */

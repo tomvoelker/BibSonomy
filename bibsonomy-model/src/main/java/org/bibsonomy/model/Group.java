@@ -14,7 +14,7 @@ import org.bibsonomy.common.enums.Privlevel;
 public class Group {
 
 	/**
-	 * The internal id of this group. TODO: shouldn't this be a {@link GroupID}?!
+	 * The internal id of this group.
 	 */
 	private int groupId;
 
@@ -60,12 +60,10 @@ public class Group {
 	/**
 	 * constructor
 	 * 
-	 * @param groupid
+	 * @param groupId
 	 */
-	public Group(final GroupID groupid) {
-		this.groupId = groupid.getId();
-		this.privlevel = Privlevel.MEMBERS;
-		this.sharedDocuments = false;
+	public Group(final GroupID groupId) {
+		this(groupId.getId());
 	}
 
 	/**
@@ -73,7 +71,7 @@ public class Group {
 	 * 
 	 * @param groupid
 	 */
-	public Group(Integer groupid) {
+	public Group(final int groupid) {
 		this.groupId = groupid;
 		this.privlevel = Privlevel.MEMBERS;
 		this.sharedDocuments = false;
@@ -153,6 +151,17 @@ public class Group {
 	 */
 	public void setUsers(List<User> users) {
 		this.users = users;
+	}
+	
+	/**
+	 * Returns the first member of this group.
+	 * 
+	 * @see User#getFriend()
+	 * @return first user
+	 */
+	public User getUser() {
+		if (this.getUsers().size() < 1) return null;
+		return this.users.get(0);
 	}
 
 	/**

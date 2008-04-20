@@ -12,10 +12,10 @@ import org.junit.Test;
 public class GroupTest {
 
 	/**
-	 * tests getPrivlevel
+	 * tests a new group object
 	 */
 	@Test
-	public void getPrivlevel() {
+	public void testNewGroup() {
 		final Group group = new Group();
 		assertEquals(GroupID.PUBLIC.getId(), group.getGroupId());
 		assertEquals(Privlevel.MEMBERS, group.getPrivlevel());

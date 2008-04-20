@@ -45,24 +45,24 @@ public class UserUtils {
 	}
 
 	/**
-	 * Transforms groupid in dependence of spammer status of a user
+	 * Merges spaminformation into the groupId (MSB set iff isSpammer == true).
 	 * 
-	 * @param groupid
-	 *            Id to transform
+	 * @param groupId
+	 *            the original groupId
 	 * @param isSpammer
 	 *            true if the user is a spammer, otherwise false
-	 * @return new groupId
+	 * @return groupId with potentially modified MSB
 	 */
-	public static int getGroupId(final int groupid, final boolean isSpammer) {
+	public static int getGroupId(final int groupId, final boolean isSpammer) {
 		// use logical OR (|) to set first bit
 		final int CONST_SET_1ST_BIT = 0x80000000;
 		// use logical AND (&) to clear first bit
 		final int CONST_CLEAR_1ST_BIT = 0x7FFFFFFF;
 
-		if (isSpammer) return groupid | CONST_SET_1ST_BIT;
+		if (isSpammer) return groupId | CONST_SET_1ST_BIT;
 		// Note: "return groupid" is not enough, since we want to use that to
 		// unflag spammers posts, as well
-		return groupid & CONST_CLEAR_1ST_BIT;
+		return groupId & CONST_CLEAR_1ST_BIT;
 	}
 
 	/**

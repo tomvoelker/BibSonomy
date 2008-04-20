@@ -21,7 +21,7 @@ public class Tag {
 	private String name;
 	
 	/**
-	 *  FIXME what's this ?
+	 * The stemmed version of the tag's name.
 	 */
 	private String stem;
 	
@@ -189,10 +189,10 @@ public class Tag {
 	 * as a space-separated string
 	 * @param subtags
 	 */
-	public void setSubtagsString(String subtags) {
-		String [] st = subtags.split(" ");
-		for (String subtag : st) {
-			Tag s = new Tag();
+	public void setSubtagsString(final String subtags) {
+		final String [] st = subtags.split(" ");
+		for (final String subtag : st) {
+			final Tag s = new Tag();
 			s.setName(subtag);
 			this.getSubTags().add(s);
 		}

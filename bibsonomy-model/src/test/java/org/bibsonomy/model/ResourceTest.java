@@ -25,22 +25,12 @@ public class ResourceTest {
 		assertEquals(BibTex.class, Resource.getResource("BIBTEX"));
 		assertEquals(Bookmark.class, Resource.getResource("BookMark "));
 
-		try {
-			Resource.getResource("foo bar");
-			fail("Should throw exception");
-		} catch (final UnsupportedResourceTypeException ex) {
-		}
-
-		try {
-			Resource.getResource("");
-			fail("Should throw exception");
-		} catch (final UnsupportedResourceTypeException ex) {
-		}
-
-		try {
-			Resource.getResource(null);
-			fail("Should throw exception");
-		} catch (final UnsupportedResourceTypeException ex) {
+		for (final String resourceType : new String[] { "", " ", null, "foo bar" }) {
+			try {
+				Resource.getResource(resourceType);
+				fail("Expected UnsupportedResourceTypeException");
+			} catch (final UnsupportedResourceTypeException ignored) {
+			}
 		}
 	}
 
