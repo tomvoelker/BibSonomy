@@ -1,5 +1,7 @@
 package org.bibsonomy.common.enums;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 /**
  * Constant group ids.
  */
@@ -10,7 +12,10 @@ public enum GroupID {
 	PRIVATE(1),
 	/** the owning user's friends group */
 	FRIENDS(2),
-	/** the kde group (normally groups are not hardoded as this, but this is an example used in some tescases) */
+	/**
+	 * the kde group (normally groups are not hardoded as this, but this is an
+	 * example used in some tescases)
+	 */
 	KDE(3),
 	/** an invalid value */
 	INVALID(-1);
@@ -29,14 +34,15 @@ public enum GroupID {
 	}
 
 	/**
-	 * @param name
+	 * @param groupName
 	 *            the groupname to look up
 	 * @return GroupID representation of a special group which name correspond
 	 *         to the argument
 	 */
-	public static GroupID getSpecialGroup(final String name) {
-		final GroupID group = valueOf(name.toUpperCase());
-		if (isSpecialGroupId(group.id)) return group;
+	public static GroupID getSpecialGroup(final String groupName) {
+		if (present(groupName) == false) return null;
+		final GroupID group = valueOf(groupName.toUpperCase());
+		if (isSpecialGroupId(group.getId())) return group;
 		return null;
 	}
 
@@ -72,9 +78,9 @@ public enum GroupID {
 	 */
 	public static boolean isSpecialGroup(final String groupName) {
 		try {
-			return isSpecialGroupId(valueOf(groupName.toUpperCase()));
-		} catch (IllegalArgumentException ex) {
-			return false;
+			if (getSpecialGroup(groupName) != null) return true;
+		} catch (IllegalArgumentException ignore) {
 		}
+		return false;
 	}
 }
