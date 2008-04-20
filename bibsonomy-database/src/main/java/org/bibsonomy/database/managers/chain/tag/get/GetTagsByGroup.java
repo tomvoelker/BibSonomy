@@ -10,8 +10,6 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.tag.TagChainElement;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.util.DBSession;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 
 /**
@@ -26,7 +24,7 @@ public class GetTagsByGroup extends TagChainElement {
 	 */
 	@Override
 	protected List<Tag> handle(final TagParam param, final DBSession session) {
-		final Integer groupId = this.generalDb.getGroupIdByGroupName(param, session);
+		final Integer groupId = this.groupDb.getGroupIdByGroupName(param.getRequestedGroupName(), session);
 		if (groupId == GroupID.INVALID.getId()  || GroupID.isSpecialGroupId(groupId)) {
 			log.debug("groupId " +  param.getRequestedGroupName() + " not found or special group" );
 			return new ArrayList<Tag>(0);			

@@ -11,7 +11,6 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChainElement;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.util.DBSession;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
@@ -28,7 +27,7 @@ public class GetBookmarksViewable extends BookmarkChainElement {
 	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
-		final Integer groupId = this.generalDb.getGroupIdByGroupNameAndUserName(param, session);
+		final Integer groupId = this.groupDb.getGroupIdByGroupNameAndUserName(param.getRequestedGroupName(), param.getUserName(), session);
 		if (groupId == GroupID.INVALID.getId()) {
 			log.debug("groupId " + param.getRequestedGroupName() + "not found");
 			return new ArrayList<Post<Bookmark>>(0);			

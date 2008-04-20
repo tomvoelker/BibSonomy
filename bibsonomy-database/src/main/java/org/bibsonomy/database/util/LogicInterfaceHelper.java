@@ -29,15 +29,15 @@ public class LogicInterfaceHelper {
 	 * 
 	 * @param <T> the type of param object to be build
 	 * @param type the type of param object to be build
-	 * @param authUser name of logged in user as specified for {@link PostLogicInterface#getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)}
-	 * @param grouping as specified for {@link PostLogicInterface#getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)}
-	 * @param groupingName as specified for {@link PostLogicInterface#getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)} 
-	 * @param tags as specified for {@link PostLogicInterface#getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)} 
-	 * @param hash as specified for {@link PostLogicInterface#getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)}
-	 * @param order as specified for {@link PostLogicInterface#getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)}
-	 * @param start as specified for {@link PostLogicInterface#getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)} 
-	 * @param end as specified for {@link PostLogicInterface#getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)}
-	 * @param search as specified for {@link PostLogicInterface#getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)} 
+	 * @param authUser name of logged in user as specified for {@link PostLogicInterface#getPosts}
+	 * @param grouping as specified for {@link PostLogicInterface#getPosts}
+	 * @param groupingName as specified for {@link PostLogicInterface#getPosts} 
+	 * @param tags as specified for {@link PostLogicInterface#getPosts} 
+	 * @param hash as specified for {@link PostLogicInterface#getPosts}
+	 * @param order as specified for {@link PostLogicInterface#getPosts}
+	 * @param start as specified for {@link PostLogicInterface#getPosts} 
+	 * @param end as specified for {@link PostLogicInterface#getPosts}
+	 * @param search as specified for {@link PostLogicInterface#getPosts} 
 	 * @param loginUser TODO
 	 * @return the fresh param object 
 	 */

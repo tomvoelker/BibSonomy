@@ -24,7 +24,7 @@ public class GetBibtexForGroup extends BibTexChainElement {
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		final Integer groupId = this.generalDb.getGroupIdByGroupName(param, session);
+		final Integer groupId = this.groupDb.getGroupIdByGroupName(param.getRequestedGroupName(), session);
 		if (groupId == GroupID.INVALID.getId() || GroupID.isSpecialGroupId(groupId)) {
 			log.debug("group " + param.getRequestedGroupName() + " not found or special group");
 			return new ArrayList<Post<BibTex>>(0);			

@@ -11,35 +11,132 @@ import org.bibsonomy.database.util.DBSession;
  * 
  * @author Jens Illig
  * @author Christian Schenk
- * @author Anton Wilhelm
  * @author Stefan Stützer
+ * @author Anton Wilhelm
  * @version $Id$
  */
 public interface DatabasePlugin {
 
+	/**
+	 * Called when a BibTex is inserted.
+	 * 
+	 * @param contentId
+	 * @param session
+	 * @return runnable
+	 */
 	public Runnable onBibTexInsert(int contentId, DBSession session);
 
+	/**
+	 * Called when a BibTex is deleted.
+	 * 
+	 * @param contentId
+	 * @param session
+	 * @return runnable
+	 */
 	public Runnable onBibTexDelete(int contentId, DBSession session);
 
+	/**
+	 * Called when a BibTex is updated.
+	 * 
+	 * @param newContentId
+	 * @param contentId
+	 * @param session
+	 * @return runnable
+	 */
 	public Runnable onBibTexUpdate(int newContentId, int contentId, DBSession session);
 
+	/**
+	 * Called when a Bookmark is inserted.
+	 * 
+	 * @param contentId
+	 * @param session
+	 * @return runnable
+	 */
 	public Runnable onBookmarkInsert(int contentId, DBSession session);
 
+	/**
+	 * Called when a Bookmark is deleted.
+	 * 
+	 * @param contentId
+	 * @param session
+	 * @return runnable
+	 */
 	public Runnable onBookmarkDelete(int contentId, DBSession session);
 
+	/**
+	 * Called when a Bookmark is updated.
+	 * 
+	 * @param newNontentId
+	 * @param contentId
+	 * @param session
+	 * @return runnable
+	 */
 	public Runnable onBookmarkUpdate(int newNontentId, int contentId, DBSession session);
 
+	/**
+	 * Called when a TagRelation is deleted.
+	 * 
+	 * @param upperTagName
+	 * @param lowerTagName
+	 * @param userName
+	 * @param session
+	 * @return runnable
+	 */
 	public Runnable onTagRelationDelete(String upperTagName, String lowerTagName, String userName, DBSession session);
 	
+	/**
+	 * Called when a Concept is deleted.
+	 * 
+	 * @param conceptName
+	 * @param userName
+	 * @param session
+	 * @return runnable
+	 */
 	public Runnable onConceptDelete(String conceptName, String userName, DBSession session);
 	
+	/**
+	 * Called when a Tag is deleted.
+	 * 
+	 * @param contentId
+	 * @param session
+	 * @return runnable
+	 */
 	public Runnable onTagDelete(int contentId, DBSession session);
 	
+	/**
+	 * Called when a User is inserted.
+	 * 
+	 * @param userName
+	 * @param session
+	 * @return runnable
+	 */
 	public Runnable onUserInsert(String userName, DBSession session);
 
+	/**
+	 * Called when a User is deleted.
+	 * 
+	 * @param userName
+	 * @param session
+	 * @return runnable
+	 */
 	public Runnable onUserDelete(String userName, DBSession session);
 
+	/**
+	 * Called when a User is updated.
+	 * 
+	 * @param userName
+	 * @param session
+	 * @return runnable
+	 */
 	public Runnable onUserUpdate(String userName, DBSession session);	
 
+	/**
+	 * Called when a user is removed from a group.
+	 * 
+	 * @param userName
+	 * @param groupId
+	 * @param session
+	 * @return runnable
+	 */
 	public Runnable onRemoveUserFromGroup(String userName, int groupId, DBSession session);
 }

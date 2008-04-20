@@ -19,14 +19,16 @@ public class ConceptChain implements FirstChainElement<Tag, TagRelationParam> {
 	private final ChainElement<Tag, TagRelationParam> getAllConcepts;
 	private final ChainElement<Tag, TagRelationParam> getAllConceptsForUser;
 	private final ChainElement<Tag, TagRelationParam> getPickedConceptsForUser;
-	
-	
+
+	/**
+	 * Constructs the chain
+	 */
 	public ConceptChain() {
 		// intialize chain elements
 		this.getAllConcepts 			= new GetAllConcepts();
 		this.getAllConceptsForUser 		= new GetAllConceptsForUser();
 		this.getPickedConceptsForUser 	= new GetPickedConceptsForUser();
-		
+
 		// set order of chain elements
 		this.getAllConcepts.setNext(this.getAllConceptsForUser);
 		this.getAllConceptsForUser.setNext(this.getPickedConceptsForUser);

@@ -4,11 +4,13 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
+import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.util.DBSession;
 
 /**
  * Represents one element in the chain of responsibility.
+ * 
  * @param <L> Type of the fetched result entities
  * @param <P> Type of the param object
  * 
@@ -21,6 +23,7 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 
 	protected static final Logger log = Logger.getLogger(ChainElement.class);
 	protected final GeneralDatabaseManager generalDb;
+	protected final GroupDatabaseManager groupDb;
 	/** The next element of the chain */
 	private ChainElement<L, P> next;
 
@@ -29,12 +32,15 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 	 */
 	public ChainElement() {
 		this.generalDb = GeneralDatabaseManager.getInstance();
+		this.groupDb = GroupDatabaseManager.getInstance();
 		this.next = null;
 	}
 
 	/**
 	 * Sets the next element in the chain.
-	 * @param nextElement the next element following this element
+	 * 
+	 * @param nextElement
+	 *            the next element following this element
 	 */
 	public final void setNext(final ChainElement<L, P> nextElement) {
 		this.next = nextElement;

@@ -2,8 +2,8 @@ package org.bibsonomy.database.plugin.plugins;
 
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
-import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.GroupParam;
+import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 import org.bibsonomy.database.util.DBSession;
@@ -15,8 +15,8 @@ import org.bibsonomy.database.util.DBSession;
  * 
  * @author Jens Illig
  * @author Christian Schenk
- * @author Anton Wilhelm
  * @author Stefan Stützer
+ * @author Anton Wilhelm
  * @version $Id$
  */
 public class Logging extends AbstractDatabasePlugin {
@@ -81,7 +81,7 @@ public class Logging extends AbstractDatabasePlugin {
 			}
 		};
 	}
-	
+
 	@Override
 	public Runnable onConceptDelete(final String conceptName, final String userName, final DBSession session) {
 		return new Runnable() {
@@ -125,5 +125,5 @@ public class Logging extends AbstractDatabasePlugin {
 				insert("logUser", userName, session);
 			}
 		};
-	}	
+	}
 }

@@ -8,7 +8,8 @@ import org.bibsonomy.database.params.GenericParam;
  * they're able to hand out the first element of their chain.
  * 
  * @param <L> Type of the fetched result entities
- * @param <P> Type of the param object 
+ * @param <P> Type of the param object
+ * 
  * @author Christian Schenk
  * @version $Id$
  */

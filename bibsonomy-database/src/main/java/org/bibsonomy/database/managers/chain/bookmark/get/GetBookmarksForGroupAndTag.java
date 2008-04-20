@@ -25,7 +25,7 @@ public class GetBookmarksForGroupAndTag extends BookmarkChainElement {
 	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
-		final Integer groupId = this.generalDb.getGroupIdByGroupName(param, session);
+		final Integer groupId = this.groupDb.getGroupIdByGroupName(param.getRequestedGroupName(), session);
 		if (groupId == GroupID.INVALID.getId()  || GroupID.isSpecialGroupId(groupId)) {
 			log.debug("groupId " +  param.getRequestedGroupName() + " not found or special group" );
 			return new ArrayList<Post<Bookmark>>(0);			

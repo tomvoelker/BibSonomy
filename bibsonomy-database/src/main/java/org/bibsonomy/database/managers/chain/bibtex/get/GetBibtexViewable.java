@@ -31,7 +31,7 @@ public class GetBibtexViewable extends BibTexChainElement {
 	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		final Integer groupId = this.generalDb.getGroupIdByGroupNameAndUserName(param, session);
+		final Integer groupId = this.groupDb.getGroupIdByGroupNameAndUserName(param.getRequestedGroupName(), param.getUserName(), session);
 		if (groupId == GroupID.INVALID.getId()) {
 			log.debug("groupId " +  param.getRequestedGroupName() + " not found" );
 			return new ArrayList<Post<BibTex>>(0);			

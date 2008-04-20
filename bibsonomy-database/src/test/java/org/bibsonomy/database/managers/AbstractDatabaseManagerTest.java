@@ -10,9 +10,9 @@ import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DBSessionFactory;
+import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.testutil.JNDITestDatabaseBinder;
 import org.bibsonomy.testutil.ParamUtils;
-import org.bibsonomy.testutil.SandboxDBSessionFactory;
 import org.junit.After;
 import org.junit.Before;
 
@@ -49,8 +49,8 @@ public abstract class AbstractDatabaseManagerTest {
 	protected GroupParam groupParam;
 	protected StatisticsParam statisticsParam;
 
+	protected DBSessionFactory dbSessionFactory;
 	protected DBSession dbSession;
-	protected SandboxDBSessionFactory dbSessionFactory;
 
 	/**
 	 * Setup
@@ -75,8 +75,7 @@ public abstract class AbstractDatabaseManagerTest {
 			// bind datasource access via JNDI
 			JNDITestDatabaseBinder.bind();
 
-			// testcases shouldn't write into the db
-			this.dbSessionFactory = new SandboxDBSessionFactory();
+			this.dbSessionFactory = new IbatisDBSessionFactory();
 			this.dbSession = this.dbSessionFactory.getDatabaseSession();
 		} catch (final Throwable ex) {
 			log.fatal("exception in testcase setUp", ex);
@@ -88,8 +87,6 @@ public abstract class AbstractDatabaseManagerTest {
 	 */
 	@After
 	public void tearDown() {
-		this.dbSessionFactory.endTest();
-
 		this.generalDb = null;
 		this.bookmarkDb = null;
 		this.bibTexDb = null;

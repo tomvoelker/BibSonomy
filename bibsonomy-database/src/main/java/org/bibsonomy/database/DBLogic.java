@@ -1,5 +1,7 @@
 package org.bibsonomy.database;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +29,6 @@ import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.BookmarkDatabaseManager;
 import org.bibsonomy.database.managers.CrudableContent;
 import org.bibsonomy.database.managers.DocumentDatabaseManager;
-import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.managers.StatisticsDatabaseManager;
@@ -52,11 +53,9 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.UserUtils;
-import org.bibsonomy.model.enums.Order;
-
-import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * @author Jens Illig
@@ -68,7 +67,6 @@ public class DBLogic implements LogicInterface {
 	private static final Logger log = Logger.getLogger(DBLogic.class);
 
 	private final Map<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>> allDatabaseManagers;
-	private final GeneralDatabaseManager generalDBManager;
 	private final DocumentDatabaseManager docDBManager;
 	private final PermissionDatabaseManager permissionDBManager;
 	private final BookmarkDatabaseManager bookmarkDBManager;
@@ -88,21 +86,20 @@ public class DBLogic implements LogicInterface {
 		loginUser.addGroup(new Group(GroupID.PUBLIC));
 		this.loginUser = loginUser;
 
-		generalDBManager = GeneralDatabaseManager.getInstance();
-		allDatabaseManagers = new HashMap<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>>();
-		bibtexDBManager = BibTexDatabaseManager.getInstance();
-		allDatabaseManagers.put(BibTex.class, this.bibtexDBManager);
-		bookmarkDBManager = BookmarkDatabaseManager.getInstance();
-		allDatabaseManagers.put(Bookmark.class, this.bookmarkDBManager);
+		this.allDatabaseManagers = new HashMap<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>>();
+		this.bibtexDBManager = BibTexDatabaseManager.getInstance();
+		this.allDatabaseManagers.put(BibTex.class, this.bibtexDBManager);
+		this.bookmarkDBManager = BookmarkDatabaseManager.getInstance();
+		this.allDatabaseManagers.put(Bookmark.class, this.bookmarkDBManager);
 
-		docDBManager = DocumentDatabaseManager.getInstance();
-		userDBManager = UserDatabaseManager.getInstance();
-		groupDBManager = GroupDatabaseManager.getInstance();
-		tagDBManager = TagDatabaseManager.getInstance();
-		adminDBManager = AdminDatabaseManager.getInstance();
-		permissionDBManager = PermissionDatabaseManager.getInstance();
-		statisticsDBManager = StatisticsDatabaseManager.getInstance();
-		tagRelationsDBManager = TagRelationDatabaseManager.getInstance();
+		this.docDBManager = DocumentDatabaseManager.getInstance();
+		this.userDBManager = UserDatabaseManager.getInstance();
+		this.groupDBManager = GroupDatabaseManager.getInstance();
+		this.tagDBManager = TagDatabaseManager.getInstance();
+		this.adminDBManager = AdminDatabaseManager.getInstance();
+		this.permissionDBManager = PermissionDatabaseManager.getInstance();
+		this.statisticsDBManager = StatisticsDatabaseManager.getInstance();
+		this.tagRelationsDBManager = TagRelationDatabaseManager.getInstance();
 
 		this.dbSessionFactory = dbSessionFactory;		
 	}
@@ -111,7 +108,7 @@ public class DBLogic implements LogicInterface {
 	 * Returns a new database session.
 	 */
 	private DBSession openSession() {
-		return dbSessionFactory.getDatabaseSession();
+		return this.dbSessionFactory.getDatabaseSession();
 	}
 
 	/*
@@ -121,7 +118,7 @@ public class DBLogic implements LogicInterface {
 		this.permissionDBManager.checkStartEnd(start, end, "user");
 		final DBSession session = openSession();
 		try {
-			return userDBManager.getAllUsers(start, end, session);
+			return this.userDBManager.getAllUsers(start, end, session);
 		} finally {
 			session.close();
 		}
@@ -133,7 +130,7 @@ public class DBLogic implements LogicInterface {
 	public List<User> getUsers(final String groupName, final int start, final int end) {
 		final DBSession session = openSession();
 		try {
-			return groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, session).getUsers();
+			return this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, session).getUsers();
 		} finally {
 			session.close();
 		}
@@ -148,7 +145,7 @@ public class DBLogic implements LogicInterface {
 	public User getUserDetails(final String userName) {
 		final DBSession session = openSession();
 		try {
-			final User user = userDBManager.getUserDetails(userName, session);
+			final User user = this.userDBManager.getUserDetails(userName, session);
 			if (userName.equals(this.loginUser.getName()) == false) {
 				user.setEmail(null);
 				user.setRealname(null);
@@ -195,14 +192,13 @@ public class DBLogic implements LogicInterface {
 			} else */
 			if (resourceType == BibTex.class) {
 				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, loginUser);
-				if (filter != null)
-					param.setFilter(filter);
+				if (filter != null) param.setFilter(filter);
 				// this is save because of RTTI-check of resourceType argument which is of class T
-				result = ((List) bibtexDBManager.getPosts(param, session));
+				result = ((List) this.bibtexDBManager.getPosts(param, session));
 			} else if (resourceType == Bookmark.class) {
-				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, loginUser);
+				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, this.loginUser);
 				// this is save because of RTTI-check of resourceType argument which is of class T
-				result = ((List) bookmarkDBManager.getPosts(param, session));
+				result = ((List) this.bookmarkDBManager.getPosts(param, session));
 			} else {
 				throw new UnsupportedResourceTypeException();
 			}
@@ -220,7 +216,7 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = openSession();
 		try {
 			Post<? extends Resource> rVal;
-			for (final CrudableContent<? extends Resource, ? extends GenericParam> manager : allDatabaseManagers.values()) {
+			for (final CrudableContent<? extends Resource, ? extends GenericParam> manager : this.allDatabaseManagers.values()) {
 				rVal = manager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
 				if (rVal != null) {
 					return rVal;
@@ -238,7 +234,7 @@ public class DBLogic implements LogicInterface {
 	public List<Group> getGroups(final int start, final int end) {
 		final DBSession session = openSession();
 		try {
-			return groupDBManager.getAllGroups(start, end, session);
+			return this.groupDBManager.getAllGroups(start, end, session);
 		} finally {
 			session.close();
 		}
@@ -250,7 +246,7 @@ public class DBLogic implements LogicInterface {
 	public Group getGroupDetails(final String groupName) {
 		final DBSession session = openSession();
 		try {
-			return groupDBManager.getGroupByName(groupName, session);
+			return this.groupDBManager.getGroupByName(groupName, session);
 		} finally {
 			session.close();
 		}
@@ -275,14 +271,14 @@ public class DBLogic implements LogicInterface {
 		final List<Tag> result;
 
 		try {
-			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, loginUser);
+			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, this.loginUser);
 
 			if (resourceType == BibTex.class || resourceType == Bookmark.class || resourceType == Resource.class) {
 				// this is save because of RTTI-check of resourceType argument which is of class T
 				param.setRegex(regex);
 				// need to switch from class to string to ensure legibility of Tags.xml
 				param.setContentTypeByClass(resourceType);				
-				result = tagDBManager.getTags(param, session);
+				result = this.tagDBManager.getTags(param, session);
 			} else {
 				throw new UnsupportedResourceTypeException("The requested resourcetype (" + resourceType.getClass().getName() + ") is not supported.");
 			}
@@ -299,8 +295,8 @@ public class DBLogic implements LogicInterface {
 	public Tag getTagDetails(final String tagName) {
 		final DBSession session = openSession();
 		try {
-			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, this.loginUser.getName(), null, this.loginUser.getName(), Arrays.asList(tagName), null, null, 0, 1, null, loginUser);
-			return tagDBManager.getTagDetails(param, session); 
+			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, this.loginUser.getName(), null, this.loginUser.getName(), Arrays.asList(tagName), null, null, 0, 1, null, this.loginUser);
+			return this.tagDBManager.getTagDetails(param, session); 
 		} finally {
 			session.close();
 		}
@@ -377,7 +373,7 @@ public class DBLogic implements LogicInterface {
 		try {
 			boolean resourceFound = false;
 			// TODO would be nice to know about the resourcetype or the instance behind this resourceHash
-			for (final CrudableContent<? extends Resource, ? extends GenericParam> man : allDatabaseManagers.values()) {
+			for (final CrudableContent<? extends Resource, ? extends GenericParam> man : this.allDatabaseManagers.values()) {
 				if (man.deletePost(userName, resourceHash, session) == true) {
 					resourceFound = true;
 					break;
@@ -463,16 +459,15 @@ public class DBLogic implements LogicInterface {
 	 * @return post the incoming post with the groupIDs filled in
 	 */
 	private <T extends Resource> Post<T> validateGroups(Post<T> post, DBSession session) {
-
 		// retrieve the user's groups
-		final List<Integer> groupIds = generalDBManager.getGroupIdsForUser(post.getUser().getName(), session);
-		// each user can post as public / private / friends
+		final List<Integer> groupIds = this.groupDBManager.getGroupIdsForUser(post.getUser().getName(), session);
+		// each user can post as public, private or friends
 		groupIds.add(GroupID.PUBLIC.getId());
 		groupIds.add(GroupID.PRIVATE.getId());
 		groupIds.add(GroupID.FRIENDS.getId());
 
 		for (final Group group : post.getGroups()) {
-			final Group testGroup = groupDBManager.getGroupByName(group.getName().toLowerCase(), session);
+			final Group testGroup = this.groupDBManager.getGroupByName(group.getName().toLowerCase(), session);
 			if (testGroup == null) {
 				// group does not exist
 				throw new ValidationException("Group " + group.getName() + " does not exist");
@@ -495,9 +490,9 @@ public class DBLogic implements LogicInterface {
 	@SuppressWarnings("unchecked")
 	private <T extends Resource> CrudableContent<T, GenericParam> getFittingDatabaseManager(final Post<T> post) {
 		final Class resourceClass = post.getResource().getClass();
-		CrudableContent<? extends Resource, ? extends GenericParam> man = allDatabaseManagers.get(resourceClass);
+		CrudableContent<? extends Resource, ? extends GenericParam> man = this.allDatabaseManagers.get(resourceClass);
 		if (man == null) {
-			for (final Map.Entry<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>> entry : allDatabaseManagers.entrySet()) {
+			for (final Map.Entry<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>> entry : this.allDatabaseManagers.entrySet()) {
 				if (entry.getKey().isAssignableFrom(resourceClass)) {
 					man = entry.getValue();
 					break;
@@ -587,8 +582,8 @@ public class DBLogic implements LogicInterface {
 			this.permissionDBManager.ensureAdminAccess(this.loginUser);
 			DBSession session = this.openSession();
 			
-			String mode = adminDBManager.getClassifierSettings(ClassifierSettings.TESTING, session);
-			return adminDBManager.flagSpammer(user, this.getAuthenticatedUser(), mode, session);			
+			String mode = this.adminDBManager.getClassifierSettings(ClassifierSettings.TESTING, session);
+			return this.adminDBManager.flagSpammer(user, this.getAuthenticatedUser(), mode, session);			
 		}
 		
 		return this.storeUser(user, true);
@@ -674,7 +669,7 @@ public class DBLogic implements LogicInterface {
 			 * we just forward this task to getPostDetails from the 
 			 * BibTeXDatabaseManager and extract the documents.
 			 */
-			final Post<BibTex> post = bibtexDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
+			final Post<BibTex> post = this.bibtexDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
 			if (post != null) {
 				for (final Document document:post.getResource().getDocuments()) {
 					if (document.getFileName().equals(fileName)) {
@@ -755,7 +750,7 @@ public class DBLogic implements LogicInterface {
 //		ensureLoggedIn();
 //		permissionDBManager.ensureAdminAccess(loginUser);
 		final DBSession session = openSession();
-		final InetAddressStatus inetAddressStatus = adminDBManager.getInetAddressStatus(address, session);
+		final InetAddressStatus inetAddressStatus = this.adminDBManager.getInetAddressStatus(address, session);
 		session.close();
 		return inetAddressStatus;
 	}
@@ -775,39 +770,39 @@ public class DBLogic implements LogicInterface {
 					return this.statisticsDBManager.getNumberOfResourcesForUserAndTags(resourceType, tags, groupingName, this.loginUser.getName(), UserUtils.getListOfGroupIDs(this.loginUser), session);
 				}
 				return this.statisticsDBManager.getNumberOfResourcesForUser(resourceType, groupingName, this.loginUser.getName(), UserUtils.getListOfGroupIDs(this.loginUser), session);
-			}
-			else if (grouping.equals(GroupingEntity.GROUP) && groupingName != null && groupingName != "") {
+			} else if (grouping.equals(GroupingEntity.GROUP) && groupingName != null && groupingName != "") {
 				Group group = this.groupDBManager.getGroupByName(groupingName, session);
 				if (group == null) {
 					log.debug("group " + groupingName + " does not exist");
 					return 0;
 				}
 				return this.statisticsDBManager.getNumberOfResourcesForGroup(resourceType, group.getGroupId(), UserUtils.getListOfGroupIDs(this.loginUser), session);
-			}
-			else if (grouping.equals(GroupingEntity.ALL) && tags != null) {
+			} else if (grouping.equals(GroupingEntity.ALL) && tags != null) {
 				return this.statisticsDBManager.getNumberOfResourcesForTags(resourceType, tags, UserUtils.getListOfGroupIDs(this.loginUser), session);
-			}
-			else {
+			} else {
 				throw new RuntimeException("Can't handle statistics request");
 			}
-		} 
-		catch (QueryTimeoutException ex) {
+		} catch (final QueryTimeoutException ex) {
 			// if a query times out, we return 0
-			return 0;			
-		}		
-		finally {
-			session.close();			
-		}	
+			return 0;
+		} finally {
+			session.close();
+		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getConcepts(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.common.enums.ConceptStatus, int, int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.bibsonomy.model.logic.LogicInterface#getConcepts(java.lang.Class,
+	 *      org.bibsonomy.common.enums.GroupingEntity, java.lang.String,
+	 *      java.lang.String, java.util.List,
+	 *      org.bibsonomy.common.enums.ConceptStatus, int, int)
 	 */
 	public List<Tag> getConcepts(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end) {
 		final DBSession session = openSession();
 		
 		try {
-			TagRelationParam param = LogicInterfaceHelper.buildParam(TagRelationParam.class, this.loginUser.getName(), grouping, groupingName, tags, null, null, start, end, null, loginUser);
+			TagRelationParam param = LogicInterfaceHelper.buildParam(TagRelationParam.class, this.loginUser.getName(), grouping, groupingName, tags, null, null, start, end, null, this.loginUser);
 			param.setConceptStatus(status);
 			return this.tagRelationsDBManager.getConcepts(param, session);
 		} finally {
@@ -823,7 +818,7 @@ public class DBLogic implements LogicInterface {
 					groupingName != null && groupingName != "") {
 				concept = this.tagRelationsDBManager.getConceptForUser(conceptName, groupingName, session);		
 			} else if (grouping.equals(GroupingEntity.ALL)) {
-				concept = tagRelationsDBManager.getGlobalConceptByName(conceptName, session);
+				concept = this.tagRelationsDBManager.getGlobalConceptByName(conceptName, session);
 			} else {
 				throw new RuntimeException("Can't handle request");
 			}
@@ -846,7 +841,8 @@ public class DBLogic implements LogicInterface {
 		}
 
 		final DBSession session = openSession();
-		tagRelationsDBManager.deleteConcept(concept, groupingName, session);		
+		this.tagRelationsDBManager.deleteConcept(concept, groupingName, session);
+		// FIXME: close session?
 	}
 
 	public void deleteRelation(String upper, String lower, GroupingEntity grouping, String groupingName) {
@@ -855,7 +851,8 @@ public class DBLogic implements LogicInterface {
 		}
 
 		final DBSession session = openSession();
-		tagRelationsDBManager.deleteRelation(upper, lower, groupingName, session);	
+		this.tagRelationsDBManager.deleteRelation(upper, lower, groupingName, session);
+		// FIXME: close session?
 	}
 
 	public String updateConcept(Tag concept, GroupingEntity grouping, String groupingName) {
@@ -868,10 +865,10 @@ public class DBLogic implements LogicInterface {
 	private String storeConcept(Tag concept, GroupingEntity grouping, String groupingName, boolean update) {		
 		final DBSession session = openSession();
 		if (update) {
-			tagRelationsDBManager.insertRelations(concept, groupingName, session);			
+			this.tagRelationsDBManager.insertRelations(concept, groupingName, session);			
 		} else {
 			this.deleteConcept(concept.getName(), grouping, groupingName);
-			tagRelationsDBManager.insertRelations(concept, groupingName, session);
+			this.tagRelationsDBManager.insertRelations(concept, groupingName, session);
 		}		
 		return concept.getName();
 	}
@@ -880,9 +877,8 @@ public class DBLogic implements LogicInterface {
 	 * retrieve related user
 	 */
 	public List<User> getUsers (List<String> tags, Order order, final int start, int end){
-		final DBSession session = openSession();
 		final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, null, null, null, tags, null, order, start, end, null, loginUser);
-
+		final DBSession session = openSession();
 		try {
 			return this.userDBManager.getUserByFolkrank(param, session);
 		} finally {
@@ -891,9 +887,8 @@ public class DBLogic implements LogicInterface {
 	}
 
 	public List<User> getClassifiedUsers(Classifier classifier, SpamStatus status, int interval) {
-		permissionDBManager.ensureAdminAccess(this.loginUser);
+		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		final DBSession session = openSession();
-
 		try {			
 			return this.adminDBManager.getClassifiedUsers(classifier, status, interval, session);
 		} finally {
@@ -902,9 +897,8 @@ public class DBLogic implements LogicInterface {
 	}
 
 	public String getClassifierSettings(ClassifierSettings key) {
-		permissionDBManager.ensureAdminAccess(this.loginUser);
+		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		final DBSession session = openSession();
-
 		try {			
 			return this.adminDBManager.getClassifierSettings(key, session);
 		} finally {
@@ -913,9 +907,8 @@ public class DBLogic implements LogicInterface {
 	}
 
 	public void updateClassifierSettings(ClassifierSettings key, String value) {
-		permissionDBManager.ensureAdminAccess(this.loginUser);
+		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		final DBSession session = openSession();
-
 		try {			
 			this.adminDBManager.updateClassifierSettings(key, value, session);
 		} finally {
@@ -924,9 +917,8 @@ public class DBLogic implements LogicInterface {
 	}
 
 	public int getClassifiedUserCount(final Classifier classifier, final SpamStatus status, final int interval) {
-		permissionDBManager.ensureAdminAccess(this.loginUser);
+		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		final DBSession session = openSession();
-
 		try {			
 			return this.adminDBManager.getClassifiedUserCount(classifier, status, interval, session);
 		} finally {
@@ -935,9 +927,8 @@ public class DBLogic implements LogicInterface {
 	}
 
 	public List<User> getClassifierHistory(String userName) {
-		permissionDBManager.ensureAdminAccess(this.loginUser);
+		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		final DBSession session = openSession();
-
 		try {			
 			return this.adminDBManager.getClassifierHistory(userName, session);
 		} finally {
@@ -946,9 +937,8 @@ public class DBLogic implements LogicInterface {
 	}
 
 	public List<User> getClassifierComparison(int interval) {
-		permissionDBManager.ensureAdminAccess(this.loginUser);
+		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		final DBSession session = openSession();
-
 		try {			
 			return this.adminDBManager.getClassifierComparison(interval, session);
 		} finally {

@@ -10,7 +10,6 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChainElement;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.util.DBSession;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 
@@ -25,7 +24,7 @@ public class GetBookmarksForGroup extends BookmarkChainElement {
 	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
-		final Integer groupId = this.generalDb.getGroupIdByGroupName(param, session);
+		final Integer groupId = this.groupDb.getGroupIdByGroupName(param.getRequestedGroupName(), session);
 		if (groupId == GroupID.INVALID.getId()  || GroupID.isSpecialGroupId(groupId)) {
 			log.debug("groupId " +  param.getRequestedGroupName() + " not found or special group" );
 			return new ArrayList<Post<Bookmark>>(0);			

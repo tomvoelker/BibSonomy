@@ -17,6 +17,28 @@ USE `bibsonomy`;
 -- --------------------------------------------------------
 
 -- 
+-- Structure for table `classifier_settings`
+-- 
+
+DROP TABLE IF EXISTS `classifier_settings`;
+CREATE TABLE `classifier_settings` (
+  `ID` tinyint(4) NOT NULL auto_increment,
+  `key` varchar(255) default NULL,
+  `value` varchar(255) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- 
+-- Data for table `classifier_settings`
+--
+
+INSERT INTO `classifier_settings` (`key`, `value`) VALUES ('algorithm', 'weka.classifiers.lazy.IBk');
+INSERT INTO `classifier_settings` (`key`, `value`) VALUES ('mode', 'D');
+
+
+-- --------------------------------------------------------
+
+-- 
 -- Structure for table `ContentModifiedTags`
 -- 
 
@@ -458,8 +480,9 @@ INSERT INTO `groupids` VALUES ('friends', -2147483646, 1, 0);
 INSERT INTO `groupids` VALUES ('public', 0, 1, 0);
 INSERT INTO `groupids` VALUES ('private', 1, 1, 0);
 INSERT INTO `groupids` VALUES ('friends', 2, 1, 0);
-INSERT INTO `groupids` VALUES ('testgroup1', 3, 2, 0);
-INSERT INTO `groupids` VALUES ('testgroup2', 4, 2, 0);
+INSERT INTO `groupids` VALUES ('testgroup1', 3, 0, 1);
+INSERT INTO `groupids` VALUES ('testgroup2', 4, 1, 0);
+INSERT INTO `groupids` VALUES ('testgroup3', 5, 2, 0);
 
 -- --------------------------------------------------------
 
@@ -483,6 +506,7 @@ CREATE TABLE `groups` (
 INSERT INTO `groups` VALUES ('testuser1', 3, 3, '2007-01-01 01:01:01', 7);
 INSERT INTO `groups` VALUES ('testuser2', 3, 3, '2007-01-01 01:01:01', 7);
 INSERT INTO `groups` VALUES ('testuser1', 4, 3, '2007-01-01 01:01:01', 7);
+INSERT INTO `groups` VALUES ('testuser1', 5, 3, '2007-01-01 01:01:01', 7);
 
 -- --------------------------------------------------------
 
@@ -527,6 +551,25 @@ INSERT INTO `ids` VALUES (3, 0, 'question id');
 INSERT INTO `ids` VALUES (4, 1, 'cycle id');
 INSERT INTO `ids` VALUES (5, 0, 'extended_fields_id');
 INSERT INTO `ids` VALUES (7, 0, 'scraper_metadata_id');
+
+-- --------------------------------------------------------
+
+-- 
+-- Structure for table `inetAddressStates`
+-- 
+
+DROP TABLE IF EXISTS `inetAddressStates`;
+CREATE TABLE `inetAddressStates` (
+  `address` char(15) NOT NULL default '',
+  `status` tinyint(3) default NULL,
+  PRIMARY KEY  (`address`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- 
+-- Data for table `inetAddressStates`
+-- 
+
+INSERT INTO `inetAddressStates` VALUES ('192.168.0.1', 0);
 
 -- --------------------------------------------------------
 
@@ -755,9 +798,9 @@ CREATE TABLE `log_user` (
   `updated_at` datetime default '1815-12-10 00:00:00',
   `api_key` varchar(32) default NULL,
   `lang` char(2) default 'en',
-  `role` tinyint(3) NOT NULL,
+  `role` tinyint(3) NOT NULL default 1,
   `to_classify` tinyint(4),
-  `timestamp` mediumtext not null,
+  `timestamp` mediumtext NOT NULL,
   PRIMARY KEY  (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1242,7 +1285,7 @@ CREATE TABLE `user` (
   `updated_at` datetime default '1815-12-10 00:00:00',
   `api_key` varchar(32) default NULL,
   `lang` char(2) default 'en',
-  `role` tinyint(3) NOT NULL,
+  `role` tinyint(3) NOT NULL default 1,
   `to_classify` tinyint(4) default '1',
   PRIMARY KEY  (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1251,10 +1294,13 @@ CREATE TABLE `user` (
 -- Data for table `user`
 -- 
 
-INSERT INTO `user` VALUES ('testuser1', 'testuser1@bibsonomy.org', 'test123', 'http://www.bibsonomy.org/', 'Test User 1', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, '1815-12-10 00:00:00', 0, 0, 0, 0, 10, 1, NULL, 'm', 'test-place', 'test-profession', 'test-interests', 'test-hobbies', 1, NULL, '1815-12-10 00:00:00', '11111111111111111111111111111111', 'en', 0, 1);
-INSERT INTO `user` VALUES ('testuser2', 'testuser2@bibsonomy.org', 'test123', 'http://www.bibsonomy.org/', 'Test User 2', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, '1815-12-10 00:00:00', 0, 0, 0, 0, 10, 1, NULL, 'm', 'test-place', 'test-profession', 'test-interests', 'test-hobbies', 1, NULL, '1815-12-10 00:00:00', '22222222222222222222222222222222', 'en', 0, 1);
-INSERT INTO `user` VALUES ('testuser3', 'testuser3@bibsonomy.org', 'test123', 'http://www.bibsonomy.org/', 'Test User 3', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, '1815-12-10 00:00:00', 0, 0, 0, 0, 10, 1, NULL, 'm', 'test-place', 'test-profession', 'test-interests', 'test-hobbies', 1, NULL, '1815-12-10 00:00:00', '33333333333333333333333333333333', 'en', 1, 0);
+INSERT INTO `user` VALUES ('testgroup1', 'testgroup1@bibsonomy.org', 'test123', 'http://www.bibsonomy.org/group/testgroup1', 'Test Group 1', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, '1815-12-10 00:00:00', 0, 0, 0, 0, 10, 1, NULL, 'm', 'test-place', 'test-profession', 'test-interests', 'test-hobbies', 1, NULL, '1815-12-10 00:00:00', '', 'en', 0, 1);
+INSERT INTO `user` VALUES ('testgroup2', 'testgroup2@bibsonomy.org', 'test123', 'http://www.bibsonomy.org/group/testgroup2', 'Test Group 2', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, '1815-12-10 00:00:00', 0, 0, 0, 0, 10, 1, NULL, 'm', 'test-place', 'test-profession', 'test-interests', 'test-hobbies', 1, NULL, '1815-12-10 00:00:00', '', 'en', 0, 1);
+INSERT INTO `user` VALUES ('testgroup3', 'testgroup3@bibsonomy.org', 'test123', 'http://www.bibsonomy.org/group/testgroup3', 'Test Group 3', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, '1815-12-10 00:00:00', 0, 0, 0, 0, 10, 1, NULL, 'm', 'test-place', 'test-profession', 'test-interests', 'test-hobbies', 1, NULL, '1815-12-10 00:00:00', '', 'en', 0, 1);
 INSERT INTO `user` VALUES ('testspammer', 'testspammer@bibsonomy.org', 'test123', 'http://www.bibsonomy.org/', 'Test Spammer', 1, 'http://sfxserv.rug.ac.be:8888/rug', '2007-02-02 02:02:02', '0.0.0.0', NULL, '1815-12-10 00:00:00', 0, 0, 0, 0, 10, 1, NULL, 'm', 'test-place', 'test-profession', 'test-interests', 'test-hobbies', 1, NULL, '1815-12-10 00:00:00', '', 'en', 0, 1);
+INSERT INTO `user` VALUES ('testuser1', 'testuser1@bibsonomy.org', 'test123', 'http://www.bibsonomy.org/user/testuser1', 'Test User 1', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, '1815-12-10 00:00:00', 0, 0, 0, 0, 10, 1, NULL, 'm', 'test-place', 'test-profession', 'test-interests', 'test-hobbies', 1, NULL, '1815-12-10 00:00:00', '11111111111111111111111111111111', 'en', 0, 1);
+INSERT INTO `user` VALUES ('testuser2', 'testuser2@bibsonomy.org', 'test123', 'http://www.bibsonomy.org/user/testuser2', 'Test User 2', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, '1815-12-10 00:00:00', 0, 0, 0, 0, 10, 1, NULL, 'm', 'test-place', 'test-profession', 'test-interests', 'test-hobbies', 1, NULL, '1815-12-10 00:00:00', '22222222222222222222222222222222', 'en', 0, 1);
+INSERT INTO `user` VALUES ('testuser3', 'testuser3@bibsonomy.org', 'test123', 'http://www.bibsonomy.org/user/testuser3', 'Test User 3', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, '1815-12-10 00:00:00', 0, 0, 0, 0, 10, 1, NULL, 'm', 'test-place', 'test-profession', 'test-interests', 'test-hobbies', 1, NULL, '1815-12-10 00:00:00', '33333333333333333333333333333333', 'en', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -1283,24 +1329,3 @@ CREATE TABLE `weights` (
 -- 
 ALTER TABLE `weights`
   ADD CONSTRAINT `weights_ibfk_1` FOREIGN KEY (`id`) REFERENCES `rankings` (`id`) ON DELETE CASCADE;
-  
- -- --------------------------------------------------------
-
--- 
--- Structure for table `classifier_settings`
--- 
-
-DROP TABLE IF EXISTS `classifier_settings`;
-CREATE TABLE `classifier_settings` (
-  `ID` tinyint(4) NOT NULL auto_increment,
-  `key` varchar(255) default NULL,
-  `value` varchar(255) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
- 
--- 
--- Data for table `classifier_settings`
---
-
-INSERT INTO `classifier_settings` (`key`, `value`) VALUES ('algorithm', 'weka.classifiers.lazy.IBk');
-INSERT INTO `classifier_settings` (`key`, `value`) VALUES ('mode', 'D');

@@ -22,7 +22,40 @@ public class PerfTest extends AbstractDatabaseManagerTest {
 
 	/** This is used for the great switch statement in callMethod() */
 	private enum Method {
-		getBookmarkByTagNames, getBookmarkByTagNamesForUser, getBookmarkByConceptForUser, getBookmarkByUserFriends, getBookmarkForHomepage, getBookmarkPopular, getBookmarkByHash, getBookmarkByHashCount, getBookmarkByHashForUser, getBookmarkSearch, getBookmarkSearchCount, getBookmarkViewable, getBookmarkForGroup, getBookmarkForGroupCount, getBookmarkForGroupByTag, getBookmarkForUser, getBookmarkForUserCount
+		/** getBookmarkByTagNames */
+		getBookmarkByTagNames,
+		/** getBookmarkByTagNamesForUser */
+		getBookmarkByTagNamesForUser,
+		/** getBookmarkByConceptForUser */
+		getBookmarkByConceptForUser,
+		/** getBookmarkByUserFriends */
+		getBookmarkByUserFriends,
+		/** getBookmarkForHomepage */
+		getBookmarkForHomepage,
+		/** getBookmarkPopular */
+		getBookmarkPopular,
+		/** getBookmarkByHash */
+		getBookmarkByHash,
+		/** getBookmarkByHashCount */
+		getBookmarkByHashCount,
+		/** getBookmarkByHashForUser */
+		getBookmarkByHashForUser,
+		/** getBookmarkSearch */
+		getBookmarkSearch,
+		/** getBookmarkSearchCount */
+		getBookmarkSearchCount,
+		/** getBookmarkViewable */
+		getBookmarkViewable,
+		/** getBookmarkForGroup */
+		getBookmarkForGroup,
+		/** getBookmarkForGroupCount */
+		getBookmarkForGroupCount,
+		/** getBookmarkForGroupByTag */
+		getBookmarkForGroupByTag,
+		/** getBookmarkForUser */
+		getBookmarkForUser,
+		/** getBookmarkForUserCount */
+		getBookmarkForUserCount
 	}
 
 	/**

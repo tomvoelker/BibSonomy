@@ -35,7 +35,7 @@
 		SELECT relationID, lower, upper, date_of_create, user_name
 		FROM tagtagrelations WHERE lower=#lowerTagName# AND upper=#upperTagName# AND user_name=#ownerUserName#
 	</insert>
-	
+
 	<insert id="logConcept" parameterClass="tagRelationParam">	
 		INSERT INTO log_tagtagrelations (relationID, lower, upper, date_of_create, user_name) 
 		SELECT relationID, lower, upper, date_of_create, user_name
@@ -47,61 +47,61 @@
 		SELECT tas_id, tag_name, content_id, content_type, date,change_date
 		FROM tas WHERE content_id = #requestedContentId#
 	</insert>
-	
+
 	<insert id="logRemoveUserFromGroup" parameterClass="groupParam">
 		INSERT INTO log_groups (`user_name`, `group`, `defaultgroup`, `start_date`)
 		SELECT g.user_name, g.group, g.defaultgroup, g.start_date
 		FROM groups g WHERE g.user_name = #userName# AND g.group = #groupId#
 	</insert>
-	
+
 	<insert id="logUser" parameterClass="String">
-		INSERT INTO log_user (	user_name,  user_email, user_password, user_homepage, user_realname, spammer,  
-								openurl, reg_date, ip_address, id, tmp_password, tmp_request_date, tagbox_style, 
-								tagbox_sort, tagbox_minfreq, tagbox_tooltip, list_itemcount, spammer_suggest, 
+		INSERT INTO log_user (	user_name,  user_email, user_password, user_homepage, user_realname, spammer,
+								openurl, reg_date, ip_address, tmp_password, tmp_request_date, tagbox_style, 
+								tagbox_sort, tagbox_minfreq, tagbox_tooltip, list_itemcount, spammer_suggest,
 								birthday, gender, profession, interests, hobbies, place,  profilegroup, api_key, 
-								updated_by, updated_at, lang, role, timestamp, to_classify) 
-		(SELECT user_name,  user_email, user_password, user_homepage, user_realname, spammer,  
-				openurl, reg_date, ip_address, id, tmp_password, tmp_request_date, tagbox_style, 
-				tagbox_sort, tagbox_minfreq, tagbox_tooltip, list_itemcount, spammer_suggest, 
-				birthday, gender, profession, interests, hobbies, place,  profilegroup, api_key, 
-				updated_by, updated_at, lang, role, UNIX_TIMESTAMP(NOW(), to_classify) 
-				FROM user WHERE user_name = #userName#) 
+								updated_by, updated_at, lang, role, timestamp, to_classify)
+		(SELECT user_name, user_email, user_password, user_homepage, user_realname, spammer,
+				openurl, reg_date, ip_address, tmp_password, tmp_request_date, tagbox_style,
+				tagbox_sort, tagbox_minfreq, tagbox_tooltip, list_itemcount, spammer_suggest,
+				birthday, gender, profession, interests, hobbies, place, profilegroup, api_key, 
+				updated_by, updated_at, lang, role, UNIX_TIMESTAMP(NOW()), to_classify
+		 FROM user WHERE user_name = #userName#) 
 	</insert>
-	
+
 	<insert id="logPrediction" parameterClass="adminParam">
 		INSERT INTO log_prediction (`user_name`, `prediction`, `timestamp`, `updated_at`, `algorithm` , `mode`)
 		VALUES (#userName#, #prediction#, UNIX_TIMESTAMP(NOW()), #updatedAt#, #algorithm#, #mode#)
 	</insert>
-	
+
 	<select id="countNewContentIdFromBibTex" resultClass="int" parameterClass="bibtexParam">
 		SELECT COUNT(*)	AS count FROM log_bibtex LB WHERE LB.new_content_id=#newContentId#
 	</select>
-	
+
 	<select id="countRequestedContentIdFromBibTex" resultClass="int" parameterClass="bibtexParam">
 		SELECT COUNT(*)	AS count FROM log_bibtex LB WHERE LB.content_id=#requestedContentId#
 	</select>
-	            
+
 	<select id="countNewContentIdFromBookmark" resultClass="int" parameterClass="bookmarkParam">
 		SELECT COUNT(*)	AS count FROM log_bookmark LB WHERE LB.new_content_id=#newContentId#
 	</select>
-	
+
 	<select id="countRequestedContentIdFromBookmark" resultClass="int" parameterClass="bookmarkParam">
 		SELECT COUNT(*)	AS count FROM log_bookmark LB WHERE LB.content_id=#requestedContentId#
 	</select>
-	
+
 	<select id="countTasIds" resultClass="int" parameterClass="tagParam">
 		SELECT COUNT(*)	AS count FROM tas LB WHERE LB.content_id=#requestedContentId#
 	</select>
-	
+
 	<select id="countLoggedTasIds" resultClass="int" parameterClass="tagParam">
 		SELECT COUNT(*)	AS count FROM log_tas LB WHERE LB.content_id=#requestedContentId#
 	</select>
-	
+
 	<select id="countTagRelation" resultClass="int" parameterClass="tagRelationParam">
 		SELECT COUNT(*)	AS count FROM log_tagtagrelations
 		WHERE lower=#lowerTagName# AND upper=#upperTagName# AND user_name=#ownerUserName#
 	</select>
-	
+
 	<select id="countGroup" resultClass="int" parameterClass="groupParam">
 		SELECT COUNT(*)	AS count FROM log_groups
 		WHERE user_name = #userName# AND `group` = #groupId#

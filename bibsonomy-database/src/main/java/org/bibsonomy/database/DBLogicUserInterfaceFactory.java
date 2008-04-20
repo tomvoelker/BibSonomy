@@ -1,7 +1,7 @@
 package org.bibsonomy.database;
 
 import org.bibsonomy.common.exceptions.ValidationException;
-import org.bibsonomy.database.managers.GeneralDatabaseManager;
+import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.UserDatabaseManager;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DBSessionFactory;
@@ -19,7 +19,7 @@ import org.bibsonomy.model.util.UserUtils;
 public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 
 	protected final UserDatabaseManager userDBManager = UserDatabaseManager.getInstance();
-	protected final GeneralDatabaseManager generalDB = GeneralDatabaseManager.getInstance();
+	protected final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
 
 	private DBSessionFactory dbSessionFactory;
 
@@ -55,7 +55,7 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 		try {
 			final User loggedInUser = this.userDBManager.validateUserUserAccess(loginName, password, session);
 			if (loggedInUser.getName() != null) {
-				UserUtils.setGroupsByGroupIDs(loggedInUser, this.generalDB.getGroupIdsForUser(loggedInUser.getName(), session));
+				UserUtils.setGroupsByGroupIDs(loggedInUser, this.groupDb.getGroupIdsForUser(loggedInUser.getName(), session));
 			}
 			return loggedInUser;
 		} finally {

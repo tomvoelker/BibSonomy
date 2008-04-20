@@ -25,7 +25,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * @throws ValidationException
 	 */
 	@Test
-	public void ensureAdminAccess() throws ValidationException {
+	public void ensureAdminAccess() {
 		User user = new User();
 		user.setName("rjaeschke");
 		user.setRole(Role.ADMIN);

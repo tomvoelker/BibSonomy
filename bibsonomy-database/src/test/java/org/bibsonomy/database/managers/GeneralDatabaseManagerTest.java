@@ -3,29 +3,34 @@ package org.bibsonomy.database.managers;
 import static org.bibsonomy.util.ValidationUtils.present;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.List;
+
 import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * General tests.
+ * Test for the GeneralDatabaseManager.
  * 
  * @author Miranda Grahl
  * @author Jens Illig
  * @author Christian Schenk
  * @version $Id$
  */
+@Ignore
 public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	/**
 	 * tests isFriendOf
 	 */
-	@Ignore
+	@Test
 	public void isFriendOf() {
 		// a user is always his own friend
 		for (final int i : new int[] { 1, 2, 3 }) {
@@ -53,9 +58,19 @@ public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
+	 * tests getFriendsOfUser
+	 */
+	@Test
+	public void getFriendsOfUser() {
+		final List<User> friends = this.generalDb.getFriendsOfUser("testuser1", this.dbSession);
+		assertNotNull(friends);
+		assertEquals(2, friends.size());
+	}
+
+	/**
 	 * tests isSpammer
 	 */
-	@Ignore
+	@Test
 	public void isSpammer() {
 		// these users aren't spammers
 		for (final int i : new int[] { 1, 2, 3 }) {
@@ -75,16 +90,17 @@ public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * tests getNewContentId
 	 */
-	@Ignore
+	@Test
 	public void getNewContentId() {
-		assertNull(this.generalDb.getNewContentId(ConstantID.IDS_UNDEFINED_CONTENT_ID, this.dbSession));
 		final int id = this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
-		assertEquals(1, id);
 		assertTrue(id < this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, this.dbSession));
+
+		assertNull(this.generalDb.getNewContentId(ConstantID.IDS_UNDEFINED_CONTENT_ID, this.dbSession));
+
 		try {
 			this.generalDb.getNewContentId(null, this.dbSession);
 			fail("Exception should be thrown");
-		} catch (final Exception ignore) {
+		} catch (Exception ignore) {
 		}
 	}
 

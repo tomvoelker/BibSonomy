@@ -1,92 +1,97 @@
 package org.bibsonomy.database.managers;
 
+import static org.junit.Assert.assertEquals;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.List;
 
-import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierMode;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.InetAddressStatus;
-import org.bibsonomy.common.enums.SpamStatus;
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.User;
+import org.junit.Ignore;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
 
 /**
- * @author rja
+ * @author Robert Jaeschke
+ * @author Stefan Stützer
  * @version $Id$
  */
+@Ignore
 public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
+	/**
+	 * tests getInetAddressStatus
+	 */
 	@Test
 	public void getInetAddressStatus() {
 		try {
-			InetAddress address = InetAddress.getByName("192.168.1.1");
+			final InetAddress address = InetAddress.getByName("192.168.0.1");
+			assertEquals(InetAddressStatus.UNKNOWN, this.adminDb.getInetAddressStatus(address, this.dbSession));
+		} catch (UnknownHostException ignore) {
+			// ignore, we don't need host name resolution
+		}
+	}
+
+	/**
+	 * tests addInetAdressStatus
+	 */
+	@Test
+	public void addInetAdressStatus() {
+		try {
+			final InetAddress address = InetAddress.getByName("192.168.1.1");
+			final InetAddressStatus status = InetAddressStatus.WRITEBLOCKED;
+			// write
+			this.adminDb.addInetAddressStatus(address, status, this.dbSession);
+			// read
+			final InetAddressStatus writtenStatus = this.adminDb.getInetAddressStatus(address, this.dbSession);
+			// check
+			assertEquals(status, writtenStatus);
+		} catch (UnknownHostException ignore) {
+			// ignore, we don't need host name resolution
+		}
+	}
+
+	/**
+	 * tests deleteInetAdressStatus
+	 */
+	@Test
+	public void deleteInetAdressStatus() {
+		try {
+			final InetAddress address = InetAddress.getByName("192.168.1.1");
 			// read
 			InetAddressStatus status = this.adminDb.getInetAddressStatus(address, this.dbSession);
+			// delete
+			this.adminDb.deleteInetAdressStatus(address, this.dbSession);
+			// read
+			status = this.adminDb.getInetAddressStatus(address, this.dbSession);
 			// check
 			assertEquals(InetAddressStatus.UNKNOWN, status);
 		} catch (UnknownHostException ex) {
 			// ignore, we don't need host name resolution
 		}
 	}
-	
-	@Test
-	public void addInetAdressStatus() {
-		try {
-			InetAddress address = InetAddress.getByName("192.168.1.1");
-			InetAddressStatus status = InetAddressStatus.WRITEBLOCKED;
-			// write
-			this.adminDb.addInetAddressStatus(address, status, this.dbSession);
-			// read
-			InetAddressStatus writtenStatus = this.adminDb.getInetAddressStatus(address, this.dbSession);
-			// check
-			assertEquals(status, writtenStatus);
-		} catch (UnknownHostException ex) {
-			// ignore, we don't need host name resolution
-		}
-		
-	}
-	
-	@Test
-	public void deleteInetAdressStatus() {
-		try {
-			InetAddress address = InetAddress.getByName("192.168.1.1");
-			InetAddressStatus status = InetAddressStatus.WRITEBLOCKED;
-			// write
-			this.adminDb.addInetAddressStatus(address, status, this.dbSession);
-			// read
-			InetAddressStatus writtenStatus = this.adminDb.getInetAddressStatus(address, this.dbSession);
-			assertEquals(status, writtenStatus);
-			// delete 
-			this.adminDb.deleteInetAdressStatus(address, this.dbSession);
-			// read
-			writtenStatus = this.adminDb.getInetAddressStatus(address, this.dbSession);
-			// check
-			assertEquals(InetAddressStatus.UNKNOWN, writtenStatus);
-		} catch (UnknownHostException ex) {
-			// ignore, we don't need host name resolution
-		}		
-	}
-	
+
+	/**
+	 * tests getClassifierSettings
+	 */
 	@Test
 	public void getClassifierSettings() {
-		ClassifierSettings settingsKey = ClassifierSettings.ALGORITHM;
-		String value = this.adminDb.getClassifierSettings(settingsKey, this.dbSession);
-		
+		final ClassifierSettings settingsKey = ClassifierSettings.ALGORITHM;
+		final String value = this.adminDb.getClassifierSettings(settingsKey, this.dbSession);
 		assertEquals("weka.classifiers.lazy.IBk", value);
 	}
-	
+
+	/**
+	 * tests updateClassifierSettings
+	 */
 	@Test
 	public void updateClassifierSettings() {
-		ClassifierSettings settingsKey = ClassifierSettings.MODE;
-		String value = ClassifierMode.NIGHT.getAbbreviation();
-		
-		this.adminDb.updateClassifierSettings(settingsKey, value, this.dbSession);	
-		
-		String result = this.adminDb.getClassifierSettings(settingsKey, this.dbSession);		
+		final ClassifierSettings settingsKey = ClassifierSettings.MODE;
+		final String value = ClassifierMode.NIGHT.getAbbreviation();
+
+		this.adminDb.updateClassifierSettings(settingsKey, value, this.dbSession);
+
+		final String result = this.adminDb.getClassifierSettings(settingsKey, this.dbSession);
 		assertEquals(value, result);
 	}
 }
