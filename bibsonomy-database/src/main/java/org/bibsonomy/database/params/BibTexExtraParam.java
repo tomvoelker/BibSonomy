@@ -10,11 +10,17 @@ public class BibTexExtraParam extends BibTexParam {
 
 	private BibTexExtra bibtexExtra;
 
+	/**
+	 * @return BibTexExtra
+	 */
 	public BibTexExtra getBibtexExtra() {
 		if (this.bibtexExtra == null) this.bibtexExtra = new BibTexExtra();
 		return this.bibtexExtra;
 	}
 
+	/**
+	 * @param extra
+	 */
 	public void setBibtexExtra(BibTexExtra extra) {
 		this.bibtexExtra = extra;
 	}
