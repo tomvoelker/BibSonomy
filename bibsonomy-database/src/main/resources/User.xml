@@ -9,18 +9,6 @@
 		WHERE spammer = 0 LIMIT #limit# OFFSET #offset#
 	</select>
 
-	<select id="getApiKeyForUser" resultClass="string" parameterClass="string">
-		SELECT api_key 
-		FROM user 
-		WHERE user_name = #userName#
-	</select>
-
-	<update id="updateApiKeyForUser" parameterClass="user">
-		UPDATE user 
-		SET api_key = #apiKey# 
-		WHERE user_name = #name#
-	</update>
-
 	<select id="getUserDetails" resultMap="UserCommon.userWithSettings" parameterClass="string">
 		SELECT <include refid="allUserAttributes"/>
 		FROM user 
@@ -48,17 +36,29 @@
 			#settings.tagboxTooltip#, #settings.listItemcount#
 			)
 	</insert>
-	
+
+	<delete id="deleteUser" parameterClass="string">
+		DELETE FROM user WHERE user_name = #userName#
+	</delete>
+
 	<select id="getUserSettings" resultMap="Common.user" parameterClass="userParam">
 		SELECT <include refid="userSettingsAttributes"/> 
 		FROM user 
 		WHERE user_name = #userName#
-	</select>	
-	
-	<delete id="deleteUser" parameterClass="string">
-		DELETE FROM user WHERE user_name = #userName#
-	</delete>
-	
+	</select>
+
+	<select id="getApiKeyForUser" resultClass="string" parameterClass="string">
+		SELECT api_key 
+		FROM user 
+		WHERE user_name = #userName#
+	</select>
+
+	<update id="updateApiKeyForUser" parameterClass="user">
+		UPDATE user 
+		SET api_key = #apiKey# 
+		WHERE user_name = #name#
+	</update>
+
 	<select id="getUsersOrderedByFolkrank" resultMap="UserCommon.userWithWeight" parameterClass="userParam"> 
 		SELECT w.item AS user_name, ROUND(SUM(weight),5) * 10000 AS weight
 		FROM rankings r

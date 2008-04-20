@@ -1,13 +1,8 @@
 package org.bibsonomy.database.params;
 
-import org.bibsonomy.common.enums.HashID;
-
 /**
- * 
- * @version $Id$
  * @author Christian Kramer
- *
+ * @version $Id$
  */
-public class StatisticsParam extends GenericParam {
-	
+public class StatisticsParam extends GenericParam {	
 }

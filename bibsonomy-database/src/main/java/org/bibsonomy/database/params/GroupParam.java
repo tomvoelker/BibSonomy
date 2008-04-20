@@ -7,5 +7,4 @@ package org.bibsonomy.database.params;
  * @version $Id$
  */
 public class GroupParam extends GenericParam {
-	// XXX: currently empty but could be filled in the future...
 }

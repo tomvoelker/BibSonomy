@@ -2,22 +2,17 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConstantID;
-import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
-import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.User;
-import org.bibsonomy.util.ExceptionUtils;
 
 /**
  * Used to retrieve all different kind of stuff from the database.
@@ -28,7 +23,6 @@ import org.bibsonomy.util.ExceptionUtils;
  */
 public class GeneralDatabaseManager extends AbstractDatabaseManager {
 
-	private static final Logger log = Logger.getLogger(GeneralDatabaseManager.class);
 	private static final GeneralDatabaseManager singleton = new GeneralDatabaseManager();
 
 	private GeneralDatabaseManager() {
@@ -64,6 +58,18 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
+	 * Returns a list of friends for the given user.
+	 * 
+	 * @param authUser
+	 * @param session
+	 * @return a list of users
+	 */
+	@SuppressWarnings("unchecked")
+	public List<User> getFriendsOfUser(final String authUser, final DBSession session) {
+		return this.queryForList("getFriendsOfUser", authUser, session);
+	}
+
+	/**
 	 * Checks whether a user, given by userName, is a spammer. If userName is
 	 * set to null the default behaviour is to return false, i.e. no spammer.
 	 * 
@@ -74,60 +80,6 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	public Boolean isSpammer(final String userName, final DBSession session) {
 		if (present(userName) == false) return false;
 		return this.queryForObject("isSpammer", userName, Boolean.class, session);
-	}
-
-	/**
-	 * Gets all the groupIds of the given users groups.
-	 * 
-	 * @param userName userName to get the groupids for
-	 * @param session a db session
-	 * @return A list of groupids
-	 */
-	public List<Integer> getGroupIdsForUser(final String userName, final DBSession session) {
-		if (present(userName) == false) return new ArrayList<Integer>();
-		return this.queryForList("getGroupIdsForUser", userName, Integer.class, session);
-	}
-
-	/**
-	 * Checks if group exists.
-	 * 
-	 * @param param Database-Properties used: requestedGroupName
-	 * @param session a db session
-	 * @return groupid of group, GroupID.GROUP_INVALID otherwise
-	 */
-	public Integer getGroupIdByGroupName(final GenericParam param, final DBSession session) {		
-		final String oldUserName = param.getUserName();
-		param.setUserName(null);
-		try {
-			return this.getGroupIdByGroupNameAndUserName(param, session);
-		} finally {
-			param.setUserName(oldUserName);
-		}
-	}
-
-	/**
-	 * Checks if a given user is in the given group.
-	 * 
-	 * @param param Database-Properties used: requestedGroupName, userName
-	 * @param session a db session
-	 * @return groupid if user is in group, GroupID.GROUP_INVALID otherwise
-	 */
-	public Integer getGroupIdByGroupNameAndUserName(final GenericParam param, final DBSession session) {
-		if (present(param.getRequestedGroupName()) == false) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "requestedGroupName isn't set");
-		}
-		try {
-			final GroupID specialGroup = GroupID.getSpecialGroup(param.getRequestedGroupName());
-			if (specialGroup != null) {
-				return specialGroup.getId();
-			}
-		}
-		catch (IllegalArgumentException ex) {
-			// do nothing - this simply means that the given group is not a special group
-		}
-		final Integer rVal = this.queryForObject("getGroupIdByGroupNameAndUserName", param, Integer.class, session);
-		if (rVal == null) return GroupID.INVALID.getId();
-		return rVal;
 	}
 
 	/**

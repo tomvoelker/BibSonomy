@@ -10,8 +10,7 @@
 		WHERE <include refid="bibtexSimHash"/>
 		ORDER BY b.rank
 	</select>
-	
-	
+
 	<select id="getBibTexByKey" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name
 		FROM bibtex b, tas t, bibhash h 
@@ -23,7 +22,6 @@
 			ORDER BY date DESC 
 			LIMIT #limit# OFFSET #offset#	
 	</select>	
-	
 
 	<select id="getBibTexByTagNames" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name
@@ -40,7 +38,7 @@
 		      AND <include refid="bibtexSimHash"/>
 		ORDER BY b.date DESC, b.content_id DESC
 	</select>
-	
+
 	<select id="getBibTexByTagNamesCount" resultClass="int" timeout="2" parameterClass="bibtexParam">
 		SELECT count(*)
 		FROM <include refid="tagFromQuery"/>
@@ -48,7 +46,7 @@
 			AND t1.content_type = #contentType#
 			AND t1.group = #groupType#
 	</select>
-	
+
 	<select id="getBibTexByTagNamesAndFolkrank" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name
 		FROM bibtex b, tas t, bibhash h,
@@ -70,7 +68,6 @@
 		AND t.content_id = b.content_id 
 		AND <include refid="bibtexSimHash"/>
 	</select>
-	
 
 	<select id="getBibTexByTagNamesForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, g.group, g.group_name
@@ -89,7 +86,7 @@
 				AND g.group = b.group
 				ORDER BY b.date DESC, b.content_id DESC;
 	</select>
-	
+
 	<select id="getBibTexByTagNamesForUserCount" resultClass="int" parameterClass="bibtexParam">
 		SELECT count(*) AS count
 		FROM <include refid="tagFromQuery"/>
@@ -98,7 +95,7 @@
 			AND t1.content_type = #contentType#
 			AND t1.user_name = #requestedUserName#	
 	</select>
-	
+
 	<select id="getBibTexByConceptForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, g.group, g.group_name
 		FROM bibtex b, tas t, groupids g, bibhash h,
@@ -159,10 +156,7 @@
 		LEFT OUTER JOIN tas t ON b.content_id=t.content_id
 		ORDER BY b.date DESC, b.content_id DESC 
 	</select>
-	
-	
 
-		
 	<select id="getBibTexByHash" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, b.`group`, NULL AS group_name
 		FROM (SELECT b2.*
@@ -187,7 +181,6 @@
 	<!--   Here we join the document table to the bibtex table to get the corresponding 
 		documents and link them to the user; if currUser != requUser no documents
 		are joined so that a user can only see her own documents. -->
-		
 	<select id="getBibTexByHashForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT g.*,t.tag_name,h.ctr AS count, <include refid ="bibtexAttributes2"/>
 		FROM (SELECT * 
@@ -309,7 +302,7 @@
 		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
-	
+
 	<select id="getBibTexForGroupWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, h.ctr as count, g.group,
 		bb.hash, bb.name
@@ -425,38 +418,38 @@
 
 	<select id="getBibTexByAuthor" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr as count,NULL AS `group`, NULL AS group_name
-		FROM bibtex b,tas t,bibhash h,   
-							(SELECT content_id FROM search_bibtex s
-							WHERE MATCH (s.author) AGAINST (#search# IN BOOLEAN MODE) 
-							AND s.group = #groupType#
-							<include refid="sysTagsUser"/>
-							<include refid="sysTagsGroup"/>
-							ORDER BY s.date DESC LIMIT #limit# OFFSET #offset#) AS tt 
-							WHERE b.content_id = tt.content_id    
-					 		AND t.content_id=tt.content_id 
-					 		<include refid="sysTagsYear"/>
-							AND <include refid="bibtexSimHash"/>
-							ORDER BY b.date DESC,b.content_id DESC;
+		FROM bibtex b, tas t, bibhash h,   
+		     (SELECT content_id FROM search_bibtex s
+		      WHERE MATCH (s.author) AGAINST (#search# IN BOOLEAN MODE) 
+		            AND s.group = #groupType#
+		            <include refid="sysTagsUser"/>
+		            <include refid="sysTagsGroup"/>
+		      ORDER BY s.date DESC LIMIT #limit# OFFSET #offset#) AS tt 
+		WHERE b.content_id = tt.content_id    
+		      AND t.content_id = tt.content_id 
+		      <include refid="sysTagsYear"/>
+		      AND <include refid="bibtexSimHash"/>
+		ORDER BY b.date DESC, b.content_id DESC;
 	</select>
-	
-	
-	 <select id="getBibTexByAuthorAndTag" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+
+	<select id="getBibTexByAuthorAndTag" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr as count,NULL AS `group`, NULL AS group_name
-		FROM bibtex b,tas t,bibhash h,
-							(SELECT s.content_id FROM search_bibtex s, tas t1
-							 WHERE MATCH(s.author) AGAINST (#search# IN BOOLEAN MODE)
-							 AND s.group =#groupType#
-							 AND s.content_id = t1.content_id
-							 <include refid="sysTagsUser"/>
-							 <include refid="sysTagsGroup"/>
-							 AND t1.tag_name = <include refid="tagWhereQuery"/> ORDER BY s.date DESC LIMIT #limit# OFFSET #offset#) AS tt 		
-							WHERE b.content_id = tt.content_id  		
-							AND t.content_id=tt.content_id 	
-							<include refid="sysTagsYear"/>	
-							AND <include refid="bibtexSimHash"/> 
-							ORDER BY b.date DESC,b.content_id DESC;
+		FROM bibtex b, tas t, bibhash h,
+		     (SELECT s.content_id FROM search_bibtex s, tas t1
+		      WHERE MATCH(s.author) AGAINST (#search# IN BOOLEAN MODE)
+		            AND s.group = #groupType#
+		            AND s.content_id = t1.content_id
+		            <include refid="sysTagsUser"/>
+		            <include refid="sysTagsGroup"/>
+		            AND t1.tag_name = <include refid="tagWhereQuery"/>
+		      ORDER BY s.date DESC LIMIT #limit# OFFSET #offset#) AS tt 		
+		WHERE b.content_id = tt.content_id  		
+		      AND t.content_id = tt.content_id 	
+		      <include refid="sysTagsYear"/>	
+		      AND <include refid="bibtexSimHash"/> 
+		ORDER BY b.date DESC, b.content_id DESC;
 	</select>
-	
+
 	<select id="getBibTexByConceptByTag" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributes"/>, b.interHash, b.intraHash, t.tag_name, b.ctr AS count, NULL AS `group`, NULL AS group_name
 			   FROM (SELECT <include refid="bibtexAttributes2"/>, h.ctr,
@@ -482,7 +475,7 @@
 			   JOIN tas t ON b.content_id = t.content_id
 			   ORDER BY b.date DESC;	
 	</select>
-	
+
 	<select id="getBibTexByConceptForGroup" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributes"/>, b.interHash, b.intraHash, t.tag_name, b.ctr AS count, NULL AS `group`, NULL AS group_name
 		FROM (

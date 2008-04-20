@@ -1,6 +1,5 @@
 package org.bibsonomy.database.managers;
 
-import org.apache.log4j.Logger;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.util.DBSession;
 
@@ -14,7 +13,6 @@ import org.bibsonomy.database.util.DBSession;
  */
 public class BasketDatabaseManager extends AbstractDatabaseManager {
 
-	private static final Logger LOGGER = Logger.getLogger(BasketDatabaseManager.class);
 	private final static BasketDatabaseManager singleton = new BasketDatabaseManager();
 
 	private BasketDatabaseManager() {

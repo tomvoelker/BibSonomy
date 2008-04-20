@@ -3,12 +3,14 @@
 
 <sqlMap namespace="Admin">
 
-<!-- 
+<!--
+
+  FIXME: should this go into the SQL scripts?
 
   CREATE TABLE inetAddressStates (address char(15), status tinyint, primary key (address));
-  
+
   ALTER TABLE user ADD COLUMN role TINYINT NOT NULL DEFAULT 1;
-  
+
  -->
 
 	<select id="getInetAddressStatus" resultClass="InetAddressStatus" parameterClass="InetAddress">
@@ -23,12 +25,12 @@
 	<delete id="deleteInetAddressStatus" parameterClass="InetAddress">
 		DELETE FROM inetAddressStates WHERE address = #address#
 	</delete>
-	
+
 	<update id="flagSpammer" parameterClass="adminParam">
 		UPDATE user SET spammer = #spammer#, updated_by = #updatedBy#, updated_at = #updatedAt#, to_classify = #toClassify# 
 		WHERE user_name = #userName# 
 	</update>
-	
+
 	<select id="getAdminClassifiedUsers" resultMap="UserCommon.user" parameterClass="adminParam">
 		SELECT <include refid="commonUserAttributes"/>  
 		FROM user WHERE (updated_by != 'classifier' OR ISNULL(updated_by)) AND spammer = #prediction# 
@@ -38,7 +40,7 @@
 		ORDER BY updated_at DESC
 		LIMIT #limit#
 	</select>
-	
+
 	<select id="getAdminClassifiedUsersCount" resultClass="integer" parameterClass="adminParam">
 		SELECT COUNT(*) 
 		FROM user WHERE (updated_by != 'classifier' OR ISNULL(updated_by)) AND spammer = #prediction# 
@@ -46,7 +48,7 @@
 			updated_at > NOW() - INTERVAL #interval# HOUR		
 	    </isGreaterThan>
 	</select>
-	
+
 	<select id="getClassifiedUsers" resultMap="UserCommon.userWithPrediction" parameterClass="adminParam">
 		SELECT *  
 		FROM user u JOIN log_prediction p ON (u.user_name = p.user_name AND u.updated_at = p.updated_at)
@@ -57,7 +59,7 @@
 		ORDER BY u.updated_at DESC
 		LIMIT #limit#
 	</select>
-	
+
 	<select id="getClassifiedUsersCount" resultClass="integer" parameterClass="adminParam">
 		SELECT COUNT(*)  
 		FROM user u JOIN log_prediction p ON (u.user_name = p.user_name AND u.updated_at = p.updated_at)
@@ -66,23 +68,22 @@
 			p.updated_at > NOW() - INTERVAL #interval# HOUR		
 		</isGreaterThan>
 	</select>	
-	
+
 	<select id="getClassifierSettings" resultClass="string" parameterClass="string">
 		SELECT value FROM classifier_settings cs WHERE cs.key = #key#		
 	</select>	
-	
+
 	<update id="updateClassifierSettings" parameterClass="adminParam">
 		UPDATE classifier_settings cs SET value = #value# WHERE cs.key = #key# 
 	</update>
-	
+
 	<select id="getClassifierHistory" resultMap="AdminCommon.userPrediction" parameterClass="string">
 		SELECT <include refid="commonPredictionAttributes"/>  FROM log_prediction WHERE user_name  = #userName# 
 		ORDER BY updated_at DESC LIMIT 25
 	</select>
-	
+
 	<select id="getClassifierComparison" resultMap="AdminCommon.userPredictionAndSpammer" parameterClass="adminParam">
-		SELECT
-		u.user_name,u.spammer, u.updated_by, u.updated_at, b.prediction, b.algorithm, b.mode
+		SELECT u.user_name,u.spammer, u.updated_by, u.updated_at, b.prediction, b.algorithm, b.mode
 		FROM user u 
 		JOIN log_prediction a ON (u.user_name = a.user_name)
 		JOIN log_prediction b ON (u.user_name = b.user_name)
@@ -93,25 +94,25 @@
 		GROUP BY 1,b.timestamp HAVING b.timestamp = MAX(a.timestamp)
 		ORDER BY u.reg_date DESC
 	</select>
-	
+
 	<update id="updateTasGroupIds" parameterClass="adminParam">
 		UPDATE tas SET `group` = #newGroupId# WHERE user_name = #userName# AND `group` = #oldGroupId#
-	</update> 
-	
+	</update>
+
 	<update id="updateBookmarkGroupIds" parameterClass="adminParam">
 		UPDATE bookmark SET `group` = #newGroupId# WHERE user_name = #userName# AND `group` = #oldGroupId#
-	</update> 
-	
+	</update>
+
 	<update id="updateBibtexGroupIds" parameterClass="adminParam">
 		UPDATE bibtex SET `group` = #newGroupId# WHERE user_name = #userName# AND `group` = #oldGroupId#
-	</update> 
-	
+	</update>
+
 	<update id="updateSearchBookmarkGroupIds" parameterClass="adminParam">
 		UPDATE search_bookmark SET `group` = #newGroupId# WHERE user_name = #userName# AND `group` = #oldGroupId#
-	</update> 
-	
+	</update>
+
 	<update id="updateSearchBibtexGroupIds" parameterClass="adminParam">
 		UPDATE search_bibtex SET `group` = #newGroupId# WHERE user_name = #userName# AND `group` = #oldGroupId#
-	</update> 
+	</update>
 
 </sqlMap>

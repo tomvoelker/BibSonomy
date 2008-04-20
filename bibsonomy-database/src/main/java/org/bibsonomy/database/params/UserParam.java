@@ -13,10 +13,16 @@ public class UserParam extends GenericParam {
 
 	private User user;
 
+	/**
+	 * @return user
+	 */
 	public User getUser() {
 		return this.user;
 	}
 
+	/**
+	 * @param user
+	 */
 	public void setUser(User user) {
 		this.user = user;
 	}

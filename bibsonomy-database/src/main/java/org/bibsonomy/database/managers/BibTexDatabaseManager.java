@@ -26,7 +26,7 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.SimHash;
 
 /**
- * Used to CRUD BibTexs from the database.
+ * Used to create, read, update and delete BibTexs from the database.
  * 
  * @author Miranda Grahl
  * @author Jens Illig
@@ -53,6 +53,9 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		this.docDb = DocumentDatabaseManager.getInstance();
 	}
 
+	/**
+	 * @return BibTexDatabaseManager
+	 */
 	public static BibTexDatabaseManager getInstance() {
 		return singleton;
 	}
@@ -71,29 +74,38 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * Prepares a query which retrieves all publications whose hash
 	 * requestedSimHash is equal to a given hash. Only public posts are
 	 * retrieved.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bibtex posts
 	 */
 	public List<Post<BibTex>> getBibTexByHash(final BibTexParam param, final DBSession session) {
 		return this.bibtexList("getBibTexByHash", param, session);
 	}
-	
+
 	/**
-	 * wrapper for {@see getBibTexByHash(final BibTexParam param, final DBSession session)}
-	 * @param hash 
-	 * @param hashId 
-	 * @param session 
-	 * @return 
+	 * Wrapper for getBibTexByHash.
+	 * 
+	 * @param hash
+	 * @param hashId
+	 * @param session
+	 * @return list of bibtex posts
 	 */
 	public List<Post<BibTex>> getBibTexByHash(final String hash, final HashID hashId, final DBSession session) {
-		BibTexParam param = new BibTexParam();
+		final BibTexParam param = new BibTexParam();
 		param.setRequestedSimHash(hashId);
 		param.setSimHash(hashId);
 		param.setHash(hash);
 		param.setGroupType(GroupID.PUBLIC);
 		return this.getBibTexByHash(param, session);
-	}	
+	}
 
 	/**
 	 * Returns the number of publications for a given hash.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return number of publications for a given hash
 	 */
 	public Integer getBibTexByHashCount(final BibTexParam param, final DBSession session) {
 		return this.queryForObject("getBibTexByHashCount", param, Integer.class, session);
@@ -106,6 +118,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * be set to public) which have all of the given tags attached. On the
 	 * <em>/viewable/</em> page only posts are shown which are set viewable to
 	 * the given group and which have all of the given tags attached.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bibtex posts
 	 */
 	public List<Post<BibTex>> getBibTexByTagNames(final BibTexParam param, final DBSession session) {
 		if (Order.FOLKRANK.equals(param.getOrder())){
@@ -142,6 +158,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * built in a way, that not only public posts are retrieved, but also
 	 * friends or private or other groups, depending upon if currUser us allowed
 	 * to see them.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bibtex posts
 	 */
 	public List<Post<BibTex>> getBibTexByTagNamesForUser(final BibTexParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
@@ -190,23 +210,42 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * built in a way, that not only public posts are retrieved, but also
 	 * friends or private or other groups, depending upon if userName us allowed
 	 * to see them.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bibtex posts
 	 */
 	public List<Post<BibTex>> getBibTexByConceptForUser(final BibTexParam param, final DBSession session) {
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
 		return this.bibtexList("getBibTexByConceptForUser", param, session);
 	}
-	
+
 	/**
 	 * <em>/concept/group/EineGruppe/EinTag</em><br/><br/>
 	 * 
 	 * This method retrieves all bibtex of all group members of the given group
-	 * which are tagged at least with one of the concept tags or its subtags 	 
+	 * which are tagged at least with one of the concept tags or its subtags.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bibtex posts
 	 */
 	public List<Post<BibTex>> getBibTexByConceptForGroup(final BibTexParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
 		return this.bibtexList("getBibTexByConceptForGroup", param, session);
 	}
-	
+
+	/**
+	 * Returns a BibTex for a given concept and a user.
+	 * 
+	 * @param loginUser
+	 * @param conceptName
+	 * @param requestedUser
+	 * @param limit
+	 * @param offset
+	 * @param session
+	 * @return list of bibtex posts
+	 */
 	public List<Post<BibTex>> getBibTexByConceptForUser(final String loginUser, final String conceptName, final String requestedUser, final int limit, final int offset, final DBSession session) {
 		final BibTexParam param = new BibTexParam();
 		param.setUserName(loginUser);
@@ -222,6 +261,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * 
 	 * Prepares queries which show all posts of users which have userName as
 	 * their friend.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bibtex posts
 	 */
 	public List<Post<BibTex>> getBibTexByUserFriends(final BibTexParam param, final DBSession session) {
 		// groupType must be set to friends
@@ -235,6 +278,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * <em>/download</em>. Since every user can only see his <em>own</em>
 	 * download page, we use userName as restriction for the user name and not
 	 * requestedUserName.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bibtex posts
 	 */
 	public List<Post<BibTex>> getBibTexByDownload(final BibTexParam param, final DBSession session) {
 		return this.bibtexList("getBibTexByDownload", param, session);
@@ -244,6 +291,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * This method prepares queries which retrieve all publications for the home
 	 * page of BibSonomy. These are typically the X last posted entries. Only
 	 * public posts are shown.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bibtex posts
 	 */
 	public List<Post<BibTex>> getBibTexForHomePage(final BibTexParam param, final DBSession session) {
 		param.setGroupType(GroupID.PUBLIC);
@@ -255,6 +306,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * This method prepares queries which retrieve all publications for the
 	 * <em>/popular</em> page of BibSonomy. The lists are retrieved from two
 	 * separate temporary tables which are filled by an external script.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bibtex posts
 	 */
 	public List<Post<BibTex>> getBibTexPopular(final BibTexParam param, final DBSession session) {
 		return this.bibtexList("getBibTexPopular", param, session);
@@ -272,6 +327,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * 
 	 * If requestedUser is given, only (public) posts from the given user are
 	 * searched. Otherwise all (public) posts are searched.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bibtex posts
 	 */
 	public List<Post<BibTex>> getBibTexSearch(final BibTexParam param, final DBSession session) {
 		return this.bibtexList("getBibTexSearch", param, session);
@@ -279,6 +338,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 
 	/**
 	 * Returns the number of publications for a given search.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return number of publications for a given search
 	 */
 	public Integer getBibTexSearchCount(final BibTexParam param, final DBSession session) {
 		return this.queryForObject("getBibTexSearchCount", param, Integer.class, session);
@@ -288,6 +351,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * <em>/viewable/EineGruppe</em><br/><br/>
 	 * 
 	 * Prepares queries to retrieve posts which are set viewable to group.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bibtex posts
 	 */
 	public List<Post<BibTex>> getBibTexViewable(final BibTexParam param, final DBSession session) {
 		if (GroupID.isSpecialGroupId(param.getGroupId()) == true) {
@@ -298,6 +365,13 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		return this.bibtexList("getBibTexViewable", param, session);
 	}
 
+	/**
+	 * Returns viewable BibTexs for a given tag.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bibtex posts
+	 */
 	public List<Post<BibTex>> getBibTexViewableByTag(final BibTexParam param, final DBSession session) {
 		if (GroupID.isSpecialGroupId(param.getGroupId()) == true) {
 			// show users own bookmarks, which are private, public or for friends
@@ -312,6 +386,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * requested user. Duplicates are BibTex posts which have the same simhash1,
 	 * but a different simhash0 (the latter is always true within the posts of a
 	 * single user).
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bibtex posts
 	 */
 	public List<Post<BibTex>> getBibTexDuplicate(final BibTexParam param, final DBSession session) {
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
@@ -320,6 +398,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 
 	/**
 	 * Returns the number of duplicates (i.e. BibTex posts) of a given user.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return number of duplicates
 	 */
 	public Integer getBibTexDuplicateCount(final BibTexParam param, final DBSession session) {
 		return this.queryForObject("getBibTexDuplicateCount", param, Integer.class, session);
@@ -336,6 +418,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * See also
 	 * http://www.bibsonomy.org/bibtex/1d28c9f535d0f24eadb9d342168836199 page
 	 * 92, formula (9) for formal semantics of this query.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bibtex posts
 	 */
 	public List<Post<BibTex>> getBibTexForUsersInGroup(final BibTexParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
@@ -346,12 +432,16 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		
 		return this.bibtexList("getBibTexForUsersInGroup", param, session);
 	}
-	
+
 	/**
 	 * Returns the number of publications belonging to the group.<br/><br/>
 	 * 
 	 * TODO: these are just approximations - users own private/friends bookmarks
-	 * and friends bookmarks are not included (same for publications)
+	 * and friends bookmarks are not included (same for publications).
+	 * 
+	 * @param param
+	 * @param session
+	 * @return number of publications belonging to the given group
 	 */
 	public Integer getBibTexForGroupCount(final BibTexParam param, final DBSession session) {
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
@@ -378,6 +468,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * 
 	 * Does basically the same as getBibTexForGroup with the additionaly
 	 * possibility to restrict the tags the posts have to have.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bibtex posts
 	 */
 	public List<Post<BibTex>> getBibTexForGroupByTag(final BibTexParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
@@ -393,8 +487,12 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * are retrieved, but also friends or private or other groups, depending
 	 * upon if userName is allowed to see them.
 	 * 
-	 * ATTENTION! in case of a given groupId it is NOT checked if the user actually
-	 * belongs to this group.
+	 * ATTENTION! in case of a given groupId it is NOT checked if the user
+	 * actually belongs to this group.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bibtex posts
 	 */
 	public List<Post<BibTex>> getBibTexForUser(final BibTexParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
@@ -403,6 +501,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 
 	/**
 	 * Returns the number of publications for a given user.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return number of publications for a given user
 	 */
 	public Integer getBibTexForUserCount(final BibTexParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
@@ -435,6 +537,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * 
 	 * Additionally, if requUser = currUser, the document table is joined so
 	 * that we can present the user a link to the uploaded document.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bibtex posts
 	 */
 	public List<Post<BibTex>> getBibTexByHashForUser(final BibTexParam param, final DBSession session) {
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
@@ -476,6 +582,14 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		return this.getBibTexByHashForUser(param, session);
 	}
 
+	/**
+	 * Return a contentId for a BibTex with a given hash and for a given user.
+	 * 
+	 * @param hash
+	 * @param userName
+	 * @param session
+	 * @return contentId
+	 */
 	public int getContentIdForBibTex(final String hash, final String userName, final DBSession session) {
 		if (present(hash) == false || present(userName) == false) {
 			throw new RuntimeException("Hash and user name must be set");
@@ -512,7 +626,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			}
 		}
 		return posts;
-	} 
+	}
 
 	/**
 	 * Gets the details of a post, including all extra data like (TODO!) 
@@ -526,30 +640,21 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * 
 	 */
 	public Post<BibTex> getPostDetails(final String authUser, final String resourceHash, final String userName, final List<Integer> visibleGroupIDs, final DBSession session) {
-		/*
-		 * get post from database
-		 */
-		final List<Post<BibTex>> list = getBibTexByHashForUser(authUser, resourceHash, userName, visibleGroupIDs, session, HashID.INTRA_HASH);
+		// get post from database
+		final List<Post<BibTex>> list = this.getBibTexByHashForUser(authUser, resourceHash, userName, visibleGroupIDs, session, HashID.INTRA_HASH);
 		if (list.size() >= 1) {
 			if (list.size() > 1) {
-				/*
-				 * user has multiple posts with the same hash
-				 */
+				// user has multiple posts with the same hash
 				log.warn("multiple BibTeX-posts from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' found ->returning first");
 			}
-			/*
-			 * just take first post
-			 */
+			// just take first post
 			final Post<BibTex> post = list.get(0);
-			/*
-			 * attach document hash 
-			 */
-			if (permissionDb.isAllowedToAccessPostsDocuments(userName, post, session)) {
-				post.getResource().setDocuments(docDb.getDocuments(userName, resourceHash, session));
+			// attach document hash 
+			if (this.permissionDb.isAllowedToAccessPostsDocuments(userName, post, session)) {
+				post.getResource().setDocuments(this.docDb.getDocuments(userName, resourceHash, session));
 			}
 			return post;
 		}
-
 		log.debug("BibTex-post from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' not found");
 		return null;
 	}
@@ -566,6 +671,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			this.insertUpdateSimHashes(param.getResource(), false, session);
 			// add private note, if exists
 			if (param.getResource().getPrivnote() != null) {
+				// FIXME: singletonitis
 				final BibTexExtraDatabaseManager bibtexExtraDb = BibTexExtraDatabaseManager.getInstance();
 				bibtexExtraDb.updateBibTexPrivnoteForUser(param.getResource().getIntraHash(), param.getUserName(), param.getResource().getPrivnote(), session);
 			}			
@@ -773,24 +879,26 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
     public List<Post<BibTex>> getBibTexByAuthorAndTag(final BibTexParam param, final DBSession session){
 		return this.bibtexList("getBibTexByAuthorAndTag",param,session);
 	}
-    
+
     /**
-     * <em>/concept/tag/TAGNAME</em>
-   	 * --
-     * @param param
-     * @param session
-     * @return
-     */
-	public List<Post<BibTex>> getBibTexByConceptByTag(final BibTexParam param, final DBSession session){
-		return this.bibtexList("getBibTexByConceptByTag",param,session);
+	 * <em>/concept/tag/TAGNAME</em> --
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bibtex posts
+	 */
+	public List<Post<BibTex>> getBibTexByConceptByTag(final BibTexParam param, final DBSession session) {
+		return this.bibtexList("getBibTexByConceptByTag", param, session);
 	}
 
 	/**
-	 * <em>/bibtexkey/KEY</em>
-	 * Returns a list of bibtex entries for a given bibtexKey
+	 * <em>/bibtexkey/KEY</em> Returns a list of bibtex entries for a given
+	 * bibtexKey
 	 * 
-	 * @param param a bibtex parameter object
-	 * @param session a database session
+	 * @param param
+	 *            a bibtex parameter object
+	 * @param session
+	 *            a database session
 	 * @return list of bibtex entries
 	 */
 	public List<Post<BibTex>> getBibTexByKey(BibTexParam param, DBSession session) {

@@ -11,16 +11,13 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
-import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChain;
-import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -53,9 +50,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	}
 
 	/**
-	 * Return singleton instance
-	 * 
-	 * @return
+	 * @return BookmarkDatabaseManager
 	 */
 	public static BookmarkDatabaseManager getInstance() {
 		return singleton;
@@ -75,7 +70,11 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * On the <em>/tag</em> page only public entries are shown (groupType must
 	 * be set to public) which have all of the given tags attached. On the
 	 * <em>/viewable/</em> page only posts are shown which are set viewable to
-	 * the given group and which have all of the given tags attached. 
+	 * the given group and which have all of the given tags attached.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkByTagNames(final BookmarkParam param, final DBSession session) {
 		if (Order.FOLKRANK.equals(param.getOrder())){
@@ -86,7 +85,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	}
 
 	/**
-	 * @see org.bibsonomy.database.manager.BookmarkDatabaseManager.getBookmarkByTagNames
+	 * @see BookmarkDatabaseManager#getBookmarkByTagNames(BookmarkParam, DBSession)
 	 * 
 	 * @param groupType
 	 * @param tagIndex
@@ -103,7 +102,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setOffset(offset);
 		return getBookmarkByTagNames(param, session);
 	}
-	
+
 	/**
 	 * Counts the number of visible bookmark entries for a given list of tags
 	 * 
@@ -131,6 +130,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * built in a way, that not only public posts are retrieved, but also
 	 * friends or private or other groups, depending upon if userName us allowed
 	 * to see them.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkByTagNamesForUser(final BookmarkParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
@@ -165,7 +168,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	}	
 
 	/**
-	 * @see org.bibsonomy.database.manager.BookmarkDatabaseManager.getBookmarkByTagNamesForUser
+	 * @see BookmarkDatabaseManager#getBookmarkByTagNamesForUser(BookmarkParam, DBSession)
 	 * 
 	 * @param requestedUserName
 	 * @param userName
@@ -201,17 +204,26 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * built in a way, that not only public posts are retrieved, but also
 	 * friends or private or other groups, depending upon if userName us allowed
 	 * to see them.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkByConceptForUser(final BookmarkParam param, final DBSession session) {
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
 		return this.bookmarkList("getBookmarkByConceptForUser", param, session);
 	}
-	
+
 	/**
 	 * <em>/concept/group/GruppenName/EinTag</em><br/><br/>
 	 * 
-	 * This method retrieves all bookmarks of all group members of the given group
-	 * which are tagged at least with one of the concept tags or its subtags
+	 * This method retrieves all bookmarks of all group members of the given
+	 * group which are tagged at least with one of the concept tags or its
+	 * subtags
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkByConceptForGroup(final BookmarkParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
@@ -242,6 +254,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * 
 	 * Prepares queries which show all posts of users which have currUser as
 	 * their friend.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkByUserFriends(final BookmarkParam param, final DBSession session) {
 		return this.bookmarkList("getBookmarkByUserFriends", param, session);
@@ -267,6 +283,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * This method prepares queries which retrieve all bookmarks for the home
 	 * page of BibSonomy. These are typically the X last posted entries. Only
 	 * public posts are shown.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkForHomepage(final BookmarkParam param, final DBSession session) {
 		return this.bookmarkList("getBookmarkForHomepage", param, session);
@@ -289,6 +309,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * This method prepares queries which retrieve all bookmarks for the
 	 * <em>/popular</em> page of BibSonomy. The lists are retrieved from two
 	 * separate temporary tables which are filled by an external script.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkPopular(final BookmarkParam param, final DBSession session) {
 		return this.bookmarkList("getBookmarkPopular", param, session);
@@ -302,10 +326,14 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		final BookmarkParam param = new BookmarkParam();
 		return getBookmarkPopular(param, session);
 	}
-	
+
 	/**
 	 * Prepares a query which retrieves all bookmarks which are represented by
 	 * the given hash. Retrieves only public bookmarks!
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkByHash(final BookmarkParam param, final DBSession session) {
 		return this.bookmarkList("getBookmarkByHash", param, session);
@@ -327,9 +355,13 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setOffset(offset);
 		return getBookmarkByHash(param, session);
 	}
-	
+
 	/**
 	 * Retrieves the number of bookmarks represented by the given hash.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return number of bookmarks for the given hash
 	 */
 	public Integer getBookmarkByHashCount(final BookmarkParam param, final DBSession session) {
 		return this.queryForObject("getBookmarkByHashCount", param, Integer.class, session);
@@ -352,6 +384,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * Prepares a query which retrieves the bookmark (which is represented by
 	 * the given hash) for a given user. Since user name is given, full group
 	 * checking is done, i.e. everbody who may see the bookmark will see it.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkByHashForUser(final BookmarkParam param, final DBSession session) {
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
@@ -378,13 +414,13 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	}
 
 	/**
-	 * Returns a list with bookmark posts identified by INTER-hash for a given user
-	 */
-	/**
+	 * Returns a list with bookmark posts identified by INTER-hash for a given
+	 * user
+	 * 
 	 * @param userName
 	 * @param requBibtex
 	 * @param requestedUserName
-	 * @param visibleGroupIDs 
+	 * @param visibleGroupIDs
 	 * @param session
 	 * @return see at param method
 	 */
@@ -404,6 +440,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * 
 	 * If requestedUser is given, only (public) posts from the given user are
 	 * searched. Otherwise all (public) posts are searched.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkSearch(final BookmarkParam param, final DBSession session) {
 		return this.bookmarkList("getBookmarkSearch", param, session);
@@ -430,6 +470,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 
 	/**
 	 * Returns the number of bookmarks for a given search.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return number of bookmarks for a given search
 	 */
 	public Integer getBookmarkSearchCount(final BookmarkParam param, final DBSession session) {
 		return this.queryForObject("getBookmarkSearchCount", param, Integer.class, session);
@@ -483,7 +527,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setOffset(offset);
 		return getBookmarkViewable(param, session);
 	}
-	
+
 	/**
 	 * @param param
 	 * @param session
@@ -509,6 +553,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * See also
 	 * http://www.bibsonomy.org/bibtex/1d28c9f535d0f24eadb9d342168836199 page
 	 * 92, formula (9) for formal semantics of this query.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkForGroup(final BookmarkParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
@@ -537,29 +585,27 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * 
 	 * TODO: these are just approximations - users own private/friends bookmarks
 	 * and friends bookmarks are not included (same for publications)
+	 * 
+	 * @param param
+	 * @param session
+	 * @return number of bookmarks for a given group
 	 */
 	public Integer getBookmarkForGroupCount(final BookmarkParam param, final DBSession session) {
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
 		return this.queryForObject("getBookmarkForGroupCount", param, Integer.class, session);
 	}
-	
+
 	/**
 	 * Returns the number of bookmarks belonging to this group
 	 * 
-	 * @see BookmarkDatabaseManager.getBookmarkForGroupCount
+	 * @see BookmarkDatabaseManager#getBookmarkForGroupCount(BookmarkParam,
+	 *      DBSession)
 	 * 
 	 * @param groupId
-	 * @param loginUserName
+	 * @param visibleGroupIDs
 	 * @param session
-	 * @return the (approximated) number of bookmarks for the given group, see method above
-	 */
-
-	/**
-	 * @param groupId
-	 * @param visibleGroupIDs 
-	 * @param userName
-	 * @param session
-	 * @return see at param method
+	 * @return the (approximated) number of bookmarks for the given group, see
+	 *         method above
 	 */
 	public Integer getBookmarkForGroupCount(final int groupId, final List<Integer> visibleGroupIDs, final DBSession session) {
 		BookmarkParam param = new BookmarkParam();
@@ -573,6 +619,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * 
 	 * Does basically the same as getBookmarkForGroup with the additionaly
 	 * possibility to restrict the tags the posts have to have.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkForGroupByTag(final BookmarkParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
@@ -602,6 +652,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * restricted. The queries are built in a way, that not only public posts
 	 * are retrieved, but also friends or private or other groups, depending
 	 * upon if userName is allowed to see them.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkForUser(final BookmarkParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
@@ -629,14 +683,18 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 
 	/**
 	 * Returns the number of bookmarks for a given user.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return number of bookmarks for a given user
 	 */
 	public Integer getBookmarkForUserCount(final BookmarkParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session); // set groups
 		return this.queryForObject("getBookmarkForUserCount", param, Integer.class, session);
 	}
-	
+
 	/**
-	 * returns the number of bookmarks for a given user
+	 * Returns the number of bookmarks for a given user.
 	 * 
 	 * @param requestedUserName
 	 * @param loginUserName
@@ -703,17 +761,38 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		this.insert("updateBookmarkHash", param, session);
 	}
 
+	/**
+	 * Deletes a bookmark.
+	 * 
+	 * @param param
+	 * @param session
+	 */
 	public void deleteBookmark(final BookmarkParam param, final DBSession session) {
 		this.delete("deleteBookmark", param, session);
 	}
 
+	/**
+	 * Returns a contentId for a given bookmark.
+	 * 
+	 * @param param
+	 * @param session
+	 * @return contentId for a given bookmark
+	 */
 	public Integer getContentIDForBookmark(final BookmarkParam param, final DBSession session) {
 		return this.queryForObject("getContentIDForBookmark", param, Integer.class, session);
 	}
-	//checkme (OK)
-	public Integer getContentIDForBookmark(final String requBibtex, final String userName, final DBSession session) {
+
+	/**
+	 * FIXME: checkme, OK?
+	 * 
+	 * @param requBookmark
+	 * @param userName
+	 * @param session
+	 * @return contentId for a given bookmark
+	 */
+	public Integer getContentIDForBookmark(final String requBookmark, final String userName, final DBSession session) {
 		final BookmarkParam param = new BookmarkParam();
-		param.setHash(requBibtex);
+		param.setHash(requBookmark);
 		param.setUserName(userName);
 		return getContentIDForBookmark(param, session);
 	}
@@ -846,12 +925,13 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		}
 		return update;
 	}
-	
+
 	/**
-	 * @return
+	 * @param param 
+	 * @param session 
+	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkByConceptByTag(final BookmarkParam param, final DBSession session){
 		return this.bookmarkList("getBookmarkByConceptByTag", param, session);
-		
 	}
 }

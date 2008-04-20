@@ -28,6 +28,9 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 	private BibTexExtraDatabaseManager() {
 	}
 
+	/**
+	 * @return BibTexExtraDatabaseManager
+	 */
 	public static BibTexExtraDatabaseManager getInstance() {
 		return singleton;
 	}
@@ -98,12 +101,13 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Returns the filename for the document with the given hash.
-	 * @param hash 
-	 * @param session 
-	 * @return 
-	 * @deprecated Documents are contained in BibTeX posts now. Access is now 
-	 * possible via the more general method {@link LogicInterface#getDocument(String, String, String)}.
 	 * 
+	 * @param hash
+	 * @param session
+	 * @return some string
+	 * @deprecated Documents are contained in BibTeX posts now. Access is now
+	 *             possible via the more general method
+	 *             {@link LogicInterface#getDocument(String, String, String)}.
 	 */
 	@Deprecated
 	public String getDocumentByHash(final String hash, final DBSession session) {
@@ -113,9 +117,14 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Returns the filename for the document with the given hash and username.
 	 * 
-	 * @deprecated Documents are contained in BibTeX posts now. Access is now 
-	 * possible via the more general method {@link LogicInterface#getDocument(String, String, String)}.
+	 * @param hash
+	 * @param username
+	 * @param session
+	 * @return some string
 	 * 
+	 * @deprecated Documents are contained in BibTeX posts now. Access is now
+	 *             possible via the more general method
+	 *             {@link LogicInterface#getDocument(String, String, String)}.
 	 */
 	@Deprecated
 	public String getDocumentByHashAndUser(final String hash, final String username, final DBSession session) {

@@ -6,7 +6,8 @@ import org.bibsonomy.common.enums.ConceptStatus;
 
 /**
  * @author Jens Illig
- * @version $Id$
+ * @version $Id: TagRelationParam.java,v 1.1 2008-03-11 17:50:51 ss05sstuetzer
+ *          Exp $
  */
 public class TagRelationParam extends GenericParam {
 
@@ -17,51 +18,87 @@ public class TagRelationParam extends GenericParam {
 	private String ownerUserName;
 	private ConceptStatus conceptStatus;
 
+	/**
+	 * @return creationDate
+	 */
 	public Date getCreationDate() {
 		return this.creationDate;
 	}
 
+	/**
+	 * @param creationDate
+	 */
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
 	}
 
+	/**
+	 * @return lowerTagName
+	 */
 	public String getLowerTagName() {
 		return this.lowerTagName;
 	}
 
+	/**
+	 * @param lowerTagName
+	 */
 	public void setLowerTagName(String lowerTagName) {
 		this.lowerTagName = lowerTagName;
 	}
 
+	/**
+	 * @return ownerUserName
+	 */
 	public String getOwnerUserName() {
 		return this.ownerUserName;
 	}
 
+	/**
+	 * @param ownerUserName
+	 */
 	public void setOwnerUserName(String ownerUserName) {
 		this.ownerUserName = ownerUserName;
 	}
 
+	/**
+	 * @return relationId
+	 */
 	public Integer getRelationId() {
 		return this.relationId;
 	}
 
+	/**
+	 * @param relationId
+	 */
 	public void setRelationId(Integer relationId) {
 		this.relationId = relationId;
 	}
 
+	/**
+	 * @return upperTagName
+	 */
 	public String getUpperTagName() {
 		return this.upperTagName;
 	}
 
+	/**
+	 * @param upperTagName
+	 */
 	public void setUpperTagName(String upperTagName) {
 		this.upperTagName = upperTagName;
 	}
 
+	/**
+	 * @return conceptStatus
+	 */
 	public ConceptStatus getConceptStatus() {
 		return this.conceptStatus;
 	}
 
+	/**
+	 * @param conceptStatus
+	 */
 	public void setConceptStatus(ConceptStatus conceptStatus) {
 		this.conceptStatus = conceptStatus;
-	}	
+	}
 }

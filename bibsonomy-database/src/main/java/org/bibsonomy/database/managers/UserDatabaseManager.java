@@ -131,7 +131,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * Insert attributes for new user account including new Api key.
 	 */
 	private void insertUser(final User user, final DBSession session) {
-		if (user == null) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User object isn't present");
+		if (present(user) == false) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User object isn't present");
 		user.setApiKey(UserUtils.generateApiKey());
 		this.insert("insertUser", user, session);
 	}
@@ -155,7 +155,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	private void updateUser(final User user, final DBSession session) {
 		final User existingUser = this.getUserDetails(user.getName(), session);
 
-		if (existingUser == null)
+		if (present(existingUser.getName()) == false)
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User " + user.getName() + "does not exist");
 
 		// FIXME if this should copy all properties from the one bean to the
@@ -177,10 +177,10 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		existingUser.setPlace(!present(user.getPlace()) 		? existingUser.getPlace() 		: user.getPlace());
 		existingUser.setProfession(!present(user.getProfession()) ? existingUser.getProfession(): user.getProfession());
 		existingUser.setRegistrationDate(!present(user.getRegistrationDate()) ? existingUser.getRegistrationDate() : user.getRegistrationDate());
-		
+
 		existingUser.setUpdatedBy(!present(user.getUpdatedBy()) 	? existingUser.getUpdatedBy() 	: user.getUpdatedBy());
 		existingUser.setUpdatedAt(!present(user.getUpdatedAt()) 	? existingUser.getUpdatedAt() 	: user.getUpdatedAt());
-		
+
 		this.plugins.onUserUpdate(existingUser.getName(), session);
 
 		// TODO: update existing dataset instead of delete and re-insert
@@ -195,6 +195,9 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session 
 	 */
 	public void deleteUser(final String userName, final DBSession session) {
+		if (present(userName) == false) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Username not set");
+		}
 		// TODO this should also delete tas entries
 		this.delete("deleteUser", userName, session);
 		//throw new UnsupportedOperationException("Not implemented");
@@ -215,16 +218,16 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	public User validateUserAccess(final String username, final String apiKey, final DBSession session) {
 		// empty user object for not-logged in users
 		final User notLoggedInUser = new User();
-		
+
 		// either username or password not given -> user is not logged in
 		if (present(apiKey) == false || present(username) == false) return notLoggedInUser;
-		
+
 		// get user from database
 		final User foundUser = getUserDetails(username, session);
-		
+
 		// user exists and password is correct
 		if ((foundUser.getName() != null) && (foundUser.getApiKey().equals(apiKey))) return foundUser;
-		
+
 		// fallback: user is not logged in
 		return notLoggedInUser;
 	}
@@ -247,16 +250,16 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	public User validateUserUserAccess(final String username, final String password, final DBSession session) {
 		// empty user object for not-logged in users
 		final User notLoggedInUser = new User();
-		
+
 		// either username or password not given -> user is not logged in
 		if (present(password) == false || present(username) == false) return notLoggedInUser;
-		
+
 		// get user from database
 		final User foundUser = getUserDetails(username, session);
-		
+
 		// user exists and password is correct
 		if ((foundUser.getName() != null) && (foundUser.getPassword().equals(password))) return foundUser;
-		
+
 		// fallback: user is not logged in
 		return notLoggedInUser;
 	}

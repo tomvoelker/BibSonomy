@@ -29,16 +29,6 @@
 		      AND u.user_name = g.user_name
 	</select>
 
-	<select id="getFriendsOfUser" resultMap="UserCommon.user" parameterClass="string">
-		SELECT <include refid="commonUserAttributes"/> 
-		FROM (
-		  SELECT u.*
-		  FROM user u, friends f
-		  WHERE f.user_name = #requestedUserName# AND u.user_name=f.f_user_name
-		  ORDER BY u.user_name
-		) AS uf
-	</select>
-
 	<select id="getPrivlevelForGroup" resultClass="Privlevel" parameterClass="int">
 		SELECT privlevel FROM groupids WHERE `group` = #groupId#
 	</select>
@@ -70,12 +60,12 @@
 		SELECT `group` FROM groups WHERE user_name = #userName#
 	</select>
 
-	<select id="getGroupIdByGroupNameAndUserName" resultClass="int" parameterClass="genericParam">
+	<select id="getGroupIdByGroupNameAndUserName" resultClass="int" parameterClass="group">
 		SELECT g.group
-		FROM groupids g <isNotNull property="userName" prepend=",">groups i</isNotNull>
-		WHERE g.group_name = #requestedGroupName#
-		      <isNotNull property="userName" prepend="AND">
-		        i.user_name = #userName#
+		FROM groupids g <isNotNull property="user" prepend=",">groups i</isNotNull>
+		WHERE g.group_name = #name#
+		      <isNotNull property="user" prepend="AND">
+		        i.user_name = #user.name#
 		        AND i.group = g.group
 		      </isNotNull>
 	</select>

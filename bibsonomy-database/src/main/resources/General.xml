@@ -2,10 +2,21 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="General">
+
 	<select id="isFriendOf" resultClass="boolean" parameterClass="user">
 		SELECT count(user_name)
 		FROM friends
 		WHERE user_name = #name# AND f_user_name = #friend.name#
+	</select>
+
+	<select id="getFriendsOfUser" resultMap="UserCommon.user" parameterClass="string">
+		SELECT <include refid="commonUserAttributes"/> 
+		FROM (
+		  SELECT u.*
+		  FROM user u, friends f
+		  WHERE f.user_name = #requestedUserName# AND u.user_name = f.f_user_name
+		  ORDER BY u.user_name
+		) AS uf
 	</select>
 
 	<select id="isSpammer" resultClass="boolean" parameterClass="string">
@@ -15,7 +26,7 @@
 	<select id="getNewContentId" resultClass="int" parameterClass="int">
 		SELECT value FROM ids WHERE name = #idsType# FOR UPDATE
 	</select>
-	
+
 	<select id="getCurrentContentId" resultClass="int" parameterClass="int">
 		SELECT MAX(value) FROM ids WHERE name = #idsType# FOR UPDATE
 	</select>
@@ -38,4 +49,5 @@
 	<delete id="deleteTas" parameterClass="int">
 		DELETE FROM tas WHERE content_id = #requestedContentId#
 	</delete>
+
 </sqlMap>
