@@ -266,7 +266,7 @@
 	</URLTest>
 	<URLTest id="url_45">
 		<TestDescription>test for nature.com</TestDescription>
-		<URL>http://www.nature.com/bdj/journal/vaop/ncurrent/abs/bdj.2008.21.html</URL>
+		<URL>http://www.nature.com/ajh/journal/v21/n4/abs/ajh20089a.html</URL>
 		<BibFile>NatureScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.nature.NatureScraper</Scraper>
 	</URLTest>
