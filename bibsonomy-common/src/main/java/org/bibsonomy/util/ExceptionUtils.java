@@ -1,5 +1,7 @@
 package org.bibsonomy.util;
 
+import java.sql.SQLException;
+
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.exceptions.QueryTimeoutException;
 
@@ -21,6 +23,14 @@ public class ExceptionUtils {
 	 */
 	public static void logErrorAndThrowRuntimeException(final Logger log, final Exception ex, final String error) throws RuntimeException {
 		log.error(error + " - throwing RuntimeException" + ((ex != null) ? ("\n" + ex.toString()) : ""), ex );
+		/*
+		 * Inserted to get more information (e.g., on "java.sql.SQLException: Unknown error" messages)
+		 * FIXME: it's probably not the best place to handle SQL stuff
+		 */
+		if (ex.getCause() != null && ex.getCause().getClass().equals(SQLException.class)) {
+			final SQLException sqlException = ((SQLException) ex);
+			log.error("SQL error code: " + sqlException.getErrorCode() + ", SQL state: " + sqlException.getSQLState());
+		}
 		throw new RuntimeException(error, ex);
 	}
 	
