@@ -78,7 +78,7 @@ public class DatabaseUtils {
 			}
 			// add the groups
 			param.addGroups(groupIds);			
-		}		
+		}
 	}
 
 	/**
@@ -88,6 +88,15 @@ public class DatabaseUtils {
 	 * @param session 
 	 */
 	public static void prepareGetPostForGroup(final GeneralDatabaseManager db, final GenericParam param, final DBSession session) {
+		/*
+		 * FIXME: Why is DatabaseUtils.checkPrivateFriendsGroup(db, param, session) called here?
+		 * 
+		 * It tests if a user name is given AND if the user is logged in. 
+		 * At least the first test ALWAYS fails on /group/ pages, since we 
+		 * have a group given, not a user name.  
+		 * 
+		 * 
+		 */
 		DatabaseUtils.checkPrivateFriendsGroup(db, param, session);
 		// the group type needs to be set to friends because of the second union
 		// in the SQL statement

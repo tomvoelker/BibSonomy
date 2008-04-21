@@ -162,9 +162,16 @@
 	
 	<!-- restrict visibility of retrieved items to the groups a user may see -->	
 	<sql id="inGroups">
-		<isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">		
-			<include refid="inGroupsUnchecked"/>
-		</isNotEqual>
+	    <!-- no user logged in - only public posts -->
+		<isEmpty property="userName" prepend="AND">
+		  	t1.group = 0 
+		</isEmpty>
+		<!-- a user is logged in - check groups -->
+		<isNotEmpty property="userName">
+		  <isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">		
+			  <include refid="inGroupsUnchecked"/>
+		  </isNotEqual>
+		</isNotEmpty>
 	</sql>
 	
 	<!-- restrict visibility directly, i.e. without checking for user's own items -->
