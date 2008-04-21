@@ -170,11 +170,23 @@ public class DBSessionImpl implements DBSession {
 			 * check for query interruption because of time limits
 			 * TODO: don't use equals() on getMessage() but on Message Error Code (MySQL-specific :-()
 			 */
-			if (ex.getCause() != null && 
-					ex.getCause().getClass().equals(SQLException.class) && 
+			if (ex.getCause() != null && ex.getCause().getClass().equals(SQLException.class) && 
 					"Query execution was interrupted".equals(ex.getCause().getMessage()) ) {
 				ExceptionUtils.logErrorAndThrowQueryTimeoutException(log, ex, query);
-			}			
+			}
+			/*
+			 * Here we catch the wonderful "unknown error" (code 1105) exception of MySQL.
+			 * On 2008-04-21 we found that it occurs, when a statement is killed during its
+			 * "statistics" phase (mysql version 5.0.45). We filed a bug report 
+			 * <http://bugs.mysql.com/bug.php?id=36230> and as workaround added this if- 
+			 * block.
+			 * 
+			 * http://dev.mysql.com/doc/refman/5.1/en/error-messages-server.html
+			 */
+			if (ex.getCause() != null && ex.getCause().getClass().equals(SQLException.class) && 1105 == ((SQLException)ex.getCause()).getErrorCode()) {
+				log.fatal("Hit MySQL bug 36230. See <http://bugs.mysql.com/bug.php?id=36230> for more information.");
+				ExceptionUtils.logErrorAndThrowQueryTimeoutException(log, ex, query);
+			}		
 			if (ignoreException == false) {
 				this.somethingWentWrong();
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, msg);
