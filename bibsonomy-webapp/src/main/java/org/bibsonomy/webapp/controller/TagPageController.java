@@ -62,7 +62,13 @@ public class TagPageController extends MultiResourceListControllerWithTags imple
 		
 		// html format - retrieve relted tags (and evtl. users) and return HTML view
 		if (command.getFormat().equals("html")) {
-			this.setRelatedTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, order, 0, Parameters.NUM_RELATED_TAGS, null);
+			/*
+			 * TODO: getRequestedTagsList() always re-tokenized the String to get
+			 * the list of tags. The result should be saved for later use. 
+			 */
+			if (command.getRequestedTagsList().size() == 1) {
+				this.setRelatedTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, order, 0, Parameters.NUM_RELATED_TAGS, null);
+			}
 			// set total nr. of posts 
 			command.getRelatedTagCommand().setTagGlobalCount(totalNumPosts);
 			if (order.equals(Order.FOLKRANK)) {
