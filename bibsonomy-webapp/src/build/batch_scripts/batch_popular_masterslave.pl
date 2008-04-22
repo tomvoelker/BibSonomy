@@ -31,7 +31,7 @@ if (am_i_running($ENV{'TMP'}."/$PROGRAM_NAME.pid")) {
 ##################################################################
 my $last_bookmark_days = 20;
 my $last_bibtex_days   = 20;
-my $last_tag_days      = 10;
+my $last_tag_days      = 20;
 my $max_bookmarks      = 100;
 my $max_bibtexs        = 100;
 my $max_tags           = 100;
@@ -77,9 +77,11 @@ my $slave  = DBI->connect("DBI:mysql:database=$db_slave;host=$db_slave_host:$db_
 my $master = DBI->connect("DBI:mysql:database=$db_master;host=$db_master_host:$db_master_port;$db_master_sock", 
 			  $db_master_user, $db_master_pass, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1, "mysql_auto_reconnect" => 1});
 
+
 ##################################################################
-# prepare statements to select rows (slave)
+# prepare statements (bookmark)
 ##################################################################
+
 # get last bookmark posts, order them by ctr
 my $stm_select_bookmark = $slave->prepare("
 SELECT book_url_hash,count(book_url_hash) AS ctr 
@@ -93,55 +95,23 @@ SELECT book_url_hash,count(book_url_hash) AS ctr
   ORDER BY ctr DESC 
   LIMIT $max_bookmarks");
 
-# get last bibtex rows, order them by ctr
-my $stm_select_bibtex = $slave->prepare("
-SELECT simhash1,count(simhash1) AS ctr 
-  FROM (
-    SELECT simhash1, user_name FROM bibtex 
-      WHERE bibtex.group = 0 
-        AND bibtex.date > SUBDATE(CURRENT_TIMESTAMP, INTERVAL $last_bibtex_days DAY)
-      GROUP BY simhash1, user_name
-    ) AS b 
-    GROUP BY simhash1 
-    ORDER BY ctr DESC 
-    LIMIT $max_bibtexs");
-
-# get last tag rows, order them by ctr
-my $stm_select_tags = $slave->prepare("
-SELECT tag_lower, COUNT(tag_lower) AS ctr FROM tas 
-  WHERE tas.group = 0
-    AND tas.date > SUBDATE(CURRENT_TIMESTAMP, INTERVAL $last_tag_days DAY)
-  GROUP BY tag_lower
-  ORDER BY ctr DESC
-  LIMIT $max_tags");
-
-# rows to get from bookmark/bibtex table and to store in temp table
-# please add new rows here
+# rows to get/write
 my $rows_bookmark = "content_id,book_description,book_extended,book_url_hash,date,user_name,rating";
-my $rows_bibtex   = "content_id,journal,volume,chapter,edition,month,day,bookTitle,howPublished,institution,organization,publisher,address,school,series,bibtexKey,date,user_name,url,type,description,annote,note,pages,bKey,number,crossref,misc,bibtexAbstract,simhash0,simhash1,simhash2,simhash3,title,author,editor,year,entrytype,rating";
+# build "?" string for insert statements
+my $fz_bookmark = ""; foreach (split (",", $rows_bookmark)) {$fz_bookmark .= "?,";}
 
 # get the first post of each resource
 my $stm_get_first_bookmark = $slave->prepare("SELECT $rows_bookmark FROM bookmark WHERE book_url_hash = ? AND bookmark.group = 0 ORDER BY date LIMIT 1");
-my $stm_get_first_bibtex   = $slave->prepare("SELECT $rows_bibtex   FROM bibtex   WHERE simhash1 = ?      AND bibtex.group = 0   ORDER BY date LIMIT 1");
 
-# build "?" string for insert statements
-my $fz_bibtex   = ""; foreach (split (",", $rows_bibtex))   {$fz_bibtex   .= "?,";}
-my $fz_bookmark = ""; foreach (split (",", $rows_bookmark)) {$fz_bookmark .= "?,";}
-
-# statements to insert posts in popular tables
+# insert posts in popular table
 my $stm_insert_bookmark = $master->prepare("INSERT INTO temp_bookmark ($rows_bookmark,book_url_ctr,rank) VALUES ($fz_bookmark?,?)");
-my $stm_insert_bibtex   = $master->prepare("INSERT INTO temp_bibtex   ($rows_bibtex,ctr,rank)            VALUES ($fz_bibtex?,?)");
-my $stm_insert_tags     = $master->prepare("INSERT INTO popular_tags  (tag_lower, tag_count)             VALUES (?,?)");
 
-# delete old values from temp tables
+# delete old values from temp table
 my $stm_delete_bookmark = $master->prepare("DELETE FROM temp_bookmark");
-my $stm_delete_bibtex   = $master->prepare("DELETE FROM temp_bibtex");
-my $stm_delete_tags     = $master->prepare("DELETE FROM popular_tags");
 
-
-##################################################################
+##########################################
 # execute statements (bookmark)
-##################################################################
+##########################################
 
 # get TOP bookmarks
 $stm_select_bookmark->execute();
@@ -166,9 +136,43 @@ $master->commit;
 $stm_select_bookmark->finish();
 $stm_get_first_bookmark->finish();
 
+
+
 ##################################################################
+# prepare statements (BibTeX)
+##################################################################
+
+# get last bibtex rows, order them by ctr
+my $stm_select_bibtex = $slave->prepare("
+SELECT simhash1,count(simhash1) AS ctr 
+  FROM (
+    SELECT simhash1, user_name FROM bibtex 
+      WHERE bibtex.group = 0 
+        AND bibtex.date > SUBDATE(CURRENT_TIMESTAMP, INTERVAL $last_bibtex_days DAY)
+      GROUP BY simhash1, user_name
+    ) AS b 
+    GROUP BY simhash1 
+    ORDER BY ctr DESC 
+    LIMIT $max_bibtexs");
+
+# rows to get/write
+my $rows_bibtex   = "content_id,journal,volume,chapter,edition,month,day,bookTitle,howPublished,institution,organization,publisher,address,school,series,bibtexKey,date,user_name,url,type,description,annote,note,pages,bKey,number,crossref,misc,bibtexAbstract,simhash0,simhash1,simhash2,simhash3,title,author,editor,year,entrytype,rating";
+# build "?" string for insert statements
+my $fz_bibtex   = ""; foreach (split (",", $rows_bibtex))   {$fz_bibtex   .= "?,";}
+
+# get the first post of each resource
+my $stm_get_first_bibtex   = $slave->prepare("SELECT $rows_bibtex   FROM bibtex   WHERE simhash1 = ?      AND bibtex.group = 0   ORDER BY date LIMIT 1");
+
+# statements to insert posts in popular table
+my $stm_insert_bibtex   = $master->prepare("INSERT INTO temp_bibtex   ($rows_bibtex,ctr,rank)            VALUES ($fz_bibtex?,?)");
+
+# delete old values from temp tables
+my $stm_delete_bibtex   = $master->prepare("DELETE FROM temp_bibtex");
+
+
+##########################################
 # execute statements (BibTeX)
-##################################################################
+##########################################
 
 # get TOP posts
 $stm_select_bibtex->execute();
@@ -203,9 +207,35 @@ $stm_select_bibtex->finish();
 $stm_get_first_bibtex->finish();
 
 
+
+
+
 ##################################################################
+# prepare statements (tags)
+##################################################################
+
+# get last tag rows, order them by ctr
+my $stm_select_tags = $slave->prepare("
+SELECT tag_lower, COUNT(tag_lower) AS ctr 
+  FROM (
+    SELECT tag_lower, user_name FROM tas 
+      WHERE tas.group = 0
+        AND tas.date > SUBDATE(CURRENT_TIMESTAMP, INTERVAL $last_tag_days DAY)
+      GROUP BY tag_lower, user_name
+    ) AS b
+  GROUP BY tag_lower
+  ORDER BY ctr DESC
+  LIMIT $max_tags");
+
+# insert tags
+my $stm_insert_tags     = $master->prepare("INSERT INTO popular_tags  (tag_lower, tag_ctr)               VALUES (?,?)");
+
+# delete old values from temp tables
+my $stm_delete_tags     = $master->prepare("DELETE FROM popular_tags");
+
+##########################################
 # execute statements (tags)
-##################################################################
+##########################################
 
 # get TOP bookmarks
 $stm_select_tags->execute();
@@ -223,17 +253,21 @@ $stm_select_tags->finish();
 
 
 
+
+##################################################################
+# clean up
+##################################################################
+
 # disconnect database
 $slave->disconnect();
 $master->disconnect();
 
 
 
-#################################
+
 ##################################################################
 # subroutines
 ##################################################################
-#################################
 # INPUT: location of lockfile
 # OUTPUT: 1, if a lockfile exists and a program with the pid inside 
 #            the lockfile is running
