@@ -121,10 +121,12 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		}
 	}
 
-	public void deleteTas(final Integer contentId, final DBSession session) {
-		this.delete("deleteTas", contentId, session);
-	}
-
+	/**
+	 * Deletes the tags from the given post.
+	 * 
+	 * @param post
+	 * @param session
+	 */
 	public void deleteTags(final Post<?> post, final DBSession session) {
 		// get tags for this contentId
 		// FIXME param.getResource().setTags(getTasByContendId(param));
@@ -167,9 +169,19 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		// TODO: log all tas related to this post -> this.insertLogTas(...)
 		this.plugins.onTagDelete(post.getContentId(), session);
 		// delete all tas related to this bookmark
-		deleteTas(post.getContentId(), session);
+		this.deleteTas(post.getContentId(), session);
 	}
 
+	private void deleteTas(final Integer contentId, final DBSession session) {
+		this.delete("deleteTas", contentId, session);
+	}
+
+	/**
+	 * Inserts the tags from the given post.
+	 * 
+	 * @param post
+	 * @param session
+	 */
 	public void insertTags(final Post<?> post, final DBSession session) {
 		final TagParam tagParam = new TagParam();
 		tagParam.setTags(post.getTags());
@@ -178,19 +190,19 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		tagParam.setUserName(post.getUser().getName());
 		tagParam.setDate(post.getDate());
 		tagParam.setDescription(post.getDescription());
-		List<Integer> groups = new ArrayList<Integer>();
+		final List<Integer> groups = new ArrayList<Integer>();
 		for (final Group group : post.getGroups()) {
 			groups.add(group.getGroupId());
 		}
 		tagParam.setGroups(groups);
-		insertTags(tagParam, session);
+		this.insertTags(tagParam, session);
 	}
 
 	/**
 	 * Insert a set of tags for a content (into tas table and what else is
 	 * required)
 	 */
-	public void insertTags(final TagParam param, final DBSession session) {
+	private void insertTags(final TagParam param, final DBSession session) {
 		// generate a list of tags
 		final List<Tag> allTags = param.getTags();
 		// TODO: use this and implement nonbatch-tagtag-inserts:

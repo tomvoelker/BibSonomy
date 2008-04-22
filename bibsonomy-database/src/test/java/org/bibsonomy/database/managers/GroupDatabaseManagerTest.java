@@ -60,7 +60,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getGroupByName() {
 		final Group testgroup1 = this.groupDb.getGroupByName("testgroup1", this.dbSession);
 		assertEquals("testgroup1", testgroup1.getName());
-		assertEquals(3, testgroup1.getGroupId());
+		assertEquals(ParamUtils.TESTGROUP1, testgroup1.getGroupId());
 		assertEquals("Test Group 1", testgroup1.getUsers().get(0).getRealname());
 		assertEquals("http://www.bibsonomy.org/group/testgroup1", testgroup1.getUsers().get(0).getHomepage().toString());
 		assertEquals(true, testgroup1.isSharedDocuments());
@@ -288,7 +288,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final List<Group> groups = this.groupDb.getGroupsForContentId(8, this.dbSession);
 		assertEquals(1, groups.size());
 		assertEquals("testgroup2", groups.get(0).getName());
-		assertEquals(4, groups.get(0).getGroupId());
+		assertEquals(ParamUtils.TESTGROUP2, groups.get(0).getGroupId());
 	}
 
 	/**
@@ -313,9 +313,9 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getGroupIdByGroupNameAndUserName() {
 		// group exists
-		assertEquals(3, this.groupDb.getGroupIdByGroupNameAndUserName("testgroup1", null, this.dbSession));
-		assertEquals(3, this.groupDb.getGroupIdByGroupNameAndUserName("testgroup1", "testuser1", this.dbSession));
-		assertEquals(3, this.groupDb.getGroupIdByGroupName("testgroup1", this.dbSession));
+		assertEquals(ParamUtils.TESTGROUP1, this.groupDb.getGroupIdByGroupNameAndUserName("testgroup1", null, this.dbSession));
+		assertEquals(ParamUtils.TESTGROUP1, this.groupDb.getGroupIdByGroupNameAndUserName("testgroup1", "testuser1", this.dbSession));
+		assertEquals(ParamUtils.TESTGROUP1, this.groupDb.getGroupIdByGroupName("testgroup1", this.dbSession));
 		// "testuser3" isn't a member of "testgroup1" and can't get the id
 		assertEquals(GroupID.INVALID.getId(), this.groupDb.getGroupIdByGroupNameAndUserName("testgroup1", "testuser3", this.dbSession));
 

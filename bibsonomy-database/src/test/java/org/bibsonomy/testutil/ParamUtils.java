@@ -30,8 +30,12 @@ public class ParamUtils {
 	public static final String NOUSER_NAME = "this-user-doesnt-exist";
 	/** groupname of a group who doesn't exist */
 	public static final String NOGROUP_NAME = "this-group-doesnt-exist";
-	/** the id of testgroup1 */
-	public static final int TESTGROUP1_ID = 3;
+	/** testgroup1 */
+	public static final int TESTGROUP1 = 3;
+	/** testgroup2 */
+	public static final int TESTGROUP2 = 4;
+	/** testgroup3 */
+	public static final int TESTGROUP3 = 5;
 
 	private static final Date date;
 

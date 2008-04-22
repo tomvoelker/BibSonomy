@@ -170,7 +170,7 @@ public class DBLogic implements LogicInterface {
 		if (grouping.equals(GroupingEntity.ALL) && !present(tags)) {
 			this.permissionDBManager.checkStartEnd(start, end, "post");
 		}
-		// check maximum number f allowed tags
+		// check maximum number of allowed tags
 		if (this.permissionDBManager.exceedsMaxmimumSize(tags)) {
 			return new ArrayList<Post<T>>();
 		}
@@ -390,7 +390,7 @@ public class DBLogic implements LogicInterface {
 	/*
 	 * Adds/updates a user in the database.
 	 */
-	private String storeUser(final User user, boolean update) {	
+	private String storeUser(final User user, final boolean update) {	
 		if (update == false) throw new UnsupportedOperationException("not yet available");
 
 		final DBSession session = openSession();
@@ -436,7 +436,7 @@ public class DBLogic implements LogicInterface {
 	/*
 	 * Adds/updates a post in the database.
 	 */
-	private <T extends Resource> String storePost(Post<T> post, boolean update) {
+	private <T extends Resource> String storePost(Post<T> post, final boolean update) {
 		final DBSession session = openSession();
 		try {
 			final CrudableContent<T, GenericParam> man = getFittingDatabaseManager(post);
@@ -458,7 +458,7 @@ public class DBLogic implements LogicInterface {
 	 * @param post the incoming post
 	 * @return post the incoming post with the groupIDs filled in
 	 */
-	private <T extends Resource> Post<T> validateGroups(Post<T> post, DBSession session) {
+	private <T extends Resource> Post<T> validateGroups(final Post<T> post, final DBSession session) {
 		// retrieve the user's groups
 		final List<Integer> groupIds = this.groupDBManager.getGroupIdsForUser(post.getUser().getName(), session);
 		// each user can post as public, private or friends
@@ -542,33 +542,33 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	public String createGroup(Group group) {
-		ensureLoggedIn();		
+	public String createGroup(final Group group) {
+		this.ensureLoggedIn();		
 		return this.storeGroup(group, false);
 	}
 
-	public String updateGroup(Group group) {
-		ensureLoggedIn();
+	public String updateGroup(final Group group) {
+		this.ensureLoggedIn();
 		return this.storeGroup(group, true);
 	}
 
-	public String createPost(Post<?> post) {
-		ensureLoggedIn();
+	public String createPost(final Post<?> post) {
+		this.ensureLoggedIn();
 		this.permissionDBManager.ensureWriteAccess(post, this.loginUser);
 		return this.storePost(post, false);
 	}
 
-	public String updatePost(Post<?> post) {
-		ensureLoggedIn();
+	public String updatePost(final Post<?> post) {
+		this.ensureLoggedIn();
 		this.permissionDBManager.ensureWriteAccess(post, this.loginUser);
 		return this.storePost(post, true);
 	}
 
-	public String createUser(User user) {
+	public String createUser(final User user) {
 		return this.storeUser(user, false);
 	}
 
-	public String updateUser(User user) {
+	public String updateUser(final User user) {
 		// TODO: could we re-use this.permissionDBManager.ensureWriteAccess(post, this.loginUser) here?
 		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(user.getName()) == false && this.loginUser.getRole() != Role.ADMIN)) {
 			final String errorMsg = "user " + ((this.loginUser.getName() != null) ? this.loginUser.getName() : "anonymous") + " is not authorized to change user " + user.getName();
@@ -597,7 +597,7 @@ public class DBLogic implements LogicInterface {
 	}
 
 	public String addDocument(final Document doc, final String resourceHash) {
-		ensureLoggedIn();
+		this.ensureLoggedIn();
 		this.permissionDBManager.ensureWriteAccess(doc, this.loginUser);
 		return this.storeDocument(doc, resourceHash).getFileHash();
 	}
@@ -614,14 +614,8 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = openSession();
 
 		try {
-			//create the docParam object
+			// create a DocumentParam object
 			final DocumentParam docParam = new DocumentParam();
-
-			/*
-			 * store all necessary informations in the docParam object
-			 * i think its not needed to create a method because there are only
-			 * 4 fields to save. 
-			 */
 			docParam.setUserName(doc.getUserName());
 			docParam.setResourceHash(resourceHash);
 			docParam.setFileHash(doc.getFileHash());
@@ -661,7 +655,7 @@ public class DBLogic implements LogicInterface {
 	 * Returns the named document for the given userName and resourceHash.
 	 */
 	public Document getDocument(final String userName, final String resourceHash, final String fileName) {
-		ensureLoggedIn();
+		this.ensureLoggedIn();
 
 		final DBSession session = openSession();
 		try {
@@ -689,17 +683,13 @@ public class DBLogic implements LogicInterface {
 	 * @param fileName
 	 */
 	public void deleteDocument(final String userName, final String resourceHash, final String fileName){
-		ensureLoggedIn();
-
+		this.ensureLoggedIn();
 		this.permissionDBManager.ensureWriteAccess(this.loginUser, userName);
 
 		final DBSession session = openSession();
-
 		try {
-			//create the docParam object
+			// create a DocumentParam object
 			final DocumentParam docParam = new DocumentParam();
-
-			//fill the docParam object
 			docParam.setFileName(fileName);
 			docParam.setResourceHash(resourceHash);
 			docParam.setUserName(userName);
@@ -723,36 +713,44 @@ public class DBLogic implements LogicInterface {
 		log.info("API - Document deleted: " + fileName + " from User: " + userName);
 	}
 
-	public void addInetAddressStatus(InetAddress address, InetAddressStatus status) {
-		ensureLoggedIn();
+	public void addInetAddressStatus(final InetAddress address, final InetAddressStatus status) {
+		this.ensureLoggedIn();
 		// only admins are allowed to change the status of an address
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		final DBSession session = openSession();
-		this.adminDBManager.addInetAddressStatus(address, status, session);
-		session.close();
+		try {
+			this.adminDBManager.addInetAddressStatus(address, status, session);
+		} finally {
+			session.close();
+		}
 	}
 
-	public void deleteInetAdressStatus(InetAddress address) {
-		ensureLoggedIn();
+	public void deleteInetAdressStatus(final InetAddress address) {
+		this.ensureLoggedIn();
 		// only admins are allowed to change the status of an address
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		final DBSession session = openSession();
-		this.adminDBManager.deleteInetAdressStatus(address, session);
-		session.close();
+		try {
+			this.adminDBManager.deleteInetAdressStatus(address, session);
+		} finally {
+			session.close();
+		}
 	}
 
-	public InetAddressStatus getInetAddressStatus(InetAddress address) {
+	public InetAddressStatus getInetAddressStatus(final InetAddress address) {
 		// everybody is allowed to ask for the status of an address
 		/*
 		 * TODO: is this really OK? At least it is neccessary, because otherwise the 
 		 * RegistrationHandler can not check the status of an address.
 		 */
-//		ensureLoggedIn();
-//		permissionDBManager.ensureAdminAccess(loginUser);
+//		this.ensureLoggedIn();
+//		this.permissionDBManager.ensureAdminAccess(loginUser);
 		final DBSession session = openSession();
-		final InetAddressStatus inetAddressStatus = this.adminDBManager.getInetAddressStatus(address, session);
-		session.close();
-		return inetAddressStatus;
+		try {
+			return this.adminDBManager.getInetAddressStatus(address, session);
+		} finally {
+			session.close();
+		}
 	}
 
 	/** 
@@ -762,7 +760,7 @@ public class DBLogic implements LogicInterface {
 	 * 
 	 * @see org.bibsonomy.model.logic.LogicInterface#getStatistics(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, org.bibsonomy.common.enums.StatisticsConstraint, java.lang.String, List)
 	 */
-	public int getStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, StatisticsConstraint constraint, String search, List<String> tags) {
+	public int getStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final StatisticsConstraint constraint, final String search, final List<String> tags) {
 		final DBSession session = openSession();
 		try {
 			if (grouping.equals(GroupingEntity.USER) && groupingName != null && groupingName != "") {
@@ -790,19 +788,10 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.bibsonomy.model.logic.LogicInterface#getConcepts(java.lang.Class,
-	 *      org.bibsonomy.common.enums.GroupingEntity, java.lang.String,
-	 *      java.lang.String, java.util.List,
-	 *      org.bibsonomy.common.enums.ConceptStatus, int, int)
-	 */
-	public List<Tag> getConcepts(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end) {
+	public List<Tag> getConcepts(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final ConceptStatus status, final int start, final int end) {
 		final DBSession session = openSession();
-		
 		try {
-			TagRelationParam param = LogicInterfaceHelper.buildParam(TagRelationParam.class, this.loginUser.getName(), grouping, groupingName, tags, null, null, start, end, null, this.loginUser);
+			final TagRelationParam param = LogicInterfaceHelper.buildParam(TagRelationParam.class, this.loginUser.getName(), grouping, groupingName, tags, null, null, start, end, null, this.loginUser);
 			param.setConceptStatus(status);
 			return this.tagRelationsDBManager.getConcepts(param, session);
 		} finally {
@@ -810,13 +799,12 @@ public class DBLogic implements LogicInterface {
 		}		
 	}
 
-	public Tag getConceptDetails(String conceptName, GroupingEntity grouping, String groupingName) {
+	public Tag getConceptDetails(final String conceptName, final GroupingEntity grouping, final String groupingName) {
 		final DBSession session = openSession();
-		Tag concept = null;
+		final Tag concept;
 		try {
-			if (grouping.equals(GroupingEntity.USER) || grouping.equals(GroupingEntity.GROUP) && 
-					groupingName != null && groupingName != "") {
-				concept = this.tagRelationsDBManager.getConceptForUser(conceptName, groupingName, session);		
+			if (grouping.equals(GroupingEntity.USER) || grouping.equals(GroupingEntity.GROUP) && groupingName != null && groupingName != "") {
+				concept = this.tagRelationsDBManager.getConceptForUser(conceptName, groupingName, session);
 			} else if (grouping.equals(GroupingEntity.ALL)) {
 				concept = this.tagRelationsDBManager.getGlobalConceptByName(conceptName, session);
 			} else {
@@ -828,14 +816,14 @@ public class DBLogic implements LogicInterface {
 		return concept;
 	}
 
-	public String createConcept(Tag concept, GroupingEntity grouping, String groupingName) {
+	public String createConcept(final Tag concept, final GroupingEntity grouping, final String groupingName) {
 		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(groupingName) == false)) {
 			throw new ValidationException("You are not authorized to perform the requested operation");
 		}
 		return this.storeConcept(concept, grouping, groupingName, false);			
 	}
 
-	public void deleteConcept(String concept, GroupingEntity grouping, String groupingName) {
+	public void deleteConcept(final String concept, final GroupingEntity grouping, final String groupingName) {
 		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(groupingName) == false)) {
 			throw new ValidationException("You are not authorized to perform the requested operation");
 		}
@@ -845,7 +833,7 @@ public class DBLogic implements LogicInterface {
 		// FIXME: close session?
 	}
 
-	public void deleteRelation(String upper, String lower, GroupingEntity grouping, String groupingName) {
+	public void deleteRelation(final String upper, final String lower, final GroupingEntity grouping, final String groupingName) {
 		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(groupingName) == false)) {
 			throw new ValidationException("You are not authorized to perform the requested operation");
 		}
@@ -855,28 +843,28 @@ public class DBLogic implements LogicInterface {
 		// FIXME: close session?
 	}
 
-	public String updateConcept(Tag concept, GroupingEntity grouping, String groupingName) {
+	public String updateConcept(final Tag concept, final GroupingEntity grouping, final String groupingName) {
 		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(groupingName) == false)) {
 			throw new ValidationException("You are not authorized to perform the requested operation");
 		}
 		return this.storeConcept(concept, grouping, groupingName, true);
-	}	
+	}
 
-	private String storeConcept(Tag concept, GroupingEntity grouping, String groupingName, boolean update) {		
+	private String storeConcept(final Tag concept, final GroupingEntity grouping, final String groupingName, final boolean update) {
 		final DBSession session = openSession();
 		if (update) {
-			this.tagRelationsDBManager.insertRelations(concept, groupingName, session);			
+			this.tagRelationsDBManager.insertRelations(concept, groupingName, session);
 		} else {
 			this.deleteConcept(concept.getName(), grouping, groupingName);
 			this.tagRelationsDBManager.insertRelations(concept, groupingName, session);
-		}		
+		}
 		return concept.getName();
 	}
 
 	/**
 	 * retrieve related user
 	 */
-	public List<User> getUsers (List<String> tags, Order order, final int start, int end){
+	public List<User> getUsers(final List<String> tags, final Order order, final int start, final int end) {
 		final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, null, null, null, tags, null, order, start, end, null, loginUser);
 		final DBSession session = openSession();
 		try {
@@ -886,63 +874,63 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	public List<User> getClassifiedUsers(Classifier classifier, SpamStatus status, int interval) {
+	public List<User> getClassifiedUsers(final Classifier classifier, final SpamStatus status, final int interval) {
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		final DBSession session = openSession();
-		try {			
+		try {
 			return this.adminDBManager.getClassifiedUsers(classifier, status, interval, session);
 		} finally {
-			session.close();			
+			session.close();
 		}
 	}
 
-	public String getClassifierSettings(ClassifierSettings key) {
+	public String getClassifierSettings(final ClassifierSettings key) {
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		final DBSession session = openSession();
-		try {			
+		try {
 			return this.adminDBManager.getClassifierSettings(key, session);
 		} finally {
-			session.close();			
+			session.close();
 		}
 	}
 
-	public void updateClassifierSettings(ClassifierSettings key, String value) {
+	public void updateClassifierSettings(final ClassifierSettings key, final String value) {
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		final DBSession session = openSession();
-		try {			
+		try {
 			this.adminDBManager.updateClassifierSettings(key, value, session);
 		} finally {
-			session.close();			
+			session.close();
 		}
 	}
 
 	public int getClassifiedUserCount(final Classifier classifier, final SpamStatus status, final int interval) {
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		final DBSession session = openSession();
-		try {			
+		try {
 			return this.adminDBManager.getClassifiedUserCount(classifier, status, interval, session);
 		} finally {
-			session.close();			
+			session.close();
 		}
 	}
 
-	public List<User> getClassifierHistory(String userName) {
+	public List<User> getClassifierHistory(final String userName) {
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		final DBSession session = openSession();
-		try {			
+		try {
 			return this.adminDBManager.getClassifierHistory(userName, session);
 		} finally {
-			session.close();			
+			session.close();
 		}
 	}
 
-	public List<User> getClassifierComparison(int interval) {
+	public List<User> getClassifierComparison(final int interval) {
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		final DBSession session = openSession();
-		try {			
+		try {
 			return this.adminDBManager.getClassifierComparison(interval, session);
 		} finally {
-			session.close();			
+			session.close();
 		}
-	}		
+	}
 }

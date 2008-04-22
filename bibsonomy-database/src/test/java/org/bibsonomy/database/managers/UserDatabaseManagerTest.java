@@ -60,7 +60,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void getUserNamesOfGroupId() {
-		final List<String> users = this.userDb.getUserNamesByGroupId(ParamUtils.TESTGROUP1_ID, this.dbSession);
+		final List<String> users = this.userDb.getUserNamesByGroupId(ParamUtils.TESTGROUP1, this.dbSession);
 		final String[] testgroup1User = new String[] { "testuser1", "testuser2" };
 		assertTrue(users.containsAll(Arrays.asList(testgroup1User)));
 		assertEquals(testgroup1User.length, users.size());
@@ -134,7 +134,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertNotSame(apiKey, updatedApiKey);
 
 		try {
-			this.userDb.updateApiKeyForUser("this-user-doesnt-exist", this.dbSession);
+			this.userDb.updateApiKeyForUser(ParamUtils.NOUSER_NAME, this.dbSession);
 			fail("expected exception");
 		} catch (Exception ignore) {
 		}

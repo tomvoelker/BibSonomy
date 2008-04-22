@@ -245,6 +245,13 @@ public class ModelUtils {
 		return buildLowerCaseHashSet(values.toArray(new String[values.size()]));
 	}
 
+	/**
+	 * Checks whether the given post has the required tags.
+	 * 
+	 * @param post
+	 * @param requiredTags
+	 * @return true if the post has the requred tags, otherwise false
+	 */
 	public static boolean hasTags(final Post<?> post, final Set<String> requiredTags) {
 		int required = requiredTags.size();
 		for (final Tag presentTag : post.getTags()) {
@@ -257,6 +264,14 @@ public class ModelUtils {
 		return true;
 	}
 
+	/**
+	 * Checks whether the post belongs to the given set of groups.
+	 * 
+	 * @param post
+	 * @param mustBeInGroups
+	 * @param mustNotBeInGroups
+	 * @return true if the post belongs to mustBeInGroups and not mustNotBeInGroups, otherwise false
+	 */
 	public static boolean checkGroups(final Post<?> post, final Set<Integer> mustBeInGroups, final Set<Integer> mustNotBeInGroups) {
 		int required = (mustBeInGroups != null) ? mustBeInGroups.size() : 0;
 		for (final Group group : post.getGroups()) {
@@ -273,9 +288,17 @@ public class ModelUtils {
 			log.warn("not in all groups");
 			return false;
 		}
-			return true;
+		return true;
 	}
 
+	/**
+	 * Constructs a list of tags.
+	 * 
+	 * @param count
+	 * @param namePrefix
+	 * @param detailDepth
+	 * @return list of tags
+	 */
 	public static List<Tag> buildTagList(final int count, final String namePrefix, final int detailDepth) {
 		final List<Tag> tags = new ArrayList<Tag>(count);
 		for (int i = 1; i <= count; ++i) {

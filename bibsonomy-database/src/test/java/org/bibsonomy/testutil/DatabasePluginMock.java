@@ -38,7 +38,7 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 			for (final Field field : this.getClass().getDeclaredFields()) {
 				field.setBoolean(this, false);
 			}
-		} catch (final Exception ex) {
+		} catch (final Exception ignored) {
 			// will not happen
 		}
 	}

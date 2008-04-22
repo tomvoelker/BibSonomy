@@ -21,12 +21,12 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	private final BookmarkDatabaseManager bookmarkDBManager;
 
 	private StatisticsDatabaseManager() {
-		bibtexDBManager = BibTexDatabaseManager.getInstance();
-		bookmarkDBManager = BookmarkDatabaseManager.getInstance();
+		this.bibtexDBManager = BibTexDatabaseManager.getInstance();
+		this.bookmarkDBManager = BookmarkDatabaseManager.getInstance();
 	}
 
 	/**
-	 * @return DocumentDatabaseManager
+	 * @return StatisticsDatabaseManager
 	 */
 	public static StatisticsDatabaseManager getInstance() {
 		return singleton;
@@ -40,7 +40,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return a statistical number (int)
 	 */
-	public Integer getNumberOfResourcesForUser(Class<? extends Resource> resourceType, final String requestedUserName, final String loginUserName, List<Integer> visibleGroupIDs, final DBSession session) {
+	public Integer getNumberOfResourcesForUser(final Class<? extends Resource> resourceType, final String requestedUserName, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session) {
 		if (resourceType == BibTex.class) {
 			return this.bibtexDBManager.getBibTexForUserCount(requestedUserName, loginUserName, visibleGroupIDs, session);
 		} else if (resourceType == Bookmark.class) {
@@ -59,7 +59,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return number of resources for given group
 	 */
-	public Integer getNumberOfResourcesForGroup(Class<? extends Resource> resourceType, final int groupId, final List<Integer> visibleGroupIDs, final DBSession session) {
+	public Integer getNumberOfResourcesForGroup(final Class<? extends Resource> resourceType, final int groupId, final List<Integer> visibleGroupIDs, final DBSession session) {
 		if (resourceType == BibTex.class) {
 			return this.bibtexDBManager.getBibTexForGroupCount(groupId, visibleGroupIDs, session);
 		} else if (resourceType == Bookmark.class) {
@@ -78,7 +78,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return number of resources for a list of tags
 	 */
-	public Integer getNumberOfResourcesForTags(Class<? extends Resource> resourceType, final List<String> tags, List<Integer> visibleGroupIDs, final DBSession session) {
+	public Integer getNumberOfResourcesForTags(final Class<? extends Resource> resourceType, final List<String> tags, final List<Integer> visibleGroupIDs, final DBSession session) {
 		if (resourceType == BibTex.class) {
 			return this.bibtexDBManager.getBibtexByTagNamesCount(tags, visibleGroupIDs, session);
 		} else if (resourceType == Bookmark.class) {
@@ -99,7 +99,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return number of resources for a given user and a list of tags
 	 */
-	public Integer getNumberOfResourcesForUserAndTags(Class<? extends Resource> resourceType, final List<String> tags, final String requestedUserName, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session) {
+	public Integer getNumberOfResourcesForUserAndTags(final Class<? extends Resource> resourceType, final List<String> tags, final String requestedUserName, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session) {
 		if (resourceType == BibTex.class) {
 			return this.bibtexDBManager.getBibTexByTagNamesForUserCount(requestedUserName, loginUserName, tags, visibleGroupIDs, session);
 		} else if (resourceType == Bookmark.class) {

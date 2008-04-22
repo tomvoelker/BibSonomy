@@ -19,17 +19,15 @@ import org.junit.Test;
 public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	/**
-	 * This method must not throw an exception, because users with role ADMIN
-	 * should have admin access.
-	 * 
-	 * @throws ValidationException
+	 * tests ensureAdminAccess
 	 */
 	@Test
 	public void ensureAdminAccess() {
 		User user = new User();
-		user.setName("rjaeschke");
+		user.setName("testuser1");
 		user.setRole(Role.ADMIN);
-		// should work
+		// This method must not throw an exception, because users with role
+		// ADMIN should have admin access.
 		this.permissionDb.ensureAdminAccess(user);
 
 		for (final String name : new String[] { "", " ", null }) {
@@ -62,13 +60,12 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void exceedsMaxmimumSize() {
 		final List<String> tags = new ArrayList<String>();
-
 		for (int i = 0; i < 9; i++) {
-			tags.add("tag"+ i);
+			tags.add("tag" + i);
 			assertFalse(this.permissionDb.exceedsMaxmimumSize(tags));
 		}
 		for (int i = 10; i < 42; i++) {
-			tags.add("tag"+ i);
+			tags.add("tag" + i);
 			assertTrue(this.permissionDb.exceedsMaxmimumSize(tags));
 		}
 	}

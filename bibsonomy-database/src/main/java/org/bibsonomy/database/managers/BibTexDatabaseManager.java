@@ -510,7 +510,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		return this.queryForObject("getBibTexForUserCount", param, Integer.class, session);
 	}
-	
+
 	/**
 	 * Returns the number of publications for a given user
 	 * 
@@ -521,7 +521,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * @return the number of publications of the requested user which the logged in user is allowed to see
 	 */
 	public Integer getBibTexForUserCount(final String requestedUserName, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session) {
-		BibTexParam param = new BibTexParam();
+		final BibTexParam param = new BibTexParam();
 		param.addGroups(visibleGroupIDs);
 		param.setUserName(loginUserName);
 		param.setRequestedUserName(requestedUserName);
@@ -615,12 +615,11 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 */
 	public List<Post<BibTex>> getPostsWithPrivnote(final BibTexParam param, final DBSession session) {
 		// start the chain
-		List<Post<BibTex>> posts = chain.getFirstElement().perform(param, session);
+		final List<Post<BibTex>> posts = chain.getFirstElement().perform(param, session);
 		// insert the private notes
 		final BibTexExtraDatabaseManager bibtexExtraDb = BibTexExtraDatabaseManager.getInstance();
 		for (final Iterator<Post<BibTex>> postsIterator = posts.iterator(); postsIterator.hasNext();) {
 			final Post<BibTex> post = postsIterator.next();
-			
 			if (post.getUser().getName().equals(param.getUserName())) {
 				post.getResource().setPrivnote(bibtexExtraDb.getBibTexPrivnoteForUser(post.getResource().getIntraHash(), param.getUserName(), session));
 			}
@@ -707,6 +706,13 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	}
 
 	/**
+	 * Inserts a BibTex-hash into the database.
+	 */
+	private void insertBibTexHash(final BibTexParam param, final DBSession session) {
+		this.insert("insertBibTexHash", param, session);
+	}
+
+	/**
 	 * Inserts a post with a publication into the database.
 	 */
 	protected void insertBibTexPost(final Post<BibTex> post, final DBSession session) {
@@ -725,16 +731,8 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		}
 	}
 
-	/**
-	 * Inserts a BibTex-hash into the database.
-	 */
-	private void insertBibTexHash(final BibTexParam param, final DBSession session) {
-		this.insert("insertBibTexHash", param, session);
-	}
-
-	@SuppressWarnings("null") // because eclipse's checks are not intelligent enough for checks in methods
+	// TODO: test insertion (tas, bibtex, ...)
 	public boolean storePost(final String userName, final Post<BibTex> post, final String oldIntraHash, boolean update, final DBSession session) {
-		// TODO: test insertion (tas, bibtex, ...)
 		session.beginTransaction();
 		try {
 			// the bibtex with the "old" intrahash, i.e. the one that was sent
@@ -742,15 +740,15 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			final List<Post<BibTex>> isOldBibTexInDb;
 
 			// the bookmark with the "new" intrahash, i.e. the one that was recalculated
-			// based on the bookmark's fields			
+			// based on the bibtex's fields			
 			final List<Post<BibTex>> isNewBibTexInDb;
-									
+
 			// check if a user is trying to create a bibtex that already exists
 			isNewBibTexInDb = this.getBibTexByHashForUser(userName, post.getResource().getIntraHash(), userName, new ArrayList<Integer>(), session, HashID.INTRA_HASH);
 			if (isNewBibTexInDb != null && isNewBibTexInDb.size() > 0 && update == false) {
 				throw new IllegalArgumentException("Could not create new bibtex entry: This bibtex entry already exists in your collection (intrahash: " + post.getResource().getIntraHash() + ")");
 			}			
-			
+
 			if (oldIntraHash != null) {
 				if ((update == false) && (oldIntraHash.equals(post.getResource().getIntraHash()) == false)) {
 					throw new IllegalArgumentException(
@@ -773,28 +771,28 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			if (present(isOldBibTexInDb)) {
 				// BibTex entry DOES EXIST for this user -> delete old BibTex post
 				final Post<BibTex> oldBibTexPost = isOldBibTexInDb.get(0);
-				
+
 				// if no groups are specified for an existing bibtex when updating -> take over existing groups
 				// this is kind of a hack, as the JabRef-Client does not store group information so far :(
 				// dbe, 2007/07/27
 //				if (update == true && !present(post.getGroups())) {										
 //					post.setGroups(this.groupDb.getGroupsForContentId(oldBibTexPost.getContentId(), session));
 //				}				
-				
+
 				/*TODO nicht fertig*/
 				/** insert addition bibtex attributes into the search table*/
 				//this.plugins.onBibTexInsertintoSearch(post.getContentId(), session);
-				
+
 				this.plugins.onBibTexUpdate(post.getContentId(), oldBibTexPost.getContentId(), session);
 				this.deletePost(userName, oldBibTexPost.getResource().getIntraHash(), update, session);
-												
+
 			} else {
 				if (update == true) {
 					log.warn("Bibtex with intrahash " + oldIntraHash + " does not exist for user " + userName);
 					throw new ResourceNotFoundException(oldIntraHash);	
 				}
 				update = false;
-				
+
 				// if no groups are specified when inserting a new bibtex -> post it as public
 				// this is kind of a hack, as the JabRef-Client does not store group information so far :(
 				// dbe, 2007/08/02
@@ -807,7 +805,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 //					post.setGroups(groups);
 //				}				
 			}
-								
+
 			this.insertBibTexPost(post, session);			
 			// add the tags
 			this.tagDb.insertTags(post, session);
