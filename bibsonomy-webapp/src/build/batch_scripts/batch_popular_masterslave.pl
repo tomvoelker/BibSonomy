@@ -228,7 +228,7 @@ SELECT tag_lower, COUNT(tag_lower) AS ctr
   LIMIT $max_tags");
 
 # insert tags
-my $stm_insert_tags     = $master->prepare("INSERT INTO popular_tags  (tag_lower, tag_ctr)               VALUES (?,?)");
+my $stm_insert_tags     = $master->prepare("INSERT INTO popular_tags  (tag_lower, tag_ctr, content_type) VALUES (?,?,?)");
 
 # delete old values from temp tables
 my $stm_delete_tags     = $master->prepare("DELETE FROM popular_tags");
@@ -246,7 +246,7 @@ $stm_delete_tags->execute();
 
 # get tags
 while (my @row = $stm_select_tags->fetchrow_array ) {
-    $stm_insert_tags->execute($row[0],$row[1]);
+    $stm_insert_tags->execute($row[0],$row[1], 0);
 }
 $master->commit;
 $stm_select_tags->finish();
