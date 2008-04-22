@@ -84,12 +84,12 @@ my $master = DBI->connect("DBI:mysql:database=$db_master;host=$db_master_host:$d
 my $stm_select_bookmark = $slave->prepare("
 SELECT book_url_hash,count(book_url_hash) AS ctr 
   FROM (
-    SELECT book_url_hash FROM bookmark 
+    SELECT book_url_hash, user_name FROM bookmark 
       WHERE bookmark.group = 0
         AND bookmark.date > SUBDATE(CURRENT_TIMESTAMP, INTERVAL $last_bookmark_days DAY)
-      ORDER BY date DESC 
-  ) AS b 
-  GROUP BY book_url_hash 
+      GROUP BY book_url_hash, user_name
+    ) AS b 
+  GROUP BY book_url_hash
   ORDER BY ctr DESC 
   LIMIT $max_bookmarks");
 
@@ -97,10 +97,10 @@ SELECT book_url_hash,count(book_url_hash) AS ctr
 my $stm_select_bibtex = $slave->prepare("
 SELECT simhash1,count(simhash1) AS ctr 
   FROM (
-    SELECT simhash1 FROM bibtex 
+    SELECT simhash1, user_name FROM bibtex 
       WHERE bibtex.group = 0 
         AND bibtex.date > SUBDATE(CURRENT_TIMESTAMP, INTERVAL $last_bibtex_days DAY)
-      ORDER BY date DESC
+      GROUP BY simhash1, user_name
     ) AS b 
     GROUP BY simhash1 
     ORDER BY ctr DESC 
