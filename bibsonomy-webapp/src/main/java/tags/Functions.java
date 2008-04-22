@@ -240,8 +240,8 @@ public class Functions  {
 		// round(log(if(tag_anzahl>100, 100, tag_anzahl+6)/6))*60+40
 		if ("home".equals(tagSizeMode)) {
 			Double t = (tagFrequency > 100 ? 100.0 : tagFrequency.doubleValue() + 6);
-			t /= 6;
-			t = Math.log(t) * 60 + 40;
+			t /= 5;
+			t = Math.log(t) * 100 + 60;
 			if (t.intValue() < 100) 
 					return 100;
 			return t.intValue();
