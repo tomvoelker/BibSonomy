@@ -42,14 +42,14 @@ my $db_master      = shift @ARGV;
 my $db_master_pass = $ENV{'DB_PASS'};
 my $db_master_host = "gandalf";
 my $db_master_port = 6033;
-my $db_master_user = "bibsonomy";
+my $db_master_user = "batch";
 my $db_master_sock = "";
 # slave
 my $db_slave      = shift @ARGV;
 my $db_slave_pass = $ENV{'DB_PASS'};
 my $db_slave_host = "odie";
 my $db_slave_port = 3306;
-my $db_slave_user = "bibsonomy";
+my $db_slave_user = "batch";
 my $db_slave_sock = "mysql_socket=/var/mysql/run/mysql.sock";
 
 # test configuration
