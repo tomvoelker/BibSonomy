@@ -25,14 +25,14 @@ public class BibTexPostComparator implements Comparator<Post<BibTex>>, Serializa
 	private static final long serialVersionUID = 1L;
 	private List<SortCriterium> sortCriteria = new ArrayList<SortCriterium>();
 
-	/** helper structure to bind a sort key to a sort order */
+	/** Helper structure to bind a sort key to a sort order */
 	private class SortCriterium {
 		/** sort key */
-		public SortKey sortKey;
+		public final SortKey sortKey;
 		/** sort order */
-		public SortOrder sortOrder;
+		public final SortOrder sortOrder;
 		/**
-		 * Constructor 
+		 * Constructor
 		 * @param key 
 		 * @param order
 		 */
@@ -46,7 +46,7 @@ public class BibTexPostComparator implements Comparator<Post<BibTex>>, Serializa
 	private class SortKeyIsEqualException extends Exception {
 		private static final long serialVersionUID = 1L;		
 	}
-	
+
 	/**
 	 * instantiate comparator
 	 * 
@@ -56,60 +56,61 @@ public class BibTexPostComparator implements Comparator<Post<BibTex>>, Serializa
 	public BibTexPostComparator(final List<SortKey> sortKeys, final List<SortOrder> sortOrders) {
 		for (int i = 0; i <= sortKeys.size() - 1; i++) {
 			try {
-				this.sortCriteria.add( new SortCriterium(sortKeys.get(i), sortOrders.get(i)) );
-			}
-			catch (IndexOutOfBoundsException iob) {
+				this.sortCriteria.add(new SortCriterium(sortKeys.get(i), sortOrders.get(i)));
+			} catch (IndexOutOfBoundsException ignore) {
 				// fill up with default ascending order
-				this.sortCriteria.add( new SortCriterium(sortKeys.get(i), SortOrder.DESC ) );
+				// FIXME: comment doesn't match implementation ("ascending" vs. SortOrder.DESC)
+				this.sortCriteria.add(new SortCriterium(sortKeys.get(i), SortOrder.DESC));
 			}
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 	 * 
 	 * main comparison method
 	 */
-	public int compare(final Post<BibTex> o1, final Post<BibTex> o2) {
-		// TODO Auto-generated method stub
-		for (SortCriterium crit : this.sortCriteria) {
+	public int compare(final Post<BibTex> post1, final Post<BibTex> post2) {
+		for (final SortCriterium crit : this.sortCriteria) {
 			try {
 				// author
 				if (crit.sortKey.equals(SortKey.AUTHOR)) {
 					// if author not present, take editor
-					final String personList1 = ( present(o1.getResource().getAuthor()) ? o1.getResource().getAuthor() : o1.getResource().getEditor() );
-					final String personList2 = ( present(o2.getResource().getAuthor()) ? o2.getResource().getAuthor() : o2.getResource().getEditor() );
+					final String personList1 = ( present(post1.getResource().getAuthor()) ? post1.getResource().getAuthor() : post1.getResource().getEditor() );
+					final String personList2 = ( present(post2.getResource().getAuthor()) ? post2.getResource().getAuthor() : post2.getResource().getEditor() );
 					return this.nomalizeAndCompare(BibTexUtils.getFirstPersonsLastName(personList1), BibTexUtils.getFirstPersonsLastName(personList2), crit.sortOrder);
 				}
 				// year
 				else if (crit.sortKey.equals(SortKey.YEAR)) {
-					return this.compare(BibTexUtils.getYear(o1.getResource().getYear()), BibTexUtils.getYear(o2.getResource().getYear()), crit.sortOrder);
+					return this.compare(BibTexUtils.getYear(post1.getResource().getYear()), BibTexUtils.getYear(post2.getResource().getYear()), crit.sortOrder);
 				}
 				// editor
 				else if (crit.sortKey.equals(SortKey.EDITOR)) {
-					return this.nomalizeAndCompare(BibTexUtils.getFirstPersonsLastName(o1.getResource().getEditor()), BibTexUtils.getFirstPersonsLastName(o2.getResource().getEditor()), crit.sortOrder);				
+					return this.nomalizeAndCompare(BibTexUtils.getFirstPersonsLastName(post1.getResource().getEditor()), BibTexUtils.getFirstPersonsLastName(post2.getResource().getEditor()), crit.sortOrder);				
 				}
 				// entrytype
 				else if (crit.sortKey.equals(SortKey.ENTRYTYPE)) {
-					return this.nomalizeAndCompare(o1.getResource().getEntrytype(), o2.getResource().getEntrytype(), crit.sortOrder);
+					return this.nomalizeAndCompare(post1.getResource().getEntrytype(), post2.getResource().getEntrytype(), crit.sortOrder);
 				}
 				// title
 				else if (crit.sortKey.equals(SortKey.TITLE)) {
-					return this.nomalizeAndCompare(o1.getResource().getTitle(), o2.getResource().getTitle(), crit.sortOrder);
+					return this.nomalizeAndCompare(post1.getResource().getTitle(), post2.getResource().getTitle(), crit.sortOrder);
 				}		
 				// booktitle
 				else if (crit.sortKey.equals(SortKey.BOOKTITLE)) {
-					return this.nomalizeAndCompare(o1.getResource().getBooktitle(), o2.getResource().getBooktitle(), crit.sortOrder);
+					return this.nomalizeAndCompare(post1.getResource().getBooktitle(), post2.getResource().getBooktitle(), crit.sortOrder);
 				}			
 				// school
 				else if (crit.sortKey.equals(SortKey.SCHOOL)) {
-					return this.nomalizeAndCompare(o1.getResource().getSchool(), o2.getResource().getSchool(), crit.sortOrder);
+					return this.nomalizeAndCompare(post1.getResource().getSchool(), post2.getResource().getSchool(), crit.sortOrder);
 				}
 				else {
 					return 0;
 				}
 			}
-			catch (SortKeyIsEqualException e) {
+			catch (SortKeyIsEqualException ignore) {
 				// the for-loop will jump to the next sort criterium in this case
 			}
 		}
@@ -117,7 +118,7 @@ public class BibTexPostComparator implements Comparator<Post<BibTex>>, Serializa
 	}
 
 	/**
-	 * compare two strings following a specified order
+	 * Compare two strings following a specified order
 	 * 
 	 * @param s1 first string
 	 * @param s2 second string
@@ -141,7 +142,7 @@ public class BibTexPostComparator implements Comparator<Post<BibTex>>, Serializa
 	}
 
 	/**
-	 * compare two integers following a specified order
+	 * Compare two integers following a specified order
 	 * 
 	 * @param i1 first integer
 	 * @param i2 second integer
@@ -153,11 +154,10 @@ public class BibTexPostComparator implements Comparator<Post<BibTex>>, Serializa
 		int comp = 0;
 		if (order.equals(SortOrder.ASC)) {
 			comp = i1 - i2;
-		}
-		else {
+		} else {
 			comp = i2 - i1;
 		}
-		if ( comp == 0 ) throw new SortKeyIsEqualException();
+		if (comp == 0) throw new SortKeyIsEqualException();
 		return comp;
 	}	
 }

@@ -4,10 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -23,7 +27,7 @@ public class BibtexUtilsTest {
 	 */
 	@Test
 	public void toBibtexString() {
-		BibTex bib = new BibTex();
+		final BibTex bib = new BibTex();
 		bib.setEntrytype("inproceedings");
 		bib.setBibtexKey("KIE");
 		bib.setTitle("The most wonderfult title on earth");
@@ -31,8 +35,8 @@ public class BibtexUtilsTest {
 		bib.setJournal("Journal of the most wonderful articles on earth");
 		bib.setYear("2525");
 		bib.setVolume("3");
-		
-		String expectedBibtex = 
+
+		final String expectedBibtex = 
 			"@inproceedings{KIE,\n" +
 			"author = {Hans Dampf and Peter Silie},\n" +
 			"journal = {Journal of the most wonderful articles on earth},\n" +
@@ -88,6 +92,33 @@ public class BibtexUtilsTest {
 		assertEquals(2005, BibTexUtils.getYear("test 2005 test"));
 		assertEquals(2005, BibTexUtils.getYear("test2005test"));
 		assertEquals(Integer.MAX_VALUE, BibTexUtils.getYear("no year in this string"));
+	}
+
+	/**
+	 * tests sortBibTexList
+	 */
+	@Ignore
+	// FIXME: implement me...
+	public void sortBibTexList() {
+		final List<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();
+		final Post<BibTex> post1 = new Post<BibTex>();
+		final Post<BibTex> post2 = new Post<BibTex>();
+		BibTex b1 = new BibTex();
+		b1.setAuthor("A. Test");
+		post1.setResource(b1);
+		BibTex b2 = new BibTex();
+		b2.setAuthor("B. Test");
+		post2.setResource(b2);
+		posts.add(post1);
+		posts.add(post2);
+		assertEquals("A. Test", posts.get(0).getResource().getAuthor());
+		assertEquals("B. Test", posts.get(1).getResource().getAuthor());
+		BibTexUtils.sortBibTexList(posts, Arrays.asList(SortKey.AUTHOR), Arrays.asList(SortOrder.ASC));
+		assertEquals("A. Test", posts.get(0).getResource().getAuthor());
+		assertEquals("B. Test", posts.get(1).getResource().getAuthor());
+		BibTexUtils.sortBibTexList(posts, Arrays.asList(SortKey.AUTHOR), Arrays.asList(SortOrder.DESC));
+		assertEquals("A. Test", posts.get(0).getResource().getAuthor());
+		assertEquals("B. Test", posts.get(1).getResource().getAuthor());
 	}
 
 	/**

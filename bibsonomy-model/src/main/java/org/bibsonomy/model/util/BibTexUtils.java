@@ -308,8 +308,8 @@ public class BibTexUtils {
 	       replaceAll("\\\"U", "Ü").
 	       replaceAll("\\\"A", "Ä").
 	       replaceAll("\\\"s", "ß").
-	       trim();		
-		
+	       trim();
+
 		final StringBuffer buffer = new StringBuffer(bibtex.length());
 		char c;		
 		for (int i = 0; i < bibtex.length(); i++) {
@@ -364,7 +364,7 @@ public class BibTexUtils {
 	}
 
 	/**
-	 * sort a list of bibtex posts (and eventually remove duplicates)
+	 * Sort a list of bibtex posts (and eventually remove duplicates).
 	 * 
 	 * @param bibtexList
 	 * @param sortKeys
