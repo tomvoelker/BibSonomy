@@ -39,14 +39,14 @@ my $max_tags           = 100;
 # run configuration
 # master
 my $db_master      = shift @ARGV;
-my $db_master_pass = $ENV{'DB_MASTER_PASS'};
+my $db_master_pass = $ENV{'DB_PASS'};
 my $db_master_host = "gandalf";
 my $db_master_port = 6033;
 my $db_master_user = "bibsonomy";
 my $db_master_sock = "";
 # slave
 my $db_slave      = shift @ARGV;
-my $db_slave_pass = $ENV{'DB_SLAVE_PASS'};
+my $db_slave_pass = $ENV{'DB_PASS'};
 my $db_slave_host = "odie";
 my $db_slave_port = 3306;
 my $db_slave_user = "bibsonomy";
