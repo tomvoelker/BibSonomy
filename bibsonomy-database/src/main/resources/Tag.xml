@@ -32,22 +32,11 @@
 	</select>
 
 	<select id="getAllTags" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
-		<!-- we only give out the 100 most frequent tags from the last 10000 public ones -->
-   		SELECT tag_name, lower(tag_name) as x, tag_ctr
-    	FROM ( 
-    		SELECT tt.tag_name, count(tt.tag_name) AS tag_ctr
-      		FROM 
-        		(SELECT tag_name 
-          		FROM tas t
-          		WHERE t.group=0
-          			<include refid="getTagsByResourceType"/>
-          		ORDER BY date desc
-          		LIMIT 10000) AS tt
-      		GROUP BY tt.tag_name
-      		ORDER BY tag_ctr desc
-      		LIMIT #limit#
-      	) as t1
-      	order by x;		 
+		<!-- we only give out the 100 most popular tags here -->
+		SELECT tag_lower AS tag_name, tag_ctr 
+		FROM popular_tags
+		WHERE content_type=#contentType#
+		LIMIT #limit#		 
 	</select>
 	
 	<select id="getTagsByExpression" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
