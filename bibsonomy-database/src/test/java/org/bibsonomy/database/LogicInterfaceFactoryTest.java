@@ -27,9 +27,9 @@ public class LogicInterfaceFactoryTest extends AbstractDatabaseManagerTest {
 	public void setup() {
 		super.setUp();
 		this.userFactory = new DBLogicUserInterfaceFactory();
-		this.userFactory.setDbSessionFactory(this.dbSessionFactory);
+		this.userFactory.setDbSessionFactory(this.getDbSessionFactory());
 		this.apiFactory = new DBLogicApiInterfaceFactory();
-		this.apiFactory.setDbSessionFactory(this.dbSessionFactory);
+		this.apiFactory.setDbSessionFactory(this.getDbSessionFactory());
 	}
 
 	/**

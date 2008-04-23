@@ -15,7 +15,7 @@ import org.junit.Test;
  * Tests related to the Tag Chain.
  * 
  * @author Dominik Benz
- * @author miranda
+ * @author Miranda Grahl
  * @version $Id$
  */
 public class TagChainTest extends AbstractChainTest {
@@ -34,10 +34,9 @@ public class TagChainTest extends AbstractChainTest {
 		this.tagParam.setTagIndex(null);
 		 //start chain
 		final List<Tag> tags = this.tagChain.getFirstElement().perform(this.tagParam, this.dbSession);		
-		assertEquals(1408, tags.size());
-		this.resetParameters();
+		assertEquals(1500, tags.size());
 	}
-	
+
 	/**
 	 *  get tags by group
 	 */
@@ -49,7 +48,6 @@ public class TagChainTest extends AbstractChainTest {
 		 this.tagParam.addGroup(GroupID.PUBLIC.getId());
     	 final List<Tag> tags = this.tagChain.getFirstElement().perform(this.tagParam, this.dbSession);         
 		 assertEquals(10, tags.size());
-		 this.resetParameters();
 	}
 
 	/**
@@ -66,8 +64,7 @@ public class TagChainTest extends AbstractChainTest {
 		 this.tagParam.setLimit(1000);
 		 this.tagParam.setOffset(0);
 		 final List<Tag> tags = this.tagChain.getFirstElement().perform(this.tagParam, this.dbSession);
-		 assertEquals(333, tags.size());		 
-		 this.resetParameters();
+		 assertEquals(503, tags.size());		 
 	}
 
 	/**
@@ -80,8 +77,7 @@ public class TagChainTest extends AbstractChainTest {
 		 this.tagParam.setRequestedUserName("hotho");
 		 this.tagParam.setLimit(100);
     	 final List<Tag> tags = this.tagChain.getFirstElement().perform(this.tagParam, this.dbSession);         
-		 assertEquals(12, tags.size());		
-		 this.resetParameters();		 
+		 assertEquals(19, tags.size());		
 	}
 
 	/**
@@ -94,10 +90,9 @@ public class TagChainTest extends AbstractChainTest {
 		this.tagParam.setTagIndex(null);
 		System.out.println("getAllTags");
 		final List<Tag> tags = this.tagChain.getFirstElement().perform(this.tagParam, this.dbSession);
-		assertEquals(1, tags.size()); // only 'dblp' in the current test database
-		this.resetParameters();
+		assertEquals(100, tags.size()); // only 'dblp' in the current test database
 	}
-	
+
 	/**
 	 * get tags by author
 	 * 
@@ -112,6 +107,5 @@ public class TagChainTest extends AbstractChainTest {
 		this.tagParam.setLimit(1000);
 		final List<Tag> tags = this.tagChain.getFirstElement().perform(this.tagParam, this.dbSession);
 		assertEquals(342, tags.size());
-	}
-	
+	}	
 }

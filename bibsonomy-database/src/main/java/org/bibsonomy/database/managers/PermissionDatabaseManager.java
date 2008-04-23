@@ -50,17 +50,30 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Check if the logged in user has write access to the given Post
+	 * Check if the logged in user has write access to the given post.
 	 * 
 	 * @param post
 	 * @param loginUser
 	 */
-	public void ensureWriteAccess(final Post<?> post, final User loginUser) {
+	public void ensureWriteAccess(final Post<? extends Resource> post, final User loginUser) {
 		// delegate write access check
 		ensureWriteAccess(loginUser, post.getUser().getName());
 	}
 
 	/**
+	 * Check if the logged in user has write access to the given document.
+	 * 
+	 * @param document
+	 * @param loginUser
+	 */
+	public void ensureWriteAccess(final Document document, final User loginUser) {
+		// delegate write access check
+		ensureWriteAccess(loginUser, document.getUserName());
+	}
+
+	/**
+	 * Throws an exception if the loginUser.getName and userName doesn't match.
+	 * 
 	 * @param loginUser
 	 * @param userName
 	 */
@@ -68,15 +81,6 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		if (loginUser.getName() == null || !loginUser.getName().toLowerCase().equals(userName.toLowerCase())) {
 			throw new ValidationException("You are not authorized to perform the requested operation.");
 		}
-	}
-
-	/**
-	 * @param document
-	 * @param loginUser
-	 */
-	public void ensureWriteAccess(final Document document, final User loginUser) {
-		// delegate write access check
-		ensureWriteAccess(loginUser, document.getUserName());
 	}
 
 	/**
@@ -113,6 +117,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 
 		// Construct the public group.
 		// TODO: this should better be done in a GroupFactory!
+		// ----> what about GroupUtils?
 		final Group publicGroup = new Group();
 		publicGroup.setGroupId(GroupID.PUBLIC.getId());
 

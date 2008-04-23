@@ -9,7 +9,11 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.model.Document;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -17,6 +21,68 @@ import org.junit.Test;
  * @version $Id$
  */
 public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
+
+	/**
+	 * tests checkStartEnd
+	 */
+	@Test
+	public void checkStartEnd() {
+		// ok
+		for (int i = 0; i <= 1000; i++) {
+			try {
+				this.permissionDb.checkStartEnd(0, i, "test");
+			} catch (ValidationException ignore) {
+				fail("no exception expected");
+			}
+		}
+		// not ok
+		for (int i = 1001; i < 10000; i++) {
+			try {
+				this.permissionDb.checkStartEnd(0, i, "test");
+				fail("expected exception");
+			} catch (ValidationException ignore) {
+			}
+		}
+	}
+
+	/**
+	 * tests ensureWriteAccess
+	 */
+	@Test
+	public void ensureWriteAccess() {
+		final Post<Resource> post = new Post<Resource>();
+		post.setUser(new User("testuser1"));
+		this.permissionDb.ensureWriteAccess(post, new User("testuser1"));
+		try {
+			this.permissionDb.ensureWriteAccess(post, new User("testuser2"));
+			fail("expected exception");
+		} catch (ValidationException ignore) {
+		}
+
+		final Document document  = new Document();
+		document.setUserName("testuser1");
+		this.permissionDb.ensureWriteAccess(document, new User("testuser1"));
+		try {
+			this.permissionDb.ensureWriteAccess(document, new User("testuser2"));
+			fail("expected exception");
+		} catch (ValidationException ignore) {
+		}
+
+		this.permissionDb.ensureWriteAccess(new User("testuser1"), "testuser1");
+		try {
+			this.permissionDb.ensureWriteAccess(new User("testuser1"), "testuser2");
+			fail("expected exception");
+		} catch (ValidationException ignore) {
+		}
+	}
+
+	/**
+	 * tests isAllowedToAccessPostsDocuments
+	 */
+	@Ignore
+	public void isAllowedToAccessPostsDocuments() {
+		// TODO: implement me...
+	}
 
 	/**
 	 * tests ensureAdminAccess

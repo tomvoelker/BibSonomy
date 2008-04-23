@@ -621,6 +621,7 @@ public class DBLogic implements LogicInterface {
 			docParam.setFileHash(doc.getFileHash());
 			docParam.setFileName(doc.getFileName());
 
+			// FIXME remove deprecated method
 			final boolean valid = this.docDBManager.validateResource(docParam, session);
 			final boolean existingDoc = this.docDBManager.checkForExistingDocuments(docParam, session);
 
@@ -665,7 +666,7 @@ public class DBLogic implements LogicInterface {
 			 */
 			final Post<BibTex> post = this.bibtexDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
 			if (post != null) {
-				for (final Document document:post.getResource().getDocuments()) {
+				for (final Document document : post.getResource().getDocuments()) {
 					if (document.getFileName().equals(fileName)) {
 						return document;
 					}
@@ -694,6 +695,7 @@ public class DBLogic implements LogicInterface {
 			docParam.setResourceHash(resourceHash);
 			docParam.setUserName(userName);
 
+			// FIXME: remove deprecated method
 			final boolean valid = this.docDBManager.validateResource(docParam, session);
 
 			/*

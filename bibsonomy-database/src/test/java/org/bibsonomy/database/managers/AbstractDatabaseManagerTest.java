@@ -49,7 +49,7 @@ public abstract class AbstractDatabaseManagerTest {
 	protected GroupParam groupParam;
 	protected StatisticsParam statisticsParam;
 
-	protected DBSessionFactory dbSessionFactory;
+	private DBSessionFactory dbSessionFactory;
 	protected DBSession dbSession;
 
 	/**
@@ -106,6 +106,8 @@ public abstract class AbstractDatabaseManagerTest {
 		this.statisticsParam = null;
 
 		JNDITestDatabaseBinder.unbind();
+		// FIXME: hack ("DBSessionImpl not closed")
+		this.dbSession.close();
 	}
 
 	/**
