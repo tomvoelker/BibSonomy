@@ -31,8 +31,10 @@ public class ResourceViewCommand extends BaseCommand {
 	private String duplicates = "yes";
 	
 	/** retrieve only tags without resources */
-	private String restrictToTags = "no";
-	
+	private String restrictToTags = "false";
+
+	/** callback function for JSON outputs */
+	private String callback = "";	
 	
 	public String getDuplicates() {
 		return this.duplicates;
@@ -152,5 +154,13 @@ public class ResourceViewCommand extends BaseCommand {
 
 	public void setRestrictToTags(String restrictToTags) {
 		this.restrictToTags = restrictToTags;
+	}
+
+	public String getCallback() {
+		return this.callback;
+	}
+
+	public void setCallback(String callBack) {
+		this.callback = callBack;
 	}		
 }

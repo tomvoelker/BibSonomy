@@ -12,12 +12,19 @@
 	<jsp:directive.page contentType="application/json; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
 	<c:set var="tags" value="${command.tagcloud.tags}"/>
+	
+	<c:if test="${not empty command.callback}">
+		<c:out value="${command.callback}"/> (
+	</c:if>
 	{ "tags": [
 	<c:forEach var="tag" items="${tags}">
 		{
 		"name" : "<c:out value="${tag.name}"/>", 
 		"count" : <c:out value="${tag.globalcount}"/>
-		}
+		},
 	</c:forEach>
 	]}
+	<c:if test="${not empty command.callback}">
+		)
+	</c:if>	
 </jsp:root>

@@ -28,11 +28,12 @@ public class BibtexPageController extends MultiResourceListController implements
 		
 		// retrieve only tags
 		if (!command.getRestrictToTags().equals("false")) {
-			System.out.println("get json tags");
 			this.setTags(command, BibTex.class, GroupingEntity.ALL, null, null, null, command.getRequBibtex(), null, 0, 1000, null);
 			
 			// TODO: other output formats
-			return Views.JSONTAGS;
+			if (command.getFormat().equals("json")) {
+				return Views.JSONTAGS;
+			}
 		}		
 		
 		/** Michaels part
