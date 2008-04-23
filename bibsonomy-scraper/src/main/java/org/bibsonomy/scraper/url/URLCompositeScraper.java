@@ -5,6 +5,7 @@ package org.bibsonomy.scraper.url;
 
 import org.bibsonomy.scraper.CompositeScraper;
 import org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper;
+import org.bibsonomy.scraper.url.kde.acs.ACSScraper;
 import org.bibsonomy.scraper.url.kde.aip.AipScitationScraper;
 import org.bibsonomy.scraper.url.kde.amazon.AmazonScraper;
 import org.bibsonomy.scraper.url.kde.arxiv.ArxivScraper;
@@ -71,5 +72,6 @@ public class URLCompositeScraper extends CompositeScraper {
 		addScraper(new BioMedCentralScraper());
 		addScraper(new WorldCatScraper());
 		addScraper(new SpringerScraper());
+		addScraper(new ACSScraper());
 	}
 }

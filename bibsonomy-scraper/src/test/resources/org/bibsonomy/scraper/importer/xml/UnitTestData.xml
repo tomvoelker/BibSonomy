@@ -372,4 +372,16 @@
 		<BibFile>BioMedCentralScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.biomed.BioMedCentralScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_63">
+		<TestDescription>ACS Publications Url 1</TestDescription>
+		<URL>http://pubs.acs.org/cgi-bin/abstract.cgi/jcisd8/2004/44/i06/abs/ci049894n.html</URL>
+		<BibFile>ACSScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.acs.ACSScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_64">
+		<TestDescription>ACS Publications Url 2</TestDescription>
+		<URL>http://pubs.acs.org/wls/journals/citation2/Citation?jid=ci049894n</URL>
+		<BibFile>ACSScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.acs.ACSScraper</Scraper>
+	</URLTest>
 </test:Tests>
