@@ -290,7 +290,7 @@
           	<include refid="restrictToGroups"/>
         ) AS t      
       	GROUP BY t.tag_name
-      	ORDER BY 1 ASC
+      	ORDER BY 2 DESC
       	LIMIT #limit#
       	OFFSET #offset#		
 	</select>
@@ -308,7 +308,7 @@
           	<include refid="restrictToGroups"/>
         ) AS t      
       	GROUP BY t.tag_name
-      	ORDER BY 1 ASC
+      	ORDER BY 2 DESC
       	LIMIT #limit#
       	OFFSET #offset#
 	</select>
