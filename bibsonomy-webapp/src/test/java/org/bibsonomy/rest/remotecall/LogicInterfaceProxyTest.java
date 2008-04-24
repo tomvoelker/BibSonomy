@@ -310,7 +310,8 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		EasyMock.expect(serverLogic.getGroupDetails(groupName)).andReturn(returnedGroupExpectation);
 		EasyMock.replay(serverLogic);
 		final Group returnedGroup = clientLogic.getGroupDetails(groupName);
-		ModelUtils.assertPropertyEquality(returnedGroupExpectation, returnedGroup, 5, Pattern.compile(".*users.*\\.(apiKey|homepage|realname|email|password|date|openURL|gender|place|interests|hobbies|IPAddress|basket|profession|place|spammer|settings|toClassify|updatedBy)|.*\\.date|.*\\.scraperId|.*\\.openURL|.*groupId"));
+		System.out.println(returnedGroup.getUser().getIPAddress());
+		ModelUtils.assertPropertyEquality(returnedGroupExpectation, returnedGroup, 5, Pattern.compile(".*users.*\\.(apiKey|homepage|realname|email|password|date|openURL|gender|place|interests|hobbies|IPAddress|basket|profession|place|spammer|settings|toClassify|updatedBy)|.*\\.date|.*\\.scraperId|.*\\.openURL|.*groupId|user.*"));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return returnedGroup;
