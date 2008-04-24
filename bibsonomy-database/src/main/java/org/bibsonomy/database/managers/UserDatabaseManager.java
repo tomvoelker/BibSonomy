@@ -205,7 +205,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Authenticate a user by comparing his submitted Api key with the one
-	 * stored in the database.
+	 * stored in the database. Spammers are excluded from accessing the API
 	 * 
 	 * TODO: rename
 	 * 
@@ -225,8 +225,8 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		// get user from database
 		final User foundUser = getUserDetails(username, session);
 
-		// user exists and password is correct
-		if ((foundUser.getName() != null) && (foundUser.getApiKey().equals(apiKey))) return foundUser;
+		// user exists and password is correct and user is no spammer
+		if ((foundUser.getName() != null) && (foundUser.getApiKey().equals(apiKey)) && !foundUser.isSpammer()) return foundUser;
 
 		// fallback: user is not logged in
 		return notLoggedInUser;
