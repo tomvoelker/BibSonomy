@@ -34,7 +34,7 @@ public class TagChainTest extends AbstractChainTest {
 		this.tagParam.setTagIndex(null);
 		 //start chain
 		final List<Tag> tags = this.tagChain.getFirstElement().perform(this.tagParam, this.dbSession);		
-		assertEquals(1500, tags.size());
+		assertEquals(1412, tags.size());
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class TagChainTest extends AbstractChainTest {
 		 this.tagParam.setLimit(1000);
 		 this.tagParam.setOffset(0);
 		 final List<Tag> tags = this.tagChain.getFirstElement().perform(this.tagParam, this.dbSession);
-		 assertEquals(503, tags.size());		 
+		 assertEquals(333, tags.size());		 
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class TagChainTest extends AbstractChainTest {
 		 this.tagParam.setRequestedUserName("hotho");
 		 this.tagParam.setLimit(100);
     	 final List<Tag> tags = this.tagChain.getFirstElement().perform(this.tagParam, this.dbSession);         
-		 assertEquals(19, tags.size());		
+		 assertEquals(12, tags.size());		
 	}
 
 	/**
@@ -90,7 +90,7 @@ public class TagChainTest extends AbstractChainTest {
 		this.tagParam.setTagIndex(null);
 		System.out.println("getAllTags");
 		final List<Tag> tags = this.tagChain.getFirstElement().perform(this.tagParam, this.dbSession);
-		assertEquals(100, tags.size()); // only 'dblp' in the current test database
+		assertEquals(0, tags.size()); // only 'dblp' in the current test database
 	}
 
 	/**

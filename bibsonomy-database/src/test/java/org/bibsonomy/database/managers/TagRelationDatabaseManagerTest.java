@@ -95,7 +95,7 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	public void getPickedConceptsForUser() {
 		final List<Tag> relations = this.tagRelDb.getPickedConceptsForUser("hotho", this.dbSession);
 		// hotho has six concepts
-		assertEquals(13, relations.size());
+		assertEquals(6, relations.size());
 	}
 
 	/**
@@ -105,7 +105,7 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	public void getAllConceptsForUser() {
 		final List<Tag> relations = this.tagRelDb.getAllConceptsForUser("hotho", this.dbSession);
 		// hotho has six concepts
-		assertEquals(13, relations.size());
+		assertEquals(6, relations.size());
 	}
 
 	/**
@@ -123,6 +123,6 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	@Test
 	public void testGetGlobalConceptByName() {
 		final Tag concept = this.tagRelDb.getGlobalConceptByName("programming", this.dbSession);
-		assertEquals(36, concept.getSubTags().size());
+		assertEquals(9, concept.getSubTags().size());
 	}
 }
