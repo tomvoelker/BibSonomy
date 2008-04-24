@@ -37,7 +37,7 @@
 		</jsp:attribute>
 		<jsp:attribute name="title">
 			<c:if test='${not empty post.resource.documents}'> 
-				<a href="/documents/${post.resource.documents[0].fileHash}"><img alt="PDF" src="${pageContext.request.contextPath}/resources/image/document-txt-blue.png" style="float: left;"/></a>
+				<a href="/documents/${post.resource.documents[0].fileHash}"><img alt="PDF" src="${projectContext}resources/image/document-txt-blue.png" style="float: left;"/></a>
 			</c:if>
 			<c:set var="bibUrlTemplate">/bibtex/2${post.resource.intraHash}/<mtl:encode value='${post.user.name}'/></c:set>
 			<c:url var="bibUrl" value="${bibUrlTemplate}" context="${projectContext}"/>
