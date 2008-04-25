@@ -21,7 +21,7 @@ import org.bibsonomy.scraper.ScrapingException;
  */
 public class ACSScraper implements Scraper {
 
-	private static final String info = "BioMed Central Scraper: This Scraper parses a publication from http://www.biomedcentral.com/ "+
+	private static final String info = "ACS Publication Scraper: This Scraper parses a publication from http://www.acs.org/ "+
 	"and extracts the adequate BibTeX entry. Author: KDE";
 
 	private static final String ACS_HOST_NAME  = "http://pubs.acs.org";
