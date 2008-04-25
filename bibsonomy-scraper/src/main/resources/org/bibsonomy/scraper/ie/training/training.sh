@@ -23,7 +23,7 @@ echo "The best trained CRF is stored in crfBibsonomy with the name crf-saved.dat
 echo
 echo "For using the trained CRF in BibSonomy copy the crf-saved.dat to bibsonomy-scraper/src/main/resources/org/bibsonomy/scraper/ie and rename it to crf.dat"
 echo
-echo "If a bad version error oucccurs during starting the training, the used java ist not java 6. Change path to the correct java version."
+echo "If a bad version error oucccurs during starting the training, the used java ist not version 5. Change path to the correct java version."
 echo
 
 java -Xmx1400m -jar mallet.jar --head-or-ref 1 --input-file testdata/tagged_ie_references_newreference_start_newline_meta_reference_count_cluster_count.txt --use-cluster-features false --training-pct 0.7 --testing-pct 0.3 --output-prefix crfBibsonomy --num-reps 100 1> training_log.txt 2> training_err_log.txt
