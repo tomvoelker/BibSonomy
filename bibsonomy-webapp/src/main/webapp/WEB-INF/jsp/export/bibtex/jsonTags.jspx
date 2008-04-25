@@ -17,11 +17,12 @@
 		<c:out value="${command.callback}"/> (
 	</c:if>
 	{ "tags": [
-	<c:forEach var="tag" items="${tags}">
+	<c:forEach var="tag" items="${tags}" varStatus="status">
 		{
 		"name" : "<c:out value="${tag.name}"/>", 
 		"count" : <c:out value="${tag.globalcount}"/>
-		},
+		}
+		<c:if test="${!status.last}">,</c:if>
 	</c:forEach>
 	]}
 	<c:if test="${not empty command.callback}">
