@@ -1,3 +1,4 @@
+
 /*
  * RegistrationHandler is used by processRegister.jsp 
  * to take care of the registration process, e.g. to avoid
@@ -383,7 +384,7 @@ public class RegistrationHandler extends HttpServlet {
 	 * @return The status of the given inetAddress.
 	 * @throws UnknownHostException
 	 */
-	private InetAddressStatus getInetAddressStatus(String inetAddress) throws UnknownHostException {
+	private InetAddressStatus getInetAddressStatus(String inetAddress) {
 		if (inetAddress != null) {
 			// remove proxy servers from address
 			final int proxyStartPos = inetAddress.indexOf(",");
@@ -398,8 +399,11 @@ public class RegistrationHandler extends HttpServlet {
 			dbLogicFactory.setDbSessionFactory(new IbatisDBSessionFactory());
 			final LogicInterface logic = dbLogicFactory.getLogicAccess(null, null); // we don't know any user or password
 			// query the DB for the status of address 
-			return logic.getInetAddressStatus(InetAddress.getByName(inetAddress));
-
+			try {
+				return logic.getInetAddressStatus(InetAddress.getByName(inetAddress));
+			} catch (UnknownHostException ex) {
+				log.debug("Could not check inetAddress " + inetAddress + ": " + ex.getMessage());
+			}
 		}
 		// fallback: unknown
 		return InetAddressStatus.UNKNOWN;
