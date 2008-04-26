@@ -196,7 +196,7 @@
 	<!-- 
 		query to retrieve related tags restricted to groups, users or viewable pages
 	-->
-	<select id="getRelatedTagsRestricted" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+	<select id="getRelatedTagsRestricted" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam" timeout="3">
 		    SELECT t.tag_name AS tag_name, count(t.tag_name) as tag_ctr
 	      	FROM tas t, <include refid="tagFromQuery"/> <!-- a TAS join (t1, t2, ...) for each requested tag -->
 	      		<isNotEmpty property="requestedGroupName">
