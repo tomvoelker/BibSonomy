@@ -59,8 +59,7 @@ public class BibTexPostComparator implements Comparator<Post<BibTex>>, Serializa
 				this.sortCriteria.add(new SortCriterium(sortKeys.get(i), sortOrders.get(i)));
 			} catch (IndexOutOfBoundsException ignore) {
 				// fill up with default ascending order
-				// FIXME: comment doesn't match implementation ("ascending" vs. SortOrder.DESC)
-				this.sortCriteria.add(new SortCriterium(sortKeys.get(i), SortOrder.DESC));
+				this.sortCriteria.add(new SortCriterium(sortKeys.get(i), SortOrder.ASC));
 			}
 		}
 	}
