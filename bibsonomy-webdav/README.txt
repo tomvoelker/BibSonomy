@@ -3,10 +3,9 @@ Borrowed implementation from Confluence' WebDAV Plugin:
     http://confluence.atlassian.com/display/CONFEXT/WebDAV+Plugin
 
 
-
 Updating:
 
-The plugin's version on the last update was: 1.2.3
+The plugin's version on the last update was: 1.2.5-SNAPSHOT
 
 For the next update we're interested in these files:
   * com.atlassian.confluence.extra.webdav.servlet.client.*

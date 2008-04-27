@@ -25,11 +25,11 @@ public class BibTexCollectionResource extends VirtualCollectionResource {
 	 * @param backend
 	 *            The backend
 	 */
-	public BibTexCollectionResource(RootCollectionResource root, BibSonomyBackend backend) {
+	public BibTexCollectionResource(final RootCollectionResource root, final BibSonomyBackend backend) {
 		super(root, backend, "Publications", "Publications");
 	}
 
-	public Resource getChild(String name) {
+	public Resource getChild(final String name) {
 		final Post<BibTex> post = this.getBibTex(name);
 		if (post != null) {
 			return new BibTexResource(this, this.getBackend(), post.getResource().getTitle() + ".txt", BibTexUtils.toBibtexString(post.getResource()));

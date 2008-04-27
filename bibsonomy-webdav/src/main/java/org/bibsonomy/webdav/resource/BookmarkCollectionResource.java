@@ -23,11 +23,11 @@ public class BookmarkCollectionResource extends VirtualCollectionResource {
 	 * @param backend
 	 *            The backend
 	 */
-	public BookmarkCollectionResource(RootCollectionResource root, BibSonomyBackend backend) {
+	public BookmarkCollectionResource(final RootCollectionResource root, final BibSonomyBackend backend) {
 		super(root, backend, "Bookmarks", "Bookmarks");
 	}
 
-	public Resource getChild(String name) {
+	public Resource getChild(final String name) {
 		return null;
 	}
 

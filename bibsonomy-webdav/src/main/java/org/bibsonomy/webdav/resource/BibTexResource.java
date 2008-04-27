@@ -22,7 +22,7 @@ public class BibTexResource extends BibSonomyResource {
 	 * @param content
 	 *            The content of this resource
 	 */
-	public BibTexResource(CollectionResource parent, BibSonomyBackend backend, String name, String content) {
+	public BibTexResource(final CollectionResource parent, final BibSonomyBackend backend, final String name, final String content) {
 		super(parent, backend, name, content);
 	}
 }

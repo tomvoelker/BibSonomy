@@ -59,7 +59,7 @@ public class BibSonomyBackend implements ResourceBackend {
 		JNDITestDatabaseBinder.bind();
 	}
 
-	public void init(ServletContext servletContext) throws BackendException {
+	public void init(final ServletContext servletContext) throws BackendException {
 		// Do nothing.
 	}
 
@@ -68,7 +68,7 @@ public class BibSonomyBackend implements ResourceBackend {
 		JNDITestDatabaseBinder.unbind();
 	}
 
-	public void initRequest(WebdavRequest req) {
+	public void initRequest(final WebdavRequest req) {
 		// Do nothing.
 	}
 
