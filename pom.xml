@@ -120,6 +120,7 @@
 		<module>bibsonomy-rest-server</module>
 		<module>bibsonomy-spielwiese</module>
 		<module>bibsonomy-webapp</module>
+		<module>bibsonomy-webdav</module>
 	</modules>
 	<build>
 		<pluginManagement>
@@ -230,6 +231,11 @@
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-webapp</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-webdav</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
