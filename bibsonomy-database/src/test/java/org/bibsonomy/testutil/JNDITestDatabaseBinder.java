@@ -19,9 +19,15 @@ import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
  * @author Dominik Benz
  * @version $Id$
  */
-public class JNDITestDatabaseBinder {
+public final class JNDITestDatabaseBinder {
 
 	private static final Logger log = Logger.getLogger(JNDITestDatabaseBinder.class);
+
+	/**
+	 * Don't create instances of this class - use the static methods instead.
+	 */
+	private JNDITestDatabaseBinder() {
+	}
 
 	/**
 	 * Main method: read configuration file 'database.properties', create SQL Data Source and

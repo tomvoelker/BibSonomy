@@ -9,7 +9,6 @@ import org.bibsonomy.model.Post;
 import org.junit.Test;
 
 /**
- * 
  * @author Jens Illig
  * @version $Id$
  */

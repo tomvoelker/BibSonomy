@@ -24,7 +24,7 @@ import org.bibsonomy.model.UserSettings;
  * @author Christian Schenk
  * @version $Id$
  */
-public class ParamUtils {
+public final class ParamUtils {
 
 	/** username of a user who doesn't exist */
 	public static final String NOUSER_NAME = "this-user-doesnt-exist";
@@ -43,6 +43,12 @@ public class ParamUtils {
 		final Calendar cal = Calendar.getInstance();
 		cal.clear();
 		date = cal.getTime();
+	}
+
+	/**
+	 * Don't create instances of this class - use the static methods instead.
+	 */
+	private ParamUtils() {
 	}
 
 	/**

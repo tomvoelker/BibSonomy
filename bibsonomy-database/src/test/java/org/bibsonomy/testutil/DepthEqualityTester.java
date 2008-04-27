@@ -21,13 +21,19 @@ import org.bibsonomy.util.ExceptionUtils;
  * @author Jens Illig
  * @version $Id$
  */
-public class DepthEqualityTester  {
+public final class DepthEqualityTester  {
 
 	private static final Logger log = Logger.getLogger(DepthEqualityTester.class);
 
 	public static interface EqualityChecker {
 		public boolean checkEquals(Object should, Object is, String path);
 		public boolean checkTrue(boolean value, String path, String checkName);
+	}
+
+	/**
+	 * Don't create instances of this class - use the static methods instead.
+	 */
+	private DepthEqualityTester() {
 	}
 
 	private static Set<String> toSet(final String[] excludeProperties) {
