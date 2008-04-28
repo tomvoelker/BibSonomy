@@ -34,7 +34,7 @@ public class RepairBrokenHashes {
 	public RepairBrokenHashes (final Connection conn, final BufferedWriter writer) {
 		if (conn != null){
 			try {
-				stmtSelectAll    = conn.prepareStatement("SELECT volume, number, journal, booktitle, entrytype, title, author, editor, year, user_name, content_id FROM bibtex LIMIT 30000000;");
+				stmtSelectAll    = conn.prepareStatement("SELECT title, author, editor, year, user_name, content_id FROM bibtex LIMIT 30000000;");
 			} catch (SQLException e) {
 				log.fatal("Could not prepare statements");
 			}
@@ -88,46 +88,30 @@ public class RepairBrokenHashes {
 		int badECtr = 0;
 		while (rst.next()) {
 			ctr++;
-			BibTex bibtex = new BibTex();
+			final BibTex bibtex = new BibTex();
 			// simhash 1 (inter-hash)
 			bibtex.setAuthor(rst.getString("author"));
 			bibtex.setEditor(rst.getString("editor"));
 			bibtex.setYear(rst.getString("year"));
 			bibtex.setTitle(rst.getString("title"));
-			// simhash 0 (old intra-hash)
-			bibtex.setBooktitle(rst.getString("booktitle"));
-			bibtex.setJournal(rst.getString("journal"));
-			bibtex.setEntrytype(rst.getString("entrytype"));
-			// simhash (intra-hash)
-			bibtex.setVolume(rst.getString("volume"));
-			bibtex.setNumber(rst.getString("number"));
 
 
 			final String username = rst.getString("user_name");
 			final int content_id  = rst.getInt("content_id");
 
-			boolean update = false;
-
-			final String[] oldHashes = new String[4];
-			final String[] newHashes = new String[4];
-
 			/*
 			 * calculate all hashes
 			 */
-			for (int i = 0; i < oldHashes.length; i++) {
-				oldHashes[i] = SimHashOld.getSimHash(bibtex, HashID.getSimHash(i));
-				newHashes[i] = SimHashNew.getSimHash(bibtex, HashID.getSimHash(i));
-				if (!oldHashes[i].equals(newHashes[i])) update = true;
-			}
-
-			if (update) {
+			final String oldHash1 = SimHashOld.getSimHash(bibtex, HashID.INTER_HASH);
+			final String newHash1 = SimHashNew.getSimHash(bibtex, HashID.INTER_HASH);
+			if (!oldHash1.equals(newHash1)) {
 				/*
 				 * update hashes
 				 */
 				badACtr++;
 				System.out.println(badACtr);
 
-				updatePost(content_id, username, oldHashes, newHashes);
+				updatePost(content_id, username, oldHash1, newHash1);
 
 			}
 
@@ -137,23 +121,19 @@ public class RepairBrokenHashes {
 		writer.close();
 	}
 
-	private void updatePost(final int content_id, final String username, final String[] oldHashes, final String[] newHashes) throws IOException {
-		for (int i = 0; i < oldHashes.length; i++) {
+	private void updatePost(final int content_id, final String username, final String oldHash1, final String newHash1) throws IOException {
+		// update bibtex table
+		writer.write("UPDATE bibtex " +
+				"SET simhash" + HashID.INTER_HASH.getId() + " = '" + newHash1 + "' " +
+				"WHERE content_id = " + content_id + " " +
+				"AND user_name = '" + username + "' " +
+				"AND simhash" + HashID.INTER_HASH.getId() + " = '" + oldHash1 + "';\n");
 
-			// update bibtex table
-			final String newHash = newHashes[i];
-			final String oldHash = oldHashes[i];
-			if (!oldHash.equals(newHash)) {
-				writer.write("UPDATE bibtex SET simhash" + i + " = '" + newHash + "' WHERE content_id = " + content_id + " AND user_name = '" + username + "' AND simhash" + i + " = '" + oldHash + "';\n");
+		// decrement old hash
+		writer.write("UPDATE bibhash SET ctr = ctr - 1 WHERE type = " + HashID.INTER_HASH.getId() + " AND hash = '" + oldHash1 + "'\n");
 
-				// decrement old hash
-				writer.write("UPDATE bibhash SET ctr = ctr - 1 WHERE type = " + i + " AND hash = '" + oldHash + "'\n");
-
-				// increment new hash
-				writer.write("UPDATE bibhash SET ctr = ctr + 1 WHERE type = " + i + " AND hash = '" + newHash + "'\n");
-			}
-		}
-
+		// increment new hash
+		writer.write("UPDATE bibhash SET ctr = ctr + 1 WHERE type = " + HashID.INTER_HASH.getId() + " AND hash = '" + newHash1 + "'\n");
 	}
 
 }
