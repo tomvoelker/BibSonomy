@@ -1,8 +1,11 @@
 package org.bibsonomy.spielwiese.hashes;
 
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -23,28 +26,20 @@ public class RepairBrokenHashes {
 	private static final Logger log = Logger.getLogger(RepairBrokenHashes.class);
 
 	private PreparedStatement stmtSelectAll;
-	private PreparedStatement stmtSelectPost;
-	private PreparedStatement stmtUpdateBibtex;
-	private PreparedStatement stmtDecHash;
-	private PreparedStatement stmtIncHash;
-	private Connection conn;
+	private BufferedWriter writer;
 
 	/** 
 	 * @param conn
 	 */
-	public RepairBrokenHashes (final Connection conn) {
+	public RepairBrokenHashes (final Connection conn, final BufferedWriter writer) {
 		if (conn != null){
 			try {
 				stmtSelectAll    = conn.prepareStatement("SELECT volume, number, journal, booktitle, entrytype, title, author, editor, year, user_name, content_id FROM bibtex LIMIT 30000000;");
-				stmtSelectPost   = conn.prepareStatement("SELECT volume, number, journal, booktitle, entrytype, title, author, editor, year, user_name, content_id FROM bibtex WHERE content_id = ? AND user_name = ?");
-				stmtUpdateBibtex = conn.prepareStatement("UPDATE bibtex SET simhash? = ? WHERE content_id = ? AND user_name = ? AND simhash? = ?");
-				stmtDecHash      = conn.prepareStatement("UPDATE bibhash SET ctr = ctr - 1 WHERE type = ? AND hash = ?");
-				stmtIncHash      = conn.prepareStatement("UPDATE bibhash SET ctr = ctr + 1 WHERE type = ? AND hash = ?");
 			} catch (SQLException e) {
 				log.fatal("Could not prepare statements");
 			}
-			this.conn = conn;
 		}
+		this.writer = writer;
 	}
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
@@ -67,7 +62,9 @@ public class RepairBrokenHashes {
 			final Connection conn = DriverManager.getConnection (dbURL, dbUser, dbPass);
 			log.info("Database connection established");
 
-			final RepairBrokenHashes repair = new RepairBrokenHashes(conn);
+			final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("/tmp/updates.sql"), "UTF-8"));
+
+			final RepairBrokenHashes repair = new RepairBrokenHashes(conn, writer);
 			repair.checkAndUpdatePosts();
 
 
@@ -83,7 +80,7 @@ public class RepairBrokenHashes {
 
 	}
 
-	public void checkAndUpdatePosts() throws SQLException {
+	public void checkAndUpdatePosts() throws SQLException, IOException {
 		final ResultSet rst = stmtSelectAll.executeQuery();
 
 		int ctr = 0;
@@ -137,57 +134,26 @@ public class RepairBrokenHashes {
 		}
 		System.out.println("finished");
 		System.out.println("ctr: " + ctr + ", badACtr: " + badACtr + ", badECtr: " + badECtr);
+		writer.close();
 	}
 
-	private void updatePost(final int content_id, final String username, final String[] oldHashes, final String[] newHashes) throws SQLException {
-		stmtSelectPost.setInt(1, content_id);
-		stmtSelectPost.setString(2, username);
-		final ResultSet rst = stmtSelectPost.executeQuery(); 
+	private void updatePost(final int content_id, final String username, final String[] oldHashes, final String[] newHashes) throws IOException {
+		for (int i = 0; i < oldHashes.length; i++) {
 
-		if (rst.next()) {
-			conn.setAutoCommit(false);
-			try {
-				/*
-				 * update bibtex table
-				 */
+			// update bibtex table
+			final String newHash = newHashes[i];
+			final String oldHash = oldHashes[i];
+			if (!oldHash.equals(newHash)) {
+				writer.write("UPDATE bibtex SET simhash" + i + " = '" + newHash + "' WHERE content_id = " + content_id + " AND user_name = '" + username + "' AND simhash" + i + " = '" + oldHash + "';\n");
 
-				for (int i = 0; i < oldHashes.length; i++) {
-					// UPDATE bibtex SET simhash? = ? WHERE content_id = ? AND user_name = ? AND simhash? = ?");
-					stmtUpdateBibtex.setInt(1, i);
-					stmtUpdateBibtex.setString(2, newHashes[1]);
-					stmtUpdateBibtex.setInt(3, content_id);
-					stmtUpdateBibtex.setString(4, username);
-					stmtUpdateBibtex.setInt(5, i);
-					stmtUpdateBibtex.setString(6, oldHashes[1]);
-					final int updateCount = stmtUpdateBibtex.executeUpdate();
-					if (updateCount != 1) log.error("Updated " + updateCount + " rows instead of 1 row in bibtex table");
-					
-					/*
-					 * update counters
-					 */
-					
-					// decrement old hash
-					stmtDecHash.setInt(1, i);
-					stmtDecHash.setString(2, oldHashes[i]);
-					final int decCount = stmtDecHash.executeUpdate();
-					if (decCount != 1) log.error("Decremented" + decCount + " rows instead of 1 row in bibhash table");
-					
-					// increment new hash
-					stmtIncHash.setInt(1, i);
-					stmtIncHash.setString(2, newHashes[i]);
-					final int incCount = stmtIncHash.executeUpdate();
-					if (incCount != 1) log.error("Incremented" + incCount + " rows instead of 1 row in bibhash table");
-				}
-				
-				conn.commit();
-			} catch (final SQLException e) {
-				log.fatal("Could not update post from user " + username + " with content_id " + content_id + " in bibtex table: " + e );
-				conn.rollback();
+				// decrement old hash
+				writer.write("UPDATE bibhash SET ctr = ctr - 1 WHERE type = " + i + " AND hash = '" + oldHash + "'\n");
+
+				// increment new hash
+				writer.write("UPDATE bibhash SET ctr = ctr + 1 WHERE type = " + i + " AND hash = '" + newHash + "'\n");
 			}
-			conn.setAutoCommit(true);
-		} else {
-			log.error("Could not find post from user " + username + " with content_id " + content_id + " in bibtex table");
 		}
+
 	}
 
 }
