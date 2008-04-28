@@ -43,7 +43,7 @@ public class ExceptionUtils {
 	 * @throws QueryTimeoutException
 	 */
 	public static void logErrorAndThrowQueryTimeoutException(final Logger log, final Exception ex, final String query) throws QueryTimeoutException {
-		log.debug("Query timeout for query: " + query);
+		log.error("Query timeout for query: " + query);
 		throw new QueryTimeoutException(ex, query);
 	} 
 }
