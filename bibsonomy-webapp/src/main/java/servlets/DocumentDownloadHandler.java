@@ -103,8 +103,28 @@ public class DocumentDownloadHandler extends HttpServlet{
 				if (publicDocuments) {
 					stmtP = conn.prepareStatement("SELECT name FROM document WHERE hash = ?");
 				} else {
-					stmtP = conn.prepareStatement("SELECT name FROM document WHERE hash = ? AND user_name = ? ");
+					stmtP = conn.prepareStatement("	SELECT name FROM document d " +					// own documents
+												  "	WHERE hash = ? AND user_name = ? " +
+												  "	UNION " +										// public and viewable docs of group members
+												  " SELECT name FROM document d JOIN bibtex b USING (content_id) " + 
+												  "	WHERE hash = ? " +
+												  " AND b.group IN (SELECT 0 UNION SELECT g.group FROM groups g WHERE user_name = ?) " + 
+												  " AND d.user_name IN " +
+												  " ( " +
+												  " 	SELECT DISTINCT user_name " +
+												  "		FROM groups g " + 
+												  "		WHERE g.group IN " +
+												  "		( " +
+												  "			SELECT g.group " +
+												  "			FROM groups g " +
+												  "			WHERE user_name = ? " +
+												  "		)" +	 
+												  " )");
+					
 					stmtP.setString(2, currUser);
+					stmtP.setString(3, hash);
+					stmtP.setString(4, currUser);
+					stmtP.setString(5, currUser);					
 				}
 				stmtP.setString(1, hash);
 				rst = stmtP.executeQuery();
