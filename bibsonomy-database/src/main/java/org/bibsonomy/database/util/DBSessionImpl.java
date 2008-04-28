@@ -167,11 +167,14 @@ public class DBSessionImpl implements DBSession {
 		} catch (final Exception ex) {
 			String msg = "Couldn't execute query '" + query + "'";
 			/*
-			 * check for query interruption because of time limits
-			 * TODO: don't use equals() on getMessage() but on Message Error Code (MySQL-specific :-()
+			 * catch exception that happens because of
+			 * query interruption due to time limits
+			 * 
+			 * Error code 1317 corresponds to "Query execution was interrupted", see
+			 * http://dev.mysql.com/doc/refman/5.0/en/error-messages-server.html
+			 * 
 			 */
-			if (ex.getCause() != null && ex.getCause().getClass().equals(SQLException.class) && 
-					"Query execution was interrupted".equals(ex.getCause().getMessage()) ) {
+			if (ex.getCause() != null && ex.getCause().getClass().equals(SQLException.class) && 1317 == ((SQLException)ex.getCause()).getErrorCode()) {
 				ExceptionUtils.logErrorAndThrowQueryTimeoutException(log, ex, query);
 			}
 			/*
