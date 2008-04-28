@@ -224,10 +224,11 @@ public class SimHash {
 				last = t.nextToken().trim();
 			}
 		}
-		// if both are equal --> only last name given
-		if (first != null && first.equals(last)) {
+		// only last name (=first) given
+		if (first != null && last == null) {
 			return first;
 		}
+		// first and last given
 		if (first != null && last != null) {
 			return (first.substring(0,1) + "." + last);
 		}
