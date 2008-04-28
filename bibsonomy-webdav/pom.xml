@@ -40,6 +40,7 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>dom4j</groupId>
@@ -70,8 +71,8 @@
 			<artifactId>bibsonomy-database</artifactId>
 			<version>${project.version}</version>
 			<type>test-jar</type>
-		</dependency>	
-  </dependencies>
+		</dependency>
+	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
