@@ -608,7 +608,7 @@
 		<to>/bibtex?requBibtex=$2&amp;requSim=$1&amp;$4</to> 
 	</rule>	
 	<rule><!-- arbitrary hash -->
-		<from>^/+bibtex/+([0-9a-fA-F]*)(\?(.*))?$</from>
+		<from>^/+bibtex/+([0-9a-zA-Z]*)(\?(.*))?$</from>
 		<to>/bibtex?requBibtex=$1&amp;requSim=1&amp;$3</to> 
 	</rule>	
 	
