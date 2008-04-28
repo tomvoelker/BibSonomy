@@ -17,6 +17,7 @@ import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.testutil.JNDITestDatabaseBinder;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webdav.resource.RootCollectionResource;
 
 import com.atlassian.confluence.extra.webdav.impl.UserImpl;
@@ -97,7 +98,7 @@ public class BibSonomyBackend implements ResourceBackend {
 		if (present(username) == false || present(password) == false || User.ANONYMOUS.equals(username)) return false;
 
 		try {
-			this.logicInterface = this.logicInterfaceFactory.getLogicAccess(username, password);
+			this.logicInterface = this.logicInterfaceFactory.getLogicAccess(username, StringUtils.getMD5Hash(password));
 		} catch (ValidationException ignore) {
 			return false;
 		}
