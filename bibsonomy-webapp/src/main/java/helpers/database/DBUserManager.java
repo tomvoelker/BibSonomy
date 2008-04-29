@@ -19,7 +19,7 @@ public class DBUserManager extends DBManager {
 	private final static String COL_TAGBOX_TOOLTIP = "tagbox_tooltip";
 	private final static String COL_LIST_ITEMCOUNT = "list_itemcount";
 	private final static String COL_DEFAULT_LANG   = "lang";
-	
+	private final static String COL_API_KEY   	   = "api_key";
 	
 	private final static Logger log = Logger.getLogger(DBUserManager.class); 
 	
@@ -184,6 +184,7 @@ public class DBUserManager extends DBManager {
 		DBContext c = new DBContext();
 		try {
 			if (c.init()) { // initialize database
+				
 				// prepare Statement
 				c.stmt = c.conn.prepareStatement("UPDATE user " +
 						                         "  SET " +
@@ -192,7 +193,8 @@ public class DBUserManager extends DBManager {
 						                              COL_TAGBOX_MINFREQ + " = ?, " +
 						                              COL_TAGBOX_TOOLTIP + " = ?, " +
  						                              COL_LIST_ITEMCOUNT + " = ?,  " +
- 						                              COL_DEFAULT_LANG + " = ? " +
+ 						                              COL_DEFAULT_LANG + " = ?, " +
+ 						                              COL_API_KEY + " = ?" +
 						                         "  WHERE user_name = ?");
 				c.stmt.setInt(1, user.getTagboxStyle());
 				c.stmt.setInt(2, user.getTagboxSort());
@@ -200,7 +202,8 @@ public class DBUserManager extends DBManager {
 				c.stmt.setInt(4, user.getTagboxTooltip());
 				c.stmt.setInt(5, user.getItemcount());
 				c.stmt.setString(6, user.getDefaultLanguage());
-				c.stmt.setString(7, user.getName());
+				c.stmt.setString(7, user.getApiKey());				
+				c.stmt.setString(8, user.getName());
 				return c.stmt.executeUpdate() == 1; // return true, if exactly one row got updated 
 			}
 		} catch (SQLException e) {

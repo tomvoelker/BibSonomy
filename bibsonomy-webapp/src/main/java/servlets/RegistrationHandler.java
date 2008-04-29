@@ -43,6 +43,7 @@ import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.database.DBLogicUserInterfaceFactory;
 import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.util.UserUtils;
 
 import resources.Resource;
 import servlets.listeners.InitialConfigListener;
@@ -308,13 +309,14 @@ public class RegistrationHandler extends HttpServlet {
 					getServletConfig().getServletContext().getRequestDispatcher("/register").forward(request, response);
 				} else {
 					// retrieve bean properties and store them
-					stmt = conn.prepareStatement("INSERT INTO user (user_name, user_email, user_password, user_realname, user_homepage, ip_address) VALUES (?,?,?,?,?,?)");
+					stmt = conn.prepareStatement("INSERT INTO user (user_name, user_email, user_password, user_realname, user_homepage, ip_address, api_key) VALUES (?,?,?,?,?,?,?)");
 					stmt.setString(1, username);
 					stmt.setString(2, bean.getEmail());
 					stmt.setString(3, Resource.hash(bean.getPassword1()));
 					stmt.setString(4, bean.getRealName());
 					stmt.setString(5, bean.getHomepage());
 					stmt.setString(6, inetAddress);
+					stmt.setString(7, UserUtils.generateApiKey());
 					if (stmt.executeUpdate() != 1) {
 						log.fatal("Error registering user: row count != 1");
 					}

@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.model.util.UserUtils;
 
 import beans.UserBean;
 
@@ -221,6 +222,14 @@ public class SessionSettingsFilter implements Filter {
 		if (paramValue != null) {
 			user.setDefaultLanguage(paramValue);
 			httpServletRequest.getSession().setAttribute(InitUserFilter.REQ_ATTRIB_LANGUAGE, new Locale(paramValue));
+			update = true;
+		}
+		
+		// Api key
+		paramValue = httpServletRequest.getParameter("apikey");
+		if (paramValue != null) {
+			String apiKey = UserUtils.generateApiKey();
+			user.setApiKey(apiKey);
 			update = true;
 		}
 		

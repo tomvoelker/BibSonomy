@@ -27,13 +27,12 @@ public class UserBean implements Serializable {
 	private int tagboxTooltip   = 0;  // 0 = don't show, 1 = show (TODO: what does this mean?)
 	private int itemcount       = 10; // how many posts to show in post lists?  
 	private String defaultLanguage = "en"; // the default language
+	private String apiKey = null; // the API key
 
 	private Set<String> groups = new HashSet<String>(); // groups the user is in
 	private List<String> friends = new LinkedList<String>(); // the friends of the user	
 
-	
 	private final int MAX_ITEMCOUNT = 1000; // maximal number of items shown (inclusive)
-	
 	
 	public String toString () {
 		return name + "(" + realname + " <" + email + ">): " +
@@ -156,5 +155,11 @@ public class UserBean implements Serializable {
 	}
 	public void setRole(Role role) {
 		this.role = role;
-	}		
+	}
+	public String getApiKey() {
+		return this.apiKey;
+	}
+	public void setApiKey(String apiKey) {
+		this.apiKey = apiKey;
+	}
 }

@@ -148,24 +148,27 @@
 		
 		<%-- ------------------------ API -------------------------- --%>
 		<h2>API</h2>
+		<form name="apiKey" method="post" action="/settings">
 		<c:choose>
 			<c:when test="${apiKey.rows[0].api_key eq null}">			
 				<p>
-					Currently we are in the Beta testing phase of our new <a href="/help/doc/api.html">API</a>.
-					To get access, please write an email to
-					<%@include file="/boxes/emailaddress_api_support.jsp" %> containing your BibSonomy username.<br/>
-					We will send you an email that your key has been created, and it will be displayed here.  
+					BibSonomy now provides <a href="/help/doc/api.html">API</a> access for all users.					
+					Just click the button below to get access. Your generated API key will be displayed here.  					 
 				</p>	
 			</c:when>
 			<c:otherwise>
 				<p>
-					Your API key is: <tt>${apiKey.rows[0].api_key}</tt><br/><br/>
+					Your API key is: <tt style="font-size: 14px;">${apiKey.rows[0].api_key}</tt><br/><br/>
 					Refer to the <a href="/help/doc/api.html">API Documentation</a> or write an email to
 					<%@include file="/boxes/emailaddress_api_support.jsp" %> if you have questions or
 					comments. 
 				</p>		
 			</c:otherwise>
 		</c:choose>
+		<input type="hidden" name="ckey" value="${ckey}"/>
+		<input type="hidden" name="apikey" value="true"/>
+		<input type="submit" value="(Re)generate API key"/> 
+		</form>
 		<hr/>
 					
 		<%-- ------------------------ password change -------------------------- --%>
