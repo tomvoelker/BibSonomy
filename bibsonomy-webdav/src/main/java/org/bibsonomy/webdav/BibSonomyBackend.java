@@ -16,7 +16,6 @@ import org.bibsonomy.database.DBLogicUserInterfaceFactory;
 import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
-import org.bibsonomy.testutil.JNDITestDatabaseBinder;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webdav.resource.RootCollectionResource;
 
@@ -55,9 +54,6 @@ public class BibSonomyBackend implements ResourceBackend {
 		this.logicInterfaceFactory = new DBLogicUserInterfaceFactory();
 		((DBLogicUserInterfaceFactory) this.logicInterfaceFactory).setDbSessionFactory(new IbatisDBSessionFactory());
 		this.logicInterface = null;
-
-		// FIXME: hack
-		JNDITestDatabaseBinder.bind();
 	}
 
 	public void init(final ServletContext servletContext) throws BackendException {
@@ -65,8 +61,7 @@ public class BibSonomyBackend implements ResourceBackend {
 	}
 
 	public void destroy() {
-		// FIXME: hack
-		JNDITestDatabaseBinder.unbind();
+		// Do nothing.
 	}
 
 	public void initRequest(final WebdavRequest req) {

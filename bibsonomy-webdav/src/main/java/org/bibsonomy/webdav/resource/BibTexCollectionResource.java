@@ -17,6 +17,9 @@ import com.atlassian.confluence.extra.webdav.servlet.resource.Resource;
  */
 public class BibTexCollectionResource extends VirtualCollectionResource {
 
+	/** Special file that aggregates all publications */
+	private static final String ALL_BIBTEX = "ALL.bib";
+
 	/**
 	 * Constructs the new resource.
 	 * 
@@ -26,14 +29,25 @@ public class BibTexCollectionResource extends VirtualCollectionResource {
 	 *            The backend
 	 */
 	public BibTexCollectionResource(final RootCollectionResource root, final BibSonomyBackend backend) {
-		super(root, backend, "Publications", "Publications");
+		super(root, backend, "bibtex", "Publications");
 	}
 
 	public Resource getChild(final String name) {
+		// contains all publications
+		if (ALL_BIBTEX.equals(name)) {
+			final List<Post<BibTex>> posts = this.getBackend().getLogicInterface().getPosts(BibTex.class, GroupingEntity.ALL, null, null, null, null, null, 0, 10, null);
+			final StringBuilder buffer = new StringBuilder();
+			for (final Post<BibTex> post : posts) {
+				buffer.append(BibTexUtils.toBibtexString(post.getResource()) + "\n\n");
+			}
+			return new BibTexResource(this, this.getBackend(), ALL_BIBTEX, buffer.toString());
+		}
+
 		final Post<BibTex> post = this.getBibTex(name);
 		if (post != null) {
 			return new BibTexResource(this, this.getBackend(), post.getResource().getTitle() + ".txt", BibTexUtils.toBibtexString(post.getResource()));
 		}
+
 		return null;
 	}
 
@@ -50,6 +64,9 @@ public class BibTexCollectionResource extends VirtualCollectionResource {
 
 	public List<Resource> getChildren() {
 		final List<Resource> children = new ArrayList<Resource>();
+
+		// contains all publications
+		children.add(new BibTexResource(this, this.getBackend(), ALL_BIBTEX, ""));
 
 		final List<Post<BibTex>> posts = this.getBackend().getLogicInterface().getPosts(BibTex.class, GroupingEntity.ALL, null, null, null, null, null, 0, 10, null);
 		for (final Post<BibTex> post : posts) {
