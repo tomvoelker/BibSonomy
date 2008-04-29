@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.BibtexkeyCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -46,9 +47,14 @@ public class BibtexkeyPageController extends MultiResourceListController impleme
 		
 		command.setPageTitle("bibtexkey :: " + command.getRequestKey());
 		
+		// html format - retrieve tags and return HTML view
+		if (command.getFormat().equals("html")) {
+			this.endTiming();
+			return Views.BIBTEXKEYPAGE;	
+		}
 		this.endTiming();
 		// export - return the appropriate view
-		return Views.BIBTEXKEYPAGE;	
+		return Views.getViewByFormat(command.getFormat());				
 	}
 
 	

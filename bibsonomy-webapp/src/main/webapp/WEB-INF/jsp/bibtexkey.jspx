@@ -6,29 +6,17 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" disableListNavigation="${true}" disableActions="${true}" displayIntroduction="${true}">
 		<jsp:attribute name="heading">
-			<c:url var="specialSearchUrl" value="/specialsearch" context="${projectContext}"/>
-			<form id="specialsearch" method="get" action="${specialSearchUrl}">
-				<select name="scope" size="1" id="scope">
-					<option value="tag"><fmt:message key="navi.tag"/></option>
-					<option value="user"><fmt:message key="navi.user"/></option>
-					<option value="group"><fmt:message key="navi.group"/></option>
-					<option value="author"><fmt:message key="navi.author"/></option>
-					<option value="concept"><fmt:message key="navi.concept"/></option>
-					<option value="bibtexkey"><fmt:message key="navi.bibtexKey"/></option>
-					<option value="all" selected="selected"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></option>
-					<c:if test="${loginUser.name != null}">
-						<option value="user:${loginUser.name}"><fmt:message key="navi.search"/>:${loginUser.name}</option>
-					</c:if>					
-				</select>
-				::
-				<input type="text" id="inpf" name="q" size="25" />
-			</form>
+			<a rel="path_menu" href="#"><fmt:message key="navi.bibtexKey"/>${mtl:ch('nbsp')}<img alt="" src="/resources/image/box_arrow.png"/></a> :: 
+			<form action="/bibtexkey/${fn:escapeXml(command.requestKey)}" method="get" class="smallform">
+		  		<input type="text" id="inpf" name="q" size="25" value="${command.requestKey}" />
+			</form>	
 		</jsp:attribute>
 		<jsp:attribute name="sidebar">
 			<li>
