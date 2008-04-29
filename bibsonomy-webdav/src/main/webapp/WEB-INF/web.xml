@@ -18,7 +18,7 @@
 		</init-param>
 		<init-param>
 			<param-name>RootPrefix</param-name>
-			<param-value>/webdav</param-value>
+			<param-value>/bibsonomy-webdav-2.0.1-SNAPSHOT</param-value>
 			</init-param>
 		<init-param>
 			<param-name>RequireAuthentication</param-name>
