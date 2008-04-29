@@ -55,7 +55,8 @@
 		<dependency>
 			<groupId>edu.umass.cs.mallet</groupId>
 			<artifactId>mallet</artifactId>
-			<version>0.4-steuber</version>
+			<version>0.4</version>
+			<classifier>steuber</classifier>
 		</dependency>
 		<dependency>
 			<groupId>bsh</groupId>
