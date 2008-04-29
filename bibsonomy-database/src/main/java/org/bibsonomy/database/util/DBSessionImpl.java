@@ -171,11 +171,12 @@ public class DBSessionImpl implements DBSession {
 			 * query interruption due to time limits
 			 * 
 			 * Error code 1317 corresponds to "Query execution was interrupted", see
-			 * http://dev.mysql.com/doc/refman/5.0/en/error-messages-server.html
+			 * http://dev.mysql.com/doc/refman/5.1/en/error-messages-server.html
 			 * 
 			 */
 			if (ex.getCause() != null && ex.getCause().getClass().equals(SQLException.class) && 1317 == ((SQLException)ex.getCause()).getErrorCode()) {
 				log.error("Query timeout for query: " + query);
+				ExceptionUtils.logErrorAndThrowQueryTimeoutException(log, ex, query);
 			}
 			/*
 			 * Here we catch the wonderful "unknown error" (code 1105) exception of MySQL.
@@ -188,6 +189,7 @@ public class DBSessionImpl implements DBSession {
 			 */
 			if (ex.getCause() != null && ex.getCause().getClass().equals(SQLException.class) && 1105 == ((SQLException)ex.getCause()).getErrorCode()) {
 				log.error("Hit MySQL bug 36230. (with query: " + query + "). See <http://bugs.mysql.com/bug.php?id=36230> for more information.");
+				ExceptionUtils.logErrorAndThrowQueryTimeoutException(log, ex, query);
 			}		
 			if (ignoreException == false) {
 				this.somethingWentWrong();
