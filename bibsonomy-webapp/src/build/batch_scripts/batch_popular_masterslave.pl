@@ -19,13 +19,13 @@ use English;
 ##################################################################
 
 if ($#ARGV != 1) {
-    print STDERR "usage: $PROGRAM_NAME MASTER_DB SLAVE_DB\n";
+    print STDERR "usage: MASTER_DB SLAVE_DB\n";
     print STDERR "please enter database names as arguments\n";
     exit;
 } 
 
 
-if (am_i_running($ENV{'TMP'}."/$PROGRAM_NAME.pid")) {
+if (am_i_running($ENV{'TMP'}."/batch_popular_masterslave.pid")) {
   print STDERR "another instance of $PROGRAM_NAME is running on $ENV{'hostname'}. Aborting this job.\n";
   exit;
 }
