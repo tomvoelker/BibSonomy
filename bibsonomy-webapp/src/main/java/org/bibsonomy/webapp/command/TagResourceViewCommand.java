@@ -20,6 +20,11 @@ public class TagResourceViewCommand extends ResourceViewCommand{
 		
 	/** bean for related tags */
 	private RelatedTagCommand relatedTagCommand = new RelatedTagCommand();
+	
+	/** re-using relatedTagCommand to store similar tags */
+	private RelatedTagCommand similarTags = new RelatedTagCommand();
+	
+	/** related users - needed for FolkRank */
 	private RelatedUserCommand relatedUserCommand = new RelatedUserCommand();
 	
 	/**
@@ -93,6 +98,14 @@ public class TagResourceViewCommand extends ResourceViewCommand{
 	 */
 	public void setOrder(final String order) {
 		this.order = order;
+	}
+
+	public RelatedTagCommand getSimilarTags() {
+		return this.similarTags;
+	}
+
+	public void setSimilarTags(RelatedTagCommand similarTags) {
+		this.similarTags = similarTags;
 	}
 	
 }
