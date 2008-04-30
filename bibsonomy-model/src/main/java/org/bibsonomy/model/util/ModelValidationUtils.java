@@ -96,6 +96,9 @@ public class ModelValidationUtils {
 		if (xmlTag.getName() == null || xmlTag.getName().length() == 0) {
 			throw new InvalidModelException(XML_IS_INVALID_MSG + "tag name is missing in element 'tag'");
 		}
+		if (xmlTag.getName() != null && xmlTag.getName().contains(" ")) {
+			throw new InvalidModelException(XML_IS_INVALID_MSG + "tag name contains space character. To assign several tags to a post, please use one tag element for each tag.");
+		}
 	}
 
 	/**
