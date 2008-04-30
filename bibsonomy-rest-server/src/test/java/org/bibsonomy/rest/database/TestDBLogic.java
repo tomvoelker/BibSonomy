@@ -19,6 +19,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
+import org.bibsonomy.common.enums.TagRelationType;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
@@ -133,7 +134,7 @@ public class TestDBLogic implements LogicInterface {
 	/**
 	 * note: the regex is currently not considered
 	 */
-	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags_, String hash, Order order, int start, int end, String search) {
+	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags_, String hash, Order order, int start, int end, String search, TagRelationType relation) {
 		final List<Tag> tags = new LinkedList<Tag>();
 
 		switch (grouping) {
