@@ -12,6 +12,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
+import org.bibsonomy.common.enums.TagRelationType;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -118,7 +119,7 @@ public class RestLogic implements LogicInterface {
 		return execute(new GetTagDetailsQuery(tagName));
 	}
 
-	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, String hash, Order order, int start, int end, String search) {
+	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, String hash, Order order, int start, int end, String search, TagRelationType relation) {
 		GetTagsQuery query = new GetTagsQuery(start, end);
 		query.setGrouping(grouping, groupingName);
 		query.setFilter(regex);
