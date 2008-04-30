@@ -678,3 +678,11 @@ CREATE TABLE `author` (
   UNIQUE KEY `last_name_middle_first_name_idx` (`last_name`,`middle`,`first_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `tagtag_similarity` (
+   `t1` varchar(255) default NULL,
+   `t2` varchar(255) default NULL,
+   `sim` float NOT NULL default '0',
+   KEY `t1_idx` (`t1`),
+   KEY `t2_idx` (`t2`),
+   KEY `t1_t2_idx` (`t1`(10),`t2`(10))
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf;
