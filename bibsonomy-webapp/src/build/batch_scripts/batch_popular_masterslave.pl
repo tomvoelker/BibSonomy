@@ -42,7 +42,7 @@ my $max_bookmarks      = 100;
 my $max_bibtexs        = 100;
 my $max_tags           = 100;
 
-my $DEBUG = 1; # 1 = on, 0 = off
+my $DEBUG = 0; # 1 = on, 0 = off
 
 # run configuration
 # master
