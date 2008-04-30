@@ -666,3 +666,15 @@ CREATE TABLE `classifier_settings` (
   `value` varchar(255) default NULL,
   PRIMARY KEY  (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 
+
+CREATE TABLE `author` (
+  `author_id` int(10) unsigned NOT NULL,
+   `first_name` varchar(255) default NULL,
+   `middle` varchar(255) default NULL,
+   `last_name` varchar(255) default NULL,
+   `author_like_in_bibtex_tab` text,
+  `ctr` int(10) unsigned NOT NULL default '1',
+  PRIMARY KEY  (`last_name`),
+  UNIQUE KEY `last_name_middle_first_name_idx` (`last_name`,`middle`,`first_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
