@@ -657,4 +657,13 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	private Boolean exceedsMaxSize(List<TagIndex> index) {
 		return index != null && index.size() > 10;
 	}
+	
+	public List<Tag> getSimilarTags(final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, int limit, int offset, final DBSession session) {
+		TagParam param = new TagParam();
+		param.setTagName(tagIndex.get(0).getTagName()); // index 0 is always present, because other wise the calling chain element won't answer
+		param.setGroups(visibleGroupIDs);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		return this.queryForList("getSimilarTags", param, Tag.class, session);
+	} 
 }

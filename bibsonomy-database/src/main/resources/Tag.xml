@@ -313,4 +313,13 @@
       	OFFSET #offset#
 	</select>
 	
+	<select id="getSimilarTags" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT t2 AS tag_name, ROUND(sim * 100) AS tag_ctr
+		FROM tagtag_similarity TTS
+		WHERE TTS.t1=#tagName#
+		ORDER BY sim DESC
+      	LIMIT #limit#
+      	OFFSET #offset#
+	</select>
+	
 </sqlMap>

@@ -3,6 +3,7 @@ package org.bibsonomy.database.params;
 import java.util.List;
 
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.TagRelationType;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
@@ -26,6 +27,7 @@ public class TagParam extends GenericParam {
 	private int count;
 	private int usercount;
 	private HashID hashId;
+	private TagRelationType tagRelationType;
 
 	/**
 	 * Decides whether to retrieve the subtags of the current tag
@@ -148,6 +150,14 @@ public class TagParam extends GenericParam {
 
 	public void setHashId(HashID hashId) {
 		this.hashId = hashId;
+	}
+
+	public TagRelationType getTagRelationType() {
+		return this.tagRelationType;
+	}
+
+	public void setTagRelationType(TagRelationType tagRelationType) {
+		this.tagRelationType = tagRelationType;
 	}
 
 }
