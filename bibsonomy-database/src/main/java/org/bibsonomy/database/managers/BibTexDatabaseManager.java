@@ -15,6 +15,7 @@ import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChain;
 import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
@@ -88,15 +89,19 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * 
 	 * @param hash
 	 * @param hashId
+	 * @param limit
+	 * @param offset
 	 * @param session
 	 * @return list of bibtex posts
 	 */
-	public List<Post<BibTex>> getBibTexByHash(final String hash, final HashID hashId, final DBSession session) {
+	public List<Post<BibTex>> getBibTexByHash(final String hash, final HashID hashId, final int limit, final int offset, final DBSession session) {
 		final BibTexParam param = new BibTexParam();
 		param.setRequestedSimHash(hashId);
 		param.setSimHash(hashId);
 		param.setHash(hash);
 		param.setGroupType(GroupID.PUBLIC);
+		param.setLimit(limit);
+		param.setOffset(offset);
 		return this.getBibTexByHash(param, session);
 	}
 
@@ -109,6 +114,22 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 */
 	public Integer getBibTexByHashCount(final BibTexParam param, final DBSession session) {
 		return this.queryForObject("getBibTexByHashCount", param, Integer.class, session);
+	}
+	
+	/**
+	 * Wrapper for getBibTexByHashCount
+	 * 
+	 * @param requBibtex
+	 * @param simHash
+	 * @param session
+	 * @return number of publications for a given hash
+	 */
+    // FIXME: check wrapper
+	public Integer getBibTexByHashCount(final String requBibtex, final HashID simHash, final DBSession session) {
+		BibTexParam param = new BibTexParam();
+		param.setHash(requBibtex);
+		param.setSimHash(simHash);
+		return getBibTexByHashCount(param, session);
 	}
 
 	/**
@@ -131,6 +152,27 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		return this.bibtexList("getBibTexByTagNames", param, session);
 	}
 	
+	/**
+	 * Wrapper for getBibTexByTagNames
+	 * 
+	 * @param contentType
+	 * @param groupType
+	 * @param tagIndex
+	 * @param limit
+	 * @param offset
+	 * @param session
+	 * @return list of bibtex posts
+	 */
+    // FIXME: check wrapper
+	public List<Post<BibTex>> getBibTexByTagNames(final ConstantID contentType, final GroupID groupType, final List<TagIndex> tagIndex, final int limit, final int offset, final DBSession session) {
+		BibTexParam param = new BibTexParam();
+		param.setGroupType(groupType);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		param.setTagIndex(tagIndex);
+		return getBibTexByTagNames(param, session);
+	}
+
 	/**
 	 * Counts the number of visible bibtex entries for a given list of tags
 	 * 
@@ -170,6 +212,31 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	}
 	
 	/**
+	 * Wrapper for getBibTexByTagNamesForUser
+	 * 
+	 * @param contentType
+	 * @param requestedUserName
+	 * @param limit
+	 * @param offset
+	 * @param tagIndex
+	 * @param groupId
+	 * @param groups
+	 * @param session
+	 * @return list of bibtex posts
+	 */
+    // FIXME: check wrapper
+	public List<Post<BibTex>> getBibTexByTagNamesForUser(final ConstantID contentType, final String requestedUserName, final int limit, final int offset, final List<TagIndex> tagIndex, final int groupId, final List<Integer> groups, final DBSession session) {
+		BibTexParam param = new BibTexParam();
+		param.setRequestedUserName(requestedUserName);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		param.setTagIndex(tagIndex);
+		param.setGroupId(groupId);
+		param.setGroups(groups);
+		return getBibTexByTagNamesForUser(param, session);
+	}
+
+/**
 	 * Retrieves the number of bibtex items tagged by the tags present in tagIndex by user requestedUserName
 	 * being visible to the logged in user
 	 * 
@@ -218,6 +285,28 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	public List<Post<BibTex>> getBibTexByConceptForUser(final BibTexParam param, final DBSession session) {
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
 		return this.bibtexList("getBibTexByConceptForUser", param, session);
+	}
+	
+	/**
+	 * Wrapper for getBibTexByConceptForUser
+	 * 
+	 * @param loginUser
+	 * @param requestedUserName
+	 * @param tagIndex
+	 * @param groups
+	 * @param limit
+	 * @param offset
+	 * @param session
+	 * @return list of bibtex posts
+	 */
+    // FIXME: check wrapper
+	public List<Post<BibTex>> getBibTexByConceptForUser(final String loginUser, final  String requestedUserName, final List<TagIndex> tagIndex, final List<Integer> groups, final int limit, final int offset, final DBSession session) {
+		BibTexParam param = new BibTexParam();
+		param.setUserName(loginUser); // original parameter: userName
+		param.setRequestedUserName(requestedUserName);
+		param.setTagIndex(tagIndex);
+		param.setGroups(groups);
+		return getBibTexByConceptForUser(param, session);
 	}
 
 	/**
@@ -273,6 +362,26 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	}
 
 	/**
+	 * Wrapper for getBibTexByUserFriends
+	 * 
+	 * @param loginUser
+	 * @param limit
+	 * @param offset
+	 * @param simHash
+	 * @param session
+	 * @return list of bibtex posts
+	 */
+	// FIXME: check wrapper
+	public List<Post<BibTex>> getBibTexByUserFriends(final String loginUser, final int limit, final int offset, final HashID simHash, final DBSession session) {
+		final BibTexParam param = new BibTexParam();
+		param.setUserName(loginUser);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		param.setSimHash(simHash);
+		return getBibTexByUserFriends(param, session);
+	}
+
+	/**
 	 * This method prepares a query which retrieves all publications the user
 	 * has in his download list. The result is shown on the page
 	 * <em>/download</em>. Since every user can only see his <em>own</em>
@@ -285,6 +394,22 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 */
 	public List<Post<BibTex>> getBibTexByDownload(final BibTexParam param, final DBSession session) {
 		return this.bibtexList("getBibTexByDownload", param, session);
+	}
+
+	/**
+	 * Wrapper for getBibTexByDownload
+	 * 
+	 * @param loginUser
+	 * @param simHash
+	 * @param session
+	 * @return list of bibtex posts
+	 */
+	// FIXME: check wrapper
+	public List<Post<BibTex>> getBibTexByDownload(final String loginUser, final HashID simHash, final DBSession session) {
+		final BibTexParam param = new BibTexParam();
+		param.setUserName(loginUser);
+		param.setSimHash(simHash);
+		return getBibTexByDownload(param, session);
 	}
 
 	/**
@@ -303,6 +428,26 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	}
 
 	/**
+	 * Wrapper for getBibTexForHomePage
+	 * 
+	 * @param groupType
+	 * @param limit
+	 * @param offset
+	 * @param simHash
+	 * @param session
+	 * @return list of bibtex posts
+	 */
+	// FIXME: check wrapper
+	public List<Post<BibTex>> getBibTexForHomePage(final GroupID groupType, final int limit, final int offset, final HashID simHash, final DBSession session) {
+		final BibTexParam param = new BibTexParam();
+		param.setGroupType(groupType);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		param.setSimHash(simHash);
+		return getBibTexForHomePage(param, session);
+	}
+
+	/**
 	 * This method prepares queries which retrieve all publications for the
 	 * <em>/popular</em> page of BibSonomy. The lists are retrieved from two
 	 * separate temporary tables which are filled by an external script.
@@ -315,6 +460,24 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		return this.bibtexList("getBibTexPopular", param, session);
 	}
 
+	/**
+	 * Wrapper for getBibTexPopular
+	 * 
+	 * @param limit
+	 * @param offset
+	 * @param simHash
+	 * @param session
+	 * @return list of bibtex posts
+	 */
+	// FIXME: check wrapper
+	public List<Post<BibTex>> getBibTexPopular(final int limit, final int offset, final HashID simHash, final DBSession session) {
+		final BibTexParam param = new BibTexParam();
+		param.setLimit(limit);
+		param.setOffset(offset);
+		param.setSimHash(simHash);
+		return getBibTexPopular(param, session);
+	}
+	
 	/**
 	 * <em>/search/ein+lustiger+satz</em><br/><br/>
 	 * 
@@ -337,6 +500,30 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	}
 
 	/**
+	 * Wrapper for getBibTexSearch
+	 * 
+	 * @param groupType
+	 * @param search
+	 * @param requestedUserName
+	 * @param limit
+	 * @param offset
+	 * @param simHash
+	 * @param session
+	 * @return list of bibtex posts
+	 */
+	// FIXME: check wrapper
+	public List<Post<BibTex>> getBibTexSearch(final GroupID groupType, final String search, final String requestedUserName, final int limit, final int offset, final HashID simHash, final DBSession session) {
+		final BibTexParam param = new BibTexParam();
+		param.setGroupType(groupType);
+		param.setSearch(search);
+		param.setRequestedUserName(requestedUserName);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		param.setSimHash(simHash);
+		return getBibTexSearch(param, session);
+	}
+
+	/**
 	 * Returns the number of publications for a given search.
 	 * 
 	 * @param param
@@ -345,6 +532,22 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 */
 	public Integer getBibTexSearchCount(final BibTexParam param, final DBSession session) {
 		return this.queryForObject("getBibTexSearchCount", param, Integer.class, session);
+	}
+
+	/**
+	 * Wrapper for getBibTexSearchCount
+	 * 
+	 * @param groupType
+	 * @param requestedUserName
+	 * @param session
+	 * @return number of publications for a given search
+	 */
+	// FIXME: check wrapper
+	public Integer getBibTexSearchCount(final GroupID groupType, final String requestedUserName, final DBSession session) {
+		final BibTexParam param = new BibTexParam();
+		param.setGroupType(groupType);
+		param.setRequestedUserName(requestedUserName);
+		return getBibTexSearchCount(param, session);
 	}
 
 	/**
@@ -397,6 +600,24 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	}
 
 	/**
+	 * Wrapper for getBibTexDuplicate
+	 * 
+	 * @param requestedUserName
+	 * @param groups
+	 * @param simHash
+	 * @param session
+	 * @return list of bibtex posts
+	 */
+	// FIXME: check wrapper
+	public List<Post<BibTex>> getBibTexDuplicate(final String requestedUserName, final List<Integer> groups, final HashID simHash, final DBSession session) {
+		final BibTexParam param = new BibTexParam();
+		param.setRequestedUserName(requestedUserName);
+		param.setGroups(groups);
+		param.setSimHash(simHash);
+		return getBibTexDuplicate(param, session);
+	}
+
+	/**
 	 * Returns the number of duplicates (i.e. BibTex posts) of a given user.
 	 * 
 	 * @param param
@@ -405,6 +626,19 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 */
 	public Integer getBibTexDuplicateCount(final BibTexParam param, final DBSession session) {
 		return this.queryForObject("getBibTexDuplicateCount", param, Integer.class, session);
+	}
+	
+	/**
+	 * Wrapper for getBibTexDuplicateCount
+	 * 
+	 * @param requestedUserName
+	 * @param session
+	 * @return number of duplicates
+	 */
+	public Integer getBibTexDuplicateCount(final String requestedUserName, final DBSession session) {
+		final BibTexParam param = new BibTexParam();
+		param.setRequestedUserName(requestedUserName);
+		return getBibTexDuplicateCount(param, session);
 	}
 
 	/**
@@ -431,6 +665,28 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 				return this.bibtexList("getBibTexForGroupWithPDF", param, session);
 		
 		return this.bibtexList("getBibTexForUsersInGroup", param, session);
+	}
+
+	/**
+	 * Wrapper for getBibTexForUsersInGroup
+	 * 
+	 * @param loginUser
+	 * @param groupId
+	 * @param limit
+	 * @param offset
+	 * @param simHash
+	 * @param session
+	 * @return list of bibtex posts
+	 */
+	// TODO: check wrapper
+	public List<Post<BibTex>> getBibTexForUsersInGroup(final String loginUser, final Integer groupId, final int limit, final int offset, final HashID simHash, final DBSession session) {
+		final BibTexParam param = new BibTexParam();
+		param.setUserName(loginUser);
+		param.setGroupId(groupId);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		param.setSimHash(simHash);
+		return getBibTexForUsersInGroup(param, session);
 	}
 
 	/**
@@ -479,6 +735,32 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	}
 
 	/**
+	 * Wrapper for getBibTexForGroupByTag
+	 * 
+	 * @param tagIndex
+	 * @param groupId
+	 * @param groups
+	 * @param loginUser
+	 * @param groupType
+	 * @param limit
+	 * @param offset
+	 * @param session
+	 * @return list of bibtex posts
+	 */
+	// TODO: check wrapper
+	public List<Post<BibTex>> getBibTexForGroupByTag(final List<TagIndex> tagIndex, final int groupId, final List<Integer> groups, final String loginUser, final GroupID groupType, final int limit, final int offset, final DBSession session) {
+		final BibTexParam param = new BibTexParam();
+		param.setTagIndex(tagIndex);
+		param.setGroupId(groupId);
+		param.setGroups(groups);
+		param.setUserName(loginUser);
+		param.setGroupType(groupType);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		return getBibTexForGroupByTag(param, session);
+	}
+
+	/**
 	 * <em>/user/MaxMustermann</em><br/><br/>
 	 * 
 	 * This method prepares queries which retrieve all publications for a given
@@ -497,6 +779,30 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	public List<Post<BibTex>> getBibTexForUser(final BibTexParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		return this.bibtexList("getBibTexForUser", param, session);
+	}
+
+	/**
+	 * Wrapper for getBibTexForUser
+	 * 
+	 * @param requestedUserName
+	 * @param limit
+	 * @param offset
+	 * @param simHash
+	 * @param groupId
+	 * @param groups
+	 * @param session
+	 * @return list of bibtex posts
+	 */
+	// TODO: check wrapper
+	public List<Post<BibTex>> getBibTexForUser(final String requestedUserName, final int limit, final int offset, final HashID simHash, final int groupId, final List<Integer> groups, final DBSession session) {
+		final BibTexParam param = new BibTexParam();
+		param.setRequestedUserName(requestedUserName);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		param.setSimHash(simHash);
+		param.setGroupId(groupId);
+		param.setGroups(groups);
+		return getBibTexForUser(param, session);
 	}
 
 	/**
@@ -711,6 +1017,22 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	private void insertBibTexHash(final BibTexParam param, final DBSession session) {
 		this.insert("insertBibTexHash", param, session);
 	}
+	
+	/**
+	 * Wrapper for insertBibTexHash
+	 * 
+	 * @param hash
+	 * @param requestedSimHash
+	 * @param session
+	 */
+	// TODO: need this method?
+	// TODO: check wrapper
+	private void insertBibTexHash(final String hash, final HashID requestedSimHash, final DBSession session) {
+		BibTexParam param = new BibTexParam();
+		param.setHash(hash);
+		param.setRequestedSimHash(requestedSimHash);
+		insertBibTexHash(param, session);
+	}
 
 	/**
 	 * Inserts a post with a publication into the database.
@@ -850,9 +1172,39 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	private void deleteBibTex(final BibTexParam param, final DBSession session) {
 		this.delete("deleteBibTex", param, session);
 	}
+	
+	// TODO: need this method?
+	// TODO: check wrapper
+	/**
+	 * Wrapper for deleteBibTex
+	 * 
+	 * @param requestedContentId
+	 * @param session
+	 */
+	private void deleteBibTex(final int requestedContentId, final DBSession session) {
+		BibTexParam param = new BibTexParam();
+		param.setRequestedContentId(requestedContentId);
+		deleteBibTex(param, session);
+	}
 
 	private void updateBibTexHash(final BibTexParam param, final DBSession session) {
 		this.update("updateBibTexHash", param, session);
+	}
+	
+	// TODO: need this method?
+	// TODO: check wrapper
+	/**
+	 * Wrapper for updateBibTexHash
+	 * 
+	 * @param hash
+	 * @param requestedSimHash
+	 * @param session
+	 */
+	private void updateBibTexHash(final String hash, final HashID requestedSimHash, final DBSession session) {
+		BibTexParam param = new BibTexParam();
+		param.setHash(hash);
+		param.setRequestedSimHash(requestedSimHash);
+		updateBibTexHash(param, session);
 	}
 	
 	/**
@@ -866,6 +1218,30 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	public List<Post<BibTex>> getBibTexByAuthor(final BibTexParam param, final DBSession session){
 		return this.bibtexList("getBibTexByAuthor",param,session);
 	}
+	
+	/**
+	 * Wrapper for getBibTexByAuthor
+	 * 
+	 * @param search
+	 * @param groupType
+	 * @param requestedUserName
+	 * @param limit
+	 * @param offset
+	 * @param simHash
+	 * @param session
+	 * @return list of bibtex entries
+	 */
+	// TODO: check wrapper
+	public List<Post<BibTex>> getBibTexByAuthor(final String search, final GroupID groupType, final String requestedUserName, final int limit, final int offset, final HashID simHash, final DBSession session){
+		BibTexParam param = new BibTexParam();
+		param.setSearch(search);
+		param.setGroupType(groupType);
+		param.setRequestedUserName(requestedUserName);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		param.setSimHash(simHash);
+		return getBibTexByAuthor(param, session);
+	}
 	/**
 	 * <em>/author/MaxMustermann</em><br/><br/>
 	 * This method prepares queries which retrieve all publications for a given
@@ -876,6 +1252,30 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 */
     public List<Post<BibTex>> getBibTexByAuthorAndTag(final BibTexParam param, final DBSession session){
 		return this.bibtexList("getBibTexByAuthorAndTag",param,session);
+	}
+    
+    /**
+     * Wrapper for getBibTexByAuthorAndTag
+	 * 
+     * @param search
+     * @param groupType
+     * @param tagIndex
+     * @param limit
+     * @param offset
+     * @param simHash
+     * @param session
+     * @return list of bibtex entries
+     */
+    // FIXME: check wrapper
+    public List<Post<BibTex>> getBibTexByAuthorAndTag(final String search, final GroupID groupType, final List<TagIndex> tagIndex, final int limit, final int offset, final HashID simHash, final DBSession session){
+		BibTexParam param = new BibTexParam();
+		param.setSearch(search);
+		param.setGroupType(groupType);
+		param.setTagIndex(tagIndex);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		param.setSimHash(simHash);
+		return getBibTexByAuthorAndTag(param, session);
 	}
 
     /**
