@@ -562,17 +562,23 @@
 	    <to type="redirect">/</to>
 	</rule>
 	<rule>
-		<from>^/+url\?url=(.*)$</from>
-		<to>/RedirectHandler?page=url&amp;requUrl=$1</to> 
+		<from>^/+url\?requestUrl=(.*)$</from>
+ 		<to>/url?requestUrl=$1</to>
+<!-- <to>/RedirectHandler?page=url&amp;requUrl=$1</to> --> 
 	</rule>
 	<rule>
 		<from>^/+url/+([0-9a-fA-F]+)(\?(.*))?$</from>
-		<to>/ResourceHandler?page=url&amp;requUrl=$1&amp;$3</to> 
+		<to>/url?requestUrlHash=$1&amp;$3</to>
+<!-- <to>/ResourceHandler?page=url&amp;requUrl=$1&amp;$3</to> --> 
 	</rule>
 	<rule>
 		<from>^/+url/+([0-9a-fA-F]+)/+(.+?)(\?(.*))?$</from>
 		<to>/ResourceHandler?page=userurl&amp;requUrl=$1&amp;requUser=$2&amp;$4</to> 
 	</rule>
+	
+	
+	
+	
 
 <!-- ############## publ hashes ############### -->
 	<!-- JSON -->

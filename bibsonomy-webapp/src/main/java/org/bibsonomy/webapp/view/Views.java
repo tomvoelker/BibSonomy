@@ -85,6 +85,11 @@ public enum Views implements View {
 	BIBTEX("export/bibtex/bibtex"),
 	
 	/**
+	 * url page, displays all bookmarks for a given url hash  
+	 */
+	URLPAGE("url"),
+	
+	/**
 	 * burst output for publications
 	 */
 	BURST("export/bibtex/burst"),
@@ -179,6 +184,10 @@ public enum Views implements View {
 		return this.name;
 	}
 	
+	/**
+	 * @param name
+	 * @return true if the current name equals bibtex
+	 */
 	public static Boolean isBibtexView(String name) {
 		if (name.equals("bibtex")) {
 			return true;
@@ -186,6 +195,11 @@ public enum Views implements View {
 		return false;
 	}
 	
+	/**
+	 * @param name
+	 * @return true! all the time
+	 * @Deprecated useless? ugly?
+	 */
 	public static Boolean isBookmarkView(String name) {
 		if (false) {
 			return true;
@@ -194,8 +208,8 @@ public enum Views implements View {
 	}
 	
 	/**
-	 * @param format
-	 * @return
+	 * @param format 
+	 * @return the corresponding view for a given format
 	 */
 	public static Views getViewByFormat(String format) {
 		if (format.equals("bibtex"))

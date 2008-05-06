@@ -71,17 +71,17 @@ public abstract class Resource implements Cloneable {
     public static String hash (String s) {
     	if (s == null) {
     		return null;
-    	} else {
-    		String charset = "UTF-8";
-    		try {
-    			MessageDigest md = MessageDigest.getInstance("MD5");
-    			return toHexString(md.digest(s.getBytes(charset)));
-    		} catch (java.io.UnsupportedEncodingException e) {
-    			return null;
-    		} catch (NoSuchAlgorithmException e) {
-    			return null;
-    		}
-    	}
+    	} 
+    	
+		String charset = "UTF-8";
+		try {
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			return toHexString(md.digest(s.getBytes(charset)));
+		} catch (java.io.UnsupportedEncodingException e) {
+			return null;
+		} catch (NoSuchAlgorithmException e) {
+			return null;
+		}
     }
 
 
