@@ -40,15 +40,14 @@ if (am_i_running($ENV{'TMP'}."/batch_contexttag.pid")) {
 # configuration
 #######################################################
 my $database = shift @ARGV;     # same db name on all hosts
-#my $user     = "batch";         # same user name on all databases
+my $user     = "batch";         # same user name on all databases
 my $password = $ENV{'DB_PASS'}; # same password on all databases
-my $user     = "bibsonomy";         # same user name on all databases
 # fit to slave
-#my $slave    = "DBI:mysql:database=$database;host=localhost:3306;mysql_socket=/var/mysql/run/mysqld.sock";
-my $slave    = "DBI:mysql:database=$database;host=127.0.0.1:3306";
+my $slave    = "DBI:mysql:database=$database;host=localhost:3306;mysql_socket=/var/mysql/run/mysqld.sock";
+#my $slave    = "DBI:mysql:database=$database;host=127.0.0.1:3306";
 # fit to master
-#my $master   = "DBI:mysql:database=$database;host=gandalf:6033";
-my $master   = "DBI:mysql:database=$database;host=127.0.0.1:3306";
+my $master   = "DBI:mysql:database=$database;host=gandalf:6033";
+#my $master   = "DBI:mysql:database=$database;host=127.0.0.1:3306";
 
 my %tagtag_ctr_hash=();
 my %list_of_tags=();
@@ -62,10 +61,10 @@ my @rel_tags_of_t1=();
 my $dbh = DBI->connect($slave, $user, $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});#, "transaction-isolation" => "READ-UNCOMMITTED"});
 # prepare statements
 # get all public tag_names ordered by post
-my $stm_select_tagtag =$dbh->prepare("SELECT t1 collate utf8_bin , t2 collate utf8_bin , ctr_public  FROM tagtag where ctr_public>0 order by t1,t2 collate utf8_bin limit 5000");
+my $stm_select_tagtag =$dbh->prepare("SELECT t1 collate utf8_bin , t2 collate utf8_bin , ctr_public  FROM tagtag where ctr_public>0 order by t1,t2 collate utf8_bin");
 $stm_select_tagtag->{"mysql_use_result"} = 1;
 # get top 10000 tags of the system
-my $stm_select_toptag =$dbh->prepare("SELECT tag_name,tag_ctr_public FROM tags order by tag_ctr_public desc limit 1000");
+my $stm_select_toptag =$dbh->prepare("SELECT tag_name,tag_ctr_public FROM tags order by tag_ctr_public desc limit 5000");
 $stm_select_toptag->{"mysql_use_result"} = 1;
 
 #######################################
