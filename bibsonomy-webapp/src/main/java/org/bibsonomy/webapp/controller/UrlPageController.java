@@ -18,10 +18,10 @@ import org.bibsonomy.webapp.view.Views;
  * <ul>
  * 		<li>^/+url/*$ 
  *          --> error, need at least the url hash
- * 		<li>^/+url\?url=(.*)$
- *          --> should work as expected
+ * 		<li>^/+url\?requestUrl=(.*)$
+ *          --> should work as expected, maps to requestUrl
  * 		<li>^/+url/+([0-9a-fA-F]+)(\?(.*))?$
- *          --> should work as expected
+ *          --> should work as expected, maps to requestUrlHash
  * </ul>
  *
  * @author Flori
@@ -36,9 +36,6 @@ public class UrlPageController extends MultiResourceListController implements Mi
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());		
-//		3c26c6776556ff61f291321d4505c10e
-		
-		System.out.println("--->> getRequestUrl(): "+ command.getRequestUrl() +" | getRequestUrlHash(): " + command.getRequestUrlHash());
 		
 		if (!ValidationUtils.present(command.getRequestUrl()) && !ValidationUtils.present(command.getRequestUrlHash())) {
 			LOGGER.error("Invalid query /url without key");
