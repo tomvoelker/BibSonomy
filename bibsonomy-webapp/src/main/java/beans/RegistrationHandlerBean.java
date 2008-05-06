@@ -126,7 +126,7 @@ public class RegistrationHandlerBean implements Serializable {
 				"friends".equals(userName) ||
 				"null".equals(userName) ||
 				userName.length()      > 30 ||
-				userName.indexOf(' ') != -1 ||
+				userName.matches(".*\\s.*") ||
 				userName.indexOf('-') != -1 ||
 				userName.indexOf('+') != -1 ||
 				userName.indexOf('/') != -1 ||
