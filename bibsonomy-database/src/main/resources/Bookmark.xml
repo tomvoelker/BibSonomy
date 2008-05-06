@@ -107,14 +107,14 @@
 		      		FROM bookmark b
 		      		WHERE b.group = #groupType#
 		      		ORDER BY date DESC
-		      		LIMIT 100
+		      		LIMIT 1000
 		     ) AS b
 		     LEFT JOIN tas AS t USING (content_id)
 		     LEFT JOIN spammer_tags AS s USING (tag_name)
 		     GROUP BY b.content_id
 		     HAVING COUNT(s.tag_name) = 0
 		     ORDER BY date DESC
-		     LIMIT 20) as b
+		     LIMIT #limit# OFFSET #offset#) as b
 		LEFT JOIN tas AS t USING (content_id)
 		JOIN urls u USING (book_url_hash)
 		ORDER BY b.date DESC, b.content_id DESC
