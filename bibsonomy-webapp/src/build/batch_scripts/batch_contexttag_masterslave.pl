@@ -49,6 +49,8 @@ my $slave    = "DBI:mysql:database=$database;host=localhost:3306;mysql_socket=/v
 my $master   = "DBI:mysql:database=$database;host=gandalf:6033";
 #my $master   = "DBI:mysql:database=$database;host=127.0.0.1:3306";
 
+my $toptags_count=5000;
+
 my %tagtag_ctr_hash=();
 my %list_of_tags=();
 my @t1_array_of_tags=();
@@ -64,13 +66,13 @@ my $dbh = DBI->connect($slave, $user, $password, {RaiseError => 1, AutoCommit =>
 my $stm_select_tagtag =$dbh->prepare("SELECT t1 collate utf8_bin , t2 collate utf8_bin , ctr_public  FROM tagtag where ctr_public>0 order by t1,t2 collate utf8_bin");
 $stm_select_tagtag->{"mysql_use_result"} = 1;
 # get top 10000 tags of the system
-my $stm_select_toptag =$dbh->prepare("SELECT tag_name,tag_ctr_public FROM tags order by tag_ctr_public desc limit 5000");
+my $stm_select_toptag =$dbh->prepare("SELECT tag_name,tag_ctr_public FROM tags order by tag_ctr_public desc limit ?");
 $stm_select_toptag->{"mysql_use_result"} = 1;
 
 #######################################
 # get the top tags
 
-$stm_select_toptag->execute();
+$stm_select_toptag->execute($toptags_count);
 
 my %toptag = ();
 
