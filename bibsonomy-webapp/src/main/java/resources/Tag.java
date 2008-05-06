@@ -258,7 +258,7 @@ public class Tag implements Cloneable {
 	 * @return
 	 */
 	private String getForUser (String tag) {
-		return tag.substring(4,tag.length());
+		return tag.toLowerCase().substring(4,tag.length());
 	}
 	
 	/* *************************************** *
