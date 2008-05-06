@@ -49,13 +49,13 @@ show statistics: <a href="?showSpammer=no">without spammers</a>, <a href="?showS
   <tr><th>         </th><th>sum                                  </th><th>bookmarks                                 </th><th>publications                                 </th>
                         <th>sum                                  </th><th>bookmarks                                 </th><th>publications                                 </th>
                         <th>sum                                  </th><th>bookmarks                                 </th><th>publications                                 </th></tr>
-  <tr><th>resources</th><td><ajax:get var="stats.resources"/>    </th><td><ajax:get var="stats.bookmarks"/>         </td><td><ajax:get var="stats.publications"/>         </td>
+  <tr><th>resources</th><td><ajax:get var="stats.resources"/>    </td><td><ajax:get var="stats.bookmarks"/>         </td><td><ajax:get var="stats.publications"/>         </td>
                         <td><ajax:get var="stats.resourcesDBLP"/></td><td><ajax:get var="stats.bookmarksDBLP"/>     </td><td><ajax:get var="stats.publicationsDBLP"/>     </td>
                         <td><ajax:get var="stats.resources24"/>  </td><td><ajax:get var="stats.bookmarks24"/>       </td><td><ajax:get var="stats.publications24"/>       </td></tr>
-  <tr><th>posts    </th><td><ajax:get var="stats.posts"/>        </th><td><ajax:get var="stats.postsBookmarks"/>    </td><td><ajax:get var="stats.postsPublications"/>    </td>
+  <tr><th>posts    </th><td><ajax:get var="stats.posts"/>        </td><td><ajax:get var="stats.postsBookmarks"/>    </td><td><ajax:get var="stats.postsPublications"/>    </td>
                         <td><ajax:get var="stats.postsDBLP"/>    </td><td><ajax:get var="stats.postsBookmarksDBLP"/></td><td><ajax:get var="stats.postsPublicationsDBLP"/></td>
                         <td><ajax:get var="stats.posts24"/>      </td><td><ajax:get var="stats.postsBookmarks24"/>  </td><td><ajax:get var="stats.postsPublications24"/>  </td></tr>
-  <tr><th>TAS      </th><td><ajax:get var="stats.tas"/>          </th><td><ajax:get var="stats.tasBookmarks"/>      </td><td><ajax:get var="stats.tasPublications"/>      </td>
+  <tr><th>TAS      </th><td><ajax:get var="stats.tas"/>          </td><td><ajax:get var="stats.tasBookmarks"/>      </td><td><ajax:get var="stats.tasPublications"/>      </td>
                         <td><ajax:get var="stats.tasDBLP"/>      </td><td><ajax:get var="stats.tasBookmarksDBLP"/>  </td><td><ajax:get var="stats.tasPublicationsDBLP"/>  </td>
                         <td><ajax:get var="stats.tas24"/>        </td><td><ajax:get var="stats.tasBookmarks24"/>    </td><td><ajax:get var="stats.tasPublications24"/>    </td></tr>
 
