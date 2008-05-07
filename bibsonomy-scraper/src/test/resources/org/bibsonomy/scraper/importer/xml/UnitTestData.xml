@@ -384,4 +384,10 @@
 		<BibFile>ACSScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.acs.ACSScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_65">
+		<TestDescription>Opac Scraper and PicaToBibtex</TestDescription>
+		<URL>http://opac.bibliothek.uni-kassel.de/DB=23/XML=1.0/CHARSET=UTF-8/PRS=PP/PPN?PPN=191787183</URL>
+		<BibFile>OpacScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.biomed.BioMedCentralScraper</Scraper>
+	</URLTest>
 </test:Tests>

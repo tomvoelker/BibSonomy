@@ -1,0 +1,361 @@
+package helpers.picatobibtex;
+
+import java.util.LinkedList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.log4j.Logger;
+
+/**
+ * 
+ * The bibtexkey is manufactured in accordance to the 013H category of pica+.
+ * http://www.allegro-c.de/formate/f/f0528.htm
+ * 
+ * TODO: need to fix that nearly every category is repeatable
+ * TODO: all this should have a better structure
+ * TODO: fix special chars
+ * 
+ * @author C. Kramer
+ * @version $Id$
+ */
+public class PicaParser {
+	private static final Logger log = Logger.getLogger(PicaParser.class);
+	private PicaRecord pica = null;
+	
+	/**
+	 * @param pica
+	 */
+	public PicaParser(final PicaRecord pica){
+		this.pica = pica;
+	}
+	
+	/**
+	 * start parsing
+	 * 
+	 * @return String
+	 */
+	public String getBibRes(){		
+		return parse();
+	}
+	
+	/**
+	 * method to activate the parsing methods and form the complete bibtex string
+	 * 
+	 * @return String
+	 */
+	private String parse(){
+		StringBuffer bibres = new StringBuffer();
+		
+		try {
+			String type = getBibType();
+			String author = getAuthor();
+			String title = getTitle();
+			String year = getYear();
+			String misc = getMisc();
+			String abstr = getAbstract();
+			String tags = getTags();
+			
+			String bibkey = createBibkey(author,year);
+			
+			
+			bibres.append(type + bibkey + ",\n");
+			bibres.append("author = {" + author + "},\n");
+			bibres.append("title = {" + title + "},\n");
+			bibres.append("year = {" + year + "},\n");
+			bibres.append("abstract = {" + abstr + "}, \n");
+			bibres.append("keywords = {" + tags + "}, \n");
+			bibres.append(misc);
+			bibres.append("}");
+			
+		} catch (Exception e){
+			log.error(e);
+		}
+		
+		return bibres.toString();
+	}
+
+	/**
+	 * catch all authors by pica cat 028C or 028A & 028B and create the bibtex form i.e.: author 
+	 * and author
+	 * 
+	 * @return String
+	 */
+	private String getAuthor(){
+		String author = "";
+		
+		Row row = null;
+		String cat = null;
+		
+		// get the main category
+		if(pica.isExisting("028C")){
+			if(pica.getRow("028C").isExisting("$8")){
+				author = getData("028C", "$8");
+			} else if (pica.getRow("028C").isExisting("$a")){
+				author = getData("028C", "$a");
+				author +="," + getData("028C", "$d");
+			}
+			
+			cat = "028C";
+		} else if(pica.isExisting("028A")){
+			if(pica.getRow("028A").isExisting("$8")){
+				author = getData("028A", "$8");
+			} else if (pica.getRow("028A").isExisting("$a")){
+				author = getData("028A", "$a");
+				author +="," + getData("028A", "$d");
+			}
+			
+			cat = "028B";
+		}
+		
+		// get all other author by specific category
+		if (cat != null){
+			int ctr = 1;
+			
+			row = pica.getRow(cat + "/0" + Integer.toString(ctr));
+			
+			while(row != null){
+				String newCat = cat + "/0" + Integer.toString(ctr);
+				
+				if(row.isExisting("$8")){
+					author += " and " + getData(newCat, "$8");
+				} else {
+					author += " and " + getData(newCat, "$a");
+					author += "," + getData(newCat, "$d");
+				}
+				
+				ctr++;
+	
+				if (ctr < 10){
+					row = pica.getRow(cat + "/0" + Integer.toString(ctr));
+				} else {
+					row = pica.getRow(cat + "/" + Integer.toString(ctr));
+				}
+			}
+		}
+		
+		return author;
+	}
+	
+	/**
+	 * method to create the bibtex key
+	 * 
+	 * @return String
+	 */
+	private String getBibType(){
+		String bibtype = "@misc{";
+		
+		Row r = null;
+		SubField s = null;
+		
+		/*
+		 * tests if the category 013H is existing and test for some values, 
+		 * if not check if the title category 021A has a $d subfield and if "proceedings" matches
+		 * if thats the case then its a proceeding. If the entry has a ISBN and NO ISSN then its a book,
+		 * if it has a ISSN and NO ISBN then its an article otherwise if it has ISBN AND ISSN
+		 * its usually a proceeding.
+		 * 
+		 * If the 013H category is set and the $0 subfield provides the value u then
+		 * it will be decided between phdthesis, masterthesis and techreport
+		 */
+		if ((r = pica.getRow("013H")) != null){
+			if ((s = r.getSubField("$0")) != null){
+				
+				if ("u".equals(s.getContent())){
+					Row _tempRow = null;
+					SubField _tempSub = null;
+					
+					if ((_tempRow = pica.getRow("037C")) != null){
+						if ((_tempSub = _tempRow.getSubField("$c")) != null){
+							String _tempCont = _tempSub.getContent();
+							if (_tempCont.matches("^.*Diss.*$")){
+								bibtype = "@phdthesis{";
+							} else if (_tempCont.matches("^.*Master.*$")){
+								bibtype = "@masterthesis{";
+							} else {
+								bibtype = "@techreport{";
+							}
+						}
+					}
+				}
+				
+				if ("k".equals(s.getContent())){
+					bibtype = "@proceedings{";
+				}
+
+			}
+		} else if((pica.isExisting("004A") || pica.isExisting("004D")) && !pica.isExisting("005A") && !pica.isExisting("005D")) {
+			bibtype = "@book{";
+		} else if(((pica.isExisting("005A")) || pica.isExisting("005D")) && !pica.isExisting("004A") && !pica.isExisting("004D")){
+			bibtype = "@article{";
+		} else if(((pica.isExisting("004A")) || pica.isExisting("004D")) && (pica.isExisting("005A") || pica.isExisting("005D"))){
+			bibtype = "@proceedings{";
+		} else if(pica.getRow("021A").isExisting("$d")){
+			if (pica.getRow("021A").getSubField("$d").getContent().trim().matches("^.*proceedings.*$")){
+				bibtype = "@proceedings{";
+			}
+		} else {
+			bibtype = "@book{";
+		}
+		
+		return bibtype;
+	}
+	
+	/**
+	 * extract the title by pica cat 021A
+	 * 
+	 * @return String
+	 */
+	private String getTitle(){
+		String res = "";
+		
+		res = getData("021A", "$a");
+		
+		return res;
+	}
+	
+	/**
+	 * retrieve the year by the pica cat 011@
+	 * 
+	 * @return String
+	 */
+	private String getYear(){
+		String year = "";
+		
+		year = getData("011@", "$a");
+
+		if (year.length() == 0){
+			year = getData("011@", "$n");
+		}
+		
+		return year;
+	}
+	
+	/** 
+	 * get some misc fields like isbn and issn simply add
+	 * more fields.
+	 * 
+	 * return String
+	 */ 
+	private String getMisc(){
+		String isbn = "isbn = {";
+		String issn = "issn = {";
+		
+		String res = "";
+		
+		res = getData("004A", "$0");
+		if (res.length() == 0){
+			res = getData("004A", "$A");
+		}
+		
+		isbn += res + "},\n";
+		
+		res = getData("005A", "$0");
+		issn += res + "},\n";
+		
+		return isbn + issn;
+	}
+	
+	/**
+	 * Tries to extract the abstract
+	 * 
+	 * @return abstract String
+	 */
+	private String getAbstract(){
+		String abstr = "";
+		abstr = getData("046M", "$a");
+		return abstr;
+	}
+	
+	/**
+	 * Tries to get all tag by categories 044K and 041A
+	 * 
+	 * @return String of tags
+	 */
+	private String getTags(){
+		String tags = "";
+		
+		LinkedList<Row> list = null;
+		Row row = null;
+		
+		if((list = pica.getRows("044K")) != null){
+			for(Row r : list){
+				if(r.isExisting("$8")){
+					tags += r.getSubField("$8").getContent() + " ";
+				}
+			}
+		} else if(pica.isExisting("041A")){
+			String cat = "041A";
+			tags += getData(cat, "$8") + " ";
+			
+			int ctr = 1;
+			
+			row = pica.getRow(cat + "/0" + Integer.toString(ctr));
+			
+			while(row != null){
+				String newCat = cat + "/0" + Integer.toString(ctr);
+				
+				if(row.isExisting("$8")){
+					tags += getData(newCat, "$8") + " ";
+				}
+				
+				ctr++;
+	
+				if (ctr < 10){
+					row = pica.getRow(cat + "/0" + Integer.toString(ctr));
+				} else {
+					row = pica.getRow(cat + "/" + Integer.toString(ctr));
+				}
+			}
+		}
+
+		
+		return tags;
+	}
+	
+	/**
+	 * This helpmethod should create the bibtexkey be author and year
+	 * 
+	 * @param author
+	 * @param year
+	 * @return BibtexKey
+	 */
+	private String createBibkey(final String author, final String year){
+		String key = "";
+		
+		if ("".equals(author) && "".equals(year)){
+			return "imported";
+		}
+		
+		if (author.matches("^(.+?),.*$")){
+			Pattern p = Pattern.compile("^(.+?),.*$");
+			Matcher m = p.matcher(author);
+			if(m.find()){
+				key += m.group(1);
+			}
+		}
+		
+		key += ":" + year;
+		
+		return key;
+	}
+	
+	/**
+	 * use this method to get the data out of a specific row and subfield
+	 * 
+	 * @param cat
+	 * @param sub
+	 * @return
+	 */
+	private String getData(final String cat, final String sub){
+		Row r = null;
+		SubField f = null;
+		
+		if ((r = pica.getRow(cat)) != null){
+			if ((f = r.getSubField(sub)) != null){
+				return f.getContent();
+			}
+		}
+		
+		return "";
+	}
+}

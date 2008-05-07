@@ -26,6 +26,7 @@ import org.bibsonomy.scraper.url.kde.librarything.LibrarythingScraper;
 import org.bibsonomy.scraper.url.kde.mathscinet.MathSciNetScraper;
 import org.bibsonomy.scraper.url.kde.nasa.ads.NasaAdsScraper;
 import org.bibsonomy.scraper.url.kde.nature.NatureScraper;
+import org.bibsonomy.scraper.url.kde.opac.OpacScraper;
 import org.bibsonomy.scraper.url.kde.plos.PlosScraper;
 import org.bibsonomy.scraper.url.kde.prola.ProlaScraper;
 import org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper;
@@ -42,6 +43,7 @@ public class URLCompositeScraper extends CompositeScraper {
 
 	public URLCompositeScraper() {
 		addScraper(new CiteBaseScraper());
+		addScraper(new OpacScraper());
 		addScraper(new IEEEXploreScraper());
 		addScraper(new SpringerLinkScraper());
 		addScraper(new ScienceDirectScraper());
