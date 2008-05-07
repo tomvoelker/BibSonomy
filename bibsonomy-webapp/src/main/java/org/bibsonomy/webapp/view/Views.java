@@ -11,7 +11,7 @@ import org.bibsonomy.webapp.util.View;
  * which views are capable to display bibtex / bookmark only
  * 
  * @author Jens Illig
- * @V
+ * @version $Id$
  */
 public enum Views implements View {
 		
