@@ -1,6 +1,5 @@
 package org.bibsonomy.webdav.resource;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bibsonomy.webdav.BibSonomyBackend;
@@ -13,10 +12,10 @@ import com.atlassian.confluence.extra.webdav.servlet.resource.Resource;
  * @author Christian Schenk
  * @version $Id$
  */
-public class RootCollectionResource extends BibSonomyCollectionResource {
+public class RootCollectionResource extends StandardFilesCollectionResource {
 
-//	private final BookmarkCollectionResource bookmarkCollectionResource;
-	private final BibTexCollectionResource bibtexCollectionResource;
+	private final BibSonomyCollectionResource userFolder;
+	private final BibSonomyCollectionResource groupFolder;
 
 	/**
 	 * Constructor.
@@ -26,23 +25,29 @@ public class RootCollectionResource extends BibSonomyCollectionResource {
 	 */
 	public RootCollectionResource(final BibSonomyBackend backend) {
 		super(null, backend, "", "RootCollectionResource");
-//		this.bookmarkCollectionResource = new BookmarkCollectionResource(this, backend);
-		this.bibtexCollectionResource = new BibTexCollectionResource(this, backend);
+		this.userFolder = new UsersCollectionResource(this, backend);
+		this.groupFolder = new GroupsCollectionResource(this, backend);
 	}
 
+	@Override
 	public List<Resource> getChildren() {
-		final List<Resource> children = new ArrayList<Resource>();
-//		children.add(this.bookmarkCollectionResource);
-		children.add(this.bibtexCollectionResource);
+		final List<Resource> children = super.getChildren();
+		children.add(this.userFolder);
+		children.add(this.groupFolder);
 		return children;
 	}
 
+	@Override
 	public Resource getChild(final String name) {
-		/*if (this.bookmarkCollectionResource.getName().equals(name)) {
-			return this.bookmarkCollectionResource;
-		} else*/ if (this.bibtexCollectionResource.getName().equals(name)) {
-			return this.bibtexCollectionResource;
+		final Resource standardResource = super.getChild(name);
+		if (standardResource != null) return standardResource;
+
+		if (this.userFolder.getName().equals(name)) {
+			return this.userFolder;
+		} else if (this.groupFolder.getName().equals(name)) {
+			return this.groupFolder;
 		}
+
 		return null;
 	}
 }

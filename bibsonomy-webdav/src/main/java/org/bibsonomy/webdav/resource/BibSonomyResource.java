@@ -19,7 +19,7 @@ import com.atlassian.confluence.extra.webdav.servlet.resource.SingleResource;
  * @author Christian Schenk
  * @version $Id$
  */
-public abstract class BibSonomyResource extends BaseResource implements SingleResource {
+public class BibSonomyResource extends BaseResource implements SingleResource {
 
 	private final String name;
 	private final String content;
