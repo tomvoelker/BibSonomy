@@ -37,7 +37,7 @@ public class UrlPageController extends MultiResourceListController implements Mi
 		// and the requested resourcetype
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());		
 		
-		if (!ValidationUtils.present(command.getRequestUrl()) && !ValidationUtils.present(command.getRequestUrlHash())) {
+		if (!ValidationUtils.present(command.getRequUrl()) && !ValidationUtils.present(command.getRequUrlHash())) {
 			LOGGER.error("Invalid query /url without key");
 			throw new MalformedURLSchemeException("error.url_no_hash");
 		}
@@ -47,12 +47,12 @@ public class UrlPageController extends MultiResourceListController implements Mi
 			// disable manual setting of start value for homepage
 			command.getListCommand(resourceType).setStart(0);
 			
-			if (ValidationUtils.present(command.getRequestUrl())) {
-				command.setRequestUrlHash(resources.Resource.hash(command.getRequestUrl()));
+			if (ValidationUtils.present(command.getRequUrl())) {
+				command.setRequUrlHash(resources.Resource.hash(command.getRequUrl()));
 			}
 			
-			setList(command, resourceType, GroupingEntity.ALL, null, null, command.getRequestUrlHash(), null, null, null, 20);
-			setTags(command, resourceType, GroupingEntity.ALL, null, null, null, command.getRequestUrlHash(), null, 0, 20, null);
+			setList(command, resourceType, GroupingEntity.ALL, null, null, command.getRequUrlHash(), null, null, null, 20);
+			setTags(command, resourceType, GroupingEntity.ALL, null, null, null, command.getRequUrlHash(), null, 0, 20, null);
 			postProcessAndSortList(command, resourceType);
 		}
 		

@@ -562,13 +562,13 @@
 	    <to type="redirect">/</to>
 	</rule>
 	<rule>
-		<from>^/+url\?requestUrl=(.*)$</from>
- 		<to>/url?requestUrl=$1</to>
+		<from>^/+url\?requUrl=(.*)$</from>
+ 		<to>/url?requUrl=$1</to>
 <!-- <to>/RedirectHandler?page=url&amp;requUrl=$1</to> --> 
 	</rule>
 	<rule>
 		<from>^/+url/+([0-9a-fA-F]+)(\?(.*))?$</from>
-		<to>/url?requestUrlHash=$1&amp;$3</to>
+		<to>/url?requUrlHash=$1&amp;$3</to>
 <!-- <to>/ResourceHandler?page=url&amp;requUrl=$1&amp;$3</to> --> 
 	</rule>
 	<rule>

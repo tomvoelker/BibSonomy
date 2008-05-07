@@ -9,37 +9,37 @@ package org.bibsonomy.webapp.command;
  */
 public class UrlCommand extends ResourceViewCommand{
 	
-	/** String to search for requestUrl */
-	private String requestUrl = "";
+	/** String to search for requUrl */
+	private String requUrl = "";
 	
-	/** String to search for requestUrlHash */
-	private String requestUrlHash = "";
+	/** String to search for requUrlHash */
+	private String requUrlHash = "";
 
 	/**
 	 * @return the requested url 
 	 */
-	public String getRequestUrl() {
-		return this.requestUrl;
+	public String getRequUrl() {
+		return this.requUrl;
 	}
 
 	/**
-	 * @param requestUrl set the url 
+	 * @param requUrl set the url 
 	 */
-	public void setRequestUrl(String requestUrl) {
-		this.requestUrl = requestUrl;
+	public void setRequUrl(String requUrl) {
+		this.requUrl = requUrl;
 	}
 
 	/**
 	 * @return the requested url hash
 	 */
-	public String getRequestUrlHash() {
-		return this.requestUrlHash;
+	public String getRequUrlHash() {
+		return this.requUrlHash;
 	}
 
 	/**
-	 * @param requestUrlHash set the url as hash 
+	 * @param requUrlHash set the url as hash 
 	 */
-	public void setRequestUrlHash(String requestUrlHash) {
-		this.requestUrlHash = requestUrlHash;
+	public void setRequUrlHash(String requUrlHash) {
+		this.requUrlHash = requUrlHash;
 	}
 }
