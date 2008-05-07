@@ -203,6 +203,9 @@ public class DBLogic implements LogicInterface {
 			} else {
 				throw new UnsupportedResourceTypeException();
 			}
+		} catch (final QueryTimeoutException ex) {
+			// if a query times out, we return an empty list
+			return new ArrayList<Post<T>>();			
 		} finally {
 			session.close();
 		}
