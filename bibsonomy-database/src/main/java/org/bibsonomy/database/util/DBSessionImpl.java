@@ -170,14 +170,20 @@ public class DBSessionImpl implements DBSession {
 			 * catch exception that happens because of
 			 * query interruption due to time limits
 			 * 
-			 * Error code 1317 corresponds to "Query execution was interrupted", see
-			 * http://dev.mysql.com/doc/refman/5.1/en/error-messages-server.html
+			 * Error code 1317: "Query execution was interrupted"
+			 * Error code 1028: "Sort aborted"
+			 * (see http://dev.mysql.com/doc/refman/5.1/en/error-messages-server.html) 
 			 * 
 			 */
 			if (ex.getCause() != null && ex.getCause().getClass().equals(SQLException.class) && 1317 == ((SQLException)ex.getCause()).getErrorCode()) {
 				log.error("Query timeout for query: " + query);
 				ExceptionUtils.logErrorAndThrowQueryTimeoutException(log, ex, query);
 			}
+			if (ex.getCause() != null && ex.getCause().getClass().equals(SQLException.class) && 1028 == ((SQLException)ex.getCause()).getErrorCode()) {
+				log.error("Sort aborted for query: " + query);
+				ExceptionUtils.logErrorAndThrowQueryTimeoutException(log, ex, query);
+			}			
+						
 			/*
 			 * Here we catch the wonderful "unknown error" (code 1105) exception of MySQL.
 			 * On 2008-04-21 we found that it occurs, when a statement is killed during its
