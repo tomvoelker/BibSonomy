@@ -60,14 +60,11 @@ public class TagPageController extends MultiResourceListControllerWithTags imple
 			totalNumPosts += totalCount;
 		}	
 		
-		// html format - retrieve relted tags (and evtl. users) and return HTML view
+		// html format - retrieve related / similar tags (and evtl. users) and return HTML view
 		if (command.getFormat().equals("html")) {
-			/*
-			 * TODO: getRequestedTagsList() always re-tokenized the String to get
-			 * the list of tags. The result should be saved for later use. 
-			 */
+			this.setRelatedTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, order, 0, Parameters.NUM_RELATED_TAGS, null);
+			// similar tags only make sense for a single requested tag
 			if (command.getRequestedTagsList().size() == 1) {
-				this.setRelatedTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, order, 0, Parameters.NUM_RELATED_TAGS, null);
 				this.setSimilarTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, order, 0, Parameters.NUM_RELATED_TAGS, null);
 			}
 			// set total nr. of posts 
