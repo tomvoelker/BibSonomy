@@ -92,7 +92,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @param limit
 	 * @param offset
 	 * @param session
-	 * @return see at param method
+	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkByTagNames(final GroupID groupType, final List<TagIndex> tagIndex, final int limit, final int offset, final DBSession session) {
 		final BookmarkParam param = new BookmarkParam();
@@ -100,7 +100,12 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setTagIndex(tagIndex);
 		param.setLimit(limit);
 		param.setOffset(offset);
-		return getBookmarkByTagNames(param, session);
+		
+		if (Order.FOLKRANK.equals(param.getOrder())){
+			param.setGroupId(GroupID.PUBLIC.getId());
+			return this.bookmarkList("getBookmarkByTagNamesAndFolkrank", param, session);
+		}
+		return this.bookmarkList("getBookmarkByTagNames", param, session);
 	}
 
 	/**
@@ -177,7 +182,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @param limit
 	 * @param offset
 	 * @param session
-	 * @return see at param method
+	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkByTagNamesForUser(final String requestedUserName, final String userName, final List<TagIndex> tagIndex, final int groupId, final int limit, final int offset, final DBSession session) {
 		final BookmarkParam param = new BookmarkParam();
@@ -187,7 +192,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setGroupId(groupId);
 		param.setLimit(limit);
 		param.setOffset(offset);
-		return getBookmarkByTagNamesForUser(param, session);
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
+		return this.bookmarkList("getBookmarkByTagNamesForUser", param, session);
 	}
 
 	/**
@@ -231,13 +237,15 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	}
 
 	/**
+	 * @see BookmarkDatabaseManager#getBookmarkByConceptForUser(BookmarkParam, DBSession)
+	 * 
 	 * @param loginUser
 	 * @param requestedUserName
 	 * @param tagIndex
 	 * @param limit
 	 * @param offset
 	 * @param session
-	 * @return see at param method
+	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkByConceptForUser(final String loginUser, final String requestedUserName, final List<TagIndex> tagIndex, final int limit, final int offset, final DBSession session) {
 		final BookmarkParam param = new BookmarkParam();
@@ -246,7 +254,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setTagIndex(tagIndex);
 		param.setLimit(limit);
 		param.setOffset(offset);
-		return getBookmarkByConceptForUser(param, session);
+		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
+		return this.bookmarkList("getBookmarkByConceptForUser", param, session);
 	}
 
 	/**
@@ -260,15 +269,19 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkByUserFriends(final BookmarkParam param, final DBSession session) {
+		// groupType must be set to friends
+		param.setGroupType(GroupID.FRIENDS);
 		return this.bookmarkList("getBookmarkByUserFriends", param, session);
 	}
 
 	/**
+	 * @see BookmarkDatabaseManager#getBookmarkByUserFriends(BookmarkParam, DBSession)
+	 * 
 	 * @param user
 	 * @param limit
 	 * @param offset
 	 * @param session
-	 * @return see at param method
+	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkByUserFriends(final String user, final int limit, final int offset, final DBSession session) {
 		final BookmarkParam param = new BookmarkParam();
@@ -276,7 +289,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setGroupType(GroupID.FRIENDS); // groupType must be set to friends
 		param.setLimit(limit);
 		param.setOffset(offset);
-		return getBookmarkByUserFriends(param, session);
+		return this.bookmarkList("getBookmarkByUserFriends", param, session);
 	}
 
 	/**
@@ -293,16 +306,18 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	}
 
 	/**
+	 * @see BookmarkDatabaseManager#getBookmarkForHomepage(BookmarkParam, DBSession)
+	 * 
 	 * @param groupType
 	 * @param limit
 	 * @param session
-	 * @return see at param method
+	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkForHomepage(final GroupID groupType, final int limit, final DBSession session) {
 		final BookmarkParam param = new BookmarkParam();
 		param.setGroupType(groupType);
 		param.setLimit(limit);
-		return getBookmarkForHomepage(param, session);
+		return this.bookmarkList("getBookmarkForHomepage", param, session);
 	}
 
 	/**
@@ -319,12 +334,14 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	}
 
 	/**
+	 * @see BookmarkDatabaseManager#getBookmarkPopular(BookmarkParam, DBSession)
+	 * 
 	 * @param session
-	 * @return see at param method
+	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkPopular(final DBSession session) {
 		final BookmarkParam param = new BookmarkParam();
-		return getBookmarkPopular(param, session);
+		return this.bookmarkList("getBookmarkPopular", param, session);
 	}
 
 	/**
@@ -340,12 +357,14 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	}
 
 	/**
+	 * @see BookmarkDatabaseManager#getBookmarkByHash(BookmarkParam, DBSession)
+	 * 
 	 * @param requBibtex
 	 * @param groupType
 	 * @param limit
 	 * @param offset
 	 * @param session
-	 * @return see at param method
+	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkByHash(final String requBibtex, final GroupID groupType, final int limit, final int offset, final DBSession session) {
 		final BookmarkParam param = new BookmarkParam();
@@ -353,7 +372,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setGroupType(groupType);
 		param.setLimit(limit);
 		param.setOffset(offset);
-		return getBookmarkByHash(param, session);
+		return this.bookmarkList("getBookmarkByHash", param, session);
 	}
 
 	/**
@@ -368,16 +387,18 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	}
 
 	/**
+	 * @see BookmarkDatabaseManager#getBookmarkByHashCount(BookmarkParam, DBSession)
+	 * 
 	 * @param requBibtex
 	 * @param groupType
 	 * @param session
-	 * @return see at param method
+	 * @return number of bookmarks for the given hash
 	 */
 	public Integer getBookmarkByHashCount(final String requBibtex, final GroupID groupType, final DBSession session) {
 		final BookmarkParam param = new BookmarkParam();
 		param.setHash(requBibtex);
 		param.setGroupType(groupType);
-		return getBookmarkByHashCount(param, session);
+		return this.queryForObject("getBookmarkByHashCount", param, Integer.class, session);
 	}
 
 	/**
@@ -395,13 +416,15 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	}
 
 	/**
+	 * @see BookmarkDatabaseManager#getBookmarkByHashForUser(BookmarkParam, DBSession)
+	 * 
 	 * @param userName
 	 * @param requBibtex
 	 * @param requestedUserName
      * @param visibleGroupIDs
 	 * @param session
 	 * @param hashType
-	 * @return see at param method
+	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkByHashForUser(final String userName, final String requBibtex, final String requestedUserName, final List<Integer> visibleGroupIDs, final DBSession session, final HashID hashType) {
 		final BookmarkParam param = new BookmarkParam();
@@ -410,7 +433,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setHash(requBibtex);
 		param.setRequestedUserName(requestedUserName);
 		param.setRequestedSimHash(hashType);
-		return getBookmarkByHashForUser(param, session);
+		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
+		return this.bookmarkList("getBookmarkByHashForUser", param, session);
 	}
 
 	/**
@@ -450,13 +474,15 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	}
 
 	/**
+	 * @see BookmarkDatabaseManager#getBookmarkSearch(BookmarkParam, DBSession)
+	 * 
 	 * @param groupType
 	 * @param search
 	 * @param requestedUserName
 	 * @param limit
 	 * @param offset
 	 * @param session
-	 * @return see at param method
+	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkSearch(final GroupID groupType, final String search, final String requestedUserName, final int limit, final int offset, final DBSession session) {
 		final BookmarkParam param = new BookmarkParam();
@@ -465,7 +491,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setRequestedUserName(requestedUserName);
 		param.setLimit(limit);
 		param.setOffset(offset);
-		return getBookmarkSearch(param, session);
+		return this.bookmarkList("getBookmarkSearch", param, session);
 	}
 
 	/**
@@ -480,18 +506,20 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	}
 
 	/**
+	 * @see BookmarkDatabaseManager#getBookmarkSearchCount(BookmarkParam, DBSession)
+	 * 
 	 * @param groupType
 	 * @param search
 	 * @param requestedUserName
 	 * @param session
-	 * @return see at param method
+	 * @return number of bookmarks for a given search
 	 */
 	public Integer getBookmarkSearchCount(final GroupID groupType, final String search, final String requestedUserName, final DBSession session) {
 		final BookmarkParam param = new BookmarkParam();
 		param.setGroupType(groupType);
 		param.setSearch(search);
 		param.setRequestedUserName(requestedUserName);
-		return getBookmarkSearchCount(param, session);
+		return this.queryForObject("getBookmarkSearchCount", param, Integer.class, session);
 	}
 
 	/**
@@ -512,12 +540,14 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	}
 
 	/**
+	 * @see BookmarkDatabaseManager#getBookmarkViewable(BookmarkParam, DBSession)
+	 * 
 	 * @param groupId
 	 * @param userName
 	 * @param limit
 	 * @param offset
 	 * @param session
-	 * @return see at param method
+	 * @return list of bookmarks
 	 */
 	public List<Post<Bookmark>> getBookmarkViewable(final int groupId, final String userName, final int limit, final int offset, final DBSession session) {
 		final BookmarkParam param = new BookmarkParam();
@@ -525,7 +555,12 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setUserName(userName);
 		param.setLimit(limit);
 		param.setOffset(offset);
-		return getBookmarkViewable(param, session);
+		if (GroupID.isSpecialGroupId(param.getGroupId()) == true) {
+			// show users own bookmarks, which are private, public or for friends
+			param.setRequestedUserName(param.getUserName());
+			return getBookmarkForUser(param, session);
+		}				
+		return this.bookmarkList("getBookmarkViewable", param, session);
 	}
 
 	/**
@@ -564,12 +599,14 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	}
 
 	/**
+	 * @see BookmarkDatabaseManager#getBookmarkForGroup(BookmarkParam, DBSession)
+	 * 
 	 * @param groupId
 	 * @param userName
 	 * @param limit
 	 * @param offset
 	 * @param session
-	 * @return see at param method
+	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkForGroup(final int groupId, final String userName, final int limit, final int offset, final DBSession session) {
 		final BookmarkParam param = new BookmarkParam();
@@ -577,7 +614,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setUserName(userName);
 		param.setLimit(limit);
 		param.setOffset(offset);
-		return getBookmarkForGroup(param, session);
+		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
+		return this.bookmarkList("getBookmarkForGroup", param, session);
 	}
 
 	/**
@@ -598,20 +636,19 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	/**
 	 * Returns the number of bookmarks belonging to this group
 	 * 
-	 * @see BookmarkDatabaseManager#getBookmarkForGroupCount(BookmarkParam,
-	 *      DBSession)
+	 * @see BookmarkDatabaseManager#getBookmarkForGroupCount(BookmarkParam, DBSession)
 	 * 
 	 * @param groupId
 	 * @param visibleGroupIDs
 	 * @param session
-	 * @return the (approximated) number of bookmarks for the given group, see
-	 *         method above
+	 * @return the (approximated) number of bookmarks for the given group, see method above
 	 */
 	public Integer getBookmarkForGroupCount(final int groupId, final List<Integer> visibleGroupIDs, final DBSession session) {
 		BookmarkParam param = new BookmarkParam();
 		param.addGroups(visibleGroupIDs);
 		param.setGroupId(groupId);
-		return this.getBookmarkForGroupCount(param, session);
+		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
+		return this.queryForObject("getBookmarkForGroupCount", param, Integer.class, session);
 	}
 
 	/**
@@ -630,18 +667,21 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	}
 
 	/**
+	 * @see BookmarkDatabaseManager#getBookmarkForGroupByTag(BookmarkParam, DBSession)
+	 * 
 	 * @param groupId
 	 * @param userName
 	 * @param tagIndex
 	 * @param session
-	 * @return see at param method
+	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkForGroupByTag(final int groupId, final String userName,  List<TagIndex> tagIndex, final DBSession session) {
 		final BookmarkParam param = new BookmarkParam();
 		param.setGroupId(groupId); 
 		param.setUserName(userName);
 		param.setTagIndex(tagIndex);
-		return getBookmarkForGroupByTag(param, session);
+		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
+		return this.bookmarkList("getBookmarkForGroupByTag", param, session);
 	}
 
 	/**
@@ -663,13 +703,15 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	}
 
 	/**
+	 * @see BookmarkDatabaseManager#getBookmarkForUser(BookmarkParam, DBSession)
+	 * 
 	 * @param userName
 	 * @param requestedUserName
 	 * @param groupId
 	 * @param limit
 	 * @param offset
 	 * @param session
-	 * @return  see at param method
+	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkForUser(final String userName, final String requestedUserName, final int groupId, final int limit, final int offset, final DBSession session) {
 		final BookmarkParam param = new BookmarkParam();
@@ -678,7 +720,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setGroupId(groupId);
 		param.setLimit(limit);
 		param.setOffset(offset);
-		return getBookmarkForUser(param, session);
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
+		return this.bookmarkList("getBookmarkForUser", param, session);
 	}
 
 	/**
@@ -707,7 +750,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setUserName(loginUserName);
 		param.addGroups(visibleGroupIDs);
 		param.setRequestedUserName(requestedUserName);
-		return this.getBookmarkForUserCount(param, session);
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session); // set groups
+		return this.queryForObject("getBookmarkForUserCount", param, Integer.class, session);
 	}
 
 	/**
@@ -747,7 +791,21 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setUrl(post.getResource().getUrl());
 		for (final Group group : post.getGroups()) {
 			param.setGroupId(group.getGroupId());
-			this.insertBookmark(param, session);
+			
+			// Start transaction
+			session.beginTransaction();
+			try {
+				// Insert bookmark
+				this.insert("insertBookmark", param, session);
+				// compute only a single simHash, as all simHashes are equal for bookmarks
+				final HashID simHash = HashID.getSimHash(0);
+				param.setRequestedSimHash(simHash);
+				param.setHash(SimHash.getSimHash(param.getResource(),simHash));
+				this.insertBookmarkHash(param, session);
+				session.commitTransaction();
+			} finally {
+				session.endTransaction();
+			}
 		}
 	}
 
@@ -783,8 +841,6 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	}
 
 	/**
-	 * FIXME: checkme, OK?
-	 * 
 	 * @param requBookmark
 	 * @param userName
 	 * @param session
@@ -794,7 +850,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		final BookmarkParam param = new BookmarkParam();
 		param.setHash(requBookmark);
 		param.setUserName(userName);
-		return getContentIDForBookmark(param, session);
+		return this.queryForObject("getContentIDForBookmark", param, Integer.class, session);
 	}
 
 	public List<Post<Bookmark>> getPosts(final BookmarkParam param, final DBSession session) {
