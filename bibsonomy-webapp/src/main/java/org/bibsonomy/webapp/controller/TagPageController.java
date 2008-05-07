@@ -60,7 +60,12 @@ public class TagPageController extends MultiResourceListControllerWithTags imple
 			totalNumPosts += totalCount;
 		}	
 		
-		// html format - retrieve related / similar tags (and evtl. users) and return HTML view
+		//if order = folkrank - retrieve related users
+		if (order.equals(Order.FOLKRANK)) {
+			this.setRelatedUsers(command, requTags, order, 0, Parameters.NUM_RELATED_USERS);
+		}
+		
+		// html format - retrieve relted tags and return HTML view
 		if (command.getFormat().equals("html")) {
 			this.setRelatedTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, order, 0, Parameters.NUM_RELATED_TAGS, null);
 			// similar tags only make sense for a single requested tag
@@ -69,9 +74,6 @@ public class TagPageController extends MultiResourceListControllerWithTags imple
 			}
 			// set total nr. of posts 
 			command.getRelatedTagCommand().setTagGlobalCount(totalNumPosts);
-			if (order.equals(Order.FOLKRANK)) {
-				this.setRelatedUsers(command, requTags, order, 0, Parameters.NUM_RELATED_USERS);
-			}
 			this.endTiming();
 			return Views.TAGPAGE;			
 		}
