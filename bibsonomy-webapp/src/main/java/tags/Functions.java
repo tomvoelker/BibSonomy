@@ -128,18 +128,18 @@ public class Functions  {
 	}
 	
 	/**
-	 * converts a list of tags in a space-separated string of tags 
+	 * converts a list of tags into a space-separated string of tags 
 	 * 
 	 * @param tags a list of tags
 	 * @return a space-separated string of tags
 	 */
-	public static String toTagString (List<Tag> tags) {		
-		StringBuffer sb = new StringBuffer();
-		for (Tag tag : tags) {
+	public static String toTagString (final List<Tag> tags) {		
+		final StringBuffer sb = new StringBuffer();
+		for (final Tag tag : tags) {
 			sb.append(tag.getName());
 			sb.append(" ");
 		}
-		return sb.toString().substring(0, sb.length() - 1);
+		return sb.toString().trim();
 	}
 	
 	/**
