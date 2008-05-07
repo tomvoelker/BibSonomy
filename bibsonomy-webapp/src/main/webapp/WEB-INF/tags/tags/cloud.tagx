@@ -62,7 +62,7 @@
 			</c:choose>
 			
 			<!-- display the tag -->						
-			<c:if test="${tag.usercount >= cmd.minFreq}">
+			<c:if test="${tag.usercount >= cmd.minFreq or empty disableTagboxMinfreq or disableTagboxMinfreq == true}">
 				<li class="${tagclass}">
 					<jsp:element name="a">
 						<jsp:attribute name="href">
