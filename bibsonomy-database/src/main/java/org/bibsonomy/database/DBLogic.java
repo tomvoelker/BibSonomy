@@ -192,7 +192,7 @@ public class DBLogic implements LogicInterface {
 			 * 
 			} else */
 			if (resourceType == BibTex.class) {
-				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, loginUser);
+				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, this.loginUser);
 				if (filter != null) param.setFilter(filter);
 				// this is save because of RTTI-check of resourceType argument which is of class T
 				result = ((List) this.bibtexDBManager.getPosts(param, session));
@@ -205,7 +205,7 @@ public class DBLogic implements LogicInterface {
 			}
 		} catch (final QueryTimeoutException ex) {
 			// if a query times out, we return an empty list
-			return new ArrayList<Post<T>>();			
+			return new ArrayList<Post<T>>();
 		} finally {
 			session.close();
 		}
@@ -267,7 +267,7 @@ public class DBLogic implements LogicInterface {
 	 * @param search
 	 * @return list of tags
 	 */
-	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final String hash, final Order order, final int start, final int end, String search, TagRelationType relation) {
+	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final String hash, final Order order, final int start, final int end, final String search, final TagRelationType relation) {
 		if (grouping.equals(GroupingEntity.ALL)) {
 			this.permissionDBManager.checkStartEnd(start, end, "Tag");
 		}				

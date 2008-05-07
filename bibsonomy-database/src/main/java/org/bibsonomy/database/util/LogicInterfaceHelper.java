@@ -41,7 +41,7 @@ public class LogicInterfaceHelper {
 	 * @param loginUser TODO
 	 * @return the fresh param object 
 	 */
-	public static <T extends GenericParam> T buildParam(final Class<T> type, final String authUser, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end, String search, User loginUser) {
+	public static <T extends GenericParam> T buildParam(final Class<T> type, final String authUser, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end, final String search, final User loginUser) {
 		final T param = getParam(type);
 		param.setUserName(authUser);
 		param.setGrouping(grouping);
@@ -53,34 +53,33 @@ public class LogicInterfaceHelper {
 		}
 		param.setRequestedGroupName(groupingName);
 		param.setHash(hash);
-		
+
 		// set the groupIDs the logged-in user may see 
 		//  - every user may see public posts - this one is added in the constructor of DBLogic
 		//  - groups the logged-in user is explicitely member of
 		param.addGroups(UserUtils.getListOfGroupIDs(loginUser));
 		//  - private / friends groups are set later on 
 		//    (@see org.bibsonomy.database.util.DatabaseUtils.prepareGetPostForUser)
-				
+
 		param.setOrder(order);
 		param.setOffset(start);
-		if (end - start < 0 ) {
+		if (end - start < 0) {
 			param.setLimit(0);
-		}
-		else {
+		} else {
 			param.setLimit(end - start);
 		}
+
 		if (tags != null) {
-			
 			for (String tag : tags) {
 				tag = tag.trim();
-				
+
 				if (tag.length() > 2) {
-					if (tag.length() > 14 &&  tag.substring(0,14).equals("sys:bibtexkey:")) {
-						//:bibtexkey:
-						((BibTexParam)param).setBibtexKey(tag.substring(14).trim());
+					if (tag.length() > 14 && tag.substring(0, 14).equals("sys:bibtexkey:")) {
+						// :bibtexkey:
+						((BibTexParam) param).setBibtexKey(tag.substring(14).trim());
 						continue;
 					}
-					
+
 					if (tag.charAt(0) != '-' && tag.charAt(0) != '<' && tag.charAt(tag.length() - 1) != '>') {
 						param.addTagName(tag);
 						continue;
@@ -90,39 +89,42 @@ public class LogicInterfaceHelper {
 						continue;
 					}
 					if (tag.substring(0, 3).equals("-->")) {
-						if (tag.length() > 3) 
+						if (tag.length() > 3) {
 							param.addTransitiveConceptName(tag.substring(3).trim());
-						else
-							param.addTagName(tag);						
+						} else {
+							param.addTagName(tag);
+						}
 						continue;
 					}
 					if (tag.substring(tag.length() - 3, tag.length()).equals("-->")) {
-						if (tag.length() > 3) 
-							param.addSimpleConceptWithParentName(tag.substring(0,tag.length() - 3).trim());
-						else
-							param.addTagName(tag);						
-						continue;
-					}					
-					if (tag.substring(tag.length() - 2, tag.length()).equals("->")) {
-						param.addSimpleConceptWithParentName(tag.substring(0,tag.length() - 2).trim());
+						if (tag.length() > 3) {
+							param.addSimpleConceptWithParentName(tag.substring(0, tag.length() - 3).trim());
+						} else {
+							param.addTagName(tag);
+						}
 						continue;
 					}
-					if (tag.substring(0,3).equals("<->")) {
-						if (tag.length() > 3) 
-							param.addCorrelatedConceptName(tag.substring(3).trim());
-						else
-							param.addTagName(tag);
+					if (tag.substring(tag.length() - 2, tag.length()).equals("->")) {
+						param.addSimpleConceptWithParentName(tag.substring(0, tag.length() - 2).trim());
 						continue;
-					}															
+					}
+					if (tag.substring(0, 3).equals("<->")) {
+						if (tag.length() > 3) {
+							param.addCorrelatedConceptName(tag.substring(3).trim());
+						} else {
+							param.addTagName(tag);
+						}
+						continue;
+					}
 				}
-				
+
 				// if none of the above was applicable, we add a simple tag
 				param.addTagName(tag);
-				
+
 			} // end for
-			
+
 		} // end if (tags != null)
-		
+
 		return param;
 	}
 
