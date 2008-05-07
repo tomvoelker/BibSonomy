@@ -11,6 +11,10 @@ import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.ScrapingException;
 
+/**
+ * @author daill
+ * @version $Id$
+ */
 public class PubMedScraper implements Scraper {
 	private static final Logger log 	= Logger.getLogger(PubMedScraper.class);
 	private static final String info 	= "PudMed Scraper: This scraper parses a publication page of citations from <a href=\"http://www.ncbi.nlm.nih.gov/sites/entrez/\">PubMed</a>  " +
