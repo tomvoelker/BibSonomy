@@ -60,7 +60,12 @@ public class TagPageController extends MultiResourceListControllerWithTags imple
 			totalNumPosts += totalCount;
 		}	
 		
-		//if order = folkrank - retrieve related users
+		/*
+		 *  if order = folkrank - retrieve related users
+		 *  
+		 *  TODO: in practice, this is (currently) only neccessary for HTML and SWRC 
+		 *  (burst, publrss, swrc) related pages
+		 */
 		if (order.equals(Order.FOLKRANK)) {
 			this.setRelatedUsers(command, requTags, order, 0, Parameters.NUM_RELATED_USERS);
 		}

@@ -216,4 +216,11 @@
   	<function-signature>Boolean isSpammer(java.lang.Integer)</function-signature>
   </function>
 
+  <function>
+    <!-- maps BibTeX entrytypes to SWRC entrytypes  -->
+  	<name>getSWRCEntryType</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String getSWRCEntryType(java.lang.String)</function-signature>
+  </function>
+
 </taglib>

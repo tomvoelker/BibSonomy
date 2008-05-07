@@ -7,7 +7,7 @@
 		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 		  xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
 		  xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
-		  xmlns:swrctags="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
+          xmlns:swrctags="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
 		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 

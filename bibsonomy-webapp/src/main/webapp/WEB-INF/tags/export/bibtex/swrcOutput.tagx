@@ -3,82 +3,16 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"	
 	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
+  	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:swrctags="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:swrc="http://swrc.ontoware.org/ontology#">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
-	<c:choose>
-			<c:when test="${post.resource.entrytype eq 'book'}">
-				<swrc:book>
-					<bib:swrcAttributes post="${post}"/>
-				</swrc:book>
-			</c:when>
-			
-			<c:when test="${post.resource.entrytype eq 'inbook'}">
-				<swrc:inbook>
-					<bib:swrcAttributes post="${post}"/>
-				</swrc:inbook>
-			</c:when>
-			
-			<c:when test="${post.resource.entrytype eq 'booklet'}">
-				<swrc:booklet>
-					<bib:swrcAttributes post="${post}"/>
-				</swrc:booklet>
-			</c:when>
-			
-			<c:when test="${post.resource.entrytype eq 'incollection'}">
-				<swrc:incollection>
-					<bib:swrcAttributes post="${post}"/>
-				</swrc:incollection>
-			</c:when>
-			
-			<c:when test="${post.resource.entrytype eq 'inproceedings'}">
-				<swrc:inproceedings>
-					<bib:swrcAttributes post="${post}"/>
-				</swrc:inproceedings>
-			</c:when>
-			
-			<c:when test="${post.resource.entrytype eq 'manual'}">
-				<swrc:manual>
-					<bib:swrcAttributes post="${post}"/>
-				</swrc:manual>
-			</c:when>
-		
-			<c:when test="${post.resource.entrytype eq 'masterthesis'}">
-				<swrc:masterthesis>
-					<bib:swrcAttributes post="${post}"/>
-				</swrc:masterthesis>
-			</c:when>
-			
-			<c:when test="${post.resource.entrytype eq 'phdthesis'}">
-				<swrc:phdthesis>
-					<bib:swrcAttributes post="${post}"/>
-				</swrc:phdthesis>
-			</c:when>
-			
-			<c:when test="${post.resource.entrytype eq 'proceedings'}">				
-				<swrc:proceedings>
-					<bib:swrcAttributes post="${post}"/>
-				</swrc:proceedings>
-			</c:when>
-			
-			<c:when test="${post.resource.entrytype eq 'techreport'}">			
-				<swrc:techreport>
-					<bib:swrcAttributes post="${post}"/>
-				</swrc:techreport>						
-			</c:when>
-			
-			<c:when test="${post.resource.entrytype eq 'unpublished'}">			
-				<swrc:unpublished>
-					<bib:swrcAttributes post="${post}"/>
-				</swrc:unpublished>
-			</c:when>	
-			
-			<c:when test="${post.resource.entrytype eq 'misc'}">			
-				<swrc:misc>
-					<bib:swrcAttributes post="${post}"/>
-				</swrc:misc>
-			</c:when>	
-	</c:choose>
-	
+
+    <rdf:Description rdf:about="${projectHome}bibtex/2${bibtex.intraHash}/${fn:escapeXml(post.user.name)}">
+      <rdf:type rdf:resource="http://swrc.ontoware.org/ontology#${mtl:getSWRCEntryType(bibtex.entrytype)}"/>
+      <swrctags:swrcAttributes post="${post}"/>
+    </rdf:Description>
+
 </jsp:root>

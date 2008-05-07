@@ -26,18 +26,26 @@ import resources.Resource;
  */
 public class Functions  {
 
+	/*
+	 * Mapping of BibTeX entry types to SWRC entry types
+	 */
+	private static String[] bibtexEntryTypes = {"article","book","booklet","inbook","incollection","inproceedings","manual","masterthesis","misc","phdthesis","proceedings","techreport",     "unpublished"}; 
+	private static String[] swrcEntryTypes   = {"Article","Book","Booklet","InBook","InCollection","InProceedings","Manual","MasterThesis","Misc","PhDThesis","Proceedings","TechnicalReport","Unpublished"}; 
+
+
+
 	// contains special characters, symbols, etc...
 	private static Properties chars = new Properties(); 
-		
+
 	// load special characters
 	static {
-	    try {
-	        chars.load(Functions.class.getClassLoader().getResourceAsStream("chars.properties"));
-	    } catch (IOException e) {
-	    	throw new RuntimeException(e.getMessage());
-	    }	    	    		
+		try {
+			chars.load(Functions.class.getClassLoader().getResourceAsStream("chars.properties"));
+		} catch (IOException e) {
+			throw new RuntimeException(e.getMessage());
+		}	    	    		
 	}
-	
+
 	/**
 	 * lookup a special character
 	 * 
@@ -50,7 +58,7 @@ public class Functions  {
 		}
 		return "???" + key + "???";
 	}
-	
+
 	/**
 	 * replaces occurrences of whitespace in the by only one occurrence of the 
 	 * respective whitespace character  
@@ -96,7 +104,7 @@ public class Functions  {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * wrapper for URLEncoder.encode(URI, "UTF-8");
 	 * 
@@ -126,7 +134,7 @@ public class Functions  {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * converts a list of tags into a space-separated string of tags 
 	 * 
@@ -141,7 +149,7 @@ public class Functions  {
 		}
 		return sb.toString().trim();
 	}
-	
+
 	/**
 	 * get the Path component of a URI string
 	 * 
@@ -157,7 +165,7 @@ public class Functions  {
 			throw new RuntimeException(ex.getMessage());
 		}		
 	}
-	
+
 	/**
 	 * Cuts the last segment of the url string until last slash
 	 * 
@@ -174,7 +182,7 @@ public class Functions  {
 			throw new RuntimeException(ex.getMessage());
 		}	
 	}
-	
+
 	/**
 	 * extract query part of given URI string, within a leading "?"
 	 * 
@@ -193,7 +201,7 @@ public class Functions  {
 			throw new RuntimeException(ex.getMessage());
 		}		
 	}	
-	
+
 	/**
 	 * checks if a given String is numeric
 	 * 
@@ -208,7 +216,7 @@ public class Functions  {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * parses a String of misc field entries
 	 * 
@@ -225,7 +233,7 @@ public class Functions  {
 		}
 		return formattedMiscFields;
 	}
-	
+
 	/**
 	 * Computes font size for given tag frequency and maximum tag frequency inside tag cloud
 	 * 
@@ -243,12 +251,12 @@ public class Functions  {
 			t /= 5;
 			t = Math.log(t) * 100 + 60;
 			if (t.intValue() < 100) 
-					return 100;
+				return 100;
 			return t.intValue();
 		}		
 		return 100 + (tagFrequency / tagMaxFrequency * 200);
 	}
-	
+
 	/**
 	 * Wrapper for org.bibsonomy.util.UrlUtils.cleanUrl
 	 * 
@@ -259,7 +267,7 @@ public class Functions  {
 	public static String cleanUrl(String url) {
 		return UrlUtils.cleanUrl(url);
 	}
-	
+
 
 	/**
 	 * wrapper for for org.bibsonomy.util.UrlUtils.setParam
@@ -272,7 +280,7 @@ public class Functions  {
 	public static String setParam(String url, String paramName, String paramValue) {
 		return UrlUtils.setParam(url, paramName, paramValue); 
 	}
-	
+
 	/**
 	 * wrapper for org.bibsonomy.model.util.BibTexUtils.cleanBibtex
 	 * 
@@ -282,7 +290,7 @@ public class Functions  {
 	public static String cleanBibtex(String bibtex) {
 		return BibTexUtils.cleanBibTex(bibtex);
 	}
-	
+
 	/**
 	 * returns the SpamStatus as string for admin pages
 	 * @param id id of the spammer state
@@ -291,7 +299,7 @@ public class Functions  {
 	public static String getPredictionString(final Integer id) {
 		return SpamStatus.getStatus(id).toString();
 	}	
-	
+
 	/**
 	 * Retrieves if given status is a spammer status
 	 * @param id
@@ -300,5 +308,27 @@ public class Functions  {
 	public static Boolean isSpammer(final Integer id) {
 		SpamStatus status = SpamStatus.getStatus(id);
 		return SpamStatus.isSpammer(status);
+	}
+
+
+
+
+	/** Maps BibTeX entry types to SWRC entry types.
+	 * 
+	 * TODO: stolen from old code in {@link EntryType} ... 
+	 * very inefficient ... use a static map instead
+	 *  
+	 * @param bibtexEntryType
+	 * @return
+	 */
+	public static String getSWRCEntryType(final String bibtexEntryType) {
+		for (int i = 0; i < bibtexEntryTypes.length; i++) {
+			/* Comparison with current entrytype value */
+			if (bibtexEntryTypes[i].equals(bibtexEntryType)) {
+				/* match found -> print and stop loop */
+				return swrcEntryTypes[i];
+			}
+		}
+		return "Misc";
 	}
 }
