@@ -34,21 +34,18 @@ public class PubMedScraper implements Scraper {
 			String _origUrl = sc.getUrl().toString();
 			
 			try {
-				//avoid crashes through wrong "db"
-				pa = Pattern.compile("(?i)db=pubmed");
-				ma = pa.matcher(sc.getUrl().getQuery());
-				
-				if (!ma.find()){
+				// avoid crashes
+				if (!sc.getPageContent().matches("(?ms)^.+db=PubMed.+$")){
 					return false;
 				}
 
 				//try to get the PMID out of the paramters
-				pa = Pattern.compile("\\d+");
-				ma = pa.matcher(sc.getUrl().getQuery());
+				pa = Pattern.compile("(?ms)^.+PMID: (\\d*) .+$");
+				ma = pa.matcher(sc.getPageContent());
 				
 				//if the PMID is existent then get the bibtex from hubmed
 				if(ma.find()){
-					String newUrl = "http://www.hubmed.org/export/bibtex.cgi?uids=" + ma.group();
+					String newUrl = "http://www.hubmed.org/export/bibtex.cgi?uids=" + ma.group(1);
 					bibtexresult = sc.getContentAsString(new URL(newUrl));
 				}
 				
