@@ -11,6 +11,7 @@ import org.bibsonomy.webapp.util.View;
  * which views are capable to display bibtex / bookmark only
  * 
  * @author Jens Illig
+ * @V
  */
 public enum Views implements View {
 		
@@ -180,55 +181,73 @@ public enum Views implements View {
 		this.name = name;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.util.View#getName()
+	 */
 	public String getName() {
 		return this.name;
 	}
 	
 	/**
-	 * @param name
-	 * @return true if the current name equals bibtex
+	 * Helper method to identify those formats whose corresponding view 
+	 * displays ONLY bibtex posts
+	 * 
+	 * @param format the name of the format
+	 * @return true if the corresponding view displays only bibtex posts, false otherwise
 	 */
-	public static Boolean isBibtexView(String name) {
-		if (name.equals("bibtex")) {
+	public static Boolean isBibtexOnlyFormat(String format) {
+		if ("bibtex".equals(format) || 
+			"publrss".equals(format) ||
+			"aparss".equals(format) ||
+			"burst".equals(format) || 
+			"swrc".equals(format)) {
 			return true;
 		}
 		return false;
 	}
 	
 	/**
-	 * @param name
-	 * @return true! all the time
-	 * @Deprecated useless? ugly?
+	 * Helper method to identify those formats whose corresponding view 
+	 * displays ONLY bookmark posts
+	 * 
+	 * @param format the name of the format
+	 * @return true if the corresponding view displays only bookmark posts, false otherwise
 	 */
-	public static Boolean isBookmarkView(String name) {
-		if (false) {
-			return true;
-		}
+	public static Boolean isBookmarkOnlyFormat(String format) {
+		if ("xml".equals(format) || 
+			"publ".equals(format) ||
+			"rss".equals(format) ||
+			"bookpubl".equals(format)) {
+				return true;
+			}
 		return false;
 	}
 	
 	/**
-	 * @param format 
+	 * Helper method to retrieve a view by a format string (passed to the
+	 * application via e.g. ?format=rss)
+	 * 
+	 * @param format the name of the format
 	 * @return the corresponding view for a given format
 	 */
 	public static Views getViewByFormat(String format) {
-		if (format.equals("bibtex"))
+		if ("bibtex".equals(format))
 			return BIBTEX;
-		if (format.equals("burst"))
+		if ("burst".equals(format))
 			return BURST;
-		if (format.equals("rss"))
+		if ("rss".equals(format))
 			return RSS;
-		if (format.equals("publrss"))
+		if ("publrss".equals(format))
 			return PUBLRSS;
-		if (format.equals("swrc"))
+		if ("swrc".equals(format))
 			return SWRC;
-		if (format.equals("publ"))
+		if ("publ".equals(format))
 			return PUBL;
-		if (format.equals("aparss"))
+		if ("aparss".equals(format))
 			return APARSS;
-		if (format.equals("xml"))
+		if ("xml".equals(format))
 			return XML;
-		if (format.equals("bookpubl"))
+		if ("bookpubl".equals(format))
 			return BOOKPUBL;
 		
 		throw new BadRequestOrResponseException("Invalid format specification.");
