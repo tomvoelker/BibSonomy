@@ -131,11 +131,11 @@ public abstract class MultiResourceListController {
 	 */
 	protected void chooseListsToInitialize(String format, String resourcetype) {
 		format = format.toLowerCase();
-		if (Views.isBibtexView(format.toLowerCase()) 
+		if (Views.isBibtexOnlyFormat(format.toLowerCase()) 
 				|| (resourcetype != null && resourcetype.toLowerCase().equals("bibtex"))) {
 			this.listsToInitialise.remove(Bookmark.class);
 		}
-		if (Views.isBookmarkView(format.toLowerCase()) 
+		if (Views.isBookmarkOnlyFormat(format.toLowerCase()) 
 				|| (resourcetype != null && resourcetype.toLowerCase().equals("bookmark"))) {
 			this.listsToInitialise.remove(BibTex.class);
 		}
