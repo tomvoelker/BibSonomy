@@ -15,6 +15,9 @@ public class TagResourceViewCommand extends ResourceViewCommand{
 	/** tags to search for */
 	private String requestedTags = "";
 	
+	/** tags to search for, as list */
+	private List<String> requestedTagsList = null;
+	
 	/** the specified order */
 	private String order = "added";
 		
@@ -30,16 +33,17 @@ public class TagResourceViewCommand extends ResourceViewCommand{
 	/**
 	 * @return the requested tagstring as a list
 	 */
-	public List<String> getRequestedTagsList() {
-		List<String> tags = new ArrayList<String>();
-		
-		StringTokenizer st = new StringTokenizer(requestedTags);
-		while (st.hasMoreTokens()) {			
-			String tagname = st.nextToken();			
-			tags.add(tagname);			
-		}
-		
-		return tags;
+	public List<String> getRequestedTagsList() {		
+		// tagstring has not yet been tokenized 
+		if (this.requestedTagsList == null) {
+			this.requestedTagsList = new ArrayList<String>();			
+			StringTokenizer st = new StringTokenizer(requestedTags);
+			while (st.hasMoreTokens()) {			
+				String tagname = st.nextToken();			
+				this.requestedTagsList.add(tagname);			
+			}			
+		}		
+		return this.requestedTagsList;
 	}
 	
 	/**
