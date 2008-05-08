@@ -198,6 +198,7 @@ public enum Views implements View {
 	public static Boolean isBibtexOnlyFormat(String format) {
 		if ("bibtex".equals(format) || 
 			"publrss".equals(format) ||
+			"publ".equals(format) ||			
 			"aparss".equals(format) ||
 			"burst".equals(format) || 
 			"swrc".equals(format)) {
@@ -215,7 +216,6 @@ public enum Views implements View {
 	 */
 	public static Boolean isBookmarkOnlyFormat(String format) {
 		if ("xml".equals(format) || 
-			"publ".equals(format) ||
 			"rss".equals(format) ||
 			"bookpubl".equals(format)) {
 				return true;
