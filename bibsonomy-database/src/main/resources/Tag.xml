@@ -233,7 +233,7 @@
 	<!-- 
 		query to retrieve globally related tags 
 	-->
-	<select id="getRelatedTags" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+	<select id="getRelatedTags" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam" timeout="2">
 	    <!-- single tag requested: query tagtag table -->
 		<isEqual property="maxTagIndex" compareValue="1">
 			SELECT TT.t2 AS tag_name, TT.ctr_public AS tag_ctr
