@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.BibtexkeyCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -20,7 +19,7 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class BibtexkeyPageController extends MultiResourceListController implements MinimalisticController<BibtexkeyCommand> {
-	private static final Logger LOGGER = Logger.getLogger(HomepageController.class);
+	private static final Logger LOGGER = Logger.getLogger(BibtexkeyPageController.class);
 
 	public View workOn(BibtexkeyCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());

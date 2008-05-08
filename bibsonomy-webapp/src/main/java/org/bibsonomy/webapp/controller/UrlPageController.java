@@ -28,7 +28,7 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class UrlPageController extends MultiResourceListController implements MinimalisticController<UrlCommand> {
-	private static final Logger LOGGER = Logger.getLogger(HomepageController.class);
+	private static final Logger LOGGER = Logger.getLogger(UrlPageController.class);
 
 	public View workOn(UrlCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
