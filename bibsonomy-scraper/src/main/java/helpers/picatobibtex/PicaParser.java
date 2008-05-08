@@ -82,8 +82,6 @@ public class PicaParser{
 		bibres.append("publisher = {" + publisher + "}, \n");
 		bibres.append("}");
 		
-		System.out.println(bibres.toString());
-		
 		return bibres.toString();
 	}
 

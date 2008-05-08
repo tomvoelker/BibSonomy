@@ -71,7 +71,7 @@ public class PicaToBibtexConverter {
 			for (int i=0; i<childs.getLength(); i++){
 				Node child = childs.item(i);
 				if (child.getNodeType() == 3){
-					processRow(Normalizer.normalize(child.getTextContent().trim(), Normalizer.COMPOSE, 0));
+					processRow(Normalizer.normalize(child.getTextContent().trim(), Normalizer.DECOMP, 0));
 				}
 			}	
 		} catch (Exception e) {
