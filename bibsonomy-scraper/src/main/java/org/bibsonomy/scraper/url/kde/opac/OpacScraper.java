@@ -26,7 +26,7 @@ public class OpacScraper implements Scraper {
 			
 			try {
 				// create a converter and start converting :)
-				PicaToBibtexConverter converter = new PicaToBibtexConverter(sc.getPageContent(), "xml");
+				PicaToBibtexConverter converter = new PicaToBibtexConverter(sc.getPageContent(), "xml", sc.getUrl().toString());
 				
 				bibResult = converter.getBibResult();
 				

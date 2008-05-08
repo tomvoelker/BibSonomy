@@ -18,14 +18,20 @@ import org.apache.log4j.Logger;
  * @author C. Kramer
  * @version $Id$
  */
-public class PicaParser {
+public class PicaParser{
 	private static final Logger log = Logger.getLogger(PicaParser.class);
 	private PicaRecord pica = null;
+	private String  url = null;
+	
+	// String array with all regex pieces to be replaced
+	private String[] cleaning = {"@", "&lt;.+?&gt;"};
 	
 	/**
 	 * @param pica
+	 * @param url 
 	 */
-	public PicaParser(final PicaRecord pica){
+	public PicaParser(final PicaRecord pica, final String url){
+		this.url = url;
 		this.pica = pica;
 	}
 	
@@ -33,8 +39,9 @@ public class PicaParser {
 	 * start parsing
 	 * 
 	 * @return String
+	 * @throws Exception 
 	 */
-	public String getBibRes(){		
+	public String getBibRes() throws Exception{		
 		return parse();
 	}
 	
@@ -43,33 +50,39 @@ public class PicaParser {
 	 * 
 	 * @return String
 	 */
-	private String parse(){
+	private String parse() throws Exception{
 		StringBuffer bibres = new StringBuffer();
 		
-		try {
-			String type = getBibType();
-			String author = getAuthor();
-			String title = getTitle();
-			String year = getYear();
-			String misc = getMisc();
-			String abstr = getAbstract();
-			String tags = getTags();
+		String type = getBibType();
+		String author = cleanString(getAuthor());
+		String title = cleanString(getTitle());
+		String year = cleanString(getYear());
+		String isbn = cleanString(getISBN());
+		String issn = cleanString(getISSN());
+		String ppn = cleanString(getPPN());
+		String series = cleanString(getSeries());
+		String abstr = cleanString(getAbstract());
+		String tags = cleanString(getTags());
+		String publisher = cleanString(getPublisher());
 			
-			String bibkey = createBibkey(author,year);
+		String bibkey = createBibkey(author,year);
 			
 			
-			bibres.append(type + bibkey + ",\n");
-			bibres.append("author = {" + author + "},\n");
-			bibres.append("title = {" + title + "},\n");
-			bibres.append("year = {" + year + "},\n");
-			bibres.append("abstract = {" + abstr + "}, \n");
-			bibres.append("keywords = {" + tags + "}, \n");
-			bibres.append(misc);
-			bibres.append("}");
-			
-		} catch (Exception e){
-			log.error(e);
-		}
+		bibres.append(type + bibkey + ",\n");
+		bibres.append("author = {" + author + "},\n");
+		bibres.append("title = {" + title + "},\n");
+		bibres.append("year = {" + year + "},\n");
+		bibres.append("abstract = {" + abstr + "}, \n");
+		bibres.append("keywords = {" + tags + "}, \n");
+		bibres.append("url = {" + url + "}, \n");
+		bibres.append("ppn = {" + ppn +  "}, \n");
+		bibres.append("series = {" + series + "}, \n");
+		bibres.append("isbn = {" + isbn + "}, \n");
+		bibres.append("issn = {" + issn + "}, \n");
+		bibres.append("publisher = {" + publisher + "}, \n");
+		bibres.append("}");
+		
+		System.out.println(bibres.toString());
 		
 		return bibres.toString();
 	}
@@ -142,8 +155,6 @@ public class PicaParser {
 	 * @return String
 	 */
 	private String getBibType(){
-		String bibtype = "@misc{";
-		
 		Row r = null;
 		SubField s = null;
 		
@@ -168,36 +179,37 @@ public class PicaParser {
 						if ((_tempSub = _tempRow.getSubField("$c")) != null){
 							String _tempCont = _tempSub.getContent();
 							if (_tempCont.matches("^.*Diss.*$")){
-								bibtype = "@phdthesis{";
+								return "@phdthesis{";
 							} else if (_tempCont.matches("^.*Master.*$")){
-								bibtype = "@masterthesis{";
+								return "@masterthesis{";
 							} else {
-								bibtype = "@techreport{";
+								return "@techreport{";
 							}
 						}
 					}
 				}
-				
-				if ("k".equals(s.getContent())){
-					bibtype = "@proceedings{";
-				}
-
 			}
-		} else if((pica.isExisting("004A") || pica.isExisting("004D")) && !pica.isExisting("005A") && !pica.isExisting("005D")) {
-			bibtype = "@book{";
-		} else if(((pica.isExisting("005A")) || pica.isExisting("005D")) && !pica.isExisting("004A") && !pica.isExisting("004D")){
-			bibtype = "@article{";
-		} else if(((pica.isExisting("004A")) || pica.isExisting("004D")) && (pica.isExisting("005A") || pica.isExisting("005D"))){
-			bibtype = "@proceedings{";
-		} else if(pica.getRow("021A").isExisting("$d")){
+		} 
+			
+		if(pica.getRow("021A").isExisting("$d")){
 			if (pica.getRow("021A").getSubField("$d").getContent().trim().matches("^.*proceedings.*$")){
-				bibtype = "@proceedings{";
+				return "@proceedings{";
 			}
-		} else {
-			bibtype = "@book{";
+		} 
+		
+		if((pica.isExisting("004A") || pica.isExisting("004D")) && !pica.isExisting("005A") && !pica.isExisting("005D")) {
+			return "@book{";
 		}
 		
-		return bibtype;
+		if(((pica.isExisting("005A")) || pica.isExisting("005D")) && !pica.isExisting("004A") && !pica.isExisting("004D")){
+			return "@article{";
+		}
+		
+		if(((pica.isExisting("004A")) || pica.isExisting("004D")) && (pica.isExisting("005A") || pica.isExisting("005D"))){
+			return "@proceedings{";
+		}
+		
+		return "@misc{";
 	}
 	
 	/**
@@ -209,6 +221,34 @@ public class PicaParser {
 		String res = "";
 		
 		res = getData("021A", "$a");
+		res += " " + getData("021A", "$d");
+		res += " " + getData("021A", "$h");
+		
+		return res;
+	}
+	
+	/**
+	 * extract the ppn
+	 * 
+	 * @return
+	 */
+	private String getPPN(){
+		String res = "";
+		
+		res = getData("003@", "$0");
+		
+		return res;
+	}
+	
+	/**
+	 * extract Series
+	 * 
+	 * @return
+	 */
+	private String getSeries(){
+		String res = "";
+		
+		res = getData("036E", "$a");
 		
 		return res;
 	}
@@ -230,16 +270,28 @@ public class PicaParser {
 		return year;
 	}
 	
-	/** 
-	 * get some misc fields like isbn and issn simply add
-	 * more fields.
+	/**
+	 * extract the issn
 	 * 
-	 * return String
-	 */ 
-	private String getMisc(){
-		String isbn = "isbn = {";
-		String issn = "issn = {";
+	 * @return issn
+	 */
+	private String getISSN(){
+		String res = "";
 		
+		res = getData("005A", "$0");
+		if(res.length() == 0){
+			 res = getData("005A", "$A"); 
+		}
+		
+		return res;
+	}
+	
+	/**
+	 * extract the isbn
+	 * 
+	 * @return isbn
+	 */
+	private String getISBN(){
 		String res = "";
 		
 		res = getData("004A", "$0");
@@ -247,12 +299,7 @@ public class PicaParser {
 			res = getData("004A", "$A");
 		}
 		
-		isbn += res + "},\n";
-		
-		res = getData("005A", "$0");
-		issn += res + "},\n";
-		
-		return isbn + issn;
+		return res;
 	}
 	
 	/**
@@ -313,6 +360,20 @@ public class PicaParser {
 	}
 	
 	/**
+	 * extract publisher
+	 * 
+	 * @return
+	 */
+	private String getPublisher(){
+		String res = "";
+
+		res = getData("033A", "$n");
+		res += " " + getData("033A", "$p");
+		
+		return res;
+	}
+	
+	/**
 	 * This helpmethod should create the bibtexkey be author and year
 	 * 
 	 * @param author
@@ -357,5 +418,22 @@ public class PicaParser {
 		}
 		
 		return "";
+	}
+	
+	/**
+	 * Tries to clean the given String from i.e. internal references like @
+	 * 
+	 * @param toClean
+	 * @return String
+	 */
+	private String cleanString(String toClean){
+		String res = toClean;
+		
+		for (String s : cleaning){
+			res = res.replaceAll(s, "");
+		}
+		
+		
+		return res;
 	}
 }

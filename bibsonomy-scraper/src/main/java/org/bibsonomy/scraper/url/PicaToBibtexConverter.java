@@ -17,6 +17,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import sun.text.Normalizer;
+
 /**
  * @author C. Kramer
  * @version $Id$
@@ -25,13 +27,16 @@ public class PicaToBibtexConverter {
 	private static final Logger log = Logger.getLogger(PicaToBibtexConverter.class);
 	
 	private static PicaRecord pica;
+	private String url;
 	
 	/**
 	 * @param scrapingcont 
 	 * @param type
+	 * @param url
 	 */
-	public PicaToBibtexConverter(final String scrapingcont, final String type){
-		pica = new PicaRecord();
+	public PicaToBibtexConverter(final String scrapingcont, final String type, final String url){
+		this.pica = new PicaRecord();
+		this.url = url;
 		
 		if ("html".equals(type.toLowerCase())){
 			parseContentHtml(scrapingcont);	
@@ -66,7 +71,7 @@ public class PicaToBibtexConverter {
 			for (int i=0; i<childs.getLength(); i++){
 				Node child = childs.item(i);
 				if (child.getNodeType() == 3){
-					processRow(child.getTextContent().trim());
+					processRow(Normalizer.normalize(child.getTextContent().trim(), Normalizer.COMPOSE, 0));
 				}
 			}	
 		} catch (Exception e) {
@@ -91,7 +96,7 @@ public class PicaToBibtexConverter {
 			String _cont = cont.replaceFirst(m.group(1), "");
 			
 			// etract the subfield of each category
-			Pattern p1 = Pattern.compile("(\\$[0-9a-z]{1})([^\\$]+)");
+			Pattern p1 = Pattern.compile("(\\$[0-9a-zA-Z]{1})([^\\$]+)");
 			Matcher m1 = p1.matcher(_cont);
 			
 			// put it to the row object
@@ -115,7 +120,7 @@ public class PicaToBibtexConverter {
 	 * @return Bibtex String
 	 */
 	public String getBibResult() throws Exception{
-		PicaParser parser = new PicaParser(pica);
+		PicaParser parser = new PicaParser(pica, url);
 		return parser.getBibRes();
 	}
 }
