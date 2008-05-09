@@ -49,7 +49,7 @@ my $slave    = "DBI:mysql:database=$database;host=localhost:3306;mysql_socket=/v
 my $master   = "DBI:mysql:database=$database;host=gandalf:6033";
 #my $master   = "DBI:mysql:database=$database;host=127.0.0.1:3306";
 
-my $toptags_count=5000;
+my $toptags_count=10;
 
 my %tagtag_ctr_hash=();
 my %list_of_tags=();
@@ -63,10 +63,10 @@ my @rel_tags_of_t1=();
 my $dbh = DBI->connect($slave, $user, $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});#, "transaction-isolation" => "READ-UNCOMMITTED"});
 # prepare statements
 # get all public tag_names ordered by post
-my $stm_select_tagtag =$dbh->prepare("SELECT t1 collate utf8_bin , t2 collate utf8_bin , ctr_public  FROM tagtag where ctr_public>0 order by t1,t2 collate utf8_bin");
+my $stm_select_tagtag =$dbh->prepare("SELECT t1 collate utf8_bin , t2 collate utf8_bin , ctr_public  FROM tagtag force index (t1_ctr_public_idx) where ctr_public>0 order by t1 ");
 $stm_select_tagtag->{"mysql_use_result"} = 1;
 # get top 10000 tags of the system
-my $stm_select_toptag =$dbh->prepare("SELECT tag_name,tag_ctr_public FROM tags order by tag_ctr_public desc limit ?");
+my $stm_select_toptag =$dbh->prepare("select lower(tag_name),sum(tag_ctr_public) as ctr from tags group by lower(tag_name) having ctr > ?");
 $stm_select_toptag->{"mysql_use_result"} = 1;
 
 #######################################
@@ -77,7 +77,12 @@ $stm_select_toptag->execute($toptags_count);
 my %toptag = ();
 
 while (my @row = $stm_select_toptag->fetchrow_array ) {
-	$toptag{$row[0]}=$row[1];
+       
+        if (exists $toptag{lc($row[0])}) {
+  		$toptag{lc($row[0])} += $row[1];
+	} else {
+		$toptag{lc($row[0])} = $row[1];
+	}
 }
 
 ########################################
@@ -116,7 +121,9 @@ while (my @tt = $stm_select_tagtag->fetchrow_array ) {
 
 #print STDERR "$tt[0] $tt[1] $tt[2]\n";
 
-	if (!(exists $toptag{$tt[0]} && exists $toptag{$tt[1]})) {next;}
+        if ($count<=0) {next; }
+
+	if (!(exists $toptag{$tag} && exists $toptag{$res})) {next;}
 
 	# store the tags
 	if (exists $tags{$tag}) {
@@ -182,8 +189,19 @@ $dbh->disconnect;
 # connect
 $dbh = DBI->connect($master, $user, $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});
 # prepare
-my $stm_instert_contexttag = $dbh->prepare("INSERT INTO tagtag_similarity (t1,t2,sim) values (?, ?, ?)"); # ON DUPLICATE KEY UPDATE sim=?");
+#
 
+my $stm_delete_old_entries =  $dbh->prepare("delete from tagtag_similarity2");
+
+my $stm_instert_contexttag = $dbh->prepare("INSERT INTO tagtag_similarity2 (t1,t2,sim) values (?, ?, ?)"); # ON DUPLICATE KEY UPDATE sim=?");
+
+my $stm_rename_tabs = $dbh->prepare("rename table tagtag_similarity to tagtag_similarity_old,  tagtag_similarity2 to tagtag_similarity,  tagtag_similarity_old to tagtag_similarity2");
+
+# delete all entries of the current table
+
+$stm_delete_old_entries->execute();
+
+$dbh->commit;
 
 
 my $tid1;
@@ -212,14 +230,20 @@ for ($tid1 = 0; $tid1 <= $tagCount; $tid1++) {
 	
 	for ((sort {$sim_to_tid1{$b} <=> $sim_to_tid1{$a}} keys %sim_to_tid1)) {
 		$sim = $sim_to_tid1{$_};
-		print $tags_reverse{$tid1}."|#|".$tags_reverse{$_}."|#|".$sim."\n";
-#		$stm_instert_contexttag->execute($tags_reverse{$tid1},$tags_reverse{$_},$sim); #,$sim);
+#		print $tags_reverse{$tid1}."|#|".$tags_reverse{$_}."|#|".$sim."\n";
+		$stm_instert_contexttag->execute($tags_reverse{$tid1},$tags_reverse{$_},$sim); #,$sim);
 		$commit_count++;
-		if ($commit_count % 10000 == 0) {$dbh->commit;}
+		if ($commit_count % 1000 == 0) {$dbh->commit;}
 		$count_curr_sim++;
 		if ($count_curr_sim == $sim_count_tags) {last;}
 	}
 }
+
+$dbh->commit;
+
+# rename old and new
+
+$stm_rename_tabs->execute();
 
 $dbh->commit;
 
