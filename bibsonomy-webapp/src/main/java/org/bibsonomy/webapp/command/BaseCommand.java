@@ -108,4 +108,14 @@ public class BaseCommand {
 	public Boolean getUserLoggedIn() {
 		return this.userLoggedIn();
 	}
+	
+	/**
+	 * Helper function to expose the name of the current command
+	 * to the JSPs
+	 * 
+	 * @return the class name of the current command
+	 */
+	public String getCommandName() {
+		return this.getClass().getSimpleName();
+	}
 }
