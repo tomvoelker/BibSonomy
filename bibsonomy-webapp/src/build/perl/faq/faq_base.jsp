@@ -158,6 +158,16 @@ list</a>.</p>
     show all your entries (e.g. by extending the URL with "?items=1000"). Then, click on the edit button. Note 
     that you can only remove your own entries.  
     </dd>
+    
+    <dt>What is the difference between &quot;related&quot; and &quot;similar&quot; tags?</dt>
+    <dd>For tag-based navigation purposes, we provide two kinds of tags: <em>related tags</em>
+    are those tags &quot;usual&quot; which were assigned together to a post. If e.g. a user has
+    tagged a post with <em>java</em> and <em>programming</em>, then those two tags are related.
+    <em>Similar tags</em> on the other side are computed by a more complex similarity measure 
+    coming from the research of information retrieval, namely cosine similarity in the vector 
+    of the popular tags. Similar tags are in many cases synonoym tags. See our 
+    <a href="/help/basic/cutting_edge#relSimTags">help pages</a> for a more detailed explanation.
+    </dd>
 
 </dl>
 <!--              Groups and Privacy              -->
