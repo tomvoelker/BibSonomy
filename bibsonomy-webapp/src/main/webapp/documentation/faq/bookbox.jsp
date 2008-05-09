@@ -152,11 +152,11 @@ list</a>.</p>
     
     <dt>What is the difference between "related" and "similar" tags?<a name="faq-ui-10" ></a></dt>
     <dd>For tag-based navigation purposes, we provide two kinds of tags: <em>related tags</em>
-    are those tags "usual" which were assigned together to a post. If e.g. a user has
+    are those tags which were assigned together to a post. If e.g. a user has
     tagged a post with <em>java</em> and <em>programming</em>, then those two tags are related.
     <em>Similar tags</em> on the other side are computed by a more complex similarity measure 
-    coming from the research of information retrieval, namely cosine similarity in the vector 
-    of the popular tags. Similar tags are in many cases synonoym tags. See our 
+    coming from the research on information retrieval, namely cosine similarity in the vector 
+    of the popular tags. Similar tags are in many cases synonym tags. See our 
     <a href="/help/basic/cutting_edge#relSimTags" >help pages</a> for a more detailed explanation.
     </dd>
 
