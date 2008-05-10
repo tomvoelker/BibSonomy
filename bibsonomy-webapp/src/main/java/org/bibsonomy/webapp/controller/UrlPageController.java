@@ -55,8 +55,13 @@ public class UrlPageController extends MultiResourceListController implements Mi
 			setTags(command, resourceType, GroupingEntity.ALL, null, null, null, command.getRequUrlHash(), null, 0, 20, null);
 			postProcessAndSortList(command, resourceType);
 		}
-		
-		command.setPageTitle("url :: " + command.getBookmark().getList().get(0).getResource().getUrl() );
+
+		if (ValidationUtils.present(command.getBookmark().getList())) {	
+			command.setPageTitle("url :: " + command.getBookmark().getList().get(0).getResource().getUrl() );
+		}
+		else {
+			command.setPageTitle("url ::");
+		}
 		
 		// html format - retrieve tags and return HTML view
 		if (command.getFormat().equals("html")) {
