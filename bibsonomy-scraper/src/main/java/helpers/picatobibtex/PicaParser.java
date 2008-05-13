@@ -1,6 +1,9 @@
 package helpers.picatobibtex;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Set;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,7 +27,7 @@ public class PicaParser{
 	private String  url = null;
 	
 	// String array with all regex pieces to be replaced
-	private String[] cleaning = {"@", "&lt;.+?&gt;"};
+	private String[] cleaning = {"@", "&lt;.+?&gt;", "\\{", "\\}"};
 	
 	/**
 	 * @param pica
@@ -92,59 +95,44 @@ public class PicaParser{
 	 * @return String
 	 */
 	private String getAuthor(){
-		String author = "";
+		HashMap<String, String> authorCat = new HashMap<String, String>();
+		Vector<String> authors = new Vector<String>();
+		String authorResult = "";
 		
-		Row row = null;
-		String cat = null;
+		// fill
+		authorCat.put("028C", "028C");
+		authorCat.put("028A", "028B");
+		authorCat.put("028D", "028D");
 		
-		// get the main category
-		if(pica.isExisting("028C")){
-			if(pica.getRow("028C").isExisting("$8")){
-				author = getData("028C", "$8");
-			} else if (pica.getRow("028C").isExisting("$a")){
-				author = getData("028C", "$a");
-				author +="," + getData("028C", "$d");
-			}
-			
-			cat = "028C";
-		} else if(pica.isExisting("028A")){
-			if(pica.getRow("028A").isExisting("$8")){
-				author = getData("028A", "$8");
-			} else if (pica.getRow("028A").isExisting("$a")){
-				author = getData("028A", "$a");
-				author +="," + getData("028A", "$d");
-			}
-			
-			cat = "028B";
-		}
+		Set<String> set = authorCat.keySet();
 		
-		// get all other author by specific category
-		if (cat != null){
-			int ctr = 1;
-			
-			row = pica.getRow(cat + "/0" + Integer.toString(ctr));
-			
-			while(row != null){
-				String newCat = cat + "/0" + Integer.toString(ctr);
-				
-				if(row.isExisting("$8")){
-					author += " and " + getData(newCat, "$8");
-				} else {
-					author += " and " + getData(newCat, "$a");
-					author += "," + getData(newCat, "$d");
+		for(String s : set){
+			// get the main category
+			if(pica.isExisting(s)){
+				String _tempAuthor = null;
+				_tempAuthor = new String();
+				if(pica.getRow(s).isExisting("$8")){
+					_tempAuthor = getData(s, "$8");
+				} else if (pica.getRow(s).isExisting("$a")){
+					_tempAuthor = getData(s, "$a");
+					_tempAuthor +="," + getData(s, "$d");
 				}
 				
-				ctr++;
-	
-				if (ctr < 10){
-					row = pica.getRow(cat + "/0" + Integer.toString(ctr));
-				} else {
-					row = pica.getRow(cat + "/" + Integer.toString(ctr));
-				}
-			}
+				_tempAuthor += getSubAuthors(authorCat.get(s));
+				
+				authors.add(_tempAuthor);
+			} 
 		}
 		
-		return author;
+		for(String _temp : authors){
+			if (authorResult.length() < 1){
+				authorResult = _temp;
+			} else {
+				authorResult += "and " + _temp;
+			}
+		}
+
+		return authorResult;
 	}
 	
 	/**
@@ -433,5 +421,38 @@ public class PicaParser{
 		
 		
 		return res;
+	}
+	
+	private String getSubAuthors(final String cat){
+		String author = "";
+		Row row = null;
+		
+		// get all other author by specific category
+		if (cat != null){
+			int ctr = 1;
+			
+			row = pica.getRow(cat + "/0" + Integer.toString(ctr));
+			
+			while(row != null){
+				String newCat = cat + "/0" + Integer.toString(ctr);
+				
+				if(row.isExisting("$8")){
+					author += " and " + getData(newCat, "$8");
+				} else {
+					author += " and " + getData(newCat, "$a");
+					author += "," + getData(newCat, "$d");
+				}
+				
+				ctr++;
+	
+				if (ctr < 10){
+					row = pica.getRow(cat + "/0" + Integer.toString(ctr));
+				} else {
+					row = pica.getRow(cat + "/" + Integer.toString(ctr));
+				}
+			}
+		}
+		
+		return author;
 	}
 }

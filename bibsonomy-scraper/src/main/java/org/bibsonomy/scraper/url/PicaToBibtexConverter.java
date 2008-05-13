@@ -63,6 +63,7 @@ public class PicaToBibtexConverter {
 			DocumentBuilder builder = fac.newDocumentBuilder();
 			Document doc = builder.parse(new ByteArrayInputStream(sc.getBytes("UTF-8")));
 			
+			
 			// get the nodelist which holds the "rows"
 			NodeList nodes = doc.getElementsByTagName("LONGTITLE");
 			NodeList childs = nodes.item(0).getChildNodes();
@@ -76,7 +77,6 @@ public class PicaToBibtexConverter {
 			}	
 		} catch (Exception e) {
 			log.error(e);
-			e.printStackTrace();
 		}
 	}
 	
