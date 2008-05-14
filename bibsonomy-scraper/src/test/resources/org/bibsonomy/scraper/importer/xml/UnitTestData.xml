@@ -390,4 +390,16 @@
 		<BibFile>OpacScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.biomed.BioMedCentralScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_66">
+		<TestDescription>AnthroSource Journals Url 1</TestDescription>
+		<URL>http://www.anthrosource.net/doi/abs/10.1525/aa.1980.82.1.02a00550</URL>
+		<BibFile>AnthroSourceScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.anthrosource.AnthroSourceScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_67">
+		<TestDescription>AnthroSource Journals Url 1</TestDescription>
+		<URL>http://www.anthrosource.net/action/showCitFormats?doi=10.1525%2Faa.1980.82.1.02a00550</URL>
+		<BibFile>AnthroSourceScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.anthrosource.AnthroSourceScraper</Scraper>
+	</URLTest>
 </test:Tests>
