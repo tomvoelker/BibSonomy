@@ -77,6 +77,11 @@ public abstract class MultiResourceListController {
 			}
 			if ("no".equals(cmd.getDuplicates())) {
 				BibTexUtils.removeDuplicates(cmd.getBibtex().getList());
+				// re-sort list by date in descending order, if nothing else requested
+				if ("none".equals(cmd.getSortPage())) {
+					cmd.setSortPage("date");
+					cmd.setSortPageOrder("desc");
+				}
 			}
 			if (!"none".equals(cmd.getSortPage())) {
 				BibTexUtils.sortBibTexList(cmd.getBibtex().getList(), SortUtils.parseSortKeys(cmd.getSortPage()), SortUtils.parseSortOrders(cmd.getSortPageOrder()) );
