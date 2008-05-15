@@ -4,12 +4,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Date;
 
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.util.DateUtils;
 import org.bibsonomy.util.StringUtils;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -105,6 +107,10 @@ public class BibTexPostComparator implements Comparator<Post<BibTex>>, Serializa
 				else if (crit.sortKey.equals(SortKey.SCHOOL)) {
 					return this.nomalizeAndCompare(post1.getResource().getSchool(), post2.getResource().getSchool(), crit.sortOrder);
 				}
+				// posting date
+				else if (crit.sortKey.equals(SortKey.DATE)) {
+					return this.compare(post1.getDate(), post2.getDate(), crit.sortOrder);
+				}
 				else {
 					return 0;
 				}
@@ -149,7 +155,7 @@ public class BibTexPostComparator implements Comparator<Post<BibTex>>, Serializa
 	 * @return an int comparison value
 	 * @throws SortKeyIsEqualException 
 	 */
-	private int compare(final int i1, final int i2, final SortOrder order) throws SortKeyIsEqualException {
+	private int compare (final int i1, final int i2, final SortOrder order) throws SortKeyIsEqualException {
 		int comp = 0;
 		if (order.equals(SortOrder.ASC)) {
 			comp = i1 - i2;
@@ -159,4 +165,25 @@ public class BibTexPostComparator implements Comparator<Post<BibTex>>, Serializa
 		if (comp == 0) throw new SortKeyIsEqualException();
 		return comp;
 	}	
+	
+	/**
+	 * Compare two dates following a specified order
+	 * 
+	 * @param d1 first date
+	 * @param d2 second date
+	 * @param order sort order
+	 * @return an int comparison value
+	 * @throws SortKeyIsEqualException
+	 */
+	private int compare (final Date d1, final Date d2, final SortOrder order) throws SortKeyIsEqualException {
+		int comp = 0;
+		if (order.equals(SortOrder.ASC)) {
+			comp = DateUtils.secureCompareTo(d1, d2);
+		}
+		else {
+			comp = DateUtils.secureCompareTo(d2, d1);
+		}
+		if (comp == 0) throw new SortKeyIsEqualException();
+		return comp;
+	}
 }
