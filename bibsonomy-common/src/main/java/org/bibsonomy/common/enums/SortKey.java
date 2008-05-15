@@ -35,5 +35,7 @@ public enum SortKey {
 	/** by journal */
 	JOURNAL,
 	/** by school */
-	SCHOOL;
+	SCHOOL,
+	/** by posting date*/
+	DATE;
 }
