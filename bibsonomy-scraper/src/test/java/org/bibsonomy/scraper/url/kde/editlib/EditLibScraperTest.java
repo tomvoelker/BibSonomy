@@ -16,7 +16,7 @@ public class EditLibScraperTest {
 	 * starts URL test with id url_70
 	 */
 	@Test
-	//@Ignore
+	@Ignore
 	public void url1TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_70"));
@@ -26,7 +26,7 @@ public class EditLibScraperTest {
 	 * starts URL test with id url_71
 	 */
 	@Test
-	//@Ignore
+	@Ignore
 	public void url2TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_71"));
