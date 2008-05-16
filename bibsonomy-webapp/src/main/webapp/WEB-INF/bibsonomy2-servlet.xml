@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<bean id="controllerBase" class="org.bibsonomy.webapp.util.spring.controller.MinimalisticControllerSpringWrapper" abstract="true">
 	</bean>
@@ -88,11 +89,19 @@
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="ajaxController"/>
 					</bean>
-				</entry>					
+				</entry>
+				
+				<!-- actions  -->
+				<entry key="/actions/register/user">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="userRegistrationController"/>
+					</bean>
+				</entry>
+				
 			</map>
 		</property>
 	</bean>
-			<bean id="homepageController" class="org.bibsonomy.webapp.controller.HomepageController" scope="request">
+				<bean id="homepageController" class="org.bibsonomy.webapp.controller.HomepageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
 		<property name="listsToInitialise">
@@ -285,4 +294,5 @@
 		<property name="suffix" value=".jspx" />
 	</bean>
 		
+    <import resource="bibsonomy2-servlet-actions.xml"/>			
 </beans>
