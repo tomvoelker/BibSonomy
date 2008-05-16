@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<jsp:root version="2.0" xmlns:jsp="http://java.sun.com/JSP/Page"
+  xmlns:form="http://www.springframework.org/tags/form"
+  xmlns:spring="http://www.springframework.org/tags">
+  <jsp:directive.page language="java"
+    contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" />
+  <jsp:text>
+    <![CDATA[ <?xml version="1.0" encoding="UTF-8" ?> ]]>
+  </jsp:text>
+  <jsp:text>
+    <![CDATA[ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> ]]>
+  </jsp:text>
+  <html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Insert title here</title>
+  </head>
+  <body>
+
+  <h1>Here users can register</h1>
+  
+  <p>This is just a sample page, to demonstrate form handling. 
+     Headers and includes need to be adopted to BibSonomy defaults!</p> 
+
+
+  <form:form action="/actions/register/user" method="GET">
+
+    <spring:hasBindErrors name="command">Errors in "command" found<br/></spring:hasBindErrors>
+
+
+    <form:errors path="*" />
+
+    <table>
+      <tr>
+        <td>user name:</td>
+        <td><form:input path="registerUser.name" /></td>
+        <td><form:errors path="registerUser.name" /></td>
+      </tr>
+
+      <tr>
+        <td>password:</td>
+        <td><form:password path="registerUser.password" /></td>
+        <td><form:errors path="registerUser.password" /></td>
+      </tr>
+
+
+      <tr>
+        <td>real name:</td>
+        <td><form:input path="registerUser.realname" /></td>
+        <td><form:errors path="registerUser.realname" /></td>
+      </tr>
+
+      <tr>
+        <td>email:</td>
+        <td><form:input path="registerUser.email" /></td>
+        <td><form:errors path="registerUser.email" /></td>
+      </tr>
+      
+      <tr>
+        <td>homepage:</td>
+        <td><form:input path="registerUser.homepage" /></td>
+        <td><form:errors path="registerUser.homepage" /></td>
+      </tr>
+
+      <tr>
+        <td colspan="3"><input type="submit" value="register" /></td>
+      </tr>
+    </table>
+  </form:form>
+  </body>
+  </html>
+</jsp:root>

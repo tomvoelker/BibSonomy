@@ -173,7 +173,14 @@ public enum Views implements View {
 	/**
 	 * A json output tag page 
 	 */
-	JSONTAGS("export/bibtex/jsonTags");
+	JSONTAGS("export/bibtex/jsonTags"),
+	
+	/**
+	 * where users can register
+     * TODO: we will probably move those action parts
+     * into a separate Views class!
+	 */
+	REGISTER_USER("actions/register/user");
 	
 	private final String name;
 	
