@@ -3,8 +3,6 @@
  */
 package org.bibsonomy.webapp.command;
 
-import org.bibsonomy.model.User;
-
 import beans.UserBean;
 
 /**
@@ -19,6 +17,7 @@ import beans.UserBean;
  */
 public class BaseCommand {
 	private String ckey;
+	
 	private UserBean user;
 	private String pageTitle;
 	private String requPath;
