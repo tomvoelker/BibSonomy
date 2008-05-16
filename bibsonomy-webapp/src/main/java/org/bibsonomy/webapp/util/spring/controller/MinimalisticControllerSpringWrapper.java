@@ -3,7 +3,6 @@
  */
 package org.bibsonomy.webapp.util.spring.controller;
 
-import java.net.MalformedURLException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,10 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.log4j.Logger;
-import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.ValidationException;
-import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.command.BaseCommand;
+import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.ValidationAwareController;
@@ -38,12 +36,13 @@ import org.springframework.web.servlet.mvc.BaseCommandController;
  * @param <T> type of the command object used in the MinimalisticController
  * 
  * @author Jens Illig
+ * 
+ * @version $Id$
  */
 public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends BaseCommandController {
 	private static final String CONTROLLER_ATTR_NAME = "minctrlatrr";
 	private String controllerBeanName;
 	private static final Logger LOGGER = Logger.getLogger(MinimalisticControllerSpringWrapper.class);
-	
 	
 	/**
 	 * @param controllerBeanName the name of the controller bean in the context
@@ -71,17 +70,36 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 		((Holder<HttpServletRequest>) getApplicationContext().getBean("requestHolder")).setObj(request); // hack but thats springs fault
 		final MinimalisticController<T> controller = (MinimalisticController<T>) getApplicationContext().getBean(controllerBeanName);
 		request.setAttribute(CONTROLLER_ATTR_NAME, controller);
-		Enumeration e = request.getAttributeNames();
-		while (e.hasMoreElements()) {
-			LOGGER.debug(e.nextElement().toString());			
+		
+		/*
+		 * DEBUG: log request attributes
+		 */
+		if (LOGGER.isDebugEnabled()) {
+			Enumeration e = request.getAttributeNames();
+			while (e.hasMoreElements()) {
+				LOGGER.debug(e.nextElement().toString());			
+			}
 		}
+		
 		final T command = controller.instantiateCommand();
+		
+		/*
+		 * set validator for this instance
+		 */
+		if (controller instanceof ValidationAwareController) {
+			setValidator(((ValidationAwareController<T>) controller).getValidator());
+		}
+		
+		/*
+		 * bind request attributes to command
+		 */
 		ServletRequestDataBinder binder = bindAndValidate(request, command);
 		BindException errors = new BindException(binder.getBindingResult());
 		if (controller instanceof ErrorAware) {
 			((ErrorAware)controller).setErrors(errors);
 		}
-				
+
+		
 		View view;
 		
 		try {
@@ -108,6 +126,11 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 		
 		final Map<String, Object> model = new HashMap<String, Object>();
 		model.put(getCommandName(), command);
+		
+		/*
+		 * put errors into model 
+		 */
+		model.putAll(errors.getModel());
 		
 		return new ModelAndView(view.getName(), model);			
 	}
