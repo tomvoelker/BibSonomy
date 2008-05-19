@@ -18,6 +18,18 @@ import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.BibTex;
 
 /**
+ * Helper class to re-generate bibtex inter-hashes, e.g. in a case when their computation
+ * has changed.
+ * 
+ * Requires the "old" version of hash computation in SimHashOld, and the new
+ * one in SimhashNew.
+ * 
+ * Requires a properties file as input with database parameters of the form
+ * 
+ *   db.user=USER
+ *   db.pass=PASS
+ *   db.url=CONNECTION_URL
+ * 
  * @author rja
  * @version $Id$
  */
@@ -28,8 +40,11 @@ public class RepairBrokenHashes {
 	private PreparedStatement stmtSelectAll;
 	private BufferedWriter writer;
 
-	/** 
-	 * @param conn
+	/**
+	 * initialize writer and a query that retrieves all bibtex posts
+	 * 
+	 * @param conn a database connection
+	 * @param writer
 	 */
 	public RepairBrokenHashes (final Connection conn, final BufferedWriter writer) {
 		if (conn != null){
@@ -42,6 +57,13 @@ public class RepairBrokenHashes {
 		this.writer = writer;
 	}
 
+	/**
+	 * main class
+	 * 
+	 * @param args
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 
 		Properties prop = new Properties();
@@ -50,8 +72,6 @@ public class RepairBrokenHashes {
 		final String dbUser = prop.getProperty("db.user");
 		final String dbPass = prop.getProperty("db.pass");
 		final String dbURL  = prop.getProperty("db.url");
-
-
 
 
 		try {
@@ -80,6 +100,12 @@ public class RepairBrokenHashes {
 
 	}
 
+	/**
+	 * loop over all bibtex entries and compare old / new interhash value
+	 * 
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	public void checkAndUpdatePosts() throws SQLException, IOException {
 
 		writer.write("START TRANSACTION;\n");
