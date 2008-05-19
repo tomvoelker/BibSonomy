@@ -10,14 +10,11 @@ import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.webapp.command.AdminSettingsCommand;
 import org.bibsonomy.webapp.command.AdminStatisticsCommand;
 import org.bibsonomy.webapp.command.AdminViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
-
-import beans.UserBean;
 
 /**
  * Controller for admin page
@@ -41,8 +38,8 @@ public class AdminPageController implements MinimalisticController<AdminViewComm
 	public View workOn(AdminViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		
-		final UserBean user = command.getUser();		
-		if (user.getRole().equals(Role.DEFAULT)) {
+		final User loginUser = command.getLoginUser();		
+		if (loginUser.getRole().equals(Role.DEFAULT)) {
 			/** TODO: redirect to login page as soon as it is available */
 		}		
 		
