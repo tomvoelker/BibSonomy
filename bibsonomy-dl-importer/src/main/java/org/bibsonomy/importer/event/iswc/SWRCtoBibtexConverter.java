@@ -14,6 +14,7 @@ import org.bibsonomy.importer.event.iswc.rdf.RDFRepository;
 /**
  * Main class of the SWRC to BibTeX converter. It starts the whole process.  
  * @author tst
+ * @version $Id$
  */
 public class SWRCtoBibtexConverter {
 	
@@ -26,9 +27,7 @@ public class SWRCtoBibtexConverter {
 		
 		if (args.length < 3) {
 			System.err.println("usage:");
-			System.err.println("  " + SWRCtoBibtexConverter.class.getName() + " file");
-			System.err.println("directory");
-			System.err.println("white list path");
+			System.err.println("  " + SWRCtoBibtexConverter.class.getSimpleName() + " rdfFile resultDirectory whiteListFile");
 			System.exit(1);
 		}
 		
@@ -75,7 +74,7 @@ public class SWRCtoBibtexConverter {
 			 * write proceeding with its inproceedings in a file with a modified proceeding URI
 			 * (cut off http:// and replace all "/" with "_")
 			 */ 
-			File proceedingFile = new File(dir + "/" + proceeding.getBibtexkey().substring(7).replaceAll("/", "_") + ".bib");
+			File proceedingFile = new File(dir + "/" + proceeding.getBibtexkey().replaceAll("http://","").replaceAll("/", "_") + ".bib");
 			Writer writer = new OutputStreamWriter(new FileOutputStream(proceedingFile), "utf-8");
 			
 

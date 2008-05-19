@@ -101,11 +101,11 @@ public class RDFRepository {
 		HashMap<String, Publication> publicationMap = new HashMap<String, Publication>();
 		
 		// authors map <numberInList, authorName> 
-		HashMap<Integer, String> authors = null;
+		HashMap<Integer, String> authors = new HashMap<Integer, String>();
 		
 		// current proccessed publication (key and publication itself
 		String currentPubl = null;
-		Publication publication = null;
+		Publication publication = new Publication();
 		
 		// iterate over all publication an extract title, abstract and keywords
 		for (int row = 0; row < resultsTable.getRowCount(); row++) {
@@ -195,7 +195,12 @@ public class RDFRepository {
     	publication.setAuthor(BibtexHelper.buildPersonString(list));
 		
     	// build and add bibtexkey
-    	publication.setBibtexkey(BibtexHelper.buildBibtexKey(list.get(0), publication.getYear(), publication.getTitle()));
+    	String firstAuthorName = null;
+    	if (list.size() > 0) {
+    		firstAuthorName = list.get(0);
+    	}
+    	
+		publication.setBibtexkey(BibtexHelper.buildBibtexKey(firstAuthorName, publication.getYear(), publication.getTitle()));
 
     	// init entrytype
     	publication.setEntrytype("inproceedings");
@@ -282,11 +287,11 @@ public class RDFRepository {
 		HashMap<String, Publication> publicationMap = new HashMap<String, Publication>();
 		
 		// editor map <numberInList, authorName> 
-		HashMap<Integer, String> editors = null;
+		HashMap<Integer, String> editors = new HashMap<Integer, String>();
 		
 		// current proccessed publication (key and publication itself
 		String currentPubl = null;
-		Publication publication = null;
+		Publication publication = new Publication();
 		
 		// iterate over all publication an extract title, abstract and keywords
 		for (int row = 0; row < resultsTable.getRowCount(); row++) {
@@ -377,7 +382,8 @@ public class RDFRepository {
     	}
     	
     	// store editor string in publication
-    	publication.setEditor(BibtexHelper.buildPersonString(list));
+    	final String personString = BibtexHelper.buildPersonString(list);
+		publication.setEditor(personString);
 		
 
     	// add last publication to map
