@@ -25,7 +25,7 @@ public class ViewablePageController extends MultiResourceListControllerWithTags 
 		this.startTiming(this.getClass(), command.getFormat());
 		
 		// we need to be logged in, and a group needs to be present
-		if (command.userLoggedIn() == false) {
+		if (command.isUserLoggedIn() == false) {
 			throw new MalformedURLSchemeException("error.viewable_page_not_logged_in");
 		}				
 		if (command.getRequestedGroup() == null || "".equals(command.getRequestedGroup())) {
