@@ -53,20 +53,20 @@
 			<div class="smalltext">
 		
 			<!-- links to user's  or global concept / tag pages -->
-			<c:if test="${not empty command.user.name}">
+			<c:if test="${command.userLoggedIn}">
 				<li>
-					<a href="/user/${command.user.name}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+					<a href="/user/${fn:escapeXml(command.loginUser.name)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 					<c:out value=" "/>
 					<fmt:message key="tag.asTagFrom"/>
 					<c:out value=" "/>
-					${fn:escapeXml(command.user.name)}						
+					${fn:escapeXml(command.loginUser.name)}						
 				</li>					
 				<li>
-					<a href="/concept/user/${command.user.name}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+					<a href="/concept/user/${fn:escapeXml(command.loginUser.name)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 					<c:out value=" "/>
 					<fmt:message key="tag.asConceptFrom"/>
 					<c:out value=" "/>
-					${fn:escapeXml(command.user.name)}
+					${fn:escapeXml(command.loginUser.name)}
 				</li>				
 			</c:if>
 

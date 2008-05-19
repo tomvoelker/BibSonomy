@@ -29,7 +29,7 @@
 		<post href="${bmark.url}" 
 			  description="${fn:escapeXml(bmark.title)}" 
 			  hash="${bmark.intraHash}"
-			  user="'${post.user.name}"
+			  user="'${fn:escapeXml(post.user.name)}"
 			  tag="${fn:escapeXml(tags)}"
 			  time="${postDate}"/>
 	</c:forEach>

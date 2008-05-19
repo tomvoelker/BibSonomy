@@ -38,18 +38,18 @@
 	    <rdf:Seq>
 	 	  <c:forEach var="post" items="${command.bibtex.list}">
 	  	 	<!-- the intraHash of a bibtex entry -->
-	  	 	<rdf:li rdf:resource="${projectHome}bibtex/2${post.resource.intraHash}/${post.user.name}"/>
+	  	 	<rdf:li rdf:resource="${projectHome}bibtex/2${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"/>
 	 	  </c:forEach>
 	    </rdf:Seq>
 	  </items>
 </channel>
 
 <c:forEach var="post" items="${command.bibtex.list}">
-	<item rdf:about="${projectHome}bibtex/2${post.resource.intraHash}/${post.user.name}">
+	<item rdf:about="${projectHome}bibtex/2${post.resource.intraHash}/${fn:escapeXml(post.user.name)}">
     	<title><mtl:bibclean value="${post.resource.title}"/></title>
 		<c:if test ="${!empty post.description}"><description>${fn:escapeXml(post.description)}</description></c:if>	
   		<link>${projectHome}bibtex/2${post.resource.intraHash}/<mtl:encode value='${post.user.name}'/></link>
-  		<dc:creator>${post.user.name}</dc:creator>
+  		<dc:creator>${fn:escapeXml(post.user.name)}</dc:creator>
   		<dc:date><mtl:formatDate value="${post.date}"/></dc:date>
   		<dc:subject><c:forEach var="tag" items="${post.tags}">${fn:escapeXml(tag.name)}<c:out value=" "/></c:forEach></dc:subject>
   		<content:encoded>

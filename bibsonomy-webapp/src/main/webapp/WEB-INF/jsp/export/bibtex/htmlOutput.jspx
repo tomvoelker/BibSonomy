@@ -25,7 +25,7 @@
       <c:set var="bib" value="${post.resource}"/>
       <p class="entry">
         <!-- author --><c:if test="${!empty bib.author}"><span class="entry_author"><mtl:bibclean value="${bib.author}"/>. </span></c:if>
-        <!-- title  --><span class="entry_title"><a href="${projectHome}bibtex/2${bib.intraHash}/${post.user.name}"><mtl:bibclean value="${bib.title}"/></a>. </span>
+        <!-- title  --><span class="entry_title"><a href="${projectHome}bibtex/2${bib.intraHash}/${fn:escapeXml(post.user.name)}"><mtl:bibclean value="${bib.title}"/></a>. </span>
         <!-- editor --><c:if test="${!empty bib.editor}"><span class="entry_editor">In <mtl:bibclean value="${bib.editor}"/>, editor(s), </span></c:if>
         <!-- journal, booktitle, series  -->
         <c:choose>
