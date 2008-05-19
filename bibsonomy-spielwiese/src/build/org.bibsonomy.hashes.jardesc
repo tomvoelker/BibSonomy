@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jardesc>
+    <jar path="/home/rja/org.bibsonomy.hashes_0.2.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/bibsonomy-spielwiese/src/main/org.bibsonomy.hashes.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="true" mainClassHandleIdentifier="=bibsonomy-spielwiese/src\/main\/java&lt;org.bibsonomy.util{BibTeXHashCalculator.java[BibTeXHashCalculator" manifestLocation="" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="true" exportOutputFolder="false">
+        <javaElement handleIdentifier="=bibsonomy-model/src\/main\/java&lt;org.bibsonomy.model.util{PersonNameUtils.java"/>
+        <javaElement handleIdentifier="=bibsonomy-model/src\/main\/java&lt;org.bibsonomy.model{Bookmark.java"/>
+        <javaElement handleIdentifier="=bibsonomy-model/src\/main\/java&lt;org.bibsonomy.model.util{SimHash.java"/>
+        <javaElement handleIdentifier="=bibsonomy-common/src\/main\/java&lt;org.bibsonomy.util{StringUtils.java"/>
+        <javaElement handleIdentifier="=bibsonomy-common/src\/main\/java&lt;org.bibsonomy.common.exceptions{UnsupportedResourceTypeException.java"/>
+        <javaElement handleIdentifier="=bibsonomy-spielwiese/src\/main\/java&lt;org.bibsonomy.util"/>
+        <javaElement handleIdentifier="=bibsonomy-common/src\/main\/java&lt;org.bibsonomy.common.enums{HashID.java"/>
+        <javaElement handleIdentifier="=bibsonomy-model/src\/main\/java&lt;org.bibsonomy.model{Resource.java"/>
+        <javaElement handleIdentifier="=bibsonomy-model/src\/main\/java&lt;org.bibsonomy.model{BibTex.java"/>
+        <javaElement handleIdentifier="=bibsonomy-model/src\/main\/java&lt;org.bibsonomy.model{PersonName.java"/>
+    </selectedElements>
+</jardesc>
