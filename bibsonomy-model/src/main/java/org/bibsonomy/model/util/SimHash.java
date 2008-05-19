@@ -168,12 +168,12 @@ public class SimHash {
 
 	private static String getNormalizedAuthor(final String str) {
 		if (str == null) return "";
-		return StringUtils.getStringFromList(normalizePersonList(StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(str))).toLowerCase();
+		return StringUtils.getStringFromList(normalizePersonList(StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(str.toLowerCase())));
 	}
 
 	private static String getNormalizedEditor(final String str) {
 		if (str == null) return "";
-		return StringUtils.getStringFromList(normalizePersonList(StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(str))).toLowerCase();
+		return StringUtils.getStringFromList(normalizePersonList(StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(str.toLowerCase())));
 	}
 
 	private static String getNormalizedYear(final String str) {
