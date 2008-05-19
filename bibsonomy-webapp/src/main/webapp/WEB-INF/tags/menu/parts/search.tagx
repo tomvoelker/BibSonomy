@@ -9,7 +9,7 @@
 	
 	<c:url var="searchUrl" value="/search" context="${projectContext}"/>
 	<form id="search" method="get" action="${searchUrl}">
-		<c:if test="${!empty loginUserName}">
+		<c:if test="${not empty loginUserName}">
 			<select name="scope" size="1">
 				<option value="all">all</option>
 				<option>user:<c:out value='${loginUserName}'/></option>

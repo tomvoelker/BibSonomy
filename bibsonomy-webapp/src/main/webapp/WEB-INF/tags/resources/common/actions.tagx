@@ -6,10 +6,9 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
-	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
 	
-	<c:if test="${not empty loginUserName}">
+	<c:if test="${command.userLoggedIn}">
 
       <span class="actions">
         <c:choose>

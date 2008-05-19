@@ -32,16 +32,8 @@
 		<c:set var="disableListNavigation" value="${false}"/>
 	</c:if>	
 		
-	<c:choose>
-		<c:when test="${command.user != null}">
-			<c:set var="loginUserName" value="${command.user.name}"/>
-		</c:when>
-		<c:otherwise>
-			<c:set var="loginUserName" value="${null}"/>
-		</c:otherwise>
-	</c:choose>
 	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>
-	<layout:layout loginUserName="${loginUserName}" searchString="hurz" basketSize="${loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}">
+	<layout:layout loginUserName="${command.loginUser.name}" searchString="hurz" basketSize="${loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}">
 		<jsp:attribute name="headerExt">
 			<c:set var="bookRssUrl" value="/rss/${requPath}"/>
 			<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${requPath}" href="${bookRssUrl}" />
@@ -51,8 +43,8 @@
 			<link rel="alternate" type="application/rss+xml" title="${burstRssFeed} /${requPath}" href="${burstUrl}" />
 		</jsp:attribute>
 		<jsp:attribute name="content">
-			<resources:bookmarks listView="${command.bookmark}" loginUserName="${loginUserName}" otherParamsNextprev="bibtex.start=${command.bibtex.start}&amp;bookmark.entriesPerPage=${command.bookmark.entriesPerPage}&amp;bibtex.entriesPerPage=${command.bibtex.entriesPerPage}" otherParamsNumEntries="bibtex.start=${command.bibtex.start}&amp;bookmark.start=${command.bookmark.start}&amp;bibtex.entriesPerPage=${command.bibtex.entriesPerPage}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
-			<resources:bibtexs listView="${command.bibtex}" loginUserName="${loginUserName}" otherParamsNextprev="bookmark.start=${command.bookmark.start}&amp;bookmark.entriesPerPage=${command.bookmark.entriesPerPage}&amp;bibtex.entriesPerPage=${command.bibtex.entriesPerPage}" otherParamsNumEntries="bibtex.start=${command.bibtex.start}&amp;bookmark.start=${command.bookmark.start}&amp;bookmark.entriesPerPage=${command.bookmark.entriesPerPage}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
+			<resources:bookmarks listView="${command.bookmark}" loginUserName="${command.loginUser.name}" otherParamsNextprev="bibtex.start=${command.bibtex.start}&amp;bookmark.entriesPerPage=${command.bookmark.entriesPerPage}&amp;bibtex.entriesPerPage=${command.bibtex.entriesPerPage}" otherParamsNumEntries="bibtex.start=${command.bibtex.start}&amp;bookmark.start=${command.bookmark.start}&amp;bibtex.entriesPerPage=${command.bibtex.entriesPerPage}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
+			<resources:bibtexs listView="${command.bibtex}" loginUserName="${command.loginUser.name}" otherParamsNextprev="bookmark.start=${command.bookmark.start}&amp;bookmark.entriesPerPage=${command.bookmark.entriesPerPage}&amp;bibtex.entriesPerPage=${command.bibtex.entriesPerPage}" otherParamsNumEntries="bibtex.start=${command.bibtex.start}&amp;bookmark.start=${command.bookmark.start}&amp;bookmark.entriesPerPage=${command.bookmark.entriesPerPage}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
 		</jsp:attribute>
 	</layout:layout>
 </jsp:root>

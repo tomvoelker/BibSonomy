@@ -7,7 +7,6 @@
     xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
-	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="otherParams" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="true"/>
@@ -107,7 +106,7 @@
 		</span>
 	</c:if>
 
-	<c:if test="${not empty loginUserName and empty disableActions}">
+	<c:if test="${command.userLoggedIn and empty disableActions}">
 		<span class="actions">
 			<c:set var="editUrlTemplate">/bediturl/<c:out value='${requPath}' escapeXml="true"/></c:set>
 			<c:url var="editUrl" value="${editUrlTemplate}" context="${projectContext}"/>

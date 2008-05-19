@@ -7,7 +7,7 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
 
-	<c:if test="${not empty loginUserName}">
+	<c:if test="${command.userLoggedIn}">
 
 		<!-- PICK / UNPICK -->
 		<c:choose>
@@ -106,7 +106,7 @@
 	
 	<!-- BIBTEX -->
     <c:set var="bibtexTitle"><fmt:message key="bibtex.actions.bibtex.title"/></c:set>
-    <a href="/bib/bibtex/2${post.resource.intraHash}/${post.user.name}"	title="${bibtexTitle}">
+    <a href="/bib/bibtex/2${post.resource.intraHash}/${fn:escapeXml(post.user.name)}" title="${bibtexTitle}">
 		<fmt:message key="bibtex.actions.bibtex"/>
 	</a>
 

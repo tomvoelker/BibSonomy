@@ -37,8 +37,8 @@
 			
 				
 				<div class="kiste">		
-					<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}" loginUserName="${loginUserName}" otherParams="${otherParamsNextprev}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}"/>
-					<rc:actions loginUserName="${loginUserName}" resourceType="${listView.resourcetype}"/>				
+					<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}" otherParams="${otherParamsNextprev}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}"/>
+					<rc:actions resourceType="${listView.resourcetype}"/>				
 					${mtl:ch('nbsp')}
 				</div>
 				
@@ -85,7 +85,7 @@
 		</c:if>
 			
 		<div class="kiste">		
-			<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}" loginUserName="${loginUserName}" otherParams="${otherParamsNextprev}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}"/>
+			<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}" otherParams="${otherParamsNextprev}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}"/>
 			<c:if test="${disableListNavigation == false}">
 				<rc:itemcount entriesPerPage="${listView.entriesPerPage}" entryType="${listView.resourcetype}" otherParams="${otherParamsNumEntries}" titleKey="${titleKey}"/>
 			</c:if>

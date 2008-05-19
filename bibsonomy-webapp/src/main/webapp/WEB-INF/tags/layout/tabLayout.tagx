@@ -19,17 +19,7 @@
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>			
 		
-	<c:choose>
-		<c:when test="${command.user != null}">
-			<c:set var="loginUserName" value="${command.user.name}"/>
-		</c:when>
-		<c:otherwise>
-			<c:set var="loginUserName" value="${null}"/>
-		</c:otherwise>
-	</c:choose>
-	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>
-	
-	<layout:layout loginUserName="${loginUserName}" searchString="hurz" basketSize="${loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}">
+	<layout:layout loginUserName="${command.loginUser.name}" searchString="hurz" basketSize="${loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}">
 		<jsp:attribute name="content">
 			<div id="fullscreen">			
 			

@@ -5,12 +5,10 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
-	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post"
-		required="true" />
-	<jsp:directive.attribute name="loginUserName" type="java.lang.String"
-		required="true" />
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
 
-	<c:if test="${not empty user.name}">
+	<c:if test="${command.userLoggedIn}">
 		<span class="bmaction">
 		
 		<c:if test="${loginUserName eq post.user.name}">

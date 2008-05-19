@@ -88,12 +88,10 @@
 					<a onclick="naviSwitchSpecial('bibtexkey')" style="cursor:pointer"><fmt:message key="navi.bibtexKey"/></a>
 					<a onclick="naviSwitchSpecial('all')" style="cursor:pointer"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></a>
 					<c:if test="${not empty requestedUser}">
-						<c:set var="requUser" value="${requestedUser}" />						
 						<a onclick="naviSwitchSpecial('explicit_user')" style="cursor:pointer"><fmt:message key="navi.search"/>:<c:out value='${requestedUser}'/></a>
 						<c:set var="mode" value="requUser" />
 					</c:if>
-					<c:if test="${not empty loginUser.name and empty requestedUser}">
-						<c:set var="requUser" value="${requestedUser}" />
+					<c:if test="${command.userLoggedIn and empty requestedUser}">
 						<a onclick="naviSwitchSpecial('explicit_user')" style="cursor:pointer"><fmt:message key="navi.search"/>:<c:out value='${loginUser.name}'/></a>
 						<c:set var="mode" value="requUser" />
 					</c:if>
@@ -117,7 +115,7 @@
 				
 				<!-- main content pane -->
 				<div id="outer">
-					<c:if test="${empty loginUserName and empty command.error and displayIntroduction}">
+					<c:if test="${not command.userLoggedIn and empty command.error and displayIntroduction}">
 						<div id="general">
 							<p class="smalltext">
 								<fmt:message key="system.about">
@@ -151,7 +149,7 @@
 					<fmt:message key="system.contact"/>
 					<c:out value=" "/>
 					<lp:email address="${projectEmail}"/>
-					<script type="text/javascript">init(${user.tagboxStyle}, ${user.tagboxSort}, ${user.tagboxMinfreq}, "${requestedUser}", "${loginUserName}", "${ckey}", "${projectName}");</script>  
+					<script type="text/javascript">init(${command.loginUser.settings.tagboxStyle}, ${command.loginUser.settings.tagboxSort}, ${command.loginUser.settings.tagboxMinfreq}, "${requestedUser}", "${loginUserName}", "${ckey}", "${projectName}");</script>  
 				</div>
 			</body>
 		</jsp:body>

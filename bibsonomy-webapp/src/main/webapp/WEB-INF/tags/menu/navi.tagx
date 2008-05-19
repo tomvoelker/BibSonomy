@@ -24,7 +24,7 @@
 				<a href="${groupsUrl}" rel="grp_menu"><fmt:message key="navi.groups"/></a><c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
 				<!-- dropdown menu for groups -->					
 			  	<div id="grp_menu" class="dropmenudiv">
-					<c:forEach var="grp" items="${loginUser.groups}">
+					<c:forEach var="grp" items="${command.loginUser.groups}">
 						<a href="/group/${fn:escapeXml(grp.name)}"><c:out value='${grp.name}'/></a>
 					</c:forEach>  	
 				</div>											
@@ -32,9 +32,9 @@
 				<a href="${popularUrl}"><fmt:message key="navi.popular"/></a>
 			</td>
 			<td class="tright">
-				<c:if test="${!empty loginUserName}"><!-- show user name, if available -->
+				<c:if test="${command.userLoggedIn}"><!-- show user name, if available -->
 					<fmt:message key="navi.loggedInAs"/>${mtl:ch('nbsp')}
-					<c:url var="userUrl" value="/user/${loginUserName}" context="${projectContext}"/>
+					<c:url var="userUrl" value="/user/${fn:escapeXml(loginUserName)}" context="${projectContext}"/>
 					<a href="${userUrl}"><c:out value="${loginUserName}" /></a>
 					<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
 				</c:if>
@@ -48,8 +48,8 @@
 		<tr>
 			<td class="tleft" id="lower_menu">
 				<c:choose>
-					<c:when test="${!empty loginUserName}">
-						<c:url var="userUrl" value="/user/${loginUserName}" context="${projectContext}"/>
+					<c:when test="${command.userLoggedIn}">
+						<c:url var="userUrl" value="/user/${fn:escapeXml(loginUserName)}" context="${projectContext}"/>
 						<a href="${userUrl}" rel="my_menu"><fmt:message key="navi.my"/>${projectName}</a><c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
 						
 				      <!-- dropdown menu for myBibSonomy -->  
@@ -92,7 +92,7 @@
 			</td>
 			<td class="tright">
 				<c:choose>
-					<c:when test="${!empty loginUserName}">
+					<c:when test="${command.userLoggedIn}">
 						<c:url var="basketUrl" value="/basket" context="${projectContext}"/>
 						<span id="pickctr">${basketSize}</span>${mtl:ch('nbsp')}
 						<fmt:message key="navi.pickedIn"/>${mtl:ch('nbsp')}
@@ -115,7 +115,7 @@
 		</tr>
 	</table>
 	
-	<c:if test="${!empty loginUserName}">
+	<c:if test="${command.userLoggedIn}">
 		<script type="text/javascript">
 			<![CDATA[
 		  		cssdropdown.startchrome("upper_menu");

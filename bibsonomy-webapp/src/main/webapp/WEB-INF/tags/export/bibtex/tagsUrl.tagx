@@ -13,7 +13,7 @@
 	     [<a href="${projectHome}">${projectName}</a>:
             <!--  tags  -->
             <c:forEach var="tag" items="${post.tags}">
-               <c:out value=" "/><a href="${projectHome}user/${post.user.name}/${fn:escapeXml(tag.name)}">${fn:escapeXml(tag.name)}</a>
+               <c:out value=" "/><a href="${projectHome}user/${fn:escapeXml(post.user.name)}/${fn:escapeXml(tag.name)}">${fn:escapeXml(tag.name)}</a>
             </c:forEach>]
 	     <!-- download URL -->
 	     <c:if test="${not empty post.resource.url}">
