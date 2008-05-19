@@ -34,7 +34,7 @@ public class RepairBrokenHashes {
 	public RepairBrokenHashes (final Connection conn, final BufferedWriter writer) {
 		if (conn != null){
 			try {
-				stmtSelectAll    = conn.prepareStatement("SELECT title, author, editor, year, user_name, content_id FROM bibtex LIMIT 30000000;");
+				stmtSelectAll    = conn.prepareStatement("SELECT simhash1, title, author, editor, year, user_name, content_id FROM bibtex LIMIT 30000000;");
 			} catch (SQLException e) {
 				log.fatal("Could not prepare statements");
 			}
@@ -81,6 +81,9 @@ public class RepairBrokenHashes {
 	}
 
 	public void checkAndUpdatePosts() throws SQLException, IOException {
+
+		writer.write("START TRANSACTION;\n");
+		
 		final ResultSet rst = stmtSelectAll.executeQuery();
 
 		int ctr = 0;
@@ -102,7 +105,7 @@ public class RepairBrokenHashes {
 			/*
 			 * calculate all hashes
 			 */
-			final String oldHash1 = SimHashOld.getSimHash(bibtex, HashID.INTER_HASH);
+			final String oldHash1 = rst.getString("simhash1");
 			final String newHash1 = SimHashNew.getSimHash(bibtex, HashID.INTER_HASH);
 			if (!oldHash1.equals(newHash1)) {
 				/*
@@ -118,6 +121,7 @@ public class RepairBrokenHashes {
 		}
 		System.out.println("finished");
 		System.out.println("ctr: " + ctr + ", badACtr: " + badACtr + ", badECtr: " + badECtr);
+		writer.write("COMMIT;\n");
 		writer.close();
 	}
 
@@ -130,10 +134,10 @@ public class RepairBrokenHashes {
 				"AND simhash" + HashID.INTER_HASH.getId() + " = '" + oldHash1 + "';\n");
 
 		// decrement old hash
-		writer.write("UPDATE bibhash SET ctr = ctr - 1 WHERE type = " + HashID.INTER_HASH.getId() + " AND hash = '" + oldHash1 + "'\n");
+		writer.write("UPDATE bibhash SET ctr = ctr - 1 WHERE type = " + HashID.INTER_HASH.getId() + " AND hash = '" + oldHash1 + "';\n");
 
 		// increment new hash
-		writer.write("UPDATE bibhash SET ctr = ctr + 1 WHERE type = " + HashID.INTER_HASH.getId() + " AND hash = '" + newHash1 + "'\n");
+		writer.write("INSERT INTO bibhash (hash, type, ctr) VALUES ('" + newHash1 + "', " + HashID.INTER_HASH.getId() + ", 1) ON DUPLICATE KEY UPDATE ctr = ctr + 1;\n");
 	}
 
 }
