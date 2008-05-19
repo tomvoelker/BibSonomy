@@ -215,14 +215,21 @@ CREATE TABLE `bibhash` (
 -- 
 
 INSERT INTO `bibhash` (`hash`, `ctr`, `type`) VALUES
+('36a19ee7b7923b062a99a6065fe07792', 1, 0),
+('8711751127efb070ee910a5d145a168b', 1, 0),
 ('92e8d9c7588eced69419b911b31580ee', 1, 0),
 ('9abf98937435f05aec3d58b214a2ac58', 1, 0),
 ('b386bdfc8ac7b76ca96e6784736c4b95', 1, 0),
 ('96c7cf1a752564f8ae0b6540e131af73', 1, 1),
+('ac6aa3ccb181e61801cefbc1401d409a', 1, 1),
+('e2fb0763068b21639c3e36101f64aefe', 1, 1),
 ('d9eea4aa159d70ecfabafa0c91bbc9f0', 2, 1),
+('1b298f199d487bc527a62326573892b8', 1, 2),
 ('522833042311cc30b8775772335424a7', 1, 2),
 ('65e49a5791c3dae2356d26fb9040fe29', 1, 2),
+('b71d5283dc7f4f59f306810e73e9bc9a', 1, 2),
 ('b77ddd8087ad8856d77c740c8dc2864a', 1, 2);
+
 
 -- --------------------------------------------------------
 
@@ -296,8 +303,9 @@ CREATE TABLE `bibtex` (
 INSERT INTO `bibtex` (`content_id`, `journal`, `volume`, `chapter`, `edition`, `month`, `day`, `booktitle`, `howPublished`, `institution`, `organization`, `publisher`, `address`, `school`, `series`, `bibtexKey`, `group`, `date`, `user_name`, `url`, `type`, `description`, `annote`, `note`, `pages`, `bKey`, `number`, `crossref`, `misc`, `bibtexAbstract`, `simhash0`, `simhash1`, `simhash2`, `simhash3`, `entrytype`, `title`, `author`, `editor`, `year`, `privnote`, `scraperid`, `change_date`, `rating`) VALUES
 (10, 'test journal', 'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle', 'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'test bibtexKey', 0, '1815-12-10 00:00:00', 'testuser1', 'http://www.testurl.org', '2', 'test description', 'test annote', 'test note', 'test pages', 'test bKey', 'test number', 'test crossref', 'test misc', 'test bibtexAbstract', '9abf98937435f05aec3d58b214a2ac58', 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'b77ddd8087ad8856d77c740c8dc2864a', '', 'test entrytype', 'test title', 'test author', 'test editor', 'test year', 'test privnote', -1, '2008-03-20 16:24:55', 0),
 (11, 'test journal', 'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test spam booktitle', 'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'test bibtexKey', 0, '1815-12-10 00:00:00', 'testspammer', 'test url', '2', 'test description', 'test annote', 'test note', 'test pages', 'test bKey', 'test number', 'test crossref', 'test misc', 'test bibtexAbstract', 'b386bdfc8ac7b76ca96e6784736c4b95', '96c7cf1a752564f8ae0b6540e131af73', '65e49a5791c3dae2356d26fb9040fe29', '', 'test entrytype', 'test spam title', 'test spammer', 'test editor', 'test year', 'test privnote', -1, '2008-03-20 16:34:34', 0),
-(12, 'test journal for group3', 'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle for group3', 'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'test bibtexKey', 3, '1815-12-10 00:00:00', 'testuser1', 'http://www.testurl.org', '2', 'test description', 'test annote', 'test note', 'test pages', 'test bKey', 'test number', 'test crossref', 'test misc', 'test bibtexAbstract', '92e8d9c7588eced69419b911b31580ee', 'd9eea4aa159d70ecfabafa0c91bbc9f0', '522833042311cc30b8775772335424a7', '', 'test entrytype', 'test title', 'test author', 'test editor', 'test year', 'test privnote', -1, '2008-05-05 18:11:55', 0);
-
+(12, 'test journal for group3', 'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle for group3', 'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'test bibtexKey', 3, '1815-12-10 00:00:00', 'testuser1', 'http://www.testurl.org', '2', 'test description', 'test annote', 'test note', 'test pages', 'test bKey', 'test number', 'test crossref', 'test misc', 'test bibtexAbstract', '92e8d9c7588eced69419b911b31580ee', 'd9eea4aa159d70ecfabafa0c91bbc9f0', '522833042311cc30b8775772335424a7', '', 'test entrytype', 'test title', 'test author', 'test editor', 'test year', 'test privnote', -1, '2008-05-05 18:11:55', 0),
+(13, 'test journal', 'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle', 'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'test bibtexKey', 1, '1815-12-10 00:00:00', 'testuser2', 'http://private.bibtex.url.com', '2', 'test description', 'test annote', 'test note', 'test page', 'test bKey', 'test number', 'test crossref', 'test misc', 'test bibtexAbstract', '8711751127efb070ee910a5d145a168b', 'ac6aa3ccb181e61801cefbc1401d409a', '1b298f199d487bc527a62326573892b8', '', 'test entrytype', 'test private title', 'test author', 'test editor', 'test year', 'test privnote', -1, '2008-05-19 14:34:29', 0),
+(14, 'test journal', 'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle', 'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'test bibtexKey', 2, '1815-12-10 00:00:00', 'testuser2', 'http://friend.bibtex.url.com', '2', 'test description', 'test annote', 'test note', 'test page', 'test bKey', 'test number', 'test crossref', 'test misc', 'test bibtexAbstract', '36a19ee7b7923b062a99a6065fe07792', 'e2fb0763068b21639c3e36101f64aefe', 'b71d5283dc7f4f59f306810e73e9bc9a', '', 'test entrytype', 'test friend title', 'test author', 'test editor', 'test year', 'test privnote', -1, '2008-05-19 14:34:29', 0);
 -- --------------------------------------------------------
 
 -- 
@@ -557,8 +565,8 @@ CREATE TABLE `ids` (
 -- Data for table `ids`
 -- 
 
-INSERT INTO `ids` VALUES (0, 12, 'content_id');
-INSERT INTO `ids` VALUES (1, 21, 'tas id');
+INSERT INTO `ids` VALUES (0, 14, 'content_id');
+INSERT INTO `ids` VALUES (1, 24, 'tas id');
 INSERT INTO `ids` VALUES (2, 0, 'relation id');
 INSERT INTO `ids` VALUES (3, 0, 'question id');
 INSERT INTO `ids` VALUES (4, 1, 'cycle id');
@@ -1005,9 +1013,11 @@ INSERT INTO `tags` (`tag_id`, `tag_name`, `tag_stem`, `tag_ctr`, `tag_ctr_public
 (12, 'radio', '', 1, 1, 0),
 (13, 'apple', '', 1, 1, 0),
 (14, 'fireball', '', 1, 1, 0),
-(15, 'testbibtex', '', 1, 1, 0),
+(15, 'testbibtex', '', 2, 2, 0),
 (16, 'spam', '', 1, 0, 0),
-(17, 'bibtexgroup', '', 1, 1, 0);
+(17, 'bibtexgroup', '', 1, 1, 0),
+(18, 'privatebibtex', '', 1, 1, 0),
+(19, 'friendbibtex', '', 1, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -1152,7 +1162,10 @@ INSERT INTO `tas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `content_typ
 (18, 'testbibtex', 'testbibtex', 10, 2, 'testuser1', '1815-12-10 00:00:00', 0, '2008-03-19 11:21:44'),
 (19, 'testtag', 'testtag', 10, 2, 'testuser1', '1815-12-10 00:00:00', 0, '2008-03-19 11:27:34'),
 (20, 'spam', 'spam', 11, 2, 'testspammer', '1815-12-10 00:00:00', 0, '2008-03-20 16:35:21'),
-(21, 'bibtexgroup', 'bibtexgroup', 12, 2, 'testuser1', '1815-12-10 00:00:00', 0, '2008-03-20 20:35:21');
+(21, 'bibtexgroup', 'bibtexgroup', 12, 2, 'testuser1', '1815-12-10 00:00:00', 3, '2008-03-20 20:35:21'),
+(22, 'privatebibtex', 'privatebibtex', 13, 2, 'testuser2', '1815-12-10 00:00:00', 1, '2008-03-20 20:35:21'),
+(23, 'friendbibtex', 'friendbibtex', 14, 2, 'testuser2', '1815-12-10 00:00:00', 2, '2008-03-20 20:35:21'),
+(24, 'testbibtex', 'testbibtex', 12, 2, 'testuser1', '1815-12-10 00:00:00', 3, '2008-03-20 20:35:21');
 
 -- --------------------------------------------------------
 
