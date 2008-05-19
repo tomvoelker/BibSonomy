@@ -3,7 +3,7 @@
  */
 package org.bibsonomy.webapp.command;
 
-import beans.UserBean;
+import org.bibsonomy.model.User;
 
 /**
  * Base class for command objects. Contains request and response fields
@@ -18,7 +18,7 @@ import beans.UserBean;
 public class BaseCommand {
 	private String ckey;
 	
-	private UserBean user;
+	private User loginUser;
 	private String pageTitle;
 	private String requPath;
 	private String error;
@@ -81,31 +81,31 @@ public class BaseCommand {
 	/**
 	 * @return the user, who is currently logged in
 	 */
-	public UserBean getUser() {
-		return this.user;
+	public User getLoginUser() {
+		return this.loginUser;
 	}
 	/**
 	 * @param loginUser the user, who is currently logged in
 	 */
-	public void setUser(UserBean loginUser) {
-		this.user = loginUser;
+	public void setLoginUser(User loginUser) {
+		this.loginUser = loginUser;
 	}
 	
 	/**
 	 * helper function to ease checking if a logged in user exists
 	 * @return true if a user is logged in, false otherwise
 	 */
-	public Boolean userLoggedIn() {
-		return this.user.getName() != null;
+	public Boolean isUserLoggedIn() {
+		return this.loginUser.getName() != null;
 	}
 	
 	/**
 	 * wrapper for function userLoggedIn to enable access from JSPs
-	 * @see BaseCommand.userLoggedIn()
+	 * @see #isUserLoggedIn()
 	 * @return true if a user is logged in, false otherwise 
 	 */
 	public Boolean getUserLoggedIn() {
-		return this.userLoggedIn();
+		return this.isUserLoggedIn();
 	}
 	
 	/**
