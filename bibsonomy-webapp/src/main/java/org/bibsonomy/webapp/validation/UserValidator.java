@@ -4,6 +4,7 @@ import java.net.URL;
 
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.util.Validator;
+import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
@@ -15,10 +16,23 @@ public class UserValidator implements Validator<User> {
 
 	@SuppressWarnings("unchecked")
 	public boolean supports(final Class clazz) {
-		return clazz.equals(User.class);
+		return User.class.equals(clazz);
 	}
 
+	/** Validates the given user object. The object must not be null.
+	 * 
+	 * @see org.springframework.validation.Validator#validate(java.lang.Object, org.springframework.validation.Errors)
+	 */
 	public void validate(final Object userObj, final Errors errors) {
+
+		final User user = (User) userObj;
+
+		/*
+		 * Let's check, that the given user is not null.
+		 */
+		Assert.notNull(user);
+
+
 		/*
 		 * Before we make a detailed check on correctness, we look,
 		 * if required attributes are set. 
@@ -30,7 +44,6 @@ public class UserValidator implements Validator<User> {
 		/*
 		 * detailed checks
 		 */
-		final User user = (User) userObj;
 		validateEmail(user.getEmail(), errors);
 		validateName(user.getName(), errors);
 

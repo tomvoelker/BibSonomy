@@ -15,7 +15,7 @@ public class UserRegistrationValidator implements Validator<UserRegistrationComm
 
 	@SuppressWarnings("unchecked")
 	public boolean supports(final Class clazz) {
-		return clazz.equals(UserRegistrationCommand.class);
+		return UserRegistrationCommand.class.equals(clazz);
 	}
 
 	/**
@@ -24,15 +24,15 @@ public class UserRegistrationValidator implements Validator<UserRegistrationComm
 	 * @see org.springframework.validation.Validator#validate(java.lang.Object, org.springframework.validation.Errors)
 	 */
 	public void validate(final Object userObj, final Errors errors) {
+
+		/*
+		 * To ensure that the received command is not null, we throw an
+		 * exception, if this assertion fails.
+		 */
+		Assert.notNull(userObj);
 		
 		final UserRegistrationCommand command = (UserRegistrationCommand) userObj;
 		final User user = command.getRegisterUser();
-		
-		/*
-		 * To ensure that the received command contains a user, we throw an
-		 * exception, if this assertion fails.
-		 */
-		Assert.notNull(user);
 		
 		/*
 		 * validate user

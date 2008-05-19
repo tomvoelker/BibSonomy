@@ -81,7 +81,7 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 	 */
 	public boolean isValidationRequired(final UserRegistrationCommand command) {
 		/*
-		 * is validation always required?
+		 * TODO: is validation always required?
 		 */
 //		final User user = command.getRegisterUser();
 //		new UserValidator().validate(user, errors);
