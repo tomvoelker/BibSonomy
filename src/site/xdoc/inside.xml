@@ -160,7 +160,7 @@
 			
 			<p>
 			  The complete source code to compute the hashes is included in 
-			  <a href="http://www.bibsonomy.org/help/downloads/org.bibsonomy.hashes_0.1.jar">org.bibsonomy.hashes_0.1.jar</a>. 
+			  <a href="http://www.bibsonomy.org/help/downloads/org.bibsonomy.hashes_0.2.jar">org.bibsonomy.hashes_0.2.jar</a>. 
 			  It includes the class <tt>org.bibsonomy.util.BibTeXHashCalculator</tt>, which contains a main method you
 			  can call with <tt>java -jar org.bibsonomy.hashes_0.1.jar</tt> to see an example output and to use it as
 			  starting point for browsing and understanding the source.
