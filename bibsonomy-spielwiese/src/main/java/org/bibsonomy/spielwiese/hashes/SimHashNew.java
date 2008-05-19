@@ -168,12 +168,12 @@ public class SimHashNew {
 
 	private static String getNormalizedAuthor(final String str) {
 		if (str == null) return "";
-		return StringUtils.getStringFromList(normalizePersonList(StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(str))).toLowerCase();
+		return StringUtils.getStringFromList(normalizePersonList(StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(str.toLowerCase())));
 	}
 
 	private static String getNormalizedEditor(final String str) {
 		if (str == null) return "";
-		return StringUtils.getStringFromList(normalizePersonList(StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(str))).toLowerCase();
+		return StringUtils.getStringFromList(normalizePersonList(StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(str.toLowerCase())));
 	}
 
 	private static String getNormalizedYear(final String str) {
@@ -224,10 +224,11 @@ public class SimHashNew {
 				last = t.nextToken().trim();
 			}
 		}
-		// if both are equal --> only last name given
+		// only last name (=first) given
 		if (first != null && last == null) {
 			return first;
 		}
+		// first and last given
 		if (first != null && last != null) {
 			return (first.substring(0,1) + "." + last);
 		}

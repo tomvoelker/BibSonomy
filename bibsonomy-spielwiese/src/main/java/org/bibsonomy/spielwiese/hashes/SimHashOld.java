@@ -225,7 +225,7 @@ public class SimHashOld {
 			}
 		}
 		// if both are equal --> only last name given
-		if (first != null && first.equals(last)) {
+		if (first != null && last == null) {
 			return first;
 		}
 		if (first != null && last != null) {
