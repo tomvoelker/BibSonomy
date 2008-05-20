@@ -40,6 +40,9 @@ public class GetUserConceptStrategy extends Strategy {
 	public void perform(ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException {
 		writer = new PrintWriter(outStream);
 		Tag concept = this.getLogic().getConceptDetails(this.conceptName, GroupingEntity.USER, userName);
+		if (concept == null) {
+			throw new NoSuchResourceException("The requested concept '" + conceptName + "' does not exist for user '" + userName + "'.");
+		}		
 		this.getRenderer().serializeTag(writer, concept, new ViewModel());		
 	}
 	

@@ -32,6 +32,9 @@ public class GetConceptDetailsStrategy extends Strategy {
 	public void perform(ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException {
 		writer = new PrintWriter(outStream);
 		Tag concept = this.getLogic().getConceptDetails(conceptName, GroupingEntity.ALL, null);
+		if (concept == null) {
+			throw new NoSuchResourceException("The requested concept '" + conceptName + "' does not exist.");
+		}
 		this.getRenderer().serializeTag(writer, concept, new ViewModel());
 	}
 	

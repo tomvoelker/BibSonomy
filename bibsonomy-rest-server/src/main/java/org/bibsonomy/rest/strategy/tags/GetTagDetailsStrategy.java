@@ -7,6 +7,7 @@ import java.io.Writer;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.rest.ViewModel;
+import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
 
@@ -32,6 +33,9 @@ public class GetTagDetailsStrategy extends Strategy {
 	@Override
 	public void perform(final ByteArrayOutputStream outStream) throws InternServerException {
 		writer = new PrintWriter(outStream);
+		if (this.tag == null) {
+			throw new NoSuchResourceException("The requested tag '" + this.tagName + "' does not exist.");
+		}		
 		// delegate to the renderer
 		this.getRenderer().serializeTag(writer, this.tag, new ViewModel());
 	}

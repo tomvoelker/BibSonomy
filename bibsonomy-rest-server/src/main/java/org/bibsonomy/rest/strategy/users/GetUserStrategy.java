@@ -33,7 +33,12 @@ public class GetUserStrategy extends Strategy {
 	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException {
 		writer = new PrintWriter(outStream);
 		final User user = this.getLogic().getUserDetails(userName);
-		if (user == null) throw new NoSuchResourceException("The requested user '" + this.userName + "' does not exist.");
+		// user cannot be null - if user is not found, an empty user object is given back by getUserDetails.
+		// -> check for user name being null
+		if (user.getName() == null) {
+			throw new NoSuchResourceException("The requested user '" + userName + "' does not exist.");
+		}
+		//
 		// delegate to the renderer
 		this.getRenderer().serializeUser(writer, user, new ViewModel());
 	}
