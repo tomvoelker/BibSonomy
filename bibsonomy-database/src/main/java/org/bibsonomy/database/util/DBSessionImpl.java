@@ -3,10 +3,12 @@ package org.bibsonomy.database.util;
 import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.common.exceptions.QueryTimeoutException;
 import org.bibsonomy.util.ExceptionUtils;
 
 import com.ibatis.sqlmap.client.SqlMapExecutor;
 import com.ibatis.sqlmap.client.SqlMapSession;
+import com.mysql.jdbc.exceptions.MySQLTimeoutException;
 
 /**
  * This class wraps the iBatis SqlMap and manages database sessions. Transactions are virtual,
@@ -176,13 +178,17 @@ public class DBSessionImpl implements DBSession {
 			 * 
 			 */
 			if (ex.getCause() != null && ex.getCause().getClass().equals(SQLException.class) && 1317 == ((SQLException)ex.getCause()).getErrorCode()) {
-				log.error("Query timeout for query: " + query);
-				ExceptionUtils.logErrorAndThrowQueryTimeoutException(log, ex, query);
+				log.info("Query timeout for query: " + query);
+				throw new QueryTimeoutException(ex, query);
 			}
 			if (ex.getCause() != null && ex.getCause().getClass().equals(SQLException.class) && 1028 == ((SQLException)ex.getCause()).getErrorCode()) {
-				log.error("Sort aborted for query: " + query);
-				ExceptionUtils.logErrorAndThrowQueryTimeoutException(log, ex, query);
-			}			
+				log.info("Sort aborted for query: " + query);
+				throw new QueryTimeoutException(ex, query);
+			}
+			if (ex.getCause() != null && ex.getCause().getClass().equals(MySQLTimeoutException.class)) {
+				log.info("MySQL Query timeout for query " + query);
+				throw new QueryTimeoutException(ex, query);
+			}
 						
 			/*
 			 * Here we catch the wonderful "unknown error" (code 1105) exception of MySQL.
@@ -194,8 +200,8 @@ public class DBSessionImpl implements DBSession {
 			 * http://dev.mysql.com/doc/refman/5.1/en/error-messages-server.html
 			 */
 			if (ex.getCause() != null && ex.getCause().getClass().equals(SQLException.class) && 1105 == ((SQLException)ex.getCause()).getErrorCode()) {
-				log.error("Hit MySQL bug 36230. (with query: " + query + "). See <http://bugs.mysql.com/bug.php?id=36230> for more information.");
-				ExceptionUtils.logErrorAndThrowQueryTimeoutException(log, ex, query);
+				log.info("Hit MySQL bug 36230. (with query: " + query + "). See <http://bugs.mysql.com/bug.php?id=36230> for more information.");
+				throw new QueryTimeoutException(ex, query);
 			}		
 			if (ignoreException == false) {
 				this.somethingWentWrong();
