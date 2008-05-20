@@ -355,7 +355,9 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		
 		// this is just a hack as long as we don't supply separate user counts for
 		// each tag, DB
-		tag.setUsercount(tag.getGlobalcount());
+		if (tag != null) {
+			tag.setUsercount(tag.getGlobalcount());
+		}
 		
 		return tag;
 	}
