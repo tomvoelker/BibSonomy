@@ -65,6 +65,10 @@ public class ListCommand<T> {
 	 * @return size of the list without window limits or offsets
 	 */
 	public int getTotalCount() {
+		// if no entries are displayed, our navigation doesn't make sense 
+		if (this.entriesPerPage == 0) {
+			return 0;
+		}
 		return this.totalCount;
 	}
 	
@@ -72,10 +76,14 @@ public class ListCommand<T> {
 	 * @return the last starting index
 	 */
 	public int getLast() {
+		if (this.entriesPerPage == 0) {
+			return 1;
+		}
 		if (this.totalCount % this.entriesPerPage == 0) {
 			return this.totalCount - this.entriesPerPage;
 		}		
 		return this.totalCount - (this.totalCount % this.entriesPerPage);
+
 	}
 	
 	/**
@@ -164,7 +172,12 @@ public class ListCommand<T> {
 	 */
 	public PageCommand getCurPage() {
 		if (this.curPage.getNumber() == null) {
-			this.curPage.setNumber( (this.curPage.getStart() + this.entriesPerPage - 1) / this.entriesPerPage + 1);
+			if (this.entriesPerPage == 0) {
+				this.curPage.setNumber(1);
+			}
+			else {
+				this.curPage.setNumber( (this.curPage.getStart() + this.entriesPerPage - 1) / this.entriesPerPage + 1);
+			}
 		}
 		return this.curPage;
 	}
