@@ -86,7 +86,7 @@ function generateApiKey(name) {
 /* function interacts with server via ajax */
 function runAjax(parameter,action) {
 	var request = initRequest(); 
-	var url = "ajax?" + parameter;	   
+	var url = "ajax/?" + parameter;	   
    	if (request) {    	   		
    		request.open('GET',url + "&action=" + action,true);	
    		var handle = ajax_updateLog(request); 	   		
