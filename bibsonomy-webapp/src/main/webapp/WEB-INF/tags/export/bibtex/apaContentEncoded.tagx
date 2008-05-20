@@ -5,6 +5,7 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
 	xmlns:swrc="http://swrc.ontoware.org/ontology#"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:output="urn:jsptagdir:/WEB-INF/tags/export/bibtex">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
