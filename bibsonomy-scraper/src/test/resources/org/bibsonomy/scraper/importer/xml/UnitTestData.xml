@@ -432,4 +432,10 @@
 		<BibFile>AIFBScraperUnitURLTest5.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_73">
+		<TestDescription>Cambridge Journals Url Test</TestDescription>
+		<URL>http://journals.cambridge.org/action/displayAbstract?fromPage=online&amp;aid=1805072&amp;fulltextType=RA&amp;fileId=S0008938908000022</URL>
+		<BibFile>CambridgeScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cambridge.CambridgeScraper</Scraper>
+	</URLTest>
 </test:Tests>
