@@ -921,37 +921,61 @@ CREATE TABLE `scraperMetaData` (
 -- Data for table `scraperMetaData`
 -- 
 
-
 -- --------------------------------------------------------
 
 -- 
--- Structure for table `search`
+-- Structure for table `search_bibtex`
 -- 
 
-DROP TABLE IF EXISTS `search`;
-CREATE TABLE `search` (
+DROP TABLE IF EXISTS `search_bibtex`;
+CREATE TABLE `search_bibtex` (
   `content_id` int(10) unsigned NOT NULL default '0',
   `content` text NOT NULL,
   `author` text NOT NULL,
   `group` int(10) default '0',
   `date` datetime NOT NULL default '1815-12-10 00:00:00',
-  `content_type` tinyint(1) unsigned default NULL,
   `user_name` varchar(30) NOT NULL default '',
   PRIMARY KEY  (`content_id`),
-  KEY `group_content_type_date_content_id_idx` (`group`,`content_type`,`date`,`content_id`),
-  KEY `user_name_group_content_type_date_content_id_idx` (`user_name`,`content_type`,`group`,`date`,`content_id`),
-  KEY `user_name_content_type_date_content_id_idx` (`user_name`,`content_type`,`date`,`content_id`),
+  KEY `group_content_type_date_content_id_idx` (`group`,`date`,`content_id`),
+  KEY `user_name_group_content_type_date_content_id_idx` (`user_name`,`group`,`date`,`content_id`),
+  KEY `user_name_content_type_date_content_id_idx` (`user_name`,`date`,`content_id`),
   KEY `date_idx` (`date`),
   FULLTEXT KEY `content_fidx` (`content`),
   FULLTEXT KEY `author_fidx` (`author`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
--- Data for table `search`
+-- Data for table `search_bibtex`
 -- 
 
-INSERT INTO `search` (`content_id`, `content`, `author`, `group`, `date`, `content_type`, `user_name`) VALUES
-(2, 'google suchmaschine gmail earth sketchup maps news images bot adwords', 'testauthor', 0, '1815-12-10 00:00:00', 1, 'testuser1');
+
+-- --------------------------------------------------------
+
+-- 
+-- Structure for table `search_bookmark`
+-- 
+
+DROP TABLE IF EXISTS `search_bookmark`;
+CREATE TABLE `search_bookmark` (
+  `content_id` int(10) unsigned NOT NULL default '0',
+  `content` text NOT NULL,
+  `group` int(10) default '0',
+  `date` datetime NOT NULL default '1815-12-10 00:00:00',
+  `user_name` varchar(30) NOT NULL default '',
+  PRIMARY KEY  (`content_id`),
+  KEY `group_content_type_date_content_id_idx` (`group`,`date`,`content_id`),
+  KEY `user_name_group_content_type_date_content_id_idx` (`user_name`,`group`,`date`,`content_id`),
+  KEY `user_name_content_type_date_content_id_idx` (`user_name`,`date`,`content_id`),
+  KEY `date_idx` (`date`),
+  FULLTEXT KEY `content_fidx` (`content`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- 
+-- Data for table `search_bookmark`
+-- 
+
+INSERT INTO `search_bookmark` (`content_id`, `content`, `group`, `date`, `user_name`) VALUES
+(2, 'google suchmaschine gmail earth sketchup maps news images bot adwords', 0, '1815-12-10 00:00:00', 'testuser1');
 
 -- --------------------------------------------------------
 
