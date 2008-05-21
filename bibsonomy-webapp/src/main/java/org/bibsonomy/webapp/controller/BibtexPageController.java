@@ -1,20 +1,24 @@
 package org.bibsonomy.webapp.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
+
+import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.webapp.command.BibtexResourceViewCommand;
+import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 /**
- * Controller for BibTeX pages
- * 
- * bibtex/HASH and bibtex/HASH/USERNAME
- * 
  * @author mwa
- * @author sts
  * @version $Id$
  */
 public class BibtexPageController extends MultiResourceListController implements MinimalisticController<BibtexResourceViewCommand>{
@@ -26,23 +30,19 @@ public class BibtexPageController extends MultiResourceListController implements
 		LOGGER.debug(this.getClass().getSigners());
 		this.startTiming(this.getClass(), command.getFormat());
 		
-		// retrieve only tags
-		if (!command.getRestrictToTags().equals("false")) {
-			this.setTags(command, BibTex.class, GroupingEntity.ALL, null, null, null, command.getRequBibtex(), null, 0, 1000, null);
-			
-			// TODO: other output formats
-			if (command.getFormat().equals("json")) {
-				return Views.JSONTAGS;
-			}
-		}		
-		
-		/** Michaels part
 		//if no hash given return
 		if(command.getRequBibtex().length() == 0){return null;}
 
 		final String hash = command.getRequBibtex();
-		final String hashType = command.getRequSim();
-		final String requUser = "";
+		String requUser = command.getRequestedUser();
+
+		// retrieve only tags
+		if (!command.getRestrictToTags().equals("false")) {
+			this.setTags(command, BibTex.class, GroupingEntity.ALL, null, null, null, hash, null, 0, 1000, null);
+			
+			// TODO: other output formats
+			return Views.JSONTAGS;
+		}		
 		
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype
@@ -50,30 +50,47 @@ public class BibtexPageController extends MultiResourceListController implements
 		
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {			
-			this.setList(command, resourceType, GroupingEntity.ALL, null, null, hash, null,null, null, command.getListCommand(resourceType).getEntriesPerPage());
+			this.setList(command, resourceType, requUser!=null?GroupingEntity.USER:GroupingEntity.ALL, requUser, null, hash, null, null, null, command.getListCommand(resourceType).getEntriesPerPage());
 			this.postProcessAndSortList(command, resourceType);
 		}	
 		
+		//get the title of the publication with the requested hash (intrahash)
+		if(command.getBibtex().getList().size() > 0){
+			command.setTitle(command.getBibtex().getList().get(0).getResource().getTitle());
+		}
+		
 		if (command.getFormat().equals("html")) {
-			
 			this.endTiming();
-			if(requUser.length() > 0){
+			if(requUser != null){
+				
+				// retrieve concepts
+				List<Tag> concepts = this.logic.getConcepts(null, GroupingEntity.USER, requUser, null, null, ConceptStatus.PICKED, 0, Integer.MAX_VALUE);
+				command.getConcepts().setConceptList(concepts);
+				command.getConcepts().setNumConcepts(concepts.size());
+				
+				ArrayList<Post<BibTex>> bibtex = new ArrayList<Post<BibTex>>();
+				for(Post<BibTex> b: command.getBibtex().getList()){
+					bibtex.add((Post<BibTex>) this.logic.getPostDetails(b.getResource().getIntraHash(), b.getUser().getName()));
+				}
+				command.getBibtex().setList(bibtex);
+				this.setTags(command, Resource.class, GroupingEntity.USER, requUser, null, null, null, null, 0, 1000, null);
 				return Views.BIBTEXDETAILS;
 			}
-			
-			this.setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, 0, 1000, null);
+			this.setTags(command, BibTex.class, GroupingEntity.ALL, requUser, null, null, hash, null, 0, 1000, null);
 			return Views.BIBTEXPAGE;
+			
 	
 		}
 		this.endTiming();
 		
 		// export - return the appropriate view
-		return Views.getViewByFormat(command.getFormat());		
-		*/
-		return null;
+		return Views.getViewByFormat(command.getFormat());
+		
 	}
 	
-	public BibtexResourceViewCommand instantiateCommand() {		
+	public BibtexResourceViewCommand instantiateCommand() {
+		
 		return new BibtexResourceViewCommand();
 	}
+
 }
