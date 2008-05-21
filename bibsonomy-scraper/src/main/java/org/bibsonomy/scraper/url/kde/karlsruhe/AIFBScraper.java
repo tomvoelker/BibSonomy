@@ -18,6 +18,7 @@ public class AIFBScraper implements Scraper {
 	private static final String AIFB_DEPT_PATH = "/Forschungsgruppen/";
 	private static final String AIFB_PERSON_PATH = "/Personen/viewPerson";	
 	private static final String AIFB_PUBL_PATH = "/Publikationen/showPublikation";
+	private static final String AIFB_PUBL_PATH_ENGLISH = "/Publikationen/showPublikation_english";
 	private static final String AIFB_PUBL_PERSON_PATH = "/Publikationen/showPublikationen";
 	private static final String AIFB_PUBL_EXPORT_PATH = "/Publikationen/exportPublikation.bib";
 	private static final String AIFB_PUBL_PERSON_EXPORT_PATH = "/Publikationen/exportPublikationenPerson.bib";
@@ -88,7 +89,7 @@ public class AIFBScraper implements Scraper {
 				 */
 				sc.setBibtexResult(sc.getPageContent());	
 				return true;
-			}else if(AIFB_PUBL_PATH.equals(sc.getUrl().getPath())){
+			}else if(AIFB_PUBL_PATH.equals(sc.getUrl().getPath()) || AIFB_PUBL_PATH_ENGLISH.equals(sc.getUrl().getPath())){
 				/* We are scraping a publication page. Just extract the parameter publ_id
 				 * to call export publication page.
 				 * URL must be like this: 

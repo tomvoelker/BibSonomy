@@ -7,7 +7,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Scraper URL tests #2 #3 #4 #5 #6 #7 for AIFBScraper
+ * Scraper URL tests #2 #3 #4 #5 #6 #7 #72 for AIFBScraper
  * @author tst
  *
  */
@@ -72,5 +72,14 @@ public class AIFBScraperTest {
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_7"));
 	}
-		
+	
+	/**
+	 * starts URL test with id url_72
+	 */
+	@Test
+	//@Ignore
+	public void url7TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_72"));
+	}
 }

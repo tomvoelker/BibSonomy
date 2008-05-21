@@ -218,7 +218,7 @@
 	</URLTest>
 	<URLTest id="url_37">
 		<TestDescription>URL test for work pages from librarything (standard language)</TestDescription>
-		<URL>http://www.librarything.de/work/1926837</URL>
+		<URL>http://www.librarything.de/work/1926837/details</URL>
 		<BibFile>LibrarythingScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.librarything.LibrarythingScraper</Scraper>
 	</URLTest>
@@ -425,5 +425,11 @@
 		<URL>http://www.editlib.org/index.cfm?fuseaction=Reader.ChooseCitationFormat&amp;paper_id=12795</URL>
 		<BibFile>EditLibScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.editlib.EditLibScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_72">
+		<TestDescription>URL test for list of aifb publikations from a user (standard language setting and showPublikationen path)</TestDescription>
+		<URL>http://www.aifb.uni-karlsruhe.de/Publikationen/showPublikation_english?publ_id=907</URL>
+		<BibFile>AIFBScraperUnitURLTest5.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper</Scraper>
 	</URLTest>
 </test:Tests>
