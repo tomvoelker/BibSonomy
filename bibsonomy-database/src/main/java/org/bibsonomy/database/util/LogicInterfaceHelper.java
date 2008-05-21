@@ -3,6 +3,7 @@ package org.bibsonomy.database.util;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
@@ -43,6 +44,26 @@ public class LogicInterfaceHelper {
 	 */
 	public static <T extends GenericParam> T buildParam(final Class<T> type, final String authUser, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end, final String search, final User loginUser) {
 		final T param = getParam(type);
+		
+		//if hash length is 33 ,than use the first character as hash type
+		if(hash != null && hash.length() == 33) {
+			HashID id = HashID.SIM_HASH1;
+			switch(Integer.valueOf(hash.substring(0,1))){
+				case 0: id = HashID.SIM_HASH0; break;
+				case 2: id = HashID.SIM_HASH2; break;
+				case 3: id = HashID.SIM_HASH3; break;
+				default: break;
+			}
+			if(param instanceof BibTexParam){
+				((BibTexParam) param).setSimHash(id);
+			}else if(param instanceof TagParam){
+				((TagParam) param).setHashId(id);
+			}
+			param.setHash(hash.substring(1));
+		}else{
+			param.setHash(hash);
+		}
+		
 		param.setUserName(authUser);
 		param.setGrouping(grouping);
 		if (search != null) {
@@ -52,8 +73,7 @@ public class LogicInterfaceHelper {
 			param.setRequestedUserName(groupingName);
 		}
 		param.setRequestedGroupName(groupingName);
-		param.setHash(hash);
-
+		
 		// set the groupIDs the logged-in user may see 
 		//  - every user may see public posts - this one is added in the constructor of DBLogic
 		//  - groups the logged-in user is explicitely member of

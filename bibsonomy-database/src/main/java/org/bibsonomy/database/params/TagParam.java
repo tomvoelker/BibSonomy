@@ -26,7 +26,7 @@ public class TagParam extends GenericParam {
 	private String stem;
 	private int count;
 	private int usercount;
-	private HashID hashId;
+	private HashID hashId = HashID.INTER_HASH;
 	private TagRelationType tagRelationType;
 
 	/**

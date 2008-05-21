@@ -23,9 +23,19 @@ public class getTagsByHashForUser extends TagChainElement {
 	@Override
 	protected List<Tag> handle(final TagParam param, final DBSession session) {		
 		if (param.getContentType() == ConstantID.BIBTEX_CONTENT_TYPE.getId()) 
-			return this.db.getTagsByBibtexHashForUser(param.getUserName(), param.getRequestedUserName(), param.getHash(), HashID.INTER_HASH, param.getLimit(), param.getOffset(), session);
+			return this.db.getTagsByBibtexHashForUser(	param.getUserName(), 
+														param.getRequestedUserName(), 
+														param.getHash(), HashID.getSimHash(param.getHashId()), 
+														param.getLimit(), 
+														param.getOffset(), 
+														session);
 		else if (param.getContentType() == ConstantID.BOOKMARK_CONTENT_TYPE.getId()) 
-			return this.db.getTagsByBookmarkHashForUser(param.getUserName(), param.getRequestedUserName(), param.getHash(), param.getLimit(), param.getOffset(), session);
+			return this.db.getTagsByBookmarkHashForUser(	param.getUserName(), 
+															param.getRequestedUserName(), 
+															param.getHash(), 
+															param.getLimit(), 
+															param.getOffset(), 
+															session);
 		else
 			throw new UnsupportedResourceTypeException();
 	}
@@ -35,6 +45,6 @@ public class getTagsByHashForUser extends TagChainElement {
 		return present(param.getGrouping()) &&
 			   param.getGrouping() == GroupingEntity.USER &&
 			   present(param.getHash()) && 
-			    present(param.getRequestedUserName());
+			   present(param.getRequestedUserName());
 	}
 }
