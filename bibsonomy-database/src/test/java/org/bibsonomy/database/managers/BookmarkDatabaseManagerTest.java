@@ -94,23 +94,27 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	/**
 	 * tests getBookmarkByConceptForUser
+	 * 
+	 * if userName == null, you don't need to set visibleGroupIDs
+	 * otherwise you have to set visibleGroupIDs
 	 */
 	@Test
-	//FIXME: RuntimeException: Couldn't execute query
 	public void getBookmarkByConceptForUser() {		
 		final String loginUser = "testuser1";
 		final String requestedUserName = "testuser1";
 		List<TagIndex> tagIndex = new ArrayList<TagIndex>();
 		tagIndex.add(new TagIndex("suchmaschine", 1));
-		final List<Post<Bookmark>> posts = this.bookmarkDb.getBookmarkByConceptForUser(loginUser, null, tagIndex, 10, 0, this.dbSession);
+		ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
+		visibleGroupIDs.add(0);
+		final List<Post<Bookmark>> posts = this.bookmarkDb.getBookmarkByConceptForUser(null, requestedUserName, visibleGroupIDs, tagIndex, 10, 0, this.dbSession);
 		assertEquals(1, posts.size());
 		// now get private posts
-		final List<Post<Bookmark>> posts2 = this.bookmarkDb.getBookmarkByConceptForUser(loginUser, requestedUserName, tagIndex, 10, 0, this.dbSession);
+		final List<Post<Bookmark>> posts2 = this.bookmarkDb.getBookmarkByConceptForUser(loginUser, requestedUserName, visibleGroupIDs, tagIndex, 10, 0, this.dbSession);
 		assertEquals(2, posts2.size());
 	}
 
 	/**
-	 * getBookmarkByUserFriends
+	 * tests getBookmarkByUserFriends
 	 */
 	@Test
 	public void getBookmarkByUserFriends() {
@@ -120,7 +124,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
-	 * getBookmarkForHomepage
+	 * tests getBookmarkForHomepage
 	 */
 	@Test
 	public void getBookmarkForHomepage() {
@@ -188,7 +192,6 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * tests getBookmarkSearch
 	 */
 	@Test
-	//FIXME: RuntimeException: Couldn't execute query
 	public void getBookmarkSearch() {	
 		final String requestedUserName = "testuser1";
 		final String search = "suchmaschine";
@@ -201,7 +204,6 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * tests getBookmarkSearchCount
 	 */
 	@Test
-	//FIXME: RuntimeException: Couldn't execute query
 	public void getBookmarkSearchCount() {
 		final String requestedUserName = "testuser1";
 		final String search = "suchmaschine";
@@ -232,103 +234,130 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	/**
 	 * tests getBookmarkForGroup
+	 * 
+	 * if userName == null, you dont need visibleGroupIDs
+	 * otherwise:
+	 * groupId must be set
+	 * visibleGroupIDs must be set
+	 * userName must be set
 	 */
 	@Test
-	//FIXME: RuntimeException: Couldn't execute query
 	public void getBookmarkForGroup() {
 		/*
 		 * testuser1 & testuser2 are members of group 3 
 		 * testuser1 is also member of group 4
 		 */
-		// get all posts by testuser1, testuser2, which are public or friends + private posts of testuser1
+		// get all posts of testuser1 (and testuser2) which are public or friends + private posts of testuser1
 		String userName = "testuser1";
 		final int groupId3 = 3;
-		final List<Post<Bookmark>> posts = this.bookmarkDb.getBookmarkForGroup(groupId3, userName, 10, 0, this.dbSession);
+		ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
+		visibleGroupIDs.add(0);
+		final List<Post<Bookmark>> posts = this.bookmarkDb.getBookmarkForGroup(groupId3, visibleGroupIDs, userName, 10, 0, this.dbSession);
 		assertEquals(8, posts.size());
 
-		// get all posts by testuser1, which are public or friends + private posts of testuser1
+		// get all posts of testuser1 (and testuser2) which are public or friends + private posts of testuser1
 		final int groupId4 = 4;
-		final List<Post<Bookmark>> posts2 = this.bookmarkDb.getBookmarkForGroup(groupId4, userName, 10, 0, this.dbSession);
+		final List<Post<Bookmark>> posts2 = this.bookmarkDb.getBookmarkForGroup(groupId4, visibleGroupIDs, userName, 10, 0, this.dbSession);
 		assertEquals(6, posts2.size());
 
-		// get all posts by testuser1, testuser2, which are public or friends
+		// get all posts of testuser2 (and testuser1) which are public or friends
 		userName = "testuser2";
-		final List<Post<Bookmark>> posts3 = this.bookmarkDb.getBookmarkForGroup(groupId3, userName, 10, 0, this.dbSession);
+		final List<Post<Bookmark>> posts3 = this.bookmarkDb.getBookmarkForGroup(groupId3, visibleGroupIDs, userName, 10, 0, this.dbSession);
 		assertEquals(5, posts3.size());
 
-		final List<Post<Bookmark>> posts4 = this.bookmarkDb.getBookmarkForGroup(3, "testuser1", 10, 0, this.dbSession);
-		assertEquals(2, posts4.size());
+		// get all posts by testuser1, testuser2, which are public or friends
+		final List<Post<Bookmark>> posts4 = this.bookmarkDb.getBookmarkForGroup(groupId4, visibleGroupIDs, userName, 10, 0, this.dbSession);
+		assertEquals(3, posts4.size());
 	}
 
 	/**
 	 * tests getBookmarkForGroupCount
+	 * 
+	 * groupId must be set
+	 * visibleGroupIDs must be set
 	 */
 	@Test
 	public void getBookmarkForGroupCount() {
 		//approximated number of bookmarks, users own private/friends bookmarks are not included
 		Integer count = -1;
-		ArrayList<Integer> groupsOfTestuser1 = new ArrayList<Integer>();
-		groupsOfTestuser1.add(0);
-		count = this.bookmarkDb.getBookmarkForGroupCount(3, groupsOfTestuser1, this.dbSession);
+		ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
+		visibleGroupIDs.add(0);
+		count = this.bookmarkDb.getBookmarkForGroupCount(3, visibleGroupIDs, this.dbSession);
 		assertEquals(4, count);
 
-		ArrayList<Integer> groupsOfTestuser2 = new ArrayList<Integer>(); // empty list?
-		count = this.bookmarkDb.getBookmarkForGroupCount(3, groupsOfTestuser2, this.dbSession);
+		// TODO: visibleGroupIDs don't need to set, why?
+		count = this.bookmarkDb.getBookmarkForGroupCount(3, visibleGroupIDs, this.dbSession);
 		assertEquals(4, count);
-		count = this.bookmarkDb.getBookmarkForGroupCount(4, groupsOfTestuser2, this.dbSession);
+		// TODO: visibleGroupIDs don't need to set, why?
+		count = this.bookmarkDb.getBookmarkForGroupCount(4, visibleGroupIDs, this.dbSession);
 		assertEquals(2, count);
 	}
 
 	/**
 	 * tests getBookmarkForGroupByTag
+	 * 
+	 * userName can be set
+	 * groupId must be set
+	 * visibleGroupIDs must be set
+	 * tagIndex must be set
 	 */
 	@Test
-	//FIXME: RuntimeException: Couldn't execute query
 	public void getBookmarkForGroupByTag() {
 		final int groupId = 3;
-		String userName = "testuser1"; // null has same effect as "testuser1"
-
+		String userName = "testuser1";
+		ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
+		visibleGroupIDs.add(0);
 		List<TagIndex> tagIndex = new ArrayList<TagIndex>();
 		tagIndex.add(new TagIndex("suchmaschine", 1));
-		for (final String userNames : new String[] {userName, null}) {
-			final List<Post<Bookmark>> posts = this.bookmarkDb.getBookmarkForGroupByTag(groupId, userNames, tagIndex, this.dbSession);
-			assertEquals(3, posts.size());
-		}
-		userName = "testuser2";
-		final List<Post<Bookmark>> posts2 = this.bookmarkDb.getBookmarkForGroupByTag(groupId, userName, tagIndex, this.dbSession);
-		assertEquals(2, posts2.size());
-	}
+		List<Post<Bookmark>> posts = this.bookmarkDb.getBookmarkForGroupByTag(groupId, visibleGroupIDs, userName, tagIndex, this.dbSession);
+		assertEquals(3, posts.size());
+		
+		posts = this.bookmarkDb.getBookmarkForGroupByTag(groupId, visibleGroupIDs, null, tagIndex, this.dbSession);
+		assertEquals(2, posts.size());
 
+		userName = "testuser2";
+		posts = this.bookmarkDb.getBookmarkForGroupByTag(groupId, visibleGroupIDs, userName, tagIndex, this.dbSession);
+		assertEquals(2, posts.size());
+	}
+	
+	// TODO: Check the parameters
 	/**
 	 * tests getBookmarkForUser
+	 *
+	 * if userName == null or userName == requestedUserName, you dont need visibleGroupIDs
+	 * otherwise:
+	 * groupId must be set
+	 * visibleGroupIDs must be set
+	 * userName must be set
 	 */
 	@Test
-	//FIXME: RuntimeException: Couldn't execute query
 	public void getBookmarkForUser() {
 		final String requestedUserName = "testuser1";
-
+		ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
+		
 		// testuser1 has two public bookmarks
-		final List<Post<Bookmark>> posts = this.bookmarkDb.getBookmarkForUser(null, requestedUserName, GroupID.PUBLIC.getId(), 10, 0, this.dbSession);
+		final List<Post<Bookmark>> posts = this.bookmarkDb.getBookmarkForUser(null, requestedUserName, GroupID.PUBLIC.getId(), visibleGroupIDs, 10, 0, this.dbSession);
 		assertEquals(2, posts.size());
 		
 		// testuser1 has one bookmarks for friends
-		final List<Post<Bookmark>> posts1 = this.bookmarkDb.getBookmarkForUser(null, requestedUserName, GroupID.FRIENDS.getId(), 10, 0, this.dbSession);
+		final List<Post<Bookmark>> posts1 = this.bookmarkDb.getBookmarkForUser(null, requestedUserName, GroupID.FRIENDS.getId(), visibleGroupIDs, 10, 0, this.dbSession);
 		assertEquals(1, posts1.size());
 		
 		// testuser has two posts for group 4
-		final List<Post<Bookmark>> posts2 = this.bookmarkDb.getBookmarkForUser(null, requestedUserName, 4, 10, 0, this.dbSession);
+		final List<Post<Bookmark>> posts2 = this.bookmarkDb.getBookmarkForUser(null, requestedUserName, 4, visibleGroupIDs, 10, 0, this.dbSession);
 		assertEquals(2, posts2.size());
 		
 		// Invalid groupId => get all posts of testsuser1
 		// When groupId = Invalid, you need userName
 		String userName = "testuser1";
-		final List<Post<Bookmark>> posts3 = this.bookmarkDb.getBookmarkForUser(userName, requestedUserName, GroupID.INVALID.getId(), 10, 0, this.dbSession);
+		final List<Post<Bookmark>> posts3 = this.bookmarkDb.getBookmarkForUser(userName, requestedUserName, GroupID.INVALID.getId(), visibleGroupIDs, 10, 0, this.dbSession);
 		assertEquals(6, posts3.size());
 		
 		// Invalid groupId => testuser3 can only see public posts of testuser1
 		// When groupId = Invalid, you need userName
+		visibleGroupIDs.add(0);
 		userName = "testuser3";
-		final List<Post<Bookmark>> posts4 = this.bookmarkDb.getBookmarkForUser(userName, requestedUserName, GroupID.INVALID.getId(), 10, 0, this.dbSession);
+		final List<Post<Bookmark>> posts4 = this.bookmarkDb.getBookmarkForUser(userName, requestedUserName, GroupID.INVALID.getId(), visibleGroupIDs, 10, 0, this.dbSession);
 		assertEquals(2, posts4.size());
 	}
 
