@@ -46,7 +46,7 @@
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
-			<version>2.1</version>
+			<version>2.3</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.xml.bind</groupId>
@@ -61,6 +61,7 @@
 			<groupId>edu.umass.cs.mallet</groupId>
 			<artifactId>mallet</artifactId>
 			<version>0.4</version>
+			<classifier>steuber</classifier>
 		</dependency>
 		<dependency>
 			<groupId>bsh</groupId>
