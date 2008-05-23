@@ -13,6 +13,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.webapp.command.BibtexResourceViewCommand;
 import org.bibsonomy.webapp.command.ListCommand;
+import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
@@ -31,7 +32,10 @@ public class BibtexPageController extends MultiResourceListController implements
 		this.startTiming(this.getClass(), command.getFormat());
 		
 		//if no hash given return
-		if(command.getRequBibtex().length() == 0){return null;}
+		if(command.getRequBibtex().length() == 0){
+			LOGGER.error("Invalid query /bibtex without hashvalue");
+			throw new MalformedURLSchemeException("error.bibtex_no_hash");
+		}
 
 		final String hash = command.getRequBibtex();
 		String requUser = command.getRequestedUser();
