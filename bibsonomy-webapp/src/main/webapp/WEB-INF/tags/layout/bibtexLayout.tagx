@@ -32,8 +32,8 @@
 	</c:if>	
 		
 	<c:choose>
-		<c:when test="${command.user != null}">
-			<c:set var="loginUserName" value="${command.user.name}"/>
+		<c:when test="${command.userLoggedIn}">
+			<c:set var="loginUserName" value="${command.loginUser.name}"/>
 		</c:when>
 		<c:otherwise>
 			<c:set var="loginUserName" value="${null}"/>
