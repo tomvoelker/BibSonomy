@@ -253,7 +253,9 @@ public abstract class GenericParam {
 	}
 
 	public void setSearch(String search) {
-		this.search = search.replaceAll("([\\s]|^)([\\S&&[^-]])", " +$2");
+		if (search != null) {
+			this.search = search.replaceAll("([\\s]|^)([\\S&&[^-]])", " +$2");
+		}
 	}
 
 	public String getUserName() {

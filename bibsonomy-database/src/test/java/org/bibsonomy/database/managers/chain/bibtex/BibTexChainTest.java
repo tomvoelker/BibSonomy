@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.AbstractChainTest;
+import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
@@ -55,9 +56,15 @@ public class BibTexChainTest extends AbstractChainTest {
 	 */
 	@Test
 	public void getBibtexByHash() {
-		this.bibtexParam.setOrder(null);
-		this.bibtexParam.setTagIndex(null);
-		this.bibtexChain.getFirstElement().perform(bibtexParam, dbSession);
+		BibTexParam param = new BibTexParam();
+		param.setHash("I_am_a_hash");
+		param.setBibtexKey(null);
+		param.setGrouping(GroupingEntity.ALL);
+		param.setRequestedUserName(null);
+		param.setTagIndex(null);
+		param.setOrder(null);
+		param.setSearch(null);
+		this.bibtexChain.getFirstElement().perform(param, dbSession);
 	}
 
 	/**
