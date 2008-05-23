@@ -438,4 +438,22 @@
 		<BibFile>CambridgeScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.cambridge.CambridgeScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_74">
+		<TestDescription>URL test for event page from usenix.org with current layout</TestDescription>
+		<URL>http://www.usenix.org/events/lisa2001/tech/apthorpe.html</URL>
+		<BibFile>UsenixScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.usenix.UsenixScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_75">
+		<TestDescription>URL test for event page from usenix.org with current layout</TestDescription>
+		<URL>http://usenix.org/events/usenix07/tech/kotla.html</URL>
+		<BibFile>UsenixScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.usenix.UsenixScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_76">
+		<TestDescription>URL test for event page from usenix.org with current layout</TestDescription>
+		<URL>http://usenix.org/events/sec07/tech/drimer.html</URL>
+		<BibFile>UsenixScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.usenix.UsenixScraper</Scraper>
+	</URLTest>
 </test:Tests>
