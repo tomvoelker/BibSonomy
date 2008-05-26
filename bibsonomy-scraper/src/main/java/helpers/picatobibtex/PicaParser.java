@@ -53,16 +53,16 @@ public class PicaParser{
 	 * 
 	 * @return String
 	 */
-	private String parse() throws Exception{
+	private String parse() throws Exception{		
 		StringBuffer bibres = new StringBuffer();
 		
 		String type = getBibType();
 		String author = cleanString(getAuthor());
+		String url = prepareUrl(this.url);
 		String title = cleanString(getTitle());
 		String year = cleanString(getYear());
 		String isbn = cleanString(getISBN());
 		String issn = cleanString(getISSN());
-		String ppn = cleanString(getPPN());
 		String series = cleanString(getSeries());
 		String abstr = cleanString(getAbstract());
 		String tags = cleanString(getTags());
@@ -78,7 +78,6 @@ public class PicaParser{
 		bibres.append("abstract = {" + abstr + "}, \n");
 		bibres.append("keywords = {" + tags + "}, \n");
 		bibres.append("url = {" + url + "}, \n");
-		bibres.append("ppn = {" + ppn +  "}, \n");
 		bibres.append("series = {" + series + "}, \n");
 		bibres.append("isbn = {" + isbn + "}, \n");
 		bibres.append("issn = {" + issn + "}, \n");
@@ -207,21 +206,6 @@ public class PicaParser{
 		String res = "";
 		
 		res = getData("021A", "$a");
-		res += " " + getData("021A", "$d");
-		res += " " + getData("021A", "$h");
-		
-		return res;
-	}
-	
-	/**
-	 * extract the ppn
-	 * 
-	 * @return
-	 */
-	private String getPPN(){
-		String res = "";
-		
-		res = getData("003@", "$0");
 		
 		return res;
 	}
@@ -454,5 +438,19 @@ public class PicaParser{
 		}
 		
 		return author;
+	}
+	
+	/**
+	 * Replace "XML=1.0/CHARSET=UTF-8/PRS=PP" in the url
+	 * 
+	 * @param url
+	 * @return formatted url
+	 */
+	private String prepareUrl(String url){
+		String new_url = "";
+		
+		new_url = url.replaceFirst("XML=1.0/CHARSET=UTF-8/PRS=PP", "");
+		
+		return new_url;
 	}
 }
