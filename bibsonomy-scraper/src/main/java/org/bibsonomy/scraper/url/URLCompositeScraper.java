@@ -21,6 +21,7 @@ import org.bibsonomy.scraper.url.kde.dblp.DBLPScraper;
 import org.bibsonomy.scraper.url.kde.editlib.EditLibScraper;
 import org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper;
 import org.bibsonomy.scraper.url.kde.ieee.IEEEXploreScraper;
+import org.bibsonomy.scraper.url.kde.informaworld.InformaWorldScraper;
 import org.bibsonomy.scraper.url.kde.ingenta.IngentaconnectScraper;
 import org.bibsonomy.scraper.url.kde.iop.IOPScraper;
 import org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper;
@@ -83,5 +84,6 @@ public class URLCompositeScraper extends CompositeScraper {
 		addScraper(new BMJScraper());
 		addScraper(new EditLibScraper());
 		addScraper(new CambridgeScraper());
+		addScraper(new InformaWorldScraper());
 	}
 }
