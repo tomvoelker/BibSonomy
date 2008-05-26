@@ -177,7 +177,7 @@
 		</property>
 	</bean>
 	
-	<bean id="friendsPageController" class="org.bibsonomy.webapp.controller.FriendsPageController" scope="request">
+	<!-- <bean id="friendsPageController" class="org.bibsonomy.webapp.controller.FriendsPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
 		<property name="listsToInitialise">
@@ -197,7 +197,7 @@
 				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
 			</list>
 		</property>
-	</bean>
+	</bean> -->
 	
 	<bean id="bibtexPageController" class="org.bibsonomy.webapp.controller.BibtexPageController" scope="request">
 		<property name="logic" ref="logic"/>
