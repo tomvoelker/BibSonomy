@@ -88,17 +88,16 @@ public class MailUtils {
 	 * @param userName - the name of the user which registered. 
 	 * @param userEmail - the email address of the user which registered.
 	 * @param inetAddress - 
-	 * @param language - the language to use for localization.
-	 * @param country - the country to use for localization.
+	 * @param locale - a locale to use for localization
 	 * @return <code>true</code>, if the email could be send without errors.
 	 */
-	public boolean sendRegistrationMail (final String userName, final String userEmail, final String inetAddress, final String language, final String country) {
+	public boolean sendRegistrationMail (final String userName, final String userEmail, final String inetAddress, final Locale locale) {
 		final Object[] messagesParameters = new Object[]{userName, projectName, projectHome, projectBlog, projectEmail};
 		/*
 		 * Format the message "mail.registration.body" with the given parameters.
 		 */
-		final String messageBody    = getFormattedMessage(language, country, "mail.registration.body", messagesParameters);
-		final String messageSubject = getFormattedMessage(language, country, "mail.registration.subject", messagesParameters);
+		final String messageBody    = getFormattedMessage(locale, "mail.registration.body", messagesParameters);
+		final String messageSubject = getFormattedMessage(locale, "mail.registration.subject", messagesParameters);
 
 		/*
 		 * set the recipients
@@ -121,17 +120,16 @@ public class MailUtils {
 	 * @param messageParameters
 	 * @return
 	 */
-	private String getFormattedMessage(final String language, final String country, final String messageKey, final Object[] messageParameters) {
+	private String getFormattedMessage(final Locale locale, final String messageKey, final Object[] messageParameters) {
 		/*
 		 * get the locale for the given language and country.
 		 */
-		final Locale currentLocale = new Locale(language, country);
-		final ResourceBundle messages = ResourceBundle.getBundle(messagesFileNamePrefix, currentLocale);
+		final ResourceBundle messages = ResourceBundle.getBundle(messagesFileNamePrefix, locale);
 		/*
 		 * prepare a formatter for the given locale
 		 */
 		final MessageFormat formatter = new MessageFormat("");
-		formatter.setLocale(currentLocale);
+		formatter.setLocale(locale);
 		/*
 		 * load the message
 		 */

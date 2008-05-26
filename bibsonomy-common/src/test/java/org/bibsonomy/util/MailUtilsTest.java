@@ -3,6 +3,8 @@ package org.bibsonomy.util;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Locale;
+
 import org.bibsonomy.testutil.JNDITestProjectParams;
 import org.junit.Test;
 
@@ -22,7 +24,7 @@ public class MailUtilsTest {
 		try {
 			
 			MailUtils utils = MailUtils.getInstance();
-			assertTrue(utils.sendRegistrationMail("testuser", "devnull@cs.uni-kassel.de", "255.255.255.255", "en", "US"));
+			assertTrue(utils.sendRegistrationMail("testuser", "devnull@cs.uni-kassel.de", "255.255.255.255", new Locale("en")));
 
 		} catch (Exception e) {
 			fail();
