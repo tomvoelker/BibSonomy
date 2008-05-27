@@ -6,7 +6,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 /** 
- * This command basically encapsulates the user for the registration page. 
+ * This command encapsulates the user and other details for the registration page. 
  * 
  * @author rja
  * @version $Id$
@@ -17,7 +17,32 @@ public class UserRegistrationCommand extends BaseCommand implements Serializable
 	 * 
 	 */
 	private static final long serialVersionUID = 4051289358685799133L;
+	
+	/**
+	 * Holds the details of the user which wants to register (like name, email, password)
+	 */
 	private User registerUser;
+	/**
+	 * The user has to re-type the password, to ensure, that he did not make any typos.
+	 */
+	private String passwordCheck;
+	/**
+	 * Contains the HTML-Code to view the reCaptcha. Is filled ONLY by the controller!
+	 * Any validator must check, that the user did not fill this field.
+	 */
+	private String reCaptchaHTML;
+	/**
+	 * The (encoded) challenge the user has to solve. Is given as a request parameter by 
+	 * the reCaptcha form.
+	 */
+	private String recaptcha_challenge_field;
+	/**
+	 * The response to the captcha, the user entered.
+	 */
+	private String recaptcha_response_field;
+	
+	
+	
 
 	/** 
 	 * @return The user which tries to register.
@@ -31,6 +56,38 @@ public class UserRegistrationCommand extends BaseCommand implements Serializable
 	 */
 	public void setRegisterUser(User registerUser) {
 		this.registerUser = registerUser;
+	}
+
+	public String getReCaptchaHTML() {
+		return this.reCaptchaHTML;
+	}
+
+	public void setReCaptchaHTML(String reCaptchaHTML) {
+		this.reCaptchaHTML = reCaptchaHTML;
+	}
+
+	public String getRecaptcha_challenge_field() {
+		return this.recaptcha_challenge_field;
+	}
+
+	public void setRecaptcha_challenge_field(String recaptcha_challenge_field) {
+		this.recaptcha_challenge_field = recaptcha_challenge_field;
+	}
+
+	public String getRecaptcha_response_field() {
+		return this.recaptcha_response_field;
+	}
+
+	public void setRecaptcha_response_field(String recaptcha_response_field) {
+		this.recaptcha_response_field = recaptcha_response_field;
+	}
+
+	public String getPasswordCheck() {
+		return this.passwordCheck;
+	}
+
+	public void setPasswordCheck(String passwordCheck) {
+		this.passwordCheck = passwordCheck;
 	}
 
 }
