@@ -32,14 +32,12 @@ public class UserValidator implements Validator<User> {
 		 */
 		Assert.notNull(user);
 
-
 		/*
 		 * Before we make a detailed check on correctness, we look,
 		 * if required attributes are set. 
 		 */
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "error.field.required");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "error.field.required");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "error.field.required");
 		
 		/*
 		 * detailed checks
@@ -58,9 +56,16 @@ public class UserValidator implements Validator<User> {
 	}
 
 
+	/** Validates the correctness of the email-address. This is done by 
+	 * some simple tests, e.g., if the address contains whitespace, an '@'
+	 * or a '.'.
+	 * 
+	 * @param email
+	 * @param errors
+	 */
 	private void validateEmail (final String email, final Errors errors) {
 		if (email == null ||
-				"".equals(email) || 
+				"".equals(email.trim()) || 
 				email.indexOf(' ') != -1 ||
 				email.indexOf('@') == -1 || 
 				email.length() > 255 ||
@@ -71,6 +76,12 @@ public class UserValidator implements Validator<User> {
 		}
 	}
 
+	/** Checks the validity of the homepage. The homepage might either be NULL 
+	 * or a http (or https) address.
+	 * 
+	 * @param homepage
+	 * @param errors
+	 */
 	private void validateHomepage(final URL homepage, final Errors errors) {
 		if (homepage != null) {
 			if (!("http".equals(homepage.getProtocol()) || "https".equals(homepage.getProtocol()))) {
@@ -79,6 +90,13 @@ public class UserValidator implements Validator<User> {
 		}
 	}
 
+	/** Checks the validity of the user name. There are some user names which are 
+	 * reserved (public, private, friends, null) and some characters which are not
+	 * allowed (whitespace, -, +, /, &, ?, ", \, >, <, %).
+	 * 
+	 * @param name
+	 * @param errors
+	 */
 	private void validateName (final String name, final Errors errors) {
 		/* username must not contain %, otherwise cookie auth does not work, 
 		 * because %20 separates username from password in cookie auth */

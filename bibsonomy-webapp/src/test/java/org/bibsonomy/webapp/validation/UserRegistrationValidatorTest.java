@@ -47,6 +47,9 @@ public class UserRegistrationValidatorTest {
 		}
 	}
 	
+	/**
+	 * registerUser = null should not pass validation
+	 */
 	@Test
 	public void testValidateNullUser() {
 		final UserRegistrationValidator validator = new UserRegistrationValidator();
@@ -62,6 +65,9 @@ public class UserRegistrationValidatorTest {
 		}
 	}
 	
+	/**
+	 * non-null register user should not fail with exception but give some errors.
+	 */
 	@Test
 	public void testValidate() {
 		final UserRegistrationValidator validator = new UserRegistrationValidator();
@@ -84,6 +90,103 @@ public class UserRegistrationValidatorTest {
 		 */
 		Assert.assertTrue(errors.hasErrors());
 		
+	}
+	
+	/**
+	 * If HTML for captcha is set, fail
+	 */
+	@Test
+	public void testValidateFailOnGivenCaptchaHTML() {
+		final UserRegistrationValidator validator = new UserRegistrationValidator();
+		final UserRegistrationCommand command = new UserRegistrationCommand();
+		
+		final Errors errors = new BindException(command, "command");
+		
+		final User validUser = getValidUser();
+		command.setRegisterUser(validUser);
+		command.setPasswordCheck("foo");
+		
+		
+		Assert.assertFalse(errors.hasErrors());
+		
+		/*
+		 * should not fail
+		 */
+		validator.validate(command, errors);
+
+		/*
+		 * no errors
+		 */
+		Assert.assertFalse(errors.hasErrors());
+		
+		/*
+		 * set HTML
+		 */
+		command.setReCaptchaHTML("bar");
+
+		/*
+		 * should not fail
+		 */
+		validator.validate(command, errors);
+		
+		/*
+		 * should contain some entries
+		 */
+		Assert.assertTrue(errors.hasErrors());
+		
+	}
+	
+	
+	/**
+	 * If HTML for captcha is set, fail
+	 */
+	@Test
+	public void testValidateFailOnNonMatchingPasswords() {
+		final UserRegistrationValidator validator = new UserRegistrationValidator();
+		final UserRegistrationCommand command = new UserRegistrationCommand();
+		
+		final Errors errors = new BindException(command, "command");
+		
+		final User validUser = getValidUser();
+		command.setRegisterUser(validUser);
+		command.setPasswordCheck("foo");
+		
+		
+		Assert.assertFalse(errors.hasErrors());
+		
+		/*
+		 * should not fail
+		 */
+		validator.validate(command, errors);
+
+		/*
+		 * no errors
+		 */
+		Assert.assertFalse(errors.hasErrors());
+		
+		/*
+		 * set different password
+		 */
+		command.setPasswordCheck("bat");
+
+		/*
+		 * should not fail
+		 */
+		validator.validate(command, errors);
+		
+		/*
+		 * should contain some entries
+		 */
+		Assert.assertTrue(errors.hasErrors());
+		
+	}
+	
+	private User getValidUser() {
+		final User user = new User();
+		user.setName("john_doe");
+		user.setEmail("devnull@cs.uni-kassel.de");
+		user.setPassword("foo");
+		return user;
 	}
 	
 }
