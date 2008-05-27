@@ -9,9 +9,11 @@ public enum Role {
 	/** When a new user registers, he has this role. */
 	DEFAULT(1),
 	/** Is allowed to use admin pages. */
-	ADMIN(0);
+	ADMIN(0),
+	/** Not logged in. */
+	NOBODY(2);
 
-	private static final Role[] map = new Role[] { ADMIN, DEFAULT };
+	private static final Role[] map = new Role[] { ADMIN, DEFAULT, NOBODY };
 	private final int role;
 
 	private Role(final int role) {
