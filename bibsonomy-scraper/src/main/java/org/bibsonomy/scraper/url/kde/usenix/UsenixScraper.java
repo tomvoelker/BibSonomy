@@ -1,14 +1,12 @@
 package org.bibsonomy.scraper.url.kde.usenix;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.ScrapingException;
@@ -24,13 +22,27 @@ public class UsenixScraper implements Scraper {
 	
 	private static final String HOST = "usenix.org";
 	
-	private static final String PATTERN_GET_TITLE = "<h2>(.*)</h2>";
+	private static final String PATTERN_YEAR_EVENTS = "/events/.*(\\d{2})/";
 	
-	private static final String PATTERN_GET_AUTHOR = "</h2>(.*)<h3>";
+	private static final String PATTERN_YEAR_PROCEEDING = "/publications/library/proceedings/\\D*(\\d{2})/";
 	
-	private static final String PATTERN_GET_EVENT = "sans-serif\"><b>(.*)</b></font>";
+	private static final String PATTERN_KEY_EVENTS = "/events/([^/]*)/";
 	
-	private static final String PATTERN_GET_PAGES = "<b>Pp.(.*)</b>";
+	private static final String PATTERN_KEY_PROCEEDING = "/publications/library/proceedings/([^/]*)/";
+	
+	private static final String CURRENT_PATTERN_GET_TITLE = "<h2>(.*)</h2>";
+	
+	private static final String CURRENT_PATTERN_GET_AUTHOR = "</h2>(.*)<h3>";
+	
+	private static final String CURRENT_WITH_BORDER_PATTERN_GET_AUTHOR = "</h2>(.*)<h4>";
+
+	private static final String OLD_PATTERN_GET_AUTHOR = "<PRE>\\s*(.*)";
+
+	private static final String CURRENT_PATTERN_GET_EVENT = "sans-serif\"><b>([^<]*)</b></font>";
+	
+	private static final String OLD_PATTERN_GET_EVENT = "<title>(.*)</title>";
+	
+	private static final String CURRENT_PATTERN_GET_PAGES = "<b>Pp.(.*)</b>";
 
 	public String getInfo() {
 		return INFO;
@@ -44,39 +56,127 @@ public class UsenixScraper implements Scraper {
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(HOST)){
 			String path = sc.getUrl().getPath();
 			try {
-				if(path.startsWith("/events/") && path.endsWith(".html")){
+				String title = null;
+				String author = null;
+				String event = null;
+				String pages = null;
+				String year = null;
+				String key = null;
+				
+				if( (path.startsWith("/events/") || path.startsWith("/publications/library/proceedings/")) && path.endsWith(".html")){
 					/*
-					 * examples for current event layout:
+					 * examples for current event/proceeding layout:
 					 * http://usenix.org/events/sec07/tech/drimer.html
+					 * http://usenix.org/publications/library/proceedings/tcl97/libes_writing.html
+					 * 
+					 * TODO:
+					 * http://www.usenix.org/events/evt07/tech/full_papers/sandler/sandler_html/
 					 */
 					
 					String content = sc.getPageContent();
-					
-					String title = null;
-					String author = null;
-					String event = null;
-					String pages = null;
 					
 					/*
 					 * Pattern
 					 */
 					
-					Pattern titlePattern = Pattern.compile(PATTERN_GET_TITLE, Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+					// get year and key (event page)
+					if(path.startsWith("/events/")){
+						// get year
+						Pattern yearPattern = Pattern.compile(PATTERN_YEAR_EVENTS);
+						Matcher yearMatcher = yearPattern.matcher(path);
+						if(yearMatcher.find())
+							year = expandYear(yearMatcher.group(1));
+						
+						//get key
+						Pattern keyPattern = Pattern.compile(PATTERN_KEY_EVENTS);
+						Matcher keyMatcher = keyPattern.matcher(path);
+						if(keyMatcher.find())
+							key = keyMatcher.group(1);
+
+					// get year and key (proceeding page)
+					}else if(path.startsWith("/publications/library/proceedings/")){
+						// get year
+						Pattern yearPattern = Pattern.compile(PATTERN_YEAR_PROCEEDING);
+						Matcher yearMatcher = yearPattern.matcher(path);
+						if(yearMatcher.find())
+							year = expandYear(yearMatcher.group(1));
+						
+						//get key
+						Pattern keyPattern = Pattern.compile(PATTERN_KEY_PROCEEDING);
+						Matcher keyMatcher = keyPattern.matcher(path);
+						if(keyMatcher.find())
+							key = keyMatcher.group(1);
+						
+					}
+					
+					// get title
+					Pattern titlePattern = Pattern.compile(CURRENT_PATTERN_GET_TITLE, Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 					Matcher titleMatcher = titlePattern.matcher(content);
 					if(titleMatcher.find())
 						title = cleanup(titleMatcher.group(1), false);
 					
-					Pattern authorPattern = Pattern.compile(PATTERN_GET_AUTHOR, Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+					// get author
+					Pattern authorPattern = Pattern.compile(CURRENT_PATTERN_GET_AUTHOR, Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 					Matcher authorMatcher = authorPattern.matcher(content);
 					if(authorMatcher.find())
 						author = cleanup(authorMatcher.group(1), true);
+					else{
+						/*
+						 * matching for different layout
+						 * example: http://usenix.org/publications/library/proceedings/ec96/geer.html
+						 */
+						authorPattern = Pattern.compile(CURRENT_WITH_BORDER_PATTERN_GET_AUTHOR, Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+						authorMatcher = authorPattern.matcher(content);
+						if(authorMatcher.find()){
+							author = cleanup(authorMatcher.group(1), true);
+							author = author.replace("<HR>", "");
+							author = author.replace("<hr>", "");
+							author = author.replace("<P>", "");
+							author = author.replace("<p>", "");
+							
+							// because of this: http://usenix.org/publications/library/proceedings/mob95/raja.html
+							if(author.contains("<PRE>")){
+								authorPattern = Pattern.compile(OLD_PATTERN_GET_AUTHOR, Pattern.CASE_INSENSITIVE);
+								authorMatcher = authorPattern.matcher(content);
+								if(authorMatcher.find()){
+									author = cleanup(authorMatcher.group(1), true);
+									author = author.replaceAll("\\s{2,}", " and ");
+								}
+							}
+						}
+					}
+					if(author!=null){
+						// replace "\n" with "and"
+						author = author.replace("\n", " and ");
+						// replace "," with "and"
+						author = author.replace(",", " and ");
+						// and cleanup
+						while(author.contains("and  and"))
+							author = author.replaceAll("and\\s*and", "and");
+						if(author.endsWith(" and "))
+							author = author.substring(0, author.length()-5);
+						if(author.startsWith(" and "))
+							author = author.substring(5);
+					}
 					
-					Pattern eventPattern = Pattern.compile(PATTERN_GET_EVENT, Pattern.CASE_INSENSITIVE);
+					// get event
+					Pattern eventPattern = Pattern.compile(CURRENT_PATTERN_GET_EVENT, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 					Matcher eventMatcher = eventPattern.matcher(content);
-					if(eventMatcher.find())
+					if(eventMatcher.find()){
 						event = cleanup(eventMatcher.group(1), false);
+						event = event.replace("\n", "");
+					}else{
+						// old layout example: http://usenix.org/publications/library/proceedings/mob95/raja.html
+						eventPattern = Pattern.compile(OLD_PATTERN_GET_EVENT, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+						eventMatcher = eventPattern.matcher(content);
+						if(eventMatcher.find()){
+							event = cleanup(eventMatcher.group(1), false);
+							event = event.replace("\n", "");
+						}
+					}
 					
-					Pattern pagesPattern = Pattern.compile(PATTERN_GET_PAGES, Pattern.CASE_INSENSITIVE);
+					// get pages
+					Pattern pagesPattern = Pattern.compile(CURRENT_PATTERN_GET_PAGES, Pattern.CASE_INSENSITIVE);
 					Matcher pagesMatcher = pagesPattern.matcher(content);
 					if(pagesMatcher.find())
 						pages = cleanup("Pp." + pagesMatcher.group(1), false);
@@ -87,12 +187,18 @@ public class UsenixScraper implements Scraper {
 					 */
 					
 					StringBuffer resultBibtex = new StringBuffer();
-					resultBibtex.append("@inproceedings{usenix,\n");			
+					
+					if(key != null)
+						resultBibtex.append("@inproceedings{" + key + ",\n");
+					else
+						resultBibtex.append("@inproceedings{usenix,\n");
 					
 					if(author != null)
 						resultBibtex.append("\tauthor = {" + author + "},\n");
 					if(title != null)
 						resultBibtex.append("\ttitle = {" + title + "},\n");
+					if(year != null)
+						resultBibtex.append("\tyear = {" + year + "},\n");
 					if(event != null)
 						resultBibtex.append("\tseries = {" + event + "},\n");
 					if(pages != null)
@@ -105,23 +211,6 @@ public class UsenixScraper implements Scraper {
 					sc.setScraper(this);
 					return true;
 					
-				}else if(false){
-					// Url pattern for older proceedings
-					
-					/*
-					 * TODO:
-					 * 
-					 * simple version from current layout
-					 * http://usenix.org/publications/library/proceedings/sd96/wilkes.html
-					 * 
-					 * old collection layout
-					 * http://usenix.org/publications/library/proceedings/sd93/#uhler
-					 * 
-					 * current layout, but no event
-					 * http://usenix.org/publications/library/proceedings/tcl97/libes_writing.html
-					 * 
-					 */
-					
 				}else
 					throw new ScrapingException("Not supported usenix url!");
 			} catch (UnsupportedEncodingException ex) {
@@ -131,6 +220,13 @@ public class UsenixScraper implements Scraper {
 		return false;
 	}
 
+	/**
+	 * Removes some HTML-Elements and Codings which are not needed in Bibtex
+	 * @param bibContent bibliographic information as HTML
+	 * @param cut flag for cutting off the conten between <i></i>
+	 * @return bibliographic information without HTML-Elements
+	 * @throws UnsupportedEncodingException
+	 */
 	private String cleanup(String bibContent, boolean cut) throws UnsupportedEncodingException{
 		bibContent = bibContent.replace("&#150;", "-");
 		bibContent = StringEscapeUtils.unescapeHtml(bibContent);
@@ -174,7 +270,25 @@ public class UsenixScraper implements Scraper {
 			bibContent = bibContent.replaceAll("</I>", "");
 		}
 
+		bibContent = bibContent.replace("<BR>", "\n");
+		bibContent = bibContent.replace("<br>", "\n");
+		
 		return bibContent.trim();
 	}
 	
+	/**
+	 * expand a given decade to a complete year
+	 * @param decade the last two numbers of a year (with 4 digits)
+	 * @return decade expande with 199X or 20XX
+	 */
+	private String expandYear(String decade){
+		/*
+		 * TODO:
+		 * Problem with year 21XX
+		 */
+		if(decade.startsWith("9"))
+			return "19" + decade;
+		else
+			return "20" + decade;
+	}
 }
