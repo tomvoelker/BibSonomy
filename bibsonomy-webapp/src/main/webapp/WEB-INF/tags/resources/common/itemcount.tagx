@@ -7,19 +7,20 @@
 
 	<jsp:directive.attribute name="entriesPerPage" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="entryType" type="java.lang.String" required="true" />		
-	<jsp:directive.attribute name="otherParams" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="titleKey" type="java.lang.String" required="true"/>		
 
 	<!-- define selection of list lengts -->
 	<c:set var="allEntryCounts" value="5,10,20,50,100"/>
+	<!-- entrytype whose entries per page will be in/decreased -->
+	<c:set var="entryTypeEntriesPerPage" value="${entryType}.entriesPerPage"/>
 	
 	<span class="actions">
 		<fmt:message key="${titleKey}"/>${mtl:ch('nbsp')}<fmt:message key="list.entriesPerPage" />:${mtl:ch('nbsp')}
 		<c:forEach var="num" items="${fn:split(allEntryCounts, ',')}">
 		
 			<!-- build url --> 
-			<c:url var="numListUrl" value="/${mtl:getPath(requPath)}?${otherParams}" context="${projectContext}">
-				<c:param name="${entryType}.entriesPerPage" value="${num}" />
+			<c:url var="numListUrl" value="/${mtl:setParam(requPath,entryTypeEntriesPerPage,num)}" context="${projectContext}">
+				<!-- <c:param name="${entryType}.entriesPerPage" value="${num}" /> -->
 			</c:url>
 	
 			<!-- display link or current number of entries per page -->
