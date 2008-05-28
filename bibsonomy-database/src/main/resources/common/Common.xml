@@ -138,6 +138,41 @@
 		ORDER BY date DESC
 		LIMIT #limit# OFFSET #offset#) AS bb
 	</sql>
+	
+	<!--
+	   This query is used for get*ForGroupByTag queries that want to retrieve documents
+	   It selects all content ids (for the specific content type)
+		- from all users of the group, if userName is allowed to see them
+		- from users of group, if userName is friend of one of the users
+		- from userName, if in the group
+	-->
+	<sql id="selectContentIDsWithDocuments">
+		((SELECT t1.content_id, t1.date, d.hash, d.name         <!-- currUser's own items + items from users of group which currUser may see -->
+		  FROM groups g, document d, <include refid="tagFromQuery"/>
+		  WHERE <include refid="tagWhereQuery"/>
+		        AND g.group = #groupId#
+		        AND g.user_name = t1.user_name            <!-- all items of all group members (including currUser) -->
+		        AND (
+		         t1.user_name = #userName#                <!-- currUser's own items -->
+		         OR <include refid="inGroupsUnchecked"/>  <!-- items of other users wich currUser may see -->
+		        ) 
+		        AND d.content_id = t1.content_id		  <!-- join documents -->
+		        AND t1.content_type = #contentType#
+		 ) UNION (
+		  SELECT t1.content_id, t1.date, d.hash, d.name           <!-- items from users of group which have currUser as friend -->
+		  FROM groups g, friends f, document d, <include refid="tagFromQuery"/>
+		  WHERE <include refid="tagWhereQuery"/>
+		        AND g.group = #groupId#
+		        AND f.f_user_name = #userName#      <!-- currUser is friend of user -->
+		        AND g.user_name = f.user_name       <!-- user is in group -->
+		        AND t1.user_name = f.user_name      <!-- user owns this item -->              
+		        AND t1.group = $groupType$          <!-- item is only for friends -->
+		        AND d.content_id = t1.content_id	<!-- join documents -->
+		        AND t1.content_type = #contentType#
+		 )
+		ORDER BY date DESC
+		LIMIT #limit# OFFSET #offset#) AS bb
+	</sql>
 
 	<!-- 
 		restrict visibility of retrieved items to

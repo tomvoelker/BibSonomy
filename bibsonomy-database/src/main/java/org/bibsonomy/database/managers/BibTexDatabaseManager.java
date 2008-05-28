@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.InvalidModelException;
@@ -211,6 +212,17 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	public List<Post<BibTex>> getBibTexByTagNamesForUser(final BibTexParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		HashID.getSimHash(param.getSimHash()); // ensures correct simHash is set (exception would be thrown otherwise)
+		
+		// if user wants to retrieve documents
+		if (present(param.getFilter())) {
+			if (param.getFilter().equals(FilterEntity.PDF)) {
+				return this.bibtexList("getBibTexByTagNamesForUserWithPDF", param, session);
+			}
+			else {
+				return this.bibtexList("getJustBibTexByTagNamesForUserWithPDF", param, session);
+			}
+		}		
+		
 		return this.bibtexList("getBibTexByTagNamesForUser", param, session);
 	}
 	
@@ -729,8 +741,14 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	public List<Post<BibTex>> getBibTexForUsersInGroup(final BibTexParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
 		// if user wants to retrieve documents
-		if (present(param.getFilter()) && param.getGroups().contains(param.getGroupId()))
+		if (present(param.getFilter()) && param.getGroups().contains(param.getGroupId())) {
+			if (param.getFilter().equals(FilterEntity.PDF)) {
 				return this.bibtexList("getBibTexForGroupWithPDF", param, session);
+			}
+			else {
+				return this.bibtexList("getJustBibTexForGroupWithPDF", param, session);
+			}
+		}
 		
 		return this.bibtexList("getBibTexForUsersInGroup", param, session);
 	}
@@ -807,6 +825,17 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 */
 	public List<Post<BibTex>> getBibTexForGroupByTag(final BibTexParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
+		
+		// if user wants to retrieve documents
+		if (present(param.getFilter()) && param.getGroups().contains(param.getGroupId())) {
+			if (param.getFilter().equals(FilterEntity.PDF)) {
+				return this.bibtexList("getBibTexForGroupByTagWithPDF", param, session);
+			}
+			else {
+				return this.bibtexList("getJustBibTexForGroupByTagWithPDF", param, session);
+			}
+		}
+		
 		return this.bibtexList("getBibTexForGroupByTag", param, session);
 	}
 
@@ -855,6 +884,19 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 */
 	public List<Post<BibTex>> getBibTexForUser(final BibTexParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
+		
+		// if user wants to retrieve documents
+		if (present(param.getFilter())) {
+			if (param.getFilter().equals(FilterEntity.PDF)) {
+				System.out.println("user with PDF");
+				return this.bibtexList("getBibTexForUserWithPDF", param, session);
+			}
+			else {
+				System.out.println("user with just pdf");
+				return this.bibtexList("getJustBibTexForUserWithPDF", param, session);
+			}
+		}
+		
 		return this.bibtexList("getBibTexForUser", param, session);
 	}
 

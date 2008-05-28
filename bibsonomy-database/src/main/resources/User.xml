@@ -71,4 +71,12 @@
 		LIMIT #limit#
 	</select>
 
+	<select id="getOpenIdUserTimestamp" resultClass="string" parameterClass="string"> 
+		SELECT valid_until FROM openIdUser WHERE user_name = #userName#
+	</select>
+	
+	<update id="updateOpenIdSessionForUser" parameterClass="string">
+		UPDATE openIdUser SET valid_until = ((UNIX_TIMESTAMP() + 3600) * 1000) WHERE user_name = #userName#
+	</update>	
+
 </sqlMap>

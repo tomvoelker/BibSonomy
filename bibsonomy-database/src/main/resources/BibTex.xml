@@ -86,6 +86,46 @@
 				AND g.group = b.group
 				ORDER BY b.date DESC, b.content_id DESC;
 	</select>
+	
+	<select id="getBibTexByTagNamesForUserWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
+		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, g.group, 
+		g.group_name,d.hash, d.name
+		FROM bibtex b, tas t, groupids g, bibhash h,
+			(SELECT t1.content_id
+			FROM <include refid="tagFromQuery"/>			
+				WHERE <include refid="tagWhereQuery"/>
+					<include refid="restrictToGroups"/>
+					AND t1.content_type = #contentType#
+					AND t1.user_name = #requestedUserName#
+				ORDER BY t1.date DESC
+				LIMIT #limit# OFFSET #offset#) AS tt
+				LEFT JOIN document d USING(content_id) 
+				WHERE tt.content_id=b.content_id
+				AND tt.content_id=t.content_id
+				AND <include refid="bibtexSimHash"/>
+				AND g.group = b.group
+				ORDER BY b.date DESC, b.content_id DESC;
+	</select>
+	
+	<select id="getJustBibTexByTagNamesForUserWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
+		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, g.group, 
+		g.group_name, tt.hash, tt.name
+		FROM bibtex b, tas t, groupids g, bibhash h,
+			(SELECT t1.content_id, d.hash, d.name
+			FROM document d, <include refid="tagFromQuery"/>			
+				WHERE <include refid="tagWhereQuery"/>
+					<include refid="restrictToGroups"/>
+					AND t1.content_type = #contentType#
+					AND t1.user_name = #requestedUserName#
+					AND d.content_id = t1.content_id
+				ORDER BY t1.date DESC
+				LIMIT #limit# OFFSET #offset#) AS tt
+				WHERE tt.content_id=b.content_id
+				AND tt.content_id=t.content_id
+				AND <include refid="bibtexSimHash"/>
+				AND g.group = b.group
+				ORDER BY b.date DESC, b.content_id DESC;
+	</select>
 
 	<select id="getBibTexByTagNamesForUserCount" resultClass="int" parameterClass="bibtexParam">
 		SELECT count(*) AS count
@@ -305,6 +345,42 @@
 
 	<select id="getBibTexForGroupWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, h.ctr as count, g.group,
+		d.hash, d.name
+		FROM bibtex b, bibhash h,
+		     (
+		     SELECT ids.content_id, ids.date FROM  
+		     ((SELECT content_id, date                <!-- publications from users of group which currUser may see -->
+		       FROM bibtex t1, groups g
+		       WHERE g.group = #groupId#
+		             AND g.user_name = t1.user_name    <!-- user owns this publication -->
+		             <include refid="inGroups"/>
+		      )UNION(
+		       SELECT content_id, date                <!-- publications from users of group which have currUser as friend -->
+		       FROM bibtex b, groups g, friends f
+		       WHERE f.f_user_name = #userName#       <!-- currUser is friend -->
+		             AND g.user_name = f.user_name    <!-- user is in group -->
+		             AND b.user_name = f.user_name    <!-- user owns this publication -->
+		             AND g.group = #groupId#
+		             AND b.group = $groupType$        <!-- publication is only for friends -->
+		      )UNION(
+		       SELECT content_id, date                <!-- currUsers publications, ... -->
+		       FROM bibtex b, groups g
+		       WHERE b.user_name = #userName#
+		             AND g.user_name = b.user_name    <!-- only, if currUser ... -->
+		             AND g.group = #groupId#          <!-- is in this group       -->
+		      )) as ids			      
+		      ORDER BY date DESC
+		      LIMIT #limit# OFFSET #offset#) AS bb	
+		LEFT JOIN document d USING(content_id) 	
+		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas (get tags) -->
+		WHERE t.group = g.group                                                  <!-- join groupname -->
+		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
+		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
+		ORDER BY bb.date DESC, bb.content_id DESC
+	</select>
+	
+	<select id="getJustBibTexForGroupWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, h.ctr as count, g.group,
 		bb.hash, bb.name
 		FROM bibtex b, bibhash h,
 		     (
@@ -328,10 +404,7 @@
 		       WHERE b.user_name = #userName#
 		             AND g.user_name = b.user_name    <!-- only, if currUser ... -->
 		             AND g.group = #groupId#          <!-- is in this group       -->
-		      )) as ids		
-		      <isEqual property="filter" compareValue="PDF">
-		      LEFT
-		      </isEqual>      
+		      )) as ids			           
    			  JOIN document d USING(content_id) 
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS bb		
@@ -359,6 +432,27 @@
 		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select> 
+	
+	<select id="getBibTexForGroupByTagWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, h.ctr as count, g.group, d.hash, d.name
+		FROM bibtex b, bibhash h, <include refid="selectContentIDs"/>
+		LEFT JOIN document d USING(content_id) 	
+		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas (get tags) -->
+		WHERE t.group = g.group                                                  <!-- join groupname -->
+		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
+		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
+		ORDER BY bb.date DESC, bb.content_id DESC
+	</select> 
+	
+	<select id="getJustBibTexForGroupByTagWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, h.ctr as count, g.group, bb.hash, bb.name
+		FROM bibtex b, bibhash h, <include refid="selectContentIDsWithDocuments"/>
+		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas (get tags) -->
+		WHERE t.group = g.group                                                  <!-- join groupname -->
+		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
+		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
+		ORDER BY bb.date DESC, bb.content_id DESC
+	</select> 
 
 	<select id="getBibTexForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count
@@ -367,6 +461,36 @@
 		      WHERE <include refid="bibtexSimHash3"/>
 		            AND t1.user_name = #requestedUserName#
 		            <include refid="restrictToGroups"/>
+		      ORDER BY date DESC
+		      LIMIT #limit# OFFSET #offset#) AS b2
+		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id, groupids AS g
+		WHERE b2.group = g.group
+		ORDER BY b2.date DESC, b2.content_id DESC
+	</select>
+	
+	<select id="getBibTexForUserWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
+		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count, d.hash, d.name
+		FROM (SELECT t1.*, h.ctr AS count
+		      FROM bibtex t1, bibhash h
+		      WHERE <include refid="bibtexSimHash3"/>
+		            AND t1.user_name = #requestedUserName#
+		            <include refid="restrictToGroups"/>
+		      ORDER BY date DESC
+		      LIMIT #limit# OFFSET #offset#) AS b2
+		LEFT JOIN document d USING(content_id) 
+		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id, groupids AS g
+		WHERE b2.group = g.group
+		ORDER BY b2.date DESC, b2.content_id DESC
+	</select>
+	
+	<select id="getJustBibTexForUserWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
+		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count, b2.hash, b2.name
+		FROM (SELECT t1.*, h.ctr AS count, d.hash, d.name 
+		      FROM bibtex t1, bibhash h, document d
+		      WHERE <include refid="bibtexSimHash3"/>
+		            AND t1.user_name = #requestedUserName#
+		            <include refid="restrictToGroups"/>
+		      AND d.content_id = t1.content_id
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b2
 		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id, groupids AS g
