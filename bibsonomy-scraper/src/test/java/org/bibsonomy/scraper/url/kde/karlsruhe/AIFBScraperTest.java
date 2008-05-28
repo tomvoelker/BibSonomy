@@ -77,7 +77,7 @@ public class AIFBScraperTest {
 	 * starts URL test with id url_72
 	 */
 	@Test
-	//@Ignore
+	@Ignore
 	public void url7TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_72"));
