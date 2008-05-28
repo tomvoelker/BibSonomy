@@ -43,8 +43,8 @@ public class Importer {
 		 * Load properties for configuring the filters. 
 		 */
 		final Properties prop = new Properties();
-		prop.load(new InputStreamReader(Importer.class.getClassLoader().getResourceAsStream("easychair.properties"), "UTF-8"));
-
+		prop.load(Importer.class.getClassLoader().getResourceAsStream("easychair.properties"));
+		
 		/*
 		 * The reader which will read and parse the XML.
 		 */
