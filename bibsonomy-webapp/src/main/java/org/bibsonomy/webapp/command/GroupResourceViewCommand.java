@@ -12,11 +12,7 @@ public class GroupResourceViewCommand extends TagResourceViewCommand {
 	/** the group whose resources are requested*/
 	private String requestedGroup = "";
 	
-	/** filter group resources  */
-	private String filter = "";
 	
-	/** PDF files attached to resources */
-	private String showPDF = "";	
 		
 	/** bean for group members */
 	private GroupMemberCommand memberCommand = new GroupMemberCommand();
@@ -33,24 +29,7 @@ public class GroupResourceViewCommand extends TagResourceViewCommand {
 	 */
 	public void setRequestedGroup(String requestedGroup) {
 		this.requestedGroup = requestedGroup;
-	}	
-	
-	public String getFilter() {
-		return this.filter;
-	}
-
-	public void setFilter(String filter) {
-		this.filter = filter;
-	}
-
-	public String getShowPDF() {
-		return this.showPDF;
-	}
-
-	public void setShowPDF(String showPDF) {
-		System.out.println("----------> SHHOW PDF");
-		this.showPDF = showPDF;
-	}
+	}		
 
 	/**
 	 *  @return command with all group members (in dependence of the group privacy level)

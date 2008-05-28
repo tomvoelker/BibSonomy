@@ -108,7 +108,8 @@ public class DocumentDownloadHandler extends HttpServlet{
 												  "	UNION " +										// public and viewable docs of group members
 												  " SELECT name FROM document d JOIN bibtex b USING (content_id) " + 
 												  "	WHERE hash = ? " +
-												  " AND b.group IN (SELECT 0 UNION SELECT g.group FROM groups g WHERE user_name = ?) " + 
+												  " AND b.group IN " + // only groups that are allowed to share documents
+												  " (SELECT 0 UNION SELECT g.group FROM groups g JOIN groupids i ON (g.group = i.group) WHERE user_name = ? AND i.sharedDocuments = 1) " + 
 												  " AND d.user_name IN " +
 												  " ( " +
 												  " 	SELECT DISTINCT user_name " +
@@ -182,5 +183,4 @@ public class DocumentDownloadHandler extends HttpServlet{
 			return "application/octet-stream";
 		}
 	}
-	
 }

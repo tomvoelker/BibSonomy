@@ -290,7 +290,9 @@
     <!-- /user/USER/TAG -->
     <rule>
     	<!-- workaround to redirect not-yet-supported features to old resource handler -->
-		<condition type="parameter" name="filter" operator="notequal"/>
+		<!-- forward PDF sites to new page -->
+		<condition type="parameter" name="filter" operator="notequal" next="or"/>
+		<condition type="parameter" name="filter" operator="equal">myPDF</condition>
 		<condition type="attribute" name="type" operator="notequal"/>    
     	<from>^/+user/+([^/?]+?)/(.+?)(\?(.*))?$</from>
     	<!-- NEW PAGE -->
@@ -306,8 +308,10 @@
     <!-- /user/USER -->
 	<rule>
 	    <!-- workaround to redirect not-yet-supported features to old resource handler -->
+		<!-- forward PDF sites to new page -->
+		<condition type="parameter" name="filter" operator="equal" next="or">myPDF</condition>
 		<condition type="parameter" name="filter" operator="notequal"/>
-		<condition type="attribute" name="type" operator="notequal"/>
+		<condition type="attribute" name="type" operator="notequal"/>  
 		<from>^/+user/+([^/?]+?)(\?(.*))?$</from>
 		<!-- NEW PAGE -->
 		<to>/user?requestedUser=$1&amp;$3</to>
@@ -388,8 +392,10 @@
 <!-- ############## group pages ############### -->
     <rule> <!-- /group/GROUP/TAG -->
     	<!-- workaround to redirect not-yet-supported features to old resource handler -->
-		<condition type="parameter" name="filter" operator="notequal"/> 
-		<condition type="attribute" name="type" operator="notequal"/>     
+    	<!-- forward PDF sites to new page -->
+		<condition type="parameter" name="filter" operator="notequal" next="or"/>
+		<condition type="parameter" name="filter" operator="equal">myGroupPDF</condition> 
+		<condition type="attribute" name="type"   operator="notequal"/>     
         <from>^/+group/+([^/?]+?)/(.+?)(\?(.*))?$</from> 
 		<!-- NEW PAGE -->      
         <to>/group?requestedGroup=$1&amp;requestedTags=$2&amp;$4</to> 
@@ -407,7 +413,9 @@
     </rule>
 	<rule> <!-- /group/GROUP -->
     	<!-- workaround to redirect not-yet-supported features to old resource handler -->
-		<!-- <condition type="parameter" name="filter" operator="notequal"/> -->
+		<!-- forward PDF sites to new page -->
+		<condition type="parameter" name="filter" operator="notequal" next="or"/>
+		<condition type="parameter" name="filter" operator="equal">myGroupPDF</condition> 
 		<condition type="attribute" name="type" operator="notequal"/>    	
 		<from>^/+group/+([^/?]+?)(\?(.*))?$</from>
 		<!-- NEW PAGE -->

@@ -91,6 +91,16 @@ public enum Views implements View {
 	URLPAGE("url"),
 	
 	/**
+	 * userpage only for publications with documents attached
+	 */
+	USERDOCUMENTPAGE("userDocument"),
+	
+	/**
+	 * userpage only for publications with documents attached
+	 */
+	GROUPDOCUMENTPAGE("groupDocument"),
+	
+	/**
 	 * burst output for publications
 	 */
 	BURST("export/bibtex/burst"),

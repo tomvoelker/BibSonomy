@@ -6,12 +6,12 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.webapp.command.GroupMemberCommand;
 import org.bibsonomy.webapp.command.GroupResourceViewCommand;
-import org.bibsonomy.webapp.command.RelatedTagCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
@@ -57,6 +57,10 @@ public class GroupPageController extends MultiResourceListControllerWithTags imp
 		// and the requested resourcetype
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
 		
+		if (filter == FilterEntity.JUST_PDF) {
+			this.listsToInitialise.remove(Bookmark.class);
+		}
+		
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {			
 			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, filter, null, command.getListCommand(resourceType).getEntriesPerPage());
@@ -77,12 +81,25 @@ public class GroupPageController extends MultiResourceListControllerWithTags imp
 			if (requTags.size() > 0) {
 				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, Order.ADDED, 0, 20, null);
 				this.endTiming();
-				return Views.GROUPTAGPAGE;
+				
+
+				// forward to bibtex page if PDF filter is set
+				if (filter == FilterEntity.JUST_PDF) {
+					return Views.GROUPDOCUMENTPAGE;
+				} else {
+					return Views.GROUPTAGPAGE;
+				}
+				
 			}
 			this.endTiming();
-			return Views.GROUPPAGE;			
-		}
-		
+			
+			// forward to bibtex page if PDF filter is set
+			if (filter == FilterEntity.JUST_PDF) {
+				return Views.GROUPDOCUMENTPAGE;
+			} else {
+				return Views.GROUPPAGE;			
+			}
+		}		
 		this.endTiming();
 		// export - return the appropriate view
 		return Views.getViewByFormat(command.getFormat());		

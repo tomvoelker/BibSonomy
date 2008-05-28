@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConceptStatus;
+import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
@@ -39,21 +41,33 @@ public class UserPageController extends MultiResourceListControllerWithTags impl
 		groupingName = command.getRequestedUser();
 		final List<String> requTags = command.getRequestedTagsList();
 		
+		FilterEntity filter = null;
+		if (command.getShowPDF().equals("true")) {
+			filter = FilterEntity.PDF;
+		} else if (command.getFilter().equals("myPDF")) {
+			filter = FilterEntity.JUST_PDF;
+		}	
+		
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
+		
+		if (filter == FilterEntity.JUST_PDF) {
+			this.listsToInitialise.remove(Bookmark.class);
+		}
 		
 		Integer totalNumPosts = 1;
 
 		// retrieve and set the requested resource lists, along with total counts
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {
-			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, command.getListCommand(resourceType).getEntriesPerPage());
+			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, filter, null, command.getListCommand(resourceType).getEntriesPerPage());
 			this.postProcessAndSortList(command, resourceType);
 			
-			int totalCount = this.logic.getStatistics(resourceType, groupingEntity, groupingName, null, null, requTags);
-			command.getListCommand(resourceType).setTotalCount(totalCount);
-			
-			totalNumPosts += totalCount;
+			if (filter != FilterEntity.JUST_PDF) { 
+				int totalCount = this.logic.getStatistics(resourceType, groupingEntity, groupingName, null, null, requTags);
+				command.getListCommand(resourceType).setTotalCount(totalCount);
+				totalNumPosts += totalCount;
+			}			
 		}
 		
 		// retrieve concepts
@@ -64,19 +78,31 @@ public class UserPageController extends MultiResourceListControllerWithTags impl
 		// set page title
 		// TODO: internationalize
 	    command.setPageTitle("user :: " + groupingName);
-		
-		
+				
 		// html format - retrieve tags and return HTML view
 		if (command.getFormat().equals("html")) {
 			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, 1000, null);
+			
 			if (requTags.size() > 0) {
 				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, Order.ADDED, 0, 20, null);
 				command.getRelatedTagCommand().setTagGlobalCount(totalNumPosts);
 				this.endTiming();
-				return Views.USERTAGPAGE;
+				
+				// forward to bibtex page if PDF filter is set
+				if (filter == FilterEntity.JUST_PDF) {
+					return Views.USERDOCUMENTPAGE;
+				} else {
+					return Views.USERTAGPAGE;				
+				}
 			}			
 			this.endTiming();
-			return Views.USERPAGE;		
+
+			// forward to bibtex page if PDF filter is set
+			if (filter == FilterEntity.JUST_PDF) {
+				return Views.USERDOCUMENTPAGE;
+			} else {
+				return Views.USERPAGE;		
+			}
 		}
 		this.endTiming();
 		// export - return the appropriate view

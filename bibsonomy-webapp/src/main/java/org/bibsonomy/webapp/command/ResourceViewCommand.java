@@ -36,6 +36,12 @@ public class ResourceViewCommand extends BaseCommand {
 	/** callback function for JSON outputs */
 	private String callback = "";	
 	
+	/** filter group resources  */
+	private String filter = "";
+	
+	/** PDF files attached to resources */
+	private String showPDF = "";	
+	
 	public String getDuplicates() {
 		return this.duplicates;
 	}
@@ -163,4 +169,20 @@ public class ResourceViewCommand extends BaseCommand {
 	public void setCallback(String callBack) {
 		this.callback = callBack;
 	}		
+	
+	public String getFilter() {
+		return this.filter;
+	}
+
+	public void setFilter(String filter) {
+		this.filter = filter;
+	}
+
+	public String getShowPDF() {
+		return this.showPDF;
+	}
+
+	public void setShowPDF(String showPDF) {
+		this.showPDF = showPDF;
+	}
 }
