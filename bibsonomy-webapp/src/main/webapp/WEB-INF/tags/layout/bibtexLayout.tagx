@@ -48,7 +48,7 @@
 			<link rel="alternate" type="application/rss+xml" title="${burstRssFeed} /${requPath}" href="${burstUrl}" />
 		</jsp:attribute>
 		<jsp:attribute name="content">
-			<resources:bibtexs listView="${command.bibtex}" loginUserName="${loginUserName}" otherParamsNextprev="bookmark.start=${command.bookmark.start}&amp;bookmark.entriesPerPage=${command.bookmark.entriesPerPage}&amp;bibtex.entriesPerPage=${command.bibtex.entriesPerPage}" otherParamsNumEntries="bibtex.start=${command.bibtex.start}&amp;bookmark.start=${command.bookmark.start}&amp;bookmark.entriesPerPage=${command.bookmark.entriesPerPage}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
+			<resources:bibtexs listView="${command.bibtex}" loginUserName="${loginUserName}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
 		</jsp:attribute>
 	</layout:layout>
 </jsp:root>
