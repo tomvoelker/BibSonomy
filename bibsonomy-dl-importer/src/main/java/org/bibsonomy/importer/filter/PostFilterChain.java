@@ -19,7 +19,7 @@ public class PostFilterChain implements PostFilterChainElement {
 
 	private final List<PostFilterChainElement> filters = new LinkedList<PostFilterChainElement>();
 
-	public PostFilterChain(final Properties prop) throws ClassNotFoundException {
+	public PostFilterChain(final Properties prop) throws Exception {
 		/*
 		 * maximal number of filters to look for ... default: 10
 		 */
@@ -29,7 +29,7 @@ public class PostFilterChain implements PostFilterChainElement {
 		} catch (final NumberFormatException e) {
 			maxFilters = 10;
 		}
-		
+
 		/*
 		 * iterate over filters
 		 */
@@ -55,28 +55,23 @@ public class PostFilterChain implements PostFilterChainElement {
 	 * @return An instance of the filter. 
 	 * @throws ClassNotFoundException
 	 */
-	private PostFilterChainElement loadFilter(final String className, final Properties prop) throws ClassNotFoundException {
+	private PostFilterChainElement loadFilter(final String className, final Properties prop) throws Exception {
 		final Class<?> clazz = PostFilterChain.class.getClassLoader().loadClass(className);
-		
+
 		try {
-			try {
-				/*
-				 * Check for constructor accepting Properties.
-				 */
-				final Constructor<?> cons = clazz.getConstructor(Properties.class);
-				return (PostFilterChainElement) cons.newInstance(prop);
-			} catch (final NoSuchMethodException e) {
-				/*
-				 * Check for no-arg constructor.
-				 */
-				final Constructor<?> cons = clazz.getConstructor();
-				return (PostFilterChainElement) cons.newInstance();
-			}
-			
-		} catch (final Exception e) {
-			System.err.println(e);
-			throw new ClassNotFoundException();
+			/*
+			 * Check for constructor accepting Properties.
+			 */
+			final Constructor<?> cons = clazz.getConstructor(Properties.class);
+			return (PostFilterChainElement) cons.newInstance(prop);
+		} catch (final NoSuchMethodException e) {
+			/*
+			 * Check for no-arg constructor.
+			 */
+			final Constructor<?> cons = clazz.getConstructor();
+			return (PostFilterChainElement) cons.newInstance();
 		}
+
 	}
 
 	/** 
