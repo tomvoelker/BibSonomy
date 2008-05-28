@@ -510,4 +510,16 @@
 		<BibFile>UsenixScraperUnitURLTest10.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.usenix.UsenixScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_86">
+		<TestDescription>ISRL Url test 1</TestDescription>
+		<URL>http://www.isrl.uiuc.edu/~amag/langev/paper/mitchener07middleEnglish.html</URL>
+		<BibFile>ISRLScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.uiuc.ISRLScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_87">
+		<TestDescription>ISRL Url test 2</TestDescription>
+		<URL>http://www.isrl.uiuc.edu/~amag/langev/paper/arbib06mirrorSystemEditedBook.html</URL>
+		<BibFile>ISRLScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.uiuc.ISRLScraper</Scraper>
+	</URLTest>
 </test:Tests>
