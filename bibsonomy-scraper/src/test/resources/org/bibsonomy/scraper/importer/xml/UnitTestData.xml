@@ -522,4 +522,16 @@
 		<BibFile>ISRLScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.uiuc.ISRLScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_88">
+		<TestDescription>Liebert Url test 1</TestDescription>
+		<URL>http://www.liebertonline.com/doi/abs/10.1089/152308604773934350</URL>
+		<BibFile>LiebertScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.liebert.LiebertScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_89">
+		<TestDescription>Liebert Url test 2</TestDescription>
+		<URL>http://www.liebertonline.com/action/showCitFormats?doi=10.1089%2F152308604773934350</URL>
+		<BibFile>LiebertScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.liebert.LiebertScraper</Scraper>
+	</URLTest>
 </test:Tests>

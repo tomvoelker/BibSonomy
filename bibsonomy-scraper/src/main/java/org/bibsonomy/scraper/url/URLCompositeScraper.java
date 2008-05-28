@@ -28,6 +28,7 @@ import org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper;
 import org.bibsonomy.scraper.url.kde.karlsruhe.UBKAScraper;
 import org.bibsonomy.scraper.url.kde.l3s.L3SScraper;
 import org.bibsonomy.scraper.url.kde.librarything.LibrarythingScraper;
+import org.bibsonomy.scraper.url.kde.liebert.LiebertScraper;
 import org.bibsonomy.scraper.url.kde.mathscinet.MathSciNetScraper;
 import org.bibsonomy.scraper.url.kde.nasa.ads.NasaAdsScraper;
 import org.bibsonomy.scraper.url.kde.nature.NatureScraper;
@@ -87,5 +88,6 @@ public class URLCompositeScraper extends CompositeScraper {
 		addScraper(new CambridgeScraper());
 		addScraper(new InformaWorldScraper());
 		addScraper(new ISRLScraper());
+		addScraper(new LiebertScraper());
 	}
 }
