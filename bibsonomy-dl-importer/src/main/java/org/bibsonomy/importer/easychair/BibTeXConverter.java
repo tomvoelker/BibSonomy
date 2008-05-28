@@ -1,9 +1,11 @@
 package org.bibsonomy.importer.easychair;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
-import java.util.Date;
+import java.io.OutputStreamWriter;
 import java.util.List;
 import java.util.Properties;
 
@@ -11,17 +13,14 @@ import org.bibsonomy.importer.filter.PostFilterChain;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
-import org.bibsonomy.rest.client.Bibsonomy;
-import org.bibsonomy.rest.client.queries.post.CreatePostQuery;
 
 /** 
- * Imports an EasyChair XML file into BibSonomy using the API.
+ * Converts an EasyChair XML file into BibTeX.
  * 
  * @author rja
  * @version $Id$
  */
-public class Importer {
+public class BibTeXConverter {
 
 	/**
 	 * @param args
@@ -29,11 +28,10 @@ public class Importer {
 	public static void main(String[] args) throws Exception {
 
 		/*
-		 * Loads the configuration 
+		 * Load properties for configuring the filters. 
 		 */
 		final Properties prop = new Properties();
-		prop.load(Importer.class.getClassLoader().getResourceAsStream("easychair.properties"));
-
+		prop.load(BibTeXConverter.class.getClassLoader().getResourceAsStream("easychair.properties"));
 		/*
 		 * The reader which will read and parse the XML.
 		 */
@@ -45,36 +43,22 @@ public class Importer {
 		final PostFilterChain filter = new PostFilterChain(prop);
 		
 		/*
-		 * An instance of the BiBSonomy API.
-		 */
-		final Bibsonomy bibsonomy = new Bibsonomy();
-		final String className = Importer.class.getName();
-		bibsonomy.setApiURL(prop.getProperty(className + ".apiUrl"));
-		final String userName = prop.getProperty(className + ".apiUser");
-		bibsonomy.setUsername(userName);
-		bibsonomy.setApiKey(prop.getProperty(className + ".apiKey"));
-		
-		/*
 		 * Get list of BibTex posts.
 		 */
 		final List<Post<BibTex>> bibTeXListFromXML = reader.readPostList();
 		
 		/*
-		 * filter posts and post them to BibSonomy
+		 * filter posts and write them to into a file.
 		 */
+		
+		final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(args[1]), "UTF-8"));
 		
 		for (final Post<BibTex> post:bibTeXListFromXML) {
 			filter.filterPost(post);
-
-			/*
-			 * add user name to post
-			 */
-			post.setUser(new User(userName));
-			post.setDate(new Date());
-			
-			bibsonomy.executeQuery(new CreatePostQuery(userName, post));
-			
+			writer.write(toString(post) + "\n");
 		}
+		
+		writer.close();
 		
 
 	}

@@ -37,6 +37,10 @@ public class XMLHandler extends DefaultHandler {
 			post = new Post<BibTex>();
 			post.setResource(new BibTex());
 			/*
+             * default entry type for EasyChair publications 
+             */
+			post.getResource().setEntrytype("inproceedings");
+			/*
 			 * set the EasyChair submission number as content id
 			 */
 			post.setContentId(Integer.parseInt(atts.getValue("number")));
