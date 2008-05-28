@@ -534,4 +534,10 @@
 		<BibFile>LiebertScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.liebert.LiebertScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_90">
+		<TestDescription>Nber Url test</TestDescription>
+		<URL>http://www.nber.org/papers/w14015</URL>
+		<BibFile>NberScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.nber.NberScraper</Scraper>
+	</URLTest>
 </test:Tests>
