@@ -39,8 +39,8 @@ public class ResourceViewCommand extends BaseCommand {
 	/** filter group resources  */
 	private String filter = "";
 	
-	/** PDF files attached to resources */
-	private String showPDF = "";	
+	/** show PDF files attached to resources - enabled by default*/
+	private String showPDF = "true";	
 	
 	public String getDuplicates() {
 		return this.duplicates;
