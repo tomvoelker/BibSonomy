@@ -388,7 +388,7 @@
 		<TestDescription>Opac Scraper and PicaToBibtex</TestDescription>
 		<URL>http://opac.bibliothek.uni-kassel.de/DB=23/XML=1.0/CHARSET=UTF-8/PRS=PP/PPN?PPN=191787183</URL>
 		<BibFile>OpacScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.biomed.BioMedCentralScraper</Scraper>
+		<Scraper>org.bibsonomy.scraper.url.kde.opac.OpacScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_66">
 		<TestDescription>AnthroSource Journals Url 1</TestDescription>
@@ -539,5 +539,11 @@
 		<URL>http://www.nber.org/papers/w14015</URL>
 		<BibFile>NberScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.nber.NberScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_91">
+		<TestDescription>PubMed new URL pattern</TestDescription>
+		<URL>http://www.ncbi.nlm.nih.gov/pubmed/18506939?ordinalpos=2&amp;itool=EntrezSystem2.PEntrez.Pubmed.Pubmed_ResultsPanel.Pubmed_RVDocSum</URL>
+		<BibFile>PubMedScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper</Scraper>
 	</URLTest>
 </test:Tests>
