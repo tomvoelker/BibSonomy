@@ -33,12 +33,14 @@ public class UrlPageController extends MultiResourceListController implements Mi
 	public View workOn(UrlCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
+		
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());		
 		
+		// no URL hash given -> error
 		if (!ValidationUtils.present(command.getRequUrl()) && !ValidationUtils.present(command.getRequUrlHash())) {
-			LOGGER.error("Invalid query /url without key");
+			LOGGER.error("Invalid query /url without URL hash");
 			throw new MalformedURLSchemeException("error.url_no_hash");
 		}
 		
@@ -68,7 +70,9 @@ public class UrlPageController extends MultiResourceListController implements Mi
 			this.endTiming();
 			return Views.URLPAGE;	
 		}
+		
 		this.endTiming();
+		
 		// export - return the appropriate view
 		return Views.getViewByFormat(command.getFormat());				
 	}

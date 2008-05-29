@@ -9,6 +9,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.webapp.command.ConceptResourceViewCommand;
+import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
@@ -27,8 +28,12 @@ public class ConceptPageController  extends MultiResourceListController implemen
 		LOGGER.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
 		
-		//if no tags given return
-		if(command.getRequestedTags().length() == 0) return null;
+		//if no concept given -> error
+		if(command.getRequestedTags().length() == 0) { // checking for string length here works because requestedTags is initialized with ""
+			LOGGER.error("Invalid query /concept without concept name");
+			throw new MalformedURLSchemeException("error.concept_page_without_conceptname");
+		}
+		
 		final List<String> requTags = command.getRequestedTagsList();
 
 		for(int i = 0; i < requTags.size(); i++){

@@ -30,15 +30,15 @@ public class UserPageController extends MultiResourceListControllerWithTags impl
 		LOGGER.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
 
-		// set grouping entity and grouping name
-		final GroupingEntity groupingEntity;
-		final String groupingName;
+		// no user given -> error
 		if (command.getRequestedUser() == null) {
 			LOGGER.error("Invalid query /user without username");
 			throw new MalformedURLSchemeException("error.user_page_without_username");
-		}
-		groupingEntity = GroupingEntity.USER;
-		groupingName = command.getRequestedUser();
+		}		
+		
+		// set grouping entity, grouping name, tags
+		final GroupingEntity groupingEntity = GroupingEntity.USER;
+		final String groupingName = command.getRequestedUser();
 		final List<String> requTags = command.getRequestedTagsList();
 		
 		FilterEntity filter = null;

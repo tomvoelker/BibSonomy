@@ -28,6 +28,7 @@ public class BibtexkeyPageController extends MultiResourceListController impleme
 		// and the requested resourcetype
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());		
 		
+		// no bibtex key given -> error
 		if (!ValidationUtils.present(command.getRequestKey())) {
 			LOGGER.error("Invalid query /bibtexkey without key");
 			throw new MalformedURLSchemeException("error.bibtexkey_no_key");

@@ -8,6 +8,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.AuthorResourceCommand;
 import org.bibsonomy.webapp.command.RelatedTagCommand;
+import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
@@ -23,8 +24,11 @@ public class AuthorPageController extends MultiResourceListController implements
 		LOGGER.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
 		
-		// if no group given return 
-		if (command.getRequestedAuthor() == null) return null;
+		// if no author given throw error 		
+		if (command.getRequestedAuthor() == null) {
+			LOGGER.error("Invalid query /author without author name");
+			throw new MalformedURLSchemeException("error.author_page_without_authorname");
+		}		
 				
 		// set grouping entity and grouping name
 		final GroupingEntity groupingEntity = GroupingEntity.VIEWABLE;

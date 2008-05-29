@@ -12,6 +12,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.webapp.command.GroupMemberCommand;
 import org.bibsonomy.webapp.command.GroupResourceViewCommand;
+import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
@@ -31,8 +32,11 @@ public class GroupPageController extends MultiResourceListControllerWithTags imp
 		LOGGER.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
 		
-		// if no group given return 
-		if (command.getRequestedGroup() == null) return null;		
+		// if no group given -> error
+		if (command.getRequestedGroup() == null) {
+			LOGGER.error("Invalid query /group without roup name");
+			throw new MalformedURLSchemeException("error.group_page_without_groupname");
+		}				
 
 		// set grouping entity and grouping name
 		final GroupingEntity groupingEntity = GroupingEntity.GROUP;

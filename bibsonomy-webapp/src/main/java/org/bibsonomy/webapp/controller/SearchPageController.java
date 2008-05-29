@@ -25,16 +25,16 @@ public class SearchPageController extends MultiResourceListController implements
 		LOGGER.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
 		
-		// determine which lists to initalize depending on the output format 
+		// no search given -> error 
 		if (command.getRequestedSearch().length() == 0){
+			LOGGER.error("Invalid query /search without search term");
 			throw new MalformedURLSchemeException("error.search_page_without_search");	
 		}
 		String search = command.getRequestedSearch();
 		GroupingEntity groupingEntity = GroupingEntity.ALL;
 		String groupingName = null;
 		
-		// search in a specific user's entries
-		
+		// search in a specific user's entries		
 		if (search.matches(".*user:.*")) {
 			// get username of first user
 			int start = search.indexOf("user:");
@@ -50,7 +50,7 @@ public class SearchPageController extends MultiResourceListController implements
 			search = search.replaceAll("user:[^\\s]*", "").trim();
 		}
 		
-		// and the requested resourcetype
+		// // determine which lists to initalize depending on the output format and the requested resourcetype
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
 		
 		// retrieve and set the requested resource lists

@@ -31,7 +31,7 @@ public class BibtexPageController extends MultiResourceListController implements
 		LOGGER.debug(this.getClass().getSigners());
 		this.startTiming(this.getClass(), command.getFormat());
 		
-		//if no hash given return
+		//if no hash given -> error
 		if(command.getRequBibtex().length() == 0){
 			LOGGER.error("Invalid query /bibtex without hashvalue");
 			throw new MalformedURLSchemeException("error.bibtex_no_hash");
