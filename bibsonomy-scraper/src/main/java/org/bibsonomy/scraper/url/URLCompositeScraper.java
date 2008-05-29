@@ -43,6 +43,7 @@ import org.bibsonomy.scraper.url.kde.spires.SpiresScraper;
 import org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper;
 import org.bibsonomy.scraper.url.kde.springer.SpringerScraper;
 import org.bibsonomy.scraper.url.kde.uiuc.ISRLScraper;
+import org.bibsonomy.scraper.url.kde.usenix.UsenixScraper;
 import org.bibsonomy.scraper.url.kde.wiley.intersience.WileyIntersienceScraper;
 import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
 
@@ -91,5 +92,6 @@ public class URLCompositeScraper extends CompositeScraper {
 		addScraper(new ISRLScraper());
 		addScraper(new LiebertScraper());
 		addScraper(new NberScraper());
+		addScraper(new UsenixScraper());
 	}
 }
