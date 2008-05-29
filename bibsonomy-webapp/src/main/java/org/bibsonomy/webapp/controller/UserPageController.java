@@ -46,8 +46,8 @@ public class UserPageController extends MultiResourceListControllerWithTags impl
 		if (command.getShowPDF().equals("true")) {
 			filter = FilterEntity.PDF;
 		} 
-		// if myGroupPDF is set, it overwrites showPDF=true
-		if (command.getFilter().equals("myGroupPDF")) {
+		// if myPDF is set, it overwrites showPDF=true
+		if (command.getFilter().equals("myPDF")) {
 			filter = FilterEntity.JUST_PDF;
 		}			
 		
