@@ -34,19 +34,31 @@ public class PubMedScraper implements Scraper {
 			String _origUrl = sc.getUrl().toString();
 			
 			try {
-				// avoid crashes
-				if (!sc.getPageContent().matches("(?ms)^.+db=PubMed.+$")){
-					return false;
-				}
+				if(_origUrl.matches("(?ms)^.+db=PubMed.+$")){
+					
+					//try to get the PMID out of the paramters
+					pa = Pattern.compile("\\d+");
+					ma = pa.matcher(sc.getUrl().getQuery());
+						
+					//if the PMID is existent then get the bibtex from hubmed
+					if(ma.find()){
+						String newUrl = "http://www.hubmed.org/export/bibtex.cgi?uids=" + ma.group();
+						bibtexresult = sc.getContentAsString(new URL(newUrl));
+					}
 
-				//try to get the PMID out of the paramters
-				pa = Pattern.compile("(?ms)^.+PMID: (\\d*) .+$");
-				ma = pa.matcher(sc.getPageContent());
-				
-				//if the PMID is existent then get the bibtex from hubmed
-				if(ma.find()){
-					String newUrl = "http://www.hubmed.org/export/bibtex.cgi?uids=" + ma.group(1);
-					bibtexresult = sc.getContentAsString(new URL(newUrl));
+				// try to scrape with new URL-Pattern
+				// avoid crashes
+				} else if (sc.getPageContent().matches("(?ms)^.+db=PubMed.+$")){
+
+					//try to get the PMID out of the paramters
+					pa = Pattern.compile("(?ms)^.+PMID: (\\d*) .+$");
+					ma = pa.matcher(sc.getPageContent());
+					
+					//if the PMID is existent then get the bibtex from hubmed
+					if(ma.find()){
+						String newUrl = "http://www.hubmed.org/export/bibtex.cgi?uids=" + ma.group(1);
+						bibtexresult = sc.getContentAsString(new URL(newUrl));
+					}
 				}
 				
 				//replace the humbed url through the original URL
@@ -71,6 +83,7 @@ public class PubMedScraper implements Scraper {
 			} catch (Exception e) {
 				log.fatal("could not scrape pudmed publication " + sc.getUrl().toString());
 				log.fatal(e);
+				e.printStackTrace();
 				throw new ScrapingException(e);
 			}
 		}

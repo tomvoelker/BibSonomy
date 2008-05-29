@@ -7,7 +7,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Scraper URL tests #27 #35 for PubMedScraper
+ * Scraper URL tests #27 #35 #91 for PubMedScraper
  * @author tst
  *
  */
@@ -31,6 +31,16 @@ public class PubMedScraperTest {
 	public void url2TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_35"));
+	}
+
+	/**
+	 * starts URL test with id url_91
+	 */
+	@Test
+	@Ignore
+	public void url3TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_91"));
 	}
 
 }
