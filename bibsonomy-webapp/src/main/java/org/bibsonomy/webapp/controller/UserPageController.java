@@ -41,12 +41,15 @@ public class UserPageController extends MultiResourceListControllerWithTags impl
 		final String groupingName = command.getRequestedUser();
 		final List<String> requTags = command.getRequestedTagsList();
 		
+		// display of attached PDFs
 		FilterEntity filter = null;
 		if (command.getShowPDF().equals("true")) {
 			filter = FilterEntity.PDF;
-		} else if (command.getFilter().equals("myPDF")) {
+		} 
+		// if myGroupPDF is set, it overwrites showPDF=true
+		if (command.getFilter().equals("myGroupPDF")) {
 			filter = FilterEntity.JUST_PDF;
-		}	
+		}			
 		
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype

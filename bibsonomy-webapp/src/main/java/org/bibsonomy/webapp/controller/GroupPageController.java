@@ -44,9 +44,12 @@ public class GroupPageController extends MultiResourceListControllerWithTags imp
 		final List<String> requTags = command.getRequestedTagsList();
 		FilterEntity filter = null;
 		
+		// display of attached PDFs
 		if (command.getShowPDF().equals("true")) {
 			filter = FilterEntity.PDF;
-		} else if (command.getFilter().equals("myGroupPDF")) {
+		}
+		// if myGroupPDF is set, it overwrites showPDF=true
+		if (command.getFilter().equals("myGroupPDF")) {
 			filter = FilterEntity.JUST_PDF;
 		}	
 		
