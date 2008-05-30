@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
  * Scraper for usenix.org
