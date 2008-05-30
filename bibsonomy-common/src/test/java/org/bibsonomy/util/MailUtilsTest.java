@@ -1,11 +1,13 @@
 package org.bibsonomy.util;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.util.Locale;
 
 import org.bibsonomy.testutil.JNDITestProjectParams;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -15,10 +17,20 @@ import org.junit.Test;
 public class MailUtilsTest {
 
 
+	/** Test instantiation.
+	 * @throws Exception
+	 */
+	@Test
+	public void testInstantiation() throws Exception {
+		assertNotNull(MailUtils.getInstance());
+		
+	}
+	
 	/**
 	 * Test, if sending registration mails works.
 	 */
 	@Test
+	@Ignore
 	public void testSendRegistrationMail() {
 		JNDITestProjectParams.bind();
 		try {
