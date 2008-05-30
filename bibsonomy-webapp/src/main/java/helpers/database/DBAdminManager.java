@@ -15,7 +15,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 import beans.AdminBean;
 
