@@ -6,7 +6,7 @@ import java.net.URL;
 
 import org.bibsonomy.scraper.CompositeScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 
 public class IEEEXploreScraper extends CompositeScraper {

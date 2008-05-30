@@ -1,4 +1,4 @@
-package org.bibsonomy.scraper;
+package org.bibsonomy.scraper.exceptions;
 
 /**
  * If a scraper throws an exception it should inherit this exception or throw this exception.

@@ -12,10 +12,10 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScraperUnitTest;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.ScrapingException;
 import org.junit.Ignore;
 
 import org.bibsonomy.scraper.URLTest.URLScraperUnitTest;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
  * ScraperUnitTest which represents a URLTest.

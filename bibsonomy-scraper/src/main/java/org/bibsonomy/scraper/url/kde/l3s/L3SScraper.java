@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 public class L3SScraper implements Scraper {
 	private static final Logger log 	= Logger.getLogger(L3SScraper.class);

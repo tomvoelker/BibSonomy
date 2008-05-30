@@ -6,7 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.junit.Test;
 
 /**

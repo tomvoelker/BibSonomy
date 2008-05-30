@@ -3,6 +3,8 @@ package org.bibsonomy.scraper;
 
 import java.util.Collection;
 
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+
 /**
  * Interface for Screen Scrapers.
  */

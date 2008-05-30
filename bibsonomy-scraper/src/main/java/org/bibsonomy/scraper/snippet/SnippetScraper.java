@@ -8,7 +8,7 @@ import java.util.Collections;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 import bibtex.dom.BibtexEntry;
 import bibtex.dom.BibtexFile;

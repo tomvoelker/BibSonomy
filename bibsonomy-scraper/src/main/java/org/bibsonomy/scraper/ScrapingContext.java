@@ -8,6 +8,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
  * This class is used to pass all relevant data from scraper to scraper and 
@@ -119,10 +121,10 @@ public class ScrapingContext {
 			return out.toString();
 		} catch (final ConnectException cex) {
 			log.fatal("Could not get content for URL " + inputURL.toString() + " : " + cex.getMessage());
-			throw new ScrapingException(cex);
+			throw new InternalFailureException(cex);
 		} catch (final IOException ioe) {
 			log.fatal("Could not get content for URL " + inputURL.toString() + " : " + ioe.getMessage());
-			throw new ScrapingException(ioe);
+			throw new InternalFailureException(ioe);
 		}
 	}
 

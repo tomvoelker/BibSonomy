@@ -7,11 +7,11 @@ import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper;
 import org.bibsonomy.scraper.url.kde.wiley.intersience.WileyIntersienceScraper;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.ScrapingException;
 
 /**
  * Builds a bibtex file with scraped content

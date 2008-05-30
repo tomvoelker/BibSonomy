@@ -13,7 +13,7 @@ import java.util.List;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
  * @author wbi
@@ -59,6 +59,7 @@ public class AnthroSourceScraper implements Scraper {
 					int idEnd = 0;
 					
 					if(url.contains("?prevSearch=")) {
+						//TODO: really "?prevSeach" not "?prevSearch" ?
 						idEnd = url.indexOf("?prevSeach=");
 					} else {
 						idEnd = url.length();
