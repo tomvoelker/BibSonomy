@@ -154,6 +154,15 @@ public class DocumentDownloadHandler extends HttpServlet{
 					}
 
 				}
+				else {
+					// no document found - there doesn't exist one, or the requesting user does not have the 
+					// rights to see it
+					String error_msg = "The document you requested does either not exist, or you are not authorized to " +
+									   "download it.";
+					request.setAttribute("error", "error_msg");
+					getServletConfig().getServletContext().getRequestDispatcher("/errors/error.jsp").forward(request, response);
+					return;					
+				}
 			}
 
 
