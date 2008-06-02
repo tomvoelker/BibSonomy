@@ -197,6 +197,12 @@
     <function-class>tags.Functions</function-class>
     <function-signature>String setParam(java.lang.String, java.lang.String, java.lang.String)</function-signature>
   </function>   
+
+  <function>
+    <name>removeParam</name>
+    <function-class>tags.Functions</function-class>
+    <function-signature>String removeParam(java.lang.String, java.lang.String)</function-signature>
+  </function>   
   
   <function>
   	<name>cleanBibtex</name>
