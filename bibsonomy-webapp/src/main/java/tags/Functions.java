@@ -280,6 +280,19 @@ public class Functions  {
 	public static String setParam(String url, String paramName, String paramValue) {
 		return UrlUtils.setParam(url, paramName, paramValue); 
 	}
+	
+	/**
+	 * wrapper for for org.bibsonomy.util.UrlUtils.removeParam
+	 * 
+	 * @param url
+	 * 		- a url string
+	 * @param paramName
+	 * 		- a parameter to be removed
+	 * @return the given url string with the parameter removed
+	 */
+	public static String removeParam(String url, String paramName) {
+		return UrlUtils.removeParam(url, paramName);
+	}
 
 	/**
 	 * wrapper for org.bibsonomy.model.util.BibTexUtils.cleanBibtex
