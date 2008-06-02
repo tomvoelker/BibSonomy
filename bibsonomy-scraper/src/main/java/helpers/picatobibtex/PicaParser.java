@@ -110,11 +110,12 @@ public class PicaParser{
 			if(pica.isExisting(s)){
 				String _tempAuthor = null;
 				_tempAuthor = new String();
-				if(pica.getRow(s).isExisting("$8")){
-					_tempAuthor = getData(s, "$8");
-				} else if (pica.getRow(s).isExisting("$a")){
+				if (pica.getRow(s).isExisting("$a")){
 					_tempAuthor = getData(s, "$a");
 					_tempAuthor +="," + getData(s, "$d");
+				} else if(pica.getRow(s).isExisting("$8")){
+					_tempAuthor = getData(s, "$8");
+					_tempAuthor = _tempAuthor.replaceAll("\\*.*\\*", "");
 				}
 				
 				_tempAuthor += getSubAuthors(authorCat.get(s));

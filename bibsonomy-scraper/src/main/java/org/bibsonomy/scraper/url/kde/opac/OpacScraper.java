@@ -43,7 +43,7 @@ public class OpacScraper implements Scraper {
 				 *on another location 
 				 */
 				if("gso.gbv.de".equals(sc.getUrl().getHost())){
-					Pattern p = Pattern.compile("PPN=(\\d*)$");
+					Pattern p = Pattern.compile("PPN=(\\d*).*$");
 					Matcher m = p.matcher(sc.getUrl().toString());
 					if(m.find()){
 						String _tmpCont =sc.getContentAsString(new URL("http://opac.sub.uni-goettingen.de/DB=4/XML=1.0/CHARSET=UTF-8/PRS=PP/PPN?PPN=" + m.group(1)));
