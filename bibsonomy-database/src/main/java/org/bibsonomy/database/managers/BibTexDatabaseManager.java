@@ -218,9 +218,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			if (param.getFilter().equals(FilterEntity.PDF)) {
 				return this.bibtexList("getBibTexByTagNamesForUserWithPDF", param, session);
 			}
-			else {
+			if (param.getFilter().equals(FilterEntity.JUST_PDF)) {
 				return this.bibtexList("getJustBibTexByTagNamesForUserWithPDF", param, session);
 			}
+			throw new IllegalArgumentException("Filter " + param.getFilter().name() + " not supported");
 		}		
 		
 		return this.bibtexList("getBibTexByTagNamesForUser", param, session);
@@ -740,14 +741,17 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 */
 	public List<Post<BibTex>> getBibTexForUsersInGroup(final BibTexParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
-		// if user wants to retrieve documents
-		if (present(param.getFilter()) && param.getGroups().contains(param.getGroupId())) {
+		// document retrieval
+		if ( present(param.getFilter()) ) {
+			// all entries, add document link, if exists
 			if (param.getFilter().equals(FilterEntity.PDF)) {
 				return this.bibtexList("getBibTexForGroupWithPDF", param, session);
 			}
-			else {
+			// just entries with document attached
+			if (param.getFilter().equals(FilterEntity.JUST_PDF)) {
 				return this.bibtexList("getJustBibTexForGroupWithPDF", param, session);
 			}
+			throw new IllegalArgumentException("Filter " + param.getFilter().name() + " not supported");
 		}
 		
 		return this.bibtexList("getBibTexForUsersInGroup", param, session);
@@ -773,9 +777,18 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		param.setOffset(offset);
 		param.setSimHash(simHash);
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
-		// if user wants to retrieve documents
-		if (present(param.getFilter()) && param.getGroups().contains(param.getGroupId()))
+		// document retrieval
+		if ( present(param.getFilter()) ) {
+			// all entries, add document link, if exists
+			if (param.getFilter().equals(FilterEntity.PDF)) {
 				return this.bibtexList("getBibTexForGroupWithPDF", param, session);
+			}
+			// just entries with document attached
+			if (param.getFilter().equals(FilterEntity.JUST_PDF)) {
+				return this.bibtexList("getJustBibTexForGroupWithPDF", param, session);
+			}
+			throw new IllegalArgumentException("Filter " + param.getFilter().name() + " not supported");
+		}
 		
 		return this.bibtexList("getBibTexForUsersInGroup", param, session);
 	}
@@ -827,13 +840,14 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
 		
 		// if user wants to retrieve documents
-		if (present(param.getFilter()) && param.getGroups().contains(param.getGroupId())) {
+		if ( present(param.getFilter()) ) {
 			if (param.getFilter().equals(FilterEntity.PDF)) {
 				return this.bibtexList("getBibTexForGroupByTagWithPDF", param, session);
 			}
-			else {
+			if (param.getFilter().equals(FilterEntity.JUST_PDF)) {
 				return this.bibtexList("getJustBibTexForGroupByTagWithPDF", param, session);
 			}
+			throw new IllegalArgumentException("Filter " + param.getFilter().name() + " not supported");
 		}
 		
 		return this.bibtexList("getBibTexForGroupByTag", param, session);
@@ -885,18 +899,22 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	public List<Post<BibTex>> getBibTexForUser(final BibTexParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		
-		// if user wants to retrieve documents
+		// document retrieval
 		if (present(param.getFilter())) {
+			// retrieve all entries + link to document, if exists
 			if (param.getFilter().equals(FilterEntity.PDF)) {
 				System.out.println("user with PDF");
 				return this.bibtexList("getBibTexForUserWithPDF", param, session);
 			}
-			else {
+			// retrieve only entries with a document attached
+			if (param.getFilter().equals(FilterEntity.JUST_PDF)) {
 				System.out.println("user with just pdf");
 				return this.bibtexList("getJustBibTexForUserWithPDF", param, session);
 			}
+			throw new IllegalArgumentException("Filter " + param.getFilter().name() + " not supported");
 		}
 		
+		// return entries without documents
 		return this.bibtexList("getBibTexForUser", param, session);
 	}
 

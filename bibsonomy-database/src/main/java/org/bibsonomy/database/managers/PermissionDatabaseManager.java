@@ -3,6 +3,7 @@ package org.bibsonomy.database.managers;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.AbstractDatabaseManager;
@@ -12,6 +13,8 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.UserUtils;
+
 import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
@@ -87,6 +90,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * This method checks, whether the user is allowed to access the posts
 	 * documents. The user is allowed to access the documents,
 	 * 
+	 * 
 	 * <ul>
 	 * <li>if the post is public and the posts user is together with the user
 	 * in a group, which allows to share documents, or
@@ -128,6 +132,45 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 				if (postGroups.contains(publicGroup) || postGroups.contains(group)) {
 					return true;
 				}
+			}
+		}
+		return false;
+	}
+	
+	
+	
+	/**
+	 * This method checks whether the logged-in user is allowed to see documents of 
+	 * the requested user or a requested group. The user is allowed to access the documents,
+	 *
+	 * <ul>
+	 * <li>if the logged-in user requests his own posts, i.e. loginUser = requestedUser
+	 * <li>if the logged-in user is a member of the requested group
+	 * </ul>
+	 * 
+	 * @param loginUser - 
+	 * 				the name of the logged-in user
+	 * @param grouping -
+	 * 				the requested grouping (GROUP or USER) 
+	 * @param groupingName -
+	 * 				the name of the requested user / group
+	 * @param session -
+	 *           	DB session
+	 * @return <code>true</code> if the logged-in user is allowed to access the
+	 *         documents of the requested user / group.
+	 */
+	public boolean isAllowedToAccessUsersOrGroupDocuments(final User loginUser, final GroupingEntity grouping, final String groupingName, final DBSession session) {
+		if (grouping != null) {
+			// user
+			if (grouping.equals(GroupingEntity.USER)) {
+				if (loginUser.getName() != null) {
+					return loginUser.getName().equals(groupingName);
+				}
+			}
+			// group
+			if (grouping.equals(GroupingEntity.GROUP)) {
+				// check group membership
+				return UserUtils.getListOfGroupIDs(loginUser).contains( this.groupDb.getGroupIdByGroupName(groupingName, session) );
 			}
 		}
 		return false;

@@ -193,7 +193,10 @@ public class DBLogic implements LogicInterface {
 			} else */
 			if (resourceType == BibTex.class) {
 				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, this.loginUser);
-				if (filter != null) param.setFilter(filter);
+				// check permissions for displaying links to documents
+				if (this.permissionDBManager.isAllowedToAccessUsersOrGroupDocuments(this.loginUser, grouping, groupingName, session)) { 
+					param.setFilter(filter);
+				}
 				// this is save because of RTTI-check of resourceType argument which is of class T
 				result = ((List) this.bibtexDBManager.getPosts(param, session));
 			} else if (resourceType == Bookmark.class) {

@@ -7,9 +7,12 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.Document;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
@@ -134,5 +137,38 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			tags.add("tag" + i);
 			assertTrue(this.permissionDb.exceedsMaxmimumSize(tags));
 		}
+	}
+	
+	
+	/**
+	 * tests isAllowedToAccessUsersOrGroupDocuments
+	 */
+	@Test
+	public void isAllowedToAccessUsersOrGroupDocuments() {
+		User loginUser = new User("Johnny_B");
+		// user page: own posts -> yes
+		assertTrue(this.permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.USER, "Johnny_B", this.dbSession));
+		// user page: posts of other users -> no
+		assertFalse(this.permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.USER, "Berthold_B", this.dbSession));
+		// null user -> no
+		assertFalse(this.permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.USER, null, this.dbSession));
+		
+		// loginUser is member of group KDE, loginUser2 is not
+		// (both may see public posts)
+		ArrayList<Group> groups = new ArrayList<Group>();
+		loginUser.addGroup(new Group(GroupID.KDE));
+		loginUser.addGroup(new Group(GroupID.PUBLIC));
+		User loginUser2 = new User("Peter");
+		loginUser2.addGroup(new Group(GroupID.PUBLIC));
+		
+		// group members are allowed to see posts -> yes
+		assertTrue(this.permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "kde", this.dbSession));
+		// non-group members are not -> no
+		assertFalse(this.permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser2, GroupingEntity.GROUP, "kde", this.dbSession));
+		// non-existent group -> no
+		assertFalse(this.permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "this_group_does_not_exist", this.dbSession));
+		
+		// dummy tests / null values -> no
+		assertFalse(this.permissionDb.isAllowedToAccessUsersOrGroupDocuments(new User(), null, null, this.dbSession));
 	}
 }
