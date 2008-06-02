@@ -57,12 +57,16 @@ public class UrlUtils {
 	 * 
 	 * ATTENTION: to ease parsing, fragment identifiers are not supported
 	 * 
-	 * @param urlString the URL string
-	 * @param paramName the parameter name
-	 * @param paramValue the parameter value
+	 * @param urlString 
+	 * 				- the URL string
+	 * @param paramName 
+	 * 				- the parameter name
+	 * @param paramValue 
+	 * 				- the parameter value
 	 * @return the given URL string with the parameter set
 	 */
 	public static String setParam(final String urlString, final String paramName, final String paramValue) {
+		if (paramName == null) return urlString;
 		if (urlString.matches(".*([&\\?])" + paramName +  "\\=[^&#$]+.*")) {
 			// parameter is already present - replace its value
 			return urlString.replaceAll("([&\\?])" + paramName +  "\\=[^&#$]+", "$1" + paramName + "=" + paramValue);
@@ -76,6 +80,30 @@ public class UrlUtils {
 		// no query at all present in url -> append ?param=value
 		return urlString + "?" + paramName + "=" + paramValue;
 	}	
+	
+	
+	/**
+	 * Remove a parameter from a given URL string
+	 * 
+	 * ATTENTION: to ease parsing, fragment identifiers are not supported
+	 * 
+	 * @param urlString
+	 * 				- the URL String
+	 * @param paramName
+	 * 				- the parameter to be removed
+	 * @return the given URL string with the parameter removed
+	 */
+	public static String removeParam(final String urlString, final String paramName) {
+		if (paramName == null) return urlString;
+		if (urlString.matches(".*([&\\?])" + paramName +  "\\=[^&#$]+.*")) {
+			// parameter is present - remove it
+			String urlWithParamRemoved = urlString.replaceAll("([&\\?])" + paramName +  "\\=[^&#$]+", "");
+			// make sure first param is initialized with ?
+			return urlWithParamRemoved.replaceFirst("([&\\?])([^\\=]+)\\=([^&#$]+)", "?$2=$3");
+		}
+		// parameter not present - return URL as it is
+		return urlString;
+	}
 	
 	/**
 	 * When using URLEncoder.encode, also 'reserved' characters defining the structure of
