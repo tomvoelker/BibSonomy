@@ -1,5 +1,6 @@
 package org.bibsonomy.scraper.url.kde.opac;
 
+import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.regex.Matcher;
@@ -32,10 +33,30 @@ public class OpacScraper implements Scraper {
 		if (sc.getUrl() != null && (Pattern.matches("^http.*?/CHARSET=UTF-8/PRS=PP/PPN\\?PPN=[0-9X]+$", sc.getUrl().toString()))){
 		
 			String bibResult = null;
+			PicaToBibtexConverter converter = null;
 			
 			try {
-				// create a converter and start converting :)
-				PicaToBibtexConverter converter = new PicaToBibtexConverter(sc.getPageContent(), "xml", sc.getUrl().toString());
+				
+				/*
+				 *Check if the requested content comes from a location where the content is formatted
+				 *in a very bad way. If this is the case get the PPN and request the same content
+				 *on another location 
+				 */
+				if("gso.gbv.de".equals(sc.getUrl().getHost())){
+					Pattern p = Pattern.compile("PPN=(\\d*)$");
+					Matcher m = p.matcher(sc.getUrl().toString());
+					if(m.find()){
+						String _tmpCont =sc.getContentAsString(new URL("http://opac.sub.uni-goettingen.de/DB=4/XML=1.0/CHARSET=UTF-8/PRS=PP/PPN?PPN=" + m.group(1)));
+						
+						
+						converter = new PicaToBibtexConverter(_tmpCont, "xml", sc.getUrl().toString());
+					}
+				} else {
+					// create a converter and start converting :)
+					converter = new PicaToBibtexConverter(sc.getPageContent(), "xml", sc.getUrl().toString());
+				}
+				
+
 				
 				bibResult = converter.getBibResult();
 				
