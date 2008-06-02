@@ -19,7 +19,22 @@
 			<form action="/group/${fn:escapeXml(command.requestedGroup)}" method="get" class="smallform">
 			  <input type="text" size="20" name="tag" id="inpf"/>
 			</form>										
-		</jsp:attribute>
+					
+			<!--  group documents - now done via myBibsonomy Menu -->
+			<!--
+			<c:out value=" "/>
+			<c:url var="groupDocumentsUrl" value="/${mtl:setParam(requPath, 'filter', 'myGroupPDF')}" context="${projectContext}"/>
+			<span style="font-size: 65%">
+				<fmt:message key="filter"/>:
+				(
+				<fmt:message key="filter.none"/>
+				|
+				<a href="${groupDocumentsUrl}"><fmt:message key="filter.justPdf"/></a>
+				)							
+			</span>
+			-->		
+			</jsp:attribute>		
+			
 		
 		<jsp:attribute name="sidebar">
 		

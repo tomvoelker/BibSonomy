@@ -26,7 +26,22 @@
 					  <input type="text" size="20" name="tag" id="inpf" value="${command.requestedTags}"/>
 				  </c:otherwise>
 			  </c:choose>
-			</form>		
+			</form>
+			
+			<!-- filter links -->
+			<!-- now done via myBibsoomy
+			<c:out value=" "/>
+			<c:url var="groupUrl" value="/${mtl:removeParam(requPath, 'filter')}" context="${projectContext}"/>
+			<span style="font-size: 65%">
+				<fmt:message key="filter"/>:
+				(
+				<a href="${groupUrl}"><fmt:message key="filter.none"/></a>				
+				|
+				<fmt:message key="filter.justPdf"/>
+				)							
+			</span>	
+			 -->
+					
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">		
