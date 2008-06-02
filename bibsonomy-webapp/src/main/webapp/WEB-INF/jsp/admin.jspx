@@ -20,6 +20,10 @@
 	<layout:tabLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">		
 		<jsp:attribute name="heading">		
 			<fmt:message key="navi.admin"/>									
+		</jsp:attribute>
+				
+		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/spammer.css" />
 		</jsp:attribute>	
 		
 		<jsp:attribute name="topcontent">

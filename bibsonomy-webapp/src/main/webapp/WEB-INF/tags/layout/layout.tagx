@@ -44,14 +44,12 @@
 		<jsp:body>
 			<head>
 				<!-- <c:set var="resdir" value="${pageContext.request.contextPath}/resources" /> TODO: if sessionid is appended this leads to problems -->
-				<c:set var="resdir" value="/resources" />
 				<c:set var="locale">
 					<fmt:message key="meta.lang"/>
 				</c:set>
 				<meta http-equiv="content-Type" content="text/html; charset=UTF-8" />
 				<link rel="stylesheet" type="text/css" href="${resdir}/css/style.css" />
-				<link rel="stylesheet" type="text/css" href="${resdir}/css/faq.css" />
-				<link rel="stylesheet" type="text/css" href="${resdir}/css/spammer.css" />
+				<link rel="stylesheet" type="text/css" href="${resdir}/css/faq.css" />				
 				<link rel="icon" href="${resdir}/image/favicon.png" type="image/png" />
 				<!-- localized javascript messages -->
 				<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale}.js">&amp;nbsp;</script>				

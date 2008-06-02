@@ -17,9 +17,11 @@
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="displayIntroduction" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
-	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>			
+	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
+	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>
+				
 		
-	<layout:layout loginUserName="${command.loginUser.name}" searchString="hurz" basketSize="${loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}">
+	<layout:layout loginUserName="${command.loginUser.name}" searchString="hurz" basketSize="${loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" headerExt="${headerExt}">
 		<jsp:attribute name="content">
 			<div id="fullscreen">			
 			
@@ -27,17 +29,16 @@
 				<c:if test="${!empty topcontent}">
 					<jsp:invoke fragment="topcontent"/>				
 				</c:if>	
-		
+										
 				<!-- Tabs -->			
 				<parts:tabheader tabView="${command}"/>				
 				<div id="tab_content">					
 					<c:if test="${!empty tabcontent}">
 						<jsp:invoke fragment="tabcontent"/>				
 					</c:if>	
-				</div>
-				
-			</div>			
-		</jsp:attribute>
+				</div>				
+			</div>
+		</jsp:attribute>			
 	</layout:layout>
 	
 </jsp:root>
