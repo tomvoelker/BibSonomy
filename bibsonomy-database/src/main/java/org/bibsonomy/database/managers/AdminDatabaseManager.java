@@ -175,7 +175,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	public List<User> getClassifiedUsers(final Classifier classifier, final SpamStatus status, final int interval, DBSession session) {
 		final AdminParam param = new AdminParam();
 		param.setInterval(interval);
-		param.setLimit(50);
+		param.setLimit(100);
 
 		if (classifier.equals(Classifier.ADMIN) && (status.equals(SpamStatus.SPAMMER) || status.equals(SpamStatus.NO_SPAMMER))) {
 			param.setPrediction(status.getId());
@@ -270,7 +270,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	public List<User> getClassifierComparison(final int interval, final DBSession session) {
 		final AdminParam param = new AdminParam();
 		param.setInterval(interval);
-		param.setLimit(50);
+		param.setLimit(100);
 		return this.queryForList("getClassifierComparison", param, User.class, session);
 	}
 }
