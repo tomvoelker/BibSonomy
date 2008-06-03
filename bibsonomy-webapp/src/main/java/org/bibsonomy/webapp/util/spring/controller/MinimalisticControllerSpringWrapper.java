@@ -108,7 +108,7 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 		catch (MalformedURLSchemeException malformed) {
 			response.setStatus(HttpStatus.SC_NOT_FOUND);
 			command.setError(malformed.getMessage());
-			LOGGER.error(malformed);
+			// LOGGER.error(malformed);
 			view = Views.ERROR;
 		}
 		catch (ValidationException notValid) {
