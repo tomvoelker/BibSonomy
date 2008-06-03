@@ -75,7 +75,7 @@
 				        
 						<c:forEach var="grp" items="${command.loginUser.groups}">
 							<c:if test="${grp.groupId ne 0}">
-								<a href="/group/${fn:escapeXml(grp.name)}?filter=myPDF">
+								<a href="/group/${fn:escapeXml(grp.name)}?filter=myGroupPDF">
 					        		<fmt:message key="navi.my.plural"/>
 					        		<fmt:message key="navi.group.cap"/>				        		
 					        		<fmt:message key="navi.pdfs"/>
