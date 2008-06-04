@@ -55,6 +55,9 @@ public class BibTeXFieldAdderFilter implements PostFilterChainElement {
 			}
 		}
 	}
+	
+	
+	
 	public void filterPost(final Post<BibTex> post) {
 		/*
 		 * Get infos about the BibTeX class.
@@ -70,7 +73,10 @@ public class BibTeXFieldAdderFilter implements PostFilterChainElement {
 			 */
 			for (final String key: fields.keySet()) {
 				final String value = fields.get(key);
-				callMethod(methods, "set" + key.substring(0, 1).toUpperCase() + key.substring(1), value, resource);
+				final boolean methodFound = callMethod(methods, "set" + key.substring(0, 1).toUpperCase() + key.substring(1), value, resource);
+				if (!methodFound) {
+					// TODO: add to misc 
+				}
 
 			} 
 		} catch (final IntrospectionException e) {
@@ -85,17 +91,19 @@ public class BibTeXFieldAdderFilter implements PostFilterChainElement {
 	 * @param methodArgument
 	 * @param resource
 	 */
-	private void callMethod (final MethodDescriptor[] methods, final String methodName, final String methodArgument, final BibTex resource) {
+	private boolean callMethod (final MethodDescriptor[] methods, final String methodName, final String methodArgument, final BibTex resource) {
 		try {
 			for (final MethodDescriptor methodDescriptor: methods) {
 				if (methodDescriptor.getName().equals(methodName)) {
 					final Method method = methodDescriptor.getMethod();
 					method.invoke(resource, methodArgument);
+					return true;
 				}
 			}
 		} catch (final Exception e) {
 			System.err.println(e);
 		}
+		return false;
 	}
 
 
