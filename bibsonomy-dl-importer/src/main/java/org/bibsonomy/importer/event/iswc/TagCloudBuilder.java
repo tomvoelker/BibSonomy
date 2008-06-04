@@ -27,33 +27,23 @@ public class TagCloudBuilder {
 	public static void main(String[] args) {
 		
 		final String[] tracks = new String[] {
-				"in_use_1",
-				"in_use_2",
-				"in_use_3",
-				"in_use_4",
-				"research_01",
-				"research_02",
-				"research_03",
-				"research_04",
-				"research_05",
-				"research_06",
-				"research_07",
-				"research_08",
-				"research_09",
-				"research_10",
-				"research_11",
-				"research_12",
-				"research_13",
-				"research_14",
-				"research_15",
-				"workshop_esoe",
-				"workshop_fews",
-				"workshop_first",
-				"workshop_om",
-				"workshop_peas",
-				"doctoral_consortium"
+				"agents-application-ontologies",
+				"applications-1",
+				"applications-2",
+				"formal-languages-1",
+				"formal-languages-2",
+				"foundational-issues-storage-and-retrieval",
+				"learning",
+				"ontologies-and-natural-language",
+				"ontology-alignment",
+				"query-processing-1",
+				"query-processing-2",
+				"search",
+				"semantic-web-services-1",
+				"semantic-web-services-2",
+				"user-interfaces-and-personalization"
 			};
-		final String requUser = "iswc2007";
+		final String requUser = "eswc2008";
 		final String username = "";
 		final String password = "";
 		final String dbUrl = "jdbc:mysql://gandalf:6033/bibsonomy?useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8";
