@@ -77,13 +77,19 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			 */
 			final int numPosts = this.basketDb.getNumBasketEntries(username, session);
 			user.getBasket().setNumPosts(numPosts);
+			/*
+			 * get the settings of the user
+			 */
+			user.setSettings(this.getUserSettings(username, session));
 		}
 		return user;
 	}
 
 	// FIXME: implement me
 	private UserSettings getUserSettings(final String username, final DBSession session) {
-		return this.queryForObject("getUserSettings", username, UserSettings.class, session);		
+		final UserParam param = new UserParam();
+		param.setUserName(username);
+		return this.queryForObject("getUserSettings", param, UserSettings.class, session);		
 	}
 	
 	/**
