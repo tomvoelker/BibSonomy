@@ -41,8 +41,8 @@
 		DELETE FROM user WHERE user_name = #userName#
 	</delete>
 
-	<select id="getUserSettings" resultMap="Common.user" parameterClass="userParam">
-		SELECT <include refid="userSettingsAttributes"/> 
+	<select id="getUserSettings" resultMap="UserCommon.userSettings" parameterClass="userParam">
+		SELECT <include refid="userSettingsAttributes"/>
 		FROM user 
 		WHERE user_name = #userName#
 	</select>
