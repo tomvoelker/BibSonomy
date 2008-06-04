@@ -26,8 +26,8 @@ import beans.UserBean;
  */
 public class ActionValidationFilter implements Filter {
 
-	private static final String REQUEST_ATTRIB_VALID_CREDENTIAL = "validckey"; // true or false
-	private static final String REQUEST_ATTRIB_CREDENTIAL = "ckey";            // current ckey
+	public static final String REQUEST_ATTRIB_VALID_CREDENTIAL = "validckey"; // true or false
+	public static final String REQUEST_ATTRIB_CREDENTIAL = "ckey";            // current ckey
 	private static final String REQUEST_PARAM_CREDENTIAL = "ckey";             // ckey from request
 	private final static Logger log = Logger.getLogger(ActionValidationFilter.class);
 
