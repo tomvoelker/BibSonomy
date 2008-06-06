@@ -30,14 +30,13 @@
 		 xmlns:community="http://www.bibsonomy.org/ontologies/2008/05/community#"> 
 	 
 <owl:Ontology rdf:about="">
-  <rdfs:comment>${projectName} publications for/<c:out value='${requPath}'/></rdfs:comment>
+  <rdfs:comment><c:out value="${projectName}"/> publications for /<c:out value='${requPath}'/></rdfs:comment>
   <owl:imports rdf:resource="http://swrc.ontoware.org/ontology/portal"/>
 </owl:Ontology>
 
 <!-- Bookmarks -->
 <c:forEach var="post" items="${command.bibtex.list}" >
-  <c:set var="bibtex" value="${post.resource}"/> 
-      <swrctags:swrcOutput post="${post}"/>
+    <swrctags:swrcOutput post="${post}"/>
 </c:forEach>
 
 <!-- the following test is kind of a hack - but currently we are displaying related users 

@@ -6,12 +6,14 @@
   	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     xmlns:swrctags="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:owl=" http://www.w3.org/2002/07/owl#"
 	xmlns:swrc="http://swrc.ontoware.org/ontology#">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 
-    <rdf:Description rdf:about="${projectHome}bibtex/2${bibtex.intraHash}/${fn:escapeXml(post.user.name)}">
-      <rdf:type rdf:resource="http://swrc.ontoware.org/ontology#${mtl:getSWRCEntryType(bibtex.entrytype)}"/>
+    <rdf:Description rdf:about="${projectHome}bibtex/2${post.resource.intraHash}/${fn:escapeXml(post.user.name)}">
+      <owl:sameAs rdf:resource="${projectHome}uri/bibtex/2${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"/>
+      <rdf:type rdf:resource="http://swrc.ontoware.org/ontology#${mtl:getSWRCEntryType(post.resource.entrytype)}"/>
       <swrctags:swrcAttributes post="${post}"/>
     </rdf:Description>
 

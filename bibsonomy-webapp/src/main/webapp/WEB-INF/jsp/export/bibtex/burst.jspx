@@ -21,6 +21,7 @@
 		 xmlns:swrc="http://swrc.ontoware.org/ontology#"
 		 xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
 		 xmlns:cc="http://web.resource.org/cc/"
+         xmlns:owl="http://www.w3.org/2002/07/owl#"
 		 xmlns:taxo="http://purl.org/rss/1.0/modules/taxonomy/"
 		 xmlns:dc="http://purl.org/dc/elements/1.1/"
 		 xmlns:syn="http://purl.org/rss/1.0/modules/syndication/"
