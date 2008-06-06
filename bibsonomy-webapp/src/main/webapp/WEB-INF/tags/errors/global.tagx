@@ -1,0 +1,27 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:spring="http://www.springframework.org/tags"
+	xmlns:menuparts="urn:jsptagdir:/WEB-INF/tags/menu/parts"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+    <jsp:directive.attribute name="errors"  type="org.springframework.validation.Errors" required="true"/>
+  
+	          <spring:hasBindErrors name="command">
+
+                <c:if test="${not empty errors.globalErrors}">
+                  <h3>errors</h3>
+                </c:if>
+                
+                <c:forEach var="error" items="${errors.globalErrors}">
+                  <div class="errmsg">
+                    <spring:message code="${error.code}" text="${error.defaultMessage}"/>
+                  </div>
+                </c:forEach>
+
+              </spring:hasBindErrors>
+
+</jsp:root>
