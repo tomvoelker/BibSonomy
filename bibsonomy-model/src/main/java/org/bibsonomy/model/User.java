@@ -169,6 +169,7 @@ public class User {
 		this.setName(name); 
 		this.basket = new Basket();
 		this.settings = new UserSettings();
+		this.role = Role.NOBODY; // TODO: check, if this has any bad implications!
 	}
 
 	/**
