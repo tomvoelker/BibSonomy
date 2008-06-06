@@ -31,6 +31,13 @@ import org.bibsonomy.model.comparators.BibTexPostInterhashComparator;
  */
 public class BibTexUtils {
 
+	/*
+	 * patterns used for matching
+	 */
+	private static final Pattern YEAR_PATTERN = Pattern.compile("\\d{4}");
+	private static final Pattern DOI_PATTERN = Pattern.compile("http://.+/(.+?/.+?$)");
+	private static final Pattern MISC_FIELD_PATTERN = Pattern.compile("([a-zA-Z]+)\\s*=\\s*\\{(.*?)\\}");
+
 	/**
 	 * Builds a string from a given bibtex object which can be used to build an OpenURL
 	 * see http://www.exlibrisgroup.com/sfx_openurl.htm
@@ -72,7 +79,7 @@ public class BibTexUtils {
 		String doi = bib.getMiscField("doi");
 		if (doi != null) {
 			// TODO: urls rausfiltern testen
-			final Matcher m = Pattern.compile("http://.+/(.+?/.+?$)").matcher(doi);
+			final Matcher m = DOI_PATTERN.matcher(doi);
 			if (m.find()) {
 				doi = m.group(1);
 			}
@@ -143,7 +150,7 @@ public class BibTexUtils {
 	 */
 	public static void parseMiscField(final BibTex bib) {
 		if (bib.getMisc() != null) {
-			final Matcher m = Pattern.compile("([a-zA-Z]+)\\s*=\\s*\\{(.+?)\\}").matcher(bib.getMisc());
+			final Matcher m = MISC_FIELD_PATTERN.matcher(bib.getMisc());
 			while (m.find()) {
 				bib.addMiscField(m.group(1), m.group(2));
 			}
@@ -354,8 +361,7 @@ public class BibTexUtils {
 			/*
 			 * try to get four digits ...
 			 */
-			final Pattern p = Pattern.compile("\\d{4}");
-			final Matcher m = p.matcher(year);
+			final Matcher m = YEAR_PATTERN.matcher(year);
 			if (m.find()) {
 				return Integer.parseInt(m.group());
 			}
