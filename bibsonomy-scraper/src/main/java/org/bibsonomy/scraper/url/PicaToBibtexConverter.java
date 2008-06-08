@@ -5,19 +5,12 @@ import helpers.picatobibtex.PicaRecord;
 import helpers.picatobibtex.Row;
 import helpers.picatobibtex.SubField;
 
-import java.io.ByteArrayInputStream;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import sun.text.Normalizer;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
  * @author C. Kramer
@@ -30,51 +23,68 @@ public class PicaToBibtexConverter {
 	private String url;
 	
 	/**
-	 * @param scrapingcont 
+	 * Convert the pica content to the pica object structure
+	 * 
+	 * @param sc 
 	 * @param type
 	 * @param url
 	 */
-	public PicaToBibtexConverter(final String scrapingcont, final String type, final String url){
+	public PicaToBibtexConverter(final String sc, final String type, final String url){
 		this.pica = new PicaRecord();
 		this.url = url;
 		
-		if ("html".equals(type.toLowerCase())){
-			parseContentHtml(scrapingcont);	
-		}
-		if ("xml".equals(type.toLowerCase())){
-			parseContentXml(scrapingcont);
-		}
-		
-	}
-	
-	private void parseContentHtml(String sc){
-		
+		parseContent(sc);
 	}
 	
 	/**
-	 * creates an PicaRecord object out of the given content
+	 * Creates an PicaRecord object out of the given content
 	 * 
 	 * @param sc
 	 */
-	private void parseContentXml(String sc){
+	private void parseContent(String sc){
 		try {
-			// create an xml parser
-			DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
-			DocumentBuilder builder = fac.newDocumentBuilder();
-			Document doc = builder.parse(new ByteArrayInputStream(sc.getBytes("UTF-8")));
+			String formattedCont = "";
+			StringTokenizer token = null;
 			
+			// get the content of the xml tag <longtitle></longtitle>
+			Pattern p = Pattern.compile("(?s)<LONGTITLE.*?>(.*)</LONGTITLE>");
+			Matcher m = p.matcher(sc);
 			
-			// get the nodelist which holds the "rows"
-			NodeList nodes = doc.getElementsByTagName("LONGTITLE");
-			NodeList childs = nodes.item(0).getChildNodes();
+			// if there is content save it, if not throw exception
+			if (m.find()){
+				formattedCont = (m.group(1));
+			} else {
+				throw new ScrapingException("Problems to get content");
+			}
 			
-			// for every node type 3 ( text content ) call processRow
-			for (int i=0; i<childs.getLength(); i++){
-				Node child = childs.item(i);
-				if (child.getNodeType() == 3){
-					processRow(child.getTextContent().trim());
+			// divide content by newlines
+			token = new StringTokenizer(formattedCont, "\n");
+			
+			// finally create the pica objects
+			while(token.hasMoreTokens()){
+				String _cont = token.nextToken();
+				if(!"<br />".equals(_cont)){
+					processRow(_cont);
 				}
-			}	
+			}
+			
+//			// create an xml parser
+//			DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
+//			DocumentBuilder builder = fac.newDocumentBuilder();
+//			Document doc = builder.parse(new ByteArrayInputStream(sc.getBytes("UTF-8")));
+//			
+//			
+//			// get the nodelist which holds the "rows"
+//			NodeList nodes = doc.getElementsByTagName("LONGTITLE");
+//			NodeList childs = nodes.item(0).getChildNodes();
+//			
+//			// for every node type 3 ( text content ) call processRow
+//			for (int i=0; i<childs.getLength(); i++){
+//				Node child = childs.item(i);
+//				if (child.getNodeType() == 3){
+//					processRow(child.getTextContent().trim());
+//				}
+//			}	
 		} catch (Exception e) {
 			log.error(e);
 		}
@@ -118,6 +128,7 @@ public class PicaToBibtexConverter {
 	
 	/**
 	 * @return Bibtex String
+	 * @throws Exception 
 	 */
 	public String getBibResult() throws Exception{
 		PicaParser parser = new PicaParser(pica, url);

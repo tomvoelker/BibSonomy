@@ -36,30 +36,11 @@ public class OpacScraper implements Scraper {
 			PicaToBibtexConverter converter = null;
 			
 			try {
-				
-				/*
-				 *Check if the requested content comes from a location where the content is formatted
-				 *in a very bad way. If this is the case get the PPN and request the same content
-				 *on another location 
-				 */
-				if("gso.gbv.de".equals(sc.getUrl().getHost())){
-					Pattern p = Pattern.compile("PPN=(\\d*).*$");
-					Matcher m = p.matcher(sc.getUrl().toString());
-					if(m.find()){
-						String _tmpCont =sc.getContentAsString(new URL("http://opac.sub.uni-goettingen.de/DB=4/XML=1.0/CHARSET=UTF-8/PRS=PP/PPN?PPN=" + m.group(1)));
-						
-						
-						converter = new PicaToBibtexConverter(_tmpCont, "xml", sc.getUrl().toString());
-					}
-				} else {
-					// create a converter and start converting :)
-					converter = new PicaToBibtexConverter(sc.getPageContent(), "xml", sc.getUrl().toString());
-				}
-				
+				// create a converter and start converting :)
+				converter = new PicaToBibtexConverter(sc.getPageContent(), "xml", sc.getUrl().toString());
 
-				
 				bibResult = converter.getBibResult();
-				
+
 				if(bibResult != null){
 					sc.setBibtexResult(bibResult);
 					sc.setScraper(this);

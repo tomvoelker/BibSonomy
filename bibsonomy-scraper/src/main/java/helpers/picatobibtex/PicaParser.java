@@ -1,5 +1,17 @@
 package helpers.picatobibtex;
 
+import helpers.picatobibtex.rules.AbstractRule;
+import helpers.picatobibtex.rules.AuthorRule;
+import helpers.picatobibtex.rules.ISBNRule;
+import helpers.picatobibtex.rules.ISSNRule;
+import helpers.picatobibtex.rules.PublisherRule;
+import helpers.picatobibtex.rules.Rules;
+import helpers.picatobibtex.rules.SeriesRule;
+import helpers.picatobibtex.rules.TagsRule;
+import helpers.picatobibtex.rules.TitleRule;
+import helpers.picatobibtex.rules.URNRule;
+import helpers.picatobibtex.rules.YearRule;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Set;
@@ -26,8 +38,7 @@ public class PicaParser{
 	private PicaRecord pica = null;
 	private String  url = null;
 	
-	// String array with all regex pieces to be replaced
-	private String[] cleaning = {"@", "&lt;.+?&gt;", "\\{", "\\}"};
+
 	
 	/**
 	 * @param pica
@@ -53,20 +64,34 @@ public class PicaParser{
 	 * 
 	 * @return String
 	 */
-	private String parse() throws Exception{		
+	private String parse() throws Exception{
+		PicaUtils utils = new PicaUtils(pica);
 		StringBuffer bibres = new StringBuffer();
 		
 		String type = getBibType();
-		String author = cleanString(getAuthor());
-		String url = prepareUrl(this.url);
-		String title = cleanString(getTitle());
-		String year = cleanString(getYear());
-		String isbn = cleanString(getISBN());
-		String issn = cleanString(getISSN());
-		String series = cleanString(getSeries());
-		String abstr = cleanString(getAbstract());
-		String tags = cleanString(getTags());
-		String publisher = cleanString(getPublisher());
+		String author = new AuthorRule(pica, utils).getContent();
+		String title = new TitleRule(pica, utils).getContent();
+		String year = new YearRule(pica, utils).getContent();
+		String isbn = new ISBNRule(pica, utils).getContent();
+		String issn = new ISSNRule(pica, utils).getContent();
+		String series = new SeriesRule(pica, utils).getContent();
+		String abstr = new AbstractRule(pica, utils).getContent();
+		String tags = new TagsRule(pica, utils).getContent();
+		String publisher = new PublisherRule(pica, utils).getContent();
+		
+		String url = "";
+		String opac = "";
+		
+		Rules urn = new URNRule(pica, utils);
+		
+		if(urn.isAvailable()){
+			url = "http://nbn-resolving.org/urn/resolver.pl?urn=" + urn.getContent();
+			opac = utils.prepareUrl(this.url);
+		} else {
+			url = utils.prepareUrl(this.url);
+		}
+		
+		
 			
 		String bibkey = createBibkey(author,year);
 			
@@ -78,6 +103,7 @@ public class PicaParser{
 		bibres.append("abstract = {" + abstr + "}, \n");
 		bibres.append("keywords = {" + tags + "}, \n");
 		bibres.append("url = {" + url + "}, \n");
+		bibres.append("opac = {" + opac + "}, \n");
 		bibres.append("series = {" + series + "}, \n");
 		bibres.append("isbn = {" + isbn + "}, \n");
 		bibres.append("issn = {" + issn + "}, \n");
@@ -86,60 +112,34 @@ public class PicaParser{
 		
 		return bibres.toString();
 	}
-
-	/**
-	 * catch all authors by pica cat 028C or 028A & 028B and create the bibtex form i.e.: author 
-	 * and author
-	 * 
-	 * @return String
-	 */
-	private String getAuthor(){
-		HashMap<String, String> authorCat = new HashMap<String, String>();
-		Vector<String> authors = new Vector<String>();
-		String authorResult = "";
-		
-		// fill
-		authorCat.put("028C", "028C");
-		authorCat.put("028A", "028B");
-		authorCat.put("028D", "028D");
-		
-		Set<String> set = authorCat.keySet();
-		
-		for(String s : set){
-			// get the main category
-			if(pica.isExisting(s)){
-				String _tempAuthor = null;
-				_tempAuthor = new String();
-				if (pica.getRow(s).isExisting("$a")){
-					_tempAuthor = getData(s, "$a");
-					_tempAuthor +="," + getData(s, "$d");
-				} else if(pica.getRow(s).isExisting("$8")){
-					_tempAuthor = getData(s, "$8");
-					_tempAuthor = _tempAuthor.replaceAll("\\*.*\\*", "");
-				}
-				
-				_tempAuthor += getSubAuthors(authorCat.get(s));
-				
-				authors.add(_tempAuthor);
-			} 
-		}
-		
-		for(String _temp : authors){
-			if (authorResult.length() < 1){
-				authorResult = _temp;
-			} else {
-				authorResult += "and " + _temp;
-			}
-		}
-
-		return authorResult;
-	}
 	
 	/**
-	 * method to create the bibtex key
+	 * This helpmethod should create the bibtexkey be author and year
 	 * 
-	 * @return String
+	 * @param author
+	 * @param year
+	 * @return BibtexKey
 	 */
+	private String createBibkey(final String author, final String year){
+		String key = "";
+		
+		if ("".equals(author) && "".equals(year)){
+			return "imported";
+		}
+		
+		if (author.matches("^(.+?),.*$")){
+			Pattern p = Pattern.compile("^(.+?),.*$");
+			Matcher m = p.matcher(author);
+			if(m.find()){
+				key += m.group(1);
+			}
+		}
+		
+		key += ":" + year;
+		
+		return key;
+	}
+	
 	private String getBibType(){
 		Row r = null;
 		SubField s = null;
@@ -163,7 +163,7 @@ public class PicaParser{
 					
 					if ((_tempRow = pica.getRow("037C")) != null){
 						if ((_tempSub = _tempRow.getSubField("$c")) != null){
-							String _tempCont = _tempSub.getContent();
+							final String _tempCont = _tempSub.getContent();
 							if (_tempCont.matches("^.*Diss.*$")){
 								return "@phdthesis{";
 							} else if (_tempCont.matches("^.*Master.*$")){
@@ -196,262 +196,5 @@ public class PicaParser{
 		}
 		
 		return "@misc{";
-	}
-	
-	/**
-	 * extract the title by pica cat 021A
-	 * 
-	 * @return String
-	 */
-	private String getTitle(){
-		String res = "";
-		
-		res = getData("021A", "$a");
-		
-		return res;
-	}
-	
-	/**
-	 * extract Series
-	 * 
-	 * @return
-	 */
-	private String getSeries(){
-		String res = "";
-		
-		res = getData("036E", "$a");
-		
-		return res;
-	}
-	
-	/**
-	 * retrieve the year by the pica cat 011@
-	 * 
-	 * @return String
-	 */
-	private String getYear(){
-		String year = "";
-		
-		year = getData("011@", "$a");
-
-		if (year.length() == 0){
-			year = getData("011@", "$n");
-		}
-		
-		return year;
-	}
-	
-	/**
-	 * extract the issn
-	 * 
-	 * @return issn
-	 */
-	private String getISSN(){
-		String res = "";
-		
-		res = getData("005A", "$0");
-		if(res.length() == 0){
-			 res = getData("005A", "$A"); 
-		}
-		
-		return res;
-	}
-	
-	/**
-	 * extract the isbn
-	 * 
-	 * @return isbn
-	 */
-	private String getISBN(){
-		String res = "";
-		
-		res = getData("004A", "$0");
-		if (res.length() == 0){
-			res = getData("004A", "$A");
-		}
-		
-		return res;
-	}
-	
-	/**
-	 * Tries to extract the abstract
-	 * 
-	 * @return abstract String
-	 */
-	private String getAbstract(){
-		String abstr = "";
-		abstr = getData("046M", "$a");
-		return abstr;
-	}
-	
-	/**
-	 * Tries to get all tag by categories 044K and 041A
-	 * 
-	 * @return String of tags
-	 */
-	private String getTags(){
-		String tags = "";
-		
-		LinkedList<Row> list = null;
-		Row row = null;
-		
-		if((list = pica.getRows("044K")) != null){
-			for(Row r : list){
-				if(r.isExisting("$8")){
-					tags += r.getSubField("$8").getContent() + " ";
-				}
-			}
-		} else if(pica.isExisting("041A")){
-			String cat = "041A";
-			tags += getData(cat, "$8") + " ";
-			
-			int ctr = 1;
-			
-			row = pica.getRow(cat + "/0" + Integer.toString(ctr));
-			
-			while(row != null){
-				String newCat = cat + "/0" + Integer.toString(ctr);
-				
-				if(row.isExisting("$8")){
-					tags += getData(newCat, "$8") + " ";
-				}
-				
-				ctr++;
-	
-				if (ctr < 10){
-					row = pica.getRow(cat + "/0" + Integer.toString(ctr));
-				} else {
-					row = pica.getRow(cat + "/" + Integer.toString(ctr));
-				}
-			}
-		}
-
-		
-		return tags;
-	}
-	
-	/**
-	 * extract publisher
-	 * 
-	 * @return
-	 */
-	private String getPublisher(){
-		String res = "";
-
-		res = getData("033A", "$n");
-		res += " " + getData("033A", "$p");
-		
-		return res;
-	}
-	
-	/**
-	 * This helpmethod should create the bibtexkey be author and year
-	 * 
-	 * @param author
-	 * @param year
-	 * @return BibtexKey
-	 */
-	private String createBibkey(final String author, final String year){
-		String key = "";
-		
-		if ("".equals(author) && "".equals(year)){
-			return "imported";
-		}
-		
-		if (author.matches("^(.+?),.*$")){
-			Pattern p = Pattern.compile("^(.+?),.*$");
-			Matcher m = p.matcher(author);
-			if(m.find()){
-				key += m.group(1);
-			}
-		}
-		
-		key += ":" + year;
-		
-		return key;
-	}
-	
-	/**
-	 * use this method to get the data out of a specific row and subfield
-	 * 
-	 * @param cat
-	 * @param sub
-	 * @return
-	 */
-	private String getData(final String cat, final String sub){
-		Row r = null;
-		SubField f = null;
-		
-		if ((r = pica.getRow(cat)) != null){
-			if ((f = r.getSubField(sub)) != null){
-				return f.getContent();
-			}
-		}
-		
-		return "";
-	}
-	
-	/**
-	 * Tries to clean the given String from i.e. internal references like @
-	 * 
-	 * @param toClean
-	 * @return String
-	 */
-	private String cleanString(String toClean){
-		String res = toClean;
-		
-		for (String s : cleaning){
-			res = res.replaceAll(s, "");
-		}
-		
-		
-		return res;
-	}
-	
-	private String getSubAuthors(final String cat){
-		String author = "";
-		Row row = null;
-		
-		// get all other author by specific category
-		if (cat != null){
-			int ctr = 1;
-			
-			row = pica.getRow(cat + "/0" + Integer.toString(ctr));
-			
-			while(row != null){
-				String newCat = cat + "/0" + Integer.toString(ctr);
-				
-				if(row.isExisting("$8")){
-					author += " and " + getData(newCat, "$8");
-				} else {
-					author += " and " + getData(newCat, "$a");
-					author += "," + getData(newCat, "$d");
-				}
-				
-				ctr++;
-	
-				if (ctr < 10){
-					row = pica.getRow(cat + "/0" + Integer.toString(ctr));
-				} else {
-					row = pica.getRow(cat + "/" + Integer.toString(ctr));
-				}
-			}
-		}
-		
-		return author;
-	}
-	
-	/**
-	 * Replace "XML=1.0/CHARSET=UTF-8/PRS=PP" in the url
-	 * 
-	 * @param url
-	 * @return formatted url
-	 */
-	private String prepareUrl(String url){
-		String new_url = "";
-		
-		new_url = url.replaceFirst("XML=1.0/CHARSET=UTF-8/PRS=PP", "");
-		
-		return new_url;
 	}
 }
