@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.bibsonomy.model.User;
 import org.springframework.beans.factory.FactoryBean;
 
-import beans.UserBean;
 import filters.InitUserFilter;
 
 /**
