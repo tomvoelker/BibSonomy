@@ -28,8 +28,7 @@ public class BibtexkeyPageController extends MultiResourceListController impleme
 		// and the requested resourcetype
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());		
 		
-		// no bibtex key given -> error
-		if (!ValidationUtils.present(command.getRequestKey())) {
+		if (!ValidationUtils.present(command.getRequestedKey())) {
 			LOGGER.error("Invalid query /bibtexkey without key");
 			throw new MalformedURLSchemeException("error.bibtexkey_no_key");
 		}
@@ -39,13 +38,13 @@ public class BibtexkeyPageController extends MultiResourceListController impleme
 			// disable manual setting of start value for homepage
 			command.getListCommand(resourceType).setStart(0);
 			ArrayList<String> listWithBibtexKey = new ArrayList<String>();
-			listWithBibtexKey.add("sys:bibtexkey:"+command.getRequestKey());
+			listWithBibtexKey.add("sys:bibtexkey:"+command.getRequestedKey());
 			setList(command, resourceType, GroupingEntity.ALL, null, listWithBibtexKey, null, null, null, null, 20);
 			
 			postProcessAndSortList(command, resourceType);
 		}
 		
-		command.setPageTitle("bibtexkey :: " + command.getRequestKey());
+		command.setPageTitle("bibtexkey :: " + command.getRequestedKey());
 		
 		// html format - retrieve tags and return HTML view
 		if (command.getFormat().equals("html")) {
