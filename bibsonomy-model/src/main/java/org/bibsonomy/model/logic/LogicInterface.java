@@ -44,7 +44,7 @@ public interface LogicInterface extends PostLogicInterface {
 	/**
 	 * @return the name of the authenticated user
 	 */
-	public String getAuthenticatedUser();
+	public User getAuthenticatedUser();
 	
 	/**
 	 * Returns all users
