@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Privlevel;
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -91,6 +92,7 @@ public final class ModelUtils {
 		final User user = new User();
 		setBeanPropertiesOn(user);
 		user.setName("jaeschke");
+		user.setRole(Role.NOBODY);
 		return user;
 	}
 	
