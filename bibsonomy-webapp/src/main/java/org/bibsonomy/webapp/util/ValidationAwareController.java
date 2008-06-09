@@ -9,7 +9,7 @@ package org.bibsonomy.webapp.util;
  * to tell about whether validation is required or not
  * 
  * @param <T> type of the command object
- * 
+ * @version $Id$
  * @author Jens Illig
  */
 public interface ValidationAwareController<T> extends MinimalisticController<T> {
