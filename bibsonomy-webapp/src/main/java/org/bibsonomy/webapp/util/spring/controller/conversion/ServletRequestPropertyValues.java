@@ -31,7 +31,10 @@ public class ServletRequestPropertyValues extends MutablePropertyValues {
 
 	private static Map<String,Object> getParametersAndAttributesStartingWith(final ServletRequest request, final String prefix) {
 		final Map<String, Object> m = (Map<String, Object>) WebUtils.getParametersStartingWith(request, prefix);
-		addAttributesStartingWith(m, request, prefix);
+		/*
+		 * FIXME: disabled binding of attributes
+		 */
+		//addAttributesStartingWith(m, request, prefix);
 		addParametersStartingWith(m, request, prefix);
 		return m;
 	}
