@@ -3,7 +3,7 @@
  */
 package org.bibsonomy.webapp.command;
 
-import org.bibsonomy.model.User;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 
 /**
  * Base class for command objects. Contains request and response fields
@@ -16,9 +16,9 @@ import org.bibsonomy.model.User;
  * @author Jens Illig
  */
 public class BaseCommand {
-	private String ckey;
 	
-	private User loginUser;
+	private RequestWrapperContext context;
+
 	private String pageTitle;
 	private String requPath;
 	private String error;
@@ -64,49 +64,6 @@ public class BaseCommand {
 	public void setPageTitle(String pageTitle) {
 		this.pageTitle = pageTitle;
 	}
-
-	/**
-	 * @return communication key used to save us from request forgery attacks
-	 */
-	public String getCkey() {
-		return this.ckey;
-	}
-	/**
-	 * @param ckey communication key used to save us from request forgery attacks
-	 */
-	public void setCkey(String ckey) {
-		this.ckey = ckey;
-	}
-	
-	/**
-	 * @return the user, who is currently logged in
-	 */
-	public User getLoginUser() {
-		return this.loginUser;
-	}
-	/**
-	 * @param loginUser the user, who is currently logged in
-	 */
-	public void setLoginUser(User loginUser) {
-		this.loginUser = loginUser;
-	}
-	
-	/**
-	 * helper function to ease checking if a logged in user exists
-	 * @return true if a user is logged in, false otherwise
-	 */
-	public Boolean isUserLoggedIn() {
-		return this.loginUser.getName() != null;
-	}
-	
-	/**
-	 * wrapper for function userLoggedIn to enable access from JSPs
-	 * @see #isUserLoggedIn()
-	 * @return true if a user is logged in, false otherwise 
-	 */
-	public Boolean getUserLoggedIn() {
-		return this.isUserLoggedIn();
-	}
 	
 	/**
 	 * Helper function to expose the name of the current command
@@ -116,5 +73,21 @@ public class BaseCommand {
 	 */
 	public String getCommandName() {
 		return this.getClass().getSimpleName();
+	}
+
+	/** The context contains the loginUser, the ckey, and other things
+	 * which can not be changed by the user.
+	 * 
+	 * @return The context.
+	 */
+	public RequestWrapperContext getContext() {
+		return this.context;
+	}
+
+	/** Add a context to this command.
+	 * @param context
+	 */
+	public void setContext(RequestWrapperContext context) {
+		this.context = context;
 	}
 }

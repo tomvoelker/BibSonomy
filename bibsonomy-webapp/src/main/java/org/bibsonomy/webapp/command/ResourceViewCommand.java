@@ -8,6 +8,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 
 /**
  * command with fields for the resource lists.
@@ -25,7 +26,10 @@ public class ResourceViewCommand extends BaseCommand {
 	private TagCloudCommand tagcloud = new TagCloudCommand();
 	private String requestedUser;
 	private String resourcetype;
-	private String format = "html";
+	/**
+	 * delegated to {@link RequestWrapperContext}
+	 */
+//	private String format = "html"; 
 	private String sortPage = "none";
 	private String sortPageOrder = "asc";
 	private String duplicates = "yes";
@@ -117,18 +121,28 @@ public class ResourceViewCommand extends BaseCommand {
 	}
 
 	/**
-	 * @return
+	 * delegated to {@link RequestWrapperContext}
+	 * 
+	 * @return The requested format.
+	 * 
 	 */
 	public String getFormat() {
-		return this.format;
+		/**
+		 * delegated to {@link RequestWrapperContext}
+		 */
+		return getContext().getFormat();
+		//return this.format;
 	}
-	
-	/**
-	 * @param format
+
+	/** 
+	 * delegated to {@link RequestWrapperContext}
 	 */
-	public void setFormat(String format) {
-		this.format = format;
-	}
+//	/**
+//	 * @param format
+//	 */
+//	public void setFormat(String format) {
+//		this.format = format;
+//	}
 
 	public String getResourcetype() {
 		return this.resourcetype;
