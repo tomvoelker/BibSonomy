@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.validation;
 
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.actions.UserRegistrationCommand;
 import org.bibsonomy.webapp.util.Validator;
@@ -58,11 +59,12 @@ public class UserRegistrationValidator implements Validator<UserRegistrationComm
 				org.bibsonomy.util.ValidationUtils.present(user.getMode()) ||
 				org.bibsonomy.util.ValidationUtils.present(user.getPrediction()) ||
 				org.bibsonomy.util.ValidationUtils.present(user.getRegistrationDate()) ||
-				org.bibsonomy.util.ValidationUtils.present(user.getRole()) ||
 				org.bibsonomy.util.ValidationUtils.present(user.getSpammer()) ||
 				org.bibsonomy.util.ValidationUtils.present(user.getToClassify()) ||
 				org.bibsonomy.util.ValidationUtils.present(user.getUpdatedBy()) ||
-				org.bibsonomy.util.ValidationUtils.present(user.getUpdatedAt())) {
+				org.bibsonomy.util.ValidationUtils.present(user.getUpdatedAt()) ||
+				!user.getRole().equals(Role.NOBODY)	
+		) {
 			errors.reject("error.invalid_parameter");
 		}
 
@@ -72,21 +74,28 @@ public class UserRegistrationValidator implements Validator<UserRegistrationComm
 		errors.pushNestedPath("registerUser");
 		ValidationUtils.invokeValidator(new UserValidator(), user, errors);
 		errors.popNestedPath();
-		
+
 		/*
 		 * Check the validity of the supplied passwords.
 		 * Both passwords must be non-empty and must match each other. 
 		 */
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "registerUser.password", "error.field.required");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "passwordCheck", "error.field.required");
-		if (command.getPasswordCheck() == null || !command.getPasswordCheck().equals(user.getPassword())) {
+		if (!errors.hasFieldErrors("registerUser.password") && 
+			!errors.hasFieldErrors("passwordCheck") && 
+			!command.getPasswordCheck().equals(user.getPassword())) {
 			/*
-			 * passwords don't match
+			 * passwords are not empty and don't match
 			 */
-			errors.reject("error.field.valid.passwordCheck");
+			errors.reject("error.field.valid.passwordCheck", "passwords don't match");
 		}
 
-		
+		/*
+		 * check, that challenge response is given
+		 */
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "recaptcha_response_field", "error.field.required");
+
+
 	}
 
 }

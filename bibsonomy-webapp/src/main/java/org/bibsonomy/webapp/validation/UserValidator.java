@@ -14,9 +14,17 @@ import org.springframework.validation.ValidationUtils;
  */
 public class UserValidator implements Validator<User> {
 
+	/** 
+	 * Validates {@link User} and also subclasses of {@link User}. 
+	 *  
+	 * @see org.springframework.validation.Validator#supports(java.lang.Class)
+	 */
 	@SuppressWarnings("unchecked")
 	public boolean supports(final Class clazz) {
-		return User.class.equals(clazz);
+		if (clazz != null) {
+			return User.class.isAssignableFrom(clazz);
+		}
+		return false;
 	}
 
 	/** Validates the given user object. The object must not be null.
@@ -38,21 +46,13 @@ public class UserValidator implements Validator<User> {
 		 */
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "error.field.required");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "error.field.required");
-		
+
 		/*
 		 * detailed checks
 		 */
-		validateEmail(user.getEmail(), errors);
-		validateName(user.getName(), errors);
-
-
-		/*
-		 * FIXME: if the homepage is already a URL in the bean (command, model),
-		 * and the user enters a non-valid URL, an exception is thrown. How can
-		 * we catch this exception and instead here care for a correct URL?
-		 */
+		if (!errors.hasFieldErrors("name")) validateName(user.getName(), errors); 
+		if (!errors.hasFieldErrors("email")) validateEmail(user.getEmail(), errors);
 		validateHomepage(user.getHomepage(), errors);
-
 	}
 
 
@@ -72,12 +72,22 @@ public class UserValidator implements Validator<User> {
 				email.lastIndexOf(".") < email.lastIndexOf("@") ||
 				email.lastIndexOf("@") != email.indexOf("@") ||
 				email.length() - email.lastIndexOf(".") < 2	) {
-			errors.rejectValue("email","error.field.valid.email");
+			errors.rejectValue("email","error.field.valid.user.email");
 		}
 	}
 
 	/** Checks the validity of the homepage. The homepage might either be NULL 
 	 * or a http (or https) address.
+	 * <br/>
+	 * FIXME: if the homepage is already a URL in the bean (command, model),
+	 * and the user enters a non-valid URL, an exception is thrown. How can
+	 * we catch this exception and instead here care for a correct URL?
+	 * <br/>
+	 * Not a real solution, but a workaround: 
+	 *   set <code>typeMismatch.java.net.URL</code> in messages.properties
+	 * <br/>  
+	 * Note, that changing values inside <code>errors</code> is no possible, 
+	 * hence, we can not just remove the error there.
 	 * 
 	 * @param homepage
 	 * @param errors
@@ -85,7 +95,7 @@ public class UserValidator implements Validator<User> {
 	private void validateHomepage(final URL homepage, final Errors errors) {
 		if (homepage != null) {
 			if (!("http".equals(homepage.getProtocol()) || "https".equals(homepage.getProtocol()))) {
-				errors.rejectValue("homepage", "error.field.valid.homepage");
+				errors.rejectValue("homepage", "error.field.valid.user.homepage");
 			}
 		}
 	}
@@ -119,7 +129,7 @@ public class UserValidator implements Validator<User> {
 				name.indexOf('>') != -1 ||
 				name.indexOf('<') != -1 ||
 				name.indexOf('%') != -1) {
-			errors.rejectValue("name","error.field.valid.username");
+			errors.rejectValue("name","error.field.valid.user.name");
 		}
 	}
 
