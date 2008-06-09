@@ -55,6 +55,7 @@ do this with JavaScript and two checkboxes
     <li><a href="/layout/html/<c:out value='${requPath}'/>">HTML</a> <b>&middot;</b></li>
     <li><a href="/layout/tablerefs/<c:out value='${requPath}'/>">TableRefs</a> <b>&middot;</b></li>
     <li><a href="/layout/tablerefsabsbib/<c:out value='${requPath}'/>">TableRefsAbsBib</a> <b>&middot;</b></li>
+    <li><a href="/layout/tablerefsabsbibsort/<c:out value='${requPath}'/>">TableRefsAbsBibSort</a> <b>&middot;</b></li>
     <li><a href="/layout/docbook/<c:out value='${requPath}'/>">DocBook</a> <b>&middot;</b></li> 
     <li><a href="/layout/openoffice-csv/<c:out value='${requPath}'/>">OpenOffice-CSV</a> <b>&middot;</b></li>
     <li><a href="/layout/dblp/<c:out value='${requPath}'/>">DBLP</a> <b>&middot;</b></li>
@@ -125,6 +126,9 @@ do this with JavaScript and two checkboxes
     
     <dt><a href="/layout/tablerefsabsbib/<c:out value='${requPath}'/>">TableRefsAbsBib</a> <a href="#jabref">*</a></dt>
     <dd>Similar to TableRefs but additionally includes the BibTeX source and the abstract of the publication.</dd>
+    
+    <dt><a href="/layout/tablerefsabsbibsort/<c:out value='${requPath}'/>">TableRefsAbsBibSort</a> <a href="#jabref">*</a></dt>
+    <dd>Similar to TableRefsAbsBib, but includes possibility to sort the table by each column.</dd>    
     
     <dt><a href="/layout/docbook/<c:out value='${requPath}'/>">DocBook</a> <a href="#jabref">*</a></dt>
     <dd>This is an 
