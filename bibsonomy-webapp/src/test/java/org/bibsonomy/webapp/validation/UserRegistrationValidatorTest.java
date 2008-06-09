@@ -105,6 +105,7 @@ public class UserRegistrationValidatorTest {
 		final User validUser = getValidUser();
 		command.setRegisterUser(validUser);
 		command.setPasswordCheck("foo");
+		command.setRecaptcha_response_field("response");
 		
 		
 		Assert.assertFalse(errors.hasErrors());
@@ -150,6 +151,7 @@ public class UserRegistrationValidatorTest {
 		final User validUser = getValidUser();
 		command.setRegisterUser(validUser);
 		command.setPasswordCheck("foo");
+		command.setRecaptcha_response_field("response");
 		
 		
 		Assert.assertFalse(errors.hasErrors());
