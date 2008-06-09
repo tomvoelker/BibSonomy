@@ -12,12 +12,11 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * @version $Id$
  */
 public class UserRegistrationCommand extends BaseCommand implements Serializable {
-	
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4051289358685799133L;
-	
+	private static final long serialVersionUID = 1371638749968299277L;
 	/**
 	 * Holds the details of the user which wants to register (like name, email, password)
 	 */
