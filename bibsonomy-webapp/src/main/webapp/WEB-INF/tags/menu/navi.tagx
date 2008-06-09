@@ -24,7 +24,7 @@
 				<a href="${groupsUrl}" rel="grp_menu"><fmt:message key="navi.groups"/></a><c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
 				<!-- dropdown menu for groups -->					
 			  	<div id="grp_menu" class="dropmenudiv">
-					<c:forEach var="grp" items="${command.loginUser.groups}">
+					<c:forEach var="grp" items="${command.context.loginUser.groups}">
 						<c:if test="${grp.groupId ne 0}">
 							<a href="/group/${fn:escapeXml(grp.name)}"><c:out value='${grp.name}'/></a>
 						</c:if>
@@ -34,7 +34,7 @@
 				<a href="${popularUrl}"><fmt:message key="navi.popular"/></a>
 			</td>
 			<td class="tright">
-				<c:if test="${command.userLoggedIn}"><!-- show user name, if available -->
+				<c:if test="${command.context.userLoggedIn}"><!-- show user name, if available -->
 					<fmt:message key="navi.loggedInAs"/>${mtl:ch('nbsp')}
 					<c:url var="userUrl" value="/user/${fn:escapeXml(loginUserName)}" context="${projectContext}"/>
 					<a href="${userUrl}"><c:out value="${loginUserName}" /></a>
@@ -50,7 +50,7 @@
 		<tr>
 			<td class="tleft" id="lower_menu">
 				<c:choose>
-					<c:when test="${command.userLoggedIn}">
+					<c:when test="${command.context.userLoggedIn}">
 						<c:url var="userUrl" value="/user/${fn:escapeXml(loginUserName)}" context="${projectContext}"/>
 						<a href="${userUrl}" rel="my_menu"><fmt:message key="navi.my"/>${projectName}</a><c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
 						
@@ -73,7 +73,7 @@
 				        	<fmt:message key="navi.pdfs"/>
 				        </a>
 				        
-						<c:forEach var="grp" items="${command.loginUser.groups}">
+						<c:forEach var="grp" items="${command.context.loginUser.groups}">
 							<c:if test="${grp.groupId ne 0}">
 								<a href="/group/${fn:escapeXml(grp.name)}?filter=myGroupPDF">
 					        		<fmt:message key="navi.my.plural"/>
@@ -107,7 +107,7 @@
 			</td>
 			<td class="tright">
 				<c:choose>
-					<c:when test="${command.userLoggedIn}">
+					<c:when test="${command.context.userLoggedIn}">
 						<c:url var="basketUrl" value="/basket" context="${projectContext}"/>
 						<span id="pickctr">${basketSize}</span>${mtl:ch('nbsp')}
 						<fmt:message key="navi.pickedIn"/>${mtl:ch('nbsp')}
@@ -130,7 +130,7 @@
 		</tr>
 	</table>
 	
-	<c:if test="${command.userLoggedIn}">
+	<c:if test="${command.context.userLoggedIn}">
 		<script type="text/javascript">
 			<![CDATA[
 		  		cssdropdown.startchrome("upper_menu");
