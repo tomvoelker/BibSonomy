@@ -10,19 +10,19 @@ package org.bibsonomy.webapp.command;
 public class BibtexkeyCommand extends ResourceViewCommand{
 	
 	/** String to search for */
-	private String requestKey = "";
+	private String requestedKey = "";
 	
 	/**
 	 * @return the requested bibtexKey 
 	 */
-	public String getRequestKey() {
-		return this.requestKey;
+	public String getRequestedKey() {
+		return this.requestedKey;
 	}
 
 	/**
 	 * @param requKey set the bibtexKey 
 	 */
-	public void setRequestKey(String requKey) {
-		this.requestKey = requKey;
+	public void setRequestedKey(String requKey) {
+		this.requestedKey = requKey;
 	}
 }
