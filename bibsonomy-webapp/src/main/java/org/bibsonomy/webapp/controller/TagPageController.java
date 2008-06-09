@@ -31,10 +31,10 @@ public class TagPageController extends MultiResourceListControllerWithTags imple
 		LOGGER.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
 		
-		//if no tags given return
-		if(command.getRequestedTags().length() == 0) {
-			LOGGER.error("Invalid query /tag without tag name");
-			throw new MalformedURLSchemeException("error.tag_page_without_tag");				
+		// if no tags given return
+		if (command.getRequestedTags() == null || command.getRequestedTags().length() == 0) {
+			LOGGER.error("Invalid query /tag without tag");
+			throw new MalformedURLSchemeException("error.tag_page_without_tag");
 		}
 		
 		// requested order
