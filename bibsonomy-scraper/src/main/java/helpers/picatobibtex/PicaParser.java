@@ -86,9 +86,10 @@ public class PicaParser{
 		
 		if(urn.isAvailable()){
 			url = "http://nbn-resolving.org/urn/resolver.pl?urn=" + urn.getContent();
-			opac = utils.prepareUrl(this.url);
+			opac = this.url;
 		} else {
 			url = utils.prepareUrl(this.url);
+			opac = this.url;
 		}
 		
 		

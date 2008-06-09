@@ -1,5 +1,8 @@
 package helpers.picatobibtex.rules;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import helpers.picatobibtex.PicaRecord;
 import helpers.picatobibtex.PicaUtils;
 
@@ -24,6 +27,14 @@ public class URNRule implements Rules {
 		String res = "";
 		
 		res = utils.getData("004U", "$0");
+		
+		// need to validate the urn
+		Pattern p = Pattern.compile("^.*(urn:.*:.*)$");
+		Matcher m = p.matcher(res);
+		
+		if(m.find()){
+			res = m.group(1);
+		}
 		
 		return utils.cleanString(res);
 	}

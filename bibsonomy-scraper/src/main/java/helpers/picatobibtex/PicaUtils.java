@@ -62,7 +62,7 @@ public class PicaUtils {
 	public String prepareUrl(String url){
 		String new_url = "";
 		
-		new_url = url.replaceFirst("XML=1.0/CHARSET=UTF-8/PRS=PP", "");
+		new_url = url.replaceFirst("XML=1.0/CHARSET=UTF-8/PRS=PP/", "");
 		
 		return new_url;
 	}
