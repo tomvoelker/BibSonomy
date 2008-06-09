@@ -903,12 +903,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		if (present(param.getFilter())) {
 			// retrieve all entries + link to document, if exists
 			if (param.getFilter().equals(FilterEntity.PDF)) {
-				System.out.println("user with PDF");
 				return this.bibtexList("getBibTexForUserWithPDF", param, session);
 			}
 			// retrieve only entries with a document attached
 			if (param.getFilter().equals(FilterEntity.JUST_PDF)) {
-				System.out.println("user with just pdf");
 				return this.bibtexList("getJustBibTexForUserWithPDF", param, session);
 			}
 			throw new IllegalArgumentException("Filter " + param.getFilter().name() + " not supported");
