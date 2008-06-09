@@ -44,7 +44,7 @@
     <dc:creator><c:out value="${post.user.name}" /></dc:creator>
     <dc:date><mtl:formatDate value="${post.date}"/></dc:date>
     <dc:subject>
-      <c:forEach var="tag" items="${post.tags}"><c:out value='${fn:escapeXml(tag.name)}'/> </c:forEach>  
+      <c:forEach var="tag" items="${post.tags}"><c:out value='${fn:escapeXml(tag.name)}'/><c:out value=" "/></c:forEach>  
     </dc:subject>
     <content:encoded>
 	    <c:set var="desc"><bmark:desc post="${post}"/></c:set>
