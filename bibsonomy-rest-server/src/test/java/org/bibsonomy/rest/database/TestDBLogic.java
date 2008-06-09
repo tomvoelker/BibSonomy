@@ -53,7 +53,7 @@ import org.junit.Ignore;
  */
 @Ignore
 public class TestDBLogic implements LogicInterface {
-	private final String loginUserName;
+	private final User loginUser;
 	
 	private final Map<String, Group> dbGroups;
 	private final Map<String, User> dbUsers;
@@ -75,7 +75,7 @@ public class TestDBLogic implements LogicInterface {
 	 * @param authUserName name of the user in whose name testoperations shall be performed 
 	 */
 	public TestDBLogic(final String authUserName) {
-		this.loginUserName = authUserName;
+		this.loginUser = new User(authUserName);
 
 		// use the linked map because ordering matters for the junit tests..
 		this.dbGroups = new LinkedHashMap<String, Group>();
@@ -699,8 +699,8 @@ public class TestDBLogic implements LogicInterface {
 		return null;
 	}
 
-	public String getAuthenticatedUser() {
-		return loginUserName;
+	public User getAuthenticatedUser() {
+		return loginUser;
 	}
 
 	public String updateGroup(Group group) {

@@ -47,7 +47,7 @@ public class TestRestServlet {
 		} catch (BadRequestOrResponseException e) {
 		}
 
-		assertEquals("error decoding string", "asdf", this.servlet.validateAuthorization("Basic YXNkZjphc2Rm").getAuthenticatedUser());
+		assertEquals("error decoding string", "asdf", this.servlet.validateAuthorization("Basic YXNkZjphc2Rm").getAuthenticatedUser().getName());
 	}
 
 	@Test
