@@ -116,7 +116,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	public void setUp() {
 		this.clientLogic = clientLogicFactory.getLogicAccess(LOGIN_USER_NAME, API_KEY);
 		this.serverLogic = EasyMock.createMock(LogicInterface.class);
-		EasyMock.expect(serverLogic.getAuthenticatedUser()).andReturn(LOGIN_USER_NAME).anyTimes();
+		EasyMock.expect(serverLogic.getAuthenticatedUser().getName()).andReturn(LOGIN_USER_NAME).anyTimes();
 		MockLogicFactory.init(serverLogic);
 	}
 
@@ -286,7 +286,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		assertLogin();
 	}
 
-	public String getAuthenticatedUser() {
+	public User getAuthenticatedUser() {
 		// no need to test this as it is part of the client
 		return null;
 	}
