@@ -552,5 +552,10 @@
 		<BibFile>IucrScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.iucr.IucrScraper</Scraper>
 	</URLTest>
-	
+	<URLTest id="url_93">
+		<TestDescription>OSA Scraper url test</TestDescription>
+		<URL>http://josaa.osa.org/abstract.cfm?uri=josaa-25-5-1084</URL>
+		<BibFile>OSAScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.osa.OSAScraper</Scraper>
+	</URLTest>
 </test:Tests>
