@@ -38,7 +38,7 @@ public class AdminPageController implements MinimalisticController<AdminViewComm
 	public View workOn(AdminViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		
-		final User loginUser = command.getLoginUser();		
+		final User loginUser = command.getContext().getLoginUser();		
 		if (loginUser.getRole().equals(Role.DEFAULT)) {
 			/** TODO: redirect to login page as soon as it is available */
 		}		
