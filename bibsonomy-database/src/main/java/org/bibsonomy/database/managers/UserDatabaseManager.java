@@ -164,6 +164,9 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		if (present(existingUser.getName()) == false)
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User " + user.getName() + "does not exist");
 
+		
+		// FIXME: Role is missing
+		
 		// FIXME if this should copy all properties from the one bean to the
 		// other we might want to come up with a more generic version of this
 		// code block - so if we add a field to the User bean we don't have to
