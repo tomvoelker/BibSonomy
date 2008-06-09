@@ -57,6 +57,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.UserUtils;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author Jens Illig
@@ -82,6 +83,11 @@ public class DBLogic implements LogicInterface {
 
 	private final User loginUser;
 
+	/** Returns an implementation of the LogicInterface.
+	 * 
+	 * @param loginUser - the user which wants to use the logic.
+	 * @param dbSessionFactory
+	 */
 	protected DBLogic(final User loginUser, final DBSessionFactory dbSessionFactory) {
 		// each user is a member of the public group
 		loginUser.addGroup(new Group(GroupID.PUBLIC));
@@ -147,13 +153,22 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = openSession();
 		try {
 			final User user = this.userDBManager.getUserDetails(userName, session);
-			if (userName.equals(this.loginUser.getName()) == false) {
+			if (! (userName.equals(this.loginUser.getName()) || Role.ADMIN.equals(this.loginUser.getRole()))) {
+				/*
+				 * only the user himself or the admin gets the full details
+				 */
 				user.setEmail(null);
 				user.setRealname(null);
 				user.setHomepage(null);
 				user.setPassword(null);
 				user.setApiKey(null);
-			}			
+				/*
+				 * FIXME: the settings and other things set in userDBManager.getUserDetails() are not cleared!
+				 */
+			}
+			/*
+			 * FIXME: may other people see which group I'm a member of?
+			 */
 			user.setGroups(this.groupDBManager.getGroupsForUser(userName, true, session));
 			return user;
 		} finally {
@@ -214,7 +229,7 @@ public class DBLogic implements LogicInterface {
 		}
 		return result;
 	}
-	
+
 	/*
 	 * Returns details to a post. A post is uniquely identified by a hash of the
 	 * corresponding resource and a username.
@@ -397,51 +412,6 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	/*
-	 * Adds/updates a user in the database.
-	 */
-	private String storeUser(final User user, final boolean update) {	
-		if (update == false) throw new UnsupportedOperationException("not yet available");
-
-		final DBSession session = openSession();
-		if(user.getName().equals(this.loginUser.getName()) && user.getSpammer() == null && user.getPrediction() == null) {
-			return this.userDBManager.changeUser(user, session);
-		}
-		this.permissionDBManager.ensureAdminAccess(this.loginUser);
-		return this.userDBManager.changeUser(user, session);
-
-//		TODO check if the following is correct
-
-//		final DBSession session = openSession();
-//		try {
-//		String errorMsg = null;
-
-//		final User existingUser = userDBManager.getUserDetails(user.getName(), session);
-//		if (existingUser != null) {
-//		if (update == false) {
-//		errorMsg = "user " + existingUser.getName() + " already exists";
-//		} else if (existingUser.getName().equals(this.loginUserName) == false) {
-//		errorMsg = "user " + this.loginUserName + " is not authorized to change user " + existingUser.getName();
-//		log.warn(errorMsg);
-//		throw new ValidationException(errorMsg);
-//		}
-//		} else {
-//		if (update == true) {
-//		errorMsg = "user " + user.getName() + " does not exist";
-//		}
-//		}
-//		if (errorMsg != null) {
-//		log.warn(errorMsg);
-//		throw new IllegalStateException(errorMsg);
-//		}
-//		if (update == false) {
-//		return userDBManager.createUser(user, session);
-//		}
-//		throw new UnsupportedOperationException("update user not implemented yet");
-//		} finally {
-//		session.close();
-//		}
-	}
 
 	/*
 	 * Adds/updates a post in the database.
@@ -574,36 +544,131 @@ public class DBLogic implements LogicInterface {
 		return this.storePost(post, true);
 	}
 
+
+
+
+
+
+
 	public String createUser(final User user) {
+		/*
+		 * We ensure, that the user is logged in and has admin privileges. 
+		 * This seems to be a contradiction, because if a user wants to 
+		 * register, he is not logged in. 
+		 *
+		 * The current solution to this paradox is, that registration is
+		 * done using an instance of the DBLogic which contains a user 
+		 * with role "admin".
+		 */
+		this.ensureLoggedIn();
+		this.permissionDBManager.ensureAdminAccess(loginUser);
+
 		return this.storeUser(user, false);
 	}
 
+
+
+
+
 	public String updateUser(final User user) {
-		// TODO: could we re-use this.permissionDBManager.ensureWriteAccess(post, this.loginUser) here?
-		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(user.getName()) == false && this.loginUser.getRole() != Role.ADMIN)) {
-			final String errorMsg = "user " + ((this.loginUser.getName() != null) ? this.loginUser.getName() : "anonymous") + " is not authorized to change user " + user.getName();
-			log.warn(errorMsg);
-			throw new ValidationException(errorMsg);
+		/*
+		 * only logged in users can update user settings
+		 */
+		this.ensureLoggedIn();
+		/*
+		 * only admins can change settings of /other/ users
+		 */
+		if (!loginUser.getName().equals(user.getName())) {
+			this.permissionDBManager.ensureAdminAccess(loginUser);
 		}
-		
-		// update spammer settings 
-		if ((user.getPrediction() != null || user.getSpammer() != null)) {
-			// only admins are allowed to change spammer settings
-			this.permissionDBManager.ensureAdminAccess(this.loginUser);
+
+		/*
+		 * update only (!) spammer settings
+		 */ 
+		if (user.getPrediction() != null || user.getSpammer() != null) {
+			/*
+			 * only admins are allowed to change spammer settings
+			 */
+			this.permissionDBManager.ensureAdminAccess(loginUser);
+			/*
+			 * open session and update spammer settings
+			 */
 			DBSession session = this.openSession();
-			
-			String mode = this.adminDBManager.getClassifierSettings(ClassifierSettings.TESTING, session);
-			return this.adminDBManager.flagSpammer(user, this.getAuthenticatedUser(), mode, session);			
+			String flagSpammerUserName = null;
+			try {	
+				final String mode = this.adminDBManager.getClassifierSettings(ClassifierSettings.TESTING, session);
+				flagSpammerUserName = this.adminDBManager.flagSpammer(user, this.getAuthenticatedUser().getName(), mode, session);
+			} finally {
+				session.close();
+			}
+			return flagSpammerUserName;
 		}
-		
+
 		return this.storeUser(user, true);
 	}
 
-	public String getAuthenticatedUser() {
-		/* TODO: we should either rename this method to getAuthenticatedUserName or 
-		 * return the user directly.
+
+
+
+	/*
+	 * Adds/updates a user in the database.
+	 */
+	private String storeUser(final User user, final boolean update) {
+
+
+		final DBSession session = openSession();
+		String updatedUser = null;
+
+		try {
+			final User existingUser = userDBManager.getUserDetails(user.getName(), session);
+			if (update) {
+				/*
+				 * update the user
+				 */
+				if (!ValidationUtils.present(existingUser.getName())) {
+					/*
+					 * error: user name does not exist
+					 */
+					final String errorMsg = "user " + user.getName() + " does not exist";
+					log.warn(errorMsg);
+					throw new ValidationException(errorMsg);
+				} 
+				updatedUser = this.userDBManager.changeUser(user, session);
+			} else {
+				/*
+				 * create a new user
+				 */
+				if (ValidationUtils.present(existingUser.getName())) {
+					/*
+					 * error: user name already exists
+					 */
+					final String errorMsg = "user " + user.getName() + " already exists";
+					log.warn(errorMsg);
+					throw new ValidationException(errorMsg);
+				} 
+				updatedUser = this.userDBManager.createUser(user, session);
+			}
+		} finally {
+			/*
+			 * TODO: check, if rollback is handled correctly!
+			 */
+			session.close();
+		}
+
+		/*
+		 * TODO: return correct value
 		 */
-		return this.loginUser.getName();
+		return updatedUser;
+
+	}
+
+
+
+
+
+
+	public User getAuthenticatedUser() {
+		return this.loginUser;
 	}
 
 	public String addDocument(final Document doc, final String resourceHash) {
