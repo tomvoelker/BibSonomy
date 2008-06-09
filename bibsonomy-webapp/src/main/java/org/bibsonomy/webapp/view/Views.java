@@ -190,7 +190,18 @@ public enum Views implements View {
      * TODO: we will probably move those action parts
      * into a separate Views class!
 	 */
-	REGISTER_USER("actions/register/user");
+	REGISTER_USER("actions/register/user"),
+	
+	/**
+	 * After a user has successfully registered, he will see this view.
+	 */
+	REGISTER_USER_SUCCESS("actions/register/user_success"),
+	
+	/**
+	 * When admins successfully register a user, this page shows them
+	 * the details.
+	 */
+	REGISTER_USER_SUCCESS_ADMIN("actions/register/user_success_admin");
 	
 	private final String name;
 	
