@@ -16,6 +16,7 @@ public class GroupSettingsBean implements Serializable {
 	
 	private String username  = ""; // is not written to DB, just for querying
 	private int privlevel    = -1;
+	private int sharedDocuments = -1;
 	private String action    = ""; // what this bean shall do, at the moment only "update" (i.e. write values to DB)
 		
 	
@@ -25,11 +26,20 @@ public class GroupSettingsBean implements Serializable {
 			// write data into database
 			DBGroupSettingsManager.setPrivlevel(this);
 		}
+		if (action.equals("update_shared_documents") && isValidSharedDocuments()) {
+			// write data into database
+			DBGroupSettingsManager.setSharedDocuments(this);
+		}
+		System.out.println("action: " + action + ", shared documents: " + sharedDocuments);
 	}
 
 	private boolean isValidPrivlevel () {
 		return privlevel >=0 && privlevel <= 2;
 	}
+	
+	private boolean isValidSharedDocuments () {
+		return this.sharedDocuments >=0 && this.sharedDocuments <= 1;
+	}	
 
 	
 	// user name
@@ -49,6 +59,17 @@ public class GroupSettingsBean implements Serializable {
 	}
 	public void setPrivlevel(int privlevel) {
 		this.privlevel = privlevel;
+	}
+	
+	// sharedDocuments
+	public int getSharedDocuments() {
+		if (this.sharedDocuments == -1) {
+			DBGroupSettingsManager.getSharedDocuments(this);
+		}
+		return this.sharedDocuments;
+	}
+	public void setSharedDocuments(int sharedDocuments) {
+		this.sharedDocuments = sharedDocuments;
 	}
 	
 	// action

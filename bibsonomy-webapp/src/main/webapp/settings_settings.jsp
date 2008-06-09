@@ -122,6 +122,17 @@
 		    <input type="submit" value="change" />
 		  </form>
 		  
+		  <h3>shared documents</h3> 
+		  <form name="groupSharedDocuments" method="post" action="/settings">
+		    shared documents are  
+		    <select name="sharedDocuments">
+		      <option value="0" <c:if test="${gsBean.sharedDocuments eq 0}">selected="true"</c:if>>disabled</option>
+		      <option value="1" <c:if test="${gsBean.sharedDocuments eq 1}">selected="true"</c:if>>enabled</option>
+		    </select>
+		    <input type="hidden" value="update_shared_documents" name="action"/>
+		    <input type="submit" value="change" />
+		  </form>		  
+		  
 		</c:when>
 		<c:otherwise>
 		  
