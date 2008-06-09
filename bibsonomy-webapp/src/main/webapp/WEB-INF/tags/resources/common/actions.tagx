@@ -8,7 +8,7 @@
 	
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
 	
-	<c:if test="${command.userLoggedIn}">
+	<c:if test="${command.context.userLoggedIn}">
 
       <span class="actions">
         <c:choose>

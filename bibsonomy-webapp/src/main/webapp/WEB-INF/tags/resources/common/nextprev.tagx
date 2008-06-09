@@ -105,7 +105,7 @@
 		</span>
 	</c:if>
 
-	<c:if test="${command.userLoggedIn and empty disableActions}">
+	<c:if test="${command.context.userLoggedIn and empty disableActions}">
 		<span class="actions">
 			<c:set var="editUrlTemplate">/bediturl/<c:out value='${requPath}' escapeXml="true"/></c:set>
 			<c:url var="editUrl" value="${editUrlTemplate}" context="${projectContext}"/>
