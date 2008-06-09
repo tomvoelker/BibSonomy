@@ -53,20 +53,20 @@
 			<div class="smalltext">
 		
 			<!-- links to user's  or global concept / tag pages -->
-			<c:if test="${command.userLoggedIn}">
+			<c:if test="${command.context.userLoggedIn}">
 				<li>
-					<a href="/user/${fn:escapeXml(command.loginUser.name)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+					<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 					<c:out value=" "/>
 					<fmt:message key="tag.asTagFrom"/>
 					<c:out value=" "/>
-					${fn:escapeXml(command.loginUser.name)}						
+					${fn:escapeXml(command.context.loginUser.name)}						
 				</li>					
 				<li>
-					<a href="/concept/user/${fn:escapeXml(command.loginUser.name)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+					<a href="/concept/user/${fn:escapeXml(command.context.loginUser.name)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 					<c:out value=" "/>
 					<fmt:message key="tag.asConceptFrom"/>
 					<c:out value=" "/>
-					${fn:escapeXml(command.loginUser.name)}
+					${fn:escapeXml(command.context.loginUser.name)}
 				</li>				
 			</c:if>
 

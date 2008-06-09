@@ -28,10 +28,10 @@
 			<div class="smalltext">
 			
 			<c:choose>
-				<c:when test="${command.userLoggedIn}">
+				<c:when test="${command.context.userLoggedIn}">
 					<c:if test="${empty command.requestedUser}">
-						<c:set var="conceptlinkname"><fmt:message key="tag.asConceptFrom"/>${mtl:ch('nbsp')}${command.loginUser.name}</c:set>
-						<c:set var="conceptlink">/concept/user/${fn:escapeXml(command.loginUser.name)}/${fn:escapeXml(command.requestedTags)}</c:set>
+						<c:set var="conceptlinkname"><fmt:message key="tag.asConceptFrom"/>${mtl:ch('nbsp')}${command.context.loginUser.name}</c:set>
+						<c:set var="conceptlink">/concept/user/${fn:escapeXml(command.context.loginUser.name)}/${fn:escapeXml(command.requestedTags)}</c:set>
 					</c:if>
 					<c:if test="${not empty command.requestedUser}">
 						<c:set var="conceptlinkname"><fmt:message key="tag.asConceptFromAll"/></c:set>
@@ -53,9 +53,9 @@
 				</li>
 			</c:if>
 			<!-- display the link to the userpage-->
-			<c:if test="${command.userLoggedIn}">
+			<c:if test="${command.context.userLoggedIn}">
 				<li>
-					<a href="/user/${fn:escapeXml(command.loginUser.name)}/${fn:escapeXml(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>${mtl:ch('nbsp')}<fmt:message key="tag.asTagFrom"/>${mtl:ch('nbsp')}${command.loginUser.name}
+					<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/${fn:escapeXml(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>${mtl:ch('nbsp')}<fmt:message key="tag.asTagFrom"/>${mtl:ch('nbsp')}${command.context.loginUser.name}
 				</li>
 			</c:if>
 			
@@ -77,7 +77,7 @@
 						<fmt:message key="tagrelations"/>
 					</a>
 				</span>	
-				<tags:concepts requPath="${requPath}" cmd="${command.concepts}" usersOwnRelations="${command.loginUser.name eq command.requestedUser}" requestedUserName="${command.requestedUser}"/>
+				<tags:concepts requPath="${requPath}" cmd="${command.concepts}" usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" requestedUserName="${command.requestedUser}"/>
 			</li>
 
 			<!-- if requestedUser is set, show the tag cloud -->			

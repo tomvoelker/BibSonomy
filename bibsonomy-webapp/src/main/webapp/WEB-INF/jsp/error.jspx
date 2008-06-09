@@ -15,7 +15,7 @@
 		basketSize="" 
 		searchString="" 
 		pageTitle="An error occured!" 
-		loginUserName="${command.loginUser.name}"
+		loginUserName="${command.context.loginUser.name}"
 		requPath="">
 		<jsp:attribute name="heading">
 			<fmt:message key="error"/>
