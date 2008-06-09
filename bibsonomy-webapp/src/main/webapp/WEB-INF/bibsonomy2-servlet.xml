@@ -4,15 +4,24 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 	                    http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+
+
 	<bean id="controllerBase" class="org.bibsonomy.webapp.util.spring.controller.MinimalisticControllerSpringWrapper" abstract="true">
+		<property name="allowedFields" ref="allowedFields"/>
+		<property name="disallowedFields" ref="disallowedFields"/>
 	</bean>
 
 	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="interceptors">
 			<list>
 				<ref local="localeChangeInterceptor"/>
+				<!-- 
+   		         Wraps the request into a context and provides access to loginUser, ckey, etc.
+		         Will be put into the command by the controllerBase
+		        -->
+				<ref local="requestWrapperContextInterceptor"/>
 			</list>
-		</property>	
+		</property>
 		<property name="urlMap">
 			<map>
 				<entry key="/homepage/">
@@ -267,8 +276,20 @@
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 	</bean>	
 	
+	<!-- 
+	    This bean provides admin access to the logic interface by predicting 
+	    to be a user with role "admin". 
+	 -->
+	<bean id="adminLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.AdminLogicFactoryBean" scope="request">
+	    <!-- name the admin user will have when accessing the logic interface -->
+		<property name="adminUserName" value="admin"/>
+		<property name="dbSessionFactory" ref="dbSessionFactory"/>
+	</bean>	
+	
 	<bean id="dbSessionFactory" class="org.bibsonomy.database.util.IbatisDBSessionFactory">
 	</bean>
+	
+	<!--  #################### factory beans #################### -->
 	
 	<bean id="userSettings" class="org.bibsonomy.webapp.util.spring.factorybeans.UserSettingsFactoryBean" scope="request">
 		<property name="user" ref="loginUser"/>
@@ -277,10 +298,13 @@
 	<bean id="loginUser" class="org.bibsonomy.webapp.util.spring.factorybeans.UserFactoryBean" scope="request">
 		<property name="request" ref="request"/>
 	</bean>	
-	
+
 	<bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
-		<property name="paramName" value ="lang" />
+		<property name="paramName" value="lang" />
 	</bean>	
+	
+	<bean id="requestWrapperContextInterceptor" class="org.bibsonomy.webapp.util.spring.RequestWrapperContextHandlerInterceptor">
+	</bean>
 	
 	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver"/>
 	
@@ -294,5 +318,7 @@
 		<property name="suffix" value=".jspx" />
 	</bean>
 		
-    <import resource="bibsonomy2-servlet-actions.xml"/>			
+    <import resource="bibsonomy2-servlet-actions.xml"/>	
+    <import resource="bibsonomy2-servlet-fields.xml"/>    		
+
 </beans>
