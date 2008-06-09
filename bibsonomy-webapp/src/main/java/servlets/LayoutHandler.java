@@ -204,26 +204,27 @@ public class LayoutHandler extends HttpServlet {
 		 * 
 		 *  NOTE: case is ignored
 		 */
-		typemap.put("html",            new OutputType(null, "text/html"));
-		typemap.put("tablerefs",       new OutputType(null, "text/html"));
-		typemap.put("tablerefsabsbib", new OutputType(null, "text/html"));
-		typemap.put("simplehtml",      new OutputType(null, "text/html"));
-		typemap.put("custom",          new OutputType(null, "text/html"));
+		typemap.put("html",                new OutputType(null, "text/html"));
+		typemap.put("tablerefs",           new OutputType(null, "text/html"));
+		typemap.put("tablerefsabsbib",     new OutputType(null, "text/html"));
+		typemap.put("tablerefsabsbibsort", new OutputType(null, "text/html"));
+		typemap.put("simplehtml",          new OutputType(null, "text/html"));
+		typemap.put("custom",              new OutputType(null, "text/html"));
 
-		typemap.put("bibtexml",        new OutputType(null, "text/xml"));
-		typemap.put("docbook",         new OutputType(null, "text/xml"));
-		typemap.put("dblp",            new OutputType(null, "text/xml"));
+		typemap.put("bibtexml",            new OutputType(null, "text/xml"));
+		typemap.put("docbook",             new OutputType(null, "text/xml"));
+		typemap.put("dblp",                new OutputType(null, "text/xml"));
 
-		typemap.put("harvard",         new OutputType("rtf", "text/rtf"));
+		typemap.put("harvard",             new OutputType("rtf", "text/rtf"));
 
-		typemap.put("endnote",         new OutputType(null, "text/plain"));
-		typemap.put("text",            new OutputType(null, "text/plain"));
+		typemap.put("endnote",             new OutputType(null, "text/plain"));
+		typemap.put("text",                new OutputType(null, "text/plain"));
 		
-		typemap.put("openoffice-csv",  new OutputType("csv", "text/comma-separated-values"));
+		typemap.put("openoffice-csv",      new OutputType("csv", "text/comma-separated-values"));
 		
 		// additional layouts, installed by us
-		typemap.put("se",          	   new OutputType(null, "text/html"));
-		typemap.put("jucs", 		   new OutputType("rtf", "text/rtf"));
+		typemap.put("se",          	       new OutputType(null, "text/html"));
+		typemap.put("jucs", 		       new OutputType("rtf", "text/rtf"));
 	}
 
 	private static class OutputType {
