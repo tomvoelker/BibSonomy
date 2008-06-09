@@ -17,11 +17,13 @@ import org.bibsonomy.webapp.command.BaseCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.controller.conversion.ServletRequestAttributeDataBinder;
 import org.bibsonomy.webapp.util.spring.factorybeans.Holder;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
@@ -44,10 +46,40 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 	private String controllerBeanName;
 	private static final Logger LOGGER = Logger.getLogger(MinimalisticControllerSpringWrapper.class);
 	
+	private String[] allowedFields;
+	private String[] disallowedFields;	
+
+	/** 
+	 * Sets the fields which Spring is allowed to bind to command objects.
+	 * <br/>
+	 * Note that in the current implementation, these fields are the same for ALL 
+	 * controllers.
+	 * 
+	 * @param allowedFields
+	 */
+	@Required
+	public void setAllowedFields(final String[] allowedFields) {
+		this.allowedFields = allowedFields;
+	}
+	
+	/** Sets the fields which Spring must not bind to command objects. 
+	 * <br/>
+	 * This list overrides the allowedFields, such that a field listed
+	 * here will <em>not</em> be bound, even it appears in the allowed
+	 * fields! 
+	 * 
+	 * @param disallowedFields
+	 */
+	public void setDisallowedFields(final String[] disallowedFields) {
+		this.disallowedFields = disallowedFields;
+	}
+		
+	
 	/**
 	 * @param controllerBeanName the name of the controller bean in the context
 	 *                           of the renderer
 	 */
+	@Required
 	public void setControllerBeanName(final String controllerBeanName) {
 		this.controllerBeanName = controllerBeanName;
 	}
@@ -69,6 +101,13 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 	protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		((Holder<HttpServletRequest>) getApplicationContext().getBean("requestHolder")).setObj(request); // hack but thats springs fault
 		final MinimalisticController<T> controller = (MinimalisticController<T>) getApplicationContext().getBean(controllerBeanName);
+		/**
+		 * Controller is put into request.
+		 * 
+		 * FIXME: is this still neccessary?
+		 * 
+		 * SuppressValidation retrieves controller from request again!
+		 */
 		request.setAttribute(CONTROLLER_ATTR_NAME, controller);
 		
 		/*
@@ -82,7 +121,15 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 		}
 		
 		final T command = controller.instantiateCommand();
-		
+
+		/*
+		 * put context into command
+		 * 
+		 * TODO: in the future this is hopefully no longer needed, since the wrapper
+		 * only exists to transfer request attributes into the command.
+		 */
+		command.setContext((RequestWrapperContext) request.getAttribute(RequestWrapperContext.class.getName()));
+
 		/*
 		 * set validator for this instance
 		 */
@@ -108,7 +155,7 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 		catch (MalformedURLSchemeException malformed) {
 			response.setStatus(HttpStatus.SC_NOT_FOUND);
 			command.setError(malformed.getMessage());
-			// LOGGER.error(malformed);
+			LOGGER.error(malformed);
 			view = Views.ERROR;
 		}
 		catch (ValidationException notValid) {
@@ -142,5 +189,17 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 		initBinder(request, binder);
 		return binder;
 	}
+	
+	@Override
+	protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+		super.initBinder(request, binder);
+		/*
+		 * setting the dis/allowed fields for the binder
+		 */
+		binder.setAllowedFields(allowedFields);
+		binder.setDisallowedFields(disallowedFields);
+	}
+
+
 	
 }
