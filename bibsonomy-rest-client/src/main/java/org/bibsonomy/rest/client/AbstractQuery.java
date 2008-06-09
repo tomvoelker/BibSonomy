@@ -1,6 +1,8 @@
 package org.bibsonomy.rest.client;
 
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.bibsonomy.rest.RestProperties;
@@ -52,7 +54,12 @@ public abstract class AbstractQuery<T> {
 		final HttpWorker worker;
 		final Reader result;
 		final String absoluteUrl;
-		absoluteUrl = apiURL + url;
+		try {
+			absoluteUrl = URLEncoder.encode(apiURL + url, "utf-8");
+		} catch (UnsupportedEncodingException ex) {
+			throw new RuntimeException(ex.getMessage());
+		}
+
 
 		switch (method) {
 		case POST:
