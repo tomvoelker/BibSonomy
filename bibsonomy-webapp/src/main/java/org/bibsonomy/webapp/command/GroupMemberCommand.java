@@ -10,9 +10,9 @@ import java.util.List;
  */
 public class GroupMemberCommand extends BaseCommand {
 	
-	String group;
+	private String group;
 	
-	List<String> members = new ArrayList<String>();
+	private List<String> members = new ArrayList<String>();
 
 	public String getGroup() {
 		return this.group;

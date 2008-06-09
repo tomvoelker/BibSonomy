@@ -15,17 +15,17 @@ import org.bibsonomy.model.Tag;
 public class RelatedTagCommand extends BaseCommand {
 
 	/** the requested tag(s) for whose to find related tags*/
-	String requestedTags;	
+	private String requestedTags;	
 	
 	/**  the related tags of the requested tag(s) */
-	List<Tag> relatedTags = new ArrayList<Tag>();
+	private List<Tag> relatedTags = new ArrayList<Tag>();
 	
 	/** the global count of the tag these tags are related to */
-	Integer tagGlobalCount = 1;
+	private Integer tagGlobalCount = 1;
 	
 	public RelatedTagCommand() {}
 	
-	RelatedTagCommand(List<Tag> relatedTags) {
+	public RelatedTagCommand(List<Tag> relatedTags) {
 		this.relatedTags = relatedTags;
 	}	
 
