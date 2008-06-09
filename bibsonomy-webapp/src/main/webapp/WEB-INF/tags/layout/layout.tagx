@@ -24,21 +24,6 @@
 
 	<jsp:output doctype-root-element="html"	doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
   
-    <!--
-    
-    TODO: 
-    Probably we should try to do XHTML. Then we would need a <?xml version="1.0" ?> tag 
-    at the beginning of each page and a namespace declaration inside the <html> tag:
-    <html xmlns="http://www.w3.org/1999/xhtml">
-    
-    Unfortunately, I didn't manage to get this into the output.
-
-    see also: http://de.selfhtml.org/html/allgemein/grundgeruest.htm
-    
-    Robert
-    
-     -->
-
 	<jsp:element name="html">
 		<jsp:attribute name="xmlns">http://www.w3.org/1999/xhtml</jsp:attribute>
 		<jsp:body>
@@ -89,8 +74,8 @@
 						<a onclick="naviSwitchSpecial('explicit_user')" style="cursor:pointer"><fmt:message key="navi.search"/>:<c:out value='${requestedUser}'/></a>
 						<c:set var="mode" value="requUser" />
 					</c:if>
-					<c:if test="${command.userLoggedIn and empty requestedUser}">
-						<a onclick="naviSwitchSpecial('explicit_user')" style="cursor:pointer"><fmt:message key="navi.search"/>:<c:out value='${loginUser.name}'/></a>
+					<c:if test="${command.context.userLoggedIn and empty requestedUser}">
+						<a onclick="naviSwitchSpecial('explicit_user')" style="cursor:pointer"><fmt:message key="navi.search"/>:<c:out value='${command.context.loginUser.name}'/></a>
 						<c:set var="mode" value="requUser" />
 					</c:if>
 				</div>	
@@ -113,7 +98,7 @@
 				
 				<!-- main content pane -->
 				<div id="outer">
-					<c:if test="${not command.userLoggedIn and empty command.error and displayIntroduction}">
+					<c:if test="${not command.context.userLoggedIn and empty command.error and displayIntroduction}">
 						<div id="general">
 							<p class="smalltext">
 								<fmt:message key="system.about">
@@ -147,7 +132,7 @@
 					<fmt:message key="system.contact"/>
 					<c:out value=" "/>
 					<lp:email address="${projectEmail}"/>
-					<script type="text/javascript">init(${command.loginUser.settings.tagboxStyle}, ${command.loginUser.settings.tagboxSort}, ${command.loginUser.settings.tagboxMinfreq}, "${requestedUser}", "${loginUserName}", "${ckey}", "${projectName}");</script>  
+					<script type="text/javascript">init(${command.context.loginUser.settings.tagboxStyle}, ${command.context.loginUser.settings.tagboxSort}, ${command.context.loginUser.settings.tagboxMinfreq}, "${requestedUser}", "${loginUserName}", "${ckey}", "${projectName}");</script>  
 				</div>
 			</body>
 		</jsp:body>

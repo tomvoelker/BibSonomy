@@ -32,20 +32,20 @@
 		
 	<c:choose>
 		<c:when test="${command.userLoggedIn}">
-			<c:set var="loginUserName" value="${command.loginUser.name}"/>
+			<c:set var="loginUserName" value="${command.context.loginUser.name}"/>
 		</c:when>
 		<c:otherwise>
 			<c:set var="loginUserName" value="${null}"/>
 		</c:otherwise>
 	</c:choose>
 	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>
-	<layout:layout loginUserName="${loginUserName}" searchString="hurz" basketSize="${loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}">
+	<layout:layout loginUserName="${loginUserName}" searchString="hurz" basketSize="${command.context.loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}">
 		<jsp:attribute name="headerExt">
 			<c:set var="bookRssUrl" value="/rss/${requPath}"/>
 			<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${requPath}" href="${bookRssUrl}" />
 		</jsp:attribute>
 		<jsp:attribute name="content">
-			<resources:bookmarks listView="${command.bookmark}" loginUserName="${command.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
+			<resources:bookmarks listView="${command.bookmark}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
 		</jsp:attribute>
 	</layout:layout>
 </jsp:root>

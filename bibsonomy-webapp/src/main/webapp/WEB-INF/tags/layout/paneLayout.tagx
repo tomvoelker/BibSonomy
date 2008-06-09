@@ -18,11 +18,11 @@
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>	
 	<c:choose>
 		<c:when test="${command.userLoggedIn}">
-			<c:set var="loginUserName" value="${command.loginUser.name}"/>
+			<c:set var="loginUserName" value="${command.context.loginUser.name}"/>
 		</c:when>
 		<c:otherwise>
 			<c:set var="loginUserName" value="${null}"/>
 		</c:otherwise>
 	</c:choose>
-	<layout:layout loginUserName="${loginUserName}" searchString="hurz" basketSize="${loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" content="${content}"/>
+	<layout:layout loginUserName="${loginUserName}" searchString="hurz" basketSize="${command.context.loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" content="${content}"/>
 </jsp:root>

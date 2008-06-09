@@ -21,7 +21,7 @@
 	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>
 				
 		
-	<layout:layout loginUserName="${command.loginUser.name}" searchString="hurz" basketSize="${loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" headerExt="${headerExt}">
+	<layout:layout loginUserName="${command.context.loginUser.name}" searchString="hurz" basketSize="${command.context.loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" headerExt="${headerExt}">
 		<jsp:attribute name="content">
 			<div id="fullscreen">			
 			
