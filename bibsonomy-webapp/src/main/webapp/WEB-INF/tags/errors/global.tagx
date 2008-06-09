@@ -13,7 +13,7 @@
 	          <spring:hasBindErrors name="command">
 
                 <c:if test="${not empty errors.globalErrors}">
-                  <h3>errors</h3>
+                  <h3><fmt:message key="error"/></h3>
                 </c:if>
                 
                 <c:forEach var="error" items="${errors.globalErrors}">
