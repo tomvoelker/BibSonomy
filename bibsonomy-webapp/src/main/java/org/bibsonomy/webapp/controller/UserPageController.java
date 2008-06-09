@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -97,7 +98,16 @@ public class UserPageController extends MultiResourceListControllerWithTags impl
 				} else {
 					return Views.USERTAGPAGE;				
 				}
-			}			
+			}
+			
+			
+			/*
+			 * add user details to command, if loginUser is admin
+			 */
+			if (Role.ADMIN.equals(logic.getAuthenticatedUser().getRole())) {
+				command.setUser(logic.getUserDetails(command.getRequestedUser()));
+			}
+			
 			this.endTiming();
 
 			// forward to bibtex page if PDF filter is set
