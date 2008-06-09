@@ -46,7 +46,7 @@ import org.bibsonomy.util.ExceptionUtils;
 public class RestLogic implements LogicInterface {
 	private static final Logger log = Logger.getLogger(RestLogic.class);
 	private final Bibsonomy bibsonomy;
-	private final String authUserName;
+	private final User authUser;
 
 	public RestLogic(final String username, final String apiKey, final String apiURL) {
 		this(username, apiKey);
@@ -55,7 +55,7 @@ public class RestLogic implements LogicInterface {
 
 	public RestLogic(final String username, final String apiKey) {
 		this.bibsonomy = new Bibsonomy(username, apiKey);
-		this.authUserName = username;
+		this.authUser = new User(username);
 	}
 
 	private <T> T execute(AbstractQuery<T> query) {
@@ -88,8 +88,8 @@ public class RestLogic implements LogicInterface {
 		execute(new DeleteUserQuery(userName));
 	}
 
-	public String getAuthenticatedUser() {
-		return this.authUserName;
+	public User getAuthenticatedUser() {
+		return this.authUser;
 	}
 
 	public Group getGroupDetails(String groupName) {
@@ -147,7 +147,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	public String createPost(Post<?> post) {
-		return execute(new CreatePostQuery(this.authUserName, post));
+		return execute(new CreatePostQuery(this.authUser.getName(), post));
 	}
 
 	public String createUser(User user) {
@@ -161,7 +161,7 @@ public class RestLogic implements LogicInterface {
 
 	public String updatePost(final Post<?> post) {
 		// hashes are recalculated by the server
-		return execute(new ChangePostQuery(this.authUserName, post.getResource().getIntraHash(), post));
+		return execute(new ChangePostQuery(this.authUser.getName(), post.getResource().getIntraHash(), post));
 	}
 
 	public String updateUser(User user) {
