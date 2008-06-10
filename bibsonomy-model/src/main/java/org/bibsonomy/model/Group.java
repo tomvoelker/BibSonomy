@@ -60,6 +60,16 @@ public class Group {
 	/**
 	 * constructor
 	 * 
+	 * @param name
+	 */
+	public Group(final String name) {
+		this();
+		this.setName(name);
+	}
+
+	/**
+	 * constructor
+	 * 
 	 * @param groupId
 	 */
 	public Group(final GroupID groupId) {

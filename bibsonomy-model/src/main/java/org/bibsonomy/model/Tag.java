@@ -14,27 +14,27 @@ public class Tag {
 	 * The id of this tag.
 	 */
 	private int id;
-	
+
 	/**
 	 * The name of this tag.
 	 */
 	private String name;
-	
+
 	/**
 	 * The stemmed version of the tag's name.
 	 */
 	private String stem;
-	
+
 	/**
 	 * Indicating how often this tag is used in the complete system.
 	 */
 	private int globalcount;
-	
+
 	/**
 	 * Indicating how often this tag is used by the user.
 	 */
 	private int usercount;
-	
+
 	/**
 	 * These are the supertags of this tag:
 	 * 
@@ -43,7 +43,7 @@ public class Tag {
 	 * </pre>
 	 */
 	private List<Tag> superTags;
-	
+
 	/**
 	 * These are the subtags of this tag.
 	 * 
@@ -52,11 +52,27 @@ public class Tag {
 	 * </pre>
 	 */
 	private List<Tag> subTags;
-	
+
 	/**
 	 * These are the {@link Post}s that are tagged with this tag.
 	 */
 	private List<Post<? extends Resource>> posts;
+
+	/**
+	 * Zero argument constructor.
+	 */
+	public Tag() {
+		this(null);
+	}
+
+	/**
+	 * Constructs an instance and sets the name for the tag.
+	 * 
+	 * @param name
+	 */
+	public Tag(final String name) {
+		this.setName(name);
+	}
 
 	/**
 	 * @return posts
@@ -96,8 +112,8 @@ public class Tag {
 	 * @return superTags
 	 */
 	public List<Tag> getSuperTags() {
-		if (this.subTags == null) {
-			this.subTags = new LinkedList<Tag>();
+		if (this.superTags == null) {
+			this.superTags = new LinkedList<Tag>();
 		}
 		return this.superTags;
 	}
@@ -183,18 +199,15 @@ public class Tag {
 	public String toString() {
 		return this.id + " '" + this.name + "' '" + this.stem + "' " + this.globalcount;
 	}
-	
+
 	/**
-	 * A little helper function to add a list of subtags 
-	 * as a space-separated string
+	 * Adds a list of subtags from a space-separated string.
+	 * 
 	 * @param subtags
 	 */
 	public void setSubtagsString(final String subtags) {
-		final String [] st = subtags.split(" ");
-		for (final String subtag : st) {
-			final Tag s = new Tag();
-			s.setName(subtag);
-			this.getSubTags().add(s);
+		for (final String subtag : subtags.split(" ")) {
+			this.getSubTags().add(new Tag(subtag));
 		}
 	}
 }

@@ -27,7 +27,7 @@ public class PostTest {
 		post.addTag("tag2");
 		assertEquals(2, post.getTags().size());
 	}
-	
+
 	/**
 	 * tests addGroup
 	 */

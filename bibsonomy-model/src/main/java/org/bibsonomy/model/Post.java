@@ -152,10 +152,8 @@ public class Post<T extends Resource> {
 	public void addTag(final String tagName) {
 		// call getTags to initialize this.tags
 		this.getTags();
-
-		final Tag tag = new Tag();
-		tag.setName(tagName);
-		this.tags.add(tag);
+		// add the tag
+		this.tags.add(new Tag(tagName));
 	}
 
 	/**
@@ -166,10 +164,8 @@ public class Post<T extends Resource> {
 	public void addGroup(final String groupName) {
 		// call getGroups to initialize this.groups
 		this.getGroups();
-
-		final Group group = new Group();
-		group.setName(groupName);
-		this.groups.add(group);
+		// add the group
+		this.groups.add(new Group(groupName));
 	}
 
 	/**

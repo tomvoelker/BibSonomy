@@ -16,9 +16,10 @@ public class GroupTest {
 	 */
 	@Test
 	public void testNewGroup() {
-		final Group group = new Group();
-		assertEquals(GroupID.PUBLIC.getId(), group.getGroupId());
-		assertEquals(Privlevel.MEMBERS, group.getPrivlevel());
-		assertEquals(false, group.isSharedDocuments());
+		for (final Group group : new Group[] { new Group(), new Group(GroupID.PUBLIC), new Group(GroupID.PUBLIC.getId()), new Group("testgroup") }) {
+			assertEquals(GroupID.PUBLIC.getId(), group.getGroupId());
+			assertEquals(Privlevel.MEMBERS, group.getPrivlevel());
+			assertEquals(false, group.isSharedDocuments());
+		}
 	}
 }
