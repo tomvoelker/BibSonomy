@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.params.BookmarkParam;
@@ -36,7 +35,7 @@ import org.junit.Test;
  * @author Anton Wilhelm
  * @version $Id$
  */
-@Ignore
+//@Ignore
 public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	/**
@@ -417,62 +416,26 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
-	 * tests deleteBookmark
-	 */
-	@Test
-	public void deleteBookmark() {
-		final String requBibtex = "108eca7b644e2c5e09853619bc416ed0";
-		final List<Post<Bookmark>> post = this.bookmarkDb.getBookmarkByHash(requBibtex, GroupID.PUBLIC, 10, 0, this.dbSession);
-		assertEquals(1, post.size());
-
-		final String userName = "testuser1";
-		final String resourceHash = "7eda282d1d604c702597600a06f8a6b0";
-		final boolean delete = this.bookmarkDb.deletePost(userName, resourceHash, this.dbSession);
-		assertTrue(!delete); // testuser1 cannot delete this posts, the owner is testuser2
-
-		final String resourceHash2 = requBibtex;
-		final boolean delete2 = this.bookmarkDb.deletePost(userName, resourceHash2, this.dbSession);
-		assertTrue(delete2);
-
-		final List<Post<Bookmark>> post2 = this.bookmarkDb.getBookmarkByHash(requBibtex, GroupID.PUBLIC, 10, 0, this.dbSession);
-		assertEquals(0, post2.size());
-	}
-
-	/**
 	 * tests storePost
 	 */
-	@Test
+	@Ignore
+	// TODO: inserted bookmarks should be deleted afterwards
 	public void storePost() {
-		// ModelUtils
 		final Post<Bookmark> post = new Post<Bookmark>();
-
-		final Group group = new Group();
-		group.setGroupId(GroupID.PUBLIC.getId());
-		group.setDescription(null);
-		group.setName("public");
-		post.getGroups().add(group);
-
-		Tag tag = new Tag();
-		tag.setName(ModelUtils.class.getName());
-		post.getTags().add(tag);
-		tag = new Tag();
-		tag.setName("testtag");
-		post.getTags().add(tag);
-
 		post.setContentId(null);
-		post.setDescription("trallalla");
+		post.setDescription("Some description");
 		post.setDate(new Date());
 
-		final User user = new User();
-		user.setName("testuser1");
-		post.setUser(user);
+		post.setUser(new User("testuser1"));
+		post.getGroups().add(new Group("public"));
+		post.getTags().add(new Tag("tag1"));
+		post.getTags().add(new Tag("tag2"));
 
 		final Bookmark bookmark = new Bookmark();
 		bookmark.setCount(0); // alternative for: setResourceDefaults(bookmark) in ModelUtils;
 		bookmark.setTitle("test"); // does not change hash
 		bookmark.setUrl("http://www.testurl.orgg");
 		bookmark.recalculateHashes();
-
 		post.setResource(bookmark);
 
 		final Post<Bookmark> toInsert = post;
@@ -480,15 +443,14 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		try {
 			this.bookmarkDb.storePost(toInsert.getUser().getName(), toInsert, null, true, this.dbSession);
 			fail("Should throw a throwable");
-		} catch (Throwable t) {
-			assertTrue(t instanceof IllegalArgumentException);
+		} catch (IllegalArgumentException ignore) {
 		}
 		try {
 			this.bookmarkDb.storePost(toInsert.getUser().getName(), toInsert, "6f372faea7ff92eedf52f597090a6291", false, this.dbSession);
 			fail("Should throw a throwable");
-		} catch (Throwable t) {
-			assertTrue(t instanceof IllegalArgumentException);
+		} catch (IllegalArgumentException ignore) {
 		}
+
 		// no oldIntraHash and no update
 		this.bookmarkDb.storePost(toInsert.getUser().getName(), toInsert, null, false, this.dbSession);
 		final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { ModelUtils.class.getName(), "testtag" }), "", null, 0, 50, null, toInsert.getUser());
@@ -512,6 +474,29 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
+	 * tests deleteBookmark
+	 */
+	@Ignore
+	// TODO: should delete the bookmarks that are inserted in storePost
+	public void deleteBookmark() {
+		final String requBibtex = "108eca7b644e2c5e09853619bc416ed0";
+		final List<Post<Bookmark>> post = this.bookmarkDb.getBookmarkByHash(requBibtex, GroupID.PUBLIC, 10, 0, this.dbSession);
+		assertEquals(1, post.size());
+
+		final String userName = "testuser1";
+		final String resourceHash = "7eda282d1d604c702597600a06f8a6b0";
+		final boolean delete = this.bookmarkDb.deletePost(userName, resourceHash, this.dbSession);
+		assertTrue(!delete); // testuser1 cannot delete this posts, the owner is testuser2
+
+		final String resourceHash2 = requBibtex;
+		final boolean delete2 = this.bookmarkDb.deletePost(userName, resourceHash2, this.dbSession);
+		assertTrue(delete2);
+
+		final List<Post<Bookmark>> post2 = this.bookmarkDb.getBookmarkByHash(requBibtex, GroupID.PUBLIC, 10, 0, this.dbSession);
+		assertEquals(0, post2.size());
+	}
+
+	/**
 	 * tests getContentIDForBookmark
 	 * 
 	 * hash (requBibtex) must be set
@@ -527,7 +512,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * tests getPosts
 	 */
-	@Test
+	@Ignore
 	//FIXME: RuntimeException: Can't handle request
 	public void getPosts() {
 		List<TagIndex> tagIndex = new ArrayList<TagIndex>();
@@ -535,8 +520,8 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final BookmarkParam param = new BookmarkParam();
 		param.setTagIndex(tagIndex);
 		param.setGroupId(GroupID.PUBLIC.getId());
-		final List<Post<Bookmark>> posts2 = this.bookmarkDb.getPosts(param, this.dbSession);
-		assertEquals(3, posts2.size());
+		final List<Post<Bookmark>> posts = this.bookmarkDb.getPosts(param, this.dbSession);
+		assertEquals(3, posts.size());
 	}
 
 	/**
@@ -554,6 +539,6 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		param.setRequestedGroupName("testuser1");
 		param.setGroups(visibleGroupIDs);
 		final List<Post<Bookmark>> posts = this.bookmarkDb.getPosts(param, this.dbSession);
-		assertEquals(2, posts.size());
-	}	
+		assertEquals(3, posts.size());
+	}
 }

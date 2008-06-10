@@ -174,15 +174,14 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 
 	/**
 	 * @see BookmarkDatabaseManager#getBookmarkByTagNamesForUser(BookmarkParam, DBSession)
-	 * 
-	 * @param requestedUserName
-	 * @param userName
-	 * @param tagIndex
-	 * @param groupId
-	 * @param groups 
-	 * @param limit
-	 * @param offset
-	 * @param session
+	 * @param requestedUserName 
+	 * @param userName 
+	 * @param tagIndex 
+	 * @param groupId 
+	 * @param visibleGroupIDs 
+	 * @param limit 
+	 * @param offset 
+	 * @param session 
 	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkByTagNamesForUser(final String requestedUserName, final String userName, final List<TagIndex> tagIndex, final int groupId, final List<Integer> visibleGroupIDs, final int limit, final int offset, final DBSession session) {
@@ -776,7 +775,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 			// compute only a single simHash, as all simHashes are equal for bookmarks
 			final HashID simHash = HashID.getSimHash(0);
 			param.setRequestedSimHash(simHash);
-			param.setHash(SimHash.getSimHash(param.getResource(),simHash));
+			param.setHash(SimHash.getSimHash(param.getResource(), simHash));
 			this.insertBookmarkHash(param, session);
 			session.commitTransaction();
 		} finally {
@@ -790,7 +789,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	private void insertBookmarkPost(final Post<Bookmark> post, final DBSession session) {
 		if (present(post.getResource()) == false) throw new InvalidModelException("There is no resource for this post.");
 		if (present(post.getGroups()) == false) throw new InvalidModelException("There are no groups for this post.");
-		
+
 		final BookmarkParam param = new BookmarkParam();
 		param.setResource(post.getResource());
 		param.setDate(post.getDate());
@@ -801,30 +800,16 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setUrl(post.getResource().getUrl());
 		for (final Group group : post.getGroups()) {
 			param.setGroupId(group.getGroupId());
-			
-			// Start transaction
-			session.beginTransaction();
-			try {
-				// Insert bookmark
-				this.insert("insertBookmark", param, session);
-				// compute only a single simHash, as all simHashes are equal for bookmarks
-				final HashID simHash = HashID.getSimHash(0);
-				param.setRequestedSimHash(simHash);
-				param.setHash(SimHash.getSimHash(param.getResource(),simHash));
-				this.insertBookmarkHash(param, session);
-				session.commitTransaction();
-			} finally {
-				session.endTransaction();
-			}
+			this.insertBookmark(param, session);
 		}
 	}
 
-	// insert counter, hash and url of bookmark
+	// Insert counter, hash and URL of bookmark
 	private void insertBookmarkHash(final BookmarkParam param, final DBSession session) {
 		this.insert("insertBookmarkHash", param, session);
 	}
 
-   	// decrements one count in url table after deleting
+   	// Decrements one count in url table after deleting
 	private void updateBookmarkHash(final BookmarkParam param, final DBSession session) {
 		this.insert("updateBookmarkHash", param, session);
 	}
