@@ -110,7 +110,7 @@ do this with JavaScript and two checkboxes
     <dt><a href="/layout/custom/<c:out value='${requPath}'/>">Custom</a></dt>
     <dd>A custom <a href="http://jabref.sourceforge.net/">JabRef</a> layout which you can upload on the <a href="/settings">settings</a> page.
     Information on how to write such a
-  layout filter can be found <a href="http://jabref.sourceforge.net/help/CustomExports.html">here</a>.
+  layout filter can be found <a href="http://jabref.sourceforge.net/help/CustomExports.php">here</a>.
     </dd>
     
     <dt><a href="/layout/simplehtml/<c:out value='${requPath}'/>">SimpleHTML</a> <a href="#jabref">*</a></dt>
