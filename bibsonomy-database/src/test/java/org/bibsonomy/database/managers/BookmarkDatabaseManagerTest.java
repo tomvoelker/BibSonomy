@@ -35,7 +35,7 @@ import org.junit.Test;
  * @author Anton Wilhelm
  * @version $Id$
  */
-//@Ignore
+@Ignore
 public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	/**
