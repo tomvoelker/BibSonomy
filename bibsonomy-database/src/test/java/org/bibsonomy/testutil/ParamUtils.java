@@ -148,9 +148,7 @@ public final class ParamUtils {
 		param.setTasId(213758);
 		param.setTags(new ArrayList<Tag>());
 		for (final String tagName : new String[] { ParamUtils.class.getName(), "hurz", "trallalla", "---_-" }) {
-			final Tag tag = new Tag();
-			tag.setName(tagName);
-			param.getTags().add(tag);
+			param.getTags().add(new Tag(tagName));
 		}
 		param.setGroups(Arrays.asList(new Integer[] { 1, 5 }));
 		param.setRegex("web");

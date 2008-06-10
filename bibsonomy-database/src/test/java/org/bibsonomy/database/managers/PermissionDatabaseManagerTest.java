@@ -16,6 +16,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.testutil.ParamUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -138,8 +139,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			assertTrue(this.permissionDb.exceedsMaxmimumSize(tags));
 		}
 	}
-	
-	
+
 	/**
 	 * tests isAllowedToAccessUsersOrGroupDocuments
 	 */
@@ -152,22 +152,21 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertFalse(this.permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.USER, "Berthold_B", this.dbSession));
 		// null user -> no
 		assertFalse(this.permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.USER, null, this.dbSession));
-		
+
 		// loginUser is member of group KDE, loginUser2 is not
 		// (both may see public posts)
-		ArrayList<Group> groups = new ArrayList<Group>();
 		loginUser.addGroup(new Group(GroupID.KDE));
 		loginUser.addGroup(new Group(GroupID.PUBLIC));
 		User loginUser2 = new User("Peter");
 		loginUser2.addGroup(new Group(GroupID.PUBLIC));
-		
+
 		// group members are allowed to see posts -> yes
 		assertTrue(this.permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "kde", this.dbSession));
 		// non-group members are not -> no
 		assertFalse(this.permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser2, GroupingEntity.GROUP, "kde", this.dbSession));
 		// non-existent group -> no
-		assertFalse(this.permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "this_group_does_not_exist", this.dbSession));
-		
+		assertFalse(this.permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, ParamUtils.NOGROUP_NAME, this.dbSession));
+
 		// dummy tests / null values -> no
 		assertFalse(this.permissionDb.isAllowedToAccessUsersOrGroupDocuments(new User(), null, null, this.dbSession));
 	}

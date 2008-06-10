@@ -35,6 +35,14 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 		return singleton;
 	}
 
+	/**
+	 * Returns the URLs for a given publication.
+	 * 
+	 * @param hash
+	 * @param username
+	 * @param session
+	 * @return list of BibTexExtra objects
+	 */
 	public List<BibTexExtra> getURL(final String hash, final String username, final DBSession session) {
 		final BibTexExtraParam param = new BibTexExtraParam();
 		param.setSimHash(HashID.INTRA_HASH); 
@@ -43,11 +51,28 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForList("getBibTexExtraURL", param, BibTexExtra.class, session);
 	}
 
+	/**
+	 * Creates an URL for the publication with the given hash.
+	 * 
+	 * @param hash
+	 * @param username
+	 * @param url
+	 * @param text
+	 * @param session
+	 */
 	public void createURL(final String hash, final String username, final String url, final String text, final DBSession session) {
 		final BibTexExtraParam param = this.buildURLParam(hash, username, url, text, session);
 		this.insert("insertBibTexExtraURL", param, session);
 	}
 
+	/**
+	 * Deletes the URL from the publication with the given hash.
+	 * 
+	 * @param hash
+	 * @param username
+	 * @param url
+	 * @param session
+	 */
 	public void deleteURL(final String hash, final String username, final String url, final DBSession session) {
 		final BibTexExtraParam param = this.buildURLParam(hash, username, url, null, session);
 		this.delete("deleteBibTexExtraURL", param, session);
@@ -56,13 +81,21 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Doesn't delete <em>all</em> URLs, but only those for the resource with
 	 * the given hash.
-	 * @param contentId 
-	 * @param session 
+	 * 
+	 * @param contentId
+	 * @param session
 	 */
 	public void deleteAllURLs(final int contentId, final DBSession session) {
 		this.delete("deleteAllBibTexExtraURLs", contentId, session);
 	}
 
+	/**
+	 * Migrates the URLs for a given contentId to its new contentId.
+	 * 
+	 * @param contentId
+	 * @param newContentId
+	 * @param session
+	 */
 	public void updateURL(final int contentId, final int newContentId, final DBSession session) {
 		this.update("updateBibTexURL", this.buildContentIdParam(contentId, newContentId), session);
 	}
@@ -80,11 +113,27 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 		return param;
 	}
 
+	/**
+	 * Returns the private note for a publication with the given hash.
+	 * 
+	 * @param hash
+	 * @param username
+	 * @param session
+	 * @return private note
+	 */
 	public String getBibTexPrivnoteForUser(final String hash, final String username, final DBSession session) {
 		final BibTexExtraParam param = this.buildPrivnoteParam(hash, username, null);
 		return this.queryForObject("getBibTexPrivnoteForUser", param, String.class, session);
 	}
 
+	/**
+	 * Updates the private note for a publication with the given hash.
+	 * 
+	 * @param hash
+	 * @param username
+	 * @param note
+	 * @param session
+	 */
 	public void updateBibTexPrivnoteForUser(final String hash, final String username, final String note, final DBSession session) {
 		final BibTexExtraParam param = this.buildPrivnoteParam(hash, username, note);
 		this.update("updateBibTexPrivnoteForUser", param, session);
@@ -110,6 +159,7 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 	 *             {@link LogicInterface#getDocument(String, String, String)}.
 	 */
 	@Deprecated
+	// FIXME: Since we don't need a stable API, replace this with the new method please.
 	public String getDocumentByHash(final String hash, final DBSession session) {
 		return this.getDocumentByHashAndUser(hash, null, session);
 	}
@@ -127,6 +177,7 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 	 *             {@link LogicInterface#getDocument(String, String, String)}.
 	 */
 	@Deprecated
+	// FIXME: Since we don't need a stable API, replace this with the new method please.
 	public String getDocumentByHashAndUser(final String hash, final String username, final DBSession session) {
 		if (present(hash) == false) throw new RuntimeException("Hash must be present.");
 		// if all documents are public -> return them
@@ -139,14 +190,35 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForObject("getDocumentByHashAndUser", param, String.class, session);
 	}
 
+	/**
+	 * Deletes the document.
+	 * 
+	 * @param contentId
+	 * @param session
+	 */
 	public void deleteDocument(final int contentId, final DBSession session) {
 		this.delete("deleteDocument", contentId, session);
 	}
 
+	/**
+	 * Migrates the document for a given contentId to its new contentId.
+	 * 
+	 * @param contentId
+	 * @param newContentId
+	 * @param session
+	 */
 	public void updateDocument(final int contentId, final int newContentId, final DBSession session) {
 		this.delete("updateDocument", this.buildContentIdParam(contentId, newContentId), session);
 	}
 
+	/**
+	 * Returns the extended fields for a publication with the given hash.
+	 * 
+	 * @param hash
+	 * @param username
+	 * @param session
+	 * @return list of ExtendedFields objects
+	 */
 	public List<ExtendedFields> getExtendedFields(final String hash, final String username, final DBSession session) {
 		final BibTexExtraParam param = new BibTexExtraParam();
 		param.setHash(hash);
@@ -154,10 +226,23 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForList("getExtendedFields", param, ExtendedFields.class, session);
 	}
 
+	/**
+	 * Migrates the extended fields for a given contentId to its new contentId.
+	 * 
+	 * @param contentId
+	 * @param newContentId
+	 * @param session
+	 */
 	public void updateExtendedFieldsData(final int contentId, final int newContentId, final DBSession session) {
 		this.update("updateExtendedFieldsData", this.buildContentIdParam(contentId, newContentId), session);
 	}
 
+	/**
+	 * Deletes the extended fields.
+	 * 
+	 * @param contentId
+	 * @param session
+	 */
 	public void deleteExtendedFieldsData(final int contentId, final DBSession session) {
 		this.delete("deleteExtendedFieldsData", contentId, session);
 	}
@@ -169,6 +254,12 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 		return param;
 	}
 
+	/**
+	 * Deletes the collector.
+	 * 
+	 * @param contentId
+	 * @param session
+	 */
 	public void deleteCollector(final int contentId, final DBSession session) {
 		this.delete("deleteBibTexCollector", contentId, session);
 	}

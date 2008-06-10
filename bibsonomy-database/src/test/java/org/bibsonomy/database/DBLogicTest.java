@@ -356,21 +356,17 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	// XXX: writes to the db (adapt to new test db)
 	public void testConceptStore() {
 		final Post<BibTex> post = ModelUtils.generatePost(BibTex.class);
-		final Tag centerTag = new Tag();
-		centerTag.setName("testCenterTag");
+		final Tag centerTag = new Tag("testCenterTag");
 
-		final Tag superTag = new Tag();
-		superTag.setName("testSuperTag");
+		final Tag superTag = new Tag("testSuperTag");
 		superTag.setSubTags(Arrays.asList(new Tag[] {centerTag}));
 		centerTag.setSuperTags(Arrays.asList(new Tag[] {superTag}));
 
-		final Tag superSuperTag = new Tag();
-		superSuperTag.setName("testSuperSuperTag");
+		final Tag superSuperTag = new Tag("testSuperSuperTag");
 		superSuperTag.setSuperTags(Arrays.asList(new Tag[] {superSuperTag}));
 		superSuperTag.setSubTags(Arrays.asList(new Tag[] {superTag}));
 
-		final Tag subTag = new Tag();
-		subTag.setName("testSubTag");
+		final Tag subTag = new Tag("testSubTag");
 		centerTag.setSubTags(Arrays.asList(new Tag[] {subTag}));
 		subTag.setSuperTags(Arrays.asList(new Tag[] {centerTag}));
 

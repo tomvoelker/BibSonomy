@@ -31,12 +31,9 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	@Before
 	public void setUp() {
 		super.setUp();
-		this.tag = new Tag();
-		this.tag.setName(this.getClass().getName());
-		this.subTag = new Tag();
-		this.subTag.setName(this.getClass().getName() + "-sub");
-		this.superTag = new Tag();
-		this.superTag.setName(this.getClass().getName() + "-super");
+		this.tag = new Tag(this.getClass().getName());
+		this.subTag = new Tag(this.getClass().getName() + "-sub");
+		this.superTag = new Tag(this.getClass().getName() + "-super");
 		this.tag.setSubTags(Arrays.asList(new Tag[] { this.subTag }));
 		this.subTag.setSuperTags(Arrays.asList(new Tag[] { this.tag }));
 		this.tag.setSuperTags(Arrays.asList(new Tag[] { this.superTag }));

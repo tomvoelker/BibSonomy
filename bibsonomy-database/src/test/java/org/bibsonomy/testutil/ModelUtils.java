@@ -1,6 +1,5 @@
 package org.bibsonomy.testutil;
 
-import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -33,7 +32,6 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.DepthEqualityTester.EqualityChecker;
 import org.bibsonomy.util.ExceptionUtils;
-import org.junit.Test;
 
 /**
  * Methods to create objects from the model like {@link Bookmark},

@@ -25,14 +25,15 @@ public class GetBibtexForGroupAndTagTest extends AbstractDatabaseManagerTest {
 	static {
 		Properties p = new Properties();
 		p.setProperty("log4j.rootLogger", "DEBUG, A1");
-		
+
 		p.setProperty("log4j.appender.A1", "org.apache.log4j.RollingFileAppender");
 		p.setProperty("log4j.appender.A1.File", "/tmp/LOG.log");
-//		p.setProperty("log4j.appender.A1", "org.apache.log4j.ConsoleAppender");
+		// p.setProperty("log4j.appender.A1",
+		// "org.apache.log4j.ConsoleAppender");
 		p.setProperty("log4j.appender.A1.layout", "org.apache.log4j.PatternLayout");
 
 		// Print the date in ISO 8601 format
-		
+
 		p.setProperty("log4j.appender.A1.layout.ConversionPattern", "%d %-5p %c - %m%n");
 
 		// Print only messages of level WARN or above in the package com.foo.
@@ -50,19 +51,18 @@ public class GetBibtexForGroupAndTagTest extends AbstractDatabaseManagerTest {
 
 		final List<Tag> tags = new LinkedList<Tag>();
 		final List<TagIndex> tagIndex = new LinkedList<TagIndex>();
-		
+
 		/*
 		 * change number of requested tags here
 		 */
 		final int NUMBER_OF_TAGS = 15;
-		
+
 		for (int i = 0; i < NUMBER_OF_TAGS; i++) {
-			Tag a = new Tag(); a.setName("a" + i); tags.add(a);
-			TagIndex a1 = new TagIndex("a" + i, i + 1); tagIndex.add(a1);
+			tags.add(new Tag("a" + i));
+			tagIndex.add(new TagIndex("a" + i, i + 1));
 		}
 		p.setTags(tags);
 		p.setTagIndex(tagIndex);
-
 
 		p.setGrouping(GroupingEntity.GROUP);
 		p.setRequestedGroupName("kde");
@@ -77,8 +77,7 @@ public class GetBibtexForGroupAndTagTest extends AbstractDatabaseManagerTest {
 
 		GetBibtexForGroupAndTag handler = new GetBibtexForGroupAndTag();
 
-
-		final List<Post<BibTex>> posts = handler.perform(p,dbSession);
+		final List<Post<BibTex>> posts = handler.perform(p, dbSession);
 
 	}
 
