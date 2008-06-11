@@ -44,28 +44,29 @@ public class LogicInterfaceHelper {
 	 */
 	public static <T extends GenericParam> T buildParam(final Class<T> type, final String authUser, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end, final String search, final User loginUser) {
 		final T param = getParam(type);
-		
-		//if hash length is 33 ,than use the first character as hash type
-		if(hash != null && hash.length() == 33) {
+
+		// if hash length is 33 ,than use the first character as hash type
+		if (hash != null && hash.length() == 33) {
 			HashID id = HashID.SIM_HASH1;
-			try{
-				switch(Integer.valueOf(hash.substring(0,1))){
+			try {
+				// FIXME: this logic already exists in HashID.getSimHash()
+				switch (Integer.valueOf(hash.substring(0, 1))) {
 					case 0: id = HashID.SIM_HASH0; break;
 					case 2: id = HashID.SIM_HASH2; break;
 					case 3: id = HashID.SIM_HASH3; break;
 					default: break;
 				}
-			}catch(NumberFormatException e){
-				e.printStackTrace();
+			} catch (final NumberFormatException ex) {
+				throw new RuntimeException(ex);
 			}
 			
-			if(param instanceof BibTexParam){
+			if (param instanceof BibTexParam) {
 				((BibTexParam) param).setSimHash(id);
-			}else if(param instanceof TagParam){
+			} else if (param instanceof TagParam) {
 				((TagParam) param).setHashId(id);
 			}
 			param.setHash(hash.substring(1));
-		}else{
+		} else {
 			param.setHash(hash);
 		}
 		

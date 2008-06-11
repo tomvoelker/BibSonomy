@@ -1,12 +1,15 @@
 package org.bibsonomy.database.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
+import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
 import org.junit.Test;
 
@@ -22,21 +25,36 @@ public class LogicInterfaceHelperTest {
 	 */
 	@Test
 	public void buildParam() {
-		GenericParam param = null;
+		GenericParam param;
 
-		param = LogicInterfaceHelper.buildParam(BookmarkParam.class, "", null, "", null, "", null, 0, 10, null, null);
-		assertEquals(BookmarkParam.class, param.getClass());
+		for (final Class<? extends GenericParam> paramClass : new Class[] { BookmarkParam.class, BibTexParam.class, TagParam.class, TagRelationParam.class, UserParam.class, GroupParam.class }) {
+			param = LogicInterfaceHelper.buildParam(paramClass, "", null, "", null, "hash", null, 0, 10, "search-string", null);
+			assertEquals(paramClass, param.getClass());
+			assertEquals(" +search-string", param.getSearch());
+			assertEquals("hash", param.getHash());
 
-		param = LogicInterfaceHelper.buildParam(BibTexParam.class, "", null, "", null, "", null, 0, 10, null, null);
-		assertEquals(BibTexParam.class, param.getClass());
+			// TODO: do we want the LIMIT to be 0?
+			param = LogicInterfaceHelper.buildParam(paramClass, "", null, "", null, "", null, 12, 10, null, null);
+			assertEquals(0, param.getLimit());
 
-		param = LogicInterfaceHelper.buildParam(TagParam.class, "", null, "", null, "", null, 0, 10, null, null);
-		assertEquals(TagParam.class, param.getClass());
+			// hash
+			final String testHash = "11111111111111111111111111111111";
+			for (final int hashId : HashID.getHashRange()) {
+				param = LogicInterfaceHelper.buildParam(paramClass, "", null, "", null, hashId + testHash, null, 12, 10, null, null);
+				if (paramClass == BibTexParam.class) {
+					assertEquals(HashID.getSimHash(hashId).getId(), ((BibTexParam) param).getSimHash());
+				} else if (paramClass == TagParam.class) {
+					assertEquals(HashID.getSimHash(hashId).getId(), ((TagParam) param).getHashId());
+				}
+			}
+			for (final Object hashId : new Object[] { "a" /* , 4, 5, 6 */}) {
+				try {
+					param = LogicInterfaceHelper.buildParam(paramClass, "", null, "", null, hashId + testHash, null, 12, 10, null, null);
+					fail("Expected exception");
+				} catch (RuntimeException ignore) {
+				}
+			}
+		}
 
-		param = LogicInterfaceHelper.buildParam(UserParam.class, "", null, "", null, "", null, 0, 10, null, null);
-		assertEquals(UserParam.class, param.getClass());
-
-		param = LogicInterfaceHelper.buildParam(GroupParam.class, "", null, "", null, "", null, 0, 10, null, null);
-		assertEquals(GroupParam.class, param.getClass());
 	}
 }
