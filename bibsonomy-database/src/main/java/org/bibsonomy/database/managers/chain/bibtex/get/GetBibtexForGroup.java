@@ -33,7 +33,7 @@ public class GetBibtexForGroup extends BibTexChainElement {
 			return new ArrayList<Post<BibTex>>(0);			
 		}
 		// remove pdf filter if sharing documents for this group is disabled
-		if (!group.isSharedDocuments() && ( param.getFilter().equals(FilterEntity.PDF) || param.getFilter().equals(FilterEntity.JUST_PDF))) {
+		if (!group.isSharedDocuments() && param.getFilter() != null && ( param.getFilter().equals(FilterEntity.PDF) || param.getFilter().equals(FilterEntity.JUST_PDF))) {
 			param.setFilter(null);
 		}
 		param.setGroupId(group.getGroupId());		
