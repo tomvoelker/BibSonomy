@@ -1,13 +1,17 @@
 package org.bibsonomy.webapp.util;
 
-import javax.servlet.http.HttpServletRequest;
 
 /**
+ * Interface to allow controllers access to the request logic. 
+ * 
  * @author rja
  * @version $Id$
  */
 public interface RequestAware {
 
 	
-	public void setRequest(HttpServletRequest request);
+	/** 
+	 * @param requestLogic
+	 */
+	public void setRequestLogic(RequestLogic requestLogic);
 }
