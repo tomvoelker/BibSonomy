@@ -1,0 +1,33 @@
+package org.bibsonomy.webapp.util;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * Logic to access the Response.
+ * 
+ * @author rja
+ * @version $Id$
+ */
+public class ResponseLogic {
+
+	private HttpServletResponse response;
+	
+	/** Adds a cookie to the response.
+	 * 
+	 * @param cookie
+	 */
+	public void addCookie(Cookie cookie) {
+		response.addCookie(cookie);
+	}
+	
+	/** Response this logic is working on.
+	 * @param response
+	 */
+	public void setResponse(HttpServletResponse response) {
+		this.response = response;
+	}
+	
+	
+
+}
