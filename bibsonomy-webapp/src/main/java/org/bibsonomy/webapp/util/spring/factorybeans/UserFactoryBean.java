@@ -1,47 +1,33 @@
-/*
- * Created on 19.08.2007
- */
 package org.bibsonomy.webapp.util.spring.factorybeans;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.bibsonomy.model.User;
+import org.bibsonomy.webapp.util.RequestLogic;
 import org.springframework.beans.factory.FactoryBean;
-
-import filters.InitUserFilter;
 
 /**
  * fishes the {@link User} out of the request
  *  
  * @see FactoryBean
  * @author Dominik Benz
+ * @version $Id$
  */
 public class UserFactoryBean implements FactoryBean {
-	private HttpServletRequest request;
+	private RequestLogic requestLogic;
 	private User instance;
 	
 	/**
-	 * @param request
+	 * The logic to acces the HTTP servlet request.
+	 * @param requestLogic
 	 */
-	public void setRequest(final HttpServletRequest request) {
-		this.request = request;
+	public void setRequestLogic(final RequestLogic requestLogic) {
+		this.requestLogic = requestLogic;
 	}
 
 	public Object getObject() throws Exception {
 		if (instance == null) {
-			instance = getLoginUser(request);
+			instance = requestLogic.getLoginUser();
 		}
 		return instance;
-	}
-
-	/**
-	 * @param req
-	 * @return the {@link User} model of the logged in user 
-	 */
-	protected User getLoginUser(@SuppressWarnings("unused") final HttpServletRequest req) {
-		// FIXME: IoC break: use user object instead of accessing request
-		// FIXME: use bibsonomy2 user object and check password again
-		return (User) this.request.getAttribute(InitUserFilter.REQ_ATTRIB_LOGIN_USER);
 	}
 
 	public Class<?> getObjectType() {
