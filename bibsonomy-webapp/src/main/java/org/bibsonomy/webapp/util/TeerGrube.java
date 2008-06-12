@@ -1,9 +1,11 @@
-package helpers;
+package org.bibsonomy.webapp.util;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.log4j.Logger;
 
 /** This class collects entities in a queue and counts how often they're added. 
  * Every add-call increases the penalty waiting time of that entity.
@@ -13,14 +15,17 @@ import java.util.Map;
  */
 public class TeerGrube {
 
+	private static final Logger log = Logger.getLogger(TeerGrube.class);
+	
 	/**
-	 * how long to wait for each retry?
+	 * How long to wait for each retry? Default: 3 seconds.
 	 */
-	private static final int WAITING_SECONDS_PER_RETRY = 3;
+	private int waitingSecondsPerRetry = 3;
 	/**
-	 * after how many seconds should an entity be removed from the queue?
+	 * After how many seconds should an entity be removed from the queue? Default: 30minutes (1800 seconds). 
 	 */
-	private static final int MAX_QUEUE_AGE_SECONDS = 30 * 60; 
+	private int maxQueueAgeSeconds = 30 * 60;
+	
 	private Map<String, WaitingEntity> waitQueue;
 	
 
@@ -28,6 +33,7 @@ public class TeerGrube {
 	 * Default constructor.
 	 */
 	public TeerGrube () {
+		log.info("New instance of TeerGrube created.");
 		waitQueue = Collections.synchronizedMap(new HashMap<String, WaitingEntity>());
 	}
 
@@ -54,11 +60,12 @@ public class TeerGrube {
 	 * it is removed from the queue. 
 	 *  
 	 * @param id - the id of the entitiy.
+	 * @return The remaining seconds to wait.
 	 */
 	public long getRemainingWaitSeconds (String id) {
 		WaitingEntity entity = waitQueue.get(id);
 		if (entity != null) {
-			if (entity.secondsSinceLastAccess() > MAX_QUEUE_AGE_SECONDS) {
+			if (entity.secondsSinceLastAccess() > maxQueueAgeSeconds) {
 				/*
 				 * entity is longer in queue than max age --> remove it
 				 */
@@ -67,7 +74,7 @@ public class TeerGrube {
 				/*
 				 * entity is in queue and younger than max age
 				 */
-				long waitingTimeInSeconds = entity.getRetryCounter() * WAITING_SECONDS_PER_RETRY;
+				long waitingTimeInSeconds = entity.getRetryCounter() * waitingSecondsPerRetry;
 				/*
 				 * restrict max waiting time to 90 seconds
 				 */
@@ -98,6 +105,9 @@ public class TeerGrube {
 		private int retryCounter;
 		private long lastAccessTime; // number of miliseconds since 1970
 		
+		/** Public constructor
+		 * @param id
+		 */
 		public WaitingEntity (String id) {
 			this.id = id;
 			retryCounter = 1;
@@ -112,13 +122,17 @@ public class TeerGrube {
 			retryCounter++;
 		}
 				
-		/** Returns the "age" of the object, or more exactly: the time (in seconds) since the last access. 
-		 * @return
+		/** Returns the "age" of the object, or more exactly: the time (in seconds) since the last access.
+		 *  
+		 * @return The number of seconds since this item has been accessed the last time.
 		 */
 		public long secondsSinceLastAccess () {
 			return (new Date().getTime() - lastAccessTime) / 1000;
 		}
 		
+		/**
+		 * @return The number of times this item has been accessed.
+		 */
 		public int getRetryCounter () {
 			return retryCounter;
 		}
@@ -131,9 +145,48 @@ public class TeerGrube {
 			return equals ((WaitingEntity) obj);
 		}
 		
+		/**
+		 * @param other
+		 * @return <code>true</code>, if <code>other</code> is equal to this instance.
+		 */
 		public boolean equals (WaitingEntity other) {
 			return this.id.equals(other.id);
 		}
+	}
+
+	/**
+	 * @return The numberof seconds to add for each retry.
+	 */
+	public int getWaitingSecondsPerRetry() {
+		return this.waitingSecondsPerRetry;
+	}
+
+	/** Set the number of seconds which the user has to wait for each retry.
+	 * 
+	 * Default: 3 seconds.
+	 * 
+	 * 
+	 * @param waitingSecondsPerRetry
+	 */
+	public void setWaitingSecondsPerRetry(int waitingSecondsPerRetry) {
+		this.waitingSecondsPerRetry = waitingSecondsPerRetry;
+	}
+
+	/**
+	 * @return The number of seconds after which an item is removed from the queue. 
+	 */
+	public int getMaxQueueAgeSeconds() {
+		return this.maxQueueAgeSeconds;
+	}
+
+	/** Set the number of seconds after which an item is removed from the queue. 
+	 * 
+	 * Default: 30minutes (1800 seconds).
+	 * 
+	 * @param maxQueueAgeSeconds
+	 */
+	public void setMaxQueueAgeSeconds(int maxQueueAgeSeconds) {
+		this.maxQueueAgeSeconds = maxQueueAgeSeconds;
 	}
 	
 }

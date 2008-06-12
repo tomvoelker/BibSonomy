@@ -7,7 +7,6 @@
 package servlets;
 
 import helpers.Spammer;
-import helpers.TeerGrube;
 import helpers.constants;
 
 import java.io.*;
@@ -20,6 +19,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.webapp.util.TeerGrube;
 
 import beans.LoginHandlerBean;
 import resources.Resource;
