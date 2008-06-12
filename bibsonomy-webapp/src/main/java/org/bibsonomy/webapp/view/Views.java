@@ -13,6 +13,10 @@ import org.bibsonomy.webapp.util.View;
  * @author Jens Illig
  * @version $Id$
  */
+/**
+ * @author rja
+ *
+ */
 public enum Views implements View {
 		
 	/**
@@ -201,7 +205,12 @@ public enum Views implements View {
 	 * When admins successfully register a user, this page shows them
 	 * the details.
 	 */
-	REGISTER_USER_SUCCESS_ADMIN("actions/register/user_success_admin");
+	REGISTER_USER_SUCCESS_ADMIN("actions/register/user_success_admin"),
+	
+	/**
+	 * Log into the system. 
+	 */
+	LOGIN("actions/login");
 	
 	private final String name;
 	
