@@ -28,10 +28,10 @@ public class RequestWrapperContext {
 
 	private HttpServletRequest request;
 
-	public HttpServletRequest getRequest() {
-		return this.request;
-	}
-
+	/** The request this wrapper provides access to.
+	 * 
+	 * @param request
+	 */
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
 	}
