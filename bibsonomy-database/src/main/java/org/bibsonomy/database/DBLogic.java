@@ -161,6 +161,8 @@ public class DBLogic implements LogicInterface {
 				user.setRealname(null);
 				user.setHomepage(null);
 				user.setPassword(null);
+				user.setReminderPassword(null);
+				user.setReminderPasswordRequestDate(null);
 				user.setApiKey(null);
 				/*
 				 * FIXME: the settings and other things set in userDBManager.getUserDetails() are not cleared!

@@ -29,7 +29,9 @@
 		<result property="role"             column="role"          javaType="Role" />	
 		<result property="updatedBy"        column="updated_by"    javaType="string" />
 		<result property="updatedAt"	    column="updated_at"    javaType="date" />
-		<result property="toClassify"       column="to_classify"   javaType="integer" />			
+		<result property="toClassify"       column="to_classify"   javaType="integer" />
+		<result property="reminderPassword" column="tmp_password"  javaType="string" />
+		<result property="reminderPasswordRequestDate" column="tmp_request_date"  javaType="date" />			
 	</resultMap>
 	
 	<resultMap id="userWithPrediction" extends="user" class="user">
@@ -59,7 +61,7 @@
 	<sql id="commonUserAttributes">
 		user_name, user_email, user_homepage, user_realname, user_password, 
 		api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, 
-		reg_date, spammer, role, updated_by, updated_at, to_classify
+		reg_date, spammer, role, updated_by, updated_at, to_classify, tmp_password, tmp_request_date
 	</sql>
 
 	<sql id="userSettingsAttributes">
