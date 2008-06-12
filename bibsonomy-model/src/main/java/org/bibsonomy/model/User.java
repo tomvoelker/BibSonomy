@@ -152,6 +152,16 @@ public class User {
 
 	/** The mode of the classiefier (day or night) */ 
 	private String mode;
+	
+	/**
+	 * The temporary password the user can request when asking for a password reminder.
+	 */
+	private String reminderPassword;
+	/**
+	 * The time at which the user requested a password reminder.
+	 */
+	private Date reminderPasswordRequestDate; 
+	
 
 	/**
 	 * Constructor
@@ -179,6 +189,9 @@ public class User {
 		if (this.spammer == null) {
 			return false;
 		}
+		/*
+		 * FIXME: this constant should be defined elsewhere
+		 */
 		return 1 == this.spammer;
 	}
 
@@ -610,5 +623,37 @@ public class User {
 	 */
 	public void setMode(String mode) {
 		this.mode = mode;
+	}
+
+	/**
+	 * @return The temporary password the user can request when asking for a password reminder.
+	 * @see #getReminderPasswordRequestDate()
+	 */
+	public String getReminderPassword() {
+		return this.reminderPassword;
+	}
+
+	/** Set the temporary password the user can request when asking for a password reminder.
+	 * @param reminderPassword
+	 * @see #getReminderPasswordRequestDate()
+	 */
+	public void setReminderPassword(String reminderPassword) {
+		this.reminderPassword = reminderPassword;
+	}
+
+	/**
+	 * @return The time at which the user requested a password reminder.
+	 * @see #getReminderPassword()
+	 */
+	public Date getReminderPasswordRequestDate() {
+		return this.reminderPasswordRequestDate;
+	}
+
+	/** Set the time at which the user requested a password reminder.
+	 * @param reminderPasswordRequestDate
+	 * @see #setReminderPassword(String)
+	 */
+	public void setReminderPasswordRequestDate(Date reminderPasswordRequestDate) {
+		this.reminderPasswordRequestDate = reminderPasswordRequestDate;
 	}
 }
