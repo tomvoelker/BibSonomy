@@ -511,16 +511,16 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.usenix.UsenixScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_86">
-		<TestDescription>ISRL Url test 1</TestDescription>
+		<TestDescription>Langev Url test 1</TestDescription>
 		<URL>http://www.isrl.uiuc.edu/~amag/langev/paper/mitchener07middleEnglish.html</URL>
-		<BibFile>ISRLScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.uiuc.ISRLScraper</Scraper>
+		<BibFile>LangevScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.langev.LangevScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_87">
-		<TestDescription>ISRL Url test 2</TestDescription>
+		<TestDescription>Langev Url test 2</TestDescription>
 		<URL>http://www.isrl.uiuc.edu/~amag/langev/paper/arbib06mirrorSystemEditedBook.html</URL>
-		<BibFile>ISRLScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.uiuc.ISRLScraper</Scraper>
+		<BibFile>LangevScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.langev.LangevScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_88">
 		<TestDescription>Liebert Url test 1</TestDescription>
@@ -557,5 +557,23 @@
 		<URL>http://josaa.osa.org/abstract.cfm?uri=josaa-25-5-1084</URL>
 		<BibFile>OSAScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.osa.OSAScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_93">
+		<TestDescription>OSA Scraper url test</TestDescription>
+		<URL>http://josaa.osa.org/abstract.cfm?uri=josaa-25-5-1084</URL>
+		<BibFile>OSAScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.osa.OSAScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_94">
+		<TestDescription>PsyContent Scraper url test 1</TestDescription>
+		<URL>http://psycontent.metapress.com/content/wlr0r32161j4j150/?p=077ed4c087c541f8a7a3d80dc02f4290&amp;pi=0</URL>
+		<BibFile>PsyContentScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.psycontent.PsyContentScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_95">
+		<TestDescription>PsyContent Scraper url test 2</TestDescription>
+		<URL>http://psycontent.metapress.com/content/q8224w5531843g47/?p=f138d31a46fb4998ac311bbed983ee05&amp;pi=0</URL>
+		<BibFile>PsyContentScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.psycontent.PsyContentScraper</Scraper>
 	</URLTest>
 </test:Tests>

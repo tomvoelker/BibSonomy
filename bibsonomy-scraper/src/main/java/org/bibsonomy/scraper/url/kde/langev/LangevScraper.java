@@ -1,4 +1,4 @@
-package org.bibsonomy.scraper.url.kde.uiuc;
+package org.bibsonomy.scraper.url.kde.langev;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -13,7 +13,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * @author wbi
  * @version $Id$
  */
-public class ISRLScraper implements Scraper {
+public class LangevScraper implements Scraper {
 
 	private static final String info = "ISRL Scraper: This scraper parses a publication page from the <a href=\"http://www.isrl.uiuc.edu/\">University of Trier Digital Bibliography & Library Project</a> " +
 	"and extracts the adequate BibTeX entry. Author: KDE";

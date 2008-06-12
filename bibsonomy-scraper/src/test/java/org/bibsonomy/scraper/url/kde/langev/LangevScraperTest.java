@@ -1,4 +1,4 @@
-package org.bibsonomy.scraper.url.kde.uiuc;
+package org.bibsonomy.scraper.url.kde.langev;
 
 import static org.junit.Assert.assertTrue;
 
@@ -11,7 +11,7 @@ import org.junit.Test;
  * @author wbi
  * @version $Id$
  */
-public class ISRLScraperTest {
+public class LangevScraperTest {
 	
 	/**
 	 * starts URL test with id url_86
