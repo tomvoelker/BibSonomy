@@ -39,8 +39,10 @@ import org.bibsonomy.scraper.url.kde.opac.OpacScraper;
 import org.bibsonomy.scraper.url.kde.osa.OSAScraper;
 import org.bibsonomy.scraper.url.kde.plos.PlosScraper;
 import org.bibsonomy.scraper.url.kde.prola.ProlaScraper;
+import org.bibsonomy.scraper.url.kde.psycontent.PsyContentScraper;
 import org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper;
 import org.bibsonomy.scraper.url.kde.pubmedcentral.PubMedCentralScraper;
+import org.bibsonomy.scraper.url.kde.rsoc.RSOCScraper;
 import org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper;
 import org.bibsonomy.scraper.url.kde.spires.SpiresScraper;
 import org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper;
@@ -97,5 +99,7 @@ public class URLCompositeScraper extends CompositeScraper {
 		addScraper(new UsenixScraper());
 		addScraper(new IucrScraper());
 		addScraper(new OSAScraper());
+		addScraper(new PsyContentScraper());
+		addScraper(new RSOCScraper());
 	}
 }

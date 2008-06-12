@@ -576,4 +576,11 @@
 		<BibFile>PsyContentScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.psycontent.PsyContentScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_96">
+		<TestDescription>RSOC Scraper url test</TestDescription>
+		<URL>http://journals.royalsociety.org/content/0212768121k0k781/?p=a355f354e68144bdacc2a11a7b4129b9&amp;pi=1</URL>
+		<BibFile>RSOCScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.rsoc.RSOCScraper</Scraper>
+	</URLTest>
+
 </test:Tests>
