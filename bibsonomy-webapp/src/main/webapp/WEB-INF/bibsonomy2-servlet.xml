@@ -24,77 +24,77 @@
 		</property>
 		<property name="urlMap">
 			<map>
-				<entry key="/homepage/">
+				<entry key="/homepage">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="homepageController"/>
 					</bean>
 				</entry>
-				<entry key="/user/">
+				<entry key="/user">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="userPageController"/>
 					</bean>
 				</entry>				
-				<entry key="/group/">
+				<entry key="/group">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="groupPageController"/>
 					</bean>
 				</entry>	
-				<entry key="/viewable/">
+				<entry key="/viewable">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="viewablePageController"/>
 					</bean>
 				</entry>
-				<entry key="/tag/">
+				<entry key="/tag">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="tagPageController"/>
 					</bean>
 				</entry>
-				<entry key="/author/">
+				<entry key="/author">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="authorPageController"/>
 					</bean>
 				</entry>	
-				<entry key="/concept/">
+				<entry key="/concept">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="conceptPageController"/>
 					</bean>
 				</entry>	
-				<entry key="/friends/">
+				<entry key="/friends">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="friendsPageController"/>
 					</bean>
 				</entry>	
-				<entry key="/friend/">
+				<entry key="/friend">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="friendPageController"/>
 					</bean>
 				</entry>
-				<entry key="/bibtexkey/">
+				<entry key="/bibtexkey">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="bibtexkeyPageController"/>
 					</bean>
 				</entry>		
-				<entry key="/url/">
+				<entry key="/url">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="urlPageController"/>
 					</bean>
 				</entry>	
-				<entry key="/bibtex/">
+				<entry key="/bibtex">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="bibtexPageController"/>
 					</bean>
 				</entry>				 
-				<entry key="/search/">
+				<entry key="/search">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="searchPageController"/>
 					</bean>
 				</entry>
-				<entry key="/admin/">
+				<entry key="/admin">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="adminPageController"/>
 					</bean>
 				</entry>	
-				<entry key="/ajax/">
+				<entry key="/ajax">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="ajaxController"/>
 					</bean>
@@ -106,6 +106,20 @@
 						<property name="controllerBeanName" value="userRegistrationController"/>
 					</bean>
 				</entry>
+				<entry key="/actions/login">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="userLoginController"/>
+						<property name="allowedFields">
+							<list>
+								<value>username</value>
+								<value>password</value>
+								<value>referer</value>
+								<value>notice</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+
 				
 			</map>
 		</property>
@@ -260,21 +274,7 @@
 		<property name="userSettings" ref="userSettings"/>
 	</bean>	
 	
-	<bean id="requestHolder" class="org.bibsonomy.webapp.util.spring.factorybeans.Holder" scope="request"/>
 
-	<bean id="request" class="org.bibsonomy.webapp.util.spring.factorybeans.RequestFactoryBean" scope="request">
-		<property name="requestHolder"><ref bean="requestHolder"/></property>
-	</bean>
-	
-	<bean id="postLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.PostLogicFactoryBean" scope="request">
-		<property name="user" ref="loginUser"/>
-		<property name="dbSessionFactory" ref="dbSessionFactory"/>
-	</bean>
-	
-	<bean id="logic" class="org.bibsonomy.webapp.util.spring.factorybeans.LogicFactoryBean" scope="request">
-		<property name="user" ref="loginUser"/>
-		<property name="dbSessionFactory" ref="dbSessionFactory"/>
-	</bean>	
 	
 	<!-- 
 	    This bean provides admin access to the logic interface by predicting 
@@ -290,14 +290,54 @@
 	</bean>
 	
 	<!--  #################### factory beans #################### -->
+
+	<!-- provides access to the request for all controllers, which need it -->
+	<bean id="requestLogic" class="org.bibsonomy.webapp.util.RequestLogic" scope="request"/>
+
+	<!-- provides access to the response for all controllers, which need it -->
+	<bean id="responseLogic" class="org.bibsonomy.webapp.util.ResponseLogic" scope="request"/>
+
+	<!-- provides access to cookies -->
+	<bean id="cookieLogic" class="org.bibsonomy.webapp.util.CookieLogic" scope="request">
+		<property name="requestLogic" ref="requestLogic"/>
+		<property name="responseLogic" ref="responseLogic"/>
+		<!-- configuration of cookies -->
+		<property name="cookieAge" value="31536000"/><!-- one year (= 3600 * 24 * 365 seconds) -->
+		<property name="cookiePath" value="/"/>
+		<property name="cookieUser" value="_currUser"/>
+		<property name="cookieSpammer" value="_lPost"/>
+	</bean>
+
+	<!-- an instance of the currently logged in user -->
+	<bean id="loginUser" class="org.bibsonomy.webapp.util.spring.factorybeans.UserFactoryBean" scope="request">
+		<property name="requestLogic" ref="requestLogic"/>
+	</bean>	
 	
+	<!-- the settings of the currently logged in user -->
 	<bean id="userSettings" class="org.bibsonomy.webapp.util.spring.factorybeans.UserSettingsFactoryBean" scope="request">
 		<property name="user" ref="loginUser"/>
 	</bean>
-	
-	<bean id="loginUser" class="org.bibsonomy.webapp.util.spring.factorybeans.UserFactoryBean" scope="request">
-		<property name="request" ref="request"/>
+
+	<!-- provides access to the database for all controllers -->
+	<bean id="logic" class="org.bibsonomy.webapp.util.spring.factorybeans.LogicFactoryBean" scope="request">
+		<property name="user" ref="loginUser"/>
+		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 	</bean>	
+	
+	
+	<!--  #################### custom property editors #################### -->
+	<bean class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+		<property name="customEditors">
+			<map>
+				<entry key="java.net.URL">
+					<bean class="org.springframework.beans.propertyeditors.URLEditor"/>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	
+	
+	<!--  #################### interceptors #################### -->
 
 	<bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
 		<property name="paramName" value="lang" />
@@ -306,18 +346,27 @@
 	<bean id="requestWrapperContextInterceptor" class="org.bibsonomy.webapp.util.spring.RequestWrapperContextHandlerInterceptor">
 	</bean>
 	
+	
+	<!--  #################### locale stuff #################### -->
+	
 	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver"/>
 	
 	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
 		<property name="basenames" value="messages"/>
 	</bean>	
 	  
+
+	<!--  #################### view resolver #################### -->
+	
 	<bean id="viewResolver"	class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
 		<property name="prefix" value="/WEB-INF/jsp/" />
 		<property name="suffix" value=".jspx" />
 	</bean>
-		
+	
+
+	<!--  #################### imports #################### -->
+
     <import resource="bibsonomy2-servlet-actions.xml"/>	
     <import resource="bibsonomy2-servlet-fields.xml"/>    		
 
