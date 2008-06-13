@@ -160,27 +160,7 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 			 * 
 			 * check captcha
 			 */
-			final String challenge = command.getRecaptcha_challenge_field();
-			final String response = command.getRecaptcha_response_field();
-
-			if (org.bibsonomy.util.ValidationUtils.present(challenge) && org.bibsonomy.util.ValidationUtils.present(response)) {
-				/*
-				 * check captcha response
-				 */
-				try {
-					final ReCaptchaResponse res = reCaptcha.checkAnswer(hostInetAddress, challenge, response);
-
-					log.error("Error validating captcha response: " + res.getErrorMessage());
-
-					if (!res.isValid()) {
-						errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
-						errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha2");
-					}
-				} catch (final Exception e) {
-					log.fatal("Could not validate captcha response.", e);
-					throw new InternServerException("error.captcha");
-				}
-			}
+			checkCaptcha(command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), hostInetAddress);
 		}
 
 		/*
@@ -266,7 +246,6 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 		/*
 		 * proceed to the view
 		 */
-
 		if (adminAccess) {
 			/*
 			 * admin created a new user -> give feedback about successful creation of user
@@ -277,10 +256,43 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 
 		
 		/*
-		 * log user into system and present him a success view
+		 * log user into system ...
 		 */
 		cookieLogic.addUserCookie(registerUser.getName(), registerUser.getPassword());
+		/*
+		 * ... and present him a success view
+		 */
 		return new ExtendedRedirectView(successRedirect);
+	}
+
+	/**
+	 * Checks the captcha. If the response from the user does not match the captcha,
+	 * an error is added. 
+	 * 
+	 * @param command - the command associated with this request.
+	 * @param hostInetAddress - the address of the client
+	 * @throws InternServerException - if checking the captcha was not possible due to 
+	 * an exception. This could be caused by a non-rechable captcha-server. 
+	 */
+	private void checkCaptcha(final String challenge, final String response, final String hostInetAddress) throws InternServerException {
+		if (org.bibsonomy.util.ValidationUtils.present(challenge) && org.bibsonomy.util.ValidationUtils.present(response)) {
+			/*
+			 * check captcha response
+			 */
+			try {
+				final ReCaptchaResponse res = reCaptcha.checkAnswer(hostInetAddress, challenge, response);
+
+				log.error("Error validating captcha response: " + res.getErrorMessage());
+
+				if (!res.isValid()) {
+					errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
+					errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha2");
+				}
+			} catch (final Exception e) {
+				log.fatal("Could not validate captcha response.", e);
+				throw new InternServerException("error.captcha");
+			}
+		}
 	}
 
 	/** Creates the HTML string which displays the captcha.
