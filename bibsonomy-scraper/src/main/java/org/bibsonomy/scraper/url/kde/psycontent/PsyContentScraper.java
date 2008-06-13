@@ -95,8 +95,6 @@ public class PsyContentScraper implements Scraper{
 					// missing id
 					throw new ScrapingFailureException("ID for donwload link is missing.");
 				}
-			} else {
-				throw new PageNotSupportedException(PageNotSupportedException.DEFAULT_ERROR_MESSAGE + this.getClass().getName());
 			}
 		}
 		
