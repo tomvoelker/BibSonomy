@@ -32,7 +32,7 @@
       
       
             <!-- ###################### welcome ####################### -->
-            <h2><fmt:message key="register.success" ><fmt:param value="${command.registerUser.name}"/></fmt:message></h2>
+            <h2><fmt:message key="register.success" ><fmt:param value="${command.context.loginUser.name}"/></fmt:message></h2>
           
             <p><fmt:message key="register.welcome"/> <a href="/">${projectName}</a>! <fmt:message key="register.signedIn"/></p>
   
@@ -43,12 +43,9 @@
                 
                 <!-- ###################### buttons ####################### -->
                 <p>
-                  <buttons:myBibSonomy username="${command.registerUser.name}"/>  
+                  <buttons:myBibSonomy username="${command.context.loginUser.name}"/>  
                   <buttons:postBookmark/>
                   <buttons:postPublication/>
-                <!--  
-                   @include file="/boxes/button_postbibtex.jsp" 
-                   -->
                 </p>
                 <p style="font-size: 80%;">
                   <fmt:message key="register.internetExplorer"/> <a href="/help"><fmt:message key="register.internetExplorer.here"/></a>.
@@ -66,8 +63,8 @@
             <!-- ###################### confirmation ####################### -->
             <p><fmt:message key="register.confirmationMail"/></p>
             <table>
-                  <tr><td><fmt:message key="navi.username"/>:</td><td><c:out value="${command.registerUser.name}"/></td></tr>
-                  <tr><td><fmt:message key="user.settings.email"/>:</td><td><c:out value="${command.registerUser.email}"/></td></tr>
+                  <tr><td><fmt:message key="navi.username"/>:</td><td><c:out value="${command.context.loginUser.name}"/></td></tr>
+                  <tr><td><fmt:message key="user.settings.email"/>:</td><td><c:out value="${command.context.loginUser.email}"/></td></tr>
               </table>  
 
 
