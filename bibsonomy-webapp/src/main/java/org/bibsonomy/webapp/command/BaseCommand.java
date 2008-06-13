@@ -45,6 +45,8 @@ public class BaseCommand {
 	}
 
 	/**
+	 * TODO: use localization to resolve page titles
+	 * 
 	 * @param pageTitle the page title
 	 */
 	public void setPageTitle(String pageTitle) {
