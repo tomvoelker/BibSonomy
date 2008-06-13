@@ -152,7 +152,7 @@ public class User {
 
 	/** The mode of the classiefier (day or night) */ 
 	private String mode;
-	
+
 	/**
 	 * The temporary password the user can request when asking for a password reminder.
 	 */
@@ -161,7 +161,7 @@ public class User {
 	 * The time at which the user requested a password reminder.
 	 */
 	private Date reminderPasswordRequestDate; 
-	
+
 
 	/**
 	 * Constructor
@@ -227,14 +227,22 @@ public class User {
 	 * @return name
 	 */
 	public String getName() {
-		return name;
+		if (name != null) {
+			return name.toLowerCase();
+		} 
+		return name;	
+
 	}
 
 	/**
 	 * @param name
 	 */
 	public void setName(String name) {
-		this.name = name;
+		if (name != null) {
+			this.name = name.toLowerCase();
+		} else {
+			this.name = name;			
+		}
 	}
 
 	/**
@@ -540,7 +548,7 @@ public class User {
 	public void setRole(Role role) {
 		this.role = role;
 	}
-		
+
 	/**
 	 * @return Classification algorithm the user was classified with
 	 */

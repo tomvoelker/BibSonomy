@@ -47,7 +47,11 @@ public class Document {
 	 * @param userName
 	 */
 	public void setUserName(String userName) {
-		this.userName = userName;
+		if (userName != null) {
+			this.userName = userName.toLowerCase(); 
+		} else {
+			this.userName = userName;
+		}
 	}
 
 	/**
