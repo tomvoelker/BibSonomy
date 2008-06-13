@@ -5,49 +5,48 @@ import java.net.UnknownHostException;
 import java.util.Locale;
 import java.util.Properties;
 
-import javax.servlet.http.HttpServletRequest;
-
 import net.tanesha.recaptcha.ReCaptcha;
 import net.tanesha.recaptcha.ReCaptchaResponse;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.webapp.command.actions.UserRegistrationCommand;
-import org.bibsonomy.webapp.util.CookieHelper;
+import org.bibsonomy.webapp.util.CookieAware;
+import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestAware;
+import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.UserRegistrationValidator;
-import org.bibsonomy.webapp.view.RedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
-import org.springframework.web.servlet.support.RequestContext;
 
 /** This controller handles the registration of users.
  * 
  * @author rja
  * @version $Id$
  */
-public class UserRegistrationController implements MinimalisticController<UserRegistrationCommand>, ErrorAware, ValidationAwareController<UserRegistrationCommand>, RequestAware {
+public class UserRegistrationController implements MinimalisticController<UserRegistrationCommand>, ErrorAware, ValidationAwareController<UserRegistrationCommand>, RequestAware, CookieAware {
 	private static final Logger log = Logger.getLogger(UserRegistrationController.class);
 
 	protected LogicInterface logic;
 	protected LogicInterface adminLogic;
-	protected UserSettings userSettings;
 	private Errors errors = null;
 	private ReCaptcha reCaptcha;
-	private HttpServletRequest request;
+	private RequestLogic requestLogic;
+	private CookieLogic cookieLogic;
 
 	/**
 	 * @param logic - an instance of the logic interface.
@@ -61,6 +60,7 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 	 */
 	@Required
 	public void setAdminLogic(LogicInterface adminLogic) {
+		Assert.notNull(adminLogic, "The provided logic interface must not be null.");
 		this.adminLogic = adminLogic;
 		/*
 		 * Check, if logic has admin access.
@@ -95,7 +95,7 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 		/*
 		 * variables used throughout the method
 		 */
-		final Locale locale = new RequestContext(request).getLocale();
+		final Locale locale = requestLogic.getLocale();
 		final RequestWrapperContext context = command.getContext();
 		final User loginUser = context.getLoginUser();
 
@@ -105,17 +105,14 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 		 */
 		if (context.isUserLoggedIn() && !Role.ADMIN.equals(loginUser.getRole())) {
 			log.warn("User " + loginUser.getName() + " tried to access user registration without having role " + Role.ADMIN);
-			errors.reject("error.method_not_allowed");
-			command.setError("error.method_not_allowed");
-
-			return Views.ERROR;
+			throw new ValidationException("error.method_not_allowed");
 		}
 
 		/* Check cookies
 		 * 
 		 * Check, if user has cookies enabled (there should be at least a "JSESSIONID" cookie)
 		 */
-		if (!requestContainsCookies()) {
+		if (!cookieLogic.containsCookies()) {
 			errors.reject("error.cookies_required");
 		}
 
@@ -132,8 +129,8 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 		 * TODO: Does stripping the proxy work?
 		 * 
 		 */
-		final String inetAddress = request.getHeader("x-forwarded-for");
-		final String hostInetAddress = getHostInetAddress(inetAddress);
+		final String inetAddress = requestLogic.getInetAddress();
+		final String hostInetAddress = requestLogic.getHostInetAddress();
 
 
 		/* Check spamIP
@@ -145,7 +142,7 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 		 * if one of the conditions is true, the user is silently blocked and has to re-enter
 		 * the captcha again and again.
 		 */
-		if (InetAddressStatus.WRITEBLOCKED.equals(getInetAddressStatus(hostInetAddress)) || CookieHelper.hasSpammerCookie(request.getCookies())) {
+		if (InetAddressStatus.WRITEBLOCKED.equals(getInetAddressStatus(hostInetAddress)) || cookieLogic.hasSpammerCookie()) {
 			/*
 			 * Spammer found!
 			 * 
@@ -177,9 +174,7 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 					}
 				} catch (final Exception e) {
 					log.fatal("Could not validate captcha response.", e);
-					errors.reject("error.captcha");
-					command.setError("error.captcha");
-					return Views.ERROR;
+					throw new InternServerException("error.captcha");
 				}
 			}
 		}
@@ -248,12 +243,7 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 		/*
 		 * create user in DB
 		 */
-		try {
-			logic.createUser(registerUser);
-		} catch (final Exception e) {
-			command.setError("Could not register user: " + e); // FIXME: error code expected!
-			return Views.ERROR;
-		}
+		logic.createUser(registerUser);
 
 		/*
 		 * send registration confirmation mail
@@ -277,10 +267,14 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 		} 
 		/*
 		 * TODO: log user into system and present him a success view
+		 * 
+		 * 
+		 * Problem, when forwarding to UserLoginController: the command is not contained in the request.
 		 */
-		/*
-		 * TODO: migrate success view to Spring MVC
-		 */
+//		final UserLoginCommand userLoginCommand = new UserLoginCommand();
+//		userLoginCommand.setUsername(registerUser.getName());
+//		userLoginCommand.setPassword(registerUser.getPassword());
+//		return new UserLoginController().workOn(userLoginCommand);
 		return Views.REGISTER_USER_SUCCESS;
 
 
@@ -301,14 +295,6 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 		props.setProperty("lang", locale.getLanguage());
 
 		return reCaptcha.createRecaptchaHtml(null, props);
-	}
-
-	/** Checks, if the request contains any cookies.
-	 * 
-	 * @return
-	 */
-	private boolean requestContainsCookies() {
-		return request.getCookies() != null && request.getCookies().length > 0;
 	}
 
 	public Errors getErrors() {
@@ -334,27 +320,6 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 		return true;
 	}
 
-	/** 
-	 * From a comma-separated list of inetAddresses, returns the last entry
-	 * of the list.
-	 * 
-	 * @param inetAddress - a comma separated list of inetAddresses.
-	 * @return
-	 */
-	private String getHostInetAddress (final String inetAddress) {
-		if (inetAddress != null) {
-			final int proxyStartPos = inetAddress.indexOf(",");
-			if (log.isDebugEnabled()) log.debug("inetAddress = " + inetAddress + ", proxyStartPos = " + proxyStartPos);
-			if (proxyStartPos > 0) { 
-				return inetAddress.substring(0, proxyStartPos);
-			}
-			if (log.isDebugEnabled()) log.debug("inetAddress = " + inetAddress + " (cutted)");
-			return inetAddress;
-		}
-		return "";
-	}
-
-
 	/** Checks the status of the given inetAddress in the DB
 	 * @param inetAddress
 	 * @return
@@ -379,15 +344,26 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 	 * 
 	 * @param reCaptcha
 	 */
+	@Required
 	public void setReCaptcha(ReCaptcha reCaptcha) {
 		this.reCaptcha = reCaptcha;
 	}
 
-	/**
-	 * @see org.bibsonomy.webapp.util.RequestAware#setRequest(javax.servlet.http.HttpServletRequest)
+	/** The logic needed to access the request
+	 * @param requestLogic 
 	 */
-	public void setRequest(HttpServletRequest request) {
-		this.request = request;
+	@Required
+	public void setRequestLogic(RequestLogic requestLogic) {
+		this.requestLogic = requestLogic;
+	}
+
+	/** The logic needed to access the cookies.
+	 * 
+	 * @param cookieLogic
+	 */
+	@Required
+	public void setCookieLogic(CookieLogic cookieLogic) {
+		this.cookieLogic = cookieLogic;
 	}
 
 }
