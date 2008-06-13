@@ -28,7 +28,7 @@
         
         <jsp:attribute name="content">
 
-		  <div id="general">
+		  <div id="bookbox">
       
       
             <!-- ###################### welcome ####################### -->
@@ -68,13 +68,16 @@
               </table>  
 
 
+          </div>
+
+
+          <div id="bibbox">
+
             <!-- ###################### help graphic ####################### -->
             <!-- TODO: Bild erneuern, Größe korrekt angeben, lokalisieren -->
             <fmt:message key="register.dragButtons" var="dragButtons"/>
             <fmt:message key="image.register.success" var="successImage"/>
-            <img src="${successImage}" style="float:left;" width="70%" alt="${dragButtons}" title="${dragButtons}"/>
-
-
+            <img src="${successImage}" style="float:left;" alt="${dragButtons}" title="${dragButtons}"/>
 
           </div>
       
