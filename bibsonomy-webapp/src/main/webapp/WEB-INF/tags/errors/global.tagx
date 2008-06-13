@@ -9,7 +9,8 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
     <jsp:directive.attribute name="errors"  type="org.springframework.validation.Errors" required="true"/>
-  
+    <jsp:directive.attribute name="cssClass"  type="java.lang.String" required="false" description="The CSS class for the div the errors are written to"/>
+              <!-- this tag is neccessary, otherwise errors is empty!  -->
 	          <spring:hasBindErrors name="command">
 
                 <c:if test="${not empty errors.globalErrors}">
@@ -17,8 +18,9 @@
                 </c:if>
                 
                 <c:forEach var="error" items="${errors.globalErrors}">
-                  <div class="errmsg">
-                    <spring:message code="${error.code}" text="${error.defaultMessage}"/>
+                  <c:if test="${empty cssClass}"><c:set var="cssClass" value="errmsg"/></c:if>
+                  <div class="${cssClass}">
+                    <spring:message code="${error.code}" text="${error.defaultMessage}" arguments="${error.arguments}"/>
                   </div>
                 </c:forEach>
 
