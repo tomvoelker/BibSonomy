@@ -14,15 +14,18 @@
 	          <spring:hasBindErrors name="command">
 
                 <c:if test="${not empty errors.globalErrors}">
-                  <h3><fmt:message key="error"/></h3>
-                </c:if>
-                
-                <c:forEach var="error" items="${errors.globalErrors}">
-                  <c:if test="${empty cssClass}"><c:set var="cssClass" value="errmsg"/></c:if>
-                  <div class="${cssClass}">
-                    <spring:message code="${error.code}" text="${error.defaultMessage}" arguments="${error.arguments}"/>
+                  <div style="border:1px solid #006699; padding: 1em; margin-bottom: 1em;">
+                    <h3><fmt:message key="error"/></h3>
+
+                    <c:forEach var="error" items="${errors.globalErrors}">
+                      <c:if test="${empty cssClass}"><c:set var="cssClass" value="error"/></c:if>
+                      <div class="${cssClass}">
+                        <spring:message code="${error.code}" text="${error.defaultMessage}" arguments="${error.arguments}"/>
+                      </div>
+                    </c:forEach>
+                  
                   </div>
-                </c:forEach>
+                </c:if>
 
               </spring:hasBindErrors>
 

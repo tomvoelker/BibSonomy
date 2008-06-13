@@ -24,7 +24,7 @@
 		<jsp:attribute name="content">
     
           <div id="general">
-            <errors:global errors="${errors}" cssClass="error"/>
+            <errors:global errors="${errors}"/>
           </div>
             
 		</jsp:attribute>				

@@ -36,6 +36,7 @@
                 <fmt:message key="login.notice.welcome_1"/> <a style="font-weight: bold;" href="/">${projectName}</a>, <fmt:message key="login.notice.welcome_2"/>
                 <br/><br/>
                 <fmt:message key="${command.notice}"/>
+                <br/><br/>
                 <fmt:message key="login.notice.welcome_3"/> <a style="font-weight:bold;" href="/register"><fmt:message key="login.notice.welcome_4"/></a>.
               </div>
             </c:if>
@@ -67,11 +68,19 @@
               </table>
             </form:form>
 
-            <h2>Registration</h2>
-            <p>I am not registered, but want to do this <a href="/register">now</a>.</p>
+            <h2><fmt:message key="navi.register"/></h2>
+            <p>
+              <fmt:message key="login.notRegistered_1"/>
+              <c:out value=" "/>
+              <a href="/register"><fmt:message key="login.notRegistered_2"/></a>.
+            </p>
             
-            <h2>Lost Password</h2>
-            <p>I've lost my password. Please <a href="/reminder">send</a> me a new one.</p>
+            <h2><fmt:message key="login.lostPassword"/></h2>
+            <p>
+              <fmt:message key="login.lostPassword_1"/> 
+              <c:out value=" "/>
+              <a href="/reminder"><fmt:message key="login.lostPassword_2"/></a>
+            </p>
 
           </div>
       
