@@ -49,7 +49,7 @@
 				<lp:meta fieldName="description"/>
 				<link rel="alternate" type="application/atom+xml" title="${systemName} Blog - Atom" href="http://bibsonomy.blogspot.com/feeds/posts/default" />
 				<link rel="alternate" type="application/rss+xml"  title="${systemName} Blog - RSS"  href="http://bibsonomy.blogspot.com/feeds/posts/default?alt=rss" />
-				<title>${projectName} :: <c:out value="${pageTitle}"/></title>
+				<title>${projectName} :: <c:out value="${pageTitle}"/></title><!-- TODO: localize page titles! -->
 				<jsp:invoke fragment="headerExt"/>
 			</head>
 			<body>
@@ -98,7 +98,7 @@
 				
 				<!-- main content pane -->
 				<div id="outer">
-					<c:if test="${not command.context.userLoggedIn and empty command.error and displayIntroduction}">
+					<c:if test="${not command.context.userLoggedIn and errors.errorCount == 0 and displayIntroduction}">
 						<div id="general">
 							<p class="smalltext">
 								<fmt:message key="system.about">
