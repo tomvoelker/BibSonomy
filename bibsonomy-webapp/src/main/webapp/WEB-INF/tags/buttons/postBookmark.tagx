@@ -14,7 +14,7 @@
     <!-- NOTE: Tomcat converts &amp; into the symbol "ampersand" ... thus, we get invalid XHTML.
          Workaround: double &amp; to &amp;amp; -->
     <script type="text/javascript">
-      var myurl = "javascript:location.href='${projectHome}ShowBookmarkEntry?c=b&amp;amp;jump=yes&amp;amp;user=${fn:escapeXml(username)}&amp;amp;url='+encodeURIComponent(location.href)+'&amp;amp;extended='+";
+      var myurl = "javascript:location.href='${projectHome}ShowBookmarkEntry?c=b&amp;amp;jump=yes&amp;amp;url='+encodeURIComponent(location.href)+'&amp;amp;extended='+";
       if (window.getSelection) {
         myurl  += "encodeURIComponent(window.getSelection())";
       } else if (document.getSelection) {
