@@ -48,7 +48,11 @@ public class UserLoginCommand extends BaseCommand implements Serializable {
 		return this.username;
 	}
 	public void setUsername(String username) {
-		this.username = username;
+		if (username != null) {
+			this.username = username.toLowerCase();
+		} else {
+			this.username = username;
+		}
 	}
 	public String getPassword() {
 		return this.password;
