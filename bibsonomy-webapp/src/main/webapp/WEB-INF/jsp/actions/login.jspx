@@ -43,7 +43,7 @@
 
 
 
-            <form:form action="/actions/login" method="POST">
+            <form:form action="/login" method="POST">
 
               <errors:global errors="${errors}"/>             
 

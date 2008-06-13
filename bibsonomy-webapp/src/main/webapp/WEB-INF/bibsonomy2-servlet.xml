@@ -111,7 +111,7 @@
 						<property name="controllerBeanName" value="userRegistrationSuccessController"/>
 					</bean>
 				</entry>
-				<entry key="/actions/login">
+				<entry key="/login">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="userLoginController"/>
 						<property name="allowedFields">
