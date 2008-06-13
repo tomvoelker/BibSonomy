@@ -65,21 +65,14 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 	public View workOn(UserLoginCommand command) {
 		log.debug("workOn() called");
 
-		/*
-		 * TODO: may logged in users use this page? 
-		 */
-		
 		command.setPageTitle("login");
 		
 		
 		/*
-		 * remember referer to send user back to the page he's coming from
+		 * remember referer to send user back to the page she's coming from
 		 */
-		if (!ValidationUtils.present(command.getReferer())) {
-			command.setReferer(requestLogic.getReferer());
-			log.debug("Set referer to " + command.getReferer());
-		}
-		
+		setReferer(command);
+
 
 		/* Check cookies
 		 * 
@@ -94,44 +87,26 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 			return Views.LOGIN;
 		}
 
+		
+		/*
+		 * extract username and password
+		 */
 		final String username = command.getUsername();
 		final String password = command.getPassword();
 		final String hashedPassword = StringUtils.getMD5Hash(password);
 
 
-
 		/*
 		 * Get the hosts IP address.
-		 * 
-		 * Since we're typically behind a proxy, we have to strip the proxies address.
-		 * TODO: Does stripping the proxy work?
-		 * 
 		 */
 		final String inetAddress = requestLogic.getInetAddress();
 
 
-		final long remainingWaitSecondsIP   = grube.getRemainingWaitSeconds(inetAddress);
-		final long remainingWaitSecondsName = grube.getRemainingWaitSeconds(username);
 		/*
-		 * take the maximum
+		 * Check, if the user (or IP) has to wait some time for another login try.
 		 */
-		final long waitingSeconds = (remainingWaitSecondsIP > remainingWaitSecondsName ? remainingWaitSecondsIP : remainingWaitSecondsName);
-		/*
-		 * check in how many seconds the user is allowed to use this service 
-		 */
-		if (waitingSeconds > 5) {
-			/*
-			 * either ip or user name is blocked for more than 5 seconds from now --> log and send error page 
-			 */
-			log.warn("user " + username + " from IP " + inetAddress + " tried to login but still has to wait for max(" 
-					+ remainingWaitSecondsName + ", " + remainingWaitSecondsIP + ") = " + waitingSeconds + " seconds.");
-
-			/*
-			 * Send user error message.
-			 */
-			throw new ServiceUnavailableException("error.service_unavailable", waitingSeconds);
-		}
-
+		handleWaiting(username, inetAddress);
+		
 
 		/*
 		 * checking password of user
@@ -219,18 +194,84 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 
 
 		/*
-		 * redirect to referer or home page 
-		 * FIXME: if user is coming from /login, he's send back to login!
+		 * Redirect to the page the user is coming from. 
 		 */
-
-		if (ValidationUtils.present(command.getReferer())) {
-			return new ExtendedRedirectView(command.getReferer());
-		}
-		return new ExtendedRedirectView("/");
+		return new ExtendedRedirectView(command.getReferer());
 	}
 
 
+	/**
+	 * Sets the referer in the command using the referer from
+	 * the requests referer header. Contains also some logic 
+	 * to handle non-existing referer-headers. 
+	 * 
+	 * @param command
+	 */
+	private void setReferer(UserLoginCommand command) {
+		if (!ValidationUtils.present(command.getReferer())) {
+			/*
+			 * no referer set in command
+			 */
+			final String referer = requestLogic.getReferer();
+			/*
+			 * check referer from header
+			 */
+			if (ValidationUtils.present(referer)) {
+				/*
+				 * there is a referer -> set it in command
+				 */
+				command.setReferer(referer);
+				log.debug("Set referer to " + command.getReferer());
+			} else {
+				/*
+				 * There is no referer. This probably means, that /login has been
+				 * called the first time directly. After filling out the form and 
+				 * sending it to the controller, the referer header would contain
+				 * /login and this would be written into the referer attribute of
+				 * the command (which would still be empty). Hence, the user will
+				 * be redirected to /login after login ... which doesn't make any
+				 * sense. To circumvent this, we set here the redirect page to /. 
+				 */
+				command.setReferer("/");
+			}
+		}
+	}
 
+	/**
+	 * Check, if the user (or IP) has to wait until a login try is possible. 
+	 * 
+	 * @param username
+	 * @param inetAddress
+	 * @throws ServiceUnavailableException When the user (or IP) has to wait until another login try is possible.
+	 */
+	private void handleWaiting(final String username, final String inetAddress) throws ServiceUnavailableException {
+		/*
+		 * get the number of seconds the user has to wait
+		 */
+		final long remainingWaitSecondsIP   = grube.getRemainingWaitSeconds(inetAddress);
+		final long remainingWaitSecondsName = grube.getRemainingWaitSeconds(username);
+		/*
+		 * take the maximum
+		 */
+		final long waitingSeconds = (remainingWaitSecondsIP > remainingWaitSecondsName ? remainingWaitSecondsIP : remainingWaitSecondsName);
+		/*
+		 * check in how many seconds the user is allowed to use this service 
+		 */
+		if (waitingSeconds > 5) {
+			/*
+			 * either ip or user name is blocked for more than 5 seconds from now --> log and send error page 
+			 */
+			log.warn("user " + username + " from IP " + inetAddress + " tried to login but still has to wait for max(" 
+					+ remainingWaitSecondsName + ", " + remainingWaitSecondsIP + ") = " + waitingSeconds + " seconds.");
+
+			/*
+			 * Send user error message.
+			 */
+			throw new ServiceUnavailableException("error.service_unavailable", waitingSeconds);
+		}
+	}
+
+	
 	public Errors getErrors() {
 		return errors;
 	}
