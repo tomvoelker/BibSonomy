@@ -30,7 +30,7 @@
 
           <div id="general">
 
-            <form:form action="/actions/register/user" method="POST">
+            <form:form action="/register" method="POST">
 
               <errors:global errors="${errors}"/>             
 

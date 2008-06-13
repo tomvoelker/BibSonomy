@@ -101,12 +101,12 @@
 				</entry>
 				
 				<!-- actions  -->
-				<entry key="/actions/register/user">
+				<entry key="/register">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="userRegistrationController"/>
 					</bean>
 				</entry>
-				<entry key="/actions/register/user_success">
+				<entry key="/register_success">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="userRegistrationSuccessController"/>
 					</bean>
