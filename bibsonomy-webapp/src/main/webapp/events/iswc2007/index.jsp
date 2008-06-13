@@ -40,7 +40,7 @@
       workshops, together with the keywords (tags) that authors have
       associated with their papers or that show up in the paper titles.
 
-      <b>Want to organize your conference visit? Just <a href="/events/iswc2007/register.jsp">get a BibSonomy account</a> and
+      <b>Want to organize your conference visit? Just <a href="/register">get a BibSonomy account</a> and
       start copying and annoting the papers you are interested in!</b>
 
     </div>
@@ -48,7 +48,7 @@
     <div class="linkbox">
         <a href="/help/basic">What is ${projectName}?</a>
         <a href="/help/tutorials">Tutorials</a>
-        <a href="/events/iswc2007/register.jsp">Get a ${projectName} account!</a>
+        <a href="/register">Get a ${projectName} account!</a>
     </div>
 
 

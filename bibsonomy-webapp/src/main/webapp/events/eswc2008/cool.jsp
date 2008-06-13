@@ -23,7 +23,7 @@
     <h2>all tags of all users in the group ${requGroup}</h2>
     Here you can see a live view of all tags used by the users of the 
     <a href="/group/<c:out value='${requGroup}'/>">ESWC 2008 group</a>. 
-    Feel free to <a href="/events/eswc2008/register.jsp">join</a> the group, 
+    Feel free to <a href="/register">join</a> the group, 
     such that your tags become a part of it. 
   </center>
 

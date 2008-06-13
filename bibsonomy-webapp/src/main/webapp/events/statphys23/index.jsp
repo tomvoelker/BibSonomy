@@ -15,7 +15,7 @@
 <div class="linkbox">
     <a href="/help/basic">What is BibSonomy?</a>
     <a href="/help/tutorials">Tutorials</a>
-    <a href="/events/statphys23/register.jsp">Get a BibSonomy account!</a>
+    <a href="/register">Get a BibSonomy account!</a>
 </div>
 
 
