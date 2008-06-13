@@ -10,18 +10,19 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.httpclient.HttpStatus;
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.webapp.command.BaseCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
+import org.bibsonomy.webapp.exceptions.ServiceUnavailableException;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
+import org.bibsonomy.webapp.util.ResponseLogic;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.controller.conversion.ServletRequestAttributeDataBinder;
-import org.bibsonomy.webapp.util.spring.factorybeans.Holder;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.BindException;
@@ -99,7 +100,8 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 	 * @see org.springframework.web.servlet.mvc.AbstractController#handleRequestInternal(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		((Holder<HttpServletRequest>) getApplicationContext().getBean("requestHolder")).setObj(request); // hack but thats springs fault
+		((RequestLogic) getApplicationContext().getBean("requestLogic")).setRequest(request); // hack but thats springs fault
+		((ResponseLogic) getApplicationContext().getBean("responseLogic")).setResponse(response); // hack but thats springs fault
 		final MinimalisticController<T> controller = (MinimalisticController<T>) getApplicationContext().getBean(controllerBeanName);
 		/**
 		 * Controller is put into request.
@@ -153,23 +155,32 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 			view = controller.workOn(command);
 		}
 		catch (MalformedURLSchemeException malformed) {
-			response.setStatus(HttpStatus.SC_NOT_FOUND);
-			command.setError(malformed.getMessage());
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			errors.reject(malformed.getMessage());
 			LOGGER.error(malformed);
 			view = Views.ERROR;
 		}
 		catch (ValidationException notValid) {
-			response.setStatus(HttpStatus.SC_UNAUTHORIZED);
-			command.setError(notValid.getMessage());
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			errors.reject(notValid.getMessage());
 			LOGGER.error(notValid);
 			view = Views.ERROR;
 		}
+		catch (ServiceUnavailableException e) {
+			response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+			response.setHeader("Retry-After", Long.toString(e.getRetryAfter()));
+			errors.reject(e.getMessage(), new Object[]{e.getRetryAfter()}, "Service unavailable");
+			LOGGER.warn(e);
+			view = Views.ERROR;
+		}
 		catch (Exception ex) {
-			response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
-			command.setError(ex.getMessage());
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			errors.reject(ex.getMessage());
 			LOGGER.error(ex);
 			view = Views.ERROR;
 		}
+		
+		LOGGER.debug("Exception catching block passed, putting comand+errors into model.");
 		
 		final Map<String, Object> model = new HashMap<String, Object>();
 		model.put(getCommandName(), command);
@@ -179,6 +190,19 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 		 */
 		model.putAll(errors.getModel());
 		
+		LOGGER.debug("Returning model and view.");
+		
+		/**
+		 * If the view is already a Spring view, use it directly.
+		 * The primal reason for the this workaround is, that Spring's RedirctView
+		 * automatically appends the model parameters to each redirected URL. This
+		 * can only be avoided by calling setExposeModelAttributes(false) on the 
+		 * RedirectView. Hence, we must directly create a redirect view instead of 
+		 * using a "redirect:..." URL.  
+		 */
+		if (org.springframework.web.servlet.View.class.isAssignableFrom(view.getClass())) {
+			return new ModelAndView((org.springframework.web.servlet.View) view, model);
+		}
 		return new ModelAndView(view.getName(), model);			
 	}
 
