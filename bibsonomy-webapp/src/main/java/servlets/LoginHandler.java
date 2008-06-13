@@ -24,6 +24,7 @@ import org.bibsonomy.webapp.util.TeerGrube;
 import beans.LoginHandlerBean;
 import resources.Resource;
 
+@Deprecated
 public class LoginHandler extends HttpServlet {
 
 	private static final Logger log = Logger.getLogger(LoginHandler.class);
