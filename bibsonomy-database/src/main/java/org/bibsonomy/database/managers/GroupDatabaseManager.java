@@ -96,7 +96,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	public Group getGroupMembers(final String authUser, final String groupname, final DBSession session) {
 		log.debug("getGroupMembers " + groupname);
 		Group group;
-		if ("friends".equals(groupname) == true) {
+		if ("friends".equals(groupname)) {
 			group = GroupUtils.getFriendsGroup();
 			group.setUsers(this.generalDb.getFriendsOfUser(authUser,session));
 			return group;

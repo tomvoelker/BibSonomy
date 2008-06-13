@@ -147,7 +147,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void isAllowedToAccessUsersOrGroupDocuments() {
 		User loginUser = new User("Johnny_B");
 		// user page: own posts -> yes
-		assertTrue(this.permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.USER, "Johnny_B", this.dbSession));
+		assertTrue(this.permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.USER, "johnny_b", this.dbSession));
 		// user page: posts of other users -> no
 		assertFalse(this.permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.USER, "Berthold_B", this.dbSession));
 		// null user -> no

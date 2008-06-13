@@ -153,7 +153,7 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = openSession();
 		try {
 			final User user = this.userDBManager.getUserDetails(userName, session);
-			if (! (userName.equals(this.loginUser.getName()) || Role.ADMIN.equals(this.loginUser.getRole()))) {
+			if (! (user.getName().equals(this.loginUser.getName()) || Role.ADMIN.equals(this.loginUser.getRole()))) {
 				/*
 				 * only the user himself or the admin gets the full details
 				 */
@@ -171,7 +171,7 @@ public class DBLogic implements LogicInterface {
 			/*
 			 * FIXME: may other people see which group I'm a member of?
 			 */
-			user.setGroups(this.groupDBManager.getGroupsForUser(userName, true, session));
+			user.setGroups(this.groupDBManager.getGroupsForUser(user.getName(), true, session));
 			return user;
 		} finally {
 			session.close();
@@ -343,7 +343,8 @@ public class DBLogic implements LogicInterface {
 	 * Removes the given user.
 	 */
 	public void deleteUser(final String userName) {
-
+		// TODO: take care of toLowerCase()! 
+		
 		throw new UnsupportedOperationException("not yet available");
 
 //		if ((this.loginUserName == null) || (this.loginUserName.equals(userName) == false)) {
@@ -376,6 +377,7 @@ public class DBLogic implements LogicInterface {
 	 * Removes an user from a group.
 	 */
 	public void removeUserFromGroup(final String groupName, final String userName) {
+		// TODO: take care of toLowerCase()!
 		// FIXME: IMPORTANT: not everybody may do this!
 		// better do nothing than anything horribly wrong:
 		throw new UnsupportedOperationException("not yet available");
@@ -392,7 +394,8 @@ public class DBLogic implements LogicInterface {
 	 * from the user.
 	 */
 	public void deletePost(final String userName, final String resourceHash) {
-		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(userName) == false)) {
+		final String lowerCaseUserName = userName.toLowerCase();
+		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(lowerCaseUserName) == false)) {
 			throw new ValidationException("You are not authorized to perform the requested operation");
 		}
 
@@ -401,7 +404,7 @@ public class DBLogic implements LogicInterface {
 			boolean resourceFound = false;
 			// TODO would be nice to know about the resourcetype or the instance behind this resourceHash
 			for (final CrudableContent<? extends Resource, ? extends GenericParam> man : this.allDatabaseManagers.values()) {
-				if (man.deletePost(userName, resourceHash, session) == true) {
+				if (man.deletePost(lowerCaseUserName, resourceHash, session) == true) {
 					resourceFound = true;
 					break;
 				}
@@ -507,7 +510,7 @@ public class DBLogic implements LogicInterface {
 	 * Adds an existing user to an existing group.
 	 */
 	public void addUserToGroup(final String groupName, final String userName) {
-
+		// TODO: take care of toLowerCase()!
 		throw new UnsupportedOperationException("not yet available");
 
 //		final DBSession session = openSession();
@@ -733,6 +736,7 @@ public class DBLogic implements LogicInterface {
 	 * Returns the named document for the given userName and resourceHash.
 	 */
 	public Document getDocument(final String userName, final String resourceHash, final String fileName) {
+		final String lowerCaseUserName = userName.toLowerCase();
 		this.ensureLoggedIn();
 
 		final DBSession session = openSession();
@@ -741,7 +745,7 @@ public class DBLogic implements LogicInterface {
 			 * we just forward this task to getPostDetails from the 
 			 * BibTeXDatabaseManager and extract the documents.
 			 */
-			final Post<BibTex> post = this.bibtexDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
+			final Post<BibTex> post = this.bibtexDBManager.getPostDetails(this.loginUser.getName(), resourceHash, lowerCaseUserName, UserUtils.getListOfGroupIDs(this.loginUser), session);
 			if (post != null) {
 				for (final Document document : post.getResource().getDocuments()) {
 					if (document.getFileName().equals(fileName)) {
@@ -761,8 +765,9 @@ public class DBLogic implements LogicInterface {
 	 * @param fileName
 	 */
 	public void deleteDocument(final String userName, final String resourceHash, final String fileName){
+		final String lowerCaseUserName = userName.toLowerCase();
 		this.ensureLoggedIn();
-		this.permissionDBManager.ensureWriteAccess(this.loginUser, userName);
+		this.permissionDBManager.ensureWriteAccess(this.loginUser, lowerCaseUserName);
 
 		final DBSession session = openSession();
 		try {
@@ -770,7 +775,7 @@ public class DBLogic implements LogicInterface {
 			final DocumentParam docParam = new DocumentParam();
 			docParam.setFileName(fileName);
 			docParam.setResourceHash(resourceHash);
-			docParam.setUserName(userName);
+			docParam.setUserName(lowerCaseUserName);
 
 			// FIXME: remove deprecated method
 			final boolean valid = this.docDBManager.validateResource(docParam, session);
@@ -789,7 +794,7 @@ public class DBLogic implements LogicInterface {
 		} finally {
 			session.close();
 		}
-		log.info("API - Document deleted: " + fileName + " from User: " + userName);
+		log.info("API - Document deleted: " + fileName + " from User: " + lowerCaseUserName);
 	}
 
 	public void addInetAddressStatus(final InetAddress address, final InetAddressStatus status) {

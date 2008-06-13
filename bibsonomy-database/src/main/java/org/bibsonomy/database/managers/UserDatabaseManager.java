@@ -65,7 +65,8 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @return user object
 	 */
 	public User getUserDetails(final String username, final DBSession session) {
-		User user = this.queryForObject("getUserDetails", username, User.class, session);
+		final String lowerCaseUsername = username.toLowerCase();
+		User user = this.queryForObject("getUserDetails", lowerCaseUsername, User.class, session);
 		if (user == null) {
 			/*
 			 * user does not exist -> create an empty (=unknown) user
@@ -75,12 +76,12 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			/*
 			 * user exists: get number of posts in his basket
 			 */
-			final int numPosts = this.basketDb.getNumBasketEntries(username, session);
+			final int numPosts = this.basketDb.getNumBasketEntries(lowerCaseUsername, session);
 			user.getBasket().setNumPosts(numPosts);
 			/*
 			 * get the settings of the user
 			 */
-			user.setSettings(this.getUserSettings(username, session));
+			user.setSettings(this.getUserSettings(lowerCaseUsername, session));
 		}
 		return user;
 	}
