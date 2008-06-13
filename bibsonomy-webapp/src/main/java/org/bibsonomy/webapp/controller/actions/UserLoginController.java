@@ -96,6 +96,8 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 
 		final String username = command.getUsername();
 		final String password = command.getPassword();
+		final String hashedPassword = StringUtils.getMD5Hash(password);
+
 
 
 		/*
@@ -135,7 +137,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		 * checking password of user
 		 */
 		final User user = adminLogic.getUserDetails(username);
-		if (!StringUtils.getMD5Hash(password).equals(user.getPassword())) {
+		if (!hashedPassword.equals(user.getPassword())) {
 			/*
 			 * passwords do not match -> check password from reminder
 			 */
@@ -202,7 +204,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		/*
 		 * add authentication cookie to response
 		 */
-		cookieLogic.addUserCookie(username, password);
+		cookieLogic.addUserCookie(username, hashedPassword);
 
 		/*
 		 * flag spammers with a cookie
@@ -218,6 +220,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 
 		/*
 		 * redirect to referer or home page 
+		 * FIXME: if user is coming from /login, he's send back to login!
 		 */
 
 		if (ValidationUtils.present(command.getReferer())) {

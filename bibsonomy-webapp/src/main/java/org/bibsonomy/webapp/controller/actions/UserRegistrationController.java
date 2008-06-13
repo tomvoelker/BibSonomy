@@ -16,6 +16,7 @@ import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.MailUtils;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.actions.UserRegistrationCommand;
 import org.bibsonomy.webapp.util.CookieAware;
 import org.bibsonomy.webapp.util.CookieLogic;
@@ -28,6 +29,7 @@ import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.UserRegistrationValidator;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.Assert;
@@ -39,6 +41,12 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class UserRegistrationController implements MinimalisticController<UserRegistrationCommand>, ErrorAware, ValidationAwareController<UserRegistrationCommand>, RequestAware, CookieAware {
+	
+	/**
+	 * After successful registration, the user is redirected to this page. 
+	 */
+	private String successRedirect = "/actions/register/user_success";
+
 	private static final Logger log = Logger.getLogger(UserRegistrationController.class);
 
 	protected LogicInterface logic;
@@ -124,10 +132,6 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 
 		/*
 		 * Get the hosts IP address.
-		 * 
-		 * Since we're typically behind a proxy, we have to strip the proxies address.
-		 * TODO: Does stripping the proxy work?
-		 * 
 		 */
 		final String inetAddress = requestLogic.getInetAddress();
 		final String hostInetAddress = requestLogic.getHostInetAddress();
@@ -241,6 +245,11 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 		registerUser.setIPAddress(inetAddress);
 
 		/*
+		 * hash password of user before storing it into database
+		 */
+		registerUser.setPassword(StringUtils.getMD5Hash(registerUser.getPassword()));
+		
+		/*
 		 * create user in DB
 		 */
 		logic.createUser(registerUser);
@@ -264,22 +273,14 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 			 */
 			command.setRegisterUser(logic.getUserDetails(registerUser.getName()));
 			return Views.REGISTER_USER_SUCCESS_ADMIN; 
-		} 
+		}
+
+		
 		/*
-		 * TODO: log user into system and present him a success view
-		 * 
-		 * 
-		 * Problem, when forwarding to UserLoginController: the command is not contained in the request.
+		 * log user into system and present him a success view
 		 */
-//		final UserLoginCommand userLoginCommand = new UserLoginCommand();
-//		userLoginCommand.setUsername(registerUser.getName());
-//		userLoginCommand.setPassword(registerUser.getPassword());
-//		return new UserLoginController().workOn(userLoginCommand);
-		return Views.REGISTER_USER_SUCCESS;
-
-
-
-
+		cookieLogic.addUserCookie(registerUser.getName(), registerUser.getPassword());
+		return new ExtendedRedirectView(successRedirect);
 	}
 
 	/** Creates the HTML string which displays the captcha.
@@ -364,6 +365,13 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 	@Required
 	public void setCookieLogic(CookieLogic cookieLogic) {
 		this.cookieLogic = cookieLogic;
+	}
+
+	/** After successful registration, the user is redirected to this page.
+	 * @param successRedirect
+	 */
+	public void setSuccessRedirect(String successRedirect) {
+		this.successRedirect = successRedirect;
 	}
 
 }

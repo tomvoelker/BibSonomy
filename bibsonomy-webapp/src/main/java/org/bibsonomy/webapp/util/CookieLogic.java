@@ -108,10 +108,10 @@ public class CookieLogic implements RequestAware, ResponseAware {
 	 * The cookie contains the username and the hashed password - separated by whitespace (%20).
 	 * 
 	 * @param username - the user's name.
-	 * @param password - the user's password.
+	 * @param passwordHash - the user's password, already MD5-hashed!
 	 */
-	public void addUserCookie(final String username, final String password) {
-		addCookie(cookieUser, username + "%20" + StringUtils.getMD5Hash(password));
+	public void addUserCookie(final String username, final String passwordHash) {
+		addCookie(cookieUser, username + "%20" + passwordHash);
 	}
 	
 	/** Adds a cookie to the response. Sets default values for path and maxAge. 

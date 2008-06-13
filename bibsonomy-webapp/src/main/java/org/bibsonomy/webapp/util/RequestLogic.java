@@ -51,6 +51,10 @@ public class RequestLogic {
 	 * first host.
 	 * 
 	 * FIXME: check for correct implementation!
+	 *  
+	 * Since we're typically behind a proxy, we have to strip the proxies address.
+	 * TODO: Does stripping the proxy work?
+	 * 
 	 * 
 	 * @see #getInetAddress()
 	 * @return The extracted address of the host.
