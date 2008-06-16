@@ -28,7 +28,7 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 	private ChainElement<L, P> next;
 
 	/**
-	 * abstract base constructs for a chain element (surprise, surprise)
+	 * Constructor
 	 */
 	public ChainElement() {
 		this.generalDb = GeneralDatabaseManager.getInstance();
@@ -47,11 +47,26 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 	}
 
 	public final List<L> perform(final P param, final DBSession session) {
+		return this.perform(param, session, null);
+	}
+
+	/**
+	 * @param param
+	 * @param session
+	 * @param chainStatus
+	 * @return list of L's
+	 * @see #perform(GenericParam, DBSession)
+	 * @see ChainStatus
+	 * 
+	 * XXX: This method is only interesting for unit testing the chain, i.e. if
+	 * you want to know which element executed its <code>handle</code> method.
+	 */
+	public final List<L> perform(final P param, final DBSession session, final ChainStatus chainStatus) {
 		if (this.canHandle(param)) {
-			log.debug(this.getClass().getSimpleName());
+			if (chainStatus != null) chainStatus.setChainElement(this);
 			return this.handle(param, session);
 		}
-		if (this.next != null) return this.next.perform(param, session);
+		if (this.next != null) return this.next.perform(param, session, chainStatus);
 		throw new RuntimeException("Can't handle request.");
 	}
 
