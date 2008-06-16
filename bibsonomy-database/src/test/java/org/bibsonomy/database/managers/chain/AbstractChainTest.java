@@ -3,6 +3,7 @@ package org.bibsonomy.database.managers.chain;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChain;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChain;
+import org.bibsonomy.database.managers.chain.concept.ConceptChain;
 import org.bibsonomy.database.managers.chain.tag.TagChain;
 import org.junit.After;
 import org.junit.Before;
@@ -19,6 +20,8 @@ public abstract class AbstractChainTest extends AbstractDatabaseManagerTest {
 	protected BookmarkChain bookmarkChain;
 	protected BibTexChain bibtexChain;
 	protected TagChain tagChain;
+	protected ConceptChain conceptChain;
+	protected ChainStatus chainStatus;
 
 	@Override
 	@Before
@@ -27,6 +30,8 @@ public abstract class AbstractChainTest extends AbstractDatabaseManagerTest {
 		this.bookmarkChain = new BookmarkChain();
 		this.bibtexChain = new BibTexChain();
 		this.tagChain = new TagChain();
+		this.conceptChain = new ConceptChain();
+		this.chainStatus = new ChainStatus();
 	}
 
 	@Override
@@ -36,5 +41,7 @@ public abstract class AbstractChainTest extends AbstractDatabaseManagerTest {
 		this.bookmarkChain = null;
 		this.bibtexChain = null;
 		this.tagChain = null;
+		this.conceptChain = null;
+		this.chainStatus = null;
 	}
 }
