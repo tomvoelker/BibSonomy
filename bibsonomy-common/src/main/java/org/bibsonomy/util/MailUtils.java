@@ -17,9 +17,8 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
 
-
 /**
- * @author rja
+ * @author Robert Jäschke
  * @version $Id$
  */
 public class MailUtils {

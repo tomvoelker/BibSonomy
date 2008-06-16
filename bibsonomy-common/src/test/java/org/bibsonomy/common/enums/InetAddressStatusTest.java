@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
- * @author rja
+ * @author Robert Jäschke
  * @version $Id$
  */
 public class InetAddressStatusTest {

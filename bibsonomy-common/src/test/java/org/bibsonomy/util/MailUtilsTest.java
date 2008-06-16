@@ -13,7 +13,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * @author rja
+ * @author Robert Jäschke
  * @version $Id$
  */
 public class MailUtilsTest {
@@ -26,31 +26,30 @@ public class MailUtilsTest {
 		JNDITestProjectParams.bind();
 	}
 
-	/** 
+	/**
 	 * Test instantiation.
 	 * 
 	 * @throws Exception
 	 */
 	@Test
 	public void testInstantiation() throws Exception {
-		assertNotNull(MailUtils.getInstance());		
+		assertNotNull(MailUtils.getInstance());
 	}
-	
+
 	/**
 	 * Test, if sending registration mails works.
 	 */
 	@Test
 	@Ignore
 	public void testSendRegistrationMail() {
-		try {			
+		try {
 			MailUtils utils = MailUtils.getInstance();
 			assertTrue(utils.sendRegistrationMail("testuser", "devnull@cs.uni-kassel.de", "255.255.255.255", new Locale("en")));
 		} catch (Exception e) {
 			fail();
 		}
 	}
-	
-	
+
 	/**
 	 * do after testing
 	 */
@@ -58,5 +57,4 @@ public class MailUtilsTest {
 	public void shutdown() {
 		JNDITestProjectParams.unbind();
 	}
-	
 }

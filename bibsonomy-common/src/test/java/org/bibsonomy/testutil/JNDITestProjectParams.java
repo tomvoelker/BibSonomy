@@ -8,16 +8,15 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.log4j.Logger;
 import org.mockejb.jndi.MockContextFactory;
 
-/** Loads a project.properties file and binds all properties to JNDI.
- * @author rja
+/**
+ * Loads a project.properties file and binds all properties to JNDI.
+ * 
+ * @author Robert Jäschke
  * @version $Id$
  */
 public final class JNDITestProjectParams {
-
-	private static final Logger log = Logger.getLogger(JNDITestProjectParams.class);
 
 	/**
 	 * Don't create instances of this class - use the static methods instead.
@@ -26,12 +25,12 @@ public final class JNDITestProjectParams {
 	}
 
 	/**
-	 * Main method: read configuration file 'project.properties' and register 
+	 * Main method: read configuration file 'project.properties' and register
 	 * properties via JNDI.
 	 */
 	public static final void bind() {
 		final Context ctx;
-		final Properties props = new Properties();		
+		final Properties props = new Properties();
 
 		try {
 			/*
@@ -42,9 +41,9 @@ public final class JNDITestProjectParams {
 			 * create Mock JNDI context
 			 */
 			MockContextFactory.setAsInitial();
-			
+
 			ctx = new InitialContext();
-			
+
 			/*
 			 * FIXME: this seems to work, but why?
 			 */
@@ -54,14 +53,15 @@ public final class JNDITestProjectParams {
 			 * copy all properties into context
 			 */
 			final Set<Object> keys = props.keySet();
-			for (final Object o: keys) {
-				final String key = (String)o;
+			for (final Object o : keys) {
+				final String key = (String) o;
 				ctx.bind(key, props.getProperty(key));
 			}
-			
+
 		} catch (IOException ex) {
 			throw new RuntimeException(ex);
-		} catch (NamingException ex) {ex.printStackTrace();
+		} catch (NamingException ex) {
+			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		}
 
@@ -80,5 +80,4 @@ public final class JNDITestProjectParams {
 	public static void unbind() {
 		MockContextFactory.revertSetAsInitial();
 	}
-
 }
