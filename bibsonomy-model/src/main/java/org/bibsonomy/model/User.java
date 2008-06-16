@@ -227,11 +227,7 @@ public class User {
 	 * @return name
 	 */
 	public String getName() {
-		if (name != null) {
-			return name.toLowerCase();
-		} 
-		return name;	
-
+		return this.name;	
 	}
 
 	/**
