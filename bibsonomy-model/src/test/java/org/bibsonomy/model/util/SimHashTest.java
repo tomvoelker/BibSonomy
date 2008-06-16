@@ -8,6 +8,11 @@ import org.junit.Test;
 
 /**
  * Testcase for the SimHash class
+ * 
+ * @author Dominik Benz
+ * @author Jens Illig
+ * @author Christian Schenk
+ * @version $Id$
  */
 public class SimHashTest {
 

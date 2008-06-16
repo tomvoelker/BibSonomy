@@ -229,7 +229,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * 
 	 * @param address - the address for which we want to set the status
 	 * @param status  - the status of the address (e.g. "blocked") 
-	 * @author rja
+	 * @author Robert Jäschke
 	 */
 	public void addInetAddressStatus (InetAddress address, InetAddressStatus status);
 
@@ -238,7 +238,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * 
 	 * @param address - the InetAddress which status to get
 	 * @return The status of the given address.
-	 * @author rja
+	 * @author Robert Jäschke
 	 */
 	public InetAddressStatus getInetAddressStatus (InetAddress address);
 
@@ -248,7 +248,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * for {@link #addInetAddressStatus(InetAddress, InetAddressStatus)}.
 	 * 
 	 * @param address - the InetAddress which should be removed from the status list.
-	 * @author rja
+	 * @author Robert Jäschke
 	 */
 	public void deleteInetAdressStatus (InetAddress address);
 
