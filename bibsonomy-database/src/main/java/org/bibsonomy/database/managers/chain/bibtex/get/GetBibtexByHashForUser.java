@@ -13,14 +13,13 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 
 /**
+ * Returns a list of BibTex's for a given hash and a user.
+ * 
  * @author Miranda Grahl
  * @version $Id$
  */
 public class GetBibtexByHashForUser extends BibTexChainElement {
 
-	/**
-	 * return a list of bibtex by a given hash and a logged user.
-	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		return this.db.getBibTexByHashForUser(param.getUserName(), param.getHash(), param.getRequestedUserName(), param.getGroups(), session, HashID.getSimHash(param.getSimHash()));

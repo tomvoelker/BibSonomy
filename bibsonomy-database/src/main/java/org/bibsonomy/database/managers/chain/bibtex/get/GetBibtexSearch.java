@@ -12,14 +12,13 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 
 /**
- * @author Miranda Grahl
+ * Returns a list of BibTex's for a given search.
+ * 
+ * @author Dominik Benz
  * @version $Id$
  */
 public class GetBibtexSearch extends BibTexChainElement {
 
-	/**
-	 * return all popular bibtex entries of bibSonomy.
-	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		return this.db.getBibTexSearch(param, session);

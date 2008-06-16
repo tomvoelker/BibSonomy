@@ -20,13 +20,13 @@ import org.bibsonomy.model.enums.Order;
 public class GetBibtexByConceptForGroup extends BibTexChainElement {
 
 	@Override
-	protected List<Post<BibTex>> handle(BibTexParam param, DBSession session) { 
+	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) { 
 		return this.db.getBibTexByConceptForGroup(param, session);
 	}
-	
+
 	@Override
-	protected boolean canHandle(BibTexParam param) {
-		return 	present(param.getGrouping() == GroupingEntity.GROUP) &&
+	protected boolean canHandle(final BibTexParam param) {
+		return  param.getGrouping() == GroupingEntity.GROUP &&
 				!present(param.getBibtexKey()) && 
 				present(param.getRequestedGroupName()) && 
 				present(param.getTagIndex()) && 
@@ -35,6 +35,6 @@ public class GetBibtexByConceptForGroup extends BibTexChainElement {
 				(param.getNumTransitiveConcepts() == 0) && 
 				!present(param.getHash()) && 
 				nullOrEqual(param.getOrder(), Order.ADDED) && 
-				!present(param.getSearch());		
+				!present(param.getSearch());
 	}
 }

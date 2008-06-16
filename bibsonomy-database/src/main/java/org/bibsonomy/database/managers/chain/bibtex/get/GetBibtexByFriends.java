@@ -14,19 +14,17 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
 
 /**
+ * Returns all BibTex's of your friends.
+ * 
+ * TODO extension with user restriction rearding returned bibtex and appropriate
+ * naming of URL in REST interface (e.g. /user/friend).
+ * 
  * @author Miranda Grahl
  * @author Jens Illig
  * @version $Id$
  */
 public class GetBibtexByFriends extends BibTexChainElement {
 
-	/**
-	 * return all bibtex entries of your friends
-	 * TODO extension with user restriction rearding returned bibtex and
-	 * appropriate naming of URL in REST interface
-	 * 
-	 * /user/friend
-	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		return this.db.getBibTexByUserFriends(param, session);

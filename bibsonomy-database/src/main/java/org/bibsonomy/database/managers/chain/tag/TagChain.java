@@ -17,6 +17,7 @@ import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.model.Tag;
 
 /**
+ * @author Dominik Benz
  * @author Miranda Grahl
  * @version $Id$
  */

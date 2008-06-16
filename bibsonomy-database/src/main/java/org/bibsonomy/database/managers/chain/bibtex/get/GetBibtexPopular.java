@@ -14,14 +14,13 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
 
 /**
+ * Return all popular BibTex entries.
+ * 
  * @author Miranda Grahl
  * @version $Id$
  */
 public class GetBibtexPopular extends BibTexChainElement {
 
-	/**
-	 * return all popular bibtex entries of bibSonomy.
-	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		return this.db.getBibTexPopular(param, session);

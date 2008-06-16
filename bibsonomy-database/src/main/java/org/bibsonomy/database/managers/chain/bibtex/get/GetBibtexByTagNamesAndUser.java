@@ -14,14 +14,13 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
 
 /**
+ * Returns a list of BibTex's for a given tag/tags and user.
+ * 
  * @author Miranda Grahl
  * @version $Id$
  */
 public class GetBibtexByTagNamesAndUser extends BibTexChainElement {
 
-	/**
-	 * return a list of bibtex entries by given tag/tags and User.
-	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		return this.db.getBibTexByTagNamesForUser(param, session);
@@ -40,5 +39,4 @@ public class GetBibtexByTagNamesAndUser extends BibTexChainElement {
 				nullOrEqual(param.getOrder(), Order.ADDED) && 
 				!present(param.getSearch());
 	}
-
 }

@@ -13,14 +13,13 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
 
 /**
- * @author Flori
+ * Returns a list of BibTex's for a given key.
+ * 
+ * @author Florian Bachmann
  * @version $Id$
  */
 public class GetBibtexByKey extends BibTexChainElement {
 
-	/**
-	 * return a list of bibtex by a given key.
-	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		return this.db.getBibTexByKey(param, session);

@@ -16,14 +16,13 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 
 /**
+ * Returns a list of BibTex's for a given group and common tags of a group.
+ * 
  * @author Miranda Grahl
  * @version $Id$
  */
 public class GetBibtexForGroupAndTag extends BibTexChainElement {
 
-	/**
-	 * return a list of bibtex by a given group and common tags of a group.
-	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		// final Integer groupId = this.groupDb.getGroupIdByGroupName(param.getRequestedGroupName(), session);

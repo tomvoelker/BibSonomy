@@ -16,17 +16,15 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
 
 /**
+ * Returns a list of BibTex's for a given friend of a user (this friend also
+ * posted the BibTex to group friends (made bibtex viewable for friends)).
+ * 
  * @author Miranda Grahl
  * @author Jens Illig
  * @version $Id$
  */
 public class GetBibtexOfFriendsByUser extends BibTexChainElement {
 
-	/**
-	 * return a list of bibtex entries by given friend of a user (this friends also
-	 * posted this bibtex to group friends (made bibtex viewable for
-	 * friends)).
-	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		if (this.generalDb.isFriendOf(param.getRequestedUserName(), param.getUserName(), session) == true) {

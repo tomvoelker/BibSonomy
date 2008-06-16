@@ -14,14 +14,13 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
 
 /**
- * @author mwa
+ * Returns a list of BibTex's that are related to the given concept name.
+ * 
+ * @author Michael Wagner
  * @version $Id$
  */
 public class GetBibTexByConceptByTag extends BibTexChainElement{
-	
-	/**
-	 * Returns a list of posts (bibtex) which is in relationship with the given concept name.
-	 */
+
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		return this.db.getBibTexByConceptByTag(param, session);
@@ -29,7 +28,7 @@ public class GetBibTexByConceptByTag extends BibTexChainElement{
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return  (param.getGrouping() == GroupingEntity.ALL) && 
+		return  param.getGrouping() == GroupingEntity.ALL && 
 				!present(param.getBibtexKey()) && 
 				present(param.getTagIndex())&& 
 				(param.getNumSimpleConcepts() > 0) && 

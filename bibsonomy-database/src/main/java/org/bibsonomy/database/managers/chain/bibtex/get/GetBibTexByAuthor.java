@@ -14,13 +14,13 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
 
 /**
+ * Returns a list of BibTex's for given author.
+ * 
  * @author Miranda Grahl
- * @version 
+ * @version $Id$
  */
 public class GetBibTexByAuthor extends BibTexChainElement {
-	/**
-	 * return a list of bibtex entries by given author.
-	 */
+
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		return this.db.getBibTexByAuthor(param, session);
@@ -34,6 +34,5 @@ public class GetBibTexByAuthor extends BibTexChainElement {
 				!present(param.getHash()) && 
 				nullOrEqual(param.getOrder(), Order.ADDED) && 
 				present(param.getSearch());
-	}
-	
+	}	
 }

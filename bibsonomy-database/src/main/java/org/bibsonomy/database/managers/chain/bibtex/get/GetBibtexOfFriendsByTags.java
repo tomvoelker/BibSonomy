@@ -16,18 +16,16 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
 
 /**
+ * Returns a list of BibTex's for a given friend of a user (this friend also
+ * posted the bibtex to group friends (made bibtex viewable for friends))
+ * restricted by a given tag.
+ * 
  * @author Miranda Grahl
  * @author Jens Illig
  * @version $Id$
  */
 public class GetBibtexOfFriendsByTags extends BibTexChainElement {
 
-	/**
-	 * return a list of bibtex entries by given friend of a user (this friends also
-	 * posted this bookmarks to group friends (made bookmarks viewable for
-	 * friends)).
-	 * bibtex entries are restricted by a chosen tag 
-	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		param.setGroupType(GroupID.FRIENDS);

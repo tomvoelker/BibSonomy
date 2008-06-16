@@ -14,15 +14,13 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
 
 /**
+ * Returns a list of BibTex's for a tag-concept.
+ * 
  * @author Miranda Grahl
  * @version $Id$
  */
 public class GetBibtexByConceptForUser extends BibTexChainElement {
 
-	/**
-	 * return a list of bibtex by a tag-concept. All bookmarks will be return
-	 * for a given "super-tag".
-	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) { 
 		return this.db.getBibTexByConceptForUser(param, session);
@@ -30,7 +28,7 @@ public class GetBibtexByConceptForUser extends BibTexChainElement {
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return  present(param.getGrouping() == GroupingEntity.USER) && 
+		return  param.getGrouping() == GroupingEntity.USER &&
 				!present(param.getBibtexKey()) && 
 				present(param.getRequestedUserName()) && 
 				present(param.getTagIndex()) && 

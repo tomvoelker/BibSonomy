@@ -15,13 +15,13 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
 
 /**
+ * Returns a list of BibTex's for a given user.
+ * 
  * @author Miranda Grahl
  * @version $Id$
  */
 public class GetBibtexForUser extends BibTexChainElement {
-	/**
-	 * return a list of bibtex entries by a user
-	 */
+
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		return this.db.getBibTexForUser(param, session);

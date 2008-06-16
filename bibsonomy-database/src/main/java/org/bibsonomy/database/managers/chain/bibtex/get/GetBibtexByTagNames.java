@@ -14,19 +14,18 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
 
 /**
+ * Returns a list of BibTex's tagged with the given tags.
+ * 
  * @author Miranda Grahl
  * @version $Id$
  */
 public class GetBibtexByTagNames extends BibTexChainElement {
 
-	/**
-	 * Returns a list of posts (bibtex) tagged with the given tags.
-	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		return this.db.getBibTexByTagNames(param, session);
 	}
-	
+
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
 		return  (param.getGrouping() == GroupingEntity.ALL) &&
