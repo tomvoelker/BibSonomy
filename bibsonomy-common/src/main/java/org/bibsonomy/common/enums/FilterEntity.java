@@ -18,5 +18,10 @@ public enum FilterEntity {
 	 * Use this when you ONLY want to retrieve resources with a PDF
 	 * file attached
 	 */
-	JUST_PDF;	
+	JUST_PDF,
+	
+	/**
+	 * Only retrieve resources which are stored at least two times
+	 */
+	DUPLICATES;
 }
