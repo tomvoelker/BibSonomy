@@ -7,6 +7,7 @@ import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.params.TagParam;
+import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DBSessionFactory;
@@ -46,6 +47,7 @@ public abstract class AbstractDatabaseManagerTest {
 	protected BibTexParam bibtexParam;
 	protected UserParam userParam;
 	protected TagParam tagParam;
+	protected TagRelationParam tagRelationParam;
 	protected GroupParam groupParam;
 	protected StatisticsParam statisticsParam;
 
@@ -118,8 +120,10 @@ public abstract class AbstractDatabaseManagerTest {
 	 * parameter object is altered which can lead to side effects in the
 	 * following queries.<br/>
 	 * 
-	 * This is done before running a testcase method, so you don't have to do
-	 * this manually.
+	 * XXX: This is done before running a testcase method, so you don't have to
+	 * do this manually.
+	 * 
+	 * @see #setUp()
 	 */
 	protected void resetParameters() {
 		this.generalParam = ParamUtils.getDefaultGeneralParam();
@@ -127,6 +131,7 @@ public abstract class AbstractDatabaseManagerTest {
 		this.bibtexParam = ParamUtils.getDefaultBibTexParam();
 		this.userParam = ParamUtils.getDefaultUserParam();
 		this.tagParam = ParamUtils.getDefaultTagParam();
+		this.tagRelationParam = ParamUtils.getDefaultTagRelationParam();
 		this.groupParam = ParamUtils.getDefaultGroupParam();
 		this.statisticsParam = new StatisticsParam();
 	}

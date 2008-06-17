@@ -31,8 +31,6 @@ import org.junit.Test;
 /**
  * Tests related to the BibTex chain.
  * 
- * TODO: the tests should have asserts
- * 
  * @author Miranda Grahl
  * @author Christian Schenk
  * @version $Id$

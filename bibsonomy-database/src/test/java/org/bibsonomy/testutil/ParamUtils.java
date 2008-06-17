@@ -12,6 +12,7 @@ import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
+import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
@@ -157,6 +158,13 @@ public final class ParamUtils {
 		// nee to set the default resourcetype to all so bibtex and bookmark tags will be displayed
 		param.setContentType(ConstantID.ALL_CONTENT_TYPE);
 		return param; 
+	}
+
+	/**
+	 * @return TagRelationParam
+	 */
+	public static TagRelationParam getDefaultTagRelationParam() {
+		return new TagRelationParam();
 	}
 
 	/**
