@@ -909,6 +909,12 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			if (param.getFilter().equals(FilterEntity.JUST_PDF)) {
 				return this.bibtexList("getJustBibTexForUserWithPDF", param, session);
 			}
+			
+			// retrieve duplicate entries
+			if (param.getFilter().equals(FilterEntity.DUPLICATES)) {
+				return this.getBibTexDuplicate(param, session);
+			}
+			
 			throw new IllegalArgumentException("Filter " + param.getFilter().name() + " not supported");
 		}
 		

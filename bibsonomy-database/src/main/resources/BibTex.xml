@@ -294,7 +294,7 @@
 	</select>
 
 	<select id="getBibTexDuplicate" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, h.ctr
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, g.group, h.ctr AS count
 		FROM bibtex b, bibhash h,
 		     (SELECT b2.content_id, b2.date
 		      FROM (<include refid ="duplicatesCount"/>) AS b1
