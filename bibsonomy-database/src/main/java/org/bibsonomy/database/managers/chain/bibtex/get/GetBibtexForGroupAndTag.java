@@ -27,30 +27,30 @@ public class GetBibtexForGroupAndTag extends BibTexChainElement {
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		// final Integer groupId = this.groupDb.getGroupIdByGroupName(param.getRequestedGroupName(), session);
 		final Group group = this.groupDb.getGroupByName(param.getRequestedGroupName(), session);
-		if (group == null || group.getGroupId() == GroupID.INVALID.getId()  || GroupID.isSpecialGroupId(group.getGroupId())) {
-			log.debug("groupId " +  param.getRequestedGroupName() + " not found or special group" );
-			return new ArrayList<Post<BibTex>>(0);			
+		if (group == null || group.getGroupId() == GroupID.INVALID.getId() || GroupID.isSpecialGroupId(group.getGroupId())) {
+			log.debug("groupId " + param.getRequestedGroupName() + " not found or special group");
+			return new ArrayList<Post<BibTex>>(0);
 		}
 		// remove pdf filter if sharing documents for this group is disabled
-		if (!group.isSharedDocuments() && param.getFilter() != null && ( param.getFilter().equals(FilterEntity.PDF) || param.getFilter().equals(FilterEntity.JUST_PDF))) {
+		if (!group.isSharedDocuments() && param.getFilter() != null && (param.getFilter().equals(FilterEntity.PDF) || param.getFilter().equals(FilterEntity.JUST_PDF))) {
 			param.setFilter(null);
-		}		
-		param.setGroupId(group.getGroupId());	
+		}
+		param.setGroupId(group.getGroupId());
 		return this.db.getBibTexForGroupByTag(param, session);
 	}
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return  (param.getGrouping() == GroupingEntity.GROUP) &&
-				!present(param.getBibtexKey()) && 
-				present(param.getRequestedGroupName()) && 
-				!present(param.getRequestedUserName()) && 
-				present(param.getTagIndex())&& 
-				(param.getNumSimpleConcepts() == 0) && 
-				(param.getNumSimpleTags() > 0) && 
-				(param.getNumTransitiveConcepts() == 0) && 
-				!present(param.getHash()) && 
-				!present(param.getOrder()) && 
-				!present(param.getSearch());
+		return (param.getGrouping() == GroupingEntity.GROUP &&
+				!present(param.getBibtexKey()) &&
+				present(param.getRequestedGroupName()) &&
+				!present(param.getRequestedUserName()) &&
+				present(param.getTagIndex()) &&
+				param.getNumSimpleConcepts() == 0 &&
+				param.getNumSimpleTags() > 0 &&
+				param.getNumTransitiveConcepts() == 0 &&
+				!present(param.getHash()) &&
+				!present(param.getOrder()) &&
+				!present(param.getSearch()));
 	}
 }

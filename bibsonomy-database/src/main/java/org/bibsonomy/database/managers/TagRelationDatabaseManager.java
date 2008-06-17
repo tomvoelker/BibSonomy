@@ -160,7 +160,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	 * @return list of concepts for a given user
 	 */
 	public List<Tag> getAllConceptsForUser(final String userName, final DBSession session) {
-		return queryForList("getAllConceptsForUser", userName, session);
+		return this.queryForList("getAllConceptsForUser", userName, Tag.class, session);
 	}
 
 	/**
@@ -189,7 +189,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Tag> getPickedConceptsForUser(final String userName, final DBSession session) {
-		return queryForList("getPickedConceptsForUser", userName, session);
+		return this.queryForList("getPickedConceptsForUser", userName, session);
 	}
 
 	/**
@@ -198,7 +198,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	 * @return all concepts (50 most popular)
 	 */
 	public List<Tag> getAllConcepts(final DBSession session) {
-		return queryForList("getAllConcepts", null, session);
+		return this.queryForList("getAllConcepts", null, Tag.class, session);
 	}
 
 	/**
@@ -208,7 +208,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	 * @return a global concept by name
 	 */
 	public Tag getGlobalConceptByName(final String conceptName, final DBSession session) {
-		return queryForObject("getGlobalConceptByName", conceptName, Tag.class, session);
+		return this.queryForObject("getGlobalConceptByName", conceptName, Tag.class, session);
 	}
 
 	/**

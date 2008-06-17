@@ -18,14 +18,14 @@ import org.bibsonomy.model.Tag;
 public class GetAllConceptsForUser extends ConceptChainElement {
 
 	@Override
-	protected List<Tag> handle(TagRelationParam param, DBSession session) {
+	protected List<Tag> handle(final TagRelationParam param, final DBSession session) {
 		return this.db.getAllConceptsForUser(param.getRequestedUserName(), session);
 	}
 
 	@Override
-	protected boolean canHandle(TagRelationParam param) {
-		return 	param.getGrouping() == GroupingEntity.USER &&
-				param.getConceptStatus().equals(ConceptStatus.ALL) &&
-		   		present(param.getRequestedUserName());
+	protected boolean canHandle(final TagRelationParam param) {
+		return (param.getGrouping() == GroupingEntity.USER &&
+				param.getConceptStatus() == ConceptStatus.ALL &&
+		   		present(param.getRequestedUserName()));
 	}
 }

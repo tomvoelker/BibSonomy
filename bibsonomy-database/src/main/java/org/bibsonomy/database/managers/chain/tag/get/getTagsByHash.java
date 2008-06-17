@@ -44,9 +44,9 @@ public class getTagsByHash extends TagChainElement {
 
 	@Override
 	protected boolean canHandle(final TagParam param) {
-		return present(param.getGrouping()) &&
-			   param.getGrouping() == GroupingEntity.ALL &&
-			   present(param.getHash()) && 
-			   !present(param.getRequestedUserName());
+		return (present(param.getGrouping()) &&
+				param.getGrouping() == GroupingEntity.ALL &&
+				present(param.getHash()) &&
+				!present(param.getRequestedUserName()));
 	}
 }

@@ -14,15 +14,13 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
 
 /**
+ * Returns a list of bookmarks for a concept.
+ * 
  * @author Miranda Grahl
  * @version $Id$
  */
 public class GetBookmarksByConceptForUser extends BookmarkChainElement {
 
-	/**
-	 * return a list of bookmarks by a tag-concept. All bookmarks will be return
-	 * for a given "super-tag". Following arguments have to be given:
-	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
 		return this.db.getBookmarkByConceptForUser(param, session);
@@ -30,6 +28,14 @@ public class GetBookmarksByConceptForUser extends BookmarkChainElement {
 
 	@Override
 	protected boolean canHandle(final BookmarkParam param) {
-		return present(param.getGrouping() == GroupingEntity.USER) && present(param.getRequestedUserName()) && present(param.getTagIndex()) && (param.getNumSimpleConcepts() > 0) && (param.getNumSimpleTags() == 0) && (param.getNumTransitiveConcepts() == 0) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED) && !present(param.getSearch());
+		return (param.getGrouping() == GroupingEntity.USER &&
+				present(param.getRequestedUserName()) &&
+				present(param.getTagIndex()) &&
+				param.getNumSimpleConcepts() > 0 &&
+				param.getNumSimpleTags() == 0 &&
+				param.getNumTransitiveConcepts() == 0 &&
+				!present(param.getHash()) &&
+				nullOrEqual(param.getOrder(), Order.ADDED) &&
+				!present(param.getSearch()));
 	}
 }

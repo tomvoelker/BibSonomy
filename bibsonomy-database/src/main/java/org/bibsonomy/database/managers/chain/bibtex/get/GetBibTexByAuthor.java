@@ -28,11 +28,11 @@ public class GetBibTexByAuthor extends BibTexChainElement {
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return  present(param.getGrouping() == GroupingEntity.VIEWABLE) && 
-				!present(param.getBibtexKey()) && 
-				!present(param.getTagIndex()) && 
-				!present(param.getHash()) && 
-				nullOrEqual(param.getOrder(), Order.ADDED) && 
-				present(param.getSearch());
+		return (param.getGrouping() == GroupingEntity.VIEWABLE &&
+				!present(param.getBibtexKey()) &&
+				!present(param.getTagIndex()) &&
+				!present(param.getHash()) &&
+				nullOrEqual(param.getOrder(), Order.ADDED) &&
+				present(param.getSearch()));
 	}	
 }

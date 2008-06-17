@@ -12,18 +12,16 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 
 /**
+ * Returns a list of bookmarks of your friends.
+ * 
+ * TODO extension with user restriction rearding returned bookmarks and
+ * appropriate naming of URL in REST interface.
  * 
  * @author Miranda Grahl
  * @version $Id$
  */
 public class GetBookmarksByFriends extends BookmarkChainElement {
 
-	/**
-	 * return a list of bookmark entries of your friends in bibSonomy
-	 * TODO extension with user restriction rearding returned bookmarks and
-	 * appropriate naming of URL in REST interface
-	 * 
-	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
 		return this.db.getBookmarkByUserFriends(param, session);
@@ -34,6 +32,13 @@ public class GetBookmarksByFriends extends BookmarkChainElement {
 	 */
 	@Override
 	protected boolean canHandle(final BookmarkParam param) {
-		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.FRIEND) && present(param.getRequestedGroupName()) && present(param.getRequestedUserName()) && !present(param.getTagIndex()) && !present(param.getHash()) && !present(param.getOrder()) && !present(param.getSearch());
+		return (present(param.getUserName()) &&
+				param.getGrouping() == GroupingEntity.FRIEND &&
+				present(param.getRequestedGroupName()) &&
+				present(param.getRequestedUserName()) &&
+				!present(param.getTagIndex()) &&
+				!present(param.getHash()) &&
+				!present(param.getOrder()) &&
+				!present(param.getSearch()));
 	}
 }

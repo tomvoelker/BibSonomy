@@ -20,19 +20,20 @@ import org.bibsonomy.model.enums.Order;
 public class GetBookmarksByConceptForGroup extends BookmarkChainElement {
 
 	@Override
-	protected List<Post<Bookmark>> handle(BookmarkParam param, DBSession session) {
+	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
 		return this.db.getBookmarkByConceptForGroup(param, session);
 	}
-	
+
 	@Override
-	protected boolean canHandle(BookmarkParam param) {
-		return 	present(param.getGrouping() == GroupingEntity.GROUP) && 
-				present(param.getRequestedGroupName()) && 
-				present(param.getTagIndex()) && 
-				(param.getNumSimpleConcepts() > 0) && 
-				(param.getNumSimpleTags() == 0) && 
-				(param.getNumTransitiveConcepts() == 0) && 
-				!present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED) && 
-				!present(param.getSearch());
+	protected boolean canHandle(final BookmarkParam param) {
+		return (param.getGrouping() == GroupingEntity.GROUP &&
+				present(param.getRequestedGroupName()) &&
+				present(param.getTagIndex()) &&
+				param.getNumSimpleConcepts() > 0 &&
+				param.getNumSimpleTags() == 0 &&
+				param.getNumTransitiveConcepts() == 0 &&
+				!present(param.getHash()) &&
+				nullOrEqual(param.getOrder(), Order.ADDED) &&
+				!present(param.getSearch()));
 	}
 }

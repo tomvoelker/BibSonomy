@@ -12,15 +12,13 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 
 /**
+ * Returns a list of bookmarks for a given hash and a user.
+ * 
  * @author Miranda Grahl
  * @version $Id$
  */
 public class GetBookmarksByHashForUser extends BookmarkChainElement {
 
-	/**
-	 * return a list of bookmark by a given hash and a logged user. Following
-	 * arguments have to be given:
-	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
 		return this.db.getBookmarkByHashForUser(param, session);
@@ -28,6 +26,11 @@ public class GetBookmarksByHashForUser extends BookmarkChainElement {
 
 	@Override
 	protected boolean canHandle(final BookmarkParam param) {
-		return present(param.getHash()) && (param.getGrouping() == GroupingEntity.USER) && present(param.getRequestedGroupName()) && !present(param.getTagIndex()) && !present(param.getOrder()) && !present(param.getSearch());
+		return (present(param.getHash()) &&
+				param.getGrouping() == GroupingEntity.USER &&
+				present(param.getRequestedGroupName()) &&
+				!present(param.getTagIndex()) &&
+				!present(param.getOrder()) &&
+				!present(param.getSearch()));
 	}
 }

@@ -16,13 +16,13 @@ import org.bibsonomy.model.Tag;
 public class GetAllConcepts extends ConceptChainElement {
 
 	@Override
-	protected List<Tag> handle(TagRelationParam param, DBSession session) {
+	protected List<Tag> handle(final TagRelationParam param, final DBSession session) {
 		return this.db.getAllConcepts(session);
 	}
 
 	@Override
-	protected boolean canHandle(TagRelationParam param) {
-		return 	param.getGrouping() == GroupingEntity.ALL &&
-		param.getConceptStatus().equals(ConceptStatus.ALL);
+	protected boolean canHandle(final TagRelationParam param) {
+		return (param.getGrouping() == GroupingEntity.ALL &&
+				param.getConceptStatus() == ConceptStatus.ALL);
 	}
 }

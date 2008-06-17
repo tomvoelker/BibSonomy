@@ -13,21 +13,20 @@ import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Tag;
 
 /**
+ * Returns a list of tags for a given group.
+ * 
  * @author Dominik Benz
  * @author Miranda Grahl
  * @version $Id$
  */
 public class GetTagsByGroup extends TagChainElement {
 
-	/**
-	 * return a list of tags by a given group
-	 */
 	@Override
 	protected List<Tag> handle(final TagParam param, final DBSession session) {
 		final Integer groupId = this.groupDb.getGroupIdByGroupName(param.getRequestedGroupName(), session);
-		if (groupId == GroupID.INVALID.getId()  || GroupID.isSpecialGroupId(groupId)) {
-			log.debug("groupId " +  param.getRequestedGroupName() + " not found or special group" );
-			return new ArrayList<Tag>(0);			
+		if (groupId == GroupID.INVALID.getId() || GroupID.isSpecialGroupId(groupId)) {
+			log.debug("groupId " + param.getRequestedGroupName() + " not found or special group");
+			return new ArrayList<Tag>(0);
 		}
 		param.setGroupId(groupId);
 		return this.db.getTagsByGroup(param, session);
@@ -35,9 +34,9 @@ public class GetTagsByGroup extends TagChainElement {
 
 	@Override
 	protected boolean canHandle(final TagParam param) {
-		return param.getGrouping() == GroupingEntity.GROUP && 
-		       present(param.getRequestedGroupName()) && 
-		       !present(param.getTagIndex()) 
-		       && !present(param.getRegex());
+		return (param.getGrouping() == GroupingEntity.GROUP &&
+				present(param.getRequestedGroupName()) &&
+				!present(param.getTagIndex()) &&
+				!present(param.getRegex()));
 	}
 }

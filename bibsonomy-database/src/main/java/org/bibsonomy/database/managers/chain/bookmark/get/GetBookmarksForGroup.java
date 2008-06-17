@@ -14,27 +14,31 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 
 /**
+ * Returns a list of bookmarks for a given group.
+ * 
  * @author Miranda Grahl
  * @version $Id$
  */
 public class GetBookmarksForGroup extends BookmarkChainElement {
 
-	/**
-	 * return a list of bookmark entries by a given group
-	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
 		final Integer groupId = this.groupDb.getGroupIdByGroupName(param.getRequestedGroupName(), session);
-		if (groupId == GroupID.INVALID.getId()  || GroupID.isSpecialGroupId(groupId)) {
-			log.debug("groupId " +  param.getRequestedGroupName() + " not found or special group" );
-			return new ArrayList<Post<Bookmark>>(0);			
+		if (groupId == GroupID.INVALID.getId() || GroupID.isSpecialGroupId(groupId)) {
+			log.debug("groupId " + param.getRequestedGroupName() + " not found or special group");
+			return new ArrayList<Post<Bookmark>>(0);
 		}
-		param.setGroupId(groupId);	
+		param.setGroupId(groupId);
 		return this.db.getBookmarkForGroup(param, session);
 	}
 
 	@Override
-	protected boolean canHandle(final BookmarkParam param) {		
-		return (param.getGrouping() == GroupingEntity.GROUP) && present(param.getRequestedGroupName()) &&  !present(param.getTagIndex()) && !present(param.getHash()) && !present(param.getOrder()) && !present(param.getSearch());
+	protected boolean canHandle(final BookmarkParam param) {
+		return (param.getGrouping() == GroupingEntity.GROUP &&
+				present(param.getRequestedGroupName()) &&
+				!present(param.getTagIndex()) &&
+				!present(param.getHash()) &&
+				!present(param.getOrder()) &&
+				!present(param.getSearch()));
 	}
 }

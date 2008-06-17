@@ -12,14 +12,13 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 
 /**
+ * Returns a list of bookmarks for a given fulltext search string.
+ * 
  * @author Dominik Benz
  * @version $Id$
  */
 public class GetBookmarksSearch extends BookmarkChainElement {
 
-	/**
-	 * return a list of bookmarks by a given fulltext search string
-	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
 		return this.db.getBookmarkSearch(param, session);
@@ -27,6 +26,7 @@ public class GetBookmarksSearch extends BookmarkChainElement {
 
 	@Override
 	protected boolean canHandle(final BookmarkParam param) {
-		return (param.getGrouping() == GroupingEntity.ALL) && present(param.getSearch());
+		return (param.getGrouping() == GroupingEntity.ALL &&
+				present(param.getSearch()));
 	}
 }

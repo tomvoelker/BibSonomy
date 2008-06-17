@@ -14,34 +14,34 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 
 /**
+ * Returns a list of bookmarks for a given group and common tags of a group.
+ * 
  * @author Miranda Grahl
  * @version $Id$
  */
 public class GetBookmarksForGroupAndTag extends BookmarkChainElement {
 
 	/**
-	 * return a list of bookmark by a given group and common tags of a group.
-	 * Following arguments have to be given:
 	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
 		final Integer groupId = this.groupDb.getGroupIdByGroupName(param.getRequestedGroupName(), session);
-		if (groupId == GroupID.INVALID.getId()  || GroupID.isSpecialGroupId(groupId)) {
-			log.debug("groupId " +  param.getRequestedGroupName() + " not found or special group" );
-			return new ArrayList<Post<Bookmark>>(0);			
+		if (groupId == GroupID.INVALID.getId() || GroupID.isSpecialGroupId(groupId)) {
+			log.debug("groupId " + param.getRequestedGroupName() + " not found or special group");
+			return new ArrayList<Post<Bookmark>>(0);
 		}
-		param.setGroupId(groupId);	
+		param.setGroupId(groupId);
 		return this.db.getBookmarkForGroupByTag(param, session);
 	}
 
 	@Override
 	protected boolean canHandle(final BookmarkParam param) {
-		return 	(param.getGrouping() == GroupingEntity.GROUP) && 
-				present(param.getRequestedGroupName()) && 
-				present(param.getTagIndex()) && 
-				!present(param.getHash()) && 
-				!present(param.getOrder()) && 
+		return (param.getGrouping() == GroupingEntity.GROUP &&
+				present(param.getRequestedGroupName()) &&
+				present(param.getTagIndex()) &&
+				!present(param.getHash()) &&
+				!present(param.getOrder()) &&
 				!present(param.getSearch()) &&
-				(param.getNumSimpleConcepts() == 0);
+				(param.getNumSimpleConcepts() == 0));
 	}
 }

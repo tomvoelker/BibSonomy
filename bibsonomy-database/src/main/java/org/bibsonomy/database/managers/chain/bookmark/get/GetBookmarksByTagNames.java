@@ -14,19 +14,16 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
 
 /**
- * TODO implement compartible method for concept structure
+ * Returns a list of bookmarks for given tag/tags.
  * 
  * @author Miranda Grahl
  * @version $Id$
  */
 public class GetBookmarksByTagNames extends BookmarkChainElement {
 
-	/**
-	 * return a list of bookmark entries by given tag/tags
-	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
-		List<Post<Bookmark>> posts;
+		final List<Post<Bookmark>> posts;
 		if (param.getTagIndex().size() == 0) {
 			posts = this.db.getBookmarkForHomepage(param, session);
 		} else {
@@ -37,6 +34,13 @@ public class GetBookmarksByTagNames extends BookmarkChainElement {
 
 	@Override
 	protected boolean canHandle(final BookmarkParam param) {
-		return (param.getGrouping() == GroupingEntity.ALL) && present(param.getTagIndex()) && (param.getNumSimpleConcepts() == 0) && (param.getNumSimpleTags() > 0) && (param.getNumTransitiveConcepts() == 0) &&  !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED, Order.FOLKRANK) && !present(param.getSearch());
+		return (param.getGrouping() == GroupingEntity.ALL &&
+				present(param.getTagIndex()) &&
+				param.getNumSimpleConcepts() == 0 &&
+				param.getNumSimpleTags() > 0 &&
+				param.getNumTransitiveConcepts() == 0 &&
+				!present(param.getHash()) &&
+				nullOrEqual(param.getOrder(), Order.ADDED, Order.FOLKRANK) &&
+				!present(param.getSearch()));
 	}
 }

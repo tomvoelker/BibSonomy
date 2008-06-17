@@ -16,21 +16,20 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
 
 /**
+ * Returns a list of bookmarks for a given group (which is only viewable for
+ * groupmembers excluded public option regarding setting a post).
+ * 
  * @author Miranda Grahl
  * @version $Id$
  */
 public class GetBookmarksViewable extends BookmarkChainElement {
 
-	/**
-	 * return a list of bookmark by a given group (which is only viewable for
-	 * groupmembers excluded public option regarding setting a post)
-	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
 		final Integer groupId = this.groupDb.getGroupIdByGroupNameAndUserName(param.getRequestedGroupName(), param.getUserName(), session);
 		if (groupId == GroupID.INVALID.getId()) {
 			log.debug("groupId " + param.getRequestedGroupName() + "not found");
-			return new ArrayList<Post<Bookmark>>(0);			
+			return new ArrayList<Post<Bookmark>>(0);
 		}
 		param.setGroupId(groupId);
 		if (present(param.getTagIndex()) == true) return this.db.getBookmarkViewableByTag(param, session);
@@ -39,6 +38,11 @@ public class GetBookmarksViewable extends BookmarkChainElement {
 
 	@Override
 	protected boolean canHandle(final BookmarkParam param) {
-		return (present(param.getUserName()) && (param.getGrouping() == GroupingEntity.VIEWABLE) && present(param.getRequestedGroupName()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED) && !present(param.getSearch()));
+		return (present(param.getUserName()) &&
+				param.getGrouping() == GroupingEntity.VIEWABLE &&
+				present(param.getRequestedGroupName()) &&
+				!present(param.getHash()) &&
+				nullOrEqual(param.getOrder(), Order.ADDED) &&
+				!present(param.getSearch()));
 	}
 }

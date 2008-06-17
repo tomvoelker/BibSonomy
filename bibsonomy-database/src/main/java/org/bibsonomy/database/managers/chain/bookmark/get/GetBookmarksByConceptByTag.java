@@ -14,7 +14,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
 
 /**
- * @author mwa
+ * @author Michael Wagner
  * @version $Id$
  */
 public class GetBookmarksByConceptByTag extends BookmarkChainElement{
@@ -26,6 +26,13 @@ public class GetBookmarksByConceptByTag extends BookmarkChainElement{
 
 	@Override
 	protected boolean canHandle(BookmarkParam param) {
-		return (param.getGrouping() == GroupingEntity.ALL) && present(param.getTagIndex()) && (param.getNumSimpleConcepts() > 0) && (param.getNumSimpleTags() == 0) && (param.getNumTransitiveConcepts() == 0) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED) && !present(param.getSearch());
+		return (param.getGrouping() == GroupingEntity.ALL &&
+				present(param.getTagIndex()) &&
+				param.getNumSimpleConcepts() > 0 &&
+				param.getNumSimpleTags() == 0 &&
+				param.getNumTransitiveConcepts() == 0 &&
+				!present(param.getHash()) &&
+				nullOrEqual(param.getOrder(), Order.ADDED) &&
+				!present(param.getSearch()));
 	}
 }

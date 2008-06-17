@@ -11,20 +11,20 @@ import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Tag;
 
 /**
- * @author Stefan Stuetzer
+ * @author Stefan Stützer
  * @version $Id$
  */
 public class GetRelatedTagsForGroup extends TagChainElement {
 
 	@Override
-	protected List<Tag> handle(TagParam param, DBSession session) {		
+	protected List<Tag> handle(final TagParam param, final DBSession session) {		
 		return this.db.getRelatedTagsForGroup(param ,session);
 	}
-	
+
 	@Override
-	protected boolean canHandle(TagParam param) {
-		return present(param.getRequestedGroupName()) && 
-		       param.getGrouping() == GroupingEntity.GROUP && 
-		       present(param.getTagIndex());
+	protected boolean canHandle(final TagParam param) {
+		return (present(param.getRequestedGroupName()) &&
+				param.getGrouping() == GroupingEntity.GROUP &&
+				present(param.getTagIndex()));
 	}
 }

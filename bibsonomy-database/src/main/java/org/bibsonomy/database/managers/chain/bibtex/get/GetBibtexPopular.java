@@ -28,11 +28,11 @@ public class GetBibtexPopular extends BibTexChainElement {
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return  (param.getGrouping() == GroupingEntity.ALL) && 
-				!present(param.getBibtexKey()) && 
-				!present(param.getTagIndex()) && 
-				!present(param.getHash()) && 
-				nullOrEqual(param.getOrder(), Order.POPULAR) && 
-				!present(param.getSearch());
+		return (param.getGrouping() == GroupingEntity.ALL &&
+				!present(param.getBibtexKey()) &&
+				!present(param.getTagIndex()) &&
+				!present(param.getHash()) &&
+				nullOrEqual(param.getOrder(), Order.POPULAR) &&
+				!present(param.getSearch()));
 	}
 }

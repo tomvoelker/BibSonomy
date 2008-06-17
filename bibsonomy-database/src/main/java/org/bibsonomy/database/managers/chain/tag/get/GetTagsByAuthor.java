@@ -10,16 +10,15 @@ import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Tag;
 
-	/**
-	 * @author miranda 
-	 */
-public class GetTagsByAuthor extends TagChainElement{
+/**
+ * Returns a list of tags for a given author.
+ * 
+ * @author Dominik Benz
+ * @author Miranda Grahl
+ * @version $Id$
+ */
+public class GetTagsByAuthor extends TagChainElement {
 
-	
-	/**
-	 * return a list of tags by a given author
-	 */
-	
 	@Override
 	protected List<Tag> handle(final TagParam param, final DBSession session) {
 		return this.db.getTagsAuthor(param, session);
@@ -27,9 +26,7 @@ public class GetTagsByAuthor extends TagChainElement{
 
 	@Override
 	protected boolean canHandle(final TagParam param) {
-		return present(param.getGrouping()== GroupingEntity.VIEWABLE) && 
-		       present(param.getSearch());
+		return (param.getGrouping() == GroupingEntity.VIEWABLE &&
+				present(param.getSearch()));
 	}
-	
-	
 }

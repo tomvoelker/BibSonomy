@@ -13,18 +13,15 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 
 /**
+ * Returns a list of bookmarks for a given friend of a user (this friends also
+ * posted this bookmarks to group friends (made bookmarks viewable for friends))
+ * restricted by a given tag.
  * 
  * @author Miranda Grahl
  * @version $Id$
  */
 public class GetBookmarksOfFriendsByTags extends BookmarkChainElement {
 
-	/**
-	 * return a list of bookmark entries by given friend of a user (this friends also
-	 * posted this bookmarks to group friends (made bookmarks viewable for
-	 * friends)).
-	 * bookmark entries are restricted by a chosen tag 
-	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
 		param.setGroupId(GroupID.FRIENDS.getId());
@@ -33,6 +30,13 @@ public class GetBookmarksOfFriendsByTags extends BookmarkChainElement {
 
 	@Override
 	protected boolean canHandle(final BookmarkParam param) {
-		return present(param.getUserName()) && (param.getGrouping() == GroupingEntity.FRIEND) && present(param.getRequestedGroupName())&& !present(param.getRequestedUserName()) && present(param.getTagIndex()) && !present(param.getHash()) && !present(param.getOrder()) && !present(param.getSearch());
+		return (present(param.getUserName()) &&
+				param.getGrouping() == GroupingEntity.FRIEND &&
+				present(param.getRequestedGroupName()) &&
+				!present(param.getRequestedUserName()) &&
+				present(param.getTagIndex()) &&
+				!present(param.getHash()) &&
+				!present(param.getOrder()) &&
+				!present(param.getSearch()));
 	}
 }

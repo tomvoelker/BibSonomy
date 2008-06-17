@@ -17,6 +17,9 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
 
 /**
+ * Returns a list of BibTex's for a given group (which is only viewable for
+ * groupmembers excluded public option regarding setting a post).
+ * 
  * @author Miranda Grahl
  * @version $Id$
  */
@@ -25,16 +28,12 @@ public class GetBibtexViewable extends BibTexChainElement {
 	@SuppressWarnings("hiding")
 	private static final Logger log = Logger.getLogger(GetBibtexViewable.class);
 
-	/**
-	 * return a list of bibtex by a given group (which is only viewable for
-	 * groupmembers excluded public option regarding setting a post).
-	 */
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		final Integer groupId = this.groupDb.getGroupIdByGroupNameAndUserName(param.getRequestedGroupName(), param.getUserName(), session);
 		if (groupId == GroupID.INVALID.getId()) {
-			log.debug("groupId " +  param.getRequestedGroupName() + " not found" );
-			return new ArrayList<Post<BibTex>>(0);			
+			log.debug("groupId " + param.getRequestedGroupName() + " not found");
+			return new ArrayList<Post<BibTex>>(0);
 		}
 		param.setGroupId(groupId);
 		if (present(param.getTagIndex()) == true) return this.db.getBibTexViewableByTag(param, session);
@@ -43,13 +42,13 @@ public class GetBibtexViewable extends BibTexChainElement {
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return  (present(param.getUserName()) && 
-				!present(param.getBibtexKey()) && 
-				(param.getGrouping() == GroupingEntity.VIEWABLE) && 
-				present(param.getRequestedGroupName())&& 
-				present(param.getRequestedUserName()) && 
-				!present(param.getHash()) && 
-				nullOrEqual(param.getOrder(), Order.ADDED) && 
+		return (present(param.getUserName()) &&
+				!present(param.getBibtexKey()) &&
+				param.getGrouping() == GroupingEntity.VIEWABLE &&
+				present(param.getRequestedGroupName()) &&
+				present(param.getRequestedUserName()) &&
+				!present(param.getHash()) &&
+				nullOrEqual(param.getOrder(), Order.ADDED) &&
 				!present(param.getSearch()));
 	}
 }

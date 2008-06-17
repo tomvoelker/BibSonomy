@@ -14,14 +14,13 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
 
 /**
+ * Returns a list of bookmarks by given tag/tags and user.
+ * 
  * @author Miranda Grahl
  * @version $Id$
  */
 public class GetBookmarksByTagNamesAndUser extends BookmarkChainElement {
 
-	/**
-	 * return a list of bookmark by given tag/tags and user
-	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
 		return this.db.getBookmarkByTagNamesForUser(param, session);
@@ -29,14 +28,14 @@ public class GetBookmarksByTagNamesAndUser extends BookmarkChainElement {
 
 	@Override
 	protected boolean canHandle(final BookmarkParam param) {
-		return param.getGrouping() == GroupingEntity.USER && 
-			   present(param.getTagIndex()) && 
-			   present(param.getRequestedUserName()) && 
-			   !present(param.getHash()) && 
-			   param.getNumSimpleConcepts() == 0 && 
-			   param.getNumSimpleTags() > 0 && 
-			   param.getNumTransitiveConcepts() == 0 && 
-			   nullOrEqual(param.getOrder(), Order.ADDED) && 
-			   !present(param.getSearch());
+		return (param.getGrouping() == GroupingEntity.USER &&
+				present(param.getTagIndex()) &&
+				present(param.getRequestedUserName()) &&
+				!present(param.getHash()) &&
+				param.getNumSimpleConcepts() == 0 &&
+				param.getNumSimpleTags() > 0 &&
+				param.getNumTransitiveConcepts() == 0 &&
+				nullOrEqual(param.getOrder(), Order.ADDED) &&
+				!present(param.getSearch()));
 	}
 }

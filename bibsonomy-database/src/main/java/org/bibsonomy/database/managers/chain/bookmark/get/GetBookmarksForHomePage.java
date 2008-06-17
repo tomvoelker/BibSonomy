@@ -14,14 +14,13 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
 
 /**
+ * Returns a list of bookmarks for a user's homepage.
+ * 
  * @author Miranda Grahl
  * @version $Id$
  */
 public class GetBookmarksForHomePage extends BookmarkChainElement {
 
-	/**
-	 * return a list of bookmark entries by a logged user
-	 */
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
 		return this.db.getBookmarkForHomepage(param, session);
@@ -29,6 +28,10 @@ public class GetBookmarksForHomePage extends BookmarkChainElement {
 
 	@Override
 	protected boolean canHandle(final BookmarkParam param) {
-		return present(param.getGrouping()) && param.getGrouping() == GroupingEntity.ALL && !present(param.getTagIndex()) && !present(param.getHash()) && nullOrEqual(param.getOrder(), Order.ADDED) && !present(param.getSearch());
+		return (param.getGrouping() == GroupingEntity.ALL &&
+				!present(param.getTagIndex()) &&
+				!present(param.getHash()) &&
+				nullOrEqual(param.getOrder(), Order.ADDED) &&
+				!present(param.getSearch()));
 	}
 }

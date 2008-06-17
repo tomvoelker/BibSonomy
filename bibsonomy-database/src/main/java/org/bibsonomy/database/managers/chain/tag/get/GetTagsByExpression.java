@@ -11,18 +11,14 @@ import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Tag;
 
 /**
+ * Returns a list of tags.
+ * 
  * @author Dominik Benz
  * @author Miranda Grahl
  * @version $Id$
  */
 public class GetTagsByExpression extends TagChainElement {
 
-	/**
-	 * return a list of tags by a logged user. Following arguments have to be
-	 * given:
-	 * 
-	 * grouping:irrelevant name:irrelevant regex: given
-	 */
 	@Override
 	protected List<Tag> handle(final TagParam param, final DBSession session) {
 		return this.db.getTagsByExpression(param, session);
@@ -30,9 +26,9 @@ public class GetTagsByExpression extends TagChainElement {
 
 	@Override
 	protected boolean canHandle(final TagParam param) {
-		return present(param.getRegex()) && 
-		       present(param.getGrouping()) && 
-		       param.getGrouping() == GroupingEntity.USER && 
-		       present(param.getRequestedUserName());
+		return (present(param.getRegex()) &&
+				present(param.getGrouping()) &&
+				param.getGrouping() == GroupingEntity.USER &&
+				present(param.getRequestedUserName()));
 	}
 }

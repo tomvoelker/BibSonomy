@@ -14,21 +14,21 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
 
 /**
- * @author daill
+ * @author Christian Kramer
  * @version $Id$
  */
 public class GetRelatedTags extends TagChainElement {
-	
+
 	@Override
-	protected List<Tag> handle(TagParam param, DBSession session) {
-		if (Order.FOLKRANK.equals(param.getOrder())) return this.db.getRelatedTagsOrderedByFolkrank(param, session); 
-		return this.db.getRelatedTags(param ,session);
+	protected List<Tag> handle(final TagParam param, final DBSession session) {
+		if (Order.FOLKRANK.equals(param.getOrder())) return this.db.getRelatedTagsOrderedByFolkrank(param, session);
+		return this.db.getRelatedTags(param, session);
 	}
-	
+
 	@Override
-	protected boolean canHandle(TagParam param) {
-		return param.getGrouping() == GroupingEntity.ALL && 
-			   present(param.getTagIndex()) &&
-			   nullOrEqual(param.getTagRelationType(), TagRelationType.COOC);
+	protected boolean canHandle(final TagParam param) {
+		return (param.getGrouping() == GroupingEntity.ALL &&
+				present(param.getTagIndex()) &&
+				nullOrEqual(param.getTagRelationType(), TagRelationType.COOC));
 	}
 }
