@@ -2326,8 +2326,9 @@ public class ResourceHandler extends HttpServlet{
 	 * @param requUser
 	 * @throws SQLException
 	 */
+	@Deprecated
 	private void queryPageDuplicate (DBContext c, String currUser) throws SQLException {
-
+		log.fatal("queryPageDuplicate: should never be called");		
 		String bibQuery = "SELECT " + getBibtexSelect("b") + ",t.tag_name,g.group_name, h.ctr"
 		+ "  FROM bibtex b, bibhash h,"
 		+ "    (SELECT b2.content_id,b2.date FROM "

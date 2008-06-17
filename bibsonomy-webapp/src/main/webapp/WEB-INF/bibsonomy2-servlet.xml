@@ -92,6 +92,11 @@
 				<entry key="/admin">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="adminPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>selTab</value>
+							</list>
+						</property>
 					</bean>
 				</entry>	
 				<entry key="/ajax">

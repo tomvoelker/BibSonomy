@@ -50,13 +50,18 @@ public class UserPageController extends MultiResourceListControllerWithTags impl
 		// if myPDF is set, it overwrites showPDF=true
 		if (command.getFilter().equals("myPDF")) {
 			filter = FilterEntity.JUST_PDF;
-		}			
+		}		
+		
+		// display duplicate entries
+		if (command.getFilter().equals("myDuplicates")) {
+			filter = FilterEntity.DUPLICATES;
+		}
 		
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
 		
-		if (filter == FilterEntity.JUST_PDF) {
+		if (filter == FilterEntity.JUST_PDF || filter == FilterEntity.DUPLICATES) {
 			this.listsToInitialise.remove(Bookmark.class);
 		}
 		
@@ -67,7 +72,7 @@ public class UserPageController extends MultiResourceListControllerWithTags impl
 			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, filter, null, command.getListCommand(resourceType).getEntriesPerPage());
 			this.postProcessAndSortList(command, resourceType);
 			
-			if (filter != FilterEntity.JUST_PDF) { 
+			if (filter != FilterEntity.JUST_PDF && filter != FilterEntity.DUPLICATES) { 
 				int totalCount = this.logic.getStatistics(resourceType, groupingEntity, groupingName, null, null, requTags);
 				command.getListCommand(resourceType).setTotalCount(totalCount);
 				totalNumPosts += totalCount;
@@ -92,14 +97,13 @@ public class UserPageController extends MultiResourceListControllerWithTags impl
 				command.getRelatedTagCommand().setTagGlobalCount(totalNumPosts);
 				this.endTiming();
 				
-				// forward to bibtex page if PDF filter is set
-				if (filter == FilterEntity.JUST_PDF) {
+				// forward to bibtex page if filter is set
+				if (filter == FilterEntity.JUST_PDF || filter == FilterEntity.DUPLICATES) {
 					return Views.USERDOCUMENTPAGE;
 				} else {
 					return Views.USERTAGPAGE;				
 				}
 			}
-			
 			
 			/*
 			 * add user details to command, if loginUser is admin
@@ -110,8 +114,8 @@ public class UserPageController extends MultiResourceListControllerWithTags impl
 			
 			this.endTiming();
 
-			// forward to bibtex page if PDF filter is set
-			if (filter == FilterEntity.JUST_PDF) {
+			// forward to bibtex page if filter is set
+			if (filter == FilterEntity.JUST_PDF || filter == FilterEntity.DUPLICATES) {
 				return Views.USERDOCUMENTPAGE;
 			} else {
 				return Views.USERPAGE;		

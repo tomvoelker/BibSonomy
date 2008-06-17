@@ -42,7 +42,7 @@
 			</span>	
 			 -->
 					
-		</jsp:attribute>
+		</jsp:attribute>		
 		
 		<jsp:attribute name="sidebar">		
 			<c:choose>			
@@ -55,7 +55,7 @@
 					<c:out value=" "/>
 					<fmt:message key="tag.asTagFromAll"/>						
 				</li>			
-				<c:if test="${command.userLoggedIn}">
+				<c:if test="${command.context.userLoggedIn}">
 					<li>
 						<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 						<c:out value=" "/>
@@ -87,7 +87,7 @@
 			</c:when>
 			<c:otherwise>
 				<!-- link to join group -->
-				<c:if test="${command.userLoggedIn}">
+				<c:if test="${command.context.userLoggedIn}">
 					<li style="margin-bottom: 1ex; margin-top: 1ex;">
 						<span class="sidebar_h">
 							<a href="/join_group?group=${fn:escapeXml(command.requestedGroup)}">

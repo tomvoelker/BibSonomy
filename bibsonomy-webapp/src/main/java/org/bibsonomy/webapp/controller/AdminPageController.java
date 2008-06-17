@@ -84,7 +84,6 @@ public class AdminPageController implements MinimalisticController<AdminViewComm
 		if (cmd.getSelTab() == AdminViewCommand.CLASSIFIER_EVALUATE) {
 			List<User> u = this.logic.getClassifierComparison(cmd.getInterval());
 			cmd.setContent(u);
-			System.out.println(u.get(0).getName());
 			return;
 		}		
 			

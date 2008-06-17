@@ -304,23 +304,12 @@
         <to>/ResourceHandler?page=usertag&amp;requUser=$1&amp;requTag=$2&amp;$4</to>
     </rule>
 
-
     <!-- /user/USER -->
-	<rule>
-	    <!-- workaround to redirect not-yet-supported features to old resource handler -->
-		<!-- forward PDF sites to new page -->
-		<condition type="parameter" name="filter" operator="equal" next="or">myPDF</condition>
-		<condition type="parameter" name="filter" operator="notequal"/>
-		<condition type="attribute" name="type" operator="notequal"/>  
+	<rule>		
 		<from>^/+user/+([^/?]+?)(\?(.*))?$</from>
 		<!-- NEW PAGE -->
 		<to>/user?requestedUser=$1&amp;$3</to>
-	</rule>	
-	<rule>		
-		<from>^/+user/+([^/?]+?)(\?(.*))?$</from>
-		<!-- OLD PAGE -->
-		<to>/ResourceHandler?page=user&amp;requUser=$1&amp;$3</to>
-	</rule>	
+	</rule>		
 
 	<rule>
 		<from>^/+user/+([^/?]+?)(\?(.*filter=.*))$</from>

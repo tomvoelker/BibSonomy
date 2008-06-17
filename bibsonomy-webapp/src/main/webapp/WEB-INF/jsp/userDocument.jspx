@@ -28,8 +28,18 @@
 			</form>		
 		</jsp:attribute>
 		
-		<jsp:attribute name="sidebar">		
+		<jsp:attribute name="info">		
+			<c:choose>
+		      <c:when test="${command.filter eq 'myDuplicates'}">
+		      	<fmt:message key="post.meta.duplicates"/> 
+		      </c:when>
+		      <c:otherwise>
+		     	 <fmt:message key="post.meta.documents"/> 
+		      </c:otherwise>
+		    </c:choose>			
+		</jsp:attribute>
 		
+		<jsp:attribute name="sidebar">		
 			<c:if test="${not empty command.requestedTags}">
 			<div class="smalltext">		
 			<!-- links to user's  or global concept / tag pages -->
