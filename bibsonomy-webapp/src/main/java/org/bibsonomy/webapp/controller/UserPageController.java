@@ -72,8 +72,11 @@ public class UserPageController extends MultiResourceListControllerWithTags impl
 			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, filter, null, command.getListCommand(resourceType).getEntriesPerPage());
 			this.postProcessAndSortList(command, resourceType);
 			
-			if (filter != FilterEntity.JUST_PDF && filter != FilterEntity.DUPLICATES) { 
-				int totalCount = this.logic.getStatistics(resourceType, groupingEntity, groupingName, null, null, requTags);
+			if (filter != FilterEntity.JUST_PDF) { 
+				//int totalCount = this.logic.getStatistics(resourceType, groupingEntity, groupingName, null, null, requTags);
+				int start = command.getListCommand(resourceType).getStart();
+				int totalCount = this.logic.getPostStatistics(resourceType, GroupingEntity.USER, groupingName, requTags, null, null, filter, start, start + command.getListCommand(resourceType).getEntriesPerPage(), null, null);
+								
 				command.getListCommand(resourceType).setTotalCount(totalCount);
 				totalNumPosts += totalCount;
 			}			

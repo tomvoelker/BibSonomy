@@ -75,7 +75,10 @@ public class GroupPageController extends MultiResourceListControllerWithTags imp
 			
 			// retrieve resource counts, if no tags are given
 			if (requTags.size() == 0 && filter != FilterEntity.JUST_PDF) { 
-				int totalCount = this.logic.getStatistics(resourceType, groupingEntity, groupingName, null, null, null);
+				//int totalCount = this.logic.getStatistics(resourceType, groupingEntity, groupingName, null, null, null);
+				int start = command.getListCommand(resourceType).getStart();
+				int totalCount = this.logic.getPostStatistics(resourceType, GroupingEntity.GROUP, groupingName, requTags, null, null, filter, start, start + command.getListCommand(resourceType).getEntriesPerPage(), null, null);
+				
 				command.getListCommand(resourceType).setTotalCount(totalCount);				
 			}
 		}		

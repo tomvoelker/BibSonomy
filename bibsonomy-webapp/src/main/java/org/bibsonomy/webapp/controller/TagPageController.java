@@ -57,7 +57,12 @@ public class TagPageController extends MultiResourceListControllerWithTags imple
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {			
 			this.setList(command, resourceType, GroupingEntity.ALL, null, requTags, null, order, null, null, command.getListCommand(resourceType).getEntriesPerPage());
 			this.postProcessAndSortList(command, resourceType);
-			int totalCount = this.logic.getStatistics(resourceType, GroupingEntity.ALL, null, null, null, requTags);
+						
+			//int totalCount = this.logic.getStatistics(resourceType, GroupingEntity.ALL, null, null, null, requTags);
+			int start = command.getListCommand(resourceType).getStart();
+			int totalCount = this.logic.getPostStatistics(resourceType, GroupingEntity.ALL, null, requTags, null, null, null, start, start + command.getListCommand(resourceType).getEntriesPerPage(), null, null);
+			
+			
 			command.getListCommand(resourceType).setTotalCount(totalCount);
 			// sum up
 			totalNumPosts += totalCount;
