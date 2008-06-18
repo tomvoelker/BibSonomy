@@ -272,4 +272,9 @@ public class RestLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public int getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search, StatisticsConstraint constraint) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
