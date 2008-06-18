@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
@@ -80,4 +81,33 @@ public interface PostLogicInterface {
 	 * @return resourceHash the hash of the updated resource
 	 */
 	public String updatePost(Post<?> post);
+	
+	/**  
+	 * retrieves the counts of a filterable list of posts.
+	 * 
+	 * @param resourceType resource type to be shown.
+	 * @param grouping
+	 *            grouping tells whom posts are to be shown: the posts of a
+	 *            user, of a group or of the viewables.
+	 * @param groupingName
+	 *            name of the grouping. if grouping is user, then its the
+	 *            username. if grouping is set to {@link GroupingEntity#ALL},
+	 *            then its an empty string!
+	 * @param tags
+	 *            a set of tags. remember to parse special tags like
+	 *            ->[tagname], -->[tagname] and <->[tagname]. see documentation.
+	 *            if the parameter is not used, its an empty list
+	 * @param hash
+	 *            hash value of a resource, if one would like to get a list of
+	 *            all posts belonging to a given resource. if unused, its empty
+	 *            but not null.
+	 * @param start inclusive start index of the view window
+	 * @param end exclusive end index of the view window
+	 * @param search free text search
+	 * @param order a flag indicating the way of sorting
+	 * @param filter filter for the retrieved posts
+	 * @param constraint - a possible contstraint on the statistics
+	 * @return a filtered list of posts. may be empty but not null
+	 */
+	public int getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search, StatisticsConstraint constraint);
 }

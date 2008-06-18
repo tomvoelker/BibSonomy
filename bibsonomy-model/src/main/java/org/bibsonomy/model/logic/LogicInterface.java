@@ -253,20 +253,6 @@ public interface LogicInterface extends PostLogicInterface {
 	public void deleteInetAdressStatus (InetAddress address);
 
 	/**
-	 * Retrieve statistics
-	 * 
-	 * @param resourceType - the requested resource type
-	 * @param grouping - grouping entity
-	 * @param groupingName - the grouping name
-	 * @param constraint - a possible contstraint on the statistics
-	 * @param search - search string
-	 * @param tags - a list of tags
-	 * @return an int representing a statistical information
-	 * @author dbe
-	 */
-	public int getStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, StatisticsConstraint constraint, String search, List<String> tags);
-
-	/**
 	 * Retrieve relations
 	 * 
 	 * @param resourceType - the reqtested resourcetype
