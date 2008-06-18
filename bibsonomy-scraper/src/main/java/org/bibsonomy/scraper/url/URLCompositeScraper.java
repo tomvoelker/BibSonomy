@@ -25,6 +25,7 @@ import org.bibsonomy.scraper.url.kde.informaworld.InformaWorldScraper;
 import org.bibsonomy.scraper.url.kde.ingenta.IngentaconnectScraper;
 import org.bibsonomy.scraper.url.kde.iop.IOPScraper;
 import org.bibsonomy.scraper.url.kde.iucr.IucrScraper;
+import org.bibsonomy.scraper.url.kde.jstor.JStorScraper;
 import org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper;
 import org.bibsonomy.scraper.url.kde.karlsruhe.UBKAScraper;
 import org.bibsonomy.scraper.url.kde.l3s.L3SScraper;
@@ -101,5 +102,6 @@ public class URLCompositeScraper extends CompositeScraper {
 		addScraper(new OSAScraper());
 		addScraper(new PsyContentScraper());
 		addScraper(new RSOCScraper());
+		addScraper(new JStorScraper());
 	}
 }

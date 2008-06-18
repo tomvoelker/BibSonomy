@@ -582,5 +582,16 @@
 		<BibFile>RSOCScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.rsoc.RSOCScraper</Scraper>
 	</URLTest>
-
+	<URLTest id="url_97">
+		<TestDescription>JStor Scraper url test 1</TestDescription>
+		<URL>http://www.jstor.org/pss/4142852</URL>
+		<BibFile>JStorScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.jstor.JStorScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_98">
+		<TestDescription>RSOC Scraper url test</TestDescription>
+		<URL>http://www.jstor.org/action/exportSingleCitation?singleCitation=true&amp;suffix=4142852</URL>
+		<BibFile>JStorScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.jstor.JStorScraper</Scraper>
+	</URLTest>
 </test:Tests>
