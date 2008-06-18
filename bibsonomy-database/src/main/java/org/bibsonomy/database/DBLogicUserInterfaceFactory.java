@@ -62,6 +62,24 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 			session.close();
 		}
 	}
+	
+	public boolean isOpenIdSessionValid(final String userName) {
+		final DBSession session = openSession();
+		try {
+			return userDBManager.isOpenIdSessionValid(userName, session);
+		} finally {
+			session.close();
+		}
+	}
+	
+	public void extendOpenIdSession(final String userName) {
+		final DBSession session = openSession();
+		try {
+			userDBManager.extendOpenIdSession(userName, session);
+		} finally {
+			session.close();
+		}
+	}
 
 	/**
 	 * @param dbSessionFactory

@@ -25,6 +25,7 @@
 	<typeAlias alias="bookmarkParam"      type="org.bibsonomy.database.params.BookmarkParam" />
 	<typeAlias alias="bibtexParam"        type="org.bibsonomy.database.params.BibTexParam" />
 	<typeAlias alias="bibtexExtraParam"   type="org.bibsonomy.database.params.BibTexExtraParam" />
+	<typeAlias alias="statisticParam"     type="org.bibsonomy.database.params.StatisticsParam" />	
 	<typeAlias alias="userParam"          type="org.bibsonomy.database.params.UserParam" />
 	<typeAlias alias="groupParam"         type="org.bibsonomy.database.params.GroupParam" />
 	<typeAlias alias="tagParam"           type="org.bibsonomy.database.params.TagParam" />	

@@ -16,6 +16,7 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
@@ -133,17 +134,17 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 	
 	@Test
-	public void getBibtexByTagNamesCount() {
-		ArrayList<String> tags = new ArrayList<String>();
-		ArrayList<Integer> groups = new ArrayList<Integer>();
-		tags.add("community");
-		Integer count = this.bibTexDb.getBibtexByTagNamesCount(tags, groups, this.dbSession);
-		assertEquals(179, count);
-		tags.add("social");
-		count = this.bibTexDb.getBibtexByTagNamesCount(tags, groups, this.dbSession);
+	public void getBibtexByTagNamesCount() {		
+		this.statisticsParam.addTagName("community");
+		this.statisticsParam.setContentTypeByClass(BibTex.class);
+
+		Integer count = this.bibTexDb.getBibtexByTagNamesCount(this.statisticsParam, this.dbSession);
+		assertEquals(179, count);		
+		this.statisticsParam.addTagName("social");
+		count = this.bibTexDb.getBibtexByTagNamesCount(this.statisticsParam, this.dbSession);
 		assertEquals(8, count);
-		tags.add("web2.0");
-		count = this.bibTexDb.getBibtexByTagNamesCount(tags, groups, this.dbSession);
+		this.statisticsParam.addTagName("web2.0");
+		count = this.bibTexDb.getBibtexByTagNamesCount(this.statisticsParam, this.dbSession);
 		assertEquals(0, count);
 	}
 
@@ -258,7 +259,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getBibTexDuplicateCount() {
 		Integer count = -1;
-		count = this.bibTexDb.getBibTexDuplicateCount(this.bibtexParam, this.dbSession);
+		count = this.bibTexDb.getBibTexDuplicateCount(this.statisticsParam, this.dbSession);
 		assertTrue(count >= 0);
 	}
 
@@ -270,7 +271,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getBibTexForGroupCount() {
 		Integer count = -1;
-		count = this.bibTexDb.getBibTexForGroupCount(this.bibtexParam, this.dbSession);
+		count = this.bibTexDb.getBibTexForGroupCount(this.statisticsParam, this.dbSession);
 		assertTrue(count >= 0);
 	}
 
@@ -287,12 +288,13 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.bibTexDb.getBibTexForUser(this.bibtexParam, this.dbSession);
 	}
 
+	
 	@Test
 	public void getBibTexForUserCount() {
-		this.bibTexDb.getBibTexForUserCount(this.bibtexParam, this.dbSession);
+		this.bibTexDb.getBibTexForUserCount(this.statisticsParam, this.dbSession);
 		this.resetParameters();
 		this.bibtexParam.setGroupId(GroupID.INVALID.getId());
-		this.bibTexDb.getBibTexForUserCount(this.bibtexParam, this.dbSession);
+		this.bibTexDb.getBibTexForUserCount(this.statisticsParam, this.dbSession);
 	}
 
 	@Test

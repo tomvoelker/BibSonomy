@@ -16,6 +16,7 @@ import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChain;
 import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
@@ -185,12 +186,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * @param visibleGroupIDs a list of groupIDs 
 	 * @return the number of visible bibtex entries
 	 */
-	public Integer getBibtexByTagNamesCount(final List<String> tags, final List<Integer> visibleGroupIDs, final DBSession session) {
-		BibTexParam param = new BibTexParam();
-		param.addGroups(visibleGroupIDs);
-		for (String tagName : tags) {
-			param.addTagName(tagName);
-		}
+	public Integer getBibtexByTagNamesCount(final StatisticsParam param, final DBSession session) {
 		return this.queryForObject("getBibTexByTagNamesCount", param, Integer.class, session);
 	}
 
@@ -254,30 +250,16 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		return this.bibtexList("getBibTexByTagNamesForUser", param, session);
 	}
 
-/**
+	/**
 	 * Retrieves the number of bibtex items tagged by the tags present in tagIndex by user requestedUserName
 	 * being visible to the logged in user
 	 * 
-	 * @param requestedUserName
-	 * 			owner of the bibtex items
-	 * @param loginUserName
-	 * 			logged in user
-	 * @param tags
-	 * 			a list of tags
-	 * @param visibleGroupIDs
-	 * 			a list of groupIDs the logged in user is member of
+	 * @param param 
 	 * @param session
 	 * 			DB session
 	 * @return the corresponding number of visible bibtex items
 	 */
-	public Integer getBibTexByTagNamesForUserCount(final String requestedUserName, final String loginUserName, final List<String> tags, final List<Integer> visibleGroupIDs, final DBSession session) {
-		BibTexParam param = new BibTexParam();
-		param.addGroups(visibleGroupIDs);
-		param.setRequestedUserName(requestedUserName);
-		param.setUserName(loginUserName);
-		for (String tag : tags) {
-			param.addTagName(tag);
-		}
+	public Integer getBibTexByTagNamesForUserCount(final StatisticsParam param, final DBSession session) {
 		return this.queryForObject("getBibTexByTagNamesForUserCount", param, Integer.class, session);
 	}
 
@@ -705,7 +687,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * @param session
 	 * @return number of duplicates
 	 */
-	public Integer getBibTexDuplicateCount(final BibTexParam param, final DBSession session) {
+	public Integer getBibTexDuplicateCount(final StatisticsParam param, final DBSession session) {
 		return this.queryForObject("getBibTexDuplicateCount", param, Integer.class, session);
 	}
 	
@@ -803,7 +785,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * @param session
 	 * @return number of publications belonging to the given group
 	 */
-	public Integer getBibTexForGroupCount(final BibTexParam param, final DBSession session) {
+	public Integer getBibTexForGroupCount(final StatisticsParam param, final DBSession session) {
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
 		return this.queryForObject("getBibTexForGroupCount", param, Integer.class, session);
 	}
@@ -954,7 +936,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * @param session
 	 * @return number of publications for a given user
 	 */
-	public Integer getBibTexForUserCount(final BibTexParam param, final DBSession session) {
+	public Integer getBibTexForUserCount(final StatisticsParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		return this.queryForObject("getBibTexForUserCount", param, Integer.class, session);
 	}

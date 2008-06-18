@@ -13,7 +13,9 @@ import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChain;
+import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
+import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
@@ -116,12 +118,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @param visibleGroupIDs a list of visible group IDs
 	 * @return the number of visible bookmark entries
 	 */
-	public Integer getBookmarkByTagNamesCount(final List<String> tags, final List<Integer> visibleGroupIDs, final DBSession session) {
-		BookmarkParam param = new BookmarkParam();
-		param.addGroups(visibleGroupIDs);
-		for (String tagName : tags) {
-			param.addTagName(tagName);
-		}
+	public Integer getBookmarkByTagNamesCount(final StatisticsParam param, final DBSession session) {
 		return this.queryForObject("getBookmarkByTagNamesCount", param, Integer.class, session);
 	}	
 
@@ -149,26 +146,12 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * Retrieves the number of bookmark items tagged by the tags present in tagIndex by user requestedUserName
 	 * being visible to the logged in user
 	 * 
-	 * @param requestedUserName
-	 * 			owner of the bookmark items
-	 * @param loginUserName
-	 * 			logged in user
-	 * @param tags
-	 * 			a list of tags
-	 * @param visibleGroupIDs
-	 * 			a list of groupIDs the logged in user is member of
+	 * @param param StatisticsParam  	
 	 * @param session
 	 * 			DB session
 	 * @return the corresponding number of visible bibtex items
 	 */
-	public Integer getBookmarkByTagNamesForUserCount(final String requestedUserName, final String loginUserName, final List<String> tags, final List<Integer> visibleGroupIDs, final DBSession session) {
-		BookmarkParam param = new BookmarkParam();
-		param.addGroups(visibleGroupIDs);
-		param.setRequestedUserName(requestedUserName);
-		param.setUserName(loginUserName);
-		for (String tag : tags) {
-			param.addTagName(tag);
-		}
+	public Integer getBookmarkByTagNamesForUserCount(final StatisticsParam param, final DBSession session) {
 		return this.queryForObject("getBookmarkByTagNamesForUserCount", param, Integer.class, session);
 	}	
 
@@ -633,7 +616,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @param session
 	 * @return number of bookmarks for a given group
 	 */
-	public Integer getBookmarkForGroupCount(final BookmarkParam param, final DBSession session) {
+	public Integer getBookmarkForGroupCount(final StatisticsParam param, final DBSession session) {
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
 		return this.queryForObject("getBookmarkForGroupCount", param, Integer.class, session);
 	}
@@ -748,17 +731,11 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	/**
 	 * Returns the number of bookmarks for a given user.
 	 * 
-	 * @param requestedUserName
-	 * @param loginUserName
-	 * @param visibleGroupIDs 
+	 * @param param StatisticsParam
 	 * @param session
 	 * @return the number of bookmarks of the requested User which the logged in user is allowed to see
 	 */
-	public Integer getBookmarkForUserCount(final String requestedUserName, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session) {
-		BookmarkParam param = new BookmarkParam();
-		param.setRequestedUserName(requestedUserName);
-		param.setUserName(loginUserName);
-		param.addGroups(visibleGroupIDs);
+	public Integer getBookmarkForUserCount(final StatisticsParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session); // set groups
 		return this.queryForObject("getBookmarkForUserCount", param, Integer.class, session);
 	}

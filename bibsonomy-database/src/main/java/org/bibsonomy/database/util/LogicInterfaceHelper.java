@@ -8,6 +8,7 @@ import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.GroupParam;
+import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
@@ -171,6 +172,8 @@ public class LogicInterfaceHelper {
 			return (T) new GroupParam();
 		} else if (type == TagRelationParam.class) {
 			return (T) new TagRelationParam();
+		} else if (type == StatisticsParam.class) {
+			return (T) new StatisticsParam();
 		} else {
 			throw new RuntimeException("Can't instantiate param: " + type.getName());
 		}

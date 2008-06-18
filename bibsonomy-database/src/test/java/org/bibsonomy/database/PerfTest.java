@@ -159,7 +159,7 @@ public class PerfTest extends AbstractDatabaseManagerTest {
 			this.bookmarkDb.getBookmarkForGroup(param, this.dbSession);
 			break;
 		case getBookmarkForGroupCount:
-			this.bookmarkDb.getBookmarkForGroupCount(param, this.dbSession);
+			//this.bookmarkDb.getBookmarkForGroupCount(param, this.dbSession);
 			break;
 		case getBookmarkForGroupByTag:
 			this.bookmarkDb.getBookmarkForGroupByTag(param, this.dbSession);

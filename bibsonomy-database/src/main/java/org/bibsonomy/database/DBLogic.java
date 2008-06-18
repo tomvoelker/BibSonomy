@@ -40,6 +40,7 @@ import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.GenericParam;
+import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
@@ -836,40 +837,30 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
-
-	/** 
-	 * Query statistical information
-	 * 
-	 * TODO: as soon as more statistics are added, a chain should be defined
-	 * 
-	 * @see org.bibsonomy.model.logic.LogicInterface#getStatistics(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, org.bibsonomy.common.enums.StatisticsConstraint, java.lang.String, List)
+	
+	/**
+	 * Query statistical information regarding posts
 	 */
-	public int getStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final StatisticsConstraint constraint, final String search, final List<String> tags) {
+	public int getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search, StatisticsConstraint constraint) {
 		final DBSession session = openSession();
+		final Integer result;
+
 		try {
-			if (grouping.equals(GroupingEntity.USER) && groupingName != null && groupingName != "") {
-				if (tags != null && tags.size() > 0) {
-					return this.statisticsDBManager.getNumberOfResourcesForUserAndTags(resourceType, tags, groupingName, this.loginUser.getName(), UserUtils.getListOfGroupIDs(this.loginUser), session);
-				}
-				return this.statisticsDBManager.getNumberOfResourcesForUser(resourceType, groupingName, this.loginUser.getName(), UserUtils.getListOfGroupIDs(this.loginUser), session);
-			} else if (grouping.equals(GroupingEntity.GROUP) && groupingName != null && groupingName != "") {
-				Group group = this.groupDBManager.getGroupByName(groupingName, session);
-				if (group == null) {
-					log.debug("group " + groupingName + " does not exist");
-					return 0;
-				}
-				return this.statisticsDBManager.getNumberOfResourcesForGroup(resourceType, group.getGroupId(), UserUtils.getListOfGroupIDs(this.loginUser), session);
-			} else if (grouping.equals(GroupingEntity.ALL) && tags != null) {
-				return this.statisticsDBManager.getNumberOfResourcesForTags(resourceType, tags, UserUtils.getListOfGroupIDs(this.loginUser), session);
+			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, this.loginUser);
+			if (resourceType == BibTex.class || resourceType == Bookmark.class || resourceType == Resource.class) {
+				param.setContentTypeByClass(resourceType);
+				param.setFilter(filter);
+				result = this.statisticsDBManager.getPostStatistics(param, session);
 			} else {
-				throw new RuntimeException("Can't handle statistics request");
+				throw new UnsupportedResourceTypeException("The requested resourcetype (" + resourceType.getClass().getName() + ") is not supported.");
 			}
 		} catch (final QueryTimeoutException ex) {
-			// if a query times out, we return 0
+			// if a query times out, we return an empty list
 			return 0;
 		} finally {
 			session.close();
 		}
+		return result;
 	}
 
 	public List<Tag> getConcepts(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final ConceptStatus status, final int start, final int end) {

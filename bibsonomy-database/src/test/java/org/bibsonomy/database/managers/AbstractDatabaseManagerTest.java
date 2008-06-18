@@ -133,7 +133,10 @@ public abstract class AbstractDatabaseManagerTest {
 		this.tagParam = ParamUtils.getDefaultTagParam();
 		this.tagRelationParam = ParamUtils.getDefaultTagRelationParam();
 		this.groupParam = ParamUtils.getDefaultGroupParam();
+		
 		this.statisticsParam = new StatisticsParam();
+		statisticsParam.setRequestedContentId(1924061);
+		statisticsParam.setHash("0000175071e6141a7d36835489f922ef"); // from user dblp
 	}
 
 	protected DBSessionFactory getDbSessionFactory() {
