@@ -122,6 +122,8 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		}
 
 		this.insert("logPrediction", param, session);
+		this.insert("logCurrentPrediction", param, session);
+		
 		return user.getName();
 	}
 
