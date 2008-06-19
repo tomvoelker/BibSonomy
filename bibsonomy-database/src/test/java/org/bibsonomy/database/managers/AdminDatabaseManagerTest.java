@@ -4,6 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Date;
+
+import org.bibsonomy.model.User;
 
 import org.bibsonomy.common.enums.ClassifierMode;
 import org.bibsonomy.common.enums.ClassifierSettings;
@@ -16,7 +19,7 @@ import org.junit.Test;
  * @author Stefan Stützer
  * @version $Id$
  */
-@Ignore
+
 public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	/**
@@ -93,5 +96,23 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		final String result = this.adminDb.getClassifierSettings(settingsKey, this.dbSession);
 		assertEquals(value, result);
+	}
+	
+	/**
+	 * tests logging when flagging and unflagging spammers
+	 */
+	@Test
+	public void updatePredictionLogs(){
+		final User user = new User(); 
+		user.setName("beate"); 
+		user.setSpammer(0);
+		user.setToClassify(1); 
+		user.setPrediction(0);
+		user.setMode("D"); 
+		user.setAlgorithm("testlogging"); 
+		user.setUpdatedBy("classifier");
+		//flag spammer (flagging does not change: user is no spammer)
+		final String result = this.adminDb.flagSpammer(user, "classifier", "on", this.dbSession);
+		assertEquals(user.getName(), result); 
 	}
 }
