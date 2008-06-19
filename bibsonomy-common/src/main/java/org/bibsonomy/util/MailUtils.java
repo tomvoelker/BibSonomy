@@ -1,9 +1,7 @@
 package org.bibsonomy.util;
 
-import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.ResourceBundle;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -13,6 +11,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import org.apache.log4j.Logger;
+import org.springframework.context.MessageSource;
 
 
 /**
@@ -30,10 +29,9 @@ public class MailUtils {
 	private String projectBlog;
 	private String projectEmail;
 	private String projectRegistrationFromAddress;
-	/**
-	 * Prefix of the property files holding the localized messages. 
-	 */
-	private final static String messagesFileNamePrefix = "messages";
+	
+	private MessageSource messageSource;
+
 	/**
 	 * Stores the properties for mailing (mail host). 
 	 */
@@ -53,8 +51,8 @@ public class MailUtils {
 		/*
 		 * Format the message "mail.registration.body" with the given parameters.
 		 */
-		final String messageBody    = getFormattedMessage(locale, "mail.registration.body", messagesParameters);
-		final String messageSubject = getFormattedMessage(locale, "mail.registration.subject", messagesParameters);
+		final String messageBody    = messageSource.getMessage("mail.registration.body", messagesParameters, locale);
+		final String messageSubject = messageSource.getMessage("mail.registration.subject", messagesParameters, locale);
 
 		/*
 		 * set the recipients
@@ -68,35 +66,6 @@ public class MailUtils {
 		}
 		return false;
 	}
-
-	/** Inserts the parameters into the message.
-	 * 
-	 * @param language
-	 * @param country
-	 * @param messageKey
-	 * @param messageParameters
-	 * @return
-	 */
-	private String getFormattedMessage(final Locale locale, final String messageKey, final Object[] messageParameters) {
-		/*
-		 * get the locale for the given language and country.
-		 */
-		final ResourceBundle messages = ResourceBundle.getBundle(messagesFileNamePrefix, locale);
-		/*
-		 * prepare a formatter for the given locale
-		 */
-		final MessageFormat formatter = new MessageFormat("");
-		formatter.setLocale(locale);
-		/*
-		 * load the message
-		 */
-		formatter.applyPattern(messages.getString(messageKey));
-		/*
-		 * format the message
-		 */
-		return formatter.format(messageParameters);
-	}
-
 
 	/** Sends a mail to the given recipients
 	 * @param recipients
@@ -185,6 +154,13 @@ public class MailUtils {
 	 */
 	public void setMailHost(String mailHost) {
 		props.put("mail.smtp.host", mailHost);
+	}
+
+	/** A message source to format mail messages.
+	 * @param messageSource
+	 */
+	public void setMessageSource(MessageSource messageSource) {
+		this.messageSource = messageSource;
 	}
 
 

@@ -10,6 +10,7 @@ import java.util.Properties;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.context.support.ResourceBundleMessageSource;
 
 /**
  * @author Robert Jäschke
@@ -42,6 +43,9 @@ public class MailUtilsTest {
 		utils.setProjectName(props.getProperty("project.name"));
 		utils.setProjectRegistrationFromAddress(props.getProperty("project.registrationFromAddress"));
 		
+		final ResourceBundleMessageSource resourceBundleMessageSource = new ResourceBundleMessageSource();
+		resourceBundleMessageSource.setBasename("messages");
+		utils.setMessageSource(resourceBundleMessageSource);
 		
 		return utils;
 	}
@@ -50,10 +54,10 @@ public class MailUtilsTest {
 	 * Test, if sending registration mails works.
 	 */
 	@Test
-	@Ignore
+	//@Ignore
 	public void testSendRegistrationMail() {
 		try {
-			assertTrue(mailUtils.sendRegistrationMail("testuser", "jaeschke@cs.uni-kassel.de", "255.255.255.255", new Locale("en")));
+			assertTrue(mailUtils.sendRegistrationMail("testuser", "devnull@cs.uni-kassel.de", "255.255.255.255", new Locale("en")));
 		} catch (Exception e) {
 			fail();
 		}
