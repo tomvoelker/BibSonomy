@@ -19,7 +19,7 @@ import org.junit.Test;
  * @author Stefan Stützer
  * @version $Id$
  */
-
+@Ignore
 public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	/**
