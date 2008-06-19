@@ -82,7 +82,8 @@ public class MailUtils {
 		session.setDebug(debug);
 
 		// create a message
-		final Message msg = new MimeMessage(session);
+		final MimeMessage msg = new MimeMessage(session);
+		
 
 		// set the from and to address
 		final InternetAddress addressFrom = new InternetAddress(from);
@@ -99,7 +100,7 @@ public class MailUtils {
 
 		// Setting the Subject and Content Type
 		msg.setSubject(subject);
-		msg.setText(message);
+		msg.setText(message, "UTF-8");
 		Transport.send(msg);
 	}
 
