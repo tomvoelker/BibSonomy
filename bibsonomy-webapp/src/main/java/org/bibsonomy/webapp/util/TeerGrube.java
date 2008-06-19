@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
  * Every add-call increases the penalty waiting time of that entity.
  *     
  * @author rja
- *
+ * @version $Id$
  */
 public class TeerGrube {
 
