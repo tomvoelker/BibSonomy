@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!--
+	   webapp independent bean configurations
+
+       in principle, the DBlogic should be here as well, but it is currently coupled
+       via FactoryBeans
+	
+	-->
+
+
+	<!-- extracts properties from the provided file and inserts them into this file -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>/WEB-INF/project.properties</value>
+		</property>
+	</bean>
+	
+	<!-- to resolve messages -->
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<!-- matches messages.properties, messages_de.properties, ... -->
+		<property name="basenames" value="messages"/>
+	</bean>	
+	
+	<!-- handles sending of mails  -->
+	<bean id="mailUtils" class="org.bibsonomy.util.MailUtils" scope="singleton">
+		<property name="projectHome"><value>${project.home}</value></property>
+		<property name="projectName"><value>${project.name}</value></property>
+		<property name="projectBlog"><value>${project.blog}</value></property>
+		<property name="projectEmail"><value>${project.email}</value></property>
+		<property name="projectRegistrationFromAddress"><value>${project.registrationFromAddress}</value></property>
+		<property name="mailHost"><value>${mail.smtp.host}</value></property>
+		<property name="messageSource" ref="messageSource"/>
+	</bean>
+	
+</beans>
