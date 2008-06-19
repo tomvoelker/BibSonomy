@@ -1,13 +1,12 @@
 package org.bibsonomy.util;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.util.Locale;
+import java.util.Properties;
 
-import org.bibsonomy.testutil.JNDITestProjectParams;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -18,22 +17,33 @@ import org.junit.Test;
  */
 public class MailUtilsTest {
 
+	private MailUtils mailUtils;
+	
 	/**
 	 * do before testing
+	 * @throws IOException 
 	 */
 	@Before
-	public void init() {
-		JNDITestProjectParams.bind();
+	public void init() throws IOException {
+		final Properties props = new Properties();
+		props.load(MailUtilsTest.class.getClassLoader().getResourceAsStream("project.properties"));
+		mailUtils = getMailUtils(props);
+		
+		
 	}
-
-	/**
-	 * Test instantiation.
-	 * 
-	 * @throws Exception
-	 */
-	@Test
-	public void testInstantiation() throws Exception {
-		assertNotNull(MailUtils.getInstance());
+	
+	private MailUtils getMailUtils(final Properties props) {
+		final MailUtils utils = new MailUtils();
+		
+		utils.setMailHost(props.getProperty("mail.smtp.host"));
+		utils.setProjectBlog(props.getProperty("project.blog"));
+		utils.setProjectEmail(props.getProperty("project.email"));
+		utils.setProjectHome(props.getProperty("project.home"));
+		utils.setProjectName(props.getProperty("project.name"));
+		utils.setProjectRegistrationFromAddress(props.getProperty("project.registrationFromAddress"));
+		
+		
+		return utils;
 	}
 
 	/**
@@ -43,18 +53,10 @@ public class MailUtilsTest {
 	@Ignore
 	public void testSendRegistrationMail() {
 		try {
-			MailUtils utils = MailUtils.getInstance();
-			assertTrue(utils.sendRegistrationMail("testuser", "devnull@cs.uni-kassel.de", "255.255.255.255", new Locale("en")));
+			assertTrue(mailUtils.sendRegistrationMail("testuser", "jaeschke@cs.uni-kassel.de", "255.255.255.255", new Locale("en")));
 		} catch (Exception e) {
 			fail();
 		}
 	}
 
-	/**
-	 * do after testing
-	 */
-	@After
-	public void shutdown() {
-		JNDITestProjectParams.unbind();
-	}
 }
