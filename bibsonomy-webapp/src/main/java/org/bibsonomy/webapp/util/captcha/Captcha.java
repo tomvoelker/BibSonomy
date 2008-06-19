@@ -19,9 +19,9 @@ public interface Captcha {
 	 * 
 	 * @param challenge
 	 * @param response
-	 * @param hostInetAddress
+	 * @param remoteHostInetAddress
 	 * @return A response containing errors and information about the validity.
 	 */
-	public CaptchaResponse checkAnswer(final String challenge, final String response, final String hostInetAddress);
+	public CaptchaResponse checkAnswer(final String challenge, final String response, final String remoteHostInetAddress);
 	
 }
