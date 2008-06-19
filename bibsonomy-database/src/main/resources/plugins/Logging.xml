@@ -72,6 +72,11 @@
 		INSERT INTO log_prediction (`user_name`, `prediction`, `timestamp`, `updated_at`, `algorithm` , `mode`)
 		VALUES (#userName#, #prediction#, UNIX_TIMESTAMP(NOW()), #updatedAt#, #algorithm#, #mode#)
 	</insert>
+		
+	<insert id="logCurrentPrediction" parameterClass="adminParam">
+		REPLACE INTO prediction (`user_name`, `prediction`, `timestamp`, `updated_at`, `algorithm` , `mode`, `evaluator`)
+		VALUES (#userName#, #prediction#, UNIX_TIMESTAMP(NOW()), #updatedAt#, #algorithm#, #mode#, 0)
+	</insert>
 
 	<select id="countNewContentIdFromBibTex" resultClass="int" parameterClass="bibtexParam">
 		SELECT COUNT(*)	AS count FROM log_bibtex LB WHERE LB.new_content_id=#newContentId#
