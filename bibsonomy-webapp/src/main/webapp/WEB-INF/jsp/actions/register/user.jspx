@@ -67,7 +67,7 @@
 
                 <tr>
                   <td><form:label path="recaptcha_response_field" ><fmt:message key="captcha"/>:</form:label></td>
-                  <td>${command.reCaptchaHTML}<form:errors cssClass="errmsg" path="recaptcha_response_field" /></td>
+                  <td>${command.captchaHTML}<form:errors cssClass="errmsg" path="recaptcha_response_field" /></td>
                 </tr>
 
                 <tr>
