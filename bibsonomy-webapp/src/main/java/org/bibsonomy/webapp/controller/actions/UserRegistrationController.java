@@ -3,10 +3,6 @@ package org.bibsonomy.webapp.controller.actions;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Locale;
-import java.util.Properties;
-
-import net.tanesha.recaptcha.ReCaptcha;
-import net.tanesha.recaptcha.ReCaptchaResponse;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.InetAddressStatus;
@@ -28,6 +24,8 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.captcha.Captcha;
+import org.bibsonomy.webapp.util.captcha.CaptchaResponse;
 import org.bibsonomy.webapp.validation.UserRegistrationValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
@@ -52,9 +50,10 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 	protected LogicInterface logic;
 	protected LogicInterface adminLogic;
 	private Errors errors = null;
-	private ReCaptcha reCaptcha;
+	private Captcha captcha;
 	private RequestLogic requestLogic;
 	private CookieLogic cookieLogic;
+	private MailUtils mailUtils;
 
 	/**
 	 * @param logic - an instance of the logic interface.
@@ -178,7 +177,7 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 			/*
 			 * Generate HTML to show captcha.
 			 */
-			command.setReCaptchaHTML(createReCaptchaHtml(locale));
+			command.setCaptchaHTML(captcha.createCaptchaHtml(locale));
 			return Views.REGISTER_USER;
 		}
 
@@ -191,7 +190,7 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 			 * yes -> user must choose another name
 			 */
 			errors.rejectValue("registerUser.name", "error.field.duplicate.user.name");
-			command.setReCaptchaHTML(createReCaptchaHtml(locale));
+			command.setCaptchaHTML(captcha.createCaptchaHtml(locale));
 			return Views.REGISTER_USER;
 		}
 
@@ -238,7 +237,7 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 		 * send registration confirmation mail
 		 */
 		try {
-			MailUtils.getInstance().sendRegistrationMail(registerUser.getName(), registerUser.getEmail(), inetAddress, locale);
+			mailUtils.sendRegistrationMail(registerUser.getName(), registerUser.getEmail(), inetAddress, locale);
 		} catch (final Exception e) {
 			log.error("Could not send registration confirmation mail for user " + registerUser.getName(), e);
 		}
@@ -280,7 +279,7 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 			 * check captcha response
 			 */
 			try {
-				final ReCaptchaResponse res = reCaptcha.checkAnswer(hostInetAddress, challenge, response);
+				final CaptchaResponse res = captcha.checkAnswer(hostInetAddress, challenge, response);
 
 				log.error("Error validating captcha response: " + res.getErrorMessage());
 
@@ -292,21 +291,6 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 				throw new InternServerException("error.captcha");
 			}
 		}
-	}
-
-	/** Creates the HTML string which displays the captcha.
-	 * 
-	 * @param locale - to determine the language for the captcha description.
-	 * @return A HTML string for the captcha. 
-	 */
-	private String createReCaptchaHtml(final Locale locale) {
-		final Properties props = new Properties();
-		/*
-		 * set language
-		 */
-		props.setProperty("lang", locale.getLanguage());
-
-		return reCaptcha.createRecaptchaHtml(null, props);
 	}
 
 	public Errors getErrors() {
@@ -352,13 +336,13 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 		return new UserRegistrationValidator();
 	}
 
-	/** Give this controller an instance of {@link ReCaptcha}.
+	/** Give this controller an instance of {@link Captcha}.
 	 * 
-	 * @param reCaptcha
+	 * @param captcha
 	 */
 	@Required
-	public void setReCaptcha(ReCaptcha reCaptcha) {
-		this.reCaptcha = reCaptcha;
+	public void setCaptcha(Captcha captcha) {
+		this.captcha = captcha;
 	}
 
 	/** The logic needed to access the request
@@ -383,6 +367,14 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 	 */
 	public void setSuccessRedirect(String successRedirect) {
 		this.successRedirect = successRedirect;
+	}
+
+	/** Injects an instance of the MailUtils to send registration success mails.
+	 * @param mailUtils
+	 */
+	@Required
+	public void setMailUtils(MailUtils mailUtils) {
+		this.mailUtils = mailUtils;
 	}
 
 }

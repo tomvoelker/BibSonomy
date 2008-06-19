@@ -39,7 +39,7 @@ public class UserRegistrationValidator implements Validator<UserRegistrationComm
 		 * reCaptcha JavaScript. Incoming requests should never have this attribute
 		 * set.
 		 */
-		if (org.bibsonomy.util.ValidationUtils.present(command.getReCaptchaHTML())) {
+		if (org.bibsonomy.util.ValidationUtils.present(command.getCaptchaHTML())) {
 			errors.reject("error.invalid_parameter");
 		}
 

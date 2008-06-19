@@ -29,7 +29,7 @@ public class UserRegistrationCommand extends BaseCommand implements Serializable
 	 * Contains the HTML-Code to view the reCaptcha. Is filled ONLY by the controller!
 	 * Any validator must check, that the user did not fill this field.
 	 */
-	private String reCaptchaHTML;
+	private String captchaHTML;
 	/**
 	 * The (encoded) challenge the user has to solve. Is given as a request parameter by 
 	 * the reCaptcha form.
@@ -57,12 +57,12 @@ public class UserRegistrationCommand extends BaseCommand implements Serializable
 		this.registerUser = registerUser;
 	}
 
-	public String getReCaptchaHTML() {
-		return this.reCaptchaHTML;
+	public String getCaptchaHTML() {
+		return this.captchaHTML;
 	}
 
-	public void setReCaptchaHTML(String reCaptchaHTML) {
-		this.reCaptchaHTML = reCaptchaHTML;
+	public void setCaptchaHTML(String captchaHTML) {
+		this.captchaHTML = captchaHTML;
 	}
 
 	public String getRecaptcha_challenge_field() {
