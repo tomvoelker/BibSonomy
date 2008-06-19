@@ -279,12 +279,18 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 			 * check captcha response
 			 */
 			try {
-				final CaptchaResponse res = captcha.checkAnswer(hostInetAddress, challenge, response);
-
-				log.error("Error validating captcha response: " + res.getErrorMessage());
+				final CaptchaResponse res = captcha.checkAnswer(challenge, response, hostInetAddress);
 
 				if (!res.isValid()) {
+					/*
+					 * invalid response from user
+					 */
 					errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
+				} else if (res.getErrorMessage() != null) {
+					/*
+					 * valid response, but still an error
+					 */
+					log.warn("Could not validate captcha response: " + res.getErrorMessage());
 				}
 			} catch (final Exception e) {
 				log.fatal("Could not validate captcha response.", e);
