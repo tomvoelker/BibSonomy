@@ -123,7 +123,7 @@ public class UserRegistrationValidatorTest {
 		/*
 		 * set HTML
 		 */
-		command.setReCaptchaHTML("bar");
+		command.setCaptchaHTML("bar");
 
 		/*
 		 * should not fail
