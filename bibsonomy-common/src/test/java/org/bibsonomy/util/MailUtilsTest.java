@@ -54,7 +54,7 @@ public class MailUtilsTest {
 	 * Test, if sending registration mails works.
 	 */
 	@Test
-	//@Ignore
+	@Ignore
 	public void testSendRegistrationMail() {
 		try {
 			assertTrue(mailUtils.sendRegistrationMail("testuser", "devnull@cs.uni-kassel.de", "255.255.255.255", new Locale("en")));
