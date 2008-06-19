@@ -296,8 +296,7 @@
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 	</bean>	
 	
-	<bean id="dbSessionFactory" class="org.bibsonomy.database.util.IbatisDBSessionFactory">
-	</bean>
+	<bean id="dbSessionFactory" class="org.bibsonomy.database.util.IbatisDBSessionFactory"/>
 	
 	<!--  #################### factory beans #################### -->
 
@@ -332,20 +331,7 @@
 	<bean id="logic" class="org.bibsonomy.webapp.util.spring.factorybeans.LogicFactoryBean" scope="request">
 		<property name="user" ref="loginUser"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
-	</bean>	
-	
-	
-	<!--  #################### custom property editors #################### -->
-	<bean class="org.springframework.beans.factory.config.CustomEditorConfigurer">
-		<property name="customEditors">
-			<map>
-				<entry key="java.net.URL">
-					<bean class="org.springframework.beans.propertyeditors.URLEditor"/>
-				</entry>
-			</map>
-		</property>
-	</bean>
-	
+	</bean>		
 	
 	<!--  #################### interceptors #################### -->
 
@@ -361,10 +347,7 @@
 	
 	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver"/>
 	
-	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
-		<property name="basenames" value="messages"/>
-	</bean>	
-	  
+  
 
 	<!--  #################### view resolver #################### -->
 	
