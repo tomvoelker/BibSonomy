@@ -11,14 +11,12 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
 
+
 /**
- * @author Robert Jäschke
+ * @author rja
  * @version $Id$
  */
 public class MailUtils {
@@ -31,56 +29,16 @@ public class MailUtils {
 	private String projectHome;
 	private String projectBlog;
 	private String projectEmail;
-	private String projectFromAddress;
+	private String projectRegistrationFromAddress;
 	/**
 	 * Prefix of the property files holding the localized messages. 
 	 */
 	private final static String messagesFileNamePrefix = "messages";
 	/**
-	 * This class is a singleton. 
-	 */
-	private static MailUtils instance = null;
-	/**
 	 * Stores the properties for mailing (mail host). 
 	 */
 	final Properties props = new Properties();
 	
-	/**
-	 * @return An instance of the MailUtils.
-	 * @throws NamingException 
-	 */
-	public static MailUtils getInstance() throws NamingException {
-		if (instance == null) {
-			instance = initializeInstance();
-		}
-		return instance;
-	}
-
-	private MailUtils () {
-		// singleton
-	}
-
-	private static MailUtils initializeInstance() throws NamingException {
-		final MailUtils mailUtils = new MailUtils();
-
-		/*
-		 * configure project properties
-		 */
-		final Context context = (Context) new InitialContext().lookup("java:/comp/env");
-		mailUtils.projectName = (String) context.lookup("projectName");
-		mailUtils.projectHome = (String) context.lookup("projectHome");
-		mailUtils.projectBlog = (String) context.lookup("projectBlog");
-		mailUtils.projectEmail = (String) context.lookup("projectEmail");
-		mailUtils.projectFromAddress = (String) context.lookup("projectFromAddress");
-		
-		/*
-		 * Set the host smtp address
-		 */
-		mailUtils.props.put("mail.smtp.host", context.lookup("mailhost"));
-		
-		return mailUtils;
-	}
-
 
 	/** Sends the registration mail to the user and to the project admins.
 	 * 
@@ -103,7 +61,7 @@ public class MailUtils {
 		 */
 		final String recipient[] = new String[] {userEmail};
 		try {
-			sendMail(recipient,  messageSubject, messageBody, projectFromAddress);
+			sendMail(recipient,  messageSubject, messageBody, projectRegistrationFromAddress);
 			return true;
 		} catch (final MessagingException e) {
 			log.fatal("Could not send registration mail: " + e.getMessage());
@@ -175,5 +133,59 @@ public class MailUtils {
 		msg.setText(message);
 		Transport.send(msg);
 	}
+
+
+	/** The name of the project.
+	 * 
+	 * @param projectName
+	 */
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
+
+	/** The base URL of the project.
+	 * 
+	 * @param projectHome
+	 */
+	public void setProjectHome(String projectHome) {
+		this.projectHome = projectHome;
+	}
+
+
+	/** A URL to the blog of the project.
+	 * 
+	 * @param projectBlog
+	 */
+	public void setProjectBlog(String projectBlog) {
+		this.projectBlog = projectBlog;
+	}
+
+
+	/** The email address users can use to contact the project admins. 
+	 * 
+	 * @param projectEmail
+	 */
+	public void setProjectEmail(String projectEmail) {
+		this.projectEmail = projectEmail;
+	}
+
+
+	/** The From: address of registration mails. 
+	 * 
+	 * @param projectRegistrationFromAddress
+	 */
+	public void setProjectRegistrationFromAddress(String projectRegistrationFromAddress) {
+		this.projectRegistrationFromAddress = projectRegistrationFromAddress;
+	}
+
+	/** A host which accepts SMTP requests and should be used for sending mails.
+	 * 
+	 * @param mailHost
+	 */
+	public void setMailHost(String mailHost) {
+		props.put("mail.smtp.host", mailHost);
+	}
+
 
 }
