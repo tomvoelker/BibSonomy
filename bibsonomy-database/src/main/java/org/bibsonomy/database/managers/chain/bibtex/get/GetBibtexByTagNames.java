@@ -20,7 +20,8 @@ import org.bibsonomy.model.enums.Order;
  * @version $Id$
  */
 public class GetBibtexByTagNames extends BibTexChainElement {
-
+	
+	// Tag pages can only contain public posts. Take notice when adapt it for new method / db
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		return this.db.getBibTexByTagNames(param, session);
