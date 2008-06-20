@@ -696,6 +696,11 @@ CREATE TABLE `log_collector` (
 -- Data for table `log_collector`
 -- 
 
+INSERT INTO `collector` (`user_name`, `content_id`, `date`) VALUES
+('testuser1', 10, '2008-06-18 14:27:35'),
+('testuser1', 12, '2008-06-18 14:27:35'),
+('testuser2', 13, '2008-06-18 14:33:01'),
+('testuser2', 14, '2008-06-18 14:33:22');
 
 -- --------------------------------------------------------
 
@@ -948,6 +953,8 @@ CREATE TABLE `search_bibtex` (
 -- Data for table `search_bibtex`
 -- 
 
+INSERT INTO `search_bibtex` (`content_id`, `content`, `author`, `group`, `date`, `user_name`) VALUES
+(10, 'test bibtext search string', 'author', 0, '1815-12-10 00:00:00', 'testuser1');
 
 -- --------------------------------------------------------
 
@@ -1247,6 +1254,9 @@ CREATE TABLE `temp_bibtex` (
 -- Data for table `temp_bibtex`
 -- 
 
+INSERT INTO `temp_bibtex` (`content_id`, `journal`, `volume`, `chapter`, `edition`, `month`, `day`, `bookTitle`, `howPublished`, `institution`, `organization`, `publisher`, `address`, `school`, `series`, `bibtexKey`, `date`, `user_name`, `url`, `type`, `description`, `annote`, `note`, `pages`, `bKey`, `number`, `crossref`, `misc`, `bibtexAbstract`, `entrytype`, `title`, `author`, `editor`, `year`, `simhash0`, `simhash1`, `simhash2`, `simhash3`, `ctr`, `rank`, `rating`) VALUES
+(10, 'test journal', 'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle', 'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'test bibtexKey', '1815-12-10 00:00:00', 'testuser1', 'http://www.testurl.org', '2', 'test description', 'test annote', 'test note', 'test pages', 'test bKey', 'test number', 'test crossref', 'test misc', 'test bibtexAbstract', 'test entrytype', 'test title', 'test author', 'test editor', 'test year', '9abf98937435f05aec3d58b214a2ac58', 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'b77ddd8087ad8856d77c740c8dc2864a', '', 1, 1, 0),
+(12, 'test journal for group3', 'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle for group3', 'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'test bibtexKey', '1815-12-10 00:00:00', 'testuser1', 'http://www.testurl.org', '2', 'test description', 'test annote', 'test note', 'test pages', 'test bKey', 'test number', 'test crossref', 'test misc', 'test bibtexAbstract', 'test entrytype', 'test title', 'test author', 'test editor', 'test year', '92e8d9c7588eced69419b911b31580ee', 'd9eea4aa159d70ecfabafa0c91bbc9f0', '522833042311cc30b8775772335424a7', '', 1, 2, 0);
 
 -- --------------------------------------------------------
 
