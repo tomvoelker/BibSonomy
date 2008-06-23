@@ -44,7 +44,7 @@ public class GetPostDocumentStrategy extends Strategy{
 	
 	@Override
 	public void validate() throws ValidationException {
-		if (!this.userName.equals(this.getLogic().getAuthenticatedUser())) throw new ValidationException("You are not authorized to perform the requested operation");
+		if (!this.userName.equals(this.getLogic().getAuthenticatedUser().getName())) throw new ValidationException("You are not authorized to perform the requested operation");
 	}
 	
 	@Override
