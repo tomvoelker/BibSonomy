@@ -154,7 +154,7 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = openSession();
 		try {
 			final User user = this.userDBManager.getUserDetails(userName, session);
-			if (! (user.getName().equals(this.loginUser.getName()) || Role.ADMIN.equals(this.loginUser.getRole()))) {
+			if (! ((this.loginUser.getName() != null && this.loginUser.getName().equals(user.getName())) || Role.ADMIN.equals(this.loginUser.getRole()))) {
 				/*
 				 * only the user himself or the admin gets the full details
 				 */
