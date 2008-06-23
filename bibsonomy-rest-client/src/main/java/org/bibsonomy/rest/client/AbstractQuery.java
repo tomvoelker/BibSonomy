@@ -54,12 +54,7 @@ public abstract class AbstractQuery<T> {
 		final HttpWorker worker;
 		final Reader result;
 		final String absoluteUrl;
-		try {
-			absoluteUrl = URLEncoder.encode(apiURL + url, "utf-8");
-		} catch (UnsupportedEncodingException ex) {
-			throw new RuntimeException(ex.getMessage());
-		}
-
+		absoluteUrl = apiURL + url;
 
 		switch (method) {
 		case POST:
