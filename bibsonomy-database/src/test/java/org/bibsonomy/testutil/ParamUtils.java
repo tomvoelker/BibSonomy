@@ -1,9 +1,9 @@
 package org.bibsonomy.testutil;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
@@ -147,7 +147,7 @@ public final class ParamUtils {
 		setDefaults(param);
 		param.setNewContentId(5218);
 		param.setTasId(213758);
-		param.setTags(new ArrayList<Tag>());
+		param.setTags(new HashSet<Tag>());
 		for (final String tagName : new String[] { ParamUtils.class.getName(), "hurz", "trallalla", "---_-" }) {
 			param.getTags().add(new Tag(tagName));
 		}

@@ -124,7 +124,7 @@ public final class ModelUtils {
 		final Post<T> post = new Post<T>();
 
 		final Group group = new Group();
-		group.setGroupId(GroupID.PUBLIC.getId());
+		//group.setGroupId(GroupID.PUBLIC.getId()); // the group ID of posts from the "outside" is usually unknown
 		group.setDescription(null);
 		group.setName("public");
 		post.getGroups().add(group);
