@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
@@ -29,6 +30,18 @@ public final class DepthEqualityTester  {
 		public boolean checkEquals(Object should, Object is, String path);
 		public boolean checkTrue(boolean value, String path, String checkName);
 	}
+	
+	private static final EqualityChecker simpleChecker = new EqualityChecker() {
+
+		public boolean checkEquals(Object should, Object is, String path) {
+			return should.equals(is);
+		}
+
+		public boolean checkTrue(boolean value, String path, String checkName) {
+			return value;
+		}
+		
+	};
 
 	/**
 	 * Don't create instances of this class - use the static methods instead.
@@ -38,7 +51,7 @@ public final class DepthEqualityTester  {
 
 	private static Set<String> toSet(final String[] excludeProperties) {
 		final Set<String> skip;
-		if (excludeProperties != null || excludeProperties.length > 0) {
+		if ((excludeProperties != null) && (excludeProperties.length > 0)) {
 			skip = new HashSet<String>();
 			skip.addAll(Arrays.asList(excludeProperties));
 		} else {
@@ -83,7 +96,28 @@ public final class DepthEqualityTester  {
 		}
 		visited.add(should);
 
-		if (Iterable.class.isAssignableFrom(shouldType) == true) {
+		if ((Set.class.isAssignableFrom(shouldType) == true) && (SortedSet.class.isAssignableFrom(shouldType) == false)) {
+			final Set<?> shouldSet = (Set<?>) should;
+			final Set<?> isSet = (Set<?>) is;
+			int i = 0;
+			for (Object shouldEntry : shouldSet) {
+				final String entryPath = path + "[" + i + "]";
+				boolean found = false;
+				for (Object isEntry : isSet) {
+					if (assertPropertyEquality(shouldEntry, isEntry, simpleChecker, remainingDepth - 1, exclusionPattern, excludeProperties, entryPath, visited) == true) {
+						found = true;
+						break;
+					}
+				}
+				if (checker.checkTrue(found, entryPath, "should be present") == false) {
+					return false;
+				}
+				i++;
+			}
+			if (checker.checkEquals(i, isSet.size(), path + ": too much entries") == false) {
+				return false;
+			}
+		} else if (Iterable.class.isAssignableFrom(shouldType) == true) {
 			final Iterable<?> shouldIterable = (Iterable<?>) should;
 			final Iterator<?> isIterator = ((Iterable<?>) is).iterator();
 			int i = 0;
