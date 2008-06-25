@@ -52,4 +52,24 @@ public enum Privlevel {
 			throw new RuntimeException("Privlevel is out of bounds (" + privlevel + ")");
 		}
 	}
+	
+
+	/** Returns the corresponding privlevel for the given String.
+	 * 
+	 * @param privlevel
+	 * @return A privlevel according to the String. If the string does not match 
+	 * any privlevel, {@value #MEMBERS} is returned.
+	 */
+	public static Privlevel getPrivlevel(final String privlevel) {
+		if ("members".equals(privlevel)) {
+			return MEMBERS;
+		} 
+		if ("hidden".equals(privlevel)) {
+			return HIDDEN;
+		}
+		return PUBLIC;
+	}
+	
+	
+	
 }
