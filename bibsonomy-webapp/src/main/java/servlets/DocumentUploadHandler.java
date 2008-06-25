@@ -114,8 +114,8 @@ public class DocumentUploadHandler extends HttpServlet{
 			/*
 			 * check file extensions which we accept
 			 */
-			if (fileName.equals("") || !matchExtension(fileName, "pdf", "ps", "djv", "djvu")) {
-				throw new Exception ("Please check your file. Only PDF, PS or DJVU files are accepted.");
+			if (fileName.equals("") || !matchExtension(fileName, "pdf", "ps", "djv", "djvu", "txt")) {
+				throw new Exception ("Please check your file. Only PDF, PS, TXT or DJVU files are accepted.");
 			}
 
 			// format date

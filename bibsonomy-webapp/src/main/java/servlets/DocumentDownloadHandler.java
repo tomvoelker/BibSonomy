@@ -186,6 +186,8 @@ public class DocumentDownloadHandler extends HttpServlet{
 			return "application/postscript";
 		} else if (DocumentUploadHandler.matchExtension(filename, "pdf")) {
 			return "application/pdf";
+		} else if (DocumentUploadHandler.matchExtension(filename, "txt")) {
+			return "text/plain";			
 		} else if (DocumentUploadHandler.matchExtension(filename, "djv", "djvu")) {
 			return "image/vnd.djvu";
 		} else {

@@ -888,7 +888,9 @@ public class ResourceHandler extends HttpServlet{
 	 * @return <code>true</code> if currUser is a friend of requUser
 	 * @throws SQLException
 	 */
+	@Deprecated
 	private boolean isFriendOf(DBContext c, String currUser, String requUser) throws SQLException {
+		log.warn("query 'isFriendOf' is migrated to bibsonomy 2");
 		c.bookStmtP = c.conn.prepareStatement("SELECT user_name FROM friends WHERE user_name = ? AND f_user_name = ?");
 		c.bookStmtP.setString(1, requUser);
 		c.bookStmtP.setString(2, currUser);
@@ -1123,7 +1125,7 @@ public class ResourceHandler extends HttpServlet{
 
 	}
 
-	/** Shows all bibtex posts of the user, which have a document attached (PDF, PS, DJVU)
+	/** Shows all bibtex posts of the user, which have a document attached (PDF, PS, DJVU, TXT)
 	 * @param c
 	 * @param currUser
 	 * @throws SQLException
@@ -1589,7 +1591,9 @@ public class ResourceHandler extends HttpServlet{
 	 * @param startBib
 	 * @throws SQLException
 	 */
+	@Deprecated
 	private void queryPageAuthor(DBContext c, String requAuthor, int itemCount, int startBib) throws SQLException {
+		log.warn("query 'queryPageAuthor' is migrated to bibsonomy 2");
 		SplittedAuthors authors = new SplittedAuthors(requAuthor);
 		SystemTags systemTags   = new SystemTags(requAuthor);		
 		String authorMatch = authors.getQuery();		
