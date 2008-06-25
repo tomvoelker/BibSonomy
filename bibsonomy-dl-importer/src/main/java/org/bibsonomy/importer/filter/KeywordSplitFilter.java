@@ -1,7 +1,7 @@
 package org.bibsonomy.importer.filter;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -16,8 +16,8 @@ import org.bibsonomy.model.Tag;
 public class KeywordSplitFilter implements PostFilterChainElement {
 
 	public void filterPost(final Post<BibTex> post) {
-		final List<Tag> oldTags = post.getTags();
-		final List<Tag> newTags = new LinkedList<Tag>();
+		final Set<Tag> oldTags = post.getTags();
+		final Set<Tag> newTags = new HashSet<Tag>();
 		
 		for (final Tag oldTag: oldTags) {
 			/*

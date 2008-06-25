@@ -1,7 +1,6 @@
 package org.bibsonomy.importer.filter;
 
 import java.util.HashSet;
-import java.util.LinkedList;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -20,7 +19,7 @@ public class KeywordDuplicateRemovalFilter implements PostFilterChainElement {
 	 * @see org.bibsonomy.importer.filter.PostFilterChainElement#filterPost(org.bibsonomy.model.Post)
 	 */
 	public void filterPost(final Post<BibTex> post) {
-		post.setTags(new LinkedList<Tag>(new HashSet<Tag>(post.getTags())));
+		post.setTags(new HashSet<Tag>(post.getTags()));
 	}
 
 }

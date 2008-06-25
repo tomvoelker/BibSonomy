@@ -1,7 +1,5 @@
 package org.bibsonomy.importer.filter;
 
-import java.util.List;
-
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
@@ -19,9 +17,7 @@ public class KeywordLowerCaseFilter implements PostFilterChainElement {
 	 * @see org.bibsonomy.importer.filter.PostFilterChainElement#filterPost(org.bibsonomy.model.Post)
 	 */
 	public void filterPost(final Post<BibTex> post) {
-		final List<Tag> tags = post.getTags();
-		
-		for (final Tag tag: tags) {
+		for (final Tag tag: post.getTags()) {
 			tag.setName(tag.getName().toLowerCase());
 		}
 		
