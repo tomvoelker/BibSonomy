@@ -11,12 +11,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.bibsonomy.bibtex.util.BibtexParserUtils;
-import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -209,7 +209,7 @@ public class ModelFactory {
 			post.setResource(bookmark);
 		}
 		if (xmlPost.getGroup() != null) {
-			post.setGroups(new ArrayList<Group>());
+			post.setGroups(new HashSet<Group>());
 			for (final GroupType xmlGroup : xmlPost.getGroup()) {
 				checkGroup(xmlGroup);
 				final Group group = new Group();
