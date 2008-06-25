@@ -66,6 +66,36 @@ public class MailUtils {
 		}
 		return false;
 	}
+	
+	/**
+	 * Method to send the password reminder mail
+	 * 
+	 * @param userName
+	 * @param userEmail
+	 * @param inetAddress
+	 * @param locale
+	 * @param maxmin 
+	 * @param tmppw 
+	 * @return true, if the mail could be send without errors
+	 */
+	public boolean sendPasswordReminderMail (final String userName, final String userEmail, final String inetAddress, final Locale locale, final int maxmin, final String tmppw){
+		final Object[] messagesParameters = new Object[]{userName, projectName, projectHome, projectBlog, projectEmail, maxmin, tmppw};
+		
+		final String messageBody	= messageSource.getMessage("mail.reminder.body", messagesParameters, locale);
+		final String messageSubject = messageSource.getMessage("mail.reminder.subject", messagesParameters, locale);
+		
+		/*
+		 * set the recipients
+		 */
+		final String recipient[] = new String[] {userEmail};
+		try {
+			sendMail(recipient,  messageSubject, messageBody, projectRegistrationFromAddress);
+			return true;
+		} catch (final MessagingException e) {
+			log.fatal("Could not send reminder mail: " + e.getMessage());
+		}
+		return false;
+	}
 
 	/** Sends a mail to the given recipients
 	 * @param recipients
