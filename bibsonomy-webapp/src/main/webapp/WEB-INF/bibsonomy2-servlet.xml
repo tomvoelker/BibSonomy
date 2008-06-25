@@ -129,6 +129,13 @@
 						</property>
 					</bean>
 				</entry>
+				
+				<entry key="/actions/user/passwordreminder">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="passwordReminderController"/>
+					</bean>
+				</entry>
+				
 
 				
 			</map>

@@ -57,6 +57,11 @@
 				
 				<value>ckey</value>
 				
+				<!-- for password reminder -->
+				<value>requestedUser.name</value>
+				<value>requestedUser.email</value>
+				
+				
 				<!-- for recaptcha -->
 				<value>recaptcha_response_field</value>
 				<value>recaptcha_challenge_field</value>

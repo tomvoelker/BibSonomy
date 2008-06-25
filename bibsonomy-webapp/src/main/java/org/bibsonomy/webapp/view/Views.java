@@ -210,7 +210,9 @@ public enum Views implements View {
 	/**
 	 * Log into the system. 
 	 */
-	LOGIN("actions/login");
+	LOGIN("actions/login"),
+	
+	PASSWORD_REMINDER("actions/user/passwordReminder");
 	
 	private final String name;
 	
