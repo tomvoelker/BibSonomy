@@ -34,7 +34,10 @@ public final class DepthEqualityTester  {
 	private static final EqualityChecker simpleChecker = new EqualityChecker() {
 
 		public boolean checkEquals(Object should, Object is, String path) {
-			return should.equals(is);
+			/*
+			 * to allow null values, we first compare memory addresses
+			 */
+			return should == is || should.equals(is);
 		}
 
 		public boolean checkTrue(boolean value, String path, String checkName) {
