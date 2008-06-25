@@ -48,8 +48,8 @@ public class HandleFileUpload implements FileUploadInterface {
 		}
 
 		// check file extensions which we accept
-		if (this.fileName.equals("") || !StringUtils.matchExtension(this.fileName, "pdf", "ps", "djv", "djvu")) {
-			throw new Exception("Please check your file. Only PDF, PS or DJVU files are accepted.");
+		if (this.fileName.equals("") || !StringUtils.matchExtension(this.fileName, "pdf", "ps", "djv", "djvu", "txt")) {
+			throw new Exception("Please check your file. Only PDF, PS, TXT or DJVU files are accepted.");
 		}
 
 		// format date
