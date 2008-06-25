@@ -1,7 +1,9 @@
 package org.bibsonomy.database.managers;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
@@ -219,7 +221,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 */
 	private void insertTags(final TagParam param, final DBSession session) {
 		// generate a list of tags
-		final List<Tag> allTags = param.getTags();
+		final Collection<Tag> allTags = param.getTags();
 		// TODO: use this and implement nonbatch-tagtag-inserts:
 		// (allTags.size() > MAX_TAGS_TO_INSERT);
 		final boolean batchIt = true;
