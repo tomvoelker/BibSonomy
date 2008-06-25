@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
@@ -89,7 +90,7 @@ public class BibTeXConverter {
 		
 	}
 	
-	public static String toString(final List<Tag> tags) {
+	public static String toString(final Collection<Tag> tags) {
 		final StringBuffer buf = new StringBuffer();
 		for (final Tag tag: tags) {
 			buf.append(tag.getName() + " ");

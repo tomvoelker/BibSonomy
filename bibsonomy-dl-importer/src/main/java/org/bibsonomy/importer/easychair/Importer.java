@@ -3,6 +3,7 @@ package org.bibsonomy.importer.easychair;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -105,7 +106,7 @@ public class Importer {
 		
 	}
 	
-	public static String toString(final List<Tag> tags) {
+	public static String toString(final Collection<Tag> tags) {
 		final StringBuffer buf = new StringBuffer();
 		for (final Tag tag: tags) {
 			buf.append(tag.getName() + " ");
