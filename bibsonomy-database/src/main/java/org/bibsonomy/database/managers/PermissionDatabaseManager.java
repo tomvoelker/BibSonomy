@@ -1,5 +1,8 @@
 package org.bibsonomy.database.managers;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.Collection;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
@@ -14,8 +17,6 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.UserUtils;
-
-import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * Database Manager for permissions
@@ -114,7 +115,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public boolean isAllowedToAccessPostsDocuments(final String userName, final Post<? extends Resource> post, final DBSession session) {
 		final String postUserName = post.getUser().getName();
-		final List<Group> postGroups = post.getGroups();
+		final Collection<Group> postGroups = post.getGroups();
 
 		// Get the groups in which both users are.
 		final List<Group> commonGroups = this.groupDb.getCommonGroups(userName, postUserName, session);
