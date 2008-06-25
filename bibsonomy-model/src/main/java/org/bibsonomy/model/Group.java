@@ -16,7 +16,7 @@ public class Group {
 	/**
 	 * The internal id of this group.
 	 */
-	private int groupId;
+	private int groupId = GroupID.INVALID.getId();
 
 	/**
 	 * This group's name.
@@ -54,7 +54,7 @@ public class Group {
 	 * constructor
 	 */
 	public Group() {
-		this(GroupID.PUBLIC);
+		//this(GroupID.PUBLIC);
 	}
 
 	/**
@@ -162,7 +162,7 @@ public class Group {
 	public void setUsers(List<User> users) {
 		this.users = users;
 	}
-	
+
 	/**
 	 * Returns the first member of this group.
 	 * 
@@ -220,12 +220,47 @@ public class Group {
 	 * @param other
 	 * @return <code>true</code> if the two groups are equal.
 	 */
-	public boolean equals(Group other) {
-		return this.groupId == other.groupId;
+	public boolean equals(final Group other) {
+		if (this.groupId != GroupID.INVALID.getId() && other.groupId != GroupID.INVALID.getId()) {
+			/*
+			 * both groups have IDs set --> compare them by id
+			 */
+			if (this.name != null && other.name != null) {
+				/*
+				 * since both have also names set ... we should include the names in the comparison!
+				 */
+				if ((this.groupId == other.groupId && !this.name.equals(other.name)) ||
+						(this.groupId != other.groupId &&  this.name.equals(other.name))) {
+					/*
+					 * IDs do not match with names --> exception! 
+					 */
+					throw new RuntimeException("The names and the IDs of the given groups " + this + " and " + other + " do not match.");
+				}
+			}
+			return this.groupId == other.groupId;
+		} 
+		/*
+		 * at least one of the groups has no ID set --> check their name
+		 */
+		if (this.name != null && other.name != null) {
+			return this.name.equals(other.name);
+		}
+		throw new RuntimeException("The given groups " + this + " and " + other + " are incomparable.");
+	}
+
+	/** 
+	 * Returns a string representation of a group in the form <code>name(groupId)</code>. 
+	 *  
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return this.name + "(" + this.groupId + ")";
 	}
 
 	@Override
 	public int hashCode() {
 		return groupId;
 	}
+
 }
