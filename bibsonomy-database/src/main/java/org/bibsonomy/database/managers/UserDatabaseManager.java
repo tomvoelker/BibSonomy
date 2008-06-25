@@ -175,7 +175,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		existingUser.setEmail(!present(user.getEmail()) 		? existingUser.getEmail() 		: user.getEmail());
 		existingUser.setPassword(!present(user.getPassword()) 	? existingUser.getPassword() 	: user.getPassword());		
 		existingUser.setRealname(!present(user.getRealname()) 	? existingUser.getRealname() 	: user.getRealname());		
-		existingUser.setHomepage(!present(user.getHomepage()) 	? existingUser.getHomepage() 	: user.getHomepage());		
+		existingUser.setHomepage(!present(user.getHomepage()) 	? existingUser.getHomepage() 	: user.getHomepage());
 		existingUser.setApiKey(!present(user.getApiKey()) 		? existingUser.getApiKey()	 	: user.getApiKey());		
 		existingUser.setBirthday(!present(user.getBirthday()) 	? existingUser.getBirthday() 	: user.getBirthday());
 		existingUser.setGender(!present(user.getGender()) 		? existingUser.getGender() 		: user.getGender());
@@ -190,6 +190,10 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 
 		existingUser.setUpdatedBy(!present(user.getUpdatedBy()) 	? existingUser.getUpdatedBy() 	: user.getUpdatedBy());
 		existingUser.setUpdatedAt(!present(user.getUpdatedAt()) 	? existingUser.getUpdatedAt() 	: user.getUpdatedAt());
+
+		
+		existingUser.setReminderPassword(user.getReminderPassword());
+		existingUser.setReminderPasswordRequestDate(user.getReminderPasswordRequestDate());
 
 		this.plugins.onUserUpdate(existingUser.getName(), session);
 
