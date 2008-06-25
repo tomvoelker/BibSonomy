@@ -33,9 +33,9 @@ import org.bibsonomy.model.enums.Order;
  */
 public abstract class GenericParam {
 	/**
-	 * A list of tags
+	 * A set of tags
 	 */
-	private List<Tag> tags;
+	private Set<Tag> tags;
 	
 	/**
 	 * A single tag
@@ -96,7 +96,7 @@ public abstract class GenericParam {
 	 * expects a List to loop over, getGroups returns a List
 	 * 
 	 * */
-	private HashSet<Integer> groups;
+	private Set<Integer> groups;
 	
 	/**
 	 * Should tagnames (names of tags and concepts) be case sensitive; by
@@ -304,19 +304,12 @@ public abstract class GenericParam {
 
 	/**
 	 * set the groups
-	 * 
-	 * @param groups a SET of group ids
-	 */
-	public void setGroups(Set<Integer> groups) {
-		this.groups = new HashSet<Integer>(groups);
-	}
-	
-	/**
+	 *
 	 * wrapper method for setting the groups set by a list
 	 * 
 	 * @param groups a LIST of group ids
 	 */
-	public void setGroups(List<Integer> groups) {
+	public void setGroups(Collection<Integer> groups) {
 		this.groups = new HashSet<Integer>(groups);
 	}	
 
@@ -387,11 +380,11 @@ public abstract class GenericParam {
 		this.contendIDbyBookmark = contendIDbyBookmark;
 	}
 
-	public List<Tag> getTags() {
+	public Set<Tag> getTags() {
 		return this.tags;
 	}
 
-	public void setTags(List<Tag> tags) {
+	public void setTags(Set<Tag> tags) {
 		this.tags = tags;
 	}
 
