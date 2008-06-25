@@ -1,8 +1,10 @@
 package org.bibsonomy.database.managers.chain.bibtex;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.bibsonomy.common.enums.GroupID;
@@ -49,7 +51,7 @@ public class GetBibtexForGroupAndTagTest extends AbstractDatabaseManagerTest {
 	public void getBibtexForGroupAndTag() {
 		BibTexParam p = new BibTexParam();
 
-		final List<Tag> tags = new LinkedList<Tag>();
+		final Set<Tag> tags = new HashSet<Tag>();
 		final List<TagIndex> tagIndex = new LinkedList<TagIndex>();
 
 		/*
