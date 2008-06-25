@@ -1,12 +1,13 @@
 package org.bibsonomy.database;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -378,7 +379,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		group.setGroupId(GroupID.PRIVATE.getId());
 		group.setName("private");
 		group.setDescription(null);
-		post.setGroups(Arrays.asList(new Group[] {group}));
+		post.setGroups(Collections.singleton(group));
 
 		final LogicInterface testClassAccess = this.getDbLogic(testUserName);
 		assertEquals(1, testClassAccess.getPosts(BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null, null, 0, 100, null).size());
