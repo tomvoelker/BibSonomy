@@ -1,8 +1,8 @@
 package org.bibsonomy.model;
 
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A post connects a given resource with a user and a certain date.
@@ -33,12 +33,12 @@ public class Post<T extends Resource> {
 	/**
 	 * This post belongs to these {@link Group}s.
 	 */
-	private List<Group> groups;
+	private Set<Group> groups;
 
 	/**
 	 * This post is tagged with these {@link Tag}s.
 	 */
-	private List<Tag> tags;
+	private Set<Tag> tags;
 
 	/**
 	 * This is the {@link Date} when this post was lastly modified.
@@ -71,9 +71,9 @@ public class Post<T extends Resource> {
 	/**
 	 * @return groups
 	 */
-	public List<Group> getGroups() {
+	public Set<Group> getGroups() {
 		if (this.groups == null) {
-			this.groups = new LinkedList<Group>();
+			this.groups = new HashSet<Group>();
 		}
 		return this.groups;
 	}
@@ -81,7 +81,7 @@ public class Post<T extends Resource> {
 	/**
 	 * @param groups
 	 */
-	public void setGroups(List<Group> groups) {
+	public void setGroups(Set<Group> groups) {
 		this.groups = groups;
 	}
 
@@ -116,9 +116,9 @@ public class Post<T extends Resource> {
 	/**
 	 * @return tags
 	 */
-	public List<Tag> getTags() {
+	public Set<Tag> getTags() {
 		if (this.tags == null) {
-			this.tags = new LinkedList<Tag>();
+			this.tags = new HashSet<Tag>();
 		}
 		return this.tags;
 	}
@@ -126,7 +126,7 @@ public class Post<T extends Resource> {
 	/**
 	 * @param tags
 	 */
-	public void setTags(List<Tag> tags) {
+	public void setTags(Set<Tag> tags) {
 		this.tags = tags;
 	}
 
