@@ -47,24 +47,6 @@
 				<value>format</value><!-- html, bib, publ, etc. -->
 				<value>order</value><!-- folkrank, date, etc. -->
 
-				<!-- for registration handling -->
-				<value>registerUser.name</value>
-				<value>registerUser.email</value>
-				<value>registerUser.password</value>
-				<value>registerUser.homepage</value>
-				<value>registerUser.realname</value>
-				<value>passwordCheck</value>
-				
-				<value>ckey</value>
-				
-				<!-- for password reminder -->
-				<value>requestedUser.name</value>
-				<value>requestedUser.email</value>
-				
-				
-				<!-- for recaptcha -->
-				<value>recaptcha_response_field</value>
-				<value>recaptcha_challenge_field</value>
 			</list>
 		</constructor-arg>
 	</bean>

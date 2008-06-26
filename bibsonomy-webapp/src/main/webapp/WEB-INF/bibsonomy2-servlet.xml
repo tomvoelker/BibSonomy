@@ -109,6 +109,21 @@
 				<entry key="/register">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="userRegistrationController"/>
+						<property name="allowedFields">	
+							<list>
+								<value>registerUser.name</value>
+								<value>registerUser.email</value>
+								<value>registerUser.password</value>
+								<value>registerUser.homepage</value>
+								<value>registerUser.realname</value>
+								<value>passwordCheck</value>
+								<!-- for admins which want to register a new user -->
+								<value>ckey</value>
+								<!-- for recaptcha -->
+								<value>recaptcha_response_field</value>
+								<value>recaptcha_challenge_field</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 				<entry key="/register_success">
@@ -133,6 +148,14 @@
 				<entry key="/actions/user/passwordreminder">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="passwordReminderController"/>
+						<property name="allowedFields">
+							<list>
+								<value>userName</value>
+								<value>userEmail</value>
+								<value>recaptcha_response_field</value>
+								<value>recaptcha_challenge_field</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 				
