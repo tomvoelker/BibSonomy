@@ -1,0 +1,96 @@
+package org.bibsonomy.scraper.url.kde.eric;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.bibsonomy.scraper.Scraper;
+import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.url.RisToBibtexConverter;
+
+/**
+ * SCraper for papers from http://www.eric.ed.gov/
+ * @author tst
+ * @version $Id$
+ */
+public class EricScraper implements Scraper {
+	
+	private static final String INFO = "";
+	
+	private static final String ERIC_URL = "http://www.eric.ed.gov/";
+	
+	private static final String EXPORT_BASE_URL = "http://www.eric.ed.gov/ERICWebPortal/custom/portlets/clipboard/performExport.jsp?texttype=endnote&accno=";
+	
+	private static final String PATTERN_ACCNO = "accno=([^&]*)";
+
+	public String getInfo() {
+		return INFO;
+	}
+
+	public Collection<Scraper> getScraper() {
+		return Collections.singletonList((Scraper) this);
+	}
+
+	public boolean scrape(ScrapingContext sc)throws ScrapingException {
+		// TODO Auto-generated method stub
+		
+		/*
+		 * example:
+		 * http://www.eric.ed.gov/ERICWebPortal/Home.portal?_nfpb=true&ERICExtSearch_SearchValue_0=star&searchtype=keyword&ERICExtSearch_SearchType_0=kw&_pageLabel=RecordDetails&objectId=0900019b802f2e44&accno=EJ786532&_nfls=false
+		 * accno=EJ786532
+		 * 
+		 * texttype=endnote
+		 * 
+		 */
+		
+		if(sc != null && sc.getUrl() != null && sc.getUrl().toString().startsWith(ERIC_URL)){
+			//extract accno from url query
+			String accno = null;
+			
+			Pattern accnoPattern = Pattern.compile(PATTERN_ACCNO);
+			Matcher accnoMatcher = accnoPattern.matcher(sc.getUrl().getQuery());
+			if(accnoMatcher.find())
+				accno = accnoMatcher.group(1);
+			
+			// build download URL
+			String downloadUrl = null;
+			if(accno != null)
+				downloadUrl = EXPORT_BASE_URL + accno;
+			
+			// download ris
+			try {
+				
+				if(downloadUrl != null){
+					String ris = sc.getContentAsString(new URL(downloadUrl));
+					
+					// convert to bibtex
+					String bibtex = null;
+					RisToBibtexConverter converter = new RisToBibtexConverter();
+					
+					bibtex = converter.RisToBibtex(ris);
+				
+					if(bibtex != null){
+						sc.setBibtexResult(bibtex);
+						sc.setScraper(this);
+						return true;
+					}else
+						throw new ScrapingFailureException("Scraping failed. Converted bibtex is null.");
+					
+				}else
+					throw new ScrapingFailureException("Value for accno is missing. Cannot build download url.");
+				
+			} catch (MalformedURLException ex) {
+				throw new InternalFailureException(ex);
+			}
+		}
+		
+		return false;
+	}
+
+}

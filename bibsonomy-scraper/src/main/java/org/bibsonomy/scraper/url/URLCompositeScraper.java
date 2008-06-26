@@ -19,12 +19,15 @@ import org.bibsonomy.scraper.url.kde.citebase.CiteBaseScraper;
 import org.bibsonomy.scraper.url.kde.citeseer.CiteseerBasicScraper;
 import org.bibsonomy.scraper.url.kde.dblp.DBLPScraper;
 import org.bibsonomy.scraper.url.kde.editlib.EditLibScraper;
+import org.bibsonomy.scraper.url.kde.eric.EricScraper;
 import org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper;
 import org.bibsonomy.scraper.url.kde.ieee.IEEEXploreScraper;
 import org.bibsonomy.scraper.url.kde.informaworld.InformaWorldScraper;
 import org.bibsonomy.scraper.url.kde.ingenta.IngentaconnectScraper;
 import org.bibsonomy.scraper.url.kde.iop.IOPScraper;
 import org.bibsonomy.scraper.url.kde.iucr.IucrScraper;
+import org.bibsonomy.scraper.url.kde.iwap.IWAPonlineScraper;
+import org.bibsonomy.scraper.url.kde.jmlr.JMLRScraper;
 import org.bibsonomy.scraper.url.kde.jstor.JStorScraper;
 import org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper;
 import org.bibsonomy.scraper.url.kde.karlsruhe.UBKAScraper;
@@ -92,8 +95,8 @@ public class URLCompositeScraper extends CompositeScraper {
 		addScraper(new AnthroSourceScraper());
 		addScraper(new BMJScraper());
 		addScraper(new EditLibScraper());
-		addScraper(new CambridgeScraper());
 		addScraper(new InformaWorldScraper());
+		addScraper(new CambridgeScraper());
 		addScraper(new LangevScraper());
 		addScraper(new LiebertScraper());
 		addScraper(new NberScraper());
@@ -103,5 +106,8 @@ public class URLCompositeScraper extends CompositeScraper {
 		addScraper(new PsyContentScraper());
 		addScraper(new RSOCScraper());
 		addScraper(new JStorScraper());
+		addScraper(new EricScraper());
+		addScraper(new IWAPonlineScraper());
+		addScraper(new JMLRScraper());
 	}
 }

@@ -7,7 +7,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Scraper URL tests #42, #46, #47, #48, #49, #50, #57 for AmazonScraper
+ * Scraper URL tests #42, #46, #47, #48, #49, #50, #57, #105 for AmazonScraper
  * @author tst
  */
 public class AmazonScraperTest {
@@ -82,4 +82,13 @@ public class AmazonScraperTest {
 		assertTrue(runner.runSingleTest("url_57"));
 	}
 
+	/**
+	 * starts URL test with id url_105
+	 */
+	@Test
+	@Ignore
+	public void url8TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_105"));
+	}
 }

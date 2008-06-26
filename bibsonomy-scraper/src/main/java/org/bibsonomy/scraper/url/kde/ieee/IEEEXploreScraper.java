@@ -25,14 +25,14 @@ public class IEEEXploreScraper extends CompositeScraper {
 		/* if url includes search the arnumber will be 
 		* extracted and a new URL will be formed ... else use oringinal SC
 		*/
-		if (sc.getUrl() != null && sc.getUrl().toString().startsWith("http://ieeexplore.ieee.org/") && sc.getUrl().toString().indexOf("search") != -1) {
+		if (sc.getUrl() != null && sc.getUrl().toString().startsWith("http://ieeexplore.ieee.org/Xplore")) {
 			String query = sc.getUrl().getQuery();
 			if (query.indexOf("arnumber") != -1) {
-				String arnumber;
-				if (query.indexOf("&") != -1){
-					arnumber = query.substring(query.indexOf("arnumber")+9,query.indexOf("&"));	
+				String arnumber = query.substring(query.indexOf("arnumber"));
+				if (arnumber.indexOf("&") != -1){
+					arnumber = arnumber.substring(arnumber.indexOf("arnumber")+9,arnumber.indexOf("&"));	
 				} else {
-					arnumber = query.substring(query.indexOf("arnumber")+9);
+					arnumber = arnumber.substring(arnumber.indexOf("arnumber")+9);
 				}
 				URL xplUrl = null;
 				try {
