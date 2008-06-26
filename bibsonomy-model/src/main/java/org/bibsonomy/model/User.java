@@ -464,6 +464,13 @@ public class User {
 	public Boolean getSpammer() {
 		return this.spammer;
 	}
+	
+	/**
+	 * @return <code>true</code> if and only if spammer == true.
+	 */
+	public boolean isSpammer() {
+		return this.spammer == null ? false : this.spammer;
+	}
 
 	/**
 	 * @param spammer
