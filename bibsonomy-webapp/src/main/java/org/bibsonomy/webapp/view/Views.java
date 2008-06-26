@@ -211,7 +211,9 @@ public enum Views implements View {
 	 * Log into the system. 
 	 */
 	LOGIN("actions/login"),
-	
+	/**
+     * Show a form to request a password reminder.
+     */ 
 	PASSWORD_REMINDER("actions/user/passwordReminder");
 	
 	private final String name;
