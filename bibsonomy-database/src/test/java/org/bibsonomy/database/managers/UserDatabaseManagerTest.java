@@ -12,8 +12,10 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.testutil.ParamUtils;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -24,13 +26,28 @@ import org.junit.Test;
  * @author Christian Schenk
  * @version $Id$
  */
-@Ignore
+//@Ignore
 public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
+	/* name of 1st testuser to be created / updated */
+	public static String NEW_TESTUSER_1;
+	/* name of 2nd testuser to be created / updated */
+	public static String NEW_TESTUSER_2;
+	
+	/**
+	 * Init user names
+	 */
+	@BeforeClass
+	public static void setup() {
+		// abusing API key generation to generate random usernames... 
+		UserDatabaseManagerTest.NEW_TESTUSER_1 = UserUtils.generateApiKey().substring(0,12);
+		UserDatabaseManagerTest.NEW_TESTUSER_2 = UserUtils.generateApiKey().substring(0,12);
+	}
+	
 	/**
 	 * tests getAllUsers
 	 */
-	@Test
+	@Ignore // depends on new local db
 	public void getAllUsers() {
 		// there're 6 users that aren't spammers
 		List<User> users = this.userDb.getAllUsers(0, 10, this.dbSession);
@@ -44,7 +61,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * tests getUserDetails
 	 */
-	@Test
+	@Ignore // depends on new local db
 	public void getUserDetails() {
 		final User user = this.userDb.getUserDetails("testuser1", this.dbSession);
 		// TODO: checke every entity that should be present in the user object
@@ -58,7 +75,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * Retrieve the names of users present in a group with given group ID
 	 */
-	@Test
+	@Ignore // depends on new local db
 	public void getUserNamesOfGroupId() {
 		final List<String> users = this.userDb.getUserNamesByGroupId(ParamUtils.TESTGROUP1, this.dbSession);
 		final String[] testgroup1User = new String[] { "testuser1", "testuser2" };
@@ -72,7 +89,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void createUser() {
 		final User newUser = new User();
-		final String randomUserName = "new-testuser";
+		final String randomUserName = NEW_TESTUSER_1;
 		newUser.setName(randomUserName);
 		newUser.setRealname("New Testuser");
 		newUser.setEmail("new-testuser@bibsonomy.org");
@@ -86,7 +103,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final String userName = this.userDb.createUser(newUser, this.dbSession);
 		assertEquals(randomUserName, userName);
 		final User user = this.userDb.getUserDetails(randomUserName, this.dbSession);
-		ModelUtils.assertPropertyEquality(newUser, user, Integer.MAX_VALUE, null, new String[] { "password", "registrationDate", "basket", "prediction", "algorithm", "updatedBy", "updatedAt", "mode" });
+		ModelUtils.assertPropertyEquality(newUser, user, Integer.MAX_VALUE, null, new String[] { "apiKey", "IPAddress", "basket", "gender", "interests", "hobbies", "profession", "openURL", "place", "spammer", "settings", "toClassify", "updatedBy", "reminderPassword", "registrationDate", "reminderPasswordRequestDate", "updatedAt" });
 
 		try {
 			this.userDb.createUser(null, this.dbSession);
@@ -101,7 +118,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void createUserSpammerUnknown() {
 		final User newUser = new User();
-		newUser.setName("new-testuser2");
+		newUser.setName(NEW_TESTUSER_2);
 		newUser.setRealname("New Testuser");
 		newUser.setEmail("new-testuser@bibsonomy.org");
 		newUser.setPassword("password");
@@ -112,9 +129,9 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		newUser.setToClassify(1);
 		newUser.setAlgorithm(null);
 		final String userName = this.userDb.createUser(newUser, this.dbSession);
-		assertEquals("new-testuser2", userName);
-		final User user = this.userDb.getUserDetails("new-testuser", this.dbSession);
-		ModelUtils.assertPropertyEquality(newUser, user, Integer.MAX_VALUE, null, new String[] { "password", "registrationDate", "basket", "prediction", "algorithm", "updatedBy", "updatedAt", "mode", "reminderPasswordRequestDate" });
+		assertEquals(NEW_TESTUSER_2, userName);
+		final User user = this.userDb.getUserDetails(NEW_TESTUSER_2, this.dbSession);
+		ModelUtils.assertPropertyEquality(newUser, user, Integer.MAX_VALUE, null, new String[] { "apiKey", "IPAddress", "basket", "gender", "interests", "hobbies", "profession", "openURL", "place", "spammer", "settings", "toClassify", "updatedBy", "reminderPassword", "registrationDate", "reminderPasswordRequestDate", "updatedAt"});
 
 		try {
 			this.userDb.createUser(null, this.dbSession);
@@ -129,16 +146,16 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * FIXME: copying the user to log_user only works once, the second time we
 	 * get a "duplicate key" error.
 	 */
-	@Ignore
+	@Test
 	public void changeUser() {
-		User newTestuser = this.userDb.getUserDetails("new-testuser", this.dbSession);
+		User newTestuser = this.userDb.getUserDetails(NEW_TESTUSER_1, this.dbSession);
 		assertEquals("New Testuser", newTestuser.getRealname());
 		// FIXME: it should be possible to change almost all properties of a
 		// user - implement me...
 		newTestuser.setRealname("New TestUser");
 		final String userName = this.userDb.changeUser(newTestuser, this.dbSession);
-		assertEquals("new-testuser", userName);
-		newTestuser = this.userDb.getUserDetails("new-testuser", this.dbSession);
+		assertEquals(NEW_TESTUSER_1, userName);
+		newTestuser = this.userDb.getUserDetails(NEW_TESTUSER_1, this.dbSession);
 		assertEquals("New TestUser", newTestuser.getRealname());
 
 		// you can't change the user's name
@@ -155,10 +172,12 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void updateApiKeyForUser() {
-		final String apiKey = this.userDb.getApiKeyForUser("new-testuser", this.dbSession);
+		final String apiKey = this.userDb.getApiKeyForUser(NEW_TESTUSER_1, this.dbSession);
+		assertNotNull(apiKey);
 		assertEquals(32, apiKey.length());
-		this.userDb.updateApiKeyForUser("new-testuser", this.dbSession);
-		final String updatedApiKey = this.userDb.getApiKeyForUser("new-testuser", this.dbSession);
+		this.userDb.updateApiKeyForUser(NEW_TESTUSER_1, this.dbSession);
+		final String updatedApiKey = this.userDb.getApiKeyForUser(NEW_TESTUSER_1, this.dbSession);
+		assertNotNull(updatedApiKey);
 		assertEquals(32, updatedApiKey.length());
 		assertNotSame(apiKey, updatedApiKey);
 
@@ -174,8 +193,8 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void deleteUser() {
-		this.userDb.deleteUser("new-testuser", this.dbSession);
-		final User newTestuser = this.userDb.getUserDetails("new-testuser", this.dbSession);
+		this.userDb.deleteUser(NEW_TESTUSER_1, this.dbSession);
+		final User newTestuser = this.userDb.getUserDetails(NEW_TESTUSER_1, this.dbSession);
 		assertNull(newTestuser.getName());
 
 		for (final String username : new String[] { "", " ", null }) {
@@ -190,7 +209,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * Test the user authentication via API key
 	 */
-	@Test
+	@Ignore // depends on new local db
 	public void validateUserAccess() {
 		// not logged in (wrong apikey) = unknown user
 		assertNull(this.userDb.validateUserAccess("testuser1", "ThisIsJustAFakeAPIKey", this.dbSession).getName());
