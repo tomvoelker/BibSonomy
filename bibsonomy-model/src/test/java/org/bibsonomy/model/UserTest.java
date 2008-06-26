@@ -89,5 +89,13 @@ public class UserTest {
 			user.setSpammer(spammer);
 			assertFalse(user.getSpammer());
 		}
+
+		// isn't a spammer
+		// isSpammer maps null to false
+		for (final Boolean spammer : new Boolean[] { null, false, new Boolean("false"), new Boolean("aslkjdfh") }) {
+			user.setSpammer(spammer);
+			assertFalse(user.isSpammer());
+		}
+
 	}
 }
