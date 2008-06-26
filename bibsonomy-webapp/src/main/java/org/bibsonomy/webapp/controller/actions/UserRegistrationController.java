@@ -39,7 +39,7 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class UserRegistrationController implements MinimalisticController<UserRegistrationCommand>, ErrorAware, ValidationAwareController<UserRegistrationCommand>, RequestAware, CookieAware {
-	
+
 	/**
 	 * After successful registration, the user is redirected to this page. 
 	 */
@@ -171,25 +171,22 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 		}
 
 		/*
+		 * check, if user name already exists
+		 */
+		if (registerUser.getName() != null && logic.getUserDetails(registerUser.getName()).getName() != null) {
+			/*
+			 * yes -> user must choose another name
+			 */
+			errors.rejectValue("registerUser.name", "error.field.duplicate.user.name");
+		}
+		
+		/*
 		 * return to form until validation passes
 		 */
 		if (errors.hasErrors()) {
 			/*
 			 * Generate HTML to show captcha.
 			 */
-			command.setCaptchaHTML(captcha.createCaptchaHtml(locale));
-			return Views.REGISTER_USER;
-		}
-
-		/*
-		 * check, if user name already exists
-		 */
-		final User existingUser = logic.getUserDetails(registerUser.getName());
-		if (existingUser.getName() != null) {
-			/*
-			 * yes -> user must choose another name
-			 */
-			errors.rejectValue("registerUser.name", "error.field.duplicate.user.name");
 			command.setCaptchaHTML(captcha.createCaptchaHtml(locale));
 			return Views.REGISTER_USER;
 		}
@@ -227,7 +224,7 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 		 * hash password of user before storing it into database
 		 */
 		registerUser.setPassword(StringUtils.getMD5Hash(registerUser.getPassword()));
-		
+
 		/*
 		 * create user in DB
 		 */
@@ -241,7 +238,7 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 		} catch (final Exception e) {
 			log.error("Could not send registration confirmation mail for user " + registerUser.getName(), e);
 		}
-		
+
 		/*
 		 * proceed to the view
 		 */
@@ -253,7 +250,7 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 			return Views.REGISTER_USER_SUCCESS_ADMIN; 
 		}
 
-		
+
 		/*
 		 * log user into system ...
 		 */

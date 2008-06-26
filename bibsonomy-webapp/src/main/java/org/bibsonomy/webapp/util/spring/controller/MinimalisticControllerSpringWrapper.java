@@ -175,7 +175,7 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 		}
 		catch (Exception ex) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			errors.reject(ex.getMessage());
+			errors.reject("error.internal", new Object[]{ex}, "Internal Server Error: " + ex.getMessage());
 			LOGGER.error(ex);
 			view = Views.ERROR;
 		}
