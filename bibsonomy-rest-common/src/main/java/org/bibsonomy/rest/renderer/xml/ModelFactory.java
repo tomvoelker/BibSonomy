@@ -60,8 +60,8 @@ public class ModelFactory {
 		user.setName(xmlUser.getName());
 		user.setRealname(xmlUser.getRealname());
 		user.setPassword(xmlUser.getPassword());
-		if (xmlUser.getSpammer() != null)
-			user.setSpammer(xmlUser.getSpammer().intValue());
+		if (xmlUser.isSpammer() != null)
+			user.setSpammer(xmlUser.isSpammer());
 		if (xmlUser.getPrediction() != null)
 			user.setPrediction(xmlUser.getPrediction().intValue());
 		user.setAlgorithm(xmlUser.getAlgorithm());

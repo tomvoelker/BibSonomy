@@ -277,7 +277,7 @@ public class XMLRenderer implements Renderer {
 		xmlUser.setHref(createHrefForUser(user.getName()));
 		xmlUser.setPassword(user.getPassword());
 		if (user.getSpammer() != null)
-			xmlUser.setSpammer(BigInteger.valueOf(user.getSpammer()));
+			xmlUser.setSpammer(user.getSpammer());
 		if (user.getPrediction() != null)
 			xmlUser.setPrediction(BigInteger.valueOf(user.getPrediction()));
 		xmlUser.setAlgorithm(user.getAlgorithm());
