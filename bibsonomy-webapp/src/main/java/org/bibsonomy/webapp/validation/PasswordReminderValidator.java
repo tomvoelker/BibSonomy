@@ -2,8 +2,6 @@ package org.bibsonomy.webapp.validation;
 
 
 
-import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.actions.PasswordReminderCommand;
 import org.bibsonomy.webapp.util.Validator;
 import org.springframework.util.Assert;
@@ -31,39 +29,11 @@ public class PasswordReminderValidator implements Validator<PasswordReminderComm
 		}
 		
 		/*
-		 * Check the user data. 
+		 * password and user name must be given
 		 */
-		final User user = command.getRequestedUser();
-		Assert.notNull(user);
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "userName", "error.field.required");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "userEmail", "error.field.required");
 
-		/*
-		 * TODO: Check, that ONLY values are set, which the user can enter in a form,
-		 * i.e. that no spammer status or other settings are set!
-		 */
-		if (org.bibsonomy.util.ValidationUtils.present(user.getAlgorithm()) ||
-				org.bibsonomy.util.ValidationUtils.present(user.getApiKey()) ||
-				org.bibsonomy.util.ValidationUtils.present(user.getIPAddress()) ||
-				org.bibsonomy.util.ValidationUtils.present(user.getMode()) ||
-				org.bibsonomy.util.ValidationUtils.present(user.getPrediction()) ||
-				org.bibsonomy.util.ValidationUtils.present(user.getRegistrationDate()) ||
-				org.bibsonomy.util.ValidationUtils.present(user.getSpammer()) ||
-				org.bibsonomy.util.ValidationUtils.present(user.getToClassify()) ||
-				org.bibsonomy.util.ValidationUtils.present(user.getUpdatedBy()) ||
-				org.bibsonomy.util.ValidationUtils.present(user.getUpdatedAt()) ||
-				org.bibsonomy.util.ValidationUtils.present(user.getReminderPassword()) ||
-				org.bibsonomy.util.ValidationUtils.present(user.getReminderPasswordRequestDate()) ||
-				org.bibsonomy.util.ValidationUtils.present(user.getPassword()) ||
-				!user.getRole().equals(Role.NOBODY)	
-		) {
-			errors.reject("error.invalid_parameter");
-		}
-		
-		/*
-		 * validate user
-		 */
-		errors.pushNestedPath("requestedUser");
-		ValidationUtils.invokeValidator(new UserValidator(), user, errors);
-		errors.popNestedPath();
 		
 		/*
 		 * check, that challenge response is given

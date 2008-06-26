@@ -5,7 +5,7 @@ package org.bibsonomy.webapp.controller.actions;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
@@ -26,7 +26,6 @@ import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
-import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
@@ -49,11 +48,10 @@ import resources.Resource;
 public class PasswordReminderController implements MinimalisticController<PasswordReminderCommand>, ErrorAware, ValidationAwareController<PasswordReminderCommand>, RequestAware, CookieAware{
 	private static final Logger log = Logger.getLogger(PasswordReminderController.class);
 	
-	private static final int MAX_TIME_IN_MINUTES = 15; 
+	private int maxMinutesPasswordReminderValid = 60; 
 	
 	private static final String success = "/login";
 	
-	protected LogicInterface logic;
 	protected LogicInterface adminLogic;
 	private Errors errors = null;
 	private RequestLogic requestLogic;
@@ -63,23 +61,19 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 	private MessageSource messageSource;
 
 	public PasswordReminderCommand instantiateCommand() {
-		final PasswordReminderCommand command = new PasswordReminderCommand();
-		
-		//create a new user object
-		command.setRequestedUser(new User());
-		
-		return command;
+		return new PasswordReminderCommand();
 	}
 
 	public View workOn(PasswordReminderCommand command) {
-		// get localisation
+		// get locale
 		final Locale locale = requestLogic.getLocale();
 		
 		// set page title
 		command.setPageTitle(messageSource.getMessage("navi.passReminder", null, locale));
 
-		final RequestWrapperContext context = command.getContext();
-		User requUser = command.getRequestedUser();
+		final User user = new User();
+		user.setName(command.getUserName());
+		user.setEmail(command.getUserEmail());
 		
 		/*
 		 * Get the hosts IP address.
@@ -102,7 +96,7 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 			 * 
 			 * Must enter captcha again (and again, and again ...)
 			 */
-			log.warn("Host " + hostInetAddress + " with SPAMMER cookie/blocked IP tried to remind password as user " + requUser.getName());
+			log.warn("Host " + hostInetAddress + " with SPAMMER cookie/blocked IP tried to remind password as user " + user.getName());
 			errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
 		} else {
 			/*
@@ -112,8 +106,12 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 			 */
 			checkCaptcha(command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), hostInetAddress);
 		}
-		
-		if (errors.hasErrors()){
+
+		/*
+		 * If the user name is null, we get an exception on getUserDetails.
+		 * Hence, we send the user back to the form.
+		 */
+		if (errors.hasErrors()) {
 			/*
 			 * Generate HTML to show captcha.
 			 */
@@ -122,32 +120,63 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 		}
 		
 		/*
-		 * if the user is not logged in, we need an instance of the logic interface
-		 * with admin access 
+		 * check, if user name exists
 		 */
-		if (!context.isUserLoggedIn()) {
-			this.logic = this.adminLogic;
-		}
-		
-		final User existingUser = logic.getUserDetails(requUser.getName());
+		final User existingUser = adminLogic.getUserDetails(user.getName());
 		
 		if (existingUser.getName() == null) {
-			errors.rejectValue("requestedUser.name", "error.field.valid.user.name");
-			command.setCaptchaHTML(captcha.createCaptchaHtml(locale));
-			return Views.PASSWORD_REMINDER;
-		} else if (!requUser.getEmail().toLowerCase().equals(existingUser.getEmail().toLowerCase())) {
-			errors.rejectValue("requestedUser.email", "error.field.valid.user.email");
+			errors.rejectValue("userName", "error.field.valid.user.name");
+		} else if (!user.getEmail().equalsIgnoreCase(existingUser.getEmail())) {
+			errors.rejectValue("userEmail", "error.field.valid.user.email");
+		}
+		
+		/*
+		 * If the user does not exist, getReminderPasswordRequestDate() returns null.
+		 * Hence, we send the user back to the form.
+		 */
+		if (errors.hasErrors()) {
+			/*
+			 * Generate HTML to show captcha.
+			 */
 			command.setCaptchaHTML(captcha.createCaptchaHtml(locale));
 			return Views.PASSWORD_REMINDER;
 		}
 		
-		Timestamp now = new Timestamp(new Date().getTime());
+		/*
+		 * check, if user has requested a password reminder not so long ago
+		 */
+		final Calendar now = Calendar.getInstance();
+		/*
+		 * set expiration date by adding the max number of minutes a password
+		 * reminder is valid to the time where the user requested the reminder
+		 */
+		final Calendar reminderExpirationDate = Calendar.getInstance();
+		reminderExpirationDate.setTime(existingUser.getReminderPasswordRequestDate());
+		reminderExpirationDate.add(Calendar.MINUTE, maxMinutesPasswordReminderValid);
+		if (now.before(reminderExpirationDate)) {
+			/*
+			 * existing reminder still valid
+			 */
+			final int waitingMinutes = (int) (reminderExpirationDate.getTimeInMillis() - now.getTimeInMillis()) / 1000 / 60;
+			errors.reject("error.passReminder.time", 
+					new Object[]{maxMinutesPasswordReminderValid, waitingMinutes}, 
+					"You already requested a password in the last " + maxMinutesPasswordReminderValid + " minutes. Please wait " + waitingMinutes + " minutes before you can request a new password");
+		}
 		
-		if(!((now.getTime() - (MAX_TIME_IN_MINUTES * 60 * 1000)) > existingUser.getReminderPasswordRequestDate().getTime())){
-			errors.reject("error.passReminder.time");
+		/*
+		 * Password reminder still valid -> send user back.
+		 */
+		if (errors.hasErrors()) {
+			/*
+			 * Generate HTML to show captcha.
+			 */
 			command.setCaptchaHTML(captcha.createCaptchaHtml(locale));
 			return Views.PASSWORD_REMINDER;
 		}
+		
+		
+		
+		
 		
 		/*
 		 * at this point the given information like email and username are correct, and now we
@@ -157,15 +186,15 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 		/*
 		 * create the random pw and set it to the user object
 		 */
-		String tmppw = getRandomString();
-		requUser.setReminderPassword(tmppw);
-		requUser.setReminderPasswordRequestDate(now);
+		final String tempPassword = getRandomString();
+		user.setReminderPassword(tempPassword);
+		user.setReminderPasswordRequestDate(new Date());
 		
 		// update db
-		logic.updateUser(requUser);
+		adminLogic.updateUser(user);
 		
 		// send mail
-		mailUtils.sendPasswordReminderMail(requUser.getName(), requUser.getEmail(), inetAddress, locale, MAX_TIME_IN_MINUTES, tmppw);
+		mailUtils.sendPasswordReminderMail(user.getName(), user.getEmail(), inetAddress, locale, maxMinutesPasswordReminderValid, tempPassword);
 		
 		return new ExtendedRedirectView(success);
 	}
@@ -186,12 +215,6 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 		return true;
 	}
 	
-	/**
-	 * @param logic - an instance of the logic interface.
-	 */
-	public void setLogic(LogicInterface logic) {
-		this.logic = logic;
-	}
 
 	@Required
 	public void setRequestLogic(RequestLogic requestLogic) {
@@ -272,7 +295,7 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 	private InetAddressStatus getInetAddressStatus(final String inetAddress) {
 		// query the DB for the status of address 
 		try {
-			return logic.getInetAddressStatus(InetAddress.getByName(inetAddress));
+			return adminLogic.getInetAddressStatus(InetAddress.getByName(inetAddress));
 		} catch (final UnknownHostException e) {
 			log.info("Could not check inetAddress " + inetAddress, e);
 		}
@@ -304,5 +327,13 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 	 */
 	public void setMailUtils(MailUtils mailUtils) {
 		this.mailUtils = mailUtils;
+	}
+
+	/** The maximal number of minutes, a password reminder is valid.
+	 * 
+	 * @param maxMinutesPasswordReminderValid
+	 */
+	public void setMaxMinutesPasswordReminderValid(int maxMinutesPasswordReminderValid) {
+		this.maxMinutesPasswordReminderValid = maxMinutesPasswordReminderValid;
 	}
 }

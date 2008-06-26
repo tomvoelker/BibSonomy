@@ -53,24 +53,6 @@ public class PasswordReminderValidatorTest {
 	}
 	
 	/**
-	 * requestedUser = null should not pass validation
-	 */
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testValidateNullUser() {
-		final PasswordReminderValidator validator = new PasswordReminderValidator();
-		final Errors errors = new MapBindingResult(new HashMap(), "user");
-		final PasswordReminderCommand command = new PasswordReminderCommand();
-		
-		try {
-			validator.validate(command, errors);
-			Assert.fail("Should raise an IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
-			
-		}
-	}
-	
-	/**
 	 * non-null requested user should not fail with exception but give some errors.
 	 */
 	@Test
@@ -79,8 +61,6 @@ public class PasswordReminderValidatorTest {
 		final PasswordReminderCommand command = new PasswordReminderCommand();
 		
 		final Errors errors = new BindException(command, "command");
-		
-		command.setRequestedUser(new User());
 		
 		
 		Assert.assertFalse(errors.hasErrors());
@@ -105,9 +85,10 @@ public class PasswordReminderValidatorTest {
 		final PasswordReminderCommand command = new PasswordReminderCommand();
 		
 		final Errors errors = new BindException(command, "command");
+
 		
-		final User validUser = getValidUser();
-		command.setRequestedUser(validUser);
+		command.setUserEmail("fooo@bar.de");
+		command.setUserName("foobar");
 		command.setRecaptcha_response_field("response");
 		
 		
@@ -138,11 +119,5 @@ public class PasswordReminderValidatorTest {
 		 */
 		Assert.assertTrue(errors.hasErrors());
 	}
-	
-	private User getValidUser() {
-		final User user = new User();
-		user.setName("john_doe");
-		user.setEmail("devnull@cs.uni-kassel.de");
-		return user;
-	}
+
 }

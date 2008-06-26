@@ -4,7 +4,6 @@ package org.bibsonomy.webapp.command.actions;
 
 import java.io.Serializable;
 
-import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
@@ -16,12 +15,17 @@ public class PasswordReminderCommand extends BaseCommand implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2980720178626094002L;
+	private static final long serialVersionUID = 6971611795826344738L;
+
+	/**
+	 * The user's name.
+	 */
+	private String userName;
 	
 	/**
-	 * A User object with the necessary information like email and nickname
+	 * The user's email address.
 	 */
-	private User requestedUser;
+	private String userEmail;
 	/**
 	 * Contains the HTML-Code to view the reCaptcha. Is filled ONLY by the controller!
 	 * Any validator must check, that the user did not fill this field.
@@ -37,18 +41,6 @@ public class PasswordReminderCommand extends BaseCommand implements Serializable
 	 */
 	private String recaptcha_response_field;
 
-	/**
-	 * @return returns the requestedUser Object
-	 */
-	public User getRequestedUser() {
-		return this.requestedUser;
-	}
-	/**
-	 * @param requestedUser
-	 */
-	public void setRequestedUser(User requestedUser) {
-		this.requestedUser = requestedUser;
-	}
 	/**
 	 * @return returns a captcha
 	 */
@@ -89,5 +81,17 @@ public class PasswordReminderCommand extends BaseCommand implements Serializable
 	 */
 	public void setRecaptcha_response_field(String recaptcha_response_field) {
 		this.recaptcha_response_field = recaptcha_response_field;
+	}
+	public String getUserName() {
+		return this.userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	public String getUserEmail() {
+		return this.userEmail;
+	}
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
 	}
 }
