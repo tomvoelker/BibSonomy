@@ -52,7 +52,7 @@ public class AdminAjaxController extends AjaxController implements MinimalisticC
 			User user = new User(cmd.getUserName());
 			user.setToClassify(0);
 			user.setAlgorithm("admin");
-			user.setSpammer(spammer ? 1 : 0);
+			user.setSpammer(spammer);
 			
 			this.logic.updateUser(user);
 		}
