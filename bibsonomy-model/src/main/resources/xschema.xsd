@@ -61,7 +61,7 @@
 		<xsd:attribute name="email" type="xsd:string"/>
 		<xsd:attribute name="homepage" type="xsd:string"/>
 		<xsd:attribute name="password" type="xsd:string"/>
-		<xsd:attribute name="spammer" type="xsd:positiveInteger"/>	
+		<xsd:attribute name="spammer" type="xsd:boolean"/>	
 		<xsd:attribute name="prediction" type="xsd:positiveInteger"/>
 		<xsd:attribute name="algorithm" type="xsd:string"/>	
 		<xsd:attribute name="toClassify" type="xsd:positiveInteger"/>

@@ -72,18 +72,22 @@ public class UserTest {
 	@Test
 	public void isSpammer() {
 		final User user = new User();
-		assertFalse(user.isSpammer());
+		
+		/*
+		 * default: unknown spam status
+		 */
+		assertNull(user.getSpammer());
 
 		// is a spammer
-		for (final Integer spammer : new Integer[] { 1, new Integer(1) }) {
+		for (final Boolean spammer : new Boolean[] { true, new Boolean("true") }) {
 			user.setSpammer(spammer);
-			assertTrue(user.isSpammer());
+			assertTrue(user.getSpammer());
 		}
 
 		// isn't a spammer
-		for (final Integer spammer : new Integer[] { null, -1, 0, 23, 42, new Integer(23) }) {
+		for (final Boolean spammer : new Boolean[] { false, new Boolean("false"), new Boolean("aslkjdfh") }) {
 			user.setSpammer(spammer);
-			assertFalse(user.isSpammer());
+			assertFalse(user.getSpammer());
 		}
 	}
 }

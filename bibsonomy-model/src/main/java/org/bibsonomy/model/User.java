@@ -62,7 +62,7 @@ public class User {
 	/**
 	 * Indicates if this user is a spammer.
 	 */
-	private Integer spammer;
+	private Boolean spammer;
 
 	/**
 	 * the settings of this user
@@ -180,19 +180,6 @@ public class User {
 		this.basket = new Basket();
 		this.settings = new UserSettings();
 		this.role = Role.NOBODY; // TODO: check, if this has any bad implications!
-	}
-
-	/**
-	 * @return true if this user is a spammer false otherwise
-	 */
-	public boolean isSpammer() {
-		if (this.spammer == null) {
-			return false;
-		}
-		/*
-		 * FIXME: this constant should be defined elsewhere
-		 */
-		return 1 == this.spammer;
 	}
 
 	/**
@@ -455,16 +442,33 @@ public class User {
 	}
 
 	/**
+	 * The spammer property can have three states:
+	 * <dl>
+	 * <dt><code>null</code></dd>
+	 * <dd>
+	 *  The spam status hasn't been set in this object, i.e., we don't
+	 *  know it and don't want to change it.  
+	 *  <br/>
+	 *  It can never be <code>null</code> for users coming from the 
+	 *  DBLogic, since in the DB the property is either 
+	 *  <code>true</code> or <code>false</code>.
+	 * </dd>
+	 * <dt><code>true</code></dt>
+	 * <dd>This user is a spammer, for sure.</dd>
+	 * <dt><code>false</code></dt>
+	 * <dd>This user not a spammer or not yet.</dd>
+	 * <dd></dd>
+	 * </dl>
 	 * @return spammer
 	 */
-	public Integer getSpammer() {
+	public Boolean getSpammer() {
 		return this.spammer;
 	}
 
 	/**
 	 * @param spammer
 	 */
-	public void setSpammer(Integer spammer) {
+	public void setSpammer(Boolean spammer) {
 		this.spammer = spammer;
 	}
 
