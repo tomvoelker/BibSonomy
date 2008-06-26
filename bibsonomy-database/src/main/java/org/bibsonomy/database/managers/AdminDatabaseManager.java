@@ -110,7 +110,22 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		param.setSpammer(user.getSpammer());
 		param.setToClassify(user.getToClassify());
 
-		param.setPrediction(user.getPrediction() != null ? user.getPrediction() : user.getSpammer());
+		/*
+		 * set prediction
+		 */
+		if (user.getPrediction() != null) {
+			param.setPrediction(user.getPrediction());
+		} else {
+			/*
+			 * map boolean to int
+			 */
+			if (user.isSpammer()) {
+				user.setPrediction(1);
+			} else {
+				user.setPrediction(0);
+			}
+		}
+		
 		param.setMode(user.getMode());
 		param.setAlgorithm(user.getAlgorithm());
 		param.setUpdatedBy(updatedBy);
@@ -135,7 +150,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void updateGroupIds(final AdminParam param, final DBSession session) {
-		final boolean spammer = (param.getSpammer() == 1) ? true : false;
+		final boolean spammer = param.isSpammer();
 
 		// private ids
 		param.setOldGroupId(UserUtils.getGroupId(GroupID.PRIVATE.getId(), !spammer));

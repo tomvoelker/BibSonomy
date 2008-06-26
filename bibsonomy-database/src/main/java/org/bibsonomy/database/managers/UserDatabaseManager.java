@@ -140,6 +140,25 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	private void insertUser(final User user, final DBSession session) {
 		if (present(user) == false) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User object isn't present");
 		user.setApiKey(UserUtils.generateApiKey());
+		
+		/*
+		 * The spammer column in MySQL is defined as
+		 * 
+		 * `spammer` tinyint(1) NOT NULL default '0'
+		 * 
+		 * This means, it can't take NULL values. NULL in the user object
+		 * means, we don't know the spammer status, or won't change it.
+		 * On insert we have to map this to 0 or 1 for the database to not
+		 * throw an exception. This is done here:
+		 * null, false map to 0  
+		 * true maps to 1
+		 * 
+		 */
+		user.setSpammer(user.isSpammer());
+		/*
+		 * probably, we should add here more code to check for null values!
+		 */
+		
 		this.insert("insertUser", user, session);
 	}
 
@@ -191,9 +210,8 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		existingUser.setUpdatedBy(!present(user.getUpdatedBy()) 	? existingUser.getUpdatedBy() 	: user.getUpdatedBy());
 		existingUser.setUpdatedAt(!present(user.getUpdatedAt()) 	? existingUser.getUpdatedAt() 	: user.getUpdatedAt());
 
-		
-		existingUser.setReminderPassword(user.getReminderPassword());
-		existingUser.setReminderPasswordRequestDate(user.getReminderPasswordRequestDate());
+		existingUser.setReminderPassword(!present(user.getReminderPassword()) ? existingUser.getReminderPassword() : user.getReminderPassword());
+		existingUser.setReminderPasswordRequestDate(!present(user.getReminderPasswordRequestDate()) ? existingUser.getReminderPasswordRequestDate() : user.getReminderPasswordRequestDate());
 
 		this.plugins.onUserUpdate(existingUser.getName(), session);
 

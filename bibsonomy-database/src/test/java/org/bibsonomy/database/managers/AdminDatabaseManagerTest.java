@@ -105,7 +105,7 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void updatePredictionLogs(){
 		final User user = new User(); 
 		user.setName("beate"); 
-		user.setSpammer(0);
+		user.setSpammer(false);
 		user.setToClassify(1); 
 		user.setPrediction(0);
 		user.setMode("D"); 

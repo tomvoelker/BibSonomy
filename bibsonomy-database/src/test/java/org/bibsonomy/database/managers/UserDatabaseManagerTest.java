@@ -72,20 +72,49 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void createUser() {
 		final User newUser = new User();
-		newUser.setName("new-testuser");
+		final String randomUserName = "new-testuser";
+		newUser.setName(randomUserName);
 		newUser.setRealname("New Testuser");
 		newUser.setEmail("new-testuser@bibsonomy.org");
 		newUser.setPassword("password");
 		newUser.setApiKey("00000000000000000000000000000000");
 		newUser.getSettings().setDefaultLanguage("zv");
-		newUser.setSpammer(0);
+		newUser.setSpammer(false);
 		newUser.setRole(Role.DEFAULT);
 		newUser.setToClassify(1);
 		newUser.setAlgorithm(null);
 		final String userName = this.userDb.createUser(newUser, this.dbSession);
-		assertEquals("new-testuser", userName);
-		final User user = this.userDb.getUserDetails("new-testuser", this.dbSession);
+		assertEquals(randomUserName, userName);
+		final User user = this.userDb.getUserDetails(randomUserName, this.dbSession);
 		ModelUtils.assertPropertyEquality(newUser, user, Integer.MAX_VALUE, null, new String[] { "password", "registrationDate", "basket", "prediction", "algorithm", "updatedBy", "updatedAt", "mode" });
+
+		try {
+			this.userDb.createUser(null, this.dbSession);
+			fail("expected exception");
+		} catch (Exception ignore) {
+		}
+	}
+	
+	/**
+	 * tests createUser
+	 */
+	@Test
+	public void createUserSpammerUnknown() {
+		final User newUser = new User();
+		newUser.setName("new-testuser2");
+		newUser.setRealname("New Testuser");
+		newUser.setEmail("new-testuser@bibsonomy.org");
+		newUser.setPassword("password");
+		newUser.setApiKey("00000000000000000000000000000000");
+		newUser.getSettings().setDefaultLanguage("zv");
+		//newUser.setSpammer(false);
+		newUser.setRole(Role.DEFAULT);
+		newUser.setToClassify(1);
+		newUser.setAlgorithm(null);
+		final String userName = this.userDb.createUser(newUser, this.dbSession);
+		assertEquals("new-testuser2", userName);
+		final User user = this.userDb.getUserDetails("new-testuser", this.dbSession);
+		ModelUtils.assertPropertyEquality(newUser, user, Integer.MAX_VALUE, null, new String[] { "password", "registrationDate", "basket", "prediction", "algorithm", "updatedBy", "updatedAt", "mode", "reminderPasswordRequestDate" });
 
 		try {
 			this.userDb.createUser(null, this.dbSession);

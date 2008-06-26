@@ -25,7 +25,7 @@ public class AdminParam extends GenericParam {
 	private String userName;
 
 	/** The spammer status of the user */
-	private Integer spammer;
+	private Boolean spammer;
 
 	/** flag if user should by classified any longer */
 	private Integer toClassify;
@@ -84,11 +84,15 @@ public class AdminParam extends GenericParam {
 		this.userName = userName;
 	}
 
-	public Integer getSpammer() {
+	public Boolean getSpammer() {
 		return this.spammer;
 	}
 
-	public void setSpammer(Integer spammer) {
+	public boolean isSpammer() {
+		return this.spammer == null ? false : this.spammer;
+	}
+	
+	public void setSpammer(Boolean spammer) {
 		this.spammer = spammer;
 	}
 
