@@ -141,7 +141,7 @@
   <function>
     <name>toTagString</name>
     <function-class>tags.Functions</function-class>
-    <function-signature>String toTagString (java.util.List)</function-signature>
+    <function-signature>String toTagString (java.util.Collection)</function-signature>
   </function>
   
   <function>

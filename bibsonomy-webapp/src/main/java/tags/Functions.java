@@ -6,8 +6,8 @@ import java.net.URI;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Properties;
 
 import org.bibsonomy.common.enums.SpamStatus;
@@ -136,12 +136,12 @@ public class Functions  {
 	}
 
 	/**
-	 * converts a list of tags into a space-separated string of tags 
+	 * converts a collection of tags into a space-separated string of tags 
 	 * 
 	 * @param tags a list of tags
 	 * @return a space-separated string of tags
 	 */
-	public static String toTagString (final List<Tag> tags) {		
+	public static String toTagString (final Collection<Tag> tags) {		
 		final StringBuffer sb = new StringBuffer();
 		for (final Tag tag : tags) {
 			sb.append(tag.getName());
