@@ -26,9 +26,9 @@ public class GetResourcesByTagNamesAndUserCount extends StatisticChainElement {
 		List<Integer> counts = new ArrayList<Integer>();
 		
 		if (param.getContentType() == ConstantID.BIBTEX_CONTENT_TYPE.getId()) {
-			counts.add(this.db.getNumberOfResourcesForUserAndTags(BibTex.class, param, session));
+			counts.add(this.db.getNumberOfResourcesForUserAndTags(BibTex.class, param.getTagIndex(), param.getRequestedUserName(), param.getUserName(), param.getGroups(), session));
 		} else if (param.getContentType() == ConstantID.BOOKMARK_CONTENT_TYPE.getId()) {
-			counts.add(this.db.getNumberOfResourcesForUserAndTags(Bookmark.class, param, session));
+			counts.add(this.db.getNumberOfResourcesForUserAndTags(Bookmark.class, param.getTagIndex(), param.getRequestedUserName(), param.getUserName(), param.getGroups(), session));
 		}
 		return counts;
 	}

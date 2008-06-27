@@ -23,7 +23,7 @@ public class GetResourcesDuplicateCount extends StatisticChainElement {
 		List<Integer> counts = new ArrayList<Integer>();
 		
 		if (param.getContentType() == ConstantID.BIBTEX_CONTENT_TYPE.getId()) {
-			counts.add(this.db.getNumberOfDuplicates(BibTex.class, param, session));
+			counts.add(this.db.getNumberOfDuplicates(BibTex.class, param.getRequestedUserName(), session));
 		} else {
 			throw new UnsupportedResourceTypeException("Resource type not supported for this query.");
 		}

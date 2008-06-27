@@ -16,7 +16,6 @@ import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -59,13 +58,18 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void getBookmarkByTagNamesCount() {
-		this.statisticsParam.setContentTypeByClass(Bookmark.class);
-		this.statisticsParam.addTagName("suchmaschine");
-		assertEquals(3, this.bookmarkDb.getBookmarkByTagNamesCount(this.statisticsParam, this.dbSession));
-		this.statisticsParam.addTagName("google");
-		assertEquals(1, this.bookmarkDb.getBookmarkByTagNamesCount(this.statisticsParam, this.dbSession));
-		this.statisticsParam.addTagName("yahoo");
-		assertEquals(0, this.bookmarkDb.getBookmarkByTagNamesCount(this.statisticsParam, this.dbSession));
+		final ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
+		List<TagIndex> tagIndex = new ArrayList<TagIndex>();		
+		TagIndex t1 = new TagIndex("suchmaschine",1);	
+		TagIndex t2 = new TagIndex("google",2);	
+		TagIndex t3 = new TagIndex("yahoo",3);	
+				
+		tagIndex.add(t1);			
+		assertEquals(3, this.bookmarkDb.getBookmarkByTagNamesCount(tagIndex, visibleGroupIDs, this.dbSession));
+		tagIndex.add(t2);
+		assertEquals(1, this.bookmarkDb.getBookmarkByTagNamesCount(tagIndex, visibleGroupIDs, this.dbSession));
+		tagIndex.add(t3);
+		assertEquals(0, this.bookmarkDb.getBookmarkByTagNamesCount(tagIndex, visibleGroupIDs, this.dbSession));
 	}
 
 	/**
@@ -317,14 +321,13 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getBookmarkForGroupCount() {
 		//approximated number of bookmarks, users own private/friends bookmarks are not included
-		this.statisticsParam.setContentTypeByClass(Bookmark.class);
 		Integer count = -1;
 		ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
-		count = this.bookmarkDb.getBookmarkForGroupCount(this.statisticsParam, this.dbSession);
+		count = this.bookmarkDb.getBookmarkForGroupCount(3, visibleGroupIDs, this.dbSession);
 		assertEquals(4, count);
-		count = this.bookmarkDb.getBookmarkForGroupCount(this.statisticsParam, this.dbSession);
+		count = this.bookmarkDb.getBookmarkForGroupCount(3, visibleGroupIDs, this.dbSession);
 		assertEquals(4, count);
-		count = this.bookmarkDb.getBookmarkForGroupCount(this.statisticsParam, this.dbSession);
+		count = this.bookmarkDb.getBookmarkForGroupCount(4, visibleGroupIDs, this.dbSession);
 		assertEquals(2, count);
 	}
 
@@ -404,18 +407,15 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		Integer count = -1;
 		ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
 		visibleGroupIDs.add(0);
-		
-		this.statisticsParam.setGroups(visibleGroupIDs);
-		this.statisticsParam.setRequestedUserName("testuser1");
-		this.statisticsParam.setUserName("testuser3");
-		
-		count =  this.bookmarkDb.getBookmarkForUserCount(this.statisticsParam, this.dbSession);	
+		final String requestedUserName = "testuser1";
+		String userName = "testuser3";
+		count =  this.bookmarkDb.getBookmarkForUserCount(requestedUserName, userName, visibleGroupIDs, this.dbSession);	
 		assertEquals(2, count);
-		this.statisticsParam.setUserName("testuser2");
-		count =  this.bookmarkDb.getBookmarkForUserCount(this.statisticsParam, this.dbSession);	
+		userName = "testuser2";
+		count =  this.bookmarkDb.getBookmarkForUserCount(requestedUserName, userName, visibleGroupIDs, this.dbSession);	
 		assertEquals(3, count);
-		this.statisticsParam.setUserName("testuser1");
-		count =  this.bookmarkDb.getBookmarkForUserCount(this.statisticsParam, this.dbSession);	
+		userName = "testuser1";
+		count =  this.bookmarkDb.getBookmarkForUserCount(requestedUserName, userName, visibleGroupIDs, this.dbSession);	
 		assertEquals(6, count);
 	}
 

@@ -39,7 +39,7 @@
 		ORDER BY b.date DESC, b.content_id DESC
 	</select>
 
-	<select id="getBibTexByTagNamesCount" resultClass="int" timeout="2" parameterClass="statisticParam">
+	<select id="getBibTexByTagNamesCount" resultClass="int" timeout="2" parameterClass="bibtexParam">
 		SELECT count(*)
 		FROM <include refid="tagFromQuery"/>
 		WHERE <include refid="tagWhereQuery"/>
@@ -127,7 +127,7 @@
 				ORDER BY b.date DESC, b.content_id DESC;
 	</select>
 
-	<select id="getBibTexByTagNamesForUserCount" resultClass="int" parameterClass="statisticParam">
+	<select id="getBibTexByTagNamesForUserCount" resultClass="int" parameterClass="bibtexParam">
 		SELECT count(*) AS count
 		FROM <include refid="tagFromQuery"/>
 		WHERE <include refid="tagWhereQuery"/>
@@ -307,7 +307,7 @@
 		ORDER BY b.simhash1 DESC, bb.date DESC
 	</select>
 
-	<select id="getBibTexDuplicateCount" resultClass="int" parameterClass="statisticParam">
+	<select id="getBibTexDuplicateCount" resultClass="int" parameterClass="bibtexParam">
 		SELECT count(*) FROM (<include refid ="duplicatesCount"/>) AS duplicates
 	</select>
 
@@ -415,7 +415,7 @@
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 
-	<select id="getBibTexForGroupCount" resultClass="int" parameterClass="statisticParam" timeout="1">
+	<select id="getBibTexForGroupCount" resultClass="int" parameterClass="bibtexParam" timeout="1">
 		SELECT count(*)
 		FROM bibtex t1, groups g
 		WHERE g.group = #groupId#
@@ -498,7 +498,7 @@
 		ORDER BY b2.date DESC, b2.content_id DESC
 	</select>
 
-	<select id="getBibTexForUserCount" resultClass="int" parameterClass="statisticParam" timeout="1">
+	<select id="getBibTexForUserCount" resultClass="int" parameterClass="bibtexParam" timeout="1">
 		SELECT count(*)
 		FROM bibtex t1
 		WHERE t1.user_name = #requestedUserName#

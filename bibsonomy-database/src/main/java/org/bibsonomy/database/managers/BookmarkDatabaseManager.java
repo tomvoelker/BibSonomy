@@ -24,6 +24,7 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.SimHash;
 
@@ -113,12 +114,15 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	/**
 	 * Counts the number of visible bookmark entries for a given list of tags
 	 * 
-	 * @param tags a list of tags
+	 * @param tagIndex a list of tags
 	 * @param session DB session
 	 * @param visibleGroupIDs a list of visible group IDs
 	 * @return the number of visible bookmark entries
 	 */
-	public Integer getBookmarkByTagNamesCount(final StatisticsParam param, final DBSession session) {
+	public Integer getBookmarkByTagNamesCount(final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, final DBSession session) {
+		BookmarkParam param = new BookmarkParam();
+		param.addGroups(visibleGroupIDs);
+		param.setTagIndex(tagIndex);
 		return this.queryForObject("getBookmarkByTagNamesCount", param, Integer.class, session);
 	}	
 
@@ -146,12 +150,24 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * Retrieves the number of bookmark items tagged by the tags present in tagIndex by user requestedUserName
 	 * being visible to the logged in user
 	 * 
-	 * @param param StatisticsParam  	
+	 * @param requestedUserName
+	 * 			owner of the bookmark items
+	 * @param loginUserName
+	 * 			logged in user
+	 * @param tagIndex
+	 * 			a list of tags
+	 * @param visibleGroupIDs
+	 * 			a list of groupIDs the logged in user is member of
 	 * @param session
 	 * 			DB session
 	 * @return the corresponding number of visible bibtex items
 	 */
-	public Integer getBookmarkByTagNamesForUserCount(final StatisticsParam param, final DBSession session) {
+	public Integer getBookmarkByTagNamesForUserCount(final String requestedUserName, final String loginUserName, final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, final DBSession session) {
+		BookmarkParam param = new BookmarkParam();
+		param.addGroups(visibleGroupIDs);
+		param.setRequestedUserName(requestedUserName);
+		param.setUserName(loginUserName);
+		param.setTagIndex(tagIndex);
 		return this.queryForObject("getBookmarkByTagNamesForUserCount", param, Integer.class, session);
 	}	
 
@@ -616,7 +632,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @param session
 	 * @return number of bookmarks for a given group
 	 */
-	public Integer getBookmarkForGroupCount(final StatisticsParam param, final DBSession session) {
+	public Integer getBookmarkForGroupCount(final BookmarkParam param, final DBSession session) {
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
 		return this.queryForObject("getBookmarkForGroupCount", param, Integer.class, session);
 	}
@@ -735,7 +751,11 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @param session
 	 * @return the number of bookmarks of the requested User which the logged in user is allowed to see
 	 */
-	public Integer getBookmarkForUserCount(final StatisticsParam param, final DBSession session) {
+	public Integer getBookmarkForUserCount(final String requestedUserName, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session) {
+		BookmarkParam param = new BookmarkParam();
+		param.setRequestedUserName(requestedUserName);
+		param.setUserName(loginUserName);
+		param.addGroups(visibleGroupIDs);
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session); // set groups
 		return this.queryForObject("getBookmarkForUserCount", param, Integer.class, session);
 	}
