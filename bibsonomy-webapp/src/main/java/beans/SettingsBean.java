@@ -124,7 +124,7 @@ public class SettingsBean extends UserBean implements Serializable {
 	}
 	
 	public void setHomepage(String homepage) {
-		super.setHomepage(homepage.trim());
+		super.setHomepage(homepage);
 	}
 	
 	// birthday
