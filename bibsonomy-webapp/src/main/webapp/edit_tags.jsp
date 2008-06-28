@@ -43,8 +43,8 @@
         <td><input id="inpf" name="delTags" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" on size="30" value="" tabindex="1" title="these tags will be removed from every posts which contains ALL of these tags"/></td>
         <td rowspan="2" style="padding-left:1em; border: 1px solid black; font-size:smaller;">
           This example shows the substitution of the tags 
-          <a href="${projectHome}tag/folksonomy" tabindex="2" onFocus="switchField('inpf','inpfNew')">folksonomy</a> and
-          <a href="${projectHome}tag/project" tabindex="7" onFocus="switchField('insert_up','insert_lo')">project</a>
+          <a href="${projectHome}tag/folksonomy" onFocus="switchField('inpf','inpfNew')">folksonomy</a> and
+          <a href="${projectHome}tag/project" onFocus="switchField('insert_up','insert_lo')">project</a>
           by the tags 
           <a href="${projectHome}tag/social">social</a>,
           <a href="${projectHome}tag/system">system</a> and
@@ -56,7 +56,7 @@
       </tr>
       <tr>
         <td>new tag(s):</td>
-        <td><input id="inpfNew" name="addTags" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" size="30" value="" tabindex="3" title="these tags will be added to every post which contains ALL of the above tags"/></td>
+        <td><input id="inpfNew" name="addTags" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" size="30" value="" tabindex="2" title="these tags will be added to every post which contains ALL of the above tags"/></td>
       </tr>
       <tr>
         <td>also update relations: </td>
@@ -81,10 +81,10 @@
   <h2>insert relations</h2>
   <form action="/RelationsHandler?do=insert" method="post">
      relations to insert: 
-     <input id="insert_lo" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" name="lower" size="30" value="" tabindex="8" title="enter the subtag(s) here"/> &rarr;
-     <input id="insert_up" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" name="upper" size="15" value="" tabindex="6" title="enter the supertag(s) here"/> 
+     <input id="insert_lo" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" name="lower" size="30" value="" tabindex="5" title="enter the subtag(s) here"/> &rarr;
+     <input id="insert_up" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" name="upper" size="15" value="" tabindex="6" title="enter the supertag(s) here"/>
+     <input type="submit" tabindex="7"/> 
      <input type="reset" tabindex="8"/>
-     <input type="submit" tabindex="9"/>
      <input type="hidden" name="ckey" value="${ckey}"/>
   </form>
   
@@ -92,10 +92,10 @@
   <h2>delete relations</h2>
   <form action="/RelationsHandler?do=delete" method="post">
     relations to delete:
-    <input id="delete_lo" name="lower" size="30" value="" tabindex="12" title="enter the subtag(s) here"/> &rarr; 
-    <input id="delete_up" name="upper" size="15" value="" tabindex="11" title="enter the supertag(s) here"/> 
-    <input type="reset" tabindex="13"/>
-    <input type="submit" tabindex="14"/>
+    <input id="delete_lo" name="lower" size="30" value="" tabindex="9" title="enter the subtag(s) here"/> &rarr; 
+    <input id="delete_up" name="upper" size="15" value="" tabindex="10" title="enter the supertag(s) here"/>
+    <input type="submit" tabindex="11"/> 
+    <input type="reset" tabindex="12"/>
     <input type="hidden" name="ckey" value="${ckey}"/>
   </form>
 
