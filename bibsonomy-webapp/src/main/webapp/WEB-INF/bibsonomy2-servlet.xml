@@ -159,6 +159,20 @@
 					</bean>
 				</entry>
 				
+				<entry key="/actions/user/passwordchangeonremind">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="passwordChangeOnRemindController"/>
+						<property name="allowedFields">
+							<list>
+								<value>userName</value>
+								<value>tmpPassword</value>
+								<value>newPassword</value>
+								<value>passwordCheck</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				
 
 				
 			</map>

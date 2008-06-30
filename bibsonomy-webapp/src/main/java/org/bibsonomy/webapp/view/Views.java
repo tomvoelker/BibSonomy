@@ -214,7 +214,12 @@ public enum Views implements View {
 	/**
      * Show a form to request a password reminder.
      */ 
-	PASSWORD_REMINDER("actions/user/passwordReminder");
+	PASSWORD_REMINDER("actions/user/passwordReminder"), 
+	
+	/**
+	 * Show the form after reminding a password to change it
+	 */
+	PASSWORD_CHANGE_ON_REMIND("actions/user/passwordChangeOnRemind");
 	
 	private final String name;
 	

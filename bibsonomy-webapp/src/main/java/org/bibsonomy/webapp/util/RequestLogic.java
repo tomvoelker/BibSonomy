@@ -110,6 +110,15 @@ public class RequestLogic {
 		request.getSession(true).setAttribute(key, value); 
 	}
 	
+	/** Gets a session attribute
+	 * 
+	 * @param key
+	 * @return Object
+	 */
+	public Object getSessionAttribute(final String key) {
+		return request.getSession(true).getAttribute(key);
+	}
+	
 	/**
 	 * @return The User object associated with the logged in user.
 	 */
