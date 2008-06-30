@@ -18,10 +18,7 @@ public class PasswordChangeOnRemindCommand extends BaseCommand implements Serial
 	 * the username with the ative temporary password
 	 */
 	private String userName;
-	/**
-	 * the temporary password itself
-	 */
-	private String tmpPassword;
+
 	/**
 	 * the new password entered by the user
 	 */
@@ -42,18 +39,6 @@ public class PasswordChangeOnRemindCommand extends BaseCommand implements Serial
 	 */
 	public void setUserName(final String userName) {
 		this.userName = userName;
-	}
-	/**
-	 * @return String
-	 */
-	public String getTmpPassword() {
-		return this.tmpPassword;
-	}
-	/**
-	 * @param tmpPassword
-	 */
-	public void setTmpPassword(final String tmpPassword) {
-		this.tmpPassword = tmpPassword;
 	}
 	/**
 	 * @return String

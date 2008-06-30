@@ -157,8 +157,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 					 * and his new password (twice).
 					 */
 					requestLogic.setSessionAttribute("tmpUser", username);
-					requestLogic.setSessionAttribute("tmpPass", password);
-					return new ExtendedRedirectView(Views.PASSWORD_CHANGE_ON_REMIND.toString());
+					return new ExtendedRedirectView("/actions/user/passwordchangeonremind");
 				}
 			}
 		}

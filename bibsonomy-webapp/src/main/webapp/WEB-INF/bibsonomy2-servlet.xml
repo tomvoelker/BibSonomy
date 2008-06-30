@@ -165,7 +165,6 @@
 						<property name="allowedFields">
 							<list>
 								<value>userName</value>
-								<value>tmpPassword</value>
 								<value>newPassword</value>
 								<value>passwordCheck</value>
 							</list>

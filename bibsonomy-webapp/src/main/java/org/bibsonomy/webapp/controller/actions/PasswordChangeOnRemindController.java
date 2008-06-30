@@ -41,27 +41,12 @@ public class PasswordChangeOnRemindController implements MinimalisticController<
 		
 		// set the username and the tmp password
 		command.setUserName((String)requestLogic.getSessionAttribute("tmpUser"));
-		command.setTmpPassword((String)requestLogic.getSessionAttribute("tmpPass"));
 
-		if (command.getUserName() != null || command.getTmpPassword() != null){
+		if (command.getUserName() != null){
 			log.debug("neither username nor the tmppassword is null");
 			// get the existing user
 			User user = new User();
 			user.setName(command.getUserName());
-			
-			User existingUser = adminLogic.getUserDetails(command.getUserName());
-			
-			/*
-			 * Check if the temporary password is valid if the time has expired show an error
-			 */
-			final Calendar now = Calendar.getInstance();
-			final Calendar reminderExpirationDate = Calendar.getInstance();
-			reminderExpirationDate.setTime(existingUser.getReminderPasswordRequestDate());
-			reminderExpirationDate.add(Calendar.MINUTE, maxMinutesPasswordReminderValid);
-			if (!now.before(reminderExpirationDate)) {
-				errors.reject("error.passReminder.expired");
-				return Views.ERROR;
-			}
 			
 			// if there are any errors show thems
 			if (errors.hasErrors()) {
