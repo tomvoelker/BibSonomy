@@ -10,33 +10,73 @@ import org.bibsonomy.webapp.command.BaseCommand;
  */
 public class PasswordChangeOnRemindCommand extends BaseCommand implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8544593363734488269L;
+	/**
+	 * the username with the ative temporary password
+	 */
 	private String userName;
+	/**
+	 * the temporary password itself
+	 */
 	private String tmpPassword;
+	/**
+	 * the new password entered by the user
+	 */
 	private String newPassword;
+	/**
+	 * the copy of the new password entered by the user
+	 */
 	private String passwordCheck;
 	
+	/**
+	 * @return String
+	 */
 	public String getUserName() {
 		return this.userName;
 	}
-	public void setUserName(String userName) {
+	/**
+	 * @param userName
+	 */
+	public void setUserName(final String userName) {
 		this.userName = userName;
 	}
+	/**
+	 * @return String
+	 */
 	public String getTmpPassword() {
 		return this.tmpPassword;
 	}
-	public void setTmpPassword(String tmpPassword) {
+	/**
+	 * @param tmpPassword
+	 */
+	public void setTmpPassword(final String tmpPassword) {
 		this.tmpPassword = tmpPassword;
 	}
+	/**
+	 * @return String
+	 */
 	public String getNewPassword() {
 		return this.newPassword;
 	}
-	public void setNewPassword(String newPassword) {
+	/**
+	 * @param newPassword
+	 */
+	public void setNewPassword(final String newPassword) {
 		this.newPassword = newPassword;
 	}
+	/**
+	 * @return String
+	 */
 	public String getPasswordCheck() {
 		return this.passwordCheck;
 	}
-	public void setPasswordCheck(String passwordCheck) {
+	/**
+	 * @param passwordCheck
+	 */
+	public void setPasswordCheck(final String passwordCheck) {
 		this.passwordCheck = passwordCheck;
 	}
 
