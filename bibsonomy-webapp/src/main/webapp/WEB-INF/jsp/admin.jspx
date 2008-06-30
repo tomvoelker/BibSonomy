@@ -16,7 +16,6 @@
 	<c:set var="settingsCommand" value="${command.settingsCommand}" />
 	<c:set var="statisticsCommand" value="${command.statisticsCommand}" />
 
-
 	<layout:tabLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">		
 		<jsp:attribute name="heading">		
 			<fmt:message key="navi.admin"/>									
@@ -82,8 +81,8 @@
 				       </td>
 				       <td>
 				       	<a href="/user/${user.name}"><c:out value="${user.name}"/></a>
-				       	<a onclick="javascript:ajax_showTooltip('ajax/?action=latest_posts&amp;userName=${user.name}',this);return false;" style="cursor:pointer" title="show latest posts"><img src="/resources/image/info.png"/></a>
-				        <a onclick="javascript:ajax_showTooltip('ajax/?action=prediction_history&amp;userName=${user.name}',this);return false;" style="cursor:pointer" title="show latest user predictions"><img src="/resources/image/history.png"/></a></td>
+				       	<a onclick="javascript:ajax_showTooltip('ajax?action=latest_posts&amp;userName=${user.name}',this);return false;" style="cursor:pointer" title="show latest posts"><img src="/resources/image/info.png"/></a>
+				        <a onclick="javascript:ajax_showTooltip('ajax?action=prediction_history&amp;userName=${user.name}',this);return false;" style="cursor:pointer" title="show latest user predictions"><img src="/resources/image/history.png"/></a></td>
 				       <td><c:out value="${user.spammer}"/></td>
 				       <td><c:out value="${user.realname}"/></td>	
 					   <td><c:out value="${user.registrationDate}"/></td>					   
@@ -113,8 +112,8 @@
 				<tr>
 					<td>
 						<a href="/user/${user.name}"><c:out value="${user.name}"/></a>
-						<a onclick="javascript:ajax_showTooltip('ajax/?action=latest_posts&amp;userName=${user.name}',this);return false;" style="cursor:pointer" title="show latest posts"><img src="/resources/image/info.png"/></a>
-				        <a onclick="javascript:ajax_showTooltip('ajax/?action=prediction_history&amp;userName=${user.name}',this);return false;" style="cursor:pointer" title="show latest user predictions"><img src="/resources/image/history.png"/></a>
+						<a onclick="javascript:ajax_showTooltip('ajax?action=latest_posts&amp;userName=${user.name}',this);return false;" style="cursor:pointer" title="show latest posts"><img src="/resources/image/info.png"/></a>
+				        <a onclick="javascript:ajax_showTooltip('ajax?action=prediction_history&amp;userName=${user.name}',this);return false;" style="cursor:pointer" title="show latest user predictions"><img src="/resources/image/history.png"/></a>
 				  	</td>
 				    <td><c:out value="${user.updatedBy}"/></td>	
 					<td><c:out value="${user.spammer}"/></td>
