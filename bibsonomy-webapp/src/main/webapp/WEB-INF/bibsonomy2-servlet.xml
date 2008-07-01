@@ -102,6 +102,13 @@
 				<entry key="/ajax">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="ajaxController"/>
+						 <property name="allowedFields">
+                                                        <list>
+                                                                <value>action</value>
+								<value>userName</value>
+							</list>
+						</property>
+
 					</bean>
 				</entry>
 				
