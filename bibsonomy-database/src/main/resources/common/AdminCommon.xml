@@ -12,7 +12,7 @@
 	</resultMap>
 
 	<resultMap id="userPredictionAndSpammer" class="user" extends="userPrediction">		
-		<result property="spammer"   	column="spammer"  	javaType="integer" />	
+		<result property="spammer"   	column="spammer"  	javaType="boolean" />	
 		<result property="updatedBy"   	column="updated_by" javaType="string" />
 	</resultMap>
 
