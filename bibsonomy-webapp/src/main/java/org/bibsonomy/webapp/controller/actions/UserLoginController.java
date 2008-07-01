@@ -156,8 +156,8 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 					 * change page is the best, where the user enters his temporary password,
 					 * and his new password (twice).
 					 */
-					requestLogic.setSessionAttribute("tmpUser", username);
-					return new ExtendedRedirectView("/actions/user/passwordchangeonremind");
+					requestLogic.setSessionAttribute("tmpUser", username); // FIXME: remove this!
+					return new ExtendedRedirectView("/change_password");
 				}
 			}
 		}
