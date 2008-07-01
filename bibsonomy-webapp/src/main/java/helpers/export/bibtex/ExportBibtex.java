@@ -64,12 +64,12 @@ public final class ExportBibtex {
 		 * preferences and if we don't initialize them, we get NullPointerExceptions later 
 		 */
 		Globals.prefs = JabRefPreferences.getInstance();
-		
+
 		// load default filters 
 		try {
 			loadDefaultFilters();
 		} catch (URISyntaxException ex) {
-			log.fatal("could not load default layout files");
+			log.fatal("Could not load default layout files", ex);
 		}
 	}
 
@@ -101,37 +101,38 @@ public final class ExportBibtex {
 	 */
 	public StringBuffer exportBibtex(Collection<Bibtex> bibtexList, String userName, String format) throws IOException, Exception {
 		StringBuffer output = new StringBuffer();  
-		
+
 		BibtexDatabase database = bibtex2JabrefDB(bibtexList);
 		// Write database entries; entries will be sorted as they
 		// appear on the screen, or sorted by author, depending on
 		// Preferences.
 		List<BibtexEntry> sorted = FileActions.getSortedEntries(database, null, false);
-		
+
 		if("custom".equals(format)) {
 
 			/* *************** Printing the header ******************/
-			String hash = userLayoutHash(userName, LayoutType.BEGIN);
-			appendFile(output, new File((_rootPath + "bibsonomy_docs/" + hash.substring(0, 2).toLowerCase()) + "/" + hash));
-				
+			final Layout beginLayout = getUserLayout(userName, LayoutType.BEGIN);
+			if (beginLayout != null) {
+				output.append(beginLayout.doLayout(database, "UTF-8"));
+			}
+
 			/* *************** Printing the entries ******************/ 
-
-			Layout layout = getUserLayout(userName);
-
+			final Layout layout = getUserLayout(userName, LayoutType.ITEM);
 			for(BibtexEntry entry: sorted){	              
 				output.append(layout.doLayout(entry, database));
 			}	        
 
 			/* *************** Printing the footer ******************/
-			hash = userLayoutHash(userName, LayoutType.END);
-			appendFile(output, new File((_rootPath + "bibsonomy_docs/" + hash.substring(0, 2).toLowerCase()) + "/" + hash));
-			
+			final Layout endLayout = getUserLayout(userName, LayoutType.END);
+			if (endLayout != null) {
+				output.append(endLayout.doLayout(database, "UTF-8"));
+			}
 		} else {
 			//must be one of the default formats like html, bibtexml, docbook, tablerefs, tablerefsabsbib, openoffice, harvard or endnote
 
 
 			/* *************** Printing the header ******************/
-			Layout beginLayout = _layouts.get(format + ".begin" + _layoutFileExtension);
+			final Layout beginLayout = _layouts.get(format + ".begin" + _layoutFileExtension);
 			if (beginLayout != null) {
 				output.append(beginLayout.doLayout(database, "UTF-8"));
 			}
@@ -155,7 +156,7 @@ public final class ExportBibtex {
 			}
 
 			/* *************** Printing the footer ******************/
-			Layout endLayout = _layouts.get(format + ".end" + _layoutFileExtension);
+			final Layout endLayout = _layouts.get(format + ".end" + _layoutFileExtension);
 			if (endLayout != null) {
 				output.append(endLayout.doLayout(database, "UTF-8"));
 			}
@@ -169,19 +170,24 @@ public final class ExportBibtex {
 	 * @return
 	 * @throws Exception if layout is not available
 	 */
-	private Layout getUserLayout(String userName) throws Exception {
-		String hashedName = userLayoutHash(userName, LayoutType.ITEM);
+	private Layout getUserLayout(final String userName, final LayoutType layoutType) throws Exception {
+		final String hashedName = userLayoutHash(userName, layoutType);
 		// check if custom filter exists
-		if(!_layouts.containsKey(hashedName)){
+		if (!_layouts.containsKey(hashedName)) {
 			// custom filter of current user is not loaded yet -> check if a filter exists at all
-			if(!loadCustomFilter(userName)){
-				// no custom filter for this user -> exception
+			
+			try {
+				loadCustomFilter(hashedName);
+			} catch (final Exception e) {
+				log.fatal("error loading custom filter for user " + userName, e);
 				throw new Exception(message_no_custom_layout);    			
-			}	 	
+			}
 		}
 		/* *************** Printing the entries ******************/
-		Layout defLayout = _layouts.get(hashedName);
-		if(defLayout == null){//custom filter deleted meanwhile -> exception
+		final Layout defLayout = _layouts.get(hashedName);
+		if (defLayout == null){
+			//custom filter deleted meanwhile -> exception
+			log.fatal("error loading custom filter for user " + userName);
 			throw new Exception(message_no_custom_layout);		    		
 		}
 		return defLayout;
@@ -206,7 +212,7 @@ public final class ExportBibtex {
 		try {
 			result = BibtexParser.parse(new StringReader(bibtexStrings.toString()));
 		} catch (IOException e) {
-			log.fatal("error parsing bibtex objects for JabRef output: " + e);
+			log.fatal("Error parsing bibtex objects for JabRef output.", e);
 		}
 
 		return result.getDatabase();
@@ -218,7 +224,7 @@ public final class ExportBibtex {
 	public void resetFilters() throws URISyntaxException {
 		loadDefaultFilters();
 	}
-	
+
 	/**
 	 * Loads default filters (xxx.xxx.layout and xxx.layout) from BibSonomy`s default layout directory into a map.
 	 * @throws URISyntaxException 
@@ -228,9 +234,9 @@ public final class ExportBibtex {
 
 		// create new hashmap for filters
 		_layouts = new HashMap<String, Layout>();
-		
-		Stack<File> dirs = new Stack<File>();
-		
+
+		final Stack<File> dirs = new Stack<File>();
+
 		/*
 		 * start searching in default layout directory
 		 */
@@ -241,7 +247,7 @@ public final class ExportBibtex {
 		// add first directory to stack
 		if (startdir.isDirectory()) 
 			dirs.push(startdir);
-		
+
 		while (dirs.size() > 0) {
 			for (File file : dirs.pop().listFiles()){
 				if (file.isDirectory()){	        
@@ -257,7 +263,7 @@ public final class ExportBibtex {
 							}
 							log.info("loaded filter " + file.getName());
 						} catch (Exception e) {
-							log.fatal("error loading default filters: " + e);
+							log.fatal("Error loading default filters.", e);
 						}
 					}//if	
 				}//else
@@ -267,30 +273,23 @@ public final class ExportBibtex {
 
 
 	/**
-	 * Loads user filter from BibSonomy into a map.
+	 * Loads user filter from file into a map.
+	 * 
 	 * @param userName The user who requested a filter
-	 * @return true If loading was successful. Return false, if loading failed because user does not have a custom filter.
+	 * @throws Exception  
 	 */
-	private boolean loadCustomFilter(String userName){
-		
-		String hashedName = userLayoutHash(userName, LayoutType.ITEM);		
-		// build path from first two letters of file name hash
-		String docPath = _rootPath + "bibsonomy_docs/" + hashedName.substring(0, 2).toLowerCase();
+	private void loadCustomFilter(final String hashedName) throws Exception {
 
-		//read file (docPath = /home/stud/sre/bibsonomy_docs/4c + hashedName = 4c432434rk345j33...)
-		try {
-			File file = new File(docPath + "/" + hashedName);
-			if(file.exists()){
-				LayoutHelper layoutHelper = new LayoutHelper(new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8")));
-				synchronized(_layouts){
-					_layouts.put(hashedName, layoutHelper.getLayoutFromText(Globals.FORMATTER_PACKAGE));
-				}
-				return true;
+		// build path from first two letters of file name hash
+		final String docPath = _rootPath + "bibsonomy_docs/" + hashedName.substring(0, 2);
+
+		final File file = new File(docPath + "/" + hashedName);
+		if (file.exists()) {
+			final LayoutHelper layoutHelper = new LayoutHelper(new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8")));
+			synchronized(_layouts){
+				_layouts.put(hashedName, layoutHelper.getLayoutFromText(Globals.FORMATTER_PACKAGE));
 			}
-		} catch (Exception e) {
-			log.fatal("error loading custom filter for user " + userName + ": " + e);
-		}		
-		return false;
+		}
 	}
 
 	public String toString() {
@@ -299,48 +298,32 @@ public final class ExportBibtex {
 
 	public static enum LayoutType {
 		BEGIN, END, ITEM;
-		
+
 		private static String[] allTypes = new String[]{"begin", "item", "end"};
-		
+
 		public static LayoutType getLayoutType (String type) {
 			if ("begin".equals(type)) return BEGIN;
 			if ("end".equals(type)) return END;
 			return ITEM;
 		}
-		
+
 		private String getString (LayoutType type) {
 			if (type == BEGIN) return "begin";
 			if (type == END) return "end";
 			return "item";
 		}
-		
+
 		public String toString() {
 			return getString(this);
 		}
-		
+
 		public static String[] getLayoutTypes () {
 			return allTypes;
 		}
-		
+
 	}
-	
-	/** Reads file in UTF-8 format and appends the contents to the buf.
-	 * 
-	 * @param buf - buffer which the file contents should be appended to.
-	 * @param file - text file which is assumed to be in UTF-8 format.
-	 * 
-	 * @throws IOException
-	 */
-	private static void appendFile (StringBuffer buf, File file) throws IOException {
-		if (file.exists()) {
-			BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
-			String line = null;
-			while ((line = r.readLine()) != null) {
-				buf.append(line).append("\n");
-			}
-		}
-	}
-	
+
+
 	/** Builds the hash for the custom layout files of the user. Depending on the 
 	 * layout type the hash differs.
 	 * 
@@ -348,8 +331,8 @@ public final class ExportBibtex {
 	 * @param type
 	 * @return
 	 */
-	public static String userLayoutHash (String user, LayoutType type) {
-		return Resource.hash("user." + user + "." + type + _layoutFileExtension);
+	public static String userLayoutHash (final String user, final LayoutType type) {
+		return Resource.hash("user." + user + "." + type + _layoutFileExtension).toLowerCase();
 	}
 
 }
