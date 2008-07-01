@@ -3,6 +3,7 @@ package org.bibsonomy.rest.strategy.users;
 import java.io.Reader;
 import java.io.Writer;
 
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.User;
@@ -25,10 +26,10 @@ public class PutUserStrategy extends AbstractUpdateStrategy {
 
 	@Override
 	public void validate() throws ValidationException {
-		// ensure username equals auth-username
-		// FIXME: there is no chance to retrieve the role of the user from here, but only the name (so I check admin access via name)
-		if (!this.userName.equals(this.getLogic().getAuthenticatedUser()) && !this.getLogic().getAuthenticatedUser().equals("classifier")) 
-			throw new ValidationException("The operation is not permitted for the logged-in user.");
+		// ensure username equals auth-username (or user is admin)
+		final User authenticatedUser = this.getLogic().getAuthenticatedUser();
+		if (!(this.userName.equals(authenticatedUser.getName()) || Role.ADMIN.equals(authenticatedUser.getRole())))  
+			throw new ValidationException("The operation is not permitted for the logged-in user: " + authenticatedUser.getName());
 	}
 
 	@Override
