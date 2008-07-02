@@ -1,11 +1,11 @@
 //Chrome Drop Down Menu v2.01- Author: Dynamic Drive (http://www.dynamicdrive.com)
 //Last updated: November 14th 06- added iframe shim technique
+//last updated: july 2nd 08: removed iframe shim technique
 
 var cssdropdown={
 disappeardelay: 250, //set delay in miliseconds before menu disappears onmouseout
 disablemenuclick: false, //when user clicks on a menu item with a drop down menu, disable menu item's link?
 enableswipe: 1, //enable swipe effect? 1 for yes, 0 for no
-enableiframeshim: 1, //enable "iframe shim" technique to get drop down menus to correctly appear on top of controls such as form objects in IE5.5/IE6? 1 for yes, 0 for no
 
 //No need to edit beyond here////////////////////////
 dropmenuobj: null, ie: document.all, firefox: document.getElementById&&!document.all, swipetimer: undefined, bottomclip:0,
@@ -88,25 +88,7 @@ this.dropmenuobj.x=this.getposOffset(obj, "left")
 this.dropmenuobj.y=this.getposOffset(obj, "top")
 this.dropmenuobj.style.left=this.dropmenuobj.x-this.clearbrowseredge(obj, "rightedge")+"px"
 this.dropmenuobj.style.top=this.dropmenuobj.y-this.clearbrowseredge(obj, "bottomedge")+obj.offsetHeight+1+"px"
-this.positionshim() //call iframe shim function
 }
-},
-
-positionshim:function(){ //display iframe shim function
-if (this.enableiframeshim && typeof this.shimobject!="undefined"){
-if (this.dropmenuobj.style.visibility=="visible"){
-this.shimobject.style.width=this.dropmenuobj.offsetWidth+"px"
-this.shimobject.style.height=this.dropmenuobj.offsetHeight+"px"
-this.shimobject.style.left=this.dropmenuobj.style.left
-this.shimobject.style.top=this.dropmenuobj.style.top
-}
-this.shimobject.style.display=(this.dropmenuobj.style.visibility=="visible")? "block" : "none"
-}
-},
-
-hideshim:function(){
-if (this.enableiframeshim && typeof this.shimobject!="undefined")
-this.shimobject.style.display='none'
 },
 
 contains_firefox:function(a, b) {
@@ -125,7 +107,7 @@ this.delayhidemenu()
 },
 
 delayhidemenu:function(){
-this.delayhide=setTimeout("cssdropdown.dropmenuobj.style.visibility='hidden'; cssdropdown.hideshim()",this.disappeardelay) //hide menu
+this.delayhide=setTimeout("cssdropdown.dropmenuobj.style.visibility='hidden'; ",this.disappeardelay) //hide menu
 },
 
 clearhidemenu:function(){
@@ -134,22 +116,18 @@ clearTimeout(this.delayhide)
 },
 
 startchrome:function(){
-for (var ids=0; ids<arguments.length; ids++){
-var menuitems=document.getElementById(arguments[ids]).getElementsByTagName("a")
-for (var i=0; i<menuitems.length; i++){
-if (menuitems[i].getAttribute("rel")){
-var relvalue=menuitems[i].getAttribute("rel")
-menuitems[i].onmouseover=function(e){
-var event=typeof e!="undefined"? e : window.event
-cssdropdown.dropit(this,event,this.getAttribute("rel"))
-}
-}
-}
-}
-if (window.createPopup && !window.XmlHttpRequest){ //if IE5.5 to IE6, create iframe for iframe shim technique
-document.write('<IFRAME id="iframeshim"  src="" style="display: none; left: 0; top: 0; z-index: 90; position: absolute; filter: progid:DXImageTransform.Microsoft.Alpha(style=0,opacity=0)" frameBorder="0" scrolling="no"></IFRAME>')
-this.shimobject=document.getElementById("iframeshim") //reference iframe object
-}
+	for (var ids=0; ids<arguments.length; ids++){
+		var menuitems=document.getElementById(arguments[ids]).getElementsByTagName("a")
+		for (var i=0; i<menuitems.length; i++){
+			if (menuitems[i].getAttribute("rel")){
+				var relvalue=menuitems[i].getAttribute("rel")
+				menuitems[i].onmouseover=function(e){
+					var event=typeof e!="undefined"? e : window.event
+ 					cssdropdown.dropit(this,event,this.getAttribute("rel"))
+				}
+			}
+		}
+	}
 }
 
 }
