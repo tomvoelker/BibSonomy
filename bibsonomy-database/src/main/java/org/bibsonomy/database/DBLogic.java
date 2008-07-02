@@ -215,10 +215,20 @@ public class DBLogic implements LogicInterface {
 				if (this.permissionDBManager.isAllowedToAccessUsersOrGroupDocuments(this.loginUser, grouping, groupingName, session)) { 
 					param.setFilter(filter);
 				}
+	
 				// this is save because of RTTI-check of resourceType argument which is of class T
 				result = ((List) this.bibtexDBManager.getPosts(param, session));
 			} else if (resourceType == Bookmark.class) {
+				
+				//check filters
+				//can not add filter to BookmarkParam yet, but need to add group before buildParam
+				 
+				if(this.permissionDBManager.checkFilterPermissions(filter, this.loginUser)){
+					loginUser.addGroup(new Group(GroupID.ADMINSPAM));
+				}
+				
 				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, this.loginUser);
+				
 				// this is save because of RTTI-check of resourceType argument which is of class T
 				result = ((List) this.bookmarkDBManager.getPosts(param, session));
 			} else {

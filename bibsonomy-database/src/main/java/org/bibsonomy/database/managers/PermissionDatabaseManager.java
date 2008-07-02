@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.Collection;
 import java.util.List;
 
+import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
@@ -165,6 +166,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 			// user
 			if (grouping.equals(GroupingEntity.USER)) {
 				if (loginUser.getName() != null) {
+					
 					return loginUser.getName().equals(groupingName);
 				}
 			}
@@ -196,5 +198,28 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public boolean exceedsMaxmimumSize(final List<String> tags) {
 		return tags != null && tags.size() >= 10;
+	}
+	
+	/**
+	 * Check permissions to decide if filter can be set
+	 * 
+	 * @param loginUser
+	 * 		- the user whose permissions need to be checked
+	 * @param filter 
+	 * 	    - the filter under question
+	 * @return <code>true</code> if the logged-in user is allowed to set the specific 
+	 * filter
+	 */
+	public boolean checkFilterPermissions(FilterEntity filter, User loginUser){
+		
+		
+		switch (filter){
+			case ADMIN_SPAM_POSTS:
+				// Admin_SPAM_POSTS
+				if (loginUser.getRole().equals(Role.ADMIN)){
+					return true;
+				} 
+		}
+		return false; 
 	}
 }
