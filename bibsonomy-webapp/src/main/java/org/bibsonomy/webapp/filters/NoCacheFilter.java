@@ -11,7 +11,10 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
 
 /**
  * Filter sets everything in the response what could make clients
@@ -21,11 +24,30 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class NoCacheFilter implements Filter {
 
+	private final static Logger log = Logger.getLogger(NoCacheFilter.class);
+	
 	public void destroy() {
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-		HttpServletResponse httpResponse = (HttpServletResponse) response;
+		
+		/*
+		 * FIXME: workaround for IE6 bug 
+		 * http://www.somacon.com/p106.php
+		 * http://www.brookes.ac.uk/mediaworkshop/brookesvirtual/faqs.html#cache
+		 */
+		if (request.isSecure()) {
+			final HttpServletRequest httpRequest = (HttpServletRequest) request;
+			if (httpRequest.getRequestURI().startsWith("/documents/")) {
+				/*
+				 * don't modify cache header for PDF documents when SSL is enabled
+				 */
+				filterChain.doFilter(request, response);
+				return;
+			}
+		}
+			
+		final HttpServletResponse httpResponse = (HttpServletResponse) response;
 		httpResponse.setHeader("Pragma","no-cache");
 		httpResponse.setHeader("Cache-Control","no-cache");
 		httpResponse.setDateHeader("Expires",-1);
