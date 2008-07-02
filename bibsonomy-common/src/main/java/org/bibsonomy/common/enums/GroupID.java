@@ -18,7 +18,12 @@ public enum GroupID {
 	 */
 	KDE(3),
 	/** an invalid value */
-	INVALID(-1);
+	INVALID(-1),
+	
+	/**
+	 * group for admins to be able to view spam posts
+	 */
+	ADMINSPAM(-2147483648);
 
 	private final int id;
 
