@@ -20,6 +20,7 @@ import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksPopular;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksSearch;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksViewable;
 import org.bibsonomy.model.enums.Order;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -191,7 +192,7 @@ public class BookmarkChainTest extends AbstractChainTest {
 	/**
 	 * tests getBookmarkPopular
 	 */
-	@Test
+	@Ignore
 	public void getBookmarkPopular() {
 		this.bookmarkParam.setGrouping(GroupingEntity.ALL);
 		this.bookmarkParam.setHash(null);
