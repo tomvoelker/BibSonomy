@@ -2,7 +2,9 @@ package org.bibsonomy.webapp.controller;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ClassifierSettings;
+import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -20,9 +22,13 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class AdminAjaxController extends AjaxController implements MinimalisticController<AdminAjaxCommand> {
+	
+	private static final Logger log = Logger.getLogger(AdminAjaxController.class);
 
 	public View workOn(AdminAjaxCommand command) {
+		
 		final String action = command.getAction();
+		
 		
 		if ("flag_spammer".equals(action)) {
 			this.flagSpammer(command, true);
@@ -66,8 +72,14 @@ public class AdminAjaxController extends AjaxController implements MinimalisticC
 	}
 	
 	private void setLatestPosts(AdminAjaxCommand command) {
+	 
 		if (command.getUserName() != null && command.getUserName() != "") {
-			List<Post<Bookmark>> bookmarks = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, Order.ADDED, null, 0, 5, null);
+			// set filter to display spam posts
+			FilterEntity filter = null;			
+			if (command.getShowSpamPosts().equals("true")) {
+				filter = FilterEntity.ADMIN_SPAM_POSTS;
+			}
+			List<Post<Bookmark>> bookmarks = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, Order.ADDED, filter, 0, 5, null);
 			command.setBookmarks(bookmarks);
 		}
 	}	

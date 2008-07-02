@@ -29,6 +29,9 @@ public class AdminAjaxCommand extends AjaxCommand {
 	/** value for updating classifier settings */
 	private String value;
 	
+	/** show spam posts; enabled by default*/
+	private String showSpamPosts = "true";
+	
 	public String getUserName() {
 		return this.userName;
 	}
@@ -58,5 +61,11 @@ public class AdminAjaxCommand extends AjaxCommand {
 	}
 	public void setPredictionHistory(List<User> predictionHistory) {
 		this.predictionHistory = predictionHistory;
-	}		
+	}	
+	public String getShowSpamPosts() {
+		return this.showSpamPosts;
+	}
+	public void setShowSpamPosts(String showSpamPosts) {
+		this.showSpamPosts = showSpamPosts;
+	}
 }
