@@ -4,10 +4,12 @@
 package org.bibsonomy.scraper.url;
 
 import org.bibsonomy.scraper.CompositeScraper;
+import org.bibsonomy.scraper.url.kde.acl.AclScraper;
 import org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper;
 import org.bibsonomy.scraper.url.kde.acs.ACSScraper;
 import org.bibsonomy.scraper.url.kde.aip.AipScitationScraper;
 import org.bibsonomy.scraper.url.kde.amazon.AmazonScraper;
+import org.bibsonomy.scraper.url.kde.annualreviews.AnnualreviewsScraper;
 import org.bibsonomy.scraper.url.kde.anthrosource.AnthroSourceScraper;
 import org.bibsonomy.scraper.url.kde.arxiv.ArxivScraper;
 import org.bibsonomy.scraper.url.kde.bibsonomy.BibSonomyScraper;
@@ -109,5 +111,7 @@ public class URLCompositeScraper extends CompositeScraper {
 		addScraper(new EricScraper());
 		addScraper(new IWAPonlineScraper());
 		addScraper(new JMLRScraper());
+		addScraper(new AclScraper());
+		addScraper(new AnnualreviewsScraper());
 	}
 }
