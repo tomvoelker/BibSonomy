@@ -158,6 +158,9 @@
 						<select name="algorithm" id="algorithm" size="1">
 							<option id="weka.classifiers.lazy.IBk" value="weka.classifiers.lazy.IBk">IBk</option>
 							<option id="weka.classifiers.bayes.NaiveBayes" value="weka.classifiers.bayes.NaiveBayes">Naive Bayes</option>
+							<option id="weka.classifiers.trees.J48"  value="weka.classifiers.trees.J48">J48</option>
+							<option id="weka.classifiers.rules.OneR"  value="weka.classifiers.rules.OneR">OneR</option>
+							<option id="weka.classifiers.functions.Logistic"  value="weka.classifiers.functions.Logistic">Logistic Regression</option>
 						</select>
 					</td>
 					<td><input type="button" value="update" onclick="javascript:updateSettings('algorithm', document.getElementById('algorithm').value)"/></td>

@@ -106,6 +106,8 @@
                                                         <list>
                                                                 <value>action</value>
 								<value>userName</value>
+								<value>value</value>
+								<value>key</value>
 							</list>
 						</property>
 
