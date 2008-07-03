@@ -192,7 +192,7 @@ public class BookmarkChainTest extends AbstractChainTest {
 	/**
 	 * tests getBookmarkPopular
 	 */
-	@Ignore
+	@Test
 	public void getBookmarkPopular() {
 		this.bookmarkParam.setGrouping(GroupingEntity.ALL);
 		this.bookmarkParam.setHash(null);
