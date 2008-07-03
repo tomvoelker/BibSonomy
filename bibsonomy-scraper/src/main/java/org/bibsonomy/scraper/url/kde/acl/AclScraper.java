@@ -23,6 +23,8 @@ public class AclScraper implements Scraper {
 	
 	private static final String HOST = "aclweb.org";
 	
+	private static final String ERROR_CODE_300 = "<TITLE>300 Multiple Choices</TITLE>";
+	
 	private static final String PATH_PREFIX = "/anthology-new";
 
 	public String getInfo() {
@@ -49,6 +51,9 @@ public class AclScraper implements Scraper {
 				}
 				
 				if(bibtex != null){
+					if(bibtex.contains(ERROR_CODE_300))
+						throw new PageNotSupportedException("This aclweb.org page is not supported. Bibtex is not available.");
+					
 					sc.setBibtexResult(bibtex);
 					sc.setScraper(this);
 					return true;
