@@ -212,6 +212,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public boolean checkFilterPermissions(FilterEntity filter, User loginUser){
 		
+		if (filter == null) return false;
 		
 		switch (filter){
 			case ADMIN_SPAM_POSTS:
