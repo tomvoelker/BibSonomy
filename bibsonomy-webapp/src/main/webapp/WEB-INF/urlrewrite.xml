@@ -305,14 +305,17 @@
     </rule>
 
     <!-- /user/USER -->
-	<rule>		
+	<rule>	
+		<condition type="parameter" name="filter" operator="notequal" next="or"/>
+		<condition type="parameter" name="filter" operator="equal">myPDF</condition>
+		<condition type="attribute" name="type" operator="notequal"/>    
 		<from>^/+user/+([^/?]+?)(\?(.*))?$</from>
 		<!-- NEW PAGE -->
 		<to>/user?requestedUser=$1&amp;$3</to>
 	</rule>		
 
 	<rule>
-		<from>^/+user/+([^/?]+?)(\?(.*filter=.*))$</from>
+		<from>^/+user/+([^/?]+?)(\?(.*))?$</from>
 		<to>/ResourceHandler?page=user&amp;requUser=$1&amp;$3</to>
 	</rule>	
 	<rule>
