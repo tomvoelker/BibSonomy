@@ -300,24 +300,6 @@
 		<BibFile>AmazonScraperUnitURLTest6.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.amazon.AmazonScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_51">
-		<TestDescription>Blackwell-Synergy scraping test (download form, single publ)</TestDescription>
-		<URL>http://www.blackwell-synergy.com/action/showCitFormats?href=/toc/isj/17/4&amp;doi=10.1111/j.1365-2575.2007.00275.x</URL>
-		<BibFile>BlackwellSynergyScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.blackwell.BlackwellSynergyScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_52">
-		<TestDescription>Blackwell-Synergy scraping test (download page)</TestDescription>
-		<URL>http://www.blackwell-synergy.com/action/downloadCitation?include=abs&amp;format=bibtex&amp;doi=10.1111/j.1365-2575.2007.00248.x</URL>
-		<BibFile>BlackwellSynergyScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.blackwell.BlackwellSynergyScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_53">
-		<TestDescription>Blackwell-Synergy scraping test (download form, multi publ)</TestDescription>
-		<URL>http://www.blackwell-synergy.com/action/showCitFormats?href=/toc/isj/17/4&amp;doi=10.1111/j.1365-2575.2007.00275.x&amp;doi=10.1111/j.1365-2575.2007.00248.x</URL>
-		<BibFile>BlackwellSynergyScraperUnitURLTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.blackwell.BlackwellSynergyScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_54">
 		<TestDescription>D-Lib scraping test (html page)</TestDescription>
 		<URL>http://www.dlib.org/dlib/january08/smith/01smith.html</URL>
@@ -435,7 +417,7 @@
 	<URLTest id="url_73">
 		<TestDescription>Cambridge Journals Url Test</TestDescription>
 		<URL>http://journals.cambridge.org/action/displayAbstract?fromPage=online&amp;aid=1805072&amp;fulltextType=RA&amp;fileId=S0008938908000022</URL>
-		<BibFile>CambridgeScraperUnitURLTest.bib</BibFile>
+		<BibFile>CambridgeScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.cambridge.CambridgeScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_74">
@@ -647,5 +629,17 @@
 		<URL>http://www.aclweb.org/anthology-new/W/W04/W04-1806.pdf</URL>
 		<BibFile>AclScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.acl.AclScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_109">
+		<TestDescription>URL scraping test with a abstract page (alternate URL pattern) from wiley</TestDescription>
+		<URL>http://www3.interscience.wiley.com/journal/118514708/abstract</URL>
+		<BibFile>WileyIntersienceScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.wiley.intersience.WileyIntersienceScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_110">
+		<TestDescription>Cambridge Journals Url Test</TestDescription>
+		<URL>http://journals.cambridge.org/action/displayAbstract?fromPage=online&amp;aid=402142#</URL>
+		<BibFile>CambridgeScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cambridge.CambridgeScraper</Scraper>
 	</URLTest>
 </test:Tests>
