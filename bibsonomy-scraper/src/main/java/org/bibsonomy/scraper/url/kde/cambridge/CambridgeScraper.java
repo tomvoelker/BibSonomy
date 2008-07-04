@@ -10,10 +10,14 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 
 /**
  * @author wbi
@@ -27,6 +31,8 @@ public class CambridgeScraper implements Scraper {
 	private static final String CAMBRIDGE_HOST_NAME  = "http://journals.cambridge.org";
 	private static final String CAMBRIDGE_ABSTRACT_PATH = "/action/displayAbstract";
 	private static final String CAMBRIDGE_BIBTEX_DOWNLOAD_PATH = "/action/exportCitation?org.apache.struts.taglib.html.TOKEN=51cf342977f2aaa784c6ddfa66c3572c&emailid=&Download=Download&displayAbstract=No&format=BibTex&componentIds=";
+	
+	private static final String PATTERN_GET_AID_FROM_URL_QUERY = "aid=([^&]*)";
 	
 	public String getInfo() {
 		return info;
@@ -51,7 +57,13 @@ public class CambridgeScraper implements Scraper {
 				String id = null;
 				URL citUrl = null;
 				if(url.startsWith(CAMBRIDGE_HOST_NAME + CAMBRIDGE_ABSTRACT_PATH)) {
-					id = url.substring(url.indexOf("aid=") + 4, url.indexOf("&fulltextType"));
+					Pattern idPattern = Pattern.compile(PATTERN_GET_AID_FROM_URL_QUERY);
+					Matcher idMatcher = idPattern.matcher(url);
+					if(idMatcher.find())
+						id = idMatcher.group(1);
+					else
+						throw new ScrapingFailureException("No aid found.");
+					
 					try {
 						citUrl = new URL(CAMBRIDGE_HOST_NAME + CAMBRIDGE_BIBTEX_DOWNLOAD_PATH + id);
 					} catch (MalformedURLException ex) {
