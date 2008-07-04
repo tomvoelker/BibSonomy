@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -21,9 +22,15 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
  * Scraper for blackwell-synergy.com
+ * 
+ * This scraper is offline 
+ * blackwell is offline and all journals are now available under intersience.wiley.com
+ * 
  * @author tst
  */
 public class BlackwellSynergyScraper implements Scraper {
+	
+	private static final Logger log = Logger.getLogger(BlackwellSynergyScraper.class);
 
 	/**
 	 * scraper info
@@ -53,6 +60,12 @@ public class BlackwellSynergyScraper implements Scraper {
 
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith("blackwell-synergy.com")){
+			
+			// log every try to call this Scraper
+			log.info("offline Scraper called: BlackwellSynergyScraper with " + sc.getUrl().toString());
+			
+			/*
+			 * 
 			try {
 				String bibtex = null;
 				String cookie = getCookie();
@@ -122,7 +135,7 @@ public class BlackwellSynergyScraper implements Scraper {
 			} catch (IOException ex) {
 				ex.printStackTrace();
 				throw new ScrapingException(ex);
-			}
+			}*/
 		}
 		return false;
 	}
