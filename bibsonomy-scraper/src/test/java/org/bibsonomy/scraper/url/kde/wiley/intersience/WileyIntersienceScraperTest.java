@@ -7,7 +7,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Scraper URL tests #33 #34 for WileyIntersienceScraper
+ * Scraper URL tests #33 #34 #109 for WileyIntersienceScraper
  * @author tst
  *
  */
@@ -33,4 +33,14 @@ public class WileyIntersienceScraperTest {
 		assertTrue(runner.runSingleTest("url_34"));
 	}
 
+	/**
+	 * starts URL test with id url_109
+	 */
+	@Test
+	@Ignore
+	public void url3TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_109"));
+	}
+	
 }

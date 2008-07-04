@@ -11,6 +11,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -57,6 +59,9 @@ public class WileyIntersienceScraper implements Scraper {
 	// name of citation download link
 	private static final String CITATION_DOWNLOAD_LINK = "download citation";
 
+	// pattern for getting id from url between jorunal and abstract
+	private static final String PATTERN_GET_ID_JOURNAL_ABSTRACT = "journal/(\\d*)/abstract";
+	
 	/**
 	 * Scraper for www3.interscience.wiley.com
 	 * 
@@ -81,6 +86,14 @@ public class WileyIntersienceScraper implements Scraper {
 					citationId = citationId.substring(indexId+3);
 					int indexAnd = citationId.indexOf("&");
 					citationId = citationId.substring(0, indexId);
+				}
+				
+				// alternate url pattern for abstract page
+				else{
+					Pattern idPattern = Pattern.compile(PATTERN_GET_ID_JOURNAL_ABSTRACT);
+					Matcher idMatcher = idPattern.matcher(citationId);
+					if(idMatcher.find())
+						citationId = idMatcher.group(1);
 				}
 				
 				// get session cookie
