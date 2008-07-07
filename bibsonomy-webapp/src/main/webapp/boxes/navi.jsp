@@ -43,7 +43,7 @@
 	    <c:when test="${not empty user.name}">
           <a href="/user/<mtl:encode value='${user.name}'/>" rel="my_menu">my${projectName}</a> &middot;
   		  <a href="/post_bookmark">post bookmark</a> &middot;
-       	  <a href="/post_bibtex">post bibtex</a>
+       	  <a href="/post_bibtex">post publication</a>
 	    </c:when>
 	    <c:otherwise>
 	      <%@include file="/boxes/login.jsp"%>      
