@@ -49,7 +49,12 @@ public class JStorScraper implements Scraper {
 				
 				String id = null;
 				if(url.startsWith(JSTOR_HOST_NAME + JSTOR_ABSTRACT_PATH)) {
-					id = url.substring(url.indexOf(JSTOR_ABSTRACT_PATH) + JSTOR_ABSTRACT_PATH.length());
+					if(url.contains("?cookieSet=")) {
+						id = url.substring(url.indexOf(JSTOR_ABSTRACT_PATH) + JSTOR_ABSTRACT_PATH.length(), url.indexOf("?cookieSet="));
+					} else {
+						id = url.substring(url.indexOf(JSTOR_ABSTRACT_PATH) + JSTOR_ABSTRACT_PATH.length());
+					}
+					
 				}
 				
 				if(url.startsWith(JSTOR_HOST_NAME + JSTOR_EXPORT_PATH)) {
