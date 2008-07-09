@@ -326,6 +326,8 @@ CREATE TABLE `bibtexurls` (
 -- Data for table `bibtexurls`
 -- 
 
+INSERT INTO `bibtexurls` (`content_id`, `url`, `text`, `group`, `date`) VALUES
+(10, 'http://www.testurl.org', 'test text', 0, '2008-07-09 11:03:24');
 
 -- --------------------------------------------------------
 

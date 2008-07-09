@@ -116,12 +116,12 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * 
 	 * @param tagIndex a list of tags
 	 * @param session DB session
-	 * @param visibleGroupIDs a list of visible group IDs
+	 * @param groupId is the group id
 	 * @return the number of visible bookmark entries
 	 */
-	public Integer getBookmarkByTagNamesCount(final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, final DBSession session) {
+	public Integer getBookmarkByTagNamesCount(final List<TagIndex> tagIndex, final int groupId, final DBSession session) {
 		BookmarkParam param = new BookmarkParam();
-		param.addGroups(visibleGroupIDs);
+		param.setGroupId(groupId);
 		param.setTagIndex(tagIndex);
 		return this.queryForObject("getBookmarkByTagNamesCount", param, Integer.class, session);
 	}	
@@ -643,13 +643,16 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @see BookmarkDatabaseManager#getBookmarkForGroupCount(BookmarkParam, DBSession)
 	 * 
 	 * @param groupId
-	 * @param visibleGroupIDs
 	 * @param session
 	 * @return the (approximated) number of bookmarks for the given group, see method above
+	 * 
+	 * visibleGroupIDs && userName && (userName != requestedUserName) optional
 	 */
-	public Integer getBookmarkForGroupCount(final int groupId, final List<Integer> visibleGroupIDs, final DBSession session) {
+	public Integer getBookmarkForGroupCount(final String requestedUserName, final String userName, final int groupId, final List<Integer> visibleGroupIDs, final DBSession session) {
 		BookmarkParam param = new BookmarkParam();
-		param.addGroups(visibleGroupIDs);
+		param.setRequestedUserName(requestedUserName);
+		param.setUserName(userName);
+		param.setGroups(visibleGroupIDs);
 		param.setGroupId(groupId);
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
 		return this.queryForObject("getBookmarkForGroupCount", param, Integer.class, session);
@@ -746,16 +749,22 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 
 	/**
 	 * Returns the number of bookmarks for a given user.
-	 * 
-	 * @param param StatisticsParam
+	 * @param requestedUserName 
+	 * @param userName 
+	 * @param groupId 
+	 * @param visibleGroupIDs 
 	 * @param session
 	 * @return the number of bookmarks of the requested User which the logged in user is allowed to see
+	 * 
+	 * groupId or
+	 * visibleGroupIDs && userName && (userName != requestedUserName)
 	 */
-	public Integer getBookmarkForUserCount(final String requestedUserName, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session) {
+	public Integer getBookmarkForUserCount(final String requestedUserName, final String userName, final int groupId, final List<Integer> visibleGroupIDs, final DBSession session) {
 		BookmarkParam param = new BookmarkParam();
 		param.setRequestedUserName(requestedUserName);
-		param.setUserName(loginUserName);
-		param.addGroups(visibleGroupIDs);
+		param.setUserName(userName);
+		param.setGroupId(groupId);
+		param.setGroups(visibleGroupIDs);
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session); // set groups
 		return this.queryForObject("getBookmarkForUserCount", param, Integer.class, session);
 	}

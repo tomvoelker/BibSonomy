@@ -35,6 +35,7 @@ import org.junit.Test;
  * @author Jens Illig
  * @version $Id$
  */
+@Ignore
 public class DBLogicTest extends AbstractDBLogicBase {
 
 	private static final Logger log = Logger.getLogger(DBLogicTest.class);

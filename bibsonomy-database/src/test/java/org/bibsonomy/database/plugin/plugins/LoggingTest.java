@@ -3,6 +3,9 @@ package org.bibsonomy.database.plugin.plugins;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.params.BibTexParam;
@@ -10,6 +13,7 @@ import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
+import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.AbstractDatabasePluginTest;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -269,8 +273,11 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 	 */
 	@Test
 	public void onTagRelationDeleteSQL() {
+		final List<TagIndex> tagIndex = new ArrayList<TagIndex>();
 		final String USER = "jaeschke", LOWER = "shannon", UPPER = "researcher";
-		final int countBefore = bibTexDb.getBibTexByConceptForUser(USER, UPPER, USER, 100, 0, this.dbSession).size();
+		final ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
+		tagIndex.add(new TagIndex("researcher", 1));
+		final int countBefore = bibTexDb.getBibTexByConceptForUser(USER, USER, tagIndex, visibleGroupIDs, false, 100, 0, this.dbSession).size();
 		final TagRelationParam trp = new TagRelationParam();
 		trp.setOwnerUserName(USER);
 		trp.setLowerTagName(LOWER);
@@ -278,7 +285,7 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 		Integer result = this.generalDb.countTagRelation(trp, this.dbSession);
 		assertEquals(0, result);
 		this.tagRelDb.deleteRelation(UPPER, LOWER, USER, this.dbSession);
-		final int countAfter = bibTexDb.getBibTexByConceptForUser(USER, UPPER, USER, 100, 0, this.dbSession).size();
+		final int countAfter = bibTexDb.getBibTexByConceptForUser(USER, USER, tagIndex, visibleGroupIDs, false, 100, 0, this.dbSession).size();
 		result = this.generalDb.countTagRelation(trp, this.dbSession);
 		assertTrue(countBefore > countAfter);
 		assertEquals(1, result);

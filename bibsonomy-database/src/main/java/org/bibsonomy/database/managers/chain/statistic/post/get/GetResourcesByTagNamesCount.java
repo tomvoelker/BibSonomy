@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.statistic.StatisticChainElement;
 import org.bibsonomy.database.params.StatisticsParam;
@@ -27,9 +28,9 @@ public class GetResourcesByTagNamesCount extends StatisticChainElement {
 		List<Integer> counts = new ArrayList<Integer>();
 		
 		if (param.getContentType() == ConstantID.BIBTEX_CONTENT_TYPE.getId()) {
-			counts.add(this.db.getNumberOfResourcesForTags(BibTex.class, param.getTagIndex(), param.getGroups(), session));
+			counts.add(this.db.getNumberOfResourcesForTags(BibTex.class, param.getTagIndex(), param.getGroupType(), session));
 		} else if (param.getContentType() == ConstantID.BOOKMARK_CONTENT_TYPE.getId()) {
-			counts.add(this.db.getNumberOfResourcesForTags(Bookmark.class, param.getTagIndex(), param.getGroups(), session));
+			counts.add(this.db.getNumberOfResourcesForTags(Bookmark.class, param.getTagIndex(), param.getGroupType(), session));
 		}
 		return counts;
 	}

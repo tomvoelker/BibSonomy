@@ -35,9 +35,9 @@ public class GetResourcesForGroupCount extends StatisticChainElement {
 		param.setGroupId(group.getGroupId());
 		
 		if (param.getContentType() == ConstantID.BIBTEX_CONTENT_TYPE.getId()) {
-			counts.add(this.db.getNumberOfResourcesForGroup(BibTex.class, param.getGroupId(), param.getGroups(), session));
+			counts.add(this.db.getNumberOfResourcesForGroup(BibTex.class, param.getRequestedUserName(), param.getUserName(), param.getGroupType(), param.getGroups(), session));
 		} else if (param.getContentType() == ConstantID.BOOKMARK_CONTENT_TYPE.getId()) {
-			counts.add(this.db.getNumberOfResourcesForGroup(Bookmark.class, param.getGroupId(), param.getGroups(), session));
+			counts.add(this.db.getNumberOfResourcesForGroup(Bookmark.class, param.getRequestedUserName(), param.getUserName(), param.getGroupType(), param.getGroups(), session));
 		}
 		return counts;
 	}

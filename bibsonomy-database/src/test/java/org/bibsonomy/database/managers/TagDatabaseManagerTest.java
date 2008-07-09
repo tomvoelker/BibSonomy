@@ -27,6 +27,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Christian Kramer
  * @version $Id$
  */
+@Ignore
 public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test

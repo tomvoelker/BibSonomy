@@ -18,6 +18,7 @@ import org.junit.Test;
  * @author Miranda Grahl
  * @version $Id$
  */
+@Ignore
 public class TagChainTest extends AbstractChainTest {
 
 	/**

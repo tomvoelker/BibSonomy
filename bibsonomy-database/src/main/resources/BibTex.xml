@@ -44,7 +44,7 @@
 		FROM <include refid="tagFromQuery"/>
 		WHERE <include refid="tagWhereQuery"/>
 			AND t1.content_type = #contentType#
-			AND t1.group = #groupType#
+			AND t1.group = #groupId#
 	</select>
 
 	<select id="getBibTexByTagNamesAndFolkrank" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">

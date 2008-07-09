@@ -3,6 +3,7 @@ package org.bibsonomy.database.managers;
 import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChain;
@@ -60,16 +61,15 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * @param resourceType
 	 * @param requestedUserName
-	 * @param loginUserName
-	 * @param visibleGroupIDs
+	 * @param groupId 
 	 * @param session
 	 * @return a statistical number (int)
 	 */
-	public Integer getNumberOfResourcesForUser(final Class<? extends Resource> resourceType, final String requestedUserName, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session) {
+	public Integer getNumberOfResourcesForUser(final Class<? extends Resource> resourceType, final String requestedUserName, final String userName, final int groupId, final List<Integer> visibleGroupIDs, final DBSession session) {
 		if (resourceType == BibTex.class) {
-			return this.bibtexDBManager.getBibTexForUserCount(requestedUserName, loginUserName, visibleGroupIDs, session);
+			return this.bibtexDBManager.getBibTexForUserCount(requestedUserName, userName, groupId, visibleGroupIDs, session);
 		} else if (resourceType == Bookmark.class) {
-			return this.bookmarkDBManager.getBookmarkForUserCount(requestedUserName, loginUserName, visibleGroupIDs, session);
+			return this.bookmarkDBManager.getBookmarkForUserCount(requestedUserName, userName, groupId, visibleGroupIDs, session);
 		} else {
 			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
 		}
@@ -84,11 +84,11 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return number of resources for given group
 	 */
-	public Integer getNumberOfResourcesForGroup(final Class<? extends Resource> resourceType, final int groupId, final List<Integer> visibleGroupIDs, final DBSession session) {
+	public Integer getNumberOfResourcesForGroup(final Class<? extends Resource> resourceType, final String requestedUserName, final String userName, int groupId, final List<Integer> visibleGroupIDs, final DBSession session) {
 		if (resourceType == BibTex.class) {
-			return this.bibtexDBManager.getBibTexForGroupCount(groupId, visibleGroupIDs, session);
+			return this.bibtexDBManager.getBibTexForGroupCount(requestedUserName, userName, groupId, visibleGroupIDs, session);
 		} else if (resourceType == Bookmark.class) {
-			return this.bookmarkDBManager.getBookmarkForGroupCount(groupId, visibleGroupIDs, session);
+			return this.bookmarkDBManager.getBookmarkForGroupCount(requestedUserName, userName, groupId, visibleGroupIDs, session);
 		} else {
 			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
 		}
@@ -98,16 +98,16 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * Returns the number of resources for a list of tags
 	 * 
 	 * @param resourceType
-	 * @param tags
-	 * @param visibleGroupIDs
+	 * @param tagIndex 
+	 * @param groupType 
 	 * @param session
 	 * @return number of resources for a list of tags
 	 */
-	public Integer getNumberOfResourcesForTags(final Class<? extends Resource> resourceType, final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, final DBSession session) {
+	public Integer getNumberOfResourcesForTags(final Class<? extends Resource> resourceType, final List<TagIndex> tagIndex, final int groupId, final DBSession session) {
 		if (resourceType == BibTex.class) {
-			return this.bibtexDBManager.getBibtexByTagNamesCount(tagIndex, visibleGroupIDs, session);
+			return this.bibtexDBManager.getBibtexByTagNamesCount(tagIndex, groupId, session);
 		} else if (resourceType == Bookmark.class) {
-			return this.bookmarkDBManager.getBookmarkByTagNamesCount(tagIndex, visibleGroupIDs, session);
+			return this.bookmarkDBManager.getBookmarkByTagNamesCount(tagIndex, groupId, session);
 		} else {
 			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
 		}

@@ -143,7 +143,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * tests isAllowedToAccessUsersOrGroupDocuments
 	 */
-	@Test
+	@Ignore
 	public void isAllowedToAccessUsersOrGroupDocuments() {
 		User loginUser = new User("Johnny_B");
 		// user page: own posts -> yes
