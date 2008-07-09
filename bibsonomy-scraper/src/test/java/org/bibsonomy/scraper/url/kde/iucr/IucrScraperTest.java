@@ -18,7 +18,7 @@ public class IucrScraperTest {
 	 * starts URL test with id url_92
 	 */
 	@Test
-	//@Ignore
+	@Ignore
 	public void url1TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_92"));
