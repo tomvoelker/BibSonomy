@@ -23,13 +23,16 @@ import static org.junit.Assert.assertNotNull;
  * @author Dominik Benz
  * @author Miranda Grahl
  * @author Jens Illig
- * @author Christian Schenk
  * @author Christian Kramer
+ * @author Christian Schenk
  * @version $Id$
  */
 @Ignore
 public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
+	/**
+	 * tests getTagById
+	 */
 	@Test
 	public void getTagById() {
 		final Tag tag = this.tagDb.getTagById(5218, this.dbSession);
@@ -167,7 +170,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		visibleGroups.add(0);		
 		List<Tag> tags = this.tagDb.getTagsByBibtexHash(loginUserName, hash, HashID.INTER_HASH, visibleGroups, 0, 20, this.dbSession);
 	}
-	
+
 	/**
 	 * this is just a dummy test to check if the function works; please adapt
 	 * it to check it the correct tags are returned when migrating to the new 
@@ -180,7 +183,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final String hash = "palim palim";
 		List<Tag> tags = this.tagDb.getTagsByBibtexHashForUser(loginUserName, requestedUserName, hash, HashID.INTER_HASH, 0, 20, this.dbSession);	
 	}
-	
+
 	/**
 	 * this is just a dummy test to check if the function works; please adapt
 	 * it to check it the correct tags are returned when migrating to the new 
@@ -194,7 +197,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		visibleGroups.add(0);
 		List<Tag> tags = this.tagDb.getTagsByBookmarkHash(loginUserName, hash, visibleGroups, 0, 20, this.dbSession);
 	}
-	
+
 	/**
 	 * this is just a dummy test to check if the function works; please adapt
 	 * it to check it the correct tags are returned when migrating to the new 
@@ -207,7 +210,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final String hash = "palim palim";		
 		List<Tag> tags = this.tagDb.getTagsByBookmarkHashForUser(loginUserName, requestedUserName, hash, 0, 20, this.dbSession);
 	}
-	
+
 	@Test
 	public void getRelatedTags() {
 		final TagParam param = new TagParam();
@@ -216,7 +219,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		param.addGroup(GroupID.PUBLIC.getId());
 		List<Tag> tags = this.tagDb.getRelatedTags(param, this.dbSession);
 	}
-	
+
 	@Test
 	public void getRelatedTagsForUser() {
 		TagParam param = new TagParam();
@@ -224,8 +227,6 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		param.addTagName("text");
 		ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
 		visibleGroupIDs.add(0);
-		List<Tag> tags = this.tagDb.getRelatedTagsForUser(null,"hotho", param.getTagIndex(), visibleGroupIDs, this.dbSession);	
+		List<Tag> tags = this.tagDb.getRelatedTagsForUser(null,"hotho", param.getTagIndex(), visibleGroupIDs, this.dbSession);
 	}
-
-	
 }

@@ -4,13 +4,11 @@ import static org.junit.Assert.assertEquals;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Date;
-
-import org.bibsonomy.model.User;
 
 import org.bibsonomy.common.enums.ClassifierMode;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.InetAddressStatus;
+import org.bibsonomy.model.User;
 import org.junit.Ignore;
 import org.junit.Test;
 

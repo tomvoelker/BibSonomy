@@ -21,7 +21,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * @author Robert Jaeschke
+ * @author Robert Jäschke
  * @version $Id$
  */
 public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {

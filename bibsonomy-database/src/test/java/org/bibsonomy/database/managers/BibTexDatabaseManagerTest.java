@@ -26,22 +26,18 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.extra.BibTexExtra;
-import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.testutil.DatabasePluginMock;
 import org.bibsonomy.testutil.ModelUtils;
-import org.bibsonomy.testutil.ParamUtils;
 import org.bibsonomy.util.ExceptionUtils;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -54,7 +50,6 @@ import org.junit.Test;
  * @author Christian Schenk
  * @version $Id$
  */
-
 public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	private static final Logger log = Logger.getLogger(BibTexDatabaseManagerTest.class);
@@ -946,7 +941,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// someBibTexPost.getGroups().clear();
 		this.bibTexDb.storePost(someBibTexPost.get(0).getUser().getName(), someBibTexPost.get(0), hash, true, this.dbSession);
 	}
-	
+
 	/**
 	 * tests whether the query timeout specified in SqlMapConfig.xml works
 	 * done by retrieving all bibtex entries of user dblp, which will take longer

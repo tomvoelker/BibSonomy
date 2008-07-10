@@ -3,7 +3,6 @@ package org.bibsonomy.database.managers;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
