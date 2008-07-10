@@ -504,14 +504,16 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Tet related tags from a given user and a given list of tags.
 	 * 
+	 * @param userName 
 	 * @param requestedUserName
 	 * @param tagIndex
 	 * @param visibleGroupIDs
 	 * @param session
 	 * @return list of tags
 	 */
-	public List<Tag> getRelatedTagsForUser(final String requestedUserName, final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, final DBSession session) {
+	public List<Tag> getRelatedTagsForUser(final String userName, final String requestedUserName, final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, final DBSession session) {
 		final TagParam param = new TagParam();
+		param.setUserName(userName);
 		param.setRequestedUserName(requestedUserName);
 		param.addGroups(visibleGroupIDs);
 		param.setTagIndex(tagIndex);

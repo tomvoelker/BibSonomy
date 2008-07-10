@@ -23,7 +23,7 @@ public class GetTagsByUser extends TagChainElement {
 	protected List<Tag> handle(final TagParam param, final DBSession session) {
 		if (param.getTagIndex() != null && param.getTagIndex().size() > 0) {
 			// retrieve related tags
-			return this.db.getRelatedTagsForUser(
+			return this.db.getRelatedTagsForUser(param.getUserName(),
 					param.getRequestedUserName(), 
 					param.getTagIndex(),
 					param.getGroups(),
