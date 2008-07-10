@@ -1,13 +1,19 @@
 package org.bibsonomy.testutil;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import org.apache.log4j.Logger;
-import org.bibsonomy.database.util.DBSession;
-import org.bibsonomy.database.util.StatementType;
 import org.junit.Ignore;
 
 /**
@@ -60,16 +66,115 @@ public class TestDatabaseLoader {
 
 	/**
 	 * Executes all statements from the SQL script.
-	 * 
-	 * @param session
-	 *            database session
 	 */
-	public void load(final DBSession session) {
-		session.beginTransaction();
-		for (final String statement : this.statements) {
-			session.transactionWrapper(statement, null, StatementType.INSERT, null, false);
+	public void load() {
+		try {
+			final SimpleJDBCHelper jdbc = new SimpleJDBCHelper();
+			for (final String statement : this.statements) {
+				jdbc.execute(statement);
+			}
+			jdbc.close();
+		} catch (final IOException ex) {
+			throw new RuntimeException(ex);
 		}
-		session.commitTransaction();
-		session.endTransaction();
+	}
+}
+
+/**
+ * Very simple JDBC abstraction.
+ * @author Christian Schenk
+ */
+final class SimpleJDBCHelper implements Closeable {
+	private final String configFile = "database.properties";
+	private Connection connection;
+
+	/**
+	 * Holds the config for the database.
+	 */
+	private interface DatabaseConfig {
+		/**
+		 * @return url
+		 */
+		public String getUrl();
+
+		/**
+		 * @return username
+		 */
+		public String getUsername();
+
+		/**
+		 * @return password
+		 */
+		public String getPassword();
+	}
+
+	/**
+	 * Loads the MySQL JDBC driver and sets up a connection.
+	 */
+	public SimpleJDBCHelper() {
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			final DatabaseConfig cfg = this.getConfig();
+			this.connection = DriverManager.getConnection(cfg.getUrl(), cfg.getUsername(), cfg.getPassword());
+		} catch (final Exception ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+
+	private DatabaseConfig getConfig() {
+		final InputStream scriptStream = SimpleJDBCHelper.class.getClassLoader().getResourceAsStream(this.configFile);
+		if (scriptStream == null) throw new RuntimeException("Can't get config file '" + this.configFile + "'");
+
+		final Map<String, String> params = new HashMap<String, String>();
+		final Scanner scan = new Scanner(scriptStream);
+		while (scan.hasNext()) {
+			final String currentLine = scan.nextLine();
+			for (final String param : new String[] { "url", "username", "password" }) {
+				if (currentLine.startsWith(param) == false) continue;
+				params.put(param, currentLine.substring(param.length() + 1));
+			}
+		}
+		if (params.size() != 3) throw new RuntimeException("Couldn't read config file '" + this.configFile + "'");
+
+		return new DatabaseConfig() {
+
+			public String getUrl() {
+				return params.get("url");
+			}
+
+			public String getUsername() {
+				return params.get("username");
+			}
+
+			public String getPassword() {
+				return params.get("password");
+			}
+		};
+	}
+
+	/**
+	 * Executes the given SQL.
+	 * 
+	 * @param sql
+	 */
+	public void execute(final String sql) {
+		Statement stmt;
+		try {
+			stmt = this.connection.createStatement();
+			stmt.execute(sql);
+			stmt.close();
+		} catch (final SQLException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+
+	public void close() throws IOException {
+		if (this.connection == null) return;
+		try {
+			if (this.connection.isClosed()) return;
+			this.connection.close();
+		} catch (final SQLException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 }

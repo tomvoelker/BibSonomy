@@ -14,8 +14,10 @@ import org.bibsonomy.database.util.DBSessionFactory;
 import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.testutil.JNDITestDatabaseBinder;
 import org.bibsonomy.testutil.ParamUtils;
+import org.bibsonomy.testutil.TestDatabaseLoader;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 
 /**
  * This class provides a connection to the database. Every class that implements
@@ -53,6 +55,14 @@ public abstract class AbstractDatabaseManagerTest {
 
 	private DBSessionFactory dbSessionFactory;
 	protected DBSession dbSession;
+
+	/**
+	 * Initializes the test database.
+	 */
+	@BeforeClass
+	public static void initDatabase() {
+		//new TestDatabaseLoader().load();
+	}
 
 	/**
 	 * Setup
