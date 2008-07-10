@@ -10,9 +10,9 @@
 -- Database: `bibsonomy`
 -- 
 
-DROP DATABASE IF EXISTS `bibsonomy`;
-CREATE DATABASE `bibsonomy`;
-USE `bibsonomy`;
+DROP DATABASE IF EXISTS `bibsonomy_unit_test`;
+CREATE DATABASE `bibsonomy_unit_test`;
+USE `bibsonomy_unit_test`;
 
 -- --------------------------------------------------------
 

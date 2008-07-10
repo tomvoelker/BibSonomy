@@ -61,7 +61,7 @@ public abstract class AbstractDatabaseManagerTest {
 	 */
 	@BeforeClass
 	public static void initDatabase() {
-		//new TestDatabaseLoader().load();
+		new TestDatabaseLoader().load();
 	}
 
 	/**
