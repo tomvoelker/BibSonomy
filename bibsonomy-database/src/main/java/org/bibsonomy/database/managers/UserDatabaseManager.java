@@ -182,7 +182,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		final User existingUser = this.getUserDetails(user.getName(), session);
 
 		if (present(existingUser.getName()) == false)
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User " + user.getName() + "does not exist");
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User '" + user.getName() + "' does not exist");
 
 		
 		// FIXME: Role is missing

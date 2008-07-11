@@ -7,14 +7,12 @@ import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * @author Christian Schenk
  * @version $Id$
  */
-@Ignore
 public class LogicInterfaceFactoryTest extends AbstractDatabaseManagerTest {
 
 	private DBLogicUserInterfaceFactory userFactory;

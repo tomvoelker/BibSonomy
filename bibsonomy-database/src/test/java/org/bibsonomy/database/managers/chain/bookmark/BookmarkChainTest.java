@@ -20,7 +20,6 @@ import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksPopular;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksSearch;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksViewable;
 import org.bibsonomy.model.enums.Order;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**

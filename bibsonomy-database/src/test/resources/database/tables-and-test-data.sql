@@ -882,6 +882,30 @@ CREATE TABLE `picked_concepts` (
 -- --------------------------------------------------------
 
 -- 
+-- Structure for table `prediction`
+-- 
+
+DROP TABLE IF EXISTS `prediction`;
+CREATE TABLE `prediction` (
+  `ID` int(11) NOT NULL auto_increment,
+  `user_name` varchar(30) NOT NULL,
+  `prediction` tinyint(4) NOT NULL,
+  `timestamp` bigint(20) default NULL,
+  `updated_at` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `algorithm` varchar(100) default NULL,
+  `mode` char(1) default NULL,
+  `evaluator` tinyint(4) default 0,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8;
+
+-- 
+-- Data for table `prediction`
+-- 
+
+
+-- --------------------------------------------------------
+
+-- 
 -- Structure for table `rankings`
 -- 
 

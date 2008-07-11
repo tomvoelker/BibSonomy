@@ -3,16 +3,6 @@
 
 <sqlMap namespace="Admin">
 
-<!--
-
-  FIXME: should this go into the SQL scripts?
-
-  CREATE TABLE inetAddressStates (address char(15), status tinyint, primary key (address));
-
-  ALTER TABLE user ADD COLUMN role TINYINT NOT NULL DEFAULT 1;
-
- -->
-
 	<select id="getInetAddressStatus" resultClass="InetAddressStatus" parameterClass="InetAddress">
 		SELECT status FROM inetAddressStates 
 		WHERE address = #address#

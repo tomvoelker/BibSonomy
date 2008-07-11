@@ -19,13 +19,13 @@ import org.bibsonomy.model.Tag;
 import org.junit.Test;
 
 /**
- * @author Robert Jaeschke
+ * @author Robert Jäschke
  * @version $Id$
  */
 public class GetBibtexForGroupAndTagTest extends AbstractDatabaseManagerTest {
 
 	static {
-		Properties p = new Properties();
+		final Properties p = new Properties();
 		p.setProperty("log4j.rootLogger", "DEBUG, A1");
 
 		p.setProperty("log4j.appender.A1", "org.apache.log4j.RollingFileAppender");
@@ -35,7 +35,6 @@ public class GetBibtexForGroupAndTagTest extends AbstractDatabaseManagerTest {
 		p.setProperty("log4j.appender.A1.layout", "org.apache.log4j.PatternLayout");
 
 		// Print the date in ISO 8601 format
-
 		p.setProperty("log4j.appender.A1.layout.ConversionPattern", "%d %-5p %c - %m%n");
 
 		// Print only messages of level WARN or above in the package com.foo.
@@ -47,6 +46,9 @@ public class GetBibtexForGroupAndTagTest extends AbstractDatabaseManagerTest {
 		PropertyConfigurator.configure(p);
 	}
 
+	/**
+	 * tests getBibtexForGroupAndTag
+	 */
 	@Test
 	public void getBibtexForGroupAndTag() {
 		BibTexParam p = new BibTexParam();
@@ -79,8 +81,7 @@ public class GetBibtexForGroupAndTagTest extends AbstractDatabaseManagerTest {
 
 		GetBibtexForGroupAndTag handler = new GetBibtexForGroupAndTag();
 
+		@SuppressWarnings("unused")
 		final List<Post<BibTex>> posts = handler.perform(p, dbSession);
-
 	}
-
 }

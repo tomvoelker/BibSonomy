@@ -143,7 +143,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * tests isAllowedToAccessUsersOrGroupDocuments
 	 */
-	@Ignore
+	@Ignore // FIXME: adapt to new test db
 	public void isAllowedToAccessUsersOrGroupDocuments() {
 		User loginUser = new User("Johnny_B");
 		// user page: own posts -> yes

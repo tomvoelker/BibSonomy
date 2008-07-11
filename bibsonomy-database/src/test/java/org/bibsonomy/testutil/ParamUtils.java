@@ -1,5 +1,7 @@
 package org.bibsonomy.testutil;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -11,6 +13,7 @@ import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.GroupParam;
+import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
@@ -37,13 +40,20 @@ public final class ParamUtils {
 	public static final int TESTGROUP2 = 4;
 	/** testgroup3 */
 	public static final int TESTGROUP3 = 5;
-
+	/** Holds the date of the epoch which is 1970-01-01 00:00:00 */
 	private static final Date date;
+	/** example.com */
+	public static URL EXAMPLE_URL;
 
 	static {
 		final Calendar cal = Calendar.getInstance();
 		cal.clear();
 		date = cal.getTime();
+
+		try {
+			EXAMPLE_URL = new URL("http://example.com");
+		} catch (MalformedURLException ignore) {
+		}
 	}
 
 	/**
@@ -139,6 +149,13 @@ public final class ParamUtils {
 	}
 
 	/**
+	 * @return random user name
+	 */
+	public static String getRandomUserName() {
+		return "user" + new Long(System.nanoTime()).hashCode();
+	}
+
+	/**
 	 * Retrieve a TagParam
 	 * @return TagParam
 	 */
@@ -174,6 +191,17 @@ public final class ParamUtils {
 	public static GroupParam getDefaultGroupParam() {
 		final GroupParam param = new GroupParam();
 		setDefaults(param);
+		return param;
+	}
+
+	/**
+	 * @return StatisticsParam
+	 */
+	public static StatisticsParam getDefaultStatisticsParam() {
+		final StatisticsParam param = new StatisticsParam();
+		// FIXME: adapt to new test db
+		param.setRequestedContentId(1924061);
+		param.setHash("0000175071e6141a7d36835489f922ef"); // from user dblp
 		return param;
 	}
 }
