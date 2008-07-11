@@ -3,6 +3,7 @@ package org.bibsonomy.database.managers.chain.statistic.post.get;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
@@ -30,7 +31,7 @@ public class GetResourcesForGroupCount extends StatisticChainElement {
 		final Group group = this.groupDb.getGroupByName(param.getRequestedGroupName(), session);
 		if (group == null || group.getGroupId() == GroupID.INVALID.getId() || GroupID.isSpecialGroupId(group.getGroupId())) {
 			log.debug("group " + param.getRequestedGroupName() + " not found or special group");
-			return new ArrayList<Integer>(0);			
+			return new ArrayList<Integer>(Arrays.asList(0));			
 		}
 		param.setGroupId(group.getGroupId());
 		
