@@ -9,7 +9,6 @@ import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.SpamStatus;
-import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagRelationType;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
