@@ -56,7 +56,7 @@ public class TestDatabaseLoader {
 			if (currentLine.startsWith("--")) continue;
 
 			spanningLineBuf.append(" " + currentLine);
-			final String wholeLine = spanningLineBuf.toString();
+			final String wholeLine = spanningLineBuf.toString().trim();
 			if (wholeLine.endsWith(";") == false) continue;
 			log.debug("Read: " + wholeLine);
 			this.statements.add(wholeLine);
@@ -131,13 +131,12 @@ final class SimpleJDBCHelper implements Closeable {
 			final String currentLine = scan.nextLine();
 			for (final String param : new String[] { "url", "username", "password" }) {
 				if (currentLine.startsWith(param) == false) continue;
-				params.put(param, currentLine.substring(param.length() + 1));
+				params.put(param, currentLine.substring(currentLine.indexOf('=') + 1).trim());
 			}
 		}
 		if (params.size() != 3) throw new RuntimeException("Couldn't read config file '" + this.configFile + "'");
 
 		return new DatabaseConfig() {
-
 			public String getUrl() {
 				return params.get("url");
 			}
@@ -158,9 +157,8 @@ final class SimpleJDBCHelper implements Closeable {
 	 * @param sql
 	 */
 	public void execute(final String sql) {
-		Statement stmt;
 		try {
-			stmt = this.connection.createStatement();
+			final Statement stmt = this.connection.createStatement();
 			stmt.execute(sql);
 			stmt.close();
 		} catch (final SQLException ex) {
