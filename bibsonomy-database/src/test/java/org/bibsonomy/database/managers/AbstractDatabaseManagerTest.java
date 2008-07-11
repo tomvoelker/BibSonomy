@@ -82,6 +82,7 @@ public abstract class AbstractDatabaseManagerTest {
 			this.permissionDb = PermissionDatabaseManager.getInstance();
 			this.statisticsDb = StatisticsDatabaseManager.getInstance();
 
+			// initialize parameter objects
 			this.resetParameters();
 
 			// bind datasource access via JNDI
@@ -130,7 +131,7 @@ public abstract class AbstractDatabaseManagerTest {
 	 * parameter object is altered which can lead to side effects in the
 	 * following queries.<br/>
 	 * 
-	 * XXX: This is done before running a testcase method, so you don't have to
+	 * Hint: This is done before running a testcase method, so you don't have to
 	 * do this manually.
 	 * 
 	 * @see #setUp()
@@ -143,10 +144,7 @@ public abstract class AbstractDatabaseManagerTest {
 		this.tagParam = ParamUtils.getDefaultTagParam();
 		this.tagRelationParam = ParamUtils.getDefaultTagRelationParam();
 		this.groupParam = ParamUtils.getDefaultGroupParam();
-		
-		this.statisticsParam = new StatisticsParam();
-		statisticsParam.setRequestedContentId(1924061);
-		statisticsParam.setHash("0000175071e6141a7d36835489f922ef"); // from user dblp
+		this.statisticsParam = ParamUtils.getDefaultStatisticsParam();
 	}
 
 	protected DBSessionFactory getDbSessionFactory() {
