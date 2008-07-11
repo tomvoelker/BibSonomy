@@ -24,7 +24,7 @@ import org.junit.Test;
  * @author Christian Schenk
  * @version $Id$
  */
-@Ignore
+@Ignore // FIXME: sometimes the tests are executed in the wrong order
 public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	/**

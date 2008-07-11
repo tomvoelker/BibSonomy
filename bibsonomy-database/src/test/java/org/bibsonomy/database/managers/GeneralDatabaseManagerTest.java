@@ -13,7 +13,6 @@ import java.util.List;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.ParamUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -24,7 +23,6 @@ import org.junit.Test;
  * @author Christian Schenk
  * @version $Id$
  */
-@Ignore
 public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	/**

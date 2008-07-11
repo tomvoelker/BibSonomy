@@ -12,7 +12,6 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
-import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.testutil.DatabasePluginMock;
 import org.junit.Before;
@@ -23,7 +22,6 @@ import org.junit.Test;
  * @author Jens Illig
  * @version $Id$
  */
-@Ignore
 public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	private static final Logger log = Logger.getLogger(TagRelationDatabaseManagerTest.class);
@@ -47,7 +45,7 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	/**
 	 * tests insertRelations (new relations)
 	 */
-	@Ignore
+	@Test
 	public void testInsertNewRelations() {
 		final Integer newId1 = this.generalDb.getNewContentId(ConstantID.IDS_TAGREL_ID, this.dbSession);
 		this.tagRelDb.insertRelations(tag, "test-user", this.dbSession);

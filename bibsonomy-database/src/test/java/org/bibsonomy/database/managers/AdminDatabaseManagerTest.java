@@ -9,15 +9,13 @@ import org.bibsonomy.common.enums.ClassifierMode;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.model.User;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * @author Robert Jaeschke
+ * @author Robert Jäschke
  * @author Stefan Stützer
  * @version $Id$
  */
-@Ignore
 public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	/**
@@ -95,22 +93,22 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final String result = this.adminDb.getClassifierSettings(settingsKey, this.dbSession);
 		assertEquals(value, result);
 	}
-	
+
 	/**
 	 * tests logging when flagging and unflagging spammers
 	 */
 	@Test
-	public void updatePredictionLogs(){
-		final User user = new User(); 
-		user.setName("beate"); 
+	public void updatePredictionLogs() {
+		final User user = new User();
+		user.setName("beate");
 		user.setSpammer(false);
-		user.setToClassify(1); 
+		user.setToClassify(1);
 		user.setPrediction(0);
-		user.setMode("D"); 
-		user.setAlgorithm("testlogging"); 
+		user.setMode("D");
+		user.setAlgorithm("testlogging");
 		user.setUpdatedBy("classifier");
 		//flag spammer (flagging does not change: user is no spammer)
 		final String result = this.adminDb.flagSpammer(user, "classifier", "on", this.dbSession);
-		assertEquals(user.getName(), result); 
+		assertEquals(user.getName(), result);
 	}
 }
