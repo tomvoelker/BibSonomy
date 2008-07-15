@@ -93,7 +93,6 @@ public class LayoutHandler extends HttpServlet {
 					/*
 					 * loading of layout failed: send error message to user
 					 */
-					e.printStackTrace();
 					log.warn("could not load layout for user " + currUser + ": " + e);
 					request.setAttribute("error", "Sorry, I was not able to load the layout: " + e.getMessage());
 					getServletConfig().getServletContext().getRequestDispatcher("/errors/error.jsp").forward(request, response);
