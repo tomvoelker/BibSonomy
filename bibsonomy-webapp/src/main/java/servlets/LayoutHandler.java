@@ -93,6 +93,7 @@ public class LayoutHandler extends HttpServlet {
 					/*
 					 * loading of layout failed: send error message to user
 					 */
+					e.printStackTrace();
 					log.warn("could not load layout for user " + currUser + ": " + e);
 					request.setAttribute("error", "Sorry, I was not able to load the layout: " + e.getMessage());
 					getServletConfig().getServletContext().getRequestDispatcher("/errors/error.jsp").forward(request, response);
@@ -225,6 +226,7 @@ public class LayoutHandler extends HttpServlet {
 		// additional layouts, installed by us
 		typemap.put("se",          	       new OutputType(null, "text/html"));
 		typemap.put("jucs", 		       new OutputType("rtf", "text/rtf"));
+		typemap.put("imtm", 		       new OutputType(null, "text/html"));
 	}
 
 	private static class OutputType {
