@@ -403,6 +403,12 @@
       <from>^/+group/+([^/?]+?)(\?tag=(.*))$</from>
       <to type="redirect">/group/$1/$3</to>
     </rule>
+    
+    <rule>
+		<from>^/+json/+tags/+group/+([^/?]+?)(\?(.*))?$</from>
+		<to type="redirect">/group?requestedGroup=$1&amp;format=json&amp;restrictToTags=true&amp;$3</to>		
+	</rule>	
+    
 	<rule> <!-- /group/GROUP -->
     	<!-- workaround to redirect not-yet-supported features to old resource handler -->
 		<!-- forward PDF sites to new page -->

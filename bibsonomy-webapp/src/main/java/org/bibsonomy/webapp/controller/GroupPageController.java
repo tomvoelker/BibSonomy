@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
@@ -43,6 +44,14 @@ public class GroupPageController extends MultiResourceListControllerWithTags imp
 		final String groupingName = command.getRequestedGroup();
 		final List<String> requTags = command.getRequestedTagsList();
 		FilterEntity filter = null;
+		
+		// retrieve only tags
+		if (!command.getRestrictToTags().equals("false")) {
+			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, 1000, null);
+			
+			// TODO: other output formats
+			return Views.JSONTAGS;
+		}		
 		
 		// display of attached PDFs
 		if (command.getShowPDF().equals("true")) {
