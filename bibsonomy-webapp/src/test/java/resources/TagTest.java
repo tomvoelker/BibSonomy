@@ -15,6 +15,9 @@ import org.junit.Test;
  */
 public class TagTest {
 
+	/**
+	 * Test empty tag
+	 */
 	@Test
 	public void isEmpty() {
 		Tag t = new Tag();
@@ -25,7 +28,7 @@ public class TagTest {
 		
 	}
 
-	/*
+	/**
 	 * tests, if adding two tags works
 	 */
 	@Test
@@ -38,12 +41,12 @@ public class TagTest {
 		t.addTag("bar");
 		Set<String> realSet = t.getTags();
 
-		assertEquals(realSet, testSet);
+		assertEquals(testSet, realSet);
 		assertTrue(t.getTagrelations().isEmpty());
 		assertTrue(t.getForUsers().isEmpty());
 	}
 
-	/*
+	/**
 	 * testing simple tag string parsing
 	 */
 	@Test
@@ -55,12 +58,12 @@ public class TagTest {
 		t.setTags("foo bar");
 		Set<String> realSet = t.getTags();
 
-		assertEquals(realSet, testSet);
+		assertEquals(testSet, realSet);
 		assertTrue(t.getTagrelations().isEmpty());
 		assertTrue(t.getForUsers().isEmpty());
 	}
 	
-	/*
+	/**
 	 * Christophs Example of a broken parsing
 	 */
 	@Test
@@ -79,17 +82,17 @@ public class TagTest {
 		testSet.add("graphgenerator");
 		testSet.add("brocken");
 		testSet.add("berg");
-		assertEquals(t.getTags(), testSet);
+		assertEquals(testSet, t.getTags());
 
 		// check tagrelations
 		HashSet<TagRelation> testSet2 = new HashSet<TagRelation>();
 		testSet2.add(new TagRelation("dorogovtsev", "researcher"));
 		testSet2.add(new TagRelation("brocken", "berg"));
 		
-		assertEquals(t.getTagrelations(), testSet2);
+		assertEquals(testSet2, t.getTagrelations());
 	}
 	
-	/*
+	/**
 	 * testing tagging of tags
 	 */
 	@Test
@@ -101,25 +104,25 @@ public class TagTest {
 		// check tags
 		TreeSet<String> testSet = new TreeSet<String>();
 		testSet.add("foo");
-		assertEquals(t.getTags(), testSet);
+		assertEquals(testSet, t.getTags());
 		
 		// check relations
 		HashSet<TagRelation> testSet2 = new HashSet<TagRelation>();
 		testSet2.add(new TagRelation("bar", "foo"));
-		assertEquals(t.getTagrelations(), testSet2);
+		assertEquals(testSet2, t.getTagrelations());
 		
 		// check users
 		HashSet<String> testSet3 = new HashSet<String>();
 		testSet3.add("klaus");
-		assertEquals(t.getForUsers(), testSet3);
+		assertEquals(testSet3, t.getForUsers());
 	
 		// adding user names to tag set
 		testSet.add("for:klaus");
 		t.addForTag("klaus");
-		assertEquals(t.getTags(), testSet);
+		assertEquals(testSet, t.getTags());
 	}
 	
-	/*
+	/**
 	 * testing difficult tag string parsing
 	 */
 	@Test
@@ -134,30 +137,30 @@ public class TagTest {
 		testSet.add("bar");
 		testSet.add("eins");
 		testSet.add("zwei");
-		assertEquals(t.getTags(), testSet);
+		assertEquals(testSet, t.getTags());
 
 		// check tagrelations
 		HashSet<TagRelation> testSet2 = new HashSet<TagRelation>();
 		testSet2.add(new TagRelation("bar", "foo"));
 		testSet2.add(new TagRelation("foo", "bar"));
 
-		assertEquals(t.getTagrelations(), testSet2);
+		assertEquals(testSet2, t.getTagrelations());
 
 		// check for:users
 		HashSet<String> testSet3 = new HashSet<String>();
 		testSet3.add("klaus");
 		testSet3.add("manni");
-		assertEquals(t.getForUsers(), testSet3);
+		assertEquals(testSet3, t.getForUsers());
 
 		// adding user names to tag set
 		t.addForTag("klaus");
 		t.addForTag("manni");
 		testSet.add("for:klaus");
 		testSet.add("for:manni");
-		assertEquals(t.getTags(), testSet);
+		assertEquals(testSet, t.getTags());
 	}
 	
-	/*
+	/**
 	 * test character: < >  -
 	 */
 	@Test
@@ -169,10 +172,10 @@ public class TagTest {
 		testSet.add("-tag-");
 		testSet.add("foo-bar");
 		testSet.add("-foo-bar-");
-		assertEquals(t.getTags(), testSet);
+		assertEquals(testSet, t.getTags());
 	}
 	
-	/*
+	/**
 	 * test crazy tagrelations
 	 */
 	@Test
@@ -188,11 +191,11 @@ public class TagTest {
 		testSet.add(">");
 		testSet.add("<");
 		
-		assertEquals(t.getTags(), testSet);
+		assertEquals(testSet, t.getTags());
 		
 	}
 	
-	/*
+	/**
 	 * test special characters
 	 * only 'foobar' is a tag
 	 */
@@ -208,10 +211,10 @@ public class TagTest {
 		testSet.add("-");
 		testSet.add("-<");
 		testSet.add("foobar");
-		assertEquals(t.getTags(), testSet);
+		assertEquals(testSet, t.getTags());
 	}
 	
-	/*
+	/**
 	 * test russian / cyrillic font
 	 */
 	@Test
@@ -224,10 +227,10 @@ public class TagTest {
 		testSet.add("Беназир");
 		testSet.add("Бхутто");
 		testSet.add("ӃӄӅӆӇӈӉӊӋӌӍӎӐӑӒӓӔӕӖӗӘәӚӛӜӝӞӟӠӡӢӣӤӥӦӧӨөӪӫӬӭӮӯӰӱӲӳӴӵ");
-		assertEquals(t.getTags(), testSet);
+		assertEquals(testSet, t.getTags());
 	}
 	
-	/*
+	/**
 	 * test japanese writing system
 	 */
 	@Test
@@ -236,10 +239,10 @@ public class TagTest {
 		t.setTags("よう光接続サービスをはじめ続々登場!動画などのコンテンツゼン");
 		TreeSet<String> testSet = new TreeSet<String>();
 		testSet.add("よう光接続サービスをはじめ続々登場!動画などのコンテンツゼン");
-		assertEquals(t.getTags(), testSet);
+		assertEquals(testSet, t.getTags());
 	}
 	
-	/*
+	/**
 	 * test cloning of tag object
 	 */
 	@Test
@@ -258,7 +261,7 @@ public class TagTest {
 		// check tags
 		TreeSet<String> testSet = new TreeSet<String>();
 		testSet.add("foo");
-		assertEquals(neu.getTags(), testSet);
+		assertEquals(testSet, neu.getTags());
 		
 		// check relations
 		assertTrue(neu.getTagrelations().isEmpty());
@@ -267,7 +270,7 @@ public class TagTest {
 		assertTrue(neu.getForUsers().isEmpty());
 	}
 	
-	/*
+	/**
 	 * test tagrelation
 	 */
 	@Test
@@ -280,11 +283,11 @@ public class TagTest {
 		
 		HashSet<TagRelation> testSet = new HashSet<TagRelation>();
 		testSet.add(r);
-		assertEquals(t.getTagrelations(), testSet);
-		assertEquals(t2.getTagrelations(), testSet);
+		assertEquals(testSet, t.getTagrelations());
+		assertEquals(testSet, t2.getTagrelations());
 	}
 	
-	/*
+	/**
 	 * testing adding of relations
 	 */
 	@Test
@@ -303,6 +306,6 @@ public class TagTest {
 		testSet.add(u);
 		
 		assertTrue(t.getTags().isEmpty()); // Why this work?
-		assertEquals(t.getTagrelations(), testSet);
+		assertEquals(testSet, t.getTagrelations());
 	}
 }
