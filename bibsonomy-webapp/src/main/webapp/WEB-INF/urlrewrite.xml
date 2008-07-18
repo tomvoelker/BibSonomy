@@ -406,7 +406,7 @@
     
     <rule>
 		<from>^/+json/+tags/+group/+([^/?]+?)(\?(.*))?$</from>
-		<to type="redirect">/group?requestedGroup=$1&amp;format=json&amp;restrictToTags=true&amp;$3</to>		
+		<to>/group?requestedGroup=$1&amp;format=json&amp;restrictToTags=true&amp;$3</to>		
 	</rule>	
     
 	<rule> <!-- /group/GROUP -->
@@ -587,11 +587,6 @@
 	
 
 <!-- ############## publ hashes ############### -->
-	<!-- JSON -->
-	<rule>
-		<from>^/+json/+tags/+bibtex/+([0-9a-fA-F]*)(\?(.*))?$</from>
-		<to type="redirect">/bibtex/$1?format=json&amp;restrictToTags=true&amp;$3</to>		
-	</rule>	
 	
     <!-- pick right sim hash type -->
 	<rule><!-- /[32]/user -->
@@ -599,7 +594,6 @@
 		<to>/ResourceHandler?page=userbibtex&amp;requBibtex=$1&amp;requSim=0&amp;requUser=$2&amp;$4</to> 
 	</rule>
 	<rule><!-- /[32] -->
-		<condition type="parameter" name="restrictToTags" operator="notequal"/>
 		<from>^/+bibtex/+([0-9a-fA-F]{32})(\?(.*))?$</from>
 		<to>/ResourceHandler?page=bibtex&amp;requBibtex=$1&amp;requSim=1&amp;$3</to> 
 	</rule>
@@ -609,10 +603,15 @@
 		<to>/ResourceHandler?page=userbibtex&amp;requBibtex=$2&amp;requSim=$1&amp;requUser=$3&amp;$5</to> 
 	</rule>
 	<rule><!-- /[0-3][32] -->
-		<condition type="parameter" name="restrictToTags" operator="notequal"/> 
 		<from>^/+bibtex/+([0-3])([0-9a-fA-F]{32})(\?(.*))?$</from>
 		<to>/ResourceHandler?page=bibtex&amp;requBibtex=$2&amp;requSim=$1&amp;$4</to> 
 	</rule>
+	
+	<!-- JSON -->
+	<rule>
+		<from>^/+json/+tags/+bibtex/+([0-3])([0-9a-fA-F]{32})(\?(.*))?$</from>
+		<to>/bibtex?requBibtex=$2&amp;requSim=$1&amp;format=json&amp;restrictToTags=true&amp;$4</to>		
+	</rule>		
 	
 	<!-- NEW PAGE -->
 	<rule><!-- /[0-3][32] -->
