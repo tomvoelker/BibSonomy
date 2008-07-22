@@ -890,7 +890,7 @@ public class ResourceHandler extends HttpServlet{
 	 */
 	@Deprecated
 	private boolean isFriendOf(DBContext c, String currUser, String requUser) throws SQLException {
-		log.warn("query 'isFriendOf' is migrated to bibsonomy 2");
+		log.info("query 'isFriendOf' is migrated to bibsonomy 2");
 		c.bookStmtP = c.conn.prepareStatement("SELECT user_name FROM friends WHERE user_name = ? AND f_user_name = ?");
 		c.bookStmtP.setString(1, requUser);
 		c.bookStmtP.setString(2, currUser);
@@ -1257,7 +1257,7 @@ public class ResourceHandler extends HttpServlet{
 	 */
 	@Deprecated
 	private void queryPageConcept(DBContext c, String currUser, String requTag, int itemCount, int startBook, int startBib) throws SQLException {
-		log.fatal("queryPageConcept: should never be called");
+		log.info("queryPageConcept: should never be called");
 		SplittedEntireConcepts tags = new SplittedEntireConcepts(requTag, "", true);		
 
 		/*
@@ -1355,7 +1355,7 @@ public class ResourceHandler extends HttpServlet{
 	 */
 	@Deprecated
 	private void queryPageUserConcept (DBContext c, String currUser, String requUser, String requTag, int itemCount, int startBook, int startBib) throws SQLException {
-		log.fatal("queryPageUserConcept: should never be called");
+		log.info("queryPageUserConcept: should never be called");
 		SplittedConcepts tags  = new SplittedConcepts(requTag, "", true);
 		String tagWhereQuery   = tags.getQuery();
 		String groupWhereQuery = getQueryForGroups (c.conn, currUser, requUser, "b");
@@ -1593,7 +1593,7 @@ public class ResourceHandler extends HttpServlet{
 	 */
 	@Deprecated
 	private void queryPageAuthor(DBContext c, String requAuthor, int itemCount, int startBib) throws SQLException {
-		log.warn("query 'queryPageAuthor' is migrated to bibsonomy 2");
+		log.info("query 'queryPageAuthor' is migrated to bibsonomy 2");
 		SplittedAuthors authors = new SplittedAuthors(requAuthor);
 		SystemTags systemTags   = new SystemTags(requAuthor);		
 		String authorMatch = authors.getQuery();		
@@ -2011,7 +2011,7 @@ public class ResourceHandler extends HttpServlet{
 	 */
 	@Deprecated
 	private void queryPageGroup (DBContext c, String currUser, int group, int itemCount, int startBook, int startBib) throws SQLException {
-		log.fatal("queryPageGroup: should never be called");
+		log.info("queryPageGroup: should never be called");
 		String groupWhereQuery = getQueryForGroups (c.conn, currUser, null, "b");
 		// bookmark query 
 		/* because MySQL 5.0 optimizes subqueries badly, we reformulated this query to use JOINs and UNION instead of a subquery:
@@ -2135,7 +2135,7 @@ public class ResourceHandler extends HttpServlet{
 	 */
 	@Deprecated
 	private void queryPageGroupTag (DBContext c, String requTag, String currUser, int group, int itemCount, int startBook, int startBib) throws SQLException {
-		log.fatal("queryPageCroupTag: should never be called");
+		log.info("queryPageCroupTag: should never be called");
 		String groupWhereQuery = getQueryForGroups (c.conn, currUser, null, "t1");
 		SplittedTags tags      = new SplittedTags(requTag, "", true);
 		String tagWhereQuery   = tags.getQuery();
@@ -2332,7 +2332,7 @@ public class ResourceHandler extends HttpServlet{
 	 */
 	@Deprecated
 	private void queryPageDuplicate (DBContext c, String currUser) throws SQLException {
-		log.fatal("queryPageDuplicate: should never be called");		
+		log.info("queryPageDuplicate: should never be called");		
 		String bibQuery = "SELECT " + getBibtexSelect("b") + ",t.tag_name,g.group_name, h.ctr"
 		+ "  FROM bibtex b, bibhash h,"
 		+ "    (SELECT b2.content_id,b2.date FROM "
