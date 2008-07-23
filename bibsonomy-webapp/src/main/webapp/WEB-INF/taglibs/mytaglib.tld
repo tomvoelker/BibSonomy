@@ -223,6 +223,12 @@
   </function>
 
   <function>
+  	<name>quoteJSON</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String quoteJSON(java.lang.String)</function-signature>
+  </function>
+
+  <function>
     <!-- maps BibTeX entrytypes to SWRC entrytypes  -->
   	<name>getSWRCEntryType</name>
   	<function-class>tags.Functions</function-class>

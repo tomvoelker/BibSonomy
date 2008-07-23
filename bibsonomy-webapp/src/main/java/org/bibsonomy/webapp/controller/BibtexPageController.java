@@ -45,7 +45,7 @@ public class BibtexPageController extends MultiResourceListController implements
 			this.setTags(command, BibTex.class, GroupingEntity.ALL, null, null, null, hash, null, 0, 1000, null);
 			
 			// TODO: other output formats
-			return Views.JSONTAGS;
+			return Views.JSON;
 		}		
 		
 		// determine which lists to initalize depending on the output format 

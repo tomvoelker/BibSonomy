@@ -49,7 +49,7 @@ public class GroupPageController extends MultiResourceListControllerWithTags imp
 			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, 1000, null);
 			
 			// TODO: other output formats
-			return Views.JSONTAGS;
+			return Views.JSON;
 		}		
 		
 		// display of attached PDFs

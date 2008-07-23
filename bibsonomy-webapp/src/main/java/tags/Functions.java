@@ -324,6 +324,22 @@ public class Functions  {
 	}
 
 
+	/** Quotes a String such that it is usable for JSON.
+	 * 
+	 * @param value
+	 * @return The quoted String.
+	 */
+	public static String quoteJSON(final String value) {
+		if (value != null) {
+			return value
+				.replaceAll("\\\\", "\\\\\\\\") // back-slashes
+				.replaceAll("\n", "\\\\n")   // linebreaks 
+				.replaceAll("\r", "")        // windows linebreaks
+				.replaceAll("\"", "\\\\\"")  // quotation marks
+				;  
+		}
+		return value;
+	}
 
 
 	/** Maps BibTeX entry types to SWRC entry types.
