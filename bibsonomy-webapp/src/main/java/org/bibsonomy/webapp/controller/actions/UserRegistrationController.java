@@ -138,7 +138,7 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 
 		/* Check spamIP
 		 * 
-		 * TODO: This is a canidate of functionality for a super-class "CaptchaController".
+		 * TODO: This is a candidate of functionality for a super-class "CaptchaController".
 		 * 
 		 * check, if IP is blocked from registration or
 		 *        if user has spammer cookie set
