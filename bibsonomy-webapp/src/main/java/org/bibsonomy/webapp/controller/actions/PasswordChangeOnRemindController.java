@@ -1,7 +1,5 @@
 package org.bibsonomy.webapp.controller.actions;
 
-import java.util.Calendar;
-
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -31,7 +29,6 @@ public class PasswordChangeOnRemindController implements MinimalisticController<
 	private LogicInterface adminLogic;
 	private CookieLogic cookieLogic;
 	private RequestLogic requestLogic;
-	private int maxMinutesPasswordReminderValid;
 
 	private Errors errors;
 	
@@ -44,14 +41,15 @@ public class PasswordChangeOnRemindController implements MinimalisticController<
 
 		if (command.getUserName() != null){
 			log.debug("neither username nor the tmppassword is null");
-			// get the existing user
-			User user = new User();
-			user.setName(command.getUserName());
 			
 			// if there are any errors show thems
 			if (errors.hasErrors()) {
 				return Views.PASSWORD_CHANGE_ON_REMIND;
 			}
+
+			// get the existing user
+			User user = new User();
+			user.setName(command.getUserName());
 			
 			// create the md5 hash of the new password
 			final String hashedPassword = StringUtils.getMD5Hash(command.getNewPassword());
@@ -115,10 +113,4 @@ public class PasswordChangeOnRemindController implements MinimalisticController<
 		this.adminLogic = adminLogic;
 	}
 
-	/**
-	 * @param maxMinutesPasswordReminderValid
-	 */
-	public void setMaxMinutesPasswordReminderValid(int maxMinutesPasswordReminderValid){
-		this.maxMinutesPasswordReminderValid = maxMinutesPasswordReminderValid;
-	}
 }
