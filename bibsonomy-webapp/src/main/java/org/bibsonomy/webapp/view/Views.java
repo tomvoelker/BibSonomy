@@ -140,6 +140,11 @@ public enum Views implements View {
 	XML("export/bookmark/xmlOutput"),
 	
 	/**
+	 * JSON for both bookmarks and publications
+	 */
+	JSON("export/json"),
+	
+	/**
 	 * viewable page
 	 */
 	VIEWABLEPAGE("viewable"),
@@ -182,12 +187,7 @@ public enum Views implements View {
 	/**
 	 * spammer predictions 
 	 */
-	AJAX_PREDICTIONS("ajaxPredictions"), 
-	
-	/**
-	 * A json output tag page 
-	 */
-	JSONTAGS("export/bibtex/jsonTags"),
+	AJAX_PREDICTIONS("ajaxPredictions"),
 	
 	/**
 	 * where users can register
@@ -295,6 +295,8 @@ public enum Views implements View {
 			return XML;
 		if ("bookpubl".equals(format))
 			return BOOKPUBL;
+		if ("json".equals(format)) 
+			return JSON;
 		
 		throw new BadRequestOrResponseException("Invalid format specification.");
 	}
