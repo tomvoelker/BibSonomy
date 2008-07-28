@@ -629,6 +629,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * tests getPosts
 	 */
 	@Test
+	@Ignore
 	// TODO: need assertByTagNames?
 	public void getPosts() {
 		BibTexParam param = new BibTexParam();
