@@ -57,6 +57,9 @@ public class InitUserFilter implements Filter {
 	public static final String REQ_ATTRIB_LOGIN_USER       = "loginUser";
 	public static final String BIBTEX_NUM_ENTRIES_PER_PAGE = "bibtex.entriesPerPage";
 	public static final String BOOKMARK_NUM_ENTRIES_PER_PAGE = "bookmark.entriesPerPage";
+	/**
+	 * Enables X.509 authentication.
+	 */
 	public static boolean useX509forAuth = false;
 
 	/**
@@ -76,7 +79,7 @@ public class InitUserFilter implements Filter {
 		/*
 		 * if true, we use X.509 certificates instead of passwords in DB for authentication
 		 */
-		this.useX509forAuth = "true".equals(this.filterConfig.getInitParameter("useX509forAuth"));
+		useX509forAuth = "true".equals(this.filterConfig.getInitParameter("useX509forAuth"));
 	}
 
 
@@ -105,12 +108,12 @@ public class InitUserFilter implements Filter {
 		 * if successful, get user details
 		 */
 
-		DBLogicUserInterfaceFactory dbLogicFactory = new DBLogicUserInterfaceFactory();
+		final DBLogicUserInterfaceFactory dbLogicFactory = new DBLogicUserInterfaceFactory();
 		dbLogicFactory.setDbSessionFactory(new IbatisDBSessionFactory());
 		User loginUser = null;
-				
-		String userCookie = getCookie(httpServletRequest,USER_COOKIE_NAME);
-		
+
+		final String userCookie = getCookie(httpServletRequest,USER_COOKIE_NAME);
+
 		// check user authentication
 		try {			
 			if (userCookie != null) {
@@ -123,7 +126,7 @@ public class InitUserFilter implements Filter {
 					/*
 					 * all two parts of cookie available
 					 */
-					LogicInterface logic = dbLogicFactory.getLogicAccess(userCookieParts[0], userCookieParts[1]);
+					final LogicInterface logic = dbLogicFactory.getLogicAccess(userCookieParts[0], userCookieParts[1]);
 					loginUser = logic.getUserDetails(userCookieParts[0]);								
 				} else {
 					/*
@@ -147,11 +150,11 @@ public class InitUserFilter implements Filter {
 					 *  INSERT IGNORE INTO user VALUES ...  
 					 */
 					try {
-						LogicInterface logic = dbLogicFactory.getLogicAccess(uname, "*");
+						final LogicInterface logic = dbLogicFactory.getLogicAccess(uname, "*");
 						loginUser = logic.getUserDetails(uname);
 					} catch (ValidationException e) {
 					}
-										
+
 					/*
 					 * this should not be neccessary, if we got the user from the database ...
 					 */
@@ -162,33 +165,33 @@ public class InitUserFilter implements Filter {
 				} catch (Exception e)  {
 					log.info("certificate authentication failed: " + e);
 				}				
-			} else if (HttpServletRequest.BASIC_AUTH.equals(httpServletRequest.getAuthType())) {
-				/*
-				 * HTTP BASIC AUTHENTICATION
-				 */
-				log.info("auth via http basic auth");
-				
-				// get password sent by client in HTTP Authentication Header
-				String userpassDecoded = getUserPassFromHTTPBasicAuthHeader(httpServletRequest);
-				    
-				/*
-				 * FIXME: The password is expected to be already MD5-encoded (as in the cookie).
-				 * This is typically not the case (i.e., user enters password in browser), but 
-				 * we decided to do it this way because we implemented this mechanism exclusively
-				 * for integration of publication lists into CMS. There cookie handling is often
-				 * difficult and one does not want the cleartext password to be written into the 
-				 * CMS (at least in our (eecs) scenario).
-				 */
-				
-				// try to authenticate user
-				LogicInterface logic = dbLogicFactory.getLogicAccess(httpServletRequest.getRemoteUser(), userpassDecoded);
-				loginUser = logic.getUserDetails(httpServletRequest.getRemoteUser());
+			} else {
+				final String[] auth = decodeAuthHeader(httpServletRequest);
+				if (auth != null) {
+					/*
+					 * HTTP BASIC AUTHENTICATION
+					 */
+					log.info("Authentication for user '" + auth[0] + "' using HTTP basic auth.");
+
+					/*
+					 * FIXME: The password is expected to be already MD5-encoded (as in the cookie).
+					 * This is typically not the case (i.e., user enters password in browser), but 
+					 * we decided to do it this way because we implemented this mechanism exclusively
+					 * for integration of publication lists into CMS. There cookie handling is often
+					 * difficult and one does not want the cleartext password to be written into the 
+					 * CMS (at least in our (eecs) scenario).
+					 */
+
+					// try to authenticate user
+					final LogicInterface logic = dbLogicFactory.getLogicAccess(auth[0], auth[1]);
+					loginUser = logic.getUserDetails(auth[0]);
+				}
 			}
 		}
 		catch (ValidationException valEx) {
 			log.info(valEx.getMessage());
 		}
-		
+
 		if (loginUser == null) {
 			log.info("user not found in DB or user has no cookie set");
 			/*
@@ -220,8 +223,8 @@ public class InitUserFilter implements Filter {
 		 * put bean into request for following Servlets/JSPs
 		 */
 		httpServletRequest.setAttribute(REQ_ATTRIB_LOGIN_USER, loginUser);
-		
-		
+
+
 		// set list lengths to default value, if not present
 		if (httpServletRequest.getParameter(BOOKMARK_NUM_ENTRIES_PER_PAGE) == null) {
 			httpServletRequest.setAttribute(BOOKMARK_NUM_ENTRIES_PER_PAGE, loginUser.getSettings().getListItemcount());
@@ -229,7 +232,7 @@ public class InitUserFilter implements Filter {
 		if (httpServletRequest.getParameter(BIBTEX_NUM_ENTRIES_PER_PAGE) == null) {
 			httpServletRequest.setAttribute(BIBTEX_NUM_ENTRIES_PER_PAGE, loginUser.getSettings().getListItemcount());
 		}		
-		
+
 		/*
 		 * for backwards compatibility, we copy here the data from the user object into a
 		 * "BibSonomy 1" UserBean Object
@@ -241,7 +244,7 @@ public class InitUserFilter implements Filter {
 		// add default language to request if no language is set	
 		if (httpServletRequest.getSession().getAttribute(REQ_ATTRIB_LANGUAGE) == null)
 			httpServletRequest.getSession().setAttribute(REQ_ATTRIB_LANGUAGE, new Locale(userBean.getDefaultLanguage()));
-		
+
 		log.info("finished: " + loginUser);
 
 		// Pass control on to the next filter
@@ -249,7 +252,6 @@ public class InitUserFilter implements Filter {
 
 	}
 
-	
 	/** Returns the value of a cookie with the given name.
 	 * 
 	 * @param request
@@ -269,27 +271,24 @@ public class InitUserFilter implements Filter {
 	}
 
 
-	/** Returns the password contained in a HTTP (Basic) authentication header.
+	/** Extracts the auth header, decodes it and returns an array containing at 
+	 * position 0 the user name and at position 1 the user password.
 	 * 
 	 * @author rja
-	 * @param httpServletRequest
-	 * @return
+	 * @return <code>new String[]{username, password}</code> or <code>null</code>, 
+	 * if no auth header found.
+	 *  
 	 * @throws IOException
 	 */
-	private String getUserPassFromHTTPBasicAuthHeader(HttpServletRequest httpServletRequest) {
-		// get the user:password from the header
-		final String userpassEncoded = httpServletRequest.getHeader("Authentication").substring(6);
-
-		// Decode it, using any base 64 decoder
-		final String userpassDecoded = new String (Base64.decodeBase64(userpassEncoded.getBytes()));
-		
-		// extract password from string
-		int p = userpassDecoded.indexOf(":");
-		if (p != -1) {
-			// password after :
-			return userpassDecoded.substring(p+1);
+	private String[] decodeAuthHeader(final HttpServletRequest request) {
+		final String authHeader = request.getHeader("authorization");
+		if (authHeader != null) {
+			// Decode it, using any base 64 decoder
+			final String userpassDecoded = new String (Base64.decodeBase64(authHeader.split("\\s+")[1].getBytes()));
+			// split user name and password
+			return userpassDecoded.split(":");
 		}
-		return null; 
+		return null;
 	}
 
 
@@ -357,7 +356,7 @@ public class InitUserFilter implements Filter {
 	}
 
 	private static UserBean createUserBean(User loginUser) {
-		
+
 		// general info
 		UserBean userBean = new UserBean();
 		userBean.setEmail(loginUser.getEmail());
@@ -367,7 +366,7 @@ public class InitUserFilter implements Filter {
 		userBean.setRealname(loginUser.getRealname());
 		userBean.setRole(loginUser.getRole());
 		userBean.setApiKey(loginUser.getApiKey());
-		
+
 		//settings
 		userBean.setTagboxMinfreq(loginUser.getSettings().getTagboxMinfreq());
 		userBean.setTagboxSort(loginUser.getSettings().getTagboxSort());
@@ -375,17 +374,17 @@ public class InitUserFilter implements Filter {
 		userBean.setTagboxTooltip(loginUser.getSettings().getTagboxTooltip());
 		userBean.setItemcount(loginUser.getSettings().getListItemcount());
 		userBean.setDefaultLanguage(loginUser.getSettings().getDefaultLanguage());
-		
+
 		//basket size
 		userBean.setPostsInBasket(loginUser.getBasket().getNumPosts());
-				
+
 		//groups
 		for(Group g : loginUser.getGroups()) {
 			/* 
 			 * Ignore public, private, friends - because we don't want to see 
-             * them on the basket page and also not in the "groups" menu. The 
-             * UserBean contains a method "getAllGroups" to get those groups, 
-             * too.
+			 * them on the basket page and also not in the "groups" menu. The 
+			 * UserBean contains a method "getAllGroups" to get those groups, 
+			 * too.
 			 */
 			if (!GroupID.isSpecialGroupId(g.getGroupId())) {
 				userBean.addGroup(g.getName());
