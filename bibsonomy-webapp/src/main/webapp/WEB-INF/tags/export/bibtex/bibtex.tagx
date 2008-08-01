@@ -40,7 +40,7 @@
 		<c:if test="${not empty bibtex.bibtexAbstract}">
 			<jsp:text>	abstract = {${bibtex.bibtexAbstract}},<br/></jsp:text>
 		</c:if>
-		<jsp:text>	biburl = {${projectHome}bibtex/2${bibtex['intraHash']}/${post.user['name']}},<br/></jsp:text>
+		<jsp:text>	biburl = {${projectHome}bibtex/${hash.intra.id}${bibtex['intraHash']}/${post.user['name']}},<br/></jsp:text>
 		<jsp:text>	keywords = {${mtl:toTagString(post.tags)}}<br/></jsp:text>
 		<jsp:text>}</jsp:text>
 	</pre>

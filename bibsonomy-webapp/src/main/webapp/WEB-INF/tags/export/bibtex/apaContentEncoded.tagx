@@ -8,6 +8,8 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:output="urn:jsptagdir:/WEB-INF/tags/export/bibtex">
 	
+	<jsp:useBean id="hash" class="beans.HashIDBean" scope="application"/>
+	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	
 	<!-- autors -->
@@ -17,7 +19,7 @@
 	<bib:year post="${post}" braces="true"/>
 	
 	<!-- title -->    
-   	<a href="${projectHome}bibtex/2${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"><i><mtl:bibclean value="${post.resource.title}"/>.</i></a>
+   	<a href="${projectHome}bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"><i><mtl:bibclean value="${post.resource.title}"/>.</i></a>
 
 	<!-- inbook / incollection data -->
   	<c:choose>

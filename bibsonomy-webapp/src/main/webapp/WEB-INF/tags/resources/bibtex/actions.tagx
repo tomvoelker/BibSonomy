@@ -106,7 +106,7 @@
 	
 	<!-- BIBTEX -->
     <c:set var="bibtexTitle"><fmt:message key="bibtex.actions.bibtex.title"/></c:set>
-    <a href="/bib/bibtex/2${post.resource.intraHash}/${fn:escapeXml(post.user.name)}" title="${bibtexTitle}">
+    <a href="/bib/bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}" title="${bibtexTitle}">
 		<fmt:message key="bibtex.actions.bibtex"/>
 	</a>
 
