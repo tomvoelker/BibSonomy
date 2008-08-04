@@ -181,7 +181,32 @@
 		<input type="submit" value="(Re)generate API key"/> 
 		</form>
 		<hr/>
+    
+        <%-- ------------------------ log level -------------------------- --%>
+        <h2>Logging</h2>
+        <form name="logLevel" method="post" action="/settings">
+        <table>
+          <tr>
+            <td>log clicks to external pages</td>
+            <td>
+		          <select name="logLevel">
+		            <option <c:if test="${user.logLevel == 0}">selected="true"</c:if> value="0">yes</option>
+		            <option <c:if test="${user.logLevel == 1}">selected="true"</c:if> value="1">no</option>
+		          </select>
+            </td>
+          </tr> 
+          <tr>
+            <td>
+              <input type="submit"/>
+              <input type="hidden" name="ckey" value="${ckey}"/>
+            </td>
+        </tr>        
+        
 					
+          
+          
+          
+          
 		<%-- ------------------------ password change -------------------------- --%>
 		<jsp:useBean id="registrationHandlerBean" class="beans.RegistrationHandlerBean" scope="request"/>
 		
