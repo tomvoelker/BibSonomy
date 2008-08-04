@@ -198,7 +198,7 @@ public class DBUserManager extends DBManager {
 						                              COL_TAGBOX_TOOLTIP + " = ?, " +
  						                              COL_LIST_ITEMCOUNT + " = ?,  " +
  						                              COL_DEFAULT_LANG + " = ?, " +
- 						                              COL_API_KEY + " = ?" +
+ 						                              COL_API_KEY + " = ?, " +
  						                              LOG_LEVEL + " = ?" +
 						                         "  WHERE user_name = ?");
 				c.stmt.setInt(1, user.getTagboxStyle());
@@ -207,9 +207,10 @@ public class DBUserManager extends DBManager {
 				c.stmt.setInt(4, user.getTagboxTooltip());
 				c.stmt.setInt(5, user.getItemcount());
 				c.stmt.setString(6, user.getDefaultLanguage());
-				c.stmt.setString(7, user.getApiKey());				
-				c.stmt.setString(8, user.getApiKey());
-				c.stmt.setInt(9, user.getLogLevel());
+				c.stmt.setString(7, user.getApiKey());
+				c.stmt.setInt(8, user.getLogLevel());
+				c.stmt.setString(9, user.getName());
+				
 				return c.stmt.executeUpdate() == 1; // return true, if exactly one row got updated 
 			}
 		} catch (SQLException e) {
