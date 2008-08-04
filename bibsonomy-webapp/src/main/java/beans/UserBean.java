@@ -28,6 +28,7 @@ public class UserBean implements Serializable {
 	private int itemcount       = 10; // how many posts to show in post lists?  
 	private String defaultLanguage = "en"; // the default language
 	private String apiKey = null; // the API key
+	private int logLevel = 0;
 
 	private Set<String> groups = new HashSet<String>(); // groups the user is in
 	private List<String> friends = new LinkedList<String>(); // the friends of the user	
@@ -161,5 +162,17 @@ public class UserBean implements Serializable {
 	}
 	public void setApiKey(String apiKey) {
 		this.apiKey = apiKey;
+	}
+
+
+
+	public int getLogLevel() {
+		return this.logLevel;
+	}
+
+
+
+	public void setLogLevel(int logLevel) {
+		this.logLevel = logLevel;
 	}
 }
