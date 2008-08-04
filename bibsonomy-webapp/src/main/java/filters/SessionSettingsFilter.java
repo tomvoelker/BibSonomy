@@ -233,6 +233,18 @@ public class SessionSettingsFilter implements Filter {
 			update = true;
 		}
 		
+		paramValue = httpServletRequest.getParameter("logLevel");
+		if (paramValue != null) {
+			int logLevel = 0;
+			try {
+				logLevel = Integer.parseInt(paramValue);
+			} catch (NumberFormatException e) {
+				
+			}
+			user.setLogLevel(logLevel);
+			update = true;
+		}
+		
 		return update;
 	}
 
