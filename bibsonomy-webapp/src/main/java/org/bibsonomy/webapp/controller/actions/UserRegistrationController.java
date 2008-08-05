@@ -43,7 +43,7 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 	/**
 	 * After successful registration, the user is redirected to this page. 
 	 */
-	private String successRedirect = "/actions/register/user_success";
+	private String successRedirect = "/register_success";
 
 	private static final Logger log = Logger.getLogger(UserRegistrationController.class);
 
