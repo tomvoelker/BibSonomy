@@ -374,6 +374,7 @@ public class InitUserFilter implements Filter {
 		userBean.setTagboxTooltip(loginUser.getSettings().getTagboxTooltip());
 		userBean.setItemcount(loginUser.getSettings().getListItemcount());
 		userBean.setDefaultLanguage(loginUser.getSettings().getDefaultLanguage());
+		userBean.setLogLevel(loginUser.getSettings().getLogLevel());
 
 		//basket size
 		userBean.setPostsInBasket(loginUser.getBasket().getNumPosts());
