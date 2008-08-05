@@ -69,4 +69,9 @@ public class Bookmark extends Resource {
 	public void recalculateHashes() {
 		this.setIntraHash(getHash());
 	}
+	
+	@Override
+	public String toString() {
+		return super.toString() + " = \"" + title + "\" = <" + url + ">";
+	}
 }

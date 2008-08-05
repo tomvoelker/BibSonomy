@@ -145,4 +145,9 @@ public abstract class Resource {
 		}
 		return rVal;
 	}
+	
+	@Override
+	public String toString() {
+		return "<" + intraHash + "/" + interHash + ">";
+	}
 }

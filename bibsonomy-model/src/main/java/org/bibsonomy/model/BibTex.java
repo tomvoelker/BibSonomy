@@ -632,4 +632,9 @@ public class BibTex extends Resource {
 	public void setDocuments(List<Document> documents) {
 		this.documents = documents;
 	}		
+	
+	@Override
+	public String toString() {
+		return super.toString() + " = \"" + title + "\" by <" + author + ">";	
+	}
 }

@@ -182,4 +182,9 @@ public class Post<T extends Resource> {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
+	@Override
+	public String toString() {
+		return "\n" + user.getName() + "\n\ttagged\n" + resource + "\n\twith\n" + tags;
+	}
 }
