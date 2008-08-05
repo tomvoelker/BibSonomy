@@ -103,8 +103,8 @@
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="ajaxController"/>
 						 <property name="allowedFields">
-                                                        <list>
-                                                                <value>action</value>
+                            <list>
+                                <value>action</value>
 								<value>userName</value>
 								<value>value</value>
 								<value>key</value>
@@ -154,7 +154,7 @@
 					</bean>
 				</entry>
 				
-				<entry key="/actions/user/passwordreminder">
+				<entry key="/change_password">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="passwordReminderController"/>
 						<property name="allowedFields">
