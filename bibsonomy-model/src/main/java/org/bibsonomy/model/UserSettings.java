@@ -35,6 +35,12 @@ public class UserSettings {
 	 * the default language for i18n
 	 */
 	private String defaultLanguage = "en";
+	/**
+	 * How much data about the user behaviour (clicking, etc.) is logged.
+	 */
+	private int logLevel;
+
+
 
 	/**
 	 * @return tagboxStyle
@@ -118,5 +124,13 @@ public class UserSettings {
 	 */
 	public void setDefaultLanguage(String defaultLanguage) {
 		this.defaultLanguage = defaultLanguage;
+	}
+
+	public int getLogLevel() {
+		return this.logLevel;
+	}
+
+	public void setLogLevel(int logLevel) {
+		this.logLevel = logLevel;
 	}	
 }
