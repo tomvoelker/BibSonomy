@@ -8,7 +8,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:output="urn:jsptagdir:/WEB-INF/tags/export/bibtex">
 	
-	<jsp:useBean id="hash" class="beans.HashIDBean" scope="application"/>
+	<jsp:useBean id="hash" class="org.bibsonomy.util.HashIDBean" scope="application"/>
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	

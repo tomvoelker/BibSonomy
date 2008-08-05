@@ -8,7 +8,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
-	<jsp:useBean id="hash" class="beans.HashIDBean" scope="application"/>
+	<jsp:useBean id="hash" class="org.bibsonomy.util.HashIDBean" scope="application"/>
 
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="basketSize" type="java.lang.Integer" required="true"/>
