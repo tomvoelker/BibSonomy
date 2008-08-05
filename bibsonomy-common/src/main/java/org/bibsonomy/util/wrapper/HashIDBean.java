@@ -1,4 +1,4 @@
-package org.bibsonomy.util;
+package org.bibsonomy.util.wrapper;
 
 import org.bibsonomy.common.enums.HashID;
 
