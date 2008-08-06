@@ -93,4 +93,41 @@ public class UserUtils {
 		}
 		return groupIDs;
 	}
+	
+	/**
+	 * Normalizes the OpenID of a user for matching
+	 * 
+	 * @param url the OpenID url
+	 * @return normalized OpenID
+	 */
+	public static String normalizeURL(String url) {
+		
+		/*
+		 * do nothing if url is empty
+		 */
+		if (url == null || url == "") {
+			return url;
+		}
+		
+		/*
+		 * append http suffix if not set
+		 */
+		if (!url.startsWith("http://") && !url.startsWith("https://")) {
+			url = "http://" + url;
+		}
+		
+		/*
+		 * append last backslash if not exist
+		 */
+		if (!url.endsWith("/")) {
+			url += "/";
+		}
+		
+		/*
+		 * convert to lower case
+		 */
+		url = url.toLowerCase();
+		
+		return url;
+	}
 }

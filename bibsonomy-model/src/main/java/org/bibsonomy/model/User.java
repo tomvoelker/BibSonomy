@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.model.util.UserUtils;
 
 /**
  * This class defines a user. An unknown user has an empty (<code>null</code>) name.
@@ -73,6 +74,11 @@ public class User {
 	 * OpenURL url
 	 */
 	private String openURL;
+	
+	/**
+	 * OpenID url for authentication
+	 */
+	private String openID;
 
 	/**
 	 * IP Address
@@ -491,6 +497,20 @@ public class User {
 	 */
 	public void setOpenURL(String openURL) {
 		this.openURL = openURL;
+	}
+	
+	/**
+	 * @return openID
+	 */
+	public String getOpenID() {
+		return this.openID;
+	}
+
+	/**
+	 * @param openID
+	 */
+	public void setOpenID(String openID) {
+		this.openID = UserUtils.normalizeURL(openID);
 	}
 
 	/**

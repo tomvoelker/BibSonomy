@@ -385,4 +385,12 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @return Userlist with spammer flag of admin and prediction of classifier 
 	 */
 	public List<User> getClassifierComparison(int interval);	
+	
+	/**
+	 * Returns a username cotrresponding to a given openid
+	 * 
+	 * @param openID
+	 * @return username
+	 */
+	public String getOpenIDUser(final String openID);
 }
