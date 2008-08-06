@@ -265,7 +265,7 @@ function sendMinfreqRequ(minfreq, currUser) {
  	if(request) {
  		if(minfreq == null)	minfreq = 1;
 
-		request.open('GET', "/ajax/subTagList.jsp?requUser=" + currUser + "&minfreq=" + minfreq + "&ckey=" + ckey, true);
+		request.open('GET', "/ajax_scripts/subTagList.jsp?requUser=" + currUser + "&minfreq=" + minfreq + "&ckey=" + ckey, true);
 		request.onreadystatechange = handleMinfreqResponse(request);
 		request.send(null);
 	}

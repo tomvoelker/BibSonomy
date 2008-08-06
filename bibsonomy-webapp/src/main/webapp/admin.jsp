@@ -4,8 +4,8 @@
 
 <%@include file="/boxes/admin/login.jsp"%>
 
-<script type="text/javascript" src="/ajax/scriptaculous/lib/prototype.js"></script>
-<script type="text/javascript" src="/ajax/scriptaculous/src/scriptaculous.js"></script>
+<script type="text/javascript" src="/ajax_scripts/scriptaculous/lib/prototype.js"></script>
+<script type="text/javascript" src="/ajax_scripts/scriptaculous/src/scriptaculous.js"></script>
 <link rel="stylesheet" type="text/css" href="/resources/css/spammer.css">
 
 <%-- include HTML header --%>
