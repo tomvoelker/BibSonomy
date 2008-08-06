@@ -730,3 +730,9 @@ span.info:hover span{
   float: left;
   padding-right: 5px;
 }
+
+.openid {
+	background:#FFFFFF url(/resources/image/openid.png) no-repeat scroll 0pt 50%;
+	color:#000000;
+	padding-left:18px;
+}
