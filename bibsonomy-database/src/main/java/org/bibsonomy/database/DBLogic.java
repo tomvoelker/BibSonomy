@@ -1018,4 +1018,14 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
+
+	public String getOpenIDUser(String openID) {
+		final DBSession session = openSession();
+		try {
+			final String username = this.userDBManager.getOpenIDUser(openID, session);			
+			return username;
+		} finally {
+			session.close();
+		}
+	}
 }

@@ -160,6 +160,23 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		 */
 		
 		this.insert("insertUser", user, session);
+		
+		/*
+		 * insert openID of user in separate table if present
+		 */
+		if (present(user.getOpenID())) {
+			this.insertOpenIDUser(user, session);
+		}
+	}
+	
+	/**
+	 * Inserts a user to openID table
+	 * 
+	 * @param user user authenticating via OpenID
+	 * @param session
+	 */
+	private void insertOpenIDUser(final User user, final DBSession session) {
+		this.insert("insertOpenIDUser", user, session);
 	}
 
 	/**
@@ -232,6 +249,8 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		}
 		// TODO this should also delete tas entries
 		this.delete("deleteUser", userName, session);
+		this.delete("deleteOpenIDUser", userName, session);		
+		
 		//throw new UnsupportedOperationException("Not implemented");
 	}
 
@@ -295,27 +314,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		// fallback: user is not logged in
 		return notLoggedInUser;
 	}
-	
-	public User validateOpenIDUserAccess(final String OpenID, final DBSession session) {
-		// empty user object for not-logged in users
-		final User notLoggedInUser = new User();
 		
-		return notLoggedInUser;
-	}
-
-	public boolean isOpenIdSessionValid(final String userName, final DBSession session) {
-		Long validUntil = Long.parseLong(this.queryForObject("getOpenIdUserTimestamp", userName, String.class, session));
-		Long current = System.currentTimeMillis();
-		
-		if (validUntil > current) return true;
-		
-		return false;
-	}
-	
-	public void extendOpenIdSession(final String userName, final DBSession session) {
-		this.update("updateOpenIdSessionForUser", userName, session);
-	}
-	
 	/**
 	 * @param param
 	 * @param session
@@ -323,5 +322,15 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public List<User> getUserByFolkrank(final UserParam param, final DBSession session){
 		return this.queryForList("getUsersOrderedByFolkrank", param, User.class, session);
+	}
+
+	/**
+	 * Gets a username by openid
+	 * @param openID
+	 * @param session
+	 * @return username
+	 */
+	public String getOpenIDUser(String openID, DBSession session) {
+		return this.queryForObject("getOpenIDUser", openID, String.class, session);
 	}
 }
