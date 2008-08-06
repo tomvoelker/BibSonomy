@@ -41,6 +41,7 @@ public class SessionSettingsFilter implements Filter {
 	 * Constants to describe Cookie and Bean informations
 	 */
 	public static final String USER_COOKIE_NAME     = "_currUser";
+	public static final String OPENID_COOKIE_NAME	= "_openIDUser";
 	public static final String SETTINGS_COOKIE_NAME	= "_styleSettings";
 	public static final String REQ_ATTRIB_USER      = "user";
 

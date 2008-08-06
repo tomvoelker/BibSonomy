@@ -27,7 +27,4 @@ public class ResponseLogic {
 	public void setResponse(HttpServletResponse response) {
 		this.response = response;
 	}
-	
-	
-
 }

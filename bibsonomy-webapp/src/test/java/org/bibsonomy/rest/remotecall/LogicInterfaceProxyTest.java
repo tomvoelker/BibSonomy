@@ -752,4 +752,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	public String getOpenIDUser(String openID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

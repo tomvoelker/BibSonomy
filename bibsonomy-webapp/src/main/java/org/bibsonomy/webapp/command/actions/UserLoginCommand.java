@@ -25,6 +25,10 @@ public class UserLoginCommand extends BaseCommand implements Serializable {
 	 * The users password
 	 */
 	private String password;	
+	/**
+	 *	The openID url of the user 
+	 */
+	private String openID;
 
 	/**
 	 * URL to which the user wants to jump back after successful login.
@@ -66,6 +70,10 @@ public class UserLoginCommand extends BaseCommand implements Serializable {
 	public void setReferer(String referer) {
 		this.referer = referer;
 	}
-	
-	
+	public String getOpenID() {
+		return this.openID;
+	}
+	public void setOpenID(String openID) {
+		this.openID = openID;
+	}
 }

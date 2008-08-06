@@ -140,6 +140,35 @@
 						<property name="controllerBeanName" value="userRegistrationSuccessController"/>
 					</bean>
 				</entry>
+				
+				<entry key="/register_openid_success">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="userOpenIDRegistrationSuccessController"/>
+					</bean>
+				</entry>
+				
+				<!-- actions  -->
+				<entry key="/registerOpenID">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="userOpenIDRegistrationController"/>
+						<property name="allowedFields">	
+							<list>		
+								<!-- for admins which want to register a new user -->
+								<value>ckey</value>
+								<value>step</value>
+								<value>registerUser.name</value>
+								<value>registerUser.email</value>
+								<value>registerUser.openID</value>
+								<value>registerUser.password</value>
+								<value>registerUser.homepage</value>
+								<value>registerUser.realname</value>
+								<value>registerUser.gender</value>
+								<value>registerUser.place</value>																
+							</list>
+						</property>
+					</bean>
+				</entry>
+				
 				<entry key="/login">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="userLoginController"/>
@@ -149,6 +178,7 @@
 								<value>password</value>
 								<value>referer</value>
 								<value>notice</value>
+								<value>openID</value>								
 							</list>
 						</property>
 					</bean>

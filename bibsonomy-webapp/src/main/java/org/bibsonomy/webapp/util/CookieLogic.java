@@ -24,6 +24,10 @@ public class CookieLogic implements RequestAware, ResponseAware {
 	 */
 	private String cookieUser = "_currUser";
 	/**
+	 * The cookie wihich authenticates an openID user
+	 */
+	private String openIDCookie = "_openIDUser";
+	/**
 	 * The name of the cookie which holds the spammer cookie.
 	 */
 	private String cookieSpammer = "_lPost";
@@ -114,6 +118,10 @@ public class CookieLogic implements RequestAware, ResponseAware {
 		addCookie(cookieUser, username + "%20" + passwordHash);
 	}
 	
+	public void addOpenIDCookie(final String username, final String openID, final String passwordHash) {
+		addCookie(openIDCookie, username + "%20" + openID + "%20" + passwordHash); 
+	}
+	
 	/** Adds a cookie to the response. Sets default values for path and maxAge. 
 	 * 
 	 * @param key - The key identifying this cookie.
@@ -126,6 +134,25 @@ public class CookieLogic implements RequestAware, ResponseAware {
 		cookie.setMaxAge(cookieAge);
 		responseLogic.addCookie(cookie);
 	}
+	
+	/**
+	 * Deletes the OpenID cookie
+	 */
+	public void deleteOpenIDCookie() {
+		deleteCookie(openIDCookie);
+	}
+	
+	/**
+	 * Deletes a cookie 
+	 * @param key name of the cookie
+	 */
+	private void deleteCookie(final String key) {
+		log.debug("Delete cookie " + key);
+		final Cookie cookie = new Cookie(key, "");
+		cookie.setPath("/");
+		cookie.setMaxAge(0);
+		responseLogic.addCookie(cookie);
+	}
 
 	
 	/** Checks, if the request contains any cookies.
@@ -136,9 +163,8 @@ public class CookieLogic implements RequestAware, ResponseAware {
 		final Cookie[] cookies = requestLogic.getCookies();
 		return cookies != null && cookies.length > 0;
 	}
-
-
 	
+		
 	/** The logic to access the HTTP request. Neccessary for getting cookies.
 	 * 
 	 * @param requestLogic

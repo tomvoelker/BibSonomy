@@ -79,6 +79,12 @@
                 </tr>
               </table>
             </form:form>
+            
+            <p style="font-size: 0.9em;">
+            	<fmt:message key="register.openid.hint1"/>
+            	<a href="registerOpenID"><fmt:message key="register.openid.hint2"/></a>
+            	<fmt:message key="register.openid.hint3"/>
+            </p>
 
           </div>
       

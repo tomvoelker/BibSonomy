@@ -1,9 +1,12 @@
 package org.bibsonomy.webapp.util;
 
+import java.util.Enumeration;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.User;
@@ -34,15 +37,13 @@ public class RequestLogic {
 	 */
 	private HttpServletRequest request;
 
-	
-	
 	/**
 	 * @return The inet address of the requesting host. Since the system 
 	 * typically runs behind a proxy, this is NOT the host address, but 
 	 * rather the contents of the x-forwarded-for header. This also contains
 	 * all involved proxies, separated by comma.
 	 */
-	public String getInetAddress() {
+	public String getInetAddress() {		
 		return request.getHeader(HEADER_X_FORWARDED_FOR);
 	}
 	
@@ -120,6 +121,44 @@ public class RequestLogic {
 	}
 	
 	/**
+	 * Gets the HTTP session
+	 * @return HTTPSession
+	 */
+	public HttpSession getSession() {
+		return request.getSession();
+	}
+	
+	/**
+	 * Gets a paramter from the HTTPRequest
+	 * @param parameter name of the parameter
+	 * @return value of parameter
+	 */
+	public String getParameter(final String parameter) {
+		return request.getParameter(parameter);
+	}
+	
+	/**
+	 * @return Parameter map
+	 */
+	public Map getParameterMap() {
+		return request.getParameterMap();
+	}
+	
+	/**
+	 * @return request URL
+	 */
+	public StringBuffer getRequestURL() {
+		return request.getRequestURL();
+	}
+	
+	/**
+	 * @return query string
+	 */
+	public String getQueryString() {
+		return request.getQueryString();
+	}
+	
+	/**
 	 * @return The User object associated with the logged in user.
 	 */
 	public User getLoginUser() {
@@ -138,6 +177,37 @@ public class RequestLogic {
 	 */
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
+	}
+	
+	/**
+	 * Builds query string from parameter map
+	 * 
+	 * @return querystring
+	 */
+	public String getParametersAsQueryString() {
+		StringBuffer buf = new StringBuffer("?");
+		try {
+			Enumeration paramNames = request.getParameterNames();
+			while ( paramNames.hasMoreElements() ) {
+			    String param = (String) paramNames.nextElement();
+			    buf.append(param + "=" );
+			    String paramValues[] = request.getParameterValues(param);
+			    if ( paramValues.length == 1 ) {
+		            String paramValue = paramValues[0];
+		            if ( paramValue.length() == 0 )
+		            	buf.append("");
+					else
+							buf.append(paramValue);
+			    } else {
+		            for (int i = 0; i < paramValues.length; i++ )
+		            	buf.append(paramValues[i] + "%20" ) ;
+		        }
+			    buf.append("&");
+		    }
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return buf.toString();
 	}
 		
 }

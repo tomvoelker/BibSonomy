@@ -81,7 +81,7 @@ public class BibtexShowHandler extends HttpServlet{
 			// wanted to post (because referer header is not changed by redirect)
 			// this is not the best solution (I would prefer to be redirected back here), but
 			// it's the simplest one
-			String refer = "/login?referer="+URLEncoder.encode("/ShowBibEntry?"+request.getQueryString(), "UTF-8");
+			String refer = "/login?referer="+URLEncoder.encode("/ShowBibtexEntry?"+request.getQueryString(), "UTF-8");
 			response.sendRedirect(refer);
 			return;
 		}

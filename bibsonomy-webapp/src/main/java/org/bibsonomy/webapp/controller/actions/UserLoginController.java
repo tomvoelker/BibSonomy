@@ -1,11 +1,14 @@
 package org.bibsonomy.webapp.controller.actions;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Calendar;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.actions.UserLoginCommand;
@@ -20,6 +23,7 @@ import org.bibsonomy.webapp.util.TeerGrube;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.auth.OpenID;
 import org.bibsonomy.webapp.validation.UserLoginValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
@@ -34,11 +38,14 @@ import org.springframework.validation.Errors;
  */
 public class UserLoginController implements MinimalisticController<UserLoginCommand>, ErrorAware, ValidationAwareController<UserLoginCommand>, RequestAware, CookieAware {
 	private static final Logger log = Logger.getLogger(UserLoginController.class);
-
+		
 	protected LogicInterface adminLogic;
 	private Errors errors = null;
 	private RequestLogic requestLogic;
 	private CookieLogic cookieLogic;
+	private OpenID openIDLogic;
+	
+	private String projectHome;
 	
 	/**
 	 * The max number of minutes, a password reminder is valid.
@@ -67,12 +74,30 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 
 		command.setPageTitle("login");
 		
-		
 		/*
 		 * remember referer to send user back to the page she's coming from
 		 */
 		setReferer(command);
-
+		
+		/*
+		 * catch response from OpenID provider
+		 */
+		if (requestLogic.getParameter("openid.identity") != null) {
+			String openID = requestLogic.getParameter("openid.identity");
+			
+			/*
+			 * if login successful then redirect to referer
+			 */
+			if(this.handleOpenIDLogin(openID)) {
+				return new ExtendedRedirectView(command.getReferer());
+			} 
+			
+			/*
+			 * else to openID registration page
+			 */
+			return new ExtendedRedirectView("/registerOpenID");
+			
+		}
 
 		/* Check cookies
 		 * 
@@ -84,10 +109,10 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 
 
 		if (errors.hasErrors()) {
+			log.debug(errors.getAllErrors().get(0).toString());
 			return Views.LOGIN;
 		}
 
-		
 		/*
 		 * extract username and password
 		 */
@@ -95,6 +120,12 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		final String password = command.getPassword();
 		final String hashedPassword = StringUtils.getMD5Hash(password);
 
+		
+		/*
+		 * OpenID used for authentication?
+		 */
+		final String openID = command.getOpenID();
+			
 
 		/*
 		 * Get the hosts IP address.
@@ -107,62 +138,89 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		 */
 		handleWaiting(username, inetAddress);
 		
-
+		
 		/*
-		 * checking password of user
+		 * The user 
 		 */
-		final User user = adminLogic.getUserDetails(username);
-		if (!hashedPassword.equals(user.getPassword())) {
+		User user = null;
+		
+		/*
+		 * authentication via username and password 
+		 */
+		if (username != null && hashedPassword != null) {
 			/*
-			 * passwords do not match -> check password from reminder
+			 * checking password of user
 			 */
-			if (!password.equals(user.getReminderPassword())) {
+			user = adminLogic.getUserDetails(username);
+			if (!hashedPassword.equals(user.getPassword())) {
 				/*
-				 * password does neither match real or reminder password --> show error message
+				 * passwords do not match -> check password from reminder
 				 */
-				log.info("Login of user " + username + " failed.");
-				errors.reject("error.login.failed");
-				/*
-				 * count failures
-				 */
-				grube.add(username);
-				grube.add(inetAddress);
-			} else {
-				/*
-				 * passwords do match -> check if reminder still valid or already expired.
-				 */
-				final Calendar now = Calendar.getInstance();
-				/*
-				 * set expiration date by adding the max number of minutes a password
-				 * reminder is valid to the time where the user requested the reminder
-				 */
-				final Calendar reminderExpirationDate = Calendar.getInstance();
-				reminderExpirationDate.setTime(user.getReminderPasswordRequestDate());
-				reminderExpirationDate.add(Calendar.MINUTE, maxMinutesPasswordReminderValid);
-
-				if (now.after(reminderExpirationDate)) {
+				if (!password.equals(user.getReminderPassword())) {
 					/*
-					 * reminder expired
+					 * password does neither match real or reminder password --> show error message
 					 */
-					log.info("Login of user " + username + " failed, because of expired password reminder.");
-					errors.reject("error.login.reminderExpired");
+					log.info("Login of user " + username + " failed.");
+					errors.reject("error.login.failed");
+					/*
+					 * count failures
+					 */
+					grube.add(username);
+					grube.add(inetAddress);
 				} else {
 					/*
-					 * reminder password correct (and used!) and reminder not expired. Send 
-					 * user to password change page.
-					 * 
-					 * FIXME: migration of password_change neccessary! Using the session is
-					 * not the best idea - find better solutions! Maybe a separate password-
-					 * change page is the best, where the user enters his temporary password,
-					 * and his new password (twice).
+					 * passwords do match -> check if reminder still valid or already expired.
 					 */
-					requestLogic.setSessionAttribute("tmpUser", username); // FIXME: remove this!
-					return new ExtendedRedirectView("/change_password");
+					final Calendar now = Calendar.getInstance();
+					/*
+					 * set expiration date by adding the max number of minutes a password
+					 * reminder is valid to the time where the user requested the reminder
+					 */
+					final Calendar reminderExpirationDate = Calendar.getInstance();
+					reminderExpirationDate.setTime(user.getReminderPasswordRequestDate());
+					reminderExpirationDate.add(Calendar.MINUTE, maxMinutesPasswordReminderValid);
+					
+					if (now.after(reminderExpirationDate)) {
+						/*
+						 * reminder expired
+						 */
+						log.info("Login of user " + username + " failed, because of expired password reminder.");
+						errors.reject("error.login.reminderExpired");
+					} else {
+						/*
+						 * reminder password correct (and used!) and reminder not expired. Send 
+						 * user to password change page.
+						 * 
+						 * FIXME: migration of password_change neccessary! Using the session is
+						 * not the best idea - find better solutions! Maybe a separate password-
+						 * change page is the best, where the user enters his temporary password,
+						 * and his new password (twice).
+						 */
+						requestLogic.setSessionAttribute("tmpUser", username); // FIXME: remove this!
+						return new ExtendedRedirectView("/change_password");
+					}
 				}
+			}			
+		} else if (openID != null) {
+			/*
+			 * OpenID authentication
+			 */
+			String returnToUrl = null;
+			try {
+				String referer = URLEncoder.encode(command.getReferer(), "UTF-8");
+				returnToUrl = projectHome + "login?referer=" + referer;
+			} catch (UnsupportedEncodingException ex) {
+				ex.printStackTrace();
 			}
+			
+			/*
+			 * redirect to OpenID provider
+			 */
+			return new ExtendedRedirectView(openIDLogic.authOpenIdRequest(requestLogic, openID, 
+					projectHome, returnToUrl, false));						
 		}
 
-
+		
 		/*
 		 * on error, send user back
 		 */
@@ -170,11 +228,9 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 			return Views.LOGIN;
 		}
 
-
 		/*
 		 * user successfully authenticated!
 		 */
-
 
 		/*
 		 * add authentication cookie to response
@@ -191,7 +247,6 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		 * we invalidate the old session.
 		 */
 		requestLogic.invalidateSession();
-
 
 		/*
 		 * Redirect to the page the user is coming from. 
@@ -271,7 +326,52 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		}
 	}
 
-	
+	/**
+	 * Handles a OpenID authentication request from provider
+	 * 
+	 * @param openID the OpenID url
+	 * @return <code>true</code> if authentication succeeded else <code>false</code>
+	 */
+	private boolean handleOpenIDLogin(final String openID) {
+		/*
+		 * Response from OpenId Provider 
+		 */	
+		
+		/*
+		 * get instance of openid logic from session
+		 */
+		openIDLogic = (OpenID) requestLogic.getSessionAttribute(OpenID.OPENID_LOGIC_SESSION_ATTRIBUTE);
+		
+		/*
+		 * verify the openid request
+		 */
+		User user = openIDLogic.verifyResponse(requestLogic, false);
+		
+		if (user != null) {
+			/*
+			 * OpenID auth succeeded  
+			 */
+			
+			/*
+			 *  get username corresponding to openid 
+			 */
+			String username = adminLogic.getOpenIDUser(UserUtils.normalizeURL(openID));
+			
+			/*
+			 *  user known -> login
+			 */
+			if (username != null) {
+				User registeredUser = adminLogic.getUserDetails(username);
+				cookieLogic.addOpenIDCookie(registeredUser.getName(), openID, registeredUser.getPassword());	
+				openIDLogic.extendOpenIDSession(requestLogic.getSession(), openID);
+				return true;
+			} 
+			
+			log.debug("OpenID user not found");
+		}
+		return false;
+	}
+		
 	public Errors getErrors() {
 		return errors;
 	}
@@ -347,4 +447,20 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		this.cookieLogic = cookieLogic;
 	}
 
+
+	/**
+	 * @param openIDLogic
+	 */
+	public void setOpenIDLogic(OpenID openIDLogic) {
+		this.openIDLogic = openIDLogic;
+	}
+	
+	/** 
+	 * The base URL of the project.
+	 * 
+	 * @param projectHome
+	 */
+	public void setProjectHome(String projectHome) {
+		this.projectHome = projectHome;
+	}
 }

@@ -29,10 +29,15 @@ public class UserLoginValidator implements Validator<UserLoginCommand> {
 		 */
 		Assert.notNull(loginObj);
 		
+		UserLoginCommand cmd = (UserLoginCommand) loginObj;
 
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "error.field.required");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "error.field.required");
+		if (!org.bibsonomy.util.ValidationUtils.present(cmd.getOpenID()) && 
+			!org.bibsonomy.util.ValidationUtils.present(cmd.getUsername()) &&
+			!org.bibsonomy.util.ValidationUtils.present(cmd.getPassword())) {
+			
+			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "error.field.required");
+			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "error.field.required");
+			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "openID", "error.field.required");
+		}		
 	}
-
 }
-
