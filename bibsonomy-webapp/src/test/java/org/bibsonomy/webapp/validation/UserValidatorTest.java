@@ -118,6 +118,36 @@ public class UserValidatorTest {
 		Assert.assertTrue(errors.hasErrors());
 	}
 	
+	
+	
+	/**
+	 * Linebreak in user name
+	 */
+	@Test
+	public void testValidateFails4() {
+		final UserValidator validator = new UserValidator();
+		final User user = new User();
+		final Errors errors = new BindException(user, "registerUser");
+		
+		/*
+		 * populate user
+		 */
+		
+		user.setName("john\r\n");
+		user.setEmail("john@example.com");
+		user.setPassword("password");
+		
+
+		Assert.assertFalse(errors.hasErrors());
+
+		/*
+		 * should produce no errors
+		 */
+		validator.validate(user, errors);
+		
+		Assert.assertTrue(errors.hasErrors());
+	}
+	
 	/**
 	 * No user name given
 	 */

@@ -117,7 +117,7 @@ public class UserValidator implements Validator<User> {
 				"friends".equals(name) ||
 				"null".equals(name) ||
 				name.length()      > 30 ||
-				name.matches(".*\\s.*") ||
+				name.matches("(?s).*\\s.*") ||
 				name.indexOf('-') != -1 ||
 				name.indexOf('+') != -1 ||
 				name.indexOf('/') != -1 ||
