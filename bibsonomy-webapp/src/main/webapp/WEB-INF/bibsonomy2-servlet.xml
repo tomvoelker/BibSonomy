@@ -184,7 +184,7 @@
 					</bean>
 				</entry>
 				
-				<entry key="/change_password">
+				<entry key="/reminder">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="passwordReminderController"/>
 						<property name="allowedFields">
@@ -198,7 +198,7 @@
 					</bean>
 				</entry>
 				
-				<entry key="/reminder">
+				<entry key="/change_password">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="passwordChangeOnRemindController"/>
 						<property name="allowedFields">
