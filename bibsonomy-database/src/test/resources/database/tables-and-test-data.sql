@@ -1396,6 +1396,19 @@ INSERT INTO `user` VALUES ('testuser1', 'testuser1@bibsonomy.org', 'test123', 'h
 INSERT INTO `user` VALUES ('testuser2', 'testuser2@bibsonomy.org', 'test123', 'http://www.bibsonomy.org/user/testuser2', 'Test User 2', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, '1815-12-10 00:00:00', 0, 0, 0, 0, 10, 1, NULL, 'm', 'test-place', 'test-profession', 'test-interests', 'test-hobbies', 1, NULL, '1815-12-10 00:00:00', '22222222222222222222222222222222', 'en', 0, 1, 0);
 INSERT INTO `user` VALUES ('testuser3', 'testuser3@bibsonomy.org', 'test123', 'http://www.bibsonomy.org/user/testuser3', 'Test User 3', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, '1815-12-10 00:00:00', 0, 0, 0, 0, 10, 1, NULL, 'm', 'test-place', 'test-profession', 'test-interests', 'test-hobbies', 1, NULL, '1815-12-10 00:00:00', '33333333333333333333333333333333', 'en', 1, 0, 0);
 
+--
+-- Data for table `openIDUser`
+-- 
+DROP TABLE IF EXISTS `openIDUser`;
+CREATE TABLE `openIDUser` (
+  `user_name` varchar(30) NOT NULL,
+  `openID` varchar(255) NOT NULL,
+  PRIMARY KEY  (`openID`),
+  KEY `user_name` (`user_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
 -- --------------------------------------------------------
 
 -- 
