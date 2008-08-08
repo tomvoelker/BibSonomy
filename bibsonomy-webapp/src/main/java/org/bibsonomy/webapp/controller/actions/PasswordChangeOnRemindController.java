@@ -20,6 +20,9 @@ import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 
 /**
+ * 
+ * TODO: bitte hier reinschreiben, was das Ding macht!
+ * 
  * @author daill
  * @version $Id$
  */
