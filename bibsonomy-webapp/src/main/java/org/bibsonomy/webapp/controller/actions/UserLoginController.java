@@ -27,6 +27,7 @@ import org.bibsonomy.webapp.util.auth.OpenID;
 import org.bibsonomy.webapp.validation.UserLoginValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.openid4java.OpenIDException;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
@@ -216,8 +217,13 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 			/*
 			 * redirect to OpenID provider
 			 */
-			return new ExtendedRedirectView(openIDLogic.authOpenIdRequest(requestLogic, openID, 
-					projectHome, returnToUrl, false));						
+			try {
+				return new ExtendedRedirectView(openIDLogic.authOpenIdRequest(requestLogic, openID, 
+						projectHome, returnToUrl, false));
+			} catch (OpenIDException ex) {
+				errors.reject("error.invalid_openid");
+				return Views.ERROR;
+			}						
 		}
 
 		

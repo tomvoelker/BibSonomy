@@ -35,6 +35,7 @@ import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.ResponseLogic;
 import org.bibsonomy.webapp.util.auth.OpenID;
+import org.openid4java.OpenIDException;
 import org.openid4java.consumer.ConsumerException;
 import org.openid4java.consumer.ConsumerManager;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
@@ -218,8 +219,14 @@ public class InitUserFilter implements Filter {
 						/*
 						 * redirect user to openID provider
 						 */
-						String url = openIDLogic.authOpenIdRequest(requestLogic, openID, InitialConfigListener.getProjectHome() ,returnTo.toString(), false);
-						httpServletResponse.sendRedirect(url);
+						String url;
+						try {
+							url = openIDLogic.authOpenIdRequest(requestLogic, openID, InitialConfigListener.getProjectHome() ,returnTo.toString(), false);
+							httpServletResponse.sendRedirect(url);
+						} catch (OpenIDException ex) {
+							log.error("OpenID provider url not valid");
+							ex.printStackTrace();
+						}
 						return;
 					}					
 				} else {

@@ -21,6 +21,7 @@ import org.bibsonomy.webapp.util.auth.OpenID;
 import org.bibsonomy.webapp.validation.UserOpenIDRegistrationValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.openid4java.OpenIDException;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
@@ -93,9 +94,14 @@ public class UserOpenIDRegistrationController implements MinimalisticController<
 			/*
 			 *  if OpenID is present -> redirect to OpenID provider
 			 */
-			return new ExtendedRedirectView(
-					openIDLogic.authOpenIdRequest(requestLogic, command.getRegisterUser().getOpenID(), projectHome, 
-									projectHome + "registerOpenID?step=3", true));			
+			try {
+				String redirect = openIDLogic.authOpenIdRequest(requestLogic, command.getRegisterUser().getOpenID(), projectHome, 
+						projectHome + "registerOpenID?step=3", true);
+				return new ExtendedRedirectView(redirect);
+			} catch (OpenIDException ex) {
+				errors.reject("error.invalid_openid");
+				return Views.ERROR;
+			}			
 		} else if (command.getStep() == 3) {
 		
 			log.debug("step 3: show form");

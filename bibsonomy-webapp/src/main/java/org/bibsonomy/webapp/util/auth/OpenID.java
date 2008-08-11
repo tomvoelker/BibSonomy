@@ -11,6 +11,7 @@ import org.bibsonomy.webapp.util.RequestLogic;
 import org.openid4java.OpenIDException;
 import org.openid4java.consumer.ConsumerManager;
 import org.openid4java.consumer.VerificationResult;
+import org.openid4java.discovery.DiscoveryException;
 import org.openid4java.discovery.DiscoveryInformation;
 import org.openid4java.discovery.Identifier;
 import org.openid4java.message.AuthRequest;
@@ -70,75 +71,71 @@ public class OpenID implements Serializable {
 	 * @param returnURL url the user is forwared after authentication
 	 * @param retrieveProfileInformation if the OpenID provider should send profile information of the user
 	 * @return The url of OpenID provider where forward the user to
+	 * @throws OpenIDException 
 	 */
-	public String authOpenIdRequest(final RequestLogic requestLogic, final String openID, final String realm, String returnURL, boolean retrieveProfileInformation) {
-		try {
-			/*
-			 *  perform discovery on the user-supplied identifier
-			 */
-			List discoveries = manager.discover(openID);
+	public String authOpenIdRequest(final RequestLogic requestLogic, final String openID, final String realm, String returnURL, boolean retrieveProfileInformation) throws OpenIDException {
+		/*
+		 *  perform discovery on the user-supplied identifier
+		 */
+		List discoveries = manager.discover(openID);
 
+		/*
+		 *  attempt to associate with the OpenID provider
+		 *	and retrieve one service endpoint for authentication
+		 */
+		DiscoveryInformation discovered = manager.associate(discoveries);
+		
+		/*
+		 *  store the discovery information in the user's session
+		 * 	httpReq.getSession().setAttribute("openid-disc", discovered);
+		 */
+		requestLogic.setSessionAttribute(OPENID_DISCOVERY_SESSION_ATTRIBUTE, discovered);
+		
+		/*
+		 *  obtain a AuthRequest message to be sent to the OpenID provider
+		 */
+		AuthRequest authReq = manager.authenticate(discovered, returnURL);
+		
+		/*
+		 *  Attribute Exchange
+		 */
+		SRegRequest sregReq = SRegRequest.createFetchRequest();
+		
+		if (retrieveProfileInformation) {
 			/*
-			 *  attempt to associate with the OpenID provider
-			 *	and retrieve one service endpoint for authentication
+			 *  required attributes
 			 */
-			DiscoveryInformation discovered = manager.associate(discoveries);
+			sregReq.addAttribute("nickname", true);
+			sregReq.addAttribute("email", true);
 			
 			/*
-			 *  store the discovery information in the user's session
-			 * 	httpReq.getSession().setAttribute("openid-disc", discovered);
+			 * optional attributes
 			 */
-			requestLogic.setSessionAttribute(OPENID_DISCOVERY_SESSION_ATTRIBUTE, discovered);
-			
-			/*
-			 *  obtain a AuthRequest message to be sent to the OpenID provider
-			 */
-			AuthRequest authReq = manager.authenticate(discovered, returnURL);
-			
-			/*
-			 *  Attribute Exchange
-			 */
-			SRegRequest sregReq = SRegRequest.createFetchRequest();
-			
-			if (retrieveProfileInformation) {
-				/*
-				 *  required attributes
-				 */
-				sregReq.addAttribute("nickname", true);
-				sregReq.addAttribute("email", true);
-				
-				/*
-				 * optional attributes
-				 */
-				sregReq.addAttribute("fullname", false);
-				sregReq.addAttribute("gender", false);
-				sregReq.addAttribute("language", false);
-				sregReq.addAttribute("country", false);
-			} 
-			
-			/*
-			 *  attach the extension to the authentication request
-			 */
-			authReq.addExtension(sregReq);
-			
-			/*
-			 * set root domain to trust
-			 */
-			authReq.setRealm(realm);
-			
-			/*
-			 * save instance of openID logic in session
-			 */
-			requestLogic.setSessionAttribute(OPENID_LOGIC_SESSION_ATTRIBUTE, this);
+			sregReq.addAttribute("fullname", false);
+			sregReq.addAttribute("gender", false);
+			sregReq.addAttribute("language", false);
+			sregReq.addAttribute("country", false);
+		} 
+		
+		/*
+		 *  attach the extension to the authentication request
+		 */
+		authReq.addExtension(sregReq);
+		
+		/*
+		 * set root domain to trust
+		 */
+		authReq.setRealm(realm);
+		
+		/*
+		 * save instance of openID logic in session
+		 */
+		requestLogic.setSessionAttribute(OPENID_LOGIC_SESSION_ATTRIBUTE, this);
 
-			/*
-			 * return redirect url to provider
-			 */
-			return authReq.getDestinationUrl(true);		
-		} catch (OpenIDException e) {
-			log.error("OpenID authentication error: " + e.getMessage());
-		}
-		return null;
+		/*
+		 * return redirect url to provider
+		 */
+		return authReq.getDestinationUrl(true);		
 	}
 	
 
