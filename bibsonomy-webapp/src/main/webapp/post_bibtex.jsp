@@ -23,7 +23,7 @@
 
   <c:if test="${not empty user.name}">
     <p>Posting could be so easy: just <strong>drag and drop</strong> our <a href="/buttons">buttons</a> to your bookmark toolbar.
-    (IE users <a href="/help#button_postbookmark">look here</a>)
+    (IE users <a href="/help/basic/buttons#setup">look here</a>)
     </p>
   </c:if>
 
