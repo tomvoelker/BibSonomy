@@ -304,6 +304,10 @@ public class BibTexUtils {
 	 * @return the cleaned bibtex string
 	 */
 	public static String cleanBibTex(String bibtex) {
+		
+		// replace markup
+		bibtex = bibtex.replaceAll("\\\\url\\{([^\\}]+)\\}", "$1");  // \\url{http://bla.fasel}		
+		
 		// replace special character sequences for umlauts
 		// NOTE: this is just a small subset - could / should be extended to french, ...
 		bibtex = bibtex.replaceAll("\\{|\\}|\\\\", ""). // remove '\','{' and '\'
@@ -316,7 +320,7 @@ public class BibTexUtils {
 	       replaceAll("\\\"A", "Ä").
 	       replaceAll("\\\"s", "ß").
 	       trim();
-
+		
 		final StringBuffer buffer = new StringBuffer(bibtex.length());
 		char c;		
 		for (int i = 0; i < bibtex.length(); i++) {

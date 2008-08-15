@@ -81,6 +81,7 @@ public class BibtexUtilsTest {
 		assertEquals("M&#252;ller", BibTexUtils.cleanBibTex("M{\\\"u}ller"));
 		assertEquals("M&#252;ller", BibTexUtils.cleanBibTex("M\\\"{u}ller"));
 		assertEquals("M&#252;ller", BibTexUtils.cleanBibTex("M\"uller"));
+		assertEquals("http://bla.fasel", BibTexUtils.cleanBibTex("\\url{http://bla.fasel}"));
 	}
 
 	/**
