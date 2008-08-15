@@ -68,11 +68,21 @@
 			
 			<!-- display user's tag relations -->			
 			<li>
-				<c:set var="tagRelationsTitle">
-					<fmt:message key="${(not empty command.requestedUser ? 'tagrelations.user.title' : 'tagrelations.group.title')}"/>
-				</c:set>
-				<span class="sidebar_h">
-					<c:url var="relationsUrl" value="/relations/${(not empty command.requestedUser ? command.requestedUser : command.requestedGroup)}" context="${projectContext}"/>
+				<c:choose>
+					<c:when test="${not empty command.requestedUser}">
+						<c:set var="tagRelationsTitle"><fmt:message key="tagrelations.user.title"/></c:set>
+						<c:url var="relationsUrl" value="/relations/${command.requestedUser}" context="${projectContext}"/>
+					</c:when>
+					<c:when test="${not empty command.requestedGroup}">
+						<c:set var="tagRelationsTitle"><fmt:message key="tagrelations.group.title"/></c:set>
+						<c:url var="relationsUrl" value="/relations/${command.requestedGroup}" context="${projectContext}"/>
+					</c:when>						
+					<c:otherwise>
+						<c:set var="tagRelationsTitle"><fmt:message key="tagrelations.all.title"/></c:set>
+						<c:url var="relationsUrl" value="/relations" context="${projectContext}"/>
+					</c:otherwise>
+				</c:choose>
+				<span class="sidebar_h">				
 					<a href="${relationsUrl}" title="${tagRelationsTitle}">
 						<fmt:message key="tagrelations"/>
 					</a>
