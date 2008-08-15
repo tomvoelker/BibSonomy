@@ -306,7 +306,7 @@ public class BibTexUtils {
 	public static String cleanBibTex(String bibtex) {
 		
 		// replace markup
-		bibtex = bibtex.replaceAll("\\\\url\\{([^\\}]+)\\}", "$1");  // \\url{http://bla.fasel}		
+		bibtex = bibtex.replaceAll("\\\\[a-z]+\\{([^\\}]+)\\}", "$1");  // \\markup{marked_up_text}		
 		
 		// replace special character sequences for umlauts
 		// NOTE: this is just a small subset - could / should be extended to french, ...
