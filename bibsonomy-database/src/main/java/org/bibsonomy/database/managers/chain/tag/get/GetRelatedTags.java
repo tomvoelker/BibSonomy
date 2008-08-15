@@ -6,7 +6,7 @@ import static org.bibsonomy.util.ValidationUtils.nullOrEqual;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.TagRelationType;
+import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.database.managers.chain.tag.TagChainElement;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.util.DBSession;
@@ -29,6 +29,6 @@ public class GetRelatedTags extends TagChainElement {
 	protected boolean canHandle(final TagParam param) {
 		return (param.getGrouping() == GroupingEntity.ALL &&
 				present(param.getTagIndex()) &&
-				nullOrEqual(param.getTagRelationType(), TagRelationType.COOC));
+				nullOrEqual(param.getTagRelationType(), TagSimilarity.COOC));
 	}
 }

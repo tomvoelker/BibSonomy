@@ -20,7 +20,7 @@ import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
-import org.bibsonomy.common.enums.TagRelationType;
+import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.exceptions.QueryTimeoutException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
@@ -298,7 +298,7 @@ public class DBLogic implements LogicInterface {
 	 * @param search
 	 * @return list of tags
 	 */
-	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final String hash, final Order order, final int start, final int end, final String search, final TagRelationType relation) {
+	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final String hash, final Order order, final int start, final int end, final String search, final TagSimilarity relation) {
 		if (grouping.equals(GroupingEntity.ALL)) {
 			this.permissionDBManager.checkStartEnd(start, end, "Tag");
 		}				

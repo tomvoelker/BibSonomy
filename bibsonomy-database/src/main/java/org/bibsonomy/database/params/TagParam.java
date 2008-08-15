@@ -3,7 +3,7 @@ package org.bibsonomy.database.params;
 import java.util.List;
 
 import org.bibsonomy.common.enums.HashID;
-import org.bibsonomy.common.enums.TagRelationType;
+import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
@@ -27,7 +27,7 @@ public class TagParam extends GenericParam {
 	private int count;
 	private int usercount;
 	private HashID hashId = HashID.INTER_HASH;
-	private TagRelationType tagRelationType;
+	private TagSimilarity tagRelationType;
 
 	/**
 	 * Decides whether to retrieve the subtags of the current tag
@@ -152,11 +152,11 @@ public class TagParam extends GenericParam {
 		this.hashId = hashId;
 	}
 
-	public TagRelationType getTagRelationType() {
+	public TagSimilarity getTagRelationType() {
 		return this.tagRelationType;
 	}
 
-	public void setTagRelationType(TagRelationType tagRelationType) {
+	public void setTagRelationType(TagSimilarity tagRelationType) {
 		this.tagRelationType = tagRelationType;
 	}
 
