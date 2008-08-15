@@ -20,7 +20,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
-import org.bibsonomy.common.enums.TagRelationType;
+import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
@@ -476,7 +476,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	public void getTagsTest() {
 		getTags(org.bibsonomy.model.Resource.class, GroupingEntity.GROUP, "testGroup", "regex", null, null, null, 4, 22, null, null);
 	}
-	public List<Tag> getTags(Class<? extends org.bibsonomy.model.Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, String hash, Order order, int start, int end, String search, TagRelationType relation) {
+	public List<Tag> getTags(Class<? extends org.bibsonomy.model.Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, String hash, Order order, int start, int end, String search, TagSimilarity relation) {
 		final List<Tag> expected = ModelUtils.buildTagList(3, "testPrefix", 1);		
 		EasyMock.expect(serverLogic.getTags(resourceType, grouping, groupingName, regex, tags, null, order, start, end, null, null)).andReturn(expected);
 		EasyMock.replay(serverLogic);

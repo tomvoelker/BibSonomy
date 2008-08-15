@@ -3,7 +3,7 @@ package org.bibsonomy.webapp.controller;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.TagRelationType;
+import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.webapp.command.RelatedTagCommand;
@@ -55,6 +55,6 @@ public class MultiResourceListControllerWithTags extends MultiResourceListContro
 	 */
 	protected <T extends Resource, V extends TagResourceViewCommand> void setSimilarTags(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, Order order, int start, int end, String search) {
 		RelatedTagCommand similarTags = cmd.getSimilarTags();
-		similarTags.setRelatedTags(this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, null, order, start, end, search, TagRelationType.COSINE));		
+		similarTags.setRelatedTags(this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, null, order, start, end, search, TagSimilarity.COSINE));		
 	}
 }
