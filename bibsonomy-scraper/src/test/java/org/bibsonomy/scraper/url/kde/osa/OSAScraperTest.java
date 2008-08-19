@@ -12,6 +12,7 @@ import org.junit.Test;
  * @version $Id$
  */
 public class OSAScraperTest {
+	
 	/**
 	 * starts URL test with id url_91
 	 */

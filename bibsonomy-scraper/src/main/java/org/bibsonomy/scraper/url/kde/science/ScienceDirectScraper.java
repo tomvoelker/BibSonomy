@@ -13,7 +13,9 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.scraper.url.RisToBibtexConverter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -128,11 +130,11 @@ public class ScienceDirectScraper implements Scraper {
 					sc.setScraper(this);
 
 					return true;
-				} 
+				} else
+					throw new ScrapingFailureException("getting bibtex failed");
+
 			} catch (MalformedURLException me) {
-				log.fatal("could not scrape sciencedirect publication " + sc.getUrl().toString());
-				log.fatal(me);
-				throw new ScrapingException(me);
+				throw new InternalFailureException(me);
 			}
 		}
 		// This Scraper can`t handle the specified url

@@ -17,7 +17,9 @@ import java.util.regex.PatternSyntaxException;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 
 
 /**
@@ -72,7 +74,7 @@ public class UBKAScraper implements Scraper {
 						//download page and extract bibtex
 						result = extractBibtexFromUBKA(sc.getContentAsString(expURL));
 					} catch (MalformedURLException me) {
-						throw new ScrapingException(me);
+						throw new InternalFailureException(me);
 					}
 				}
 				if(result != null){
@@ -83,7 +85,9 @@ public class UBKAScraper implements Scraper {
 
 					sc.setBibtexResult(result);
 					return true;
-				}				
+				}else
+					throw new ScrapingFailureException("getting bibtex failed");
+
 			}
 			
 		}	
@@ -126,7 +130,7 @@ public class UBKAScraper implements Scraper {
             return bib;			
 		}
 		}catch(PatternSyntaxException pse){
-			throw new ScrapingException(pse);
+			throw new InternalFailureException(pse);
 		}
 		return null;		
 	}
@@ -154,7 +158,7 @@ public class UBKAScraper implements Scraper {
 	            try {
 					params.setProperty(URLDecoder.decode(previous, "UTF-8"),URLDecoder.decode(st.nextToken(), "UTF-8"));
 				} catch (UnsupportedEncodingException e) {
-					throw new ScrapingException(e);
+					throw new InternalFailureException(e);
 				}
 	         }else{
 	            previous = currToken;

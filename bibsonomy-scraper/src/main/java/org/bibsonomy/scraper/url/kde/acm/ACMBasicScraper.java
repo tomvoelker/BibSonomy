@@ -10,7 +10,9 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -139,14 +141,10 @@ public class ACMBasicScraper implements Scraper {
 					 */
 					sc.setScraper(this);
 					return true;
-				} else {
-					return false;
-				}
+				} else
+					throw new ScrapingFailureException("getting bibtex failed");
 			} catch (Exception me) {
-				log.fatal("could not scrape acm publication " + sc.getUrl().toString());
-				log.fatal(me);
-				throw new ScrapingException(me);
-			}
+				throw new InternalFailureException(me);			}
 		}
 		// This Scraper can`t handle the specified url
 		return false;

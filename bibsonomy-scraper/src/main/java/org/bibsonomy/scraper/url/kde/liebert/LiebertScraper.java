@@ -13,7 +13,9 @@ import java.util.List;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.scraper.url.EndnoteToBibtexConverter;
 
 /**
@@ -78,7 +80,7 @@ public class LiebertScraper implements Scraper {
 					try {
 						userURL = new URL(LIEBERT_HOST_NAME + LIEBERT_ABSTRACT_PATH + id);
 					} catch (MalformedURLException ex) {
-						ex.printStackTrace();
+						throw new InternalFailureException(ex);
 					}
 				}
 				
@@ -91,7 +93,7 @@ public class LiebertScraper implements Scraper {
 					bibResult = getContent(citURL, getCookies(userURL));
 					
 				} catch (IOException ex) {
-					ex.printStackTrace();
+					throw new InternalFailureException(ex);
 				}
 				
 				if(bibResult != null) {
@@ -102,7 +104,9 @@ public class LiebertScraper implements Scraper {
 					sc.setScraper(this);
 	
 					return true;
-				}
+				}else
+					throw new ScrapingFailureException("getting bibtex failed");
+
 			}
 		}
 		return false;

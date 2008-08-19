@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
@@ -67,7 +68,7 @@ public class CambridgeScraper implements Scraper {
 					try {
 						citUrl = new URL(CAMBRIDGE_HOST_NAME + CAMBRIDGE_BIBTEX_DOWNLOAD_PATH + id);
 					} catch (MalformedURLException ex) {
-						ex.printStackTrace();
+						throw new InternalFailureException(ex);
 					}
 				}
 				
@@ -75,8 +76,7 @@ public class CambridgeScraper implements Scraper {
 				try {
 					bibResult = getContent(citUrl, getCookie(sc.getUrl()));
 				} catch (IOException ex) {
-					// TODO Auto-generated catch block
-					ex.printStackTrace();
+					throw new InternalFailureException(ex);
 				}
 				
 				if(bibResult != null) {
@@ -87,7 +87,9 @@ public class CambridgeScraper implements Scraper {
 					sc.setScraper(this);
 	
 					return true;
-				}
+				}else
+					throw new ScrapingFailureException("getting bibtex failed");
+
 			}
 		}
 		

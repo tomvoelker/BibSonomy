@@ -7,7 +7,9 @@ import java.util.Collections;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 
 
 /**
@@ -47,9 +49,11 @@ public class BibSonomyScraper implements Scraper {
 					sc.setBibtexResult(bibResult);
 					sc.setScraper(this);
 					return true;
-				}
+				}else
+					throw new ScrapingFailureException("getting bibtex failed");
+
 			} catch (MalformedURLException e) {
-				throw new ScrapingException(e);
+				throw new InternalFailureException(e);
 			}
 		}
 		return false;

@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 public class IngentaconnectScraper implements Scraper{
@@ -56,8 +57,7 @@ public class IngentaconnectScraper implements Scraper{
 				try {
 					bibResult = getBibTexFromIngenta(queryURL, getCookieFromIngenta());
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					throw new InternalFailureException(e);
 				}
 
 				/*
@@ -107,8 +107,7 @@ public class IngentaconnectScraper implements Scraper{
 				sc.setScraper(this);
 				return true;
 			} catch (MalformedURLException e) {
-				log.fatal("Could not connect to Ingentaconnect: " + e);
-				throw new ScrapingException(e);
+				throw new InternalFailureException(e);
 			}
 		}
 		// This Scraper can`t handle the specified url

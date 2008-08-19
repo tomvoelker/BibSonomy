@@ -1,0 +1,166 @@
+package org.bibsonomy.scraper.url.kde.ssrn;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import org.bibsonomy.scraper.Scraper;
+import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.url.RisToBibtexConverter;
+
+/**
+ * Edit tst: early version from wbi. Problem is that the download is not available.
+ * May be some addditional informations are missing. The Cookie is build like the
+ * cookie you can see in web browsers. May be that some Javscript actions change 
+ * something important. But this download try to rebuild the request header as you
+ * can see with the LiveHttpHeader Addon from Firefox.
+ * 
+ * @author wbi
+ * @version $Id$
+ */
+public class _SSRNScraper implements Scraper {
+
+	private static final String info = "SSRN Scraper: This Scraper parses a publication from http://papers.ssrn.com/ "+
+	"and extracts the adequate BibTeX entry. Author: KDE";
+
+	private static final String SSRN_HOST_NAME  = "http://papers.ssrn.com";
+	private static final String SSRN_ABSTRACT_PATH = "/sol3/papers.cfm?abstract_id=";
+	private static final String SSRN_BIBTEX_PATH = "/sol3/RefExport.cfm";
+	private static final String SSRN_BIBTEX_PARAMS = "?function=download&format=2&abstract_id=";
+	
+	public String getInfo() {
+		return info;
+	}
+
+	public Collection<Scraper> getScraper() {
+		return Collections.singletonList((Scraper) this);
+	}
+
+	public boolean scrape(ScrapingContext sc)
+			throws ScrapingException {
+		
+		if(sc.getUrl() != null) {
+			
+			String url = sc.getUrl().toString();
+			if(url.startsWith(SSRN_HOST_NAME)) {
+				String id = null;
+				if(url.startsWith(SSRN_HOST_NAME + SSRN_ABSTRACT_PATH)) {
+					id = url.substring(url.indexOf(SSRN_ABSTRACT_PATH) + SSRN_ABSTRACT_PATH.length());
+				}
+				
+				if(url.startsWith(SSRN_HOST_NAME + SSRN_BIBTEX_PATH)) {
+					id = url.substring(url.indexOf(SSRN_BIBTEX_PATH + "?abstract_id=") + (SSRN_BIBTEX_PATH + "?abstract_id=").length(), url.indexOf("&function"));
+				}
+				
+				if(id != null) {
+					String downloadLink = SSRN_HOST_NAME + SSRN_BIBTEX_PATH + SSRN_BIBTEX_PARAMS + id;
+					String cookies = null;
+					
+					try {
+						cookies = getCookies(sc.getUrl());
+					} catch (IOException ex) {
+						throw new InternalFailureException("Could not store cookies from " + sc.getUrl());
+					}
+					
+					String bibtex = null;
+					try {
+						bibtex = getContent(new URL(downloadLink), cookies);
+					} catch (MalformedURLException ex) {
+						throw new InternalFailureException("The url "+ downloadLink + " is not valid");
+					} catch (IOException ex) {
+						throw new ScrapingFailureException("BibTex download failed. Result is null!");
+					}
+					
+					if(bibtex != null) {
+						
+						bibtex = bibtex.replace("\r\n", "\n");
+						sc.setBibtexResult(bibtex);
+						
+						sc.setScraper(this);
+						return true;
+					}
+				} else {
+					throw new ScrapingFailureException("ID for donwload link is missing.");
+				}
+			}
+		}
+		
+		return false;
+	}
+
+	private String getContent(URL queryURL, String cookie) throws IOException {
+
+		HttpURLConnection urlConn = (HttpURLConnection) queryURL.openConnection();
+		urlConn.setAllowUserInteraction(false);
+		urlConn.setDoInput(true);
+		urlConn.setDoOutput(false);
+		urlConn.setUseCaches(false);
+		/*
+		 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
+		 * pages require it to download content.
+		 */
+		urlConn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
+		
+		//insert cookie
+		urlConn.setRequestProperty("Set-Cookie", cookie);
+		
+		urlConn.connect();
+		
+		StringWriter out = new StringWriter();
+		InputStream in = new BufferedInputStream(urlConn.getInputStream());
+		int b;
+		while ((b = in.read()) >= 0) {
+			out.write(b);
+		}
+		urlConn.disconnect();
+		
+		return out.toString();
+	}
+	
+	private String getCookies(URL queryURL) throws IOException {
+		HttpURLConnection urlConn = null;
+		
+		urlConn = (HttpURLConnection) queryURL.openConnection();
+		
+		urlConn.setAllowUserInteraction(false);
+		urlConn.setDoInput(true);
+		urlConn.setDoOutput(false);
+		urlConn.setUseCaches(false);
+		
+		/*
+		 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
+		 * pages require it to download content.
+		 */
+		urlConn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
+		
+		urlConn.connect();
+		/*
+		 * extract cookie from connection
+		 */
+		List<String> cookies = urlConn.getHeaderFields().get("Set-Cookie");
+		
+		StringBuffer cookieString = new StringBuffer();
+		
+		for(String cookie : cookies) {
+			cookieString.append(cookie.substring(0, cookie.indexOf(";") + 1) + " ");
+		}
+		
+		cookieString.append("SSRN_LOGIN=wbi%40cs%2Euni%2Dkassel%2Ede; ");
+		cookieString.append("SSRN_PW=Walde209; ");
+		
+		urlConn.disconnect();
+		
+		return cookieString.toString();
+	}
+}

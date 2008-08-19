@@ -7,7 +7,9 @@ import java.util.Collections;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 
 /**
  * @author wbi
@@ -59,8 +61,7 @@ public class EditLibScraper implements Scraper {
 					URL citURL = new URL(EDITLIB_HOST_NAME + EDITLIB_BIBTEX_DOWNLOAD_PATH.replace("{id}", id) + id);
 					bibResult = sc.getContentAsString(citURL);
 				} catch (MalformedURLException ex) {
-					// TODO Auto-generated catch block
-					ex.printStackTrace();
+					throw new InternalFailureException(ex);
 				}
 				
 				if(bibResult != null) {
@@ -71,7 +72,9 @@ public class EditLibScraper implements Scraper {
 					sc.setScraper(this);
 	
 					return true;
-				}
+				}else
+					throw new ScrapingFailureException("getting bibtex failed");
+
 			}
 		}
 		

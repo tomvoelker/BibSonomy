@@ -12,6 +12,7 @@ import org.junit.Test;
  * @version $Id$
  */
 public class EditLibScraperTest {
+	
 	/**
 	 * starts URL test with id url_70
 	 */

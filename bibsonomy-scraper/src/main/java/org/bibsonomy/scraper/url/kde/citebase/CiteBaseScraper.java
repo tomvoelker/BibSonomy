@@ -11,6 +11,7 @@ import java.util.Collections;
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -64,7 +65,7 @@ public class CiteBaseScraper implements Scraper {
 				
 				
 			} catch (MalformedURLException me) {
-				throw new ScrapingException(me);
+				throw new InternalFailureException(me);
 			}
 		}		
 		return false;

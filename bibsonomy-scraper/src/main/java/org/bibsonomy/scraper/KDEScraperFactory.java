@@ -1,6 +1,7 @@
 package org.bibsonomy.scraper;
 
 import org.bibsonomy.scraper.InformationExtraction.IEScraper;
+import org.bibsonomy.scraper.id.kde.isbn.ISBNScraper;
 import org.bibsonomy.scraper.snippet.SnippetScraper;
 import org.bibsonomy.scraper.url.URLCompositeScraper;
 import org.bibsonomy.scraper.url.kde.highwire.HighwireScraper;
@@ -14,7 +15,11 @@ public class KDEScraperFactory {
 		//temporary solution to avoid manifold content download 
 		scraper.addScraper(new HighwireScraper());
 		
-		scraper.addScraper(new SnippetScraper());		
+		scraper.addScraper(new SnippetScraper());
+
+		// TODO: ISBNScraper can be used as a snippet scraper 
+		//scraper.addScraper(new ISBNScraper());
+		
 		scraper.addScraper(new IEScraper());
 		return scraper;
 	}

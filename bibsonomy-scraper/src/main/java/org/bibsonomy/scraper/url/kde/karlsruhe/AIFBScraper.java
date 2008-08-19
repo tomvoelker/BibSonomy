@@ -6,6 +6,7 @@ import java.util.*;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 
@@ -102,7 +103,7 @@ public class AIFBScraper implements Scraper {
 					sc.setBibtexResult(sc.getContentAsString(expURL));
 					return true;
 				} catch (MalformedURLException me) {
-					throw new ScrapingException(me);
+					throw new InternalFailureException(me);
 				}
 				
 			}else if(sc.getUrl().getPath().contains(AIFB_PERSON_PATH)){
@@ -119,7 +120,7 @@ public class AIFBScraper implements Scraper {
 					sc.setBibtexResult(sc.getContentAsString(expURL)); 
 					return true;
 				} catch (MalformedURLException me) {
-					throw new ScrapingException(me);
+					throw new InternalFailureException(me);
 				}
 				
 			}else if(sc.getUrl().getPath().contains(AIFB_PUBL_PERSON_PATH)){
@@ -136,7 +137,7 @@ public class AIFBScraper implements Scraper {
 					sc.setBibtexResult(sc.getContentAsString(expURL)); 
 					return true;
 				} catch (MalformedURLException me) {
-					throw new ScrapingException(me);
+					throw new InternalFailureException(me);
 				}
 				
 			}else if(sc.getUrl().getPath().toString().startsWith(AIFB_DEPT_PATH)){
@@ -156,7 +157,7 @@ public class AIFBScraper implements Scraper {
 						sc.setBibtexResult(sc.getContentAsString(expURL));
 						return true;
 					} catch (MalformedURLException me) {
-						throw new ScrapingException(me);
+						throw new InternalFailureException(me);
 					}	
 				}else if(sc.getUrl().getPath().toString().contains(AIFB_DEPT_CODE_BIK)){
 					try {
@@ -170,7 +171,7 @@ public class AIFBScraper implements Scraper {
 						sc.setBibtexResult(sc.getContentAsString(expURL));
 						return true;
 					} catch (MalformedURLException me) {
-						throw new ScrapingException(me);
+						throw new InternalFailureException(me);
 					}
 				}else if(sc.getUrl().getPath().toString().contains(AIFB_DEPT_CODE_EFFALG)){
 					try {
@@ -184,7 +185,7 @@ public class AIFBScraper implements Scraper {
 						sc.setBibtexResult(sc.getContentAsString(expURL));
 						return true;
 					} catch (MalformedURLException me) {
-						throw new ScrapingException(me);
+						throw new InternalFailureException(me);
 					}
 				}else if(sc.getUrl().getPath().toString().contains(AIFB_DEPT_CODE_COM)){
 					try {
@@ -198,7 +199,7 @@ public class AIFBScraper implements Scraper {
 						sc.setBibtexResult(sc.getContentAsString(expURL));
 						return true;
 					} catch (MalformedURLException me) {
-						throw new ScrapingException(me);
+						throw new InternalFailureException(me);
 					}
 				}
 			}

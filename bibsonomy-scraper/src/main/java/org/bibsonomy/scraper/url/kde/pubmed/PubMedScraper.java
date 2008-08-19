@@ -1,5 +1,6 @@
 package org.bibsonomy.scraper.url.kde.pubmed;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
@@ -9,7 +10,9 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 
 /**
  * @author daill
@@ -33,7 +36,7 @@ public class PubMedScraper implements Scraper {
 			//save the original URL 
 			String _origUrl = sc.getUrl().toString();
 			
-			try {
+			try{
 				if(_origUrl.matches("(?ms)^.+db=PubMed.+$")){
 					
 					//try to get the PMID out of the paramters
@@ -78,13 +81,12 @@ public class PubMedScraper implements Scraper {
 					sc.setScraper(this);
 		
 					return true;
-				}
+				}else
+					throw new ScrapingFailureException("getting bibtex failed");
+
 				
-			} catch (Exception e) {
-				log.fatal("could not scrape pudmed publication " + sc.getUrl().toString());
-				log.fatal(e);
-				e.printStackTrace();
-				throw new ScrapingException(e);
+			} catch (MalformedURLException e) {
+				throw new InternalFailureException(e);
 			}
 		}
 		return false;

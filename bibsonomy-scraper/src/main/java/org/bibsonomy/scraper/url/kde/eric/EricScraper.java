@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
+import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.scraper.url.RisToBibtexConverter;
@@ -80,10 +81,10 @@ public class EricScraper implements Scraper {
 						sc.setScraper(this);
 						return true;
 					}else
-						throw new ScrapingFailureException("Scraping failed. Converted bibtex is null.");
+						throw new ScrapingFailureException("getting bibtex failed");
 					
 				}else
-					throw new ScrapingFailureException("Value for accno is missing. Cannot build download url.");
+					throw new PageNotSupportedException("Value for accno is missing.");
 				
 			} catch (MalformedURLException ex) {
 				throw new InternalFailureException(ex);

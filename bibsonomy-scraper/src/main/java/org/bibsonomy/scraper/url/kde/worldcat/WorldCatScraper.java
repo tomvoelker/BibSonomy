@@ -7,8 +7,10 @@ import java.util.Collections;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
+import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.url.EndnoteToBibtexConverter;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.scraper.url.RisToBibtexConverter;
 
 /**
@@ -37,12 +39,14 @@ public class WorldCatScraper implements Scraper {
 						sc.setBibtexResult(bibtex);
 						sc.setScraper(this);
 						return true;
-					}
+					}else
+						throw new ScrapingFailureException("getting bibtex failed");
+
 				} catch (MalformedURLException ex) {
-					throw new ScrapingException(ex);
+					throw new InternalFailureException(ex);
 				}
 			}else
-				throw new ScrapingException("not supported worldcat.org page. Select a publication page and scrape again.");
+				throw new PageNotSupportedException("not supported worldcat.org page. Select a publication page and scrape again.");
 		}
 		return false;
 	}
@@ -79,4 +83,5 @@ public class WorldCatScraper implements Scraper {
 		RisToBibtexConverter converter = new RisToBibtexConverter();
 		return converter.RisToBibtex(endnote);
 	}
+	
 }

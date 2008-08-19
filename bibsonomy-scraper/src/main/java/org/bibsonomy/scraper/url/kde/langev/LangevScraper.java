@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
@@ -42,7 +43,8 @@ public class LangevScraper implements Scraper {
 					sc.setScraper(this);
 
 					return true;
-				}
+				}else
+					throw new PageNotSupportedException("no bibtex snippet found");
 			}
 		}
 		return false;

@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 
@@ -202,11 +203,9 @@ public class WileyIntersienceScraper implements Scraper {
 				sc.setScraper(this);
 				return true;
 			}catch (MalformedURLException e) {
-				throw new ScrapingException(e);
+				throw new InternalFailureException(e);
 			}catch (IOException ioe){
-				throw new ScrapingException(ioe);
-			}catch(Exception e){
-				throw new ScrapingException(e);
+				throw new InternalFailureException(ioe);
 			}
 		}
 		return false;

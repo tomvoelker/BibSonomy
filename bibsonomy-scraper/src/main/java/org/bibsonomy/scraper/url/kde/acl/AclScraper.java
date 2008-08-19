@@ -10,6 +10,7 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 
 /**
  * Scraper for aclweb.org, given URL must be show on a PDF
@@ -57,7 +58,8 @@ public class AclScraper implements Scraper {
 					sc.setBibtexResult(bibtex);
 					sc.setScraper(this);
 					return true;
-				}
+				}else
+					throw new ScrapingFailureException("getting bibtex failed");
 				
 			}else
 				throw new PageNotSupportedException("This aclweb.org page is not supported.");

@@ -101,10 +101,9 @@ public class JStorScraper implements Scraper {
 						sc.setScraper(this);
 						
 						return true;
-					} else {
-						
-						throw new ScrapingFailureException("Bibtex result is null!");
-					}
+					} else
+						throw new ScrapingFailureException("getting bibtex failed");
+
 				} else {
 					//missing id
 					throw new ScrapingFailureException("ID is missing!");

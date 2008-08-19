@@ -7,6 +7,8 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
 /**
+ * Test for old citeseer Scraper. This one is never used.
+ * 
  * Scraper URL tests #12 for CiteseerBasicScraper
  * @author tst
  *
@@ -19,8 +21,8 @@ public class CiteseerBasicScraperTest {
 	@Test
 	@Ignore
 	public void urlTestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_12"));
+		/*UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_12"));*/
 	}
 	
 }

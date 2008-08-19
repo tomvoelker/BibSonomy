@@ -6,6 +6,7 @@ import java.net.URL;
 
 import org.bibsonomy.scraper.CompositeScraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 
@@ -38,7 +39,7 @@ public class IEEEXploreScraper extends CompositeScraper {
 				try {
 					xplUrl = new URL(("http://ieeexplore.ieee.org/xpl/freeabs_all.jsp?arnumber=" + arnumber));
 				} catch (MalformedURLException e) {
-					throw new ScrapingException(e);
+					throw new InternalFailureException(e);
 				}
 				sc.setUrl(xplUrl);
 			}

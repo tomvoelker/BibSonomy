@@ -7,7 +7,9 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 
 
 public class CiteseerBasicScraper implements Scraper {
@@ -31,7 +33,9 @@ public class CiteseerBasicScraper implements Scraper {
 				sc.setScraper(this);
 
 				return true;
-			}
+			}else
+				throw new PageNotSupportedException("no bibtex snippet available");
+
 		}
 		return false;
 	}

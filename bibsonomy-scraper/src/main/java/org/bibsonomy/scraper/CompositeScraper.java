@@ -5,7 +5,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
+import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.exceptions.UseageFailureException;
 
 /**
  * This scraper contains other scrapers and the scrape method calls them
@@ -29,7 +33,25 @@ public class CompositeScraper implements Scraper {
 					return true;
 				}
 			}
-		} catch (final ScrapingException e) {
+			
+		} catch (final InternalFailureException e) {
+			// internal failure 
+			log.fatal(e);			
+			throw (e);
+		} catch (final UseageFailureException e) {
+			// a user has used a scraper in a wrong way
+			log.info(e);
+			throw (e);
+		} catch (final PageNotSupportedException e) {
+			// a scraper can't scrape a page but the host is supported
+			log.error(e);
+			throw (e);
+		} catch (final ScrapingFailureException e) {
+			// getting bibtex failed (conversion failed)
+			log.fatal(e);
+			throw (e);
+		}  catch (final ScrapingException e) {
+			// something else
 			log.error(e);
 			throw (e);
 		}

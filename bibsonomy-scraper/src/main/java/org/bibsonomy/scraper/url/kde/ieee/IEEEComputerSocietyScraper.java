@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
@@ -66,8 +67,7 @@ public class IEEEComputerSocietyScraper implements Scraper {
 						try {
 							bibtex = URLDecoder.decode(bibtex, "UTF-8");
 						} catch (UnsupportedEncodingException e) {
-							LOGGER.error(e.getMessage());
-							// do nothing. if encoding does not work well, then the bibtex entry is still invalid an import will be stopped
+							throw new InternalFailureException(e);
 						}
 						
 						sc.setBibtexResult(bibtex);

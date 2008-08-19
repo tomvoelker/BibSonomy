@@ -11,6 +11,8 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
+import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 
@@ -125,10 +127,10 @@ public class MathSciNetScraper implements Scraper {
 
 					// values for URL are missing
 					}else
-						throw new ScrapingException("MathSciNetScraper: This MathSciNet page is not supported. Can't extract link to bibtex.");
+						throw new PageNotSupportedException("MathSciNetScraper: This MathSciNet page is not supported. Can't extract link to bibtex.");
 					
 				}catch(UnsupportedEncodingException uee){
-					throw new ScrapingException(uee);
+					throw new InternalFailureException(uee);
 				}
 			}
 			
@@ -154,14 +156,14 @@ public class MathSciNetScraper implements Scraper {
 						
 					// can't find bibtex
 					}else
-						throw new ScrapingException("MathSciNetScraper: This MathSciNet page is not supported. Can't extract link to bibtex.");
+						throw new PageNotSupportedException("MathSciNetScraper: This MathSciNet page is not supported. Can't extract link to bibtex.");
 					
 				} catch (MalformedURLException e) {
-					throw new ScrapingException(e);
+					throw new InternalFailureException(e);
 				}
 			// can't find url for bibtex
 			}else
-				throw new ScrapingException("MathSciNetScraper: This MathSciNet page is not supported. Can't extract link to bibtex.");
+				throw new PageNotSupportedException("MathSciNetScraper: This MathSciNet page is not supported. Can't extract link to bibtex.");
 		}
 		
 		return false;

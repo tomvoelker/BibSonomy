@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -38,15 +39,9 @@ public class IEEEXploreJournalProceedingsScraper implements Scraper {
 	
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		if (sc.getUrl() != null && sc.getUrl().toString().startsWith(IEEE_HOST_NAME+IEEE_PATH)  && sc.getUrl().toString().indexOf("punumber") == -1 ) {
-			try {
-				sc.setBibtexResult(ieeeJournalProceedingsScrape(sc));
-				sc.setScraper(this);
-				return true;
-			} catch (Exception e){
-				log.fatal("could not scrape ieeexplore journal/proceeding " + sc.getUrl().toString());
-				log.fatal(e);
-				throw new ScrapingException(e);
-			}
+			sc.setBibtexResult(ieeeJournalProceedingsScrape(sc));
+			sc.setScraper(this);
+			return true;
 		}
 		return false;
 	}

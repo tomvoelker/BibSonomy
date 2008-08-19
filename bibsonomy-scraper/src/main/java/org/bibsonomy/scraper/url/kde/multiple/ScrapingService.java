@@ -14,7 +14,9 @@ import javax.naming.NamingException;
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 
 public class ScrapingService implements Scraper {
 
@@ -55,13 +57,13 @@ public class ScrapingService implements Scraper {
 					sc.setScraper(this);
 
 					return true;
-				}
+				}else
+					throw new ScrapingFailureException("getting bibtex failed");
+
 			} catch (MalformedURLException e) {
-				log.fatal(e);
+				throw new InternalFailureException(e);
 			} catch (UnsupportedEncodingException e) {
-				log.fatal(e);
-			} catch (ScrapingException e) {
-				log.fatal(e);
+				throw new InternalFailureException(e);
 			}
 		}
 		return false;

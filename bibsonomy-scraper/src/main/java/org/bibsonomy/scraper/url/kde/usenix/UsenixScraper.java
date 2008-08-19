@@ -9,6 +9,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
+import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
@@ -212,9 +214,9 @@ public class UsenixScraper implements Scraper {
 					return true;
 					
 				}else
-					throw new ScrapingException("Not supported usenix url!");
+					throw new PageNotSupportedException("Not supported usenix url!");
 			} catch (UnsupportedEncodingException ex) {
-				throw new ScrapingException("Decoding failure in UsenixScraper");
+				throw new InternalFailureException(ex);
 			}
 		}
 		return false;

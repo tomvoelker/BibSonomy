@@ -9,7 +9,10 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
+import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 
 
 /**
@@ -117,11 +120,12 @@ public class IOPScraper implements Scraper {
 						sc.setScraper(this);
 						return true;						
 					}else
-						throw new ScrapingException("IOPScraper: can't get bibtex from this citation");
+						throw new ScrapingFailureException("getting bibtex failed");
+
 				}else
-					throw new ScrapingException("IOPScraper: This iop side has no citation download link.");
+					throw new PageNotSupportedException("IOPScraper: This iop side has no citation download link.");
 			} catch (MalformedURLException e) {
-				throw new ScrapingException(e);
+				throw new InternalFailureException(e);
 			}
 		}
 		return false;

@@ -17,7 +17,9 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 
 /**
  * @author wbi
@@ -101,11 +103,9 @@ public class OSAScraper implements Scraper {
 					URL citUrl = new URL(OSA_HOST_NAME + OSA_BIBTEX_DOWNLOAD_PATH);
 					bibResult = getContent(citUrl, getCookies(sc.getUrl()), id, actions);
 				} catch (MalformedURLException ex) {
-					// TODO Auto-generated catch block
-					ex.printStackTrace();
+					throw new InternalFailureException(ex);
 				} catch (IOException ex) {
-					// TODO Auto-generated catch block
-					ex.printStackTrace();
+					throw new InternalFailureException(ex);
 				}
 				
 				if(bibResult != null) {
@@ -116,7 +116,9 @@ public class OSAScraper implements Scraper {
 					sc.setScraper(this);
 	
 					return true;
-				}
+				}else
+					throw new ScrapingFailureException("getting bibtex failed");
+
 			}
 		}
 		return false;

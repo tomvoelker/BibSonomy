@@ -7,6 +7,7 @@ import java.util.Collections;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
@@ -59,8 +60,7 @@ public class BMJScraper implements Scraper {
 					URL citURL = new URL(BMJ_HOST_NAME + BMJ_BIBTEX_DOWNLOAD_PATH + id);
 					bibResult = sc.getContentAsString(citURL);
 				} catch (MalformedURLException ex) {
-					// TODO Auto-generated catch block
-					ex.printStackTrace();
+					throw new InternalFailureException(ex);
 				}
 				
 				if(bibResult != null) {

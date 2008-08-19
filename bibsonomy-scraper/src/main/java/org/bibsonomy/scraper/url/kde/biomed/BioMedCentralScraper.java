@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
@@ -66,7 +67,7 @@ public class BioMedCentralScraper implements Scraper {
 				try {
 					sc.setUrl(new URL(url));
 				} catch (MalformedURLException ex) {
-					ex.printStackTrace();
+					throw new InternalFailureException(ex);
 				}
 				String bibResult = sc.getPageContent();
 								

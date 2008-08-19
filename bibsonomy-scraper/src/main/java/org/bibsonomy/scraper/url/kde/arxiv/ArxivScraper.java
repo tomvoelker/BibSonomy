@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
@@ -89,6 +90,8 @@ public class ArxivScraper implements Scraper {
 					bibtexResult = scrapeBySourceCode(doc);
 				}
 				
+				// add url to bibentry
+				bibtexResult = addUrlToBibtexEntry(sc.getUrl().toString(), bibtexResult);
 				
 				// set result
 				sc.setBibtexResult(bibtexResult);
@@ -100,9 +103,7 @@ public class ArxivScraper implements Scraper {
 				return true;
 				
 			} catch (MalformedURLException me) {
-				log.fatal("could not scrape arxiv publication " + sc.getUrl().toString());
-				log.fatal(me);
-				throw new ScrapingException(me);
+				throw new InternalFailureException(me);
 			}
 		}		
 		return false;
@@ -176,6 +177,16 @@ public class ArxivScraper implements Scraper {
 			StringBuffer buf = new StringBuffer (bibtexEntry);
 			buf.replace(buf.lastIndexOf("}"), buf.length(), ", abstract={" + bibAbstract + "}}");
 			return  buf.toString();		
+	}
+	
+	/**
+	 * Adds scraped URL to extracted bibtex entry.
+	 * @param url 
+	 * @param entry citation in Bibtex
+	 * @return bibtex entry with scraped url
+	 */
+	private String addUrlToBibtexEntry(String url, String entry){
+		return entry.substring(0, entry.lastIndexOf("}")) + ",\n  url = {\\url{" + url + "}}\n}";
 	}
 	
 	private String scrapeBySourceCode (Document doc){

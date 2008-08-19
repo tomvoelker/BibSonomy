@@ -13,7 +13,9 @@ import java.util.List;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 
 /**
  * @author wbi
@@ -79,7 +81,7 @@ public class AnthroSourceScraper implements Scraper {
 					try {
 						userURL = new URL(AS_HOST_NAME + AS_ABSTRACT_PATH + id);
 					} catch (MalformedURLException ex) {
-						ex.printStackTrace();
+						throw new InternalFailureException(ex);
 					}
 				}
 				
@@ -92,7 +94,7 @@ public class AnthroSourceScraper implements Scraper {
 					bibResult = getContent(citURL, getCookies(userURL));
 					
 				} catch (IOException ex) {
-					ex.printStackTrace();
+					throw new InternalFailureException(ex);
 				}
 				
 				if(bibResult != null) {
@@ -103,7 +105,9 @@ public class AnthroSourceScraper implements Scraper {
 					sc.setScraper(this);
 	
 					return true;
-				}
+				}else
+					throw new ScrapingFailureException("getting bibtex failed");
+
 			}
 		}
 		

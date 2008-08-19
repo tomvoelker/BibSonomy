@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 
@@ -131,10 +132,9 @@ public class BlackwellSynergyScraper implements Scraper {
 					return true;
 				}
 			} catch (MalformedURLException ex) {
-				throw new ScrapingException(ex);
+				throw new InternalFailureException(ex);
 			} catch (IOException ex) {
-				ex.printStackTrace();
-				throw new ScrapingException(ex);
+				throw new InternalFailureException(ex);
 			}*/
 		}
 		return false;

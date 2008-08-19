@@ -15,7 +15,9 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.scraper.url.RisToBibtexConverter;
 
 
@@ -73,13 +75,13 @@ public class SpringerLinkScraper implements Scraper {
 					 */
 					sc.setScraper(this);
 					return true;
-				}
+				}else
+					throw new ScrapingFailureException("getting bibtex failed");
+
 			} catch (MalformedURLException e) {
-				log.fatal("Could not connect to SpringerLink: " + e);
-				throw new ScrapingException(e);
+				throw new InternalFailureException(e);
 			} catch (IOException e) {
-				log.fatal("Could not connect to SpringerLink: " + e);
-				throw new ScrapingException(e);
+				throw new InternalFailureException(e);
 			}
 		}
 		// This Scraper can`t handle the specified url

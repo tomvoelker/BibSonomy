@@ -7,7 +7,9 @@ import java.util.Collections;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 
 /**
  * @author wbi
@@ -45,7 +47,7 @@ public class NberScraper implements Scraper {
 				try {
 					sc.setUrl(new URL(url + ".bib"));
 				} catch (MalformedURLException ex) {
-					ex.printStackTrace();
+					throw new InternalFailureException(ex);
 				}
 				
 				String bibResult = sc.getPageContent();
@@ -58,7 +60,9 @@ public class NberScraper implements Scraper {
 					sc.setScraper(this);
 	
 					return true;
-				}
+				}else
+					throw new ScrapingFailureException("getting bibtex failed");
+
 			}
 		}
 		return false;

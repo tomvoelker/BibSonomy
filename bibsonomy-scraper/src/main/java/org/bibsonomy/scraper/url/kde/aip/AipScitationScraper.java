@@ -17,7 +17,10 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
+import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.TagStringUtils;
 
 
@@ -153,16 +156,17 @@ public class AipScitationScraper implements Scraper {
 							sc.setBibtexResult(cleanKeywords(bibtexResult));
 							sc.setScraper(this);
 							return true;
-						}
+						}else
+							throw new ScrapingFailureException("getting bibtex failed");
 						
 					}
 				} catch (ConnectException cex) {
-					throw new ScrapingException(cex);
+					throw new InternalFailureException(cex);
 				} catch (IOException ioe) {
-					throw new ScrapingException(ioe);
+					throw new InternalFailureException(ioe);
 				}
 			}
-			throw new ScrapingException("AipScitationScraper: Not supported aip page. no bibtex link in html.");
+			throw new PageNotSupportedException("AipScitationScraper: Not supported aip page. no bibtex link in html.");
 		}
 		return false;
 	}

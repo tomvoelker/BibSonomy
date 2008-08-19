@@ -32,14 +32,9 @@ public class IEEEXploreStandardsScraper implements Scraper {
 	
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		if (sc.getUrl() != null && sc.getUrl().toString().startsWith(IEEE_HOST_NAME+IEEE_STANDARDS_PATH) && sc.getUrl().toString().indexOf(IEEE_STANDARDS_IDENTIFIER) != -1 ) {
-			try {
-				sc.setBibtexResult(ieeeStandardsScrape(sc));
-				sc.setScraper(this);
-				return true;
-			} catch (Exception e){
-				log.fatal("could not scrape ieeexplore standard " + sc.getUrl().toString());
-				throw new ScrapingException(e);
-			}
+			sc.setBibtexResult(ieeeStandardsScrape(sc));
+			sc.setScraper(this);
+			return true;
 		}
 		return false;
 	}

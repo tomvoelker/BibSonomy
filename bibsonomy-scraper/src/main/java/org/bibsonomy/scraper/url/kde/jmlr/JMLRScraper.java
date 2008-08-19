@@ -44,7 +44,6 @@ public class JMLRScraper implements Scraper {
 	}
 
 	public boolean scrape(ScrapingContext sc)throws ScrapingException {
-		try{
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(HOST)){
 			if(sc.getUrl().getPath().startsWith(PATH) && sc.getUrl().getPath().endsWith(".html")){
 				String pageContent = sc.getPageContent();
@@ -168,9 +167,7 @@ public class JMLRScraper implements Scraper {
 			}else
 				throw new PageNotSupportedException("Select a page with the abtract view from a jmlr paper.");
 		}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
+		
 		return false;
 	}
 

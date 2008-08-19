@@ -8,6 +8,7 @@ import java.util.Collections;
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -35,14 +36,9 @@ public class IEEEXploreBookScraper implements Scraper {
 
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		if (sc.getUrl() != null && sc.getUrl().toString().startsWith(IEEE_HOST_NAME+IEEE_BOOK_PATH)) {
-			try {
-				sc.setBibtexResult(ieeeBookScrape(sc));
-				sc.setScraper(this);
-				return true;
-			} catch (Exception e){
-				log.fatal("could not scrape ieeexplore book " + sc.getUrl().toString());
-				throw new ScrapingException(e);
-			}
+			sc.setBibtexResult(ieeeBookScrape(sc));
+			sc.setScraper(this);
+			return true;
 		}
 		return false;
 	}

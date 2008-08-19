@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.util.BibTexUtils;
 
@@ -20,7 +21,7 @@ public class EndnoteToBibtexConverter {
 	private static Map<String,String> endnoteToBibtexEntryTypeMap = new HashMap<String,String>();
 	private static Map<String,String> endnoteToBibtexFieldMap     = new HashMap<String,String>();
 	
-	private static final Pattern _eachLinePattern       = Pattern.compile("(?s)((%\\S)\\s*(([^%]|%\\s)*))");
+	private static final Pattern _eachLinePattern       = Pattern.compile("(?s)((%\\S)\\s+(([^%]|%\\s)*))");
 
 	
 	static {
@@ -29,7 +30,33 @@ public class EndnoteToBibtexConverter {
 		buildEndnoteToBibtexEntryTypeMap();
 	}
 	
+	/**
+	 * example for a StackOverFlowException (thos occure only on 32bit Java versions)
+	 * @param args
+	 */
 	public static void main (String[] args){
+		/*
+		String test = "%A Stewart, James Bruce\n" +
+"%A Freyer, Christoph\n" +
+"%A Elson, Joanna L.\n" +
+"%A Wredenberg, Anna\n" +
+"%A Cansu, Zekiye\n" +
+"%A Trifunovic, Aleksandra\n" +
+"%A Larsson, Nils-G&ouml;ran\n" +
+"%T Strong Purifying Selection in Transmission of Mammalian Mitochondrial DNA\n" +
+"%0 Journal Article\n" +
+"%D 2008\n" +
+"%J PLoS Biology\n" +
+"%P e10\n" +
+"%V 6\n" +
+"%N 1\n" +
+"%U http://dx.doi.org/10.1371%2Fjournal.pbio.0060010\n" +
+"%X There is an intense debate concerning whether selection or demographics has been most important in shaping the sequence variation observed in modern human mitochondrial DNA (mtDNA). Purifying selection is thought to be important in shaping mtDNA sequence evolution, but the strength of this selection has been debated, mainly due to the threshold effect of pathogenic mtDNA mutations and an observed excess of new mtDNA mutations in human population data. We experimentally addressed this issue by studying the maternal transmission of random mtDNA mutations in mtDNA mutator mice expressing a proofreading-deficient mitochondrial DNA polymerase. We report a rapid and strong elimination of nonsynonymous changes in protein-coding genes; the hallmark of purifying selection. There are striking similarities between the mutational patterns in our experimental mouse system and human mtDNA polymorphisms. These data show strong purifying selection against mutations within mtDNA protein-coding genes. To our knowledge, our study presents the first direct experimental observations of the fate of random mtDNA mutations in the mammalian germ line and demonstrates the importance of purifying selection in shaping mitochondrial sequence diversity.\n" +
+"%8 January 01, 2008\n" +
+"";
+		EndnoteToBibtexConverter converter = new EndnoteToBibtexConverter();
+		String bibtex = converter.processEntry(test);
+		System.out.println(bibtex);*/
 	}
 	
 	//main method
@@ -127,6 +154,8 @@ public class EndnoteToBibtexConverter {
 			
 			_resultBibtexFields.put("key", BibTexUtils.generateBibtexKey(_resultBibtexFields.get("author"), _resultBibtexFields.get("editor"), _resultBibtexFields.get("year"), _resultBibtexFields.get("title")));
 			
+		} catch (RuntimeException e){
+			e.printStackTrace();
 		} catch (Exception e){
 			log.fatal("Could not process the data: " + e);
 		}

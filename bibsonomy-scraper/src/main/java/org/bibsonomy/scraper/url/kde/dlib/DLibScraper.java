@@ -11,7 +11,9 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 
 
 /**
@@ -133,10 +135,12 @@ public class DLibScraper implements Scraper {
 						sc.setBibtexResult(bibtex);
 						sc.setScraper(this);
 						return true;
-					}
+					}else
+						throw new ScrapingFailureException("getting bibtex failed");
+
 				}
 			} catch (MalformedURLException ex) {
-				throw new ScrapingException(ex);
+				throw new InternalFailureException(ex);
 			}
 		}
 		return false;

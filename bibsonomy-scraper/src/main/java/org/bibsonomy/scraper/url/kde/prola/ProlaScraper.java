@@ -10,6 +10,8 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
+import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 
@@ -148,9 +150,9 @@ public class ProlaScraper implements Scraper {
 					}else
 						throw new ScrapingException("ProlaScraper: can't get bibtex from this article");
 				}else
-					throw new ScrapingException("ProlaScraper: This prola side has no bibtex download link.");
+					throw new PageNotSupportedException("ProlaScraper: This prola side has no bibtex download link.");
 			} catch (MalformedURLException e) {
-				throw new ScrapingException(e);
+				throw new InternalFailureException(e);
 			}
 		}
 		return false;

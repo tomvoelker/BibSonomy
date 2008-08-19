@@ -13,7 +13,9 @@ import java.util.List;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 
 /**
  * @author wbi
@@ -59,7 +61,7 @@ public class ACSScraper implements Scraper {
 					try {
 						citationURL = new URL(ACS_HOST_NAME + ACS_BIBTEX_PATH + "?jid=" + id);
 					} catch (MalformedURLException ex) {
-						ex.printStackTrace();
+						throw new InternalFailureException(ex);
 					}
 				} 
 				
@@ -67,7 +69,7 @@ public class ACSScraper implements Scraper {
 					try {
 						citationURL = new URL(url);
 					} catch (MalformedURLException ex) {
-						ex.printStackTrace();
+						throw new InternalFailureException(ex);
 					}
 				}
 				
@@ -78,7 +80,7 @@ public class ACSScraper implements Scraper {
 					String cookie = getCookie(citationURL);
 					bibResult = getACSContent(new URL(ACS_HOST_NAME + ACS_BIBTEX_PATH + ACS_BIBTEX_PARAMS), cookie);
 				} catch (IOException ex) {
-					ex.printStackTrace();
+					throw new InternalFailureException(ex);
 				}				
 				
 				if(bibResult != null) {
@@ -89,7 +91,8 @@ public class ACSScraper implements Scraper {
 					sc.setScraper(this);
 	
 					return true;
-				}
+				}else
+					throw new ScrapingFailureException("getting bibtex failed");
 			}
 		}
 		

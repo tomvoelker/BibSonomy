@@ -66,12 +66,6 @@
 		<BibFile>CiteBaseScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.citebase.CiteBaseScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_12">
-		<TestDescription>URL scraping test with citeseer publications</TestDescription>
-		<URL>http://citeseer.ist.psu.edu/brin98anatomy.html</URL>
-		<BibFile>CiteseerBasicScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.citeseer.CiteseerBasicScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_13">
 		<TestDescription>URL scraping test with journals and proceedings from ieeexlpore</TestDescription>
 		<URL>http://ieeexplore.ieee.org/xpl/freeabs_all.jsp?isnumber=26129&amp;arnumber=1163019&amp;count=14&amp;index=0</URL>
@@ -641,5 +635,59 @@
 		<URL>http://journals.cambridge.org/action/displayAbstract?fromPage=online&amp;aid=402142#</URL>
 		<BibFile>CambridgeScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.cambridge.CambridgeScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_111">
+		<TestDescription>URL test for metapress.com</TestDescription>
+		<URL>http://www.metapress.com/content/d18n477648411447/?p=796894ff484e4c518d5e5a2b6aaae1f6&amp;pi=0</URL>
+		<BibFile>MetapressScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.metapress.MetapressScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_112">
+		<TestDescription>URL test for citeseerx</TestDescription>
+		<URL>http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.28.9570</URL>
+		<BibFile>CiteseerxScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.citeseer.CiteseerxScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_113">
+		<TestDescription>URL test for muse.jhu.edu with normal URL pattern</TestDescription>
+		<URL>http://muse.jhu.edu/journals/social_science_history/v029/29.4mcnay.html</URL>
+		<BibFile>ProjectmuseScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.muse.ProjectmuseScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_114">
+		<TestDescription>URL test for muse.jhu.edu with missing login pattern</TestDescription>
+		<URL>http://muse.jhu.edu/login?uri=/journals/demography/v042/42.4johnson.html</URL>
+		<BibFile>ProjectmuseScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.muse.ProjectmuseScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_115">
+		<TestDescription>Scraper for bibtex extraction from sourcecode</TestDescription>
+		<URL>http://citeseer.ist.psu.edu/fiat90competitive.html</URL>
+		<BibFile>BibtexScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.bibtex.BibtexScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_117">
+		<TestDescription>Test for e-space.mmu.ac.uk/e-space (openrepository)</TestDescription>
+		<URL>http://e-space.mmu.ac.uk/e-space/handle/2173/31869</URL>
+		<BibFile>OpenrepositoryScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.openrepository.OpenrepositoryScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_118">
+		<TestDescription>Test for http://hirsla.lsh.is/lsh (openrepository)</TestDescription>
+		<URL>http://hirsla.lsh.is/lsh/handle/2336/11284</URL>
+		<BibFile>OpenrepositoryScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.openrepository.OpenrepositoryScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_119">
+		<TestDescription>Test for arrts.gtcni.org.uk/gtcni (openrepository)</TestDescription>
+		<URL>http://arrts.gtcni.org.uk/gtcni/handle/2428/8327</URL>
+		<BibFile>OpenrepositoryScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.openrepository.OpenrepositoryScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_120">
+		<TestDescription>Test for eric.exeter.ac.uk/exeter (openrepository)</TestDescription>
+		<URL>http://eric.exeter.ac.uk/exeter/handle/10036/18938</URL>
+		<BibFile>OpenrepositoryScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.openrepository.OpenrepositoryScraper</Scraper>
 	</URLTest>
 </test:Tests>

@@ -14,6 +14,8 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
+import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 
@@ -149,12 +151,12 @@ public class NasaAdsScraper implements Scraper {
 						}
 					}
 				} catch (ConnectException cex) {
-					throw new ScrapingException(cex);
+					throw new InternalFailureException(cex);
 				} catch (IOException ioe) {
-					throw new ScrapingException(ioe);
+					throw new InternalFailureException(ioe);
 				}
 			}
-			throw new ScrapingException("NasaADSScraper: Not supported nasa ads page. no bibtex link in html.");
+			throw new PageNotSupportedException("NasaADSScraper: Not supported nasa ads page. no bibtex link in html.");
 		}
 		return false;
 	}

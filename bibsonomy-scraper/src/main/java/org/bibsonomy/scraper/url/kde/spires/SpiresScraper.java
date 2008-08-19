@@ -9,7 +9,9 @@ import java.util.Collections;
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -55,12 +57,12 @@ public class SpiresScraper implements Scraper{
 					sc.setScraper(this);
 		
 					return true;
-				}
+				}else
+					throw new ScrapingFailureException("getting bibtex failed");
+
 				
-			} catch (Exception e) {
-				log.fatal("could not scrape spires publication " + sc.getUrl().toString());
-				log.fatal(e);
-				throw new ScrapingException(e);
+			} catch (MalformedURLException e) {
+				throw new InternalFailureException(e);
 			}
 		}
 		return false;

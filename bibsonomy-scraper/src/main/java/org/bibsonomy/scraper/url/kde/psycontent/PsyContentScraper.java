@@ -93,7 +93,7 @@ public class PsyContentScraper implements Scraper{
 					}
 				} else {
 					// missing id
-					throw new ScrapingFailureException("ID for donwload link is missing.");
+					throw new PageNotSupportedException("ID for donwload link is missing.");
 				}
 			}
 		}
