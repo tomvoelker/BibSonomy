@@ -7,6 +7,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.common.enums.DatabaseType;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
@@ -28,24 +29,60 @@ public class DatabaseUtils {
 
 	private static final Logger log = Logger.getLogger(DatabaseUtils.class);
 	private static final SqlMapClient client;
+	private static final SqlMapClient secondaryClient;
 
 	static {
+		// primary SqlMapClient
 		SqlMapClient clientTmp;
 		try {
 			final String resource = "SqlMapConfig.xml";
 			final Reader reader = Resources.getResourceAsReader(resource);
-			clientTmp = SqlMapClientBuilder.buildSqlMapClient(reader);
+			clientTmp = SqlMapClientBuilder.buildSqlMapClient(reader); 
 		} catch (final IOException ex) {
 			clientTmp = null;
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't initialize SqlMapClient");
 		}
-		client = clientTmp;
+		client = clientTmp;		
+		
+		// secondary SqlMapClient
+		SqlMapClient secondaryClientTmp;
+		try {
+			final String secondaryResource = "SecondarySqlMapConfig.xml";
+			final Reader secondaryReader = Resources.getResourceAsReader(secondaryResource);
+			secondaryClientTmp = SqlMapClientBuilder.buildSqlMapClient(secondaryReader); 
+		} catch (final Exception ex) {
+			// fall back to primary client, if available
+			if (client != null) {
+				secondaryClientTmp = client;
+			}
+			else {
+				secondaryClientTmp = null;
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't initialize SqlMapClient");
+			}
+		}
+		secondaryClient = secondaryClientTmp;		
+		
 	}
 
 	/**
-	 * Returns the SqlMap which can be used to query the database.
+	 * Returns the default SqlMap which can be used to query the database.
 	 */
 	protected static SqlMapSession getSqlMap() {
+		return client.openSession();
+	}
+	
+	/**
+	 * Returns an SqlMap for a given database type (master, slave)
+	 * @param dbType TODO
+	 */
+	protected static SqlMapSession getSqlMap(DatabaseType dbType) {
+		if (dbType.equals(DatabaseType.MASTER)) {
+			return client.openSession();
+		}
+		if (dbType.equals(DatabaseType.SLAVE)) {
+			return secondaryClient.openSession();
+		}
+		// default
 		return client.openSession();
 	}
 

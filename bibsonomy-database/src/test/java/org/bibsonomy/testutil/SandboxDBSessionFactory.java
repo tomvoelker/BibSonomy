@@ -6,6 +6,7 @@ import java.lang.reflect.Proxy;
 import java.util.HashSet;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.common.enums.DatabaseType;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DBSessionFactory;
 import org.bibsonomy.database.util.DatabaseUtils;
@@ -68,5 +69,10 @@ public class SandboxDBSessionFactory extends DatabaseUtils implements DBSessionF
 			this.realDbSession.endTransaction();
 			this.realDbSession.close();
 		}
+	}
+
+	public DBSession getDatabaseSession(DatabaseType dbType) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

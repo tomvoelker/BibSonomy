@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
+import org.bibsonomy.common.enums.DatabaseType;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -113,9 +114,14 @@ public class DBLogic implements LogicInterface {
 	}
 
 	/**
-	 * Returns a new database session.
+	 * Returns a new database session. If a user is logged in, he gets the master
+	 * connection, if not logged in, the secondary connection
 	 */
 	private DBSession openSession() {
+	    // uncomment following to access secondary datasource for not logged-in users
+		//if (this.loginUser.getName() == null) {
+		//	return this.dbSessionFactory.getDatabaseSession(DatabaseType.SLAVE);
+		//}
 		return this.dbSessionFactory.getDatabaseSession();
 	}
 

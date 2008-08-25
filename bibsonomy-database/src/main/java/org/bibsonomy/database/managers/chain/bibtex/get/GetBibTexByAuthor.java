@@ -12,6 +12,7 @@ import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.common.enums.DatabaseType;
 
 /**
  * Returns a list of BibTex's for given author.
@@ -22,7 +23,9 @@ import org.bibsonomy.model.enums.Order;
 public class GetBibTexByAuthor extends BibTexChainElement {
 
 	@Override
-	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
+	protected List<Post<BibTex>> handle(final BibTexParam param, DBSession session) {
+		// uncomment following for a quick hack to access secondary datasource
+		// session = this.dbSessionFactory.getDatabaseSession(DatabaseType.SLAVE);
 		return this.db.getBibTexByAuthor(param, session);
 	}
 

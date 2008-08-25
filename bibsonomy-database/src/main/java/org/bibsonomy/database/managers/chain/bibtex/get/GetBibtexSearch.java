@@ -10,6 +10,7 @@ import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.common.enums.DatabaseType;
 
 /**
  * Returns a list of BibTex's for a given search.
@@ -20,7 +21,9 @@ import org.bibsonomy.model.Post;
 public class GetBibtexSearch extends BibTexChainElement {
 
 	@Override
-	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
+	protected List<Post<BibTex>> handle(final BibTexParam param, DBSession session) {
+		// uncomment following for a quick hack to access secondary datasource
+		// session = this.dbSessionFactory.getDatabaseSession(DatabaseType.SLAVE);
 		return this.db.getBibTexSearch(param, session);
 	}
 

@@ -7,6 +7,8 @@ import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.util.DBSession;
+import org.bibsonomy.database.util.DBSessionFactory;
+import org.bibsonomy.database.util.IbatisDBSessionFactory;
 
 /**
  * Represents one element in the chain of responsibility.
@@ -25,7 +27,13 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 	protected final GeneralDatabaseManager generalDb;
 	protected final GroupDatabaseManager groupDb;
 	/** The next element of the chain */
-	private ChainElement<L, P> next;
+	protected ChainElement<L, P> next;
+	
+	/** 
+	 * This is a quick hack to enable the access of the secondary 
+	 * datasource from behind the logic interface
+	 */
+	protected DBSessionFactory dbSessionFactory;
 
 	/**
 	 * Constructor
@@ -34,6 +42,7 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 		this.generalDb = GeneralDatabaseManager.getInstance();
 		this.groupDb = GroupDatabaseManager.getInstance();
 		this.next = null;
+		this.dbSessionFactory = new IbatisDBSessionFactory();
 	}
 
 	/**
@@ -64,6 +73,7 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 	public final List<L> perform(final P param, final DBSession session, final ChainStatus chainStatus) {
 		if (this.canHandle(param)) {
 			if (chainStatus != null) chainStatus.setChainElement(this);
+			log.debug("Handling Chain element: " + this.getClass().getSimpleName());
 			return this.handle(param, session);
 		}
 		if (this.next != null) return this.next.perform(param, session, chainStatus);

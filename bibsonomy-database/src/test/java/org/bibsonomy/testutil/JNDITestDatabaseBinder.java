@@ -41,6 +41,7 @@ public final class JNDITestDatabaseBinder {
 			MockContextFactory.setAsInitial();
 			ctx = new InitialContext();
 			ctx.bind("java:comp/env/jdbc/bibsonomy", ds);
+			ctx.bind("java:comp/env/jdbc/bibsonomy_slave", ds);
 		}
 		catch (NamingException ex) {
 			log.error("Error when trying to bind test database connection via JNDI");
