@@ -29,7 +29,7 @@
 		</jsp:attribute>
 		<jsp:attribute name="title">
 			<c:set var="bookUrl"><c:out value="${mtl:cleanUrl(post.resource.url)}" escapeXml="true" /></c:set>
-			<a href="${bookUrl}"><c:out value='${post.resource.title}' /></a>
+			<a href="${bookUrl}" rel="nofollow"><c:out value='${post.resource.title}' /></a>
 		</jsp:attribute>
 		<jsp:attribute name="desc">
 			<bm:desc post="${post}"/>
