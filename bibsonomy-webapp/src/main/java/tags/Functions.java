@@ -334,8 +334,9 @@ public class Functions  {
 			return value
 				.replaceAll("\\\\", "\\\\\\\\") // back-slashes
 				.replaceAll("\n", "\\\\n")   // linebreaks 
+				.replaceAll("\t", "\\\\t")   // tabs
 				.replaceAll("\r", "")        // windows linebreaks
-				.replaceAll("\"", "\\\\\"")  // quotation marks
+// done by c:out				.replaceAll("\"", "\\\\\"")  // quotation marks
 				;  
 		}
 		return value;
