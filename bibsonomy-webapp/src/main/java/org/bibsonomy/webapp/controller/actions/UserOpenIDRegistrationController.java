@@ -105,6 +105,12 @@ public class UserOpenIDRegistrationController implements MinimalisticController<
 		} else if (command.getStep() == 3) {
 		
 			log.debug("step 3: show form");
+			
+			/*
+			 * get instance of openid logic from session
+			 */
+			openIDLogic = (OpenID) requestLogic.getSessionAttribute(OpenID.OPENID_LOGIC_SESSION_ATTRIBUTE);
+			
 			/*
 			 * show profile form prefilled with information from the openID provider
 			 */
