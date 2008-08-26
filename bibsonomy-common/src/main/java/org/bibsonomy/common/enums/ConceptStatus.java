@@ -15,7 +15,7 @@ public enum ConceptStatus {
 	PICKED,
 	/** Concept is unpicked */
 	UNPICKED,
-	/** Concept is all */
+	/** Concept is all TODO: what does "all" mean? */
 	ALL;
 
 	/**
