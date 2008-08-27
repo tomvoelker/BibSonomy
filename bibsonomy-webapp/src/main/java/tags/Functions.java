@@ -341,6 +341,16 @@ public class Functions  {
 		}
 		return value;
 	}
+	
+	/** First, replaces certain BibTex characters, 
+	 * and then quotes JSON relevant characters. 
+	 *  
+	 * @param value
+	 * @return The cleaned String.
+	 */
+	public static String quoteJSONcleanBibTeX(final String value) {
+		return quoteJSON(BibcleanCSV.cleanBibtex(value));
+	}
 
 
 	/** Maps BibTeX entry types to SWRC entry types.

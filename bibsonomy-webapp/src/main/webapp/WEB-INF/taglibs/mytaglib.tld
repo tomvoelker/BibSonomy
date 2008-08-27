@@ -229,6 +229,12 @@
   </function>
 
   <function>
+  	<name>quoteJSONcleanBibTeX</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String quoteJSONcleanBibTeX(java.lang.String)</function-signature>
+  </function>
+
+  <function>
     <!-- maps BibTeX entrytypes to SWRC entrytypes  -->
   	<name>getSWRCEntryType</name>
   	<function-class>tags.Functions</function-class>
