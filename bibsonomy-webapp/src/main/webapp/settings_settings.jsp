@@ -178,12 +178,12 @@
 		</c:choose>
 		<input type="hidden" name="ckey" value="${ckey}"/>
 		<input type="hidden" name="apikey" value="true"/>
-		<input type="submit" value="(Re)generate API key"/> 
+		<input type="submit" value="(re)generate API key"/> 
 		</form>
 		<hr/>
     
         <%-- ------------------------ log level -------------------------- --%>
-        <h2>Logging</h2>
+        <h2>logging</h2>
         <form name="logLevel" method="post" action="/settings">
         <table>
           <tr>
@@ -197,10 +197,13 @@
           </tr> 
           <tr>
             <td>
-              <input type="submit"/>
+              <input type="submit" value="update settings"/>
               <input type="hidden" name="ckey" value="${ckey}"/>
             </td>
-        </tr>        
+          </tr>
+        </table>
+        </form>
+        <hr/>    
         
 					
           
