@@ -336,7 +336,7 @@ public class Functions  {
 				.replaceAll("\n", "\\\\n")   // linebreaks 
 				.replaceAll("\t", "\\\\t")   // tabs
 				.replaceAll("\r", "")        // windows linebreaks
-// done by c:out				.replaceAll("\"", "\\\\\"")  // quotation marks
+				.replaceAll("\"", "\\\\\"")  // quotation marks
 				;  
 		}
 		return value;
