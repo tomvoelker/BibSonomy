@@ -713,7 +713,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	private Boolean exceedsMaxSize(final List<TagIndex> index) {
 		// FIXME: why don't we use a "private static final" variable here
 		// instead of the "10"?
-		return index != null && index.size() > 10;
+		return index != null && index.size() > 5;
 	}
 
 	/**
