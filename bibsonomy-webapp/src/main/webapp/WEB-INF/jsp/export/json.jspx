@@ -76,7 +76,7 @@
       {  
          "type" : "Publication",
          "id"   : "${projectHome}bibtex/2${post.resource.intraHash}/${mtl:quoteJSON(post.user.name)}",
-         "label" : "<mtl:bibclean value='${mtl:quoteJSON(post.resource.title)}'/>",
+         "label" : "${mtl:quoteJSONcleanBibTeX(post.resource.title)}",
          "user" : "${mtl:quoteJSON(post.user.name)}",
          "description" : "${mtl:quoteJSON(post.description)}",
          "date" : "<fmt:formatDate value='${post.date}' pattern="yyyy-MM-dd hh:mm:ss"/>",
@@ -84,30 +84,30 @@
          "tags" : [
             <c:forEach var="tag" varStatus="tagStatus" items="${post.tags}">"${mtl:quoteJSON(tag.name)}"<c:if test="${not tagStatus.last}">,</c:if></c:forEach>
          ],
-         "pub-type": "<mtl:bibclean value='${post.resource.entrytype}' />",
-         <c:if test="${!empty post.resource.journal}">"journal": "<mtl:bibclean value='${mtl:quoteJSON(post.resource.journal)}' />",</c:if>
-         <c:if test="${!empty post.resource.booktitle}">"booktitle": "<mtl:bibclean value='${mtl:quoteJSON(post.resource.booktitle)}' />",</c:if>
-         <c:if test="${!empty post.resource.series}">"series": "<mtl:bibclean value='${mtl:quoteJSON(post.resource.series)}' />",</c:if>
-         <c:if test="${!empty post.resource.publisher}">"publisher":"<mtl:bibclean value='${mtl:quoteJSON(post.resource.publisher)}' />",</c:if>
-         <c:if test="${!empty post.resource.address}">"address":"<mtl:bibclean value='${mtl:quoteJSON(post.resource.address)}' />",</c:if>
+         "pub-type": "${post.resource.entrytype}",
+         <c:if test="${!empty post.resource.journal}">"journal": "${mtl:quoteJSONcleanBibTeX(post.resource.journal)}",</c:if>
+         <c:if test="${!empty post.resource.booktitle}">"booktitle": "${mtl:quoteJSONcleanBibTeX(post.resource.booktitle)}",</c:if>
+         <c:if test="${!empty post.resource.series}">"series": "${mtl:quoteJSONcleanBibTeX(post.resource.series)}",</c:if>
+         <c:if test="${!empty post.resource.publisher}">"publisher":"${mtl:quoteJSONcleanBibTeX(post.resource.publisher)}",</c:if>
+         <c:if test="${!empty post.resource.address}">"address":"${mtl:quoteJSONcleanBibTeX(post.resource.address)}",</c:if>
          "year": "${mtl:quoteJSON(post.resource.year)}", 
          "url": "${mtl:cleanUrl(post.resource.url)}", 
          <c:if test="${! empty post.resource.authorList}">
          "author": [ 
-            <c:forEach var="author" varStatus="authorStatus" items="${post.resource.authorList}">"<mtl:bibclean value="${mtl:quoteJSON(author.name)}" />"<c:if test="${not authorStatus.last}">,</c:if></c:forEach>
+            <c:forEach var="author" varStatus="authorStatus" items="${post.resource.authorList}">"${mtl:quoteJSONcleanBibTeX(author.name)}"<c:if test="${not authorStatus.last}">,</c:if></c:forEach>
          ],
          </c:if>
          <c:if test="${! empty post.resource.editorList}">
          "editor": [ 
-            <c:forEach var="editor" varStatus="editorStatus" items="${post.resource.editorList}">"<mtl:bibclean value="${mtl:quoteJSON(editor.name)}" />"<c:if test="${not editorStatus.last}">,</c:if></c:forEach>
+            <c:forEach var="editor" varStatus="editorStatus" items="${post.resource.editorList}">"${mtl:quoteJSONcleanBibTeX(editor.name)}"<c:if test="${not editorStatus.last}">,</c:if></c:forEach>
          ],
          </c:if>
-         <c:if test="${!empty post.resource.volume}">"volume": "<mtl:bibclean value="${mtl:quoteJSON(post.resource.volume)}"/>",</c:if>  
-         <c:if test="${!empty post.resource.number}">"number": "<mtl:bibclean value="${mtl:quoteJSON(post.resource.number)}"/>",</c:if>
-         <c:if test="${!empty post.resource.pages}">"pages": "<mtl:bibclean value="${mtl:quoteJSON(post.resource.pages)}"/>",</c:if>
-         <c:if test="${!empty post.resource.note}">"note": "<mtl:bibclean value="${mtl:quoteJSON(post.resource.note)}"/>",</c:if>
-         <c:if test="${!empty post.resource.bibtexAbstract}">"abstract": "<mtl:bibclean value="${mtl:quoteJSON(post.resource.bibtexAbstract)}"/>",</c:if>
-         "bibtexKey": "<mtl:bibclean value="${mtl:quoteJSON(post.resource.bibtexKey)}"/>"
+         <c:if test="${!empty post.resource.volume}">"volume": "${mtl:quoteJSONcleanBibTeX(post.resource.volume)}",</c:if>  
+         <c:if test="${!empty post.resource.number}">"number": "${mtl:quoteJSONcleanBibTeX(post.resource.number)}",</c:if>
+         <c:if test="${!empty post.resource.pages}">"pages": "${mtl:quoteJSONcleanBibTeX(post.resource.pages)}",</c:if>
+         <c:if test="${!empty post.resource.note}">"note": "${mtl:quoteJSONcleanBibTeX(post.resource.note)}",</c:if>
+         <c:if test="${!empty post.resource.bibtexAbstract}">"abstract": "${mtl:quoteJSONcleanBibTeX(post.resource.bibtexAbstract)}",</c:if>
+         "bibtexKey": "${mtl:quoteJSONcleanBibTeX(post.resource.bibtexKey)}"
       }<c:if test="${not status.last}">,</c:if>
       </c:forEach>
 
