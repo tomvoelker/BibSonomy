@@ -156,8 +156,18 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		 */
 		user.setSpammer(user.isSpammer());
 		/*
+		 * The reason for the next statement is similar to user.setSpammer().
+		 * 
+		 * The default value is 1.
+		 * 
+		 * See also <48BC063F.5030307@cs.uni-kassel.de>.
+		 * 
+		 */
+		user.setToClassify(user.getToClassify() == null ? 1 : user.getToClassify());
+		/*
 		 * probably, we should add here more code to check for null values!
 		 */
+		
 		
 		this.insert("insertUser", user, session);
 		
