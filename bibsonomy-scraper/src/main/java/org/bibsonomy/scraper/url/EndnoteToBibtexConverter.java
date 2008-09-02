@@ -35,28 +35,33 @@ public class EndnoteToBibtexConverter {
 	 * @param args
 	 */
 	public static void main (String[] args){
-		/*
-		String test = "%A Stewart, James Bruce\n" +
-"%A Freyer, Christoph\n" +
-"%A Elson, Joanna L.\n" +
-"%A Wredenberg, Anna\n" +
-"%A Cansu, Zekiye\n" +
-"%A Trifunovic, Aleksandra\n" +
-"%A Larsson, Nils-G&ouml;ran\n" +
-"%T Strong Purifying Selection in Transmission of Mammalian Mitochondrial DNA\n" +
-"%0 Journal Article\n" +
-"%D 2008\n" +
-"%J PLoS Biology\n" +
-"%P e10\n" +
-"%V 6\n" +
-"%N 1\n" +
-"%U http://dx.doi.org/10.1371%2Fjournal.pbio.0060010\n" +
-"%X There is an intense debate concerning whether selection or demographics has been most important in shaping the sequence variation observed in modern human mitochondrial DNA (mtDNA). Purifying selection is thought to be important in shaping mtDNA sequence evolution, but the strength of this selection has been debated, mainly due to the threshold effect of pathogenic mtDNA mutations and an observed excess of new mtDNA mutations in human population data. We experimentally addressed this issue by studying the maternal transmission of random mtDNA mutations in mtDNA mutator mice expressing a proofreading-deficient mitochondrial DNA polymerase. We report a rapid and strong elimination of nonsynonymous changes in protein-coding genes; the hallmark of purifying selection. There are striking similarities between the mutational patterns in our experimental mouse system and human mtDNA polymorphisms. These data show strong purifying selection against mutations within mtDNA protein-coding genes. To our knowledge, our study presents the first direct experimental observations of the fate of random mtDNA mutations in the mammalian germ line and demonstrates the importance of purifying selection in shaping mitochondrial sequence diversity.\n" +
-"%8 January 01, 2008\n" +
-"";
+		String test1 = "%A Knox, John A.\n" +
+			"%T Recent and Future Trends in U.S. Undergraduate Meteorology Enrollments, Degree Recipients, and Employment Opportunities\n" +
+			"%0 Journal Article\n" +
+			"%D 2008\n" +
+			"%J Bulletin of the American Meteorological Society\n" +
+			"%P 873-883\n" +
+			"\n" +
+			"%V 89\n" +
+			"%N 6\n" +
+			"%U http://dx.doi.org/10.1175%2F2008BAMS2375.1\n" +
+			"%8 June 01, 2008\n" +
+			"%X Using data derived from the American Meteorological Society&#8211;University Corporation for Atmospheric Research Curricula and U.S. Department of Education statistics, it is found that the number of meteorology bachelor&#039;s degree recipients in the United States has reached a level unprecedented in at least the past 40 years: from 600 to possibly 1,000 graduates per year. Furthermore, this number is increasing at a rate of approximately 8&#037;&#8211;11&#037; per year. The number of meteorology majors has also increased up to 10&#037; per year since the late 1990s. The number of meteorology bachelor&#039;s degree recipients is projected to increase at a rate of approximately 5&#037;&#8211;12&#037; per year through 2011. This simultaneous combination of record numbers and rapid recent increases is not mirrored in other related fields or in the American college population as a whole, suggesting a meteorology-specific cause for the increase in undergraduates. These graduation and enrollment trends are compared to data on the employment of meteorology bachelor&#039;s degree holders. The number of entry-level meteorology positions in the United States available each year appears to be no more than about half the number of new degreed meteorologists. According to data from the U.S. Bureau of Labor Statistics, growth in meteorology employment has averaged 1.2&#037; per year from 1994&#8211;2004 and is expected to be no more than 1.6&#037; per year through 2014. These numbers and trends portend an increasing oversupply of meteorology graduates versus meteorology employment opportunities if current enrollment and employment trends continue. Possible responses of the meteorology community are explored.";
+
+		String test2 = "%D 2003\n" +
+			"%0 ARTICLE\n" +
+			"%T Genomic gene clustering analysis of pathways in eukaryotes .\n" + 
+			"%J Genome Research\n" +
+			"%V 13\n" +
+			"%P 875 882\n" + 
+			"%A Lee JM\n" +
+			"%A Sonnhammer ELL\n" +
+			"%M WBPaper00005873\n" +
+			"%X Genomic clustering of genes in a pathway is commonly found in prokaryotes due to transcriptional operons , but these are not present in most eukaryotes . Yet , there might be clustering to a lesser extent of pathway members in eukaryotic genomes , that assist coregulation of a set of functionally cooperating genes . We analyzed five sequenced eukaryotic genomes for clustering of genes assigned to the same pathway in the KEGG database . Between 98% and 30% of the analyzed pathways in a genome were found to exhibit significantly higher clustering levels than expected by chance . in descending order by the level of clustering , the genomes studied were Saccharomyces cerevisiae , Homo sapiens , Caenorhabditis elegans , Arabidopsis thaliana , and Drosophila melanogaster . Surprisingly , there is not much agreement between genomes in terms of which pathways are most clustered . Only seven of 69 pathways found in all species were significantly clustered in all five of them . This species-specific pattern of pathway clustering may reflect adaptations or evolutionary events unique to a particular lineage . We note that although operons are common in C elegans , only 58% of the pathways showed significant clustering , which is less than in human . Virtually all pathways in S cerevisiae showed significant";
+
 		EndnoteToBibtexConverter converter = new EndnoteToBibtexConverter();
-		String bibtex = converter.processEntry(test);
-		System.out.println(bibtex);*/
+		String bibtex = converter.processEntry(test1);
+		System.out.println(bibtex);
 	}
 	
 	//main method

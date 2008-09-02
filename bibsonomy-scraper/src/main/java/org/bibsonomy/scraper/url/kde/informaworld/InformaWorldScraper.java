@@ -4,6 +4,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -21,8 +23,11 @@ public class InformaWorldScraper implements Scraper {
 	private static final String info = "Informaworld Scraper: This Scraper parses a publication from http://www.informaworld.com/ "+
 	"and extracts the adequate BibTeX entry. Author: KDE";
 
-	private static final String INFORMAWORLD_HOST_NAME  = "http://www.informaworld.com";
+	private static final String INFORMAWORLD_HOST_NAME  = "informaworld.com";
 	private static final String INFORMAWORLD_ABSTRACT_PATH = "/smpp/content~content=";
+	
+	private static final String PATTERN_ID = "content=([^~]*)";
+	
 	private static final String INFORMAWORLD_BIBTEX_PATH = "/smpp/content~db=all";
 	private static final String INFORMAWORLD_BIBTEX_DOWNLOAD_PATH = "/smpp/content?file.txt&tab=citation&popup=&group=&expanded=&mode=&maction=&backurl=&citstyle=endnote&showabs=false&format=file&toemail=&subject=&fromname=&fromemail=&content={id}&selecteditems={sid}";
 	
@@ -44,19 +49,17 @@ public class InformaWorldScraper implements Scraper {
 			 * extract URL and check against several (mirror) host names
 			 */
 			String url = sc.getUrl().toString();
-			if(url.startsWith(INFORMAWORLD_HOST_NAME)) {
+			if(sc.getUrl().getHost().endsWith(INFORMAWORLD_HOST_NAME)) {
 				
 				String id = null;
 				
-				if(url.startsWith(INFORMAWORLD_HOST_NAME + INFORMAWORLD_ABSTRACT_PATH)) {
-					id = url.substring(url.indexOf("~content=") + 9, url.indexOf("~db="));
-				}
+				Pattern pattern = Pattern.compile(PATTERN_ID);
+				Matcher matcher = pattern.matcher(sc.getUrl().getPath());
+				if(matcher.find())
+					id = matcher.group(1);
 				
-				if(url.startsWith(INFORMAWORLD_HOST_NAME + INFORMAWORLD_BIBTEX_PATH)) {
-					id = url.substring(url.indexOf("~content=") + 9, url.indexOf("~tab="));
-				}
 				
-				String citUrl = INFORMAWORLD_HOST_NAME + (INFORMAWORLD_BIBTEX_DOWNLOAD_PATH.replace("{id}", id)).replace("{sid}", id.substring(1));
+				String citUrl = "http://www." + INFORMAWORLD_HOST_NAME + (INFORMAWORLD_BIBTEX_DOWNLOAD_PATH.replace("{id}", id)).replace("{sid}", id.substring(1));
 				
 				try {
 					sc.setUrl(new URL(citUrl));

@@ -7,7 +7,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * Scraper URL tests #77 & #78 for DBLPScraper
+ * Scraper URL tests #77 #78 #123 for DBLPScraper
  * @author wbi
  * @version $Id$
  */
@@ -32,4 +32,15 @@ public class InformaWorldScraperTest {
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_78"));
 	}
+	
+	/**
+	 * starts URL test with id url_123
+	 */
+	@Test
+	@Ignore
+	public void url3TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_123"));
+	}
+	
 }
