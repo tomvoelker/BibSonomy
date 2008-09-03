@@ -100,7 +100,7 @@
 				
 				<!-- main content pane -->
 				<div id="outer">
-					<c:if test="${not command.context.userLoggedIn and errors.errorCount == 0 and displayIntroduction}">
+					<c:if test="${not command.context.userLoggedIn and displayIntroduction and (empty errors or errors.errorCount == 0)}">
 						<div id="general">
 							<p class="smalltext">
 								<fmt:message key="system.about">
