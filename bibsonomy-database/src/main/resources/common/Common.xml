@@ -216,6 +216,14 @@
 		    $groups[]$
 		</iterate>)	
 	</sql>
+	
+	<!-- restrict visibility directly, i.e. without checking for user's own items -->
+	<sql id="inGroupsUnchecked2">
+		t2.group in (
+		<iterate property="groups" conjunction=",">
+		    $groups[]$
+		</iterate>)	
+	</sql>
 		
 	<!-- 
 		 this only needed for getBibTexDuplicate, as refactoring that query to
