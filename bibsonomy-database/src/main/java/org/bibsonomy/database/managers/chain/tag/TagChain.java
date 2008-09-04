@@ -10,6 +10,7 @@ import org.bibsonomy.database.managers.chain.tag.get.GetTagsByAuthor;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByExpression;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByGroup;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByUser;
+import org.bibsonomy.database.managers.chain.tag.get.GetTagsPopular;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsViewable;
 import org.bibsonomy.database.managers.chain.tag.get.getTagsByHash;
 import org.bibsonomy.database.managers.chain.tag.get.getTagsByHashForUser;
@@ -34,6 +35,7 @@ public class TagChain implements FirstChainElement<Tag, TagParam> {
 	private final ChainElement<Tag, TagParam> getSimilarTags;
 	private final ChainElement<Tag, TagParam> getTagsByHash;
 	private final ChainElement<Tag, TagParam> getTagsByHashForUser;
+	private final ChainElement<Tag, TagParam> getTagsPopular;
 
 	/**
 	 * Constructs the chain
@@ -50,6 +52,7 @@ public class TagChain implements FirstChainElement<Tag, TagParam> {
 		this.getTagsByHash = new getTagsByHash();
 		this.getTagsByHashForUser = new getTagsByHashForUser();
 		this.getSimilarTags = new GetSimilarTags();
+		this.getTagsPopular = new GetTagsPopular();
 
 		this.getTagsByUser.setNext(this.getTagsByGroup);
 		this.getTagsByGroup.setNext(this.getAllTags);
@@ -61,6 +64,7 @@ public class TagChain implements FirstChainElement<Tag, TagParam> {
 		this.getTagsByRegularExpression.setNext(this.getRelatedTagsForGroup);
 		this.getRelatedTagsForGroup.setNext(this.getTagsByHash);
 		this.getTagsByHash.setNext(this.getTagsByHashForUser);
+		this.getTagsByHashForUser.setNext(this.getTagsPopular);
 	}
 
 	public ChainElement<Tag, TagParam> getFirstElement() {
