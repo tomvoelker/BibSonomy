@@ -171,6 +171,15 @@ public class RequestLogic {
 	}
 	
 	/**
+	 * @return the context of the request
+	 */
+	public String getContextPath() {
+		return request.getContextPath();		
+	}
+	
+	
+	
+	/**
 	 * The HTTP request the logic is working on.
 	 * 
 	 * @param request

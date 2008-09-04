@@ -1,6 +1,8 @@
 package org.bibsonomy.webapp.util.auth;
 
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -163,13 +165,31 @@ public class OpenID implements Serializable {
 			 *  extract the receiving URL from the HTTP request
 			 */
 			StringBuffer receivingURL = requestLogic.getRequestURL();
+			
+			/*
+			 * workaround because the tomcat is behind a proxy
+			 */
+			StringBuffer newReceivingURL = new StringBuffer();
+						
+			URL requestURL = new URL(receivingURL.toString());
+			
+			String protocol = requestURL.getProtocol();
+			String host = requestURL.getHost();
+			String path = requestURL.getPath();
+			String contextPath = requestLogic.getContextPath();
+			
+			if (path.startsWith(contextPath)) {
+				path = path.replace(contextPath, "");
+			}
+			
+			newReceivingURL.append(protocol).append("://").append(host).append(path);
 			String queryString = requestLogic.getQueryString();
-			if (queryString != null && queryString.length() > 0) receivingURL.append("?").append(requestLogic.getQueryString());
-
+			if (queryString != null && queryString.length() > 0) newReceivingURL.append("?").append(requestLogic.getQueryString());
+			
 			/*
 			 * verify the response
 			 */
-			VerificationResult verification = manager.verify(receivingURL.toString(), response, discovered);
+			VerificationResult verification = manager.verify(newReceivingURL.toString(), response, discovered);
 
 			/*
 			 * examine the verification result and extract the verified
@@ -187,6 +207,7 @@ public class OpenID implements Serializable {
 			 */
 			if (verified != null) {
 				User user = new User();
+				user.setOpenID(openID);
 				AuthSuccess authSuccess = (AuthSuccess) verification.getAuthResponse();
 				
 				if (authSuccess.hasExtension(SRegMessage.OPENID_NS_SREG) && retrieveProfileInformation) {
@@ -208,14 +229,15 @@ public class OpenID implements Serializable {
 				        user.setGender(gender);
 				        user.getSettings().setDefaultLanguage(language);
 				        user.setPlace(country);
-				        user.setOpenID(openID);
 				    }
 				}				
 				return user; 
 			} 
-			log.error("OpenID verification failed");			
 		} catch (OpenIDException e) {
 			log.error("OpenID verification failed: " + e.getMessage());
+		} catch (MalformedURLException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
 		}
 		return null;
 	}	
