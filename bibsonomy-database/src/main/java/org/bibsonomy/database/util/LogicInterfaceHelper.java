@@ -1,5 +1,6 @@
 package org.bibsonomy.database.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -107,6 +108,13 @@ public class LogicInterfaceHelper {
 						continue;
 					}
 
+					if (tag.length() > 9 && tag.substring(0, 9).equals("sys:days:")) {
+						// clear the tagindex and set the value
+						param.getTagIndex().clear();
+						param.setDays(Integer.parseInt(tag.substring(9).trim()));
+						break;
+					}
+					
 					if (tag.charAt(0) != '-' && tag.charAt(0) != '<' && tag.charAt(tag.length() - 1) != '>') {
 						param.addTagName(tag);
 						continue;

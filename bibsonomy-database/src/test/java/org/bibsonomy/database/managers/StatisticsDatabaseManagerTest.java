@@ -1,7 +1,7 @@
 package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertEquals;
-
+import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,4 +95,11 @@ public class StatisticsDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		tagIndex.add(t2);
 		assertEquals(2, this.statisticsDb.getNumberOfResourcesForUserAndTags(BibTex.class, tagIndex, "testuser1", "testuser1", this.visibleGroupIDs, this.dbSession));
 	}
+	
+	public void getResourcesPopularDaysTest(){
+		int days = 2;
+		assertTrue(this.statisticsDb.getPopularDays(BibTex.class, days, this.dbSession) != null);
+		assertTrue(this.statisticsDb.getPopularDays(Bookmark.class, days, this.dbSession) != null);
+	}
+	
 }

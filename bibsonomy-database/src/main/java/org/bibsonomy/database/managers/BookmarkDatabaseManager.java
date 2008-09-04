@@ -20,6 +20,7 @@ import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -341,8 +342,27 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @param session
 	 * @return list of bookmark posts
 	 */
-	public List<Post<Bookmark>> getBookmarkPopular(final DBSession session) {
+	public List<Post<Bookmark>> getBookmarkPopular(final int limit, final int offset, final DBSession session) {
 		final BookmarkParam param = new BookmarkParam();
+		param.setOffset(offset);
+		param.setLimit(limit);
+		return this.bookmarkList("getBookmarkPopular", param, session);
+	}
+	
+	/**
+	 * @see BookmarkDatabaseManager#getBookmarkPopular(BookmarkParam, DBSession)
+	 * 
+	 * @param days
+	 * @param limit
+	 * @param offset
+	 * 
+	 * @return list of bookmark posts
+	 */
+	public List<Post<Bookmark>> getBookmarkPopular(final int days, final int limit, final int offset, final DBSession session) {
+		final BookmarkParam param = new BookmarkParam();
+		param.setDays(days);
+		param.setOffset(offset);
+		param.setLimit(limit);
 		return this.bookmarkList("getBookmarkPopular", param, session);
 	}
 
@@ -795,7 +815,9 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	private void insertBookmarkPost(final Post<Bookmark> post, final DBSession session) {
 		if (present(post.getResource()) == false) throw new InvalidModelException("There is no resource for this post.");
 		if (present(post.getGroups()) == false) throw new InvalidModelException("There are no groups for this post.");
-
+		/*if (post.getGroups().contains(GroupID.PUBLIC) && post.getGroups().size() > 1) throw new InvalidModelException("Invalid constilation of groups for this post.");
+		if (post.getGroups().contains(GroupID.PRIVATE) && post.getGroups().size() > 1) throw new InvalidModelException("Invalid constilation of groups for this post.");*/
+		
 		final BookmarkParam param = new BookmarkParam();
 		param.setResource(post.getResource());
 		param.setDate(post.getDate());
@@ -804,10 +826,23 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setDescription(post.getDescription());
 		param.setUserName(post.getUser().getName());
 		param.setUrl(post.getResource().getUrl());
+		
+		/* nur ein eintrag pro post in der bookmark tabelle*/
 		for (final Group group : post.getGroups()) {
 			param.setGroupId(group.getGroupId());
 			this.insertBookmark(param, session);
 		}
+		
+		/*
+		MULTIPLE GROUPS FOR A POST
+		if(post.getGroups().size() > 1){
+			param.setGroupId(GroupID.MULTIPLE.getId());
+		}else if(param.getGroups().contains(GroupID.PUBLIC)){
+			param.setGroupId(GroupID.PUBLIC.getId());
+		}else{
+			param.setGroupId(GroupID.PRIVATE.getId());
+		}
+		this.insertBookmark(param, session);*/
 	}
 
 	// Insert counter, hash and URL of bookmark
@@ -990,5 +1025,95 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 */
 	public List<Post<Bookmark>> getBookmarkByConceptByTag(final BookmarkParam param, final DBSession session){
 		return this.bookmarkList("getBookmarkByConceptByTag", param, session);
+	}
+	
+	/**
+	 * 
+	 * @param requestedUserName
+	 * @param loginUserName
+	 * @param visibleGroupIDs
+	 * @param session
+	 * @return number of bookmarks that are available for some groups
+	 */
+	public Object getGroupBookmarkCount(final String requestedUserName, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session){			
+		BookmarkParam param = new BookmarkParam();
+		param.setRequestedUserName(requestedUserName);
+		param.setUserName(loginUserName);
+		param.setGroups(visibleGroupIDs);
+		
+		return this.queryForObject("getGroupBookmarkCount", param, session);
+	}
+	
+	/**
+	 * @param requestedUserName
+	 * @param loginUserName
+	 * @param tagIndex
+	 * @param visibleGroupIDs
+	 * @param session
+	 * @return number of bookmarks that are available for some groups and tagged by a tag of the tagIndex
+	 */
+	public Object getGroupBookmarkCountByTag(final String requestedUserName, final String loginUserName, final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, final DBSession session){			
+		BookmarkParam param = new BookmarkParam();
+		param.setTagIndex(tagIndex);
+		param.setRequestedUserName(requestedUserName);
+		param.setUserName(loginUserName);
+		param.setGroups(visibleGroupIDs);
+		
+		return this.queryForObject("getGroupBookmarkCountByTag", param, session);
+	}
+	
+	/**
+	 * 
+	 * @param requestedUserName
+	 * @param loginUserName
+	 * @param limit 
+	 * @param offset 
+	 * @param visibleGroupIDs
+	 * @param session
+	 * @return list of bookmark posts
+	 */
+	public List<Post<Bookmark>> getBookmarksForMyGroupPosts(final String requestedUserName, final String loginUserName, final int limit, final int offset, final List<Integer> visibleGroupIDs, final DBSession session) {
+		BookmarkParam param = new BookmarkParam();
+		param.setRequestedUserName(requestedUserName);
+		param.setUserName(loginUserName);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		param.setGroups(visibleGroupIDs);
+		
+		return this.bookmarkList("getBookmarksForMyGroupPosts",param,session);
+	}
+	
+	/**
+	 * @param requestedUserName
+	 * @param loginUserName
+	 * @param tagIndex
+	 * @param limit
+	 * @param offset
+	 * @param visibleGroupIDs
+	 * @param session
+	 * @return list of bookmark posts
+	 */
+	public List<Post<Bookmark>> getBookmarksForMyGroupPostsByTag(final String requestedUserName, final String loginUserName, final List<TagIndex> tagIndex, final int limit, final int offset, final List<Integer> visibleGroupIDs, final DBSession session){
+		BookmarkParam param = new BookmarkParam();
+		param.setRequestedUserName(requestedUserName);
+		param.setUserName(loginUserName);
+		param.setTagIndex(tagIndex);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		param.setGroups(visibleGroupIDs);
+		
+		return this.bookmarkList("getBookmarksForMyGroupPostsByTag",param,session);
+	}
+	
+	/**
+	 * @param days
+	 * @param session
+	 * @return the number of days when a bookmark was popular
+	 */
+	public Object getBookmarkPopularDays(final int days, final DBSession session){
+		BookmarkParam param = new BookmarkParam();
+		param.setDays(days);
+		
+		return this.queryForObject("getBookmarkPopularDays", param, session);
 	}
 }

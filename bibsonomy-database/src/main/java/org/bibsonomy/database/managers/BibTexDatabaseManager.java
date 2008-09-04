@@ -492,6 +492,24 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	}
 	
 	/**
+	 * @see BibTexDatabaseManager#getBibTexPopular(BibTexParam, DBSession)
+	 * 
+	 * @param days
+	 * @param limit
+	 * @param offset
+	 * @param session
+	 * @return list of bibtex posts
+	 */
+	public List<Post<BibTex>> getBibTexPopular(final int days, final int limit, final int offset, final HashID simHash, final DBSession session) {
+		final BibTexParam param = new BibTexParam();
+		param.setDays(days);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		param.setSimHash(simHash);
+		return this.bibtexList("getBibTexPopular", param, session);
+	}
+	
+	/**
 	 * <em>/search/ein+lustiger+satz</em><br/><br/>
 	 * 
 	 * Prepares queries to retrieve posts which match a fulltext search in the
@@ -1181,17 +1199,33 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	protected void insertBibTexPost(final Post<BibTex> post, final DBSession session) {
 		if (present(post.getResource()) == false) throw new InvalidModelException("There is no resource for this post.");
 		if (present(post.getGroups()) == false) throw new InvalidModelException("There are no groups for this post.");
-
+		/*if (post.getGroups().contains(GroupID.PUBLIC) && post.getGroups().size() > 1) throw new InvalidModelException("Invalid constilation of groups for this post.");
+		if (post.getGroups().contains(GroupID.PRIVATE) && post.getGroups().size() > 1) throw new InvalidModelException("Invalid constilation of groups for this post.");*/
+		
 		final BibTexParam param = new BibTexParam();
 		param.setResource(post.getResource());
 		param.setRequestedContentId(post.getContentId());
 		param.setDescription(post.getDescription());
 		param.setDate(post.getDate());
 		param.setUserName(((post.getUser() != null) ? post.getUser().getName() : ""));
-		for (final Group group : post.getGroups()) {
-			param.setGroupId(group.getGroupId());
+		
+		/* nur ein eintrag pro post in der bibtex tabelle*/
+		 for (final Group group : post.getGroups()) {
+	 		param.setGroupId(group.getGroupId());
 			this.insertBibTex(param, session);
+		 }
+		
+		
+		/*
+		MULTIPLE GROUPS FOR A POST
+		if(post.getGroups().size() > 1){
+			param.setGroupId(GroupID.MULTIPLE.getId());
+		}else if(param.getGroups().contains(GroupID.PUBLIC)){
+			param.setGroupId(GroupID.PUBLIC.getId());
+		}else{
+			param.setGroupId(GroupID.PRIVATE.getId());
 		}
+		this.insertBibTex(param, session);*/
 	}
 
 	// TODO: test insertion (tas, bibtex, ...)
@@ -1268,7 +1302,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 //					post.setGroups(groups);
 //				}				
 			}
-
+			/*FIXME
+			 * Warum wird insertTags nicht in insertBibTexPost aufgerufen?
+			 * in deletePost wird ja auch deleteTags aufgerufen
+			 */
 			this.insertBibTexPost(post, session);			
 			// add the tags
 			this.tagDb.insertTags(post, session);
@@ -1427,5 +1464,95 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 */
 	public List<Post<BibTex>> getBibTexByKey(BibTexParam param, DBSession session) {
 		return this.bibtexList("getBibTexByKey",param,session);
+	}
+	
+	/**
+	 * 
+	 * @param requestedUserName
+	 * @param loginUserName
+	 * @param visibleGroupIDs
+	 * @param session
+	 * @return number of publications that are available for some groups
+	 */
+	public Object getGroupBibtexCount(final String requestedUserName, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session){
+		BibTexParam param = new BibTexParam();
+		param.setRequestedUserName(requestedUserName);
+		param.setUserName(loginUserName);
+		param.setGroups(visibleGroupIDs);
+		
+		return this.queryForObject("getGroupBibtexCount", param, session);
+	}
+	
+	/**
+	 * @param requestedUserName
+	 * @param loginUserName
+	 * @param tagIndex
+	 * @param visibleGroupIDs
+	 * @param session
+	 * @return number of publications that are available for some groups and tagged by a tag of the tagIndex
+	 */
+	public Object getGroupBibtexCountByTag(final String requestedUserName, final String loginUserName, final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, final DBSession session){
+		BibTexParam param = new BibTexParam();
+		param.setTagIndex(tagIndex);
+		param.setRequestedUserName(requestedUserName);
+		param.setUserName(loginUserName);
+		param.setGroups(visibleGroupIDs);
+		
+		return this.queryForObject("getGroupBibtexCountByTag", param, session);
+	}
+	
+	/**
+	 * 
+	 * @param requestedUserName
+	 * @param loginUserName
+	 * @param limit 
+	 * @param offset 
+	 * @param visibleGroupIDs
+	 * @param session
+	 * @return list of bibtex posts
+	 */
+	public List<Post<BibTex>> getBibTexForMyGroupPosts(final String requestedUserName, final String loginUserName, final int limit, final int offset, final List<Integer> visibleGroupIDs, final DBSession session) {
+		BibTexParam param = new BibTexParam();
+		param.setRequestedUserName(requestedUserName);
+		param.setUserName(loginUserName);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		param.setGroups(visibleGroupIDs);
+		
+		return this.bibtexList("getBibtexForMyGroupPosts",param,session);
+	}
+	
+	/**
+	 * @param requestedUserName
+	 * @param loginUserName
+	 * @param tagIndex
+	 * @param limit
+	 * @param offset
+	 * @param visibleGroupIDs
+	 * @param session
+	 * @return list of bibtex posts
+	 */
+	public List<Post<BibTex>> getBibTexForMyGroupPostsByTag(final String requestedUserName, final String loginUserName, final List<TagIndex> tagIndex, final int limit, final int offset, final List<Integer> visibleGroupIDs, final DBSession session){
+		BibTexParam param = new BibTexParam();
+		param.setRequestedUserName(requestedUserName);
+		param.setUserName(loginUserName);
+		param.setTagIndex(tagIndex);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		param.setGroups(visibleGroupIDs);
+		
+		return this.bibtexList("getBibtexForMyGroupPostsByTag",param,session);
+	}
+	
+	/**
+	 * @param days
+	 * @param session
+	 * @return the number of days when a publication was popular
+	 */
+	public Object getBibTexPopularDays(final int days, final DBSession session){
+		BibTexParam param = new BibTexParam();
+		param.setDays(days);
+		
+		return this.queryForObject("getBibTexPopularDays", param, session);
 	}
 }

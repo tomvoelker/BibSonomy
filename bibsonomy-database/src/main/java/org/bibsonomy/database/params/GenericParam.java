@@ -147,6 +147,8 @@ public abstract class GenericParam {
 	private Order order;
 	private GroupingEntity grouping;
 	private FilterEntity filter;
+	//the days of a popular resource
+	private int days;
 
 	public GenericParam() {
 		this.tagIndex = new ArrayList<TagIndex>();
@@ -167,6 +169,8 @@ public abstract class GenericParam {
 		this.grouping = GroupingEntity.ALL;
 		
 		this.groups =  new HashSet<Integer>();
+		//when using this field the value of days must be greater 0 
+		this.days = -1;
 		
 	}
 
@@ -540,4 +544,12 @@ public abstract class GenericParam {
 	public void addGroups(Collection<Integer> groups) {
 		this.groups.addAll(groups);
 	}	
+	
+	public void setDays(int days){
+		this.days = days;
+	}
+	
+	public int getDays(){
+		return this.days;
+	}
 }

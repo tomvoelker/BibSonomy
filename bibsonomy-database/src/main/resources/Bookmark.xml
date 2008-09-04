@@ -120,12 +120,26 @@
 		ORDER BY b.date DESC, b.content_id DESC
 	</select>
 	
-	<select id="getBookmarkPopular" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+	<!-- <select id="getBookmarkPopular" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT <include refid="bookmarkAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name
 		FROM temp_bookmark b
 		LEFT OUTER JOIN tas AS t ON t.content_id = b.content_id, urls u
 		WHERE u.book_url_hash = b.book_url_hash
 		ORDER BY b.rank
+	</select>-->
+	
+	<select id="getBookmarkPopular" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+		SELECT <include refid="bookmarkAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name
+		FROM (SELECT * FROM temp_bookmark b2 
+			  WHERE b2.popular_days = (SELECT popular_days FROM temp_bookmark GROUP BY popular_days ORDER by popular_days LIMIT 1 OFFSET #days#)
+			  ORDER BY b2.rank LIMIT #limit# OFFSET #offset#) b
+		LEFT OUTER JOIN tas AS t ON t.content_id = b.content_id, urls u
+		WHERE u.book_url_hash = b.book_url_hash
+		ORDER BY b.rank 
+	</select>
+	
+	<select id="getBookmarkPopularDays" resultClass="int" parameterClass="bookmarkParam">
+		SELECT popular_days FROM temp_bookmark GROUP BY popular_days ORDER by popular_days LIMIT 1 OFFSET #days#
 	</select>
 
 	<select id="getBookmarkByUserFriends" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
@@ -400,4 +414,78 @@
 		JOIN tas t ON a.content_id = t.content_id
 		ORDER BY a.date DESC;	
 	</select>
+
+	<select id="getGroupBookmarkCount" resultClass="int" parameterClass="bookmarkParam">
+		SELECT COUNT(DISTINCT t1.content_id) 
+		FROM grouptas t1
+		WHERE t1.user_name = #requestedUserName#
+		AND <include refid="inGroupsUnchecked"/>
+		AND t1.content_type = #contentType#
+	</select>
+	
+	<select id="getGroupBookmarkCountByTag" resultClass="int" parameterClass="bookmarkParam">
+		SELECT COUNT(DISTINCT t1.content_id) 
+		FROM grouptas t1
+		<iterate property="tagIndex">
+			<isGreaterThan property="tagIndex[].index" compareValue="1">
+				JOIN tas t$tagIndex[].index$ USING (content_id)
+			</isGreaterThan>
+		</iterate>
+		WHERE <include refid="tagWhereQuery"/>
+		AND t1.user_name = #requestedUserName#
+		AND <include refid="inGroupsUnchecked"/>
+		AND t1.content_type = #contentType#
+	</select>
+	
+	<select id="getBookmarksForMyGroupPosts" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
+			   bb.book_url, bb.book_url_ctr AS count, t.tag_name, t.user_name 
+		
+		FROM (
+			SELECT t1.content_id, t1.group, t1.date, b.book_url_hash, b.book_description AS title, b.book_extended AS description, u.book_url, u.book_url_ctr
+			FROM grouptas t1
+			LEFT JOIN bookmark b ON (b.content_id = t1.content_id)
+			LEFT JOIN urls u ON (u.book_url_hash = b.book_url_hash) 
+			  
+			WHERE t1.user_name = #requestedUserName#
+			AND <include refid="inGroupsUnchecked"/>
+			  
+			GROUP BY t1.content_id 
+			ORDER BY t1.date DESC
+			LIMIT #limit# OFFSET #offset# 
+			 ) AS bb
+		
+		LEFT JOIN tas t ON t.content_id = bb.content_id, groupids AS g 
+		WHERE bb.group = g.group 
+		ORDER BY bb.date DESC, bb.content_id DESC
+	</select>
+	
+	<select id="getBookmarksForMyGroupPostsByTag" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
+			   bb.book_url, bb.book_url_ctr AS count, t.tag_name, t.user_name 
+		
+		FROM (
+			SELECT t1.content_id, t1.group, t1.date, b.book_url_hash, b.book_description AS title, b.book_extended AS description, u.book_url, u.book_url_ctr
+			FROM grouptas t1
+			<iterate property="tagIndex">
+				<isGreaterThan property="tagIndex[].index" compareValue="1">
+					JOIN copytas t$tagIndex[].index$ USING (content_id)
+				</isGreaterThan>
+			</iterate>
+			LEFT JOIN bookmark b ON (b.content_id = t1.content_id AND t1.user_name = #requestedUserName#)
+			LEFT JOIN urls u ON (u.book_url_hash = b.book_url_hash) 
+			
+			WHERE <include refid="inGroupsUnchecked"/>
+			AND <include refid="tagWhereQuery"/> 
+			  
+			GROUP BY t1.content_id 
+			ORDER BY t1.date DESC
+			LIMIT #limit# OFFSET #offset# 
+			 ) AS bb
+		
+		LEFT JOIN tas t ON t.content_id = bb.content_id, groupids AS g 
+		WHERE bb.group = g.group 
+		ORDER BY bb.date DESC, bb.content_id DESC
+	</select>
+
 </sqlMap>

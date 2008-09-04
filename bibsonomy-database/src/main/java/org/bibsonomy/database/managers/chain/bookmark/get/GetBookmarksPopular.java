@@ -23,13 +23,13 @@ public class GetBookmarksPopular extends BookmarkChainElement {
 
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
-		return this.db.getBookmarkPopular(param, session);
+		return this.db.getBookmarkPopular(param.getDays(), param.getLimit(), param.getOffset(), session);
 	}
 
 	@Override
 	protected boolean canHandle(final BookmarkParam param) {
 		return (param.getGrouping() == GroupingEntity.ALL &&
-				!present(param.getTagIndex()) &&
+				param.getDays() >= 0 &&
 				!present(param.getHash()) &&
 				nullOrEqual(param.getOrder(), Order.POPULAR) &&
 				!present(param.getSearch()));

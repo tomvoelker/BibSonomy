@@ -197,6 +197,7 @@ public class BookmarkChainTest extends AbstractChainTest {
 		this.bookmarkParam.setHash(null);
 		this.bookmarkParam.setOrder(Order.POPULAR);
 		this.bookmarkParam.setTagIndex(null);
+		this.bookmarkParam.setDays(0);
 		this.bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, this.chainStatus);
 		assertEquals(GetBookmarksPopular.class, this.chainStatus.getChainElement().getClass());
 	}

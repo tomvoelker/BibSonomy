@@ -348,9 +348,15 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * tests getBibTexPopular
 	 */
 	@Test
+	//TEST GEÄNDERT, IST NURNOCH ERFOLGREICH WENN EIN ELEMENT GEFUNDEN WIRD WEGEN NEUEM POPULAR STATEMENT
 	public void getBibTexPopular() {
-		List<Post<BibTex>> l = this.bibTexDb.getBibTexPopular(10, 0, HashID.INTER_HASH, this.dbSession);
-		assertEquals(2, l.size());
+		BibTexParam param = new BibTexParam();
+		param.setDays(0);
+		param.setOffset(0);
+		param.setLimit(10);
+		param.setSimHash(HashID.INTER_HASH);
+		List<Post<BibTex>> l = this.bibTexDb.getBibTexPopular(param, this.dbSession);
+		assertEquals(1, l.size());
 	}
 
 	/**

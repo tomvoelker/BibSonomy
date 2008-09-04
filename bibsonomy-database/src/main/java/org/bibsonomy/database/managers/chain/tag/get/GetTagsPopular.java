@@ -12,22 +12,28 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
 
 /**
- * @author Dominik Benz
- * @author Miranda Grahl
+ * @author mwa
  * @version $Id$
  */
-public class GetAllTags extends TagChainElement {
+public class GetTagsPopular extends TagChainElement {
 
+	
 	@Override
-	protected List<Tag> handle(final TagParam param, final DBSession session) {
-		return this.db.getAllTags(param, session);
+	protected List<Tag> handle(TagParam param, DBSession session) {
+		return this.db.getTagsPopular(param, session);
 	}
-
+	
 	@Override
-	protected boolean canHandle(final TagParam param) {
-		return (param.getGrouping() == GroupingEntity.ALL &&
-				param.getOrder() != Order.POPULAR &&
-				!present(param.getTagIndex()) &&
+	protected boolean canHandle(TagParam param) {
+		return (param.getGrouping() == GroupingEntity.ALL && 
+				param.getOrder() == Order.POPULAR &&
+				!present(param.getRegex()) &&
+				!present(param.getSearch()) &&
 				!present(param.getHash()));
+	
 	}
+
+	
+	
+
 }

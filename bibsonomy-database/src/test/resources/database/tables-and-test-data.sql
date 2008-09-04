@@ -1273,16 +1273,17 @@ CREATE TABLE `temp_bibtex` (
   `ctr` int(10) unsigned NOT NULL default '1',
   `rank` int(10) unsigned NOT NULL default '1',
   `rating` tinyint(3) NOT NULL default '0',
-  PRIMARY KEY  (`rank`)
+  `popular_days` smallint NOT NULL default '1',
+  PRIMARY KEY (`rank`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- 
 -- Data for table `temp_bibtex`
 -- 
 
-INSERT INTO `temp_bibtex` (`content_id`, `journal`, `volume`, `chapter`, `edition`, `month`, `day`, `bookTitle`, `howPublished`, `institution`, `organization`, `publisher`, `address`, `school`, `series`, `bibtexKey`, `date`, `user_name`, `url`, `type`, `description`, `annote`, `note`, `pages`, `bKey`, `number`, `crossref`, `misc`, `bibtexAbstract`, `entrytype`, `title`, `author`, `editor`, `year`, `simhash0`, `simhash1`, `simhash2`, `simhash3`, `ctr`, `rank`, `rating`) VALUES
-(10, 'test journal', 'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle', 'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'test bibtexKey', '1815-12-10 00:00:00', 'testuser1', 'http://www.testurl.org', '2', 'test description', 'test annote', 'test note', 'test pages', 'test bKey', 'test number', 'test crossref', 'test misc', 'test bibtexAbstract', 'test entrytype', 'test title', 'test author', 'test editor', 'test year', '9abf98937435f05aec3d58b214a2ac58', 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'b77ddd8087ad8856d77c740c8dc2864a', '', 1, 1, 0),
-(12, 'test journal for group3', 'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle for group3', 'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'test bibtexKey', '1815-12-10 00:00:00', 'testuser1', 'http://www.testurl.org', '2', 'test description', 'test annote', 'test note', 'test pages', 'test bKey', 'test number', 'test crossref', 'test misc', 'test bibtexAbstract', 'test entrytype', 'test title', 'test author', 'test editor', 'test year', '92e8d9c7588eced69419b911b31580ee', 'd9eea4aa159d70ecfabafa0c91bbc9f0', '522833042311cc30b8775772335424a7', '', 1, 2, 0);
+INSERT INTO `temp_bibtex` (`content_id`, `journal`, `volume`, `chapter`, `edition`, `month`, `day`, `bookTitle`, `howPublished`, `institution`, `organization`, `publisher`, `address`, `school`, `series`, `bibtexKey`, `date`, `user_name`, `url`, `type`, `description`, `annote`, `note`, `pages`, `bKey`, `number`, `crossref`, `misc`, `bibtexAbstract`, `entrytype`, `title`, `author`, `editor`, `year`, `simhash0`, `simhash1`, `simhash2`, `simhash3`, `ctr`, `rank`, `rating`, `popular_days`) VALUES
+(10, 'test journal', 'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle', 'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'test bibtexKey', '1815-12-10 00:00:00', 'testuser1', 'http://www.testurl.org', '2', 'test description', 'test annote', 'test note', 'test pages', 'test bKey', 'test number', 'test crossref', 'test misc', 'test bibtexAbstract', 'test entrytype', 'test title', 'test author', 'test editor', 'test year', '9abf98937435f05aec3d58b214a2ac58', 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'b77ddd8087ad8856d77c740c8dc2864a', '', 1, 1, 0, 1),
+(12, 'test journal for group3', 'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle for group3', 'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'test bibtexKey', '1815-12-10 00:00:00', 'testuser1', 'http://www.testurl.org', '2', 'test description', 'test annote', 'test note', 'test pages', 'test bKey', 'test number', 'test crossref', 'test misc', 'test bibtexAbstract', 'test entrytype', 'test title', 'test author', 'test editor', 'test year', '92e8d9c7588eced69419b911b31580ee', 'd9eea4aa159d70ecfabafa0c91bbc9f0', '522833042311cc30b8775772335424a7', '', 1, 2, 0, 2);
 
 -- --------------------------------------------------------
 
@@ -1301,15 +1302,16 @@ CREATE TABLE `temp_bookmark` (
   `book_url_ctr` int(10) unsigned NOT NULL default '1',
   `rank` int(10) unsigned NOT NULL default '1',
   `rating` tinyint(3) NOT NULL default '0',
-  PRIMARY KEY  (`rank`)
+  `popular_days` smallint NOT NULL default '1',
+  PRIMARY KEY (`rank`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- 
 -- Data for table `temp_bookmark`
 -- 
 
-INSERT INTO `temp_bookmark` (`content_id`, `book_description`, `book_extended`, `book_url_hash`, `date`, `user_name`, `book_url_ctr`, `rank`, `rating`) VALUES
-(1, 'test bookmark descripton	', 'test bookmark extended	', '6f372faea7ff92eedf52f597090a6291', '1815-12-10 00:00:00', 'testuser1', 1, 1, 0);
+INSERT INTO `temp_bookmark` (`content_id`, `book_description`, `book_extended`, `book_url_hash`, `date`, `user_name`, `book_url_ctr`, `rank`, `rating`, `popular_days`) VALUES
+(1, 'test bookmark descripton	', 'test bookmark extended	', '6f372faea7ff92eedf52f597090a6291', '1815-12-10 00:00:00', 'testuser1', 1, 1, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -1436,3 +1438,62 @@ CREATE TABLE `weights` (
 -- 
 ALTER TABLE `weights`
   ADD CONSTRAINT `weights_ibfk_1` FOREIGN KEY (`id`) REFERENCES `rankings` (`id`) ON DELETE CASCADE;
+  
+--
+-- Structure for table `grouptas`
+--
+DROP TABLE IF EXISTS `grouptas`;
+CREATE TABLE `grouptas` (
+  `tas_id` int(10) unsigned NOT NULL,
+  `tag_name` varchar(255) character set utf8 collate utf8_bin NOT NULL default '',
+  `tag_lower` varchar(255) NOT NULL default '',
+  `content_id` int(10) unsigned NOT NULL default '0',
+  `content_type` tinyint(1) unsigned default NULL,
+  `user_name` varchar(30) NOT NULL default '',
+  `date` datetime NOT NULL default '1815-12-10 00:00:00',
+  `group` int(10) default '0',
+  `change_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  PRIMARY KEY  (`tas_id`),
+  KEY `content_id_idx` (`content_id`),
+  KEY `tag_name_user_name_idx` (`tag_name`,`user_name`),
+  KEY `user_name_tag_name_content_type_group_date_content_id_idx` (`user_name`,`tag_name`,`content_type`,`group`,`date`,`content_id`),
+  KEY `user_name_tag_lower_content_type_group_date_content_id_idx` (`user_name`,`tag_lower`,`content_type`,`group`,`date`,`content_id`),
+  KEY `user_name_tag_name_content_type_date_content_id_idx` (`user_name`,`tag_name`,`content_type`,`date`,`content_id`),
+  KEY `content_type_group_tag_name_date_content_id_idx` (`content_type`,`group`,`tag_name`,`date`,`content_id`),
+  KEY `content_type_group_tag_lower_date_content_id_idx` (`content_type`,`group`,`tag_lower`,`date`,`content_id`),
+  KEY `group_tag_name_idx` (`group`,`tag_name`),
+  KEY `date_idx` (`date`),
+  KEY `group_date_idx` (`group`,`date`),
+  KEY `user_name_tag_name_idx` (`user_name`,`tag_name`),
+  KEY `tag_lower_idx` (`tag_lower`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- 
+-- Data for table `grouptas`
+-- 
+
+INSERT INTO `grouptas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `content_type`, `user_name`, `date`, `group`, `change_date`) VALUES
+(1, 'testtag', 'testtag', 1, 1, 'testuser1', '1815-12-10 00:00:00', 0, '2008-01-18 10:20:07'),
+(2, 'google', 'google', 2, 1, 'testuser1', '1815-12-10 00:00:00', 0, '2008-01-18 10:20:17'),
+(3, 'suchmaschine', 'suchmaschine', 2, 1, 'testuser1', '1815-12-10 00:00:00', 0, '2008-01-18 10:19:51'),
+(4, 'yahoo', 'yahoo', 3, 1, 'testuser2', '1815-12-10 00:00:00', 0, '2008-01-18 10:21:12'),
+(5, 'suchmaschine', 'suchmaschine', 3, 1, 'testuser2', '1815-12-10 00:00:00', 0, '2008-01-18 10:21:47'),
+(6, 'friends', 'friends', 4, 1, 'testuser1', '1815-12-10 00:00:00', 2, '2008-01-18 10:24:31'),
+(7, 'friendscout', 'friendscout', 4, 1, 'testuser1', '1815-12-10 00:00:00', 2, '2008-01-18 10:24:44'),
+(8, 'web', 'web', 5, 1, 'testuser3', '1815-12-10 00:00:00', 0, '2008-01-18 10:24:14'),
+(9, 'freemail', 'freemail', 5, 1, 'testuser3', '1815-12-10 00:00:00', 0, '2008-01-18 10:24:14'),
+(10, 'suchmaschine', 'suchmaschine', 5, 1, 'testuser3', '1815-12-10 00:00:00', 0, '2008-01-18 10:24:14'),
+(11, 'uni', 'uni', 6, 1, 'testuser2', '1815-12-10 00:00:00', 0, '2008-01-18 11:30:05'),
+(12, 'kassel', 'kassel', 6, 1, 'testuser2', '0000-00-00 00:00:00', 0, '2008-01-18 11:30:05'),
+(13, 'finetune', 'finetune', 7, 1, 'testuser1', '1815-12-10 00:00:00', 4, '2008-01-21 13:22:09'),
+(14, 'radio', 'radio', 7, 1, 'testuser1', '1815-12-10 00:00:00', 4, '2008-01-21 13:22:20'),
+(15, 'apple', 'apple', 8, 1, 'testuser1', '1815-12-10 00:00:00', 4, '2008-01-21 13:20:37'),
+(16, 'suchmaschine', 'suchmaschine', 9, 1, 'testuser1', '1815-12-10 00:00:00', 1, '2008-01-29 10:39:17'),
+(17, 'fireball', 'fireball', 9, 1, 'testuser1', '1815-12-10 00:00:00', 1, '2008-01-29 10:39:17'),
+(18, 'testbibtex', 'testbibtex', 10, 2, 'testuser1', '1815-12-10 00:00:00', 0, '2008-03-19 11:21:44'),
+(19, 'testtag', 'testtag', 10, 2, 'testuser1', '1815-12-10 00:00:00', 0, '2008-03-19 11:27:34'),
+(20, 'spam', 'spam', 11, 2, 'testspammer', '1815-12-10 00:00:00', 0, '2008-03-20 16:35:21'),
+(21, 'bibtexgroup', 'bibtexgroup', 12, 2, 'testuser1', '1815-12-10 00:00:00', 3, '2008-03-20 20:35:21'),
+(22, 'privatebibtex', 'privatebibtex', 13, 2, 'testuser2', '1815-12-10 00:00:00', 1, '2008-03-20 20:35:21'),
+(23, 'friendbibtex', 'friendbibtex', 14, 2, 'testuser2', '1815-12-10 00:00:00', 2, '2008-03-20 20:35:21'),
+(24, 'testbibtex', 'testbibtex', 12, 2, 'testuser1', '1815-12-10 00:00:00', 3, '2008-03-20 20:35:21');

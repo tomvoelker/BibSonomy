@@ -253,6 +253,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setHash(null);
 		this.bibtexParam.setOrder(Order.POPULAR);
 		this.bibtexParam.setTagIndex(null);
+		this.bibtexParam.setDays(0);
 		this.bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, this.chainStatus);
 		assertEquals(GetBibtexPopular.class, this.chainStatus.getChainElement().getClass());
 	}

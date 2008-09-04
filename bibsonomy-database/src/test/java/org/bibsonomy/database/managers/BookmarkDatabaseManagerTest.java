@@ -174,7 +174,9 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void getBookmarkPopular() {
-		final List<Post<Bookmark>> posts = this.bookmarkDb.getBookmarkPopular(this.bookmarkParam, this.dbSession);
+		BookmarkParam param = new BookmarkParam();
+		param.setDays(0);
+		final List<Post<Bookmark>> posts = this.bookmarkDb.getBookmarkPopular(param, this.dbSession);
 		assertEquals(1, posts.size());
 	}
 

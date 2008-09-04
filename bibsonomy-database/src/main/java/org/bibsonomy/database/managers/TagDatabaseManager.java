@@ -122,10 +122,34 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		this.insert("insertTagTagBatch", param, session);
 	}
 
-	/**
+	/*
+	NEW INSERTTAS (MULTIPLE GROUPS FOR A POST)
 	 * @param param
 	 * @param session
 	 */
+	/*public void insertTas(final TagParam param, final DBSession session) {
+		for (final Tag tag : param.getTags()) {
+			param.setTag(tag);
+			/*
+			 * if a post is visible for more than one group, 
+			 * only insert an entry for the first group in the tas table.
+			 * otherwise param.getGroups has length = 1.
+			 
+			if(param.getGroups().get(0) != null){
+				final Integer groupId = param.getGroups().get(0); 
+				param.setGroupId(groupId);
+				param.setTasId(generalDb.getNewContentId(ConstantID.IDS_TAS_ID, session));
+				this.insert("insertTas", param, session);
+			}
+		}
+		
+	}*/
+
+	/**
+	 * OLD METHOD INSERTAS
+	 * @param param
+	 * @param session
+	 **/
 	public void insertTas(final TagParam param, final DBSession session) {
 		for (final Tag tag : param.getTags()) {
 			param.setTag(tag);
@@ -136,7 +160,24 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			}
 		}
 	}
-
+	
+	
+	/*
+	 * For each group a post is visible, store an entry in the grouptas table.
+	 * @param param
+	 * @param session
+	 */
+	public void insertGroupTas(final TagParam param, final DBSession session) {
+		for (final Tag tag : param.getTags()) {
+			param.setTag(tag);
+			for (final Integer groupId : param.getGroups()) {
+				param.setGroupId(groupId);
+				param.setTasId(generalDb.getNewContentId(ConstantID.IDS_GROUPTAS_ID, session));
+				this.insert("insertGroupTas", param, session);
+			}
+		}
+	}
+	
 	/**
 	 * Deletes the tags from the given post.
 	 * 
@@ -187,10 +228,15 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		this.plugins.onTagDelete(post.getContentId(), session);
 		// delete all tas related to this bookmark
 		this.deleteTas(post.getContentId(), session);
+		//this.deleteGroupTas(post.getContentId(), session);
 	}
 
 	private void deleteTas(final Integer contentId, final DBSession session) {
 		this.delete("deleteTas", contentId, session);
+	}
+	
+	private void deleteGroupTas(final Integer contentId, final DBSession session) {
+		this.delete("deleteGroupTas", contentId, session);
 	}
 
 	/**
@@ -236,7 +282,13 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			}
 
 			this.insertTas(param, session);
-
+			
+			/* if post is visible for more than one group, store for each group
+			and each tag one entry in the grouptas table */
+			/*if(param.getGroups().size() > 1){
+				this.insertGroupTas(param, session);
+			}*/
+			
 			for (final Tag tag : param.getTags()) {
 				this.tagRelDb.insertRelations(tag, param.getUserName(), session);				
 			}
@@ -734,4 +786,15 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		param.setOffset(offset);
 		return this.queryForList("getSimilarTags", param, Tag.class, session);
 	} 
+	
+	/**
+	 * See getAllTags
+	 * 
+	 * @param param
+	 * @param session
+	 * @return
+	 */
+	public List<Tag> getTagsPopular(final TagParam param, final DBSession session){
+		return this.queryForList("getTagsPopular", param, Tag.class, session);
+	}
 }

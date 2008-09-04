@@ -160,4 +160,58 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 		// FIXME: implement me...
 		return null;
 	}	
+	
+	/**
+	 * 
+	 * @param resourceType
+	 * @param requestedUserName
+	 * @param loginUserName
+	 * @param visibleGroupIDs
+	 * @param session
+	 * @return number of resources that are available for some groups
+	 */
+	public Integer getNumberOfResourcesForUserAndGroup(final Class<? extends Resource> resourceType, final String requestedUserName, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session){
+		if(resourceType == BibTex.class){
+			return (Integer) this.bibtexDBManager.getGroupBibtexCount(requestedUserName, loginUserName, visibleGroupIDs, session);
+		}else if(resourceType == Bookmark.class){
+			return (Integer) this.bookmarkDBManager.getGroupBookmarkCount(requestedUserName, loginUserName, visibleGroupIDs, session);
+		}else {
+			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
+		}
+	}
+	
+	/**
+	 * @param resourceType
+	 * @param requestedUserName
+	 * @param tagIndex
+	 * @param loginUserName
+	 * @param visibleGroupIDs
+	 * @param session
+	 * @return number of resources that are available for some groups and tagged by a tag of the tagIndex
+	 */
+	public Integer getNumberOfResourcesForUserAndGroupByTag(final Class<? extends Resource> resourceType, final String requestedUserName, final List<TagIndex> tagIndex, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session){
+		if(resourceType == BibTex.class){
+			return (Integer) this.bibtexDBManager.getGroupBibtexCountByTag(requestedUserName, loginUserName, tagIndex, visibleGroupIDs, session);
+		}else if(resourceType == Bookmark.class){
+			return (Integer) this.bookmarkDBManager.getGroupBookmarkCountByTag(requestedUserName, loginUserName, tagIndex, visibleGroupIDs, session);
+		}else {
+			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
+		}
+	}
+	
+	/**
+	 * @param resourceType
+	 * @param days
+	 * @param session
+	 * @return the number of days when a resource was popular
+	 */
+	public Integer getPopularDays(final Class<? extends Resource> resourceType, final int days, final DBSession session){
+		if(resourceType == BibTex.class){
+			return (Integer) this.bibtexDBManager.getBibTexPopularDays(days, session);
+		}else if(resourceType == Bookmark.class){
+			return (Integer) this.bookmarkDBManager.getBookmarkPopularDays(days, session);
+		}else{
+			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
+		}
+	}
 }
