@@ -331,7 +331,8 @@
 	**/
 	function appendRow(title, authors, bibtexhash, url) {		
 		var table = document.getElementById("resultlist");
-		var br = document.createElement("br");		
+		var spacer1 = document.createTextNode(" | ");	
+		var spacer2 = document.createTextNode(" | ");
 		var tr = document.createElement("tr");
 		
 		var titletd = document.createElement("td");			
@@ -351,6 +352,11 @@
 		var link = document.createElement("a");	
 		link.href = "/bib/bibtex/<%=Bibtex.INTRA_HASH %>" + bibtexhash + "/<c:out value='${user.name}'/>";
 		link.innerHTML = "BibTeX";
+
+		var pick = document.createElement("a");
+		pick.onclick = pickUnpickPublication;
+		pick.href = "/Collector?pick=" + bibtexhash + "&user=<c:out value='${user.name}'/>&ckey=<c:out value='${ckey}'/>";
+		pick.innerHTML = "pick";
 		
 		if (url != "") {
 			var urllink = document.createElement("a");
@@ -361,12 +367,16 @@
 		div1.innerHTML = title;	
 		span1.innerHTML = authors;				
 		titletd.appendChild(div1);					
-		titletd.appendChild(span1);			
+		titletd.appendChild(span1);
+					
 		linktd.appendChild(link);
+		linktd.appendChild(spacer1);		
+		linktd.appendChild(pick);
 		if (url != "") {
-			linktd.appendChild(br);	
+			linktd.appendChild(spacer2);
 			linktd.appendChild(urllink);			
-		}				
+		}	
+					
 		tr.appendChild(titletd);	
 		tr.appendChild(linktd);	
 				
