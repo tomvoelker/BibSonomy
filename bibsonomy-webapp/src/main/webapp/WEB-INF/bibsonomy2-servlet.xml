@@ -89,6 +89,11 @@
 						<property name="controllerBeanName" value="searchPageController"/>
 					</bean>
 				</entry>
+				<entry key="/popular">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="popularPageController"/>
+					</bean>
+				</entry>
 				<entry key="/admin">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="adminPageController"/>
@@ -140,7 +145,6 @@
 						<property name="controllerBeanName" value="userRegistrationSuccessController"/>
 					</bean>
 				</entry>
-				
 				<entry key="/register_openid_success">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="userOpenIDRegistrationSuccessController"/>
@@ -178,7 +182,7 @@
 								<value>password</value>
 								<value>referer</value>
 								<value>notice</value>
-								<value>openID</value>								
+								<value>openID</value>							
 							</list>
 						</property>
 					</bean>
@@ -210,9 +214,6 @@
 						</property>
 					</bean>
 				</entry>
-				
-
-				
 			</map>
 		</property>
 	</bean>
@@ -366,8 +367,16 @@
 		<property name="userSettings" ref="userSettings"/>
 	</bean>	
 	
-
-	
+	<bean id="popularPageController" class="org.bibsonomy.webapp.controller.PopularPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+		<property name="listsToInitialise">
+			<list>
+				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
+			</list>
+		</property>
+	</bean>
 	<!-- 
 	    This bean provides admin access to the logic interface by predicting 
 	    to be a user with role "admin". 

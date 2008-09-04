@@ -95,6 +95,11 @@ public enum Views implements View {
 	URLPAGE("url"),
 	
 	/**
+	 * popular page
+	 */
+	POPULAR("popular"),
+	
+	/**
 	 * userpage only for publications with documents attached
 	 */
 	USERDOCUMENTPAGE("userDocument"),
@@ -187,7 +192,12 @@ public enum Views implements View {
 	/**
 	 * spammer predictions 
 	 */
-	AJAX_PREDICTIONS("ajaxPredictions"),
+	AJAX_PREDICTIONS("ajaxPredictions"), 
+	
+	/**
+	 * A json output tag page 
+	 */
+	JSONTAGS("export/bibtex/jsonTags"),
 	
 	/**
 	 * where users can register
@@ -196,6 +206,11 @@ public enum Views implements View {
 	 */
 	REGISTER_USER("actions/register/user"),
 	
+	/**
+	 * additional posts 
+	 */
+	MY_GROUP_POSTS_PAGE("myGroupPosts"), 
+
 	/**
 	 * After a user has successfully registered, he will see this view.
 	 */

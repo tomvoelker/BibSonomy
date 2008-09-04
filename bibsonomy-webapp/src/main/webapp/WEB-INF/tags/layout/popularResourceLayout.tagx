@@ -1,0 +1,65 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.ResourceViewCommand" required="true"/>	
+	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="displayIntroduction" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
+	<jsp:directive.attribute name="sidebar" fragment="true" required="true"/>	
+	
+	<!--  actions (list navigation, editing entries, ...) are enabled by default -->
+	<c:if test="${empty disableActions}">
+		<c:set var="disableActions" value="${false}"/>
+	</c:if>
+	<c:if test="${empty disableListNavigation}">
+		<c:set var="disableListNavigation" value="${true}"/>
+	</c:if>	
+		
+	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>
+	<layout:layout loginUserName="${command.context.loginUser.name}" searchString="hurz" basketSize="${command.context.loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}">
+		<jsp:attribute name="headerExt"/>
+		<jsp:attribute name="content">
+				<c:set var="counter" value="0"/>
+				<c:choose>
+					<c:when test="${fn:length(command.popularListsBookmark) > fn:length(command.popularListsBibTex)}">
+						<c:forEach var="bookmark" items="${command.popularListsBookmark}" varStatus="status">
+							<resources:bookmarks2 listView="${bookmark}" loginUserName="${command.context.loginUser.name}" info="${command.popularBookmarkDays[counter]}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
+							<c:choose>
+								<c:when test="${not empty command.popularListsBibTex[counter]}">
+									<resources:bibtexs2 listView="${command.popularListsBibTex[counter]}" loginUserName="${command.context.loginUser.name}" info="${command.popularBibtexDays[counter]}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
+								</c:when>
+								<c:otherwise>
+									<div class="bookbox"/>
+								</c:otherwise>
+							</c:choose>
+							<c:set var="counter" value="${counter+1}"/>
+						</c:forEach>
+					</c:when>
+					<c:otherwise>
+						<c:forEach var="bibtex" items="${command.popularListsBibTex}" varStatus="status">
+							<c:choose>
+								<c:when test="${ not empty command.popularListsBookmark[counter]}">
+									<resources:bookmarks2 listView="${command.popularListsBookmark[counter]}" loginUserName="${command.context.loginUser.name}" info="${command.popularBookmarkDays[counter]}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
+								</c:when>
+								<c:otherwise>
+									<div class="bookbox"/>
+								</c:otherwise>
+							</c:choose>
+							<resources:bibtexs2 listView="${bibtex}" loginUserName="${command.context.loginUser.name}" info="${command.popularBibtexDays[counter]}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
+							<c:set var="counter" value="${counter+1}"/>
+						</c:forEach>
+					</c:otherwise>
+				</c:choose>
+		</jsp:attribute>
+	</layout:layout>
+</jsp:root>

@@ -251,8 +251,13 @@
 	</rule>	
     <rule>
         <from>^/+popular(\?(.*))?$</from>
-        <to>/ResourceHandler?page=popular&amp;$2</to>
+        <to>/popular</to>
     </rule>
+    <!-- OLD PAGE -->
+    <!-- <rule>
+        <from>^/+popular(\?(.*))?$</from>
+        <to>/ResourceHandler?page=popular&amp;$2</to>
+    </rule> -->
 	<!-- download a document -->
     <rule>
 		<from>^/+documents/(.+?)(\?(.*))?$</from>
