@@ -6,8 +6,8 @@ import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesByTa
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesByTagNamesCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesDuplicateCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForGroupCount;
-import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForUserAndGroupByTagCount;
-import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForUserAndGroupCount;
+//import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForUserAndGroupByTagCount;
+//import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForUserAndGroupCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForUserCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesPopularDays;
 import org.bibsonomy.database.params.StatisticsParam;
