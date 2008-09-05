@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for ISBNScraper class (no url test)
@@ -18,7 +19,7 @@ public class ISBNScraperTest {
 	 */
 	@Test
 	public void getISBN13Test1(){
-		assertTrue(ISBNScraper.getISBN("0123456789012").equals("0123456789012"));
+		assertEquals("0123456789012", ISBNScraper.extractISBN("0123456789012"));
 	}
 	
 	/**
@@ -27,7 +28,7 @@ public class ISBNScraperTest {
 	 */
 	@Test
 	public void getISBN13Test2(){
-		assertTrue(ISBNScraper.getISBN("012345678901X").equals("012345678901X"));
+		assertEquals("012345678901X", ISBNScraper.extractISBN("012345678901X"));
 	}
 
 	/**
@@ -36,7 +37,7 @@ public class ISBNScraperTest {
 	 */
 	@Test
 	public void getISBN13Test3(){
-		assertTrue(ISBNScraper.getISBN("012345678901x").equals("012345678901x"));
+		assertEquals("012345678901x", ISBNScraper.extractISBN("012345678901x"));
 	}
 	
 	/**
@@ -45,7 +46,7 @@ public class ISBNScraperTest {
 	 */
 	@Test
 	public void getISBN10Test1(){
-		assertTrue(ISBNScraper.getISBN("0123456789").equals("0123456789"));
+		assertEquals("0123456789", ISBNScraper.extractISBN("0123456789"));
 	}
 	
 	/**
@@ -54,7 +55,7 @@ public class ISBNScraperTest {
 	 */
 	@Test
 	public void getISBN10Test2(){
-		assertTrue(ISBNScraper.getISBN("012345678X").equals("012345678X"));
+		assertEquals("012345678X", ISBNScraper.extractISBN("012345678X"));
 	}
 	
 	/**
@@ -63,7 +64,7 @@ public class ISBNScraperTest {
 	 */
 	@Test
 	public void getISBN10Test3(){
-		assertTrue(ISBNScraper.getISBN("012345678x").equals("012345678x"));
+		assertEquals("012345678x", ISBNScraper.extractISBN("012345678x"));
 	}
 	
 	/**
@@ -71,9 +72,26 @@ public class ISBNScraperTest {
 	 */
 	@Test
 	public void cleanISBNTest(){
-		assertTrue(ISBNScraper.cleanISBN("012-3 4-56 78 x").equals("012345678x"));
+		assertEquals("012345678x", ISBNScraper.cleanISBN("012-3 4-56 78 x"));
 	}
 
+
+	/**
+	 * @throws Exception
+	 */
+	@Test
+	public void getISBNTest1() throws Exception {
+		final String isbn09 = "01234567X";
+		final String isbn10 = "012345678X";
+		final String isbn12 = "01234567891x";
+		final String isbn13 = "012345678912x";
+
+		assertEquals(null, ISBNScraper.extractISBN(isbn09));
+		assertEquals("012345678X", ISBNScraper.extractISBN(isbn10));
+		assertEquals("0123456789", ISBNScraper.extractISBN(isbn12));
+		assertEquals("012345678912x", ISBNScraper.extractISBN(isbn13));
+	}
+	
 	/**
 	 * test getting URL 
 	 */
