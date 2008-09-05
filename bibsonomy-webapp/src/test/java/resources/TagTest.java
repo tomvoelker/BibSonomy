@@ -276,13 +276,14 @@ public class TagTest {
 	@Test
 	public void setTagRel1Works() {
 		Tag t = new Tag();
-		t.setTags("auto->vw");
+		t.setTags("auto<-vw");
 		Tag t2 = new Tag();
-		t2.setTags("vw<-auto");
-		TagRelation r = new TagRelation ("auto", "vw");
+		t2.setTags("vw->auto");
+		TagRelation r = new TagRelation ("vw", "auto");
 		
 		HashSet<TagRelation> testSet = new HashSet<TagRelation>();
 		testSet.add(r);
+		
 		assertEquals(testSet, t.getTagrelations());
 		assertEquals(testSet, t2.getTagrelations());
 	}
