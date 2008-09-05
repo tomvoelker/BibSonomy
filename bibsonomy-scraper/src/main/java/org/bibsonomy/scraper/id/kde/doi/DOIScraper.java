@@ -1,15 +1,8 @@
 package org.bibsonomy.scraper.id.kde.doi;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.net.FileNameMap;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.security.Permission;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Gives Access to the URL behind a given DOI.

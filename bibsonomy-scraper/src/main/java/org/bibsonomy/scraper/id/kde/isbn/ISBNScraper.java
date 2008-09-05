@@ -21,11 +21,16 @@ import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
  */
 public class ISBNScraper implements Scraper {
 	
+	private static final String WORLDCAT_URL = "http://www.worldcat.org/search?qt=worldcat_org_all&q=";
+
 	private static final String INFO = "ISBN support in scraped snippet";
 
-	private static final String PATTERN_ISBN_10 = "(\\d{9}\\d?x?)";
-	
-	private static final String PATTERN_ISBN_13 = "(\\d{12}\\d?x?)";
+	/*
+	 * patterns to match ISBN 10 and 13
+	 */
+	private static final Pattern isbn10Pattern = Pattern.compile("(\\d{9}\\d?x?)", Pattern.CASE_INSENSITIVE);
+	private static final Pattern isbn13Pattern = Pattern.compile("(\\d{12}\\d?x?)", Pattern.CASE_INSENSITIVE);
+
 	
 	public String getInfo() {
 		return INFO;
@@ -37,14 +42,7 @@ public class ISBNScraper implements Scraper {
 
 	public boolean scrape(ScrapingContext sc)throws ScrapingException {
 		if(sc != null && sc.getSelectedText() != null){
-			String snippet = cleanISBN(sc.getSelectedText());
-			String isbn = null;
-			
-			// check ISBN13
-			isbn = getISBN13(snippet);
-			if(isbn == null)
-				// check ISBN10
-				isbn = getISBN10(snippet);
+			final String isbn = getISBN(cleanISBN(sc.getSelectedText()));
 
 			if(isbn != null){
 				WorldCatScraper worldcatScraper = new WorldCatScraper();
@@ -67,41 +65,29 @@ public class ISBNScraper implements Scraper {
 		return false;
 	}
 
-	/**
-	 * Search substring with ISBN10 format and returns it.
-	 * @param snippet 
-	 * @return ISBN10, null if no ISBN10 is available
-	 */
-	public static String getISBN10(String snippet){
-
-		if(snippet != null){
-			Pattern isbnPattern = Pattern.compile(PATTERN_ISBN_10, Pattern.CASE_INSENSITIVE);
-			Matcher isbnMatcher = isbnPattern.matcher(snippet);
-			
-			if(isbnMatcher.find()){
-				return isbnMatcher.group(1);
-			}
-		}
-		
-		return null;
+	public static String getISBN(String snippet) {
+		String isbn;
+		// check ISBN13
+		isbn = extractISBN(isbn13Pattern, snippet);
+		if(isbn == null)
+			// check ISBN10
+			isbn = extractISBN(isbn10Pattern, snippet);
+		return isbn;
 	}
 
 	/**
-	 * Search substring with ISBN13 format and returns it.
+	 * Search substring with pattern format and returns it.
+	 * @param pattern - the pattern to match snippet.
 	 * @param snippet 
-	 * @return ISBN13, null if no ISBN13 is available
+	 * @return ISBN, null if no ISBN is available
 	 */
-	public static String getISBN13(String snippet){
-		
+	private static String extractISBN(final Pattern pattern, final String snippet){
 		if(snippet != null){
-			Pattern isbnPattern = Pattern.compile(PATTERN_ISBN_13, Pattern.CASE_INSENSITIVE);
-			Matcher isbnMatcher = isbnPattern.matcher(snippet);
-			
+			final Matcher isbnMatcher = pattern.matcher(snippet);
 			if(isbnMatcher.find()){
 				return isbnMatcher.group(1);
 			}
 		}
-		
 		return null;
 	}
 
@@ -112,17 +98,11 @@ public class ISBNScraper implements Scraper {
 	 * @throws MalformedURLException 
 	 */
 	public static URL getUrlForIsbn(String isbn) throws MalformedURLException{
-		String checkISBN = null;
-		
-		// check ISBN13
-		checkISBN = getISBN13(isbn);
-		if(checkISBN == null)
-			// check ISBN10
-			checkISBN = getISBN10(isbn);
+		final String checkISBN = getISBN(isbn);
 
 		// build worldcat.org URL
 		if(checkISBN != null)
-			return new URL("http://www.worldcat.org/search?qt=worldcat_org_all&q=" + checkISBN);
+			return new URL(WORLDCAT_URL + checkISBN);
 		return null;
 	}
 	

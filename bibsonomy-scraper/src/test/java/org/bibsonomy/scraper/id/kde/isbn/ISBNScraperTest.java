@@ -18,7 +18,7 @@ public class ISBNScraperTest {
 	 */
 	@Test
 	public void getISBN13Test1(){
-		assertTrue(ISBNScraper.getISBN13("0123456789012").equals("0123456789012"));
+		assertTrue(ISBNScraper.getISBN("0123456789012").equals("0123456789012"));
 	}
 	
 	/**
@@ -27,7 +27,7 @@ public class ISBNScraperTest {
 	 */
 	@Test
 	public void getISBN13Test2(){
-		assertTrue(ISBNScraper.getISBN13("012345678901X").equals("012345678901X"));
+		assertTrue(ISBNScraper.getISBN("012345678901X").equals("012345678901X"));
 	}
 
 	/**
@@ -36,7 +36,7 @@ public class ISBNScraperTest {
 	 */
 	@Test
 	public void getISBN13Test3(){
-		assertTrue(ISBNScraper.getISBN13("012345678901x").equals("012345678901x"));
+		assertTrue(ISBNScraper.getISBN("012345678901x").equals("012345678901x"));
 	}
 	
 	/**
@@ -45,7 +45,7 @@ public class ISBNScraperTest {
 	 */
 	@Test
 	public void getISBN10Test1(){
-		assertTrue(ISBNScraper.getISBN10("0123456789").equals("0123456789"));
+		assertTrue(ISBNScraper.getISBN("0123456789").equals("0123456789"));
 	}
 	
 	/**
@@ -54,7 +54,7 @@ public class ISBNScraperTest {
 	 */
 	@Test
 	public void getISBN10Test2(){
-		assertTrue(ISBNScraper.getISBN10("012345678X").equals("012345678X"));
+		assertTrue(ISBNScraper.getISBN("012345678X").equals("012345678X"));
 	}
 	
 	/**
@@ -63,7 +63,7 @@ public class ISBNScraperTest {
 	 */
 	@Test
 	public void getISBN10Test3(){
-		assertTrue(ISBNScraper.getISBN10("012345678x").equals("012345678x"));
+		assertTrue(ISBNScraper.getISBN("012345678x").equals("012345678x"));
 	}
 	
 	/**
