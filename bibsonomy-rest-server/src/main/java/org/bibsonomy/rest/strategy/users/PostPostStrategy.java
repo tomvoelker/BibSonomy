@@ -49,6 +49,12 @@ public class PostPostStrategy extends AbstractCreateStrategy {
 		catch ( ResourceNotFoundException ex ) {
 			throw new NoSuchResourceException(ex.getMessage());
 		}
+		catch (IllegalArgumentException ex) {
+			/*
+			 * is thrown, when user already has post with this intra hash.
+			 */
+			throw new BadRequestOrResponseException(ex.getMessage());
+		}
 	}
 
 	@Override
