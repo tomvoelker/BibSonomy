@@ -192,12 +192,7 @@ public enum Views implements View {
 	/**
 	 * spammer predictions 
 	 */
-	AJAX_PREDICTIONS("ajaxPredictions"), 
-	
-	/**
-	 * A json output tag page 
-	 */
-	JSONTAGS("export/bibtex/jsonTags"),
+	AJAX_PREDICTIONS("ajaxPredictions"),
 	
 	/**
 	 * where users can register
