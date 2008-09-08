@@ -102,13 +102,13 @@ public class LogicInterfaceHelper {
 				tag = tag.trim();
 
 				if (tag.length() > 2) {
-					if (tag.length() > 14 && tag.substring(0, 14).equals("sys:bibtexkey:")) {
+					if (tag.length() > 14 && tag.startsWith("sys:bibtexkey:")) {
 						// :bibtexkey:
 						((BibTexParam) param).setBibtexKey(tag.substring(14).trim());
 						continue;
 					}
 
-					if (tag.length() > 9 && tag.substring(0, 9).equals("sys:days:")) {
+					if (tag.length() > 9 && tag.startsWith("sys:days:")) {
 						// clear the tagindex and set the value
 						param.getTagIndex().clear();
 						param.setDays(Integer.parseInt(tag.substring(9).trim()));
@@ -119,11 +119,11 @@ public class LogicInterfaceHelper {
 						param.addTagName(tag);
 						continue;
 					}
-					if (tag.substring(0, 2).equals("->")) {
+					if (tag.startsWith("->")) {
 						param.addSimpleConceptName(tag.substring(2).trim());
 						continue;
 					}
-					if (tag.substring(0, 3).equals("-->")) {
+					if (tag.startsWith("-->")) {
 						if (tag.length() > 3) {
 							param.addTransitiveConceptName(tag.substring(3).trim());
 						} else {
@@ -143,7 +143,7 @@ public class LogicInterfaceHelper {
 						param.addSimpleConceptWithParentName(tag.substring(0, tag.length() - 2).trim());
 						continue;
 					}
-					if (tag.substring(0, 3).equals("<->")) {
+					if (tag.startsWith("<->")) {
 						if (tag.length() > 3) {
 							param.addCorrelatedConceptName(tag.substring(3).trim());
 						} else {

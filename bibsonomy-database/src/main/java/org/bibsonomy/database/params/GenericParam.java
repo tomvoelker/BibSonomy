@@ -548,5 +548,13 @@ public abstract class GenericParam {
 	
 	public void addGroups(Collection<Integer> groups) {
 		this.groups.addAll(groups);
+	}
+
+	public int getDays() {
+		return this.days;
+	}
+
+	public void setDays(int days) {
+		this.days = days;
 	}	
 }

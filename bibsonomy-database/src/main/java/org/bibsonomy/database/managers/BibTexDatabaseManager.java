@@ -1474,13 +1474,13 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * @param session
 	 * @return number of publications that are available for some groups
 	 */
-	public Object getGroupBibtexCount(final String requestedUserName, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session){
+	public int getGroupBibtexCount(final String requestedUserName, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session){
 		BibTexParam param = new BibTexParam();
 		param.setRequestedUserName(requestedUserName);
 		param.setUserName(loginUserName);
 		param.setGroups(visibleGroupIDs);
 		
-		return this.queryForObject("getGroupBibtexCount", param, session);
+		return (Integer) this.queryForObject("getGroupBibtexCount", param, session);
 	}
 	
 	/**
@@ -1491,14 +1491,14 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * @param session
 	 * @return number of publications that are available for some groups and tagged by a tag of the tagIndex
 	 */
-	public Object getGroupBibtexCountByTag(final String requestedUserName, final String loginUserName, final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, final DBSession session){
+	public int getGroupBibtexCountByTag(final String requestedUserName, final String loginUserName, final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, final DBSession session){
 		BibTexParam param = new BibTexParam();
 		param.setTagIndex(tagIndex);
 		param.setRequestedUserName(requestedUserName);
 		param.setUserName(loginUserName);
 		param.setGroups(visibleGroupIDs);
 		
-		return this.queryForObject("getGroupBibtexCountByTag", param, session);
+		return (Integer) this.queryForObject("getGroupBibtexCountByTag", param, session);
 	}
 	
 	/**
@@ -1549,10 +1549,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * @param session
 	 * @return the number of days when a publication was popular
 	 */
-	public Object getBibTexPopularDays(final int days, final DBSession session){
+	public int getBibTexPopularDays(final int days, final DBSession session){
 		BibTexParam param = new BibTexParam();
 		param.setDays(days);
 		
-		return this.queryForObject("getBibTexPopularDays", param, session);
+		return (Integer) this.queryForObject("getBibTexPopularDays", param, session);
 	}
 }

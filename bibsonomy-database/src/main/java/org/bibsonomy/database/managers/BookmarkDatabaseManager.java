@@ -1035,13 +1035,13 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @param session
 	 * @return number of bookmarks that are available for some groups
 	 */
-	public Object getGroupBookmarkCount(final String requestedUserName, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session){			
+	public int getGroupBookmarkCount(final String requestedUserName, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session){			
 		BookmarkParam param = new BookmarkParam();
 		param.setRequestedUserName(requestedUserName);
 		param.setUserName(loginUserName);
 		param.setGroups(visibleGroupIDs);
 		
-		return this.queryForObject("getGroupBookmarkCount", param, session);
+		return (Integer) this.queryForObject("getGroupBookmarkCount", param, session);
 	}
 	
 	/**
@@ -1052,14 +1052,14 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @param session
 	 * @return number of bookmarks that are available for some groups and tagged by a tag of the tagIndex
 	 */
-	public Object getGroupBookmarkCountByTag(final String requestedUserName, final String loginUserName, final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, final DBSession session){			
+	public int getGroupBookmarkCountByTag(final String requestedUserName, final String loginUserName, final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, final DBSession session){			
 		BookmarkParam param = new BookmarkParam();
 		param.setTagIndex(tagIndex);
 		param.setRequestedUserName(requestedUserName);
 		param.setUserName(loginUserName);
 		param.setGroups(visibleGroupIDs);
 		
-		return this.queryForObject("getGroupBookmarkCountByTag", param, session);
+		return (Integer) this.queryForObject("getGroupBookmarkCountByTag", param, session);
 	}
 	
 	/**
@@ -1110,10 +1110,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @param session
 	 * @return the number of days when a bookmark was popular
 	 */
-	public Object getBookmarkPopularDays(final int days, final DBSession session){
+	public int getBookmarkPopularDays(final int days, final DBSession session){
 		BookmarkParam param = new BookmarkParam();
 		param.setDays(days);
 		
-		return this.queryForObject("getBookmarkPopularDays", param, session);
+		return (Integer) this.queryForObject("getBookmarkPopularDays", param, session);
 	}
 }
