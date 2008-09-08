@@ -217,6 +217,12 @@
 		</iterate>)	
 	</sql>
 	
+	<!-- 
+	  TODO:
+	  It would be good, to not "invent" a new SQL snippet for each differently named
+	  table. Either, name the table in the corresponding statement appropriately
+	  (e.g., "t1"), or introduce a parameter.
+	-->
 	<!-- restrict visibility directly, i.e. without checking for user's own items -->
 	<sql id="inGroupsUnchecked2">
 		t2.group in (
