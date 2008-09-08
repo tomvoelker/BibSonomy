@@ -147,7 +147,12 @@ public abstract class GenericParam {
 	private Order order;
 	private GroupingEntity grouping;
 	private FilterEntity filter;
-	//the days of a popular resource
+	/*
+     * the days of a popular resource
+     * TODO: please document use better. This are not really
+     * the "days", but more or less the position in the list
+     * of available days?!
+	 */
 	private int days;
 
 	public GenericParam() {
@@ -544,12 +549,4 @@ public abstract class GenericParam {
 	public void addGroups(Collection<Integer> groups) {
 		this.groups.addAll(groups);
 	}	
-	
-	public void setDays(int days){
-		this.days = days;
-	}
-	
-	public int getDays(){
-		return this.days;
-	}
 }
