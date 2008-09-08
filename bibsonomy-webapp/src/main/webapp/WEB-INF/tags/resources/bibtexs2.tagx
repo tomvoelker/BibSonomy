@@ -17,7 +17,7 @@
 		titleKey="publications" 
 		loginUserName="${loginUserName}"
 		listViewStartParamName="bibtex.start"
-		otherPostsUrlPrefix="/bibtex/1"
+		otherPostsUrlPrefix="/bibtex/${hash.inter.id}"
 		disableActions="${disableActions}"
 		disableListNavigation="${disableListNavigation}"
 		listView="${listView}">
