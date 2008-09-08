@@ -12,7 +12,7 @@ public enum GroupID {
 	PRIVATE(1),
 	/** the owning user's friends group */
 	FRIENDS(2),
-	/** */
+	/** TODO: please comment! */
 	MULTIPLE(1000000),
 	/**
 	 * the kde group (normally groups are not hardoded as this, but this is an
