@@ -28,12 +28,22 @@ public class PopularPageController extends MultiResourceListController implement
 		//set the groupingentity and the order
 		final GroupingEntity groupingEntity = GroupingEntity.ALL;
 		final Order order = Order.POPULAR;
-		//the next popular days in the database
+		
+		/*
+		 * the next popular days in the database
+		 * TODO: This should not be fixed! The loop to gather the days should 
+		 * be programmed in a way, that it automatically stops when all available
+		 * days are gathered. 
+		 */
 		final int steps = 3; 
 		
-		ArrayList<String> nextPopularDays = new ArrayList<String>();
+		final ArrayList<String> tags = new ArrayList<String>();
 		
-		//only show 5 entries for each list
+		/*
+		 * only show 5 entries for each list
+		 * TODO: never put constants like this ("5") as literals into the code!
+		 * Use configurable (via bibsonomy2-servlets.xml) attributes instead!
+		 */
 		command.getListCommand(BibTex.class).setEntriesPerPage(5);
 		command.getListCommand(Bookmark.class).setEntriesPerPage(5);
 		
@@ -41,14 +51,18 @@ public class PopularPageController extends MultiResourceListController implement
 		// and the requested resourcetype
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
 		
-		for(int i = 0; i < steps; i++){
+		for(int step = 0; step < steps; step++){
 			// retrieve and set the requested resource lists
 			for (final Class<? extends Resource> resourceType : listsToInitialise) {
-				nextPopularDays.add(0, "sys:days:"+String.valueOf(i));
-				this.setList(command, resourceType, groupingEntity, null, nextPopularDays, null, order, null, null, command.getListCommand(resourceType).getEntriesPerPage());
+				tags.add(0, "sys:days:" + step);
+				this.setList(command, resourceType, groupingEntity, null, tags, null, order, null, null, command.getListCommand(resourceType).getEntriesPerPage());
 				this.postProcessAndSortList(command, resourceType);
-				//determine the value of popular days, e.g. the last 10 days
-				int days = this.logic.getPostStatistics(resourceType, groupingEntity, null, nextPopularDays, null, order, null, command.getListCommand(resourceType).getStart(), command.getListCommand(resourceType).getStart()+command.getListCommand(resourceType).getEntriesPerPage(), null, null);
+				/*
+				 * determine the value of popular days, e.g. the last 10 days
+				 * TODO: wouldn't it make more sense, to first get the days and then use 
+				 * them to retrieve the posts?
+				 */
+				int days = this.logic.getPostStatistics(resourceType, groupingEntity, null, tags, null, order, null, command.getListCommand(resourceType).getStart(), command.getListCommand(resourceType).getStart()+command.getListCommand(resourceType).getEntriesPerPage(), null, null);
 				
 				if(resourceType == BibTex.class){
 					command.getPopularListsBibTex().add(command.getBibtex());
