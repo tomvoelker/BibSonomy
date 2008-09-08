@@ -234,10 +234,9 @@ public class OpenID implements Serializable {
 				return user; 
 			} 
 		} catch (OpenIDException e) {
-			log.error("OpenID verification failed: " + e.getMessage());
-		} catch (MalformedURLException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
+			log.error("OpenID verification failed: ", e);
+		} catch (MalformedURLException e) {
+			log.error("OpenID verification failed: ", e);
 		}
 		return null;
 	}	
