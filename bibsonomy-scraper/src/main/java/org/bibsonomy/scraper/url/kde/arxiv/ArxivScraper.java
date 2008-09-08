@@ -186,7 +186,7 @@ public class ArxivScraper implements Scraper {
 	 * @return bibtex entry with scraped url
 	 */
 	private String addUrlToBibtexEntry(String url, String entry){
-		String newUrl = "url = {\\url{" + url + "}}";
+		String newUrl = "url = {\\\\url{" + url + "}}";
 		// replace old url with scraped url
 		if(entry.contains("url = {"))
 			return entry.replaceAll("url = \\{[^\\}]*\\}", newUrl);
