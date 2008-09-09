@@ -54,6 +54,8 @@ public class AbstractDatabaseManager {
 	 * In this case we break the rule to create one method for every return
 	 * type, because with a single object it doesn't result in an unchecked
 	 * cast.
+	 * 
+	 * FIXME: what to do if {@link #queryForAnything(String, Object, QueryFor, boolean, DBSession)} returns null
 	 */
 	@SuppressWarnings("unchecked")
 	protected <T> T queryForObject(final String query, final Object param, @SuppressWarnings("unused") Class<T> type, final boolean ignoreException, final DBSession session) {

@@ -1550,9 +1550,14 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * @return the number of days when a publication was popular
 	 */
 	public int getBibTexPopularDays(final int days, final DBSession session){
+		Integer result;
 		BibTexParam param = new BibTexParam();
 		param.setDays(days);
 		
-		return (Integer) this.queryForObject("getBibTexPopularDays", param, session);
+		result = this.queryForObject("getBibTexPopularDays", param, Integer.class, session);
+		if(result != null){
+			return result;
+		}
+		return new Integer(0);
 	}
 }

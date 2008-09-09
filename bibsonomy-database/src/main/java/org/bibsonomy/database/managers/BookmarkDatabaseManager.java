@@ -1111,9 +1111,14 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @return the number of days when a bookmark was popular
 	 */
 	public int getBookmarkPopularDays(final int days, final DBSession session){
+		Integer result;
 		BookmarkParam param = new BookmarkParam();
 		param.setDays(days);
 		
-		return (Integer) this.queryForObject("getBookmarkPopularDays", param, session);
+		result = this.queryForObject("getBookmarkPopularDays", param, Integer.class, session);
+		if(result != null){
+			return result;
+		}
+		return new Integer(0);
 	}
 }
