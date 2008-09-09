@@ -41,44 +41,18 @@
 				</div>
 				
 	
-				
-				<ul id="${listView.resourcetype}">
-					<c:forEach var="post" items="${listView.list}">
-						<c:choose>
-							<c:when test="${loginUserName eq post.user.name}">
-								<c:set var="liClass" value="bm bmown"/>
-							</c:when>
-							<c:otherwise>
-								<c:set var="liClass" value="bm"/>
-							</c:otherwise>
-						</c:choose>
-						<li class="${liClass}">
-							<div class="bmtitle">
-								<jsp:invoke fragment="title"/>
-							</div>
-							<div class="bmdesc">
-								<jsp:invoke fragment="desc"/>
-							</div>
-							<span class="bmmeta">
-								<rc:meta post="${post}" loginUserName="${loginUserName}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
-							</span>
-							<div class="bmfoot">
-								<span class="bmaction">
-									<jsp:invoke fragment="actions"/>
-								</span>
-								
-								<!-- ugly hack to circumvent IEs clearfix bug -->
-								<c:set var="act">
-									<jsp:invoke fragment="actions"/>
-								</c:set>
-								<c:if test="${not (fn:trim(act) eq '')}">
-									<jsp:text>${mtl:ch('nbsp')}</jsp:text>
-								</c:if>
-								<!-- end ugly hack (dbe) -->
-							</div>   
-						</li>
-					</c:forEach>
-				</ul>
+				<!-- create the list -->
+				<rc:resourcelist listView="${listView}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}">
+					<jsp:attribute name="title">
+						<jsp:invoke fragment="title"/>
+					</jsp:attribute>
+					<jsp:attribute name="actions">
+						<jsp:invoke fragment="actions"/>
+					</jsp:attribute>
+					<jsp:attribute name="desc">
+						<jsp:invoke fragment="desc"/>
+					</jsp:attribute>
+				</rc:resourcelist>
 	
 		</c:if>
 			

@@ -12,7 +12,6 @@ import org.bibsonomy.webapp.command.PopularResourceViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
-
 /**
  * @author mwa
  * @version $Id$
@@ -20,62 +19,68 @@ import org.bibsonomy.webapp.view.Views;
 public class PopularPageController extends MultiResourceListController implements MinimalisticController<PopularResourceViewCommand>{
 	private static final Logger LOGGER = Logger.getLogger(PopularPageController.class);
 	
-	public View workOn(PopularResourceViewCommand command) {
+	protected Integer entriesPerPage;
+	
+	public Integer getEntriesPerpage() {
+		return this.entriesPerPage;
+	}
+
+	public void setEntriesPerPage(Integer entriesPerPage) {
+		this.entriesPerPage = entriesPerPage;
+	}
+	public View workOn(final PopularResourceViewCommand command) {
 		
 		LOGGER.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
 				
-		//set the groupingentity and the order
+		//set the grouping entity and the order
 		final GroupingEntity groupingEntity = GroupingEntity.ALL;
 		final Order order = Order.POPULAR;
 		
-		/*
-		 * the next popular days in the database
-		 * TODO: This should not be fixed! The loop to gather the days should 
-		 * be programmed in a way, that it automatically stops when all available
-		 * days are gathered. 
-		 */
-		final int steps = 3; 
+		//the start parameter for OFFSET
+		int begin = 0; 
 		
+		//the value of the field 'popular_days' in the database
+		int days = 0;
+		
+		//the system tags
 		final ArrayList<String> tags = new ArrayList<String>();
 		
-		/*
-		 * only show 5 entries for each list
-		 * TODO: never put constants like this ("5") as literals into the code!
-		 * Use configurable (via bibsonomy2-servlets.xml) attributes instead!
-		 */
-		command.getListCommand(BibTex.class).setEntriesPerPage(5);
-		command.getListCommand(Bookmark.class).setEntriesPerPage(5);
+		//get the entriesPerPage value from the servlet
+		command.getListCommand(BibTex.class).setEntriesPerPage(this.getEntriesPerpage());
+		command.getListCommand(Bookmark.class).setEntriesPerPage(this.getEntriesPerpage());
 		
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
-		
-		for(int step = 0; step < steps; step++){
-			// retrieve and set the requested resource lists
+		do{
 			for (final Class<? extends Resource> resourceType : listsToInitialise) {
-				tags.add(0, "sys:days:" + step);
-				this.setList(command, resourceType, groupingEntity, null, tags, null, order, null, null, command.getListCommand(resourceType).getEntriesPerPage());
-				this.postProcessAndSortList(command, resourceType);
-				/*
-				 * determine the value of popular days, e.g. the last 10 days
-				 * TODO: wouldn't it make more sense, to first get the days and then use 
-				 * them to retrieve the posts?
-				 */
-				int days = this.logic.getPostStatistics(resourceType, groupingEntity, null, tags, null, order, null, command.getListCommand(resourceType).getStart(), command.getListCommand(resourceType).getStart()+command.getListCommand(resourceType).getEntriesPerPage(), null, null);
+				//set the system tag
+				tags.add(0, "sys:days:" + begin);
 				
-				if(resourceType == BibTex.class){
-					command.getPopularListsBibTex().add(command.getBibtex());
-					command.getPopularBibtexDays().add(days);
-				}
+				//determine the value of popular days, e.g. the last 10 days
+				days = this.logic.getPostStatistics(resourceType, groupingEntity, null, tags, null, order, null, command.getListCommand(resourceType).getStart(), command.getListCommand(resourceType).getStart()+command.getListCommand(resourceType).getEntriesPerPage(), null, null);
 				
-				if(resourceType == Bookmark.class){
-					command.getPopularListsBookmark().add(command.getBookmark());
-					command.getPopularBookmarkDays().add(days);
+				//only retrieve and set the requested resource lists if days > 0
+				//because otherwise the lists will be empty
+				if(days > 0){
+					//retrieve and set the requested resource lists
+					this.setList(command, resourceType, groupingEntity, null, tags, null, order, null, null, command.getListCommand(resourceType).getEntriesPerPage());
+					this.postProcessAndSortList(command, resourceType);
+					
+					if(resourceType == BibTex.class){
+						command.getPopularListsBibTex().add(command.getBibtex());
+						command.getPopularBibTexDays().add(days);
+					}
+					if(resourceType == Bookmark.class){
+						command.getPopularListsBookmark().add(command.getBookmark());
+						command.getPopularBookmarkDays().add(days);
+					}
 				}
 			}
-		}	
-	
+			begin++;
+		}while(days > 0);
+
 		// only html format, exports are not possible atm 
 		this.setTags(command, Resource.class, groupingEntity, null, null, null, null, order, 0, 1000, null);
 		this.endTiming();
@@ -86,7 +91,5 @@ public class PopularPageController extends MultiResourceListController implement
 	public PopularResourceViewCommand instantiateCommand() {
 		return new PopularResourceViewCommand();
 	}
-
-	
 
 }

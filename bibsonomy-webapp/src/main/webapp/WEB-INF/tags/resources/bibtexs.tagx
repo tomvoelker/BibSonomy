@@ -11,7 +11,7 @@
 	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
-	
+
 	<rc:list
 		titleKey="publications" 
 		loginUserName="${loginUserName}"
@@ -32,12 +32,7 @@
 			<a href="${exportPath}"><img alt="other export options" src="${projectContext}resources/image/more.png"/></a>
 		</jsp:attribute>
 		<jsp:attribute name="title">
-			<c:if test='${not empty post.resource.documents}'> 
-				<a href="/documents/${post.resource.documents[0].fileHash}"><img alt="PDF" src="${projectContext}resources/image/document-txt-blue.png" style="float: left;"/></a>
-			</c:if>
-			<c:set var="bibUrlTemplate">/bibtex/${hash.intra.id}${post.resource.intraHash}/<mtl:encode value='${post.user.name}'/></c:set>
-			<c:url var="bibUrl" value="${bibUrlTemplate}" context="${projectContext}"/>
-			<a href="${bibUrl}"><mtl:bibclean value="${post.resource.title}" /></a>
+			<bib:title post="${post}"/>
 		</jsp:attribute>
 		
 		<!-- Bibtex description -->
@@ -51,4 +46,5 @@
 		</jsp:attribute>
 		
 	</rc:list>
+	
 </jsp:root>

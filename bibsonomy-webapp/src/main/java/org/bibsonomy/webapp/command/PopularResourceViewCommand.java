@@ -21,11 +21,11 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 public class PopularResourceViewCommand extends ResourceViewCommand{
 
 	//list of lists of popular bibtex posts for the last XX days
-	private List<ListCommand<Post<BibTex>>> popularListsBibTex = new ArrayList<ListCommand<Post<BibTex>>>();
+	private final List<ListCommand<Post<BibTex>>> popularListsBibTex = new ArrayList<ListCommand<Post<BibTex>>>();
 	//list of lists of popular bookmark posts for the last XX days
-	private List<ListCommand<Post<Bookmark>>> popularListsBookmark = new ArrayList<ListCommand<Post<Bookmark>>>();
+	private final List<ListCommand<Post<Bookmark>>> popularListsBookmark = new ArrayList<ListCommand<Post<Bookmark>>>();
 	//the days for bibtex
-	private List<Integer> popularBibtexDays = new ArrayList<Integer>();
+	private List<Integer> popularBibTexDays = new ArrayList<Integer>();
 	//the days for bookmark
 	private List<Integer> popularBookmarkDays = new ArrayList<Integer>();
 	
@@ -34,24 +34,16 @@ public class PopularResourceViewCommand extends ResourceViewCommand{
 		return this.popularListsBibTex;
 	}
 
-	public void setPopularListsBibTex(List<ListCommand<Post<BibTex>>> popularListsBibTex) {
-		this.popularListsBibTex = popularListsBibTex;
-	}
-
 	public List<ListCommand<Post<Bookmark>>> getPopularListsBookmark() {
 		return this.popularListsBookmark;
 	}
 
-	public void setPopularListsBookmark(List<ListCommand<Post<Bookmark>>> popularListsBookmark) {
-		this.popularListsBookmark = popularListsBookmark;
-	}
-
-	public List<Integer> getPopularBibtexDays() {
-		return this.popularBibtexDays;
+	public List<Integer> getPopularBibTexDays() {
+		return this.popularBibTexDays;
 	}
 
 	public void setPopularBibtexDays(List<Integer> popularBibtexDays) {
-		this.popularBibtexDays = popularBibtexDays;
+		this.popularBibTexDays = popularBibtexDays;
 	}
 
 	public List<Integer> getPopularBookmarkDays() {

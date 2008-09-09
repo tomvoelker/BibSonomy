@@ -29,34 +29,47 @@
 	<layout:layout loginUserName="${command.context.loginUser.name}" searchString="hurz" basketSize="${command.context.loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}">
 		<jsp:attribute name="headerExt"/>
 		<jsp:attribute name="content">
-				<c:set var="counter" value="0"/>
 				<c:choose>
 					<c:when test="${fn:length(command.popularListsBookmark) > fn:length(command.popularListsBibTex)}">
 						<c:forEach var="bookmark" items="${command.popularListsBookmark}" varStatus="status">
-							<resources:bookmarks2 listView="${bookmark}" loginUserName="${command.context.loginUser.name}" info="${command.popularBookmarkDays[counter]}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
+							<resources:simplebookmarks listView="${bookmark}" loginUserName="${command.context.loginUser.name}">
+								<jsp:attribute name="extTitle">
+									<h2 class="listh">(${command.popularBookmarkDays[status.index]} <fmt:message key="days"/>)</h2>
+								</jsp:attribute>
+							</resources:simplebookmarks>
 							<c:choose>
-								<c:when test="${not empty command.popularListsBibTex[counter]}">
-									<resources:bibtexs2 listView="${command.popularListsBibTex[counter]}" loginUserName="${command.context.loginUser.name}" info="${command.popularBibtexDays[counter]}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
+								<c:when test="${not empty command.popularListsBibTex[status.index]}">
+									<resources:simplebibtexs listView="${command.popularListsBibTex[status.index]}" loginUserName="${command.context.loginUser.name}">
+										<jsp:attribute name="extTitle">
+											<h2 class="listh">(${command.popularBibTexDays[status.index]} <fmt:message key="days"/>)</h2>
+										</jsp:attribute>
+									</resources:simplebibtexs>
 								</c:when>
 								<c:otherwise>
 									<div class="bookbox"/>
 								</c:otherwise>
 							</c:choose>
-							<c:set var="counter" value="${counter+1}"/>
 						</c:forEach>
 					</c:when>
 					<c:otherwise>
 						<c:forEach var="bibtex" items="${command.popularListsBibTex}" varStatus="status">
 							<c:choose>
-								<c:when test="${ not empty command.popularListsBookmark[counter]}">
-									<resources:bookmarks2 listView="${command.popularListsBookmark[counter]}" loginUserName="${command.context.loginUser.name}" info="${command.popularBookmarkDays[counter]}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
+								<c:when test="${not empty command.popularListsBookmark[status.index]}">
+									<resources:simplebookmarks listView="${command.popularListsBookmark[status.index]}" loginUserName="${command.context.loginUser.name}">
+										<jsp:attribute name="extTitle">
+											<h2 class="listh">(${command.popularBookmarkDays[status.index]} <fmt:message key="days"/>)</h2>
+										</jsp:attribute>
+									</resources:simplebookmarks>
 								</c:when>
 								<c:otherwise>
 									<div class="bookbox"/>
 								</c:otherwise>
 							</c:choose>
-							<resources:bibtexs2 listView="${bibtex}" loginUserName="${command.context.loginUser.name}" info="${command.popularBibtexDays[counter]}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
-							<c:set var="counter" value="${counter+1}"/>
+							<resources:simplebibtexs listView="${bibtex}" loginUserName="${command.context.loginUser.name}">
+								<jsp:attribute name="extTitle">
+									<h2 class="listh">(${command.popularBibTexDays[status.index]} <fmt:message key="days"/>)</h2>
+								</jsp:attribute>
+							</resources:simplebibtexs>
 						</c:forEach>
 					</c:otherwise>
 				</c:choose>
