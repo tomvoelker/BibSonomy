@@ -4,6 +4,7 @@ import java.util.StringTokenizer;
 
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.posts.GetListOfPostsStrategy;
 import org.bibsonomy.rest.strategy.posts.GetNewPostsStrategy;
 import org.bibsonomy.rest.strategy.posts.GetPopularPostsStrategy;
@@ -36,6 +37,6 @@ public class PostsHandler implements ContextHandler {
 			}
 			break;
 		}
-		throw new UnsupportedOperationException("no strategy for url ");
+		throw new NoSuchResourceException("cannot process url (no strategy available) - please check url syntax ");
 	}
 }

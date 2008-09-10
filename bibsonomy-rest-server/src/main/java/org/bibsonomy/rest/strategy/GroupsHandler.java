@@ -4,6 +4,7 @@ import java.util.StringTokenizer;
 
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
 import org.bibsonomy.rest.strategy.groups.AddGroupStrategy;
 import org.bibsonomy.rest.strategy.groups.AddUserToGroupStrategy;
@@ -48,7 +49,7 @@ public class GroupsHandler implements ContextHandler {
 			}
 			break;
 		}
-		throw new UnsupportedOperationException("no strategy for url ");
+		throw new NoSuchResourceException("cannot process url (no strategy available) - please check url syntax ");
 	}
 
 	private Strategy createGroupListStrategy(final Context context, final HttpMethod httpMethod) {
