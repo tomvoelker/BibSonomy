@@ -20,6 +20,16 @@ public class PutPostStrategy extends AbstractUpdateStrategy {
 	private final String userName;
 	private final String resourceHash;
 
+	/**
+	 * Create new PutPostStrategy
+	 * 
+	 * @param context
+	 * 			- the context of the request
+	 * @param userName
+	 * 			- user name of the user who submitted the request
+	 * @param resourceHash
+	 * 			- intraHash of the resource to be updated
+	 */
 	public PutPostStrategy(final Context context, final String userName, final String resourceHash) {
 		super(context);
 		this.userName = userName;
@@ -45,10 +55,10 @@ public class PutPostStrategy extends AbstractUpdateStrategy {
 	@Override
 	protected String update() throws InternServerException, BadRequestOrResponseException {
 		final Post<?> post = this.getRenderer().parsePost(this.doc);
-		// ensure using the right resource.
+		// set the (old) intrahash of the resource as specified in the URL
+		post.getResource().setIntraHash(this.resourceHash);
 		// XXX: neither the client nor the REST API will calculate the new
-		// hash - this will be done by the logic behind the LogicInterface!
-		if (post.getResource().getInterHash() != null && !post.getResource().getIntraHash().equals(this.resourceHash)) throw new BadRequestOrResponseException("wrong resource");
+		// hash - this will be done by the logic behind the LogicInterface!		
 		try {
 			return this.getLogic().updatePost(post);
 		}
