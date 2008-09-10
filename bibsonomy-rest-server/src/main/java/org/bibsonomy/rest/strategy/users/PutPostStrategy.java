@@ -48,7 +48,7 @@ public class PutPostStrategy extends AbstractUpdateStrategy {
 		// ensure using the right resource.
 		// XXX: neither the client nor the REST API will calculate the new
 		// hash - this will be done by the logic behind the LogicInterface!
-		if (!post.getResource().getIntraHash().equals(this.resourceHash)) throw new BadRequestOrResponseException("wrong resource");
+		if (post.getResource().getInterHash() != null && !post.getResource().getIntraHash().equals(this.resourceHash)) throw new BadRequestOrResponseException("wrong resource");
 		try {
 			return this.getLogic().updatePost(post);
 		}
