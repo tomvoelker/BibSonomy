@@ -269,7 +269,7 @@ public class InitUserFilter implements Filter {
 				}				
 			} else {
 				final String[] auth = decodeAuthHeader(httpServletRequest);
-				if (auth != null) {
+				if (auth != null && auth.length == 2) {
 					/*
 					 * HTTP BASIC AUTHENTICATION
 					 */
