@@ -65,8 +65,8 @@ public class HandleFileUpload implements FileUploadInterface {
 	 * @see org.bibsonomy.util.fileutil.FileUploadInterface#writeUploadedFiles(java.lang.String,
 	 *      java.lang.String)
 	 */
-	public void writeUploadedFiles(final String rootPath, final String docPath) throws Exception {
-		this.upFile.write(new File((rootPath + docPath + this.fileHash.substring(0, 2).toLowerCase()), this.fileHash));
+	public void writeUploadedFiles(final String docPath) throws Exception {
+		this.upFile.write(new File((docPath + this.fileHash.substring(0, 2).toLowerCase()), this.fileHash));
 	}
 
 	/*
