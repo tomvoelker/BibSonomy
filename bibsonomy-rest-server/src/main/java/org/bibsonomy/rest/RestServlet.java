@@ -59,7 +59,10 @@ public final class RestServlet extends HttpServlet {
 		// get the roopath of bibsonomy out of the web.xml
 		additionalInfos.put("rootPath", getServletContext().getInitParameter("rootPath"));
 		// declare the path where all documents will be stored
-		additionalInfos.put("docPath", "bibsonomy_docs/");
+		/*
+		 * FIXME: make doc path configurable
+		 */
+		additionalInfos.put("docPath", getServletContext().getInitParameter("rootPath") + "bibsonomy_docs/"); 
 		// get the projectHome out of the web.xml
 		additionalInfos.put("projectHome", getServletContext().getInitParameter("projectHome"));
 		

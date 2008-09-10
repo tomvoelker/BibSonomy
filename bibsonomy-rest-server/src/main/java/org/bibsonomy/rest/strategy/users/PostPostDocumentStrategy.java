@@ -23,7 +23,6 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy{
 	private final String userName;
 	private final String resourceHash;
 	private final List<FileItem> items;
-	private final String rootPath;
 	private final String docPath;
 	private final String projectHome;
 	private String uri;
@@ -38,7 +37,6 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy{
 		this.userName = userName;
 		this.resourceHash = resourceHash;
 		this.items = context.getItemList();
-		this.rootPath = context.getAdditionalInfos().get("rootPath");
 		this.docPath = context.getAdditionalInfos().get("docPath");
 		this.projectHome = context.getAdditionalInfos().get("projectHome");
 	}
@@ -61,10 +59,11 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy{
 			doc.setFileName(up.getFileName());
 			doc.setFileHash(up.getFileHash());
 			
-			final String fileHash = this.getLogic().addDocument(doc, this.resourceHash);
+			// add document to post
+			this.getLogic().addDocument(doc, this.resourceHash);
 			
 			// write the file to the hdd
-			up.writeUploadedFiles(this.rootPath, this.docPath);
+			up.writeUploadedFiles(this.docPath);
 			uri = this.projectHome + "api/users/" + doc.getUserName() + "/posts/" + this.resourceHash + "/documents/" + doc.getFileName(); 
 			
 			return uri;

@@ -55,7 +55,7 @@ public class GetPostDocumentStrategy extends Strategy{
 		
 		try {
 			// get the bufferedstream of the file
-			FileDownloadInterface download = new HandleFileDownload(additionalInfos.get("rootPath"), additionalInfos.get("docPath"), doc.getFileHash());
+			FileDownloadInterface download = new HandleFileDownload(additionalInfos.get("docPath"), doc.getFileHash());
 			buf = download.getBuf();
 			
 			// write the bytes of the file to the writer
