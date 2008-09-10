@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +40,11 @@ import sun.misc.BASE64Decoder;
  */
 public final class RestServlet extends HttpServlet {
 
+	/**
+	 * Used in {@link #validateAuthorization(String)} to identify HTTP basic authentication.
+	 */
+	private static final String HTTP_AUTH_BASIC_IDENTIFIER = "Basic ";
+
 	private static final long serialVersionUID = 1L;
 
 	private static final Logger log = Logger.getLogger(RestServlet.class);
@@ -57,14 +63,15 @@ public final class RestServlet extends HttpServlet {
 		// instantiate the bibsonomy database connection
 		final String logicFactoryClassName = this.getServletConfig().getInitParameter(PARAM_LOGICFACTORY_CLASS);
 		// get the roopath of bibsonomy out of the web.xml
-		additionalInfos.put("rootPath", getServletContext().getInitParameter("rootPath"));
+		final ServletContext servletContext = getServletContext();
+		additionalInfos.put("rootPath", servletContext.getInitParameter("rootPath"));
 		// declare the path where all documents will be stored
 		/*
-		 * FIXME: make doc path configurable
+		 * FIXME: make doc path configurable via web.xml (or another config file)
 		 */
-		additionalInfos.put("docPath", getServletContext().getInitParameter("rootPath") + "bibsonomy_docs/"); 
+		additionalInfos.put("docPath", servletContext.getInitParameter("rootPath") + "bibsonomy_docs/"); 
 		// get the projectHome out of the web.xml
-		additionalInfos.put("projectHome", getServletContext().getInitParameter("projectHome"));
+		additionalInfos.put("projectHome", servletContext.getInitParameter("projectHome"));
 		
 		if (logicFactoryClassName != null) {
 			Object logicFactoryObj;
@@ -262,14 +269,14 @@ public final class RestServlet extends HttpServlet {
 	 * @throws IOException
 	 */
 	LogicInterface validateAuthorization(final String authentication) throws AuthenticationException {
-		if (authentication == null || !authentication.startsWith("Basic ")) {
+		if (authentication == null || !authentication.startsWith(HTTP_AUTH_BASIC_IDENTIFIER)) {
 			throw new AuthenticationException("Please authenticate yourself.");
 		}
 
 		final String basicCookie;
 		try {
 			final BASE64Decoder decoder = new BASE64Decoder();
-			basicCookie = new String(decoder.decodeBuffer(authentication.substring(6)));
+			basicCookie = new String(decoder.decodeBuffer(authentication.substring(HTTP_AUTH_BASIC_IDENTIFIER.length())));
 		} catch (final IOException e) {
 			throw new BadRequestOrResponseException("error decoding authorization header: " + e.toString());
 		}
@@ -281,7 +288,7 @@ public final class RestServlet extends HttpServlet {
 
 		// check username and password
 		final String username = basicCookie.substring(0, i);		
-		final String apiKey = basicCookie.substring(i + 1);
+		final String apiKey   = basicCookie.substring(i + 1);
 		log.debug("Username/API-key: " + username + " / " + apiKey);
 		try {
 			return logicFactory.getLogicAccess(username, apiKey);

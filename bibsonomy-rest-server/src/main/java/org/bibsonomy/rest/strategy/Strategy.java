@@ -51,6 +51,9 @@ public abstract class Strategy {
 		if (getContentType() == null) {
 			return null;
 		}
+		/*
+		 * FIXME: hard-coded "bibsonomy" must be removed!
+		 */
 		if (this.context.apiIsUserAgent(userAgent)) return "bibsonomy/" + getContentType() + "+" + this.context.getRenderingFormat().toString();
 		return RestProperties.getInstance().getContentType();
 	}
