@@ -27,4 +27,16 @@
 			<artifactId>junit</artifactId>
 		</dependency>
 	</dependencies>
+    <reporting>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <configuration>
+			<linksource>true</linksource>
+            <destDir>../../../target/site/rest-client-javadoc</destDir>						
+          </configuration>
+        </plugin>
+      </plugins>
+    </reporting>		
 </project>
