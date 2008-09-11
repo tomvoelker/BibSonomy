@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="BibLog">
+
+<!-- 
+**************************************************************
+CREATE TABLE `clicklog` (
+  `id` int(11) NOT NULL auto_increment,
+  `logdate` datetime default NULL,
+  `dompath` text collate utf8_unicode_ci,
+  `dompathwclasses` text collate utf8_unicode_ci,
+  `type` text collate utf8_unicode_ci,
+  `pageurl` text collate utf8_unicode_ci,
+  `ahref` text collate utf8_unicode_ci,
+  `atitle` text collate utf8_unicode_ci,
+  `useragent` text collate utf8_unicode_ci,
+  `host` text collate utf8_unicode_ci,
+  `completeheader` text collate utf8_unicode_ci,
+  `xforwardedfor` text collate utf8_unicode_ci,
+  `username` text collate utf8_unicode_ci,
+  `sessionid` text collate utf8_unicode_ci,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=84 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
+**************************************************************
+ -->
+
+  <!-- Use type aliases to avoid typing the full classname every time. -->
+  <typeAlias alias="Log" type="org.bibsonomy.logging.Log"/>
+
+  <!-- Result maps describe the mapping between the columns returned
+       from a query, and the rce="Bookmark.xml" />
+	<sqlMap resource="BibTclass properties.  A result map isn't
+       necessary if the columns (or aliases) match to the properties 
+       exactly. -->
+  <resultMap id="LogResult" class="Log">
+    <result property="id" column="id" />
+    <result property="logdate" column="logdate" />
+    <result property="dompath" column="dompath"/>
+    <result property="dompath2" column="dompathwclasses"/>
+    <result property="type" column="type"/>
+    <result property="pageurl" column="pageurl"/>
+    <result property="ahref" column="ahref"/>
+    <result property="acontent" column="acontent"/>
+    <result property="useragent" column="useragent"/>
+    <result property="username" column="username"/>
+    <result property="sessionid" column="sessionid"/>
+    <result property="host" column="host"/>
+    <result property="completeheader" column="completeheader"/>
+    <result property="xforwardedfor" column="xforwardedfor"/>
+    <result property="listpos" column="listpos"/>
+    <result property="windowsize" column="clientwindowsize"/>
+    <result property="mousedocumentpos" column="mousedocumentpos"/>
+    <result property="mouseclientpos" column="mouseclientpos"/>
+    <result property="anumberofposts" column="anumberofposts"/>
+    <result property="abmown" column="abmown"/>
+  </resultMap>
+
+  <!-- Select with no parameters using the result map for Account class. -->
+  <select id="selectAllLogdata" resultMap="LogResult">
+    select * from CLICKLOG
+  </select>
+
+  <!-- A simpler select example without the result map.  Note the 
+       aliases to match the properties of the target result class. -->
+ <!--  
+  <select id="selectLogdataById" parameterClass="int" resultClass="Log">
+    select
+      ACC_ID as id,
+      ACC_FIRST_NAME as firstName,
+      ACC_LAST_NAME as lastName,
+      ACC_EMAIL as emailAddress
+    from ACCOUNT
+    where ACC_ID = #id#
+  </select>
+-->   
+  <!-- Insert example, using the Account parameter class -->
+  <insert id="insertLogdata" parameterClass="Log">
+    insert into clicklog (
+		LOGDATE,
+		DOMPATH,
+		DOMPATHWCLASSES,
+		TYPE,
+		PAGEURL,
+		AHREF,
+		ACONTENT,
+		USERAGENT,
+		HOST,
+		COMPLETEHEADER,
+		XFORWARDEDFOR,
+		USERNAME,
+		SESSIONID,
+		LISTPOS,
+		CLIENTWINDOWSIZE,
+		MOUSECLIENTPOS,
+		MOUSEDOCUMENTPOS,
+		ANUMOFPOSTS,
+		ABMOWN
+      )
+    values (
+      now(), 
+      #dompath#, 
+      #dompath2#, 
+      #type#, 
+      #pageurl#, 
+      #ahref#, 
+      #acontent#, 
+      #useragent#, 
+      #host#, 
+      #completeheader#, 
+      #xforwardedfor#,
+      #username#, 
+      #sessionid#,
+      #listpos#,
+      #windowsize#,
+      #mouseclientpos#,
+      #mousedocumentpos#,
+      #anumberofposts#,
+      #abmown#
+    )
+  </insert>
+
+  <!-- Update example, using the Account parameter class -->
+ <!-- 
+  <update id="updateAccount" parameterClass="Account">
+    update ACCOUNT set
+      ACC_FIRST_NAME = #firstName#,
+      ACC_LAST_NAME = #lastName#,
+      ACC_EMAIL = #emailAddress#
+    where
+      ACC_ID = #id#
+  </update>
+ -->
+  <!-- Delete example, using an integer as the parameter class -->
+ 
+ <!--
+  <delete id="deleteAccountById" parameterClass="int">
+    delete from ACCOUNT where ACC_ID = #id#
+  </delete>
+ -->
+</sqlMap>
