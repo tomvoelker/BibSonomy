@@ -164,6 +164,44 @@
 					<finalName>${project.artifactId}-client-api-${project.version}</finalName>
 				</configuration>
 			</plugin>
+			<!-- copy site documentation to ftp server when 'mvn site' is executed -->
+			<plugin>
+			  <groupId>org.apache.maven.plugins</groupId>
+			  <artifactId>maven-antrun-plugin</artifactId>
+			  <version>1.1</version>
+			  <executions>
+			    <execution>
+			      <id>ftp</id>
+			      <phase>site</phase>
+			      <goals>
+			        <goal>run</goal>
+			      </goals>
+			      <configuration>
+			        <tasks>
+			          <ftp server="${site.ftp.server}"
+			               port="${site.ftp.port}"
+			               remotedir="${site.ftp.remotedir}"			               
+			               userid="${site.ftp.user}"
+			               password="${site.ftp.password}">
+			            <fileset dir="${project.build.directory}/site" />
+			          </ftp>
+			        </tasks>
+			      </configuration>
+			    </execution>
+			  </executions>
+			  <dependencies>
+			    <dependency>
+			      <groupId>ant</groupId>
+			      <artifactId>ant-commons-net</artifactId>
+			      <version>1.6.5</version>
+			    </dependency>
+			    <dependency>
+			      <groupId>commons-net</groupId>
+			      <artifactId>commons-net</artifactId>
+			      <version>1.4.1</version>
+			    </dependency>
+			  </dependencies>
+			</plugin>		
 		</plugins>
 		<extensions>
 			<extension>
