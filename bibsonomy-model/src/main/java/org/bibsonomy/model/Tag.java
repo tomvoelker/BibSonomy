@@ -2,13 +2,22 @@ package org.bibsonomy.model;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeSet;
 
 /**
  * This class represents a tag.
  * 
  * @version $Id$
  */
-public class Tag {
+public class Tag implements Comparable<Tag> , Cloneable {
+	/**
+	 * TODO: U.U. waere es nur schoener, wenn man das von ausserhalb "konfigurieren" koennte.
+	 * Ist aber bei einem Tag eher kompliziert. Oder steht es im Parser drin? Wenn wir
+	 * den wie eine Bean in bibsonomy-servlet.xml erstellen (z.B. wie die Logic) und
+	 * dann ueberall reinreichen, wo wir ihn brauchen, dann koennte man ihn mittels
+	 * dieser XML-Datei konfigurieren (aehnlich dem Captcha). 
+	 */
+	public static final int MAX_TAGS_ALLOWED = 100; // more tags are not allowed (they get lost)
 
 	/**
 	 * The id of this tag.
@@ -102,12 +111,41 @@ public class Tag {
 	}
 
 	/**
+	 * adds a subTag to the current tag
+	 * @param subTag
+	 */
+	public void addSubTag(Tag subTag) {
+		if (this.subTags == null) {
+			this.subTags = new LinkedList<Tag>();
+//			System.out.println("addSubTag -> new LinkedList<Tag>() " + this.getName() + " subTag: " + subTag.getName());
+		}
+		this.subTags.add(subTag);
+//		this.subTags.add(new Tag("Peter1"));
+//		this.subTags.add(new Tag("Peter2"));
+//		System.out.println("Tag.addSubTag             : " + this.getName() + " subTag: " + subTag.getName());
+//		System.out.println("Tag.addSubTag getSubTags(): " + getSubTags());
+	}	
+	
+	/**
 	 * @param subTags
 	 */
 	public void setSubTags(List<Tag> subTags) {
 		this.subTags = subTags;
 	}
 
+	/**
+	 * adds a superTag to the current tag
+	 * @param superTag
+	 */
+	public void addSuperTag(Tag superTag) {
+		if (this.superTags == null) {
+			this.superTags = new LinkedList<Tag>();
+//			System.out.println("addSuperTag -> new LinkedList<Tag>() " + this.getName() + " superTag: " + superTag.getName());
+		}
+		this.superTags.add(superTag);
+//		System.out.println("Tag.addSuperTag: " + this.getName() + " superTag: " + superTag.getName());
+	}	
+	
 	/**
 	 * @return superTags
 	 */
@@ -210,4 +248,32 @@ public class Tag {
 			this.getSubTags().add(new Tag(subtag));
 		}
 	}
+	
+	@Override
+	public boolean equals(Object tag) {
+		return this.getName().equals(((Tag) tag).getName());
+	}
+
+	@Override
+	public int hashCode() {
+		return this.getName().hashCode();
+	}
+
+	public int compareTo(Tag tag) {
+		return this.getName().compareTo(tag.getName());
+	}
+	
+	/** 
+	 * Returns a copy of this object<br>
+	 * The copy does NOT contain "for:" users or (any!) relations - 
+	 * only the tag set.
+	 * 
+	 * @see java.lang.Object#clone()
+	 */
+	public Object clone() throws CloneNotSupportedException {
+		Tag copy = new Tag();
+		copy = this;
+		return copy;
+	}
+	
 }
