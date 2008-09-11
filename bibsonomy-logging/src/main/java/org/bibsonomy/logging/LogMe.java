@@ -131,7 +131,7 @@ public class LogMe extends HttpServlet {
 			 String text = req.getParameter("dompath2");
 			 List<String> idArray = getMatches(p, text);
 			
-			 System.out.println (idArray.toString());
+//			 System.out.println (idArray.toString());
 			 
 			
 			
@@ -144,13 +144,11 @@ public class LogMe extends HttpServlet {
 			 text = req.getParameter("dompath2");
 			 List<String> classArray = getMatches(p, text,1);
 
-			 System.out.println (classArray.toString());
+//			 System.out.println (classArray.toString());
 			
 	
 			// logType is the type of logging information
 			// where in page has user clicked? Bookmark area,...  
-
-			       
 			logType = req.getParameter("dompath").replaceFirst("^[^#]+#", "");
 			logType = logType.replaceFirst("/.*$", "");
 			
