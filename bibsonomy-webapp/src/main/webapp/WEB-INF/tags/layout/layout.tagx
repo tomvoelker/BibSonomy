@@ -41,6 +41,7 @@
 				<!-- localized javascript messages -->
 				<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale}.js">&amp;nbsp;</script>				
 				<script type="text/javascript" src="${resdir}/javascript/functions.js">&amp;nbsp;</script>
+				<script type="text/javascript" src="${resdir}/javascript/logging.js">&amp;nbsp;</script>
 				<script type="text/javascript" src="${resdir}/javascript/tooltip.js">&amp;nbsp;</script>
 				<script type="text/javascript" src="${resdir}/javascript/style.js">&amp;nbsp;</script>
 				<script type="text/javascript" src="${resdir}/javascript/chrome.js">&amp;nbsp;</script>
