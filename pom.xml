@@ -115,12 +115,13 @@
 		<module>bibsonomy-dl-importer</module>
 		<module>bibsonomy-scraper</module>
 		<module>bibsonomy-database</module>
+		<module>bibsonomy-logging</module>
 		<module>bibsonomy-rest-client</module>
 		<module>bibsonomy-rest-common</module>
 		<module>bibsonomy-rest-server</module>
 		<module>bibsonomy-spielwiese</module>
 		<module>bibsonomy-webapp</module>
-		<module>bibsonomy-webdav</module>
+		<module>bibsonomy-webdav</module>		
 	</modules>
 	<build>
 		<pluginManagement>
@@ -312,5 +313,5 @@
 				<version>1.6.1</version>
 			</dependency>
 		</dependencies>
-	</dependencyManagement>
+	</dependencyManagement>		
 </project>
