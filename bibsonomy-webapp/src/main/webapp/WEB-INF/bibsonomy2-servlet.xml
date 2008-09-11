@@ -214,9 +214,20 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/post/bookmark">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="postBookmarkController"/>
+					</bean>
+				</entry>				
 			</map>
 		</property>
 	</bean>
+			
+	<bean id="postBookmarkController" class="org.bibsonomy.webapp.controller.post.PostBookmarkController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+	</bean>
+				
 				<bean id="homepageController" class="org.bibsonomy.webapp.controller.HomepageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
@@ -375,9 +386,6 @@
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
 				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
 			</list>
-		</property>
-		<property name="entriesPerPage">
-			<value type="java.lang.Integer">5</value>
 		</property>
 	</bean>
 	<!-- 
