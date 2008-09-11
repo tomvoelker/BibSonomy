@@ -6,4 +6,5 @@ Download
 |<<>>|<<Download>>
 |Java client library | {{{./download/bibsonomy_rest_client_library_java.tgz}bibsonomy_rest_client_library_java.tgz}} 
 |JabRef client | {{{./download/JabRef2.3b-BibsonomyEdition.jar}JabRef2.3b-BibsonomyEdition.jar}}
+|PHP API client | {{{./download/bibsonomy-client-php.zip}bibsonomy-client-php.zip}}
 *--+--+
