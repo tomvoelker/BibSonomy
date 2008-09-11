@@ -80,7 +80,6 @@
 					</dependency>				
 				</dependencies>
 			</plugin>
-			<!-- 
 			<plugin>
 				<groupId>com.sun.tools.xjc.maven2</groupId>
 				<artifactId>maven-jaxb-plugin</artifactId>
@@ -97,7 +96,6 @@
 					</generatePackage>
 				</configuration>
 			</plugin>
-			 -->
 		</plugins>
 	</build>
 	<dependencies>
