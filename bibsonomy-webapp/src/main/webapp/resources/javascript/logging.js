@@ -189,7 +189,7 @@ function log_sendRequest(e) {
 				}
 			} 
 			
-			console.log("Stelle im DOM: " + sibling_count);
+//			console.log("Stelle im DOM: " + sibling_count);
 			
 		}
 		welement = welement.parentNode
@@ -246,7 +246,7 @@ function log_sendRequest(e) {
 
 //		console.log('.. readyState:  '+http_request.readyState);
 		if (http_request.readyState == 4) {
-			console.log('.. http-status:  '+http_request.status);
+//			console.log('.. http-status:  '+http_request.status);
 		}
 //		console.log('.. http-response:  '+http_request.responseText);
 
