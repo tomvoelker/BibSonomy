@@ -41,7 +41,7 @@ public class UserPageController extends MultiResourceListControllerWithTags impl
 		final GroupingEntity groupingEntity = GroupingEntity.USER;
 		final String groupingName = command.getRequestedUser();
 		final List<String> requTags = command.getRequestedTagsList();
-		
+				
 		// display of attached PDFs
 		FilterEntity filter = null;
 		if (command.getShowPDF().equals("true")) {
@@ -93,7 +93,12 @@ public class UserPageController extends MultiResourceListControllerWithTags impl
 				
 		// html format - retrieve tags and return HTML view
 		if (command.getFormat().equals("html")) {
-			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, 1000, null);
+			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, 10000, null);
+			
+			// log if a user has reached threshold
+			if (command.getTagcloud().getTags().size() > 9999) {
+				LOGGER.error("User " + groupingName + " has reached threshold of 10000 tags on user page");
+			}
 			
 			if (requTags.size() > 0) {
 				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, Order.ADDED, 0, 20, null);
