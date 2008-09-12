@@ -46,7 +46,7 @@
 				<script type="text/javascript" src="${resdir}/javascript/chrome.js">&amp;nbsp;</script>
 
 				<!-- enable logging with user permission -->
-				<c:if test="${${command.context.loginUser.settings.logLevel != 1}">
+				<c:if test="${command.context.loginUser.settings.logLevel != 1}">
 				  <script type="text/javascript" src="${resdir}/javascript/logging.js">&amp;nbsp;</script>
 				</c:if>
 
