@@ -230,7 +230,8 @@ function log_sendRequest(e) {
 					'&windowsize='+Fensterweite()+" "+Fensterhoehe()+
 					'&mousedocumentpos='+mouseposition(e)+
 					'&mouseclientpos='+absolutemouseposition(e)+
-					'&listpos='+sibling_count;
+					'&listpos='+sibling_count+
+					'&referer='+document.referrer;
 					
 		http_request.open('POST', serverurl, true);
 		http_request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');

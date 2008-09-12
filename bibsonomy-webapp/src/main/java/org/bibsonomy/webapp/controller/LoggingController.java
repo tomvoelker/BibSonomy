@@ -26,11 +26,11 @@ public class LoggingController extends AjaxController implements MinimalisticCon
 		final String action = command.getAction();
 
 		
-		System.out.println("1:"+command.getUserName());
-		System.out.println("10:"+command.getDompath());
-		System.out.println("11:"+command.getPageurl());
-		System.out.println("12:"+command.getAtitle());
-		System.out.println("13:"+command.getAhref());
+//		System.out.println("1:"+command.getUserName());
+//		System.out.println("10:"+command.getDompath());
+//		System.out.println("11:"+command.getPageurl());
+//		System.out.println("12:"+command.getAtitle());
+//		System.out.println("13:"+command.getAhref());
 		
 		return Views.AJAX;
 	}	
@@ -38,7 +38,7 @@ public class LoggingController extends AjaxController implements MinimalisticCon
 
 	
 	public LoggingCommand instantiateCommand() {
-		System.out.println("Logging: Bibsonomy2");
+//		System.out.println("Logging: Bibsonomy2");
 		return new LoggingCommand();
 	}
 }

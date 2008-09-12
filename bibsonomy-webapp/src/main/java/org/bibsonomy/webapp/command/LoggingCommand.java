@@ -28,6 +28,10 @@ public class LoggingCommand extends AjaxCommand {
 	/** anchor hyper-reference */
 	private String ahref;
 
+	/** referer */
+	private String referer;
+
+	
 	/**
 	 * @return the userName
 	 */
