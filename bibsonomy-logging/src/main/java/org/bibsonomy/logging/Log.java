@@ -62,6 +62,8 @@ public class Log {
 	/** clicked link is users own bookmark (or bibtex) */
 	private String abmown;
 
+	/** referrer - where does user come from  */
+	private String referer;
 	
 
 
@@ -440,6 +442,24 @@ public class Log {
 	 */
 	public void setAbmown(String abmown) {
 		this.abmown = abmown;
+	}
+
+
+
+	/**
+	 * @return the referer
+	 */
+	public String getReferer() {
+		return referer;
+	}
+
+
+
+	/**
+	 * @param referer the referer to set
+	 */
+	public void setReferer(String referer) {
+		this.referer = referer;
 	}
 
 	

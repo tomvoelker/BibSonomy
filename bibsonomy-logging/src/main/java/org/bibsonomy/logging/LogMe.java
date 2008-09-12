@@ -69,7 +69,8 @@ public class LogMe extends HttpServlet {
 		pw.println("</body>");
 		pw.println("</html>");
 */
-	    pw.println("");
+
+//		pw.println("");
 	    pw.close();
 
 	    
@@ -166,7 +167,6 @@ public class LogMe extends HttpServlet {
 			}
 			
 			
-			
 			Log LogData = new Log();
 			
 			LogData.setAhref(req.getParameter("ahref"));
@@ -187,8 +187,9 @@ public class LogMe extends HttpServlet {
 			LogData.setMouseclientpos(req.getParameter("mouseclientpos"));
 			LogData.setMousedocumentpos(req.getParameter("mousedocumentpos"));
 			LogData.setAbmown(abmown);
+			LogData.setReferer(req.getParameter("referer"));
 			
-	
+			
 			try {
 				QueryDB.getInstance().insertLogdata(LogData);
 			} catch (SQLException e) {

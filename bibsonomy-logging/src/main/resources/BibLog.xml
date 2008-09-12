@@ -57,6 +57,7 @@ CREATE TABLE `clicklog` (
     <result property="mouseclientpos" column="mouseclientpos"/>
     <result property="anumberofposts" column="anumberofposts"/>
     <result property="abmown" column="abmown"/>
+    <result property="referer" column="referer"/>
   </resultMap>
 
   <!-- Select with no parameters using the result map for Account class. -->
@@ -98,7 +99,8 @@ CREATE TABLE `clicklog` (
 		MOUSECLIENTPOS,
 		MOUSEDOCUMENTPOS,
 		ANUMOFPOSTS,
-		ABMOWN
+		ABMOWN,
+		REFERER
       )
     values (
       now(), 
@@ -119,7 +121,8 @@ CREATE TABLE `clicklog` (
       #mouseclientpos#,
       #mousedocumentpos#,
       #anumberofposts#,
-      #abmown#
+      #abmown#,
+      #referer#
     )
   </insert>
 
