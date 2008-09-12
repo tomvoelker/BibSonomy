@@ -36,7 +36,10 @@ public class UserSettings {
 	 */
 	private String defaultLanguage = "en";
 	/**
-	 * How much data about the user behaviour (clicking, etc.) is logged.
+	 * How much data about the user behavior (clicking, etc.) is logged.
+	 * 
+	 * 0 = yes (log clicks to external pages)
+	 * 1 = no  (don't log clicks to external pages)
 	 */
 	private int logLevel;
 
