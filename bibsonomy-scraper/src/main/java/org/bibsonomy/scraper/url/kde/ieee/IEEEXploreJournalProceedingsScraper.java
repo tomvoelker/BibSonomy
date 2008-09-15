@@ -1,6 +1,8 @@
 package org.bibsonomy.scraper.url.kde.ieee;
 
 import java.io.ByteArrayInputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.StringTokenizer;
@@ -35,13 +37,43 @@ public class IEEEXploreJournalProceedingsScraper implements Scraper {
 	private static final String CONST_VOLUME     = "Volume: ";
 	private static final String CONST_PAGES      = "On page(s): ";
 	private static final String CONST_BOOKTITLE	 = "This paper appears in: ";
+	
+	private static final String PATTERN_ARNUMBER = "chklist=([^%]*)";
 
 	
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		if (sc.getUrl() != null && sc.getUrl().toString().startsWith(IEEE_HOST_NAME+IEEE_PATH)  && sc.getUrl().toString().indexOf("punumber") == -1 ) {
-			sc.setBibtexResult(ieeeJournalProceedingsScrape(sc));
-			sc.setScraper(this);
-			return true;
+			
+			Pattern pattern = Pattern.compile(PATTERN_ARNUMBER);
+			Matcher matcher = pattern.matcher(sc.getUrl().toString());
+			if(matcher.find()){
+				String downUrl = "http://ieeexplore.ieee.org/xpls/citationAct?dlSelect=cite_abs&fileFormate=BibTex&arnumber=<arnumber>" + matcher.group(1) + "</arnumber>";
+				String bibtex = null;
+				try {
+					bibtex = sc.getContentAsString(new URL(downUrl));
+				} catch (MalformedURLException ex) {
+					throw new InternalFailureException(ex);
+				}
+				
+				if(bibtex != null){
+					// clean up
+					bibtex = bibtex.replace("<br>", "");
+					
+					sc.setBibtexResult(bibtex);
+					sc.setScraper(this);
+					return true;
+					
+				}else{
+					sc.setBibtexResult(ieeeJournalProceedingsScrape(sc));
+					sc.setScraper(this);
+					return true;
+					
+				}
+			}else{
+				sc.setBibtexResult(ieeeJournalProceedingsScrape(sc));
+				sc.setScraper(this);
+				return true;
+			}
 		}
 		return false;
 	}

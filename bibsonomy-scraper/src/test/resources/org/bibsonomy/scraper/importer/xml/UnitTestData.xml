@@ -69,7 +69,7 @@
 	<URLTest id="url_13">
 		<TestDescription>URL scraping test with journals and proceedings from ieeexlpore</TestDescription>
 		<URL>http://ieeexplore.ieee.org/xpl/freeabs_all.jsp?isnumber=26129&amp;arnumber=1163019&amp;count=14&amp;index=0</URL>
-		<BibFile>IEEEXploreJournalProceedingsScraperUnitURLTest.bib</BibFile>
+		<BibFile>IEEEXploreJournalProceedingsScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEXploreJournalProceedingsScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_14">
@@ -725,5 +725,11 @@
 		<URL>http://arxiv.org/abs/cond-mat/0508028</URL>
 		<BibFile>ArxivScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.arxiv.ArxivScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_127">
+		<TestDescription>Test for IEEEXploreJournalProceedingsScraper</TestDescription>
+		<URL>http://ieeexplore.ieee.org/xpl/selected.jsp?imageField.x=81&amp;imageField.y=12&amp;imageField=View+Selected+Items&amp;chklist=4536262%40ieeecnfs</URL>
+		<BibFile>IEEEXploreJournalProceedingsScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEXploreJournalProceedingsScraper</Scraper>
 	</URLTest>
 </test:Tests>
