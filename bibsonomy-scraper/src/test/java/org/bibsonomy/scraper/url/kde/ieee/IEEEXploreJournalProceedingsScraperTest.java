@@ -17,7 +17,7 @@ public class IEEEXploreJournalProceedingsScraperTest {
 	 * starts URL test with id url_13
 	 */
 	@Test
-	//@Ignore
+	@Ignore
 	public void urlTestRun1(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_13"));
@@ -27,7 +27,7 @@ public class IEEEXploreJournalProceedingsScraperTest {
 	 * starts URL test with id url_127
 	 */
 	@Test
-	//@Ignore
+	@Ignore
 	public void urlTestRun2(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_127"));
