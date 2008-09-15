@@ -135,6 +135,11 @@ public class EndnoteToBibtexConverter {
 								final String newAuthor = _resultBibtexFields.get(bibtexFieldName) + " and " + _tempData;
 								_resultBibtexFields.put(bibtexFieldName, newAuthor);
 							}
+							
+							if ("editor".equals(bibtexFieldName)) {
+								final String newEditor = _resultBibtexFields.get(bibtexFieldName) + " and " + _tempData;
+								_resultBibtexFields.put(bibtexFieldName, newEditor);
+							}
 						} else {
 							_resultBibtexFields.put(bibtexFieldName, _tempData);
 						}
