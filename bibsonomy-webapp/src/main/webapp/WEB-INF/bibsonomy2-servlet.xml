@@ -387,6 +387,9 @@
 				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
 			</list>
 		</property>
+		<property name="entriesPerPage">
+			<value type="java.lang.Integer">5</value>
+		</property>
 	</bean>
 	<!-- 
 	    This bean provides admin access to the logic interface by predicting 
