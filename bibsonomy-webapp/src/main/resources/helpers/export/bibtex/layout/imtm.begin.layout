@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="en">
 <head>
-<title>JabRef References output</title>
+<title>Literaturliste</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <script type="text/javascript">
 <!--
@@ -45,12 +45,13 @@ function convertToHtml(input) {
 	output = output.split(String.fromCharCode(220)).join("&Uuml;");
 	output = output.split(String.fromCharCode(223)).join("&szlig;");
 	output = output.split("%20").join(" ");
-	output = output.split("\\n").join("<br/>");
+	output = output.split("\n").join("<br/>");
 	return output;
 }
 
 function initHeadline() {
 	var url = document.URL;
+	
 	var urlArray = url.split("#");
 	if (urlArray.length==4) {
 		var titleArray = urlArray[1].split("=");
@@ -358,7 +359,8 @@ function toggleQSetting() {
 	redoQS()
 }
 -->
-
+</script>
+<script type="text/javascript">
 <!--
 // Sort Table Script
 // Version: 1.1
@@ -583,7 +585,6 @@ th.sort_asc, th.sort_des {  }
 </style>
 </head>
 <body>
-
 <h id="headline"></h>
 <div id="qs">
 	<form action="">
@@ -594,7 +595,6 @@ th.sort_asc, th.sort_des {  }
 	</div>
 	</form>
 </div>
-<br/>
 <table id="qstable" class="sortable" border="1">
 <thead><tr><th width="5%" class="sort_asc">Jahr</th><th width="95%">Publikationen</th></tr></thead>
 <tbody>
