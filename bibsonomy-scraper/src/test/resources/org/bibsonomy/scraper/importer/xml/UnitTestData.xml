@@ -597,7 +597,7 @@
 	<URLTest id="url_104">
 		<TestDescription>ieee xplore Scraper url test</TestDescription>
 		<URL>http://ieeexplore.ieee.org/Xplore/login.jsp?url=/iel5/69/30743/01423975.pdf?tp=&amp;isnumber=&amp;arnumber=1423975</URL>
-		<BibFile>IEEEXploreScraperUnitURLTest.bib</BibFile>
+		<BibFile>IEEEXploreScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEXploreScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_105">
@@ -731,5 +731,11 @@
 		<URL>http://ieeexplore.ieee.org/xpl/selected.jsp?imageField.x=81&amp;imageField.y=12&amp;imageField=View+Selected+Items&amp;chklist=4536262%40ieeecnfs</URL>
 		<BibFile>IEEEXploreJournalProceedingsScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEXploreJournalProceedingsScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_128">
+		<TestDescription>Test for IEEEXploreScraper</TestDescription>
+		<URL>http://ieeexplore.ieee.org/search/freesrchabstract.jsp?arnumber=4427159&amp;isnumber=4427044&amp;punumber=4427043&amp;k2dockey=4427159@ieeecnfs&amp;query=%28folksonomy%29%3Cin%3Emetadata&amp;pos=1</URL>
+		<BibFile>IEEEXploreScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEXploreScraper</Scraper>
 	</URLTest>
 </test:Tests>

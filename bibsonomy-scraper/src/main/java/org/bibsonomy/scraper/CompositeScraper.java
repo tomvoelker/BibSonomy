@@ -50,10 +50,14 @@ public class CompositeScraper implements Scraper {
 			// getting bibtex failed (conversion failed)
 			log.fatal(e);
 			throw (e);
-		}  catch (final ScrapingException e) {
+		} catch (final ScrapingException e) {
 			// something else
 			log.error(e);
 			throw (e);
+		} catch (final Exception e) {
+			// unexpected internal failure 
+			log.fatal(e);			
+			throw (new InternalFailureException(e));
 		}
 		return false;
 	}

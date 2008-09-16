@@ -7,7 +7,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * Scraper URL tests #104 for IEEEXploreScraper
+ * Scraper URL tests #104 #128 for IEEEXploreScraper
  * @author tst
  *
  */
@@ -18,9 +18,18 @@ public class IEEEXploreScraperTest {
 	 */
 	@Test
 	@Ignore
-	public void urlTestRun(){
+	public void urlTestRun1(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_104"));
 	}
 	
+	/**
+	 * starts URL test with id url_128
+	 */
+	@Test
+	@Ignore
+	public void urlTestRun2(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_128"));
+	}
 }
