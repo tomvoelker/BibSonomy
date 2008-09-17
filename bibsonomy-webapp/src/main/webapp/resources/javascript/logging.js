@@ -26,20 +26,50 @@ var port     = 0;
 var mostInnerLi = true;
 
 
-//var serverurl = "http://p7.biblicious.org/logging"; // ohne slash
-//var serverurl = "http://p7.biblicious.org/logging/"; // mit slash
-var serverurl = "/logging"; // absolut, ohne serverangabe, ohne slash
+var serverurl = "/logging";
 
 function log_init () {
   log_register_events();
 }
 
 function log_register_events() {
-	document.addEventListener ("click", log_sendRequest, false);
+    if (document.addEventListener) { // Mozilla, Safari,...
+        try {
+			document.addEventListener ("click", log_sendRequest, false);
+        } catch (e) {
+        	// do nothing
+        }
+    } else if (document.attachEvent) { // IE
+        try {
+			document.attachEvent('onclick', log_sendRequest);
+        } catch (e) {
+        	// do nothingwelement
+        }
+    }
+    else
+    {
+    	// not IE, Mozilla, Safari,....
+    	// what else should be here?
+    	
+    }
 }
 
 function log_sendRequest(e) {
-	element = e.target;
+	
+// debug	
+//	document.bgColor = "#ffeeee";
+
+    if (document.addEventListener) { // Mozilla, Safari,...
+		element = e.target
+    } else if (document.attachEvent) { // IE
+		element = event.srcElement
+    }
+    else
+    {
+    	// not IE, Mozilla, Safari,....
+    	// what else should be here?
+    	
+    }
 
 	welement = element;
 	dom_path = "";
@@ -150,7 +180,8 @@ function log_sendRequest(e) {
 		}
 
 		if (welement.nodeName == "A") {
-			dom_acontent = welement.childNodes[0].textContent;
+//			dom_acontent = welement.childNodes[0].textContent;
+			dom_acontent = welement.firstChild.nodeValue;
 			// trim(dom_acontent)
 			dom_acontent = dom_acontent.replace (/^\s+/, '').replace (/\s+$/, '');
 			dom_ahref=welementattrs_ahref;
@@ -196,8 +227,12 @@ function log_sendRequest(e) {
 		
 	} while (welement.parentNode)
 
+// debug
+//	document.bgColor = "#ddffdd";
+
+	http_request = false;
+
 	if (a_node_present) {	
-		http_request = false;
 
         if (window.XMLHttpRequest) { // Mozilla, Safari,...
             http_request = new XMLHttpRequest();
