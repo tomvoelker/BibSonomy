@@ -1,4 +1,6 @@
 target
 target-eclipse
+.cvsignore
+.project
 .classpath
 .settings
