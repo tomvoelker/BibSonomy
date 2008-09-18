@@ -47,6 +47,7 @@ public class PsyContentScraper implements Scraper{
 			
 			String url = sc.getUrl().toString();
 			if(url.startsWith(PSYCONTENT_HOST_NAME)) {
+				sc.setScraper(this);
 				
 				//get the ID of the article
 				String id = null;
@@ -80,10 +81,7 @@ public class PsyContentScraper implements Scraper{
 						bibtex = (new RisToBibtexConverter()).RisToBibtex(risFile);
 						
 						if(bibtex != null) {
-							
 							sc.setBibtexResult(bibtex);
-							//return itself to know which scraper the page
-							sc.setScraper(this);
 							return true;
 						} else {
 							throw new ScrapingFailureException("Conversion from Ris to bibtex failed");

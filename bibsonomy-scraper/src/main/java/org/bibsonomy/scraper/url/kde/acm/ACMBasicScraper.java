@@ -33,7 +33,8 @@ public class ACMBasicScraper implements Scraper {
 	
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		if (sc.getUrl() != null && sc.getUrl().toString().startsWith(ACM_CITATION_URL)) {
-			
+			sc.setScraper(this);
+
 			//create the URL string manually to add it to the bibtex string
 			String url = "url = {" + sc.getUrl().toString() + "}}";
 			String abstr = ",abstract = {";
@@ -136,10 +137,6 @@ public class ACMBasicScraper implements Scraper {
 				
 				if (!"".equals(result)) {
 					sc.setBibtexResult(result);
-					/*
-					 * returns itself to know, which scraper scraped this
-					 */
-					sc.setScraper(this);
 					return true;
 				} else
 					throw new ScrapingFailureException("getting bibtex failed");

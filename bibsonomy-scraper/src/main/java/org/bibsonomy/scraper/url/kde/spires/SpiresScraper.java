@@ -27,6 +27,8 @@ public class SpiresScraper implements Scraper{
 	
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		if (sc.getUrl() != null && sc.getUrl().getHost().endsWith(SPIRES_HOST)) {
+			sc.setScraper(this);
+			
 			try {
 				String bibtexresult = null;
 				
@@ -51,11 +53,6 @@ public class SpiresScraper implements Scraper{
 				//-- bibtex string may not be empty
 				if (bibtexresult != null && !"".equals(bibtexresult)) {
 					sc.setBibtexResult(bibtexresult);
-					/*
-					 * returns itself to know, which scraper scraped this
-					 */
-					sc.setScraper(this);
-		
 					return true;
 				}else
 					throw new ScrapingFailureException("getting bibtex failed");

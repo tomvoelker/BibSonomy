@@ -31,6 +31,8 @@ public class IngentaconnectScraper implements Scraper{
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		if (sc.getUrl() != null && (sc.getUrl().toString().startsWith(INGENTA_CITATION_URL))) {
 
+			sc.setScraper(this);
+
 			// This Scraper might handle the specified url
 			try {
 				
@@ -101,10 +103,6 @@ public class IngentaconnectScraper implements Scraper{
 				 */
 				//System.out.println(buffer.toString());
 				sc.setBibtexResult(buffer.toString());
-				/*
-				* returns itself to know, which scraper scraped this
-				*/
-				sc.setScraper(this);
 				return true;
 			} catch (MalformedURLException e) {
 				throw new InternalFailureException(e);

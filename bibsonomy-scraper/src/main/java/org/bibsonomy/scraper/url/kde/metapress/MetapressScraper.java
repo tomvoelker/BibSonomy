@@ -49,6 +49,8 @@ public class MetapressScraper implements Scraper {
 	public boolean scrape(ScrapingContext sc)throws ScrapingException {
 		
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(HOST)){
+			sc.setScraper(this);
+			
 			Pattern patternHref = Pattern.compile(PATTERN_URL);
 			Matcher matcherHref = patternHref.matcher(sc.getUrl().toString());
 			
@@ -70,7 +72,6 @@ public class MetapressScraper implements Scraper {
 						
 						if(bibtex != null){
 							sc.setBibtexResult(bibtex);
-							sc.setScraper(this);
 							return true;
 						}else
 							throw new ScrapingFailureException("convert to bibtex failed");

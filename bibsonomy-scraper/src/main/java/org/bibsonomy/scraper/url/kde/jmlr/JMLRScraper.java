@@ -45,6 +45,8 @@ public class JMLRScraper implements Scraper {
 
 	public boolean scrape(ScrapingContext sc)throws ScrapingException {
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(HOST)){
+			sc.setScraper(this);
+			
 			if(sc.getUrl().getPath().startsWith(PATH) && sc.getUrl().getPath().endsWith(".html")){
 				String pageContent = sc.getPageContent();
 				
@@ -161,7 +163,6 @@ public class JMLRScraper implements Scraper {
 				
 				// finish
 				sc.setBibtexResult(bibtex.toString());
-				sc.setScraper(this);
 				return true;
 
 			}else

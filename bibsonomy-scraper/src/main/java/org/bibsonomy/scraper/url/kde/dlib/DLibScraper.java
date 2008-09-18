@@ -113,6 +113,8 @@ public class DLibScraper implements Scraper {
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(DLIB_HOST)){
 			try {
+				sc.setScraper(this);
+				
 				String metaData = null;
 				
 				// get metadata
@@ -133,7 +135,6 @@ public class DLibScraper implements Scraper {
 					if(bibtex != null){
 						// success 
 						sc.setBibtexResult(bibtex);
-						sc.setScraper(this);
 						return true;
 					}else
 						throw new ScrapingFailureException("getting bibtex failed");

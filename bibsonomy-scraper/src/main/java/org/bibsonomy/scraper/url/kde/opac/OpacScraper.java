@@ -33,7 +33,8 @@ public class OpacScraper implements Scraper {
 		//Pattern.matches("^http.*?+/CHARSET=UTF-8/PRS=PP/PPN\\?PPN=[0-9X]+$", sc.getUrl().toString())
 		//sc.getUrl().toString().startsWith(OPAC_URL)
 		if (sc.getUrl() != null && (Pattern.matches("^http.*?/CHARSET=UTF-8/PRS=PP/PPN\\?PPN=[0-9X]+$", sc.getUrl().toString()))){
-		
+			sc.setScraper(this);
+			
 			String bibResult = null;
 			PicaToBibtexConverter converter = null;
 			
@@ -45,7 +46,6 @@ public class OpacScraper implements Scraper {
 
 				if(bibResult != null){
 					sc.setBibtexResult(bibResult);
-					sc.setScraper(this);
 					return true;
 				}else
 					throw new ScrapingFailureException("getting bibtex failed");

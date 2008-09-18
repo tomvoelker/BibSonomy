@@ -54,6 +54,8 @@ public class ProjectmuseScraper implements Scraper {
 
 	public boolean scrape(ScrapingContext sc)throws ScrapingException {
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(HOST)){
+			sc.setScraper(this);
+			
 			// build sgml download url
 			String journalID = getRegexResult(PATTERN_JOURNAL_ID, sc.getUrl().toString());
 			
@@ -183,7 +185,6 @@ public class ProjectmuseScraper implements Scraper {
 				bibtex.append("}\n");
 				
 				sc.setBibtexResult(bibtex.toString());
-				sc.setScraper(this);
 				return true;
 				
 			} catch (MalformedURLException ex) {

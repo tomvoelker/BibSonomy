@@ -22,6 +22,8 @@ public class L3SScraper implements Scraper {
 		
 		//-- url shouldn't be null
 		if (sc.getUrl() != null && sc.getUrl().getHost().endsWith(L3S_URL)) {
+				
+				sc.setScraper(this);
 				String bibtexresult = null;
 				
 				Pattern patternTd = Pattern.compile(PATTERN_HTML_TD, Pattern.MULTILINE | Pattern.DOTALL);
@@ -46,10 +48,6 @@ public class L3SScraper implements Scraper {
 				//-- bibtex string may not be empty
 				if (bibtexresult != null && !"".equals(bibtexresult)) {
 					sc.setBibtexResult(bibtexresult);
-					/*
-					 * returns itself to know, which scraper scraped this
-					 */
-					sc.setScraper(this);
 	
 					return true;
 				}else

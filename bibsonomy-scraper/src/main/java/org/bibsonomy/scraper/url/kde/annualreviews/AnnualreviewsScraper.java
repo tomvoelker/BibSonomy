@@ -59,6 +59,8 @@ public class AnnualreviewsScraper implements Scraper {
 
 	public boolean scrape(ScrapingContext sc)throws ScrapingException {
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(HOST)){
+			sc.setScraper(this);
+			
 			String doi = null;
 			String bibtex = null;
 			
@@ -87,7 +89,6 @@ public class AnnualreviewsScraper implements Scraper {
 			
 			if(bibtex != null){
 				sc.setBibtexResult(bibtex);
-				sc.setScraper(this);
 				return true;
 			}else
 				throw new ScrapingFailureException("Bibtex download failed. Can't scrape any bibtex.");

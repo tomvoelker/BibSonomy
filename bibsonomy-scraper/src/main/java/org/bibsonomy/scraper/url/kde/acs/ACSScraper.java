@@ -51,6 +51,7 @@ public class ACSScraper implements Scraper {
 			String url = sc.getUrl().toString();
 			
 			if(url.startsWith(ACS_HOST_NAME)) {
+				sc.setScraper(this);
 				URL citationURL = null;
 				
 				if(url.startsWith(ACS_HOST_NAME + ACS_ABSTRACT_PATH)) {
@@ -85,11 +86,6 @@ public class ACSScraper implements Scraper {
 				
 				if(bibResult != null) {
 					sc.setBibtexResult(bibResult);
-					/*
-					 * returns itself to know, which scraper scraped this
-					 */
-					sc.setScraper(this);
-	
 					return true;
 				}else
 					throw new ScrapingFailureException("getting bibtex failed");

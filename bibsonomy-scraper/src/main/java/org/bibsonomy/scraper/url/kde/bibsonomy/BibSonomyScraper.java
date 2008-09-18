@@ -32,6 +32,8 @@ public class BibSonomyScraper implements Scraper {
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(BIBSONOMY_HOST)){
 			try {
+				sc.setScraper(this);
+				
 				String bibResult = null;
 				
 				// if /bibtex page then change path from /bibtex to /bib/bibtex and download
@@ -47,7 +49,6 @@ public class BibSonomyScraper implements Scraper {
 				
 				if(bibResult != null){
 					sc.setBibtexResult(bibResult);
-					sc.setScraper(this);
 					return true;
 				}else
 					throw new ScrapingFailureException("getting bibtex failed");

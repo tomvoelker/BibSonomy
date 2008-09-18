@@ -18,6 +18,7 @@ import java.util.regex.PatternSyntaxException;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
+import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 
@@ -52,6 +53,7 @@ public class UBKAScraper implements Scraper {
 	
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		if (sc.getUrl() != null && sc.getUrl().toString().startsWith(UBKA_HOST_NAME)) {
+			sc.setScraper(this);
 			
 			if(UBKA_SEARCH_PATH.equals(sc.getUrl().getPath())){
 			/* URL looks some like this:
@@ -88,7 +90,8 @@ public class UBKAScraper implements Scraper {
 				}else
 					throw new ScrapingFailureException("getting bibtex failed");
 
-			}
+			}else
+				throw new PageNotSupportedException("This UBKA URL is not supported!");
 			
 		}	
 		return false;

@@ -61,6 +61,8 @@ public class ProlaScraper implements Scraper {
 	 */
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().equals(PROLA_APS_HOST)){
+			sc.setScraper(this);
+			
 			String prolaPageContent = sc.getPageContent();
 			
 			// check if snippet is selected
@@ -72,7 +74,6 @@ public class ProlaScraper implements Scraper {
 				
 				// add downloaded bibtex to result 
 				sc.setBibtexResult(bibtex);
-				sc.setScraper(this);
 				return true;						
 			}
 			
@@ -85,7 +86,6 @@ public class ProlaScraper implements Scraper {
 				
 				// add downloaded bibtex to result 
 				sc.setBibtexResult(bibtex);
-				sc.setScraper(this);
 				return true;						
 			}
 			
@@ -145,7 +145,6 @@ public class ProlaScraper implements Scraper {
 						
 						// add downloaded bibtex to result 
 						sc.setBibtexResult(downloadedBibtex);
-						sc.setScraper(this);
 						return true;						
 					}else
 						throw new ScrapingException("ProlaScraper: can't get bibtex from this article");

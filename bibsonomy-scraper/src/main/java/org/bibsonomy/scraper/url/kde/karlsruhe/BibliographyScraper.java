@@ -32,6 +32,8 @@ public class BibliographyScraper implements Scraper {
 
 	public boolean scrape(ScrapingContext sc)throws ScrapingException {
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(HOST) && sc.getUrl().getPath().startsWith(PATH)){
+			sc.setScraper(this);
+			
 			String page = sc.getPageContent();
 			
 			if(page.indexOf(BIBTEX_START_BLOCK) > -1){
@@ -45,7 +47,6 @@ public class BibliographyScraper implements Scraper {
 				page = page.replaceAll("<[^>]*>", "");
 				
 				sc.setBibtexResult(page);
-				sc.setScraper(this);
 				return true;
 			}else
 				throw new ScrapingException("Can't find bibtex in scraped page.");			

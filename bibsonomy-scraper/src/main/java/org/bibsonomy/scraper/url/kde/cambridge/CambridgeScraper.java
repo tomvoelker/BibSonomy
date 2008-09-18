@@ -55,6 +55,8 @@ public class CambridgeScraper implements Scraper {
 			String url = sc.getUrl().toString();
 			
 			if(url.startsWith(CAMBRIDGE_HOST_NAME)) {
+				sc.setScraper(this);
+				
 				String id = null;
 				URL citUrl = null;
 				if(url.startsWith(CAMBRIDGE_HOST_NAME + CAMBRIDGE_ABSTRACT_PATH)) {
@@ -81,11 +83,6 @@ public class CambridgeScraper implements Scraper {
 				
 				if(bibResult != null) {
 					sc.setBibtexResult(bibResult);
-					/*
-					 * returns itself to know, which scraper scraped this
-					 */
-					sc.setScraper(this);
-	
 					return true;
 				}else
 					throw new ScrapingFailureException("getting bibtex failed");

@@ -46,6 +46,7 @@ public class BioMedCentralScraper implements Scraper {
 			 */
 			String url = sc.getUrl().toString();
 			if(url.startsWith(BIOMEDCENTRAL_HOST_NAME)) {
+				sc.setScraper(this);
 				
 				if(!(url.endsWith("/" + BIOMEDCENTRAL_BIBTEX_PATH + "/") || 
 					 url.endsWith("/" + BIOMEDCENTRAL_BIBTEX_PATH) ||
@@ -73,11 +74,6 @@ public class BioMedCentralScraper implements Scraper {
 								
 				if(bibResult != null) {
 					sc.setBibtexResult(bibResult);
-					/*
-					 * returns itself to know, which scraper scraped this
-					 */
-					sc.setScraper(this);
-	
 					return true;
 				}
 			}

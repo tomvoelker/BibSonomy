@@ -60,6 +60,8 @@ public class IOPScraper implements Scraper {
 	 */
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().equals(IOP_URL_HOST) && sc.getUrl().getPath().startsWith(IOP_URL_PATH_START)){
+			sc.setScraper(this);
+			
 			// download article page
 			String articlePageContent = sc.getPageContent();
 			
@@ -117,7 +119,6 @@ public class IOPScraper implements Scraper {
 					if(citationBibtex != null){
 						// add downloaded bibtex to result 
 						sc.setBibtexResult(citationBibtex);
-						sc.setScraper(this);
 						return true;						
 					}else
 						throw new ScrapingFailureException("getting bibtex failed");

@@ -56,6 +56,8 @@ public class OpenrepositoryScraper implements Scraper {
 			}
 			
 			if(downloadURL != null){
+				sc.setScraper(this);
+				
 				try {
 					String ris = sc.getContentAsString(new URL(downloadURL));
 					
@@ -64,7 +66,6 @@ public class OpenrepositoryScraper implements Scraper {
 					
 					if(bibtex != null){
 						sc.setBibtexResult(bibtex);
-						sc.setScraper(this);
 						return true;
 					}else
 						throw new ScrapingFailureException("getting bibtex failed");

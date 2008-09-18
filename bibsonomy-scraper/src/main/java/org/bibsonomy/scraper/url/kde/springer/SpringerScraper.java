@@ -29,6 +29,8 @@ public class SpringerScraper implements Scraper {
 
 	public boolean scrape(ScrapingContext sc)throws ScrapingException {
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith("springer.com")){
+			sc.setScraper(this);
+			
 			try {
 				String url = sc.getUrl().toString();
 				String isbn = url.substring(url.lastIndexOf("/")+1);
@@ -39,7 +41,6 @@ public class SpringerScraper implements Scraper {
 				
 				if(bibtex != null){
 					sc.setBibtexResult(bibtex);
-					sc.setScraper(this);
 					return true;
 				}else
 					throw new ScrapingFailureException("getting bibtex failed");

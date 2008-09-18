@@ -36,6 +36,8 @@ public class BibtexScraper implements Scraper {
 
 	public boolean scrape(ScrapingContext sc)throws ScrapingException {
 		if(sc != null && sc.getUrl() != null){
+			sc.setScraper(this);
+			
 			String source = sc.getPageContent();
 			
 			// html clean up

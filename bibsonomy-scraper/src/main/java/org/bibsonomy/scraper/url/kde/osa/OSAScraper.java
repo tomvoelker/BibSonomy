@@ -58,6 +58,7 @@ public class OSAScraper implements Scraper {
 			 */
 			String url = sc.getUrl().toString();
 			if(url.startsWith(OSA_HOST_NAME)) {
+				sc.setScraper(this);
 
 				String id = null;
 				
@@ -110,11 +111,6 @@ public class OSAScraper implements Scraper {
 				
 				if(bibResult != null) {
 					sc.setBibtexResult(bibResult);
-					/*
-					 * returns itself to know, which scraper scraped this
-					 */
-					sc.setScraper(this);
-	
 					return true;
 				}else
 					throw new ScrapingFailureException("getting bibtex failed");

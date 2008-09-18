@@ -65,13 +65,13 @@ public class NasaAdsScraper implements Scraper {
 	 */
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(URL_NASA_ADS_HOST)){
+			sc.setScraper(this);
 		
 			/*
 			 * check of snippet
 			 */
 			if(sc.getSelectedText() != null){
 				sc.setBibtexResult(sc.getSelectedText());
-				sc.setScraper(this);
 				return true;
 				
 			/*
@@ -116,7 +116,6 @@ public class NasaAdsScraper implements Scraper {
 					if(urlConn.getContentType().startsWith(NASA_ADS_CONTENT_TYPE_PLAIN)){
 						
 						sc.setBibtexResult(nasaAdsContent);
-						sc.setScraper(this);
 						return true;
 						
 					/*
@@ -144,7 +143,6 @@ public class NasaAdsScraper implements Scraper {
 									// get snippet
 									String bibtexSnippet = sc.getContentAsString(new URL(bibtexURL));
 									sc.setBibtexResult(bibtexSnippet);
-									sc.setScraper(this);
 									return true;
 								}
 							}

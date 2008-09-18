@@ -56,6 +56,8 @@ public class UsenixScraper implements Scraper {
 
 	public boolean scrape(ScrapingContext sc)throws ScrapingException {
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(HOST)){
+			sc.setScraper(this);
+			
 			String path = sc.getUrl().getPath();
 			try {
 				String title = null;
@@ -210,7 +212,6 @@ public class UsenixScraper implements Scraper {
 					bibResult = bibResult.substring(0, bibResult.length()-2) + "\n}\n";
 
 					sc.setBibtexResult(bibResult);
-					sc.setScraper(this);
 					return true;
 					
 				}else

@@ -43,6 +43,8 @@ public class ArxivScraper implements Scraper {
 		
 		if (sc.getUrl() != null && sc.getUrl().getHost().endsWith(ARXIV_HOST)) {
 			try {
+				sc.setScraper(this);
+				
 				String bibtexResult = null; 
 				
 				Document doc = getDOM(sc.getPageContent());
@@ -95,11 +97,6 @@ public class ArxivScraper implements Scraper {
 				
 				// set result
 				sc.setBibtexResult(bibtexResult);
-				/*
-				 * returns itself to know, which scraper scraped this
-				 */
-				sc.setScraper(this);
-
 				return true;
 				
 			} catch (MalformedURLException me) {

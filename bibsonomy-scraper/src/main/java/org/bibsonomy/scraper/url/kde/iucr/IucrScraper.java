@@ -85,6 +85,7 @@ public class IucrScraper implements Scraper {
 
 	public boolean scrape(ScrapingContext sc)throws ScrapingException {
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(HOST)){
+			sc.setScraper(this);
 			
 			if(sc.getUrl().getHost().startsWith(HOST_JOURNAL_PREFIX)){
 				throw new UseageFailureException(USEAGE_FAILURE_MESSAGE);
@@ -114,7 +115,6 @@ public class IucrScraper implements Scraper {
 							
 							// successful
 							sc.setBibtexResult(bibtex);
-							sc.setScraper(this);
 							return true;
 							
 						}else{

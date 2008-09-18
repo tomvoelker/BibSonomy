@@ -84,6 +84,7 @@ public class AipScitationScraper implements Scraper {
 	 */
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(URL_AIP_HOST)){
+			sc.setScraper(this);
 			
 			/*
 			 * check of snippet
@@ -91,7 +92,6 @@ public class AipScitationScraper implements Scraper {
 			 */			
 			if(sc.getSelectedText() != null && sc.getUrl().getPath().startsWith(URL_AIP_CITATION_BIBTEX_PAGE_PATH) && sc.getUrl().toString().contains(HTML_INPUT_NAME_FN_AND_VALUE)){
 				sc.setBibtexResult(cleanKeywords(sc.getSelectedText()));
-				sc.setScraper(this);
 				return true;
 				
 			/*
@@ -117,7 +117,6 @@ public class AipScitationScraper implements Scraper {
 					if(urlConn.getContentType().startsWith(AIP_CONTENT_TYPE_PLAIN)){
 						
 						sc.setBibtexResult(cleanKeywords(aipContent));
-						sc.setScraper(this);
 						return true;
 						
 					/*
@@ -154,7 +153,6 @@ public class AipScitationScraper implements Scraper {
 							urlConn = (HttpURLConnection) new URL(bibtexLink.toString()).openConnection();
 							String bibtexResult = getAipContent(urlConn, cookie);
 							sc.setBibtexResult(cleanKeywords(bibtexResult));
-							sc.setScraper(this);
 							return true;
 						}else
 							throw new ScrapingFailureException("getting bibtex failed");

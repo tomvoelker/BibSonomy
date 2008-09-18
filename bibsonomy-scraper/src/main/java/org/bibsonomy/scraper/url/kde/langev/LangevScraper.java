@@ -32,16 +32,12 @@ public class LangevScraper implements Scraper {
 			 * extract URL and check against several (mirror) host names
 			 */
 			final String url = sc.getUrl().toString();
-			if (url.startsWith(ISRL_HOST_NAME)) { 		
+			if (url.startsWith(ISRL_HOST_NAME)) {
+				sc.setScraper(this);
 				
 				final Matcher m = ISRL_PATTERN.matcher(sc.getPageContent());	
 				if (m.matches()) {
 					sc.setBibtexResult(m.group(1));
-					/*
-					 * returns itself to know, which scraper scraped this
-					 */
-					sc.setScraper(this);
-
 					return true;
 				}else
 					throw new PageNotSupportedException("no bibtex snippet found");

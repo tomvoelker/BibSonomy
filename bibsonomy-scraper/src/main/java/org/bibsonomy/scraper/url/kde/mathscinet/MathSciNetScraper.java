@@ -66,6 +66,7 @@ public class MathSciNetScraper implements Scraper {
 	 */
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(URL_MATHSCINET_HOST) && sc.getUrl().getPath().startsWith(URL_MATHSCINET_PATH)){
+			sc.setScraper(this);
 			
 			String urlToBibtex = null;
 			/*
@@ -73,7 +74,6 @@ public class MathSciNetScraper implements Scraper {
 			 */			
 			if(sc.getSelectedText() != null && sc.getUrl().toString().contains(URL_MATHSCINET_FMT_PARAMETER)){
 				sc.setBibtexResult(sc.getSelectedText());
-				sc.setScraper(this);
 				return true;
 				
 			/*
@@ -151,7 +151,6 @@ public class MathSciNetScraper implements Scraper {
 						bibtex = bibtex.substring(5, bibtex.length()-6);
 						
 						sc.setBibtexResult(bibtex);
-						sc.setScraper(this);
 						return true;
 						
 					// can't find bibtex

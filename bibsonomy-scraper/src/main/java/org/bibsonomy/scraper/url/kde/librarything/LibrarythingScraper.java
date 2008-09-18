@@ -77,6 +77,8 @@ public class LibrarythingScraper implements Scraper {
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().contains("librarything") && sc.getSelectedText() == null){
 			URL url = null;
 			
+			sc.setScraper(this);
+			
 			// build .com url			
 			if(!sc.getUrl().getHost().contains("librarything.com")){
 				String urlString = sc.getUrl().toString();
@@ -203,7 +205,6 @@ public class LibrarythingScraper implements Scraper {
 			bibResult = bibResult.substring(0, bibResult.length()-2) + "\n}\n";
 
 			sc.setBibtexResult(bibResult);
-			sc.setScraper(this);
 			return true;
 		}
 		return false;

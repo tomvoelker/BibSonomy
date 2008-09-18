@@ -46,7 +46,9 @@ public class DBLPScraper implements Scraper {
 					url.startsWith(DBLP_HOST_NAME2) /*||
 					url.startsWith(DBLP_HOST_NAME3) ||
 					url.startsWith(DBLP_HOST_NAME4) ||
-					url.startsWith(DBLP_HOST_NAME5)*/) { 
+					url.startsWith(DBLP_HOST_NAME5)*/) {
+				
+				sc.setScraper(this);
 
 				//Filtering the <a href="...">DBLP</a>: links out of the content
 				int beginDBLPLink = sc.getPageContent().indexOf("<a href=\"http://www.informatik.uni-trier.de/~ley/db/about/bibtex.html\">");
@@ -58,11 +60,6 @@ public class DBLPScraper implements Scraper {
 				final Matcher m = DBLP_PATTERN.matcher(pageContent);	
 				if (m.matches()) {
 					sc.setBibtexResult(m.group(1));
-					/*
-					 * returns itself to know, which scraper scraped this
-					 */
-					sc.setScraper(this);
-
 					return true;
 				}else
 					throw new PageNotSupportedException("no bibtex snippet available");

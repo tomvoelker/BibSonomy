@@ -38,6 +38,7 @@ public class AclScraper implements Scraper {
 
 	public boolean scrape(ScrapingContext sc)throws ScrapingException {
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(HOST)){
+			sc.setScraper(this);
 			if(sc.getUrl().getPath().startsWith(PATH_PREFIX) && sc.getUrl().getPath().endsWith(".pdf")){
 				String downloadUrl = sc.getUrl().toString();
 				
@@ -56,7 +57,6 @@ public class AclScraper implements Scraper {
 						throw new PageNotSupportedException("This aclweb.org page is not supported. Bibtex is not available.");
 					
 					sc.setBibtexResult(bibtex);
-					sc.setScraper(this);
 					return true;
 				}else
 					throw new ScrapingFailureException("getting bibtex failed");

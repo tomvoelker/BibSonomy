@@ -46,6 +46,7 @@ public class JStorScraper implements Scraper {
 			
 			String url = sc.getUrl().toString();
 			if(url.startsWith(JSTOR_HOST_NAME)) {
+				sc.setScraper(this);
 				
 				String id = null;
 				if(url.startsWith(JSTOR_HOST_NAME + JSTOR_ABSTRACT_PATH)) {
@@ -94,12 +95,7 @@ public class JStorScraper implements Scraper {
 							throw new InternalFailureException("Could not convert to UTF-8!");
 						}
 						
-						/*
-						 * returns itself to know, which scraper scraped this
-						 */
 						sc.setBibtexResult(bibtex);
-						sc.setScraper(this);
-						
 						return true;
 					} else
 						throw new ScrapingFailureException("getting bibtex failed");

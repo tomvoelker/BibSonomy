@@ -40,6 +40,8 @@ public class IEEEComputerSocietyScraper implements Scraper {
 
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		if(sc != null &&  sc.getUrl() != null && sc.getUrl().getHost().equals(HOST)){
+			sc.setScraper(this);
+			
 			String page = sc.getPageContent();
 			
 			StringTokenizer tokenizer = new StringTokenizer(page, "\n");

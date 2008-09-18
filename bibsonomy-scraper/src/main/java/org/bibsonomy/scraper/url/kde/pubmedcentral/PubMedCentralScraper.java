@@ -23,6 +23,8 @@ public class PubMedCentralScraper implements Scraper {
 	
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		if (sc.getUrl() != null && PUBMEDCENTRAL_HOST.equals(sc.getUrl().getHost())){
+			sc.setScraper(this);
+			
 			String bibtexresult = null;
 
 			try {
@@ -53,11 +55,6 @@ public class PubMedCentralScraper implements Scraper {
 				//-- bibtex string may not be empty
 				if (bibtexresult != null && !"".equals(bibtexresult)) {
 					sc.setBibtexResult(bibtexresult);
-					/*
-					 * returns itself to know, which scraper scraped this
-					 */
-					sc.setScraper(this);
-		
 					return true;
 				}else
 					throw new ScrapingFailureException("getting bibtex failed");

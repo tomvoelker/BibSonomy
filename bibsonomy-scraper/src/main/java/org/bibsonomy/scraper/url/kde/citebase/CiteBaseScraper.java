@@ -38,6 +38,8 @@ public class CiteBaseScraper implements Scraper {
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		
 		if (sc.getUrl() != null && sc.getUrl().getHost().endsWith(CITEBASE_HOST)) {
+			sc.setScraper(this);
+			
 			try {
 				 
 				final Document document = getDOM(sc.getPageContent());
@@ -56,13 +58,7 @@ public class CiteBaseScraper implements Scraper {
 				}
 				// set result
 				sc.setBibtexResult(bibtexEntry);
-				/*
-				 * returns itself to know, which scraper scraped this
-				 */
-				sc.setScraper(this);
-
 				return true;
-				
 				
 			} catch (MalformedURLException me) {
 				throw new InternalFailureException(me);

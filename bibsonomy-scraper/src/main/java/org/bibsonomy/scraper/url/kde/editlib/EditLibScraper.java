@@ -45,6 +45,8 @@ public class EditLibScraper implements Scraper {
 			String url = sc.getUrl().toString();
 			
 			if(url.startsWith(EDITLIB_HOST_NAME)) {
+				sc.setScraper(this);
+				
 				String id = null;
 				
 				if(url.startsWith(EDITLIB_HOST_NAME + EDITLIB_ABSTRACT_PATH)) {
@@ -66,11 +68,6 @@ public class EditLibScraper implements Scraper {
 				
 				if(bibResult != null) {
 					sc.setBibtexResult(bibResult);
-					/*
-					 * returns itself to know, which scraper scraped this
-					 */
-					sc.setScraper(this);
-	
 					return true;
 				}else
 					throw new ScrapingFailureException("getting bibtex failed");

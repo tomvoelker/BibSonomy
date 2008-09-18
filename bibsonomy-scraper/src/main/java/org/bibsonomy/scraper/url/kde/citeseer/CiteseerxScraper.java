@@ -32,6 +32,7 @@ public class CiteseerxScraper implements Scraper {
 
 	public boolean scrape(ScrapingContext sc)throws ScrapingException {
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(HOST)){
+			sc.setScraper(this);
 			
 			// check for selected bibtex snippet
 			if(sc.getSelectedText() != null){
@@ -55,7 +56,6 @@ public class CiteseerxScraper implements Scraper {
 				bibtex = bibtex.replace("&nbsp;", " ");
 				
 				sc.setBibtexResult(bibtex);
-				sc.setScraper(this);
 				return true;
 
 			}else

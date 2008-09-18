@@ -73,6 +73,7 @@ public class PlosScraper implements Scraper {
 	 */
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(PLOS_HOST_ENDING)){
+			sc.setScraper(this);
 			try {
 				// citation as endnote
 				String citation = null;
@@ -123,7 +124,6 @@ public class PlosScraper implements Scraper {
 					String bibtex = converter.processEntry(citation);
 					if(bibtex != null){
 						sc.setBibtexResult(bibtex);
-						sc.setScraper(this);
 						return true;
 					}else
 						throw new ScrapingFailureException("getting bibtex failed");

@@ -44,6 +44,7 @@ public class BMJScraper implements Scraper {
 			String url = sc.getUrl().toString();
 			
 			if(url.startsWith(BMJ_HOST_NAME)) {
+				sc.setScraper(this);
 				String id = null;
 				
 				if(url.startsWith(BMJ_HOST_NAME + BMJ_ABSTRACT_PATH)) {
@@ -65,11 +66,6 @@ public class BMJScraper implements Scraper {
 				
 				if(bibResult != null) {
 					sc.setBibtexResult(bibResult);
-					/*
-					 * returns itself to know, which scraper scraped this
-					 */
-					sc.setScraper(this);
-	
 					return true;
 				}
 			}

@@ -51,6 +51,8 @@ public class EricScraper implements Scraper {
 		 */
 		
 		if(sc != null && sc.getUrl() != null && sc.getUrl().toString().startsWith(ERIC_URL)){
+			sc.setScraper(this);
+			
 			//extract accno from url query
 			String accno = null;
 			
@@ -78,7 +80,6 @@ public class EricScraper implements Scraper {
 				
 					if(bibtex != null){
 						sc.setBibtexResult(bibtex);
-						sc.setScraper(this);
 						return true;
 					}else
 						throw new ScrapingFailureException("getting bibtex failed");

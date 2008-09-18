@@ -42,6 +42,7 @@ public class NberScraper implements Scraper {
 			 */
 			String url = sc.getUrl().toString();
 			if(url.startsWith(NBER_HOST_NAME)) {
+				sc.setScraper(this);
 				
 				//here we just need to append .bib to the url and we got the bibtex file
 				try {
@@ -54,11 +55,6 @@ public class NberScraper implements Scraper {
 								
 				if(bibResult != null) {
 					sc.setBibtexResult(bibResult);
-					/*
-					 * returns itself to know, which scraper scraped this
-					 */
-					sc.setScraper(this);
-	
 					return true;
 				}else
 					throw new ScrapingFailureException("getting bibtex failed");

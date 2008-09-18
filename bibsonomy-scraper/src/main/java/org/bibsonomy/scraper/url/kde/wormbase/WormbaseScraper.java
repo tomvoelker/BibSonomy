@@ -40,6 +40,8 @@ public class WormbaseScraper implements Scraper {
 
 	public boolean scrape(ScrapingContext sc)throws ScrapingException {
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(HOST)){
+			sc.setScraper(this);
+			
 			String name = null;
 			
 			// get id
@@ -60,7 +62,6 @@ public class WormbaseScraper implements Scraper {
 					
 					if(bibtex != null){
 						sc.setBibtexResult(bibtex);
-						sc.setScraper(this);
 						return true;
 					}else
 						throw new ScrapingFailureException("generating bibtex failed");

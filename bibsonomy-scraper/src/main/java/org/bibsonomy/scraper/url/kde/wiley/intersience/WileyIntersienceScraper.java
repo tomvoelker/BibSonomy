@@ -72,6 +72,8 @@ public class WileyIntersienceScraper implements Scraper {
 	 */
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(WILEY_INTERSIENCE_HOST)){
+			sc.setScraper(this);
+			
 			try{
 				// get id from citation
 				String citationId = sc.getUrl().getPath();
@@ -200,7 +202,6 @@ public class WileyIntersienceScraper implements Scraper {
 
 				// build bibtex and store it in context
 				sc.setBibtexResult(bibResult);
-				sc.setScraper(this);
 				return true;
 			}catch (MalformedURLException e) {
 				throw new InternalFailureException(e);

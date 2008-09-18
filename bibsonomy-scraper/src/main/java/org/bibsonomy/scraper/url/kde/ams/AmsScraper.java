@@ -38,6 +38,7 @@ public class AmsScraper implements Scraper {
 
 	public boolean scrape(ScrapingContext sc)throws ScrapingException {
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(HOST)){
+			sc.setScraper(this);
 			String doi = null;
 			
 			String url = sc.getUrl().toString();
@@ -64,7 +65,6 @@ public class AmsScraper implements Scraper {
 						
 						if(bibtex != null){
 							sc.setBibtexResult(bibtex);
-							sc.setScraper(this);
 							return true;
 						}else
 							throw new ScrapingFailureException("failure during converting to bibtex");

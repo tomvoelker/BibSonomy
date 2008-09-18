@@ -51,6 +51,7 @@ public class LiebertScraper implements Scraper {
 			 */
 			String url = sc.getUrl().toString();
 			if(url.startsWith(LIEBERT_HOST_NAME)) {
+				sc.setScraper(this);
 				
 				String id = null;
 				URL userURL = null;
@@ -98,11 +99,6 @@ public class LiebertScraper implements Scraper {
 				
 				if(bibResult != null) {
 					sc.setBibtexResult(bibResult);
-					/*
-					 * returns itself to know, which scraper scraped this
-					 */
-					sc.setScraper(this);
-	
 					return true;
 				}else
 					throw new ScrapingFailureException("getting bibtex failed");

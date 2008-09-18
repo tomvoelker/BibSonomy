@@ -46,6 +46,7 @@ public class IEEEXploreBookScraper implements Scraper {
 
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		if (sc.getUrl() != null && sc.getUrl().toString().startsWith(IEEE_HOST_NAME+IEEE_BOOK_PATH)) {
+			sc.setScraper(this);
 			
 			Pattern pattern = Pattern.compile(PATTERN_ARNUMBER);
 			Matcher matcher = pattern.matcher(sc.getUrl().toString());
@@ -63,20 +64,17 @@ public class IEEEXploreBookScraper implements Scraper {
 					bibtex = bibtex.replace("<br>", "");
 					
 					sc.setBibtexResult(bibtex);
-					sc.setScraper(this);
 					return true;
 					
 				}else{
 					log.debug("IEEEXploreBookScraper: direct bibtex download failed. Use JTidy to get bibliographic data.");
 					sc.setBibtexResult(ieeeBookScrape(sc));
-					sc.setScraper(this);
 					return true;
 					
 				}
 			}else{
 				log.debug("IEEEXploreBookScraper use JTidy to get Bibtex from " + sc.getUrl().toString());
 				sc.setBibtexResult(ieeeBookScrape(sc));
-				sc.setScraper(this);
 				return true;
 			}
 		}

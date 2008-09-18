@@ -61,6 +61,8 @@ public class NatureScraper implements Scraper {
 	 */
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith("nature.com")){
+			sc.setScraper(this);
+			
 			// bibtex result
 			String bibtex = null;
 			
@@ -94,7 +96,6 @@ public class NatureScraper implements Scraper {
 							// return bibtex
 							if(bibtex != null){
 								sc.setBibtexResult(bibtex);
-								sc.setScraper(this);
 								return true;
 							}else
 								throw new ScrapingFailureException("getting bibtex failed");

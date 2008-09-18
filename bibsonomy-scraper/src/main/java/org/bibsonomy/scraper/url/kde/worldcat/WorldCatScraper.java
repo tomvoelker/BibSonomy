@@ -31,13 +31,14 @@ public class WorldCatScraper implements Scraper {
 
 	public boolean scrape(ScrapingContext sc)throws ScrapingException {
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith("worldcat.org")){
+			sc.setScraper(this);
+			
 			if(sc.getUrl().getPath().startsWith("/oclc/")){
 				try {
 					String bibtex = getBibtex(sc.getUrl(), sc, false);
 					
 					if(bibtex != null){
 						sc.setBibtexResult(bibtex);
-						sc.setScraper(this);
 						return true;
 					}else
 						throw new ScrapingFailureException("getting bibtex failed");

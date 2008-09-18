@@ -34,6 +34,7 @@ public class SpringerLinkScraper implements Scraper {
 
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		if (sc.getUrl() != null && (sc.getUrl().toString().startsWith(SPRINGER_CITATION_URL) || sc.getUrl().toString().startsWith(SPRINGER_CITATION_URL2))) {
+			sc.setScraper(this);
 
 			// This Scraper might handle the specified url
 			try {
@@ -70,10 +71,6 @@ public class SpringerLinkScraper implements Scraper {
 				 */
 				if (bibtexEntries != null && !"".equals(bibtexEntries)) {
 					sc.setBibtexResult(bibtexEntries);
-					/*
-					 * returns itself to know, which scraper scraped this
-					 */
-					sc.setScraper(this);
 					return true;
 				}else
 					throw new ScrapingFailureException("getting bibtex failed");

@@ -85,29 +85,27 @@ public class AnthroSourceScraper implements Scraper {
 					}
 				}
 				
-				id = id.replaceAll("/", "%2F");
-				
-				String bibResult = null;
-				
-				try {
-					URL citURL = new URL(AS_HOST_NAME + AS_BIBTEX_DOWNLOAD_PATH + AS_BIBTEX_PARAMS + id);
-					bibResult = getContent(citURL, getCookies(userURL));
-					
-				} catch (IOException ex) {
-					throw new InternalFailureException(ex);
-				}
-				
-				if(bibResult != null) {
-					sc.setBibtexResult(bibResult);
-					/*
-					 * returns itself to know, which scraper scraped this
-					 */
+				if(id != null){
 					sc.setScraper(this);
-	
-					return true;
-				}else
-					throw new ScrapingFailureException("getting bibtex failed");
-
+					
+					id = id.replaceAll("/", "%2F");
+					
+					String bibResult = null;
+					
+					try {
+						URL citURL = new URL(AS_HOST_NAME + AS_BIBTEX_DOWNLOAD_PATH + AS_BIBTEX_PARAMS + id);
+						bibResult = getContent(citURL, getCookies(userURL));
+						
+					} catch (IOException ex) {
+						throw new InternalFailureException(ex);
+					}
+					
+					if(bibResult != null) {
+						sc.setBibtexResult(bibResult);
+						return true;
+					}else
+						throw new ScrapingFailureException("getting bibtex failed");
+				}
 			}
 		}
 		

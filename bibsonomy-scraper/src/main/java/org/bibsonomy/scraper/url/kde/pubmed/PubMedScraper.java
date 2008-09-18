@@ -30,6 +30,8 @@ public class PubMedScraper implements Scraper {
 		String bibtexresult = null;
 
 		if ((sc.getUrl() != null && PUBMED_HOST.equals(sc.getUrl().getHost())) || (sc.getUrl() != null && PUBMED_EUTIL_HOST.equals(sc.getUrl().getHost())) ) {
+			sc.setScraper(this);
+			
 			Pattern pa = null;
 			Matcher ma = null;
 			
@@ -75,11 +77,6 @@ public class PubMedScraper implements Scraper {
 				//-- bibtex string may not be empty
 				if (bibtexresult != null && !"".equals(bibtexresult)) {
 					sc.setBibtexResult(bibtexresult);
-					/*
-					 * returns itself to know, which scraper scraped this
-					 */
-					sc.setScraper(this);
-		
 					return true;
 				}else
 					throw new ScrapingFailureException("getting bibtex failed");

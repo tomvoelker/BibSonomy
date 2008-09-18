@@ -38,6 +38,7 @@ public class IEEEXploreStandardsScraper implements Scraper {
 	
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		if (sc.getUrl() != null && sc.getUrl().toString().startsWith(IEEE_HOST_NAME+IEEE_STANDARDS_PATH) && sc.getUrl().toString().indexOf(IEEE_STANDARDS_IDENTIFIER) != -1 ) {
+			sc.setScraper(this);
 			
 			Pattern pattern = Pattern.compile(PATTERN_ARNUMBER);
 			Matcher matcher = pattern.matcher(sc.getUrl().toString());
@@ -55,20 +56,17 @@ public class IEEEXploreStandardsScraper implements Scraper {
 					bibtex = bibtex.replace("<br>", "");
 					
 					sc.setBibtexResult(bibtex);
-					sc.setScraper(this);
 					return true;
 					
 				}else{
 					log.debug("IEEEXploreStandardsScraper: direct bibtex download failed. Use JTidy to get bibliographic data.");
 					sc.setBibtexResult(ieeeStandardsScrape(sc));
-					sc.setScraper(this);
 					return true;
 					
 				}
 			}else{
 				log.debug("IEEEXploreStandardsScraper use JTidy to get Bibtex from " + sc.getUrl().toString());
 				sc.setBibtexResult(ieeeStandardsScrape(sc));
-				sc.setScraper(this);
 				return true;
 			}
 		}

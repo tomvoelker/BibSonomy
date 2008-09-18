@@ -23,15 +23,12 @@ public class CiteseerBasicScraper implements Scraper {
 
 	public boolean scrape(ScrapingContext sc) throws ScrapingException{
 		if (sc.getUrl() != null && sc.getUrl().getHost().equals(CS_HOST_NAME)){
+			sc.setScraper(this);
+			
 			Pattern p = Pattern.compile(CS_BIB_PATTERN, Pattern.MULTILINE | Pattern.DOTALL);
 			Matcher m = p.matcher(sc.getPageContent());	
 			if (m.matches()) {
 				sc.setBibtexResult(m.group(1));
-				/*
-				 * returns itself to know, which scraper scraped this
-				 */
-				sc.setScraper(this);
-
 				return true;
 			}else
 				throw new PageNotSupportedException("no bibtex snippet available");

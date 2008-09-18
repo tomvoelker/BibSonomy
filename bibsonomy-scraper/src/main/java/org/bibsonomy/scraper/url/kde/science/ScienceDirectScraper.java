@@ -37,6 +37,7 @@ public class ScienceDirectScraper implements Scraper {
 	private static final String[] PARAMS2                = new String[] {"_ob","_method","_acct","_userid","_docType","_ArticleListID","_uoikey","count", "_rdoc","md5","format","citation-type","x","y","RETURN_URL"};
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		if (sc.getUrl() != null && sc.getUrl().toString().startsWith(SCIENCE_CITATION_URL)) {
+			sc.setScraper(this);
 			
 			// This Scraper might handle the specified url
 			try {
@@ -124,11 +125,6 @@ public class ScienceDirectScraper implements Scraper {
 				 */
 				if (bibtexEntries != null && !"".equals(bibtexEntries)) {
 					sc.setBibtexResult(bibtexEntries);
-					/*
-					 * returns itself to know, which scraper scraped this
-					 */
-					sc.setScraper(this);
-
 					return true;
 				} else
 					throw new ScrapingFailureException("getting bibtex failed");

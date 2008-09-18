@@ -46,7 +46,8 @@ public class HighwireScraper implements Scraper {
 			try {
 				//-- if its available extract the needed parts and form the final bibtex export url
 				if (m.find()){
-
+					sc.setScraper(this);
+					
 					//-- to export the bibtex we need to replace ? through ?type=bibtex
 					String exportUrl = m.group(0).replaceFirst("\\?","?type=bibtex&");
 
@@ -82,11 +83,6 @@ public class HighwireScraper implements Scraper {
 					//-- bibtex string may not be empty
 					if (bibtexresult != null && !"".equals(bibtexresult)) {
 						sc.setBibtexResult(bibtexresult);
-						/*
-						 * returns itself to know, which scraper scraped this
-						 */
-						sc.setScraper(this);
-
 						return true;
 					}else
 						throw new ScrapingFailureException("getting bibtex failed");

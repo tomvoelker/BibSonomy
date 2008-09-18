@@ -68,6 +68,8 @@ public class IWAPonlineScraper implements Scraper {
 	public boolean scrape(ScrapingContext sc)throws ScrapingException {
 		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(HOST)){
 
+			sc.setScraper(this);
+			
 			// get page
 			String page = sc.getPageContent();
 			
@@ -193,7 +195,6 @@ public class IWAPonlineScraper implements Scraper {
 			bibtex.append("}");
 			
 			sc.setBibtexResult(bibtex.toString());
-			sc.setScraper(this);
 			return true;
 
 		}
