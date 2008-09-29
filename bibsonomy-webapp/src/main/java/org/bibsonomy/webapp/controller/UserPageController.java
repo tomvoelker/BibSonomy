@@ -91,11 +91,11 @@ public class UserPageController extends MultiResourceListControllerWithTags impl
 				
 		// html format - retrieve tags and return HTML view
 		if (command.getFormat().equals("html")) {
-			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, 10000, null);
+			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, 20000, null);
 			
 			// log if a user has reached threshold
-			if (command.getTagcloud().getTags().size() > 9999) {
-				LOGGER.error("User " + groupingName + " has reached threshold of 10000 tags on user page");
+			if (command.getTagcloud().getTags().size() > 19999) {
+				LOGGER.error("User " + groupingName + " has reached threshold of 20000 tags on user page");
 			}
 			
 			if (requTags.size() > 0) {
