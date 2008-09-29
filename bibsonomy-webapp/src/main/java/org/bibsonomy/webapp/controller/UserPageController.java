@@ -41,13 +41,11 @@ public class UserPageController extends MultiResourceListControllerWithTags impl
 		final GroupingEntity groupingEntity = GroupingEntity.USER;
 		final String groupingName = command.getRequestedUser();
 		final List<String> requTags = command.getRequestedTagsList();
-				
-		// display of attached PDFs
+		
+		
 		FilterEntity filter = null;
-		if (command.getShowPDF().equals("true")) {
-			filter = FilterEntity.PDF;
-		} 
-		// if myPDF is set, it overwrites showPDF=true
+
+		// display only posts which have a document attached
 		if (command.getFilter().equals("myPDF")) {
 			filter = FilterEntity.JUST_PDF;
 		}		
