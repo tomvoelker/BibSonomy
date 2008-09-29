@@ -42,10 +42,7 @@ public class ResourceViewCommand extends BaseCommand {
 	
 	/** filter group resources  */
 	private String filter = "";
-	
-	/** show PDF files attached to resources - enabled by default*/
-	private String showPDF = "true";	
-	
+		
 	public String getDuplicates() {
 		return this.duplicates;
 	}
@@ -190,13 +187,5 @@ public class ResourceViewCommand extends BaseCommand {
 
 	public void setFilter(String filter) {
 		this.filter = filter;
-	}
-
-	public String getShowPDF() {
-		return this.showPDF;
-	}
-
-	public void setShowPDF(String showPDF) {
-		this.showPDF = showPDF;
 	}
 }

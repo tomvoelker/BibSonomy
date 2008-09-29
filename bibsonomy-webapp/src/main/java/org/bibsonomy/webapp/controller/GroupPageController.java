@@ -52,11 +52,7 @@ public class GroupPageController extends MultiResourceListControllerWithTags imp
 			return Views.JSON;
 		}		
 		
-		// display of attached PDFs
-		if (command.getShowPDF().equals("true")) {
-			filter = FilterEntity.PDF;
-		}
-		// if myGroupPDF is set, it overwrites showPDF=true
+		// display only posts, which have a document attached
 		if (command.getFilter().equals("myGroupPDF")) {
 			filter = FilterEntity.JUST_PDF;
 		}	
