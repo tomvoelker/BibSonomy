@@ -147,7 +147,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 *
 	 * <ul>
 	 * <li>if the logged-in user requests his own posts, i.e. loginUser = requestedUser
-	 * <li>if the logged-in user is a member of the requested group
+	 * <li>if the logged-in user is a member of the requested group AND the group allows shared documents.
 	 * </ul>
 	 * 
 	 * @param loginUser - 
@@ -166,14 +166,16 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 			// user
 			if (grouping.equals(GroupingEntity.USER)) {
 				if (loginUser.getName() != null) {
-					
 					return loginUser.getName().equals(groupingName);
 				}
 			}
 			// group
 			if (grouping.equals(GroupingEntity.GROUP)) {
-				// check group membership
-				return UserUtils.getListOfGroupIDs(loginUser).contains( this.groupDb.getGroupIdByGroupName(groupingName, session) );
+				final Group group = this.groupDb.getGroupByName(groupingName, session);
+				/*
+				 * check group membership and if the group allows shared documents
+				 */
+				return UserUtils.getListOfGroupIDs(loginUser).contains(group.getGroupId()) && group.isSharedDocuments();
 			}
 		}
 		return false;

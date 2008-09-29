@@ -45,6 +45,11 @@ public class BibTexParam extends ResourcesParam<BibTex> {
 	private String lastYear;
 	private String year;
 	
+	/**
+	 * If <code>true</code>, methods should provide data (file name, hash, etc.)
+	 * of documents (PDF, PS, ...) associated to posts. 
+	 */
+	private boolean documentsAttached;
 	
 	private String bibtexKey;
 
@@ -118,5 +123,13 @@ public class BibTexParam extends ResourcesParam<BibTex> {
 
 	public void setBibtexKey(String requestedBibtexkey) {
 		this.bibtexKey = requestedBibtexkey;
+	}
+
+	public boolean isDocumentsAttached() {
+		return this.documentsAttached;
+	}
+
+	public void setDocumentsAttached(boolean documentsAttached) {
+		this.documentsAttached = documentsAttached;
 	}
 }

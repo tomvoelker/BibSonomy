@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
-import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.statistic.StatisticChainElement;
 import org.bibsonomy.database.params.StatisticsParam;
@@ -44,7 +43,6 @@ public class GetResourcesForUserCount extends StatisticChainElement {
 				!presentValidGroupId(param.getGroupId()) && 
 				!present(param.getTagIndex()) && 
 				!present(param.getHash()) && 
-				nullOrEqual(param.getFilter(), FilterEntity.PDF) &&
 				nullOrEqual(param.getOrder(), Order.ADDED) && 
 				!present(param.getSearch());
 	}
