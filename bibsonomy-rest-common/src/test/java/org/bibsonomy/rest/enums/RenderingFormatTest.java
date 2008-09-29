@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import org.bibsonomy.common.exceptions.InternServerException;
-import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.common.exceptions.ValidationException;
 import org.junit.Test;
 
 /**
@@ -27,7 +27,7 @@ public class RenderingFormatTest {
 		try {
 			RenderingFormat.getRenderingFormat("someUnsupportedRenderingFormat");
 			fail("Should throw exception");
-		} catch (final BadRequestOrResponseException ex) {
+		} catch (final ValidationException ex) {
 		}		
 	}
 
