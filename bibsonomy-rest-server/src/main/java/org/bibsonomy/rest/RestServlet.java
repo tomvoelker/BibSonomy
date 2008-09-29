@@ -250,7 +250,13 @@ public final class RestServlet extends HttpServlet {
 	private void sendError(final HttpServletRequest request, final HttpServletResponse response, final int code, final String message) throws IOException {
 		// get renderer
 		final String renderingFormatName = Context.getStringAttribute(request.getParameterMap(), "format", "xml");
-		final RenderingFormat renderingFormat = RenderingFormat.getRenderingFormat(renderingFormatName);
+		RenderingFormat renderingFormat;
+		try { 
+			renderingFormat = RenderingFormat.getRenderingFormat(renderingFormatName);
+		}
+		catch (Exception ex) {
+			renderingFormat = RenderingFormat.XML;
+		}
 		final Renderer renderer = RendererFactory.getRenderer(renderingFormat);
 
 		// send error

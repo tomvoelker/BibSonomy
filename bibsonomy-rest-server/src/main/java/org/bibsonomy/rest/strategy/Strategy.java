@@ -44,18 +44,20 @@ public abstract class Strategy {
 	public abstract void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException;
 
 	/**
-	 * @param userAgent
+	 * Get Content type to be set for response, depending on the specified user agent.
+	 * 
+	 * @param userAgent - 
 	 * @return the contentType of the answer document
 	 */
 	public final String getContentType(final String userAgent) {
 		if (getContentType() == null) {
-			return null;
+			return this.context.getRenderingFormat().toMimeType();
 		}
-		/*
-		 * FIXME: hard-coded "bibsonomy" must be removed!
-		 */
-		if (this.context.apiIsUserAgent(userAgent)) return "bibsonomy/" + getContentType() + "+" + this.context.getRenderingFormat().toString();
-		return RestProperties.getInstance().getContentType();
+		// Use special content type if request comes from BibSonomy REST client
+		// (like bibsonomy/post+XML )
+		if (this.context.apiIsUserAgent(userAgent)) 
+			return RestProperties.getInstance().getSystemName().toLowerCase() + "/" + getContentType() + "+" + this.context.getRenderingFormat().toString();
+		return this.context.getRenderingFormat().toMimeType();
 	}
 
 	protected abstract String getContentType();

@@ -32,8 +32,7 @@ public class PostPostStrategy extends AbstractCreateStrategy {
 
 	@Override
 	public String getContentType() {
-		// TODO no content-contenttype
-		return null;
+		return "resourcehash";
 	}
 
 	@Override

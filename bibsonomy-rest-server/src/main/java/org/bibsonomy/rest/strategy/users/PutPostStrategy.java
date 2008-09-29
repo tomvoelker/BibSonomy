@@ -43,8 +43,7 @@ public class PutPostStrategy extends AbstractUpdateStrategy {
 
 	@Override
 	public String getContentType() {
-		// TODO no content-contenttype
-		return null;
+		return "resourcehash";
 	}
 
 	@Override

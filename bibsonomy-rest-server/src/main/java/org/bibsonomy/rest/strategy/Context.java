@@ -101,6 +101,7 @@ public final class Context {
 		if (url == null || "/".equals(url)) throw new ValidationException("It is forbidden to access '/'.");
 		this.urlTokens = new StringTokenizer(url, "/");
 
+		// choose rendering format (defaults to xml)
 		this.renderingFormat = RenderingFormat.getRenderingFormat(getStringAttribute("format", "xml"));
 		this.renderer = RendererFactory.getRenderer(this.renderingFormat);
 
