@@ -33,6 +33,7 @@ public class RestProperties {
 	public static enum Property {
 		CONFIGFILE("RestConfig.cfg"),
 		API_URL("http://www.bibsonomy.org/api/"),
+		SYSTEM_NAME("BibSonomy"),
 		CONTENT_TYPE("text/xml"),
 		API_USER_AGENT("BibsonomyWebServiceClient"),
 		URL_TAGS("tags"),
@@ -167,5 +168,9 @@ public class RestProperties {
 
 	public String getPopularPostsUrl() {
 		return this.get(Property.URL_POPULAR_POSTS);
+	}
+	
+	public String getSystemName() {
+		return this.get(Property.SYSTEM_NAME);
 	}
 }
