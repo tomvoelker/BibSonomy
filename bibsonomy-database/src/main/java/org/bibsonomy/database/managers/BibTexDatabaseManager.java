@@ -16,7 +16,6 @@ import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChain;
 import org.bibsonomy.database.params.BibTexParam;
-import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
@@ -25,7 +24,6 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.SimHash;
 
@@ -213,15 +211,17 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		
 		// if user wants to retrieve documents
 		if (present(param.getFilter())) {
-			if (param.getFilter().equals(FilterEntity.PDF)) {
-				return this.bibtexList("getBibTexByTagNamesForUserWithPDF", param, session);
-			}
-			if (param.getFilter().equals(FilterEntity.JUST_PDF)) {
+			if (param.isDocumentsAttached() && param.getFilter().equals(FilterEntity.JUST_PDF)) {
 				return this.bibtexList("getJustBibTexByTagNamesForUserWithPDF", param, session);
 			}
 			throw new IllegalArgumentException("Filter " + param.getFilter().name() + " not supported");
-		}		
+		}
 		
+		// posts including documents
+		if (param.isDocumentsAttached()) {
+			return this.bibtexList("getBibTexByTagNamesForUserWithPDF", param, session);
+		}
+		// posts only
 		return this.bibtexList("getBibTexByTagNamesForUser", param, session);
 	}
 	
@@ -748,17 +748,18 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
 		// document retrieval
 		if ( present(param.getFilter()) ) {
-			// all entries, add document link, if exists
-			if (param.getFilter().equals(FilterEntity.PDF)) {
-				return this.bibtexList("getBibTexForGroupWithPDF", param, session);
-			}
 			// just entries with document attached
-			if (param.getFilter().equals(FilterEntity.JUST_PDF)) {
+			if (param.isDocumentsAttached() && param.getFilter().equals(FilterEntity.JUST_PDF)) {
 				return this.bibtexList("getJustBibTexForGroupWithPDF", param, session);
 			}
 			throw new IllegalArgumentException("Filter " + param.getFilter().name() + " not supported");
 		}
-		
+
+		// posts including documents
+		if (param.isDocumentsAttached()) {
+			return this.bibtexList("getBibTexForGroupWithPDF", param, session);
+		}
+		// posts only
 		return this.bibtexList("getBibTexForUsersInGroup", param, session);
 	}
 
@@ -785,17 +786,18 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
 		// document retrieval
 		if ( present(param.getFilter()) ) {
-			// all entries, add document link, if exists
-			if (param.getFilter().equals(FilterEntity.PDF)) {
-				return this.bibtexList("getBibTexForGroupWithPDF", param, session);
-			}
 			// just entries with document attached
-			if (param.getFilter().equals(FilterEntity.JUST_PDF)) {
+			if (param.isDocumentsAttached() && param.getFilter().equals(FilterEntity.JUST_PDF)) {
 				return this.bibtexList("getJustBibTexForGroupWithPDF", param, session);
 			}
 			throw new IllegalArgumentException("Filter " + param.getFilter().name() + " not supported");
 		}
-		
+
+		// posts including documents
+		if (param.isDocumentsAttached()) {
+			return this.bibtexList("getBibTexForGroupWithPDF", param, session);
+		}
+		// posts only
 		return this.bibtexList("getBibTexForUsersInGroup", param, session);
 	}
 
@@ -853,15 +855,16 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		
 		// if user wants to retrieve documents
 		if ( present(param.getFilter()) ) {
-			if (param.getFilter().equals(FilterEntity.PDF)) {
-				return this.bibtexList("getBibTexForGroupByTagWithPDF", param, session);
-			}
-			if (param.getFilter().equals(FilterEntity.JUST_PDF)) {
+			if (param.isDocumentsAttached() && param.getFilter().equals(FilterEntity.JUST_PDF)) {
 				return this.bibtexList("getJustBibTexForGroupByTagWithPDF", param, session);
 			}
 			throw new IllegalArgumentException("Filter " + param.getFilter().name() + " not supported");
 		}
-		
+		// posts including documents
+		if (param.isDocumentsAttached()) {
+			return this.bibtexList("getBibTexForGroupByTagWithPDF", param, session);
+		}
+		// posts only
 		return this.bibtexList("getBibTexForGroupByTag", param, session);
 	}
 
@@ -892,15 +895,17 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		
 		// if user wants to retrieve documents
 		if ( present(param.getFilter()) ) {
-			if (param.getFilter().equals(FilterEntity.PDF)) {
-				return this.bibtexList("getBibTexForGroupByTagWithPDF", param, session);
-			}
-			if (param.getFilter().equals(FilterEntity.JUST_PDF)) {
+			if (param.isDocumentsAttached() && param.getFilter().equals(FilterEntity.JUST_PDF)) {
 				return this.bibtexList("getJustBibTexForGroupByTagWithPDF", param, session);
 			}
 			throw new IllegalArgumentException("Filter " + param.getFilter().name() + " not supported");
 		}
-		
+
+		// posts including documents
+		if (param.isDocumentsAttached()) {
+			return this.bibtexList("getBibTexForGroupByTagWithPDF", param, session);
+		}
+		// posts only
 		return this.bibtexList("getBibTexForGroupByTag", param, session);
 	}
 
@@ -925,15 +930,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		
 		// document retrieval
 		if (present(param.getFilter())) {
-			// retrieve all entries + link to document, if exists
-			if (param.getFilter().equals(FilterEntity.PDF)) {
-				return this.bibtexList("getBibTexForUserWithPDF", param, session);
-			}
 			// retrieve only entries with a document attached
-			if (param.getFilter().equals(FilterEntity.JUST_PDF)) {
+			if (param.isDocumentsAttached() && param.getFilter().equals(FilterEntity.JUST_PDF)) {
 				return this.bibtexList("getJustBibTexForUserWithPDF", param, session);
-			}
-			
+			}			
 			// retrieve duplicate entries
 			if (param.getFilter().equals(FilterEntity.DUPLICATES)) {
 				return this.getBibTexDuplicate(param, session);
@@ -942,7 +942,11 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			throw new IllegalArgumentException("Filter " + param.getFilter().name() + " not supported");
 		}
 		
-		// return entries without documents
+		// posts including documents
+		if (param.isDocumentsAttached()) {
+			return this.bibtexList("getBibTexForUserWithPDF", param, session);
+		}
+		// posts only
 		return this.bibtexList("getBibTexForUser", param, session);
 	}
 
@@ -1555,9 +1559,9 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		param.setDays(days);
 		
 		result = this.queryForObject("getBibTexPopularDays", param, Integer.class, session);
-		if(result != null){
+		if (result != null) {
 			return result;
 		}
-		return new Integer(0);
+		return 0;
 	}
 }
