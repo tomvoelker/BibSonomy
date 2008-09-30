@@ -1,5 +1,7 @@
 package resources;
 
+
+
 import helpers.parser.TagStringLexer;
 import helpers.parser.TagStringParser;
 
@@ -82,7 +84,6 @@ public class Tag implements Cloneable {
 	 * </ul>
 	 * 
 	 * @param tagString the string to be parsed
-	 */
 	private void parse(String tagString) {
 		if (tagString != null) {
 			StringReader    r = new StringReader (tagString);
@@ -96,10 +97,12 @@ public class Tag implements Cloneable {
 			}
 		}
 	}
+	 */
 	
 	/*
 	 * This method you need for Antlr 3.0.1 (3.05b)
 	 * 
+	 */
 	private void parse(String tagString) {
         if (tagString != null) {
                 StringReader reader = new StringReader (tagString);
@@ -112,12 +115,10 @@ public class Tag implements Cloneable {
                         System.out.println(e);
                         e.printStackTrace();
                 } catch (IOException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                 }
         }
 	}
-	*/
 	
 	/* ******************************************************* * 
 	 * these methods are used to implement the tagging of tags *

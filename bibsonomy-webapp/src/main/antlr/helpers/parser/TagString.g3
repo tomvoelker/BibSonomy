@@ -58,9 +58,9 @@ tokens {
     catch (MismatchedTokenException e) {
     	// getTokenErrorDisplay() does only work with ANTLR 3.0.1, alternative: getText()
     	//String err = "line: "+e.line+", "+e.charPositionInLine+"; found "+getTokenErrorDisplay(e.token)+
-    	String err = "line: "+e.line+", "+e.charPositionInLine+"; found '"+e.token.getText()+
-    				 "' but expected "+tokenNames[e.expecting];
-    	System.out.println(err);
+    	//String err = "line: "+e.line+", "+e.charPositionInLine+"; found '"+e.token.getText()+
+    	//			 "' but expected "+tokenNames[e.expecting];
+    	//System.out.println(err);
     }
 }
 
@@ -96,7 +96,7 @@ norel
 //		TAG
 tag returns [String t = null]
 	@init{
-        System.out.println("found " + t);
+       // System.out.println("found " + t);
 	}
     :   tt=TAG {t = tt.getText(); tagobj.addTag(t);}
     ;
