@@ -25,7 +25,6 @@ var path	= null
 var port     = 0;
 var mostInnerLi = true;
 
-
 var serverurl = "/logging";
 
 function log_init () {
@@ -50,7 +49,6 @@ function log_register_events() {
     {
     	// not IE, Mozilla, Safari,....
     	// what else should be here?
-    	
     }
 }
 
@@ -68,9 +66,9 @@ function log_sendRequest(e) {
     {
     	// not IE, Mozilla, Safari,....
     	// what else should be here?
-    	
     }
 
+	// init
 	welement = element;
 	dom_path = "";
 	dom_path2 = "";
@@ -78,6 +76,7 @@ function log_sendRequest(e) {
 	dom_ahref = ""; 
 	a_node_present = false;	
 	numberofposts = "";
+
 
 	function Fensterweite () {
 	  if (window.innerWidth) {
@@ -142,6 +141,8 @@ function log_sendRequest(e) {
 	// schleife fängt mit dem innersten LI an
 	mostInnerLi = true;
 
+	// do-while-loop - from most inner (clicked) html-tag to html-root-tag
+	// get path of clicked html-tag
 	do
 	{
 		
@@ -204,8 +205,7 @@ function log_sendRequest(e) {
 			// damit die schleife nicht bei geschachtelten LIs erneut aufgerufen wird
 			mostInnerLi = false;
 		
-		// zeige alle schwesterknoten
-		
+		    // zeige alle schwesterknoten
 			siblingnode = welement;
 			sibling_count = 1;
 			while (siblingnode.previousSibling)
@@ -232,6 +232,9 @@ function log_sendRequest(e) {
 
 	http_request = false;
 
+// if user clicked a a-node, then post data to logging-server
+
+//  create http_request-object
 	if (a_node_present) {	
 
         if (window.XMLHttpRequest) { // Mozilla, Safari,...
@@ -256,6 +259,7 @@ function log_sendRequest(e) {
         }
 
 
+// collect data to send
 		senddata = 	'dompath='+dom_path+
 					'&dompath2='+dom_path2+
 					'&pageurl='+document.location.href+
@@ -268,26 +272,26 @@ function log_sendRequest(e) {
 					'&listpos='+sibling_count+
 					'&referer='+document.referrer;
 					
+// post data
 		http_request.open('POST', serverurl, true);
 		http_request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 		http_request.send(senddata);
 		
 	}  
 
-	http_request.onreadystatechange = readystatechange; 
+//	http_request.onreadystatechange = readystatechange; 
 
 }
 
+/*
     function readystatechange() {
-
-//		console.log('.. readyState:  '+http_request.readyState);
+		console.log('.. readyState:  '+http_request.readyState);
 		if (http_request.readyState == 4) {
-//			console.log('.. http-status:  '+http_request.status);
+			console.log('.. http-status:  '+http_request.status);
 		}
-//		console.log('.. http-response:  '+http_request.responseText);
-
+		console.log('.. http-response:  '+http_request.responseText);
     }
-
+*/
 
 
 // load logger
