@@ -1,6 +1,7 @@
 package org.bibsonomy.database.managers.chain.bookmark.get;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+import static org.bibsonomy.util.ValidationUtils.nullOrEqual;
 
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.enums.Order;
 
 /**
  * Returns a list of bookmarks of your friends.
@@ -34,11 +36,11 @@ public class GetBookmarksByFriends extends BookmarkChainElement {
 	protected boolean canHandle(final BookmarkParam param) {
 		return (present(param.getUserName()) &&
 				param.getGrouping() == GroupingEntity.FRIEND &&
-				present(param.getRequestedGroupName()) &&
-				present(param.getRequestedUserName()) &&
+				!present(param.getRequestedGroupName()) &&
+				!present(param.getRequestedUserName()) &&
 				!present(param.getTagIndex()) &&
 				!present(param.getHash()) &&
-				!present(param.getOrder()) &&
+				nullOrEqual(param.getOrder(), Order.ADDED) &&
 				!present(param.getSearch()));
 	}
 }

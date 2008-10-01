@@ -3,6 +3,8 @@
 
 <sqlMap namespace="General">
 
+	<!-- TODO: isn't it a bit tricky, to convert a COUNT result to boolean? -->
+	<!-- BTW: user has a LIST of friends, how come that #friend.name# works? -->
 	<select id="isFriendOf" resultClass="boolean" parameterClass="user">
 		SELECT count(user_name)
 		FROM friends
@@ -13,9 +15,9 @@
 		SELECT <include refid="commonUserAttributes"/> 
 		FROM (
 		  SELECT u.*
-		  FROM user u, friends f
-		  WHERE f.user_name = #requestedUserName# AND u.user_name = f.f_user_name
-		  ORDER BY u.user_name
+		    FROM user u JOIN friends f ON (u.user_name = f.f_user_name)
+		    WHERE f.user_name = #requestedUserName#
+		    ORDER BY u.user_name
 		) AS uf
 	</select>
 

@@ -15,8 +15,8 @@ Users:
 - testgroup3
 
 Friends:
-- testuser1 is a friend of testuser2 and testuser3
-- testuser2 is a friend of testuser1
+- testuser1 has as friends testuser2 and testuser3
+- testuser2 has as friend testuser1
 - testuser3 and testspammer have no friends at all ;(
 
 Groups:

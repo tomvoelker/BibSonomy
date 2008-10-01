@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers.chain.bookmark.get;
 
 import static org.bibsonomy.util.ValidationUtils.nullOrEqual;
 import static org.bibsonomy.util.ValidationUtils.present;
+import static org.bibsonomy.util.ValidationUtils.presentValidGroupId;
 
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class GetBookmarksForUser extends BookmarkChainElement {
 	protected boolean canHandle(final BookmarkParam param) {
 		return (param.getGrouping() == GroupingEntity.USER &&
 				present(param.getRequestedUserName()) &&
+				!presentValidGroupId(param.getGroupId()) &&
 				!present(param.getTagIndex()) &&
 				!present(param.getHash()) &&
 				nullOrEqual(param.getOrder(), Order.ADDED) &&

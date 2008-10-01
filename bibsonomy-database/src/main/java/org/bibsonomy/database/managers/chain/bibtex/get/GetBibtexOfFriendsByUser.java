@@ -27,7 +27,11 @@ public class GetBibtexOfFriendsByUser extends BibTexChainElement {
 
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		if (this.generalDb.isFriendOf(param.getRequestedUserName(), param.getUserName(), session) == true) {
+		/*
+		 * if the requested user has the current user in his/her friend list, he may 
+		 * see the posts
+		 */
+		if (this.generalDb.isFriendOf(param.getUserName(), param.getRequestedUserName(), session)) {
 			param.setGroupId(GroupID.FRIENDS.getId());
 			return this.db.getBibTexForUser(param, session);
 		}
@@ -37,9 +41,9 @@ public class GetBibtexOfFriendsByUser extends BibTexChainElement {
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
 		return (present(param.getUserName()) &&
-				!present(param.getBibtexKey()) &&
 				param.getGrouping() == GroupingEntity.FRIEND &&
 				present(param.getRequestedUserName()) &&
+				!present(param.getBibtexKey()) &&
 				!present(param.getTagIndex()) &&
 				!present(param.getHash()) &&
 				nullOrEqual(param.getOrder(), Order.ADDED) &&

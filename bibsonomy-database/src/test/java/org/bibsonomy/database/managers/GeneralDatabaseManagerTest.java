@@ -35,13 +35,14 @@ public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			assertTrue(this.generalDb.isFriendOf("testuser" + i, "testuser" + i, this.dbSession));
 		}
 
-		// combinations: testuser1 is a friend of testuser2 and 3, testuser2 is
-		// a friend of testuser1, testuser3 has no friends at all
-		assertTrue(this.generalDb.isFriendOf("testuser1", "testuser2", this.dbSession));
+		// combinations: testuser1 has as friends testuser2 and 3, 
+		//               testuser2 has as friend testuser1
+		//               testuser3 has no friends at all
 		assertTrue(this.generalDb.isFriendOf("testuser2", "testuser1", this.dbSession));
-		assertTrue(this.generalDb.isFriendOf("testuser1", "testuser3", this.dbSession));
-		assertFalse(this.generalDb.isFriendOf("testuser3", "testuser1", this.dbSession));
+		assertTrue(this.generalDb.isFriendOf("testuser3", "testuser1", this.dbSession));
+		assertTrue(this.generalDb.isFriendOf("testuser1", "testuser2", this.dbSession));
 		assertFalse(this.generalDb.isFriendOf("testuser3", "testuser2", this.dbSession));
+		assertFalse(this.generalDb.isFriendOf("testuser1", "testuser3", this.dbSession));
 		assertFalse(this.generalDb.isFriendOf("testuser2", "testuser3", this.dbSession));
 
 		// with no users set or a not existing one, no exception should be

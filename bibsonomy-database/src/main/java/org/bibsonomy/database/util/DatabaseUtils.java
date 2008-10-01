@@ -110,8 +110,9 @@ public class DatabaseUtils {
 				groupIds.add(GroupID.PRIVATE.getId());
 				groupIds.add(GroupID.FRIENDS.getId());
 			} else {
-				final boolean friends = db.isFriendOf(param.getUserName(), param.getRequestedUserName(), session);
-				if (friends) groupIds.add(GroupID.FRIENDS.getId());
+				if (db.isFriendOf(param.getUserName(), param.getRequestedUserName(), session)) {
+					groupIds.add(GroupID.FRIENDS.getId());
+				}
 			}
 			// add the groups
 			param.addGroups(groupIds);			
