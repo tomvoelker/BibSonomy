@@ -249,7 +249,7 @@ public class Functions  {
 		if ("home".equals(tagSizeMode)) {
 			Double t = (tagFrequency > 100 ? 100.0 : tagFrequency.doubleValue() + 6);
 			t /= 5;
-			t = Math.log(t) * 100 + 60;
+			t = Math.log(t) * 100 + 30;
 			if (t.intValue() < 100) 
 				return 100;
 			return t.intValue();
