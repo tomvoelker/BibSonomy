@@ -45,7 +45,7 @@ function convertToHtml(input) {
 	output = output.split(String.fromCharCode(220)).join("&Uuml;");
 	output = output.split(String.fromCharCode(223)).join("&szlig;");
 	output = output.split("%20").join(" ");
-	output = output.split("\n").join("<br/>");
+	output = output.split("\\n").join("<br/>");
 	return output;
 }
 
