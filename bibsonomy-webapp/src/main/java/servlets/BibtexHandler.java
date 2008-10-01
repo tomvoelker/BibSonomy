@@ -67,6 +67,7 @@ import bibtex.expansions.CrossReferenceExpander;
 import bibtex.expansions.ExpansionException;
 import bibtex.expansions.MacroReferenceExpander;
 import bibtex.expansions.PersonListExpander;
+import bibtex.parser.BibtexMultipleFieldValuesPolicy;
 import bibtex.parser.BibtexParser;
 import bibtex.parser.ParseException;
 import filters.ActionValidationFilter;
@@ -76,10 +77,10 @@ public class BibtexHandler extends HttpServlet {
 
 	private static final long serialVersionUID = 3258132444744921394L;
 	private static final Logger log = Logger.getLogger(BibtexHandler.class);
-	
+
 	private DataSource dataSource;
 	private static String tempPath = null;
-	
+
 	/*
 	 * The dataSource lookup code is added to the init() method to avoid the
 	 * costly JNDI operations for every HTTP request.
@@ -93,7 +94,7 @@ public class BibtexHandler extends HttpServlet {
 			throw new ServletException("Cannot retrieve java:/comp/env/bibsonomy", ex);
 		}
 	}
-	
+
 	public void doGet(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
 		/*
 		 * forward all GET-requests to doPost to handle them
@@ -102,7 +103,7 @@ public class BibtexHandler extends HttpServlet {
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+
 		UserBean user = SessionSettingsFilter.getUser(request);
 		String currUser = user.getName(); 
 		if (currUser == null) {
@@ -110,15 +111,15 @@ public class BibtexHandler extends HttpServlet {
 			response.sendRedirect(refer);
 			return;
 		}
-		
+
 		/* Establish all connections, result sets and statements */
 		Connection conn = null;
 		DBBibtexManager bibman = new DBBibtexManager();
 		DBContentManager contentman = new DBContentManager();
 		DBBibtexGetManager bibgetman = new DBBibtexGetManager();
 		DBGroupCopyManager<Bibtex> groupman = new DBGroupCopyManager<Bibtex>();
-		
-		
+
+
 		/* WARNING */
 		WarningBean warnings = new WarningBean();
 		String redirectURL = "/user/" + URLEncoder.encode(currUser, "UTF-8");
@@ -136,17 +137,17 @@ public class BibtexHandler extends HttpServlet {
 					throw new SQLException("No Datasource");
 				}
 			}
-			
+
 			boolean isSnippet    = false;
 			boolean isFileUpload = false;
 			boolean isManual     = false;
-			
+
 			BibtexHandlerBean bean = (BibtexHandlerBean) request.getAttribute("bibtexHandlerBean");
 
 			if ("upload".equals(request.getParameter("requTask"))) {
 
 				UploadBean bibtexUploadBean = new UploadBean(); // Create UploadBean (for giving error messages to user)
-				
+
 				String contentType   = request.getContentType();
 				Reader bibReader     = null;
 				String oldhash       = ""; 		// to remember old hash from bean for "move" operation				
@@ -158,7 +159,7 @@ public class BibtexHandler extends HttpServlet {
 				boolean substitute   = false;
 				int rating = 0;
 				int scraperid        = -1;        // database id of scraping metadata row
-				
+
 				if (bean != null) {
 					/* ********************************************************
 					 * manual post - create bibtex entry as a string to present
@@ -168,16 +169,16 @@ public class BibtexHandler extends HttpServlet {
 					if (!ActionValidationFilter.isValidCkey(request)) {
 						throw new BibtexException("invalid credentials");
 					}
-						
+
 					isManual = true;
-					
+
 					Bibtex bib = bean.getResource();
 					group      = bib.getGroup();
 					oldhash    = bean.getOldhash(); // remember oldhash for "move" operation
 					scraperid  = bean.getScraperid();
-					
+
 					rating     = bib.getRating();
-					
+
 					// get description
 					if (bib.getDescription() != null) { description = bib.getDescription().trim();	}
 					if (bib.getPrivnote() != null) { privnote = bib.getPrivnote().trim();}
@@ -187,10 +188,10 @@ public class BibtexHandler extends HttpServlet {
 
 					// add tags and tagrelations as last field of entry
 					entryBuffer.append("keywords = {" + bean.getTagstring() + "}}"); 
-					
+
 					// put entry into reader
 					bibReader = new BufferedReader(new StringReader(entryBuffer.toString()));
-					
+
 				} else if (contentType != null && contentType.startsWith("multipart/form-data")) {
 
 					/* *********************************************
@@ -202,37 +203,37 @@ public class BibtexHandler extends HttpServlet {
 					/* restrict the request size for uploading files */
 					int maxRequestSize = 1024 * 1024 * 51;
 					int maxThreshold = 1024 * 1024 * 10;
-					
+
 					factory = new DiskFileItemFactory();
 					// maximum size that will be stored in memory
 					factory.setSizeThreshold(maxThreshold);
 					// the location for saving data that is larger than
 					// getSizeThreshold()
 					factory.setRepository(new File((tempPath)));
-					
+
 					upload = new ServletFileUpload(factory);
 					// maximum size before a FileUploadException will be thrown
 					upload.setSizeMax(maxRequestSize);
-					
+
 					/* ********************************************
 					 * handle file upload
 					 * ********************************************/
-					
+
 					redirectURL = "/uploadinfo.jsp";
-					
+
 					isFileUpload = true;
-					
+
 					/* Parse this request by the handler that gives us a list of items from the request	 */
 					items = upload.parseRequest(request); // FileUploadException is catched below
-					
+
 					/* Convert list of items into map for convinience */
 					Map<String,FileItem> fieldMap = new HashMap<String,FileItem>();
 					for (FileItem temp:items) {
 						fieldMap.put(temp.getFieldName(), temp);
 					}
 					items.clear();
-					
-					
+
+
 					description = getParameter(fieldMap, "description");
 					group       = getParameter(fieldMap, "group"); // TODO: necessary: groupid = getGroup(stmtP_select_group, currUser, groupString); ?
 					// get parameters for substitution of comma, semicolon, etc. in tagstring
@@ -240,11 +241,11 @@ public class BibtexHandler extends HttpServlet {
 					whitespace  = getParameter(fieldMap, "whitespace");
 					substitute  = "on".equals(getParameter(fieldMap, "substitute"));
 
-					
+
 					// retrieve form field "file"
 					FileItem upFile = fieldMap.get("file");
 					String currFile = upFile.getName();
-					
+
 					// retrieve form field "encoding"
 					String encoding = getParameter(fieldMap, "encoding");
 					if (encoding == null) {
@@ -252,7 +253,7 @@ public class BibtexHandler extends HttpServlet {
 					}
 
 					final String fileExtension = currFile.substring(currFile.lastIndexOf(".") + 1);
-					
+
 					// check validity of file --> on error, throw exception (handling below)
 					if ("".equals(currFile)) {
 						throw new BibUploadException ("Please choose a BibTeX or EndNote file!");
@@ -262,7 +263,7 @@ public class BibtexHandler extends HttpServlet {
 					if (upFile.getSize() < 1) {
 						throw new BibUploadException ("Your file is empty or does not exist!");
 					}
-					
+
 					/*
 					 * check if the user "checked" the checkbox that he is uploading an EndNote-file
 					 * else nothing will be done
@@ -275,7 +276,7 @@ public class BibtexHandler extends HttpServlet {
 
 					fieldMap.clear();
 					upFile.delete();
-					
+
 				} else {
 					/* ***************************************************************
 					 * try to scrape
@@ -287,11 +288,11 @@ public class BibtexHandler extends HttpServlet {
 					} catch (MalformedURLException e) {
 						url = null;
 					}
-					
+
 					description    = request.getParameter("description"); // nur desc der URL!!!
 					group          = request.getParameter("group");
 					String snippet = request.getParameter("selection");
-					
+
 					/*
 					 * TODO: another dirty scraper hack ... read comment above private class ScraperId ...
 					 */
@@ -299,7 +300,7 @@ public class BibtexHandler extends HttpServlet {
 					bibReader = callScrapers(url, snippet, tmp);
 					scraperid = tmp.id;
 				}
-				
+
 				/* *****************************************************************
 				 * parse the BibTeX entries
 				 * *****************************************************************/
@@ -314,14 +315,14 @@ public class BibtexHandler extends HttpServlet {
 					redirectURL = "/uploadinfo.jsp";
 				}
 
-				
+
 				/* ********************************************************
 				 * just one entry (from file or snippet) -> edit
 				 * ********************************************************/
 				if (bibtexList.size() + warnings.getIncompleteCount() == 1 && (isSnippet || isFileUpload)) {
-					
+
 					Bibtex bibtex;
-					
+
 					if (bibtexList.size() == 1) {
 						// entry is valid (in bibtexList)
 						bibtex = bibtexList.getFirst();						
@@ -329,12 +330,12 @@ public class BibtexHandler extends HttpServlet {
 						// entry is invalid (in IncompleteList)
 						bibtex = warnings.getIncomplete().getFirst();
 					}
-					
+
 					bibtex.setScraperid(scraperid);
 					// put bibtex object into bean
 					BibtexHandlerBean bibBean = new BibtexHandlerBean (bibtex);
 
-					
+
 					contentman.prepareStatementsForBibtex(conn);
 					/* Test, if this bibtex is a duplicate! If yes, get the
 					 * old one from DB and send it as oldentry!	 */
@@ -344,21 +345,21 @@ public class BibtexHandler extends HttpServlet {
 						/* this bibtex entry exists for that user --> get existing entry */
 						bibBean.setOldentry(oldBib);
 					}
-					
+
 					// forward to edit_bibtex page 
 					request.setAttribute("bibtexHandlerBean", bibBean);
 					getServletConfig().getServletContext().getRequestDispatcher(response.encodeRedirectURL("/edit_bibtex")).forward(request,response);
 					return;
 				}
-				
+
 				/* TODO: dirty hack (that whole scraperid thing!) 
 				 * put scraperid into bibtex object 
 				 */
 				if (scraperid != -1 && bibtexList.size() > 0) {
 					bibtexList.getFirst().setScraperid(scraperid);
 				}
-				
-				
+
+
 				/* ********************************************************
 				 * do database stuff
 				 * ********************************************************/
@@ -366,23 +367,23 @@ public class BibtexHandler extends HttpServlet {
 					bibman.prepareStatements(conn);
 					groupman.prepareStatements(conn);
 					contentman.prepareStatementsForBibtex(conn);
-					
+
 					/* *********************************************************
 					 * group copy handling
 					 * *********************************************************/
 					/* Iterate all bibtex from bibtexList and check current object on for:tags and clone it if
 					 * needed. Add cloned objects to bibtexCopyList, which will be merged with bibtexList at the end! */
-					
+
 					/* will be used to save cloned bibtex objects end */
 					LinkedList<Bibtex> bibtexCopyList = new LinkedList<Bibtex>();
-							
+
 					for (Bibtex bib:bibtexList) {
 						bib.setGroupid(groupman.getGroup(currUser, bib.getGroup()));
 						bibtexCopyList.addAll(groupman.getCopiesForGroup(bib, contentman));
 					} 
 					// merge bibtexList and bibtexCopyList
 					bibtexList.addAll(bibtexCopyList);
-					
+
 					/* *****************************************************
 					 * Insert/Update Bibtex
 					 * *****************************************************/
@@ -399,16 +400,16 @@ public class BibtexHandler extends HttpServlet {
 					}
 					// send inserted bibtex for user info
 					request.setAttribute("bibtexUploadBean", bibtexUploadBean);
-					
+
 				} catch (SQLException e) {
 					conn.rollback(); // rollback all queries, if transaction fails
 					log.fatal("Could not insert bibtex objects, failed finally: " + e);
 					getServletConfig().getServletContext().getRequestDispatcher("/errors/databaseError.jsp").forward(request, response);
 					return;
 				} 
-				
+
 			}// END OF UPLOAD
-			
+
 			/*
 			 * *****************************************************************************************************
 			 * START REGULAR DELETE
@@ -423,50 +424,62 @@ public class BibtexHandler extends HttpServlet {
 					bibman.deleteBibtex(conn, currUser, hash);
 
 				}
-				
+
 				response.sendRedirect(redirectURL);
 				return;
-				
+
 			} // requTask == TASK_DELETE
-			
+
 			/*
 			 * *****************************************************************************************************
 			 * END OF DELETE
 			 * ***************************************************************************************************
 			 */
-			
+
 			request.setAttribute("WarningBean", warnings);
-			
+
 			if (isManual) {
 				/* TODO: This is a hack!
-				 * if we have a manual post (i.e. only one entry) and this entry is incomplete, send user back to edit page 
-				 * this hack affects also BibtexHandlerBean: getBibtex() and setBibtex() had to be added!
+				 * If we have a manual post (i.e. only one entry) and this entry is incomplete or erroneous, 
+				 * send user back to edit page. 
+				 * This hack affects also BibtexHandlerBean: getBibtex() and setBibtex() had to be added!
 				 */
-				if (warnings.getIncomplete().isEmpty()) {
+				if (warnings.getIncomplete().isEmpty() && warnings.getErrors().isEmpty()) {
 					response.sendRedirect("/user/" + URLEncoder.encode(currUser, "UTF-8"));
-				} else {	
-					/* - get the original Bibtex object (which has erroneous fields) and save it
-					 * - then get the one where these fields are missing, put it into bean and call isValid(), 
-					 *   so that the error-map of the bean is filled
-					 * - afterwards put the old object again into the bean, so that we have the erroneous entries
-					 * 
+				} else {
+					final Bibtex bibold = bean.getResource();
+					if (!warnings.getIncomplete().isEmpty()) {
+						/* 
+						 * - get the original Bibtex object (which has erroneous fields) and save it (done above)
+						 * - then get the one where these fields are missing, put it into bean and call isValid(), 
+						 *   so that the error-map of the bean is filled
+						 * - afterwards put the old object again into the bean, so that we have the erroneous entries
+						 */
+						bean.setBibtex(warnings.getIncomplete().getFirst());
+						bean.isValid();
+					}
+					/*
+					 * put BibTeX as given by user again into bean
 					 */
-					Bibtex bib = warnings.getIncomplete().getFirst();
-					Bibtex bibold = bean.getResource();
-					bean.setBibtex(bib);
-					bean.isValid();
-					bean.setBibtex(bibold);
+					bean.setBibtex(bibold);					
 					request.setAttribute("bibtexHandlerBean", bean);
+					/*
+					 * add errors
+					 */
+					for (final String msg: warnings.getErrors().values()) {
+						bean.addError("" + msg.hashCode(), msg);
+					}
+
 					getServletConfig().getServletContext().getRequestDispatcher("/edit_bibtex").forward(request, response);
 				}
 				return;
-			} else {
-				getServletConfig().getServletContext().getRequestDispatcher(response.encodeRedirectURL(redirectURL)).forward(request, response);
-			}
-			
-			 /* **************************************************************************************************
+			} 
+			getServletConfig().getServletContext().getRequestDispatcher(response.encodeRedirectURL(redirectURL)).forward(request, response);
+
+
+			/* **************************************************************************************************
 			 * Exception handling block
-        	 * ***************************************************************************************************/
+			 * ***************************************************************************************************/
 		} catch (SQLException e) {
 			log.fatal(e);
 			getServletConfig().getServletContext().getRequestDispatcher("/errors/databaseError.jsp").forward(request, response);
@@ -509,21 +522,21 @@ public class BibtexHandler extends HttpServlet {
 			bibgetman.closeStatements();
 			groupman.closeStatements();
 		}
-		
+
 	} // END OF doPost
 
-	
+
 	private String getParameter (Map<String,FileItem> fieldMap, String parameterName) {
 		FileItem itemValue = fieldMap.get(parameterName);
 		if (itemValue != null) {
-		  String value = itemValue.getString().trim();
-		  itemValue.delete();
-		  return value;
+			String value = itemValue.getString().trim();
+			itemValue.delete();
+			return value;
 		}
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * Another dirty hack for the scraping stuff ... :-(
 	 * this allows callScrapers to return the scraperid in the parameter
@@ -532,7 +545,7 @@ public class BibtexHandler extends HttpServlet {
 	private class ScraperId {
 		public int id = -1; 
 	}
-	
+
 	/** Calls some parsers which try to extract a valid bibtex string from either the snippet
 	 * or the URL. 
 	 *  
@@ -545,15 +558,15 @@ public class BibtexHandler extends HttpServlet {
 	private Reader callScrapers(URL url, String snippet, ScraperId scraperid) throws ScrapingException {
 		ScrapingContext sc = new ScrapingContext(url);
 		sc.setSelectedText(snippet);
-		
+
 		Scraper scraper = new KDEScraperFactory().getScraper();
-		
-/*		CompositeScraper scraper = new CompositeScraper();
+
+		/*		CompositeScraper scraper = new CompositeScraper();
 		scraper.addScraper(new URLCompositeScraper());
 		scraper.addScraper(new SnippetScraper());
 		scraper.addScraper(new IEScraper());
-*/
-		
+		 */
+
 		if (scraper.scrape(sc)) {
 			/*
 			 * scraping was successful: save metadata (if neccessary)
@@ -585,37 +598,44 @@ public class BibtexHandler extends HttpServlet {
 		 * BibTeX file parsing starts here
 		 * **************************************************/
 
-		BibtexParser parser = new BibtexParser(true);
-		BibtexFile bibtexFile = new BibtexFile();
+		final BibtexParser parser = new BibtexParser(true);
+		/*
+		 * To allow several "keywords" fields (as done by Connotea), we set the policy
+		 * to keep all fields, such that we can access all keywords.
+		 * 
+		 * Default was KEEP_FIRST, changed by rja on 2008-08-26.
+		 */
+//		parser.setMultipleFieldValuesPolicy(BibtexMultipleFieldValuesPolicy.KEEP_ALL);
+		final BibtexFile bibtexFile = new BibtexFile();
 
 		// parse file, exceptions are catched below
 		parser.parse(bibtexFile, bibReader);
-		
-		
+
+
 		// boolean topComment = false;
 		// String topLevelComment;//stores comment or snippet, depending on bibtex entries
-		
+
 		// boolean standard = true;
-		
+
 		/* ****************************************************************
 		 * expand all macros, crossrefs and convert author/editor field
 		 * values into BibtexPersonList objects
 		 * ****************************************************************/
-		
+
 		MacroReferenceExpander macroExpander = new MacroReferenceExpander(true, true, false, false);
 		try {
 			macroExpander.expand(bibtexFile);
 		} catch (ExpansionException ee) {
 			warnings.setWarning(ee.getMessage());
 		}
-		
+
 		CrossReferenceExpander crossExpander = new CrossReferenceExpander(true);
 		try {
 			crossExpander.expand(bibtexFile);
 		} catch (ExpansionException ee) {
 			warnings.setWarning(ee.getMessage());
 		}
-		
+
 		PersonListExpander pListExpander = new PersonListExpander(true,	true, false);
 		try {
 			pListExpander.expand(bibtexFile);
@@ -623,20 +643,20 @@ public class BibtexHandler extends HttpServlet {
 			warnings.setWarning(ee.getMessage());
 		}
 
-		
-		
+
+
 		/* ****************************************************************
 		 * iterate over all entries and put them in Bibtex objects
 		 * ****************************************************************/
 		int bibTotalCounter = 0;        // counts all bibtex entries
 		Date currDate = new Date();
-		
-		
+
+
 		// TODO: teste, ob snippet && entries leer && toplevelcomment
 		// vorhanden -> falls ja, dann(snippet) in db
 		for (Object potentialEntry:bibtexFile.getEntries()) {
-			
-			
+
+
 			// TODO: insert handling of invalid snippets which go into "to parse" table HERE
 			if (!(potentialEntry instanceof BibtexEntry)) {
 				/*
@@ -655,7 +675,7 @@ public class BibtexHandler extends HttpServlet {
 					continue;
 				}
 			}
-			
+
 			// finally we got an entry
 			bibTotalCounter++;
 			Bibtex bib = new Bibtex();
@@ -664,11 +684,11 @@ public class BibtexHandler extends HttpServlet {
 			bib.setGroup(group);
 			bib.setUser(currUser);
 			bib.setRating(rating);
-			
+
 
 			// fill other fields from entry
 			fillBibtexFromEntry(potentialEntry, bib, substitute, delimiter, whitespace);
-			
+
 			/*
 			 * handle date
 			 * TODO: this is another DBLP hack: for the DBLP user we use the "date" (misc-)field 
@@ -683,14 +703,14 @@ public class BibtexHandler extends HttpServlet {
 			} else {
 				bib.setDate(currDate);
 			}
-			
+
 			// collect all valid bibtex entries in a list
 			if (bib.isValidBibtex()) {
 				bibtexList.add(bib);
 			} else {
 				warnings.addIncomplete(bib);
 			}
-			
+
 		} // end of entry iteration
 		return bibTotalCounter;
 	}
@@ -714,14 +734,14 @@ public class BibtexHandler extends HttpServlet {
 		// replace line breaks with " and " to help bibtex parser
 		if (bib.getAuthor()      != null) { authors = replaceLinebreak(bib.getAuthor().trim()); }
 		if (bib.getEditor()      != null) { editors = replaceLinebreak(bib.getEditor().trim()); }
-		
+
 		// create bibtex entry
 		entryBuffer.append("@" + bib.getEntrytype().trim() + "{"); // set entry type like "article"
 		entryBuffer.append(bib.getBibtexKey().trim() + ",");       // set bibtex key
 		entryBuffer.append("title = {" + bib.getTitle() + "},");
 		entryBuffer.append("author = {" + authors + "},");
 		entryBuffer.append("editor = {" + editors + "},");
-		
+
 		if (bib.getType()           != null && !bib.getType().equals(""))           { entryBuffer.append("type = {"         + bib.getType()           + "},"); }
 		if (bib.getPages()          != null && !bib.getPages().equals(""))          { entryBuffer.append("pages = {"        + bib.getPages()          + "},"); }
 		if (bib.getUrl()            != null && !bib.getUrl().equals(""))            { entryBuffer.append("url = {"          + bib.getUrl()            + "},"); }
@@ -746,7 +766,7 @@ public class BibtexHandler extends HttpServlet {
 		if (bib.getSeries()         != null && !bib.getSeries().equals(""))         { entryBuffer.append("series = {"       + bib.getSeries()         + "},"); } 
 		if (bib.getVolume()         != null && !bib.getVolume().equals(""))         { entryBuffer.append("volume = {"       + bib.getVolume()         + "},"); }
 		if (bib.getBibtexAbstract() != null && !bib.getBibtexAbstract().equals("")) { entryBuffer.append("abstract = {"		+ bib.getBibtexAbstract() + "},"); }
-		
+
 		// handle "misc" fields
 		String misc = bib.getMisc();
 		if (misc != null) {
@@ -762,7 +782,7 @@ public class BibtexHandler extends HttpServlet {
 		return entryBuffer;
 	}
 
-	
+
 	/*
 	 * this method does the main bibtex part - after parsing it gets all field 
 	 * values from the parsed Entry and fills the bibtex object
@@ -773,12 +793,12 @@ public class BibtexHandler extends HttpServlet {
 		/* ************************************************
 		 * process non standard bibtex fields 
 		 * ************************************************/
-		
+
 		// get set of all current fieldnames - like address, author etc.
 		ArrayList<String> nonStandardFieldNames = new ArrayList<String>(entry.getFields().keySet());
 		// remove standard fields from list to retrieve nonstandard ones
 		nonStandardFieldNames.removeAll(getStandardFieldNames());
-		
+
 		// iter over arraylist to retrieve nonstandard field values
 		StringBuffer miscBuffer = new StringBuffer();
 		for (String next:nonStandardFieldNames) {
@@ -790,32 +810,32 @@ public class BibtexHandler extends HttpServlet {
 		}
 
 		bib.setMisc(miscBuffer.toString());
-		
+
 		/* ************************************************
 		 * process standard bibtex fields 
 		 * ************************************************/
 
-		
+
 		/* ************************************************
 		 * mandatory fields
 		 * ************************************************/
-		
+
 		BibtexString field = null;
-		
+
 		// retrieve entry/bibtex key
 		bib.setBibtexKey(entry.getEntryKey());
 		// retrieve entry type - should not be null or ""
 		bib.setEntrytype(entry.getEntryType());
 
 		// TODO: remove ELSE parts - just added for DB compatibility with last release (also do it for authors, editors below)
-		
+
 		field = (BibtexString) entry.getFieldValue("title"); if (field != null) bib.setTitle(field.getContent());
 		field = (BibtexString) entry.getFieldValue("year");  if (field != null) bib.setYear(field.getContent()); 
 
 		/* ************************************************
 		 * optional fields
 		 * ************************************************/
-		
+
 		field = (BibtexString) entry.getFieldValue("crossref");     if (field != null) bib.setCrossref(field.getContent());     
 		field = (BibtexString) entry.getFieldValue("address");      if (field != null) bib.setAddress(field.getContent());      
 		field = (BibtexString) entry.getFieldValue("annote");       if (field != null) bib.setAnnote(field.getContent());       
@@ -841,11 +861,11 @@ public class BibtexHandler extends HttpServlet {
 		field = (BibtexString) entry.getFieldValue("type");  		if (field != null) bib.setType(field.getContent());          
 		field = (BibtexString) entry.getFieldValue("description");	if (field != null) bib.setDescription(field.getContent());
 
-		
+
 		/* ************************************************
 		 * author
 		 * ************************************************/
-		
+
 		// returns unmodifiable linkedlist of BibtexPerson objects
 		StringBuffer authorBuffer = new StringBuffer();
 		BibtexAbstractValue fieldValue = entry.getFieldValue("author");
@@ -853,26 +873,26 @@ public class BibtexHandler extends HttpServlet {
 			BibtexPersonList authorString = (BibtexPersonList) fieldValue;
 			if (authorString != null) {
 				List<BibtexPerson> authorList = authorString.getList();
-							
+
 				for (BibtexPerson person:authorList) {
 					// build one author
-					
+
 					StringBuffer author = new StringBuffer();
 					String first = person.getFirst();
 					if (first != null) {
 						author.append(first);
 					}
-					
+
 					String preLast = person.getPreLast();
 					if (preLast != null) {
 						author.append(" " + preLast);
 					}
-					
+
 					String last = person.getLast();
 					if (last != null) {
 						author.append(" " + last);
 					}
-					
+
 					authorBuffer.append(author + " and ");
 				}
 				/* remove last " and " */
@@ -885,32 +905,32 @@ public class BibtexHandler extends HttpServlet {
 		/* ************************************************
 		 * editor
 		 * ************************************************/
-		
+
 		StringBuffer editorBuffer = new StringBuffer();
 		fieldValue = entry.getFieldValue("editor");
 		if (fieldValue instanceof BibtexPersonList) {
 			BibtexPersonList editorString = (BibtexPersonList) fieldValue;
 			if (editorString != null) {
 				List<BibtexPerson> editorList = editorString.getList();
-				
+
 				for (BibtexPerson person:editorList) {
-					
+
 					StringBuffer editor = new StringBuffer();
 					String first = person.getFirst();
 					if (first != null) {
 						editor.append(first);
 					}
-					
+
 					String preLast = person.getPreLast();
 					if (preLast != null) {
 						editor.append(" " + preLast);
 					}
-					
+
 					String last = person.getLast();
 					if (last != null) {
 						editor.append(" " + last);
 					}
-					
+
 					editorBuffer.append(editor + " and ");
 				}
 				if (!editorList.isEmpty()) {
@@ -925,7 +945,7 @@ public class BibtexHandler extends HttpServlet {
 		// merge "tags" and "keywords"
 		StringBuffer allTags = new StringBuffer();
 		BibtexAbstractValue tagAbstractValue;
-		
+
 		tagAbstractValue = entry.getFieldValue("tags");
 		if (tagAbstractValue != null) {
 			// clean tags
@@ -936,9 +956,26 @@ public class BibtexHandler extends HttpServlet {
 			// clean tags
 			allTags.append(TagStringUtils.cleanTags(((BibtexString) tagAbstractValue).getContent(), substitute, delimiter, whitespace));
 		}
+		/*
+         * parsing of several tags - replace above by code below
+         */ 
+//		System.out.println("Getting keywords");
+//		final List tagAbstractValueList = entry.getFieldValuesAsList("keywords");
+//
+//		System.out.println("got list: " + tagAbstractValueList);
+//	if (tagAbstractValueList != null) {
+//			System.out.println("list is not null");
+//
+//			for (final Object keyword: tagAbstractValueList) {
+//				System.out.println("found keyword: " + keyword);
+//				// clean tags
+//				allTags.append(TagStringUtils.cleanTags(((BibtexString) keyword).getContent(), substitute, delimiter, whitespace) + " ");
+//				System.out.println("allTags is now: " + allTags);
+//			}
+//		}
 
-		
-		
+
+
 //		field = (BibtexString) entry.getFieldValue("tags");     if (field != null) {allTags.append(field.getContent() + " ");}
 		//field = (BibtexString) entry.getFieldValue("keywords"); if (field != null) {allTags.append(field.getContent());      }
 		// see, if tag is available or not
@@ -949,29 +986,29 @@ public class BibtexHandler extends HttpServlet {
 		}
 	}
 
-	
-	
+
+
 	// Exception to be called, when something went wront on the upload process
 	private class BibUploadException extends Exception {
 		private static final long serialVersionUID = 23978;
-		
+
 		public BibUploadException (String m) {
 			super(m);
 		}
 	}
-	
+
 	/*
 	 * if we find an error which has nothing to do with upload or so: throw this exception
 	 */ 
 	public static class BibtexException extends Exception {
 		private static final long serialVersionUID = 23978;
-		
+
 		public BibtexException (String m) {
 			super(m);
 		}
 	}
-	
-	
+
+
 	private HashSet getStandardFieldNames() {
 		/*
 		 * TODO: have a look into the Bibtex object, is has a list of fields;
@@ -1014,7 +1051,7 @@ public class BibtexHandler extends HttpServlet {
 		fields.add("biburl");   // added because this way it is not added to "misc"
 		return fields;
 	}
-	
+
 	/*
 	 * //for entrytype parsing private boolean isStandardType (String type){
 	 * 
@@ -1031,10 +1068,10 @@ public class BibtexHandler extends HttpServlet {
 	 * if(standardTypes.contains(type)){ return true; }else{ return false; } }
 	 */
 
-	
+
 	// exchanges linebreaks by " and " 
 	private String replaceLinebreak(String s) {
 		return s.replaceAll("\r\n", " and ");
 	}
-	
+
 }// END OF CLASS
