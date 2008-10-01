@@ -60,7 +60,8 @@ do this with JavaScript and two checkboxes
     <li><a href="/layout/openoffice-csv/<c:out value='${requPath}'/>">OpenOffice-CSV</a> <b>&middot;</b></li>
     <li><a href="/layout/dblp/<c:out value='${requPath}'/>">DBLP</a> <b>&middot;</b></li>
     <li><a href="/layout/text/<c:out value='${requPath}'/>">Text</a> <b>&middot;</b></li>
-    <li><a href="/layout/jucs/<c:out value='${requPath}'/>">JUCS</a></li>
+    <li><a href="/layout/jucs/<c:out value='${requPath}'/>">JUCS</a> <b>&middot;</b></li>
+    <li><a href="/layout/imtm/<c:out value='${requPath}'/>">IMTM</a></li>
   </ul>
 </div>
 
@@ -150,7 +151,11 @@ do this with JavaScript and two checkboxes
     
     <dt><a href="/layout/jucs/<c:out value='${requPath}'/>">JUCS</a> <a href="#jabref">*</a></dt>
     <dd>Output formatted according to the guidelines of the <a href="http://www.jucs.org/">Journal of Universal 
-    Computer Science</a>.</dd>    
+    Computer Science</a>.</dd>
+    
+    <dt><a href="/layout/imtm/<c:out value='${requPath}'/>">IMTM</a> <a href="#jabref">*</a></dt>
+    <dd>Custom output format provided by the  <a href="http://www.imtm-iaw.rub.de">Department Information and
+    Technology Manangement (IMTM), University of Bochum</a>.</dd>   
   </dl>
 
   <h3><a name="jabref">JabRef</a></h3>
