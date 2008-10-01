@@ -13,19 +13,15 @@ import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChain;
-import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
-import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.SimHash;
 
@@ -1111,14 +1107,13 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @return the number of days when a bookmark was popular
 	 */
 	public int getBookmarkPopularDays(final int days, final DBSession session){
-		Integer result;
-		BookmarkParam param = new BookmarkParam();
+		final BookmarkParam param = new BookmarkParam();
 		param.setDays(days);
 		
-		result = this.queryForObject("getBookmarkPopularDays", param, Integer.class, session);
-		if(result != null){
+		final Integer result = this.queryForObject("getBookmarkPopularDays", param, Integer.class, session);
+		if (result != null) {
 			return result;
 		}
-		return new Integer(0);
+		return 0;
 	}
 }
