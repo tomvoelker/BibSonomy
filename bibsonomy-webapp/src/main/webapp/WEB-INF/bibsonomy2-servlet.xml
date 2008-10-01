@@ -388,7 +388,7 @@
 			</list>
 		</property>
 		<property name="entriesPerPage">
-			<value type="java.lang.Integer">5</value>
+			<value type="java.lang.Integer">3</value>
 		</property>
 	</bean>
 	<!-- 
