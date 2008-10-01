@@ -6,17 +6,24 @@
 	So kann jeder Klick nachvollzogen werden.
 	
 	Es werden folgende Daten übermittelt:
-    dompath: Position des Klicks im DOM-Baum
-	pageurl: URL der aktuellen Seite
-	acontent:  Inhlat des angeklickten Links, wenn verfügbar. Der klickbare Linktext.
-	ahref:   Ziel-URL des angeklickten Links
+    dompath:		Position des Klicks im DOM-Baum mit IDs
+    dompath2:		Position des Klicks im DOM-Baum mit IDs und Klassen
+	pageurl:		URL der aktuellen Seite
+	numberofposts:	Anzahl der Posts eines Tags in der Tagwolke
+	acontent: 		Inhalt des angeklickten Links, wenn verfügbar. Der klickbare Linktext.
+	ahref:			Ziel-URL des angeklickten Links
+	windowsize:		Groesse des Anzeigefensters
+    mouseclientpos:	Position der Maus beim Klick im Anzeigefesnter
+	mousedocumentpos: Position der Maus beim Klick im Dokument
+	listpos:		Position des geklickten Links in einer Linkauflistung
+	referer:		Referrer, die Seite, die auf die aktuelle Seite verwiesen hat
 
 	Es werden nur Klicks auf einen Link (A-Element) an den Loggingserver gesendet.
 
 	Der Loggingserver kann die Requests auswerten und in einer Datenbank speichern, so dass eine spätere
-	Auswertung möglich sein wird.
+	Auswertung möglich sein wird. Dadurch kann dann das Design und die Usability der Anwendung verbessert werden.
 
-	Sven Stefani, 2008
+	Sven Stefani, 2008 - stefani@cs.uni-kassel.de
 	
 */
 
