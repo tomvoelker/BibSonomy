@@ -46,7 +46,13 @@
     </plugins>
   </build>
   <dependencies>
-    <dependency>
+  	<dependency>
+    	<groupId>org.antlr</groupId>
+    	<artifactId>antlr</artifactId>
+    	<version>3.0.1</version>
+		<scope>compile</scope>
+	</dependency>
+	<dependency>
       <groupId>org.bibsonomy</groupId>
       <artifactId>bibsonomy-rest-server</artifactId>
     </dependency>
