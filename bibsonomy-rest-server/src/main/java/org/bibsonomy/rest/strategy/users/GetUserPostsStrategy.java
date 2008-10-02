@@ -37,7 +37,7 @@ public class GetUserPostsStrategy extends AbstractGetListStrategy<List<? extends
 			sb.append("&tags=").append(this.tagString);
 		}
 		if (this.resourceType != Resource.class) {
-			sb.append("&resourcetype=").append(resourceType.toString());
+			sb.append("&resourcetype=").append(Resource.toString(this.resourceType).toLowerCase());
 		}
 	}
 
