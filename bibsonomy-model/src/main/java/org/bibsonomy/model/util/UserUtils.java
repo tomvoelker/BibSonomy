@@ -1,14 +1,12 @@
 package org.bibsonomy.model.util;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
-import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.util.HashUtils;
 
 /**
  * @author Dominik Benz
@@ -23,21 +21,13 @@ public class UserUtils {
 	 * @return String Api key
 	 */
 	public static String generateApiKey() {
-		try {
-			final byte[] randomArray = generateRandom();
-			final MessageDigest md = MessageDigest.getInstance("MD5");
-			return StringUtils.toHexString(md.digest(randomArray));
-		} catch (final NoSuchAlgorithmException e) {
-			// should never happen
-			throw new RuntimeException(e);
-		}
+		return HashUtils.getMD5Hash(generateRandom());
 	}
 
 	private static byte[] generateRandom() {
 		final byte[] randomBytes = new byte[32];
 		try {
-			final Random random = new Random();
-			random.nextBytes(randomBytes);
+			new Random().nextBytes(randomBytes);
 		} catch (final Exception e) {
 			throw new RuntimeException(e);
 		}

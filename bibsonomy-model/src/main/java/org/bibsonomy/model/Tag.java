@@ -251,6 +251,9 @@ public class Tag implements Comparable<Tag> , Cloneable {
 	
 	@Override
 	public boolean equals(Object tag) {
+		// FIXME: check for null pointers
+		// FIXME: check if tag is instance of Tag
+		// FIXME: what about upper vs. lower case?
 		return this.getName().equals(((Tag) tag).getName());
 	}
 
@@ -260,6 +263,7 @@ public class Tag implements Comparable<Tag> , Cloneable {
 	}
 
 	public int compareTo(Tag tag) {
+		// FIXME: what about upper vs. lower case?
 		return this.getName().compareTo(tag.getName());
 	}
 	
