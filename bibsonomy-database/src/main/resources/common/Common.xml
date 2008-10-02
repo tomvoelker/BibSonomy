@@ -6,6 +6,7 @@
 		<result property="interHash"   column="interHash"       javaType="string" />
 		<result property="intraHash"   column="intraHash"       javaType="string" />     	
 		<result property="count"       column="count"           javaType="int" />
+        <result property="title"       column="title"           javaType="string" />
 	</resultMap>
 
 	<resultMap id="posts" class="post" groupBy="contentId">

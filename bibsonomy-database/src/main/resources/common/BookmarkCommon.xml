@@ -3,7 +3,6 @@
 
 <sqlMap namespace="BookmarkCommon">
 	<resultMap id="bookmark" class="bookmark" extends="Common.resource">
-		<result property="title"    column="title"     javaType="string" />
     	<result property="url"      column="book_url"  javaType="string" />
 	</resultMap>
 
