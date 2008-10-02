@@ -15,6 +15,7 @@ public class DefaultTagRecommender extends CompositeTagRecommender {
 	 * Currently only the {@link SimpleContentBasedTagRecommender} is included.
 	 */
 	public DefaultTagRecommender() {
+		super(new RecommendedTagComparator());
 		addTagRecommender(new SimpleContentBasedTagRecommender());
 	}
 	

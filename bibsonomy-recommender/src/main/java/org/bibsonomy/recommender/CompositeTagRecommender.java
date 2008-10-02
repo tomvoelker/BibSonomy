@@ -1,11 +1,13 @@
 package org.bibsonomy.recommender;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
 
 /**
  * @author rja
@@ -14,9 +16,19 @@ import org.bibsonomy.model.Tag;
 public class CompositeTagRecommender implements TagRecommender {
 
 	private final List<TagRecommender> recommender = new LinkedList<TagRecommender>();
-
-	public List<Tag> getRecommendedTags(Post<? extends Resource> post) {
-		final List<Tag> recommendedTags = new LinkedList<Tag>();
+	private final Comparator<RecommendedTag> comparator;
+	
+	/** Create a new instance of this class. The comparator is necessary to fill the
+	 * SortedSet in {@link #getRecommendedTags(Post)}. 
+	 * 
+	 * @param comparator
+	 */
+	public CompositeTagRecommender(final Comparator<RecommendedTag> comparator) {
+		this.comparator = comparator;
+	}
+	
+	public SortedSet<RecommendedTag> getRecommendedTags(Post<? extends Resource> post) {
+		final SortedSet<RecommendedTag> recommendedTags = new TreeSet<RecommendedTag>(comparator);
 		for (final TagRecommender t: recommender) {
 			t.addRecommendedTags(recommendedTags, post);
 		}
@@ -35,7 +47,7 @@ public class CompositeTagRecommender implements TagRecommender {
 		this.recommender.add(tagRecommender);
 	}
 
-	public void addRecommendedTags(List<Tag> recommendedTags, Post<? extends Resource> post) {
+	public void addRecommendedTags(SortedSet<RecommendedTag> recommendedTags, Post<? extends Resource> post) {
 		for (final TagRecommender t: recommender) {
 			t.addRecommendedTags(recommendedTags, post);
 		}

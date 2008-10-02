@@ -1,13 +1,14 @@
 package org.bibsonomy.recommender.tags.simple;
 
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Scanner;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
+import org.bibsonomy.recommender.RecommendedTag;
+import org.bibsonomy.recommender.RecommendedTagComparator;
 import org.bibsonomy.recommender.TagRecommender;
 import org.bibsonomy.recommender.tags.simple.termprocessing.TermProcessingIterator;
 
@@ -19,9 +20,9 @@ public class SimpleContentBasedTagRecommender implements TagRecommender {
 
 	/** Simply adds recommendations at end of list. 
 	 * 
-	 * @see org.bibsonomy.recommender.TagRecommender#addRecommendedTags(java.util.List, org.bibsonomy.model.Post)
+	 * @see org.bibsonomy.recommender.TagRecommender#addRecommendedTags(java.util.SortedSet, org.bibsonomy.model.Post)
 	 */
-	public void addRecommendedTags(List<Tag> recommendedTags, Post<? extends Resource> post) {
+	public void addRecommendedTags(SortedSet<RecommendedTag> recommendedTags, Post<? extends Resource> post) {
 		recommendedTags.addAll(getRecommendedTags(post));
 	}
 
@@ -29,8 +30,8 @@ public class SimpleContentBasedTagRecommender implements TagRecommender {
 		return "Simple content based recommender which extracts tags from title, description, URL.";
 	}
 
-	public List<Tag> getRecommendedTags(Post<? extends Resource> post) {
-		final List<Tag> extracted = new LinkedList<Tag>();
+	public SortedSet<RecommendedTag> getRecommendedTags(Post<? extends Resource> post) {
+		final SortedSet<RecommendedTag> extracted = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
 		/*
 		 * extract tags from title using Jens' Termprocessor.
 		 */
@@ -39,7 +40,7 @@ public class SimpleContentBasedTagRecommender implements TagRecommender {
 		 * add all extracted tags
 		 */
 		while(extractor.hasNext() == true) {
-			extracted.add(new Tag(extractor.next()));
+			extracted.add(new RecommendedTag(extractor.next(), 0.5, 0.0));
 		}
 		return extracted;
 	}
