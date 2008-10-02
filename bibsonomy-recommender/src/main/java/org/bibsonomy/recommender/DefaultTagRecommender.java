@@ -1,6 +1,6 @@
 package org.bibsonomy.recommender;
 
-import org.bibsonomy.recommender.tags.SimpleContentBasedTagRecommender;
+import org.bibsonomy.recommender.tags.simple.SimpleContentBasedTagRecommender;
 
 
 /**
