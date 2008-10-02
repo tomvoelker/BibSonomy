@@ -42,6 +42,13 @@ public abstract class Resource {
 	private List<Post<? extends Resource>> posts;
 
 	/**
+	 * Each resource has a title. 
+	 * 
+	 * TODO: It is given by the user and thus might better fit into the post.
+	 */
+	private String title;
+	
+	/**
 	 * FIXME: This method does not belong to the model!!!! It would be fine to
 	 * make it a static method of this class and use the resource (to
 	 * recalculate hashes for) as parameter.
@@ -149,5 +156,13 @@ public abstract class Resource {
 	@Override
 	public String toString() {
 		return "<" + intraHash + "/" + interHash + ">";
+	}
+
+	public String getTitle() {
+		return this.title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 }

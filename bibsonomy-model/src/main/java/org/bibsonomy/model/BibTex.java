@@ -38,7 +38,6 @@ public class BibTex extends Resource {
 	private String annote;
 	private String author;
 	private List<PersonName> authorList;
-	private String title;
 	private String booktitle;
 	private String chapter;
 	private String crossref;
@@ -473,20 +472,6 @@ public class BibTex extends Resource {
 	}
 
 	/**
-	 * @return title
-	 */
-	public String getTitle() {
-		return this.title;
-	}
-
-	/**
-	 * @param title
-	 */
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	/**
 	 * @return volume
 	 */
 	public String getVolume() {
@@ -635,6 +620,6 @@ public class BibTex extends Resource {
 	
 	@Override
 	public String toString() {
-		return super.toString() + " = \"" + title + "\" by <" + author + ">";	
+		return super.toString() + " by <" + author + ">";	
 	}
 }

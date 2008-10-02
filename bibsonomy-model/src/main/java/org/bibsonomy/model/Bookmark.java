@@ -18,11 +18,6 @@ public class Bookmark extends Resource {
 	private String url;
 
 	/**
-	 * The title of this bookmark.
-	 */
-	private String title;
-
-	/**
 	 * @return url
 	 */
 	public String getUrl() {
@@ -34,20 +29,6 @@ public class Bookmark extends Resource {
 	 */
 	public void setUrl(String url) {
 		this.url = url;
-	}
-
-	/**
-	 * @return title
-	 */
-	public String getTitle() {
-		return this.title;
-	}
-	
-	/**
-	 * @param title
-	 */
-	public void setTitle(String title) {
-		this.title = title;
 	}
 
 	/**
@@ -72,6 +53,6 @@ public class Bookmark extends Resource {
 	
 	@Override
 	public String toString() {
-		return super.toString() + " = \"" + title + "\" = <" + url + ">";
+		return super.toString() + " = <" + url + ">";
 	}
 }
