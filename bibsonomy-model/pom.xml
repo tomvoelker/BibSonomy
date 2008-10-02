@@ -61,7 +61,7 @@
 							<tasks>
 								<java classname="org.antlr.Tool" classpathref="maven.plugin.classpath" fork="true" dir="src/main/antlr">
 									<arg line="-o ${project.build.directory}/generated-sources/antlr/" />
-									<arg value="helpers/parser/TagString3.g" />
+									<arg value="org/bibsonomy/model/util/tagparser/TagString3.g" />
 								</java>
 							</tasks>
 							<sourceRoot>${project.build.directory}/generated-sources/antlr</sourceRoot>

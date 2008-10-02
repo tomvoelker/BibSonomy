@@ -12,7 +12,7 @@ tokens {
 
 
 @header {
-	package helpers.parser;
+	package org.bibsonomy.model.util.tagparser;
 	import org.antlr.runtime.BitSet;
   import org.antlr.runtime.CommonTokenStream;
   import org.antlr.runtime.IntStream;
@@ -28,7 +28,7 @@ tokens {
 	import java.util.HashMap;
 }
 @lexer::header {
-	package helpers.parser;
+	package org.bibsonomy.model.util.tagparser;
 }
 
 @members{

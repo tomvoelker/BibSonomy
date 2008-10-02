@@ -1,8 +1,8 @@
 package org.bibsonomy.model.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import helpers.parser.TagString3Lexer;
-import helpers.parser.TagString3Parser;
+import org.bibsonomy.model.util.tagparser.TagString3Lexer;
+import org.bibsonomy.model.util.tagparser.TagString3Parser;
 
 import java.util.Collection;
 import java.util.Set;
