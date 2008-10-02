@@ -24,65 +24,68 @@ import org.bibsonomy.scrapingservice.beans.ScrapingResultBean;
  * Servlet implementation class for Servlet: ScrapingServlet
  *
  */
- public class ScrapingServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
+public class ScrapingServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
 
-	 /**
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -5145534846771334947L;
-	
+
 	private static final Logger log = Logger.getLogger(ScrapingServlet.class);
-	 
-	 public ScrapingServlet() {
+
+	public ScrapingServlet() {
 		super();
 	}   	
-	
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ScrapingResultBean bean = new ScrapingResultBean();
+
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		final String urlString = request.getParameter("url");
+		log.info("Scraping service called with url " + urlString);
 		
-		String url = request.getParameter("scrapingUrl");
-		URL scrapingUrl;
-		try {
-			scrapingUrl = new URL(url);
-			bean.setUrl(url);
-			
-			ScrapingContext context = new ScrapingContext(scrapingUrl);
-			
-			Scraper compositeScraper = new KDEScraperFactory().getScraper();
-		
-			if(compositeScraper.scrape(context)){
-				bean.setBibtex(context.getBibtexResult());
-				bean.setErrorMessage(null);
-			}else{
-				bean.setBibtex(null);
-				bean.setErrorMessage("Given host is not supported from scraping service.");
+		if (urlString != null && !urlString.trim().equals("")) {
+			final ScrapingResultBean bean = new ScrapingResultBean();
+
+			try {
+				final URL url = new URL(urlString);
+				bean.setUrl(url);
+
+				final ScrapingContext context = new ScrapingContext(url);
+
+				final Scraper compositeScraper = new KDEScraperFactory().getScraper();
+
+				if (compositeScraper.scrape(context)) {
+					bean.setBibtex(context.getBibtexResult());
+					bean.setErrorMessage(null);
+				} else {
+					bean.setBibtex(null);
+					bean.setErrorMessage("Given host is not supported by scraping service.");
+				}
+			} catch (final MalformedURLException e) {
+				log.info("URL is malformed.", e);
+				bean.setErrorMessage("URL is malformed.");
+			} catch (final InternalFailureException e) {
+				// internal failure 
+				log.fatal("Internal error occurred.", e);
+				bean.setErrorMessage("Internal error occurred: " + e.getMessage());
+			} catch (final UseageFailureException e) {
+				// a user has used a scraper in a wrong way
+				log.info("Usage error.", e);
+				bean.setErrorMessage(e.getMessage());
+			} catch (final PageNotSupportedException e) {
+				// a scraper can't scrape a page but the host is supported
+				log.error("Given page is not supported.", e);
+				bean.setErrorMessage("Given page is not supported.");
+			} catch (final ScrapingFailureException e) {
+				// getting bibtex failed (conversion failed)
+				log.fatal("Failure during scraping occurred.", e);
+				bean.setErrorMessage("Failure during scraping occurred: " + e.getMessage());
+			}  catch (final ScrapingException e) {
+				// something else
+				log.error("General Error.", e);
+				bean.setErrorMessage(e.getMessage());
 			}
-		} catch (MalformedURLException e) {
-			log.info(e);
-			bean.setErrorMessage("Given URL is malformed.");
-		} catch (final InternalFailureException e) {
-			// internal failure 
-			log.fatal(e);
-			bean.setErrorMessage("Internal error occurred: " + e.getMessage());
-		} catch (final UseageFailureException e) {
-			// a user has used a scraper in a wrong way
-			log.info(e);
-			bean.setErrorMessage(e.getMessage());
-		} catch (final PageNotSupportedException e) {
-			// a scraper can't scrape a page but the host is supported
-			log.error(e);
-			bean.setErrorMessage("Given page is not supported.");
-		} catch (final ScrapingFailureException e) {
-			// getting bibtex failed (conversion failed)
-			log.fatal(e);
-			bean.setErrorMessage("Failure druing scraping occurred: " + e.getMessage());
-		}  catch (final ScrapingException e) {
-			// something else
-			log.error(e);
-			bean.setErrorMessage(e.getMessage());
+
+			request.setAttribute("bean", bean);
 		}
-		
-		request.setAttribute("result", bean);
-		getServletConfig().getServletContext().getRequestDispatcher("/").forward(request, response);
+		getServletConfig().getServletContext().getRequestDispatcher("/index.jsp").forward(request, response);
 	}   	  	    
 }

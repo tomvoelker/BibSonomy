@@ -1,22 +1,26 @@
 package org.bibsonomy.scrapingservice.beans;
 
 import java.io.Serializable;
+import java.net.URL;
 
 public class ScrapingResultBean implements Serializable {
 	
 	private static final long serialVersionUID = 8899554705056075887L;
 
 	private String bibtex;
-	
 	private String errorMessage;
+	private URL url;
 	
-	private String url;
+	public ScrapingResultBean() {
+		// TODO Auto-generated constructor stub
+	}
+	
 
-	public String getUrl() {
+	public URL getUrl() {
 		return url;
 	}
 
-	public void setUrl(String url) {
+	public void setUrl(URL url) {
 		this.url = url;
 	}
 
