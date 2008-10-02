@@ -1,38 +1,48 @@
-<?xml version="1.0" encoding="UTF-8"?><project>
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>bibsonomy-scrapingservice</groupId>
-  <artifactId>bibsonomy-scrapingservice</artifactId>
-  <packaging>war</packaging>
-  <version>2.0.1-SNAPSHOT</version>
-  <description></description>
-  <parent>
-	<artifactId>bibsonomy</artifactId>
-	<groupId>org.bibsonomy</groupId>
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>bibsonomy-scrapingservice</groupId>
+	<artifactId>bibsonomy-scrapingservice</artifactId>
+	<packaging>war</packaging>
 	<version>2.0.1-SNAPSHOT</version>
-  </parent>
-  <dependencies>
+	<description></description>
+	<parent>
+		<artifactId>bibsonomy</artifactId>
+		<groupId>org.bibsonomy</groupId>
+		<version>2.0.1-SNAPSHOT</version>
+	</parent>
+	<dependencies>
 		<dependency>
-      <groupId>org.bibsonomy</groupId>
-      <artifactId>bibsonomy-scraper</artifactId>
-      <version>2.0.1-SNAPSHOT</version>
-    </dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-scraper</artifactId>
+			<version>2.0.1-SNAPSHOT</version>
+		</dependency>
 		<dependency>
-  		<groupId>log4j</groupId>
-  		<artifactId>log4j</artifactId>
-	  </dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
 		<dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.5</version>
-    </dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+		</dependency>
 		<dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>jsp-api</artifactId>
-    </dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jsp-api</artifactId>
+		</dependency>
 		<dependency>
-      <groupId>commons-httpclient</groupId>
-      <artifactId>commons-httpclient</artifactId>
-      <version>3.0</version>
-    </dependency>
-  </dependencies>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>taglibs</groupId>
+			<artifactId>standard</artifactId>
+			<version>1.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.0</version>
+		</dependency>
+	</dependencies>
 </project>
