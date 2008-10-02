@@ -7,9 +7,9 @@
 	<groupId>org.bibsonomy</groupId>
 	<artifactId>bibsonomy-scrapingservice</artifactId>
 	<packaging>war</packaging>
-	<name>Bibsonomy-Scrapingservice</name>
+	<name>BibSonomy-Scrapingservice</name>
 	<version>2.0.1-SNAPSHOT</version>
-	<description>Web application to test the Bibsonomy web page scrapers (see bibsonomy-scraper)</description>
+	<description>Web application to test the BibSonomy web page scrapers (see bibsonomy-scraper)</description>
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
