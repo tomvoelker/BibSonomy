@@ -116,6 +116,7 @@
 		<module>bibsonomy-scraper</module>
 		<module>bibsonomy-database</module>
 		<module>bibsonomy-logging</module>
+		<module>bibsonomy-recommender</module>
 		<module>bibsonomy-rest-client</module>
 		<module>bibsonomy-rest-common</module>
 		<module>bibsonomy-rest-server</module>
@@ -281,6 +282,11 @@
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-spielwiese</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-recommender</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
