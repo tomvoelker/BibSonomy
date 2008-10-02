@@ -94,6 +94,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 * 
 	 * <ul>
+	 * <li>if userName = post.userName</li> 
 	 * <li>if the post is public and the posts user is together with the user
 	 * in a group, which allows to share documents, or
 	 * <li>if the post is viewable for a specific group, in which both users
@@ -116,6 +117,13 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public boolean isAllowedToAccessPostsDocuments(final String userName, final Post<? extends Resource> post, final DBSession session) {
 		final String postUserName = post.getUser().getName();
+		/*
+		 * if userName = postUserName, return true
+		 */
+		if ((userName != null && userName.equalsIgnoreCase(postUserName))) return true;
+		/*
+		 * else: check groups stuff ....
+		 */
 		final Collection<Group> postGroups = post.getGroups();
 
 		// Get the groups in which both users are.
