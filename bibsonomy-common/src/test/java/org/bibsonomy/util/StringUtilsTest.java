@@ -29,18 +29,6 @@ public class StringUtilsTest {
 	}
 
 	/**
-	 * tests toHexString
-	 * 
-	 * @throws UnsupportedEncodingException
-	 */
-	@Test
-	public void toHexString() throws UnsupportedEncodingException {
-		assertEquals("74657374", StringUtils.toHexString("test".getBytes("UTF-8")));
-		assertEquals("6875727a", StringUtils.toHexString("hurz".getBytes("UTF-8")));
-		assertEquals("c3bcc3b6c3a42122c2a72425262f28293d2c2e2d2b2327c2b460", StringUtils.toHexString(this.SPECIAL_CHARS.getBytes("UTF-8")));
-	}
-
-	/**
 	 * tests matchExtension
 	 */
 	@Test
