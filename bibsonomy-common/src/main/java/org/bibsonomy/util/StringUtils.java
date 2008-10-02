@@ -1,8 +1,6 @@
 package org.bibsonomy.util;
 
 import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -24,32 +22,10 @@ public class StringUtils {
 
 		final String charset = "UTF-8";
 		try {
-			final MessageDigest md = MessageDigest.getInstance("MD5");
-			return toHexString(md.digest(string.getBytes(charset)));
+			return HashUtils.getMD5Hash(string.getBytes(charset));
 		} catch (final UnsupportedEncodingException e) {
 			return null;
-		} catch (final NoSuchAlgorithmException e) {
-			return null;
 		}
-	}
-
-	/**
-	 * Converts a buffer of bytes into a string of hex values.
-	 * 
-	 * @param buffer
-	 *            array of bytes which should be converted
-	 * @return hex string representation of buffer
-	 */
-	public static String toHexString(byte[] buffer) {
-		final StringBuffer result = new StringBuffer();
-		for (int i = 0; i < buffer.length; i++) {
-			String hex = Integer.toHexString(buffer[i]);
-			if (hex.length() == 1) {
-				hex = "0" + hex;
-			}
-			result.append(hex.substring(hex.length() - 2));
-		}
-		return result.toString();
 	}
 
 	/**
