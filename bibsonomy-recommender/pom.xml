@@ -9,7 +9,7 @@
 	<packaging>jar</packaging>
 	<name>BibSonomy-Recommender</name>
 	<version>2.0.1-SNAPSHOT</version>
-	<description>Various methods to provide recommendations for bibsonomy</description>
+	<description>Various methods to provide recommendations for BibSonomy</description>
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
@@ -22,13 +22,17 @@
 			<artifactId>bibsonomy-common</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-model</artifactId>
+		</dependency>		
+		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-		</dependency>
+		</dependency>	
 	</dependencies>
 	<properties>
 		<wtpversion>1.5</wtpversion>
