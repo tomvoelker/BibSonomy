@@ -21,4 +21,9 @@ public interface FileUploadInterface {
 	 * @return fileName
 	 */
 	public abstract String getFileName();
+	
+	/**
+	 * @return md5hash
+	 */
+	public abstract String getMd5Hash();
 }

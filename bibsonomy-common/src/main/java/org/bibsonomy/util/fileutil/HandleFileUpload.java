@@ -10,6 +10,7 @@ import java.util.TimeZone;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.FilenameUtils;
+import org.bibsonomy.util.HashUtils;
 import org.bibsonomy.util.StringUtils;
 
 /**
@@ -23,6 +24,7 @@ public class HandleFileUpload implements FileUploadInterface {
 	private final Map<String, FileItem> fieldMap;
 	private final String fileHash;
 	private final String fileName;
+	private final String md5hash;
 	private final FileItem upFile;
 
 	/**
@@ -57,6 +59,9 @@ public class HandleFileUpload implements FileUploadInterface {
 		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		df.setTimeZone(TimeZone.getDefault());
 		final String currDateFormatted = df.format(currDate);
+		
+		// create hash over file content
+		this.md5hash = HashUtils.getMD5Hash(this.upFile.get());
 
 		this.fileHash = StringUtils.getMD5Hash(this.upFile.getFieldName() + Math.random() + currDateFormatted);
 	}
@@ -74,6 +79,13 @@ public class HandleFileUpload implements FileUploadInterface {
 	 */
 	public String getFileHash() {
 		return this.fileHash;
+	}
+	
+	/*
+	 * @see org.bibsonomy.util.fileutil.FileUploadInterface#getMd5Hash()
+	 */
+	public String getMd5Hash() {
+		return this.md5hash;
 	}
 
 	/*
