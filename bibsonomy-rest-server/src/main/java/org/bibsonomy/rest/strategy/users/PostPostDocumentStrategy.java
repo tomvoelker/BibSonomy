@@ -58,6 +58,7 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy{
 			doc.setUserName(this.userName);
 			doc.setFileName(up.getFileName());
 			doc.setFileHash(up.getFileHash());
+			doc.setMd5hash(up.getMd5Hash());
 			
 			// add document to post
 			this.getLogic().addDocument(doc, this.resourceHash);
