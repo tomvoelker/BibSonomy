@@ -33,6 +33,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.log4j.Logger;
+import org.bibsonomy.util.HashUtils;
 
 import resources.Bibtex;
 import resources.Resource;
@@ -49,7 +50,7 @@ public class DocumentUploadHandler extends HttpServlet{
 	private String rootPath = null;
 
 	private static final String SQL_TEST_UPLOAD                 = "SELECT d.content_id FROM document d, bibtex b WHERE b.simhash" + Bibtex.INTRA_HASH + " = ? AND b.user_name = ? AND d.content_id=b.content_id";
-	private static final String SQL_INSERT_DOCUMENT             = "INSERT INTO document (hash, content_id, name, user_name, date) VALUES (?, ?, ?, ?, ?)";
+	private static final String SQL_INSERT_DOCUMENT             = "INSERT INTO document (hash, content_id, name, user_name, date, md5hash) VALUES (?, ?, ?, ?, ?, ?)";
 	private static final String SQL_GET_CONTENT_ID_FOR_BIBTEX   = "SELECT content_id FROM bibtex WHERE simhash" + Bibtex.INTRA_HASH + " = ? AND user_name = ?";  
 	// TODO: get_content_id statement stolen from DBContentManager --> should be done by a DB manager
 
@@ -161,6 +162,7 @@ public class DocumentUploadHandler extends HttpServlet{
 				stmtP.setString(3, fileName);
 				stmtP.setString(4, currUser);
 				stmtP.setTimestamp(5, new Timestamp(currDate.getTime()));
+				stmtP.setString(6, HashUtils.getMD5Hash(upFile.get()));
 				stmtP.executeUpdate();
 
 				redirectUrl = "/bibtex/" + Bibtex.INTRA_HASH + hash + "/" + URLEncoder.encode(currUser, "UTF-8");
