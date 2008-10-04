@@ -5,5 +5,6 @@
 	<resultMap id="document" class="document">
 		<result property="fileHash"      column="hash"     javaType="string" />
     	<result property="fileName"      column="name"     javaType="string" />
+    	<result property="md5hash"		 column="md5hash"  javaType="string" />
 	</resultMap>
 </sqlMap>

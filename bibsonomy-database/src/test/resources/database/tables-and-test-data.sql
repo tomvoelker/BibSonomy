@@ -401,6 +401,7 @@ CREATE TABLE `document` (
   `name` varchar(255) default '',
   `user_name` varchar(255) default '',
   `date` datetime default '0000-00-00 00:00:00',
+  `md5hash` char(32) not null default '00000000000000000000000000000000',
   PRIMARY KEY  (`hash`,`content_id`),
   KEY `content_id_idx` (`content_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

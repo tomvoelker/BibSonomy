@@ -16,13 +16,13 @@
 	</select>
 	
 	<insert id="insertDoc" parameterClass="documentParam">
-		INSERT INTO document (hash, content_id, name, user_name, date)
-		VALUES (#fileHash#, #contentId#, #fileName#, #userName#, NOW())
+		INSERT INTO document (hash, content_id, name, user_name, date, md5hash)
+		VALUES (#fileHash#, #contentId#, #fileName#, #userName#, NOW(), #md5hash#)
 	</insert>
 	
 	<update id="updateDoc" parameterClass="documentParam">
 		UPDATE document d 
-		SET d.name=#fileName#, d.hash=#fileHash#, d.date=NOW()
+		SET d.name=#fileName#, d.hash=#fileHash#, d.date=NOW(), d.md5hash=#md5hash#
 		WHERE d.content_id = #contentId# 
 	</update>
 	
@@ -33,7 +33,7 @@
 	</select>
 		
 	<select id="getDocuments" resultMap="DocumentCommon.document" parameterClass="documentParam">
-		SELECT d.hash, d.name 
+		SELECT d.hash, d.name, d.md5hash 
 		FROM document d, bibtex b 
 		WHERE b.simhash$requestedSimHash$ = #resourceHash#
 			AND d.content_id = b.content_id

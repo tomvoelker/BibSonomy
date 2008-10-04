@@ -718,6 +718,7 @@ public class DBLogic implements LogicInterface {
 			docParam.setResourceHash(resourceHash);
 			docParam.setFileHash(doc.getFileHash());
 			docParam.setFileName(doc.getFileName());
+			docParam.setMd5hash(doc.getMd5hash());
 
 			// FIXME remove deprecated method
 			final boolean valid = this.docDBManager.validateResource(docParam, session);

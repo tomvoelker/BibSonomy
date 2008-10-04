@@ -27,6 +27,29 @@ public class DocumentParam extends GenericParam {
 	 * the contentId of the bibtex entry
 	 */
 	private int contentId;
+	
+	/**
+	 * the md5hash of the document
+	 */
+	private String md5hash;
+
+	/**
+	 * returns the md5hash which has been builded over the content
+	 * 
+	 * @return md5hash
+	 */
+	public String getMd5hash() {
+		return this.md5hash;
+	}
+
+	/**
+	 * set the md5hash
+	 * 
+	 * @param md5hash
+	 */
+	public void setMd5hash(String md5hash) {
+		this.md5hash = md5hash;
+	}
 
 	/**
 	 * defines the needed simhash which should be unique for each bibtex entry
