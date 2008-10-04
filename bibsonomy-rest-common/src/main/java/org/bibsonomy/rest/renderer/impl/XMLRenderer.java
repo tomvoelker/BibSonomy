@@ -36,6 +36,7 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -43,22 +44,10 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.ViewModel;
+import org.bibsonomy.rest.RestProperties.Property;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.Renderer;
-import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
-import org.bibsonomy.rest.renderer.xml.BibtexType;
-import org.bibsonomy.rest.renderer.xml.BookmarkType;
-import org.bibsonomy.rest.renderer.xml.GroupType;
-import org.bibsonomy.rest.renderer.xml.GroupsType;
-import org.bibsonomy.rest.renderer.xml.ModelFactory;
-import org.bibsonomy.rest.renderer.xml.ObjectFactory;
-import org.bibsonomy.rest.renderer.xml.PostType;
-import org.bibsonomy.rest.renderer.xml.PostsType;
-import org.bibsonomy.rest.renderer.xml.StatType;
-import org.bibsonomy.rest.renderer.xml.TagType;
-import org.bibsonomy.rest.renderer.xml.TagsType;
-import org.bibsonomy.rest.renderer.xml.UserType;
-import org.bibsonomy.rest.renderer.xml.UsersType;
+import org.bibsonomy.rest.renderer.xml.*;
 import org.xml.sax.SAXParseException;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
@@ -77,6 +66,7 @@ public class XMLRenderer implements Renderer {
 	private final String groupUrlPrefix;
 	private final String tagUrlPrefix;
 	private final String postsUrlDelimiter;
+	private final String documentsUrlDelimeter;
 	private final Boolean validateXMLInput;
 	private final Boolean validateXMLOutput;
 	private static Schema schema;
@@ -88,6 +78,7 @@ public class XMLRenderer implements Renderer {
 		this.groupUrlPrefix = apiUrl + properties.get(URL_GROUPS) + "/";
 		this.tagUrlPrefix = apiUrl + properties.get(URL_TAGS) + "/";
 		this.postsUrlDelimiter = "/" + properties.get(URL_POSTS) + "/";
+		this.documentsUrlDelimeter = "/" + properties.get(Property.URL_DOCUMENTS) + "/";
 		this.validateXMLInput = "true".equals( properties.get(VALIDATE_XML_INPUT) );
 		this.validateXMLOutput = "true".equals( properties.get(VALIDATE_XML_OUTPUT) );
 
@@ -159,6 +150,27 @@ public class XMLRenderer implements Renderer {
 				xmlPost.getTag().add(xmlTag);
 			}
 		}
+		
+		// check if the resource is an instance of bibtex
+		if(post.getResource() instanceof BibTex){
+			final BibTex bibtex = (BibTex) post.getResource();
+			// if the resource is a bibtex object and has documents ...
+			if(bibtex.getDocuments() != null){
+				String url = this.createHrefForRessource(post.getUser().getName(), bibtex.getIntraHash());
+				
+				checkBibtex(bibtex);
+				// put them into the xml output
+				final DocumentsType xmlDocuments = new DocumentsType();
+				for (Document d : bibtex.getDocuments()){
+					final DocumentType xmlDocument = new DocumentType();
+					xmlDocument.setFilename(d.getFileName());
+					xmlDocument.setMd5Hash(d.getMd5hash());
+					xmlDocument.setHref(url + this.documentsUrlDelimeter + d.getFileName());
+					xmlDocuments.getDocument().add(xmlDocument);
+				}
+				xmlPost.getDocuments().add(xmlDocuments);
+			}
+		}
 
 		// add groups
 		for (final Group group : post.getGroups()) {
@@ -223,6 +235,7 @@ public class XMLRenderer implements Renderer {
 			xmlBibtex.setVolume(bibtex.getVolume());
 			xmlBibtex.setYear(bibtex.getYear());
 			xmlBibtex.setPrivnote(bibtex.getPrivnote());
+			
 
 			xmlPost.setBibtex(xmlBibtex);
 		}
@@ -642,7 +655,7 @@ public class XMLRenderer implements Renderer {
 	private String createHrefForRessource(final String userName, final String intraHash) {
 		return this.userUrlPrefix + userName + this.postsUrlDelimiter + intraHash;
 	}
-
+	
 	public Tag parseTag(Reader reader) throws BadRequestOrResponseException {
 		checkReader(reader);
 		final BibsonomyXML xmlDoc = parse(reader);
