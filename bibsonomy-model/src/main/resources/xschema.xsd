@@ -144,6 +144,7 @@
 			<xsd:element maxOccurs="unbounded" minOccurs="0" name="group" type="GroupType"/>
 			<!-- Note: a post must have at least one tag -->
 			<xsd:element maxOccurs="unbounded" name="tag" type="TagType"/>
+			<xsd:element minOccurs="0" maxOccurs="unbounded" name="documents" type="DocumentsType"/>
 			<xsd:choice>
 				<xsd:element name="bookmark" maxOccurs="1" type="BookmarkType"/>
 				<xsd:element name="bibtex" maxOccurs="1" type="BibtexType"/>
@@ -151,6 +152,24 @@
 		</xsd:sequence>
 		<xsd:attribute name="description" type="xsd:string"/>
 		<xsd:attribute name="postingdate" type="xsd:dateTime"/>
+	</xsd:complexType>
+	
+	<!--
+		the final Document entry 
+	 -->
+	<xsd:complexType name="DocumentType">
+		<xsd:attribute name="filename" type="xsd:string"/>
+		<xsd:attribute name="md5hash" type="xsd:string"/>
+		<xsd:attribute name="href" type="xsd:anyURI"/>
+	</xsd:complexType>
+	
+	<!-- 
+		list of Documents to be shown in the xml 
+	 -->
+	<xsd:complexType name="DocumentsType">
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" name="document" type="DocumentType"/>
+		</xsd:sequence>
 	</xsd:complexType>
 
 	<!--

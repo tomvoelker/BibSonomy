@@ -21,6 +21,25 @@ public class Document {
 	 * the hash of the file
 	 */
 	private String fileHash;
+	
+	/**
+	 * md5hash over content of the file 
+	 */
+	private String md5hash;
+
+	/**
+	 * @return md5hash
+	 */
+	public String getMd5hash() {
+		return this.md5hash;
+	}
+
+	/**
+	 * @param md5hash
+	 */
+	public void setMd5hash(String md5hash) {
+		this.md5hash = md5hash;
+	}
 
 	/**
 	 * @return fileName
