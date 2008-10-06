@@ -66,7 +66,7 @@ public class XMLRenderer implements Renderer {
 	private final String groupUrlPrefix;
 	private final String tagUrlPrefix;
 	private final String postsUrlDelimiter;
-	private final String documentsUrlDelimeter;
+	private final String documentsUrlDelimiter;
 	private final Boolean validateXMLInput;
 	private final Boolean validateXMLOutput;
 	private static Schema schema;
@@ -78,7 +78,7 @@ public class XMLRenderer implements Renderer {
 		this.groupUrlPrefix = apiUrl + properties.get(URL_GROUPS) + "/";
 		this.tagUrlPrefix = apiUrl + properties.get(URL_TAGS) + "/";
 		this.postsUrlDelimiter = "/" + properties.get(URL_POSTS) + "/";
-		this.documentsUrlDelimeter = "/" + properties.get(Property.URL_DOCUMENTS) + "/";
+		this.documentsUrlDelimiter = "/" + properties.get(Property.URL_DOCUMENTS) + "/";
 		this.validateXMLInput = "true".equals( properties.get(VALIDATE_XML_INPUT) );
 		this.validateXMLOutput = "true".equals( properties.get(VALIDATE_XML_OUTPUT) );
 
@@ -165,7 +165,7 @@ public class XMLRenderer implements Renderer {
 					final DocumentType xmlDocument = new DocumentType();
 					xmlDocument.setFilename(d.getFileName());
 					xmlDocument.setMd5Hash(d.getMd5hash());
-					xmlDocument.setHref(url + this.documentsUrlDelimeter + d.getFileName());
+					xmlDocument.setHref(url + this.documentsUrlDelimiter + d.getFileName());
 					xmlDocuments.getDocument().add(xmlDocument);
 				}
 				xmlPost.getDocuments().add(xmlDocuments);
