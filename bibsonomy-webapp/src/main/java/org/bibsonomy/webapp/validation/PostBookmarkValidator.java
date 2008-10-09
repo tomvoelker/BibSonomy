@@ -44,7 +44,7 @@ public class PostBookmarkValidator implements Validator<EditBookmarkCommand> {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "resource.title", "error.field.required");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", "error.field.required");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "tags", "error.field.required");
-		
+				
 		
 //		if (!resource.hasValidTags()) { 
 //			addError ("tags", "please enter valid tags");

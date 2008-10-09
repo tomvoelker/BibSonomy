@@ -1,0 +1,121 @@
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:common="urn:jsptagdir:/WEB-INF/tags/post/common">
+
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
+	
+	<c:set var="user" value="${command.context.loginUser}"/>
+
+	<tr>
+		<!-- TODO besseres stylesheet schrieben -->
+		<td><form:label path="postBookmark.groups"><fmt:message key="post.resource.viewablefor"/>*:</form:label></td>
+		<td colspan="2">
+			<table class="vmiddle">
+				<tr>
+					<td style="width:50%">
+						<table class="vmiddle">
+							<td>
+								<common:groupingradio onclick="disableGroupBox()"/>
+							</td>
+							<td align="right">
+								<common:groupingselect user="${user}" size="5" path="postBookmark.groups" optionid="visibilityoption" selectid="visibilitybox" error="${true}" friends="${true}"/>
+							</td>
+						</table>
+					</td>
+					<td style="width:50%">
+						<table class="vmiddle">
+							<td>
+								<form:label path="relevantGroups"><fmt:message key="post.resource.relevantfor"/>*:</form:label>
+							</td>
+							<td align="right">
+								<common:groupingselect user="${user}" size="5" path="relevantGroups" error="${false}" onchange="checkVisibility()" optionid="relgroup" friends="${false}"/>
+							</td>
+							<td>
+								<c:set var="aboutrelevantfor"><fmt:message key="post.resource.aboutrelevantfor"/></c:set>	
+								<a href="/help" title="${aboutrelevantfor}"><div class="info"><fmt:message key="post.resource.about"/></div></a>
+							</td>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	
+	<c:forEach var="group" items="${user.groups}" varStatus="status">
+		<c:if test="${fn:length(group.name) > 0}">
+			<tr id="groupset${status.index}" style="display:none">
+				<td valign="center"><fmt:message key="post.resource.relevantfor"/><br/>${group.name}</td>
+				<td colspan="2">
+
+					<table>
+						<tr>
+							<c:forEach var="tagset" items="${command.relevantTagSets[group.name]}" varStatus="status_set">
+								<td align="center">
+									<div class="info_bold">${tagset.key}</div>
+									<form:select id="${tagset.key}" path="relevantTags" size="1" onchange="addSelectedTag('${tagset.key}')" multiple="false">
+										<c:set var="select"><fmt:message key="post.resource.select"/></c:set>
+										<form:option value="" label="${select}" id="${tagset.key}-1"/>
+										<c:forEach items="${tagset.value}" var="tag" varStatus="status_tag">
+											<form:option label="${tag}" value="${tag}" id="${tagset.key}${status_tag.index}"/>
+										</c:forEach>	
+										<c:if test="${error == true}">
+											<div class="posterror"><form:errors path="relevantTags"/></div>
+										</c:if>
+									</form:select>
+								</td>
+							</c:forEach>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</c:if>
+	</c:forEach>
+
+	<script type="text/javascript">
+	<![CDATA[
+		//disable the groupbox at start
+		disableGroupBox();
+		
+		function disableGroupBox(){
+			var counter = 0;
+			if(document.getElementById("other").checked == false){
+				while(document.getElementById("visibilityoption"+counter) != null){
+					document.getElementById("visibilityoption"+counter).selected = false;
+					counter++;
+				}
+				document.getElementById("visibilitybox").disabled = true;
+			}else{
+				document.getElementById("visibilitybox").disabled = false;
+			}
+		}
+
+		function checkVisibility(){
+			var counter = 0;
+			while(document.getElementById("relgroup"+counter) != null){
+				if(document.getElementById("relgroup"+counter).selected == true){
+					document.getElementById("groupset"+counter).style.display = '';
+				}else{
+					document.getElementById("groupset"+counter).style.display = 'none';
+				}
+				counter++;
+			}
+		}
+
+		function addSelectedTag(id){
+			var counter = -1;
+			while(document.getElementById(id+counter) != null){
+				if(document.getElementById(id+counter).selected == true){
+					document.getElementById('tags').value+=document.getElementById(id+counter).value+" ";
+				}
+				counter++;
+			}
+
+		}
+	]]>
+	</script>
+</jsp:root>

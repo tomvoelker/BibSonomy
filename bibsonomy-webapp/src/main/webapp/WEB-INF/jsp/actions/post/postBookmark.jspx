@@ -7,137 +7,91 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
-
 		<jsp:attribute name="heading">
-			<a rel="path_menu" href="#"><fmt:message key="navi.editBookmark" />${mtl:ch('nbsp')}<img
-				alt="" src="/resources/image/box_arrow.png" /></a> :: 
+			<a rel="path_menu" href="#"><fmt:message key="navi.editBookmark" />${mtl:ch('nbsp')}<img alt="" src="/resources/image/box_arrow.png" /></a> :: 
 		</jsp:attribute>
-
-		<jsp:attribute name="sidebar">
-			<!-- display tags -->
-			<li>
-				<span class="sidebar_h"><fmt:message key="tags" /></span>
-				<tags:cloud requPath="tag/" cmd="${command.tagcloud}" disableTagboxMinfreq="${true}" />
-			</li>
-		</jsp:attribute>
-
 
 		<jsp:attribute name="content">
-			<!-- <div id="general"> -->
+			
 			<form:form action="/post/bookmark" method="GET">
-				<!--<form:input path="postBookmark.resource.oldurl"  />-->
-				<!--<form:input path="bookmarkHandlerBean.rating"  />-->
-				<!--<form:input path="bookmarkHandlerBean.jump"  />-->
-				<!--<form:input path="ckey" /> -->
-				<!--<form:errors path="*" cssClass="posterror" />-->
-				<spring:hasBindErrors name="command">Errors in "command" found<br /></spring:hasBindErrors>
+			
+				<spring:hasBindErrors name="command">Errors in "command" found<br/></spring:hasBindErrors>
+			
 					<div id="outer">
 						<div id="general">
-							<table class="expl_small">
+							<table class="expl_small vmiddle">
 								<tr>
-									<td colspan="3">
-										<h2>Feel free to edit your bookmark</h2>
+									<td colspan="3"><h2><fmt:message key="post.resource.editbookmark"/></h2>
+									<div class="info_bold">* <fmt:message key="post.resource.requiredfield"/></div></td>
+								</tr>
+								<tr>
+									<td><form:label path="postBookmark.resource.url" ><fmt:message key="post.resource.url"/>*:</form:label></td>
+									<td colspan="2">
+										<form:input path="postBookmark.resource.url" cssClass="reqinput" tabindex="2" size="60" />
+										<div class="posterror"><form:errors path="postBookmark.resource.url" /></div>
 									</td>
 								</tr>
 								<tr>
-									<td><form:label path="postBookmark.resource.url" >url*</form:label></td>
-									<td colspan="2">
-										<form:input path="postBookmark.resource.url" cssClass="reqinput" tabindex="1" size="60" />
-										<div class="posterror"><form:errors path="postBookmark.resource.url" /></div>
- 									</td>
-								</tr>
-								<tr>
-									<td><form:label path="postBookmark.resource.title" >title*</form:label></td>
+									<td><form:label path="postBookmark.resource.title" ><fmt:message key="post.resource.title"/>*:</form:label></td>
 									<td colspan="2">
 										<form:input path="postBookmark.resource.title" cssClass="reqinput" tabindex="2" size="60" />
 										<div class="posterror"><form:errors path="postBookmark.resource.title" /></div>
 									</td>
 								</tr>
 								<tr>
-									<td><form:label path="postBookmark.description" >description, <br />comment</form:label></td>
+									<td><form:label path="postBookmark.description" ><fmt:message key="post.resource.description"/>, <br /><fmt:message key="post.resource.comment"/>:</form:label></td>
 									<td colspan="2">
 										<form:textarea path="postBookmark.description" tabindex="3" cols="60" rows="3" onkeyup="sz(this);" />
 									</td>
 								</tr>
 								<tr>
-									<td><form:label path="postBookmark.tags" >tags*</form:label></td>
+									<td><form:label path="postBookmark.tags" ><fmt:message key="post.resource.tags"/>*:</form:label></td>
 									<td>
 									<!--  <input onclick="setActiveInputField(this.id); enableHandler();" onfocus="setActiveInputField(this.id); enableHandler()" onblur="disableHandler()" value="" size="60"  type="text">  -->
 										<form:input path="postBookmark.tags"
 											cssStyle="color: rgb(170, 170, 170);"
 											onfocus="setActiveInputField(this.id); enableHandler()"
 											onclick="setActiveInputField(this.id); enableHandler();"
-											onblur="disableHandler()" cssClass="reqinput" tabindex="4"
+											onblur="disableHandler()" cssClass="reqinput" tabindex="4" id="tags"
 											size="60" autocomplete="off" />
 										<div class="posterror"><form:errors path="postBookmark.tags" /></div>
 									</td>
-									<td>space seperated</td>
+									<td><div class="info_bold"><fmt:message key="post.resource.spaceseperated"/></div></td>
 								</tr>
-								<!-- 
-								<c:if test="${not empty bookmarkHandlerBean.recommendedTags}" >
-									<tr>
-							          <td height="40">
-							    	    <ul id="suggTags">
-							    	      <li>recommendation:</li>
-							    	    </ul>
-							    	  </td>
-							          <td colspan="2" height="40" id="recommender">
-							            <ul id="recommendtag">
-							                <c:forEach var="tag" items="${bookmarkHandlerBean.recommendedTags}">
-							                    <li class="recommended"><a onclick="toggle(event); return false;" title="<c:out value="${tag.score}"/> score"><c:out value="${tag.name}"/></a></li>
-							    			</c:forEach>
-							            </ul>
-							      	  </td>
-							    	</tr>		
-								</c:if>
-								 -->
+								<post:recommendedTags command="${command}"/>
 								<tr>
-									<td>suggested:</td>
+									<td><fmt:message key="post.resource.suggested"/>:</td>
 									<td colspan="2"><!-- ??? --></td>
 								</tr>
+								<post:groupBox command="${command}"/>
+								<c:set var="submit"><fmt:message key="submit"/></c:set>
 								<tr>
-									<td valign="center"><label for="lgroup">viewable for:</label></td>
-									<td colspan="2">
-										<table style="border: 1px solid #069; width: 40%">
-											<td>
-												<input type="radio" name="groupid" value="0" /> Public<br />
-												<input type="radio" name="groupid" value="1" /> Private<br />
-												<input type="radio" name="groupid" value="2" /> Other
-											</td>
-											<td align="right">
-												<select name="groups" size="6" multiple="multiple">
-													<option>friends</option>
-													<option>kde</option>
-													<option>kde_stud</option>
-													<option>vskassel</option>
-												</select>
-											</td>
-										</table>
-										<input tabindex="5" type="submit" name="submit" value="save" onclick="clear_tags()" />
+									<td colspan="3">
+										<input tabindex="5" type="submit" name="submit" value="${submit}"/>
 									</td>
 								</tr>
 							</table>
-						    <!-- 
-						    <select name="group" id="lgroup">
-					   	      <c:forEach var="group" items="${user.allGroups}">
-					   	        <option 
-					              value="<c:out value='${group}'/>" 
-					              <c:if test="${bookmarkHandlerBean.group eq group || bibtexHandlerBean.group eq group}">
-					                selected="true"
-					              </c:if>
-					              ><c:out value='${group}'/></option>
-					          </c:forEach>
-						    </select>
-							-->		
 						</div>
-				</div>
+					</div>
+					
 			</form:form>
-			<!-- </div>  -->
 		</jsp:attribute>
+		
+		<jsp:attribute name="sidebar">
+		
+			<!-- display tags -->
+			<li>
+				<span class="sidebar_h"><fmt:message key="tags" /></span>
+				<tags:cloud requPath="tag/" cmd="${command.tagcloud}" disableTagboxMinfreq="${true}"/>
+			</li>
+	
+		</jsp:attribute>
+
 	</layout:paneLayout>
 </jsp:root>

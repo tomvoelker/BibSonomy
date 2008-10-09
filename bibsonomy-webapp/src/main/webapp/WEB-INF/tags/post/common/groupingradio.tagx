@@ -1,0 +1,16 @@
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post/">
+
+		<jsp:directive.attribute name="onclick" type="java.lang.String" required="false"/>
+
+		<form:radiobutton path="postBookmark.groups" id="public" onclick="${onclick}" value="public"/> <fmt:message key="post.resource.private"/><br/>
+		<form:radiobutton path="postBookmark.groups" id="private" onclick="${onclick}" value="private"/> <fmt:message key="post.resource.public"/><br/>
+		<form:radiobutton path="postBookmark.groups" id="other" onclick="${onclick}" value="other"/> <fmt:message key="post.resource.other"/>
+
+</jsp:root>

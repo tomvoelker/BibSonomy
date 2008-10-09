@@ -736,3 +736,24 @@ span.info:hover span{
 	color:#000000;
 	padding-left:18px;
 }
+
+.info_bold {
+ 	font-size: 75%;
+ 	font-weight: bold;
+  	color: #069;
+  	margin: 3px 10px 10px 0px;
+  	padding: 0px;
+
+}
+
+table.vmiddle td{
+	vertical-align:middle;
+}
+
+.info {
+ 	font-size: 75%;
+  	color: #069;
+  	margin: 3px 10px 10px 0px;
+  	padding: 0px;
+
+}

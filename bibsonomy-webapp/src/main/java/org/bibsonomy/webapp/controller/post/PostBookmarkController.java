@@ -1,14 +1,23 @@
 package org.bibsonomy.webapp.controller.post;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.TreeMap;
+
 import javax.naming.Context;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
 import org.bibsonomy.webapp.command.actions.UserLoginCommand;
 import org.bibsonomy.webapp.command.actions.UserRegistrationCommand;
+import org.bibsonomy.webapp.controller.MultiResourceListController;
 import org.bibsonomy.webapp.util.CookieAware;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -42,7 +51,7 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 //public class PostBookmarkController implements MinimalisticController<EditBookmarkCommand>, ErrorAware, ValidationAwareController<EditBookmarkCommand>, RequestAware, CookieAware {
-public class PostBookmarkController implements MinimalisticController<EditBookmarkCommand>, ErrorAware, ValidationAwareController<EditBookmarkCommand> {
+public class PostBookmarkController extends MultiResourceListController implements MinimalisticController<EditBookmarkCommand>, ErrorAware, ValidationAwareController<EditBookmarkCommand> {
 	private static final Logger log = Logger.getLogger(PostBookmarkController.class);
 	protected LogicInterface logic;	
 	protected UserSettings userSettings;
@@ -58,14 +67,33 @@ public class PostBookmarkController implements MinimalisticController<EditBookma
 
 		final RequestWrapperContext context = command.getContext();
 		final User loginUser = context.getLoginUser();
+		//cheat, bis wir die recommended tags kriegen
+		final List<String> recommendedTags = new ArrayList<String>();
 		
+		for(Group group: loginUser.getGroups()){
+				recommendedTags.add(group.getName());
+				String s[] = {"A","B","C","D","E"};
+				TreeMap<String, List<String>> set = new TreeMap<String, List<String>>();
+				for(int j = 0; j < 5; j++){
+					String listName = "Liste"+s[j];
+					ArrayList<String> tagset = new ArrayList<String>();
+					set.put(listName, tagset);
+					for(int i = 0; i < 3; i++){
+						tagset.add("tag"+i);
+					}
+					j++;
+				}
+				command.getRelevantTagSets().put(group.getName(),set);
+			
+		}
+		
+		command.setRecommendedTags(recommendedTags);
+		//command.getRelevantTagSets().get("kde").
 		if (context.isUserLoggedIn()) {
 			
 		}
 		
-		
-		
-		
+		this.setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, null, 0, 1000, null);
 		
 		return Views.POST_BOOKMARK;
 	}
@@ -82,7 +110,7 @@ public class PostBookmarkController implements MinimalisticController<EditBookma
 	public boolean isValidationRequired(EditBookmarkCommand command) {
 		return true;
 	}
-
+/*
 	public void setLogic(LogicInterface logic) {
 		this.logic = logic;
 	}
@@ -90,4 +118,5 @@ public class PostBookmarkController implements MinimalisticController<EditBookma
 	public void setUserSettings(UserSettings userSettings) {
 		this.userSettings = userSettings;
 	}
+*/
 }
