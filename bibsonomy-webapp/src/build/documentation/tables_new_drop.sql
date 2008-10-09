@@ -43,3 +43,4 @@ DROP TABLE `weights`;
 DROP TABLE `user`;
 DROP TABLE `log_prediction`;
 DROP TABLE `classifier_settings`;
+DROP TABLE IF EXISTS `clicklog`;

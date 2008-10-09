@@ -686,3 +686,21 @@ CREATE TABLE `tagtag_similarity` (
    KEY `t2_idx` (`t2`),
    KEY `t1_t2_idx` (`t1`(10),`t2`(10))
  ) ENGINE=InnoDB DEFAULT CHARSET=utf;
+
+CREATE TABLE `clicklog` (
+  `id` int(11) NOT NULL auto_increment,
+  `logdate` datetime default NULL,
+  `dompath` text collate utf8_unicode_ci,
+  `dompathwclasses` text collate utf8_unicode_ci,
+  `type` text collate utf8_unicode_ci,
+  `pageurl` text collate utf8_unicode_ci,
+  `ahref` text collate utf8_unicode_ci,
+  `atitle` text collate utf8_unicode_ci,
+  `useragent` text collate utf8_unicode_ci,
+  `host` text collate utf8_unicode_ci,
+  `completeheader` text collate utf8_unicode_ci,
+  `xforwardedfor` text collate utf8_unicode_ci,
+  `username` text collate utf8_unicode_ci,
+  `sessionid` text collate utf8_unicode_ci,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=84 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
