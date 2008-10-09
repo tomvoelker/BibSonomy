@@ -1498,3 +1498,30 @@ INSERT INTO `grouptas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `conten
 (22, 'privatebibtex', 'privatebibtex', 13, 2, 'testuser2', '1815-12-10 00:00:00', 1, '2008-03-20 20:35:21'),
 (23, 'friendbibtex', 'friendbibtex', 14, 2, 'testuser2', '1815-12-10 00:00:00', 2, '2008-03-20 20:35:21'),
 (24, 'testbibtex', 'testbibtex', 12, 2, 'testuser1', '1815-12-10 00:00:00', 3, '2008-03-20 20:35:21');
+
+
+
+-- --------------------------------------------------------
+
+-- 
+-- Structure for table `clicklog`
+-- 
+
+DROP TABLE IF EXISTS `clicklog`;
+CREATE TABLE `clicklog` (
+  `id` int(11) NOT NULL auto_increment,
+  `logdate` datetime default NULL,
+  `dompath` text collate utf8_unicode_ci,
+  `dompathwclasses` text collate utf8_unicode_ci,
+  `type` text collate utf8_unicode_ci,
+  `pageurl` text collate utf8_unicode_ci,
+  `ahref` text collate utf8_unicode_ci,
+  `atitle` text collate utf8_unicode_ci,
+  `useragent` text collate utf8_unicode_ci,
+  `host` text collate utf8_unicode_ci,
+  `completeheader` text collate utf8_unicode_ci,
+  `xforwardedfor` text collate utf8_unicode_ci,
+  `username` text collate utf8_unicode_ci,
+  `sessionid` text collate utf8_unicode_ci,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=84 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
