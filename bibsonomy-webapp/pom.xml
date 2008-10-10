@@ -54,6 +54,10 @@
 	</dependency>
 	<dependency>
       <groupId>org.bibsonomy</groupId>
+      <artifactId>bibsonomy-recommender</artifactId>
+    </dependency>	
+	<dependency>
+      <groupId>org.bibsonomy</groupId>
       <artifactId>bibsonomy-rest-server</artifactId>
     </dependency>
     <dependency>
