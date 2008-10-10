@@ -6,9 +6,7 @@ import java.net.URLEncoder;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.Enumeration;
 import java.util.Locale;
-import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.servlet.Filter;
@@ -30,6 +28,7 @@ import org.bibsonomy.database.DBLogicUserInterfaceFactory;
 import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.RequestLogic;
@@ -41,7 +40,6 @@ import org.openid4java.consumer.ConsumerManager;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import servlets.listeners.InitialConfigListener;
-
 import beans.UserBean;
 
 /**
@@ -104,7 +102,7 @@ public class InitUserFilter implements Filter {
 		try {
 			this.manager = new ConsumerManager();
 		} catch (ConsumerException ex) {
-			ex.printStackTrace();
+			log.error("Could not initialize OpenID Consumer Manager.", ex);
 		}
 		this.openIDLogic = new OpenID();
 		this.openIDLogic.setManager(manager);
@@ -118,9 +116,9 @@ public class InitUserFilter implements Filter {
 	 */
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-		HttpServletRequest httpServletRequest = (HttpServletRequest)request;
+		final HttpServletRequest httpServletRequest = (HttpServletRequest)request;
 
-		String requPath = httpServletRequest.getServletPath();
+		final String requPath = httpServletRequest.getServletPath();
 		/*
 		 * ignore resource files (CSS, JPEG/PNG, JavaScript) ... 
 		 */
@@ -149,13 +147,13 @@ public class InitUserFilter implements Filter {
 				/* 
 				 * user has Cookie set: try to authenticate 
 				 */
-				String userCookieParts[] = userCookie.split("%20");
+				final String userCookieParts[] = userCookie.split("%20");
 				if (userCookieParts.length >= 2) {
 					/*
 					 * all two parts of cookie available
 					 */
 					final LogicInterface logic = dbLogicFactory.getLogicAccess(userCookieParts[0], userCookieParts[1]);
-					loginUser = logic.getUserDetails(userCookieParts[0]);								
+					loginUser = logic.getUserDetails(userCookieParts[0]);
 				} else {
 					/*
 					 * something is wrong with the cookie: log!
@@ -265,7 +263,7 @@ public class InitUserFilter implements Filter {
 						loginUser.setName(uname);
 					}
 				} catch (Exception e)  {
-					log.info("certificate authentication failed: " + e);
+					log.info("Certificate authentication failed.", e);
 				}				
 			} else {
 				final String[] auth = decodeAuthHeader(httpServletRequest);
@@ -291,7 +289,7 @@ public class InitUserFilter implements Filter {
 			}
 		}
 		catch (ValidationException valEx) {
-			log.info(valEx.getMessage());
+			log.info("Login failed.", valEx);
 		}
 		
 		if (loginUser == null) {
@@ -340,7 +338,7 @@ public class InitUserFilter implements Filter {
 		 * "BibSonomy 1" UserBean Object
 		 */				
 		// TODO copy contents loginUser -> user
-		UserBean userBean = createUserBean(loginUser);
+		final UserBean userBean = createUserBean(loginUser);
 		httpServletRequest.setAttribute(REQ_ATTRIB_USER, userBean);
 
 		// add default language to request if no language is set	
@@ -471,12 +469,14 @@ public class InitUserFilter implements Filter {
 		userBean.setApiKey(loginUser.getApiKey());
 		
 		//settings
-		userBean.setTagboxMinfreq(loginUser.getSettings().getTagboxMinfreq());
-		userBean.setTagboxSort(loginUser.getSettings().getTagboxSort());
-		userBean.setTagboxStyle(loginUser.getSettings().getTagboxStyle());
-		userBean.setTagboxTooltip(loginUser.getSettings().getTagboxTooltip());
-		userBean.setItemcount(loginUser.getSettings().getListItemcount());
-		userBean.setDefaultLanguage(loginUser.getSettings().getDefaultLanguage());
+		final UserSettings settings = loginUser.getSettings();
+		userBean.setTagboxMinfreq(settings.getTagboxMinfreq());
+		userBean.setTagboxSort(settings.getTagboxSort());
+		userBean.setTagboxStyle(settings.getTagboxStyle());
+		userBean.setTagboxTooltip(settings.getTagboxTooltip());
+		userBean.setItemcount(settings.getListItemcount());
+		userBean.setDefaultLanguage(settings.getDefaultLanguage());
+		userBean.setLogLevel(settings.getLogLevel());
 		
 		//basket size
 		userBean.setPostsInBasket(loginUser.getBasket().getNumPosts());

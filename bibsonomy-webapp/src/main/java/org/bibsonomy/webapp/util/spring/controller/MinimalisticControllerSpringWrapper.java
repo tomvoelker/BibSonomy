@@ -157,26 +157,26 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 		catch (MalformedURLSchemeException malformed) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			errors.reject(malformed.getMessage());
-			LOGGER.error(malformed);
+			LOGGER.error("Could not complete controller.", malformed);
 			view = Views.ERROR;
 		}
 		catch (ValidationException notValid) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			errors.reject(notValid.getMessage());
-			LOGGER.error(notValid);
+			LOGGER.error("Could not complete controller.", notValid);
 			view = Views.ERROR;
 		}
 		catch (ServiceUnavailableException e) {
 			response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 			response.setHeader("Retry-After", Long.toString(e.getRetryAfter()));
 			errors.reject(e.getMessage(), new Object[]{e.getRetryAfter()}, "Service unavailable");
-			LOGGER.warn(e);
+			LOGGER.warn("Could not complete controller.", e);
 			view = Views.ERROR;
 		}
 		catch (Exception ex) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			errors.reject("error.internal", new Object[]{ex}, "Internal Server Error: " + ex.getMessage());
-			LOGGER.error(ex);
+			LOGGER.error("Could not complete controller.", ex);
 			view = Views.ERROR;
 		}
 		
