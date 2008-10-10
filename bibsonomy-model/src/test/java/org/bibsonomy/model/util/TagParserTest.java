@@ -59,7 +59,7 @@ public class TagParserTest {
 		boolean foundSuperTag = false;
 		for (Tag tag : tags) {
 			if (tag.equals(tagToCheck)) {
-				System.out.println("tag: "+tag.getName() + " superTags: " + getTagsAsStringSet(tag.getSuperTags()) + " superTagsToCheck: "+ getTagsAsStringSet(tagToCheck.getSuperTags()));
+//				System.out.println("tag: "+tag.getName() + " superTags: " + getTagsAsStringSet(tag.getSuperTags()) + " superTagsToCheck: "+ getTagsAsStringSet(tagToCheck.getSuperTags()));
 				assertEquals(tag.getSuperTags(), tagToCheck.getSuperTags());
 				foundSuperTag = true;
 			}
@@ -115,7 +115,7 @@ public class TagParserTest {
 	 */
 	@Test
 	public void isEmpty() {
-		System.out.println("--- BEGIN isEmpty ---");
+//		System.out.println("--- BEGIN isEmpty ---");
 		Tag t = new Tag();
 //		assertTrue(t.getTagrelations().isEmpty());
 		assertTrue(t.getSubTags().isEmpty());
@@ -132,7 +132,7 @@ public class TagParserTest {
 	 */
 	@Test
 	public void addTagWorks() {
-		System.out.println("--- BEGIN addTagWorks ---");
+//		System.out.println("--- BEGIN addTagWorks ---");
 		Set<Tag> tags = parse("foo bar");
 
 		// check tags by constructing similar tag set
@@ -145,7 +145,7 @@ public class TagParserTest {
 //		assertTrue(t.getTagrelations().isEmpty());
 //		assertTrue(t.getForUsers().isEmpty());
 		
-		System.out.println("--> tags:      " + getTagsAsStringSet(tags));
+//		System.out.println("--> tags:      " + getTagsAsStringSet(tags));
 	}
 
 	/**
@@ -167,7 +167,7 @@ public class TagParserTest {
 	 */
 	@Test
 	public void setTag2Works () {
-		System.out.println("--- BEGIN setTag2Works ---");
+//		System.out.println("--- BEGIN setTag2Works ---");
 		Set<Tag> tags = parse("graphtheory evolution graphtheory graph graphgenerator graphtheory network researcher<-dorogovtsev brocken->mountain zugspitze->mountain mountain<-matterhorn world<-mountain");
 		
 		// check tags by constructing similar tag set
@@ -203,8 +203,8 @@ public class TagParserTest {
 		assertTrue(checkForSuperRelation(tags, t1));
 		assertTrue(checkForSuperRelation(tags, t2));
 		assertTrue(checkForSubRelation(tags, t2));
-		System.out.println("--> tags:      " + getTagsAsStringSet(tags));
-		System.out.println(printTagRelations(tags));
+//		System.out.println("--> tags:      " + getTagsAsStringSet(tags));
+//		System.out.println(printTagRelations(tags));
 		
 	}
 	
@@ -213,7 +213,7 @@ public class TagParserTest {
 	 */
 	@Test
 	public void setTag3Works() {
-		System.out.println("--- BEGIN setTag3Works ---");
+//		System.out.println("--- BEGIN setTag3Works ---");
 		Set<Tag> tags = parse("for:klaus foo<-bar");
 		
 		// check tags by constructing similar tag set
@@ -240,8 +240,8 @@ public class TagParserTest {
 //		testSet.add("for:klaus");
 //		t.addForTag("klaus");
 //		assertEquals(testSet, t.getTags());
-		System.out.println("--> tags:      " + getTagsAsStringSet(tags));
-		System.out.println(printTagRelations(tags));
+//		System.out.println("--> tags:      " + getTagsAsStringSet(tags));
+//		System.out.println(printTagRelations(tags));
 	}
 	
 	/**
@@ -261,7 +261,7 @@ public class TagParserTest {
 	 */
 	@Test
 	public void setTag4Works() {
-		System.out.println("--- BEGIN setTag4Works ---");
+//		System.out.println("--- BEGIN setTag4Works ---");
 		
 		// generate tag object and give it the string to parse
 		Set<Tag> tags = parse("<-foo<-bar-> eins<- zwei foo bar -> for:klaus->for:manni foo->bar for:klaus->bar");
@@ -300,8 +300,8 @@ public class TagParserTest {
 //		testSet.add("for:klaus");
 //		testSet.add("for:manni");
 //		assertEquals(testSet, t.getTags());
-		System.out.println("--> tags:      " + getTagsAsStringSet(tags));
-		System.out.println(printTagRelations(tags));
+//		System.out.println("--> tags:      " + getTagsAsStringSet(tags));
+//		System.out.println(printTagRelations(tags));
 	}
 	
 	/**
@@ -309,7 +309,7 @@ public class TagParserTest {
 	 */
 	@Test
 	public void setTag5Works() {
-		System.out.println("--- BEGIN setTag5Works ---");
+//		System.out.println("--- BEGIN setTag5Works ---");
 		
 		// generate tag object and give it the string to parse
 		Set<Tag> tags = parse("<tag> -tag- foo-bar -foo-bar-");
@@ -322,7 +322,7 @@ public class TagParserTest {
 		testSet.add(new Tag("-foo-bar-"));
 		
 		assertEquals(testSet, tags);
-		System.out.println("--> tags:      " + getTagsAsStringSet(tags));
+//		System.out.println("--> tags:      " + getTagsAsStringSet(tags));
 	}
 	
 	/**
@@ -330,7 +330,7 @@ public class TagParserTest {
 	 */
 	@Test
 	public void setTag6Works() {
-		System.out.println("--- BEGIN setTag6Works ---");
+//		System.out.println("--- BEGIN setTag6Works ---");
 		
 		// generate tag object and give it the string to parse
 		// i = ignored characters, p = parsed characters
@@ -346,7 +346,7 @@ public class TagParserTest {
 		testSet.add(new Tag("<"));
 		
 		assertEquals(testSet, tags);
-		System.out.println("--> tags:      " + getTagsAsStringSet(tags));
+//		System.out.println("--> tags:      " + getTagsAsStringSet(tags));
 	}
 	
 	/**
@@ -355,7 +355,7 @@ public class TagParserTest {
 	 */
 	@Test
 	public void setTag7Works() {
-		System.out.println("--- BEGIN setTag7Works ---");
+//		System.out.println("--- BEGIN setTag7Works ---");
 		
 		// generate tag object and give it the string to parse
 		Set<Tag> tags = parse("-?)´ß`-.<-,c#c.,--y.-<<x#x- >$=( %&=->- -< foobar");
@@ -371,7 +371,7 @@ public class TagParserTest {
 		testSet.add(new Tag("foobar"));
 		
 		assertEquals(testSet, tags);
-		System.out.println("--> tags:      " + getTagsAsStringSet(tags));
+//		System.out.println("--> tags:      " + getTagsAsStringSet(tags));
 	}
 	
 	/**
@@ -379,7 +379,7 @@ public class TagParserTest {
 	 */
 	@Test
 	public void setTag8Works() {
-		System.out.println("--- BEGIN setTag8Works ---");
+//		System.out.println("--- BEGIN setTag8Works ---");
 		
 		// generate tag object and give it the string to parse
 		Set<Tag> tags = parse("Экс-премьер Пакистана Беназир Бхутто ӃӄӅӆӇӈӉӊӋӌӍӎӐӑӒӓӔӕӖӗӘәӚӛӜӝӞӟӠӡӢӣӤӥӦӧӨөӪӫӬӭӮӯӰӱӲӳӴӵ");
@@ -393,7 +393,7 @@ public class TagParserTest {
 		testSet.add(new Tag("ӃӄӅӆӇӈӉӊӋӌӍӎӐӑӒӓӔӕӖӗӘәӚӛӜӝӞӟӠӡӢӣӤӥӦӧӨөӪӫӬӭӮӯӰӱӲӳӴӵ"));
 		
 		assertEquals(testSet, tags);
-		System.out.println("--> tags:      " + getTagsAsStringSet(tags));		
+//		System.out.println("--> tags:      " + getTagsAsStringSet(tags));		
 	}
 	
 	/**
@@ -401,7 +401,7 @@ public class TagParserTest {
 	 */
 	@Test
 	public void setTag9Works() {
-		System.out.println("--- BEGIN setTag9Works ---");
+//		System.out.println("--- BEGIN setTag9Works ---");
 		
 		// generate tag object and give it the string to parse
 		Set<Tag> tags = parse("よう光接続サービスをはじめ続々登場!動画などのコンテンツゼン");
@@ -411,7 +411,7 @@ public class TagParserTest {
 		testSet.add(new Tag("よう光接続サービスをはじめ続々登場!動画などのコンテンツゼン"));
 		
 		assertEquals(testSet, tags);
-		System.out.println("--> tags:      " + getTagsAsStringSet(tags));		
+//		System.out.println("--> tags:      " + getTagsAsStringSet(tags));		
 	}
 	
 	/**
@@ -419,7 +419,7 @@ public class TagParserTest {
 	 */
 	@Test
 	public void cloneWorks() {
-		System.out.println("--- BEGIN cloneWorks ---");
+//		System.out.println("--- BEGIN cloneWorks ---");
 		
 		// check tagrelations
 		Tag tagBar = new Tag("bar");
@@ -446,7 +446,7 @@ public class TagParserTest {
 	 */
 	@Test
 	public void setTagRel1Works() {
-		System.out.println("--- BEGIN setTagRel1Works ---");
+//		System.out.println("--- BEGIN setTagRel1Works ---");
 		
 		// generate tag object and give it the string to parse
 		Set<Tag> tags = parse("auto<-vw vw->auto");
@@ -468,8 +468,8 @@ public class TagParserTest {
 		assertTrue(checkForSuperRelation(tags, tagCar));
 		assertTrue(checkForSubRelation(tags, tagVW));
 		
-		System.out.println("--> tags:      " + getTagsAsStringSet(tags));
-		System.out.println(printTagRelations(tags));
+//		System.out.println("--> tags:      " + getTagsAsStringSet(tags));
+//		System.out.println(printTagRelations(tags));
 	}
 	
 	/**
@@ -477,7 +477,7 @@ public class TagParserTest {
 	 */
 	@Test
 	public void addTagRel2Works() {
-		System.out.println("--- BEGIN addTagRel2Works ---");
+//		System.out.println("--- BEGIN addTagRel2Works ---");
 		
 		// generate tag object and give it the string to parse
 		Set<Tag> tags = parse("bar<-foo bar<-foo+bar");
@@ -504,7 +504,7 @@ public class TagParserTest {
 		assertTrue(checkForSubRelation(tags, tagBar));
 		assertTrue(checkForSuperRelation(tags, tagFooBar));
 		
-		System.out.println("--> tags:      " + getTagsAsStringSet(tags));
-		System.out.println(printTagRelations(tags));
+//		System.out.println("--> tags:      " + getTagsAsStringSet(tags));
+//		System.out.println(printTagRelations(tags));
 	}
 }

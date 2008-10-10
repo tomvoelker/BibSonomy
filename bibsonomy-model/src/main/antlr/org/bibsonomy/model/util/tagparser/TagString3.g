@@ -56,7 +56,7 @@ tokens {
 @rulecatch {
     catch (MismatchedTokenException e) {
     	String err = "line: "+e.line+", "+e.charPositionInLine+"; found "+getTokenErrorDisplay(e.token)+ " but expected "+tokenNames[e.expecting];
-    	System.out.println(err);
+//    	System.out.println(err);
     }
 }
 
