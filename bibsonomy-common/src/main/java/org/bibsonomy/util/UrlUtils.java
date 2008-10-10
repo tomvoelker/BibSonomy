@@ -12,7 +12,7 @@ import java.net.URLEncoder;
 public class UrlUtils {
 
 	private static final int MAX_LEN_URL   = 6000;
-	private static final String BROKEN_URL = "/brokenurl#";	
+	public static final String BROKEN_URL = "/brokenurl#";	
 
 	/**
 	 * Cleans a URL and makes it valid. This includes 
