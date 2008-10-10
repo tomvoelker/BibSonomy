@@ -1,14 +1,11 @@
 package org.bibsonomy.webapp.controller.actions;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -18,11 +15,6 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.InetAddressStatus;
-import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
-import org.bibsonomy.common.exceptions.ValidationException;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -33,12 +25,8 @@ import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.tagparser.TagString3Lexer;
 import org.bibsonomy.model.util.tagparser.TagString3Parser;
-import org.bibsonomy.testutil.ModelUtils;
-import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
-import org.bibsonomy.webapp.command.actions.UserRegistrationCommand;
 import org.bibsonomy.webapp.controller.MultiResourceListController;
-import org.bibsonomy.webapp.util.CookieAware;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestAware;
@@ -52,7 +40,6 @@ import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.Errors;
-import org.springframework.web.servlet.mvc.SimpleFormController;
 
 /**
  * <pre>
@@ -92,12 +79,15 @@ public class PostBookmarkController extends MultiResourceListController implemen
 	 * 
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(java.lang.Object)
 	 */
+	
 	public View workOn(EditBookmarkCommand command) {
 		log.debug("--> PostBookmarkController: workOn() called");
 
 		command.setPageTitle("post a new bookmark");
 		final RequestWrapperContext context = command.getContext();
 
+		
+	
 		Post<Bookmark> post = command.getPostBookmark();
 		
 		if (!context.isUserLoggedIn()) {
@@ -130,8 +120,16 @@ public class PostBookmarkController extends MultiResourceListController implemen
 		if (context.isUserLoggedIn()) {
 			
 		}
+		
 //		this.setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, null, 0, 1000, null);
 		
+		//be aware of double postings
+		command.getPostBookmark().getResource().recalculateHashes();
+		String interHash = command.getPostBookmark().getResource().getInterHash();
+		
+		if (logic.getPostDetails(interHash, loginUser.getName()) != null)  {
+			errors.rejectValue("postBookmark.resource.url", "error.field.valid.url.alreadybookmarked");
+		}
 		
 		
 		/*
@@ -140,6 +138,7 @@ public class PostBookmarkController extends MultiResourceListController implemen
 		if (errors.hasErrors()) {
 			return Views.POST_BOOKMARK;
 		}
+		
 		
 		
 		//groups
