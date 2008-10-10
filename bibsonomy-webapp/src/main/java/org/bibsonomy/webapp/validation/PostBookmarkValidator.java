@@ -46,7 +46,7 @@ public class PostBookmarkValidator implements Validator<EditBookmarkCommand> {
 		bookmark.getPostBookmark().getResource().setUrl(UrlUtils.cleanUrl(bookmark.getPostBookmark().getResource().getUrl()));
 		
 		if (org.bibsonomy.util.ValidationUtils.present(bookmark.getPostBookmark().getResource().getUrl()) 
-				&& bookmark.getPostBookmark().getResource().getUrl().contains(UrlUtils.BROKEN_URL)) {
+				&& bookmark.getPostBookmark().getResource().getUrl().startsWith(UrlUtils.BROKEN_URL)) {
 			System.out.println("PostBookmarkValidator validate(): BROKEN_URL");
 			errors.rejectValue("postBookmark.resource.url", "error.field.valid.url");
 		}
