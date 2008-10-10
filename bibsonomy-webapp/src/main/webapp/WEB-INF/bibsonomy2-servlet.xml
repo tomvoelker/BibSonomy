@@ -214,21 +214,29 @@
 						</property>
 					</bean>
 				</entry>
-				<entry key="/post/bookmark">
+				<entry key="/postBookmark">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="postBookmarkController"/>
+						<property name="allowedFields">
+							<list>
+								<value>postBookmark.resource.url</value>
+								<value>postBookmark.resource.title</value>
+								<value>postBookmark.description</value>
+								<value>tags</value>  
+							</list>
+						</property>
 					</bean>
-				</entry>				
+				</entry>
+				<entry key="/postBookmarkSuccess">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="postBookmarkSuccessController"/>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
-			
-	<bean id="postBookmarkController" class="org.bibsonomy.webapp.controller.post.PostBookmarkController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
-	</bean>
-				
-				<bean id="homepageController" class="org.bibsonomy.webapp.controller.HomepageController" scope="request">
+
+	<bean id="homepageController" class="org.bibsonomy.webapp.controller.HomepageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
 		<property name="listsToInitialise">

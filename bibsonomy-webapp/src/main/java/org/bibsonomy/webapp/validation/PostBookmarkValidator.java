@@ -5,30 +5,30 @@ import org.bibsonomy.webapp.util.Validator;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
-
+import org.bibsonomy.util.UrlUtils;
 /**
  * @author fba
  * @version $Id$
  */
 public class PostBookmarkValidator implements Validator<EditBookmarkCommand> {
 
+	@SuppressWarnings("unchecked")
 	public boolean supports(final Class clazz) {
 		return EditBookmarkCommand.class.equals(clazz);
 	}
 
+	/**
+	 * Validates the given userObj.
+	 * 
+	 * @see org.springframework.validation.Validator#validate(java.lang.Object, org.springframework.validation.Errors)
+	 */
 	public void validate(Object postBookmarkObj, Errors errors) {
-		
 		/*
 		 * To ensure that the received command is not null, we throw an
 		 * exception, if this assertion fails.
 		 */
 		Assert.notNull(postBookmarkObj);
 		
-		final EditBookmarkCommand command = (EditBookmarkCommand) postBookmarkObj;
-		
-		errors.pushNestedPath("postBookmark");
-
-
 		final EditBookmarkCommand bookmark = (EditBookmarkCommand) postBookmarkObj;
 
 		/*
@@ -36,34 +36,23 @@ public class PostBookmarkValidator implements Validator<EditBookmarkCommand> {
 		 */
 		Assert.notNull(bookmark);
 
-		/*
-		 * Before we make a detailed check on correctness, we look, if required
-		 * attributes are set.
-		 */
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "resource.url", "error.field.required");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "resource.title", "error.field.required");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", "error.field.required");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "tags", "error.field.required");
-				
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "postBookmark.resource.url", "error.field.required");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "postBookmark.resource.title", "error.field.valid.title");
+//		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "postBookmark.description", "error.field.required");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "tags", "error.field.valid.tags");
 		
-//		if (!resource.hasValidTags()) { 
-//			addError ("tags", "please enter valid tags");
-//		}
-//		if (!resource.isValidurl()) {
-//			addError ("url", "please enter a valid URL");
-//		}
-//		if (!resource.isValidtitle()) {
-//			addError("description", "please enter a valid title");
-//		}
+		//clean url
+		System.out.println("PostBookmarkValidator validate(): " + bookmark.getPostBookmark().getResource().getUrl());
+		bookmark.getPostBookmark().getResource().setUrl(UrlUtils.cleanUrl(bookmark.getPostBookmark().getResource().getUrl()));
 		
+		if (org.bibsonomy.util.ValidationUtils.present(bookmark.getPostBookmark().getResource().getUrl()) 
+				&& bookmark.getPostBookmark().getResource().getUrl().contains(UrlUtils.BROKEN_URL)) {
+			System.out.println("PostBookmarkValidator validate(): BROKEN_URL");
+			errors.rejectValue("postBookmark.resource.url", "error.field.valid.url");
+		}
 		
 		System.out.println("--> errors: " + errors.getErrorCount());
 		System.out.println("--> errors: " + errors);
-		
-		
-		
-		
-		errors.popNestedPath();
 	}
 
 }

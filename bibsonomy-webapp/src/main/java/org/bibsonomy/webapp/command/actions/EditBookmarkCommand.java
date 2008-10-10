@@ -21,6 +21,8 @@ import org.bibsonomy.webapp.command.PostCommand;
 public class EditBookmarkCommand extends PostCommand {
 	private boolean userLoggedIn;
 	private Post<Bookmark> postBookmark;
+	private String tags ;
+	
 	private List<Group> groups;
 	private List<String> relevantTags;
 	private List<Tag> relevantGroups;
@@ -32,6 +34,7 @@ public class EditBookmarkCommand extends PostCommand {
 	public EditBookmarkCommand() {
 		postBookmark = new Post<Bookmark>();
 		postBookmark.setResource(new Bookmark());
+
 		groups = new ArrayList<Group>();
 		relevantTags = new ArrayList<String>();
 		relevantGroups = new ArrayList<Tag>();
@@ -49,6 +52,15 @@ public class EditBookmarkCommand extends PostCommand {
 	public boolean isUserLoggedIn() {
 		return userLoggedIn;
 	}
+
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
+
+	public String getTags() {
+		return tags;
+	}
+
 
 	public List<Group> getGroups() {
 		return this.groups;

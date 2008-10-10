@@ -99,6 +99,7 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 	 * 
 	 * @see org.springframework.web.servlet.mvc.AbstractController#handleRequestInternal(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
+	@Override
 	protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		((RequestLogic) getApplicationContext().getBean("requestLogic")).setRequest(request); // hack but thats springs fault
 		((ResponseLogic) getApplicationContext().getBean("responseLogic")).setResponse(response); // hack but thats springs fault

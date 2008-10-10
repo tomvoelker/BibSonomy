@@ -7,6 +7,7 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post">
 
@@ -18,8 +19,7 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="content">
-			
-			<form:form action="/post/bookmark" method="GET">
+			<form:form action="/postBookmark" method="POST">
 			
 				<spring:hasBindErrors name="command">Errors in "command" found<br/></spring:hasBindErrors>
 			
@@ -34,14 +34,14 @@
 									<td><form:label path="postBookmark.resource.url" ><fmt:message key="post.resource.url"/>*:</form:label></td>
 									<td colspan="2">
 										<form:input path="postBookmark.resource.url" cssClass="reqinput" tabindex="2" size="60" />
-										<div class="posterror"><form:errors path="postBookmark.resource.url" /></div>
+										<div class="errmsg"><form:errors path="postBookmark.resource.url" /></div>
 									</td>
 								</tr>
 								<tr>
 									<td><form:label path="postBookmark.resource.title" ><fmt:message key="post.resource.title"/>*:</form:label></td>
 									<td colspan="2">
 										<form:input path="postBookmark.resource.title" cssClass="reqinput" tabindex="2" size="60" />
-										<div class="posterror"><form:errors path="postBookmark.resource.title" /></div>
+										<div class="errmsg"><form:errors path="postBookmark.resource.title" /></div>
 									</td>
 								</tr>
 								<tr>
@@ -54,13 +54,13 @@
 									<td><form:label path="postBookmark.tags" ><fmt:message key="post.resource.tags"/>*:</form:label></td>
 									<td>
 									<!--  <input onclick="setActiveInputField(this.id); enableHandler();" onfocus="setActiveInputField(this.id); enableHandler()" onblur="disableHandler()" value="" size="60"  type="text">  -->
-										<form:input path="postBookmark.tags"
+										<form:input path="tags"
 											cssStyle="color: rgb(170, 170, 170);"
 											onfocus="setActiveInputField(this.id); enableHandler()"
 											onclick="setActiveInputField(this.id); enableHandler();"
 											onblur="disableHandler()" cssClass="reqinput" tabindex="4" id="tags"
 											size="60" autocomplete="off" />
-										<div class="posterror"><form:errors path="postBookmark.tags" /></div>
+										<div class="errmsg"><form:errors path="tags" /></div>
 									</td>
 									<td><div class="info_bold"><fmt:message key="post.resource.spaceseperated"/></div></td>
 								</tr>
@@ -73,7 +73,7 @@
 								<c:set var="submit"><fmt:message key="submit"/></c:set>
 								<tr>
 									<td colspan="3">
-										<input tabindex="5" type="submit" name="submit" value="${submit}"/>
+										<input tabindex="5" type="submit" name="submit" value="Save" onclick="clear_tags()" />
 									</td>
 								</tr>
 							</table>
