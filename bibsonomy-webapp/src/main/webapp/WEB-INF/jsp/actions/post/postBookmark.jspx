@@ -19,7 +19,7 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="content">
-			<form:form action="/postBookmark" method="POST">
+			<form:form action="/actions/postBookmark" method="POST">
 			
 				<spring:hasBindErrors name="command">Errors in "command" found<br/></spring:hasBindErrors>
 			
