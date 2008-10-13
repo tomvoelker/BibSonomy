@@ -286,8 +286,8 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		// get user from database
 		final User foundUser = getUserDetails(username, session);
 
-		// user exists and password is correct and user is no spammer
-		if ((foundUser.getName() != null) && (foundUser.getApiKey().equals(apiKey)) && !foundUser.isSpammer()) return foundUser;
+		// user exists and api key is correct and user is no spammer
+		if (foundUser.getName() != null && !foundUser.isSpammer() && foundUser.getApiKey() != null && foundUser.getApiKey().equals(apiKey)) return foundUser;
 
 		// fallback: user is not logged in
 		return notLoggedInUser;
