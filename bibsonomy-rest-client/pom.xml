@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<name>Bibsonomy-Rest-Client</name>
@@ -27,16 +28,36 @@
 			<artifactId>junit</artifactId>
 		</dependency>
 	</dependencies>
-    <reporting>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <configuration>
-			<linksource>true</linksource>
-            <destDir>../../../target/site/rest-client-javadoc</destDir>						
-          </configuration>
-        </plugin>
-      </plugins>
-    </reporting>		
+	
+	<build>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-webdav</artifactId>
+			</extension>
+		</extensions>
+	</build>
+	
+	<distributionManagement>
+		<site>
+			<id>bibsonomy-rest-client-www-documentation</id>
+			<name>Website documentation for BibSonomy REST client</name>
+			<url>
+				dav:http://bibsonomy:bibsonomy@www.bibsonomy.org/help/doc/bibsonomy-rest-client
+			</url>
+		</site>
+	</distributionManagement>
+	
+	<reporting>
+		<plugins>
+			<plugin>
+				<!-- create javadoc with linked sources -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<linksource>true</linksource>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>
