@@ -11,20 +11,26 @@
 CREATE TABLE `clicklog` (
   `id` int(11) NOT NULL auto_increment,
   `logdate` datetime default NULL,
-  `dompath` text collate utf8_unicode_ci,
-  `dompathwclasses` text collate utf8_unicode_ci,
-  `type` text collate utf8_unicode_ci,
-  `pageurl` text collate utf8_unicode_ci,
-  `ahref` text collate utf8_unicode_ci,
-  `atitle` text collate utf8_unicode_ci,
-  `useragent` text collate utf8_unicode_ci,
-  `host` text collate utf8_unicode_ci,
-  `completeheader` text collate utf8_unicode_ci,
-  `xforwardedfor` text collate utf8_unicode_ci,
-  `username` text collate utf8_unicode_ci,
-  `sessionid` text collate utf8_unicode_ci,
+  `dompath` text character set utf8 collate utf8_unicode_ci,
+  `dompathwclasses` text character set utf8 collate utf8_unicode_ci,
+  `type` text character set utf8 collate utf8_unicode_ci,
+  `pageurl` text character set utf8 collate utf8_unicode_ci,
+  `ahref` text character set utf8 collate utf8_unicode_ci,
+  `acontent` longtext character set utf8 collate utf8_unicode_ci,
+  `useragent` text character set utf8 collate utf8_unicode_ci,
+  `host` text character set utf8 collate utf8_unicode_ci,
+  `completeheader` text character set utf8 collate utf8_unicode_ci,
+  `xforwardedfor` text character set utf8 collate utf8_unicode_ci,
+  `username` text character set utf8 collate utf8_unicode_ci,
+  `sessionid` text character set utf8 collate utf8_unicode_ci,
+  `listpos` varchar(20) character set utf8 collate utf8_unicode_ci default NULL,  `mouseclientpos` varchar(20) character set utf8 collate utf8_unicode_ci default NULL COMMENT 'mouse position in current client window',
+  `mousedocumentpos` varchar(20) character set utf8 collate utf8_unicode_ci default NULL COMMENT 'mouse position in current document',
+  `clientwindowsize` varchar(20) character set utf8 collate utf8_unicode_ci default NULL,
+  `anumofposts` int(11) default NULL,
+  `abmown` tinyint(4) default NULL,
+  `referer` varchar(250) default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=84 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8
 **************************************************************
  -->
 
