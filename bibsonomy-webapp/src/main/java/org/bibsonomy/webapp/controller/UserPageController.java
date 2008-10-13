@@ -24,7 +24,7 @@ import org.bibsonomy.webapp.view.Views;
  * @author Dominik Benz
  * @version $Id$
  */
-public class UserPageController extends MultiResourceListControllerWithTags implements MinimalisticController<UserResourceViewCommand>{
+public class UserPageController extends SingleResourceListControllerWithTags implements MinimalisticController<UserResourceViewCommand>{
 	private static final Logger LOGGER = Logger.getLogger(UserPageController.class);
 
 	public View workOn(final UserResourceViewCommand command) {
