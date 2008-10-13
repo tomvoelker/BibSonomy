@@ -27,6 +27,7 @@ import org.bibsonomy.model.util.tagparser.TagString3Lexer;
 import org.bibsonomy.model.util.tagparser.TagString3Parser;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
+import org.bibsonomy.webapp.controller.SingleResourceListControllerWithTags;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestAware;
@@ -61,8 +62,7 @@ import org.springframework.validation.Errors;
 public class PostBookmarkController extends SingleResourceListController implements MinimalisticController<EditBookmarkCommand>, ErrorAware, ValidationAwareController<EditBookmarkCommand>, RequestAware {
 
 	private static final Logger log = Logger.getLogger(PostBookmarkController.class);
-	protected LogicInterface logic;
-	protected UserSettings userSettings;
+
 	private Errors errors = null;
 	private RequestLogic requestLogic;
 
@@ -87,7 +87,6 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		final RequestWrapperContext context = command.getContext();
 
 		
-	
 		Post<Bookmark> post = command.getPostBookmark();
 		
 		if (!context.isUserLoggedIn()) {
@@ -115,14 +114,9 @@ public class PostBookmarkController extends SingleResourceListController impleme
 				command.getRelevantTagSets().put(group.getName(),set);
 			
 		}
+		this.setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, null, 0, 100, null);
 		command.setRecommendedTags(recommendedTags);
-		//command.getRelevantTagSets().get("kde").
-		if (context.isUserLoggedIn()) {
-			
-		}
-		
-//		this.setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, null, 0, 1000, null);
-		
+
 		//be aware of double postings
 		command.getPostBookmark().getResource().recalculateHashes();
 		String interHash = command.getPostBookmark().getResource().getInterHash();
@@ -138,7 +132,6 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		if (errors.hasErrors()) {
 			return Views.POST_BOOKMARK;
 		}
-		
 		
 		
 		//groups
@@ -229,17 +222,6 @@ public class PostBookmarkController extends SingleResourceListController impleme
 	 */
 	public boolean isValidationRequired(EditBookmarkCommand command) {
 		return true;
-	}
-
-	/**
-	 * @param logic - an instance of the logic interface.
-	 */
-	public void setLogic(LogicInterface logic) {
-		this.logic = logic;
-	}
-
-	public void setUserSettings(UserSettings userSettings) {
-		this.userSettings = userSettings;
 	}
 
 	/** The logic needed to access the request
