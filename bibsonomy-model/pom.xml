@@ -16,42 +16,6 @@
 	</parent>
 	<build>
 		<plugins>
-		<!-- 
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>generate-sources</phase>
-						<configuration>
-							<tasks>
-								<java classname="org.antlr.Tool" classpathref="maven.plugin.classpath" fork="true" dir="src/main/antlr">
-									<arg line="-o ${project.build.directory}/generated-sources/antlr/" />
-									<arg value="helpers/parser/TagString3.g" />
-								</java>
-							</tasks>
-							<sourceRoot>${project.build.directory}/generated-sources/antlr</sourceRoot>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>				
-				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>org.antlr</groupId>
-						<artifactId>antlr-java-runtime</artifactId>
-						<version>3.1b2</version>
-						<scope>compile</scope>
-					</dependency>
-					<dependency>
-						<groupId>org.antlr</groupId>
-						<artifactId>antlr-tool</artifactId>
-						<version>3.1b2</version>
-						<scope>compile</scope>
-					</dependency>
-				</dependencies>
-			</plugin>
-		-->
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
@@ -97,6 +61,13 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh-external</artifactId>		
+				<version>1.0-beta-2</version>		
+			</extension>
+		</extensions>
 	</build>
 	<dependencies>
 		<dependency>
@@ -117,4 +88,26 @@
 			<artifactId>junit</artifactId>
 		</dependency>
 	</dependencies>
+
+	<distributionManagement>
+		<site>
+			<!-- copy site documentation via scp to gromit -->
+			<id>bibsonomy-model-website-documentation</id>
+			<url>scp://bibsonomy@gromit:/home/bibsonomy/bibsonomy-doc-www/${project.artifactId}</url>
+		</site>
+	</distributionManagement>
+		
+    <reporting>
+      <plugins>
+        <plugin>
+          <!-- create javadoc with linked sources -->
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <configuration>
+			<linksource>true</linksource>						
+          </configuration>
+        </plugin>
+      </plugins>
+    </reporting>	
+
 </project>
