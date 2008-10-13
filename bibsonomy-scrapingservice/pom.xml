@@ -9,13 +9,16 @@
 	<packaging>war</packaging>
 	<name>BibSonomy-Scrapingservice</name>
 	<version>2.0.1-SNAPSHOT</version>
-	<description>Web application to test the BibSonomy web page scrapers (see bibsonomy-scraper)</description>
+	<description>
+		Web application to test the BibSonomy web page scrapers (see
+		bibsonomy-scraper)
+	</description>
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
 		<version>2.0.1-SNAPSHOT</version>
 	</parent>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
@@ -50,4 +53,36 @@
 			<version>3.0</version>
 		</dependency>
 	</dependencies>
+	
+	<build>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh-external</artifactId>
+			</extension>
+		</extensions>
+	</build>
+	
+	<distributionManagement>
+		<site>
+			<!-- copy site documentation via scp to gromit -->
+			<id>bibsonomy-scrapingservice-website-documentation</id>
+			<url>
+				scp://bibsonomy@gromit:/home/bibsonomy/bibsonomy-doc-www/${project.artifactId}
+			</url>
+		</site>
+	</distributionManagement>
+	
+	<reporting>
+		<plugins>
+			<plugin>
+				<!-- create javadoc with linked sources -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<linksource>true</linksource>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>
