@@ -8,12 +8,16 @@
 	<artifactId>bibsonomy-bibtex-parser</artifactId>
 	<version>2.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<description>BibTeX Parser from http://www-plan.cs.colorado.edu/henkel/stuff/javabib/.</description>
+	<description>
+		BibTeX Parser from
+		http://www-plan.cs.colorado.edu/henkel/stuff/javabib/.
+	</description>
 	<parent>
 		<groupId>org.bibsonomy</groupId>
 		<artifactId>bibsonomy</artifactId>
 		<version>2.0.1-SNAPSHOT</version>
 	</parent>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
@@ -22,6 +26,39 @@
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-model</artifactId>
-		</dependency>		
-	</dependencies>	
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh-external</artifactId>
+				<version>1.0-beta-2</version>
+			</extension>
+		</extensions>
+	</build>
+	
+	<distributionManagement>
+		<site>
+			<!-- copy site documentation via scp to gromit -->
+			<id>bibsonomy-bibtex-parser-website-documentation</id>
+			<url>
+				scp://bibsonomy@gromit:/home/bibsonomy/bibsonomy-doc-www/${project.artifactId}
+			</url>
+		</site>
+	</distributionManagement>
+	
+	<reporting>
+		<plugins>
+			<plugin>
+				<!-- create javadoc with linked sources -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<linksource>true</linksource>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>
