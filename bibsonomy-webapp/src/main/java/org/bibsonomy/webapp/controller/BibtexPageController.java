@@ -22,7 +22,7 @@ import org.bibsonomy.webapp.view.Views;
  * @author mwa
  * @version $Id$
  */
-public class BibtexPageController extends MultiResourceListController implements MinimalisticController<BibtexResourceViewCommand>{
+public class BibtexPageController extends SingleResourceListController implements MinimalisticController<BibtexResourceViewCommand>{
 
 	private static final Logger LOGGER = Logger.getLogger(BibtexPageController.class);
 	

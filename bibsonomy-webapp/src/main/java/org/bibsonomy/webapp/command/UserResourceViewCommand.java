@@ -16,7 +16,8 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
      * used to show infos about the user in the sidebar (only for admins, currently)
      */
 	private User user;
-
+	private int bookmarkCount = 0;
+	private int bibtexCount = 0;
 	/**
 	 * @return
 	 */
@@ -38,5 +39,31 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	public void setUser(User user) {
 		this.user = user;
 	}	
+
+	/**
+	 * @return
+	 */
+	public int getBookmarkCount() {
+		return this.bookmarkCount;
+	}
+
+	/**
+	 * @param bookmarkCount
+	 */
+	public void setBookmarkCount(final int bookmarkCount) {
+		this.bookmarkCount = bookmarkCount;
+	}
+
+	/**
+	 * @return
+	 */
+	public int getBibtexCount() {
+		return this.bibtexCount;
+	}
+
+	public void setBibtexCount(final int bibtexCount) {
+		this.bibtexCount = bibtexCount;
+	}	
 	
+
 }

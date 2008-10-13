@@ -17,7 +17,7 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
 import org.bibsonomy.webapp.command.actions.UserLoginCommand;
 import org.bibsonomy.webapp.command.actions.UserRegistrationCommand;
-import org.bibsonomy.webapp.controller.MultiResourceListController;
+import org.bibsonomy.webapp.controller.SingleResourceListController;
 import org.bibsonomy.webapp.util.CookieAware;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -51,7 +51,7 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 //public class PostBookmarkController implements MinimalisticController<EditBookmarkCommand>, ErrorAware, ValidationAwareController<EditBookmarkCommand>, RequestAware, CookieAware {
-public class PostBookmarkController extends MultiResourceListController implements MinimalisticController<EditBookmarkCommand>, ErrorAware, ValidationAwareController<EditBookmarkCommand> {
+public class PostBookmarkController extends SingleResourceListController implements MinimalisticController<EditBookmarkCommand>, ErrorAware, ValidationAwareController<EditBookmarkCommand> {
 	private static final Logger log = Logger.getLogger(PostBookmarkController.class);
 	protected LogicInterface logic;	
 	protected UserSettings userSettings;

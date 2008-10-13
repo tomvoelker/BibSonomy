@@ -18,7 +18,7 @@ import org.bibsonomy.webapp.view.Views;
  * @author Flori
  * @version $Id$
  */
-public class BibtexkeyPageController extends MultiResourceListController implements MinimalisticController<BibtexkeyCommand> {
+public class BibtexkeyPageController extends SingleResourceListController implements MinimalisticController<BibtexkeyCommand> {
 	private static final Logger LOGGER = Logger.getLogger(BibtexkeyPageController.class);
 
 	public View workOn(BibtexkeyCommand command) {

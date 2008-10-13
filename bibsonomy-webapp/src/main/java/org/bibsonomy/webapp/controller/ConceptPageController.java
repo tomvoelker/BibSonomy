@@ -21,7 +21,7 @@ import org.bibsonomy.webapp.view.Views;
  * @author Michael Wagner
  * @version $Id$
  */
-public class ConceptPageController  extends MultiResourceListController implements MinimalisticController<ConceptResourceViewCommand>{
+public class ConceptPageController  extends SingleResourceListController implements MinimalisticController<ConceptResourceViewCommand>{
 	private static final Logger LOGGER = Logger.getLogger(ConceptPageController.class);
 
 	public View workOn(ConceptResourceViewCommand command) {

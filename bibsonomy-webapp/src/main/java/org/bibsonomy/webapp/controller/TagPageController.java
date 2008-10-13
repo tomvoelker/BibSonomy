@@ -24,7 +24,7 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 
-public class TagPageController extends MultiResourceListControllerWithTags implements MinimalisticController<TagResourceViewCommand>{
+public class TagPageController extends SingleResourceListControllerWithTags implements MinimalisticController<TagResourceViewCommand>{
 	private static final Logger LOGGER = Logger.getLogger(TagPageController.class);
 	
 	public View workOn(final TagResourceViewCommand command) {

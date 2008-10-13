@@ -8,7 +8,7 @@ import java.util.StringTokenizer;
  * @author daill
  * @version $Id$
  */
-public class AuthorResourceCommand extends ResourceViewCommand {
+public class AuthorResourceCommand extends SimpleResourceViewCommand {
 	
 	// the requested Author
 	private String requestedAuthor = "";

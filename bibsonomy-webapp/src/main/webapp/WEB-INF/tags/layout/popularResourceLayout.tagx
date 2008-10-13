@@ -8,7 +8,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
-	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.ResourceViewCommand" required="true"/>	
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.MultiResourceViewCommand" required="true"/>	
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="false"/>
@@ -30,18 +30,18 @@
 		<jsp:attribute name="headerExt"/>
 		<jsp:attribute name="content">
 				<c:choose>
-					<c:when test="${fn:length(command.popularListsBookmark) > fn:length(command.popularListsBibTex)}">
-						<c:forEach var="bookmark" items="${command.popularListsBookmark}" varStatus="status">
+					<c:when test="${fn:length(command.listsBookmark) > fn:length(command.listsBibTeX)}">
+						<c:forEach var="bookmark" items="${command.listsBookmark}" varStatus="status">
 							<resources:simplebookmarks listView="${bookmark}" loginUserName="${command.context.loginUser.name}">
 								<jsp:attribute name="extTitle">
-									<h2 class="listh">(${command.popularBookmarkDays[status.index]} <fmt:message key="days"/>)</h2>
+									<h2 class="listh">(${command.listsBookmarkDescription[status.index]} <fmt:message key="days"/>)</h2>
 								</jsp:attribute>
 							</resources:simplebookmarks>
 							<c:choose>
-								<c:when test="${not empty command.popularListsBibTex[status.index]}">
-									<resources:simplebibtexs listView="${command.popularListsBibTex[status.index]}" loginUserName="${command.context.loginUser.name}">
+								<c:when test="${not empty command.listsBibTeX[status.index]}">
+									<resources:simplebibtexs listView="${command.listsBibTeX[status.index]}" loginUserName="${command.context.loginUser.name}">
 										<jsp:attribute name="extTitle">
-											<h2 class="listh">(${command.popularBibTexDays[status.index]} <fmt:message key="days"/>)</h2>
+											<h2 class="listh">(${command.listsBibTeXDescription[status.index]} <fmt:message key="days"/>)</h2>
 										</jsp:attribute>
 									</resources:simplebibtexs>
 								</c:when>
@@ -52,12 +52,12 @@
 						</c:forEach>
 					</c:when>
 					<c:otherwise>
-						<c:forEach var="bibtex" items="${command.popularListsBibTex}" varStatus="status">
+						<c:forEach var="bibtex" items="${command.listsBibTeX}" varStatus="status">
 							<c:choose>
-								<c:when test="${not empty command.popularListsBookmark[status.index]}">
-									<resources:simplebookmarks listView="${command.popularListsBookmark[status.index]}" loginUserName="${command.context.loginUser.name}">
+								<c:when test="${not empty command.listsBookmark[status.index]}">
+									<resources:simplebookmarks listView="${command.listsBookmark[status.index]}" loginUserName="${command.context.loginUser.name}">
 										<jsp:attribute name="extTitle">
-											<h2 class="listh">(${command.popularBookmarkDays[status.index]} <fmt:message key="days"/>)</h2>
+											<h2 class="listh">(${command.listsBookmarkDescription[status.index]} <fmt:message key="days"/>)</h2>
 										</jsp:attribute>
 									</resources:simplebookmarks>
 								</c:when>
@@ -67,7 +67,7 @@
 							</c:choose>
 							<resources:simplebibtexs listView="${bibtex}" loginUserName="${command.context.loginUser.name}">
 								<jsp:attribute name="extTitle">
-									<h2 class="listh">(${command.popularBibTexDays[status.index]} <fmt:message key="days"/>)</h2>
+									<h2 class="listh">(${command.listsBibTeXDescription[status.index]} <fmt:message key="days"/>)</h2>
 								</jsp:attribute>
 							</resources:simplebibtexs>
 						</c:forEach>

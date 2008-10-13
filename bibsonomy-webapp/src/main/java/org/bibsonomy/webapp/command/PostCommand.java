@@ -4,7 +4,7 @@ package org.bibsonomy.webapp.command;
  * @author fba
  * @version $Id$
  */
-public class PostCommand extends ResourceViewCommand {
+public class PostCommand extends SimpleResourceViewCommand {
 	private TagCloudCommand tagcloud = new TagCloudCommand();
 	private String requestedUser;
 

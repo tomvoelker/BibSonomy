@@ -10,7 +10,7 @@ import java.util.StringTokenizer;
  * @author Michael Wagner
  * @version $Id$
  */
-public class TagResourceViewCommand extends ResourceViewCommand{
+public class TagResourceViewCommand extends SimpleResourceViewCommand{
 	
 	/** tags to search for */
 	private String requestedTags = "";

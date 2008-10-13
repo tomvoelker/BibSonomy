@@ -17,7 +17,7 @@ import org.bibsonomy.webapp.view.Views;
  * @author Beate Krause
  * @version $Id$
  */
-public class SearchPageController extends MultiResourceListController implements MinimalisticController<SearchViewCommand>{
+public class SearchPageController extends SingleResourceListController implements MinimalisticController<SearchViewCommand>{
 	private static final Logger LOGGER = Logger.getLogger(SearchPageController.class);
 
 	public View workOn(SearchViewCommand command) {

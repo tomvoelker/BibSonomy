@@ -16,7 +16,7 @@ import org.bibsonomy.webapp.command.TagResourceViewCommand;
  * @author Dominik Benz
  * @version $Id$
  */
-public class MultiResourceListControllerWithTags extends MultiResourceListController {
+public class SingleResourceListControllerWithTags extends SingleResourceListController {
 	/**
      * Retrieve a set of related tags to a list of given tags 
      * from the database logic and add them to the command object

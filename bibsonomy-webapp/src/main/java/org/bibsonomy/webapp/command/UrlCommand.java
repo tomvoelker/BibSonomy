@@ -7,7 +7,7 @@ package org.bibsonomy.webapp.command;
  * @author Flori
  * @version $Id$
  */
-public class UrlCommand extends ResourceViewCommand{
+public class UrlCommand extends SimpleResourceViewCommand{
 	
 	/** String to search for requUrl */
 	private String requUrl = "";

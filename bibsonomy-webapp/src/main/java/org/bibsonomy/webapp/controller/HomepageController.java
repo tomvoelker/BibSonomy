@@ -5,7 +5,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.PageCommand;
-import org.bibsonomy.webapp.command.ResourceViewCommand;
+import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
@@ -16,10 +16,10 @@ import org.bibsonomy.webapp.view.Views;
  * @author Dominik Benz
  * @version $Id$
  */
-public class HomepageController extends MultiResourceListController implements MinimalisticController<ResourceViewCommand> {
+public class HomepageController extends SingleResourceListController implements MinimalisticController<SimpleResourceViewCommand> {
 	private static final Logger LOGGER = Logger.getLogger(HomepageController.class);
 
-	public View workOn(final ResourceViewCommand command) {
+	public View workOn(final SimpleResourceViewCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
 
@@ -47,7 +47,7 @@ public class HomepageController extends MultiResourceListController implements M
 		return Views.getViewByFormat(command.getFormat());	
 	}
 
-	public ResourceViewCommand instantiateCommand() {
-		return new ResourceViewCommand();
+	public SimpleResourceViewCommand instantiateCommand() {
+		return new SimpleResourceViewCommand();
 	}
 }

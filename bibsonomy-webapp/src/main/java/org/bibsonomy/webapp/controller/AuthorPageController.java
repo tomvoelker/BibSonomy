@@ -17,7 +17,7 @@ import org.bibsonomy.webapp.view.Views;
  * @author daill
  * @version $Id$
  */
-public class AuthorPageController extends MultiResourceListController implements MinimalisticController<AuthorResourceCommand>{
+public class AuthorPageController extends SingleResourceListController implements MinimalisticController<AuthorResourceCommand>{
 	private static final Logger LOGGER = Logger.getLogger(AuthorPageController.class);
 
 	public View workOn(AuthorResourceCommand command) {

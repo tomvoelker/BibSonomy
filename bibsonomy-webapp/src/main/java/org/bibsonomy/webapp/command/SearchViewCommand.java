@@ -7,7 +7,7 @@ package org.bibsonomy.webapp.command;
  * @author Beate Krause
  * @version $Id$
  */
-public class SearchViewCommand extends ResourceViewCommand{
+public class SearchViewCommand extends SimpleResourceViewCommand{
 	
 	/** String to search for */
 	private String requestedSearch = "";
