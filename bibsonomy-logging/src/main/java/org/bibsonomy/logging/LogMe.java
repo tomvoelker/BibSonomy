@@ -18,6 +18,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+//import org.bibsonomy.rest.RestServlet;
+
 
 /**
  * @author sst
@@ -25,6 +28,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 
 public class LogMe extends HttpServlet {
+	
+	private static final Logger log = Logger.getLogger(LogMe.class);
 
 	public static List<String> getMatches(Pattern pattern, String text, int splitAtSpace) {
 		List<String> matches = new ArrayList<String>();
@@ -84,12 +89,13 @@ public class LogMe extends HttpServlet {
 			// kein dompath angegeben 
 		}
 		
+		log.debug("dompath_lenght = " + dompath_length);
+
 		// if dompath is empty 
 		if (dompath_length>0)
 		{
-		
-			String userAgent =  req.getHeader("user-agent");
-	
+
+	//		String userAgent =  req.getHeader("user-agent");
 	//		System.out.println("Hallo " + userAgent);
 	
 			// schreibe Cookies in Cookie-Array cookie
@@ -189,20 +195,23 @@ public class LogMe extends HttpServlet {
 			LogData.setAbmown(abmown);
 			LogData.setReferer(req.getParameter("referer"));
 			
+			log.debug("LogData to insert:\n" + LogData.toString());
+			log.info("Clicked at anchor with shown text: " + LogData.getAcontent());
 			
 			try {
 				QueryDB.getInstance().insertLogdata(LogData);
+				log.info("Database access: insertLogdata ok");
+				
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error("Database error: insertLogdata", e);
 			}
-			
 			
 		}
 	}
 
 	public void doPost(HttpServletRequest req, HttpServletResponse response)
 	throws ServletException, IOException {
+		log.debug("POST-Request");
 		doGet (req, response);
 	}
 

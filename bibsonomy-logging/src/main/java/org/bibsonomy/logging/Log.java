@@ -69,11 +69,31 @@ public class Log {
 
 	public String toString() {
 
-		return "ahref:"+this.ahref + "\natitle:" +this.acontent + "\npageurl:"+ this.pageurl + "\ndompath:"+this.dompath;  
-		
+		return	"id: "+ this.id +
+				"\nlogdate: "+ this.logdate +
+				"\ndompath: "+ this.dompath +
+				"\ndompath2: "+ this.dompath2 +
+				"\ntype: "+ this.type +
+				"\npageurl: "+ this.pageurl + 
+				"\nacontent: "+ this.acontent +
+				"\nanumberofposts: "+ this.anumberofposts +
+				"\nahref: "+ this.ahref + 
+				"\nuseragent: "+ this.useragent + 
+				"\nusername: " +this.username + 
+				"\nsessionid: " +this.sessionid +  
+				"\nhost: " +this.host + 
+				"\ncompleteheader: " +this.completeheader + 
+				"\nxforwardedfor: " +this.xforwardedfor + 
+				"\nwindowsize: " +this.windowsize + 
+				"\nmousedocumentpos: " +this.mousedocumentpos + 
+				"\nmouseclientpos: " +this.mouseclientpos + 
+				"\nlistpos: " +this.listpos + 
+				"\nabmown: " +this.abmown + 
+				"\nreferer: " +this.referer;		
 	}
 
-
+	
+	
 
 	/**
 	 * @return the id
