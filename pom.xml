@@ -41,6 +41,7 @@
 			<roles>
 				<role>Project leader</role>
 			</roles>
+			<url>http://www.kde.cs.uni-kassel.de/hotho</url>
 		</developer>
 		<developer>
 			<name>Miranda Grahl</name>
@@ -59,7 +60,8 @@
 				<role>Project leader</role>
 				<role>Developer</role>
 			</roles>
-		</developer>		
+			<url>http://www.kde.cs.uni-kassel.de/benz</url>
+		</developer>
 		<developer>
 			<name>Robert Jaeschke</name>
 			<id>rja</id>
@@ -68,6 +70,7 @@
 				<role>Project leader</role>
 				<role>Developer</role>
 			</roles>
+			<url>http://www.kde.cs.uni-kassel.de/jaeschke</url>
 		</developer>
 		<developer>
 			<name>Manuel Bork</name>
@@ -76,6 +79,9 @@
 			<roles>
 				<role>Developer</role>
 			</roles>
+			<url>
+				http://www.se.eecs.uni-kassel.de/se/index.php?mbork
+			</url>
 		</developer>
 		<developer>
 			<name>Jens Illig</name>
@@ -93,19 +99,79 @@
 				<role>Developer</role>
 			</roles>
 		</developer>
+		<developer>
+			<name>Stefan Stützer</name>
+			<id>sts</id>
+			<email>stuetzer@cs.uni-kassel.de</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Beate Krause</name>
+			<id>bkr</id>
+			<email>krause@cs.uni-kassel.de</email>
+			<roles>
+				<role>Developer</role>
+				<role>Project leader</role>
+			</roles>
+			<url>http://www.kde.cs.uni-kassel.de/krause</url>
+		</developer>
+		<developer>
+			<name>Michael Wagner</name>
+			<id>mwa</id>
+			<email>michi83@t-online.de</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Thomas Steuber</name>
+			<id>tst</id>
+			<email>ThomasSteuber@t-online.de</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Christian Claus</name>
+			<id>ccl</id>
+			<email>claus@cs.uni-kassel.de</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Sven Stefani</name>
+			<id>sst</id>
+			<email>stefani@cs.uni-kassel.de</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Christian Kramer</name>
+			<id>daill</id>
+			<email>ck.daill@gmail.com</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
 	</developers>
 	<repositories>
 		<repository>
 			<id>biblicious</id>
 			<name>Artifactory-Maven-Proxy auf biblicious.org</name>
 			<url>http://www.biblicious.org:8088/artifactory/repo</url>
-		</repository>	
+		</repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
 			<id>biblicious</id>
 			<name>Artifactory-Maven-Proxy auf biblicious.org</name>
-			<url>http://www.biblicious.org:8088/artifactory/plugins-releases</url>
+			<url>
+				http://www.biblicious.org:8088/artifactory/plugins-releases
+			</url>
 		</pluginRepository>
 	</pluginRepositories>
 	<modules>
@@ -114,6 +180,7 @@
 		<module>bibsonomy-model</module>
 		<module>bibsonomy-dl-importer</module>
 		<module>bibsonomy-scraper</module>
+		<module>bibsonomy-scrapingservice</module>
 		<module>bibsonomy-database</module>
 		<module>bibsonomy-logging</module>
 		<module>bibsonomy-recommender</module>
@@ -122,7 +189,7 @@
 		<module>bibsonomy-rest-server</module>
 		<module>bibsonomy-spielwiese</module>
 		<module>bibsonomy-webapp</module>
-		<module>bibsonomy-webdav</module>		
+		<module>bibsonomy-webdav</module>
 	</modules>
 	<build>
 		<pluginManagement>
@@ -152,78 +219,65 @@
 				<artifactId>tomcat-maven-plugin</artifactId>
 				<configuration>
 					<server>tomcat_gromit</server>
-					<url>http://gromit.cs.uni-kassel.de:8080/manager</url>
+					<url>
+						http://gromit.cs.uni-kassel.de:8080/manager
+					</url>
 				</configuration>
 			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
 					<descriptors>
-						<descriptor>src/main/assembly/clientapi.xml</descriptor>
+						<descriptor>
+							src/main/assembly/clientapi.xml
+						</descriptor>
 					</descriptors>
-					<outputDirectory>${project.build.directory}/site/download/</outputDirectory>
-					<finalName>${project.artifactId}-client-api-${project.version}</finalName>
+					<outputDirectory>
+						${project.build.directory}/site/download/
+					</outputDirectory>
+					<finalName>
+						${project.artifactId}-client-api-${project.version}
+					</finalName>
 				</configuration>
 			</plugin>
-			<!-- copy site documentation to ftp server when 'mvn site' is executed -->
-			<!-- 
-			<plugin>
-			  <groupId>org.apache.maven.plugins</groupId>
-			  <artifactId>maven-antrun-plugin</artifactId>
-			  <executions>
-			    <execution>
-			      <id>ftp</id>
-			      <phase>site</phase>
-			      <goals>
-			        <goal>run</goal>
-			      </goals>
-			      <configuration>
-			        <tasks>
-			          <ftp server="${site.ftp.server}"
-			               port="${site.ftp.port}"
-			               remotedir="${site.ftp.remotedir}"			               
-			               userid="${site.ftp.user}"
-			               password="${site.ftp.password}">
-			            <fileset dir="${project.build.directory}/site" />
-			          </ftp>
-			        </tasks>
-			      </configuration>
-			    </execution>
-			  </executions>
-			  <dependencies>
-			    <dependency>
-			      <groupId>ant</groupId>
-			      <artifactId>ant-commons-net</artifactId>
-			      <version>1.6.5</version>
-			    </dependency>
-			    <dependency>
-			      <groupId>commons-net</groupId>
-			      <artifactId>commons-net</artifactId>
-			      <version>1.4.1</version>
-			    </dependency>
-			  </dependencies>
-			</plugin>
-			-->		
 		</plugins>
-		<extensions>
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ssh-external</artifactId>
-				<version>1.0-alpha-4</version>	
-			</extension>
-		</extensions>
 	</build>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-changes-plugin</artifactId>
+				<configuration>
+					<issueLinkTemplate>
+						%URL%/index.php?func=detail&amp;aid=%ISSUE%&amp;group_id=52&amp;atid=278
+					</issueLinkTemplate>
+				</configuration>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>changes-report</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+		</plugins>
+	</reporting>
 	<distributionManagement>
 		<!--repository>
 			<id>ssh-se.uni-kassel.de</id>
 			<! TODO: we need an own distribution-management location! >
 			<url>
-				scpexe://www.se.eecs.uni-kassel.de/home/maven/public_html/repository
+			scpexe://www.se.eecs.uni-kassel.de/home/maven/public_html/repository
 			</url>
-		</repository-->
+			</repository-->
+
+		<!--  deploy web site documentation via webdav to zope -->
 		<site>
 			<id>website-bibsonomy-documentation</id>
-			<url>scpexe://bibsonomy@gromit/home/bibsonomy/bibsonomy-doc-www</url>
+			<name>Website documentation for BibSonomy</name>
+			<url>
+				dav:http://bibsonomy:bibsonomy@www.bibsonomy.org/help/doc/
+			</url>
 		</site>
 	</distributionManagement>
 	<dependencyManagement>
@@ -254,6 +308,11 @@
 				<version>${project.version}</version>
 				<type>test-jar</type>
 			</dependency>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-recommender</artifactId>
+				<version>${project.version}</version>
+			</dependency>			
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-rest-client</artifactId>
@@ -296,6 +355,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-scrapingservice</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-dl-importer</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -318,7 +382,7 @@
 				<groupId>com.ibatis</groupId>
 				<artifactId>ibatis2</artifactId>
 				<version>2.3.0.677</version>
-			</dependency -->
+				</dependency -->
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>servlet-api</artifactId>
@@ -358,5 +422,5 @@
 				<version>1.6.1</version>
 			</dependency>
 		</dependencies>
-	</dependencyManagement>		
+	</dependencyManagement>
 </project>
