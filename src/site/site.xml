@@ -19,7 +19,9 @@
 				href="http://www.kde.cs.uni-kassel.de/" />
 		</links>
 
+		<!--  
 		<menu ref="parent" inherit="top" />
+		 -->
 
 		<menu name="BibSonomy">
 			<item name="Home" href="/index.html" />
