@@ -63,7 +63,7 @@ public final class Context {
 	private final Map<?, ?> parameterMap;
 	// FIXME: never used locally ?
 	// private final HttpMethod httpMethod;
-	private final RenderingFormat renderingFormat;
+	private RenderingFormat renderingFormat;
 
 	/**
 	 * the list with all items out of the http request
@@ -289,5 +289,14 @@ public final class Context {
 	 */
 	public List<FileItem> getItemList(){
 		return this.items;
+	}
+	
+	/**
+	 * Need to set another RenderingFormat to download .pdf files as pdf files :)
+	 * 
+	 * @param renderingFormat
+	 */
+	public void setRenderingFormat(RenderingFormat renderingFormat) {
+		this.renderingFormat = renderingFormat;
 	}
 }

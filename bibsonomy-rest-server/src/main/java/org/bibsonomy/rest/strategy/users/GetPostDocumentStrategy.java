@@ -9,6 +9,7 @@ import java.util.HashMap;
 
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.Document;
+import org.bibsonomy.rest.enums.RenderingFormat;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
@@ -39,6 +40,7 @@ public class GetPostDocumentStrategy extends Strategy{
 		this.resourceHash = resourceHash;
 		this.fileName = fileName;
 		this.additionalInfos = context.getAdditionalInfos();
+		context.setRenderingFormat(RenderingFormat.PDF);
 		
 	}
 	
