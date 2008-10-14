@@ -4,6 +4,7 @@
 
 <%@include file="/boxes/admin/login.jsp"%>
 
+<script type="text/javascript" src="/resources/javascript/marksame.js"></script>
 <script type="text/javascript" src="/ajax_scripts/scriptaculous/lib/prototype.js"></script>
 <script type="text/javascript" src="/ajax_scripts/scriptaculous/src/scriptaculous.js"></script>
 <link rel="stylesheet" type="text/css" href="/resources/css/spammer.css">
@@ -151,7 +152,7 @@
 <a href="?usercount=1000">1000</a>
 <a href="?usercount=100000">all</a>, show <a href="?frequent=true">frequent IPs</a>)
 
-  <table class="spammertable">
+  <table id="spammertable" class="spammertable">
     <tr style="font-size:120%"><th>Is it a Spammer?</th><th>Username</th><th>Spammer?</th><th>IP</th><th>Realname</th><th>E-Mail</th><th>Date</th><th>updated by</th><th>updated at</th></tr>
     
     <!-- specified user infos -->
@@ -401,6 +402,10 @@
 		document.getElementsByName("user")[0].value = "";
 		document.getElementsByName("user")[1].value = "";
 	}
+</script>
+
+<script type="text/javascript">  
+	ms_init("spammertable", 4);
 </script>
 
 <%@ include file="footer.jsp"%>
