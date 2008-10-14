@@ -35,6 +35,7 @@ public class RestProperties {
 		API_URL("http://www.bibsonomy.org/api/"),
 		SYSTEM_NAME("BibSonomy"),
 		CONTENT_TYPE("text/xml"),
+		PDF_TYPE("application/pdf"),
 		API_USER_AGENT("BibsonomyWebServiceClient"),
 		URL_TAGS("tags"),
 		URL_CONCEPTS("concepts"),
@@ -172,5 +173,9 @@ public class RestProperties {
 	
 	public String getSystemName() {
 		return this.get(Property.SYSTEM_NAME);
+	}
+	
+	public String getPdfType(){
+		return this.get(Property.PDF_TYPE);
 	}
 }

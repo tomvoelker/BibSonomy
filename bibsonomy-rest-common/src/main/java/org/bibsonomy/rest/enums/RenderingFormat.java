@@ -15,7 +15,8 @@ import org.bibsonomy.common.exceptions.ValidationException;
 public enum RenderingFormat {
 
 	/** currently only XML is supported */
-	XML;
+	XML,
+	PDF;
 
 	/**
 	 * Returns the rendering format to the given string.
@@ -27,7 +28,11 @@ public enum RenderingFormat {
 		if ("xml".equals(format)) {
 			return XML;
 		}
-		throw new ValidationException("Format " + format + " is not supported. Currently, only 'xml' is supported.");
+		
+		if ("pdf".equals(format)){
+			return PDF;
+		}
+		throw new ValidationException("Format " + format + " is not supported.");
 	}
 	
 	/**
@@ -39,6 +44,7 @@ public enum RenderingFormat {
 	public String toMimeType() {
 		switch (this) {
 			case XML: return "text/xml";
+			case PDF: return "application/pdf";
 		}
 		throw new InternServerException("No MIME-Type defined for format " + this.toString());
 	}

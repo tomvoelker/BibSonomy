@@ -21,6 +21,7 @@ public class RendererFactory {
 
 		switch (renderingFormat) {
 		case XML:
+		case PDF:
 		default:
 			return XMLRenderer.getInstance();
 		}
