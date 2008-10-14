@@ -102,7 +102,7 @@
 	
 	<select id="getBibTexByTagNamesForUserWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
 		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, g.group, 
-		g.group_name,d.hash, d.name, d.md5hash
+		g.group_name,d.hash, d.name, d.md5hash, d.content_id,
 		FROM bibtex b, tas t, groupids g, bibhash h,
 			(SELECT t1.content_id
 			FROM <include refid="tagFromQuery"/>			
@@ -124,7 +124,7 @@
 		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, g.group, 
 		g.group_name, tt.hash, tt.name
 		FROM bibtex b, tas t, groupids g, bibhash h,
-			(SELECT t1.content_id, d.hash, d.name, d.md5hash
+			(SELECT t1.content_id, d.hash, d.name, d.md5hash, d.content_id, 
 			FROM document d, <include refid="tagFromQuery"/>			
 				WHERE <include refid="tagWhereQuery"/>
 					<include refid="restrictToGroups"/>
@@ -356,7 +356,7 @@
 
 	<select id="getBibTexForGroupWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, h.ctr as count, g.group,
-		d.hash, d.name, d.md5hash
+		d.hash, d.name, d.md5hash, d.content_id
 		FROM bibtex b, bibhash h,
 		     (
 		     SELECT ids.content_id, ids.date FROM  
@@ -445,7 +445,7 @@
 	</select> 
 	
 	<select id="getBibTexForGroupByTagWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
-		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, h.ctr as count, g.group, d.hash, d.name, d.md5hash
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, h.ctr as count, g.group, d.hash, d.name, d.md5hash, d.content_id
 		FROM bibtex b, bibhash h, <include refid="selectContentIDs"/>
 		LEFT JOIN document d USING(content_id) 	
 		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas (get tags) -->
@@ -480,7 +480,7 @@
 	</select>
 	
 	<select id="getBibTexForUserWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
-		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count, d.hash, d.name, d.md5hash
+		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count, d.hash, d.name, d.md5hash, d.content_id
 		FROM (SELECT t1.*, h.ctr AS count
 		      FROM bibtex t1, bibhash h
 		      WHERE <include refid="bibtexSimHash3"/>
@@ -496,7 +496,7 @@
 	
 	<select id="getJustBibTexForUserWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
 		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count, b2.hash, b2.name
-		FROM (SELECT t1.*, h.ctr AS count, d.hash, d.name, d.md5hash
+		FROM (SELECT t1.*, h.ctr AS count, d.hash, d.name, d.md5hash, d.content_id
 		      FROM bibtex t1, bibhash h, document d
 		      WHERE <include refid="bibtexSimHash3"/>
 		            AND t1.user_name = #requestedUserName#
