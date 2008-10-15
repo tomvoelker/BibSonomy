@@ -409,7 +409,8 @@ CREATE TABLE `document` (
 -- 
 -- Data for table `document`
 -- 
-
+INSERT INTO `document` VALUES ('00000000000000000000000000000000', 10, 'testdocument_1.pdf', 'testuser1', '2008-10-01 01:01:01', '00000000000000000000000000000000');
+INSERT INTO `document` VALUES ('00000000000000000000000000000001', 10, 'testdocument_2.pdf', 'testuser1', '2008-10-01 01:01:01', '00000000000000000000000000000001');
 
 -- --------------------------------------------------------
 
