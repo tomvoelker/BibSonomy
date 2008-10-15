@@ -30,6 +30,9 @@ import org.bibsonomy.model.util.SimHash;
 /**
  * Used to create, read, update and delete BibTexs from the database.
  * 
+ * FIXME: why do some methods use loginUserName and some methods not? Shouldn't all methods
+ * need loginUserName?
+ * 
  * @author Miranda Grahl
  * @author Jens Illig
  * @author Christian Schenk
@@ -921,6 +924,9 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * ATTENTION! in case of a given groupId it is NOT checked if the user
 	 * actually belongs to this group.
 	 * 
+	 * TODO: which of the two methods {@link #getBibTexForUser(BibTexParam, DBSession)} and {@link #getBibTexForUser(String, HashID, int, int, int, DBSession)} is deprecated? 
+	 * Mark it with the appropriate tag! 
+	 * 
 	 * @param param
 	 * @param session
 	 * @return list of bibtex posts
@@ -956,7 +962,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * @param requestedUserName
 	 * @param limit
 	 * @param offset
-	 * @param simHash
+	 * @param simHash TODO: what is this hash good for?
 	 * @param groupId
 	 * @param session
 	 * @return list of bibtex posts
