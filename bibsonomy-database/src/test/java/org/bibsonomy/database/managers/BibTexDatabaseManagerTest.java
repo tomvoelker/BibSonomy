@@ -31,6 +31,7 @@ import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
@@ -580,6 +581,36 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		
 	}
 
+	
+	/**
+	 * Check if documents are proper attached to posts
+	 */
+	@Test
+	public void getBibTeXForUserWithDocuments() {
+		final String requestedUserName = "testuser1";
+		final BibTexParam param = new BibTexParam();
+		param.setRequestedUserName(requestedUserName);
+		param.setSimHash(HashID.INTER_HASH);
+		param.setGroupId(GroupID.INVALID.getId());
+		param.setDocumentsAttached(true);
+		param.setLimit(10);
+		param.setOffset(0);
+		
+		final List<Post<BibTex>> posts = this.bibTexDb.getBibTexForUser(param, this.dbSession);
+		
+		assertFalse(posts.isEmpty());
+		// testuser 1 has 1 public post
+		assertEquals(1,posts.size());
+		// this post has two documents
+		assertEquals(2,posts.get(0).getResource().getDocuments().size());
+		// order might matter .. then the following assertions fail -> disable them
+		assertEquals("00000000000000000000000000000000", posts.get(0).getResource().getDocuments().get(0).getMd5hash());
+		assertEquals("00000000000000000000000000000001", posts.get(0).getResource().getDocuments().get(1).getMd5hash());
+		
+	}
+	
+	
+	
 	/**
 	 * tests getBibTexForUserCount
 	 * 
