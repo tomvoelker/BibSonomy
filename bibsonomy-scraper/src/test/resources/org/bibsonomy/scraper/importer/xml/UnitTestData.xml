@@ -738,4 +738,10 @@
 		<BibFile>IEEEXploreScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEXploreScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_129">
+		<TestDescription>URL scraping test with arxiv publications</TestDescription>
+		<URL>http://arxiv.org/abs/0810.1951</URL>
+		<BibFile>ArxivScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.arxiv.ArxivScraper</Scraper>
+	</URLTest>
 </test:Tests>

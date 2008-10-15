@@ -7,7 +7,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Scraper URL tests #10 #126 for ArxivScraper
+ * Scraper URL tests #10 #126 #129 for ArxivScraper
  * @author tst
  *
  */
@@ -31,6 +31,16 @@ public class ArxivScraperTest {
 	public void urlTestRun2(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_126"));
+	}
+	
+	/**
+	 * starts URL test with id url_129
+	 */
+	@Test
+	@Ignore
+	public void urlTestRun3(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_129"));
 	}
 	
 }

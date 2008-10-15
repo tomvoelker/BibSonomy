@@ -13,6 +13,7 @@ import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -28,14 +29,15 @@ public class ArxivScraper implements Scraper {
 	   								   "extracts the adequate BibTeX entry. Author: KDE";
 	
 	private static final String ARXIV_HOST = "arxiv.org";
-	private static final String CITEBASE_HOST_NAME = "http://www.citebase.org";
-	private static final String SLACSPIRES_HOST_NAME = "http://www.slac.stanford.edu";
-	private static final String CITEBASE_STRING_ON_ARXIV = "CiteBase";
-	private static final String SLACSPIRE_STRING_ON_ARXIV = "SLAC-SPIRES HEP";
 	
-	private static final String BIBTEX_STRING_ON_ARXIV = "BibTeX";
-	private static final String BIBTEX_STRING_ON_SLACSPIRES = "BibTeX";
-	private static final String BIBTEX_ABSTRACT_TAG = "blockquote";
+	private static final String PATTERN_TITLE = "<dc:title>([^<]*)<";
+	private static final String PATTERN_CREATOR = "<dc:creator>([^<]*)<";
+	private static final String PATTERN_DESCRIPTION = "<dc:description>([^<]*)<";
+	private static final String PATTERN_DATE = "<dc:date>([^<]*)<";
+	private static final String PATTERN_IDENTIFIER = "<dc:identifier>([^<]*)<";
+	
+	private static final String PATTERN_YEAR = ".*(\\d{4}).*";
+	private static final String PATTERN_ID = "abs/([^?]*)";
 	
 	private static final Logger log = Logger.getLogger(ArxivScraper.class);
 	
@@ -45,77 +47,140 @@ public class ArxivScraper implements Scraper {
 			try {
 				sc.setScraper(this);
 				
-				String bibtexResult = null; 
+				StringBuffer bibtexResult = new StringBuffer(); 
 				
-				Document doc = getDOM(sc.getPageContent());
-				// get citebase url on arxiv publication page
-				String testCitebaseUrl = extractUrlFromElementByTagNameAndValue(doc, "a", CITEBASE_STRING_ON_ARXIV, "href");
-				String testSlacSpiresUrl = extractUrlFromElementByTagNameAndValue(doc, "a", SLACSPIRE_STRING_ON_ARXIV, "href");
+				//get id
+				String id = null;
 				
+				Pattern patternID = Pattern.compile(PATTERN_ID);
+				Matcher matcherID = patternID.matcher(sc.getUrl().toString());
+				if(matcherID.find())
+					id = matcherID.group(1);
 				
-				//decide which extraction method will be used
-				if(testCitebaseUrl != null) {
-					URL citebaseUrl    = new URL(testCitebaseUrl);
-					String bibAbstract = extractAbstract(doc, BIBTEX_ABSTRACT_TAG); 
+				if(id != null){
+					// build url for oai_dc export
+					String exportURL = "http://export.arxiv.org/oai2?verb=GetRecord&identifier=oai:arXiv.org:" + id + "&metadataPrefix=oai_dc";
 					
-					// get bibtex url on citebase publication page
-					URL bibtexUrl = new URL(CITEBASE_HOST_NAME + extractUrlFromElementByTagNameAndValue(getDOM(sc.getContentAsString(citebaseUrl)), "a", BIBTEX_STRING_ON_ARXIV, "href"));
+					// download oai_dc reference
+					String reference = sc.getContentAsString(new URL(exportURL));
 					
-					// get bibtex page and add abstract
-					bibtexResult = sc.getContentAsString(bibtexUrl);
-					if (bibAbstract != null) {						
-						bibtexResult = addAbstractToBibtexEntry(bibtexResult, bibAbstract);
+					String key = "";
+					//parse reference
+					
+					// get title
+					String title = null;
+					Pattern patternTitle = Pattern.compile(PATTERN_TITLE);
+					Matcher matcherTitle = patternTitle.matcher(reference);
+					if(matcherTitle.find())
+						title = matcherTitle.group(1);
+					
+					//get authors
+					String creator = "";
+					Pattern patternCreator = Pattern.compile(PATTERN_CREATOR);
+					Matcher matcherCreator = patternCreator.matcher(reference);
+					while(matcherCreator.find()){
+						if(creator.equals("")){
+							creator = matcherCreator.group(1);
+							// add lastname from the first author to bibtex key
+							key = creator.substring(0, creator.indexOf(","));
+						}else
+							creator = creator + " and " + matcherCreator.group(1);
 					}
-				} else 	if(testSlacSpiresUrl != null) {
-					String bibAbstract = extractAbstract(doc, BIBTEX_ABSTRACT_TAG); 
-					URL slacSpiresUrl    = new URL(testSlacSpiresUrl);
 					
-					//get the bibtex url from spires
-					URL bibtexUrl = new URL(SLACSPIRES_HOST_NAME + extractUrlFromElementByTagNameAndValue(getDOM(sc.getContentAsString(slacSpiresUrl)), "a", BIBTEX_STRING_ON_SLACSPIRES, "href"));
-							
-					//extract the pre-tagged bibtex entry from slacspires
-					Document temp = getDOM(sc.getContentAsString(bibtexUrl));
-					NodeList as = temp.getElementsByTagName("pre");
-					for (int i = 0; i < as.getLength(); i++) {
-						Node currNode = as.item(i);
-						if (currNode.hasChildNodes()){
-							bibtexResult = currNode.getChildNodes().item(0).getNodeValue();	
+					String description = "";
+					Pattern patternDescription = Pattern.compile(PATTERN_DESCRIPTION, Pattern.MULTILINE);
+					Matcher matcherDescription = patternDescription.matcher(reference);
+					while(matcherDescription.find())
+						if(description.equals(""))
+							description = matcherDescription.group(1);
+						else
+							description = description + " " + matcherDescription.group(1);
+					
+					String year = null;
+					Pattern patternDate = Pattern.compile(PATTERN_DATE);
+					Matcher matcherDate = patternDate.matcher(reference);
+					if(matcherDate.find()){
+						String date = matcherDate.group(1);
+						Pattern patternYear = Pattern.compile(PATTERN_YEAR);
+						Matcher matcherYear = patternYear.matcher(date);
+						if(matcherYear.find()){
+							year = matcherYear.group(1);
+							key = key + year;
 						}
-					}	
-					
-					//add the abstract to the bibtex entry
-					if (bibAbstract != null) {						
-						bibtexResult = addAbstractToBibtexEntry(bibtexResult, bibAbstract);
 					}
-				} else {
-					//if no citation manager is available scrape from html code
-					bibtexResult = scrapeBySourceCode(doc);
-				}
-				
-				// add url to bibentry
-				bibtexResult = addUrlToBibtexEntry(sc.getUrl().toString(), bibtexResult);
-				
-				// set result
-				sc.setBibtexResult(bibtexResult);
-				return true;
-				
+					
+					String identifier = null;
+					Pattern patternIdentifier = Pattern.compile(PATTERN_IDENTIFIER);
+					Matcher matcherIdentifier = patternIdentifier.matcher(reference);
+					if(matcherIdentifier.find())
+						identifier = matcherIdentifier.group(1);
+					
+					// build bibtex
+					
+					// start and bibtex key
+					bibtexResult.append("@MISC{");
+					bibtexResult.append(key);
+					bibtexResult.append(",\n");
+					
+					// title
+					if(title != null){
+						bibtexResult.append("title = {");
+						bibtexResult.append(title);
+						bibtexResult.append("}");
+						bibtexResult.append(",\n");
+					}else
+						throw new ScrapingFailureException("no title found");
+					
+					// author
+					if(!creator.equals("")){
+						bibtexResult.append("author = {");
+						bibtexResult.append(creator);
+						bibtexResult.append("}");
+						bibtexResult.append(",\n");
+					}else
+						throw new ScrapingFailureException("no authors found");
+
+					// year
+					if(year != null){
+						bibtexResult.append("year = {");
+						bibtexResult.append(year);
+						bibtexResult.append("}");
+						bibtexResult.append(",\n");
+					}else
+						throw new ScrapingFailureException("no year found");
+
+					// abstract
+					if(!description.equals("")){
+						bibtexResult.append("abstract = {");
+						bibtexResult.append(description);
+						bibtexResult.append("}");
+						bibtexResult.append(",\n");
+					}
+					
+					// url
+					if(identifier != null){
+						bibtexResult.append("url = {\\url{");
+						bibtexResult.append(identifier);
+						bibtexResult.append("}}");
+						bibtexResult.append(",\n");
+					}
+
+					// remove last ","
+					bibtexResult = new StringBuffer(bibtexResult.subSequence(0, bibtexResult.lastIndexOf(",")-1));
+					
+					// finisch bibtex
+					bibtexResult.append("\n}\n");
+					
+					// set result
+					sc.setBibtexResult(bibtexResult.toString());
+					return true;
+				}else
+					throw new ScrapingFailureException("no arxiv id found in URL");
 			} catch (MalformedURLException me) {
 				throw new InternalFailureException(me);
 			}
 		}		
 		return false;
-	}
-
-	/** Parses a page and returns the DOM
-	 * @param content
-	 * @return
-	 */
-	private Document getDOM(String content) {
-		Tidy tidy = new Tidy();
-		tidy.setQuiet(true);
-		tidy.setShowWarnings(false);// turns off warning lines
-		Document doc = tidy.parseDOM(new ByteArrayInputStream(content.getBytes()), null);
-		return doc;
 	}
 
 	public String getInfo() {
@@ -124,180 +189,6 @@ public class ArxivScraper implements Scraper {
 	
 	public Collection<Scraper> getScraper() {
 		return Collections.singletonList((Scraper) this);
-	}
-	
-	/**
-	 * Extracts URLs from specific and page-unique elements. Unique means, that the node value (here: CiteBase)
-	 * of the requested element "a" appears only once as node value.
-	 * We handle some like this: <a href="http://blabla.com">CiteBase</a>
-	 * @param pageContent Page content as InputStream
-	 * @param tagName E.g. a 
-	 * @param tagValue  E.g. CiteBase 
-	 * @param attribute E.g. href
-	 * @return The extracted URL as a String - e.g. http://blabla.com or null
-	 * @throws DOMException 
-	 * @throws MalformedURLException 
-	 */
-	private String extractUrlFromElementByTagNameAndValue(Document doc, String tagName, String tagValue, String attribute) throws MalformedURLException, DOMException{
-		NodeList as = doc.getElementsByTagName(tagName);
-		for (int i = 0; i < as.getLength(); i++) {
-			Node currNode = as.item(i);
-
-			if (currNode.getChildNodes().getLength() > 0) {
-				if (tagValue.equals(currNode.getChildNodes().item(0).getNodeValue())){
-					return currNode.getAttributes().getNamedItem(attribute).getNodeValue();						
-				}
-			}
-		
-		}		
-		return null;
-	}
-	
-	private String extractAbstract(Document doc, String tagName){		
-		NodeList as = doc.getElementsByTagName(tagName);
-		for (int i = 0; i < as.getLength(); i++) {
-			Node currNode = as.item(i);
-			
-			if (currNode.getChildNodes().getLength() > 0) {	
-				log.debug("abstract = " + currNode.getChildNodes().item(0).getNodeValue());
-				return currNode.getChildNodes().item(1).getNodeValue();	
-			}
-		}		
-		return null;
-	}
-	
-	/**
-	 *  Add abstract to bibtex entry by replacing the last occurrence of "}"
-	 *  with ",abstract = {...}}"
-	 */
-	private String addAbstractToBibtexEntry(String bibtexEntry, String bibAbstract){
-			StringBuffer buf = new StringBuffer (bibtexEntry);
-			buf.replace(buf.lastIndexOf("}"), buf.length(), ", abstract={" + bibAbstract + "}}");
-			return  buf.toString();		
-	}
-	
-	/**
-	 * Adds scraped URL to extracted bibtex entry.
-	 * @param url 
-	 * @param entry citation in Bibtex
-	 * @return bibtex entry with scraped url
-	 */
-	private String addUrlToBibtexEntry(String url, String entry){
-		String newUrl = "url = {\\\\url{" + url + "}}";
-		// replace old url with scraped url
-		if(entry.contains("url = {"))
-			return entry.replaceAll("url = \\{[^\\}]*\\}", newUrl);
-		
-		// no old url available
-		return entry.substring(0, entry.lastIndexOf("}")) + newUrl + "\n}";
-	}
-	
-	private String scrapeBySourceCode (Document doc){
-		//initalize all neede vars
-		NodeList pres = null;
-		StringBuffer bibtex = new StringBuffer();
-		
-		String year = "";
-		String month = "";
-		String title = "";
-		String pages = "";
-		String authors = "";
-		String abstr = "";
-		
-		//add the bibtexkey
-		bibtex.append("@article{");
-		
-		//get all h1 tag to extract the title
-		pres = doc.getElementsByTagName("h1"); //get all <h1>-Tags
-		for (int i = 0; i < pres.getLength(); i++) {
-			Node curr = pres.item(i);
-			if (curr.hasAttributes()){
-				Element g = (Element)curr;
-				Attr own = g.getAttributeNode("class");
-				
-				if (own == null){
-					continue;
-				}
-			
-				if ("title".equals(own.getValue())) {
-					title = curr.getChildNodes().item(1).getNodeValue().trim();
-				}
-			}
-		}
-		
-		//get all div tag to extract the authors, the date and the pages
-		pres = doc.getElementsByTagName("div"); //get all <div>-Tags
-		for (int i = 0; i < pres.getLength(); i++) {
-			Node curr = pres.item(i);
-			
-			if (curr.hasAttributes()){
-				Element g = (Element)curr;
-				Attr own = g.getAttributeNode("class");
-
-				if (own == null){
-					continue;
-				}
-				
-				//get all authors
-				if ("authors".equals(own.getValue())) {
-					for (int j = 1; j < curr.getChildNodes().getLength(); j++){
-						if (curr.getChildNodes().item(j).hasChildNodes()){
-							authors += curr.getChildNodes().item(j).getChildNodes().item(0).getNodeValue() + " and ";
-						}
-					}
-				}
-				
-				//get the date
-				if ("dateline".equals(own.getValue())) {
-					String datePattern = "(\\d{1,2})? (\\w{3})? (\\d{4})?";
-					String dateline = curr.getChildNodes().item(0).getNodeValue();
-					
-					
-					Pattern dateP = Pattern.compile(datePattern);
-					Matcher matcher = dateP.matcher(dateline);
-					
-					if (matcher.find()){
-						month = matcher.group(2);
-						year = matcher.group(3);
-					}
-				}
-				
-				//get the pages
-				if ("tablecell subjects".equals(own.getValue())){
-					String pagePattern = "\\d*";
-					Pattern pageP = Pattern.compile(pagePattern);
-					Matcher matcher = pageP.matcher(curr.getChildNodes().item(0).getNodeValue());
-					
-					if (matcher.find()){
-						pages = matcher.group(0);
-					}
-				}
-			}
-		}
-		
-		//extract the abstract with the predefinied function
-		abstr = extractAbstract(doc, "blockquote");
-				
-		//creat the bibtexkey
-		String keyPattern = "\\w*";
-		Pattern keyP = Pattern.compile(keyPattern);
-		Matcher matcher = keyP.matcher(authors);
-		
-		if (matcher.find()){
-			bibtex.append(matcher.group(0) + ":" + year + ",");
-		}
-		
-		
-		//form the bibtex string
-		bibtex.append("title={" + title + " },");
-		bibtex.append("author={" + authors + " },");
-		bibtex.append("pages={" + pages + " },");
-		bibtex.append("year={" + year + " },");
-		bibtex.append("month={" + month + "},");
-		bibtex.append("abstract={" + abstr + " },");
-		bibtex.append("}");
-
-		return bibtex.toString();
 	}
 
 }
