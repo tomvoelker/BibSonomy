@@ -1,7 +1,7 @@
-package helpers.picatobibtex.rules;
+package org.bibsonomy.scraper.converter.picatobibtex.rules;
 
-import helpers.picatobibtex.PicaRecord;
-import helpers.picatobibtex.PicaUtils;
+import org.bibsonomy.scraper.converter.picatobibtex.PicaRecord;
+import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
 
 /**
  * @author daill

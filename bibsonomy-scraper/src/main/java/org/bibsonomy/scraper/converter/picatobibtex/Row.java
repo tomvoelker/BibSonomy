@@ -1,4 +1,4 @@
-package helpers.picatobibtex;
+package org.bibsonomy.scraper.converter.picatobibtex;
 
 import java.util.HashMap;
 import java.util.Map;

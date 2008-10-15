@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.bibsonomy.scraper.url;
+package org.bibsonomy.scraper.converter;
 
 import java.util.Iterator;
 import java.util.SortedMap;

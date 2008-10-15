@@ -1,4 +1,4 @@
-package helpers.picatobibtex.rules;
+package org.bibsonomy.scraper.converter.picatobibtex.rules;
 
 /**
  * @author daill

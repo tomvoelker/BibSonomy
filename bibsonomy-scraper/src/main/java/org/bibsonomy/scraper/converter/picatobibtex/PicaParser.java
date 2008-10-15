@@ -1,16 +1,5 @@
-package helpers.picatobibtex;
+package org.bibsonomy.scraper.converter.picatobibtex;
 
-import helpers.picatobibtex.rules.AbstractRule;
-import helpers.picatobibtex.rules.AuthorRule;
-import helpers.picatobibtex.rules.ISBNRule;
-import helpers.picatobibtex.rules.ISSNRule;
-import helpers.picatobibtex.rules.PublisherRule;
-import helpers.picatobibtex.rules.Rules;
-import helpers.picatobibtex.rules.SeriesRule;
-import helpers.picatobibtex.rules.TagsRule;
-import helpers.picatobibtex.rules.TitleRule;
-import helpers.picatobibtex.rules.URNRule;
-import helpers.picatobibtex.rules.YearRule;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -20,6 +9,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.scraper.converter.picatobibtex.rules.AbstractRule;
+import org.bibsonomy.scraper.converter.picatobibtex.rules.AuthorRule;
+import org.bibsonomy.scraper.converter.picatobibtex.rules.ISBNRule;
+import org.bibsonomy.scraper.converter.picatobibtex.rules.ISSNRule;
+import org.bibsonomy.scraper.converter.picatobibtex.rules.PublisherRule;
+import org.bibsonomy.scraper.converter.picatobibtex.rules.Rules;
+import org.bibsonomy.scraper.converter.picatobibtex.rules.SeriesRule;
+import org.bibsonomy.scraper.converter.picatobibtex.rules.TagsRule;
+import org.bibsonomy.scraper.converter.picatobibtex.rules.TitleRule;
+import org.bibsonomy.scraper.converter.picatobibtex.rules.URNRule;
+import org.bibsonomy.scraper.converter.picatobibtex.rules.YearRule;
 
 /**
  * 

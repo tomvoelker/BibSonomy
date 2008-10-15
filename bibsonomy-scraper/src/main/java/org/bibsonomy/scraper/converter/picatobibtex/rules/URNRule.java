@@ -1,10 +1,11 @@
-package helpers.picatobibtex.rules;
+package org.bibsonomy.scraper.converter.picatobibtex.rules;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import helpers.picatobibtex.PicaRecord;
-import helpers.picatobibtex.PicaUtils;
+import org.bibsonomy.scraper.converter.picatobibtex.PicaRecord;
+import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
+
 
 /**
  * @author daill

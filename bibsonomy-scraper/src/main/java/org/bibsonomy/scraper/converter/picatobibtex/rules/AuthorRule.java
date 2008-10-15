@@ -1,12 +1,13 @@
-package helpers.picatobibtex.rules;
+package org.bibsonomy.scraper.converter.picatobibtex.rules;
 
-import helpers.picatobibtex.PicaRecord;
-import helpers.picatobibtex.PicaUtils;
-import helpers.picatobibtex.Row;
 
 import java.util.HashMap;
 import java.util.Set;
 import java.util.Vector;
+
+import org.bibsonomy.scraper.converter.picatobibtex.PicaRecord;
+import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
+import org.bibsonomy.scraper.converter.picatobibtex.Row;
 
 /**
  * @author daill

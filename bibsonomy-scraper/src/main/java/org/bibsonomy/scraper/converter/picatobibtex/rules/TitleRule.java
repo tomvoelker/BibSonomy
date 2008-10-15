@@ -1,13 +1,13 @@
-package helpers.picatobibtex.rules;
+package org.bibsonomy.scraper.converter.picatobibtex.rules;
 
-import helpers.picatobibtex.PicaRecord;
-import helpers.picatobibtex.PicaUtils;
+import org.bibsonomy.scraper.converter.picatobibtex.PicaRecord;
+import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
 
 /**
  * @author daill
  * @version $Id$
  */
-public class ISBNRule implements Rules {
+public class TitleRule implements Rules {
 	private PicaRecord pica = null;
 	private PicaUtils utils = null;
 	
@@ -15,24 +15,21 @@ public class ISBNRule implements Rules {
 	 * @param pica
 	 * @param utils
 	 */
-	public ISBNRule(PicaRecord pica, PicaUtils utils){
+	public TitleRule(PicaRecord pica, PicaUtils utils){
 		this.pica = pica;
 		this.utils = utils;
 	}
-
+	
 	public String getContent() {
 		String res = "";
 		
-		res = utils.getData("004A", "$0");
-		if (res.length() == 0){
-			res = utils.getData("004A", "$A");
-		}
+		res = utils.getData("021A", "$a");
 		
 		return utils.cleanString(res);
 	}
 
 	public boolean isAvailable() {
-		if(pica.isExisting("004A")){
+		if(pica.isExisting("021A")){
 			return true;
 		}
 		

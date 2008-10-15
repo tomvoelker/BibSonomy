@@ -1,4 +1,4 @@
-package org.bibsonomy.scraper.url;
+package org.bibsonomy.scraper.converter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
