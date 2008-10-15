@@ -171,6 +171,9 @@ public class DBLogic implements LogicInterface {
 				user.setReminderPassword(null);
 				user.setReminderPasswordRequestDate(null);
 				user.setApiKey(null);
+				// set neutral spam information 
+				user.setToClassify(0);
+				user.setSpammer(false);
 				/*
 				 * FIXME: the settings and other things set in userDBManager.getUserDetails() are not cleared!
 				 */
