@@ -41,6 +41,7 @@ public class PostBookmarkValidator implements Validator<EditBookmarkCommand> {
 //		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "postBookmark.description", "error.field.required");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "tags", "error.field.valid.tags");
 		
+		
 		//clean url
 		System.out.println("PostBookmarkValidator validate(): " + bookmark.getPostBookmark().getResource().getUrl());
 		bookmark.getPostBookmark().getResource().setUrl(UrlUtils.cleanUrl(bookmark.getPostBookmark().getResource().getUrl()));
@@ -50,6 +51,13 @@ public class PostBookmarkValidator implements Validator<EditBookmarkCommand> {
 			System.out.println("PostBookmarkValidator validate(): BROKEN_URL");
 			errors.rejectValue("postBookmark.resource.url", "error.field.valid.url");
 		}
+		
+		/*
+		 * TODO: one of the things to add is a check that the group combinations are correct.
+		 * Of course, the web interface (forms + JavaScript) enforce correct groups but one 
+		 * can easily bypass that. Note that this check additionally has to be added into the 
+		 * DBLogics addPost/updatePost, etc. methods!
+		 */
 		
 		System.out.println("--> errors: " + errors.getErrorCount());
 		System.out.println("--> errors: " + errors);
