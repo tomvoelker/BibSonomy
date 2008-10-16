@@ -159,14 +159,14 @@ public class ArxivScraper implements Scraper {
 					
 					// url
 					if(identifier != null){
-						bibtexResult.append("url = {\\url{");
+						bibtexResult.append("url = {");
 						bibtexResult.append(identifier);
-						bibtexResult.append("}}");
+						bibtexResult.append("}");
 						bibtexResult.append(",\n");
 					}
 
 					// remove last ","
-					bibtexResult = new StringBuffer(bibtexResult.subSequence(0, bibtexResult.lastIndexOf(",")-1));
+					bibtexResult = new StringBuffer(bibtexResult.subSequence(0, bibtexResult.lastIndexOf(",")));
 					
 					// finisch bibtex
 					bibtexResult.append("\n}\n");
