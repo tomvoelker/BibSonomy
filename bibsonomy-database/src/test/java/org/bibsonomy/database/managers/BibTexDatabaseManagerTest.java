@@ -31,7 +31,6 @@ import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
@@ -553,8 +552,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * tests getBibTexForUser
 	 */
-	// FIXME: test is only successfully when running alone
-	@Ignore
+	@Test
 	public void getBibTexForUser() {
 		String requestedUserName = "testuser1";
 		int groupId = 3;
@@ -854,6 +852,9 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertFalse(plugin.isOnBibTexUpdate());
 		this.postDuplicate(bibtexHashForUpdate);
 		assertTrue(plugin.isOnBibTexUpdate());
+		
+		this.bibTexDb.deletePost(toInsert.getUser().getName(), toInsert.getResource().getIntraHash(), this.dbSession);
+		
 	}
 	
 	/**
@@ -866,6 +867,12 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		DatabasePluginRegistry.getInstance().clearPlugins();
 		DatabasePluginRegistry.getInstance().add(plugin);
 		assertFalse(plugin.isOnBibTexDelete());
+
+		// first: insert post such that we can delete it later
+		
+		final Post<BibTex> toInsert = this.generateBibTexDatabaseManagerTestPost();
+		this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, null, false, this.dbSession);
+
 		
 		// delete public post
 		BibTexParam param = new BibTexParam();
@@ -888,7 +895,6 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertTrue(plugin.isOnBibTexDelete());
 		
 		// delete private post
-		final Post<BibTex> toInsert = this.generateBibTexDatabaseManagerTestPost();
 		toInsert.getGroups().clear();
 		final Group group = new Group();
 		group.setDescription(null);
