@@ -46,8 +46,8 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.KDEScraperFactory;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.url.EndnoteToBibtexConverter;
 import org.bibsonomy.util.TagStringUtils;
 
 import resources.Bibtex;
@@ -67,7 +67,6 @@ import bibtex.expansions.CrossReferenceExpander;
 import bibtex.expansions.ExpansionException;
 import bibtex.expansions.MacroReferenceExpander;
 import bibtex.expansions.PersonListExpander;
-import bibtex.parser.BibtexMultipleFieldValuesPolicy;
 import bibtex.parser.BibtexParser;
 import bibtex.parser.ParseException;
 import filters.ActionValidationFilter;
