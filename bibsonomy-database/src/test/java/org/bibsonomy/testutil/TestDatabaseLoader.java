@@ -70,6 +70,16 @@ public class TestDatabaseLoader {
 	public void load() {
 		try {
 			final SimpleJDBCHelper jdbc = new SimpleJDBCHelper();
+			/*
+			 * do initialization: drop database, create it, use it
+			 */
+			final String database = jdbc.getDatabaseConfig().getDatabase();
+			jdbc.execute("DROP DATABASE IF EXISTS `" + database + "`;");
+			jdbc.execute("CREATE DATABASE `" + database + "`;");
+			jdbc.execute("USE `" + database + "`;");
+			/*
+			 * execute statements from script
+			 */
 			for (final String statement : this.statements) {
 				jdbc.execute(statement);
 			}
@@ -87,16 +97,22 @@ public class TestDatabaseLoader {
 final class SimpleJDBCHelper implements Closeable {
 	private final String configFile = "database.properties";
 	private Connection connection;
-
+	private final DatabaseConfig cfg;
+	
 	/**
 	 * Holds the config for the database.
 	 */
-	private interface DatabaseConfig {
+	public static interface DatabaseConfig {
 		/**
 		 * @return url
 		 */
 		public String getUrl();
 
+		/**
+		 * @return database name
+		 */
+		public String getDatabase();
+		
 		/**
 		 * @return username
 		 */
@@ -114,7 +130,7 @@ final class SimpleJDBCHelper implements Closeable {
 	public SimpleJDBCHelper() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			final DatabaseConfig cfg = this.getConfig();
+			this.cfg = this.getConfig();
 			this.connection = DriverManager.getConnection(cfg.getUrl(), cfg.getUsername(), cfg.getPassword());
 		} catch (final Exception ex) {
 			throw new RuntimeException(ex);
@@ -139,6 +155,20 @@ final class SimpleJDBCHelper implements Closeable {
 		return new DatabaseConfig() {
 			public String getUrl() {
 				return params.get("url");
+			}
+			
+			/** Extracts the name of the database from the URL. 
+			 * The name is the string between the last "/" and before
+			 * the first "?".
+			 * 
+			 * @return The name of the database.
+			 */
+			public String getDatabase() {
+				String url = this.getUrl();
+				// remove everything behind first '?'
+				url = url.substring(0, url.indexOf('?'));
+				// remove everything before last '/'
+				return url.substring(url.lastIndexOf('/') + 1);
 			}
 
 			public String getUsername() {
@@ -174,5 +204,9 @@ final class SimpleJDBCHelper implements Closeable {
 		} catch (final SQLException ex) {
 			throw new RuntimeException(ex);
 		}
+	}
+	
+	public DatabaseConfig getDatabaseConfig() {
+		return this.cfg;
 	}
 }
