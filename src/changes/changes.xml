@@ -24,6 +24,17 @@
     	
     	Dominik, 2008-10-10
     -->
+    
+    <release version="2.0.1" date="2008-10-16" description="Minor bugfixes">
+    	<action dev="rja" type="update">Removed histograms from admin page.</action>
+    	<action dev="dbe" type="fix">Fixed bug: NPE when spammer tries to access the API</action>
+    	<action dev="sst" type="add">Clicking on IP address on admin page marks same adresses.</action>
+    	<action dev="daill" type="fix">Fixed bug: documents occur several times in API XML.</action>
+    	<action dev="daill" type="fix">Fixed bug: wrong content-type when retrieving PDF documents via the API.</action>
+    	<action dev="steuber" type="update">Fixed ArXiv scraper.</action>
+    	<action dev="rja" type="fix">Fixed bug: Spammer information is visibile via /api/users/USERNAME</action>
+    	<action dev="dbe" type="update">Removed tag "imported" from global tag cloud</action>    	
+    </release> 
   
    	<release version="2.0.1" date="2008-10-08" description="Several bugfixes, some minor additions">
       	<action dev="sts" type="fix">Fixed some OpenID bugs.</action>
