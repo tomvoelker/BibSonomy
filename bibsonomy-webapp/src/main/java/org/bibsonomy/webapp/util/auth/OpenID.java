@@ -1,4 +1,4 @@
-package org.bibsonomy.webapp.util.auth;
+ package org.bibsonomy.webapp.util.auth;
 
 import java.io.Serializable;
 import java.net.MalformedURLException;
@@ -12,6 +12,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.openid4java.OpenIDException;
 import org.openid4java.consumer.ConsumerManager;
+import org.openid4java.consumer.InMemoryNonceVerifier;
 import org.openid4java.consumer.VerificationResult;
 import org.openid4java.discovery.DiscoveryException;
 import org.openid4java.discovery.DiscoveryInformation;
@@ -45,7 +46,7 @@ public class OpenID implements Serializable {
 	/**
 	 * manager for openID authentication
 	 */
-	private ConsumerManager manager;
+	private OpenIdConsumerManager manager;
 	
 	/**
 	 * name of session attribute 
@@ -80,7 +81,8 @@ public class OpenID implements Serializable {
 		 *  perform discovery on the user-supplied identifier
 		 */
 		List discoveries = manager.discover(openID);
-
+		manager.setNonceVerifier(new InMemoryNonceVerifier(100000));
+		
 		/*
 		 *  attempt to associate with the OpenID provider
 		 *	and retrieve one service endpoint for authentication
@@ -177,6 +179,7 @@ public class OpenID implements Serializable {
 			String host = requestURL.getHost();
 			String path = requestURL.getPath();
 			String contextPath = requestLogic.getContextPath();
+			int port = requestURL.getPort();
 			
 			if (path.startsWith(contextPath)) {
 				path = path.replace(contextPath, "");
@@ -254,7 +257,7 @@ public class OpenID implements Serializable {
 	/**
 	 * @param manager OpenID ConsumerManager
 	 */
-	public void setManager(ConsumerManager manager) {
+	public void setManager(OpenIdConsumerManager manager) {
 		this.manager = manager;
 	}	
 }

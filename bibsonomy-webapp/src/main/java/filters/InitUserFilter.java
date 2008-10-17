@@ -34,6 +34,7 @@ import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.ResponseLogic;
 import org.bibsonomy.webapp.util.auth.OpenID;
+import org.bibsonomy.webapp.util.auth.OpenIdConsumerManager;
 import org.openid4java.OpenIDException;
 import org.openid4java.consumer.ConsumerException;
 import org.openid4java.consumer.ConsumerManager;
@@ -63,7 +64,7 @@ public class InitUserFilter implements Filter {
 	 * OpenID authentication functionality
 	 */
 	protected OpenID openIDLogic = null;
-	protected ConsumerManager manager = null;
+	protected OpenIdConsumerManager manager = null;
 	
 	/**
 	 * Constants to describe Cookie and Bean informations
@@ -100,7 +101,7 @@ public class InitUserFilter implements Filter {
 		 */
 		useX509forAuth = "true".equals(this.filterConfig.getInitParameter("useX509forAuth"));
 		try {
-			this.manager = new ConsumerManager();
+			this.manager = new OpenIdConsumerManager();
 		} catch (ConsumerException ex) {
 			log.error("Could not initialize OpenID Consumer Manager.", ex);
 		}
