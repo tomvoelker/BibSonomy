@@ -838,7 +838,7 @@ CREATE TABLE `log_user` (
   `log_level` tinyint(4) NOT NULL default '0',
   `to_classify` tinyint(4) default '1',
   PRIMARY KEY  (`nr`)
-) ENGINE=InnoDB AUTO_INCREMENT=117 DEFAULT CHARSET=utf8
+) ENGINE=InnoDB AUTO_INCREMENT=117 DEFAULT CHARSET=utf8;
 
 -- 
 -- Data for table `log_user`
