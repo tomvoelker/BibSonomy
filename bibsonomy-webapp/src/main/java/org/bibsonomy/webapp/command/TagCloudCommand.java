@@ -15,12 +15,13 @@ import org.bibsonomy.model.Tag;
  * 
  * @author Dominik Benz
  */
-public class TagCloudCommand {
+public class TagCloudCommand extends BaseCommand {
 	private List<Tag> tags = new ArrayList<Tag>();
 	private int minFreq = 0; // threshold which tags to display
 	private int maxFreq = 100; // maximum occurrence frequency of all tags
 	private TagCloudStyle style = TagCloudStyle.CLOUD;
 	private TagCloudSort sort = TagCloudSort.ALPHA;
+	private int maxTagCount;
 	
 	
 	/**
@@ -34,8 +35,26 @@ public class TagCloudCommand {
 	 */
 	public TagCloudCommand(List<Tag> tags) {
 		this.tags = tags;
+		
+		calculateMaxTagCount();
 	}	
 
+
+	/**
+	 * find the max Tag Count
+	 */
+	private void calculateMaxTagCount() {
+		maxTagCount = Integer.MIN_VALUE;
+		for (Tag tag : tags) {
+			if (tag.getGlobalcount() > maxTagCount) {
+				maxTagCount = tag.getGlobalcount();
+			}
+		}
+	}
+
+	public int getMaxTagCount() {
+		return this.maxTagCount;
+	}
 
 	/**
 	 * @return the list of contained tags
@@ -50,6 +69,7 @@ public class TagCloudCommand {
 	 */
 	public void setTags(List<Tag> tags) {
 		this.tags = tags;
+		calculateMaxTagCount();
 	}
 
 
