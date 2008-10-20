@@ -240,5 +240,10 @@
   	<function-class>tags.Functions</function-class>
   	<function-signature>String getSWRCEntryType(java.lang.String)</function-signature>
   </function>
-
+  
+  <function>
+  	<name>getTagSize</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String getTagSize(java.lang.Integer, java.lang.Integer)</function-signature>
+  </function>
 </taglib>
