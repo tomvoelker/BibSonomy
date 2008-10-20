@@ -371,4 +371,27 @@ public class Functions  {
 		}
 		return "Misc";
 	}
+	
+	/**
+	 * returns the css Class for an given tag
+	 * @param tagCount the count aof the current Tag
+	 * @param maxTagCount the maximum tag count
+	 * @return the css class for the tag
+	 */
+	public static String getTagSize(Integer tagCount, Integer maxTagCount) {
+		int percentage = ((tagCount * 100) / maxTagCount);
+		
+		String cssTag = "";
+		if (percentage < 25) {
+			cssTag =  "tagtiny";
+		} else if (percentage >= 25 && percentage < 50) {
+			cssTag =  "tagnormal";
+		} else if (percentage >= 50 && percentage < 75) {
+			cssTag =  "taglarge";
+		} else if (percentage >= 75) {
+			cssTag =  "taghuge";
+		}
+	//	System.out.println("parseInt maxTagCount: " + maxTagCount +  " tagCount: " + tagCount + " | "+percentage + " >> " + cssTag);
+		return cssTag;
+	}
 }
