@@ -31,48 +31,36 @@
 		<jsp:attribute name="content">
 				<c:choose>
 					<c:when test="${fn:length(command.listsBookmark) > fn:length(command.listsBibTeX)}">
-						<c:forEach var="bookmark" items="${command.listsBookmark}" varStatus="status">
-							<resources:simplebookmarks listView="${bookmark}" loginUserName="${command.context.loginUser.name}">
-								<jsp:attribute name="extTitle">
-									<h2 class="listh">(${command.listsBookmarkDescription[status.index]} <fmt:message key="days"/>)</h2>
-								</jsp:attribute>
-							</resources:simplebookmarks>
-							<c:choose>
-								<c:when test="${not empty command.listsBibTeX[status.index]}">
-									<resources:simplebibtexs listView="${command.listsBibTeX[status.index]}" loginUserName="${command.context.loginUser.name}">
-										<jsp:attribute name="extTitle">
-											<h2 class="listh">(${command.listsBibTeXDescription[status.index]} <fmt:message key="days"/>)</h2>
-										</jsp:attribute>
-									</resources:simplebibtexs>
-								</c:when>
-								<c:otherwise>
-									<div class="bookbox"/>
-								</c:otherwise>
-							</c:choose>
-						</c:forEach>
+						<c:set var="max">${command.listsBookmark}</c:set>
 					</c:when>
 					<c:otherwise>
-						<c:forEach var="bibtex" items="${command.listsBibTeX}" varStatus="status">
+						<c:set var="max">${command.listsBibTeX}</c:set>
+					</c:otherwise>		
+				</c:choose>
+					<c:forEach var="bibtex" items="${max}" varStatus="status">
+						<div class="popular">
 							<c:choose>
 								<c:when test="${not empty command.listsBookmark[status.index]}">
 									<resources:simplebookmarks listView="${command.listsBookmark[status.index]}" loginUserName="${command.context.loginUser.name}">
-										<jsp:attribute name="extTitle">
-											<h2 class="listh">(${command.listsBookmarkDescription[status.index]} <fmt:message key="days"/>)</h2>
-										</jsp:attribute>
+											<jsp:attribute name="extTitle">
+												<h2 class="listh">(${command.listsBookmarkDescription[status.index]} <fmt:message key="days"/>)</h2>
+											</jsp:attribute>
 									</resources:simplebookmarks>
 								</c:when>
-								<c:otherwise>
-									<div class="bookbox"/>
-								</c:otherwise>
+								<c:otherwise><div class="bookbox"/></c:otherwise>
 							</c:choose>
-							<resources:simplebibtexs listView="${bibtex}" loginUserName="${command.context.loginUser.name}">
-								<jsp:attribute name="extTitle">
-									<h2 class="listh">(${command.listsBibTeXDescription[status.index]} <fmt:message key="days"/>)</h2>
-								</jsp:attribute>
-							</resources:simplebibtexs>
-						</c:forEach>
-					</c:otherwise>
-				</c:choose>
+							<c:choose>
+								<c:when test="${not empty command.listsBibTeX[status.index]}">
+									<resources:simplebibtexs listView="${command.listsBibTeX[status.index]}" loginUserName="${command.context.loginUser.name}">
+											<jsp:attribute name="extTitle">
+												<h2 class="listh">(${command.listsBibTeXDescription[status.index]} <fmt:message key="days"/>)</h2>
+											</jsp:attribute>
+									</resources:simplebibtexs>
+								</c:when>
+								<c:otherwise><div class="bookbox"/></c:otherwise>
+							</c:choose>
+						</div>
+					</c:forEach>
 		</jsp:attribute>
 	</layout:layout>
 </jsp:root>

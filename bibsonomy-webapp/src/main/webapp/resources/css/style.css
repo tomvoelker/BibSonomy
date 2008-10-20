@@ -757,3 +757,17 @@ table.vmiddle td{
   	padding: 0px;
 
 }
+
+table.bluebox{
+	background-color:#EEEEEE;
+	border-bottom:1px solid #CCCCCC;
+	border-top:1px solid #CCCCCC;
+	border-left:1px solid #CCCCCC;
+	border-right:1px solid #CCCCCC;
+}
+
+.popular{
+	overflow-x:hidden;
+	width:100%;	
+}
+
