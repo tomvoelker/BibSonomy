@@ -1,14 +1,14 @@
 .tagtiny a {
-  color: #8D9964 ! important;
+  color: #869EC0 ! important;
 }
 .tagnormal a {
-  color: #8C9963 ! important;
+  color: #869EC0 ! important;
 }
 .taglarge a {
-  color: #768053 ! important;
+  color: #4D7DC0 ! important;
 }
 .taghuge a {
-  color: #2F3321 ! important;
+  color: #2E4B73 ! important;
   font-size: 140%;
 }
 

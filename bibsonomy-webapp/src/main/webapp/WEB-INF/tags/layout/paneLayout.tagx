@@ -11,20 +11,24 @@
 
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>	
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="displayIntroduction" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
-	<jsp:directive.attribute name="sidebar" fragment="true" required="true"/>
+	<jsp:directive.attribute name="sidebar" fragment="true"/>
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>	
+	<jsp:directive.attribute name="fullscreen" type="java.lang.Boolean" required="false"/>	
+	
 	<c:choose>
-		<c:when test="${command.userLoggedIn}">
+		<c:when test="${command.context.userLoggedIn}">
 			<c:set var="loginUserName" value="${command.context.loginUser.name}"/>
 		</c:when>
 		<c:otherwise>
 			<c:set var="loginUserName" value="${null}"/>
 		</c:otherwise>
-	</c:choose>
-	<layout:layout loginUserName="${loginUserName}" searchString="hurz" basketSize="${command.context.loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" content="${content}"/>
+	</c:choose>	
+
+	<layout:layout loginUserName="${loginUserName}" searchString="hurz" basketSize="${command.context.loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${requestedUser}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" content="${content}" fullscreen="${fullscreen}"/>
 </jsp:root>

@@ -15,6 +15,7 @@
 	<jsp:directive.attribute name="searchString" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false"/>	
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>	
+	<jsp:directive.attribute name="fullscreen" type="java.lang.Boolean" required="false"/>	
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>	
 	<jsp:directive.attribute name="displayIntroduction" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
@@ -129,6 +130,13 @@
 					<ul id="sidebar">
 						<jsp:invoke fragment="sidebar"/>
 					</ul>
+				</c:if>
+				<c:if test="${fullscreen}">
+					<script type="text/javascript">
+					<![CDATA[
+						document.getElementById('outer').style.width = "100%";
+					]]>
+					</script>
 				</c:if>
 				
 				<!-- page footer -->

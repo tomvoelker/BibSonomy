@@ -500,7 +500,7 @@
     <!-- tags -->
 	<rule>
 	    <from>^/+tags/*$</from>
-	    <to>/tags.jsp</to>
+	    <to>/tags</to>
 	</rule>
 	<rule>
 	    <from>^/+tag/*$</from>

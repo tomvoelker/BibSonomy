@@ -373,6 +373,16 @@ public class Functions  {
 	}
 	
 	/**
+	 * Calculates the percentage of font size for tag clouds
+	 * 
+	 * @param tag the Tag 
+	 * @return value between 0 and 100 %
+	 */
+	public static double getTagFontSize(final Tag tag) {
+		return Math.round(Math.log(tag.getGlobalcount()/40))*25;		
+	}
+	
+	/**
 	 * returns the css Class for an given tag
 	 * @param tagCount the count aof the current Tag
 	 * @param maxTagCount the maximum tag count
@@ -391,7 +401,6 @@ public class Functions  {
 		} else if (percentage >= 75) {
 			cssTag =  "taghuge";
 		}
-	//	System.out.println("parseInt maxTagCount: " + maxTagCount +  " tagCount: " + tagCount + " | "+percentage + " >> " + cssTag);
 		return cssTag;
 	}
 }

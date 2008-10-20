@@ -13,7 +13,7 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
-	<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
+	<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}">
 	
 		<jsp:attribute name="heading">
 		<a rel="path_menu" href="#"><fmt:message key="navi.bibtex.cap"/>${mtl:ch('nbsp')}<img alt="" src="/resources/image/box_arrow.png"/></a> :: 

@@ -115,9 +115,13 @@
 								<value>key</value>
 							</list>
 						</property>
-
 					</bean>
 				</entry>
+				<entry key="/tags">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="popularTagsPageController"/>						
+					</bean>
+				</entry>	
 				
 				<!-- actions  -->
 				<entry key="/register">
@@ -385,6 +389,11 @@
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
 	</bean>	
+	
+	<bean id="popularTagsPageController" class="org.bibsonomy.webapp.controller.PopularTagsPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+	</bean>
 	
 	<bean id="popularPageController" class="org.bibsonomy.webapp.controller.PopularPageController" scope="request">
 		<property name="logic" ref="logic"/>

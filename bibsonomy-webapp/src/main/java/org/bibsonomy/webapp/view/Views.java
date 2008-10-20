@@ -100,6 +100,11 @@ public enum Views implements View {
 	POPULAR("popular"),
 	
 	/**
+	 * popular tags page
+	 */
+	POPULAR_TAGS("popularTags"),
+	
+	/**
 	 * userpage only for publications with documents attached
 	 */
 	USERDOCUMENTPAGE("userDocument"),
