@@ -797,4 +797,15 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	public List<Tag> getTagsPopular(final TagParam param, final DBSession session){
 		return this.queryForList("getTagsPopular", param, Tag.class, session);
 	}
+	
+	/**
+	 * Gets list of global popular tags (no restriction in days)
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of popular tags
+	 */
+	public List<Tag> getPopularTags(final TagParam param, final DBSession session){
+		return this.queryForList("getPopularTags", param, Tag.class, session);
+	}
 }

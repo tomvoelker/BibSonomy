@@ -341,4 +341,16 @@
 		LIMIT #limit#		 
 	</select>
 	
+	<select id="getPopularTags" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT * FROM 
+      	(
+        	SELECT tag_name, tag_ctr_public AS tag_ctr
+          	FROM tags 
+            WHERE tag_name NOT IN ('dblp', 'imported', 'system:imported', 'public','nn')  
+          	ORDER BY tag_ctr_public 
+          	DESC LIMIT #limit#
+      	) AS a 
+      	ORDER BY LOWER(tag_name)
+	</select>
+	
 </sqlMap>
