@@ -100,6 +100,7 @@
 						<property name="allowedFields">
 							<list>
 								<value>selTab</value>
+								<value>interval</value>
 							</list>
 						</property>
 					</bean>
