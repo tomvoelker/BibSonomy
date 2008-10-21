@@ -108,8 +108,15 @@ public class DBAdminManager extends DBManager {
 				 * update user table
 				 */
 				if (spammer) {
-					c.stmt = c.conn.prepareStatement("UPDATE user SET spammer = " + constants.SQL_CONST_SPAMMER_TRUE + ", updated_by = ?, updated_at = ?" +
-							                         " WHERE user_name = ? AND spammer = " + constants.SQL_CONST_SPAMMER_FALSE);	
+					c.stmt = c.conn.prepareStatement("UPDATE user " +
+							                         "  SET " +
+							                         "    spammer = " + constants.SQL_CONST_SPAMMER_TRUE + ", " +
+							                         "    updated_by = ?, " +
+							                         "    updated_at = ?, " +
+							                         "    to_classify = " + constants.SQL_CONST_TO_CLASSIFY_FALSE + 
+							                         "  WHERE " +
+							                         "    user_name = ? AND " +
+							                         "    spammer = " + constants.SQL_CONST_SPAMMER_FALSE);	
 				} else {
 					c.stmt = c.conn.prepareStatement("UPDATE user SET spammer = " + constants.SQL_CONST_SPAMMER_FALSE + ", updated_by = ?, updated_at = ?" +
 							                         " WHERE user_name = ? AND spammer = " + constants.SQL_CONST_SPAMMER_TRUE);
@@ -182,7 +189,7 @@ public class DBAdminManager extends DBManager {
 	}
 
 	/**
-	 * add an user to the negative spammerlist. So he is marked NOT as a spammer and will not appear longer in any suggestion list
+	 * add a user to the negative spammerlist. So he is marked NOT as a spammer and will not appear longer in any suggestion list
 	 * @param bean the AdminBean reference
 	 */
 	public static void removeUserFromSpammerlist(AdminBean bean) {
@@ -190,7 +197,13 @@ public class DBAdminManager extends DBManager {
 
 		try {
 			if (c.init()) {
-				c.stmt = c.conn.prepareStatement("UPDATE user SET spammer_suggest = 0, updated_by = ?, updated_at = ? WHERE user_name = ?");
+				c.stmt = c.conn.prepareStatement("UPDATE user " +
+						                         "  SET " +
+						                         "    spammer_suggest = 0, " +
+						                         "    updated_by = ?, " +
+						                         "    updated_at = ?, " +
+						                         "    to_classify = " + constants.SQL_CONST_TO_CLASSIFY_FALSE + 						                         
+						                         "  WHERE user_name = ?");
 				c.stmt.setString(1, bean.getCurrUser());
 				c.stmt.setTimestamp(2, new Timestamp(new Date().getTime()));
 				c.stmt.setString(3, bean.getUser());
