@@ -10,8 +10,11 @@
 	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+
+	
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	<script type="text/javascript" src="/resources/javascript/marksame.js">;</script>
 	
 	<c:set var="settingsCommand" value="${command.settingsCommand}" />
 	<c:set var="statisticsCommand" value="${command.statisticsCommand}" />
@@ -20,7 +23,8 @@
 		<jsp:attribute name="heading">		
 			<fmt:message key="navi.admin"/>									
 		</jsp:attribute>
-				
+		
+			
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/spammer.css" />
 		</jsp:attribute>	
@@ -33,6 +37,7 @@
 				<table class="stattable">
 					<tr>
 					<td>Filter: Last <input type="text" name="interval" id="interval" value="${command.interval}" size="4"/>  hours</td>
+					
 					</tr>
 				</table>
 			</form>				
@@ -53,7 +58,8 @@
 				<c:when test="${command.selTab &lt; 7}">				
 				<table id="spammers" class="spammertable">
 				    <tr style="font-size:120%">
-				    	<th>Spam?</th><th>Username</th><th>Spammer</th><th>Realname</th><th>Regdate</th>    	
+				    	<!--<th>Spam?</th><th>Username</th><th>Spammer</th><th>Realname</th><th>Regdate</th> --> 
+				    	<th>Spam?</th><th>Username</th><th>Realname</th><th>IP</th><th>Regdate</th>  	
 				   		<c:choose>
 				   		<c:when test="${command.selTab > 2}">
 				    	<th>Algorithm</th>
@@ -83,8 +89,9 @@
 				       	<a href="/user/${user.name}"><c:out value="${user.name}"/></a>
 				       	<a onclick="javascript:ajax_showTooltip('ajax?action=latest_posts&amp;userName=${user.name}',this);return false;" style="cursor:pointer" title="show latest posts"><img src="/resources/image/info.png"/></a>
 				        <a onclick="javascript:ajax_showTooltip('ajax?action=prediction_history&amp;userName=${user.name}',this);return false;" style="cursor:pointer" title="show latest user predictions"><img src="/resources/image/history.png"/></a></td>
-				       <td><c:out value="${user.spammer}"/></td>
+				       <!--<td><c:out value="${user.spammer}"/></td>-->
 				       <td><c:out value="${user.realname}"/></td>	
+					   <td><c:out value="${user.IPAddress}"/></td>
 					   <td><c:out value="${user.registrationDate}"/></td>					   
 				 	   <c:choose>
 				       <c:when test="${command.selTab > 2}">				    				       
@@ -132,8 +139,17 @@
 				</table>			
 				</c:otherwise>				
 				</c:choose>				
-			</c:if>					
-		</jsp:attribute>		
+			</c:if>		
+			
+			<script type="text/javascript"> 
+			<![CDATA[ 
+				ms_init("spammers", 4);
+			]]>
+			</script>
+					
+		</jsp:attribute>
+		
+		
 		
 		<jsp:attribute name="sidebar">			
 			<span class="sidebar_h">logging</span>	
@@ -230,6 +246,9 @@
 				preselect();
 			</script>											
 		</jsp:attribute>
+		
+		
 									
 	</layout:tabLayout>
+	
 </jsp:root>
