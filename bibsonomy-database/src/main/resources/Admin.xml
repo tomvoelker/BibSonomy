@@ -71,23 +71,8 @@
 		SELECT <include refid="commonPredictionAttributes"/>  FROM log_prediction WHERE user_name  = #userName# 
 		ORDER BY updated_at DESC LIMIT 25
 	</select>
-
-    <!--
-	<select id="getClassifierComparison" resultMap="AdminCommon.userPredictionAndSpammer" parameterClass="adminParam">
-		SELECT u.user_name,u.spammer, u.updated_by, u.updated_at, b.prediction, b.algorithm, b.mode
-		FROM user u 
-		JOIN log_prediction a ON (u.user_name = a.user_name)
-		JOIN log_prediction b ON (u.user_name = b.user_name)
-		WHERE (updated_by != 'classifier' OR ISNULL(u.updated_by))
-		<isGreaterThan property="interval" compareValue="0" prepend="AND">	
-			u.reg_date > NOW() - INTERVAL #interval# HOUR
-		</isGreaterThan>
-		GROUP BY 1,b.timestamp HAVING b.timestamp = MAX(a.timestamp)
-		ORDER BY u.reg_date DESC
-	</select>
-	--> 
 	 
-	   
+	 <!--  
 	 <select id="getClassifierComparison" resultMap="AdminCommon.userPredictionAndSpammer" parameterClass="adminParam">
 	 	SELECT a.user_name,u.spammer, u.updated_by, u.updated_at, a.prediction, a.algorithm, a.mode
 	 	FROM user u
@@ -98,7 +83,19 @@
 		</isGreaterThan>
 	 	order by u.reg_date DESC
 	 </select>
-	 
+	--> 
+	
+	 <select id="getClassifierComparison" resultMap="AdminCommon.userPredictionAndSpammer" parameterClass="adminParam">
+	 	SELECT a.user_name,u.spammer, u.updated_by, u.updated_at, a.prediction, a.algorithm, a.mode
+	 	FROM user u
+	 	JOIN prediction a ON (u.user_name = a.user_name)
+	 	JOIN tas t ON (t.user_name = a.user_name)
+	 	WHERE a.evaluator=1 AND t.date > NOW() - INTERVAL 24 HOUR 
+	 	<isGreaterThan property="interval" compareValue="0" prepend="AND">	
+			u.reg_date > NOW() - INTERVAL #interval# DAY
+		</isGreaterThan>
+	 	group by user_name order by t.date DESC
+	 </select>
 
 	<update id="updateTasGroupIds" parameterClass="adminParam">
 		UPDATE tas SET `group` = #newGroupId# WHERE user_name = #userName# AND `group` = #oldGroupId#
