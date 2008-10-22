@@ -183,7 +183,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 				/*
 				 * check group membership and if the group allows shared documents
 				 */
-				return UserUtils.getListOfGroupIDs(loginUser).contains(group.getGroupId()) && group.isSharedDocuments();
+				return group != null && UserUtils.getListOfGroupIDs(loginUser).contains(group.getGroupId()) && group.isSharedDocuments();
 			}
 		}
 		return false;
