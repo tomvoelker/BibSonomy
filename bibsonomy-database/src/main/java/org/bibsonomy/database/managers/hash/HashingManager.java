@@ -11,7 +11,7 @@ import org.bibsonomy.util.ValidationUtils;
  * @author Andreas Koch
  * @version $Id$
  */
-public abstract class HashingManager {
+public abstract class HashingManager<P extends HashElement> {
 
 	private static final String FALSE = "0";
 	private static final String TRUE = "1";
@@ -24,7 +24,7 @@ public abstract class HashingManager {
 	 *            to hash
 	 * @return hash string
 	 */
-	protected <T extends Resource> String elementToHashString(HashElement<Post<T>, ? extends GenericParam> element) {
+	protected <T extends Resource> String elementToHashString(P element) {
 		if (getMap().containsKey(elementToHash(element).toString())) {
 			/*
 			 * 
@@ -41,7 +41,7 @@ public abstract class HashingManager {
 	 *            to hash
 	 * @return hash stringbuilder
 	 */
-	protected <T extends Resource> StringBuilder elementToHash(HashElement<Post<T>, ? extends GenericParam> element) {
+	protected <T extends Resource> StringBuilder elementToHash(P element) {
 
 		StringBuilder sb = new StringBuilder();
 		addBoolean(sb, element.isDescription());
@@ -135,7 +135,7 @@ public abstract class HashingManager {
 	 *            incoming param
 	 * @return hash element
 	 */
-	public HashElement<? extends Post<? extends Resource>, ? extends GenericParam> getMapping(GenericParam param) {
+	public P getMapping(GenericParam param) {
 		return getMap().get(paramToHashString(param));
 		// HashElement elem = getMap().get(paramToHashString(param));
 		// if (elem != null && elem.isOrderValid(param.getOrder())) {
@@ -150,13 +150,13 @@ public abstract class HashingManager {
 	 * 
 	 * @return map
 	 */
-	protected abstract Map<String, HashElement<? extends Post<? extends Resource>, ? extends GenericParam>> getMap();
+	protected abstract Map<String, P> getMap();
 
 	/**
 	 * implement these methods, if a subclass handles specialized hash elements
 	 * with additional attributes
 	 */
-	protected abstract StringBuilder additionalElementToHash(HashElement element);
+	protected abstract StringBuilder additionalElementToHash(P element);
 
 	protected abstract StringBuilder additionalParamToHash(GenericParam param);
 }

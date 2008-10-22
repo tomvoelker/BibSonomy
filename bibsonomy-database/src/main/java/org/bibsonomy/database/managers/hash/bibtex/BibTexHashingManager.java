@@ -3,7 +3,6 @@ package org.bibsonomy.database.managers.hash.bibtex;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bibsonomy.database.managers.hash.HashElement;
 import org.bibsonomy.database.managers.hash.HashingManager;
 import org.bibsonomy.database.managers.hash.bibtex.get.GetBibTexByAuthor;
 import org.bibsonomy.database.managers.hash.bibtex.get.GetBibTexByAuthorAndTag;
@@ -26,38 +25,35 @@ import org.bibsonomy.database.managers.hash.bibtex.get.GetBibtexSearch;
 import org.bibsonomy.database.managers.hash.bibtex.get.GetBibtexViewable;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.GenericParam;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author Andreas Koch
  * @version $Id$
  */
-public class BibTexHashingManager extends HashingManager {
+public class BibTexHashingManager extends HashingManager<BibTexHashElement> {
 
-	private HashMap<String, HashElement<? extends Post<? extends Resource>, ? extends GenericParam>> bibtexMap;
+	private HashMap<String, BibTexHashElement> bibtexMap;
 
-	private final HashElement<Post<BibTex>, BibTexParam> getBibTexByHash;
-	private final HashElement<Post<BibTex>, BibTexParam> getBibTexByHashForUser;
-	private final HashElement<Post<BibTex>, BibTexParam> getBibTexByTagNames;
-	private final HashElement<Post<BibTex>, BibTexParam> getBibTexByTagNamesAndUser;
-	private final HashElement<Post<BibTex>, BibTexParam> getBibTexForGroup;
-	private final HashElement<Post<BibTex>, BibTexParam> getBibTexForGroupAndTag;
-	private final HashElement<Post<BibTex>, BibTexParam> getBibTexForHomePageOrPopular;
-	private final HashElement<Post<BibTex>, BibTexParam> getBibTexViewable;
-	private final HashElement<Post<BibTex>, BibTexParam> getBibTexForUser;
-	private final HashElement<Post<BibTex>, BibTexParam> getBibTexByConceptForUser;
-	private final HashElement<Post<BibTex>, BibTexParam> getBibTexByUserFriends;
-	private final HashElement<Post<BibTex>, BibTexParam> getBibTexByUserAndTagsFriends;
-	private final HashElement<Post<BibTex>, BibTexParam> getBibTexByFriends;
-	private final HashElement<Post<BibTex>, BibTexParam> getBibTexSearch;
-	private final HashElement<Post<BibTex>, BibTexParam> getBibTexByAuthor;
-	private final HashElement<Post<BibTex>, BibTexParam> getBibTexByAuthorAndTag;
-	private final HashElement<Post<BibTex>, BibTexParam> getBibTexByConceptByTag;
-	private final HashElement<Post<BibTex>, BibTexParam> getBibTexByConceptForGroup;
-	private final HashElement<Post<BibTex>, BibTexParam> getBibTexByKey;
+	private final BibTexHashElement getBibTexByHash;
+	private final BibTexHashElement getBibTexByHashForUser;
+	private final BibTexHashElement getBibTexByTagNames;
+	private final BibTexHashElement getBibTexByTagNamesAndUser;
+	private final BibTexHashElement getBibTexForGroup;
+	private final BibTexHashElement getBibTexForGroupAndTag;
+	private final BibTexHashElement getBibTexForHomePageOrPopular;
+	private final BibTexHashElement getBibTexViewable;
+	private final BibTexHashElement getBibTexForUser;
+	private final BibTexHashElement getBibTexByConceptForUser;
+	private final BibTexHashElement getBibTexByUserFriends;
+	private final BibTexHashElement getBibTexByUserAndTagsFriends;
+	private final BibTexHashElement getBibTexByFriends;
+	private final BibTexHashElement getBibTexSearch;
+	private final BibTexHashElement getBibTexByAuthor;
+	private final BibTexHashElement getBibTexByAuthorAndTag;
+	private final BibTexHashElement getBibTexByConceptByTag;
+	private final BibTexHashElement getBibTexByConceptForGroup;
+	private final BibTexHashElement getBibTexByKey;
 
 	private GetBibtexOfFriendsByTags getBibTexOfFriendsByTags;
 
@@ -88,7 +84,7 @@ public class BibTexHashingManager extends HashingManager {
 	}
 
 	@Override
-	protected StringBuilder additionalElementToHash(HashElement element) {
+	protected StringBuilder additionalElementToHash(BibTexHashElement element) {
 		StringBuilder sb = new StringBuilder();
 		if (element instanceof BibTexHashElement) {
 			addBoolean(sb, ((BibTexHashElement) element).isBibtexKey());
@@ -114,11 +110,11 @@ public class BibTexHashingManager extends HashingManager {
 	 * @see org.bibsonomy.database.managers.hash.HashingManager#getMap()
 	 */
 	@Override
-	protected Map<String, HashElement<? extends Post<? extends Resource>, ? extends GenericParam>> getMap() {
+	protected Map<String, BibTexHashElement> getMap() {
 		if (bibtexMap == null) {
-			bibtexMap = new HashMap<String, HashElement<? extends Post<? extends Resource>, ? extends GenericParam>>();
+			bibtexMap = new HashMap<String, BibTexHashElement>();
 
-			// fill the map with all existing elements 
+			// fill the map with all existing elements
 			bibtexMap.put(elementToHashString(this.getBibTexByHash), this.getBibTexByHash);
 			bibtexMap.put(elementToHashString(this.getBibTexByHashForUser), this.getBibTexByHashForUser);
 			bibtexMap.put(elementToHashString(this.getBibTexByTagNames), this.getBibTexByTagNames);
