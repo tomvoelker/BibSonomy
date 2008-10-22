@@ -59,7 +59,6 @@ public abstract class HashingManager {
 		// addBoolean(sb, element.isDate());
 		// addBoolean(sb, element.isRequestedGroupName());
 		// addBoolean(sb, element.isNumSimpleTagsOverNull());
-
 		sb.append(additionalElementToHash(element));
 
 		return sb;
@@ -93,15 +92,15 @@ public abstract class HashingManager {
 		sb.append(present(param.getNumSimpleConcepts()));
 		sb.append(present(param.getNumTransitiveConcepts()));
 		sb.append(param.getGrouping());
-		
+
 		/*
 		 * not neccessary to distinguish between the elements
 		 */
-		
+
 		// addBoolean(sb, ValidationUtils.present(param.getDate()));
-		// addBoolean(sb, ValidationUtils.present(param.getRequestedGroupName()));
+		// addBoolean(sb,
+		// ValidationUtils.present(param.getRequestedGroupName()));
 		// sb.append(present(param.getNumSimpleTags()));
-		
 		sb.append(additionalParamToHash(param));
 
 		return sb;
@@ -132,11 +131,17 @@ public abstract class HashingManager {
 	/**
 	 * returns the hash element suitable for the incoming param
 	 * 
-	 * @param param incoming param
+	 * @param param
+	 *            incoming param
 	 * @return hash element
 	 */
 	public HashElement<? extends Post<? extends Resource>, ? extends GenericParam> getMapping(GenericParam param) {
 		return getMap().get(paramToHashString(param));
+		// HashElement elem = getMap().get(paramToHashString(param));
+		// if (elem != null && elem.isOrderValid(param.getOrder())) {
+		// return elem;
+		// }
+		// return null;
 	}
 
 	/**
@@ -148,8 +153,10 @@ public abstract class HashingManager {
 	protected abstract Map<String, HashElement<? extends Post<? extends Resource>, ? extends GenericParam>> getMap();
 
 	/**
-	 * implement these methods, if a subclass handles specialized hash elements with additional attributes
+	 * implement these methods, if a subclass handles specialized hash elements
+	 * with additional attributes
 	 */
 	protected abstract StringBuilder additionalElementToHash(HashElement element);
+
 	protected abstract StringBuilder additionalParamToHash(GenericParam param);
 }
