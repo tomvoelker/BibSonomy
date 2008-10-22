@@ -15,6 +15,7 @@ import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChain;
+import org.bibsonomy.database.managers.hash.bibtex.BibTexHashingManager;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
@@ -49,7 +50,8 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	private final TagDatabaseManager tagDb;
 	private final DatabasePluginRegistry plugins;
 	private static final BibTexChain chain = new BibTexChain();
-
+	private static final BibTexHashingManager hashelements = new BibTexHashingManager();
+	
 	private BibTexDatabaseManager() {
 		this.generalDb = GeneralDatabaseManager.getInstance();
 		this.tagDb = TagDatabaseManager.getInstance();
@@ -1107,6 +1109,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	public List<Post<BibTex>> getPostsWithPrivnote(final BibTexParam param, final DBSession session) {
 		// start the chain
 		final List<Post<BibTex>> posts = chain.getFirstElement().perform(param, session);
+		
+		
+//		final List<Post<BibTex>> posts = hashelements.getMapping(param).perform(param, session);
+		
 		// insert the private notes
 		final BibTexExtraDatabaseManager bibtexExtraDb = BibTexExtraDatabaseManager.getInstance();
 		for (final Iterator<Post<BibTex>> postsIterator = posts.iterator(); postsIterator.hasNext();) {
