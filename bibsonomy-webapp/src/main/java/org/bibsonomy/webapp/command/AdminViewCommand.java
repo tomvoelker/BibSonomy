@@ -27,7 +27,7 @@ public class AdminViewCommand extends TabsCommand<User> {
 	private AdminStatisticsCommand statisticsCommand = new AdminStatisticsCommand();	
 	
 	/** the time interval for retrieving spammers */
-	private Integer interval = -1;
+	private Integer interval = 300;
 	
 	public AdminViewCommand() {				
 		addTab(ADMIN_SPAMMER_INDEX, "Admin: Spammer");

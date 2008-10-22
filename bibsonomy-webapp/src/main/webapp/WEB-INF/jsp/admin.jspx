@@ -34,7 +34,7 @@
 			<form action="/admin" method="get" class="smallform">
 				<table class="stattable">
 					<tr>
-					<td>Filter: Last <input type="text" name="interval" id="interval" value="${command.interval}" size="4"/>  hours</td>
+					<td>Filter: Last <input type="text" name="interval" id="interval" value="${command.interval}" size="4"/>  days</td>
 					
 					</tr>
 				</table>
