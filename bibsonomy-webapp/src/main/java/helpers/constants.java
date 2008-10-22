@@ -29,6 +29,7 @@ public final class constants {
 	/*spammer ids*/
 	public static final int SQL_CONST_SPAMMER_TRUE   = 1;
 	public static final int SQL_CONST_SPAMMER_FALSE  = 0;
+	public static final int SQL_CONST_TO_CLASSIFY_FALSE = 0;
 	
 	/* ***********************************************************************
 	 * HTTP constants
