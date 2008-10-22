@@ -129,10 +129,14 @@ function ms_marksame(ipvalue) {
 	// vergleiche spaltenwert mit eventwert 
 	// markiere ggf. den wert bzw. nimm markeirung weg. 
 	// markierung besteht aus zusätzlichem style-element! 
+
+
+var duplicateCount = 0;
+
 	
 //	console.log("Welcome to function ms_marksame");
 //	console.log(ipvalue);
-	
+
 	if (ms_table_tbody != "")
 	{
 		
@@ -161,7 +165,8 @@ function ms_marksame(ipvalue) {
 								if (ms_table_tbody.childNodes[i].childNodes[j].childNodes[0].nodeValue == ipvalue)
 								{
 									// set background-color to yellow
-									ms_table_tbody.childNodes[i].childNodes[j].style.backgroundColor = "yellow";
+									ms_table_tbody.childNodes[i].childNodes[j].style.backgroundColor = "#FFFFAA";
+									duplicateCount++;
 								}
 								else
 								{ // reset style
@@ -174,17 +179,27 @@ function ms_marksame(ipvalue) {
 								// do nothing
 							}
 
-						}
-					}
+						} // end if (countTD==ms_table_col)
+					} // end if (ms_table_tbody.childNodes[i].childNodes[j].nodeName == "TD")
+				} // end for
+			} // end if (ms_table_tbody.childNodes[i].nodeName == "TR")
+		} // end for
 
-
-
-				}
-			}
-			
-		};
-	
+	// write number of same ips in status-bar
+	// in newer browsers you can only write in status bar if user allowed this before.
+	// in firefox 3: 
+	//    Click on Extras/Einstellungen/Inhalt then activate option "Javascript aktivieren" and click "Erweitert"
+	//    activate option "Statusleistentext ändern"
+	if (duplicateCount>1)
+	{
+		top.status = "IP address "+ipvalue+" occurs in entries: " + duplicateCount;
 	}
+	else
+	{
+		top.status = "IP address "+ipvalue+" does not occur in more than this entry.";
+	}	
+
+	} // end if (ms_table_tbody != "")
 	
 } 
 
