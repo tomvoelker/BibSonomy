@@ -41,7 +41,7 @@
 
 	<select id="getClassifiedUsers" resultMap="UserCommon.userWithPrediction" parameterClass="adminParam">
 		SELECT *  
-		FROM user u JOIN log_prediction p ON (u.user_name = p.user_name AND u.updated_at = p.updated_at)
+		FROM user u JOIN prediction p ON (u.user_name = p.user_name AND u.updated_at = p.updated_at)
 		WHERE updated_by = 'classifier' AND prediction = #prediction# 
 		<isGreaterThan property="interval" compareValue="0" prepend="AND">
 			p.updated_at > NOW() - INTERVAL #interval# HOUR		
@@ -52,7 +52,7 @@
 
 	<select id="getClassifiedUsersCount" resultClass="integer" parameterClass="adminParam">
 		SELECT COUNT(*)  
-		FROM user u JOIN log_prediction p ON (u.user_name = p.user_name AND u.updated_at = p.updated_at)
+		FROM user u JOIN prediction p ON (u.user_name = p.user_name AND u.updated_at = p.updated_at)
 		WHERE updated_by = 'classifier' AND prediction = #prediction#		
 	   <isGreaterThan property="interval" compareValue="0" prepend="AND">	
 			p.updated_at > NOW() - INTERVAL #interval# HOUR		
