@@ -113,9 +113,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		/*
 		 * set prediction
 		 */
-		if (user.getPrediction() != null) {
-			param.setPrediction(user.getPrediction());
-		} else {
+		if (user.getPrediction() == null) {
 			/*
 			 * map boolean to int
 			 */
@@ -126,6 +124,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 			}
 		}
 		
+		param.setPrediction(user.getPrediction());
 		param.setMode(user.getMode());
 		param.setAlgorithm(user.getAlgorithm());
 		param.setUpdatedBy(updatedBy);
