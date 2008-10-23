@@ -5,6 +5,7 @@ Download
 *--+--+
 |<<>>|<<Download>>
 |Java client library | {{{./download/bibsonomy_rest_client_library_java.tgz}bibsonomy_rest_client_library_java.tgz}} 
-|JabRef client | {{{./download/JabRef2.3b-BibsonomyEdition.jar}JabRef2.3b-BibsonomyEdition.jar}}
-|PHP API client | {{{./download/bibsonomy-client-php.zip}bibsonomy-client-php.zip}}
+|JabRef client | {{{https://gforge.cs.uni-kassel.de/frs/download.php/30/jabref-2.3b-bibsonomy-edition-1.0.jar}jabref-2.3b-bibsonomy-edition-1.0.jar}}
+|PHP API client | {{{https://gforge.cs.uni-kassel.de/frs/download.php/26/bibsonomy-client-php.zip}bibsonomy-client-php.zip}}
+|Backup Client | {{{https://gforge.cs.uni-kassel.de/frs/download.php/32/bibsonomy_userbackup.zip}bibsonomy_userbackup.zip}}
 *--+--+
