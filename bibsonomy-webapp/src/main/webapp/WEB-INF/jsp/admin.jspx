@@ -220,11 +220,11 @@
 					<td>Spammers by Classifier (unsure)</td><td><c:out value="${statisticsCommand.numClassifierSpammerUnsure}"/></td>
 				</tr>
 				<tr>
-					<td>No Spammers by Classifier</td><td><c:out value="${statisticsCommand.numClassifierNoSpammer}"/></td>
+					<td>No Spammers by Classifier (unsure)</td><td><c:out value="${statisticsCommand.numClassifierNoSpammerUnsure}"/></td>
 				</tr>
 				<tr>
-					<td>No Spammers by Classifier (unsure)</td><td><c:out value="${statisticsCommand.numClassifierNoSpammerUnsure}"/></td>
-				</tr>		
+					<td>No Spammers by Classifier</td><td><c:out value="${statisticsCommand.numClassifierNoSpammer}"/></td>
+				</tr>	
 			</table>
 			
 			<script type="text/javascript">
