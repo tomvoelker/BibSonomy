@@ -15,8 +15,8 @@
   <html>
 	<head>
 		<meta content="text/html; charset=UTF-8" http-equiv="content-Type"/>
-		<link href="/style.css" type="text/css" rel="stylesheet"/>
-		<link href="/faq.css" type="text/css" rel="stylesheet"/>
+		<link href="/resources/css/style.css" type="text/css" rel="stylesheet"/>
+		<link href="/resources/css/faq.css" type="text/css" rel="stylesheet"/>
 		<title>BibSonomy :: scraping service</title>
 	</head>
 	<body>
@@ -33,6 +33,15 @@
 		</div>
 		<div id="outer">
           <div id="general">
+          
+            <p>
+            This service allows you to extraxt bibliographic metadata from 
+            <a href="http://www.bibsonomy.org/scraperinfo">numerous digital libraries</a>.
+            The extracted data is represented in  
+            <a href="http://en.wikipedia.org/wiki/BibTeX">BibTeX</a> format.
+            
+            </p>
+             
 
 			<div class="scrapebox">
 				<form method="get" action="/service">
@@ -41,28 +50,74 @@
 					<input type="submit" value="send"/>
 				</form>
 			</div>
-      
-            <hr/>
 
-            <c:if test="${not empty bean and not empty bean.errorMessage}">
-                <h3>errors</h3>
-				<p class="errmsg">
-					<c:out value="${bean.errorMessage}"/>
-				</p>
-            </c:if>
-            
-            <c:if test="${not empty bean and not empty bean.url}">
-                <h3>scraped URL</h3> 
-				<p>
-					<c:out value="${bean.url}"/>
-				</p>
-            </c:if>
-            
-            <c:if test="${not empty bean and not empty bean.bibtex}">
-                <h3>scraped BibTeX</h3>
-				<p style="white-space:pre;">
-                   <c:out value="${bean.bibtex}"/>
-				</p>
+
+<c:set var="projectHome" value="http://scraper.bibsonomy.org/service"/>
+
+<p>You can also drag the 
+<script type="text/javascript">
+<![CDATA[
+  var myurl = "";
+  if (window.getSelection) {
+    myurl  = "javascript:location.href='${projectHome}?url='+encodeURIComponent(location.href)+'&amp;selection='+encodeURIComponent(window.getSelection())";
+  } else if (document.getSelection) {
+    myurl  = "javascript:location.href='${projectHome}?url='+encodeURIComponent(location.href)+'&amp;selection='+encodeURIComponent(document.getSelection())";
+  } else if (document.selection) {
+    myurl  = "javascript:location.href='${projectHome}?url='+encodeURIComponent(location.href)+'&amp;selection='+encodeURIComponent(document.selection.createRange().text)";
+  }
+  document.write("<a title=\"scrapePublication\"href=\""+myurl+"\" onclick=\"return false\" class=\"bookmarklet2\"><img src=\"/resources/image/button_scrapePublication.png\" alt=\"scrapePublication\"/></a>");
+]]>
+</script>
+<noscript>
+  (you need JavaScript enabled: Firefox/Opera: <a title="scrapePublication" href="javascript:location.href='${projectHome}?url='+encodeURIComponent(location.href)+'&amp;selection='+encodeURIComponent(document.getSelection())" onclick="return false" class="bookmarklet2"><img src="/resources/image/button_scrapePublication.png" alt="scrapePublication"/></a>,
+  InternetExplorer: <a title="postPublication" href="javascript:location.href='${projectHome}?url='+encodeURIComponent(location.href)+'&amp;selection='+encodeURIComponent(document.selection.createRange().text)" onclick="return false" class="bookmarklet2"><img src="/resources/image/button_scrapePublication.png" alt="scrapePublication"/></a>)
+</noscript>
+button to the links toolbar of your browser once and then use it to scrape publications from pages listed <a href="http://www.bibsonomy.org/scraperinfo">here</a>.</p>
+      
+            <c:if test="${not empty bean}">
+              
+              <hr/>
+  
+              <c:if test="${not empty bean.errorMessage}">
+                  <h3>errors</h3>
+  				  <p class="errmsg">
+  					<c:out value="${bean.errorMessage}"/>
+  				  </p>
+              </c:if>
+              
+              <c:if test="${not empty bean.url}">
+                  <h3>scraped URL</h3> 
+                  <p>
+  					<a href="${fn:escapeXml(bean.url)}"><c:out value="${bean.url}"/></a>
+  				  </p>
+              </c:if>
+
+              <c:if test="${not empty bean.selection}">
+                  <h3>scraped selection</h3> 
+                  <p>
+                   <c:out value="${bean.selection}"/>
+                  </p>
+              </c:if>
+
+              
+              <c:if test="${not empty bean.bibtex}">
+                  <hr/>
+                  <h3>resulting BibTeX</h3>
+                  
+                  <c:url var="postBibTeXURL" value="http://www.bibsonomy.org/BibtexHandler">
+                    <c:param name="url"><c:out value="${bean.url}"/></c:param>
+                    <c:param name="requTask">upload</c:param>
+                    <c:param name="selection"><c:out value="${bean.selection}"/></c:param>
+                  </c:url>
+                  
+                  <p><a style="border: 1px solid #ccc; background-color: #eee; margin: 1em; padding: .5em;" 
+                     href="${postBibTeXURL}">post to BibSonomy</a></p>
+                  
+  				<p style="white-space:pre;">
+                     <c:out value="${bean.bibtex}"/>
+  				</p>
+              </c:if>
+              
             </c:if>
         
         </div>

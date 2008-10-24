@@ -39,6 +39,8 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		final String urlString = request.getParameter("url");
+		final String selection = request.getParameter("selection");
+		
 		log.info("Scraping service called with url " + urlString);
 		
 		if (urlString != null && !urlString.trim().equals("")) {
@@ -47,8 +49,10 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 			try {
 				final URL url = new URL(urlString);
 				bean.setUrl(url);
+				bean.setSelection(selection);
 
 				final ScrapingContext context = new ScrapingContext(url);
+				context.setSelectedText(selection);
 
 				final Scraper compositeScraper = new KDEScraperFactory().getScraper();
 
