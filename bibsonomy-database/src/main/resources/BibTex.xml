@@ -122,7 +122,7 @@
 	
 	<select id="getJustBibTexByTagNamesForUserWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
 		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, g.group, 
-		g.group_name, tt.hash, tt.name
+		g.group_name, tt.hash, tt.name, tt.md5hash
 		FROM bibtex b, tas t, groupids g, bibhash h,
 			(SELECT t1.content_id, d.hash, d.name, d.md5hash
 			FROM document d, <include refid="tagFromQuery"/>			
@@ -495,7 +495,7 @@
 	</select>
 	
 	<select id="getJustBibTexForUserWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
-		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count, b2.hash, b2.name
+		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count, b2.hash, b2.name, b2.md5hash
 		FROM (SELECT t1.*, h.ctr AS count, d.hash, d.name, d.md5hash
 		      FROM bibtex t1, bibhash h, document d
 		      WHERE <include refid="bibtexSimHash3"/>
