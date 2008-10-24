@@ -47,6 +47,10 @@ my $master   = "DBI:mysql:database=$database;host=gandalf:6033";
 # temp variables
 my %tag_hash =();
 my %tag_count_hash =();
+my %tag_user_hash =();
+my %tag_user_count_hash = ();
+
+my $min_user_count=10;
 
 ########################################################
 # SLAVE 
@@ -55,9 +59,9 @@ my %tag_count_hash =();
 my $dbh = DBI->connect($slave, $user, $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});
 # prepare statements
 # get all public tag_names from the tas list
-my $stm_select_tag_names = $dbh->prepare("SELECT tag_name FROM tas t WHERE t.group = 0");
+my $stm_select_tag_names = $dbh->prepare("SELECT tag_name,user_name FROM tas t WHERE t.group = 0");
 # get old tag counts
-my $stm_select_tagcounts_names = $dbh->prepare("SELECT tag_name, tag_ctr_public FROM tags t WHERE tag_ctr_public > 0");
+my $stm_select_tagcounts_names = $dbh->prepare("SELECT tag_name, tag_ctr_public, show_tag FROM tags t WHERE tag_ctr_public > 0");
 
 # execute statements (Tag Names)
 # get TOP bookmarks
@@ -73,6 +77,10 @@ while (my @tag = $stm_select_tag_names->fetchrow_array ) {
     	$tag_hash{$tag[0]}=1;
     }
 
+    $tag_user_hash{$tag[0]}{$tag[1]}=1;
+
+
+
 }
 $dbh->commit;
 
@@ -81,6 +89,7 @@ $stm_select_tagcounts_names->execute();
 $dbh->commit;
 while (my @tagcount = $stm_select_tagcounts_names->fetchrow_array ) {
     	$tag_count_hash{$tagcount[0]}=$tagcount[1];
+    	$tag_user_count_hash{$tagcount[0]}=$tagcount[2];
 }
 $dbh->commit;
 
@@ -92,14 +101,20 @@ $dbh->disconnect;
 # connect to master
 $dbh = DBI->connect($master, $user, $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});
 # update tag table with the new counts
-my $stm_update_tag = $dbh->prepare("UPDATE tags SET tag_ctr_public = ? WHERE tag_name= ?");
+my $stm_update_tag = $dbh->prepare("UPDATE tags SET tag_ctr_public = ?, show_tag =? WHERE tag_name= ?");
 
 # update tag table
 for my $key (sort {$a cmp $b} keys %tag_hash) {
   my $count=$tag_hash{$key};
+  # count the number of users per tag
+  my $user_count = keys(%{$tag_user_hash{$key}});
+  my $show_tag=0;
+  if ($user_count>$min_user_count) {$show_tag=1};
+  
   # update only if we have a new counter
-  if ((not exists $tag_count_hash{$key}) || $tag_count_hash{$key}!=$count) {
-    $stm_update_tag->execute($count,$key);
+  if ((not exists $tag_count_hash{$key}) || $tag_count_hash{$key}!=$count ||
+       $tag_user_count_hash{$key}!=$show_tag ) {
+    $stm_update_tag->execute($count,$show_tag,$key);
   }
 }
 
