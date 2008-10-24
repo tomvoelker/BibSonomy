@@ -10,6 +10,7 @@ public class ScrapingResultBean implements Serializable {
 	private String bibtex;
 	private String errorMessage;
 	private URL url;
+	private String selection;
 	
 	public ScrapingResultBean() {
 		// TODO Auto-generated constructor stub
@@ -38,6 +39,16 @@ public class ScrapingResultBean implements Serializable {
 
 	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
+	}
+
+
+	public String getSelection() {
+		return selection;
+	}
+
+
+	public void setSelection(String selection) {
+		this.selection = selection;
 	}
 
 }
