@@ -40,9 +40,9 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		final String urlString = request.getParameter("url");
 		final String selection = request.getParameter("selection");
-		
+
 		log.info("Scraping service called with url " + urlString);
-		
+
 		if (urlString != null && !urlString.trim().equals("")) {
 			final ScrapingResultBean bean = new ScrapingResultBean();
 
@@ -88,8 +88,17 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 				bean.setErrorMessage(e.getMessage());
 			}
 
+			/*
+			 * show plain bibtex output
+			 */
+			if ("plain".equals(request.getParameter("format"))) {
+				response.setContentType("text/plain");
+				response.getOutputStream().write(bean.getBibtex().getBytes("UTF-8"));
+				return;
+			}
 			request.setAttribute("bean", bean);
 		}
+
 		getServletConfig().getServletContext().getRequestDispatcher("/index.jsp").forward(request, response);
 	}   	  	    
 }

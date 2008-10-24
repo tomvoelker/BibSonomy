@@ -72,7 +72,16 @@
   (you need JavaScript enabled: Firefox/Opera: <a title="scrapePublication" href="javascript:location.href='${projectHome}?url='+encodeURIComponent(location.href)+'&amp;selection='+encodeURIComponent(document.getSelection())" onclick="return false" class="bookmarklet2"><img src="/resources/image/button_scrapePublication.png" alt="scrapePublication"/></a>,
   InternetExplorer: <a title="postPublication" href="javascript:location.href='${projectHome}?url='+encodeURIComponent(location.href)+'&amp;selection='+encodeURIComponent(document.selection.createRange().text)" onclick="return false" class="bookmarklet2"><img src="/resources/image/button_scrapePublication.png" alt="scrapePublication"/></a>)
 </noscript>
-button to the links toolbar of your browser once and then use it to scrape publications from pages listed <a href="http://www.bibsonomy.org/scraperinfo">here</a>.</p>
+button to the links toolbar of your browser once and then use it to scrape publications from pages listed <a href="http://www.bibsonomy.org/scraperinfo">here</a> by pressing
+the button on one of the listed pages.</p>
+
+<p>The service accepts the following parameters:</p>
+<ul>
+<li><tt>url</tt>: The URL of the page which should be scraped.</li>
+<li><tt>selection</tt>: Text selected on the web page. Used by some scrapers in addition to / instead of the URL.</li>
+<li><tt>format</tt>: If equal to <tt>plain</tt>, plain BibTeX is returned instead of this HTML page.</li>
+</ul>
+ 
       
             <c:if test="${not empty bean}">
               
@@ -109,13 +118,22 @@ button to the links toolbar of your browser once and then use it to scrape publi
                     <c:param name="requTask">upload</c:param>
                     <c:param name="selection"><c:out value="${bean.selection}"/></c:param>
                   </c:url>
-                  
-                  <p><a style="border: 1px solid #ccc; background-color: #eee; margin: 1em; padding: .5em;" 
-                     href="${postBibTeXURL}">post to BibSonomy</a></p>
-                  
-  				<p style="white-space:pre;">
+                  <c:url var="plainBibTeXURL" value="${projectHome}">
+                    <c:param name="url"><c:out value="${bean.url}"/></c:param>
+                    <c:param name="format">plain</c:param>
+                    <c:param name="selection"><c:out value="${bean.selection}"/></c:param>
+                  </c:url>
+                     
+                  <p>
+                     <a style="border: 1px solid #ccc; background-color: #eee; margin: .5em; padding: .5em;" 
+                        href="${postBibTeXURL}">post to BibSonomy</a>
+                     <a style="border: 1px solid #ccc; background-color: #eee; margin: .5em; padding: .5em;" 
+                        href="${plainBibTeXURL}">get plain BibTeX</a>
+                  </p>
+
+   	              <p style="white-space:pre;">
                      <c:out value="${bean.bibtex}"/>
-  				</p>
+  				  </p>
               </c:if>
               
             </c:if>
