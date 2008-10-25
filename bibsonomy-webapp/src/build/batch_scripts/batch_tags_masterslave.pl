@@ -122,7 +122,7 @@ for my $key (sort {$a cmp $b} keys %tag_hash) {
 for my $key (sort {$a cmp $b} keys %tag_count_hash) {
    # update only if we have a new counter
    if (not exists $tag_hash{$key}) {
-      $stm_update_tag->execute(0,$key);
+      $stm_update_tag->execute(0,0,$key);
    }
 }
 
