@@ -1,0 +1,44 @@
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
+	
+	<fieldset style="border: 1px solid #069;background-color: #eee; width:95%">
+		<legend><form:label path="postBookmark.tags" ><fmt:message key="post.resource.tags"/>*</form:label></legend>
+		<div class="info_bold">
+			<form:input path="tags"
+					onfocus="setActiveInputField(this.id); enableHandler()"
+					onclick="setActiveInputField(this.id); enableHandler();"
+					onblur="disableHandler()" tabindex="4" id="tags"
+					size="60" autocomplete="off" />
+			${mtl:ch('nbsp')}<fmt:message key="post.resource.spaceseperated"/>
+		</div>
+		<div class="errmsg"><form:errors path="tags" /></div>
+		
+		<p>
+			<div style="vertical-align:middle">
+				<fmt:message key="post.resource.recommendation"/>:${mtl:ch('nbsp')}<c:forEach var="tag" items="${command.recommendedTags}"><a href="javascript:addTag('${tag}')">${tag}</a>${mtl:ch('nbsp')}</c:forEach>
+			</div>
+		</p>
+		<p>
+			<div style="vertical-align:center">
+				<div><fmt:message key="post.resource.suggested"/>:</div>
+				<div></div>
+			</div>
+		</p>
+	</fieldset>		
+
+	<script type="text/javascript">
+		<![CDATA[
+			function addTag(tagname){
+				document.getElementById('tags').value+=tagname+" ";
+			}
+		]]>
+	</script>
+
+</jsp:root>

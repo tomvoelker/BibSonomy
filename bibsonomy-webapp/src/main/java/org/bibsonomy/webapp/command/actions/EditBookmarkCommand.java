@@ -23,22 +23,19 @@ public class EditBookmarkCommand extends PostCommand {
 	private Post<Bookmark> postBookmark;
 	private String tags ;
 	
-	private List<Group> groups;
-	private List<String> relevantTags;
+	private List<String> groups;
 	private List<Tag> relevantGroups;
 	private List<String> recommendedTags;
-	private GroupID groupIds;
-	private Map<String,Map<String,List<String>>> relevantTagSets;
+	private List<Group> groupDetails;
 	//private TagCloudCommand tagcloud = new TagCloudCommand();
 	
 	public EditBookmarkCommand() {
 		postBookmark = new Post<Bookmark>();
 		postBookmark.setResource(new Bookmark());
 
-		groups = new ArrayList<Group>();
-		relevantTags = new ArrayList<String>();
+		groups = new ArrayList<String>();
 		relevantGroups = new ArrayList<Tag>();
-		relevantTagSets = new HashMap<String, Map<String,List<String>>>();
+		groupDetails = new ArrayList<Group>();
 	}
 
 	public Post<Bookmark> getPostBookmark() {
@@ -62,20 +59,12 @@ public class EditBookmarkCommand extends PostCommand {
 	}
 
 
-	public List<Group> getGroups() {
+	public List<String> getGroups() {
 		return this.groups;
 	}
 
-	public void setGroups(List<Group> groups) {
+	public void setGroups(List<String> groups) {
 		this.groups = groups;
-	}
-
-	public List<String> getRelevantTags() {
-		return this.relevantTags;
-	}
-
-	public void setRelevantTags(List<String> relevantTags) {
-		this.relevantTags = relevantTags;
 	}
 
 	public List<Tag> getRelevantGroups() {
@@ -94,13 +83,14 @@ public class EditBookmarkCommand extends PostCommand {
 		this.recommendedTags = recommendedTags;
 	}
 
-	public Map<String, Map<String, List<String>>> getRelevantTagSets() {
-		return this.relevantTagSets;
+	public List<Group> getGroupDetails() {
+		return this.groupDetails;
 	}
 
-	public void setRelevantTagSets(Map<String, Map<String, List<String>>> relevantTagSets) {
-		this.relevantTagSets = relevantTagSets;
+	public void setGroupDetails(List<Group> groupDetails) {
+		this.groupDetails = groupDetails;
 	}
+
 	
 	
 }

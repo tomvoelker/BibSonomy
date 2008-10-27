@@ -269,7 +269,6 @@
 		<to>/PictureDownloadHandler?requHash=$1&amp;requUser=$2</to> 
 	</rule>
 
-
 <!-- ############## user pages ############### -->
     <!-- redirect for tag formular on /concept/user/USER/TAG page -->
     <rule>
@@ -713,6 +712,12 @@
 		<from>^/+uri/+author/(.+?)(\?(.*))?$</from>
 		<to>/RedirectHandler?page=uri&amp;requResource=author&amp;requContent=$1&amp;$3</to>
 	</rule>	
+	
+	<!-- Actions -->
+	<rule><!-- /actions/admin/group/GROUPNAME -->
+		<from>^/+actions/+admin/+group/+([^/?]+?)(\?(.*))?$</from>
+		<to>/actions/admin/group?requestedGroup=$1&amp;$3</to>
+	</rule>
 
 <!-- ############## other pages ############### -->
 	<rule>

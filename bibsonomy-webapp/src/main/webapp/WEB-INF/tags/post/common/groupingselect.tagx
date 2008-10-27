@@ -7,17 +7,17 @@
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post/">
 
-	<jsp:directive.attribute name="user" type="org.bibsonomy.model.User" required="true"/>
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
 	<jsp:directive.attribute name="size" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="onchange" type="java.lang.String" required="false"/>
-	<jsp:directive.attribute name="optionid" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="selectid" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="optionid" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="friends" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="path" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="error" type="java.lang.Boolean" required="true"/>
 
 	<form:select path="${path}" size="${size}" onchange="${onchange}" id="${selectid}">
-		<c:forEach items="${user.groups}" var="group" varStatus="status">
+		<c:forEach items="${command.groupDetails}" var="group" varStatus="status">
 			<c:if test="${fn:length(group.name) > 0}">
 				<form:option id="${optionid}${status.index}" label="${group.name}" value="${group.name}"/>
 			</c:if>

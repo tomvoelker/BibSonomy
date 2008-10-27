@@ -9,68 +9,23 @@
 
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
 	
-	<c:set var="user" value="${command.context.loginUser}"/>
-
-	<tr>
-		<!-- TODO besseres stylesheet schrieben -->
-		<td><form:label path="postBookmark.groups"><fmt:message key="post.resource.viewablefor"/>*:</form:label></td>
-		<td colspan="2">
-			<table class="vmiddle">
-				<td style="width:50%">
-					<common:groupingradio onclick="disableGroupBox()"/>
+	<fieldset style="border: 1px solid #069;background-color: #eee; width:95%">
+		<legend><form:label path="postBookmark.groups"><fmt:message key="post.resource.viewablefor"/>*</form:label></legend>
+		<table class="vmiddle" style="width:100%">
+			<tr>
+				<td style="width:20%">
+					<common:groupingradio onclick="disableGroupBox()"/>${mtl:ch('nbsp')}
 				</td>
-				<td align="right">
-					<common:groupingselect user="${user}" size="5" path="postBookmark.groups" optionid="visibilityoption" selectid="visibilitybox" error="${true}" friends="${true}"/>
+				<td style="width:20%">
+					<common:groupingselect  command="${command}" size="5" path="postBookmark.groups" optionid="visibilityoption" selectid="visibilitybox" error="${true}" friends="${true}"/>
 				</td>
-			</table>
-		</td>
-	</tr>
-	
-	<tr>
-		<td>
-			<form:label path="relevantGroups"><fmt:message key="post.resource.relevantfor"/>*:</form:label>
-		</td>
-		<td colspan="2">
-			<table class="vmiddle">
-				<td style="width:50%;text-align:center">
-					<c:set var="aboutrelevantfor"><fmt:message key="post.resource.aboutrelevantfor"/></c:set>	
-					<a href="/help" title="${aboutrelevantfor}"><div class="info"><fmt:message key="post.resource.about"/></div></a>
+				<td>
+					<c:set var="aboutgroups"><fmt:message key="post.resource.aboutrelevantfor"/></c:set>	
+					<a href="/help" title="${aboutgroups}"><div class="info"><fmt:message key="post.resource.about"/></div></a>
 				</td>
-				<td align="right">
-					<common:groupingselect user="${user}" size="5" path="relevantGroups" error="${false}" onchange="checkVisibility()" optionid="relgroup" friends="${false}"/>
-				</td>
-			</table>
-		</td>
-	</tr>
-				
-<c:forEach var="group" items="${user.groups}" varStatus="status">
-	<c:if test="${fn:length(group.name) > 0}">
-		<tr id="groupset${status.index}" style="display:none">
-			<td valign="center"><fmt:message key="post.resource.relevantfor"/><br/>${group.name}:</td>
-			<td colspan="2">
-				<table>
-					<tr>
-						<c:forEach var="tagset" items="${command.relevantTagSets[group.name]}" varStatus="status_set">
-							<td align="center">
-								<div class="info_bold">${tagset.key}</div>
-								<form:select id="${tagset.key}" path="relevantTags" size="1" onchange="addSelectedTag('${tagset.key}')" multiple="false">
-									<c:set var="select"><fmt:message key="post.resource.select"/></c:set>
-									<form:option value="" label="${select}" id="${tagset.key}-1"/>
-									<c:forEach items="${tagset.value}" var="tag" varStatus="status_tag">
-											<form:option label="${tag}" value="${tag}" id="${tagset.key}${status_tag.index}"/>
-									</c:forEach>	
-									<c:if test="${error == true}">
-										<div class="posterror"><form:errors path="relevantTags"/></div>
-									</c:if>
-								</form:select>
-							</td>
-						</c:forEach>
-					</tr>
-				</table>
-			</td>
-		</tr>
-	</c:if>
-</c:forEach>		
+			</tr>
+		</table>
+	</fieldset>	
 
 	<script type="text/javascript">
 	<![CDATA[
@@ -88,29 +43,6 @@
 			}else{
 				document.getElementById("visibilitybox").disabled = false;
 			}
-		}
-
-		function checkVisibility(){
-			var counter = 0;
-			while(document.getElementById("relgroup"+counter) != null){
-				if(document.getElementById("relgroup"+counter).selected == true){
-					document.getElementById("groupset"+counter).style.display = '';
-				}else{
-					document.getElementById("groupset"+counter).style.display = 'none';
-				}
-				counter++;
-			}
-		}
-
-		function addSelectedTag(id){
-			var counter = -1;
-			while(document.getElementById(id+counter) != null){
-				if(document.getElementById(id+counter).selected == true){
-					document.getElementById('tags').value+=document.getElementById(id+counter).value+" ";
-				}
-				counter++;
-			}
-
 		}
 	]]>
 	</script>

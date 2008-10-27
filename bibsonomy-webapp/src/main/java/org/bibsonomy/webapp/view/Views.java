@@ -257,7 +257,14 @@ public enum Views implements View {
 	/**
 	 * Show the form after reminding a password to change it
 	 */
-	PASSWORD_CHANGE_ON_REMIND("actions/user/passwordChangeOnRemind");
+	PASSWORD_CHANGE_ON_REMIND("actions/user/passwordChangeOnRemind"),
+	
+	
+	/**
+	 * Show the page for administrating groups
+	 */
+	ADMINISTRATE_GROUP("actions/admin/group");
+	
 	
 	private final String name;
 	

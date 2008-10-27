@@ -219,7 +219,7 @@
 						</property>
 					</bean>
 				</entry>
-				<entry key="/postBookmark">
+				<entry key="/actions/postBookmark">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="postBookmarkController"/>
 						<property name="allowedFields">
@@ -230,6 +230,11 @@
 								<value>tags</value>  
 							</list>
 						</property>
+					</bean>
+				</entry>
+				<entry key="/actions/admin/group">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="groupAdminPageController"/>
 					</bean>
 				</entry>
 				<entry key="/postBookmarkSuccess">

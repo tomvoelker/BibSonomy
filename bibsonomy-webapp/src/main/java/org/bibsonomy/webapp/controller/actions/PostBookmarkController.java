@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller.actions;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -7,7 +9,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeMap;
+
 import java.util.TreeSet;
 
 import org.antlr.runtime.ANTLRStringStream;
@@ -21,13 +23,10 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.UserSettings;
-import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.tagparser.TagString3Lexer;
 import org.bibsonomy.model.util.tagparser.TagString3Parser;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
-import org.bibsonomy.webapp.controller.SingleResourceListControllerWithTags;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestAware;
@@ -99,23 +98,13 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		final List<String> recommendedTags = new ArrayList<String>();
 
 		for(Group group: loginUser.getGroups()){
-				recommendedTags.add(group.getName());
-				String s[] = {"A","B","C","D","E"};
-				TreeMap<String, List<String>> set = new TreeMap<String, List<String>>();
-				for(int j = 0; j < 5; j++){
-					String listName = "Liste"+s[j];
-					ArrayList<String> tagset = new ArrayList<String>();
-					set.put(listName, tagset);
-					for(int i = 0; i < 3; i++){
-						tagset.add("tag"+i);
-					}
-					j++;
+				if(present(group.getName())){
+					recommendedTags.add(group.getName());
+					command.getGroupDetails().add(logic.getGroupDetails(group.getName()));
 				}
-				command.getRelevantTagSets().put(group.getName(),set);
-			
 		}
-		this.setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, null, 0, 100, null);
 		command.setRecommendedTags(recommendedTags);
+		this.setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, null, 0, 100, null);
 
 		//be aware of double postings
 		command.getPostBookmark().getResource().recalculateHashes();
