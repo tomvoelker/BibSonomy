@@ -21,66 +21,41 @@
 		<jsp:attribute name="content">
 			<form:form action="/actions/postBookmark" method="POST">
 			
-				<spring:hasBindErrors name="command">Errors in "command" found<br/></spring:hasBindErrors>
-			
-					<div id="outer">
-						<div id="general">
-							<table class="expl_small vmiddle">
-								<tr>
-									<td colspan="3"><h2><fmt:message key="post.resource.editbookmark"/></h2>
-									<div class="info_bold">* <fmt:message key="post.resource.requiredfield"/></div></td>
-								</tr>
-								<tr>
-									<td><form:label path="postBookmark.resource.url" ><fmt:message key="post.resource.url"/>*:</form:label></td>
-									<td colspan="2">
-										<form:input path="postBookmark.resource.url" cssClass="reqinput" tabindex="2" size="60" />
-										<div class="errmsg"><form:errors path="postBookmark.resource.url" /></div>
-									</td>
-								</tr>
-								<tr>
-									<td><form:label path="postBookmark.resource.title" ><fmt:message key="post.resource.title"/>*:</form:label></td>
-									<td colspan="2">
-										<form:input path="postBookmark.resource.title" cssClass="reqinput" tabindex="2" size="60" />
-										<div class="errmsg"><form:errors path="postBookmark.resource.title" /></div>
-									</td>
-								</tr>
-								<tr>
-									<td><form:label path="postBookmark.description" ><fmt:message key="post.resource.description"/>, <br /><fmt:message key="post.resource.comment"/>:</form:label></td>
-									<td colspan="2">
-										<form:textarea path="postBookmark.description" tabindex="3" cols="60" rows="3" onkeyup="sz(this);" />
-									</td>
-								</tr>
-								<tr>
-									<td><form:label path="postBookmark.tags" ><fmt:message key="post.resource.tags"/>*:</form:label></td>
-									<td>
-									<!--  <input onclick="setActiveInputField(this.id); enableHandler();" onfocus="setActiveInputField(this.id); enableHandler()" onblur="disableHandler()" value="" size="60"  type="text">  -->
-										<form:input path="tags"
-											cssStyle="color: rgb(170, 170, 170);"
-											onfocus="setActiveInputField(this.id); enableHandler()"
-											onclick="setActiveInputField(this.id); enableHandler();"
-											onblur="disableHandler()" cssClass="reqinput" tabindex="4" id="tags"
-											size="60" autocomplete="off" />
-										<div class="errmsg"><form:errors path="tags" /></div>
-									</td>
-									<td><div class="info_bold"><fmt:message key="post.resource.spaceseperated"/></div></td>
-								</tr>
-								<post:recommendedTags command="${command}"/>
-								<tr>
-									<td><fmt:message key="post.resource.suggested"/>:</td>
-									<td colspan="2"><!-- ??? --></td>
-								</tr>
-								<post:groupBox command="${command}"/>
-								<c:set var="submit"><fmt:message key="submit"/></c:set>
-								<tr>
-									<td colspan="3">
-										<input tabindex="5" type="submit" name="submit" value="Save" onclick="clear_tags()" />
-									</td>
-								</tr>
-							</table>
-						</div>
+				<errors:global errors="${errors}"/>
+     				<div id="general">
+						<fieldset style="border: 0px;text-align:center;width:95%">
+							<h2><fmt:message key="post.resource.editbookmark"/></h2>
+						</fieldset>
+						<fieldset style="border: 1px solid #069;background-color: #eee; width:95%">
+							<legend><form:label path="postBookmark.resource.url" ><fmt:message key="post.resource.url"/>*</form:label></legend>
+							<form:input path="postBookmark.resource.url" tabindex="2" size="60" />
+							<div class="errmsg"><form:errors path="postBookmark.resource.url" /></div>
+						</fieldset>	
+						<p>
+							<fieldset style="border: 1px solid #069;background-color: #eee; width:95%">
+								<legend><form:label path="postBookmark.resource.title" ><fmt:message key="post.resource.title"/>*</form:label></legend>
+								<form:input path="postBookmark.resource.title" tabindex="2" size="60" />
+								<div class="errmsg"><form:errors path="postBookmark.resource.title" /></div>
+							</fieldset>	
+						</p>
+						<p>
+							<fieldset style="border: 1px solid #069;background-color: #eee; width:95%">
+								<legend><form:label path="postBookmark.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label></legend>
+								<form:textarea path="postBookmark.description" tabindex="3" cols="60" rows="3" onkeyup="sz(this);" />
+							</fieldset>	
+						</p>
+						<p>
+							<post:tagfield command="${command}"/>	
+						</p>
+						<p>
+							<post:groupBox command="${command}"/>	
+						</p>
+						<p>
+							<post:relevantForBox command="${command}"/>	
+						</p>  
 					</div>
-					
-			</form:form>
+				</form:form>
+			
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
@@ -94,4 +69,5 @@
 		</jsp:attribute>
 
 	</layout:paneLayout>
+
 </jsp:root>
