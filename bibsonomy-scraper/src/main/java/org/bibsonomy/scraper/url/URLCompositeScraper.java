@@ -21,6 +21,8 @@ import org.bibsonomy.scraper.url.kde.cambridge.CambridgeScraper;
 import org.bibsonomy.scraper.url.kde.citebase.CiteBaseScraper;
 import org.bibsonomy.scraper.url.kde.citeseer.CiteseerBasicScraper;
 import org.bibsonomy.scraper.url.kde.citeseer.CiteseerxScraper;
+import org.bibsonomy.scraper.url.kde.citeulike.CiteulikeScraper;
+import org.bibsonomy.scraper.url.kde.coins.CoinsScraper;
 import org.bibsonomy.scraper.url.kde.dblp.DBLPScraper;
 import org.bibsonomy.scraper.url.kde.editlib.EditLibScraper;
 import org.bibsonomy.scraper.url.kde.eric.EricScraper;
@@ -130,9 +132,10 @@ public class URLCompositeScraper extends CompositeScraper {
 		addScraper(new CiteseerxScraper());
 		addScraper(new OpenrepositoryScraper());
 		addScraper(new PionScraper());
+		addScraper(new CiteulikeScraper());
 		//addScraper(new AmsScraper());
 		addScraper(new BibliographyScraper());
 		//addScraper(new WormbaseScraper());
-		
+		//addScraper(new CoinsScraper());
 	}
 }

@@ -744,4 +744,22 @@
 		<BibFile>ArxivScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.arxiv.ArxivScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_130">
+		<TestDescription>test for pages with coins</TestDescription>
+		<URL>http://www.worldcat.org/oclc/18164641&amp;referer=brief_results</URL>
+		<BibFile>CoinsScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.coins.CoinsScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_131">
+		<TestDescription>Citeulike test, one citation only</TestDescription>
+		<URL>http://citeulike.org/user/zwang/article/1286647</URL>
+		<BibFile>CiteulikeScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.citeulike.CiteulikeScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_132">
+		<TestDescription>Citeulike test, many citations</TestDescription>
+		<URL>http://citeulike.org/tag/bibsonomy</URL>
+		<BibFile>CiteulikeScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.citeulike.CiteulikeScraper</Scraper>
+	</URLTest>
 </test:Tests>
