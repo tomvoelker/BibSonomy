@@ -2,6 +2,7 @@ package org.bibsonomy.model;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Privlevel;
@@ -50,6 +51,13 @@ public class Group {
 	 */
 	private boolean sharedDocuments;
 
+	/**
+	 * If you add a tagset to a group and a user marks this group as 
+	 * 'relevent for' a post, then the user has to tag one entry of this set
+	 * to his post. A tagset has the following form: Map<SetName,Tags>.
+	 */
+	private List<TagSet> tagSets;
+	
 	/**
 	 * constructor
 	 */
@@ -261,6 +269,14 @@ public class Group {
 	@Override
 	public int hashCode() {
 		return groupId;
+	}
+
+	public List<TagSet> getTagSets() {
+		return this.tagSets;
+	}
+
+	public void setTagSets(List<TagSet> tagSets) {
+		this.tagSets = tagSets;
 	}
 
 }
