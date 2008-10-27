@@ -3,14 +3,17 @@ package org.bibsonomy.rest.client.queries.get;
 import java.io.Reader;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.RendererFactory;
+
 
 /**
  * Use this Class to receive an ordered list of all posts.
@@ -22,12 +25,14 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 
 	private final int start;
 	private final int end;
+	private Order order;
+	private String search;
 	private Class<? extends Resource> resourceType;
 	private List<String> tags;
 	private GroupingEntity grouping = GroupingEntity.ALL;
 	private String groupingValue;
 	private String resourceHash;
-
+	private static final Logger log = Logger.getLogger(GetPostsQuery.class);
 	/**
 	 * Gets bibsonomy's posts list.
 	 */
@@ -100,6 +105,23 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 	public void setTags(final List<String> tags) {
 		this.tags = tags;
 	}
+	
+	/**
+	 * @param order
+	 * 				the order to set
+	 */
+	public void setOrder(Order order) {
+		this.order = order;
+	}
+	
+	/**
+	 * @param search
+	 * 				the search string to set
+	 */
+	public void setSearch(String search) {
+		this.search = search.replace(" ", "+");
+	}
+
 
 	@Override
 	public List<Post<? extends Resource>> getResult() throws BadRequestOrResponseException, IllegalStateException {
@@ -146,6 +168,15 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 		if (this.resourceHash != null && this.resourceHash.length() > 0) {
 			url += "&resource=" + this.resourceHash;
 		}
+		
+		if(this.order != null){
+			url += "&order=" +this.order;
+		}
+		
+		if(this.search != null && this.search.length() > 0){
+			url += "&search" +this.search;
+		}
+		log.debug("GetPostsQuery doExecute() called - URL: "+url);
 		this.downloadedDocument = performGetRequest(url + "&format=" + getRenderingFormat().toString().toLowerCase());
 		return null;
 	}

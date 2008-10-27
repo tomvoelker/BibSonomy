@@ -3,6 +3,9 @@ package org.bibsonomy.rest.client;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.rest.client.queries.get.GetPostsQuery;
 import org.bibsonomy.rest.client.queries.get.GetUserDetailsQuery;
 import org.junit.Test;
 
@@ -100,6 +103,21 @@ public class BibsonomyTest {
 			bib.executeQuery(new GetUserDetailsQuery("foo"));
 			fail("exception should have been thrown");
 		} catch (final IllegalStateException e) {
+		}
+	}
+	
+	@Test
+	public void testGetPostsQuery() throws Exception {
+		final Bibsonomy bib = new Bibsonomy();
+		GetPostsQuery query = new GetPostsQuery();
+		query.setOrder(Order.FOLKRANK);
+		query.setSearch("java xml");
+		query.setGrouping(GroupingEntity.ALL,"");
+		try{
+			bib.executeQuery(query);
+			System.out.println(query.getHttpStatusCode());
+		}catch (final Exception e){
+				System.out.println("exception should have been thrown");	
 		}
 	}
 }
