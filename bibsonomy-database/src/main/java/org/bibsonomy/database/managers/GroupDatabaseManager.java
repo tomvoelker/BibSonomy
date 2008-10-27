@@ -15,6 +15,7 @@ import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.TagSet;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.util.ExceptionUtils;
@@ -83,6 +84,17 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		}
 
 		return this.queryForObject("getGroupByName", groupname, Group.class, session);
+	}
+	
+	/**
+	 * Returns a list of tagsets for a group
+	 *
+	 * @param groupname - the name of the group
+	 * @param session
+	 * @return Return a list of {@link TagSet} objects if the group exists and if there are tagsets related to th group
+	 */
+	public List<TagSet> getGroupTagSets(final String groupname, final DBSession session){
+		return this.queryForList("getTagSetsForGroup", groupname, TagSet.class, session);
 	}
 
 	/**

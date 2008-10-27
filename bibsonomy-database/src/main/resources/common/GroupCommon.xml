@@ -13,5 +13,10 @@
 	<resultMap id="group" class="group" extends="group_basic" groupBy="name">
 		<result property="users"    resultMap="UserCommon.userForGroup" />
 	</resultMap>
+	
+	<resultMap id="tagsets" class="tagset" groupBy="setName">
+		<result property="setName"   	column="set_name"  	javaType="string"  />
+		<result property="tags"         resultMap="Common.tag" />
+	</resultMap>
 
 </sqlMap>

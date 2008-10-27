@@ -290,8 +290,13 @@ public class DBLogic implements LogicInterface {
 	 */
 	public Group getGroupDetails(final String groupName) {
 		final DBSession session = openSession();
+		Group myGroup = null;
 		try {
-			return this.groupDBManager.getGroupByName(groupName, session);
+			myGroup = this.groupDBManager.getGroupByName(groupName, session);
+			if(myGroup != null){
+				myGroup.setTagSets(this.groupDBManager.getGroupTagSets(groupName, session));
+			}
+			return myGroup;
 		} finally {
 			session.close();
 		}

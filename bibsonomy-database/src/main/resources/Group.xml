@@ -70,6 +70,12 @@
 		      </isNotNull>
 	</select>
 
+	<select id="getTagSetsForGroup" resultMap="GroupCommon.tagsets" parameterClass="string">
+		SELECT set_name, tag_name from group_tagsets s
+		LEFT JOIN groups g ON (s.group = g.group)
+		WHERE g.user_name = #groupname#
+	</select>
+	
 	<insert id="insertGroup" parameterClass="group">
 		INSERT INTO groupids (group_name, `group`, privlevel, sharedDocuments) VALUES (#name#, #groupId#, #privlevel#, #sharedDocuments#)
 	</insert>
