@@ -1,0 +1,95 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post">
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+	<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
+		
+		<jsp:attribute name="heading">
+			<a rel="path_menu" href="#"><fmt:message key="navi.editBookmark" />${mtl:ch('nbsp')}<img alt="" src="/resources/image/box_arrow.png" /></a> :: 
+		</jsp:attribute>
+
+		<jsp:attribute name="content">
+			<form:form action="/actions/admin/group" method="POST">
+			
+				<spring:hasBindErrors name="command">Errors in "command" found<br/></spring:hasBindErrors>
+				
+				<div id="outer">
+						<div id="general">
+							<h2><fmt:message key="actions.admin.group.administrate"/></h2>
+							<fieldset style="border: 1px solid #069;background-color: #eee; width:100%">
+							<legend><fmt:message key="navi.group"/>:${mtl:ch('nbsp')}${command.group.name}</legend>			
+								<table>
+									<tr>
+										<td><form:label path="group.description" ><fmt:message key="actions.admin.group.description"/>:</form:label></td>
+										<td>
+											<form:textarea path="group.description" tabindex="3" cols="40" rows="3" onkeyup="sz(this);" />
+										</td>
+									</tr>
+								</table>
+								<c:set var="save"><fmt:message key="actions.admin.group.save"/></c:set>
+								<div style="text-align:right"><input type="submit" value="${save}"/></div>				
+							</fieldset>	
+
+							<fieldset style="border: 1px solid #069;background-color: #eee; width:100%">
+							<legend><fmt:message key="actions.admin.group.tagsets"/>:</legend>			
+								<c:set var="create"><fmt:message key="actions.admin.group.create"/></c:set>
+								<table class="info">
+									<tr>
+										<td><fmt:message key="actions.admin.group.name"/></td>
+										<td colspan="2"><fmt:message key="post.resource.tags"/></td>
+									</tr>
+									<tr>
+										<td>
+											<form:input path="setName" tabindex="2" size="10" />
+										</td>
+										<td>
+											<form:input path="tags" tabindex="2" size="35" />
+										</td>
+										<td>
+											<input type="submit" value="${create}"/>
+										</td>
+									</tr>
+								</table>		
+								<p>		
+									<div id='numresult' style="text-align:right; font-size:70%; padding-bottom:2px; color:gray;">
+										<fmt:message key="actions.admin.group.alltagsets"/>
+									</div>	
+									<div class="scroller">
+										<table class="result_table">
+											<c:forEach var="tagset" items="${command.group.tagSets}" varStatus="status">
+												<tr>
+													<td>
+														<div style="font-size: 75%;color: #069;font-weight: bold;">${tagset.setName}</div>
+														<div style="font-size: 75%"><c:forEach var="tag" items="${tagset.tags}">${tag.name}${mtl:ch('nbsp')}</c:forEach></div>
+													</td>	
+													<td class="bmfoot">
+														<a href="">del</a>
+													</td>
+												</tr>
+											</c:forEach>
+										</table>
+									</div>			
+								</p>						
+							</fieldset>	
+						</div>
+				</div>
+
+			</form:form>
+		</jsp:attribute>
+		
+		<jsp:attribute name="sidebar"/>
+
+	</layout:paneLayout>
+
+</jsp:root>
