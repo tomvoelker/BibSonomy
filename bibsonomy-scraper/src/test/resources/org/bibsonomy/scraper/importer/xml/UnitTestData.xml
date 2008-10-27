@@ -762,4 +762,10 @@
 		<BibFile>CiteulikeScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.citeulike.CiteulikeScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_133">
+		<TestDescription>URL scraping test with arxiv publications</TestDescription>
+		<URL>http://arxiv.org/abs/0805.2045</URL>
+		<BibFile>ArxivScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.arxiv.ArxivScraper</Scraper>
+	</URLTest>
 </test:Tests>
