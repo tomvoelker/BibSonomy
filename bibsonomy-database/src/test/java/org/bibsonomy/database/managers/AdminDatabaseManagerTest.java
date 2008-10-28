@@ -104,6 +104,7 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		user.setSpammer(false);
 		user.setToClassify(1);
 		user.setPrediction(0);
+		user.setConfidence(0.56);
 		user.setMode("D");
 		user.setAlgorithm("testlogging");
 		user.setUpdatedBy("classifier");
