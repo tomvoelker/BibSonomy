@@ -860,6 +860,7 @@ CREATE TABLE `log_prediction` (
   `updated_at` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `algorithm` varchar(100) default NULL,
   `mode` char(1) default NULL,
+  `confidence` double default NULL,
   PRIMARY KEY  (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8;
 
@@ -902,6 +903,7 @@ CREATE TABLE `prediction` (
   `algorithm` varchar(100) default NULL,
   `mode` char(1) default NULL,
   `evaluator` tinyint(4) default NULL,
+  `confidence` double default NULL,
   PRIMARY KEY  (`user_name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8;
 
