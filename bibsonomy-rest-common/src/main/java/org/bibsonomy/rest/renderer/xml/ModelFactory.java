@@ -64,6 +64,8 @@ public class ModelFactory {
 			user.setSpammer(xmlUser.isSpammer());
 		if (xmlUser.getPrediction() != null)
 			user.setPrediction(xmlUser.getPrediction().intValue());
+		if (xmlUser.getConfidence() != null)
+			user.setConfidence(xmlUser.getConfidence());
 		user.setAlgorithm(xmlUser.getAlgorithm());
 		user.setMode(xmlUser.getClassifierMode());
 		if (xmlUser.getToClassify() != null) {

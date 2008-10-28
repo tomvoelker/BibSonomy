@@ -293,6 +293,8 @@ public class XMLRenderer implements Renderer {
 			xmlUser.setSpammer(user.getSpammer());
 		if (user.getPrediction() != null)
 			xmlUser.setPrediction(BigInteger.valueOf(user.getPrediction()));
+		if (user.getConfidence() != null)
+			xmlUser.setConfidence(Double.valueOf(user.getConfidence()));
 		xmlUser.setAlgorithm(user.getAlgorithm());
 		xmlUser.setClassifierMode(user.getMode());
 		if (user.getToClassify() != null)
