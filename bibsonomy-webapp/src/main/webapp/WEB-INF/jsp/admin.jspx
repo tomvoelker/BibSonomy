@@ -22,7 +22,6 @@
 			<fmt:message key="navi.admin"/>									
 		</jsp:attribute>
 		
-			
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/spammer.css" />
 		</jsp:attribute>	
@@ -73,16 +72,32 @@
 				    <!-- user list -->
 					<c:forEach var="user" items="${command.content}" varStatus="status">
 				      <tr id="sl${status.count}">				
-				       <td style="text-align: center">
+				       <td style="text-align: left">
 					     <c:choose>
+					     <c:when test="${command.selTab > 2}">
+					     <table >
+					     <tr style="font-size:80%">
+					     	<td>
+					      	 <a href="javascript:addSpammer('${user.name}','sl${status.count}', true)" title="flag this user as spammer">YES</a>
+					     	</td>
+					     	<td>
+					     	 <a href="javascript:unflagSpammer('${user.name}','sl${status.count}', true)" title="unflag this user as spammer">NO</a>
+					  		</td>
+					  	 </tr>
+					     </table>
+					  	</c:when>
+					  	<c:otherwise>
+					  	<c:choose>
 					     	<c:when test="${user.spammer}">
-							     <a href="javascript:unflagSpammer('${user.name}','sl${status.count}', true)" title="unflag this user as spammer">NO</a>
+								<a href="javascript:unflagSpammer('${user.name}','sl${status.count}', true)" title="unflag this user as spammer">NO</a>
 					     	</c:when>
-							<c:otherwise>
-							     <a href="javascript:addSpammer('${user.name}','sl${status.count}', true)" title="flag this user as spammer">YES</a>
-							</c:otherwise>			     
-					     </c:choose>
-				       </td>
+					     	<c:otherwise>
+					     		<a href="javascript:addSpammer('${user.name}','sl${status.count}', true)" title="flag this user as spammer">YES</a>
+							</c:otherwise>
+							</c:choose> 
+							</c:otherwise>		
+						 </c:choose> 		 	  
+				      </td>
 				       <td>
 				       	<a href="/user/${user.name}"><c:out value="${user.name}"/></a>
 				       	<a onclick="javascript:ajax_showTooltip('ajax?action=latest_posts&amp;userName=${user.name}',this);return false;" style="cursor:pointer" title="show latest posts"><img src="/resources/image/info.png"/></a>
@@ -110,7 +125,7 @@
 				<c:otherwise>
 				<table id="spammers" class="spammertable">
 			    <tr style="font-size:120%">
-			    	<th>Username</th><th>Admin</th><th>Spammer</th><th>Algorithm</th><th>Prediction</th><th></th>
+			    	<th>Username</th><th>Admin</th><th>Spammer</th><th>Algorithm</th><th>Prediction</th><th>Confidence</th><th></th>
 			    </tr>
 				
 				<c:forEach var="user" items="${command.content}" varStatus="status">
@@ -124,6 +139,7 @@
 					<td><c:out value="${user.spammer}"/></td>
 					<td><c:out value="${user.algorithm}"/></td>	
 					<td><c:out value="${mtl:predictionString(user.prediction)}"/></td>	
+					<td><c:out value="${user.confidence}"/></td>
 					<c:choose>
 						<c:when test="${user.spammer == mtl:isSpammer(user.prediction)}">
 							<td style="background: green"></td>					
