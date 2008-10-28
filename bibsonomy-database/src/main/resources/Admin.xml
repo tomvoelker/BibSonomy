@@ -38,18 +38,28 @@
 			updated_at > NOW() - INTERVAL #interval# HOUR		
 	    </isGreaterThan>
 	</select>
-
+	
+	<!--
 	<select id="getClassifiedUsers" resultMap="UserCommon.userWithPrediction" parameterClass="adminParam">
 		SELECT *  
 		FROM user u JOIN prediction p ON (u.user_name = p.user_name AND u.updated_at = p.updated_at)
 		WHERE updated_by = 'classifier' AND prediction = #prediction# 
 		<isGreaterThan property="interval" compareValue="0" prepend="AND">
-			p.updated_at > NOW() - INTERVAL #interval# HOUR		
+			p.updated_at > NOW() - INTERVAL #interval# DAY	
 	    </isGreaterThan>
 		ORDER BY u.updated_at DESC
 		LIMIT #limit#
 	</select>
-
+	--> 
+	
+	<select id="getClassifiedUsers" resultMap="UserCommon.userWithPrediction" parameterClass="adminParam">
+		SELECT *  
+		FROM user u JOIN prediction p ON (u.user_name = p.user_name AND u.updated_at = p.updated_at)
+		WHERE updated_by = 'classifier' AND prediction = #prediction# 
+		ORDER BY u.updated_at DESC
+		LIMIT #limit#
+	</select>
+	
 	<select id="getClassifiedUsersCount" resultClass="integer" parameterClass="adminParam">
 		SELECT COUNT(*)  
 		FROM user u JOIN prediction p ON (u.user_name = p.user_name AND u.updated_at = p.updated_at)
@@ -86,11 +96,11 @@
 	--> 
 	
 	 <select id="getClassifierComparison" resultMap="AdminCommon.userPredictionAndSpammer" parameterClass="adminParam">
-	 	SELECT a.user_name,u.spammer, u.updated_by, u.updated_at, a.prediction, a.algorithm, a.mode
+	 	SELECT a.user_name, u.spammer, u.updated_by, u.updated_at, a.prediction, a.algorithm, a.confidence, a.mode
 	 	FROM user u
 	 	JOIN prediction a ON (u.user_name = a.user_name)
 	 	JOIN tas t ON (t.user_name = a.user_name)
-	 	WHERE a.evaluator=1 AND t.date > NOW() - INTERVAL 24 HOUR 
+	 	WHERE a.evaluator=1 AND t.date > NOW() - INTERVAL 1420 HOUR 
 	 	<isGreaterThan property="interval" compareValue="0" prepend="AND">	
 			u.reg_date > NOW() - INTERVAL #interval# DAY
 		</isGreaterThan>

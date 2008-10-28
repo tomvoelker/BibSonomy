@@ -69,13 +69,13 @@
 	</insert>
 
 	<insert id="logPrediction" parameterClass="adminParam">
-		INSERT INTO log_prediction (`user_name`, `prediction`, `timestamp`, `updated_at`, `algorithm` , `mode`)
-		VALUES (#userName#, #prediction#, UNIX_TIMESTAMP(NOW()), #updatedAt#, #algorithm#, #mode#)
+		INSERT INTO log_prediction (`user_name`, `prediction`, `timestamp`, `updated_at`, `algorithm` ,`mode`, `confidence`)
+		VALUES (#userName#, #prediction#, UNIX_TIMESTAMP(NOW()), #updatedAt#, #algorithm#, #mode#, #confidence#)
 	</insert>
 
 	<insert id="logCurrentPrediction" parameterClass="adminParam">
-		REPLACE INTO prediction (`user_name`, `prediction`, `timestamp`, `updated_at`, `algorithm` , `mode`, `evaluator`)
-		VALUES (#userName#, #prediction#, UNIX_TIMESTAMP(NOW()), #updatedAt#, #algorithm#, #mode#, 0)
+		REPLACE INTO prediction (`user_name`, `prediction`, `timestamp`, `updated_at`, `algorithm` , `mode`, `evaluator`, `confidence`)
+		VALUES (#userName#, #prediction#, UNIX_TIMESTAMP(NOW()), #updatedAt#, #algorithm#, #mode#, 0, #confidence#)
 	</insert>
 
 	<select id="countNewContentIdFromBibTex" resultClass="int" parameterClass="bibtexParam">
