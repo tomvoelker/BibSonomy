@@ -155,9 +155,16 @@ public class User {
 	 * The spammer prediction of the classifier
 	 */
 	private Integer prediction;
+	
+	/**
+	 * The confidence of the classifier
+	 */
+	private Double confidence;
 
-	/** The mode of the classiefier (day or night) */ 
+	/** The mode of the classifier (day or night) */ 
 	private String mode;
+	
+	
 
 	/**
 	 * The temporary password the user can request when asking for a password reminder.
@@ -602,6 +609,20 @@ public class User {
 	 */
 	public void setPrediction(Integer prediction) {
 		this.prediction = prediction;
+	}
+	
+	/**
+	 * @return confidence of classifier
+	 */
+	public Double getConfidence() {
+		return this.confidence;
+	}
+	
+	/**
+	 * @param confidence Confidence
+	 */
+	public void setConfidence(Double confidence) {
+		this.confidence = confidence;
 	}
 
 	/**
