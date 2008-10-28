@@ -32,6 +32,9 @@ public class AdminParam extends GenericParam {
 
 	/** The prediction of the classifier */
 	private Integer prediction;
+	
+	/** The confidence of the classifier */
+	private Double confidence;
 
 	/** The classifier algorithm */
 	private String algorithm;
@@ -142,6 +145,14 @@ public class AdminParam extends GenericParam {
 
 	public void setPrediction(Integer prediction) {
 		this.prediction = prediction;
+	}
+	
+	public Double getConfidence() {
+		return this.confidence;
+	}
+
+	public void setConfidence(Double confidence) {
+		this.confidence = confidence;
 	}
 
 	public String getAlgorithm() {
