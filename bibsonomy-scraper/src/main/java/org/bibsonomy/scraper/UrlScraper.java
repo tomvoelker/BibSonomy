@@ -23,6 +23,11 @@ public interface UrlScraper extends Scraper {
 	public List<Tuple<Pattern,Pattern>> getUrlPatterns();
 	
 	/** Checks if this scraper supports the given URL.
+	 * <p>
+	 * Note that UrlScrapers {@link Scraper#supportsScrapingContext(ScrapingContext)}
+	 * method must delegate to {@link #supportsUrl(URL)} by calling
+	 * <code>supportsUrl(scrapingContext.getUrl())</code>!
+	 * </p>
 	 * 
 	 * @param url
 	 * @return <code>true</code> if the scraper can extract metadata from
