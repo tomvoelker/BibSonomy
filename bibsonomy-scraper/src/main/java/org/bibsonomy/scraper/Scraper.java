@@ -33,5 +33,19 @@ public interface Scraper {
      * @return The current scraper or a list of its subscrapers.
      */
     public Collection<Scraper> getScraper ();
+    
+    
+    
+    /** Checks if this scraper can scrape the given context.
+     * <br/>
+     * Note that some scrapers might need to download the contents to check
+     * if they can scrape it. This should not hold for {@link UrlScraper}s.
+     * 
+     * @param scrapingContext
+     * @return <code>true</code> if the given {@link ScrapingContext} is 
+     * scrapable by this scraper.
+     */
+    //public boolean supportsScrapingContext(final ScrapingContext scrapingContext);
+    
 
 }
