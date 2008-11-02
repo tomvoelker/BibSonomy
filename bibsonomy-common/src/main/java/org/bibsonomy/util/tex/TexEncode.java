@@ -1,0 +1,156 @@
+package org.bibsonomy.util.tex;
+import java.util.HashMap;
+
+
+/**
+ * Framework to encode TeX Macros to unicode
+ * 
+ * @author Christian Claus
+ * @version $Id$
+ */
+public class TexEncode {
+	
+	private HashMap<String, String> texMap = new HashMap<String, String>();
+	
+	// marko with most count of curly brackets have to lead this array
+	private final String[] TEX = { 
+			"{\\c{C}}",		"{\\c{c}}", 	"{{\\\"\\i}}", 
+			"{{\\^\\i}}",	"{{\\`\\i}}", 	"{{\\'\\i}}", 
+			"{{\\aa}}", 	"{{\\AA}}", 	"{{\\ae}}", 
+			"{{\\AE}}", 	"{{\\ss}}",		"{\\\"{A}}", 
+			"{\\\"{O}}", 	"{\\\"{U}}", 	"{\\\"{o}}", 
+			"{\\\"{o}}", 	"{\\\"{o}}", 	"{\\\"A}", 
+			"{\\\"O}", 		"{\\\"U}", 		"{\\\"a}", 
+			"{\\\"e}", 		"{\\\"u}", 		"{\\\"o}", 
+			"{\\`a}", 		"{\\`e}", 		"{\\`o}", 
+			"{\\`u}", 		"{\\^e}", 		"{\\^o}", 
+			"{\\^a}", 		"{\\^u}", 		"{\\'a}", 
+			"{\\'e}", 		"{\\'o}", 		"{\\'u}", 
+			"{\\'E}", 		"{\\~n}", 		"{\"A}", 
+			"{\"O}", 		"{\"U}", 		"{\"a}", 
+			"{\"o}", 		"{\"u}", 		"{\\~N}" 
+	};
+
+	private final String[] UNICODE = { 
+			"\u00C7", 		"\u00E7", 		"\u00EF", 
+			"\u00EE", 		"\u00EC", 		"\u00ED", 
+			"\u00E5", 		"\u00C5", 		"\u00E6", 
+			"\u00C6", 		"\u00DF",		"\u00C4", 
+			"\u00D6", 		"\u00DC", 		"\u00E4", 		
+			"\u00FC", 		"\u00F6",		"\u00C4", 
+			"\u00D6", 		"\u00DC", 		"\u00E4", 
+			"\u00EB", 		"\u00FC", 		"\u00F6", 
+			"\u00E0", 		"\u00E8", 		"\u00F2", 
+			"\u00F9", 		"\u00EA", 		"\u00F4", 
+			"\u00E2", 		"\u00FB", 		"\u00E1", 
+			"\u00E9", 		"\u00F3", 		"\u00FA", 
+			"\u00C9", 		"\u00F1", 		"\u00C4", 	
+			"\u00D6", 		"\u00DC", 		"\u00E4", 
+			"\u00FC", 		"\u00F6", 		"\u00D1" };
+	
+	
+	/**
+	 * initializes the HashMap 'texMap' with TeX macros as key and a
+	 * referenced Unicode value as value
+	 * 
+	 */
+	public TexEncode() {
+		if(TEX.length == UNICODE.length) {
+			for(int i = 0; i < TEX.length; ++i) {
+				texMap.put(TEX[i], UNICODE[i]);
+			}
+		}
+	}
+	
+	
+	/**
+	 * encodes a String, containing TeX macros to it's Unicode representation
+	 * 
+	 * @param s
+	 * @return Unicode representation of the String
+	 */
+	public String encode(String s) {
+		if (s != null) {
+			for (int i = 0; i < TEX.length; ++i) {
+				while (s.contains(TEX[i])) {
+					s = s.replace(TEX[i], UNICODE[i]);
+				}
+			}
+			return s.trim();
+		}
+		return "";
+	}
+	
+	
+	/**
+	 * old version of encode(..) with counting brackets - works also with an
+	 * unsorted tex array
+	 * encodes a String, containing TeX macros to it's Unicode representation
+	 * 
+	 * @param s
+	 * @return Unicode representation of the String
+	 *//*
+	public String encode(String s) {
+		s += " ";
+		
+		String[] splitted = s.split("");
+		String result = s;
+		int bracketCounter = 0;
+		int preCount = 0;
+		boolean changed = true;
+		
+		for (int i = 0; i < splitted.length; ++i) {
+			if (bracketCounter == 0 && preCount <= (i - 1)) {
+				if (changed) {
+					String sub = s.substring(preCount, i - 1);
+					if (sub != null && texMap.get(sub) != null) {
+						result = result.replace(sub, texMap.get(sub));
+						changed = false;
+					}
+				}
+				preCount = i - 1;
+			}
+			
+			if (splitted[i].equals("{")) {
+				changed = true;
+				bracketCounter++;
+			} else if (splitted[i].equals("}")) {
+				changed = true;
+				bracketCounter--;
+			} 
+		}
+		
+		result = result.trim();
+		return result;
+	}*/
+	
+
+	/**
+	 * Getter for the texMap
+	 * 
+	 * @return HashMap of TeX->Unicode representation
+	 */
+	public HashMap<String, String> getTexMap() {
+		return this.texMap;
+	}
+
+	
+	/**
+	 * Getter for the TeX macros
+	 * 
+	 * @return String array of TeX macros
+	 */
+	public String[] getTEX() {
+		return this.TEX;
+	}
+
+	
+	/**
+	 * Getter for Unicode signs
+	 * 
+	 * @return String array of Unicode signs
+	 */
+	public String[] getUNICODE() {
+		return this.UNICODE;
+	}	
+}
