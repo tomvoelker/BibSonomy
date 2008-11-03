@@ -18,16 +18,32 @@
 
 	<update id="flagSpammer" parameterClass="adminParam">
 		UPDATE user SET spammer = #spammer#, updated_by = #updatedBy#, updated_at = #updatedAt#, to_classify = #toClassify# 
-		WHERE user_name = #userName# 
+		WHERE user_name = #userName#
+		<isEqual property="updatedBy" compareValue="classifier" prepend="AND">
+			to_classify=1
+	    </isEqual>
 	</update>
 
+	<!--
 	<select id="getAdminClassifiedUsers" resultMap="UserCommon.user" parameterClass="adminParam">
-		SELECT <include refid="commonUserAttributes"/>  
-		FROM user WHERE (updated_by != 'classifier' OR ISNULL(updated_by)) AND spammer = #prediction# 
+		SELECT <include refid="commonUserAttributes"/>, prediction  
+		FROM user u JOIN prediction p ON (u.user_name = p.user_name)
+		WHERE (u.updated_by != 'classifier' OR ISNULL(u.updated_by)) AND spammer = #prediction# 
 		<isGreaterThan property="interval" compareValue="0" prepend="AND">
 			updated_at > NOW() - INTERVAL #interval# HOUR		
 	    </isGreaterThan>
 		ORDER BY updated_at DESC
+		LIMIT #limit#
+	</select>
+--> 
+	<select id="getAdminClassifiedUsers" resultMap="UserCommon.userWithPrediction" parameterClass="adminParam">
+		SELECT *
+		FROM user u JOIN prediction p ON (u.user_name = p.user_name)
+		WHERE (u.updated_by != 'classifier' OR ISNULL(u.updated_by)) AND spammer = #prediction# 
+		<isGreaterThan property="interval" compareValue="0" prepend="AND">
+			u.updated_at > NOW() - INTERVAL #interval# HOUR		
+	    </isGreaterThan>
+		ORDER BY u.updated_at DESC
 		LIMIT #limit#
 	</select>
 
@@ -104,7 +120,7 @@
 	 	<isGreaterThan property="interval" compareValue="0" prepend="AND">	
 			u.reg_date > NOW() - INTERVAL #interval# DAY
 		</isGreaterThan>
-	 	group by user_name order by t.date DESC
+	 	group by u.user_name order by t.date DESC
 	 </select>
 
 	<update id="updateTasGroupIds" parameterClass="adminParam">
