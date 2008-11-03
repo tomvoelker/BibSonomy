@@ -14,6 +14,12 @@ import java.util.regex.Pattern;
 public interface UrlScraper extends Scraper {
 	
 	/**
+	 * If a scraper does not need to check the path (or host) of a 
+	 * the URL, it should return this value as pattern. 
+	 */
+	public static final Pattern EMPTY_PATTERN = null;
+	
+	/**
 	 * Get a list of patterns the scraper uses to identify supported URLs.
 	 * The first pattern of each tuple must match the host part of the URL,
 	 * the second pattern must match the path part.    
