@@ -104,7 +104,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 				}
 		}
 		command.setRecommendedTags(recommendedTags);
-		this.setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, null, 0, 100, null);
+		this.setTags(command, Resource.class, GroupingEntity.USER, loginUser.getName(), null, null, null, null, 0, 100, null);
 
 		//be aware of double postings
 		command.getPostBookmark().getResource().recalculateHashes();

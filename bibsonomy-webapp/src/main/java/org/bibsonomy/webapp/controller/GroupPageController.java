@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -7,11 +8,15 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.TagSet;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.webapp.command.GroupMemberCommand;
 import org.bibsonomy.webapp.command.GroupResourceViewCommand;
+import org.bibsonomy.webapp.command.TagCloudCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -27,7 +32,7 @@ import org.bibsonomy.webapp.view.Views;
  */
 public class GroupPageController extends SingleResourceListControllerWithTags implements MinimalisticController<GroupResourceViewCommand> {
 	private static final Logger LOGGER = Logger.getLogger(GroupPageController.class);
-
+	
 	public View workOn(GroupResourceViewCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
@@ -42,6 +47,10 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 		final GroupingEntity groupingEntity = GroupingEntity.GROUP;
 		final String groupingName = command.getRequestedGroup();
 		final List<String> requTags = command.getRequestedTagsList();
+		
+		//check if system-tag "sys:relevantFor:" exists in taglist
+		boolean isRelevantFor = checkRelevantFor(requTags);
+		
 		FilterEntity filter = null;
 		
 		// retrieve only tags
@@ -56,10 +65,6 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 		if (command.getFilter().equals("myGroupPDF")) {
 			filter = FilterEntity.JUST_PDF;
 		}	
-		
-		// set title
-		// TODO: localize
-		command.setPageTitle("group :: " + groupingName);		
 		
 		// special group given - return empty page
 		if (GroupID.isSpecialGroup(groupingName)) return Views.GROUPPAGE;
@@ -85,33 +90,44 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 				
 				command.getListCommand(resourceType).setTotalCount(totalCount);				
 			}
-		}		
-		
+		}	
+	
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(command.getFormat())) {
-			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, 1000, null);
-			this.setGroupMembers(command, groupingName);
 			
-			if (requTags.size() > 0) {
-				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, Order.ADDED, 0, 20, null);
-				this.endTiming();
+			if(isRelevantFor == false){
 				
-
-				// forward to bibtex page if PDF filter is set
-				if (filter == FilterEntity.JUST_PDF) {
-					return Views.GROUPDOCUMENTPAGE;
-				} else {
-					return Views.GROUPTAGPAGE;
+				// set title
+				// TODO: localize
+				command.setPageTitle("group :: " + groupingName);	
+				
+				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, 1000, null);
+				this.setGroupMembers(command, groupingName);
+				
+				if (requTags.size() > 0) {
+					this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, Order.ADDED, 0, 20, null);
+					this.endTiming();
 				}
-				
+			}else{
+				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, Order.ADDED, 0, 20, null);
+				command.setPageTitle("relevant for :: " + groupingName);	
 			}
 			this.endTiming();
 			
 			// forward to bibtex page if PDF filter is set
 			if (filter == FilterEntity.JUST_PDF) {
+				
 				return Views.GROUPDOCUMENTPAGE;
-			} else {
-				return Views.GROUPPAGE;			
+				
+			} else if(requTags.size() > 0){
+				//if system-tag "sys:relevantFor:" was found, forward to the relevantfor view
+				if(isRelevantFor == true){return Views.RELEVANTFORPAGE;}
+				else return Views.GROUPTAGPAGE;	
+				
+			} else{
+				
+				return Views.GROUPPAGE;		
+				
 			}
 		}		
 		this.endTiming();
@@ -137,5 +153,18 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 		for (User u: members) {
 			memberCommand.addMember(u.getName());
 		}
+	}
+	
+	/**
+	 * @FIXME This should be done by the system-tag framework
+	 */
+	private boolean checkRelevantFor(List<String> tags){
+		for(String tag: tags){
+			if(tag.contains("sys:relevantFor:")){
+				LOGGER.debug("SYSTEMTAG 'sys:relevantFor:' found --> forward to the relevant-for View");
+				return true;
+			}
+		}
+		return false;
 	}
 }

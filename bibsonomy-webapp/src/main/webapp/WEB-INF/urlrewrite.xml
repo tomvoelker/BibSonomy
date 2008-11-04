@@ -310,7 +310,8 @@
     	<!-- workaround to redirect not-yet-supported features to old resource handler -->
 		<!-- forward PDF sites to new page -->
 		<condition type="parameter" name="filter" operator="notequal" next="or"/>
-		<condition type="parameter" name="filter" operator="equal">myPDF</condition>
+		<condition type="parameter" name="filter" operator="equal" next="or" >myPDF</condition>
+		<condition type="parameter" name="filter" operator="equal">myGroupPosts</condition>
 		<condition type="attribute" name="type" operator="notequal"/>    
     	<from>^/+user/+([^/?]+?)/(.+?)(\?(.*))?$</from>
     	<!-- NEW PAGE -->
@@ -325,7 +326,8 @@
     <!-- /user/USER -->
 	<rule>	
 		<condition type="parameter" name="filter" operator="notequal" next="or"/>
-		<condition type="parameter" name="filter" operator="equal">myPDF</condition>
+		<condition type="parameter" name="filter" operator="equal" next="or" >myPDF</condition>
+		<condition type="parameter" name="filter" operator="equal">myGroupPosts</condition>
 		<condition type="attribute" name="type" operator="notequal"/>    
 		<from>^/+user/+([^/?]+?)(\?(.*))?$</from>
 		<!-- NEW PAGE -->
@@ -456,6 +458,22 @@
 	  <from>^/+group/+([^/?]+?)/$</from>
 	  <to type="redirect">/group/$1</to>
 	</rule>
+	
+	
+	<!-- /releventfor/GROUP -->
+	<rule>
+		<from>^/+relevantfor/+([^/?]+?)(\?(.*))?$</from>
+		<!-- REDIRECT TO GROUPPAGE AND BUILD A SYSTEMTAG -->
+		<to>/group?requestedGroup=$1&amp;requestedTags=sys:relevantFor:$1&amp;$3</to>
+	</rule>
+	
+	<!-- /relevantfor/GROUP/TAG -->
+	<rule>
+		<from>^/+relevantfor/+([^/?]+?)/(.+?)(\?(.*))?$</from>
+		<!-- REDIRECT TO GROUPPAGE AND BUILD A SYSTEMTAG -->
+		<to>/group?requestedGroup=$1&amp;requestedTags=sys:relevantFor:$1+$2&amp;$4</to>
+	</rule>
+
 
 <!-- ############## friends pages ############### -->
     <rule> <!-- /friend/USER/TAG -->

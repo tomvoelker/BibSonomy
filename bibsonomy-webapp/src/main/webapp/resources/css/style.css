@@ -755,7 +755,6 @@ span.info:hover span{
  	font-size: 75%;
  	font-weight: bold;
   	color: #069;
-  	margin: 3px 10px 10px 0px;
   	padding: 0px;
 
 }
@@ -770,14 +769,6 @@ table.vmiddle td{
   	margin: 3px 10px 10px 0px;
   	padding: 0px;
 
-}
-
-table.bluebox{
-	background-color:#EEEEEE;
-	border-bottom:1px solid #CCCCCC;
-	border-top:1px solid #CCCCCC;
-	border-left:1px solid #CCCCCC;
-	border-right:1px solid #CCCCCC;
 }
 
 .popular{

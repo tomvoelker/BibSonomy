@@ -212,6 +212,11 @@ public enum Views implements View {
 	MY_GROUP_POSTS_PAGE("myGroupPosts"), 
 
 	/**
+	 * relevant-for page
+	 */
+	RELEVANTFORPAGE("relevantfor"),
+	
+	/**
 	 * After a user has successfully registered, he will see this view.
 	 */
 	REGISTER_USER_SUCCESS("actions/register/user_success"),
