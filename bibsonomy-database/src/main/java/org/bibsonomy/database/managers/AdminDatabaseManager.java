@@ -4,12 +4,14 @@ import java.net.InetAddress;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.managers.chain.ChainElement;
 import org.bibsonomy.database.params.AdminParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.User;
@@ -27,6 +29,7 @@ import org.bibsonomy.model.util.UserUtils;
 public class AdminDatabaseManager extends AbstractDatabaseManager {
 
 	private final static AdminDatabaseManager singleton = new AdminDatabaseManager();
+	protected static final Logger log = Logger.getLogger(AdminDatabaseManager.class);
 
 	private AdminDatabaseManager() {
 	}
@@ -123,22 +126,72 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 				user.setPrediction(0);
 			}
 		}
-		
+
 		param.setPrediction(user.getPrediction());
+		param.setConfidence(user.getConfidence());
 		param.setMode(user.getMode());
 		param.setAlgorithm(user.getAlgorithm());
 		param.setUpdatedBy(updatedBy);
 		param.setUpdatedAt(new Date());
 
-		if (!updatedBy.equals("classifier") || testMode.equals("off")) {
+		if (!updatedBy.equals("classifier")) {
 			this.update("flagSpammer", param, session);
 			this.updateGroupIds(param, session);
+		} else if (testMode.equals("off")) {
+
+			// only change user settings when prediction changes
+			if (checkPredictionChange(param, session)) {
+				this.update("flagSpammer", param, session);
+				this.updateGroupIds(param, session);
+			}
 		}
 
-		this.insert("logPrediction", param, session);
-		this.insert("logCurrentPrediction", param, session);
-		
+		if (checkPredictionChange(param, session)) {
+			this.insert("logPrediction", param, session);
+			this.insert("logCurrentPrediction", param, session);
+		}
+
 		return user.getName();
+	}
+
+	/**
+	 * checks if the last prediction of the classifier or admin is the same as
+	 * the current one
+	 * 
+	 * @param param
+	 * @param session
+	 * 
+	 * @return true, if prediction and confidence change, false if values are
+	 *         the same
+	 */
+
+	public boolean checkPredictionChange(final AdminParam param, final DBSession session) {
+
+		if (param.getConfidence() != null && param.getPrediction() != null) {
+			// check if prediction and confidence values changed, only update if
+			// they changed
+			List<User> history = getClassifierHistory(param.getUserName(), session);
+
+			for (int i = 0; i < history.size(); i++) {
+				// last predictor needs to be the same as this predictor
+				if (history.get(i).getConfidence() != null && history.get(i).getPrediction() != null) {
+					
+					if (history.get(i).getAlgorithm().equals(param.getAlgorithm())) {
+						
+						double newConf = Math.round(param.getConfidence());
+						double oldConf = Math.round(history.get(i).getConfidence());
+						
+						
+						if (oldConf == newConf && param.getPrediction().compareTo(history.get(i).getPrediction()) == 0) {
+							return false;
+						}
+						// first entry is not the same
+						return true;
+					}
+				}
+			}
+		}
+		return true;
 	}
 
 	/**

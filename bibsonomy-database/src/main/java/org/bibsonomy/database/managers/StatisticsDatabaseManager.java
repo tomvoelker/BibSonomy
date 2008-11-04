@@ -2,8 +2,10 @@ package org.bibsonomy.database.managers;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.DBLogic;
 import org.bibsonomy.database.managers.chain.statistic.post.PostStatisticChain;
 import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.params.beans.TagIndex;
@@ -21,6 +23,8 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 
 	private final static StatisticsDatabaseManager singleton = new StatisticsDatabaseManager();
 
+	private static final Logger log = Logger.getLogger(StatisticsDatabaseManager.class);
+	
 	private final BibTexDatabaseManager bibtexDBManager;
 	private final BookmarkDatabaseManager bookmarkDBManager;
 	private static final PostStatisticChain postchain = new PostStatisticChain();

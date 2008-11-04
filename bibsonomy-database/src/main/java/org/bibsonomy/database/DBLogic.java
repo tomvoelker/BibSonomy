@@ -597,15 +597,12 @@ public class DBLogic implements LogicInterface {
 		return this.storeUser(user, false);
 	}
 
-
-
-
-
 	public String updateUser(final User user) {
 		/*
 		 * only logged in users can update user settings
 		 */
 		this.ensureLoggedIn();
+		
 		/*
 		 * only admins can change settings of /other/ users
 		 */
@@ -870,9 +867,18 @@ public class DBLogic implements LogicInterface {
 	public int getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search, StatisticsConstraint constraint) {
 		final DBSession session = openSession();
 		final Integer result;
+		
+		
 
 		try {
+				
+			if(this.permissionDBManager.checkFilterPermissions(filter, this.loginUser)){
+				loginUser.addGroup(new Group(GroupID.ADMINSPAM));
+			}
+					
 			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, this.loginUser);
+			
+			
 			if (resourceType == BibTex.class || resourceType == Bookmark.class || resourceType == Resource.class) {
 				param.setContentTypeByClass(resourceType);
 				param.setFilter(filter);
