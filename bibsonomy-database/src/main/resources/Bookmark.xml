@@ -419,6 +419,7 @@
 		SELECT COUNT(DISTINCT t1.content_id) 
 		FROM grouptas t1
 		WHERE t1.user_name = #requestedUserName#
+		AND t1.group > 1
 		AND <include refid="inGroupsUnchecked"/>
 		AND t1.content_type = #contentType#
 	</select>
@@ -433,6 +434,7 @@
 		</iterate>
 		WHERE <include refid="tagWhereQuery"/>
 		AND t1.user_name = #requestedUserName#
+		AND t1.group > 1
 		AND <include refid="inGroupsUnchecked"/>
 		AND t1.content_type = #contentType#
 	</select>
@@ -441,20 +443,17 @@
 		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
 			   bb.book_url, bb.book_url_ctr AS count, t.tag_name, t.user_name 
 		
-		FROM (
-			SELECT t1.content_id, t1.group, t1.date, b.book_url_hash, b.book_description AS title, b.book_extended AS description, u.book_url, u.book_url_ctr
-			FROM grouptas t1
-			LEFT JOIN bookmark b ON (b.content_id = t1.content_id)
-			LEFT JOIN urls u ON (u.book_url_hash = b.book_url_hash) 
-			  
-			WHERE t1.user_name = #requestedUserName#
-			AND <include refid="inGroupsUnchecked"/>
-			  
-			GROUP BY t1.content_id 
-			ORDER BY t1.date DESC
-			LIMIT #limit# OFFSET #offset# 
-			 ) AS bb
-		
+		FROM (SELECT gts.content_id, gts.date, gts.group, b.book_url_hash, b.book_description AS title, b.book_extended AS description, u.book_url, u.book_url_ctr
+		      		 FROM (SELECT * FROM grouptas t 
+		      			WHERE t.user_name = #requestedUserName# 
+		      			AND t.group > 1 
+		      			AND t.group in (<iterate property="groups" conjunction=",">$groups[]$</iterate>)
+		      ) 
+			  AS gts
+		      LEFT JOIN bookmark b ON (b.content_id = gts.content_id),urls u
+			  WHERE u.book_url_hash = b.book_url_hash
+			  ORDER BY date DESC
+		      LIMIT #limit# OFFSET #offset#) AS bb
 		LEFT JOIN tas t ON t.content_id = bb.content_id, groupids AS g 
 		WHERE bb.group = g.group 
 		ORDER BY bb.date DESC, bb.content_id DESC
@@ -464,25 +463,23 @@
 		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
 			   bb.book_url, bb.book_url_ctr AS count, t.tag_name, t.user_name 
 		
-		FROM (
-			SELECT t1.content_id, t1.group, t1.date, b.book_url_hash, b.book_description AS title, b.book_extended AS description, u.book_url, u.book_url_ctr
-			FROM grouptas t1
-			<iterate property="tagIndex">
+		FROM (SELECT t1.content_id, t1.date, t1.group, b.book_url_hash, b.book_description AS title, b.book_extended AS description, u.book_url, u.book_url_ctr
+		      		 FROM (SELECT * FROM grouptas t 
+		      			WHERE t.user_name = #requestedUserName# 
+		      			AND t.group > 1 
+		      			AND t.group in (<iterate property="groups" conjunction=",">$groups[]$</iterate>)
+		      ) 
+			  AS t1
+			  <iterate property="tagIndex">
 				<isGreaterThan property="tagIndex[].index" compareValue="1">
 					JOIN copytas t$tagIndex[].index$ USING (content_id)
 				</isGreaterThan>
-			</iterate>
-			LEFT JOIN bookmark b ON (b.content_id = t1.content_id AND t1.user_name = #requestedUserName#)
-			LEFT JOIN urls u ON (u.book_url_hash = b.book_url_hash) 
-			
-			WHERE <include refid="inGroupsUnchecked"/>
-			AND <include refid="tagWhereQuery"/> 
-			  
-			GROUP BY t1.content_id 
-			ORDER BY t1.date DESC
-			LIMIT #limit# OFFSET #offset# 
-			 ) AS bb
-		
+			  </iterate>
+		      LEFT JOIN bookmark b ON (b.content_id = t1.content_id),urls u
+			  WHERE u.book_url_hash = b.book_url_hash
+			  AND <include refid="tagWhereQuery"/> 
+			  ORDER BY date DESC
+		      LIMIT #limit# OFFSET #offset#) AS bb
 		LEFT JOIN tas t ON t.content_id = bb.content_id, groupids AS g 
 		WHERE bb.group = g.group 
 		ORDER BY bb.date DESC, bb.content_id DESC

@@ -652,6 +652,7 @@
 		SELECT COUNT(DISTINCT t1.content_id) 
 		FROM grouptas t1
 		WHERE t1.user_name = #requestedUserName#
+		AND t1.group > 1
 		AND <include refid="inGroupsUnchecked"/>
 		AND t1.content_type = #contentType#
 	</select>
@@ -666,65 +667,63 @@
 		</iterate>
 		WHERE <include refid="tagWhereQuery"/>
 		AND t1.user_name = #requestedUserName#
+		AND t1.group > 1
 		AND <include refid="inGroupsUnchecked"/>
 		AND t1.content_type = #contentType#
 	</select>
 	
 	<select id="getBibtexForMyGroupPosts" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count
-		FROM (
-			SELECT t1.*, h.ctr AS count
-      		FROM grouptas t2 
-      		LEFT JOIN bibtex t1 ON (t1.content_id = t2.content_id AND t2.user_name = #requestedUserName# ) 
-      		LEFT JOIN bibhash h ON (h.hash = t1.simhash1)
-      		WHERE <include refid="inGroupsUnchecked2"/> 
-      		GROUP BY t2.content_id 
-      		ORDER BY t2.date
-      		LIMIT #limit# OFFSET #offset#
-      		  ) as b2
-      	
-      	LEFT JOIN tas AS t ON b2.content_id = t.content_id, groupids AS g
-		WHERE b2.group = g.group ORDER BY b2.date DESC, b2.content_id DESC
+		FROM (SELECT <include refid ="allBibtexAttributes"/>,b.simhash1,b.simhash2, 
+			  h.ctr AS count,gts.group
+		      FROM (SELECT * FROM grouptas t 
+		      			WHERE t.user_name = #requestedUserName# 
+		      			AND t.group > 1 
+		      			AND t.group in (<iterate property="groups" conjunction=",">$groups[]$</iterate>)
+		      		) 
+			  AS gts
+		      LEFT JOIN bibtex b ON (b.content_id = gts.content_id), bibhash h
+			  WHERE <include refid="bibtexSimHash"/>
+			  ORDER BY date DESC
+		      LIMIT #limit# OFFSET #offset#) AS b2
+		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id, groupids AS g
+		WHERE b2.group = g.group
+		ORDER BY b2.date DESC, b2.content_id DESC
 	</select>
 	
 	<select id="getBibtexForMyGroupPostsByTag" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count
-		FROM (
-			SELECT t1.*, h.ctr AS count
-      		FROM grouptas ct1 
-      		<iterate property="tagIndex">
+		FROM (SELECT <include refid ="allBibtexAttributes"/>,b.simhash1,b.simhash2, 
+			  h.ctr AS count,gt1.group
+		      FROM (SELECT * FROM grouptas t 
+		      			WHERE t.user_name = #requestedUserName# 
+		      			AND t.group > 1 
+		      			AND t.group in (<iterate property="groups" conjunction=",">$groups[]$</iterate>)
+		      		) 
+			  AS gt1
+			  <iterate property="tagIndex">
 				<isGreaterThan property="tagIndex[].index" compareValue="1">
-					JOIN copytas ct$tagIndex[].index$ USING (content_id)
+					JOIN copytas gt$tagIndex[].index$ USING (content_id)
 				</isGreaterThan>
-			</iterate>
-      		LEFT JOIN bibtex t1 ON (t1.content_id = ct1.content_id) 
-      		LEFT JOIN bibhash h ON (h.hash = t1.simhash1)
-      		WHERE ct1.user_name = #requestedUserName# 
-      		AND
-      		
-      		ct1.group in (
-			<iterate property="groups" conjunction=",">
-			    $groups[]$
-			</iterate>)	
-      		
-      		AND
-      		
-      		<iterate property="tagIndex" conjunction="AND">
-			  <isEqual property="caseSensitiveTagNames" compareValue="true">
-			    ct$tagIndex[].index$.tag_name = #tagIndex[].tagName#
-			  </isEqual>
-			  <isEqual property="caseSensitiveTagNames" compareValue="false">
-			    ct$tagIndex[].index$.tag_lower = lower(#tagIndex[].tagName#)
-			  </isEqual>
-			</iterate>
-			
-      		GROUP BY ct1.content_id 
-      		ORDER BY ct1.date
-      		LIMIT #limit# OFFSET #offset#
-      		  ) as b2
-      	
-      	LEFT JOIN tas AS t ON b2.content_id = t.content_id, groupids AS g
-		WHERE b2.group = g.group ORDER BY b2.date DESC, b2.content_id DESC
+			  </iterate>
+		      LEFT JOIN bibtex b ON (b.content_id = gt1.content_id), bibhash h
+			  WHERE <include refid="bibtexSimHash"/>
+			  
+			  AND
+			  
+			  <iterate property="tagIndex" conjunction="AND">
+				  <isEqual property="caseSensitiveTagNames" compareValue="true">
+				    gt$tagIndex[].index$.tag_name = #tagIndex[].tagName#
+				  </isEqual>
+				  <isEqual property="caseSensitiveTagNames" compareValue="false">
+				    gt$tagIndex[].index$.tag_lower = lower(#tagIndex[].tagName#)
+				  </isEqual>
+			  </iterate>
+			  ORDER BY date DESC
+		      LIMIT #limit# OFFSET #offset#) AS b2
+		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id, groupids AS g
+		WHERE b2.group = g.group
+		ORDER BY b2.date DESC, b2.content_id DESC
 	</select>
 
 </sqlMap>
