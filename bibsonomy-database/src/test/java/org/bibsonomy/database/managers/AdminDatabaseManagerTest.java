@@ -100,16 +100,15 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void updatePredictionLogs() {
 		final User user = new User();
-		user.setName("beate");
-		user.setSpammer(false);
-		user.setToClassify(1);
-		user.setPrediction(0);
-		user.setConfidence(0.56);
+		user.setName("testspammer");
+		user.setSpammer(true);
+		user.setToClassify(0);
+		user.setPrediction(1);
+		user.setConfidence(0.2);
 		user.setMode("D");
 		user.setAlgorithm("testlogging");
-		user.setUpdatedBy("classifier");
 		//flag spammer (flagging does not change: user is no spammer)
-		final String result = this.adminDb.flagSpammer(user, "classifier", "on", this.dbSession);
+		final String result = this.adminDb.flagSpammer(user, "classifier", "off", this.dbSession);
 		assertEquals(user.getName(), result);
 	}
 }

@@ -868,6 +868,7 @@ CREATE TABLE `log_prediction` (
 -- Data for table `log_prediction`
 -- 
 
+INSERT INTO `log_prediction` VALUES (1, 'testspammer', 1, UNIX_TIMESTAMP(NOW()),'2008-06-18 14:27:35', 'testlogging', 0, 0.2);
 
 -- --------------------------------------------------------
 
