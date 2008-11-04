@@ -82,6 +82,14 @@ tr.lastrow {
 	background-color: #ffeeee;	
 }
 
+.uncertainUser {
+	background-color: #F0FFF0;	
+}
+
+.spamflag a {
+	padding-right: 1em;
+}
+	
 #ajax_tooltipObj{
 	z-index:1000000;
 	text-align:left;

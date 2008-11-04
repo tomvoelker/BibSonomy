@@ -54,13 +54,36 @@ function unflagSpammer(name, rowId, disable) {
 	
 	/* colorize row */
 	if (rowId != null && !disable) {			
-		document.getElementById(rowId).className="";
+		document.getElementById(rowId).className="spamflag";
 	} else {
 		document.getElementById(rowId).style.display = "none"; 
 	}
 		
 	/* remove spammer from db via AJAX*/
 	runAjax("userName=" + name, "unflag_spammer");
+}
+
+/**
+* sets a user as an unsure spammer
+* name: name of the user
+* rowId: table row id 
+* disable:  if true row is removed else row is colorized white
+*/	
+function markUncertainUser(name, rowId, disable) {		
+	if (name == null || name == "") {
+		addLogMessage("please specify a user");
+		return;
+	}
+	
+	/* colorize row */
+	if (rowId != null && !disable) {			
+		document.getElementById(rowId).className="uncertainUser";
+	} else {
+		document.getElementById(rowId).style.display = "none"; 
+	}
+	
+	/* remove spammer from db via AJAX*/
+	runAjax("userName=" + name, "mark_uncertainUser");
 }
 
 /** saves the settings on admin page */
