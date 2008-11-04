@@ -22,24 +22,24 @@
 			<form:form action="/actions/postBookmark" method="POST">
 			
 				<errors:global errors="${errors}"/>
-     				<div id="general">
-						<fieldset style="border: 0px;text-align:center;width:95%">
+     				<div style="float left;width:80%;margin-left:10px">
+						<fieldset style="border: 0px;text-align:center">
 							<h2><fmt:message key="post.resource.editbookmark"/></h2>
 						</fieldset>
-						<fieldset style="border: 1px solid #069;background-color: #eee; width:95%">
+						<fieldset style="border: 1px solid #069;background-color: #eee">
 							<legend><form:label path="postBookmark.resource.url" ><fmt:message key="post.resource.url"/>*</form:label></legend>
 							<form:input path="postBookmark.resource.url" tabindex="2" size="60" />
 							<div class="errmsg"><form:errors path="postBookmark.resource.url" /></div>
 						</fieldset>	
 						<p>
-							<fieldset style="border: 1px solid #069;background-color: #eee; width:95%">
+							<fieldset style="border: 1px solid #069;background-color: #eee">
 								<legend><form:label path="postBookmark.resource.title" ><fmt:message key="post.resource.title"/>*</form:label></legend>
 								<form:input path="postBookmark.resource.title" tabindex="2" size="60" />
 								<div class="errmsg"><form:errors path="postBookmark.resource.title" /></div>
 							</fieldset>	
 						</p>
 						<p>
-							<fieldset style="border: 1px solid #069;background-color: #eee; width:95%">
+							<fieldset style="border: 1px solid #069;background-color: #eee">
 								<legend><form:label path="postBookmark.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label></legend>
 								<form:textarea path="postBookmark.description" tabindex="3" cols="60" rows="3" onkeyup="sz(this);" />
 							</fieldset>	
@@ -53,6 +53,14 @@
 						<p>
 							<post:relevantForBox command="${command}"/>	
 						</p>  
+						<p>
+							<fieldset style="border: 1px solid #069;background-color: #eee;width:5%">
+								<legend><fmt:message key="save"/></legend>
+								<c:set var="go"><fmt:message key="post.resource.go"/></c:set>
+								<!-- function addSystemTags located in relevantFoxBox.tagx -->
+								<input type="submit" value="${go}" onClick="addSystemTags()"/>
+							</fieldset>	
+						</p>
 					</div>
 				</form:form>
 			
