@@ -39,7 +39,7 @@
 	<select id="getAdminClassifiedUsers" resultMap="UserCommon.userWithPrediction" parameterClass="adminParam">
 		SELECT *
 		FROM user u JOIN prediction p ON (u.user_name = p.user_name)
-		WHERE (u.updated_by != 'classifier' OR ISNULL(u.updated_by)) AND spammer = #prediction# 
+		WHERE (u.updated_by != 'classifier' OR ISNULL(u.updated_by)) AND spammer = #prediction# AND algorithm='admin'
 		<isGreaterThan property="interval" compareValue="0" prepend="AND">
 			u.updated_at > NOW() - INTERVAL #interval# HOUR		
 	    </isGreaterThan>
@@ -94,7 +94,8 @@
 	</update>
 
 	<select id="getClassifierHistory" resultMap="AdminCommon.userPrediction" parameterClass="string">
-		SELECT <include refid="commonPredictionAttributes"/>  FROM log_prediction WHERE user_name  = #userName# 
+		SELECT <include refid="commonPredictionAttributes"/>  FROM log_prediction 
+		WHERE user_name  = #userName# AND algorithm != 'admin' 
 		ORDER BY updated_at DESC LIMIT 25
 	</select>
 	 
@@ -116,7 +117,7 @@
 	 	FROM user u
 	 	JOIN prediction a ON (u.user_name = a.user_name)
 	 	JOIN tas t ON (t.user_name = a.user_name)
-	 	WHERE a.evaluator=1 AND t.date > NOW() - INTERVAL 1420 HOUR 
+	 	WHERE a.evaluator=1 AND t.date > NOW() - INTERVAL 1420 HOUR AND algorithm!='admin'
 	 	<isGreaterThan property="interval" compareValue="0" prepend="AND">	
 			u.reg_date > NOW() - INTERVAL #interval# DAY
 		</isGreaterThan>
