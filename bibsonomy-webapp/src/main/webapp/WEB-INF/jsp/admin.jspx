@@ -27,17 +27,15 @@
 		</jsp:attribute>	
 		
 		<jsp:attribute name="topcontent">
+			<menu:adminNavi/>	
 			<!-- Admin Navigation -->
-			<menu:adminNavi/>		
-			
-			<form action="/admin" method="get" class="smallform">
+				<form action="/admin" method="get" class="smallform">
 				<table class="stattable">
 					<tr>
 					<td>Filter: Last <input type="text" name="interval" id="interval" value="${command.interval}" size="4"/>  days</td>
-					
 					</tr>
 				</table>
-			</form>				
+				</form>			
 		</jsp:attribute>
 		
 		<jsp:attribute name="tabcontent">		
@@ -53,14 +51,17 @@
 				<c:choose>
 				
 				<!-- classifier results tabs -->
-				<c:when test="${command.selTab &lt; 7}">				
+				<c:when test="${command.selTab &lt; 7}">	
+				
 				<table id="spammers" class="spammertable">
+					
 				    <tr style="font-size:120%">
-				    	<th>Spam?</th><th>Username</th><th>Realname</th><th>IP</th><th>Regdate</th>  	
+				    	<th>Spam?</th><th>Username</th><th>Realname</th><th>IP</th><th>E-Mail</th><th>Regdate</th>  	
 				   		<c:choose>
 				   		<c:when test="${command.selTab > 2}">
 				    	<th>Algorithm</th>
 				    	<th>Mode</th>
+				    	<th>Confidence</th>
 				    	</c:when>
 				    	<c:otherwise>
 				    	<th>updated by</th>
@@ -71,51 +72,76 @@
 				    				    
 				    <!-- user list -->
 					<c:forEach var="user" items="${command.content}" varStatus="status">
-				      <tr id="sl${status.count}">				
-				       <td style="text-align: left">
+					  <tr id="sl${status.count}">			
+				     
 					     <c:choose>
+					     
 					     <c:when test="${command.selTab > 2}">
-					     <table >
-					     <tr style="font-size:80%">
-					     	<td>
-					      	 <a href="javascript:addSpammer('${user.name}','sl${status.count}', true)" title="flag this user as spammer">YES</a>
-					     	</td>
-					     	<td>
+					       <td style="text-align: left" class="spamflag">
+					      	 <a href="javascript:addSpammer('${user.name}','sl${status.count}', true)" title="flag this user as spammer">YES</a>	
+					      	 <a href="javascript:markUncertainUser('${user.name}','sl${status.count}', true)" title="mark as spammer status uncertain">?</a>			     	
 					     	 <a href="javascript:unflagSpammer('${user.name}','sl${status.count}', true)" title="unflag this user as spammer">NO</a>
-					  		</td>
-					  	 </tr>
-					     </table>
+							</td>
 					  	</c:when>
+					  	
 					  	<c:otherwise>
 					  	<c:choose>
-					     	<c:when test="${user.spammer}">
-								<a href="javascript:unflagSpammer('${user.name}','sl${status.count}', true)" title="unflag this user as spammer">NO</a>
-					     	</c:when>
-					     	<c:otherwise>
-					     		<a href="javascript:addSpammer('${user.name}','sl${status.count}', true)" title="flag this user as spammer">YES</a>
-							</c:otherwise>
-							</c:choose> 
-							</c:otherwise>		
-						 </c:choose> 		 	  
-				      </td>
+					     		<c:when test="${user.spammer}">		
+					     		<td style="text-align: left" class="spamflag">
+									<a href="javascript:unflagSpammer('${user.name}','sl${status.count}', true)" title="unflag this user as spammer">NO</a>
+					     	 		<a href="javascript:markUncertainUser('${user.name}','sl${status.count}', true)" title="mark as spammer status uncertain">?</a>
+					     		</td>
+					     		</c:when>
+					     		<c:otherwise>
+					     		    <c:choose>
+					     			<c:when test="${user.prediction == 9}">
+					     			<td style="text-align: left" class="spamflag uncertainUser">
+										<a href="javascript:unflagSpammer('${user.name}','sl${status.count}', true)" title="unflag this user as spammer">NO</a>
+										<a href="javascript:markUncertainUser('${user.name}','sl${status.count}', false)" title="mark as spammer status uncertain">?</a>
+					     				<a href="javascript:addSpammer('${user.name}','sl${status.count}', true)" title="flag this user as spammer">YES</a>
+									</td>
+									</c:when>
+									<c:otherwise>
+									<td style="text-align: left" class="spamflag">
+										<a href="javascript:unflagSpammer('${user.name}','sl${status.count}', false)" title="unflag this user as spammer">NO</a>
+										<a href="javascript:markUncertainUser('${user.name}','sl${status.count}', false)" title="mark as spammer status uncertain">?</a>
+					     				<a href="javascript:addSpammer('${user.name}','sl${status.count}', true)" title="flag this user as spammer">YES</a>
+									</td>
+									</c:otherwise>
+									</c:choose> 
+								</c:otherwise>
+								</c:choose> 
+								
+						</c:otherwise>	
+						</c:choose> 		 	  
+				   
 				       <td>
-				       	<a href="/user/${user.name}"><c:out value="${user.name}"/></a>
+				       	<a href="/user/${fn:escapeXml(user.name)}"><c:out value="${user.name}"/></a>
 				       	<a onclick="javascript:ajax_showTooltip('ajax?action=latest_posts&amp;userName=${user.name}',this);return false;" style="cursor:pointer" title="show latest posts"><img src="/resources/image/info.png"/></a>
 				        <a onclick="javascript:ajax_showTooltip('ajax?action=prediction_history&amp;userName=${user.name}',this);return false;" style="cursor:pointer" title="show latest user predictions"><img src="/resources/image/history.png"/></a></td>
-				       <!--<td><c:out value="${user.spammer}"/></td>-->
-				       <td><c:out value="${user.realname}"/></td>	
-					   <td><c:out value="${user.IPAddress}"/></td>
-					   <td><c:out value="${user.registrationDate}"/></td>					   
+				       <td><c:out value="${fn:substring(user.realname, 0, 25)}"/></td>	
+					   <td>
+					   	<span title="${user.IPAddress}"><c:out value="${fn:substringBefore(user.IPAddress, ',')}"/></span>
+					   </td>
+					   <td>
+					   	<c:out value="${user.email}"/>
+					   </td>
+					   <td>
+					    <fmt:formatDate type="both" timeStyle="short" value="${user.registrationDate}"/>
+					   </td>					   
 				 	   <c:choose>
 				       <c:when test="${command.selTab > 2}">				    				       
 				       <td><c:out value="${user.algorithm}"/></td>
 				       <td><c:out value="${user.mode}"/></td>	
+				       <td><c:out value="${fn:substring(user.confidence, 0, 4)}"/></td>
 				       </c:when>
 				       <c:otherwise>
 				       <td><c:out value="${user.updatedBy}"/></td>	
 				       </c:otherwise>	
 				       </c:choose>	       
-					   <td><c:out value="${user.updatedAt}"/></td>
+					   <td>
+					   	<fmt:formatDate type="both" timeStyle="short" value="${user.updatedAt}"/>
+					   </td>
 				       </tr>
 				    </c:forEach>
 				</table>
@@ -139,13 +165,20 @@
 					<td><c:out value="${user.spammer}"/></td>
 					<td><c:out value="${user.algorithm}"/></td>	
 					<td><c:out value="${mtl:predictionString(user.prediction)}"/></td>	
-					<td><c:out value="${user.confidence}"/></td>
+					<td><c:out value="${fn:substring(user.confidence, 0,5)}"/></td>
 					<c:choose>
+						<c:when test="${user.prediction == 9}">
+							<td class="uncertainUser"></td>					
+						</c:when>
+						<c:otherwise>
+						<c:choose>
 						<c:when test="${user.spammer == mtl:isSpammer(user.prediction)}">
 							<td style="background: green"></td>					
 						</c:when>
 						<c:otherwise>
 							<td style="background: red"></td>	
+						</c:otherwise>
+						</c:choose>
 						</c:otherwise>
 					</c:choose>
 				</tr>				
