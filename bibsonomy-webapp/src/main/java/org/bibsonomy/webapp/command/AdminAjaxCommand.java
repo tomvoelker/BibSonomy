@@ -32,6 +32,12 @@ public class AdminAjaxCommand extends AjaxCommand {
 	/** show spam posts; enabled by default*/
 	private String showSpamPosts = "true";
 	
+	/** total number of bookmarks*/
+	private int bookmarkCount;
+	
+	/** total number of bibtex*/
+	private int bibtexCount;
+	
 	public String getUserName() {
 		return this.userName;
 	}
@@ -67,5 +73,21 @@ public class AdminAjaxCommand extends AjaxCommand {
 	}
 	public void setShowSpamPosts(String showSpamPosts) {
 		this.showSpamPosts = showSpamPosts;
+	}
+	
+	public int getBookmarkCount() {
+		return bookmarkCount;
+	}
+	
+	public void setBookmarkCount(int bookmarkCount) {
+		this.bookmarkCount = bookmarkCount;
+	}
+	
+	public int getBibtexCount() {
+		return bibtexCount;
+	}
+	
+	public void setBibtexCount(int bibtexCount) {
+		this.bibtexCount = bibtexCount;
 	}
 }

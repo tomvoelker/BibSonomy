@@ -6,7 +6,9 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
@@ -31,11 +33,14 @@ public class AdminAjaxController extends AjaxController implements MinimalisticC
 		
 		
 		if ("flag_spammer".equals(action)) {
+			log.debug("Flag as spammer ");
 			this.flagSpammer(command, true);
 			this.setResponse(command, command.getUserName() + " flagged as spammer");
 		} else if ("unflag_spammer".equals(action)) {
 			this.flagSpammer(command, false);
 			this.setResponse(command, command.getUserName() + " flagged as nonspammer");
+		} else if ("mark_uncertainUser".equals(action)) {
+			this.flagUnsureSpammer(command, false);
 		} else if ("update_settings".equals(action)) {
 			this.updateSettings(command);
 			this.setResponse(command, command.getKey() + " updated");
@@ -59,7 +64,22 @@ public class AdminAjaxController extends AjaxController implements MinimalisticC
 			user.setToClassify(0);
 			user.setAlgorithm("admin");
 			user.setSpammer(spammer);
-			
+			log.debug("Flag spammer in Controller");
+			this.logic.updateUser(user);
+		}
+	}
+	
+	/**
+	 * marks a user of not being a sure non-spammer
+	 * @param cmd
+	 */
+	private void flagUnsureSpammer(AdminAjaxCommand cmd, boolean spammer) {		
+		if (cmd.getUserName() != null) {
+			User user = new User(cmd.getUserName());
+			user.setToClassify(1);
+			user.setAlgorithm("admin");
+			user.setSpammer(spammer);
+			user.setPrediction(SpamStatus.UNKNOWN.getId());
 			this.logic.updateUser(user);
 		}
 	}
@@ -81,6 +101,12 @@ public class AdminAjaxController extends AjaxController implements MinimalisticC
 			}
 			List<Post<Bookmark>> bookmarks = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, Order.ADDED, filter, 0, 5, null);
 			command.setBookmarks(bookmarks);
+			
+			int totalBookmarks = this.logic.getPostStatistics(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, filter, 0, 100, null, null);
+			command.setBookmarkCount(totalBookmarks);
+			
+			int totalBibtex = this.logic.getPostStatistics(BibTex.class, GroupingEntity.USER, command.getUserName(), null, null, null, filter, 0, 10000, null, null);
+			command.setBibtexCount(totalBibtex);
 		}
 	}	
 

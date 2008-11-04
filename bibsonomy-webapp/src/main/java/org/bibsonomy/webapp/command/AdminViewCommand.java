@@ -24,10 +24,10 @@ public class AdminViewCommand extends TabsCommand<User> {
 	/** Command containing current admin settings */
 	private AdminSettingsCommand settingsCommand = new AdminSettingsCommand();
 	
-	private AdminStatisticsCommand statisticsCommand = new AdminStatisticsCommand();	
+	private AdminStatisticsCommand statisticsCommand = new AdminStatisticsCommand();
 	
 	/** the time interval for retrieving spammers */
-	private Integer interval = 300;
+	private Integer interval = 7000;
 	
 	public AdminViewCommand() {				
 		addTab(ADMIN_SPAMMER_INDEX, "Admin: Spammer");
@@ -37,7 +37,8 @@ public class AdminViewCommand extends TabsCommand<User> {
 		addTab(CLASSIFIER_NOSPAMMER_UNSURE_INDEX, "Classifier: No Spammer (U)");
 		addTab(CLASSIFIER_NOSPAMMER_INDEX, "Classifier: No Spammer");
 		addTab(CLASSIFIER_EVALUATE, "Classifier Evaluation");			
-	}		
+	}	
+	
 		
 	public AdminSettingsCommand getSettingsCommand() {
 		return this.settingsCommand;
