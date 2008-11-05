@@ -130,6 +130,7 @@
           
           <!-- little script to switch between default login and OpenID login forms -->
           <script type="text/javascript">
+				<![CDATA[
 				/** switch between default and openid login form */
 				function switchLogin() {
 					var defaultLoginDiv = document.getElementById("userAndPw");
@@ -143,6 +144,7 @@
 						openIDLoginDiv.style.display = "block";
 					}
 				}
+		  	]]>
 		  </script>		
       
       </jsp:attribute>
