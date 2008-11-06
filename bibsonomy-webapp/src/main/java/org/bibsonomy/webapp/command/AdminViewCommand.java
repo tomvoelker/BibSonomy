@@ -36,7 +36,10 @@ public class AdminViewCommand extends TabsCommand<User> {
 		addTab(CLASSIFIER_SPAMMER_UNSURE_INDEX, "Classifier: Spammer (U)");
 		addTab(CLASSIFIER_NOSPAMMER_UNSURE_INDEX, "Classifier: No Spammer (U)");
 		addTab(CLASSIFIER_NOSPAMMER_INDEX, "Classifier: No Spammer");
-		addTab(CLASSIFIER_EVALUATE, "Classifier Evaluation");			
+		addTab(CLASSIFIER_EVALUATE, "Classifier Evaluation");	
+		
+		// change default tab to classifier tab
+		selTab = 4;
 	}	
 	
 		
