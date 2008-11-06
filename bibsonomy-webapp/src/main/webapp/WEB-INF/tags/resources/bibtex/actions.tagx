@@ -50,7 +50,7 @@
 					<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
 				</c:url>
 				<c:set var="copyTitle"><fmt:message key="bibtex.actions.copy.title"/></c:set>				
-         		<a href="${fn:escapeXml(copy_url)}'" title="${copyTitle}">
+         		<a href="${fn:escapeXml(copy_url)}" title="${copyTitle}">
 					<fmt:message key="bibtex.actions.copy"/>
 				</a>
 
