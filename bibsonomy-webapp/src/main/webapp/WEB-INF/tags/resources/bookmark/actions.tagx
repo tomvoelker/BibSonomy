@@ -54,6 +54,12 @@
 				<fmt:message key="bookmark.actions.copy"/>
 			</a>
 		</c:if>
+		
+		<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
+		
+		<!-- FLAG AS SPAM  -->		
+	    <fmt:message var="flagAsSpam" key="post.meta.flag_as_spam.title"/>
+    	<a class="flag_as_spam" href="javascript:;" title="${flagAsSpam}"><fmt:message key="post.meta.flag_as_spam"/></a>		
 
 		</span>
   </c:if>
