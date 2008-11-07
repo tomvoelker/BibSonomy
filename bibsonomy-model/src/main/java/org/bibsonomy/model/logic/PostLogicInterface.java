@@ -5,6 +5,7 @@ import java.util.List;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.StatisticsConstraint;
+import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
@@ -57,30 +58,31 @@ public interface PostLogicInterface {
 	public Post<? extends Resource> getPostDetails(String resourceHash, String userName);
 
 	/**
-	 * Removes the given post - identified by the connected resource's hash -
+	 * Removes the given posts - identified by the connected resource's hashes -
 	 * from the user.
 	 * 
-	 * @param userName user who's post is to be removed
-	 * @param resourceHash
-	 *            hash of the resource, which is connected to the post to delete
+	 * @param userName user who's posts are to be removed
+	 * @param resourceHashes
+	 *            hashes of the resources, which is connected to the posts to delete
 	 */
-	public void deletePost(String userName, String resourceHash);
+	public void deletePosts(String userName, List<String> resourceHashes);
 
 	/**
-	 * Add a post to the database.
+	 * Add the posts to the database.
 	 * 
-	 * @param post  the post to add
-	 * @return String the resource hash of the created post
+	 * @param posts  the posts to add
+	 * @return String the resource hashes of the created posts
 	 */
-	public String createPost(Post<?> post);
+	public List<String> createPosts(List<Post<?>> posts);
 
 	/**
-	 * Updates a post in the database.
+	 * Updates the posts in the database.
 	 * 
-	 * @param post  the post to update
-	 * @return resourceHash the hash of the updated resource
+	 * @param posts  the posts to update
+	 * @param operation  which parts of the posts should be updated
+	 * @return resourceHashes the (new) hashes of the updated resources
 	 */
-	public String updatePost(Post<?> post);
+	public List<String> updatePosts(List<Post<?>> posts, PostUpdateOperation operation);
 	
 	/**  
 	 * retrieves the counts of a filterable list of posts.
