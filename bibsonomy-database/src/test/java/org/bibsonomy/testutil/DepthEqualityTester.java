@@ -140,6 +140,8 @@ public final class DepthEqualityTester  {
 		} else {
 			try {
 				final BeanInfo bi = Introspector.getBeanInfo(should.getClass());
+				log.debug("introspecting class " + should.getClass().getName());
+				log.debug("comparing with class " + is.getClass().getName());
 				for (final PropertyDescriptor d : bi.getPropertyDescriptors()) {
 					final String propertyPath = (path.length() > 0) ? (path + "." + d.getName()) : d.getName();
 					Exception catched = null;

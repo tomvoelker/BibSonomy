@@ -384,7 +384,9 @@ public class DBLogicTest extends AbstractDBLogicBase {
 
 		final LogicInterface testClassAccess = this.getDbLogic(testUserName);
 		assertEquals(1, testClassAccess.getPosts(BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null, null, 0, 100, null).size());
-		testClassAccess.createPost(post);
+		final List<Post<?>> posts = new LinkedList<Post<?>>();
+		posts.add(post);
+		testClassAccess.createPosts(posts);
 		assertEquals(1, testClassAccess.getPosts(BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null, null, 0, 100, null).size());
 		assertEquals(0, this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, testUserName, Arrays.asList("->testSuperTag"), "", null, null, 0, 100, null).size());
 	}
