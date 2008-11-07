@@ -1,6 +1,7 @@
 package org.bibsonomy.rest.client;
 
 import java.net.InetAddress;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -10,6 +11,7 @@ import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
+import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagSimilarity;
@@ -80,8 +82,14 @@ public class RestLogic implements LogicInterface {
 		execute(new DeleteGroupQuery(groupName));
 	}
 
-	public void deletePost(String userName, String resourceHash) {
-		execute(new DeletePostQuery(userName, resourceHash));
+	public void deletePosts(String userName, List<String> resourceHashes) {
+		/* 
+		 * FIXME: this iteration should be done on the server, i.e., DeletePostQuery should 
+		 * support several posts ... although it's probably not so simple.
+		 */ 		
+		for (final String resourceHash: resourceHashes) {
+			execute(new DeletePostQuery(userName, resourceHash));
+		}
 	}
 
 	public void deleteUser(String userName) {
@@ -146,8 +154,16 @@ public class RestLogic implements LogicInterface {
 		return execute(new CreateGroupQuery(group));
 	}
 
-	public String createPost(Post<?> post) {
-		return execute(new CreatePostQuery(this.authUser.getName(), post));
+	public List<String> createPosts(List<Post<?>> posts) {
+		/* 
+		 * FIXME: this iteration should be done on the server, i.e., CreatePostQuery should 
+		 * support several posts ... although it's probably not so simple.
+		 */ 
+		final List<String> resourceHashes = new LinkedList<String>();
+		for (Post<?> post: posts) {
+			resourceHashes.add(execute(new CreatePostQuery(this.authUser.getName(), post)));
+		}
+		return resourceHashes;
 	}
 
 	public String createUser(User user) {
@@ -159,9 +175,17 @@ public class RestLogic implements LogicInterface {
 		return execute(new ChangeGroupQuery(group.getName(), group));
 	}
 
-	public String updatePost(final Post<?> post) {
-		// hashes are recalculated by the server
-		return execute(new ChangePostQuery(this.authUser.getName(), post.getResource().getIntraHash(), post));
+	public List<String> updatePosts(List<Post<?>> posts, PostUpdateOperation operation) {
+		/* 
+		 * FIXME: this iteration should be done on the server, i.e., CreatePostQuery should 
+		 * support several posts ... although it's probably not so simple.
+		 */ 
+		final List<String> resourceHashes = new LinkedList<String>();
+		for (Post<?> post: posts) {
+			// hashes are recalculated by the server
+			resourceHashes.add(execute(new ChangePostQuery(this.authUser.getName(), post.getResource().getIntraHash(), post)));
+		}
+		return resourceHashes;
 	}
 
 	public String updateUser(User user) {
@@ -181,24 +205,24 @@ public class RestLogic implements LogicInterface {
 
 	public void deleteDocument(String userName, String resourceHash, String fileName) {
 		// TODO Auto-generated method stub
-		
+
 	}	
-	
+
 	public void addInetAddressStatus(InetAddress address, InetAddressStatus status) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void deleteInetAdressStatus(InetAddress address) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public InetAddressStatus getInetAddressStatus(InetAddress address) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	public int getStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, StatisticsConstraint constraint, String search, List<String> tags) {
 		// TODO Auto-generated method stub
 		return 0;
@@ -216,7 +240,7 @@ public class RestLogic implements LogicInterface {
 
 	public void deleteConcept(Tag concept, GroupingEntity grouping, String groupingName) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public String updateConcept(Tag concept, GroupingEntity grouping, String groupingName) {
@@ -226,19 +250,19 @@ public class RestLogic implements LogicInterface {
 
 	public void deleteConcept(String concept, GroupingEntity grouping, String groupingName) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void deleteRelation(String upper, String lower, GroupingEntity grouping, String groupingName) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public Tag getConceptDetails(String conceptName, GroupingEntity grouping, String groupingName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	public List<User> getUsers(List<String> tags, Order order, int start, int end) {
 		// TODO Auto-generated method stub
 		return null;
