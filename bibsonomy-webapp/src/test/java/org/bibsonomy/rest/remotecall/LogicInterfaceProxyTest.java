@@ -6,6 +6,8 @@ package org.bibsonomy.rest.remotecall;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -18,6 +20,7 @@ import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
+import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagSimilarity;
@@ -40,7 +43,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mortbay.jetty.AbstractConnector;
 import org.mortbay.jetty.Server;
@@ -222,25 +224,28 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 */
 	@Test
 	public void createPostTestBookmark() {
-		createPost(ModelUtils.generatePost(Bookmark.class));		
+		final List<Post<?>> posts = new LinkedList<Post<?>>();
+		posts.add(ModelUtils.generatePost(Bookmark.class));
+		createPosts(posts);
 	}
 	/**
 	 * runs the test defined by {@link #createPost(Post)} with a populated BibTex Post as the argument
 	 */
 	@Test
 	public void createPostTestBibtex() {
-		// createPost(ModelUtils.generatePost(BibTex.class));
-		Post<BibTex> post = ModelUtils.generatePost(BibTex.class);
-		createPost(post);
+		final List<Post<?>> posts = new LinkedList<Post<?>>();
+		posts.add(ModelUtils.generatePost(BibTex.class));
+		createPosts(posts);
 	}
-	public String createPost(Post<?> post) {
+	public List<String> createPosts(List<Post<?>> posts) {
+		final Post<?> post = posts.get(0);
 		post.getUser().setName(LOGIN_USER_NAME);
-		
-		final Post<?> eq = PropertyEqualityArgumentMatcher.eq(post,"date", "user.apiKey", "user.email", "user.homepage", "user.password", "user.realname", "resource.scraperId", "resource.openURL", "user.IPAddress", "user.basket", "user.gender", "user.interests", "user.hobbies", "user.profession", "user.openURL", "user.place", "user.spammer", "user.settings", "user.algorithm", "user.prediction", "user.mode", "user.toClassify", "user.updatedBy", "user.reminderPassword", "user.openID");
-		
-		EasyMock.expect(serverLogic.createPost(eq)).andReturn(post.getResource().getIntraHash());
+				
+		final List<String> singletonList = Collections.singletonList(post.getResource().getIntraHash());
+
+		EasyMock.expect(serverLogic.createPosts(PropertyEqualityArgumentMatcher.eq(posts, "[0].date", "[0].user.apiKey", "[0].user.email", "[0].user.homepage", "[0].user.password", "[0].user.realname", "[0].resource.scraperId", "[0].resource.openURL", "[0].user.IPAddress", "[0].user.basket", "[0].user.gender", "[0].user.interests", "[0].user.hobbies", "[0].user.profession", "[0].user.openURL", "[0].user.place", "[0].user.spammer", "[0].user.settings", "[0].user.algorithm", "[0].user.prediction", "[0].user.mode", "[0].user.toClassify", "[0].user.updatedBy", "[0].user.reminderPassword", "[0].user.openID"))).andReturn(singletonList);
 		EasyMock.replay(serverLogic);
-		Assert.assertEquals(post.getResource().getIntraHash(), clientLogic.createPost(post));
+		Assert.assertEquals(singletonList, clientLogic.createPosts(posts));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return null;
@@ -254,7 +259,13 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		createUser(ModelUtils.getUser());
 	}
 	public String createUser(User user) {
-		EasyMock.expect(serverLogic.createUser(PropertyEqualityArgumentMatcher.eq(user, "apiKey", "IPAddress", "basket", "gender", "interests", "hobbies", "profession", "openURL", "place", "spammer", "settings", "toClassify", "updatedBy", "reminderPassword", "openID"))).andReturn(user.getName() + "-new");
+
+		final User eqUser = PropertyEqualityArgumentMatcher.eq(user, "apiKey", "IPAddress", "basket", "gender", "interests", "hobbies", "profession", "openURL", "place", "spammer", "settings", "toClassify", "updatedBy", "reminderPassword", "openID");
+		
+		final String userName = serverLogic.createUser(eqUser);
+		System.out.println("username is " + userName);
+		
+		EasyMock.expect(userName).andReturn(user.getName() + "-new");
 		EasyMock.replay(serverLogic);
 		Assert.assertEquals(user.getName() + "-new", clientLogic.createUser(user));
 		EasyMock.verify(serverLogic);
@@ -282,12 +293,12 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 */
 	@Test
 	public void deletePostTest() {
-		deletePost("hurzelUserName", ModelUtils.getBookmark().getIntraHash());
+		deletePosts("hurzelUserName", Collections.singletonList(ModelUtils.getBookmark().getIntraHash()));
 	}
-	public void deletePost(String userName, String resourceHash) {
-		serverLogic.deletePost(userName, resourceHash);
+	public void deletePosts(String userName, List<String> resourceHashes) {
+		serverLogic.deletePosts(userName, resourceHashes);
 		EasyMock.replay(serverLogic);
-		clientLogic.deletePost(userName, resourceHash);
+		clientLogic.deletePosts(userName, resourceHashes);
 		EasyMock.verify(serverLogic);
 		assertLogin();
 	}
@@ -594,30 +605,39 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	/**
-	 * runs the test defined by {@link #updatePost(Post)} with a fully populated Bibtex Post as argument
+	 * runs the test defined by {@link #updatePosts(List, PostUpdateOperation)} with a fully populated Bibtex Post as argument
 	 */
 	@Test
 	public void updatePostTestBibtex() {
-		Post<BibTex> post = ModelUtils.generatePost(BibTex.class);
-		post.getUser().setName(LOGIN_USER_NAME);
-		updatePost(post);
+		final List<Post<?>> posts = new LinkedList<Post<?>>();
+		posts.add(ModelUtils.generatePost(BibTex.class));
+
+		updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
 	}
 	/**
-	 * runs the test defined by {@link #updatePost(Post)} with a fully populated Bookmark Post as argument
+	 * runs the test defined by {@link #updatePosts(List, PostUpdateOperation)} with a fully populated Bookmark Post as argument
 	 */
 	@Test
 	public void updatePostTestBookmark() {
-		Post<Bookmark> post = ModelUtils.generatePost(Bookmark.class);
-		post.getUser().setName(LOGIN_USER_NAME);
-		updatePost(post);
+		final List<Post<?>> posts = new LinkedList<Post<?>>();
+		posts.add(ModelUtils.generatePost(Bookmark.class));
+		
+		updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
 	}
-	public String updatePost(Post<?> post) {
-		EasyMock.expect(serverLogic.updatePost(PropertyEqualityArgumentMatcher.eq(post,"date", "user.apiKey", "user.email", "user.homepage", "user.password", "user.realname", "resource.scraperId", "resource.openURL", "user.IPAddress", "user.basket", "user.gender", "user.interests", "user.hobbies", "user.profession", "user.openURL", "user.place", "user.spammer", "user.settings", "user.algorithm", "user.prediction", "user.mode", "user.updatedBy", "user.toClassify", "user.reminderPassword", "user.openID"))).andReturn(post.getResource().getIntraHash());
+	
+	public List<String> updatePosts(List<Post<?>> posts, PostUpdateOperation operation) {
+		final Post<?> post = posts.get(0);
+		post.getUser().setName(LOGIN_USER_NAME);
+		
+		final List<String> singletonList = Collections.singletonList(post.getResource().getIntraHash());
+		
+		EasyMock.expect(serverLogic.updatePosts(PropertyEqualityArgumentMatcher.eq(posts, "[0].date", "[0].user.apiKey", "[0].user.email", "[0].user.homepage", "[0].user.password", "[0].user.realname", "[0].resource.scraperId", "[0].resource.openURL", "[0].user.IPAddress", "[0].user.basket", "[0].user.gender", "[0].user.interests", "[0].user.hobbies", "[0].user.profession", "[0].user.openURL", "[0].user.place", "[0].user.spammer", "[0].user.settings", "[0].user.algorithm", "[0].user.prediction", "[0].user.mode", "[0].user.updatedBy", "[0].user.toClassify", "[0].user.reminderPassword", "[0].user.openID"), PropertyEqualityArgumentMatcher.eq(operation, ""))).andReturn(singletonList);
 		EasyMock.replay(serverLogic);
-		Assert.assertEquals(post.getResource().getIntraHash(), clientLogic.updatePost(post));
+		Assert.assertEquals(singletonList, clientLogic.updatePosts(posts, operation));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return null;
+		
 	}
 
 	/**
