@@ -6,6 +6,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -13,11 +14,11 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
-import org.bibsonomy.common.enums.DatabaseType;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
+import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
@@ -118,7 +119,7 @@ public class DBLogic implements LogicInterface {
 	 * connection, if not logged in, the secondary connection
 	 */
 	private DBSession openSession() {
-	    // uncomment following to access secondary datasource for not logged-in users
+		// uncomment following to access secondary datasource for not logged-in users
 		//if (this.loginUser.getName() == null) {
 		//	return this.dbSessionFactory.getDatabaseSession(DatabaseType.SLAVE);
 		//}
@@ -222,23 +223,23 @@ public class DBLogic implements LogicInterface {
 				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, this.loginUser);
 				// check permissions for displaying links to documents
 				param.setDocumentsAttached(this.permissionDBManager.isAllowedToAccessUsersOrGroupDocuments(this.loginUser, grouping, groupingName, session));
-				
+
 				// add filters
 				param.setFilter(filter);
-	
+
 				// this is save because of RTTI-check of resourceType argument which is of class T
 				result = ((List) this.bibtexDBManager.getPosts(param, session));
 			} else if (resourceType == Bookmark.class) {
-				
+
 				//check filters
 				//can not add filter to BookmarkParam yet, but need to add group before buildParam
-				 
+
 				if(this.permissionDBManager.checkFilterPermissions(filter, this.loginUser)){
 					loginUser.addGroup(new Group(GroupID.ADMINSPAM));
 				}
-				
+
 				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, this.loginUser);
-				
+
 				// this is save because of RTTI-check of resourceType argument which is of class T
 				result = ((List) this.bookmarkDBManager.getPosts(param, session));
 			} else {
@@ -370,7 +371,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	public void deleteUser(final String userName) {
 		// TODO: take care of toLowerCase()! 
-		
+
 		throw new UnsupportedOperationException("not yet available");
 
 //		if ((this.loginUserName == null) || (this.loginUserName.equals(userName) == false)) {
@@ -419,27 +420,47 @@ public class DBLogic implements LogicInterface {
 	 * Removes the given post - identified by the connected resource's hash -
 	 * from the user.
 	 */
-	public void deletePost(final String userName, final String resourceHash) {
-		final String lowerCaseUserName = userName.toLowerCase();
-		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(lowerCaseUserName) == false)) {
-			throw new ValidationException("You are not authorized to perform the requested operation");
-		}
+	public void deletePosts(final String userName, final List<String> resourceHashes) {
+		/*
+		 * check permissions
+		 */
+		this.ensureLoggedIn();
+		this.permissionDBManager.ensureWriteAccess(this.loginUser, userName);
+		/*
+		 * to store hashes of missing resources
+		 */
+		final List<String> missingResources = new LinkedList<String>();
 
 		final DBSession session = openSession();
 		try {
-			boolean resourceFound = false;
-			// TODO would be nice to know about the resourcetype or the instance behind this resourceHash
-			for (final CrudableContent<? extends Resource, ? extends GenericParam> man : this.allDatabaseManagers.values()) {
-				if (man.deletePost(lowerCaseUserName, resourceHash, session) == true) {
-					resourceFound = true;
-					break;
+			final String lowerCaseUserName = userName.toLowerCase();
+			for (final String resourceHash: resourceHashes) {
+				/*
+				 * delete one resource
+				 */
+				boolean resourceFound = false;
+				// TODO would be nice to know about the resourcetype or the instance behind this resourceHash
+				for (final CrudableContent<? extends Resource, ? extends GenericParam> man : this.allDatabaseManagers.values()) {
+					if (man.deletePost(lowerCaseUserName, resourceHash, session) == true) {
+						resourceFound = true;
+						break;
+					}
 				}
-			}
-			if (resourceFound == false) {
-				throw new IllegalStateException("The resource with ID " + resourceHash + " does not exist and could hence not be deleted.");
+				/*
+				 * remember missing resources
+				 */
+				if (resourceFound == false) {
+					missingResources.add(resourceHash);
+				}
 			}
 		} finally {
 			session.close();
+		}
+		/*
+		 * throw exception for missing resources
+		 */
+		if (missingResources.size() > 0) {
+			throw new IllegalStateException("The resource(s) with ID(s) " + missingResources + " do(es) not exist and could hence not be deleted.");
 		}
 	}
 
@@ -563,20 +584,47 @@ public class DBLogic implements LogicInterface {
 		return this.storeGroup(group, true);
 	}
 
-	public String createPost(final Post<?> post) {
+
+
+	public List<String> createPosts(final List<Post<?>> posts) {
 		this.ensureLoggedIn();
-		this.permissionDBManager.ensureWriteAccess(post, this.loginUser);
-		return this.storePost(post, false);
+		/*
+		 * check permissions
+		 */
+		for (final Post<?> post: posts) {
+			this.permissionDBManager.ensureWriteAccess(post, this.loginUser);
+		}
+		/*
+		 * insert posts
+		 * TODO: more efficient implementation (transactions, deadlock handling, asynchronous, etc.) 
+		 */
+		final List<String> hashes = new LinkedList<String>();
+		for (final Post<?> post: posts) {
+			hashes.add(this.storePost(post, false));
+		}
+		return hashes;
 	}
 
-	public String updatePost(final Post<?> post) {
+
+
+	public List<String> updatePosts(List<Post<?>> posts, PostUpdateOperation operation) {
 		this.ensureLoggedIn();
-		this.permissionDBManager.ensureWriteAccess(post, this.loginUser);
-		return this.storePost(post, true);
+		/*
+		 * check permissions
+		 */
+		for (Post<?> post: posts) {
+			this.permissionDBManager.ensureWriteAccess(post, this.loginUser);
+		}
+		/*
+		 * update posts
+		 * FIXME: implement properly (see createPosts) 
+		 */
+		final List<String> hashes = new LinkedList<String>();
+		for (Post<?> post: posts) {
+			hashes.add(this.storePost(post, true));
+		}
+		return hashes;
 	}
-
-
-
 
 
 
@@ -597,12 +645,15 @@ public class DBLogic implements LogicInterface {
 		return this.storeUser(user, false);
 	}
 
+
+
+
+
 	public String updateUser(final User user) {
 		/*
 		 * only logged in users can update user settings
 		 */
 		this.ensureLoggedIn();
-		
 		/*
 		 * only admins can change settings of /other/ users
 		 */
@@ -860,7 +911,7 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
-	
+
 	/**
 	 * Query statistical information regarding posts
 	 */
