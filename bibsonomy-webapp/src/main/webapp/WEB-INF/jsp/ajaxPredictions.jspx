@@ -10,8 +10,7 @@
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />		
 	
-	<div style="width:100%; font-size:0.7em; text-align:right;"><a href="javascript:ajax_hideTooltip()">close</a></div>
-	
+	<div onclick='javascript:ajax_hideTooltip()'/>
 	<table class="spammertable">
 	<tr><th>Prediction</th><th>Algorithm</th><th>Mode</th><th>Updated at</th></tr>
 	<c:forEach var="prediction" items="${command.predictionHistory}">		
