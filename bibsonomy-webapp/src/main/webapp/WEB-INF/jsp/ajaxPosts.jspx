@@ -9,10 +9,12 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />	
-	<div style="width:100%; font-size:0.7em; text-align:right;"><a href="javascript:ajax_hideTooltip()">close</a></div>	
+	<div style="width:100%; font-size:0.7em; text-align:left;"><a href="javascript:ajax_hideTooltip()">close</a></div>	
 	<div style="width:100%; font-size:0.7em; text-align:left;">
 		Bookmarks:  <c:out value="${command.bookmarkCount}"/>
-		Publications: <c:out value="${command.bibtexCount}"/>
+        <c:if test="${command.bibtexCount > 0}">
+		   , <span class="important">Publications: <c:out value="${command.bibtexCount}"/></span>
+        </c:if>
 	</div>
 	<table class="poststable">
 	<tr><th>Field</th><th>Data</th></tr>

@@ -123,3 +123,7 @@ tr.lastrow {
 	overflow:auto;	/* Hide overflow content */
 	z-index:1000001;
 }
+
+.important {
+  background-color: #ff0;
+}
