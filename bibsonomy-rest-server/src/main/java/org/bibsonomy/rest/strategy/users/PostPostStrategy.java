@@ -2,6 +2,8 @@ package org.bibsonomy.rest.strategy.users;
 
 import java.io.Writer;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.InvalidModelException;
@@ -40,7 +42,9 @@ public class PostPostStrategy extends AbstractCreateStrategy {
 		final Post<?> post = this.getRenderer().parsePost(this.doc);
 		post.setDate(new Date(System.currentTimeMillis()));
 		try {
-			return this.getLogic().createPost(post);
+			final List<Post<?>> posts = new LinkedList<Post<?>>();
+			posts.add(post);
+			return this.getLogic().createPosts(posts).get(0);
 		}
 		catch ( InvalidModelException ex ) {
 			throw new BadRequestOrResponseException(ex.getMessage());

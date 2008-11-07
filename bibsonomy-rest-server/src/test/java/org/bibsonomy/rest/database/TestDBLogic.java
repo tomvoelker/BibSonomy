@@ -17,6 +17,7 @@ import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
+import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagSimilarity;
@@ -681,7 +682,7 @@ public class TestDBLogic implements LogicInterface {
 	public void deleteGroup(String groupName) {
 	}
 
-	public void deletePost(String userName, String resourceHash) {
+	public void deletePosts(String userName, List<String> resourceHashes) {
 	}
 
 	public void deleteUser(String userName) {
@@ -713,11 +714,11 @@ public class TestDBLogic implements LogicInterface {
 		return null;
 	}
 
-	public String createPost(Post<?> post) {
+	public List<String> createPosts(List<Post<?>> posts) {
 		return null;
 	}
 
-	public String updatePost(Post<?> post) {
+	public List<String> updatePosts(List<Post<?>> posts, PostUpdateOperation operation) {
 		return null;
 	}
 

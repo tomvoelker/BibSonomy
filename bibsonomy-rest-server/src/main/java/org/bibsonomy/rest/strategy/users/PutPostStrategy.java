@@ -1,7 +1,10 @@
 package org.bibsonomy.rest.strategy.users;
 
 import java.io.Writer;
+import java.util.LinkedList;
+import java.util.List;
 
+import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
@@ -59,7 +62,9 @@ public class PutPostStrategy extends AbstractUpdateStrategy {
 		// XXX: neither the client nor the REST API will calculate the new
 		// hash - this will be done by the logic behind the LogicInterface!		
 		try {
-			return this.getLogic().updatePost(post);
+			final List<Post<?>> posts = new LinkedList<Post<?>>();
+			posts.add(post);
+			return this.getLogic().updatePosts(posts, PostUpdateOperation.UPDATE_ALL).get(0);
 		}
 		catch (InvalidModelException ex) {
 			throw new BadRequestOrResponseException(ex);

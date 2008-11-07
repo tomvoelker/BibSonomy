@@ -1,5 +1,7 @@
 package org.bibsonomy.rest.strategy.users;
 
+import java.util.Collections;
+
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.rest.strategy.AbstractDeleteStrategy;
 import org.bibsonomy.rest.strategy.Context;
@@ -26,7 +28,7 @@ public class DeletePostStrategy extends AbstractDeleteStrategy {
 
 	@Override
 	protected boolean delete() throws InternServerException {
-		this.getLogic().deletePost(this.userName, this.resourceHash);
+		this.getLogic().deletePosts(this.userName, Collections.singletonList(this.resourceHash));
 		// no exception -> assume success
 		return true;
 	}
