@@ -7,6 +7,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -141,7 +142,9 @@ public class PostBookmarkController extends SingleResourceListController impleme
 //		post.setResource(ModelUtils.getBookmark());
 		
 		System.out.println("--> PostBookmarkController: workOn() insert into database");
-		String out = logic.createPost(command.getPostBookmark());
+		final List<Post<?>> posts = new LinkedList<Post<?>>();
+		posts.add(command.getPostBookmark());
+		String out = logic.createPosts(posts).get(0);
 		System.out.println("out: " + out);
 		
 		/*
