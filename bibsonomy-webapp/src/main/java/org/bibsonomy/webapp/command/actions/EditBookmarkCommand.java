@@ -22,19 +22,26 @@ public class EditBookmarkCommand extends PostCommand {
 	private boolean userLoggedIn;
 	private Post<Bookmark> postBookmark;
 	private String tags ;
+	private boolean jump = false;
 	
 	private List<String> groups;
 	private List<Tag> relevantGroups;
 	private List<String> recommendedTags;
 	private List<Group> groupDetails;
+	private GroupID groupIds;
+	private Map<String,Map<String,List<String>>> relevantTagSets;
 	//private TagCloudCommand tagcloud = new TagCloudCommand();
 	
 	public EditBookmarkCommand() {
 		postBookmark = new Post<Bookmark>();
 		postBookmark.setResource(new Bookmark());
 
+		postBookmark.getResource().setUrl("http://");
+		
 		groups = new ArrayList<String>();
+//		relevantTags = new ArrayList<String>();
 		relevantGroups = new ArrayList<Tag>();
+		relevantTagSets = new HashMap<String, Map<String,List<String>>>();
 		groupDetails = new ArrayList<Group>();
 	}
 
@@ -67,6 +74,14 @@ public class EditBookmarkCommand extends PostCommand {
 		this.groups = groups;
 	}
 
+//	public List<String> getRelevantTags() {
+//		return this.relevantTags;
+//	}
+//
+//	public void setRelevantTags(List<String> relevantTags) {
+//		this.relevantTags = relevantTags;
+//	}
+
 	public List<Tag> getRelevantGroups() {
 		return this.relevantGroups;
 	}
@@ -83,6 +98,22 @@ public class EditBookmarkCommand extends PostCommand {
 		this.recommendedTags = recommendedTags;
 	}
 
+	public Map<String, Map<String, List<String>>> getRelevantTagSets() {
+		return this.relevantTagSets;
+	}
+
+	public void setRelevantTagSets(Map<String, Map<String, List<String>>> relevantTagSets) {
+		this.relevantTagSets = relevantTagSets;
+	}
+
+	public void setJump(boolean jump) {
+		this.jump = jump;
+	}
+
+	public boolean isJump() {
+		return jump;
+	}
+	
 	public List<Group> getGroupDetails() {
 		return this.groupDetails;
 	}
@@ -90,7 +121,6 @@ public class EditBookmarkCommand extends PostCommand {
 	public void setGroupDetails(List<Group> groupDetails) {
 		this.groupDetails = groupDetails;
 	}
-
 	
 	
 }

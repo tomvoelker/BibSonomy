@@ -190,6 +190,10 @@ public enum Views implements View {
 	AJAX("ajax"),
 	
 	/**
+	 * used by postBookmark to get the details for a given Url
+	 */
+	AJAX_GET_TITLE_FOR_URL("ajaxGetTitleForUrl"),
+	/**
 	 * posts 
 	 */
 	AJAX_POSTS("ajaxPosts"),

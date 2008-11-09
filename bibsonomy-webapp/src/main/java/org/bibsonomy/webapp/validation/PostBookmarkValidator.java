@@ -42,12 +42,15 @@ public class PostBookmarkValidator implements Validator<EditBookmarkCommand> {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "tags", "error.field.valid.tags");
 		
 		
+		
+		
 		//clean url
 		System.out.println("PostBookmarkValidator validate(): " + bookmark.getPostBookmark().getResource().getUrl());
 		bookmark.getPostBookmark().getResource().setUrl(UrlUtils.cleanUrl(bookmark.getPostBookmark().getResource().getUrl()));
 		
-		if (org.bibsonomy.util.ValidationUtils.present(bookmark.getPostBookmark().getResource().getUrl()) 
-				&& bookmark.getPostBookmark().getResource().getUrl().startsWith(UrlUtils.BROKEN_URL)) {
+		if (bookmark.getPostBookmark().getResource().getUrl().equals("http://") 
+				|| (org.bibsonomy.util.ValidationUtils.present(bookmark.getPostBookmark().getResource().getUrl()) 
+				    && bookmark.getPostBookmark().getResource().getUrl().startsWith(UrlUtils.BROKEN_URL))) {
 			System.out.println("PostBookmarkValidator validate(): BROKEN_URL");
 			errors.rejectValue("postBookmark.resource.url", "error.field.valid.url");
 		}
@@ -58,7 +61,7 @@ public class PostBookmarkValidator implements Validator<EditBookmarkCommand> {
 		 * can easily bypass that. Note that this check additionally has to be added into the 
 		 * DBLogics addPost/updatePost, etc. methods!
 		 */
-		
+	
 		System.out.println("--> errors: " + errors.getErrorCount());
 		System.out.println("--> errors: " + errors);
 	}

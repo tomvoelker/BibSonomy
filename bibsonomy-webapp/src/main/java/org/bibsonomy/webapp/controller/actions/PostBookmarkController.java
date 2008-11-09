@@ -43,26 +43,12 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.Errors;
 
 /**
- * <pre>
- * TODO: 
- * - "Fehler" nicht beim ersten Seiten-Aufruf anzeigen 
- * - "viewable for" mit übergeben und verarbeiten 
- * - Spezialfall, wenn Scrapbare-Seite gebookmarked werden soll 
- *   - <c:when test="${not empty scraped}"> 
- *   - http://bibsonomy.org/scraperinfo
- * - ersetzen in allen jsp(x)-Dateien:
- *   - ${mtl:ch('nbsp')} --> &nbsp;
- * </pre>
- * 
- * 
  * @author fba
  * @version $Id: PostBookmarkController.java,v 1.1 2008-09-11 04:40:12
  *          ss05fbachmann Exp $
  */
 public class PostBookmarkController extends SingleResourceListController implements MinimalisticController<EditBookmarkCommand>, ErrorAware, ValidationAwareController<EditBookmarkCommand>, RequestAware {
-
 	private static final Logger log = Logger.getLogger(PostBookmarkController.class);
-
 	private Errors errors = null;
 	private RequestLogic requestLogic;
 
@@ -115,14 +101,12 @@ public class PostBookmarkController extends SingleResourceListController impleme
 			errors.rejectValue("postBookmark.resource.url", "error.field.valid.url.alreadybookmarked");
 		}
 		
-		
 		/*
 		 * return to form until validation passes
 		 */
 		if (errors.hasErrors()) {
 			return Views.POST_BOOKMARK;
 		}
-		
 		
 		//groups
 		final Group group = new Group();
@@ -150,22 +134,16 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		/*
 		 * check, if bookmark was posted by bookmarklet (jump = true) or not 
 		 */
-		String redirectURL;
-//		if (b.isJump()) {
-//			/*
-//			 * posted by bookmarklet --> don't change an existing bookmark, but make
-//			 * a copy of it (with the new, changed URL) 
-//			 */
-//			change = false;
-			redirectURL = command.getPostBookmark().getResource().getUrl();
-//		} else {
+		System.out.println("--> PostBookmarkController: workOn() JUMP TRUE");
+		String redirectURL = command.getPostBookmark().getResource().getUrl();
+		if (!command.isJump()) {
+			System.out.println("--> PostBookmarkController: workOn() JUMP FALSE");
 			try {
 				redirectURL = "/user/" + URLEncoder.encode(context.getLoginUser().getName(), "UTF-8");
 			} catch (UnsupportedEncodingException ex) {
 				ex.printStackTrace();
 			} 
-//		}
-		
+		}
 		return new ExtendedRedirectView(redirectURL);
 	}
 	

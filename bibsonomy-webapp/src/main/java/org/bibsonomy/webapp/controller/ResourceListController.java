@@ -56,6 +56,7 @@ public abstract class ResourceListController {
 		TagCloudCommand tagCloudCommand = cmd.getTagcloud();
 		// retrieve tags
 		log.debug("getTags " + " " + groupingEntity + " " + groupingName);
+		System.out.println("this.logic = " + this.logic);
 		tagCloudCommand.setTags( this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, hash, order, start, end, search, null));
 		// retrieve tag cloud settings
 		tagCloudCommand.setStyle(TagCloudStyle.getStyle(userSettings.getTagboxStyle()));
