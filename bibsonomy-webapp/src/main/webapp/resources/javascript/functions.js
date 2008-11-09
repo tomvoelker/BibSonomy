@@ -60,7 +60,6 @@ function add_filter() {
 
 function init_sidebar() {
   var childs = sidebar.childNodes;
- 
   for (var i=0; i < childs.length; i++) {
     var elem = childs[i]
     
@@ -77,18 +76,22 @@ function init_sidebar() {
 
 function getToggler() {
   var toggle = document.createElement("span");
-  var text = document.createTextNode("-");//String.fromCharCode(9830));
+//  var text = document.createTextNode("-");//String.fromCharCode(9830));
+  var text = document.createElement("img");
+  text.src = "/resources/image/icon_collapse.png";
+  text.border = 0;
   toggle.appendChild(text);
   toggle.className = "toggler";
-  toggle.onclick = hideNextList;
+  toggle.onclick = hideNextList; 
+  
   return toggle;
 }
-
 
 // hide/unhide the next list following the element which called the method
 function hideNextList() {
   var node = this.parentNode;
-
+  var content = this.firstChild;
+  
   while (node && node.nodeName.toUpperCase() != "UL") {
     node = node.nextSibling;
   }
@@ -96,8 +99,10 @@ function hideNextList() {
   if (node) {
     if (node.style.display != "none") {
       node.style.display = "none";
+      content.src="/resources/image/icon_expand.png";
     } else {
       node.style.display = "block";
+      content.src="/resources/image/icon_collapse.png";
     }
   }
 }
@@ -1510,4 +1515,55 @@ function getString( key ) {
   var s = LocalizedStrings[key];
   if( !s ) return "???"+key+"???";
   return s;
+}
+
+function expandBookmarkList(){
+	$("#bibtexList").animate({ 
+	width: 0, opacity: 0.0
+	}, "slow" ).hide("1");
+
+	$("#bookmarkList").animate({ 
+	width: "97%", opacity: 1.0
+	}, "slow", function() {
+		$(this).css("position","static");
+	}).show("1");
+	
+	$("#optionExpandBookmark").hide();
+	$("#optionShowBoth").show();
+	$("#optionExpandBibtex").show();
+
+}
+
+function expandBibTexList(){
+	$("#bookmarkList").animate({ 
+		width: 0, opacity: 0.0
+	}, "slow", function() {
+		$(this).css("position","absolute");
+	}).hide("1");
+
+	$("#bibtexList").animate({ 
+		width: "97%", opacity: 1.0
+	}, "slow").show("1");
+				   
+	$("#optionExpandBookmark").show();
+	$("#optionShowBoth").show();
+	$("#optionExpandBibtex").hide();						   
+}
+
+function showBothLists(){
+	$("#bibtexList").animate({ 
+		width: "47%", opacity: 1.0
+	}, "slow", function() {
+		$(this).css("position","static");
+	}).show("1");
+
+	$("#bookmarkList").animate({ 
+		width: "47%", opacity: 1.0
+	}, "slow", function() {
+		$(this).css("position","static");
+	} ).show("1");
+	
+	$("#optionExpandBookmark").show();
+	$("#optionShowBoth").hide();
+	$("#optionExpandBibtex").show();
 }

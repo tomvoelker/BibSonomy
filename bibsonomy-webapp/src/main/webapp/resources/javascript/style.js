@@ -7,7 +7,6 @@ var style_show = new Array("cloud", "list");
 // var style_show = new Array(getString("tagbox.style.cloud"), getString("tagbox.style.list"));
 
 function init_tagbox(show, sort, minfreq, requUser) {
-
   style_list = document.createElement("ul");
   style_list.className= "floatul";
 
@@ -33,12 +32,19 @@ function init_tagbox(show, sort, minfreq, requUser) {
 function attachChangeTagBox(mode) { return(function() {	changeTagBox(mode);	})}
 function changeTagBox(mode) {
   var request = ajaxInit();
+  //alert("petetr : " + mode + " | "+ getStyleItem(mode, style_show));
 
 	if(mode == "list" || mode == "cloud"){
 		sendStyleRequ("style", mode);
 		tagbox.className = "tag" + mode;
+		
+		  
+		
 		style_list.replaceChild(getStyleItem(mode, style_show), style_list.childNodes[1]);
 	}else if(mode == "alph" || mode == "freq") {
+		
+		
+		
 		sendStyleRequ("sort", mode);
 		style_list.replaceChild(getStyleItem(mode, style_sort), style_list.childNodes[0]);
 		if (mode == "alph") {
@@ -85,6 +91,7 @@ function getMinUsertagsLink (count, requUser) {
 }
 
 function showMinfreq(count, currUser) {
+	
 	var minfreqList = document.createElement("li")
 
 	minfreqList.appendChild(document.createTextNode(" (" + getString("tagbox.minfreq") + "  "));
