@@ -46,20 +46,13 @@
 			</c:set>		
 			
 			<!-- determine tag css depending on its frequency -->
-			<c:choose>
-				<c:when test="${tag.usercount == 1}">
-					<c:set var="tagclass" value="tagone" />
-					<c:set var="posts">
-						<fmt:message key="post" /> <!-- singular -->
-					</c:set>				
-				</c:when>
-				<c:when test="${tag.usercount > 10}">
-					<c:set var="tagclass" value="tagten" />
-				</c:when>
-				<c:otherwise>
-					<c:set var="tagclass" value="" />
-				</c:otherwise>
-			</c:choose>
+			<c:if test="${tag.usercount == 1}">
+				<c:set var="posts">
+					<fmt:message key="post" /> <!-- singular -->
+				</c:set>
+			</c:if>	
+				
+			<c:set var="tagclass" value="${mtl:getTagSize(tag.usercount, cmd.maxTagCount)}" />
 			
 			<!-- display the tag -->						
 			<c:if test="${tag.usercount >= cmd.minFreq or empty disableTagboxMinfreq or disableTagboxMinfreq == true}">
@@ -89,7 +82,7 @@
 				</li>
 				<c:out value=" "/>						
 			</c:if>			
-		</c:forEach>
+		</c:forEach>		
 	</ul>
 
 	<!-- this is just a hack to expose the maximum number of tags for "old" ajax components 

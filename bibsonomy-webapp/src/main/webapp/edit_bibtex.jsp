@@ -12,7 +12,7 @@
 </jsp:include>
 
 <%-------------------------- Heading -----------------------%>
-<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="#">edit bibtex&nbsp;<img src="/resources/image/box_arrow.png"></a></h1> 
+<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="#"><img src="/resources/image/box_arrow.png">&nbsp;edit bibtex</a></h1> 
 
 <%-------------------------- Path Navigation -----------------------%>
 <%@include file="/boxes/path_navi.jsp" %>
@@ -595,10 +595,15 @@
 
 </div><%--closed general box --%>
 
+<div id="sidebarroundcorner" >
 <ul id="sidebar">
   <c:set var="markSuperTags" value="false"/>
   <%@include file="/boxes/tags/userstags.jsp"%>
 </ul>
+</div>
+<script type="text/javascript">
+   $("#sidebarroundcorner").corner("round bottom 15px").corner("round tl 15px");
+</script>
 
 <%@ include file="/boxes/copytag.jsp" %>
 

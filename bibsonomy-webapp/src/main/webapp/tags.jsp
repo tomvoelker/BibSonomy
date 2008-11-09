@@ -6,7 +6,7 @@
 </jsp:include>
 
 <%-------------------------- Heading -----------------------%>
-<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="/tags">tags&nbsp;<img src="/resources/image/box_arrow.png"></a> ::
+<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="/tags"><img src="/resources/image/box_arrow.png">&nbsp;tags</a> ::
 <form action="/tag/" method="GET" class="smallform">
   <input type="text" size="20" name="tag" id="inpf" value="<c:out value='${param.requTag}'/>"/>
 </form>

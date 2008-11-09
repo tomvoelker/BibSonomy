@@ -9,7 +9,7 @@
   <jsp:param name="title" value="${param.requUser}" />
 </jsp:include>
 
-<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="/edit_tags">edit tags&nbsp;<img src="/resources/image/box_arrow.png"></a></h1>
+<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="/edit_tags"><img src="/resources/image/box_arrow.png">&nbsp;edit tags</a></h1>
 
 <%-------------------------- Path Navigation -----------------------%>
 <%@include file="/boxes/path_navi.jsp" %>
@@ -120,6 +120,7 @@
 
 
 <%-- tag cloud, including: list of ALL relations of the user and the tag filter box --%>
+<div id="sidebarroundcorner" >
 <ul id="sidebar">
 
   <jsp:useBean id="RelationBean" class="beans.RelationBean" scope="request">
@@ -145,6 +146,10 @@
   <%@include file="/boxes/tags/userstags.jsp"%>
 
 </ul> 
+</div>
+<script type="text/javascript">
+   $("#sidebarroundcorner").corner("round bottom 15px").corner("round tl 15px");
+</script>
 
 <script type="text/javascript">add_toggle_relations(); add_toggle();</script>
 

@@ -9,7 +9,7 @@
 </jsp:include>
 
 <%-------------------------- Heading -----------------------%>
-<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a href="#" rel="path_menu">concept&nbsp;<img src="/resources/image/box_arrow.png"></a> :: user :: 
+<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a href="#" rel="path_menu"><img src="/resources/image/box_arrow.png">&nbsp;concept</a> :: user :: 
 <a href="/user/<mtl:encode value='${param.requUser}'/>"><c:out value='${param.requUser}'/></a> ::
 <form action="/concept/user/<mtl:encode value='${param.requUser}'/>" method="GET" class="smallform">
   <input type="text" id="inpf" size="20" name="tag" value="<c:out value='${param.requTag}'/>"/>
@@ -26,6 +26,7 @@
   <%@include file="/boxes/itemcount.jsp" %>
 </div>
 
+<div id="sidebarroundcorner" >
 <ul id="sidebar">    
     <c:if test="${not empty user.name}">
     	<li><a href="/user/<mtl:encode value='${param.requUser}'/>/<mtl:encode value='${param.requTag}'/>"><c:out value="${param.requTag}"/></a> as tag from <c:out value="${user.name}"/></li>
@@ -40,5 +41,9 @@
     <c:set var="markSuperTags" value="true"/>
     <%@include file="/boxes/tags/userstags.jsp"%>
 </ul>
+</div>
+<script type="text/javascript">
+   $("#sidebarroundcorner").corner("round bottom 15px").corner("round tl 15px");
+</script>
 
 <%@ include file="/footer.jsp" %>

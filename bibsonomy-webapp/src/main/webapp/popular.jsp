@@ -6,7 +6,7 @@
 </jsp:include>
  
  <%-------------------------- Heading -----------------------%>
-<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="/popular">popular&nbsp;<img src="/resources/image/box_arrow.png"></a></h1> 
+<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="/popular"><img src="/resources/image/box_arrow.png">&nbsp;popular</a></h1> 
 
 <%-------------------------- Path Navigation -----------------------%>
 <%@include file="/boxes/path_navi.jsp" %>
@@ -17,8 +17,13 @@
 <%@include file="/boxes/bibtex.jsp"%>    <%-------------------------- BibTeX     -----------------------%>
 </div>
 
+<div id="sidebarroundcorner" >
 <ul id="sidebar">
    <%@include file="/boxes/tags/busytags.jsp"%>
 </ul>
+</div>
+<script type="text/javascript">
+   $("#sidebarroundcorner").corner("round bottom 15px").corner("round tl 15px");
+</script>
 
 <%@ include file="footer.jsp" %>

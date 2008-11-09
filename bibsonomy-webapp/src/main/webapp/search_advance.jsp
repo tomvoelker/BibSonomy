@@ -17,7 +17,7 @@
 
 <%-------------------------- Heading -----------------------%>
 <h1 id="path">
-  <a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="#" >advanced search&nbsp;<img src="/resources/image/box_arrow.png"></a>
+  <a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="#" ><img src="/resources/image/box_arrow.png">&nbsp;advanced search</a>
 </h1>
 
 <%-------------------------- Path Navigation -----------------------%>

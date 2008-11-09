@@ -14,7 +14,7 @@
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
 	
 		<jsp:attribute name="heading">		
-			<a rel="path_menu" href="#"><fmt:message key="navi.concept"/>${mtl:ch('nbsp')}<img alt="" src="/resources/image/box_arrow.png"/></a> :: 
+			<a rel="path_menu" href="#"><img alt="" src="/resources/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.concept"/></a> :: 
 			<c:if test="${not empty command.requestedUser}"><fmt:message key="navi.user"/> :: <a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${fn:escapeXml(command.requestedUser)}'/></a> :: </c:if>
 			<c:if test="${not empty command.requestedGroup}"><fmt:message key="navi.group"/> :: <a href="/group/${fn:escapeXml(command.requestedGroup)}"><c:out value='${fn:escapeXml(command.requestedGroup)}'/></a> :: </c:if>
 			<form action="/concept/tag/" method="get" class="smallform">

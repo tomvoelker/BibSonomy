@@ -9,9 +9,16 @@
 
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
 	
-	<fieldset style="border: 1px solid #069;background-color: #eee">
-		<legend><form:label path="postBookmark.groups"><fmt:message key="post.resource.viewablefor"/>*</form:label></legend>
-		<table class="vmiddle" style="width:100%">
+	<fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
+		<legend>
+			<form:label path="postBookmark.groups">
+				<a href="javascript:togglePostBookmarkView();" title="" alt="">
+					<img id="postBookmakViewableImage" src="/resources/image/nice_box_arrow_right.png" alt="" />
+				</a> 
+				<fmt:message key="post.resource.viewablefor"/>*
+			</form:label>
+		</legend>
+		<table id="postBookmakViewable" class="vmiddle" style="width:100%; display: none">
 			<tr>
 				<td style="width:20%">
 					<common:groupingradio onclick="disableGroupBox()"/>${mtl:ch('nbsp')}
@@ -21,7 +28,7 @@
 				</td>
 				<td>
 					<c:set var="aboutgroups"><fmt:message key="post.resource.aboutrelevantfor"/></c:set>	
-					<a href="/help" title="${aboutgroups}"><div class="info"><fmt:message key="post.resource.about"/></div></a>
+					<a href="/help" title="${aboutgroups}"><div class="info"><fmt:message key="post.resource.about"/> - more details about our visibility settings</div></a>
 				</td>
 			</tr>
 		</table>
@@ -31,6 +38,19 @@
 	<![CDATA[
 		//disable the groupbox at start
 		disableGroupBox();
+		togglePostBookmarkView();
+
+		function togglePostBookmarkView() {
+			if ($("#postBookmakViewable").css("display") == "block") {
+				$("#postBookmakViewable").hide("slow");	
+				$("#postBookmakViewableImage").attr("src","/resources/image/nice_box_arrow.png");
+				$("#postBookmakViewableImage").attr("alt","Expand Viewable for...");
+			} else {
+				$("#postBookmakViewable").show("slow");	
+				$("#postBookmakViewableImage").attr("src","/resources/image/nice_box_arrow_right.png");
+				$("#postBookmakViewableImage").attr("alt","Collapse Viewable for...");
+			}
+		}
 		
 		function disableGroupBox(){
 			var counter = 0;

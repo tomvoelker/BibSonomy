@@ -22,6 +22,10 @@
 			<bib:desc post="${post}"/>
 		</jsp:attribute>
 		
+		<jsp:attribute name="bmicon">
+			<bib:bmicon post="${post}" loginUserName="${loginUserName}"/>
+		</jsp:attribute>
+		
 		<!-- BibTeX action -->
 		<jsp:attribute name="actions">
 			<bib:actions loginUserName="${loginUserName}" post="${post}"/>

@@ -20,6 +20,9 @@
 		<jsp:attribute name="desc">
 			<bm:desc post="${post}"/>
 		</jsp:attribute>
+		<jsp:attribute name="bmicon">
+			<bm:bmicon post="${post}" loginUserName="${loginUserName}"/>
+		</jsp:attribute>
 		<!-- Bookmark action -->
 		<jsp:attribute name="actions">
 			<bm:actions post="${post}" loginUserName="${loginUserName}"/>

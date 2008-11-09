@@ -13,57 +13,111 @@
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
+	<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" selectedNaviTab="nav_postBook">
 		<jsp:attribute name="heading">
-			<a rel="path_menu" href="#"><fmt:message key="navi.editBookmark" />${mtl:ch('nbsp')}<img alt="" src="/resources/image/box_arrow.png" /></a> :: 
+			<a rel="path_menu" href="#"><img alt="" src="/resources/image/box_arrow.png" />${mtl:ch('nbsp')}<fmt:message key="navi.editBookmark" /></a> 
 		</jsp:attribute>
 
 		<jsp:attribute name="content">
 			<form:form action="/actions/postBookmark" method="POST">
+			<script type="text/javascript">
+				<![CDATA[
+					function checkUrlForTitle(  ){
+						//alert(document.getElementById("postBookmark.resource.url").value);
+						var req = new XMLHttpRequest();
+						req.open("GET", '/generalAjax?action=getTitleForUrl&pageURL='+encodeURIComponent(document.getElementById("postBookmark.resource.url").value), true); // Request starten
+						req.onreadystatechange = function() {
+						    if ( req.readyState == 4 ) {
+						        if ( req.status == 200 ) {
+						            var result = eval( "(" + req.responseText + ")" );
 			
+									if (result.pageTitle != "") {
+										var pageTitle = "<a href=\"javascript:setSuggestionFromUrlTitle('"+ result.pageTitle +"')\">" + result.pageTitle + "</a> ";
+										document.getElementById( "suggestion.title" ).innerHTML = pageTitle;
+									}
+			
+									if (result.pageDescription != "") {
+										var pageDescription = "<a href=\"javascript:setSuggestionFromUrlDescription('"+ result.pageDescription +"')\">" + result.pageDescription + "</a> ";
+										document.getElementById( "suggestion.description" ).innerHTML = pageDescription;
+									}
+									
+									setSuggestionFromUrlTags(result.pageKeywords);
+						        }
+						    }
+						};
+						
+						req.send(null);
+					}
+					
+					function setSuggestionFromUrlTags(pageKeywords) {
+						var keywords = pageKeywords.split(",")
+						
+						var tagString = "";
+						for(var i = 0; i < keywords.length; i++) {
+							keywords[i] = keywords[i].replace (/^\s+/, '').replace (/\s+$/, '');
+							tagString += "<a href=\"javascript:addTag('"+ keywords[i] +"')\">" + keywords[i] + "</a> ";
+						}
+			
+						document.getElementById( "suggestion.tags" ).innerHTML = tagString;
+					}
+			
+					function setSuggestionFromUrlDescription(tagname){
+						document.getElementById('postBookmark.description').value=tagname;
+					}
+			
+					function setSuggestionFromUrlTitle(tagname){
+						document.getElementById('postBookmark.resource.title').value=tagname;
+					}
+
+					
+					
+					
+				]]>
+			</script>					
 				<errors:global errors="${errors}"/>
-     				<div style="float left;width:80%;margin-left:10px">
-						<fieldset style="border: 0px;text-align:center">
-							<h2><fmt:message key="post.resource.editbookmark"/></h2>
-						</fieldset>
-						<fieldset style="border: 1px solid #069;background-color: #eee">
+     				<div style="float left;width:97%;margin-left:10px">
+						<h2 style="text-align: center; margin-bottom: 0"><fmt:message key="post.resource.editbookmark"/></h2>
+						<fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
 							<legend><form:label path="postBookmark.resource.url" ><fmt:message key="post.resource.url"/>*</form:label></legend>
-							<form:input path="postBookmark.resource.url" tabindex="2" size="60" />
-							<div class="errmsg"><form:errors path="postBookmark.resource.url" /></div>
+							<form:input path="postBookmark.resource.url" tabindex="1" size="60" onblur="checkUrlForTitle();"  />
+							<div class="postBookmarkNotValidTip"><form:errors path="postBookmark.resource.url" /></div>
 						</fieldset>	
-						<p>
-							<fieldset style="border: 1px solid #069;background-color: #eee">
-								<legend><form:label path="postBookmark.resource.title" ><fmt:message key="post.resource.title"/>*</form:label></legend>
-								<form:input path="postBookmark.resource.title" tabindex="2" size="60" />
-								<div class="errmsg"><form:errors path="postBookmark.resource.title" /></div>
-							</fieldset>	
-						</p>
-						<p>
-							<fieldset style="border: 1px solid #069;background-color: #eee">
-								<legend><form:label path="postBookmark.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label></legend>
-								<form:textarea path="postBookmark.description" tabindex="3" cols="60" rows="3" onkeyup="sz(this);" />
-							</fieldset>	
-						</p>
-						<p>
-							<post:tagfield command="${command}"/>	
-						</p>
-						<p>
-							<post:groupBox command="${command}"/>	
-						</p>
-						<p>
-							<post:relevantForBox command="${command}"/>	
-						</p>  
-						<p>
-							<fieldset style="border: 1px solid #069;background-color: #eee;width:5%">
-								<legend><fmt:message key="save"/></legend>
-								<c:set var="go"><fmt:message key="post.resource.go"/></c:set>
-								<!-- function addSystemTags located in relevantFoxBox.tagx -->
-								<input type="submit" value="${go}" onClick="addSystemTags()"/>
-							</fieldset>	
-						</p>
+						<fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
+							<legend><form:label path="postBookmark.resource.title" ><fmt:message key="post.resource.title"/>*</form:label></legend>
+							<form:input path="postBookmark.resource.title" tabindex="2" size="60" />
+							<div class="postBookmarkNotValidTip"><form:errors path="postBookmark.resource.title" /></div>
+							<div id="suggestion.title"></div>
+						</fieldset>	
+						<fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
+							<legend><form:label path="postBookmark.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label></legend>
+							<form:textarea path="postBookmark.description" tabindex="3" cols="60" rows="3" onkeyup="sz(this);" />
+							<div id="suggestion.description"></div>
+						</fieldset>	
+						<post:tagfield command="${command}"/>	
+						<post:groupBox command="${command}"/>	
+						<post:relevantForBox command="${command}"/>	
+						<fieldset style="border: 1px solid #069;background-color: #eee; text-align: center">
+							<legend><fmt:message key="save"/></legend>
+							<c:set var="go"><fmt:message key="post.resource.go"/></c:set>
+							<!-- function addSystemTags located in relevantFoxBox.tagx -->
+							<input type="reset"  tabindex="5" value="Reset" />
+							<input type="submit" tabindex="6" value="${go}" onClick="addSystemTags();"/>
+						</fieldset>	
 					</div>
 				</form:form>
-			
+				<script type="text/javascript">
+				<![CDATA[
+					$(".postBookmarkNotValidTip").mouseover(function() {
+						$(this).fadeOut('slow');
+					});
+
+					$("#command fieldset input").focus(function() {
+						$(this).parent("fieldset").find('.postBookmarkNotValidTip').not(':hidden').fadeOut('slow');
+					});
+					//hide empty error fields
+					$(".postBookmarkNotValidTip:empty").hide("1");
+				]]>
+				</script>
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">

@@ -8,7 +8,7 @@
 </jsp:include>
 
 <%-------------------------- Heading -----------------------%>
-<h1 id="path"><a href="/">${projectName}</a> :: <a href="#" rel="path_menu">join group&nbsp;<img src="/resources/image/box_arrow.png"></a> :: <a href="/group/<mtl:encode value='${param.group}'/>"><c:out value='${param.group}'/></a></h1> 
+<h1 id="path"><a href="/">${projectName}</a> :: <a href="#" rel="path_menu"><img src="/resources/image/box_arrow.png">&nbsp;join group</a> :: <a href="/group/<mtl:encode value='${param.group}'/>"><c:out value='${param.group}'/></a></h1> 
 
 <%-------------------------- Path Navigation -----------------------%>
 <%@include file="/boxes/path_navi.jsp" %>

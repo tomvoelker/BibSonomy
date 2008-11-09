@@ -22,6 +22,8 @@
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>	
 	<jsp:directive.attribute name="headerExt" fragment="true" />
 	<jsp:directive.attribute name="sidebar" fragment="true" />
+	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>	
+	
 
 	<fmt:setBundle basename="messages" scope="request"/>
 
@@ -40,12 +42,14 @@
 				<link rel="stylesheet" type="text/css" href="${resdir}/css/faq.css" />				
 				<link rel="icon" href="${resdir}/image/favicon.png" type="image/png" />
 				<!-- localized javascript messages -->
+				<script type="text/javascript" src="${resdir}/javascript/jquery_126_min.js">&amp;nbsp;</script>
+				<script type="text/javascript" src="${resdir}/javascript/jquery_corner.js">&amp;nbsp;</script>
 				<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale}.js">&amp;nbsp;</script>				
 				<script type="text/javascript" src="${resdir}/javascript/functions.js">&amp;nbsp;</script>
 				<script type="text/javascript" src="${resdir}/javascript/tooltip.js">&amp;nbsp;</script>
 				<script type="text/javascript" src="${resdir}/javascript/style.js">&amp;nbsp;</script>
 				<script type="text/javascript" src="${resdir}/javascript/chrome.js">&amp;nbsp;</script>
-
+				
 				<!-- enable logging with user permission -->
 				<c:if test="${command.context.loginUser.settings.logLevel != 1}">
 				  <script type="text/javascript" src="${resdir}/javascript/logging.js">&amp;nbsp;</script>
@@ -59,52 +63,147 @@
 				<lp:meta fieldName="description"/>
 				<link rel="alternate" type="application/atom+xml" title="${systemName} Blog - Atom" href="http://bibsonomy.blogspot.com/feeds/posts/default" />
 				<link rel="alternate" type="application/rss+xml"  title="${systemName} Blog - RSS"  href="http://bibsonomy.blogspot.com/feeds/posts/default?alt=rss" />
-				<title>${projectName} :: <c:out value="${pageTitle}"/></title><!-- TODO: localize page titles! -->
+				<title>${projectName} <c:if test="${not empty pageTitle}"> :: </c:if><c:out value="${pageTitle}"/></title><!-- TODO: localize page titles! -->
 				<jsp:invoke fragment="headerExt"/>
 			</head>
 			<body>
-				<!-- Navigation -->
-				<div id="heading" style="float:left">
-					<h1>
-						<c:url var="root" value="/" context="${projectContext}"/>
-						<a href="${root}">${projectName}</a> :: <jsp:invoke fragment="heading"/>
-					</h1>															
+			
+			<div id="topNavBar">
+				<c:choose>
+					<c:when test="${!empty loginUserName}">
+						<fmt:message key="navi.loggedInAs"/>&amp;nbsp;
+						<c:url var="userUrl" value="/user/${loginUserName}" context="${projectContext}"/>
+						<a href="${userUrl}"><c:out value="${loginUserName}" /></a>
+						<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
+						<c:url var="settingsUrl" value="/settings" context="${projectContext}"/>        
+						<a href="${settingsUrl}"><fmt:message key="navi.settings"/></a>
+						<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
+						<c:url var="logoutUrl" value="/logout" context="${projectContext}"/>
+						<a href="${logoutUrl}"><fmt:message key="navi.logout"/>
+						<c:out value=" "/></a>${mtl:ch('menu.delim')}<c:out value=" "/>	
+					</c:when>
+					<c:otherwise>
+						<c:url var="loginUrl" value="/login" context="${projectContext}"/>
+						<a href="${loginUrl}"><fmt:message key="navi.login"/></a>
+						<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
+						<c:url var="registerUrl" value="/register" context="${projectContext}"/>
+						<a href="${registerUrl}"><fmt:message key="navi.register"/></a>
+						<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>	
+					</c:otherwise>
+				</c:choose>
+				
+				<c:url var="helpUrl" value="/help" context="${projectContext}"/>
+				<a href="${helpUrl}" rel="Help"><fmt:message key="navi.help"/></a>
+				<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
+				<a href="http://bibsonomy.blogspot.com/"><fmt:message key="navi.blog"/></a>
+				<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
+				<c:url var="aboutUrl" value="/help/about/" context="${projectContext}"/>
+				<a href="${aboutUrl}"><fmt:message key="navi.about"/></a>	
+				<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
+				<c:url var="langUrlDe" value="/${mtl:setParam(requPath, 'lang', 'de')}" context="${projectContext}"/>
+				<a href="${langUrlDe}"><img alt="de" src="${resdir}/image/lang_de.png"/></a>
+				<c:url var="langUrlEn" value="/${mtl:setParam(requPath, 'lang', 'en')}" context="${projectContext}"/>					
+				<a href="${langUrlEn}"><img alt="en" src="${resdir}/image/lang_en.png"/></a>					
+			</div>
+			
+			
+			<div id="main">
+				<div id="main_header">
+				
+					<!-- Navigation -->
+					<div id="heading" style="float:left">
+						<h1>
+							<c:url var="root" value="/" context="${projectContext}"/>
+							<a href="${root}">${projectName}</a> :: <jsp:invoke fragment="heading"/>
+						</h1>															
+					</div>
+									
+					<!-- dropdown menu for BibSonomy Path -->  
+					<div id="path_menu" class="dropmenudiv">
+						<a onclick="naviSwitchSpecial('tag')" style="cursor:pointer"><fmt:message key="navi.tag"/></a>
+						<a onclick="naviSwitchSpecial('user')" style="cursor:pointer"><fmt:message key="navi.user"/></a>
+						<a onclick="naviSwitchSpecial('group')" style="cursor:pointer"><fmt:message key="navi.group"/></a>
+						<a onclick="naviSwitchSpecial('author')" style="cursor:pointer"><fmt:message key="navi.author"/></a>
+						<a onclick="naviSwitchSpecial('concept')" style="cursor:pointer"><fmt:message key="navi.concept"/></a>
+						<a onclick="naviSwitchSpecial('bibtexkey')" style="cursor:pointer"><fmt:message key="navi.bibtexKey"/></a>
+						<a onclick="naviSwitchSpecial('all')" style="cursor:pointer"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></a>
+						<c:if test="${not empty requestedUser}">
+							<a onclick="naviSwitchSpecial('explicit_user')" style="cursor:pointer"><fmt:message key="navi.search"/>:<c:out value='${requestedUser}'/></a>
+							<c:set var="mode" value="requUser" />
+						</c:if>
+						<c:if test="${command.context.userLoggedIn and empty requestedUser}">
+							<a onclick="naviSwitchSpecial('explicit_user')" style="cursor:pointer"><fmt:message key="navi.search"/>:<c:out value='${command.context.loginUser.name}'/></a>
+							<c:set var="mode" value="requUser" />
+						</c:if>
+					</div>	
+					
+					<!-- init dropdown menu -->
+					<script type="text/javascript">
+					  cssdropdown.startchrome("heading");
+					</script>
+					
+					<div id="mainHeaderRightBox">
+						<c:choose>
+						<c:when test="${!empty loginUserName}">
+								<c:url var="basketUrl" value="/basket" context="${projectContext}"/>
+								<span id="pickctr">${basketSize}</span>&amp;nbsp;
+								<fmt:message key="navi.pickedIn"/>&amp;nbsp;
+								<a href="${basketUrl}"><fmt:message key="navi.basket"/></a>
+								<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
+								<c:url var="editTagsUrl" value="/edit_tags" context="${projectContext}"/>
+								<a href="${editTagsUrl}"><fmt:message key="navi.editTags"/></a><c:out value=" "/>
+						</c:when>
+						<c:otherwise>
+							<span style="display: block; margin-top: 7px;">		
+								<div id="userAndPw">
+									<c:set var="login">
+									<fmt:message key="navi.login"/>
+									</c:set>
+									<c:url var="loginUrl" value="/login" context="${projectContext}"/>
+									<form method="POST" action="${loginUrl}" style="display:inline">
+										<label for="un"><fmt:message key="navi.username"/>:&amp;nbsp;</label> <input type="text" size="10" name="username" id="un" />&amp;nbsp;
+										<label for="pw"><fmt:message key="navi.password"/>:&amp;nbsp;</label> <input type="password" size="10" name="password" id="pw" />
+										<input type="image" src="${projectContext}resources/image/grey.png" alt="${login}" />
+										<a href="javascript:switchLogin();"><img style="width: 16px; height:16px;" src="${resdir}/image/login_openid.png"/></a>
+									</form>
+								</div>
+	
+								<div id="openID" style="display:none">
+						            <form action="/login" method="POST">
+						              	<label path="openID" >OpenID:</label>
+						              	<input type="text" id="registerUser.openID" class="openid" size="30" value="" name="registerUser.openID"/>
+										<a href="javascript:switchLogin();"><img style="width: 16px; height:16px;" src="${resdir}/image/login_bib.png"/></a>
+						            </form>
+					            </div>
+							</span>
+	          
+							<!-- little script to switch between default login and OpenID login forms -->
+							<script type="text/javascript">
+							<![CDATA[
+							/** switch between default and openid login form */
+							function switchLogin() {
+								var defaultLoginDiv = document.getElementById("userAndPw");
+								var openIDLoginDiv = document.getElementById("openID");
+							
+								if (defaultLoginDiv.style.display == "none") {
+									defaultLoginDiv.style.display = "block";
+									openIDLoginDiv.style.display = "none";
+								} else {
+									defaultLoginDiv.style.display = "none";
+									openIDLoginDiv.style.display = "block";
+								}
+							}
+							]]>
+							</script>	
+						</c:otherwise>
+						</c:choose>
+						
+					</div>
+					<div id="welcomeTop"><fmt:message key="system.desc"/></div>
 				</div>
-								
-				<!-- dropdown menu for BibSonomy Path -->  
-				<div id="path_menu" class="dropmenudiv">
-					<a onclick="naviSwitchSpecial('tag')" style="cursor:pointer"><fmt:message key="navi.tag"/></a>
-					<a onclick="naviSwitchSpecial('user')" style="cursor:pointer"><fmt:message key="navi.user"/></a>
-					<a onclick="naviSwitchSpecial('group')" style="cursor:pointer"><fmt:message key="navi.group"/></a>
-					<a onclick="naviSwitchSpecial('author')" style="cursor:pointer"><fmt:message key="navi.author"/></a>
-					<a onclick="naviSwitchSpecial('concept')" style="cursor:pointer"><fmt:message key="navi.concept"/></a>
-					<a onclick="naviSwitchSpecial('bibtexkey')" style="cursor:pointer"><fmt:message key="navi.bibtexKey"/></a>
-					<a onclick="naviSwitchSpecial('all')" style="cursor:pointer"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></a>
-					<c:if test="${not empty requestedUser}">
-						<a onclick="naviSwitchSpecial('explicit_user')" style="cursor:pointer"><fmt:message key="navi.search"/>:<c:out value='${requestedUser}'/></a>
-						<c:set var="mode" value="requUser" />
-					</c:if>
-					<c:if test="${command.context.userLoggedIn and empty requestedUser}">
-						<a onclick="naviSwitchSpecial('explicit_user')" style="cursor:pointer"><fmt:message key="navi.search"/>:<c:out value='${command.context.loginUser.name}'/></a>
-						<c:set var="mode" value="requUser" />
-					</c:if>
-				</div>	
-				
-				<!-- init dropdown menu -->
-				<script type="text/javascript">
-				  cssdropdown.startchrome("heading");
-				</script>
-				
-                <!-- links to change language --> 
-				<div id="languagebox" style="text-align: right;">
-					<c:url var="langUrlDe" value="/${mtl:setParam(requPath, 'lang', 'de')}" context="${projectContext}"/>
-					<c:url var="langUrlEn" value="/${mtl:setParam(requPath, 'lang', 'en')}" context="${projectContext}"/>					
-					<a href="${langUrlDe}"><img alt="de" src="${resdir}/image/lang_de.png"/></a>
-					<a href="${langUrlEn}"><img alt="en" src="${resdir}/image/lang_en.png"/></a>					
-				</div>
 				
 				<!-- Navigation -->
-				<menu:navi loginUserName="${loginUserName}" searchString="${searchString}" basketSize="${basketSize}" />
+				<menu:navi selectedNaviTab="${selectedNaviTab}" loginUserName="${loginUserName}" searchString="${searchString}" basketSize="${basketSize}" />
 				
 				<!-- main content pane -->
 				<div id="outer">
@@ -127,9 +226,11 @@
 				
 				<!-- sidebar -->
 				<c:if test="${sidebar != null}">
+					<div id="sidebarroundcorner" >
 					<ul id="sidebar">
 						<jsp:invoke fragment="sidebar"/>
 					</ul>
+					</div>
 				</c:if>
 				<c:if test="${fullscreen}">
 					<script type="text/javascript">
@@ -149,7 +250,17 @@
 					<fmt:message key="system.contact"/>
 					<c:out value=" "/>
 					<lp:email address="${projectEmail}"/>
-					<script type="text/javascript">init(${command.context.loginUser.settings.tagboxStyle}, ${command.context.loginUser.settings.tagboxSort}, ${command.context.loginUser.settings.tagboxMinfreq}, "${requestedUser}", "${loginUserName}", "${ckey}", "${projectName}");</script>  
+					<script type="text/javascript">
+					<![CDATA[
+						init(${command.context.loginUser.settings.tagboxStyle}, ${command.context.loginUser.settings.tagboxSort}, ${command.context.loginUser.settings.tagboxMinfreq}, "${requestedUser}", "${loginUserName}", "${ckey}", "${projectName}");
+					]]>
+					</script>
+					<script type="text/javascript">
+					<![CDATA[
+					    $("#sidebarroundcorner").corner("round bottom 15px").corner("round tl 15px");
+					]]>
+					</script>
+				</div>
 				</div>
 			</body>
 		</jsp:body>

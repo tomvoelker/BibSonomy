@@ -10,7 +10,7 @@
 
 
 <%-------------------------- Heading -----------------------%>
-<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a href="#" rel="path_menu">viewable&nbsp;<img src="/resources/image/box_arrow.png"></a> :: 
+<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a href="#" rel="path_menu"><img src="/resources/image/box_arrow.png">&nbsp;viewable</a> :: 
 <a href="/viewable/<mtl:encode value='${param.requGroup}'/>"><c:out value="${param.requGroup}"/></a> ::
 <form action="/viewable/<mtl:encode value='${param.requGroup}'/>" method="GET" class="smallform">
   <input type="text" size="20" name="tag" id="inpf" value="<c:out value='${param.requTag}'/>"/>
@@ -27,8 +27,13 @@
 <%@include file="/boxes/itemcount.jsp" %>
 </div>
 
+<div id="sidebarroundcorner" >
 <ul id="sidebar">
-  <%@include file="/boxes/tags/viewabletags.jsp" %>  
+  <%@include file="/boxes/friends.jsp" %>  
 </ul>
+</div>
+<script type="text/javascript">
+  <%@include file="/boxes/tags/viewabletags.jsp" %>  
+</script>
 
 <%@ include file="/footer.jsp" %>

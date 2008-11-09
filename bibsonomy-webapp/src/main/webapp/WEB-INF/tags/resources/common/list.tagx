@@ -16,10 +16,12 @@
 	<jsp:directive.attribute name="title" fragment="true" required="true"/>
 	<jsp:directive.attribute name="desc" fragment="true" required="true"/>
 	<jsp:directive.attribute name="actions" fragment="true" required="true"/>
+	<jsp:directive.attribute name="bmicon" fragment="true" required="true"/>
+	<jsp:directive.attribute name="listID"  type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true"/>
 	<jsp:directive.variable name-given="post" scope="NESTED"/>
 	
-	<div class="bookbox">
+	<div class="bookbox" id="${listID}">
 	
 		<h2 class="listh"><fmt:message key="${titleKey}" /></h2> 
 
@@ -30,7 +32,9 @@
 						<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${listView.totalCount} "/> <fmt:message key="${titleKey}" /></c:set>
 						<span title="${totalTitle}">(${listView.totalCount})</span>
 					</c:if>
-					<jsp:invoke fragment="formatButtons"/>
+					<span class="listhButtons">
+						<jsp:invoke fragment="formatButtons"/>
+					</span>
 				</div>
 			
 				
@@ -48,6 +52,9 @@
 					</jsp:attribute>
 					<jsp:attribute name="actions">
 						<jsp:invoke fragment="actions"/>
+					</jsp:attribute>
+					<jsp:attribute name="bmicon">
+						<jsp:invoke fragment="bmicon"/>
 					</jsp:attribute>
 					<jsp:attribute name="desc">
 						<jsp:invoke fragment="desc"/>

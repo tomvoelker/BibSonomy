@@ -13,7 +13,7 @@
 
 
 <%-------------------------- Heading -----------------------%>
-<h1 id="path"><a href="/">${projectName}</a> :: <a href="#" rel="path_menu">geotagging&nbsp;<img src="/resources/image/box_arrow.png"></a> ::
+<h1 id="path"><a href="/">${projectName}</a> :: <a href="#" rel="path_menu"><img src="/resources/image/box_arrow.png">&nbsp;geotagging</a> ::
   <form class="smallform" method="get" action="/search">
     <input type="text" name="q" id="inpf" value="${book.title}" size="30"/>
   </form>
@@ -99,8 +99,13 @@
 </div>
 </div>
 
+<div id="sidebarroundcorner" >
 <ul id="sidebar">
   <%@include file="/boxes/tags/userstags.jsp"%>
 </ul>
+</div>
+<script type="text/javascript">
+   $("#sidebarroundcorner").corner("round bottom 15px").corner("round tl 15px");
+</script>
 
 <%@ include file="/footer.jsp" %>

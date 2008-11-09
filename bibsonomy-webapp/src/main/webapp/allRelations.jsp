@@ -7,7 +7,7 @@
 
 <jsp:useBean id="RelationBean" class="beans.RelationBean" scope="request"/>
 
-<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="/relations">relations&nbsp;<img src="/resources/image/box_arrow.png"></a>
+<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="/relations"><img src="/resources/image/box_arrow.png">&nbsp;relations</a>
 :: <form action="/concept/tag/" method="GET" class="smallform">
   <input type="text" size="20" name="tag" id="inpf" value="<c:out value='${param.requTag}'/>"/>
 </form>

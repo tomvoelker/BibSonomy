@@ -10,7 +10,7 @@
 
 
 <%-------------------------- Heading -----------------------%>
-<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="/groups">groups&nbsp;<img src="/resources/image/box_arrow.png"></a> :: 
+<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="/groups"><img src="/resources/image/box_arrow.png">&nbsp;groups</a> :: 
 <form action="/group/" method="GET" class="smallform">
   <input type="text" size="20" name="group" id="inpf"/>
 </form>

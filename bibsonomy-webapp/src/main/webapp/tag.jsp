@@ -17,7 +17,7 @@
 </jsp:include>
 
 <%-------------------------- Heading -----------------------%>
-<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a href="/tags" rel="path_menu">tag&nbsp;<img src="/resources/image/box_arrow.png"></a> :: 
+<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a href="/tags" rel="path_menu"><img src="/resources/image/box_arrow.png">&nbsp;tag</a> :: 
 <form action="/tag/" method="GET" class="smallform">
   <input id="inpf" type="text" size="20" name="tag" value="<c:out value='${param.requTag}'/>"/>
   <span style="font-size: 65%">
@@ -44,6 +44,7 @@
 <%@include file="/boxes/itemcount.jsp" %>             
 </div>
 
+<div id="sidebarroundcorner" >
 <ul id="sidebar">
 	 <c:if test="${not empty user.name}">
     	<li><a href="/user/<c:out value="${user.name}"/>/<mtl:encode value='${param.requTag}'/>"><c:out value="${param.requTag}"/></a> as tag from <c:out value="${user.name}"/></li>
@@ -53,6 +54,10 @@
    
   <%@include file="/boxes/tags/relatedtags.jsp"%>
 </ul>
+</div>
+<script type="text/javascript">
+   $("#sidebarroundcorner").corner("round bottom 15px").corner("round tl 15px");
+</script>
 
 
 <%@ include file="/footer.jsp" %>

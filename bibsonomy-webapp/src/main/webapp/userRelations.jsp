@@ -10,7 +10,7 @@
 </jsp:useBean>
 
 <%-- heading --%>
-<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="#">relations&nbsp;<img src="/resources/image/box_arrow.png"></a> :: 
+<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="#"><img src="/resources/image/box_arrow.png">&nbsp;relations</a> :: 
 <a href="/relations/<mtl:encode value='${param.requUser}'/>"><c:out value='${param.requUser}'/></a></h1> 
 
 <%-------------------------- Path Navigation -----------------------%>
@@ -48,6 +48,7 @@
 <%@include file="/boxes/itemcount.jsp" %>
 </div>
 
+<div id="sidebarroundcorner" >
 <ul id="sidebar">
   <%--
    can't be shown because I programmed RelationBean in a stupid way. :-(
@@ -56,7 +57,13 @@
    --%>
   <c:set var="markSuperTags" value="true"/>
   <%@include file="/boxes/tags/userstags.jsp"%>
-  
-</ul>  
+</ul>
+</div>
+<script type="text/javascript">
+   $("#sidebarroundcorner").corner("round bottom 15px").corner("round tl 15px");
+</script>
+
+
+
 
 <%@ include file="footer.jsp" %>

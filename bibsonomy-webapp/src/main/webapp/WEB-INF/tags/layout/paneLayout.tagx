@@ -20,6 +20,7 @@
 	<jsp:directive.attribute name="sidebar" fragment="true"/>
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>	
 	<jsp:directive.attribute name="fullscreen" type="java.lang.Boolean" required="false"/>	
+	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>	
 	
 	<c:choose>
 		<c:when test="${command.context.userLoggedIn}">
@@ -30,5 +31,5 @@
 		</c:otherwise>
 	</c:choose>	
 
-	<layout:layout loginUserName="${loginUserName}" searchString="hurz" basketSize="${command.context.loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${requestedUser}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" content="${content}" fullscreen="${fullscreen}"/>
+	<layout:layout loginUserName="${loginUserName}" searchString="hurz" basketSize="${command.context.loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${requestedUser}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" content="${content}" fullscreen="${fullscreen}" selectedNaviTab="${selectedNaviTab}"/>
 </jsp:root>

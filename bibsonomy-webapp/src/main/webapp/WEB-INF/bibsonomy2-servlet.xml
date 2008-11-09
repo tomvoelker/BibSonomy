@@ -104,7 +104,18 @@
 							</list>
 						</property>
 					</bean>
-				</entry>	
+				</entry>
+				<entry key="/generalAjax">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="getUrlAjaxController"/>
+						 <property name="allowedFields">
+                            <list>
+                                <value>action</value>
+								<value>pageURL</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/ajax">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="ajaxController"/>
@@ -227,7 +238,8 @@
 								<value>postBookmark.resource.url</value>
 								<value>postBookmark.resource.title</value>
 								<value>postBookmark.description</value>
-								<value>tags</value>  
+								<value>tags</value>
+								<value>jump</value>    
 							</list>
 						</property>
 					</bean>
@@ -392,6 +404,11 @@
 	</bean>
 	
 	<bean id="ajaxController" class="org.bibsonomy.webapp.controller.AdminAjaxController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+	</bean>
+		
+	<bean id="getUrlAjaxController" class="org.bibsonomy.webapp.controller.GetUrlAjaxController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
 	</bean>	

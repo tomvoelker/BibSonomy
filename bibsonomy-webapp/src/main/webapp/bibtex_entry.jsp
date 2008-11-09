@@ -9,7 +9,7 @@
 
 
 <%-------------------------- Heading -----------------------%>
-<h1 id="path"><a href="/">${projectName}</a> :: <a href="#" rel="path_menu">bibtex&nbsp;<img src="/resources/image/box_arrow.png"></a> ::
+<h1 id="path"><a href="/">${projectName}</a> :: <a href="#" rel="path_menu"><img src="/resources/image/box_arrow.png">&nbsp;bibtex</a> ::
   <form class="smallform" method="get" action="/search">
     <input type="text" name="q" value="<mtl:bibclean value='${ResourceBean.title}'/>" size="30"/>
   </form>
@@ -236,11 +236,16 @@
 </c:forEach></div>
 </div>
 
+<div id="sidebarroundcorner" >
 <ul id="sidebar">
   <%@include file="/boxes/tags/usersrelations.jsp" %>
   
   <c:set var="markSuperTags" value="true"/>
   <%@include file="/boxes/tags/userstags.jsp"%>
 </ul>
+</div>
+<script type="text/javascript">
+   $("#sidebarroundcorner").corner("round bottom 15px").corner("round tl 15px");
+</script>
 
 <%@ include file="/footer.jsp" %>

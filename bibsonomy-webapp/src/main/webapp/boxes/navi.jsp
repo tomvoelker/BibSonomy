@@ -1,88 +1,65 @@
-<div id="welcomeTop">A blue social bookmark and publication sharing system.</div>
 
-<table id="tnav">
-  <tr>
-    <td class="tleft" id="upper_menu">
-      
-      <%-- ######### tags * groups * relations * popular ######### --%>
-	  <a href="/tags">tags</a> &middot;
-	  <a href="/relations">relations</a> &middot;
-      <a href="/groups" rel="grp_menu">groups</a> &middot;
-	  <a href="/popular">popular</a>
-
+<%-- ######### myBibSonomy * post bookmark * post bibtex ######### --%>
+<div id="nice_tnav">
+<ul>
+	<li>
+		<a id="nav_home" href="/">Home</a>
+	</li>
+	<c:choose>
+		<c:when test="${not empty user.name}">
+			<li>
+		        <a id="nav_my" href="/user/<mtl:encode value='${user.name}'/>" rel="my_menu"><img src="/resources/image/nice_box_arrow.png" alt="" />my${projectName}</a>
+ 
+			      <!-- dropdown menu for myBibSonomy -->  
+				  <div id="my_menu" class="nicedropmenudiv">
+				    <a href="/friends">myFriends</a>
+					<a href="/relations/<mtl:encode value='${user.name}'/>">myRelations</a>
+					<a href="/advanced_search">mySearch</a>
+			        <a href="/user/<mtl:encode value='${user.name}'/>?filter=myPDF">myPDF</a>
+			        <a href="/user/<mtl:encode value='${user.name}'/>?filter=myDuplicates">myDuplicates</a>
+			        <a href="/bib/user/<mtl:encode value='${user.name}'/>?items=1000">myBibTeX</a>
+				  </div>
+			</li>
+			<li>
+				<a id="nav_postBook" href="/actions/postBookmark">post bookmark</a>
+			</li>
+			<li>
+				<a id="nav_postPub" href="/post_bibtex">post publication</a>
+			</li>
+		</c:when>
+	</c:choose>	
+     <%-- ######### tags * groups * relations * popular ######### --%>
+	<li>
+	  <a id="nav_tags" href="/tags">tags</a>
+	</li>		
+	<li>
+	  <a id="nav_relations" href="/relations">relations</a>
+	</li>
+	<li>
+     <a id="nav_urls" href="/groups" rel="grp_menu"><img src="/resources/image/nice_box_arrow.png" alt="" />groups</a>
+	</li>
+	<li>
 	  <%-- dropdown menu for groups --%>		
-  	  <div id="grp_menu" class="dropmenudiv">
+  	  <div id="grp_menu" class="nicedropmenudiv">
 	    <c:forEach var="grp" items="${user.groups}">
 		  <a href="/group/<mtl:encode value='${grp}'/>"><c:out value='${grp}'/></a>
 		</c:forEach>  	
-	  </div>			
-			
-    </td>
-		
-	<td class="tright">
+	  </div>										
+	</li>
+	<li>
+ 	  <a id="nav_popular" href="/popular">popular</a>
+	</li>
+</ul>
+</div>
 
-      <%-- ######### logged in as USER * help * blog * about ######### --%>
-      <c:if test="${not empty user.name}">
-        logged in as 
-        <a href="/user/<c:out value="${user.name}" />"><c:out value="${user.name}" /></a>
-        &middot;
-      </c:if>
-    
-      <a href="/help" rel="Help">help</a> &middot;
-      <a href="http://bibsonomy.blogspot.com/">blog</a> &middot;
-      <a href="/help/about/">about</a>
-    </td>
-  </tr>
 
-  <tr>
-    <td class="tleft" id="lower_menu">
-    
-      <%-- ######### myBibSonomy * post bookmark * post bibtex ######### --%>
-    
-      <c:choose>
-	    <c:when test="${not empty user.name}">
-          <a href="/user/<mtl:encode value='${user.name}'/>" rel="my_menu">my${projectName}</a> &middot;
-  		  <a href="/post_bookmark">post bookmark</a> &middot;
-       	  <a href="/post_bibtex">post publication</a>
-	    </c:when>
-	    <c:otherwise>
-	      <%@include file="/boxes/login.jsp"%>      
-	    </c:otherwise>
-	  </c:choose>
-	  
-      <%-- dropdown menu for myBibSonomy --%>  
-	  <div id="my_menu" class="dropmenudiv">
-	    <a href="/friends">myFriends</a>
-		<a href="/relations/<mtl:encode value='${user.name}'/>">myRelations</a>
-		<a href="/advanced_search">mySearch</a>
-        <a href="/user/<mtl:encode value='${user.name}'/>?filter=myPDF">myPDF</a>
-        <a href="/user/<mtl:encode value='${user.name}'/>?filter=myDuplicates">myDuplicates</a>
-        <a href="/bib/user/<mtl:encode value='${user.name}'/>?items=1000">myBibTeX</a>
-	  </div>
-	    
-	    
-    </td>
-    <td class="tright">
-      <%-- ######### basket * edit tags * settings * logout ######### --%>
-    
-      <c:choose>
-        <c:when test="${!empty user.name}">
-          <span id="pickctr">${user.postsInBasket}</span> picked in <a href="/basket">basket</a> &middot;
-          <a href="/edit_tags">edit tags</a> &middot;
-          <a href="/settings">settings</a> &middot;
-          <a href="/logout">logout</a>
-        </c:when>
-        <c:otherwise>
-          <a href="/login">login</a> &middot;
-          <a href="/register">register</a>
-        </c:otherwise>
-      </c:choose>
-    </td>
-  </tr>
-
-</table>
-
-<script type="text/javascript">
-  cssdropdown.startchrome("upper_menu");
-  cssdropdown.startchrome("lower_menu");
-</script>
+ <c:if test="${not empty user.name}">
+	<script type="text/javascript">
+  		cssdropdown.startchrome("nice_tnav");
+		if ("${selectedNaviTab}" != "" ) {
+			document.getElementById("${selectedNaviTab}").className = "checked";
+		} else {
+			document.getElementById("nav_my").className = "checked";
+		}
+	</script>  
+</c:if>

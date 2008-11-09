@@ -13,7 +13,7 @@
 
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" disableListNavigation="${true}" disableActions="${true}">
 		<jsp:attribute name="heading">
-			<a rel="path_menu" href="#">url${mtl:ch('nbsp')}<img alt="" src="/resources/image/box_arrow.png"/></a> :: 
+			<a rel="path_menu" href="#"><img alt="" src="/resources/image/box_arrow.png"/>${mtl:ch('nbsp')}url</a> :: 
 			<form action="/url" method="get" class="smallform">
 		  		<input type="text" id="inpf" name="requUrl" size="25" value="${fn:escapeXml(command.bookmark.list[0].resource.url)}" />
 			</form>	

@@ -6,7 +6,7 @@
 	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
-
+	
 	<jsp:useBean id="hash" class="org.bibsonomy.util.wrapper.HashIDBean" scope="application"/>
 
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.SimpleResourceViewCommand" required="true"/>	
@@ -17,15 +17,15 @@
 	<jsp:directive.attribute name="displayIntroduction" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="sidebar" fragment="true" required="true"/>	
-	<jsp:directive.attribute name="info" fragment="true" required="false"/>		
-	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>	
 	
 	<!-- 
 		store some locale messages in variables to be
 	    able to access them inside element attributes
 	-->
+	<c:set var="bookmarkRssFeed"><fmt:message key="feeds.bookmark"/></c:set>
 	<c:set var="publicationRssFeed"><fmt:message key="feeds.publication"/></c:set>
 	<c:set var="burstRssFeed"><fmt:message key="feeds.burst"/></c:set>
+    <c:set var="swrcFeed"><fmt:message key="feeds.swrc"/></c:set>
 	
 	<!--  actions (list navigation, editing entries, ...) are enabled by default -->
 	<c:if test="${empty disableActions}">
@@ -35,31 +35,22 @@
 		<c:set var="disableListNavigation" value="${false}"/>
 	</c:if>	
 		
-	<c:choose>
-		<c:when test="${command.context.userLoggedIn}">
-			<c:set var="loginUserName" value="${command.context.loginUser.name}"/>
-		</c:when>
-		<c:otherwise>
-			<c:set var="loginUserName" value="${null}"/>
-		</c:otherwise>
-	</c:choose>
 	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>
-	<layout:layout loginUserName="${loginUserName}" searchString="hurz" basketSize="${command.context.loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}">
+	<layout:layout loginUserName="${command.context.loginUser.name}" searchString="hurz" basketSize="${command.context.loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}">
 		<jsp:attribute name="headerExt">
+			<c:set var="bookRssUrl" value="/rss/${requPath}"/>
+			<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${requPath}" href="${bookRssUrl}" />
 			<c:set var="bibRssUrl" value="/publrss/${requPath}"/>
 			<link rel="alternate" type="application/rss+xml" title="${publicationRssFeed} /${requPath}" href="${bibRssUrl}" />
 			<c:set var="burstUrl" value="/burst/${requPath}"/>
 			<link rel="alternate" type="application/rss+xml" title="${burstRssFeed} /${requPath}" href="${burstUrl}" />
+            <c:set var="swrcUrl" value="/swrc/${requPath}"/>
+            <link rel="alternate" type="application/rdf+xml" title="${swrcFeed} /${requPath}" href="${swrcUrl}" />
+
 		</jsp:attribute>
 		<jsp:attribute name="content">
-			<!-- info text -->
-			<c:if test="${info != null}">	
-				<div class="infobox">
-					<p><jsp:invoke fragment="info"/></p>			
-				</div>			
-			</c:if>		
-			
-			<resources:bibtexs listView="${command.bibtex}" loginUserName="${loginUserName}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
+			<resources:bookmarks listView="${command.bookmark}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
+			<resources:bibtexs listView="${command.bibtex}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
 		</jsp:attribute>
 	</layout:layout>
 </jsp:root>

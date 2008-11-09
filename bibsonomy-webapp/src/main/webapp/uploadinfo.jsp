@@ -9,7 +9,7 @@
 </jsp:include>
 
 <%-------------------------- Heading -----------------------%>
-<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a href="#" rel="path_menu">upload info&nbsp;<img src="/resources/image/box_arrow.png"></a></h1> 
+<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a href="#" rel="path_menu"><img src="/resources/image/box_arrow.png">&nbsp;upload info</a></h1> 
 
 <%-------------------------- Path Navigation -----------------------%>
 <%@include file="/boxes/path_navi.jsp" %>
@@ -72,6 +72,7 @@
 <%--  boxes with warnings, incomplete and duplicate entries 
       WARNING: don't touch this stuff, since it is neccessary for DBLP upload handler (see HTMLResultHandler)
 --%>
+<div id="sidebarroundcorner" >
 <ul id="sidebar">
   
   <%-- errors --%>
@@ -132,5 +133,9 @@
   </c:if>   
 
 </ul>
+</div>
+<script type="text/javascript">
+   $("#sidebarroundcorner").corner("round bottom 15px").corner("round tl 15px");
+</script>
 
 <%@ include file="footer.jsp" %>

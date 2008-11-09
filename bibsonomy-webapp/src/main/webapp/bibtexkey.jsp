@@ -10,7 +10,7 @@
 
 <%-------------------------- Heading -----------------------%>
 <h1 id="path">
-  <a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="#">bibtexkey&nbsp;<img src="/resources/image/box_arrow.png"></a> :: 
+  <a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="#"><img src="/resources/image/box_arrow.png">&nbsp;bibtexkey</a> :: 
   <form action="/bibtexkey/" method="GET" class="smallform">
   	<input id="inpf" type="text" size="20" name=key value="<c:out value='${param.requKey}'/>"/>
   </form>  

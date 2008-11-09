@@ -37,6 +37,10 @@
     <script type="text/javascript" src="/resources/javascript/tooltip.js"></script>
     <script type="text/javascript" src="/resources/javascript/style.js"></script>
     <script type="text/javascript" src="/resources/javascript/chrome.js"></script>
+	<script type="text/javascript" src="/resources/javascript/jquery_126_min.js"></script>
+	<script type="text/javascript" src="/resources/javascript/jquery_corner.js"></script>
+    
+    
     <%-- enable logging with user permission --%>
     <c:if test="${user.logLevel != 1}">
       <script type="text/javascript" src="/resources/javascript/logging.js"></script>
@@ -59,9 +63,32 @@
     <title><c:out value="${projectName}" />::<c:out value="${param.title}"/></title>
   </head>
   
-
-  
   <body>
+  
+  <div id="topNavBar">
+	<c:choose>
+		<c:when test="${!empty user.name}">
+			logged in as <a href="/user/<c:out value="${user.name}" />"><c:out value="${user.name}" /></a> &middot;
+	        <a href="/settings">settings</a> &middot;
+	        <a href="/logout">logout</a> &middot;
+		</c:when>
+		<c:otherwise>
+			<a href="/login">login</a> &middot;
+			<a href="/register">register</a>
+		</c:otherwise>
+	</c:choose>
+	
+	<a href="/help" rel="Help">help</a> &middot;
+	<a href="http://bibsonomy.blogspot.com/">blog</a> &middot;
+	<a href="/help/about/">about</a> &middot;
+	<a href="/?lang=en"><img alt="en" src="/resources/image/lang_en.png"/></a>
+  </div>
+
+  <div id="main">
+	<div id="main_header">
+	
+		<!-- Navigation -->
+		<div id="heading" style="float:left">
   
   
 <%--

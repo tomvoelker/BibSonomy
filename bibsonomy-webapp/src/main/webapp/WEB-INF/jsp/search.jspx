@@ -10,10 +10,10 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
-	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" sidebar="${null}">
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" sidebar="${null}" selectedNaviTab="nav_my" >
 	
 	<jsp:attribute name="heading">
-		<a rel="path_menu" href="#"><fmt:message key="navi.search"/>${mtl:ch('nbsp')}<img alt="" src="/resources/image/box_arrow.png"/></a> :: 
+		<a rel="path_menu" href="#"><img alt="" src="/resources/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.search"/></a> :: 
 		<form action="/search" method="get" class="smallform">
 		  	  <input type="text" size="20" name="search" id="inpf" value='${command.requestedSearch}'/>
 		</form>							

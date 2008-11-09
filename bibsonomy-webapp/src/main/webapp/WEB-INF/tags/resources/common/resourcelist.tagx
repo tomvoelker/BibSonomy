@@ -12,20 +12,26 @@
 	<jsp:directive.attribute name="title" fragment="true" required="true"/>
 	<jsp:directive.attribute name="desc" fragment="true" required="true"/>
 	<jsp:directive.attribute name="actions" fragment="true" required="true"/>
+	<jsp:directive.attribute name="bmicon" fragment="true" required="true"/>
 	<jsp:directive.variable name-given="post" scope="NESTED"/>
 	
 	<!-- iterate over a list of resources and create the list -->
 	<ul id="${listView.resourcetype}">
 		<c:forEach var="post" items="${listView.list}">
-			<c:choose>
-				<c:when test="${loginUserName eq post.user.name}">
-					<c:set var="liClass" value="bm bmown"/>
-				</c:when>
-				<c:otherwise>
-					<c:set var="liClass" value="bm"/>
-				</c:otherwise>
-			</c:choose>
-			<li class="${liClass}">
+			<li class="bm">
+				<c:choose>
+					<c:when test="${loginUserName eq post.user.name}">
+						<div id="bmicon_selected">
+							<jsp:invoke fragment="bmicon"/>
+						</div>
+					</c:when>
+					<c:otherwise>
+						<div id="bmicon_unselected">
+							<jsp:invoke fragment="bmicon"/>
+						</div>
+					</c:otherwise>
+				</c:choose>
+				
 				<div class="bmtitle">
 					<jsp:invoke fragment="title"/>
 				</div>

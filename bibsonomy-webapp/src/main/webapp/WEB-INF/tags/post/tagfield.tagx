@@ -8,21 +8,20 @@
 
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
 	
-	<fieldset style="border: 1px solid #069;background-color: #eee">
+	<fieldset style="border: 1px solid #069; background-color: #eee; position:relative;">
 		<legend><form:label path="postBookmark.tags" ><fmt:message key="post.resource.tags"/>*</form:label></legend>
-		<div class="info_bold">
-			<form:input path="tags"
-					onfocus="setActiveInputField(this.id); enableHandler()"
-					onclick="setActiveInputField(this.id); enableHandler();"
-					onblur="disableHandler()" tabindex="4" id="tags"
-					size="60" autocomplete="off" />
-			${mtl:ch('nbsp')}<fmt:message key="post.resource.spaceseperated"/>
-		</div>
-		<div class="errmsg"><form:errors path="tags" /></div>
+		<form:input path="tags"
+				onfocus="setActiveInputField(this.id); enableHandler()"
+				onclick="setActiveInputField(this.id); enableHandler();"
+				onblur="disableHandler()" tabindex="4" id="tags"
+				size="60" autocomplete="off"/>
+		${mtl:ch('nbsp')}<fmt:message key="post.resource.spaceseperated"/>
+		<div class="postBookmarkNotValidTip"><form:errors path="tags" /></div>
 		
 		<p>
 			<div style="vertical-align:middle">
 				<fmt:message key="post.resource.recommendation"/>:${mtl:ch('nbsp')}<c:forEach var="tag" items="${command.recommendedTags}"><a href="javascript:addTag('${tag}')">${tag}</a>${mtl:ch('nbsp')}</c:forEach>
+				<div id="suggestion.tags"></div>
 			</div>
 		</p>
 		<p>

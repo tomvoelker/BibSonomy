@@ -15,7 +15,7 @@
 	
 	<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" fullscreen="true">
 		<jsp:attribute name="heading">
-			<a rel="path_menu" href="#"><fmt:message key="navi.tags"/>${mtl:ch('nbsp')}<img alt="" src="/resources/image/box_arrow.png"/></a> :: 
+			<a rel="path_menu" href="#"><img alt="" src="/resources/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.tags"/></a> :: 
 			<form action="/search" method="get" class="smallform">
 			  <input type="text" size="20" name="q" value=""/>
 			</form>

@@ -10,7 +10,7 @@
 
 <%-------------------------- Heading -----------------------%>
 <h1 id="path">
-  <a href="/" rel="Start">${projectName}</a> :: <a href="#" rel="path_menu">bibtex&nbsp;<img src="/resources/image/box_arrow.png"></a> :: 
+  <a href="/" rel="Start">${projectName}</a> :: <a href="#" rel="path_menu"><img src="/resources/image/box_arrow.png">&nbsp;bibtex</a> :: 
   <form class="smallform" method="get" action="/search">
     <input type="text" name="q" value="<mtl:bibclean value='${ResourceBean.title}'/>" size="30"/>
   </form>
@@ -26,8 +26,13 @@
 <%@include file="/boxes/itemcount.jsp" %>
 </div>
 
+<div id="sidebarroundcorner" >
 <ul id="sidebar">
   <%@include file="/boxes/tags/bibtextags.jsp" %>
 </ul>
+</div>
+<script type="text/javascript">
+   $("#sidebarroundcorner").corner("round bottom 15px").corner("round tl 15px");
+</script>
 
 <%@ include file="/footer.jsp" %>
