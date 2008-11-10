@@ -29,9 +29,11 @@ public class GetResourcesForUserCount extends StatisticChainElement {
 		List<Integer> counts = new ArrayList<Integer>();
 		
 		if (param.getContentType() == ConstantID.BIBTEX_CONTENT_TYPE.getId()) {
-			counts.add(this.db.getNumberOfResourcesForUser(BibTex.class, param.getRequestedUserName(), param.getUserName(), param.getGroupType(), param.getGroups(), session));
+			counts.add(this.db.getNumberOfResourcesForUser(BibTex.class, param.getRequestedUserName(), param.getUserName(), param.getGroupId(), param.getGroups(), session));
+			
 		} else if (param.getContentType() == ConstantID.BOOKMARK_CONTENT_TYPE.getId()) {
-			counts.add(this.db.getNumberOfResourcesForUser(Bookmark.class, param.getRequestedUserName(), param.getUserName(), param.getGroupType(), param.getGroups(), session));
+		
+			counts.add(this.db.getNumberOfResourcesForUser(Bookmark.class, param.getRequestedUserName(), param.getUserName(), param.getGroupId(), param.getGroups(), session));
 		}
 		return counts;
 	}
