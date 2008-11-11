@@ -2,7 +2,6 @@ package org.bibsonomy.bibtex.parser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -28,23 +27,52 @@ import bibtex.parser.ParseException;
 
 
 /**
+ * Provides parsing of BibTeX entries represented by {@link String}s into {@link BibTex} objects.
+ * 
  * @author rja
  * @version $Id$
  */
 public class SimpleBibTeXParser {
 
-	final List<String> warnings;
-	
+	/**
+	 * To concatenate persons (authors + editors)
+	 */
+	private static final String AND = " and ";
+
+	/**
+	 * Stores warnings occuring during parsing.
+	 */
+	private final List<String> warnings;
+
+	/**
+	 * @return The warnings created during parsing.
+	 */
 	public List<String> getWarnings() {
 		return this.warnings;
 	}
+	
+	/**
+	 * Clears the warnings.
+	 */
+	public void clearWarnings() {
+		this.warnings.clear();
+	}
+	
 
 	public SimpleBibTeXParser() {
 		this.warnings = new LinkedList<String>();
 	}
-	
+
+	/** Parses one BibTeX entry into a {@link BibTex} object.
+	 * 
+	 * @param bibtex - the BibTeX entry as string.
+	 * @return The filled {@link BibTex} object.
+	 * 
+	 * @throws ParseException If a serious error during parsing occured. 
+	 * 
+	 * @throws IOException
+	 */
 	public BibTex parseBibTeX (final String bibtex) throws ParseException, IOException {
-		final Reader bibReader = new BufferedReader(new StringReader(bibtex));
 		final BibtexParser parser = new BibtexParser(true);
 		/*
 		 * To allow several "keywords" fields (as done by Connotea), we set the policy
@@ -52,11 +80,13 @@ public class SimpleBibTeXParser {
 		 * 
 		 * Default was KEEP_FIRST, changed by rja on 2008-08-26.
 		 */
-//		parser.setMultipleFieldValuesPolicy(BibtexMultipleFieldValuesPolicy.KEEP_ALL);
+		//		parser.setMultipleFieldValuesPolicy(BibtexMultipleFieldValuesPolicy.KEEP_ALL);
 		final BibtexFile bibtexFile = new BibtexFile();
 
-		// parse file, exceptions are catched below
-		parser.parse(bibtexFile, bibReader);
+		/*
+		 * parse the string
+		 */
+		parser.parse(bibtexFile, new BufferedReader(new StringReader(bibtex)));
 
 
 		// boolean topComment = false;
@@ -64,31 +94,10 @@ public class SimpleBibTeXParser {
 
 		// boolean standard = true;
 
-		/* ****************************************************************
-		 * expand all macros, crossrefs and convert author/editor field
-		 * values into BibtexPersonList objects
-		 * ****************************************************************/
-
-		final MacroReferenceExpander macroExpander = new MacroReferenceExpander(true, true, false, false);
-		try {
-			macroExpander.expand(bibtexFile);
-		} catch (ExpansionException ee) {
-			warnings.add(ee.getMessage());
-		}
-
-		final CrossReferenceExpander crossExpander = new CrossReferenceExpander(true);
-		try {
-			crossExpander.expand(bibtexFile);
-		} catch (ExpansionException ee) {
-			warnings.add(ee.getMessage());
-		}
-
-		final PersonListExpander pListExpander = new PersonListExpander(true,	true, false);
-		try {
-			pListExpander.expand(bibtexFile);
-		} catch (ExpansionException ee) {
-			warnings.add(ee.getMessage());
-		}
+		/* 
+		 * expand all macros, crossrefs and author/editor field
+		 */
+		expandMacrosCrossRefsPersonLists(bibtexFile);
 
 
 
@@ -115,7 +124,7 @@ public class SimpleBibTeXParser {
 				}
 			}
 			// fill other fields from entry
-			return fillBibtexFromEntry(potentialEntry);
+			return fillBibtexFromEntry((BibtexEntry) potentialEntry);
 		}
 		/*
 		 * no entry found
@@ -123,17 +132,41 @@ public class SimpleBibTeXParser {
 		return null;
 	}
 
+	/** Expands all macros, crossrefs and person lists. Any exceptions occuring are put into 
+	 * the {@link #warnings}.
+	 * 
+	 * @param bibtexFile
+	 */
+	private void expandMacrosCrossRefsPersonLists(final BibtexFile bibtexFile) {
+		try {
+			new MacroReferenceExpander(true, true, false, false).expand(bibtexFile);
+		} catch (ExpansionException ee) {
+			warnings.add(ee.getMessage());
+		}
+
+		try {
+			new CrossReferenceExpander(true).expand(bibtexFile);
+		} catch (ExpansionException ee) {
+			warnings.add(ee.getMessage());
+		}
+
+		try {
+			new PersonListExpander(true, true, false).expand(bibtexFile);
+		} catch (ExpansionException ee) {
+			warnings.add(ee.getMessage());
+		}
+	}
+
 	/**
 	 * This method does the main BibTeX work - after parsing it gets all field 
 	 * values from the parsed entry and fills the BibTex object.
 	 * 
-	 * @param potentialEntry
+	 * @param entry
 	 * @return
 	 */
-	private BibTex fillBibtexFromEntry(Object potentialEntry) {
+	private BibTex fillBibtexFromEntry(BibtexEntry entry) {
 		final BibTex bibtex = new BibTex();
-		
-		final BibtexEntry entry = (BibtexEntry) potentialEntry;
+
 		/* ************************************************
 		 * process non standard bibtex fields 
 		 * ************************************************/
@@ -171,7 +204,7 @@ public class SimpleBibTeXParser {
 		bibtex.setBibtexKey(entry.getEntryKey());
 		// retrieve entry type - should not be null or ""
 		bibtex.setEntrytype(entry.getEntryType());
-		
+
 		BibtexString field = null;
 		field = (BibtexString) entry.getFieldValue("title"); if (field != null) bibtex.setTitle(field.getContent());
 		field = (BibtexString) entry.getFieldValue("year");  if (field != null) bibtex.setYear(field.getContent()); 
@@ -204,6 +237,11 @@ public class SimpleBibTeXParser {
 		field = (BibtexString) entry.getFieldValue("type");  		if (field != null) bibtex.setType(field.getContent());          
 
 		/*
+		 * FIXME: description, keywords, tags, etc. missing but necessary for proper operation in BibSonomy 
+		 * (not needed for the scraping service!)
+		 */
+
+		/*
 		 * parse person names for author + editor
 		 */
 		bibtex.setAuthor(createPersonString(entry.getFieldValue("author")));
@@ -211,46 +249,56 @@ public class SimpleBibTeXParser {
 
 		return bibtex;
 	}
-	
-	/** Extracts all persons from the given field value and concatenates their name
-	 * with "and".
+
+	/** Extracts all persons from the given field value and concatenates their names
+	 * with {@value #AND}.
 	 * 
 	 * @param fieldValue
-	 * @return
+	 * @return The persons names concatenated with " and ".
 	 */
 	private String createPersonString (final BibtexAbstractValue fieldValue) {
-		// returns unmodifiable list of BibtexPerson objects
-		final StringBuffer personBuffer = new StringBuffer();
-		if (fieldValue instanceof BibtexPersonList) {
-			final BibtexPersonList personString = (BibtexPersonList) fieldValue;
-			if (personString != null) {
-				final List<BibtexPerson> personList = personString.getList();
-
-				for (final BibtexPerson person:personList) {
-					// build one author
-
-					final StringBuffer personName = new StringBuffer();
-					final String first = person.getFirst();
-					if (first != null) {
-						personName.append(first);
-					}
-
-					final String preLast = person.getPreLast();
-					if (preLast != null) {
-						personName.append(" " + preLast);
-					}
-
-					final String last = person.getLast();
-					if (last != null) {
-						personName.append(" " + last);
-					}
-
-					personBuffer.append(personName + " and ");
-				}
-				/* remove last " and " */
-				if (!personList.isEmpty()) {
-					return(personBuffer.substring(0, personBuffer.lastIndexOf(" and ")));
-				} 
+		if (fieldValue != null && fieldValue instanceof BibtexPersonList) {
+			/*
+			 * cast into a person list and extract the persons
+			 */
+			final List<BibtexPerson> personList = ((BibtexPersonList) fieldValue).getList();
+			/*
+			 * result buffer
+			 */
+			final StringBuffer personBuffer = new StringBuffer();
+			/*
+			 * build person names
+			 */
+			for (final BibtexPerson person:personList) {
+				/*
+				 * build one person
+				 */
+				final StringBuffer personName = new StringBuffer();
+				/*
+				 * first name
+				 */
+				final String first = person.getFirst();
+				if (first != null) personName.append(first);
+				/*
+				 * between first and last name
+				 */
+				final String preLast = person.getPreLast();
+				if (preLast != null) personName.append(" " + preLast);
+				/*
+				 * last name
+				 */
+				final String last = person.getLast();
+				if (last != null) personName.append(" " + last);
+				/*
+				 * next name
+				 */
+				personBuffer.append(personName + AND);
+			}
+			/* 
+			 * remove last " and " 
+			 */
+			if (personBuffer.length() > AND.length()) {
+				return personBuffer.substring(0, personBuffer.length() - AND.length());
 			} 
 		}
 		return null;

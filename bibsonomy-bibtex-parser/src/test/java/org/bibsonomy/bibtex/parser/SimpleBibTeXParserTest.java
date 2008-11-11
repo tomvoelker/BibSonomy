@@ -25,7 +25,7 @@ public class SimpleBibTeXParserTest {
 	"keywords = {ISR_07}\n" +
 	"}";
 
-	final String entry2 = "@article{foo,\n" +
+	private static final String entry2 = "@article{foo,\n" +
 	"title = {Foo Barness},\n" +
 	"author = {M. Mustermann}}";
 
