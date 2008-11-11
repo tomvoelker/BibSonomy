@@ -5,7 +5,7 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:swrc="http://swrc.ontoware.org/ontology#"
 	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-    xmlns:owl=" http://www.w3.org/2002/07/owl#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
