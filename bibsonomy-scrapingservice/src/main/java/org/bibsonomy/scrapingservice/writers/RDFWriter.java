@@ -1,9 +1,10 @@
 package org.bibsonomy.scrapingservice.writers;
 
 import java.io.OutputStream;
-import java.net.URL;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.bibsonomy.model.BibTex;
@@ -15,13 +16,26 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 public class RDFWriter {
 
+	/*
+	 * Mapping of BibTeX entry types to SWRC entry types
+	 * FIXME: copied from Functions.java tag library.
+	 */
+	private static String[] bibtexEntryTypes = {"article","book","booklet","inbook","incollection","inproceedings","manual","masterthesis","misc","phdthesis","proceedings","techreport",     "unpublished"}; 
+	private static String[] swrcEntryTypes   = {"Article","Book","Booklet","InBook","InCollection","InProceedings","Manual","MasterThesis","Misc","PhDThesis","Proceedings","TechnicalReport","Unpublished"}; 
+	private static Map<String,String> entryTypeMap = new HashMap<String, String>();
+	static {
+		for (int i = 0; i < bibtexEntryTypes.length; i++) {
+			entryTypeMap.put(bibtexEntryTypes[i], swrcEntryTypes[i]);
+		}
+	}
+	
 	private static final String NS_SWRC = "http://swrc.ontoware.org/ontology#";
 	private static final String NS_OWL  = "http://www.w3.org/2002/07/owl#";
 	
 	private final OutputStream outputStream;
 	private final Model model;
 
-	public RDFWriter(OutputStream outputStream) {
+	public RDFWriter(final OutputStream outputStream) {
 		super();
 		this.outputStream = outputStream;
 		this.model = ModelFactory.createDefaultModel();
@@ -33,13 +47,23 @@ public class RDFWriter {
 	}
 
 
-	public void write (final URL url, final BibTex bibtex) {
+	/** Writes the given BibTex in RDF/XML-ABBREV notation to the outputstream.
+	 * 
+	 * @param resourceUrl - the URL of the bibtex, will be used as URI of the created 
+	 * resource.
+	 * @param bibtex
+	 * 
+	 * FIXME: add exception handling around critical sections (e.g., using the URL 
+	 * from bibtex.getUrl() to create a resource, using keys from the misc-fields
+	 * as XML-entity names, etc.)
+	 */
+	public void write (final URI resourceUri, final BibTex bibtex) {
 		/*
 		 * fill model
 		 * FIXME: automatic type extraction
 		 */
-		final Resource type = model.createResource(NS_SWRC + "Inproceedings");
-		final Resource resource = model.createResource(url.toString(), type);
+		final Resource type = model.createResource(NS_SWRC + getSWRCEntryType(bibtex.getEntrytype()));
+		final Resource resource = model.createResource(resourceUri.toString(), type);
 
 		/*
 		 * complex properties
@@ -147,5 +171,15 @@ public class RDFWriter {
 		if (value != null) {
 			resource.addProperty(model.createProperty(NS_SWRC + property), value);
 		}
+	}
+	
+	/** Maps BibTeX entry types to SWRC entry types.
+	 * FIXME: copied from Functions.java tag lib.
+	 * @param bibtexEntryType
+	 * @return
+	 */
+	private static String getSWRCEntryType(final String bibtexEntryType) {
+		if (entryTypeMap.containsKey(bibtexEntryType)) return entryTypeMap.get(bibtexEntryType);
+		return "Misc";
 	}
 }

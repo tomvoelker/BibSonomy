@@ -3,6 +3,7 @@ package org.bibsonomy.scrapingservice.writers;
 import static org.junit.Assert.*;
 
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.bibsonomy.model.BibTex;
@@ -29,8 +30,10 @@ public class RDFWriterTest {
 		bibtex.setUrl("http://portal.acm.org/laxton/2008/reconsidering-physical-key-security");
 		
 		try {
-			writer.write(new URL("http://example.com/laxton/2008/reconsidering"), bibtex);
+			writer.write(new URL("http://example.com/laxton/2008/reconsidering").toURI(), bibtex);
 		} catch (MalformedURLException e) {
+			fail(e.getMessage());
+		} catch (URISyntaxException e) {
 			fail(e.getMessage());
 		}
 	}
