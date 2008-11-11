@@ -43,7 +43,7 @@ public class GetUrlAjaxController extends AjaxController implements Minimalistic
 	private void getDetailsForUrl(GetUrlAjaxCommand command) {
 		System.out.println("GetUrlAjaxController getDetailsForUrl " + command.getPageURL());
 		
-		if (command.getPageURL().isEmpty()) return;
+		if ((command.getPageURL() == null) || (command.getPageURL().length() == 0)) return;
 		
 		URL url;
 		try {
