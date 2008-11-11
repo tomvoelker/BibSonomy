@@ -2,6 +2,7 @@ package org.bibsonomy.scrapingservice.servlets;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.servlet.ServletException;
@@ -9,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.scraper.KDEScraperFactory;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -18,6 +21,9 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.scraper.exceptions.UseageFailureException;
 import org.bibsonomy.scrapingservice.beans.ScrapingResultBean;
+import org.bibsonomy.scrapingservice.writers.RDFWriter;
+
+import bibtex.parser.ParseException;
 
 
 /**
@@ -63,6 +69,39 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 					bean.setBibtex(null);
 					bean.setErrorMessage("Given host is not supported by scraping service.");
 				}
+				
+				
+
+				/*
+				 * handle special output formats
+				 */
+				final String format = request.getParameter("format");
+				if ("bibtex".equals(format)) {
+					/* *******************************************
+					 * text/x-bibtex
+					 * *******************************************/
+					// should be: text/x-bibtex (according to /etc/mime.types)
+					response.setContentType("text/plain");
+					response.getOutputStream().write(bean.getBibtex().getBytes("UTF-8"));
+					return;
+				} else if ("rdf+xml".equals(format)) {
+					/* *******************************************
+					 * application/rdf+xml
+					 * *******************************************/
+					response.setContentType("application/rdf+xml");
+					/*
+					 * BibTeX -> model
+					 */
+					final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+					final BibTex bibtex = parser.parseBibTeX(bean.getBibtex());
+					/*
+					 * model -> RDF
+					 */
+					final RDFWriter writer = new RDFWriter(response.getOutputStream());
+					writer.write(url.toURI(), bibtex);
+					return;
+				}
+				
 			} catch (final MalformedURLException e) {
 				log.info("URL is malformed.", e);
 				bean.setErrorMessage("URL is malformed.");
@@ -86,15 +125,12 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 				// something else
 				log.error("General Error.", e);
 				bean.setErrorMessage(e.getMessage());
-			}
-
-			/*
-			 * show plain bibtex output
-			 */
-			if ("bibtex".equals(request.getParameter("format"))) {
-				response.setContentType("text/plain");
-				response.getOutputStream().write(bean.getBibtex().getBytes("UTF-8"));
-				return;
+			} catch (URISyntaxException e) {
+				log.info("URL is URI.", e);
+				bean.setErrorMessage("URL is no URI.");
+			} catch (ParseException e) {
+				log.info("Could not parse BibTeX.", e);
+				bean.setErrorMessage("Could not parse BibTeX.");
 			}
 			request.setAttribute("bean", bean);
 		}
