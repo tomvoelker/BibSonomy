@@ -79,7 +79,7 @@ the button on one of the listed pages.</p>
 <ul>
 <li><tt>url</tt>: The URL of the page which should be scraped.</li>
 <li><tt>selection</tt>: Text selected on the web page. Used by some scrapers in addition to / instead of the URL.</li>
-<li><tt>format</tt>: If equal to <tt>plain</tt>, plain BibTeX is returned instead of this HTML page.</li>
+<li><tt>format</tt>: If equal to <tt>bibtex</tt>, plain BibTeX is returned instead of this HTML page.</li>
 </ul>
  
       
@@ -120,7 +120,7 @@ the button on one of the listed pages.</p>
                   </c:url>
                   <c:url var="plainBibTeXURL" value="${projectHome}">
                     <c:param name="url"><c:out value="${bean.url}"/></c:param>
-                    <c:param name="format">plain</c:param>
+                    <c:param name="format">bibtex</c:param>
                     <c:param name="selection"><c:out value="${bean.selection}"/></c:param>
                   </c:url>
                      

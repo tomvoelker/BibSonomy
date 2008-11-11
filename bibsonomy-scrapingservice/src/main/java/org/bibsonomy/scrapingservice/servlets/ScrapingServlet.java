@@ -91,7 +91,7 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 			/*
 			 * show plain bibtex output
 			 */
-			if ("plain".equals(request.getParameter("format"))) {
+			if ("bibtex".equals(request.getParameter("format"))) {
 				response.setContentType("text/plain");
 				response.getOutputStream().write(bean.getBibtex().getBytes("UTF-8"));
 				return;
