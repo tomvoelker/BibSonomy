@@ -1,10 +1,9 @@
 package org.bibsonomy.scraper;
 
 import org.bibsonomy.scraper.InformationExtraction.IEScraper;
-import org.bibsonomy.scraper.id.kde.isbn.ISBNScraper;
+import org.bibsonomy.scraper.generic.UnAPIScraper;
 import org.bibsonomy.scraper.snippet.SnippetScraper;
 import org.bibsonomy.scraper.url.URLCompositeScraper;
-import org.bibsonomy.scraper.url.kde.bibtex.BibtexScraper;
 import org.bibsonomy.scraper.url.kde.highwire.HighwireScraper;
 
 public class KDEScraperFactory {
@@ -12,6 +11,9 @@ public class KDEScraperFactory {
 	public CompositeScraper getScraper () {
 		final CompositeScraper scraper = new CompositeScraper();
 		scraper.addScraper(new URLCompositeScraper());
+		
+		// this scraper always crawls the content and thus accepts ALL URLs!
+		scraper.addScraper(new UnAPIScraper());
 		
 		//temporary solution to avoid manifold content download 
 		scraper.addScraper(new HighwireScraper());
