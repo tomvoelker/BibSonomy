@@ -1534,3 +1534,17 @@ CREATE TABLE `clicklog` (
   `sessionid` text collate utf8_unicode_ci,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=84 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
+
+
+-- 
+-- Structure for table `popular_tags`
+--
+CREATE TABLE `popular_tags` (
+  `tag_lower` varchar(255) NOT NULL default '',
+  `tag_ctr` int(11) default NULL,
+  `content_type` tinyint(1) unsigned default NULL,
+  `popular_days` smallint(6) default '0',
+  KEY `tag_lower_idx` (`tag_lower`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+
