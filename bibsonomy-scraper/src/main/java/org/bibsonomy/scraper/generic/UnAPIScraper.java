@@ -8,6 +8,7 @@ import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -23,6 +24,8 @@ import org.w3c.tidy.Tidy;
  * @version $Id$
  */
 public class UnAPIScraper implements Scraper {
+
+	private static final Logger log = Logger.getLogger(UnAPIScraper.class);
 
 
 	public String getInfo() {
@@ -50,6 +53,8 @@ public class UnAPIScraper implements Scraper {
 			 */
 			final Tidy tidy = new Tidy();
 			tidy.setQuiet(true);
+//			tidy.setMakeClean(false); // necessary?
+			tidy.setXmlTags(true); // necessary to allow empty "abbr" tags
 			tidy.setShowWarnings(false); // turn off warning lines
 			final Document document = tidy.parseDOM(new ByteArrayInputStream(pageContents.getBytes()), null);
 			/*
@@ -57,11 +62,13 @@ public class UnAPIScraper implements Scraper {
 			 */
 			final String href = getApiHref(document);
 			if (href != null) {
+				log.debug("found server id " + href);
 				/*
 				 * get record identifier
 				 */
 				final String id = getRecordIdentifier(document);
 				if (id != null) {
+					log.debug("found record id " + id);
 					/*
 					 * query for bibtex
 					 */
@@ -70,6 +77,7 @@ public class UnAPIScraper implements Scraper {
 						 * build URL to get record in bibtex format
 						 */
 						final URL url = new URL(href + "?format=bibtex&id=" + URLEncoder.encode(id, "UTF-8"));
+						log.debug("querying service at " + url);
 						/*
 						 * get the data
 						 */
@@ -78,6 +86,7 @@ public class UnAPIScraper implements Scraper {
 							/*
 							 * success! 
 							 */
+							log.debug("got bibtex (" + bibtex.length() + " characters)");
 							scrapingContext.setScraper(this);
 							scrapingContext.setBibtexResult(bibtex);
 							return true;
@@ -125,7 +134,11 @@ public class UnAPIScraper implements Scraper {
 	 * 
 	 */
 	private String getRecordIdentifier(final Document document) {
+		/*
+		 * debug
+		 */
 		final NodeList abbrTags = document.getElementsByTagName("abbr");
+		log.debug("found " + abbrTags.getLength() + " abbr nodes.");
 		for (int i = 0; i < abbrTags.getLength(); i++) {
 			final Node node = abbrTags.item(i);
 			final NamedNodeMap attributes = node.getAttributes();

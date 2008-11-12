@@ -15,21 +15,36 @@ import org.junit.Test;
  */
 public class UnAPIScraperTest {
 
+	/* removed URLs:
+	 * 
+	 * "http://ebsees.staatsbibliothek-berlin.de/simple_search.php?title=%27Aleksej%20Tolstojs%20Erz%C3%A4hlung%20%C2%ABBrot%C2%BB.%20Der%20literarische%20Text%20als%20fiktive%20Dokumentation%27,%20in:%20Schriften%20-%20Dinge%20-%20Phantasmen:%20Literatur%20und%20Kultur%20der%20russischen%20Moderne%20I,%20Mirjam%20Goller,%20Susanne%20Str%C3%A4tling,%20Hrsg.&data=96527&hits=364&ds=1",
+	 * --> bieten kein BibTeX an (nur "mods"), siehe http://ebsees.staatsbibliothek-berlin.de/unapi.php
+	 *
+	 * 	"http://iwblog.vili.de/2008/06/05/vibi-mit-unapi-unterstutzung/"
+	 * --> bieten kein BibTeX an, siehe http://iwblog.vili.de/wp-content/plugins/unapi/server.php
+	 */
+	
+	final String[] urls = new String[] {
+			"http://canarydatabase.org/record/488"
+	};
+
 	@Test
 	public void testScrape() {
 		final UnAPIScraper scraper = new UnAPIScraper();
-		ScrapingContext scrapingContext = null;
-		try {
-			scrapingContext = new ScrapingContext(new URL("http://canarydatabase.org/record/488"));
-		} catch (MalformedURLException ex) {
-			fail(ex.getMessage());
-		}
+		for (final String url: urls) {
+			ScrapingContext scrapingContext = null;
+			try {
+				scrapingContext = new ScrapingContext(new URL(url));
+			} catch (MalformedURLException ex) {
+				fail(ex.getMessage());
+			}
 
-		try {
-			scraper.scrape(scrapingContext);
-		} catch (ScrapingException ex) {
-			fail(ex.getMessage());
+			try {
+				scraper.scrape(scrapingContext);
+				assertNotNull(scrapingContext.getBibtexResult());
+			} catch (ScrapingException ex) {
+				fail(ex.getMessage());
+			}
 		}
 	}
-
 }
