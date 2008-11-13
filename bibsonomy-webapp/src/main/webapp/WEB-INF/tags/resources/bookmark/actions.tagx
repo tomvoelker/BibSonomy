@@ -8,60 +8,60 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
 
-	<c:if test="${command.context.userLoggedIn}">
-		<span class="bmaction">
-		
-		<c:if test="${loginUserName eq post.user.name}">
-			<!-- EDIT link -->
-			<c:url var="url_edit" value="/ShowBookmarkEntry" context="${projectContext}">
-				<c:param name="url" value="${post.resource.url}" />
-				<c:param name="user" value="${post.user.name}" />
-				<c:param name="jump" value="no" />
-			</c:url>
-			<c:set var="edit"><fmt:message key="bookmark.actions.edit.title"/></c:set>
-
-			<!-- DELETE link -->
-			<c:url var="url_delete" value="/bookmarkHandler" context="${projectContext}">
-				<c:param name="delete" value="${post.resource.hash}" />
-				<c:param name="user" value="${post.user.name}" />
-				<c:param name="ckey" value="${ckey}" />
-			</c:url>
-			<c:set var="deleteTitle"><fmt:message key="bookmark.actions.delete.title"/></c:set>
-
-			<span>
-			<a onclick="editTags(this,'${ckey}');return false;"
-				tags="${fn:escapeXml(mtl:toTagString(post.tags))}"
-				hashsum="${post.resource.hash}" user="${fn:escapeXml(post.user.name)}"
-				title="${editTitle}"
-				href="${fn:escapeXml(url_edit)}">
-				<fmt:message key="bookmark.actions.edit"/>
-			</a>
-			</span>
-            <c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
-		    <a href="${fn:escapeXml(url_delete)}"
-		       title="${deleteTitle}">		       
-		       <fmt:message key="bookmark.actions.delete"/>
-		    </a>
-		</c:if>
-
-		<c:if test="${loginUserName ne post.user.name}">
-			<!-- COPY link -->
-			<c:set var="copyTitle"><fmt:message key="bookmark.actions.copy.title"/></c:set>
-			<a
-				href="/ShowBookmarkEntry?c=b&amp;jump=no&amp;url=${mtl:encodeURI(post.resource.url)}&amp;description=${mtl:encodeURI(post.resource.title)}&amp;extended=${mtl:encodeURI(post.description)}&amp;copytag=${mtl:encodeURI(mtl:toTagString(post.tags))}"
-				title="${copyTitle}">
-				<fmt:message key="bookmark.actions.copy"/>
-			</a>
-		</c:if>
-		
-		<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
-		
-		<!-- FLAG AS SPAM  -->		
-	    <fmt:message var="flagAsSpam" key="post.meta.flag_as_spam.title"/>
-    	<a class="flag_as_spam" href="javascript:;" title="${flagAsSpam}"><fmt:message key="post.meta.flag_as_spam"/></a>		
-
-		</span>
-  </c:if>
+	<span class="bmaction">
+		<c:if test="${command.context.userLoggedIn}">		
+			<c:if test="${loginUserName eq post.user.name}">
+				<!-- EDIT link -->
+				<c:url var="url_edit" value="/ShowBookmarkEntry" context="${projectContext}">
+					<c:param name="url" value="${post.resource.url}" />
+					<c:param name="user" value="${post.user.name}" />
+					<c:param name="jump" value="no" />
+				</c:url>
+				<c:set var="edit"><fmt:message key="bookmark.actions.edit.title"/></c:set>
+	
+				<!-- DELETE link -->
+				<c:url var="url_delete" value="/bookmarkHandler" context="${projectContext}">
+					<c:param name="delete" value="${post.resource.hash}" />
+					<c:param name="user" value="${post.user.name}" />
+					<c:param name="ckey" value="${ckey}" />
+				</c:url>
+				<c:set var="deleteTitle"><fmt:message key="bookmark.actions.delete.title"/></c:set>
+	
+				<span>
+				<a onclick="editTags(this,'${ckey}');return false;"
+					tags="${fn:escapeXml(mtl:toTagString(post.tags))}"
+					hashsum="${post.resource.hash}" user="${fn:escapeXml(post.user.name)}"
+					title="${editTitle}"
+					href="${fn:escapeXml(url_edit)}">
+					<fmt:message key="bookmark.actions.edit"/>
+				</a>
+				</span>
+	            <c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
+			    <a href="${fn:escapeXml(url_delete)}"
+			       title="${deleteTitle}">		       
+			       <fmt:message key="bookmark.actions.delete"/>
+			    </a>
+			</c:if>
+	
+			<c:if test="${loginUserName ne post.user.name}">
+				<!-- COPY link -->
+				<c:set var="copyTitle"><fmt:message key="bookmark.actions.copy.title"/></c:set>
+				<a
+					href="/ShowBookmarkEntry?c=b&amp;jump=no&amp;url=${mtl:encodeURI(post.resource.url)}&amp;description=${mtl:encodeURI(post.resource.title)}&amp;extended=${mtl:encodeURI(post.description)}&amp;copytag=${mtl:encodeURI(mtl:toTagString(post.tags))}"
+					title="${copyTitle}">
+					<fmt:message key="bookmark.actions.copy"/>
+				</a>
+			</c:if>
+			
+			<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
+									
+	  </c:if>
+	  
+	  <!-- FLAG AS SPAM  -->		
+      <fmt:message var="flagAsSpam" key="post.meta.flag_as_spam.title"/>
+   	  <a class="flag_as_spam" href="javascript:;" title="${flagAsSpam}"><fmt:message key="post.meta.flag_as_spam"/></a>
+   	  	  
+  </span>
 
 	<!--  <%@include file="/boxes/resource_rating.jsp" %> -->
 
