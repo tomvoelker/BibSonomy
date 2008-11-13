@@ -32,7 +32,11 @@ foreach my $file (@files) {
 	foreach my $line (<M>) {
 		chomp($line);
 		my @keyValuePair = split("=", $line);
-		if (scalar @keyValuePair == 2) {
+		# escape backslashes
+		$keyValuePair[1] =~ s/\\/\\\\/g;		
+		# escape quotation marks & backslashes
+		$keyValuePair[1] =~ s/\"/\\\"/g;
+		if (scalar @keyValuePair == 2 and length($keyValuePair[0]) > 0 and length($keyValuePair[1]) > 0 and not (substr($keyValuePair[0],0,1) eq '#')) {
 			$pairs .= '   "'.$keyValuePair[0].'" : "' . $keyValuePair[1] . '",' . "\n";
 		}
 	}
