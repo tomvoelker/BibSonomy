@@ -54,7 +54,11 @@
 				<c:if test="${command.context.loginUser.settings.logLevel != 1}">
 				  <script type="text/javascript" src="${resdir}/javascript/logging.js">&amp;nbsp;</script>
 				</c:if>
-
+				
+				<!-- enable on-site spammer killing when user is admin -->
+				<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
+				  <script type="text/javascript" src="${resdir}/javascript/spammer.js">&amp;nbsp;</script>
+				</c:if>
 
 				<meta name="email" content="${projectEmail}"/>
 				<lp:meta fieldName="author"/>
@@ -67,7 +71,7 @@
 				<jsp:invoke fragment="headerExt"/>
 			</head>
 			<body>
-			
+						
 			<div id="topNavBar">
 				<c:choose>
 					<c:when test="${!empty loginUserName}">

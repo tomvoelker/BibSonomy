@@ -40,6 +40,18 @@ function addSpammer(name, rowId, disable) {
 	runAjax("userName=" + name, "flag_spammer");
 }
 
+
+function addSpammerInline(name) {
+	/* remove items of this user from current view */
+	var elements = document.getElementsByName(name);	
+	for (i = 0; i < elements.length; i++) {
+		elements[i].parentNode.parentNode.style.display='none';
+	}
+	/* add spammer to db via AJAX*/
+	runAjax("userName=" + name, "flag_spammer");
+	
+}
+
 /**
 * unflags a user as spammer
 * name: name of the user
@@ -122,7 +134,7 @@ function runAjax(parameter,action) {
 function ajax_updateLog(request) {   			
 	return function() {			
 		if (4 == request.readyState) {    	
-	    	addLogMessage(request.responseText);		    			    	   
+	    	addLogMessage(request.responseText);	    			    	   
 	    }
 	}
 }
@@ -130,9 +142,11 @@ function ajax_updateLog(request) {
 /* add a message to log box */
 function addLogMessage(msg) {
 	var division = document.getElementById("log");
-	var li = document.createElement("LI");
-	li.innerHTML = msg;
-	division.insertBefore(li,division.firstChild);
+	if (division) {
+		var li = document.createElement("LI");
+		li.innerHTML = msg;
+		division.insertBefore(li,division.firstChild);
+	}
 }	
 
 /* resets input fields */

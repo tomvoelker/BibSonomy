@@ -11,7 +11,7 @@
 	
 
 	<fmt:bundle basename="messages"/>
-
+	
 	<!-- the tags of a resource -->
 	<fmt:message key="post.meta.taggedTo" />
 	<c:out value=" "/>
@@ -56,7 +56,7 @@
 		<c:out value=" "/>
 		<fmt:message key="post.meta.taggedBy" />
 		<c:out value=" "/>
-		<a href="${taggedByUrl}"><c:out value="${post.user.name}" escapeXml="true"/></a>
+		<a name="${fn:escapeXml(post.user.name)}" href="${taggedByUrl}"><c:out value="${post.user.name}" escapeXml="true"/></a>
 	</c:if>
 
 	<c:if test="${!empty post.resource.interHash and post.resource.count > 2}">
