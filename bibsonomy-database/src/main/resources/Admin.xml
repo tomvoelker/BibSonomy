@@ -15,27 +15,18 @@
 	<delete id="deleteInetAddressStatus" parameterClass="InetAddress">
 		DELETE FROM inetAddressStates WHERE address = #address#
 	</delete>
+	
+	<select id="getClassifierUserBeforeUpdate" resultMap="UserCommon.user" parameterClass="adminParam">
+		SELECT *
+		FROM user
+		WHERE user_name=#userName# FOR UPDATE
+	</select>
 
 	<update id="flagSpammer" parameterClass="adminParam">
 		UPDATE user SET spammer = #spammer#, updated_by = #updatedBy#, updated_at = #updatedAt#, to_classify = #toClassify# 
 		WHERE user_name = #userName#
-		<isEqual property="updatedBy" compareValue="classifier" prepend="AND">
-			to_classify=1
-	    </isEqual>
 	</update>
 
-	<!--
-	<select id="getAdminClassifiedUsers" resultMap="UserCommon.user" parameterClass="adminParam">
-		SELECT <include refid="commonUserAttributes"/>, prediction  
-		FROM user u JOIN prediction p ON (u.user_name = p.user_name)
-		WHERE (u.updated_by != 'classifier' OR ISNULL(u.updated_by)) AND spammer = #prediction# 
-		<isGreaterThan property="interval" compareValue="0" prepend="AND">
-			updated_at > NOW() - INTERVAL #interval# HOUR		
-	    </isGreaterThan>
-		ORDER BY updated_at DESC
-		LIMIT #limit#
-	</select>
---> 
 	<select id="getAdminClassifiedUsers" resultMap="UserCommon.userWithPrediction" parameterClass="adminParam">
 		SELECT *
 		FROM user u JOIN prediction p ON (u.user_name = p.user_name)
@@ -55,23 +46,18 @@
 	    </isGreaterThan>
 	</select>
 	
-	<!--
 	<select id="getClassifiedUsers" resultMap="UserCommon.userWithPrediction" parameterClass="adminParam">
 		SELECT *  
 		FROM user u JOIN prediction p ON (u.user_name = p.user_name AND u.updated_at = p.updated_at)
 		WHERE updated_by = 'classifier' AND prediction = #prediction# 
-		<isGreaterThan property="interval" compareValue="0" prepend="AND">
-			p.updated_at > NOW() - INTERVAL #interval# DAY	
-	    </isGreaterThan>
 		ORDER BY u.updated_at DESC
 		LIMIT #limit#
 	</select>
-	--> 
 	
-	<select id="getClassifiedUsers" resultMap="UserCommon.userWithPrediction" parameterClass="adminParam">
+	<select id="getNumNewUsers" resultMap="UserCommon.user" parameterClass="adminParam">
 		SELECT *  
-		FROM user u JOIN prediction p ON (u.user_name = p.user_name AND u.updated_at = p.updated_at)
-		WHERE updated_by = 'classifier' AND prediction = #prediction# 
+		FROM user u 
+		WHERE to_classify = 0
 		ORDER BY u.updated_at DESC
 		LIMIT #limit#
 	</select>
@@ -84,7 +70,7 @@
 			p.updated_at > NOW() - INTERVAL #interval# HOUR		
 		</isGreaterThan>
 	</select>	
-
+	
 	<select id="getClassifierSettings" resultClass="string" parameterClass="string">
 		SELECT value FROM classifier_settings cs WHERE cs.key = #key#		
 	</select>	
@@ -117,7 +103,7 @@
 	 	FROM user u
 	 	JOIN prediction a ON (u.user_name = a.user_name)
 	 	JOIN tas t ON (t.user_name = a.user_name)
-	 	WHERE a.evaluator=1 AND t.date > NOW() - INTERVAL 1420 HOUR AND algorithm!='admin'
+	 	WHERE a.evaluator=1 AND t.date > NOW() - INTERVAL 148 HOUR AND algorithm!='admin'
 	 	<isGreaterThan property="interval" compareValue="0" prepend="AND">	
 			u.reg_date > NOW() - INTERVAL #interval# DAY
 		</isGreaterThan>

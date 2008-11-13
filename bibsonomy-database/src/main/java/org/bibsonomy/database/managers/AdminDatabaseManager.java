@@ -24,7 +24,8 @@ import org.bibsonomy.model.util.UserUtils;
  * 
  * @author Robert Jaeschke
  * @author Stefan Stützer
- * @version $Id$
+ * @version $Id: AdminDatabaseManager.java,v 1.14 2008-11-04 17:25:11 beatekr
+ *          Exp $
  */
 public class AdminDatabaseManager extends AbstractDatabaseManager {
 
@@ -138,19 +139,29 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 			this.update("flagSpammer", param, session);
 			this.updateGroupIds(param, session);
 		} else if (testMode.equals("off")) {
-
-			// only change user settings when prediction changes
-			if (checkPredictionChange(param, session)) {
-				this.update("flagSpammer", param, session);
-				this.updateGroupIds(param, session);
+			
+			// set transaction to set locks
+			session.beginTransaction();
+			try {
+				// gets user data to check if to_classify is still set to 0
+				List<User> userData = this.queryForList("getClassifierUserBeforeUpdate", param, User.class, session);
+				// only update if to_classify is set to 0, else admin has already classified the specific user
+				if (userData.get(0).getToClassify() == 0){
+					// only change user settings when prediction changes
+					if (checkPredictionChange(param, session)) {
+						this.update("flagSpammer", param, session);
+						this.updateGroupIds(param, session);
+					}
+				}
+				session.commitTransaction();
+			} finally {
+				session.endTransaction();
 			}
 		}
-
 		if (checkPredictionChange(param, session)) {
 			this.insert("logPrediction", param, session);
 			this.insert("logCurrentPrediction", param, session);
 		}
-
 		return user.getName();
 	}
 
@@ -175,13 +186,12 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 			for (int i = 0; i < history.size(); i++) {
 				// last predictor needs to be the same as this predictor
 				if (history.get(i).getConfidence() != null && history.get(i).getPrediction() != null) {
-					
+
 					if (history.get(i).getAlgorithm().equals(param.getAlgorithm())) {
-						
+
 						double newConf = Math.round(param.getConfidence());
 						double oldConf = Math.round(history.get(i).getConfidence());
-						
-						
+
 						if (oldConf == newConf && param.getPrediction().compareTo(history.get(i).getPrediction()) == 0) {
 							return false;
 						}
@@ -254,6 +264,21 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 			return this.queryForList("getClassifiedUsers", param, User.class, session);
 		}
 		return null;
+	}
+
+	/**
+	 * Returns all users that have not been classified neither by the classifier
+	 * nor by the admins
+	 * 
+	 * @param session
+	 *            the db session
+	 * @return list of users
+	 */
+	public List<User> getNumNewUsers(DBSession session) {
+		final AdminParam param = new AdminParam();
+		param.setLimit(100);
+		return this.queryForList("getNumNewUsers", param, User.class, session);
+
 	}
 
 	/**
