@@ -295,7 +295,7 @@ public class TagHandler extends HttpServlet {
 			}
 			
 			/* redirect*/
-			String referer = request.getParameter("referer");
+			String referer = request.getHeader("referer");
 			if (referer == null || referer.trim().equals("")) {
 				referer = "/user/" + URLEncoder.encode(currUser, "UTF-8");
 			}
