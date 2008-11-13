@@ -136,6 +136,7 @@ public class RDFWriter {
 		addProperty(resource, "crossref", bibtex.getCrossref());
 		addProperty(resource, "edition", bibtex.getEdition());
 		addProperty(resource, "howpublished", bibtex.getHowpublished());
+		addProperty(resource, "journal", bibtex.getJournal());
 		addProperty(resource, "key", bibtex.getBKey());
 		addProperty(resource, "number", bibtex.getNumber());
 		addProperty(resource, "month", bibtex.getMonth());
