@@ -187,6 +187,7 @@ function log_sendRequest(e) {
 		{
 		}
 
+//			console.log (welementattrs_class);
 		if (welement.nodeName == "A") {
 //			dom_acontent = welement.childNodes[0].textContent;
 			dom_acontent = welement.firstChild.nodeValue;
@@ -195,6 +196,31 @@ function log_sendRequest(e) {
 			dom_ahref=welementattrs_ahref;
 			numberofposts=welementattrs_title.split(" ")[0];
 			a_node_present = true;	
+			
+			// if user has clicked on spammer classification, give him a feedback
+			if ( welementattrs_id.substr(0,5) == "spam_")
+			{
+				// add "no" to the beginning of attribute id
+				welement.setAttribute("id", "no"+welement.getAttribute("id"));
+
+				// set attribute title
+				welement.setAttribute("title", getString("post.meta.unflag_as_spam.title"));
+
+				// set value in first (text) child node, presumed this value is in first child node 
+				welement.firstChild.nodeValue = getString("post.meta.unflag_as_spam");
+				
+			}
+			else if ( welementattrs_id.substr(0,7) == "nospam_")
+			{
+				// remove first two letters from id attribute
+				welement.setAttribute("id", welementattrs_id.substr(2));
+
+				// set attribute title
+				welement.setAttribute("title", getString("post.meta.flag_as_spam.title"));
+
+				// set value in first (text) child node, presumed this value is in first child node 
+				welement.firstChild.nodeValue = getString("post.meta.flag_as_spam");
+			}
 		}  
 
 		dom_path += welement.nodeName;
@@ -259,6 +285,7 @@ function log_sendRequest(e) {
                 } catch (e) {}
             }
         }
+
 
         if (!http_request) {
 //            alert('Ende :( Kann keine XMLHTTP-Instanz erzeugen');
