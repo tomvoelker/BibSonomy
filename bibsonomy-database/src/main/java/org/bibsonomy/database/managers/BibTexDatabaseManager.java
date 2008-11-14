@@ -3,6 +3,7 @@ package org.bibsonomy.database.managers;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -15,7 +16,6 @@ import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChain;
-import org.bibsonomy.database.managers.hash.bibtex.BibTexHashingManager;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
@@ -50,7 +50,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	private final TagDatabaseManager tagDb;
 	private final DatabasePluginRegistry plugins;
 	private static final BibTexChain chain = new BibTexChain();
-	private static final BibTexHashingManager hashelements = new BibTexHashingManager();
+	//private static final BibTexHashingManager hashelements = new BibTexHashingManager();
 	
 	private BibTexDatabaseManager() {
 		this.generalDb = GeneralDatabaseManager.getInstance();
@@ -1071,7 +1071,28 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		param.setHash(intraHash);
 		param.setRequestedSimHash(hashType);
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
+		
+		/*
+		 * DEBUG
+		 */
+		//getLoggedBibTexByHashForUser(loginUserName, intraHash, requestedUserName, visibleGroupIDs, session, hashType);
+		
 		return this.bibtexList("getBibTexByHashForUser", param, session);
+	}
+	
+	private Post<BibTex> getLoggedBibTexByHashForUser(final String loginUserName, final String intraHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final DBSession session, final HashID hashType) {
+		final BibTexParam param = new BibTexParam();
+		param.setUserName(loginUserName);
+		param.addGroups(visibleGroupIDs);
+		param.setRequestedUserName(requestedUserName);
+		param.setHash(intraHash);
+		param.setRequestedSimHash(hashType);
+		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
+		
+		final String[] queryForObject = this.queryForObject("getLoggedHashesByHashForUser", param, String[].class, session);
+		System.out.println("got hashes: " + Arrays.toString(queryForObject));
+		
+		return null;
 	}
 
 	/**
@@ -1576,4 +1597,5 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		}
 		return 0;
 	}
+	
 }
