@@ -19,7 +19,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -52,7 +53,7 @@ import org.junit.Test;
  */
 public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
-	private static final Logger log = Logger.getLogger(BibTexDatabaseManagerTest.class);
+	private static final Log log = LogFactory.getLog(BibTexDatabaseManagerTest.class);
 	
 	/**
 	 * tests getBibTexByHash

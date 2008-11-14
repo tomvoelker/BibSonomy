@@ -1,6 +1,7 @@
 package org.bibsonomy.database.managers;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
@@ -30,7 +31,7 @@ import org.junit.BeforeClass;
  */
 public abstract class AbstractDatabaseManagerTest {
 
-	private static final Logger log = Logger.getLogger(AbstractDatabaseManagerTest.class);
+	private static final Log log = LogFactory.getLog(AbstractDatabaseManagerTest.class);
 
 	protected GeneralDatabaseManager generalDb;
 	protected BookmarkDatabaseManager bookmarkDb;

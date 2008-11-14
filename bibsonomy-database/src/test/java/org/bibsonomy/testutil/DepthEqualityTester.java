@@ -15,7 +15,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.util.ExceptionUtils;
 
 /**
@@ -24,7 +25,7 @@ import org.bibsonomy.util.ExceptionUtils;
  */
 public final class DepthEqualityTester  {
 
-	private static final Logger log = Logger.getLogger(DepthEqualityTester.class);
+	private static final Log log = LogFactory.getLog(DepthEqualityTester.class);
 
 	public static interface EqualityChecker {
 		public boolean checkEquals(Object should, Object is, String path);

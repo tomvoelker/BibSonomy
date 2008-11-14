@@ -17,7 +17,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Privlevel;
@@ -26,7 +27,6 @@ import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -49,7 +49,7 @@ import org.junit.Test;
  */
 public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
-	private static final Logger log = Logger.getLogger(BibTexDatabaseManagerTest.class);
+	private static final Log log = LogFactory.getLog(BibTexDatabaseManagerTest.class);
 
 	/**
 	 * tests getBookmarkByTagNames

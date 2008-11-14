@@ -18,7 +18,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
@@ -42,7 +43,7 @@ import org.bibsonomy.util.ExceptionUtils;
  */
 public final class ModelUtils {
 
-	private static final Logger log = Logger.getLogger(ModelUtils.class);
+	private static final Log log = LogFactory.getLog(ModelUtils.class);
 
 	/**
 	 * Don't create instances of this class - use the static methods instead.
