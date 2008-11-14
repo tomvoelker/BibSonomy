@@ -2,7 +2,7 @@ package org.bibsonomy.util;
 
 import java.sql.SQLException;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
 import org.bibsonomy.common.exceptions.QueryTimeoutException;
 
 /**
@@ -21,7 +21,7 @@ public class ExceptionUtils {
 	 * @param error message of the new RuntimeException
 	 * @throws RuntimeException the resulting exception
 	 */
-	public static void logErrorAndThrowRuntimeException(final Logger log, final Exception ex, final String error) throws RuntimeException {
+	public static void logErrorAndThrowRuntimeException(final Log log, final Exception ex, final String error) throws RuntimeException {
 		log.error(error + " - throwing RuntimeException" + ((ex != null) ? ("\n" + ex.toString()) : ""), ex );
 		/*
 		 * Inserted to get more information (e.g., on "java.sql.SQLException: Unknown error" messages)
@@ -42,7 +42,7 @@ public class ExceptionUtils {
 	 * @param query
 	 * @throws QueryTimeoutException
 	 */
-	public static void logErrorAndThrowQueryTimeoutException(final Logger log, final Exception ex, final String query) throws QueryTimeoutException {
+	public static void logErrorAndThrowQueryTimeoutException(final Log log, final Exception ex, final String query) throws QueryTimeoutException {
 		log.error("Query timeout for query: " + query);
 		throw new QueryTimeoutException(ex, query);
 	} 

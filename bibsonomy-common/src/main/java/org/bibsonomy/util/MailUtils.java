@@ -10,7 +10,8 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.context.MessageSource;
 
 
@@ -20,7 +21,7 @@ import org.springframework.context.MessageSource;
  */
 public class MailUtils {
 
-	private static final Logger log = Logger.getLogger(MailUtils.class);
+	private static final Log log = LogFactory.getLog(MailUtils.class);
 	/*
 	 * The following constants are configured using JNDI.
 	 */
