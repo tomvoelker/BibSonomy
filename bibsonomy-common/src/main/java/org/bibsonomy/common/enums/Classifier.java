@@ -11,7 +11,10 @@ public enum Classifier {
 	CLASSIFIER(0),
 
 	/** An administrator */
-	ADMIN(1);
+	ADMIN(1),
+	
+	/** Both */
+	BOTH(2);
 	
 	/** the id */
 	private int id;
@@ -37,6 +40,8 @@ public enum Classifier {
 			return CLASSIFIER;
 		case 1:
 			return ADMIN;
+		case 2:
+			return BOTH;
 		default:
 			return null;
 		}
