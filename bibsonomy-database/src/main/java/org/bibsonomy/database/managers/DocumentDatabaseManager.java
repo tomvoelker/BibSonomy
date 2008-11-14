@@ -4,7 +4,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.DocumentParam;
@@ -18,7 +19,7 @@ import org.bibsonomy.util.ExceptionUtils;
  */
 public class DocumentDatabaseManager extends AbstractDatabaseManager{
 
-	private static final Logger log = Logger.getLogger(UserDatabaseManager.class);
+	private static final Log log = LogFactory.getLog(UserDatabaseManager.class);
 	private final static DocumentDatabaseManager singleton = new DocumentDatabaseManager();
 
 	private DocumentDatabaseManager() {

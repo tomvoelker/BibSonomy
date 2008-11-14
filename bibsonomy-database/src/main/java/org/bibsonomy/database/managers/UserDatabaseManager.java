@@ -4,7 +4,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
@@ -25,7 +26,7 @@ import org.bibsonomy.util.ExceptionUtils;
  */
 public class UserDatabaseManager extends AbstractDatabaseManager {
 
-	private static final Logger log = Logger.getLogger(UserDatabaseManager.class);
+	private static final Log log = LogFactory.getLog(UserDatabaseManager.class);
 	private final static UserDatabaseManager singleton = new UserDatabaseManager();
 	private final BasketDatabaseManager basketDb;
 	private final DatabasePluginRegistry plugins;

@@ -1,12 +1,15 @@
 package org.bibsonomy.database.managers;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.database.AbstractDatabaseManager;
@@ -19,7 +22,6 @@ import org.bibsonomy.model.TagSet;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.util.ExceptionUtils;
-import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * Used to retrieve groups from the database.
@@ -29,7 +31,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
  */
 public class GroupDatabaseManager extends AbstractDatabaseManager {
 
-	private static final Logger log = Logger.getLogger(GroupDatabaseManager.class);
+	private static final Log log = LogFactory.getLog(GroupDatabaseManager.class);
 
 	private final static GroupDatabaseManager singleton = new GroupDatabaseManager();
 	private final UserDatabaseManager userDb;

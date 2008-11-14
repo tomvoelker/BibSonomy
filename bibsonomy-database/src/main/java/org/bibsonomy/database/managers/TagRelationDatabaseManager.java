@@ -3,7 +3,8 @@ package org.bibsonomy.database.managers;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.concept.ConceptChain;
@@ -21,7 +22,7 @@ import org.bibsonomy.util.ExceptionUtils;
  */
 public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 
-	private static final Logger log = Logger.getLogger(TagRelationDatabaseManager.class);
+	private static final Log log = LogFactory.getLog(TagRelationDatabaseManager.class);
 
 	private final static TagRelationDatabaseManager singleton = new TagRelationDatabaseManager();
 	private final GeneralDatabaseManager generalDb;
