@@ -6,7 +6,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.DatabaseType;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
@@ -27,7 +28,7 @@ import com.ibatis.sqlmap.client.SqlMapSession;
  */
 public class DatabaseUtils {
 
-	private static final Logger log = Logger.getLogger(DatabaseUtils.class);
+	private static final Log log = LogFactory.getLog(DatabaseUtils.class);
 	private static final SqlMapClient client;
 	private static final SqlMapClient secondaryClient;
 

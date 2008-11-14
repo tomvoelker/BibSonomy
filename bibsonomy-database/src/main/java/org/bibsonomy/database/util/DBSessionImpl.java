@@ -2,7 +2,8 @@ package org.bibsonomy.database.util;
 
 import java.sql.SQLException;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.QueryTimeoutException;
 import org.bibsonomy.util.ExceptionUtils;
 
@@ -20,7 +21,7 @@ import com.mysql.jdbc.exceptions.MySQLTimeoutException;
  */
 public class DBSessionImpl implements DBSession {
 
-	protected static final Logger log = Logger.getLogger(DBSessionImpl.class);
+	protected static final Log log = LogFactory.getLog(DBSessionImpl.class);
 	/** Communication with the database is done with the sqlMap */
 	private final SqlMapSession sqlMap;
 	/** how many commit-calls have to be made for getting the real transaction to become committed */
