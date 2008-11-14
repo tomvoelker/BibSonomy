@@ -54,11 +54,10 @@
 		LIMIT #limit#
 	</select>
 	
-	<select id="getNumNewUsers" resultMap="UserCommon.user" parameterClass="adminParam">
-		SELECT *  
+	<select id="getAllUsersWithSpam" resultMap="UserCommon.user" parameterClass="adminParam">
+		SELECT * 
 		FROM user u 
-		WHERE to_classify = 0
-		ORDER BY u.updated_at DESC
+		ORDER BY u.reg_date DESC
 		LIMIT #limit#
 	</select>
 	

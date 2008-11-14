@@ -255,30 +255,18 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		final AdminParam param = new AdminParam();
 		param.setInterval(interval);
 		param.setLimit(100);
-
+		log.debug("Classifier Enum: " + classifier.getId());
 		if (classifier.equals(Classifier.ADMIN) && (status.equals(SpamStatus.SPAMMER) || status.equals(SpamStatus.NO_SPAMMER))) {
 			param.setPrediction(status.getId());
 			return this.queryForList("getAdminClassifiedUsers", param, User.class, session);
-		} else if (classifier.equals(Classifier.CLASSIFIER)) {
+		} else if (classifier.equals(Classifier.BOTH)){
+			log.debug("Classifier: " + Classifier.BOTH);
+			return this.queryForList("getAllUsersWithSpam", param, User.class, session);
+		}else if (classifier.equals(Classifier.CLASSIFIER)) {
 			param.setPrediction(status.getId());
 			return this.queryForList("getClassifiedUsers", param, User.class, session);
 		}
 		return null;
-	}
-
-	/**
-	 * Returns all users that have not been classified neither by the classifier
-	 * nor by the admins
-	 * 
-	 * @param session
-	 *            the db session
-	 * @return list of users
-	 */
-	public List<User> getNumNewUsers(DBSession session) {
-		final AdminParam param = new AdminParam();
-		param.setLimit(100);
-		return this.queryForList("getNumNewUsers", param, User.class, session);
-
 	}
 
 	/**
