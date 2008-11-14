@@ -1,6 +1,5 @@
 package org.bibsonomy.rest.strategy.users;
 
-import org.apache.log4j.Logger;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.rest.strategy.AbstractDeleteStrategy;
 import org.bibsonomy.rest.strategy.Context;
@@ -13,7 +12,6 @@ import org.bibsonomy.rest.strategy.Context;
  *
  */
 public class DeleteDocumentStrategy extends AbstractDeleteStrategy {
-	private static final Logger LOGGER = Logger.getLogger(DeleteDocumentStrategy.class);
 	
 	private final String userName;
 	private final String resourceHash;

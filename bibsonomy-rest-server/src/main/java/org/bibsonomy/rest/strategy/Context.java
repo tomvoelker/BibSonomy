@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,7 +12,8 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.apache.commons.fileupload.FileItem;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -30,7 +30,7 @@ import org.bibsonomy.rest.renderer.RendererFactory;
  */
 public final class Context {
 
-	private static final Logger log = Logger.getLogger(Context.class);
+	private static final Log log = LogFactory.getLog(Context.class);
 	
 	private static final Map<String, ContextHandler> urlHandlers = new HashMap<String, ContextHandler>();
 

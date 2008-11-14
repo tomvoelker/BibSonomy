@@ -14,7 +14,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.DBLogicApiInterfaceFactory;
@@ -47,7 +48,7 @@ public final class RestServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger log = Logger.getLogger(RestServlet.class);
+	private static final Log log = LogFactory.getLog(RestServlet.class);
 
 	/** name of the servlet-parameter that configures the logicFactoryClass to use */
 	public static final String PARAM_LOGICFACTORY_CLASS = "logicFactoryClass";
