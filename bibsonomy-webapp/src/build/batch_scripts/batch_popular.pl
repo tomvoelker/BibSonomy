@@ -2,7 +2,7 @@
 ##############
 use DBI();
 
-$MAX_LAST_ROWS = 7000;
+$MAX_LAST_ROWS = 15000;
 $MAX_ABS_ROWS = 100;
 
 if ($#ARGV != 0) {
