@@ -3,7 +3,8 @@ package org.bibsonomy.bibtex.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.junit.Test;
@@ -19,7 +20,7 @@ public class BibtexParserUtilsTest {
 
 	private BibTex bib;
 	
-	private static final Logger log = Logger.getLogger(BibtexParserUtilsTest.class);
+	private static final Log log = LogFactory.getLog(BibtexParserUtilsTest.class);
 	
 	private String bibString() {
 		return BibTexUtils.toBibtexString(this.bib);

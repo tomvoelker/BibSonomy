@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.ValidationException;
 
 import bibtex.dom.BibtexAbstractValue;
@@ -60,7 +61,7 @@ public class BibtexParserUtils {
 	
 	private static final String BIBTEX_IS_INVALID_MSG = "The validation of the BibTeX entry failed: ";
 	
-	private static final Logger log = Logger.getLogger(BibtexParserUtils.class);
+	private static final Log log = LogFactory.getLog(BibtexParserUtils.class);
 	
 	
 	/**
