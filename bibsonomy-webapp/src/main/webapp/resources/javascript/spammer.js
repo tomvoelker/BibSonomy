@@ -30,7 +30,7 @@ function addSpammer(name, rowId, disable) {
 		return;
 	}
 	/* colorize */
-	if (rowId != null && !disable) {			
+	if (rowId != null && disable=='false') {			
 		document.getElementById(rowId).className="spammer";
 	} else {
 		document.getElementById(rowId).style.display = "none";
@@ -65,7 +65,7 @@ function unflagSpammer(name, rowId, disable) {
 	}
 	
 	/* colorize row */
-	if (rowId != null && !disable) {			
+	if (rowId != null && disable=='false') {			
 		document.getElementById(rowId).className="spamflag";
 	} else {
 		document.getElementById(rowId).style.display = "none"; 
@@ -88,7 +88,7 @@ function markUncertainUser(name, rowId, disable) {
 	}
 	
 	/* colorize row */
-	if (rowId != null && !disable) {			
+	if (rowId != null && disable=='false') {			
 		document.getElementById(rowId).className="uncertainUser";
 	} else {
 		document.getElementById(rowId).style.display = "none"; 
