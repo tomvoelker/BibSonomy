@@ -31,6 +31,16 @@
 
 <div id="general">
 
+    <p>
+      If you want a group added to the system, create a user account with the desired group name and write an e-mail to 
+      <%@include file="/boxes/emailaddress.jsp" %>. Groups help you to get an aggregated overview of its member's posts
+      as well as to make posts visible for group members only. More information on groups can be found in our blog posts
+      <a href="http://bibsonomy.blogspot.com/2007/08/feature-of-week-manage-publication.html">Manage the publication 
+      lists of your homepage, research group homepage and research project homepage with BibSonomy!</a> and 
+      <a href="http://bibsonomy.blogspot.com/2007/04/feature-of-week-groups-and-friends.html">Groups and Friends</a>.
+    </p>
+
+
   <ul id="groups">
     <c:forEach var="row" items="${rs.rows}">
        <li>

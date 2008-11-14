@@ -138,10 +138,8 @@
 		  
 		<h3>add a group</h3>
 		<p>
-		  If you want a group added to the system, create an user account with the desired group name and write an E-Mail to 
+		  If you want a group added to the system, create a user account with the desired group name and write an E-Mail to 
 		  <%@include file="/boxes/emailaddress.jsp" %>.
-		  During the first test phase, group accounts are only available to selected projects. 
-		  We will relax this constraint later.
 		</p>
 		
 		</c:otherwise>
