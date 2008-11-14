@@ -34,8 +34,8 @@ if (am_i_running($ENV{'TMP'}."/batch_popular_masterslave.pid")) {
 # configuration
 ##################################################################
 # these are arrays - enter as many days as blocks you like
-my @last_bookmark_days = (10); 
-my @last_bibtex_days   = (10);
+my @last_bookmark_days = (7, 30, 120);
+my @last_bibtex_days   = (7, 30, 120);
 my @last_tag_days      = (10);
 # max number of posts for each day block
 my $max_bookmarks      = 100;
