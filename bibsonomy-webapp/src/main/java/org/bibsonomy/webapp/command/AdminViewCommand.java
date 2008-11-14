@@ -12,13 +12,16 @@ import org.bibsonomy.model.User;
 public class AdminViewCommand extends TabsCommand<User> {
 	
 	/** Indexes of definded tabs */
-	public final static int ADMIN_SPAMMER_INDEX = 1;
-	public final static int ADMIN_NOSPAMMER_INDEX = 2;
-	public final static int CLASSIFIER_SPAMMER_INDEX = 3;
-	public final static int CLASSIFIER_SPAMMER_UNSURE_INDEX = 4;
-	public final static int CLASSIFIER_NOSPAMMER_UNSURE_INDEX = 5;
-	public final static int CLASSIFIER_NOSPAMMER_INDEX	= 6;
-	public final static int CLASSIFIER_EVALUATE = 7;
+	
+	public final static int MOST_RECENT = 1;
+	public final static int ADMIN_SPAMMER_INDEX = 2;
+	public final static int ADMIN_NOSPAMMER_INDEX = 3;
+	public final static int CLASSIFIER_SPAMMER_INDEX = 4;
+	public final static int CLASSIFIER_SPAMMER_UNSURE_INDEX = 5;
+	public final static int CLASSIFIER_NOSPAMMER_UNSURE_INDEX = 6;
+	public final static int CLASSIFIER_NOSPAMMER_INDEX	= 7;
+	public final static int CLASSIFIER_EVALUATE = 8;
+	
 	
 	
 	/** Command containing current admin settings */
@@ -30,16 +33,17 @@ public class AdminViewCommand extends TabsCommand<User> {
 	private Integer interval = 300;
 	
 	public AdminViewCommand() {				
+		addTab(MOST_RECENT, "New registrations");
 		addTab(ADMIN_SPAMMER_INDEX, "Admin: Spammer");
 		addTab(ADMIN_NOSPAMMER_INDEX, "Admin: No Spammer");
 		addTab(CLASSIFIER_SPAMMER_INDEX, "Classifier: Spammer");
 		addTab(CLASSIFIER_SPAMMER_UNSURE_INDEX, "Classifier: Spammer (U)");
 		addTab(CLASSIFIER_NOSPAMMER_UNSURE_INDEX, "Classifier: No Spammer (U)");
 		addTab(CLASSIFIER_NOSPAMMER_INDEX, "Classifier: No Spammer");
-		addTab(CLASSIFIER_EVALUATE, "Classifier Evaluation");	
+		addTab(CLASSIFIER_EVALUATE, "Classifier Evaluation");
 		
 		// change default tab to classifier tab
-		selTab = 4;
+		selTab = 5;
 	}	
 	
 		

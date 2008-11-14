@@ -51,7 +51,7 @@
 				<c:choose>
 				
 				<!-- classifier results tabs -->
-				<c:when test="${command.selTab &lt; 7}">	
+				<c:when test="${command.selTab &lt; 8}">	
 				
 				<table id="spammers" class="spammertable">
 					
@@ -72,49 +72,45 @@
 				    				    
 				    <!-- user list -->
 					<c:forEach var="user" items="${command.content}" varStatus="status">
-					  <tr id="sl${status.count}">			
-				     
+					
+					  <!-- color rows according to spam status -->
+					  <tr id="sl${status.count}" class="${user.prediction == 9 ? 'spamflag uncertainUser' : (user.spammer==true ? 'spammer' : 'none')}">	
 					     <c:choose>
-					     
-					     <c:when test="${command.selTab > 2}">
-					       <td style="text-align: left" class="spamflag">
-					      	 <a href="javascript:addSpammer('${user.name}','sl${status.count}', true)" title="flag this user as spammer">YES</a>	
-					      	 <a href="javascript:markUncertainUser('${user.name}','sl${status.count}', true)" title="mark as spammer status uncertain">?</a>			     	
-					     	 <a href="javascript:unflagSpammer('${user.name}','sl${status.count}', true)" title="unflag this user as spammer">NO</a>
-							</td>
-					  	</c:when>
-					  	
-					  	<c:otherwise>
-					  	<c:choose>
-					     		<c:when test="${user.spammer}">		
-					     		<td style="text-align: left" class="spamflag">
-									<a href="javascript:unflagSpammer('${user.name}','sl${status.count}', true)" title="unflag this user as spammer">NO</a>
-					     	 		<a href="javascript:markUncertainUser('${user.name}','sl${status.count}', true)" title="mark as spammer status uncertain">?</a>
-					     		</td>
-					     		</c:when>
-					     		<c:otherwise>
-					     		    <c:choose>
-					     			<c:when test="${user.prediction == 9}">
-					     			<td style="text-align: left" class="spamflag uncertainUser">
-										<a href="javascript:unflagSpammer('${user.name}','sl${status.count}', true)" title="unflag this user as spammer">NO</a>
-										<a href="javascript:markUncertainUser('${user.name}','sl${status.count}', false)" title="mark as spammer status uncertain">?</a>
-					     				<a href="javascript:addSpammer('${user.name}','sl${status.count}', true)" title="flag this user as spammer">YES</a>
-									</td>
-									</c:when>
-									<c:otherwise>
-									<td style="text-align: left" class="spamflag">
-										<a href="javascript:unflagSpammer('${user.name}','sl${status.count}', false)" title="unflag this user as spammer">NO</a>
-										<a href="javascript:markUncertainUser('${user.name}','sl${status.count}', false)" title="mark as spammer status uncertain">?</a>
-					     				<a href="javascript:addSpammer('${user.name}','sl${status.count}', true)" title="flag this user as spammer">YES</a>
-									</td>
-									</c:otherwise>
-									</c:choose> 
-								</c:otherwise>
-								</c:choose> 
-								
-						</c:otherwise>	
-						</c:choose> 		 	  
-				   
+					    	<c:when test="${command.selTab == 1}">
+					        	<c:set var="Unflag" value="false"/> 
+					        	<c:set var="Uncertain" value="false"/>
+					        	<c:set var="Flag" value="false"/> 
+					    	</c:when> 
+					    	<c:otherwise>
+					    	<c:choose>
+					    	    <c:when test="${command.selTab == 2 or command.selTab == 3}">
+					    		<c:choose>
+					    		<c:when test="${user.spammer == true}">
+					    		<c:out value="${user.spammer}"/>
+					    			<c:set var="Unflag" value="true"/> 
+					    			<c:set var="Uncertain" value="true"/>
+					        		<c:set var="Flag" value="false"/> 
+					        	</c:when>
+					        	<c:otherwise>		        	
+					    			<c:set var="Unflag" value="false"/> 
+					    			<c:set var="Uncertain" value="false"/>
+					        		<c:set var="Flag" value="true"/> 
+					        	</c:otherwise>
+					        	</c:choose>
+					        	</c:when>
+					        	<c:otherwise>
+					        		<c:set var="Unflag" value="true"/> 
+					    			<c:set var="Uncertain" value="true"/>
+					        		<c:set var="Flag" value="true"/> 
+					        	</c:otherwise>
+					        </c:choose>
+					  	 	</c:otherwise>
+						</c:choose>
+						<td style="text-align: left" class="spamflag">
+							<a href="javascript:unflagSpammer('${user.name}','sl${status.count}', '${Unflag}')" title="unflag this user as spammer">NO</a>
+							<a href="javascript:markUncertainUser('${user.name}','sl${status.count}', '${Uncertain}')" title="mark as spammer status uncertain">?</a>
+					     	<a href="javascript:addSpammer('${user.name}','sl${status.count}', '${Flag}')" title="flag this user as spammer">YES</a>
+						</td>
 				       <td>
 				       	<a href="/user/${fn:escapeXml(user.name)}"><c:out value="${user.name}"/></a>
 				       	<a onclick="javascript:ajax_showTooltip('ajax?action=latest_posts&amp;userName=${user.name}',this);return false;" style="cursor:pointer" title="show latest posts"><img src="/resources/image/info.png"/></a>
@@ -256,6 +252,9 @@
 			<span class="sidebar_h"><fmt:message key="statistic"/></span>
 			<table class="stattable">
 				<tr><th></th><th>Count</th></tr>
+				<tr>
+					<td>New Users</td><td><c:out value="${statisticsCommand.numClassifierNoSpammer}"/></td>
+				</tr>	
 				<tr>
 					<td>Spammers by Admin</td><td><c:out value="${statisticsCommand.numAdminSpammers}"/></td>
 				</tr>	
