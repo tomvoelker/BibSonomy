@@ -1,9 +1,9 @@
 package org.bibsonomy.rest.client.queries.get;
 
-import java.io.Reader;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Post;
@@ -32,7 +32,7 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 	private GroupingEntity grouping = GroupingEntity.ALL;
 	private String groupingValue;
 	private String resourceHash;
-	private static final Logger log = Logger.getLogger(GetPostsQuery.class);
+	private static final Log log = LogFactory.getLog(GetPostsQuery.class);
 	/**
 	 * Gets bibsonomy's posts list.
 	 */

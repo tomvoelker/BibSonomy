@@ -4,7 +4,8 @@ import java.net.InetAddress;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory; 
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
@@ -46,7 +47,7 @@ import org.bibsonomy.rest.client.queries.put.ChangeUserQuery;
 import org.bibsonomy.util.ExceptionUtils;
 
 public class RestLogic implements LogicInterface {
-	private static final Logger log = Logger.getLogger(RestLogic.class);
+	private static final Log log = LogFactory.getLog(RestLogic.class);
 	private final Bibsonomy bibsonomy;
 	private final User authUser;
 

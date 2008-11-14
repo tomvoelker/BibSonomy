@@ -1,10 +1,10 @@
 package org.bibsonomy.rest.client.worker;
 
-import org.apache.log4j.Logger;
-
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.params.HttpClientParams;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.rest.RestProperties;
 
 import sun.misc.BASE64Encoder;
@@ -15,7 +15,7 @@ import sun.misc.BASE64Encoder;
  */
 public abstract class HttpWorker {
 
-	protected static final Logger LOGGER = Logger.getLogger(HttpWorker.class.getName());
+	protected static final Log LOGGER = LogFactory.getLog(HttpWorker.class.getName());
 
 	public static final String HEADER_USER_AGENT = "User-Agent";
 	public static final String HEADER_AUTHORIZATION = "Authorization";

@@ -1,8 +1,6 @@
 package org.bibsonomy.rest.client;
 
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.bibsonomy.rest.RestProperties;
