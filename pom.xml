@@ -177,6 +177,7 @@
 	<modules>
 		<module>bibsonomy-bibtex-parser</module>
 		<module>bibsonomy-common</module>
+		<module>bibsonomy-batch</module>
 		<module>bibsonomy-model</module>
 		<module>bibsonomy-dl-importer</module>
 		<module>bibsonomy-scraper</module>
