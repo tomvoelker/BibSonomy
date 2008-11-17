@@ -6,7 +6,7 @@
  * @author Thomas Steuber
  **/
 
-package org.bibsonomy.scraper.ie.ie;
+package org.bibsonomy.scraper.ie;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,11 +17,11 @@ import java.util.regex.Pattern;
 
 import javax.naming.NamingException;
 
-import org.bibsonomy.scraper.ie.CRFSingleton;
 
 import edu.umass.cs.mallet.base.pipe.CharSequence2TokenSequence;
 import edu.umass.cs.mallet.base.types.Instance;
 import edu.umass.cs.mallet.base.types.TokenSequence;
+import edu.umass.cs.mallet.util.bibsonomy.IEInterface;
 
 
 

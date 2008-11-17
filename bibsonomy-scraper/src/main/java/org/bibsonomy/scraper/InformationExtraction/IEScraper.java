@@ -15,7 +15,7 @@ import javax.naming.NamingException;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.ie.ie.BibExtraction;
+import org.bibsonomy.scraper.ie.BibExtraction;
 
 
 public class IEScraper implements Scraper {
