@@ -17,7 +17,7 @@
 		<artifactId>bibsonomy</artifactId>
 		<version>2.0.1-SNAPSHOT</version>
 	</parent>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
@@ -28,7 +28,7 @@
 			<artifactId>bibsonomy-model</artifactId>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<extensions>
 			<extension>
@@ -37,8 +37,21 @@
 				<version>1.0-beta-2</version>
 			</extension>
 		</extensions>
+		<plugins>
+			<plugin>
+				<groupId>com.google.code.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>src/main/java/bibtex/**</exclude>
+						<exclude>src/main/resources/bibtex/**</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
+
 	</build>
-	
+
 	<distributionManagement>
 		<site>
 			<!-- copy site documentation via scp to gromit -->
@@ -48,7 +61,7 @@
 			</url>
 		</site>
 	</distributionManagement>
-	
+
 	<reporting>
 		<plugins>
 			<plugin>
