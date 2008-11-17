@@ -38,5 +38,7 @@
   Maven URLS
   ----------
 
-  Home Page:          http://scraper.bibsonomy.org/
+  Service Page:       http://scraper.bibsonomy.org/
+  Home Page:          http://dev.bibsonomy.org/
+  Maven Repository:   http://dev.bibsonomy.org/maven2/
   Issue Tracking:     http://gforge.cs.uni-kassel.de/tracker/?atid=676&group_id=52&func=browse
