@@ -260,6 +260,29 @@
 					</properties>
 				</configuration>
 			</plugin>
+			<plugin>
+				<!-- generate a source jar during build pase and deploy it along with binary jar -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>	
+			<plugin>
+        		<groupId>org.apache.maven.plugins</groupId>
+        		<artifactId>maven-release-plugin</artifactId>
+        		<version>2.0-beta-7</version>
+        		<configuration>
+        			<!-- 
+        			<goals>deploy assembly:assembly site-deploy tomcat:undeploy tomcat:deploy</goals>
+        			 -->
+        		</configuration>
+      		</plugin>
 		</plugins>
 	</build>
 	<reporting>
@@ -282,15 +305,23 @@
 			</plugin>
 		</plugins>
 	</reporting>
-	<distributionManagement>
-		<!--repository>
-			<id>ssh-se.uni-kassel.de</id>
-			<! TODO: we need an own distribution-management location! >
-			<url>
-			scpexe://www.se.eecs.uni-kassel.de/home/maven/public_html/repository
-			</url>
-			</repository-->
-
+	<distributionManagement>	
+		<!--  deploy releases via webdav to zope - username + password is defined in settings.xml -->
+	    <repository>
+	      <uniqueVersion>false</uniqueVersion>
+	      <id>bibsonomyReleases</id>
+	      <name>Repository for BibSonomy Releases</name>
+	      <url>scp://bugs:/home/bibsonomyupload/wwwupload/maven2</url>	  	      
+	      <layout>default</layout>
+	    </repository>	    
+	    <!--  use internal maven artifactory proxy for snapshot releases; username + password is defined in settings.xml -->
+	    <snapshotRepository>
+	      <uniqueVersion>true</uniqueVersion>
+	      <id>bibsonomySnapshots</id>
+	      <name>Repository for BibSonomy Snapshots</name>  
+	      <url>dav:http://www.biblicious.org:8088/artifactory/libs-snapshots</url>
+	      <layout>default</layout>
+	    </snapshotRepository>	
 		<!--  deploy web site documentation via webdav to zope -->
 		<site>
 			<id>website-bibsonomy-documentation</id>
