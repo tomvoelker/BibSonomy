@@ -77,6 +77,17 @@
 				<version>1.0-beta-2</version>
 			</extension>
 		</extensions>
+		<plugins>
+			<plugin>
+				<groupId>com.google.code.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>src/main/webapp/**</exclude>
+					</excludes>
+				</configuration>
+			</plugin>		
+		</plugins>
 	</build>
 	
 	<distributionManagement>
