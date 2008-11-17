@@ -39,7 +39,6 @@ import java.util.List;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.bibsonomy.bibtex.util.BibtexParserUtils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -47,7 +46,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.rest.validation.ModelValidator;
 
 /**
  * Produces objects from the model based on objects from the XML model generated
@@ -59,6 +58,8 @@ import org.bibsonomy.model.util.BibTexUtils;
 public class ModelFactory {
 
 	private static ModelFactory modelFactory;
+	
+	private ModelValidator modelValidator = null; 
 
 	private ModelFactory() {
 	}
@@ -215,10 +216,7 @@ public class ModelFactory {
 			bibtex.setYear(xmlBibtex.getYear());
 			bibtex.setPrivnote(xmlBibtex.getPrivnote());
 
-			// parse Bibtex so see whether the entry is valid
-			BibtexParserUtils bibutil = new BibtexParserUtils( BibTexUtils.toBibtexString(bibtex) );						
-			bibtex.setAuthor( bibutil.getFormattedAuthorString() );
-			bibtex.setEditor( bibutil.getFormattedEditorString() );
+			checkBibTeX(bibtex);
 						
 			post.setResource(bibtex);
 		}
@@ -247,6 +245,16 @@ public class ModelFactory {
 		return post;
 	}
 
+	/** Checks the bibtex. Here a model validator can be plugged in which does the checking.
+	 * 
+	 * @param bibtex
+	 */
+	protected void checkBibTeX(final BibTex bibtex) {
+		if (modelValidator != null) {
+			modelValidator.checkBibTeX(bibtex);
+		}
+	}
+	
 	// FIXME what do we want to do here?
 	private Date createDate(XMLGregorianCalendar date) {
 		
@@ -255,5 +263,13 @@ public class ModelFactory {
 //		final Calendar cal = new GregorianCalendar(date.getYear(), date.getMonth() - 1, date.getDay(), date.getHour(), date.getMinute(), date.getSecond());
 //		cal.set(Calendar.MILLISECOND, date.getMillisecond());
 //		return cal.getTime();
+	}
+
+	public ModelValidator getModelValidator() {
+		return this.modelValidator;
+	}
+
+	public void setModelValidator(ModelValidator modelValidator) {
+		this.modelValidator = modelValidator;
 	}
 }

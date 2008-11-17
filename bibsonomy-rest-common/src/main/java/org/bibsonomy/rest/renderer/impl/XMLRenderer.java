@@ -71,6 +71,7 @@ import org.bibsonomy.rest.RestProperties.Property;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.xml.*;
+import org.bibsonomy.rest.validation.ModelValidator;
 import org.xml.sax.SAXParseException;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
@@ -104,6 +105,7 @@ public class XMLRenderer implements Renderer {
 		this.documentsUrlDelimiter = "/" + properties.get(Property.URL_DOCUMENTS) + "/";
 		this.validateXMLInput = "true".equals( properties.get(VALIDATE_XML_INPUT) );
 		this.validateXMLOutput = "true".equals( properties.get(VALIDATE_XML_OUTPUT) );
+		ModelFactory.getInstance().setModelValidator(properties.geModelValidator());
 
 		// we only need to load the XML schema if we validate input or output
 		if (this.validateXMLInput || this.validateXMLOutput) {

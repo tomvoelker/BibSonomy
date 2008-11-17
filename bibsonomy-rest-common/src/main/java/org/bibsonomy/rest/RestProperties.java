@@ -35,6 +35,7 @@ import javax.naming.NamingException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.rest.validation.ModelValidator;
 
 /**
  * Some Properties for the REST Webservice.
@@ -47,6 +48,7 @@ public class RestProperties {
 	private static final Log log = LogFactory.getLog(RestProperties.class);
 	private static RestProperties singleton = null;
 	
+	private ModelValidator validator = null; 
 	private final Properties properties;
 	private final Context jndiCtx;
 	
@@ -201,5 +203,13 @@ public class RestProperties {
 	
 	public String getPdfType(){
 		return this.get(Property.PDF_TYPE);
+	}
+
+	public ModelValidator geModelValidator() {
+		return this.validator;
+	}
+
+	public void setValidator(ModelValidator validator) {
+		this.validator = validator;
 	}
 }
