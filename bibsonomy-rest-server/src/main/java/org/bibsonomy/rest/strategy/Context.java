@@ -23,6 +23,7 @@ import org.bibsonomy.rest.enums.RenderingFormat;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
+import org.bibsonomy.rest.validation.ServersideModelValidator;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -39,7 +40,11 @@ public final class Context {
 		Context.urlHandlers.put(RestProperties.getInstance().getUsersUrl(), new UsersHandler());
 		Context.urlHandlers.put(RestProperties.getInstance().getGroupsUrl(), new GroupsHandler());
 		Context.urlHandlers.put(RestProperties.getInstance().getPostsUrl(), new PostsHandler());
-		Context.urlHandlers.put(RestProperties.getInstance().getConceptUrl(), new ConceptsHandler());		
+		Context.urlHandlers.put(RestProperties.getInstance().getConceptUrl(), new ConceptsHandler());
+		/*
+		 * configure validation
+		 */
+		RestProperties.getInstance().setValidator(ServersideModelValidator.getInstance());
 	}
 
 	private final InputStream doc;

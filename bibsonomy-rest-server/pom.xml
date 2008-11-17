@@ -21,6 +21,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-bibtex-parser</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-database</artifactId>
 		</dependency>
 		<dependency>
@@ -36,7 +40,7 @@
 			<artifactId>bibsonomy-common</artifactId>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<extensions>
 			<extension>
@@ -46,7 +50,7 @@
 			</extension>
 		</extensions>
 	</build>
-	
+
 	<distributionManagement>
 		<site>
 			<!-- copy site documentation via scp to gromit -->
@@ -56,7 +60,7 @@
 			</url>
 		</site>
 	</distributionManagement>
-	
+
 	<reporting>
 		<plugins>
 			<plugin>
