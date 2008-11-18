@@ -62,7 +62,7 @@ public class RestProperties {
 		SYSTEM_NAME("BibSonomy"),
 		CONTENT_TYPE("text/xml"),
 		PDF_TYPE("application/pdf"),
-		API_USER_AGENT("BibsonomyWebServiceClient"),
+		API_USER_AGENT("BibSonomyWebServiceClient"),
 		URL_TAGS("tags"),
 		URL_CONCEPTS("concepts"),
 		URL_USERS("users"),
