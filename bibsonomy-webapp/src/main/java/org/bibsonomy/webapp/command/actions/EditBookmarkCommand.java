@@ -14,11 +14,17 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.webapp.command.PostCommand;
 
+import com.sun.tools.javac.code.Attribute.Array;
+
 /**
  * @author fba
  * @version $Id$
  */
 public class EditBookmarkCommand extends PostCommand {
+	
+	//if the post is a copy
+	private List<Tag> copyTags = new ArrayList<Tag>();
+	
 	private boolean userLoggedIn;
 	private Post<Bookmark> postBookmark;
 	private String tags ;
@@ -35,11 +41,8 @@ public class EditBookmarkCommand extends PostCommand {
 	public EditBookmarkCommand() {
 		postBookmark = new Post<Bookmark>();
 		postBookmark.setResource(new Bookmark());
-
 		postBookmark.getResource().setUrl("http://");
-		
 		groups = new ArrayList<String>();
-//		relevantTags = new ArrayList<String>();
 		relevantGroups = new ArrayList<Tag>();
 		relevantTagSets = new HashMap<String, Map<String,List<String>>>();
 		groupDetails = new ArrayList<Group>();
@@ -65,7 +68,6 @@ public class EditBookmarkCommand extends PostCommand {
 		return tags;
 	}
 
-
 	public List<String> getGroups() {
 		return this.groups;
 	}
@@ -73,14 +75,6 @@ public class EditBookmarkCommand extends PostCommand {
 	public void setGroups(List<String> groups) {
 		this.groups = groups;
 	}
-
-//	public List<String> getRelevantTags() {
-//		return this.relevantTags;
-//	}
-//
-//	public void setRelevantTags(List<String> relevantTags) {
-//		this.relevantTags = relevantTags;
-//	}
 
 	public List<Tag> getRelevantGroups() {
 		return this.relevantGroups;
@@ -121,6 +115,31 @@ public class EditBookmarkCommand extends PostCommand {
 	public void setGroupDetails(List<Group> groupDetails) {
 		this.groupDetails = groupDetails;
 	}
+		
+	/** setter functions for the COPY action **/
+	public void setUrl(String url){
+		this.postBookmark.getResource().setUrl(url);
+	}
 	
+	public void setDescription(String title){
+		this.postBookmark.getResource().setTitle(title);
+	}
 	
+	public void setExtended(String ext){
+		this.postBookmark.setDescription(ext);
+	}
+	
+	public void setCopytag(String tags){
+		for(String tagname: tags.split(" ")){
+			this.copyTags.add(new Tag(tagname));
+		}
+	}
+	
+	public List<Tag> getCopyTags(){
+		return this.copyTags;
+	}
+	
+	public void setCopyTags(List<Tag> tags){
+		this.copyTags = tags;
+	}
 }

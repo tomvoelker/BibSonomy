@@ -278,7 +278,6 @@ function filter_tags(e) {
  */
 function setActiveInputField(id) {
 	var sg = document.getElementById("suggested");
-		
 	while(sg.hasChildNodes())
 		sg.removeChild(sg.firstChild);
 
@@ -510,11 +509,11 @@ function xget_event (event) {
 	function disHandler(event) {	}
 	
 	function handler(event) {
-	
 	var inputValue = activeField ? document.getElementById(activeField).value 
 															 : document.getElementById("inpf").value;
-	
-		var e = (event || window.event || event.shiftkey)
+
+		var e = (event || window.event || event.shiftkey);
+
 		if (e.type == 'keyup') {
 			switch (e.keyCode) {
 				case 8: {	//backspace
@@ -679,22 +678,22 @@ function xget_event (event) {
 		var ul = document.getElementById("tagbox");
 		var rows = new Array();
 		rows = ul.getElementsByTagName("li");
-	
 		for(var i = 0; i < rows.length; ++i) {
 			if(rows[i].getElementsByTagName("a").length < 2) {
 				var tmp = rows[i].getElementsByTagName("a")[0];
-				var tmpData = tmp.firstChild.data;
+				var tmpData = tmp.firstChild.data.trim();
 				listElements[tmpData] = i;
 				nodeList[tmpData] = tmp;
 				//list[i] = tmpData;	wegen recommending pfeilen
 				list.push(tmpData);
             } else {
                 var tmp = rows[i].getElementsByTagName("a")[2];
-                var tmpData = tmp.firstChild.data;
-                listElements[tmpData] = i;
+                var tmpData = tmp.firstChild.data.trim();
+                listElements[tmpData.trim()] = i;
                 nodeList[tmpData] = tmp;
                 list.push(tmpData);
             }
+		
 		}
 
 		if(document.getElementById("recommendtag")) {
@@ -705,7 +704,7 @@ function xget_event (event) {
 				var tmpData = tmp.firstChild.data;
 				listElements[tmpData] = rows.length + i;
 				nodeList[tmpData] = tmp;
-				list.push(tmpData);
+				list.push(tmpData.trim());
 			}
 		}
 		
@@ -759,11 +758,13 @@ function xget_event (event) {
 	function getActiveTag(backspace) {
 		var tmpInput = activeField ? document.getElementById(activeField).value.toLowerCase().split(" ") 
 								: document.getElementById("inpf").value.toLowerCase().split(" ");
+
 		var inputValue = activeField ? document.getElementById(activeField).value 
 	 								 : document.getElementById("inpf").value;
+
 	 	var input = new Array();
 	 	input = getTags(inputValue);
-		
+
 		for(var n in input) {
 			if(typeof savTag != "undefined") {
 				if(input[n] > savTag[n] && !backspace) {
@@ -798,7 +799,7 @@ function xget_event (event) {
 		var success = false;
 		var counter = 0;
 		var firstElement = 0;
-		var lastElement = list.length - 1
+		var lastElement = list.length - 1;
 		var midElement = 0;
 
 		/*
@@ -806,7 +807,7 @@ function xget_event (event) {
 		 */
 		var tags = activeField ? document.getElementById(activeField).value.toLowerCase().split(" ")
 												   : document.getElementById("inpf").value.toLowerCase().split(" ");
-												   
+							   
 		/*
 		 * if the following lines are activated, it's not allowed to post duplicates in relations.
 		 * var tagString = activeField ? document.getElementById(activeField).value.toLowerCase()
@@ -819,31 +820,29 @@ function xget_event (event) {
 		/*
 		 * Bin?re Suche ?ber die Listenelemente, in denen die Tags stehen
 		 */
-		
 		while(!success && firstElement <= lastElement) {
 			midElement = Math.floor((firstElement + lastElement) / 2);
 			if(list[midElement].substring(0,searchLength).toLowerCase() == searchString) {
 				var i = midElement - 1;
 				var j = midElement + 1;
-				
 				while(i >= 0 && list[i].substring(0,searchLength).toLowerCase() == searchString) {
 					collect.push(new Suggestion(list[i], nodeList[list[i]].title.split(" ")[0]));
 					i--;
 				}
 				while(j <= list.length - 1 && list[j].substring(0,searchLength).toLowerCase() == searchString) {
-					collect.push(new Suggestion(list[j], nodeList[list[j]].title.split(" ")[0]));
+					collect.push(new Suggestion(list[j], nodeList[list[j]].title));
 					j++;
 				}
 				collect.push(new Suggestion(list[midElement], nodeList[list[midElement]].title.split(" ")[0]));
 				success == true;
 				break;
+				//alert(collect);
 			}
 			else if(list[midElement].substring(0,searchLength).toLowerCase() > searchString)
 				lastElement = midElement - 1;
 			else
 				firstElement = midElement + 1;
 		}
-		
 		collect.sort(byWight);
 
 		/*	collects suggested entrys inside copytag elemens	*/
@@ -942,6 +941,7 @@ function xget_event (event) {
 
 	/*	removes all the crap ;)	*/
 	function clearSuggestion() {
+
 		var ul = document.getElementById("tagbox");
 		var rows = ul.getElementsByTagName("li");
 		var sg = document.getElementById("suggested");
@@ -1567,3 +1567,92 @@ function showBothLists(){
 	$("#optionShowBoth").hide();
 	$("#optionExpandBibtex").show();
 }
+
+//new functions for adding tags from tag-cloud to a field
+function copytag(target, tagname){
+	if(document.getElementById(target)){
+		var tagfieldContent = document.getElementById(target).value;
+		
+		if(tagfieldContent.lastIndexOf(" ") == (tagfieldContent.length-1)){
+			document.getElementById(target).value+=tagname+" ";
+		}else{
+			document.getElementById(target).value+=" "+tagname;
+		}
+	}
+}
+
+/** FUNCTIONS USED IN THE POSTING VIEWS **/
+
+//functions checks if a post is PUBLIC, PRIVATE or OTHER (viewable for groups or friends)
+//and enables/disables the groupselection in the post-view 
+//see "tags/post/groupBox.tagx", "tags/post/common/groupingradio.tagx" and "tags/post/common/groupingselect.tagx"
+function disableGroupBox(){
+	var counter = 0;
+	if(document.getElementById("other").checked == false){
+		while(document.getElementById("visibilityoption"+counter) != null){
+			document.getElementById("visibilityoption"+counter).selected = false;
+			counter++;
+		}
+		document.getElementById("visibilitybox").disabled = true;
+	}else{
+		document.getElementById("visibilitybox").disabled = false;
+	}
+}
+
+//hide and show the tagsets in the relevant for field
+function checkVisibility(){
+	var counter = 0;
+	while(document.getElementById("relgroup"+counter) != null){
+		if(document.getElementById("relgroup"+counter).selected == true){
+			document.getElementById("sets_"+counter).style.display = '';
+		}else{
+			document.getElementById("sets_"+counter).style.display = 'none';
+		}
+		counter++;
+	}
+}
+
+//add tags from a taglist to the tag field
+function addSelectedTag(target,id){
+	var counter = -1;
+	while(document.getElementById(id+counter) != null){
+		if(document.getElementById(id+counter).selected == true){
+			copytag(target,document.getElementById(id+counter).value);
+		}
+		counter++;
+	}
+
+}
+
+//functions checks if a group in the relevant for field is selected and adds its name to the hidden field 
+//systemtags 
+function addSystemTags(){
+	var counter = 0;
+	var tags = document.getElementById("inpf").value;
+	while(document.getElementById("relgroup"+counter) != null){
+		if(document.getElementById("relgroup"+counter).selected == true){
+			var value = document.getElementById("relgroup"+counter).value;
+			// only write the systemtag if it doesn't exist in the tagfield
+			if(tags.match(":"+value) == null){
+				if(systemtags == null){
+					systemtags = "sys:relevantFor:"+value;
+				}else{
+					systemtags +=" "+"sys:relevantFor:"+value;
+				}
+			}
+		}
+		counter++;
+	}
+	//if a systemtag was build, add it to the tag field
+	if(systemtags != null){
+		//add systemtags to the tag field
+		copytag("inpf",systemtags);
+	}
+	
+}
+
+//trim
+String.prototype.trim = function () {
+    return this.replace(/^\s+/g, '').replace(/\s+$/g, '');
+}
+

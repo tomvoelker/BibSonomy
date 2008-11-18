@@ -11,6 +11,8 @@
 	<jsp:directive.attribute name="disableTagboxMinfreq" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="tagSizeMode" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="showTooltips" type="java.lang.Integer" required="false"/>
+	<jsp:directive.attribute name="copytag" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="targetId" type="java.lang.String" required="false"/>
 
 	<!-- tagcloud styles: 0 cloud, 1 list (see org.bibsonomy.common.enums.TagCloudStyle) -->
 	<c:choose>
@@ -59,7 +61,16 @@
 				<li class="${tagclass}">
 					<jsp:element name="a">
 						<jsp:attribute name="href">
-							/${mtl:getPath(requPath)}/${fn:escapeXml(tag.name)}
+							<c:choose>
+								<c:when test="${copytag == true and not empty targetId}">
+									<!-- add the tag to a field -->
+									javascript:copytag('${targetId}','${tag.name}')
+								</c:when>
+								<c:otherwise>
+									<!-- use the tag as a link to a page -->
+									/${mtl:getPath(requPath)}/${fn:escapeXml(tag.name)}
+								</c:otherwise>
+							</c:choose>
 						</jsp:attribute>
 						<jsp:attribute name="title">
 							${tag.usercount}<c:out value=" "/>${posts}
@@ -90,4 +101,5 @@
 		var tagMaxFreq = ${cmd.maxFreq};
 	</script>
 	-->
+
 </jsp:root>

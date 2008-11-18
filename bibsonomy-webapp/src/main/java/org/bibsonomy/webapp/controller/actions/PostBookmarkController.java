@@ -3,6 +3,7 @@ package org.bibsonomy.webapp.controller.actions;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -51,7 +52,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 	private static final Logger log = Logger.getLogger(PostBookmarkController.class);
 	private Errors errors = null;
 	private RequestLogic requestLogic;
-
+	
 	/** 
 	 * Returns an instance of the command the controller handles.
 	 * 
@@ -71,9 +72,6 @@ public class PostBookmarkController extends SingleResourceListController impleme
 
 		command.setPageTitle("post a new bookmark");
 		final RequestWrapperContext context = command.getContext();
-
-		
-		Post<Bookmark> post = command.getPostBookmark();
 		
 		if (!context.isUserLoggedIn()) {
 			log.debug("--> PostBookmarkController: workOn() called -> User not logged in -> Redirect to /login");
@@ -86,17 +84,20 @@ public class PostBookmarkController extends SingleResourceListController impleme
 
 		for(Group group: loginUser.getGroups()){
 				if(present(group.getName())){
+					
+					//cheaet
 					recommendedTags.add(group.getName());
 					command.getGroupDetails().add(logic.getGroupDetails(group.getName()));
 				}
 		}
+				
 		command.setRecommendedTags(recommendedTags);
 		this.setTags(command, Resource.class, GroupingEntity.USER, loginUser.getName(), null, null, null, null, 0, 100, null);
 
 		//be aware of double postings
 		command.getPostBookmark().getResource().recalculateHashes();
 		String interHash = command.getPostBookmark().getResource().getInterHash();
-		
+				
 		if (logic.getPostDetails(interHash, loginUser.getName()) != null)  {
 			errors.rejectValue("postBookmark.resource.url", "error.field.valid.url.alreadybookmarked");
 		}
@@ -108,12 +109,13 @@ public class PostBookmarkController extends SingleResourceListController impleme
 			return Views.POST_BOOKMARK;
 		}
 		
+		Post<Bookmark> post = command.getPostBookmark();
+		
 		//groups
-		final Group group = new Group();
-		group.setDescription(null);
-		group.setName("public");
-		post.getGroups().add(group);
-//		post.setGroupid(groupman.getGroup(context.getLoginUser(), request.getParameter("group")));
+		for(String groupname: command.getGroups()){
+			Group group = new Group(groupname);
+			post.getGroups().add(group);
+		}
 		
 		//tags
 		Set<Tag> t = parse(command.getTags());
@@ -201,5 +203,5 @@ public class PostBookmarkController extends SingleResourceListController impleme
 	public void setRequestLogic(RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
-
+	
 }

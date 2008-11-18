@@ -239,7 +239,10 @@
 								<value>postBookmark.resource.title</value>
 								<value>postBookmark.description</value>
 								<value>tags</value>
-								<value>jump</value>    
+								<value>url</value>    
+								<value>description</value>  
+								<value>extended</value>  
+								<value>copytag</value>  
 							</list>
 						</property>
 					</bean>

@@ -78,33 +78,40 @@
      				<div style="float left;width:97%;margin-left:10px">
 						<h2 style="text-align: center; margin-bottom: 0"><fmt:message key="post.resource.editbookmark"/></h2>
 						<fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
-							<legend><form:label path="postBookmark.resource.url" ><fmt:message key="post.resource.url"/>*</form:label></legend>
-							<form:input path="postBookmark.resource.url" tabindex="1" size="60" onblur="checkUrlForTitle();"  />
-							<div class="postBookmarkNotValidTip"><form:errors path="postBookmark.resource.url" /></div>
-						</fieldset>	
-						<fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
-							<legend><form:label path="postBookmark.resource.title" ><fmt:message key="post.resource.title"/>*</form:label></legend>
-							<form:input path="postBookmark.resource.title" tabindex="2" size="60" />
-							<div class="postBookmarkNotValidTip"><form:errors path="postBookmark.resource.title" /></div>
-							<div id="suggestion.title"></div>
-						</fieldset>	
-						<fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
-							<legend><form:label path="postBookmark.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label></legend>
-							<form:textarea path="postBookmark.description" tabindex="3" cols="60" rows="3" onkeyup="sz(this);" />
-							<div id="suggestion.description"></div>
-						</fieldset>	
-						<post:tagfield command="${command}"/>	
-						<post:groupBox command="${command}"/>	
-						<post:relevantForBox command="${command}"/>	
-						<fieldset style="border: 1px solid #069;background-color: #eee; text-align: center">
-							<legend><fmt:message key="save"/></legend>
-							<c:set var="go"><fmt:message key="post.resource.go"/></c:set>
-							<!-- function addSystemTags located in relevantFoxBox.tagx -->
-							<input type="reset"  tabindex="5" value="Reset" />
-							<input type="submit" tabindex="6" value="${go}" onClick="addSystemTags();"/>
-						</fieldset>	
+							<fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
+								<legend><fmt:message key="general"/></legend>
+								<fieldset style="border:0px; position:relative;">
+									<legend><form:label path="postBookmark.resource.url" ><fmt:message key="post.resource.url"/>*</form:label></legend>
+									<form:input path="postBookmark.resource.url" tabindex="1" size="60" onblur="checkUrlForTitle();"  />
+									<div class="postBookmarkNotValidTip"><form:errors path="postBookmark.resource.url" /></div>
+								</fieldset>	
+								<fieldset style="border:0px; position:relative;">
+									<legend><form:label path="postBookmark.resource.title" ><fmt:message key="post.resource.title"/>*</form:label></legend>
+									<form:input path="postBookmark.resource.title" tabindex="2" size="60"/>
+									<div class="postBookmarkNotValidTip"><form:errors path="postBookmark.resource.title" /></div>
+									<div id="suggestion.title"></div>
+								</fieldset>	
+								<fieldset style="border:0px; position:relative;">
+									<legend><form:label path="postBookmark.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label></legend>
+									<form:textarea path="postBookmark.description" tabindex="3" cols="69" rows="3" onkeyup="sz(this);" />
+									<div id="suggestion.description"></div>
+								</fieldset>	
+							</fieldset>
+							<post:tagfield command="${command}"/>	
+							<post:groupBox command="${command}"/>	
+							<c:if test="${not empty command.groupDetails}">
+								<post:relevantForBox command="${command}"/>
+							</c:if>	
+							<fieldset style="border:0px; text-align: center">
+								<c:set var="save"><fmt:message key="save"/></c:set>
+								<!-- function addSystemTags located in relevantFoxBox.tagx -->
+								<input type="reset"  tabindex="5" value="Reset" />
+								<input type="submit" tabindex="6" value="${save}" onClick="addSystemTags();"/>
+							</fieldset>	
+						</fieldset>
 					</div>
 				</form:form>
+							
 				<script type="text/javascript">
 				<![CDATA[
 					$(".postBookmarkNotValidTip").mouseover(function() {
@@ -125,11 +132,29 @@
 			<!-- display tags -->
 			<li>
 				<span class="sidebar_h"><fmt:message key="tags" /></span>
-				<tags:cloud requPath="tag/" cmd="${command.tagcloud}" disableTagboxMinfreq="${true}"/>
+				<tags:cloud requPath="tag/" cmd="${command.tagcloud}" disableTagboxMinfreq="${true}" copytag="${true}" targetId="inpf"/>
 			</li>
+			
+			 <c:if test="${not empty command.copyTags}">
+				<div id="copytags"> 
+				    <h2>Tags of copied item: </h2>
+				    <ul id="copytag" >
+				    <c:forEach var="tag" items="${command.copyTags}">
+				        <li onClick="copytag('inpf', '${tag.name}')"><c:out value="${tag.name}"/></li><br/>
+				    </c:forEach>
+				    </ul>    
+				</div>
+			</c:if>
 	
 		</jsp:attribute>
 
 	</layout:paneLayout>
+
+	<script type="text/javascript">
+		<![CDATA[		
+			//Save tags from tagcloud in lists
+			setOps();
+		]]>	 		
+	</script>
 
 </jsp:root>
