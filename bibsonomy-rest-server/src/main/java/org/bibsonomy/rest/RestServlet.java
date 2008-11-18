@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.DBLogicApiInterfaceFactory;
 import org.bibsonomy.database.util.IbatisDBSessionFactory;
@@ -29,6 +30,7 @@ import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
+import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.util.fileutil.MultiPartRequestParser;
 
@@ -227,7 +229,14 @@ public final class RestServlet extends HttpServlet {
 			sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
 		} catch (final ValidationException e) {
 			log.error(e.getMessage());
-			sendError(request, response, HttpServletResponse.SC_FORBIDDEN, e.getMessage());			
+			sendError(request, response, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+		} catch (final ResourceMovedException e) {
+			log.error(e.getMessage());
+			/*
+			 * sending new location
+			 */
+			response.setHeader("Location", UrlRenderer.getInstance().createHrefForResource(e.getUserName(), e.getNewIntraHash()));
+			sendError(request, response, HttpServletResponse.SC_MOVED_PERMANENTLY, e.getMessage());
 		} catch (final Exception e) {
 			log.error(e,e);
 			// well, lets fetch each and every error...

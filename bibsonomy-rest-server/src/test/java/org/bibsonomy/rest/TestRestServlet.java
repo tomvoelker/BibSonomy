@@ -108,6 +108,6 @@ public class TestRestServlet {
 		while ((s = br.readLine()) != null) {
 			sb.append(s + "\n");
 		}
-		assertTrue("output not as expected", sw.equals(sb.toString()));
+		assertEquals(sb.toString(), sw);
 	}
 }
