@@ -5,7 +5,7 @@
 	<name>BibSonomy-Database</name>
 	<groupId>org.bibsonomy</groupId>
 	<artifactId>bibsonomy-database</artifactId>
-	<version>2.0.1-SNAPSHOT</version>
+	<version>2.0.1</version>
 	<packaging>jar</packaging>
 	<description>Database for Bibsonomy.</description>
 	<parent>
