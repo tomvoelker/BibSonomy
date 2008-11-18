@@ -3,7 +3,6 @@ package org.bibsonomy.database.managers;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,6 +12,7 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.InvalidModelException;
+import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChain;
@@ -1071,16 +1071,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		param.setHash(intraHash);
 		param.setRequestedSimHash(hashType);
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
-		
-		/*
-		 * DEBUG
-		 */
-		//getLoggedBibTexByHashForUser(loginUserName, intraHash, requestedUserName, visibleGroupIDs, session, hashType);
-		
 		return this.bibtexList("getBibTexByHashForUser", param, session);
 	}
 	
-	private Post<BibTex> getLoggedBibTexByHashForUser(final String loginUserName, final String intraHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final DBSession session, final HashID hashType) {
+	private List<Post<BibTex>> getLoggedBibTexByHashForUser(final String loginUserName, final String intraHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final DBSession session, final HashID hashType) {
 		final BibTexParam param = new BibTexParam();
 		param.setUserName(loginUserName);
 		param.addGroups(visibleGroupIDs);
@@ -1089,10 +1083,9 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		param.setRequestedSimHash(hashType);
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
 		
-		final String[] queryForObject = this.queryForObject("getLoggedHashesByHashForUser", param, String[].class, session);
-		System.out.println("got hashes: " + Arrays.toString(queryForObject));
+		final List<Post<BibTex>> bibtexList = this.bibtexList("getLoggedHashesByHashForUser", param, session);
 		
-		return null;
+		return bibtexList;
 	}
 
 	/**
@@ -1172,7 +1165,21 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			}
 			return post;
 		}
-		log.debug("BibTex-post from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' not found");
+		/*
+		 * second try: look into logging table
+		 */
+		final List<Post<BibTex>> loggedList = this.getLoggedBibTexByHashForUser(authUser, resourceHash, userName, visibleGroupIDs, session, HashID.INTRA_HASH);
+		if (loggedList.size() >= 1) {
+			if (loggedList.size() > 1) {
+				// user has multiple posts with the same hash
+				log.warn("multiple logged BibTeX-posts from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' found ->returning first");
+			}
+			/*
+			 * Resource has been changed and thus could be found in logging table. We send back the new resource hash. 
+			 */
+			throw new ResourceMovedException(resourceHash, loggedList.get(0).getResource().getIntraHash(), userName);
+		}
+		log.debug("BibTeX-post from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' not found");
 		return null;
 	}
 

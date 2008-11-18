@@ -247,6 +247,29 @@
 		      AND b2.group = g.group
 		ORDER BY b2.date DESC, b2.content_id DESC
 	</select>
+	
+	<!-- 
+		Get the "next" post of a deleted post.
+		The next post is either in the bibtex table or already in the log_bibtex table (or deleted).
+	 -->	
+	<select id="getLoggedHashesByHashForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+	  SELECT 0 AS count, '' AS tag_name, b.*, g.* FROM 
+	    (
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, b.group
+		  FROM log_bibtex t1 
+		    JOIN log_bibtex b ON (t1.new_content_id = b.content_id AND t1.user_name = b.user_name) 
+		  WHERE t1.simhash$requestedSimHash$ = #hash#
+		    AND t1.user_name = #requestedUserName#
+	    UNION 
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, b.group
+		  FROM log_bibtex t1 
+		    JOIN bibtex b ON (t1.new_content_id = b.content_id AND t1.user_name = b.user_name) 
+		  WHERE t1.simhash$requestedSimHash$ = #hash#
+		    AND t1.user_name = #requestedUserName#
+		) AS b
+		LEFT OUTER JOIN groupids g ON (b.group = g.group) 
+	</select>
+
 
 	<select id="getBibTexSearch" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam" >
 		SELECT <include refid ="allBibtexAttributes"/>, t.tag_name, b.ctr AS count,
