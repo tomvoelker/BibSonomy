@@ -28,14 +28,8 @@ import static org.bibsonomy.model.util.ModelValidationUtils.checkBookmark;
 import static org.bibsonomy.model.util.ModelValidationUtils.checkGroup;
 import static org.bibsonomy.model.util.ModelValidationUtils.checkTag;
 import static org.bibsonomy.model.util.ModelValidationUtils.checkUser;
-import static org.bibsonomy.rest.RestProperties.Property.API_URL;
-import static org.bibsonomy.rest.RestProperties.Property.URL_GROUPS;
-import static org.bibsonomy.rest.RestProperties.Property.URL_POSTS;
-import static org.bibsonomy.rest.RestProperties.Property.URL_USERS;
-import static org.bibsonomy.rest.RestProperties.Property.URL_TAGS;
 import static org.bibsonomy.rest.RestProperties.Property.VALIDATE_XML_INPUT;
 import static org.bibsonomy.rest.RestProperties.Property.VALIDATE_XML_OUTPUT;
-
 
 import java.io.Reader;
 import java.io.Writer;
@@ -67,11 +61,25 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.ViewModel;
-import org.bibsonomy.rest.RestProperties.Property;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.Renderer;
-import org.bibsonomy.rest.renderer.xml.*;
-import org.bibsonomy.rest.validation.ModelValidator;
+import org.bibsonomy.rest.renderer.UrlRenderer;
+import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
+import org.bibsonomy.rest.renderer.xml.BibtexType;
+import org.bibsonomy.rest.renderer.xml.BookmarkType;
+import org.bibsonomy.rest.renderer.xml.DocumentType;
+import org.bibsonomy.rest.renderer.xml.DocumentsType;
+import org.bibsonomy.rest.renderer.xml.GroupType;
+import org.bibsonomy.rest.renderer.xml.GroupsType;
+import org.bibsonomy.rest.renderer.xml.ModelFactory;
+import org.bibsonomy.rest.renderer.xml.ObjectFactory;
+import org.bibsonomy.rest.renderer.xml.PostType;
+import org.bibsonomy.rest.renderer.xml.PostsType;
+import org.bibsonomy.rest.renderer.xml.StatType;
+import org.bibsonomy.rest.renderer.xml.TagType;
+import org.bibsonomy.rest.renderer.xml.TagsType;
+import org.bibsonomy.rest.renderer.xml.UserType;
+import org.bibsonomy.rest.renderer.xml.UsersType;
 import org.xml.sax.SAXParseException;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
@@ -86,23 +94,14 @@ public class XMLRenderer implements Renderer {
 	private static final Logger log = Logger.getLogger(XMLRenderer.class);
 	private static final String JAXB_PACKAGE_DECLARATION = "org.bibsonomy.rest.renderer.xml";
 	private static XMLRenderer renderer;
-	private final String userUrlPrefix;
-	private final String groupUrlPrefix;
-	private final String tagUrlPrefix;
-	private final String postsUrlDelimiter;
-	private final String documentsUrlDelimiter;
+	private final UrlRenderer urlRenderer;
 	private final Boolean validateXMLInput;
 	private final Boolean validateXMLOutput;
 	private static Schema schema;
 
 	private XMLRenderer() {
 		final RestProperties properties = RestProperties.getInstance();
-		final String apiUrl = properties.get(API_URL);
-		this.userUrlPrefix = apiUrl + properties.get(URL_USERS) + "/";
-		this.groupUrlPrefix = apiUrl + properties.get(URL_GROUPS) + "/";
-		this.tagUrlPrefix = apiUrl + properties.get(URL_TAGS) + "/";
-		this.postsUrlDelimiter = "/" + properties.get(URL_POSTS) + "/";
-		this.documentsUrlDelimiter = "/" + properties.get(Property.URL_DOCUMENTS) + "/";
+		this.urlRenderer = UrlRenderer.getInstance();
 		this.validateXMLInput = "true".equals( properties.get(VALIDATE_XML_INPUT) );
 		this.validateXMLOutput = "true".equals( properties.get(VALIDATE_XML_OUTPUT) );
 		ModelFactory.getInstance().setModelValidator(properties.geModelValidator());
@@ -161,7 +160,7 @@ public class XMLRenderer implements Renderer {
 		checkUser(post.getUser());
 		final UserType xmlUser = new UserType();
 		xmlUser.setName(post.getUser().getName());
-		xmlUser.setHref(createHrefForUser(post.getUser().getName()));
+		xmlUser.setHref(urlRenderer.createHrefForUser(post.getUser().getName()));
 		xmlPost.setUser(xmlUser);
 		xmlPost.setPostingdate(createXmlCalendar(post.getDate()));
 
@@ -171,7 +170,7 @@ public class XMLRenderer implements Renderer {
 				checkTag(t);
 				final TagType xmlTag = new TagType();
 				xmlTag.setName(t.getName());
-				xmlTag.setHref(this.createHrefForTag(t.getName()));
+				xmlTag.setHref(urlRenderer.createHrefForTag(t.getName()));
 				xmlPost.getTag().add(xmlTag);
 			}
 		}
@@ -181,16 +180,15 @@ public class XMLRenderer implements Renderer {
 			final BibTex bibtex = (BibTex) post.getResource();
 			// if the resource is a bibtex object and has documents ...
 			if(bibtex.getDocuments() != null){
-				String url = this.createHrefForRessource(post.getUser().getName(), bibtex.getIntraHash());
 				
 				checkBibtex(bibtex);
 				// put them into the xml output
 				final DocumentsType xmlDocuments = new DocumentsType();
-				for (Document d : bibtex.getDocuments()){
+				for (final Document document : bibtex.getDocuments()){
 					final DocumentType xmlDocument = new DocumentType();
-					xmlDocument.setFilename(d.getFileName());
-					xmlDocument.setMd5Hash(d.getMd5hash());
-					xmlDocument.setHref(url + this.documentsUrlDelimiter + d.getFileName());
+					xmlDocument.setFilename(document.getFileName());
+					xmlDocument.setMd5Hash(document.getMd5hash());
+					xmlDocument.setHref(urlRenderer.createHrefForResourceDocument(post.getUser().getName(), bibtex.getIntraHash(), document.getFileName()));
 					xmlDocuments.getDocument().add(xmlDocument);
 				}
 				xmlPost.getDocuments().add(xmlDocuments);
@@ -202,7 +200,7 @@ public class XMLRenderer implements Renderer {
 			checkGroup(group);
 			final GroupType xmlGroup = new GroupType();
 			xmlGroup.setName(group.getName());
-			xmlGroup.setHref(createHrefForGroup(group.getName()));
+			xmlGroup.setHref(urlRenderer.createHrefForGroup(group.getName()));
 			xmlPost.getGroup().add(xmlGroup);
 		}
 
@@ -212,7 +210,7 @@ public class XMLRenderer implements Renderer {
 			final Bookmark bookmark = (Bookmark) post.getResource();
 			checkBookmark(bookmark);
 			final BookmarkType xmlBookmark = new BookmarkType();
-			xmlBookmark.setHref(createHrefForRessource(post.getUser().getName(), bookmark.getIntraHash()));
+			xmlBookmark.setHref(urlRenderer.createHrefForResource(post.getUser().getName(), bookmark.getIntraHash()));
 			xmlBookmark.setInterhash(bookmark.getInterHash());
 			xmlBookmark.setIntrahash(bookmark.getIntraHash());
 			xmlBookmark.setTitle(bookmark.getTitle());
@@ -224,7 +222,7 @@ public class XMLRenderer implements Renderer {
 			checkBibtex(bibtex);
 			final BibtexType xmlBibtex = new BibtexType();
 
-			xmlBibtex.setHref(createHrefForRessource(post.getUser().getName(), bibtex.getIntraHash()));
+			xmlBibtex.setHref(urlRenderer.createHrefForResource(post.getUser().getName(), bibtex.getIntraHash()));
 
 			xmlBibtex.setAddress(bibtex.getAddress());
 			xmlBibtex.setAnnote(bibtex.getAnnote());
@@ -312,7 +310,7 @@ public class XMLRenderer implements Renderer {
 		}
 		xmlUser.setName(user.getName());
 		xmlUser.setRealname(user.getRealname());
-		xmlUser.setHref(createHrefForUser(user.getName()));
+		xmlUser.setHref(urlRenderer.createHrefForUser(user.getName()));
 		xmlUser.setPassword(user.getPassword());
 		if (user.getSpammer() != null)
 			xmlUser.setSpammer(user.getSpammer());
@@ -354,7 +352,7 @@ public class XMLRenderer implements Renderer {
 		final TagType xmlTag = new TagType();
 		checkTag(tag);
 		xmlTag.setName(tag.getName());
-		xmlTag.setHref(createHrefForTag(tag.getName()));
+		xmlTag.setHref(urlRenderer.createHrefForTag(tag.getName()));
 		// if (tag.getGlobalcount() > 0) {
 			xmlTag.setGlobalcount(BigInteger.valueOf(tag.getGlobalcount()));
 		// }
@@ -409,7 +407,7 @@ public class XMLRenderer implements Renderer {
 		checkGroup(group);
 		final GroupType xmlGroup = new GroupType();
 		xmlGroup.setName(group.getName());
-		xmlGroup.setHref(createHrefForGroup(group.getName()));
+		xmlGroup.setHref(urlRenderer.createHrefForGroup(group.getName()));
 		xmlGroup.setDescription(group.getDescription());
 		if (group.getUsers() != null) {
 			for (final User user : group.getUsers()) {
@@ -667,21 +665,6 @@ public class XMLRenderer implements Renderer {
 		}
 	}
 
-	private String createHrefForUser(final String name) {
-		return this.userUrlPrefix + name;
-	}
-	
-	private String createHrefForTag(final String tag) {
-		return this.tagUrlPrefix + tag;
-	}	
-
-	private String createHrefForGroup(final String name) {
-		return this.groupUrlPrefix + name;
-	}
-
-	private String createHrefForRessource(final String userName, final String intraHash) {
-		return this.userUrlPrefix + userName + this.postsUrlDelimiter + intraHash;
-	}
 	
 	public Tag parseTag(Reader reader) throws BadRequestOrResponseException {
 		checkReader(reader);
