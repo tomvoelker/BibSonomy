@@ -8,7 +8,7 @@
 	<artifactId>bibsonomy-scrapingservice</artifactId>
 	<packaging>war</packaging>
 	<name>BibSonomy-Scrapingservice</name>
-	<version>2.0.1-SNAPSHOT</version>
+	<version>2.0.1</version>
 	<description>
 		Web application to test the BibSonomy web page scrapers (see
 		bibsonomy-scraper)
@@ -23,7 +23,6 @@
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-scraper</artifactId>
-			<version>2.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
