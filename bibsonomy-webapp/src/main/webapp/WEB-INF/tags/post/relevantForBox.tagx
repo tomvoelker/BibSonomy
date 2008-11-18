@@ -7,20 +7,20 @@
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:common="urn:jsptagdir:/WEB-INF/tags/post/common">
 
-	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
+	<jsp:directive.attribute name="groups" type="java.util.List" required="true"/>
 	
 	<fieldset style="border: 1px solid #069; background-color: #eee; position:relative;">
 		<legend>
 			<fmt:message key="post.resource.relevantfor"/>, <fmt:message key="actions.admin.group.tagsets"/>
 		</legend>	
-		<div id="postBookmakRelevantTags" style="display: block">		
+		<div id="postBookmarkRelevantTags" style="display: block">		
 			<div class="info_bold" style="text-align:center">
 				<p><fmt:message key="post.resource.relevant"/></p>
 			</div>
 			<div style="text-align:center">
-				<common:groupingselect command="${command}" size="5" path="relevantGroups" error="${false}" onchange="checkVisibility()" optionid="relgroup" friends="${false}"/>
+				<common:groupingselect groups="${loginUser.groups}" size="5" path="relevantGroups" error="${false}" onchange="checkVisibility()" optionid="relgroup" friends="${false}"/>
 				<table class="result_table" >
-					<c:forEach var="group" items="${command.groupDetails}" varStatus="status">
+					<c:forEach var="group" items="${groups}" varStatus="status">
 						<tr id="sets_${status.index}" style="display:none">
 							<td style="text-align:center;vertical-align:middle"><fmt:message key="for"/>${mtl:ch('nbsp')}${group.name}:</td>
 							<c:choose>

@@ -6,17 +6,18 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:form="http://www.springframework.org/tags/form">
 
-	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+    <jsp:directive.attribute name="recommendedTags" type="java.util.Set" required="true"/>
 	
 	<fieldset style="border: 1px solid #069; background-color: #eee; position:relative;">
-		<legend><form:label path="postBookmark.tags" ><fmt:message key="post.resource.tags"/>*</form:label></legend>
+		<legend><form:label path="post.tags" ><fmt:message key="post.resource.tags"/>*</form:label></legend>
 		<fmt:message key="post.resource.spaceseperated"/>${mtl:ch('nbsp')}
 		<input class="reqinput" tabindex="4" type="text" name="tags" id="inpf" onClick="setActiveInputField(this.id); enableHandler();" onFocus="setActiveInputField(this.id); enableHandler()" onBlur="disableHandler()" value="" size="60" autocomplete="off" />
 		<div class="postBookmarkNotValidTip"><form:errors path="tags" /></div>
 		
 		<p>
 			<div style="vertical-align:middle">
-				<fmt:message key="post.resource.recommendation"/>:${mtl:ch('nbsp')}<c:forEach var="tag" items="${command.recommendedTags}"><a href="javascript:copytag('inpf','${tag}')">${tag}</a>${mtl:ch('nbsp')}</c:forEach>
+				<fmt:message key="post.resource.recommendation"/>:${mtl:ch('nbsp')}<c:forEach var="tag" items="${recommendedTags}"><a href="javascript:copytag('inpf','${fn:escapeXml(tag)}')"><c:out value="${tag}"/></a>${mtl:ch('nbsp')}</c:forEach>
 				<div id="suggestion.tags"></div>
 			</div>
 		</p>

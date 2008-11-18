@@ -34,7 +34,7 @@
 	</c:if>	
 		
 	<c:choose>
-		<c:when test="${command.userLoggedIn}">
+		<c:when test="${command.context.userLoggedIn}">
 			<c:set var="loginUserName" value="${command.context.loginUser.name}"/>
 		</c:when>
 		<c:otherwise>
