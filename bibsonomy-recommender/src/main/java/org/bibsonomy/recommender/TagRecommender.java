@@ -8,6 +8,10 @@ import org.bibsonomy.model.Resource;
 /**
  * This interface provides methods to get tag recommendations given posts.
  * 
+ * We don't provide a method to recommend tags given a prefix of a tag, i.e., 
+ * to recommend matching tags during the user types them. This must be done
+ * on the client using JavaScript and the user's tag cloud. 
+ * 
  * @author rja
  * @version $Id$
  */

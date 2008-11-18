@@ -8,7 +8,7 @@
 	<artifactId>bibsonomy-recommender</artifactId>
 	<packaging>jar</packaging>
 	<name>BibSonomy-Recommender</name>
-	<version>2.0.1-SNAPSHOT</version>
+	<version>2.0.1</version>
 	<description>Various methods to provide recommendations for BibSonomy</description>
 	<parent>
 		<artifactId>bibsonomy</artifactId>
