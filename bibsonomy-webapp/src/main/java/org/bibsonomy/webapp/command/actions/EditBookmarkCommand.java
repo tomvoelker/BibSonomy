@@ -1,20 +1,14 @@
 package org.bibsonomy.webapp.command.actions;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.SortedSet;
 
-import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.recommender.RecommendedTag;
 import org.bibsonomy.webapp.command.PostCommand;
-
-import com.sun.tools.javac.code.Attribute.Array;
 
 /**
  * @author fba
@@ -22,42 +16,28 @@ import com.sun.tools.javac.code.Attribute.Array;
  */
 public class EditBookmarkCommand extends PostCommand {
 	
-	//if the post is a copy
-	private List<Tag> copyTags = new ArrayList<Tag>();
+	/**
+	 * The tags of the copied post.
+	 */
+	private List<Tag> copyTags;
 	
-	private boolean userLoggedIn;
-	private Post<Bookmark> postBookmark;
+	private Post<Bookmark> post;
 	private String tags ;
 	private boolean jump = false;
 	
 	private List<String> groups;
 	private List<Tag> relevantGroups;
-	private List<String> recommendedTags;
-	private List<Group> groupDetails;
-	private GroupID groupIds;
+	private SortedSet<RecommendedTag> recommendedTags;
+
 	private Map<String,Map<String,List<String>>> relevantTagSets;
-	//private TagCloudCommand tagcloud = new TagCloudCommand();
 	
-	public EditBookmarkCommand() {
-		postBookmark = new Post<Bookmark>();
-		postBookmark.setResource(new Bookmark());
-		postBookmark.getResource().setUrl("http://");
-		groups = new ArrayList<String>();
-		relevantGroups = new ArrayList<Tag>();
-		relevantTagSets = new HashMap<String, Map<String,List<String>>>();
-		groupDetails = new ArrayList<Group>();
+
+	public Post<Bookmark> getPost() {
+		return this.post;
 	}
 
-	public Post<Bookmark> getPostBookmark() {
-		return this.postBookmark;
-	}
-
-	public void setUserLoggedIn(boolean userLoggedIn) {
-		this.userLoggedIn = userLoggedIn;
-	}
-
-	public boolean isUserLoggedIn() {
-		return userLoggedIn;
+	public void setPost(Post<Bookmark> post) {
+		this.post = post;
 	}
 
 	public void setTags(String tags) {
@@ -84,11 +64,11 @@ public class EditBookmarkCommand extends PostCommand {
 		this.relevantGroups = relevantGroups;
 	}
 	
-	public List<String> getRecommendedTags() {
+	public SortedSet<RecommendedTag> getRecommendedTags() {
 		return this.recommendedTags;
 	}
 
-	public void setRecommendedTags(List<String> recommendedTags) {
+	public void setRecommendedTags(SortedSet<RecommendedTag> recommendedTags) {
 		this.recommendedTags = recommendedTags;
 	}
 
@@ -107,39 +87,54 @@ public class EditBookmarkCommand extends PostCommand {
 	public boolean isJump() {
 		return jump;
 	}
-	
-	public List<Group> getGroupDetails() {
-		return this.groupDetails;
-	}
-
-	public void setGroupDetails(List<Group> groupDetails) {
-		this.groupDetails = groupDetails;
-	}
 		
-	/** setter functions for the COPY action **/
-	public void setUrl(String url){
-		this.postBookmark.getResource().setUrl(url);
+	/**
+	 * Sets the URL of the post. 
+	 * Needed for the (old) postBookmark button and "copy" links. 
+	 *  
+	 * @param url 
+	 */
+	public void setUrl(final String url){
+		this.post.getResource().setUrl(url);
 	}
 	
-	public void setDescription(String title){
-		this.postBookmark.getResource().setTitle(title);
+	/**
+	 * Sets the title of a post.
+	 * Needed for the (old) postBookmark button and "copy" links.
+	 * 
+	 * @param title
+	 */
+	public void setDescription(final String title){
+		this.post.getResource().setTitle(title);
 	}
 	
-	public void setExtended(String ext){
-		this.postBookmark.setDescription(ext);
+	/**
+	 * Sets the description of a post.
+	 * Needed for the (old) postBookmark button and "copy" links.
+	 * 
+	 * @param description
+	 */
+	public void setExtended(final String description){
+		this.post.setDescription(description);
 	}
 	
-	public void setCopytag(String tags){
-		for(String tagname: tags.split(" ")){
+	/** Sets the tags from the copied post.
+	 * Needed for the (old) "copy" links.
+	 * 
+	 * @param tags
+	 */
+	public void setCopytags(final String tags){
+		final String[] splittedTags = tags.split("\\s");
+		for (final String tagname: splittedTags){
 			this.copyTags.add(new Tag(tagname));
 		}
 	}
 	
-	public List<Tag> getCopyTags(){
+	public List<Tag> getCopytags(){
 		return this.copyTags;
 	}
 	
-	public void setCopyTags(List<Tag> tags){
+	public void setCopytags(final List<Tag> tags){
 		this.copyTags = tags;
 	}
 }

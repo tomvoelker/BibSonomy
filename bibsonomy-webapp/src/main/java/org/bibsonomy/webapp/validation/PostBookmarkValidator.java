@@ -5,6 +5,7 @@ import org.bibsonomy.webapp.util.Validator;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.util.UrlUtils;
 /**
  * @author fba
@@ -22,37 +23,32 @@ public class PostBookmarkValidator implements Validator<EditBookmarkCommand> {
 	 * 
 	 * @see org.springframework.validation.Validator#validate(java.lang.Object, org.springframework.validation.Errors)
 	 */
-	public void validate(Object postBookmarkObj, Errors errors) {
+	public void validate(Object obj, Errors errors) {
 		/*
 		 * To ensure that the received command is not null, we throw an
 		 * exception, if this assertion fails.
 		 */
-		Assert.notNull(postBookmarkObj);
+		Assert.notNull(obj);
 		
-		final EditBookmarkCommand bookmark = (EditBookmarkCommand) postBookmarkObj;
+		final EditBookmarkCommand command = (EditBookmarkCommand) obj;
 
 		/*
-		 * Let's check, that the given user is not null.
+		 * Let's check, that the given command is not null.
 		 */
-		Assert.notNull(bookmark);
+		Assert.notNull(command);
 
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "postBookmark.resource.url", "error.field.required");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "postBookmark.resource.title", "error.field.valid.title");
-//		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "postBookmark.description", "error.field.required");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "post.resource.url", "error.field.required");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "post.resource.title", "error.field.valid.title");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "tags", "error.field.valid.tags");
 		
 		
+		// clean url
+		final Bookmark resource = command.getPost().getResource();
+		resource.setUrl(UrlUtils.cleanUrl(resource.getUrl()));
 		
-		
-		//clean url
-		System.out.println("PostBookmarkValidator validate(): " + bookmark.getPostBookmark().getResource().getUrl());
-		bookmark.getPostBookmark().getResource().setUrl(UrlUtils.cleanUrl(bookmark.getPostBookmark().getResource().getUrl()));
-		
-		if (bookmark.getPostBookmark().getResource().getUrl().equals("http://") 
-				|| (org.bibsonomy.util.ValidationUtils.present(bookmark.getPostBookmark().getResource().getUrl()) 
-				    && bookmark.getPostBookmark().getResource().getUrl().startsWith(UrlUtils.BROKEN_URL))) {
-			System.out.println("PostBookmarkValidator validate(): BROKEN_URL");
-			errors.rejectValue("postBookmark.resource.url", "error.field.valid.url");
+		final String url = resource.getUrl();
+		if (url == null || url.equals("http://") || url.startsWith(UrlUtils.BROKEN_URL)) {
+			errors.rejectValue("post.resource.url", "error.field.valid.url");
 		}
 		
 		/*
@@ -62,8 +58,6 @@ public class PostBookmarkValidator implements Validator<EditBookmarkCommand> {
 		 * DBLogics addPost/updatePost, etc. methods!
 		 */
 	
-		System.out.println("--> errors: " + errors.getErrorCount());
-		System.out.println("--> errors: " + errors);
 	}
 
 }
