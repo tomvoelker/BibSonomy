@@ -5,7 +5,7 @@
 	<groupId>org.bibsonomy</groupId>
 	<artifactId>bibsonomy-logging</artifactId>
 	<packaging>jar</packaging>
-	<version>2.0.1-SNAPSHOT</version>
+	<version>2.0.1</version>
 	<name>Bibsonomy-Logging</name>
 	<url>http://maven.apache.org</url>
 
