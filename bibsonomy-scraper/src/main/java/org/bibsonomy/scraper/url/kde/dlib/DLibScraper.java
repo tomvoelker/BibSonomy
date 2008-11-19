@@ -2,14 +2,12 @@ package org.bibsonomy.scraper.url.kde.dlib;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.UrlScraper;
@@ -17,24 +15,29 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 
 /**
  * Scraper for www.dlib.org
  * @author tst
  */
-public class DLibScraper implements Scraper, UrlScraper {
+public class DLibScraper extends UrlScraper {
 	
 	/**
 	 * Scraper info
 	 */
-	private static final String INFO = "Scraper for metadata from www.dlib.org";
+	private static final String INFO = "Scraper for metadata from " + href("http://www.dlib.org/", "dlib.org");
 
 	/**
 	 * D-Lib host
 	 */
 	private static final String DLIB_HOST = "dlib.org";
+
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + DLIB_HOST + "$"), UrlScraper.EMPTY_PATTERN));
+
+	/*
+	 * FIXME: refactor all patterns into static Patterns
+	 */
 
 	/**
 	 * URL ending from a normal publication page (HTML)  
@@ -110,12 +113,8 @@ public class DLibScraper implements Scraper, UrlScraper {
 		return INFO;
 	}
 
-	public Collection<Scraper> getScraper() {
-		return Collections.singletonList((Scraper) this);
-	}
-
-	public boolean scrape(ScrapingContext sc) throws ScrapingException {
-		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(DLIB_HOST)){
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+		if(sc.getUrl().getHost().endsWith(DLIB_HOST)){
 			try {
 				sc.setScraper(this);
 				
@@ -271,13 +270,7 @@ public class DLibScraper implements Scraper, UrlScraper {
 	}
 	
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
-		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
-		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + DLIB_HOST), UrlScraper.EMPTY_PATTERN));
-		return list;
-	}
-
-	public boolean supportsUrl(URL url) {
-		return UrlMatchingHelper.isUrlMatch(url, this);
+		return patterns;
 	}
 	
 }
