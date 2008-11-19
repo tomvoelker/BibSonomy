@@ -1,10 +1,10 @@
 package org.bibsonomy.scraper;
 
 import org.bibsonomy.scraper.InformationExtraction.IEScraper;
+import org.bibsonomy.scraper.generic.HighwireScraper;
 import org.bibsonomy.scraper.generic.UnAPIScraper;
 import org.bibsonomy.scraper.snippet.SnippetScraper;
 import org.bibsonomy.scraper.url.URLCompositeScraper;
-import org.bibsonomy.scraper.url.kde.highwire.HighwireScraper;
 
 public class KDEScraperFactory {
 
