@@ -3,7 +3,6 @@ package org.bibsonomy.scraper.url.kde.ieee;
 import java.io.ByteArrayInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,13 +10,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.url.UrlMatchingHelper;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -25,10 +22,14 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.tidy.Tidy;
 
-public class IEEEXploreStandardsScraper implements Scraper, UrlScraper {
+/** Scraper for IEEE Explore
+ * @author rja
+ *
+ */
+public class IEEEXploreStandardsScraper extends UrlScraper {
 	private static final Logger log = Logger.getLogger(IEEEXploreStandardsScraper.class);
 	private static final String info = "IEEEXplore Standards Scraper: This scraper creates a BibTeX entry for the standards at " +
-			                           "<a href=\"http://ieeexplore.ieee.org/\">IEEEXplore</a>. Author: KDE";
+			                           href("http://ieeexplore.ieee.org/", "IEEEXplore");
 
 	private static final String IEEE_HOST        	  = "ieeexplore.ieee.org";
 	private static final String IEEE_HOST_NAME        	  = "http://ieeexplore.ieee.org/";
@@ -40,13 +41,15 @@ public class IEEEXploreStandardsScraper implements Scraper, UrlScraper {
 	private static final String CONST_PAGE                = "Page(s): ";
 	private static final String CONST_DATE                = "Publication Date: ";
 
-	private static final String PATTERN_ARNUMBER = "arnumber=([^&]*)";
+	private static final Pattern pattern = Pattern.compile("arnumber=([^&]*)");
 	
-	public boolean scrape(ScrapingContext sc) throws ScrapingException {
-		if (sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl()) && sc.getUrl().toString().indexOf(IEEE_STANDARDS_IDENTIFIER) != -1 ) {
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile("/" + IEEE_STANDARDS_PATH + ".*")));
+
+	
+	protected boolean scrapeInternal (ScrapingContext sc) throws ScrapingException {
+		if (sc.getUrl().toString().indexOf(IEEE_STANDARDS_IDENTIFIER) != -1 ) {
 			sc.setScraper(this);
 			
-			Pattern pattern = Pattern.compile(PATTERN_ARNUMBER);
 			Matcher matcher = pattern.matcher(sc.getUrl().toString());
 			if(matcher.find()){
 				String downUrl = "http://ieeexplore.ieee.org/xpls/citationAct?dlSelect=cite_abs&fileFormate=BibTex&arnumber=<arnumber>" + matcher.group(1) + "</arnumber>";
@@ -81,10 +84,6 @@ public class IEEEXploreStandardsScraper implements Scraper, UrlScraper {
 
 	public String getInfo() {
 		return info;
-	}
-
-	public Collection<Scraper> getScraper () {
-		return Collections.singletonList((Scraper)this);
 	}
 
 	public String ieeeStandardsScrape (ScrapingContext sc) throws ScrapingException {
@@ -176,13 +175,7 @@ public class IEEEXploreStandardsScraper implements Scraper, UrlScraper {
 	}
 	
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
-		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
-		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile("/" + IEEE_STANDARDS_PATH + ".*")));
-		return list;
-	}
-
-	public boolean supportsUrl(URL url) {
-		return UrlMatchingHelper.isUrlMatch(url, this);
+		return patterns;
 	}
 	
 }
