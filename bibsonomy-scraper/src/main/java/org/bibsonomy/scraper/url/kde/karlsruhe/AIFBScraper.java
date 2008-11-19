@@ -2,22 +2,28 @@ package org.bibsonomy.scraper.url.kde.karlsruhe;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Pattern;
 
-import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 
-public class AIFBScraper implements Scraper, UrlScraper {
+/** Scraper for AIFB.
+ * 
+ * @author rja
+ *
+ */
+public class AIFBScraper extends UrlScraper {
 	
 	private static final String info = "AIFB Scraper: This scraper parses institute, research group and people-specific pages from the " +
-									   "<a href=\"http://www.aifb.uni-karlsruhe.de/\">Institute AIFB Universität Karlsruhe</a>. Author: KDE";
+									   href("http://www.aifb.uni-karlsruhe.de/", "Institut AIFB Universität Karlsruhe");
 
 	private static final String AIFB_HOST = "aifb.uni-karlsruhe.de";
 	private static final String AIFB_HOST_NAME = "http://www.aifb.uni-karlsruhe.de";
@@ -57,13 +63,24 @@ public class AIFBScraper implements Scraper, UrlScraper {
     //dept. id of Komplexitätsmanagement
 	private static final int AIFB_DEPT_ID_COM = 4;
 
-    
+	private static final List<Tuple<Pattern,Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>();
+
+    static {
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + AIFB_HOST), Pattern.compile(AIFB_PERSON_PATH + ".*")));
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + AIFB_HOST), Pattern.compile(AIFB_PUBL_DEPT_EXPORT_PATH + ".*")));
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + AIFB_HOST), Pattern.compile(AIFB_PUBL_EXPORT_PATH + ".*")));
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + AIFB_HOST), Pattern.compile(AIFB_PUBL_PATH + ".*")));
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + AIFB_HOST), Pattern.compile(AIFB_PUBL_PATH_ENGLISH + ".*")));
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + AIFB_HOST), Pattern.compile(AIFB_PUBL_PERSON_EXPORT_PATH + ".*")));
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + AIFB_HOST), Pattern.compile(AIFB_PUBL_PERSON_PATH + ".*")));
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + AIFB_HOST), Pattern.compile(AIFB_DEPT_PATH + ".*")));
+    }
 	
 	
 	
-	public boolean scrape(ScrapingContext sc) throws ScrapingException {
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		
-		if(sc.getUrl() != null && sc.getUrl().toString().startsWith(AIFB_HOST_NAME) && sc.getSelectedText() == null){
+		if(sc.getSelectedText() == null){
 			/*
 			 * returns itself to know, which scraper scraped this
 			 */
@@ -227,25 +244,8 @@ public class AIFBScraper implements Scraper, UrlScraper {
 		return info;
 	}
 
-	public Collection<Scraper> getScraper() {
-		return Collections.singletonList((Scraper) this);
-	}
-
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
-		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
-		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + AIFB_HOST), Pattern.compile(AIFB_PERSON_PATH + ".*")));
-		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + AIFB_HOST), Pattern.compile(AIFB_PUBL_DEPT_EXPORT_PATH + ".*")));
-		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + AIFB_HOST), Pattern.compile(AIFB_PUBL_EXPORT_PATH + ".*")));
-		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + AIFB_HOST), Pattern.compile(AIFB_PUBL_PATH + ".*")));
-		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + AIFB_HOST), Pattern.compile(AIFB_PUBL_PATH_ENGLISH + ".*")));
-		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + AIFB_HOST), Pattern.compile(AIFB_PUBL_PERSON_EXPORT_PATH + ".*")));
-		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + AIFB_HOST), Pattern.compile(AIFB_PUBL_PERSON_PATH + ".*")));
-		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + AIFB_HOST), Pattern.compile(AIFB_DEPT_PATH + ".*")));
-		return list;
+		return patterns;
 	}
 
-	public boolean supportsUrl(URL url) {
-		return UrlMatchingHelper.isUrlMatch(url, this);
-	}
-	
 }
