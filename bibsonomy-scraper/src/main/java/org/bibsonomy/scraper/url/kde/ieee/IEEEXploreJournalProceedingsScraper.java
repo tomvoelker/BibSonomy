@@ -3,22 +3,18 @@ package org.bibsonomy.scraper.url.kde.ieee;
 import java.io.ByteArrayInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.url.UrlMatchingHelper;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -27,10 +23,14 @@ import org.w3c.dom.NodeList;
 import org.w3c.tidy.Configuration;
 import org.w3c.tidy.Tidy;
 
-public class IEEEXploreJournalProceedingsScraper implements Scraper, UrlScraper {
+/** Scraper for journals from IEEE Explore.
+ * @author rja
+ *
+ */
+public class IEEEXploreJournalProceedingsScraper extends UrlScraper {
 	private static final Logger log = Logger.getLogger(IEEEXploreJournalProceedingsScraper.class);
-	private static final String info = "IEEEXplore Journal Scraper: This scraper creates a BibTeX entry for the journals and proceedings " +
-			                           "at <a href=\"http://ieeexplore.ieee.org/\">IEEEXplore</a>. Author: KDE";
+	private static final String info = "IEEEXplore Journal Scraper: This scraper creates a BibTeX entry for the journals and proceedings at " +
+	href("http://ieeexplore.ieee.org/", "IEEEXplore");
 
 	private static final String IEEE_HOST		   = "ieeexplore.ieee.org";
 	private static final String IEEE_HOST_NAME     = "http://ieeexplore.ieee.org/";
@@ -43,22 +43,24 @@ public class IEEEXploreJournalProceedingsScraper implements Scraper, UrlScraper 
 	private static final String CONST_VOLUME     = "Volume: ";
 	private static final String CONST_PAGES      = "On page(s): ";
 	private static final String CONST_BOOKTITLE	 = "This paper appears in: ";
+
+	private static final Pattern pattern = Pattern.compile("arnumber=([^&]*)");
+	private static final Pattern pattern2 = Pattern.compile("chklist=([^%]*)");
+
 	
-	private static final String PATTERN_CHKLIST = "chklist=([^%]*)";
-	private static final String PATTERN_ARNUMBER = "arnumber=([^&]*)";
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile("/" + IEEE_PATH + ".*")));
 	
-	public boolean scrape(ScrapingContext sc) throws ScrapingException {
-		if (sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())  && sc.getUrl().toString().indexOf("punumber") == -1 ) {
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+		//FIXME: this should into the path pattern!
+		if (sc.getUrl().toString().indexOf("punumber") == -1 ) {
 			sc.setScraper(this);
-			
+
 			String id = null;
-			Pattern pattern = Pattern.compile(PATTERN_ARNUMBER);
 			Matcher matcher = pattern.matcher(sc.getUrl().toString());
 			if(matcher.find())
 				id = matcher.group(1);
-			
-			pattern = Pattern.compile(PATTERN_CHKLIST);
-			matcher = pattern.matcher(sc.getUrl().toString());
+
+			matcher = pattern2.matcher(sc.getUrl().toString());
 			if(id == null && matcher.find())
 				id = matcher.group(1);
 
@@ -70,19 +72,19 @@ public class IEEEXploreJournalProceedingsScraper implements Scraper, UrlScraper 
 				} catch (MalformedURLException ex) {
 					throw new InternalFailureException(ex);
 				}
-				
+
 				if(bibtex != null){
 					// clean up
 					bibtex = bibtex.replace("<br>", "");
-					
+
 					sc.setBibtexResult(bibtex);
 					return true;
-					
+
 				}else{
 					log.debug("IEEEXploreJournalProceedingsScraper: direct bibtex download failed. Use JTidy to get bibliographic data.");
 					sc.setBibtexResult(ieeeJournalProceedingsScrape(sc));
 					return true;
-					
+
 				}
 			}else{
 				log.debug("IEEEXploreJournalProceedingsScraper use JTidy to get Bibtex from " + sc.getUrl().toString());
@@ -96,11 +98,6 @@ public class IEEEXploreJournalProceedingsScraper implements Scraper, UrlScraper 
 	public String getInfo() {
 		return info;
 	}
-
-	public Collection<Scraper> getScraper () {
-		return Collections.singletonList((Scraper)this);
-	}
-
 	public String ieeeJournalProceedingsScrape (ScrapingContext sc) throws ScrapingException {
 
 		try{
@@ -108,7 +105,7 @@ public class IEEEXploreJournalProceedingsScraper implements Scraper, UrlScraper 
 			NodeList pres 		= null; 
 			Node currNode 		= null;
 			NodeList temp 		= null;
-	
+
 			//-- init Strings for bibtex entries
 			// month uncased because of multiple date types
 			String type 		= "";
@@ -123,25 +120,25 @@ public class IEEEXploreJournalProceedingsScraper implements Scraper, UrlScraper 
 			String issn   = null;
 			String isbn   = null;
 			String doi    = null;
-	
+
 			String authors[] 	= null; 
 			String tempAuthors 	= null;
-	
-	
+
+
 			//-- get the html doc and parse the DOM
 			Tidy tidy = new Tidy();
 			tidy.setQuiet(true);
 			tidy.setCharEncoding(Configuration.UTF8);
 			tidy.setShowWarnings(false); // turn off warning lines
 			Document doc = tidy.parseDOM(new ByteArrayInputStream(sc.getPageContent().getBytes()), null);
-	
+
 			//get the abstract block
 			String ident1 = "<span class=\"sectionHeaders\">Abstract</span><br>";
 			String ident2 = "<td class=\"bodyCopyGrey\"><p class=\"bodyCopyGreySpaced\"><strong>Index";
 			if (sc.getPageContent().indexOf(ident1) != -1 && sc.getPageContent().indexOf(ident2) != -1 ){
 				abstr = sc.getPageContent().substring(sc.getPageContent().indexOf(ident1)+ident1.length(),sc.getPageContent().indexOf(ident2)).replaceAll("\\s\\s+", "").replaceAll("(<.+?>)", "").trim();			
 			}
-	
+
 			/*-- Get the title of the journal --
 			 * Iterate through all spans
 			 */
@@ -151,14 +148,14 @@ public class IEEEXploreJournalProceedingsScraper implements Scraper, UrlScraper 
 				Node curr = pres.item(i);
 				Element g = (Element)curr;
 				Attr own = g.getAttributeNode("class");
-	
+
 				if ("headNavBlueXLarge2".equals(own.getValue())) {
 					title = curr.getFirstChild().getNodeValue();
 					temp = pres.item(i+1).getChildNodes();
-	
+
 					if (!"".equals(temp.item(0).getNodeValue())) {
 						tempAuthors = temp.item(0).getNodeValue();
-	
+
 						if ("\u00A0\u00A0".equals(tempAuthors))	{
 							authors = new String[] {"N/A"};
 						} else {
@@ -168,7 +165,7 @@ public class IEEEXploreJournalProceedingsScraper implements Scraper, UrlScraper 
 					break;
 				}
 			}
-	
+
 			/*-- Get the global infomation like publication date, number of pages ... --
 			 * iterate through all p's stop at "This paper appears in:" because its
 			 * available in all journals.
@@ -201,7 +198,7 @@ public class IEEEXploreJournalProceedingsScraper implements Scraper, UrlScraper 
 						StringTokenizer tokenizer = new StringTokenizer(infoMatches);
 						String yearPattern = "\\d{4}";
 						Pattern yearP = Pattern.compile(yearPattern);
-	
+
 						while ( tokenizer.hasMoreTokens() ){
 							String token = tokenizer.nextToken();
 							Matcher matcherYear = yearP.matcher(token);
@@ -223,7 +220,7 @@ public class IEEEXploreJournalProceedingsScraper implements Scraper, UrlScraper 
 					if (doi  == null) doi  = getField(match, i, "Digital Object Identifier: ");
 				}
 			}
-	
+
 			//-- set bibtex type @article for journals & @proceeding for proceedings
 			if ((isbn == null || isbn.trim().equals("")) && issn != null && !issn.trim().equals("")) {
 				type = IEEE_JOURNAL;
@@ -234,8 +231,8 @@ public class IEEEXploreJournalProceedingsScraper implements Scraper, UrlScraper 
 					type = IEEE_INPROCEEDINGS;
 				}
 			}
-	
-	
+
+
 			//-- get all authors out of the arraylist and prepare them to bibtex entry "author"
 			for (int i=0; i<authors.length; i++){
 				if (i==authors.length-1){
@@ -244,14 +241,14 @@ public class IEEEXploreJournalProceedingsScraper implements Scraper, UrlScraper 
 					author += authors[i].trim() + " and ";
 				}
 			}
-	
-	
+
+
 			//-- kill spaces and add the year to bibtexkey
 			//- replace all special chars to avaoid crashes through bibtexkey
 			StringBuffer b = new StringBuffer (type + "{" + getName(authors[0]) + ":" + year + ",");
 			appendBibtexField(b, "author", author);
 			appendBibtexField(b, "abstract", abstr);
-			
+
 			appendBibtexField(b, "title", title);
 			appendBibtexField(b, "booktitle", booktitle);
 			appendBibtexField(b, "url", url);
@@ -262,9 +259,9 @@ public class IEEEXploreJournalProceedingsScraper implements Scraper, UrlScraper 
 			appendBibtexField(b, "volume", volume);
 			appendBibtexField(b, "pages", pages);
 			b.append("}");
-	
+
 			return b.toString();
-			
+
 		}catch(Exception e){
 			throw new InternalFailureException(e);
 		}
@@ -289,21 +286,15 @@ public class IEEEXploreJournalProceedingsScraper implements Scraper, UrlScraper 
 		}
 		return null;
 	}
-	
+
 	private void appendBibtexField (StringBuffer b, String field, String value) {
 		if (value != null) {
 			b.append(field + " = {" + value + "},");
 		}
 	}
-	
-	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
-		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
-		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile("/" + IEEE_PATH + ".*")));
-		return list;
-	}
 
-	public boolean supportsUrl(URL url) {
-		return UrlMatchingHelper.isUrlMatch(url, this);
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		return patterns;
 	}
 
 }
