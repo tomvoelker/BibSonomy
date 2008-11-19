@@ -2,60 +2,47 @@ package org.bibsonomy.scraper.url.kde.worldcat;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
-import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 /**
  * Scraper for http://www.worldcat.org 
  * @author tst
  */
-public class WorldCatScraper implements Scraper, UrlScraper {
+public class WorldCatScraper extends UrlScraper {
 
-	private static final String INFO = "Wolrdcat Scraper: Scraper for publications from <a herf=\"http://www.worldcat.org\">worldcat</a>. Author: KDE";
-	
-	private static final String HOST = "worldcat.org";
-	private static final String PATH = "/oclc/";
-	
+	private static final String INFO = "Worldcat Scraper: Scraper for publications from " + href("http://www.worldcat.org", "worldcat") + ". Author: KDE";
+
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + "worldcat.org"), Pattern.compile("/oclc/")));
+
 	public String getInfo() {
 		return INFO;
 	}
 
-	public Collection<Scraper> getScraper() {
-		return Collections.singletonList((Scraper)this);
-	}
+	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
+		sc.setScraper(this);
 
-	public boolean scrape(ScrapingContext sc)throws ScrapingException {
-		if(sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())){
-			sc.setScraper(this);
-			
-				try {
-					String bibtex = getBibtex(sc.getUrl(), sc, false);
-					
-					if(bibtex != null){
-						sc.setBibtexResult(bibtex);
-						return true;
-					}else
-						throw new ScrapingFailureException("getting bibtex failed");
+		try {
+			final String bibtex = getBibtex(sc.getUrl(), sc, false);
 
-				} catch (MalformedURLException ex) {
-					throw new InternalFailureException(ex);
-				}
+			if(bibtex != null){
+				sc.setBibtexResult(bibtex);
+				return true;
+			}else
+				throw new ScrapingFailureException("getting bibtex failed");
+
+		} catch (MalformedURLException ex) {
+			throw new InternalFailureException(ex);
 		}
-		return false;
 	}
 
 	/**
@@ -74,31 +61,25 @@ public class WorldCatScraper implements Scraper, UrlScraper {
 
 		URL searchURL = new URL("http://www.worldcat.org/search?qt=worldcat_org_all&q=" + isbn); 
 		bibtex = getBibtex(searchURL, sc, true);
-		
+
 		return bibtex;
 	}
-	
+
 	private String getBibtex(URL publPageURL, ScrapingContext sc, boolean search) throws MalformedURLException, ScrapingException{
 		String exportUrl = null;
 		if(search)
 			exportUrl = publPageURL.getProtocol() + "://" + publPageURL.getHost() + publPageURL.getPath() + "?" + publPageURL.getQuery() + "&page=endnote&client=worldcat.org-detailed_record";
 		else
 			exportUrl = publPageURL.getProtocol() + "://" + publPageURL.getHost() + publPageURL.getPath() + "?page=endnote&client=worldcat.org-detailed_record";
-		
+
 		String endnote = sc.getContentAsString(new URL(exportUrl));
-		
+
 		RisToBibtexConverter converter = new RisToBibtexConverter();
 		return converter.RisToBibtex(endnote);
 	}
 
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
-		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
-		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), Pattern.compile(PATH)));
-		return list;
+		return patterns;
 	}
 
-	public boolean supportsUrl(URL url) {
-		return UrlMatchingHelper.isUrlMatch(url, this);
-	}
-	
 }
