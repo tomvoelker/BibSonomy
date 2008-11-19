@@ -9,16 +9,11 @@ import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
-import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.UrlScraper;
@@ -27,13 +22,14 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
-public class ScienceDirectScraper implements Scraper, UrlScraper {
-	private static final Logger log = Logger.getLogger(ScienceDirectScraper.class);
-
-	private static final String info = "ScienceDirect Scraper: This scraper parses a publication page from the  <a href=\"http://www.sciencedirect.com/\">ScienceDirect</a>  " +
-	"and extracts the adequate BibTeX entry. Author: KDE";
+/** Scraper for ScienceDirect.
+ * 
+ * @author rja
+ *
+ */
+public class ScienceDirectScraper extends UrlScraper {
+	private static final String info = "ScienceDirect Scraper: This scraper parses a publication page from " + href("http://www.sciencedirect.com/", "ScienceDirect");
 
 	private static final String SCIENCE_CITATION_HOST     = "sciencedirect.com";
 	private static final String SCIENCE_CITATION_PATH     = "/science";
@@ -46,8 +42,9 @@ public class ScienceDirectScraper implements Scraper, UrlScraper {
 	private static final String PATTERN_UIOKEY = "&_uoikey=([^&]*)";
 	private static final String PATTERN_MD5 = "<input type=hidden name=md5 value=([^>]*)>";
 
-	public boolean scrape(ScrapingContext sc) throws ScrapingException {
-		if (sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())) {
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + SCIENCE_CITATION_HOST), Pattern.compile(SCIENCE_CITATION_PATH + ".*")));
+	
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 			sc.setScraper(this);
 
 			// This Scraper might handle the specified url
@@ -134,18 +131,11 @@ public class ScienceDirectScraper implements Scraper, UrlScraper {
 			} catch (IOException ex) {
 				throw new InternalFailureException(ex);
 			}
-		}
-		// This Scraper can`t handle the specified url
-		return false;
 	}
 
 
 	public String getInfo() {
 		return info;
-	}
-	
-	public Collection<Scraper> getScraper() {
-		return Collections.singletonList((Scraper) this);
 	}
 	
 	/**
@@ -262,13 +252,7 @@ public class ScienceDirectScraper implements Scraper, UrlScraper {
 	}
 	
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
-		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
-		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + SCIENCE_CITATION_HOST), Pattern.compile(SCIENCE_CITATION_PATH + ".*")));
-		return list;
+		return patterns;
 	}
 
-	public boolean supportsUrl(URL url) {
-		return UrlMatchingHelper.isUrlMatch(url, this);
-	}
-	
 }
