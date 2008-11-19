@@ -1,17 +1,12 @@
 package org.bibsonomy.scraper.url.kde.arxiv;
 
-import java.io.ByteArrayInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
-import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.UrlScraper;
@@ -19,42 +14,32 @@ import org.bibsonomy.scraper.converter.OAIConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.scraper.url.UrlMatchingHelper;
-import org.w3c.dom.Attr;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.tidy.Tidy;
 
 
-public class ArxivScraper implements Scraper, UrlScraper {
+/** Scraper for arXiv.
+ * 
+ * @author rja
+ *
+ */
+public class ArxivScraper extends UrlScraper {
 	
-	private static final String info = "arXiv Scraper: This scraper parses a publication page from <a href=\"http://arxiv.org/\">arXiv</a> and " +
-	   								   "extracts the adequate BibTeX entry. Author: KDE";
+	private static final String info = "arXiv Scraper: This scraper parses a publication page from " + href("http://arxiv.org/", "arXiv");
 	
 	private static final String ARXIV_HOST = "arxiv.org";
 	
-	private static final String PATTERN_ID = "abs/([^?]*)";
+	private static final Pattern patternID = Pattern.compile("abs/([^?]*)");
+
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(ARXIV_HOST), UrlScraper.EMPTY_PATTERN));
 	
-	private static final Logger log = Logger.getLogger(ArxivScraper.class);
-	
-	public boolean scrape(ScrapingContext sc) throws ScrapingException {
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		
 		if (sc.getUrl() != null && sc.getUrl().getHost().endsWith(ARXIV_HOST)) {
 			try {
 				sc.setScraper(this);
 				
-				//get id
-				String id = null;
-				
-				Pattern patternID = Pattern.compile(PATTERN_ID);
-				Matcher matcherID = patternID.matcher(sc.getUrl().toString());
-				if(matcherID.find())
-					id = matcherID.group(1);
-				
-				if(id != null){
+				final Matcher matcherID = patternID.matcher(sc.getUrl().toString());
+				if(matcherID.find()) {
+					final String id = matcherID.group(1);
 					// build url for oai_dc export
 					String exportURL = "http://export.arxiv.org/oai2?verb=GetRecord&identifier=oai:arXiv.org:" + id + "&metadataPrefix=oai_dc";
 					
@@ -84,18 +69,8 @@ public class ArxivScraper implements Scraper, UrlScraper {
 		return info;
 	}
 	
-	public Collection<Scraper> getScraper() {
-		return Collections.singletonList((Scraper) this);
-	}
-
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
-		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
-		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(ARXIV_HOST), UrlScraper.EMPTY_PATTERN));
-		return list;
-	}
-
-	public boolean supportsUrl(URL url) {
-		return UrlMatchingHelper.isUrlMatch(url, this);
+		return patterns;
 	}
 	
 }
