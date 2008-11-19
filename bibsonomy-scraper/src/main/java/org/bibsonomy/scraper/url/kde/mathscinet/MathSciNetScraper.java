@@ -4,21 +4,17 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 
 /**
@@ -27,10 +23,12 @@ import org.bibsonomy.scraper.url.UrlMatchingHelper;
  * @author tst
  *
  */
-public class MathSciNetScraper implements Scraper, UrlScraper {
+public class MathSciNetScraper extends UrlScraper {
 	
-	private static final String INFO = "MathSciNetScraper: Extracts publications from <a herf=\"http://www.ams.org/mathscinet/\">MathSciNet</a> . Publications can be entered as a marked bibtex snippet or by posting the page of the reference. Author: KDE";
+	private static final String INFO = "MathSciNetScraper: Extracts publications from " + href("http://www.ams.org/mathscinet/" , "MathSciNet") + 
+	". Publications can be entered as a marked bibtex snippet or by posting the page of the reference.";
 
+	
 	/*
 	 * URL components
 	 */
@@ -47,30 +45,30 @@ public class MathSciNetScraper implements Scraper, UrlScraper {
 	/*
 	 * regualar expressions for complete elements
 	 */
-	private static final String PATTERN_COMPLETE_DIV = "<div id=\"selectAlternative\".*</div>";
-	private static final String PATTERN_PRE = "<pre>.*</pre>";
-	private static final String PATTERN_INPUT = "<input(.*)/>";
+	private static final Pattern PATTERN_COMPLETE_DIV = Pattern.compile("<div id=\"selectAlternative\".*</div>");
+	private static final Pattern prePattern   = Pattern.compile("<pre>.*</pre>", Pattern.DOTALL);
+	private static final Pattern inputPattern = Pattern.compile("<input(.*)/>");
 	
 	/*
 	 * regualar expressions for start tags
 	 */
-	private static final String PATTERN_DIV = "<div(.*)>";
-	private static final String PATTERN_FORM = "<form(.*)>";
+	private static final Pattern divPattern  = Pattern.compile("<div(.*)>");
+	private static final Pattern formPattern = Pattern.compile("<form(.*)>");
 	
 	/*
 	 * regualar expressions for attributes
 	 */
-	private static final String PATTERN_VALUE = "value=\"[^\"]*\"";
-	private static final String PATTERN_NAME = "name=\"[^\"]*\"";
-	private static final String PATTERN_ID = "id=\"[^\"]*\"";
-	private static final String PATTERN_ACTION = "action=\"[^\"]*\"";
+	private static final Pattern valuePattern   = Pattern.compile("value=\"[^\"]*\"");
+	private static final Pattern namePattern    = Pattern.compile("name=\"[^\"]*\"");
+	private static final Pattern idPattern      = Pattern.compile("id=\"[^\"]*\"");
+	private static final Pattern actionPattern  = Pattern.compile("action=\"[^\"]*\"");
 
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile("^.*" + URL_MATHSCINET_HOST), Pattern.compile(URL_MATHSCINET_PATH + ".*")));
 
 	/**
 	 * Extract a reference from a bibtex page as post and snippet. It also extracts a single references from its overview page (get its bibtex link and download it). 
 	 */
-	public boolean scrape(ScrapingContext sc) throws ScrapingException {
-		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(URL_MATHSCINET_HOST) && sc.getUrl().getPath().startsWith(URL_MATHSCINET_PATH)){
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 			sc.setScraper(this);
 			
 			String urlToBibtex = null;
@@ -104,14 +102,12 @@ public class MathSciNetScraper implements Scraper, UrlScraper {
 					String pg1 = null;
 					
 					// search input field for s1 and pg1
-					Pattern inputPattern = Pattern.compile(PATTERN_INPUT);
-					Matcher inputMatcher = inputPattern.matcher(div);
+					final Matcher inputMatcher = inputPattern.matcher(div);
 					
 					while(inputMatcher.find()){
 						String input = inputMatcher.group();
 						
-						Pattern namePattern = Pattern.compile(PATTERN_NAME);
-						Matcher nameMatcher = namePattern.matcher(input);
+						final Matcher nameMatcher = namePattern.matcher(input);
 						
 						while(nameMatcher.find()){
 							String name = nameMatcher.group();
@@ -147,7 +143,6 @@ public class MathSciNetScraper implements Scraper, UrlScraper {
 					String bibtexPage = sc.getContentAsString(new URL(urlToBibtex));
 					
 					//search pre element, which contains the bibtex reference
-					Pattern prePattern = Pattern.compile(PATTERN_PRE, Pattern.DOTALL);
 					Matcher preMatcher = prePattern.matcher(bibtexPage);
 					
 					// extract reference
@@ -168,9 +163,6 @@ public class MathSciNetScraper implements Scraper, UrlScraper {
 			// can't find url for bibtex
 			}else
 				throw new PageNotSupportedException("MathSciNetScraper: This MathSciNet page is not supported. Can't extract link to bibtex.");
-		}
-		
-		return false;
 	}
 	
 	/**
@@ -182,15 +174,13 @@ public class MathSciNetScraper implements Scraper, UrlScraper {
 		String actionValue = null;
 		
 		// find form start tag
-		Pattern formPattern = Pattern.compile(PATTERN_FORM);
-		Matcher formMatcher = formPattern.matcher(div);
+		final Matcher formMatcher = formPattern.matcher(div);
 		
 		if(formMatcher.find()){
 			String formStartTag = formMatcher.group();
 			
 			// find action attribute
-			Pattern actionAttributePattern = Pattern.compile(PATTERN_ACTION);
-			Matcher actionAttributeMatcher = actionAttributePattern.matcher(formStartTag);
+			Matcher actionAttributeMatcher = actionPattern.matcher(formStartTag);
 			
 			if(actionAttributeMatcher.find()){
 				String actionAttribute = actionAttributeMatcher.group();
@@ -211,7 +201,6 @@ public class MathSciNetScraper implements Scraper, UrlScraper {
 	private String getDiv(String content)throws ScrapingException {
 		String resultDiv = null;
 		
-		Pattern divPattern = Pattern.compile(PATTERN_COMPLETE_DIV, Pattern.DOTALL);
 		Matcher divMatcher = divPattern.matcher(content);
 		
 		// search div element with id="selectAlternative"
@@ -236,8 +225,7 @@ public class MathSciNetScraper implements Scraper, UrlScraper {
 		String result = null;
 		
 		// search value attribute
-		Pattern valuePattern = Pattern.compile(PATTERN_VALUE);
-		Matcher valueMatcher = valuePattern.matcher(input);
+		final Matcher valueMatcher = valuePattern.matcher(input);
 		if(valueMatcher.find()){
 			
 			String value = valueMatcher.group();
@@ -257,18 +245,8 @@ public class MathSciNetScraper implements Scraper, UrlScraper {
 		return INFO;
 	}
 
-	public Collection<Scraper> getScraper() {
-		return Collections.singletonList((Scraper) this);
-	}
-	
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
-		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
-		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + URL_MATHSCINET_HOST), Pattern.compile(URL_MATHSCINET_PATH + ".*")));
-		return list;
-	}
-
-	public boolean supportsUrl(URL url) {
-		return UrlMatchingHelper.isUrlMatch(url, this);
+		return patterns;
 	}
 	
 }
