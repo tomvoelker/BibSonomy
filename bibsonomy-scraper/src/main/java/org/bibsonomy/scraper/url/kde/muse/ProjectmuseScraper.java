@@ -2,34 +2,30 @@ package org.bibsonomy.scraper.url.kde.muse;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 /**
  * Scraper for muse.jhu.edu
  * @author tst
  * @version $Id$
  */
-public class ProjectmuseScraper implements Scraper, UrlScraper {
-	
-	private static final String INFO = "MUSE Scraper: Scraper for citations from <a herf=\"http://muse.jhu.edu/\">Project MUSE</a>. Author: KDE";
+public class ProjectmuseScraper extends UrlScraper {
+
+	private static final String INFO = "MUSE Scraper: Scraper for citations from " + href("http://muse.jhu.edu/", "Project MUSE");
 
 	private static final String HOST = "muse.jhu.edu";
-	
+
 	private static final String PREFIX_DOWNLOAD_URL = "http://muse.jhu.edu/metadata/sgml/journals/";
-	
+
 	private static final String PATTERN_JOURNAL_ID = "/journals/(.*)";
 	/*
 	 * regex pattern (sgml)
@@ -48,156 +44,151 @@ public class ProjectmuseScraper implements Scraper, UrlScraper {
 	private static final String PATTERN_SURNAME = "<surname>(.*)</surname>";
 	private static final String PATTERN_FNAME = "<fname>(.*)</fname>";
 	private static final String PATTERN_ABSTRACT = "<abstract>\\s*<p>([^<]*)</p>\\s*</abstract>";
+
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), UrlScraper.EMPTY_PATTERN));
 	
 	public String getInfo() {
 		return INFO;
 	}
 
-	public Collection<Scraper> getScraper() {
-		return Collections.singletonList((Scraper) this);
-	}
+	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
+		sc.setScraper(this);
 
-	public boolean scrape(ScrapingContext sc)throws ScrapingException {
-		if(sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())){
-			sc.setScraper(this);
-			
-			// build sgml download url
-			String journalID = getRegexResult(PATTERN_JOURNAL_ID, sc.getUrl().toString());
-			
-			try {
-				URL downloadUrl = new URL(PREFIX_DOWNLOAD_URL + journalID);
-				
-				String sgml = sc.getContentAsString(downloadUrl);
-				
-				String bibKey = null;
-				String authors = "";
-				
-				// author may be occur more then one time, thats why special behaviour
-				Pattern pattern = Pattern.compile(PATTERN_AUTHOR);
-				Matcher matcher = pattern.matcher(sgml);
-				while(matcher.find()){
-					String author = matcher.group(1);
-					String surname = getRegexResult(PATTERN_SURNAME, author); 
-					String fname = getRegexResult(PATTERN_FNAME, author);
-					
-					// first surname is the first part of the bibtex key
-					if(bibKey == null)
-						bibKey = surname;
-					
-					// first author
-					if(authors.equals(""))
-						authors = fname + " " + surname;
-					// additional authors
-					else
-						authors = authors + " and " + fname + " " + surname;
-				}
-				
-				// get year
-				String year = getRegexResult(PATTERN_YEAR, sgml);
-				// add year to bibtex key
-				if(year != null){
-					if(bibKey == null)
-						bibKey = year;
-					else
-						bibKey = bibKey + year;
-				}
-				
-				// get title
-				String title = getRegexResult(PATTERN_TITLE, sgml);
-				
-				// get url
-				String url = getRegexResult(PATTERN_URL, sgml);
+		// build sgml download url
+		final String journalID = getRegexResult(PATTERN_JOURNAL_ID, sc.getUrl().toString());
 
-				// get journal
-				String journal = getRegexResult(PATTERN_JOURNAL, sgml);
+		try {
+			URL downloadUrl = new URL(PREFIX_DOWNLOAD_URL + journalID);
 
-				// get issn
-				String issn = getRegexResult(PATTERN_ISSN, sgml);
+			String sgml = sc.getContentAsString(downloadUrl);
 
-				// get volume
-				String volume = getRegexResult(PATTERN_VOLUME, sgml);
+			String bibKey = null;
+			String authors = "";
 
-				// get issue
-				String issue = getRegexResult(PATTERN_ISSUE, sgml);
+			// author may be occur more then one time, thats why special behaviour
+			Pattern pattern = Pattern.compile(PATTERN_AUTHOR);
+			Matcher matcher = pattern.matcher(sgml);
+			while(matcher.find()){
+				String author = matcher.group(1);
+				String surname = getRegexResult(PATTERN_SURNAME, author); 
+				String fname = getRegexResult(PATTERN_FNAME, author);
 
-				// get pages
-				String fpages = getRegexResult(PATTERN_FPAGES, sgml);
-				String lpages = getRegexResult(PATTERN_LPAGES, sgml);
-				String pages = null;
-				if(fpages != null && lpages == null)
-					pages = fpages;
-				else if(fpages == null && lpages != null)
-					pages = lpages;
-				else if(fpages != null && lpages != null)
-					pages = fpages + "-" + lpages;
+				// first surname is the first part of the bibtex key
+				if(bibKey == null)
+					bibKey = surname;
 
-				// get abstract
-				String abstractCitation = getRegexResult(PATTERN_ABSTRACT, sgml);
-
-				StringBuffer bibtex = new StringBuffer();
-				bibtex.append("@inproceedings{");
-				
-				// add bibtex key
-				if(bibKey != null)
-					bibtex.append(bibKey).append(",\n");
+				// first author
+				if(authors.equals(""))
+					authors = fname + " " + surname;
+				// additional authors
 				else
-					bibtex.append("noKey,\n");
-				
-				// add author
-				if(authors != null)
-					bibtex.append("author = {").append(authors).append("},\n");
-				
-				// add year
-				if(year != null)
-					bibtex.append("year = {").append(year).append("},\n");
-				
-				// add title
-				if(title != null)
-					bibtex.append("title = {").append(title).append("},\n");
-				
-				// add url
-				if(url != null)
-					bibtex.append("url = {").append(url).append("},\n");
-				
-				// add journal
-				if(journal != null)
-					bibtex.append("journal = {").append(journal).append("},\n");
-				
-				// add issn
-				if(issn != null)
-					bibtex.append("issn = {").append(issn).append("},\n");
-				
-				// add volume
-				if(volume != null)
-					bibtex.append("volume = {").append(volume).append("},\n");
-				
-				// add issue
-				if(issue != null)
-					bibtex.append("issue = {").append(issue).append("},\n");
-				
-				// add pages
-				if(pages != null)
-					bibtex.append("pages = {").append(pages).append("},\n");
-				
-				// add abstratc
-				if(abstractCitation != null)
-					bibtex.append("abstract = {").append(abstractCitation).append("},\n");
-				
-				// remove last ","
-				bibtex.deleteCharAt(bibtex.length()-2);
-				
-				// add last parts
-				bibtex.append("}\n");
-				
-				sc.setBibtexResult(bibtex.toString());
-				return true;
-				
-			} catch (MalformedURLException ex) {
-				throw new InternalFailureException(ex);
+					authors = authors + " and " + fname + " " + surname;
 			}
-			
+
+			// get year
+			String year = getRegexResult(PATTERN_YEAR, sgml);
+			// add year to bibtex key
+			if(year != null){
+				if(bibKey == null)
+					bibKey = year;
+				else
+					bibKey = bibKey + year;
+			}
+
+			// get title
+			String title = getRegexResult(PATTERN_TITLE, sgml);
+
+			// get url
+			String url = getRegexResult(PATTERN_URL, sgml);
+
+			// get journal
+			String journal = getRegexResult(PATTERN_JOURNAL, sgml);
+
+			// get issn
+			String issn = getRegexResult(PATTERN_ISSN, sgml);
+
+			// get volume
+			String volume = getRegexResult(PATTERN_VOLUME, sgml);
+
+			// get issue
+			String issue = getRegexResult(PATTERN_ISSUE, sgml);
+
+			// get pages
+			String fpages = getRegexResult(PATTERN_FPAGES, sgml);
+			String lpages = getRegexResult(PATTERN_LPAGES, sgml);
+			String pages = null;
+			if(fpages != null && lpages == null)
+				pages = fpages;
+			else if(fpages == null && lpages != null)
+				pages = lpages;
+			else if(fpages != null && lpages != null)
+				pages = fpages + "-" + lpages;
+
+			// get abstract
+			String abstractCitation = getRegexResult(PATTERN_ABSTRACT, sgml);
+
+			StringBuffer bibtex = new StringBuffer();
+			bibtex.append("@inproceedings{");
+
+			// add bibtex key
+			if(bibKey != null)
+				bibtex.append(bibKey).append(",\n");
+			else
+				bibtex.append("noKey,\n");
+
+			// add author
+			if(authors != null)
+				bibtex.append("author = {").append(authors).append("},\n");
+
+			// add year
+			if(year != null)
+				bibtex.append("year = {").append(year).append("},\n");
+
+			// add title
+			if(title != null)
+				bibtex.append("title = {").append(title).append("},\n");
+
+			// add url
+			if(url != null)
+				bibtex.append("url = {").append(url).append("},\n");
+
+			// add journal
+			if(journal != null)
+				bibtex.append("journal = {").append(journal).append("},\n");
+
+			// add issn
+			if(issn != null)
+				bibtex.append("issn = {").append(issn).append("},\n");
+
+			// add volume
+			if(volume != null)
+				bibtex.append("volume = {").append(volume).append("},\n");
+
+			// add issue
+			if(issue != null)
+				bibtex.append("issue = {").append(issue).append("},\n");
+
+			// add pages
+			if(pages != null)
+				bibtex.append("pages = {").append(pages).append("},\n");
+
+			// add abstratc
+			if(abstractCitation != null)
+				bibtex.append("abstract = {").append(abstractCitation).append("},\n");
+
+			// remove last ","
+			bibtex.deleteCharAt(bibtex.length()-2);
+
+			// add last parts
+			bibtex.append("}\n");
+
+			sc.setBibtexResult(bibtex.toString());
+			return true;
+
+		} catch (MalformedURLException ex) {
+			throw new InternalFailureException(ex);
 		}
-		return false;
+
 	}
 
 	/**
@@ -207,21 +198,13 @@ public class ProjectmuseScraper implements Scraper, UrlScraper {
 	 * @return matching result, null if no matching
 	 */
 	private String getRegexResult(String regex, String content){
-		Pattern pattern = Pattern.compile(regex);
-		Matcher matcher = pattern.matcher(content);
+		final Matcher matcher = Pattern.compile(regex).matcher(content);
 		if(matcher.find())
 			return matcher.group(1);
 		return null;
 	}
-	
-	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
-		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
-		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), UrlScraper.EMPTY_PATTERN));
-		return list;
-	}
 
-	public boolean supportsUrl(URL url) {
-		return UrlMatchingHelper.isUrlMatch(url, this);
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		return patterns;
 	}
-	
 }
