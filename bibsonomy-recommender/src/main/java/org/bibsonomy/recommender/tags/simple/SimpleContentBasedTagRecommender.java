@@ -32,15 +32,19 @@ public class SimpleContentBasedTagRecommender implements TagRecommender {
 
 	public SortedSet<RecommendedTag> getRecommendedTags(Post<? extends Resource> post) {
 		final SortedSet<RecommendedTag> extracted = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
-		/*
-		 * extract tags from title using Jens' Termprocessor.
-		 */
-		final Iterator<String> extractor = buildTagExtractionIterator(post.getResource().getTitle());
-		/*
-		 * add all extracted tags
-		 */
-		while(extractor.hasNext() == true) {
-			extracted.add(new RecommendedTag(extractor.next(), 0.5, 0.0));
+		final String title = post.getResource().getTitle();
+		if (title != null) {
+			/*
+			 * extract tags from title using Jens' Termprocessor.
+			 */
+
+			final Iterator<String> extractor = buildTagExtractionIterator(title);
+			/*
+			 * add all extracted tags
+			 */
+			while(extractor.hasNext() == true) {
+				extracted.add(new RecommendedTag(extractor.next(), 0.5, 0.0));
+			}
 		}
 		return extracted;
 	}
@@ -50,5 +54,5 @@ public class SimpleContentBasedTagRecommender implements TagRecommender {
 		s.useDelimiter("([\\|/\\\\ \t;!,\\-:\\)\\(\\]\\[\\}\\{]+)|(\\.[\\t ]+)");
 		return new TermProcessingIterator(s);
 	}
-	
+
 }
