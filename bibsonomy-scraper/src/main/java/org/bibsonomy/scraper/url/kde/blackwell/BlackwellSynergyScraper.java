@@ -5,24 +5,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.UrlScraper;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 
 /**
@@ -33,14 +26,14 @@ import org.bibsonomy.scraper.url.UrlMatchingHelper;
  * 
  * @author tst
  */
-public class BlackwellSynergyScraper implements Scraper, UrlScraper {
+public class BlackwellSynergyScraper extends UrlScraper {
 	
 	private static final Logger log = Logger.getLogger(BlackwellSynergyScraper.class);
 
 	/**
 	 * scraper info
 	 */
-	private static final String INFO = "";
+	private static final String INFO = "currently disabled";
 	
 	/**
 	 * pattern for form inputs
@@ -57,6 +50,8 @@ public class BlackwellSynergyScraper implements Scraper, UrlScraper {
 	 */
 	private static final String HOST = "blackwell-synergy.com";
 	
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), UrlScraper.EMPTY_PATTERN));
+	
 	/**
 	 * get Info
 	 */
@@ -64,13 +59,7 @@ public class BlackwellSynergyScraper implements Scraper, UrlScraper {
 		return INFO;
 	}
 
-	public Collection<Scraper> getScraper() {
-		return Collections.singletonList((Scraper) this);
-	}
-
-	public boolean scrape(ScrapingContext sc) throws ScrapingException {
-		if(sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())){
-			
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 			// log every try to call this Scraper
 			log.info("offline Scraper called: BlackwellSynergyScraper with " + sc.getUrl().toString());
 			
@@ -145,11 +134,10 @@ public class BlackwellSynergyScraper implements Scraper, UrlScraper {
 			} catch (IOException ex) {
 				throw new InternalFailureException(ex);
 			}*/
-		}
 		return false;
 	}
 
-	/**
+	/** FIXME: refactor
 	 * Gets the cookie which is needed to extract the content of aip pages.
 	 * (changed code from ScrapingContext.getContentAsString) 
 	 * @param urlConn Connection to api page (from url.openConnection())
@@ -182,7 +170,7 @@ public class BlackwellSynergyScraper implements Scraper, UrlScraper {
 		return cookie;
 	}
 
-	/**
+	/** FIXME: refactor
 	 * Extract the content of a scitation.aip.org page.
 	 * (changed code from ScrapingContext.getContentAsString)
 	 * @param urlConn Connection to api page (from url.openConnection())
@@ -222,13 +210,7 @@ public class BlackwellSynergyScraper implements Scraper, UrlScraper {
 	}
 	
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
-		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
-		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), UrlScraper.EMPTY_PATTERN));
-		return list;
+		return patterns;
 	}
 
-	public boolean supportsUrl(URL url) {
-		return UrlMatchingHelper.isUrlMatch(url, this);
-	}
-	
 }
