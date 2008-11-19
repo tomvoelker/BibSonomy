@@ -2,116 +2,99 @@ package org.bibsonomy.scraper.url.kde.pubmed;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
-import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 /**
  * @author daill
  * @version $Id$
  */
-public class PubMedScraper implements Scraper, UrlScraper {
-	private static final Logger log 	= Logger.getLogger(PubMedScraper.class);
-	private static final String info 	= "PudMed Scraper: This scraper parses a publication page of citations from <a href=\"http://www.ncbi.nlm.nih.gov/sites/entrez/\">PubMed</a>  " +
-	"and extracts the adequate BibTeX entry. Author: KDE";
-	
+public class PubMedScraper extends UrlScraper {
+	private static final String info = "PudMed Scraper: This scraper parses a publication page of citations from " + href("http://www.ncbi.nlm.nih.gov/sites/entrez/", "PubMed");
+
 	private static final String HOST = "ncbi.nlm.nih.gov";
-	private static final String PUBMED_HOST = "www.ncbi.nlm.nih.gov";
 	private static final String PUBMED_EUTIL_HOST = "eutils.ncbi.nlm.nih.gov";
 
-	public boolean scrape(ScrapingContext sc) throws ScrapingException {
+	private static final List<Tuple<Pattern,Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>();
+	static {
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), UrlScraper.EMPTY_PATTERN));
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + PUBMED_EUTIL_HOST), UrlScraper.EMPTY_PATTERN));
+	}
+	
+	protected boolean scrapeInternal (ScrapingContext sc) throws ScrapingException {
 		String bibtexresult = null;
+		sc.setScraper(this);
 
-		if ( sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())) {
-			sc.setScraper(this);
-			
-			Pattern pa = null;
-			Matcher ma = null;
-			
-			//save the original URL 
-			String _origUrl = sc.getUrl().toString();
-			
-			try{
-				if(_origUrl.matches("(?ms)^.+db=PubMed.+$")){
-					
-					//try to get the PMID out of the paramters
-					pa = Pattern.compile("\\d+");
-					ma = pa.matcher(sc.getUrl().getQuery());
-						
-					//if the PMID is existent then get the bibtex from hubmed
-					if(ma.find()){
-						String newUrl = "http://www.hubmed.org/export/bibtex.cgi?uids=" + ma.group();
-						bibtexresult = sc.getContentAsString(new URL(newUrl));
-					}
+		Pattern pa = null;
+		Matcher ma = null;
+
+		//save the original URL 
+		String _origUrl = sc.getUrl().toString();
+
+		try{
+			if(_origUrl.matches("(?ms)^.+db=PubMed.+$")){
+
+				//try to get the PMID out of the paramters
+				pa = Pattern.compile("\\d+");
+				ma = pa.matcher(sc.getUrl().getQuery());
+
+				//if the PMID is existent then get the bibtex from hubmed
+				if(ma.find()){
+					String newUrl = "http://www.hubmed.org/export/bibtex.cgi?uids=" + ma.group();
+					bibtexresult = sc.getContentAsString(new URL(newUrl));
+				}
 
 				// try to scrape with new URL-Pattern
 				// avoid crashes
-				} else if (sc.getPageContent().matches("(?ms)^.+db=PubMed.+$")){
+			} else if (sc.getPageContent().matches("(?ms)^.+db=PubMed.+$")){
 
-					//try to get the PMID out of the paramters
-					pa = Pattern.compile("(?ms)^.+PMID: (\\d*) .+$");
-					ma = pa.matcher(sc.getPageContent());
-					
-					//if the PMID is existent then get the bibtex from hubmed
-					if(ma.find()){
-						String newUrl = "http://www.hubmed.org/export/bibtex.cgi?uids=" + ma.group(1);
-						bibtexresult = sc.getContentAsString(new URL(newUrl));
-					}
+				//try to get the PMID out of the paramters
+				pa = Pattern.compile("(?ms)^.+PMID: (\\d*) .+$");
+				ma = pa.matcher(sc.getPageContent());
+
+				//if the PMID is existent then get the bibtex from hubmed
+				if(ma.find()){
+					String newUrl = "http://www.hubmed.org/export/bibtex.cgi?uids=" + ma.group(1);
+					bibtexresult = sc.getContentAsString(new URL(newUrl));
 				}
-				
-				//replace the humbed url through the original URL
-				pa = Pattern.compile("url = \".*\"");
-				ma = pa.matcher(bibtexresult);
-
-				if (ma.find()){
-					bibtexresult = ma.replaceFirst("url = \"" + _origUrl + "\"" );
-				}
-				
-				//-- bibtex string may not be empty
-				if (bibtexresult != null && !"".equals(bibtexresult)) {
-					sc.setBibtexResult(bibtexresult);
-					return true;
-				}else
-					throw new ScrapingFailureException("getting bibtex failed");
-
-				
-			} catch (MalformedURLException e) {
-				throw new InternalFailureException(e);
 			}
+
+			//replace the humbed url through the original URL
+			pa = Pattern.compile("url = \".*\"");
+			ma = pa.matcher(bibtexresult);
+
+			if (ma.find()){
+				bibtexresult = ma.replaceFirst("url = \"" + _origUrl + "\"" );
+			}
+
+			//-- bibtex string may not be empty
+			if (bibtexresult != null && !"".equals(bibtexresult)) {
+				sc.setBibtexResult(bibtexresult);
+				return true;
+			}else
+				throw new ScrapingFailureException("getting bibtex failed");
+
+
+		} catch (MalformedURLException e) {
+			throw new InternalFailureException(e);
 		}
-		return false;
 	}	
 
 	public String getInfo() {
 		return info;
 	}
 
-	public Collection<Scraper> getScraper() {
-		return Collections.singletonList((Scraper) this);
-	}
-	
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
-		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
-		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), UrlScraper.EMPTY_PATTERN));
-		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + PUBMED_EUTIL_HOST), UrlScraper.EMPTY_PATTERN));
-		return list;
+		return patterns;
 	}
 
-	public boolean supportsUrl(URL url) {
-		return UrlMatchingHelper.isUrlMatch(url, this);
-	}
-	
 }
