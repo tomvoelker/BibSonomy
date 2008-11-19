@@ -56,7 +56,7 @@
 						var tagString = "";
 						for(var i = 0; i < keywords.length; i++) {
 							keywords[i] = keywords[i].replace (/^\s+/, '').replace (/\s+$/, '');
-							tagString += "<a href=\"javascript:addTag('"+ keywords[i] +"')\">" + keywords[i] + "</a> ";
+							tagString += "<a href=\"javascript:copytag('inpf','"+ keywords[i] +"')\">" + keywords[i] + "</a> ";
 						}
 			
 						document.getElementById( "suggestion.tags" ).innerHTML = tagString;
@@ -90,7 +90,7 @@
 									<div id="suggestion.title"></div>
 								</fieldset>	
 								<fieldset style="border:0px; position:relative;">
-									<legend><form:label path="post.description" ><fmt:message key="post.description"/>, <fmt:message key="post.description"/></form:label></legend>
+									<legend><form:label path="post.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label></legend>
 									<form:textarea path="post.description" tabindex="3" cols="69" rows="3" onkeyup="sz(this);" />
 									<div id="suggestion.description"></div>
 								</fieldset>	
@@ -102,7 +102,7 @@
 							</c:if>	
 							<fieldset style="border:0px; text-align: center">
 								<c:set var="save"><fmt:message key="save"/></c:set>
-                                <c:set var="reset"><fmt:message key="reset"/></c:set>
+                                <c:set var="reset"><fmt:message key="resetbutton"/></c:set>
 								<!-- function addSystemTags located in relevantFoxBox.tagx -->
 								<input type="reset"  tabindex="5" value="${reset}" />
 								<input type="submit" tabindex="6" value="${save}" onClick="addSystemTags();"/>

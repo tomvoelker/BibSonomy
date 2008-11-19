@@ -243,6 +243,7 @@
 								<value>description</value>  
 								<value>extended</value>  
 								<value>copytag</value>  
+								<value>abstractGrouping</value>
 							</list>
 						</property>
 					</bean>

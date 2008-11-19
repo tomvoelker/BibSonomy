@@ -76,8 +76,9 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		 * initialize post & resource
 		 */
 		command.setPost(new Post<Bookmark>());
-		command.getPost().setResource(new Bookmark());
-		command.getPost().setGroups(Collections.singleton(new Group("public")));
+		command.getPost().setResource(new Bookmark());		
+		command.setAbstractGrouping("public");
+		
 		/*
 		 * set default url.
 		 */
@@ -105,6 +106,18 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		}
 
 		final User loginUser = context.getLoginUser();
+		
+		/* 
+		 * get tagsets for each group and add them to the loginUser object
+		 */
+		ArrayList<Group> groupsWithTagSets = new ArrayList<Group>();
+		for(Group group: loginUser.getGroups()){
+			if(group.getName() != null){
+				groupsWithTagSets.add(this.logic.getGroupDetails(group.getName()));
+			}
+		}
+		loginUser.setGroups(groupsWithTagSets);
+		
 		final Post<Bookmark> post = command.getPost();
 		
 		/*
@@ -155,10 +168,18 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		/*
 		 * copy the groups of the post into the post (make proper groups from them)
 		 */
-		final List<String> groups = command.getGroups();
-		for (final String groupname: groups){
-			post.getGroups().add(new Group(groupname));
+		if(!command.getAbstractGrouping().endsWith("other")){
+			//if the post is private or public --> remove all groups and add one (private or public)
+			post.getGroups().clear();
+			post.getGroups().add(new Group(command.getAbstractGrouping()));
+		}	
+		else{
+			final List<String> groups = command.getGroups();
+			for (final String groupname: groups){
+				post.getGroups().add(new Group(groupname));
+			}
 		}
+		
 
 		
 		/*

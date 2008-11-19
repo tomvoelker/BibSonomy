@@ -10,8 +10,8 @@
 		<jsp:directive.attribute name="onclick" type="java.lang.String" required="false"/>
         <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 
-		<form:radiobutton path="post.groups" id="public"  onclick="${onclick}" value="public" /> <fmt:message key="post.resource.public"/><br/>
-		<form:radiobutton path="post.groups" id="private" onclick="${onclick}" value="private"/> <fmt:message key="post.resource.private"/><br/>
-		<form:radiobutton path="post.groups" id="other"   onclick="${onclick}" value="other"/>   <fmt:message key="post.resource.other"/>
+		<form:radiobutton path="abstractGrouping" id="public"  onclick="${onclick}" value="public" /> <fmt:message key="post.resource.public"/><br/>
+		<form:radiobutton path="abstractGrouping" id="private" onclick="${onclick}" value="private"/> <fmt:message key="post.resource.private"/><br/>
+		<form:radiobutton path="abstractGrouping" id="other"   onclick="${onclick}" value="other"/>   <fmt:message key="post.resource.other"/>
 
 </jsp:root>
