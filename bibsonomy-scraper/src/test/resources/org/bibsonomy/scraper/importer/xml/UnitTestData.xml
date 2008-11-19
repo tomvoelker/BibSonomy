@@ -748,7 +748,7 @@
 		<TestDescription>test for pages with coins</TestDescription>
 		<URL>http://www.worldcat.org/oclc/18164641&amp;referer=brief_results</URL>
 		<BibFile>CoinsScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.coins.CoinsScraper</Scraper>
+		<Scraper>org.bibsonomy.scraper.generic.CoinsScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_131">
 		<TestDescription>Citeulike test, one citation only</TestDescription>
