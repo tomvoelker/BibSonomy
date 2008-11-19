@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
@@ -15,11 +17,11 @@ import org.bibsonomy.webapp.command.PostCommand;
  * @version $Id$
  */
 public class EditBookmarkCommand extends PostCommand {
-	
+	private static final Log log = LogFactory.getLog(EditBookmarkCommand.class);
 	/**
 	 * The tags of the copied post.
 	 */
-	private List<Tag> copyTags;
+	private List<Tag> copytags;
 	
 	private Post<Bookmark> post;
 	private String tags ;
@@ -31,6 +33,9 @@ public class EditBookmarkCommand extends PostCommand {
 
 	private Map<String,Map<String,List<String>>> relevantTagSets;
 	
+	public EditBookmarkCommand() {
+		log.debug("constructor called");
+	}
 
 	public Post<Bookmark> getPost() {
 		return this.post;
@@ -95,6 +100,7 @@ public class EditBookmarkCommand extends PostCommand {
 	 * @param url 
 	 */
 	public void setUrl(final String url){
+		log.debug("setUrl(" + url + ") called");
 		this.post.getResource().setUrl(url);
 	}
 	
@@ -123,18 +129,18 @@ public class EditBookmarkCommand extends PostCommand {
 	 * 
 	 * @param tags
 	 */
-	public void setCopytags(final String tags){
+	public void setCopytag(final String tags){
 		final String[] splittedTags = tags.split("\\s");
 		for (final String tagname: splittedTags){
-			this.copyTags.add(new Tag(tagname));
+			this.copytags.add(new Tag(tagname));
 		}
 	}
 	
 	public List<Tag> getCopytags(){
-		return this.copyTags;
+		return this.copytags;
 	}
 	
 	public void setCopytags(final List<Tag> tags){
-		this.copyTags = tags;
+		this.copytags = tags;
 	}
 }

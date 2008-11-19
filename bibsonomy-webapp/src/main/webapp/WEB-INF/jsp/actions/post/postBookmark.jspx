@@ -90,7 +90,7 @@
 									<div id="suggestion.title"></div>
 								</fieldset>	
 								<fieldset style="border:0px; position:relative;">
-									<legend><form:label path="post.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label></legend>
+									<legend><form:label path="post.description" ><fmt:message key="post.description"/>, <fmt:message key="post.description"/></form:label></legend>
 									<form:textarea path="post.description" tabindex="3" cols="69" rows="3" onkeyup="sz(this);" />
 									<div id="suggestion.description"></div>
 								</fieldset>	

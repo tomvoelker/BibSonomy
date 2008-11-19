@@ -3,6 +3,7 @@ package org.bibsonomy.webapp.controller.actions;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -15,7 +16,8 @@ import java.util.TreeSet;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -47,7 +49,7 @@ import org.springframework.validation.Errors;
  *          ss05fbachmann Exp $
  */
 public class PostBookmarkController extends SingleResourceListController implements MinimalisticController<EditBookmarkCommand>, ErrorAware, ValidationAwareController<EditBookmarkCommand> {
-	private static final Logger log = Logger.getLogger(PostBookmarkController.class);
+	private static final Log log = LogFactory.getLog(PostBookmarkController.class);
 	private Errors errors = null;
 
 	/**
@@ -75,6 +77,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		 */
 		command.setPost(new Post<Bookmark>());
 		command.getPost().setResource(new Bookmark());
+		command.getPost().setGroups(Collections.singleton(new Group("public")));
 		/*
 		 * set default url.
 		 */
@@ -89,6 +92,9 @@ public class PostBookmarkController extends SingleResourceListController impleme
 	 */
 	public View workOn(EditBookmarkCommand command) {
 		log.debug("--> PostBookmarkController: workOn() called");
+		if (log.isDebugEnabled() && command.getPost() != null && command.getPost().getResource() != null) {
+			log.debug("url = " + command.getPost().getResource().getUrl());
+		}
 
 		command.setPageTitle("post a new bookmark");
 		final RequestWrapperContext context = command.getContext();
@@ -140,7 +146,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		 * return to form until validation passes
 		 */
 		if (errors.hasErrors()) {
-			log.debug("returning to view because of errors: " + errors);
+			log.debug("returning to view because of errors: " + errors.getErrorCount());
 			log.debug("post is " + post.getResource());
 			return Views.POST_BOOKMARK;
 		}

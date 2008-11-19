@@ -235,9 +235,9 @@
 						<property name="controllerBeanName" value="postBookmarkController"/>
 						<property name="allowedFields">
 							<list>
-								<value>postBookmark.resource.url</value>
-								<value>postBookmark.resource.title</value>
-								<value>postBookmark.description</value>
+								<value>post.resource.url</value>
+								<value>post.resource.title</value>
+								<value>post.description</value>
 								<value>tags</value>
 								<value>url</value>    
 								<value>description</value>  
