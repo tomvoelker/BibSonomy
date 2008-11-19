@@ -2,14 +2,11 @@ package org.bibsonomy.scraper.url.kde.iucr;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.UrlScraper;
@@ -18,7 +15,6 @@ import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.scraper.exceptions.UseageFailureException;
-import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 /**
  * scraper for jornals from iucr.org. Because of the frame structure of 
@@ -48,112 +44,91 @@ import org.bibsonomy.scraper.url.UrlMatchingHelper;
  * @author tst
  * @version $Id$
  */
-public class IucrScraper implements Scraper, UrlScraper {
-	
+public class IucrScraper extends UrlScraper {
+
 	/*
 	 * messages
 	 */
-	
-	private static final String INFO = "IUCr Scraper: Scraper for journals from the <a href=\"http://www.iucr.org/\">International Union of Crystallography</a>. Author: KDE";
+
+	private static final String INFO = "IUCr Scraper: Scraper for journals from the " + href("http://www.iucr.org/", "International Union of Crystallography");
 
 	private static final String USEAGE_FAILURE_MESSAGE = "Please open the publication in a new browser tab and post it again.";
-	
+
 	/*
 	 * hosts
 	 */
-	
+
 	private static final String HOST = "iucr.org";
-	
+
 	private static final String HOST_JOURNAL_PREFIX = "journal";
-	
+
 	private static final String HOST_SCRIPTS_PREFIX = "scripts";
+
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), UrlScraper.EMPTY_PATTERN));
 	
-	/*
-	 * pattern
-	 */
-	
-	private static final String PATTERN_CNOR = "<input name=\"cnor\" value=\"([^\"]*)\" type=\"hidden\">";
+	private static final Pattern cnorPattern = Pattern.compile("<input name=\"cnor\" value=\"([^\"]*)\" type=\"hidden\">");
 
 	/*
 	 * Download link
 	 */
 	private static final String DOWNLOAD_LINK_PART = "http://scripts.iucr.org/cgi-bin/biblio?Action=download&saveas=BIBTeX&cnor=";
-	
+
 
 	public String getInfo() {
 		return INFO;
 	}
 
-	public Collection<Scraper> getScraper() {
-		return Collections.singletonList((Scraper) this);
-	}
+	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
+		sc.setScraper(this);
 
-	public boolean scrape(ScrapingContext sc)throws ScrapingException {
-		if(sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())){
-			sc.setScraper(this);
-			
-			if(sc.getUrl().getHost().startsWith(HOST_JOURNAL_PREFIX)){
-				throw new UseageFailureException(USEAGE_FAILURE_MESSAGE);
-			
-			}else if(sc.getUrl().getHost().startsWith(HOST_SCRIPTS_PREFIX)){
-				
-				try {
-					String pageContent = sc.getPageContent();
-					
-					// extract cnor number from HTML
-					String cnor = null;
-					Pattern cnorPattern = Pattern.compile(PATTERN_CNOR);
-					Matcher cnorMatcher = cnorPattern.matcher(pageContent);
-					if(cnorMatcher.find())
-						cnor = cnorMatcher.group(1);
-					
-					// check if cnor can be extracted
-					if(cnor != null){
-						
-						// build download link
-						String downloadLink = DOWNLOAD_LINK_PART + cnor;
-						
-						// download bibtex
-						String bibtex = sc.getContentAsString(new URL(downloadLink));
-						
-						if(bibtex != null){
-							
-							// successful
-							sc.setBibtexResult(bibtex);
-							return true;
-							
-						}else{
-							// bibtex == null, may be wrong download url
-							throw new ScrapingFailureException("Bibtex download failed. Bibtex result is null.");
-						}
+		if(sc.getUrl().getHost().startsWith(HOST_JOURNAL_PREFIX)){
+			throw new UseageFailureException(USEAGE_FAILURE_MESSAGE);
+
+		}else if(sc.getUrl().getHost().startsWith(HOST_SCRIPTS_PREFIX)){
+
+			try {
+				final String pageContent = sc.getPageContent();
+
+				// extract cnor number from HTML
+				final Matcher cnorMatcher = cnorPattern.matcher(pageContent);
+				if(cnorMatcher.find()) {
+					final String cnor = cnorMatcher.group(1);
+
+					// build download link
+					final String downloadLink = DOWNLOAD_LINK_PART + cnor;
+
+					// download bibtex
+					String bibtex = sc.getContentAsString(new URL(downloadLink));
+
+					if(bibtex != null){
+
+						// successful
+						sc.setBibtexResult(bibtex);
+						return true;
+
+					}else{
+						// bibtex == null, may be wrong download url
+						throw new ScrapingFailureException("Bibtex download failed. Bibtex result is null.");
+					}
 
 					// can't extract cnor
-					}else{
-						// missing id
-						throw new ScrapingFailureException("ID for donwload link is missing.");
-					}
-					
-				} catch (MalformedURLException ex) {
-					throw new InternalFailureException(ex);
+				}else{
+					// missing id
+					throw new ScrapingFailureException("ID for donwload link is missing.");
 				}
-				
-			}else{
-				// no journal or scripts page
-				throw new PageNotSupportedException(PageNotSupportedException.DEFAULT_ERROR_MESSAGE + this.getClass().getName());
+
+			} catch (MalformedURLException ex) {
+				throw new InternalFailureException(ex);
 			}
+
+		}else{
+			// no journal or scripts page
+			throw new PageNotSupportedException(PageNotSupportedException.DEFAULT_ERROR_MESSAGE + this.getClass().getName());
 		}
-		
-		return false;
-	}
-	
-	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
-		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
-		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), UrlScraper.EMPTY_PATTERN));
-		return list;
 	}
 
-	public boolean supportsUrl(URL url) {
-		return UrlMatchingHelper.isUrlMatch(url, this);
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		return patterns;
 	}
 
 }
