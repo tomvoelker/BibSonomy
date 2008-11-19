@@ -36,9 +36,9 @@ public class IEScraper implements Scraper {
 			if (map != null) {
 
 				/*
-				 * build Bibtex String from map
+				 * build Bibtex String from map and add url to bibtex entry
 				 */
-				sc.setBibtexResult(getBibtexString(map));
+				sc.setBibtexResult(getBibtexString(map).replaceFirst("}", "},\nurl = {" + sc.getUrl().toString() + "}"));
 
 				/*
 				 * save the text the user selected (and the scraper used) into map 
