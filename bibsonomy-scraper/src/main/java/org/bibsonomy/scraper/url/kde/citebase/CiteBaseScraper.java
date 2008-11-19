@@ -5,72 +5,70 @@ package org.bibsonomy.scraper.url.kde.citebase;
 import java.io.ByteArrayInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.url.UrlMatchingHelper;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.tidy.Tidy;
 
-public class CiteBaseScraper implements Scraper, UrlScraper {
+/** Scraper for CiteBase.
+ * 
+ * @author rja
+ *
+ */
+public class CiteBaseScraper extends UrlScraper {
 
 //	http://www.citebase.org/abstract?id=oai:arXiv.org:cs/0408047
-	
-	private static final String info = "citebase Scraper: This scraper parses a publication page from <a href=\"http://www.citebase.org/\">citebase</a> and " +
-	   								   "extracts the adequate BibTeX entry. Author: KDE";
-	
+
+	private static final String info = "citebase Scraper: This scraper parses a publication page from " + href("http://www.citebase.org/", "Citebase");
+
 	private static final String CITEBASE_HOST = "citebase.org";
 	private static final String CITEBASE_HOST_NAME = "http://www.citebase.org";
 	//private static final String CITEBASE_STRING_ON_ARXIV = "CiteBase"; //TODO: never used locally
-	
+
 	private static final String BIBTEX_STRING_ON_ARXIV = "BibTeX";
 	private static final String BIBTEX_ABSTRACT_TAG = "div";
-	
+
 	private static final Logger log = Logger.getLogger(CiteBaseScraper.class);
+
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + CITEBASE_HOST), UrlScraper.EMPTY_PATTERN));
 	
-	public boolean scrape(ScrapingContext sc) throws ScrapingException {
-		
-		if (sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())) {
-			sc.setScraper(this);
-			
-			try {
-				 
-				final Document document = getDOM(sc.getPageContent());
-				String bibAbstract = extractAbstract(document, BIBTEX_ABSTRACT_TAG); 
-				
-				// get bibtex url on citebase publication page
-				URL bibtexUrl = new URL(CITEBASE_HOST_NAME	+ extractUrlFromElementByTagNameAndValue(document, "a",	BIBTEX_STRING_ON_ARXIV, "href"));
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+		sc.setScraper(this);
 
-				log.debug("bibtex url = " + bibtexUrl);
+		try {
 
-				// get bibtex page and add abstract
-				String bibtexEntry = sc.getContentAsString(bibtexUrl);
-				if (bibAbstract != null) {
-					bibtexEntry = addAbstractToBibtexEntry(bibtexEntry,
-							bibAbstract);
-				}
-				// set result
-				sc.setBibtexResult(bibtexEntry);
-				return true;
-				
-			} catch (MalformedURLException me) {
-				throw new InternalFailureException(me);
+			final Document document = getDOM(sc.getPageContent());
+			String bibAbstract = extractAbstract(document, BIBTEX_ABSTRACT_TAG); 
+
+			// get bibtex url on citebase publication page
+			URL bibtexUrl = new URL(CITEBASE_HOST_NAME	+ extractUrlFromElementByTagNameAndValue(document, "a",	BIBTEX_STRING_ON_ARXIV, "href"));
+
+			log.debug("bibtex url = " + bibtexUrl);
+
+			// get bibtex page and add abstract
+			String bibtexEntry = sc.getContentAsString(bibtexUrl);
+			if (bibAbstract != null) {
+				bibtexEntry = addAbstractToBibtexEntry(bibtexEntry,
+						bibAbstract);
 			}
-		}		
-		return false;
+			// set result
+			sc.setBibtexResult(bibtexEntry);
+			return true;
+
+		} catch (MalformedURLException me) {
+			throw new InternalFailureException(me);
+		}
 	}
 
 	/** Parses a page and returns the DOM
@@ -88,11 +86,7 @@ public class CiteBaseScraper implements Scraper, UrlScraper {
 	public String getInfo() {
 		return info;
 	}
-	
-	public Collection<Scraper> getScraper() {
-		return Collections.singletonList((Scraper) this);
-	}
-	
+
 	/**
 	 * Extracts URLs from specific and page-unique elements. Unique means, that the node value (here: CiteBase)
 	 * of the requested element "a" appears only once as node value.
@@ -115,11 +109,11 @@ public class CiteBaseScraper implements Scraper, UrlScraper {
 					return currNode.getAttributes().getNamedItem(attribute).getNodeValue();						
 				}
 			}
-		
+
 		}		
 		return null;
 	}
-	
+
 	private String extractAbstract(Document doc, String tagName){		
 		NodeList as = doc.getElementsByTagName(tagName); 
 		for (int i = 0; i < as.getLength(); i++) {
@@ -131,25 +125,18 @@ public class CiteBaseScraper implements Scraper, UrlScraper {
 		}		
 		return null;
 	}
-	
+
 	/**
 	 *  Add abstract to bibtex entry by replacing the last occurrence of "}"
 	 *  with ",abstract = {...}}"
 	 */
 	private String addAbstractToBibtexEntry(String bibtexEntry, String bibAbstract){
-			StringBuffer buf = new StringBuffer (bibtexEntry);
-			buf.replace(buf.lastIndexOf("}"), buf.length(), ", abstract={" + bibAbstract + "}}");
-			return  buf.toString();		
+		StringBuffer buf = new StringBuffer (bibtexEntry);
+		buf.replace(buf.lastIndexOf("}"), buf.length(), ", abstract={" + bibAbstract + "}}");
+		return  buf.toString();		
 	}
-	
+
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
-		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
-		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + CITEBASE_HOST), UrlScraper.EMPTY_PATTERN));
-		return list;
+		return patterns;
 	}
-
-	public boolean supportsUrl(URL url) {
-		return UrlMatchingHelper.isUrlMatch(url, this);
-	}
-
 }
