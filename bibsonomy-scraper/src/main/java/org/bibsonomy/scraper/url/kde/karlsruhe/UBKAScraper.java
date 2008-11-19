@@ -7,9 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -17,7 +15,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.UrlScraper;
@@ -25,24 +22,22 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 
 /**
  * @author sre
  *
  */
-public class UBKAScraper implements Scraper, UrlScraper {
+public class UBKAScraper extends UrlScraper {
 
-	private static final String info = "UBKA Scraper: This scraper parses a publication page from the <a href=\"http://www.ubka.uni-karlsruhe.de/hylib/ka_opac.html\">University Library (UB) Karlsruhe</a> " +
-									   "and extracts the adequate BibTeX entry. Author: KDE";
+	private static final String info = "UBKA Scraper: This scraper parses a publication page from the " + href("http://www.ubka.uni-karlsruhe.de/hylib/ka_opac.html", "University Library (UB) Karlsruhe");
 
 	private static final String UBKA_HOST = "ubka.uni-karlsruhe.de";
 	private static final String UBKA_HOST_NAME = "http://www.ubka.uni-karlsruhe.de";
 	private static final String UBKA_SEARCH_NAME = "http://www.ubka.uni-karlsruhe.de/hylib-bin/suche.cgi";
 	private static final String UBKA_SEARCH_PATH = "/hylib-bin/suche.cgi";
-	
-	
+
+
 	//bibtex id (fix value)
 	private static final String UBKA_PARAM_BIBTEX   = "bibtex=1";
 	//opac id (fix value)
@@ -51,58 +46,58 @@ public class UBKAScraper implements Scraper, UrlScraper {
 	private static final String UBKA_PARAM_PRINTMAB = "printMAB=1";
 	//query id (user dependent value)
 	private static final String UBKA_PARAM_ND    	= "nd";
-	
+
 	private static final String  UBKA_BIB_PATTERN   = ".*<td valign=\"top\"\\s*>\\s*(@[A-Za-z]+&nbsp;\\s*\\{.+}\\s).*";
 	private static final String  UBKA_COMMA_PATTERN = "(.*keywords\\s*=\\s*\\{)(.*?)(\\},?<br>.*)";	
 	private static final String  UBKA_SPACE_PATTERN = "&nbsp;";
 	private static final String  UBKA_BREAK_PATTERN = "<br>";
+
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + UBKA_HOST), UrlScraper.EMPTY_PATTERN));
+
 	
-	public boolean scrape(ScrapingContext sc) throws ScrapingException {
-		if (sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())) {
-			sc.setScraper(this);
-			
-			if(UBKA_SEARCH_PATH.equals(sc.getUrl().getPath())){
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+		sc.setScraper(this);
+
+		if(UBKA_SEARCH_PATH.equals(sc.getUrl().getPath())){
 			/* URL looks some like this:
 			 * http://www.ubka.uni-karlsruhe.de/hylib-bin/suche.cgi?opacdb=UBKA_OPAC&nd=256943346
 			 * &session=1147556008&use_cookie_session=1&returnTo=http%3A%2F%2Fwww.ubka.uni-karlsruhe.de%2Fhylib%2Fka_opac.html
 			 */	
-				String result = null;
-				
-				if(sc.getUrl().getQuery().contains(UBKA_PARAM_BIBTEX)){
-						//current publication must be published as bibtex
-						result = extractBibtexFromUBKA(sc.getPageContent());
-				}else{
-					    //publication is not published as bibtex
-					try {
-						URL expURL = new URL(UBKA_SEARCH_NAME + "?" +  
-											 UBKA_PARAM_OPACDB + "&" +
-											 UBKA_PARAM_ND + "=" + extractQueryParamValue(sc.getUrl().getQuery(),UBKA_PARAM_ND) + "&" +
-											 UBKA_PARAM_PRINTMAB + "&" + 
-											 UBKA_PARAM_BIBTEX);
-						//download page and extract bibtex
-						result = extractBibtexFromUBKA(sc.getContentAsString(expURL));
-					} catch (MalformedURLException me) {
-						throw new InternalFailureException(me);
-					}
+			String result = null;
+
+			if(sc.getUrl().getQuery().contains(UBKA_PARAM_BIBTEX)){
+				//current publication must be published as bibtex
+				result = extractBibtexFromUBKA(sc.getPageContent());
+			}else{
+				//publication is not published as bibtex
+				try {
+					URL expURL = new URL(UBKA_SEARCH_NAME + "?" +  
+							UBKA_PARAM_OPACDB + "&" +
+							UBKA_PARAM_ND + "=" + extractQueryParamValue(sc.getUrl().getQuery(),UBKA_PARAM_ND) + "&" +
+							UBKA_PARAM_PRINTMAB + "&" + 
+							UBKA_PARAM_BIBTEX);
+					//download page and extract bibtex
+					result = extractBibtexFromUBKA(sc.getContentAsString(expURL));
+				} catch (MalformedURLException me) {
+					throw new InternalFailureException(me);
 				}
-				if(result != null){
-					/*
-					 * returns itself to know, which scraper scraped this
-					 */
-					sc.setScraper(this);
+			}
+			if(result != null){
+				/*
+				 * returns itself to know, which scraper scraped this
+				 */
+				sc.setScraper(this);
 
-					sc.setBibtexResult(result);
-					return true;
-				}else
-					throw new ScrapingFailureException("getting bibtex failed");
-
+				sc.setBibtexResult(result);
+				return true;
 			}else
-				throw new PageNotSupportedException("This UBKA URL is not supported!");
-			
-		}	
-		return false;
+				throw new ScrapingFailureException("getting bibtex failed");
+
+		}else
+			throw new PageNotSupportedException("This UBKA URL is not supported!");
+
 	}
-	
+
 	/**
 	 * This method extracts bibtex entries from 
 	 * @param pageContent The page content in a string.
@@ -111,33 +106,33 @@ public class UBKAScraper implements Scraper, UrlScraper {
 	 */
 	private String extractBibtexFromUBKA(String pageContent) throws ScrapingException{
 		try{
-	    //replace <br>
-		Pattern p = Pattern.compile(UBKA_BREAK_PATTERN);
-		Matcher m = p.matcher(pageContent);
-		pageContent = m.replaceAll("");
-	    
-	    p = Pattern.compile(UBKA_BIB_PATTERN, Pattern.MULTILINE | Pattern.DOTALL);
-		m = p.matcher(pageContent);	
-		if (m.matches()) {//we got the entry
-			String bib = m.group(1);
-           
-            //replace spaces &nbsp;
-            p = Pattern.compile(UBKA_SPACE_PATTERN);
-            m = p.matcher(bib);
-	        bib = m.replaceAll(" ");
-            
-            //replace comma in keywords={bla, bla, bla bla}
-            p = Pattern.compile(UBKA_COMMA_PATTERN, Pattern.MULTILINE | Pattern.DOTALL);
-	        m = p.matcher(bib);
-	        if (m.matches()){
-	        	bib = m.group(1) + m.group(2).replaceAll(",", " ") + m.group(3);	        
-	        }
-	        
-	        bib = bib.replaceFirst("\n", ",\n");
-	        
-	        
-            return bib;			
-		}
+			//replace <br>
+			Pattern p = Pattern.compile(UBKA_BREAK_PATTERN);
+			Matcher m = p.matcher(pageContent);
+			pageContent = m.replaceAll("");
+
+			p = Pattern.compile(UBKA_BIB_PATTERN, Pattern.MULTILINE | Pattern.DOTALL);
+			m = p.matcher(pageContent);	
+			if (m.matches()) {//we got the entry
+				String bib = m.group(1);
+
+				//replace spaces &nbsp;
+				p = Pattern.compile(UBKA_SPACE_PATTERN);
+				m = p.matcher(bib);
+				bib = m.replaceAll(" ");
+
+				//replace comma in keywords={bla, bla, bla bla}
+				p = Pattern.compile(UBKA_COMMA_PATTERN, Pattern.MULTILINE | Pattern.DOTALL);
+				m = p.matcher(bib);
+				if (m.matches()){
+					bib = m.group(1) + m.group(2).replaceAll(",", " ") + m.group(3);	        
+				}
+
+				bib = bib.replaceFirst("\n", ",\n");
+
+
+				return bib;			
+			}
 		}catch(PatternSyntaxException pse){
 			throw new InternalFailureException(pse);
 		}
@@ -152,47 +147,36 @@ public class UBKAScraper implements Scraper, UrlScraper {
 	 * @return extracted value
 	 */
 	private String extractQueryParamValue(String query, String name) throws ScrapingException{
-		
-		  StringTokenizer st = new StringTokenizer(query,"&=",true);
-	      Properties params = new Properties();
-	      String previous = null;
-	      while (st.hasMoreTokens())
-	      {
-	         String currToken = st.nextToken();
-	         if ("?".equals(currToken) || "&".equals(currToken))
-	         {
-	            //ignore
-	         }else if ("=".equals(currToken))
-	         {
-	            try {
+
+		StringTokenizer st = new StringTokenizer(query,"&=",true);
+		Properties params = new Properties();
+		String previous = null;
+		while (st.hasMoreTokens())
+		{
+			String currToken = st.nextToken();
+			if ("?".equals(currToken) || "&".equals(currToken))
+			{
+				//ignore
+			}else if ("=".equals(currToken))
+			{
+				try {
 					params.setProperty(URLDecoder.decode(previous, "UTF-8"),URLDecoder.decode(st.nextToken(), "UTF-8"));
 				} catch (UnsupportedEncodingException e) {
 					throw new InternalFailureException(e);
 				}
-	         }else{
-	            previous = currToken;
-	         }
-	      }
-	 
-	      return (String) params.get(name);
+			}else{
+				previous = currToken;
+			}
+		}
+
+		return (String) params.get(name);
 	}
 
 	public String getInfo() {
 		return info;
 	}
-	
-	public Collection<Scraper> getScraper() {
-		return Collections.singletonList((Scraper) this);
-	}
-
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
-		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
-		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + UBKA_HOST), UrlScraper.EMPTY_PATTERN));
-		return list;
+		return patterns;
 	}
 
-	public boolean supportsUrl(URL url) {
-		return UrlMatchingHelper.isUrlMatch(url, this);
-	}
-	
 }
