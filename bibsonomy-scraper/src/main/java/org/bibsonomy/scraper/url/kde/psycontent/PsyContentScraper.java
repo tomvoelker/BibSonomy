@@ -5,15 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.UrlScraper;
@@ -22,87 +18,83 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 /**
  * @author wbi
  * @version $Id$
  */
-public class PsyContentScraper implements Scraper, UrlScraper{
+public class PsyContentScraper extends UrlScraper{
 
-	private static final String info = "Psy CONTENT Scraper: This Scraper parses a publication from <a herf=\"http://psycontent.metapress.com/\">Psy CONTENT</a> "+
-	"and extracts the adequate BibTeX entry. Author: KDE";
+	private static final String info = "Psy CONTENT Scraper: This Scraper parses a publication from "+ href("http://psycontent.metapress.com/", "Psy CONTENT");
 
 	private static final String PSYCONTENT_HOST  = "psycontent.metapress.com";
 	private static final String PSYCONTENT_HOST_NAME  = "http://psycontent.metapress.com";
 	private static final String PSYCONTENT_ABSTRACT_PATH = "/content/";
 	private static final String PSYCONTENT_RIS_PATH = "/export.mpx?mode=ris&code=";
+
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + PSYCONTENT_HOST), UrlScraper.EMPTY_PATTERN));
 	
 	public String getInfo() {
 		return info;
 	}
 
-	public Collection<Scraper> getScraper() {
-		return Collections.singletonList((Scraper) this);
-	}
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+		sc.setScraper(this);
 
-	public boolean scrape(ScrapingContext sc)
-			throws ScrapingException {
-		
-		if(sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())) {
-				sc.setScraper(this);
+		String url = sc.getUrl().toString();
 
-				String url = sc.getUrl().toString();
-				
-				//get the ID of the article
-				String id = null;
-				id = url.substring(url.indexOf(PSYCONTENT_ABSTRACT_PATH) + PSYCONTENT_ABSTRACT_PATH.length(), url.indexOf("/?p="));
-				
-				//let's see if we got an ID
-				if(id != null) {
-					
-					String downloadLink = PSYCONTENT_HOST_NAME + PSYCONTENT_RIS_PATH + id;
-					//Store the cookies in a String
-					String cookies = null;
-					try {
-						cookies = getCookies(sc.getUrl());
-					} catch (IOException ex) {
-						throw new InternalFailureException("Could not store cookies from " + sc.getUrl());
-					}
-					
-					String risFile = null;
-					try {
-						risFile = getContent(new URL(downloadLink), cookies); 
-					} catch (IOException ex) {
-						throw new InternalFailureException("The url "+ downloadLink + " is not valid");
-					}
-					
-					if(risFile != null) {
-						//replace all CR+LF to LF
-						risFile = risFile.replaceAll("\r\n", "\n");
-						
-						//convert the ris file to bibtex
-						String bibtex = null;
-						bibtex = (new RisToBibtexConverter()).RisToBibtex(risFile);
-						
-						if(bibtex != null) {
-							sc.setBibtexResult(bibtex);
-							return true;
-						} else {
-							throw new ScrapingFailureException("Conversion from Ris to bibtex failed");
-						}
-					} else {
-						throw new ScrapingFailureException("Ris download failed. Result is null!");
-					}
+		//get the ID of the article
+		String id = null;
+		id = url.substring(url.indexOf(PSYCONTENT_ABSTRACT_PATH) + PSYCONTENT_ABSTRACT_PATH.length(), url.indexOf("/?p="));
+
+		//let's see if we got an ID
+		if(id != null) {
+
+			String downloadLink = PSYCONTENT_HOST_NAME + PSYCONTENT_RIS_PATH + id;
+			//Store the cookies in a String
+			String cookies = null;
+			try {
+				cookies = getCookies(sc.getUrl());
+			} catch (IOException ex) {
+				throw new InternalFailureException("Could not store cookies from " + sc.getUrl());
+			}
+
+			String risFile = null;
+			try {
+				risFile = getContent(new URL(downloadLink), cookies); 
+			} catch (IOException ex) {
+				throw new InternalFailureException("The url "+ downloadLink + " is not valid");
+			}
+
+			if(risFile != null) {
+				//replace all CR+LF to LF
+				risFile = risFile.replaceAll("\r\n", "\n");
+
+				//convert the ris file to bibtex
+				String bibtex = null;
+				bibtex = (new RisToBibtexConverter()).RisToBibtex(risFile);
+
+				if(bibtex != null) {
+					sc.setBibtexResult(bibtex);
+					return true;
 				} else {
-					// missing id
-					throw new PageNotSupportedException("ID for donwload link is missing.");
+					throw new ScrapingFailureException("Conversion from Ris to bibtex failed");
 				}
+			} else {
+				throw new ScrapingFailureException("Ris download failed. Result is null!");
+			}
+		} else {
+			// missing id
+			throw new PageNotSupportedException("ID for donwload link is missing.");
 		}
-		
-		return false;
 	}
-	
+
+	/** FIXME: refactor
+	 * @param queryURL
+	 * @param cookie
+	 * @return
+	 * @throws IOException
+	 */
 	private String getContent(URL queryURL, String cookie) throws IOException {
 
 		HttpURLConnection urlConn = (HttpURLConnection) queryURL.openConnection();
@@ -115,12 +107,12 @@ public class PsyContentScraper implements Scraper, UrlScraper{
 		 * pages require it to download content.
 		 */
 		urlConn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
-		
+
 		//insert cookie
 		urlConn.setRequestProperty("Cookie", cookie);
-		
+
 		urlConn.connect();
-		
+
 		StringWriter out = new StringWriter();
 		InputStream in = new BufferedInputStream(urlConn.getInputStream());
 		int b;
@@ -128,51 +120,49 @@ public class PsyContentScraper implements Scraper, UrlScraper{
 			out.write(b);
 		}
 		urlConn.disconnect();
-		
+
 		return out.toString();
 	}
-	
+
+	/** FIXME: refactor
+	 * @param queryURL
+	 * @return
+	 * @throws IOException
+	 */
 	private String getCookies(URL queryURL) throws IOException {
 		HttpURLConnection urlConn = null;
-		
+
 		urlConn = (HttpURLConnection) queryURL.openConnection();
-		
+
 		urlConn.setAllowUserInteraction(false);
 		urlConn.setDoInput(true);
 		urlConn.setDoOutput(false);
 		urlConn.setUseCaches(false);
-		
+
 		/*
 		 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
 		 * pages require it to download content.
 		 */
 		urlConn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
-		
+
 		urlConn.connect();
 		/*
 		 * extract cookie from connection
 		 */
 		List<String> cookies = urlConn.getHeaderFields().get("Set-Cookie");
-		
+
 		StringBuffer cookieString = new StringBuffer();
-		
+
 		for(String cookie : cookies) {
 			cookieString.append(cookie.substring(0, cookie.indexOf(";") + 1) + " ");
 		}
-		
+
 		urlConn.disconnect();
-		
+
 		return cookieString.toString();
 	}
 
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
-		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
-		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + PSYCONTENT_HOST), UrlScraper.EMPTY_PATTERN));
-		return list;
+		return patterns;
 	}
-
-	public boolean supportsUrl(URL url) {
-		return UrlMatchingHelper.isUrlMatch(url, this);
-	}
-	
 }
