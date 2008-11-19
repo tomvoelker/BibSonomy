@@ -3,35 +3,35 @@ package org.bibsonomy.scraper.url.kde.spires;
 import java.io.ByteArrayInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
-import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.scraper.url.UrlMatchingHelper;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.tidy.Tidy;
 
-public class SpiresScraper implements Scraper, UrlScraper{
-	private static final Logger log = Logger.getLogger(SpiresScraper.class);
-	private static final String info = "Spires Scraper: Gets publications from <a herf=\"slac.stanford.edu\">SLAC National Accelerator Laboratory</a> Author: KDE";
+/** Scraper for the SLAC National Accelerator Laboratory
+ * @author rja
+ *
+ */
+public class SpiresScraper extends UrlScraper{
+	private static final String info = "Spires Scraper: Gets publications from " + href("slac.stanford.edu", "SLAC National Accelerator Laboratory");
 
 	private static final String SPIRES_HOST = "slac.stanford.edu";
 	
-	public boolean scrape(ScrapingContext sc) throws ScrapingException {
-		if (sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())) {
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + SPIRES_HOST), UrlScraper.EMPTY_PATTERN));
+	
+	
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 			sc.setScraper(this);
 			
 			try {
@@ -66,18 +66,11 @@ public class SpiresScraper implements Scraper, UrlScraper{
 			} catch (MalformedURLException e) {
 				throw new InternalFailureException(e);
 			}
-		}
-		return false;
 	}
 
 	public String getInfo() {
 		return info;
 	}
-	
-	public Collection<Scraper> getScraper() {
-		return Collections.singletonList((Scraper) this);
-	}
-	
 	/** Parses a page and returns the DOM
 	 * @param content
 	 * @return
@@ -106,13 +99,7 @@ public class SpiresScraper implements Scraper, UrlScraper{
 	}
 	
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
-		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
-		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + SPIRES_HOST), UrlScraper.EMPTY_PATTERN));
-		return list;
+		return patterns;
 	}
 
-	public boolean supportsUrl(URL url) {
-		return UrlMatchingHelper.isUrlMatch(url, this);
-	}
-	
 }
