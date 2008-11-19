@@ -1,32 +1,26 @@
 package org.bibsonomy.scraper.url.kde.usenix;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
-import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 /**
  * Scraper for usenix.org
  * It works only with new publications. Pattterns for old data will be added soon.
  * @author tst
  */
-public class UsenixScraper implements Scraper, UrlScraper {
+public class UsenixScraper extends UrlScraper {
 	
-	private static final String INFO = "USENIX Scraper: Scraper for papers from events which are postetd on <a herf=\"http://usenix.org/\">USENIX</a>";
+	private static final String INFO = "USENIX Scraper: Scraper for papers from events which are postetd on " + href("http://usenix.org/", "USENIX");
 	
 	private static final String HOST = "usenix.org";
 	
@@ -55,20 +49,24 @@ public class UsenixScraper implements Scraper, UrlScraper {
 	
 	private static final String CURRENT_PATTERN_GET_PAGES = "<b>Pp.(.*)</b>";
 
+	private static final List<Tuple<Pattern,Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>(); 
+	
+	static {
+		final Pattern hostPattern = Pattern.compile(".*" + HOST);
+		patterns.add(new Tuple<Pattern, Pattern>(hostPattern, Pattern.compile(PATH_1 + ".*")));
+		patterns.add(new Tuple<Pattern, Pattern>(hostPattern, Pattern.compile(PATH_2)));
+	}
+	
 	public String getInfo() {
 		return INFO;
 	}
 
-	public Collection<Scraper> getScraper() {
-		return Collections.singletonList((Scraper) this);
-	}
-
-	public boolean scrape(ScrapingContext sc)throws ScrapingException {
-		if(sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())){
+	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
 			sc.setScraper(this);
 			
-			String path = sc.getUrl().getPath();
 			try {
+				String path = sc.getUrl().getPath();
+
 				String title = null;
 				String author = null;
 				String event = null;
@@ -226,8 +224,6 @@ public class UsenixScraper implements Scraper, UrlScraper {
 			} catch (UnsupportedEncodingException ex) {
 				throw new InternalFailureException(ex);
 			}
-		}
-		return false;
 	}
 
 	/**
@@ -303,13 +299,7 @@ public class UsenixScraper implements Scraper, UrlScraper {
 	}
 	
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
-		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
-		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), Pattern.compile(PATH_1 + ".*")));
-		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), Pattern.compile(PATH_2)));
-		return list;
+		return patterns;
 	}
 
-	public boolean supportsUrl(URL url) {
-		return UrlMatchingHelper.isUrlMatch(url, this);
-	}
 }

@@ -10,13 +10,13 @@ import org.junit.Test;
  * Scraper URL tests #74 #75 #76 #79 #80 #81 #82 #83 #84 #85 for UsenixScraper
  * @author tst
  */
+@Ignore
 public class UsenixScraperTest {
 
 	/**
 	 * starts URL test with id url_74
 	 */
 	@Test
-	@Ignore
 	public void url1TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_74"));
@@ -26,7 +26,6 @@ public class UsenixScraperTest {
 	 * starts URL test with id url_75
 	 */
 	@Test
-	@Ignore
 	public void url2TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_75"));
@@ -36,7 +35,6 @@ public class UsenixScraperTest {
 	 * starts URL test with id url_76
 	 */
 	@Test
-	@Ignore
 	public void url3TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_76"));
@@ -46,7 +44,6 @@ public class UsenixScraperTest {
 	 * starts URL test with id url_79
 	 */
 	@Test
-	@Ignore
 	public void url4TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_79"));
@@ -56,7 +53,6 @@ public class UsenixScraperTest {
 	 * starts URL test with id url_80
 	 */
 	@Test
-	@Ignore
 	public void url5TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_80"));
@@ -66,7 +62,6 @@ public class UsenixScraperTest {
 	 * starts URL test with id url_81
 	 */
 	@Test
-	@Ignore
 	public void url6TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_81"));
@@ -76,7 +71,6 @@ public class UsenixScraperTest {
 	 * starts URL test with id url_82
 	 */
 	@Test
-	@Ignore
 	public void url7TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_82"));
@@ -86,7 +80,6 @@ public class UsenixScraperTest {
 	 * starts URL test with id url_83
 	 */
 	@Test
-	@Ignore
 	public void url8TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_83"));
@@ -96,7 +89,6 @@ public class UsenixScraperTest {
 	 * starts URL test with id url_84
 	 */
 	@Test
-	@Ignore
 	public void url9TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_84"));
@@ -106,7 +98,6 @@ public class UsenixScraperTest {
 	 * starts URL test with id url_85
 	 */
 	@Test
-	@Ignore
 	public void url10TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_85"));
