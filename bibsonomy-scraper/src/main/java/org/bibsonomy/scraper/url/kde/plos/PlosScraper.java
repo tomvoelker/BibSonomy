@@ -4,26 +4,31 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 /**
  * Scraper for X.plosjournals.org
  * @author tst
  */
-public class PlosScraper implements Scraper {
+public class PlosScraper implements Scraper, UrlScraper {
 	
 	/**
 	 * INFO
 	 */
-	private static final String INFO = "Scraper for journals from plos.org";
+	private static final String INFO = "PLoS Scraper: Scraper for journals from <a herf=\"http://www.plos.org/journals/index.php\">PLoS</a>. Author: KDE";
 	
 	/**
 	 * ending of plos journal URLs
@@ -72,7 +77,7 @@ public class PlosScraper implements Scraper {
 	 * Scrapes journals from plos.org 
 	 */
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
-		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(PLOS_HOST_ENDING)){
+		if(sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())){
 			sc.setScraper(this);
 			try {
 				// citation as endnote
@@ -137,6 +142,16 @@ public class PlosScraper implements Scraper {
 
 		}
 		return false;
+	}
+	
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + PLOS_HOST_ENDING), UrlScraper.EMPTY_PATTERN));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
 	}
 
 }

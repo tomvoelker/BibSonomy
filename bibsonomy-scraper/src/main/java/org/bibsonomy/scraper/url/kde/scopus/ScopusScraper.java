@@ -1,23 +1,30 @@
 package org.bibsonomy.scraper.url.kde.scopus;
 
+import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 /**
  * Scraping Logger for access on http://www.scopus.com
  * @author tst
  * @version $Id$
  */
-public class ScopusScraper implements Scraper {
+public class ScopusScraper implements Scraper, UrlScraper {
 	
 	private static final Logger log = Logger.getLogger(ScopusScraper.class);
 	
-	private static final String INFO = "Scraper for scopus.com";
+	private static final String INFO = "currently not available";
 
 	private static final String HOST = "scopus.com";
 	
@@ -50,4 +57,13 @@ public class ScopusScraper implements Scraper {
 		return false;
 	}
 
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), UrlScraper.EMPTY_PATTERN));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
+	}
 }

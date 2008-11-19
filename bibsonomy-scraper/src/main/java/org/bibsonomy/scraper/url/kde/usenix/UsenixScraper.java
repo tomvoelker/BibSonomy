@@ -1,28 +1,37 @@
 package org.bibsonomy.scraper.url.kde.usenix;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 /**
  * Scraper for usenix.org
  * It works only with new publications. Pattterns for old data will be added soon.
  * @author tst
  */
-public class UsenixScraper implements Scraper {
+public class UsenixScraper implements Scraper, UrlScraper {
 	
-	private static final String INFO = "Scraper for papaers from events which are postetd on usenix.org";
+	private static final String INFO = "USENIX Scraper: Scraper for papers from events which are postetd on <a herf=\"http://usenix.org/\">USENIX</a>";
 	
 	private static final String HOST = "usenix.org";
+	
+	private static final String PATH_1 = "/events/";
+	private static final String PATH_2 = "/publications/library/proceedings/.*\\.html";
 	
 	private static final String PATTERN_YEAR_EVENTS = "/events/.*(\\d{2})/";
 	
@@ -55,7 +64,7 @@ public class UsenixScraper implements Scraper {
 	}
 
 	public boolean scrape(ScrapingContext sc)throws ScrapingException {
-		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(HOST)){
+		if(sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())){
 			sc.setScraper(this);
 			
 			String path = sc.getUrl().getPath();
@@ -67,7 +76,7 @@ public class UsenixScraper implements Scraper {
 				String year = null;
 				String key = null;
 				
-				if( (path.startsWith("/events/") || path.startsWith("/publications/library/proceedings/")) && path.endsWith(".html")){
+
 					/*
 					 * examples for current event/proceeding layout:
 					 * http://usenix.org/events/sec07/tech/drimer.html
@@ -214,8 +223,6 @@ public class UsenixScraper implements Scraper {
 					sc.setBibtexResult(bibResult);
 					return true;
 					
-				}else
-					throw new PageNotSupportedException("Not supported usenix url!");
 			} catch (UnsupportedEncodingException ex) {
 				throw new InternalFailureException(ex);
 			}
@@ -293,5 +300,16 @@ public class UsenixScraper implements Scraper {
 			return "19" + decade;
 		else
 			return "20" + decade;
+	}
+	
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), Pattern.compile(PATH_1 + ".*")));
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), Pattern.compile(PATH_2)));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
 	}
 }

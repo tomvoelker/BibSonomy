@@ -5,14 +5,20 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -20,11 +26,12 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.tidy.Tidy;
 
-public class ACMBasicScraper implements Scraper {
+public class ACMBasicScraper implements Scraper, UrlScraper {
 	private static final Logger log = Logger.getLogger(ACMBasicScraper.class);
 	private static final String info = "ACM Scraper: This scraper parses a publication page from the  <a href=\"http://portal.acm.org/portal.cfm\">ACM Digital Library</a>  " +
 									   "and extracts the adequate BibTeX entry. Author: KDE";
-	
+
+	private static final String ACM_HOST       		 = "portal.acm.org";
 	private static final String ACM_HOST_NAME        = "http://portal.acm.org/";
 	private static final String ACM_CITATION_URL     = ACM_HOST_NAME + "citation.cfm";
 	private static final String BIBTEX_STRING_ON_ACM = "BibTex";
@@ -32,7 +39,7 @@ public class ACMBasicScraper implements Scraper {
 	private List<String> pathsToScrape; // holds the paths to the popup pages
 	
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
-		if (sc.getUrl() != null && sc.getUrl().toString().startsWith(ACM_CITATION_URL)) {
+		if (sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())) {
 			sc.setScraper(this);
 
 			//create the URL string manually to add it to the bibtex string
@@ -216,4 +223,15 @@ public class ACMBasicScraper implements Scraper {
     
     return text.toString();
 	}
+
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + ACM_HOST), UrlScraper.EMPTY_PATTERN));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
+	}
+	
 }

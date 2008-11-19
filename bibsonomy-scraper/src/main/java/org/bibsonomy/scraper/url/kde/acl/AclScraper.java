@@ -4,23 +4,31 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 /**
  * Scraper for aclweb.org, given URL must be show on a PDF
  * TODO: Problem is that bibtex is only for few papers available 
+ * TODO: add
  * @author tst
  * @version $Id$
  */
-public class AclScraper implements Scraper {
+public class AclScraper implements Scraper, UrlScraper {
 	
-	private static final String INFO = "Scraper for (PDF) references from aclweb.org";
+	private static final String INFO = "ACL Scraper: Scraper for (PDF) references from <a herf=\"http://aclweb.org/\">Association for Computational Linguistics</a>";
 	
 	private static final String HOST = "aclweb.org";
 	
@@ -37,7 +45,7 @@ public class AclScraper implements Scraper {
 	}
 
 	public boolean scrape(ScrapingContext sc)throws ScrapingException {
-		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(HOST)){
+		if(sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())){
 			sc.setScraper(this);
 			if(sc.getUrl().getPath().startsWith(PATH_PREFIX) && sc.getUrl().getPath().endsWith(".pdf")){
 				String downloadUrl = sc.getUrl().toString();
@@ -65,6 +73,16 @@ public class AclScraper implements Scraper {
 				throw new PageNotSupportedException("This aclweb.org page is not supported.");
 		}
 		return false;
+	}
+
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), Pattern.compile(PATH_PREFIX + ".*\\.pdf")));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
 	}
 
 }

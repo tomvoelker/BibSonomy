@@ -9,26 +9,33 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 /**
  * @author wbi
  * @version $Id$
  */
-public class JStorScraper implements Scraper {
+public class JStorScraper implements Scraper, UrlScraper {
 
-	private static final String info = "JStor Scraper: This Scraper parses a publication from http://www.jstor.org/ "+
+	private static final String info = "JSTOR Scraper: This Scraper parses a publication from <a herf=\"http://www.jstor.org/\">JSTOR</a> "+
 	"and extracts the adequate BibTeX entry. Author: KDE";
 
+	private static final String JSTOR_HOST  = "jstor.org";
 	private static final String JSTOR_HOST_NAME  = "http://www.jstor.org";
 	private static final String JSTOR_ABSTRACT_PATH = "/pss/";
-	private static final String JSTOR_EXPORT_PATH = "/action/exportSingleCitation?singleCitation=true&suffix=";
+	private static final String JSTOR_EXPORT_PATH = "/action/exportSingleCitation";
+	private static final String JSTOR_EXPORT_PATH_AND_QUERY = "/action/exportSingleCitation?singleCitation=true&suffix=";
 	private static final String JSTOR_DOWNLOAD_PATH = "/action/downloadSingleCitation?format=bibtex&include=abs&singleCitation=true&noDoi=yesDoi&suffix={id}&downloadFileName={id}";
 	
 	public String getInfo() {
@@ -42,11 +49,10 @@ public class JStorScraper implements Scraper {
 	public boolean scrape(ScrapingContext sc)
 			throws ScrapingException {
 		
-		if(sc.getUrl() != null) {
-			
-			String url = sc.getUrl().toString();
-			if(url.startsWith(JSTOR_HOST_NAME)) {
+		if(sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())) {
 				sc.setScraper(this);
+				
+				String url = sc.getUrl().toString();
 				
 				String id = null;
 				if(url.startsWith(JSTOR_HOST_NAME + JSTOR_ABSTRACT_PATH)) {
@@ -58,7 +64,7 @@ public class JStorScraper implements Scraper {
 					
 				}
 				
-				if(url.startsWith(JSTOR_HOST_NAME + JSTOR_EXPORT_PATH)) {
+				if(url.startsWith(JSTOR_HOST_NAME + JSTOR_EXPORT_PATH_AND_QUERY)) {
 					id = url.substring(url.indexOf("&suffix=") + "&suffix=".length());
 				}
 				
@@ -104,7 +110,6 @@ public class JStorScraper implements Scraper {
 					//missing id
 					throw new ScrapingFailureException("ID is missing!");
 				}
-			}
 				
 		}
 		
@@ -179,4 +184,15 @@ public class JStorScraper implements Scraper {
 		return cookieString.toString();
 	}
 
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + JSTOR_HOST), Pattern.compile(JSTOR_ABSTRACT_PATH + ".*")));
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + JSTOR_HOST), Pattern.compile(JSTOR_EXPORT_PATH + ".*")));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
+	}
+	
 }

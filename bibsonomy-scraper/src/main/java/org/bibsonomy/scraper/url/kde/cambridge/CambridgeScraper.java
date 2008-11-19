@@ -9,26 +9,30 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 /**
  * @author wbi
  * @version $Id$
  */
-public class CambridgeScraper implements Scraper {
+public class CambridgeScraper implements Scraper, UrlScraper {
 	
-	private static final String info = "Cambridge Journals Scraper: This Scraper parses a publication from http://journals.cambridge.org/ "+
-	"and extracts the adequate BibTeX entry. Author: KDE";
+	private static final String info = "Cambridge Journals Scraper: This Scraper parses a journal from <a href=\"http://journals.cambridge.org/\"> Cambridge Journals</a>. Author: KDE";
 
+	private static final String CAMBRIDGE_HOST  = "journals.cambridge.org";
 	private static final String CAMBRIDGE_HOST_NAME  = "http://journals.cambridge.org";
 	private static final String CAMBRIDGE_ABSTRACT_PATH = "/action/displayAbstract";
 	private static final String CAMBRIDGE_BIBTEX_DOWNLOAD_PATH = "/action/exportCitation?org.apache.struts.taglib.html.TOKEN=51cf342977f2aaa784c6ddfa66c3572c&emailid=&Download=Download&displayAbstract=No&format=BibTex&componentIds=";
@@ -48,14 +52,10 @@ public class CambridgeScraper implements Scraper {
 		/*
 		 * check, if URL is not NULL 
 		 */
-		if (sc.getUrl() != null) {
-			/*
-			 * extract URL and check against several (mirror) host names
-			 */
-			String url = sc.getUrl().toString();
-			
-			if(url.startsWith(CAMBRIDGE_HOST_NAME)) {
+		if (sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())) {
 				sc.setScraper(this);
+				
+				String url = sc.getUrl().toString();
 				
 				String id = null;
 				URL citUrl = null;
@@ -87,7 +87,6 @@ public class CambridgeScraper implements Scraper {
 				}else
 					throw new ScrapingFailureException("getting bibtex failed");
 
-			}
 		}
 		
 		return false;
@@ -158,4 +157,14 @@ public class CambridgeScraper implements Scraper {
 		return out.toString();
 	}
 
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + CAMBRIDGE_HOST), Pattern.compile(CAMBRIDGE_ABSTRACT_PATH + ".*")));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
+	}
+	
 }

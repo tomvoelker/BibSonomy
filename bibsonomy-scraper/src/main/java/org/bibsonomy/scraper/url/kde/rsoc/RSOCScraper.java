@@ -8,25 +8,31 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 /**
  * @author wbi
  * @version $Id$
  */
-public class RSOCScraper implements Scraper {
+public class RSOCScraper implements Scraper, UrlScraper {
 
-	private static final String info = "RSOC Scraper: This Scraper parses a publication from http://journals.royalsociety.org/ "+
+	private static final String info = "RSOC Scraper: This Scraper parses a journal from <a herf=\"http://journals.royalsociety.org/\">Royal Society Publishing</a> "+
 	"and extracts the adequate BibTeX entry. Author: KDE";
 
+	private static final String RSOC_HOST  = "journals.royalsociety.org";
 	private static final String RSOC_HOST_NAME  = "http://journals.royalsociety.org";
 	private static final String RSOC_ABSTRACT_PATH = "/content/";
 	private static final String RSOC_RIS_PATH = "/export.mpx?mode=ris&code=";
@@ -42,11 +48,10 @@ public class RSOCScraper implements Scraper {
 	public boolean scrape(ScrapingContext sc)
 			throws ScrapingException {
 		
-		if(sc.getUrl() != null) {
-			
-			String url = sc.getUrl().toString();
-			if(url.startsWith(RSOC_HOST_NAME)) {
+		if(sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())) {
 				sc.setScraper(this);
+
+				String url = sc.getUrl().toString();
 				
 				//get the ID of the article
 				String id = null;
@@ -92,7 +97,6 @@ public class RSOCScraper implements Scraper {
 					// missing id
 					throw new PageNotSupportedException("ID for donwload link is missing.");
 				}
-			}
 		}
 		
 		return false;
@@ -160,4 +164,14 @@ public class RSOCScraper implements Scraper {
 		return cookieString.toString();
 	}
 
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + RSOC_HOST), UrlScraper.EMPTY_PATTERN));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
+	}
+	
 }

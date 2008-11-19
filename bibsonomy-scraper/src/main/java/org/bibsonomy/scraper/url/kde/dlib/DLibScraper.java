@@ -11,16 +11,20 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
+import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 
 /**
  * Scraper for www.dlib.org
  * @author tst
  */
-public class DLibScraper implements Scraper {
+public class DLibScraper implements Scraper, UrlScraper {
 	
 	/**
 	 * Scraper info
@@ -139,7 +143,8 @@ public class DLibScraper implements Scraper {
 					}else
 						throw new ScrapingFailureException("getting bibtex failed");
 
-				}
+				}else
+					throw new PageNotSupportedException("This dlib page is not supported.");
 			} catch (MalformedURLException ex) {
 				throw new InternalFailureException(ex);
 			}
@@ -264,4 +269,15 @@ public class DLibScraper implements Scraper {
 		
 		return elements;
 	}
+	
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + DLIB_HOST), UrlScraper.EMPTY_PATTERN));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
+	}
+	
 }

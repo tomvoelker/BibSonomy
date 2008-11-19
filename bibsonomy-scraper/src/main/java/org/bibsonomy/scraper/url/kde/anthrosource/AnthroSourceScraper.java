@@ -9,23 +9,31 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
+import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 /**
  * @author wbi
  * @version $Id$
  */
-public class AnthroSourceScraper implements Scraper {
+public class AnthroSourceScraper implements Scraper, UrlScraper {
 	
-	private static final String info = "AnthroSource Scraper: This Scraper parses a publication from http://www.anthrosource.net/ "+
+	private static final String info = "AnthroSource Scraper: This Scraper parses a publication from <a herf=\"http://www.anthrosource.net/\">anthrosource</a> "+
 	"and extracts the adequate BibTeX entry. Author: KDE";
 
+	private static final String AS_HOST  = "anthrosource.net";
 	private static final String AS_HOST_NAME  = "http://www.anthrosource.net";
 	private static final String AS_ABSTRACT_PATH = "/doi/abs/";
 	private static final String AS_BIBTEX_PATH = "/action/showCitFormats";
@@ -45,15 +53,10 @@ public class AnthroSourceScraper implements Scraper {
 		/*
 		 * check, if URL is not NULL 
 		 */
-		if (sc.getUrl() != null) {
-			/*
-			 * extract URL and check against several (mirror) host names
-			 */
-			String url = sc.getUrl().toString();
-			
-			if(url.startsWith(AS_HOST_NAME)) {
+		if (sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())) {
 				String id = null;
 				URL userURL = null;
+				String url = sc.getUrl().toString();
 				
 				if(url.startsWith(AS_HOST_NAME + AS_ABSTRACT_PATH)) {
 					userURL = sc.getUrl();
@@ -71,7 +74,7 @@ public class AnthroSourceScraper implements Scraper {
 					
 				}
 				
-				if(url.startsWith(AS_HOST_NAME + AS_BIBTEX_PATH)) {
+				else if(url.startsWith(AS_HOST_NAME + AS_BIBTEX_PATH)) {
 					
 					int idStart = url.indexOf("?doi=") + 5;
 					int idEnd = url.length();
@@ -105,8 +108,8 @@ public class AnthroSourceScraper implements Scraper {
 						return true;
 					}else
 						throw new ScrapingFailureException("getting bibtex failed");
-				}
-			}
+				}else
+					throw new PageNotSupportedException("Given URL is not supported by this Scraper.");
 		}
 		
 		return false;
@@ -178,4 +181,16 @@ public class AnthroSourceScraper implements Scraper {
 		
 		return cookieString.toString();
 	}
+	
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + AS_HOST), Pattern.compile(AS_ABSTRACT_PATH + ".*")));
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + AS_HOST), Pattern.compile(AS_BIBTEX_PATH + ".*")));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
+	}
+	
 }

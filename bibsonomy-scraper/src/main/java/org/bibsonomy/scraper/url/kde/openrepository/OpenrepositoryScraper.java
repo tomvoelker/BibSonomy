@@ -4,32 +4,46 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 /**
  * Scraper for openrepository pages
  * @author tst
  * @version $Id$
  */
-public class OpenrepositoryScraper implements Scraper {
+public class OpenrepositoryScraper implements Scraper, UrlScraper {
 	
 	private static final String SUPPORTED_HOST_OPENREPOSITORY = "openrepository.com";
-	private static final String SUPPORTED_HOST_E_SPACE = "e-space.mmu.ac.uk/e-space";
-	private static final String SUPPORTED_HOST_HIRSLA = "hirsla.lsh.is/lsh";
-	private static final String SUPPORTED_HOST_GTCNI = "arrts.gtcni.org.uk/gtcni";
-	private static final String SUPPORTED_HOST_EXETER = "eric.exeter.ac.uk/exeter";
+	private static final String SUPPORTED_HOST_E_SPACE = "e-space.mmu.ac.uk";
+	private static final String SUPPORTED_HOST_E_SPACE_PATH = "/e-space";
+	private static final String SUPPORTED_HOST_HIRSLA = "hirsla.lsh.is";
+	private static final String SUPPORTED_HOST_HIRSLA_PATH = "/lsh";
+	private static final String SUPPORTED_HOST_GTCNI = "arrts.gtcni.org.uk";
+	private static final String SUPPORTED_HOST_GTCNI_PATH = "/gtcni";
+	private static final String SUPPORTED_HOST_EXETER = "eric.exeter.ac.uk";
+	private static final String SUPPORTED_HOST_EXETER_PATH = "/exeter";
 
 	private static final String PATTERN_HANDLE = "handle/(.*)";
 	
-	private static final String INFO = "Scraper for openrepository pages. Following poages are supported: " + SUPPORTED_HOST_OPENREPOSITORY + ", " + SUPPORTED_HOST_E_SPACE + ", " + SUPPORTED_HOST_EXETER + ", " + SUPPORTED_HOST_GTCNI + ", " + SUPPORTED_HOST_HIRSLA;
+	private static final String INFO = "Open Repository Scraper: Supports the following repositories: "
+		+ "<a href=\"http://" + SUPPORTED_HOST_OPENREPOSITORY + "\">Open Repository</a>, "
+		+ "<a href=\"http://" + SUPPORTED_HOST_E_SPACE + "\"> MMU Repository</a>, "
+		+ "<a href=\"http://" + SUPPORTED_HOST_EXETER + "\">Exeter Research and Institutional Content archive</a>, "
+		+ "<a href=\"http://" + SUPPORTED_HOST_GTCNI + "\">ARRT Space</a>, "
+		+ "<a href=\"http://" + SUPPORTED_HOST_HIRSLA + "\">HIRSLA</a>";
 	
 	public String getInfo() {
 		return INFO;
@@ -40,19 +54,19 @@ public class OpenrepositoryScraper implements Scraper {
 	}
 
 	public boolean scrape(ScrapingContext sc)throws ScrapingException {
-		if(sc != null && sc.getUrl() != null){
+		if(sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())){
 			String downloadURL = null;
 			
 			if(sc.getUrl().toString().contains(SUPPORTED_HOST_OPENREPOSITORY)){
 				downloadURL = "http://www." + SUPPORTED_HOST_OPENREPOSITORY + "/references?format=refman&handle=" + getHandle(sc.getUrl().toString());
-			}else if(sc.getUrl().toString().contains(SUPPORTED_HOST_E_SPACE)){
-				downloadURL = "http://www." + SUPPORTED_HOST_E_SPACE + "/references?format=refman&handle=" + getHandle(sc.getUrl().toString());
-			}else if(sc.getUrl().toString().contains(SUPPORTED_HOST_EXETER)){
-				downloadURL = "http://www." + SUPPORTED_HOST_EXETER + "/references?format=refman&handle=" + getHandle(sc.getUrl().toString());
-			}else if(sc.getUrl().toString().contains(SUPPORTED_HOST_HIRSLA)){
-				downloadURL = "http://www." + SUPPORTED_HOST_HIRSLA + "/references?format=refman&handle=" + getHandle(sc.getUrl().toString());
-			}else if(sc.getUrl().toString().contains(SUPPORTED_HOST_GTCNI)){
-				downloadURL = "http://" + SUPPORTED_HOST_GTCNI + "/references?format=refman&handle=" + getHandle(sc.getUrl().toString());
+			}else if(sc.getUrl().toString().contains(SUPPORTED_HOST_E_SPACE + SUPPORTED_HOST_E_SPACE_PATH)){
+				downloadURL = "http://www." + SUPPORTED_HOST_E_SPACE + SUPPORTED_HOST_E_SPACE_PATH + "/references?format=refman&handle=" + getHandle(sc.getUrl().toString());
+			}else if(sc.getUrl().toString().contains(SUPPORTED_HOST_EXETER + SUPPORTED_HOST_EXETER_PATH)){
+				downloadURL = "http://www." + SUPPORTED_HOST_EXETER + SUPPORTED_HOST_EXETER_PATH + "/references?format=refman&handle=" + getHandle(sc.getUrl().toString());
+			}else if(sc.getUrl().toString().contains(SUPPORTED_HOST_HIRSLA + SUPPORTED_HOST_HIRSLA_PATH)){
+				downloadURL = "http://www." + SUPPORTED_HOST_HIRSLA + SUPPORTED_HOST_HIRSLA_PATH + "/references?format=refman&handle=" + getHandle(sc.getUrl().toString());
+			}else if(sc.getUrl().toString().contains(SUPPORTED_HOST_GTCNI + SUPPORTED_HOST_GTCNI_PATH)){
+				downloadURL = "http://" + SUPPORTED_HOST_GTCNI + SUPPORTED_HOST_GTCNI_PATH + "/references?format=refman&handle=" + getHandle(sc.getUrl().toString());
 			}
 			
 			if(downloadURL != null){
@@ -93,4 +107,19 @@ public class OpenrepositoryScraper implements Scraper {
 		
 		return handle;
 	}
+	
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + SUPPORTED_HOST_OPENREPOSITORY), UrlScraper.EMPTY_PATTERN));
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + SUPPORTED_HOST_E_SPACE), Pattern.compile(SUPPORTED_HOST_E_SPACE_PATH + ".*")));
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + SUPPORTED_HOST_EXETER), Pattern.compile(SUPPORTED_HOST_EXETER_PATH + ".*")));
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + SUPPORTED_HOST_GTCNI), Pattern.compile(SUPPORTED_HOST_GTCNI_PATH + ".*")));
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + SUPPORTED_HOST_HIRSLA), Pattern.compile(SUPPORTED_HOST_HIRSLA_PATH + ".*")));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
+	}
+	
 }

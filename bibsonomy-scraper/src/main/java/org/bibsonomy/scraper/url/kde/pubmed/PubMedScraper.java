@@ -4,32 +4,38 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 /**
  * @author daill
  * @version $Id$
  */
-public class PubMedScraper implements Scraper {
+public class PubMedScraper implements Scraper, UrlScraper {
 	private static final Logger log 	= Logger.getLogger(PubMedScraper.class);
 	private static final String info 	= "PudMed Scraper: This scraper parses a publication page of citations from <a href=\"http://www.ncbi.nlm.nih.gov/sites/entrez/\">PubMed</a>  " +
 	"and extracts the adequate BibTeX entry. Author: KDE";
 	
+	private static final String HOST = "ncbi.nlm.nih.gov";
 	private static final String PUBMED_HOST = "www.ncbi.nlm.nih.gov";
 	private static final String PUBMED_EUTIL_HOST = "eutils.ncbi.nlm.nih.gov";
 
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		String bibtexresult = null;
 
-		if ((sc.getUrl() != null && PUBMED_HOST.equals(sc.getUrl().getHost())) || (sc.getUrl() != null && PUBMED_EUTIL_HOST.equals(sc.getUrl().getHost())) ) {
+		if ( sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())) {
 			sc.setScraper(this);
 			
 			Pattern pa = null;
@@ -96,4 +102,16 @@ public class PubMedScraper implements Scraper {
 	public Collection<Scraper> getScraper() {
 		return Collections.singletonList((Scraper) this);
 	}
+	
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), UrlScraper.EMPTY_PATTERN));
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + PUBMED_EUTIL_HOST), UrlScraper.EMPTY_PATTERN));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
+	}
+	
 }

@@ -4,28 +4,34 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 
 /**
  * SCraper for http://www.iop.org
  * @author tst
  */
-public class IOPScraper implements Scraper {
+public class IOPScraper implements Scraper, UrlScraper {
 
-	private static final String INFO = "IOPScraper: Scraper for citations from http://www.iop.org/EJ.";
+	private static final String INFO = "IOPScraper: Scraper for electronic journals from <a herf=\"http://www.iop.org/EJ\">IOP</a>. Author: KDE";
 
 	/*
 	 * URL parts
 	 */
+	private static final String IOP_HOST = "iop.org";
 	private static final String IOP_URL_HOST = "www.iop.org";
 	
 	private static final String IOP_URL_PATH_START = "/EJ";
@@ -59,7 +65,7 @@ public class IOPScraper implements Scraper {
 	 * It supports only http://www.iop.org sides which starts in the path with "/EJ". EJ stands for electrionic journals.
 	 */
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
-		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().equals(IOP_URL_HOST) && sc.getUrl().getPath().startsWith(IOP_URL_PATH_START)){
+		if(sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())){
 			sc.setScraper(this);
 			
 			// download article page
@@ -130,6 +136,16 @@ public class IOPScraper implements Scraper {
 			}
 		}
 		return false;
+	}
+	
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + IOP_HOST), Pattern.compile(IOP_URL_PATH_START + ".*")));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
 	}
 
 }

@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,8 +18,11 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 
 /**
@@ -29,7 +33,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * 
  * @author tst
  */
-public class BlackwellSynergyScraper implements Scraper {
+public class BlackwellSynergyScraper implements Scraper, UrlScraper {
 	
 	private static final Logger log = Logger.getLogger(BlackwellSynergyScraper.class);
 
@@ -49,6 +53,11 @@ public class BlackwellSynergyScraper implements Scraper {
 	private static final String PATTERN_VALUE = "value=\"[^\"]*\"";
 
 	/**
+	 * balckwell host
+	 */
+	private static final String HOST = "blackwell-synergy.com";
+	
+	/**
 	 * get Info
 	 */
 	public String getInfo() {
@@ -60,7 +69,7 @@ public class BlackwellSynergyScraper implements Scraper {
 	}
 
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
-		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith("blackwell-synergy.com")){
+		if(sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())){
 			
 			// log every try to call this Scraper
 			log.info("offline Scraper called: BlackwellSynergyScraper with " + sc.getUrl().toString());
@@ -210,6 +219,16 @@ public class BlackwellSynergyScraper implements Scraper {
 		out.close();
 		
 		return out.toString();
+	}
+	
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), UrlScraper.EMPTY_PATTERN));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
 	}
 	
 }

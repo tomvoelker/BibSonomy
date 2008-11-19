@@ -9,23 +9,30 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 /**
  * @author wbi
  * @version $Id$
  */
-public class ACSScraper implements Scraper {
+public class ACSScraper implements Scraper, UrlScraper {
 
-	private static final String info = "ACS Publication Scraper: This Scraper parses a publication from http://www.acs.org/ "+
+	private static final String info = "ACS Publication Scraper: This Scraper parses a publication from <a herf=\"http://www.acs.org/\">ACS</a> "+
 	"and extracts the adequate BibTeX entry. Author: KDE";
 
+	private static final String ACS_HOST  = "pubs.acs.org";
 	private static final String ACS_HOST_NAME  = "http://pubs.acs.org";
 	private static final String ACS_ABSTRACT_PATH = "/cgi-bin/abstract.cgi/";
 	private static final String ACS_BIBTEX_PATH = "/wls/journals/citation2/Citation";
@@ -44,13 +51,8 @@ public class ACSScraper implements Scraper {
 		/*
 		 * check, if URL is not NULL 
 		 */
-		if (sc.getUrl() != null) {
-			/*
-			 * extract URL and check against several (mirror) host names
-			 */
-			String url = sc.getUrl().toString();
-			
-			if(url.startsWith(ACS_HOST_NAME)) {
+		if (sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())) {
+				String url = sc.getUrl().toString();
 				sc.setScraper(this);
 				URL citationURL = null;
 				
@@ -89,7 +91,6 @@ public class ACSScraper implements Scraper {
 					return true;
 				}else
 					throw new ScrapingFailureException("getting bibtex failed");
-			}
 		}
 		
 		return false;
@@ -160,4 +161,16 @@ public class ACSScraper implements Scraper {
 		urlConn.disconnect();
 		return out.toString();
 	}
+	
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + ACS_HOST), Pattern.compile(ACS_BIBTEX_PATH + ".*")));
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + ACS_HOST), Pattern.compile(ACS_ABSTRACT_PATH + ".*")));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
+	}
+	
 }

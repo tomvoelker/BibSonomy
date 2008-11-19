@@ -4,22 +4,31 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 /**
  * Scraper for http://www.worldcat.org 
  * @author tst
  */
-public class WorldCatScraper implements Scraper {
+public class WorldCatScraper implements Scraper, UrlScraper {
 
-	private static final String INFO = "Scraper for publications from http://www.worldcat.org.";
+	private static final String INFO = "Wolrdcat Scraper: Scraper for publications from <a herf=\"http://www.worldcat.org\">worldcat</a>. Author: KDE";
+	
+	private static final String HOST = "worldcat.org";
+	private static final String PATH = "/oclc/";
 	
 	public String getInfo() {
 		return INFO;
@@ -30,10 +39,9 @@ public class WorldCatScraper implements Scraper {
 	}
 
 	public boolean scrape(ScrapingContext sc)throws ScrapingException {
-		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith("worldcat.org")){
+		if(sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())){
 			sc.setScraper(this);
 			
-			if(sc.getUrl().getPath().startsWith("/oclc/")){
 				try {
 					String bibtex = getBibtex(sc.getUrl(), sc, false);
 					
@@ -46,8 +54,6 @@ public class WorldCatScraper implements Scraper {
 				} catch (MalformedURLException ex) {
 					throw new InternalFailureException(ex);
 				}
-			}else
-				throw new PageNotSupportedException("not supported worldcat.org page. Select a publication page and scrape again.");
 		}
 		return false;
 	}
@@ -83,6 +89,16 @@ public class WorldCatScraper implements Scraper {
 		
 		RisToBibtexConverter converter = new RisToBibtexConverter();
 		return converter.RisToBibtex(endnote);
+	}
+
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), Pattern.compile(PATH)));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
 	}
 	
 }

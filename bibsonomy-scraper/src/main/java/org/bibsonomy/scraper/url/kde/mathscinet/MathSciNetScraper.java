@@ -6,14 +6,19 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 
 /**
@@ -22,9 +27,9 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * @author tst
  *
  */
-public class MathSciNetScraper implements Scraper {
+public class MathSciNetScraper implements Scraper, UrlScraper {
 	
-	private static final String INFO = "MathSciNetScraper: Extracts publications from ams.org/mathscinet . Publications can be entered as a marked bibtex snippet or by posting the page of the reference.";
+	private static final String INFO = "MathSciNetScraper: Extracts publications from <a herf=\"http://www.ams.org/mathscinet/\">MathSciNet</a> . Publications can be entered as a marked bibtex snippet or by posting the page of the reference. Author: KDE";
 
 	/*
 	 * URL components
@@ -254,6 +259,16 @@ public class MathSciNetScraper implements Scraper {
 
 	public Collection<Scraper> getScraper() {
 		return Collections.singletonList((Scraper) this);
+	}
+	
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + URL_MATHSCINET_HOST), Pattern.compile(URL_MATHSCINET_PATH + ".*")));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
 	}
 	
 }

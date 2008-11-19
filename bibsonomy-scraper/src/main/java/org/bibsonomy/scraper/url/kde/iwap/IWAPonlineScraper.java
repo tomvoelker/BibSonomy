@@ -1,23 +1,29 @@
 package org.bibsonomy.scraper.url.kde.iwap;
 
+import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 /**
  * Scraper for papers from http://www.iwaponline.com
  * @author tst
  * @version $Id$
  */
-public class IWAPonlineScraper implements Scraper {
+public class IWAPonlineScraper implements Scraper, UrlScraper {
 	
-	private static final String INFO = "Supports papers from http://www.iwaponline.com";
+	private static final String INFO = "IWAP Scraper: This Scraper supports papers from <a herf=\"http://www.iwaponline.com\">IWA Publishing</a>. Author: KDE";
 	
 	/*
 	 * host
@@ -66,7 +72,7 @@ public class IWAPonlineScraper implements Scraper {
 	}
 
 	public boolean scrape(ScrapingContext sc)throws ScrapingException {
-		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(HOST)){
+		if(sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())){
 
 			sc.setScraper(this);
 			
@@ -201,4 +207,14 @@ public class IWAPonlineScraper implements Scraper {
 		return false;
 	}
 
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), UrlScraper.EMPTY_PATTERN));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
+	}
+	
 }

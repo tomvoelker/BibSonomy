@@ -11,22 +11,27 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 
 /**
  * Scraper for www3.interscience.wiley.com
  * @author tst
  */
-public class WileyIntersienceScraper implements Scraper {
+public class WileyIntersienceScraper implements Scraper, UrlScraper {
 	
-	private static final String INFO = "WileyIntersienceScraper: Extracts publications from there abstract page.";
+	private static final String INFO = "WileyIntersienceScraper: Extracts publications from the abstract page of <a herf=\"http://www3.interscience.wiley.com/cgi-bin/home?CRETRY=1&SRETRY=0\">interscience.wiley.com</a>. Author: KDE";
 
 	/*
 	 * urls and host from intersience.wiley.com 
@@ -71,7 +76,7 @@ public class WileyIntersienceScraper implements Scraper {
 	 * - download citation page
 	 */
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
-		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(WILEY_INTERSIENCE_HOST)){
+		if(sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())){
 			sc.setScraper(this);
 			
 			try{
@@ -288,6 +293,16 @@ public class WileyIntersienceScraper implements Scraper {
 
 	public Collection<Scraper> getScraper() {
 		return Collections.singletonList((Scraper) this);
+	}
+	
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + WILEY_INTERSIENCE_HOST), UrlScraper.EMPTY_PATTERN));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
 	}
 	
 }

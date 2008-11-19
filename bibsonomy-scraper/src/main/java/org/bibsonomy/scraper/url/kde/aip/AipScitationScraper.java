@@ -11,16 +11,21 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 import org.bibsonomy.util.TagStringUtils;
 
 
@@ -32,9 +37,9 @@ import org.bibsonomy.util.TagStringUtils;
  * @author tst
  *
  */
-public class AipScitationScraper implements Scraper {
+public class AipScitationScraper implements Scraper, UrlScraper {
 	
-	private static final String INFO = "AipScitationScraper: Extracts publications from scitation.aip.org . Publications can be entered as a marked bibtex snippet or by posting the page of the reference.";
+	private static final String INFO = "AipScitationScraper: Extracts publications from <a herf=\"http://scitation.aip.org/\">Scitation</a> . Publications can be entered as a marked bibtex snippet or by posting the page of the reference. Author: KDE";
 	
 	/*
 	 * urls and parts of urls
@@ -83,7 +88,7 @@ public class AipScitationScraper implements Scraper {
 	 * Extract snippets from a bibtex page and single references from overview pages 
 	 */
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
-		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(URL_AIP_HOST)){
+		if(sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())){
 			sc.setScraper(this);
 			
 			/*
@@ -389,5 +394,15 @@ public class AipScitationScraper implements Scraper {
 	public Collection<Scraper> getScraper() {
 		return Collections.singletonList((Scraper) this);
 	}
+	
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + URL_AIP_HOST), UrlScraper.EMPTY_PATTERN));
+		return list;
+	}
 
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
+	}
+	
 }

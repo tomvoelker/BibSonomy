@@ -7,22 +7,29 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 /**
  * @author wbi
  * @version $Id$
  */
-public class BioMedCentralScraper implements Scraper {
+public class BioMedCentralScraper implements Scraper, UrlScraper {
 
-	private static final String info = "BioMed Central Scraper: This Scraper parses a publication from http://www.biomedcentral.com/ "+
+	private static final String info = "BioMed Central Scraper: This Scraper parse a publication from <a herf=\"http://www.biomedcentral.com/\">BioMed Central</a>. "+
 	"and extracts the adequate BibTeX entry. Author: KDE";
 
+	private static final String BIOMEDCENTRAL_HOST  = "biomedcentral.com";
 	private static final String BIOMEDCENTRAL_HOST_NAME  = "http://www.biomedcentral.com";
 	private static final String BIOMEDCENTRAL_BIBTEX_PATH = "citation";
 	private static final String BIOMEDCENTRAL_BIBTEX_PARAMS = "?format=bibtex&include=cit&direct=0&action=submit";
@@ -40,13 +47,10 @@ public class BioMedCentralScraper implements Scraper {
 		/*
 		 * check, if URL is not NULL 
 		 */
-		if (sc.getUrl() != null) {
-			/*
-			 * extract URL and check against several (mirror) host names
-			 */
-			String url = sc.getUrl().toString();
-			if(url.startsWith(BIOMEDCENTRAL_HOST_NAME)) {
+		if (sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())) {
 				sc.setScraper(this);
+				
+				String url = sc.getUrl().toString();
 				
 				if(!(url.endsWith("/" + BIOMEDCENTRAL_BIBTEX_PATH + "/") || 
 					 url.endsWith("/" + BIOMEDCENTRAL_BIBTEX_PATH) ||
@@ -76,8 +80,18 @@ public class BioMedCentralScraper implements Scraper {
 					sc.setBibtexResult(bibResult);
 					return true;
 				}
-			}
 		}
 		return false;
 	}
+	
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + BIOMEDCENTRAL_HOST), UrlScraper.EMPTY_PATTERN));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
+	}
+	
 }

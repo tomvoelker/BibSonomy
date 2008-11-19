@@ -1,18 +1,23 @@
 package org.bibsonomy.scraper.url.kde.l3s;
 
+import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
-public class L3SScraper implements Scraper {
-	private static final String info 	= "arXiv Scraper: This scraper parses a publication page from <a href=\"http://www.l3s.de/\">L3S</a> and " +
-	   									  "extracts the adequate BibTeX entry. Author: KDE";
+public class L3SScraper implements Scraper, UrlScraper {
+	private static final String info 	= "L3S Scraper: Scrapes publications from <a href=\"http://www.l3s.de\">L3S</a> and returns it as bibtex. Author: KDE";
 	
 	private static final String L3S_URL = "l3s.de";
 	
@@ -21,7 +26,7 @@ public class L3SScraper implements Scraper {
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
 		
 		//-- url shouldn't be null
-		if (sc.getUrl() != null && sc.getUrl().getHost().endsWith(L3S_URL)) {
+		if (sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())) {
 				
 				sc.setScraper(this);
 				String bibtexresult = null;
@@ -66,4 +71,15 @@ public class L3SScraper implements Scraper {
 	public Collection<Scraper> getScraper() {
 		return Collections.singletonList((Scraper) this);
 	}
+	
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + L3S_URL), UrlScraper.EMPTY_PATTERN));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
+	}
+	
 }

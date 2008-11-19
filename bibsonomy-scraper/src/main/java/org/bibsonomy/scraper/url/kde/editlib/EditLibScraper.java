@@ -4,22 +4,30 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 /**
  * @author wbi
  * @version $Id$
  */
-public class EditLibScraper implements Scraper {
+public class EditLibScraper implements Scraper, UrlScraper {
 
-	private static final String info = "Ed/ITLib Scraper: This Scraper parses a publication from http://www.bmj.com/ "+
+	private static final String info = "Ed/ITLib Scraper: This Scraper parses a publication from <a herf=\"http://www.editlib.org\">Ed/ITLib</a> "+
 	"and extracts the adequate BibTeX entry. Author: KDE";
 
+	private static final String EDITLIB_HOST  = "editlib.org";
+	private static final String EDITLIB_PATH  = "/index.cfm";
 	private static final String EDITLIB_HOST_NAME  = "http://www.editlib.org";
 	private static final String EDITLIB_ABSTRACT_PATH = "/index.cfm?fuseaction=Reader.ViewAbstract&paper_id=";
 	private static final String EDITLIB_BIBTEX_PATH = "/index.cfm?fuseaction=Reader.ChooseCitationFormat&paper_id=";
@@ -38,13 +46,9 @@ public class EditLibScraper implements Scraper {
 		/*
 		 * check, if URL is not NULL 
 		 */
-		if (sc.getUrl() != null) {
-			/*
-			 * extract URL and check against several (mirror) host names
-			 */
-			String url = sc.getUrl().toString();
-			
-			if(url.startsWith(EDITLIB_HOST_NAME)) {
+		if (sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())) {
+				String url = sc.getUrl().toString();
+				
 				sc.setScraper(this);
 				
 				String id = null;
@@ -72,11 +76,19 @@ public class EditLibScraper implements Scraper {
 				}else
 					throw new ScrapingFailureException("getting bibtex failed");
 
-			}
 		}
 		
 		return false;
 	}
 
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + EDITLIB_HOST), Pattern.compile(EDITLIB_PATH + ".*")));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
+	}
 
 }

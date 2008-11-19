@@ -11,25 +11,30 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 /**
  * @author wbi
  * @version $Id$
  */
-public class OSAScraper implements Scraper {
+public class OSAScraper implements Scraper, UrlScraper {
 
-	private static final String info = "Optical Society of America Scraper: This Scraper parses a publication from http://josaa.osa.org/ "+
+	private static final String info = "Optical Society of America Scraper: This Scraper parses a publication from the <a herf=\"http://josaa.osa.org/\">Optical Society of America</a> "+
 	"and extracts the adequate BibTeX entry. Author: KDE";
 
+	private static final String OSA_HOST  = "josaa.osa.org";
 	private static final String OSA_HOST_NAME  = "http://josaa.osa.org";
 	private static final String OSA_BIBTEX_DOWNLOAD_PATH = "/custom_tags/IB_Download_Citations.cfm";
 	
@@ -52,13 +57,10 @@ public class OSAScraper implements Scraper {
 		/*
 		 * check, if URL is not NULL 
 		 */
-		if (sc.getUrl() != null) {
-			/*
-			 * extract URL and check against several (mirror) host names
-			 */
-			String url = sc.getUrl().toString();
-			if(url.startsWith(OSA_HOST_NAME)) {
+		if (sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())) {
 				sc.setScraper(this);
+				
+				String url = sc.getUrl().toString();
 
 				String id = null;
 				
@@ -115,7 +117,6 @@ public class OSAScraper implements Scraper {
 				}else
 					throw new ScrapingFailureException("getting bibtex failed");
 
-			}
 		}
 		return false;
 	}
@@ -197,4 +198,15 @@ public class OSAScraper implements Scraper {
 		
 		return cookieString.toString();
 	}
+	
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + OSA_HOST), UrlScraper.EMPTY_PATTERN));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
+	}
+	
 }

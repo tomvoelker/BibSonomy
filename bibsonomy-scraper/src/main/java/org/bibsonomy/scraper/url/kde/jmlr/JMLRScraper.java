@@ -1,23 +1,29 @@
 package org.bibsonomy.scraper.url.kde.jmlr;
 
+import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 /**
  * Scraper for papers from http://jmlr.csail.mit.edu/
  * @author tst
  * @version $Id$
  */
-public class JMLRScraper implements Scraper {
+public class JMLRScraper implements Scraper, UrlScraper {
 	
-	private static final String INFO = "Scraper for papers from http://jmlr.csail.mit.edu/";
+	private static final String INFO = "JMLR Scraper: Scraper for papers from <a href=\"http://jmlr.csail.mit.edu/\">Journal of Machine Learning Research</a>. Author: KDE";
 	
 	private static final String HOST = "jmlr.csail.mit.edu";
 	
@@ -44,7 +50,7 @@ public class JMLRScraper implements Scraper {
 	}
 
 	public boolean scrape(ScrapingContext sc)throws ScrapingException {
-		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().endsWith(HOST)){
+		if(sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())){
 			sc.setScraper(this);
 			
 			if(sc.getUrl().getPath().startsWith(PATH) && sc.getUrl().getPath().endsWith(".html")){
@@ -172,4 +178,14 @@ public class JMLRScraper implements Scraper {
 		return false;
 	}
 
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), UrlScraper.EMPTY_PATTERN));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
+	}
+	
 }

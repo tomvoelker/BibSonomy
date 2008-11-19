@@ -9,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,20 +17,24 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
-public class IngentaconnectScraper implements Scraper{
+public class IngentaconnectScraper implements Scraper, UrlScraper{
 	
 	private static final String info = "Ingentaconnect Scraper: This scraper parses a publication page from <a href=\"http://www.ingentaconnect.com/\">Ingentaconnect</a>  " +
 	"and extracts the adequate BibTeX entry. Author: KDE";
 	
 	private static final Logger log = Logger.getLogger(IngentaconnectScraper.class);
-	
+
+	private static final String INGENTA_HOST = "ingentaconnect.com";
 	private static final String INGENTA_CITATION_URL = "http://www.ingentaconnect.com/";
 
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
-		if (sc.getUrl() != null && (sc.getUrl().toString().startsWith(INGENTA_CITATION_URL))) {
+		if (sc.getUrl() != null && supportsUrl(sc.getUrl())) {
 
 			sc.setScraper(this);
 
@@ -209,4 +214,14 @@ public class IngentaconnectScraper implements Scraper{
 		return Collections.singletonList((Scraper) this);
 	}
 
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + INGENTA_HOST), UrlScraper.EMPTY_PATTERN));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
+	}
+	
 }
