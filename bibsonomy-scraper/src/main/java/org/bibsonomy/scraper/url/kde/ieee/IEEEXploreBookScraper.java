@@ -11,14 +11,19 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -27,11 +32,12 @@ import org.w3c.dom.NodeList;
 import org.w3c.tidy.Tidy;
 
 
-public class IEEEXploreBookScraper implements Scraper {
+public class IEEEXploreBookScraper implements Scraper, UrlScraper {
 	private static final Logger log = Logger.getLogger(IEEEXploreBookScraper.class);
 	private static final String info = "IEEEXplore Book Scraper: This scraper creates a BibTeX entry for the books at " +
 			                           "<a href=\"http://ieeexplore.ieee.org/books/bkbrowse.jsp\">IEEEXplore</a>. Author: KDE";
 	
+	private static final String IEEE_HOST = "ieeexplore.ieee.org";
 	private static final String IEEE_HOST_NAME = "http://ieeexplore.ieee.org/";
 	private static final String IEEE_BOOK_PATH = "books";
 	private static final String IEEE_BOOK	   = "@book";
@@ -45,7 +51,7 @@ public class IEEEXploreBookScraper implements Scraper {
 
 
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
-		if (sc.getUrl() != null && sc.getUrl().toString().startsWith(IEEE_HOST_NAME+IEEE_BOOK_PATH)) {
+		if (sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())) {
 			sc.setScraper(this);
 			
 			Pattern pattern = Pattern.compile(PATTERN_ARNUMBER);
@@ -287,6 +293,16 @@ public class IEEEXploreBookScraper implements Scraper {
 	
 	public Collection<Scraper> getScraper () {
 		return Collections.singletonList((Scraper)this);
+	}
+	
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile("/" + IEEE_BOOK_PATH + ".*")));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
 	}
 	
 }

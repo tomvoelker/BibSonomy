@@ -7,13 +7,18 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -28,9 +33,9 @@ import org.w3c.tidy.Tidy;
  * http://www.librarything.com/work/
  * @author tst
  */
-public class LibrarythingScraper implements Scraper {
+public class LibrarythingScraper implements Scraper, UrlScraper {
 	
-	private static final String INFO = "LibrarythingScraper: extracts publication from http://www.librarything.com/work-info and convert it to bibtex. If a http://www.librarything.com/work page is selectd, then the scraper trys to download the according work-info page.";
+	private static final String INFO = "LibrarythingScraper: extracts publication from <a herf=\"http://www.librarything.com/work-info\">librarything</a> and convert it to bibtex. If a http://www.librarything.com/work page is selectd, then the scraper trys to download the according work-info page. Author: KDE";
 	
 	
 	private static final String URL_LIBRARYTHING_PAGE = "http://www.librarything.com";
@@ -48,7 +53,7 @@ public class LibrarythingScraper implements Scraper {
 	
 	private static String LIBRARYTHING_PATTERN_AUTHOR_LINK = "<td class=\"bookeditfield\" id=\"bookedit_authorunflip\">(.*)</td>";
 
-	private static String LIBRARYTHING_PATTERN_AUTHOR = "<td class=\"left\">Author<div id=\"data_authorunflip\" class=\"hidden\">([^<]*)</div></td>";
+	private static String LIBRARYTHING_PATTERN_AUTHOR = "<h2>by <a href=\"/author/[^>]*>([^<]*)</a></h2>";
 	
 	private static String LIBRARYTHING_PATTERN_DATE = "<td class=\"bookeditfield\" id=\"bookedit_date\">([^<]*)</td>";
 	
@@ -74,7 +79,7 @@ public class LibrarythingScraper implements Scraper {
 	 * http://www.librarything.com/work/
 	 */
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
-		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().contains("librarything") && sc.getSelectedText() == null){
+		if(sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())){
 			URL url = null;
 			
 			sc.setScraper(this);
@@ -216,6 +221,16 @@ public class LibrarythingScraper implements Scraper {
 
 	public Collection<Scraper> getScraper() {
 		return Collections.singletonList((Scraper) this);
+	}
+	
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*librarything\\..*"), UrlScraper.EMPTY_PATTERN));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
 	}
 
 }

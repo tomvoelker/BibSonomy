@@ -1,9 +1,12 @@
 package org.bibsonomy.scraper.url.kde.ieee;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,16 +14,19 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 /**
  * Scraper for csdl2.computer.org
  * @author tst
  */ 
-public class IEEEComputerSocietyScraper implements Scraper {
+public class IEEEComputerSocietyScraper implements Scraper, UrlScraper {
 	
-	private static final String INFO = "Scraper for IEEE Computer Society from csdl2.computer.org";
+	private static final String INFO = "IEEE compüuter society Scraper: Scraper for publications from <a href=\"http://www2.computer.org/portal/web/guest/home\">IEEE Computer Society</a>. Author: KDE";
 	private static final String HOST = "csdl2.computer.org";
 	
 	private static final String PATTERN_HREF = "href=\"[^\"]*\"";
@@ -39,7 +45,7 @@ public class IEEEComputerSocietyScraper implements Scraper {
 	}
 
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
-		if(sc != null &&  sc.getUrl() != null && sc.getUrl().getHost().equals(HOST)){
+		if(sc != null &&  sc.getUrl() != null && supportsUrl(sc.getUrl())){
 			sc.setScraper(this);
 			
 			String page = sc.getPageContent();
@@ -80,6 +86,16 @@ public class IEEEComputerSocietyScraper implements Scraper {
 			}
 		}
 		return false;
+	}
+	
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), UrlScraper.EMPTY_PATTERN));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
 	}
 	
 }

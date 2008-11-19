@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,14 +16,17 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 
 
-public class SpringerLinkScraper implements Scraper {
+public class SpringerLinkScraper implements Scraper, UrlScraper {
 	private static final String info = "SpringerLink Scraper: This scraper parses a publication page from <a href=\"http://springerlink.com/\">SpringerLink</a>  " +
 	"and extracts the adequate BibTeX entry. Author: KDE";
 	private static final String userAgent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)";	
@@ -30,10 +34,10 @@ public class SpringerLinkScraper implements Scraper {
 	private static final Logger log = Logger.getLogger(SpringerLinkScraper.class);
 
 	private static final String SPRINGER_CITATION_URL = "http://springerlink.com/";
-	private static final String SPRINGER_CITATION_URL2= "http://www.springerlink.com/";
-
+	private static final String SPRINGER_CITATION_HOST = "springerlink.com";
+	
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
-		if (sc.getUrl() != null && (sc.getUrl().toString().startsWith(SPRINGER_CITATION_URL) || sc.getUrl().toString().startsWith(SPRINGER_CITATION_URL2))) {
+		if (sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())) {
 			sc.setScraper(this);
 
 			// This Scraper might handle the specified url
@@ -165,6 +169,16 @@ public class SpringerLinkScraper implements Scraper {
 	
 	public Collection<Scraper> getScraper() {
 		return Collections.singletonList((Scraper) this);
+	}
+	
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + SPRINGER_CITATION_HOST), UrlScraper.EMPTY_PATTERN));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
 	}
 
 }

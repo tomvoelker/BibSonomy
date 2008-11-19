@@ -9,6 +9,8 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
@@ -17,21 +19,25 @@ import java.util.regex.PatternSyntaxException;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 
 /**
  * @author sre
  *
  */
-public class UBKAScraper implements Scraper {
+public class UBKAScraper implements Scraper, UrlScraper {
 
 	private static final String info = "UBKA Scraper: This scraper parses a publication page from the <a href=\"http://www.ubka.uni-karlsruhe.de/hylib/ka_opac.html\">University Library (UB) Karlsruhe</a> " +
 									   "and extracts the adequate BibTeX entry. Author: KDE";
-	
+
+	private static final String UBKA_HOST = "ubka.uni-karlsruhe.de";
 	private static final String UBKA_HOST_NAME = "http://www.ubka.uni-karlsruhe.de";
 	private static final String UBKA_SEARCH_NAME = "http://www.ubka.uni-karlsruhe.de/hylib-bin/suche.cgi";
 	private static final String UBKA_SEARCH_PATH = "/hylib-bin/suche.cgi";
@@ -52,7 +58,7 @@ public class UBKAScraper implements Scraper {
 	private static final String  UBKA_BREAK_PATTERN = "<br>";
 	
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
-		if (sc.getUrl() != null && sc.getUrl().toString().startsWith(UBKA_HOST_NAME)) {
+		if (sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())) {
 			sc.setScraper(this);
 			
 			if(UBKA_SEARCH_PATH.equals(sc.getUrl().getPath())){
@@ -179,5 +185,14 @@ public class UBKAScraper implements Scraper {
 		return Collections.singletonList((Scraper) this);
 	}
 
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + UBKA_HOST), UrlScraper.EMPTY_PATTERN));
+		return list;
+	}
 
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
+	}
+	
 }

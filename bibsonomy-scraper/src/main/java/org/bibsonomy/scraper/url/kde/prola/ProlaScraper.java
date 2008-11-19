@@ -5,23 +5,28 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
 
 /**
  * Scraper for prola.aps.org. It scrapes selected bibtex snippets and selected articles.
  * @author tst
  */
-public class ProlaScraper implements Scraper {
+public class ProlaScraper implements Scraper, UrlScraper {
 	
-	private static final String INFO = "ProlaScraper: For selected bibtex snippets and articles from prola.aps.org.";
+	private static final String INFO = "ProlaScraper: For selected bibtex snippets and articles from <a href=\"http://prola.aps.org/\">PROLA</a>. Author: KDE";
 	
 	/*
 	 * needed URLs and components
@@ -60,7 +65,7 @@ public class ProlaScraper implements Scraper {
 	 * Extract atricles from prola.aps.org. It works with the article page, the bibtex page and a selected bibtex snippet.
 	 */
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
-		if(sc != null && sc.getUrl() != null && sc.getUrl().getHost().equals(PROLA_APS_HOST)){
+		if(sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())){
 			sc.setScraper(this);
 			
 			String prolaPageContent = sc.getPageContent();
@@ -175,4 +180,15 @@ public class ProlaScraper implements Scraper {
 		
 		return bibtex;
 	}
+	
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
+		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + PROLA_APS_HOST), UrlScraper.EMPTY_PATTERN));
+		return list;
+	}
+
+	public boolean supportsUrl(URL url) {
+		return UrlMatchingHelper.isUrlMatch(url, this);
+	}
+	
 }
