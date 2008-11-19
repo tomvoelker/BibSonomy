@@ -11,13 +11,13 @@ import org.junit.Test;
  * @author wbi
  * @version $Id$
  */
+@Ignore
 public class JStorScraperTest {
 	
 	/**
 	 * starts URL test with id url_97
 	 */
 	@Test
-	@Ignore
 	public void urlTest1Run(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_97"));
@@ -27,7 +27,6 @@ public class JStorScraperTest {
 	 * starts URL test with id url_98
 	 */
 	@Test
-	@Ignore
 	public void urlTest2Run(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_98"));
