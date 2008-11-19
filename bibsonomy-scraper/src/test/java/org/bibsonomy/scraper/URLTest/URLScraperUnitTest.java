@@ -105,6 +105,10 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 		return scraper.getClass();
 	}
 
+	public Scraper getScraper() {
+		return this.scraper;
+	}
+
 	/**
 	 * Tested URL
 	 * @return testedURL as String
