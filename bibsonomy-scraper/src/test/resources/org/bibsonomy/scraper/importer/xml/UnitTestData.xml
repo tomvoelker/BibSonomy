@@ -190,13 +190,13 @@
 		<TestDescription>URL scraping test with a citation page from intersience wiley</TestDescription>
 		<URL>http://www3.interscience.wiley.com/cgi-bin/abstract/104530788/ABSTRACT?CRETRY=1&amp;SRETRY=0</URL>
 		<BibFile>WileyIntersienceScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.wiley.intersience.WileyIntersienceScraper</Scraper>
+		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_34">
 		<TestDescription>URL scraping test with a citation download page from intersience wiley</TestDescription>
 		<URL>http://www3.interscience.wiley.com/tools/citex?clienttype=1&amp;subtype=1&amp;mode=1&amp;version=1&amp;id=104530788&amp;redirect=/cgi-bin/abstract/104530788/ABSTRACT</URL>
 		<BibFile>WileyIntersienceScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.wiley.intersience.WileyIntersienceScraper</Scraper>
+		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_35">
 		<TestDescription>URL (with eutils host) scraping test with publication from pubmed</TestDescription>
@@ -628,7 +628,7 @@
 		<TestDescription>URL scraping test with a abstract page (alternate URL pattern) from wiley</TestDescription>
 		<URL>http://www3.interscience.wiley.com/journal/118514708/abstract</URL>
 		<BibFile>WileyIntersienceScraperUnitURLTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.wiley.intersience.WileyIntersienceScraper</Scraper>
+		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_110">
 		<TestDescription>Cambridge Journals Url Test</TestDescription>
@@ -664,7 +664,7 @@
 		<TestDescription>Scraper for bibtex extraction from sourcecode</TestDescription>
 		<URL>http://citeseer.ist.psu.edu/fiat90competitive.html</URL>
 		<BibFile>BibtexScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.bibtex.BibtexScraper</Scraper>
+		<Scraper>org.bibsonomy.scraper.generic.BibtexScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_117">
 		<TestDescription>Test for e-space.mmu.ac.uk/e-space (openrepository)</TestDescription>
