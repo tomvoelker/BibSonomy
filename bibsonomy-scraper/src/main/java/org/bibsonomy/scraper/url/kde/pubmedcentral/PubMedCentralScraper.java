@@ -2,38 +2,34 @@ package org.bibsonomy.scraper.url.kde.pubmedcentral;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
-import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.scraper.url.UrlMatchingHelper;
 
-public class PubMedCentralScraper implements Scraper, UrlScraper {
-	private static final Logger log 	= Logger.getLogger(PubMedCentralScraper.class);
-	private static final String info 	= "PudMedCentral Scraper: This scraper parses a publication page of citations from <a href=\"http://www.pubmedcentral.nih.gov/\">PubMedCentral</a>  " +
-	"and extracts the adequate BibTeX entry. Author: KDE";
-
+/** Scrapder for PubMed (http://www.pubmedcentral.nih.gov).
+ * 
+ * @author rja
+ *
+ */
+public class PubMedCentralScraper extends UrlScraper {
+	private static final String info = "PudMedCentral Scraper: This scraper parses a publication page of citations from " + href("http://www.pubmedcentral.nih.gov/", "PubMedCentral");
 	private static final String HOST = "pubmedcentral.nih.gov";
-	private static final String PUBMEDCENTRAL_HOST = "www.pubmedcentral.nih.gov";
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), UrlScraper.EMPTY_PATTERN));
 	
-	public boolean scrape(ScrapingContext sc) throws ScrapingException {
-		if (sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())){
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 			sc.setScraper(this);
 			
-			String bibtexresult = null;
-
 			try {
+				String bibtexresult = null;
+
 				Pattern p = null;
 				Matcher m = null;
 				
@@ -69,26 +65,15 @@ public class PubMedCentralScraper implements Scraper, UrlScraper {
 			} catch (MalformedURLException e) {
 				throw new InternalFailureException(e);
 			}
-		}
-		return false;
 	}
 
 	public String getInfo() {
 		return info;
 	}
 
-	public Collection<Scraper> getScraper() {
-		return Collections.singletonList((Scraper) this);
-	}
-	
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
-		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
-		list.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), UrlScraper.EMPTY_PATTERN));
-		return list;
+		return patterns;
 	}
 
-	public boolean supportsUrl(URL url) {
-		return UrlMatchingHelper.isUrlMatch(url, this);
-	}
 	
 }
