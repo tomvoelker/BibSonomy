@@ -11,6 +11,7 @@ import static org.junit.Assert.assertTrue;
  * @author tst
  *
  */
+@Ignore
 public class WileyIntersienceScraperTest {
 	
 	/**
