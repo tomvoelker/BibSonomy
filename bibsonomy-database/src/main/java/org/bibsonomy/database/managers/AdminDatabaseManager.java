@@ -11,7 +11,6 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.database.AbstractDatabaseManager;
-import org.bibsonomy.database.managers.chain.ChainElement;
 import org.bibsonomy.database.params.AdminParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.User;
@@ -181,18 +180,19 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		if (param.getConfidence() != null && param.getPrediction() != null) {
 			// check if prediction and confidence values changed, only update if
 			// they changed
-			List<User> history = getClassifierHistory(param.getUserName(), session);
-
-			for (int i = 0; i < history.size(); i++) {
+			final List<User> history = getClassifierHistory(param.getUserName(), session);
+			
+			for (final User user: history) {
 				// last predictor needs to be the same as this predictor
-				if (history.get(i).getConfidence() != null && history.get(i).getPrediction() != null) {
+				
+				if (user.getConfidence() != null && user.getPrediction() != null) {
 
-					if (history.get(i).getAlgorithm().equals(param.getAlgorithm())) {
+					if (user.getAlgorithm().equals(param.getAlgorithm())) {
 
 						double newConf = Math.round(param.getConfidence());
-						double oldConf = Math.round(history.get(i).getConfidence());
+						double oldConf = Math.round(user.getConfidence());
 
-						if (oldConf == newConf && param.getPrediction().compareTo(history.get(i).getPrediction()) == 0) {
+						if (oldConf == newConf && param.getPrediction().compareTo(user.getPrediction()) == 0) {
 							return false;
 						}
 						// first entry is not the same
