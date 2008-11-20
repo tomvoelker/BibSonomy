@@ -7,7 +7,6 @@ import java.util.SortedSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.recommender.RecommendedTag;
@@ -28,8 +27,10 @@ public class EditBookmarkCommand extends PostCommand {
 	private String tags ;
 	private boolean jump = false;
 	
-	//the generall grouping value of the post. 
-	//PUBLIC, PRIVATE OR OTHER
+	/**
+	 * The abstract (or general) group of the post:
+	 * public, private, or other 
+	 */
 	private String abstractGrouping;
 	
 	private List<String> groups;
@@ -153,7 +154,7 @@ public class EditBookmarkCommand extends PostCommand {
 		return this.abstractGrouping;
 	}
 
-	public void setAbstractGrouping(String generallGrouping) {
-		this.abstractGrouping = generallGrouping;
+	public void setAbstractGrouping(String abstractGrouping) {
+		this.abstractGrouping = abstractGrouping;
 	}
 }

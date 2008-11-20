@@ -3,7 +3,6 @@ package org.bibsonomy.webapp.controller.actions;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -100,6 +99,10 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		command.setPageTitle("post a new bookmark");
 		final RequestWrapperContext context = command.getContext();
 
+		/*
+		 * only users which are logged in might post bookmarks 
+		 * -> send them to login page
+		 */
 		if (!context.isUserLoggedIn()) {
 			log.debug("--> PostBookmarkController: workOn() called -> User not logged in -> Redirect to /login");
 			return new ExtendedRedirectView("/login");
@@ -109,9 +112,11 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		
 		/* 
 		 * get tagsets for each group and add them to the loginUser object
+		 * FIXME: why into the loginUser?
 		 */
-		ArrayList<Group> groupsWithTagSets = new ArrayList<Group>();
-		for(Group group: loginUser.getGroups()){
+		final ArrayList<Group> groupsWithTagSets = new ArrayList<Group>();
+		final List<Group> usersGroups = loginUser.getGroups();
+		for(final Group group: usersGroups){
 			if(group.getName() != null){
 				groupsWithTagSets.add(this.logic.getGroupDetails(group.getName()));
 			}
@@ -168,12 +173,12 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		/*
 		 * copy the groups of the post into the post (make proper groups from them)
 		 */
+		log.debug("abstract grouping: " + command.getAbstractGrouping());
 		if(!command.getAbstractGrouping().endsWith("other")){
 			//if the post is private or public --> remove all groups and add one (private or public)
 			post.getGroups().clear();
 			post.getGroups().add(new Group(command.getAbstractGrouping()));
-		}	
-		else{
+		} else {
 			final List<String> groups = command.getGroups();
 			for (final String groupname: groups){
 				post.getGroups().add(new Group(groupname));
