@@ -9,7 +9,7 @@ import java.net.URL;
 
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper;
-import org.bibsonomy.scraper.url.kde.wiley.intersience.WileyIntersienceScraper;
+import org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 
