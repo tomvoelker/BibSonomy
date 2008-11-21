@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
@@ -166,6 +167,10 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		 */
 		user.setToClassify(user.getToClassify() == null ? 1 : user.getToClassify());
 		/*
+		 * set user's default role
+		 */
+		user.setRole(Role.DEFAULT);
+		/*
 		 * probably, we should add here more code to check for null values!
 		 */
 		
@@ -212,9 +217,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		if (present(existingUser.getName()) == false)
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User '" + user.getName() + "' does not exist");
 
-		
-		// FIXME: Role is missing
-		
+			
 		// FIXME if this should copy all properties from the one bean to the
 		// other we might want to come up with a more generic version of this
 		// code block - so if we add a field to the User bean we don't have to
@@ -233,13 +236,19 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		existingUser.setOpenURL(!present(user.getOpenURL()) 	? existingUser.getOpenURL() 	: user.getOpenURL());
 		existingUser.setPlace(!present(user.getPlace()) 		? existingUser.getPlace() 		: user.getPlace());
 		existingUser.setProfession(!present(user.getProfession()) ? existingUser.getProfession(): user.getProfession());
-		existingUser.setRegistrationDate(!present(user.getRegistrationDate()) ? existingUser.getRegistrationDate() : user.getRegistrationDate());
+
+		// we don't want to change the registration date on update!
+		//existingUser.setRegistrationDate(!present(user.getRegistrationDate()) ? existingUser.getRegistrationDate() : user.getRegistrationDate());
 
 		existingUser.setUpdatedBy(!present(user.getUpdatedBy()) 	? existingUser.getUpdatedBy() 	: user.getUpdatedBy());
 		existingUser.setUpdatedAt(!present(user.getUpdatedAt()) 	? existingUser.getUpdatedAt() 	: user.getUpdatedAt());
 
 		existingUser.setReminderPassword(!present(user.getReminderPassword()) ? existingUser.getReminderPassword() : user.getReminderPassword());
 		existingUser.setReminderPasswordRequestDate(!present(user.getReminderPasswordRequestDate()) ? existingUser.getReminderPasswordRequestDate() : user.getReminderPasswordRequestDate());
+
+		/*
+		 * FIXME: user settings are completely missing!
+		 */
 
 		this.plugins.onUserUpdate(existingUser.getName(), session);
 
