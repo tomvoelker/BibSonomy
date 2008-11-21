@@ -15,7 +15,6 @@
 	<resultMap id="userPredictionAndSpammer" class="user" extends="userPrediction">		
 		<result property="spammer"   	column="spammer"  	javaType="boolean" />	
 		<result property="updatedBy"   	column="updated_by" javaType="string" />
-		<result property="confidence"   	column="confidence" javaType="double" />
 	</resultMap>
 
 	<sql id="commonPredictionAttributes">
