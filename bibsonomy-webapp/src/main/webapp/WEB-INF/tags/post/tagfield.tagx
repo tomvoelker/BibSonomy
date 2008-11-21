@@ -17,7 +17,11 @@
 		
 		<p>
 			<div style="vertical-align:middle">
-				<fmt:message key="post.resource.recommendation"/>:${mtl:ch('nbsp')}<c:forEach var="tag" items="${recommendedTags}"><a href="javascript:copytag('inpf','${fn:escapeXml(tag)}')"><c:out value="${tag}"/></a>${mtl:ch('nbsp')}</c:forEach>
+				<fmt:message key="post.resource.recommendation"/>:${mtl:ch('nbsp')}
+                <c:forEach var="tag" items="${recommendedTags}">
+                  <a href="javascript:copytag('inpf','${fn:escapeXml(tag.name)}')"><c:out value="${tag.name}"/></a>
+                  ${mtl:ch('nbsp')}
+                </c:forEach>
 				<div id="suggestion.tags"></div>
 			</div>
 		</p>
