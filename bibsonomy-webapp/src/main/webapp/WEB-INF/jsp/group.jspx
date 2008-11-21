@@ -6,6 +6,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+    xmlns:group="urn:jsptagdir:/WEB-INF/tags/resources/group"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
@@ -18,22 +19,9 @@
 			<a href="/group/${fn:escapeXml(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a> ::
 			<form action="/group/${fn:escapeXml(command.requestedGroup)}" method="get" class="smallform">
 			  <input type="text" size="20" name="tag" id="inpf"/>
-			</form>										
-					
-			<!--  group documents - now done via myBibsonomy Menu -->
-			<!--
-			<c:out value=" "/>
-			<c:url var="groupDocumentsUrl" value="/${mtl:setParam(requPath, 'filter', 'myGroupPDF')}" context="${projectContext}"/>
-			<span style="font-size: 65%">
-				<fmt:message key="filter"/>:
-				(
-				<fmt:message key="filter.none"/>
-				|
-				<a href="${groupDocumentsUrl}"><fmt:message key="filter.justPdf"/></a>
-				)							
-			</span>
-			-->		
-			</jsp:attribute>		
+			</form>
+            <group:name group="${command.group}"/>
+		</jsp:attribute>		
 			
 		
 		<jsp:attribute name="sidebar">
@@ -52,7 +40,7 @@
 			</c:if>		
 					
 			<!-- group members -->
-			<rc:members requPath="${requPath}" cmd="${command.memberCommand}"/>
+			<rc:members requPath="${requPath}" users="${command.group.users}"/>
 			
 			<!-- tags -->
 			<li>

@@ -16,7 +16,7 @@
 
 var cssdropdown={
 disappeardelay: 250, //set delay in miliseconds before menu disappears onmouseout
-dropdownindicator: '<img src="down.gif" border="0" />', //specify full HTML to add to end of each menu item with a drop down menu
+dropdownindicator: '', //specify full HTML to add to end of each menu item with a drop down menu
 enableswipe: 1, //enable swipe effect? 1 for yes, 0 for no
 enableiframeshim: 1, //enable "iframe shim" in IE5.5/IE6? (1=yes, 0=no)
 
