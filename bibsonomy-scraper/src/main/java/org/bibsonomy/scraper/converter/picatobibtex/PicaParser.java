@@ -1,14 +1,9 @@
 package org.bibsonomy.scraper.converter.picatobibtex;
 
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Set;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.converter.picatobibtex.rules.AbstractRule;
 import org.bibsonomy.scraper.converter.picatobibtex.rules.AuthorRule;
 import org.bibsonomy.scraper.converter.picatobibtex.rules.ISBNRule;
@@ -34,7 +29,6 @@ import org.bibsonomy.scraper.converter.picatobibtex.rules.YearRule;
  * @version $Id$
  */
 public class PicaParser{
-	private static final Logger log = Logger.getLogger(PicaParser.class);
 	private PicaRecord pica = null;
 	private String  url = null;
 	
@@ -79,7 +73,6 @@ public class PicaParser{
 		String tags = new TagsRule(pica, utils).getContent();
 		String publisher = new PublisherRule(pica, utils).getContent();
 		
-		String url = "";
 		String opac = "";
 		
 		Rules urn = new URNRule(pica, utils);
