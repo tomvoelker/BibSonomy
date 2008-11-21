@@ -75,13 +75,13 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Groupname isn't present");
 		}
 
-		if ("public".equals(groupname) == true) {
+		if ("public".equals(groupname)) {
 			return GroupUtils.getPublicGroup();
 		}
-		if ("private".equals(groupname) == true) {
+		if ("private".equals(groupname)) {
 			return GroupUtils.getPrivateGroup();
 		}
-		if ("friends".equals(groupname) == true) {
+		if ("friends".equals(groupname)) {
 			return GroupUtils.getFriendsGroup();
 		}
 
