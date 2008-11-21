@@ -1,4 +1,3 @@
-
 package org.bibsonomy.scraper.url.kde.ieee;
 
 import java.util.LinkedList;

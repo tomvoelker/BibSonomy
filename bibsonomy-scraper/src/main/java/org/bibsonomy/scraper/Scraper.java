@@ -1,4 +1,3 @@
-
 package org.bibsonomy.scraper;
 
 import java.util.Collection;
