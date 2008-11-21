@@ -83,8 +83,12 @@ public class ModelFactoryTest {
 
 		// check valid group
 		xmlGroup.setName("test");
+		xmlGroup.setRealname("TestGroup");
+		xmlGroup.setHomepage("http://www.example.com/");
 		final Group group = this.modelFactory.createGroup(xmlGroup);
 		assertTrue("model not correctly initialized", "test".equals(group.getName()));
+		assertTrue("model not correctly initialized", "http://www.example.com/".equals(group.getHomepage().toString()));
+		assertTrue("model not correctly initialized", "TestGroup".equals(group.getRealname()));
 	}
 
 	@Test

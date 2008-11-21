@@ -174,13 +174,13 @@ public class XMLRenderer implements Renderer {
 				xmlPost.getTag().add(xmlTag);
 			}
 		}
-		
+
 		// check if the resource is an instance of bibtex
 		if(post.getResource() instanceof BibTex){
 			final BibTex bibtex = (BibTex) post.getResource();
 			// if the resource is a bibtex object and has documents ...
 			if(bibtex.getDocuments() != null){
-				
+
 				checkBibtex(bibtex);
 				// put them into the xml output
 				final DocumentsType xmlDocuments = new DocumentsType();
@@ -258,7 +258,7 @@ public class XMLRenderer implements Renderer {
 			xmlBibtex.setVolume(bibtex.getVolume());
 			xmlBibtex.setYear(bibtex.getYear());
 			xmlBibtex.setPrivnote(bibtex.getPrivnote());
-			
+
 
 			xmlPost.setBibtex(xmlBibtex);
 		}
@@ -354,12 +354,12 @@ public class XMLRenderer implements Renderer {
 		xmlTag.setName(tag.getName());
 		xmlTag.setHref(urlRenderer.createHrefForTag(tag.getName()));
 		// if (tag.getGlobalcount() > 0) {
-			xmlTag.setGlobalcount(BigInteger.valueOf(tag.getGlobalcount()));
+		xmlTag.setGlobalcount(BigInteger.valueOf(tag.getGlobalcount()));
 		// }
 		// if (tag.getUsercount() > 0) {
-			xmlTag.setUsercount(BigInteger.valueOf(tag.getUsercount()));
+		xmlTag.setUsercount(BigInteger.valueOf(tag.getUsercount()));
 		// }
-		
+
 		// add sub-/supertags - dbe, 20070718
 		if (tag.getSubTags() != null && tag.getSubTags().size() > 0) {			
 			xmlTag.getSubTags().add(createXmlTags(tag.getSubTags()));		
@@ -407,6 +407,11 @@ public class XMLRenderer implements Renderer {
 		checkGroup(group);
 		final GroupType xmlGroup = new GroupType();
 		xmlGroup.setName(group.getName());
+		xmlGroup.setDescription(group.getDescription());
+		xmlGroup.setRealname(group.getRealname());
+		if (group.getHomepage() != null) {
+			xmlGroup.setHomepage(group.getHomepage().toString());
+		}
 		xmlGroup.setHref(urlRenderer.createHrefForGroup(group.getName()));
 		xmlGroup.setDescription(group.getDescription());
 		if (group.getUsers() != null) {
@@ -416,26 +421,26 @@ public class XMLRenderer implements Renderer {
 		}
 		return xmlGroup;
 	}
-	
+
 	public void serializeOK(final Writer writer) {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		serialize(writer, xmlDoc);
 	}
-	
+
 	public void serializeFail(final Writer writer) {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.FAIL);
 		serialize(writer, xmlDoc);
 	}	
-	
+
 	public void serializeError(final Writer writer, final String errorMessage) {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.FAIL);
 		xmlDoc.setError(errorMessage);
 		serialize(writer, xmlDoc);
 	}
-	
+
 	public void serializeGroupId(Writer writer, String groupId) {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
@@ -456,14 +461,14 @@ public class XMLRenderer implements Renderer {
 		xmlDoc.setUserid(userId);
 		serialize(writer, xmlDoc);		
 	}
-	
+
 	public void serializeURI(Writer writer, String uri) {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setUri(uri);
 		serialize(writer, xmlDoc);		
 	}	
-	
+
 	public String parseError(final Reader reader) throws BadRequestOrResponseException {
 		checkReader(reader);
 		final BibsonomyXML xmlDoc = parse(reader);
@@ -472,7 +477,7 @@ public class XMLRenderer implements Renderer {
 		}
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no error defined.");
 	}
-	
+
 	public User parseUser(final Reader reader) throws BadRequestOrResponseException {
 		checkReader(reader);
 
@@ -587,7 +592,7 @@ public class XMLRenderer implements Renderer {
 			// create a marshaller
 			final Marshaller marshaller = jc.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-					
+
 			if (this.validateXMLOutput) {
 				// validate the XML produced by the marshaller
 				marshaller.setSchema(schema);
@@ -605,7 +610,7 @@ public class XMLRenderer implements Renderer {
 						+ ex.getLineNumber() + ", Column "
 						+ ex.getColumnNumber() + ": "
 						+ ex.getMessage()
-						);				
+				);				
 			}						
 			throw new InternServerException(e.toString());
 		}
@@ -621,25 +626,25 @@ public class XMLRenderer implements Renderer {
 	 */
 	private BibsonomyXML parse(Reader reader) throws InternServerException {
 		try {
-			
+
 //			if (log.isDebugEnabled() == true) {
-//				char[] chars = new char[65536];
-//				String s;
-//				try {
-//					int read = reader.read(chars);
-//					s = new String(chars,0,read); 
-//					log.debug("request-body:\n[" + s + "]");
-//					reader = new StringReader(s);
-//				} catch (IOException ex) {
-//					log.error(ex,ex);
-//				}
+//			char[] chars = new char[65536];
+//			String s;
+//			try {
+//			int read = reader.read(chars);
+//			s = new String(chars,0,read); 
+//			log.debug("request-body:\n[" + s + "]");
+//			reader = new StringReader(s);
+//			} catch (IOException ex) {
+//			log.error(ex,ex);
 //			}
-			
+//			}
+
 			final JAXBContext jc = JAXBContext.newInstance(JAXB_PACKAGE_DECLARATION);
 
 			// create an Unmarshaller
 			final Unmarshaller u = jc.createUnmarshaller();
-			
+
 			// set schema to validate input documents
 			if (this.validateXMLInput) {
 				u.setSchema(schema);
@@ -659,13 +664,13 @@ public class XMLRenderer implements Renderer {
 						+ ex.getLineNumber() + ", Column "
 						+ ex.getColumnNumber() + ": "
 						+ ex.getMessage()
-						);				
+				);				
 			}			
 			throw new InternServerException(e.toString());
 		}
 	}
 
-	
+
 	public Tag parseTag(Reader reader) throws BadRequestOrResponseException {
 		checkReader(reader);
 		final BibsonomyXML xmlDoc = parse(reader);
@@ -715,7 +720,7 @@ public class XMLRenderer implements Renderer {
 		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no user id defined.");
 	}
-	
+
 	private void checkReader(Reader reader) throws BadRequestOrResponseException {
 		if (reader == null) throw new BadRequestOrResponseException("The body part of the received document is missing");
 	}

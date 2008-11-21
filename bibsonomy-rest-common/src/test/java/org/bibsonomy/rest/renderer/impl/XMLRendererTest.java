@@ -23,7 +23,7 @@
 
 package org.bibsonomy.rest.renderer.impl;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
@@ -109,7 +109,7 @@ public class XMLRendererTest {
 		tmpFile = File.createTempFile("bibsonomy", "junit");
 		marshalToFile(bibXML, tmpFile);
 		final User user = this.renderer.parseUser(new FileReader(tmpFile));
-		assertTrue("model not correctly initialized", "test".equals(user.getName()));
+		assertEquals("model not correctly initialized", "test", user.getName());
 	}
 
 	@Test
@@ -137,11 +137,15 @@ public class XMLRendererTest {
 		bibXML = new BibsonomyXML();
 		final GroupType xmlGroup = new GroupType();
 		xmlGroup.setName("test");
+		xmlGroup.setRealname("TestGroup");
+		xmlGroup.setHomepage("http://www.example.com/");
 		bibXML.setGroup(xmlGroup);
 		tmpFile = File.createTempFile("bibsonomy", "junit");
 		marshalToFile(bibXML, tmpFile);
 		final Group group = this.renderer.parseGroup(new FileReader(tmpFile));
-		assertTrue("model not correctly initialized", "test".equals(group.getName()));
+		assertEquals("model not correctly initialized", "test", group.getName());
+		assertEquals("model not correctly initialized", "TestGroup", group.getRealname());
+		assertEquals("model not correctly initialized", "http://www.example.com/", group.getHomepage().toString());
 	}
 
 	/**
@@ -370,6 +374,8 @@ public class XMLRendererTest {
 		}
 		group.setName("foo");
 		group.setDescription("foo bar :)");
+		group.setHomepage(new URL("http://www.example.com/"));
+		group.setRealname("TestGroup");
 		this.renderer.serializeGroup(sw, group, null);
 		compareWithFile(sw, "ExampleResultGroup.txt");
 	}
@@ -501,7 +507,7 @@ public class XMLRendererTest {
 			sb.append(s + "\n");
 		}
 		// cut out postingdate as it changes each time
-		String swWithoutPostingdate = sw.toString().replaceAll(" postingdate=\"[^\"]*\"", "");		
-		assertTrue("output not as expected", swWithoutPostingdate.toString().equals(sb.toString()));
+		String swWithoutPostingdate = sw.toString().replaceAll(" postingdate=\"[^\"]*\"", "");
+		assertEquals("output not as expected", sb.toString(), swWithoutPostingdate.toString());
 	}
 }

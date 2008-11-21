@@ -58,7 +58,7 @@ import org.bibsonomy.rest.validation.ModelValidator;
 public class ModelFactory {
 
 	private static ModelFactory modelFactory;
-	
+
 	private ModelValidator modelValidator = null; 
 
 	private ModelFactory() {
@@ -104,6 +104,12 @@ public class ModelFactory {
 		final Group group = new Group();
 		group.setName(xmlGroup.getName());
 		group.setDescription(xmlGroup.getDescription());
+		group.setRealname(xmlGroup.getRealname());
+		try {
+			// FIXME move into Factory
+			group.setHomepage(new URL(xmlGroup.getHomepage()));
+		} catch (final MalformedURLException e) {
+		}
 		if (xmlGroup.getUser().size() > 0) {
 			group.setUsers(new ArrayList<User>());
 			for (final UserType xmlUser : xmlGroup.getUser()) {
@@ -117,7 +123,7 @@ public class ModelFactory {
 	public Tag createTag(final TagType xmlTag) {
 		return createTag(xmlTag, 1);
 	}
-	
+
 	public Tag createTag(final TagType xmlTag, final int depth) {
 		checkTag(xmlTag);
 
@@ -127,7 +133,7 @@ public class ModelFactory {
 		if (xmlTag.getGlobalcount() != null) tag.setGlobalcount(xmlTag.getGlobalcount().intValue());
 		// TODO tag count  häh?
 		if (xmlTag.getUsercount() != null) tag.setUsercount(xmlTag.getUsercount().intValue());
-		
+
 		if (depth > 0) {
 			if (xmlTag.getSubTags() != null) {
 				tag.setSubTags(createTags(xmlTag.getSubTags(), depth - 1));
@@ -217,7 +223,7 @@ public class ModelFactory {
 			bibtex.setPrivnote(xmlBibtex.getPrivnote());
 
 			checkBibTeX(bibtex);
-						
+
 			post.setResource(bibtex);
 		}
 		if (xmlPost.getBookmark() != null) {
@@ -254,12 +260,12 @@ public class ModelFactory {
 			modelValidator.checkBibTeX(bibtex);
 		}
 	}
-	
+
 	// FIXME what do we want to do here?
 	private Date createDate(XMLGregorianCalendar date) {
-		
+
 		return new Date(System.currentTimeMillis());
-		
+
 //		final Calendar cal = new GregorianCalendar(date.getYear(), date.getMonth() - 1, date.getDay(), date.getHour(), date.getMinute(), date.getSecond());
 //		cal.set(Calendar.MILLISECOND, date.getMillisecond());
 //		return cal.getTime();
