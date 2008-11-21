@@ -12,13 +12,6 @@ public class PicaRecord {
 	private Map<String, LinkedList<Row>> rows = new HashMap<String, LinkedList<Row>>();
 	
 	/**
-	 * 
-	 */
-	public PicaRecord(){
-		
-	}
-
-	/**
 	 * Adds a row to this object
 	 * 
 	 * @param row
@@ -66,6 +59,10 @@ public class PicaRecord {
 		return null;
 	}
 	
+	/**
+	 * @param cat
+	 * @return The row for the given category.
+	 */
 	public LinkedList<Row> getRows(String cat){
 		return rows.get(cat);
 	}

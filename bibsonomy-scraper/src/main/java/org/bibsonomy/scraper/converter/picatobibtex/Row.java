@@ -11,12 +11,6 @@ public class Row {
 	private String cat = null;
 	private Map<String, SubField> subfields = new HashMap<String, SubField>();
 	
-	/**
-	 * 
-	 */
-	public Row(){
-		
-	}
 	
 	/**
 	 * @param cat
