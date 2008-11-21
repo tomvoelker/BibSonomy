@@ -23,9 +23,9 @@
 
 package org.bibsonomy.model;
 
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Privlevel;
@@ -47,6 +47,16 @@ public class Group {
 	 */
 	private String name;
 
+	/**
+	 * The real (long) name of the group.
+	 */
+	private String realname;
+	
+	/**
+	 * The homepage of the group.
+	 */
+	private URL homepage;
+	
 	/**
 	 * A short text describing this group.
 	 */
@@ -294,12 +304,50 @@ public class Group {
 		return groupId;
 	}
 
+	/**
+	 * @return The tag sets associated with this group. See {@link #setTagSets(List)}.
+	 */
 	public List<TagSet> getTagSets() {
 		return this.tagSets;
 	}
 
+	/** Sets the tag sets for this group.
+	 * Tag sets allow group admins to specify pre-defined tags which
+	 * the users can/should use when marking a post as "relevant for" this group. 
+	 * 
+	 * @param tagSets
+	 */
 	public void setTagSets(List<TagSet> tagSets) {
 		this.tagSets = tagSets;
+	}
+
+	/** Get the real (long) name of this group.
+	 * 
+	 * @return The real (long) name of this group.
+	 */
+	public String getRealname() {
+		return this.realname;
+	}
+
+	/** Set the real (long) name of this group.
+	 * @param realname
+	 */
+	public void setRealname(String realname) {
+		this.realname = realname;
+	}
+
+	/**
+	 * @return The homepage of this group
+	 */
+	public URL getHomepage() {
+		return this.homepage;
+	}
+
+	/** Set the homepage of this group.
+	 * @param homepage
+	 */
+	public void setHomepage(URL homepage) {
+		this.homepage = homepage;
 	}
 
 }

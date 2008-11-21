@@ -117,6 +117,8 @@
 			<xsd:element maxOccurs="unbounded" minOccurs="0" name="user" type="UserType"/>
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string" use="required"/>
+		<xsd:attribute name="realname" type="xsd:string"/>
+		<xsd:attribute name="homepage" type="xsd:anyURI"/>
 		<xsd:attribute name="description" type="xsd:string"/>
 		<!-- link to details page -->
 		<xsd:attribute name="href" type="xsd:anyURI"/>
