@@ -74,7 +74,7 @@
 					<c:forEach var="user" items="${command.content}" varStatus="status">
 					
 					  <!-- color rows according to spam status -->
-					  <tr id="sl${status.count}" class="${user.prediction == 9 ? 'spamflag uncertainUser' : (user.spammer==true ? 'spammer' : 'none')}">	
+					  <tr id="sl${status.count}" class="${user.prediction == 9 ? 'spamflag uncertainUser' : ((user.spammer==true and command.selTab !=2) ? 'spammer' : 'none')}">	
 					     <c:choose>
 					    	<c:when test="${command.selTab == 1}">
 					        	<c:set var="Unflag" value="false"/> 
