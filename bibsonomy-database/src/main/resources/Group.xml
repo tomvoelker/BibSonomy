@@ -4,29 +4,29 @@
 <sqlMap namespace="Group">
 
 	<select id="getAllGroups" resultMap="GroupCommon.group" parameterClass="groupParam">
-		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, u.user_realname, u.user_homepage, u.user_name
-		FROM groupids i, user u
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, u.user_realname AS realname, u.user_homepage AS homepage
+		FROM groupids i 
+		  JOIN user u ON (i.group_name = u.user_name)
 		WHERE i.group > 2
-		      AND i.group_name = u.user_name
 		ORDER BY i.group_name
 		LIMIT #limit# OFFSET #offset#
 	</select>
 
 	<select id="getGroupByName" resultMap="GroupCommon.group" parameterClass="string">
-		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, u.user_realname, u.user_homepage, u.user_name
-		FROM groupids i, user u
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, u.user_realname AS realname, u.user_homepage AS homepage
+		FROM groupids i 
+		  JOIN user u ON (i.group_name = u.user_name)
 		WHERE i.group_name = #groupname#
-		      AND i.group_name = u.user_name
 	</select>
 
-	<select id="getGroupMembers" resultMap="GroupCommon.group" parameterClass="string">
+	<select id="getGroupMembers" resultMap="GroupCommon.groupWithMembers" parameterClass="string">
 		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, u.user_realname, u.user_homepage, u.user_name
-		FROM groupids i, groups g, user u
+		FROM groupids i 
+		  JOIN groups g USING (`group`) 
+		  JOIN user u ON (u.user_name = g.user_name) 
 		WHERE group_name = #groupname#
-		      AND i.group = g.group
-		      AND i.group > 2
-		      <!-- AND g.user_name != #requestedGroupName# -->
-		      AND u.user_name = g.user_name
+		  AND i.group > 2
+		  <!-- AND g.user_name != #requestedGroupName# -->
 	</select>
 
 	<select id="getPrivlevelForGroup" resultClass="Privlevel" parameterClass="int">
@@ -35,9 +35,10 @@
 
 	<select id="getGroupsForUser" resultMap="GroupCommon.group_basic" parameterClass="string">
 		(SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments
-		 FROM groups g, groupids i
+		 FROM groups g
+		   JOIN groupids i USING (`group`)
 		 WHERE g.user_name = #username#
-		       AND g.group=i.group)
+		)
 		UNION
 		(SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments
 		 FROM groupids i
@@ -71,9 +72,10 @@
 	</select>
 
 	<select id="getTagSetsForGroup" resultMap="GroupCommon.tagsets" parameterClass="string">
-		SELECT set_name, tag_name from group_tagsets s
-		LEFT JOIN groups g ON (s.group = g.group)
-		WHERE g.user_name = #groupname#
+		SELECT set_name, tag_name 
+		FROM groupids i
+		  LEFT JOIN group_tagsets s USING (`group`)
+		WHERE i.group_name = #groupname#
 	</select>
 	
 	<insert id="insertGroup" parameterClass="group">
