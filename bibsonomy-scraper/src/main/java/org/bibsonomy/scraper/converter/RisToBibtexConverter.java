@@ -3,7 +3,7 @@
  */
 package org.bibsonomy.scraper.converter;
 
-import java.util.Iterator;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -34,10 +34,11 @@ public class RisToBibtexConverter {
 
 	}
 
-	/*
-	 * Function is taken from JabRef importer
+	/** Function is taken from JabRef importer
+	 * 
+	 * @param Ris
+	 * @return The resulting BibTeX string.
 	 */
-
 	public String RisToBibtex(String Ris) {
 		// String array that maps from month number to month string label:
 		String[] MONTHS = new String[] { "jan", "feb", "mar", "apr", "may",
@@ -162,7 +163,7 @@ public class RisToBibtexConverter {
 					if (!hm.containsKey("keywords"))
 						hm.put("keywords", val);
 					else {
-						String kw = (String) hm.get("keywords");
+						String kw = hm.get("keywords");
 						hm.put("keywords", kw + " " + val);
 					}
 				} else if (lab.equals("U1") || lab.equals("U2")
@@ -197,9 +198,9 @@ public class RisToBibtexConverter {
 		boolean first=true;
 		StringBuffer bibtexString = new StringBuffer();
 		bibtexString.append("@").append(Type).append("{keyhere,\n");
-		for (Iterator it = hm.keySet().iterator(); it.hasNext();) {
-			Object key = it.next();
-			String content = (String) hm.get(key);
+		final Set<String> keySet = hm.keySet();
+		for (final String key: keySet) {
+			final String content = hm.get(key);
 			if ((content != null) && (content.trim().length() != 0)) {
 				if (first) {
 					first=false;

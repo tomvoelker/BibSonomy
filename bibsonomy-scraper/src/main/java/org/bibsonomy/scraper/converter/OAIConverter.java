@@ -24,7 +24,7 @@ public class OAIConverter {
 	/**
 	 * convert a oai2 refernce into bibtex
 	 * @param reference 
-	 * @return
+	 * @return The resultign BibTeX string.
 	 * @throws ScrapingException
 	 */
 	public static String convert(String reference) throws ScrapingException{

@@ -19,7 +19,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 public class PicaToBibtexConverter {
 	private static final Logger log = Logger.getLogger(PicaToBibtexConverter.class);
 	
-	private static PicaRecord pica;
+	private PicaRecord pica;
 	private String url;
 	
 	/**
@@ -123,7 +123,7 @@ public class PicaToBibtexConverter {
 	 * @return PicaRecord
 	 */
 	public PicaRecord getActualPicaRecord(){
-		return PicaToBibtexConverter.pica;
+		return pica;
 	}
 	
 	/**

@@ -9,11 +9,15 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.util.BibTexUtils;
 
 
+/** Converts EndNote (RIS) into BibTeX.
+ * 
+ * @author rja
+ *
+ */
 public class EndnoteToBibtexConverter {
 	
 	private static final Logger log = Logger.getLogger(EndnoteToBibtexConverter.class);
@@ -60,11 +64,15 @@ public class EndnoteToBibtexConverter {
 			"%X Genomic clustering of genes in a pathway is commonly found in prokaryotes due to transcriptional operons , but these are not present in most eukaryotes . Yet , there might be clustering to a lesser extent of pathway members in eukaryotic genomes , that assist coregulation of a set of functionally cooperating genes . We analyzed five sequenced eukaryotic genomes for clustering of genes assigned to the same pathway in the KEGG database . Between 98% and 30% of the analyzed pathways in a genome were found to exhibit significantly higher clustering levels than expected by chance . in descending order by the level of clustering , the genomes studied were Saccharomyces cerevisiae , Homo sapiens , Caenorhabditis elegans , Arabidopsis thaliana , and Drosophila melanogaster . Surprisingly , there is not much agreement between genomes in terms of which pathways are most clustered . Only seven of 69 pathways found in all species were significantly clustered in all five of them . This species-specific pattern of pathway clustering may reflect adaptations or evolutionary events unique to a particular lineage . We note that although operons are common in C elegans , only 58% of the pathways showed significant clustering , which is less than in human . Virtually all pathways in S cerevisiae showed significant";
 
 		EndnoteToBibtexConverter converter = new EndnoteToBibtexConverter();
-		String bibtex = converter.processEntry(test1);
-		System.out.println(bibtex);
+		System.out.println(converter.processEntry(test1));
+		System.out.println(converter.processEntry(test2));
+
 	}
 	
-	//main method
+	/**
+	 * @param in
+	 * @return A reader returning the BibTeX.
+	 */
 	public Reader EndnoteToBibtex(BufferedReader in){
 		
 		try {
@@ -91,7 +99,11 @@ public class EndnoteToBibtexConverter {
 		return null;
 	}
 	
-	//main method to process the data
+	/**
+	 * method to process the data
+	 * @param entry
+	 * @return The processed string.
+	 */
 	public String processEntry(String entry){
 		
 		//initialise all necessary vars
