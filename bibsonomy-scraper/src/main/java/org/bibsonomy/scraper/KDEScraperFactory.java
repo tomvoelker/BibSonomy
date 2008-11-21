@@ -6,8 +6,17 @@ import org.bibsonomy.scraper.generic.UnAPIScraper;
 import org.bibsonomy.scraper.snippet.SnippetScraper;
 import org.bibsonomy.scraper.url.URLCompositeScraper;
 
+/**  
+ * Configures the scrapers used by BibSonomy.
+ * 
+ * @author rja
+ *
+ */
 public class KDEScraperFactory {
 
+	/**
+	 * @return The scrapers produced by this factory.
+	 */
 	public CompositeScraper getScraper () {
 		final CompositeScraper scraper = new CompositeScraper();
 		scraper.addScraper(new URLCompositeScraper());
@@ -26,7 +35,9 @@ public class KDEScraperFactory {
 		// TODO: Scraper for searching bibtex in HTML-Sourcecode 
 		//scraper.addScraper(new BibtexScraper());
 
-		
+		/*
+		 * If nothing works: do information extraction using MALLET.
+		 */
 		scraper.addScraper(new IEScraper());
 		return scraper;
 	}
