@@ -7,10 +7,15 @@
 		<result property="groupId"          column="group"             javaType="int" />
 		<result property="name"             column="group_name"        javaType="string" />
 		<result property="privlevel"        column="privlevel"         javaType="Privlevel"/>
-		<result property="sharedDocuments"  column="sharedDocuments"   javaType="boolean"/>		
+		<result property="sharedDocuments"  column="sharedDocuments"   javaType="boolean"/>
 	</resultMap>
 
 	<resultMap id="group" class="group" extends="group_basic" groupBy="name">
+		<result property="realname"         column="realname"          javaType="string" />
+		<result property="homepage"         column="homepage"          javaType="url" />
+	</resultMap>
+
+	<resultMap id="groupWithMembers" class="group" extends="group_basic" groupBy="name">
 		<result property="users"    resultMap="UserCommon.userForGroup" />
 	</resultMap>
 	
