@@ -30,7 +30,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 
 	private final static AdminDatabaseManager singleton = new AdminDatabaseManager();
 	protected static final Logger log = Logger.getLogger(AdminDatabaseManager.class);
-
+	
 	private AdminDatabaseManager() {
 	}
 
@@ -108,7 +108,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public String flagSpammer(final User user, final String updatedBy, final String testMode, final DBSession session) {
 		final AdminParam param = new AdminParam();
-
+	
 		param.setUserName(user.getName());
 		param.setSpammer(user.getSpammer());
 		param.setToClassify(user.getToClassify());
@@ -134,18 +134,18 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		param.setUpdatedBy(updatedBy);
 		param.setUpdatedAt(new Date());
 
-		if (!updatedBy.equals("classifier")) {
+		if (!("classifier").equals(updatedBy)) {
 			this.update("flagSpammer", param, session);
 			this.updateGroupIds(param, session);
-		} else if (testMode.equals("off")) {
-			
+		} else if ("off".equals(testMode)) {
 			// set transaction to set locks
 			session.beginTransaction();
 			try {
-				// gets user data to check if to_classify is still set to 0
+				// gets user data to check if to_classify is still set to 1
 				List<User> userData = this.queryForList("getClassifierUserBeforeUpdate", param, User.class, session);
-				// only update if to_classify is set to 0, else admin has already classified the specific user
-				if (userData.get(0).getToClassify() == 0){
+				// only update if to_classify is set to 1, else admin has
+				// already classified the specific user
+				if (userData.get(0).getToClassify() == 1) {
 					// only change user settings when prediction changes
 					if (checkPredictionChange(param, session)) {
 						this.update("flagSpammer", param, session);
@@ -180,23 +180,24 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		if (param.getConfidence() != null && param.getPrediction() != null) {
 			// check if prediction and confidence values changed, only update if
 			// they changed
+
 			final List<User> history = getClassifierHistory(param.getUserName(), session);
 			
 			for (final User user: history) {
-				// last predictor needs to be the same as this predictor
-				
+
 				if (user.getConfidence() != null && user.getPrediction() != null) {
 
 					if (user.getAlgorithm().equals(param.getAlgorithm())) {
 
-						double newConf = Math.round(param.getConfidence());
-						double oldConf = Math.round(user.getConfidence());
+						//FIXME: collect constants in appropriate class
+						if (Math.abs(param.getConfidence() - user.getConfidence()) < 0.0001) {
 
-						if (oldConf == newConf && param.getPrediction().compareTo(user.getPrediction()) == 0) {
-							return false;
+							if (param.getPrediction().compareTo(user.getPrediction()) == 0) {
+								return false;
+							}
+							// first entry is not the same
+							return true;
 						}
-						// first entry is not the same
-						return true;
 					}
 				}
 			}
@@ -259,10 +260,10 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		if (classifier.equals(Classifier.ADMIN) && (status.equals(SpamStatus.SPAMMER) || status.equals(SpamStatus.NO_SPAMMER))) {
 			param.setPrediction(status.getId());
 			return this.queryForList("getAdminClassifiedUsers", param, User.class, session);
-		} else if (classifier.equals(Classifier.BOTH)){
+		} else if (classifier.equals(Classifier.BOTH)) {
 			log.debug("Classifier: " + Classifier.BOTH);
 			return this.queryForList("getAllUsersWithSpam", param, User.class, session);
-		}else if (classifier.equals(Classifier.CLASSIFIER)) {
+		} else if (classifier.equals(Classifier.CLASSIFIER)) {
 			param.setPrediction(status.getId());
 			return this.queryForList("getClassifiedUsers", param, User.class, session);
 		}
