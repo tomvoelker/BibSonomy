@@ -36,8 +36,6 @@ public class UnitTestRunner {
 	 * This Method reads and runs the unit tests.
 	 */
 	public void run(){
-		URL log4j = new UnitTestRunner().getClass().getResource("log4j.properties");
-		PropertyConfigurator.configure(log4j);
 		try {
 			if(importer == null)
 				throw new Exception("no UnitTestImporter available");
