@@ -17,7 +17,6 @@ public class RisToBibtexConverter {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 
 		String bsp = "TY  - BOOK\n"+
 "JF  - Lecture Notes in Computer Science : Engineering Self-Organising Systems\n"+

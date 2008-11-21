@@ -40,8 +40,7 @@ public class BibtexScraper implements Scraper {
 		return Collections.singletonList((Scraper) this);
 	}
 
-	/*
-	 * FIXME: This is not a URL scraper!
+	/**
 	 * 
 	 * @see org.bibsonomy.scraper.Scraper#scrape(org.bibsonomy.scraper.ScrapingContext)
 	 */
