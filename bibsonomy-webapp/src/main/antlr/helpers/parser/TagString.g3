@@ -17,7 +17,7 @@ grammar TagString;
 
 options {
 	k=2;
-	//output=AST; // verursacht "komische" Methoden (mit Rückgabewert) in der ParserKlasse 
+	//output=AST; // verursacht "komische" Methoden (mit Rueckgabewert) in der ParserKlasse 
 	ASTLabelType=CommonTree;
 } 
 
