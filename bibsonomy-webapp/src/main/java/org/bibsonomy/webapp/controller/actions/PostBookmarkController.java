@@ -108,6 +108,13 @@ public class PostBookmarkController extends SingleResourceListController impleme
 			return new ExtendedRedirectView("/login");
 		}
 
+		/*
+		 * check credentials to fight CSRF attacks
+		 */
+		if (!context.isValidCkey()) {
+			errors.reject("error.field.valid.ckey");
+		}
+		
 		final User loginUser = context.getLoginUser();
 		
 		/* 

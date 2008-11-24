@@ -104,6 +104,7 @@
 								<c:set var="save"><fmt:message key="save"/></c:set>
                                 <c:set var="reset"><fmt:message key="resetbutton"/></c:set>
 								<!-- function addSystemTags located in relevantFoxBox.tagx -->
+                                <input type="hidden" name="ckey" value="${command.context.ckey}"/>
 								<input type="reset"  tabindex="5" value="${reset}" />
 								<input type="submit" tabindex="6" value="${save}" onClick="clear_tags(); addSystemTags();"/>
 							</fieldset>	
