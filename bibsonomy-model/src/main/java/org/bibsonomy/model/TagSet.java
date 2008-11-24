@@ -41,7 +41,9 @@ public class TagSet {
 	*/
 	private String setName;
 	
-	public TagSet(){};
+	public TagSet(){
+		
+	};
 	
 	public TagSet(String setName, List<Tag> tags){
 		this.setName = setName;
@@ -59,6 +61,11 @@ public class TagSet {
 	}
 	public void setSetName(String setName) {
 		this.setName = setName;
+	}
+	
+	@Override
+	public String toString() {
+		return setName + ": " + tags;
 	}
 	
 }
