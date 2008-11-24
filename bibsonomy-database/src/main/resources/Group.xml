@@ -74,7 +74,7 @@
 	<select id="getTagSetsForGroup" resultMap="GroupCommon.tagsets" parameterClass="string">
 		SELECT set_name, tag_name 
 		FROM groupids i
-		  LEFT JOIN group_tagsets s USING (`group`)
+		  JOIN group_tagsets s USING (`group`)
 		WHERE i.group_name = #groupname#
 	</select>
 	
