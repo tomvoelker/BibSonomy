@@ -4,52 +4,60 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:form="http://www.springframework.org/tags/form"
-	xmlns:common="urn:jsptagdir:/WEB-INF/tags/post/common">
+	xmlns:form="http://www.springframework.org/tags/form">
+
+
+    <!-- 
+
+        shows a list of groups this post might be relevant for  
+    
+    -->
+
 
 	<jsp:directive.attribute name="groups" type="java.util.List" required="true"/>
-	
 	<fieldset style="border: 1px solid #069; background-color: #eee; position:relative;">
 		<legend>
-			<fmt:message key="post.resource.relevantfor"/>, <fmt:message key="actions.admin.group.tagsets"/>
+			<fmt:message key="post.resource.relevantfor"/>
 		</legend>	
 		<div id="postBookmarkRelevantTags" style="display: block">		
-			<div class="info_bold" style="text-align:center">
-				<p><fmt:message key="post.resource.relevant"/></p>
-			</div>
-			<div style="text-align:center">
-				<common:groupingselect groups="${loginUser.groups}" size="5" path="relevantGroups" error="${false}" onchange="checkVisibility()" optionid="relgroup" friends="${false}"/>
-				<table class="result_table" >
-					<c:forEach var="group" items="${groups}" varStatus="status">
-						<tr id="sets_${status.index}" style="display:none">
-							<td style="text-align:center;vertical-align:middle"><fmt:message key="for"/>${mtl:ch('nbsp')}${group.name}:</td>
-							<c:choose>
-								<c:when test="${not empty group.tagSets}">
-									<td style="text-align:center">
-										<table style="width:100%">
-											<c:forEach var="tagset" items="${group.tagSets}" varStatus="status_t">
-												<td style="text-align:center; x-overflow:scroll;border:0px">
-													<div class="info_bold">${tagset.setName}</div>
-													<form:select id="${tagset.setName}" path="" size="1" onchange="addSelectedTag('inpf','${tagset.setName}')" multiple="false">
-														<c:set var="select"><fmt:message key="post.resource.select"/></c:set>
-														<form:option value="" label="${select}" id="${tagset.setName}-1"/>
-														<c:forEach items="${tagset.tags}" var="tag" varStatus="status_tag">
-																<form:option label="${tag.name}" value="${tag.name}" id="${tagset.setName}${status_tag.index}"/>
-														</c:forEach>	
-													</form:select>
-												</td>
-											</c:forEach>
-										</table>
-									</td>
-								</c:when>
-								<c:otherwise>
-									<td style="vertical-align:middle"><div class="info_bold"><fmt:message key="post.resource.notagset"/></div></td>
-								</c:otherwise>
-							</c:choose>	
-						</tr>
-					</c:forEach>
-				</table>
-			</div>
+			<p class="info_bold"><fmt:message key="post.resource.relevant"/></p>
+
+                <!-- select box for "other" groups -->
+                <form:select path="post.groups" size="5" onchange="checkVisibility()" id="relgroup">
+                  <c:forEach items="${groups}" var="group" varStatus="status">
+                    <c:if test="${not empty group.name}">
+                      <form:option id="relgroup${status.index}" label="${group.name}" value="${group.name}"/>
+                    </c:if>
+                  </c:forEach>  
+                </form:select>
+
+	            <c:forEach var="group" items="${groups}" varStatus="status">
+                   <c:if test="${not empty group.tagSets}">
+                      <div id="sets_${status.index}" style="display:none">
+                         <fieldset style="border: 1px solid #069; background-color: #eee; position:relative;">
+                            <legend>
+                               <fmt:message key="for"/>${mtl:ch('nbsp')}<c:out value="${group.name}"/>
+                            </legend> 
+ 					      
+                            <c:forEach var="tagset" items="${group.tagSets}" varStatus="status_t">
+							  <span class="info_bold"><c:out value="${tagset.setName}"/>:</span>
+							  <form:select id="${tagset.setName}" path="" size="1" onchange="addSelectedTag('inpf','${fn:escapeXml(tagset.setName)}')" multiple="false">
+
+                                  <!-- show "please select" hint -->
+								  <c:set var="pleaseselect"><fmt:message key="post.resource.select"/></c:set>
+								  <form:option value="" label="${pleaseselect}" id="${fn:escapeXml(tagset.setName)}-1"/>
+
+                                  <!-- show tag set -->
+								  <c:forEach items="${tagset.tags}" var="tag" varStatus="status_tag">
+								     <form:option label="${fn:escapeXml(tag.name)}" value="${fn:escapeXml(tag.name)}" id="${fn:escapeXml(tagset.setName)}${status_tag.index}"/>
+								  </c:forEach>
+						       </form:select>
+                               ${mtl:ch('nbsp')}
+						    </c:forEach>
+                         </fieldset>
+                      </div>
+                   </c:if>
+				</c:forEach>
 		</div>
 				
 	</fieldset>					

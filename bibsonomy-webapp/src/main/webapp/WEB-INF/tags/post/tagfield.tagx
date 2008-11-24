@@ -6,13 +6,14 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:form="http://www.springframework.org/tags/form">
 
-	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+    <jsp:directive.attribute name="tags" type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="recommendedTags" type="java.util.Set" required="true"/>
 	
 	<fieldset style="border: 1px solid #069; background-color: #eee; position:relative;">
 		<legend><form:label path="post.tags" ><fmt:message key="post.resource.tags"/>*</form:label></legend>
-		<fmt:message key="post.resource.spaceseperated"/>${mtl:ch('nbsp')}
-		<input class="reqinput" tabindex="4" type="text" name="tags" id="inpf" onClick="setActiveInputField(this.id); enableHandler();" onFocus="setActiveInputField(this.id); enableHandler()" onBlur="disableHandler()" value="" size="60" autocomplete="off" />
+		<fmt:message key="post.resource.spaceseparated"/>${mtl:ch('nbsp')}
+        <form:input id="inpf" cssClass="reqinput" path="tags" tabindex="4" autocomplete="off" size="60" onclick="setActiveInputField(this.id); enableHandler();" onfocus="setActiveInputField(this.id); enableHandler()" onblur="disableHandler()"  />
+        <!-- name="tags"  -->
 		<div class="postBookmarkNotValidTip"><form:errors path="tags" /></div>
 		
 		<p>

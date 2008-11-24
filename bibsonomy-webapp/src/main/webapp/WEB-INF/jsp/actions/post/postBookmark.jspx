@@ -87,7 +87,7 @@
 									<legend><form:label path="post.resource.title" ><fmt:message key="post.resource.title"/>*</form:label></legend>
 									<form:input path="post.resource.title" tabindex="2" size="60"/>
 									<div class="postBookmarkNotValidTip"><form:errors path="post.resource.title" /></div>
-									<div id="suggestion.title"></div>
+	                                <div id="suggestion.title"></div>
 								</fieldset>	
 								<fieldset style="border:0px; position:relative;">
 									<legend><form:label path="post.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label></legend>
@@ -95,7 +95,7 @@
 									<div id="suggestion.description"></div>
 								</fieldset>	
 							</fieldset>
-							<post:tagfield post="${command.post}" recommendedTags="${command.recommendedTags}"/>	
+							<post:tagfield tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>	
 							<post:groupBox post="${post}" groups="${loginUser.groups}"/>	
 							<c:if test="${not empty loginUser.groups}">
 								<post:relevantForBox groups="${loginUser.groups}"/>

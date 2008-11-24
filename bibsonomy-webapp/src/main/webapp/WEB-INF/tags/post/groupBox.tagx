@@ -4,8 +4,15 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:form="http://www.springframework.org/tags/form"
-	xmlns:common="urn:jsptagdir:/WEB-INF/tags/post/common">
+	xmlns:form="http://www.springframework.org/tags/form">
+
+    <!-- 
+    
+        Shows form fields to choose group(s) the post should be viewable for.
+        Consists of three radio buttons: public, private, other
+        and a select box which contains the group "frieds" plus other possible groups.     
+    
+     -->
 
 	<jsp:directive.attribute name="groups" type="java.util.List" required="true"/>
     <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
@@ -19,9 +26,25 @@
 			<table class="vmiddle">
 				<div align="center">
 					<tr>
-						<td><common:groupingradio onclick="disableGroupBox()" post="${post}"/></td>
+						<td>
+                           <!-- radio buttons for public, private, other -->
+                           <form:radiobutton path="abstractGrouping" id="public"  onclick="disableGroupBox()" value="public" /> <fmt:message key="post.resource.public"/><br/>
+                           <form:radiobutton path="abstractGrouping" id="private" onclick="disableGroupBox()" value="private"/> <fmt:message key="post.resource.private"/><br/>
+                           <form:radiobutton path="abstractGrouping" id="other"   onclick="disableGroupBox()" value="other"/>   <fmt:message key="post.resource.other"/>
+                        </td>
 						<td style="width:10px"></td>
-						<td><common:groupingselect  groups="${groups}" size="5" path="post.groups" optionid="visibilityoption" selectid="visibilitybox" error="${true}" friends="${true}"/></td>
+						<td>
+                           <!-- select box for "other" groups -->
+                           <form:select path="post.groups" size="5" id="visibilitybox">
+                           <form:option label="friends" value="friends" id="visibilityboxfriends"/>
+                           <c:forEach items="${groups}" var="group" varStatus="status">
+                             <c:if test="${not empty group.name}">
+                               <form:option id="visibilitybox${status.index}" label="${group.name}" value="${group.name}"/>
+                             </c:if>
+                           </c:forEach>  
+                           <div class="postBookmarkNotValidTip"><form:errors path="post.groups" /></div>
+                           </form:select>
+                        </td>
 					</tr>
 				</div>
 			</table>
