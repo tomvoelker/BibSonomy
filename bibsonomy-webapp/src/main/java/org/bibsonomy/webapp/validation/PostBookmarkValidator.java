@@ -1,11 +1,16 @@
 package org.bibsonomy.webapp.validation;
 
+import java.util.List;
+import java.util.Set;
+
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
 import org.bibsonomy.webapp.util.Validator;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.util.UrlUtils;
 /**
  * @author fba
@@ -43,12 +48,41 @@ public class PostBookmarkValidator implements Validator<EditBookmarkCommand> {
 		
 		
 		// clean url
-		final Bookmark resource = command.getPost().getResource();
+		final Post<Bookmark> post = command.getPost();
+		final Bookmark resource = post.getResource();
 		resource.setUrl(UrlUtils.cleanUrl(resource.getUrl()));
 		
 		final String url = resource.getUrl();
 		if (url == null || url.equals("http://") || url.startsWith(UrlUtils.BROKEN_URL)) {
 			errors.rejectValue("post.resource.url", "error.field.valid.url");
+		}
+		
+		/*
+		 * check groups
+		 */
+		final String abstractGrouping = command.getAbstractGrouping();
+		if ("public".equals(abstractGrouping) || "private".equals(abstractGrouping)) {
+			final Set<Group> groups = post.getGroups();
+			if (groups != null && !groups.isEmpty()) {
+				/*
+				 * "public" or "private" selected, but other group chosen
+				 */
+				errors.rejectValue("post.groups", "error.field.valid.groups");
+			}
+		} else if ("other".equals(abstractGrouping)) {
+			final Set<Group> groups = post.getGroups();
+			if (groups == null || groups.isEmpty()) {
+				/*
+				 * "other" selected, but no group chosen
+				 * FIXME: more detailed error messages for different errors
+				 */
+				errors.rejectValue("post.groups", "error.field.valid.groups");
+			}
+		} else {
+			/*
+			 * neither public, private, other chosen
+			 */
+			errors.rejectValue("post.groups", "error.field.valid.groups");
 		}
 		
 		/*

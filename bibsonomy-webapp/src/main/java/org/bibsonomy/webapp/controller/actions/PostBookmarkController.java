@@ -87,7 +87,6 @@ public class PostBookmarkController extends SingleResourceListController impleme
 
 	/** Main method which does the postBookmark-procedure.
 	 *
-	 * TODO: checking of ckey!
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(java.lang.Object)
 	 */
 	public View workOn(EditBookmarkCommand command) {
@@ -108,13 +107,6 @@ public class PostBookmarkController extends SingleResourceListController impleme
 			return new ExtendedRedirectView("/login");
 		}
 
-		/*
-		 * check credentials to fight CSRF attacks
-		 */
-		if (!context.isValidCkey()) {
-			errors.reject("error.field.valid.ckey");
-		}
-		
 		final User loginUser = context.getLoginUser();
 		
 		/* 
@@ -176,6 +168,17 @@ public class PostBookmarkController extends SingleResourceListController impleme
 			return Views.POST_BOOKMARK;
 		}
 
+		
+		/*
+		 * check credentials to fight CSRF attacks
+		 * We do this that late to not cause the error message pop up 
+		 * on the first call to the controller. Otherwise, the form would
+		 * be empty and the hidden ckey field not sent.
+		 */
+		if (!context.isValidCkey()) {
+			errors.reject("error.field.valid.ckey");
+		}
+		
 
 		/*
 		 * copy the groups of the post into the post (make proper groups from them)
