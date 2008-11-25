@@ -640,7 +640,14 @@ public class XMLRenderer implements Renderer {
 //			}
 //			}
 
-			final JAXBContext jc = JAXBContext.newInstance(JAXB_PACKAGE_DECLARATION);
+			// initialize JAXB context. We provide the classloader here because we experienced that under
+			// certain circumstances (e.g. when used within JabRef as a JPF-Plugin), the wrong classloader is
+			// used which has the following exception as consequence:
+			//
+			//   javax.xml.bind.JAXBException: "org.bibsonomy.rest.renderer.xml" doesnt contain ObjectFactory.class or jaxb.index
+			//
+			// (see also http://ws.apache.org/jaxme/apidocs/javax/xml/bind/JAXBContext.html)
+			final JAXBContext jc = JAXBContext.newInstance(JAXB_PACKAGE_DECLARATION, this.getClass().getClassLoader());
 
 			// create an Unmarshaller
 			final Unmarshaller u = jc.createUnmarshaller();
