@@ -6,7 +6,6 @@ package org.bibsonomy.webapp.command;
  */
 public class PostCommand extends ResourceViewCommand {
 	private TagCloudCommand tagcloud = new TagCloudCommand();
-	private String requestedUser;
 
 	public TagCloudCommand getTagcloud() {
 		return this.tagcloud;
@@ -16,11 +15,4 @@ public class PostCommand extends ResourceViewCommand {
 		this.tagcloud = tagcloud;
 	}
 
-	public String getRequestedUser() {
-		return this.requestedUser;
-	}
-
-	public void setRequestedUser(String requestedUser) {
-		this.requestedUser = requestedUser;
-	}
 }
