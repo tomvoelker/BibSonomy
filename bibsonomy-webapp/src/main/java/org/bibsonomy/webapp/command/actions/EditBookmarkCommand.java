@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
@@ -17,7 +15,6 @@ import org.bibsonomy.webapp.command.PostCommand;
  * @version $Id$
  */
 public class EditBookmarkCommand extends PostCommand {
-	private static final Log log = LogFactory.getLog(EditBookmarkCommand.class);
 	/**
 	 * The tags of the copied post.
 	 */
@@ -26,6 +23,11 @@ public class EditBookmarkCommand extends PostCommand {
 	private Post<Bookmark> post;
 	private String tags ;
 	private boolean jump = false;
+	
+	private Post<Bookmark> diffPost;
+	
+	private String intraHashToUpdate;
+	
 	
 	/**
 	 * The abstract (or general) group of the post:
@@ -39,10 +41,6 @@ public class EditBookmarkCommand extends PostCommand {
 
 	private Map<String,Map<String,List<String>>> relevantTagSets;
 	
-	public EditBookmarkCommand() {
-		log.debug("constructor called");
-	}
-
 	public Post<Bookmark> getPost() {
 		return this.post;
 	}
@@ -106,7 +104,6 @@ public class EditBookmarkCommand extends PostCommand {
 	 * @param url 
 	 */
 	public void setUrl(final String url){
-		log.debug("setUrl(" + url + ") called");
 		this.post.getResource().setUrl(url);
 	}
 	
@@ -156,5 +153,21 @@ public class EditBookmarkCommand extends PostCommand {
 
 	public void setAbstractGrouping(String abstractGrouping) {
 		this.abstractGrouping = abstractGrouping;
+	}
+
+	public Post<Bookmark> getDiffPost() {
+		return this.diffPost;
+	}
+
+	public void setDiffPost(Post<Bookmark> diffPost) {
+		this.diffPost = diffPost;
+	}
+
+	public String getIntraHashToUpdate() {
+		return this.intraHashToUpdate;
+	}
+
+	public void setIntraHashToUpdate(String intraHashToUpdate) {
+		this.intraHashToUpdate = intraHashToUpdate;
 	}
 }
