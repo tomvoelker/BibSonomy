@@ -135,6 +135,14 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		 */
 		this.setTags(command, Resource.class, GroupingEntity.USER, loginUser.getName(), null, null, null, null, 0, 100, null);
 
+		
+		
+		/*
+		 * initialize groups 
+		 * TODO: we need the other way around: when we get a post from the DB and put it
+		 * into the command, we need to initialize the abstractGrouping, etc.
+		 */
+		initGroups(command, post);
 
 		/*
 		 * decide, what to do
@@ -156,6 +164,9 @@ public class PostBookmarkController extends SingleResourceListController impleme
 				 */
 				/*
 				 * put it into command
+				 * TODO: initialize abstractGrouping, etc.
+				 * (like we do it with the tags in the sequel)
+				 * 
 				 */
 				command.setPost(dbPost);
 				/*
@@ -289,11 +300,6 @@ public class PostBookmarkController extends SingleResourceListController impleme
 			errors.reject("error.field.valid.ckey");
 			return Views.POST_BOOKMARK;
 		}
-		
-		/*
-		 * initialize groups 
-		 */
-		initGroups(command, post);
 
 		/*
 		 * TODO: why is the content id set?
