@@ -75,6 +75,14 @@
 				<errors:global errors="${errors}"/>
      				<div style="float left;width:97%;margin-left:10px">
 						<h2 style="text-align: center; margin-bottom: 0"><fmt:message key="post.resource.editbookmark"/></h2>
+                        
+                        <!-- TODO: i18n -->
+                        <c:if test="${not empty command.diffPost}">
+                          <p>
+                             Hinweis: sie bearbeiten einen existierenden Post!
+                          </p>
+                        </c:if>
+                        
 						<fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
 							<fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
 								<legend><fmt:message key="general"/></legend>
@@ -93,7 +101,7 @@
 									<legend><form:label path="post.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label></legend>
 									<form:textarea path="post.description" tabindex="3" cols="69" rows="3" onkeyup="sz(this);" />
 									<div id="suggestion.description"></div>
-								</fieldset>	
+								</fieldset>
 							</fieldset>
 							<post:tagfield tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>	
 							<post:groupBox post="${post}" groups="${loginUser.groups}"/>	
@@ -104,7 +112,8 @@
 								<c:set var="save"><fmt:message key="save"/></c:set>
                                 <c:set var="reset"><fmt:message key="resetbutton"/></c:set>
 								<!-- function addSystemTags located in relevantFoxBox.tagx -->
-                                <input type="hidden" name="ckey" value="${command.context.ckey}"/>
+                                <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
+                                <form:hidden path="intraHashToUpdate"/>
 								<input type="reset"  tabindex="5" value="${reset}" />
 								<input type="submit" tabindex="6" value="${save}" onClick="clear_tags(); addSystemTags();"/>
 							</fieldset>	
