@@ -100,7 +100,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setTagIndex(tagIndex);
 		param.setLimit(limit);
 		param.setOffset(offset);
-		
+
 		if (Order.FOLKRANK.equals(param.getOrder())){
 			param.setGroupId(GroupID.PUBLIC.getId());
 			return this.bookmarkList("getBookmarkByTagNamesAndFolkrank", param, session);
@@ -142,7 +142,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		return this.bookmarkList("getBookmarkByTagNamesForUser", param, session);
 	}
-	
+
 	/**
 	 * Retrieves the number of bookmark items tagged by the tags present in tagIndex by user requestedUserName
 	 * being visible to the logged in user
@@ -256,7 +256,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
 		return this.bookmarkList("getBookmarkByConceptForGroup", param, session);
 	}
-	
+
 	/**
 	 * <em>/friends</em><br/><br/>
 	 * 
@@ -344,7 +344,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setLimit(limit);
 		return this.bookmarkList("getBookmarkPopular", param, session);
 	}
-	
+
 	/**
 	 * @see BookmarkDatabaseManager#getBookmarkPopular(BookmarkParam, DBSession)
 	 * 
@@ -439,7 +439,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @param userName
 	 * @param requBibtex
 	 * @param requestedUserName
-     * @param visibleGroupIDs
+	 * @param visibleGroupIDs
 	 * @param session
 	 * @param hashType
 	 * @return list of bookmark posts
@@ -813,7 +813,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		if (present(post.getGroups()) == false) throw new InvalidModelException("There are no groups for this post.");
 		/*if (post.getGroups().contains(GroupID.PUBLIC) && post.getGroups().size() > 1) throw new InvalidModelException("Invalid constilation of groups for this post.");
 		if (post.getGroups().contains(GroupID.PRIVATE) && post.getGroups().size() > 1) throw new InvalidModelException("Invalid constilation of groups for this post.");*/
-		
+
 		final BookmarkParam param = new BookmarkParam();
 		param.setResource(post.getResource());
 		param.setDate(post.getDate());
@@ -822,13 +822,13 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setDescription(post.getDescription());
 		param.setUserName(post.getUser().getName());
 		param.setUrl(post.getResource().getUrl());
-		
+
 		/* nur ein eintrag pro post in der bookmark tabelle*/
 		for (final Group group : post.getGroups()) {
 			param.setGroupId(group.getGroupId());
 			this.insertBookmark(param, session);
 		}
-		
+
 		/*
 		MULTIPLE GROUPS FOR A POST
 		if(post.getGroups().size() > 1){
@@ -846,7 +846,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		this.insert("insertBookmarkHash", param, session);
 	}
 
-   	// Decrements one count in url table after deleting
+	// Decrements one count in url table after deleting
 	private void updateBookmarkHash(final BookmarkParam param, final DBSession session) {
 		this.insert("updateBookmarkHash", param, session);
 	}
@@ -915,16 +915,16 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 			param.setRequestedUserName(userName);
 			param.setUserName(userName);
 			param.setHash(resourceHash);
-			
+
 			final List<Post<Bookmark>> bookmarks = this.getBookmarkByHashForUser(param, session);
 			if (bookmarks.size() == 0) {
 				// Bookmark doesn't exist
 				return false;
 			}
-			
+
 			final Post<? extends Resource> oneBookmark = bookmarks.get(0);
 			param.setRequestedContentId(oneBookmark.getContentId());
-			
+
 			if (update == false) {
 				this.plugins.onBookmarkDelete(param.getRequestedContentId(), session);
 			}
@@ -948,58 +948,113 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		return true;
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * The method assumes that the hashes of the given resource have been recalculated before calling this method!
+	 * 
 	 * @see org.bibsonomy.database.managers.CrudableContent#storePost(java.lang.String, org.bibsonomy.model.Post, java.lang.String, boolean, org.bibsonomy.database.util.DBSession)
 	 */
 	public boolean storePost(final String userName, final Post<Bookmark> post, final String oldIntraHash, boolean update, final DBSession session)  {
 		session.beginTransaction();
 		try {
-			// the bookmark with the "old" intrahash, i.e. the one that was sent
-			// within the create/update bookmark request
-			final List<Post<Bookmark>> isOldBookmarkInDb;
-			
-			// the bookmark with the "new" intrahash, i.e. the one that was recalculated
-			// based on the bookmark's fields
-			final List<Post<Bookmark>> isNewBookmarkInDb;
-			
-			// check if user is trying to create a bookmark that already exists
-			isNewBookmarkInDb = this.getBookmarkByHashForUser(userName, post.getResource().getIntraHash(), userName, new ArrayList<Integer>(), session, HashID.INTRA_HASH);
-			if ((isNewBookmarkInDb != null) && (isNewBookmarkInDb.size() > 0) && update == false) {
-				throw new IllegalArgumentException("Could not create new bookmark: This bookmark already exists in your collection (intrahash: " + post.getResource().getIntraHash() + ")");
+
+			// *************************************************************************
+			/*
+			 * the current intra hash of the resource
+			 * TODO: do a recalculation before
+			 */
+			final String intraHash = post.getResource().getIntraHash();
+			/*
+			 * recalculate hash just to be sure everything is OK
+			 */
+			post.getResource().recalculateHashes();
+			final String newIntraHash = post.getResource().getIntraHash();
+			/*
+			 * throw an exception if the hashes differ
+			 */
+			if (!intraHash.equals(newIntraHash)) {
+				throw new IllegalArgumentException("The post's hash wasn't correct.");
 			}
-			
+			// *************************************************************************
+
+
+
+			/*
+			 * the bookmark with the "old" intrahash, i.e. the one that was sent
+			 * within the create/update bookmark request
+			 */
+			final List<Post<Bookmark>> oldBookmarkInDb;
 			if (oldIntraHash != null) {
-				// check if the hash sent within the request is correct
-				if ((update == false) && (oldIntraHash.equals(post.getResource().getIntraHash()) == false)) {
+				/*
+				 * check if the hash sent within the request is correct
+				 */
+				if (!update && !oldIntraHash.equals(intraHash)) {
 					throw new IllegalArgumentException(
 							"Could not create new bookmark: The requested intrahash " 
 							+ oldIntraHash + " is not correct for this bookmark (correct intrahash is " 
-							+ post.getResource().getIntraHash() + ")."
+							+ intraHash + ")."
 					);
 				}
 				// if yes, check if a bookmark exists with the old intrahash				
-				isOldBookmarkInDb = this.getBookmarkByHashForUser(userName, oldIntraHash, userName, new ArrayList<Integer>(), session, HashID.INTRA_HASH);
+				oldBookmarkInDb = this.getBookmarkByHashForUser(userName, oldIntraHash, userName, new ArrayList<Integer>(), session, HashID.INTRA_HASH);
 			} else {
-				if (update == true) {
+				if (update) {
 					throw new IllegalArgumentException("Could not update bookmark: no intrahash specified.");
 				}
-				isOldBookmarkInDb = null;
+				oldBookmarkInDb = null;
 			}
-						
-			// ALWAYS get a new contentId
+
+			/*
+			 * get posts with the intrahash of the given post to check for possible duplicates 
+			 */
+			final List<Post<Bookmark>> newBookmarkInDb = this.getBookmarkByHashForUser(userName, intraHash, userName, new ArrayList<Integer>(), session, HashID.INTRA_HASH);
+
+			/*
+			 * check if user is trying to create a bookmark that already exists
+			 */
+			if (newBookmarkInDb != null && !newBookmarkInDb.isEmpty()) {
+				/*
+				 * new bookmark exists ... 
+				 */
+				if (!update) {
+					/*
+					 * we don't do an update, so this is not allowed
+					 */
+					throw new IllegalArgumentException("Could not create new bookmark: This bookmark already exists in your collection (intrahash: " + intraHash + ")");
+				} else if (!intraHash.equals(oldIntraHash)) {
+					/* 
+					 * Although we're doing an update, the old intra hash is different from the new one
+					 * in principle, this is OK, but not when the new hash already exists. Because that
+					 * way we would delete the post with the old hash and post the new one - resulting
+					 * in two posts with the same (new hash)
+					 */
+					throw new IllegalArgumentException("Could not create new bookmark: This bookmark already exists in your collection (intrahash: " + intraHash + ")");
+				}
+
+			}
+
+			/*
+			 * ALWAYS get a new contentId
+			 */
 			post.setContentId(this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, session));
-			if ((isOldBookmarkInDb != null) && (isOldBookmarkInDb.size() > 0)) {
-				update = true;
-				// Bookmark entry DOES EXIST for this user -> delete old Bookmark post
-				final Post<?> oldBookmarkPost = isOldBookmarkInDb.get(0);
-				this.plugins.onBookmarkUpdate(post.getContentId(), oldBookmarkPost.getContentId(), session);
-				this.deletePost(userName, oldBookmarkPost.getResource().getIntraHash(), true, session);
-			} else {
-				if (update == true) {
+
+			/*
+			 * on update, do a delete first ...
+			 */
+			if (update) {
+				if (oldBookmarkInDb != null && !oldBookmarkInDb.isEmpty()) {
+					/*
+					 * Bookmark entry DOES EXIST for this user -> delete old Bookmark post 
+					 */
+					final Post<?> oldBookmarkPost = oldBookmarkInDb.get(0);
+					this.plugins.onBookmarkUpdate(post.getContentId(), oldBookmarkPost.getContentId(), session);
+					this.deletePost(userName, oldBookmarkPost.getResource().getIntraHash(), true, session);
+				} else {
+					/*
+					 * not found -> throw exception
+					 */
 					log.warn("Bookmark with hash " + oldIntraHash + " does not exist for user " + userName);
 					throw new ResourceNotFoundException(oldIntraHash);
 				}
-				update = false;
 			}
 
 			this.insertBookmarkPost(post, session);
@@ -1022,7 +1077,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	public List<Post<Bookmark>> getBookmarkByConceptByTag(final BookmarkParam param, final DBSession session){
 		return this.bookmarkList("getBookmarkByConceptByTag", param, session);
 	}
-	
+
 	/**
 	 * 
 	 * @param requestedUserName
@@ -1036,10 +1091,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setRequestedUserName(requestedUserName);
 		param.setUserName(loginUserName);
 		param.setGroups(visibleGroupIDs);
-		
+
 		return (Integer) this.queryForObject("getGroupBookmarkCount", param, session);
 	}
-	
+
 	/**
 	 * @param requestedUserName
 	 * @param loginUserName
@@ -1054,10 +1109,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setRequestedUserName(requestedUserName);
 		param.setUserName(loginUserName);
 		param.setGroups(visibleGroupIDs);
-		
+
 		return (Integer) this.queryForObject("getGroupBookmarkCountByTag", param, session);
 	}
-	
+
 	/**
 	 * 
 	 * @param requestedUserName
@@ -1075,10 +1130,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setLimit(limit);
 		param.setOffset(offset);
 		param.setGroups(visibleGroupIDs);
-		
+
 		return this.bookmarkList("getBookmarksForMyGroupPosts",param,session);
 	}
-	
+
 	/**
 	 * @param requestedUserName
 	 * @param loginUserName
@@ -1097,10 +1152,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setLimit(limit);
 		param.setOffset(offset);
 		param.setGroups(visibleGroupIDs);
-		
+
 		return this.bookmarkList("getBookmarksForMyGroupPostsByTag",param,session);
 	}
-	
+
 	/**
 	 * @param days
 	 * @param session
@@ -1109,7 +1164,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	public int getBookmarkPopularDays(final int days, final DBSession session){
 		final BookmarkParam param = new BookmarkParam();
 		param.setDays(days);
-		
+
 		final Integer result = this.queryForObject("getBookmarkPopularDays", param, Integer.class, session);
 		if (result != null) {
 			return result;
