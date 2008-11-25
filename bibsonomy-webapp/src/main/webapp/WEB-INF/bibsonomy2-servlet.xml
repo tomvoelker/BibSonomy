@@ -244,6 +244,8 @@
 								<value>extended</value>  
 								<value>copytag</value>  
 								<value>abstractGrouping</value>
+								<value>intraHashToUpdate</value>
+								<value>jump</value>
 							</list>
 						</property>
 					</bean>
