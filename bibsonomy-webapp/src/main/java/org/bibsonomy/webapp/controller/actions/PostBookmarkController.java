@@ -18,6 +18,7 @@ import org.antlr.runtime.RecognitionException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -28,6 +29,7 @@ import org.bibsonomy.model.util.tagparser.TagString3Lexer;
 import org.bibsonomy.model.util.tagparser.TagString3Parser;
 import org.bibsonomy.recommender.RecommendedTag;
 import org.bibsonomy.recommender.TagRecommender;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -55,7 +57,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 	 * Provides tag recommendations to the user.
 	 */
 	private TagRecommender tagRecommender = null;
-	
+
 	/** 
 	 * Returns an instance of the command the controller handles.
 	 * 
@@ -77,7 +79,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		command.setPost(new Post<Bookmark>());
 		command.getPost().setResource(new Bookmark());		
 		command.setAbstractGrouping("public");
-		
+
 		/*
 		 * set default url.
 		 */
@@ -87,13 +89,13 @@ public class PostBookmarkController extends SingleResourceListController impleme
 
 	/** Main method which does the postBookmark-procedure.
 	 *
+	 * FIXME: for:group is missing
+	 *
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(java.lang.Object)
 	 */
 	public View workOn(EditBookmarkCommand command) {
-		log.debug("--> PostBookmarkController: workOn() called");
-		if (log.isDebugEnabled() && command.getPost() != null && command.getPost().getResource() != null) {
-			log.debug("url = " + command.getPost().getResource().getUrl());
-		}
+		log.debug("######## PostBookmarkController: workOn() called ########");
+		log.debug("working on command " + command);
 
 		command.setPageTitle("post a new bookmark");
 		final RequestWrapperContext context = command.getContext();
@@ -101,64 +103,172 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		/*
 		 * only users which are logged in might post bookmarks 
 		 * -> send them to login page
+		 * FIXME: add redirect to posting page (?referer=... ?)
 		 */
 		if (!context.isUserLoggedIn()) {
-			log.debug("--> PostBookmarkController: workOn() called -> User not logged in -> Redirect to /login");
+			log.debug("user not logged in -> redirect to /login");
 			return new ExtendedRedirectView("/login");
 		}
 
 		final User loginUser = context.getLoginUser();
-		
-		/* 
-		 * get tagsets for each group and add them to the loginUser object
-		 * FIXME: why into the loginUser?
-		 */
-		final ArrayList<Group> groupsWithTagSets = new ArrayList<Group>();
-		final List<Group> usersGroups = loginUser.getGroups();
-		for(final Group group: usersGroups){
-			if(group.getName() != null){
-				groupsWithTagSets.add(this.logic.getGroupDetails(group.getName()));
-			}
-		}
-		loginUser.setGroups(groupsWithTagSets);
-		
 		final Post<Bookmark> post = command.getPost();
-		
+
 		/*
-		 * get tag recommendations 
-		 * (this must be done before any error checking, because the user must have this)
+		 * initialize tag sets for groups
 		 */
-		if (tagRecommender != null) {
-			final SortedSet<RecommendedTag> recommendedTags = tagRecommender.getRecommendedTags(post);
-			log.debug("got " + recommendedTags.size() + " recommended tags");
-			command.setRecommendedTags(recommendedTags);
-		}
+		initGroupTagSets(loginUser);
+
+		/*
+		 * set the user of the post to the loginUser (the recommender might need the user name)
+		 */
+		post.setUser(loginUser);
+
+		/*
+		 * get the recommended tags
+		 */
+		initRecommendedTags(command, post);
+
 		/*
 		 * get the tag cloud of the user
 		 * (this must be done before any error checking, because the user must have this)
 		 * FIXME: get ALL tags of the user!
 		 */
 		this.setTags(command, Resource.class, GroupingEntity.USER, loginUser.getName(), null, null, null, null, 0, 100, null);
-		log.debug("got " + command.getTagcloud().getTags().size() + " tags for user tag cloud.");
+
 
 		/*
-		 * check for duplicate posts
+		 * decide, what to do
+		 */
+		final String intraHashToUpdate = command.getIntraHashToUpdate();
+		if (ValidationUtils.present(intraHashToUpdate)) {
+			log.debug("intra hash to update found -> handling update of existing post");
+			/*
+			 * we're editing an existing post
+			 */
+			if (!context.isValidCkey()) {
+				log.debug("no valid ckey found -> assuming first call, populating form");
+				/*
+				 * ckey is invalid, so this is probably the first call --> get post from DB
+				 */
+				final Post<Bookmark> dbPost = (Post<Bookmark>) logic.getPostDetails(intraHashToUpdate, loginUser.getName());
+				/*
+				 * TODO: check for dbPost == null!
+				 */
+				/*
+				 * put it into command
+				 */
+				command.setPost(dbPost);
+				/*
+				 * create tag string for view input field
+				 */
+				command.setTags(getSimpleTagString(dbPost.getTags()));
+				/*
+				 * return to view
+				 */
+				return Views.POST_BOOKMARK;
+				/*
+				 * TODO: what, if the ckey really is the problem (i.e., it is broken?) and not the first call?
+				 */
+			}
+			log.debug("ckey given, so parse tags, validate post, update post");
+			/*
+			 * ckey is given, so user is already editing the post  -> validate it
+			 */
+			try {
+				post.setTags(parse(command.getTags()));
+			} catch (Exception e) {
+				errors.rejectValue("tags", "error.field.valid.tags.parseerror");
+			}
+			org.springframework.validation.ValidationUtils.invokeValidator(new PostBookmarkValidator(), command, errors);
+			/*
+			 * check, if the URL has changed
+			 * TODO: what to do, if it has changed?
+			 */
+			post.getResource().recalculateHashes();
+			/*
+			 * return to form until validation passes
+			 */
+			if (errors.hasErrors()) {
+				log.debug("returning to view because of errors: " + errors.getErrorCount());
+				log.debug("post is " + post.getResource());
+				return Views.POST_BOOKMARK;
+			}
+			/*
+			 * the post to update has the given intra hash 
+			 */
+			post.getResource().setIntraHash(command.getIntraHashToUpdate());
+			/*
+			 * create post list for update
+			 */
+			final List<Post<?>> posts = new LinkedList<Post<?>>();
+			posts.add(post);
+			/*
+			 * update date 
+			 * TODO: don't we want to keep the posting date unchanged and only update the date?
+			 */
+			post.setDate(new Date());
+			/*
+			 * update post in DB
+			 * FIXME: posting duplicates is possible! :-(
+			 */
+			final List<String> updatePosts = logic.updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
+			if (updatePosts == null || updatePosts.isEmpty()) {
+				/*
+				 * show error page
+				 */
+				errors.reject("Could not update post");
+				log.warn("could not update post");
+				return Views.ERROR;
+			}
+			/*
+			 * TODO: when to redirect to post.getResource().getUrl()?
+			 */
+			try {
+				return new ExtendedRedirectView("/user/" + URLEncoder.encode(loginUser.getName(), "UTF-8"));
+			} catch (UnsupportedEncodingException ex) {
+				log.error("Could not encode redirect URL.", ex);
+				errors.reject("error encoding URL");
+				return Views.ERROR;
+			} 
+		} 
+
+		log.debug("no intra hash given -> new post");
+		/*
+		 * no intra hash given --> user posts a new entry (which might already exist!)
+		 */
+
+		/*
+		 * check, if post already exists
 		 */
 		post.getResource().recalculateHashes();
-		if (logic.getPostDetails(post.getResource().getIntraHash(), loginUser.getName()) != null)  {
+		final Post<Bookmark> dbPost = (Post<Bookmark>) logic.getPostDetails(post.getResource().getIntraHash(), loginUser.getName());
+		if (dbPost != null) {
+			log.debug("user already owns this URL ... handling update");
+			/*
+			 * TODO: here we could check, if the user has marked a checkbox which says "I want to update this post"
+			 * and only then set the intraHashToUpdate
+			 */
+			/*
+			 * post exists -> warn user
+			 */
 			errors.rejectValue("post.resource.url", "error.field.valid.url.alreadybookmarked");
+			/*
+			 * the next time this will be handled as an update
+			 * TODO: this does not make sense, since we don't show the user the existing post
+			 * (actually: again, we can't exchange the post ... :-( ) 
+			 */
+			//command.setIntraHashToUpdate(post.getResource().getIntraHash());
+			/*
+			 * in any case: return to view
+			 */
+			return Views.POST_BOOKMARK;
 		}
-
+		log.debug("wow, post is completely new! So ... return until no errors and then store it");
 		/*
-		 * parse the tags
-		 * TODO: add proper error handling (key for message still missing!) 
+		 * post is completely new --> return to view on error, otherwise store it.
 		 */
-		try {
-			post.setTags(parse(command.getTags()));
-		} catch (Exception e) {
-			errors.rejectValue("tags", "error.field.valid.tags.parseerror");
-		}
-		
+
+
 		/*
 		 * return to form until validation passes
 		 */
@@ -168,7 +278,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 			return Views.POST_BOOKMARK;
 		}
 
-		
+
 		/*
 		 * check credentials to fight CSRF attacks
 		 * We do this that late to not cause the error message pop up 
@@ -177,41 +287,31 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		 */
 		if (!context.isValidCkey()) {
 			errors.reject("error.field.valid.ckey");
+			return Views.POST_BOOKMARK;
 		}
 		
-
 		/*
-		 * copy the groups of the post into the post (make proper groups from them)
+		 * initialize groups 
 		 */
-		log.debug("abstract grouping: " + command.getAbstractGrouping());
-		if(!command.getAbstractGrouping().endsWith("other")){
-			//if the post is private or public --> remove all groups and add one (private or public)
-			post.getGroups().clear();
-			post.getGroups().add(new Group(command.getAbstractGrouping()));
-		} else {
-			final List<String> groups = command.getGroups();
-			for (final String groupname: groups){
-				post.getGroups().add(new Group(groupname));
-			}
-		}
-		
+		initGroups(command, post);
 
-		
 		/*
 		 * TODO: why is the content id set?
 		 */
 //		post.setContentId(null);
 		post.setDate(new Date());
-		post.setUser(loginUser);
 
-		/*
-		 * store post
-		 * TODO: how are updates handled?
-		 */
+
 		final List<Post<?>> posts = new LinkedList<Post<?>>();
 		posts.add(post);
-		final String out = logic.createPosts(posts).get(0);
-		log.debug("posted hash: " + out);
+
+		/*
+		 * new post -> create
+		 */
+		log.debug("finally: creating a new post in the DB");
+		final String createPosts = logic.createPosts(posts).get(0);
+		log.debug("created post: " + createPosts);	
+
 
 		/*
 		 * check, if bookmark was posted by bookmarklet (jump = true) or not 
@@ -225,6 +325,56 @@ public class PostBookmarkController extends SingleResourceListController impleme
 			} 
 		}
 		return new ExtendedRedirectView(redirectURL);
+	}
+
+	/**
+	 * copy the groups of the post into the post (make proper groups from them)
+	 * TODO: Why do we (still!) need this?
+	 * 
+	 * @param command
+	 * @param post
+	 */
+	private void initGroups(EditBookmarkCommand command, final Post<Bookmark> post) {
+		if(!command.getAbstractGrouping().endsWith("other")){
+			/*
+			 * if the post is private or public --> remove all groups and add one (private or public)
+			 */
+			post.getGroups().clear();
+			post.getGroups().add(new Group(command.getAbstractGrouping()));
+		} else {
+			final List<String> groups = command.getGroups();
+			for (final String groupname: groups){
+				post.getGroups().add(new Group(groupname));
+			}
+		}
+	}
+
+
+	/** Initialize the recommended tags by querying the tag recommender. 
+	 * (this should be done before any error checking, because the user must have this)
+	 * 
+	 * @param command - to store the recommended tags
+	 * @param post - to compute the recommendations
+	 */
+	private void initRecommendedTags(final EditBookmarkCommand command, final Post<Bookmark> post) {
+		if (tagRecommender != null) {
+			final SortedSet<RecommendedTag> recommendedTags = tagRecommender.getRecommendedTags(post);
+			log.debug("got " + recommendedTags.size() + " recommended tags");
+			command.setRecommendedTags(recommendedTags);
+		}
+	}
+
+	/** Concatenates the tags into one tag string to show them to the user.
+	 * 
+	 * @param tags
+	 * @return A string representing the tags, separated by space
+	 */
+	private String getSimpleTagString(final Set<Tag> tags) {
+		final StringBuffer s = new StringBuffer();
+		for (final Tag tt: tags) {
+			s.append(tt.getName() + " ");
+		}
+		return s.toString();
 	}
 
 
@@ -265,13 +415,87 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		return new PostBookmarkValidator();
 	}
 
-	/** Returns, if validation is required for the given command. On default,
-	 * for all incoming data validation is required.
+	/** 
+	 * If user already posted the given URL and this is the first call (no ckey), 
+	 * no validation is required - we will use the post from the DB.
+	 * 
 	 * 
 	 * @see org.bibsonomy.webapp.util.ValidationAwareController#isValidationRequired(java.lang.Object)
 	 */
+	@SuppressWarnings("unchecked")
 	public boolean isValidationRequired(EditBookmarkCommand command) {
+
+		if (ValidationUtils.present(command.getIntraHashToUpdate())) {
+			return false;
+		}
+
+		/*
+		 * if user is posting an already bookmarked URL, no validation is required (really?)
+		 */
+//		final RequestWrapperContext context = command.getContext();
+//		/*
+//		* weak heuristics: no ckey, so probably first call to controller -> skip validation
+//		*/
+//		if (!context.isValidCkey()) {
+//		log.debug("ckey NOT valid");
+//		final Post<Bookmark> post = command.getPost();
+//		if (command.getIntraHashToUpdate() != null) {
+//		log.debug("command.getIntraHashToUpdate() != null");
+//		final User loginUser = context.getLoginUser();
+//		try {
+//		final Post<? extends Resource> dbPost = logic.getPostDetails(command.getIntraHashToUpdate(), loginUser.getName());
+//		if (dbPost != null) {
+//		/*
+//		* ckey != null && post exists: no validation
+//		*/
+//		log.debug("skipping validation");
+//		return false;
+//		} 
+//		} catch (ResourceMovedException e) {
+//		log.warn("resource moved", e);
+//		}
+//		} else if (post != null && post.getResource() != null && post.getResource().getUrl() != null) {
+//		log.debug("post != null && post.getResource() != null && post.getResource().getUrl() != null");
+//		post.getResource().recalculateHashes();
+//		final User loginUser = context.getLoginUser();
+//		try {
+//		final Post<? extends Resource> dbPost = logic.getPostDetails(post.getResource().getIntraHash(), loginUser.getName());
+//		if (dbPost != null) {
+//		/*
+//		* ckey != null && post exists: no validation
+//		*/
+//		log.debug("skipping validation");
+//		return false;
+//		} 
+//		} catch (ResourceMovedException e) {
+//		log.warn("resource moved", e);
+//		}
+//		}
+
+//		}
 		return true;
+	}
+
+
+	/** Gets the tagsets for each group from the DB and stores them in the 
+	 * users group list.
+	 * 
+	 * @param loginUser
+	 */
+	private void initGroupTagSets(final User loginUser) {
+		/* 
+		 * get tagsets for each group and add them to the loginUser object
+		 * TODO: why into the loginUser?
+		 */
+		final List<Group> usersGroups = loginUser.getGroups();
+		final ArrayList<Group> groupsWithTagSets = new ArrayList<Group>();
+		for(final Group group: usersGroups){
+			if(group.getName() != null){
+				groupsWithTagSets.add(this.logic.getGroupDetails(group.getName()));
+			}
+		}
+		loginUser.setGroups(groupsWithTagSets);
+
 	}
 
 	public TagRecommender getTagRecommender() {
