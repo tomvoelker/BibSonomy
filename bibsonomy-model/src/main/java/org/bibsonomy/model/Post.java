@@ -208,6 +208,6 @@ public class Post<T extends Resource> {
 	
 	@Override
 	public String toString() {
-		return "\n" + user.getName() + "\n\ttagged\n" + resource + "\n\twith\n" + tags;
+		return "\n" + (user == null ? "" : user.getName()) + "\n\ttagged\n" + resource + "\n\twith\n" + tags;
 	}
 }
