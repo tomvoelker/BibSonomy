@@ -209,7 +209,7 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 
 	@Override
 	protected ServletRequestDataBinder createBinder(HttpServletRequest request, Object command) throws Exception {
-		ServletRequestDataBinder binder = new ServletRequestAttributeDataBinder(command, getCommandName());
+		final ServletRequestDataBinder binder = new ServletRequestAttributeDataBinder(command, getCommandName());
 		prepareBinder(binder);
 		initBinder(request, binder);
 		return binder;
