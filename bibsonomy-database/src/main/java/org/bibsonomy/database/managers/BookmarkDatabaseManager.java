@@ -956,27 +956,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	public boolean storePost(final String userName, final Post<Bookmark> post, final String oldIntraHash, boolean update, final DBSession session)  {
 		session.beginTransaction();
 		try {
-
-			// *************************************************************************
 			/*
 			 * the current intra hash of the resource
-			 * TODO: do a recalculation before
 			 */
 			final String intraHash = post.getResource().getIntraHash();
-			/*
-			 * recalculate hash just to be sure everything is OK
-			 */
-			post.getResource().recalculateHashes();
-			final String newIntraHash = post.getResource().getIntraHash();
-			/*
-			 * throw an exception if the hashes differ
-			 */
-			if (!intraHash.equals(newIntraHash)) {
-				throw new IllegalArgumentException("The post's hash wasn't correct.");
-			}
-			// *************************************************************************
-
-
 
 			/*
 			 * the bookmark with the "old" intrahash, i.e. the one that was sent
