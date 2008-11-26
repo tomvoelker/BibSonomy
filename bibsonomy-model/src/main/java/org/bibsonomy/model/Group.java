@@ -284,7 +284,7 @@ public class Group {
 		 * at least one of the groups has no ID set --> check their name
 		 */
 		if (this.name != null && other.name != null) {
-			return this.name.equals(other.name);
+			return this.name.equalsIgnoreCase(other.name);
 		}
 		throw new RuntimeException("The given groups " + this + " and " + other + " are incomparable.");
 	}
