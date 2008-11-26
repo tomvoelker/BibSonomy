@@ -6,9 +6,11 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.Classifier;
@@ -69,6 +71,9 @@ import org.bibsonomy.util.ValidationUtils;
  */
 public class DBLogic implements LogicInterface {
 
+	private static final Group GROUP_PRIVATE = new Group(GroupID.PRIVATE);
+	private static final Group GROUP_PUBLIC = new Group(GroupID.PUBLIC);
+
 	private static final Logger log = Logger.getLogger(DBLogic.class);
 
 	private final Map<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>> allDatabaseManagers;
@@ -93,7 +98,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	protected DBLogic(final User loginUser, final DBSessionFactory dbSessionFactory) {
 		// each user is a member of the public group
-		loginUser.addGroup(new Group(GroupID.PUBLIC));
+		loginUser.addGroup(GROUP_PUBLIC);
 		this.loginUser = loginUser;
 
 		this.allDatabaseManagers = new HashMap<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>>();
@@ -473,7 +478,7 @@ public class DBLogic implements LogicInterface {
 			final CrudableContent<T, GenericParam> man = getFittingDatabaseManager(post);
 			final String oldIntraHash = post.getResource().getIntraHash();
 			post.getResource().recalculateHashes();			
-			post = this.validateGroups(post, session);			
+			post = this.validateGroups(post, session);
 			man.storePost(this.loginUser.getName(), post, oldIntraHash, update, session);
 			// if we don't get an exception here, we assume the resource has been successfully stored
 			return post.getResource().getIntraHash();
@@ -490,14 +495,45 @@ public class DBLogic implements LogicInterface {
 	 * @return post the incoming post with the groupIDs filled in
 	 */
 	private <T extends Resource> Post<T> validateGroups(final Post<T> post, final DBSession session) {
-		// retrieve the user's groups
-		final List<Integer> groupIds = this.groupDBManager.getGroupIdsForUser(post.getUser().getName(), session);
-		// each user can post as public, private or friends
-		groupIds.add(GroupID.PUBLIC.getId());
-		groupIds.add(GroupID.PRIVATE.getId());
+		/*
+		 * First check for "public" and "private".
+		 * Those two groups are special, they can't be assigned with another group. 
+		 */
+		final Set<Group> groups = post.getGroups();
+		if (groups.contains(GROUP_PUBLIC) || groups.contains(GROUP_PRIVATE)) {
+			if (groups.size() > 1) {
+				/*
+				 * Those two groups are exclusive - they can not appear together or with any other group.
+				 */
+				throw new ValidationException("Group 'public' (or 'private') can not be combined with other groups.");
+			}
+			/*
+			 * only one group and it is "public" or "private"
+			 * -> set group id and return post
+			 */
+			final Group group = groups.iterator().next();
+			if (group.equals(GROUP_PRIVATE)) {
+				group.setGroupId(GROUP_PRIVATE.getGroupId());
+			} else {
+				group.setGroupId(GROUP_PUBLIC.getGroupId());
+			}
+			return post;
+		}
+		/*
+		 * only non-special groups remain (including "friends") - check those
+		 */
+		/*
+		 * retrieve the user's groups
+		 */
+		final Set<Integer> groupIds = new HashSet<Integer>(this.groupDBManager.getGroupIdsForUser(post.getUser().getName(), session));
+		/*
+		 * add "friends" group
+		 */
 		groupIds.add(GroupID.FRIENDS.getId());
-
-		for (final Group group : post.getGroups()) {
+		/*
+		 * check that there are only groups the user is allowed to post to.
+		 */
+		for (final Group group: groups) {
 			final Group testGroup = this.groupDBManager.getGroupByName(group.getName().toLowerCase(), session);
 			if (testGroup == null) {
 				// group does not exist
@@ -511,8 +547,8 @@ public class DBLogic implements LogicInterface {
 		}		
 
 		// no group specified -> make it public
-		if (post.getGroups().size() == 0) {
-			post.getGroups().add(new Group(GroupID.PUBLIC));
+		if (groups.size() == 0) {
+			groups.add(GROUP_PUBLIC);
 		}
 
 		return post;
@@ -917,18 +953,18 @@ public class DBLogic implements LogicInterface {
 	public int getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search, StatisticsConstraint constraint) {
 		final DBSession session = openSession();
 		final Integer result;
-		
-		
+
+
 
 		try {
-				
+
 			if(this.permissionDBManager.checkFilterPermissions(filter, this.loginUser)){
 				loginUser.addGroup(new Group(GroupID.ADMINSPAM));
 			}
-					
+
 			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, this.loginUser);
-			
-			
+
+
 			if (resourceType == BibTex.class || resourceType == Bookmark.class || resourceType == Resource.class) {
 				param.setContentTypeByClass(resourceType);
 				param.setFilter(filter);
