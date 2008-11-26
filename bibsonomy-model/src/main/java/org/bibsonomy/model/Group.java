@@ -115,6 +115,7 @@ public class Group {
 	 */
 	public Group(final GroupID groupId) {
 		this(groupId.getId());
+		this.setName(groupId.name().toLowerCase());
 	}
 
 	/**
