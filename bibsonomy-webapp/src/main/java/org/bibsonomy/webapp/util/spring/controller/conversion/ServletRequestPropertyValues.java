@@ -35,7 +35,10 @@ public class ServletRequestPropertyValues extends MutablePropertyValues {
 		 * FIXME: disabled binding of attributes
 		 */
 		//addAttributesStartingWith(m, request, prefix);
-		addParametersStartingWith(m, request, prefix);
+		/*
+		 * disabled, because it can not handle multiple values for one parameter (e.g., lists)
+		 */
+		//addParametersStartingWith(m, request, prefix);
 		return m;
 	}
 	
@@ -55,7 +58,7 @@ public class ServletRequestPropertyValues extends MutablePropertyValues {
 	 * @see javax.servlet.ServletRequest#getParameterValues
 	 * @see javax.servlet.ServletRequest#getParameterMap
 	 */
-	public static void addAttributesStartingWith(final Map<? super String, Object> params, final ServletRequest request, String prefix) {
+	private static void addAttributesStartingWith(final Map<? super String, Object> params, final ServletRequest request, String prefix) {
 		Assert.notNull(request, "Request must not be null");
 		Enumeration<?> paramNames = request.getAttributeNames();
 		if (prefix == null) {
@@ -76,7 +79,7 @@ public class ServletRequestPropertyValues extends MutablePropertyValues {
 	 * @param request
 	 * @param prefix
 	 */
-	public static void addParametersStartingWith(final Map<? super String, Object> params, final ServletRequest request, String prefix) {
+	private static void addParametersStartingWith(final Map<? super String, Object> params, final ServletRequest request, String prefix) {
 		Assert.notNull(request, "Request must not be null");
 		Enumeration<?> paramNames = request.getParameterNames();
 		if (prefix == null) {

@@ -37,9 +37,9 @@ public class ServletRequestAttributeDataBinder extends ServletRequestDataBinder 
 
 	@Override
 	public void bind(ServletRequest request) {
-		MutablePropertyValues mpvs = new ServletRequestPropertyValues(request);
+		final MutablePropertyValues mpvs = new ServletRequestPropertyValues(request);
 		if (request instanceof MultipartHttpServletRequest) {
-			MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+			final MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 			bindMultipartFiles(multipartRequest.getFileMap(), mpvs);
 		}
 		doBind(mpvs);
