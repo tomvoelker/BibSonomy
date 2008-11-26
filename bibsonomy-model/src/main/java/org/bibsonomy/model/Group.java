@@ -266,20 +266,35 @@ public class Group {
 			/*
 			 * both groups have IDs set --> compare them by id
 			 */
+			final boolean groupIdEquals = this.groupId == other.groupId;
 			if (this.name != null && other.name != null) {
+				final boolean nameEquals = this.name.equalsIgnoreCase(other.name);
 				/*
 				 * since both have also names set ... we should include the names in the comparison!
 				 */
-				if ((this.groupId == other.groupId && !this.name.equals(other.name)) ||
-						(this.groupId != other.groupId &&  this.name.equals(other.name))) {
+				if (( groupIdEquals && !nameEquals) ||
+				    (!groupIdEquals &&  nameEquals)) {
 					/*
 					 * IDs do not match with names --> exception! 
 					 */
 					throw new RuntimeException("The names and the IDs of the given groups " + this + " and " + other + " do not match.");
 				}
+				/*
+				 * here we know: 
+				 * either both name and id are equal, or neither name and id are equal
+				 * -> we need to return only the comparison value of the ids 
+				 */
 			}
-			return this.groupId == other.groupId;
-		} 
+			/*
+			 * if one of the groups has a name given and the other not, they're incomparable
+			 * (otherwise constructing a consistent hashcode() is impossible!
+			 */
+			if ((this.name != null && other.name == null) || 
+			    (this.name == null && other.name != null)) {
+				throw new RuntimeException("The given groups " + this + " and " + other + " are incomparable, because one of them has both name and ID set, the other not.");
+			}
+			return groupIdEquals;
+		}
 		/*
 		 * at least one of the groups has no ID set --> check their name
 		 */
@@ -301,6 +316,8 @@ public class Group {
 
 	@Override
 	public int hashCode() {
+		if (this.name != null && this.groupId != GroupID.INVALID.getId()) return this.name.toLowerCase().hashCode();
+		if (this.name != null) return this.name.toLowerCase().hashCode();
 		return groupId;
 	}
 

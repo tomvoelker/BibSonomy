@@ -152,8 +152,8 @@ public class GroupTest {
 		}
 
 	}
-	
-	
+
+
 	/**
 	 * One group has the ID given, the other the name. They're incomparable!
 	 */
@@ -168,7 +168,7 @@ public class GroupTest {
 
 		}
 	}
-	
+
 	/**
 	 * Neither name nor id given on both groups. Fail!
 	 * Because: invalid groups are not comparable!
@@ -183,6 +183,154 @@ public class GroupTest {
 		} catch (RuntimeException e) {
 
 		}
+	}
+
+	/**
+	 * equals should ignore case - this is tested here
+	 */
+	@Test
+	public void testEqualsOnCase() {
+		final Group first = new Group("puBliC");
+		final Group second = new Group("pubLIC");
+		assertEquals(first, second);
+	}
+
+	/**
+	 * transitivity must hold for equals!
+	 */
+	@Test
+	public void testEqualsTransitivity1() {
+		final Group first = new Group("puBliC");
+		final Group second = new Group("pubLIC");
+		final Group third = new Group("PubLIc");
+
+		assertEquals(first, second);
+		assertEquals(second, third);
+		// transitivity
+		assertEquals(first, third);
+	}
+
+	/**
+	 * more complicated example: two groups are equal by their name,
+	 * two other by their id
+	 */
+	@Test
+	public void testEqualsTransitivity2() {
+		final Group first = new Group("puBliC");
+
+		final Group second = new Group("pubLIC");
+		second.setGroupId(4);
+
+		final Group third = new Group("PubLIc");
+		third.setGroupId(4);
+
+		assertEquals(first, second);
+		assertEquals(second, third);
+		// transitivity
+		assertEquals(first, third);
+	}
+
+	/**
+	 * more complicated example: two groups are equal by their id,
+	 * two other by their name
+	 * BUT: this fails, because equals fails on given ids but differing names.
+	 */
+	@Test
+	public void testEqualsTransitivity3() {
+		final Group first = new Group(1);
+
+		final Group second = new Group(1);
+		second.setName("foo");
+
+		final Group third = new Group("FOO");
+
+		try {
+			/*
+			 * this should not work, since second has both name and ID, first not
+			 */
+			first.equals(second);
+			fail();
+		} catch (RuntimeException e) {
+
+		}
+
+		assertEquals(second, third);
+		// transitivity
+		try {
+			first.equals(third);
+			fail();
+		} catch (RuntimeException e) {
+
+		}
+	}
+
+	/**
+	 * Hashcode must be compatible to equals ...
+	 * 
+	 * "if two objects are equal according to the equals() method, they must have the same hashCode() value"
+	 * 
+	 * good article describing this: <a href="http://www.ibm.com/developerworks/java/library/j-jtp05273.html">at IBM developer works</a> 
+	 */
+	@Test
+	public void testHashCode1() {
+		final Group first = new Group("puBliC");
+		final Group second = new Group("pubLIC");
+		assertEquals(first, second);
+		assertEquals(first.hashCode(), second.hashCode());
+	}
+
+	/**
+	 * same id
+	 */
+	@Test
+	public void testHashCode2() {
+		final Group first = new Group(1);
+		final Group second = new Group(1);
+		assertEquals(first, second);
+		assertEquals(first.hashCode(), second.hashCode());
+	}
+
+	/**
+	 * same name, one group has id
+	 */
+	@Test
+	public void testHashCode3() {
+		final Group first = new Group("public");
+		first.setGroupId(3);
+		final Group second = new Group("pubLIC");
+		assertEquals(first, second);
+		assertEquals(first.hashCode(), second.hashCode());
+	}
+
+	
+	/**
+	 * 
+	 * NOTE that one group has both ID and name, the other only name - this is OK
+	 */
+	@Test
+	public void testEqualsNotFails() {
+		final Group first = new Group("public");
+		first.setGroupId(3);
+		final Group second = new Group("pubLIC");
+		assertEquals(first, second);
+	}
+
+	/**
+	 * one group has both ID and name, the other only id -- fail
+	 */
+	@Test
+	public void testEqualsFails1() {
+		final Group first = new Group(1);
+		final Group second = new Group(1);
+		second.setName("foo");
+
+		try {
+			first.equals(second);
+			fail();
+		} catch (RuntimeException e) {
+
+		}
+
 	}
 
 }
