@@ -1,0 +1,45 @@
+/*
+ * Stylesheet for /groups
+ * @author Folke Eisterlehner
+ */
+ 
+/* the introductory text about groups */
+#groupIntro {
+	font-style: italic;
+	text-align: justify;
+} 
+
+/* the navigation-alphabet on top of the list */
+#linkedAlhpabet table {
+	text-align: left;
+	width: auto;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/*----------------------------------------------------------------------------
+ * the table which holds the groups list
+ *--------------------------------------------------------------------------*/
+#groupsList table {
+	border-collapse: collapse;
+	/*border-spacing: 20px;*/
+}
+
+#groupsList .characterColumn {
+	background-color: #EEEEEE;
+}
+
+/* row in table which only shows the corresponding character in the alphabet */
+#groupsList .groupsNewChar {
+	background-color: #EEEEEE;
+}
+
+#groupsList .groupsNewChar a {
+}
+
+#groupsList .groupName {
+	width: 10em;
+}
+
+#groupsList .groupDescription {
+}

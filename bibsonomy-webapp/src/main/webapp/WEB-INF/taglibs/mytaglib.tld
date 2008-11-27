@@ -113,6 +113,11 @@
     </attribute>
   </tag>
   
+  <function>
+    <name>normalize</name>
+    <function-class>tags.Functions</function-class>
+    <function-signature>String normalize(java.lang.String, java.lang.String)</function-signature>
+  </function> 
   
   <function>
     <name>trimWhiteSpace</name>

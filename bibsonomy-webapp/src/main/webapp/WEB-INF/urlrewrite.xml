@@ -446,6 +446,7 @@
       <from>^/+group/(\?group=(.*))$</from>
       <to type="redirect">/group/$2</to>
     </rule>
+    <!-- 
 	<rule>
 	    <from>^/+group/*$</from>
 	    <to>/groups.jsp</to>
@@ -454,6 +455,7 @@
 	    <from>^/+groups/*$</from>
 	    <to>/groups.jsp</to>
 	</rule>
+	 -->
 	<rule>
 	  <from>^/+group/+([^/?]+?)/$</from>
 	  <to type="redirect">/group/$1</to>
