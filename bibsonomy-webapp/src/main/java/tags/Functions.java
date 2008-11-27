@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Properties;
+import java.text.Normalizer;
 
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.model.Tag;
@@ -57,6 +58,22 @@ public class Functions  {
 			return chars.getProperty(key);
 		}
 		return "???" + key + "???";
+	}
+	
+	/**
+	 * Normalizes input string according to Unicode Standard Annex #15
+	 * @param str
+	 * @param decomp one of NFC, NFD, NFKC, NFKD @see Normalizer.Form
+	 * @return normalized String
+	 */
+	public static String normalize( String str, String decomp ) {
+		Normalizer.Form form; 
+		try {
+			form = Normalizer.Form.valueOf(decomp);
+		} catch (Exception e) {
+			form = Normalizer.Form.NFD; 
+		}
+		return Normalizer.normalize(str+form.toString(), form);
 	}
 
 	/**
