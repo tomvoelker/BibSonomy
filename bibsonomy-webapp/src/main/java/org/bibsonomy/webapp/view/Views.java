@@ -40,6 +40,11 @@ public enum Views implements View {
 	USERTAGPAGE("usertag"),	
 	
 	/**
+	 * groups page showing all groups available
+	 */
+	GROUPSPAGE("groups"),
+
+	/**
 	 * group page showing all resources of a specified group
 	 */
 	GROUPPAGE("group"),
