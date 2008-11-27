@@ -7,7 +7,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Scraper URL tests #99 for EricScraper
+ * Scraper URL tests #99 #136 for EricScraper
  * @author tst
  * @version $Id$
  */
@@ -21,6 +21,16 @@ public class EricScraperTest {
 	public void url1TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_99"));
+	}
+	
+	/**
+	 * starts URL test with id url_136
+	 */
+	@Test
+	@Ignore
+	public void url2TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_136"));
 	}
 
 }

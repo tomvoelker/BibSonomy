@@ -30,6 +30,7 @@ public class ACMBasicScraper extends UrlScraper {
 	private static final String ACM_HOST_NAME        = "http://portal.acm.org/";
 	private static final String BIBTEX_STRING_ON_ACM = "BibTex";
 
+	
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + "portal.acm.org"), UrlScraper.EMPTY_PATTERN));
 
 	private List<String> pathsToScrape; // holds the paths to the popup pages
@@ -39,7 +40,7 @@ public class ACMBasicScraper extends UrlScraper {
 
 		//create the URL string manually to add it to the bibtex string
 		String url = "url = {" + sc.getUrl().toString() + "}}";
-		String abstr = ",abstract = {";
+		String abstr = ",\nabstract = {";
 
 		// This Scraper might handle the specified url
 		try {
@@ -132,7 +133,7 @@ public class ACMBasicScraper extends UrlScraper {
 			}
 
 			if (testAbstract){
-				result = result.replaceFirst("}$",abstr);
+				result = result.replaceFirst("}\\$", abstr);
 			}
 
 
@@ -143,7 +144,9 @@ public class ACMBasicScraper extends UrlScraper {
 			} else
 				throw new ScrapingFailureException("getting bibtex failed");
 		} catch (Exception me) {
-			throw new InternalFailureException(me);			}
+			me.printStackTrace();
+			throw new InternalFailureException(me);
+		}
 	}
 
 	/**

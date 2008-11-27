@@ -3,7 +3,7 @@
 	<URLTest id="url_1">
 		<TestDescription>Basic URL unit test for ACMBasicScraper.</TestDescription>
 		<URL>http://portal.acm.org/citation.cfm?id=1015428&amp;coll=Portal&amp;dl=ACM&amp;CFID=22531872&amp;CFTOKEN=18437036</URL>
-		<BibFile>ACMBasicScraperUnitURLTest.bib</BibFile>
+		<BibFile>ACMBasicScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_2">
@@ -567,7 +567,7 @@
 	<URLTest id="url_99">
 		<TestDescription>eric Scraper url test</TestDescription>
 		<URL>http://www.eric.ed.gov/ERICWebPortal/Home.portal?_nfpb=true&amp;ERICExtSearch_SearchValue_0=star&amp;searchtype=keyword&amp;ERICExtSearch_SearchType_0=kw&amp;_pageLabel=RecordDetails&amp;objectId=0900019b802f2e44&amp;accno=EJ786532&amp;_nfls=false</URL>
-		<BibFile>EricScraperUnitURLTest.bib</BibFile>
+		<BibFile>EricScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.eric.EricScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_100">
@@ -755,5 +755,23 @@
 		<URL>http://arxiv.org/abs/0805.2045</URL>
 		<BibFile>ArxivScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.arxiv.ArxivScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_134">
+		<TestDescription>acm  url test (failure with IllegalArgumentException)</TestDescription>
+		<URL>http://portal.acm.org/citation.cfm?id=333115.333119&amp;coll=GUIDE&amp;dl=GUIDE&amp;CFID=11052258&amp;CFTOKEN=84161555</URL>
+		<BibFile>ACMBasicScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_135">
+		<TestDescription>informaworld url test</TestDescription>
+		<URL>http://www.informaworld.com/smpp/content~content=a905990187~db=all~jumptype=rss</URL>
+		<BibFile>InformaworldUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.informaworld.InformaWorldScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_136">
+		<TestDescription>eric Scraper url test</TestDescription>
+		<URL>http://eric.ed.gov/ERICWebPortal/custom/portlets/recordDetails/detailmini.jsp?_nfpb=true&amp;_&amp;ERICExtSearch_SearchValue_0=EJ523959&amp;ERICExtSearch_SearchType_0=no&amp;accno=EJ523959</URL>
+		<BibFile>EricScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.eric.EricScraper</Scraper>
 	</URLTest>
 </test:Tests>

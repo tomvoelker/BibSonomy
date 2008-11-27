@@ -260,8 +260,9 @@ public class EndnoteToBibtexConverter {
 				data.put("type", "misc");
 			}
 			
-			//now the bibtex part will be build completely starting with the type 
-			result.append("@" + data.get("type") + "{" + data.get("key") + ",\n");
+			//now the bibtex part will be build completely starting with the type
+			//clean up key (in InformaworldScraper a "," occurs in key, which results in a broken bibtex entry
+			result.append("@" + data.get("type") + "{" + data.get("key").replace(",", "") + ",\n");
 			data.remove("type");
 			data.remove("key");
 			
