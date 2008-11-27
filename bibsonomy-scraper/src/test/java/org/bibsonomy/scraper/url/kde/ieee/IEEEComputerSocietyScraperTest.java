@@ -18,9 +18,19 @@ public class IEEEComputerSocietyScraperTest {
 	 */
 	@Test
 	@Ignore
-	public void urlTestRun(){
+	public void url1TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_40"));
+	}
+
+	/**
+	 * starts URL test with id url_137
+	 */
+	@Test
+	@Ignore
+	public void url2TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_137"));
 	}
 	
 }
