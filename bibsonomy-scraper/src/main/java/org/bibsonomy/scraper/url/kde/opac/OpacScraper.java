@@ -19,6 +19,9 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 public class OpacScraper extends UrlScraper {
 	private static final String info = "OPAC Scraper: This scraper parses a publication page from " + href("http://opac.bibliothek.uni-kassel.de/" , "Bibliothek Kassel");
 
+	/**
+	 * TODO: This Scraper match only on URL's with es specific query value in path and queries. The current patterns don't work.
+	 */
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile("^http.*"), Pattern.compile(".*?/CHARSET=UTF-8/PRS=PP/PPN\\?PPN=[0-9X]+$")));
 	
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {

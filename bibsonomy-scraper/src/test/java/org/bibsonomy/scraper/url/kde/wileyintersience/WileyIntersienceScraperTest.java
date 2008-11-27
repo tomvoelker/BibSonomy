@@ -11,13 +11,13 @@ import static org.junit.Assert.assertTrue;
  * @author tst
  *
  */
-@Ignore
 public class WileyIntersienceScraperTest {
 	
 	/**
 	 * starts URL test with id url_33
 	 */
 	@Test
+	@Ignore
 	public void url1TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_33"));
@@ -27,6 +27,7 @@ public class WileyIntersienceScraperTest {
 	 * starts URL test with id url_34
 	 */
 	@Test
+	@Ignore
 	public void url2TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_34"));
@@ -36,6 +37,7 @@ public class WileyIntersienceScraperTest {
 	 * starts URL test with id url_109
 	 */
 	@Test
+	@Ignore
 	public void url3TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_109"));

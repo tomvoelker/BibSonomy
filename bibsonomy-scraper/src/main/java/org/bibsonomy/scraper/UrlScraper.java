@@ -48,12 +48,18 @@ public abstract class UrlScraper implements Scraper {
 		if (url != null) {
 			final List<Tuple<Pattern, Pattern>> urlPatterns = getUrlPatterns();;
 
+			/*
+			 * possible matching combinations:
+			 * first = true && second = true
+			 * first = true && second = null
+			 * first = null && second = true
+			 */
 			for (final Tuple<Pattern, Pattern> tuple: urlPatterns){
-				final boolean match1 = tuple.getFirst() != null &&
-				tuple.getFirst().matcher(url.getHost()).find();
+				final boolean match1 = (tuple.getFirst() != null &&
+				tuple.getFirst().matcher(url.getHost()).find()) || tuple.getFirst() == null;
 
-				final boolean match2 = tuple.getSecond() != null & 
-				tuple.getSecond().matcher(url.getPath()).find();
+				final boolean match2 = (tuple.getSecond() != null && 
+				tuple.getSecond().matcher(url.getPath()).find()) || tuple.getSecond() == null;
 
 				if (match1 && match2) return true;
 

@@ -28,6 +28,10 @@ public class IEEEXploreScraper extends CompositeScraper {
 	}
 	
 	public IEEEXploreScraper() {
+		/*
+		 * TODO: can we remove this scraper and add this code directly into URLCompositeScraper?
+		 * Tests for this scraper are broken because this code doesn't starts the chain anymore 
+		 */
 		addScraper(new IEEEXploreJournalProceedingsScraper());
 		addScraper(new IEEEXploreBookScraper());
 		addScraper(new IEEEXploreStandardsScraper());

@@ -106,6 +106,24 @@ public class EndnoteToBibtexConverter {
 	 */
 	public String processEntry(String entry){
 		
+		/*
+		 * bug fix with large abstract
+		 */
+		String abstractEntry = null;
+		int startAbstract = entry.indexOf("%X");
+		if(startAbstract != -1){
+			
+			String entryToAbstract = entry.substring(0, startAbstract);
+			int endAbstract = entry.indexOf("\n", startAbstract)+1;
+			abstractEntry = entry.substring(startAbstract+3, endAbstract-1);
+			String entryAfterAbstract = entry.substring(endAbstract);
+
+			// build new entry without abstract
+			entry = entryToAbstract + entryAfterAbstract;
+		}
+		
+		
+		
 		//initialise all necessary vars
 		String _tempLine = null;
 		String _tempData = null;
@@ -175,6 +193,12 @@ public class EndnoteToBibtexConverter {
 			 */
 			
 			_resultBibtexFields.put("key", BibTexUtils.generateBibtexKey(_resultBibtexFields.get("author"), _resultBibtexFields.get("editor"), _resultBibtexFields.get("year"), _resultBibtexFields.get("title")));
+			
+			/*
+			 * build abstract
+			 */
+			if(abstractEntry != null)
+				_resultBibtexFields.put("abstract", abstractEntry);
 			
 		} catch (RuntimeException e){
 			e.printStackTrace();

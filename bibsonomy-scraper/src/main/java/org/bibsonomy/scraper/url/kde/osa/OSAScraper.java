@@ -29,10 +29,13 @@ public class OSAScraper extends UrlScraper {
 
 	private static final String info = "Optical Society of America Scraper: This Scraper parses a publication from the " + href("http://josaa.osa.org/", "Optical Society of America");
 
-	private static final String OSA_HOST  = "josaa.osa.org";
-	private static final String OSA_HOST_NAME  = "http://josaa.osa.org";
+	private static final String OSA_HOST  = "opticsinfobase.org";
+	private static final String OSA_HOST_NAME  = "http://www.opticsinfobase.org";
+
 	private static final String OSA_BIBTEX_DOWNLOAD_PATH = "/custom_tags/IB_Download_Citations.cfm";
 
+	private static final Pattern actionsPattern = Pattern.compile("<select name=\"(actions[^\"]*)\"");
+	
 	private static final Pattern inputPattern = Pattern.compile("<input\\b[^>]*>");
 	private static final Pattern valuePattern = Pattern.compile("value=\"[^\"]*\"");
 
@@ -66,21 +69,9 @@ public class OSAScraper extends UrlScraper {
 		}
 
 		String actions = null;
-
-		final Matcher selectMatcher = selectPattern.matcher(sc.getPageContent());
-
-		while(selectMatcher.find()) {
-			String select = selectMatcher.group();
-			if(select.contains("name=\"actions")) {
-				Matcher valueMatcher = valuePattern.matcher(select);
-
-				if(valueMatcher.find()) {
-					String name = valueMatcher.group();
-					actions = name.substring(5,name.length()-1);
-					break;
-				}
-			}
-		}
+		Matcher actionsMatcher = actionsPattern.matcher(sc.getPageContent());
+		if(actionsMatcher.find())
+			actions = actionsMatcher.group(1);
 
 		String bibResult = null;
 

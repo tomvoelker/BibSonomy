@@ -106,7 +106,7 @@ public class ScienceDirectScraper extends UrlScraper {
 				
 				if(postContent != null){
 					String ris = getPostContent(new URL(SCIENCE_CITATION_URL), postContent);
-						
+					
 					/*
 					 * make RIS to Bibtex
 					 * 
