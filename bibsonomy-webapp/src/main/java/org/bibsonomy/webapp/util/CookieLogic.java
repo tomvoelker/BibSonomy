@@ -1,5 +1,8 @@
 package org.bibsonomy.webapp.util;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.Random;
 
@@ -24,7 +27,7 @@ public class CookieLogic implements RequestAware, ResponseAware {
 	 */
 	private String cookieUser = "_currUser";
 	/**
-	 * The cookie wihich authenticates an openID user
+	 * The cookie which authenticates an openID user
 	 */
 	private String openIDCookie = "_openIDUser";
 	/**
@@ -115,11 +118,17 @@ public class CookieLogic implements RequestAware, ResponseAware {
 	 * @param passwordHash - the user's password, already MD5-hashed!
 	 */
 	public void addUserCookie(final String username, final String passwordHash) {
-		addCookie(cookieUser, username + "%20" + passwordHash);
+		addCookie(cookieUser, encode(username) + "%20" + passwordHash);
 	}
 	
+	/** Add the openID cookie.
+	 * 
+	 * @param username
+	 * @param openID
+	 * @param passwordHash
+	 */
 	public void addOpenIDCookie(final String username, final String openID, final String passwordHash) {
-		addCookie(openIDCookie, username + "%20" + openID + "%20" + passwordHash); 
+		addCookie(openIDCookie, encode(username) + "%20" + encode(openID) + "%20" + passwordHash); 
 	}
 	
 	/** Adds a cookie to the response. Sets default values for path and maxAge. 
@@ -134,6 +143,32 @@ public class CookieLogic implements RequestAware, ResponseAware {
 		cookie.setMaxAge(cookieAge);
 		responseLogic.addCookie(cookie);
 	}
+	
+	/** Encodes a string with {@link URLEncoder#encode(String, String)} with UTF-8.
+	 * 
+	 * @param s
+	 * @return
+	 */
+	private static String encode(final String s) {
+		try {
+			return URLEncoder.encode(s, "UTF-8");
+		} catch (UnsupportedEncodingException ex) {
+			return s;
+		}
+	}
+	
+	/** Decodes a string with {@link URLDecoder#decode(String, String)} with UTF-8.
+	 * @param s
+	 * @return
+	 */
+	private static String decode(final String s) {
+		try {
+			return URLDecoder.decode(s, "UTF-8");
+		} catch (UnsupportedEncodingException ex) {
+			return s;
+		}
+	}
+	
 	
 	/**
 	 * Deletes the OpenID cookie
@@ -206,5 +241,22 @@ public class CookieLogic implements RequestAware, ResponseAware {
 	 */
 	public void setCookiePath(String cookiePath) {
 		this.cookiePath = cookiePath;
+	}
+
+	/**
+	 * Default Constructor 
+	 */
+	public CookieLogic() {
+		super();
+	}
+	
+	/** Constructor to set request and response logic.
+	 * @param requestLogic
+	 * @param responseLogic
+	 */
+	public CookieLogic(RequestLogic requestLogic, ResponseLogic responseLogic) {
+		super();
+		this.requestLogic = requestLogic;
+		this.responseLogic = responseLogic;
 	}
 }

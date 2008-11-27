@@ -126,8 +126,8 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		/*
 		 * get the recommended tags
 		 */
-		initRecommendedTags(command, post);
-
+		if (tagRecommender != null)	command.setRecommendedTags(tagRecommender.getRecommendedTags(post));
+		
 		/*
 		 * get the tag cloud of the user
 		 * (this must be done before any error checking, because the user must have this)
@@ -334,10 +334,9 @@ public class PostBookmarkController extends SingleResourceListController impleme
 	}
 
 	/**
-	 * copy the groups of the post into the post (make proper groups from them)
-	 * TODO: Why do we (still!) need this?
+	 * Copy the groups from the command into the post (make proper groups from them)
 	 * 
-	 * @param command
+	 * @param command - contains the groups as represented by the form fields.
 	 * @param post
 	 */
 	private void initGroups(EditBookmarkCommand command, final Post<Bookmark> post) {
@@ -355,20 +354,6 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		}
 	}
 
-
-	/** Initialize the recommended tags by querying the tag recommender. 
-	 * (this should be done before any error checking, because the user must have this)
-	 * 
-	 * @param command - to store the recommended tags
-	 * @param post - to compute the recommendations
-	 */
-	private void initRecommendedTags(final EditBookmarkCommand command, final Post<Bookmark> post) {
-		if (tagRecommender != null) {
-			final SortedSet<RecommendedTag> recommendedTags = tagRecommender.getRecommendedTags(post);
-			log.debug("got " + recommendedTags.size() + " recommended tags");
-			command.setRecommendedTags(recommendedTags);
-		}
-	}
 
 	/** Concatenates the tags into one tag string to show them to the user.
 	 * 
@@ -490,8 +475,9 @@ public class PostBookmarkController extends SingleResourceListController impleme
 	 */
 	private void initGroupTagSets(final User loginUser) {
 		/* 
-		 * get tagsets for each group and add them to the loginUser object
-		 * TODO: why into the loginUser?
+		 * Get tagsets for each group and add them to the loginUser object.
+		 * Why into the loginUser? Because there we already have the groups 
+		 * the user is member of.
 		 */
 		final List<Group> usersGroups = loginUser.getGroups();
 		final ArrayList<Group> groupsWithTagSets = new ArrayList<Group>();

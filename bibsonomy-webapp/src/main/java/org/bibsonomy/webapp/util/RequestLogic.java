@@ -38,6 +38,22 @@ public class RequestLogic {
 	private HttpServletRequest request;
 
 	/**
+	 * Default constructor.
+	 */
+	public RequestLogic() {
+		super();
+	}
+	
+	/**
+	 * Constructor to give the request.
+	 * @param request
+	 */
+	public RequestLogic(HttpServletRequest request) {
+		super();
+		this.request = request;
+	}
+
+	/**
 	 * @return The inet address of the requesting host. Since the system 
 	 * typically runs behind a proxy, this is NOT the host address, but 
 	 * rather the contents of the x-forwarded-for header. This also contains

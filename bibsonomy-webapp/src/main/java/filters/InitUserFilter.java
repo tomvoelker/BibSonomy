@@ -2,6 +2,8 @@ package filters;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -150,11 +152,12 @@ public class InitUserFilter implements Filter {
 				 */
 				final String userCookieParts[] = userCookie.split("%20");
 				if (userCookieParts.length >= 2) {
+					final String userName = decode(userCookieParts[0]);
 					/*
 					 * all two parts of cookie available
 					 */
-					final LogicInterface logic = dbLogicFactory.getLogicAccess(userCookieParts[0], userCookieParts[1]);
-					loginUser = logic.getUserDetails(userCookieParts[0]);
+					final LogicInterface logic = dbLogicFactory.getLogicAccess(userName, userCookieParts[1]);
+					loginUser = logic.getUserDetails(userName);
 				} else {
 					/*
 					 * something is wrong with the cookie: log!
@@ -168,24 +171,19 @@ public class InitUserFilter implements Filter {
 				/* 
 				 * user has OpenID cookie set
 				 */
-				String openIdCookieParts[] = openIDCookie.split("%20");
+				final String openIdCookieParts[] = openIDCookie.split("%20");
 				if (openIdCookieParts.length >= 3) {
-					String userName = openIdCookieParts[0];
-					String openID 	= openIdCookieParts[1];
-					String password = openIdCookieParts[2];
+					final String userName = decode(openIdCookieParts[0]);
+					final String openID   = decode(openIdCookieParts[1]);
+					final String password = openIdCookieParts[2];
 					
-					HttpSession session = httpServletRequest.getSession(true);
+					final HttpSession session = httpServletRequest.getSession(true);
 					
-					RequestLogic requestLogic = new RequestLogic();
-					requestLogic.setRequest(httpServletRequest);
+					final RequestLogic requestLogic = new RequestLogic(httpServletRequest);
 					
-					HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-					ResponseLogic responseLogic = new ResponseLogic();
-					responseLogic.setResponse(httpServletResponse);
-					
-					CookieLogic cookieLogic = new CookieLogic();
-					cookieLogic.setRequestLogic(requestLogic);
-					cookieLogic.setResponseLogic(responseLogic);
+					final HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+					final ResponseLogic responseLogic = new ResponseLogic(httpServletResponse);
+					final CookieLogic cookieLogic = new CookieLogic(requestLogic, responseLogic);
 					
 					/*
 					 *  check if cookie is still valid  
@@ -495,5 +493,31 @@ public class InitUserFilter implements Filter {
 			}
 		}
 		return userBean;
-	}	
+	}
+	
+	/** Encodes a string with {@link URLEncoder#encode(String, String)} with UTF-8.
+	 * 
+	 * @param s
+	 * @return
+	 */
+	private static String encode(final String s) {
+		try {
+			return URLEncoder.encode(s, "UTF-8");
+		} catch (UnsupportedEncodingException ex) {
+			return s;
+		}
+	}
+	
+	/** Decodes a string with {@link URLDecoder#decode(String, String)} with UTF-8.
+	 * @param s
+	 * @return
+	 */
+	private static String decode(final String s) {
+		try {
+			return URLDecoder.decode(s, "UTF-8");
+		} catch (UnsupportedEncodingException ex) {
+			return s;
+		}
+	}
+	
 }
