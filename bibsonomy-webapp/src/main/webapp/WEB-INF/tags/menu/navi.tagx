@@ -41,6 +41,19 @@
 				        	<fmt:message key="navi.my.plural"/>
 				        	<fmt:message key="navi.pdfs"/>
 				        </a>
+
+            <c:forEach var="grp" items="${command.context.loginUser.groups}">
+              <c:if test="${grp.sharedDocuments}">
+                <a href="/group/${fn:escapeXml(grp.name)}?filter=myGroupPDF">
+                      <fmt:message key="navi.my.plural"/>
+                      <fmt:message key="navi.group.cap"/>                   
+                      <fmt:message key="navi.pdfs"/>
+                      <c:out value=" "/>
+                      (<c:out value="${grp.name}"/>)
+                    </a>
+                  </c:if>
+            </c:forEach>                  
+                
 				        <a href="/user/${fn:escapeXml(user.name)}?filter=myDuplicates">
 				        	<fmt:message key="navi.my.plural"/>
 				        	<fmt:message key="navi.duplicates.cap"/>

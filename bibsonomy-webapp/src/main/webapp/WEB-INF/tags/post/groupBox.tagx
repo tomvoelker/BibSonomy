@@ -34,7 +34,7 @@
 						<td style="width:10px"></td>
 						<td>
                            <!-- select box for "other" groups -->
-                           <form:select path="post.groups" size="5" id="visibilitybox">
+                           <form:select path="groups" size="5" id="visibilitybox">
                            <form:option label="friends" value="friends" id="visibilityboxfriends"/>
                            <c:forEach items="${groups}" var="group" varStatus="status">
                              <c:if test="${not empty group.name}">
