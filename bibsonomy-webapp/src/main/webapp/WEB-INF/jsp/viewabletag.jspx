@@ -57,7 +57,7 @@
 			</div>				
 			
 			<!-- group members -->
-			<rc:members requPath="${requPath}" cmd="${command.memberCommand}"/>
+			<rc:members requPath="${requPath}" users="${command.group.users}"/>
 			
 			<!-- related tags -->
 			<li>

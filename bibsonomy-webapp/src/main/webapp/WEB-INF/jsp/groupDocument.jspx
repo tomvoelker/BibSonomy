@@ -100,7 +100,7 @@
 				</c:if>		
 						
 				<!-- group members -->
-				<rc:members requPath="${requPath}" cmd="${command.memberCommand}"/>
+				<rc:members requPath="${requPath}" users="${command.group.users}"/>
 			</c:otherwise>
 			</c:choose>
 			
