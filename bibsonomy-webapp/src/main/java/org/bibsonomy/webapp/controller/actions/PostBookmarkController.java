@@ -153,124 +153,151 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		 */
 		final String intraHashToUpdate = command.getIntraHashToUpdate();
 		if (ValidationUtils.present(intraHashToUpdate)) {
+		
 			log.debug("intra hash to update found -> handling update of existing post");
+			return handleUpdatePost(command, context, loginUser, post, intraHashToUpdate);
+		
+		}
+
+		log.debug("no intra hash given -> new post");
+		return handleCreatePost(command, context, loginUser, post);
+
+	}
+
+	/** Handles the update of an existing post with the given intra hash. 
+	 * 
+	 * @param command
+	 * @param context
+	 * @param loginUser
+	 * @param post
+	 * @param intraHashToUpdate
+	 * @return
+	 */
+	private View handleUpdatePost(EditBookmarkCommand command, final RequestWrapperContext context, final User loginUser, final Post<Bookmark> post, final String intraHashToUpdate) {
+		/*
+		 * we're editing an existing post
+		 */
+		if (!context.isValidCkey()) {
+			log.debug("no valid ckey found -> assuming first call, populating form");
 			/*
-			 * we're editing an existing post
+			 * ckey is invalid, so this is probably the first call --> get post from DB
 			 */
-			if (!context.isValidCkey()) {
-				log.debug("no valid ckey found -> assuming first call, populating form");
+			final Post<Bookmark> dbPost = (Post<Bookmark>) logic.getPostDetails(intraHashToUpdate, loginUser.getName());
+			if (dbPost == null) {
 				/*
-				 * ckey is invalid, so this is probably the first call --> get post from DB
+				 * invalid intra hash: post could not be found
 				 */
-				final Post<Bookmark> dbPost = (Post<Bookmark>) logic.getPostDetails(intraHashToUpdate, loginUser.getName());
-				if (dbPost == null) {
-					/*
-					 * invalid intra hash: post could not be found
-					 */
-					errors.reject("errors.post.notfound");
-					return Views.ERROR;
-				} 
-				/*
-				 * put the DB post into command
-				 */
-				command.setPost(dbPost);
-				/*
-				 * create tag string for view input field
-				 */
-				command.setTags(getSimpleTagString(dbPost.getTags()));
-				/*
-				 * populate groups in command
-				 */
-				initCommandGroups(command, dbPost.getGroups());
-				/*
-				 * return to view
-				 */
-				return Views.POST_BOOKMARK;
-				/*
-				 * TODO: what, if the ckey really is the problem (i.e., it is broken?) and not the first call?
-				 */
-			}
-			log.debug("ckey given, so parse tags, validate post, update post");
-			/*
-			 * ckey is given, so user is already editing the post  -> parse tags
-			 */
-			try {
-				post.setTags(parse(command.getTags()));
-			} catch (final Exception e) {
-				log.warn("error parsing tags", e);
-				errors.rejectValue("tags", "error.field.valid.tags.parseerror");
-			}
-			/*
-			 * validate post
-			 */
-			org.springframework.validation.ValidationUtils.invokeValidator(getValidator(), command, errors);
-			/*
-			 * check, if the URL has changed
-			 * TODO: what to do, if it has changed?
-			 */
-			post.getResource().recalculateHashes();
-			if (!intraHashToUpdate.equals(post.getResource().getIntraHash())) {
-				/*
-				 * URL has changed -> check, if new URL already bookmarked 
-				 */
-				final Post<Bookmark> dbPost = (Post<Bookmark>) logic.getPostDetails(post.getResource().getIntraHash(), loginUser.getName());
-				if (dbPost != null) {
-					log.debug("user already owns this URL ... handling update");
-					/*
-					 * post exists -> warn user
-					 */
-					errors.rejectValue("post.resource.url", "error.field.valid.url.alreadybookmarked");
-				}
-			}
-			/*
-			 * return to form until validation passes
-			 */
-			if (errors.hasErrors()) {
-				log.debug("returning to view because of errors: " + errors.getErrorCount());
-				log.debug("post is " + post.getResource());
-				return Views.POST_BOOKMARK;
-			}
-			/*
-			 * the post to update has the given intra hash 
-			 */
-			post.getResource().setIntraHash(command.getIntraHashToUpdate());
-			/*
-			 * create post list for update
-			 */
-			final List<Post<?>> posts = new LinkedList<Post<?>>();
-			posts.add(post);
-			/*
-			 * update date 
-			 * TODO: don't we want to keep the posting date unchanged and only update the date?
-			 * --> actually, this does currently not work, since the DBLogic doesn't set the date
-			 * and thus we get a NPE from the database
-			 */
-			post.setDate(new Date());
-			/*
-			 * update post in DB
-			 */
-			final List<String> updatePosts = logic.updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
-			if (updatePosts == null || updatePosts.isEmpty()) {
-				/*
-				 * show error page
-				 */
-				errors.reject("Could not update post");
-				log.warn("could not update post");
+				errors.reject("errors.post.notfound");
 				return Views.ERROR;
-			}
+			} 
 			/*
-			 * TODO: when to redirect to post.getResource().getUrl()?
+			 * put post into command
 			 */
+			populateCommandWithPost(command, dbPost);
+			/*
+			 * return to view
+			 */
+			return Views.POST_BOOKMARK;
+		}
+		log.debug("ckey given, so parse tags, validate post, update post");
+		/*
+		 * ckey is given, so user is already editing the post  -> parse tags
+		 */
+		try {
+			post.setTags(parse(command.getTags()));
+		} catch (final Exception e) {
+			log.warn("error parsing tags", e);
+			errors.rejectValue("tags", "error.field.valid.tags.parseerror");
+		}
+		/*
+		 * validate post
+		 */
+		org.springframework.validation.ValidationUtils.invokeValidator(getValidator(), command, errors);
+		/*
+		 * check, if the URL has changed
+		 */
+		post.getResource().recalculateHashes();
+		if (!intraHashToUpdate.equals(post.getResource().getIntraHash())) {
+			/*
+			 * URL has changed -> check, if new URL already bookmarked 
+			 */
+			final Post<Bookmark> dbPost = (Post<Bookmark>) logic.getPostDetails(post.getResource().getIntraHash(), loginUser.getName());
+			if (dbPost != null) {
+				log.debug("user already owns this URL ... handling update");
+				/*
+				 * post exists -> warn user
+				 */
+				errors.rejectValue("post.resource.url", "error.field.valid.url.alreadybookmarked");
+			}
+		}
+		/*
+		 * return to form until validation passes
+		 */
+		if (errors.hasErrors()) {
+			log.debug("returning to view because of errors: " + errors.getErrorCount());
+			log.debug("post is " + post.getResource());
+			return Views.POST_BOOKMARK;
+		}
+		/*
+		 * the post to update has the given intra hash 
+		 */
+		post.getResource().setIntraHash(command.getIntraHashToUpdate());
+		/*
+		 * create post list for update
+		 */
+		final List<Post<?>> posts = new LinkedList<Post<?>>();
+		posts.add(post);
+		/*
+		 * update date 
+		 * TODO: don't we want to keep the posting date unchanged and only update the date?
+		 * --> actually, this does currently not work, since the DBLogic doesn't set the date
+		 * and thus we get a NPE from the database
+		 */
+		post.setDate(new Date());
+		/*
+		 * update post in DB
+		 */
+		final List<String> updatePosts = logic.updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
+		if (updatePosts == null || updatePosts.isEmpty()) {
+			/*
+			 * show error page
+			 */
+			errors.reject("Could not update post");
+			log.warn("could not update post");
+			return Views.ERROR;
+		}
+		/*
+		 * leave if and reach final redirect
+		 */
+		return finalRedirect(command.isJump(), loginUser.getName(), post.getResource().getUrl());
+	}
+
+	/** Create the final redirect after successful creating / updating a post.
+	 * if jump is <code>true</code>, we redirect to the given postUrl. Otherwise
+	 * we redirect to the user's page.
+	 * 
+	 * @param jump - indicates whether to jump to postUrl (<code>true</code>) or to the user's page.
+	 * @param userName - the name of the loginUser
+	 * @param postUrl - the URL of the post 
+	 * @return
+	 */
+	private View finalRedirect(final boolean jump, final String userName, final String postUrl) {
+		/*
+		 * if bookmark was posted by bookmarklet (jump = true) -> redirect to URL user is coming from 
+		 */
+		if (!jump) {
 			try {
-				return new ExtendedRedirectView("/user/" + URLEncoder.encode(loginUser.getName(), "UTF-8"));
+				return new ExtendedRedirectView("/user/" + URLEncoder.encode(userName, "UTF-8"));
 			} catch (UnsupportedEncodingException ex) {
 				log.error("Could not encode redirect URL.", ex);
 				errors.reject("error encoding URL");
 				return Views.ERROR;
 			} 
-		} 
+		}
+		return new ExtendedRedirectView(postUrl);
+	}
 
-		log.debug("no intra hash given -> new post");
+	private View handleCreatePost(EditBookmarkCommand command, final RequestWrapperContext context, final User loginUser, final Post<Bookmark> post) {
 		/*
 		 * no intra hash given --> user posts a new entry (which might already exist!)
 		 */
@@ -300,15 +327,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 			 * exchange posts
 			 */
 			command.setDiffPost(post);
-			command.setPost(dbPost);
-			/*
-			 * create tag string for view input field
-			 */
-			command.setTags(getSimpleTagString(dbPost.getTags()));
-			/*
-			 * populate groups in command
-			 */
-			initCommandGroups(command, post.getGroups());
+			populateCommandWithPost(command, dbPost);
 			/*
 			 * in any case: return to view
 			 */
@@ -351,7 +370,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		/*
 		 * TODO: why is the content id set?
 		 */
-//		post.setContentId(null);
+//			post.setContentId(null);
 		post.setDate(new Date());
 
 		/*
@@ -364,20 +383,29 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		 */
 		log.debug("finally: creating a new post in the DB");
 		final String createPosts = logic.createPosts(posts).get(0);
-		log.debug("created post: " + createPosts);	
+		log.debug("created post: " + createPosts);
+		
+		return finalRedirect(command.isJump(), loginUser.getName(), post.getResource().getUrl());
+	}
 
+	/** Populates the command with the given post. Ensures, that fields which depend on the post
+	 * (like the tag string, or the groups) in the command are correctly filled.
+	 * @param command
+	 * @param dbPost
+	 */
+	private void populateCommandWithPost(EditBookmarkCommand command, final Post<Bookmark> dbPost) {
 		/*
-		 * check, if bookmark was posted by bookmarklet (jump = true) or not 
+		 * put post into command
 		 */
-		String redirectURL = post.getResource().getUrl();
-		if (!command.isJump()) {
-			try {
-				redirectURL = "/user/" + URLEncoder.encode(loginUser.getName(), "UTF-8");
-			} catch (UnsupportedEncodingException ex) {
-				log.error("Could not encode redirect URL.", ex);
-			} 
-		}
-		return new ExtendedRedirectView(redirectURL);
+		command.setPost(dbPost);
+		/*
+		 * create tag string for view input field
+		 */
+		command.setTags(getSimpleTagString(dbPost.getTags()));
+		/*
+		 * populate groups in command
+		 */
+		initCommandGroups(command, dbPost.getGroups());
 	}
 
 	/**
@@ -523,7 +551,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 	private PostBookmarkValidator getValidator() {
 		return new PostBookmarkValidator();
 	}
-	
+
 	public Errors getErrors() {
 		return errors;
 	}
