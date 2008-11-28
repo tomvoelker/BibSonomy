@@ -583,8 +583,9 @@ public class XMLRenderer implements Renderer {
 	 */
 	private void serialize(final Writer writer, final BibsonomyXML xmlDoc) throws InternServerException {
 		try {
-			// initialize context for java xml bindings
-			final JAXBContext jc = JAXBContext.newInstance(JAXB_PACKAGE_DECLARATION);
+			// initialize context for java xml bindings (see comment inside method parse of this class
+			// why we provide a classloader here)
+			final JAXBContext jc = JAXBContext.newInstance(JAXB_PACKAGE_DECLARATION, this.getClass().getClassLoader());
 
 			// buildup xml document
 			final JAXBElement<BibsonomyXML> webserviceElement = new ObjectFactory().createBibsonomy(xmlDoc);
