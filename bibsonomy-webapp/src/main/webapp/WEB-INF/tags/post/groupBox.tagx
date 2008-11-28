@@ -24,7 +24,6 @@
 			</form:label>
 		</legend>
 			<table class="vmiddle">
-				<div align="center">
 					<tr>
 						<td>
                            <!-- radio buttons for public, private, other -->
@@ -42,11 +41,13 @@
                                <form:option id="visibilitybox${status.index}" label="${group.name}" value="${group.name}"/>
                              </c:if>
                            </c:forEach>  
-                           <div class="postBookmarkNotValidTip"><form:errors path="post.groups" /></div>
                            </form:select>
+                           
                         </td>
-					</tr>
-				</div>
+                      <td>
+                         <div class="postBookmarkNotValidTip"><form:errors path="post.groups" /></div>
+                      </td>
+                    </tr>
 			</table>
 	</fieldset>	
 
