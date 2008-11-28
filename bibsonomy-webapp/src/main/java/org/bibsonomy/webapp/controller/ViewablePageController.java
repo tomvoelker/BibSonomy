@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.GroupResourceViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -52,6 +53,7 @@ public class ViewablePageController extends SingleResourceListControllerWithTags
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(command.getFormat())) {
 			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, 1000, null);
+			this.setGroupDetails(command, groupingName);
 			
 			if (requTags.size() > 0) {
 				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, null,  0, 20, null);
@@ -66,6 +68,21 @@ public class ViewablePageController extends SingleResourceListControllerWithTags
 		return Views.getViewByFormat(command.getFormat());		
 	}
 
+	/**
+	 * Retrieve all members of the given group in dependence of the group privacy level
+	 * FIXME: duplicated in GroupPageController!
+	 * @param <V> extends ResourceViewCommand, the command
+	 * @param cmd the command
+	 * @param groupName the name of the group
+	 */
+	private <V extends GroupResourceViewCommand> void setGroupDetails(V cmd, String groupName) {
+		final Group group = this.logic.getGroupDetails(groupName);
+		if (group != null) {
+			group.setUsers(this.logic.getUsers(groupName, 0, 100));
+		}
+		cmd.setGroup(group);
+	}
+	
 	public GroupResourceViewCommand instantiateCommand() {
 		return new GroupResourceViewCommand();
 	}	

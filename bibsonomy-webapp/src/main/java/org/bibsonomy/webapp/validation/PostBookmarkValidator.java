@@ -2,6 +2,8 @@ package org.bibsonomy.webapp.validation;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.util.UrlUtils;
@@ -15,6 +17,7 @@ import org.springframework.validation.ValidationUtils;
  * @version $Id$
  */
 public class PostBookmarkValidator implements Validator<EditBookmarkCommand> {
+	private static final Log log = LogFactory.getLog(PostBookmarkValidator.class);
 	
 	@SuppressWarnings("unchecked")
 	public boolean supports(final Class clazz) {
@@ -68,6 +71,8 @@ public class PostBookmarkValidator implements Validator<EditBookmarkCommand> {
 	 * @param groups
 	 */
 	private void validateGroups(Errors errors, final String abstractGrouping, final List<String> groups) {
+		log.info("got abstractGrouping " + abstractGrouping);
+		log.info("got groups " + groups);
 		if ("public".equals(abstractGrouping) || "private".equals(abstractGrouping)) {
 			if (groups != null && !groups.isEmpty()) {
 				/*

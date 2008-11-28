@@ -132,11 +132,12 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 
 	/**
 	 * Retrieve all members of the given group in dependence of the group privacy level
+	 * FIXME: duplicated in ViewablePageController!
 	 * @param <V> extends ResourceViewCommand, the command
 	 * @param cmd the command
 	 * @param groupName the name of the group
 	 */
-	protected <V extends GroupResourceViewCommand> void setGroupDetails(V cmd, String groupName) {
+	private <V extends GroupResourceViewCommand> void setGroupDetails(V cmd, String groupName) {
 		final Group group = this.logic.getGroupDetails(groupName);
 		if (group != null) {
 			group.setUsers(this.logic.getUsers(groupName, 0, 100));

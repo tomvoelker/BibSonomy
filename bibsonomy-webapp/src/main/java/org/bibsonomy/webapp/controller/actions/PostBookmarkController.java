@@ -179,7 +179,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 					/*
 					 * populate groups in command
 					 */
-					initCommandGroups(command, post.getGroups());
+					initCommandGroups(command, dbPost.getGroups());
 				}
 				/*
 				 * return to view
@@ -421,6 +421,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 	 * @see #initPostGroups(EditBookmarkCommand, Post)
 	 */
 	private void initCommandGroups(final EditBookmarkCommand command, Set<Group> groups) {
+		log.debug("groups from post: " + groups);
 		final List<String> commandGroups = command.getGroups();
 		commandGroups.clear();
 		if (groups.contains(private_group)) {
@@ -445,6 +446,8 @@ public class PostBookmarkController extends SingleResourceListController impleme
 				commandGroups.add(group.getName());
 			}
 		}
+		log.debug("abstractGrouping: " + command.getAbstractGrouping());
+		log.debug("commandGroups: " + command.getGroups());
 	}
 	
 
