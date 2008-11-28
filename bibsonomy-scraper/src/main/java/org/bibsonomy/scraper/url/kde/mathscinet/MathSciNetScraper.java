@@ -90,7 +90,7 @@ public class MathSciNetScraper extends UrlScraper {
 					
 					// build link to bibtex
 					if(pg1 != null && s1 != null){
-						urlToBibtex = "http://www." + URL_MATHSCINET_HOST + "/mathscinet/search/publications.html?" + URL_MATHSCINET_FMT_PARAMETER + "&" + pg1 + "&" + s1;
+						urlToBibtex = "http://www." + URL_MATHSCINET_HOST + "/mathscinet/search/publications.html?" + URL_MATHSCINET_FMT_PARAMETER + "&pg1=" + pg1 + "&s1=" + s1;
 
 					// values for URL are missing
 					}else
