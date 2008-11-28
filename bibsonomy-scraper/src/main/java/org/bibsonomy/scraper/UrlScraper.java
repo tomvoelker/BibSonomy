@@ -55,11 +55,11 @@ public abstract class UrlScraper implements Scraper {
 			 * first = null && second = true
 			 */
 			for (final Tuple<Pattern, Pattern> tuple: urlPatterns){
-				final boolean match1 = (tuple.getFirst() != null &&
-				tuple.getFirst().matcher(url.getHost()).find()) || tuple.getFirst() == null;
+				final boolean match1 = tuple.getFirst() == EMPTY_PATTERN ||
+				tuple.getFirst().matcher(url.getHost()).find();
 
-				final boolean match2 = (tuple.getSecond() != null && 
-				tuple.getSecond().matcher(url.getPath()).find()) || tuple.getSecond() == null;
+				final boolean match2 = tuple.getSecond() == EMPTY_PATTERN || 
+				tuple.getSecond().matcher(url.getPath()).find();
 
 				if (match1 && match2) return true;
 
