@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.HashUtils;
@@ -91,17 +92,22 @@ public class UserUtils {
 	}
 
 	/**
-	 * Helper function to get a list of group IDs from an user object
+	 * Helper function to get a list of group IDs from the user's list of groups
 	 * 
 	 * @param user
-	 * @return list of groupIDs extracted from the given user object
+	 * @return list of groupIDs extracted from the given user's list of groups
 	 */
 	public static List<Integer> getListOfGroupIDs(final User user) {
 		final ArrayList<Integer> groupIDs = new ArrayList<Integer>();
+		/*
+		 * every user may see public posts
+		 */ 
+		groupIDs.add(GroupID.PUBLIC.getId());
 		if (user == null) {
 			return groupIDs;
 		}
-		for (final Group group : user.getGroups()) {
+		final List<Group> groups = user.getGroups();
+		for (final Group group : groups) {
 			groupIDs.add(group.getGroupId());
 		}
 		return groupIDs;
