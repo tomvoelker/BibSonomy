@@ -109,6 +109,7 @@ public class UserUtilsTest {
 
 		// invalid user object returns an empty list
 		assertNotNull(UserUtils.getListOfGroupIDs(null));
-		assertEquals(0, UserUtils.getListOfGroupIDs(null).size());
+		// every user is in the "public" group
+		assertEquals(1, UserUtils.getListOfGroupIDs(null).size());
 	}
 }
