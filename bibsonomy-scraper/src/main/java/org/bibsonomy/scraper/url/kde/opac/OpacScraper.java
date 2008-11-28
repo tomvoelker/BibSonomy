@@ -22,7 +22,7 @@ public class OpacScraper extends UrlScraper {
 	/**
 	 * TODO: This Scraper match only on URL's with es specific query value in path and queries. The current patterns don't work.
 	 */
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile("^http.*"), Pattern.compile(".*?/CHARSET=UTF-8/PRS=PP/PPN\\?PPN=[0-9X]+$")));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(UrlScraper.EMPTY_PATTERN, Pattern.compile(".*?PRS=PP/PPN")));
 	
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		//log.fatal("Opac");
