@@ -35,8 +35,6 @@ import org.bibsonomy.webapp.controller.SingleResourceListController;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
-import org.bibsonomy.webapp.util.ValidationAwareController;
-import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.PostBookmarkValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
@@ -49,13 +47,13 @@ import org.springframework.validation.Errors;
  * @version $Id: PostBookmarkController.java,v 1.1 2008-09-11 04:40:12
  *          ss05fbachmann Exp $
  */
-public class PostBookmarkController extends SingleResourceListController implements MinimalisticController<EditBookmarkCommand>, ErrorAware, ValidationAwareController<EditBookmarkCommand> {
+public class PostBookmarkController extends SingleResourceListController implements MinimalisticController<EditBookmarkCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(PostBookmarkController.class);
 	private Errors errors = null;
 
 	private static final Group public_group = GroupUtils.getPublicGroup();
 	private static final Group private_group = GroupUtils.getPrivateGroup();
-	
+
 	/**
 	 * Provides tag recommendations to the user.
 	 */
@@ -166,21 +164,24 @@ public class PostBookmarkController extends SingleResourceListController impleme
 				 */
 				final Post<Bookmark> dbPost = (Post<Bookmark>) logic.getPostDetails(intraHashToUpdate, loginUser.getName());
 				if (dbPost == null) {
+					/*
+					 * invalid intra hash: post could not be found
+					 */
 					errors.reject("errors.post.notfound");
-				} else {
-					/*
-					 * put the DB post into command
-					 */
-					command.setPost(dbPost);
-					/*
-					 * create tag string for view input field
-					 */
-					command.setTags(getSimpleTagString(dbPost.getTags()));
-					/*
-					 * populate groups in command
-					 */
-					initCommandGroups(command, dbPost.getGroups());
-				}
+					return Views.ERROR;
+				} 
+				/*
+				 * put the DB post into command
+				 */
+				command.setPost(dbPost);
+				/*
+				 * create tag string for view input field
+				 */
+				command.setTags(getSimpleTagString(dbPost.getTags()));
+				/*
+				 * populate groups in command
+				 */
+				initCommandGroups(command, dbPost.getGroups());
 				/*
 				 * return to view
 				 */
@@ -449,7 +450,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		log.debug("abstractGrouping: " + command.getAbstractGrouping());
 		log.debug("commandGroups: " + command.getGroups());
 	}
-	
+
 
 
 	/** Gets the tagsets for each group from the DB and stores them in the 
@@ -519,6 +520,10 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		return tags;
 	}
 
+	private PostBookmarkValidator getValidator() {
+		return new PostBookmarkValidator();
+	}
+	
 	public Errors getErrors() {
 		return errors;
 	}
@@ -527,36 +532,9 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		this.errors = errors;
 	}
 
-	public Validator<EditBookmarkCommand> getValidator() {
-		return new PostBookmarkValidator();
-	}
-
-	/** 
-	 * If user already posted the given URL and this is the first call (no ckey), 
-	 * no validation is required - we will use the post from the DB.
-	 * 
-	 * 
-	 * @see org.bibsonomy.webapp.util.ValidationAwareController#isValidationRequired(java.lang.Object)
+	/** Sets the tag recommender this controller uses to provide tag recommendations during posting.
+	 * @param tagRecommender
 	 */
-	@SuppressWarnings("unchecked")
-	public boolean isValidationRequired(EditBookmarkCommand command) {
-
-		if (ValidationUtils.present(command.getIntraHashToUpdate())) {
-			/*
-			 * We don't validate when an intra hash is given, because we might 
-			 * need to get the post from the DB.
-			 */
-			return false;
-		}
-		return false;
-		//return true;
-	}
-
-
-	public TagRecommender getTagRecommender() {
-		return this.tagRecommender;
-	}
-
 	public void setTagRecommender(TagRecommender tagRecommender) {
 		Assert.notNull(tagRecommender, "The provided tag recommender must not be null.");
 		this.tagRecommender = tagRecommender;
