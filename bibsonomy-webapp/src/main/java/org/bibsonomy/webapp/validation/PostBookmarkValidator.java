@@ -1,9 +1,8 @@
 package org.bibsonomy.webapp.validation;
 
-import java.util.Set;
+import java.util.List;
 
 import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
@@ -57,12 +56,19 @@ public class PostBookmarkValidator implements Validator<EditBookmarkCommand> {
 			errors.rejectValue("post.resource.url", "error.field.valid.url");
 		}
 		
-		/*
-		 * check groups
-		 */
-		final String abstractGrouping = command.getAbstractGrouping();
+		validateGroups(errors, command.getAbstractGrouping(), command.getGroups());
+		
+	}
+
+	/** Validates the groups from the command. Only some combinations are allowed, e.g., 
+	 * either private, public, or other - and with certain other groups only.
+	 * 
+	 * @param errors
+	 * @param abstractGrouping
+	 * @param groups
+	 */
+	private void validateGroups(Errors errors, final String abstractGrouping, final List<String> groups) {
 		if ("public".equals(abstractGrouping) || "private".equals(abstractGrouping)) {
-			final Set<Group> groups = post.getGroups();
 			if (groups != null && !groups.isEmpty()) {
 				/*
 				 * "public" or "private" selected, but other group chosen
@@ -70,11 +76,10 @@ public class PostBookmarkValidator implements Validator<EditBookmarkCommand> {
 				errors.rejectValue("post.groups", "error.field.valid.groups");
 			}
 		} else if ("other".equals(abstractGrouping)) {
-			final Set<Group> groups = post.getGroups();
 			if (groups == null || groups.isEmpty()) {
 				/*
 				 * "other" selected, but no group chosen
-				 * FIXME: more detailed error messages for different errors
+				 * TODO: more detailed error messages for different errors
 				 */
 				errors.rejectValue("post.groups", "error.field.valid.groups");
 			}
@@ -84,14 +89,6 @@ public class PostBookmarkValidator implements Validator<EditBookmarkCommand> {
 			 */
 			errors.rejectValue("post.groups", "error.field.valid.groups");
 		}
-		
-		/*
-		 * TODO: one of the things to add is a check that the group combinations are correct.
-		 * Of course, the web interface (forms + JavaScript) enforce correct groups but one 
-		 * can easily bypass that. Note that this check additionally has to be added into the 
-		 * DBLogics addPost/updatePost, etc. methods!
-		 */
-	
 	}
 
 }
