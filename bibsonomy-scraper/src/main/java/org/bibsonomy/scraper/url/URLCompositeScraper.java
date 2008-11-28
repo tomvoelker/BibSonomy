@@ -9,6 +9,7 @@ import org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper;
 import org.bibsonomy.scraper.url.kde.acs.ACSScraper;
 import org.bibsonomy.scraper.url.kde.aip.AipScitationScraper;
 import org.bibsonomy.scraper.url.kde.amazon.AmazonScraper;
+import org.bibsonomy.scraper.url.kde.ams.AmsScraper;
 import org.bibsonomy.scraper.url.kde.annualreviews.AnnualreviewsScraper;
 import org.bibsonomy.scraper.url.kde.anthrosource.AnthroSourceScraper;
 import org.bibsonomy.scraper.url.kde.arxiv.ArxivScraper;
@@ -23,6 +24,7 @@ import org.bibsonomy.scraper.url.kde.citeulike.CiteulikeScraper;
 import org.bibsonomy.scraper.url.kde.dblp.DBLPScraper;
 import org.bibsonomy.scraper.url.kde.editlib.EditLibScraper;
 import org.bibsonomy.scraper.url.kde.eric.EricScraper;
+import org.bibsonomy.scraper.url.kde.googlesonomy.GoogleSonomyScraper;
 import org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper;
 import org.bibsonomy.scraper.url.kde.ieee.IEEEXploreScraper;
 import org.bibsonomy.scraper.url.kde.informaworld.InformaWorldScraper;
@@ -64,6 +66,7 @@ import org.bibsonomy.scraper.url.kde.ssrn.SSRNScraper;
 import org.bibsonomy.scraper.url.kde.usenix.UsenixScraper;
 import org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper;
 import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
+import org.bibsonomy.scraper.url.kde.wormbase.WormbaseScraper;
 
 
 public class URLCompositeScraper extends CompositeScraper {
@@ -129,9 +132,10 @@ public class URLCompositeScraper extends CompositeScraper {
 		addScraper(new OpenrepositoryScraper());
 		addScraper(new PionScraper());
 		addScraper(new CiteulikeScraper());
-		//addScraper(new AmsScraper());
+		addScraper(new AmsScraper());
 		addScraper(new BibliographyScraper());
-		//addScraper(new WormbaseScraper());
+		addScraper(new WormbaseScraper());
+		addScraper(new GoogleSonomyScraper());
 		//addScraper(new CoinsScraper());
 	}
 }
