@@ -102,24 +102,19 @@ public class ScienceDirectScraper extends UrlScraper {
 
 				String postContent = null;
 				if(acct != null && userId != null && uiokey != null && md5 != null)
-					postContent = "_ob=DownloadURL&_method=finish&_acct=" + acct + "&_userid=" + userId + "&_docType=FLA&_ArticleListID=" + arList + "&&_uoikey=" + uiokey + "&count=1&md5=" + md5 + "&JAVASCRIPT_ON=&format=cite-abs&citation-type=RIS&Export=Export&RETURN_URL=http://www.sciencedirect.com/science/home";
+					postContent = "_ob=DownloadURL&_method=finish&_acct=" + acct + "&_userid=" + userId + "&_docType=FLA&_ArticleListID=" + arList + "&_uoikey=" + uiokey + "&count=1&md5=" + md5 + "&JAVASCRIPT_ON=Y&format=cite-abs&citation-type=BIBTEX&Export=Export&RETURN_URL=http%3A%2F%2Fwww.sciencedirect.com%2Fscience%2Fhome";
 				
 				if(postContent != null){
-					String ris = getPostContent(new URL(SCIENCE_CITATION_URL), postContent);
+					String bibtex  = null;
+					bibtex = getPostContent(new URL(SCIENCE_CITATION_URL), postContent, cookie);
 					
-					/*
-					 * make RIS to Bibtex
-					 * 
-					 * 
-					 */
-	
-					String bibtexEntries = new RisToBibtexConverter().RisToBibtex(ris);
-	
+					bibtex = bibtex.replace("\r","");
+					
 					/*
 					 * Job done
 					 */
-					if (bibtexEntries != null && !"".equals(bibtexEntries)) {
-						sc.setBibtexResult(bibtexEntries);
+					if (bibtex != null) {
+						sc.setBibtexResult(bibtex);
 						return true;
 					} else
 						throw new ScrapingFailureException("getting bibtex failed");
@@ -145,7 +140,7 @@ public class ScienceDirectScraper extends UrlScraper {
 	 * @return
 	 * @throws IOException
 	 */
-	private String getPostContent(URL queryURL, String postContent) throws IOException {
+	private String getPostContent(URL queryURL, String postContent, String cookie) throws IOException {
 
 		HttpURLConnection urlConn = (HttpURLConnection) queryURL.openConnection();
 		urlConn.setAllowUserInteraction(false);
@@ -155,7 +150,7 @@ public class ScienceDirectScraper extends UrlScraper {
 		urlConn.setRequestMethod("POST");
 		urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 		urlConn.setRequestProperty("Referer", "http://www.sciencedirect.com/science?_ob=DownloadURL&_method=confirm&_uoikey=B6T6R-4SVKSVW-1&count=1&_docType=FLA&_acct=C000065416&_version=1&_userid=4861060&md5=7bdff2d8c4d638ed2de29c1f371976c6");
-		urlConn.setRequestProperty("Cookie", "EUID=91c0da74-7b4f-11dd-9777-00000aac593b; MIAMISESSION=8466c6e4-9b85-11dd-b8d0-00000aac4911:3401616575; MIAMIAUTH=2627bde3c3be875724fe63267b124dafb1acc9927b66ff38dc572e307ac416653e0b6623cf4dda4ad4763cff840fa69bec27dcddf7ded5cd64d5ed1ed360908d37bb3f022690f6be1b42442383222e85e5760114fdca146e59667d90da53d92ce02efbfb17648ca0653923b4d9b7c3852200175d5152d6ea5f7df443ba5ee3c02798a86d2fff53686fdbce0005727736abe1ea9ea155046d443e9df1a83fcdfe5e0b596bae61c34d29a2411e4655ed4471517687527faf9d4dec0e18dd128ccea3fdc49fe7b0e87ea1e0bd8c1df8470fb32da21f395c852e6d56aa05742278ec; TARGET_URL=fcf74dd786744d87fbaaaf8652a764ab4a79b0d3ed681139e91069237606310567c0829015f2c9dd545bacad0076bfa36bee441378b06a633a3f8281d740af326d4e8b1b75f7a72ccafec6c5e5b4c9ee556a08ca3daa10dfe1a609c8d2aa3bd561129378ad56f8c493fbfcdb1b369a000d113e87a0682b456e50f0eda52c5c572543bb7b3f6961cf5257a727e77b41013e76026b2d04c2f5b389b34b64dc6e3c2c805ce0984c1d6193f712c2eaaa8f1ea81582e4debecb6d22c8b37e79e11795e0c524de8ebf3686496196ee4fd1c39e; BROWSER_SUPPORTS_COOKIES=1");
+		urlConn.setRequestProperty("Cookie", cookie);
 		
 		/*
 		 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
