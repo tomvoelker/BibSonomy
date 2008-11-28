@@ -61,6 +61,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.ValidationUtils;
 
@@ -71,8 +72,8 @@ import org.bibsonomy.util.ValidationUtils;
  */
 public class DBLogic implements LogicInterface {
 
-	private static final Group GROUP_PRIVATE = new Group(GroupID.PRIVATE);
-	private static final Group GROUP_PUBLIC = new Group(GroupID.PUBLIC);
+	private static final Group GROUP_PRIVATE = GroupUtils.getPrivateGroup();
+	private static final Group GROUP_PUBLIC = GroupUtils.getPublicGroup();
 
 	private static final Logger log = Logger.getLogger(DBLogic.class);
 
