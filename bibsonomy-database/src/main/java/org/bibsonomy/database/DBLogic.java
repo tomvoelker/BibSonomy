@@ -98,8 +98,6 @@ public class DBLogic implements LogicInterface {
 	 * @param dbSessionFactory
 	 */
 	protected DBLogic(final User loginUser, final DBSessionFactory dbSessionFactory) {
-		// each user is a member of the public group
-		loginUser.addGroup(GROUP_PUBLIC);
 		this.loginUser = loginUser;
 
 		this.allDatabaseManagers = new HashMap<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>>();
@@ -226,25 +224,22 @@ public class DBLogic implements LogicInterface {
 			 * 
 			} else */
 			if (resourceType == BibTex.class) {
-				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, this.loginUser);
+				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, filter, this.loginUser);
 				// check permissions for displaying links to documents
 				param.setDocumentsAttached(this.permissionDBManager.isAllowedToAccessUsersOrGroupDocuments(this.loginUser, grouping, groupingName, session));
-
-				// add filters
-				param.setFilter(filter);
 
 				// this is save because of RTTI-check of resourceType argument which is of class T
 				result = ((List) this.bibtexDBManager.getPosts(param, session));
 			} else if (resourceType == Bookmark.class) {
 
-				//check filters
-				//can not add filter to BookmarkParam yet, but need to add group before buildParam
+				// check filters
+				// can not add filter to BookmarkParam yet, but need to add group before buildParam
 
-				if(this.permissionDBManager.checkFilterPermissions(filter, this.loginUser)){
+				if (this.permissionDBManager.checkFilterPermissions(filter, this.loginUser)){
 					loginUser.addGroup(new Group(GroupID.ADMINSPAM));
 				}
 
-				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, this.loginUser);
+				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, filter, this.loginUser);
 
 				// this is save because of RTTI-check of resourceType argument which is of class T
 				result = ((List) this.bookmarkDBManager.getPosts(param, session));
@@ -327,7 +322,7 @@ public class DBLogic implements LogicInterface {
 		final List<Tag> result;
 
 		try {
-			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, this.loginUser);
+			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, null, this.loginUser);
 			param.setTagRelationType(relation);
 
 			if (resourceType == BibTex.class || resourceType == Bookmark.class || resourceType == Resource.class) {
@@ -354,7 +349,7 @@ public class DBLogic implements LogicInterface {
 	public Tag getTagDetails(final String tagName) {
 		final DBSession session = openSession();
 		try {
-			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, this.loginUser.getName(), null, this.loginUser.getName(), Arrays.asList(tagName), null, null, 0, 1, null, this.loginUser);
+			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, this.loginUser.getName(), null, this.loginUser.getName(), Arrays.asList(tagName), null, null, 0, 1, null, null, this.loginUser);
 			return this.tagDBManager.getTagDetails(param, session); 
 		} finally {
 			session.close();
@@ -963,12 +958,11 @@ public class DBLogic implements LogicInterface {
 				loginUser.addGroup(new Group(GroupID.ADMINSPAM));
 			}
 
-			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, this.loginUser);
+			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, filter, this.loginUser);
 
 
 			if (resourceType == BibTex.class || resourceType == Bookmark.class || resourceType == Resource.class) {
 				param.setContentTypeByClass(resourceType);
-				param.setFilter(filter);
 				result = this.statisticsDBManager.getPostStatistics(param, session);
 			} else {
 				throw new UnsupportedResourceTypeException("The requested resourcetype (" + resourceType.getClass().getName() + ") is not supported.");
@@ -985,7 +979,7 @@ public class DBLogic implements LogicInterface {
 	public List<Tag> getConcepts(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final ConceptStatus status, final int start, final int end) {
 		final DBSession session = openSession();
 		try {
-			final TagRelationParam param = LogicInterfaceHelper.buildParam(TagRelationParam.class, this.loginUser.getName(), grouping, groupingName, tags, null, null, start, end, null, this.loginUser);
+			final TagRelationParam param = LogicInterfaceHelper.buildParam(TagRelationParam.class, this.loginUser.getName(), grouping, groupingName, tags, null, null, start, end, null, null, this.loginUser);
 			param.setConceptStatus(status);
 			return this.tagRelationsDBManager.getConcepts(param, session);
 		} finally {
@@ -1059,7 +1053,7 @@ public class DBLogic implements LogicInterface {
 	 * retrieve related user
 	 */
 	public List<User> getUsers(final List<String> tags, final Order order, final int start, final int end) {
-		final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, null, null, null, tags, null, order, start, end, null, loginUser);
+		final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, null, null, null, tags, null, order, start, end, null, null, loginUser);
 		final DBSession session = openSession();
 		try {
 			return this.userDBManager.getUserByFolkrank(param, session);

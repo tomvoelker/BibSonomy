@@ -1,8 +1,8 @@
 package org.bibsonomy.database.util;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.params.BibTexParam;
@@ -41,10 +41,11 @@ public class LogicInterfaceHelper {
 	 * @param start as specified for {@link PostLogicInterface#getPosts} 
 	 * @param end as specified for {@link PostLogicInterface#getPosts}
 	 * @param search as specified for {@link PostLogicInterface#getPosts} 
+	 * @param filter as specified for {@link PostLogicInterface#getPosts}
 	 * @param loginUser TODO
 	 * @return the fresh param object 
 	 */
-	public static <T extends GenericParam> T buildParam(final Class<T> type, final String authUser, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end, final String search, final User loginUser) {
+	public static <T extends GenericParam> T buildParam(final Class<T> type, final String authUser, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end, final String search, final FilterEntity filter, final User loginUser) {
 		final T param = getParam(type);
 
 		// if hash length is 33 ,than use the first character as hash type
@@ -82,6 +83,9 @@ public class LogicInterfaceHelper {
 		}
 		param.setRequestedGroupName(groupingName);
 		
+		// add filters
+		param.setFilter(filter);
+
 		// set the groupIDs the logged-in user may see 
 		//  - every user may see public posts - this one is added in the constructor of DBLogic
 		//  - groups the logged-in user is explicitely member of
