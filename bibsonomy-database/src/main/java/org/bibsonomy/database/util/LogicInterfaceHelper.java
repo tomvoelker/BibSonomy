@@ -13,6 +13,8 @@ import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.database.systemstags.SystemTagFactory;
+import org.bibsonomy.database.systemstags.xml.SystemTagType;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.PostLogicInterface;
@@ -106,19 +108,12 @@ public class LogicInterfaceHelper {
 				tag = tag.trim();
 
 				if (tag.length() > 2) {
-					if (tag.length() > 14 && tag.startsWith("sys:bibtexkey:")) {
-						// :bibtexkey:
-						((BibTexParam) param).setBibtexKey(tag.substring(14).trim());
-						continue;
+					if (tag.contains(":")) {
+						if (handleSystemTag(tag, param)) {
+							continue;
+						}
 					}
 
-					if (tag.length() > 9 && tag.startsWith("sys:days:")) {
-						// clear the tagindex and set the value
-						param.getTagIndex().clear();
-						param.setDays(Integer.parseInt(tag.substring(9).trim()));
-						break;
-					}
-					
 					if (tag.charAt(0) != '-' && tag.charAt(0) != '<' && tag.charAt(tag.length() - 1) != '>') {
 						param.addTagName(tag);
 						continue;
@@ -165,6 +160,36 @@ public class LogicInterfaceHelper {
 		} // end if (tags != null)
 
 		return param;
+	}
+
+	private static boolean handleSystemTag(String tag, GenericParam param) {
+
+		String tagName;
+		String[] tags = tag.split(":");
+		if (tag.startsWith("sys:") || tag.startsWith("system:")) {
+			tagName = tags[1];
+		} else {
+			tagName = tags[0];
+		}
+
+		SystemTagType sTag = SystemTagFactory.createTag(tagName, tag.substring(tag.indexOf(tagName) + tagName.length()));
+		if (sTag != null && SystemTagFactory.getAttributeValue(sTag, SystemTagFactory.GROUPING) != null) {
+			GroupingEntity ge = GroupingEntity.getGroupingEntity(SystemTagFactory.getAttributeValue(sTag, SystemTagFactory.GROUPING));
+			if (ge != null) {
+				param.setGrouping(ge);
+			}
+			return true;
+		} else if (tagName.equals("bibtexkey")) {
+			// :bibtexkey:
+			((BibTexParam) param).setBibtexKey(tag.substring(14).trim());
+			return true;
+		} else if (tagName.equals("days")) {
+			// clear the tagindex and set the value
+			param.getTagIndex().clear();
+			param.setDays(Integer.parseInt(tag.substring(9).trim()));
+		}
+
+		return false;
 	}
 
 	/**

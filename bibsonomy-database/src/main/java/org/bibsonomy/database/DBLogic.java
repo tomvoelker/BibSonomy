@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
@@ -48,6 +49,8 @@ import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.database.systemstags.SystemTag;
+import org.bibsonomy.database.systemstags.SystemTagFactory;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DBSessionFactory;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
@@ -475,7 +478,24 @@ public class DBLogic implements LogicInterface {
 			final String oldIntraHash = post.getResource().getIntraHash();
 			post.getResource().recalculateHashes();			
 			post = this.validateGroups(post, session);
+			
+			SystemTag stt;
+			for (Tag tag : post.getTags()) {
+				stt = SystemTagFactory.createExecutableTag(tag);
+				if (stt != null) {
+					stt.performBefore(post);
+				}
+			}
+						
 			man.storePost(this.loginUser.getName(), post, oldIntraHash, update, session);
+			
+			for (Tag tag : post.getTags()) {
+				stt = SystemTagFactory.createExecutableTag(tag);
+				if (stt != null) {
+					stt.performAfter(post);
+				}
+			}
+			
 			// if we don't get an exception here, we assume the resource has been successfully stored
 			return post.getResource().getIntraHash();
 		} finally {
