@@ -233,4 +233,14 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		}
 		return false; 
 	}
+	
+	/**
+	 * @FIXME WENN DIE RICHTIGEN GRUPPENADMINS EXISTIEREN MUSS DIESE FUNKTION GEÄNDERT WERDEN 
+	 * @param loginUser
+	 * @param group
+	 * @return loginUser equals group.getName
+	 */
+	public boolean userIsGroupAdmin(User loginUser, Group group){
+		return loginUser.getName().equals(group.getName());
+	}
 }

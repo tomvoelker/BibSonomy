@@ -14,10 +14,12 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.GroupParam;
+import org.bibsonomy.database.params.TagSetParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.TagSet;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.GroupUtils;
@@ -98,7 +100,22 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	public List<TagSet> getGroupTagSets(final String groupname, final DBSession session){
 		return this.queryForList("getTagSetsForGroup", groupname, TagSet.class, session);
 	}
-
+	
+	/**
+	 * Returns a TagSet for a group with a given setname 
+	 * 
+	 * @param setName - the name of the tagSet
+	 * @param groupId - the id of the group
+	 * @param session 
+	 * @return a TagSet
+	 */
+	public TagSet getTagSetBySetNameAndGroup(final String setName, final int groupId, final DBSession session){
+		TagSetParam param = new TagSetParam();
+		param.setSetName(setName);
+		param.setGroupId(groupId);
+		return this.queryForObject("getTagSetBySetNameAndGroup", param, TagSet.class, session);
+	}
+	
 	/**
 	 * Returns a group with all its members if the user is allowed to see them.
 	 * 
@@ -338,6 +355,76 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
+	 * Insert a TagSet
+	 * 
+	 * @param tagset the Set to insert
+	 * @param group the group which owns the tagset
+	 * @param session
+	 */
+	private void insertTagSet(final TagSet tagset, final String groupname, final DBSession session) {
+		
+		Group group = this.getGroupByName(groupname, session);
+		if (group == null) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist");
+		}
+		if(tagset.getSetName().length() == 0 || tagset.getTags().size() == 0){
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Invalid tagset - a tagset must contain a setname and at least one valid tag");
+		}
+
+		TagSetParam param = new TagSetParam();
+		param.setSetName(tagset.getSetName());
+		param.setGroupId(group.getGroupId());
+		TagSet set = this.getTagSetBySetNameAndGroup(tagset.getSetName(), group.getGroupId(), session);
+		for(Tag tag: tagset.getTags()){
+			if(set.getTags().contains(tag)){
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "INSERT FAILED: tag ('"+tag.getName()+"') already contained in the tagset ('"+tagset.getSetName()+"') for group ('"+group.getName()+"')");
+			}
+			param.setTagName(tag.getName());
+			this.insert("insertTagSet", param, session);
+		}
+		
+	}
+	
+	/**
+	 * Deletes a TagSet in the DataBase
+	 * 
+	 * @param setName - the name of the TagSet to delete
+	 * @param group - the group of the TagSet
+	 * @param session
+	 */
+	private void deleteTagSet(final String setName, final String groupname, final DBSession session){
+		Group group = this.getGroupByName(groupname, session);
+		if (group == null) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist");
+		}
+		TagSet tagset = this.getTagSetBySetNameAndGroup(setName, group.getGroupId(), session);
+		if(tagset == null) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "TagSet ('" + setName + "') doesn't exist for group ('" + groupname + "')");
+		}
+		TagSetParam param = new TagSetParam();
+		param.setSetName(setName);
+		param.setGroupId(group.getGroupId());
+		this.delete("deleteTagSet", param, session);
+	}
+	
+	/**
+	 * Update an existing TagSet
+	 * 
+	 * @param tagset
+	 * @param groupname
+	 * @param session
+	 */
+	private void updateTagSet(final TagSet tagset, final String groupname, final DBSession session){
+		
+		//delete the old TagSet
+		this.deleteTagSet(tagset.getSetName(), groupname, session);
+		
+		//insert the new TagSet
+		this.insertTagSet(tagset, groupname, session);
+		
+	}
+	
+	/**
 	 * Returns a new groupId.
 	 */
 	private int getNewGroupId(final DBSession session) {
@@ -360,6 +447,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		this.delete("removeAllUserFromGroup", group.getGroupId(), session);
 	}
 
+	
 	/**
 	 * Adds a user to a group.
 	 * 

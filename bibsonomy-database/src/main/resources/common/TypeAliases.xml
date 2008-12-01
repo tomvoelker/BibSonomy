@@ -15,7 +15,7 @@
 	<typeAlias alias="user"               type="org.bibsonomy.model.User" />
 	<typeAlias alias="userSettings"       type="org.bibsonomy.model.UserSettings" />
 	<typeAlias alias="group"              type="org.bibsonomy.model.Group" />
-	<typeAlias alias="tagset"              type="org.bibsonomy.model.TagSet" />
+	<typeAlias alias="tagset"             type="org.bibsonomy.model.TagSet" />
 	<typeAlias alias="document"           type="org.bibsonomy.model.Document" />
 	<!-- Extras -->
 	<typeAlias alias="bibtexExtra"        type="org.bibsonomy.model.extra.BibTexExtra" />
@@ -35,5 +35,6 @@
 	<typeAlias alias="documentParam"      type="org.bibsonomy.database.params.DocumentParam" />	
 	<typeAlias alias="adminParam"         type="org.bibsonomy.database.params.AdminParam" />
 	<typeAlias alias="statisticsParam"    type="org.bibsonomy.database.params.StatisticsParam" />	
+	<typeAlias alias="tagSetParam"    	  type="org.bibsonomy.database.params.TagSetParam" />	
 
 </sqlMap>

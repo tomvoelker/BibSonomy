@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
@@ -31,6 +32,8 @@ import org.bibsonomy.model.Tag;
  */
 public class TagDatabaseManager extends AbstractDatabaseManager {
 
+	private static final Logger log = Logger.getLogger(TagDatabaseManager.class);
+	
 	private final static TagDatabaseManager singleton = new TagDatabaseManager();
 	private final GeneralDatabaseManager generalDb;
 	private final TagRelationDatabaseManager tagRelDb;
@@ -122,19 +125,19 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		this.insert("insertTagTagBatch", param, session);
 	}
 
-	/*
+	/**
 	NEW INSERTTAS (MULTIPLE GROUPS FOR A POST)
 	 * @param param
 	 * @param session
 	 */
-	/*public void insertTas(final TagParam param, final DBSession session) {
+	public void insertTas(final TagParam param, final DBSession session) {
 		for (final Tag tag : param.getTags()) {
 			param.setTag(tag);
 			/*
 			 * if a post is visible for more than one group, 
 			 * only insert an entry for the first group in the tas table.
 			 * otherwise param.getGroups has length = 1.
-			 
+			*/ 
 			if(param.getGroups().get(0) != null){
 				final Integer groupId = param.getGroups().get(0); 
 				param.setGroupId(groupId);
@@ -143,14 +146,14 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			}
 		}
 		
-	}*/
+	}
 
 	/**
 	 * OLD METHOD INSERTAS
 	 * @param param
 	 * @param session
 	 **/
-	public void insertTas(final TagParam param, final DBSession session) {
+	/*public void insertTas(final TagParam param, final DBSession session) {
 		for (final Tag tag : param.getTags()) {
 			param.setTag(tag);
 			for (final Integer groupId : param.getGroups()) {
@@ -159,10 +162,10 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 				this.insert("insertTas", param, session);
 			}
 		}
-	}
+	}*/
 	
 	
-	/*
+	/**
 	 * For each group a post is visible, store an entry in the grouptas table.
 	 * @param param
 	 * @param session
@@ -228,7 +231,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		this.plugins.onTagDelete(post.getContentId(), session);
 		// delete all tas related to this bookmark
 		this.deleteTas(post.getContentId(), session);
-		//this.deleteGroupTas(post.getContentId(), session);
+		this.deleteGroupTas(post.getContentId(), session);
 	}
 
 	private void deleteTas(final Integer contentId, final DBSession session) {
@@ -280,14 +283,15 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 				// requestedContentId is the real new contentId here
 				this.insertTagTagBatch(param.getNewContentId(), param.getTags(), TagTagBatchParam.Job.DECREMENT, session);
 			}
-
-			this.insertTas(param, session);
 			
-			/* if post is visible for more than one group, store for each group
+			log.debug(this.getClass()+": insertTags() - calling insertTas()");
+			this.insertTas(param, session);
+
+			/* if post is visible for groups, store for each group
 			and each tag one entry in the grouptas table */
-			/*if(param.getGroups().size() > 1){
+			if(param.getGroups().get(0) > 1){
 				this.insertGroupTas(param, session);
-			}*/
+			}
 			
 			for (final Tag tag : param.getTags()) {
 				this.tagRelDb.insertRelations(tag, param.getUserName(), session);				

@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConstantID;
@@ -49,6 +50,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	private final DocumentDatabaseManager docDb;
 	private final TagDatabaseManager tagDb;
 	private final DatabasePluginRegistry plugins;
+	private final GroupDatabaseManager groupDb;
 	private static final BibTexChain chain = new BibTexChain();
 	//private static final BibTexHashingManager hashelements = new BibTexHashingManager();
 	
@@ -58,6 +60,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		this.plugins = DatabasePluginRegistry.getInstance();
 		this.permissionDb = PermissionDatabaseManager.getInstance();
 		this.docDb = DocumentDatabaseManager.getInstance();
+		this.groupDb = GroupDatabaseManager.getInstance();
 	}
 
 	/**
@@ -1149,6 +1152,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * </ul>
 	 * 
 	 */
+	@SuppressWarnings("unchecked")
 	public Post<BibTex> getPostDetails(final String authUser, final String resourceHash, final String userName, final List<Integer> visibleGroupIDs, final DBSession session) {
 		// get post from database
 		final List<Post<BibTex>> list = this.getBibTexByHashForUser(authUser, resourceHash, userName, visibleGroupIDs, session, HashID.INTRA_HASH);
@@ -1163,6 +1167,14 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			if (this.permissionDb.isAllowedToAccessPostsDocuments(userName, post, session)) {
 				post.getResource().setDocuments(this.docDb.getDocuments(userName, resourceHash, session));
 			}
+			
+			/*
+			 * Add groups which are allowed to see the post
+			 */
+			final int contentId = post.getContentId();
+			Set<Group> groups = (Set<Group>) groupDb.getGroupsForContentId(contentId, session);
+			post.setGroups(groups);
+			
 			return post;
 		}
 		/*

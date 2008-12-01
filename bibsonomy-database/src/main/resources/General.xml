@@ -47,9 +47,18 @@
 				</iterate>
 			</iterate -->
 	</insert>
+	
+	<insert id="insertGroupTas" parameterClass="tagParam">
+		INSERT INTO grouptas (tas_id, tag_name, content_id, content_type, user_name, date, `group`, tag_lower)
+		VALUES (#tasId#, #tagName#, #newContentId#, #contentType#, #userName#, #date#, #groupId#, #tagNameLower#)
+	</insert>
 
 	<delete id="deleteTas" parameterClass="int">
 		DELETE FROM tas WHERE content_id = #requestedContentId#
+	</delete>
+	
+	<delete id="deleteGroupTas" parameterClass="int">
+		DELETE FROM grouptas WHERE content_id = #requestedContentId#
 	</delete>
 
 </sqlMap>

@@ -4,6 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConstantID;
@@ -39,6 +40,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 
 	private final static BookmarkDatabaseManager singleton = new BookmarkDatabaseManager();
 	private final GeneralDatabaseManager generalDb;
+	private final GroupDatabaseManager groupDb;
 	private final TagDatabaseManager tagDb;
 	private final DatabasePluginRegistry plugins;
 	private static final BookmarkChain chain = new BookmarkChain();
@@ -47,6 +49,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		this.generalDb = GeneralDatabaseManager.getInstance();
 		this.tagDb = TagDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
+		this.groupDb = GroupDatabaseManager.getInstance();
 	}
 
 	/**
@@ -809,6 +812,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * Inserts a post with a bookmark into the database.
 	 */
 	private void insertBookmarkPost(final Post<Bookmark> post, final DBSession session) {
+
 		if (present(post.getResource()) == false) throw new InvalidModelException("There is no resource for this post.");
 		if (present(post.getGroups()) == false) throw new InvalidModelException("There are no groups for this post.");
 		/*if (post.getGroups().contains(GroupID.PUBLIC) && post.getGroups().size() > 1) throw new InvalidModelException("Invalid constilation of groups for this post.");
@@ -822,23 +826,12 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setDescription(post.getDescription());
 		param.setUserName(post.getUser().getName());
 		param.setUrl(post.getResource().getUrl());
-
-		/* nur ein eintrag pro post in der bookmark tabelle*/
-		for (final Group group : post.getGroups()) {
-			param.setGroupId(group.getGroupId());
-			this.insertBookmark(param, session);
-		}
-
-		/*
-		MULTIPLE GROUPS FOR A POST
-		if(post.getGroups().size() > 1){
-			param.setGroupId(GroupID.MULTIPLE.getId());
-		}else if(param.getGroups().contains(GroupID.PUBLIC)){
-			param.setGroupId(GroupID.PUBLIC.getId());
-		}else{
-			param.setGroupId(GroupID.PRIVATE.getId());
-		}
-		this.insertBookmark(param, session);*/
+		
+		//in field group in table bookmark, insert the id for PUBLIC, PRIVATE or the id of the FIRST group in list
+		final int groupId =  post.getGroups().iterator().next().getGroupId();
+		param.setGroupId(groupId);
+		
+		this.insertBookmark(param, session);
 	}
 
 	// Insert counter, hash and URL of bookmark
@@ -889,13 +882,22 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		return chain.getFirstElement().perform(param, session);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Post<Bookmark> getPostDetails(String authUser, String resourceHash, String userName, final List<Integer> visibleGroupIDs, final DBSession session) {
 		final List<Post<Bookmark>> list = getBookmarkByHashForUser(authUser, resourceHash, userName, visibleGroupIDs, session, HashID.INTRA_HASH);
 		if (list.size() >= 1) {
 			if (list.size() > 1) {
 				log.warn("multiple Bookmark-posts from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' found ->returning first");
 			}
-			return list.get(0);
+			Post<Bookmark> post = list.get(0);
+			/*
+			 * Add groups which are allowed to see the post
+			 */
+			final int contentId = post.getContentId();
+			Set<Group> groups = (Set<Group>) groupDb.getGroupsForContentId(contentId, session);
+			post.setGroups(groups);
+			
+			return post;
 		}
 
 		log.debug("Bookmark-post from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' not found");

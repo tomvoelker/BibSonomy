@@ -576,6 +576,7 @@ INSERT INTO `ids` VALUES (3, 0, 'question id');
 INSERT INTO `ids` VALUES (4, 1, 'cycle id');
 INSERT INTO `ids` VALUES (5, 0, 'extended_fields_id');
 INSERT INTO `ids` VALUES (7, 0, 'scraper_metadata_id');
+INSERT INTO `ids` VALUES (12, 24, 'grouptas id');
 
 -- --------------------------------------------------------
 

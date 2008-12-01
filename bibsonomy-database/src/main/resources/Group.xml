@@ -48,7 +48,7 @@
 
 	<select id="getGroupsForContentId" resultMap="GroupCommon.group_basic" parameterClass="int">
 		SELECT DISTINCT i.group, i.group_name, i.privlevel, i.sharedDocuments 
-		FROM groupids i, tas T 
+		FROM groupids i, grouptas T 
 		WHERE T.content_id = #contentId# 
 		      AND T.group = i.group 
 	</select>	
@@ -78,12 +78,26 @@
 		WHERE i.group_name = #groupname#
 	</select>
 	
+	<select id="getTagSetBySetNameAndGroup" resultMap="GroupCommon.tagsets" parameterClass="tagSetParam">
+		SELECT set_name, tag_name from group_tagsets s
+		WHERE s.group = #groupId#
+		AND s.set_name = #setName#
+	</select>
+	
 	<insert id="insertGroup" parameterClass="group">
 		INSERT INTO groupids (group_name, `group`, privlevel, sharedDocuments) VALUES (#name#, #groupId#, #privlevel#, #sharedDocuments#)
 	</insert>
 
+	<insert id="insertTagSet" parameterClass="tagSetParam">
+		INSERT INTO group_tagsets (set_name, tag_name, `group`) VALUES (#setName#, #tagName#, #groupId#)
+	</insert>
+
 	<delete id="deleteGroup" parameterClass="int">
 		DELETE FROM groupids WHERE `group` = #groupId#
+	</delete>
+
+	<delete id="deleteTagSet" parameterClass="tagSetParam">
+		DELETE FROM group_tagsets WHERE set_name = #setName# AND `group` = #groupId#
 	</delete>
 
 	<insert id="addUserToGroup" parameterClass="group">

@@ -196,6 +196,22 @@
 		</isGreaterThan>	
 	</sql>
 	
+	<sql id="restrictToGroups2">
+		<isEqual property="groupId" compareValue="-1">
+		  <!-- no user logged in -> only public posts -->
+		  <isEmpty property="userName" prepend="AND">
+		  	t1.group = 0 
+		  </isEmpty>
+		  <!-- user logged in -> check his groups -->
+		  <isNotEmpty property="userName">
+		  	<include refid="inGroups3"/>
+		  </isNotEmpty>
+		</isEqual>
+		<isGreaterThan property="groupId" compareValue="-1" prepend="AND">
+		  t1.group = #groupId#
+		</isGreaterThan>	
+	</sql>
+	
 	<!-- restrict visibility of retrieved items to the groups a user may see -->	
 	<sql id="inGroups">
 	    <!-- no user logged in - only public posts -->
@@ -210,6 +226,23 @@
 		</isNotEmpty>
 	</sql>
 	
+	<!-- restrict visibility of retrieved items to the groups a user may see -->	
+	<sql id="inGroups3">
+	    <!-- no user logged in - only public posts -->
+		<isEmpty property="userName" prepend="AND">
+		  	t1.group = 0 
+		</isEmpty>
+		<!-- a user is logged in - check groups -->
+		<isNotEmpty property="userName">
+		  <isNotEqual property="userName" compareProperty="requestedUserName" prepend="AND">		
+			  t1.group = 0 
+		  </isNotEqual>
+		  <isEqual property="userName" compareProperty="requestedUserName" prepend="AND">		
+			  t1.group &lt; 2
+		  </isEqual>
+		</isNotEmpty>
+	</sql>
+	
 	<!-- restrict visibility directly, i.e. without checking for user's own items -->
 	<sql id="inGroupsUnchecked">
 		t1.group in (
@@ -217,21 +250,7 @@
 		    $groups[]$
 		</iterate>)	
 	</sql>
-	
-	<!-- 
-	  TODO:
-	  It would be good, to not "invent" a new SQL snippet for each differently named
-	  table. Either, name the table in the corresponding statement appropriately
-	  (e.g., "t1"), or introduce a parameter.
-	-->
-	<!-- restrict visibility directly, i.e. without checking for user's own items -->
-	<sql id="inGroupsUnchecked2">
-		t2.group in (
-		<iterate property="groups" conjunction=",">
-		    $groups[]$
-		</iterate>)	
-	</sql>
-		
+			
 	<!-- 
 		 this only needed for getBibTexDuplicate, as refactoring that query to
 	     use t1 as table alias instead of b would have had some unwanted side-effects

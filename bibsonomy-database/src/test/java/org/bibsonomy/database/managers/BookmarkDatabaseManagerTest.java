@@ -459,7 +459,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final Group group = new Group();
 		group.setDescription(null);
 		group.setName("public");
-		group.setGroupId(0);
+		group.setGroupId(GroupID.PUBLIC.getId());
 		post.getGroups().add(group);
 
 		Tag tag = new Tag();
