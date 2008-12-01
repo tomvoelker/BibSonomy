@@ -61,7 +61,7 @@
   </c:if>
 </c:forEach>
 
-<div id="general">
+<div style="float: left; width: 72%;">
 
 <%-- ------------------------ tab header -------------------------- --%>
 <c:if test="${empty seltab || not empty param.seltab}">
@@ -82,6 +82,7 @@
 </ul>
 
 <%-- ------------------------ tab content -------------------------- --%>
+
 <div id="tab_content">
 <c:choose>	
 
@@ -129,6 +130,8 @@
   </li>
 </ul>
 </div>
+
+
 <script type="text/javascript">
    $("#sidebarroundcorner").corner("round bottom 15px").corner("round tl 15px");
 </script>
