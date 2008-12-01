@@ -7,9 +7,9 @@
 	<groupId>org.bibsonomy</groupId>
 	<artifactId>bibsonomy-dl-importer</artifactId>
 	<packaging>jar</packaging>
-	<name>Bibsonomy-DigitalLibrary-Importer</name>
-	<version>2.0.1-SNAPSHOT</version>
-	<description>Digital library importer for Bibsonomy.</description>
+	<name>BibSonomy-DigitalLibrary-Importer</name>
+	<version>2.0.1</version>
+	<description>Digital library importer for BibSonomy.</description>
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
