@@ -1571,8 +1571,8 @@ function showBothLists(){
 //new functions for adding tags from tag-cloud to a field
 function copytag(target, tagname){
 	if(document.getElementById(target)){
+		clear_tags();
 		var tagfieldContent = document.getElementById(target).value;
-		
 		if(tagfieldContent.lastIndexOf(" ") == (tagfieldContent.length-1)){
 			document.getElementById(target).value+=tagname+" ";
 		}else{
@@ -1583,51 +1583,33 @@ function copytag(target, tagname){
 
 /** FUNCTIONS USED IN THE POSTING VIEWS **/
 
-//functions checks if a post is PUBLIC, PRIVATE or OTHER (viewable for groups or friends)
-//and enables/disables the groupselection in the post-view 
-//see "tags/post/groupBox.tagx", "tags/post/common/groupingradio.tagx" and "tags/post/common/groupingselect.tagx"
+//functions disables the groupselection in the post-view 
+//see "tags/post/groupBox.tagx"
 function disableGroupBox(){
-	var counter = 0;
-	if(document.getElementById("other").checked == false){
-		while(document.getElementById("visibilityoption"+counter) != null){
-			document.getElementById("visibilityoption"+counter).selected = false;
-			counter++;
-		}
-		document.getElementById("visibilitybox").disabled = true;
-	}else{
-		document.getElementById("visibilitybox").disabled = false;
-	}
+	document.getElementById("visibilitybox").disabled = true;
+}
+
+//functions enables the groupselection in the post-view 
+//see "tags/post/groupBox.tagx"
+function enableGroupBox(){
+	document.getElementById("visibilitybox").disabled = false;
 }
 
 //hide and show the tagsets in the relevant for field
-function checkVisibility(){
-	var counter = 0;
-	while(document.getElementById("relgroup"+counter) != null){
-		if(document.getElementById("relgroup"+counter).selected == true){
-			document.getElementById("sets_"+counter).style.display = '';
-		}else{
-			document.getElementById("sets_"+counter).style.display = 'none';
-		}
-		counter++;
+function showTagSets(event){
+	var node = xget_event(event);
+	if(node.selected == true){
+		document.getElementById("field_"+node.getAttributeNode("value").value).style.display = '';
+	}else{
+		document.getElementById("field_"+node.getAttributeNode("value").value).style.display = 'none';
 	}
-}
-
-//add tags from a taglist to the tag field
-function addSelectedTag(target,id){
-	var counter = -1;
-	while(document.getElementById(id+counter) != null){
-		if(document.getElementById(id+counter).selected == true){
-			copytag(target,document.getElementById(id+counter).value);
-		}
-		counter++;
-	}
-
 }
 
 //functions checks if a group in the relevant for field is selected and adds its name to the hidden field 
 //systemtags 
 function addSystemTags(){
 	var counter = 0;
+	clear_tags();
 	var tags = document.getElementById("inpf").value;
 	while(document.getElementById("relgroup"+counter) != null){
 		if(document.getElementById("relgroup"+counter).selected == true){
@@ -1649,6 +1631,18 @@ function addSystemTags(){
 		copytag("inpf",systemtags);
 	}
 	
+}
+
+//get the value of a node by a windowevent
+function getNodeValueByEvent(event){
+	node = xget_event(event);
+	return node.getAttributeNode("value").value;
+}
+
+//copy a value from a option field to the target
+function copyOptionTags(target, event){
+	var value = getNodeValueByEvent(event);
+	copytag(target, value);
 }
 
 //trim

@@ -19,48 +19,21 @@
 		<legend>
 			<fmt:message key="post.resource.relevantfor"/>
 		</legend>	
-		<div id="postBookmarkRelevantTags" style="display: block">		
-			<p class="info_bold"><fmt:message key="post.resource.relevant"/></p>
-
-                <!-- select box for "other" groups -->
-                <form:select path="post.groups" size="5" onchange="checkVisibility()" id="relgroup">
-                  <c:forEach items="${groups}" var="group" varStatus="status">
-                    <c:if test="${not empty group.name}">
-                      <form:option id="relgroup${status.index}" label="${group.name}" value="${group.name}"/>
-                    </c:if>
-                  </c:forEach>  
-                </form:select>
-
-	            <c:forEach var="group" items="${groups}" varStatus="status">
-                   <c:if test="${not empty group.tagSets}">
-                      <div id="sets_${status.index}" style="display:none">
-                         <fieldset style="border: 1px solid #069; background-color: #eee; position:relative;">
-                            <legend>
-                               <fmt:message key="for"/>${mtl:ch('nbsp')}<c:out value="${group.name}"/>
-                            </legend> 
- 					      
-                            <c:forEach var="tagset" items="${group.tagSets}" varStatus="status_t">
-							  <span class="info_bold"><c:out value="${tagset.setName}"/>:</span>
-							  <form:select id="${tagset.setName}" path="" size="1" onchange="addSelectedTag('inpf','${fn:escapeXml(tagset.setName)}')" multiple="false">
-
-                                  <!-- show "please select" hint -->
-								  <c:set var="pleaseselect"><fmt:message key="post.resource.select"/></c:set>
-								  <form:option value="" label="${pleaseselect}" id="${fn:escapeXml(tagset.setName)}-1"/>
-
-                                  <!-- show tag set -->
-								  <c:forEach items="${tagset.tags}" var="tag" varStatus="status_tag">
-								     <form:option label="${fn:escapeXml(tag.name)}" value="${fn:escapeXml(tag.name)}" id="${fn:escapeXml(tagset.setName)}${status_tag.index}"/>
-								  </c:forEach>
-						       </form:select>
-                               ${mtl:ch('nbsp')}
-						    </c:forEach>
-                         </fieldset>
-                      </div>
-                   </c:if>
-				</c:forEach>
-		</div>
+		<table class="vmiddle">
+			<tr>
+				<td>
+	                <!-- select box for "other" groups -->
+	                <form:select path="post.groups" size="5">
+	                	<form:options items="${groups}" onclick="showTagSets(event)" itemLabel="${fn:escapeXml('name')}" itemValue="${fn:escapeXml('name')}"/>
+	                </form:select>
+	            </td>
+	            <td>
+	            	<p class="info_bold"><fmt:message key="post.resource.relevant"/></p>
+	            </td>
+	        </tr>
+	    </table>
 				
-	</fieldset>					
+	</fieldset>		
 
 	<input type="hidden" value="" id="systemtags"/>
 

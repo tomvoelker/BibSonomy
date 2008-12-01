@@ -249,6 +249,7 @@
 								<value>extended</value>  
 								<value>copytag</value>  
 								<value>abstractGrouping</value>
+								<value>groups</value>
 								<value>intraHashToUpdate</value>
 								<value>jump</value>
 							</list>

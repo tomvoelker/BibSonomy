@@ -104,19 +104,36 @@
 								</fieldset>
 							</fieldset>
 							<post:tagfield tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>	
-							<post:groupBox post="${post}" groups="${loginUser.groups}"/>	
-							<c:if test="${not empty loginUser.groups}">
-								<post:relevantForBox groups="${loginUser.groups}"/>
-							</c:if>	
-							<fieldset style="border:0px; text-align: center">
-								<c:set var="save"><fmt:message key="save"/></c:set>
-                                <c:set var="reset"><fmt:message key="resetbutton"/></c:set>
-								<!-- function addSystemTags located in relevantFoxBox.tagx -->
-                                <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
-                                <form:hidden path="intraHashToUpdate"/>
-								<input type="reset"  tabindex="5" value="${reset}" />
-								<input type="submit" tabindex="6" value="${save}" onClick="clear_tags(); addSystemTags();"/>
-							</fieldset>	
+							<table style="width:100%">
+								<tr>
+									<td style="width:50%">
+										<post:groupBox post="${post}" groups="${loginUser.groups}"/>
+									</td>
+								
+									<c:if test="${not empty loginUser.groups}">
+									<td style="width:50%">
+										<post:relevantForBox groups="${loginUser.groups}"/>
+									</td>
+									</c:if>	
+								</tr>
+								<tr>
+									<td colspan="2">
+										<post:tagSets groups="${loginUser.groups}"/>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2" align="center">
+										<c:set var="save"><fmt:message key="save"/></c:set>
+		                                <c:set var="reset"><fmt:message key="resetbutton"/></c:set>
+										<!-- function addSystemTags located in relevantFoxBox.tagx -->
+		                                <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
+		                                <form:hidden path="intraHashToUpdate"/>
+										<input type="reset"  tabindex="5" value="${reset}" />
+										<input type="submit" tabindex="6" value="${save}" onClick="clear_tags(); addSystemTags();"/>
+									</td>
+								</tr>
+							</table>	
+		
 						</fieldset>
 					</div>
 				</form:form>

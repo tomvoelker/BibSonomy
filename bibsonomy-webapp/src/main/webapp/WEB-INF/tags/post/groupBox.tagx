@@ -24,33 +24,25 @@
 			</form:label>
 		</legend>
 			<table class="vmiddle">
-					<tr>
-						<td>
-                           <!-- radio buttons for public, private, other -->
-                           <form:radiobutton path="abstractGrouping" id="public"  onclick="disableGroupBox()" value="public" /> <fmt:message key="post.resource.public"/><br/>
-                           <form:radiobutton path="abstractGrouping" id="private" onclick="disableGroupBox()" value="private"/> <fmt:message key="post.resource.private"/><br/>
-                           <form:radiobutton path="abstractGrouping" id="other"   onclick="disableGroupBox()" value="other"/>   <fmt:message key="post.resource.other"/>
-                        </td>
-						<td style="width:10px"></td>
-						<td>
-                           <!-- select box for "other" groups -->
-                           <form:select path="groups" size="5" id="visibilitybox">
-                           <form:option label="friends" value="friends" id="visibilityboxfriends"/>
-                           <c:forEach items="${groups}" var="group" varStatus="status">
-                             <c:if test="${not empty group.name}">
-                               <form:option id="visibilitybox${status.index}" label="${group.name}" value="${group.name}"/>
-                             </c:if>
-                           </c:forEach>  
-                           </form:select>
-                           
-                        </td>
-                      <td>
-                         <div class="postBookmarkNotValidTip"><form:errors path="post.groups" /></div>
-                      </td>
-                    </tr>
+				<tr>
+					<td>
+                          <!-- radio buttons for public, private, other -->
+                          <form:radiobutton path="abstractGrouping" onclick="disableGroupBox()" value="public" /> <fmt:message key="post.resource.public"/><br/>
+                          <form:radiobutton path="abstractGrouping" onclick="disableGroupBox()" value="private" /> <fmt:message key="post.resource.private"/><br/>
+                          <form:radiobutton path="abstractGrouping" onclick="enableGroupBox()" value="other" />   <fmt:message key="post.resource.other"/>
+                       </td>
+					<td style="width:10px"></td>
+					<td>
+                          <!-- select box for "other" groups -->
+                          <form:select multiple="true" path="groups" size="5" id="visibilitybox">
+                         		<form:options items="${groups}" itemValue="name" itemLabel="name"/>
+                         		<form:option label="friends" value="friends"/>
+                          </form:select>
+                          <div class="postBookmarkNotValidTip"><form:errors path="groups" /></div>
+                       </td>
+				</tr>
 			</table>
 	</fieldset>	
-
 	<script type="text/javascript">
 	<![CDATA[
 		//disable the groupbox at start
