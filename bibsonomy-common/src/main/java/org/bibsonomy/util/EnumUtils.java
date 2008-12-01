@@ -47,7 +47,7 @@ public class EnumUtils {
 	public static <T extends Enum<?>> T searchEnumByName(final T[] values, final String name) {
 		if (present(name) == false) throw new InternServerException("Parameter name must be set");
 		for (final T value : values) {
-			if (value.name().toLowerCase().equals(name.trim().toLowerCase())) return value;
+			if (value.name().equalsIgnoreCase(name.trim())) return value;
 		}
 		return null;
 	}
