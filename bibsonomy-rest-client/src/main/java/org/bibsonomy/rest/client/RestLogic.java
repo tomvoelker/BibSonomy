@@ -330,4 +330,8 @@ public class RestLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public int updateTags(final User user, final List<Tag> tagsToReplace, final List<Tag> replacementTags) {
+		return 0;
+	}
 }
