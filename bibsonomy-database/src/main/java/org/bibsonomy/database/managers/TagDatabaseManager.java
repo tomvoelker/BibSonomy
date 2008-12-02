@@ -139,10 +139,10 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		for (final Tag tag : param.getTags()) {
 			param.setTag(tag);
 			/*
-	 * if a post is visible for more than one group, 
-	 * only insert an entry for the first group in the tas table.
-	 * otherwise param.getGroups has length = 1.
-
+			 * if a post is visible for more than one group, 
+			 * only insert an entry for the first group in the tas table.
+			 * otherwise param.getGroups has length = 1.
+			 */
 			if(param.getGroups().get(0) != null){
 				final Integer groupId = param.getGroups().get(0); 
 				param.setGroupId(groupId);
@@ -296,7 +296,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		log.debug("################################################################################");
 		log.debug(posts);
 		log.debug("################################################################################");
-		
+
 		/*
 		 * FIXME: shall getting the posts be included in the transaction?
 		 */
@@ -363,7 +363,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		} finally {
 			session.endTransaction();
 		}
-		
+
 		/*
 		 * test: check tags
 		 */
@@ -377,7 +377,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		log.debug(postsNew);
 		log.debug("################################################################################");
 
-		
+
 		return 0;
 	}
 
