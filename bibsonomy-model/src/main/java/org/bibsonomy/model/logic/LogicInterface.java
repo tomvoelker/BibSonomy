@@ -152,6 +152,21 @@ public interface LogicInterface extends PostLogicInterface {
 	 */
 	public Tag getTagDetails(String tagName);
 
+	/** Updates the tags of the given user by replacing ALL tags of <code>tagsToReplace</code>
+	 * with ALL tags from <code>replacementTags</code>.
+	 * <p>That means, in all posts which contain all of the first tags, those tags will be 
+	 * replaced by the second tags.</p>
+	 * <p>This method does not change relations/concepts!</p>
+	 * 
+	 * @param user - the user whose tags should be updated.
+	 * @param tagsToReplace - the tags which should be replaced. Only when all tags occur
+	 * together at the same post, they're replaced!
+	 * 
+	 * @param replacementTags - the tags which replace the other tags.
+	 * @return - The number of posts which were updated.
+	 */
+	public int updateTags(User user, List<Tag> tagsToReplace, List<Tag> replacementTags);
+	
 	/**
 	 * Removes the given user.
 	 * 
