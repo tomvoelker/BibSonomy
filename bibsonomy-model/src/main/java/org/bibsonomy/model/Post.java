@@ -32,7 +32,7 @@ import java.util.Set;
  * 
  * @version $Id$
  * @param <T>
- *            resouce type
+ *            resource type
  */
 public class Post<T extends Resource> {
 
