@@ -777,4 +777,15 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	/** Does nothing, because it's not implemented in the API.
+	 * @param user
+	 * @param tagsToReplace
+	 * @param replacementTags
+	 * @return
+	 */
+	public int updateTags(final User user, final List<Tag> tagsToReplace, final List<Tag> replacementTags) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
