@@ -263,6 +263,33 @@
 	    </isGreaterThan>
 	</select>
 	
+	
+	<!-- 
+		For updateTags(User user, List<Tag> tagsToReplace, List<Tag> replacementTags) 
+		we need the TAS of all posts which have all of the tags in tagsToReplace.
+		
+		The JOIN has two parts which are merged by a UNION:
+		1. get all public/private TAS from tas table
+		2. get other TAS from grouptas table
+	 -->	
+	<select id="getTASByTagNames" resultMap="Common.mockPost" parameterClass="genericParam">
+		SELECT t.tag_name, t.content_id, tt.group, t.content_type, t.user_name, t.date, t.change_date, NULL as description, NULL AS `group`, NULL AS group_name
+		FROM tas t 
+		  JOIN (
+		      SELECT t1.content_id, t1.group 
+		        FROM <include refid="tagFromQuery"/>
+		        WHERE <include refid="tagWhereQuery"/>
+		          AND t1.user_name = #userName#
+		          AND t1.group &lt; 2
+    		  UNION 
+		      SELECT t1.content_id, t1.group
+		        FROM <include refid="grouptasTagFromQuery"/>
+		        WHERE <include refid="tagWhereQuery"/>
+		          AND t1.user_name = #userName#
+             ) AS tt
+		  USING (content_id)
+	</select>
+	
 	<select id="getRelatedTagsOrderedByFolkrank" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
 		SELECT w.item AS tag_name , ROUND(SUM(weight),5) * 10000 AS tag_ctr
 		FROM rankings r
