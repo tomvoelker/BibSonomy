@@ -2,6 +2,7 @@ package org.bibsonomy.database.systemstags;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -19,6 +20,7 @@ import org.bibsonomy.model.Tag;
  */
 
 public class SystemTagFactory {
+	private static final String JAXB_PACKAGE_DECLARATION = "org.bibsonomy.systemstags.xml";
 	// TODO path
 	private static final String BIBSONOMY_SYSTEMTAGS_XML = "../bibsonomy-webapp/src/main/webapp/WEB-INF/systemtags.xml";
 	private static HashMap<String, SystemTagType> systemTagMap;
@@ -112,12 +114,13 @@ public class SystemTagFactory {
 
 	private static void importConfiguration(String systemtagsFile) {
 		try {
-			JAXBContext jc = JAXBContext.newInstance("org.bibsonomy.systemstags.xml");
-
-			Unmarshaller unmarshaller = jc.createUnmarshaller();
-			SystemTagsCollection collection = (SystemTagsCollection) ((JAXBElement<?>) unmarshaller.unmarshal(new File(systemtagsFile))).getValue();
+			final JAXBContext jc = JAXBContext.newInstance(JAXB_PACKAGE_DECLARATION, SystemTagFactory.class.getClassLoader());
+			
+			final Unmarshaller unmarshaller = jc.createUnmarshaller();
+			final SystemTagsCollection collection = (SystemTagsCollection) ((JAXBElement<?>) unmarshaller.unmarshal(new File(systemtagsFile))).getValue();
 			systemTagMap = new HashMap<String, SystemTagType>();
-			for (SystemTagType tag : collection.getSystemtag()) {
+			final List<SystemTagType> systemtag = collection.getSystemtag();
+			for (final SystemTagType tag : systemtag) {
 				systemTagMap.put(tag.getName(), tag);
 			}
 		} catch (JAXBException e) {
