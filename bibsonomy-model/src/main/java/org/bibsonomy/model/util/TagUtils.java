@@ -33,6 +33,8 @@ import org.bibsonomy.model.Tag;
  */
 public class TagUtils {
 
+	private static final Tag emptyTag = new Tag("system:unfiled");
+	
 	/**
 	 * Get the maximum user count of all tags contained in a list
 	 * 
@@ -63,5 +65,15 @@ public class TagUtils {
 			}
 		}
 		return maxGlobalCount;
+	}
+	
+	
+	/**
+	 * If a post has no tag attached, the empty tag should be added in the TAS table. 
+	 * 
+	 * @return The empty tag ({@value #emptyTag}).
+	 */
+	public static Tag getEmptyTag() {
+		return emptyTag;
 	}
 }
