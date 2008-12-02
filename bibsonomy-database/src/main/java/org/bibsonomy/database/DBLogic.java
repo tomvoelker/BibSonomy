@@ -678,6 +678,32 @@ public class DBLogic implements LogicInterface {
 	}
 
 
+	/** Updates all posts which contain all of the given tags by replacing them with the other given tags.
+	 * 
+	 * <p>TODO: possible options which one might want to add:</p>
+	 * <ul>
+	 * <li>ignore case</li>
+	 * </ul>
+	 * 
+	 * @see org.bibsonomy.model.logic.LogicInterface#updateTags(org.bibsonomy.model.User, java.util.List, java.util.List)
+	 */
+	public int updateTags(final User user, final List<Tag> tagsToReplace, final List<Tag> replacementTags) {
+		this.ensureLoggedIn();
+		this.permissionDBManager.ensureWriteAccess(loginUser, user.getName());
+		/*
+		 * 
+		 */
+		final DBSession session = this.openSession();
+		try {
+			/*
+			 * delegate to tagDBManager
+			 */
+			this.tagDBManager.updateTags(user, tagsToReplace, replacementTags, session);
+		} finally {
+			session.close();
+		}
+		return 0;
+	}
 
 
 	public String createUser(final User user) {

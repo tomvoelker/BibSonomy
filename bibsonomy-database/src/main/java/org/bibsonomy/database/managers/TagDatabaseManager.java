@@ -5,7 +5,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
@@ -19,7 +20,11 @@ import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
+import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.util.TagUtils;
 
 /**
  * Used to retrieve tags from the database.
@@ -32,8 +37,8 @@ import org.bibsonomy.model.Tag;
  */
 public class TagDatabaseManager extends AbstractDatabaseManager {
 
-	private static final Logger log = Logger.getLogger(TagDatabaseManager.class);
-	
+	private static final Log log = LogFactory.getLog(TagDatabaseManager.class);
+
 	private final static TagDatabaseManager singleton = new TagDatabaseManager();
 	private final GeneralDatabaseManager generalDb;
 	private final TagRelationDatabaseManager tagRelDb;
@@ -134,10 +139,10 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		for (final Tag tag : param.getTags()) {
 			param.setTag(tag);
 			/*
-			 * if a post is visible for more than one group, 
-			 * only insert an entry for the first group in the tas table.
-			 * otherwise param.getGroups has length = 1.
-			*/ 
+	 * if a post is visible for more than one group, 
+	 * only insert an entry for the first group in the tas table.
+	 * otherwise param.getGroups has length = 1.
+
 			if(param.getGroups().get(0) != null){
 				final Integer groupId = param.getGroups().get(0); 
 				param.setGroupId(groupId);
@@ -145,7 +150,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 				this.insert("insertTas", param, session);
 			}
 		}
-		
+
 	}
 
 	/**
@@ -163,8 +168,8 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			}
 		}
 	}*/
-	
-	
+
+
 	/**
 	 * For each group a post is visible, store an entry in the grouptas table.
 	 * @param param
@@ -180,7 +185,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			}
 		}
 	}
-	
+
 	/**
 	 * Deletes the tags from the given post.
 	 * 
@@ -237,7 +242,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	private void deleteTas(final Integer contentId, final DBSession session) {
 		this.delete("deleteTas", contentId, session);
 	}
-	
+
 	private void deleteGroupTas(final Integer contentId, final DBSession session) {
 		this.delete("deleteGroupTas", contentId, session);
 	}
@@ -264,6 +269,118 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		this.insertTags(tagParam, session);
 	}
 
+	/** Updates the posts by replacing all tags as described in {@link LogicInterface#updateTags(User, List, List)}.
+	 * 
+	 * 
+	 * @param user
+	 * @param tagsToReplace
+	 * @param replacementTags
+	 * @param session 
+	 * @return The number of posts which got updated.
+	 */
+	public int updateTags(final User user, final List<Tag> tagsToReplace, final List<Tag> replacementTags, final DBSession session) {
+		/*
+		 * we might need the empty tag for posts where no tags remain ...
+		 */
+		final Tag emptyTag = TagUtils.getEmptyTag();
+		/*
+		 * First: get all posts which need to be updated (i.e., which have all tags from tagsToReplace assigne)
+		 * since we're not interested in the resource, we need only data from the TAS table, i.e., we need TAS.
+		 */
+		final TagParam param = new TagParam();
+		for (final Tag tag: tagsToReplace) {
+			param.addTagName(tag.getName());
+		}
+		param.setUserName(user.getName());
+		final List<Post> posts = this.queryForList("getTASByTagNames", param, Post.class, session);
+		log.debug("################################################################################");
+		log.debug(posts);
+		log.debug("################################################################################");
+		
+		/*
+		 * FIXME: shall getting the posts be included in the transaction?
+		 */
+		session.beginTransaction();
+		try {
+
+			/*
+			 * iterate over all posts and exchange their tags
+			 */
+			for (final Post post: posts) {
+				log.debug("handling post with content id " + post.getContentId() + " and groups " + post.getGroups());
+
+				final Set<Tag> tags = post.getTags();
+				log.debug("  current tags: " + tags);
+				/*
+				 * removing tags
+				 * 
+				 * TODO: Case is important here, e.g., "kassel" is not removed, 
+				 * if "KASSEL" is contained in tagsToReplace.
+				 * 
+				 * Probably this is the way it should work - we have to discuss this.
+				 * (Although, it might be nice to have a switch to say "ignore case".)
+				 */
+				tags.removeAll(tagsToReplace);
+				/*
+				 * adding tags
+				 */
+				tags.addAll(replacementTags);
+				log.debug("  new tags: " + tags);
+				/*
+				 * Since replacementTags is allowed to be empty (i.e., to remove certain tags),
+				 * we must check here, if the post still contains some tags. If not - we add 
+				 * the empty tag.
+				 */
+				if (tags.isEmpty())	tags.add(emptyTag);
+				/*
+				 * Finally: delete the TAS and insert the new TAS.
+				 */
+				this.deleteTas(post.getContentId(), session);
+
+				final TagParam tagParam = new TagParam();
+				tagParam.setTags(post.getTags());
+				tagParam.setNewContentId(post.getContentId());
+				final Class<? extends Resource> class1 = post.getResource().getClass();
+				log.debug("  post has class " + class1);
+				tagParam.setContentTypeByClass(class1);
+				tagParam.setUserName(post.getUser().getName());
+				tagParam.setDate(post.getDate());
+				/*
+				 * FIXME: we don't have the groups from the grouptas available ... :-(
+				 */
+				final List<Integer> groups = new ArrayList<Integer>();
+				final Set<Group> groups2 = post.getGroups();
+				for (final Group group : groups2) {
+					groups.add(group.getGroupId());
+				}
+				tagParam.setGroups(groups);
+
+				this.insertTas(tagParam, session);
+			}
+
+
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+		
+		/*
+		 * test: check tags
+		 */
+		final TagParam paramNew = new TagParam();
+		for (final Tag tag: replacementTags) {
+			paramNew.addTagName(tag.getName());
+		}
+		paramNew.setUserName(user.getName());
+		final List<Post> postsNew = this.queryForList("getTASByTagNames", paramNew, Post.class, session);
+		log.debug("################################################################################");
+		log.debug(postsNew);
+		log.debug("################################################################################");
+
+		
+		return 0;
+	}
+
 	/**
 	 * Insert a set of tags for a content (into tas table and what else is
 	 * required)
@@ -283,16 +400,15 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 				// requestedContentId is the real new contentId here
 				this.insertTagTagBatch(param.getNewContentId(), param.getTags(), TagTagBatchParam.Job.DECREMENT, session);
 			}
-			
-			log.debug(this.getClass()+": insertTags() - calling insertTas()");
+
 			this.insertTas(param, session);
 
-			/* if post is visible for groups, store for each group
+			/* if post is visible for more than one group, store for each group
 			and each tag one entry in the grouptas table */
-			if(param.getGroups().get(0) > 1){
+			if(param.getGroups().size() > 1){
 				this.insertGroupTas(param, session);
 			}
-			
+
 			for (final Tag tag : param.getTags()) {
 				this.tagRelDb.insertRelations(tag, param.getUserName(), session);				
 			}
@@ -469,14 +585,14 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public List<Tag> getTagsByUser(final TagParam param, final DBSession session) {
 		/* 
-         * another DBLP extra sausage - don't query DB for tags (as only "dblp"
+		 * another DBLP extra sausage - don't query DB for tags (as only "dblp"
 		 * will be returned anyways), but return that directly
-         *
+		 *
 		 * TODO: maybe we put all the DBLP stuff into one class?
-         * Then we could do here:
-         * if (DBLP.isDBLPUser(param.getRequestedUserName()) {
-         *    return DBLP.getDBLPTag();
-         * }
+		 * Then we could do here:
+		 * if (DBLP.isDBLPUser(param.getRequestedUserName()) {
+		 *    return DBLP.getDBLPTag();
+		 * }
 		 */
 		if ("dblp".equals(param.getRequestedUserName().toLowerCase())) {
 			final ArrayList<Tag> tags = new ArrayList<Tag>();
@@ -790,7 +906,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		param.setOffset(offset);
 		return this.queryForList("getSimilarTags", param, Tag.class, session);
 	} 
-	
+
 	/**
 	 * See getAllTags
 	 * 
@@ -801,7 +917,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	public List<Tag> getTagsPopular(final TagParam param, final DBSession session){
 		return this.queryForList("getTagsPopular", param, Tag.class, session);
 	}
-	
+
 	/**
 	 * Gets list of global popular tags (no restriction in days)
 	 * 
