@@ -347,6 +347,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 			log.warn("error parsing tags", e);
 			errors.rejectValue("tags", "error.field.valid.tags.parseerror");
 		}
+		
 		/*
 		 * return to form until validation passes
 		 */
@@ -417,7 +418,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 	 * @param post - the post whose groups should be populated from the command.
 	 * @see #initCommandGroups(EditBookmarkCommand, Post)
 	 */
-	private void initPostGroups(EditBookmarkCommand command, final Post<Bookmark> post) {
+	private void initPostGroups(final EditBookmarkCommand command, final Post<Bookmark> post) {
 		/*
 		 * we can avoid some checks here, because they're done in the validator ...
 		 */
