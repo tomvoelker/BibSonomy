@@ -55,7 +55,7 @@ import org.junit.Ignore;
 @Ignore
 public class TestDBLogic implements LogicInterface {
 	private final User loginUser;
-	
+
 	private final Map<String, Group> dbGroups;
 	private final Map<String, User> dbUsers;
 	private final Map<String, Tag> dbTags;
@@ -157,7 +157,7 @@ public class TestDBLogic implements LogicInterface {
 			break;
 		default: // ALL
 			tags.addAll(this.dbTags.values());
-			break;
+		break;
 		}
 
 		return tags;
@@ -188,7 +188,7 @@ public class TestDBLogic implements LogicInterface {
 			for (final User user : this.dbUsers.values()) {
 				posts.addAll(user.getPosts());
 			}
-			break;
+		break;
 		}
 
 		// check resourceType
@@ -232,7 +232,7 @@ public class TestDBLogic implements LogicInterface {
 		}
 		return rVal;
 	}
-	
+
 	/**
 	 * Inserts some test data into the local maps
 	 */
@@ -732,24 +732,24 @@ public class TestDBLogic implements LogicInterface {
 
 	public void deleteDocument(String userName, String resourceHash, String fileName) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void addInetAddressStatus(InetAddress address, InetAddressStatus status) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void deleteInetAdressStatus(InetAddress address) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public InetAddressStatus getInetAddressStatus(InetAddress address) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	public int getStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, StatisticsConstraint constraint, String search, List<String> tags) {
 		// TODO Auto-generated method stub
 		return 0;
@@ -767,7 +767,7 @@ public class TestDBLogic implements LogicInterface {
 
 	public void deleteConcept(Tag concept, GroupingEntity grouping, String groupingName) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public String updateConcept(Tag concept, GroupingEntity grouping, String groupingName) {
@@ -777,12 +777,12 @@ public class TestDBLogic implements LogicInterface {
 
 	public void deleteConcept(String concept, GroupingEntity grouping, String groupingName) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void deleteRelation(String upper, String lower, GroupingEntity grouping, String groupingName) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public Tag getConceptDetails(String conceptName, GroupingEntity grouping, String groupingName) {
@@ -802,7 +802,7 @@ public class TestDBLogic implements LogicInterface {
 
 	public void updateClassifierSettings(ClassifierSettings key, String value) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public int getClassifiedUserCount(Classifier classifier, SpamStatus status, int interval) {
@@ -833,5 +833,9 @@ public class TestDBLogic implements LogicInterface {
 	public String getOpenIDUser(String openID) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public int updateTags(final User user, final List<Tag> tagsToReplace, final List<Tag> replacementTags) {
+		return 0;
 	}
 }
