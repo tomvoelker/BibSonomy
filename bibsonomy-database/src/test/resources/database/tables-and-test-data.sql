@@ -1481,33 +1481,39 @@ CREATE TABLE `grouptas` (
 
 -- 
 -- Data for table `grouptas`
+-- FIXME: this data is broken! it contains posts which are in the tas table but there have 
+-- a public or private group ..
 -- 
 
 INSERT INTO `grouptas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `content_type`, `user_name`, `date`, `group`, `change_date`) VALUES
-(1, 'testtag', 'testtag', 1, 1, 'testuser1', '1815-12-10 00:00:00', 0, '2008-01-18 10:20:07'),
-(2, 'google', 'google', 2, 1, 'testuser1', '1815-12-10 00:00:00', 0, '2008-01-18 10:20:17'),
-(3, 'suchmaschine', 'suchmaschine', 2, 1, 'testuser1', '1815-12-10 00:00:00', 0, '2008-01-18 10:19:51'),
-(4, 'yahoo', 'yahoo', 3, 1, 'testuser2', '1815-12-10 00:00:00', 0, '2008-01-18 10:21:12'),
-(5, 'suchmaschine', 'suchmaschine', 3, 1, 'testuser2', '1815-12-10 00:00:00', 0, '2008-01-18 10:21:47'),
-(6, 'friends', 'friends', 4, 1, 'testuser1', '1815-12-10 00:00:00', 2, '2008-01-18 10:24:31'),
-(7, 'friendscout', 'friendscout', 4, 1, 'testuser1', '1815-12-10 00:00:00', 2, '2008-01-18 10:24:44'),
-(8, 'web', 'web', 5, 1, 'testuser3', '1815-12-10 00:00:00', 0, '2008-01-18 10:24:14'),
-(9, 'freemail', 'freemail', 5, 1, 'testuser3', '1815-12-10 00:00:00', 0, '2008-01-18 10:24:14'),
-(10, 'suchmaschine', 'suchmaschine', 5, 1, 'testuser3', '1815-12-10 00:00:00', 0, '2008-01-18 10:24:14'),
-(11, 'uni', 'uni', 6, 1, 'testuser2', '1815-12-10 00:00:00', 0, '2008-01-18 11:30:05'),
-(12, 'kassel', 'kassel', 6, 1, 'testuser2', '0000-00-00 00:00:00', 0, '2008-01-18 11:30:05'),
-(13, 'finetune', 'finetune', 7, 1, 'testuser1', '1815-12-10 00:00:00', 4, '2008-01-21 13:22:09'),
-(14, 'radio', 'radio', 7, 1, 'testuser1', '1815-12-10 00:00:00', 4, '2008-01-21 13:22:20'),
-(15, 'apple', 'apple', 8, 1, 'testuser1', '1815-12-10 00:00:00', 4, '2008-01-21 13:20:37'),
-(16, 'suchmaschine', 'suchmaschine', 9, 1, 'testuser1', '1815-12-10 00:00:00', 1, '2008-01-29 10:39:17'),
-(17, 'fireball', 'fireball', 9, 1, 'testuser1', '1815-12-10 00:00:00', 1, '2008-01-29 10:39:17'),
-(18, 'testbibtex', 'testbibtex', 10, 2, 'testuser1', '1815-12-10 00:00:00', 0, '2008-03-19 11:21:44'),
-(19, 'testtag', 'testtag', 10, 2, 'testuser1', '1815-12-10 00:00:00', 0, '2008-03-19 11:27:34'),
-(20, 'spam', 'spam', 11, 2, 'testspammer', '1815-12-10 00:00:00', 0, '2008-03-20 16:35:21'),
-(21, 'bibtexgroup', 'bibtexgroup', 12, 2, 'testuser1', '1815-12-10 00:00:00', 3, '2008-03-20 20:35:21'),
-(22, 'privatebibtex', 'privatebibtex', 13, 2, 'testuser2', '1815-12-10 00:00:00', 1, '2008-03-20 20:35:21'),
-(23, 'friendbibtex', 'friendbibtex', 14, 2, 'testuser2', '1815-12-10 00:00:00', 2, '2008-03-20 20:35:21'),
-(24, 'testbibtex', 'testbibtex', 12, 2, 'testuser1', '1815-12-10 00:00:00', 3, '2008-03-20 20:35:21');
+(1, 'testtag',        'testtag',        1, 1, 'testuser1', '1815-12-10 00:00:00', 3, '2008-01-18 10:20:07'),
+(25,'testtag',        'testtag',        1, 1, 'testuser1', '1815-12-10 00:00:00', 4, '2008-01-18 10:20:07'),
+(26,'testtag',        'testtag',        1, 1, 'testuser1', '1815-12-10 00:00:00', 5, '2008-01-18 10:20:07'),
+(2, 'google',         'google',         2, 1, 'testuser1', '1815-12-10 00:00:00', 3, '2008-01-18 10:20:17'),
+(3, 'suchmaschine',   'suchmaschine',   2, 1, 'testuser1', '1815-12-10 00:00:00', 3, '2008-01-18 10:19:51'),
+(27,'google',         'google',         2, 1, 'testuser1', '1815-12-10 00:00:00', 4, '2008-01-18 10:20:17'),
+(28,'suchmaschine',   'suchmaschine',   2, 1, 'testuser1', '1815-12-10 00:00:00', 4, '2008-01-18 10:19:51'),
+(4, 'yahoo',          'yahoo',          3, 1, 'testuser2', '1815-12-10 00:00:00', 3, '2008-01-18 10:21:12'),
+(5, 'suchmaschine',   'suchmaschine',   3, 1, 'testuser2', '1815-12-10 00:00:00', 3, '2008-01-18 10:21:47'),
+(6, 'friends',        'friends',        4, 1, 'testuser1', '1815-12-10 00:00:00', 2, '2008-01-18 10:24:31'),
+(7, 'friendscout',    'friendscout',    4, 1, 'testuser1', '1815-12-10 00:00:00', 2, '2008-01-18 10:24:44'),
+(8, 'web',            'web',            5, 1, 'testuser3', '1815-12-10 00:00:00', 2, '2008-01-18 10:24:14'),
+(9, 'freemail',       'freemail',       5, 1, 'testuser3', '1815-12-10 00:00:00', 2, '2008-01-18 10:24:14'),
+(10, 'suchmaschine',  'suchmaschine',   5, 1, 'testuser3', '1815-12-10 00:00:00', 2, '2008-01-18 10:24:14'),
+(11, 'uni',           'uni',            6, 1, 'testuser2', '1815-12-10 00:00:00', 3, '2008-01-18 11:30:05'),
+(12, 'kassel',        'kassel',         6, 1, 'testuser2', '0000-00-00 00:00:00', 3, '2008-01-18 11:30:05'),
+(13, 'finetune',      'finetune',       7, 1, 'testuser1', '1815-12-10 00:00:00', 4, '2008-01-21 13:22:09'),
+(14, 'radio',         'radio',          7, 1, 'testuser1', '1815-12-10 00:00:00', 4, '2008-01-21 13:22:20'),
+(15, 'apple',         'apple',          8, 1, 'testuser1', '1815-12-10 00:00:00', 4, '2008-01-21 13:20:37'),
+(16, 'suchmaschine',  'suchmaschine',   9, 1, 'testuser1', '1815-12-10 00:00:00', 5, '2008-01-29 10:39:17'),
+(17, 'fireball',      'fireball',       9, 1, 'testuser1', '1815-12-10 00:00:00', 5, '2008-01-29 10:39:17'),
+(18, 'testbibtex',    'testbibtex',    10, 2, 'testuser1', '1815-12-10 00:00:00', 2, '2008-03-19 11:21:44'),
+(19, 'testtag',       'testtag',       10, 2, 'testuser1', '1815-12-10 00:00:00', 2, '2008-03-19 11:27:34'),
+(20, 'spam',          'spam',          11, 2, 'testspammer', '1815-12-10 00:00:00', 3, '2008-03-20 16:35:21'),
+(21, 'bibtexgroup',   'bibtexgroup',   12, 2, 'testuser1', '1815-12-10 00:00:00', 3, '2008-03-20 20:35:21'),
+(22, 'privatebibtex', 'privatebibtex', 13, 2, 'testuser2', '1815-12-10 00:00:00', 3, '2008-03-20 20:35:21'),
+(23, 'friendbibtex',  'friendbibtex',  14, 2, 'testuser2', '1815-12-10 00:00:00', 2, '2008-03-20 20:35:21'),
+(24, 'testbibtex',    'testbibtex',    12, 2, 'testuser1', '1815-12-10 00:00:00', 3, '2008-03-20 20:35:21');
 
 
 
@@ -1534,7 +1540,7 @@ CREATE TABLE `clicklog` (
   `username` text collate utf8_unicode_ci,
   `sessionid` text collate utf8_unicode_ci,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=84 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
+) ENGINE=MyISAM AUTO_INCREMENT=84 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 -- 
@@ -1546,6 +1552,6 @@ CREATE TABLE `popular_tags` (
   `content_type` tinyint(1) unsigned default NULL,
   `popular_days` smallint(6) default '0',
   KEY `tag_lower_idx` (`tag_lower`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
