@@ -36,7 +36,7 @@ public class CompositeScraper implements Scraper {
 			
 		} catch (final InternalFailureException e) {
 			// internal failure 
-			log.fatal(e);			
+			log.fatal(e,e);			
 			throw (e);
 		} catch (final UseageFailureException e) {
 			// a user has used a scraper in a wrong way
@@ -44,19 +44,19 @@ public class CompositeScraper implements Scraper {
 			throw (e);
 		} catch (final PageNotSupportedException e) {
 			// a scraper can't scrape a page but the host is supported
-			log.error(e);
+			log.error(e,e);
 			throw (e);
 		} catch (final ScrapingFailureException e) {
 			// getting bibtex failed (conversion failed)
-			log.fatal(e);
+			log.fatal(e,e);
 			throw (e);
 		} catch (final ScrapingException e) {
 			// something else
-			log.error(e);
+			log.error(e,e);
 			throw (e);
 		} catch (final Exception e) {
 			// unexpected internal failure 
-			log.fatal(e);			
+			log.fatal(e,e);			
 			throw (new InternalFailureException(e));
 		}
 		return false;
