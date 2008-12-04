@@ -17,6 +17,7 @@ public class IOPScraperTest {
 	 * starts URL test with id url_16
 	 */
 	@Test
+	@Ignore
 	public void urlTestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_16"));
