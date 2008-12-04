@@ -48,10 +48,13 @@ public class ArxivScraper extends UrlScraper {
 					
 					String bibtex = OAIConverter.convert(reference);
 					
+					
 					// add arxiv citation to note
-					bibtex = bibtex.replace("note = {", "note = {cite arxiv:" + id + "\n");
+					if(bibtex.contains("note = {"))
+						bibtex = bibtex.replace("note = {", "note = {cite arxiv:" + id + "\n");
 					// if note not exist
-					bibtex = bibtex.replaceFirst("},", "}\nnote = {cite arxiv:" + id + "}");
+					else
+						bibtex = bibtex.replaceFirst("},", "},\nnote = {cite arxiv:" + id + "},");
 					
 					// set result
 					sc.setBibtexResult(bibtex);
