@@ -37,6 +37,9 @@ public class UnAPIScraper implements Scraper {
 	}
 
 	public boolean scrape(ScrapingContext scrapingContext) throws ScrapingException {
+		if(scrapingContext.getUrl() == null)
+			return false;
+		
 		final String pageContents = scrapingContext.getPageContent();
 		/*
 		 * search for 
