@@ -1,7 +1,10 @@
 package org.bibsonomy.scraper.URLTest;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -15,7 +18,13 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.junit.Ignore;
 
 import org.bibsonomy.scraper.URLTest.URLScraperUnitTest;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+
+import bibtex.dom.BibtexEntry;
+import bibtex.dom.BibtexFile;
+import bibtex.parser.BibtexParser;
+import bibtex.parser.ParseException;
 
 /**
  * ScraperUnitTest which represents a URLTest.
@@ -80,22 +89,49 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 			testURL = new URL(url);
 		} catch (MalformedURLException e) {}
 		
+		//System.out.println("current test = " + id + " started");
+		
 		// prepare ScrapingContext with testURL
 		ScrapingContext testSC = new ScrapingContext(testURL);
+		// check if result is valid bibtex
+		boolean bibtexValid = false;
 		
 		// scrape
 		try {
 			scraper.scrape(testSC);
+			
+			/*
+			 * finale check if bibtex is valid, if not so
+			 */
+			if(testSC.getBibtexResult() != null){
+				BibtexParser parser = new BibtexParser(true);
+				BibtexFile bibtexFile = new BibtexFile();
+				BufferedReader sr = new BufferedReader(new StringReader(testSC.getBibtexResult()));
+				// parse source
+				parser.parse(bibtexFile, sr);
+	
+				for (Object potentialEntry:bibtexFile.getEntries())
+					if ((potentialEntry instanceof BibtexEntry))
+						bibtexValid = true;
+			}
+			
 		} catch (ScrapingException e) {
 			// store which Exceptions is occured during testing
 			exception = e;
+		} catch (ParseException ex) {
+			// store which Exceptions is occured during testing
+			exception = ex;
+		} catch (IOException ex) {
+			// store which Exceptions is occured during testing
+			exception = ex;
 		}
 		
 		// store scrape result
 		scrapedReference = testSC.getBibtexResult();
 		
-		// test if expected bib is equal to scraped bib
-		assertTrue(expectedRefrence.equals(testSC.getBibtexResult()));
+		//System.out.println("current test = " + id + " finished");
+		// test if expected bib is equal to scraped bib (which must be valid bibtex) 
+		assertTrue(expectedRefrence.equals(testSC.getBibtexResult()) && bibtexValid);
 	}
 
 	/**
