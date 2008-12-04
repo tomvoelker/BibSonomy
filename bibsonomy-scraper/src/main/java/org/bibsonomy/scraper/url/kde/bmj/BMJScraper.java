@@ -49,7 +49,9 @@ public class BMJScraper extends UrlScraper {
 
 		try {
 			URL citURL = new URL(BMJ_HOST_NAME + BMJ_BIBTEX_DOWNLOAD_PATH + id);
-			bibResult = sc.getContentAsString(citURL);
+			bibResult = sc.getContentAsString(citURL).trim();
+			bibResult = bibResult.replaceFirst(" ", "");
+			
 		} catch (MalformedURLException ex) {
 			throw new InternalFailureException(ex);
 		}

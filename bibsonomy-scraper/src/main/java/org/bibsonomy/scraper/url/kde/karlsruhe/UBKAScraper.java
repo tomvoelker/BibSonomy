@@ -128,7 +128,8 @@ public class UBKAScraper extends UrlScraper {
 					bib = m.group(1) + m.group(2).replaceAll(",", " ") + m.group(3);	        
 				}
 
-				bib = bib.replaceFirst("\n", ",\n");
+				// old fix, ubka fixed the missing "," after key in bibtex
+				//bib = bib.replaceFirst("\n", ",\n");
 
 
 				return bib;			
