@@ -1,46 +1,55 @@
-DROP TABLE `DBLP`;
-DROP TABLE `DBLPFailures`;
-DROP TABLE `ContentModifiedTags`;
-DROP TABLE `MostSimTagsByContent`;
-DROP TABLE `TagContent`;
-DROP TABLE `TagUser`;
-DROP TABLE `TmpMostSimTagsByContent`;
-DROP TABLE `answers`;
-DROP TABLE `bibhash`;
-DROP TABLE `bibtex`;
-DROP TABLE `bookmark`;
-DROP TABLE `collector`;
-DROP TABLE `document`;
-DROP TABLE `extended_fields_data`;
-DROP TABLE `extended_fields_map`;
-DROP TABLE `friends`;
-DROP TABLE `groupids`;
-DROP TABLE `groups`;
-DROP TABLE `highwirelist`;
-DROP TABLE `ids`;
-DROP TABLE `log_bibtex`;
-DROP TABLE `log_bookmark`;
-DROP TABLE `log_collector`;
-DROP TABLE `log_friends`;
-DROP TABLE `log_groups`;
-DROP TABLE `log_tagtagrelations`;
-DROP TABLE `log_tas`;
-DROP TABLE `picked_concepts`;
-DROP TABLE `rankings`;
-DROP TABLE `scraperMetaData`;
-DROP TABLE `search`;
-DROP TABLE `spammer_tags`;
-DROP TABLE `tags`;
-DROP TABLE `tagtag`;
-DROP TABLE `tagtag_batch`;
-DROP TABLE `tagtag_temp`;
-DROP TABLE `tagtagrelations`;
-DROP TABLE `tas`;
-DROP TABLE `temp_bibtex`;
-DROP TABLE `temp_bookmark`;
-DROP TABLE `urls`;
-DROP TABLE `weights`;
-DROP TABLE `user`;
-DROP TABLE `log_prediction`;
-DROP TABLE `classifier_settings`;
-DROP TABLE IF EXISTS `clicklog`;
+-- THIS FILE IS DEPRECATED !!!
+-- 
+-- the schema information of the bibsonomy database is now found in the 
+-- bibsonomy-database module, at
+-- 
+--    /src/main/resources/bibsonomy-db-schema.sql
+-- 
+-- (this file is produced by issuing 'mysqldump -d' from the running databases)
+
+--DROP TABLE `DBLP`;
+--DROP TABLE `DBLPFailures`;
+--DROP TABLE `ContentModifiedTags`;
+--DROP TABLE `MostSimTagsByContent`;
+--DROP TABLE `TagContent`;
+--DROP TABLE `TagUser`;
+--DROP TABLE `TmpMostSimTagsByContent`;
+--DROP TABLE `answers`;
+--DROP TABLE `bibhash`;
+--DROP TABLE `bibtex`;
+--DROP TABLE `bookmark`;
+--DROP TABLE `collector`;
+--DROP TABLE `document`;
+--DROP TABLE `extended_fields_data`;
+--DROP TABLE `extended_fields_map`;
+--DROP TABLE `friends`;
+--DROP TABLE `groupids`;
+--DROP TABLE `groups`;
+--DROP TABLE `highwirelist`;
+--DROP TABLE `ids`;
+--DROP TABLE `log_bibtex`;
+--DROP TABLE `log_bookmark`;
+--DROP TABLE `log_collector`;
+--DROP TABLE `log_friends`;
+--DROP TABLE `log_groups`;
+--DROP TABLE `log_tagtagrelations`;
+--DROP TABLE `log_tas`;
+--DROP TABLE `picked_concepts`;
+--DROP TABLE `rankings`;
+--DROP TABLE `scraperMetaData`;
+--DROP TABLE `search`;
+--DROP TABLE `spammer_tags`;
+--DROP TABLE `tags`;
+--DROP TABLE `tagtag`;
+--DROP TABLE `tagtag_batch`;
+--DROP TABLE `tagtag_temp`;
+--DROP TABLE `tagtagrelations`;
+--DROP TABLE `tas`;
+--DROP TABLE `temp_bibtex`;
+--DROP TABLE `temp_bookmark`;
+--DROP TABLE `urls`;
+--DROP TABLE `weights`;
+--DROP TABLE `user`;
+--DROP TABLE `log_prediction`;
+--DROP TABLE `classifier_settings`;
+--DROP TABLE IF EXISTS `clicklog`;
