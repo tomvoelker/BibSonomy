@@ -11,9 +11,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Scanner;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.database.DBLogic;
 import org.junit.Ignore;
 
 /**
@@ -27,45 +29,73 @@ import org.junit.Ignore;
 public class TestDatabaseLoader {
 
 	private final static Logger log = Logger.getLogger(TestDatabaseLoader.class);
-	/** Holds the SQL script */
-	private final String scriptFilename = "database/tables-and-test-data.sql";
-	/** Stores the SQL statements from the script */
-	private final List<String> statements;
+	/** Holds the database schema (script is at /src/main/resources) */
+	private final String schemaFilename = "bibsonomy-db-schema.sql";
+	/** Holds the test data (script is found at /src/test/resources) */
+	private final String dataFilename   = "database/insert-test-data.sql";
+	/** Holds the commands to empty all tables (script is found at /src/test/resources) */
+	private final String deleteFilename   = "database/empty-tables.sql";	
+	/** Stores the create table statements  */
+	private final List<String> createStatements;
+	/** Stores the insert statements  */
+	private final List<String> insertStatements;
+	/** Stores the delete statements  */
+	private final List<String> deleteStatements;	
 
 	/**
 	 * Loads the SQL statements from the script.
 	 */
 	public TestDatabaseLoader() {
-		final InputStream scriptStream = TestDatabaseLoader.class.getClassLoader().getResourceAsStream(this.scriptFilename);
-		if (scriptStream == null) throw new RuntimeException("Can't get SQL script '" + this.scriptFilename + "'");
-
-		this.statements = new ArrayList<String>();
-
+		// parse all sql scripts
+		this.createStatements = this.parseInputStream(DBLogic.class.getClassLoader().getResourceAsStream(this.schemaFilename));
+		this.insertStatements = this.parseInputStream(TestDatabaseLoader.class.getClassLoader().getResourceAsStream(this.dataFilename));
+		this.deleteStatements = this.parseInputStream(TestDatabaseLoader.class.getClassLoader().getResourceAsStream(this.deleteFilename));
+	}
+	
+	
+	/**
+	 * Parse input stream of an sql file into an array of sql commands
+	 * 
+	 * @param scriptStream
+	 * @return
+	 */
+	private List<String> parseInputStream(InputStream scriptStream) {
+		
+		List<String> statements = new ArrayList<String>();
+		if (scriptStream == null) throw new RuntimeException("Can't get SQL script.");
+				
 		/*
 		 * We read every single line and skip it if it's empty or a comment
 		 * (starting with '--'). If the current line doesn't end with a ';'
 		 * we'll append the next line to it until we get a ';' - this way
 		 * statements can span multiple lines in the SQL script and will be read
 		 * as if they were on a single line.
+		 * 
+		 * Furthermore, re skip trigger-related lines, as we don't need them in
+		 * our test database
 		 */
 		final Scanner scan = new Scanner(scriptStream);
 		final StringBuilder spanningLineBuf = new StringBuilder();
 		while (scan.hasNext()) {
 			final String currentLine = scan.nextLine();
-			if ("".equals(currentLine.trim())) continue;
-			if (currentLine.startsWith("--")) continue;
+			if ("".equals(currentLine.trim())) continue;       // skip empty lines
+			if (currentLine.startsWith("--")) continue;        // skip comments				
+			if (currentLine.startsWith("DELIMITER")) continue; // exclude trigger-related statements
+			if (currentLine.startsWith("/*!50003")) continue;  
+			
 
 			spanningLineBuf.append(" " + currentLine);
 			final String wholeLine = spanningLineBuf.toString().trim();
 			if (wholeLine.endsWith(";") == false) continue;
 			log.debug("Read: " + wholeLine);
-			this.statements.add(wholeLine);
+			statements.add(wholeLine);
 			spanningLineBuf.delete(0, spanningLineBuf.length());
-		}
+		}		
+		return statements;
 	}
 
 	/**
-	 * Executes all statements from the SQL script.
+	 * Executes all statements from the SQL scripts.
 	 */
 	public void load() {
 		try {
@@ -74,15 +104,28 @@ public class TestDatabaseLoader {
 			 * do initialization: drop database, create it, use it
 			 */
 			final String database = jdbc.getDatabaseConfig().getDatabase();
-			jdbc.execute("DROP DATABASE IF EXISTS `" + database + "`;");
-			jdbc.execute("CREATE DATABASE `" + database + "`;");
+			if (jdbc.getDatabaseConfig().createDatabaseBeforeLoading()) {
+				jdbc.execute("DROP DATABASE IF EXISTS `" + database + "`;");
+				jdbc.execute("CREATE DATABASE `" + database + "`;");
+			}
 			jdbc.execute("USE `" + database + "`;");
 			/*
 			 * execute statements from script
 			 */
-			for (final String statement : this.statements) {
-				jdbc.execute(statement);
+			List<String> statements = new ArrayList<String>();
+			if (jdbc.getDatabaseConfig().createDatabaseBeforeLoading()) {
+				statements.addAll(this.createStatements);
 			}
+			else {
+				statements.addAll(this.deleteStatements);
+			}
+			statements.addAll(this.insertStatements);
+
+			for (final String statement : statements) {
+				log.debug("executing SQL statement: " + statement);
+				jdbc.execute(statement);
+			}			
+			
 			jdbc.close();
 		} catch (final IOException ex) {
 			throw new RuntimeException(ex);
@@ -122,6 +165,10 @@ final class SimpleJDBCHelper implements Closeable {
 		 * @return password
 		 */
 		public String getPassword();
+		/**
+		 * @return whether to create DB before loading the data 
+		 */		
+		public boolean createDatabaseBeforeLoading();
 	}
 
 	/**
@@ -137,24 +184,26 @@ final class SimpleJDBCHelper implements Closeable {
 		}
 	}
 
+	/**
+	 * get datase configuration
+	 * 
+	 * @return DatabaseConfig - the database configuration
+	 */
 	private DatabaseConfig getConfig() {
-		final InputStream scriptStream = SimpleJDBCHelper.class.getClassLoader().getResourceAsStream(this.configFile);
-		if (scriptStream == null) throw new RuntimeException("Can't get config file '" + this.configFile + "'");
-
-		final Map<String, String> params = new HashMap<String, String>();
-		final Scanner scan = new Scanner(scriptStream);
-		while (scan.hasNext()) {
-			final String currentLine = scan.nextLine();
-			for (final String param : new String[] { "url", "username", "password" }) {
-				if (currentLine.startsWith(param) == false) continue;
-				params.put(param, currentLine.substring(currentLine.indexOf('=') + 1).trim());
-			}
-		}
-		if (params.size() != 3) throw new RuntimeException("Couldn't read config file '" + this.configFile + "'");
+	    final Properties prop = new Properties();
+	    try {
+	        prop.load(SimpleJDBCHelper.class.getClassLoader().getResourceAsStream(this.configFile));
+	    } catch (IOException e) {
+	    	throw new RuntimeException("Can't get config file '" + this.configFile + "'");
+	    }		
+	    // four properties need to be set
+	    if (prop.keySet().size() != 4 ) {
+	    	throw new RuntimeException("Error while reading config file '" + this.configFile + "'; expected 4 values, found " + prop.keySet().size()); 
+	    }
 
 		return new DatabaseConfig() {
 			public String getUrl() {
-				return params.get("url");
+				return prop.getProperty("url");
 			}
 			
 			/** Extracts the name of the database from the URL. 
@@ -172,11 +221,15 @@ final class SimpleJDBCHelper implements Closeable {
 			}
 
 			public String getUsername() {
-				return params.get("username");
+				return prop.getProperty("username");
 			}
 
 			public String getPassword() {
-				return params.get("password");
+				return prop.getProperty("password");
+			}
+			
+			public boolean createDatabaseBeforeLoading() {
+				return prop.getProperty("createDatabaseBeforeLoading", "true").equals("true");
 			}
 		};
 	}
