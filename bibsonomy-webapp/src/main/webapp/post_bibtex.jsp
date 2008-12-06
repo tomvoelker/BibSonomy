@@ -77,7 +77,8 @@
 
 
 <%-- ---------------- BIBTEX SNIPPET INPUT ---------------- --%>
-<h2>Insert your publication snippet here:</h2>
+<span style="float:right; padding-top:4px;" id="generatePublicationBlock"></span>
+<h2 id="generatePublicationHeader">Insert your publication snippet here:</h2>
 
 <form method="POST" action="/BibtexHandler">
 <input type="hidden" name="requTask" value="upload" />
@@ -85,7 +86,7 @@
   <tr>
     <td class="expl">BibTeX snippet*</td>
     <td>
-    	<textarea name="selection" cols="60" rows="10"  class="reqinput" onkeyup="sz(this);"></textarea>
+    	<textarea id="selection" name="selection" cols="60" rows="10"  class="reqinput" onkeyup="sz(this);"></textarea>
     </td>
     <td rowspan="3" class="expl_s">
     Just copy and paste any valid BibTeX snippet or publication reference into
@@ -203,6 +204,7 @@
 <script type="text/javascript">
 var upload_options = "hidden";
 toggle_upload_options();
+showGenerateBibtexBlock();
 maximizeById("general");
 
 function toggle_upload_options() {
@@ -218,6 +220,27 @@ function toggle_upload_options() {
      upload_options = "hidden";
    }
 }
+
+function showGenerateBibtexBlock() {
+	var selectionValue = document.getElementById("selection").value;
+	if(!selectionValue.startsWith("http://")) {
+		var target = document.createElement("a");
+		target.style.cursor = "pointer";
+		target.onclick = toggleGenerateURLOnClick;
+		target.appendChild(document.createTextNode("generate 'post BibTeX' URL"));
+		document.getElementById("generatePublicationBlock").appendChild(target);
+	}
+}
+
+function toggleGenerateURLOnClick() {
+	document.getElementById('selection').value='http://'+window.location.hostname+'/BibtexHandler?requTask=upload&selection='+escape(document.getElementById('selection').value);removeGenerateBlock();
+}
+
+function removeGenerateBlock() {
+	document.getElementById("generatePublicationBlock").style.visibility = "hidden";
+	document.getElementById("generatePublicationHeader").firstChild.data="Your generated 'post BibTeX' URL:";
+}
+
 </script>
 
 </div>
