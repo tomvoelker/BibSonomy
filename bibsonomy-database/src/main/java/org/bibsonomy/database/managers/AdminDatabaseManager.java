@@ -30,7 +30,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 
 	private final static AdminDatabaseManager singleton = new AdminDatabaseManager();
 	protected static final Logger log = Logger.getLogger(AdminDatabaseManager.class);
-	
+
 	private AdminDatabaseManager() {
 	}
 
@@ -108,7 +108,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public String flagSpammer(final User user, final String updatedBy, final String testMode, final DBSession session) {
 		final AdminParam param = new AdminParam();
-	
+
 		param.setUserName(user.getName());
 		param.setSpammer(user.getSpammer());
 		param.setToClassify(user.getToClassify());
@@ -134,13 +134,13 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		param.setUpdatedBy(updatedBy);
 		param.setUpdatedAt(new Date());
 
-		if (!("classifier").equals(updatedBy)) {
-			this.update("flagSpammer", param, session);
-			this.updateGroupIds(param, session);
-		} else if ("off".equals(testMode)) {
-			// set transaction to set locks
-			session.beginTransaction();
-			try {
+		// set transaction to set locks
+		session.beginTransaction();
+		try {
+			if (!("classifier").equals(updatedBy)) {
+				this.update("flagSpammer", param, session);
+				this.updateGroupIds(param, session);
+			} else if ("off".equals(testMode)) {
 				// gets user data to check if to_classify is still set to 1
 				List<User> userData = this.queryForList("getClassifierUserBeforeUpdate", param, User.class, session);
 				// only update if to_classify is set to 1, else admin has
@@ -152,10 +152,11 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 						this.updateGroupIds(param, session);
 					}
 				}
-				session.commitTransaction();
-			} finally {
-				session.endTransaction();
+
 			}
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
 		}
 		if (checkPredictionChange(param, session)) {
 			this.insert("logPrediction", param, session);
@@ -182,7 +183,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 			// they changed
 
 			final List<User> history = getClassifierHistory(param.getUserName(), session);
-			
+
 			for (final User user: history) {
 
 				if (user.getConfidence() != null && user.getPrediction() != null) {
