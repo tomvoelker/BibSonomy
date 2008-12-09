@@ -6,7 +6,7 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
-		
+	
 	<c:choose>
 		<c:when test="${post.resource.entrytype eq 'article'}">
 			<bib:author post="${post}"/>
@@ -79,7 +79,7 @@
 			<bib:note post="${post}"/>
 		</c:when>
 	
-		<c:when test="${post.resource.entrytype eq 'masterthesis' || post.resource.entrytype eq 'phdthesis'}">
+		<c:when test="${post.resource.entrytype eq 'mastersthesis' or post.resource.entrytype eq 'phdthesis'}">
 			<bib:author post="${post}"/>
 			<bib:school post="${post}"/>
 			<bib:address post="${post}"/>			
