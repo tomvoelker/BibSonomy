@@ -8,7 +8,7 @@
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
 
 	<c:if test="${command.context.userLoggedIn}">
-		<a href="/ShowBibtexEntry?hash=${post.resource.intraHash}&amp;user=${post.user.name}&amp;copytag=${mtl:toTagString(post.tags)}" title="${copyTitle}">
+		<a href="/ShowBibtexEntry?hash=${post.resource.intraHash}&amp;user=${fn:escapeXml(post.user.name)}&amp;copytag=${mtl:toTagString(post.tags)}" title="${fn:escapeXml(copyTitle)}">
 			&amp;nbsp;
 		</a>
 	</c:if>
