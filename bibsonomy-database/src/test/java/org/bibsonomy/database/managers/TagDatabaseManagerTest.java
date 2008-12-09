@@ -1,7 +1,12 @@
 package org.bibsonomy.database.managers;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
@@ -10,12 +15,9 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertNotNull;
 
 /**
  * Tests related to tags.
@@ -27,13 +29,14 @@ import static org.junit.Assert.assertNotNull;
  * @author Christian Schenk
  * @version $Id$
  */
-@Ignore
+
 public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	/**
 	 * tests getTagById
 	 */
 	@Test
+	@Ignore
 	public void getTagById() {
 		final Tag tag = this.tagDb.getTagById(5218, this.dbSession);
 		assertEquals(5218, tag.getId());
@@ -43,6 +46,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	@Test
+	@Ignore
 	public void getTagByCount() {
 		final List<Tag> tags = this.tagDb.getTagByCount(this.tagParam, this.dbSession);
 		assertEquals(10, tags.size());
@@ -50,24 +54,28 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	@Test
+	@Ignore
 	public void getAllTags() {
 		final List<Tag> tags = this.tagDb.getAllTags(this.tagParam, this.dbSession);
 		// assertEquals(10, tags.size());
 	}
 
 	@Test
+	@Ignore
 	public void getTagsViewable() {
 		final List<Tag> tags = this.tagDb.getTagsViewable(this.tagParam, this.dbSession);
 		assertEquals(10, tags.size());
 	}
 
 	@Test
+	@Ignore
 	public void getTagsByUser() {
 		final List<Tag> tags = this.tagDb.getTagsByUser(this.tagParam, this.dbSession);
 		assertEquals(10, tags.size());
 	}
 
 	@Test
+	@Ignore
 	public void getTagsByBookmarkResourceType() {
 		// declare the resource type
 		this.tagParam.setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
@@ -83,6 +91,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	@Test
+	@Ignore
 	public void getTagsByBibtexResourceType() {
 		// declare the resource type
 		this.tagParam.setContentType(ConstantID.BIBTEX_CONTENT_TYPE);
@@ -100,12 +109,14 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	@Test
+	@Ignore
 	public void getTagsByGroup() {
 		final List<Tag> tags = this.tagDb.getTagsByGroup(this.tagParam, this.dbSession);
 		assertEquals(10, tags.size());
 	}
 
 	@Test
+	@Ignore
 	public void getTagsByExpression() {
 		this.tagParam.setLimit(1000);
 		this.tagParam.setRegex("web");
@@ -121,6 +132,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	@Test
+	@Ignore
 	public void getTagDetails() {
 		Tag tag = this.tagDb.getTagDetails(this.tagParam, this.dbSession);
 		assertNotNull(tag);	
@@ -131,6 +143,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	@Test
+	@Ignore
 	public void getTags() {
 		this.tagParam.setLimit(1500);
 		this.tagParam.setRegex(null);
@@ -150,6 +163,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	@Test
+	@Ignore
 	public void getTagsByAuthor() {
 		this.tagParam.setSearch("stumme");
 	    this.tagDb.getTagsAuthor(this.tagParam, this.dbSession);
@@ -163,6 +177,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * test framwork (dbe)
 	 */
 	@Test
+	@Ignore
 	public void getTagsByBibtexHash() {
 		String loginUserName = "hotho";
 		String hash = "palim palim";
@@ -177,6 +192,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * test framwork (dbe)
 	 */
 	@Test
+	@Ignore
 	public void getTagsByBibtexHashForUser() {
 		final String loginUserName = "hotho";
 		final String requestedUserName = "hotho";
@@ -190,6 +206,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * test framwork (dbe)
 	 */
 	@Test
+	@Ignore
 	public void getTagsByBookmarkHash() {
 		String loginUserName = "hotho";
 		String hash = "palim palim";
@@ -204,6 +221,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * test framwork (dbe)
 	 */
 	@Test
+	@Ignore
 	public void getTagsByBookmarkHashForUser() {
 		final String loginUserName = "hotho";
 		final String requestedUserName = "hotho";
@@ -212,6 +230,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	@Test
+	@Ignore
 	public void getRelatedTags() {
 		final TagParam param = new TagParam();
 		param.addTagName("web");
@@ -221,6 +240,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	@Test
+	@Ignore
 	public void getRelatedTagsForUser() {
 		TagParam param = new TagParam();
 		param.addTagName("clustering");
@@ -229,4 +249,20 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		visibleGroupIDs.add(0);
 		List<Tag> tags = this.tagDb.getRelatedTagsForUser(null,"hotho", param.getTagIndex(), visibleGroupIDs, this.dbSession);
 	}
+	
+	@Test
+	public void updateTags() {
+		final User user = new User("testuser1");
+		
+		final List<Tag> tagsToReplace = new LinkedList<Tag>();
+		tagsToReplace.add(new Tag("suchmaschine"));
+		
+		final List<Tag> replacementTags = new LinkedList<Tag>();
+		replacementTags.add(new Tag("search"));
+		replacementTags.add(new Tag("engine"));
+		
+		
+		this.tagDb.updateTags(user, tagsToReplace, replacementTags, this.dbSession);
+	}
+	
 }
