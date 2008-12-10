@@ -104,7 +104,7 @@ public class TestDatabaseLoader {
 			 * do initialization: drop database, create it, use it
 			 */
 			final String database = jdbc.getDatabaseConfig().getDatabase();
-			if (jdbc.getDatabaseConfig().createDatabaseBeforeLoading()) {
+			if (jdbc.getDatabaseConfig().createDatabaseBeforeLoading()) {			
 				jdbc.execute("DROP DATABASE IF EXISTS `" + database + "`;");
 				jdbc.execute("CREATE DATABASE `" + database + "`;");
 			}
@@ -130,6 +130,20 @@ public class TestDatabaseLoader {
 		} catch (final IOException ex) {
 			throw new RuntimeException(ex);
 		}
+	}
+	
+	public void selectDatabase(){
+		final SimpleJDBCHelper jdbc = new SimpleJDBCHelper();
+		final String database = jdbc.getDatabaseConfig().getDatabase();
+		
+		try {
+			jdbc.execute("USE `" + database + "`;");
+			jdbc.close();
+		} catch (IOException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+		}
+		
 	}
 }
 
@@ -179,6 +193,7 @@ final class SimpleJDBCHelper implements Closeable {
 			Class.forName("com.mysql.jdbc.Driver");
 			this.cfg = this.getConfig();
 			this.connection = DriverManager.getConnection(cfg.getUrl(), cfg.getUsername(), cfg.getPassword());
+			
 		} catch (final Exception ex) {
 			throw new RuntimeException(ex);
 		}
@@ -197,8 +212,8 @@ final class SimpleJDBCHelper implements Closeable {
 	    	throw new RuntimeException("Can't get config file '" + this.configFile + "'");
 	    }		
 	    // four properties need to be set
-	    if (prop.keySet().size() != 4 ) {
-	    	throw new RuntimeException("Error while reading config file '" + this.configFile + "'; expected 4 values, found " + prop.keySet().size()); 
+	    if (prop.keySet().size() != 5) {
+	    	throw new RuntimeException("Error while reading config file '" + this.configFile + "'; expected 5 values, found " + prop.keySet().size()); 
 	    }
 
 		return new DatabaseConfig() {
@@ -213,11 +228,15 @@ final class SimpleJDBCHelper implements Closeable {
 			 * @return The name of the database.
 			 */
 			public String getDatabase() {
+				
+				return prop.getProperty("database");
+				/*
 				String url = this.getUrl();
 				// remove everything behind first '?'
 				url = url.substring(0, url.indexOf('?'));
 				// remove everything before last '/'
 				return url.substring(url.lastIndexOf('/') + 1);
+				*/
 			}
 
 			public String getUsername() {
@@ -241,6 +260,7 @@ final class SimpleJDBCHelper implements Closeable {
 	 */
 	public void execute(final String sql) {
 		try {
+			
 			final Statement stmt = this.connection.createStatement();
 			stmt.execute(sql);
 			stmt.close();

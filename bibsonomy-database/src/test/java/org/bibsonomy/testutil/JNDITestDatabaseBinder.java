@@ -19,6 +19,10 @@ import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
  * @author Dominik Benz
  * @version $Id$
  */
+/**
+ * @author bkr
+ *
+ */
 public final class JNDITestDatabaseBinder {
 
 	private static final Logger log = Logger.getLogger(JNDITestDatabaseBinder.class);
@@ -65,10 +69,27 @@ public final class JNDITestDatabaseBinder {
 			throw new RuntimeException(ex);
 		}
 		final MysqlConnectionPoolDataSource dataSource = new MysqlConnectionPoolDataSource();
-		dataSource.setUrl(props.getProperty("url"));
+
+		String url = composeDatabaseURL(props);
+		dataSource.setUrl(url);
+		dataSource.setDatabaseName(props.getProperty("database"));
 		dataSource.setUser(props.getProperty("username"));
 		dataSource.setPassword(props.getProperty("password"));
+		
 		dataSource.setZeroDateTimeBehavior(props.getProperty("zeroDateTimeBehaviour"));
 		return dataSource;
 	}	
+	
+	/**
+	 * @param props	database properties
+	 * @return string	composed url (database included in url)
+	 */
+	private static String composeDatabaseURL(Properties props){
+		
+		String url = props.getProperty("url");
+		StringBuffer newUrl = new StringBuffer(url.substring(0, url.lastIndexOf("/")+1));
+		newUrl.append(props.getProperty("database"));
+		newUrl.append(url.substring(url.lastIndexOf("/") +1, url.length()));
+		return newUrl.toString();
+	}
 }
