@@ -109,8 +109,8 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @param session 
 	 * @return a TagSet
 	 */
-	public TagSet getTagSetBySetNameAndGroup(final String setName, final int groupId, final DBSession session){
-		TagSetParam param = new TagSetParam();
+	private TagSet getTagSetBySetNameAndGroup(final String setName, final int groupId, final DBSession session){
+		final TagSetParam param = new TagSetParam();
 		param.setSetName(setName);
 		param.setGroupId(groupId);
 		return this.queryForObject("getTagSetBySetNameAndGroup", param, TagSet.class, session);
@@ -363,7 +363,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 */
 	private void insertTagSet(final TagSet tagset, final String groupname, final DBSession session) {
 		
-		Group group = this.getGroupByName(groupname, session);
+		final Group group = this.getGroupByName(groupname, session);
 		if (group == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist");
 		}
@@ -371,12 +371,12 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Invalid tagset - a tagset must contain a setname and at least one valid tag");
 		}
 
-		TagSetParam param = new TagSetParam();
+		final TagSetParam param = new TagSetParam();
 		param.setSetName(tagset.getSetName());
 		param.setGroupId(group.getGroupId());
-		TagSet set = this.getTagSetBySetNameAndGroup(tagset.getSetName(), group.getGroupId(), session);
-		for(Tag tag: tagset.getTags()){
-			if(set.getTags().contains(tag)){
+		final TagSet set = this.getTagSetBySetNameAndGroup(tagset.getSetName(), group.getGroupId(), session);
+		for (final Tag tag: tagset.getTags()){
+			if (set.getTags().contains(tag)){
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "INSERT FAILED: tag ('"+tag.getName()+"') already contained in the tagset ('"+tagset.getSetName()+"') for group ('"+group.getName()+"')");
 			}
 			param.setTagName(tag.getName());
