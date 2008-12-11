@@ -21,7 +21,7 @@
 			<c:when test="${!empty loginUserName}">
 				<li>
 					<c:url var="userUrl" value="/user/${loginUserName}" context="${projectContext}"/>
-					<a id="nav_my" href="${userUrl}" rel="my_menu"><img src="/resources/image/nice_box_arrow.png" alt="" /> <fmt:message key="navi.my"/>${projectName}</a>
+					<a id="nav_my" href="${userUrl}" rel="my_menu"><img src="${resdir}/image/nice_box_arrow.png" alt="" /> <fmt:message key="navi.my"/>${projectName}</a>
 				      <!-- dropdown menu for myBibSonomy -->  
 
 					  <div id="my_menu" class="nicedropmenudiv">
@@ -83,7 +83,7 @@
 		</li>
 		<li>
 			<c:url var="groupsUrl" value="/groups" context="${projectContext}"/>
-			<a id="nav_urls" href="${groupsUrl}" rel="grp_menu"><img src="/resources/image/nice_box_arrow.png" alt="" /> <fmt:message key="navi.groups"/></a>
+			<a id="nav_groups" href="${groupsUrl}" rel="grp_menu"><img src="${resdir}/image/nice_box_arrow.png" alt="" /> <fmt:message key="navi.groups"/></a>
 		</li>
 		<li>
 			<!-- dropdown menu for groups -->					
