@@ -105,6 +105,41 @@
 			<linksource>true</linksource>						
           </configuration>
         </plugin>
+        <plugin>
+            <!--  
+            	  generate schemaspy documentation of database. Host and database should 
+                  match to what is defined in /src/test/resources/database.properties; username
+                  and password are to be defined in ~/.m2/settings.xml 
+            -->
+            <groupId>com.wakaleo.schemaspy</groupId>
+            <artifactId>maven-schemaspy-plugin</artifactId>
+            <version>1.0</version>
+            <configuration>
+                <databaseType>mysql</databaseType>
+                <database>bibsonomy_unit_test</database>
+                <host>gromit</host>
+                <user>${bibsonomy_test_db.username}</user>
+                <password>${bibsonomy_test_db.password}</password>
+            </configuration>
+        </plugin>
+        <!-- 
+        <plugin>          
+          	<groupId>org.apache.maven.plugins</groupId>
+          	<artifactId>maven-changelog-plugin</artifactId>
+        </plugin>
+        -->
+        <plugin>
+      		<!--  tag list report (TODO, ...) -->
+        	<groupId>org.codehaus.mojo</groupId>
+        	<artifactId>taglist-maven-plugin</artifactId>
+        	<version>2.2</version>
+        </plugin>
+        <plugin>
+        	<!-- test reports -->
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-surefire-report-plugin</artifactId>
+	        <version>2.4.2</version>
+        </plugin>
       </plugins>
     </reporting>		
 </project>
