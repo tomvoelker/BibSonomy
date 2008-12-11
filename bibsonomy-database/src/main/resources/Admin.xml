@@ -113,10 +113,10 @@
 		UPDATE tas SET `group` = 
 		<dynamic prepend="IF">
 			<isEqual property="spammer" compareValue="true">
-				((`group` >= 0), `group` - 0x80000000, `group`)
+				((`group` >= 0), `group` + #groupRange#, `group`)
 			</isEqual>
 			<isEqual property="spammer" compareValue="false">
-				((`group` &lt; 0), `group` + 0x80000000, `group`)
+				((`group` &lt; 0), `group` - #groupRange#, `group`)
 			</isEqual>
 		</dynamic>
 		WHERE user_name = #userName#
@@ -126,10 +126,10 @@
 		UPDATE bookmark SET `group` = 
 		<dynamic prepend="IF">
 			<isEqual property="spammer" compareValue="true">
-				((`group` >= 0), `group` - 0x80000000, `group`)
+				((`group` >= 0), `group` + #groupRange#, `group`)
 			</isEqual>
 			<isEqual property="spammer" compareValue="false">
-				((`group` &lt; 0), `group` + 0x80000000, `group`)
+				((`group` &lt; 0), `group` - #groupRange#, `group`)
 			</isEqual>
 		</dynamic>
 		WHERE user_name = #userName#
@@ -139,10 +139,10 @@
 		UPDATE bibtex SET `group` = 
 		<dynamic prepend="IF">
 			<isEqual property="spammer" compareValue="true">
-				((`group` >= 0), `group` - 0x80000000, `group`)
+				((`group` >= 0), `group` + #groupRange#, `group`)
 			</isEqual>
 			<isEqual property="spammer" compareValue="false">
-				((`group` &lt; 0), `group` + 0x80000000, `group`)
+				((`group` &lt; 0), `group` - #groupRange#, `group`)
 			</isEqual>
 		</dynamic>
 		WHERE user_name = #userName#
@@ -152,10 +152,10 @@
 		UPDATE search_bookmark SET `group` = 
 		<dynamic prepend="IF">
 			<isEqual property="spammer" compareValue="true">
-				((`group` >= 0), `group` - 0x80000000, `group`)
+				((`group` >= 0), `group` + #groupRange#, `group`)
 			</isEqual>
 			<isEqual property="spammer" compareValue="false">
-				((`group` &lt; 0), `group` + 0x80000000, `group`)
+				((`group` &lt; 0), `group` - #groupRange#, `group`)
 			</isEqual>
 		</dynamic>
 		WHERE user_name = #userName#
@@ -165,10 +165,10 @@
 		UPDATE search_bibtex SET `group` = 
 		<dynamic prepend="IF">
 			<isEqual property="spammer" compareValue="true">
-				((`group` >= 0), `group` - 0x80000000, `group`)
+				((`group` >= 0), `group` + #groupRange#, `group`)
 			</isEqual>
 			<isEqual property="spammer" compareValue="false">
-				((`group` &lt; 0), `group` + 0x80000000, `group`)
+				((`group` &lt; 0), `group` - #groupRange#, `group`)
 			</isEqual>
 		</dynamic>
 		WHERE user_name = #userName#

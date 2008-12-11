@@ -62,6 +62,9 @@ public class AdminParam extends GenericParam {
 
 	/** Interval in hours for retrieve latest classifications */
 	private int interval;
+	
+	/** Integer range for creating groups */
+	private int groupRange; 
 
 	public InetAddress getInetAddress() {
 		return this.inetAddress;
@@ -193,5 +196,13 @@ public class AdminParam extends GenericParam {
 
 	public void setInterval(int interval) {
 		this.interval = interval;
+	}
+
+	public void setGroupRange(int groupRange) {
+		this.groupRange = groupRange;
+	}
+
+	public int getGroupRange() {
+		return groupRange;
 	}
 }

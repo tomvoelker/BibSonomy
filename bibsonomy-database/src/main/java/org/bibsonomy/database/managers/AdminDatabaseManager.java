@@ -133,6 +133,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		param.setAlgorithm(user.getAlgorithm());
 		param.setUpdatedBy(updatedBy);
 		param.setUpdatedAt(new Date());
+		param.setGroupRange(Integer.MIN_VALUE);
 	
 		session.beginTransaction();
 		
