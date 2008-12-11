@@ -61,7 +61,7 @@
   </c:if>
 </c:forEach>
 
-<div style="float: left; width: 72%;">
+<div id="general">
 
 <%-- ------------------------ tab header -------------------------- --%>
 <c:if test="${empty seltab || not empty param.seltab}">
