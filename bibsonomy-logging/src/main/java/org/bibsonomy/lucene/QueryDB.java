@@ -1,4 +1,4 @@
-package org.bibsonomy.logging;
+package org.bibsonomy.lucene;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
