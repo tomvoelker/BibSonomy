@@ -68,7 +68,4 @@
 		</plugins>
 	</reporting>
 
-  <scm>
-    <tag>bibsonomy-rest-common-2_0_1</tag>
-  </scm>
 </project>
