@@ -21,9 +21,9 @@
 	
   
           <!-- NEW EDIT link -->
-        <c:url var="url_edit_new" value="/actions/postBookmark" context="${projectContext}">
+        <!-- c:url var="url_edit_new" value="/actions/postBookmark" context="${projectContext}">
           <c:param name="intraHashToUpdate" value="${post.resource.intraHash}" />
-        </c:url>
+        </c:url -->
   
   
   
@@ -44,7 +44,7 @@
 					<fmt:message key="bookmark.actions.edit"/>
 				</a>
 				</span>
-                <a href="${fn:escapeXml(url_edit_new)}">EDIT NEW</a>
+                <!-- a href="${fn:escapeXml(url_edit_new)}">EDIT NEW</a-->
 	            <c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 			    <a href="${fn:escapeXml(url_delete)}"
 			       title="${deleteTitle}">		       
