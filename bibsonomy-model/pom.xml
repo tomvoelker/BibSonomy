@@ -106,9 +106,4 @@
         </plugin>
       </plugins>
     </reporting>	
-
-
-  <scm>
-    <tag>bibsonomy-model-2_0_1</tag>
-  </scm>
 </project>
