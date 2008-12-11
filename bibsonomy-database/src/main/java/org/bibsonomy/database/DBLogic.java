@@ -75,9 +75,6 @@ import org.bibsonomy.util.ValidationUtils;
  */
 public class DBLogic implements LogicInterface {
 
-	private static final Group GROUP_PRIVATE = GroupUtils.getPrivateGroup();
-	private static final Group GROUP_PUBLIC = GroupUtils.getPublicGroup();
-
 	private static final Logger log = Logger.getLogger(DBLogic.class);
 
 	private final Map<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>> allDatabaseManagers;
@@ -532,7 +529,7 @@ public class DBLogic implements LogicInterface {
 		 * Those two groups are special, they can't be assigned with another group. 
 		 */
 		final Set<Group> groups = post.getGroups();
-		if (groups.contains(GROUP_PUBLIC) || groups.contains(GROUP_PRIVATE)) {
+		if (GroupUtils.containsExclusiveGroup(groups)) {
 			if (groups.size() > 1) {
 				/*
 				 * Those two groups are exclusive - they can not appear together or with any other group.
@@ -544,10 +541,10 @@ public class DBLogic implements LogicInterface {
 			 * -> set group id and return post
 			 */
 			final Group group = groups.iterator().next();
-			if (group.equals(GROUP_PRIVATE)) {
-				group.setGroupId(GROUP_PRIVATE.getGroupId());
+			if (group.equals(GroupUtils.getPrivateGroup())) {
+				group.setGroupId(GroupUtils.getPrivateGroup().getGroupId());
 			} else {
-				group.setGroupId(GROUP_PUBLIC.getGroupId());
+				group.setGroupId(GroupUtils.getPublicGroup().getGroupId());
 			}
 			return post;
 		}
@@ -580,7 +577,7 @@ public class DBLogic implements LogicInterface {
 
 		// no group specified -> make it public
 		if (groups.size() == 0) {
-			groups.add(GROUP_PUBLIC);
+			groups.add(GroupUtils.getPublicGroup());
 		}
 
 		return post;
