@@ -241,6 +241,9 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @return loginUser equals group.getName
 	 */
 	public boolean userIsGroupAdmin(User loginUser, Group group){
+		/*
+		 * user name == group name
+		 */
 		return loginUser.getName().equals(group.getName());
 	}
 }
