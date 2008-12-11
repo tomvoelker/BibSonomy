@@ -33,13 +33,19 @@ import org.bibsonomy.model.Group;
  */
 public class GroupUtils {
 
+
+	private static final Group INVALID_GROUP = getGroup("invalid", "invalid group", GroupID.INVALID, Privlevel.HIDDEN);
+	private static final Group FRIENDS_GROUP = getGroup("friends", "friends group", GroupID.FRIENDS, Privlevel.HIDDEN);
+	private static final Group PRIVATE_GROUP = getGroup("private", "private group", GroupID.PRIVATE, Privlevel.HIDDEN);
+	private static final Group PUBLIC_GROUP  = getGroup("public",  "public group",  GroupID.PUBLIC,  Privlevel.PUBLIC);
+
 	/**
 	 * Public group
 	 * 
 	 * @return public group
 	 */
 	public static Group getPublicGroup() {
-		return getGroup("public", "public group", GroupID.PUBLIC, Privlevel.PUBLIC);
+		return PUBLIC_GROUP;
 	}
 
 	/**
@@ -48,7 +54,7 @@ public class GroupUtils {
 	 * @return private group
 	 */
 	public static Group getPrivateGroup() {
-		return getGroup("private", "private group", GroupID.PRIVATE, Privlevel.HIDDEN);
+		return PRIVATE_GROUP;
 	}
 
 	/**
@@ -57,7 +63,7 @@ public class GroupUtils {
 	 * @return friends group
 	 */
 	public static Group getFriendsGroup() {
-		return getGroup("friends", "group of all your BibSonomy friends", GroupID.FRIENDS, Privlevel.HIDDEN);
+		return FRIENDS_GROUP;
 	}
 
 	/**
@@ -66,9 +72,25 @@ public class GroupUtils {
 	 * @return invalid group
 	 */
 	public static Group getInvalidGroup() {
-		return getGroup("invalid", "invalid group", GroupID.INVALID, Privlevel.HIDDEN);
+		return INVALID_GROUP;
 	}
 
+	/**
+	 * Checks if the given group is an "exclusive" group, i.e., a group which can't 
+	 * be chosen as "viewable for" together with another group - basically the 
+	 * groups "private" and "public". Use this method because it also checks spam
+	 * groups! 
+	 *  
+	 * @param group
+	 * @return <code>true</code> if the group must exclusively be "viewable for". 
+	 */
+	public static boolean isExclusiveGroup(final Group group) {
+		/*
+		 * FIXME: support SPAM groups! (possibly by modifying Group.equals()?)
+		 */
+		return getPrivateGroup().equals(group) || getPublicGroup().equals(group);
+	}
+	
 	/**
 	 * Helper method that returns a new {@link Group} object.
 	 */
