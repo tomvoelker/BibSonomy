@@ -15,7 +15,7 @@
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
 	
 		<jsp:attribute name="heading">
-		<a rel="path_menu" href="#"><img alt="" src="/resources/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.tag"/></a> :: 
+		<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.tag"/></a> :: 
 		<form action="/tag/" method="get" class="smallform">
 		  <input type="text" size="20" name="tag" id="inpf" value="${command.requestedTags}"/>
 		</form>

@@ -13,7 +13,7 @@
 
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" disableListNavigation="${true}" disableActions="${true}" displayIntroduction="${true}">
 		<jsp:attribute name="heading">
-			<a rel="path_menu" href="#"><img alt="" src="/resources/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.bibtexKey"/></a> :: 
+			<a rel="path_menu" href="#"><img alt="" src="${resdir}s/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.bibtexKey"/></a> :: 
 			<form action="/bibtexkey/${fn:escapeXml(command.requestedKey)}" method="get" class="smallform">
 		  		<input type="text" id="inpf" name="q" size="25" value="${command.requestedKey}" />
 			</form>	

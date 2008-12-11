@@ -44,14 +44,14 @@
 
 		<jsp:attribute name="tabcontent">		
 			<!-- spammer js -->
-			<script type="text/javascript" src="/resources/javascript/spammer.js">&amp;nbsp;</script>				
+			<script type="text/javascript" src="${resdir}/javascript/spammer.js">&amp;nbsp;</script>				
 			<script type="text/javascript"
-				src="/resources/javascript/ajax-dynamic-content.js">&amp;nbsp;</script>
-			<script type="text/javascript" src="/resources/javascript/ajax.js">&amp;nbsp;</script>
+				src="${resdir}/javascript/ajax-dynamic-content.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="${resdir}/javascript/ajax.js">&amp;nbsp;</script>
 			<script type="text/javascript"
-				src="/resources/javascript/ajax-tooltip.js">&amp;nbsp;</script>
+				src="${resdir}/javascript/ajax-tooltip.js">&amp;nbsp;</script>
 			<script type="text/javascript"
-				src="/resources/javascript/marksame.js">;</script>
+				src="${resdir}/javascript/marksame.js">;</script>
 				
 			<c:if test="${!empty command.content}">
 				
@@ -139,11 +139,11 @@
 				       	<a
 										onclick="javascript:ajax_showTooltip('ajax?action=latest_posts&amp;userName=${user.name}',this);return false;"
 										style="cursor: pointer" title="show latest posts"><img
-										src="/resources/image/info.png" /></a>
+										src="${resdir}/image/info.png" /></a>
 				        <a
 										onclick="javascript:ajax_showTooltip('ajax?action=prediction_history&amp;userName=${user.name}',this);return false;"
 										style="cursor: pointer" title="show latest user predictions"><img
-										src="/resources/image/history.png" /></a></td>
+										src="${resdir}/image/history.png" /></a></td>
 				       <td><c:out value="${fn:substring(user.realname, 0, 25)}" /></td>	
 					   <td>
 					   	<span title="${user.IPAddress}"><c:out
@@ -195,11 +195,11 @@
 						<a
 										onclick="javascript:ajax_showTooltip('ajax?action=latest_posts&amp;userName=${user.name}',this);return false;"
 										style="cursor: pointer" title="show latest posts"><img
-										src="/resources/image/info.png" /></a>
+										src="${resdir}/image/info.png" /></a>
 				        <a
 										onclick="javascript:ajax_showTooltip('ajax?action=prediction_history&amp;userName=${user.name}',this);return false;"
 										style="cursor: pointer" title="show latest user predictions"><img
-										src="/resources/image/history.png" /></a>
+										src="${resdir}/image/history.png" /></a>
 				  	</td>
 				    <td><c:out value="${user.updatedBy}" /></td>	
 					<td><c:out value="${user.spammer}" /></td>

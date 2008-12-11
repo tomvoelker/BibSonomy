@@ -15,7 +15,9 @@
     <layout:groupsLayout 
     	requPath="${requPath}" 
     	command="${command}" 
-    	pageTitle="${command.pageTitle}">
+    	pageTitle="${command.pageTitle}"
+        selectedNaviTab="nav_groups"
+      >
     	<!--+
     	 	| html header extension: page specific stylesheet
     	 	-->
