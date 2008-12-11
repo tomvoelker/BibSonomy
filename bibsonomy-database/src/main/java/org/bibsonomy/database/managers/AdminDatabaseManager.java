@@ -133,10 +133,12 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		param.setAlgorithm(user.getAlgorithm());
 		param.setUpdatedBy(updatedBy);
 		param.setUpdatedAt(new Date());
-
-		// set transaction to set locks
+	
 		session.beginTransaction();
+		
 		try {
+			
+			
 			if (!("classifier").equals(updatedBy)) {
 				this.update("flagSpammer", param, session);
 				this.updateGroupIds(param, session);
@@ -152,7 +154,6 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 						this.updateGroupIds(param, session);
 					}
 				}
-
 			}
 			session.commitTransaction();
 		} finally {
@@ -216,20 +217,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	public void updateGroupIds(final AdminParam param, final DBSession session) {
 		final boolean spammer = param.isSpammer();
 
-		// private ids
-		param.setOldGroupId(UserUtils.getGroupId(GroupID.PRIVATE.getId(), !spammer));
-		param.setNewGroupId(UserUtils.getGroupId(GroupID.PRIVATE.getId(), spammer));
-		this.updateGroupId(param, session);
-
-		// public ids
-		param.setOldGroupId(UserUtils.getGroupId(GroupID.PUBLIC.getId(), !spammer));
-		param.setNewGroupId(UserUtils.getGroupId(GroupID.PUBLIC.getId(), spammer));
-		this.updateGroupId(param, session);
-
-		// friend ids
-		param.setOldGroupId(UserUtils.getGroupId(GroupID.FRIENDS.getId(), !spammer));
-		param.setNewGroupId(UserUtils.getGroupId(GroupID.FRIENDS.getId(), spammer));
-		this.updateGroupId(param, session);
+		this.updateGroupId(param, session);		
 	}
 
 	private void updateGroupId(final AdminParam param, final DBSession session) {
@@ -257,12 +245,11 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		final AdminParam param = new AdminParam();
 		param.setInterval(interval);
 		param.setLimit(100);
-		log.debug("Classifier Enum: " + classifier.getId());
+	
 		if (classifier.equals(Classifier.ADMIN) && (status.equals(SpamStatus.SPAMMER) || status.equals(SpamStatus.NO_SPAMMER))) {
 			param.setPrediction(status.getId());
 			return this.queryForList("getAdminClassifiedUsers", param, User.class, session);
 		} else if (classifier.equals(Classifier.BOTH)) {
-			log.debug("Classifier: " + Classifier.BOTH);
 			return this.queryForList("getAllUsersWithSpam", param, User.class, session);
 		} else if (classifier.equals(Classifier.CLASSIFIER)) {
 			param.setPrediction(status.getId());
