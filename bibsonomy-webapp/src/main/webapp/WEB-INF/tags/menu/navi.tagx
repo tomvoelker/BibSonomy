@@ -65,7 +65,8 @@
 					  </div>						
 				</li>
 				<li>
-						<c:url var="postBookUrl" value="/actions/postBookmark" context="${projectContext}"/>
+                        <c:url var="postBookUrl" value="/post_bookmark" context="${projectContext}"/>
+						<!-- c:url var="postBookUrl" value="/actions/postBookmark" context="${projectContext}"/-->
 						<a id="nav_postBook" href="${postBookUrl}"><fmt:message key="navi.postBookmark"/></a>
 				</li>
 				<li>
