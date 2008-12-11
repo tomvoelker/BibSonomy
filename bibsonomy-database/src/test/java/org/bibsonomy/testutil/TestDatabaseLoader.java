@@ -108,6 +108,7 @@ public class TestDatabaseLoader {
 				jdbc.execute("DROP DATABASE IF EXISTS `" + database + "`;");
 				jdbc.execute("CREATE DATABASE `" + database + "`;");
 			}
+	
 			jdbc.execute("USE `" + database + "`;");
 			/*
 			 * execute statements from script
@@ -130,20 +131,6 @@ public class TestDatabaseLoader {
 		} catch (final IOException ex) {
 			throw new RuntimeException(ex);
 		}
-	}
-	
-	public void selectDatabase(){
-		final SimpleJDBCHelper jdbc = new SimpleJDBCHelper();
-		final String database = jdbc.getDatabaseConfig().getDatabase();
-		
-		try {
-			jdbc.execute("USE `" + database + "`;");
-			jdbc.close();
-		} catch (IOException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
-		}
-		
 	}
 }
 
@@ -228,15 +215,7 @@ final class SimpleJDBCHelper implements Closeable {
 			 * @return The name of the database.
 			 */
 			public String getDatabase() {
-				
 				return prop.getProperty("database");
-				/*
-				String url = this.getUrl();
-				// remove everything behind first '?'
-				url = url.substring(0, url.indexOf('?'));
-				// remove everything before last '/'
-				return url.substring(url.lastIndexOf('/') + 1);
-				*/
 			}
 
 			public String getUsername() {
