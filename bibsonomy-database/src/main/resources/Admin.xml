@@ -108,25 +108,69 @@
 		</isGreaterThan>
 	 	group by u.user_name order by t.date DESC
 	 </select>
-
+	
 	<update id="updateTasGroupIds" parameterClass="adminParam">
-		UPDATE tas SET `group` = #newGroupId# WHERE user_name = #userName# AND `group` = #oldGroupId#
+		UPDATE tas SET `group` = 
+		<dynamic prepend="IF">
+			<isEqual property="spammer" compareValue="true">
+				((`group` >= 0), `group` - 0x80000000, `group`)
+			</isEqual>
+			<isEqual property="spammer" compareValue="false">
+				((`group` &lt; 0), `group` + 0x80000000, `group`)
+			</isEqual>
+		</dynamic>
+		WHERE user_name = #userName#
 	</update>
-
+	
 	<update id="updateBookmarkGroupIds" parameterClass="adminParam">
-		UPDATE bookmark SET `group` = #newGroupId# WHERE user_name = #userName# AND `group` = #oldGroupId#
+		UPDATE bookmark SET `group` = 
+		<dynamic prepend="IF">
+			<isEqual property="spammer" compareValue="true">
+				((`group` >= 0), `group` - 0x80000000, `group`)
+			</isEqual>
+			<isEqual property="spammer" compareValue="false">
+				((`group` &lt; 0), `group` + 0x80000000, `group`)
+			</isEqual>
+		</dynamic>
+		WHERE user_name = #userName#
 	</update>
-
+	
 	<update id="updateBibtexGroupIds" parameterClass="adminParam">
-		UPDATE bibtex SET `group` = #newGroupId# WHERE user_name = #userName# AND `group` = #oldGroupId#
+		UPDATE bibtex SET `group` = 
+		<dynamic prepend="IF">
+			<isEqual property="spammer" compareValue="true">
+				((`group` >= 0), `group` - 0x80000000, `group`)
+			</isEqual>
+			<isEqual property="spammer" compareValue="false">
+				((`group` &lt; 0), `group` + 0x80000000, `group`)
+			</isEqual>
+		</dynamic>
+		WHERE user_name = #userName#
 	</update>
-
+	
 	<update id="updateSearchBookmarkGroupIds" parameterClass="adminParam">
-		UPDATE search_bookmark SET `group` = #newGroupId# WHERE user_name = #userName# AND `group` = #oldGroupId#
+		UPDATE search_bookmark SET `group` = 
+		<dynamic prepend="IF">
+			<isEqual property="spammer" compareValue="true">
+				((`group` >= 0), `group` - 0x80000000, `group`)
+			</isEqual>
+			<isEqual property="spammer" compareValue="false">
+				((`group` &lt; 0), `group` + 0x80000000, `group`)
+			</isEqual>
+		</dynamic>
+		WHERE user_name = #userName#
 	</update>
-
+	
 	<update id="updateSearchBibtexGroupIds" parameterClass="adminParam">
-		UPDATE search_bibtex SET `group` = #newGroupId# WHERE user_name = #userName# AND `group` = #oldGroupId#
+		UPDATE search_bibtex SET `group` = 
+		<dynamic prepend="IF">
+			<isEqual property="spammer" compareValue="true">
+				((`group` >= 0), `group` - 0x80000000, `group`)
+			</isEqual>
+			<isEqual property="spammer" compareValue="false">
+				((`group` &lt; 0), `group` + 0x80000000, `group`)
+			</isEqual>
+		</dynamic>
+		WHERE user_name = #userName#
 	</update>
-
 </sqlMap>
