@@ -23,6 +23,8 @@
 
 package org.bibsonomy.model.util;
 
+import java.util.Set;
+
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.model.Group;
@@ -82,13 +84,29 @@ public class GroupUtils {
 	 * groups! 
 	 *  
 	 * @param group
-	 * @return <code>true</code> if the group must exclusively be "viewable for". 
+	 * @return <code>true</code> if the group is exclusively be "viewable for". 
 	 */
 	public static boolean isExclusiveGroup(final Group group) {
 		/*
 		 * FIXME: support SPAM groups! (possibly by modifying Group.equals()?)
 		 */
 		return getPrivateGroup().equals(group) || getPublicGroup().equals(group);
+	}
+	
+	/**
+	 * Checks if the given groups contain an "exclusive" group, i.e., a group which 
+	 * can't be chosen as "viewable for" together with another group - basically the 
+	 * groups "private" and "public". Use this method because it also checks spam
+	 * groups! 
+	 *  
+	 * @param groups
+	 * @return <code>true</code> if one of the groups is exclusively be "viewable for". 
+	 */
+	public static boolean containsExclusiveGroup(final Set<Group> groups) {
+		/*
+		 * at least one of the groups is public or private
+		 */
+		return groups.contains(getPublicGroup()) || groups.contains(getPrivateGroup());
 	}
 	
 	/**
