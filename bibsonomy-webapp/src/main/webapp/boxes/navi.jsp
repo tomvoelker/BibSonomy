@@ -21,7 +21,7 @@
 				  </div>
 			</li>
 			<li>
-				<a id="nav_postBook" href="/actions/postBookmark">post bookmark</a>
+				<a id="nav_postBook" href="/post_bookmark">post bookmark</a>
 			</li>
 			<li>
 				<a id="nav_postPub" href="/post_bibtex">post publication</a>
