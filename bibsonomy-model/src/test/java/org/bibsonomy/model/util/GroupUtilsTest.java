@@ -24,7 +24,7 @@
 package org.bibsonomy.model.util;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import org.bibsonomy.model.Group;
@@ -51,8 +51,14 @@ public class GroupUtilsTest {
 		}
 
 		// no caching please (due to possible side effects)
+		/*
+		 * FIXME: rja: why? I don't understand the problem,
+		 * having a singleton public (or private) group. 
+		 * Please explain! I removed the test, 2008-12-11
+		 */
 		final Group g1 = GroupUtils.getPublicGroup();
 		final Group g2 = GroupUtils.getPublicGroup();
-		assertNotSame(g1, g2);
+//		assertNotSame(g1, g2);
+		assertSame(g1, g2);
 	}
 }
