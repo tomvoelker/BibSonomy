@@ -59,7 +59,4 @@
 		</plugins>
 	</reporting>
 
-  <scm>
-    <tag>bibsonomy-rest-client-2_0_1</tag>
-  </scm>
 </project>
