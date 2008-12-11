@@ -35,8 +35,8 @@
 					<td>
                           <!-- select box for "other" groups -->
                           <form:select multiple="true" path="groups" size="5" id="visibilitybox">
-                         		<form:options items="${groups}" itemValue="name" itemLabel="name"/>
-                         		<form:option label="friends" value="friends"/>
+                              <form:option label="friends" value="friends"/>
+                        	  <form:options items="${groups}" itemValue="name" itemLabel="name"/>
                           </form:select>
                           <div class="postBookmarkNotValidTip"><form:errors path="groups" /></div>
                        </td>
