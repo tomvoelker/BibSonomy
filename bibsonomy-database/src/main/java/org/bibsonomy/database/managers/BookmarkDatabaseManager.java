@@ -24,6 +24,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.SimHash;
 
 /**
@@ -889,15 +890,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 			if (list.size() > 1) {
 				log.warn("multiple Bookmark-posts from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' found ->returning first");
 			}
-			Post<Bookmark> post = list.get(0);
 			/*
-			 * Add groups which are allowed to see the post
+			 * return the first post
 			 */
-			final int contentId = post.getContentId();
-			Set<Group> groups = (Set<Group>) groupDb.getGroupsForContentId(contentId, session);
-			post.setGroups(groups);
-			
-			return post;
+			return list.get(0);
 		}
 
 		log.debug("Bookmark-post from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' not found");

@@ -262,14 +262,30 @@ public class DBLogic implements LogicInterface {
 	 * Returns details to a post. A post is uniquely identified by a hash of the
 	 * corresponding resource and a username.
 	 */
+	@SuppressWarnings("unchecked")
 	public Post<? extends Resource> getPostDetails(final String resourceHash, final String userName) {
 		final DBSession session = openSession();
 		try {
-			Post<? extends Resource> rVal;
 			for (final CrudableContent<? extends Resource, ? extends GenericParam> manager : this.allDatabaseManagers.values()) {
-				rVal = manager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
-				if (rVal != null) {
-					return rVal;
+				final Post<? extends Resource> post = manager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
+				if (post != null) {
+					/*
+					 * add group information
+					 */
+					/*
+					 * If one of the post's groups is neither public nor private (i.e., it is
+					 * friends or a "regular" group) we must get the (remaining) groups from
+					 * the grouptas table.
+					 */
+					final Group group = post.getGroups().iterator().next();
+					if (!GroupUtils.isExclusiveGroup(group)) {
+						/*
+						 * neither public nor private ...
+						 * ... get the groups from the grouptas table
+						 */
+						post.setGroups((Set<Group>) groupDBManager.getGroupsForContentId(post.getContentId(), session));
+					}
+					return post;
 				}
 			}
 		} finally {

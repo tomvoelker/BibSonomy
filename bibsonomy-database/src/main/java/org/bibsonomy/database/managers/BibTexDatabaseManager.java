@@ -5,7 +5,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConstantID;
@@ -1167,13 +1166,6 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			if (this.permissionDb.isAllowedToAccessPostsDocuments(userName, post, session)) {
 				post.getResource().setDocuments(this.docDb.getDocuments(userName, resourceHash, session));
 			}
-			
-			/*
-			 * Add groups which are allowed to see the post
-			 */
-			final int contentId = post.getContentId();
-			Set<Group> groups = (Set<Group>) groupDb.getGroupsForContentId(contentId, session);
-			post.setGroups(groups);
 			
 			return post;
 		}
