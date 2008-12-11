@@ -30,7 +30,7 @@
 <hr style="margin: 2em 0px 2em 0px;" />
 
 <%-- ---------------- MANUAL BIBTEX INPUT ---------------- --%>
-<h2>Enter your BibTeX data here:</h2>
+<h2>Enter your publication data here:</h2>
 <form method="POST" action="<%=response.encodeURL("/ShowBibtexEntry")%>" name="post_bibtex">
 <table>
   <tr>
@@ -43,7 +43,7 @@
     <td rowspan="6" class="expl_s">
     Please enter title, year and author/editor on this form to check, if
     you've already bookmarked this entry. On the next page you can enter
-    the missing BibTeX fields.</td>
+    the missing publication metadata fields.</td>
   </tr>
   <tr>
     <td class="expl">title*</td>
@@ -227,7 +227,7 @@ function showGenerateBibtexBlock() {
 		var target = document.createElement("a");
 		target.style.cursor = "pointer";
 		target.onclick = toggleGenerateURLOnClick;
-		target.appendChild(document.createTextNode("generate 'post BibTeX' URL"));
+		target.appendChild(document.createTextNode("generate 'post Publication' URL"));
 		document.getElementById("generatePublicationBlock").appendChild(target);
 	}
 }
@@ -238,7 +238,7 @@ function toggleGenerateURLOnClick() {
 
 function removeGenerateBlock() {
 	document.getElementById("generatePublicationBlock").style.visibility = "hidden";
-	document.getElementById("generatePublicationHeader").firstChild.data="Your generated 'post BibTeX' URL:";
+	document.getElementById("generatePublicationHeader").firstChild.data="Your generated 'post Publication' URL:";
 }
 
 </script>
