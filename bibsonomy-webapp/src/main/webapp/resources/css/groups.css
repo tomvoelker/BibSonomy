@@ -5,22 +5,18 @@
  
 /* the introductory text about groups */
 #groupIntro {
-	font-style: italic;
 	text-align: justify;
 } 
 
 /* the navigation-alphabet on top of the list */
-#linkedAlhpabet table {
-	text-align: left;
-	width: auto;
-	margin-left: auto;
-	margin-right: auto;
+#linkedAlphabet a {
+  margin-right: .5em;
 }
 
 /*----------------------------------------------------------------------------
  * the table which holds the groups list
  *--------------------------------------------------------------------------*/
-#groupsList table {
+#groupsList {
 	border-collapse: collapse;
 	/*border-spacing: 20px;*/
 }

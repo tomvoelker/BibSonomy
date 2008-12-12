@@ -42,7 +42,8 @@
     	<!--+
     	 	| content
     	 	-->
-		<jsp:attribute name="content"><div id="general">
+		<jsp:attribute name="content">
+          <div id="general">
             <!--+ 
                 | explain what groups are good for
                 +-->
@@ -52,14 +53,11 @@
 			<!--+
 				| show alphabet for direct links to groups
 			    -->
-			<div id="linkedAlhpabet">
-			<table><tr>
+			<p id="linkedAlphabet">
 			   <c:forEach var="letter" items="${command.alphabet}">
-                   <td>
-                   <a href="#${letter}"><c:out value="${letter}"/></a></td>
+                   <a href="#${letter}"><c:out value="${letter}"/></a>
                </c:forEach>
-            </tr></table>
-            </div>
+            </p>
             
             <!--+
 				| list all registered groups, ordered alphabetically
@@ -68,8 +66,7 @@
                 | grouping all special characters by '#'
                 +-->
             <c:set var="lastChar" value=""/>
-			<div id="groupsList">
-			<table>
+			<table id="groupsList">
 		    <c:forEach var="entry" items="${command.list}">
 		    	<!-- current group name's first character -->
 		    	<!-- remark: diacritic are removed by normalizing the string -->
@@ -139,7 +136,7 @@
             	</tr>
 			</c:forEach>
             </table>
-            </div></div>
+            </div>
 		</jsp:attribute>
     </layout:groupsLayout>
 </jsp:root>

@@ -623,19 +623,19 @@ html>body #sidebar li {
 	cursor: pointer;
 }
 
-.tagtiny a {
+.tagtiny a, .tagtiny {
 	color: #8D9964 ! important;
 }
 
-.tagnormal a {
+.tagnormal a, .tagnormal {
 	color: #8C9963 ! important;
 }
 
-.taglarge a {
+.taglarge a, .taglarge {
 	color: #768053 ! important;
 }
 
-.taghuge a {
+.taghuge a, .taghuge {
 	color: #2F3321 ! important;
 	font-size: 140%;
 }
