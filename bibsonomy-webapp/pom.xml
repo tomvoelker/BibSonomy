@@ -240,10 +240,6 @@
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-logging</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-lucene</artifactId>
-		</dependency>
 	</dependencies>
 	<properties>
 		<wtpversion>1.5</wtpversion>
