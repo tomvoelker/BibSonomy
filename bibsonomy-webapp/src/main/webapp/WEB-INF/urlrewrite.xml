@@ -517,7 +517,7 @@
 		<condition type="attribute" name="type" operator="notequal"/>    	
 		<from>^/+tag/(.+?)(\?(.*))?$</from>
 		<!-- NEW PAGE -->
-		<to>/tag?requestedTags=$1&amp;$3</to>
+		<to>/tag?requestedTags=$1</to>
 	</rule>
 	<rule>
 		<!-- OLD PAGE -->
