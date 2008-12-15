@@ -46,6 +46,23 @@ CREATE TABLE `clicklog` (
     <result property="id" column="id" />
     <result property="logdate" column="logdate" />
     <result property="dompath" column="dompath"/>
+    <result property="dompath2" column="dompathwclasses"/>
+    <result property="type" column="type"/>
+    <result property="pageurl" column="pageurl"/>
+    <result property="ahref" column="ahref"/>
+    <result property="acontent" column="acontent"/>
+    <result property="useragent" column="useragent"/>
+    <result property="username" column="username"/>
+    <result property="sessionid" column="sessionid"/>
+    <result property="host" column="host"/>
+    <result property="completeheader" column="completeheader"/>
+    <result property="xforwardedfor" column="xforwardedfor"/>
+    <result property="listpos" column="listpos"/>
+    <result property="windowsize" column="clientwindowsize"/>
+    <result property="mousedocumentpos" column="mousedocumentpos"/>
+    <result property="mouseclientpos" column="mouseclientpos"/>
+    <result property="anumberofposts" column="anumberofposts"/>
+    <result property="abmown" column="abmown"/>
     <result property="referer" column="referer"/>
   </resultMap>
 
@@ -72,11 +89,45 @@ CREATE TABLE `clicklog` (
     insert into clicklog (
 		LOGDATE,
 		DOMPATH,
+		DOMPATHWCLASSES,
+		TYPE,
+		PAGEURL,
+		AHREF,
+		ACONTENT,
+		USERAGENT,
+		HOST,
+		COMPLETEHEADER,
+		XFORWARDEDFOR,
+		USERNAME,
+		SESSIONID,
+		LISTPOS,
+		CLIENTWINDOWSIZE,
+		MOUSECLIENTPOS,
+		MOUSEDOCUMENTPOS,
+		ANUMOFPOSTS,
+		ABMOWN,
 		REFERER
       )
     values (
       now(), 
       #dompath#, 
+      #dompath2#, 
+      #type#, 
+      #pageurl#, 
+      #ahref#, 
+      #acontent#, 
+      #useragent#, 
+      #host#, 
+      #completeheader#, 
+      #xforwardedfor#,
+      #username#, 
+      #sessionid#,
+      #listpos#,
+      #windowsize#,
+      #mouseclientpos#,
+      #mousedocumentpos#,
+      #anumberofposts#,
+      #abmown#,
       #referer#
     )
   </insert>
