@@ -384,7 +384,7 @@ div.bibentry {
 	width: 72%;
 }
 
-#general,#copytags,#general_fixed {
+#general,#copytags,#general_fixed, #general_100 {
 	margin: 5px 10px 2% 10px;
 	padding-right: 5px;
 }
