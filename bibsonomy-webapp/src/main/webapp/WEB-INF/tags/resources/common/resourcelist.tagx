@@ -15,18 +15,21 @@
 	<jsp:directive.attribute name="bmicon" fragment="true" required="true"/>
 	<jsp:directive.variable name-given="post" scope="NESTED"/>
 	
+	<c:set var="already_own"><fmt:message key="post.meta.own_post"/></c:set>
+	<c:set var="copy_this_post"><fmt:message key="post.meta.copy_this_post"/></c:set>
+	
 	<!-- iterate over a list of resources and create the list -->
 	<ul id="${listView.resourcetype}">
 		<c:forEach var="post" items="${listView.list}">
 			<li class="bm">
 				<c:choose>
 					<c:when test="${loginUserName eq post.user.name}">
-						<div id="bmicon_selected">
+						<div id="bmicon_selected" title="${already_own}">
 							<jsp:invoke fragment="bmicon"/>
 						</div>
 					</c:when>
 					<c:otherwise>
-						<div id="bmicon_unselected">
+						<div id="bmicon_unselected" title="${copy_this_post}">
 							<jsp:invoke fragment="bmicon"/>
 						</div>
 					</c:otherwise>
