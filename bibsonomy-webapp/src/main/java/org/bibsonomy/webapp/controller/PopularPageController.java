@@ -48,6 +48,8 @@ public class PopularPageController extends MultiResourceListController implement
 		
 		//the system tags
 		final ArrayList<String> tags = new ArrayList<String>();
+		//insert an empty tag
+		tags.add("");
 		
 		
 		// determine which lists to initalize depending on the output format 
@@ -55,11 +57,10 @@ public class PopularPageController extends MultiResourceListController implement
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
 		do{
 			for (final Class<? extends Resource> resourceType : listsToInitialise) {
-				//set the system tag
-				tags.add(0, "sys:days:" + begin);
+				//overwrite with systemtag
+				tags.set(0, "sys:days:" + begin);
 				//determine the value of popular days, e.g. the last 10 days
 				days = this.logic.getPostStatistics(resourceType, groupingEntity, null, tags, null, order, null, 0, this.getEntriesPerPage(), null, null);
-				
 				//only retrieve and set the requested resource lists if days > 0
 				//because otherwise the lists will be empty
 				if(days > 0){
@@ -71,7 +72,8 @@ public class PopularPageController extends MultiResourceListController implement
 				}
 			}
 			begin++;
-		}while(days > 0 && begin < 3);
+		//show max 10 entries
+		}while(days > 0 && days < 10);
 
 		// only html format, exports are not possible atm 
 		this.setTags(command, Resource.class, groupingEntity, null, null, null, null, null, 0, 100, null);
