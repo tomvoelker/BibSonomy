@@ -42,7 +42,8 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		try {
 			order = Order.getOrderByName(command.getOrder());
 		} catch (IllegalArgumentException ex) {
-			throw new MalformedURLSchemeException("error.order_not_supported");
+			// TODO: why rethrowing the exception and not just don't catch it?
+			throw new MalformedURLSchemeException(ex.getMessage());
 		}
 
 		final List<String> requTags = command.getRequestedTagsList();
