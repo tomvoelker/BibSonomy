@@ -366,27 +366,23 @@ div.bibentry {
 #sidebarroundcorner {
 	float: right;
 	width: 23%;
-	margin-top: 5px;
-	margin-right: 5px;
 	padding: 3px;
 	background-color: #D8EBAE;
 }
 
 #bookbox,#bibbox,.bookbox {
-	margin: 5px 5px 1% 1%;
+	margin: 1%; 
 	width: 47%;
 	float: left;
-	padding-right: 5px;
 }
 
 #outer,#general,#copytags {
 	float: left;
-	width: 72%;
+	width: 73%;
 }
 
 #general,#copytags,#general_fixed, #general_100 {
-	margin: 5px 10px 2% 10px;
-	padding-right: 5px;
+	margin: 1%;
 }
 
 #general_fixed {
@@ -399,12 +395,6 @@ div.bibentry {
 	clear: both;
 }
 
-#search {
-	float: right;
-	margin: 6px 0px 0px 0px;
-	padding: 0px;
-}
-
 #specialsearch {
 	display: inline;
 	margin: 6px 0px 0px 0px;
@@ -414,7 +404,7 @@ div.bibentry {
 #welcomeTop {
 	clear: both;
 	font-size: 80%;
-	color: #FFFFFF;
+	color: #fff;
 	padding: 3px 0px 9px 0px;
 	margin: 0px 0px 0px 12px;
 }
@@ -461,18 +451,6 @@ li.uploadinfo {
 	line-height: 1em;
 	display: block;
 	font-size: 80%;
-}
-
-#tnav {
-	width: 100%;
-	background-color: #eee;
-	font-weight: bold;
-	font-size: 80%;
-	clear: both;
-	margin: 0px;
-	padding: 0px 10px 0px 10px;
-	/*border-bottom: 1px solid #ccc;*/
-	border-top: 1px solid #ccc;
 }
 
 .tleft {
