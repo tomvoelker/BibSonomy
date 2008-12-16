@@ -20,7 +20,7 @@ import org.bibsonomy.model.Tag;
  */
 
 public class SystemTagFactory {
-	private static final String JAXB_PACKAGE_DECLARATION = "org.bibsonomy.systemstags.xml";
+	private static final String JAXB_PACKAGE_DECLARATION = "org.bibsonomy.database.systemstags.xml";
 	// TODO path
 	private static final String BIBSONOMY_SYSTEMTAGS_XML = "../bibsonomy-webapp/src/main/webapp/WEB-INF/systemtags.xml";
 	private static HashMap<String, SystemTagType> systemTagMap;
