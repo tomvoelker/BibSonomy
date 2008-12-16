@@ -603,6 +603,7 @@ html>body #sidebar li {
 
 .tagtiny a, .tagtiny {
 	color: #8D9964 ! important;
+	font-size: 85%;
 }
 
 .tagnormal a, .tagnormal {
