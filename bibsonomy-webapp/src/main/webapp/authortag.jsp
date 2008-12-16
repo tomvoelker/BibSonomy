@@ -27,8 +27,13 @@
 <%@include file="/boxes/itemcount.jsp" %>             
 </div>
 
+<div id="sidebarroundcorner" >
 <ul id="sidebar">
   <%@include file="/boxes/tags/authortags.jsp"%>
 </ul>
+</div>
+<script type="text/javascript">
+   $("#sidebarroundcorner").corner("round bottom 15px").corner("round tl 15px");
+</script>
 
 <%@ include file="/footer.jsp" %>
