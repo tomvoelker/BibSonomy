@@ -73,7 +73,7 @@ public class PopularPageController extends MultiResourceListController implement
 			}
 			begin++;
 		//show max 10 entries
-		}while(days > 0 && days < 10);
+		}while(days > 0 && begin < 10);
 
 		// only html format, exports are not possible atm 
 		this.setTags(command, Resource.class, groupingEntity, null, null, null, null, null, 0, 100, null);
