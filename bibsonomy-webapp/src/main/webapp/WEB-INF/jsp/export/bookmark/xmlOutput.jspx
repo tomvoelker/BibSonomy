@@ -26,10 +26,10 @@
 			<c:set var="tags" value="${tags} ${tag.name}"/>
 		</c:forEach>
 		<c:set var="postDate"><fmt:formatDate type='both' pattern="yyyy-MM-dd'T'HH:mm:ssZ" value='${post.date}'/></c:set>
-		<post href="${bmark.url}" 
+		<post href="${fn:escapeXml(bmark.url)}" 
 			  description="${fn:escapeXml(bmark.title)}" 
 			  hash="${bmark.intraHash}"
-			  user="'${fn:escapeXml(post.user.name)}"
+			  user="${fn:escapeXml(post.user.name)}"
 			  tag="${fn:escapeXml(tags)}"
 			  time="${postDate}"/>
 	</c:forEach>
