@@ -301,7 +301,7 @@
 		<condition type="attribute" name="type" operator="notequal"/>    
     	<from>^/+user/+([^/?]+?)/(.+?)(\?(.*))?$</from>
     	<!-- NEW PAGE -->
-    	<to>/user?requestedUser=$1&amp;requestedTags=$2</to> 
+    	<to>/user?requestedUser=$1&amp;requestedTags=$2&amp;$4</to> 
     </rule>
     <rule>
         <from>^/+user/+([^/?]+?)/(.+?)(\?(.*))?$</from>
@@ -317,7 +317,7 @@
 		<condition type="attribute" name="type" operator="notequal"/>    
 		<from>^/+user/+([^/?]+?)(\?(.*))?$</from>
 		<!-- NEW PAGE -->
-		<to>/user?requestedUser=$1</to>
+		<to>/user?requestedUser=$1&amp;$3</to>
 	</rule>		
 
 	<rule>
@@ -357,7 +357,7 @@
 		<condition type="attribute" name="type" operator="notequal"/>  
         <from>^/+viewable/+([^/?]+?)/(.+?)(\?(.*))?$</from>
         <!-- NEW PAGE -->
-        <to>/viewable?requestedGroup=$1&amp;requestedTags=$2</to>
+        <to>/viewable?requestedGroup=$1&amp;requestedTags=$2&amp;$4</to>
     </rule>   	
     <rule> <!-- /viewable/GROUP/TAG -->
         <from>^/+viewable/+([^/?]+?)/(.+?)(\?(.*))?$</from>
@@ -374,7 +374,7 @@
 		<condition type="attribute" name="type" operator="notequal"/>  
 		<from>^/+viewable/+([^/?]+?)(\?(.*))?$</from>
 		<!-- NEW PAGE -->
-		<to>/viewable?requestedGroup=$1</to>
+		<to>/viewable?requestedGroup=$1&amp;$3</to>
 	</rule>
 	<rule> <!-- /viewable/GROUP -->
 		<from>^/+viewable/+([^/?]+?)(\?(.*))?$</from>
@@ -396,7 +396,7 @@
 		<condition type="attribute" name="type"   operator="notequal"/>     
         <from>^/+group/+([^/?]+?)/(.+?)(\?(.*))?$</from> 
 		<!-- NEW PAGE -->      
-        <to>/group?requestedGroup=$1&amp;requestedTags=$2</to> 
+        <to>/group?requestedGroup=$1&amp;requestedTags=$2&amp;$4</to> 
         <!-- <to>/ResourceHandler?page=grouptag&amp;requGroup=$1&amp;requTag=$2&amp;$4</to> -->
     </rule>
     <rule> 
@@ -419,7 +419,7 @@
 		<condition type="attribute" name="type" operator="notequal"/>    	
 		<from>^/+group/+([^/?]+?)(\?(.*))?$</from>
 		<!-- NEW PAGE -->
-		<to>/group?requestedGroup=$1</to>
+		<to>/group?requestedGroup=$1&amp;$3</to>
 		<!--<to>/ResourceHandler?page=group&amp;requGroup=$1&amp;$3</to>-->
 	</rule>
 	<rule> 	
@@ -537,7 +537,7 @@
 		<condition type="attribute" name="type" operator="notequal"/>
         <from>^/+concept/+tag/(.+?)(\?(.*))?$</from>
         <!-- NEW PAGE -->
-        <to>/concept?requestedTags=$1</to>
+        <to>/concept?requestedTags=$1&amp;$3</to>
     </rule>     
     <!-- OLD PAGE -->
     <rule>
@@ -557,7 +557,7 @@
 		<condition type="attribute" name="type" operator="notequal"/>     
         <from>^/+author/+([^/?]+?)/(.+?)(\?(.*))?$</from> 
 		<!-- NEW PAGE -->      
-         <to>/author?requestedAuthor=$1&amp;requestedTags=$2</to>
+         <to>/author?requestedAuthor=$1&amp;requestedTags=$2&amp;$4</to>
     </rule>
     
     <!-- redirect for tag formular on /author/AUTHOR/TAG page -->
@@ -578,7 +578,7 @@
     <rule>
 		<from>^/+author/(.+?)(\?(.*))?$</from>
 		<!-- NEW PAGE -->
-		<to>/author?requestedAuthor=$1</to> 
+		<to>/author?requestedAuthor=$1&amp;$3</to> 
 	</rule>
 	
 
@@ -625,11 +625,11 @@
 	<!-- NEW PAGE -->
 	<rule><!-- /[0-3][32] -->
 		<from>^/+bibtex/+([0-3])([0-9a-fA-F]{32})(\?(.*))?$</from>
-		<to>/bibtex?requBibtex=$2&amp;requSim=$1</to> 
+		<to>/bibtex?requBibtex=$2&amp;requSim=$1&amp;$4</to> 
 	</rule>	
 	<rule><!-- arbitrary hash -->
 		<from>^/+bibtex/+([0-9a-zA-Z]*)(\?(.*))?$</from>
-		<to>/bibtex?requBibtex=$1&amp;requSim=1</to> 
+		<to>/bibtex?requBibtex=$1&amp;requSim=1&amp;$3</to> 
 	</rule>	
 	
 	
@@ -647,7 +647,7 @@
   	<rule>
 		<from>^/+search/(.+?)(\?(.*))?$</from>
 		<!-- NEW PAGE -->
-		<to>/search?requestedSearch=$1</to> 
+		<to>/search?requestedSearch=$1&amp;$3</to> 
 	</rule>
 	
 	<!-- search for tags or users -->
