@@ -175,7 +175,7 @@
 								<div id="openID" style="display:none">
 						            <form action="/login" method="POST">
 						              	<label path="openID" >OpenID:</label>
-						              	<input type="text" id="registerUser.openID" class="openid" size="30" value="" name="registerUser.openID"/>
+						              	<input type="text" id="openID" class="openid" size="30" value="" name="openID"/>
 										<a href="javascript:switchLogin();"><img style="width: 16px; height:16px;" src="${resdir}/image/login_bib.png"/></a>
 						            </form>
 					            </div>
