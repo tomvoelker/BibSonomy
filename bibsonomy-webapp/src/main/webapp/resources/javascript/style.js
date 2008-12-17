@@ -346,7 +346,7 @@ function naviSwitchSpecial(target) {
 	// create headline node as container for following stuff 
 	var headlineNode = document.createElement("h1");
 	headlineNode.setAttribute("id", "path");
-
+    
 	// create a node with projectname default values
 	var projectNode = document.createElement("a");
 	projectNode.setAttribute("href", "/");
@@ -471,13 +471,20 @@ function naviSwitchSpecial(target) {
 	headlineNode.appendChild(document.createTextNode(" "));
 
 	// insert new navi
-	body.insertBefore(headlineNode, bar);
-
+	// 2008/12/17, fei: this one is buggy!
+	// body.insertBefore(headlineNode, bar);
+    
 	// clone old navigation path and save it in a global variable for later restoring
 	curr_navi = bar.cloneNode(true);
 
+	// display new path element
+	// TODO: this is ugly as everything breaks, when <h1/> is replaced by
+	//       some other tag. Better use id in layout!!!!
+	bar.replaceChild(headlineNode, bar.getElementsByTagName("h1")[0]);
+
 	// remove old navigation path
-	body.removeChild(bar);
+	// 2008/12/18, fei: commented out, as navigation path is still needed
+	// body.removeChild(bar);
 	
 	// set focus to the input field
 	inpfNode.focus();
