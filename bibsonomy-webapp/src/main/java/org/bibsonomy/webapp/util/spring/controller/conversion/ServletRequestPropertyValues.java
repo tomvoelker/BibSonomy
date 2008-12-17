@@ -37,8 +37,9 @@ public class ServletRequestPropertyValues extends MutablePropertyValues {
 		//addAttributesStartingWith(m, request, prefix);
 		/*
 		 * disabled, because it can not handle multiple values for one parameter (e.g., lists)
+		 * rja, 2008-12-17, enabled again because of problems with UrlRewriteFilter
 		 */
-		//addParametersStartingWith(m, request, prefix);
+		addParametersStartingWith(m, request, prefix);
 		return m;
 	}
 	
