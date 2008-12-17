@@ -23,21 +23,28 @@
 	
 	<div class="bookbox" id="${listID}">
 	
-		<h2 class="listh"><fmt:message key="${titleKey}" /></h2> 
+		
+		<h2 class="listh"><fmt:message key="${titleKey}" /></h2>
 
 		<c:if test="${!empty listView.list}">
 			
 				<div class="listh">
-					<c:if test="${listView.totalCount != 0}">
-						<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${listView.totalCount} "/> <fmt:message key="${titleKey}" /></c:set>
-						<span title="${totalTitle}">(${listView.totalCount})</span>
-					</c:if>
+					<c:choose>
+						<c:when test="${listView.totalCount != 0}">
+							<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${listView.totalCount} "/> <fmt:message key="${titleKey}" /></c:set>
+							${mtl:ch('nbsp')}<span title="${totalTitle}">(${listView.totalCount})</span>
+						</c:when>
+						<c:otherwise>
+							${mtl:ch('nbsp')}
+						</c:otherwise>
+					</c:choose>
 					<span class="listhButtons">
 						<jsp:invoke fragment="formatButtons"/>
 					</span>
 				</div>
 			
 				
+
 				<div class="kiste">		
 					<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}"/>
 					<rc:actions resourceType="${listView.resourcetype}"/>				

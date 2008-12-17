@@ -499,6 +499,7 @@ li.uploadinfo {
 .listhButtons {
 	float: right;
 	margin-right: 0 ! important;
+	margin-top: -1.2em;
 	padding: 0;
 }
 
