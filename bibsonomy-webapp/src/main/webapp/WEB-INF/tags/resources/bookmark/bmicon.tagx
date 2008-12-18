@@ -8,7 +8,7 @@
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
 
 	<!-- only display icon when user is logged in and does NOT visit his own userpage  -->
-	<c:if test="${command.context.userLoggedIn and not (command.commandName eq 'UserResourceViewCommand' and command.user.name eq loginUserName) }">
+	<c:if test="${command.context.userLoggedIn and not (command.commandName eq 'UserResourceViewCommand' and command.requestedUser eq loginUserName) }">
 		<a href="/ShowBookmarkEntry?c=b&amp;jump=no&amp;url=${mtl:encodeURI(post.resource.url)}&amp;description=${mtl:encodeURI(post.resource.title)}&amp;extended=${mtl:encodeURI(post.description)}&amp;copytag=${mtl:encodeURI(mtl:toTagString(post.tags))}" title="${copyTitle}">
 			&amp;nbsp;
 		</a>
