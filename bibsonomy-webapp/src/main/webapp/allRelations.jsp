@@ -19,6 +19,8 @@
 <%@include file="/boxes/path_navi.jsp" %>
 
 <%-------------------------- Navigation -----------------------%>
+<%-- 2008/12/18, fei: passing parameter 'selectedNaviTab' due to bug 646 --%>
+<c:set var="selectedNaviTab" value="nav_relations"/>
 <%@include file="/boxes/navi.jsp" %> 
 
 <div id="general">
