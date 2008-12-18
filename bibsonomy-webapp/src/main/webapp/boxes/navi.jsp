@@ -27,7 +27,7 @@
 				<a id="nav_postPub" href="/post_bibtex">post publication</a>
 			</li>
 		</c:when>
-	</c:choose>	
+	</c:choose>
      <%-- ######### tags * groups * relations * popular ######### --%>
 	<li>
 	  <a id="nav_tags" href="/tags">tags</a>
@@ -52,8 +52,10 @@
 </ul>
 </div>
 
-
- <c:if test="${not empty user.name}">
+<%-- 2008/12/18, fei: commented out conditional as otherwise no tab is brought
+                      to front when user isn't logged in 
+--%>
+<%-- <c:if test="${not empty user.name}">  --%>
 	<script type="text/javascript">
   		cssdropdown.startchrome("nice_tnav");
 		if ("${selectedNaviTab}" != "" ) {
@@ -62,4 +64,5 @@
 			document.getElementById("nav_my").className = "checked";
 		}
 	</script>  
-</c:if>
+<%-- </c:if>  --%> 
+	

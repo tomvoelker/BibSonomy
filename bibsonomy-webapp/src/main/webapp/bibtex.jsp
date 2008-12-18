@@ -10,7 +10,7 @@
 
 <%-------------------------- Heading -----------------------%>
 <h1 id="path">
-  <a href="/" rel="Start">${projectName}</a> :: <a href="#" rel="path_menu"><img src="/resources/image/box_arrow.png">&nbsp;bibtex</a> :: 
+  <a href="/">${projectName}</a> :: <a href="#" rel="path_menu"><img src="/resources/image/box_arrow.png">&nbsp;bibtex</a> :: 
   <form class="smallform" method="get" action="/search">
     <input type="text" name="q" value="<mtl:bibclean value='${ResourceBean.title}'/>" size="30"/>
   </form>

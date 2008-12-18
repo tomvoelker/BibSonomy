@@ -10,7 +10,7 @@
 
 <%-------------------------- Heading -----------------------%>
 <h1 id="path"> 
-  <a href="/" rel="Start">${projectName}</a> :: <a href="#" rel="path_menu"><img src="/resources/image/box_arrow.png">&nbsp;url</a> :: 
+  <a href="/">${projectName}</a> :: <a href="#" rel="path_menu"><img src="/resources/image/box_arrow.png">&nbsp;url</a> :: 
   <form action="/url" method="GET" class="smallform">
     <input type="text" size="50" name="url" id="inpf" value="<c:out value='${ResourceBean.title}'/>" />
   </form>

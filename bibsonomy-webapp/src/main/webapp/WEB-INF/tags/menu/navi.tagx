@@ -101,7 +101,10 @@
 	</ul>
 	</div>
 
-	<c:if test="${!empty loginUserName}">
+<!-- 2008/12/18, fei: commented out conditional as otherwise no tab is brought
+                      to front when user isn't logged in 
+-->
+<!--<c:if test="${!empty loginUserName}"> -->
 		<script type="text/javascript">
 			<![CDATA[
 		  		cssdropdown.startchrome("nice_tnav");
@@ -112,5 +115,5 @@
 				}
 		  	]]>
 		</script>  
-	</c:if>
+<!-- </c:if> -->
 </jsp:root>
