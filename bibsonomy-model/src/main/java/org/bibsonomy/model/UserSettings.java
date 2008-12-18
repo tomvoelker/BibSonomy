@@ -52,7 +52,7 @@ public class UserSettings {
 	/**
 	 * number of list items per page; how many posts to show in post lists
 	 */
-	private int listItemcount = 10;
+	private int listItemcount = 20;
 	
 	/**
 	 * the default language for i18n
