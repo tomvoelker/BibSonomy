@@ -145,10 +145,7 @@
 										style="cursor: pointer" title="show latest user predictions"><img
 										src="${resdir}/image/history.png" /></a></td>
 				       <td><c:out value="${fn:substring(user.realname, 0, 25)}" /></td>	
-					   <td>
-					   	<span title="${user.IPAddress}"><c:out
-										value="${fn:substringBefore(user.IPAddress, ',')}" /></span>
-					   </td>
+					   <td><c:out value="${fn:substringBefore(user.IPAddress, ',')}"/></td>
 					   <td>
 					   	<c:out value="${user.email}" />
 					   </td>
