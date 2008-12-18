@@ -25,7 +25,7 @@
 
   <%@include file="/boxes/tagboxstyle.jsp" %> 
   <c:forEach var="row" items="${rs.rows}">
-    <li><a style="font-size:${row.class + 25}%" title="${row.tag_anzahl}" href="/tag/<mtl:encode value='${row.tag_name}'/>"><c:out value='${row.tag_name}'/></a></li>
+    <li><a style="font-size:${row.class}%" title="${row.tag_anzahl}" href="/tag/<mtl:encode value='${row.tag_name}'/>"><c:out value='${row.tag_name}'/></a></li>
   </c:forEach></ul>
 
 </li>  
