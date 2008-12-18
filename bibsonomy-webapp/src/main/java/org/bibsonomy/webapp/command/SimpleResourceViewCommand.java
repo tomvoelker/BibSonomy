@@ -21,8 +21,8 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
  * @author Dominik Benz
  */
 public class SimpleResourceViewCommand extends ResourceViewCommand {
-	private ListCommand<Post<Bookmark>> bookmark = new ListCommand<Post<Bookmark>>();
-	private ListCommand<Post<BibTex>> bibtex = new ListCommand<Post<BibTex>>();
+	private ListCommand<Post<Bookmark>> bookmark = new ListCommand<Post<Bookmark>>(this);
+	private ListCommand<Post<BibTex>> bibtex = new ListCommand<Post<BibTex>>(this);
 	/**
 	 * @param <T> type of the entities in the list
 	 * @param resourceType type of the entities in the list

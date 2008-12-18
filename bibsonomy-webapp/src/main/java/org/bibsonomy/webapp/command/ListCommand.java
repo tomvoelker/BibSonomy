@@ -17,12 +17,23 @@ import org.bibsonomy.model.Post;
 public class ListCommand<T> {
 	private int numPreviousPages = 2;
 	private int numNextPages = 2;
-	private int entriesPerPage = 20; 
+	private int entriesPerPage = -1;
+	/** we store the parent command here in order to be able to access the default settings for entriesPerPage therein */
+	private SimpleResourceViewCommand parentCommand;
 	private final PageCommand curPage = new PageCommand();
 	private List<PageCommand> previousPages;
 	private List<PageCommand> nextPages;
 	private int totalCount = 0;
 	private List<T> list;
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param parentCommand - the command which contains this list
+	 */
+	public ListCommand(SimpleResourceViewCommand parentCommand) {
+		this.parentCommand = parentCommand;
+	}
 	
 	/**
 	 * @return the sublistlist on the current page
@@ -185,7 +196,11 @@ public class ListCommand<T> {
 	 * @return
 	 */
 	public int getEntriesPerPage() {
-		return this.entriesPerPage;
+		if (this.entriesPerPage == -1) {
+			// fallback to user settings, if not set explicitly before via url parameter
+			this.entriesPerPage = this.parentCommand.getContext().getLoginUser().getSettings().getListItemcount(); 
+		}
+		return this.entriesPerPage;  
 	}
 	
 	/**
