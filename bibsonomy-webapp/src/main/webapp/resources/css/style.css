@@ -238,7 +238,7 @@ h3,.sidebar_h {
 	font-size: 105%;
 	color: #334d55;
 	margin: 0px;
-	padding: 0px;
+	padding: 5px;
 }
 
 #sidebar a,#sidebar a:link,#sidebar a:visited {
@@ -333,6 +333,7 @@ div.bibentry {
 
 .smalltext {
 	font-size: 80%;
+	padding: 5px;
 }
 
 .sidebar_h {
@@ -554,22 +555,26 @@ h2.listh {
 
 #sidebar ul {
 	list-style: none;
-	margin: 3px 0;
-	padding: 0px;
 	font-size: 95%;
+	margin: 3px 0;
+	padding: 5px;
 }
 
 /* hack to fix IE/Win's broken rendering of block-level anchors in lists */
 #sidebar li {
+	
 	border-bottom: 1px solid #ccc;
 }
 
 /* fix for browsers that don't need the hack */
 html>body #sidebar li {
+
 	border-bottom: none;
+
 }
 
 .tagcloud {
+	
 	text-align: justify;
 	font-size: 70%;
 }
