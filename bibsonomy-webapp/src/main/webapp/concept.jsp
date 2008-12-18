@@ -9,7 +9,8 @@
 </jsp:include>
 
 <%-------------------------- Heading -----------------------%>
-<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a href="#" rel="path_menu"><img src="/resources/image/box_arrow.png">&nbsp;concept</a> ::
+<!-- 2008/12/18, fei: removed attribute 'rel="Start"' from link as it brakes chrome menus -->
+<h1 id="path"><a href="/">${projectName}</a> :: <a href="#" rel="path_menu"><img src="/resources/image/box_arrow.png">&nbsp;concept</a> ::
 <form action="/concept/tag/" method="GET" class="smallform">
   <input type="text" id="inpf" size="20" name="tag" value="<c:out value='${param.requTag}'/>"/>
 </form>

@@ -6,7 +6,7 @@
 </jsp:include>
  
  <%-------------------------- Heading -----------------------%>
-<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="/popular"><img src="/resources/image/box_arrow.png">&nbsp;popular</a></h1> 
+<h1 id="path"><a href="/">${projectName}</a> :: <a rel="path_menu" href="/popular"><img src="/resources/image/box_arrow.png">&nbsp;popular</a></h1> 
  
 <%-------------------------- Path Navigation -----------------------%>
 <%@include file="/boxes/path_navi.jsp" %>

@@ -6,7 +6,8 @@
 </jsp:include>
 
 <%-------------------------- Heading -----------------------%>
-<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="/post_bookmark"><img src="/resources/image/box_arrow.png">&nbsp;post bookmark</a></h1> 
+<!-- 2008/12/18, fei: removed attribute 'rel="Start"' as it brakes chrome menus -->
+<h1 id="path"><a href="/" >${projectName}</a> :: <a rel="path_menu" href="/post_bookmark"><img src="/resources/image/box_arrow.png">&nbsp;post bookmark</a></h1> 
 
 <%-------------------------- Path Navigation -----------------------%>
 <%@include file="/boxes/path_navi.jsp" %>

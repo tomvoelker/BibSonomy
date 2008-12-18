@@ -10,7 +10,7 @@
 </jsp:include>
 
 <%-------------------------- Heading -----------------------%>
-<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a href="#" rel="path_menu"><img src="/resources/image/box_arrow.png">&nbsp;author</a> :: 
+<h1 id="path"><a href="/">${projectName}</a> :: <a href="#" rel="path_menu"><img src="/resources/image/box_arrow.png">&nbsp;author</a> :: 
 <form action="/author/" method="GET" class="smallform">
   <input id="inpf" type="text" size="20" name="author" value="<c:out value='${param.requAuthor}'/>"/>
 </form>

@@ -9,7 +9,7 @@
 </jsp:include>
 
 <%-------------------------- Heading -----------------------%>
-<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="/scraperinfo"><img src="/resources/image/box_arrow.png">&nbsp;scraperinfo</a> :: <a href="/scraperinfo_highwire">highwire</a>
+<h1 id="path"><a href="/">${projectName}</a> :: <a rel="path_menu" href="/scraperinfo"><img src="/resources/image/box_arrow.png">&nbsp;scraperinfo</a> :: <a href="/scraperinfo_highwire">highwire</a>
 </h1>
 
 <%-------------------------- Path Navigation -----------------------%>

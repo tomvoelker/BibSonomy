@@ -17,7 +17,7 @@
 </jsp:include>
 
 <%-------------------------- Heading -----------------------%>
-<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a href="/tags" rel="path_menu"><img src="/resources/image/box_arrow.png">&nbsp;tag</a> :: 
+<h1 id="path"><a href="/">${projectName}</a> :: <a href="/tags" rel="path_menu"><img src="/resources/image/box_arrow.png">&nbsp;tag</a> :: 
 <form action="/tag/" method="GET" class="smallform">
   <input id="inpf" type="text" size="20" name="tag" value="<c:out value='${param.requTag}'/>"/>
   <span style="font-size: 65%">

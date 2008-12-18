@@ -10,7 +10,7 @@
 </jsp:include>
 
 <%-------------------------- Heading -----------------------%>
-<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a href="#" rel="path_menu"><img src="/resources/image/box_arrow.png">&nbsp;author</a> :: 
+<h1 id="path"><a href="/">${projectName}</a> :: <a href="#" rel="path_menu"><img src="/resources/image/box_arrow.png">&nbsp;author</a> :: 
 <a href="/author/<mtl:encode value='${param.requAuthor}'/>"/><c:out value='${param.requAuthor}'/></a> ::
 <form action="/author/<mtl:encode value='${param.requAuthor}'/>" method="GET" class="smallform">
   <input type="text" size="20" id="inpf" name="tag" value="<c:out value='${param.requTag}'/>"/>

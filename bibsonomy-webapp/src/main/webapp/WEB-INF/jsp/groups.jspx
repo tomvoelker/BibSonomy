@@ -43,7 +43,7 @@
     	 	| content
     	 	-->
 		<jsp:attribute name="content">
-          <div id="general_100">
+          <div id="general">
             <!--+ 
                 | explain what groups are good for
                 +-->

@@ -10,7 +10,7 @@
 
 
 <%-------------------------- Heading -----------------------%>
-<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="/friend"><img src="/resources/image/box_arrow.png">&nbsp;friend</a> :: 
+<h1 id="path"><a href="/">${projectName}</a> :: <a rel="path_menu" href="/friend"><img src="/resources/image/box_arrow.png">&nbsp;friend</a> :: 
 <a href="/friend/<mtl:encode value='${param.requUser}'/>"><c:out value="${param.requUser}"/></a> ::
 <form action="/friend/<mtl:encode value='${param.requUser}'/>" method="GET" class="smallform">
   <input type="text" size="20" id="inpf" name="tag" value="<c:out value='${param.requTag}'/>"/>

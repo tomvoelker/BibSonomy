@@ -10,7 +10,7 @@
 </jsp:useBean>
 
 <%-- heading --%>
-<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="#"><img src="/resources/image/box_arrow.png">&nbsp;relations</a> :: 
+<h1 id="path"><a href="/">${projectName}</a> :: <a rel="path_menu" href="#"><img src="/resources/image/box_arrow.png">&nbsp;relations</a> :: 
 <a href="/relations/<mtl:encode value='${param.requUser}'/>"><c:out value='${param.requUser}'/></a></h1> 
 
 <%-------------------------- Path Navigation -----------------------%>

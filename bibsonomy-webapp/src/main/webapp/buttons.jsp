@@ -3,7 +3,7 @@
 <jsp:include page="html_header.jsp">
 	<jsp:param name="title" value="buttons" />
 </jsp:include>
-<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a
+<h1 id="path"><a href="/">${projectName}</a> :: <a
 	rel="path_menu" href="/buttons"><img
 	src="/resources/image/box_arrow.png">&nbsp;buttons</a></h1>
 

@@ -7,7 +7,9 @@
 
 <jsp:useBean id="RelationBean" class="beans.RelationBean" scope="request"/>
 
-<h1 id="path"><a href="/" rel="Start">${projectName}</a> :: <a rel="path_menu" href="/relations"><img src="/resources/image/box_arrow.png">&nbsp;relations</a>
+<%-------------------------- Heading -----------------------%>
+<!-- 2008/12/18, fei: removed attribute 'rel="Start"' from link as it brakes chrome menus -->
+<h1 id="path"><a href="/">${projectName}</a> :: <a rel="path_menu" href="/relations"><img src="/resources/image/box_arrow.png">&nbsp;relations</a>
 :: <form action="/concept/tag/" method="GET" class="smallform">
   <input type="text" size="20" name="tag" id="inpf" value="<c:out value='${param.requTag}'/>"/>
 </form>
