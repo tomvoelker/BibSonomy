@@ -41,6 +41,7 @@ function add_filter() {
   var f = document.createElement("form");
   f.onsubmit=stopEvt;
   f.title="filter sidebar";
+  f.style.padding='5px';
   f.style.display = "inline";
   f.appendChild(document.createTextNode("filter: "));
   
