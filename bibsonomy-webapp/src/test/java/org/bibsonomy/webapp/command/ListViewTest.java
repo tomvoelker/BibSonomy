@@ -20,7 +20,7 @@ public class ListViewTest {
 	 */
 	@Test
 	public void testCurPageNumber() {
-		final ListCommand<Integer> lv = new ListCommand<Integer>();
+		final ListCommand<Integer> lv = new ListCommand<Integer>(new BaseCommand());
 		lv.setEntriesPerPage(15);
 		lv.setStart(0);
 		assertEquals(new Integer(1), lv.getCurPage().getNumber());
@@ -37,7 +37,7 @@ public class ListViewTest {
 	 */
 	@Test
 	public void testPreviousPages() {
-		final ListCommand<Integer> lv = new ListCommand<Integer>();
+		final ListCommand<Integer> lv = new ListCommand<Integer>(new BaseCommand());
 		lv.setEntriesPerPage(15);
 		lv.setStart(60);
 		lv.setNumPreviousPages(2);
@@ -63,7 +63,7 @@ public class ListViewTest {
 	 */
 	@Test
 	public void testNextPages() {
-		final ListCommand<Integer> lv = new ListCommand<Integer>();
+		final ListCommand<Integer> lv = new ListCommand<Integer>(new BaseCommand());
 		lv.setEntriesPerPage(15);
 		lv.setTotalCount(91);
 		lv.setStart(60);
