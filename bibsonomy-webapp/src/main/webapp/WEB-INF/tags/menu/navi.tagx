@@ -111,7 +111,7 @@
 				if ("${selectedNaviTab}" != "" ) {
 					document.getElementById("${selectedNaviTab}").className = "checked";
 				} else {
-					document.getElementById("nav_my").className = "checked";
+					// document.getElementById("nav_my").className = "checked";
 				}
 		  	]]>
 		</script>  

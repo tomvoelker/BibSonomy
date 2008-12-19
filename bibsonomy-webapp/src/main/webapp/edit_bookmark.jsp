@@ -20,6 +20,8 @@
 <h1 id="path"><a href="/">${projectName}</a> :: <a rel="path_menu" href="#"><img src="/resources/image/box_arrow.png">&nbsp;edit bookmark</a></h1> 
 
 <%-------------------------- Path Navigation -----------------------%>
+<%-- 2008/12/18, dbe: passing parameter 'selectedNaviTab' due to bug 646 --%>
+<c:set var="selectedNaviTab" value="nav_postBook"/>
 <%@include file="/boxes/path_navi.jsp" %>
 
 <%-------------------------- Navigation -----------------------%>
