@@ -49,7 +49,7 @@ public abstract class MultiResourceListController extends ResourceListController
 	 */
 	protected <T extends Resource, V extends MultiResourceViewCommand> void addList(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, String search, int itemsPerPage) {
 		// new list command to put result list into
-		final ListCommand<Post<T>> listCommand = new ListCommand<Post<T>>();
+		final ListCommand<Post<T>> listCommand = new ListCommand<Post<T>>(cmd);
 		// retrieve posts		
 		log.debug("getPosts " + resourceType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
 		listCommand.setList(this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, order, filter, listCommand.getStart(), listCommand.getStart() + itemsPerPage, search) );
