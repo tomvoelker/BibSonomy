@@ -29,13 +29,14 @@
 }
 
 #topNavBar {
-	width: 90%;
+	width: 95%;
 	text-align: right;
 	padding: 0px;
 	margin: 0 auto 15px;
 	margin-top: 10px;
 	margin-bottom: 2px;
 	font-size: 70%;
+	min-width: 900px;
 }
 
 #nice_tnav { /*border-top-width: 1px;
