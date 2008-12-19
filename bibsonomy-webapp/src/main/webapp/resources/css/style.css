@@ -946,10 +946,11 @@ span.info:hover span {
 }
 
 #main {
-	width: 90%;
+	width: 95%;
 	margin: 0pt auto;
 	border: 2px solid #2E4B73;
 	margin-bottom: 15px;
+	min-width: 900px;
 }
 
 #main_header {
