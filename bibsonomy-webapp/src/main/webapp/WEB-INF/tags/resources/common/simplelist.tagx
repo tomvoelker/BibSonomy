@@ -19,8 +19,7 @@
 	
 	<div class="bookbox">
 	
-		<h2 class="listh"><fmt:message key="${titleKey}" /></h2> 
-
+		<h2 class="listh"><fmt:message key="${titleKey}" />${mtl:ch('nbsp')}</h2>		 
 		<jsp:invoke fragment="extTitle"/>
 		
 		<div class="kiste">${mtl:ch('nbsp')}</div>
