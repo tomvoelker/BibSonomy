@@ -44,7 +44,7 @@
 								<c:when test="${not empty command.listsBookmark[status.index]}">
 									<resources:simplebookmarks listView="${command.listsBookmark[status.index]}" loginUserName="${command.context.loginUser.name}">
 											<jsp:attribute name="extTitle">
-												<h2 class="listh">(${command.listsBookmarkDescription[status.index]} <fmt:message key="days"/>)</h2>
+												<h2 class="listh">(${command.listsBookmarkDescription[status.index]}<c:out value=" "/><fmt:message key="days"/>)</h2>
 											</jsp:attribute>
 									</resources:simplebookmarks>
 								</c:when>
@@ -54,7 +54,7 @@
 								<c:when test="${not empty command.listsBibTeX[status.index]}">
 									<resources:simplebibtexs listView="${command.listsBibTeX[status.index]}" loginUserName="${command.context.loginUser.name}">
 											<jsp:attribute name="extTitle">
-												<h2 class="listh">(${command.listsBibTeXDescription[status.index]} <fmt:message key="days"/>)</h2>
+												<h2 class="listh">(${command.listsBibTeXDescription[status.index]}<c:out value=" "/><fmt:message key="days"/>)</h2>
 											</jsp:attribute>
 									</resources:simplebibtexs>
 								</c:when>
