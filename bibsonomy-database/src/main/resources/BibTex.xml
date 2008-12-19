@@ -415,10 +415,10 @@
 	
 	<select id="getJustBibTexForGroupWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, h.ctr as count, g.group,
-		bb.hash, bb.name
+		bb.hash, bb.name, bb.md5hash
 		FROM bibtex b, bibhash h,
 		     (
-		     SELECT ids.content_id, ids.date, name, hash FROM  
+		     SELECT ids.content_id, ids.date, name, hash, md5hash FROM  
 		     ((SELECT content_id, date                <!-- publications from users of group which currUser may see -->
 		       FROM bibtex t1, groups g
 		       WHERE g.group = #groupId#
