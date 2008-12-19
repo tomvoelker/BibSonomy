@@ -77,8 +77,6 @@ public class InitUserFilter implements Filter {
 	public static final String REQ_ATTRIB_USER      	   = "user";
 	public static final String REQ_ATTRIB_LANGUAGE         =  SessionLocaleResolver.class.getName() + ".LOCALE";	
 	public static final String REQ_ATTRIB_LOGIN_USER       = "loginUser";
-	public static final String BIBTEX_NUM_ENTRIES_PER_PAGE = "bibtex.entriesPerPage";
-	public static final String BOOKMARK_NUM_ENTRIES_PER_PAGE = "bookmark.entriesPerPage";
 	/**
 	 * Enables X.509 authentication.
 	 */
@@ -322,16 +320,7 @@ public class InitUserFilter implements Filter {
 		 * put bean into request for following Servlets/JSPs
 		 */
 		httpServletRequest.setAttribute(REQ_ATTRIB_LOGIN_USER, loginUser);
-		
-		
-		// set list lengths to default value, if not present
-		if (httpServletRequest.getParameter(BOOKMARK_NUM_ENTRIES_PER_PAGE) == null) {
-			httpServletRequest.setAttribute(BOOKMARK_NUM_ENTRIES_PER_PAGE, loginUser.getSettings().getListItemcount());
-		}
-		if (httpServletRequest.getParameter(BIBTEX_NUM_ENTRIES_PER_PAGE) == null) {
-			httpServletRequest.setAttribute(BIBTEX_NUM_ENTRIES_PER_PAGE, loginUser.getSettings().getListItemcount());
-		}		
-		
+				
 		/*
 		 * for backwards compatibility, we copy here the data from the user object into a
 		 * "BibSonomy 1" UserBean Object
