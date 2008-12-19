@@ -583,7 +583,7 @@ html>body #sidebar li {
 .tagcloud li {
 	display: inline;
 	padding: 0em .1em 0em .1em;
-	line-height: 1.8em;
+	line-height: 1.5em;
 }
 
 .tagcloud a,.taglist a {
