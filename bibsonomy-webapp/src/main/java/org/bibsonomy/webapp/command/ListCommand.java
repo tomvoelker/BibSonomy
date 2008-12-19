@@ -11,7 +11,7 @@ import org.bibsonomy.model.Post;
 /**
  * bean for listviews across multiple browsable pages 
  * 
- * @param <T> type of the entities in the list 
+ * @param <T> type of the entities in the list  
  * @author Jens Illig
  */
 public class ListCommand<T> {
@@ -19,7 +19,7 @@ public class ListCommand<T> {
 	private int numNextPages = 2;
 	private int entriesPerPage = -1;
 	/** we store the parent command here in order to be able to access the default settings for entriesPerPage therein */
-	private SimpleResourceViewCommand parentCommand;
+	private ContextCommand parentCommand;
 	private final PageCommand curPage = new PageCommand();
 	private List<PageCommand> previousPages;
 	private List<PageCommand> nextPages;
@@ -31,7 +31,7 @@ public class ListCommand<T> {
 	 * 
 	 * @param parentCommand - the command which contains this list
 	 */
-	public ListCommand(SimpleResourceViewCommand parentCommand) {
+	public ListCommand(ContextCommand parentCommand) {
 		this.parentCommand = parentCommand;
 	}
 	

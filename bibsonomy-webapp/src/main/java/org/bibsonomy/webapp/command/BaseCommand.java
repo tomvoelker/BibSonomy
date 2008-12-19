@@ -15,7 +15,7 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
  * 
  * @author Jens Illig
  */
-public class BaseCommand {
+public class BaseCommand implements ContextCommand {
 	
 	private RequestWrapperContext context;
 
