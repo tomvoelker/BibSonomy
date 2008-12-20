@@ -2,41 +2,36 @@
 
 <%@include file="/boxes/admin/login.jsp"%>
 
-<c:if test="${param.userinfo != null }">
-	<sql:query var="name" dataSource="jdbc/bibsonomy">
-		SELECT user_name FROM user
-		WHERE user_name LIKE ?
-		LIMIT 10
-		<sql:param value="${param.userinfo}%"/>
-	</sql:query>
-</c:if>
-
-<c:if test="${param.user != null and param.type == 0}">
+<c:if test="${not empty param.q and param.type eq 0}">
 	<sql:query var="name" dataSource="jdbc/bibsonomy">
 		SELECT user_name FROM user
 		WHERE user_name LIKE ?
 		AND spammer = 0
 		LIMIT 10
-		<sql:param value="${param.user}%"/>
+		<sql:param value="${param.q}%"/>
 	</sql:query>
 </c:if>
 
-<c:if test="${param.user != null and param.type == 1}">
+<c:if test="${not empty param.q and param.type eq 1}">
 	<sql:query var="name" dataSource="jdbc/bibsonomy">
 		SELECT user_name FROM user
 		WHERE user_name LIKE ?
 		AND spammer = 1
 		LIMIT 10
-		<sql:param value="${param.user}%"/>
+		<sql:param value="${param.q}%"/>
 	</sql:query>
 </c:if>
 
-<ul>
+<c:if test="${not empty param.q and param.type eq 2}">
+	<sql:query var="name" dataSource="jdbc/bibsonomy">
+		SELECT user_name FROM user
+		WHERE user_name LIKE ?
+		LIMIT 10
+		<sql:param value="${param.q}%"/>
+	</sql:query>
+</c:if>
 
-	<c:forEach items="${name.rows}" var="n">
-		<li>${n.user_name}</li>
-	</c:forEach>
-
-</ul>
-
+<c:forEach items="${name.rows}" var="n">
+	${n.user_name}
+</c:forEach>
 

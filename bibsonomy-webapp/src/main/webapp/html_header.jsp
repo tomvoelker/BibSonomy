@@ -39,7 +39,8 @@
     <script type="text/javascript" src="/resources/javascript/chrome.js"></script>
 	<script type="text/javascript" src="/resources/javascript/jquery_126_min.js"></script>
 	<script type="text/javascript" src="/resources/javascript/jquery_corner.js"></script>
-    
+	<script type="text/javascript" src="/resources/javascript/jquery_autocomplete.js"></script>    
+
     
     <%-- enable logging with user permission --%>
     <c:if test="${user.logLevel != 1}">

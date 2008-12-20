@@ -5,14 +5,34 @@
 <%@include file="/boxes/admin/login.jsp"%>
 
 <script type="text/javascript" src="/resources/javascript/marksame.js"></script>
-<script type="text/javascript" src="/ajax_scripts/scriptaculous/lib/prototype.js"></script>
-<script type="text/javascript" src="/ajax_scripts/scriptaculous/src/scriptaculous.js"></script>
 <link rel="stylesheet" type="text/css" href="/resources/css/spammer.css">
 
 <%-- include HTML header --%>
 <jsp:include page="html_header.jsp">
   <jsp:param name="title" value="admin" />
 </jsp:include>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+		$("#acl_spam").autocomplete("admin_suggest.jsp?type=0", {
+			width: 260,
+			selectFirst: true
+		});
+		$("#acl_unspam").autocomplete("admin_suggest.jsp?type=1", {
+			width: 260,
+			selectFirst: true
+		});
+		$("#acl_userinfo").autocomplete("admin_suggest.jsp?type=2", {
+			width: 260,
+			selectFirst: true
+		});
+		$("#acl_usergroup").autocomplete("admin_suggest.jsp?type=2", {
+			width: 260,
+			selectFirst: true
+		});
+  });
+</script>
+
 
 <%-------------------------- Heading -----------------------%>
 <h1 id="path"><a href="/?filter=no" rel="Start">${projectName}</a> :: <a rel="path_menu" href="/admin.jsp"><img src="/resources/image/box_arrow.png">&nbsp;admin</a></h1>
@@ -45,26 +65,17 @@
 			<h2>flag/unflag a spammer</h2>
 			<%-- spammer form  --%>
 			<form action="/admin.jsp">
-			  <b>Spammer:</b> user name <input type="text" name="user" id="acl_spam" />
+			  <b>Spammer:</b> user name <input type="text" name="user" id="acl_spam" class="ac_spam"/>
 			  <input type="hidden" name="action" value="flag_spammer"/>
 			  <input type="button" value=" OK " onclick="addSpammer(document.getElementsByName('user')[0].value,null);clearFields();"/>
 			</form>
 			
-			<div id="autocomplete_spam" class="autocomplete"></div>
-			<script type="text/javascript">
-			  new Ajax.Autocompleter("acl_spam","autocomplete_spam","admin_suggest.jsp?type=0");
-			</script>
-			
 			<form action="/admin.jsp">
-			  <b style="text-decoration:line-through;">Spammer:</b> user name <input type="text" name="user" id="acl_unspam"/>
+			  <b style="text-decoration:line-through;">Spammer:</b> user name <input type="text" name="user" id="acl_unspam" class="ac_spam"/>
 			  <input type="hidden" name="action" value="unflag_spammer"/>
 			  <input type="button" value=" OK " onclick="unflagSpammer(document.getElementsByName('user')[1].value,null);clearFields();"/>
 			</form>
-			
-			<div id="autocomplete_unspam" class="autocomplete"></div>
-			<script type="text/javascript">
-			  new Ajax.Autocompleter("acl_unspam","autocomplete_unspam","admin_suggest.jsp?type=1");
-			</script>
+
 		</td>
 		<td>			
 			<div class="logbox">			
@@ -81,14 +92,9 @@
 <h2> User Info </h2>
 
 <form name="userinfo" action="/admin.jsp">
-  user name <input type="text" name="userinfo" id="acl_userinfo"/>
+  user name <input type="text" name="userinfo" id="acl_userinfo" class="ac_spam"/>
   <input type="submit"/>
 </form>
-
-<div id="autocomplete_userinfo" class="autocomplete"></div>
-<script type="text/javascript">
-  new Ajax.Autocompleter("acl_userinfo","autocomplete_userinfo","admin_suggest.jsp");
-</script>
 
 <sql:setDataSource dataSource="jdbc/bibsonomy" var="dataSource"/>   
 
@@ -271,7 +277,7 @@
 <form action="/admin.jsp">
   <table>
     <tr>
-      <td>user name</td><td><input type="text" name="user" id="acl_usergroup" /></td></tr>
+      <td>user name</td><td><input type="text" name="user" id="acl_usergroup" class="ac_spam"/></td></tr>
     <tr>
       <td>privacy</td>
       <td>
@@ -293,10 +299,6 @@
    </table>
 </form>
 
-<div id="autocomplete_usergroup" class="autocomplete"></div>
-<script type="text/javascript">
-  new Ajax.Autocompleter("acl_usergroup","autocomplete_usergroup","admin_suggest.jsp");
-</script>
 </li>
 
 <li>
