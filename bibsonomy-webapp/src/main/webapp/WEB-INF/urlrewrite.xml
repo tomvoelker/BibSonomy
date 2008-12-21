@@ -349,6 +349,11 @@
  <!--     <to>/ResourceHandler?page=bibtexkey&amp;requestKey=$1&amp;$2</to> -->
  		<to>/bibtexkey?requestedKey=$1&amp;$2</to> 
     </rule>    
+    <rule> 
+		<from>^/+uploadFile/+([^/?]+?)(\?(.*))?$</from>
+		<!-- NEW PAGE -->
+		<to>/uploadFile?resourceHash=$1&amp;$3</to>
+	</rule>
 	
 		
 <!-- ############## viewable pages ############### -->

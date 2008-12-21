@@ -184,17 +184,12 @@
 
 <div class="boxed">
   <h2>PDF / PS</h2>
-  Your private copy of the document:
   <c:choose>
     <c:when test='${empty resource.docHash}'> 
-      <form enctype="multipart/form-data" method="post" action="/DocumentUploadHandler" style="display:inline;">
-      <input type="hidden" name="hash" value="${resource.hash}" />
-      <input name="file" type="file"  size="20"/>
-      <input type="submit" value="upload" />    
-      <div class="errmsg"><%=upBean.getErrorMsg("file")%></div>
-      </form>
+		<a href="/uploadFile/${resource.hash}">upload</a>
     </c:when>  
-    <c:otherwise>      
+    <c:otherwise>  
+	 Your private copy of the document:    
       <a href="/documents/${resource.docHash}"><c:out value="${resource.docName}"/></a>
       &nbsp;(<a href="/documents/${resource.docHash}?action=delete">delete</a>)
     </c:otherwise>

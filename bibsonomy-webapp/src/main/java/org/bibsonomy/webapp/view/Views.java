@@ -273,6 +273,10 @@ public enum Views implements View {
 	 */
 	PASSWORD_CHANGE_ON_REMIND("actions/user/passwordChangeOnRemind"),
 	
+	/**
+	 * Upload page to upload document to an existing bibtex entry
+	 */
+	UPLOAD_FILE("actions/uploadFile"), 
 	
 	/**
 	 * Show the page for administrating groups

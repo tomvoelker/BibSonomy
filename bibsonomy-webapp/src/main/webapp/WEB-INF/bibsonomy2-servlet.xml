@@ -209,6 +209,18 @@
 					</bean>
 				</entry>
 				
+				<entry key="/uploadFile">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="uploadFileController"/>
+						<property name="allowedFields">
+							<list>
+								<value>file</value>
+								<value>resourceHash</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				
 				<entry key="/reminder">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="passwordReminderController"/>
@@ -511,13 +523,15 @@
 	
   
 
-	<!--  #################### view resolver #################### -->
+	<!--  #################### view resolver & multipart resolver #################### -->
 	
 	<bean id="viewResolver"	class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
 		<property name="prefix" value="/WEB-INF/jsp/" />
 		<property name="suffix" value=".jspx" />
 	</bean>
+	
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
 	
 
 	<!--  #################### imports #################### -->
