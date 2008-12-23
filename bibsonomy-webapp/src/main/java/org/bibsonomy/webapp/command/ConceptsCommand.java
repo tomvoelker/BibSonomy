@@ -3,7 +3,6 @@ package org.bibsonomy.webapp.command;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.bibsonomy.model.Tag;
 
 /**
@@ -12,8 +11,25 @@ import org.bibsonomy.model.Tag;
  * @author Dominik Benz
  * @version $Id$
  */
-public class ConceptsCommand extends BaseCommand {
+public class ConceptsCommand extends ListCommand<Tag> {
 		
+
+	/**
+	 * constructor used by the UserRelationCommand
+	 * @param parentCommand
+	 */
+	public ConceptsCommand(ContextCommand parentCommand) {
+		super(parentCommand);
+		// TODO Auto-generated constructor stub
+	}
+	
+	/**
+	 * default constructor
+	 */
+	public ConceptsCommand() {
+		super(new BaseCommand());
+	}
+
 	/**
 	 * a list of concepts
 	 */
@@ -29,7 +45,7 @@ public class ConceptsCommand extends BaseCommand {
 		this.numConcepts = numConcepts;
 	}
 
-	public ConceptsCommand() {}
+//	public ConceptsCommand() {}
 
 	public List<Tag> getConceptList() {
 		return this.conceptList;
@@ -37,6 +53,7 @@ public class ConceptsCommand extends BaseCommand {
 
 	public void setConceptList(List<Tag> concepts) {
 		this.conceptList = concepts;
+		setList(concepts);
 	}
 	
 }
