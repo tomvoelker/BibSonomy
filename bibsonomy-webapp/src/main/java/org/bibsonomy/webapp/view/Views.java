@@ -80,6 +80,11 @@ public enum Views implements View {
 	BIBTEXPAGE("bibtex"),
 	
 	/**
+	 * relations page shows all the relations of an user
+	 */
+	USERRELATED("userRelations"),
+	
+	/**
 	 * details of a publication 
 	 */
 	BIBTEXDETAILS("bibtexdetails"),
