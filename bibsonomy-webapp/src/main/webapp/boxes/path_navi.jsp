@@ -27,12 +27,55 @@
 	</div>	
 	
 	<div id="mainHeaderRightBox">
-		<c:choose>
+ 		<c:choose>
 			<c:when test="${!empty user.name}">
 				<span id="pickctr">${user.postsInBasket}</span> picked in <a href="/basket">basket</a> &middot;
 				<a href="/edit_tags">edit tags</a> 
 			</c:when>
+			<c:otherwise>
+				<span style="display: block; margin-top: 7px;">
+					<div id="userAndPw">
+						<c:set var="login">login </c:set>
+						<c:url var="loginUrl" value="/login" context="${projectContext}" />
+						<form method="POST" action="${loginUrl}" style="display: inline">
+							<label for="un">username:&nbsp;</label>
+							<input type="text" size="10" name="username" id="un" />&nbsp; 
+							<label for="pw">password:&nbsp;</label> 
+							<input type="password" size="10" name="password" id="pw" /> 
+							<input type="image" src="${projectContext}resources/image/grey.png" alt="${login}" /> 
+							<a href="javascript:switchLogin();">
+								<img style="width: 16px; height: 16px;" src="${resdir}/image/login_openid.png" />
+							</a>
+						</form>
+					</div>
+
+					<div id="openID" style="display: none">
+						<form action="/login" method="POST">
+							<label path="openID">OpenID:</label>
+							<input type="text" id="openID" class="openid" size="30" value="" name="openID" /> <a href="javascript:switchLogin();">
+							<img style="width: 16px; height: 16px;" src="${resdir}/image/login_bib.png" /></a>
+						</form>
+					</div>
+				</span>
+
+				<%-- little script to switch between default login and OpenID login forms --%>
+				<script type="text/javascript">
+							function switchLogin() {
+								var defaultLoginDiv = document.getElementById('userAndPw');
+								var openIDLoginDiv = document.getElementById('openID');
+							
+								if (defaultLoginDiv.style.display == 'none') {
+									defaultLoginDiv.style.display = 'block';
+									openIDLoginDiv.style.display = 'none';
+								} else {
+									defaultLoginDiv.style.display = 'none';
+									openIDLoginDiv.style.display = 'block';
+								}
+							}
+				</script>
+			</c:otherwise>
 		</c:choose>
+		
 	</div>
 
 	<div id="welcomeTop">A blue social bookmark and publication sharing system.</div>
