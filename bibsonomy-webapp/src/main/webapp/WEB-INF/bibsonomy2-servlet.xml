@@ -33,7 +33,12 @@
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="userPageController"/>
 					</bean>
-				</entry>				
+				</entry>	
+				<entry key="/relations">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="userRelationsController"/>
+					</bean>
+				</entry>					
 				<entry key="/groups">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="groupsPageController"/>
@@ -352,6 +357,17 @@
 		</property>
 	</bean>
 
+	<bean id="userRelationsController" class="org.bibsonomy.webapp.controller.UserRelationsController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+		<property name="listsToInitialise">
+			<list>
+				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
+			</list>
+		</property>
+	</bean>
+
 	<bean id="conceptPageController" class="org.bibsonomy.webapp.controller.ConceptPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
@@ -523,7 +539,7 @@
 	
   
 
-	<!--  #################### view resolver & multipart resolver #################### -->
+	<!--  #################### view resolver #################### -->
 	
 	<bean id="viewResolver"	class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />

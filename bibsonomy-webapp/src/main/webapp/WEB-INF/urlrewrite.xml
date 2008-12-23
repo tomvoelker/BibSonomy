@@ -703,15 +703,25 @@
 		<to>/actions/admin/group?requestedGroup=$1&amp;$3</to>
 	</rule>
 
-<!-- ############## other pages ############### -->
+<!-- ############## relation pages ############### -->
+ <!-- redirect for user formular on /user/USER page -->
+  	<!--  <rule>
+      	<from>^/+relations/+([^/?]+?)(\?(.*))?$</from>
+      <to type="redirect">/relations/$2</to>
+    </rule>-->
+
 	<rule>
 		<from>^/+relations/+([^/?]+?)(\?(.*))?$</from>
-		<to>/userRelations?requUser=$1&amp;$3</to>
-	</rule>
-	<rule>
+		<to>/relations?requestedUser=$1&amp;$3</to>
+	</rule> 
+       
+    
+<!-- ############## other pages ############### -->
+
+ 	<!-- <rule>
 		<from casesensitive="true">^/+relations</from>
 		<to>/allRelations</to>
-	</rule>
+	</rule> --> 
     <rule><!-- old one, can be removed one day -->
         <from>^/+download(\?(.*))?$</from>
         <to>/ResourceHandler?page=basket&amp;$2</to>
