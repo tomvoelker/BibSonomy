@@ -28,19 +28,8 @@
 			<link rel="stylesheet" type="text/css"
 				href="${resdir}/css/spammer.css" />
 		</jsp:attribute>
-
-		<jsp:attribute name="topcontent">
-			<menu:adminNavi />	
-			<!-- Admin Navigation -->
-				<form action="/admin" method="get" class="smallform">
-				<table class="stattable">
-					<tr>
-					<td>Filter: Last <input type="text" name="interval"
-						id="interval" value="${command.interval}" size="4" />  days</td>
-					</tr>
-				</table>
-				</form>			
-		</jsp:attribute>
+		
+		
 
 		<jsp:attribute name="tabcontent">		
 			<!-- spammer js -->
@@ -58,7 +47,7 @@
 				<c:choose>
 				
 				<!-- classifier results tabs -->
-				<c:when test="${command.selTab &lt; 8}">	
+				<c:when test="${command.selTab &lt; 7}">	
 				
 				<table id="spammers" class="spammertable">
 					
@@ -81,6 +70,8 @@
 				    	</c:choose>
 				    	<th>updated at</th>
 				    </tr>
+				    
+				    
 				    				    
 				    <!-- user list -->
 					<c:forEach var="user" items="${command.content}" varStatus="status">
@@ -267,6 +258,8 @@
 							value="weka.classifiers.functions.Logistic">Logistic Regression</option>
 							<option id="weka.classifiers.functions.LibSVM"
 							value="weka.classifiers.functions.LibSVM">LibSVM</option>
+							<option id="weka.classifiers.functions.SMO"
+							value="weka.classifiers.functions.SMO">Weka SVM (SMO)</option>
 						</select>
 					</td>
 					<td><input type="button" value="update"
@@ -315,7 +308,7 @@
 				<tr>
 					<td>Spammers by Admin</td>
 					<td><c:out value="${statisticsCommand.numAdminSpammers}" /></td>
-				</tr>	
+				</tr>
 				<tr>
 					<td>No Spammers by Admin</td>
 					<td><c:out value="${statisticsCommand.numAdminNoSpammer}" /></td>
