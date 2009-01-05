@@ -24,6 +24,12 @@
 #   - added preprocessing of URLs
 #   2008-04-09: (dbe)
 #   - extended preprocessing of URLs
+#   2009-01-05: (rja)
+#   - Added functionality to add missing posts to search table,
+#     i.e., to look for content_ids in the bookmark/bibtex table
+#     which are "old" but not contained in the respective search
+#     tables. This functionality is activated when the script is 
+#     called as "add_missing_posts_to_search_table.pl".
 #
 use DBI();
 use TeX::Encode;
@@ -37,6 +43,16 @@ my $CONTENT_TYPE_BIBTEX   = 2;
 # set to 1 to enable informative output - should be off when running as cron, because 
 # a mail is sent in case of script output
 my $enable_output = 0;
+
+# if the script is called as "add_missing_posts_to_search_table.pl", it
+# does special (expensive) queries to find "old" content_ids which are missing
+# in the search tables
+my $add_missing_posts = $PROGRAM_NAME eq "add_missing_posts_to_search_table.pl";
+if ($add_missing_posts) {
+  print "adding missing posts to search table; enabling output\n";
+  $enable_output = 1;
+}
+
 
 if ($#ARGV != 2) {
     print "please enter database name as first, bookmark table name as second and bibtex table name as last argument\n";
@@ -95,33 +111,93 @@ my $stm_select_bookmark_content_id = $dbh->prepare ("SELECT content_id FROM $boo
 # get last bibtex content_id from bibtex search table
 my $stm_select_bibtex_content_id = $dbh->prepare ("SELECT content_id FROM $bibtex_table ORDER BY content_id DESC LIMIT 1");
 
-# get all relevant bookmarks from bookmark table
-my $stm_select_book = $dbh->prepare ("
-  SELECT b.content_id, b.group, b.date, b.user_name, b.book_description, b.book_extended, u.book_url    
+# gets all relevant bookmarks from bookmark table
+my $stm_select_book;
+# the rows for bookmarks to query
+my $bookmark_rows = "b.content_id, b.group, b.date, b.user_name, b.book_description, b.book_extended, u.book_url";
+
+if ($add_missing_posts) {
+  # we ask for all bookmarks which have no corresponding content_id in the search table 
+  # and whose content_id is smaller than the last content_id of the search table - to
+  # only get "old" bookmarks, i.e., to not to interfere with the "normal" search table 
+  # updates
+  $stm_select_book = $dbh->prepare ("
+    SELECT $bookmark_rows 
+    FROM bookmark b 
+      LEFT JOIN $bookmark_table USING (content_id)
+      JOIN urls u USING (book_url_hash)
+    WHERE b.content_id < ? 
+      AND b.group >= 0
+      AND $bookmark_table.content_id IS NULL
+  ");
+} else {
+  # this is the regular query 
+  $stm_select_book = $dbh->prepare ("
+    SELECT $bookmark_rows
     FROM bookmark b JOIN urls u USING (book_url_hash)
     WHERE b.content_id > ? 
-    AND b.group >= 0");
+      AND b.group >= 0
+  ");
+}
 
-# get all relevant bibtex from bibtex table
-my $stm_select_bib  = $dbh->prepare ("
-  SELECT b.content_id,   b.group,       b.date,         b.user_name,      b.author, 
+# gets all relevant bibtex from bibtex table
+my $stm_select_bib;
+# the rows for bibtex to query
+my $bibtex_rows = 
+        "b.content_id,   b.group,       b.date,         b.user_name,      b.author, 
          b.editor,       b.title,       b.journal,      b.booktitle,      b.volume, 
          b.number,       b.chapter,     b.edition,      b.month,          b.day, 
          b.howPublished, b.institution, b.organization, b.publisher,      b.address, 
          b.school,       b.series,      b.bibtexKey,    b.url,            b.type, 
          b.description,  b.annote,      b.note,         b.pages,          b.bKey, 
-         b.number,       b.crossref,    b.misc,         b.bibtexAbstract, b.year
-   FROM bibtex b
-   WHERE b.content_id > ? 
-   AND b.group >= 0");
+         b.number,       b.crossref,    b.misc,         b.bibtexAbstract, b.year";
 
-# get all relevant data from tas table
-my $stm_select_tas = $dbh->prepare ("
-  SELECT content_id, tag_name
+if ($add_missing_posts) {
+  # see comment for bookmarks
+  $stm_select_bib = $dbh->prepare ("
+    SELECT $bibtex_rows
+    FROM bibtex b
+      LEFT JOIN $bibtex_table USING (content_id)
+    WHERE b.content_id < ? 
+      AND b.group >= 0
+      AND $bibtex_table.content_id IS NULL  
+  ");
+} else {
+  $stm_select_bib  = $dbh->prepare ("
+    SELECT $bibtex_rows
+    FROM bibtex b
+    WHERE b.content_id > ? 
+      AND b.group >= 0
+  ");
+}
+
+# gets all relevant data from tas table
+my $stm_select_tas;
+
+if ($add_missing_posts) {
+  # only missing posts, see comment above
+
+  # for bookmarks only, bibtex below
+  $stm_select_tas = $dbh->prepare("
+    SELECT t.content_id, t.tag_name
+    FROM tas t
+      LEFT JOIN $bookmark_table USING (content_id)
+    WHERE t.content_type = ?
+      AND t.content_id < ? 
+      AND t.group >= 0
+      AND $bookmark_table.content_id IS NULL
+  ");
+} else {
+  $stm_select_tas = $dbh->prepare("
+    SELECT content_id, tag_name
     FROM tas
     WHERE content_type = ? 
-    AND content_id > ? 
-    AND `group` >= 0");
+      AND content_id > ? 
+      AND `group` >= 0
+  ");
+}
+
+
 
 
 #################################
@@ -147,17 +223,38 @@ $stm_select_bibtex_content_id->finish();
 # retrieve tas rows
 #################################
 
+# bookmarks
 $stm_select_tas->execute($CONTENT_TYPE_BOOKMARK, $last_bookmark_content_id);
 while (@row = $stm_select_tas->fetchrow_array) {
-    $bookmark_tag_hash{$row[0]} .= " $row[1]";
+  $bookmark_tag_hash{$row[0]} .= " $row[1]";
 }
 $stm_select_tas->finish();
 
+
+
+# since we join the corresponding search tables to look for NULL values,
+# we need to alter the query depending on the content_type ... 
+if ($add_missing_posts) {
+  # only missing posts, see comment above
+  $stm_select_tas = $dbh->prepare("
+    SELECT t.content_id, t.tag_name
+    FROM tas t
+      LEFT JOIN $bibtex_table USING (content_id)
+    WHERE t.content_type = ?
+      AND t.content_id < ? 
+      AND t.group >= 0
+      AND $bibtex_table.content_id IS NULL
+  ");
+}
+
+# bibtex
 $stm_select_tas->execute($CONTENT_TYPE_BIBTEX, $last_bibtex_content_id);
 while (@row = $stm_select_tas->fetchrow_array) {
-    $bibtex_tag_hash{$row[0]} .= " $row[1]";
+  $bibtex_tag_hash{$row[0]} .= " $row[1]";
 }
 $stm_select_tas->finish();
+
+
 
 
 #################################
