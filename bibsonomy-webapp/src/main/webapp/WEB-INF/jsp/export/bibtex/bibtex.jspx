@@ -37,11 +37,18 @@
 	<!-- special fields: misc, key, description, abstract, keywords, biburl -->
 	
 	<c:if test="${not empty bibtex['misc']}">
-	<c:forEach var="miscField" items="${mtl:miscFieldToArray(bibtex['misc'])}">
-		<jsp:text>
-	${miscField},
+			<!--+
+		    | 2008/12/23, fei: due to bug 682, misc field can't be split using
+		    |                  regular expressions. using the bibtex parser seems to
+		    |                  be too expensive - so we just print out misc field's 
+		    |                  content. 
+			<c:forEach var="miscField" items="${mtl:miscFieldToArray(bibtex['misc'])}">
+				<jsp:text>	${miscField},<br/></jsp:text>
+			</c:forEach>
+		    -->
+		    <c:out value="${bibtex['misc']}"/>
+	<jsp:text>
 	</jsp:text>
-	</c:forEach>
 	</c:if>
 	<c:if test="${not empty bibtex.BKey}">
 	<jsp:text>key = {${bibtex.BKey}},
