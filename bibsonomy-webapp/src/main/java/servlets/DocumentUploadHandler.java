@@ -148,10 +148,21 @@ public class DocumentUploadHandler extends HttpServlet{
 			stmtP.setString(2, currUser);
 			rst = stmtP.executeQuery();
 			if (rst.next()) {
+
+				/*
+				 * Get md5hash of file contents to write it into the database.
+				 * Note: it's necessary to do this before writing the file 
+				 * because after writing the file might not any longer be in
+				 * memory (happened recently for files > 10 MB).
+				 */
+				final String fileHash = HashUtils.getMD5Hash(upFile.get());
+				if (fileHash == null) throw new RuntimeException("Could not calculate MD5 hash of file.");
+				
 				/* *************************************************
 				 * save file and insert data into database
 				 * *************************************************/
 
+				
 				// write file; build path from first two letters of file name hash
 				upFile.write(new File((rootPath + "bibsonomy_docs/" + hashedName.substring(0, 2).toLowerCase()), hashedName)); // if it fails, Exception is catched below 				
 
@@ -162,7 +173,7 @@ public class DocumentUploadHandler extends HttpServlet{
 				stmtP.setString(3, fileName);
 				stmtP.setString(4, currUser);
 				stmtP.setTimestamp(5, new Timestamp(currDate.getTime()));
-				stmtP.setString(6, HashUtils.getMD5Hash(upFile.get()));
+				stmtP.setString(6, fileHash);
 				stmtP.executeUpdate();
 
 				redirectUrl = "/bibtex/" + Bibtex.INTRA_HASH + hash + "/" + URLEncoder.encode(currUser, "UTF-8");
