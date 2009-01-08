@@ -314,6 +314,11 @@ public class SimpleBibTeXParser {
 				final String last = person.getLast();
 				if (last != null) personName.append(" " + last);
 				/*
+				 * "others" has a special meaning in BibTeX (it's converted to "et al."),
+				 * so we must not ignore it! 
+				 */
+				if (person.isOthers()) personName.append("others");
+				/*
 				 * next name
 				 */
 				personBuffer.append(personName + AND);
