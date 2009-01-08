@@ -41,5 +41,18 @@ public class BibTeXUtilsTest {
 		final String addFieldIfNotContained = BibTeXUtils.addFieldIfNotContained(bibtex, "year", FIELD_VALUE);
 		assertEquals(bibtex, addFieldIfNotContained);
 	}
+	
+	/**
+	 * Tests with a field not occuring in the entry
+	 */
+	@Test
+	public void testAddField() {
+		final StringBuffer buf = new StringBuffer(bibtex);
+		BibTeXUtils.addField(buf, FIELD_NAME, FIELD_VALUE);
+		final String expected = bibtexStart + "," + FIELD_NAME + " = {" + FIELD_VALUE + "}\n}";
+		assertEquals(expected, buf.toString());
+	}
+	
+	
 
 }

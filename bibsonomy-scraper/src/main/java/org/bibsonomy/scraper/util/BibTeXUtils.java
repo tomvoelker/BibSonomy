@@ -43,12 +43,23 @@ public class BibTeXUtils {
 		 */
 		if (!bibtexString.matches("(?s).*" + fieldName + "\\s*=\\s*.*")) {
 			/*
-			 * the add the field at the end by replacing the last brace
+			 * add the field at the end before the last brace
 			 */
-			final int lastIndexOf = bibtex.lastIndexOf("}");
-			bibtex.replace(lastIndexOf, bibtex.length(), "," + fieldName + " = {" + fieldValue + "}\n}");
+			addField(bibtex, fieldName, fieldValue);
 		}
-		System.out.println(bibtex);
 	}
+
+	/** Adds the given field at the end of the given BibTeX entry by placing
+	 * it before the last brace. 
+	 * 
+	 * @param bibtex - the BibTeX entry
+	 * @param fieldName - the name of the field
+	 * @param fieldValue - the value of the field
+	 */
+	public static void addField(final StringBuffer bibtex, final String fieldName, final String fieldValue) {
+		final int lastIndexOf = bibtex.lastIndexOf("}");
+		bibtex.replace(lastIndexOf, bibtex.length(), "," + fieldName + " = {" + fieldValue + "}\n}");
+	}
+	
 	
 }
