@@ -212,8 +212,10 @@ public static String getInterHash(final BibTeX bibtex) {
 			 
 			 <p>An overview of BibSonomy's screen scrapers is given on the
 			 <a href="http://www.bibsonomy.org/scraperinfo">scraperinfo</a> page. 
-			 The source code of the scraper interface is contained in the 
-			 <a href="http://www.bibsonomy.org/help/downloads/org.bibsonomy.scraper_0.2.jar">org.bibsonomy.scraper_0.2.jar</a> JAR. 
+			 We also provide a <a href="http://scraper.bibsonomy.org/">service</a> 
+			 which can be used for scraping without the need to post to BibSonomy.
+			 The source code of the scrapers can be found in the <a href="http://dev.bibsonomy.org/">Maven repository</a> in the 
+			 <a href="http://dev.bibsonomy.org/maven2/org/bibsonomy/bibsonomy-scraper/">bibsonomy-scraper</a> module. 
 			 </p>
 			 
 			 
