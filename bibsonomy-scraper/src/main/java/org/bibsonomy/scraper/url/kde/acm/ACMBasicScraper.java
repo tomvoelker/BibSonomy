@@ -13,6 +13,7 @@ import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.util.BibTeXUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -30,17 +31,13 @@ public class ACMBasicScraper extends UrlScraper {
 	private static final String ACM_HOST_NAME        = "http://portal.acm.org/";
 	private static final String BIBTEX_STRING_ON_ACM = "BibTex";
 
-	
+
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + "portal.acm.org"), UrlScraper.EMPTY_PATTERN));
 
 	private List<String> pathsToScrape; // holds the paths to the popup pages
 
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
-
-		//create the URL string manually to add it to the bibtex string
-		String url = "url = {" + sc.getUrl().toString() + "}}";
-		String abstr = ",\nabstract = {";
 
 		// This Scraper might handle the specified url
 		try {
@@ -82,6 +79,7 @@ public class ACMBasicScraper extends UrlScraper {
 				}
 			}
 
+			String abstr = null;
 			//if this "ABSTRACT" is availabe search the parentnode an extract all the text
 			if (testAbstract){
 				NodeList as = doc.getElementsByTagName("p"); //get all <div>-Tags
@@ -98,7 +96,7 @@ public class ACMBasicScraper extends UrlScraper {
 						if ("abstract".equals(own.getValue())) {
 							//the abstract extracting method ist not reliable somtime it cant extract text 
 							//out of a <p>-tag. Possibly its the tidy parser who causes this.
-							abstr += getText(curr) + "}}";
+							abstr = getText(curr);
 							break;
 						}
 					}
@@ -124,19 +122,19 @@ public class ACMBasicScraper extends UrlScraper {
 				}
 			}
 
-			String result;
-
-			if (bibtexEntries.toString().indexOf("url") == -1){
-				result = bibtexEntries.toString().replaceFirst(".$",url);	
-			} else {
-				result = bibtexEntries.toString();
+			/*
+			 * append URL
+			 */
+			BibTeXUtils.addFieldIfNotContained(bibtexEntries, "url", sc.getUrl().toString());
+			/*
+			 * append abstract
+			 */
+			if (testAbstract) {
+				BibTeXUtils.addFieldIfNotContained(bibtexEntries, "abstract", abstr);
 			}
 
-			if (testAbstract){
-				result = result.replaceFirst("}\\$", abstr);
-			}
 
-
+			final String result = bibtexEntries.toString().trim();
 
 			if (!"".equals(result)) {
 				sc.setBibtexResult(result);
