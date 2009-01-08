@@ -2,6 +2,12 @@ package org.bibsonomy.scraper.util;
 
 import static org.junit.Assert.*;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper;
 import org.junit.Test;
 
 /**
@@ -52,7 +58,6 @@ public class BibTeXUtilsTest {
 		final String expected = bibtexStart + "," + FIELD_NAME + " = {" + FIELD_VALUE + "}\n}";
 		assertEquals(expected, buf.toString());
 	}
-	
 	
 
 }

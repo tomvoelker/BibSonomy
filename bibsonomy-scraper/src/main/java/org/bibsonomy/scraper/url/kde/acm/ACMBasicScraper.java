@@ -31,6 +31,8 @@ public class ACMBasicScraper extends UrlScraper {
 	private static final String ACM_HOST_NAME        = "http://portal.acm.org/";
 	private static final String BIBTEX_STRING_ON_ACM = "BibTex";
 
+	private static final String BROKEN_END = "},\n }";
+
 
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + "portal.acm.org"), UrlScraper.EMPTY_PATTERN));
 
@@ -42,11 +44,11 @@ public class ACMBasicScraper extends UrlScraper {
 		// This Scraper might handle the specified url
 		try {
 
-			StringBuffer bibtexEntries = new StringBuffer("");
+			final StringBuffer bibtexEntries = new StringBuffer("");
 			pathsToScrape  = new ArrayList<String>();
 
 			// Parse the page and obtain a DOM
-			Tidy tidy = new Tidy();
+			final Tidy tidy = new Tidy();
 			tidy.setQuiet(true);
 			tidy.setShowWarnings(false); // turn off warning lines
 			Document doc = tidy.parseDOM(new ByteArrayInputStream(sc.getPageContent().getBytes()), null);
@@ -122,6 +124,17 @@ public class ACMBasicScraper extends UrlScraper {
 				}
 			}
 
+			/*
+			 * Some entries (e.g., http://portal.acm.org/citation.cfm?id=500737.500755) seem
+			 * to have broken BibTeX entries with an "," too much at the end. We remove this
+			 * here.
+			 */
+			final int indexOf = bibtexEntries.indexOf(BROKEN_END, bibtexEntries.length() - BROKEN_END.length() - 1);
+			if (indexOf > 0) {
+				bibtexEntries.replace(indexOf, bibtexEntries.length(), "}\n}");
+			}
+
+			
 			/*
 			 * append URL
 			 */
