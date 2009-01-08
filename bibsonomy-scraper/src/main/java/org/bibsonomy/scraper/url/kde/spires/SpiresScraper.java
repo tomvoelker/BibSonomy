@@ -1,9 +1,8 @@
 package org.bibsonomy.scraper.url.kde.spires;
 
-import java.io.ByteArrayInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -14,40 +13,43 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.scraper.util.BibTeXUtils;
+import org.bibsonomy.scraper.util.XMLUtils;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.tidy.Tidy;
 
 /** Scraper for the SLAC National Accelerator Laboratory
  * @author rja
  *
  */
 public class SpiresScraper extends UrlScraper{
+	private static final String FORMAT_WWWBRIEFBIBTEX = "FORMAT=WWWBRIEFBIBTEX";
+
 	private static final String info = "Spires Scraper: Gets publications from " + href("slac.stanford.edu", "SLAC National Accelerator Laboratory");
 
-	private static final String SPIRES_HOST = "slac.stanford.edu";
-	
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + SPIRES_HOST), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>();
+	static {
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + "slac.stanford.edu"), UrlScraper.EMPTY_PATTERN));
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + "www-library.desy.de"), UrlScraper.EMPTY_PATTERN));
+	}
 	
 	
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 			sc.setScraper(this);
 			
 			try {
-				String bibtex = null;
+				final URL url = sc.getUrl();
 				
-				//form the dom to extract the bibtex-url
-				final Document doc = getDOM(sc.getPageContent());
+				URL bibtexUrl = url;
+				if (!url.getQuery().contains(FORMAT_WWWBRIEFBIBTEX)) { 
+					bibtexUrl = new URL(url.toString() + "&" + FORMAT_WWWBRIEFBIBTEX);
+				}
 				
-				//create the URL to the bibtex snippet
-				final URL bibtexUrl = new URL("http://" + SPIRES_HOST + extractUrlFromElementByTagNameAndValue(doc, "a","BibTeX", "href"));
-				
-				//create the dom of the bibtex page
-				final Document temp = getDOM(sc.getContentAsString(bibtexUrl));
+				final Document temp = XMLUtils.getDOM(sc.getContentAsString(bibtexUrl));
 				
 				//extract the bibtex snippet which is embedded in pre tags
+				String bibtex = null;
 				final NodeList nl = temp.getElementsByTagName("pre"); //get the pre tags (normally one)
 				for (int i = 0; i < nl.getLength(); i++) {
 					Node currNode = nl.item(i);
@@ -59,7 +61,7 @@ public class SpiresScraper extends UrlScraper{
 				/*
 				 * add URL
 				 */
-				BibTeXUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
+				bibtex = BibTeXUtils.addFieldIfNotContained(bibtex, "url", url.toString());
 				
 				//-- bibtex string may not be empty
 				if (bibtex != null && ! "".equals(bibtex)) {
@@ -76,31 +78,6 @@ public class SpiresScraper extends UrlScraper{
 
 	public String getInfo() {
 		return info;
-	}
-	/** Parses a page and returns the DOM
-	 * @param content
-	 * @return
-	 */
-	private Document getDOM(String content) {
-		Tidy tidy = new Tidy();
-		tidy.setQuiet(true);
-		tidy.setShowWarnings(false);// turns off warning lines
-		return tidy.parseDOM(new ByteArrayInputStream(content.getBytes()), null);
-	}
-	
-	private String extractUrlFromElementByTagNameAndValue(Document doc, String tagName, String tagValue, String attribute) throws MalformedURLException, DOMException{
-		NodeList as = doc.getElementsByTagName(tagName);
-		for (int i = 0; i < as.getLength(); i++) {
-			Node currNode = as.item(i);
-
-			if (currNode.getChildNodes().getLength() > 0) {
-				if (tagValue.equals(currNode.getChildNodes().item(0).getNodeValue())){
-					return currNode.getAttributes().getNamedItem(attribute).getNodeValue();						
-				}
-			}
-		
-		}		
-		return null;
 	}
 	
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
