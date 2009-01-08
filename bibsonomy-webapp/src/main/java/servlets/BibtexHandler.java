@@ -936,6 +936,12 @@ public class BibtexHandler extends HttpServlet {
 					if (last != null) {
 						editor.append(" " + last);
 					}
+					/*
+					 * don't miss this part! 
+					 */
+					if (person.isOthers()) {
+						editor.append("others");
+					}
 
 					editorBuffer.append(editor + " and ");
 				}
