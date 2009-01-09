@@ -77,6 +77,8 @@ public class BibtexHandler extends HttpServlet {
 	private static final long serialVersionUID = 3258132444744921394L;
 	private static final Logger log = Logger.getLogger(BibtexHandler.class);
 
+	private static final String AND = " and ";
+	
 	private DataSource dataSource;
 	private static String tempPath = null;
 
@@ -860,96 +862,12 @@ public class BibtexHandler extends HttpServlet {
 		field = (BibtexString) entry.getFieldValue("type");  		if (field != null) bib.setType(field.getContent());          
 		field = (BibtexString) entry.getFieldValue("description");	if (field != null) bib.setDescription(field.getContent());
 
+		/*
+		 * parse person names for author + editor
+		 */
+		bib.setAuthor(createPersonString(entry.getFieldValue("author")));
+		bib.setEditor(createPersonString(entry.getFieldValue("editor")));
 
-		/* ************************************************
-		 * author
-		 * ************************************************/
-
-		// returns unmodifiable linkedlist of BibtexPerson objects
-		StringBuffer authorBuffer = new StringBuffer();
-		BibtexAbstractValue fieldValue = entry.getFieldValue("author");
-		if (fieldValue instanceof BibtexPersonList) {
-			BibtexPersonList authorString = (BibtexPersonList) fieldValue;
-			if (authorString != null) {
-				List<BibtexPerson> authorList = authorString.getList();
-
-				for (BibtexPerson person:authorList) {
-					// build one author
-
-					StringBuffer author = new StringBuffer();
-					String first = person.getFirst();
-					if (first != null) {
-						author.append(first);
-					}
-
-					String preLast = person.getPreLast();
-					if (preLast != null) {
-						author.append(" " + preLast);
-					}
-
-					String last = person.getLast();
-					if (last != null) {
-						author.append(" " + last);
-					}
-					
-					/*
-					 * don't miss this part! 
-					 */
-					if (person.isOthers()) {
-						author.append("others");
-					}
-
-					authorBuffer.append(author + " and ");
-				}
-				/* remove last " and " */
-				if (!authorList.isEmpty()) {
-					bib.setAuthor(authorBuffer.substring(0,	authorBuffer.lastIndexOf(" and ")));
-				} 
-			} 
-		} 
-
-		/* ************************************************
-		 * editor
-		 * ************************************************/
-
-		StringBuffer editorBuffer = new StringBuffer();
-		fieldValue = entry.getFieldValue("editor");
-		if (fieldValue instanceof BibtexPersonList) {
-			BibtexPersonList editorString = (BibtexPersonList) fieldValue;
-			if (editorString != null) {
-				List<BibtexPerson> editorList = editorString.getList();
-
-				for (BibtexPerson person:editorList) {
-
-					StringBuffer editor = new StringBuffer();
-					String first = person.getFirst();
-					if (first != null) {
-						editor.append(first);
-					}
-
-					String preLast = person.getPreLast();
-					if (preLast != null) {
-						editor.append(" " + preLast);
-					}
-
-					String last = person.getLast();
-					if (last != null) {
-						editor.append(" " + last);
-					}
-					/*
-					 * don't miss this part! 
-					 */
-					if (person.isOthers()) {
-						editor.append("others");
-					}
-
-					editorBuffer.append(editor + " and ");
-				}
-				if (!editorList.isEmpty()) {
-					bib.setEditor(editorBuffer.substring(0,	editorBuffer.lastIndexOf(" and ")));
-				} 
-			} 
-		} 
 
 		/* ************************************************
 		 * tags
@@ -998,7 +916,63 @@ public class BibtexHandler extends HttpServlet {
 		}
 	}
 
-
+	/** (Re-)creates a valid BibTeX person string from the parsed list of persons.
+	 * 
+	 * @param fieldValue
+	 * @return
+	 */
+	private String createPersonString (final BibtexAbstractValue fieldValue) {
+		if (fieldValue != null && fieldValue instanceof BibtexPersonList) {
+			/*
+			 * cast into a person list and extract the persons
+			 */
+			final List<BibtexPerson> personList = ((BibtexPersonList) fieldValue).getList();
+			/*
+			 * result buffer
+			 */
+			final StringBuffer personBuffer = new StringBuffer();
+			/*
+			 * build person names
+			 */
+			for (final BibtexPerson person:personList) {
+				/*
+				 * build one person
+				 */
+				final StringBuffer personName = new StringBuffer();
+				/*
+				 * first name
+				 */
+				final String first = person.getFirst();
+				if (first != null) personName.append(first);
+				/*
+				 * between first and last name
+				 */
+				final String preLast = person.getPreLast();
+				if (preLast != null) personName.append(" " + preLast);
+				/*
+				 * last name
+				 */
+				final String last = person.getLast();
+				if (last != null) personName.append(" " + last);
+				/*
+				 * "others" has a special meaning in BibTeX (it's converted to "et al."),
+				 * so we must not ignore it! 
+				 */
+				if (person.isOthers()) personName.append("others");
+				/*
+				 * next name
+				 */
+				personBuffer.append(personName.toString().trim() + AND);
+			}
+			/* 
+			 * remove last " and " 
+			 */
+			if (personBuffer.length() > AND.length()) {
+				return personBuffer.substring(0, personBuffer.length() - AND.length());
+			} 
+		}
+		return null;
+	}
 
 	// Exception to be called, when something went wront on the upload process
 	private class BibUploadException extends Exception {
