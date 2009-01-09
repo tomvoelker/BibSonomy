@@ -79,7 +79,7 @@ the button on one of the listed pages.</p>
 <ul>
 <li><tt>url</tt>: The URL of the page which should be scraped.</li>
 <li><tt>selection</tt>: Text selected on the web page. Used by some scrapers in addition to / instead of the URL.</li>
-<li><tt>format</tt>: If equal to <tt>bibtex</tt>, plain BibTeX is returned instead of this HTML page.</li>
+<li><tt>format</tt>: If equal to <tt>bibtex</tt>, plain BibTeX is returned instead of this HTML page. Experimental: <code>rdf+xml</code></li>
 </ul>
  
       
@@ -114,14 +114,14 @@ the button on one of the listed pages.</p>
                   <h3>resulting BibTeX</h3>
                   
                   <c:url var="postBibTeXURL" value="http://www.bibsonomy.org/BibtexHandler">
-                    <c:param name="url"><c:out value="${bean.url}"/></c:param>
                     <c:param name="requTask">upload</c:param>
-                    <c:param name="selection"><c:out value="${bean.selection}"/></c:param>
+                    <c:param name="selection">${bean.selection}</c:param>
+                    <c:param name="url">${bean.url}</c:param>
                   </c:url>
                   <c:url var="plainBibTeXURL" value="${projectHome}">
-                    <c:param name="url"><c:out value="${bean.url}"/></c:param>
                     <c:param name="format">bibtex</c:param>
-                    <c:param name="selection"><c:out value="${bean.selection}"/></c:param>
+                    <c:param name="selection">${bean.selection}</c:param>
+                    <c:param name="url">${bean.url}</c:param>
                   </c:url>
                      
                   <p>
