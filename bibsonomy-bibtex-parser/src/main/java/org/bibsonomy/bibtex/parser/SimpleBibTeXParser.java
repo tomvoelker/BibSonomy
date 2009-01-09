@@ -321,7 +321,7 @@ public class SimpleBibTeXParser {
 				/*
 				 * next name
 				 */
-				personBuffer.append(personName + AND);
+				personBuffer.append(personName.toString().trim() + AND);
 			}
 			/* 
 			 * remove last " and " 
