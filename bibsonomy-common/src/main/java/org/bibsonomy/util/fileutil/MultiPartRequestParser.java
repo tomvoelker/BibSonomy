@@ -49,7 +49,6 @@ public class MultiPartRequestParser {
 	 * @param request
 	 * @throws FileUploadException
 	 */
-	@SuppressWarnings("static-access")
 	public MultiPartRequestParser(final HttpServletRequest request) throws FileUploadException {
 		// the factory to hold the file
 		final FileItemFactory factory = new DiskFileItemFactory();
@@ -62,7 +61,7 @@ public class MultiPartRequestParser {
 		 */
 		boolean isMultipart = false;
 		if (request.getContentType() != null) {
-			isMultipart = upload.isMultipartContent(request);
+			isMultipart = ServletFileUpload.isMultipartContent(request);
 		}
 
 		// online parse the items if the content-type is multipart
