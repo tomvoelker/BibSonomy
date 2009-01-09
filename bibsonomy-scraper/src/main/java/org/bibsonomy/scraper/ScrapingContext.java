@@ -19,6 +19,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  */
 public class ScrapingContext {
 
+	private static final String CHARSET = "charset=";
 	/**
 	 * The URL of the web page where the entries to scrape are.
 	 */
@@ -88,9 +89,8 @@ public class ScrapingContext {
 	 * @throws ScrapingException 
 	 */
 	public String getContentAsString(final URL inputURL) throws ScrapingException {
-		HttpURLConnection urlConn = null;
 		try {
-			urlConn = (HttpURLConnection) inputURL.openConnection();
+			final HttpURLConnection urlConn = (HttpURLConnection) inputURL.openConnection();
 			urlConn.setAllowUserInteraction(false);
 			urlConn.setDoInput(true);
 			urlConn.setDoOutput(false);
@@ -99,15 +99,17 @@ public class ScrapingContext {
 			 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
 			 * pages require it to download content.
 			 */
-			urlConn.setRequestProperty(
-					"User-Agent",
-			"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
+			urlConn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
 			urlConn.connect();
 			
-			// extract character encoding from header
+			/*
+			 * extract character encoding from header
+			 */
 			final String charSet = getCharset(urlConn);
 			
-			// write content into string buffer
+			/*
+			 * write content into string buffer
+			 */
 			final StringWriter out = new StringWriter();
 			final InputStreamReader in = new InputStreamReader(urlConn.getInputStream(), charSet);
 			int b;
@@ -133,27 +135,39 @@ public class ScrapingContext {
 	 * @param urlConn
 	 * @return
 	 */
-	private String getCharset(HttpURLConnection urlConn) {
-		String charSet;
+	private String getCharset(final HttpURLConnection urlConn) {
 		final String contentType = urlConn.getContentType();
-		if(contentType != null){
-			int charsetPosition = contentType.indexOf("charset=");
-			if(charsetPosition > -1){
-				charSet = contentType.substring(charsetPosition + 8);
+		/*
+		 * this typically looks like that:
+		 * text/html; charset=utf-8; qs=1
+		 */
+		if (contentType != null) {
+			final int charsetPosition = contentType.indexOf(CHARSET);
+			if (charsetPosition > -1) {
+				/*
+				 * cut this:
+				 *                    |<--   -->|             
+				 * text/html; charset=utf-8; qs=1
+				 */
+				String charSet = contentType.substring(charsetPosition + CHARSET.length());
 				
 				// get only charset
-				int charsetEnding = charSet.indexOf(";");
-				if(charsetEnding > -1)
-					charSet = contentType.substring(0, charsetEnding);
-				// default encoding
-			} else {
-				charSet = "UTF-8";
-			}
-		// default encoding
-		} else {
-			charSet = "UTF-8";
-		}
-		return charSet.trim().toUpperCase();
+				final int charsetEnding = charSet.indexOf(";");
+				if (charsetEnding > -1) {
+					/*
+					 * cut this:
+					 * |<->|             
+					 * utf-8; qs=1
+					 */
+					charSet = charSet.substring(0, charsetEnding);
+				}
+				return charSet.trim().toUpperCase();
+			} 
+		} 
+		/*
+		 * default charset
+		 */
+		return "UTF-8";
 	}
 
 	/** 
