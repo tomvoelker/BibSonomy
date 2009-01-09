@@ -97,11 +97,11 @@ public class PostBookmarkController extends SingleResourceListController impleme
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(java.lang.Object)
 	 */
 	public View workOn(EditBookmarkCommand command) {
-		log.debug("######## PostBookmarkController: workOn() called ########");
-		log.debug("working on command " + command);
-
-		command.setPageTitle("post a new bookmark");
 		final RequestWrapperContext context = command.getContext();
+		/*
+		 * FIXME: i18n
+		 */
+		command.setPageTitle("post a new bookmark");
 
 		/*
 		 * only users which are logged in might post bookmarks 
@@ -120,28 +120,11 @@ public class PostBookmarkController extends SingleResourceListController impleme
 
 		final User loginUser = context.getLoginUser();
 		final Post<Bookmark> post = command.getPost();
-
-		/*
-		 * initialize tag sets for groups
-		 */
-		initGroupTagSets(loginUser);
-
+		
 		/*
 		 * set the user of the post to the loginUser (the recommender might need the user name)
 		 */
 		post.setUser(loginUser);
-
-		/*
-		 * get the recommended tags
-		 */
-		if (tagRecommender != null)	command.setRecommendedTags(tagRecommender.getRecommendedTags(post));
-
-		/*
-		 * get the tag cloud of the user
-		 * (this must be done before any error checking, because the user must have this)
-		 * FIXME: get ALL tags of the user!
-		 */
-		this.setTags(command, Resource.class, GroupingEntity.USER, loginUser.getName(), null, null, null, null, 0, 100, null);
 
 		/*
 		 * initialize groups 
@@ -164,6 +147,45 @@ public class PostBookmarkController extends SingleResourceListController impleme
 
 	}
 
+	/**
+	 * This methods does everything which needs to be done before proceeding to the 
+	 * {@link Views#POST_BOOKMARK} view. This includes:
+	 * <ul>
+	 * <li>initializing the group tag sets</li>
+	 * <li>getting the recommended tags</li>
+	 * <li>getting the tag cloud of the user</li>
+	 * </ul>
+	 * Thus, never return the view directly, but use this method! 
+	 * 
+	 * TODO: candidate for refactoring (e.g., abstract class PostController)
+	 * 
+	 * @param command - the command the controller is working on (and which is also handed over to the view).
+	 * @param loginUser - the login user.
+	 * @return The {@link Views#POST_BOOKMARK} view.
+	 */
+	private View getPostBookmarkView(final EditBookmarkCommand command, final User loginUser) {
+		/*
+		 * initialize tag sets for groups
+		 */
+		initGroupTagSets(loginUser);
+
+		/*
+		 * get the recommended tags for the post from the command
+		 */
+		if (tagRecommender != null)	command.setRecommendedTags(tagRecommender.getRecommendedTags(command.getPost()));
+
+		/*
+		 * get the tag cloud of the user
+		 * (this must be done before any error checking, because the user must have this)
+		 * FIXME: get ALL tags of the user!
+		 */
+		this.setTags(command, Resource.class, GroupingEntity.USER, loginUser.getName(), null, null, null, null, 0, 100, null);
+		/*
+		 * return the view
+		 */
+		return Views.POST_BOOKMARK;
+	}
+	
 	/** Handles the update of an existing post with the given intra hash. 
 	 * 
 	 * @param command
@@ -195,9 +217,9 @@ public class PostBookmarkController extends SingleResourceListController impleme
 			 */
 			populateCommandWithPost(command, dbPost);
 			/*
-			 * return to view
+			 * returning to view
 			 */
-			return Views.POST_BOOKMARK;
+			return getPostBookmarkView(command, loginUser);
 		}
 		log.debug("ckey given, so parse tags, validate post, update post");
 		/*
@@ -236,7 +258,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		if (errors.hasErrors()) {
 			log.debug("returning to view because of errors: " + errors.getErrorCount());
 			log.debug("post is " + post.getResource());
-			return Views.POST_BOOKMARK;
+			return getPostBookmarkView(command, loginUser);
 		}
 		/*
 		 * the post to update has the given intra hash 
@@ -331,7 +353,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 			/*
 			 * in any case: return to view
 			 */
-			return Views.POST_BOOKMARK;
+			return getPostBookmarkView(command, loginUser);
 		}
 		log.debug("wow, post is completely new! So ... return until no errors and then store it");
 		/*
@@ -354,7 +376,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		if (errors.hasErrors()) {
 			log.debug("returning to view because of errors: " + errors.getErrorCount());
 			log.debug("post is " + post.getResource());
-			return Views.POST_BOOKMARK;
+			return getPostBookmarkView(command, loginUser);
 		}
 
 		/*
@@ -365,7 +387,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		 */
 		if (!context.isValidCkey()) {
 			errors.reject("error.field.valid.ckey");
-			return Views.POST_BOOKMARK;
+			return getPostBookmarkView(command, loginUser);
 		}
 
 		/*
