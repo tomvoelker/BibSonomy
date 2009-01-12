@@ -184,12 +184,12 @@
 
 <div class="boxed">
   <h2>PDF / PS</h2>
+  Your private copy of the document:    
   <c:choose>
     <c:when test='${empty resource.docHash}'> 
 		<a href="/uploadFile/${resource.hash}">upload</a>
     </c:when>  
     <c:otherwise>  
-	 Your private copy of the document:    
       <a href="/documents/${resource.docHash}"><c:out value="${resource.docName}"/></a>
       &nbsp;(<a href="/documents/${resource.docHash}?action=delete">delete</a>)
     </c:otherwise>
