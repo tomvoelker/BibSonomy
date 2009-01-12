@@ -54,6 +54,10 @@
     | <a href="<c:out value='${user.openurl}'/>?<c:out value='${resource.openurl}'/>">OpenURL</a>
   </c:if>
   
+  <!-- UnAPI -->
+  <abbr class="unapi-id" title="${resource.hash}/${f:escapeXml(resource.user)}"><c:out value=" "/></abbr>
+  
+  
 </span>
 
   <%@include file="/boxes/resource_rating.jsp" %> 
