@@ -118,10 +118,10 @@ public class IWAPonlineScraper extends UrlScraper {
 			Matcher dateMatcher = datePattern.matcher(metaMap.get(META_ELEMENT_DATE));
 			if(dateMatcher.find()){
 				String year = dateMatcher.group(1);
-				bibtex.append("@article{iwap" + year + "\n");
+				bibtex.append("@article{iwap" + year + ",\n");
 				bibtex.append("year = {" + year + "},\n");
 			}else{
-				bibtex.append("@article{iwap\n");
+				bibtex.append("@article{iwap,\n");
 			}
 		}else{
 			bibtex.append("@article{iwap\n");
