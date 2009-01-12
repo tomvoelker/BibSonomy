@@ -114,7 +114,7 @@ public class XMLUnitTestImporter implements IUnitTestImporter {
 				
 				// use test only if all values are given
 				if(url != null && expectedReference != null && scraper != null && description != null && id != null){
-					URLScraperUnitTest test = new URLScraperUnitTest(url, expectedReference, scraper, description, id);
+					URLScraperUnitTest test = new URLScraperUnitTest(url, expectedReference, scraper, description, id, bibFile);
 					tests.add(test);
 				}
 			

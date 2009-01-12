@@ -50,6 +50,7 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 	private String scrapedReference = null;
 	private Scraper scraper = null;
 	private String id = null;
+	private String bibFile = null;
 	private Exception exception = null;
 	
 	/**
@@ -68,14 +69,16 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 	 * @param scraper
 	 * @param description
 	 * @param id
+	 * @param bibFile
 	 */
-	public URLScraperUnitTest(String url, String expectedReference, Scraper scraper, String description, String id){
+	public URLScraperUnitTest(String url, String expectedReference, Scraper scraper, String description, String id, String bibFile){
 		super(TEST_METHOD);
 		this.url = url;
 		this.expectedRefrence = expectedReference;
 		this.scraper = scraper;
 		this.description = description;
 		this.id = id;
+		this.bibFile = bibFile;
 	}
 	
 	/**
@@ -256,5 +259,9 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 	@Override
 	public String getScraperTestId() {
 		return id;
+	}
+
+	public String getBibFile() {
+		return this.bibFile;
 	}
 }
