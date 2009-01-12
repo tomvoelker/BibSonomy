@@ -277,11 +277,17 @@ public enum Views implements View {
 	 * Show the form after reminding a password to change it
 	 */
 	PASSWORD_CHANGE_ON_REMIND("actions/user/passwordChangeOnRemind"),
-	
+
 	/**
 	 * Upload page to upload document to an existing bibtex entry
 	 */
 	UPLOAD_FILE("actions/uploadFile"), 
+	/**
+	 * An XML file printing all output formats supported by UnAPI.
+	 * Basically, a list of some of our export formats in XML.
+	 */
+	UNAPI_SUPPORTED_FORMATS("export/bibtex/unapi"),	
+	
 	
 	/**
 	 * Show the page for administrating groups
