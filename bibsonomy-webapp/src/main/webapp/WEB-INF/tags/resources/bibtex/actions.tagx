@@ -111,7 +111,7 @@
 	</a>
 
     <!-- UnAPI -->
-    <abbr class="unapi-id" title="${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"><c:out value=""/></abbr>
+    <abbr class="unapi-id" title="${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"><c:out value=" "/></abbr>
 
 	<!-- OPENURL -->
 	<c:if test="${not empty command.context.loginUser.openURL}">
