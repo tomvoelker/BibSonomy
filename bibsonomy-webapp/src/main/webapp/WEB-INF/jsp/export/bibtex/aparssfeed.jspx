@@ -14,7 +14,7 @@
 
     <jsp:attribute name="content">
         <c:set var="content"><export:apaContentEncoded post="${post}"/></c:set>
-        <c:out value="${content)}"/>
+        <c:out value="${content}"/>
     </jsp:attribute>
   
   </export:rssSkeleton>
