@@ -93,7 +93,18 @@
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="bibtexPageController"/>
 					</bean>
-				</entry>				 
+				</entry>
+				<entry key="/unapi">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="UnAPIController"/>
+						<property name="allowedFields">
+							<list>
+								<value>id</value>
+								<value>format</value>
+							</list>
+						</property>
+					</bean>
+				</entry>			 
 				<entry key="/search">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="searchPageController"/>
@@ -360,12 +371,6 @@
 	<bean id="userRelationsController" class="org.bibsonomy.webapp.controller.UserRelationsController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
-		<property name="listsToInitialise">
-			<list>
-				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
-			</list>
-		</property>
 	</bean>
 
 	<bean id="conceptPageController" class="org.bibsonomy.webapp.controller.ConceptPageController" scope="request">
@@ -407,10 +412,19 @@
 		<property name="listsToInitialise">
 			<list>
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
 			</list>
 		</property>
 	</bean>	 
+	
+	<!-- 
+		Implements the UnAPI specification http://unapi.info/
+		* returns an overview of the supported formats
+		* given an ID and a format, returns the post in the chosen format
+		* basically redirects to existing controllers
+	-->
+	<bean id="UnAPIController" class="org.bibsonomy.webapp.controller.special.UnAPIController" scope="request">
+		<property name="responseLogic" ref="responseLogic"/>
+	</bean>
 	 
 	<bean id="bibtexkeyPageController" class="org.bibsonomy.webapp.controller.BibtexkeyPageController" scope="request">
 		<property name="logic" ref="logic"/>
