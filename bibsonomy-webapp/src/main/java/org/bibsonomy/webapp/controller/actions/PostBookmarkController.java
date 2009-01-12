@@ -44,8 +44,7 @@ import org.springframework.validation.Errors;
 
 /**
  * @author fba
- * @version $Id: PostBookmarkController.java,v 1.1 2008-09-11 04:40:12
- *          ss05fbachmann Exp $
+ * @version $Id$
  */
 public class PostBookmarkController extends SingleResourceListController implements MinimalisticController<EditBookmarkCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(PostBookmarkController.class);
