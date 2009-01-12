@@ -110,6 +110,9 @@
 		<fmt:message key="bibtex.actions.bibtex"/>
 	</a>
 
+    <!-- UnAPI -->
+    <abbr class="unapi-id" title="${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"><c:out value=""/></abbr>
+
 	<!-- OPENURL -->
 	<c:if test="${not empty command.context.loginUser.openURL}">
     	<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
@@ -119,6 +122,7 @@
     	</a>
 	</c:if>
 	
+  
 	<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 	
 	<!-- flas as spam  -->		

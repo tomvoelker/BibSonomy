@@ -47,6 +47,8 @@
 			<link rel="alternate" type="application/rss+xml" title="${burstRssFeed} /${requPath}" href="${burstUrl}" />
             <c:set var="swrcUrl" value="/swrc/${requPath}"/>
             <link rel="alternate" type="application/rdf+xml" title="${swrcFeed} /${requPath}" href="${swrcUrl}" />
+            <!-- UnAPI service -->
+            <link rel="unapi-server" type="application/xml" title="unAPI" href="${projectHome}unapi"/>
 
 		</jsp:attribute>
 		<jsp:attribute name="content">
