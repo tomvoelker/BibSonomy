@@ -96,12 +96,15 @@
 					</c:otherwise>
 				</c:choose>
 				
-				<c:url var="helpUrl" value="/help" context="${projectContext}"/>
-				<a href="${helpUrl}" rel="Help"><fmt:message key="navi.help"/></a>
-				<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
+				<c:set var="helpLangUrl">
+					<fmt:message key="navi.helpUrl"/>
+				</c:set>
+				<c:url var="helpUrl" value="${helpLangUrl}" context="${projectContext}"/>
+				<a href="${helpUrl}"><fmt:message key="navi.help"/></a>
+				<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>				
 				<a href="http://bibsonomy.blogspot.com/"><fmt:message key="navi.blog"/></a>
 				<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
-				<c:url var="aboutUrl" value="/help/about/" context="${projectContext}"/>
+				<c:url var="aboutUrl" value="${helpLangUrl}/about" context="${projectContext}"/>
 				<a href="${aboutUrl}"><fmt:message key="navi.about"/></a>	
 				<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
 				<c:url var="langUrlDe" value="/${mtl:setParam(requPath, 'lang', 'de')}" context="${projectContext}"/>
