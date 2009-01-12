@@ -563,19 +563,15 @@ h2.listh {
 
 /* hack to fix IE/Win's broken rendering of block-level anchors in lists */
 #sidebar li {
-	
 	border-bottom: 1px solid #ccc;
 }
 
 /* fix for browsers that don't need the hack */
 html>body #sidebar li {
-
 	border-bottom: none;
-
 }
 
 .tagcloud {
-	
 	text-align: justify;
 	font-size: 70%;
 }
@@ -615,15 +611,17 @@ html>body #sidebar li {
 
 .tagnormal a, .tagnormal {
 	color: #8C9963 ! important;
+	font-size: 95%;
 }
 
 .taglarge a, .taglarge {
-	color: #768053 ! important;
+    color: #383d27 ! important;
+    font-size: 105%;
 }
 
 .taghuge a, .taghuge {
 	color: #2F3321 ! important;
-	font-size: 120%;
+	font-size: 115%;
 }
 
 .tagone a {
@@ -1054,4 +1052,8 @@ table.vmiddle td{
 .popular{
 	overflow-x:hidden;
 	width:100%;	
+}
+
+.unapi-id {
+  display: none;
 }
