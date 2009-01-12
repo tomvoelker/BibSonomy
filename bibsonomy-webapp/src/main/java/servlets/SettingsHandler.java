@@ -181,7 +181,7 @@ public class SettingsHandler extends HttpServlet{
 						stmtP.setInt(2, groupid);
 						stmtP.executeUpdate();
 						// log bibtex
-						stmtP = conn.prepareStatement("INSERT INTO log_bibtex (content_id, `group`, user_name) SELECT content_id, user_name, `group` FROM bibtex WHERE user_name = ? AND `group` = ?");
+						stmtP = conn.prepareStatement("INSERT INTO log_bibtex (content_id, `group`, user_name) SELECT content_id, `group`, user_name FROM bibtex WHERE user_name = ? AND `group` = ?");
 						stmtP.setString(1, friend);
 						stmtP.setInt(2, groupid);
 						stmtP.executeUpdate();												
@@ -191,7 +191,7 @@ public class SettingsHandler extends HttpServlet{
 						stmtP.setInt(2, groupid);
 						stmtP.executeUpdate();						
 						// log bookmark
-						stmtP = conn.prepareStatement("INSERT INTO log_bookmark (content_id, `group`, user_name) SELECT content_id, user_name, `group` FROM bookmark WHERE user_name = ? AND `group` = ?");
+						stmtP = conn.prepareStatement("INSERT INTO log_bookmark (content_id, `group`, user_name) SELECT content_id, `group`, user_name FROM bookmark WHERE user_name = ? AND `group` = ?");
 						stmtP.setString(1, friend);
 						stmtP.setInt(2, groupid);
 						stmtP.executeUpdate();												
