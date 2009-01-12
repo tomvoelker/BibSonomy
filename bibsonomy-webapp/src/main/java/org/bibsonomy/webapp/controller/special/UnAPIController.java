@@ -2,8 +2,6 @@ package org.bibsonomy.webapp.controller.special;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.special.UnAPICommand;
@@ -23,8 +21,6 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class UnAPIController implements MinimalisticController<UnAPICommand>, ResponseAware, ErrorAware {
-	private static final Log log = LogFactory.getLog(UnAPIController.class);
-
 	private ResponseLogic responseLogic;
 	private Errors errors;
 	
@@ -79,11 +75,7 @@ public class UnAPIController implements MinimalisticController<UnAPICommand>, Re
 		 * valid format and id given: 
 		 * redirect to appropriate controller
 		 */
-
-
-		final String redirectURL = "/" + mappedFormat + "/bibtex/" + HashID.INTRA_HASH.getId() + id;
-		log.info("redirecting to " + redirectURL);
-		return new ExtendedRedirectView(redirectURL);
+		return new ExtendedRedirectView("/" + mappedFormat + "/bibtex/" + HashID.INTRA_HASH.getId() + id);
 	}	
 
 
