@@ -42,4 +42,13 @@ public class ResponseLogic {
 	public void setResponse(HttpServletResponse response) {
 		this.response = response;
 	}
+	
+	/** Sets the HTTP status code.
+	 * 
+	 * @param status
+	 */
+	public void setHttpStatus(final int status) {
+		this.response.setStatus(status);
+	}
+	
 }
