@@ -30,7 +30,7 @@
 	<select id="getAdminClassifiedUsers" resultMap="UserCommon.userWithPrediction" parameterClass="adminParam">
 		SELECT *
 		FROM user u JOIN prediction p ON (u.user_name = p.user_name)
-		WHERE (u.updated_by != 'classifier' OR ISNULL(u.updated_by)) AND spammer = #prediction# AND algorithm='admin'
+		WHERE (u.updated_by != 'classifier' OR ISNULL(u.updated_by)) AND prediction = #prediction# AND algorithm='admin'
 		<isGreaterThan property="interval" compareValue="0" prepend="AND">
 			u.updated_at > NOW() - INTERVAL #interval# HOUR		
 	    </isGreaterThan>
@@ -50,6 +50,18 @@
 		SELECT *  
 		FROM user u JOIN prediction p ON (u.user_name = p.user_name AND u.updated_at = p.updated_at)
 		WHERE updated_by = 'classifier' AND prediction = #prediction# 
+		ORDER BY u.updated_at DESC
+		LIMIT #limit#
+	</select>
+	
+	<select id="getBibtexUsers" resultMap="UserCommon.userWithPrediction" parameterClass="adminParam">
+		SELECT *  
+		FROM user u, prediction p, tas t
+		WHERE u.user_name = p.user_name 
+		AND u.updated_at = p.updated_at
+		AND t.user_name = p.user_name
+		AND content_type = 2
+		GROUP BY u.user_name
 		ORDER BY u.updated_at DESC
 		LIMIT #limit#
 	</select>
@@ -108,9 +120,9 @@
 		</isGreaterThan>
 	 	group by u.user_name order by t.date DESC
 	 </select>
-	
-	<update id="updateTasGroupIds" parameterClass="adminParam">
-		UPDATE tas SET `group` = 
+	 
+	 <update id="updateGroupIds" parameterClass="adminParam">
+		UPDATE $groupIdTable$ SET `group` = 
 		<dynamic prepend="IF">
 			<isEqual property="spammer" compareValue="true">
 				((`group` >= 0), `group` + #groupRange#, `group`)
@@ -122,55 +134,4 @@
 		WHERE user_name = #userName#
 	</update>
 	
-	<update id="updateBookmarkGroupIds" parameterClass="adminParam">
-		UPDATE bookmark SET `group` = 
-		<dynamic prepend="IF">
-			<isEqual property="spammer" compareValue="true">
-				((`group` >= 0), `group` + #groupRange#, `group`)
-			</isEqual>
-			<isEqual property="spammer" compareValue="false">
-				((`group` &lt; 0), `group` - #groupRange#, `group`)
-			</isEqual>
-		</dynamic>
-		WHERE user_name = #userName#
-	</update>
-	
-	<update id="updateBibtexGroupIds" parameterClass="adminParam">
-		UPDATE bibtex SET `group` = 
-		<dynamic prepend="IF">
-			<isEqual property="spammer" compareValue="true">
-				((`group` >= 0), `group` + #groupRange#, `group`)
-			</isEqual>
-			<isEqual property="spammer" compareValue="false">
-				((`group` &lt; 0), `group` - #groupRange#, `group`)
-			</isEqual>
-		</dynamic>
-		WHERE user_name = #userName#
-	</update>
-	
-	<update id="updateSearchBookmarkGroupIds" parameterClass="adminParam">
-		UPDATE search_bookmark SET `group` = 
-		<dynamic prepend="IF">
-			<isEqual property="spammer" compareValue="true">
-				((`group` >= 0), `group` + #groupRange#, `group`)
-			</isEqual>
-			<isEqual property="spammer" compareValue="false">
-				((`group` &lt; 0), `group` - #groupRange#, `group`)
-			</isEqual>
-		</dynamic>
-		WHERE user_name = #userName#
-	</update>
-	
-	<update id="updateSearchBibtexGroupIds" parameterClass="adminParam">
-		UPDATE search_bibtex SET `group` = 
-		<dynamic prepend="IF">
-			<isEqual property="spammer" compareValue="true">
-				((`group` >= 0), `group` + #groupRange#, `group`)
-			</isEqual>
-			<isEqual property="spammer" compareValue="false">
-				((`group` &lt; 0), `group` - #groupRange#, `group`)
-			</isEqual>
-		</dynamic>
-		WHERE user_name = #userName#
-	</update>
 </sqlMap>

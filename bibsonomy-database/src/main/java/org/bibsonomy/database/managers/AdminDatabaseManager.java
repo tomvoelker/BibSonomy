@@ -1,20 +1,19 @@
 package org.bibsonomy.database.managers;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
-import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.AdminParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.util.UserUtils;
 
 /**
  * Provides functionalities which are typically only available to admins. This
@@ -134,12 +133,11 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		param.setUpdatedBy(updatedBy);
 		param.setUpdatedAt(new Date());
 		param.setGroupRange(Integer.MIN_VALUE);
-	
+
 		session.beginTransaction();
-		
+
 		try {
-			
-			
+
 			if (!("classifier").equals(updatedBy)) {
 				this.update("flagSpammer", param, session);
 				this.updateGroupIds(param, session);
@@ -186,13 +184,13 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 
 			final List<User> history = getClassifierHistory(param.getUserName(), session);
 
-			for (final User user: history) {
+			for (final User user : history) {
 
 				if (user.getConfidence() != null && user.getPrediction() != null) {
 
 					if (user.getAlgorithm().equals(param.getAlgorithm())) {
 
-						//FIXME: collect constants in appropriate class
+						// FIXME: collect constants in appropriate class
 						if (Math.abs(param.getConfidence() - user.getConfidence()) < 0.0001) {
 
 							if (param.getPrediction().compareTo(user.getPrediction()) == 0) {
@@ -218,15 +216,31 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	public void updateGroupIds(final AdminParam param, final DBSession session) {
 		final boolean spammer = param.isSpammer();
 
-		this.updateGroupId(param, session);		
+		this.updateGroupId(param, session);
 	}
 
+	/**
+	 * Updates group ids in different tables
+	 * @param param 
+	 *				the admin's parameters
+	 * @param session
+	 * 				the current db session
+	 */
 	private void updateGroupId(final AdminParam param, final DBSession session) {
-		this.update("updateTasGroupIds", param, session);
-		this.update("updateBookmarkGroupIds", param, session);
-		this.update("updateBibtexGroupIds", param, session);
-		this.update("updateSearchBookmarkGroupIds", param, session);
-		this.update("updateSearchBibtexGroupIds", param, session);
+		
+		//TODO: make database names constants
+		List<String> tableNames = new ArrayList<String>();
+		tableNames.add("tas");
+		tableNames.add("grouptas");
+		tableNames.add("bibtex");
+		tableNames.add("bookmark");
+		tableNames.add("search_bibtex");
+		tableNames.add("search_bookmark");
+		
+		for(String table: tableNames){
+			param.setGroupIdTable(table);
+			this.update("updateGroupIds", param, session);
+		}
 	}
 
 	/**
@@ -246,9 +260,10 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		final AdminParam param = new AdminParam();
 		param.setInterval(interval);
 		param.setLimit(100);
-	
-		if (classifier.equals(Classifier.ADMIN) && (status.equals(SpamStatus.SPAMMER) || status.equals(SpamStatus.NO_SPAMMER))) {
+
+		if (classifier.equals(Classifier.ADMIN) && (status.equals(SpamStatus.SPAMMER) || status.equals(SpamStatus.NO_SPAMMER) || status.equals(SpamStatus.UNKNOWN))) {
 			param.setPrediction(status.getId());
+			log.debug("Prediction: " + param.getPrediction());
 			return this.queryForList("getAdminClassifiedUsers", param, User.class, session);
 		} else if (classifier.equals(Classifier.BOTH)) {
 			return this.queryForList("getAllUsersWithSpam", param, User.class, session);
@@ -343,6 +358,6 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		final AdminParam param = new AdminParam();
 		param.setInterval(interval);
 		param.setLimit(100);
-		return this.queryForList("getClassifierComparison", param, User.class, session);
+		return this.queryForList("getBibtexUsers", param, User.class, session);
 	}
 }
