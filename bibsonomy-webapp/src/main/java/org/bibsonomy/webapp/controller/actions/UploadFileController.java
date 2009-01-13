@@ -87,7 +87,7 @@ public class UploadFileController implements MinimalisticController<UploadFileCo
 				command.setDoc(doc);
 				
 			} catch (Exception ex) {
-				errors.reject("error.upload.failed", new Object[]{ex}, "Sorry, we could not process your upload request, an unknown error occurred.");
+				errors.reject("error.upload.failed", new Object[]{ex.getLocalizedMessage()}, "Sorry, we could not process your upload request, an unknown error occurred.");
 				return Views.ERROR;
 			}
 		}

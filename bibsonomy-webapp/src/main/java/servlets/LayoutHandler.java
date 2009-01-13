@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.log4j.Logger;
+import org.bibsonomy.util.StringUtils;
 
 import resources.Bibtex;
 import servlets.listeners.InitialConfigListener;
@@ -157,7 +158,7 @@ public class LayoutHandler extends HttpServlet {
 				if (file != null && fileName != null && !fileName.trim().equals("")) {
 
 					// check file extension
-					if (!DocumentUploadHandler.matchExtension(fileName, "layout")) {
+					if (!StringUtils.matchExtension(fileName, "layout")) {
 						throw new FileUploadException ("Please check your file. Only layout files are accepted. ");	
 					}
 

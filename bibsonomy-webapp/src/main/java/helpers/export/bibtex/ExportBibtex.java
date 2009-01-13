@@ -25,10 +25,10 @@ import net.sf.jabref.imports.BibtexParser;
 import net.sf.jabref.imports.ParserResult;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.util.StringUtils;
 
 import resources.Bibtex;
 import resources.Resource;
-import servlets.DocumentUploadHandler;
 import servlets.listeners.InitialConfigListener;
 
 /**
@@ -254,7 +254,7 @@ public final class ExportBibtex {
 					dirs.push( file );
 				}else{
 					//check extension
-					if (DocumentUploadHandler.matchExtension(file.getName(), _layoutFileExtension)){
+					if (StringUtils.matchExtension(file.getName(), _layoutFileExtension)){
 						try {
 							LayoutHelper layoutHelper = new LayoutHelper(new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8")));
 							synchronized(_layouts){

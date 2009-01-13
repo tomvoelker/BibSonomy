@@ -27,6 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
+import org.bibsonomy.util.StringUtils;
+
 import beans.UserBean;
 import filters.SessionSettingsFilter;
 
@@ -182,13 +184,13 @@ public class DocumentDownloadHandler extends HttpServlet{
 	 * @return - the MIME content type of the file.
 	 */
 	private String getContentType (String filename) {
-		if (DocumentUploadHandler.matchExtension(filename, "ps")) {
+		if (StringUtils.matchExtension(filename, "ps")) {
 			return "application/postscript";
-		} else if (DocumentUploadHandler.matchExtension(filename, "pdf")) {
+		} else if (StringUtils.matchExtension(filename, "pdf")) {
 			return "application/pdf";
-		} else if (DocumentUploadHandler.matchExtension(filename, "txt")) {
+		} else if (StringUtils.matchExtension(filename, "txt")) {
 			return "text/plain";			
-		} else if (DocumentUploadHandler.matchExtension(filename, "djv", "djvu")) {
+		} else if (StringUtils.matchExtension(filename, "djv", "djvu")) {
 			return "image/vnd.djvu";
 		} else {
 			return "application/octet-stream";
