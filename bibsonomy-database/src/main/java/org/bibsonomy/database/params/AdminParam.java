@@ -65,6 +65,9 @@ public class AdminParam extends GenericParam {
 	
 	/** Integer range for creating groups */
 	private int groupRange; 
+	
+	/** String for describing the table in which to update a group Id **/
+	private String groupIdTable;
 
 	public InetAddress getInetAddress() {
 		return this.inetAddress;
@@ -204,5 +207,13 @@ public class AdminParam extends GenericParam {
 
 	public int getGroupRange() {
 		return groupRange;
+	}
+	
+	public String getGroupIdTable() {
+		return this.groupIdTable;
+	}
+
+	public void setGroupIdTable(String groupIdTable) {
+		this.groupIdTable = groupIdTable;
 	}
 }
