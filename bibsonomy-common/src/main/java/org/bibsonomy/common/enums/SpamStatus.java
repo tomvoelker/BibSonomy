@@ -23,6 +23,8 @@
 
 package org.bibsonomy.common.enums;
 
+import org.apache.log4j.Logger;
+
 /**
  * Defines different states of a user
  * 
@@ -103,8 +105,11 @@ public enum SpamStatus {
 	}
 
 	/**
-	 * Returns in dependece of the prediction and the current classifier mode
-	 * the real spammer state to save in user table
+	 * Returns dependent on the prediction and the current classifier mode
+	 * a spammer state. If prediction is Spammer or No Spammer, the corresponding status 
+	 * is returned. The same for non-confident spammers / non spammers, expect for the day 
+	 * mode where for non confident spammers, the no spammer status is returned to avoid false 
+	 * positive classifications.
 	 * 
 	 * @param status
 	 *            The classifires prediction
@@ -114,13 +119,16 @@ public enum SpamStatus {
 	 */
 	public static SpamStatus getRealSpammerState(final SpamStatus status, final ClassifierMode mode) {
 		if (status.equals(SPAMMER) || status.equals(NO_SPAMMER)) return status;
-
-		if (status.equals(NO_SPAMMER_NOT_SURE) || status.equals(SPAMMER_NOT_SURE)) {
+		else if (status.equals(SPAMMER_NOT_SURE)) {
+			//TODO: Remove day and night modus
 			if (mode.equals(ClassifierMode.DAY)) return NO_SPAMMER;
 			return SPAMMER;
 		}
-
-		return status;
+		else if (status.equals(NO_SPAMMER_NOT_SURE)) {
+			return NO_SPAMMER;
+		}else{
+			return status;
+		}
 	}
 
 	@Override
