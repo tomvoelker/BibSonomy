@@ -437,11 +437,11 @@
       <from>^/+group/(\?group=(.*))$</from>
       <to type="redirect">/group/$2</to>
     </rule>
-    <!-- 
 	<rule>
 	    <from>^/+group/*$</from>
-	    <to>/groups.jsp</to>
+	    <to type="redirect">/groups</to>
 	</rule>
+    <!-- 
 	<rule>
 	    <from>^/+groups/*$</from>
 	    <to>/groups.jsp</to>
@@ -697,38 +697,34 @@
 		<to>/RedirectHandler?page=uri&amp;requResource=author&amp;requContent=$1&amp;$3</to>
 	</rule>	
 	
-	<!-- Actions -->
+	<!-- ############## /relations ############### -->
+	<rule>
+		<from>^/+relations/+([^/?]+?)(\?(.*))?$</from>
+		<to>/relations?requestedUser=$1&amp;$3</to>
+	</rule>
+	<rule>
+		<from>^/+relations</from>
+		<to>/allRelations</to>
+	</rule>
+	
+	<!-- ############## /basket ############### -->
+    <rule>
+        <from>^/+basket(\?(.*))?$</from>
+        <to>/ResourceHandler?page=basket&amp;$2</to>
+    </rule>
+
+
+	<!-- ############## new actions - testing! ############### -->
 	<rule><!-- /actions/admin/group/GROUPNAME -->
 		<from>^/+actions/+admin/+group/+([^/?]+?)(\?(.*))?$</from>
 		<to>/actions/admin/group?requestedGroup=$1&amp;$3</to>
 	</rule>
 
-<!-- ############## relation pages ############### -->
- <!-- redirect for user formular on /user/USER page -->
-  	<!--  <rule>
-      	<from>^/+relations/+([^/?]+?)(\?(.*))?$</from>
-      <to type="redirect">/relations/$2</to>
-    </rule>-->
 
-	<rule>
-		<from>^/+relations/+([^/?]+?)(\?(.*))?$</from>
-		<to>/relations?requestedUser=$1&amp;$3</to>
-	</rule> 
-       
-    
-<!-- ############## other pages ############### -->
-
- 	<!-- <rule>
-		<from casesensitive="true">^/+relations</from>
-		<to>/allRelations</to>
-	</rule> --> 
-    <rule><!-- old one, can be removed one day -->
-        <from>^/+download(\?(.*))?$</from>
-        <to>/ResourceHandler?page=basket&amp;$2</to>
-    </rule>
-    <rule>
-        <from>^/+basket(\?(.*))?$</from>
-        <to>/ResourceHandler?page=basket&amp;$2</to>
+    <!-- ############## old pages - can be removed when never accessed ############### -->
+    <rule><!-- /faq to /help/faq -->
+      <from>^/faq(.*)$</from>
+      <to type="permanent-redirect">/help/faq/$1</to>
     </rule>
 
 	<outbound-rule>
