@@ -1,10 +1,13 @@
-div.section {
-  padding: 1ex 1ex 3.5ex 1ex;
+li.section {
+  padding: 1ex;
   margin-top: 2ex;
   margin-bottom: 2ex;
   background: #f0f0f0;
 }
-
+li.question {
+  list-style: square;
+  margin-left: 1em;
+}
 div.section>h3 {
   float: left;
 }
