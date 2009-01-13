@@ -1,6 +1,5 @@
 package org.bibsonomy.webapp.command;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bibsonomy.model.Tag;
@@ -33,8 +32,6 @@ public class ConceptsCommand extends ListCommand<Tag> {
 	/**
 	 * a list of concepts
 	 */
-	private List<Tag> conceptList = new ArrayList<Tag>();
-	
 	private int numConcepts = 0;
 	
 	public int getNumConcepts() {
@@ -45,14 +42,12 @@ public class ConceptsCommand extends ListCommand<Tag> {
 		this.numConcepts = numConcepts;
 	}
 
-//	public ConceptsCommand() {}
 
 	public List<Tag> getConceptList() {
-		return this.conceptList;
+		return getList();
 	}
 
 	public void setConceptList(List<Tag> concepts) {
-		this.conceptList = concepts;
 		setList(concepts);
 	}
 	
