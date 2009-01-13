@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.validation;
 
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.actions.UploadFileCommand;
 import org.bibsonomy.webapp.util.Validator;
 import org.springframework.util.Assert;
@@ -21,8 +22,8 @@ public class UploadFileValidator implements Validator<UploadFileCommand> {
 		
 		final UploadFileCommand command = (UploadFileCommand) obj;
 
-		if (command.getResourceHash() == null){
-			errors.reject("error.uploadFile.hash");
+		if (!ValidationUtils.present(command.getResourceHash())){
+			errors.reject("error.upload.invalid.hash");
 		}
 	}
 
