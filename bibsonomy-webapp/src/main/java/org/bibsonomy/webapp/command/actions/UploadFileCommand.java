@@ -20,36 +20,6 @@ public class UploadFileCommand extends BaseCommand implements Serializable{
 	private CommonsMultipartFile file;
 	private Document doc;
 	private String resourceHash;
-	private String apiUrl;
-	private String refererUrl;
-	
-	/**
-	 * @return String
-	 */
-	public String getRefererUrl() {
-		return this.refererUrl;
-	}
-
-	/**
-	 * @param refererUrl
-	 */
-	public void setRefererUrl(String refererUrl) {
-		this.refererUrl = refererUrl;
-	}
-
-	/**
-	 * @return String
-	 */
-	public String getApiUrl() {
-		return this.apiUrl;
-	}
-
-	/**
-	 * @param apiUrl
-	 */
-	public void setApiUrl(String apiUrl) {
-		this.apiUrl = apiUrl;
-	}
 
 	/**
 	 * @return Document

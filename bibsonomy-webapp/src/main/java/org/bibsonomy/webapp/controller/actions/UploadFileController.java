@@ -43,21 +43,13 @@ public class UploadFileController implements MinimalisticController<UploadFileCo
 		// check if user is logged in, if not throw an error and go directly back to uploadPage
 		if (!context.isUserLoggedIn()) {
 			errors.reject("error.general.login");
-			return Views.ERROR;
 		}
 		
 		log.debug("user is logged in so start working");
 		
-		// if user is logged in check if a hash has been given.
-		// if there is a hash save it, if not throw an error
-		if (requestLogic.getParameter("resourceHash") != null){
-			command.setResourceHash(requestLogic.getParameter("resourceHash"));
-		} else {
-			errors.reject("error.uploadFile.hash");
+		if (errors.hasErrors()){
 			return Views.ERROR;
 		}
-
-		log.debug("resource hash available");
 		
 		/*
 		 * On the first run there can't be a file on the second there has to be one.
@@ -101,14 +93,9 @@ public class UploadFileController implements MinimalisticController<UploadFileCo
 				 */
 				command.setDoc(doc);
 				
-				/*
-				 * and set create some urls to show 
-				 */
-				command.setApiUrl("/api/users/" + context.getLoginUser().getName() + "/posts/" + command.getResourceHash() + "/documents/" + up.getFileName());
-				command.setRefererUrl("/bibtex/" + HashID.INTRA_HASH.getId() + command.getResourceHash() + "/" + context.getLoginUser().getName());
-				
 			} catch (Exception ex) {
-				errors.reject(ex.getMessage());
+				errors.reject("error.invalid.upload", new Object[]{ex}, "Invalid upload, uknown error.");
+				return Views.ERROR;
 			}
 		}
 		

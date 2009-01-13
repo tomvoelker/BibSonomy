@@ -52,13 +52,8 @@
 							</tr>
 							 <tr>
 		                  		<td>
-									<fmt:message key="bibtex.upload.file.apiurl"/>: <a href="${command.apiUrl}">${command.apiUrl}</a>
-								</td>
-							</tr>
-							 <tr>
-		                  		<td>
 									<br/>
-									<a href="${command.refererUrl}"><fmt:message key="bibtex.upload.file.back"/></a>
+									<a href="/bibtex/${hash.intra.id}${command.resourceHash}/${command.context.loginUser.name}"><fmt:message key="bibtex.upload.file.back"/></a>
 								</td>
 							</tr>
 						</table>
