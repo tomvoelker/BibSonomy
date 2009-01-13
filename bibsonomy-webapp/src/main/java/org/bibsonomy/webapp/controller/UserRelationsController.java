@@ -9,12 +9,9 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.webapp.command.BaseCommand;
-import org.bibsonomy.webapp.command.ContextCommand;
 import org.bibsonomy.webapp.command.UserRelationCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
-import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
@@ -32,6 +29,9 @@ public class UserRelationsController extends SingleResourceListControllerWithTag
 		
 		// no user given -> error
 		if (command.getRequestedUser() == null) {
+			/*
+			 * FIXME: wrong error message, should be /relations/ without user
+			 */
 			LOGGER.error("Invalid query /user without username");
 			throw new MalformedURLSchemeException("error.user_page_without_username");
 		}
@@ -41,11 +41,9 @@ public class UserRelationsController extends SingleResourceListControllerWithTag
 		final String groupingName = command.getRequestedUser();
 
 		// retrieve concepts
-		List<Tag> concepts = this.logic.getConcepts(null, groupingEntity, groupingName, null, null, ConceptStatus.PICKED, 0, Integer.MAX_VALUE);
+		final List<Tag> concepts = this.logic.getConcepts(null, groupingEntity, groupingName, null, null, ConceptStatus.PICKED, 0, Integer.MAX_VALUE);
 
 		int entriesPerPage = command.getConcepts().getEntriesPerPage();
-
-		System.out.println(command.getConcepts().getEntriesPerPage());
 
 		int start = command.getConcepts().getStart();
 
@@ -53,7 +51,7 @@ public class UserRelationsController extends SingleResourceListControllerWithTag
 			entriesPerPage = concepts.size() - start;
 		}
 
-		List<Tag> conceptsToShow = new LinkedList<Tag>();
+		final List<Tag> conceptsToShow = new LinkedList<Tag>();
 
 		/*
 		 * calculation of the relations which should by displayed on the page.
