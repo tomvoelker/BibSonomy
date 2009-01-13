@@ -5,17 +5,13 @@ import java.util.List;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.log4j.Logger;
-import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.fileutil.FileUploadInterface;
 import org.bibsonomy.util.fileutil.HandleFileUpload;
-import org.bibsonomy.webapp.command.actions.PasswordReminderCommand;
 import org.bibsonomy.webapp.command.actions.UploadFileCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
-import org.bibsonomy.webapp.util.RequestAware;
-import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
@@ -28,10 +24,9 @@ import org.springframework.validation.Errors;
  * @author daill
  * @version $Id$
  */
-public class UploadFileController implements MinimalisticController<UploadFileCommand>, RequestAware, ErrorAware, ValidationAwareController<UploadFileCommand> {
+public class UploadFileController implements MinimalisticController<UploadFileCommand>, ErrorAware, ValidationAwareController<UploadFileCommand> {
 	private static final Logger log = Logger.getLogger(UploadFileController.class);
 	
-	private RequestLogic requestLogic;
 	private Errors errors = null;
 	private LogicInterface logic;
 	private String docpath;
@@ -60,9 +55,7 @@ public class UploadFileController implements MinimalisticController<UploadFileCo
 			 *  create the interface, the item list to provide multiple files in the
 			 *  future and the add the fileitem to the list
 			 */
-			
-			FileUploadInterface up = null;
-			List<FileItem> list = new LinkedList<FileItem>();
+			final List<FileItem> list = new LinkedList<FileItem>();
 			list.add(command.getFile().getFileItem());
 
 			/*
@@ -70,10 +63,10 @@ public class UploadFileController implements MinimalisticController<UploadFileCo
 			 */
 			try {
 				// add the list to the HandleFile-Object
-				up = new HandleFileUpload(list);
+				final FileUploadInterface up = new HandleFileUpload(list);
 				
 				// create a new document object
-				Document doc = new Document();
+				final Document doc = new Document();
 				
 				// fill the document object with all necessary informations
 				doc.setUserName(context.getLoginUser().getName());
@@ -94,20 +87,12 @@ public class UploadFileController implements MinimalisticController<UploadFileCo
 				command.setDoc(doc);
 				
 			} catch (Exception ex) {
-				errors.reject("error.invalid.upload", new Object[]{ex}, "Invalid upload, uknown error.");
+				errors.reject("error.invalid.upload", new Object[]{ex}, "Sorry, we could not process your upload request, an unknown error occurred.");
 				return Views.ERROR;
 			}
 		}
 		
 		return Views.UPLOAD_FILE;
-	}
-
-	
-	/**
-	 * Set the requestlogic
-	 */
-	public void setRequestLogic(RequestLogic requestLogic) {
-		this.requestLogic = requestLogic;
 	}
 
 	/**

@@ -16,11 +16,10 @@ public class UploadFileValidator implements Validator<UploadFileCommand> {
 		return UploadFileCommand.class.equals(arg0);
 	}
 
-	public void validate(Object obj, Errors arg1) {
+	public void validate(Object obj, final Errors errors) {
 		Assert.notNull(obj);
 		
-		UploadFileCommand command = (UploadFileCommand) obj;
-		Errors errors = (Errors) arg1;
+		final UploadFileCommand command = (UploadFileCommand) obj;
 
 		if (command.getResourceHash() == null){
 			errors.reject("error.uploadFile.hash");
