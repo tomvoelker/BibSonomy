@@ -6,8 +6,8 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.AuthorResourceCommand;
-import org.bibsonomy.webapp.command.RelatedTagCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -23,16 +23,20 @@ public class AuthorPageController extends SingleResourceListController implement
 	public View workOn(AuthorResourceCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
-		
+
+		final String authorName = command.getRequestedAuthor();
+
 		// if no author given throw error 		
-		if (command.getRequestedAuthor() == null) {
+		if (!ValidationUtils.present(authorName)) {
 			LOGGER.error("Invalid query /author without author name");
 			throw new MalformedURLSchemeException("error.author_page_without_authorname");
 		}		
 				
 		// set grouping entity and grouping name
 		final GroupingEntity groupingEntity = GroupingEntity.VIEWABLE;
-		final String authorName = command.getRequestedAuthor();
+		/*
+		 * FIXME: the query supports only ONE tag!
+		 */
 		final List<String> requTags = command.getRequestedTagsList();
 		
 		// determine which lists to initalize depending on the output format 
@@ -47,7 +51,7 @@ public class AuthorPageController extends SingleResourceListController implement
 		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(command.getFormat())) {
-			this.setTags(command, BibTex.class, groupingEntity, null, null, null, null, null, 0, 1000, authorName);
+			this.setTags(command, BibTex.class, groupingEntity, null, null, requTags, null, null, 0, 1000, authorName);
 			this.endTiming();
 			return Views.AUTHORPAGE;			
 		}

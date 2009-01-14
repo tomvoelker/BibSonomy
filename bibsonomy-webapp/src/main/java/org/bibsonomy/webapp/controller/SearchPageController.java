@@ -1,7 +1,5 @@
 package org.bibsonomy.webapp.controller;
 
-import java.net.URLEncoder;
-
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
