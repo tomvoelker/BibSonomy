@@ -339,15 +339,9 @@
       <to>/UserFOAFOutput.jsp?requUser=$1&amp;$3</to>
     </rule>
     
-    <!-- redirect for /bibtexkey/BIBTEXKEY -->
-    <rule><!-- /bibtexkey/?key=BIBTEXKEY -->
-      <from>^/+bibtexkey/(\?key=(.*))$</from>
-      <to type="redirect">/bibtexkey/$2</to>
-    </rule>	
     <rule>
       <from>^/+bibtexkey/+(.+)(\?(.*))?$</from>
- <!--     <to>/ResourceHandler?page=bibtexkey&amp;requestKey=$1&amp;$2</to> -->
- 		<to>/bibtexkey?requestedKey=$1&amp;$2</to> 
+	  <to>/bibtexkey?requestedKey=$1&amp;$2</to> 
     </rule>    
     <rule> 
 		<from>^/+uploadFile/+([^/?]+?)(\?(.*))?$</from>
@@ -358,7 +352,6 @@
 		
 <!-- ############## viewable pages ############### -->
     <rule> 
-    	<condition type="parameter" name="filter" operator="notequal"/>
 		<condition type="attribute" name="type" operator="notequal"/>  
         <from>^/+viewable/+([^/?]+?)/(.+?)(\?(.*))?$</from>
         <!-- NEW PAGE -->
@@ -375,7 +368,6 @@
       <to type="redirect">/viewable/$1/$3</to>
     </rule>
     <rule> 
-	    <condition type="parameter" name="filter" operator="notequal"/>
 		<condition type="attribute" name="type" operator="notequal"/>  
 		<from>^/+viewable/+([^/?]+?)(\?(.*))?$</from>
 		<!-- NEW PAGE -->
@@ -419,8 +411,6 @@
 	<rule> <!-- /group/GROUP -->
     	<!-- workaround to redirect not-yet-supported features to old resource handler -->
 		<!-- forward PDF sites to new page -->
-		<condition type="parameter" name="filter" operator="notequal" next="or"/>
-		<condition type="parameter" name="filter" operator="equal">myGroupPDF</condition> 
 		<condition type="attribute" name="type" operator="notequal"/>    	
 		<from>^/+group/+([^/?]+?)(\?(.*))?$</from>
 		<!-- NEW PAGE -->
@@ -441,12 +431,6 @@
 	    <from>^/+group/*$</from>
 	    <to type="redirect">/groups</to>
 	</rule>
-    <!-- 
-	<rule>
-	    <from>^/+groups/*$</from>
-	    <to>/groups.jsp</to>
-	</rule>
-	 -->
 	<rule>
 	  <from>^/+group/+([^/?]+?)/$</from>
 	  <to type="redirect">/group/$1</to>
@@ -518,7 +502,6 @@
 	</rule>
 	<rule> <!-- /tag/TAG -->
     	<!-- workaround to redirect not-yet-supported features to old resource handler -->
-		<condition type="parameter" name="filter" operator="notequal"/>
 		<condition type="attribute" name="type" operator="notequal"/>    	
 		<from>^/+tag/(.+?)(\?(.*))?$</from>
 		<!-- NEW PAGE -->
@@ -538,7 +521,6 @@
     
     <rule> <!-- /concept/tag/CONCEPT -->
     <!-- workaround to redirect not-yet-supported features to old resource handler -->
-		<condition type="parameter" name="filter" operator="notequal"/>
 		<condition type="attribute" name="type" operator="notequal"/>
         <from>^/+concept/+tag/(.+?)(\?(.*))?$</from>
         <!-- NEW PAGE -->
@@ -550,21 +532,8 @@
         <to>/ResourceHandler?page=concept&amp;requTag=$1&amp;$3</to>
     </rule>
     
-<!-- ############## author pages ############### -->    
-    <rule> <!-- /author/AUTHOR/TAG -->
-        <from>^/+author/+([^/?]+?)/(.+?)(\?(.*))?$</from>
-        <!-- OLD PAGE -->
-        <to>/ResourceHandler?page=authortag&amp;requAuthor=$1&amp;requTag=$2&amp;$4</to>
-    </rule>   
-    <rule> 
-    	<!-- workaround to redirect not-yet-supported features to old resource handler -->
-		<condition type="parameter" name="filter" operator="notequal"/>
-		<condition type="attribute" name="type" operator="notequal"/>     
-        <from>^/+author/+([^/?]+?)/(.+?)(\?(.*))?$</from> 
-		<!-- NEW PAGE -->      
-         <to>/author?requestedAuthor=$1&amp;requestedTags=$2&amp;$4</to>
-    </rule>
-    
+	<!-- ############## author pages ############### -->
+
     <!-- redirect for tag formular on /author/AUTHOR/TAG page -->
     <rule>
       <from>^/+author/+([^/?]+?)(\?tag=(.*))$</from>
@@ -575,16 +544,34 @@
       <from>^/+author/(\?author=(.*))$</from>
       <to type="redirect">/author/$2</to>
     </rule>	
+
+     <rule> 
+    	<!-- workaround to redirect not-yet-supported features to old resource handler -->
+		<condition type="attribute" name="type" operator="notequal"/>     
+        <from>^/+author/+([^/?]+?)/(.+?)(\?(.*))?$</from> 
+		<!-- NEW PAGE -->      
+         <to>/author?requestedAuthor=$1&amp;requestedTags=$2&amp;$4</to>
+    </rule>
+    <rule> <!-- /author/AUTHOR/TAG -->
+        <from>^/+author/+([^/?]+?)/(.+?)(\?(.*))?$</from>
+        <!-- OLD PAGE -->
+        <to>/ResourceHandler?page=authortag&amp;requAuthor=$1&amp;requTag=$2&amp;$4</to>
+    </rule>   
+
+    <rule>
+    	<!-- workaround to redirect not-yet-supported features to old resource handler -->
+		<condition type="attribute" name="type" operator="notequal"/>     
+		<!-- NEW PAGE -->
+		<from>^/+author/(.+?)(\?(.*))?$</from>
+		<to>/author?requestedAuthor=$1&amp;$3</to> 
+	</rule>    
     <rule><!-- /author/AUTHOR -->
 		<from>^/+author/(.+?)(\?(.*))?$</from>
 		<!-- OLD PAGE -->
 		<to>/ResourceHandler?page=author&amp;requAuthor=$1&amp;$3</to>
 	</rule>    
-    <rule>
-		<from>^/+author/(.+?)(\?(.*))?$</from>
-		<!-- NEW PAGE -->
-		<to>/author?requestedAuthor=$1&amp;$3</to> 
-	</rule>
+
+
 	
 
 <!-- ############## url hashes ############### -->
@@ -644,58 +631,15 @@
       <from>^/+search(\?search=(.*))$</from>
       <to type="redirect">/search/$2</to>
     </rule>	
-    <rule>
-		<from>^/+search\?(.*)$</from>
-		<!-- NEW PAGE -->
-		<to>/search?requestedSearch=$1</to> 
-	</rule>
   	<rule>
 		<from>^/+search/(.+?)(\?(.*))?$</from>
 		<!-- NEW PAGE -->
 		<to>/search?requestedSearch=$1&amp;$3</to> 
 	</rule>
 	
-	<!-- search for tags or users -->
-    <rule>
-		<from>^/+specialsearch\?(.*)$</from>
-		<to>/RedirectHandler?page=specialsearch&amp;$1</to> 
-	</rule>	
 
-<!-- ############## content negotiation ############### -->
-	<!-- Bibtex -->		
-	<rule><!-- /uri/bibtex/hash -->
-		<from>^/+uri/+bibtex/+([0-3])([0-9a-fA-F]{32})(\?(.*))?$</from>
-		<to>/RedirectHandler?page=uri&amp;requResource=bibtex&amp;requContent=$1$2&amp;$4</to> 
-	</rule>	
-	<rule><!-- /uri/bibtex/hash/username -->
-		<from>^/+uri/+bibtex/+([0-3])([0-9a-fA-F]{32})/+(.+?)(\?(.*))?$</from>
-		<to>/RedirectHandler?page=uri&amp;requResource=bibtex&amp;requContent=$1$2&amp;requContent2=$3&amp;$5</to> 
-	</rule>
-	<rule><!-- /uri/bibtexkey/key/user -->
-		<!--  <from>^/+uri/+bibtexkey/+([^/?]+?)/+(.+?)(\?(.*))?$</from> -->
-		<from>^/+uri/+bibtexkey/+(.+)/+(.+?)(\?(.*))?$</from>
-		<to>/RedirectHandler?page=uri&amp;requResource=bibtexkey&amp;requContent=$1&amp;requContent2=$2&amp;$4</to> 
-	</rule>
 	
-	<!-- Bookmarks -->
-	<rule><!-- /uri/url/hash -->
-		<from>^/+uri/+url/([0-9a-fA-F]{32})(\?(.*))?$</from>
-		<to>/RedirectHandler?page=uri&amp;requResource=url&amp;requContent=$1&amp;$3</to> 
-	</rule>
-	<rule><!-- /uri/url/hash/username -->
-		<from>^/+uri/+url/([0-9a-fA-F]{32})/+(.+?)(\?(.*))?$</from>
-		<to>/RedirectHandler?page=uri&amp;requResource=url&amp;requContent=$1&amp;requContent2=$2&amp;$4</to> 
-	</rule>
-	
-	<!-- Authors -->
-	<rule><!-- /uri/author/authorname/tagname -->
-		<from>^/+uri/+author/+([^/?]+?)/(.+?)(\?(.*))?$</from>
-		<to>/RedirectHandler?page=uri&amp;requResource=author&amp;requContent=$1&amp;requContent2=$2&amp;$4</to>
-	</rule>
-	<rule><!-- /uri/author/authorname -->
-		<from>^/+uri/+author/(.+?)(\?(.*))?$</from>
-		<to>/RedirectHandler?page=uri&amp;requResource=author&amp;requContent=$1&amp;$3</to>
-	</rule>	
+
 	
 	<!-- ############## /relations ############### -->
 	<rule>
@@ -713,6 +657,25 @@
         <to>/ResourceHandler?page=basket&amp;$2</to>
     </rule>
 
+	<!-- ############## /my* mappings ############### -->
+	<!-- 
+		currently we handle the following mappings:
+		/myBibSonomy
+		/myBibTeX
+		/myRelations
+		/myPDF
+		/myDuplicates
+	 -->
+	<!-- FIXME: it is very optimistic, to send ALL URLs starting with /my to there ... -->
+	<rule>
+		<from>^/(my.+)(\?(.*))?$</from>
+		<to>/redirect?myPage=$1&amp;$3</to>
+	</rule>
+    <!-- ############## content negotiation ############### -->
+	<rule>	
+		<from>^/+uri/+(.+)$</from>
+		<to last="true">/redirect?url=$1</to>
+	</rule>	
 
 	<!-- ############## new actions - testing! ############### -->
 	<rule><!-- /actions/admin/group/GROUPNAME -->
