@@ -21,6 +21,7 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagSimilarity;
+import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
@@ -838,4 +839,10 @@ public class TestDBLogic implements LogicInterface {
 	public int updateTags(final User user, final List<Tag> tagsToReplace, final List<Tag> replacementTags) {
 		return 0;
 	}
+
+	public List<Author> getAuthors() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
