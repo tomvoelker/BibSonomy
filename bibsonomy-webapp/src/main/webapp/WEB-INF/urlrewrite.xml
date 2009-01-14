@@ -148,30 +148,25 @@
     	<to last="false">/$1</to>
     	<set name="format">json</set>
     </rule>
+    <!-- ****** JabRef Layouts ***** need to be migrated -->
     <rule>
     	<from>^/+layout/+(.+?)/+(.*)$</from>
     	<to last="false">/$2</to>
     	<set name="type">layout</set>
     	<set name="layout">$1</set>
     </rule>
-    <!--  special rule for formating KDE publications -->
-    <rule>
-    	<from>^/+publkde/+(.*)$</from>
-    	<to last="false">/$1</to>
-    	<set name="type">publkde</set>
-    </rule>
+
     <!--  special rule for formating publications as CSV -->
     <rule>
     	<from>^/+publcsv/+(.*)$</from>
     	<to last="false">/$1</to>
     	<set name="type">publcsv</set>
-
     </rule>
     <!--  special rule for formating Nepomuk publications -->
     <rule>
     	<from>^/+publrssN/+(.*)$</from>
     	<to last="false">/$1</to>
-    	<set name="type">publrssN</set>
+    	<set name="format">publrssN</set>
     </rule>
 
 
@@ -181,6 +176,8 @@
 	</rule>	
 
 
+
+	<!-- ############## quick tag editing ############### -->
 
     <!-- 
     	page where user can edit all tags in a batch
