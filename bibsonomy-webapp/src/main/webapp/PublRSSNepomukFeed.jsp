@@ -25,8 +25,6 @@
 
 <%-- Bean einbinden --%>
 <jsp:useBean id="ResourceBean" class="beans.ResourceBean" scope="request"/>
- 
-
 <c:set var="basePath" value="${projectHome}"/>
 
 <channel rdf:about="${projectHome}<c:out value='${requPath}'/>">
@@ -37,7 +35,8 @@
   <%-------------------------- bookmarks -----------------------%>
   <items>
     <rdf:Seq>
-      <c:forEach var="resource" items="${ResourceBean.bibtex}"><rdf:li rdf:resource="${projectHome}bibtex/<%=Bibtex.INTRA_HASH %><c:out value='${resource.hash}'/>/<mtl:encode value='${resource.user}'/>"/>
+      <c:forEach var="resource" items="${ResourceBean.bibtex}">
+        <rdf:li rdf:resource="${projectHome}bibtex/<%=Bibtex.INTRA_HASH %><c:out value='${resource.hash}'/>/<mtl:encode value='${resource.user}'/>"/>
       </c:forEach>
     </rdf:Seq>
   </items>
@@ -49,7 +48,9 @@
     <link>${projectHome}bibtex/<%=Bibtex.INTRA_HASH %><c:out value='${resource.hash}'/>/<mtl:encode value='${resource.user}'/></link>
     <dc:creator><c:out value="${resource.user}" /></dc:creator>
     <dc:date><mtl:formatDate value="${resource.date}"/></dc:date>
-    <dc:subject><c:forEach var="tag" items="${resource.tags}"><c:out value='${tag} '/> </c:forEach></dc:subject>
+    <dc:subject>
+      <c:forEach var="tag" items="${resource.tags}"><c:out value='${tag} '/> </c:forEach>
+    </dc:subject>
     <description><![CDATA[
     <div class="block">
       <%@ include file="/boxes/bibtex_desc.jsp" %>
@@ -60,7 +61,9 @@
     </description>
     <taxo:topics>
       <rdf:Bag>
-        <c:forEach var="tag" items="${resource.tags}"><rdf:li rdf:resource="${projectHome}tag/<c:out value='${tag}' />" /></c:forEach>  
+        <c:forEach var="tag" items="${resource.tags}">
+          <rdf:li rdf:resource="${projectHome}tag/<c:out value='${tag}' />" />
+        </c:forEach>  
       </rdf:Bag>
     </taxo:topics>
   </item>

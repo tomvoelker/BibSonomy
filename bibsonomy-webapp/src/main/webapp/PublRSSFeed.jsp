@@ -12,7 +12,6 @@
 <%@ taglib uri="/WEB-INF/taglibs/mytaglib.tld" prefix="mtl" %>
 
 
-
 <rdf:RDF
  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
  xmlns="http://purl.org/rss/1.0/"
@@ -26,7 +25,7 @@
 
 <%-- Bean einbinden --%>
 <jsp:useBean id="ResourceBean" class="beans.ResourceBean" scope="request"/>
-<c:set var="basePath" value="${projectHome}"/> 
+<c:set var="basePath" value="${projectHome}"/>
 
 <channel rdf:about="${projectHome}<c:out value='${requPath}'/>">
   <title>${projectName} publications for /<c:out value='${requPath}'/></title>
@@ -51,7 +50,7 @@
     <dc:creator><c:out value="${resource.user}" /></dc:creator>
     <dc:date><mtl:formatDate value="${resource.date}"/></dc:date>
     <dc:subject>
-      <c:forEach var="tag" items="${resource.tags}"><c:out value='${tag} '/> </c:forEach>  
+      <c:forEach var="tag" items="${resource.tags}"><c:out value='${tag} '/> </c:forEach>
     </dc:subject>
     <content:encoded><![CDATA[
     <c:if test="${not param.cleaned}">
