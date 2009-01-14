@@ -11,20 +11,20 @@
 
 <%-------------------------- Heading -----------------------%>
 <h1><a href="/" rel="Start">${projectName}</a> ::
-<form id="specialsearch" method="get" action="/specialsearch">
+<form id="specialsearch" method="get" action="/redirect">
   <select name="scope" size="1" id="scope">
     <option value="tag">tag</option>
     <option value="user">user</option>
     <option value="group">group</option>
     <option value="author">author</option> 
-    <option value="concept">concept</option>
+    <option value="concept/tag">concept</option>
     <option value="bibtexkey">BibTeX key</option> 
-    <option value="all" selected="selected">search:all</option> 
+    <option value="search" selected="selected">search:all</option> 
     <c:if test="${not empty user.name}">
     	<option value="user:<c:out value='${user.name}'/>">search:<c:out value="${user.name}"/></option> 
     </c:if>       
   </select>  ::
-  <input type="text" id="inpf" name="q" size="30"/>  
+  <input type="text" id="inpf" name="search" size="30"/>  
 </form>
 </h1>
 
