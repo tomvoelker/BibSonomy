@@ -2,7 +2,9 @@ package tags;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -32,8 +34,7 @@ public class Functions  {
 	 */
 	private static String[] bibtexEntryTypes = {"article","book","booklet","inbook","incollection","inproceedings","manual","masterthesis","misc","phdthesis","proceedings","techreport",     "unpublished"}; 
 	private static String[] swrcEntryTypes   = {"Article","Book","Booklet","InBook","InCollection","InProceedings","Manual","MasterThesis","Misc","PhDThesis","Proceedings","TechnicalReport","Unpublished"}; 
-
-
+    private static String[] risEntryTypes    = {"Journal Article","Book", "Book", "Book Section", "Book Section", "Conference Paper", "Generic", "Thesis", "Generic", "Thesis", "Conference Proceedings", "Report", "Unpublished Work"};
 
 	// contains special characters, symbols, etc...
 	private static Properties chars = new Properties(); 
@@ -389,6 +390,25 @@ public class Functions  {
 		return "Misc";
 	}
 	
+	/** Maps BibTeX entry types to RIS entry types.
+	 * 
+	 * TODO: stolen from old code in {@link EntryType} ... 
+	 * very inefficient ... use a static map instead
+	 *  
+	 * @param bibtexEntryType
+	 * @return The RIS entry type
+	 */
+	public static String getRISEntryType(final String bibtexEntryType) {
+		for (int i = 0; i < bibtexEntryTypes.length; i++) {
+			/* Comparison with current entrytype value */
+			if (bibtexEntryTypes[i].equals(bibtexEntryType)) {
+				/* match found -> print and stop loop */
+				return risEntryTypes[i];
+			}
+		}
+		return "Generic";
+	}
+	
 	/**
 	 * Calculates the percentage of font size for tag clouds
 	 * 
@@ -424,5 +444,18 @@ public class Functions  {
 		}
 		
 		return "";
+	}
+	
+	/** Returns the host name of a URL.
+	 * 
+	 * @param urlString - the URL as string
+	 * @return The host name of the URL.
+	 */
+	public static String getHostName(final String urlString) {
+		try {
+			return new URL(urlString).getHost();
+		} catch (MalformedURLException ex) {
+			return "unknownHost";
+		}
 	}
 }

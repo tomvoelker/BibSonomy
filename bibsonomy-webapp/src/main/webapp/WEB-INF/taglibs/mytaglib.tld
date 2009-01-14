@@ -245,6 +245,13 @@
   	<function-class>tags.Functions</function-class>
   	<function-signature>String getSWRCEntryType(java.lang.String)</function-signature>
   </function>
+  <function>
+    <!-- maps BibTeX entrytypes to RIS/EndNote entrytypes  -->
+  	<name>getRISEntryType</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String getRISEntryType(java.lang.String)</function-signature>
+  </function>
+
   
   <function>
   	<name>tagFontSize</name>
@@ -257,5 +264,10 @@
   	<function-class>tags.Functions</function-class>
   	<function-signature>String getTagSize(java.lang.Integer, java.lang.Integer)</function-signature>
   </function>
-
+  
+  <function>
+  	<name>getHostName</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String getHostName(java.lang.String)</function-signature>
+  </function>
 </taglib>
