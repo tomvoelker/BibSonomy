@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="AuthorCommon">
+	<resultMap id="fat_author" class="author">
+		<result property="authorId"		column="author_id"		javaType="string" />
+		<result property="firstName"	column="first_name"		javaType="string" />
+		<result property="middle"		column="middle"			javaType="string" />
+		<result property="lastName"		column="last_name"		javaType="string" />
+		<result property="ctr"			column="ctr"			javaType="int" />
+	</resultMap>
+	
+	<resultMap id="author" class="author">
+		<result property="lastName"		column="last_name"		javaType="string" />
+		<result property="ctr"			column="ctr"			javaType="int" />
+	</resultMap>
+</sqlMap>

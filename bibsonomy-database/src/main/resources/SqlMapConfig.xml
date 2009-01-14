@@ -40,6 +40,7 @@
 	<sqlMap resource="common/TagCommon.xml" />
 	<sqlMap resource="common/DocumentCommon.xml" />
 	<sqlMap resource="common/AdminCommon.xml" />
+	<sqlMap resource="common/AuthorCommon.xml"/>
 
 	<sqlMap resource="General.xml" />
 	<sqlMap resource="Tag.xml" />
@@ -53,6 +54,7 @@
 	<sqlMap resource="Basket.xml"/>
 	<sqlMap resource="Admin.xml"/>
 	<sqlMap resource="Statistics.xml"/>
+	<sqlMap resource="Author.xml"/>
 
 	<!-- Plugins -->
 	<sqlMap resource="plugins/Logging.xml"/>

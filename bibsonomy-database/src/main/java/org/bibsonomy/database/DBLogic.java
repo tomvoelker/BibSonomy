@@ -31,6 +31,7 @@ import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.managers.AdminDatabaseManager;
+import org.bibsonomy.database.managers.AuthorDatabaseManager;
 import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.BookmarkDatabaseManager;
 import org.bibsonomy.database.managers.CrudableContent;
@@ -54,6 +55,7 @@ import org.bibsonomy.database.systemstags.SystemTagFactory;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DBSessionFactory;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
+import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
@@ -71,6 +73,7 @@ import org.bibsonomy.util.ValidationUtils;
 /**
  * @author Jens Illig
  * @author Christian Kramer
+ * @author Christian Claus
  * @version $Id$
  */
 public class DBLogic implements LogicInterface {
@@ -78,6 +81,7 @@ public class DBLogic implements LogicInterface {
 	private static final Logger log = Logger.getLogger(DBLogic.class);
 
 	private final Map<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>> allDatabaseManagers;
+	private final AuthorDatabaseManager authorDBManager;
 	private final DocumentDatabaseManager docDBManager;
 	private final PermissionDatabaseManager permissionDBManager;
 	private final BookmarkDatabaseManager bookmarkDBManager;
@@ -106,6 +110,7 @@ public class DBLogic implements LogicInterface {
 		this.bookmarkDBManager = BookmarkDatabaseManager.getInstance();
 		this.allDatabaseManagers.put(Bookmark.class, this.bookmarkDBManager);
 
+		this.authorDBManager = AuthorDatabaseManager.getInstance();
 		this.docDBManager = DocumentDatabaseManager.getInstance();
 		this.userDBManager = UserDatabaseManager.getInstance();
 		this.groupDBManager = GroupDatabaseManager.getInstance();
@@ -833,12 +838,21 @@ public class DBLogic implements LogicInterface {
 
 
 
-
-
-
 	public User getAuthenticatedUser() {
 		return this.loginUser;
 	}
+	
+	
+	public List<Author> getAuthors() {
+		final DBSession session = openSession();
+		
+		try {
+			return this.authorDBManager.getAuthors(session); 
+		} finally {
+			session.close();
+		}
+	}
+	
 
 	public String addDocument(final Document doc, final String resourceHash) {
 		this.ensureLoggedIn();

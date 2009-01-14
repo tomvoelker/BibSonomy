@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Author">
+
+	<select id="getAuthors" resultMap="AuthorCommon.author" parameterClass="authorParam">
+		SELECT ctr, last_name
+		FROM (
+			SELECT ctr, last_name
+			FROM author
+			ORDER BY ctr DESC
+			LIMIT 100
+		) AS tab
+		ORDER BY last_name
+	</select>
+
+</sqlMap>
