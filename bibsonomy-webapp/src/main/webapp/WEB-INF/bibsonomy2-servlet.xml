@@ -105,6 +105,20 @@
 						</property>
 					</bean>
 				</entry>			 
+				<entry key="/redirect">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="RedirectController"/>
+						<property name="allowedFields">
+							<list>
+								<value>myPage</value>
+								<value>search</value>
+								<value>scope</value>
+								<value>requUser</value>
+								<value>url</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/search">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="searchPageController"/>
@@ -425,6 +439,13 @@
 	<bean id="UnAPIController" class="org.bibsonomy.webapp.controller.special.UnAPIController" scope="request">
 		<property name="responseLogic" ref="responseLogic"/>
 	</bean>
+	 
+	<!-- 
+	   Does various redirects, like /myRelations, /myBibSonomy, etc.
+	 -->
+	<bean id="RedirectController" class="org.bibsonomy.webapp.controller.special.RedirectController" scope="request">
+		<property name="requestLogic" ref="requestLogic"/>
+	</bean> 
 	 
 	<bean id="bibtexkeyPageController" class="org.bibsonomy.webapp.controller.BibtexkeyPageController" scope="request">
 		<property name="logic" ref="logic"/>
