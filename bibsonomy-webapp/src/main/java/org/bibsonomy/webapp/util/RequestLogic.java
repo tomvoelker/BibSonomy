@@ -29,6 +29,7 @@ public class RequestLogic {
 	 */
 	private static final String HEADER_REFERER = "Referer";
 	private static final String HEADER_X_FORWARDED_FOR = "x-forwarded-for";
+	private static final String HEADER_ACCEPT = "accept";
 
 	private static final Logger log = Logger.getLogger(RequestLogic.class);
 
@@ -95,6 +96,13 @@ public class RequestLogic {
 	 */
 	public String getReferer() {
 		return request.getHeader(HEADER_REFERER);
+	}
+	
+	/**
+	 * @return The accept header of the request.
+	 */
+	public String getAccept() {
+		return request.getHeader(HEADER_ACCEPT);
 	}
 
 	/**
