@@ -400,24 +400,29 @@ public class Functions  {
 	}
 	
 	/**
-	 * returns the css Class for an given tag
+	 * returns the css Class for a given tag
 	 * @param tagCount the count aof the current Tag
 	 * @param maxTagCount the maximum tag count
 	 * @return the css class for the tag
 	 */
-	public static String getTagSize(Integer tagCount, Integer maxTagCount) {
-		int percentage = ((tagCount * 100) / maxTagCount);
+	public static String getTagSize(final Integer tagCount, final Integer maxTagCount) {
+		/*
+		 * catch incorrect values
+		 */
+		if (tagCount == 0 || maxTagCount == 0) return "tagtiny";
 		
-		String cssTag = "";
+		final int percentage = ((tagCount * 100) / maxTagCount);
+		
 		if (percentage < 25) {
-			cssTag =  "tagtiny";
+			return  "tagtiny";
 		} else if (percentage >= 25 && percentage < 50) {
-			cssTag =  "tagnormal";
+			return  "tagnormal";
 		} else if (percentage >= 50 && percentage < 75) {
-			cssTag =  "taglarge";
+			return  "taglarge";
 		} else if (percentage >= 75) {
-			cssTag =  "taghuge";
+			return  "taghuge";
 		}
-		return cssTag;
+		
+		return "";
 	}
 }
