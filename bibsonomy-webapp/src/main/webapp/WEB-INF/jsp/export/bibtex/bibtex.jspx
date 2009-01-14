@@ -35,21 +35,6 @@
 	</c:forEach>
 	
 	<!-- special fields: misc, key, description, abstract, keywords, biburl -->
-	
-	<c:if test="${not empty bibtex['misc']}">
-			<!--+
-		    | 2008/12/23, fei: due to bug 682, misc field can't be split using
-		    |                  regular expressions. using the bibtex parser seems to
-		    |                  be too expensive - so we just print out misc field's 
-		    |                  content. 
-			<c:forEach var="miscField" items="${mtl:miscFieldToArray(bibtex['misc'])}">
-				<jsp:text>	${miscField},<br/></jsp:text>
-			</c:forEach>
-		    -->
-		    <c:out value="${bibtex['misc']}"/>
-	<jsp:text>
-	</jsp:text>
-	</c:if>
 	<c:if test="${not empty bibtex.BKey}">
 	<jsp:text>key = {${bibtex.BKey}},
 	</jsp:text>	
@@ -64,8 +49,22 @@
 	</c:if>
 	<jsp:text>biburl = {${projectHome}bibtex/2${bibtex['intraHash']}/${post.user['name']}},
 	</jsp:text>
-	<jsp:text>keywords = {${mtl:toTagString(post.tags)}}
-</jsp:text>
+	<jsp:text>keywords = {${mtl:toTagString(post.tags)}},
+    </jsp:text>
+  <c:if test="${not empty bibtex['misc']}">
+      <!--+
+        | 2008/12/23, fei: due to bug 682, misc field can't be split using
+        |                  regular expressions. using the bibtex parser seems to
+        |                  be too expensive - so we just print out misc field's 
+        |                  content. 
+      <c:forEach var="miscField" items="${mtl:miscFieldToArray(bibtex['misc'])}">
+        <jsp:text>  ${miscField},<br/></jsp:text>
+      </c:forEach>
+        -->
+        <c:out value="${bibtex['misc']}"/>
+  <jsp:text>
+  </jsp:text>
+  </c:if>
 <jsp:text>}
 
 </jsp:text>
