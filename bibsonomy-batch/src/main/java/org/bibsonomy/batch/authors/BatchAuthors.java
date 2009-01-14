@@ -13,6 +13,13 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.SimpleLayout;
 import org.bibsonomy.util.tex.TexEncode;
 
 /**
@@ -23,6 +30,9 @@ public class BatchAuthors {
 
 	private final static String PID_FILE = "batch_authors.pid";
 	private static long lastId;
+	private static Logger logger = Logger.getRootLogger();
+
+
 
 	/**
 	 * returns the last name of an author
@@ -148,7 +158,7 @@ public class BatchAuthors {
 		}
 
 		lastId = last;
-		
+		rs = null;
 		return bibtexAuthorMap;
 	}
 	
@@ -181,6 +191,9 @@ public class BatchAuthors {
 				authorMap.get(rs.getString(2)).getContentIds().add(rs.getLong(3));
 			}
 		}
+		
+		rs = null;
+		enc = null;
 		return authorMap;
 	}
 	
@@ -241,11 +254,24 @@ public class BatchAuthors {
 		}
 		
 		for(String s : sortHashMap(insertAuthorMap).keySet()) {
-			db.insertAuthor(insertAuthorMap.get(s));
+			try {
+				db.insertAuthor(insertAuthorMap.get(s));
+			} catch(Exception e) {
+				e.printStackTrace();
+				logger.fatal(e.getMessage());
+				continue;
+			}
 		}
 		
 		for(String s : sortHashMap(updateAuthorMap).keySet()) {
-			db.updateAuthor(updateAuthorMap.get(s));
+			try {
+				db.updateAuthor(updateAuthorMap.get(s));
+			} catch(Exception e) {
+				e.printStackTrace();
+				logger.fatal(e.getMessage());
+				continue;
+			}
+			
 		}
 	}
 	
@@ -353,61 +379,52 @@ public class BatchAuthors {
 	 */
 	public static void main(String[] args) {
 		String database		= null;
-		boolean type		= false;
 		
 		//property files have to be renamed, if all files are located in their correct packages
 		String props		= "lastRow.txt";
-		String masterProps	= "lastMasterRow.txt";
+		
+		try {
+			SimpleLayout layout = new SimpleLayout();
+			ConsoleAppender consoleAppender = new ConsoleAppender(layout);
+			logger.addAppender(consoleAppender);
+			FileAppender fileAppender = new FileAppender(layout, "batch_authors.log", false);
+			logger.addAppender(fileAppender);
+			logger.setLevel(Level.WARN);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		
 		//args shiften
-		if(args.length < 1 || args.length > 2) {
+		if(args.length != 1) {
 			System.err.println("Please enter a database name as first argument\n");
 			System.exit(0);
-		} else if(args.length == 1) {
-			database = args[0];
-		} else if(args.length == 2) {
-			database = args[1];
-			type = true;
-		}
-		
+		} 
+
 		if(amIRunning()) {
 			System.err.println("pid file already exists: " + getTmpPath() + PID_FILE);
 			System.exit(0);
 		}
 		
+		database = args[0];
+		
 		try {
-			if(!type) {
-				lastId = loadProperties(props);
-				
-				//just for tests
-				//lastId = 4000;
-				
-				AuthorDB db = new AuthorDB();
-				db.initDBConnection(database);
-				Map<String, Author> bibtexAuthorMap = fetchBibtexAuthors(db);
-				Map<String, Author> authorMap = fetchAuthors(db);
-				blastData(db, bibtexAuthorMap, authorMap);
-				db.closeDBConnection();
-				
-				storeProperties(props);
-			} else {
-				lastId = loadProperties(masterProps);
-				
-				//just for tests
-				//lastId = 3000;
-				
-				AuthorDB db = new AuthorDB();
-				db.initDBConnection(database);
-				Map<String, Author> slaveAuthorMap = fetchAuthors(db);
-				db.closeDBConnection();
+			lastId = loadProperties(props);
+			
+			AuthorDB db = new AuthorDB();
+			db.initDBConnection(database);
+			Map<String, Author> bibtexAuthorMap = fetchBibtexAuthors(db);
+			Map<String, Author> authorMap = fetchAuthors(db);
+			db.closeDBConnection();
 
-				db.initMasterDBConnection(database);
-				Map<String, Author> authorMap = fetchAuthors(db);
-				blastData(db, slaveAuthorMap, authorMap);
-				db.closeDBConnection();
+			db = null;
+			
+			db = new AuthorDB();
+			db.initMasterDBConnection(database);
+			blastData(db, bibtexAuthorMap, authorMap);
+			db.closeDBConnection();
 
-				storeProperties(masterProps);
-			}
+			storeProperties(props);
 		} catch (InstantiationException ex) {
 			ex.printStackTrace();
 		} catch (IllegalAccessException ex) {
@@ -416,7 +433,7 @@ public class BatchAuthors {
 			ex.printStackTrace();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-		}
+		} 
 		
 		if(!removePidFile()) {
 			System.err.println("can't delete pid file: " + getTmpPath() + PID_FILE);
