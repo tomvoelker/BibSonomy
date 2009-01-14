@@ -146,7 +146,7 @@ function add_hints() {
     el.onkeypress  = clear_input;
   }
   // specialsearch (tag, user, group, author, relation)
-  if (el != null && el.name == "q" && (el.value == "" || el.value == getString("navi.author.hint") || el.value == getString("navi.tag.hint") 
+  if (el != null && el.name == "search" && (el.value == "" || el.value == getString("navi.author.hint") || el.value == getString("navi.tag.hint") 
   		|| el.value == getString("navi.user.hint") || el.value == getString("navi.group.hint") || el.value == getString("navi.concept.hint") || getString("navi.bibtexkey.hint")) || (el != null && el.value == getString("navi.search.hint"))) {
     var scope = document.getElementById("scope");
     // add call to this method to dropdown box, so that hint changes, when box changes
@@ -161,11 +161,11 @@ function add_hints() {
 	      el.value = getString("navi.group.hint");
 	    } else if (scope.value == "author") {
 	      el.value = getString("navi.author.hint");
-	    } else if (scope.value == "concept") {
+	    } else if (scope.value == "concept/tag") {
 	      el.value = getString("navi.concept.hint");
 	    } else if (scope.value == "bibtexkey") {
 	      el.value = getString("navi.bibtexkey.hint");
-	    } else if (scope.value.indexOf("user") != -1 || scope.value == "all") {
+	    } else if (scope.value.indexOf("user") != -1 || scope.value == "search") {
 	      el.value = getString("navi.search.hint");
 	    }    
 	    el.style.color = "#aaaaaa";

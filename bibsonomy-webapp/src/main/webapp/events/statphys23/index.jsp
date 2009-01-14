@@ -37,10 +37,10 @@
   </span>
     
     <span style="font-weight: bold; font-size: 120%;padding-left:15px;display:inline;">Search for an author:</span>
-      <form id="specialsearch" method="get" action="/specialsearch" style="display:inline;">
+      <form id="specialsearch" method="get" action="/redirect" style="display:inline;">
         <input type="hidden" name="scope" value="author">
         <input type="hidden" name="requUser" value="statphys23">
-        <input type="text" id="inpf" name="q" size="25"/>
+        <input type="text" id="inpf" name="search" size="25"/>
       </form>
 </div>
 

@@ -45,7 +45,7 @@ var LocalizedStrings = {
    "navi.viewable" : "Sichtbar",
    "navi.author" : "Autor",
    "navi.concept" : "Konzept",
-   "navi.bibtexKey" : "BibTeX key",
+   "navi.bibtexkey" : "BibTeX key",
    "navi.search" : "Suche",
    "navi.all" : "alles",
    "navi.join" : "der Gruppe {0} beitreten",

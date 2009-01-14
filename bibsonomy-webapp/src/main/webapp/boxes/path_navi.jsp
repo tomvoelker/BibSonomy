@@ -9,9 +9,9 @@
 			<a onclick="naviSwitchSpecial('user')" style="cursor:pointer">user</a>
 			<a onclick="naviSwitchSpecial('group')" style="cursor:pointer">group</a>
 			<a onclick="naviSwitchSpecial('author')" style="cursor:pointer">author</a>
-			<a onclick="naviSwitchSpecial('concept')" style="cursor:pointer">concept</a>
+			<a onclick="naviSwitchSpecial('concept/tag')" style="cursor:pointer">concept</a>
 			<a onclick="naviSwitchSpecial('bibtexkey')" style="cursor:pointer">BibTeX key</a>
-			<a onclick="naviSwitchSpecial('all')" style="cursor:pointer">search:all</a>
+			<a onclick="naviSwitchSpecial('search')" style="cursor:pointer">search:all</a>
 			<c:if test="${not empty param.requUser}">
 				<a onclick="naviSwitchSpecial('explicit_user')" style="cursor:pointer">search:<c:out value='${param.requUser}'/></a>
 				<c:set var="mode" value="requUser" />

@@ -359,7 +359,7 @@ function naviSwitchSpecial(target) {
 	var formNode = document.createElement("form");
 	formNode.setAttribute("id", "specialsearch");
 	formNode.setAttribute("method", "get");
-	formNode.setAttribute("action", "/specialsearch");
+	formNode.setAttribute("action", "/redirect");
 
 	// create dropdown box
 	var selectNode = document.createElement("select");
@@ -368,7 +368,7 @@ function naviSwitchSpecial(target) {
 	selectNode.setAttribute("id", "scope");
 	
 	// select options
-	var options = new Array("tag", "user", "group", "author", "concept", "bibtexkey", "all", "explicit_user");
+	var options = new Array("tag", "user", "group", "author", "concept/tag", "bibtexkey", "search", "explicit_user");
 	
 	// hint for input field
 	var hint = "";
@@ -376,8 +376,8 @@ function naviSwitchSpecial(target) {
 	// fill select dropdown box with options
 	for(var i = 0; i < options.length; i++) {
 						
-		// exception for 'all' case
-		if(options[i] == "all") {
+		// exception for 'search' case
+		if(options[i] == "search") {
 			
 			var optionNode = document.createElement("option");
 			optionNode.setAttribute("value", options[i]);
@@ -390,15 +390,15 @@ function naviSwitchSpecial(target) {
 		
 			selectNode.appendChild(optionNode);
 			
-		} else if(options[i] == "bibtexkey") {
+		} else if(options[i] == "concept/tag") {
 			
 			var optionNode = document.createElement("option");
 			optionNode.setAttribute("value", options[i]);
-			optionNode.appendChild(document.createTextNode(getString("navi.bibtexKey")));			
+			optionNode.appendChild(document.createTextNode(getString("navi.concept")));			
 			
 			if(options[i] == target) {
 				optionNode.setAttribute("selected", "");
-				hint = getString("navi.bibtexkey.hint");
+				hint = getString("navi.concept.hint");
 			}
 		
 			selectNode.appendChild(optionNode);
@@ -441,15 +441,11 @@ function naviSwitchSpecial(target) {
 	var inpfNode = document.createElement("input");
 	inpfNode.setAttribute("type", "text");
 	inpfNode.setAttribute("id", "inpf");
-	inpfNode.setAttribute("name", "q");
+	inpfNode.setAttribute("name", "search");
 	inpfNode.setAttribute("size", "30");
 	
 	if(document.getElementById("inpf") != null) {
 		inpfValue = document.getElementById("inpf").value;
-						
-//		if(inpfValue != getString("navi.search.hint") && inpfValue != getString("navi.tag.hint")
-//			&& inpfValue != getString("navi.user.hint") && inpfValue != getString("navi.group.hint")
-//			&& inpfValue != getString("navi.author.hint") && inpfValue != getString("navi.concept.hint")) {
 
 		if(inpfValue == getString("navi.search.hint") || inpfValue == getString("navi.tag.hint")
 			|| inpfValue == getString("navi.user.hint") || inpfValue == getString("navi.group.hint")
