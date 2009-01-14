@@ -18,11 +18,16 @@
       <c:set var="description"><bib:desc post="${post}"/></c:set>
       <c:out value="${description}"/>
     </jsp:attribute>
-  
+
     <jsp:attribute name="additionalItemMetadata">
       <burst:publication>
         <swrctags:swrcOutput post="${post}"/>
       </burst:publication>
+      <c:if test="${not empty post.description}">
+        <description>
+          <c:out value="${post.description}"/>
+        </description>
+      </c:if>
     </jsp:attribute>
   
   </export:rssSkeleton>
