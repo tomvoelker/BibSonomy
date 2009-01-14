@@ -9,7 +9,7 @@
 
 	<!-- only display icon when user is logged in and does NOT visit his own userpage  -->
     <c:if test="${command.context.userLoggedIn and command.requestedUser ne loginUserName}">
-		<a href="/ShowBibtexEntry?hash=${post.resource.intraHash}&amp;user=${fn:escapeXml(post.user.name)}&amp;copytag=${mtl:toTagString(post.tags)}" title="${fn:escapeXml(copyTitle)}">
+		<a href="/ShowBibtexEntry?hash=${post.resource.intraHash}&amp;user=${mtl:encodeURI(post.user.name)}&amp;copytag=${mtl:encodeURI(mtl:toTagString(post.tags))}" title="${fn:escapeXml(copyTitle)}">
 			&amp;nbsp;
 		</a>
 	</c:if>

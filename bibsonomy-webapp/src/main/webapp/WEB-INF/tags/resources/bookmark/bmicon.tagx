@@ -9,7 +9,7 @@
 
 	<!-- only display icon when user is logged in and does NOT visit his own userpage  -->
     <c:if test="${command.context.userLoggedIn and command.requestedUser ne loginUserName}">
-        <a href="/ShowBookmarkEntry?c=b&amp;jump=no&amp;url=${mtl:encodeURI(post.resource.url)}&amp;description=${mtl:encodeURI(post.resource.title)}&amp;extended=${mtl:encodeURI(post.description)}&amp;copytag=${mtl:encodeURI(mtl:toTagString(post.tags))}" title="${copyTitle}">
+        <a href="/ShowBookmarkEntry?c=b&amp;jump=no&amp;url=${mtl:encodeURI(post.resource.url)}&amp;description=${mtl:encodeURI(post.resource.title)}&amp;extended=${mtl:encodeURI(post.description)}&amp;copytag=${mtl:encodeURI(mtl:toTagString(post.tags))}" title="${fn:escapeXml(copyTitle)}">
 			&amp;nbsp;
 		</a>
 	</c:if>
