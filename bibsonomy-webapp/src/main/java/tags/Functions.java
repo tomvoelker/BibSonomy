@@ -14,6 +14,7 @@ import java.util.Properties;
 import java.text.Normalizer;
 
 import org.bibsonomy.common.enums.SpamStatus;
+import org.bibsonomy.model.Author;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.UrlUtils;
@@ -444,6 +445,16 @@ public class Functions  {
 		}
 		
 		return "";
+	}
+	
+	/**
+	 * Calculates the percentage of font size for clouds of author names
+	 * 
+	 * @param Author
+	 * @return value between 0 and 100 %
+	 */
+	public static double getAuthorFontSize(final Author author) {
+		return Math.round(Math.log(author.getCtr())) * 25;		
 	}
 	
 	/** Returns the host name of a URL.

@@ -33,6 +33,9 @@
 	  <a id="nav_tags" href="/tags">tags</a>
 	</li>		
 	<li>
+		<a id="nav_authors" href="/authors">authors</a>
+	</li>
+	<li>
 	  <a id="nav_relations" href="/relations">relations</a>
 	</li>
 	<li>

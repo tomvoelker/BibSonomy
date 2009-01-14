@@ -77,6 +77,9 @@
 		</c:choose>	
 		<li>
 			<c:url var="tagsUrl" value="/tags" context="${projectContext}"/><a id="nav_tags" href="${tagsUrl}"><fmt:message key="navi.tags"/></a>
+		</li>
+		<li>
+			<c:url var="authorsUrl" value="/authors" context="${projectContext}"/><a id="nav_authors" href="${authorsUrl}"><fmt:message key="navi.authors"/></a>
 		</li>		
 		<li>
 			<c:url var="relationsUrl" value="/relations" context="${projectContext}"/>

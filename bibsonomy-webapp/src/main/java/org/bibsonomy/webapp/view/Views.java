@@ -60,6 +60,11 @@ public enum Views implements View {
 	TAGPAGE("tag"),
 	
 	/**
+	 * authors overview page
+	 */
+	AUTHORSPAGE("authors"),
+	
+	/**
 	 * concept page shows all suptags of an requested tag
 	 */
 	CONCEPTPAGE("concept"),

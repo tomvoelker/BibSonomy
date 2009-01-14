@@ -18,6 +18,8 @@
 			<td class="tleft" id="upper_menu">
 				<c:url var="tagsUrl" value="/tags" context="${projectContext}"/>
 				<a href="${tagsUrl}"><fmt:message key="navi.tags"/></a><c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
+				<c:url var="authorsUrl" value="/authors" context="${projectContext}"/>
+				<a href="${authorsUrl}"><fmt:message key="navi.authors"/></a><c:out value=" " />${mtl:ch('menu.delim')}<c:out value=" "/>
 				<c:url var="relationsUrl" value="/relations" context="${projectContext}"/>
 				<a href="${relationsUrl}"><fmt:message key="navi.relations"/></a><c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>								
 				<c:url var="groupsUrl" value="/groups" context="${projectContext}"/>
