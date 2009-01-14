@@ -145,6 +145,11 @@ public enum Views implements View {
 	PUBLRSS("export/bibtex/rssfeed"),
 	
 	/**
+	 * RSS output for publications with modification for NEPOMUK project  
+	 */
+	PUBLRSSNEPOMUK("export/bibtex/rssfeedNepomuk"),
+	
+	/**
 	 * swrc output for publications
 	 */
 	SWRC("export/bibtex/swrc"),
@@ -385,6 +390,8 @@ public enum Views implements View {
 			return BOOKPUBL;
 		if ("bookbib".equals(format))
 			return BOOKBIB;
+		if ("publrssN".equals(format))
+			return PUBLRSSNEPOMUK;
 		
 		throw new BadRequestOrResponseException("Invalid format specification.");
 	}
