@@ -85,8 +85,6 @@ public class UserRelationsController extends SingleResourceListControllerWithTag
 			if (Role.ADMIN.equals(logic.getAuthenticatedUser().getRole())) {
 				command.setUser(logic.getUserDetails(command.getRequestedUser()));
 			}
-
-			this.endTiming();
 		}
 
 		this.endTiming();
