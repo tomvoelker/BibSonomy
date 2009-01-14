@@ -12,7 +12,7 @@
 <h1 id="path"> 
   <a href="/">${projectName}</a> :: <a href="#" rel="path_menu"><img src="/resources/image/box_arrow.png">&nbsp;url</a> :: 
   <form action="/url" method="GET" class="smallform">
-    <input type="text" size="50" name="url" id="inpf" value="<c:out value='${ResourceBean.title}'/>" />
+    <input type="text" size="50" name="requUrl" id="inpf" value="<c:out value='${ResourceBean.title}'/>" />
   </form>
 </h1> 
 

@@ -100,6 +100,11 @@ public enum Views implements View {
 	BIBTEX("export/bibtex/bibtex"),
 	
 	/**
+	 * EndNote (RIS) output 
+	 */
+	ENDNOTE("export/bibtex/endnote"),
+	
+	/**
 	 * url page, displays all bookmarks for a given url hash  
 	 */
 	URLPAGE("url"),
@@ -188,6 +193,11 @@ public enum Views implements View {
 	 * html output for bookmarks
 	 */
 	BOOKPUBL("export/bookmark/bookpubl"),
+	
+	/**
+	 * BibTeX output for bookmarks 
+	 */
+	BOOKBIB("export/bookmark/bibtex"),
 	
 	/**
 	 * admin page
@@ -353,6 +363,8 @@ public enum Views implements View {
 	public static Views getViewByFormat(String format) {
 		if ("bibtex".equals(format))
 			return BIBTEX;
+		if ("json".equals(format)) 
+			return JSON;
 		if ("burst".equals(format))
 			return BURST;
 		if ("rss".equals(format))
@@ -363,14 +375,16 @@ public enum Views implements View {
 			return SWRC;
 		if ("publ".equals(format))
 			return PUBL;
+		if ("endnote".equals(format))
+			return ENDNOTE;
 		if ("aparss".equals(format))
 			return APARSS;
 		if ("xml".equals(format))
 			return XML;
 		if ("bookpubl".equals(format))
 			return BOOKPUBL;
-		if ("json".equals(format)) 
-			return JSON;
+		if ("bookbib".equals(format))
+			return BOOKBIB;
 		
 		throw new BadRequestOrResponseException("Invalid format specification.");
 	}
