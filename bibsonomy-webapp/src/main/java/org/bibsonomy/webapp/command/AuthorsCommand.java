@@ -7,8 +7,6 @@ import org.bibsonomy.common.enums.TagCloudSort;
 import org.bibsonomy.common.enums.TagCloudStyle;
 import org.bibsonomy.model.Author;
 
-import com.sun.media.jai.opimage.MaxCRIF;
-
 /**
  * @author Christian Claus
  * @version $Id$
