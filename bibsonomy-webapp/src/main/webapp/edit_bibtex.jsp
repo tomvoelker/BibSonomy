@@ -445,7 +445,7 @@
   <td></td>
 </tr>
 
-<tr id="miscR">
+<tr>
   <td class="expl">misc</td>
   <td>
     <textarea name="misc" cols="60" rows="3" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.misc}"/></textarea>
