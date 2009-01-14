@@ -33,6 +33,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.TagSimilarity;
+import org.bibsonomy.model.Author;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
@@ -138,6 +139,18 @@ public interface LogicInterface extends PostLogicInterface {
 	 */
 	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, String hash, Order order, int start, int end, String search, TagSimilarity relation);
 
+	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public List<Author> getAuthors();
+	
+	
+	
+	
+	
 	/**
 	 * Returns details about a tag. Those details are:
 	 * <ul>
