@@ -79,18 +79,13 @@
           
           <!-- title, description, link, creator, date, subject -->
     	  <title><mtl:bibclean value="${post.resource.title}"/></title>
-		  <c:if test="${not empty post.description}">
-            <description><c:out value="${post.description}"/></description>
-          </c:if>	
   		  <link>${projectHome}bibtex/${hash.intra.id}${post.resource.intraHash}/<mtl:encode value='${post.user.name}'/></link>
   		  <dc:creator><c:out value="${post.user.name}"/></dc:creator>
   		  <dc:date><mtl:formatDate value="${post.date}"/></dc:date>
   		  <dc:subject><c:forEach var="tag" items="${post.tags}"><c:out value="${tag.name}"/><c:out value=" "/></c:forEach></dc:subject>
 
           <!-- The HTML description of the item. -->
-  		  <content:encoded>
-            <jsp:invoke fragment="content"/>
-  	      </content:encoded>
+  		  <content:encoded><jsp:invoke fragment="content"/></content:encoded>
             
           <!-- The tags -->
   		  <taxo:topics>
