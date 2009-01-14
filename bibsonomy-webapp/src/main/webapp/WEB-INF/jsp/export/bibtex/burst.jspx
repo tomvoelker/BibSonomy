@@ -7,6 +7,7 @@
   xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
   xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
   xmlns:swrctags="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
+  xmlns:burst="http://xmlns.com/burst/0.1/"
   xmlns:fn="http://java.sun.com/jsp/jstl/functions">
   
   <jsp:directive.page contentType="application/xml; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" isELIgnored="false"/>  

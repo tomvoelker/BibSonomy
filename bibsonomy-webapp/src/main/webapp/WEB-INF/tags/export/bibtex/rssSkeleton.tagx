@@ -51,6 +51,7 @@
     <jsp:attribute name="xmlns:admin">http://webns.net/mvcb/</jsp:attribute>
     <jsp:attribute name="xmlns:swrc">http://swrc.ontoware.org/ontology#</jsp:attribute>
     <jsp:attribute name="xmlns:burst">http://xmlns.com/burst/0.1/</jsp:attribute>
+    <jsp:attribute name="xmlns:owl">http://www.w3.org/2002/07/owl#</jsp:attribute>
 
     <jsp:body>
       <!-- an RSS feed first defines a channel with general metadata and an overview of the described items -->
