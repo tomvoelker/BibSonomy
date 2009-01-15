@@ -392,11 +392,24 @@ public class DBLogic implements LogicInterface {
 	 */
 	public void deleteUser(final String userName) {
 		// TODO: take care of toLowerCase()! 
-
-		throw new UnsupportedOperationException("not yet available");
+		final String[] tables = {"bookmark", "bibtex", "tas", "search_bibtex", "search_bookmark"};
+		
+		this.ensureLoggedIn();
+		this.permissionDBManager.ensureWriteAccess(this.loginUser, userName);
+		
+		final User deleteUserParam = new User();
+		
+		deleteUserParam.setName(userName);
+		
+		
+		final DBSession session = openSession();
+		
+		userDBManager.deleteUser(deleteUserParam, session);
+		
+//		throw new UnsupportedOperationException("not yet available");
 
 //		if ((this.loginUserName == null) || (this.loginUserName.equals(userName) == false)) {
-//		throw new ValidationException("You are not authorized to perform the requested operation");
+//			throw new ValidationException("You are not authorized to perform the requested operation");
 //		}		
 //		final DBSession session = openSession();
 //		try {

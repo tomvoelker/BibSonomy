@@ -256,7 +256,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		this.deleteUser(existingUser.getName(), session);
 		this.insert("insertUser", existingUser, session);	
 	}
-
+	
 	/**
 	 * Delete a user.
 	 * 
@@ -272,6 +272,33 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		this.delete("deleteOpenIDUser", userName, session);		
 		
 		//throw new UnsupportedOperationException("Not implemented");
+	}
+
+	/**
+	 * Delete a user.
+	 * @param user 
+	 * @param session 
+	 */
+	public void deleteUser(final User user, final DBSession session) {
+		if (present(user.getName()) == false) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Username not set");
+		}
+		
+		
+		User localUser = this.getUserDetails(user.getName(), session);
+		
+		localUser.setAlgorithm("self_deleted");
+		localUser.setPassword("inactive");
+		
+		if (!localUser.isSpammer()){
+			localUser.setSpammer(true);
+		} 
+		
+		AdminDatabaseManager.getInstance().flagSpammer(localUser, "on_delete", session);
+		
+		this.updateUser(localUser, session);
+		
+		
 	}
 
 	/**

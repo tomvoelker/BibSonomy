@@ -154,7 +154,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * tests deleteUser
 	 */
 	@Test
-	public void deleteUser() {
+	public void deleteUserOld() {
 		this.userDb.deleteUser(RANDOM_TESTUSER, this.dbSession);
 		final User newTestuser = this.userDb.getUserDetails(RANDOM_TESTUSER, this.dbSession);
 		assertNull(newTestuser.getName());
@@ -166,6 +166,23 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			} catch (RuntimeException ignore) {
 			}
 		}
+	}
+	
+	/**
+	 * tests deleteUser
+	 */
+	@Test
+	public void deleteUser() {
+		User user = new User();
+		user.setName("testuser2");
+		
+		this.userDb.deleteUser(user, this.dbSession);
+
+		final User newTestuser = this.userDb.getUserDetails(user.getName(), this.dbSession);
+		
+		assertNotNull(newTestuser.getName());
+		
+		assertEquals(true, newTestuser.getSpammer());
 	}
 
 	/**
