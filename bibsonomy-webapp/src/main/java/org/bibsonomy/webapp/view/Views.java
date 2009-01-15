@@ -312,7 +312,12 @@ public enum Views implements View {
 	/**
 	 * Show the page for administrating groups
 	 */
-	ADMINISTRATE_GROUP("actions/admin/group");
+	ADMINISTRATE_GROUP("actions/admin/group"),
+	
+	/**
+	 * /layout/* pages which are rendered by JabRef 
+	 */
+	LAYOUT("layout");
 	
 	
 	private final String name;
@@ -397,6 +402,8 @@ public enum Views implements View {
 			return BOOKBIB;
 		if ("publrssN".equals(format))
 			return PUBLRSSNEPOMUK;
+		if ("layout".equals(format))
+			return LAYOUT;
 		
 		throw new BadRequestOrResponseException("Invalid format specification.");
 	}
