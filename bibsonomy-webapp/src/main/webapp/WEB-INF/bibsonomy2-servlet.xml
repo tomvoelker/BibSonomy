@@ -575,11 +575,16 @@
   
 
 	<!--  #################### view resolver #################### -->
-	
+	<!-- default: JSPs -->
 	<bean id="viewResolver"	class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
 		<property name="prefix" value="/WEB-INF/jsp/" />
 		<property name="suffix" value=".jspx" />
+	</bean>
+	
+	<!-- used to resolve non-JSP views, e.g., JabRef's layout views -->
+	<bean id="nonJSPViewResolver" class="org.springframework.web.servlet.view.XmlViewResolver">
+    	<property name="order" value="1"/>
 	</bean>
 	
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
