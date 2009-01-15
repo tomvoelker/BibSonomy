@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.bibsonomy</groupId>
+	<artifactId>bibsonomy-layout</artifactId>
+	<packaging>jar</packaging>
+	<name>BibSonomy-Layout</name>
+	<version>2.0.1</version>
+	<description>
+	      Layout engine for the webapp.
+	</description>
+	<parent>
+		<artifactId>bibsonomy</artifactId>
+		<groupId>org.bibsonomy</groupId>
+		<version>2.0.1-SNAPSHOT</version>
+	</parent>
+	
+
+	<dependencies>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-model</artifactId>
+		</dependency>		
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+	</dependencies>
+	
+	<properties>
+		<wtpversion>1.5</wtpversion>
+	</properties>
+	
+	<build>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh-external</artifactId>
+				<version>1.0-beta-2</version>
+			</extension>
+		</extensions>
+		<plugins>
+			<plugin>
+				<groupId>com.google.code.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>src/main/resources/**</exclude>
+						<exclude>src/test/resources/**</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>		
+	</build>
+	
+	<distributionManagement>
+		<site>
+			<!-- copy site documentation via scp to gromit -->
+			<id>bibsonomy-scraper-website-documentation</id>
+			<url>
+				scp://bibsonomy@gromit:/home/bibsonomy/bibsonomy-doc-www/${project.artifactId}
+			</url>
+		</site>
+	</distributionManagement>
+	
+	<reporting>
+		<plugins>
+			<plugin>
+				<!-- create javadoc with linked sources -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<linksource>true</linksource>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
+</project>
+
