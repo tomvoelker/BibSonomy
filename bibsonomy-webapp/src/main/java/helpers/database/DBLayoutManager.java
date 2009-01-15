@@ -1,14 +1,13 @@
 package helpers.database;
 
 
-import helpers.export.bibtex.ExportBibtex;
-import helpers.export.bibtex.ExportBibtex.LayoutType;
-
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.layout.jabref.JabrefLayoutUtils;
+import org.bibsonomy.layout.jabref.LayoutPart;
 
 import beans.LayoutBean;
 
@@ -28,13 +27,13 @@ public class DBLayoutManager extends DBManager {
 				while (c.rst.next()) {
 					final String hash = c.rst.getString("hash");
 					final String name = c.rst.getString("name");
-					if (hash.equals(ExportBibtex.userLayoutHash(bean.getUsername(), LayoutType.ITEM))) {
+					if (hash.equals(JabrefLayoutUtils.userLayoutHash(bean.getUsername(), LayoutPart.ITEM))) {
 						bean.setItemName(name);
 						bean.setItemHash(hash);
-					} else if (hash.equals(ExportBibtex.userLayoutHash(bean.getUsername(), LayoutType.BEGIN))) {
+					} else if (hash.equals(JabrefLayoutUtils.userLayoutHash(bean.getUsername(), LayoutPart.BEGIN))) {
 						bean.setBeginName(name);
 						bean.setBeginHash(hash);
-					} else if (hash.equals(ExportBibtex.userLayoutHash(bean.getUsername(), LayoutType.END))) {
+					} else if (hash.equals(JabrefLayoutUtils.userLayoutHash(bean.getUsername(), LayoutPart.END))) {
 						bean.setEndName(name);
 						bean.setEndHash(hash);
 					}

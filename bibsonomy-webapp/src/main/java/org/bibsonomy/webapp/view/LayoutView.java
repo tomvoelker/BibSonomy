@@ -42,6 +42,7 @@ public class LayoutView extends AbstractView {
 		final Object object = model.get("command");
 		if (object instanceof SimpleResourceViewCommand) {
 			final SimpleResourceViewCommand command = (SimpleResourceViewCommand) object;
+			final String loginUserName = command.getContext().getLoginUser().getName();
 			/*
 			 * check which list (resource type) needs to be rendered
 			 */
@@ -51,12 +52,12 @@ public class LayoutView extends AbstractView {
 				/*
 				 * render bookmarks posts
 				 */
-				getLayoutRenderer().renderResponse(layout, bookmarkPosts, response);
+				getLayoutRenderer().renderResponse(layout, bookmarkPosts, loginUserName, response);
 			} else if (publicationPosts != null && publicationPosts.size() > 0) {
 				/*
 				 * render publication posts
 				 */
-				getLayoutRenderer().renderResponse(layout, publicationPosts, response);
+				getLayoutRenderer().renderResponse(layout, publicationPosts, loginUserName, response);
 			} else {
 				/*
 				 * FIXME: what to do here?
