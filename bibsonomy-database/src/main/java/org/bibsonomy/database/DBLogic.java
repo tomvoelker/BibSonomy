@@ -403,8 +403,11 @@ public class DBLogic implements LogicInterface {
 		
 		
 		final DBSession session = openSession();
-		
-		userDBManager.deleteUser(deleteUserParam, session);
+		try {
+			userDBManager.deleteUser(deleteUserParam, session);
+		} finally {
+			session.close();
+		}
 		
 //		throw new UnsupportedOperationException("not yet available");
 
