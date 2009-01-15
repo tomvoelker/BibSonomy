@@ -182,6 +182,7 @@
 		<module>bibsonomy-dl-importer</module>
 		<module>bibsonomy-scraper</module>
 		<module>bibsonomy-scrapingservice</module>
+		<module>bibsonomy-layout</module>
 		<module>bibsonomy-database</module>
 		<module>bibsonomy-logging</module>
 		<module>bibsonomy-recommender</module>
@@ -407,6 +408,11 @@
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-scrapingservice</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-layout</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
