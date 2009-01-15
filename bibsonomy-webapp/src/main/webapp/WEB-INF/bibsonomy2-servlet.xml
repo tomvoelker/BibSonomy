@@ -303,6 +303,16 @@
 						<property name="controllerBeanName" value="groupAdminPageController"/>
 					</bean>
 				</entry>
+				<entry key="/actions/goodBye">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="deleteUserController"/>
+						<property name="allowedFields">
+							<list>
+								<value>delete</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/postBookmarkSuccess">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="postBookmarkSuccessController"/>

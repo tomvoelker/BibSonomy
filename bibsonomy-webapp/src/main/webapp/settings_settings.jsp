@@ -249,7 +249,7 @@
 		
 		<%-- ------------------------ delete account -------------------------- --%>
 		<h2>delete my account</h2>		
-		<form name="delete" method="post" action="/SettingsHandler">
+		<form name="delete" method="post" action="/actions/goodBye">
 		  <table>
 		     <tr>
 		       <td>really?</td>
