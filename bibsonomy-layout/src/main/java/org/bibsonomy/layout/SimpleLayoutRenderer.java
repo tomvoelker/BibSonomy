@@ -23,7 +23,7 @@ public class SimpleLayoutRenderer extends AbstractLayoutRenderer {
 	private static final Log log = LogFactory.getLog(SimpleLayoutRenderer.class);
 
 	@Override
-	protected <T extends Resource> void renderInternal(final String layout, final OutputStream outputStream, final List<Post<T>> posts) throws IOException {
+	protected <T extends Resource> void renderInternal(final String layout, final List<Post<T>> posts, final String loginUserName, final OutputStream outputStream) throws IOException {
 		log.info("rendering internal with layout " + layout);
 		final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));
 		

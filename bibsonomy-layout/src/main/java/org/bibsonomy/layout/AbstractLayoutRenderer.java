@@ -23,11 +23,11 @@ public abstract class AbstractLayoutRenderer {
 	private static final Log log = LogFactory.getLog(AbstractLayoutRenderer.class);
 
 	
-	public <T extends Resource> void renderResponse(final String layout, final List<Post<T>> posts, final HttpServletResponse response) throws IOException {
-		renderInternal(layout, response.getOutputStream(), posts);
+	public <T extends Resource> void renderResponse(final String layout, final List<Post<T>> posts, final String loginUserName, final HttpServletResponse response) throws IOException {
+		renderInternal(layout, posts, loginUserName, response.getOutputStream());
 	}
 	
-	protected  abstract <T extends Resource> void renderInternal(final String layout, final OutputStream outputStream, final List<Post<T>> posts) throws IOException;
+	protected  abstract <T extends Resource> void renderInternal(final String layout, final List<Post<T>> posts, final String loginUserName, final OutputStream outputStream) throws IOException;
 	
 }
 
