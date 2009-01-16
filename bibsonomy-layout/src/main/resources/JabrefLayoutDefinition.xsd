@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://www.bibsonomy.org/resources/xml/JabrefLayoutDefinition" elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.bibsonomy.org/resources/xml/JabrefLayoutDefinition">
+
+    <complexType name="JabrefLayout">
+        <annotation>
+        	<documentation>Defines one Jabref Layout.</documentation>
+        </annotation>
+        <sequence>
+        	<element name="displayName" type="string" maxOccurs="1"
+        		minOccurs="1">
+        	</element>
+            <element name="description" type="string" maxOccurs="1" minOccurs="1"></element>
+            <element name="directory" type="string" maxOccurs="1"
+        		minOccurs="0">
+        	</element>
+        	<element name="baseFileName" type="string" maxOccurs="1"
+        		minOccurs="1">
+        	</element>
+        	<element name="mimeType" type="string" maxOccurs="1"
+        		minOccurs="1">
+        	</element>
+        	<element name="extension" type="string" maxOccurs="1"
+        		minOccurs="0">
+        	</element>
+        </sequence>
+        <attribute name="name" type="string"></attribute>
+    </complexType>
+
+    <element name="layouts" type="tns:JabrefLayouts"></element>
+
+
+    
+
+    <complexType name="JabrefLayouts">
+    	<sequence>
+    		<element name="layout" type="tns:JabrefLayout" maxOccurs="unbounded" minOccurs="0"></element>
+    	</sequence>
+    </complexType>
+
+</schema>

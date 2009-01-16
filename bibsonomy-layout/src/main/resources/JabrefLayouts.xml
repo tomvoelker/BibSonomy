@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layouts
+	xmlns="http://www.bibsonomy.org/resources/xml/JabrefLayoutDefinition"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.bibsonomy.org/resources/xml/JabrefLayoutDefinition JabrefLayoutDefinition.xsd ">
+	<layout name="html">
+		<displayName>HTML</displayName>
+		<description>
+			A simple layout where each entry is represented as row in a
+			table.
+		</description>
+		<baseFileName>html</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="simplehtml">
+		<displayName>Simple HTML</displayName>
+		<description>
+			An HTML layout without any header or footer but very nice
+			output. This is useful for integrating publication lists
+			into other HTML pages.
+		</description>
+		<baseFileName>simplehtml</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="tablerefs">
+		<displayName>HTML table</displayName>
+		<description>
+			A more structured HTML output with each entry as a row in a
+			table and additional JavaScript search function.
+		</description>
+		<directory>tablerefs</directory>
+		<baseFileName>tablerefs</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="tablerefsabsbib">
+		<displayName>
+			HTML table (with Abstract &amp; BibTeX)
+		</displayName>
+		<description>
+			Similar to tablerefs but additionally includes the BibTeX
+			source and the abstract of the publication.
+		</description>
+		<directory>tablerefsabsbib</directory>
+		<baseFileName>tablerefsabsbib</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="tablerefsabsbibsort">
+		<displayName>
+			HTML table (with Abstract &amp; BibTeX, sortable)
+		</displayName>
+		<description>
+			Similar to TableRefsAbsBib, but includes possibility to sort
+			the table by each column.
+		</description>
+		<directory>tablerefsabsbibsort</directory>
+		<baseFileName>tablerefsabsbibsort</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="docbook">
+		<displayName>DocBook</displayName>
+		<description>
+			This is an XML output according to the DocBook schema.
+		</description>
+		<baseFileName>docbook</baseFileName>
+		<mimeType>application/xml</mimeType>
+		<extension>.xml</extension>
+	</layout>
+	<layout name="dblp">
+		<displayName>DBLP XML</displayName>
+		<description>
+			DBLP export your records to a DBLP conformable XML
+			structure.
+		</description>
+		<baseFileName>dblp</baseFileName>
+		<mimeType>application/xml</mimeType>
+		<extension>.xml</extension>
+	</layout>
+	<layout name="bibtexml">
+		<displayName>BibTeXML</displayName>
+		<description></description>
+		<baseFileName>bibtexml</baseFileName>
+		<mimeType>application/xml</mimeType>
+		<extension>.xml</extension>
+	</layout>
+	<layout name="bibordf">
+		<displayName>BibO RDF</displayName>
+		<description></description>
+		<baseFileName>bibordf</baseFileName>
+		<mimeType>application/rdf+xml</mimeType>
+		<extension>.rdf</extension>
+	</layout>
+	<layout name="harvard">
+		<displayName>Harvard RTF</displayName>
+		<description>
+			This exports the publication list in Rich Text Format which
+			can be used by word processors like OpenOffice or Microsoft
+			Word. It is formatted according to the Harvard bibliography
+			style guidelines.
+		</description>
+		<directory>harvard</directory>
+		<baseFileName>harvard</baseFileName>
+		<mimeType>text/rtf</mimeType>
+		<extension>.rtf</extension>
+	</layout>
+	<layout name="endnote">
+		<displayName>EndNote</displayName>
+		<description>
+			This is an output in RIS which is used by EndNote, another
+			bibliography management tool.
+		</description>
+		<directory>endnote</directory>
+		<baseFileName>Endnote</baseFileName>
+		<mimeType>text/plain</mimeType>
+		<extension>.txt</extension>
+	</layout>
+	<layout name="openoffice-csv">
+		<displayName>OpenOffice CSV</displayName>
+		<description>
+			CSV, or Comma Separated Values divides all fields of the
+			entry by a comma. It is useful to import the publications
+			into spreadsheet programs.
+		</description>
+		<directory>openoffice</directory>
+		<baseFileName>openoffice-csv</baseFileName>
+		<mimeType>text/csv</mimeType>
+		<extension>.csv</extension>
+	</layout>
+	<layout name="text">
+		<displayName>Text (BibTeX)</displayName>
+		<description>Another BibTeX output.</description>
+		<baseFileName>text</baseFileName>
+		<mimeType>text/plain</mimeType>
+		<extension>.txt</extension>
+	</layout>
+
+	<!-- additional layouts, installed by us -->
+	<!-- typemap.put("custom",              new OutputType(null, "text/html")); -->
+	<layout name="se">
+		<displayName>SE Kassel</displayName>
+		<description>
+			Custom output format provided by the Research Group Software
+			Engineering, University of Bochum.
+		</description>
+		<baseFileName>se</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="jucs">
+		<displayName>JUCS</displayName>
+		<description>
+			Output formatted according to the guidelines of the Journal
+			of Universal Computer Science.
+		</description>
+		<baseFileName>jucs</baseFileName>
+		<mimeType>text/rtf</mimeType>
+		<extension>.rtf</extension>
+	</layout>
+	<layout name="imtm">
+		<displayName>IMTM</displayName>
+		<description>
+			Custom output format provided by the Department of
+			Information and Technology Manangement (IMTM), University of
+			Bochum.
+		</description>
+		<baseFileName>imtm</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+</layouts>
