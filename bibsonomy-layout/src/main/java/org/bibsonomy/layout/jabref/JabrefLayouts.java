@@ -39,7 +39,7 @@ public class JabrefLayouts {
 	/**
 	 * Can be configured by the setter: the path where the default layout files are.
 	 */
-	private String defaultLayoutFilePath = "org/bibsonomy/layout/jabref";
+	private String defaultLayoutFilePath = "jabref";
 	/**
 	 * saves all loaded layouts (html, bibtexml, tablerefs, hash(user.username), ...)
 	 */
@@ -61,7 +61,13 @@ public class JabrefLayouts {
 
 		final Stack<File> dirs = new Stack<File>();
 
-		final URL url = JabrefLayoutRenderer.class.getClassLoader().getResource(defaultLayoutFilePath); // URL to layout directory
+		URL url = JabrefLayoutRenderer.class.getClassLoader().getResource(defaultLayoutFilePath); // URL to layout directory
+		System.out.println("url = " + url);
+		if (url == null) {
+			url = JabrefLayoutRenderer.class.getResource(defaultLayoutFilePath); // URL to layout directory
+		}
+		System.out.println("url = " + url);
+			
 		final File startdir = new File(url.toURI());
 
 		// add first directory to stack

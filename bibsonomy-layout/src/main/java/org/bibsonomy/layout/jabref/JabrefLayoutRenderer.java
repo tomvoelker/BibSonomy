@@ -43,7 +43,10 @@ public class JabrefLayoutRenderer extends AbstractLayoutRenderer {
 
 	@Override
 	protected <T extends Resource> void renderInternal(final String layout, final List<Post<T>> posts, final String loginUserName, final OutputStream outputStream) throws IOException {
-		
+		/*
+		 * FIXME: file extension + mime typing handling missing
+		 * duplicates = no supported?
+		 */
 		/*
 		 * convert posts into Jabref BibtexDatabase
 		 */

@@ -21,22 +21,24 @@ public class JabrefLayoutRendererTest {
 
 	@Test
 	public void testInit() {
-		new JabrefLayoutRenderer().init();
+		getRenderer();
 	}
 	
 	@Test
 	public void testRenderInternal() {
-		final JabrefLayoutRenderer renderer = new JabrefLayoutRenderer();
-
-		renderer.init();
-		final List<Post<BibTex>> posts = getPosts();
-		
 		try {
-			renderer.renderInternal("dblp", posts, "foo", System.out);
+			getRenderer().renderInternal("dblp", getPosts(), "foo", System.out);
 		} catch (IOException e) {
 			fail(e.getMessage());
 		}
 		
+	}
+
+	private JabrefLayoutRenderer getRenderer() {
+		final JabrefLayoutRenderer renderer = new JabrefLayoutRenderer();
+		renderer.setDefaultLayoutFilePath("org/bibsonomy/layout/jabref");
+		renderer.init();
+		return renderer;
 	}
 	
 
@@ -56,5 +58,13 @@ public class JabrefLayoutRendererTest {
 		posts.add(post);
 		return posts;
 	}
+
+	public static void main(String[] args) {
+		final JabrefLayoutRenderer renderer = new JabrefLayoutRenderer();
+		renderer.setDefaultLayoutFilePath(args[0]);
+		renderer.init();
+		
+	}
+	
 }
 
