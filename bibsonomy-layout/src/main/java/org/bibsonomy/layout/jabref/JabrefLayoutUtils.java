@@ -1,5 +1,7 @@
 package org.bibsonomy.layout.jabref;
 
+import java.io.InputStream;
+
 import org.bibsonomy.util.StringUtils;
 
 /**
@@ -27,7 +29,18 @@ public class JabrefLayoutUtils {
 		return StringUtils.getMD5Hash("user." + user + "." + part + layoutFileExtension).toLowerCase();
 	}
 
-	
+	/** Loads a resource using the classloader.
+	 * 
+	 * @param location
+	 * @return
+	 */
+	public static InputStream getResourceAsStream (final String location) {
+		final InputStream resourceAsStream = JabrefLayoutRenderer.class.getClassLoader().getResourceAsStream(location);
+		if (resourceAsStream != null) 
+			return resourceAsStream;
+		return JabrefLayoutRenderer.class.getResourceAsStream(location);
+	}
+
 	/** Constructs the name of a layout file.
 	 * 
 	 * @param layout
@@ -37,7 +50,7 @@ public class JabrefLayoutUtils {
 	protected static String getLayoutFileName(final String layout, final String part) {
 		return layout + "." + part + layoutFileExtension;
 	}
-	
+
 	protected static String getLayoutFileName(final String layout) {
 		return layout + layoutFileExtension;
 	}

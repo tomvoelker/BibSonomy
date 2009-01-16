@@ -3,11 +3,11 @@ package org.bibsonomy.layout.jabref;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.HashMap;
-import java.util.Stack;
+import java.util.List;
 
 import net.sf.jabref.Globals;
 import net.sf.jabref.export.layout.Layout;
@@ -15,10 +15,10 @@ import net.sf.jabref.export.layout.LayoutHelper;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.util.StringUtils;
 import org.springframework.beans.factory.annotation.Required;
 
 /**
+ * Holds and manages the available jabref layouts.
  * 
  * @author:  rja
  * @version: $Id$
@@ -31,7 +31,36 @@ public class JabrefLayouts {
 
 	private static final String message_no_custom_layout = "You don't have a custom filter installed. Please go to the settings page and install one.";
 
-	
+	/**
+	 * One layout my consist of several files - e.g., sublayouts. These are 
+	 * the possible (typical) sublayouts. They're used as part of the file 
+	 * name.
+	 */
+	private static final String[] subLayouts = new String[] {
+		"", 				/* the default layout - should almost always exist; renders one entry */
+		".begin", 			/* the beginning - is added to the beginning of the rendered entries */
+		".end",				/* the end - is added to the end of the rendered entries */
+		".article",			/* ****************************************************** */ 
+		".inbook",			/* the remaining sublayouts are for different entry types */
+		".book",
+		".booklet",
+		".incollection",
+		".conference",
+		".inproceedings",
+		".proceedings",
+		".manual",
+		".mastersthesis",
+		".phdthesis",
+		".techreport",
+		".unpublished",
+		".patent",
+		".standard",
+		".electronic",
+		".periodical",
+		".misc",
+		".other"
+	};
+
 	/**
 	 * Configured by the setter: the path where the user layout files are.
 	 */
@@ -45,54 +74,83 @@ public class JabrefLayouts {
 	 */
 	private HashMap<String,Layout> layouts;
 
-	public void init() throws URISyntaxException {
-		loadDefaultFilters();
+	/** Initialize the layouts by loading them into a map.
+	 * 
+	 * @throws IOException
+	 */
+	public void init() throws IOException {
+		loadDefaultLayouts();
 	}
-	
+
 	/**
 	 * Loads default filters (xxx.xxx.layout and xxx.layout) from the default layout directory into a map.
 	 * 
-	 * @throws URISyntaxException 
-	 * @throws Exception
+	 * @throws IOException 
 	 */
-	private void loadDefaultFilters() throws URISyntaxException {
-		// create new hashmap for filters
+	private void loadDefaultLayouts() throws IOException {
+		/*
+		 * create a new hashmap to store the layouts
+		 */
 		layouts = new HashMap<String, Layout>();
+		/*
+		 * load layout definition from XML file
+		 */
+		final List<JabrefLayoutDefinition> jabrefLayouts = new XMLJabrefLayoutReader(new BufferedReader(new InputStreamReader(JabrefLayoutUtils.getResourceAsStream(defaultLayoutFilePath + "/" + "JabrefLayouts.xml"), "UTF-8"))).getJabrefLayoutsDefinitions();
+		log.info("found " + jabrefLayouts.size() + " layout definitions");
+		/*
+		 * iterate over all layout definitions
+		 */
+		for (final JabrefLayoutDefinition jabrefLayout : jabrefLayouts) {
+			log.debug("loading layout " + jabrefLayout.getName());
+			final String path = defaultLayoutFilePath + "/" + getDirectory(jabrefLayout.getDirectory());
+			/*
+			 * iterate over all subLayouts
+			 */
+			for (final String subLayout: subLayouts) {
+				final String fileName = jabrefLayout.getBaseFileName() + subLayout + JabrefLayoutUtils.layoutFileExtension;
+				final String fileLocation = path + fileName;
 
-		final Stack<File> dirs = new Stack<File>();
-
-		URL url = JabrefLayoutRenderer.class.getClassLoader().getResource(defaultLayoutFilePath); // URL to layout directory
-		System.out.println("url = " + url);
-		if (url == null) {
-			url = JabrefLayoutRenderer.class.getResource(defaultLayoutFilePath); // URL to layout directory
+				final Layout layout = loadLayout(fileLocation);
+				if (layout != null) {
+					layouts.put(fileName.toLowerCase(), layout);
+				}
+			}
 		}
-		System.out.println("url = " + url);
-			
-		final File startdir = new File(url.toURI());
+		log.info("loaded " + layouts.size() + " layouts");
+	}
 
-		// add first directory to stack
-		if (startdir.isDirectory()) 
-			dirs.push(startdir);
+	/** Loads a layout from the given location. 
+	 * 
+	 * @param fileLocation - the location of the file, such that it can be found by the used class loader.
+	 * @return The loaded layout, or <code>null</code> if it could not be found.
+	 * @throws IOException
+	 */
+	private Layout loadLayout(final String fileLocation) throws IOException {
+		final InputStream resourceAsStream = JabrefLayoutUtils.getResourceAsStream(fileLocation);
+		if (resourceAsStream != null) {
+			/*
+			 * give file to layout helper
+			 */
+			final LayoutHelper layoutHelper = new LayoutHelper(new BufferedReader(new InputStreamReader(resourceAsStream, "UTF-8")));
+			/*
+			 * load layout
+			 */
+			try {
+				return layoutHelper.getLayoutFromText(Globals.FORMATTER_PACKAGE);
+			} catch (Exception e) {
+				throw new IOException(e);
+			}
+		} 
+		return null;
+	}
 
-		while (dirs.size() > 0) {
-			for (final File file : dirs.pop().listFiles()){
-				if (file.isDirectory()) {	        
-					dirs.push(file);
-				} else {
-					//check extension
-					if (StringUtils.matchExtension(file.getName(), JabrefLayoutUtils.layoutFileExtension)){
-						try {
-							final LayoutHelper layoutHelper = new LayoutHelper(new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8")));
-							// NOTE: now case of layouts is ignored
-							layouts.put(file.getName().toLowerCase(), layoutHelper.getLayoutFromText(Globals.FORMATTER_PACKAGE));
-							log.info("loaded filter " + file.getName());
-						} catch (Exception e) {
-							log.fatal("Error loading default filters.", e);
-						}
-					}//if	
-				}//else
-			}//for
-		}//while
+	/** Create string for directories. If no given, the string is empty.
+	 * @param directory
+	 * @return
+	 */
+	private String getDirectory(final String directory) {
+		if (directory == null) return "";
+		return directory + "/";
 	}
 
 	/** Returns the appropriate part for the specified layout.
@@ -104,7 +162,7 @@ public class JabrefLayouts {
 	public Layout getLayout(final String layout, final LayoutPart part) {
 		return layouts.get(JabrefLayoutUtils.getLayoutFileName(layout, part.toString()));
 	}
-	
+
 	/** Returns the requested layout. This is for layouts which don't have item parts for specific publication types. 
 	 * 
 	 * @param layout
@@ -113,13 +171,19 @@ public class JabrefLayouts {
 	public Layout getLayout(final String layout) {
 		return layouts.get(JabrefLayoutUtils.getLayoutFileName(layout));
 	}
-	
+
+	/** Returns the requested layout for the requested entryType. 
+	 * If no entry type specific layout is available, the default layout is returned. 
+	 * @param layout
+	 * @param entryType
+	 * @return
+	 */
 	public Layout getLayout(final String layout, final String entryType) {
 		/*
 		 * try type-specific layout
 		 */
 		final Layout layout2 = layouts.get(JabrefLayoutUtils.getLayoutFileName(layout, entryType));
-		
+
 		if (layout2 != null) return layout2;
 		/*
 		 * no type-specific layout available, take default
@@ -129,12 +193,12 @@ public class JabrefLayouts {
 
 
 	/** Removes all filters from the cache and loads the default filters.
-	 * @throws URISyntaxException
+	 * @throws IOException
 	 */
-	public void resetFilters() throws URISyntaxException {
-		loadDefaultFilters();
+	public void resetFilters() throws IOException {
+		loadDefaultLayouts();
 	}
-	
+
 
 	/**
 	 * Loads user filter from file into a map.
@@ -160,7 +224,7 @@ public class JabrefLayouts {
 	public String toString() {
 		return layouts.toString();
 	}
-	
+
 	/** Returns the layout for the given user
 	 * 
 	 * @param userName
@@ -194,7 +258,7 @@ public class JabrefLayouts {
 		}
 		return userLayout;
 	}
-	
+
 	/**
 	 * Unloads layout objects adequate to deleted custom filter.
 	 * @param hashedName Hash representing the deleted document.
@@ -204,7 +268,7 @@ public class JabrefLayouts {
 			layouts.remove(hashedName);
 		}
 	}
-	
+
 	/** The path where the user layout files are.
 	 * 
 	 * @param userLayoutFilePath
@@ -223,6 +287,6 @@ public class JabrefLayouts {
 	public void setDefaultLayoutFilePath(String defaultLayoutFilePath) {
 		this.defaultLayoutFilePath = defaultLayoutFilePath;
 	}
-	
+
 }
 

@@ -10,21 +10,18 @@ import net.sf.jabref.export.layout.LayoutFormatter;
 public class SeparatedAuthorsFormatter implements LayoutFormatter {
 
 	public String format(String fieldText) {
-		StringBuffer fin = new StringBuffer();
+		final StringBuffer fin = new StringBuffer();
 
 		//if the string contains an and it will be splitted else theres only one 
 		//author!
-        String[] names = fieldText.split(" and ");
+        final String[] names = fieldText.split(" and ");
         for (int i=0; i<names.length; i++)
         {
-          fin.append("<author> ");
-          fin.append(names[i]);
-          fin.append("</author>");
+          fin.append("<author>" + names[i]+ "</author>");
           if (i < names.length -1)
-        	  fin.append("\n       ");
+        	  fin.append("\n");
         }
 
-        fieldText = fin.toString();
-		return fieldText;
+        return fin.toString();
 	}
 }

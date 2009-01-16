@@ -10,6 +10,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
+ * Reads a jabref layout definition XML file and it returns a list of {@link JabrefLayoutDefinition}s.
  * 
  * @author: rja
  * @version: $Id$ $Author$
@@ -24,22 +25,25 @@ public class XMLJabrefLayoutReader {
 	}
 
 	/**
-	 * Reads a list containing BibTeX posts from an EasyChair XML file.
+	 * Reads a list of {@link JabrefLayoutDefinition}s.
 	 * 
 	 * @return
-	 * @throws SAXException
 	 * @throws IOException
 	 */
-	public List<JabrefLayout> getJabrefLayouts() throws SAXException, IOException {
-		final XMLReader xr = XMLReaderFactory.createXMLReader();
-		/*
-		 * SAX callback handler
-		 */
-		final JabrefLayoutXMLHandler handler = new JabrefLayoutXMLHandler();
-		xr.setContentHandler(handler);
-		xr.setErrorHandler(handler);
-		xr.parse(new InputSource(reader));
+	public List<JabrefLayoutDefinition> getJabrefLayoutsDefinitions() throws IOException {
+		try {
+			final XMLReader xr = XMLReaderFactory.createXMLReader();
+			/*
+			 * SAX callback handler
+			 */
+			final JabrefLayoutXMLHandler handler = new JabrefLayoutXMLHandler();
+			xr.setContentHandler(handler);
+			xr.setErrorHandler(handler);
+			xr.parse(new InputSource(reader));
 
-		return handler.getLayouts();
+			return handler.getLayouts();
+		} catch (SAXException e) {
+			throw new IOException(e);
+		}
 	}
 }

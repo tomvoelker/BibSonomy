@@ -114,7 +114,7 @@
 			bibliography management tool.
 		</description>
 		<directory>endnote</directory>
-		<baseFileName>Endnote</baseFileName>
+		<baseFileName>EndNote</baseFileName>
 		<mimeType>text/plain</mimeType>
 		<extension>.txt</extension>
 	</layout>

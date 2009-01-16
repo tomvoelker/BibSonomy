@@ -63,6 +63,7 @@ public class JabrefLayoutRendererTest {
 		final JabrefLayoutRenderer renderer = new JabrefLayoutRenderer();
 		renderer.setDefaultLayoutFilePath(args[0]);
 		renderer.init();
+		System.out.println("finished");
 		
 	}
 	

@@ -3,7 +3,6 @@ package org.bibsonomy.layout.jabref;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
-import java.net.URISyntaxException;
 import java.util.List;
 
 import net.sf.jabref.BibtexDatabase;
@@ -71,8 +70,8 @@ public class JabrefLayoutRenderer extends AbstractLayoutRenderer {
 		// load default filters 
 		try {
 			layouts.init();
-		} catch (URISyntaxException ex) {
-			log.fatal("Could not load default layout filters.", ex);
+		} catch (IOException e) {
+			log.fatal("Could not load default layout filters.", e);
 		}
 	}
 

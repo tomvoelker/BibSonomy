@@ -18,12 +18,12 @@ public class JabrefLayoutXMLHandler extends DefaultHandler {
 
 	private StringBuffer buf = new StringBuffer();
 
-	private List<JabrefLayout> layouts;
+	private List<JabrefLayoutDefinition> layoutDefinitions;
 	
-	private JabrefLayout currentLayout;
+	private JabrefLayoutDefinition currentLayoutDefinition;
 	
 	public void startDocument() {
-		 layouts = new LinkedList<JabrefLayout>();
+		 layoutDefinitions = new LinkedList<JabrefLayoutDefinition>();
 	}
 
 	public void endDocument() {
@@ -33,7 +33,7 @@ public class JabrefLayoutXMLHandler extends DefaultHandler {
 	public void startElement (final String uri, final String name, final String qName, final Attributes atts) {
 		buf = new StringBuffer();
 		if ("layout".equals(name)) {
-			currentLayout = new JabrefLayout(atts.getValue("name"));
+			currentLayoutDefinition = new JabrefLayoutDefinition(atts.getValue("name"));
 		}
 	}
 
@@ -52,19 +52,19 @@ public class JabrefLayoutXMLHandler extends DefaultHandler {
 
 	public void endElement (final String uri, final String name, final String qName) {
 		if ("layout".equals(name)) {
-			layouts.add(currentLayout);
+			layoutDefinitions.add(currentLayoutDefinition);
 		} else if ("displayName".equals(name)) {
-			currentLayout.setDisplayName(getBuf());
+			currentLayoutDefinition.setDisplayName(getBuf());
 		} else if ("description".equals(name)) {
-			currentLayout.setDescription(getBuf());
+			currentLayoutDefinition.setDescription(getBuf());
 		} else if ("baseFileName".equals(name)) {
-			currentLayout.setBaseFileName(getBuf());
+			currentLayoutDefinition.setBaseFileName(getBuf());
 		} else if ("directory".equals(name)) {
-			currentLayout.setDirectory(getBuf());
+			currentLayoutDefinition.setDirectory(getBuf());
 		} else if ("extension".equals(name)) {
-			currentLayout.setExtension(getBuf());
+			currentLayoutDefinition.setExtension(getBuf());
 		} else if ("mimeType".equals(name)) {
-			currentLayout.setMimeType(getBuf());
+			currentLayoutDefinition.setMimeType(getBuf());
 		} 
 	}
 
@@ -72,8 +72,8 @@ public class JabrefLayoutXMLHandler extends DefaultHandler {
 		return buf.toString().trim();
 	}
 
-	public List<JabrefLayout> getLayouts() {
-		return layouts;
+	public List<JabrefLayoutDefinition> getLayouts() {
+		return layoutDefinitions;
 	}
 
 }
