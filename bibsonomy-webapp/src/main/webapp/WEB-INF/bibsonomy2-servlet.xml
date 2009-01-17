@@ -64,6 +64,11 @@
 						<property name="controllerBeanName" value="authorPageController"/>
 					</bean>
 				</entry>	
+				<entry key="/authors">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="authorsPageController"/>
+					</bean>
+				</entry>
 				<entry key="/concept">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="conceptPageController"/>
@@ -383,6 +388,16 @@
 	</bean>
 	
 	<bean id="authorPageController" class="org.bibsonomy.webapp.controller.AuthorPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+		<property name="listsToInitialise">
+			<list>
+				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="authorsPageController" class="org.bibsonomy.webapp.controller.AuthorsPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
 		<property name="listsToInitialise">
