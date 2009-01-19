@@ -3,4 +3,14 @@
 
 <sqlMap namespace="Statistics">
 
+	<select id="getNumberOfRelationsForUser" resultClass="int" parameterClass="String">
+		SELECT count(*) FROM 
+            (SELECT count(upper) AS tag_name, GROUP_CONCAT(lower ORDER BY lower SEPARATOR '') AS subtags
+                FROM tagtagrelations
+                WHERE user_name=#userName#
+                GROUP BY upper
+                ORDER BY upper
+            ) as b
+	</select>
+
 </sqlMap>
