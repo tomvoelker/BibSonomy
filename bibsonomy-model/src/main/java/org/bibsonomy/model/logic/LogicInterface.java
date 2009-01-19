@@ -29,9 +29,11 @@ import java.util.List;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
+import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.SpamStatus;
+import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.Document;
@@ -305,22 +307,6 @@ public interface LogicInterface extends PostLogicInterface {
 	/**
 	 * Retrieve relations
 	 * 
-	 * @param resourceType - the reqtested resourcetype
-	 * @param grouping - grouping entity
-	 * @param groupingName - the grouping name
-	 * @param regex - a regex to possibly filter the relatons retrieved
-	 * @param tags - a list of tags which shall be part of the relations
-	 * @param status - the conceptstatus, i.e. all, picked or unpicked
-	 * @param start - start index
-	 * @param end - end index
-	 * @return a list of concepts, i.e. tags containing their assigned subtags
-     * @author dbe
-	 */
-	public List<Tag> getConcepts(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end);
-
-	/**
-	 * Retrieve relations
-	 * 
 	 * @param conceptName - the supertag of the concept
 	 * @param grouping - grouping entity
 	 * @param groupingName - the grouping name	
@@ -444,4 +430,36 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @return username
 	 */
 	public String getOpenIDUser(final String openID);
+	
+	/**
+	 * Retrieve relations
+	 * 
+	 * @param resourceType - the reqtested resourcetype
+	 * @param grouping - grouping entity
+	 * @param groupingName - the grouping name
+	 * @param regex - a regex to possibly filter the relatons retrieved
+	 * @param tags - a list of tags which shall be part of the relations
+	 * @param status - the conceptstatus, i.e. all, picked or unpicked
+	 * @param start - start index
+	 * @param end - end index
+	 * @return a list of concepts, i.e. tags containing their assigned subtags
+     * @author dbe
+	 */
+	public List<Tag> getConcepts(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end);
+	
+	/**
+	 * Retrieve the number of relations from a user
+	 * 
+	 * @param resourceType
+	 * @param grouping
+	 * @param groupingName
+	 * @param regex
+	 * @param tags
+	 * @param status
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	public int getTagStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end);
+	
 }
