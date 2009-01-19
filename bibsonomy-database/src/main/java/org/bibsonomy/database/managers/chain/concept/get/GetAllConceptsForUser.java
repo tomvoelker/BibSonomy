@@ -19,7 +19,7 @@ public class GetAllConceptsForUser extends ConceptChainElement {
 
 	@Override
 	protected List<Tag> handle(final TagRelationParam param, final DBSession session) {
-		return this.db.getAllConceptsForUser(param.getRequestedUserName(), session);
+		return this.db.getAllConceptsForUser(param, session);
 	}
 
 	@Override
