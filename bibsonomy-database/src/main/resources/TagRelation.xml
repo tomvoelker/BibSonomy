@@ -3,65 +3,91 @@
 
 <sqlMap namespace="TagRelation">
 	<insert id="insertTagRelationIfNotPresent" parameterClass="tagRelationParam">
-		INSERT INTO tagtagrelations  (relationID, lower, upper, date_of_create, user_name)
-		SELECT value+1, #lowerTagName#, #upperTagName#, #creationDate#, #ownerUserName# FROM ids WHERE name = 2
+		INSERT INTO tagtagrelations (relationID, lower, upper, date_of_create,
+		user_name)
+		SELECT value+1, #lowerTagName#, #upperTagName#,
+		#creationDate#, #ownerUserName# FROM ids WHERE name = 2
 	</insert>
-	
+
 	<delete id="deleteTagRelation" parameterClass="tagRelationParam">
-		DELETE FROM tagtagrelations WHERE lower=#lowerTagName# AND upper=#upperTagName# AND user_name=#ownerUserName#
+		DELETE FROM
+		tagtagrelations WHERE lower=#lowerTagName# AND upper=#upperTagName#
+		AND user_name=#ownerUserName#
 	</delete>
-	
+
 	<delete id="deleteConcept" parameterClass="tagRelationParam">
-		DELETE FROM tagtagrelations WHERE upper=#upperTagName# AND user_name=#ownerUserName#
-	</delete>	
-	
-	<select id="getPickedConceptsForUser" parameterClass="String" resultMap="TagCommon.tagWithSubtags">
-		SELECT r.upper AS tag_name, GROUP_CONCAT(r.lower ORDER BY r.lower SEPARATOR ' ') AS subtags 
-		FROM tagtagrelations r, picked_concepts p 
-		WHERE r.user_name=#userName# AND r.user_name=p.user_name AND r.upper=p.upper 
-		GROUP BY r.upper 
+		DELETE FROM
+		tagtagrelations WHERE upper=#upperTagName# AND
+		user_name=#ownerUserName#
+	</delete>
+
+	<select id="getPickedConceptsForUser" parameterClass="String"
+		resultMap="TagCommon.tagWithSubtags">
+		SELECT r.upper AS tag_name, GROUP_CONCAT(r.lower ORDER BY
+		r.lower SEPARATOR ' ') AS subtags
+		FROM tagtagrelations r, picked_concepts p
+		WHERE r.user_name=#userName# AND r.user_name=p.user_name AND
+		r.upper=p.upper
+		GROUP BY r.upper
 		ORDER BY r.upper
 	</select>
-	
-	<select id="getAllConceptsForUser" parameterClass="String" resultMap="TagCommon.tagWithSubtags">
-		SELECT upper AS tag_name, GROUP_CONCAT(lower ORDER BY lower SEPARATOR ' ') AS subtags 
-		FROM tagtagrelations 
-		WHERE user_name=#userName# 
-		GROUP BY upper 
+
+	<select id="getAllConceptsForUser" parameterClass="tagRelationParam"
+		resultMap="TagCommon.tagWithSubtags">
+		SELECT upper AS tag_name, GROUP_CONCAT(lower ORDER BY lower
+		SEPARATOR ' ') AS subtags
+		FROM tagtagrelations
+		WHERE user_name=#requestedUserName#
+		GROUP BY upper
 		ORDER BY upper
+		LIMIT #limit#
+		OFFSET #offset#
 	</select>
-	
-	<select id="getConceptForUser" parameterClass="tagRelationParam" resultMap="TagCommon.tagWithSubtags">
-		SELECT upper AS tag_name, GROUP_CONCAT(lower ORDER BY lower SEPARATOR ' ') AS subtags 
-		FROM tagtagrelations 
+
+	<select id="getConceptForUser" parameterClass="tagRelationParam"
+		resultMap="TagCommon.tagWithSubtags">
+		SELECT upper AS tag_name, GROUP_CONCAT(lower ORDER BY lower
+		SEPARATOR ' ') AS subtags
+		FROM tagtagrelations
 		WHERE LCASE(upper)=LCASE(#upperTagName#)
-		AND user_name=#ownerUserName# 		
-		GROUP BY LCASE(upper) 
+		AND user_name=#ownerUserName#
+		GROUP BY LCASE(upper)
 		ORDER BY upper
 	</select>
-	
+
 	<select id="getAllConcepts" resultMap="TagCommon.tagWithSubtags">
-		SELECT r.upper AS tag_name, GROUP_CONCAT(DISTINCT r.lower ORDER BY r.lower SEPARATOR ' ') AS subtags
-		FROM tagtagrelations r, 
-  		(
-    		SELECT upper, COUNT(DISTINCT user_name) AS usercount, COUNT(upper COLLATE utf8_unicode_ci) AS count 
-      		FROM tagtagrelations r GROUP BY upper COLLATE utf8_unicode_ci ORDER BY usercount DESC,count DESC LIMIT 50
-  		) AS tagCount 
-		WHERE tagCount.upper=r.upper 
+		SELECT r.upper AS
+		tag_name, GROUP_CONCAT(DISTINCT r.lower ORDER BY r.lower SEPARATOR '
+		') AS subtags
+		FROM tagtagrelations r,
+		(
+		SELECT upper, COUNT(DISTINCT user_name) AS usercount, COUNT(upper COLLATE
+		utf8_unicode_ci) AS count
+		FROM tagtagrelations r GROUP BY upper COLLATE utf8_unicode_ci ORDER BY
+		usercount DESC,count DESC LIMIT 50
+		) AS tagCount
+		WHERE tagCount.upper=r.upper
 		GROUP BY tagCount.upper
-		ORDER BY tagCount.upper COLLATE utf8_unicode_ci, r.lower COLLATE utf8_unicode_ci 
+		ORDER BY tagCount.upper COLLATE utf8_unicode_ci,
+		r.lower COLLATE utf8_unicode_ci 
 	</select>
-	
-	<select id="getGlobalConceptByName" parameterClass="String" resultMap="TagCommon.tagWithSubtags">
-		SELECT r.upper AS tag_name,  GROUP_CONCAT(DISTINCT r.lower ORDER BY r.lower SEPARATOR ' ') AS subtags
+
+	<select id="getGlobalConceptByName" parameterClass="String"
+		resultMap="TagCommon.tagWithSubtags">
+		SELECT r.upper AS tag_name, GROUP_CONCAT(DISTINCT r.lower
+		ORDER BY r.lower SEPARATOR ' ') AS subtags
 		FROM tagtagrelations r
-		WHERE LCASE(r.upper) = LCASE(#conceptName#)
+		WHERE
+		LCASE(r.upper) = LCASE(#conceptName#)
 		GROUP BY LCASE(r.upper)
-		ORDER BY r.upper
-		COLLATE utf8_unicode_ci, r.lower COLLATE utf8_unicode_ci 
+		ORDER BY
+		r.upper
+		COLLATE utf8_unicode_ci, r.lower COLLATE utf8_unicode_ci
 	</select>
-	
-	<select id="getRelationID" parameterClass="tagRelationParam" resultClass="string">
-		SELECT relationID FROM tagtagrelations where user_name = #ownerUserName# and lower = #lowerTagName# and upper = #upperTagName# 
+
+	<select id="getRelationID" parameterClass="tagRelationParam"
+		resultClass="string">
+		SELECT relationID FROM tagtagrelations where user_name =
+		#ownerUserName# and lower = #lowerTagName# and upper = #upperTagName#
 	</select>
 </sqlMap>
