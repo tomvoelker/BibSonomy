@@ -10,8 +10,10 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
+import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.testutil.DatabasePluginMock;
 import org.junit.Before;
@@ -105,7 +107,8 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	 */
 	@Ignore
 	public void getAllConceptsForUser() {
-		final List<Tag> relations = this.tagRelDb.getAllConceptsForUser("hotho", this.dbSession);
+		final TagRelationParam param = LogicInterfaceHelper.buildParam(TagRelationParam.class, "hotho", null, null, null, null, null, 0, Integer.MAX_VALUE, null, null, null);
+		final List<Tag> relations = this.tagRelDb.getAllConceptsForUser(param, this.dbSession);
 		// hotho has six concepts
 		assertEquals(6, relations.size());
 	}
