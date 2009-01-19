@@ -1,6 +1,5 @@
 package org.bibsonomy.webapp.controller;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -40,32 +39,24 @@ public class UserRelationsController extends SingleResourceListControllerWithTag
 		final GroupingEntity groupingEntity = GroupingEntity.USER;
 		final String groupingName = command.getRequestedUser();
 
-		// retrieve concepts
-		final List<Tag> concepts = this.logic.getConcepts(null, groupingEntity, groupingName, null, null, ConceptStatus.PICKED, 0, Integer.MAX_VALUE);
+		//query for the number of relations of a user
+		int numberOfRelations = this.logic.getTagStatistics(null, groupingEntity, groupingName, null, null, ConceptStatus.ALL, 0, Integer.MAX_VALUE);
 
-		int entriesPerPage = command.getConcepts().getEntriesPerPage();
-
-		int start = command.getConcepts().getStart();
-
-		if (entriesPerPage > concepts.size() - start) {
-			entriesPerPage = concepts.size() - start;
+		int limit = command.getConcepts().getEntriesPerPage();
+		int offset = command.getConcepts().getStart();
+		
+		if(offset == limit) {
+			limit++;
 		}
+	
+		// retrieving concepts
+		List<Tag> concepts = this.logic.getConcepts(null, groupingEntity, groupingName, null, null, ConceptStatus.ALL, offset, limit);
 
-		final List<Tag> conceptsToShow = new LinkedList<Tag>();
+		command.getConcepts().setConceptList(concepts);
 
-		/*
-		 * calculation of the relations which should by displayed on the page.
-		 * This manually calculation has to be replaced by an database query.
-		 * This db query doesn't exist and has to be implement
-		 */
-		for (int i = start; i < entriesPerPage + start; i++) {
-			conceptsToShow.add(concepts.get(i));
-		}
 
-		command.getConcepts().setConceptList(conceptsToShow);
-
-		command.getConcepts().setNumConcepts(conceptsToShow.size());
-		command.getConcepts().setTotalCount(concepts.size());
+		command.getConcepts().setNumConcepts(concepts.size());
+		command.getConcepts().setTotalCount(numberOfRelations);
 
 		// set page title
 		// TODO: internationalize
