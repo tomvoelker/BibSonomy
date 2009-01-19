@@ -1220,4 +1220,19 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
+	
+	public int getTagStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end) {
+		Integer result;
+
+		final DBSession session = openSession();
+		try {
+			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, this.loginUser.getName(), grouping, groupingName, tags, null, null, start, end, null, null, this.loginUser);
+
+			result = this.statisticsDBManager.getTagStatistics(param, session);
+		} finally {
+			session.close();
+		}
+
+		return result;
+	}
 }
