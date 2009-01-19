@@ -36,6 +36,9 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 		return this.user;
 	}
 
+	/**
+	 * @param user
+	 */
 	public void setUser(User user) {
 		this.user = user;
 	}	

@@ -20,6 +20,7 @@ public class ListCommand<T> {
 	private int entriesPerPage = -1;
 	/** we store the parent command here in order to be able to access the default settings for entriesPerPage therein */
 	private ContextCommand parentCommand;
+
 	private final PageCommand curPage = new PageCommand();
 	private List<PageCommand> previousPages;
 	private List<PageCommand> nextPages;
