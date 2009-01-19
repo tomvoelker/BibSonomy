@@ -5,8 +5,8 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.AbstractDatabaseManager;
-import org.bibsonomy.database.DBLogic;
 import org.bibsonomy.database.managers.chain.statistic.post.PostStatisticChain;
+import org.bibsonomy.database.managers.chain.statistic.tag.TagStatisticChain;
 import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.util.DBSession;
@@ -28,6 +28,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	private final BibTexDatabaseManager bibtexDBManager;
 	private final BookmarkDatabaseManager bookmarkDBManager;
 	private static final PostStatisticChain postchain = new PostStatisticChain();
+	private static final TagStatisticChain tagChain = new TagStatisticChain();
 
 
 	private StatisticsDatabaseManager() {
@@ -54,6 +55,29 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 		// FIXME: this is ugly, but using chain elements forces us to use lists as return types
 		return count.get(0);
 	}
+	
+	public Integer getTagStatistics(final StatisticsParam param, final DBSession session) {
+		// start the chain
+		final List<Integer> count = tagChain.getFirstElement().perform(param, session);		
+
+		// FIXME: this is ugly, but using chain elements forces us to use lists as return types
+		return count.get(0);
+	}
+	
+	
+	/**
+	 * @param param
+	 * @param session
+	 * @return number of relations from a user
+	 */
+	public Integer getNumberOfRelationsForUser(final StatisticsParam param, final DBSession session) {
+		Integer result = null;
+		
+		result = this.queryForObject("getNumberOfRelationsForUser", param.getRequestedUserName(), Integer.class, session);
+		
+		return result;
+	}
+	
 
 	/**
 	 * @param resourceType

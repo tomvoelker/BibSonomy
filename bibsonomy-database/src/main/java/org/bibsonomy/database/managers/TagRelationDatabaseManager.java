@@ -61,6 +61,18 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	public List<Tag> getConcepts(final TagRelationParam param, DBSession session) {
 		return chain.getFirstElement().perform(param, session);
 	}
+	
+	
+	/**
+	 * @param param
+	 * @param session
+	 * @return limmited number of concepts of a user
+	 */
+	public List<Tag> getLimmitedConcepts(final TagRelationParam param, DBSession session) {
+		List<Tag> result = chain.getFirstElement().perform(param, session);		
+		
+		return result;
+	}
 
 	/**
 	 * Inserts a relation.
@@ -153,15 +165,14 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 		this.delete("deleteTagRelation", trp, session);
 	}
 
+
 	/**
-	 * Returns a list of concepts for a given user.
-	 * 
-	 * @param userName
+	 * @param param
 	 * @param session
-	 * @return list of concepts for a given user
+	 * @return the concepts list of a user
 	 */
-	public List<Tag> getAllConceptsForUser(final String userName, final DBSession session) {
-		return this.queryForList("getAllConceptsForUser", userName, Tag.class, session);
+	public List<Tag> getAllConceptsForUser(final TagRelationParam param, final DBSession session) {
+		return this.queryForList("getAllConceptsForUser", param, Tag.class, session);
 	}
 
 	/**
