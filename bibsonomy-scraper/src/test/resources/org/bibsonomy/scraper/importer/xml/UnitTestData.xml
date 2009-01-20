@@ -188,7 +188,7 @@
 	</URLTest>
 	<URLTest id="url_33">
 		<TestDescription>URL scraping test with a citation page from intersience wiley</TestDescription>
-		<URL>http://www3.interscience.wiley.com/cgi-bin/abstract/104530788/ABSTRACT?CRETRY=1&amp;SRETRY=0</URL>
+		<URL>http://www3.interscience.wiley.com/journal/104530788/abstract?CRETRY=1&amp;SRETRY=0</URL>
 		<BibFile>WileyIntersienceScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
 	</URLTest>
@@ -350,13 +350,13 @@
 	</URLTest>
 	<URLTest id="url_63">
 		<TestDescription>ACS Publications Url 1</TestDescription>
-		<URL>http://pubs.acs.org/cgi-bin/abstract.cgi/jcisd8/2004/44/i06/abs/ci049894n.html</URL>
+		<URL>http://pubs.acs.org/doi/abs/10.1021/ci049894n</URL>
 		<BibFile>ACSScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.acs.ACSScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_64">
 		<TestDescription>ACS Publications Url 2</TestDescription>
-		<URL>http://pubs.acs.org/wls/journals/citation2/Citation?jid=ci049894n</URL>
+		<URL>http://pubs.acs.org/action/downloadCitation?doi=10.1021%2Fci049894n&amp;include=abs&amp;format=bibtex</URL>
 		<BibFile>ACSScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.acs.ACSScraper</Scraper>
 	</URLTest>

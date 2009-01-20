@@ -50,7 +50,7 @@ public class DBLPScraper extends UrlScraper {
 		sc.setScraper(this);
 
 		//Filtering the <a href="...">DBLP</a>: links out of the content
-		int beginDBLPLink = sc.getPageContent().indexOf("<a href=\"http://www.informatik.uni-trier.de/~ley/db/about/bibtex.html\">");
+		int beginDBLPLink = sc.getPageContent().indexOf("<a href=\"http://dblp.uni-trier.de/db/about/bibtex.html\">");
 		int endDBLPLink = sc.getPageContent().indexOf("DBLP</a>:");
 
 		final String pageContent = new String(sc.getPageContent().substring(0, beginDBLPLink) + sc.getPageContent().substring(endDBLPLink+9));
