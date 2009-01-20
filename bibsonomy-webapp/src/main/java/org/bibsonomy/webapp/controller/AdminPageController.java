@@ -97,6 +97,10 @@ public class AdminPageController implements MinimalisticController<AdminViewComm
 			classifier = Classifier.ADMIN;
 			status = SpamStatus.SPAMMER;
 			break;
+		case AdminViewCommand.ADMIN_UNSURE_INDEX:
+			classifier = Classifier.ADMIN;
+			status = SpamStatus.UNKNOWN;
+			break;
 		case AdminViewCommand.ADMIN_NOSPAMMER_INDEX:
 			classifier = Classifier.ADMIN;
 			status = SpamStatus.NO_SPAMMER;
