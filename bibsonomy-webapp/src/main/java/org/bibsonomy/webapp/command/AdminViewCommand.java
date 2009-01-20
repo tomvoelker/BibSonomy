@@ -15,12 +15,13 @@ public class AdminViewCommand extends TabsCommand<User> {
 	
 	public final static int MOST_RECENT = 1;
 	public final static int ADMIN_SPAMMER_INDEX = 2;
-	public final static int ADMIN_NOSPAMMER_INDEX = 3;
-	public final static int CLASSIFIER_SPAMMER_INDEX = 4;
-	public final static int CLASSIFIER_SPAMMER_UNSURE_INDEX = 5;
-	public final static int CLASSIFIER_NOSPAMMER_UNSURE_INDEX = 6;
-	public final static int CLASSIFIER_NOSPAMMER_INDEX	= 7;
-	public final static int CLASSIFIER_EVALUATE = 8;
+	public final static int ADMIN_UNSURE_INDEX = 3;
+	public final static int ADMIN_NOSPAMMER_INDEX = 4;
+	public final static int CLASSIFIER_SPAMMER_INDEX = 5;
+	public final static int CLASSIFIER_SPAMMER_UNSURE_INDEX = 6;
+	public final static int CLASSIFIER_NOSPAMMER_UNSURE_INDEX = 7;
+	public final static int CLASSIFIER_NOSPAMMER_INDEX	= 8;
+	public final static int CLASSIFIER_EVALUATE = 9;
 	
 	
 	
@@ -32,15 +33,18 @@ public class AdminViewCommand extends TabsCommand<User> {
 	/** the time interval for retrieving spammers */
 	private Integer interval = 300;
 	
+	private String aclUserInfo; 
+
 	public AdminViewCommand() {				
 		addTab(MOST_RECENT, "New registrations");
 		addTab(ADMIN_SPAMMER_INDEX, "Admin: Spammer");
+		addTab(ADMIN_UNSURE_INDEX, "Admin: Unsure");
 		addTab(ADMIN_NOSPAMMER_INDEX, "Admin: No Spammer");
 		addTab(CLASSIFIER_SPAMMER_INDEX, "Classifier: Spammer");
 		addTab(CLASSIFIER_SPAMMER_UNSURE_INDEX, "Classifier: Spammer (U)");
 		addTab(CLASSIFIER_NOSPAMMER_UNSURE_INDEX, "Classifier: No Spammer (U)");
 		addTab(CLASSIFIER_NOSPAMMER_INDEX, "Classifier: No Spammer");
-		addTab(CLASSIFIER_EVALUATE, "Classifier Evaluation");
+		addTab(CLASSIFIER_EVALUATE, "Modified BibTex Users");
 		
 		// change default tab to classifier tab
 		selTab = 5;
@@ -73,5 +77,13 @@ public class AdminViewCommand extends TabsCommand<User> {
 
 	public void setInterval(Integer interval) {
 		this.interval = interval;
-	}	
+	}
+	
+	public String getAclUserInfo() {
+		return this.aclUserInfo;
+	}
+
+	public void setAclUserInfo(String aclUserInfo) {
+		this.aclUserInfo = aclUserInfo;
+	}
 }

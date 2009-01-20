@@ -22,15 +22,18 @@
 		<jsp:attribute name="heading">	
 			<a href="/?filter=no">${projectName} all</a> :: <a rel="path_menu"
 				href="/admin"><fmt:message key="navi.admin" /></a>
-		</jsp:attribute>
+		</jsp:attribute>	
 
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css"
 				href="${resdir}/css/spammer.css" />
 		</jsp:attribute>
 		
+		<jsp:attribute name="topcontent">
+			<menu:adminNavi />	
+			<!-- Admin Navigation -->	
+		</jsp:attribute>
 		
-
 		<jsp:attribute name="tabcontent">		
 			<!-- spammer js -->
 			<script type="text/javascript" src="${resdir}/javascript/spammer.js">&amp;nbsp;</script>				
@@ -47,7 +50,7 @@
 				<c:choose>
 				
 				<!-- classifier results tabs -->
-				<c:when test="${command.selTab &lt; 7}">	
+				<c:when test="${command.selTab &lt; 10}">	
 				
 				<table id="spammers" class="spammertable">
 					
@@ -59,7 +62,7 @@
 								<th>E-Mail</th>
 								<th>Regdate</th>  	
 				   		<c:choose>
-				   		<c:when test="${command.selTab > 3}">
+				   		<c:when test="${command.selTab > 4}">
 				    	<th>Algorithm</th>
 				    	<th>Mode</th>
 				    	<th>Confidence</th>
@@ -77,7 +80,7 @@
 					<c:forEach var="user" items="${command.content}" varStatus="status">
 					
 					  <!-- color rows according to spam status -->
-					  <tr id="sl${status.count}" class="${user.prediction == 9 ? 'spamflag uncertainUser' : ((user.spammer==true and command.selTab !=2) ? 'spammer' : none)}">	
+					  <tr id="sl${status.count}" class="${user.prediction == 9 ? 'spamflag uncertainUser' : ((user.spammer==true) ? 'spammer' : none)}">	
 					     <c:choose>
 					    	<c:when test="${command.selTab == 1}">
 					        	<c:set var="Unflag" value="false" /> 
@@ -87,7 +90,7 @@
 					    	<c:otherwise>
 					    	<c:choose>
 					    	    <c:when
-													test="${command.selTab == 2 or command.selTab == 3}">
+									test="${command.selTab == 2 or command.selTab == 4}">
 					    		<c:choose>
 					    		<c:when test="${user.spammer == true}">
 					    			<c:set var="Unflag" value="true" /> 
@@ -96,15 +99,24 @@
 					        	</c:when>
 					        	<c:otherwise>		        	
 					    			<c:set var="Unflag" value="false" /> 
-					    			<c:set var="Uncertain" value="false" />
+					    			<c:set var="Uncertain" value="true" />
 					        		<c:set var="Flag" value="true" /> 
 					        	</c:otherwise>
 					        	</c:choose>
 					        	</c:when>
 					        	<c:otherwise>
+					        	<c:choose>
+					        	    <c:when test="${command.selTab == 3}">
+					        	    	<c:set var="Unflag" value="true" /> 
+					    				<c:set var="Uncertain" value="false" />
+					        			<c:set var="Flag" value="true" /> 
+					        	    </c:when>
+					        	    <c:otherwise>
 					        		<c:set var="Unflag" value="true" /> 
 					    			<c:set var="Uncertain" value="true" />
-					        		<c:set var="Flag" value="true" /> 
+					        		<c:set var="Flag" value="true" />
+					        		</c:otherwise>
+					        	</c:choose> 
 					        	</c:otherwise>
 					        </c:choose>
 					  	 	</c:otherwise>
@@ -344,10 +356,8 @@
 					document.getElementById(algorithm).selected = true;
 					document.getElementById(testing).selected = true;
 				}
-				
 				preselect();
 			</script>											
 		</jsp:attribute>
 	</layout:tabLayout>
-
 </jsp:root>
