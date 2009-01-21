@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.UrlScraper;
@@ -26,6 +27,9 @@ import org.w3c.tidy.Tidy;
  *
  */
 public class ACMBasicScraper extends UrlScraper {
+	
+	private Logger log = Logger.getLogger(ACMBasicScraper.class);
+	
 	private static final String info = "ACM Scraper: This scraper parses a publication page from the " + href("http://portal.acm.org/portal.cfm", "ACM Digital Library");
 
 	private static final String ACM_HOST_NAME        = "http://portal.acm.org/";
@@ -144,8 +148,8 @@ public class ACMBasicScraper extends UrlScraper {
 			 */
 			if (testAbstract) {
 				BibTeXUtils.addFieldIfNotContained(bibtexEntries, "abstract", abstr);
-			}
-
+			}else // log if abstract is not available
+				log.info("ACMBasicScraper: Abstract not avaiable \n" + sc.getPageContent());
 
 			final String result = bibtexEntries.toString().trim();
 

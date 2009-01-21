@@ -35,26 +35,32 @@ public class CompositeScraper implements Scraper {
 			}
 			
 		} catch (final InternalFailureException e) {
+			log.fatal("Exception during scraping following url: " + scrapingContext.getUrl());
 			// internal failure 
 			log.fatal(e,e);			
 			throw (e);
 		} catch (final UseageFailureException e) {
+			log.info("Exception during scraping following url: " + scrapingContext.getUrl());
 			// a user has used a scraper in a wrong way
 			log.info(e);
 			throw (e);
 		} catch (final PageNotSupportedException e) {
+			log.error("Exception during scraping following url: " + scrapingContext.getUrl());
 			// a scraper can't scrape a page but the host is supported
 			log.error(e,e);
 			throw (e);
 		} catch (final ScrapingFailureException e) {
+			log.fatal("Exception during scraping following url: " + scrapingContext.getUrl());
 			// getting bibtex failed (conversion failed)
 			log.fatal(e,e);
 			throw (e);
 		} catch (final ScrapingException e) {
+			log.error("Exception during scraping following url: " + scrapingContext.getUrl());
 			// something else
 			log.error(e,e);
 			throw (e);
 		} catch (final Exception e) {
+			log.fatal("Exception during scraping following url: " + scrapingContext.getUrl());
 			// unexpected internal failure 
 			log.fatal(e,e);			
 			throw (new InternalFailureException(e));
