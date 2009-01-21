@@ -45,12 +45,8 @@ public class UserRelationsController extends SingleResourceListControllerWithTag
 		int limit = command.getConcepts().getEntriesPerPage();
 		int offset = command.getConcepts().getStart();
 		
-		if(offset == limit) {
-			limit++;
-		}
-	
 		// retrieving concepts
-		List<Tag> concepts = this.logic.getConcepts(null, groupingEntity, groupingName, null, null, ConceptStatus.ALL, offset, limit);
+		List<Tag> concepts = this.logic.getConcepts(null, groupingEntity, groupingName, null, null, ConceptStatus.ALL, offset, limit + offset);
 
 		command.getConcepts().setConceptList(concepts);
 
