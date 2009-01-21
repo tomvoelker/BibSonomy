@@ -112,9 +112,18 @@
 					        			<c:set var="Flag" value="true" /> 
 					        	    </c:when>
 					        	    <c:otherwise>
-					        		<c:set var="Unflag" value="true" /> 
-					    			<c:set var="Uncertain" value="true" />
-					        		<c:set var="Flag" value="true" />
+					        	    <c:choose>
+					        	    <c:when test="${command.selTab == 9}">
+					        	    	<c:set var="Unflag" value="false" /> 
+					    				<c:set var="Uncertain" value="false" />
+					        			<c:set var="Flag" value="false" /> 
+					        	    </c:when>
+					        	    <c:otherwise>    
+					        			<c:set var="Unflag" value="true" /> 
+					    				<c:set var="Uncertain" value="true" />
+					        			<c:set var="Flag" value="true" />
+					        		</c:otherwise>
+					        		</c:choose>
 					        		</c:otherwise>
 					        	</c:choose> 
 					        	</c:otherwise>
@@ -157,7 +166,7 @@
 										value="${user.registrationDate}" />
 					   </td>					   
 				 	   <c:choose>
-				       <c:when test="${command.selTab > 3}">				    				       
+				       <c:when test="${command.selTab > 4}">				    				       
 				       <td><c:out value="${user.algorithm}" /></td>
 				       <td><c:out value="${user.mode}" /></td>	
 				       <td><c:out value="${fn:substring(user.confidence, 0,5)}" /></td>
