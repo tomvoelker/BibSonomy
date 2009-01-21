@@ -36,7 +36,7 @@
 				<c:set var="deleteTitle"><fmt:message key="bookmark.actions.delete.title"/></c:set>
 	
 				<span>
-				<a onclick="editTags(this,'${ckey}', '${post.contentId}');return false;"
+				<a onclick="editTags(this,'${ckey}');return false;"
 					tags="${fn:escapeXml(mtl:toTagString(post.tags))}"
 					hashsum="${post.resource.hash}" user="${fn:escapeXml(post.user.name)}"
 					title="${editTitle}"
