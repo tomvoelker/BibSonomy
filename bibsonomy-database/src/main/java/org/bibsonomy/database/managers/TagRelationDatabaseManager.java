@@ -62,18 +62,6 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 		return chain.getFirstElement().perform(param, session);
 	}
 	
-	
-	/**
-	 * @param param
-	 * @param session
-	 * @return limmited number of concepts of a user
-	 */
-	public List<Tag> getLimmitedConcepts(final TagRelationParam param, DBSession session) {
-		List<Tag> result = chain.getFirstElement().perform(param, session);		
-		
-		return result;
-	}
-
 	/**
 	 * Inserts a relation.
 	 * 
