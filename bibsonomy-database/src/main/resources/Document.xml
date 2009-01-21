@@ -29,7 +29,7 @@
 	<select id="getContentIdByHash" resultClass="int" parameterClass="documentParam">
 		SELECT b.content_id
 		FROM bibtex b
-		WHERE simhash$requestedSimHash$=#resourceHash#
+		WHERE simhash$requestedSimHash$=#resourceHash# AND user_name = #userName#
 	</select>
 		
 	<select id="getDocuments" resultMap="DocumentCommon.document" parameterClass="documentParam">
