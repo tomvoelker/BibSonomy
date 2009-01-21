@@ -38,7 +38,7 @@ public class AdminViewCommand extends TabsCommand<User> {
 	public AdminViewCommand() {				
 		addTab(MOST_RECENT, "New registrations");
 		addTab(ADMIN_SPAMMER_INDEX, "Admin: Spammer");
-		addTab(ADMIN_UNSURE_INDEX, "Admin: Unsure");
+		addTab(ADMIN_UNSURE_INDEX, "Admin: Unsure Spammer");
 		addTab(ADMIN_NOSPAMMER_INDEX, "Admin: No Spammer");
 		addTab(CLASSIFIER_SPAMMER_INDEX, "Classifier: Spammer");
 		addTab(CLASSIFIER_SPAMMER_UNSURE_INDEX, "Classifier: Spammer (U)");
