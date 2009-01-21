@@ -14,9 +14,9 @@ public abstract class Resource implements Cloneable {
 	private static final int MAX_LEN_TITLE       = 6000;
 	private static final int MAX_LEN_URL         = 6000;
 	private static final String BROKEN_URL              = "/brokenurl#";
-	
+
 	private HashMap<String, String> extended_fields = null;
-	
+
 	private int contentID   = UNDEFINED_CONTENT_ID;
 	private int groupid     = constants.SQL_CONST_GROUP_PUBLIC;
 	private String group    = "public";
@@ -29,50 +29,50 @@ public abstract class Resource implements Cloneable {
 	private String docName  = null;  // real file name of referenced document
 	private Date date = null;
 	private int ctr;
-    protected Tag tag       = new Tag();
-    
-    private int rating = 0; // rating of user
-    
-    
+	protected Tag tag       = new Tag();
+
+	private int rating = 0; // rating of user
+
+
 	/* every subclass of Resource has a unique content_type 
 	 * in the subclasses it should not be possible to change the content_type (it is fixed)
 	 * so overload setContentType to not change the type
 	 * the reason that we have setContentType inside Resource is, that we want to
 	 * use Resources for just inserting tas into the DB and tas have to have a contentType  
 	 */
-		
+
 	private boolean validTitle = false;
 	private boolean validUrl   = false;
-	
+
 	private boolean toDel = false;
 	private boolean toIns = false;
-	
-	
-	
+
+
+
 	// toString
 	public String toString () {
 		return user + "(" + date  + ") : [" + tag + "] ---> " + title;
 	}
-	
+
 	public static String clean (String s) {
 		return s.replaceAll("\\s+"," ").trim();
 	}
-	
-    public String getFullTagString(){
-    	return tag.toString();
-    }
-    
-    /**
-     * Calculates the MD5-Hash of a String s and returns it encoded as a hex string of 32 characters length.
-     * 
-     * @param s the string to be hashed
-     * @return the MD5 hash of s as a 32 character string 
-     */
-    public static String hash (String s) {
-    	if (s == null) {
-    		return null;
-    	} 
-    	
+
+	public String getFullTagString(){
+		return tag.toString();
+	}
+
+	/**
+	 * Calculates the MD5-Hash of a String s and returns it encoded as a hex string of 32 characters length.
+	 * 
+	 * @param s the string to be hashed
+	 * @return the MD5 hash of s as a 32 character string 
+	 */
+	public static String hash (String s) {
+		if (s == null) {
+			return null;
+		} 
+
 		String charset = "UTF-8";
 		try {
 			MessageDigest md = MessageDigest.getInstance("MD5");
@@ -82,38 +82,38 @@ public abstract class Resource implements Cloneable {
 		} catch (NoSuchAlgorithmException e) {
 			return null;
 		}
-    }
+	}
 
 
 
-    /**
-     * Converts a buffer of bytes into a string of hex values.
-     * 
-     * @param buffer array of bytes which should be converted
-     * @return hex string representation of buffer
-     */
-    public static String toHexString (byte[] buffer) {
-    	StringBuffer result = new StringBuffer();
-    	int i;
-    	for (i = 0; i < buffer.length; i++) {
-    		String hex = Integer.toHexString ((int) buffer[i]);
-    		if (hex.length() == 1) {
-    			hex = "0" + hex;
-    		}
-    		result.append(hex.substring(hex.length() - 2));
-    	}
-    	return result.toString();
-    }
-	
-	
+	/**
+	 * Converts a buffer of bytes into a string of hex values.
+	 * 
+	 * @param buffer array of bytes which should be converted
+	 * @return hex string representation of buffer
+	 */
+	public static String toHexString (byte[] buffer) {
+		StringBuffer result = new StringBuffer();
+		int i;
+		for (i = 0; i < buffer.length; i++) {
+			String hex = Integer.toHexString ((int) buffer[i]);
+			if (hex.length() == 1) {
+				hex = "0" + hex;
+			}
+			result.append(hex.substring(hex.length() - 2));
+		}
+		return result.toString();
+	}
+
+
 	/*
 	 * get/set Methoden
 	 */
-	
+
 	abstract public String getHash (); /*{
 		return hash(title);
 	}*/
-    
+
 
 	/**
 	 * Adds the relation lower-&gt;upper to the resource.
@@ -126,8 +126,8 @@ public abstract class Resource implements Cloneable {
 	public boolean addTagRelation (String lower, String upper) {
 		return tag.addTagRelation(lower, upper);
 	}
-	
-	
+
+
 	/**
 	 * Sets the tag object from the given tag string. Inside the tag object 
 	 * the string is parsed into tags, relations and users.
@@ -137,7 +137,7 @@ public abstract class Resource implements Cloneable {
 	public void setTags (String tagString) {
 		tag.setTags(tagString);
 	}
-	
+
 	public boolean isValidtitle () {
 		return validTitle;
 	}
@@ -147,15 +147,15 @@ public abstract class Resource implements Cloneable {
 	public boolean isValidurl () {
 		return validUrl;
 	}
-	
+
 	public void addFromTag (String user) {
 		tag.addFromTag(user);
 	}
-	
+
 	public void addForTag (String user) {
 		tag.addForTag(user);
 	}
-	
+
 
 	/**
 	 * Get a copy of this resource.
@@ -171,8 +171,8 @@ public abstract class Resource implements Cloneable {
 		copy.tag = (Tag)tag.clone();
 		return copy;
 	}
-	
-	
+
+
 	/**
 	 * Cleans a URL and makes it valid. This includes 
 	 * <ul>
@@ -189,28 +189,29 @@ public abstract class Resource implements Cloneable {
 	public static String cleanUrl (String url) {
 		if (url == null) {
 			return null;
-		} else {
-			// remove linebreaks, etc.
-			url = url.replaceAll("\\n|\\r", "");;
-			// this should be the most common case: a valid URL
-			if (url.startsWith("http://") || 
+		} 
+		// remove linebreaks, etc.
+		url = url.replaceAll("\\n|\\r", "");
+		// this should be the most common case: a valid URL
+		if (url.startsWith("http://") || 
 				url.startsWith("ftp://") ||
 				url.startsWith("file://") ||
 				url.startsWith(BROKEN_URL) ||
 				url.startsWith("gopher://") ||
+				url.startsWith("file://") ||
 				url.startsWith("https://")) {
-				return cropToLength(url, MAX_LEN_URL);
-			} else if (url.startsWith("\\url{") && url.endsWith("}")) {
-				// remove \\url{...}
-				return cropToLength(url.substring(5,url.length()-1), MAX_LEN_URL);
-			} else if (url.trim().equals("")){
-				// handle an empty URL
-				return "";
-			} else {
-				// URL is neither empty nor valid: mark it as broken
-				return cropToLength(BROKEN_URL + url, MAX_LEN_URL);
-			}
+			return cropToLength(url, MAX_LEN_URL);
+		} else if (url.startsWith("\\url{") && url.endsWith("}")) {
+			// remove \\url{...}
+			return cropToLength(url.substring(5,url.length()-1), MAX_LEN_URL);
+		} else if (url.trim().equals("")){
+			// handle an empty URL
+			return "";
+		} else {
+			// URL is neither empty nor valid: mark it as broken
+			return cropToLength(BROKEN_URL + url, MAX_LEN_URL);
 		}
+
 	}
 	// URL
 	public void setUrl (String url) {
@@ -220,14 +221,14 @@ public abstract class Resource implements Cloneable {
 	public String getUrl () {
 		return url;
 	}
-	
+
 	public String getShortUrl () {
 		if (url.length() > 60) {
 			return url.substring(0, 60) + "..."; 
 		}
 		return url;
 	}
-	
+
 	// Title
 	public void setTitle (String title) {
 		validTitle = title != null && !title.equals("");
@@ -247,11 +248,11 @@ public abstract class Resource implements Cloneable {
 			return s;
 		}
 	}
-	
+
 	// Group
 	public void setGroup (String r) {
 		if (r != null) {
-		  this.group = r;
+			this.group = r;
 		}
 	}
 	public String getGroup () {
@@ -272,21 +273,21 @@ public abstract class Resource implements Cloneable {
 	public Date getDate () {
 		return date;
 	}
-	
+
 	public void addTag(String t){
 		tag.addTag(t);
 	}
-	
+
 	// Tags
 	public Set<String>getTags () {
 		return tag.getTags();
 	}
-	
+
 	// get Set<TagRelation> TagRelations
 	public Set<TagRelation> getTagrelations (){
 		return tag.getTagrelations();
 	}
-	
+
 	/* get Tag object */
 	public Tag getTag() {
 		return tag;
@@ -300,7 +301,7 @@ public abstract class Resource implements Cloneable {
 		return contentID;
 	}
 
-	
+
 	// ToDel
 	public boolean isToDel() {
 		return toDel;
@@ -345,12 +346,12 @@ public abstract class Resource implements Cloneable {
 	public void setOldHash(String oldHash) {
 		this.oldHash = oldHash;
 	}
-	
-	
+
+
 	public String getTagString(){
 		return tag.getTagString();
 	}
-	
+
 	public abstract int getContentType();
 
 	public String getPrivnote() {
@@ -368,7 +369,7 @@ public abstract class Resource implements Cloneable {
 		return tag.tagCount();
 	}
 
-	
+
 	/** Returns the hash for the document belonging to the resource
 	 * @return The hash for the document belonging to the resource. Under this hash
 	 * the document is stored in the file system and also referenced in the document table.
@@ -398,7 +399,7 @@ public abstract class Resource implements Cloneable {
 	public void setExtended_fields(HashMap<String, String> extended_fields) {
 		this.extended_fields = extended_fields;
 	}
-	
+
 	public void addExtended_fields(String key, String value) {
 		if (this.extended_fields == null) {
 			extended_fields = new HashMap<String,String>();
@@ -409,14 +410,14 @@ public abstract class Resource implements Cloneable {
 	public int getRating() {
 		return rating;
 	}
-	
+
 	public void setRating(String rating) {
 		try {
 			this.setRating(Integer.parseInt(rating));
 		} catch (NumberFormatException e) {
 		}
 	}
-	
+
 	public void setRating(int rating) {
 		if (rating < 0 || rating > 5) {
 			this.rating = 0;
