@@ -67,7 +67,7 @@
 					</c:when>
 					<c:otherwise>						
 						<c:set var="editTitle"><fmt:message key="bibtex.actions.edit.title"/></c:set>
-             			<a onclick="editTags(this,'${ckey}', '${post.contentId}');return false;"
+             			<a onclick="editTags(this,'${ckey}');return false;"
 							tags="${fn:escapeXml(mtl:toTagString(post.tags))}"
 							hashsum="${post.resource.intraHash}"
 							href="/ShowBibtexEntry?hash=${post.resource.intraHash}"
