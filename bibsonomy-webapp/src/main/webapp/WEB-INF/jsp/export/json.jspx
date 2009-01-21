@@ -66,7 +66,7 @@
             <c:forEach var="tag" varStatus="tagStatus" items="${post.tags}">"${mtl:quoteJSON(tag.name)}"<c:if test="${not tagStatus.last}">,</c:if></c:forEach>
          ],
          "url" : "${mtl:quoteJSON(post.resource.url)}"
-      }<c:if test="${not status.last}">,</c:if>
+      }<c:if test="${not status.last or not empty command.bibtex.list or not empty command.tagcloud.tags}">,</c:if>
       </c:forEach>
       
       <c:if test="${not empty command.bookmark.list and not empty command.bibtex.list}">,</c:if>
@@ -108,7 +108,7 @@
          <c:if test="${!empty post.resource.note}">"note": "${mtl:quoteJSONcleanBibTeX(post.resource.note)}",</c:if>
          <c:if test="${!empty post.resource.bibtexAbstract}">"abstract": "${mtl:quoteJSONcleanBibTeX(post.resource.bibtexAbstract)}",</c:if>
          "bibtexKey": "${mtl:quoteJSONcleanBibTeX(post.resource.bibtexKey)}"
-      }<c:if test="${not status.last}">,</c:if>
+      }<c:if test="${not status.last or not empty command.tagcloud.tags}">,</c:if>
       </c:forEach>
 
       <!-- tags -->
