@@ -198,7 +198,6 @@ public abstract class Resource implements Cloneable {
 				url.startsWith("file://") ||
 				url.startsWith(BROKEN_URL) ||
 				url.startsWith("gopher://") ||
-				url.startsWith("file://") ||
 				url.startsWith("https://")) {
 			return cropToLength(url, MAX_LEN_URL);
 		} else if (url.startsWith("\\url{") && url.endsWith("}")) {
