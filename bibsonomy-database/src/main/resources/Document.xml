@@ -6,7 +6,7 @@
     <select id="getUserByResourceHash" resultClass="String" parameterClass="documentParam">
 		SELECT b.user_name 
 		FROM bibtex b 
-		WHERE simhash$requestedSimHash$=#resourceHash#
+		WHERE simhash$requestedSimHash$=#resourceHash# AND user_name = #userName#
 	</select>
 	
 	<select id="checkContentId" resultClass="String" parameterClass="documentParam">
