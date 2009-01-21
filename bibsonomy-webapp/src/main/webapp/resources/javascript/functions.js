@@ -1449,65 +1449,11 @@ function unicodeCollation(ersterWert, zweiterWert){
 	        }
 	    }
     }
-   
-function sendEditTags(obj, type, contentId, ckey, link) {
-	var tags = obj.childNodes[0].value;
-	var hash = obj.childNodes[0].name;
-	var ckey = obj.childNodes[1].value;
-	
-	$.ajax({
-		type:		"POST",
-		url:		"/TagHandler?requTask=" + type + "&" + hash + "=" + tags.trim() + "&ckey=" + ckey,
-		dataType:	"html",
-		global:		"false",
-		error:	function(html) {
-			alert("sorry, but i could not finish the requested action");
-		}
-	});
-	
-	var parent = obj.parentNode;
-	
-	while(parent.hasChildNodes()) {
-		parent.removeChild(parent.firstChild);
-	}
-	
-	var edit = document.createElement("a");
-	edit.setAttribute("onclick", "editTags(this, '" + ckey + "', '" + contentId + "'); return false;");
-	edit.setAttribute("tags", tags.trim());
-	edit.setAttribute("hashsum", hash);
-	edit.setAttribute("href", link);
-	edit.appendChild(document.createTextNode("edit "));
-	
-	parent.appendChild(edit);
-	
-	if(type == "bibtex") {
-		var pipe = document.createTextNode(" | ");
-		parent.appendChild(pipe);
-	}
-	
-	parent = document.getElementById(contentId);
-	
-	while(parent.hasChildNodes()) {
-		parent.removeChild(parent.firstChild);
-	}
-	
-	var tagList = tags.split(" ");
-	
-	for(i in tagList) {
-		var tag = document.createElement("a");
-		tag.setAttribute("href", "/user/" + currUser + "/" + tagList[i]);
-		tag.appendChild(document.createTextNode(tagList[i] + " "));
-		parent.appendChild(tag);
-	}
-	
-	return false;
-}
-
-
+    
 /*
  * edit tags in place
  */	
-function editTags(obj, ckey, contentId) {
+function editTags(obj,ckey) {
 	var tags = obj.getAttribute("tags");
 	var hash = obj.getAttribute("hashsum");
     var link = obj.getAttribute("href");
@@ -1526,7 +1472,8 @@ function editTags(obj, ckey, contentId) {
 	// creates Form Element
 	var form = document.createElement("form");
 	form.className = "tagtextfield";
-	form.setAttribute('onsubmit', 'sendEditTags(this, \'' + type + '\', \'' + contentId + '\', \'' + ckey + '\', \'' + link + '\'); return false;');
+	form.setAttribute('action','/TagHandler?requTask=' + type);
+	form.setAttribute('method','post');
 	
 	// creates an input Field
 	var input = document.createElement("input");
