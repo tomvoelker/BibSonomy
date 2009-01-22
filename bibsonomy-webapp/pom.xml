@@ -76,10 +76,10 @@
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-scraper</artifactId>
 		</dependency>
-		<dependency>
+		<!-- dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-layout</artifactId>
-		</dependency>		
+		</dependency-->		
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-rest-client</artifactId>
