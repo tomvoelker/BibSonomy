@@ -47,7 +47,7 @@ public class AdminViewCommand extends TabsCommand<User> {
 		addTab(CLASSIFIER_EVALUATE, "Modified BibTex Users");
 		
 		// change default tab to classifier tab
-		selTab = 5;
+		selTab = 6;
 	}	
 	
 		
