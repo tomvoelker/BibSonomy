@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.layout.AbstractLayoutRenderer;
+//import org.bibsonomy.layout.AbstractLayoutRenderer;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -24,7 +24,7 @@ import org.springframework.web.servlet.view.AbstractView;
 public class LayoutView extends AbstractView {
 	private static final Log log = LogFactory.getLog(LayoutView.class);
 	
-	private AbstractLayoutRenderer layoutRenderer;
+//	private AbstractLayoutRenderer layoutRenderer;
 	
 	@Override
 	protected void renderMergedOutputModel(final Map model, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
@@ -52,12 +52,12 @@ public class LayoutView extends AbstractView {
 				/*
 				 * render bookmarks posts
 				 */
-				getLayoutRenderer().renderResponse(layout, bookmarkPosts, loginUserName, response);
+//				getLayoutRenderer().renderResponse(layout, bookmarkPosts, loginUserName, response);
 			} else if (publicationPosts != null && publicationPosts.size() > 0) {
 				/*
 				 * render publication posts
 				 */
-				getLayoutRenderer().renderResponse(layout, publicationPosts, loginUserName, response);
+//				getLayoutRenderer().renderResponse(layout, publicationPosts, loginUserName, response);
 			} else {
 				/*
 				 * FIXME: what to do here?
@@ -69,21 +69,21 @@ public class LayoutView extends AbstractView {
 		 */
 
 	}
-
-	/**
-	 * @return The layout renderer for this view.
-	 */
-	public AbstractLayoutRenderer getLayoutRenderer() {
-		return this.layoutRenderer;
-	}
-
-	/** Set the layout renderer to be used by this view.
-	 * 
-	 * @param layoutRenderer
-	 */
-	public void setLayoutRenderer(AbstractLayoutRenderer layoutRenderer) {
-		log.debug("using layout renderer " + layoutRenderer);
-		this.layoutRenderer = layoutRenderer;
-	}
+//
+//	/**
+//	 * @return The layout renderer for this view.
+//	 */
+//	public AbstractLayoutRenderer getLayoutRenderer() {
+//		return this.layoutRenderer;
+//	}
+//
+//	/** Set the layout renderer to be used by this view.
+//	 * 
+//	 * @param layoutRenderer
+//	 */
+//	public void setLayoutRenderer(AbstractLayoutRenderer layoutRenderer) {
+//		log.debug("using layout renderer " + layoutRenderer);
+//		this.layoutRenderer = layoutRenderer;
+//	}
 
 }
