@@ -59,7 +59,7 @@ public class BibTexUtils {
 	 */
 	private static final Pattern YEAR_PATTERN = Pattern.compile("\\d{4}");
 	private static final Pattern DOI_PATTERN = Pattern.compile("http://.+/(.+?/.+?$)");
-	private static final Pattern MISC_FIELD_PATTERN = Pattern.compile("([a-zA-Z]+)\\s*=\\s*\\{(.*?)\\}");
+	private static final Pattern MISC_FIELD_PATTERN = Pattern.compile("([a-zA-Z0-9]+)\\s*=\\s*\\{(.*?)\\}");
 
 	/**
 	 * Builds a string from a given bibtex object which can be used to build an OpenURL
@@ -178,6 +178,31 @@ public class BibTexUtils {
 				bib.addMiscField(m.group(1), m.group(2));
 			}
 		}
+	}
+	
+	/**
+	 * This is a helper method to convert the key = value pairs contained in the 
+	 * miscFields map of a bibtex object into a serialized representation in the 
+	 * misc-Field. It appends 
+	 * 
+	 *  key1 = {value1}, key2 = {value2}, ...
+	 *  
+	 * for all defined miscFields to the misc field of the given entry.
+	 * 
+	 * @param bib the bibtex object
+	 */
+	public static void serializeMiscFields(final BibTex bib) {
+		HashMap<String,String> miscFields = bib.getMiscFields();
+		StringBuffer miscFieldsSerialized = new StringBuffer();
+		// loop over misc fields, if any
+		if (miscFields != null && miscFields.values().size() > 0) {
+			miscFieldsSerialized.append(" ");
+			for (String key : miscFields.keySet()) {
+				miscFieldsSerialized.append(key + " = {" + miscFields.get(key) + "}, ");
+			}
+		}
+		// write serialized misc fields into misc field
+		bib.setMisc(bib.getMisc() + miscFieldsSerialized.toString());
 	}
 
 	/**
