@@ -139,11 +139,16 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 
 	/**
 	 * Class of the tested Scraper
+	 * @return Scraper
 	 */
 	public Class getScraperClass() {
 		return scraper.getClass();
 	}
 
+	/**
+	 * tested Scraper
+	 * @return 
+	 */
 	public Scraper getScraper() {
 		return this.scraper;
 	}
@@ -261,7 +266,86 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 		return id;
 	}
 
+	/**
+	 * path to bibtex file
+	 * @return
+	 */
 	public String getBibFile() {
 		return this.bibFile;
 	}
+
+	/**
+	 * test id
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	/**
+	 * scraping url
+	 * @return
+	 */
+	public String getUrl() {
+		return this.url;
+	}
+
+	/**
+	 * scraping url
+	 */
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	/**
+	 * path to bibtex file
+	 */
+	public void setBibFile(String bibFile) {
+		this.bibFile = bibFile;
+	}
+
+	/**
+	 * test description
+	 * @param description
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	/**
+	 * tested Scraper
+	 */
+	public void setScraper(Scraper scraper) {
+		this.scraper = scraper;
+	}
+
+	/**
+	 * expected bibtex reference
+	 * @return
+	 */
+	public String getExpectedRefrence() {
+		return this.expectedRefrence;
+	}
+
+	/**
+	 * expected bibtex reference
+	 */
+	public void setExpectedRefrence(String expectedRefrence) {
+		this.expectedRefrence = expectedRefrence;
+	}
+
+	/**
+	 * occured exception
+	 * @param exception
+	 */
+	public void setException(Exception exception) {
+		this.exception = exception;
+	}
+
+	/**
+	 * occured exception
+	 */
+	public void setScrapedReference(String scrapedReference) {
+		this.scrapedReference = scrapedReference;
+	}
+	
 }

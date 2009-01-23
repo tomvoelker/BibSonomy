@@ -13,9 +13,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 import org.bibsonomy.scraper.ParseFailureMessage;
 import org.bibsonomy.scraper.Scraper;
+import org.bibsonomy.scraper.ScraperUnitTest;
 import org.bibsonomy.scraper.URLTest.URLScraperUnitTest;
 import org.bibsonomy.scraper.importer.IUnitTestImporter;
 
@@ -30,148 +34,25 @@ import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 public class XMLUnitTestImporter implements IUnitTestImporter {
 	
 	/**
-	 * 
-	 */
-	private static final String PATH_TO_BIBS = "src/test/resources/org/bibsonomy/scraper/data/";
-	
-	/*
-	 * Names from XML elements and attributes
-	 */
-	private static final String ELEMENT_URL_TEST = "URLTest";
-	private static final String ELEMENT_Test_DESCRIPTION = "TestDescription";
-	private static final String ELEMENT_URL = "URL";
-	private static final String ELEMENT_BIB_FILE = "BibFile";
-	private static final String ELEMENT_SCRAPER = "Scraper";
-	private static final String ATTRIBUTE_ID = "id";
-	
-	/**
 	 * Name of xml file which contains the test cases.
 	 */
 	private static final String UNIT_TEST_DATA_XML_FILE_NAME = "UnitTestData.xml";
 	
 
-	/**
-	 * Generates List with ScraperUnitTest and returns it to runner.
-	 * Needed because of IUnitTestImporter 
-	 */
-	public List getUnitTests() throws Exception{
-		Document doc = readUnitTestData();
-		List tests = parseTests(doc);
-		return tests;
-	}
-	
-	/**
-	 * Extract tests from UnitTestData.xml and builds List with the
-	 * ScraperUnitTests.
-	 * @param unitTestData Document representation of UnitTestData.xml
-	 * @return List with ScraperUnitTests
-	 */
-	public List parseTests(Document unitTestData){
-		List tests = new LinkedList<URLScraperUnitTest>();
-		
-		// get all URLTest elements
-		NodeList urlTests = unitTestData.getElementsByTagName(ELEMENT_URL_TEST);
-		
-		for(int i=0; i<urlTests.getLength(); i++){
-			String bibFile = null;
-			String url = null;
-			String description = null;
-			String scraperName = null;
-			String id = null;
-			try {
-				Element urlTest = (Element) urlTests.item(i);
+	public List<ScraperUnitTest> getUnitTests() throws Exception{
+		XMLReader xmlreader;
+		xmlreader = XMLReaderFactory.createXMLReader();
 
-				bibFile = null;
-				url = null;
-				description = null;
-				scraperName = null;
-				id = null;
-				
-				// extract id attribute
-				id = urlTest.getAttribute(ATTRIBUTE_ID);
-				
-				// extract BibFile element
-				Element bibFileElement = (Element) urlTest.getElementsByTagName(ELEMENT_BIB_FILE).item(0);
-				bibFile = bibFileElement.getFirstChild().getNodeValue();
+		XMLUnitTestHandler handler = new XMLUnitTestHandler(); 
+		xmlreader.setContentHandler(handler);
+		xmlreader.setEntityResolver(handler);
+		xmlreader.setErrorHandler(handler);
 
-				// extract TestDescription element
-				Element testDescriptionElement = (Element) urlTest.getElementsByTagName(ELEMENT_Test_DESCRIPTION).item(0);
-				description = testDescriptionElement.getFirstChild().getNodeValue();
-
-				// extract URL element
-				Element urlElement = (Element) urlTest.getElementsByTagName(ELEMENT_URL).item(0);
-				url = urlElement.getFirstChild().getNodeValue();
-
-				// extract URL element
-				Element scraperElement = (Element) urlTest.getElementsByTagName(ELEMENT_SCRAPER).item(0);
-				scraperName = scraperElement.getFirstChild().getNodeValue();
-				
-				// get expected reference
-				String expectedReference = getExpectedReference(bibFile);
-				
-				// get associated scraper
-				Scraper scraper = getScraperClass(scraperName);
-				
-				// use test only if all values are given
-				if(url != null && expectedReference != null && scraper != null && description != null && id != null){
-					URLScraperUnitTest test = new URLScraperUnitTest(url, expectedReference, scraper, description, id, bibFile);
-					tests.add(test);
-				}
-			
-			// TODO: print failues during parsing url tests?
-			} catch (Exception e) {
-				ParseFailureMessage.printParseFailureMessage(e, id);
-			}
-		}
-		return tests;
-	}
-
-	/**
-	 * Loads bib file with expected reference for test case.
-	 * @param bibFile Name of the bib file as String
-	 * @return Content from bib file as String
-	 * @throws IOException
-	 */
-	private String getExpectedReference(String bibFile) throws IOException{
-		InputStreamReader is = new InputStreamReader(new FileInputStream(PATH_TO_BIBS + bibFile), "UTF-8");
-		StringWriter writer = new StringWriter();
-		
-		int read = is.read();
-		while(read != -1){
-			writer.write(read);
-			read = is.read();
-		}
-		
-		// clean up
-		writer.flush();
-		writer.close();
-		is.close();
-		
-		return writer.toString();
-	}
-	
-	/**
-	 * Get Scraper which is referenced in test case. 
-	 * @param scraperName Name of a Scraper sub class as String.
-	 * @return referenced Scraper
-	 * @throws InstantiationException
-	 * @throws IllegalAccessException
-	 * @throws ClassNotFoundException
-	 */
-	private Scraper getScraperClass(String scraperName) throws InstantiationException, IllegalAccessException, ClassNotFoundException{
-		return (Scraper) Class.forName(scraperName).newInstance();
-	}
-	
-	/**
-	 * Reads and parse UnitTestData.xml
-	 * @return Document representation from UnitTestData.xml
-	 * @throws SAXException
-	 * @throws IOException
-	 */
-	private Document readUnitTestData() throws SAXException, IOException{
 		InputSource is = new InputSource(this.getClass().getResourceAsStream(UNIT_TEST_DATA_XML_FILE_NAME));
-		DOMParser parser = new DOMParser();
-		parser.parse(is);
-		return parser.getDocument();
+		
+		xmlreader.parse(is);
+		
+		return handler.getTests();
 	}
+	
 }
