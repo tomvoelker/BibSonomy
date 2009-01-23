@@ -20,7 +20,7 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="content">
-			<form:form action="/actions/postBookmark" method="POST">
+		
 			<script type="text/javascript">
 				<![CDATA[
 					function checkUrlForTitle(  ){
@@ -69,11 +69,13 @@
 					function setSuggestionFromUrlTitle(tagname){
 						document.getElementById('post.resource.title').value=tagname;
 					}
+
+					
 					
 				]]>
 			</script>					
 				<errors:global errors="${errors}"/>
-     				<div style="float left;width:97%;margin-left:10px">
+     			<div style="float left;width:97%;margin-left:10px">
 						<h2 style="text-align: center; margin-bottom: 0"><fmt:message key="post.resource.editbookmark"/></h2>
                         
                         <!-- TODO: i18n -->
@@ -82,8 +84,23 @@
                              Hinweis: sie bearbeiten einen existierenden Post!
                           </p>
                         </c:if>
-                        
-						<fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
+                    <div id="scrapable" style="display:none">
+	                    <form:form action="/BibtexHandler" method="POST"> 	   
+	                      	<fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
+	                      		  <fieldset style="border:0px; position:relative;">
+		                      		  <h2><fmt:message key="post.meta.recommended"/>: <fmt:message key="post.meta.save_as_publication"/></h2>
+		            				  <p><fmt:message key="post.resource.bookmark_a_publication"/>:</p>
+		                      		  <p><textarea id="bib" name="selection" cols="60" rows="15" class="reqinput"><c:out value=''/></textarea></p>
+		                      		  <input type="hidden" name="requTask" value="upload" />
+		                      		  <c:set var="post_publication"><fmt:message key="save"/></c:set>
+		                      		  <input id="button" type="submit" name="submit" value="${post_publication}"/>
+	                      		  </fieldset>
+	                      	</fieldset>  	
+	                    </form:form>
+                    </div><br/>
+                      
+                	<form:form action="/actions/postBookmark" method="POST">
+                		<fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
 							<fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
 								<legend><fmt:message key="general"/></legend>
 								<fieldset style="border:0px; position:relative;">
@@ -107,7 +124,7 @@
 							<table style="width:100%">
 								<tr>
 									<td style="width:50%">
-										<post:groupBox post="${post}" groups="${loginUser.groups}"/>
+										<post:groupBox post="${command.post}" groups="${loginUser.groups}"/>
 									</td>
 								
 									<c:if test="${not empty loginUser.groups}">
@@ -133,11 +150,11 @@
 									</td>
 								</tr>
 							</table>	
-		
+							<input type="hidden" id="projectHome" name="projectHome" value="${projectHome}"/>
 						</fieldset>
-					</div>
-				</form:form>
-							
+					</form:form>	
+				</div>
+					
 				<script type="text/javascript">
 				<![CDATA[
 					$(".postBookmarkNotValidTip").mouseover(function() {
@@ -180,6 +197,40 @@
 		<![CDATA[		
 			//Save tags from tagcloud in lists
 			setOps();
+			scraping();
+		
+			function scraping(){
+				var req = initRequest();
+				if(req){
+					req.open("GET", document.getElementById("projectHome").value+'scrapingservice?url='+encodeURIComponent(document.getElementById("post.resource.url").value)+'&format=bibtex', true); // Request starten
+					req.onreadystatechange = function() {
+					    if ( req.readyState == 4 ) {
+					        if ( req.status == 200 ) {
+					        	handle(req);
+					        }
+					    }
+					};
+					
+					req.send(null);
+				}
+			}
+
+			function handle(request){
+				var textfield = document.getElementById("bib");
+				if(request.responseText != ''){
+					textfield.value = request.responseText;
+					showHide("scrapable");
+				}
+			}
+
+			function showHide(id){
+				var bibtexBox = document.getElementById(id);
+				if(bibtexBox.value != ''){
+					bibtexBox.style.display = '';
+				}else{
+					bibtexBox.style.display = 'hidden';
+				}
+			}
 		]]>	 		
 	</script>
 
