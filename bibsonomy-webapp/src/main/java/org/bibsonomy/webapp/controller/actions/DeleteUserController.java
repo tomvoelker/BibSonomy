@@ -48,7 +48,7 @@ public class DeleteUserController implements MinimalisticController<DeleteUserCo
 				logic.deleteUser(command.getContext().getLoginUser().getName());
 			} else {
 				// ... else throw an error
-				errors.reject("error.field.valid.ckey");
+				errors.reject("error.secure.answer");
 			}
 		} else {
 			errors.reject("error.field.valid.ckey");
