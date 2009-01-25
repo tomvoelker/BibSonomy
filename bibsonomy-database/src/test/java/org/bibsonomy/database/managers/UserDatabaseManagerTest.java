@@ -10,7 +10,11 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.testutil.ParamUtils;
@@ -152,6 +156,8 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	/**
 	 * tests deleteUser
+	 * 
+	 * This test is the old one.
 	 */
 	@Test
 	public void deleteUserOld() {
@@ -170,19 +176,40 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
 	/**
 	 * tests deleteUser
+	 * 
+	 * This test flags a user which is not a group as spammer and all of his posts
+	 * will be also flagged
 	 */
 	@Test
 	public void deleteUser() {
+		// create a new user object
 		User user = new User();
+		// use a name of the test databases, in this case "testuser2"
 		user.setName("testuser2");
 		
+		// calls the deleteUser method of the UserDataBaseManager class
+		// this method is overloaded so you have one method with a String parameter
+		// and the new one with a User object parameter
 		this.userDb.deleteUser(user, this.dbSession);
-
+		
+		// get the old user details out of the testdb
 		final User newTestuser = this.userDb.getUserDetails(user.getName(), this.dbSession);
 		
+		// the user have to be available in the test db ...
 		assertNotNull(newTestuser.getName());
 		
+		// but it should be flagged as spammer
 		assertEquals(true, newTestuser.getSpammer());
+		
+		
+		// create a spammer group id by adding an old group id to the interger min value
+		int groupid = Integer.MAX_VALUE + 1;
+		
+		// get posts for this user
+		List<Post<BibTex>> posts = this.bibTexDb.getBibTexForUser(user.getName(), HashID.INTER_HASH, groupid , 10, 0, this.dbSession);
+		
+		// there should be at least more then one post with that negative group id
+		assertNotNull(posts);
 	}
 
 	/**
