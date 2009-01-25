@@ -42,7 +42,7 @@ public class DeleteUserController implements MinimalisticController<DeleteUserCo
 			log.debug("User is logged in, check the ckey");
 			
 			// check the security input
-			if ("yes".equals(command.getDelete())){
+			if ("yes".equalsIgnoreCase((command.getDelete()))){
 				// if all fine delete the user
 				log.debug("Ckey is correct - deleting user: " + command.getContext().getLoginUser().getName());
 				logic.deleteUser(command.getContext().getLoginUser().getName());
