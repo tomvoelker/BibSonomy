@@ -200,18 +200,21 @@
 			scraping();
 		
 			function scraping(){
-				var req = initRequest();
-				if(req){
-					req.open("GET", document.getElementById("projectHome").value+'scrapingservice?url='+encodeURIComponent(document.getElementById("post.resource.url").value)+'&format=bibtex', true); // Request starten
-					req.onreadystatechange = function() {
-					    if ( req.readyState == 4 ) {
-					        if ( req.status == 200 ) {
-					        	handle(req);
-					        }
-					    }
-					};
-					
-					req.send(null);
+				var http = 'http://';
+				//check url. if no url is set, the value of post.resource.url is 'http://'
+				if(document.getElementById("post.resource.url").value.length > http.length){
+					var req = initRequest();
+					if(req){
+						req.open("GET", document.getElementById("projectHome").value+'scrapingservice?url='+encodeURIComponent(document.getElementById("post.resource.url").value)+'&format=bibtex', true); // Request starten
+						req.onreadystatechange = function() {
+						    if ( req.readyState == 4 ) {
+						        if ( req.status == 200 ) {
+						        	handle(req);
+						        }
+						    }
+						};
+						req.send(null);
+					}
 				}
 			}
 
