@@ -8,6 +8,7 @@ import java.util.List;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.renderer.xml.tools.EscapingPrintWriter;
 
 /**
  * @author Jens Illig
@@ -29,7 +30,7 @@ public abstract class AbstractGetListStrategy<L extends List<?>> extends Strateg
 
 	@Override
 	public final void perform(final ByteArrayOutputStream outStream) throws InternServerException {
-		writer = new PrintWriter(outStream);
+		writer = new EscapingPrintWriter(outStream);
 		final L resultList = getList();
 		
 		if (resultList.size() != (getView().getEndValue() - getView().getStartValue())) {
