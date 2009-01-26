@@ -27,10 +27,29 @@ import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.Iterator;
 
+import it.unimi.dsi.fastutil.chars.CharOpenHashSet; 
+
 /**
  * Some methods for handling strings.
  */
 public class StringUtils {
+	
+	// the following is used by the escapeControlCharacters-methods below	
+	private static final CharOpenHashSet illegalChars;
+	/** replacement character for illegal characters */
+	public static final char ILLEGAL_CHAR_SUBSTITUTE = '\uFFFD'; 	
+	
+    static {
+        final String escapeString = "\u0000\u0001\u0002\u0003\u0004\u0005" +
+            "\u0006\u0007\u0008\u000B\u000C\u000E\u000F\u0010\u0011\u0012" +
+            "\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C" +
+            "\u001D\u001E\u001F\uFFFE\uFFFF";
+
+        illegalChars = new CharOpenHashSet();
+        for (int i = 0; i < escapeString.length(); i++) {
+            illegalChars.add(escapeString.charAt(i));
+        }
+    } 	
 
 	/**
 	 * Calculates the MD5-Hash of a String s and returns it encoded as a hex
@@ -193,4 +212,56 @@ public class StringUtils {
 		// null != s1 ? s2 != null
 		return s1.compareToIgnoreCase(s2);
 	}
+	
+	
+    /**
+     * Substitutes all illegal characters in the given string by the value of
+     * {@link StringUtils#ILLEGAL_CHAR_SUBSTITUTE}. 
+     *
+     * @param string
+     * @return a string with control characters replaced
+     */
+    public static String escapeControlCharacters(String string) {
+    	if (string == null) return string;    	
+    	return StringUtils.escapeControlCharacters(string.toCharArray()).toString();    	
+    }
+    
+    /**
+     * Substitutes all illegal characters in the given char array by the value of
+     * {@link StringUtils#ILLEGAL_CHAR_SUBSTITUTE}. If no illegal characters
+     * were found, no copy is made and the given char array
+     * 
+     * @param ch a char array
+     * @return a char array with control characters replaced
+     */
+    public static char[] escapeControlCharacters(char[] ch) {
+    	if (ch == null) return ch;
+        char[] copy = null;
+        boolean copied = false;
+        for (int i = 0; i < ch.length; i++) {
+            if (StringUtils.illegalChars.contains(ch[i])) {
+                if (!copied) {
+                    copy = ch;
+                    copied = true;
+                }
+                copy[i] = StringUtils.ILLEGAL_CHAR_SUBSTITUTE;
+            }
+        }
+        return copied ? copy : ch;
+    }
+    
+    /**
+     * Checks if a given char c is a control charcter; if yes, a replacement
+     * is returned, if no, the char c is returned
+     * 
+     * @param c a char
+     * @return a char with control characters replaced
+     */
+    public static char escapeControlCharacter(char c) {
+    	if (StringUtils.illegalChars.contains(c)) {
+    		return StringUtils.ILLEGAL_CHAR_SUBSTITUTE;
+    	}
+    	return c;
+    }
+    
 }
