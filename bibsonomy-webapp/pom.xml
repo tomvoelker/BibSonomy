@@ -243,15 +243,6 @@
 			<version>1.8.0</version>
 		</dependency>
 
-		<!-- 
-			To kill the MySQL cancellation timer when shutting down, we need
-			the MySQL libs 
-		-->
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-		</dependency>
-
 	</dependencies>
 	<properties>
 		<wtpversion>1.5</wtpversion>
