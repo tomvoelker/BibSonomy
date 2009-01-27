@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<name>BibSonomy-Database</name>
@@ -7,33 +8,20 @@
 	<artifactId>bibsonomy-database</artifactId>
 	<version>2.0.1</version>
 	<packaging>jar</packaging>
-	<description>Database for Bibsonomy.</description>
+	<description>Database for BibSonomy.</description>
 	<parent>
 		<groupId>org.bibsonomy</groupId>
 		<artifactId>bibsonomy</artifactId>
 		<version>2.0.1-SNAPSHOT</version>
 	</parent>
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>test-jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>			
-		</plugins>
 		<extensions>
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ssh-external</artifactId>	
-				<version>1.0-beta-2</version>			
+				<artifactId>wagon-ssh-external</artifactId>
+				<version>1.0-beta-2</version>
 			</extension>
-		</extensions>		
+		</extensions>
 	</build>
 	<dependencies>
 		<dependency>
@@ -47,7 +35,9 @@
 		<dependency>
 			<groupId>org.apache.ibatis</groupId>
 			<artifactId>ibatis-sqlmap</artifactId>
-			<version>jeillig</version>
+			<!-- version>2.3.4.726</version-->
+			<version>SNAPSHOT</version>
+			<classifier>r737724</classifier>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
@@ -56,7 +46,6 @@
 		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
-			<version>3.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -66,7 +55,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>dom4j</groupId>
 			<artifactId>dom4j</artifactId>
@@ -78,68 +67,66 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>commons-dbcp</groupId>
-			<artifactId>commons-dbcp</artifactId>
-			<version>1.2.1</version>
-		</dependency>
-		<dependency>
 			<groupId>org.mockejb</groupId>
 			<artifactId>mockejb</artifactId>
 			<version>0.6-beta2</version>
-		</dependency>
+			<scope>test</scope>
+		</dependency>	
 	</dependencies>
 	<distributionManagement>
 		<site>
 			<!-- copy site documentation via scp to gromit -->
 			<id>bibsonomy-database-website-documentation</id>
-			<url>scp://bibsonomy@gromit:/home/bibsonomy/bibsonomy-doc-www/${project.artifactId}</url>
+			<url>
+				scp://bibsonomy@gromit:/home/bibsonomy/bibsonomy-doc-www/${project.artifactId}
+			</url>
 		</site>
-	</distributionManagement>	
-    <reporting>
-      <plugins>
-        <plugin>
-          <!-- create javadoc with linked sources -->
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <configuration>
-			<linksource>true</linksource>						
-          </configuration>
-        </plugin>
-        <plugin>
-            <!--  
-            	  generate schemaspy documentation of database. Host and database should 
-                  match to what is defined in /src/test/resources/database.properties; username
-                  and password are to be defined in ~/.m2/settings.xml 
-            -->
-            <groupId>com.wakaleo.schemaspy</groupId>
-            <artifactId>maven-schemaspy-plugin</artifactId>
-            <version>1.0</version>
-            <configuration>
-                <databaseType>mysql</databaseType>
-                <database>bibsonomy_unit_test</database>
-                <host>gromit</host>
-                <user>${bibsonomy_test_db.username}</user>
-                <password>${bibsonomy_test_db.password}</password>
-            </configuration>
-        </plugin>
-        <!-- 
-        <plugin>          
-          	<groupId>org.apache.maven.plugins</groupId>
-          	<artifactId>maven-changelog-plugin</artifactId>
-        </plugin>
-        -->
-        <plugin>
-      		<!--  tag list report (TODO, ...) -->
-        	<groupId>org.codehaus.mojo</groupId>
-        	<artifactId>taglist-maven-plugin</artifactId>
-        	<version>2.2</version>
-        </plugin>
-        <plugin>
-        	<!-- test reports -->
-	        <groupId>org.apache.maven.plugins</groupId>
-	        <artifactId>maven-surefire-report-plugin</artifactId>
-	        <version>2.4.2</version>
-        </plugin>
-      </plugins>
-    </reporting>		
+	</distributionManagement>
+	<reporting>
+		<plugins>
+			<plugin>
+				<!-- create javadoc with linked sources -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<linksource>true</linksource>
+				</configuration>
+			</plugin>
+<!--			<plugin>-->
+<!--				  -->
+<!--					generate schemaspy documentation of database. Host and database should -->
+<!--					match to what is defined in /src/test/resources/database.properties; username-->
+<!--					and password are to be defined in ~/.m2/settings.xml -->
+<!--				-->
+<!--				<groupId>com.wakaleo.schemaspy</groupId>-->
+<!--				<artifactId>maven-schemaspy-plugin</artifactId>-->
+<!--				<version>1.0</version>-->
+<!--				<configuration>-->
+<!--					<databaseType>mysql</databaseType>-->
+<!--					<database>bibsonomy_unit_test</database>-->
+<!--					<host>gromit</host>-->
+<!--					<user>${bibsonomy_test_db.username}</user>-->
+<!--					<password>${bibsonomy_test_db.password}</password>-->
+<!--				</configuration>-->
+<!--			</plugin>-->
+			<!-- 
+				<plugin>          
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-changelog-plugin</artifactId>
+				</plugin>
+			-->
+			<plugin>
+				<!--  tag list report (TODO, ...) -->
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>taglist-maven-plugin</artifactId>
+				<version>2.2</version>
+			</plugin>
+			<plugin>
+				<!-- test reports -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>2.4.2</version>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>
