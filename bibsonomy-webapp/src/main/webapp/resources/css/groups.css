@@ -14,6 +14,31 @@
 }
 
 /*----------------------------------------------------------------------------
+ * Buttons - derived from listhButtons in style.css 
+ *--------------------------------------------------------------------------*/
+.groupsButtons {
+	float: right;
+	margin-right: 0 ! important;
+	padding: 0;
+}
+
+.groupsButtons a {
+	border: 1px solid #6F6F6F;
+	background-color: #EEEEEE;
+	color: #5F5F5F;
+	padding-left: 2px;
+	padding-right: 2px;
+	margin: 0;
+}
+
+.groupsButtons a:hover {
+	border: 1px solid #6F6F6F;
+	background-color: #006699;
+	color: #FFFFFF;
+}
+
+
+/*----------------------------------------------------------------------------
  * the table which holds the groups list
  *--------------------------------------------------------------------------*/
 #groupsList {
