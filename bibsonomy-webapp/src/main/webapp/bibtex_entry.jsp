@@ -1,6 +1,5 @@
 <%@include file="include_jsp_head.jsp" %>
 <jsp:useBean id="ResourceBean" class="beans.ResourceBean" scope="request"/>
-<jsp:useBean id="upBean" class="beans.UploadBean" scope="request"/>
 
 <%-- HTML header --%>
 <jsp:include page="html_header.jsp">
