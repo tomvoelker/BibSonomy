@@ -17,7 +17,7 @@
 		<groupId>org.bibsonomy</groupId>
 		<version>2.0.1-SNAPSHOT</version>
 	</parent>
-	
+
 
 	<dependencies>
 		<dependency>
@@ -44,16 +44,11 @@
 		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
-			<version>3.0</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
-			<version>2.3</version>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.xml.bind</groupId>
-			<artifactId>jaxb-impl</artifactId>
+			<version>2.4</version>
 		</dependency>
 		<dependency>
 			<groupId>jtidy</groupId>
@@ -63,20 +58,14 @@
 		<dependency>
 			<groupId>edu.umass.cs.mallet</groupId>
 			<artifactId>mallet</artifactId>
-			<version>0.4</version>
-			<classifier>steuber</classifier>
-		</dependency>
-		<dependency>
-			<groupId>bsh</groupId>
-			<artifactId>bsh</artifactId>
-			<version>1.3.0</version>
+			<version>0.4-jaeschke</version>
 		</dependency>
 	</dependencies>
-	
+
 	<properties>
 		<wtpversion>1.5</wtpversion>
 	</properties>
-	
+
 	<build>
 		<extensions>
 			<extension>
@@ -97,9 +86,9 @@
 					</excludes>
 				</configuration>
 			</plugin>
-		</plugins>		
+		</plugins>
 	</build>
-	
+
 	<distributionManagement>
 		<site>
 			<!-- copy site documentation via scp to gromit -->
@@ -109,7 +98,7 @@
 			</url>
 		</site>
 	</distributionManagement>
-	
+
 	<reporting>
 		<plugins>
 			<plugin>
