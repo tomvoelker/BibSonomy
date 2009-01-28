@@ -177,12 +177,12 @@ public class BibtexUtilsTest {
 		// add misc field, check if it is correctly serialized
 		bib.addMiscField("key1", "value1");
 		BibTexUtils.serializeMiscFields(bib);
-		assertEquals(" key1 = {value1}, ", bib.getMisc());
+		assertEquals("key1 = {value1}", bib.getMisc());
 		// reset, modify misc fields, re-check
-		bib.setMisc("blubberblub"); 
+		bib.setMisc(""); 
 		bib.addMiscField("key1", "anotherValue1");
 		BibTexUtils.serializeMiscFields(bib);
-		assertEquals("blubberblub key1 = {anotherValue1}, ", bib.getMisc());
+		assertEquals("key1 = {anotherValue1}", bib.getMisc());
 		//try the other way round (parse the serialized stuff)
 		bib.setMisc("palim palim");
 		bib.addMiscField("key1", "value1");
@@ -190,7 +190,6 @@ public class BibtexUtilsTest {
 		BibTexUtils.serializeMiscFields(bib);
 		bib.getMiscFields().clear();
 		BibTexUtils.parseMiscField(bib);
-		System.out.println(bib.getMisc());
 		assertEquals(2, bib.getMiscFields().values().size());
 		assertEquals("value1", bib.getMiscField("key1"));
 		assertEquals("value2", bib.getMiscField("key2"));

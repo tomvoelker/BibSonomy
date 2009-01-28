@@ -196,10 +196,11 @@ public class BibTexUtils {
 		StringBuffer miscFieldsSerialized = new StringBuffer();
 		// loop over misc fields, if any
 		if (miscFields != null && miscFields.values().size() > 0) {
-			miscFieldsSerialized.append(" ");
 			for (String key : miscFields.keySet()) {
 				miscFieldsSerialized.append(key + " = {" + miscFields.get(key) + "}, ");
 			}
+			// remove last comma
+			miscFieldsSerialized.delete(miscFieldsSerialized.lastIndexOf(","), miscFieldsSerialized.length());
 		}
 		// write serialized misc fields into misc field
 		bib.setMisc(bib.getMisc() + miscFieldsSerialized.toString());
