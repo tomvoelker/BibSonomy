@@ -375,21 +375,22 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @param classifier something that classfied the user
 	 * @param status the state to which the user was classified
 	 * @return list of classified users
-	 * @param interval 
+	 * @param limit 
 	 * @author sts
 	 */
-	public List<User> getClassifiedUsers(Classifier classifier, SpamStatus status, int interval);
+	public List<User> getClassifiedUsers(Classifier classifier, SpamStatus status, int limit);
 
 	/**
 	 * Returns number of classfied user 
 	 * 
 	 * @param classifier the classifier
 	 * @param status the status classifed
-	 * @param interval the time period of classifications 
+	 * @param time interval
 	 * @return count of users
 	 */
 	public int getClassifiedUserCount(Classifier classifier, SpamStatus status, int interval);
-
+	
+	
 	/**
 	 * Returns the value of the specified classifier setting
 	 * 
@@ -418,7 +419,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * Retrieves a comparison of classification results
 	 * of admins and the automatic classifier
 	 * 
-	 * @param interval the time period of classifications
+	 * @param time interval
 	 * @return Userlist with spammer flag of admin and prediction of classifier 
 	 */
 	public List<User> getClassifierComparison(int interval);	
