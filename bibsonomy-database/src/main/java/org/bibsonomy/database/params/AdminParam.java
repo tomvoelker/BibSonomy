@@ -63,6 +63,9 @@ public class AdminParam extends GenericParam {
 	/** Interval in hours for retrieve latest classifications */
 	private int interval;
 	
+	/** Page limit for table entries */
+	private int limit;
+	
 	/** Integer range for creating groups */
 	private int groupRange; 
 	
@@ -215,5 +218,13 @@ public class AdminParam extends GenericParam {
 
 	public void setGroupIdTable(String groupIdTable) {
 		this.groupIdTable = groupIdTable;
+	}
+	
+	public int getLimit() {
+		return this.limit;
+	}
+
+	public void setLimit(int limit) {
+		this.limit = limit;
 	}
 }

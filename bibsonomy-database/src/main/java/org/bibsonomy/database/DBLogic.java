@@ -779,6 +779,8 @@ public class DBLogic implements LogicInterface {
 			/*
 			 * only admins are allowed to change spammer settings
 			 */
+			log.debug("Start update this framework");
+			
 			this.permissionDBManager.ensureAdminAccess(loginUser);
 			/*
 			 * open session and update spammer settings
@@ -1151,11 +1153,11 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	public List<User> getClassifiedUsers(final Classifier classifier, final SpamStatus status, final int interval) {
+	public List<User> getClassifiedUsers(final Classifier classifier, final SpamStatus status, final int limit) {
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		final DBSession session = openSession();
 		try {
-			return this.adminDBManager.getClassifiedUsers(classifier, status, interval, session);
+			return this.adminDBManager.getClassifiedUsers(classifier, status, limit, session);
 		} finally {
 			session.close();
 		}

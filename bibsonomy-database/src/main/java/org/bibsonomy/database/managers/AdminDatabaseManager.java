@@ -15,6 +15,8 @@ import org.bibsonomy.database.params.AdminParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.User;
 
+import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
+
 /**
  * Provides functionalities which are typically only available to admins. This
  * might include flagging a user as spammer, setting the status of an
@@ -154,14 +156,20 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 					}
 				}
 			}
-			session.commitTransaction();
+
 		} finally {
 			session.endTransaction();
 		}
+
 		if (checkPredictionChange(param, session)) {
+
+			log.debug("Begin transaction for log prediction... ");
+
 			this.insert("logPrediction", param, session);
 			this.insert("logCurrentPrediction", param, session);
+			
 		}
+
 		return user.getName();
 	}
 
@@ -221,14 +229,15 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Updates group ids in different tables
-	 * @param param 
-	 *				the admin's parameters
+	 * 
+	 * @param param
+	 *            the admin's parameters
 	 * @param session
-	 * 				the current db session
+	 *            the current db session
 	 */
 	private void updateGroupId(final AdminParam param, final DBSession session) {
-		
-		//TODO: make database names constants
+
+		// TODO: make database names constants
 		List<String> tableNames = new ArrayList<String>();
 		tableNames.add("tas");
 		tableNames.add("grouptas");
@@ -236,8 +245,8 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		tableNames.add("bookmark");
 		tableNames.add("search_bibtex");
 		tableNames.add("search_bookmark");
-		
-		for(String table: tableNames){
+
+		for (String table : tableNames) {
 			param.setGroupIdTable(table);
 			this.update("updateGroupIds", param, session);
 		}
@@ -256,10 +265,10 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	 *            the db session
 	 * @return list of users
 	 */
-	public List<User> getClassifiedUsers(final Classifier classifier, final SpamStatus status, final int interval, DBSession session) {
+	public List<User> getClassifiedUsers(final Classifier classifier, final SpamStatus status, final int limit, DBSession session) {
 		final AdminParam param = new AdminParam();
-		param.setInterval(interval);
-		param.setLimit(100);
+		param.setInterval(1000);
+		param.setLimit(limit);
 
 		if (classifier.equals(Classifier.ADMIN) && (status.equals(SpamStatus.SPAMMER) || status.equals(SpamStatus.NO_SPAMMER) || status.equals(SpamStatus.UNKNOWN))) {
 			param.setPrediction(status.getId());
