@@ -307,7 +307,7 @@ public class RestLogic implements LogicInterface {
 		return 0;
 	}
 
-	public List<User> getClassifiedUsers(Classifier classifier, SpamStatus status, int interval) {
+	public List<User> getClassifiedUsers(Classifier classifier, SpamStatus status, int limit) {
 		// TODO Auto-generated method stub
 		return null;
 	}
