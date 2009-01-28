@@ -32,7 +32,6 @@ public class AdminPageController implements MinimalisticController<AdminViewComm
 	private UserSettings userSettings;
 	
 	public AdminPageController() {
-		System.err.println("instantiate");
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -70,6 +69,7 @@ public class AdminPageController implements MinimalisticController<AdminViewComm
 	public void setStatistics(AdminViewCommand cmd) {
 		AdminStatisticsCommand command = cmd.getStatisticsCommand();
 		
+		log.debug("Interval: " + cmd.getInterval());
 		command.setNumAdminSpammers(this.logic.getClassifiedUserCount(Classifier.ADMIN, SpamStatus.SPAMMER, cmd.getInterval()));
 		command.setNumAdminNoSpammer(this.logic.getClassifiedUserCount(Classifier.ADMIN, SpamStatus.NO_SPAMMER, cmd.getInterval()));
 		command.setNumClassifierSpammer(this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.SPAMMER, cmd.getInterval()));
@@ -122,6 +122,6 @@ public class AdminPageController implements MinimalisticController<AdminViewComm
 			status = SpamStatus.NO_SPAMMER_NOT_SURE;
 			break;
 		}	
-		cmd.setContent(this.logic.getClassifiedUsers(classifier, status, cmd.getInterval()));		
+		cmd.setContent(this.logic.getClassifiedUsers(classifier, status, cmd.getLimit()));		
 	}	
 }

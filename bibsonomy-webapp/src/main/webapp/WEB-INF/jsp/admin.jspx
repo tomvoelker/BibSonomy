@@ -52,6 +52,12 @@
 				<!-- classifier results tabs -->
 				<c:when test="${command.selTab &lt; 10}">	
 				
+				<div>(show 
+				<a href="?limit=100&amp;selTab=${command.selTab}">100</a> -
+				<a href="?limit=500&amp;selTab=${command.selTab}">500</a> -
+				<a href="?limit=1000&amp;selTab=${command.selTab}">1000</a> entries)
+				</div>
+				
 				<table id="spammers" class="spammertable">
 					
 				    <tr style="font-size: 120%">
@@ -73,8 +79,6 @@
 				    	</c:choose>
 				    	<th>updated at</th>
 				    </tr>
-				    
-				    
 				    				    
 				    <!-- user list -->
 					<c:forEach var="user" items="${command.content}" varStatus="status">

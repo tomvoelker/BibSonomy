@@ -23,16 +23,17 @@ public class AdminViewCommand extends TabsCommand<User> {
 	public final static int CLASSIFIER_NOSPAMMER_INDEX	= 8;
 	public final static int CLASSIFIER_EVALUATE = 9;
 	
-	
-	
 	/** Command containing current admin settings */
 	private AdminSettingsCommand settingsCommand = new AdminSettingsCommand();
 	
 	private AdminStatisticsCommand statisticsCommand = new AdminStatisticsCommand();
 	
 	/** the time interval for retrieving spammers */
-	private Integer interval = 300;
+	private Integer interval = 100;
 	
+	/** number of entries shown on one page */
+	private Integer limit = 100;
+
 	private String aclUserInfo; 
 
 	public AdminViewCommand() {				
@@ -85,5 +86,13 @@ public class AdminViewCommand extends TabsCommand<User> {
 
 	public void setAclUserInfo(String aclUserInfo) {
 		this.aclUserInfo = aclUserInfo;
+	}
+	
+	public Integer getLimit() {
+		return this.limit;
+	}
+
+	public void setLimit(Integer limit) {
+		this.limit = limit;
 	}
 }

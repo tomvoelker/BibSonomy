@@ -141,6 +141,7 @@
 							<list>
 								<value>selTab</value>
 								<value>interval</value>
+								<value>limit</value>
 							</list>
 						</property>
 					</bean>
