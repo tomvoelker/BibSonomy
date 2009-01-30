@@ -144,13 +144,14 @@
 		                                <c:set var="reset"><fmt:message key="resetbutton"/></c:set>
 										<!-- function addSystemTags located in relevantFoxBox.tagx -->
 		                                <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
+                                        <input type="hidden" name="jump" value="${fn:escapeXml(command.jump)}"/>
 		                                <form:hidden path="intraHashToUpdate"/>
 										<input type="reset"  tabindex="5" value="${reset}" />
 										<input type="submit" tabindex="6" value="${save}" onClick="clear_tags(); addSystemTags();"/>
 									</td>
 								</tr>
 							</table>	
-							<input type="hidden" id="projectHome" name="projectHome" value="${projectHome}"/>
+		
 						</fieldset>
 					</form:form>	
 				</div>
@@ -200,12 +201,11 @@
 			scraping();
 		
 			function scraping(){
-				var http = 'http://';
 				//check url. if no url is set, the value of post.resource.url is 'http://'
-				if(document.getElementById("post.resource.url").value.length > http.length){
-					var req = initRequest();
+				if(document.getElementById("post.resource.url").value.length > 'http://'.length){
+					var req = ajaxInit();
 					if(req){
-						req.open("GET", document.getElementById("projectHome").value+'scrapingservice?url='+encodeURIComponent(document.getElementById("post.resource.url").value)+'&format=bibtex', true); // Request starten
+						req.open("GET", '/scrapingservice?url='+encodeURIComponent(document.getElementById("post.resource.url").value)+'&format=bibtex', true); // Request starten
 						req.onreadystatechange = function() {
 						    if ( req.readyState == 4 ) {
 						        if ( req.status == 200 ) {
