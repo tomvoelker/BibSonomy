@@ -1651,21 +1651,3 @@ String.prototype.trim = function () {
     return this.replace(/^\s+/g, '').replace(/\s+$/g, '');
 }
 
-//initialize a XMLHttpRequest or an ActiveXObject
-function initRequest(){
-	var req;
-  	try{
-    	if(window.XMLHttpRequest){
-      		req = new XMLHttpRequest();
-    	}else if(window.ActiveXObject){
-      		req = new ActiveXObject("Microsoft.XMLHTTP");
-    	}
-    	if( req.overrideMimeType ) {
-        	req.overrideMimeType("text/xml");
-        }        	
- 	} catch(e){
- 	   	return false;
- 	}
- 	return req;
-}	
-
