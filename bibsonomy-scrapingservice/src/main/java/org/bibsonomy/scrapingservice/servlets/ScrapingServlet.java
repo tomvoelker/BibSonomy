@@ -70,6 +70,7 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		final String urlString = request.getParameter("url");
 		final String selection = request.getParameter("selection");
+		final String format = request.getParameter("format");
 
 		log.info("Scraping service called with url " + urlString);
 
@@ -93,13 +94,12 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 					bean.setBibtex(null);
 					bean.setErrorMessage("Given host is not supported by scraping service.");
 				}
-				
-				
+
+
 
 				/*
 				 * handle special output formats
 				 */
-				final String format = request.getParameter("format");
 				if ("bibtex".equals(format)) {
 					/* *******************************************
 					 * text/x-bibtex
@@ -125,7 +125,7 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 					writer.write(url.toURI(), bibtex);
 					return;
 				}
-				
+
 			} catch (final MalformedURLException e) {
 				log.info("URL is malformed.", e);
 				bean.setErrorMessage("URL is malformed.");
@@ -156,8 +156,23 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 				log.info("Could not parse BibTeX.", e);
 				bean.setErrorMessage("Could not parse BibTeX.");
 			}
+			/*
+			 * If the format is bibtex and we're still here, an error must have occurred.
+			 * Nevertheless, we should not return a HTML page but rather an empty string
+			 * such that bibtex parsers don't get rubbish input.  
+			 * 
+			 * To sum up: for format=bibtex the empty string means, we could get the 
+			 * bibtex (for whatever reason) 
+			 */
+			if ("bibtex".equals(format)) {
+				response.setContentType("text/plain");
+				response.getOutputStream().write("".getBytes("UTF-8"));
+				return;
+			}
 			request.setAttribute("bean", bean);
 		}
+
+
 
 		getServletConfig().getServletContext().getRequestDispatcher("/index.jsp").forward(request, response);
 	}   	  	    
