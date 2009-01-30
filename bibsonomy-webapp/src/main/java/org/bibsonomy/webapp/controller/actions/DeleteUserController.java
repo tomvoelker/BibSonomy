@@ -5,6 +5,7 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.actions.DeleteUserCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
@@ -29,25 +30,35 @@ public class DeleteUserController implements MinimalisticController<DeleteUserCo
 	}
 
 	public View workOn(DeleteUserCommand command) {
+		final RequestWrapperContext context = command.getContext();
 		
-		// user have to be logged in to delete homself
-		if (!command.getContext().getUserLoggedIn()){
+		/*
+		 * user has to be logged in to delete homself
+		 */
+		if (!context.isUserLoggedIn()){
 			errors.reject("error.general.login");
 		}
-
 		
-		
-		// check the ckey
-		if (command.getContext().isValidCkey() && !errors.hasErrors()){
-			log.debug("User is logged in, check the ckey");
+		/*
+		 * check the ckey
+		 */
+		if (context.isValidCkey() && !errors.hasErrors()){
+			log.debug("User is logged in, ckey is valid ... check the security answer");
 			
-			// check the security input
+			/*
+			 * check the security input
+			 */
 			if ("yes".equalsIgnoreCase((command.getDelete()))){
-				// if all fine delete the user
-				log.debug("Ckey is correct - deleting user: " + command.getContext().getLoginUser().getName());
-				logic.deleteUser(command.getContext().getLoginUser().getName());
+				/*
+				 * all fine  ->  delete the user
+				 */
+				final String loginUserName = context.getLoginUser().getName();
+				log.debug("answer is correct - deleting user: " + loginUserName);
+				logic.deleteUser(loginUserName);
 			} else {
-				// ... else throw an error
+				/*
+				 * ... else throw an error
+				 */
 				errors.reject("error.secure.answer");
 			}
 		} else {
