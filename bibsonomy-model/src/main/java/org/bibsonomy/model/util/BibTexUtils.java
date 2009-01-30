@@ -203,7 +203,7 @@ public class BibTexUtils {
 			miscFieldsSerialized.delete(miscFieldsSerialized.lastIndexOf(","), miscFieldsSerialized.length());
 		}
 		// write serialized misc fields into misc field
-		bib.setMisc(bib.getMisc() + miscFieldsSerialized.toString());
+		bib.setMisc(miscFieldsSerialized.toString());
 	}
 
 	/**
