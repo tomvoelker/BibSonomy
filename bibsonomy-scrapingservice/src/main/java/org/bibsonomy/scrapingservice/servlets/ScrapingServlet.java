@@ -90,40 +90,39 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 				if (compositeScraper.scrape(context)) {
 					bean.setBibtex(context.getBibtexResult());
 					bean.setErrorMessage(null);
+					
+					/*
+					 * handle special output formats
+					 */
+					if ("bibtex".equals(format)) {
+						/* *******************************************
+						 * text/x-bibtex
+						 * *******************************************/
+						// should be: text/x-bibtex (according to /etc/mime.types)
+						response.setContentType("text/plain");
+						response.getOutputStream().write(bean.getBibtex().getBytes("UTF-8"));
+						return;
+					} else if ("rdf+xml".equals(format)) {
+						/* *******************************************
+						 * application/rdf+xml
+						 * *******************************************/
+						response.setContentType("application/rdf+xml");
+						/*
+						 * BibTeX -> model
+						 */
+						final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+						final BibTex bibtex = parser.parseBibTeX(bean.getBibtex());
+						/*
+						 * model -> RDF
+						 */
+						final RDFWriter writer = new RDFWriter(response.getOutputStream());
+						writer.write(url.toURI(), bibtex);
+						return;
+					}
+					
 				} else {
 					bean.setBibtex(null);
 					bean.setErrorMessage("Given host is not supported by scraping service.");
-				}
-
-
-
-				/*
-				 * handle special output formats
-				 */
-				if ("bibtex".equals(format)) {
-					/* *******************************************
-					 * text/x-bibtex
-					 * *******************************************/
-					// should be: text/x-bibtex (according to /etc/mime.types)
-					response.setContentType("text/plain");
-					response.getOutputStream().write(bean.getBibtex().getBytes("UTF-8"));
-					return;
-				} else if ("rdf+xml".equals(format)) {
-					/* *******************************************
-					 * application/rdf+xml
-					 * *******************************************/
-					response.setContentType("application/rdf+xml");
-					/*
-					 * BibTeX -> model
-					 */
-					final SimpleBibTeXParser parser = new SimpleBibTeXParser();
-					final BibTex bibtex = parser.parseBibTeX(bean.getBibtex());
-					/*
-					 * model -> RDF
-					 */
-					final RDFWriter writer = new RDFWriter(response.getOutputStream());
-					writer.write(url.toURI(), bibtex);
-					return;
 				}
 
 			} catch (final MalformedURLException e) {
