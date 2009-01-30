@@ -69,16 +69,14 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, filter, null, command.getListCommand(resourceType).getEntriesPerPage());
 			this.postProcessAndSortList(command, resourceType);
 
-			if (filter != FilterEntity.JUST_PDF) {
-				if (filter != FilterEntity.DUPLICATES) {
-					// int totalCount = this.logic.getStatistics(resourceType,
-					// groupingEntity, groupingName, null, null, requTags);
-					int start = command.getListCommand(resourceType).getStart();
-					int totalCount = this.logic.getPostStatistics(resourceType, GroupingEntity.USER, groupingName, requTags, null, null, filter, start, start + command.getListCommand(resourceType).getEntriesPerPage(), null, null);
+			if (filter != FilterEntity.JUST_PDF && filter != FilterEntity.DUPLICATES) {
+				// int totalCount = this.logic.getStatistics(resourceType,
+				// groupingEntity, groupingName, null, null, requTags);
+				int start = command.getListCommand(resourceType).getStart();
+				int totalCount = this.logic.getPostStatistics(resourceType, GroupingEntity.USER, groupingName, requTags, null, null, filter, start, start + command.getListCommand(resourceType).getEntriesPerPage(), null, null);
 
-					command.getListCommand(resourceType).setTotalCount(totalCount);
-					totalNumPosts += totalCount;
-				}
+				command.getListCommand(resourceType).setTotalCount(totalCount);
+				totalNumPosts += totalCount;
 			}
 		}
 
@@ -108,9 +106,9 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 				// forward to bibtex page if filter is set
 				if (filter == FilterEntity.JUST_PDF || filter == FilterEntity.DUPLICATES) {
 					return Views.USERDOCUMENTPAGE;
-				} else {
-					return Views.USERTAGPAGE;
 				}
+				
+				return Views.USERTAGPAGE;
 			}
 
 			/*
@@ -125,13 +123,12 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			// forward to bibtex page if filter is set
 			if (filter == FilterEntity.JUST_PDF || filter == FilterEntity.DUPLICATES) {
 				return Views.USERDOCUMENTPAGE;
-			} else {
-				return Views.USERPAGE;
-			}
+			} 
+			
+			return Views.USERPAGE;
 		}
 		this.endTiming();
 		// export - return the appropriate view
-		System.out.println("\n\n\n" + "ausgabe userpage content");
 		return Views.getViewByFormat(command.getFormat());
 	}
 
