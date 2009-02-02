@@ -83,8 +83,8 @@
      relations to insert: 
      <input id="insert_lo" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" name="lower" size="30" value="" tabindex="6" title="enter the subtag(s) here"/> &rarr;
      <input id="insert_up" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" name="upper" size="15" value="" tabindex="7" title="enter the supertag(s) here"/>
-     <input type="submit" tabindex="8"/> 
-     <input type="reset" tabindex="9"/>
+     <input type="submit" value="Insert relation" tabindex="8"/> 
+     <input type="reset" value="Reset" tabindex="9"/>
      <input type="hidden" name="ckey" value="${ckey}"/>
   </form>
   
@@ -94,8 +94,8 @@
     relations to delete:
     <input id="delete_lo" name="lower" size="30" value="" tabindex="10" title="enter the subtag(s) here"/> &rarr; 
     <input id="delete_up" name="upper" size="15" value="" tabindex="11" title="enter the supertag(s) here"/>
-    <input type="submit" tabindex="12"/> 
-    <input type="reset" tabindex="13"/>
+    <input type="submit" value="Delete Relation" tabindex="12"/> 
+    <input type="reset" value="Reset" tabindex="13"/>
     <input type="hidden" name="ckey" value="${ckey}"/>
   </form>
 
