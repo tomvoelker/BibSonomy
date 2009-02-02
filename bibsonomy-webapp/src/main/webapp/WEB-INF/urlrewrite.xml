@@ -663,8 +663,8 @@
 		<to>/relations?requestedUser=$1&amp;$3</to>
 	</rule>
 	<rule>
-		<from>^/+relations</from>
-		<to>/allRelations</to>
+		<from>^/+relations(\?(.*))?$</from>
+		<to>/allRelations?$2</to>
 	</rule>
 	
 	<!-- ############## /basket ############### -->
