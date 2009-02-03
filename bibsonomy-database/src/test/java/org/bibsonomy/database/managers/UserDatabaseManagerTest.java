@@ -14,6 +14,7 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.ModelUtils;
@@ -183,9 +184,16 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void deleteUser() {
 		// create a new user object
+		List<Group> groups = null;
 		User user = new User();
 		// use a name of the test databases, in this case "testuser2"
 		user.setName("testuser2");
+		
+		// get groups for this user. testuser should be member of testgroup1
+		groups = this.groupDb.getGroupsForUser(user.getName(), true, this.dbSession);
+		assertNotNull(groups);
+		assertEquals(1, groups.size());
+		assertEquals("testgroup1", groups.get(0).getName());
 		
 		// calls the deleteUser method of the UserDataBaseManager class
 		// this method is overloaded so you have one method with a String parameter
@@ -197,6 +205,11 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		
 		// the user have to be available in the test db ...
 		assertNotNull(newTestuser.getName());
+		
+		// after deleting the user, he shouldn't have any memberships in groups
+		// get groups for this user. testuser should be member of testgroup1
+		groups = this.groupDb.getGroupsForUser(user.getName(), true, this.dbSession);
+		assertEquals(0, groups.size());
 		
 		// but it should be flagged as spammer
 		assertEquals(true, newTestuser.getSpammer());
@@ -210,6 +223,19 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		
 		// there should be at least more then one post with that negative group id
 		assertNotNull(posts);
+		
+		
+		// create a new user object which has a groupname
+		User testUserIsGroup = new User();
+		testUserIsGroup.setName("testgroup1");
+		
+		// if anybody tries to delete a user which is a group should get an exception
+		try {
+			this.userDb.deleteUser(testUserIsGroup, this.dbSession);
+			fail("expected exception");
+		} catch (RuntimeException ignore) {
+		}
+		
 	}
 
 	/**

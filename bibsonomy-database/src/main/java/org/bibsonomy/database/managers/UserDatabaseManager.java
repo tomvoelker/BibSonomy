@@ -12,6 +12,7 @@ import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.util.UserUtils;
@@ -284,17 +285,38 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Username not set");
 		}
 		
+		GroupDatabaseManager _groupDBManager = GroupDatabaseManager.getInstance();
+		AdminDatabaseManager _adminDBManager = AdminDatabaseManager.getInstance();
 		
+		Group _testGroup = _groupDBManager.getGroupByName(user.getName(), session);
+		
+		// if user is a group stop deleting and throw exception
+		if (_testGroup != null){
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User is a group, can't be deleted");
+		}
+		
+		// get details of the user which should be deleted
 		User localUser = this.getUserDetails(user.getName(), session);
 		
+		
+		// set addiotnal parameters
 		localUser.setAlgorithm("self_deleted");
 		localUser.setPassword("inactive");
 		
+		// flag user as spammer
 		if (!localUser.isSpammer()){
 			localUser.setSpammer(true);
-		} 
+		}
 		
-		AdminDatabaseManager.getInstance().flagSpammer(localUser, "on_delete", session);
+		// before deleting user remove it from all non-special groups
+		List<Group> groups = _groupDBManager.getGroupsForUser(localUser.getName(), true, session);
+		 
+		for(Group g : groups){
+			_groupDBManager.removeUserFromGroup(g.getName(), localUser.getName(), session);
+		}
+		
+		// delete user
+		_adminDBManager.flagSpammer(localUser, "on_delete", session);
 		
 		this.updateUser(localUser, session);
 		
