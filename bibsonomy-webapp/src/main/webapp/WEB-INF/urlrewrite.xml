@@ -49,8 +49,9 @@
 	-->
 	<!-- FEED overview page -->
 	<rule>
-		<from>^/+export/+(.*)$</from>
-		<to last="true">/export.jsp</to>
+		<!-- from>^/+export/+(.*)$</from>-->
+		<from>^/+export/+([^/?]+?)(\?(.*))?$</from>
+		<to last="true">/export</to>
 		<set name="requPath">$1</set>
 	</rule>
 	<!--
