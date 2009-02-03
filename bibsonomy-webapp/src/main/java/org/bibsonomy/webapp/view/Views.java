@@ -317,7 +317,12 @@ public enum Views implements View {
 	/**
 	 * /layout/* pages which are rendered by JabRef 
 	 */
-	LAYOUT("layout");
+	LAYOUT("layout"),
+	
+	/**
+	 * show the export page
+	 */
+	EXPORT("export");
 	
 	
 	private final String name;
