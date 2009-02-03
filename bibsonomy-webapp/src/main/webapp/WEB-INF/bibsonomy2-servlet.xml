@@ -38,7 +38,12 @@
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="userRelationsController"/>
 					</bean>
-				</entry>					
+				</entry>				
+				<entry key="/export">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="exportPageController"/>
+					</bean>
+				</entry>				
 				<entry key="/groups">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="groupsPageController"/>
@@ -412,6 +417,8 @@
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
 	</bean>
+	
+	<bean id="exportPageController" class="org.bibsonomy.webapp.controller.ExportPageController" scope="request"/>
 
 	<bean id="conceptPageController" class="org.bibsonomy.webapp.controller.ConceptPageController" scope="request">
 		<property name="logic" ref="logic"/>
@@ -609,9 +616,9 @@
 	</bean>
 	
 	<!-- used to resolve non-JSP views, e.g., JabRef's layout views -->
-	<bean id="nonJSPViewResolver" class="org.springframework.web.servlet.view.XmlViewResolver">
+	<!-- <bean id="nonJSPViewResolver" class="org.springframework.web.servlet.view.XmlViewResolver">
     	<property name="order" value="1"/>
-	</bean>
+	</bean> -->
 	
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
 	
