@@ -288,53 +288,20 @@ function setActiveInputField(id) {
 /*
  * functions for copytag handling
  */
-
 function toggle(event) {
+	clear_tags(); // remove getString("navi.tag.hint") 
+
+	var tagn = xget_event(event);
+    var tag = tagn.childNodes[0].nodeValue;
 		
-		clear_tags(); // remove getString("navi.tag.hint") 
-        var tagn = xget_event(event);
-        var tag = tagn.childNodes[0].nodeValue;
-        tag = tag.replace(/ /,"");
-		
-		if(activeField) {
-          var eingabe = document.getElementById(activeField);
-		} else {
-		  var eingabe = document.getElementById('inpf');
-		}
-		
-        var tags = eingabe.value.split(" ");
+	if(activeField) {
+		var eingabe = document.getElementById(activeField);
+	} else {
+		var eingabe = document.getElementById('inpf');
+	}
 
-         if (tags[0] == "") {
-            tags.splice(0,1);
-         }
-
-         var drin = 0
-         var neuetags = new Array();
-
-         for (var i = 0; i < tags.length; i++) {
-             eintag = tags[i];
-             if (eintag == tag) {
-                drin = 1;
-             } else {
-                neuetags.push(eintag);
-             }
-         } 1
-
-         if (!drin) {
-             neuetags.push(tag)
-         }
-         
-         var neueeingabe = neuetags.join(" ");
-         eingabe.value = neueeingabe;
-
-		 activeTag = "";
-		 if(sortedCollection) {
-			sortedCollection[0] = "";
-			clearSuggestion();
-		 }
-	 
-		 eingabe.focus();
-      }
+	toggleTag(eingabe, tag);
+}
       
 function add_toggle() {
   tags_toggle = 1;
@@ -1569,16 +1536,54 @@ function showBothLists(){
 	$("#optionExpandBibtex").show();
 }
 
+//----------------------------------------------------------------------------
 //new functions for adding tags from tag-cloud to a field
-function copytag(target, tagname){
-	if(document.getElementById(target)){
-		clear_tags();
-		var tagfieldContent = document.getElementById(target).value;
-		if(tagfieldContent.lastIndexOf(" ") == (tagfieldContent.length-1)){
-			document.getElementById(target).value+=tagname+" ";
-		}else{
-			document.getElementById(target).value+=" "+tagname;
+//----------------------------------------------------------------------------
+
+//the old tag toggler: add or remove tagname tagn to/from input field target 
+function toggleTag(target, tagname) {
+	clear_tags(); // remove getString("navi.tag.hint") 
+	var tag     = tagname.replace(/ /,"");
+	var eingabe = target;
+	var tags    = eingabe.value.split(" ");
+
+	if (tags[0] == "") {
+		tags.splice(0,1);
+	}
+
+	var drin = 0
+	var neuetags = new Array();
+
+	for (var i = 0; i < tags.length; i++) {
+		eintag = tags[i];
+		if (eintag == tag) {
+			drin = 1;
+		} else {
+			neuetags.push(eintag);
 		}
+	} 1
+
+	if (!drin) {
+		neuetags.push(tag)
+	}
+
+	var neueeingabe = neuetags.join(" ");
+	eingabe.value = neueeingabe;
+
+	activeTag = "";
+	if(sortedCollection) {
+		sortedCollection[0] = "";
+		clearSuggestion();
+	}
+
+	eingabe.focus();
+}
+
+//add/remove tagname to/from target field 
+function copytag(target, tagname){
+	var targetNode = document.getElementById(target) 
+	if( targetNode ){
+		toggleTag(targetNode, tagname);
 	}
 }
 
