@@ -3,7 +3,7 @@
 
 <sqlMap namespace="Author">
 
-	<select id="getAuthors" resultMap="AuthorCommon.author" parameterClass="authorParam">
+	<select id="getAuthors" resultMap="AuthorCommon.author">
 		SELECT ctr, last_name
 		FROM (
 			SELECT ctr, last_name

@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.AbstractDatabaseManager;
-import org.bibsonomy.database.params.AuthorParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Author;
 
@@ -28,7 +27,6 @@ public class AuthorDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	public List<Author> getAuthors(final DBSession session) {
-		final AuthorParam param = new AuthorParam();
-		return queryForList("getAuthors", param, session);
+		return queryForList("getAuthors", null, session);
 	}
 }
