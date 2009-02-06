@@ -406,11 +406,6 @@
 	<bean id="authorsPageController" class="org.bibsonomy.webapp.controller.AuthorsPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
-		<property name="listsToInitialise">
-			<list>
-				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-			</list>
-		</property>
 	</bean>
 
 	<bean id="userRelationsController" class="org.bibsonomy.webapp.controller.UserRelationsController" scope="request">
