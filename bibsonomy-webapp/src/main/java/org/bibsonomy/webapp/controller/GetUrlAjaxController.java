@@ -6,7 +6,7 @@ import java.net.URL;
 import java.util.Locale;
 
 import org.apache.log4j.Logger;
-import org.bibsonomy.recommender.multiplexer.MultiplexingTagRecommender;
+//import org.bibsonomy.recommender.multiplexer.MultiplexingTagRecommender;
 import org.bibsonomy.webapp.command.GetUrlAjaxCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
