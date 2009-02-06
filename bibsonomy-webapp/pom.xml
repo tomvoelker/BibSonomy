@@ -226,7 +226,10 @@
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-logging</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-lucene</artifactId>
+		</dependency>
 		<!-- 
 			*** beanutils 1.7.0 contain a memory leak *** 
 			we don't have a direct dependency to beanutils, but some lib needs it
