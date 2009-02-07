@@ -20,7 +20,8 @@ import org.bibsonomy.webapp.view.Views;
 
 /**
  * @author Steffen Kress
- * @version $Id$
+ * @version $Id: FriendsPageController.java,v 1.1 2009-02-07 05:16:38 steffen
+ *          Exp $
  */
 public class FriendsPageController extends SingleResourceListControllerWithTags implements MinimalisticController<FriendsResourceViewCommand> {
 	private static final Logger LOGGER = Logger.getLogger(FriendsPageController.class);
@@ -65,9 +66,7 @@ public class FriendsPageController extends SingleResourceListControllerWithTags 
 
 		// retrieve and set the requested resource lists, along with total
 		// counts
-		String a = "";
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {
-			a += resourceType.toString() + " ";
 			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, filter, null, command.getListCommand(resourceType).getEntriesPerPage());
 			this.postProcessAndSortList(command, resourceType);
 
@@ -83,71 +82,71 @@ public class FriendsPageController extends SingleResourceListControllerWithTags 
 					// command.getListCommand(resourceType).getEntriesPerPage(),
 					// null, null);
 
-//					command.getListCommand(resourceType).setTotalCount(totalCount);
-//					totalNumPosts += totalCount;
+					// command.getListCommand(resourceType).setTotalCount(totalCount);
+					// totalNumPosts += totalCount;
 				}
 			}
 		}
 
 		// retrieve concepts
-		//List<Tag> concepts = this.logic.getConcepts(null, groupingEntity, groupingName, null, null, ConceptStatus.PICKED, 0, Integer.MAX_VALUE);
+		// List<Tag> concepts = this.logic.getConcepts(null, groupingEntity,
+		// groupingName, null, null, ConceptStatus.PICKED, 0,
+		// Integer.MAX_VALUE);
 
 		// // set page title
 		// // TODO: internationalize
 		command.setPageTitle("friends");
-		//command.getConcepts().setConceptList(concepts);
-		//command.getConcepts().setNumConcepts(concepts.size());
+		// command.getConcepts().setConceptList(concepts);
+		// command.getConcepts().setNumConcepts(concepts.size());
 		//
 		// // html format - retrieve tags and return HTML view
-		 if (command.getFormat().equals("html")) {
-		 //this.setTags(command, Resource.class, groupingEntity, groupingName,
-		 //null, null, null, null, 0, 20000, null);
-		
-		 // log if a user has reached threshold
-		 if (command.getTagcloud().getTags().size() > 19999) {
-		 LOGGER.error("User " + groupingName +
-		 " has reached threshold of 20000 tags on user page");
-		 }
-		
-		 if (requTags.size() > 0) {
-		 this.setRelatedTags(command, Resource.class, groupingEntity,
-		 groupingName, null, requTags, Order.ADDED, 0, 20, null);
-		 command.getRelatedTagCommand().setTagGlobalCount(totalNumPosts);
-		 this.endTiming();
-		
-		 // forward to bibtex page if filter is set
-		 if (filter == FilterEntity.JUST_PDF || filter ==
-		 FilterEntity.DUPLICATES) {
-		 return Views.USERDOCUMENTPAGE;
-		 } else {
-		 return Views.USERTAGPAGE;
-		 }
-		 }
-		
-		 /*
-		 * add user details to command, if loginUser is admin
-		 */
-		 if (Role.ADMIN.equals(logic.getAuthenticatedUser().getRole())) {
-		 //command.setUser(logic.getUserDetails(command.getRequestedUser()));
-		 }
-		
-		 this.endTiming();
-		
-		 // forward to bibtex page if filter is set
-		 if (filter == FilterEntity.JUST_PDF || filter ==
-		 FilterEntity.DUPLICATES) {
-		 return Views.USERDOCUMENTPAGE;
-		 } else {
-		return Views.FRIENDSPAGE;
-		 }
+		if (command.getFormat().equals("html")) {
+			// this.setTags(command, Resource.class, groupingEntity,
+			// groupingName,
+			// null, null, null, null, 0, 20000, null);
+			command.setUserFriends(logic.getUserFriends(command.getContext().getLoginUser()));
+			command.setFriendsOfUser(logic.getFriendsOfUser(command.getContext().getLoginUser()));
+			// log if a user has reached threshold
+			if (command.getTagcloud().getTags().size() > 19999) {
+				LOGGER.error("User " + groupingName + " has reached threshold of 20000 tags on user page");
+			}
+
+			if (requTags.size() > 0) {
+				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, Order.ADDED, 0, 20, null);
+				command.getRelatedTagCommand().setTagGlobalCount(totalNumPosts);
+				this.endTiming();
+
+				// forward to bibtex page if filter is set
+				if (filter == FilterEntity.JUST_PDF || filter == FilterEntity.DUPLICATES) {
+					return Views.USERDOCUMENTPAGE;
+				} else {
+					return Views.USERTAGPAGE;
+				}
+			}
+
+			/*
+			 * add user details to command, if loginUser is admin
+			 */
+			if (Role.ADMIN.equals(logic.getAuthenticatedUser().getRole())) {
+				// command.setUser(logic.getUserDetails(command.getRequestedUser()));
+			}
+
+			this.endTiming();
+
+			// forward to bibtex page if filter is set
+			if (filter == FilterEntity.JUST_PDF || filter == FilterEntity.DUPLICATES) {
+				return Views.USERDOCUMENTPAGE;
+			} else {
+				return Views.FRIENDSPAGE;
+			}
+		}
+
+		this.endTiming();
+		// export - return the appropriate view
+		System.out.println("\n\n\n" + "ausgabe friendspage content");
+
+		return Views.getViewByFormat(command.getFormat());
 	}
-
-	 this.endTiming();
-	 // export - return the appropriate view
-	 System.out.println("\n\n\n" + "ausgabe friendspage content");
-
-	 return Views.getViewByFormat(command.getFormat());
-	 }
 
 	public FriendsResourceViewCommand instantiateCommand() {
 		return new FriendsResourceViewCommand();
