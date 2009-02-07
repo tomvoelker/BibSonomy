@@ -35,6 +35,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/* name of testuser to be created / updated */
 	private static String RANDOM_TESTUSER;
 
+
 	/**
 	 * Init user names
 	 */
@@ -154,27 +155,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		} catch (Exception ignore) {
 		}
 	}
-
-	/**
-	 * tests deleteUser
-	 * 
-	 * This test is the old one.
-	 */
-	@Test
-	public void deleteUserOld() {
-		this.userDb.deleteUser(RANDOM_TESTUSER, this.dbSession);
-		final User newTestuser = this.userDb.getUserDetails(RANDOM_TESTUSER, this.dbSession);
-		assertNull(newTestuser.getName());
-
-		for (final String username : new String[] { "", " ", null }) {
-			try {
-				this.userDb.deleteUser(username, this.dbSession);
-				fail("expected exception");
-			} catch (RuntimeException ignore) {
-			}
-		}
-	}
-	
+		
 	/**
 	 * tests deleteUser
 	 * 
@@ -213,8 +194,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		
 		// but it should be flagged as spammer
 		assertEquals(true, newTestuser.getSpammer());
-		
-		
+				
 		// create a spammer group id by adding an old group id to the interger min value
 		int groupid = Integer.MAX_VALUE + 1;
 		
@@ -223,8 +203,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		
 		// there should be at least more then one post with that negative group id
 		assertNotNull(posts);
-		
-		
+				
 		// create a new user object which has a groupname
 		User testUserIsGroup = new User();
 		testUserIsGroup.setName("testgroup1");

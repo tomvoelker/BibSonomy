@@ -254,17 +254,24 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		this.plugins.onUserUpdate(existingUser.getName(), session);
 
 		// TODO: update existing dataset instead of delete and re-insert
-		this.deleteUser(existingUser.getName(), session);
+		this.removeUser(existingUser.getName(), session);
 		this.insert("insertUser", existingUser, session);	
 	}
 	
 	/**
-	 * Delete a user.
+	 * Remove a user from the database. This function executes a DELETE on the user 
+	 * and openid-user table and erases all data about this user.
+	 * 
+	 * ATTENTION: This function is used ONLY by the updateUser-method, which works
+	 * currently in the old-fashioned "delete-insert" style. As soon as we implement
+	 * a proper update method, this removeUser-Method can be deleted.
 	 * 
 	 * @param userName 
+	 * 			- a user name 
 	 * @param session 
+	 * 			- DB session
 	 */
-	public void deleteUser(final String userName, final DBSession session) {
+	private void removeUser(final String userName, final DBSession session) {
 		if (present(userName) == false) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Username not set");
 		}
@@ -276,12 +283,25 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Delete a user.
+	 * Delete a user. This is the method to be called from the LogicInterface; it does not
+	 * truly REMOVE a user from the DB, but does
+	 * 
+	 * <ul>
+	 * 	 <li>flag this user as spammer</li>
+	 *   <li>flags all his posts as spam</li>
+	 *   <li>removes him from all groups he is a member of</li>
+	 *   <li>sets his password to inactive</li>
+	 * </ul>
+	 * 
 	 * @param user 
+	 * 			- a user to be deleteed
 	 * @param session 
+	 * 			- DB session
+	 * @throws UnsupportedOperationException
+	 * 			- when this user is a group, he cannot be deleted
 	 */
 	public void deleteUser(final User user, final DBSession session) {
-		if (present(user.getName()) == false) {
+		if (user == null || present(user.getName()) == false) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Username not set");
 		}
 		
@@ -292,22 +312,18 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		
 		// if user is a group stop deleting and throw exception
 		if (_testGroup != null){
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User is a group, can't be deleted");
+			throw new UnsupportedOperationException("User " + user.getName() +  " is a group and can't be deleted");
 		}
 		
-		// get details of the user which should be deleted
+		// reset user password, set spammer flag
 		User localUser = this.getUserDetails(user.getName(), session);
-		
-		
-		// set addiotnal parameters
-		localUser.setAlgorithm("self_deleted");
 		localUser.setPassword("inactive");
-		
-		// flag user as spammer
+		// FIXME: Why is this necessary here, and is not performed by the flagSpammer method below?
 		if (!localUser.isSpammer()){
 			localUser.setSpammer(true);
-		}
-		
+		}		
+		this.updateUser(localUser, session);
+				
 		// before deleting user remove it from all non-special groups
 		List<Group> groups = _groupDBManager.getGroupsForUser(localUser.getName(), true, session);
 		 
@@ -315,12 +331,9 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			_groupDBManager.removeUserFromGroup(g.getName(), localUser.getName(), session);
 		}
 		
-		// delete user
-		_adminDBManager.flagSpammer(localUser, "on_delete", session);
-		
-		this.updateUser(localUser, session);
-		
-		
+		// flag user as spammer & all his posts as spam
+		localUser.setAlgorithm("self_deleted");
+		_adminDBManager.flagSpammer(localUser, "on_delete", session);				
 	}
 
 	/**
