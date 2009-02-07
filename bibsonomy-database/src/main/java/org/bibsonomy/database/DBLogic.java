@@ -36,6 +36,7 @@ import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.BookmarkDatabaseManager;
 import org.bibsonomy.database.managers.CrudableContent;
 import org.bibsonomy.database.managers.DocumentDatabaseManager;
+import org.bibsonomy.database.managers.FriendDatabaseManager;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.managers.StatisticsDatabaseManager;
@@ -93,6 +94,7 @@ public class DBLogic implements LogicInterface {
 	private final DBSessionFactory dbSessionFactory;
 	private final StatisticsDatabaseManager statisticsDBManager;
 	private final TagRelationDatabaseManager tagRelationsDBManager;
+	private final FriendDatabaseManager friendDBManager;
 
 	private final User loginUser;
 
@@ -119,6 +121,7 @@ public class DBLogic implements LogicInterface {
 		this.permissionDBManager = PermissionDatabaseManager.getInstance();
 		this.statisticsDBManager = StatisticsDatabaseManager.getInstance();
 		this.tagRelationsDBManager = TagRelationDatabaseManager.getInstance();
+		this.friendDBManager = FriendDatabaseManager.getInstance();
 
 		this.dbSessionFactory = dbSessionFactory;		
 	}
@@ -147,6 +150,27 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
+	
+	public List<User> getUserFriends(User loginUser) {
+		final DBSession session = openSession();
+		final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, null, null, null, null, null, null, 0, 20, null, null, loginUser);
+		try {
+			return this.friendDBManager.getUserFriends(loginUser, param, session);
+		} finally {
+			session.close();
+		}
+	}
+	
+	public List<User> getFriendsOfUser(User loginUser) {
+		final DBSession session = openSession();
+		final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, null, null, null, null, null, null, 0, 20, null, null, loginUser);
+		try {
+			return this.friendDBManager.getFriendsOfUser(loginUser, param, session);
+		} finally {
+			session.close();
+		}
+	}
+
 
 	/*
 	 * Returns all users who are members of the specified group
