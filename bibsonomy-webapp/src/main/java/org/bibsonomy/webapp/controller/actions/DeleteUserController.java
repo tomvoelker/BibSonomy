@@ -54,7 +54,13 @@ public class DeleteUserController implements MinimalisticController<DeleteUserCo
 				 */
 				final String loginUserName = context.getLoginUser().getName();
 				log.debug("answer is correct - deleting user: " + loginUserName);
-				logic.deleteUser(loginUserName);
+				try {
+					logic.deleteUser(loginUserName);
+				}
+				catch (UnsupportedOperationException ex) {
+					// this happens when a user is a group
+					errors.reject("error.user_is_group_cannot_be_deleted");
+				}
 			} else {
 				/*
 				 * ... else throw an error
