@@ -462,5 +462,17 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @return
 	 */
 	public int getTagStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end);
+
+	/**
+	 * @param loginUser
+	 * @return
+	 */
+	public List<User> getUserFriends(User loginUser);
+	
+	/**
+	 * @param loginUser
+	 * @return
+	 */
+	public List<User> getFriendsOfUser(User loginUser);
 	
 }
