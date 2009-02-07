@@ -50,7 +50,7 @@ public class ExceptionUtils {
 		 * Inserted to get more information (e.g., on "java.sql.SQLException: Unknown error" messages)
 		 * FIXME: it's probably not the best place to handle SQL stuff
 		 */
-		if (ex.getCause() != null && ex.getCause().getClass().equals(SQLException.class)) {
+		if (ex != null && ex.getCause() != null && ex.getCause().getClass().equals(SQLException.class)) {
 			final SQLException sqlException = ((SQLException) ex);
 			log.error("SQL error code: " + sqlException.getErrorCode() + ", SQL state: " + sqlException.getSQLState());
 		}
