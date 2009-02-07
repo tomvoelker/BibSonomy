@@ -486,21 +486,39 @@
 	<!-- /friends -->
     <rule>
       <from>^/+friends/(\?user=(.*))$</from>
-      <to type="redirect">/friend/$2</to>
+      <to type="redirect">/friends/$2</to>
     </rule>
 	<rule>
 	    <from>^/+friend/*(\?(.*))?$</from>
-  		<to>/ResourceHandler?page=friend&amp;$2</to>
+<!--  		<to>/ResourceHandler?page=friend&amp;$2</to>-->
+		<to>/friend</to>
 	</rule>
 	<rule>
 	    <from>^/+friends/*(\?(.*))?$</from>
-  		<to>/ResourceHandler?page=friend&amp;$2</to>	    
+	    <to>/friends</to>
+<!--  		<to>/ResourceHandler?page=friend&amp;$2</to>	    -->
 	</rule>
 	<rule>
 	  <from>^/+friend/+([^/?]+?)/$</from>
 	  <to type="redirect">/friend/$1</to>
 	</rule>
-
+	
+	
+	
+<!--<rule>  /group/GROUP -->
+<!--    	 workaround to redirect not-yet-supported features to old resource handler -->
+<!--		 forward PDF sites to new page -->
+<!--		<condition type="attribute" name="type" operator="notequal"/>    	-->
+<!--		<from>^/+group/+([^/?]+?)(\?(.*))?$</from>-->
+<!--		 NEW PAGE -->
+<!--		<to>/group?requestedGroup=$1&amp;$3</to>-->
+<!--		<to>/ResourceHandler?page=group&amp;requGroup=$1&amp;$3</to>-->
+<!--	</rule>-->
+<!--	<rule> 	-->
+<!--		<from>^/+group/+([^/?]+?)(\?(.*))?$</from>-->
+<!--		 OLD PAGE -->
+<!--		<to>/ResourceHandler?page=group&amp;requGroup=$1&amp;$3</to>-->
+<!--	</rule>	-->
 
 <!-- ############## tag pages ############### -->
 	<!-- redirect for tag formular on /tag page -->
