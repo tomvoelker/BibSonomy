@@ -486,12 +486,12 @@
 	<!-- /friends -->
     <rule>
       <from>^/+friends/(\?user=(.*))$</from>
-      <to type="redirect">/friends/$2</to>
+      <to type="redirect">/friend/$2</to>
     </rule>
 	<rule>
 	    <from>^/+friend/*(\?(.*))?$</from>
-<!--  		<to>/ResourceHandler?page=friend&amp;$2</to>-->
-		<to>/friend</to>
+  		<to>/ResourceHandler?page=friend&amp;$2</to>
+<!--		<to>/friend</to>-->
 	</rule>
 	<rule>
 	    <from>^/+friends/*(\?(.*))?$</from>

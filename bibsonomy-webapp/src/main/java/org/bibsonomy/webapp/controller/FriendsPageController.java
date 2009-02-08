@@ -30,13 +30,6 @@ public class FriendsPageController extends SingleResourceListControllerWithTags 
 		LOGGER.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
 
-		// no user given -> error
-		// if (command.getRequestedUser() == null) {
-		// LOGGER.error("Invalid query /user without username");
-		// throw new
-		// MalformedURLSchemeException("error.user_page_without_username");
-		// }
-
 		// set grouping entity, grouping name, tags
 		final GroupingEntity groupingEntity = GroupingEntity.FRIEND;
 		final String groupingName = command.getRequestedUser();
@@ -69,41 +62,12 @@ public class FriendsPageController extends SingleResourceListControllerWithTags 
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {
 			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, filter, null, command.getListCommand(resourceType).getEntriesPerPage());
 			this.postProcessAndSortList(command, resourceType);
-
-			if (filter != FilterEntity.JUST_PDF) {
-				if (filter != FilterEntity.DUPLICATES) {
-					// int totalCount = this.logic.getStatistics(resourceType,
-					// groupingEntity, groupingName, null, null, requTags);
-					int start = command.getListCommand(resourceType).getStart();
-					// int totalCount =
-					// this.logic.getPostStatistics(resourceType,
-					// GroupingEntity.FRIEND, groupingName, requTags, null,
-					// null, filter, start, start +
-					// command.getListCommand(resourceType).getEntriesPerPage(),
-					// null, null);
-
-					// command.getListCommand(resourceType).setTotalCount(totalCount);
-					// totalNumPosts += totalCount;
-				}
-			}
 		}
 
-		// retrieve concepts
-		// List<Tag> concepts = this.logic.getConcepts(null, groupingEntity,
-		// groupingName, null, null, ConceptStatus.PICKED, 0,
-		// Integer.MAX_VALUE);
-
 		// // set page title
-		// // TODO: internationalize
 		command.setPageTitle("friends");
-		// command.getConcepts().setConceptList(concepts);
-		// command.getConcepts().setNumConcepts(concepts.size());
-		//
 		// // html format - retrieve tags and return HTML view
 		if (command.getFormat().equals("html")) {
-			// this.setTags(command, Resource.class, groupingEntity,
-			// groupingName,
-			// null, null, null, null, 0, 20000, null);
 			command.setUserFriends(logic.getUserFriends(command.getContext().getLoginUser()));
 			command.setFriendsOfUser(logic.getFriendsOfUser(command.getContext().getLoginUser()));
 			// log if a user has reached threshold
@@ -140,11 +104,8 @@ public class FriendsPageController extends SingleResourceListControllerWithTags 
 				return Views.FRIENDSPAGE;
 			}
 		}
-
 		this.endTiming();
 		// export - return the appropriate view
-		System.out.println("\n\n\n" + "ausgabe friendspage content");
-
 		return Views.getViewByFormat(command.getFormat());
 	}
 

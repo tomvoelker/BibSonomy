@@ -15,7 +15,7 @@
 
 	<layout:resourceLayout pageTitle="${command.pageTitle}" 
 		command="${command}" requPath="${requPath}" 
-		selectedNaviTab="${'nav_my'}">
+		selectedNaviTab="${command.context.loginUser.name != null ? 'nav_my' : ''}">
 	
 		<jsp:attribute name="heading">
 		<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.friends"/></a> ::
@@ -27,42 +27,29 @@
 		<jsp:attribute name="sidebar">
 			
 
-<li><span class="sidebar_h"><fmt:message key="friends.friendof"/></span>  
-
-<!-- get users, which have user.name as friend -->
-<sql:query var="rs" dataSource="${dataSource}">
-  SELECT user_name FROM friends WHERE f_user_name = ?
-  <sql:param value="${user.name}"/>  
-</sql:query>
+<li><span class="sidebar_h"><fmt:message key="friends.friendof"/></span> 
 
 <ul>
-<c:forEach var="row" items="${command.friendsOfUser}">
-  <li><a href="/friend/${fn:escapeXml(row.user_name)}"><c:out value="${row.user_name}"/></a></li>
+<c:forEach var="user" items="${command.friendsOfUser}">
+  <li><a href="/friend/${fn:escapeXml(user.name)}"><c:out value="${user.name}"/></a></li>
 </c:forEach>
 </ul>
 
 </li>
 
 <li><span class="sidebar_h"><fmt:message key="friends.yourfriends"/></span>
-
-<!-- get all friends of user -->
-<sql:query var="f" dataSource="${dataSource}">
-  SELECT f_user_name FROM friends WHERE user_name = ?
-  <sql:param>${user.name}</sql:param>
-</sql:query>
-
 <ul>
-<c:forEach var="row" items="${f.rows}">
+<c:forEach var="user" items="${command.userFriends}">
   <li>
-    <a href="/user/${fn:escapeXml(row.f_user_name)}"><c:out value='${row.f_user_name}'/>&amp;nbsp;</a> 
+    <a href="/user/${fn:escapeXml(user.name)}"><c:out value='${user.name}'/>&amp;nbsp;</a> 
 	<c:set var="deleteFriendTitle">
 		<fmt:message key="friends.actions.delete.title">
-			<fmt:param value="${fn:escapeXml(row.f_user_name)}"/>		
+			<fmt:param value="${fn:escapeXml(user.name)}"/>		
 		</fmt:message>
 	</c:set>
     <a 
     	class="action" 
-    	href="/SettingsHandler?ckey=${ckey}&amp;del_friend=${fn:escapeXml(row.f_user_name)}" 
+    	href="/SettingsHandler?ckey=${ckey}&amp;del_friend=${fn:escapeXml(user.name)}" 
     	title="${deleteFriendTitle}">
     		<fmt:message key="friends.actions.delete"/>
     </a>

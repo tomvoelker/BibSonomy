@@ -9,24 +9,8 @@ import org.bibsonomy.model.User;
  * @version $Id$
  */
 public class FriendsResourceViewCommand extends TagResourceViewCommand {
-	/** the group whode resources are requested*/
-	private ConceptsCommand concepts = new ConceptsCommand();
 	private List<User> userFriends;
 	private List<User> friendsOfUser;
-	
-	/**
-	 * @return
-	 */
-	public ConceptsCommand getConcepts() {
-		return this.concepts;
-	}
-
-	/**
-	 * @param concepts
-	 */
-	public void setConcepts(ConceptsCommand concepts) {
-		this.concepts = concepts;
-	}
 
 	/**
 	 * @param userFriends
