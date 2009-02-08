@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="FriendCommon">
-	<resultMap id="friendName" class="friend">
+	<resultMap id="friendName" class="user">
 		<result property="name" column="f_user_name" javaType="string" />
 	</resultMap>
 	
