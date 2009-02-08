@@ -29,22 +29,21 @@ public class FriendDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * @param loginUser
+	 * @param user 
 	 * @param param
 	 * @param session
 	 * @return list of users
 	 */
-	public List<User> getUserFriends(User loginUser, final UserParam param, DBSession session) {
-		return this.queryForList("getUserFriends", param, User.class, session);
+	public List<User> getUserFriends(User user, DBSession session) {
+		return this.queryForList("getUserFriends", user.getName().toLowerCase(), User.class, session);
 	}
 
 	/**
-	 * @param loginUser
-	 * @param param
+	 * @param user
 	 * @param session
 	 * @return list of users
 	 */
-	public List<User> getFriendsOfUser(User loginUser, final UserParam param, DBSession session) {
-		return this.queryForList("getFriendsOfUser", param, User.class, session);
+	public List<User> getFriendsOfUser(User user, DBSession session) {
+		return this.queryForList("getFriendsOfUserByStringAsStrings", user.getName().toLowerCase(), User.class, session);
 	}
 }

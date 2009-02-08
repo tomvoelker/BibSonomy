@@ -153,9 +153,8 @@ public class DBLogic implements LogicInterface {
 	
 	public List<User> getUserFriends(User loginUser) {
 		final DBSession session = openSession();
-		final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, null, null, null, null, null, null, 0, 20, null, null, loginUser);
 		try {
-			return this.friendDBManager.getUserFriends(loginUser, param, session);
+			return this.friendDBManager.getUserFriends(loginUser, session);
 		} finally {
 			session.close();
 		}
@@ -163,9 +162,8 @@ public class DBLogic implements LogicInterface {
 	
 	public List<User> getFriendsOfUser(User loginUser) {
 		final DBSession session = openSession();
-		final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, null, null, null, null, null, null, 0, 20, null, null, loginUser);
 		try {
-			return this.friendDBManager.getFriendsOfUser(loginUser, param, session);
+			return this.friendDBManager.getFriendsOfUser(loginUser, session);
 		} finally {
 			session.close();
 		}
