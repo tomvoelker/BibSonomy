@@ -129,6 +129,11 @@ public class UserUtils {
 		}
 		
 		/*
+		 * remove leading and trailing whitespaces
+		 */
+		url = url.trim();
+		
+		/*
 		 * append http suffix if not set
 		 */
 		if (!url.startsWith("http://") && !url.startsWith("https://")) {

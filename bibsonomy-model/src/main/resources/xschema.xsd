@@ -147,6 +147,8 @@
 		<xsd:attribute name="name" type="xsd:string" use="required"/>
 		<xsd:attribute name="globalcount" type="positiveIntegerIncludingZero"/>
 		<xsd:attribute name="usercount" type="positiveIntegerIncludingZero"/>
+		<xsd:attribute name="score" type="probabilityValue"/>
+		<xsd:attribute name="confidence" type="probabilityValue"/>
 		<!-- link to details page -->
 		<xsd:attribute name="href" type="xsd:anyURI"/>		
 	</xsd:complexType>
@@ -264,6 +266,16 @@
 	<xsd:simpleType name="positiveIntegerIncludingZero">
 		<xsd:restriction base="xsd:integer">
     		<xsd:minInclusive value="0"/>
+    	</xsd:restriction>
+	</xsd:simpleType>
+
+	<!--
+		helper type for statistical values
+	-->	
+	<xsd:simpleType name="probabilityValue">
+		<xsd:restriction base="xsd:double">
+    		<xsd:minInclusive value="0"/>
+    		<xsd:maxInclusive value="1"/>
     	</xsd:restriction>
 	</xsd:simpleType>
 
