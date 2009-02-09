@@ -849,4 +849,14 @@ public class TestDBLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public List<User> getFriendsOfUser(User loginUser) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<User> getUserFriends(User loginUser) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
