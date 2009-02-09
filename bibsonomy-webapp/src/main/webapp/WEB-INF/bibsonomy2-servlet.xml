@@ -305,6 +305,7 @@
 								<value>groups</value>
 								<value>intraHashToUpdate</value>
 								<value>jump</value>
+								<value>ajax</value>
 							</list>
 						</property>
 					</bean>

@@ -19,10 +19,12 @@
 		<p>
 			<div style="vertical-align:middle">
 				<fmt:message key="post.resource.recommendation"/>:${mtl:ch('nbsp')}
+				<div id="tagField">
                 <c:forEach var="tag" items="${recommendedTags}">
                   <a href="javascript:copytag('inpf','${fn:escapeXml(tag.name)}')"><c:out value="${tag.name}"/></a>
                   ${mtl:ch('nbsp')}
                 </c:forEach>
+                </div>
 				<div id="suggestion.tags"></div>
 			</div>
 		</p>

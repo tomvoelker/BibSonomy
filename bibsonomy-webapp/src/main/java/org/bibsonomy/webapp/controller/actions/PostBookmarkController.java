@@ -151,7 +151,6 @@ public class PostBookmarkController extends SingleResourceListController impleme
 	}
 
 	/**
-<<<<<<< PostBookmarkController.java
 	 * Handle ajax request - that is: deliver recommended Tags
 	 * TODO: This a a dirty hack-in.
 	 *       1) a separate ajax controller could handle this request
