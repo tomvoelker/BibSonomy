@@ -227,6 +227,7 @@ public class LayoutHandler extends HttpServlet {
 		typemap.put("se",          	       new OutputType(null, "text/html"));
 		typemap.put("jucs", 		       new OutputType("rtf", "text/rtf"));
 		typemap.put("imtm", 		       new OutputType(null, "text/html"));
+		typemap.put("din1505",             new OutputType(null, "text/html"));
 	}
 
 	private static class OutputType {
