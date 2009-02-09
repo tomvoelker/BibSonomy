@@ -1,0 +1,72 @@
+<!DOCTYPE sqlMapConfig
+PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
+"http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<!--
+		Die properties-Datei stellt diverse Name/Wert-Paare (name=value)
+		bereit, die in dieser Konfigurationsdatei einfach mit Platzhaltern der
+		Form “${driver}” referenziert werden können. Die properties-Datei ist
+		üblicherweise im Klassenpfad angegeben. Eine properties-Datei Angabe
+		ist optional.
+	-->
+	<properties resource="SqlMapConfig_recommender.properties" />
+	<!--
+		Die folgende Einstellungen spezifizieren Details der SqlMap
+		Konfiguration wie zum Beispiel das Transaktion Management. Sie sind
+		alle optional (Details im Handbuch).
+	-->
+	<!-- 
+	<settings 
+		maxRequests="32" 
+		cacheModelsEnabled="true" 
+		enhancementEnabled="true"
+		lazyLoadingEnabled="true" 
+		maxSessions="10"
+		maxTransactions="5" 
+		useStatementNamespaces="false" />
+	-->
+	<!--
+		Type aliases erlauben ihnen, einen kurzen Namen statt eines langen
+		voll qualifizierten Klassennamen zu definieren.
+	-->
+	
+	<typeAlias alias="byteBuffer" type="byte[]"/>	
+	<typeAlias alias="tag" type="org.bibsonomy.model.Tag" />
+
+	<typeAlias alias="recLogEntry" type="org.bibsonomy.recommender.params.RecLogEntry" />
+	<typeAlias alias="rectag" type="org.bibsonomy.model.RecommendedTag" />
+	<typeAlias alias="recTag" type="org.bibsonomy.model.RecommendedTag" />
+	<typeAlias alias="recSetting" type="org.bibsonomy.recommender.params.RecSettingParam" />
+	<typeAlias alias="recQuerySetting" type="org.bibsonomy.recommender.params.RecQuerySettingParam" />
+	<typeAlias alias="recQuery" type="org.bibsonomy.recommender.params.RecQueryParam" />
+	<typeAlias alias="recResponse" type="org.bibsonomy.recommender.params.RecResponseParam" />
+	<typeAlias alias="bookmarkParam" type="org.bibsonomy.database.params.BookmarkParam" />
+	<typeAlias alias="bibtexParam" type="org.bibsonomy.database.params.BibTexParam" />
+
+	<typeAlias alias="queryGuess" type="org.bibsonomy.recommender.params.QueryGuess" />
+	<typeAlias alias="postParam"  type="org.bibsonomy.recommender.params.PostParam" />
+	<typeAlias alias="tasEntry"  type="org.bibsonomy.recommender.params.TasEntry" />
+	<typeAlias alias="timestamp" type="java.sql.Timestamp"/>
+
+	<!--
+		Spezifizieren sie eine DataSource für diese SQL Map. Hier nehmen wir
+		eine einfache SimpleDataSource. Beachten sie die Verwendung der
+		properties aus oben angegebener properties-Datei.
+	-->
+	<transactionManager type="JDBC">
+		<dataSource type="SIMPLE">
+			<property name="JDBC.Driver" value="${driver}" />
+			<property name="JDBC.ConnectionURL" value="${url}" />
+			<property name="JDBC.Username" value="${username}" />
+			<property name="JDBC.Password" value="${password}" />
+		</dataSource>
+	</transactionManager>
+	<!--
+		Geben sie alle SQL Map XML Dateien an, die in dieser SQL Map geladen
+		werden sollen. Beachten sie das alle Dateien im Classpath liegen. Zur
+		Zeit haben wir nur eine Datei…
+	-->
+	<sqlMap resource="common/RecommendationLogCommon.xml" />
+	<sqlMap resource="RecommendationLog.xml" />
+</sqlMapConfig>
+

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<!--
+		The properties (name=value) in the file specified here can be used
+		placeholders in this config file (e.g. ${driver}. The file is usually
+		relative to the classpath and is optional.
+	-->
+	<properties resource="SqlMapConfig_recommender.properties" />
+
+	<!--
+		These settings control SqlMap configuration details, primarily to do
+		with transaction management. They are all optional (see the Developer
+		Guide for more).
+	-->
+
+
+	<!--
+		Type aliases allow you to use a shorter name for long fully qualified
+		class names.
+	-->
+	<typeAlias alias="pair" type="org.bibsonomy.recommender.params.Pair" />
+	<typeAlias alias="tag" type="org.bibsonomy.model.Tag" />
+	<typeAlias alias="postGuess" type="org.bibsonomy.recommender.params.PostGuess" />
+	<typeAlias alias="postParam"  type="org.bibsonomy.recommender.params.PostParam" />
+	<typeAlias alias="tasParam" type="org.bibsonomy.recommender.params.TasParam" />
+	<typeAlias alias="tasEntry"  type="org.bibsonomy.recommender.params.TasEntry" />
+	<typeAlias alias="timestamp"  type="java.sql.Timestamp" />
+	<!--
+		Configure a datasource to use with this SQL Map using
+		SimpleDataSource. Notice the use of the properties from the above
+		resource
+	-->
+	<transactionManager type="JDBC">
+		<dataSource type="SIMPLE">
+			<property name="JDBC.Driver" value="${driver}" />
+			<property name="JDBC.ConnectionURL" value="${jdbc.url.bibDB}" />
+			<property name="JDBC.Username" value="${username.bibDB}" />
+			<property name="JDBC.Password" value="${password.bibDB}" />
+		</dataSource>
+	</transactionManager>
+
+	<!--
+		Identify all SQL Map XML files to be loaded by this SQL map. Notice
+		the paths are relative to the classpath. For now, we only have one
+	-->
+	<sqlMap resource="common/RecommendationBibCommon.xml" />	
+	<sqlMap resource="RecommendationResolver.xml" /> 
+
+</sqlMapConfig>
