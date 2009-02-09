@@ -20,7 +20,6 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="content">
-		
 			<script type="text/javascript">
 				<![CDATA[
 					function checkUrlForTitle(  ){
@@ -41,8 +40,8 @@
 										var pageDescription = "<a href=\"javascript:setSuggestionFromUrlDescription('"+ result.pageDescription +"')\">" + result.pageDescription + "</a> ";
 										document.getElementById( "suggestion.description" ).innerHTML = pageDescription;
 									}
-									
-									setSuggestionFromUrlTags(result.pageKeywords);
+									// 2009/02/03, fei: This is a recommender's job
+									// setSuggestionFromUrlTags(result.pageKeywords);
 						        }
 						    }
 						};
@@ -56,7 +55,7 @@
 						var tagString = "";
 						for(var i = 0; i < keywords.length; i++) {
 							keywords[i] = keywords[i].replace (/^\s+/, '').replace (/\s+$/, '');
-							tagString += "<a href=\"javascript:copytag('inpf','"+ keywords[i] +"')\">" + keywords[i] + "</a> ";
+							tagString += "<a href=\"javascript:copytag('inpf','"+ keywords[i] +"')\">" + keywords[i] +"</a> ";
 						}
 			
 						document.getElementById( "suggestion.tags" ).innerHTML = tagString;
@@ -70,8 +69,36 @@
 						document.getElementById('post.resource.title').value=tagname;
 					}
 
-					
-					
+					/**
+					 * Ajax callback function for inserting recommended tags.
+					 */
+					function handleRecommendedTags(msg) {
+						var target = 'tagField';
+
+						// lookup target node
+						var tagField = document.getElementById(target) 
+						// lookup tags
+						var root = msg.getElementsByTagName('tags').item(0);
+						if( root == null ) {
+							// FIXME: DEBUG
+							alert("Invalid Ajax response: <tags/> not found.");
+						}
+						// append each tag to target field
+						for (var iNode = 0; iNode < root.childNodes.length; iNode++) {
+							var node = root.childNodes.item(iNode);
+							// work around firefox' phantom nodes
+							if( (node.nodeType == 1) && (node.tagName == 'tag') ) {
+								// create link element from tag
+								var newTag = document.createElement('a');
+								var newText= document.createTextNode(node.getAttribute('name')+" ");
+								newTag.setAttribute('href', "javascript:copytag('inpf', '"
+															+node.getAttribute('name')
+															+"')");
+								newTag.appendChild(newText);
+								tagField.appendChild(newTag);
+							}
+						}
+					}
 				]]>
 			</script>					
 				<errors:global errors="${errors}"/>
@@ -84,7 +111,20 @@
                              Hinweis: sie bearbeiten einen existierenden Post!
                           </p>
                         </c:if>
-
+                    <div id="scrapable" style="display:none">
+	                    <form:form action="/BibtexHandler" method="POST"> 	   
+	                      	<fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
+	                      		  <fieldset style="border:0px; position:relative;">
+		                      		  <h2><fmt:message key="post.meta.recommended"/>: <fmt:message key="post.meta.save_as_publication"/></h2>
+		            				  <p><fmt:message key="post.resource.bookmark_a_publication"/>:</p>
+		                      		  <p><textarea id="bib" name="selection" cols="60" rows="15" class="reqinput"><c:out value=''/></textarea></p>
+		                      		  <input type="hidden" name="requTask" value="upload" />
+		                      		  <c:set var="post_publication"><fmt:message key="save"/></c:set>
+		                      		  <input id="button" type="submit" name="submit" value="${post_publication}"/>
+	                      		  </fieldset>
+	                      	</fieldset>  	
+	                    </form:form>
+                    </div><br/>
                       
                 	<form:form action="/actions/postBookmark" method="POST">
                 		<fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
@@ -107,7 +147,20 @@
 									<div id="suggestion.description"></div>
 								</fieldset>
 							</fieldset>
-							<post:tagfield tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>	
+							<!--+
+							    | tags now inserted via ajax using JQuery
+							    + -->	
+							<script type="text/javascript">
+							$.ajax({
+							  type: "GET",
+							  url: "postBookmark",
+							  data: '<c:out value="${pageContext.request.queryString}"/>'+'&amp;ajax=getRecommendedTags',
+							  success: function(msg){
+							    handleRecommendedTags(msg)
+							  }
+							});
+							</script>
+					    	<post:tagfield tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
 							<table style="width:100%">
 								<tr>
 									<td style="width:50%">
@@ -131,33 +184,16 @@
 		                                <c:set var="reset"><fmt:message key="resetbutton"/></c:set>
 										<!-- function addSystemTags located in relevantFoxBox.tagx -->
 		                                <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
-                                        <input type="hidden" name="jump" value="${fn:escapeXml(command.jump)}"/>
+		                                <input type="hidden" name="jump" value="${fn:escapeXml(command.jump)}"/>
 		                                <form:hidden path="intraHashToUpdate"/>
 										<input type="reset"  tabindex="5" value="${reset}" />
 										<input type="submit" tabindex="6" value="${save}" onClick="clear_tags(); addSystemTags();"/>
 									</td>
 								</tr>
 							</table>	
-		
+							<input type="hidden" id="projectHome" name="projectHome" value="${projectHome}"/>
 						</fieldset>
-					</form:form>
-          
-                    <div id="scrapable" style="display:none">
-                      <br/>
-                      <form:form action="/BibtexHandler" method="POST">      
-                          <fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
-                              <fieldset style="border:0px; position:relative;">
-                                <h2><fmt:message key="post.meta.recommended"/>: <fmt:message key="post.meta.save_as_publication"/></h2>
-                          <p><fmt:message key="post.resource.bookmark_a_publication"/>:</p>
-                                <p><textarea id="bib" name="selection" cols="60" rows="15" class="reqinput"><c:out value=''/></textarea></p>
-                                <input type="hidden" name="requTask" value="upload" />
-                                <c:set var="post_publication"><fmt:message key="save"/></c:set>
-                                <input id="button" type="submit" name="submit" value="${post_publication}"/>
-                              </fieldset>
-                          </fieldset>   
-                      </form:form>
-                    </div>
-                    
+					</form:form>	
 				</div>
 					
 				<script type="text/javascript">
@@ -221,6 +257,7 @@
 					}
 				}
 			}
+			
 
 			function handle(request){
 				var textfield = document.getElementById("bib");
