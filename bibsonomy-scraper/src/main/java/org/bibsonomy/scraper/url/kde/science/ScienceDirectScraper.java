@@ -28,9 +28,9 @@ public class ScienceDirectScraper extends UrlScraper {
 	private static final String SCIENCE_CITATION_HOST     = "sciencedirect.com";
 	private static final String SCIENCE_CITATION_PATH     = "/science";
 	private static final String SCIENCE_CITATION_URL     = "http://www.sciencedirect.com/science";
-	
+
 	private static final String PATTERN_DOWNLOAD_PAGE_LINK = "<a href=\"(/science\\?_ob=DownloadURL[^\"]*)\"";
-	
+
 	private static final String PATTERN_ACCT               = "<input type=hidden name=_acct value=([^>]*)>";
 	private static final String PATTERN_ARTICLE_LIST_ID    = "<input type=hidden name=_ArticleListID\" value=(.+?)>";
 	private static final String PATTERN_USER_ID            = "<input type=hidden name=_userid value=(.+?)>"; // "&_userid=([^&]*)";
@@ -43,82 +43,83 @@ public class ScienceDirectScraper extends UrlScraper {
 	private static final Pattern patternUserId   = Pattern.compile(PATTERN_USER_ID);
 	private static final Pattern patternUiokey   = Pattern.compile(PATTERN_UIOKEY);
 	private static final Pattern patternMD5      = Pattern.compile(PATTERN_MD5);
-	
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + SCIENCE_CITATION_HOST), Pattern.compile(SCIENCE_CITATION_PATH + ".*")));
-	
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-			sc.setScraper(this);
 
-			// This Scraper might handle the specified url
-			try {
-				String downloadQuery = null;
-				
-				// article page
-				final URL url = sc.getUrl();
-				if(url.getPath().startsWith("/science") && url.getQuery().contains("_ob=ArticleURL")){
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + SCIENCE_CITATION_HOST), Pattern.compile(SCIENCE_CITATION_PATH + ".*")));
+
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+		sc.setScraper(this);
+
+		// This Scraper might handle the specified url
+		try {
+			String downloadQuery = null;
+
+			// article page
+			final URL url = sc.getUrl();
+			if (url.getPath().startsWith("/science")) {
+				if(url.getQuery() == null || url.getQuery().contains("_ob=ArticleURL")) {
 					final String pageContent = sc.getPageContent();
-					
+
 					// search link to download page (there is only one download link on page)
 					final Matcher matcherDownload = patternDownload.matcher(pageContent);
 					if(matcherDownload.find())
 						downloadQuery = matcherDownload.group(1);
-					
-				// download page
-				} else if(url.getPath().startsWith("/science") && url.getQuery().contains("_ob=DownloadURL")){
+
+					// download page
+				} else if(url.getQuery().contains("_ob=DownloadURL")) 
 					downloadQuery = url.toString();
+			} else
+				throw new  PageNotSupportedException("This page is currently not supported.");
+
+			final String downloadURL = "http://www.sciencedirect.com" + downloadQuery;
+			final String downloadPageContent = WebUtils.getContentAsString(new URL(downloadURL));
+
+
+			String acct = null;
+			final Matcher matcherAcct = patternAcct.matcher(downloadPageContent);
+			if(matcherAcct.find())
+				acct = matcherAcct.group(1);
+
+			String arList = "";
+			final Matcher matcherArList = patternArList.matcher(downloadPageContent);
+			if(matcherArList.find())
+				arList= matcherArList.group(1);
+
+			String userId = null;
+			final Matcher matcherUserId = patternUserId.matcher(downloadPageContent);
+			if(matcherUserId.find())
+				userId = matcherUserId.group(1);
+
+			String uiokey = null;
+			final Matcher matcherUiokey = patternUiokey.matcher(downloadPageContent);
+			if(matcherUiokey.find())
+				uiokey = matcherUiokey.group(1);
+
+			String md5 = null;
+			final Matcher matcherMD5 = patternMD5.matcher(downloadPageContent);
+			if(matcherMD5.find())
+				md5 = matcherMD5.group(1);
+
+			if (acct != null && userId != null && uiokey != null && md5 != null) {
+				final String postContent = "_ob=DownloadURL&_method=finish&_acct=" + acct + "&_userid=" + userId + "&_docType=FLA&_ArticleListID=" + arList + "&_uoikey=" + uiokey + "&count=1&md5=" + md5 + "&JAVASCRIPT_ON=Y&format=cite-abs&citation-type=BIBTEX&Export=Export&RETURN_URL=http%3A%2F%2Fwww.sciencedirect.com%2Fscience%2Fhome";
+
+				final String bibtex = WebUtils.getPostContentAsString(new URL(SCIENCE_CITATION_URL), postContent, "latin1").replace("\r","");
+
+				/*
+				 * Job done
+				 */
+				if (bibtex != null && ! bibtex.trim().equals("")) {
+					sc.setBibtexResult(bibtex);
+					return true;
 				} else
-					throw new  PageNotSupportedException("This page is currently not supported.");
-				
-				final String downloadURL = "http://www.sciencedirect.com" + downloadQuery;
-				final String downloadPageContent = WebUtils.getContentAsString(new URL(downloadURL));
+					throw new ScrapingFailureException("getting bibtex failed");
+			}else
+				throw new ScrapingFailureException("Needed ID is missing.");
 
-
-				String acct = null;
-				final Matcher matcherAcct = patternAcct.matcher(downloadPageContent);
-				if(matcherAcct.find())
-					acct = matcherAcct.group(1);
-				
-				String arList = "";
-				final Matcher matcherArList = patternArList.matcher(downloadPageContent);
-				if(matcherArList.find())
-					arList= matcherArList.group(1);
-				
-				String userId = null;
-				final Matcher matcherUserId = patternUserId.matcher(downloadPageContent);
-				if(matcherUserId.find())
-					userId = matcherUserId.group(1);
-
-				String uiokey = null;
-				final Matcher matcherUiokey = patternUiokey.matcher(downloadPageContent);
-				if(matcherUiokey.find())
-					uiokey = matcherUiokey.group(1);
-
-				String md5 = null;
-				final Matcher matcherMD5 = patternMD5.matcher(downloadPageContent);
-				if(matcherMD5.find())
-					md5 = matcherMD5.group(1);
-				
-				if (acct != null && userId != null && uiokey != null && md5 != null) {
-					final String postContent = "_ob=DownloadURL&_method=finish&_acct=" + acct + "&_userid=" + userId + "&_docType=FLA&_ArticleListID=" + arList + "&_uoikey=" + uiokey + "&count=1&md5=" + md5 + "&JAVASCRIPT_ON=Y&format=cite-abs&citation-type=BIBTEX&Export=Export&RETURN_URL=http%3A%2F%2Fwww.sciencedirect.com%2Fscience%2Fhome";
-					
-					final String bibtex = WebUtils.getPostContentAsString(new URL(SCIENCE_CITATION_URL), postContent, "latin1").replace("\r","");
-					
-					/*
-					 * Job done
-					 */
-					if (bibtex != null && ! bibtex.trim().equals("")) {
-						sc.setBibtexResult(bibtex);
-						return true;
-					} else
-						throw new ScrapingFailureException("getting bibtex failed");
-				}else
-					throw new ScrapingFailureException("Needed ID is missing.");
-				
-			} catch (MalformedURLException me) {
-				throw new InternalFailureException(me);
-			} catch (IOException ex) {
-				throw new InternalFailureException(ex);
-			}
+		} catch (MalformedURLException me) {
+			throw new InternalFailureException(me);
+		} catch (IOException ex) {
+			throw new InternalFailureException(ex);
+		}
 	}
 
 
