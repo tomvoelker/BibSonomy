@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.controller.actions;
 
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -27,8 +28,10 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.tagparser.TagString3Lexer;
 import org.bibsonomy.model.util.tagparser.TagString3Parser;
-import org.bibsonomy.recommender.RecommendedTag;
+import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.recommender.TagRecommender;
+import org.bibsonomy.rest.renderer.Renderer;
+import org.bibsonomy.rest.renderer.impl.XMLRenderer;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
@@ -81,7 +84,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		command.setAbstractGrouping("public");
 
 		/*
-		 * set default url.
+		 * set default values.
 		 */
 		command.getPost().getResource().setUrl("http://");
 		return command;
@@ -148,8 +151,32 @@ public class PostBookmarkController extends SingleResourceListController impleme
 	}
 
 	/**
-	 * This methods does everything which needs to be done before proceeding to
-	 * the {@link Views#POST_BOOKMARK} view. This includes:
+<<<<<<< PostBookmarkController.java
+	 * Handle ajax request - that is: deliver recommended Tags
+	 * TODO: This a a dirty hack-in.
+	 *       1) a separate ajax controller could handle this request
+	 *       2) the post data structure built prior showing the input form
+	 *          could be stored in a session id.
+	 *       3) XML should be rendered directly in the jsp 
+	 * @param command
+	 */
+	private View handleAjaxRequest(EditBookmarkCommand command) {
+		/*
+		 * get the recommended tags for the post from the command
+		 */
+		if (tagRecommender != null)	{
+			command.setRecommendedTags(tagRecommender.getRecommendedTags(command.getPost()));
+			Renderer renderer = XMLRenderer.getInstance();
+			StringWriter sw = new StringWriter(100);
+			renderer.serializeRecommendedTags(sw, command.getRecommendedTags());
+			command.setResponseString(sw.toString());
+		}
+		return Views.AJAX_RESPONSE;
+	}
+
+	/**
+	 * This methods does everything which needs to be done before proceeding to the 
+	 * {@link Views#POST_BOOKMARK} view. This includes:
 	 * <ul>
 	 * <li>initializing the group tag sets</li>
 	 * <li>getting the recommended tags</li>
@@ -173,9 +200,17 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		initGroupTagSets(loginUser);
 
 		/*
+		 * handle ajax requests 
+		 */
+		if (command.getAjax()!=null) {
+			return handleAjaxRequest(command);
+		}
+		
+		/*
 		 * get the recommended tags for the post from the command
 		 */
-		if (tagRecommender != null) command.setRecommendedTags(tagRecommender.getRecommendedTags(command.getPost()));
+		// 2009/01/29,fei: now done via ajax
+		// if (tagRecommender != null)	command.setRecommendedTags(tagRecommender.getRecommendedTags(command.getPost()));
 
 		/*
 		 * get the tag cloud of the user (this must be done before any error

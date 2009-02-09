@@ -7,7 +7,7 @@ import java.util.SortedSet;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.recommender.RecommendedTag;
+import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.webapp.command.PostCommand;
 
 /**
@@ -40,6 +40,11 @@ public class EditBookmarkCommand extends PostCommand {
 	private SortedSet<RecommendedTag> recommendedTags;
 
 	private Map<String,Map<String,List<String>>> relevantTagSets;
+	
+	// string holding ajax requests -- e.g. getRecommendedTags
+	private String ajax;
+	// string holding an ajax response -- e.g. recommended tags
+	private String responseString;
 	
 	public Post<Bookmark> getPost() {
 		return this.post;
@@ -169,5 +174,21 @@ public class EditBookmarkCommand extends PostCommand {
 
 	public void setIntraHashToUpdate(String intraHashToUpdate) {
 		this.intraHashToUpdate = intraHashToUpdate;
+	}
+
+	public void setAjax(String ajax) {
+		this.ajax = ajax;
+	}
+
+	public String getAjax() {
+		return ajax;
+	}
+
+	public void setResponseString(String responseString) {
+		this.responseString = responseString;
+	}
+
+	public String getResponseString() {
+		return responseString;
 	}
 }
