@@ -14,10 +14,10 @@
 
 <c:if test="${not empty command.pageURL}">
 {  
-	"pageTitle"       : "${command.pageTitle}", 
-	"pageURL"         : "${command.pageURL}",
-	"pageDescription" : "${command.pageDescription}",
-	"pageKeywords"    : "${command.pageKeywords}"
+	"pageTitle"       : "<c:out value='${command.pageTitle}'/>", 
+	"pageURL"         : "<c:out value='${command.pageURL}'/>",
+	"pageDescription" : "<c:out value='${command.pageDescription}'/>",
+	"pageKeywords"    : "<c:out value='${command.pageKeywords}'/>"
 }
 
 </c:if>

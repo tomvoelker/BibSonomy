@@ -220,6 +220,11 @@ public enum Views implements View {
 	AJAX("ajax"),
 	
 	/**
+	 * response page snippet for xml ajax requests
+	 */
+	AJAX_RESPONSE("ajaxResponse"),	
+	
+	/**
 	 * used by postBookmark to get the details for a given Url
 	 */
 	AJAX_GET_TITLE_FOR_URL("ajaxGetTitleForUrl"),
@@ -277,6 +282,16 @@ public enum Views implements View {
 	 */
 	REGISTER_USER_OPENID_SUCCESS("actions/register/openid/user_success"),
 	
+	/**
+	 * where user can attach an openid url to her/his user account
+	 */
+	// ATTACH_USER_OPENID("actions/register/openid/user_attach"),
+	/**
+	 * OpenID register form prefilled with information from 
+	 * the OpenID provider
+	 */
+	// ATTACH_USER_OPENID_PROVIDER_FORM("actions/register/openid/attach_provider_form"),
+
 	/**
 	 * Log into the system. 
 	 */
