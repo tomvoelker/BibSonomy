@@ -1,0 +1,37 @@
+package org.bibsonomy.recommender;
+
+import java.util.Properties;
+
+/**
+ * @author fei
+ * @version $Id$
+ */
+public interface RecommenderConnector extends TagRecommender {
+	/**
+	 * Initialize object.
+	 * @param props specific properties
+	 * @return true on success, false otherwise
+	 * @throws Exception Exception describing problem.
+	 */
+	public boolean initialize(Properties props) throws Exception;
+	
+	/**
+	 * Establish connection to recommender.
+	 * @return true on success, false otherwise
+	 * @throws Exception Exception describing problem.
+	 */
+	public boolean connect() throws Exception;
+	
+	/**
+	 * Terminate connection from recommender.
+	 * @return true on success, false otherwise
+	 * @throws Exception Exception describing problem.
+	 */
+	public boolean disconnect() throws Exception;
+	
+	/**
+	 * Identifies 
+	 * @return
+	 */
+	public byte[] getMeta();
+}
