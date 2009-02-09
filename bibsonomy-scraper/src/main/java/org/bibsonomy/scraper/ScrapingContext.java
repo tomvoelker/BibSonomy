@@ -1,15 +1,9 @@
 package org.bibsonomy.scraper;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
-import java.net.ConnectException;
-import java.net.HttpURLConnection;
 import java.net.URL;
 
-import org.apache.log4j.Logger;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.util.WebUtils;
 
 /**
  * This class is used to pass all relevant data from scraper to scraper and 
@@ -19,7 +13,6 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  */
 public class ScrapingContext {
 
-	private static final String CHARSET = "charset=";
 	/**
 	 * The URL of the web page where the entries to scrape are.
 	 */
@@ -52,12 +45,6 @@ public class ScrapingContext {
 	private Scraper scraper = null;
 
 	/**
-	 * To log errors (particularly when downloading a page for an URL)
-	 */
-	private static final Logger log = Logger.getLogger(ScrapingContext.class);
-
-
-	/**
 	 * Initially, only the URL is given (and therefore somehow mandatory). 
 	 * 
 	 * @param url URL of the web page to scrape.
@@ -88,87 +75,11 @@ public class ScrapingContext {
 	 * @return String which holds the page content.
 	 * @throws ScrapingException 
 	 */
+	@Deprecated
 	public String getContentAsString(final URL inputURL) throws ScrapingException {
-		try {
-			final HttpURLConnection urlConn = (HttpURLConnection) inputURL.openConnection();
-			urlConn.setAllowUserInteraction(false);
-			urlConn.setDoInput(true);
-			urlConn.setDoOutput(false);
-			urlConn.setUseCaches(false);
-			/*
-			 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
-			 * pages require it to download content.
-			 */
-			urlConn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
-			urlConn.connect();
-			
-			/*
-			 * extract character encoding from header
-			 */
-			final String charSet = getCharset(urlConn);
-			
-			/*
-			 * write content into string buffer
-			 */
-			final StringWriter out = new StringWriter();
-			final InputStreamReader in = new InputStreamReader(urlConn.getInputStream(), charSet);
-			int b;
-			while ((b = in.read()) >= 0) {
-				out.write(b);
-			}
-			urlConn.disconnect();
-			in.close();
-			out.flush();
-			out.close();
-			return out.toString();
-		} catch (final ConnectException cex) {
-			log.fatal("Could not get content for URL " + inputURL.toString() + " : " + cex.getMessage());
-			throw new InternalFailureException(cex);
-		} catch (final IOException ioe) {
-			log.fatal("Could not get content for URL " + inputURL.toString() + " : " + ioe.getMessage());
-			throw new InternalFailureException(ioe);
-		}
+		return WebUtils.getContentAsString(inputURL);
 	}
 
-	/** Extracts the charset ID of a web page as returned by the server.
-	 * 
-	 * @param urlConn
-	 * @return
-	 */
-	private String getCharset(final HttpURLConnection urlConn) {
-		final String contentType = urlConn.getContentType();
-		/*
-		 * this typically looks like that:
-		 * text/html; charset=utf-8; qs=1
-		 */
-		if (contentType != null) {
-			final int charsetPosition = contentType.indexOf(CHARSET);
-			if (charsetPosition > -1) {
-				/*
-				 * cut this:
-				 *                    |<--   -->|             
-				 * text/html; charset=utf-8; qs=1
-				 */
-				String charSet = contentType.substring(charsetPosition + CHARSET.length());
-				
-				// get only charset
-				final int charsetEnding = charSet.indexOf(";");
-				if (charsetEnding > -1) {
-					/*
-					 * cut this:
-					 * |<->|             
-					 * utf-8; qs=1
-					 */
-					charSet = charSet.substring(0, charsetEnding);
-				}
-				return charSet.trim().toUpperCase();
-			} 
-		} 
-		/*
-		 * default charset
-		 */
-		return "UTF-8";
-	}
 
 	/** 
 	 * @return The scraped BibTeX result.
