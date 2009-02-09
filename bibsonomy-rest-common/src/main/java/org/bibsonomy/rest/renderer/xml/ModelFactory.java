@@ -43,6 +43,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
@@ -145,6 +146,7 @@ public class ModelFactory {
 		return tag;
 	}
 
+	
 	private List<Tag> createTags(final List<TagsType> xmlTags, final int depth) {
 		final List<Tag> rVal = new ArrayList<Tag>();
 		for (final TagsType xmlSubTags : xmlTags) {
@@ -156,6 +158,16 @@ public class ModelFactory {
 		return rVal;
 	}
 
+	public RecommendedTag createRecommendedTag(final TagType xmlTag) {
+		final RecommendedTag tag = new RecommendedTag();
+		tag.setName(xmlTag.getName()); assert(tag.getName()!=null);
+		if (xmlTag.getGlobalcount() != null) tag.setGlobalcount(xmlTag.getGlobalcount().intValue());
+		if (xmlTag.getUsercount() != null) tag.setUsercount(xmlTag.getUsercount().intValue());
+		if (xmlTag.getConfidence() != null ) tag.setConfidence(xmlTag.getConfidence().doubleValue());
+		if (xmlTag.getScore() != null ) tag.setScore(xmlTag.getScore().doubleValue());
+		return tag;
+	}		
+	
 	public Post<Resource> createPost(final PostType xmlPost) {
 		checkPost(xmlPost);
 
