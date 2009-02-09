@@ -25,11 +25,14 @@ package org.bibsonomy.rest.renderer;
 
 import java.io.Reader;
 import java.io.Writer;
+import java.util.Collection;
 import java.util.List;
+import java.util.SortedSet;
 
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
@@ -121,6 +124,26 @@ public interface Renderer {
 	 */
 	public void serializeTag(Writer writer, Tag tag, ViewModel viewModel);
 
+	/**
+	 * Serializes a {@link List} of {@link RecommendedTag}s.
+	 * 
+	 * @param writer
+	 *            a {@link Writer} to use.
+	 * @param tags
+	 *            a {@link List} of {@link Tag} objects.
+	 */
+	public void serializeRecommendedTags(Writer writer, Collection<RecommendedTag> tags);
+	
+	/**
+	 * Serializes a {@link RecommendedTag}'s details
+	 * 
+	 * @param writer
+	 *            a {@link Writer} to use.
+	 * @param tag
+	 *            one {@link RecommendedTag} object.
+	 */
+	public void serializeRecommendedTag(Writer writer, RecommendedTag tag);
+	
 	/**
 	 * Serializes a list of {@link Group}s.
 	 * 
@@ -351,4 +374,26 @@ public interface Renderer {
 	 *             if the document within the reader is errorenous.
 	 */
 	public Tag parseTag(Reader reader) throws BadRequestOrResponseException;
+
+	/**
+	 * Reads a List of {@link RecommendedTag}s from a {@link Reader}.
+	 * 
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return a {@link List} of {@link Tag} objects.
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public SortedSet<RecommendedTag> parseRecommendedTagList(Reader reader) throws BadRequestOrResponseException;
+	
+	/**
+	 * Reads one {@link RecommendedTag} from a {@link Reader}.
+	 * 
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return one {@link Post} object.
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public RecommendedTag parseRecommendedTag(Reader reader) throws BadRequestOrResponseException;
 }

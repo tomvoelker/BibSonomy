@@ -34,10 +34,13 @@ import static org.bibsonomy.rest.RestProperties.Property.VALIDATE_XML_OUTPUT;
 import java.io.Reader;
 import java.io.Writer;
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -56,6 +59,8 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.RecommendedTag;
+import org.bibsonomy.model.RecommendedTagComparator;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
@@ -162,7 +167,8 @@ public class XMLRenderer implements Renderer {
 		xmlUser.setName(post.getUser().getName());
 		xmlUser.setHref(urlRenderer.createHrefForUser(post.getUser().getName()));
 		xmlPost.setUser(xmlUser);
-		xmlPost.setPostingdate(createXmlCalendar(post.getDate()));
+		if (post.getDate() != null)
+			xmlPost.setPostingdate(createXmlCalendar(post.getDate()));
 
 		// add tags
 		if (post.getTags() != null) {
@@ -274,7 +280,10 @@ public class XMLRenderer implements Renderer {
 	private void checkPost(final Post<? extends Resource> post) throws InternServerException {
 		if (post.getUser() == null) throw new InternServerException("error no user assigned!");
 		// there may be posts whithout tags
-		if( post.getTags() == null || post.getTags().size() == 0 ) throw new InternServerException( "error no tags assigned!" );
+		// 2009/01/07, fei: as stated above - there are situations where posts don't have tags
+		//                  for example, when serializing a post for submission to a remote 
+		//                  recommender -> commenting out
+		// if( post.getTags() == null || post.getTags().size() == 0 ) throw new InternServerException( "error no tags assigned!" );
 		if (post.getResource() == null) throw new InternServerException("error no ressource assigned!");
 	}
 
@@ -380,6 +389,29 @@ public class XMLRenderer implements Renderer {
 		return xmlTags;
 	}
 
+	/**
+	 * Creates an xml-representation for a given {@link RecommendedTag}.
+	 * @param tag recommended tag to encode
+	 * @return an {@link TagType} for given {@link RecommendedTag}
+	 * @throws InternServerException
+	 */
+	private TagType createXmlRecommendedTag(final RecommendedTag tag) throws InternServerException {
+		final TagType xmlTag = new TagType();
+		checkTag(tag);
+		xmlTag.setName(tag.getName());
+		xmlTag.setHref(urlRenderer.createHrefForTag(tag.getName()));
+		// if (tag.getGlobalcount() > 0) {
+		xmlTag.setGlobalcount(BigInteger.valueOf(tag.getGlobalcount()));
+		// }
+		// if (tag.getUsercount() > 0) {
+		xmlTag.setUsercount(BigInteger.valueOf(tag.getUsercount()));
+		// }
+		xmlTag.setConfidence(tag.getConfidence());
+		xmlTag.setScore(tag.getScore());
+		
+		return xmlTag;
+	}
+	
 	public void serializeGroups(final Writer writer, final List<Group> groups, final ViewModel viewModel) throws InternServerException {
 		final GroupsType xmlGroups = new GroupsType();
 		if (viewModel != null) {
@@ -731,5 +763,48 @@ public class XMLRenderer implements Renderer {
 
 	private void checkReader(Reader reader) throws BadRequestOrResponseException {
 		if (reader == null) throw new BadRequestOrResponseException("The body part of the received document is missing");
+	}
+
+	public RecommendedTag parseRecommendedTag(Reader reader) throws BadRequestOrResponseException {
+		checkReader(reader);
+		final BibsonomyXML xmlDoc = parse(reader);
+		if (xmlDoc.getTag() != null) {
+			return ModelFactory.getInstance().createRecommendedTag(xmlDoc.getTag());
+		}
+		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no tag defined.");
+	}
+
+	public SortedSet<RecommendedTag> parseRecommendedTagList(Reader reader) throws BadRequestOrResponseException {
+		checkReader(reader);
+		final BibsonomyXML xmlDoc = parse(reader);
+		if (xmlDoc.getTags() != null) {
+			final SortedSet<RecommendedTag> tags = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+			for (final TagType tt : xmlDoc.getTags().getTag()) {
+				final RecommendedTag t = ModelFactory.getInstance().createRecommendedTag(tt);
+				tags.add(t);
+			}
+			return tags;
+		}
+		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no list of tags defined.");
+	}
+
+	public void serializeRecommendedTag(Writer writer, RecommendedTag tag) {
+		final BibsonomyXML xmlDoc = new BibsonomyXML();
+		xmlDoc.setStat(StatType.OK);
+		xmlDoc.setTag(createXmlRecommendedTag(tag));
+		serialize(writer, xmlDoc);		
+	}
+
+	public void serializeRecommendedTags(Writer writer, Collection<RecommendedTag> tags) {
+		final TagsType xmlTags = new TagsType();
+		for (final RecommendedTag tag : tags) {
+			xmlTags.getTag().add(createXmlRecommendedTag(tag));
+		}
+		final BibsonomyXML xmlDoc = new BibsonomyXML();
+		xmlDoc.setStat(StatType.OK);
+		xmlDoc.setTags(xmlTags);
+		serialize(writer, xmlDoc);	
 	}
 }
