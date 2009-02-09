@@ -801,4 +801,14 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		return 0;
 	}
 
+	public List<User> getFriendsOfUser(User loginUser) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<User> getUserFriends(User loginUser) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
