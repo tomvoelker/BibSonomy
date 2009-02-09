@@ -3,6 +3,8 @@ package org.bibsonomy.recommender;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.bibsonomy.model.RecommendedTag;
+import org.bibsonomy.model.RecommendedTagComparator;
 import org.bibsonomy.model.Tag;
 import org.junit.Test;
 import static org.junit.Assert.*;

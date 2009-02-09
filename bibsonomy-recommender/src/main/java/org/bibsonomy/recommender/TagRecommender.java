@@ -3,6 +3,7 @@ package org.bibsonomy.recommender;
 import java.util.SortedSet;
 
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 
 /**

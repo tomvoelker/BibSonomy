@@ -7,6 +7,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 
 /**

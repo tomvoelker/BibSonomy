@@ -6,9 +6,9 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.RecommendedTag;
+import org.bibsonomy.model.RecommendedTagComparator;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.recommender.RecommendedTag;
-import org.bibsonomy.recommender.RecommendedTagComparator;
 import org.bibsonomy.recommender.TagRecommender;
 import org.bibsonomy.recommender.tags.simple.termprocessing.TermProcessingIterator;
 
