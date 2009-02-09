@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="RecommendationLogCommon">
+	<resultMap id="tasResult" class="tasEntry">
+		<result property="userName"  column="user_name"    javaType="string" />
+		<result property="timeStamp" column="date"         javaType="timeStamp" />
+		<result property="contentID" column="content_id"   javaType="integer"/>
+		<result property="tag"       column="tag_name"     javaType="string"/>
+	</resultMap>    
+
+	<resultMap id="tagName" class="tag">
+		<result property="name"         column="tag_name"        javaType="string"/>
+	</resultMap>	
+	
+	<resultMap id="postGuess" class="postGuess">
+		<result property="contentID"   column="content_id"  javaType="integer" />
+		<result property="diff"        column="diff"        javaType="long" />
+	</resultMap>	
+	
+	<!-- + 
+		 | pair
+	 	 + -->
+    <resultMap id="tagFrequency" class="pair">
+        <result property="first"  column="first"  javaType="string"/>
+        <result property="second" column="second" javaType="integer"/>
+    </resultMap>	
+</sqlMap>
