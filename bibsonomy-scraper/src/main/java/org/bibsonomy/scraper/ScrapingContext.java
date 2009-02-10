@@ -1,9 +1,10 @@
 package org.bibsonomy.scraper;
 
+import java.io.IOException;
 import java.net.URL;
 
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.util.WebUtils;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * This class is used to pass all relevant data from scraper to scraper and 
@@ -77,7 +78,11 @@ public class ScrapingContext {
 	 */
 	@Deprecated
 	public String getContentAsString(final URL inputURL) throws ScrapingException {
-		return WebUtils.getContentAsString(inputURL);
+		try {
+			return WebUtils.getContentAsString(inputURL);
+		} catch (IOException ex) {
+			throw new ScrapingException(ex);
+		}
 	}
 
 

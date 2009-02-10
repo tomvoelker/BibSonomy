@@ -1,5 +1,6 @@
 package org.bibsonomy.scraper.url.kde.ams;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -16,7 +17,7 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.scraper.util.WebUtils;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * Scraper for ams.allenpress.com
@@ -62,7 +63,10 @@ public class AmsScraper extends UrlScraper {
 					
 				} catch (MalformedURLException ex) {
 					throw new InternalFailureException(ex);
+				} catch (IOException e) {
+					throw new InternalFailureException(e);
 				}
+
 				
 			}else
 				throw new PageNotSupportedException("not found DOI in URL");

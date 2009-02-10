@@ -1,5 +1,6 @@
 package org.bibsonomy.scraper.url.kde.acl;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -13,7 +14,7 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.scraper.util.WebUtils;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * Scraper for aclweb.org, given URL must be show on a PDF
@@ -48,6 +49,8 @@ public class AclScraper extends UrlScraper {
 			bibtex = WebUtils.getContentAsString(new URL(downloadUrl));
 		} catch (MalformedURLException ex) {
 			throw new InternalFailureException(ex);
+		} catch (IOException e) {
+			throw new InternalFailureException(e);
 		}
 
 		if(bibtex != null){

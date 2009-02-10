@@ -15,7 +15,7 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.scraper.util.WebUtils;
+import org.bibsonomy.util.WebUtils;
 
 /** Scraper for ScienceDirect.
  * 
