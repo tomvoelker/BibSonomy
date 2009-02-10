@@ -7,7 +7,7 @@ import java.util.SortedSet;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.RecommendedTag;
+import org.bibsonomy.recommender.RecommendedTag;
 import org.bibsonomy.webapp.command.PostCommand;
 
 /**
