@@ -16,6 +16,7 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.util.WebUtils;
 
 /**
  * Scraper for ams.allenpress.com
@@ -44,7 +45,7 @@ public class AmsScraper extends UrlScraper {
 				final String downloadUrl = "http://ams.allenpress.com/perlserv/?request=download-citation&t=endnote&f=1520-0485_38_1669&doi=" + doi + "&site=amsonline";
 				
 				try {
-					final String endnote = sc.getContentAsString(new URL(downloadUrl));
+					final String endnote = WebUtils.getContentAsString(new URL(downloadUrl));
 					
 					if(endnote != null){
 						
