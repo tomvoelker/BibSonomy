@@ -13,6 +13,7 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.util.WebUtils;
 
 /**
  * Scraper for aclweb.org, given URL must be show on a PDF
@@ -44,7 +45,7 @@ public class AclScraper extends UrlScraper {
 
 		String bibtex = null;
 		try {
-			bibtex = sc.getContentAsString(new URL(downloadUrl));
+			bibtex = WebUtils.getContentAsString(new URL(downloadUrl));
 		} catch (MalformedURLException ex) {
 			throw new InternalFailureException(ex);
 		}
