@@ -55,7 +55,7 @@ public class Pair <T extends Comparable<T>, U extends Comparable<U>> implements 
 		{
 			return false;
 		}
-		Pair<T, U> other = getClass().cast( oth );
+		Pair<T, U> other = (Pair<T, U>) getClass().cast( oth );
 		return (getFirst() == null? other.getFirst() == null : getFirst().equals( other.getFirst() ))
 		&& (second == null? other.second == null : second.equals( other.second ));
 	}
