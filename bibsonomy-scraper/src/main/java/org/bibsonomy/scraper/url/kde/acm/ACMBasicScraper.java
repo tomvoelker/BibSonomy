@@ -15,6 +15,7 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.scraper.util.BibTeXUtils;
+import org.bibsonomy.scraper.util.XMLUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -102,7 +103,7 @@ public class ACMBasicScraper extends UrlScraper {
 						if ("abstract".equals(own.getValue())) {
 							//the abstract extracting method ist not reliable somtime it cant extract text 
 							//out of a <p>-tag. Possibly its the tidy parser who causes this.
-							abstr = getText(curr);
+							abstr =  XMLUtils.getText(curr);
 							break;
 						}
 					}
@@ -207,27 +208,6 @@ public class ACMBasicScraper extends UrlScraper {
 
 	public String getInfo() {
 		return info;
-	}
-
-	//function to extract the text in one parent node and all depth of it
-	private String getText(Node node) {
-		StringBuffer text = new StringBuffer();
-
-		String value = node.getNodeValue();
-
-		if (value != null){
-			text.append(value);
-		}
-
-		if (node.hasChildNodes()) {
-			NodeList children = node.getChildNodes();
-			for (int i = 0; i < children.getLength(); i++) {
-				Node child = children.item(i);
-				text.append(getText(child));
-			}
-		}
-
-		return text.toString();
 	}
 
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
