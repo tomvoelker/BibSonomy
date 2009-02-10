@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender;
+package org.bibsonomy.recommender.tags.popular;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -10,13 +10,15 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.RecommendedTagComparator;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.recommender.DBAccess;
 import org.bibsonomy.recommender.params.Pair;
+import org.bibsonomy.recommender.tags.TagRecommender;
 
 /**
  * @author fei
  * @version $Id$
  */
-public class MostPopularRecommender implements TagRecommender {
+public class MostPopularByUserTagRecommender implements TagRecommender {
 	private static final Logger log = Logger.getLogger(DBAccess.class);
 	
 	public void addRecommendedTags(SortedSet<RecommendedTag> recommendedTags,

@@ -2,6 +2,8 @@ package org.bibsonomy.recommender;
 
 import java.util.Properties;
 
+import org.bibsonomy.recommender.tags.TagRecommender;
+
 /**
  * @author fei
  * @version $Id$

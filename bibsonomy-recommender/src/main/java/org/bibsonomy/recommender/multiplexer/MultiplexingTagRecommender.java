@@ -18,10 +18,10 @@ import org.bibsonomy.model.RecommendedTagComparator;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.DBAccess;
 import org.bibsonomy.recommender.RecommenderConnector;
-import org.bibsonomy.recommender.TagRecommender;
 import org.bibsonomy.recommender.WebserviceRecommender;
 import org.bibsonomy.recommender.multiplexer.strategy.RecommendationSelector;
 import org.bibsonomy.recommender.multiplexer.strategy.SelectAll;
+import org.bibsonomy.recommender.tags.TagRecommender;
 import org.bibsonomy.recommender.tags.simple.DummyTagRecommender;
 
 /**
@@ -121,7 +121,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	//------------------------------------------------------------------------
 	/** Simply adds recommendations at end of list. 
 	 * 
-	 * @see org.bibsonomy.recommender.TagRecommender#addRecommendedTags(java.util.SortedSet, org.bibsonomy.model.Post)
+	 * @see org.bibsonomy.recommender.tags.TagRecommender#addRecommendedTags(java.util.SortedSet, org.bibsonomy.model.Post)
 	 */	
 	public void addRecommendedTags(SortedSet<RecommendedTag> recommendedTags,
 			Post<? extends Resource> post) {

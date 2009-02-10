@@ -12,7 +12,7 @@ import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.RecommendedTagComparator;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.RecommenderConnector;
-import org.bibsonomy.recommender.TagRecommender;
+import org.bibsonomy.recommender.tags.TagRecommender;
 
 /**
  * Dummy recommender for simulating different latency periods.
@@ -26,7 +26,7 @@ public class DummyTagRecommender implements TagRecommender, RecommenderConnector
 	
 	/**  
 	 * Do nothing.
-	 * @see org.bibsonomy.recommender.TagRecommender#addRecommendedTags(java.util.SortedSet, org.bibsonomy.model.Post)
+	 * @see org.bibsonomy.recommender.tags.TagRecommender#addRecommendedTags(java.util.SortedSet, org.bibsonomy.model.Post)
 	 */
 	public void addRecommendedTags(SortedSet<RecommendedTag> recommendedTags, Post<? extends Resource> post) {
 		recommendedTags.addAll(getRecommendedTags(post));

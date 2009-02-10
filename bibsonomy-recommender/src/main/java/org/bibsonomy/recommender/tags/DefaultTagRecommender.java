@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender;
+package org.bibsonomy.recommender.tags;
 
 import org.bibsonomy.model.RecommendedTagComparator;
 import org.bibsonomy.recommender.tags.simple.SimpleContentBasedTagRecommender;

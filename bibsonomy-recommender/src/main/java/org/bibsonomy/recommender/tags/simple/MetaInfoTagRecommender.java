@@ -20,8 +20,8 @@ import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.RecommendedTagComparator;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.RecommenderConnector;
-import org.bibsonomy.recommender.TagRecommender;
 import org.bibsonomy.recommender.multiplexer.MultiplexingTagRecommender;
+import org.bibsonomy.recommender.tags.TagRecommender;
 
 /**
  * @author fei

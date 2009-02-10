@@ -9,7 +9,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.RecommendedTagComparator;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.recommender.TagRecommender;
+import org.bibsonomy.recommender.tags.TagRecommender;
 import org.bibsonomy.recommender.tags.simple.termprocessing.TermProcessingIterator;
 
 /**
@@ -20,7 +20,7 @@ public class SimpleContentBasedTagRecommender implements TagRecommender {
 
 	/** Simply adds recommendations at end of list. 
 	 * 
-	 * @see org.bibsonomy.recommender.TagRecommender#addRecommendedTags(java.util.SortedSet, org.bibsonomy.model.Post)
+	 * @see org.bibsonomy.recommender.tags.TagRecommender#addRecommendedTags(java.util.SortedSet, org.bibsonomy.model.Post)
 	 */
 	public void addRecommendedTags(SortedSet<RecommendedTag> recommendedTags, Post<? extends Resource> post) {
 		recommendedTags.addAll(getRecommendedTags(post));
