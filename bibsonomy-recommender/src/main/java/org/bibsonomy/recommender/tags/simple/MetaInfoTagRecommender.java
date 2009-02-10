@@ -19,15 +19,15 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.RecommendedTagComparator;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.recommender.RecommenderConnector;
 import org.bibsonomy.recommender.multiplexer.MultiplexingTagRecommender;
+import org.bibsonomy.recommender.tags.TagRecommenderConnector;
 import org.bibsonomy.recommender.tags.TagRecommender;
 
 /**
  * @author fei
  * @version $Id$
  */
-public class MetaInfoTagRecommender implements RecommenderConnector {
+public class MetaInfoTagRecommender implements TagRecommenderConnector {
 	private static final Logger log = Logger.getLogger(MetaInfoTagRecommender.class);
 	private String server = "";   // 'http://www.bibsonomy.org' 
 	// FIXME: How can we automatically get bibsonomy's servername?

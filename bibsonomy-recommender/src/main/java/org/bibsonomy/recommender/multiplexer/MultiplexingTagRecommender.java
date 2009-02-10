@@ -17,11 +17,11 @@ import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.RecommendedTagComparator;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.DBAccess;
-import org.bibsonomy.recommender.RecommenderConnector;
-import org.bibsonomy.recommender.WebserviceRecommender;
 import org.bibsonomy.recommender.multiplexer.strategy.RecommendationSelector;
 import org.bibsonomy.recommender.multiplexer.strategy.SelectAll;
+import org.bibsonomy.recommender.tags.TagRecommenderConnector;
 import org.bibsonomy.recommender.tags.TagRecommender;
+import org.bibsonomy.recommender.tags.WebserviceTagRecommender;
 import org.bibsonomy.recommender.tags.simple.DummyTagRecommender;
 
 /**
@@ -42,7 +42,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 													// no further recommender answers 
 													// should be added to database
 	private List<TagRecommender> localRecommenders;         // recommenders with object reference
-	private List<RecommenderConnector> distRecommenders;    // recommenders with remote access
+	private List<TagRecommenderConnector> distRecommenders;    // recommenders with remote access
 	
 	private long queryTimeout = 100;                // timeout for querying distant recommenders
 	private RecommendationSelector resultSelector;
@@ -51,7 +51,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	 */
 	public MultiplexingTagRecommender() {
 		localRecommenders = new ArrayList<TagRecommender>();
-		distRecommenders  = new ArrayList<RecommenderConnector>();
+		distRecommenders  = new ArrayList<TagRecommenderConnector>();
 		resultSelector    = new SelectAll();
 	}
 	/**
@@ -79,7 +79,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	 * @param recommender
 	 * @return true on success, false otherwise
 	 */
-	public boolean addRecommenderConnector(RecommenderConnector recommender) {
+	public boolean addRecommenderConnector(TagRecommenderConnector recommender) {
 		log.info("adding local recommender: "+recommender.getInfo());
 		getDistRecommenders().add(recommender);
 		return true;
@@ -90,7 +90,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	 */
 	public boolean connectRecommenders() {
 		// connect to each recommender
-		for(RecommenderConnector rec: getDistRecommenders()) {
+		for(TagRecommenderConnector rec: getDistRecommenders()) {
 			try {
 				log.info("connecting to "+rec.getInfo());
 				if( !rec.connect() );
@@ -105,7 +105,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	 */
 	public boolean disconnectRecommenders() {
 		// disconnect from each recommender
-		for(RecommenderConnector rec: getDistRecommenders()) {
+		for(TagRecommenderConnector rec: getDistRecommenders()) {
 			try {
 				log.info("disconnecting from "+rec.getInfo());
 				if( !rec.disconnect() );
@@ -149,7 +149,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			qid = DBAccess.addQuery(post.getUser().getName(), ts, post);
 			
 			// query remote recommenders
-			for( RecommenderConnector con: getDistRecommenders() ) {
+			for( TagRecommenderConnector con: getDistRecommenders() ) {
 				// each recommender is identified by an unique id:
 				Long sid = DBAccess.addRecommender(qid, con.getInfo(), con.getMeta());
 				RecommenderDispatcher dispatcher = 
@@ -222,13 +222,13 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		return true;
 	}
 
-	public void setDistRecommenders(List<RecommenderConnector> distRecommenders) {
+	public void setDistRecommenders(List<TagRecommenderConnector> distRecommenders) {
 		if (getDistRecommenders()!=null) 
 			disconnectRecommenders();
 		this.distRecommenders = distRecommenders;
 		connectRecommenders();
 	}
-	public List<RecommenderConnector> getDistRecommenders() {
+	public List<TagRecommenderConnector> getDistRecommenders() {
 		return distRecommenders;
 	}
 

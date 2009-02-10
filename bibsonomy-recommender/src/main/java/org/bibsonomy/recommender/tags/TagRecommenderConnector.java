@@ -1,14 +1,13 @@
-package org.bibsonomy.recommender;
+package org.bibsonomy.recommender.tags;
 
 import java.util.Properties;
 
-import org.bibsonomy.recommender.tags.TagRecommender;
 
 /**
  * @author fei
  * @version $Id$
  */
-public interface RecommenderConnector extends TagRecommender {
+public interface TagRecommenderConnector extends TagRecommender {
 	/**
 	 * Initialize object.
 	 * @param props specific properties

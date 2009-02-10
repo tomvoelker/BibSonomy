@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender;
+package org.bibsonomy.recommender.tags;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -32,25 +32,25 @@ import org.bibsonomy.rest.renderer.impl.XMLRenderer;
  * @author fei
  * @version $Id$
  */
-public class WebserviceRecommender implements RecommenderConnector {
+public class WebserviceTagRecommender implements TagRecommenderConnector {
 	private HttpClient client;
 	// service's address
 	private URI address;
 	// serializes post
 	Renderer renderer;
-	final Logger log = Logger.getLogger(WebserviceRecommender.class);
+	final Logger log = Logger.getLogger(WebserviceTagRecommender.class);
 	
 	/**
 	 * Constructor
 	 */
-	public WebserviceRecommender(URI address) {
+	public WebserviceTagRecommender(URI address) {
 		// Create an instance of HttpClient.
 		client = new HttpClient();
 		this.setAddress(address);
 		this.renderer = XMLRenderer.getInstance();
 	}
 	
-	public WebserviceRecommender() {
+	public WebserviceTagRecommender() {
 		client = new HttpClient();
 		this.renderer = XMLRenderer.getInstance();
 	}

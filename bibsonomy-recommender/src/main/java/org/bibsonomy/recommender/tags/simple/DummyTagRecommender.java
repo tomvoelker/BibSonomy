@@ -11,7 +11,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.RecommendedTagComparator;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.recommender.RecommenderConnector;
+import org.bibsonomy.recommender.tags.TagRecommenderConnector;
 import org.bibsonomy.recommender.tags.TagRecommender;
 
 /**
@@ -20,7 +20,7 @@ import org.bibsonomy.recommender.tags.TagRecommender;
  * @author fei
  * @version $Id$
  */
-public class DummyTagRecommender implements TagRecommender, RecommenderConnector {
+public class DummyTagRecommender implements TagRecommender, TagRecommenderConnector {
 	private static final Logger log = Logger.getLogger(DummyTagRecommender.class);
 	private boolean init = false;
 	

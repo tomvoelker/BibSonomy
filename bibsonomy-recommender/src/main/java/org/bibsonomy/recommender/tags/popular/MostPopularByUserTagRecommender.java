@@ -15,39 +15,51 @@ import org.bibsonomy.recommender.params.Pair;
 import org.bibsonomy.recommender.tags.TagRecommender;
 
 /**
+ * Returns the most popular (i.e., most often used) tags of the user as 
+ * recommendation for the post.  
+ * 
  * @author fei
  * @version $Id$
  */
 public class MostPopularByUserTagRecommender implements TagRecommender {
 	private static final Logger log = Logger.getLogger(DBAccess.class);
 	
-	public void addRecommendedTags(SortedSet<RecommendedTag> recommendedTags,
-			Post<? extends Resource> post) {
+	public void addRecommendedTags(final SortedSet<RecommendedTag> recommendedTags, final Post<? extends Resource> post) {
 		recommendedTags.addAll(getRecommendedTags(post));
 	}
 
 	public String getInfo() {
-		return "Most Popular Tags Recommender";
+		return "Most Popular Tags By User Recommender";
 	}
 
-	// returns user's five overall most popular tags
-	public SortedSet<RecommendedTag> getRecommendedTags(
-			Post<? extends Resource> post) {
-		String username = post.getUser().getName();
-		SortedSet<RecommendedTag> result = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+	
+	 
+	/**
+	 * Returns user's five overall most popular tags
+	 * 
+	 * @see org.bibsonomy.recommender.tags.TagRecommender#getRecommendedTags(org.bibsonomy.model.Post)
+	 */
+	public SortedSet<RecommendedTag> getRecommendedTags(final Post<? extends Resource> post) {
+		final String username = post.getUser().getName();
+		final SortedSet<RecommendedTag> result = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
 		
-		if( username!=null ) {
+		if (username != null) {
 			try {
-				Integer count = DBAccess.getNumberOfTagsForUser(username);
-				List<Pair<String,Integer>> tags = DBAccess.getMostPopularTagsForUser(username);
-				for( Pair<String,Integer> tag : tags ) {
+				/*
+				 * we get the count to normalize the score
+				 */
+				final Integer count = DBAccess.getNumberOfTagsForUser(username);
+				
+				
+				final List<Pair<String,Integer>> tags = DBAccess.getMostPopularTagsForUser(username);
+				for (Pair<String,Integer> tag : tags) {
 					// TODO: use some sensible confidence value
-					double tmp = (1.0*tag.getSecond())/count;
-					RecommendedTag recTag = new RecommendedTag(tag.getFirst(),tmp,0.5);
+					final double tmp = (1.0*tag.getSecond())/count;
+					final RecommendedTag recTag = new RecommendedTag(tag.getFirst(),tmp,0.5);
 					result.add(recTag);
 				}
 			} catch (SQLException ex) {
-				log.error("Error getting recommendations for user "+username, ex);
+				log.error("Error getting recommendations for user " + username, ex);
 			}
 		}
 		// all done
