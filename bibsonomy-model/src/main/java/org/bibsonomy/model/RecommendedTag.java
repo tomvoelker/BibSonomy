@@ -36,4 +36,5 @@ public class RecommendedTag extends Tag implements Comparable<Tag> {
 		this.confidence = confidence;
 	}
 	
+
 }
