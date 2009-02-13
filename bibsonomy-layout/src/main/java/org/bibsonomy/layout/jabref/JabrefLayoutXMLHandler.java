@@ -18,12 +18,12 @@ public class JabrefLayoutXMLHandler extends DefaultHandler {
 
 	private StringBuffer buf = new StringBuffer();
 
-	private List<JabrefLayoutDefinition> layoutDefinitions;
+	private List<JabrefLayout> layoutDefinitions;
 	
-	private JabrefLayoutDefinition currentLayoutDefinition;
+	private JabrefLayout currentLayoutDefinition;
 	
 	public void startDocument() {
-		 layoutDefinitions = new LinkedList<JabrefLayoutDefinition>();
+		 layoutDefinitions = new LinkedList<JabrefLayout>();
 	}
 
 	public void endDocument() {
@@ -33,7 +33,7 @@ public class JabrefLayoutXMLHandler extends DefaultHandler {
 	public void startElement (final String uri, final String name, final String qName, final Attributes atts) {
 		buf = new StringBuffer();
 		if ("layout".equals(name)) {
-			currentLayoutDefinition = new JabrefLayoutDefinition(atts.getValue("name"));
+			currentLayoutDefinition = new JabrefLayout(atts.getValue("name"));
 		}
 	}
 
@@ -72,7 +72,7 @@ public class JabrefLayoutXMLHandler extends DefaultHandler {
 		return buf.toString().trim();
 	}
 
-	public List<JabrefLayoutDefinition> getLayouts() {
+	public List<JabrefLayout> getLayouts() {
 		return layoutDefinitions;
 	}
 

@@ -27,6 +27,8 @@ public enum LayoutPart {
 	 */
 	ITEM("item");
 
+	public static LayoutPart[] layoutParts = new LayoutPart[]{BEGIN, END, ITEM};
+	
 	private static String[] allTypes = new String[] {"begin", "item", "end"};
 
 	/**

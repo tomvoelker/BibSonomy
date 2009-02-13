@@ -9,7 +9,6 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 
-import net.sf.jabref.Globals;
 import net.sf.jabref.export.layout.Layout;
 import net.sf.jabref.export.layout.LayoutHelper;
 
@@ -27,9 +26,12 @@ import org.springframework.beans.factory.annotation.Required;
  */
 public class JabrefLayouts {
 
-	private static final Log log = LogFactory.getLog(JabrefLayouts.class);
+	/*
+	 * copied from JabRefs Globals
+	 */
+	private static final String GLOBALS_FORMATTER_PACKAGE = "net.sf.jabref.export.layout.format.";
 
-	private static final String message_no_custom_layout = "You don't have a custom filter installed. Please go to the settings page and install one.";
+	private static final Log log = LogFactory.getLog(JabrefLayouts.class);
 
 	/**
 	 * One layout my consist of several files - e.g., sublayouts. These are 
@@ -68,11 +70,11 @@ public class JabrefLayouts {
 	/**
 	 * Can be configured by the setter: the path where the default layout files are.
 	 */
-	private String defaultLayoutFilePath = "jabref";
+	private String defaultLayoutFilePath = "org/bibsonomy/layout/jabref";
 	/**
 	 * saves all loaded layouts (html, bibtexml, tablerefs, hash(user.username), ...)
 	 */
-	private HashMap<String,Layout> layouts;
+	private HashMap<String,JabrefLayout> layouts;
 
 	/** Initialize the layouts by loading them into a map.
 	 * 
@@ -91,30 +93,29 @@ public class JabrefLayouts {
 		/*
 		 * create a new hashmap to store the layouts
 		 */
-		layouts = new HashMap<String, Layout>();
+		layouts = new HashMap<String, JabrefLayout>();
 		/*
 		 * load layout definition from XML file
 		 */
-		final List<JabrefLayoutDefinition> jabrefLayouts = new XMLJabrefLayoutReader(new BufferedReader(new InputStreamReader(JabrefLayoutUtils.getResourceAsStream(defaultLayoutFilePath + "/" + "JabrefLayouts.xml"), "UTF-8"))).getJabrefLayoutsDefinitions();
+		final List<JabrefLayout> jabrefLayouts = new XMLJabrefLayoutReader(new BufferedReader(new InputStreamReader(JabrefLayoutUtils.getResourceAsStream(defaultLayoutFilePath + "/" + "JabrefLayouts.xml"), "UTF-8"))).getJabrefLayoutsDefinitions();
 		log.info("found " + jabrefLayouts.size() + " layout definitions");
 		/*
 		 * iterate over all layout definitions
 		 */
-		for (final JabrefLayoutDefinition jabrefLayout : jabrefLayouts) {
+		for (final JabrefLayout jabrefLayout : jabrefLayouts) {
 			log.debug("loading layout " + jabrefLayout.getName());
-			final String path = defaultLayoutFilePath + "/" + getDirectory(jabrefLayout.getDirectory());
+			final String filePath = defaultLayoutFilePath + "/" + getDirectory(jabrefLayout.getDirectory());
 			/*
 			 * iterate over all subLayouts
 			 */
 			for (final String subLayout: subLayouts) {
-				final String fileName = jabrefLayout.getBaseFileName() + subLayout + JabrefLayoutUtils.layoutFileExtension;
-				final String fileLocation = path + fileName;
-
-				final Layout layout = loadLayout(fileLocation);
+				final String fileName = filePath + jabrefLayout.getBaseFileName() + subLayout + JabrefLayoutUtils.layoutFileExtension;
+				final Layout layout = loadLayout(fileName);
 				if (layout != null) {
-					layouts.put(fileName.toLowerCase(), layout);
+					jabrefLayout.addSubLayout(subLayout, layout);
 				}
 			}
+			layouts.put(jabrefLayout.getName(), jabrefLayout);
 		}
 		log.info("loaded " + layouts.size() + " layouts");
 	}
@@ -136,7 +137,7 @@ public class JabrefLayouts {
 			 * load layout
 			 */
 			try {
-				return layoutHelper.getLayoutFromText(Globals.FORMATTER_PACKAGE);
+				return layoutHelper.getLayoutFromText(GLOBALS_FORMATTER_PACKAGE);
 			} catch (Exception e) {
 				throw new IOException(e);
 			}
@@ -153,44 +154,14 @@ public class JabrefLayouts {
 		return directory + "/";
 	}
 
-	/** Returns the appropriate part for the specified layout.
-	 *  
-	 * @param layout
-	 * @param part
-	 * @return
-	 */
-	public Layout getLayout(final String layout, final LayoutPart part) {
-		return layouts.get(JabrefLayoutUtils.getLayoutFileName(layout, part.toString()));
-	}
-
 	/** Returns the requested layout. This is for layouts which don't have item parts for specific publication types. 
 	 * 
 	 * @param layout
 	 * @return
 	 */
-	public Layout getLayout(final String layout) {
-		return layouts.get(JabrefLayoutUtils.getLayoutFileName(layout));
+	public JabrefLayout getLayout(final String layout) {
+		return layouts.get(layout);
 	}
-
-	/** Returns the requested layout for the requested entryType. 
-	 * If no entry type specific layout is available, the default layout is returned. 
-	 * @param layout
-	 * @param entryType
-	 * @return
-	 */
-	public Layout getLayout(final String layout, final String entryType) {
-		/*
-		 * try type-specific layout
-		 */
-		final Layout layout2 = layouts.get(JabrefLayoutUtils.getLayoutFileName(layout, entryType));
-
-		if (layout2 != null) return layout2;
-		/*
-		 * no type-specific layout available, take default
-		 */
-		return getLayout(layout);
-	}
-
 
 	/** Removes all filters from the cache and loads the default filters.
 	 * @throws IOException
@@ -199,25 +170,56 @@ public class JabrefLayouts {
 		loadDefaultLayouts();
 	}
 
-
 	/**
 	 * Loads user filter from file into a map.
 	 * 
 	 * @param userName The user who requested a filter
-	 * @throws Exception  
+	 * 
+	 * @throws IOException 
 	 */
-	private void loadUserLayoutFilter(final String hashedName) throws Exception {
+	private void loadUserLayout(final String userName) throws IOException {
 		/*
-		 * build path from first two letters of file name hash
+		 * initialize a new user layout
 		 */
-		final String docPath = userLayoutFilePath + hashedName.substring(0, 2);
+		final JabrefLayout jabrefLayout = new JabrefLayout(JabrefLayoutUtils.userLayoutName(userName));
+		jabrefLayout.setDescription("Custom layout of user " + userName);
+		jabrefLayout.setDisplayName("custom");
+		jabrefLayout.setMimeType("text/html"); // FIXME: this should be adaptable by the user ...
+		jabrefLayout.setUserLayout(true);
 
-		final File file = new File(docPath + "/" + hashedName);
-		if (file.exists()) {
-			final LayoutHelper layoutHelper = new LayoutHelper(new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8")));
-			synchronized(layouts) {
-				layouts.put(hashedName, layoutHelper.getLayoutFromText(Globals.FORMATTER_PACKAGE));
+		/*
+		 * iterate over layout parts (.begin, .item, .end)
+		 */
+		for (final LayoutPart layoutPart : LayoutPart.layoutParts) {
+			final String hashedName = JabrefLayoutUtils.userLayoutHash(userName, layoutPart);
+			/*
+			 * build path from first two letters of file name hash
+			 */
+			final String docPath = userLayoutFilePath + hashedName.substring(0, 2);
+			final File file = new File(docPath + "/" + hashedName);
+
+			log.debug("trying to load custom user layout (part " + layoutPart + ") for user " + userName + " from file " + file);
+
+			if (file.exists()) {
+				log.debug("custom layout found!");
+				final LayoutHelper layoutHelper = new LayoutHelper(new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8")));
+
+				try {
+					jabrefLayout.addSubLayout(layoutPart, layoutHelper.getLayoutFromText(GLOBALS_FORMATTER_PACKAGE));
+				} catch (final Exception e) {
+					/*
+					 * unfortunately, layoutHelper.getLayoutFromText throws a generic Exception, 
+					 * so we catch it here
+					 */
+					throw new IOException ("Could not load layout: " + e.getMessage());
+				}
 			}
+		}
+		/*
+		 * add user layout to map
+		 */
+		synchronized(layouts) {
+			layouts.put(jabrefLayout.getName(), jabrefLayout);
 		}
 	}
 
@@ -225,38 +227,29 @@ public class JabrefLayouts {
 		return layouts.toString();
 	}
 
-	/** Returns the layout for the given user
+	/** Returns the layout for the given user. If no layout could be found, <code>null</code>
+	 * is returned instead of throwing an exception. This allows for missing parts (i.e., 
+	 * no begin.layout).
 	 * 
 	 * @param userName
 	 * @return
-	 * @throws Exception if layout is not available
 	 */
-	public Layout getUserLayout(final String userName, final LayoutPart layoutPart) {
-		final String hashedName = JabrefLayoutUtils.userLayoutHash(userName, layoutPart);
+	public JabrefLayout getUserLayout(final String userName) {
 		/*
 		 * check if custom filter exists
 		 */
-		if (!layouts.containsKey(hashedName)) {
+		final String userLayoutName = JabrefLayoutUtils.userLayoutName(userName);
+		if (!layouts.containsKey(userLayoutName)) {
 			/*
 			 * custom filter of current user is not loaded yet -> check if a filter exists at all
 			 */
 			try {
-				loadUserLayoutFilter(hashedName);
-			} catch (final Exception e) {
-				log.fatal("Error loading custom filter for user " + userName, e);
-				throw new IllegalArgumentException(message_no_custom_layout);    			
+				loadUserLayout(userName);
+			} catch (final IOException e) {
+				log.info("Error loading custom filter for user " + userName, e);
 			}
 		}
-		/* *************** Printing the entries ******************/
-		final Layout userLayout = layouts.get(hashedName);
-		if (userLayout == null){
-			/*
-			 * custom filter deleted meanwhile -> exception
-			 */
-			log.fatal("Error loading custom filter for user " + userName);
-			throw new IllegalArgumentException(message_no_custom_layout);		    		
-		}
-		return userLayout;
+		return layouts.get(userLayoutName);
 	}
 
 	/**

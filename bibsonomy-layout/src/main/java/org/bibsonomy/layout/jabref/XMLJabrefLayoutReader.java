@@ -10,7 +10,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
- * Reads a jabref layout definition XML file and it returns a list of {@link JabrefLayoutDefinition}s.
+ * Reads a jabref layout definition XML file and it returns a list of {@link JabrefLayout}s.
  * 
  * @author: rja
  * @version: $Id$ $Author$
@@ -25,12 +25,12 @@ public class XMLJabrefLayoutReader {
 	}
 
 	/**
-	 * Reads a list of {@link JabrefLayoutDefinition}s.
+	 * Reads a list of {@link JabrefLayout}s.
 	 * 
 	 * @return
 	 * @throws IOException
 	 */
-	public List<JabrefLayoutDefinition> getJabrefLayoutsDefinitions() throws IOException {
+	public List<JabrefLayout> getJabrefLayoutsDefinitions() throws IOException {
 		try {
 			final XMLReader xr = XMLReaderFactory.createXMLReader();
 			/*

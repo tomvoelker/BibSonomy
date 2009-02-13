@@ -48,7 +48,7 @@
         		minOccurs="0">
                 <annotation>
                 	<documentation>
-                		The extension of the rendered file.
+                		The extension of the rendered file, including the dot.
                 	</documentation>
                 </annotation>
         	</element>
