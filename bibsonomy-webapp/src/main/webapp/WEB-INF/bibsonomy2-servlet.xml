@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
-	                    http://www.springframework.org/schema/beans/spring-beans.xsd">
-
-
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/util 
+	                    http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
 	<bean id="controllerBase" class="org.bibsonomy.webapp.util.spring.controller.MinimalisticControllerSpringWrapper" abstract="true">
 		<property name="allowedFields" ref="allowedFields"/>
@@ -291,23 +292,7 @@
 				<entry key="/actions/postBookmark">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="postBookmarkController"/>
-						<property name="allowedFields">
-							<list>
-								<value>post.resource.url</value>
-								<value>post.resource.title</value>
-								<value>post.description</value>
-								<value>tags</value>
-								<value>url</value>    
-								<value>description</value>  
-								<value>extended</value>  
-								<value>copytag</value>  
-								<value>abstractGrouping</value>
-								<value>groups</value>
-								<value>intraHashToUpdate</value>
-								<value>jump</value>
-								<value>ajax</value>
-							</list>
-						</property>
+						<property name="allowedFields" ref="bookmarkRequestParameters"/>
 					</bean>
 				</entry>
 				<entry key="/actions/admin/group">
@@ -333,7 +318,26 @@
 			</map>
 		</property>
 	</bean>
+	
+	
+    <!--  #################### request parameter lists #################### -->
+	<!-- bookmark request parameters -->
+	<util:list id="bookmarkRequestParameters">
+		<value>post.resource.url</value>
+		<value>post.resource.title</value>
+		<value>post.description</value>
+		<value>tags</value>
+		<value>url</value>
+		<value>description</value>
+		<value>extended</value>
+		<value>copytag</value>
+		<value>abstractGrouping</value>
+		<value>groups</value>
+		<value>intraHashToUpdate</value>
+		<value>jump</value>
+	</util:list>
 
+    <!--  #################### controller #################### -->
 	<bean id="homepageController" class="org.bibsonomy.webapp.controller.HomepageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
@@ -611,6 +615,7 @@
 	<!--  #################### imports #################### -->
 
     <import resource="bibsonomy2-servlet-actions.xml"/>	
+    <import resource="bibsonomy2-servlet-ajax.xml"/>	
     <import resource="bibsonomy2-servlet-fields.xml"/>    		
 
 </beans>

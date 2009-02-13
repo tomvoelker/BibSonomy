@@ -28,8 +28,8 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.tagparser.TagString3Lexer;
 import org.bibsonomy.model.util.tagparser.TagString3Parser;
-import org.bibsonomy.model.RecommendedTag;
-import org.bibsonomy.recommender.TagRecommender;
+import org.bibsonomy.model.RecommendedTag; 
+import org.bibsonomy.recommender.tags.TagRecommender;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.impl.XMLRenderer;
 import org.bibsonomy.util.ValidationUtils;
@@ -150,28 +150,6 @@ public class PostBookmarkController extends SingleResourceListController impleme
 
 	}
 
-	/**
-	 * Handle ajax request - that is: deliver recommended Tags
-	 * TODO: This a a dirty hack-in.
-	 *       1) a separate ajax controller could handle this request
-	 *       2) the post data structure built prior showing the input form
-	 *          could be stored in a session id.
-	 *       3) XML should be rendered directly in the jsp 
-	 * @param command
-	 */
-	private View handleAjaxRequest(EditBookmarkCommand command) {
-		/*
-		 * get the recommended tags for the post from the command
-		 */
-		if (tagRecommender != null)	{
-			command.setRecommendedTags(tagRecommender.getRecommendedTags(command.getPost()));
-			Renderer renderer = XMLRenderer.getInstance();
-			StringWriter sw = new StringWriter(100);
-			renderer.serializeRecommendedTags(sw, command.getRecommendedTags());
-			command.setResponseString(sw.toString());
-		}
-		return Views.AJAX_RESPONSE;
-	}
 
 	/**
 	 * This methods does everything which needs to be done before proceeding to the 
@@ -199,16 +177,10 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		initGroupTagSets(loginUser);
 
 		/*
-		 * handle ajax requests 
-		 */
-		if (command.getAjax()!=null) {
-			return handleAjaxRequest(command);
-		}
-		
-		/*
 		 * get the recommended tags for the post from the command
 		 */
-		// 2009/01/29,fei: now done via ajax
+		// 2009/01/29,fei: now done via ajax request "/ajax/getBookmarkRecommendedTags"
+		//                 {@see GetBookmarkRecommendedTagsController}
 		// if (tagRecommender != null)	command.setRecommendedTags(tagRecommender.getRecommendedTags(command.getPost()));
 
 		/*
