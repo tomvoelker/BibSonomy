@@ -229,6 +229,7 @@
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-lucene</artifactId>
+			<version>2.0.1</version>
 		</dependency>
 		<!-- 
 			*** beanutils 1.7.0 contain a memory leak *** 
