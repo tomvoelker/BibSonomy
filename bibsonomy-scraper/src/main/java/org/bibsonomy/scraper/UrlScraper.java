@@ -103,4 +103,8 @@ public abstract class UrlScraper implements Scraper {
 		return Collections.singletonList((Scraper) this);
 	}
 	
+	public boolean supportsScrapingContext(ScrapingContext scrapingContext) {
+		return supportsUrl(scrapingContext.getUrl());
+	}
+
 }

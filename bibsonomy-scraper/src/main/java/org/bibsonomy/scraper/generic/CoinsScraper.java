@@ -1,6 +1,8 @@
 package org.bibsonomy.scraper.generic;
 
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Collection;
 import java.util.Collections;
@@ -416,6 +418,29 @@ public class CoinsScraper implements Scraper {
 
 	public Collection<Scraper> getScraper() {
 		return Collections.singleton((Scraper) this);
+	}
+
+	public boolean supportsScrapingContext(ScrapingContext sc) {
+		if(sc.getUrl() != null){
+			Matcher matcherCoins;
+			try {
+				matcherCoins = patternCoins.matcher(sc.getPageContent());
+				if(matcherCoins.find())
+					return true;
+			} catch (ScrapingException ex) {
+				return false;
+			}
+		}
+		return false;
+	}
+
+	public static ScrapingContext getTestContext(){
+		ScrapingContext context = new ScrapingContext(null);
+		try {
+			context.setUrl(new URL("http://www.westmidlandbirdclub.com/bibliography/NBotWM.htm"));
+		} catch (MalformedURLException ex) {
+		}
+		return context;
 	}
 
 

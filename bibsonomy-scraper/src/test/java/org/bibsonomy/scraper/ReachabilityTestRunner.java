@@ -1,13 +1,21 @@
 package org.bibsonomy.scraper;
 
 import java.net.URL;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+import org.bibsonomy.scraper.InformationExtraction.IEScraper;
 import org.bibsonomy.scraper.URLTest.URLScraperUnitTest;
+import org.bibsonomy.scraper.generic.BibtexScraper;
+import org.bibsonomy.scraper.generic.CoinsScraper;
+import org.bibsonomy.scraper.generic.HighwireScraper;
+import org.bibsonomy.scraper.generic.UnAPIScraper;
+import org.bibsonomy.scraper.id.kde.isbn.ISBNScraper;
 import org.bibsonomy.scraper.importer.IUnitTestImporter;
 import org.bibsonomy.scraper.importer.xml.XMLUnitTestImporter;
+import org.bibsonomy.scraper.snippet.SnippetScraper;
 
 /**
  * Runner for reachability test for Scraper
@@ -43,22 +51,59 @@ public class ReachabilityTestRunner {
 			
 			List<ScraperUnitTest> unitTests = importer.getUnitTests();
 			
+			Collection<Scraper> compositeScrapers = new KDEScraperFactory().getScraper().getScraper();
+			
+			// check UrlScraper
 			for(ScraperUnitTest test : unitTests){
 				URLScraperUnitTest urlTest = (URLScraperUnitTest) test;
 				
-				UrlScraper scraper = (UrlScraper) urlTest.getScraper();
-				if(!scraper.supportsUrl(new URL(urlTest.getURL()))){
-					log.error("In Scraper "
-							+ urlTest.getScraperClass().getName()
-							+ " the URL "
-							+ urlTest.getURL()
-							+ " is not supported.");
-				}
+				Scraper testScraper = urlTest.getScraper();
+				
+				ScrapingContext context = new ScrapingContext(new URL(urlTest.getURL()));
+				
+				checkScraper(compositeScrapers, context, testScraper);
 			}
 			
+			// check UnAPIScraper
+			checkScraper(compositeScrapers, UnAPIScraper.getTestContext(), new UnAPIScraper());
+			
+			// check BibtexScraper
+			checkScraper(compositeScrapers, BibtexScraper.getTestContext(), new BibtexScraper());
+
+			// check CoinsScraper
+			checkScraper(compositeScrapers, CoinsScraper.getTestContext(), new CoinsScraper());
+
+			// check SnippetScraper
+			checkScraper(compositeScrapers, SnippetScraper.getTestContext(), new SnippetScraper());
+
+			// check ISBNScraper
+			checkScraper(compositeScrapers, ISBNScraper.getTestContext(), new ISBNScraper());
+
+			// check IEScraper
+			checkScraper(compositeScrapers, IEScraper.getTestContext(), new IEScraper());
+
+			// check HighwireScraper
+			checkScraper(compositeScrapers, HighwireScraper.getTestContext(), new HighwireScraper());
+
 		} catch (Exception e) {
 			ParseFailureMessage.printParseFailureMessage(e, "main class");
 		}
+	}
+	
+	private void checkScraper(Collection<Scraper> compositeScrapers, ScrapingContext context, Scraper testScraper){
+		Scraper foundScraper = null;
+		for(Scraper scraper: compositeScrapers){
+			if(scraper.supportsScrapingContext(context)){
+				foundScraper = scraper;
+				if(!scraper.getClass().getCanonicalName().equals(testScraper.getClass().getCanonicalName())){
+					log.debug("not expected scraper found:" + scraper.getClass().getCanonicalName() + " expected scraper:" + testScraper.getClass().getCanonicalName());
+				}
+				break;
+			}
+		}
+		
+		if(foundScraper == null)
+			log.debug("not supported reachability test: " + testScraper.getClass().getCanonicalName());
 	}
 
 	/**

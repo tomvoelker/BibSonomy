@@ -30,7 +30,7 @@ public class ReplaceBibtexFile {
 	/**
 	 * enter test ids here
 	 */
-	private static final String[] TEST_ID = {"enter test id here"};
+	private static final String[] TEST_ID = {"url_20", "url_115"};
 	
 	/**
 	 * @param args
@@ -49,26 +49,37 @@ public class ReplaceBibtexFile {
 	 * @throws IOException
 	 */
 	public static void replaceBibtex(String id) throws IOException{
+		System.out.println("Test: " + id);
+		System.out.println("running test");
 		UnitTestRunner runner = new UnitTestRunner();
 		URLScraperUnitTest test = runner.getUrlUnitTest(id);
 		if(test != null){
+			System.out.println("test finished");
 			String bibFile = test.getBibFile();
 			String scrapedBibtex = test.getScrapedReference();
-			
-			// override bibtex file
-			OutputStreamWriter os = new OutputStreamWriter(new FileOutputStream(PATH_TO_BIBS + bibFile), "UTF-8");
-			StringReader reader = new StringReader(scrapedBibtex);
+			System.out.println("scraped bibtex:");
+			System.out.println(scrapedBibtex);
+			 
+			if(bibFile != null && scrapedBibtex != null){
+				// override bibtex file
+				OutputStreamWriter os = new OutputStreamWriter(new FileOutputStream(PATH_TO_BIBS + bibFile), "UTF-8");
+				StringReader reader = new StringReader(scrapedBibtex);
+					
+				int read = reader.read();
+				while(read != -1){
+					os.write(read);
+					read = reader.read();
+				}
+					
+				// clean up
+				os.flush();
+				os.close();
+				reader.close();
 				
-			int read = reader.read();
-			while(read != -1){
-				os.write(read);
-				read = reader.read();
-			}
-				
-			// clean up
-			os.flush();
-			os.close();
-			reader.close();
+				System.out.println("old bibtex replaced");
+				System.out.println("**********************************************");
+			}else
+				log.error("bibfile(" + bibFile + ") and scraped bibtex(" + scrapedBibtex + ") is not available");
 		}else
 			log.error("Scraping failed", test.getException());
 	}

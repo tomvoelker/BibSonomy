@@ -103,4 +103,21 @@ public class ISBNScraper implements Scraper {
 		snippet = snippet.replace("-", "");
 		return snippet;
 	}
+
+	public boolean supportsScrapingContext(ScrapingContext sc) {
+		if(sc.getSelectedText() != null){
+			String isbn = null;
+			isbn = extractISBN(cleanISBN(sc.getSelectedText()));
+			if(isbn != null)
+				return true;
+		}
+		return false;
+	}
+	
+	public static ScrapingContext getTestContext(){
+		ScrapingContext context = new ScrapingContext(null);
+		context.setSelectedText("9783608935448");
+		return context;
+	}
+
 }

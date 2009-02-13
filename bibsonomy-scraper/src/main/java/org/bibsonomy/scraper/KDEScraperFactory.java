@@ -1,8 +1,11 @@
 package org.bibsonomy.scraper;
 
 import org.bibsonomy.scraper.InformationExtraction.IEScraper;
+import org.bibsonomy.scraper.generic.BibtexScraper;
+import org.bibsonomy.scraper.generic.CoinsScraper;
 import org.bibsonomy.scraper.generic.HighwireScraper;
 import org.bibsonomy.scraper.generic.UnAPIScraper;
+import org.bibsonomy.scraper.id.kde.isbn.ISBNScraper;
 import org.bibsonomy.scraper.snippet.SnippetScraper;
 import org.bibsonomy.scraper.url.URLCompositeScraper;
 
@@ -29,11 +32,13 @@ public class KDEScraperFactory {
 		
 		scraper.addScraper(new SnippetScraper());
 
+		scraper.addScraper(new CoinsScraper());
+		
 		// TODO: ISBNScraper can be used as a snippet scraper 
-		//scraper.addScraper(new ISBNScraper());
+		scraper.addScraper(new ISBNScraper());
 		
 		// TODO: Scraper for searching bibtex in HTML-Sourcecode 
-		//scraper.addScraper(new BibtexScraper());
+		scraper.addScraper(new BibtexScraper());
 
 		/*
 		 * If nothing works: do information extraction using MALLET.

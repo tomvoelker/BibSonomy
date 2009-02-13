@@ -93,4 +93,13 @@ public class CompositeScraper implements Scraper {
 		return scrapers;
 	}
 
+	public boolean supportsScrapingContext(ScrapingContext scrapingContext){
+		for (final Scraper scraper : _scrapers){
+			if (scraper.supportsScrapingContext(scrapingContext)){
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

@@ -105,5 +105,31 @@ public class HighwireScraper implements Scraper {
 	public Collection<Scraper> getScraper() {
 		return Collections.singletonList((Scraper) this);
 	}
+
+	public boolean supportsScrapingContext(ScrapingContext sc) {
+		if (sc.getUrl() != null) {
+			String pageContent;
+			try {
+				pageContent = sc.getPageContent();
+			} catch (ScrapingException e) {
+				return false;
+			}
+			
+			Matcher m = urlPattern.matcher(pageContent);
+			
+			if (m.find())
+				return true;
+		}
+		return false;
+	}
 	
+	public static ScrapingContext getTestContext(){
+		ScrapingContext context = new ScrapingContext(null);
+		try {
+			context.setUrl(new URL("http://mend.endojournals.org/cgi/gca?sendit=Get+All+Checked+Abstract(s)&gca=17%2F1%2F1"));
+		} catch (MalformedURLException ex) {
+		}
+		return context;
+	}
+
 }

@@ -3,6 +3,7 @@ package org.bibsonomy.scraper.generic;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
@@ -30,6 +32,8 @@ import bibtex.parser.ParseException;
  */
 public class BibtexScraper implements Scraper {
 	
+	private Logger log = Logger.getLogger(BibtexScraper.class);
+	
 	private static final String INFO = "Scraper for bibtex, independent from URL";
 
 	public String getInfo() {
@@ -45,7 +49,7 @@ public class BibtexScraper implements Scraper {
 	 * @see org.bibsonomy.scraper.Scraper#scrape(org.bibsonomy.scraper.ScrapingContext)
 	 */
 	public boolean scrape(ScrapingContext sc)throws ScrapingException {
-		if(sc != null && sc.getUrl() != null && supportsUrl(sc.getUrl())){
+		if(sc != null && sc.getUrl() != null){
 			sc.setScraper(this);
 			
 			String source = sc.getPageContent();
@@ -82,9 +86,48 @@ public class BibtexScraper implements Scraper {
 		return false;
 	}
 
-	public boolean supportsUrl(URL url) {
-		// match against every url
-		return true;
+	public boolean supportsScrapingContext(ScrapingContext sc) {
+		if(sc.getUrl() != null){
+			
+			try {
+				String source = sc.getPageContent();
+				
+				// html clean up
+				source = StringEscapeUtils.unescapeHtml(source);
+				source = source.replace("<br/>", "\n");
+				// TODO: may be some other format elements like <i>, <p> etc. are still in code
+				
+				/* 
+				 * copy from SnippetScraper
+				 */
+				BibtexParser parser = new BibtexParser(true);
+				BibtexFile bibtexFile = new BibtexFile();
+				BufferedReader sr = new BufferedReader(new StringReader(source));
+				// parse source
+				parser.parse(bibtexFile, sr);
+	
+				for (Object potentialEntry:bibtexFile.getEntries()) {
+					if ((potentialEntry instanceof BibtexEntry)) {
+						return true; 
+					}
+				}
+			} catch (ParseException ex) {
+				return false;
+			} catch (IOException ex) {
+				return false;
+			} catch (ScrapingException ex) {
+				return false;
+			}
+		}
+		return false;
 	}
-
+	
+	public static ScrapingContext getTestContext(){
+		ScrapingContext context = new ScrapingContext(null);
+		try {
+			context.setUrl(new URL("http://de.wikipedia.org/wiki/BibTeX"));
+		} catch (MalformedURLException ex) {
+		}
+		return context;
+	}
 }

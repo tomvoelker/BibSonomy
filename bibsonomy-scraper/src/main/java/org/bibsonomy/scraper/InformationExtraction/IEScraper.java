@@ -155,5 +155,17 @@ public class IEScraper implements Scraper {
 		
 		return person;
 	}
+
+	public boolean supportsScrapingContext(ScrapingContext sc) {
+		if(sc.getSelectedText()!=null)
+			return true; // supports every snippet
+		return false;
+	}
 	
+	public static ScrapingContext getTestContext(){
+		ScrapingContext context = new ScrapingContext(null);
+		context.setSelectedText("Michael May and Bettina Berendt and Antoine Cornuejols and Joao Gama and Fosca Giannotti and Andreas Hotho and Donato Malerba and Ernestina Menesalvas and Katharina Morik and Rasmus Pedersen and Lorenza Saitta and Yucel Saygin and Assaf Schuster and Koen Vanhoof. Research Challenges in Ubiquitous Knowledge Discovery. Next Generation of Data Mining (Chapman & Hall/Crc Data Mining and Knowledge Discovery Series), Chapman & Hall/CRC,2008.");
+		return context;
+	}
+
 }

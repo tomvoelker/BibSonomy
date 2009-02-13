@@ -1,0 +1,122 @@
+package org.bibsonomy.scraper.url.kde.scientificcommons;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+
+/**
+ * Scraper for scientificcommons.org
+ * @author tst
+ * @version $Id$
+ */
+public class ScientificcommonsScraper extends UrlScraper{
+
+	private static final String HOST = "scientificcommons.org";
+	
+	private static final String DOWNLOAD_URL = "http://en.scientificcommons.org/export/bibtex/";
+	
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), UrlScraper.EMPTY_PATTERN));
+	
+	private static final Pattern PATTERN_ID = Pattern.compile(HOST + "/(.*)");
+	
+	private static final Pattern PATTERN_YEAR = Pattern.compile("year = \\{([^\\}]*)\\}");
+	private static final Pattern PATTERN_AUTHORNAME_1 = Pattern.compile("author = \\{([^\\,]*)\\,");
+	private static final Pattern PATTERN_AUTHORNAME_2 = Pattern.compile("author = \\{(.*) and");
+	
+	private static final String INFO = "ScientificCommons Scraper: Scraper for journals from the " + href("http://www.scientificcommons.org/", "ScientificCommons.org");
+	
+	
+	@Override
+	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+		return patterns;
+	}
+
+	@Override
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+		sc.setScraper(this);
+
+		// get resource id from url
+		String id = null;
+		Matcher matcherId = PATTERN_ID.matcher(sc.getUrl().toString());
+		if(matcherId.find())
+			id = matcherId.group(1);
+		
+		if(id != null){
+			String bibtex = null;
+			
+			// get bibtex
+			try {
+				bibtex = sc.getContentAsString(new URL(DOWNLOAD_URL + id));
+			} catch (MalformedURLException ex) {
+				throw new InternalFailureException(ex);
+			}
+			
+			if(bibtex != null){
+				// bibtex key is missing 
+				
+				// get year
+				String year = null;
+				Matcher matcherYear = PATTERN_YEAR.matcher(bibtex);
+				if(matcherYear.find())
+					year = matcherYear.group(1);
+				
+				// get first author name
+				String author = null;
+				Matcher matcherAuthor = PATTERN_AUTHORNAME_1.matcher(bibtex);
+				if(matcherAuthor.find()){
+					String authorTemp = matcherAuthor.group(1);
+					
+					if(authorTemp.contains(" ")){
+						// author is not sperated by ","
+						matcherAuthor = PATTERN_AUTHORNAME_2.matcher(bibtex);
+						if(matcherAuthor.find()){
+							author = matcherAuthor.group(1).replaceAll(" ", "");// remove " " from string
+							
+						}else
+							// author is not seperated by "and"
+							author = "";
+
+					}else
+						author = authorTemp;
+						
+				}
+					
+				
+				if(year != null && author != null){
+					
+					if(author.contains(" "))
+						// author name 
+						bibtex = bibtex.replaceFirst("\\{", "{" + year + ",");
+					else
+						// add bibtex key (author, year) to entry
+						bibtex = bibtex.replaceFirst("\\{", "{" + author + year + ",");
+					
+					// finished
+					sc.setBibtexResult(bibtex);
+					return true;
+				}else
+					throw new ScrapingFailureException("Invalid bibtex, author/year is missing");
+				
+			}else
+				throw new ScrapingFailureException("Bibtex download failed");
+			
+		}else
+			throw new ScrapingFailureException("Cannot find identifier in given URL");
+		
+	}
+
+	public String getInfo() {
+		return INFO;
+	}
+
+}

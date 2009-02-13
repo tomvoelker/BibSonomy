@@ -45,7 +45,6 @@ public class ScrapingService extends UrlScraper {
 		return Collections.singletonList((Scraper) this);
 	}
 
-
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		if (sc.getUrl() != null) {
 			try {
@@ -84,4 +83,10 @@ public class ScrapingService extends UrlScraper {
 		// match every url
 		return true;
 	}
+
+	public boolean supportsScrapingContext(ScrapingContext scrapingContext) {
+		// return false, this scraper is deprecated
+		return false;
+	}
+	
 }

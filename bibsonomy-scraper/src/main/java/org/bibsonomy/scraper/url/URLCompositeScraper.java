@@ -4,6 +4,7 @@
 package org.bibsonomy.scraper.url;
 
 import org.bibsonomy.scraper.CompositeScraper;
+import org.bibsonomy.scraper.generic.CoinsScraper;
 import org.bibsonomy.scraper.url.kde.acl.AclScraper;
 import org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper;
 import org.bibsonomy.scraper.url.kde.acs.ACSScraper;
@@ -22,6 +23,7 @@ import org.bibsonomy.scraper.url.kde.citebase.CiteBaseScraper;
 import org.bibsonomy.scraper.url.kde.citeseer.CiteseerxScraper;
 import org.bibsonomy.scraper.url.kde.citeulike.CiteulikeScraper;
 import org.bibsonomy.scraper.url.kde.dblp.DBLPScraper;
+import org.bibsonomy.scraper.url.kde.dlib.DLibScraper;
 import org.bibsonomy.scraper.url.kde.editlib.EditLibScraper;
 import org.bibsonomy.scraper.url.kde.eric.EricScraper;
 import org.bibsonomy.scraper.url.kde.googlesonomy.GoogleSonomyScraper;
@@ -58,6 +60,7 @@ import org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper;
 import org.bibsonomy.scraper.url.kde.pubmedcentral.PubMedCentralScraper;
 import org.bibsonomy.scraper.url.kde.rsoc.RSOCScraper;
 import org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper;
+import org.bibsonomy.scraper.url.kde.scientificcommons.ScientificcommonsScraper;
 import org.bibsonomy.scraper.url.kde.scopus.ScopusScraper;
 import org.bibsonomy.scraper.url.kde.spires.SpiresScraper;
 import org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper;
@@ -136,6 +139,7 @@ public class URLCompositeScraper extends CompositeScraper {
 		addScraper(new BibliographyScraper());
 		addScraper(new WormbaseScraper());
 		addScraper(new GoogleSonomyScraper());
-		//addScraper(new CoinsScraper());
+		addScraper(new DLibScraper());
+		addScraper(new ScientificcommonsScraper());
 	}
 }

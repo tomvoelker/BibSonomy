@@ -44,7 +44,7 @@ public interface Scraper {
      * @return <code>true</code> if the given {@link ScrapingContext} is 
      * scrapable by this scraper.
      */
-    //public boolean supportsScrapingContext(final ScrapingContext scrapingContext);
+    public boolean supportsScrapingContext(final ScrapingContext scrapingContext);
     
 
 }

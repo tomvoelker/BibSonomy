@@ -192,8 +192,10 @@ public class EndnoteToBibtexConverter {
 			 * build the bibtex key
 			 */
 			
-			_resultBibtexFields.put("key", BibTexUtils.generateBibtexKey(_resultBibtexFields.get("author"), _resultBibtexFields.get("editor"), _resultBibtexFields.get("year"), _resultBibtexFields.get("title")));
-			
+			if(_resultBibtexFields.get("year").length() == 4)
+				_resultBibtexFields.put("key", BibTexUtils.generateBibtexKey(_resultBibtexFields.get("author"), _resultBibtexFields.get("editor"), _resultBibtexFields.get("year"), _resultBibtexFields.get("title")));
+			else // if year ist not valid (sometimes it contains day, month and/or time)
+				_resultBibtexFields.put("key", BibTexUtils.generateBibtexKey(_resultBibtexFields.get("author"), _resultBibtexFields.get("editor"), null, _resultBibtexFields.get("title")));
 			/*
 			 * build abstract
 			 */

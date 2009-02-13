@@ -160,4 +160,28 @@ public class UnAPIScraper implements Scraper {
 
 	}
 
+	public boolean supportsScrapingContext(ScrapingContext scrapingContext) {
+		if(scrapingContext.getUrl() != null){
+			try {
+				String pageContents = scrapingContext.getPageContent();
+				if (pageContents != null && pageContents.contains("unapi-server") && pageContents.contains("unapi-id"))
+					return true;
+			} catch (ScrapingException ex) {
+				return false;
+			}
+		}
+		return false;
+	}
+	
+	public static ScrapingContext getTestContext(){
+		ScrapingContext context = null;
+		try {
+			context = new ScrapingContext(new URL("http://canarydatabase.org/record/488"));
+		} catch (MalformedURLException ex) {
+			log.debug(ex);
+		}
+		return context;
+	}
+
+
 }
