@@ -156,18 +156,20 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 					}
 				}
 			}
+			
+			// update log tables
+			if (checkPredictionChange(param, session)) {
+
+				// logs all predictions ever made
+				this.insert("logPrediction", param, session);
+				
+				// logs the current prediction
+				this.insert("logCurrentPrediction", param, session);
+				
+			}
 
 		} finally {
 			session.endTransaction();
-		}
-
-		if (checkPredictionChange(param, session)) {
-
-			log.debug("Begin transaction for log prediction... ");
-
-			this.insert("logPrediction", param, session);
-			this.insert("logCurrentPrediction", param, session);
-			
 		}
 
 		return user.getName();
@@ -272,7 +274,6 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 
 		if (classifier.equals(Classifier.ADMIN) && (status.equals(SpamStatus.SPAMMER) || status.equals(SpamStatus.NO_SPAMMER) || status.equals(SpamStatus.UNKNOWN))) {
 			param.setPrediction(status.getId());
-			log.debug("Prediction: " + param.getPrediction());
 			return this.queryForList("getAdminClassifiedUsers", param, User.class, session);
 		} else if (classifier.equals(Classifier.BOTH)) {
 			return this.queryForList("getAllUsersWithSpam", param, User.class, session);
