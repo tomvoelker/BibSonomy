@@ -471,9 +471,10 @@ public class DBAccess extends AbstractDatabaseManager {
 		param.setUserName(post.getUser().getName());
 		param.setUrl(post.getResource().getUrl());
 		//in field group in table bookmark, insert the id for PUBLIC, PRIVATE or the id of the FIRST group in list
-		final int groupId =  post.getGroups().iterator().next().getGroupId();
-		param.setGroupId(groupId);
-		
+		if( (post.getGroups()!=null)&&(!post.getGroups().isEmpty()) ) {
+			final int groupId =  post.getGroups().iterator().next().getGroupId();
+			param.setGroupId(groupId);
+		};
 		try {
 			sqlMap.startTransaction();
    			sqlMap.insert("insertBookmark", param);
