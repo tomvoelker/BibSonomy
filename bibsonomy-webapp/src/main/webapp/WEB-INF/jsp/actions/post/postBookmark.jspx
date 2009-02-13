@@ -153,8 +153,8 @@
 							<script type="text/javascript">
 							$.ajax({
 							  type: "GET",
-							  url: "postBookmark",
-							  data: '<c:out value="${pageContext.request.queryString}"/>'+'&amp;ajax=getRecommendedTags',
+							  url: "/ajax/getBookmarkRecommendedTags",
+							  data: '<c:out value="${pageContext.request.queryString}"/>'+'&amp;contentType=1',
 							  success: function(msg){
 							    handleRecommendedTags(msg)
 							  }
