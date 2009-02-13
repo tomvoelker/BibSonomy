@@ -167,6 +167,8 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 				this.insert("logCurrentPrediction", param, session);
 				
 			}
+			
+			session.commitTransaction();
 
 		} finally {
 			session.endTransaction();
@@ -368,6 +370,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		final AdminParam param = new AdminParam();
 		param.setInterval(interval);
 		param.setLimit(100);
+		log.debug("Get BibTex for users: " + param.getInterval() + " " + param.getLimit());
 		return this.queryForList("getBibtexUsers", param, User.class, session);
 	}
 }
