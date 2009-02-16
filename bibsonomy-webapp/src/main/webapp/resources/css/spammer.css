@@ -74,8 +74,23 @@
 	padding: 2px;
 }
 
+td.title {
+	font-weight:bold;	
+}
+
+td.urlTitle {
+	font-weight:bold;
+	color: #069;	
+}
+
 tr.lastrow {
 	border-bottom: 1px solid #CCCCCC;
+}
+
+div.tipHeader {
+	width:100%; 
+	font-size:0.7em; 
+	text-align:left;
 }
 
 .spammer {

@@ -83,8 +83,11 @@
 				    <!-- user list -->
 					<c:forEach var="user" items="${command.content}" varStatus="status">
 					
-					  <!-- color rows according to spam status -->
+					  <!-- set variables for scripts -->
+					  <!-- e.g. row coloring depending on spam status -->
+					  <!-- e.g. bookmark tooltip depending on tab -->
 					  <tr id="sl${status.count}" class="${user.prediction == 9 ? 'spamflag uncertainUser' : ((user.spammer==true) ? 'spammer' : none)}">	
+					     <c:set var="do_flag_action" value="javascript:ajax_hideTooltip()"/>
 					     <c:choose>
 					    	<c:when test="${command.selTab == 1}">
 					        	<c:set var="Unflag" value="false" /> 
@@ -126,6 +129,9 @@
 					        			<c:set var="Unflag" value="true" /> 
 					    				<c:set var="Uncertain" value="true" />
 					        			<c:set var="Flag" value="true" />
+					        			<c:set var="userIndex" value="${status.index+1}"/>
+						                <c:set var="nextUser" value="${command.content[userIndex].name}"/> 
+					        			<c:set var="do_flag_action" value="javascript:ajax_showTooltip('ajax?action=latest_posts&amp;userName=${nextUser}',document.getElementById('latest_posts_${status.index}'));" />
 					        		</c:otherwise>
 					        		</c:choose>
 					        		</c:otherwise>
@@ -136,21 +142,22 @@
 						</c:choose>
 						
 						<td style="text-align: left" class="spamflag">
+						    <c:set var="nextUser" value="${command.content[userIndex].name}"/> 
 							<a
 										href="javascript:unflagSpammer('${user.name}','sl${status.count}', '${Unflag}')"
 										title="unflag this user as spammer"
-										onClick="javascript:ajax_hideTooltip()">NO</a>
+										onClick="${do_flag_action}">NO</a>
 							<a
 										href="javascript:markUncertainUser('${user.name}','sl${status.count}', '${Uncertain}')"
 										title="mark as spammer status uncertain"
-										onClick="javascript:ajax_hideTooltip()">?</a>
+										onClick="${do_flag_action}">?</a>
 					     	<a
 										href="javascript:addSpammer('${user.name}','sl${status.count}', '${Flag}')"
 										title="flag this user as spammer"
-										onClick="javascript:ajax_hideTooltip()">YES</a>
+										onClick="${do_flag_action}">YES</a>
 						</td>
 				       <td>
-				       	<a href="/user/${fn:escapeXml(user.name)}"><c:out
+				       	<a id="latest_posts_${status.index}" href="/user/${fn:escapeXml(user.name)}"><c:out
 										value="${user.name}" /></a>
 				       	<a
 										onclick="javascript:ajax_showTooltip('ajax?action=latest_posts&amp;userName=${user.name}',this);return false;"

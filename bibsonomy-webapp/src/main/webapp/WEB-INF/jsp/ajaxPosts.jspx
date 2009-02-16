@@ -10,7 +10,7 @@
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	<div onclick='javascript:ajax_hideTooltip()'/>
-	<div style="width:100%; font-size:0.7em; text-align:left;">
+	<div class="tipHeader">
 		Bookmarks:  <c:out value="${command.bookmarkCount}"/>
         <c:if test="${command.bibtexCount > 0}">
 		   , <span class="important">Publications: <c:out value="${command.bibtexCount}"/></span>
@@ -19,7 +19,11 @@
 	<table class="poststable">
 	<tr><th>Field</th><th>Data</th></tr>
 	<c:forEach var="post" items="${command.bookmarks}">
-		<tr><td style="font-weight:bold;">Title</td><td style="font-weight:bold; color: #069;"><c:out value="${post.resource.title}"/></td></tr>
+		<tr>
+		<td class="title">Title</td>
+		<td class="urlTitle">
+		<a href="${fn:escapeXml(post.resource.url)}"><c:out value="${fn:escapeXml(post.resource.title)}"/></a>
+		</td></tr>
 		<!--<tr><td>Desc.</td><td><c:out value="${post.description}"/></td></tr>-->
 		<tr>
 			<td>Tags</td>
