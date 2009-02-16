@@ -33,7 +33,6 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.SpamStatus;
-import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.Document;
@@ -142,14 +141,33 @@ public interface LogicInterface extends PostLogicInterface {
 	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, String hash, Order order, int start, int end, String search, TagSimilarity relation);
 
 	
-	
-	/**
+	/**  
+	 * retrieves a filterable list of authors.
 	 * 
-	 * @return
+	 * @param grouping
+	 *            grouping tells whom authors are to be shown: the authors of a
+	 *            user, of a group or of the viewables.
+	 * @param groupingName
+	 *            name of the grouping. if grouping is user, then its the
+	 *            username. if grouping is set to {@link GroupingEntity#ALL},
+	 *            then its an empty string!
+	 * @param tags
+	 *            a set of tags. remember to parse special tags like
+	 *            ->[tagname], -->[tagname] and <->[tagname]. see documentation.
+	 *            if the parameter is not used, its an empty list
+	 * @param hash
+	 *            hash value of a resource, if one would like to get a list of
+	 *            all authors belonging to a given resource. if unused, its empty
+	 *            but not null.
+	 * @param start inclusive start index of the view window
+	 * @param end exclusive end index of the view window
+	 * @param search free text search
+	 * @param order a flag indicating the way of sorting
+	 * @param filter filter for the retrieved authors
+	 * @return a filtered list of authors. may be empty but not null
 	 */
-	public List<Author> getAuthors();
-	
-	
+	public List<Author> getAuthors(GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search);
+
 	
 	
 	
