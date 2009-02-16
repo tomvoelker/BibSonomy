@@ -149,7 +149,7 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
-	
+
 	public List<User> getUserFriends(User loginUser) {
 		final DBSession session = openSession();
 		try {
@@ -158,7 +158,7 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
-	
+
 	public List<User> getFriendsOfUser(User loginUser) {
 		final DBSession session = openSession();
 		try {
@@ -414,26 +414,26 @@ public class DBLogic implements LogicInterface {
 	public void deleteUser(final String userName) {
 		// TODO: take care of toLowerCase()! 
 		final String[] tables = {"bookmark", "bibtex", "tas", "search_bibtex", "search_bookmark"};
-		
+
 		this.ensureLoggedIn();
 		this.permissionDBManager.ensureWriteAccess(this.loginUser, userName);
-		
+
 		final User deleteUserParam = new User();
-		
+
 		deleteUserParam.setName(userName);
-		
-		
+
+
 		final DBSession session = openSession();
 		try {
 			userDBManager.deleteUser(deleteUserParam, session);
 		} finally {
 			session.close();
 		}
-		
+
 //		throw new UnsupportedOperationException("not yet available");
 
 //		if ((this.loginUserName == null) || (this.loginUserName.equals(userName) == false)) {
-//			throw new ValidationException("You are not authorized to perform the requested operation");
+//		throw new ValidationException("You are not authorized to perform the requested operation");
 //		}		
 //		final DBSession session = openSession();
 //		try {
@@ -533,7 +533,7 @@ public class DBLogic implements LogicInterface {
 			final String oldIntraHash = post.getResource().getIntraHash();
 			post.getResource().recalculateHashes();			
 			post = this.validateGroups(post, session);
-			
+
 			SystemTag stt;
 			for (Tag tag : post.getTags()) {
 				stt = SystemTagFactory.createExecutableTag(tag);
@@ -541,16 +541,16 @@ public class DBLogic implements LogicInterface {
 					stt.performBefore(post);
 				}
 			}
-						
+
 			man.storePost(this.loginUser.getName(), post, oldIntraHash, update, session);
-			
+
 			for (Tag tag : post.getTags()) {
 				stt = SystemTagFactory.createExecutableTag(tag);
 				if (stt != null) {
 					stt.performAfter(post);
 				}
 			}
-			
+
 			// if we don't get an exception here, we assume the resource has been successfully stored
 			return post.getResource().getIntraHash();
 		} finally {
@@ -801,7 +801,7 @@ public class DBLogic implements LogicInterface {
 			 * only admins are allowed to change spammer settings
 			 */
 			log.debug("Start update this framework");
-			
+
 			this.permissionDBManager.ensureAdminAccess(loginUser);
 			/*
 			 * open session and update spammer settings
@@ -880,18 +880,26 @@ public class DBLogic implements LogicInterface {
 	public User getAuthenticatedUser() {
 		return this.loginUser;
 	}
-	
-	
-	public List<Author> getAuthors() {
-		final DBSession session = openSession();
+
+
+
+	public List<Author> getAuthors(GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search) {
+		/*
+		 * FIXME: implement a chain or something similar 
+		 */
+		if (GroupingEntity.ALL.equals(grouping)) {
+			final DBSession session = openSession();
+
+			try {
+				return this.authorDBManager.getAuthors(session); 
+			} finally {
+				session.close();
+			}
+		} 
+		throw new UnsupportedOperationException("Currently only ALL authors can be listed.");
 		
-		try {
-			return this.authorDBManager.getAuthors(session); 
-		} finally {
-			session.close();
-		}
 	}
-	
+
 
 	public String addDocument(final Document doc, final String resourceHash) {
 		this.ensureLoggedIn();
@@ -1243,7 +1251,7 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
-	
+
 	public int getTagStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end) {
 		Integer result;
 
@@ -1258,4 +1266,5 @@ public class DBLogic implements LogicInterface {
 
 		return result;
 	}
+
 }
