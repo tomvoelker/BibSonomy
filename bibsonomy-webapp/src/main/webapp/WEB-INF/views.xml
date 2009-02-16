@@ -5,19 +5,18 @@
 	                    http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 
-
-	
-	<!-- Both will be used as singletons! -->
-	<!-- bean id="simpleLayoutRenderer" class="org.bibsonomy.layout.SimpleLayoutRenderer"/-->
-	
 	<!-- Renders JabRef Layouts -->
-	<!-- bean id="jabrefLayoutRenderer" class="org.bibsonomy.layout.jabref.JabrefLayoutRenderer" init-method="init">
+	<!-- 
+		Currently, it's a singleton, because we need the same instance also in the old code.
+		To get the singleton, we call the static getInstance() method
+	 -->
+	<bean id="jabrefLayoutRenderer" class="org.bibsonomy.layout.jabref.JabrefLayoutRenderer" factory-method="getInstance">
 		<property name="userLayoutFilePath" value="/home/rja/bibsonomy/bibsonomy_docs/"/>
-	</bean-->
+	</bean>
 	
-	<!-- bean id="layout" class="org.bibsonomy.webapp.view.LayoutView">
-		<property name="layoutRenderer" ref="simpleLayoutRenderer"/>
-	</bean-->
+	<bean id="layout" class="org.bibsonomy.webapp.view.LayoutView">
+		<property name="layoutRenderer" ref="jabrefLayoutRenderer"/>
+	</bean>
 
 <!-- 
 
