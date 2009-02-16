@@ -845,11 +845,6 @@ public class TestDBLogic implements LogicInterface {
 		return 0;
 	}
 
-	public List<Author> getAuthors() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public List<User> getFriendsOfUser(User loginUser) {
 		// TODO Auto-generated method stub
 		return null;
@@ -859,4 +854,10 @@ public class TestDBLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public List<Author> getAuthors(GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
