@@ -134,6 +134,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 
 	public SortedSet<RecommendedTag> getRecommendedTags(
 			Post<? extends Resource> post) {
+		log.debug("querying["+localRecommenders+", "+distRecommenders+"]");
 		// SortedSet holding recommenders results
 		SortedSet<RecommendedTag> result = null;
 		// id identifying this query
