@@ -7,16 +7,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
@@ -31,8 +25,6 @@ import bibtex.parser.ParseException;
  * @version $Id$
  */
 public class BibtexScraper implements Scraper {
-	
-	private Logger log = Logger.getLogger(BibtexScraper.class);
 	
 	private static final String INFO = "Scraper for bibtex, independent from URL";
 
@@ -50,70 +42,56 @@ public class BibtexScraper implements Scraper {
 	 */
 	public boolean scrape(ScrapingContext sc)throws ScrapingException {
 		if(sc != null && sc.getUrl() != null){
-			sc.setScraper(this);
 			
-			String source = sc.getPageContent();
-			
-			// html clean up
-			source = StringEscapeUtils.unescapeHtml(source);
-			source = source.replace("<br/>", "\n");
-			// TODO: may be some other format elements like <i>, <p> etc. are still in code
-			
-			try {
-				
-				/* 
-				 * copy from SnippetScraper
-				 */
-				BibtexParser parser = new BibtexParser(true);
-				BibtexFile bibtexFile = new BibtexFile();
-				BufferedReader sr = new BufferedReader(new StringReader(source));
-				// parse source
-				parser.parse(bibtexFile, sr);
+			final String result = parseBibTeX(sc.getPageContent());
 
-				for (Object potentialEntry:bibtexFile.getEntries()) {
-					if ((potentialEntry instanceof BibtexEntry)) {
-						sc.setBibtexResult(potentialEntry.toString());
-						return true; 
-					}
-				}
-			} catch (ParseException ex) {
-				throw new InternalFailureException(ex);
-			} catch (IOException ex) {
-				throw new InternalFailureException(ex);
+			if (result != null) {
+				sc.setScraper(this);
+				sc.setBibtexResult(result);
+				return true;
 			}
-
+			
 		}
 		return false;
 	}
 
-	public boolean supportsScrapingContext(ScrapingContext sc) {
-		if(sc.getUrl() != null){
+	private String parseBibTeX(final String pageContent) throws InternalFailureException {
+		
+		if (pageContent == null) return null;
+		
+		// html clean up
+		final String source = StringEscapeUtils.unescapeHtml(pageContent).replace("<br/>", "\n");
+		// TODO: may be some other format elements like <i>, <p> etc. are still in code
+		
+		try {
 			
-			try {
-				String source = sc.getPageContent();
-				
-				// html clean up
-				source = StringEscapeUtils.unescapeHtml(source);
-				source = source.replace("<br/>", "\n");
-				// TODO: may be some other format elements like <i>, <p> etc. are still in code
-				
-				/* 
-				 * copy from SnippetScraper
-				 */
-				BibtexParser parser = new BibtexParser(true);
-				BibtexFile bibtexFile = new BibtexFile();
-				BufferedReader sr = new BufferedReader(new StringReader(source));
-				// parse source
-				parser.parse(bibtexFile, sr);
-	
-				for (Object potentialEntry:bibtexFile.getEntries()) {
-					if ((potentialEntry instanceof BibtexEntry)) {
-						return true; 
-					}
+			/* 
+			 * copied from SnippetScraper
+			 */
+			final BibtexParser parser = new BibtexParser(true);
+			final BibtexFile bibtexFile = new BibtexFile();
+			final BufferedReader sr = new BufferedReader(new StringReader(source));
+			// parse source
+			parser.parse(bibtexFile, sr);
+
+			for (Object potentialEntry:bibtexFile.getEntries()) {
+				if ((potentialEntry instanceof BibtexEntry)) {
+					return potentialEntry.toString();
 				}
-			} catch (ParseException ex) {
-				return false;
-			} catch (IOException ex) {
+			}
+		} catch (ParseException ex) {
+			throw new InternalFailureException(ex);
+		} catch (IOException ex) {
+			throw new InternalFailureException(ex);
+		}
+		return null;
+	}
+	
+	public boolean supportsScrapingContext(final ScrapingContext sc) {
+		if (sc!= null && sc.getUrl() != null) {
+			try {
+				return parseBibTeX(sc.getPageContent()) != null;
+			} catch (InternalFailureException ex) {
 				return false;
 			} catch (ScrapingException ex) {
 				return false;
