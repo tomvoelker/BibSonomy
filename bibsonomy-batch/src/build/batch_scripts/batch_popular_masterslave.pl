@@ -15,6 +15,8 @@ use English;
 #   - changed from "last N rows" to "last N days"
 #   - added possibility to compute popularity for different
 #     number of days
+#   2009-02-16 (dbe)
+#   - added list of tags to be excluded from popular tags table
 #
 ##################################################################
 
@@ -41,6 +43,8 @@ my @last_tag_days      = (10);
 my $max_bookmarks      = 100;
 my $max_bibtexs        = 100;
 my $max_tags           = 100;
+# tags to be excluded from popular tags (lower case)
+my @tags_to_exclude=('imported', 'jabref:nokeywordassigned');
 
 my $DEBUG = 0; # 1 = on, 0 = off
 
@@ -257,6 +261,11 @@ foreach my $content_type (@content_types) {
     } else {
 	# bookmark, bibtex, ...
 	$condition = " AND content_type = $content_type ";
+    }
+
+    # exclude certain tags
+    foreach my $exlude_tag (@tags_to_exclude) {
+	$condition .= " AND tag_lower != '$exclude_tag' ";
     }
 
     # get last tag rows, order them by ctr
