@@ -20,6 +20,7 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="content">
+		
 			<script type="text/javascript">
 				<![CDATA[
 					function checkUrlForTitle(  ){
@@ -111,20 +112,7 @@
                              Hinweis: sie bearbeiten einen existierenden Post!
                           </p>
                         </c:if>
-                    <div id="scrapable" style="display:none">
-	                    <form:form action="/BibtexHandler" method="POST"> 	   
-	                      	<fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
-	                      		  <fieldset style="border:0px; position:relative;">
-		                      		  <h2><fmt:message key="post.meta.recommended"/>: <fmt:message key="post.meta.save_as_publication"/></h2>
-		            				  <p><fmt:message key="post.resource.bookmark_a_publication"/>:</p>
-		                      		  <p><textarea id="bib" name="selection" cols="60" rows="15" class="reqinput"><c:out value=''/></textarea></p>
-		                      		  <input type="hidden" name="requTask" value="upload" />
-		                      		  <c:set var="post_publication"><fmt:message key="save"/></c:set>
-		                      		  <input id="button" type="submit" name="submit" value="${post_publication}"/>
-	                      		  </fieldset>
-	                      	</fieldset>  	
-	                    </form:form>
-                    </div><br/>
+
                       
                 	<form:form action="/actions/postBookmark" method="POST">
                 		<fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
@@ -184,16 +172,33 @@
 		                                <c:set var="reset"><fmt:message key="resetbutton"/></c:set>
 										<!-- function addSystemTags located in relevantFoxBox.tagx -->
 		                                <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
-		                                <input type="hidden" name="jump" value="${fn:escapeXml(command.jump)}"/>
+                                        <input type="hidden" name="jump" value="${fn:escapeXml(command.jump)}"/>
 		                                <form:hidden path="intraHashToUpdate"/>
 										<input type="reset"  tabindex="5" value="${reset}" />
 										<input type="submit" tabindex="6" value="${save}" onClick="clear_tags(); addSystemTags();"/>
 									</td>
 								</tr>
 							</table>	
-							<input type="hidden" id="projectHome" name="projectHome" value="${projectHome}"/>
+		
 						</fieldset>
-					</form:form>	
+					</form:form>
+          
+                    <div id="scrapable" style="display:none">
+                      <br/>
+                      <form:form action="/BibtexHandler" method="POST">      
+                          <fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
+                              <fieldset style="border:0px; position:relative;">
+                                <h2><fmt:message key="post.meta.recommended"/>: <fmt:message key="post.meta.save_as_publication"/></h2>
+                          <p><fmt:message key="post.resource.bookmark_a_publication"/>:</p>
+                                <p><textarea id="bib" name="selection" cols="60" rows="15" class="reqinput"><c:out value=''/></textarea></p>
+                                <input type="hidden" name="requTask" value="upload" />
+                                <c:set var="post_publication"><fmt:message key="save"/></c:set>
+                                <input id="button" type="submit" name="submit" value="${post_publication}"/>
+                              </fieldset>
+                          </fieldset>   
+                      </form:form>
+                    </div>
+                    
 				</div>
 					
 				<script type="text/javascript">
@@ -257,7 +262,6 @@
 					}
 				}
 			}
-			
 
 			function handle(request){
 				var textfield = document.getElementById("bib");
