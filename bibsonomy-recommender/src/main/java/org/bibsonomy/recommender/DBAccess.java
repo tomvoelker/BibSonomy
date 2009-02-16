@@ -6,9 +6,9 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.BibTex;
@@ -17,7 +17,6 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.RecommendedTagComparator;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
 import org.bibsonomy.recommender.params.Pair;
 import org.bibsonomy.recommender.params.PostGuess;
 import org.bibsonomy.recommender.params.PostParam;
@@ -28,7 +27,6 @@ import org.bibsonomy.recommender.params.RecResponseParam;
 import org.bibsonomy.recommender.params.RecSettingParam;
 import org.bibsonomy.recommender.params.TasEntry;
 import org.bibsonomy.recommender.params.TasParam;
-import org.bibsonomy.util.ExceptionUtils;
 
 import com.ibatis.common.resources.Resources;
 import com.ibatis.sqlmap.client.SqlMapClient;
@@ -81,7 +79,7 @@ public class DBAccess extends AbstractDatabaseManager {
 	 * Get (unique) database handler for querying bibsonomy's database.
 	 * @return The SqlMap which can be used to query bibsonomy's database
 	 */
-	public static SqlMapClient getSqlBibMapInstance () {
+	private static SqlMapClient getSqlBibMapInstance () {
 		return sqlBibMap;
 	}
 
@@ -257,18 +255,45 @@ public class DBAccess extends AbstractDatabaseManager {
 	}
 	
 	/**
-	 * Get user's 5 most popular tag names with corresponding tag frequencies 
+	 * Get user's most popular tag names with corresponding tag frequencies 
+	 * 
 	 * @param username
+	 * @param range - the number of tags to get 
+	 * 
 	 * @return list of pairs [tagname,frequency]
 	 * @throws SQLException 
 	 */
 	@SuppressWarnings("unchecked")
-	public static List<Pair<String,Integer>> getMostPopularTagsForUser(String username) throws SQLException {
-		SqlMapClient sqlMap = getSqlBibMapInstance();
-		List<Pair<String,Integer>> result =
-			(List<Pair<String,Integer>>)sqlMap.queryForList("getMostPopularTagsForUser", username);
+	public static List<Pair<String,Integer>> getMostPopularTagsForUser(final String username, final int range) throws SQLException {
+		final PostParam param = new PostParam();
+		param.setUserName(username);
+		param.setRange(range);
 		
-		return result;
+		return getSqlBibMapInstance().queryForList("getMostPopularTagsForUser", param);
+	}
+	
+	/**
+	 * Gets the most popular tags of the given resource.
+	 * 
+	 * @param <T> The type of the resource.
+	 * @param resourceType
+	 * @param intraHash
+	 * @param range
+	 * @return The most popular tags of the given resource.
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T extends Resource> List<Pair<String, Integer>> getMostPopularTagsForResource(final Class<T> resourceType, final String intraHash, final int range) throws SQLException {
+		final PostParam param = new PostParam();
+		param.setIntraHash(intraHash);
+		param.setRange(range);
+		
+		if (BibTex.class.equals(resourceType)) {
+			return getSqlBibMapInstance().queryForList("getMostPopularTagsForBibTeX", param);
+		} else if (Bookmark.class.equals(resourceType)) {
+			return getSqlBibMapInstance().queryForList("getMostPopularTagsForBookmark", param);
+		}
+		throw new UnsupportedResourceTypeException("Unknown resource type " + resourceType);
 	}
 	/**
 	 * Get number of tags used by given user. 
@@ -278,8 +303,25 @@ public class DBAccess extends AbstractDatabaseManager {
 	 */
 	@SuppressWarnings("unchecked")
 	public static Integer getNumberOfTagsForUser(String username) throws SQLException {
-		SqlMapClient sqlMap = getSqlBibMapInstance();
-		return (Integer)sqlMap.queryForObject("getNumberOfTagsForUser", username);
+		return (Integer)getSqlBibMapInstance().queryForObject("getNumberOfTagsForUser", username);
+	}
+	
+	/**
+	 * Get number of tags attached to a given resource.. 
+	 * @param resourceType - type of the resource 
+	 * @param intraHash - hash of the resource
+	 * 
+	 * @return The number of tags attached to the resource.
+	 * @throws SQLException 
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T extends Resource> Integer getNumberOfTagsForResource(final Class<T> resourceType, final String intraHash) throws SQLException {
+		if (BibTex.class.equals(resourceType)) {
+			return (Integer)getSqlBibMapInstance().queryForObject("getNumberOfTagsForBibTeX", intraHash);
+		} else if (Bookmark.class.equals(resourceType)) {
+			return (Integer)getSqlBibMapInstance().queryForObject("getNumberOfTagsForBookmark", intraHash);
+		}
+		throw new UnsupportedResourceTypeException("Unknown resource type " + resourceType);
 	}
 	
 	/**
