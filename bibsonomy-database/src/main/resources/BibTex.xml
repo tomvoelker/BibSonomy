@@ -599,7 +599,7 @@
 		            AND s.content_id = t1.content_id
 		            <include refid="sysTagsUser"/>
 		            <include refid="sysTagsGroup"/>
-		            AND t1.tag_name = <include refid="tagWhereQuery"/>
+		            AND <include refid="tagWhereQuery"/>
 		      ORDER BY s.date DESC LIMIT #limit# OFFSET #offset#) AS tt 		
 		WHERE b.content_id = tt.content_id  		
 		      AND t.content_id = tt.content_id 	
