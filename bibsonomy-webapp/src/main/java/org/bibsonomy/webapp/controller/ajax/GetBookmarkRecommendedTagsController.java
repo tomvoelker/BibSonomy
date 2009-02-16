@@ -21,7 +21,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.recommender.tags.TagRecommender;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.impl.XMLRenderer;
-import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
 import org.bibsonomy.webapp.command.ajax.AjaxBookmarkRecommenderCommand;
 import org.bibsonomy.webapp.controller.AjaxController;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -48,7 +47,6 @@ public class GetBookmarkRecommendedTagsController extends AjaxController impleme
 	// MinimalisticController interface
 	//------------------------------------------------------------------------
 	
-	@Override
 	public AjaxBookmarkRecommenderCommand instantiateCommand() {
 		final AjaxBookmarkRecommenderCommand command = new AjaxBookmarkRecommenderCommand();
 		/*
@@ -73,7 +71,6 @@ public class GetBookmarkRecommendedTagsController extends AjaxController impleme
 		return command;
 	}
 
-	@Override 
 	public View workOn(AjaxBookmarkRecommenderCommand command) {
 		final RequestWrapperContext context = command.getContext();
 		
