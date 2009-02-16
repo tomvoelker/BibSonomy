@@ -790,11 +790,6 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		return 0;
 	}
 
-	public List<Author> getAuthors() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 
 	public int getTagStatistics(Class<? extends org.bibsonomy.model.Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end) {
 		// TODO Auto-generated method stub
@@ -810,5 +805,11 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public List<Author> getAuthors(GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }
