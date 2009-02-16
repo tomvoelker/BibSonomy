@@ -43,13 +43,25 @@
 	<!-- +
 		 | Get list of pairs containing given user's most popular tag name and frequency
 		 + --> 
-	<select id="getMostPopularTagsForUser" parameterClass="string" resultMap="RecommendationLogCommon.tagFrequency">
+	<select id="getMostPopularTagsForUser" parameterClass="postParam" resultMap="RecommendationLogCommon.tagFrequency">
 		SELECT tag_lower as first, COUNT(tag_lower) as second 
 		FROM tas 
 		WHERE user_name = #userName# 
 		GROUP BY tag_lower 
 		ORDER BY COUNT(tag_lower) DESC 
-		LIMIT 5
+		LIMIT #range#
+	</select>
+	
+	<!--  +
+		  | Get list of pairs containing given bookmark's most popular tag name and frequency
+		  + -->
+	<select id="getMostPopularTagsForBookmark" parameterClass="postParam" resultMap="RecommendationLogCommon.tagFrequency">
+		SELECT tag_lower as first, COUNT(tag_lower) as second 
+		  FROM tas t 
+		WHERE user_name = #userName# 
+		GROUP BY tag_lower 
+		ORDER BY COUNT(tag_lower) DESC 
+		LIMIT #range#
 	</select>
 	
 	<!-- +

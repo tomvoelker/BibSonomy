@@ -30,23 +30,24 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
 		voll qualifizierten Klassennamen zu definieren.
 	-->
 	
-	<typeAlias alias="byteBuffer" type="byte[]"/>	
-	<typeAlias alias="tag" type="org.bibsonomy.model.Tag" />
+	<typeAlias alias="byteBuffer"      type="byte[]"/>	
+	<typeAlias alias="timestamp"       type="java.sql.Timestamp"/>
 
-	<typeAlias alias="recLogEntry" type="org.bibsonomy.recommender.params.RecLogEntry" />
-	<typeAlias alias="rectag" type="org.bibsonomy.model.RecommendedTag" />
-	<typeAlias alias="recTag" type="org.bibsonomy.model.RecommendedTag" />
-	<typeAlias alias="recSetting" type="org.bibsonomy.recommender.params.RecSettingParam" />
+	<typeAlias alias="tag"             type="org.bibsonomy.model.Tag" />
+	<typeAlias alias="rectag"          type="org.bibsonomy.model.RecommendedTag" />
+	<typeAlias alias="recTag"          type="org.bibsonomy.model.RecommendedTag" />
+
+	<typeAlias alias="bookmarkParam"   type="org.bibsonomy.database.params.BookmarkParam" />
+	<typeAlias alias="bibtexParam"     type="org.bibsonomy.database.params.BibTexParam" />
+
+	<typeAlias alias="recLogEntry"     type="org.bibsonomy.recommender.params.RecLogEntry" />
+	<typeAlias alias="recSetting"      type="org.bibsonomy.recommender.params.RecSettingParam" />
 	<typeAlias alias="recQuerySetting" type="org.bibsonomy.recommender.params.RecQuerySettingParam" />
-	<typeAlias alias="recQuery" type="org.bibsonomy.recommender.params.RecQueryParam" />
-	<typeAlias alias="recResponse" type="org.bibsonomy.recommender.params.RecResponseParam" />
-	<typeAlias alias="bookmarkParam" type="org.bibsonomy.database.params.BookmarkParam" />
-	<typeAlias alias="bibtexParam" type="org.bibsonomy.database.params.BibTexParam" />
-
-	<typeAlias alias="queryGuess" type="org.bibsonomy.recommender.params.QueryGuess" />
-	<typeAlias alias="postParam"  type="org.bibsonomy.recommender.params.PostParam" />
-	<typeAlias alias="tasEntry"  type="org.bibsonomy.recommender.params.TasEntry" />
-	<typeAlias alias="timestamp" type="java.sql.Timestamp"/>
+	<typeAlias alias="recQuery"        type="org.bibsonomy.recommender.params.RecQueryParam" />
+	<typeAlias alias="recResponse"     type="org.bibsonomy.recommender.params.RecResponseParam" />
+	<typeAlias alias="queryGuess"      type="org.bibsonomy.recommender.params.QueryGuess" />
+	<typeAlias alias="postParam"       type="org.bibsonomy.recommender.params.PostParam" />
+	<typeAlias alias="tasEntry"        type="org.bibsonomy.recommender.params.TasEntry" />
 
 	<!--
 		Spezifizieren sie eine DataSource für diese SQL Map. Hier nehmen wir
