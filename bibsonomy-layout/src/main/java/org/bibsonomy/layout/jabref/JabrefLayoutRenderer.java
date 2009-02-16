@@ -46,7 +46,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	 *  
 	 * @see org.bibsonomy.layout.LayoutRenderer#getLayout(java.lang.String, java.lang.String)
 	 */
-	public JabrefLayout getLayout(final String layout, final String loginUserName) throws IOException {
+	public JabrefLayout getLayout(final String layout, final String loginUserName) throws LayoutRenderingException {
 		final JabrefLayout jabrefLayout;
 		if ("custom".equals(layout)) {
 			/*
@@ -63,7 +63,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 		 * no layout found -> IOException
 		 */
 		if (jabrefLayout == null) {
-			throw new IOException("Could not find layout '" + layout + "' for user " + loginUserName);
+			throw new LayoutRenderingException("Could not find layout '" + layout + "' for user " + loginUserName);
 		}
 		return jabrefLayout;
 
@@ -73,7 +73,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	 * 
 	 * @see org.bibsonomy.layout.LayoutRenderer#renderLayout(org.bibsonomy.layout.Layout, java.util.List, java.io.OutputStream)
 	 */
-	public <T extends Resource> void renderLayout(final JabrefLayout layout, final List<Post<T>> posts, final OutputStream outputStream) throws IOException {
+	public <T extends Resource> void renderLayout(final JabrefLayout layout, final List<Post<T>> posts, final OutputStream outputStream) throws LayoutRenderingException {
 		log.debug("rendering " + posts.size() + " posts with " + layout.getName() + " layout");
 		/*
 		 * XXX: different handling of "duplicates = no" in new code:
@@ -90,7 +90,12 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 		/*
 		 * render the database
 		 */
-		outputStream.write(renderDatabase(database, layout).toString().getBytes("UTF-8"));	
+		final StringBuffer renderDatabase = renderDatabase(database, layout);
+		try {
+			outputStream.write(renderDatabase.toString().getBytes("UTF-8"));
+		} catch (final IOException e) {
+			throw new LayoutRenderingException("Could not render layout: " + e.getMessage());
+		}
 	}
 
 

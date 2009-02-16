@@ -3,7 +3,6 @@ package org.bibsonomy.layout.jabref;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,6 +11,7 @@ import net.sf.jabref.BibtexEntryImpl;
 import net.sf.jabref.BibtexEntryType;
 import net.sf.jabref.bst.VM;
 
+import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.junit.Test;
@@ -37,7 +37,7 @@ public class JabrefLayoutRendererTest {
 			final JabrefLayoutRenderer renderer = getRenderer();
 			final JabrefLayout layout = renderer.getLayout("dblp", "foo");
 			renderer.renderLayout(layout, getPosts(), System.out);
-		} catch (IOException e) {
+		} catch (LayoutRenderingException e) {
 			fail(e.getMessage());
 		}
 

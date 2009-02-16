@@ -1,9 +1,9 @@
 package org.bibsonomy.layout;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
+import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
@@ -25,7 +25,7 @@ public interface LayoutRenderer<LAYOUT extends Layout> {
 	 * @return
 	 * @throws IOException
 	 */
-	public LAYOUT getLayout(final String layoutName, final String loginUserName) throws IOException;
+	public LAYOUT getLayout(final String layoutName, final String loginUserName) throws LayoutRenderingException;
 
 	/** Renders the given layout to the outputStream.
 	 * 
@@ -35,7 +35,7 @@ public interface LayoutRenderer<LAYOUT extends Layout> {
 	 * @param outputStream
 	 * @throws IOException
 	 */
-	public <T extends Resource> void renderLayout(final LAYOUT layout, final List<Post<T>> posts, final OutputStream outputStream) throws IOException;
+	public <T extends Resource> void renderLayout(final LAYOUT layout, final List<Post<T>> posts, final OutputStream outputStream) throws LayoutRenderingException;
 
 	/** Checks, if the renderer supports the given resource type.
 	 * 
