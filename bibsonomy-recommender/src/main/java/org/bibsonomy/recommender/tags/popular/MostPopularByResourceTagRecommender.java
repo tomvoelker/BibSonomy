@@ -15,13 +15,13 @@ import org.bibsonomy.recommender.params.Pair;
 import org.bibsonomy.recommender.tags.TagRecommender;
 
 /**
- * Returns the most popular (i.e., most often used) tags of the user as 
+ * Returns the most popular (i.e., most often attached) tags of the resource as 
  * recommendation for the post.  
  * 
  * @author fei
  * @version $Id$
  */
-public class MostPopularByUserTagRecommender implements TagRecommender {
+public class MostPopularByResourceTagRecommender implements TagRecommender {
 	private static final Logger log = Logger.getLogger(DBAccess.class);
 	
 	private static final int MAX_NUMBER_OF_TAGS = 5;
@@ -35,22 +35,27 @@ public class MostPopularByUserTagRecommender implements TagRecommender {
 	}
 	 
 	/**
-	 * Returns user's five overall most popular tags
+	 * Returns the resource's overall most popular tags
 	 * 
 	 * @see org.bibsonomy.recommender.tags.TagRecommender#getRecommendedTags(org.bibsonomy.model.Post)
 	 */
 	public SortedSet<RecommendedTag> getRecommendedTags(final Post<? extends Resource> post) {
-		final String username = post.getUser().getName();
+		final Resource resource = post.getResource();
+		/*
+		 * FIXME: do we have to call recalculateHashes() first?
+		 */
+		final String intraHash = resource.getIntraHash();
+		
 		final SortedSet<RecommendedTag> result = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
 		
-		if (username != null) {
+		if (intraHash != null) {
 			try {
 				/*
 				 * we get the count to normalize the score
 				 */
-				final Integer count = DBAccess.getNumberOfTagsForUser(username);
+				final Integer count = DBAccess.getNumberOfTagsForResource(resource.getClass(), intraHash);
 				
-				final List<Pair<String,Integer>> tags = DBAccess.getMostPopularTagsForUser(username, MAX_NUMBER_OF_TAGS);
+				final List<Pair<String,Integer>> tags = DBAccess.getMostPopularTagsForResource(resource.getClass(), intraHash, MAX_NUMBER_OF_TAGS);
 				for (Pair<String,Integer> tag : tags) {
 					// TODO: use some sensible confidence value
 					final double tmp = (1.0*tag.getSecond())/count;
@@ -58,7 +63,7 @@ public class MostPopularByUserTagRecommender implements TagRecommender {
 					result.add(recTag);
 				}
 			} catch (SQLException ex) {
-				log.error("Error getting recommendations for user " + username, ex);
+				log.error("Error getting recommendations for resource " + resource, ex);
 			}
 		}
 		// all done
