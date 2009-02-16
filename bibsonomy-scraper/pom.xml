@@ -56,6 +56,7 @@
 			<version>4aug2000r7-dev</version>
 		</dependency>
 		<dependency>
+			<!-- this is a new "not so fat" JAR	 -->
 			<groupId>edu.umass.cs.mallet</groupId>
 			<artifactId>mallet</artifactId>
 			<version>0.4-jaeschke</version>
