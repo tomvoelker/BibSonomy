@@ -21,12 +21,10 @@ import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
 public class AjaxBookmarkRecommenderCommand extends EditBookmarkCommand implements AjaxCommandInterface {
 	private String responseString;
 
-	@Override
 	public String getResponseString() {
 		return this.responseString;
 	}
 
-	@Override
 	public void setResponseString(String response) {
 		this.responseString = response;
 	}
