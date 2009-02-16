@@ -69,12 +69,12 @@
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="authorPageController"/>
 					</bean>
-				</entry>	
+				</entry>
 				<entry key="/authors">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="authorsPageController"/>
 					</bean>
-				</entry>
+				</entry>				
 				<entry key="/concept">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="conceptPageController"/>
@@ -418,12 +418,12 @@
 			</list>
 		</property>
 	</bean>
-	
+
 	<bean id="authorsPageController" class="org.bibsonomy.webapp.controller.AuthorsPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
 	</bean>
-
+	
 	<bean id="userRelationsController" class="org.bibsonomy.webapp.controller.UserRelationsController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
@@ -605,9 +605,9 @@
 	</bean>
 	
 	<!-- used to resolve non-JSP views, e.g., JabRef's layout views -->
-	<!-- <bean id="nonJSPViewResolver" class="org.springframework.web.servlet.view.XmlViewResolver">
+	<bean id="nonJSPViewResolver" class="org.springframework.web.servlet.view.XmlViewResolver">
     	<property name="order" value="1"/>
-	</bean> -->
+	</bean>
 	
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
 	
