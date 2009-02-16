@@ -163,4 +163,9 @@ public class _SSRNScraper implements Scraper {
 		
 		return cookieString.toString();
 	}
+
+	public boolean supportsScrapingContext(ScrapingContext scrapingContext) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
