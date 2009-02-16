@@ -11,6 +11,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.w3c.tidy.Tidy;
 
 /**
  * @author rja
@@ -21,6 +26,15 @@ public class WebUtils {
 	private static final Logger log = Logger.getLogger(WebUtils.class);
 	
 	private static final String CHARSET = "charset=";
+	
+	// 2009/02/03,fei: take character encodings into account
+	// FIXME: Version up to 7 of jTidy use some strange proprietary 
+	//        encoding naming scheme - we have to map them to java 
+	private enum ENCODING_NAMES {
+		raw, ASCII, ISO8859_1, UTF8, 
+		JIS, MacRoman, UnicodeLittle, 
+		UnicodeBig, Unicode, Cp1252, Big5, 
+		SJIS};	
 
 	/**
 	 * Do a POST request to the given URL with the given content. Assume the charset of the result to be charset.
@@ -129,6 +143,31 @@ public class WebUtils {
 		}
 	}
 	
+	/**
+	 * Parse html file from given URL into DOM tree.
+	 * 
+	 * @param inputURL file's url
+	 * @return parsed DOM tree
+	 * @throws IOException if html file could not be parsed. 
+	 */
+	public static Document parseHTMLFromURL(final URL inputURL) throws IOException {
+			final Tidy tidy = new Tidy();
+			tidy.setQuiet(true);
+			tidy.setShowWarnings(false);
+
+			// 2009/02/03,fei: take character encodings into account
+			// FIXME: Version up to 7 of jTidy use some strange proprietary 
+			//        encoding naming scheme - we have to map them to java 
+			//        Better switch to newer library
+			String encodingName = getCharset((HttpURLConnection)inputURL.openConnection());
+			int encodingNr = 3;   // default to UTF-8
+			try{
+				encodingNr = ENCODING_NAMES.valueOf(encodingName).ordinal();
+			} catch (Exception ex) {
+			}
+			tidy.setCharEncoding(encodingNr);
+			return tidy.parseDOM(inputURL.openConnection().getInputStream(), null);
+	}
 
 	/** Extracts the charset ID of a web page as returned by the server.
 	 * 
