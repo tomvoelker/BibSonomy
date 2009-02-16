@@ -80,7 +80,7 @@ public class JabrefLayouts {
 	 * 
 	 * @throws IOException
 	 */
-	public void init() throws IOException {
+	protected void init() throws IOException {
 		loadDefaultLayouts();
 	}
 
@@ -159,14 +159,14 @@ public class JabrefLayouts {
 	 * @param layout
 	 * @return
 	 */
-	public JabrefLayout getLayout(final String layout) {
+	protected JabrefLayout getLayout(final String layout) {
 		return layouts.get(layout);
 	}
 
 	/** Removes all filters from the cache and loads the default filters.
 	 * @throws IOException
 	 */
-	public void resetFilters() throws IOException {
+	protected void resetFilters() throws IOException {
 		loadDefaultLayouts();
 	}
 
@@ -201,7 +201,7 @@ public class JabrefLayouts {
 			log.debug("trying to load custom user layout (part " + layoutPart + ") for user " + userName + " from file " + file);
 
 			if (file.exists()) {
-				log.debug("custom layout found!");
+				log.debug("custom layout (part '" + layoutPart + "') found!");
 				final LayoutHelper layoutHelper = new LayoutHelper(new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8")));
 
 				try {
@@ -216,10 +216,16 @@ public class JabrefLayouts {
 			}
 		}
 		/*
-		 * add user layout to map
+		 * we add the layout only to the map, if it is complete, i.e., it contains an item layout
 		 */
-		synchronized(layouts) {
-			layouts.put(jabrefLayout.getName(), jabrefLayout);
+		if (jabrefLayout.getSubLayout(LayoutPart.ITEM) != null) {
+			/*
+			 * add user layout to map
+			 */
+			log.debug("user layout contains 'item' part - loading it");
+			synchronized(layouts) {
+				layouts.put(jabrefLayout.getName(), jabrefLayout);
+			}
 		}
 	}
 
@@ -234,7 +240,7 @@ public class JabrefLayouts {
 	 * @param userName
 	 * @return
 	 */
-	public JabrefLayout getUserLayout(final String userName) {
+	protected JabrefLayout getUserLayout(final String userName) {
 		/*
 		 * check if custom filter exists
 		 */
@@ -253,12 +259,14 @@ public class JabrefLayouts {
 	}
 
 	/**
-	 * Unloads layout objects adequate to deleted custom filter.
-	 * @param hashedName Hash representing the deleted document.
+	 * Unloads the custom layout of the given user. Note that all parts
+	 * of the layout are unloaded! 
+	 * 
+	 * @param userName - the name of the user 
 	 */
-	public void unloadCustomFilter(final String hashedName){
+	protected void unloadCustomFilter(final String userName) {
 		synchronized(layouts) {
-			layouts.remove(hashedName);
+			layouts.remove(JabrefLayoutUtils.userLayoutName(userName));
 		}
 	}
 
@@ -267,7 +275,7 @@ public class JabrefLayouts {
 	 * @param userLayoutFilePath
 	 */
 	@Required
-	public void setUserLayoutFilePath(String userLayoutFilePath) {
+	protected void setUserLayoutFilePath(String userLayoutFilePath) {
 		this.userLayoutFilePath = userLayoutFilePath;
 	}
 
@@ -277,7 +285,7 @@ public class JabrefLayouts {
 	 * 
 	 * @param defaultLayoutFilePath
 	 */
-	public void setDefaultLayoutFilePath(String defaultLayoutFilePath) {
+	protected void setDefaultLayoutFilePath(String defaultLayoutFilePath) {
 		this.defaultLayoutFilePath = defaultLayoutFilePath;
 	}
 

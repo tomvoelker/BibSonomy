@@ -25,9 +25,8 @@ import org.bibsonomy.model.util.BibTexUtils;
 import org.springframework.beans.factory.annotation.Required;
 
 /**
- * 
- * FIXME: unloading/updating of custom user filters missing!
- * 
+ * This renderer handles jabref layouts. 
+ *  
  * @author:  rja
  * @version: $Id$
  * $Author$
@@ -48,16 +47,26 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	 * @see org.bibsonomy.layout.LayoutRenderer#getLayout(java.lang.String, java.lang.String)
 	 */
 	public JabrefLayout getLayout(final String layout, final String loginUserName) throws IOException {
+		final JabrefLayout jabrefLayout;
 		if ("custom".equals(layout)) {
 			/*
 			 * get custom user layout from map
 			 */
-			return layouts.getUserLayout(loginUserName);
-		} 
+			jabrefLayout = layouts.getUserLayout(loginUserName);
+		} else {
+			/*
+			 * get standard layout
+			 */
+			jabrefLayout = layouts.getLayout(layout);
+		}
 		/*
-		 * get standard layout
+		 * no layout found -> IOException
 		 */
-		return layouts.getLayout(layout);
+		if (jabrefLayout == null) {
+			throw new IOException("Could not find layout '" + layout + "' for user " + loginUserName);
+		}
+		return jabrefLayout;
+
 	}
 
 	/** Renders the posts with the given layout.
@@ -67,7 +76,11 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	public <T extends Resource> void renderLayout(final JabrefLayout layout, final List<Post<T>> posts, final OutputStream outputStream) throws IOException {
 		log.debug("rendering " + posts.size() + " posts with " + layout.getName() + " layout");
 		/*
-		 * FIXME: how to support duplicates = no?
+		 * XXX: different handling of "duplicates = no" in new code:
+		 * old code: duplicate removal and sorting by year, only for layouts, done in layout 
+		 * renderer 
+		 * new code: duplicate removal in controller, no sorting by year - must be enforced 
+		 * by another parameter
 		 */
 		/*
 		 * convert posts into Jabref BibtexDatabase
@@ -83,7 +96,11 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 
 
 	/**
-	 * This is a singleton!
+	 * This is a singleton! 
+	 * FIXME: is this really neccessary? At least until the old code from LayoutHandler
+	 * is moved we need an instance if the JabrefLayoutRenderer there to unload custom
+	 * user layouts. The easiest way to do this is via a singleton.
+	 * 
 	 */
 	private static JabrefLayoutRenderer instance = new JabrefLayoutRenderer();
 
@@ -147,7 +164,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 		 */
 		final List<BibtexEntry> sorted = FileActions.getSortedEntries(database, null, false);
 
-		
+
 		/* 
 		 * *************** rendering the entries *****************
 		 */ 
@@ -191,9 +208,9 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 
 		}
 
-		
-		
-		
+
+
+
 		/* 
 		 * *************** rendering the footer ***************** 
 		 */
@@ -276,5 +293,14 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 		return BibTex.class.equals(clazz);
 	}
 
+
+	/** Unloads the custom layout of the user. Note that all parts of the 
+	 * layout are unloaded!
+	 * 
+	 * @param userName
+	 */
+	public void unloadUserLayout(final String userName) {
+		layouts.unloadCustomFilter(userName);
+	}
 
 }
