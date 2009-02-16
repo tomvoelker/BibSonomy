@@ -36,7 +36,6 @@ import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.BookmarkDatabaseManager;
 import org.bibsonomy.database.managers.CrudableContent;
 import org.bibsonomy.database.managers.DocumentDatabaseManager;
-import org.bibsonomy.database.managers.FriendDatabaseManager;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.managers.StatisticsDatabaseManager;
@@ -307,7 +306,7 @@ public class DBLogic implements LogicInterface {
 						 * neither public nor private ...
 						 * ... get the groups from the grouptas table
 						 */
-						post.setGroups((Set<Group>) groupDBManager.getGroupsForContentId(post.getContentId(), session));
+						post.setGroups(new HashSet(groupDBManager.getGroupsForContentId(post.getContentId(), session)));
 					}
 					return post;
 				}
