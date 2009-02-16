@@ -1,36 +1,32 @@
 package org.bibsonomy.recommender.tags.simple;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.util.Properties;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.RecommendedTagComparator;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.recommender.multiplexer.MultiplexingTagRecommender;
 import org.bibsonomy.recommender.tags.TagRecommenderConnector;
-import org.bibsonomy.recommender.tags.TagRecommender;
+import org.bibsonomy.util.WebUtils;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
+ * Tag recommender which parses html file at given url for keywords from the meta-inf section.
+ * 
  * @author fei
  * @version $Id$
  */
 public class MetaInfoTagRecommender implements TagRecommenderConnector {
 	private static final Logger log = Logger.getLogger(MetaInfoTagRecommender.class);
-	private String server = "";   // 'http://www.bibsonomy.org' 
-	// FIXME: How can we automatically get bibsonomy's servername?
 	
 	public void addRecommendedTags(SortedSet<RecommendedTag> recommendedTags,
 			Post<? extends Resource> post) {
@@ -41,60 +37,57 @@ public class MetaInfoTagRecommender implements TagRecommenderConnector {
 		return "Recommender using html <meta> informations.";
 	}
 
+	/**
+	 * Parse html file at given url an return list of keywords as given in file's meta-inf section.
+	 * TODO: Assumes that keywords are comma separated.
+	 */
 	public SortedSet<RecommendedTag> getRecommendedTags(
 			Post<? extends Resource> post) {
-
 		SortedSet<RecommendedTag> result = 
 			new TreeSet<RecommendedTag>(new RecommendedTagComparator());
 
 		if( Bookmark.class.isAssignableFrom(post.getResource().getClass()) ) {
-			HttpClient client = new HttpClient();
-			// Create a method instance.
-			String uri = getServer()+"/generalAjax?action=getTitleForUrl&pageURL="
-				+ ((Bookmark)post.getResource()).getUrl();
-			log.info("Querying: "+uri);
+			String url = ((Bookmark)post.getResource()).getUrl();
+			log.debug("Scraping " + url + " for keywords.");
 			
-			GetMethod request = new GetMethod(uri);
-			try {
-				// Execute the method.
-				int statusCode = client.executeMethod(request);
-
-				if (statusCode != HttpStatus.SC_OK) {
-					System.err.println("Method failed: " + request.getStatusLine());
-				} else {
-					// Read the response body.
-					byte[] responseBody = request.getResponseBody();
-					// clean up keywords
-					String[] responseStr = new String(responseBody, "UTF8").split("pageKeywords\\s*\"\\s*:\\s*\"");
-					if( responseStr.length>0 ) {
-						String[] keywords = responseStr[1].split(",");
-						if( keywords.length>0 ) {
-							keywords[keywords.length-1]=keywords[keywords.length-1].replaceAll("\\s*\"\\s*}\\s*$", "");//
-							for( int i=0; i<keywords.length; i++ ){
-								if(keywords[i].length()>0)
-									result.add(new RecommendedTag(keywords[i].toLowerCase(),0.5,0));
-							}
-						}
-					}					
+			String[] keywords = getKeywordsForUrl(url).split(",");
+			if( keywords.length>0 ) {
+				for( int i=0; i<keywords.length; i++ ){
+					if(keywords[i].length()>0)
+						// FIXME: compute sensible confidence/score values.
+						result.add(new RecommendedTag(keywords[i].toLowerCase(),0.5,0));
 				}
-			} catch (Exception e) {
-				log.error("Fatal protocol violation.", e);
-			} finally {
-				// Release the connection.
-				request.releaseConnection();
 			}
 		}
-
 		return result;
 	}
-
-	public void setServer(String server) {
-		this.server = server;
+	
+	/**
+	 * Parses html file at given url and returns keywords from its meta informations.
+	 * @param url file's url
+	 * @return keywords as given in html file if present, empty string otherwise.
+	 */
+	private String getKeywordsForUrl(String url) {
+		String keywordsStr = "";
+		try {
+			final Document headElement = WebUtils.parseHTMLFromURL(new URL(url));
+			
+			final NodeList metaList = headElement.getElementsByTagName("meta");
+			for (int i = 0; i < metaList.getLength(); i++) {
+				final Element metaElement = (Element) metaList.item(i);
+				
+				Attr nameAttr = metaElement.getAttributeNode("name");
+				if( (nameAttr!=null) && (nameAttr.getNodeValue().equalsIgnoreCase("keywords")) ) {
+					keywordsStr += metaElement.getAttribute("content");
+					log.debug("KEYWORDS for URL "+url.toString()+":"+keywordsStr);
+				}
+			}
+		} catch (IOException ex) {
+			// ignore exceptions silently
+		}
+		return keywordsStr;
 	}
-
-	public String getServer() {
-		return server;
-	}
+	
 
 	public boolean connect() throws Exception {
 		// TODO Auto-generated method stub
@@ -108,7 +101,7 @@ public class MetaInfoTagRecommender implements TagRecommenderConnector {
 
 	public byte[] getMeta() {
 		// TODO Auto-generated method stub
-		return getServer().getBytes();
+		return null;
 	}
 
 	public boolean initialize(Properties props) throws Exception {
