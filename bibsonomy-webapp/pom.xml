@@ -76,10 +76,10 @@
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-scraper</artifactId>
 		</dependency>
-		<!-- dependency>
+		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-layout</artifactId>
-			</dependency-->
+			</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-rest-client</artifactId>
@@ -182,9 +182,9 @@
 			<version>1.1</version>
 		</dependency>
 		<dependency>
-			<groupId>jabref</groupId>
-			<artifactId>jabref</artifactId>
-			<version>2.3.1</version>
+			<groupId>JabRef</groupId>
+			<artifactId>JabRef</artifactId>
+			<version>2.4.3-16</version>
 		</dependency>
 		<dependency>
 			<groupId>net.tanesha.recaptcha4j</groupId>
