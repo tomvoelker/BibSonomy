@@ -10,6 +10,7 @@ public class PostParam extends ListParam {
 	private Timestamp timestamp;
 	private String userName;
 	private Integer contentID;
+	private String intraHash;
 	
 	
 	public void setTimestamp(Timestamp timestamp) {
@@ -29,6 +30,12 @@ public class PostParam extends ListParam {
 	}
 	public Integer getContentID() {
 		return contentID;
+	}
+	public String getIntraHash() {
+		return this.intraHash;
+	}
+	public void setIntraHash(String intraHash) {
+		this.intraHash = intraHash;
 	}
 
 
