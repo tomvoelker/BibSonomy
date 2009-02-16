@@ -264,7 +264,7 @@ foreach my $content_type (@content_types) {
     }
 
     # exclude certain tags
-    foreach my $exlude_tag (@tags_to_exclude) {
+    foreach my $exclude_tag (@tags_to_exclude) {
 	$condition .= " AND tag_lower != '$exclude_tag' ";
     }
 
