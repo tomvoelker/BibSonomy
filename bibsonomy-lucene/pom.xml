@@ -42,7 +42,8 @@
 	<dependency>
 		<groupId>org.apache.ibatis</groupId>
 		<artifactId>ibatis-sqlmap</artifactId>
-		<version>jeillig</version>
+		<version>SNAPSHOT</version>
+		<classifier>r737724</classifier>
 	</dependency> 		
 	<dependency>
 		<groupId>javax.servlet</groupId>
