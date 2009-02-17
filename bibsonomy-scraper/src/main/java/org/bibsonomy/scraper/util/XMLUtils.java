@@ -14,7 +14,7 @@ import org.w3c.tidy.Tidy;
 public class XMLUtils {
 
 	/*
-	 * As soon as we know if JTidy is thread safe, we can use a static instance of it
+	 * As soon as we know that JTidy is thread safe, we can use a static instance of it
 	 */
 //	private static final Tidy tidy = new Tidy();
 //	static {
