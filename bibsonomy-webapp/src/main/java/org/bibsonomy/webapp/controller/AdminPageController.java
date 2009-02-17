@@ -69,13 +69,14 @@ public class AdminPageController implements MinimalisticController<AdminViewComm
 	public void setStatistics(AdminViewCommand cmd) {
 		AdminStatisticsCommand command = cmd.getStatisticsCommand();
 		
-		log.debug("Interval: " + cmd.getInterval());
-		command.setNumAdminSpammers(this.logic.getClassifiedUserCount(Classifier.ADMIN, SpamStatus.SPAMMER, cmd.getInterval()));
-		command.setNumAdminNoSpammer(this.logic.getClassifiedUserCount(Classifier.ADMIN, SpamStatus.NO_SPAMMER, cmd.getInterval()));
-		command.setNumClassifierSpammer(this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.SPAMMER, cmd.getInterval()));
-		command.setNumClassifierSpammerUnsure(this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.SPAMMER_NOT_SURE, cmd.getInterval()));
-		command.setNumClassifierNoSpammerUnsure(this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.NO_SPAMMER_NOT_SURE, cmd.getInterval()));
-		command.setNumClassifierNoSpammer(this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.NO_SPAMMER, cmd.getInterval()));	
+		for (int interval: cmd.getInterval()){
+			command.setNumAdminSpammer(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.ADMIN, SpamStatus.SPAMMER, interval));
+			command.setNumAdminNoSpammer(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.ADMIN, SpamStatus.NO_SPAMMER, interval));
+			command.setNumClassifierSpammer(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.SPAMMER, interval));
+			command.setNumClassifierSpammerUnsure(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.SPAMMER_NOT_SURE, interval));
+			command.setNumClassifierNoSpammerUnsure(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.NO_SPAMMER_NOT_SURE, interval));
+			command.setNumClassifierNoSpammer(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.NO_SPAMMER, interval));
+		}
 	}
 	
 	public void setUsers(AdminViewCommand cmd) {
@@ -83,7 +84,9 @@ public class AdminPageController implements MinimalisticController<AdminViewComm
 		SpamStatus status 	  = null;
 		
 		if (cmd.getSelTab() == AdminViewCommand.CLASSIFIER_EVALUATE) {
-			List<User> u = this.logic.getClassifierComparison(cmd.getInterval());
+			
+			//TODO: Interval checken
+			List<User> u = this.logic.getClassifierComparison(cmd.getInterval()[0]);
 			cmd.setContent(u);
 			return;
 		}		

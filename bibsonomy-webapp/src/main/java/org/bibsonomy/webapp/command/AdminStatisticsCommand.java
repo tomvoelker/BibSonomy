@@ -1,7 +1,12 @@
 package org.bibsonomy.webapp.command;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.SpamStatus;
+import org.bibsonomy.webapp.controller.AdminPageController;
 
 /**
  * @author sts
@@ -9,63 +14,63 @@ import org.bibsonomy.common.enums.SpamStatus;
  */
 public class AdminStatisticsCommand {
 
-	private int numAdminSpammers;
+	private HashMap<Long, Integer> numAdminSpammer = new HashMap<Long, Integer>();
 	
-	private int numAdminNoSpammer;
+	private HashMap<Long, Integer> numAdminNoSpammer = new HashMap<Long, Integer>();
 	
-	private int numClassifierSpammer;
+	private HashMap<Long, Integer> numClassifierSpammer = new HashMap<Long, Integer>();
 	
-	private int numClassifierSpammerUnsure;
+	private HashMap<Long, Integer> numClassifierSpammerUnsure = new HashMap<Long, Integer>();
 	
-	private int numClassifierNoSpammer;
+	private HashMap<Long, Integer> numClassifierNoSpammer = new HashMap<Long, Integer>();
 	
-	private int numClassifierNoSpammerUnsure;
-
-	public int getNumAdminSpammers() {
-		return this.numAdminSpammers;
+	private HashMap<Long, Integer> numClassifierNoSpammerUnsure = new HashMap<Long, Integer>();
+	
+	public HashMap<Long, Integer> getNumAdminSpammer() {
+		return this.numAdminSpammer;
 	}
 
-	public void setNumAdminSpammers(int numAdminSpammers) {
-		this.numAdminSpammers = numAdminSpammers;
+	public void setNumAdminSpammer(Long interval, int counts) {
+		this.numAdminSpammer.put(interval, counts);
 	}
 
-	public int getNumAdminNoSpammer() {
+	public HashMap<Long, Integer> getNumAdminNoSpammer() {
 		return this.numAdminNoSpammer;
 	}
 
-	public void setNumAdminNoSpammer(int numAdminNoSpammer) {
-		this.numAdminNoSpammer = numAdminNoSpammer;
+	public void setNumAdminNoSpammer(Long interval, int counts) {
+		this.numAdminNoSpammer.put(interval, counts);
 	}
 
-	public int getNumClassifierSpammer() {
+	public HashMap<Long, Integer> getNumClassifierSpammer() {
 		return this.numClassifierSpammer;
 	}
 
-	public void setNumClassifierSpammer(int numClassifierSpammer) {
-		this.numClassifierSpammer = numClassifierSpammer;
+	public void setNumClassifierSpammer(Long interval, int counts) {
+		this.numClassifierSpammer.put(interval, counts);
 	}
 
-	public int getNumClassifierSpammerUnsure() {
+	public HashMap<Long, Integer> getNumClassifierSpammerUnsure() {
 		return this.numClassifierSpammerUnsure;
 	}
 
-	public void setNumClassifierSpammerUnsure(int numClassifierSpammerUnsure) {
-		this.numClassifierSpammerUnsure = numClassifierSpammerUnsure;
+	public void setNumClassifierSpammerUnsure(Long interval, int counts) {
+		this.numClassifierSpammerUnsure.put(interval, counts);
 	}
 
-	public int getNumClassifierNoSpammer() {
+	public HashMap<Long, Integer> getNumClassifierNoSpammer() {
 		return this.numClassifierNoSpammer;
 	}
 
-	public void setNumClassifierNoSpammer(int numClassifierNoSpammer) {
-		this.numClassifierNoSpammer = numClassifierNoSpammer;
+	public void setNumClassifierNoSpammer(Long interval, int counts) {
+		this.numClassifierNoSpammer.put(interval, counts);
 	}
 
-	public int getNumClassifierNoSpammerUnsure() {
+	public HashMap<Long, Integer> getNumClassifierNoSpammerUnsure() {
 		return this.numClassifierNoSpammerUnsure;
 	}
 
-	public void setNumClassifierNoSpammerUnsure(int numClassifierNoSpammerUnsure) {
-		this.numClassifierNoSpammerUnsure = numClassifierNoSpammerUnsure;
+	public void setNumClassifierNoSpammerUnsure(Long interval, int counts) {
+		this.numClassifierNoSpammerUnsure.put(interval, counts);
 	}	
 }

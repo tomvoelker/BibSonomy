@@ -28,8 +28,9 @@ public class AdminViewCommand extends TabsCommand<User> {
 	
 	private AdminStatisticsCommand statisticsCommand = new AdminStatisticsCommand();
 	
-	/** the time interval for retrieving spammers */
-	private Integer interval = 100;
+	/** the time interval (in hours) for retrieving spammers */
+	//TODO: variable time intervals
+	private Integer[] interval = new Integer[] {12, 24, 168};
 	
 	/** number of entries shown on one page */
 	private Integer limit = 100;
@@ -72,12 +73,12 @@ public class AdminViewCommand extends TabsCommand<User> {
 		settingsCommand.setAdminSetting(setting, value);
 	}
 
-	public Integer getInterval() {
+	public Integer[] getInterval() {
 		return this.interval;
 	}
 
-	public void setInterval(Integer interval) {
-		this.interval = interval;
+	public void setInterval(int index, Integer interval) {
+		this.interval[index] = interval;
 	}
 	
 	public String getAclUserInfo() {

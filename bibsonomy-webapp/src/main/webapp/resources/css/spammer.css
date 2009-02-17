@@ -15,7 +15,7 @@
 }
 
 .stattable {
-	font-size:90%;
+	font-size:80%;
 	border-collapse: collapse;
 	empty-cells:show;	
 	margin-top: 10px;	
@@ -23,8 +23,9 @@
 }
 
 .stattable th {
+	text-align:left;
 	font-weight:bold;	
-	padding: 2px;	
+	padding: 3px;	
 }
 
 .stattable td {		
