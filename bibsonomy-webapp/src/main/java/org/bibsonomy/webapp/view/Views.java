@@ -365,7 +365,8 @@ public enum Views implements View {
 			"publrss".equals(format) ||
 			"publ".equals(format) ||			
 			"aparss".equals(format) ||
-			"burst".equals(format) || 
+			"burst".equals(format) ||
+			"layout".equals(format) ||
 			"swrc".equals(format)) {
 			return true;
 		}
