@@ -52,14 +52,18 @@
 			<link rel="alternate" type="application/rss+xml" title="${burstRssFeed} /${requPath}" href="${burstUrl}" />
 		</jsp:attribute>
 		<jsp:attribute name="content">
-			<!-- info text -->
-			<c:if test="${info != null}">	
-				<div class="infobox">
+
+            <div id="general">
+  			   <!-- info text -->
+			   <c:if test="${not empty info}">	
+			     <div class="infobox">
 					<p><jsp:invoke fragment="info"/></p>			
-				</div>			
-			</c:if>		
-			
+				 </div>			
+			   </c:if>		
+            </div>
+
 			<resources:bibtexs listView="${command.bibtex}" loginUserName="${loginUserName}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
+
 		</jsp:attribute>
 	</layout:layout>
 </jsp:root>
