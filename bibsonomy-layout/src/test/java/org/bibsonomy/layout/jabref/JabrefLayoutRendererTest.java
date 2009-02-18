@@ -3,6 +3,7 @@ package org.bibsonomy.layout.jabref;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,6 +39,8 @@ public class JabrefLayoutRendererTest {
 			final JabrefLayout layout = renderer.getLayout("dblp", "foo");
 			renderer.renderLayout(layout, getPosts(), System.out);
 		} catch (LayoutRenderingException e) {
+			fail(e.getMessage());
+		} catch (IOException e) {
 			fail(e.getMessage());
 		}
 
