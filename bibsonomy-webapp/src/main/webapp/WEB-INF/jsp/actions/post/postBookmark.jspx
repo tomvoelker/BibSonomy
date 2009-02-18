@@ -64,6 +64,7 @@
 			
 					function setSuggestionFromUrlDescription(tagname){
 						document.getElementById('post.description').value=tagname;
+						document.getElementById('suggestion.description').innerHTML = "";
 					}
 			
 					function setSuggestionFromUrlTitle(tagname){
