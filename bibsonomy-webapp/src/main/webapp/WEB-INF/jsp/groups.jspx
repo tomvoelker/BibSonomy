@@ -128,7 +128,7 @@
 			        <!-- show 'join', if user is registered  -->
 			        <td>
                     	<c:if test="${not empty command.context.loginUser.name}">
-			            <span class="listhButtons">
+			            <span class="groupsButtons">
 	                    	<a href="/join_group?group=${fn:escapeXml(entry.name)}">join</a>
                     	</span>
                     	</c:if>
