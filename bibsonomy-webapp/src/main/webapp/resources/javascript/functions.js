@@ -1604,7 +1604,7 @@ function showBothLists(){
 //the old tag toggler: add or remove tagname tagn to/from input field target 
 function toggleTag(target, tagname) {
 	clear_tags(); // remove getString("navi.tag.hint") 
-	var tag     = tagname.replace(/ /,"");
+	var tag     = tagname.replace(/ /g,"_");
 	var eingabe = target;
 	var tags    = eingabe.value.split(" ");
 

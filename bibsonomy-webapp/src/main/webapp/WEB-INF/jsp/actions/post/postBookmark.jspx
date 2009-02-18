@@ -68,6 +68,7 @@
 			
 					function setSuggestionFromUrlTitle(tagname){
 						document.getElementById('post.resource.title').value=tagname;
+						document.getElementById( "suggestion.title" ).innerHTML ="";
 					}
 
 					/**
@@ -120,7 +121,7 @@
 								<legend><fmt:message key="general"/></legend>
 								<fieldset style="border:0px; position:relative;">
 									<legend><form:label path="post.resource.url" ><fmt:message key="post.resource.url"/>*</form:label></legend>
-									<form:input path="post.resource.url" tabindex="1" size="60" onblur="checkUrlForTitle();"  />
+									<form:input path="post.resource.url" tabindex="1" size="60" />
 									<div class="postBookmarkNotValidTip"><form:errors path="post.resource.url" /></div>
 								</fieldset>	
 								<fieldset style="border:0px; position:relative;">
@@ -139,6 +140,7 @@
 							    | tags now inserted via ajax using JQuery
 							    + -->	
 							<script type="text/javascript">
+							checkUrlForTitle();
 							$.ajax({
 							  type: "GET",
 							  url: "/ajax/getBookmarkRecommendedTags",
