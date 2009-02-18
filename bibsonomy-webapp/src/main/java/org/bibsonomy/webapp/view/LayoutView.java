@@ -9,13 +9,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.layout.Layout;
 import org.bibsonomy.layout.LayoutRenderer;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
+import org.springframework.beans.factory.annotation.Required;
+import org.springframework.web.servlet.mvc.BaseCommandController;
 import org.springframework.web.servlet.view.AbstractView;
 
 import tags.Functions;
@@ -47,70 +49,91 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 		 * ... probably this is not a good idea
 		 */
 		final String requPath = (String) request.getAttribute("requPath");
-		
+
 		log.info("rendering layout " + layout + " for path " + requPath);
 
 		/*
 		 * get the data
-		 * FIXME: constant for "command" - where to get?
 		 */
-		final Object object = model.get("command");
+		final Object object = model.get(BaseCommandController.DEFAULT_COMMAND_NAME);
 		if (object instanceof SimpleResourceViewCommand) {
+			/*
+			 * we can only handle SimpleResourceViewCommands ...
+			 */
 			final SimpleResourceViewCommand command = (SimpleResourceViewCommand) object;
 			final String loginUserName = command.getContext().getLoginUser().getName();
 			/*
-			 * check which list (resource type) needs to be rendered
+			 * 
 			 */
-			final List<Post<Bookmark>> bookmarkPosts  = command.getBookmark().getList();
 			final List<Post<BibTex>> publicationPosts = command.getBibtex().getList();
 
 			try {
-				if (bookmarkPosts != null && bookmarkPosts.size() > 0 && layoutRenderer.supportsResourceType(Bookmark.class)) {
-					/*
-					 * render bookmarks posts
-					 */
-					renderResponse(layout, requPath, bookmarkPosts, loginUserName, response);
-				} else if (publicationPosts != null && publicationPosts.size() > 0 && layoutRenderer.supportsResourceType(BibTex.class)) {
+				/*
+				 * our basic (and only) renderer is the jabref layout renderer, which supports 
+				 * only publications
+				 */
+				if (layoutRenderer.supportsResourceType(BibTex.class)) {
 					/*
 					 * render publication posts
 					 */
 					renderResponse(layout, requPath, publicationPosts, loginUserName, response);
 				} else {
 					/*
-					 * FIXME: what to do here?
+					 * we could not find a suitable renderer - this should never happen!
 					 */
+					throw new RuntimeException("No layout for publications renderer available.");
 				}
-			} catch (final Exception e) {
+			} catch (final LayoutRenderingException e) {
+				log.error("Could not render layout " + layout + ".", e);
 				/*
-				 * give user useful feedback, why rendering failed
+				 * layout could not be found or contains errors
 				 */
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				/*
+				 * FIXME: It seems impossible to implement proper error handling during rendering
+				 * views. So this is a HACK! The path to the JSP is hardcoded and no further details
+				 * are passed to it. Simply, because I found no "spring way" to do it.
+				 */
+				request.getRequestDispatcher("/WEB-INF/jsp/error/layout.jspx").forward(request, response);
+				
 			}
+		} else {
+			/*
+			 * FIXME: what todo here?
+			 */
 		}
-		/*
-		 * FIXME: what todo here?
-		 */
-
 	}
-	
-	private <T extends Resource> void renderResponse(final String layoutName, final String requPath, final List<Post<T>> posts, final String loginUserName, final HttpServletResponse response) throws IOException {
-		
+
+
+	/** Renders the layout and prepares the response.
+	 * 
+	 * @param <T>
+	 * @param layoutName
+	 * @param requPath
+	 * @param posts
+	 * @param loginUserName
+	 * @param response
+	 * 
+	 * @throws LayoutRenderingException
+	 * @throws IOException
+	 */
+	private <T extends Resource> void renderResponse(final String layoutName, final String requPath, final List<Post<T>> posts, final String loginUserName, final HttpServletResponse response) throws LayoutRenderingException, IOException {
+
 		final LAYOUT layout = layoutRenderer.getLayout(layoutName, loginUserName);
-		
+
 		log.info("got layout " + layout);
-		
+
 		/*
 		 * set the content type headers
 		 */				
-		response.setContentType(layout.getMimeType());
+		setContentType(layout.getMimeType());
 		response.setCharacterEncoding("UTF-8");
 		final String extension = layout.getExtension();
 		/*
 		 * If an extension is given, which is differrent from ".html", this suggests to the 
 		 * browser to show a file dialog.
-		 * 
-		 * FIXME: add this ".html" check
 		 */
-		if (extension != null && !extension.trim().equals("") && !extension.equals(".html")) {
+		if (extension != null && !extension.trim().equals("") && !extension.equalsIgnoreCase(".html")) {
 			response.setHeader("Content-Disposition", "attachement; filename=" + Functions.makeCleanFileName(requPath) + extension);
 		}
 		/*
@@ -130,6 +153,7 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 	 * 
 	 * @param layoutRenderer
 	 */
+	@Required
 	public void setLayoutRenderer(final LayoutRenderer<LAYOUT> layoutRenderer) {
 		this.layoutRenderer = layoutRenderer;
 	}
