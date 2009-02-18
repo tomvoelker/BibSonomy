@@ -1,5 +1,6 @@
 package org.bibsonomy.layout;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
@@ -23,9 +24,11 @@ public interface LayoutRenderer<LAYOUT extends Layout> {
 	 * @param layoutName
 	 * @param loginUserName
 	 * @return
-	 * @throws IOException
+	 * @throws IOException - if the layout could not be loaded because of internal errors 
+	 * (i.e., not the layout itself is the problem) 
+	 * @throws LayoutRenderingException - if the layout could not be found or contains errors
 	 */
-	public LAYOUT getLayout(final String layoutName, final String loginUserName) throws LayoutRenderingException;
+	public LAYOUT getLayout(final String layoutName, final String loginUserName) throws LayoutRenderingException, IOException;
 
 	/** Renders the given layout to the outputStream.
 	 * 
@@ -33,9 +36,10 @@ public interface LayoutRenderer<LAYOUT extends Layout> {
 	 * @param layout
 	 * @param posts
 	 * @param outputStream
-	 * @throws IOException
+	 * @throws IOException - if there was an internal problem rendering the layout
+	 * @throws LayoutRenderingException - if the layout contains errors
 	 */
-	public <T extends Resource> void renderLayout(final LAYOUT layout, final List<Post<T>> posts, final OutputStream outputStream) throws LayoutRenderingException;
+	public <T extends Resource> void renderLayout(final LAYOUT layout, final List<Post<T>> posts, final OutputStream outputStream) throws LayoutRenderingException, IOException;
 
 	/** Checks, if the renderer supports the given resource type.
 	 * 
