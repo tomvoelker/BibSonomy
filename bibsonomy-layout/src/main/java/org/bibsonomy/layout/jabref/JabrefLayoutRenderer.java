@@ -46,7 +46,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	 *  
 	 * @see org.bibsonomy.layout.LayoutRenderer#getLayout(java.lang.String, java.lang.String)
 	 */
-	public JabrefLayout getLayout(final String layout, final String loginUserName) throws LayoutRenderingException {
+	public JabrefLayout getLayout(final String layout, final String loginUserName) throws LayoutRenderingException, IOException {
 		final JabrefLayout jabrefLayout;
 		if ("custom".equals(layout)) {
 			/*
@@ -60,7 +60,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 			jabrefLayout = layouts.getLayout(layout);
 		}
 		/*
-		 * no layout found -> IOException
+		 * no layout found -> LayoutRenderingException
 		 */
 		if (jabrefLayout == null) {
 			throw new LayoutRenderingException("Could not find layout '" + layout + "' for user " + loginUserName);
@@ -73,7 +73,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	 * 
 	 * @see org.bibsonomy.layout.LayoutRenderer#renderLayout(org.bibsonomy.layout.Layout, java.util.List, java.io.OutputStream)
 	 */
-	public <T extends Resource> void renderLayout(final JabrefLayout layout, final List<Post<T>> posts, final OutputStream outputStream) throws LayoutRenderingException {
+	public <T extends Resource> void renderLayout(final JabrefLayout layout, final List<Post<T>> posts, final OutputStream outputStream) throws LayoutRenderingException, IOException {
 		log.debug("rendering " + posts.size() + " posts with " + layout.getName() + " layout");
 		/*
 		 * XXX: different handling of "duplicates = no" in new code:
@@ -83,7 +83,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 		 * by another parameter
 		 */
 		/*
-		 * convert posts into Jabref BibtexDatabase
+		 * convert posts into Jabref BibtexDatabase ... in a horribly inefficient way
 		 * FIXME: well ... in the future we will use wrapper objects instead ...
 		 */
 		final BibtexDatabase database = bibtex2JabrefDB(posts);
