@@ -126,7 +126,7 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 		/*
 		 * set the content type headers
 		 */				
-		setContentType(layout.getMimeType());
+		response.setContentType(layout.getMimeType());
 		response.setCharacterEncoding("UTF-8");
 		final String extension = layout.getExtension();
 		/*
