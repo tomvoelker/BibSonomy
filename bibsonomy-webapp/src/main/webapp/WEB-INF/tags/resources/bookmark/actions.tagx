@@ -8,7 +8,6 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
 
-	<span class="bmaction">
 		<c:if test="${command.context.userLoggedIn}">		
 			<c:if test="${loginUserName eq post.user.name}">
 				<!-- EDIT link -->
@@ -35,15 +34,13 @@
 				</c:url>
 				<c:set var="deleteTitle"><fmt:message key="bookmark.actions.delete.title"/></c:set>
 	
-				<span>
-				<a onclick="editTags(this,'${ckey}', '${post.resource.intraHash}');return false;"
+				<a onclick="editTags(this,'${ckey}');return false;"
 					tags="${fn:escapeXml(mtl:toTagString(post.tags))}"
-					hashsum="${post.resource.hash}" user="${fn:escapeXml(post.user.name)}"
 					title="${editTitle}"
+					name="${post.resource.hash}"
 					href="${fn:escapeXml(url_edit)}">
 					<fmt:message key="bookmark.actions.edit"/>
 				</a>
-				</span>
                 <!-- a href="${fn:escapeXml(url_edit_new)}">EDIT NEW</a-->
 	            <c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 			    <a href="${fn:escapeXml(url_delete)}"
@@ -75,7 +72,6 @@
       	  <c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
     	  <a href="javascript:addSpammerInline('${post.user.name}')"><fmt:message key="post.meta.kill_spammer"/></a>	
       </c:if>	   	     	  	  
-  </span>
 
 	<!--  <%@include file="/boxes/resource_rating.jsp" %> -->
 

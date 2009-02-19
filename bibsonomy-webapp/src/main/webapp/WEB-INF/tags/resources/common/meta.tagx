@@ -15,7 +15,7 @@
 	<!-- the tags of a resource -->
 	<fmt:message key="post.meta.taggedTo" />
 	<c:out value=" "/>
-	<span id="${post.resource.intraHash}" class="bmtags">
+	<span class="bmtags">
 		<c:forEach var="tag" items="${post.tags}">
 			<c:url var="tagUrl" value="/user/${fn:escapeXml(post.user.name)}/${fn:escapeXml(tag.name)}" context="${projectContext}"/>
 			<a href="${tagUrl}"><c:out value="${tag.name}"/></a>

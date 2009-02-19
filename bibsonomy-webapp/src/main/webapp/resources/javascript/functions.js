@@ -1420,44 +1420,41 @@ function unicodeCollation(ersterWert, zweiterWert){
 /*
  * 
  */
-function sendEditTags(obj, type, intraHash, ckey, link) {
+function sendEditTags(obj, type, ckey, link) {
 	var tags = obj.childNodes[0].value;
 	var hash = obj.childNodes[0].name;
 	var ckey = obj.childNodes[1].value;
-
+	var targetChild = 0;
+	
 	$.ajax( {
 		type :"POST",
-		url :"/TagHandler?requTask=" + type + "&" + hash + "=" + tags.trim()
+		url :"/TagHandler?requTask=" + type + "&" + hash + "=" + escape(tags.trim())
 				+ "&ckey=" + ckey,
 		dataType :"html",
-		global :"false",
-		error : function(html) {
-			alert("sorry, but i could not finish the requested action");
-		}
+		global :"false"
 	});
 
 	var parent = obj.parentNode;
-
-	while (parent.hasChildNodes()) {
-		parent.removeChild(parent.firstChild);
-	}
-
-	var edit = document.createElement("a");
-	edit.setAttribute("onclick", "editTags(this, '" + ckey + "', '" 
-			+ intraHash + "'); return false;");
-	edit.setAttribute("tags", tags.trim());
-	edit.setAttribute("hashsum", hash);
-	edit.setAttribute("href", link);
-	edit.appendChild(document.createTextNode("edit "));
-
-	parent.appendChild(edit);
+	var nodeText = "edit ";
 
 	if (type == "bibtex") {
-		var pipe = document.createTextNode(" | ");
-		parent.appendChild(pipe);
+		targetChild = 2;
+		parent.removeChild(parent.childNodes[targetChild]);
+		parent.removeChild(parent.childNodes[targetChild]);
+		nodeText = " edit ";
+	} else {
+		parent.removeChild(parent.firstChild);
+		parent.removeChild(parent.firstChild);
 	}
-
-	parent = document.getElementById(intraHash);
+	
+	var edit = document.createElement("a");
+	edit.setAttribute("onclick", "editTags(this, '" + ckey + "'); return false;");
+	edit.setAttribute("tags", tags.trim());
+	edit.setAttribute("href", link);
+	edit.appendChild(document.createTextNode(nodeText));
+	
+	parent.insertBefore(edit, parent.childNodes[targetChild]);
+	parent = parent.parentNode.previousSibling.childNodes[1];
 
 	while (parent.hasChildNodes()) {
 		parent.removeChild(parent.firstChild);
@@ -1467,7 +1464,8 @@ function sendEditTags(obj, type, intraHash, ckey, link) {
 
 	for (i in tagList) {
 		var tag = document.createElement("a");
-		tag.setAttribute("href", "/user/" + currUser + "/" + tagList[i]);
+		tags = escape(tagList[i]);
+		tag.setAttribute("href", "/user/" + currUser + "/" + tags);
 		tag.appendChild(document.createTextNode(tagList[i] + " "));
 		parent.appendChild(tag);
 	}
@@ -1480,28 +1478,29 @@ function sendEditTags(obj, type, intraHash, ckey, link) {
 /*
  * edit tags in place
  */	
-function editTags(obj, ckey, intraHash) {
+function editTags(obj, ckey) {
 	var tags = obj.getAttribute("tags");
-	var hash = obj.getAttribute("hashsum");
     var link = obj.getAttribute("href");
-    
+    var hash = obj.getAttribute("name");
+    var targetChild = 0;
+    var parent = obj.parentNode;
     var type = "bookmark";
-    if (link.match(/hash/)) type = "bibtex";
 
-	// get Parent Node
-	var parent = obj.parentNode;
+    if (link.match(/hash/))	{
+    	type = "bibtex";
+    	targetChild = 2;
+    	parent.removeChild(parent.childNodes[targetChild]);
+    }
 
 	// remove the other childnodes
-	while(parent.hasChildNodes()) {
-		parent.removeChild(parent.firstChild);
-	}
+	parent.removeChild(parent.childNodes[targetChild]);
 	
 	// creates Form Element
 	var form = document.createElement("form");
 	form.className = "tagtextfield";
 	form.setAttribute('onsubmit', 'sendEditTags(this, \'' 
-			+ type + '\', \'' + intraHash + '\', \'' 
-			+ ckey + '\', \'' + link + '\'); return false;');
+			+ type + '\',  \'' + ckey + '\', '
+			+ '\'' + link + '\'); return false;');
 	
 	// creates an input Field
 	var input = document.createElement("input");
@@ -1517,13 +1516,21 @@ function editTags(obj, ckey, intraHash) {
 	// creates the link to detail-editing
 	var details = document.createElement("a");
 	details.setAttribute('href', link);
-	details.appendChild(document.createTextNode("details "));
+	details.appendChild(document.createTextNode(" details "));
 
 	// append all the created elements
 	form.appendChild(input);
 	form.appendChild(hidden);
-	parent.appendChild(form);
-	parent.appendChild(details);
+	
+	if(type == "bibtex") {
+		var pipe = document.createTextNode(" | ");
+		parent.insertBefore(pipe, parent.childNodes[targetChild]);
+		parent.insertBefore(details, parent.childNodes[targetChild]);
+		parent.insertBefore(form, parent.childNodes[targetChild]);
+	} else {
+		parent.insertBefore(details, parent.firstChild);
+		parent.insertBefore(form, parent.firstChild);
+	}
 }
  
 function setTut(tutName) {
