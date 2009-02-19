@@ -54,7 +54,7 @@ public abstract class ResourceListController {
 	 * @param end end parameter
 	 */
 	protected <T extends Resource, V extends ResourceViewCommand> void setTags(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, String hash, Order order, int start, int end, String search) {
-		TagCloudCommand tagCloudCommand = cmd.getTagcloud();
+		final TagCloudCommand tagCloudCommand = cmd.getTagcloud();
 		// retrieve tags
 		log.debug("getTags " + " " + groupingEntity + " " + groupingName);
 		tagCloudCommand.setTags( this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, hash, order, start, end, search, null));
