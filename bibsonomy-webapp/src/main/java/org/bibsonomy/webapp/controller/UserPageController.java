@@ -44,8 +44,12 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 
 		// retrieve only tags of the user
 		if (command.getRestrictToTags()) {
-//			this.setTags(command, Resource.class, groupingEntity, groupingName, requTags, null, null, null, 0, Integer.MAX_VALUE, null);
-//			this.setTags(command, Resource.class, groupingEntity, groupingName,     null, null, null, null, 0, Integer.MAX_VALUE, null);
+			/*
+			 * get only the tags of the user
+			 * TODO: minFreq is in HTML pages handled in the view, i.e., we get ALL tags
+			 * and prune in the JSP. This is not done in the JSON view ... to be done! 
+			 */
+			this.setTags(command, Resource.class, groupingEntity, groupingName, null, requTags, null, null, 0, Integer.MAX_VALUE, null);
 			
 			// TODO: other output formats
 			return Views.JSON;
