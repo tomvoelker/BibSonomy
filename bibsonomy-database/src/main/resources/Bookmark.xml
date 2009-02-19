@@ -174,8 +174,9 @@
 		ORDER BY b.date DESC,b.content_id DESC
 	</select>
 
-	<select id="getBookmarkByHashCount" resultClass="int" parameterClass="bookmarkParam">	
-		SELECT count(*) FROM bookmark WHERE book_url_hash = #hash# AND bookmark.group = #groupType#
+	<!-- since for bookmarks intrahash = interhash, we ignore the param #simHash# -->
+	<select id="getBookmarkByHashCount" resultClass="int" parameterClass="bookmarkParam">
+		SELECT count(*) FROM bookmark WHERE book_url_hash = #hash#
 	</select>
 
 	<select id="getBookmarkByHashForUser" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">

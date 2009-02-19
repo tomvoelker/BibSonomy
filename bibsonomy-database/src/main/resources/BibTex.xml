@@ -227,10 +227,6 @@
 		SELECT ctr FROM bibhash WHERE hash = #hash# AND type = #simHash#
 	</select>
 
-	<select id="getContentIdByUserAndHash" resultClass="int" parameterClass="bibtexParam">
-		SELECT contendID FROM  WHERE hash = #hash# AND type = #simHash#
-	</select>
-
 	<!--   Here we join the document table to the bibtex table to get the corresponding 
 		documents and link them to the user; if currUser != requUser no documents
 		are joined so that a user can only see her own documents. -->
@@ -562,12 +558,12 @@
 	</insert>
 
 	<insert id="insertBibTexHash" parameterClass="bibtexParam">
-		INSERT INTO bibhash(hash, type, ctr) VALUES (#hash#, #requestedSimHash#, 1)
+		INSERT INTO bibhash(hash, type, ctr) VALUES (#hash#, #simHash#, 1)
 		ON DUPLICATE KEY UPDATE ctr = ctr + 1
 	</insert>
 
 	<update id="updateBibTexHash" parameterClass="bibtexParam">
-		UPDATE bibhash SET ctr = ctr - 1 WHERE hash = #hash# AND type = #requestedSimHash#
+		UPDATE bibhash SET ctr = ctr - 1 WHERE hash = #hash# AND type = #simHash#
 	</update>
 
 	<delete id="deleteBibTex">
