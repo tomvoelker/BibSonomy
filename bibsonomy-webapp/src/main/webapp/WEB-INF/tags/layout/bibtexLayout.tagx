@@ -53,14 +53,16 @@
 		</jsp:attribute>
 		<jsp:attribute name="content">
 
-            <div id="general">
-  			   <!-- info text -->
-			   <c:if test="${not empty info}">	
+  		    <!-- info text -->
+			<c:if test="${not empty info}">	
+			  <div id="general">
+			   
 			     <div class="infobox">
-					<p><jsp:invoke fragment="info"/></p>			
+	  				<p><jsp:invoke fragment="info"/></p>			
 				 </div>			
-			   </c:if>		
-            </div>
+              </div>
+			</c:if>		
+
 
 			<resources:bibtexs listView="${command.bibtex}" loginUserName="${loginUserName}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
 
