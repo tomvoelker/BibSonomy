@@ -11,6 +11,7 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.UserResourceViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -41,6 +42,15 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		final String groupingName = command.getRequestedUser();
 		final List<String> requTags = command.getRequestedTagsList();
 
+		// retrieve only tags of the user
+		if (command.getRestrictToTags()) {
+//			this.setTags(command, Resource.class, groupingEntity, groupingName, requTags, null, null, null, 0, Integer.MAX_VALUE, null);
+//			this.setTags(command, Resource.class, groupingEntity, groupingName,     null, null, null, null, 0, Integer.MAX_VALUE, null);
+			
+			// TODO: other output formats
+			return Views.JSON;
+		}	
+		
 		FilterEntity filter = null;
 
 		// display only posts which have a document attached
@@ -61,37 +71,40 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			this.listsToInitialise.remove(Bookmark.class);
 		}
 
-		Integer totalNumPosts = 1;
+		int totalNumPosts = 1;
 
 		// retrieve and set the requested resource lists, along with total
 		// counts
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {
-			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, filter, null, command.getListCommand(resourceType).getEntriesPerPage());
+			final ListCommand<?> listCommand = command.getListCommand(resourceType);
+			final int entriesPerPage = listCommand.getEntriesPerPage();
+			
+			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, filter, null, entriesPerPage);
 			this.postProcessAndSortList(command, resourceType);
 
+			/*
+			 * set the post counts
+			 */
 			if (filter != FilterEntity.JUST_PDF && filter != FilterEntity.DUPLICATES) {
-				// int totalCount = this.logic.getStatistics(resourceType,
-				// groupingEntity, groupingName, null, null, requTags);
-				int start = command.getListCommand(resourceType).getStart();
-				int totalCount = this.logic.getPostStatistics(resourceType, GroupingEntity.USER, groupingName, requTags, null, null, filter, start, start + command.getListCommand(resourceType).getEntriesPerPage(), null, null);
-
-				command.getListCommand(resourceType).setTotalCount(totalCount);
-				totalNumPosts += totalCount;
+				this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, filter, null, entriesPerPage, null);
+				totalNumPosts += listCommand.getTotalCount();
 			}
 		}
 
-		// retrieve concepts
-		List<Tag> concepts = this.logic.getConcepts(null, groupingEntity, groupingName, null, null, ConceptStatus.PICKED, 0, Integer.MAX_VALUE);
-		command.getConcepts().setConceptList(concepts);
-		command.getConcepts().setNumConcepts(concepts.size());
-
-		// set page title
-		// TODO: internationalize
-		command.setPageTitle("user :: " + groupingName);
 
 		// html format - retrieve tags and return HTML view
 		if (command.getFormat().equals("html")) {
-			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, 20000, null);
+
+			// set page title
+			// TODO: i18n
+			command.setPageTitle("user :: " + groupingName);
+			
+			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, Integer.MAX_VALUE, null);
+
+			// retrieve concepts
+			final List<Tag> concepts = this.logic.getConcepts(null, groupingEntity, groupingName, null, null, ConceptStatus.PICKED, 0, Integer.MAX_VALUE);
+			command.getConcepts().setConceptList(concepts);
+			command.getConcepts().setNumConcepts(concepts.size());
 
 			// log if a user has reached threshold
 			if (command.getTagcloud().getTags().size() > 19999) {
