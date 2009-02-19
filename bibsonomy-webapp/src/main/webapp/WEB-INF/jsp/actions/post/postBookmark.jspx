@@ -73,9 +73,12 @@
 					}
 
 					/**
-					 * Ajax callback function for inserting recommended tags.
+					 * Ajax callback function for inserting recommended tags:
+					 *    1) insert tags to form's recommendations field
+					 *    2) append recommended tags to potential suggestions
 					 */
 					function handleRecommendedTags(msg) {
+						var tagSuggestions = [];
 						var target = 'tagField';
 
 						// lookup target node
@@ -91,16 +94,32 @@
 							var node = root.childNodes.item(iNode);
 							// work around firefox' phantom nodes
 							if( (node.nodeType == 1) && (node.tagName == 'tag') ) {
+								// collect tag informations
+								var tagName       = node.getAttribute('name');
+								var tagScore      = node.getAttribute('score');
+								var tagConfidence = node.getAttribute('confidence');
+								
 								// create link element from tag
 								var newTag = document.createElement('a');
-								var newText= document.createTextNode(node.getAttribute('name')+" ");
+								var newText= document.createTextNode(tagName + " ");
 								newTag.setAttribute('href', "javascript:copytag('inpf', '"
 															+node.getAttribute('name')
 															+"')");
 								newTag.appendChild(newText);
 								tagField.appendChild(newTag);
+								
+								// append tag to suggestion list
+								var suggestion = new Object;
+								suggestion.title      = tagName;
+								suggestion.label      = tagName;
+								suggestion.score      = tagScore;
+								suggestion.confidence = tagConfidence;
+								tagSuggestions.push(suggestion);
 							}
 						}
+
+						// add recommended tags to suggestions
+						populateSuggestionsFromRecommendations(tagSuggestions);
 					}
 				]]>
 			</script>					
@@ -111,7 +130,7 @@
                         <!-- TODO: i18n -->
                         <c:if test="${not empty command.diffPost}">
                           <p>
-                             Hinweis: sie bearbeiten einen existierenden Post!
+                          	<fmt:message key="post.bookmark.edit.existent" />
                           </p>
                         </c:if>
 
@@ -244,8 +263,17 @@
 
 	<script type="text/javascript">
 		<![CDATA[		
+		    // load tags for tag suggestion via json using ajax library jQuery
+			$.ajax({
+				  type: "GET",
+				  url: "/json/tags/user/${command.context.loginUser.name}",
+				  data: "",
+				  success: function(data){
+					            populateSuggestionsFromJSON(data);
+			               }
+			});
 			//Save tags from tagcloud in lists
-			setOps();
+			// setOps();
 			scraping();
 		
 			function scraping(){

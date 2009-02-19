@@ -638,10 +638,98 @@ function xget_event (event) {
 		// activeTag = "";
 	}
 
+	/**
+	 * Parses tag clound from json text into list of objects, each containing 
+	 * 'label' and 'count'. 
+	 * 
+	 * For using the old suggestion functions we update global variables:
+	 *    - array 'list' containing the tag names
+	 *    - "associative" array 'nodeList' containing objects O with attributes
+	 *      O.title = tagName, O.count = tagFrequency
+	 *   
+	 * @return result list
+	 */
+	function populateSuggestionsFromJSON(json) {
+		// parse JSON into 'associative array'-object
+		var data = eval( "(" + json + ")" );
+		var tagCloud = data.items;
+		
+		// construct array from object such that sorting functions can be applied 
+		var tagList = [];
+		for( i in tagCloud ) {
+			tagList.push(tagCloud[i]);
+		}
+		// now sort this array
+		tagList.sort(tagCompare);
+		
+		// set global tag list
+		for( var i=0; i<tagList.length; i++ ) {
+			list.push(tagList[i].label);
+			var node = new Object;
+			node.title=tagList[i].label;
+			node.count=tagList[i].count;
+			nodeList[node.title] = node;
+		}
+
+		// all done.
+		return tagList;
+	}
+	
+	/**
+	 * Append recommended tags to list of potential tag suggestions.
+	 *  
+	 * Input: list of objects with attributes:
+	 *    - title = tagName
+	 *    - label = tagName
+	 *    - score, confidence
+	 * 
+	 * For using the old suggestion functions we update global variables:
+	 *    - array 'list' containing the tag names
+	 *    - "associative" array 'nodeList' containing objects O with attributes
+	 *      O.title = tagName, O.count = tagFrequency
+	 *   
+	 * @return result list
+	 */
+	function populateSuggestionsFromRecommendations(tagList) {
+		// update global tag list
+		for( var i=0; i<tagList.length; i++ ) {
+			list.push(tagList[i].label);
+			nodeList[tagList[i].label] = tagList[i];
+		}
+		// sort the list
+		list.sort(stringCompare);
+	}
+
+	/**
+	 * Compares two tag cloud entries.
+	 * 
+	 * @param a object containing properties 'label' and 'count'
+	 * @param b object containing properties 'label' and 'count'
+	 * @return -1 if a.label<b.label, 0 if a.label=b.label, 1 if a.label>b.label
+	 */
+	function tagCompare(a, b) {
+		return stringCompare(a.label, b.label);
+	}
+	
+	/**
+	 * Compares two strings, ignoring case.
+	 * 
+	 * @param a string
+	 * @param b string
+	 * @return -1 if a < label, 0 if a=b, 1 if a>b
+	 */
+	function stringCompare(a, b) {
+		if( a.toLowerCase()<b.toLowerCase() )
+			return -1;
+		else if( a.toLowerCase()==b.toLowerCase() )
+			return 0;
+		else
+			return 1;
+	}	
+	
 	/*
 	 * Hier werden die Tags aus der Tagwolke, Copytags und Recommendations in Listen gepackt
 	 */
-	
 	function setOps() {
 		var ul = document.getElementById("tagbox");
 		var rows = new Array();
