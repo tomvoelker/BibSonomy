@@ -19,11 +19,10 @@ import org.bibsonomy.webapp.util.View;
  */
 public enum Views implements View {
 		
-	/**
-	 * error page
-	 */
-	ERROR("error"),
-	
+	/* *****************************************************
+	 * query views
+	 * *****************************************************/
+		
 	/**
 	 * the first page you see when entering the application
 	 */
@@ -103,17 +102,7 @@ public enum Views implements View {
 	 * bibtexkey page does something with the bibtexkey, perhaps shows the details for a given bibtexkex  
 	 */
 	BIBTEXKEYPAGE("bibtexkey"),
-		
-	/**
-	 * bibtex output
-	 */
-	BIBTEX("export/bibtex/bibtex"),
-	
-	/**
-	 * EndNote (RIS) output 
-	 */
-	ENDNOTE("export/bibtex/endnote"),
-	
+
 	/**
 	 * url page, displays all bookmarks for a given url hash  
 	 */
@@ -140,51 +129,6 @@ public enum Views implements View {
 	GROUPDOCUMENTPAGE("groupDocument"),
 	
 	/**
-	 * burst output for publications
-	 */
-	BURST("export/bibtex/burst"),
-	
-	/**
-	 * rss bookmark outout for bookmarks
-	 */
-	RSS("export/bookmark/rssfeed"),
-	
-	/**
-	 * rss output for publications
-	 */
-	PUBLRSS("export/bibtex/rssfeed"),
-	
-	/**
-	 * RSS output for publications with modification for NEPOMUK project  
-	 */
-	PUBLRSSNEPOMUK("export/bibtex/rssfeedNepomuk"),
-	
-	/**
-	 * swrc output for publications
-	 */
-	SWRC("export/bibtex/swrc"),
-	
-	/**
-	 * html output for publications
-	 */
-	PUBL("export/bibtex/htmlOutput"),
-	
-	/**
-	 * aparss output for publications
-	 */
-	APARSS("export/bibtex/aparssfeed"),
-	
-	/**
-	 * xml output for bookmarks
-	 */
-	XML("export/bookmark/xmlOutput"),
-	
-	/**
-	 * JSON for both bookmarks and publications
-	 */
-	JSON("export/json"),
-	
-	/**
 	 * viewable page
 	 */
 	VIEWABLEPAGE("viewable"),
@@ -205,20 +149,25 @@ public enum Views implements View {
 	SEARCHPAGE("search"),
 	
 	/**
-	 * html output for bookmarks
-	 */
-	BOOKPUBL("export/bookmark/bookpubl"),
-	
-	/**
-	 * BibTeX output for bookmarks 
-	 */
-	BOOKBIB("export/bookmark/bibtex"),
-	
-	/**
 	 * admin page
 	 */
 	ADMINPAGE("admin"),
 	
+	/**
+	 * additional posts 
+	 */
+	MY_GROUP_POSTS_PAGE("myGroupPosts"), 
+
+	/**
+	 * relevant-for page
+	 */
+	RELEVANTFORPAGE("relevantfor"),
+
+	
+	/* *****************************************************
+	 * AJAX views
+	 * *****************************************************/
+
 	/**
 	 * response page snippet for ajax requests
 	 */
@@ -243,23 +192,18 @@ public enum Views implements View {
 	 */
 	AJAX_PREDICTIONS("ajaxPredictions"),
 	
+
+	/* *****************************************************
+	 * action views
+	 * *****************************************************/
+	
 	/**
 	 * where users can register
      * TODO: we will probably move those action parts
      * into a separate Views class!
 	 */
 	REGISTER_USER("actions/register/user"),
-	
-	/**
-	 * additional posts 
-	 */
-	MY_GROUP_POSTS_PAGE("myGroupPosts"), 
 
-	/**
-	 * relevant-for page
-	 */
-	RELEVANTFORPAGE("relevantfor"),
-	
 	/**
 	 * After a user has successfully registered, he will see this view.
 	 */
@@ -307,7 +251,6 @@ public enum Views implements View {
 	 */
 	POST_BOOKMARK("actions/post/postBookmark"),
 	
-	
 	/**
      * Show a form to request a password reminder.
      */ 
@@ -322,17 +265,93 @@ public enum Views implements View {
 	 * Upload page to upload document to an existing bibtex entry
 	 */
 	UPLOAD_FILE("actions/uploadFile"), 
-	/**
-	 * An XML file printing all output formats supported by UnAPI.
-	 * Basically, a list of some of our export formats in XML.
-	 */
-	UNAPI_SUPPORTED_FORMATS("export/bibtex/unapi"),	
-	
 	
 	/**
 	 * Show the page for administrating groups
 	 */
 	ADMINISTRATE_GROUP("actions/admin/group"),
+
+	
+	
+	/* *****************************************************
+	 * query independent views
+	 * *****************************************************/
+
+	/**
+	 * error page
+	 */
+	ERROR("error"),
+	
+	/**
+	 * bibtex output
+	 */
+	BIBTEX("export/bibtex/bibtex"),
+	
+	/**
+	 * EndNote (RIS) output 
+	 */
+	ENDNOTE("export/bibtex/endnote"),
+	
+	/**
+	 * burst output for publications
+	 */
+	BURST("export/bibtex/burst"),
+	
+	/**
+	 * rss bookmark outout for bookmarks
+	 */
+	RSS("export/bookmark/rssfeed"),
+	
+	/**
+	 * rss output for publications
+	 */
+	PUBLRSS("export/bibtex/rssfeed"),
+	
+	/**
+	 * RSS output for publications with modification for NEPOMUK project  
+	 */
+	PUBLRSSNEPOMUK("export/bibtex/rssfeedNepomuk"),
+	
+	/**
+	 * swrc output for publications
+	 */
+	SWRC("export/bibtex/swrc"),
+	
+	/**
+	 * html output for publications
+	 */
+	PUBL("export/bibtex/htmlOutput"),
+	
+	/**
+	 * aparss output for publications
+	 */
+	APARSS("export/bibtex/aparssfeed"),
+	
+	/**
+	 * xml output for bookmarks
+	 */
+	XML("export/bookmark/xmlOutput"),
+	
+	/**
+	 * JSON for both bookmarks and publications
+	 */
+	JSON("export/json"),
+	
+	/**
+	 * html output for bookmarks
+	 */
+	BOOKPUBL("export/bookmark/bookpubl"),
+	
+	/**
+	 * BibTeX output for bookmarks 
+	 */
+	BOOKBIB("export/bookmark/bibtex"),
+	
+	/**
+	 * An XML file printing all output formats supported by UnAPI.
+	 * Basically, a list of some of our export formats in XML.
+	 */
+	UNAPI_SUPPORTED_FORMATS("export/bibtex/unapi"),	
 	
 	/**
 	 * /layout/* pages which are rendered by JabRef 
@@ -340,9 +359,20 @@ public enum Views implements View {
 	LAYOUT("layout"),
 	
 	/**
+	 * to edit the tags of publications
+	 */
+	BATCHEDITBIB("batcheditbib"),
+	/**
+	 * to edit the tags of bookmarks 
+	 */
+	BATCHEDITURL("batchediturl"),
+	
+	/**
 	 * show the export page
 	 */
 	EXPORT("export");
+	
+	
 	
 	
 	private final String name;
@@ -372,6 +402,7 @@ public enum Views implements View {
 			"aparss".equals(format) ||
 			"burst".equals(format) ||
 			"layout".equals(format) ||
+			"batcheditbib".equals(format) ||
 			"swrc".equals(format)) {
 			return true;
 		}
@@ -388,6 +419,7 @@ public enum Views implements View {
 	public static Boolean isBookmarkOnlyFormat(String format) {
 		if ("xml".equals(format) || 
 			"rss".equals(format) ||
+			"batchediturl".equals(format) ||
 			"bookpubl".equals(format)) {
 				return true;
 			}
@@ -430,6 +462,10 @@ public enum Views implements View {
 			return PUBLRSSNEPOMUK;
 		if ("layout".equals(format))
 			return LAYOUT;
+		if ("batcheditbib".equals(format)) 
+			return BATCHEDITBIB;
+		if ("batchediturl".equals(format)) 
+			return BATCHEDITURL;
 		
 		throw new BadRequestOrResponseException("Invalid format specification.");
 	}
