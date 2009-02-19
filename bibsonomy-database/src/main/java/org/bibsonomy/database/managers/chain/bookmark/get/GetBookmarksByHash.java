@@ -28,6 +28,7 @@ public class GetBookmarksByHash extends BookmarkChainElement {
 	protected boolean canHandle(final BookmarkParam param) {
 		return (present(param.getHash()) &&
 				param.getGrouping() == GroupingEntity.ALL &&
+				!present(param.getRequestedUserName()) &&
 				!present(param.getTagIndex()) &&
 				!present(param.getOrder()) &&
 				!present(param.getSearch()));
