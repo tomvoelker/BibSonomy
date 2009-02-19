@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
@@ -12,7 +11,6 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.webapp.command.BibtexResourceViewCommand;
-import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -37,16 +35,18 @@ public class BibtexPageController extends SingleResourceListController implement
 			throw new MalformedURLSchemeException("error.bibtex_no_hash");
 		}
 
-		final String hash = command.getRequBibtex();
-		String requUser = command.getRequestedUser();
+		final String hash     = command.getRequBibtex();
+		final String requUser = command.getRequestedUser();
+		final GroupingEntity groupingEntity = (requUser != null ? GroupingEntity.USER : GroupingEntity.ALL);
 
-		// retrieve only tags
-		if (!command.getRestrictToTags().equals("false")) {
-			this.setTags(command, BibTex.class, GroupingEntity.ALL, null, null, null, hash, null, 0, 1000, null);
+		// retrieve only tags for the first 1000 tags for the resource
+		if (command.getRestrictToTags()) {
+			// FIXME: hardcoded end value
+			this.setTags(command, BibTex.class, groupingEntity, requUser, null, null, hash, null, 0, 1000, null);
 			
 			// TODO: other output formats
 			return Views.JSON;
-		}		
+		}
 		
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype
@@ -54,8 +54,12 @@ public class BibtexPageController extends SingleResourceListController implement
 		
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {			
-			this.setList(command, resourceType, requUser!=null?GroupingEntity.USER:GroupingEntity.ALL, requUser, null, hash, null, null, null, command.getListCommand(resourceType).getEntriesPerPage());
+			final int entriesPerPage = command.getListCommand(resourceType).getEntriesPerPage();
+			
+			this.setList(command, resourceType, groupingEntity, requUser, null, hash, null, null, null, entriesPerPage);
 			this.postProcessAndSortList(command, resourceType);
+
+			this.setTotalCount(command, resourceType, groupingEntity, requUser, null, hash, null, null, null, command.getListCommand(resourceType).getEntriesPerPage(), null);
 		}	
 		
 		//get the title of the publication with the requested hash (intrahash)
@@ -65,24 +69,40 @@ public class BibtexPageController extends SingleResourceListController implement
 		
 		if (command.getFormat().equals("html")) {
 			this.endTiming();
-			if(requUser != null){
-				
-				// retrieve concepts
-				List<Tag> concepts = this.logic.getConcepts(null, GroupingEntity.USER, requUser, null, null, ConceptStatus.PICKED, 0, Integer.MAX_VALUE);
-				command.getConcepts().setConceptList(concepts);
-				command.getConcepts().setNumConcepts(concepts.size());
-				
-				ArrayList<Post<BibTex>> bibtex = new ArrayList<Post<BibTex>>();
-				for(Post<BibTex> b: command.getBibtex().getList()){
+			
+			if (GroupingEntity.USER.equals(groupingEntity)) {
+				/*
+				 * /bibtex/HASH/USER
+				 */
+
+				/*
+				 * complete post details
+				 */
+				final ArrayList<Post<BibTex>> bibtex = new ArrayList<Post<BibTex>>();
+				for (Post<BibTex> b: command.getBibtex().getList()){
 					bibtex.add((Post<BibTex>) this.logic.getPostDetails(b.getResource().getIntraHash(), b.getUser().getName()));
 				}
 				command.getBibtex().setList(bibtex);
-				this.setTags(command, Resource.class, GroupingEntity.USER, requUser, null, null, null, null, 0, 1000, null);
+
+				/*
+				 * retrieve concepts for sidebar
+				 */
+				final List<Tag> concepts = this.logic.getConcepts(null, groupingEntity, requUser, null, null, ConceptStatus.PICKED, 0, Integer.MAX_VALUE);
+				command.getConcepts().setConceptList(concepts);
+				command.getConcepts().setNumConcepts(concepts.size());
+				
+				/*
+				 * show complete tag cloud of user
+				 */
+				this.setTags(command, Resource.class, groupingEntity, requUser, null, null, null, null, 0, Integer.MAX_VALUE, null);
 				return Views.BIBTEXDETAILS;
 			}
-			this.setTags(command, BibTex.class, GroupingEntity.ALL, requUser, null, null, hash, null, 0, 1000, null);
+			/*
+			 * get only those tags, related to the resource
+			 * FIXME: hardcoded end value
+			 */
+			this.setTags(command, BibTex.class, groupingEntity, requUser, null, null, hash, null, 0, 1000, null);
 			return Views.BIBTEXPAGE;
-			
 	
 		}
 		this.endTiming();
@@ -93,7 +113,6 @@ public class BibtexPageController extends SingleResourceListController implement
 	}
 	
 	public BibtexResourceViewCommand instantiateCommand() {
-		
 		return new BibtexResourceViewCommand();
 	}
 
