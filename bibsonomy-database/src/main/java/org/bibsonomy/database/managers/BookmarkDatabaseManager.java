@@ -19,7 +19,6 @@ import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
@@ -406,16 +405,16 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 
 	/**
 	 * @see BookmarkDatabaseManager#getBookmarkByHashCount(BookmarkParam, DBSession)
-	 * 
-	 * @param requBibtex
-	 * @param groupType
+
+ 	 * @param requHash 
+	 * @param simHash 
 	 * @param session
 	 * @return number of bookmarks for the given hash
 	 */
-	public Integer getBookmarkByHashCount(final String requBibtex, final GroupID groupType, final DBSession session) {
+	public Integer getBookmarkByHashCount(final String requHash, final HashID simHash, final DBSession session) {
 		final BookmarkParam param = new BookmarkParam();
-		param.setHash(requBibtex);
-		param.setGroupType(groupType);
+		param.setHash(requHash);
+		param.setSimHash(simHash);
 		return this.queryForObject("getBookmarkByHashCount", param, Integer.class, session);
 	}
 
@@ -450,7 +449,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.addGroups(visibleGroupIDs);
 		param.setHash(requBibtex);
 		param.setRequestedUserName(requestedUserName);
-		param.setRequestedSimHash(hashType);
+		param.setSimHash(hashType);
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
 		return this.bookmarkList("getBookmarkByHashForUser", param, session);
 	}
@@ -796,7 +795,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 			this.insert("insertBookmark", param, session);
 			// compute only a single simHash, as all simHashes are equal for bookmarks
 			final HashID simHash = HashID.getSimHash(0);
-			param.setRequestedSimHash(simHash);
+			param.setSimHash(simHash);
 			param.setHash(SimHash.getSimHash(param.getResource(), simHash));
 			this.insertBookmarkHash(param, session);
 			session.commitTransaction();
@@ -926,7 +925,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 			// we only update one and are done		
 			// TODO: isn't it better to replace this zero by a constant?
 			final HashID simHash = HashID.getSimHash(0);
-			param.setRequestedSimHash(simHash);
+			param.setSimHash(simHash);
 			param.setHash(SimHash.getSimHash(((Bookmark) oneBookmark.getResource()), simHash));
 			// Decrement counter in url table
 			this.updateBookmarkHash(param, session);

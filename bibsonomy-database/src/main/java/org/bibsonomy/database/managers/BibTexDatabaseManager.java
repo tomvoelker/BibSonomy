@@ -79,7 +79,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * <em>/bibtex/023847123ffa8976a969786f876f78e68</em><br/><br/>
 	 * 
 	 * Prepares a query which retrieves all publications whose hash
-	 * requestedSimHash is equal to a given hash. Only public posts are
+	 * simHash is equal to a given hash. Only public posts are
 	 * retrieved.
 	 * 
 	 * @param param
@@ -102,7 +102,6 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 */
 	public List<Post<BibTex>> getBibTexByHash(final String hash, final HashID hashId, final int limit, final int offset, final DBSession session) {
 		final BibTexParam param = new BibTexParam();
-		param.setRequestedSimHash(hashId);
 		param.setSimHash(hashId);
 		param.setHash(hash);
 		param.setGroupType(GroupID.PUBLIC);
@@ -125,14 +124,14 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	/**
 	 * @see BibTexDatabaseManager#getBibTexByHashCount(BibTexParam, DBSession)
 	 * 
-	 * @param requBibtex
+	 * @param requHash
 	 * @param simHash
 	 * @param session
 	 * @return number of publications for a given hash
 	 */
-	public Integer getBibTexByHashCount(final String requBibtex, final HashID simHash, final DBSession session) {
+	public Integer getBibTexByHashCount(final String requHash, final HashID simHash, final DBSession session) {
 		BibTexParam param = new BibTexParam();
-		param.setHash(requBibtex);
+		param.setHash(requHash);
 		param.setSimHash(simHash);
 		return this.queryForObject("getBibTexByHashCount", param, Integer.class, session);
 	}
@@ -1069,7 +1068,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		param.addGroups(visibleGroupIDs);
 		param.setRequestedUserName(requestedUserName);
 		param.setHash(intraHash);
-		param.setRequestedSimHash(hashType);
+		param.setSimHash(hashType);
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
 		return this.bibtexList("getBibTexByHashForUser", param, session);
 	}
@@ -1080,7 +1079,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		param.addGroups(visibleGroupIDs);
 		param.setRequestedUserName(requestedUserName);
 		param.setHash(intraHash);
-		param.setRequestedSimHash(hashType);
+		param.setSimHash(hashType);
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
 		
 		final List<Post<BibTex>> bibtexList = this.bibtexList("getLoggedHashesByHashForUser", param, session);
@@ -1216,7 +1215,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			if (present(hash) == false) continue;
 
 			final BibTexParam param = new BibTexParam();
-			param.setRequestedSimHash(simHash);
+			param.setSimHash(simHash);
 			param.setHash(hash);
 
 			if (delete == true) {
