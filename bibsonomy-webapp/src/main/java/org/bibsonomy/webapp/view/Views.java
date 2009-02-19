@@ -361,11 +361,11 @@ public enum Views implements View {
 	/**
 	 * to edit the tags of publications
 	 */
-	BATCHEDITBIB("batcheditbib"),
+	BATCHEDITBIB("actions/edit/batcheditbib"),
 	/**
 	 * to edit the tags of bookmarks 
 	 */
-	BATCHEDITURL("batchediturl"),
+	BATCHEDITURL("actions/edit/batchediturl"),
 	
 	/**
 	 * show the export page
