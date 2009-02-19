@@ -12,7 +12,7 @@
 <h1 id="path">
   <a href="/">${projectName}</a> :: <a href="#" rel="path_menu"><img src="/resources/image/box_arrow.png">&nbsp;bibtex</a> :: 
   <form class="smallform" method="get" action="/search">
-    <input type="text" name="q" value="<mtl:bibclean value='${ResourceBean.title}'/>" size="30"/>
+    <input type="text" name="search" value="<mtl:bibclean value='${ResourceBean.title}'/>" size="30"/>
   </form>
 </h1> 
 
