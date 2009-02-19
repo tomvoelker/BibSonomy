@@ -13,10 +13,15 @@ import org.bibsonomy.model.Resource;
  * @version $Id$
  */
 public class ResourcesParam<T extends Resource> extends GenericParam {
-
+	
 	/** A list of resources. */
 	private List<T> resources;
 
+	
+	public ResourcesParam() {
+		super();
+	}
+	
 	/**
 	 * @return resources
 	 */
@@ -30,4 +35,5 @@ public class ResourcesParam<T extends Resource> extends GenericParam {
 	public void setResources(List<T> resources) {
 		this.resources = resources;
 	}
+
 }

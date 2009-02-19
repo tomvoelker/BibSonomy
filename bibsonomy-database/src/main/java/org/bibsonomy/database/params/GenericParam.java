@@ -11,6 +11,7 @@ import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.model.BibTex;
@@ -113,6 +114,12 @@ public abstract class GenericParam {
 	 * resource-specific and shouldn't it be set in the resource-field?
 	 */
 	private String hash;
+
+	/**
+	 * This is used to restrict simHashes, i.e. to limit the overall resultset.
+	 * The default simHash is defined in {@link HashID}.
+	 */
+	private HashID simHash;	
 	private String search;
 	/** This is the current user. */
 	private String userName;
@@ -170,6 +177,7 @@ public abstract class GenericParam {
 		this.limit = 10;
 		this.offset = 0;
 		this.friendOf=false;
+		this.simHash = HashID.SIM_HASH; // the default hash type
 		
 		this.grouping = GroupingEntity.ALL;
 		
@@ -339,6 +347,15 @@ public abstract class GenericParam {
 	public void setHash(String hash) {
 		this.hash = hash;
 	}
+	
+	public int getSimHash() {
+		return this.simHash.getId();
+	}
+
+	public void setSimHash(HashID simHash) {
+		this.simHash = simHash;
+	}
+
 
 	// TODO: why in genericparam and not in resource-field?
 	public String getRequestedUserName() {
