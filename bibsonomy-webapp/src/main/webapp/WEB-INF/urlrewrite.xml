@@ -142,6 +142,13 @@
 		<from>^/+json/+tags/+bibtex/+([0-3])([0-9a-fA-F]{32})(\?(.*))?$</from>
 		<to>/bibtex?requBibtex=$2&amp;requSim=$1&amp;format=json&amp;restrictToTags=true&amp;$4</to>		
 	</rule>	 
+	<!-- handling /json/tags/URLSCHEME  -->
+    <rule>
+    	<from>^/+json/+tags/+(.*?)(\?(.*))?$</from>
+    	<to last="false">/$1?restrictToTags=true&amp;$3</to>
+    	<set name="format">json</set>
+    </rule>
+    <!-- handling /json/URLSCHEME -->
     <rule>
     	<from>^/+json/+(.*)$</from>
     	<to last="false">/$1</to>
@@ -592,28 +599,20 @@
 		<from>^/+bibtex/+([0-9a-fA-F]{32})/+(.+?)(\?(.*))?$</from>
 		<to>/ResourceHandler?page=userbibtex&amp;requBibtex=$1&amp;requSim=0&amp;requUser=$2&amp;$4</to> 
 	</rule>
-	<rule><!-- /[32] -->
-		<from>^/+bibtex/+([0-9a-fA-F]{32})(\?(.*))?$</from>
-		<to>/ResourceHandler?page=bibtex&amp;requBibtex=$1&amp;requSim=1&amp;$3</to> 
-	</rule>
 	<!-- sim hash type explicitly given -->
 	<rule><!-- /[0-3][32]/user -->
 		<from>^/+bibtex/+([0-3])([0-9a-fA-F]{32})/+(.+?)(\?(.*))?$</from>
 		<to>/ResourceHandler?page=userbibtex&amp;requBibtex=$2&amp;requSim=$1&amp;requUser=$3&amp;$5</to> 
 	</rule>
-	<rule><!-- /[0-3][32] -->
-		<from>^/+bibtex/+([0-3])([0-9a-fA-F]{32})(\?(.*))?$</from>
-		<to>/ResourceHandler?page=bibtex&amp;requBibtex=$2&amp;requSim=$1&amp;$4</to> 
-	</rule>
 		
 	<!-- NEW PAGE -->
 	<rule><!-- /[0-3][32] -->
 		<from>^/+bibtex/+([0-3])([0-9a-fA-F]{32})(\?(.*))?$</from>
-		<to>/bibtex?requBibtex=$2&amp;requSim=$1&amp;$4</to> 
+		<to>/bibtex?requBibtex=$1$2&amp;$4</to> 
 	</rule>	
-	<rule><!-- arbitrary hash -->
-		<from>^/+bibtex/+([0-9a-zA-Z]*)(\?(.*))?$</from>
-		<to>/bibtex?requBibtex=$1&amp;requSim=1&amp;$3</to> 
+	<rule><!-- /[32] (arbitrary hash) defaults to simhash1 -->
+		<from>^/+bibtex/+([0-9a-fA-F]{32})(\?(.*))?$</from>
+		<to>/bibtex?requBibtex=1$1&amp;$3</to> 
 	</rule>	
 	
 	
