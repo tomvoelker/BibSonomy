@@ -1,10 +1,9 @@
 package org.bibsonomy.database.managers.chain.statistic.post.get;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.bibsonomy.util.ValidationUtils.nullOrEqual;
-import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -19,7 +18,7 @@ import org.bibsonomy.model.enums.Order;
  * @author mwa
  * @version $Id$
  */
-public class GetResourcesPopularDays extends StatisticChainElement{
+public class GetResourcesPopularDaysCount extends StatisticChainElement{
 
 	@Override
 	protected List<Integer> handle(StatisticsParam param, DBSession session) {
