@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagCloudSort;
 import org.bibsonomy.common.enums.TagCloudStyle;
 import org.bibsonomy.model.BibTex;
@@ -104,10 +105,32 @@ public abstract class ResourceListController {
 		final ListCommand<Post<T>> listCommand = cmd.getListCommand(resourceType);
 		// retrieve posts		
 		log.debug("getPosts " + resourceType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
-		listCommand.setList( this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, order, filter, listCommand.getStart(), listCommand.getStart() + itemsPerPage, search) );
+		final int start = listCommand.getStart();
+		listCommand.setList( this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, order, filter, start, start + itemsPerPage, search) );
 		// list settings
 		listCommand.setEntriesPerPage(itemsPerPage);
 	}
+	
+	/**
+     * retrieve the number of posts from the database logic and add it to the command object
+     * 
+	 * @param <T> extends Resource
+	 * @param <V> extends ResourceViewComand
+	 * @param cmd the command object
+	 * @param resourceType the resource type
+	 * @param groupingEntity the grouping entity
+	 * @param groupingName the grouping name
+	 * @param itemsPerPage number of items to be displayed on each page
+	 * @param constraint
+	 */
+	protected <T extends Resource, V extends SimpleResourceViewCommand> void setTotalCount(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, String search, int itemsPerPage, StatisticsConstraint constraint) {
+		final ListCommand<Post<T>> listCommand = cmd.getListCommand(resourceType);
+		log.debug("getPostStatistics " + resourceType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
+		final int start = listCommand.getStart();
+		final int totalCount = this.logic.getPostStatistics(resourceType, groupingEntity, groupingName, tags, hash, order, filter, start, start + itemsPerPage, search, constraint);
+		listCommand.setTotalCount(totalCount);
+	}
+
 
 	/**
 	 * @param userSettings the loginUsers userSettings
