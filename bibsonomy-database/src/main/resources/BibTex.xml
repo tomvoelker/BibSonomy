@@ -29,8 +29,8 @@
 		FROM bibtex b, tas t, bibhash h 
 		WHERE
 			b.content_id = t.content_id
-			AND b.simhash$requestedSimHash$ = h.hash
-			AND h.type= $requestedSimHash$
+			AND b.simhash$simHash$ = h.hash
+			AND h.type= $simHash$
 			AND b.bibtexKey = #bibtexKey# 
 			ORDER BY date DESC 
 			LIMIT #limit# OFFSET #offset#	
@@ -214,7 +214,7 @@
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, b.`group`, NULL AS group_name
 		FROM (SELECT b2.*
 		      FROM bibtex b2
-		      WHERE simhash$requestedSimHash$ = #hash#
+		      WHERE simhash$simHash$ = #hash#
 		            AND `group` = #groupType#
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b
@@ -234,7 +234,7 @@
 		SELECT g.*,t.tag_name,h.ctr AS count, <include refid ="bibtexAttributes2"/>
 		FROM (SELECT * 
 		      FROM bibtex t1
-		      WHERE simhash$requestedSimHash$ = #hash#
+		      WHERE simhash$simHash$ = #hash#
 		            <include refid="inGroups"/>
 		            AND user_name = #requestedUserName#
 		      ORDER BY date DESC) AS b2
@@ -254,13 +254,13 @@
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, b.group
 		  FROM log_bibtex t1 
 		    JOIN log_bibtex b ON (t1.new_content_id = b.content_id AND t1.user_name = b.user_name) 
-		  WHERE t1.simhash$requestedSimHash$ = #hash#
+		  WHERE t1.simhash$simHash$ = #hash#
 		    AND t1.user_name = #requestedUserName#
 	    UNION 
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, b.group
 		  FROM log_bibtex t1 
 		    JOIN bibtex b ON (t1.new_content_id = b.content_id AND t1.user_name = b.user_name) 
-		  WHERE t1.simhash$requestedSimHash$ = #hash#
+		  WHERE t1.simhash$simHash$ = #hash#
 		    AND t1.user_name = #requestedUserName#
 		) AS b
 		LEFT OUTER JOIN groupids g ON (b.group = g.group) 
