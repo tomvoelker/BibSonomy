@@ -85,6 +85,11 @@ public enum Views implements View {
 	BIBTEXPAGE("bibtex"),
 	
 	/**
+	 * all the posts the user has picked in his basket 
+	 */
+	BASKETPAGE("basket"),
+	
+	/**
 	 * relations page shows all the relations of an user
 	 */
 	USERRELATED("userRelations"),
