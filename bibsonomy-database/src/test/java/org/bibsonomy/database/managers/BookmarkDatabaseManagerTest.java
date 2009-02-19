@@ -21,6 +21,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.params.BookmarkParam;
@@ -202,8 +203,8 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getBookmarkByHashCount() {
 		Integer count = -1;
-		final String requBibtex = "b7aa3a91885e432c6c95bec0145c3968";
-		count = this.bookmarkDb.getBookmarkByHashCount(requBibtex, GroupID.FRIENDS, this.dbSession);
+		final String requHash = "b7aa3a91885e432c6c95bec0145c3968";
+		count = this.bookmarkDb.getBookmarkByHashCount(requHash, HashID.INTRA_HASH, this.dbSession);
 		assertTrue(count >= 0);
 	}
 

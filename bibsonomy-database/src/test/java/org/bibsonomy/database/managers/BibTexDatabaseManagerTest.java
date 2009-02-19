@@ -837,7 +837,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, null, false, this.dbSession);
 
 		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, toInsert.getUser());
-		param.setRequestedSimHash(HashID.INTRA_HASH);
+		param.setSimHash(HashID.INTRA_HASH);
 		final List<Post<BibTex>> posts = this.bibTexDb.getPosts(param, this.dbSession);
 		assertEquals(1, posts.size());
 		ModelUtils.assertPropertyEquality(toInsert, posts.get(0), Integer.MAX_VALUE, null, new String[] { "resource", "tags", "user", "date"});
@@ -880,7 +880,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		param.setUserName("testuser1");
 		param.setRequestedUserName("testuser1");
 		param.setHash("14143c6508fe645ca312d0aa5d0e791b");
-		param.setRequestedSimHash(HashID.INTRA_HASH);
+		param.setSimHash(HashID.INTRA_HASH);
 		List<Post<BibTex>> posts = this.bibTexDb.getBibTexByHashForUser(param, this.dbSession);
 		assertNotNull(posts);
 		assertTrue(posts.size() == 1);
@@ -904,7 +904,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		toInsert.getGroups().add(group);
 		
 		final BibTexParam postParam = LogicInterfaceHelper.buildParam(BibTexParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, toInsert.getUser());
-		param.setRequestedSimHash(HashID.INTRA_HASH);
+		param.setSimHash(HashID.INTRA_HASH);
 		List<Post<BibTex>> post2 = this.bibTexDb.getPosts(postParam, this.dbSession);
 		posts = this.bibTexDb.getBibTexByHashForUser(param, this.dbSession);
 		assertEquals(0, posts.size());
