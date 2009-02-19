@@ -12,6 +12,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.webapp.command.GroupResourceViewCommand;
+import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -47,7 +48,7 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 		final boolean isRelevantFor = checkRelevantFor(requTags);
 
 		// retrieve only tags
-		if (!"false".equals(command.getRestrictToTags())) {
+		if (command.getRestrictToTags()) {
 			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, 1000, null);
 
 			// TODO: other output formats
@@ -68,19 +69,17 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 			filter = FilterEntity.JUST_PDF;
 			this.listsToInitialise.remove(Bookmark.class);
 		}
-
+		
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {			
-			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, filter, null, command.getListCommand(resourceType).getEntriesPerPage());
+			final ListCommand<?> listCommand = command.getListCommand(resourceType);
+			final int entriesPerPage = listCommand.getEntriesPerPage();
+			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, filter, null, entriesPerPage);
 			this.postProcessAndSortList(command, resourceType);
 
 			// retrieve resource counts, if no tags are given
 			if (requTags.size() == 0 && filter != FilterEntity.JUST_PDF) { 
-				//int totalCount = this.logic.getStatistics(resourceType, groupingEntity, groupingName, null, null, null);
-				int start = command.getListCommand(resourceType).getStart();
-				int totalCount = this.logic.getPostStatistics(resourceType, GroupingEntity.GROUP, groupingName, requTags, null, null, filter, start, start + command.getListCommand(resourceType).getEntriesPerPage(), null, null);
-
-				command.getListCommand(resourceType).setTotalCount(totalCount);				
+				this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, entriesPerPage, null);
 			}
 		}	
 

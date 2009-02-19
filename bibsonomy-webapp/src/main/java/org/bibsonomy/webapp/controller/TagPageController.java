@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.webapp.command.RelatedTagCommand;
+import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.RelatedUserCommand;
 import org.bibsonomy.webapp.command.TagResourceViewCommand;
 import org.bibsonomy.webapp.config.Parameters;
@@ -37,6 +37,21 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 			throw new MalformedURLSchemeException("error.tag_page_without_tag");
 		}
 		
+		final List<String> requTags = command.getRequestedTagsList();
+		
+		// retrieve only tags of the user
+		if (command.getRestrictToTags()) {
+			/*
+			 * get only the tags of the user
+			 * TODO: minFreq is in HTML pages handled in the view, i.e., we get ALL tags
+			 * and prune in the JSP. This is not done in the JSON view ... to be done! 
+			 */
+			this.setTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, null, null, 0, Integer.MAX_VALUE, null);
+			
+			// TODO: other output formats
+			return Views.JSON;
+		}	
+		
 		// requested order
 		Order order = Order.ADDED;
 		try {
@@ -46,27 +61,23 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 			throw new MalformedURLSchemeException(ex.getMessage());
 		}
 
-		final List<String> requTags = command.getRequestedTagsList();
 				
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
 		
-		Integer totalNumPosts = 1; 
+		int totalNumPosts = 1; 
 		
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {			
-			this.setList(command, resourceType, GroupingEntity.ALL, null, requTags, null, order, null, null, command.getListCommand(resourceType).getEntriesPerPage());
+			final ListCommand<?> listCommand = command.getListCommand(resourceType);
+			final int entriesPerPage = listCommand.getEntriesPerPage();
+
+			this.setList(command, resourceType, GroupingEntity.ALL, null, requTags, null, order, null, null, entriesPerPage);
 			this.postProcessAndSortList(command, resourceType);
-						
-			//int totalCount = this.logic.getStatistics(resourceType, GroupingEntity.ALL, null, null, null, requTags);
-			int start = command.getListCommand(resourceType).getStart();
-			int totalCount = this.logic.getPostStatistics(resourceType, GroupingEntity.ALL, null, requTags, null, null, null, start, start + command.getListCommand(resourceType).getEntriesPerPage(), null, null);
 			
-			
-			command.getListCommand(resourceType).setTotalCount(totalCount);
-			// sum up
-			totalNumPosts += totalCount;
+			this.setTotalCount(command, resourceType, GroupingEntity.ALL, null, requTags, null, null, null, null, entriesPerPage, null);
+			totalNumPosts += listCommand.getTotalCount();
 		}	
 		
 		/*
