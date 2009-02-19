@@ -6,10 +6,9 @@ import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesByTa
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesByTagNamesCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesDuplicateCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForGroupCount;
-//import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForUserAndGroupByTagCount;
-//import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForUserAndGroupCount;
+import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForHashCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForUserCount;
-import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesPopularDays;
+import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesPopularDaysCount;
 import org.bibsonomy.database.params.StatisticsParam;
 
 /**
@@ -27,7 +26,8 @@ public class PostStatisticChain implements FirstChainElement<Integer, Statistics
 	private final GetResourcesDuplicateCount getResourcesDuplicateCount;
 	//private final GetResourcesForUserAndGroupCount getResourcesForUserAndGroupCount;
 	//private final GetResourcesForUserAndGroupByTagCount getResourcesForUserAndGroupByTagCount;
-	private final GetResourcesPopularDays getResourcesPopularDays;
+	private final GetResourcesPopularDaysCount getResourcesPopularDays;
+	private final GetResourcesForHashCount getResourcesForHashCount;
 	
 	/**
 	 * Default Constructor
@@ -40,7 +40,8 @@ public class PostStatisticChain implements FirstChainElement<Integer, Statistics
 		getResourcesDuplicateCount 	= new GetResourcesDuplicateCount();
 		//getResourcesForUserAndGroupCount = new GetResourcesForUserAndGroupCount();
 		//getResourcesForUserAndGroupByTagCount = new GetResourcesForUserAndGroupByTagCount();
-		getResourcesPopularDays = new GetResourcesPopularDays();
+		getResourcesPopularDays = new GetResourcesPopularDaysCount();
+		getResourcesForHashCount = new GetResourcesForHashCount();
 		
 		getResourcesForGroupCount.setNext(getResourcesForUserCount);
 		getResourcesForUserCount.setNext(getResourcesByTagNamesAndUserCount);
@@ -48,6 +49,7 @@ public class PostStatisticChain implements FirstChainElement<Integer, Statistics
 		getResourcesByTagNamesCount.setNext(getResourcesDuplicateCount);
 		//getResourcesDuplicateCount.setNext(getResourcesForUserAndGroupCount);
 		getResourcesDuplicateCount.setNext(getResourcesPopularDays);
+		getResourcesPopularDays.setNext(getResourcesForHashCount);
 		//getResourcesForUserAndGroupCount.setNext(getResourcesForUserAndGroupByTagCount);
 		//getResourcesForUserAndGroupByTagCount.setNext(getResourcesPopularDays);
 	}

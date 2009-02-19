@@ -3,6 +3,7 @@ package org.bibsonomy.database.managers;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.statistic.post.PostStatisticChain;
@@ -91,6 +92,24 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 			return this.bibtexDBManager.getBibTexForUserCount(requestedUserName, userName, groupId, visibleGroupIDs, session);
 		} else if (resourceType == Bookmark.class) {
 			return this.bookmarkDBManager.getBookmarkForUserCount(requestedUserName, userName, groupId, visibleGroupIDs, session);
+		} else {
+			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
+		}
+	}
+	
+
+	/**
+	 * @param resourceType
+	 * @param requHash 
+	 * @param simHash 
+	 * @param session
+	 * @return a statistical number (int)
+	 */
+	public Integer getNumberOfResourcesForHash(final Class<? extends Resource> resourceType, final String requHash, final HashID simHash, final DBSession session) {
+		if (resourceType == BibTex.class) {
+			return this.bibtexDBManager.getBibTexByHashCount(requHash, simHash, session);
+		} else if (resourceType == Bookmark.class) {
+			return this.bookmarkDBManager.getBookmarkByHashCount(requHash, simHash, session);
 		} else {
 			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
 		}
