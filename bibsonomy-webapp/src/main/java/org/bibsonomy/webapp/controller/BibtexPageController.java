@@ -100,6 +100,7 @@ public class BibtexPageController extends SingleResourceListController implement
 			/*
 			 * get only those tags, related to the resource
 			 * FIXME: hardcoded end value
+			 * FIXME: here we assume, bibtexsare handled, further above we use listsToInitialize ...
 			 */
 			this.setTags(command, BibTex.class, groupingEntity, requUser, null, null, hash, null, 0, 1000, null);
 			return Views.BIBTEXPAGE;

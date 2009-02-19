@@ -2,8 +2,10 @@ package org.bibsonomy.webapp.controller;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.util.ValidationUtils;
+import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.UrlCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -40,7 +42,8 @@ public class UrlPageController extends SingleResourceListController implements M
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());		
 		
 		// no URL hash given -> error
-		if (!ValidationUtils.present(command.getRequUrl()) && !ValidationUtils.present(command.getRequUrlHash())) {
+		final String requHash = command.getRequUrlHash();
+		if (!ValidationUtils.present(command.getRequUrl()) && !ValidationUtils.present(requHash)) {
 			LOGGER.error("Invalid query /url without URL hash");
 			throw new MalformedURLSchemeException("error.url_no_hash");
 		}
@@ -53,13 +56,13 @@ public class UrlPageController extends SingleResourceListController implements M
 
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {
-			// disable manual setting of start value for homepage
-			command.getListCommand(resourceType).setStart(0);
+			final ListCommand<?> listCommand = command.getListCommand(resourceType);
+			final int entriesPerPage = listCommand.getEntriesPerPage();
 			
-			setList(command, resourceType, GroupingEntity.ALL, null, null, command.getRequUrlHash(), null, null, null, 20);
-			// TODO: tags only for HTML output
-			setTags(command, resourceType, GroupingEntity.ALL, null, null, null, command.getRequUrlHash(), null, 0, 20, null);
-			postProcessAndSortList(command, resourceType);
+			this.setList(command, resourceType, GroupingEntity.ALL, null, null, requHash, null, null, null, entriesPerPage);
+			this.postProcessAndSortList(command, resourceType);
+			
+			this.setTotalCount(command, resourceType, GroupingEntity.ALL, null, null, requHash, null, null, null, entriesPerPage, null);
 		}
 
 		if (ValidationUtils.present(command.getBookmark().getList())) {	
@@ -69,8 +72,12 @@ public class UrlPageController extends SingleResourceListController implements M
 		}
 
 		this.endTiming();
+		
 		// html format - retrieve tags and return HTML view
 		if (command.getFormat().equals("html")) {
+			// FIXME: here we assume, bookmarks are handled, further above we use listsToInitialize ...
+			setTags(command, Bookmark.class, GroupingEntity.ALL, null, null, null, requHash, null, 0, 1000, null);
+
 			return Views.URLPAGE;	
 		}
 		
