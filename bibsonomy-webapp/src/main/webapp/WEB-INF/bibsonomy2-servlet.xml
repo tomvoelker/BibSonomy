@@ -105,6 +105,11 @@
 						<property name="controllerBeanName" value="bibtexPageController"/>
 					</bean>
 				</entry>
+				<entry key="/basket">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="basketPageController"/>
+					</bean>
+				</entry>				
 				<entry key="/unapi">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="UnAPIController"/>
@@ -450,7 +455,17 @@
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
 			</list>
 		</property>
-	</bean>	 
+	</bean>
+
+	<bean id="basketPageController" class="org.bibsonomy.webapp.controller.BasketPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+		<property name="listsToInitialise">
+			<list>
+				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+			</list>
+		</property>
+	</bean>	 	
 	
 	<!-- 
 		Implements the UnAPI specification http://unapi.info/
