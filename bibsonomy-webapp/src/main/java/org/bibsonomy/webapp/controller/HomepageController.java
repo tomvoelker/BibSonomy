@@ -37,7 +37,7 @@ public class HomepageController extends SingleResourceListController implements 
 												
 		// html format - retrieve tags and return HTML view
 		if (command.getFormat().equals("html")) {
-			setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, null, 0, 75, null);
+			setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, null, 0, 50, null);
 			this.endTiming();
 			return Views.HOMEPAGE;		
 		}

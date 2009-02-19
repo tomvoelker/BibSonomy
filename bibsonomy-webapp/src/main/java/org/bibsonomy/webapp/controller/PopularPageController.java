@@ -76,7 +76,7 @@ public class PopularPageController extends MultiResourceListController implement
 		}while(days > 0 && begin < 10);
 
 		// only html format, exports are not possible atm 
-		this.setTags(command, Resource.class, groupingEntity, null, null, null, null, null, 0, 100, null);
+		this.setTags(command, Resource.class, groupingEntity, null, null, null, null, null, 0, 50, null);
 		this.endTiming();
 		return Views.POPULAR;			
 		
