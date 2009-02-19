@@ -176,7 +176,7 @@
 
 	<!-- since for bookmarks intrahash = interhash, we ignore the param #simHash# -->
 	<select id="getBookmarkByHashCount" resultClass="int" parameterClass="bookmarkParam">
-		SELECT count(*) FROM bookmark WHERE book_url_hash = #hash#
+		SELECT book_url_ctr FROM urls WHERE book_url_hash = #hash#
 	</select>
 
 	<select id="getBookmarkByHashForUser" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
