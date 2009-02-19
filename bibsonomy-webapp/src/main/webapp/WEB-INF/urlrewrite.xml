@@ -291,7 +291,8 @@
     </rule>
 
     <!-- /user/USER -->
-	<rule>	
+	<rule>
+		<condition type="attribute" name="type" operator="notequal"/>
 		<from>^/+user/+([^/?]+?)(\?(.*))?$</from>
 		<!-- NEW PAGE -->
 		<to>/user?requestedUser=$1&amp;$3</to>
@@ -621,10 +622,18 @@
 	</rule>
 	
 	<!-- ############## /basket ############### -->
+    <!-- NEW page -->
+    <rule>
+    	<condition type="attribute" name="type" operator="notequal"/>
+        <from>^/+basket(\?(.*))?$</from>
+        <to>/basket?$2</to>
+    </rule>	
     <rule>
         <from>^/+basket(\?(.*))?$</from>
         <to>/ResourceHandler?page=basket&amp;$2</to>
     </rule>
+
+    
 
 	<!-- ############## /my* mappings ############### -->
 	<!-- 
