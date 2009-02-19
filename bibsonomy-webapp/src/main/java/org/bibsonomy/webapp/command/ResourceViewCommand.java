@@ -28,7 +28,7 @@ public class ResourceViewCommand extends BaseCommand {
 	private String duplicates = "yes";
 	
 	/** retrieve only tags without resources */
-	private String restrictToTags = "false";
+	private boolean restrictToTags = false;
 
 	/** callback function for JSON outputs */
 	private String callback = "";	
@@ -119,11 +119,11 @@ public class ResourceViewCommand extends BaseCommand {
 		this.sortPageOrder = sortPageOrder;
 	}
 
-	public String getRestrictToTags() {
+	public boolean getRestrictToTags() {
 		return this.restrictToTags;
 	}
 
-	public void setRestrictToTags(String restrictToTags) {
+	public void setRestrictToTags(boolean restrictToTags) {
 		this.restrictToTags = restrictToTags;
 	}
 
