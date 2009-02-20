@@ -6,10 +6,13 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.BibtexResourceViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 
 /**
- * @author mwa
+ * Controller for the basket page
+ * 
+ * @author Dominik Benz, benz@cs.uni-kassel.de
  * @version $Id$
  */
 public class BasketPageController extends SingleResourceListController implements MinimalisticController<BibtexResourceViewCommand>{
@@ -20,12 +23,16 @@ public class BasketPageController extends SingleResourceListController implement
 		
 		LOGGER.debug(this.getClass().getSigners());
 		this.startTiming(this.getClass(), command.getFormat());
+						
+		// if user is not logged in, redirect him to login page
+		if (command.getContext().isUserLoggedIn() == false) {
+			LOGGER.info("Trying to access basket without being logged in");
+			return new ExtendedRedirectView("/login");
+		}				
 		
-
-		final String hash     = "1f72e35e5615a7da4c61de4d830305c38";
-		final String requUser = command.getRequestedUser();
-		final GroupingEntity groupingEntity = (requUser != null ? GroupingEntity.USER : GroupingEntity.ALL);
-
+		// set login user name + grouping entity = BASKET
+		final String loginUserName = command.getContext().getLoginUser().getName();
+		final GroupingEntity groupingEntity = GroupingEntity.BASKET;
 		
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype
@@ -35,23 +42,21 @@ public class BasketPageController extends SingleResourceListController implement
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {			
 			final int entriesPerPage = command.getListCommand(resourceType).getEntriesPerPage();
 			
-			this.setList(command, resourceType, groupingEntity, requUser, null, hash, null, null, null, entriesPerPage);
+			this.setList(command, resourceType, groupingEntity, loginUserName, null, null, null, null, null, entriesPerPage);
 			this.postProcessAndSortList(command, resourceType);
-
-			this.setTotalCount(command, resourceType, groupingEntity, requUser, null, hash, null, null, null, command.getListCommand(resourceType).getEntriesPerPage(), null);
+			
+			// the number of items in this user's basket has already been fetched
+			command.getListCommand(resourceType).setTotalCount(command.getContext().getLoginUser().getBasket().getNumPosts());
 		}	
 		
-		//get the title of the publication with the requested hash (intrahash)
-		if(command.getBibtex().getList().size() > 0){
-			command.setTitle(command.getBibtex().getList().get(0).getResource().getTitle());
+				
+		if (command.getFormat().equals("html")) {
+			// TODO i18n
+			command.setPageTitle(" :: basket" );
+			this.endTiming();			
+			return Views.BASKETPAGE;	
 		}
 		
-		if (command.getFormat().equals("html")) {
-			this.endTiming();
-			
-			return Views.BASKETPAGE;
-	
-		}
 		this.endTiming();
 		
 		// export - return the appropriate view
