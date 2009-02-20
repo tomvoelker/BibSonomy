@@ -33,6 +33,10 @@ import org.bibsonomy.util.EnumUtils;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
+/**
+ * @author dbenz
+ *
+ */
 public enum GroupingEntity {
 	/**
 	 * for constrainting the user which is somehow related to the entities
@@ -64,9 +68,17 @@ public enum GroupingEntity {
 	ALL,
 	
 	/**
-	 * for constrainting the associated groups of the entities in the list, which is to be filtered, to contain the group 'friends' and the requesting user is in that "friends-group".  
+	 * for constrainting the associated groups of the entities in the list, 
+	 * which is to be filtered, to contain the group 'friends' and the requesting 
+	 * user is in that "friends-group".  
 	 */
-	FRIEND;
+	FRIEND,
+	
+	/**
+	 * for constraining the entities in the list to the ones contained in the
+	 * basket collection of a given user
+	 */
+	BASKET;
 
 	/**
 	 * @param groupingEntity name of the GroupingEntity Instance to retrieve
