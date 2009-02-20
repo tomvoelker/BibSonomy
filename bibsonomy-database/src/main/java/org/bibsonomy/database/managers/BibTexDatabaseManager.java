@@ -422,13 +422,17 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * @see BibTexDatabaseManager#getBibTexFromBasketForUser(BibTexParam, DBSession)
 	 * 
 	 * @param loginUser
+	 * @param limit TODO
+	 * @param offset TODO
 	 * @param session
 	 * @return list of bibtex posts
 	 */
-	public List<Post<BibTex>> getBibTexFromBasketForUser(final String loginUser, final DBSession session) {
+	public List<Post<BibTex>> getBibTexFromBasketForUser(final String loginUser, final int limit, final int offset, final DBSession session) {
 		final BibTexParam param = new BibTexParam();
 		param.setUserName(loginUser);
 		param.setSimHash(HashID.INTER_HASH);
+		param.setLimit(limit);
+		param.setOffset(offset);
 		return this.bibtexList("getBibTexFromBasketForUser", param, session);
 	}
 

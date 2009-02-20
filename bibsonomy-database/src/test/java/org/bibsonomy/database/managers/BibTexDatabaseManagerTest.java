@@ -327,11 +327,11 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getBibTexFromBasketForUser() {
 		String userName = "testuser1";
-		List<Post<BibTex>> posts = this.bibTexDb.getBibTexFromBasketForUser(userName, this.dbSession);
+		List<Post<BibTex>> posts = this.bibTexDb.getBibTexFromBasketForUser(userName, Integer.MAX_VALUE, 0, this.dbSession);
 		assertEquals(2, posts.size());
 		
 		userName = "testuser2";
-		posts = this.bibTexDb.getBibTexFromBasketForUser(userName, this.dbSession);
+		posts = this.bibTexDb.getBibTexFromBasketForUser(userName, Integer.MAX_VALUE, 0, this.dbSession);
 		assertEquals(2, posts.size());
 	}
 
