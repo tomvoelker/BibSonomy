@@ -30,7 +30,7 @@
     <!-- page title -->
     <fmt:message key="post.meta.edit" var="pageTitle"/>
     <fmt:message key="batchedit.button.update" var="buttonUpdate"/>
-
+    
     <!-- TODO: i18n -->
     <layout:layout requPath="${requPath}" 
       loginUserName="${command.context.loginUser.name}"
@@ -83,21 +83,27 @@
                 </tr>                  
                   
                 <c:forEach var="post" items="${listView.list}">
-                  <c:if test="${post.user.name eq command.context.loginUser.name}">
-                    <tr>
-                      <td>
-                        <input type="text" name="${post.resource.intraHash}" size="40" value="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
-                        <!-- to see if the tags have been changed, we also send the original tags -->
-                        <input type="hidden" name="0${post.resource.intraHash}" value="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
-                      </td>
-                      <td class="chunkybib">
-                        <jsp:invoke fragment="shortPostDescription"/>
-                      </td>   
-                      <td>
-                        <input type="checkbox" name="d${post.resource.intraHash}"/> <fmt:message key="batchedit.deletePost"/>
-                      </td>
-                    </tr>
-                  </c:if>
+                  <c:choose>
+                    <c:when test="${post.user.name eq command.context.loginUser.name}">
+                      <tr>
+                        <td>
+                          <input type="text" name="${post.resource.intraHash}" size="40" value="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
+                          <!-- to see if the tags have been changed, we also send the original tags -->
+                          <input type="hidden" name="0${post.resource.intraHash}" value="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
+                        </td>
+                        <td class="chunkybib">
+                          <jsp:invoke fragment="shortPostDescription"/>
+                        </td>   
+                        <td>
+                          <input type="checkbox" name="d${post.resource.intraHash}"/> <fmt:message key="batchedit.deletePost"/>
+                        </td>
+                      </tr>
+                    </c:when>
+                    <c:otherwise>
+                      <!-- remember, that we have found posts not owned by the user to show them at end of page -->
+                      <c:set var="otherPosts" value="true"/>
+                    </c:otherwise>
+                  </c:choose>
                 </c:forEach> 
 
                 <tr>
@@ -120,32 +126,36 @@
             </form>
             
 
+            <c:if test="${not empty otherPosts}">
 
 
-            <h2 style="margin-top: 2em;"><fmt:message key="batchedit.disregardedPosts"/></h2>
-            <p><fmt:message key="batchedit.disregardedPosts.info"/></p>
-
-            <fmt:message key="post.meta.own_post" var="alreadyOwn"/>
-            <fmt:message key="post.meta.copy_this_post" var="copyThisPost"/>
-    
-            <!-- iterate over a list of resources and create the list -->
-            <ul id="${listView.resourcetype}">
-              <c:forEach var="post" items="${listView.list}">
-          
-                <c:if test="${post.user.name ne command.context.loginUser.name}">
-                  <!-- show one post -->
-                  <rc:post post="${post}" otherPostsUrlPrefix="/url/" loginUserName="${loginUserName}" copyThisPost="${copyThisPost}" alreadyOwn="${alreadyOwn}">
-    					<jsp:attribute name="title">  <jsp:invoke fragment="title"/>  </jsp:attribute>
-    					<jsp:attribute name="actions"><jsp:invoke fragment="actions"/></jsp:attribute>
-    					<jsp:attribute name="bmicon"> <jsp:invoke fragment="bmicon"/> </jsp:attribute>
-    					<jsp:attribute name="desc">   <jsp:invoke fragment="desc"/>   </jsp:attribute>
-                  </rc:post>
-                </c:if>
-              
-              </c:forEach>
-            </ul>
+              <h2 style="margin-top: 2em;"><fmt:message key="batchedit.disregardedPosts"/></h2>
+              <p><fmt:message key="batchedit.disregardedPosts.info"/></p>
+  
+              <fmt:message key="post.meta.own_post" var="alreadyOwn"/>
+              <fmt:message key="post.meta.copy_this_post" var="copyThisPost"/>
+      
+              <!-- iterate over a list of resources and create the list -->
+              <ul id="${listView.resourcetype}">
+                <c:forEach var="post" items="${listView.list}">
+            
+                  <c:if test="${post.user.name ne command.context.loginUser.name}">
+                    <!-- show one post -->
+                    <rc:post post="${post}" otherPostsUrlPrefix="/url/" loginUserName="${loginUserName}" copyThisPost="${copyThisPost}" alreadyOwn="${alreadyOwn}">
+      					<jsp:attribute name="title">  <jsp:invoke fragment="title"/>  </jsp:attribute>
+      					<jsp:attribute name="actions"><jsp:invoke fragment="actions"/></jsp:attribute>
+      					<jsp:attribute name="bmicon"> <jsp:invoke fragment="bmicon"/> </jsp:attribute>
+      					<jsp:attribute name="desc">   <jsp:invoke fragment="desc"/>   </jsp:attribute>
+                    </rc:post>
+                  </c:if>
+                
+                </c:forEach>
+              </ul>
+            
+            </c:if>
             
           </c:if>
+          
 
         </div>
 
