@@ -101,7 +101,8 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 			// TODO: localize
 			command.setPageTitle("group :: " + groupingName);	
 
-			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, 1000, null);
+			// always retrieve all tags of this group
+			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, Integer.MAX_VALUE, null);
 			this.setGroupDetails(command, groupingName);
 
 			if (requTags.size() > 0) {
