@@ -17,6 +17,7 @@ import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexForGroup;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexForGroupAndTag;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexForHomePage;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexForUser;
+import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexFromBasketForUser;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexOfFriendsByTags;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexOfFriendsByUser;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexPopular;
@@ -52,6 +53,7 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByAuthorAndTag;
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByConceptByTag;
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByConceptForGroup;
+	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexFromBasketForUser;
 
 	/**
 	 * Constructs the chain
@@ -77,6 +79,7 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 		this.getBibTexByConceptByTag = new GetBibTexByConceptByTag();
 		this.getBibTexByConceptForGroup = new GetBibtexByConceptForGroup();
 		this.getBibTexByKey = new GetBibtexByKey();
+		this.getBibTexFromBasketForUser = new GetBibtexFromBasketForUser();
 
 		this.getBibTexForHomePage.setNext(this.getBibTexForPopular);
 		this.getBibTexForPopular.setNext(this.getBibTexForUser);
@@ -98,6 +101,7 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 		this.getBibTexByAuthorAndTag.setNext(getBibTexByConceptByTag);
 		this.getBibTexByConceptByTag.setNext(this.getBibTexByConceptForGroup);
 		this.getBibTexByConceptForGroup.setNext(this.getBibTexByKey);
+		this.getBibTexByKey.setNext(this.getBibTexFromBasketForUser);
 	}
 
 	public ChainElement<Post<BibTex>, BibTexParam> getFirstElement() {

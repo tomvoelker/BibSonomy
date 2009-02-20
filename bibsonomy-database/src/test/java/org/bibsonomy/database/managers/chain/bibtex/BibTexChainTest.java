@@ -19,6 +19,7 @@ import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexForGroup;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexForGroupAndTag;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexForHomePage;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexForUser;
+import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexFromBasketForUser;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexOfFriendsByTags;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexOfFriendsByUser;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexPopular;
@@ -312,5 +313,19 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setLimit(350);
 		this.bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, this.chainStatus);
 		assertEquals(GetBibtexSearch.class, this.chainStatus.getChainElement().getClass());
+	}
+	/**
+	 * tests getBibtexFromBasketForUser
+	 */
+	@Test
+	public void getBibtexFromBasketForUser() {
+		this.bibtexParam.setGrouping(GroupingEntity.BASKET);
+		this.bibtexParam.setUserName("testuser1");
+		this.bibtexParam.setBibtexKey(null);
+		this.bibtexParam.setHash(null);
+		this.bibtexParam.setSearch(null);
+		this.bibtexParam.setTagIndex(null);
+		this.bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, this.chainStatus);
+		assertEquals(GetBibtexFromBasketForUser.class, this.chainStatus.getChainElement().getClass());
 	}
 }

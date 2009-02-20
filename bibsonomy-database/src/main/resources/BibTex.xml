@@ -187,7 +187,7 @@
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 
-	<select id="getBibTexByDownload" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+	<select id="getBibTexFromBasketForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name
 		FROM (SELECT content_id, date
 		      FROM collector
@@ -197,7 +197,7 @@
 		      AND <include refid="bibtexSimHash"/>
 		ORDER BY c.date DESC, content_id DESC
 	</select>
-
+	
 	<select id="getBibTexForHomePage" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, b.ctr as count, NULL AS `group`, NULL AS group_name
 		FROM (SELECT b.*, h.ctr

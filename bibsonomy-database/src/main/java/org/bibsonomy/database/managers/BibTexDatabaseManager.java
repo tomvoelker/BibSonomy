@@ -405,32 +405,31 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 
 	/**
 	 * This method prepares a query which retrieves all publications the user
-	 * has in his download list. The result is shown on the page
-	 * <em>/download</em>. Since every user can only see his <em>own</em>
-	 * download page, we use userName as restriction for the user name and not
+	 * has in his basket list. The result is shown on the page
+	 * <em>/basket</em>. Since every user can only see his <em>own</em>
+	 * basket page, we use userName as restriction for the user name and not
 	 * requestedUserName.
 	 * 
 	 * @param param
 	 * @param session
 	 * @return list of bibtex posts
 	 */
-	public List<Post<BibTex>> getBibTexByDownload(final BibTexParam param, final DBSession session) {
-		return this.bibtexList("getBibTexByDownload", param, session);
+	public List<Post<BibTex>> getBibTexFromBasketForUser(final BibTexParam param, final DBSession session) {
+		return this.bibtexList("getBibTexFromBasketForUser", param, session);
 	}
 
 	/**
-	 * @see BibTexDatabaseManager#getBibTexByDownload(BibTexParam, DBSession)
+	 * @see BibTexDatabaseManager#getBibTexFromBasketForUser(BibTexParam, DBSession)
 	 * 
 	 * @param loginUser
-	 * @param simHash
 	 * @param session
 	 * @return list of bibtex posts
 	 */
-	public List<Post<BibTex>> getBibTexByDownload(final String loginUser, final HashID simHash, final DBSession session) {
+	public List<Post<BibTex>> getBibTexFromBasketForUser(final String loginUser, final DBSession session) {
 		final BibTexParam param = new BibTexParam();
 		param.setUserName(loginUser);
-		param.setSimHash(simHash);
-		return this.bibtexList("getBibTexByDownload", param, session);
+		param.setSimHash(HashID.INTER_HASH);
+		return this.bibtexList("getBibTexFromBasketForUser", param, session);
 	}
 
 	/**

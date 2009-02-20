@@ -126,6 +126,11 @@ INSERT INTO `bookmark` (`content_id`, `book_url_hash`, `book_description`, `book
 -- 
 -- Data for table `collector`
 -- 
+INSERT INTO `collector` (`user_name`, `content_id`, `date`) VALUES
+('testuser1', 10, '2008-06-18 14:27:35'),
+('testuser1', 12, '2008-06-18 14:27:35'),
+('testuser2', 13, '2008-06-18 14:33:01'),
+('testuser2', 14, '2008-06-18 14:33:22');
 
 
 -- 
@@ -230,13 +235,6 @@ INSERT INTO `inetAddressStates`(`address`, `status`) VALUES
 -- 
 -- Data for table `log_collector`
 -- 
-
-INSERT INTO `collector` (`user_name`, `content_id`, `date`) VALUES
-('testuser1', 10, '2008-06-18 14:27:35'),
-('testuser1', 12, '2008-06-18 14:27:35'),
-('testuser2', 13, '2008-06-18 14:33:01'),
-('testuser2', 14, '2008-06-18 14:33:22');
-
 
 
 -- 

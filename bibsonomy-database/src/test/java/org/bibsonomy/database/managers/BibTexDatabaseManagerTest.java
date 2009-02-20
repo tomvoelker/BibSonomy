@@ -322,17 +322,17 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
-	 * tests getBibTexByDownload
+	 * tests getBibTexFromBasketForUser
 	 */
 	@Test
-	public void getBibTexByDownload() {
+	public void getBibTexFromBasketForUser() {
 		String userName = "testuser1";
-		List<Post<BibTex>> post = this.bibTexDb.getBibTexByDownload(userName, HashID.INTER_HASH, this.dbSession);
-		assertEquals(2, post.size());
+		List<Post<BibTex>> posts = this.bibTexDb.getBibTexFromBasketForUser(userName, this.dbSession);
+		assertEquals(2, posts.size());
 		
 		userName = "testuser2";
-		post = this.bibTexDb.getBibTexByDownload(userName, HashID.INTER_HASH, this.dbSession);
-		assertEquals(2, post.size());
+		posts = this.bibTexDb.getBibTexFromBasketForUser(userName, this.dbSession);
+		assertEquals(2, posts.size());
 	}
 
 	/**
