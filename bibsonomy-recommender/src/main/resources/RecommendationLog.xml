@@ -223,7 +223,7 @@
 	<select id="lookupSelectorSetting2" resultClass="long" parameterClass="selectorSetting">
 		SELECT selector_id
 		FROM recommender_selectors
-		WHERE (selector_name = #id# AND rec_meta IS NULL) 
+		WHERE (selector_name = #info# AND selector_meta IS NULL) 
 	</select>
 
 	<!--+ 

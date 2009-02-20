@@ -39,13 +39,14 @@ public class DBAccessTest {
 	/**
 	 * Method for interactive testing.
 	 */
-	/*
+	
 	public static void main( String[] args ) throws Exception {
 		DBAccessTest obj = new DBAccessTest(); 
+		obj.testAddNewSelector2();
 		obj.testAddNewSelector();
 		obj.testAddSelectedTags();
     }
-	*/
+	
 	/**
 	 * Test registering a new recommender
 	 * @throws SQLException 
@@ -99,7 +100,23 @@ public class DBAccessTest {
 		assertArrayEquals(selectorMeta.getBytes(), retVal.getMeta());
 	}	
 	
-	
+	/**
+	 * Test registering a new selector
+	 * @throws SQLException 
+	 */
+	@Test
+	public void testAddNewSelector2() throws SQLException  {
+		Long qid       = new Long(0);
+		String selectorInfo = "TestCase-non-Selector";
+		byte[] selectorMeta = null;
+		// store and retrieve recommender informations
+		Long sid = null;
+		SelectorSettingParam retVal = null;
+		sid = DBAccess.addResultSelector(qid, selectorInfo, selectorMeta);
+		retVal = DBAccess.getSelector(sid);
+		assertEquals(selectorInfo, retVal.getInfo());
+		assertArrayEquals(null, retVal.getMeta());
+	}		
 	/**
 	 * Test adding selected tags.
 	 * @throws SQLException 
