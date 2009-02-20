@@ -196,12 +196,22 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	//------------------------------------------------------------------------
 	// Implementation of distributed recommendation evaluation
 	//------------------------------------------------------------------------
+	/**
+	 * After querying all recommenders, the final result is composed here.
+	 * @throws SQLException
+	 */
 	private SortedSet<RecommendedTag> selectResult(Long qid) throws SQLException {
 		// assure that no further results are added while evaluating 
 		// collected responses
 		// TODO current primitive synchronization prohibits parallel result selection
 		synchronized(lockResults) {
-			return resultSelector.selectResult(qid);
+			Long rid = DBAccess.addResultSelector(qid, 
+					resultSelector.getInfo(), 
+					resultSelector.getMeta()
+					);
+			SortedSet<RecommendedTag> result = resultSelector.selectResult(qid);
+			DBAccess.storeRecommendation(qid, rid, result);
+			return result;
 		}
 	}
 	/**

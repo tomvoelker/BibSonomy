@@ -18,4 +18,27 @@ public interface RecommendationSelector {
 	 * @throws Exception
 	 */
 	public SortedSet<RecommendedTag> selectResult(Long qid) throws SQLException;
+	
+	/**
+	 * selector specific meta informations
+	 */
+	public void setInfo(String info);
+	/**
+	 * selector specific meta informations
+	 * @return 
+	 */
+	public String getInfo();
+	
+	/**
+	 * short text describing this strategy
+	 * @param meta 
+	 */
+	public void setMeta(byte[] meta);
+	/**
+	 * short text describing this strategy
+	 * @return 
+	 */
+	public byte[] getMeta();
+	
+	
 }

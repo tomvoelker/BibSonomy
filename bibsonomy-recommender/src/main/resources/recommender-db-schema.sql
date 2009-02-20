@@ -9,6 +9,7 @@ CREATE TABLE log_recommender(
 
 DROP TABLE IF EXISTS recommender_result;
 CREATE TABLE recommender_result(
+    result_id BIGINT NOT NULL AUTO_INCREMENT,
 	query_id VARCHAR(20) NOT NULL,
 	setting_id BIGINT NOT NULL,
 	rec_latency INT,
@@ -17,6 +18,16 @@ CREATE TABLE recommender_result(
 	tag VARCHAR(255) NOT NULL,
 	PRIMARY KEY (query_id, setting_id, tag)
 ) DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS recommender_recommendations;
+CREATE TABLE recommender_recommendations(
+	query_id VARCHAR(20) NOT NULL,
+	score DOUBLE NOT NULL,
+	confidence DOUBLE NOT NULL,
+	tag VARCHAR(255) NOT NULL,
+	PRIMARY KEY (query_id, tag)
+) DEFAULT CHARSET=utf8;
+
 
 DROP TABLE IF EXISTS recommender_preset;
 CREATE TABLE recommender_preset(
@@ -39,6 +50,21 @@ CREATE TABLE recommender_settings(
 	rec_id VARCHAR(50) NOT NULL,
 	rec_meta BLOB,
 	PRIMARY KEY (setting_id)
+) DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS recommender_selectors;
+CREATE TABLE recommender_selectors(
+	selector_id BIGINT NOT NULL AUTO_INCREMENT,
+	selector_name VARCHAR(50) NOT NULL,
+	selector_meta BLOB,
+	PRIMARY KEY (selector_id)
+) DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS recommender_selectormap;
+CREATE TABLE recommender_selectormap(
+	query_id BIGINT NOT NULL,
+	selector_id BIGINT NOT NULL,
+	PRIMARY KEY (query_id, selector_id)
 ) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `recommender_bookmark`;

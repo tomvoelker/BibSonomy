@@ -14,6 +14,7 @@ import org.bibsonomy.recommender.multiplexer.MultiplexingTagRecommender;
  */
 public class SelectAll implements RecommendationSelector {
 	private static final Logger log = Logger.getLogger(SelectAll.class);
+	private String info = "Strategy for selecting all recommended Tags.";
 	
 	/**
 	 * Selection strategy which simply selects each recommended tag
@@ -22,6 +23,26 @@ public class SelectAll implements RecommendationSelector {
 		log.debug("Selecting result.");
 		final SortedSet<RecommendedTag> result = DBAccess.getRecommendations(qid);
 		return result;
+	}
+
+	public String getInfo() {
+		// TODO Auto-generated method stub
+		return info;
+	}
+
+	public void setInfo(String info) {
+		this.info = info;
+	}
+
+
+	public byte[] getMeta() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setMeta(byte[] meta) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -10,6 +10,11 @@
     <resultMap id="recSetting" class="recSetting">
         <result property="recId"       column="rec_id"     javaType="string"/>
         <result property="recMeta"     column="rec_meta"   jdbcType="BLOB"/>
+    </resultMap>
+    
+    <resultMap id="selectorSetting" class="selectorSetting">
+        <result property="info"        column="selector_name"   javaType="string"/>
+        <result property="meta"        column="selector_meta"   jdbcType="BLOB"/>
     </resultMap>    
     
 	<resultMap id="recQuery" class="recQuery">
@@ -41,7 +46,6 @@
 		<result property="score"        column="score"           javaType="double"/>
 		<result property="confidence"   column="confidence"      javaType="double"/>
 	</resultMap>
-
 	
 	<resultMap id="recLog_result" class="rectag">
 		<result property="name"         column="tag"             javaType="string"/>

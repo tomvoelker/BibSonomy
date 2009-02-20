@@ -11,6 +11,16 @@
 		FROM recommender_settings
 		WHERE setting_id = #id#
 	</select>
+	
+ 	<!-- +
+		 | Get details for given recommender
+		 + -->  
+	<select id="getSelectorByID" parameterClass="long" resultMap="RecommendationLogCommon.selectorSetting">
+		SELECT selector_name, selector_meta
+		FROM recommender_selectors
+		WHERE selector_id = #id#
+	</select>
+	
 
  	<!-- +
 		 | Get details for given query
@@ -124,6 +134,26 @@
 		   JOIN recommender_settings s ON (s.setting_id=m.setting_id)
 		WHERE l.query_id = #qid#
 	</select>	
+
+	<!-- +
+		 | Get list of selected recommendations for given query. 
+		 + -->
+	<select id="getSelectedRecommendationsByQid" resultMap="RecommendationLogCommon.recTag" parameterClass="long">
+		SELECT l.query_id,
+			   l.user_name,	
+			   l.date,			 
+			   m.selector_id,
+			   s.selector_name, 
+			   s.selector_meta, 
+			   r.score, 
+			   r.confidence, 
+			   r.tag
+		FROM log_recommender l 
+		   JOIN recommender_selectormap m ON (l.query_id = m.query_id) 
+		   JOIN recommender_recommendations r ON (r.query_id=l.query_id) 
+		   JOIN recommender_selectors s ON (s.selector_id=m.selector_id)
+		WHERE l.query_id = #qid#
+	</select>
 	
 	<!-- +
 		 | Get list of all recommendations for given recommender in a given query. 
@@ -177,6 +207,46 @@
 			SELECT LAST_INSERT_ID() AS value
 	    </selectKey>
 	</insert>
+
+	<!--+ 
+	    | Get specific result selector setting's id, if it exists 
+	  	+-->
+	<select id="lookupSelectorSetting" resultClass="long" parameterClass="selectorSetting">
+		SELECT selector_id
+		FROM recommender_selectors
+		WHERE (selector_name = #info# AND selector_meta = #meta#) 
+	</select>
+
+	<!--+ 
+	    | Get specific result selector setting's id with undefined meta_data, if it exists 
+	  	+-->
+	<select id="lookupSelectorSetting2" resultClass="long" parameterClass="selectorSetting">
+		SELECT selector_id
+		FROM recommender_selectors
+		WHERE (selector_name = #id# AND rec_meta IS NULL) 
+	</select>
+
+	<!--+ 
+	    | Add result selector setting, returning it's id
+		| WARNING: LAST_INSERT_ID() is not thread-safe, but while iBatis doesn't
+		|          support JDBC 3.0's getGeneratedKeys(), this is the technique of 
+		|          choice (see http://issues.apache.org/jira/browse/IBATIS-142)
+	  	+-->
+	<insert id="addSelectorSetting" parameterClass="selectorSetting">
+		INSERT INTO recommender_selectors (selector_name,selector_meta)
+		VALUES ( #info#, #meta# )
+ 		<selectKey resultClass="java.lang.Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS value
+	    </selectKey>
+	</insert>
+	
+	<!--+ 
+	    | Map query_id to corresponding selector settings
+	  	+-->
+	<insert id="addSelectorQuerySetting" parameterClass="selectorMap">
+		REPLACE INTO recommender_selectormap (query_id, selector_id)
+		VALUES ( #qid#, #sid# )
+	</insert>
 	
 	<!--+ 
 	    | Add recommender query.
@@ -205,6 +275,16 @@
 		   (query_id, setting_id, rec_latency, score, confidence, tag)
 		VALUES ( #qid#, #sid#, #latency#, #score#, #confidence#, #tagName# )
 	</insert>
+	
+	<!--+ 
+	    | Add selected tag.
+	  	+-->
+	<insert id="addSelectedTag" parameterClass="selectorResponse">
+		REPLACE INTO recommender_recommendations 
+		   (query_id, score, confidence, tag)
+		VALUES ( #qid#, #score#, #confidence#, #tagName# )
+	</insert>
+	
 	
 	<!--+
 		| Insert Bookmark 

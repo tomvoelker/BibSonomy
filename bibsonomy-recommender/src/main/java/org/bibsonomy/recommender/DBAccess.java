@@ -3,6 +3,7 @@ package org.bibsonomy.recommender;
 import java.io.Reader;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Collection;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -17,6 +18,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.RecommendedTagComparator;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.recommender.multiplexer.strategy.RecommendationSelector;
 import org.bibsonomy.recommender.params.Pair;
 import org.bibsonomy.recommender.params.PostGuess;
 import org.bibsonomy.recommender.params.PostParam;
@@ -25,6 +27,9 @@ import org.bibsonomy.recommender.params.RecQueryParam;
 import org.bibsonomy.recommender.params.RecQuerySettingParam;
 import org.bibsonomy.recommender.params.RecResponseParam;
 import org.bibsonomy.recommender.params.RecSettingParam;
+import org.bibsonomy.recommender.params.SelectorTagParam;
+import org.bibsonomy.recommender.params.SelectorQueryMapParam;
+import org.bibsonomy.recommender.params.SelectorSettingParam;
 import org.bibsonomy.recommender.params.TasEntry;
 import org.bibsonomy.recommender.params.TasParam;
 
@@ -155,6 +160,38 @@ public class DBAccess extends AbstractDatabaseManager {
 	}		
 
 	/**
+	 * Add result selector to given query.
+	 * @param qid query id
+	 * @param resultSelector
+	 * 
+	 * @return
+	 * @throws SQLException 
+	 */
+	public static Long addResultSelector(Long qid, String selectorInfo, byte[] selectorMeta ) throws SQLException {
+		Long selectorID = null;
+
+		SqlMapClient sqlMap = getSqlMapInstance();
+	   	try {
+    		sqlMap.startTransaction();
+    		
+    		// insert recommender settings
+    		selectorID = insertSelectorSetting(selectorInfo, selectorMeta);
+    		// connect query with setting
+    		SelectorQueryMapParam queryMap = new SelectorQueryMapParam();
+    		queryMap.setQid(qid);
+    		queryMap.setSid(selectorID);
+    		sqlMap.insert("addSelectorQuerySetting", queryMap);
+    		
+    		sqlMap.commitTransaction();
+    	} finally {
+    		sqlMap.endTransaction();
+    	}		
+		
+		return selectorID;
+	}
+
+
+	/**
 	 * Add recommender's recommended tags.
 	 * 
 	 * @param queryId unique id identifying query
@@ -193,7 +230,7 @@ public class DBAccess extends AbstractDatabaseManager {
 		
 		return tags.size();
 	}
-	
+
 	/**
 	 * Get sorted list of tags recommended in a given query by a given recommender. 
 	 * 
@@ -236,6 +273,21 @@ public class DBAccess extends AbstractDatabaseManager {
 	    // all done.
 	    return result;
 	}		
+
+	/**
+	 * Get (unsorted) list of selected tags for a given query. 
+	 * 
+	 * @param qid
+	 * @return tags recommended in query identified by qid and all recommenders 
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<RecommendedTag> getSelectedTags(Long qid) throws SQLException {
+	    List<RecommendedTag> queryResult = sqlMap.queryForList("getSelectedRecommendationsByQid", qid);
+	    // all done.
+	    return queryResult;
+	}		
+	
 	
 	/**
 	 * Get list of newest tas entries
@@ -361,6 +413,17 @@ public class DBAccess extends AbstractDatabaseManager {
 	}
 
 	/**
+	 * Returns details for given selector.
+	 * @param sid Result selector's setting id
+	 * @return Details for given recommender if found -- null otherwise
+	 * @throws SQLException 
+	 * @throws SQLException 
+	 */
+	public static SelectorSettingParam getSelector(Long sid) throws SQLException {
+		return (SelectorSettingParam)getSqlMapInstance().queryForObject("getSelectorByID", sid);
+	}
+	
+	/**
 	 * Return query information for given query id
 	 * @param qid querie's id
 	 * @return RecQueryParam on success, null otherwise
@@ -476,6 +539,75 @@ public class DBAccess extends AbstractDatabaseManager {
 		return settingId;
 	}
 
+	
+	/**
+	 * insert selector setting into table - if given setting already exists,
+	 * return its id. This should always be embedded into a transaction.
+	 * 
+	 * @return unique identifier for given settings
+	 * @throws SQLException 
+	 */
+	private static Long insertSelectorSetting(String selectorInfo, byte[] selectorMeta) throws SQLException {
+		Long selectorID = null;
+
+		SqlMapClient sqlMap = getSqlMapInstance();
+
+		SelectorSettingParam setting = new SelectorSettingParam();
+		setting.setInfo(selectorInfo);
+		setting.setMeta(selectorMeta);
+
+		// determine which lookup sql statement we have to use.
+		String lookupFunction;
+		if( selectorMeta==null )
+			lookupFunction = "lookupSelectorSetting2";
+		else
+			lookupFunction = "lookupSelectorSetting";
+
+		selectorID = (Long) sqlMap.queryForObject(lookupFunction, setting);
+		if( selectorID==null ) {
+			log.debug("Given setting not found -> adding new");
+			selectorID = (Long) sqlMap.insert("addSelectorSetting", setting);    			
+			log.debug("Setting added @" + selectorID);
+		} else {
+			log.debug("Given setting found in DB at " + selectorID);
+		}
+
+		return selectorID;
+	}	
+	/**
+	 * Store selected recommended tags.
+	 * 
+	 * @param qid query id
+	 * @param rid result selector id
+	 * @param result set of recommended tags
+	 * @throws SQLException 
+	 */
+	public static int storeRecommendation(Long qid, Long rid, SortedSet<RecommendedTag> result) throws SQLException {
+		SqlMapClient sqlMap = getSqlMapInstance();
+		try {
+			sqlMap.startTransaction();
+
+			// insert recommender response
+			// #qid#, #score#, #confidence#, #tagName# )
+			SelectorTagParam response = new SelectorTagParam();
+			response.setQid(qid);
+			response.setRid(rid);
+			for( RecommendedTag tag : result ) {
+				response.setTagName( tag.getName() );
+				response.setConfidence( tag.getConfidence() );
+				response.setScore( tag.getScore() );
+				sqlMap.insert("addSelectedTag", response);
+			}    		
+
+			sqlMap.commitTransaction();
+		} finally {
+			sqlMap.endTransaction();
+		}		
+
+		return result.size();
+	}
+	
+
 	/**
 	 * Store post for current recommendation.
 	 * @param userName
@@ -573,5 +705,6 @@ public class DBAccess extends AbstractDatabaseManager {
 		}
 		return false;
 	}
+
 
 }
