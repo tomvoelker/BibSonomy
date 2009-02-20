@@ -61,7 +61,8 @@ public abstract class ResourceListController {
 		// retrieve tag cloud settings
 		tagCloudCommand.setStyle(TagCloudStyle.getStyle(userSettings.getTagboxStyle()));
 		tagCloudCommand.setSort(TagCloudSort.getSort(userSettings.getTagboxSort()));
-		tagCloudCommand.setMinFreq(userSettings.getTagboxMinfreq());
+		// overwrite minFreq only if not explicitly set by URL param
+		if (tagCloudCommand.getMinFreq() == 0) {tagCloudCommand.setMinFreq(userSettings.getTagboxMinfreq());}
 		tagCloudCommand.setMaxFreq(TagUtils.getMaxUserCount(tagCloudCommand.getTags()));
 	}
 	

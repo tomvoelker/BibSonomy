@@ -194,7 +194,7 @@
 		<set name="requPath">$1</set>		
 	</rule>
 	
-	<!-- ensure compatibility to old bookmark / bibtex start / end params -->
+	<!-- ensure compatibility to old bookmark / bibtex start / end and tagbox minfreq params -->
 	<rule>
 		<from>^/+(.*startBib=(\d+).*)$</from>
 		<to last="false">/$1&amp;bibtex.start=$2</to>
@@ -202,11 +202,15 @@
 	<rule>
 		<from>^/+(.*startBook=(\d+).*)$</from>
 		<to last="false">/$1&amp;bookmark.start=$2</to>
-	</rule>
+	</rule>	
 	<rule>
 		<from>^/+(.*items=(\d+).*)$</from>
 		<to last="false">/$1&amp;bookmark.entriesPerPage=$2&amp;bibtex.entriesPerPage=$2</to>
 	</rule>
+	<rule>
+		<from>^/+(.*minfreq=(\d+).*)$</from>
+		<to last="false">/$1&amp;tagcloud.minFreq=$2</to>
+	</rule>		
 
         <!-- necessary to keep jabref exports valid until they are migrated -->
         <rule>

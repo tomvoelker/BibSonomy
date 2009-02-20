@@ -9,7 +9,7 @@
 		type="org.bibsonomy.webapp.command.TagCloudCommand" required="true" />
 	<jsp:directive.attribute name="requPath" type="java.lang.String"
 		required="true" />
-	<jsp:directive.attribute name="disableTagboxMinfreq" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="tagboxMinfreqStyle" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="tagSizeMode" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="showTooltips" type="java.lang.Integer" required="false"/>
 	<jsp:directive.attribute name="copytag" type="java.lang.Boolean" required="false"/>
@@ -24,21 +24,17 @@
 			<c:set var="style" value="taglist" />
 		</c:otherwise>
 	</c:choose>
-	
-	<!-- display of minfreq links is disabled by default -->
-	<c:choose>
-		<c:when test="${empty disableTagboxMinfreq or disableTagboxMinfreq == true}">
-			<script type="text/javascript">disable_tagbox_minfreq = 'true';</script>
-		</c:when>
-		<c:otherwise>
-			<script type="text/javascript">disable_tagbox_minfreq = 'false';</script>
-		</c:otherwise>
-	</c:choose>
-	
+
+	<!-- disable tagbox minfreq links, if not specified -->
+	<c:if test="${empty tagboxMinfreqStyle}">
+    	<c:set var="tagboxMinfreqStyle" value="none"/>
+    </c:if>
+			
 	<!-- display of tag tooltips is disabled by default -->
     <c:set var="showTooltips" value="${not (empty showTooltips or showTooltips == 0)}"/>
 
-	
+	<script type="text/javascript">tagbox_minfreq_style = '${tagboxMinfreqStyle}';</script>
+
 	<ul class="${style}" id="tagbox">
 	
 		<!-- loop over tags -->
@@ -58,7 +54,7 @@
 			<c:set var="tagclass" value="${mtl:getTagSize(tag.usercount, cmd.maxTagCount)}" />
 			
 			<!-- display the tag -->						
-			<c:if test="${tag.usercount >= cmd.minFreq or empty disableTagboxMinfreq or disableTagboxMinfreq == true}">
+			<c:if test="${tag.usercount >= cmd.minFreq or tagboxMinfreqStyle == 'none'}">
 				<li class="${tagclass}">
 					<jspx:element name="a">
 						<jspx:attribute name="href">
@@ -73,7 +69,7 @@
 						<c:if test="${tagSizeMode eq 'home'}">				
 							<jspx:attribute name="style">font-size:${mtl:computeTagFontsize(tag.usercount, cmd.maxFreq, tagSizeMode)}%</jspx:attribute>
 						</c:if>
-						<c:if test="${showTooltips}">							
+						<c:if test="${showTooltips}">
 							<jspx:attribute name="onmouseover">javascript:preDoTooltip(event)</jspx:attribute>
 							<jspx:attribute name="onmouseout">javascript:hideTip()</jspx:attribute>					
 						</c:if>	

@@ -26,6 +26,7 @@
 				<value>requSim</value>
 				<value>requUrl</value>
 				<value>requUrlHash</value>
+				<value>tagcloud.minFreq</value>
 				<!-- TODO: missing:  Tab(s)Command, TagCloudCommand -->
 				<!-- 
 					to not be dependent on bookmark or bibtex resource types, 

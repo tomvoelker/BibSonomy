@@ -16,8 +16,16 @@ function init_tagbox(show, sort, minfreq, requUser) {
 
   style_list.replaceChild(getStyleItem(style_sort[sort], style_sort), style_list.childNodes[0]);
   style_list.replaceChild(getStyleItem(style_show[show], style_show), style_list.childNodes[1]);
-  if (typeof disable_tagbox_minfreq != "undefined" && disable_tagbox_minfreq == "false") {
-  	showMinfreq(minfreq, requUser);
+  if (typeof tagbox_minfreq_style != "undefined") {
+	  if (tagbox_minfreq_style == "user") {
+		  showUserMinfreq(minfreq, requUser);
+	  }
+	  else if (tagbox_minfreq_style == "default") {
+		  showMinfreq();  
+	  }
+	  else if (tagbox_minfreq_style == "none"){
+		  // do nothing
+	  }
   }
 
   var span = document.createElement("span");
@@ -82,6 +90,7 @@ function getStyleItem(style, style_arr) {
 	return style_sort;
 }
 function attachMinUsertags(count, requUser) { return(function() { minUsertags(count,requUser);})}
+
 function getMinUsertagsLink (count, requUser) {
 	var node = document.createElement("a");
 	node.onclick = attachMinUsertags(count,requUser);
@@ -90,7 +99,24 @@ function getMinUsertagsLink (count, requUser) {
 	return node;
 }
 
-function showMinfreq(count, currUser) {
+function getMinTagsLink (count) {
+	var node = document.createElement("a");
+	if (document.URL.indexOf("tagcloud.minFreq") > -1) {
+		// param is present, replace
+		node.href = document.URL.replace(/tagcloud\.minFreq\=\d+/, "tagcloud.minFreq=" + count);
+	}
+	else {
+		// param not yet present, append
+		var sep = (document.URL.indexOf("=") == -1) ? "?" : "&"; 
+		node.href = document.URL + sep + "tagcloud.minFreq=" + count;
+	}
+	node.appendChild(document.createTextNode(count));
+	node.style.cursor = "pointer";
+	return node;
+}
+
+// create minfreq links for users (which are loaded via AJAX)
+function showUserMinfreq(count, currUser) {
 	
 	var minfreqList = document.createElement("li")
 
@@ -121,6 +147,23 @@ function showMinfreq(count, currUser) {
 	
 	style_list.replaceChild(minfreqList, style_list.childNodes[2]);
 	
+}
+
+// create default minfreq links
+function showMinfreq() {
+	var minfreqList = document.createElement("li")
+
+	minfreqList.appendChild(document.createTextNode(" (" + getString("tagbox.minfreq") + "  "));
+
+	minfreqList.appendChild(getMinTagsLink(1));
+	minfreqList.appendChild(document.createTextNode(" | "));
+	minfreqList.appendChild(getMinTagsLink(2));
+	minfreqList.appendChild(document.createTextNode(" | "));
+	minfreqList.appendChild(getMinTagsLink(5));
+	
+	minfreqList.appendChild(document.createTextNode(") "));
+	
+	style_list.replaceChild(minfreqList, style_list.childNodes[2]);	
 }
 
 
