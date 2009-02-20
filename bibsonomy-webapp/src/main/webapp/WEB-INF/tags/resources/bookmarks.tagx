@@ -21,6 +21,7 @@
 		disableListNavigation="${disableListNavigation}"
 		listID="bookmarkList"
 		listView="${listView}">
+    
 		<jsp:attribute name="formatButtons">
 			<!-- Buttons to show content of page in different formats -->
 			<c:url var="rssPath" value="/rss/${requPath}" context="${projectContext}"/>
@@ -28,18 +29,12 @@
             <c:url var="xmlPath" value="/xml/${requPath}" context="${projectContext}"/>
       	<a href="${xmlPath}">XML</a>
 		</jsp:attribute>
-		<jsp:attribute name="title">
-			<bm:title post="${post}"/>
-		</jsp:attribute>
-		<jsp:attribute name="desc">
-			<bm:desc post="${post}"/>
-		</jsp:attribute>
-		<jsp:attribute name="bmicon">
-			<bm:bmicon post="${post}" loginUserName="${loginUserName}"/>
-		</jsp:attribute>
-		<jsp:attribute name="actions">
-			<bm:actions post="${post}" loginUserName="${loginUserName}"/>
-		</jsp:attribute>
+    
+		<jsp:attribute name="title">  <bm:title   post="${post}"/></jsp:attribute>
+		<jsp:attribute name="desc">	  <bm:desc    post="${post}"/></jsp:attribute>
+		<jsp:attribute name="bmicon"> <bm:bmicon  post="${post}" loginUserName="${loginUserName}"/></jsp:attribute>
+		<jsp:attribute name="actions"><bm:actions post="${post}" loginUserName="${loginUserName}"/></jsp:attribute>
+    
 	</rc:list>
 	
 </jsp:root>
