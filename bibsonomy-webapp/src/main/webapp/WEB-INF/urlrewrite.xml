@@ -169,6 +169,17 @@
 
 
 
+
+	<!--  store requested path for each query -->
+	<!-- 
+		WARNING: please never put this after the quick tag editing rules, because there
+		we need the complete requested path for nextprev navigation!
+	 -->
+	<rule>
+		<from>^/+(.+)$</from>		
+		<set name="requPath">$1</set>		
+	</rule>
+
 	<!-- ############## quick tag editing ############### -->
 
     <!-- 
@@ -179,20 +190,15 @@
     <rule>
     	<from>^/+bediturl/+(.*)$</from>
     	<to last="false">/$1</to>
-    	<set name="type">batchediturl</set>
+    	<set name="format">batchediturl</set>
     </rule>
     <rule>
     	<from>^/+beditbib/+(.*)$</from>
     	<to last="false">/$1</to>
-    	<set name="type">batcheditbib</set>
-    </rule>
+    	<set name="format">batcheditbib</set>
+    </rule>    
 
 
-	<!--  store requested path for each query -->
-	<rule>
-		<from>^/+(.+)$</from>		
-		<set name="requPath">$1</set>		
-	</rule>
 	
 	<!-- ensure compatibility to old bookmark / bibtex start / end and tagbox minfreq params -->
 	<rule>
@@ -202,7 +208,7 @@
 	<rule>
 		<from>^/+(.*startBook=(\d+).*)$</from>
 		<to last="false">/$1&amp;bookmark.start=$2</to>
-	</rule>	
+	</rule>
 	<rule>
 		<from>^/+(.*items=(\d+).*)$</from>
 		<to last="false">/$1&amp;bookmark.entriesPerPage=$2&amp;bibtex.entriesPerPage=$2</to>
