@@ -110,7 +110,6 @@
 								
 								// append tag to suggestion list
 								var suggestion = new Object;
-								suggestion.title      = tagName;
 								suggestion.label      = tagName;
 								suggestion.score      = tagScore;
 								suggestion.confidence = tagConfidence;

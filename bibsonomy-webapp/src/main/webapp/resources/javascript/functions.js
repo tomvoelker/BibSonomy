@@ -443,6 +443,7 @@ function xget_event (event) {
 	return str_browser;
 } 
 
+    var maxTagFreq = 0;                    // maximal tag frequency in tag cloud
 	var list = new Array();
 	var listElements = new Array();
 	var nodeList = new Array();
@@ -645,7 +646,7 @@ function xget_event (event) {
 	 * For using the old suggestion functions we update global variables:
 	 *    - array 'list' containing the tag names
 	 *    - "associative" array 'nodeList' containing objects O with attributes
-	 *      O.title = tagName, O.count = tagFrequency
+	 *      O.title = tagFrequency (as String), O.count = tagFrequency
 	 *   
 	 * @return result list
 	 */
@@ -662,13 +663,18 @@ function xget_event (event) {
 		// now sort this array
 		tagList.sort(tagCompare);
 		
-		// set global tag list
+		// set global tag list, storing maximal tag frequency in maxTagFreq
 		for( var i=0; i<tagList.length; i++ ) {
-			list.push(tagList[i].label);
+			var label = tagList[i].label;
+			var count = tagList[i].count;
+			if(count>maxTagFreq) 
+				maxTagFreq = count;
+			
+			list.push(label);
 			var node = new Object;
-			node.title=tagList[i].label;
-			node.count=tagList[i].count;
-			nodeList[node.title] = node;
+			node.title=count+" ";
+			node.count=count;
+			nodeList[label] = node;
 		}
 
 		// all done.
@@ -679,14 +685,14 @@ function xget_event (event) {
 	 * Append recommended tags to list of potential tag suggestions.
 	 *  
 	 * Input: list of objects with attributes:
-	 *    - title = tagName
+	 *    - title = tag weight
 	 *    - label = tagName
 	 *    - score, confidence
 	 * 
 	 * For using the old suggestion functions we update global variables:
 	 *    - array 'list' containing the tag names
 	 *    - "associative" array 'nodeList' containing objects O with attributes
-	 *      O.title = tagName, O.count = tagFrequency
+	 *      O.title = tagFrequency (as String), O.count = tagFrequency
 	 *   
 	 * @return result list
 	 */
@@ -694,6 +700,9 @@ function xget_event (event) {
 		// update global tag list
 		for( var i=0; i<tagList.length; i++ ) {
 			list.push(tagList[i].label);
+			
+			var node = tagList[i];
+			node.title = Math.ceil(node.score*(maxTagFreq/2)+(maxTagFreq/2))+ " ";
 			nodeList[tagList[i].label] = tagList[i];
 		}
 		// sort the list
