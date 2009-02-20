@@ -699,11 +699,12 @@ function xget_event (event) {
 	function populateSuggestionsFromRecommendations(tagList) {
 		// update global tag list
 		for( var i=0; i<tagList.length; i++ ) {
-			list.push(tagList[i].label);
+			var label = tagList[i].label.replace(/^\s+|\s+$/g, '').replace(/ /g,"_");;
+			list.push(label);
 			
 			var node = tagList[i];
 			node.title = Math.ceil(node.score*(maxTagFreq/2)+(maxTagFreq/2))+ " ";
-			nodeList[tagList[i].label] = tagList[i];
+			nodeList[label] = tagList[i];
 		}
 		// sort the list
 		list.sort(stringCompare);
