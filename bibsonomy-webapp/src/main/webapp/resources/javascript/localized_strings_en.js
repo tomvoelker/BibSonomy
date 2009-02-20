@@ -161,7 +161,7 @@ var LocalizedStrings = {
    "register.signedIn" : "You have successfully signed in.",
    "register.nextSteps" : "Next steps:",
    "register.nextSteps.step1" : "Drag these buttons to the links toolbar of your browser.",
-   "register.nextSteps.step2.surf" : "Surf to your favourite page and bookmark it by clicking on the newly added \"post bookmark\" .",
+   "register.nextSteps.step2.surf" : "Surf to your favourite page and bookmark it by clicking on the newly added \"post bookmark\" button.",
    "register.nextSteps.step2.click" : "Afterwards a click on \"my{0}\" shows your first successful bookmark. ",
    "register.confirmationMail" : "A confirmation message has been sent to your email address.",
    "register.internetExplorer" : "For Internet Explorer you have to right-click the button and select \"add to favorites\". More infos ",
