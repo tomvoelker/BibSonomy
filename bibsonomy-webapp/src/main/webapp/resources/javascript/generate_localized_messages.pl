@@ -9,6 +9,7 @@ use strict;
 # dbe, 20071204
 #
 
+use Encode;
 
 # directory with messages.properties, messages_de.properties, ...
 my @files = <../../../resources/messages*.properties>;
@@ -31,6 +32,14 @@ foreach my $file (@files) {
 	# parse properties file and write contents into javascript array
 	foreach my $line (<M>) {
 		chomp($line);
+		#
+		# messages_de.properties is in latin1 (because of a strange Java/JSTL bug)
+		# but we want UTF-8 for the JavaScript file ... so we convert
+		#
+		if ($locale eq "de") {
+		    $line = encode("utf-8", decode("iso-8859-1", $line));
+		}
+
 		my @keyValuePair = split("=", $line);
 		# escape backslashes
 		$keyValuePair[1] =~ s/\\/\\\\/g;		
