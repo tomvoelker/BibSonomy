@@ -284,4 +284,16 @@
   	<function-signature>String getAuthorSize(java.lang.Integer, java.lang.Integer)</function-signature>
   </function>
   
+  <function>
+  	<name>shortPublicationDescription</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String shortPublicationDescription(org.bibsonomy.model.Post)</function-signature>
+  </function>
+  
+  <function>
+  	<name>shorten</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String shorten(java.lang.String, java.lang.Integer)</function-signature>
+  </function>
+  
 </taglib>

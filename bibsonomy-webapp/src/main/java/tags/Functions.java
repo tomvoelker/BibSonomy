@@ -7,14 +7,16 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Properties;
-import java.text.Normalizer;
 
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.model.Author;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.UrlUtils;
@@ -35,7 +37,7 @@ public class Functions  {
 	 */
 	private static String[] bibtexEntryTypes = {"article","book","booklet","inbook","incollection","inproceedings","manual","masterthesis","misc","phdthesis","proceedings","techreport",     "unpublished"}; 
 	private static String[] swrcEntryTypes   = {"Article","Book","Booklet","InBook","InCollection","InProceedings","Manual","MasterThesis","Misc","PhDThesis","Proceedings","TechnicalReport","Unpublished"}; 
-    private static String[] risEntryTypes    = {"Journal Article","Book", "Book", "Book Section", "Book Section", "Conference Paper", "Generic", "Thesis", "Generic", "Thesis", "Conference Proceedings", "Report", "Unpublished Work"};
+	private static String[] risEntryTypes    = {"Journal Article","Book", "Book", "Book Section", "Book Section", "Conference Paper", "Generic", "Thesis", "Generic", "Thesis", "Conference Proceedings", "Report", "Unpublished Work"};
 
 	// contains special characters, symbols, etc...
 	private static Properties chars = new Properties(); 
@@ -61,7 +63,7 @@ public class Functions  {
 		}
 		return "???" + key + "???";
 	}
-	
+
 	/**
 	 * Normalizes input string according to Unicode Standard Annex #15
 	 * @param str
@@ -162,9 +164,11 @@ public class Functions  {
 	 */
 	public static String toTagString (final Collection<Tag> tags) {		
 		final StringBuffer sb = new StringBuffer();
-		for (final Tag tag : tags) {
-			sb.append(tag.getName());
-			sb.append(" ");
+		if (tags != null) {
+			for (final Tag tag : tags) {
+				sb.append(tag.getName());
+				sb.append(" ");
+			}
 		}
 		return sb.toString().trim();
 	}
@@ -299,7 +303,7 @@ public class Functions  {
 	public static String setParam(String url, String paramName, String paramValue) {
 		return UrlUtils.setParam(url, paramName, paramValue); 
 	}
-	
+
 	/**
 	 * wrapper for for org.bibsonomy.util.UrlUtils.removeParam
 	 * 
@@ -351,16 +355,16 @@ public class Functions  {
 	public static String quoteJSON(final String value) {
 		if (value != null) {
 			return value
-				.replaceAll("\\\\", "\\\\\\\\") // back-slashes
-				.replaceAll("\n", "\\\\n")   // linebreaks 
-				.replaceAll("\t", "\\\\t")   // tabs
-				.replaceAll("\r", "")        // windows linebreaks
-				.replaceAll("\"", "\\\\\"")  // quotation marks
-				;  
+			.replaceAll("\\\\", "\\\\\\\\") // back-slashes
+			.replaceAll("\n", "\\\\n")   // linebreaks 
+			.replaceAll("\t", "\\\\t")   // tabs
+			.replaceAll("\r", "")        // windows linebreaks
+			.replaceAll("\"", "\\\\\"")  // quotation marks
+			;  
 		}
 		return value;
 	}
-	
+
 	/** First, replaces certain BibTex characters, 
 	 * and then quotes JSON relevant characters. 
 	 *  
@@ -390,7 +394,7 @@ public class Functions  {
 		}
 		return "Misc";
 	}
-	
+
 	/** Maps BibTeX entry types to RIS entry types.
 	 * 
 	 * TODO: stolen from old code in {@link EntryType} ... 
@@ -409,7 +413,7 @@ public class Functions  {
 		}
 		return "Generic";
 	}
-	
+
 	/**
 	 * Calculates the percentage of font size for tag clouds
 	 * 
@@ -419,7 +423,7 @@ public class Functions  {
 	public static double getTagFontSize(final Tag tag) {
 		return Math.round(Math.log(tag.getGlobalcount()/40))*25;		
 	}
-	
+
 	/**
 	 * returns the css Class for a given tag
 	 * @param tagCount the count aof the current Tag
@@ -431,9 +435,9 @@ public class Functions  {
 		 * catch incorrect values
 		 */
 		if (tagCount == 0 || maxTagCount == 0) return "tagtiny";
-		
+
 		final int percentage = ((tagCount * 100) / maxTagCount);
-		
+
 		if (percentage < 25) {
 			return  "tagtiny";
 		} else if (percentage >= 25 && percentage < 50) {
@@ -443,10 +447,10 @@ public class Functions  {
 		} else if (percentage >= 75) {
 			return  "taghuge";
 		}
-		
+
 		return "";
 	}
-	
+
 	/**
 	 * Calculates the percentage of font size for clouds of author names
 	 * 
@@ -456,7 +460,7 @@ public class Functions  {
 	public static double getAuthorFontSize(final Author author) {
 		return Math.round(Math.log(author.getCtr())) * 25;		
 	}
-	
+
 	/** Returns the host name of a URL.
 	 * 
 	 * @param urlString - the URL as string
@@ -469,4 +473,39 @@ public class Functions  {
 			return "unknownHost";
 		}
 	}
+	
+	/** Returns a short (max. 160 characters) description of the post.
+	 * 
+	 * @param post
+	 * @return A short description of the post.
+	 */
+	public static String shortPublicationDescription(final Post<BibTex> post) {
+		final StringBuffer buf = new StringBuffer();
+		final BibTex resource = post.getResource();
+		if (resource != null) {
+			final String title = resource.getTitle();
+			if (title != null) buf.append(shorten(title, 50));
+			
+			final String author = resource.getAuthor();
+			if (author != null) buf.append(", " + shorten(author, 20));
+			
+			final String year = resource.getYear();
+			if (year != null) buf.append(", " + shorten(year, 4));
+		}
+		
+		
+		return buf.toString();
+	}
+	
+	/** If the string is longer than <code>length</code>: shortens the given string to 
+	 * <code>length - 3</code> and appends <code>...</code>. Else: returns the string.
+	 * @param s - the string
+	 * @param length - maximal length of teh string
+	 * @return The shortened string
+	 */
+	public static String shorten(final String s, final Integer length) {
+		if (s.length() > length) return s.substring(0, length - 3) + "...";
+		return s;
+	}
+	
 }
