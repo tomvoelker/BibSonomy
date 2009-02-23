@@ -2,9 +2,7 @@ package org.bibsonomy.webapp.controller;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.webapp.command.PageCommand;
 import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -20,6 +18,9 @@ public class HomepageController extends SingleResourceListController implements 
 	private static final Logger LOGGER = Logger.getLogger(HomepageController.class);
 
 	public View workOn(final SimpleResourceViewCommand command) {
+		/*
+		 * FIXME: implement filter=no parameter
+		 */
 		LOGGER.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
 
