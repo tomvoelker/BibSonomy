@@ -332,7 +332,7 @@
 			<isNotEmpty prepend="AND" property="requestedUserName">
 				t1.user_name=#requestedUserName#
 			</isNotEmpty>          	
-          	AND b.simhash#hashId# = #hash#
+          	AND b.simhash#simHash# = #hash#
           	<include refid="restrictToGroups"/>
         ) AS t      
       	GROUP BY t.tag_name
