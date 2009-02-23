@@ -1755,18 +1755,6 @@ function copytag(target, tagname){
 
 /** FUNCTIONS USED IN THE POSTING VIEWS **/
 
-//functions disables the groupselection in the post-view 
-//see "tags/post/groupBox.tagx"
-function disableGroupBox(){
-	document.getElementById("visibilitybox").disabled = true;
-}
-
-//functions enables the groupselection in the post-view 
-//see "tags/post/groupBox.tagx"
-function enableGroupBox(){
-	document.getElementById("visibilitybox").disabled = false;
-}
-
 //hide and show the tagsets in the relevant for field
 function showTagSets(event){
 	var node = xget_event(event);
