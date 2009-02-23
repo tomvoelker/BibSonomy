@@ -27,6 +27,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.Iterator;
 
+import javax.swing.text.StyledEditorKit.ForegroundAction;
+
 import it.unimi.dsi.fastutil.chars.CharOpenHashSet; 
 
 /**
@@ -195,6 +197,27 @@ public class StringUtils {
 		if (s2 == null) return 1;
 		// null != s1 ? s2 != null
 		return s1.compareToIgnoreCase(s2);
+	}
+	
+	
+	/**
+	 * Implode a collection of Strings into a single String, delimited by a given delimiter
+	 * 
+	 * @param stringList - a list of strings s1, s2, ..
+	 * @param delim - a delimiter _d_
+	 * @return a concatenated representation of the string collection s1_d_s2_d_...
+	 */
+	public static String implodeStringCollection(Collection<String> stringList, String delim) {
+		if (stringList == null || delim == null) {return "";}
+		int i = 0;
+		StringBuffer sb = new StringBuffer();
+		for (String elem : stringList) {
+			if (i != 0) {
+				sb.append(delim);
+			}
+			sb.append(elem);
+		} 
+		return sb.toString();
 	}
     
 }
