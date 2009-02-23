@@ -65,10 +65,8 @@ public class LogicInterfaceHelper {
 				throw new RuntimeException(ex);
 			}
 			
-			if (param instanceof BibTexParam) {
-				((BibTexParam) param).setSimHash(id);
-			} else if (param instanceof TagParam) {
-				((TagParam) param).setHashId(id);
+			if (param instanceof BibTexParam || param instanceof TagParam || param instanceof StatisticsParam) {
+				((GenericParam) param).setSimHash(id);
 			}
 			param.setHash(hash.substring(1));
 		} else {

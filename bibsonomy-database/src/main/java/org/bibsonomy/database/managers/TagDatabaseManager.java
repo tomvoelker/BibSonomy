@@ -842,7 +842,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	public List<Tag> getTagsByBibtexHash(final String loginUserName, final String hash, final HashID hashId, final List<Integer> visibleGroupIDs, int limit, int offset, final DBSession session) {
 		final TagParam param = new TagParam();
 		param.setHash(hash);
-		param.setHashId(hashId);
+		param.setSimHash(hashId);
 		param.setUserName(loginUserName);
 		param.addGroups(visibleGroupIDs);
 		param.setLimit(limit);
@@ -866,7 +866,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	public List<Tag> getTagsByBibtexHashForUser(final String loginUserName, final String requestedUserName, final String hash, final HashID hashId, int limit, int offset, final DBSession session) {
 		final TagParam param = new TagParam();
 		param.setHash(hash);
-		param.setHashId(hashId);
+		param.setSimHash(hashId);
 		param.setUserName(loginUserName);
 		param.setRequestedUserName(requestedUserName);
 		param.setLimit(limit);

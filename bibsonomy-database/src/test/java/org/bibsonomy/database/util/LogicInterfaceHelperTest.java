@@ -44,7 +44,7 @@ public class LogicInterfaceHelperTest {
 				if (paramClass == BibTexParam.class) {
 					assertEquals(HashID.getSimHash(hashId).getId(), ((BibTexParam) param).getSimHash());
 				} else if (paramClass == TagParam.class) {
-					assertEquals(HashID.getSimHash(hashId).getId(), ((TagParam) param).getHashId());
+					assertEquals(HashID.getSimHash(hashId).getId(), ((TagParam) param).getSimHash());
 				}
 			}
 			for (final Object hashId : new Object[] { "a" /* , 4, 5, 6 */}) {

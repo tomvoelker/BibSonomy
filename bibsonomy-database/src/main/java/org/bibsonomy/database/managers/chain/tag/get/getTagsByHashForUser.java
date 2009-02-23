@@ -25,7 +25,7 @@ public class getTagsByHashForUser extends TagChainElement {
 		if (param.getContentType() == ConstantID.BIBTEX_CONTENT_TYPE.getId()) 
 			return this.db.getTagsByBibtexHashForUser(	param.getUserName(), 
 														param.getRequestedUserName(), 
-														param.getHash(), HashID.getSimHash(param.getHashId()), 
+														param.getHash(), HashID.getSimHash(param.getSimHash()), 
 														param.getLimit(), 
 														param.getOffset(), 
 														session);
