@@ -216,6 +216,7 @@ public class StringUtils {
 				sb.append(delim);
 			}
 			sb.append(elem);
+			i++;
 		} 
 		return sb.toString();
 	}
