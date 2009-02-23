@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.io.Writer;
 
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.rest.renderer.xml.tools.EscapingPrintWriter;
 
 /**
  * @author Dominik Benz
@@ -19,7 +20,7 @@ public abstract class AbstractDeleteStrategy extends Strategy {
 
 	@Override
 	public final void perform(final ByteArrayOutputStream outStream) throws InternServerException {
-		writer = new PrintWriter(outStream);
+		writer = new EscapingPrintWriter(outStream);
 		final boolean deleted = delete();
 		if (deleted == true)
 			this.getRenderer().serializeOK(writer);

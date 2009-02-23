@@ -9,6 +9,7 @@ import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
+import org.bibsonomy.rest.renderer.xml.tools.EscapingPrintWriter;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -31,7 +32,7 @@ public class AddUserToGroupStrategy extends Strategy {
 
 	@Override
 	public void perform(final ByteArrayOutputStream outStream) throws InternServerException {
-		writer = new PrintWriter(outStream);
+		writer = new EscapingPrintWriter(outStream);
 		final User user = this.getRenderer().parseUser(this.doc);
 		this.getLogic().addUserToGroup(this.groupName, user.getName());
 		// no exception -> assume success

@@ -10,6 +10,7 @@ import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
+import org.bibsonomy.rest.renderer.xml.tools.EscapingPrintWriter;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -31,7 +32,7 @@ public class GetUserStrategy extends Strategy {
 
 	@Override
 	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException {
-		writer = new PrintWriter(outStream);
+		writer = new EscapingPrintWriter(outStream);
 		final User user = this.getLogic().getUserDetails(userName);
 		// user cannot be null - if user is not found, an empty user object is given back by getUserDetails.
 		// -> check for user name being null

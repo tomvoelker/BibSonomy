@@ -14,6 +14,7 @@ import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
+import org.bibsonomy.rest.renderer.xml.tools.EscapingPrintWriter;
 
 /**
  * Handle a user concepts request
@@ -41,7 +42,7 @@ public class GetUserConceptsStrategy extends Strategy {
 
 	@Override
 	public void perform(ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException {
-		writer = new PrintWriter(outStream);
+		writer = new EscapingPrintWriter(outStream);
 		List<Tag> concepts = this.getLogic().getConcepts(resourceType, GroupingEntity.USER, userName, regex, tags, status, 0, Integer.MAX_VALUE);
 		this.getRenderer().serializeTags(writer, concepts, new ViewModel());			
 	}

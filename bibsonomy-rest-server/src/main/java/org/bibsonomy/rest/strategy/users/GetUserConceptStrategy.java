@@ -12,6 +12,7 @@ import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
+import org.bibsonomy.rest.renderer.xml.tools.EscapingPrintWriter;
 
 /**
  * Handle user concept request
@@ -38,7 +39,7 @@ public class GetUserConceptStrategy extends Strategy {
 
 	@Override
 	public void perform(ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException {
-		writer = new PrintWriter(outStream);
+		writer = new EscapingPrintWriter(outStream);
 		Tag concept = this.getLogic().getConceptDetails(this.conceptName, GroupingEntity.USER, userName);
 		if (concept == null) {
 			throw new NoSuchResourceException("The requested concept '" + conceptName + "' does not exist for user '" + userName + "'.");

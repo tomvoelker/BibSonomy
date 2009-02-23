@@ -4,6 +4,8 @@ import org.bibsonomy.bibtex.util.BibtexParserUtils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.util.BibTexUtils;
 
+import org.bibsonomy.rest.validation.ModelValidator;
+
 /**
  * Validates the given model.
  * 

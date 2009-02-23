@@ -7,6 +7,7 @@ import java.io.Writer;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
+import org.bibsonomy.rest.renderer.xml.tools.EscapingPrintWriter;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -25,7 +26,7 @@ public class RemoveUserFromGroupStrategy extends Strategy {
 
 	@Override
 	public void perform(final ByteArrayOutputStream outStream) throws InternServerException {
-		writer = new PrintWriter(outStream);
+		writer = new EscapingPrintWriter(outStream);
 		this.getLogic().removeUserFromGroup(this.groupName, this.userName);
 		// no exception -> assume success
 		this.getRenderer().serializeOK(writer);

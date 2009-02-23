@@ -1,9 +1,10 @@
 package org.bibsonomy.rest.strategy;
 
 import java.io.ByteArrayOutputStream;
-import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
+
+import org.bibsonomy.rest.renderer.xml.tools.EscapingPrintWriter;
 
 import org.bibsonomy.common.exceptions.InternServerException;
 
@@ -23,7 +24,7 @@ public abstract class AbstractCreateStrategy extends Strategy {
 
 	@Override
 	public final void perform(final ByteArrayOutputStream outStream) throws InternServerException {
-		writer = new PrintWriter(outStream);
+		writer = new EscapingPrintWriter(outStream);
 		final String resourceID = create();	
 		render(writer, resourceID);
 	}

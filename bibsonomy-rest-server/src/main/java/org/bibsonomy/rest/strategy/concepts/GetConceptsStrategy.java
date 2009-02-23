@@ -11,6 +11,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
+import org.bibsonomy.rest.renderer.xml.tools.EscapingPrintWriter;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
 
@@ -24,7 +25,7 @@ public class GetConceptsStrategy extends Strategy {
 	protected final Class<? extends Resource> resourceType;
 	private final String regex;	
 	private final List<String> tags;
-	private PrintWriter writer;
+	private EscapingPrintWriter writer;
 	
 	public GetConceptsStrategy(Context context) {
 		super(context);
@@ -35,7 +36,7 @@ public class GetConceptsStrategy extends Strategy {
 	
 	@Override
 	public void perform(ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException {
-		writer = new PrintWriter(outStream);
+		writer = new EscapingPrintWriter(outStream);
 		List<Tag> concepts = this.getLogic().getConcepts(resourceType, GroupingEntity.ALL, null, regex, tags, ConceptStatus.ALL, 0, Integer.MAX_VALUE);
 		this.getRenderer().serializeTags(writer, concepts, new ViewModel());
 	}

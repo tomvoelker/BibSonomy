@@ -9,6 +9,7 @@ import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
+import org.bibsonomy.rest.renderer.xml.tools.EscapingPrintWriter;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
 
@@ -30,7 +31,7 @@ public class GetConceptDetailsStrategy extends Strategy {
 
 	@Override
 	public void perform(ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException {
-		writer = new PrintWriter(outStream);
+		writer = new EscapingPrintWriter(outStream);
 		Tag concept = this.getLogic().getConceptDetails(conceptName, GroupingEntity.ALL, null);
 		if (concept == null) {
 			throw new NoSuchResourceException("The requested concept '" + conceptName + "' does not exist.");

@@ -7,6 +7,8 @@ import java.io.Writer;
 
 import org.bibsonomy.common.exceptions.InternServerException;
 
+import org.bibsonomy.rest.renderer.xml.tools.EscapingPrintWriter;
+
 /**
  * @author Dominik Benz
  * @version $Id$
@@ -22,7 +24,7 @@ public abstract class AbstractUpdateStrategy extends Strategy {
 
 	@Override
 	public final void perform(final ByteArrayOutputStream outStream) throws InternServerException {
-		writer = new PrintWriter(outStream);
+		writer = new EscapingPrintWriter(outStream);
 		final String resourceID = update();		
 		render(writer, resourceID);
 	}
