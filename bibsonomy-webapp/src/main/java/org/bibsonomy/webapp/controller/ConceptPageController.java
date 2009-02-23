@@ -8,6 +8,7 @@ import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.ConceptResourceViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -47,17 +48,26 @@ public class ConceptPageController  extends SingleResourceListController impleme
 		GroupingEntity groupingEntity = GroupingEntity.ALL;
 		String groupingName = null;
 		
+		// title
+		StringBuffer pageTitle = new StringBuffer();
+		pageTitle.append("concept :: ");
+		
 		//if URI looks like concept/USER/USERNAME/TAGNAME, change GroupingEntity to USER
 		if(requUser.length() > 0){
 			groupingEntity = GroupingEntity.USER;
 			groupingName = requUser;
+			pageTitle.append(" user :: ");
 		}
 		
 		//if URI looks like concept/GROUP/GROUPNAME/TAGNAME, change GroupingEntity to GROUP 
 		if (requGroup.length() > 0) {
 			groupingEntity = GroupingEntity.GROUP;
 			groupingName = requGroup;
+			pageTitle.append(" group :: ");
 		}
+		
+		pageTitle.append(groupingName + " :: " + StringUtils.implodeStringCollection(requTags, " "));		
+		command.setPageTitle(pageTitle.toString());
 	
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype

@@ -70,6 +70,8 @@ public class BibtexPageController extends SingleResourceListController implement
 		if (command.getFormat().equals("html")) {
 			this.endTiming();
 			
+			command.setPageTitle("bibtex :: " + requUser + " :: " + hash );
+			
 			if (GroupingEntity.USER.equals(groupingEntity)) {
 				/*
 				 * /bibtex/HASH/USER

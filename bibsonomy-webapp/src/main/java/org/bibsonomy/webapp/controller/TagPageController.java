@@ -1,11 +1,14 @@
 package org.bibsonomy.webapp.controller;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.util.TagUtils;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.RelatedUserCommand;
 import org.bibsonomy.webapp.command.TagResourceViewCommand;
@@ -14,6 +17,8 @@ import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+
+import tags.Functions;
 
 /**
  * Controller for tag pages
@@ -92,6 +97,7 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		
 		// html format - retrieve relted tags and return HTML view
 		if (command.getFormat().equals("html")) {
+			command.setPageTitle("tag :: " + StringUtils.implodeStringCollection(requTags, " "));		
 			this.setRelatedTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, order, 0, Parameters.NUM_RELATED_TAGS, null);
 			// similar tags only make sense for a single requested tag
 			if (command.getRequestedTagsList().size() == 1) {
@@ -100,7 +106,7 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 			// set total nr. of posts 
 			command.getRelatedTagCommand().setTagGlobalCount(totalNumPosts);
 			this.endTiming();
-			return Views.TAGPAGE;			
+			return Views.TAGPAGE;
 		}
 		
 		this.endTiming();
