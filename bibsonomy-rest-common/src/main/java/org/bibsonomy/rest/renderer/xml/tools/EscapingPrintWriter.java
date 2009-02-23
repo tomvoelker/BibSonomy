@@ -5,7 +5,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 
-import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.util.XmlUtils;
 
 /**
  * PrintWriter which preprocesses all content to be printed/written 
@@ -55,6 +55,6 @@ public class EscapingPrintWriter extends Writer {
 	 */
 	@Override
 	public void write(char[] cbuf, int off, int len) throws IOException {
-		this.pw.write(StringUtils.escapeControlCharacters(cbuf), off, len);
+		this.pw.write(XmlUtils.removeXmlControlCharacters(cbuf), off, len);
 	}
 }
