@@ -335,9 +335,9 @@
 			<table class="stattable">
 				<tr class="counts">
 					<th>Activities in the last</th>
-					<th>12 h</th>
-					<th>24 h</th>
 					<th>7 days</th>
+					<th>24 h</th>
+					<th>12 h</th>
 				</tr>
 				<tr>
 					<th>Admin</th>
@@ -354,8 +354,8 @@
 				</tr>
 				<tr>
 					<td>No Spammers</td>
-					<c:forEach items="${statisticsCommand.numAdminNoSpammer}" var="counts2">
-					<td><c:out value="${counts2.value}"/></td>
+					<c:forEach items="${statisticsCommand.numAdminNoSpammer}" var="counts">
+					<td><c:out value="${counts.value}"/></td>
 					</c:forEach>	
 				</tr>
 				<tr>
@@ -384,7 +384,7 @@
 					</c:forEach>
 				</tr>
 				<tr>
-					<td>Spammers unsure</td>
+					<td>No Spammers</td>
 					<c:forEach items="${statisticsCommand.numClassifierNoSpammer}" var="counts">
 					<td><c:out value="${counts.value}"/></td>
 					</c:forEach>
