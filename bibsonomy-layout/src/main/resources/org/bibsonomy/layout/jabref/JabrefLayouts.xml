@@ -171,4 +171,11 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
+	<layout name="din1505">
+		<displayName>DIN 1505</displayName>
+		<description>HTML output format according to the German Institute for Standardization (DIN).</description>
+		<baseFileName>din1505</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
 </layouts>
