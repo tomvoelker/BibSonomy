@@ -12,7 +12,8 @@
         required="true"
         type="java.lang.String"
         description="" />
-    <jsp:text> ${name}="</jsp:text>
+    <c:out value=" "/>
+    <jsp:text>${name}="</jsp:text>
     <jsp:doBody/>
     <jsp:text>"</jsp:text>
 </jsp:root>
