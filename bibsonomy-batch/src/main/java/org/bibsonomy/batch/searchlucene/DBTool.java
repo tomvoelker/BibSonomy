@@ -145,6 +145,7 @@ public class DBTool {
 			return rset;
 		} catch (SQLException e) {
 			System.out.println("SQL Error: " + e.getMessage());
+			System.out.println("SQL Query: " + query);
 		}
 		return null;
 	}
@@ -180,6 +181,7 @@ public class DBTool {
 			return stmt.executeUpdate(query);
 		} catch (SQLException e) {
 			System.out.println("SQL Error: " + e.getMessage());
+			System.out.println("SQL Query: " + query);
 			return null;
 		}
 	}
