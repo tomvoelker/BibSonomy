@@ -94,6 +94,22 @@ public class GroupUtils {
 	}
 	
 	/**
+	 * Checks if the given group ID is an "exclusive" group ID, i.e., a group which can't 
+	 * be chosen as "viewable for" together with another group - basically the 
+	 * groups "private" and "public". Use this method because it also checks spam
+	 * groups! 
+	 *  
+	 * @param group
+	 * @return <code>true</code> if the group is exclusively "viewable for" 
+	 */
+	public static boolean isExclusiveGroup(final int group) {
+		/*
+		 * FIXME: support SPAM groups! (possibly by modifying Group.equals()?)
+		 */		
+		return getPrivateGroup().getGroupId() == group || getPublicGroup().getGroupId() == group;
+	}
+	
+	/**
 	 * Checks if the given groups contain an "exclusive" group, i.e., a group which 
 	 * can't be chosen as "viewable for" together with another group - basically the 
 	 * groups "private" and "public". Use this method because it also checks spam

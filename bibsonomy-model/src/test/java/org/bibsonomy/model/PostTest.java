@@ -25,6 +25,9 @@ package org.bibsonomy.model;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Iterator;
+import java.util.Set;
+
 import org.junit.Test;
 
 /**
@@ -67,5 +70,30 @@ public class PostTest {
 		post.addGroup("testgroup1");
 		post.addGroup("testgroup2");
 		assertEquals(2, post.getGroups().size());
+	}
+	
+	/**
+	 * Tests, if removing a tag from the tag set works.
+	 */
+	@Test 
+	public void removeTag() {
+		final Post<Bookmark> post = new Post<Bookmark>();
+		final Set<Tag> tags = post.getTags();
+		assertEquals(0, tags.size());
+		
+		tags.add(new Tag("tag"));
+		tags.add(new Tag("sys:relevantFor:l3s"));
+		
+		assertEquals(2, tags.size());
+		
+		final Iterator<Tag> iterator = tags.iterator();
+		while (iterator.hasNext()) {
+			final Tag next = iterator.next();
+			if (next.getName().equals("sys:relevantFor:l3s")) {
+				iterator.remove();
+			}
+		}
+		
+		assertEquals(1, tags.size());
 	}
 }
