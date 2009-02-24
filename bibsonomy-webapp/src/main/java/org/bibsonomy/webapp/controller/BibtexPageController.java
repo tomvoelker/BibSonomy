@@ -62,9 +62,10 @@ public class BibtexPageController extends SingleResourceListController implement
 			this.setTotalCount(command, resourceType, groupingEntity, requUser, null, hash, null, null, null, command.getListCommand(resourceType).getEntriesPerPage(), null);
 		}	
 		
-		//get the title of the publication with the requested hash (intrahash)
-		if(command.getBibtex().getList().size() > 0){
-			command.setTitle(command.getBibtex().getList().get(0).getResource().getTitle());
+		// get the title of the publication with the requested hash
+		final List<Post<BibTex>> bibtexList = command.getBibtex().getList();
+		if (bibtexList != null && bibtexList.size() > 0){
+			command.setTitle(bibtexList.get(0).getResource().getTitle());
 		}
 		
 		if (command.getFormat().equals("html")) {
@@ -81,7 +82,7 @@ public class BibtexPageController extends SingleResourceListController implement
 				 * complete post details
 				 */
 				final ArrayList<Post<BibTex>> bibtex = new ArrayList<Post<BibTex>>();
-				for (Post<BibTex> b: command.getBibtex().getList()){
+				for (Post<BibTex> b: bibtexList){
 					bibtex.add((Post<BibTex>) this.logic.getPostDetails(b.getResource().getIntraHash(), b.getUser().getName()));
 				}
 				command.getBibtex().setList(bibtex);
