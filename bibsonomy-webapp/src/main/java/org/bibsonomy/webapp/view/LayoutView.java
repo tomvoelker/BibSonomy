@@ -17,8 +17,10 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.BaseCommandController;
 import org.springframework.web.servlet.view.AbstractView;
+import org.springframework.web.servlet.view.JstlView;
 
 import tags.Functions;
 
@@ -33,7 +35,7 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 	private static final Log log = LogFactory.getLog(LayoutView.class);
 
 	private LayoutRenderer<LAYOUT> layoutRenderer;
-
+	
 	@Override
 	protected void renderMergedOutputModel(final Map model, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
 		/*
@@ -86,15 +88,21 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 			} catch (final LayoutRenderingException e) {
 				log.error("Could not render layout " + layout + ".", e);
 				/*
-				 * layout could not be found or contains errors
+				 * layout could not be found or contains errors -> set HTTP status to 400
 				 */
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				/*
-				 * FIXME: It seems impossible to implement proper error handling during rendering
-				 * views. So this is a HACK! The path to the JSP is hardcoded and no further details
-				 * are passed to it. Simply, because I found no "spring way" to do it.
+				 * get the errors object and add the error message
 				 */
-				request.getRequestDispatcher("/WEB-INF/jsp/error/layout.jspx").forward(request, response);
+				final BindingResult errors = getBindingResult(model);
+				errors.reject("error.layout.rendering", new Object[]{e.getMessage()}, "Could not render layout: " + e.getMessage());
+				/*
+				 * do the rendering ... a bit tricky: we need to get an appropriate JSTL view and give it the 
+				 * application context
+				 */
+				final JstlView view = new JstlView("/WEB-INF/jsp/error.jspx");
+				view.setApplicationContext(getApplicationContext());
+				view.render(model, request, response);
 				
 			}
 		} else {
@@ -142,6 +150,20 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 		layoutRenderer.renderLayout(layout, posts, response.getOutputStream());
 	}
 
+	
+    /** Gets the BindingResult (containing errors) from the model.
+     * @param model
+     * @return
+     */
+    private BindingResult getBindingResult(final Map model){
+        for (Object key : model.keySet() ){
+            if(((String)key).startsWith(BindingResult.MODEL_KEY_PREFIX))
+                return (BindingResult) model.get(key);
+        }
+        return null;
+    }
+
+	
 	/**
 	 * @return The layout renderer for this view.
 	 */
