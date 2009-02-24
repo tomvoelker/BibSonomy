@@ -2,7 +2,6 @@ package org.bibsonomy.database.managers;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.AbstractDatabaseManager;
@@ -24,8 +23,6 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 
 	private final static StatisticsDatabaseManager singleton = new StatisticsDatabaseManager();
 
-	private static final Logger log = Logger.getLogger(StatisticsDatabaseManager.class);
-	
 	private final BibTexDatabaseManager bibtexDBManager;
 	private final BookmarkDatabaseManager bookmarkDBManager;
 	private static final PostStatisticChain postchain = new PostStatisticChain();
@@ -47,25 +44,31 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * @param param
 	 * @param session
-	 * @return
+	 * @return The number of posts matching the given params.
+	 * 
 	 */
-	public Integer getPostStatistics(final StatisticsParam param, final DBSession session) {
-		// start the chain
-		final List<Integer> count = postchain.getFirstElement().perform(param, session);		
-
+	public int getPostStatistics(final StatisticsParam param, final DBSession session) {
 		// FIXME: this is ugly, but using chain elements forces us to use lists as return types
-		return count.get(0);
+		final Integer count = postchain.getFirstElement().perform(param, session).get(0);
+		// to not get NPEs later
+		if (count == null) return 0;
+		return count;
 	}
-	
-	public Integer getTagStatistics(final StatisticsParam param, final DBSession session) {
-		// start the chain
-		final List<Integer> count = tagChain.getFirstElement().perform(param, session);		
 
+	/**
+	 * @param param
+	 * @param session
+	 * @return The number of tags matching the given params
+	 */
+	public int getTagStatistics(final StatisticsParam param, final DBSession session) {
 		// FIXME: this is ugly, but using chain elements forces us to use lists as return types
-		return count.get(0);
+		final Integer count = tagChain.getFirstElement().perform(param, session).get(0);
+		// to not get NPEs later
+		if (count == null) return 0;
+		return count;
 	}
-	
-	
+
+
 	/**
 	 * @param param
 	 * @param session
@@ -73,30 +76,36 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public Integer getNumberOfRelationsForUser(final StatisticsParam param, final DBSession session) {
 		Integer result = null;
-		
+
 		result = this.queryForObject("getNumberOfRelationsForUser", param.getRequestedUserName(), Integer.class, session);
-		
+
 		return result;
 	}
-	
+
 
 	/**
 	 * @param resourceType
 	 * @param requestedUserName
+	 * @param userName 
 	 * @param groupId 
+	 * @param visibleGroupIDs 
 	 * @param session
 	 * @return a statistical number (int)
 	 */
-	public Integer getNumberOfResourcesForUser(final Class<? extends Resource> resourceType, final String requestedUserName, final String userName, final int groupId, final List<Integer> visibleGroupIDs, final DBSession session) {
+	public int getNumberOfResourcesForUser(final Class<? extends Resource> resourceType, final String requestedUserName, final String userName, final int groupId, final List<Integer> visibleGroupIDs, final DBSession session) {
+		final Integer count;
 		if (resourceType == BibTex.class) {
-			return this.bibtexDBManager.getBibTexForUserCount(requestedUserName, userName, groupId, visibleGroupIDs, session);
+			count = this.bibtexDBManager.getBibTexForUserCount(requestedUserName, userName, groupId, visibleGroupIDs, session);
 		} else if (resourceType == Bookmark.class) {
-			return this.bookmarkDBManager.getBookmarkForUserCount(requestedUserName, userName, groupId, visibleGroupIDs, session);
+			count = this.bookmarkDBManager.getBookmarkForUserCount(requestedUserName, userName, groupId, visibleGroupIDs, session);
 		} else {
 			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
 		}
+		// to not get NPEs 
+		if (count == null) return 0;
+		return count;
 	}
-	
+
 
 	/**
 	 * @param resourceType
@@ -105,14 +114,18 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return a statistical number (int)
 	 */
-	public Integer getNumberOfResourcesForHash(final Class<? extends Resource> resourceType, final String requHash, final HashID simHash, final DBSession session) {
+	public int getNumberOfResourcesForHash(final Class<? extends Resource> resourceType, final String requHash, final HashID simHash, final DBSession session) {
+		final Integer count;
 		if (resourceType == BibTex.class) {
-			return this.bibtexDBManager.getBibTexByHashCount(requHash, simHash, session);
+			count = this.bibtexDBManager.getBibTexByHashCount(requHash, simHash, session);
 		} else if (resourceType == Bookmark.class) {
-			return this.bookmarkDBManager.getBookmarkByHashCount(requHash, simHash, session);
+			count = this.bookmarkDBManager.getBookmarkByHashCount(requHash, simHash, session);
 		} else {
 			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
 		}
+		// to not get NPEs 
+		if (count == null) return 0;
+		return count;		
 	}
 
 	/**
@@ -126,14 +139,18 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return number of resources for given group
 	 */
-	public Integer getNumberOfResourcesForGroup(final Class<? extends Resource> resourceType, final String requestedUserName, final String userName, int groupId, final List<Integer> visibleGroupIDs, final DBSession session) {
+	public int getNumberOfResourcesForGroup(final Class<? extends Resource> resourceType, final String requestedUserName, final String userName, int groupId, final List<Integer> visibleGroupIDs, final DBSession session) {
+		final Integer count;
 		if (resourceType == BibTex.class) {
-			return this.bibtexDBManager.getBibTexForGroupCount(requestedUserName, userName, groupId, visibleGroupIDs, session);
+			count = this.bibtexDBManager.getBibTexForGroupCount(requestedUserName, userName, groupId, visibleGroupIDs, session);
 		} else if (resourceType == Bookmark.class) {
-			return this.bookmarkDBManager.getBookmarkForGroupCount(requestedUserName, userName, groupId, visibleGroupIDs, session);
+			count = this.bookmarkDBManager.getBookmarkForGroupCount(requestedUserName, userName, groupId, visibleGroupIDs, session);
 		} else {
 			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
 		}
+		// to not get NPEs 
+		if (count == null) return 0;
+		return count;
 	}
 
 	/**
@@ -145,14 +162,18 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return number of resources for a list of tags
 	 */
-	public Integer getNumberOfResourcesForTags(final Class<? extends Resource> resourceType, final List<TagIndex> tagIndex, final int groupId, final DBSession session) {
+	public int getNumberOfResourcesForTags(final Class<? extends Resource> resourceType, final List<TagIndex> tagIndex, final int groupId, final DBSession session) {
+		final Integer count;
 		if (resourceType == BibTex.class) {
-			return this.bibtexDBManager.getBibtexByTagNamesCount(tagIndex, groupId, session);
+			count = this.bibtexDBManager.getBibtexByTagNamesCount(tagIndex, groupId, session);
 		} else if (resourceType == Bookmark.class) {
-			return this.bookmarkDBManager.getBookmarkByTagNamesCount(tagIndex, groupId, session);
+			count = this.bookmarkDBManager.getBookmarkByTagNamesCount(tagIndex, groupId, session);
 		} else {
 			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
 		}
+		// to not get NPEs 
+		if (count == null) return 0;
+		return count;
 	}
 
 	/**
@@ -166,14 +187,18 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return number of resources for a given user and a list of tags
 	 */
-	public Integer getNumberOfResourcesForUserAndTags(final Class<? extends Resource> resourceType, final List<TagIndex> tagIndex, final String requestedUserName, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session) {
+	public int getNumberOfResourcesForUserAndTags(final Class<? extends Resource> resourceType, final List<TagIndex> tagIndex, final String requestedUserName, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session) {
+		final Integer count;
 		if (resourceType == BibTex.class) {
-			return this.bibtexDBManager.getBibTexByTagNamesForUserCount(requestedUserName, loginUserName, tagIndex, visibleGroupIDs, session);
+			count = this.bibtexDBManager.getBibTexByTagNamesForUserCount(requestedUserName, loginUserName, tagIndex, visibleGroupIDs, session);
 		} else if (resourceType == Bookmark.class) {
-			return this.bookmarkDBManager.getBookmarkByTagNamesForUserCount(requestedUserName, loginUserName, tagIndex, visibleGroupIDs, session);
+			count = this.bookmarkDBManager.getBookmarkByTagNamesForUserCount(requestedUserName, loginUserName, tagIndex, visibleGroupIDs, session);
 		} else {
 			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
 		}
+		// to not get NPEs 
+		if (count == null) return 0;
+		return count;
 	}
 
 	/**
@@ -184,11 +209,16 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return number of resources  that occur at least twice
 	 */
-	public Integer getNumberOfDuplicates(final Class<? extends Resource> resourceType, final String requestedUserName, final DBSession session) {
+	public int getNumberOfDuplicates(final Class<? extends Resource> resourceType, final String requestedUserName, final DBSession session) {
+		final Integer count;
 		if (resourceType == BibTex.class) {
-			return this.bibtexDBManager.getBibTexDuplicateCount(requestedUserName, session);
-		} 
-		throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
+			count = this.bibtexDBManager.getBibTexDuplicateCount(requestedUserName, session);
+		} else {
+			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
+		}
+		// to not get NPEs 
+		if (count == null) return 0;
+		return count;
 	}
 
 	/**
@@ -211,14 +241,18 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return number of resources that are available for some groups
 	 */
-	public Integer getNumberOfResourcesForUserAndGroup(final Class<? extends Resource> resourceType, final String requestedUserName, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session){
+	public int getNumberOfResourcesForUserAndGroup(final Class<? extends Resource> resourceType, final String requestedUserName, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session){
+		final Integer count;
 		if(resourceType == BibTex.class){
-			return this.bibtexDBManager.getGroupBibtexCount(requestedUserName, loginUserName, visibleGroupIDs, session);
+			count = this.bibtexDBManager.getGroupBibtexCount(requestedUserName, loginUserName, visibleGroupIDs, session);
 		}else if(resourceType == Bookmark.class){
-			return this.bookmarkDBManager.getGroupBookmarkCount(requestedUserName, loginUserName, visibleGroupIDs, session);
+			count = this.bookmarkDBManager.getGroupBookmarkCount(requestedUserName, loginUserName, visibleGroupIDs, session);
 		}else {
 			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
 		}
+		// to not get NPEs 
+		if (count == null) return 0;
+		return count;
 	}
 
 	/**
@@ -230,14 +264,18 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return number of resources that are available for some groups and tagged by a tag of the tagIndex
 	 */
-	public Integer getNumberOfResourcesForUserAndGroupByTag(final Class<? extends Resource> resourceType, final String requestedUserName, final List<TagIndex> tagIndex, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session){
+	public int getNumberOfResourcesForUserAndGroupByTag(final Class<? extends Resource> resourceType, final String requestedUserName, final List<TagIndex> tagIndex, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session){
+		final Integer count;
 		if(resourceType == BibTex.class){
-			return this.bibtexDBManager.getGroupBibtexCountByTag(requestedUserName, loginUserName, tagIndex, visibleGroupIDs, session);
+			count = this.bibtexDBManager.getGroupBibtexCountByTag(requestedUserName, loginUserName, tagIndex, visibleGroupIDs, session);
 		}else if(resourceType == Bookmark.class){
-			return this.bookmarkDBManager.getGroupBookmarkCountByTag(requestedUserName, loginUserName, tagIndex, visibleGroupIDs, session);
+			count = this.bookmarkDBManager.getGroupBookmarkCountByTag(requestedUserName, loginUserName, tagIndex, visibleGroupIDs, session);
 		}else {
 			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
 		}
+		// to not get NPEs 
+		if (count == null) return 0;
+		return count;
 	}
 
 	/**
@@ -246,13 +284,17 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return the number of days when a resource was popular
 	 */
-	public Integer getPopularDays(final Class<? extends Resource> resourceType, final int days, final DBSession session){
+	public int getPopularDays(final Class<? extends Resource> resourceType, final int days, final DBSession session){
+		final Integer count;
 		if(resourceType == BibTex.class){
-			return this.bibtexDBManager.getBibTexPopularDays(days, session);
+			count = this.bibtexDBManager.getBibTexPopularDays(days, session);
 		}else if(resourceType == Bookmark.class){
-			return this.bookmarkDBManager.getBookmarkPopularDays(days, session);
+			count = this.bookmarkDBManager.getBookmarkPopularDays(days, session);
 		}else{
 			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
 		}
+		// to not get NPEs 
+		if (count == null) return 0;
+		return count;
 	}
 }

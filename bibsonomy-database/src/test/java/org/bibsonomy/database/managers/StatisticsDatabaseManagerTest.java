@@ -98,8 +98,8 @@ public class StatisticsDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
 	public void getResourcesPopularDaysTest(){
 		int days = 2;
-		assertTrue(this.statisticsDb.getPopularDays(BibTex.class, days, this.dbSession) != null);
-		assertTrue(this.statisticsDb.getPopularDays(Bookmark.class, days, this.dbSession) != null);
+		assertTrue(this.statisticsDb.getPopularDays(BibTex.class, days, this.dbSession) != 0);
+		assertTrue(this.statisticsDb.getPopularDays(Bookmark.class, days, this.dbSession) != 0);
 	}
 	
 }
