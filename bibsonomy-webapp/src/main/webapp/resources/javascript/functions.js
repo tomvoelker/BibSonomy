@@ -1008,8 +1008,6 @@ function xget_event (event) {
 	/*	removes all the crap ;)	*/
 	function clearSuggestion() {
 
-		var ul = document.getElementById("tagbox");
-		var rows = ul.getElementsByTagName("li");
 		var sg = document.getElementById("suggested");
 		
 		if(document.getElementById("copytag")) {
