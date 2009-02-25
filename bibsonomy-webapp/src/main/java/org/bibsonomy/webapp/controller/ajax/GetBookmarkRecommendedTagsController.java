@@ -51,9 +51,10 @@ public class GetBookmarkRecommendedTagsController extends AjaxController impleme
 		final AjaxBookmarkRecommenderCommand command = new AjaxBookmarkRecommenderCommand();
 		/*
 		 * initialize lists
+		 * FIXME: is it really neccessary to initialize ALL those lists? Which are really needed?
 		 */
 		command.setGroups(new ArrayList<String>());
-		command.setRelevantGroups(new ArrayList<Tag>());
+		command.setRelevantGroups(new ArrayList<String>());
 		command.setRelevantTagSets(new HashMap<String, Map<String, List<String>>>());
 		command.setRecommendedTags(new TreeSet<RecommendedTag>());
 		command.setCopytags(new ArrayList<Tag>());

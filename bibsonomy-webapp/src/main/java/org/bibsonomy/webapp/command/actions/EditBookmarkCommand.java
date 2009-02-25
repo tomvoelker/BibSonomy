@@ -36,7 +36,8 @@ public class EditBookmarkCommand extends PostCommand {
 	private String abstractGrouping;
 	
 	private List<String> groups;
-	private List<Tag> relevantGroups;
+	
+	private List<String> relevantGroups;
 	private SortedSet<RecommendedTag> recommendedTags;
 
 	private Map<String,Map<String,List<String>>> relevantTagSets;
@@ -65,11 +66,11 @@ public class EditBookmarkCommand extends PostCommand {
 		this.groups = groups;
 	}
 
-	public List<Tag> getRelevantGroups() {
+	public List<String> getRelevantGroups() {
 		return this.relevantGroups;
 	}
 
-	public void setRelevantGroups(List<Tag> relevantGroups) {
+	public void setRelevantGroups(List<String> relevantGroups) {
 		this.relevantGroups = relevantGroups;
 	}
 	
