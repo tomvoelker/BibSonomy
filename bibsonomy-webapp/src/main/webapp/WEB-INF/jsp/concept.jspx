@@ -14,10 +14,22 @@
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
 	
 		<jsp:attribute name="heading">		
-			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.concept"/></a> :: 
-			<c:if test="${not empty command.requestedUser}"><fmt:message key="navi.user"/> :: <a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${fn:escapeXml(command.requestedUser)}'/></a> :: </c:if>
-			<c:if test="${not empty command.requestedGroup}"><fmt:message key="navi.group"/> :: <a href="/group/${fn:escapeXml(command.requestedGroup)}"><c:out value='${fn:escapeXml(command.requestedGroup)}'/></a> :: </c:if>
-			<form action="/concept/tag/" method="get" class="smallform">
+			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.concept"/></a> ::
+            <c:choose>
+              <c:when test="${not empty command.requestedUser}">
+                <fmt:message key="navi.user"/> :: <a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${fn:escapeXml(command.requestedUser)}'/></a> ::
+                <c:set var="formAction">/concept/user/<c:out value='${fn:escapeXml(command.requestedUser)}'/></c:set>
+              </c:when> 
+    		  <c:when test="${not empty command.requestedGroup}">
+                <fmt:message key="navi.group"/> :: <a href="/group/${fn:escapeXml(command.requestedGroup)}"><c:out value='${fn:escapeXml(command.requestedGroup)}'/></a> ::
+                <c:set var="formAction">/concept/group/<c:out value='${fn:escapeXml(command.requestedGroup)}'/></c:set> 
+              </c:when>
+              <c:otherwise>
+                <c:set var="formAction">/concept/tag</c:set>
+              </c:otherwise>
+            </c:choose>
+            
+			<form action="${formAction}" method="GET" class="smallform">
 			  <input type="text" size="20" name="tag" id="inpf" value="${command.requestedTags}"/>
 			</form>										
 		</jsp:attribute>
