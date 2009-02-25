@@ -378,18 +378,22 @@ div.bibentry {
 	float: left;
 }
 
-#outer,#general,#copytags {
+#outer,#general {
 	float: left;
 	width: 73%;
 }
 
-#general,#copytags,#general_fixed, #general_100 {
+#general,#general_fixed, #general_100 {
 	margin: 1%;
 }
 
 #general_fixed {
 	float: left;
 	width: 700px;
+}
+
+#copytags, #tagField, #suggested {
+	margin-left: 2ex;
 }
 
 #itembox {
