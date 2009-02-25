@@ -41,7 +41,6 @@
 	<sqlMap resource="common/DocumentCommon.xml" />
 	<sqlMap resource="common/AdminCommon.xml" />
 	<sqlMap resource="common/AuthorCommon.xml"/>
-	<sqlMap resource="common/FriendCommon.xml"/>
 
 	<sqlMap resource="General.xml" />
 	<sqlMap resource="Tag.xml" />
@@ -54,7 +53,6 @@
 	<sqlMap resource="Document.xml"/>
 	<sqlMap resource="Basket.xml"/>
 	<sqlMap resource="Admin.xml"/>
-	<sqlMap resource="Friend.xml"/>
 	<sqlMap resource="Statistics.xml"/>
 	<sqlMap resource="Author.xml"/>
 
