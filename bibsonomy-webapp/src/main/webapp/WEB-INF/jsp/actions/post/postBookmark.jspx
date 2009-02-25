@@ -126,7 +126,6 @@
      			<div style="float left;width:97%;margin-left:10px">
 						<h2 style="text-align: center; margin-bottom: 0"><fmt:message key="post.resource.editbookmark"/></h2>
                         
-                        <!-- TODO: i18n -->
                         <c:if test="${not empty command.diffPost}">
                           <p>
                           	<fmt:message key="post.bookmark.edit.existent" />

@@ -25,7 +25,7 @@
     </p>
   </c:if>
   
-  <form style="margin: 3% 10px 3% 5px;" method="POST" action="<%=response.encodeURL("/ShowBookmarkEntry")%>">
+  <form style="margin: 3% 10px 3% 5px;" method="POST" action="/postBookmark">
     <label for="inpf">url</label> 
     <input type="text" name="url" id="inpf" size="60" value="http://" />
     <input type="submit" name="submit" value="check" />

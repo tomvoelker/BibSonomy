@@ -48,17 +48,23 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class PostBookmarkController extends SingleResourceListController implements MinimalisticController<EditBookmarkCommand>, ErrorAware {
-	private static final String SYS_RELEVANT_FOR = "sys:relevantFor:";
+
 	private static final Log log = LogFactory.getLog(PostBookmarkController.class);
 	private Errors errors = null;
 
-	private static final Group public_group = GroupUtils.getPublicGroup();
-	private static final Group private_group = GroupUtils.getPrivateGroup();
+	/**
+	 * FIXME: unused
+	 */
+	private TagRecommender tagRecommender;
 
 	/**
-	 * Provides tag recommendations to the user.
+	 * FIXME: system tag handling should be done by system tags ... not by this
+	 * controller.
 	 */
-	private TagRecommender tagRecommender = null;
+	private static final String SYS_RELEVANT_FOR = "sys:relevantFor:";
+
+	private static final Group PUBLIC_GROUP = GroupUtils.getPublicGroup();
+	private static final Group PRIVATE_GROUP = GroupUtils.getPrivateGroup();
 
 	/**
 	 * Returns an instance of the command the controller handles.
@@ -80,7 +86,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		 */
 		command.setPost(new Post<Bookmark>());
 		command.getPost().setResource(new Bookmark());
-		command.setAbstractGrouping("public");
+		command.setAbstractGrouping(PUBLIC_GROUP.getName());
 
 		/*
 		 * set default values.
@@ -92,9 +98,8 @@ public class PostBookmarkController extends SingleResourceListController impleme
 	/**
 	 * Main method which does the postBookmark-procedure.
 	 * 
-	 * FIXME: for:group is missing FIXME: if the bookmark is scrapable the
-	 * bibtex-string will be put into the request (or use scraping service)
-	 * FIXME: check for other features from BookmarkShowHandler
+	 * FIXME: for:group is missing FIXME: check for other features from
+	 * BookmarkShowHandler
 	 * 
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(java.lang.Object)
 	 */
@@ -120,10 +125,10 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		}
 
 		/*
-		 * FIXME: spammers must have a valid captcha, so add captcha to JSP
-		 * and checking here.
+		 * TODO: spammers must have a valid captcha, so add captcha to JSP and
+		 * check it here.
 		 */
-		
+
 		final User loginUser = context.getLoginUser();
 		final Post<Bookmark> post = command.getPost();
 
@@ -138,7 +143,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		 */
 		initPostGroups(command, post);
 		/*
-		 * initialize relevantFor-tags 
+		 * initialize relevantFor-tags FIXME: candidate for system tags
 		 */
 		initRelevantForTags(command, post);
 
@@ -158,10 +163,9 @@ public class PostBookmarkController extends SingleResourceListController impleme
 
 	}
 
-
 	/**
-	 * This methods does everything which needs to be done before proceeding to the 
-	 * {@link Views#POST_BOOKMARK} view. This includes:
+	 * This methods does everything which needs to be done before proceeding to
+	 * the {@link Views#POST_BOOKMARK} view. This includes:
 	 * <ul>
 	 * <li>initializing the group tag sets</li>
 	 * <li>getting the recommended tags</li>
@@ -187,10 +191,11 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		/*
 		 * get the recommended tags for the post from the command
 		 */
-		// 2009/01/29,fei: now done via ajax request "/ajax/getBookmarkRecommendedTags"
-		//                 {@see GetBookmarkRecommendedTagsController}
-		// if (tagRecommender != null)	command.setRecommendedTags(tagRecommender.getRecommendedTags(command.getPost()));
-
+		// 2009/01/29,fei: now done via ajax request
+		// "/ajax/getBookmarkRecommendedTags"
+		// {@see GetBookmarkRecommendedTagsController}
+		// if (tagRecommender != null)
+		// command.setRecommendedTags(tagRecommender.getRecommendedTags(command.getPost()));
 		/*
 		 * get the tag cloud of the user (this must be done before any error
 		 * checking, because the user must have this) FIXME: get ALL tags of the
@@ -213,6 +218,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 	 * @param intraHashToUpdate
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	private View handleUpdatePost(EditBookmarkCommand command, final RequestWrapperContext context, final User loginUser, final Post<Bookmark> post, final String intraHashToUpdate) {
 		/*
 		 * we're editing an existing post
@@ -228,7 +234,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 				/*
 				 * invalid intra hash: post could not be found
 				 */
-				errors.reject("errors.post.notfound");
+				errors.reject("error.post.notfound");
 				return Views.ERROR;
 			}
 			/*
@@ -245,6 +251,10 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		 * ckey is given, so user is already editing the post -> parse tags
 		 */
 		try {
+			/*
+			 * we use addAll here because there might already be system tags 
+			 * in the post which should not be overwritten 
+			 */
 			post.getTags().addAll(parse(command.getTags()));
 		} catch (final Exception e) {
 			log.warn("error parsing tags", e);
@@ -303,7 +313,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 			/*
 			 * show error page
 			 */
-			errors.reject("Could not update post");
+			errors.reject("error.post.update", "Could not update post.");
 			log.warn("could not update post");
 			return Views.ERROR;
 		}
@@ -337,13 +347,14 @@ public class PostBookmarkController extends SingleResourceListController impleme
 				return new ExtendedRedirectView("/user/" + URLEncoder.encode(userName, "UTF-8"));
 			} catch (UnsupportedEncodingException ex) {
 				log.error("Could not encode redirect URL.", ex);
-				errors.reject("error encoding URL");
+				errors.reject("error.post.redirect", new Object[]{ex.getMessage()}, "Error encoding URL for redirect: " + ex.getMessage());
 				return Views.ERROR;
 			}
 		}
 		return new ExtendedRedirectView(postUrl);
 	}
 
+	@SuppressWarnings("unchecked")
 	private View handleCreatePost(EditBookmarkCommand command, final RequestWrapperContext context, final User loginUser, final Post<Bookmark> post) {
 		/*
 		 * no intra hash given --> user posts a new entry (which might already
@@ -358,22 +369,16 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		if (dbPost != null) {
 			log.debug("user already owns this URL ... handling update");
 			/*
-			 * TODO: here we could check, if the user has marked a checkbox
-			 * which says "I want to update this post" and only then set the
-			 * intraHashToUpdate
-			 */
-			/*
 			 * post exists -> warn user
 			 */
 			errors.rejectValue("post.resource.url", "error.field.valid.url.alreadybookmarked");
 			/*
-			 * the next time this will be handled as an update TODO: this does
-			 * not make sense, since we don't show the user the existing post
-			 * (actually: again, we can't exchange the post ... :-( )
+			 * the next time this will be handled as an update 
 			 */
 			command.setIntraHashToUpdate(post.getResource().getIntraHash());
 			/*
 			 * exchange posts
+			 * TODO: show diff post to user!
 			 */
 			command.setDiffPost(post);
 			populateCommandWithPost(command, dbPost);
@@ -391,6 +396,10 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		 * parse the tags
 		 */
 		try {
+			/*
+			 * we use addAll here because there might already be system tags 
+			 * in the post which should not be overwritten 
+			 */
 			post.getTags().addAll(parse(command.getTags()));
 		} catch (final Exception e) {
 			log.warn("error parsing tags", e);
@@ -407,7 +416,9 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		}
 
 		/*
-		 * check credentials to fight CSRF attacks We do this that late to not
+		 * check credentials to fight CSRF attacks 
+		 * 
+		 * We do this that late to not
 		 * cause the error message pop up on the first call to the controller.
 		 * Otherwise, the form would be empty and the hidden ckey field not
 		 * sent.
@@ -417,10 +428,6 @@ public class PostBookmarkController extends SingleResourceListController impleme
 			return getPostBookmarkView(command, loginUser);
 		}
 
-		/*
-		 * TODO: why is the content id set?
-		 */
-		// post.setContentId(null);
 		post.setDate(new Date());
 
 		/*
@@ -458,53 +465,54 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		/*
 		 * populate groups in command
 		 */
-		initCommandGroups(command, dbPost.getGroups());		
+		initCommandGroups(command, dbPost.getGroups());
 		/*
-		 * create tag string for view input field
-		 * (NOTE: this needs to be done after initializing the relevantFor groups, because there
-		 * the relevantFor tags are removed from the post)
+		 * create tag string for view input field (NOTE: this needs to be done
+		 * after initializing the relevantFor groups, because there the
+		 * relevantFor tags are removed from the post)
 		 * 
 		 */
 		command.setTags(getSimpleTagString(dbPost.getTags()));
 
 	}
 
+	/** Initializes the relevant for groups in the command from the (system) tags of the 
+	 * post. Also removes the corresponding system tags from the post such that they're 
+	 * not shown in the tag input field.
+	 * 
+	 * @param command
+	 * @param tags
+	 */
 	private void initCommandRelevantForGroups(final EditBookmarkCommand command, final Set<Tag> tags) {
-		log.debug("got tags " + tags + " from post");
 		final List<String> relevantGroups = command.getRelevantGroups();
-		
+
 		final Iterator<Tag> iterator = tags.iterator();
 		while (iterator.hasNext()) {
-			final Tag tag = iterator.next();
-			final String name = tag.getName();
-			log.debug("handling tag " + tag);
+			final String name = iterator.next().getName();
 			if (name.startsWith(SYS_RELEVANT_FOR)) {
 				relevantGroups.add(name.substring(SYS_RELEVANT_FOR.length()));
 				/*
-				 * removing the tag from the post such that it is not shown in the tag input form
+				 * removing the tag from the post such that it is not shown in
+				 * the tag input form
 				 */
-				log.debug("removing tag from post");
 				iterator.remove();
 			}
 		}
-		log.debug("relevant groups: " + relevantGroups);
-		log.debug("posts's tags: " + tags);
 	}
-	
-	
+
+	/**
+	 * Adds the relevant groups from the command as system tags to the post. 
+	 * 
+	 * @param command
+	 * @param post
+	 */
 	private void initRelevantForTags(final EditBookmarkCommand command, final Post<Bookmark> post) {
-		log.debug("initializing post's tags from command's relevantFor groups");
-		final List<String> relevantGroups = command.getRelevantGroups();
-		log.debug("got relevant groups " + relevantGroups + " from command");
 		final Set<Tag> tags = post.getTags();
-		log.debug("got tags " + tags + " from post");
-		for (final String relevantGroup : relevantGroups) {
+		for (final String relevantGroup : command.getRelevantGroups()) {
 			tags.add(new Tag(SYS_RELEVANT_FOR + relevantGroup));
 		}
-		log.debug("post's tags are now: " + tags);
-		
 	}
-	
+
 	/**
 	 * Copy the groups from the command into the post (make proper groups from
 	 * them)
@@ -563,16 +571,16 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		log.debug("groups from post: " + groups);
 		final List<String> commandGroups = command.getGroups();
 		commandGroups.clear();
-		if (groups.contains(private_group)) {
+		if (groups.contains(PRIVATE_GROUP)) {
 			/*
 			 * only private
 			 */
-			command.setAbstractGrouping(private_group.getName());
-		} else if (groups.contains(public_group)) {
+			command.setAbstractGrouping(PRIVATE_GROUP.getName());
+		} else if (groups.contains(PUBLIC_GROUP)) {
 			/*
 			 * only public
 			 */
-			command.setAbstractGrouping(public_group.getName());
+			command.setAbstractGrouping(PUBLIC_GROUP.getName());
 		} else {
 			/*
 			 * other
