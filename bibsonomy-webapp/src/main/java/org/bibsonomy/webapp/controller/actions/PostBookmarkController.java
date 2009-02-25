@@ -29,7 +29,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.tagparser.TagString3Lexer;
 import org.bibsonomy.model.util.tagparser.TagString3Parser;
-import org.bibsonomy.recommender.tags.TagRecommender;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
@@ -40,7 +39,6 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.PostBookmarkValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
-import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 
 /**
@@ -51,11 +49,6 @@ public class PostBookmarkController extends SingleResourceListController impleme
 
 	private static final Log log = LogFactory.getLog(PostBookmarkController.class);
 	private Errors errors = null;
-
-	/**
-	 * FIXME: unused
-	 */
-	private TagRecommender tagRecommender;
 
 	/**
 	 * FIXME: system tag handling should be done by system tags ... not by this
@@ -100,6 +93,8 @@ public class PostBookmarkController extends SingleResourceListController impleme
 	 * 
 	 * FIXME: for:group is missing FIXME: check for other features from
 	 * BookmarkShowHandler
+	 * 
+	 * FIXME: DBLP handling (dblp user may set date of post)
 	 * 
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(java.lang.Object)
 	 */
@@ -198,8 +193,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		// command.setRecommendedTags(tagRecommender.getRecommendedTags(command.getPost()));
 		/*
 		 * get the tag cloud of the user (this must be done before any error
-		 * checking, because the user must have this) FIXME: get ALL tags of the
-		 * user!
+		 * checking, because the user must have this) 
 		 */
 		this.setTags(command, Resource.class, GroupingEntity.USER, loginUser.getName(), null, null, null, null, 0, 20000, null);
 		/*
@@ -675,17 +669,6 @@ public class PostBookmarkController extends SingleResourceListController impleme
 
 	public void setErrors(final Errors errors) {
 		this.errors = errors;
-	}
-
-	/**
-	 * Sets the tag recommender this controller uses to provide tag
-	 * recommendations during posting.
-	 * 
-	 * @param tagRecommender
-	 */
-	public void setTagRecommender(TagRecommender tagRecommender) {
-		Assert.notNull(tagRecommender, "The provided tag recommender must not be null.");
-		this.tagRecommender = tagRecommender;
 	}
 
 }

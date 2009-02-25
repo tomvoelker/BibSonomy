@@ -341,6 +341,7 @@
 		<value>intraHashToUpdate</value>
 		<value>jump</value>
 		<value>relevantGroups</value>
+		<value>acceptComma</value>
 	</util:list>
 
     <!--  #################### controller #################### -->
