@@ -26,6 +26,11 @@
 		UPDATE user SET spammer = #spammer#, updated_by = #updatedBy#, updated_at = #updatedAt#, to_classify = #toClassify# 
 		WHERE user_name = #userName#
 	</update>
+	
+	<update id="flagSpammerEvaluation" parameterClass="adminParam">
+		UPDATE evaluation SET $evaluator$ = #prediction#
+		WHERE user_name = #userName#
+	</update>
 
 	<select id="getAdminClassifiedUsers" resultMap="UserCommon.userWithPrediction" parameterClass="adminParam">
 		SELECT *
@@ -55,12 +60,11 @@
 	</select>
 	
 	<select id="getBibtexUsers" resultMap="UserCommon.userWithPrediction" parameterClass="adminParam">
-		SELECT *  
-		FROM user u, prediction p, tas t
+		SELECT * 
+		FROM user u, prediction p, bibtex b
 		WHERE u.user_name = p.user_name 
 		AND u.updated_at = p.updated_at
-		AND t.user_name = p.user_name
-		AND content_type = 2
+		AND b.user_name = p.user_name
 		GROUP BY u.user_name
 		ORDER BY u.updated_at DESC
 		LIMIT #limit#
