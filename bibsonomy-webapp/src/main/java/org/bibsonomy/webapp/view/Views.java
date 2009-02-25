@@ -370,7 +370,12 @@ public enum Views implements View {
 	/**
 	 * show the export page
 	 */
-	EXPORT("export");
+	EXPORT("export"),
+	
+	/**
+	 * show the advanced_search page
+	 */
+	MYSEARCH("mySearch");
 	
 	
 	
