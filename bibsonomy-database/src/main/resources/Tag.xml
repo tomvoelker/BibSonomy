@@ -381,4 +381,16 @@
       	ORDER BY LOWER(tag_name)
 	</select>
 	
+	<select id="getTagsByFriendOfUser" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT tag_name, count(tag_name) AS tag_ctr
+            FROM tas t1, friends f 
+            WHERE f.f_user_name = #userName#
+              AND t1.user_name = #requestedUserName#
+              AND t1.user_name = f.user_name
+              AND t1.group = 2
+              <include refid="getTagsByResourceType"/>
+            GROUP BY t1.tag_name 
+            ORDER BY tag_ctr DESC, t1.tag_name COLLATE utf8_unicode_ci
+            LIMIT #limit# OFFSET #offset#
+	</select>
 </sqlMap>
