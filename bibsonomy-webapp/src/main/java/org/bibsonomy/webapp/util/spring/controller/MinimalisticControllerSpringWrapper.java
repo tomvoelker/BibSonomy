@@ -22,7 +22,6 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ResponseLogic;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.util.spring.controller.conversion.ServletRequestAttributeDataBinder;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.BindException;
@@ -208,14 +207,6 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 	}
 
 	@Override
-	protected ServletRequestDataBinder createBinder(HttpServletRequest request, Object command) throws Exception {
-		final ServletRequestDataBinder binder = new ServletRequestAttributeDataBinder(command, getCommandName());
-		prepareBinder(binder);
-		initBinder(request, binder);
-		return binder;
-	}
-	
-	@Override
 	protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
 		super.initBinder(request, binder);
 		/*
@@ -224,7 +215,5 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 		binder.setAllowedFields(allowedFields);
 		binder.setDisallowedFields(disallowedFields);
 	}
-
-
 	
 }
