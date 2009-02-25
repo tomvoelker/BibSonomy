@@ -187,7 +187,7 @@
                           <fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
                               <fieldset style="border:0px; position:relative;">
                                 <h2><fmt:message key="post.meta.recommended"/>: <fmt:message key="post.meta.save_as_publication"/></h2>
-                          <p><fmt:message key="post.resource.bookmark_a_publication"/>:</p>
+                                <p><fmt:message key="post.resource.bookmark_a_publication"/>:</p>
                                 <p><textarea id="bib" name="selection" cols="60" rows="15" class="reqinput"><c:out value=''/></textarea></p>
                                 <input type="hidden" name="requTask" value="upload" />
                                 <c:set var="post_publication"><fmt:message key="save"/></c:set>
