@@ -204,27 +204,27 @@ public class BookmarkHandler extends HttpServlet{
 
 					if ("".equals(currFile) || (!currFile.substring(currFile.lastIndexOf(".") + 1).equals("html"))) {
 						throw new FileUploadException ("Please check your file. Only html files are accepted.");
-					} else {
-						//retrieve selected form field group and get corresponding id 
-						int groupid = groupman.getGroup(currUser, fieldMap.get("group").getString());
-						//retrieve form field and set overwrite 
-						overwrite = (fieldMap.get("overwrite")) != null && "yes".equals(fieldMap.get("overwrite").getString());
+					} 
+					//retrieve selected form field group and get corresponding id 
+					int groupid = groupman.getGroup(currUser, fieldMap.get("group").getString());
+					//retrieve form field and set overwrite 
+					overwrite = (fieldMap.get("overwrite")) != null && "yes".equals(fieldMap.get("overwrite").getString());
 
-						/* *************************************************
-						 * save file with hashed name (currFile+currUser+Time) in temp Dir
-						 * *************************************************/													
-						File bookmarkFile = new File(rootPath + "bibsonomy_temp", Resource.hash(currFile + currUser + System.currentTimeMillis()));	
-						upFile.write(bookmarkFile); // if it fails, Exception is catched below 
+					/* *************************************************
+					 * save file with hashed name (currFile+currUser+Time) in temp Dir
+					 * *************************************************/													
+					File bookmarkFile = new File(rootPath + "bibsonomy_temp", Resource.hash(currFile + currUser + System.currentTimeMillis()));	
+					upFile.write(bookmarkFile); // if it fails, Exception is catched below 
 
-						//writing into file was ok -> delete fileitem upfile
-						upFile.delete();
+					//writing into file was ok -> delete fileitem upfile
+					upFile.delete();
 
-						//firefox importer aufrufen (mit filename und groupid)							
-						bookmarks = getBookmarksFromFirefox(bookmarkFile, currUser, groupid);
+					//firefox importer aufrufen (mit filename und groupid)							
+					bookmarks = getBookmarksFromFirefox(bookmarkFile, currUser, groupid);
 
-						//retrieving bookmarks successful - delete bookmark file from disk
-						bookmarkFile.delete();
-					}
+					//retrieving bookmarks successful - delete bookmark file from disk
+					bookmarkFile.delete();
+
 
 				} catch (IOException e) {
 					request.setAttribute("error", "Sorry, I was not able to get your bookmarks " + e);
