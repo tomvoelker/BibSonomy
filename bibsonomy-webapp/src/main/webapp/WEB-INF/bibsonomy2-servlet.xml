@@ -320,6 +320,11 @@
 						<property name="controllerBeanName" value="postBookmarkSuccessController"/>
 					</bean>
 				</entry>
+				<entry key="/mySearch">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="mySearchController"/>
+					</bean>
+				</entry>	
 			</map>
 		</property>
 	</bean>
@@ -357,6 +362,17 @@
 	</bean>
 
 	<bean id="userPageController" class="org.bibsonomy.webapp.controller.UserPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+		<property name="listsToInitialise">
+			<list>
+				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="mySearchController" class="org.bibsonomy.webapp.controller.MySearchController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
 		<property name="listsToInitialise">
