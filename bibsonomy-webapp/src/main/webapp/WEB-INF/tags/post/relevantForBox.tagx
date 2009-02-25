@@ -14,7 +14,9 @@
     -->
 
 
-	<jsp:directive.attribute name="groups" type="java.util.List" required="true"/>
+	<jsp:directive.attribute name="groups" type="java.util.List" required="true" description="The groups the user is a member of."/>
+  
+  
 	<fieldset style="border: 1px solid #069; background-color: #eee; position:relative;">
 		<legend>
 			<fmt:message key="post.resource.relevantfor"/>
@@ -23,7 +25,7 @@
 			<tr>
 				<td>
 	                <!-- select box for "other" groups -->
-	                <form:select path="post.groups" size="5">
+	                <form:select path="relevantGroups" size="5">
 	                	<form:options items="${groups}" onclick="showTagSets(event)" itemLabel="${fn:escapeXml('name')}" itemValue="${fn:escapeXml('name')}"/>
 	                </form:select>
 	            </td>
@@ -35,14 +37,4 @@
 				
 	</fieldset>		
 
-	<input type="hidden" value="" id="systemtags"/>
-
-<script type="text/javascript">
-	<![CDATA[
-
-		//clear systemtags
-		var systemtags = null;
-	 	 		
-	]]>
-</script>
 </jsp:root>
