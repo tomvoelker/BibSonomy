@@ -455,15 +455,14 @@
 		<to last="true">/group</to>
 	</rule>
 
-
 	<!-- ############## friends pages ############### -->
 	<rule><!-- /friend/USER/TAG -->
 		<name>/friend/user/TAG</name>
 		<from>^/+friend/+([^/]+?)/(.+)$</from>
 		<set type="parameter" name="page">frienduser</set>
-		<set type="parameter" name="requUser">$1</set>
-		<set type="parameter" name="requTag">$2</set>
-		<to last="true">/ResourceHandler</to>
+		<set type="parameter" name="requestedUser">$1</set>
+		<set type="parameter" name="requestedTags">$2</set>
+		<to last="true">/friend</to>
 	</rule>
 	<!-- redirect for tag formular on /friend/USER/TAG page -->
 	<rule>
@@ -475,9 +474,8 @@
 	<rule><!-- /friend/USER -->
 		<name>/friend/USER</name>
 		<from>^/+friend/+([^/]+)$</from>
-		<set type="parameter" name="page">frienduser</set>
-		<set type="parameter" name="requUser">$1</set>
-		<to last="true">/ResourceHandler</to>
+		<set type="parameter" name="requestedUser">$1</set>
+		<to last="true">/friend</to>
 	</rule>
 	<!-- /friends -->
 	<rule>
@@ -488,9 +486,8 @@
 	</rule>
 	<rule>
 		<name>/friend/</name>
-		<from>^/+friend/*$</from>
-		<set type="parameter" name="page">friend</set>
-		<to last="true">/ResourceHandler</to>
+		<from>^/+friends/*$</from>
+		<to last="true">/friends</to>
 	</rule>
 	<rule>
 		<name>/friends/</name>

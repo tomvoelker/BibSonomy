@@ -8,9 +8,7 @@
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
     xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:sql="http://java.sun.com/jsp/jstl/sql"> 
-	<sql:setDataSource dataSource="jdbc/bibsonomy" var="dataSource"/> 
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<layout:resourceLayout pageTitle="${command.pageTitle}" 
@@ -18,7 +16,7 @@
 		selectedNaviTab="${command.context.loginUser.name != null ? 'nav_my' : ''}">
 	
 		<jsp:attribute name="heading">
-		<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.friends"/></a> ::
+		<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="friends.friendinput.label"/></a> ::
 		<form action="/friends/" method="GET" class="smallform">
   			<input type="text" size="20" name="user" id="inpf"/>
 		</form>							
@@ -31,7 +29,7 @@
 
 <ul>
 <c:forEach var="user" items="${command.friendsOfUser}">
-  <li><a href="/friend/${fn:escapeXml(user.name)}"><c:out value="${user.name}"/></a></li>
+  <li><a href="/friend/${mtl:encodeURI(user.name)}"><c:out value="${user.name}"/></a></li>
 </c:forEach>
 </ul>
 
@@ -49,7 +47,7 @@
 	</c:set>
     <a 
     	class="action" 
-    	href="/SettingsHandler?ckey=${ckey}&amp;del_friend=${fn:escapeXml(user.name)}" 
+    	href="/SettingsHandler?ckey=${ckey}&amp;del_friend=${mtl:encodeURI(user.name)}" 
     	title="${deleteFriendTitle}">
     		<fmt:message key="friends.actions.delete"/>
     </a>
@@ -71,6 +69,6 @@
 </form>
 </li>
             			
-		</jsp:attribute>	
+		</jsp:attribute>
 	</layout:resourceLayout>
 </jsp:root>
