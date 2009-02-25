@@ -13,8 +13,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Level;
@@ -103,60 +101,58 @@ public class BatchAuthors {
 		ResultSet rs = db.getBibtexAuthors(lastId);
 		long last = 0;
 		
-		TexEncode enc = new TexEncode();
-		Map<String, Author> bibtexAuthorMap = new HashMap<String, Author>();
+		// TexEncode enc = new TexEncode();
+		Map<String, Author> bibtexAuthorMap = new HashMap<String, Author>(900000, 1);
+		
+		// rs.getString(1) = author feld vom bibtex eintrag
+		// rs.getString(2) = content id feld
+		
+		int c = 0;
+		
+		String[] authors;
 		
 		while(rs.next()) {
-			if(rs.getString(1) != null && !bibtexAuthorMap.containsKey(rs.getString(1))) {
-				if(rs.getString(1).contains(" and ")) {
-					String[] authors = rs.getString(1).split(" and ");
-					
-					for(String s : authors) {
-						s = s.trim();
-						s = enc.encode(s);
-						if(s.length() > 2) {
-							Author a = new Author(getFirstName(s),
-									getMiddleName(s),
-									getLastName(s), s);
-							
-							a.getContentIds().add(rs.getLong(2));
-							bibtexAuthorMap.put(s, a);
-						}
-					}	
-				} else {
-					String s = rs.getString(1).trim();
-					s = enc.encode(s);
-					if(s.length() > 2) {
-						Author a = new Author(getFirstName(s),
-								getMiddleName(s),
-								getLastName(s), s);
-						
-						a.getContentIds().add(rs.getLong(2));
-						bibtexAuthorMap.put(s, a);
-					}
-				}
-			} else if(rs.getString(1) != null){
-				String encName = enc.encode(rs.getString(1));
-				if(encName.contains(" and ")) {
-					String[] authors = encName.split("and");
-					
-					for(String s : authors) {
-						s = s.trim();
-						if(s.length() > 2) {
-							bibtexAuthorMap.get(s).getContentIds().add(rs.getLong(2));
-						}
-					}	
-				} else {
-					String s = rs.getString(1).trim();
-					if(s.length() > 2) {
-						bibtexAuthorMap.get(s).getContentIds().add(rs.getLong(2));
-					}
-				}
+			if(rs.getString(1) == null) {
+				continue;
 			}
+			c++;
 			
+			// split author field
+			authors = rs.getString(1).split(" and ");
+			
+			// 280 MB 
+			
+			// loop over all authors			
+			for(int i = 0; i < authors.length; i++) {
+				authors[i] = authors[i].trim();
+				//authors[i] = enc.encode(authors[i]);
+				if(authors[i].length() > 2) {
+					//Author a = new Author();
+					Author a = new Author(getFirstName(authors[i]),
+							getMiddleName(authors[i]),
+							getLastName(authors[i]), authors[i]);							
+					//a.getContentIds().add(rs.getLong(2));
+					// check if author is already in map
+					if (bibtexAuthorMap.containsKey(authors[i]) ) {
+						// is contained -> add content id
+						if(authors[i].length() > 2) {
+							bibtexAuthorMap.get(authors[i]).getContentIds().add(rs.getLong(2));
+						}
+					}
+					else {
+						// not contained -> add to map 
+						bibtexAuthorMap.put(authors[i], a);
+					}
+				}
+			} // end for
+			
+			if (c % 1000 == 0) {
+				logger.info("nr. of authors: " + bibtexAuthorMap.size());
+				long memUsed = ( Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() ) / 1024;
+				logger.info("memory used: " + memUsed + " KB"); 
+			}
 			last = rs.getLong(2);
 		}
-
 		lastId = last;
 		rs = null;
 		return bibtexAuthorMap;
@@ -389,7 +385,7 @@ public class BatchAuthors {
 			logger.addAppender(consoleAppender);
 			FileAppender fileAppender = new FileAppender(layout, "batch_authors.log", false);
 			logger.addAppender(fileAppender);
-			logger.setLevel(Level.WARN);
+			logger.setLevel(Level.INFO);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
