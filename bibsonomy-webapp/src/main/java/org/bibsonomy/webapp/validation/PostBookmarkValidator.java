@@ -70,9 +70,9 @@ public class PostBookmarkValidator implements Validator<EditBookmarkCommand> {
 	 * @param abstractGrouping
 	 * @param groups
 	 */
-	private void validateGroups(Errors errors, final String abstractGrouping, final List<String> groups) {
-		log.info("got abstractGrouping " + abstractGrouping);
-		log.info("got groups " + groups);
+	private void validateGroups(final Errors errors, final String abstractGrouping, final List<String> groups) {
+		log.debug("got abstractGrouping " + abstractGrouping);
+		log.debug("got groups " + groups);
 		if ("public".equals(abstractGrouping) || "private".equals(abstractGrouping)) {
 			if (groups != null && !groups.isEmpty()) {
 				/*
@@ -81,14 +81,23 @@ public class PostBookmarkValidator implements Validator<EditBookmarkCommand> {
 				errors.rejectValue("post.groups", "error.field.valid.groups");
 			}
 		} else if ("other".equals(abstractGrouping)) {
+			log.debug("grouping 'other' found ... checking given groups");
 			if (groups == null || groups.isEmpty()) {
+				log.debug("error: no groups given");
 				/*
 				 * "other" selected, but no group chosen
 				 * TODO: more detailed error messages for different errors
 				 */
 				errors.rejectValue("post.groups", "error.field.valid.groups");
 			}
+			/*
+			 * TODO: allow multiple groups
+			 */
+			if (groups.size() > 1) {
+				errors.rejectValue("post.groups", "error.field.valid.groups");
+			}
 		} else {
+			log.debug("neither public, private, other chosen");
 			/*
 			 * neither public, private, other chosen
 			 */
