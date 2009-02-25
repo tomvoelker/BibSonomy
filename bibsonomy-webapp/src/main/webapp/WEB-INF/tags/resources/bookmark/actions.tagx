@@ -11,10 +11,8 @@
 		<c:if test="${command.context.userLoggedIn}">		
 			<c:if test="${loginUserName eq post.user.name}">
 				<!-- EDIT link -->
-				<c:url var="url_edit" value="/ShowBookmarkEntry" context="${projectContext}">
-					<c:param name="url" value="${post.resource.url}" />
-					<c:param name="user" value="${post.user.name}" />
-					<c:param name="jump" value="no" />
+				<c:url var="url_edit" value="/postBookmark" context="${projectContext}">
+                        <c:param name="intraHashToUpdate" value="${post.resource.intraHash}" />
 				</c:url>
 				<c:set var="edit"><fmt:message key="bookmark.actions.edit.title"/></c:set>
 	
@@ -53,7 +51,7 @@
 				<!-- COPY link -->
 				<c:set var="copyTitle"><fmt:message key="bookmark.actions.copy.title"/></c:set>
 				<a
-					href="/ShowBookmarkEntry?c=b&amp;jump=no&amp;url=${mtl:encodeURI(post.resource.url)}&amp;description=${mtl:encodeURI(post.resource.title)}&amp;extended=${mtl:encodeURI(post.description)}&amp;copytag=${mtl:encodeURI(mtl:toTagString(post.tags))}"
+					href="/postBookmark?c=b&amp;jump=no&amp;url=${mtl:encodeURI(post.resource.url)}&amp;description=${mtl:encodeURI(post.resource.title)}&amp;extended=${mtl:encodeURI(post.description)}&amp;copytag=${mtl:encodeURI(mtl:toTagString(post.tags))}"
 					title="${copyTitle}">
 					<fmt:message key="bookmark.actions.copy"/>
 				</a>

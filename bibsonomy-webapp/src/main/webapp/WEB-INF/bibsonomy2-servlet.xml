@@ -294,7 +294,7 @@
 						</property>
 					</bean>
 				</entry>
-				<entry key="/actions/postBookmark">
+				<entry key="/postBookmark">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="postBookmarkController"/>
 						<property name="allowedFields" ref="bookmarkRequestParameters"/>
@@ -340,6 +340,7 @@
 		<value>groups</value>
 		<value>intraHashToUpdate</value>
 		<value>jump</value>
+		<value>relevantGroups</value>
 	</util:list>
 
     <!--  #################### controller #################### -->
