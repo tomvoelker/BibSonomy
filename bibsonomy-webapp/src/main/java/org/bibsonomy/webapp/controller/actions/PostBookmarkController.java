@@ -1,11 +1,11 @@
 package org.bibsonomy.webapp.controller.actions;
 
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -22,16 +22,14 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.tagparser.TagString3Lexer;
 import org.bibsonomy.model.util.tagparser.TagString3Parser;
-import org.bibsonomy.model.RecommendedTag; 
 import org.bibsonomy.recommender.tags.TagRecommender;
-import org.bibsonomy.rest.renderer.Renderer;
-import org.bibsonomy.rest.renderer.impl.XMLRenderer;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
@@ -50,6 +48,7 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class PostBookmarkController extends SingleResourceListController implements MinimalisticController<EditBookmarkCommand>, ErrorAware {
+	private static final String SYS_RELEVANT_FOR = "sys:relevantFor:";
 	private static final Log log = LogFactory.getLog(PostBookmarkController.class);
 	private Errors errors = null;
 
@@ -72,7 +71,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		 * initialize lists
 		 */
 		command.setGroups(new ArrayList<String>());
-		command.setRelevantGroups(new ArrayList<Tag>());
+		command.setRelevantGroups(new ArrayList<String>());
 		command.setRelevantTagSets(new HashMap<String, Map<String, List<String>>>());
 		command.setRecommendedTags(new TreeSet<RecommendedTag>());
 		command.setCopytags(new ArrayList<Tag>());
@@ -120,6 +119,11 @@ public class PostBookmarkController extends SingleResourceListController impleme
 			return new ExtendedRedirectView("/login");
 		}
 
+		/*
+		 * FIXME: spammers must have a valid captcha, so add captcha to JSP
+		 * and checking here.
+		 */
+		
 		final User loginUser = context.getLoginUser();
 		final Post<Bookmark> post = command.getPost();
 
@@ -133,6 +137,10 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		 * initialize groups
 		 */
 		initPostGroups(command, post);
+		/*
+		 * initialize relevantFor-tags 
+		 */
+		initRelevantForTags(command, post);
 
 		/*
 		 * decide, what to do
@@ -237,7 +245,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		 * ckey is given, so user is already editing the post -> parse tags
 		 */
 		try {
-			post.setTags(parse(command.getTags()));
+			post.getTags().addAll(parse(command.getTags()));
 		} catch (final Exception e) {
 			log.warn("error parsing tags", e);
 			errors.rejectValue("tags", "error.field.valid.tags.parseerror");
@@ -383,7 +391,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		 * parse the tags
 		 */
 		try {
-			post.setTags(parse(command.getTags()));
+			post.getTags().addAll(parse(command.getTags()));
 		} catch (final Exception e) {
 			log.warn("error parsing tags", e);
 			errors.rejectValue("tags", "error.field.valid.tags.parseerror");
@@ -438,21 +446,65 @@ public class PostBookmarkController extends SingleResourceListController impleme
 	 * @param command
 	 * @param dbPost
 	 */
-	private void populateCommandWithPost(EditBookmarkCommand command, final Post<Bookmark> dbPost) {
+	private void populateCommandWithPost(final EditBookmarkCommand command, final Post<Bookmark> dbPost) {
 		/*
 		 * put post into command
 		 */
 		command.setPost(dbPost);
 		/*
-		 * create tag string for view input field
+		 * populate "relevant for" groups in command
 		 */
-		command.setTags(getSimpleTagString(dbPost.getTags()));
+		initCommandRelevantForGroups(command, dbPost.getTags());
 		/*
 		 * populate groups in command
 		 */
-		initCommandGroups(command, dbPost.getGroups());
+		initCommandGroups(command, dbPost.getGroups());		
+		/*
+		 * create tag string for view input field
+		 * (NOTE: this needs to be done after initializing the relevantFor groups, because there
+		 * the relevantFor tags are removed from the post)
+		 * 
+		 */
+		command.setTags(getSimpleTagString(dbPost.getTags()));
+
 	}
 
+	private void initCommandRelevantForGroups(final EditBookmarkCommand command, final Set<Tag> tags) {
+		log.debug("got tags " + tags + " from post");
+		final List<String> relevantGroups = command.getRelevantGroups();
+		
+		final Iterator<Tag> iterator = tags.iterator();
+		while (iterator.hasNext()) {
+			final Tag tag = iterator.next();
+			final String name = tag.getName();
+			log.debug("handling tag " + tag);
+			if (name.startsWith(SYS_RELEVANT_FOR)) {
+				relevantGroups.add(name.substring(SYS_RELEVANT_FOR.length()));
+				/*
+				 * removing the tag from the post such that it is not shown in the tag input form
+				 */
+				log.debug("removing tag from post");
+				iterator.remove();
+			}
+		}
+		log.debug("relevant groups: " + relevantGroups);
+		log.debug("posts's tags: " + tags);
+	}
+	
+	
+	private void initRelevantForTags(final EditBookmarkCommand command, final Post<Bookmark> post) {
+		log.debug("initializing post's tags from command's relevantFor groups");
+		final List<String> relevantGroups = command.getRelevantGroups();
+		log.debug("got relevant groups " + relevantGroups + " from command");
+		final Set<Tag> tags = post.getTags();
+		log.debug("got tags " + tags + " from post");
+		for (final String relevantGroup : relevantGroups) {
+			tags.add(new Tag(SYS_RELEVANT_FOR + relevantGroup));
+		}
+		log.debug("post's tags are now: " + tags);
+		
+	}
+	
 	/**
 	 * Copy the groups from the command into the post (make proper groups from
 	 * them)
@@ -466,6 +518,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 	 * @see #initCommandGroups(EditBookmarkCommand, Post)
 	 */
 	private void initPostGroups(final EditBookmarkCommand command, final Post<Bookmark> post) {
+		log.debug("initializing post's groups from command");
 		/*
 		 * we can avoid some checks here, because they're done in the validator
 		 * ...
@@ -473,14 +526,18 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		final Set<Group> postGroups = post.getGroups();
 		final String abstractGrouping = command.getAbstractGrouping();
 		if ("other".equals(abstractGrouping)) {
+			log.debug("found 'other' grouping");
 			/*
 			 * copy groups into post
 			 */
 			final List<String> groups = command.getGroups();
+			log.debug("groups in command: " + groups);
 			for (final String groupname : groups) {
 				postGroups.add(new Group(groupname));
 			}
+			log.debug("groups in post: " + postGroups);
 		} else {
+			log.debug("public or private post");
 			/*
 			 * if the post is private or public --> remove all groups and add
 			 * one (private or public)
