@@ -17,6 +17,7 @@
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="displayIntroduction" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
+	<jsp:directive.attribute name="headerExt" fragment="true" />
 	<jsp:directive.attribute name="sidebar" fragment="true"/>
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>	
 	<jsp:directive.attribute name="fullscreen" type="java.lang.Boolean" required="false"/>	
@@ -31,5 +32,5 @@
 		</c:otherwise>
 	</c:choose>	
 
-	<layout:layout loginUserName="${loginUserName}" searchString="hurz" basketSize="${command.context.loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${requestedUser}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" content="${content}" fullscreen="${fullscreen}" selectedNaviTab="${selectedNaviTab}"/>
+	<layout:layout loginUserName="${loginUserName}" searchString="hurz" basketSize="${command.context.loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" headerExt="${headerExt}" requestedUser="${requestedUser}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" content="${content}" fullscreen="${fullscreen}" selectedNaviTab="${selectedNaviTab}"/>
 </jsp:root>

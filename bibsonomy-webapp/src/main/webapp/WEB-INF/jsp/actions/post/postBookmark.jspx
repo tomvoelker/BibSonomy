@@ -15,6 +15,13 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" selectedNaviTab="nav_postBook">
+	    <!--+
+    	 	| html header extension: page specific javascript
+    	 	+-->
+		<jsp:attribute name="headerExt">
+	    	<script type="text/javascript" src="${resdir}/javascript/util.js">&amp;nbsp;</script>
+	    </jsp:attribute>
+	    
 		<jsp:attribute name="heading">
 			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<fmt:message key="navi.editBookmark" /></a> 
 		</jsp:attribute>
@@ -140,20 +147,6 @@
 									<div id="suggestion.description"></div>
 								</fieldset>
 							</fieldset>
-							<!--+
-							    | tags now inserted via ajax using JQuery
-							    + -->	
-							<script type="text/javascript">
-							checkUrlForTitle();
-							$.ajax({
-							  type: "GET",
-							  url: "/ajax/getBookmarkRecommendedTags",
-							  data: "${pageContext.request.queryString}",
-							  success: function(msg){
-							    handleRecommendedTags(msg)
-							  }
-							});
-							</script>
 					    	<post:tagfield tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
 							<table style="width:100%">
 								<tr>
@@ -246,7 +239,31 @@
 
 	<script type="text/javascript">
 		<![CDATA[		
+			//----------------------------------------------------------------
+	    	// suggest title
+			//----------------------------------------------------------------
+			checkUrlForTitle();
+			//----------------------------------------------------------------
+		    // load recommended tags (via ajax request using jQuery
+			//----------------------------------------------------------------
+			// if post is referenced via intrahash we get the url from form content
+			var queryString = "";
+			if( getPostParameter("${pageContext.request.queryString}", "intraHashToUpdate") ) {
+				queryString = "url="+document.getElementById('post.resource.url').value;
+			} else {
+				queryString = "${pageContext.request.queryString}";
+			}
+			$.ajax({
+			  type: "GET",
+			  url: "/ajax/getBookmarkRecommendedTags",
+			  data: queryString,
+			  success: function(msg){
+			    handleRecommendedTags(msg)
+			  }
+			});
+			//----------------------------------------------------------------
 		    // load tags for tag suggestion via json using ajax library jQuery
+			//----------------------------------------------------------------
 			$.ajax({
 				  type: "GET",
 				  url: "/json/tags/user/${command.context.loginUser.name}",
