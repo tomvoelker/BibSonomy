@@ -54,6 +54,14 @@
 		<result property="logLevel"        column="log_level"      javaType="integer" />
 		<result property="defaultLanguage" column="lang" 	       javaType="string" />			
 	</resultMap>	
+	
+	<resultMap id="friendName" class="user">
+		<result property="name" column="f_user_name" javaType="string" />
+	</resultMap>
+	
+	<resultMap id="userName" class="user">
+		<result property="name" column="user_name" javaType="string" />
+	</resultMap>
 
 	<sql id="allUserAttributes">
 		<include refid="commonUserAttributes"/>,
