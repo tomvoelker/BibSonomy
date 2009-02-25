@@ -10,39 +10,31 @@
     <jsp:directive.attribute name="recommendedTags" type="java.util.Set" required="true"/>
 	
 	<fieldset style="border: 1px solid #069; background-color: #eee; position:relative;">
-		<legend><form:label path="post.tags" ><fmt:message key="post.resource.tags"/>*</form:label></legend>
+		<legend><form:label path="tags" ><fmt:message key="post.resource.tags"/>*</form:label></legend>
         <form:input id="inpf" path="tags" tabindex="4" autocomplete="off" size="60" onclick="setActiveInputField(this.id); enableHandler();" onfocus="setActiveInputField(this.id); enableHandler()" onblur="disableHandler()"  />
         (<fmt:message key="post.resource.spaceseparated"/>)
         
         <!-- name="tags"  -->
 		<div class="postBookmarkNotValidTip"><form:errors path="tags" /></div>
-		
+
+        <!-- allow user to confirm tags containing comma or semicolon -->
+        <c:if test="${containsComma}">
+          <p>
+            <form:checkbox path="acceptComma"/><form:label path="acceptComma"><fmt:message key="post.resource.tags.comma"/></form:label>
+          </p>
+        </c:if>
+        
 		<p>
-			<div style="vertical-align:middle">
-				<fmt:message key="post.resource.recommendation"/>:${mtl:ch('nbsp')}
-				<div id="tagField">
-                <c:forEach var="tag" items="${recommendedTags}">
-                  <a href="javascript:copytag('inpf','${fn:escapeXml(tag.name)}')"><c:out value="${tag.name}"/></a>
-                  ${mtl:ch('nbsp')}
-                </c:forEach>
-                </div>
-				<div id="suggestion.tags"></div>
-			</div>
+		  <fmt:message key="post.resource.recommendation"/>
+          <br/>
+		  <span id="tagField"></span>
 		</p>
 		<p>
-			<table>
-				<tr>
-			      <td>
-				    <fmt:message key="post.resource.suggested"/>
-				  </td>
-				  <td>
-			        <ul id="suggested" class="suggtag">
-			        </ul>
-			        <div class="errmsg"></div>
-			  	  </td>
-				</tr>
-			</table>
+ 	      <fmt:message key="post.resource.suggested"/>
+          <br/>
+          <span id="suggested" class="suggtag"></span>
 		</p>
+    
 	</fieldset>		
 
 </jsp:root>

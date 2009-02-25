@@ -41,25 +41,11 @@
 										var pageDescription = "<a href=\"javascript:setSuggestionFromUrlDescription('"+ result.pageDescription +"')\">" + result.pageDescription + "</a> ";
 										document.getElementById( "suggestion.description" ).innerHTML = pageDescription;
 									}
-									// 2009/02/03, fei: This is a recommender's job
-									// setSuggestionFromUrlTags(result.pageKeywords);
 						        }
 						    }
 						};
 						
 						req.send(null);
-					}
-					
-					function setSuggestionFromUrlTags(pageKeywords) {
-						var keywords = pageKeywords.split(",")
-						
-						var tagString = "";
-						for(var i = 0; i < keywords.length; i++) {
-							keywords[i] = keywords[i].replace (/^\s+/, '').replace (/\s+$/, '');
-							tagString += "<a href=\"javascript:copytag('inpf','"+ keywords[i] +"')\">" + keywords[i] +"</a> ";
-						}
-			
-						document.getElementById( "suggestion.tags" ).innerHTML = tagString;
 					}
 			
 					function setSuggestionFromUrlDescription(tagname){
@@ -240,7 +226,7 @@
 			<!-- display tags -->
 			<li>
 				<span class="sidebar_h"><fmt:message key="tags"/></span>
-				<tags:cloud requPath="tag/" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" copytag="${true}" targetId="inpf"/>
+				<tags:cloud requPath="tag/" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" copytag="${true}" targetId="inpf"/>
 			</li>
 			
 			 <c:if test="${not empty command.copytags}">
