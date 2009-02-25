@@ -502,8 +502,16 @@ public class PostBookmarkController extends SingleResourceListController impleme
 	 */
 	private void initRelevantForTags(final EditBookmarkCommand command, final Post<Bookmark> post) {
 		final Set<Tag> tags = post.getTags();
-		for (final String relevantGroup : command.getRelevantGroups()) {
-			tags.add(new Tag(SYS_RELEVANT_FOR + relevantGroup));
+		
+		final List<String> relevantGroups = command.getRelevantGroups();
+		/*
+		 * null check neccessary, because Spring sets the list to null, when no group 
+		 * has been selected. :-(
+		 */
+		if (relevantGroups != null) {
+			for (final String relevantGroup : relevantGroups) {
+				tags.add(new Tag(SYS_RELEVANT_FOR + relevantGroup));
+			}
 		}
 	}
 
