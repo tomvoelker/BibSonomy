@@ -28,6 +28,12 @@ public class EditBookmarkCommand extends PostCommand {
 	
 	private String intraHashToUpdate;
 	
+	/**
+	 * When the tag field contains commas, it is only accepted, if this boolean is set to <code>true</code> 
+	 */
+	private boolean acceptComma = false;
+	private boolean containsComma = false;
+	
 	
 	/**
 	 * The abstract (or general) group of the post:
@@ -170,5 +176,21 @@ public class EditBookmarkCommand extends PostCommand {
 
 	public void setIntraHashToUpdate(String intraHashToUpdate) {
 		this.intraHashToUpdate = intraHashToUpdate;
+	}
+
+	public boolean isAcceptComma() {
+		return this.acceptComma;
+	}
+
+	public void setAcceptComma(boolean acceptComma) {
+		this.acceptComma = acceptComma;
+	}
+
+	public boolean getContainsComma() {
+		return this.containsComma;
+	}
+
+	public void setContainsComma(boolean containsComma) {
+		this.containsComma = containsComma;
 	}
 }

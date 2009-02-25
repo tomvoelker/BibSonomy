@@ -47,19 +47,34 @@ public class PostBookmarkValidator implements Validator<EditBookmarkCommand> {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "post.resource.title", "error.field.valid.title");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "tags", "error.field.valid.tags");
 		
-		
-		// clean url
 		final Post<Bookmark> post = command.getPost();
-		
 		final Bookmark resource = post.getResource();
+
+		/*
+		 * clean url
+		 */
 		resource.setUrl(UrlUtils.cleanUrl(resource.getUrl()));
 		
+		/*
+		 * check url
+		 */
 		final String url = resource.getUrl();
 		if (url == null || url.equals("http://") || url.startsWith(UrlUtils.BROKEN_URL)) {
 			errors.rejectValue("post.resource.url", "error.field.valid.url");
 		}
+
+		/*
+		 * if tag string contains commas, user needs to confirm
+		 */
+		final String tags = command.getTags();
+		if (tags != null && (tags.contains(",") || tags.contains(";")) && !command.isAcceptComma()) {
+			command.setContainsComma(true);
+			errors.rejectValue("tags", "error.field.valid.tags.comma");
+		}
 		
 		validateGroups(errors, command.getAbstractGrouping(), command.getGroups());
+		
+		log.debug("errors in " + EditBookmarkCommand.class.getName() + ": " + errors);
 		
 	}
 
