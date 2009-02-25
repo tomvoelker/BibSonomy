@@ -1,0 +1,253 @@
+package org.bibsonomy.webapp.command;
+
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.SortedSet;
+
+import org.bibsonomy.model.User;
+
+/**
+ * Command class which is used by the MySearchController class.
+ * This class stores all information such as relations between serval bibtex informations
+ * which are needed by the mySearch.jspx side.
+ * 
+ * @author Christian Voigtmann
+ * @version $Id$
+ */
+public class MySearchCommand extends SimpleResourceViewCommand{
+
+	/**
+	 * user object
+	 */
+	private User user;
+	private LinkedList<String> tags;
+	private LinkedList<String> authors;
+	private LinkedList<String> titles;	
+	private SortedSet[] tagTitle;
+	private SortedSet[] authorTitle;
+	private SortedSet[] tagAuthor;
+	private SortedSet[] titleAuthor;
+	private	String[]	bibtexHash;
+	private String[]	bibtexUrls;
+	private int    simHash;
+
+	/**
+	 * default constructor
+	 */
+	public MySearchCommand() {
+		
+		tags = new LinkedList<String>();
+		authors = new LinkedList<String>();
+		titles = new LinkedList<String>();
+	}
+
+	/**
+	 * 
+	 * @return user object
+	 */
+	public User getUser() {
+		return this.user;
+	}
+
+
+	/**
+	 * set the user object
+	 * @param user
+	 */
+	public void setUser(User user) {
+		this.user = user;
+	}
+	
+	/**
+	 * 
+	 * @return the simhash 
+	 */
+	public int getSimHash() {
+		return this.simHash;
+	}
+
+	/**
+	 * set the current simHash
+	 * @param simHash
+	 */
+	public void setSimHash(int simHash) {
+		this.simHash = simHash;
+	}
+
+	/**
+	 * 
+	 * @return list of tags
+	 */
+	public LinkedList<String> getTags() {
+		return this.tags;
+	}
+
+	/**
+	 * sets the tag list
+	 * @param tags
+	 */
+	public void setTags(LinkedList<String> tags) {
+		this.tags = tags;
+	}
+
+	/**
+	 * 
+	 * @return list of authors
+	 */
+	public LinkedList<String> getAuthors() {
+		return this.authors;
+	}
+
+	/**
+	 * sets the author list
+	 * @param authors
+	 */
+	public void setAuthors(LinkedList<String> authors) {
+		this.authors = authors;
+	}
+
+	/**
+	 * 
+	 * @return list of titles
+	 */
+	public LinkedList<String> getTitles() {
+		return this.titles;
+	}
+
+	/**
+	 * set list of titles
+	 * @param titles
+	 */
+	public void setTitles(LinkedList<String> titles) {
+		this.titles = titles;
+	}
+
+	/**
+	 * 
+	 * @return relations between tag and title as a string
+	 */
+	public String getTagTitle() {
+		return getArrayToString(this.tagTitle);
+	}
+
+	/**
+	 * 
+	 * @param tagTitle
+	 */
+	public void setTagTitle(SortedSet[] tagTitle) {
+		this.tagTitle = tagTitle;
+	}
+
+
+	/**
+	 * 
+	 * @return relations between author and title as a string
+	 */
+	public String getAuthorTitle() {
+		return getArrayToString(this.authorTitle);
+	}
+
+	/**
+	 * 
+	 * @param authorTitle
+	 */
+	public void setAuthorTitle(SortedSet[] authorTitle) {
+		this.authorTitle = authorTitle;
+	}
+
+
+	/**
+	 * 
+	 * @return relations between tag and author as a string
+	 */
+	public String getTagAuthor() {
+		return getArrayToString(this.tagAuthor);
+	}
+
+	/**
+	 * 
+	 * @param tagAuthor
+	 */
+	public void setTagAuthor(SortedSet[] tagAuthor) {
+		this.tagAuthor = tagAuthor;
+	}
+
+
+	/**
+	 * 
+	 * @return relations between title and author as a string
+	 */
+	public String getTitleAuthor() {
+		return getArrayToString(this.titleAuthor);
+	}
+
+	/**
+	 * 
+	 * @param titleAuthor
+	 */
+	public void setTitleAuthor(SortedSet[] titleAuthor) {
+		this.titleAuthor = titleAuthor;
+	}
+
+	/**
+	 * 
+	 * @return string array of all bitex hashes
+	 */
+	public String[] getBibtexHash() {
+		return this.bibtexHash;
+	}
+
+	/**
+	 * 
+	 * @param bibtexHash
+	 */
+	public void setBibtexHash(String[] bibtexHash) {
+		this.bibtexHash = bibtexHash;
+	}
+
+	/**
+	 * 
+	 * @return string array with all bibtex urls
+	 */
+	public String[] getBibtexUrls() {
+		return this.bibtexUrls;
+	}
+		
+	/**
+	 * 
+	 * @param bibtexUrls
+	 */
+	public void setBibtexUrls(String[] bibtexUrls) {
+		this.bibtexUrls = bibtexUrls;
+	}	
+		
+	/**
+	 * generates a string from given set in javascript array syntax
+	 * @param list the set
+	 * @return a string of the elements
+	 */
+	private String getArrayToString(SortedSet[] list) {
+		StringBuffer buf = new StringBuffer();
+		
+		buf.append("[");
+		if (list != null) {
+			for (int i=0; i<list.length; i++) {
+				buf.append("[");
+
+				Iterator iter = list[i].iterator();			
+				while(iter.hasNext()) {			
+					buf.append(iter.next());				
+					if(iter.hasNext())
+						buf.append(",");				
+				}
+
+				buf.append("]");
+				if (i != (list.length -1))
+					buf.append(",");
+			}
+		}
+		buf.append("]");		
+		
+		return buf.toString();
+	}	
+}
