@@ -134,7 +134,7 @@
                         </c:if>
 
                       
-                	<form:form action="/actions/postBookmark" method="POST">
+                	<form:form action="/postBookmark" method="POST">
                 		<fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
 							<fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
 								<legend><fmt:message key="general"/></legend>
@@ -191,12 +191,11 @@
 									<td colspan="2" align="center">
 										<c:set var="save"><fmt:message key="save"/></c:set>
 		                                <c:set var="reset"><fmt:message key="resetbutton"/></c:set>
-										<!-- function addSystemTags located in relevantFoxBox.tagx -->
 		                                <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
                                         <input type="hidden" name="jump" value="${fn:escapeXml(command.jump)}"/>
 		                                <form:hidden path="intraHashToUpdate"/>
 										<input type="reset"  tabindex="5" value="${reset}" />
-										<input type="submit" tabindex="6" value="${save}" onClick="clear_tags(); addSystemTags();"/>
+										<input type="submit" tabindex="6" value="${save}" onClick="clear_tags();"/>
 									</td>
 								</tr>
 							</table>	
