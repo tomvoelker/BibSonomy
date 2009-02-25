@@ -667,6 +667,11 @@
 		/myPDF
 		/myDuplicates
 	-->
+	
+	<rule>
+		<from>^/mySearch(\?(.*))?</from>
+		<to last="true">/mySearch</to>
+	</rule>
 	<!-- FIXME: it is very optimistic, to send ALL URLs starting with /my to there ... -->
 	<rule>
 		<name>/my*</name>
