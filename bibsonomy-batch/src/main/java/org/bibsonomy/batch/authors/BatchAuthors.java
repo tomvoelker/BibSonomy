@@ -38,12 +38,10 @@ public class BatchAuthors {
 	 * @param s
 	 * @return
 	 */
-	private static String getLastName(String s) {	
-		if(s != null) {
-			String[] subNames = s.split(" ");
+	private static String getLastName(String[] subNames) {
+		if(subNames.length > 1) {
 			return subNames[subNames.length - 1].trim();
 		}
-		
 		return "";
 	}
 	
@@ -54,15 +52,10 @@ public class BatchAuthors {
 	 * @param s
 	 * @return first name
 	 */
-	private static String getFirstName(String s) {
-		if(s != null) {
-			String[] subNames = s.split(" ");
-			
-			if(subNames.length > 1) {
+	private static String getFirstName(String[] subNames) {
+		if(subNames.length > 1) {
 				return subNames[0].trim();
-			}
 		}
-		
 		return "";
 	}
 	
@@ -73,19 +66,14 @@ public class BatchAuthors {
 	 * @param s
 	 * @return middle name
 	 */
-	private static String getMiddleName(String s) {
-		StringBuffer buf = new StringBuffer();
-		buf.append("");
-
-		if(s != null) {
-			String[] subNames = s.split(" ");
-			
+	private static String getMiddleName(String[] subNames) {
+		if (subNames.length > 2) {
+			String mn = "";
 			for(int i = 1; i < (subNames.length - 1); ++i) {
-				buf.append(subNames[1].trim());
-			}
+				mn +=  subNames[i].trim();
+			}			
 		}
-		
-		return new String(buf);
+		return "";
 	}
 	
 	
@@ -101,8 +89,8 @@ public class BatchAuthors {
 		ResultSet rs = db.getBibtexAuthors(lastId);
 		long last = 0;
 		
-		// TexEncode enc = new TexEncode();
-		Map<String, Author> bibtexAuthorMap = new HashMap<String, Author>(900000, 1);
+		TexEncode enc = new TexEncode();
+		Map<String, Author> bibtexAuthorMap = new HashMap<String, Author>(1500000);
 		
 		// rs.getString(1) = author feld vom bibtex eintrag
 		// rs.getString(2) = content id feld
@@ -110,6 +98,7 @@ public class BatchAuthors {
 		int c = 0;
 		
 		String[] authors;
+		String[] subNames;
 		
 		while(rs.next()) {
 			if(rs.getString(1) == null) {
@@ -120,18 +109,19 @@ public class BatchAuthors {
 			// split author field
 			authors = rs.getString(1).split(" and ");
 			
-			// 280 MB 
+			// memory consumption here: 280 MB (result set) 
 			
 			// loop over all authors			
 			for(int i = 0; i < authors.length; i++) {
 				authors[i] = authors[i].trim();
-				//authors[i] = enc.encode(authors[i]);
+				authors[i] = enc.encode(authors[i]);
 				if(authors[i].length() > 2) {
 					//Author a = new Author();
-					Author a = new Author(getFirstName(authors[i]),
-							getMiddleName(authors[i]),
-							getLastName(authors[i]), authors[i]);							
-					//a.getContentIds().add(rs.getLong(2));
+					subNames = authors[i].split(" ");
+					Author a = new Author(getFirstName(subNames),
+							getMiddleName(subNames),
+							getLastName(subNames), authors[i]);							
+					a.getContentIds().add(rs.getLong(2));
 					// check if author is already in map
 					if (bibtexAuthorMap.containsKey(authors[i]) ) {
 						// is contained -> add content id
@@ -146,13 +136,19 @@ public class BatchAuthors {
 				}
 			} // end for
 			
-			if (c % 1000 == 0) {
-				logger.info("nr. of authors: " + bibtexAuthorMap.size());
+			if (c % 10000 == 0) {
+				logger.info("nr. of bibtex authors: " + bibtexAuthorMap.size());
 				long memUsed = ( Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() ) / 1024;
 				logger.info("memory used: " + memUsed + " KB"); 
 			}
 			last = rs.getLong(2);
 		}
+		
+		// force GC - otherwise we tend to run out of memory...
+		//System.gc();
+		//long memUsed = ( Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() ) / 1024;
+		//logger.info("memory used after GC: " + memUsed + " KB");
+				
 		lastId = last;
 		rs = null;
 		return bibtexAuthorMap;
@@ -173,19 +169,33 @@ public class BatchAuthors {
 		TexEncode enc = new TexEncode();
 		Map<String, Author> authorMap = new HashMap<String, Author>();
 		
+		String authorName;
+		String[] subNames;
+		int c = 0;
+		
 		while(rs.next()) {
-			if(!authorMap.containsKey(rs.getString(2))) {
-				Author a = new Author(enc.encode(getFirstName(rs.getString(2))),
-						enc.encode(getMiddleName(rs.getString(2))),
-						enc.encode(getLastName(rs.getString(2))),
-						enc.encode(rs.getString(2)));
+			authorName = rs.getString(2);			
+			if (authorName == null) continue;
+			c++;
+			if(!authorMap.containsKey(authorName)) {
+				subNames = authorName.split(" ");
+				Author a = new Author(enc.encode(getFirstName(subNames)),
+						enc.encode(getMiddleName(subNames)),
+						enc.encode(getLastName(subNames)),
+						enc.encode(authorName));
 				
 				a.getContentIds().add(rs.getLong(3));
 				a.setAuthorId(rs.getLong(1));
-				authorMap.put(rs.getString(2), a);	
+				authorMap.put(authorName, a);	
 			} else {
-				authorMap.get(rs.getString(2)).getContentIds().add(rs.getLong(3));
+				authorMap.get(authorName).getContentIds().add(rs.getLong(3));
 			}
+			
+			if (c % 10000 == 0) {
+				logger.info("nr. of bibtex authors: " + authorMap.size());
+				long memUsed = ( Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() ) / 1024;
+				logger.info("memory used: " + memUsed + " KB"); 
+			}			
 		}
 		
 		rs = null;
@@ -217,6 +227,9 @@ public class BatchAuthors {
 		Map<String, Author> updateAuthorMap = new HashMap<String, Author>();
 		Map<String, Author> insertAuthorMap = new HashMap<String, Author>();
 		
+		ArrayList<Long> removeList = new ArrayList<Long>();
+		
+		logger.info("Computing which authors to insert / update...");
 		for(String s : sortHashMap(bibtexAuthorMap).keySet()) {
 
 			if(authorMap.containsKey(s)) {
@@ -228,7 +241,7 @@ public class BatchAuthors {
 					updateAuthorMap.put(s, bibtexAuthorMap.get(s));
 					updateAuthorMap.get(s).setAuthorId(authorMap.get(s).getAuthorId());
 					
-					ArrayList<Long> removeList = new ArrayList<Long>();
+					removeList.clear();
 					for(long l : bibtexAuthorMap.get(s).getContentIds()) {
 						if(authorMap.get(s).getContentIds().contains(l)) {
 							removeList.add(l);
@@ -249,6 +262,7 @@ public class BatchAuthors {
 			}
 		}
 		
+		logger.info("Inserting authors...");
 		for(String s : sortHashMap(insertAuthorMap).keySet()) {
 			try {
 				db.insertAuthor(insertAuthorMap.get(s));
@@ -259,6 +273,7 @@ public class BatchAuthors {
 			}
 		}
 		
+		logger.info("Updating authors...");
 		for(String s : sortHashMap(updateAuthorMap).keySet()) {
 			try {
 				db.updateAuthor(updateAuthorMap.get(s));
@@ -266,8 +281,7 @@ public class BatchAuthors {
 				e.printStackTrace();
 				logger.fatal(e.getMessage());
 				continue;
-			}
-			
+			}			
 		}
 	}
 	
@@ -410,7 +424,9 @@ public class BatchAuthors {
 			AuthorDB db = new AuthorDB();
 			db.initDBConnection(database);
 			Map<String, Author> bibtexAuthorMap = fetchBibtexAuthors(db);
+			logger.info ("Done with fetching bibtex authors");
 			Map<String, Author> authorMap = fetchAuthors(db);
+			logger.info ("Done with fetching authors");
 			db.closeDBConnection();
 
 			db = null;
