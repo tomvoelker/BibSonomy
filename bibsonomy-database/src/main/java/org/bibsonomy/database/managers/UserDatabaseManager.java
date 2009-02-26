@@ -415,4 +415,23 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	public String getOpenIDUser(String openID, DBSession session) {
 		return this.queryForObject("getOpenIDUser", openID, String.class, session);
 	}
+	
+	/**
+	 * @param user 
+	 * @param param
+	 * @param session
+	 * @return list of users
+	 */
+	public List<User> getUserFriends(User user, DBSession session) {
+		return this.queryForList("getUserFriends", user.getName().toLowerCase(), User.class, session);
+	}
+
+	/**
+	 * @param user
+	 * @param session
+	 * @return list of users
+	 */
+	public List<User> getFriendsOfUser(User user, DBSession session) {
+		return this.queryForList("getFriendsOfUserByStringAsStrings", user.getName().toLowerCase(), User.class, session);
+	}
 }
