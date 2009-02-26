@@ -9,6 +9,7 @@ import org.bibsonomy.database.managers.chain.tag.get.GetRelatedTagsForGroup;
 import org.bibsonomy.database.managers.chain.tag.get.GetSimilarTags;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByAuthor;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByExpression;
+import org.bibsonomy.database.managers.chain.tag.get.GetTagsByFriendOfUser;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByGroup;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByUser;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsPopular;
@@ -38,6 +39,7 @@ public class TagChain implements FirstChainElement<Tag, TagParam> {
 	private final ChainElement<Tag, TagParam> getTagsByHashForUser;
 //	private final ChainElement<Tag, TagParam> getTagsPopular;
 	private final ChainElement<Tag, TagParam> getPopularTags;
+	private final ChainElement<Tag, TagParam> getTagsByFriendOfUser;
 
 	
 	/**
@@ -57,9 +59,12 @@ public class TagChain implements FirstChainElement<Tag, TagParam> {
 		this.getSimilarTags = new GetSimilarTags();
 //		this.getTagsPopular = new GetTagsPopular();
 		this.getPopularTags = new GetPopularTags();
+		this.getTagsByFriendOfUser = new GetTagsByFriendOfUser();
 
+		
 		this.getTagsByUser.setNext(this.getTagsByGroup);
-		this.getTagsByGroup.setNext(this.getAllTags);
+		this.getTagsByGroup.setNext(this.getTagsByFriendOfUser);
+		this.getTagsByFriendOfUser.setNext(this.getAllTags);
 		this.getAllTags.setNext(this.getSimilarTags);
 		this.getSimilarTags.setNext(this.getRelatedTags);
 		this.getRelatedTags.setNext(this.getTagsByAuthor);
