@@ -18,7 +18,7 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class FriendPageController extends SingleResourceListControllerWithTags implements MinimalisticController<FriendResourceViewCommand> {
-	private static final Logger LOGGER = Logger.getLogger(UserPageController.class);
+	private static final Logger LOGGER = Logger.getLogger(FriendPageController.class);
 
 	public View workOn(final FriendResourceViewCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
@@ -27,7 +27,7 @@ public class FriendPageController extends SingleResourceListControllerWithTags i
 		// no user given -> error
 		if (command.getRequestedUser() == null) {
 			LOGGER.error("Invalid query /friend without friendname");
-			throw new MalformedURLSchemeException("error.user_page_without_username");
+			throw new MalformedURLSchemeException("error.friend_page_without_friendname");
 		}
 
 		// set grouping entity, grouping name, tags
