@@ -928,4 +928,13 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	public List<Tag> getPopularTags(final TagParam param, final DBSession session){
 		return this.queryForList("getPopularTags", param, Tag.class, session);
 	}
+
+	/**
+	 * @param param
+	 * @param session
+	 * @return list of tags from a given friend of a given user
+	 */
+	public List<Tag> getTagsByFriendOfUser(TagParam param, DBSession session) {
+		return this.queryForList("getTagsByFriendOfUser", param, Tag.class, session);
+	}
 }
