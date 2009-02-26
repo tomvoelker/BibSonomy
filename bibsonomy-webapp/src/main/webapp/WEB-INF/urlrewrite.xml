@@ -485,7 +485,7 @@
 		<to type="redirect" last="true">/friend/${escape:%1}</to>
 	</rule>
 	<rule>
-		<name>/friend/</name>
+		<name>/friends/</name>
 		<from>^/+friends/*$</from>
 		<to last="true">/friends</to>
 	</rule>
