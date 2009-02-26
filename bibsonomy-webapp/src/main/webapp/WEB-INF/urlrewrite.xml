@@ -490,12 +490,6 @@
 		<to last="true">/friends</to>
 	</rule>
 	<rule>
-		<name>/friends/</name>
-		<from>^/+friends/*$</from>
-		<set type="parameter" name="page">friend</set>
-		<to last="true">/ResourceHandler</to>
-	</rule>
-	<rule>
 		<name>redirect /friends/USER</name>
 		<from>^/+friend/+([^/]+)/$</from>
 		<to type="redirect" last="true">/friend/${escape:$1}</to>
