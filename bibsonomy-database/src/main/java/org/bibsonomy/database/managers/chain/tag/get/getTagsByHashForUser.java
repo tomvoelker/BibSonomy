@@ -26,13 +26,15 @@ public class getTagsByHashForUser extends TagChainElement {
 			return this.db.getTagsByBibtexHashForUser(	param.getUserName(), 
 														param.getRequestedUserName(), 
 														param.getHash(), HashID.getSimHash(param.getSimHash()), 
+														param.getGroups(),
 														param.getLimit(), 
 														param.getOffset(), 
 														session);
 		else if (param.getContentType() == ConstantID.BOOKMARK_CONTENT_TYPE.getId()) 
 			return this.db.getTagsByBookmarkHashForUser(	param.getUserName(), 
 															param.getRequestedUserName(), 
-															param.getHash(), 
+															param.getHash(),
+															param.getGroups(),
 															param.getLimit(), 
 															param.getOffset(), 
 															session);

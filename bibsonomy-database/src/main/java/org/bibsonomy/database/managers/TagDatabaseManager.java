@@ -816,10 +816,11 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return a list of tags attached to the given user's bookmark with the given hash
 	 */
-	public List<Tag> getTagsByBookmarkHashForUser(final String loginUserName, final String requestedUserName, final String hash, int limit, int offset, final DBSession session) {
+	public List<Tag> getTagsByBookmarkHashForUser(final String loginUserName, final String requestedUserName, final String hash, final List<Integer> visibleGroupIDs, int limit, int offset, final DBSession session) {
 		final TagParam param = new TagParam();
 		param.setHash(hash);
 		param.setUserName(loginUserName);
+		param.addGroups(visibleGroupIDs);
 		param.setRequestedUserName(requestedUserName);
 		param.setLimit(limit);
 		param.setOffset(offset);		
@@ -863,10 +864,11 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return a list of tags attached to a given user's bibtex with the given hash
 	 */
-	public List<Tag> getTagsByBibtexHashForUser(final String loginUserName, final String requestedUserName, final String hash, final HashID hashId, int limit, int offset, final DBSession session) {
+	public List<Tag> getTagsByBibtexHashForUser(final String loginUserName, final String requestedUserName, final String hash, final HashID hashId, final List<Integer> visibleGroupIDs, int limit, int offset, final DBSession session) {
 		final TagParam param = new TagParam();
 		param.setHash(hash);
 		param.setSimHash(hashId);
+		param.addGroups(visibleGroupIDs);		
 		param.setUserName(loginUserName);
 		param.setRequestedUserName(requestedUserName);
 		param.setLimit(limit);
