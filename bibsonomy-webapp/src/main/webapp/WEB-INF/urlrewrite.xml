@@ -455,11 +455,15 @@
 		<to last="true">/group</to>
 	</rule>
 
-	<!-- ############## friends pages ############### -->
+	<!-- ############## friend pages ############### -->
+	<rule><!-- redirect to friends page if user types /friend incidentally -->
+		<name>redirect /friend</name>
+		<from>^/+friend/*$</from>
+		<to  type="redirect" last="true">/friends</to>
+	</rule>
 	<rule><!-- /friend/USER/TAG -->
 		<name>/friend/user/TAG</name>
 		<from>^/+friend/+([^/]+?)/(.+)$</from>
-		<set type="parameter" name="page">frienduser</set>
 		<set type="parameter" name="requestedUser">$1</set>
 		<set type="parameter" name="requestedTags">$2</set>
 		<to last="true">/friend</to>
@@ -573,14 +577,12 @@
 		<set type="parameter" name="requUrlHash">$1</set>
 		<to last="true">/url</to>
 	</rule>
-	<!-- TODO: migrate -->
 	<rule>
 		<name>/url/HASH/USER</name>
 		<from>^/+url/+([0-9a-fA-F]+)/+(.+)$</from>
-		<set type="parameter" name="requUrl">$1</set>
-		<set type="parameter" name="page">userurl</set>
-		<set type="parameter" name="requUser">$2</set>
-		<to last="true">/ResourceHandler</to>
+		<set type="parameter" name="requUrlHash">$1</set>
+		<set type="parameter" name="requestedUser">$2</set>
+		<to last="true">/url</to>
 	</rule>
 
 
