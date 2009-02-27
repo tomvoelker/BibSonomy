@@ -14,26 +14,19 @@
 
 	<c:forEach var="group" items="${groups}" varStatus="status">
 		<c:if test="${not empty group.tagSets}">
-			<div id="field_${group.name}" style="display:none">
+			<div id="field_${fn:escapeXml(group.name)}" style="display:none">
 				<fieldset style="border: 1px solid #069; background-color: #eee; position:relative;">
 					<legend><fmt:message key="actions.admin.group.tagsets"/>${mtl:ch('nbsp')}<fmt:message key="for"/>:${mtl:ch('nbsp')}<c:out value="${group.name}"/></legend> 
 			 		<div align="center">
-				 		<table>
-				 			<tr>
-				 				<c:forEach var="tagset" items="${group.tagSets}" varStatus="status_t">
-									<td>
-										<span class="info_bold"><c:out value="${tagset.setName}"/>:</span>${mtl:ch('nbsp')}
-										<form:select path="" size="1" multiple="false">
-											<!-- show "please select" hint -->
-											<c:set var="pleaseselect"><fmt:message key="post.resource.select"/></c:set>
-											<form:option value="" label="${pleaseselect}"/>
-											<form:options items="${tagset.tags}" itemLabel="${fn:escapeXml('name')}" itemValue="${fn:escapeXml('name')}" onclick="copyOptionTags('inpf',event)"/>
-										</form:select>  
-									</td>
-									<td style="width:10px"/>
-								</c:forEach>
-							</tr>
-						</table>
+		 				<c:forEach var="tagset" items="${group.tagSets}" varStatus="status_t">
+    						<span class="info_bold"><c:out value="${tagset.setName}"/>:</span>${mtl:ch('nbsp')}
+							<form:select path="" size="1" multiple="false" cssStyle="margin-right: 1em;">
+								<!-- show "please select" hint -->
+								<fmt:message var="pleaseselect" key="post.resource.select"/>
+								<form:option value="" label="${pleaseselect}"/>
+								<form:options items="${tagset.tags}" itemLabel="${fn:escapeXml('name')}" itemValue="${fn:escapeXml('name')}" onclick="copyOptionTags('inpf',event)"/>
+							</form:select>
+						</c:forEach>
 					</div>
 				</fieldset>
 			</div>
