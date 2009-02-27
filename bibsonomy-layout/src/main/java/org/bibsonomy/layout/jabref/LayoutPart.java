@@ -35,9 +35,9 @@ public enum LayoutPart {
 	 */
 	ITEM("item");
 
-	public static LayoutPart[] layoutParts = new LayoutPart[]{BEGIN, END, ITEM};
+	public static LayoutPart[] layoutParts = new LayoutPart[]{BEGIN, END, ITEM, EMBEDDEDBEGIN, EMBEDDEDEND};
 	
-	private static String[] allTypes = new String[] {"begin", "item", "end"};
+	private static String[] allTypes = new String[] {BEGIN.name, END.name, ITEM.name, EMBEDDEDBEGIN.name, EMBEDDEDEND.name};
 
 	/**
 	 * The name of a part.
@@ -52,20 +52,15 @@ public enum LayoutPart {
 		return this.name;
 	}
 	
-	public static LayoutPart getLayoutType (String type) {
-		if ("begin".equals(type)) return BEGIN;
-		if ("end".equals(type)) return END;
+	public static LayoutPart getLayoutType (final String typeString) {
+		for (final LayoutPart part: layoutParts) {
+			if (part.getName().equals(typeString)) return part;
+		}
 		return ITEM;
 	}
 
-	private String getString (LayoutPart type) {
-		if (type == BEGIN) return "begin";
-		if (type == END) return "end";
-		return "item";
-	}
-
 	public String toString() {
-		return getString(this);
+		return name;
 	}
 
 	public static String[] getLayoutTypes () {

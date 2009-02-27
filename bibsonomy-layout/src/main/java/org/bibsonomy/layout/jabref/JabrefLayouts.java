@@ -39,11 +39,13 @@ public class JabrefLayouts {
 	 * name.
 	 */
 	private static final String[] subLayouts = new String[] {
-		"", 				/* the default layout - should almost always exist; renders one entry */
-		".begin", 			/* the beginning - is added to the beginning of the rendered entries */
-		".end",				/* the end - is added to the end of the rendered entries */
-		".article",			/* ****************************************************** */ 
-		".inbook",			/* the remaining sublayouts are for different entry types */
+		"", 									/* the default layout - should always exist; renders one entry */
+		"." + LayoutPart.BEGIN.name(), 			/* the beginning - is added to the beginning of the rendered entries */
+		"." + LayoutPart.EMBEDDEDBEGIN.name(),	/* the beginning - for embedded layouts */
+		"." + LayoutPart.END.name(),			/* the end - is added to the end of the rendered entries */
+		"." + LayoutPart.EMBEDDEDEND.name(),	/* the end - for embedded layouts */
+		".article",								/* ****************************************************** */ 
+		".inbook",								/* the remaining sublayouts are for different entry types */
 		".book",
 		".booklet",
 		".incollection",
