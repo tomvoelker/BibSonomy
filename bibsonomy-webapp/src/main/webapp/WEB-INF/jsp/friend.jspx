@@ -15,25 +15,27 @@
 	<layout:resourceLayout pageTitle="${command.pageTitle}" 
 		command="${command}" requPath="${requPath}" 
 		selectedNaviTab="${command.context.loginUser.name != null ? 'nav_my' : ''}">
-		<jsp:attribute name="heading">
-		<h1 id="path"> 
+		
+        <jsp:attribute name="heading">
+		  <h1 id="path"> 
 			<a rel="path_menu" href="/friend"><img src="/resources/image/box_arrow.png" />&amp;nbsp;<fmt:message key="navi.friend"/></a> :: 
 			<a href="/friend/${mtl:encodeURI(param.requestedUser)}"><c:out value="${param.requestedUser}"/></a> ::
 			<form action="/friend/${mtl:encodeURI(param.requestedUser)}" method="GET" class="smallform">
 			  <input type="text" size="20" id="inpf" name="tag" value="${command.requestedTags}"/>
 			</form>
-		</h1> 		
-</jsp:attribute>
-<jsp:attribute name="sidebar">
-	<li>
-		<span class="sidebar_h"><fmt:message key="tags" /></span>
-		<c:if test="${not empty command.requestedTags}">
-			<c:set var="requPath" value="${mtl:getLowerPath(requPath)}" />
-		</c:if>
-		<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}"
-			tagboxMinfreqStyle="none"
-			showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-	</li>   
-</jsp:attribute>	
+		  </h1> 		
+        </jsp:attribute>
+
+        <jsp:attribute name="sidebar">
+	      <li>
+		    <span class="sidebar_h"><fmt:message key="tags" /></span>
+		      <c:if test="${not empty command.requestedTags}">
+			    <c:set var="requPath" value="${mtl:getLowerPath(requPath)}" />
+		      </c:if>
+		    <tags:cloud requPath="${requPath}" cmd="${command.tagcloud}"
+			 tagboxMinfreqStyle="none"
+			 showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
+	      </li>   
+        </jsp:attribute>	
 	</layout:resourceLayout>
 </jsp:root>

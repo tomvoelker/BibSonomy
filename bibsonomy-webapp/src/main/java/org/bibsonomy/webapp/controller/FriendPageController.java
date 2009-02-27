@@ -7,7 +7,7 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.webapp.command.FriendResourceViewCommand;
+import org.bibsonomy.webapp.command.UserResourceViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -17,10 +17,10 @@ import org.bibsonomy.webapp.view.Views;
  * @author Steffen Kress
  * @version $Id$
  */
-public class FriendPageController extends SingleResourceListControllerWithTags implements MinimalisticController<FriendResourceViewCommand> {
+public class FriendPageController extends SingleResourceListControllerWithTags implements MinimalisticController<UserResourceViewCommand> {
 	private static final Logger LOGGER = Logger.getLogger(FriendPageController.class);
 
-	public View workOn(final FriendResourceViewCommand command) {
+	public View workOn(final UserResourceViewCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
 
@@ -64,7 +64,7 @@ public class FriendPageController extends SingleResourceListControllerWithTags i
 			 * add user details to command, if loginUser is admin
 			 */
 			if (Role.ADMIN.equals(logic.getAuthenticatedUser().getRole())) {
-				command.setFriend(logic.getUserDetails(command.getRequestedUser()));
+				command.setUser(logic.getUserDetails(command.getRequestedUser()));
 			}
 
 			this.endTiming();
@@ -77,7 +77,7 @@ public class FriendPageController extends SingleResourceListControllerWithTags i
 		return Views.FRIENDSPAGE;
 	}
 
-	public FriendResourceViewCommand instantiateCommand() {
-		return new FriendResourceViewCommand();
+	public UserResourceViewCommand instantiateCommand() {
+		return new UserResourceViewCommand();
 	}
 }
