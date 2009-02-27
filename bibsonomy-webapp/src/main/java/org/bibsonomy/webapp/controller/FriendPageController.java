@@ -21,7 +21,8 @@ public class FriendPageController extends SingleResourceListControllerWithTags i
 
 	public View workOn(final UserResourceViewCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
-		this.startTiming(this.getClass(), command.getFormat());
+		final String format = command.getFormat();
+		this.startTiming(this.getClass(), format);
 
 		// no user given -> error
 		if (command.getRequestedUser() == null) {
@@ -36,7 +37,7 @@ public class FriendPageController extends SingleResourceListControllerWithTags i
 
 		// determine which lists to initalize depending on the output format
 		// and the requested resourcetype
-		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
+		this.chooseListsToInitialize(format, command.getResourcetype());
 
 		// retrieve and set the requested resource lists, along with total
 		// counts
@@ -48,7 +49,7 @@ public class FriendPageController extends SingleResourceListControllerWithTags i
 		command.setPageTitle("friend :: " + groupingName);
 
 		// html format - retrieve tags and return HTML view
-		if (command.getFormat().equals("html")) {
+		if (format.equals("html")) {
 			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, 20000, null);
 
 			// log if a user has reached threshold
@@ -68,7 +69,7 @@ public class FriendPageController extends SingleResourceListControllerWithTags i
 		}
 		this.endTiming();
 		// export - return the appropriate view
-		return Views.getViewByFormat(command.getFormat());
+		return Views.getViewByFormat(format);
 	}
 
 	public UserResourceViewCommand instantiateCommand() {
