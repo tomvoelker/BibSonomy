@@ -3,7 +3,6 @@ package org.bibsonomy.webapp.controller;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Resource;
@@ -35,17 +34,14 @@ public class FriendPageController extends SingleResourceListControllerWithTags i
 		final String groupingName = command.getRequestedUser();
 		final List<String> requTags = command.getRequestedTagsList();
 
-		FilterEntity filter = null;
-
 		// determine which lists to initalize depending on the output format
 		// and the requested resourcetype
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
 
-
 		// retrieve and set the requested resource lists, along with total
 		// counts
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {
-			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, filter, null, command.getListCommand(resourceType).getEntriesPerPage());
+			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, command.getListCommand(resourceType).getEntriesPerPage());
 			this.postProcessAndSortList(command, resourceType);
 		}
 		// set page title
@@ -64,7 +60,7 @@ public class FriendPageController extends SingleResourceListControllerWithTags i
 			 * add user details to command, if loginUser is admin
 			 */
 			if (Role.ADMIN.equals(logic.getAuthenticatedUser().getRole())) {
-				command.setUser(logic.getUserDetails(command.getRequestedUser()));
+				command.setUser(logic.getUserDetails(groupingName));
 			}
 
 			this.endTiming();
@@ -72,9 +68,7 @@ public class FriendPageController extends SingleResourceListControllerWithTags i
 		}
 		this.endTiming();
 		// export - return the appropriate view
-		//return Views.getViewByFormat(command.getFormat());
-		
-		return Views.FRIENDSPAGE;
+		return Views.getViewByFormat(command.getFormat());
 	}
 
 	public UserResourceViewCommand instantiateCommand() {
