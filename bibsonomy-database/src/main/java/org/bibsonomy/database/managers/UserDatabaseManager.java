@@ -417,6 +417,8 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	/**
+	 * Returns all users which have authUser in their friend list.
+	 * 
 	 * @param authUser 
 	 * @param session
 	 * @return list of users
