@@ -24,6 +24,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.TagUtils;
 
 /**
@@ -262,6 +263,9 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		tagParam.setDate(post.getDate());
 		tagParam.setDescription(post.getDescription());
 		final List<Integer> groups = new ArrayList<Integer>();
+		/*
+		 * copy the groups' ids into the param
+		 */
 		for (final Group group : post.getGroups()) {
 			groups.add(group.getGroupId());
 		}
@@ -403,9 +407,15 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 
 			this.insertTas(param, session);
 
-			/* if post is visible for more than one group, store for each group
-			and each tag one entry in the grouptas table */
-			if(param.getGroups().size() > 1){
+			/* 
+			 * if post is visible for a non exclusive group, store for each group
+			 * and each tag one entry in the grouptas table 
+			 */
+			final int firstGroup = param.getGroups().iterator().next();
+			if (!GroupUtils.isExclusiveGroup(firstGroup)) {
+				/*
+				 * first group found is neither public nor private ... so we have to fill the group tas table!
+				 */
 				this.insertGroupTas(param, session);
 			}
 
