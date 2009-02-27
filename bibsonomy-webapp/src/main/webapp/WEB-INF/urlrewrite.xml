@@ -664,8 +664,10 @@
 		/myDuplicates
 	-->
 	
+	<!-- we need this rule, since without it, mySearch is catched by the next rule -->
 	<rule>
-		<from>^/mySearch(\?(.*))?</from>
+		<name>mySearch</name>
+		<from>^/mySearch</from>
 		<to last="true">/mySearch</to>
 	</rule>
 	<!-- FIXME: it is very optimistic, to send ALL URLs starting with /my to there ... -->
