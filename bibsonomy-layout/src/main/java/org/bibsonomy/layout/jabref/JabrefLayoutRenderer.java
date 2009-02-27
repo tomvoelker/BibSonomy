@@ -73,7 +73,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	 * 
 	 * @see org.bibsonomy.layout.LayoutRenderer#renderLayout(org.bibsonomy.layout.Layout, java.util.List, java.io.OutputStream)
 	 */
-	public <T extends Resource> void renderLayout(final JabrefLayout layout, final List<Post<T>> posts, final OutputStream outputStream) throws LayoutRenderingException, IOException {
+	public <T extends Resource> void renderLayout(final JabrefLayout layout, final List<Post<T>> posts, final OutputStream outputStream, final boolean embeddedLayout) throws LayoutRenderingException, IOException {
 		log.debug("rendering " + posts.size() + " posts with " + layout.getName() + " layout");
 		/*
 		 * XXX: different handling of "duplicates = no" in new code:
@@ -90,7 +90,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 		/*
 		 * render the database
 		 */
-		final StringBuffer renderDatabase = renderDatabase(database, layout);
+		final StringBuffer renderDatabase = renderDatabase(database, layout, embeddedLayout);
 		try {
 			outputStream.write(renderDatabase.toString().getBytes("UTF-8"));
 		} catch (final IOException e) {
@@ -146,16 +146,33 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	 * @param postList Entries to export.
 	 * @param userName User to whom the passed entries belong 
 	 * @param layout - the name of the layout If "custom", export with user specific layout filter
+	 * @param embeddedLayout - if <code>true</code> the corresponding embedded begin/end parts 
+	 * (see {@link LayoutPart}) are used (only if available).
 	 * @return output The formatted BibTeX entries as a string.
 	 * @throws LayoutRenderingException - if a layout could not be found
 	 */
-	private StringBuffer renderDatabase(final BibtexDatabase database, final JabrefLayout layout) throws LayoutRenderingException {
+	private StringBuffer renderDatabase(final BibtexDatabase database, final JabrefLayout layout, final boolean embeddedLayout) throws LayoutRenderingException {
 		final StringBuffer output = new StringBuffer();  
 
 		/* 
 		 * *************** rendering the header ***************** 
 		 */
-		final Layout beginLayout = layout.getSubLayout(LayoutPart.BEGIN);
+		Layout beginLayout = null;
+		/*
+		 * first: try embedded begin layout, if requested.
+		 */
+		if (embeddedLayout) {
+			beginLayout = layout.getSubLayout(LayoutPart.EMBEDDEDBEGIN);
+		} 
+		/*
+		 * second: if not available, take normal begin layout
+		 */
+		if (beginLayout == null) {
+			beginLayout = layout.getSubLayout(LayoutPart.BEGIN);
+		}
+		/*
+		 * third: render, if layout found
+		 */
 		if (beginLayout != null) {
 			output.append(beginLayout.doLayout(database, "UTF-8"));
 		}
@@ -219,7 +236,22 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 		/* 
 		 * *************** rendering the footer ***************** 
 		 */
-		final Layout endLayout = layout.getSubLayout(LayoutPart.END);
+		Layout endLayout = null;
+		/*
+		 * first: try embedded end layout, if requested.
+		 */
+		if (embeddedLayout) {
+			endLayout = layout.getSubLayout(LayoutPart.EMBEDDEDEND);
+		} 
+		/*
+		 * second: if not available, take normal begin layout
+		 */
+		if (endLayout == null) {
+			endLayout = layout.getSubLayout(LayoutPart.END);
+		}
+		/*
+		 * third: render, if layout found
+		 */
 		if (endLayout != null) {
 			output.append(endLayout.doLayout(database, "UTF-8"));
 		}

@@ -36,10 +36,13 @@ public interface LayoutRenderer<LAYOUT extends Layout> {
 	 * @param layout
 	 * @param posts
 	 * @param outputStream
+	 * @param embeddedLayout - if possible, the rendering result should be embeddable into
+	 * a page (i.e., for HTML based layouts: don't render &lt;html&gt; tags) 
+	 * 
 	 * @throws IOException - if there was an internal problem rendering the layout
 	 * @throws LayoutRenderingException - if the layout contains errors
 	 */
-	public <T extends Resource> void renderLayout(final LAYOUT layout, final List<Post<T>> posts, final OutputStream outputStream) throws LayoutRenderingException, IOException;
+	public <T extends Resource> void renderLayout(final LAYOUT layout, final List<Post<T>> posts, final OutputStream outputStream, final boolean embeddedLayout) throws LayoutRenderingException, IOException;
 
 	/** Checks, if the renderer supports the given resource type.
 	 * 

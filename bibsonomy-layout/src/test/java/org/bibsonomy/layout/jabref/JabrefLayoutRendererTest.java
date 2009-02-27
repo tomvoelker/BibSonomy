@@ -37,7 +37,7 @@ public class JabrefLayoutRendererTest {
 			
 			final JabrefLayoutRenderer renderer = getRenderer();
 			final JabrefLayout layout = renderer.getLayout("dblp", "foo");
-			renderer.renderLayout(layout, getPosts(), System.out);
+			renderer.renderLayout(layout, getPosts(), System.out, false);
 		} catch (LayoutRenderingException e) {
 			fail(e.getMessage());
 		} catch (IOException e) {

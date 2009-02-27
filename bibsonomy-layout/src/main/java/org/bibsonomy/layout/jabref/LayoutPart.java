@@ -21,7 +21,15 @@ public enum LayoutPart {
 	/**
 	 * 
 	 */
-	END("end"), 
+	EMBEDDEDBEGIN("embeddedbegin"),
+	/**
+	 * 
+	 */
+	END("end"),
+	/**
+	 * 
+	 */
+	EMBEDDEDEND("embeddedend"),
 	/**
 	 * 
 	 */
