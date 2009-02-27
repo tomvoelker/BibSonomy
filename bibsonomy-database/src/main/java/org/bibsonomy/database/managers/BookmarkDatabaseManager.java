@@ -945,6 +945,11 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @see org.bibsonomy.database.managers.CrudableContent#storePost(java.lang.String, org.bibsonomy.model.Post, java.lang.String, boolean, org.bibsonomy.database.util.DBSession)
 	 */
 	public boolean storePost(final String userName, final Post<Bookmark> post, final String oldIntraHash, boolean update, final DBSession session)  {
+		/*
+		 * FIXME: we need to overwrite the userName in the post with the given userName
+		 * (which comes from loginUser.getName() in DBLogic) - otherwise one can store
+		 * posts under another name! 
+		 */
 		session.beginTransaction();
 		try {
 			/*
