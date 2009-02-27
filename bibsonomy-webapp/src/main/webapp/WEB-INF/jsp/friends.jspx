@@ -16,7 +16,7 @@
 		selectedNaviTab="${command.context.loginUser.name != null ? 'nav_my' : ''}">
 	
 		<jsp:attribute name="heading">
-		<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="friends.friendinput.label"/></a> ::
+		<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.friends"/></a> ::
 		<form action="/friends/" method="GET" class="smallform">
   			<input type="text" size="20" name="user" id="inpf"/>
 		</form>							
