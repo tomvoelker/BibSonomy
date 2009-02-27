@@ -483,13 +483,13 @@ public interface LogicInterface extends PostLogicInterface {
 
 	/**
 	 * @param loginUser
-	 * @return
+	 * @return All users which have loginUser in their friend list. 
 	 */
 	public List<User> getUserFriends(User loginUser);
 	
 	/**
 	 * @param loginUser
-	 * @return
+	 * @return All users which loginUser has in his friend list.
 	 */
 	public List<User> getFriendsOfUser(User loginUser);
 	
