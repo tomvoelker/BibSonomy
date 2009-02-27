@@ -140,7 +140,7 @@
 
 	<!-- additional layouts, installed by us -->
 	<!-- typemap.put("custom",              new OutputType(null, "text/html")); -->
-	<layout name="se">
+	<layout name="se" public="false">
 		<displayName>SE Kassel</displayName>
 		<description>
 			Custom output format provided by the Research Group Software
