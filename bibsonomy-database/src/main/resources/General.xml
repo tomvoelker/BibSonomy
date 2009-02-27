@@ -11,16 +11,6 @@
 		WHERE user_name = #name# AND f_user_name = #friend.name#
 	</select>
 
-	<select id="getFriendsOfUser" resultMap="UserCommon.user" parameterClass="string">
-		SELECT <include refid="commonUserAttributes"/> 
-		FROM (
-		  SELECT u.*
-		    FROM user u JOIN friends f ON (u.user_name = f.f_user_name)
-		    WHERE f.user_name = #requestedUserName#
-		    ORDER BY u.user_name
-		) AS uf
-	</select>
-
 	<select id="isSpammer" resultClass="boolean" parameterClass="string">
 		SELECT spammer FROM user WHERE user_name = #userName#
 	</select>

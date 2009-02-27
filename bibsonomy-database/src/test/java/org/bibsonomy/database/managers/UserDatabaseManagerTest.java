@@ -10,7 +10,6 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.BibTex;
@@ -44,6 +43,17 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		RANDOM_TESTUSER = ParamUtils.getRandomUserName();
 	}
 
+
+	/**
+	 * tests getFriendsOfUser
+	 */
+	@Test
+	public void getFriendsOfUser() {
+		final List<User> friends = this.userDb.getFriendsOfUser("testuser1", this.dbSession);
+		assertNotNull(friends);
+		assertEquals(2, friends.size());
+	}
+	
 	/**
 	 * tests getAllUsers
 	 */

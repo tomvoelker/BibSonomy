@@ -37,12 +37,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	private final static GroupDatabaseManager singleton = new GroupDatabaseManager();
 	private final UserDatabaseManager userDb;
-	private final GeneralDatabaseManager generalDb;
 	private final DatabasePluginRegistry plugins;
 
 	private GroupDatabaseManager() {
 		this.userDb = UserDatabaseManager.getInstance();
-		this.generalDb = GeneralDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
 	}
 
@@ -129,7 +127,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		Group group;
 		if ("friends".equals(groupname)) {
 			group = GroupUtils.getFriendsGroup();
-			group.setUsers(this.generalDb.getFriendsOfUser(authUser,session));
+			group.setUsers(this.userDb.getFriendsOfUser(authUser,session));
 			return group;
 		}
 		if ("public".equals(groupname)) {

@@ -417,21 +417,24 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	/**
-	 * @param user 
-	 * @param param
+	 * @param authUser 
 	 * @param session
 	 * @return list of users
 	 */
-	public List<User> getUserFriends(User user, DBSession session) {
-		return this.queryForList("getUserFriends", user.getName().toLowerCase(), User.class, session);
+	public List<User> getUserFriends(final String authUser, final DBSession session) {
+		return this.queryForList("getUserFriends", authUser, User.class, session);
 	}
 
 	/**
-	 * @param user
+	 * Returns a list of friends for the given user. This list contains all users, which
+	 * <code>authUser</code> has in his/her friend list.
+	 * 
+	 * @param authUser
 	 * @param session
-	 * @return list of users
+	 * @return a list of users
 	 */
-	public List<User> getFriendsOfUser(User user, DBSession session) {
-		return this.queryForList("getFriendsOfUserByStringAsStrings", user.getName().toLowerCase(), User.class, session);
+	public List<User> getFriendsOfUser(final String authUser, final DBSession session) {
+		return this.queryForList("getFriendsOfUser", authUser, User.class, session);
 	}
+
 }

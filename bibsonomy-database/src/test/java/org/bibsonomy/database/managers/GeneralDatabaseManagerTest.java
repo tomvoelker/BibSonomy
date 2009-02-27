@@ -3,15 +3,11 @@ package org.bibsonomy.database.managers;
 import static org.bibsonomy.util.ValidationUtils.present;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.List;
-
 import org.bibsonomy.common.enums.ConstantID;
-import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.Test;
 
@@ -54,16 +50,6 @@ public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 				assertFalse(this.generalDb.isFriendOf(userName, friendUserName, this.dbSession));
 			}
 		}
-	}
-
-	/**
-	 * tests getFriendsOfUser
-	 */
-	@Test
-	public void getFriendsOfUser() {
-		final List<User> friends = this.generalDb.getFriendsOfUser("testuser1", this.dbSession);
-		assertNotNull(friends);
-		assertEquals(2, friends.size());
 	}
 
 	/**

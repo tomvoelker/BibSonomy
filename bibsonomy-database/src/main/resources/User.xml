@@ -86,13 +86,11 @@
 		LIMIT #limit#
 	</select>
 	
-	<select id="getUserFriends" resultMap="UserCommon.friendName"
-		parameterClass="string">
-		SELECT f_user_name FROM friends WHERE user_name = #username#
+	<select id="getUserFriends" resultMap="Common.user"	parameterClass="string">
+		SELECT f_user_name AS user_name FROM friends WHERE user_name = #username#
 	</select>
 	
-	<select id="getFriendsOfUserByStringAsStrings" resultMap="UserCommon.userName"
-		parameterClass="string">
+	<select id="getFriendsOfUser" resultMap="Common.user" parameterClass="string">
 		SELECT user_name FROM friends WHERE f_user_name = #username#
 	</select>
 </sqlMap>

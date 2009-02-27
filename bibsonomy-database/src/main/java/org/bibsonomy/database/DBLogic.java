@@ -147,19 +147,49 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	public List<User> getUserFriends(User loginUser) {
+	/**
+	 * FIXME: use String instead of User
+	 *  
+	 * @see org.bibsonomy.model.logic.LogicInterface#getUserFriends(org.bibsonomy.model.User)
+	 */
+	public List<User> getUserFriends(final User loginUser) {
+		/*
+		 * only logged in users can get a friend list
+		 */
+		this.ensureLoggedIn();
+		/*
+		 * only admins can access the friend list of another user
+		 */
+		if (!loginUser.getName().equals(loginUser.getName())) {
+			this.permissionDBManager.ensureAdminAccess(loginUser);
+		}
 		final DBSession session = openSession();
 		try {
-			return this.userDBManager.getUserFriends(loginUser, session);
+			return this.userDBManager.getUserFriends(loginUser.getName(), session);
 		} finally {
 			session.close();
 		}
 	}
 
-	public List<User> getFriendsOfUser(User loginUser) {
+	/**
+	 * FIXME: use String instead of User
+	 * 
+	 * @see org.bibsonomy.model.logic.LogicInterface#getFriendsOfUser(org.bibsonomy.model.User)
+	 */
+	public List<User> getFriendsOfUser(final User loginUser) {
+		/*
+		 * only logged in users can get a friend list
+		 */
+		this.ensureLoggedIn();
+		/*
+		 * only admins can access the friend list of another user
+		 */
+		if (!loginUser.getName().equals(loginUser.getName())) {
+			this.permissionDBManager.ensureAdminAccess(loginUser);
+		}
 		final DBSession session = openSession();
 		try {
-			return this.userDBManager.getFriendsOfUser(loginUser, session);
+			return this.userDBManager.getFriendsOfUser(loginUser.getName(), session);
 		} finally {
 			session.close();
 		}

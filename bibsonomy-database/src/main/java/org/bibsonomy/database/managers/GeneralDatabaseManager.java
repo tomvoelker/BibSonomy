@@ -2,8 +2,6 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.List;
-
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.BibTexParam;
@@ -76,19 +74,6 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 		 * now we can query the DB, if userA is really userB's friend
 		 */
 		return this.queryForObject("isFriendOf", user, Boolean.class, session);
-	}
-
-	/**
-	 * Returns a list of friends for the given user. This list contains all users, which
-	 * <code>authUser</code> has in his/her friend list.
-	 * 
-	 * @param authUser
-	 * @param session
-	 * @return a list of users
-	 */
-	@SuppressWarnings("unchecked")
-	public List<User> getFriendsOfUser(final String authUser, final DBSession session) {
-		return this.queryForList("getFriendsOfUser", authUser, session);
 	}
 
 	/**

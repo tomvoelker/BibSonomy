@@ -2,9 +2,9 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="UserCommon">
-	<resultMap id="userForGroup" class="user">
+
+	<resultMap id="userForGroup" extends="Common.user" class="user">
 		<result property="homepage"   column="user_homepage"  javaType="url"  />
-		<result property="name"       column="user_name"      javaType="string" />
 		<result property="realname"   column="user_realname"  javaType="string" />
 	</resultMap>
 	
@@ -54,14 +54,6 @@
 		<result property="logLevel"        column="log_level"      javaType="integer" />
 		<result property="defaultLanguage" column="lang" 	       javaType="string" />			
 	</resultMap>	
-	
-	<resultMap id="friendName" class="user">
-		<result property="name" column="f_user_name" javaType="string" />
-	</resultMap>
-	
-	<resultMap id="userName" class="user">
-		<result property="name" column="user_name" javaType="string" />
-	</resultMap>
 
 	<sql id="allUserAttributes">
 		<include refid="commonUserAttributes"/>,
