@@ -1,11 +1,13 @@
 package org.bibsonomy.webapp.validation;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
 import org.bibsonomy.webapp.util.Validator;
@@ -64,10 +66,18 @@ public class PostBookmarkValidator implements Validator<EditBookmarkCommand> {
 		}
 
 		/*
+		 * if no valid (after parsing) tags given, issue an error
+		 */
+		final Set<Tag> tags = post.getTags();
+		if (tags == null || tags.isEmpty()) {
+			errors.rejectValue("tags", "error.field.valid.tags");
+		}
+		
+		/*
 		 * if tag string contains commas, user needs to confirm
 		 */
-		final String tags = command.getTags();
-		if (tags != null && (tags.contains(",") || tags.contains(";")) && !command.isAcceptComma()) {
+		final String tagString = command.getTags();
+		if (tagString != null && (tagString.contains(",") || tagString.contains(";")) && !command.isAcceptComma()) {
 			command.setContainsComma(true);
 			errors.rejectValue("tags", "error.field.valid.tags.comma");
 		}
