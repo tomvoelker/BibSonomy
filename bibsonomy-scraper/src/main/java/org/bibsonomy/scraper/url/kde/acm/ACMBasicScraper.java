@@ -16,6 +16,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.scraper.util.BibTeXUtils;
 import org.bibsonomy.scraper.util.XMLUtils;
+import org.bibsonomy.util.WebUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -61,55 +62,81 @@ public class ACMBasicScraper extends UrlScraper {
 			extractSinglePath(doc);
 
 			/*
-			 * test if "ABSTRACT" is available in an anchor tag, this indicates that an abtract if at hand
+			 * extract the abstract
+			 * 
+			 * structure is as follows:
+			 * 
+			 * <div class="abstract">
+			 *   <A HREF="citation.cfm?id=345231.345249&coll=Portal&dl=GUIDE&CFID=23770365&CFTOKEN=52785444#CIT">
+			 *     <img name="top" src="http://portal.acm.org/images/arrowu.gif" hspace="10" border="0">
+			 *   </A>
+			 *   <SPAN class=heading>
+			 *     <A NAME="abstract">ABSTRACT</A>
+			 *   </span>
+		     *   <p class="abstract">
+		     *     <p>
+		     *     
+		     *       abstract here
+		     *     </p>
+		     *   </p>
+		     * </div>
+		     * 
+		     * NOTE: there might be other (empty!) divs with class="abstract". 
+		     * We have to pick the right one.
+		     * 
+		     * ALSO: sometimes the innermost <p> is missing!
+			 * 
+			 * 
 			 */
-			boolean testAbstract = false;
-			NodeList as1 = doc.getElementsByTagName("a"); //get all <div>-Tags
+			String abstrct = null;
+			final NodeList as1 = doc.getElementsByTagName("a"); // get all <a>-Tags
 			for (int i = 0; i < as1.getLength(); i++) {
-				Node curr = as1.item(i);
+				final Node a = as1.item(i);
 
-				if (curr.hasAttributes()){
-					Element g = (Element)curr;
-					Attr own = g.getAttributeNode("name");
-
-					if (own == null){
-						continue;
-					}
-
-					if ("abstract".equals(own.getValue())) {
-						if ("ABSTRACT".equals(curr.getChildNodes().item(0).getNodeValue())){
-							testAbstract = true;
-							break;
+				/*
+				 * check for "name" attribute which has value "abstract"
+				 */
+				if (a.hasAttributes()) {
+					final Attr name = ((Element)a).getAttributeNode("name");
+					if (name != null && "abstract".equals(name.getValue())) {
+						/*
+						 * we have found the correct <a name="abstract" ... now check its contents
+						 * (child text node)
+						 */
+						if ("ABSTRACT".equals(a.getChildNodes().item(0).getNodeValue())) {
+							/*
+							 * we now have to find the next <p class="abstract">
+							 */
+							final Node span = a.getParentNode();
+							final Node textNode = span.getNextSibling(); // there is whitespace between the nodes ...
+							final Node p = textNode.getNextSibling();    // this should be the <p class="abstract">
+							if (p.hasAttributes()) {
+								final Attr clazz = ((Element)p).getAttributeNode("class");
+								if (clazz != null && "abstract".equals(clazz.getValue())) {
+									 /*
+									  * Check for the innermost <p>. 
+									  *  
+									  * Although this <p> which contains the abstract is contained in the previous
+									  * <p class="abstract"> in the source, <p>'s can't be nested in the DOM tree.
+									  * Hence, we must take the next sibling. 
+									  */
+									final Node nextSibling = p.getNextSibling();
+									if (nextSibling != null && "p".equals(nextSibling.getNodeName())) {
+										abstrct = XMLUtils.getText(nextSibling);
+									} else {
+										/*
+										 * If the innermost <p> is missing, we take the text of the <p ...> at hand
+										 */
+										abstrct = XMLUtils.getText(p);
+									}
+									break;
+								}
+							}
 						}
 
 					}
 				}
 			}
-
-			String abstr = null;
-			//if this "ABSTRACT" is availabe search the parentnode an extract all the text
-			if (testAbstract){
-				NodeList as = doc.getElementsByTagName("p"); //get all <div>-Tags
-				for (int i = 0; i < as.getLength(); i++) {
-					Node curr = as.item(i);
-					if (curr.hasAttributes()){
-						Element g = (Element)curr;
-						Attr own = g.getAttributeNode("class");
-
-						if (own == null){
-							continue;
-						}
-
-						if ("abstract".equals(own.getValue())) {
-							//the abstract extracting method ist not reliable somtime it cant extract text 
-							//out of a <p>-tag. Possibly its the tidy parser who causes this.
-							abstr =  XMLUtils.getText(curr);
-							break;
-						}
-					}
-				}
-			}
-
 
 			/*
 			 * Scrape entries from popup BibTeX site. BibTeX entry on these
@@ -117,7 +144,7 @@ public class ACMBasicScraper extends UrlScraper {
 			 * author = {The Author}, title = {This is the title}...}</pre>
 			 */
 			for (String path: pathsToScrape) {
-				doc = tidy.parseDOM(new ByteArrayInputStream(sc.getContentAsString(new URL(ACM_HOST_NAME + path)).getBytes()), null);
+				doc = tidy.parseDOM(new ByteArrayInputStream(WebUtils.getContentAsString(new URL(ACM_HOST_NAME + path)).getBytes()), null);
 
 				NodeList pres = doc.getElementsByTagName("pre");
 				for (int i = 0; i < pres.getLength(); i++) {
@@ -147,10 +174,10 @@ public class ACMBasicScraper extends UrlScraper {
 			/*
 			 * append abstract
 			 */
-			if (testAbstract) {
-				BibTeXUtils.addFieldIfNotContained(bibtexEntries, "abstract", abstr);
-			}else // log if abstract is not available
-				log.info("ACMBasicScraper: Abstract not avaiable \n" + sc.getPageContent());
+			if (abstrct != null) {
+				BibTeXUtils.addFieldIfNotContained(bibtexEntries, "abstract", abstrct);
+			} else // log if abstract is not available
+				log.info("ACMBasicScraper: Abstract not available \n" + sc.getPageContent());
 
 			final String result = bibtexEntries.toString().trim();
 
@@ -190,7 +217,6 @@ public class ACMBasicScraper extends UrlScraper {
 	 * 
 	 * @param doc The document to extract the popup path from.
 	 * @param snippet
-	 * @return the extracted path
 	 */
 	private void extractSinglePath(Document doc) {
 		NodeList as = doc.getElementsByTagName("a");
