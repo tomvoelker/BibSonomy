@@ -3,7 +3,6 @@
  */
 package org.bibsonomy.webapp.command;
 
-import org.bibsonomy.webapp.util.RequestWrapperContext;
 
 /**
  * command with fields for the resource lists.
@@ -19,10 +18,9 @@ public class ResourceViewCommand extends BaseCommand {
 	private TagCloudCommand tagcloud = new TagCloudCommand();
 	private String requestedUser;
 	private String resourcetype;
-	/**
-	 * delegated to {@link RequestWrapperContext}
-	 */
-//	private String format = "html"; 
+	private String format = "html"; 
+	private String layout; // if format="layout", here the requested layout is stored
+	private boolean formatEmbeded; // 
 	private String sortPage = "none";
 	private String sortPageOrder = "asc";
 	private String duplicates = "yes";
@@ -72,28 +70,26 @@ public class ResourceViewCommand extends BaseCommand {
 	}
 
 	/**
-	 * delegated to {@link RequestWrapperContext}
-	 * 
 	 * @return The requested format.
 	 * 
 	 */
 	public String getFormat() {
-		/**
-		 * delegated to {@link RequestWrapperContext}
-		 */
-		return getContext().getFormat();
-		//return this.format;
+		if (this.format != null && !this.format.trim().equals("")) return this.format;
+		/*
+		 * the default is html
+		 * */
+		return "html";
 	}
 
 	/** 
 	 * delegated to {@link RequestWrapperContext}
 	 */
-//	/**
-//	 * @param format
-//	 */
-//	public void setFormat(String format) {
-//		this.format = format;
-//	}
+	/**
+	 * @param format
+	 */
+	public void setFormat(final String format) {
+		this.format = format;
+	}
 
 	public String getResourcetype() {
 		return this.resourcetype;
@@ -141,5 +137,21 @@ public class ResourceViewCommand extends BaseCommand {
 
 	public void setFilter(String filter) {
 		this.filter = filter;
+	}
+
+	public String getLayout() {
+		return this.layout;
+	}
+
+	public void setLayout(String layout) {
+		this.layout = layout;
+	}
+
+	public boolean getFormatEmbeded() {
+		return this.formatEmbeded;
+	}
+
+	public void setFormatEmbeded(boolean formatEmbeded) {
+		this.formatEmbeded = formatEmbeded;
 	}
 }

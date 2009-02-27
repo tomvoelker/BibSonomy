@@ -8,7 +8,6 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.webapp.util.RequestWrapperContext;
 
 /**
  * command with fields for the resource lists (one list for each resource).
@@ -63,18 +62,4 @@ public class SimpleResourceViewCommand extends ResourceViewCommand {
 		this.bookmark = bookmark;
 	}
 
-
-	/**
-	 * delegated to {@link RequestWrapperContext}
-	 * 
-	 * @return The requested format.
-	 * 
-	 */
-	public String getFormat() {
-		/**
-		 * delegated to {@link RequestWrapperContext}
-		 */
-		return getContext().getFormat();
-		//return this.format;
-	}
 }
