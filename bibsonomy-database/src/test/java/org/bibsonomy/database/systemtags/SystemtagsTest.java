@@ -1,9 +1,5 @@
 package org.bibsonomy.database.systemtags;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -17,13 +13,11 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.ValidationException;
-import org.bibsonomy.database.DBLogicNoAuthInterfaceFactory;
 import org.bibsonomy.database.DBLogicUserInterfaceFactory;
 import org.bibsonomy.database.managers.AbstractDBLogicBase;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.systemstags.SystemTagFactory;
-import org.bibsonomy.database.systemstags.TestMe;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
