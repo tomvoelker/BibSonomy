@@ -1,8 +1,13 @@
 package org.bibsonomy.database.systemstags;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -12,7 +17,11 @@ import javax.xml.bind.Unmarshaller;
 import org.bibsonomy.database.systemstags.xml.Attribute;
 import org.bibsonomy.database.systemstags.xml.SystemTagType;
 import org.bibsonomy.database.systemstags.xml.SystemTagsCollection;
+import org.bibsonomy.database.util.DBSessionFactory;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.PostLogicInterface;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * @author Andreas Koch
@@ -31,6 +40,16 @@ public class SystemTagFactory {
 	 */
 	public static final String GROUPING = "GROUPING";
 
+
+	/**
+	 * Initializer
+	 */
+	static {
+		final ClassPathXmlApplicationContext springBeanFactory = 
+			new ClassPathXmlApplicationContext("systemtags-context.xml");
+		setExecutableSystemTagMap((HashMap<String,SystemTag>)springBeanFactory.getBean("executableSystemTagMap"));
+	}
+	
 	/**
 	 * @return map with executables system tags
 	 */
@@ -49,6 +68,10 @@ public class SystemTagFactory {
 			renewSystemTagMap(BIBSONOMY_SYSTEMTAGS_XML);
 		}
 		return systemTagMap;
+	}
+
+	public static void setExecutableSystemTagMap(HashMap<String, SystemTag> executableSystemTagMap) {
+		SystemTagFactory.executableSystemTagMap = executableSystemTagMap;
 	}
 
 	/**
@@ -87,20 +110,43 @@ public class SystemTagFactory {
 		return null;
 	}
 
-	public static SystemTag createExecutableTag(Tag tag) {
-		return getExecutableSystemTagMap().get(tag);
+	/**
+	 * Check whether given tag matches to a registered system tag and
+	 * initialize corresponding instance on success.
+	 * 
+	 * @param dbLogic Database interface on which tag should operate
+	 * @param sessionFactory session factory for creating new database sessions
+	 * @param tag
+	 * @return null, if given tag doesn't match to a known system tag.
+	 */
+	public static SystemTag createExecutableTag(LogicInterface dbLogic, DBSessionFactory sessionFactory, Tag tag) {
+		if( !SystemTagFactory.isSystemTag(tag.getName()))
+			return null;
+		String name = SystemTagFactory.extractName(tag.getName());
+		SystemTag retVal = null;
+		if( name!=null ) {
+			if( getExecutableSystemTagMap().get(name)!=null ) {
+				retVal = getExecutableSystemTagMap().get(name).newInstance();
+				retVal.setTag(tag);
+				retVal.setLogicInterface(dbLogic);
+				retVal.setDbSessionFactory(sessionFactory);
+			}
+		}
+		return retVal;
 	}
 
+	
 	/**
-	 * 
 	 * @param tag
 	 * @return true if tag is existent
 	 */
 	public static boolean isSystemTag(String tag) {
-		if (tag.equals("web")) {
-			return true;
+		final String name = extractName(tag);
+		
+		if( name!=null ) {
+			return  getExecutableSystemTagMap().containsKey(name) || getSystemTagMap().containsKey(name);
 		}
-		return getExecutableSystemTagMap().containsKey(tag) || systemTagMap.containsKey(tag);
+		return false;
 	}
 
 	public static String getAttributeValue(SystemTagType sTag, String attributeName) {
@@ -110,6 +156,59 @@ public class SystemTagFactory {
 			}
 		}
 		return null;
+	}
+	
+	//------------------------------------------------------------------------
+	// helpers
+	//------------------------------------------------------------------------
+	/**
+	 * Extract system tag's argument.
+	 * @return tag's argument, if found.
+	 */
+	public static String extractArgument(String tagName) {
+		final Pattern sysPrefix = Pattern.compile("^\\s*(sys:|system:)?.*:(.*)");
+		Matcher action = sysPrefix.matcher(tagName);
+		if( action.lookingAt() )
+			return action.group(2);
+		return null;
+	}
+
+	/**
+	 * Extract system tag's name.
+	 * @return tag's name, if found, null otherwise.
+	 */
+	public static String extractName(String tagName) {
+		final Pattern sysPrefix = Pattern.compile("^\\s*(sys:|system:)?(.*):.*");
+		Matcher action = sysPrefix.matcher(tagName);
+		if( action.lookingAt() )
+			return action.group(2);
+		return null;
+	}	
+	
+	/**
+	 * Removes all occurrences of system tags sys:&lt;name&gt;:&lt;argument&gt;,
+	 * system:&lt;name&gt;:&lt;argument&gt; and &lt;name&gt;:&lt;argument&gt;
+	 * 
+	 * @param tags collection of tags to alter 
+	 * @param name name of system tag to remove. If name==null, every system tag will be removed
+	 * @return number of occurrences removed.
+	 */
+	public static int removeSystemTag(Set<Tag> tags, String name) {
+		int nr = 0;
+		
+		Collection<Tag> toRemove = new HashSet<Tag>();
+		// traverse all tags
+		for( Tag tag : tags ) {
+			if( isSystemTag(tag.getName()) && (name!=null||name.equals(extractName(tag.getName()))) ) {
+				toRemove.add(tag);
+				nr++;
+			}
+		}
+		// remove collected occurrences
+		tags.removeAll(toRemove);
+		
+		// all done.
+		return nr;
 	}
 
 	private static void importConfiguration(String systemtagsFile) {

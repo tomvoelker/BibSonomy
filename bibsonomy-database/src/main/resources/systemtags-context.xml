@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+	<!--+
+		| Configuring mapping from system tag names to corresponding tag handler.
+		| General naming scheme is 'sys:<tagname>:<attribute>' - but for backward 
+		| compatibility the system tag dispatcher matches also '<tagname>:<attribute>'.
+		| {@see DBLogic.storePost}
+		+-->
+	<util:map id="executableSystemTagMap" map-class="java.util.HashMap">
+		<entry key="for" value-ref="forGroupTag"/>
+	</util:map>
+	
+	<!--+
+	    | 'for:group' system tag
+	    +-->
+	<bean id="forGroupTag" class="org.bibsonomy.database.systemstags.executable.ForGroupTag"/>
+</beans>

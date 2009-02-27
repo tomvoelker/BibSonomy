@@ -533,18 +533,18 @@ public class DBLogic implements LogicInterface {
 
 			SystemTag stt;
 			for (Tag tag : post.getTags()) {
-				stt = SystemTagFactory.createExecutableTag(tag);
+				stt = SystemTagFactory.createExecutableTag(this, dbSessionFactory, tag);
 				if (stt != null) {
-					stt.performBefore(post);
+					stt.performBefore(post, session);
 				}
 			}
 
 			man.storePost(this.loginUser.getName(), post, oldIntraHash, update, session);
 
 			for (Tag tag : post.getTags()) {
-				stt = SystemTagFactory.createExecutableTag(tag);
+				stt = SystemTagFactory.createExecutableTag(this, dbSessionFactory, tag);
 				if (stt != null) {
-					stt.performAfter(post);
+					stt.performAfter(post, session);
 				}
 			}
 

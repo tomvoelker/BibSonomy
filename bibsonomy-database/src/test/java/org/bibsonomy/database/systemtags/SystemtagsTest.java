@@ -1,29 +1,68 @@
 package org.bibsonomy.database.systemtags;
 
-import java.util.Arrays;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.database.DBLogicNoAuthInterfaceFactory;
+import org.bibsonomy.database.DBLogicUserInterfaceFactory;
+import org.bibsonomy.database.managers.AbstractDBLogicBase;
 import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.systemstags.SystemTagFactory;
+import org.bibsonomy.database.systemstags.TestMe;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.testutil.ParamUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * @author Andreas Koch
  * @version $Id$
  */
-public class SystemtagsTest {
+public class SystemtagsTest extends AbstractDBLogicBase {
 
+	/*
+	// just for debugging
+	public static void main( String[] args ) {
+		SystemtagsTest test = new SystemtagsTest();
+		test.setUp();
+		test.testForGroupTag();
+	}
+	*/
+	
 	@Before
+	@Ignore
 	public void setUp() {
+		super.setUp();
 		SystemTagFactory.renewSystemTagMap("src/test/resources/systemtags/systemtags.xml");
 	}
 
 	@Test
+	@Ignore
 	public void testAttribute() {
 		String groupingTag = "sys:grouping";
 		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, "testuser", GroupingEntity.USER, "testuser", Arrays.asList(new String[] { groupingTag }), "", null, 0, 50, null, null, new User());
@@ -39,6 +78,7 @@ public class SystemtagsTest {
 	}
 
 	@Test
+	@Ignore
 	public void testFormatFalse() {
 		String systemtag = "sys:date:12:03:3";
 		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, "testuser", GroupingEntity.USER, "testuser", Arrays.asList(new String[] { systemtag }), "", null, 0, 50, null, null, new User());
@@ -46,6 +86,7 @@ public class SystemtagsTest {
 	}
 
 	@Test
+	@Ignore
 	public void testBibtexKey() {
 		String systemtag = "sys:bibtexkey:123456";
 		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, "testuser", GroupingEntity.USER, "testuser", Arrays.asList(new String[] { systemtag }), "", null, 0, 50, null, null, new User());
@@ -53,9 +94,232 @@ public class SystemtagsTest {
 	}
 
 	@Test
+	@Ignore
 	public void testDays() {
 		String systemtag = "sys:days:13";
 		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, "testuser", GroupingEntity.USER, "testuser", Arrays.asList(new String[] { systemtag }), "", null, 0, 50, null, null, new User());
 		Assert.assertEquals(13, param.getDays());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testSpring() {
+		// initialize spring bean factory
+		ClassPathXmlApplicationContext springBeanFactory = 
+			new ClassPathXmlApplicationContext("systemtags-context.xml");
+		// create test bean
+		HashMap<String, SystemTag> map = (HashMap<String, SystemTag>) 
+			springBeanFactory.getBean("executableSystemTagMap");
+		
+		Assert.assertNotNull(map.get("for"));
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testArgumentExtraction() {
+		Tag testTag1 = new Tag("for:kde");
+		Tag testTag2 = new Tag("sys:for:kde");
+		Tag testTag3 = new Tag("system:for:kde");
+		Set<Tag> tags = new HashSet<Tag>();
+		tags.add(testTag1);tags.add(testTag2);tags.add(testTag3);
+		
+		for( Tag tag:tags ) {
+			Assert.assertEquals("for", SystemTagFactory.extractName(tag.getName()));
+			String result = "";
+			String expected = "kde";
+			result = SystemTagFactory.extractArgument(tag.getName());
+			Assert.assertEquals(expected, result);
+		}
+		
+		SystemTagFactory.removeSystemTag(tags, "for");
+		Assert.assertEquals(0, tags.size());
+	}
+	
+	@Test
+	public void testForGroupTag() {
+		// create users
+		User testUser1 = createTestUser("forgroupuser1");
+		User testUser2 = createTestUser("forgroupuser2");
+		
+		// create groups 
+		createTestUser("forgroup1");
+		createTestUser("forgroup2");
+		Group testGroup1 = createTestGroup("forgroup1");
+		Group testGroup2 = createTestGroup("forgroup2");
+		
+		// add users to groups
+		this.groupDb.addUserToGroup("forgroup1", "forgroupuser1", this.dbSession);
+		this.groupDb.addUserToGroup("forgroup1", "forgroupuser2", this.dbSession);
+		this.groupDb.addUserToGroup("forgroup2", "forgroupuser2", this.dbSession);
+		
+		// update users
+		testUser1.setGroups(this.groupDb.getGroupsForUser(testUser1.getName(), this.dbSession));
+		testUser2.setGroups(this.groupDb.getGroupsForUser(testUser2.getName(), this.dbSession));
+
+		// create posts
+		Set<Tag> tags1 = new HashSet<Tag>();
+		Set<Tag> tags2 = new HashSet<Tag>();
+		Tag tag1 = new Tag(); tag1.setName("for:forgroup1"); tags1.add(tag1); tags2.add(tag1);
+		Tag tag2 = new Tag(); tag2.setName("for:forgroup2"); tags2.add(tag2);
+		
+		List<Post<?>> posts1 = new LinkedList<Post<?>>();
+		List<Post<?>> posts2 = new LinkedList<Post<?>>();
+		List<Post<?>> posts3 = new LinkedList<Post<?>>();
+		posts1.add(createTestPost(testUser1, tags1));
+		posts2.add(createTestPost(testUser2, tags2));
+		posts3.add(createTestPost(testUser1, tags2));
+		
+		// store posts
+		DBLogicUserInterfaceFactory logicFactory = new DBLogicUserInterfaceFactory(); 
+		logicFactory.setDbSessionFactory(getDbSessionFactory());
+		LogicInterface logic1 = logicFactory.getLogicAccess(testUser1.getName(), "password");
+		LogicInterface logic2 = logicFactory.getLogicAccess(testUser2.getName(), "password");
+		
+		// Scenario: 
+		//    forgroupuser1 is member of forgroup1
+		//    forgroupuser2 is member of forgroup1 and forgroup2
+		// 
+		//    post1 one contains tags 'for:forgroup1'
+		//    post2 one contains tags 'for:forgroup1' and 'for:forgroup2'
+		//    post3 one contains tags 'for:forgroup1' and 'for:forgroup2'
+		//
+		//    post1 is owned by forgroupuser1
+		//    post2 is owned by forgroupuser2
+		//    post3 is owned by forgroupuser1
+		//
+		//    logic1 is forgroupuser1's instance
+		//    logic2 is forgroupuser2's instance
+		
+		// forgroupuser1 gives post1 to forgroup1
+		logic1.createPosts(posts1);
+		List<?> retVal = lookupGroupPost(posts1.get(0), logic1, testGroup1.getName());
+		Assert.assertEquals(1, retVal.size());
+		retVal = lookupGroupPost(posts1.get(0), logic1, testGroup2.getName());
+		Assert.assertEquals(0, retVal.size());
+		
+		// forgroupuser2 gives post1 and post2 to forgroup1
+		logic2.createPosts(posts2);
+		retVal = lookupGroupPost(posts2.get(0), logic2, testGroup2.getName());
+		Assert.assertEquals(1, retVal.size());
+		retVal = lookupGroupPost(posts2.get(0), logic2, testGroup2.getName());
+		Assert.assertEquals(1, retVal.size());
+		
+		// forgroupuser1 gives post3 to forgroup2 -- we expect an error
+		try {
+			logic1.createPosts(posts3);
+			Assert.fail("User was not allowed to write post");
+		} catch (ValidationException ex){
+			// ignore
+		}
+		
+		// forgroupuser1 gives post2 to forgroup1 and forgroup2 -- we expect an error
+		try {
+			logic1.createPosts(posts2);
+			Assert.fail("User was not allowed to write post");
+		} catch (ValidationException ex){
+			// ignore
+		}
+	}
+	
+	//------------------------------------------------------------------------
+	// helpers
+	//------------------------------------------------------------------------
+	private Post <Bookmark> createTestPost(User user, Set<Tag> tags) {
+		// generate post
+		final Post<Bookmark> post = new Post<Bookmark>();
+		final Group group = new Group();
+
+		group.setDescription(null);
+		group.setName("public");
+		group.setGroupId(GroupID.PUBLIC.getId());
+		post.getGroups().add(group);
+
+		post.getTags().addAll(tags);
+		
+		post.setContentId(null); // will be set in storePost()
+		post.setDescription("Some description");
+		post.setDate(new Date());
+		post.setUser(user);
+		final Bookmark resource;
+
+		final Bookmark bookmark = new Bookmark();
+		bookmark.setCount(0);
+		bookmark.setTitle("test");
+		bookmark.setUrl("http://www.testurl.orgg");
+		bookmark.recalculateHashes();
+		resource = bookmark;
+		
+		post.setResource(resource);
+
+		return post;
+	}
+	
+	/**
+	 * Get test user for given name.
+	 * 
+	 * @param name
+	 * @return
+	 */
+	private User createTestUser( String name ) {
+		// lookup
+		User user = this.userDb.getUserDetails(name, this.dbSession);
+		if( user.getName()!=null ) {
+			final List<Post<Bookmark>> posts = 
+				this.bookmarkDb.getBookmarkForUser(null, name, GroupID.INVALID.getId(), new ArrayList<Integer>(), Integer.MAX_VALUE, 0, this.dbSession);
+			for( Post<Bookmark> post : posts ) {
+				this.bookmarkDb.deletePost(name, post.getResource().getHash(), this.dbSession);
+			}
+		} else {
+			user = new User(name);
+			user.setRealname("New Testuser");
+			user.setEmail("new-testuser@bibsonomy.org");
+			user.setHomepage(ParamUtils.EXAMPLE_URL);
+			user.setPassword("password");
+			user.setApiKey("00000000000000000000000000000000");
+			user.getSettings().setDefaultLanguage("zv");
+			user.setSpammer(false);
+			user.setRole(Role.DEFAULT);
+			user.setToClassify(1);
+			user.setAlgorithm(null);
+			this.userDb.createUser(user, this.dbSession);
+		}
+		return user;
+	}
+	
+	/**
+	 * Get test group for given name.
+	 * 
+	 * @param name
+	 * @return
+	 */
+	private Group createTestGroup( String name ) {
+		Group group = this.groupDb.getGroupByName(name, this.dbSession);
+		if( group!=null ) {
+			this.groupDb.deleteGroup(name, this.dbSession);
+		};
+		group = new Group();
+		group.setName(name);
+		this.groupDb.storeGroup(group, false, this.dbSession);
+
+		return group;
+	}
+
+	/**
+	 * Lookup given post for given group.
+	 * 
+	 * @param <T>
+	 * @param post
+	 * @param logic
+	 * @param groupName
+	 * @return
+	 */
+	private <T extends Resource> List<Post<T>> lookupGroupPost(Post<T> post, LogicInterface logic, String groupName ) {
+		final GroupingEntity groupingEntity = GroupingEntity.USER;
+		List<String> tags = new LinkedList<String>();
+		// FIXME: why does GetPostsForGroup chain element not allow hash-selection?
+		List<Post<T>> groupPosts = logic.getPosts(
+				(Class<T>)post.getResource().getClass(), groupingEntity, groupName, tags, 
+				post.getResource().getIntraHash(), null, null, 0, Integer.MAX_VALUE, "");
+		return groupPosts;
 	}
 }

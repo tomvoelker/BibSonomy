@@ -121,7 +121,8 @@ public abstract class AbstractDatabaseManagerTest {
 
 		JNDITestDatabaseBinder.unbind();
 		// FIXME: hack ("DBSessionImpl not closed")		
-		this.dbSession.close();
+		if( this.dbSession!=null )
+			this.dbSession.close();
 	}
 
 	/**

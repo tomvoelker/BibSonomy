@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -19,6 +20,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.UserUtils;
 
+
 /**
  * Database Manager for permissions
  * 
@@ -29,6 +31,8 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 
 	private final static PermissionDatabaseManager singleton = new PermissionDatabaseManager();
 	private final GroupDatabaseManager groupDb;
+	
+	private static final Logger log = Logger.getLogger(PermissionDatabaseManager.class);
 
 	private PermissionDatabaseManager() {
 		this.groupDb = GroupDatabaseManager.getInstance();
@@ -189,6 +193,19 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		return false;
 	}
 
+	/**
+	 * Ensures that the user is member of given group.
+	 * 
+	 * @param userName 
+	 * @param groupName 
+	 * @param session 
+	 */
+	public void ensureMemberOfGroup(final String userName, final String groupName, DBSession session) {
+		final Integer groupID = this.groupDb.getGroupIdByGroupNameAndUserName(groupName, userName, session);
+		if( groupID==GroupID.INVALID.getId() )
+			throw new ValidationException("You are not authorized to perform the requested operation.");
+	}
+	
 	/**
 	 * Ensures that the user is an admin.
 	 * 
