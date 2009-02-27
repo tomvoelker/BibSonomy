@@ -36,16 +36,6 @@ public class RequestWrapperContext {
 		this.request = request;
 	}
 	
-	/** Extract format from request. If not given, defaults to <code>html</code>.
-	 * 
-	 * @return The requested format.
-	 */
-	public String getFormat() {
-		final String format = (String) getRequestAttribute("format");
-		if (format != null && !format.trim().equals("")) return format;
-		return "html";
-	}
-	
 	/** Returns the logged in user.
 	 *  
 	 * @return An instance of the logged in user.

@@ -39,22 +39,6 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 	@Override
 	protected void renderMergedOutputModel(final Map model, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
 		/*
-		 * get requested layout
-		 * FIXME: we transfer this by the UrlRewriteFilter using request attributes 
-		 * ... probably this is not a good idea 
-		 */
-		final String layout   = (String) request.getAttribute("layout");
-		/*
-		 * get the requested path
-		 * we need it to generate the file names for inline content-disposition
-		 * FIXME: The path is written into the request by the UrlRewriteFilter 
-		 * ... probably this is not a good idea
-		 */
-		final String requPath = (String) request.getAttribute("requPath");
-
-		log.info("rendering layout " + layout + " for path " + requPath);
-
-		/*
 		 * get the data
 		 */
 		final Object object = model.get(BaseCommandController.DEFAULT_COMMAND_NAME);
@@ -64,6 +48,22 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 			 */
 			final SimpleResourceViewCommand command = (SimpleResourceViewCommand) object;
 			final String loginUserName = command.getContext().getLoginUser().getName();
+
+			/*
+			 * get requested layout
+			 */
+			final String layout = command.getLayout();
+			final boolean formatEmbeded = command.getFormatEmbeded(); 
+			/*
+			 * get the requested path
+			 * we need it to generate the file names for inline content-disposition
+			 * FIXME: The path is written into the request by the UrlRewriteFilter 
+			 * ... probably this is not a good idea
+			 */
+			final String requPath = (String) request.getAttribute("requPath");
+
+			log.info("rendering layout " + layout + " for user " + loginUserName + " with path " + requPath);
+
 			/*
 			 * 
 			 */
@@ -78,7 +78,7 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 					/*
 					 * render publication posts
 					 */
-					renderResponse(layout, requPath, publicationPosts, loginUserName, response);
+					renderResponse(layout, requPath, publicationPosts, loginUserName, response, formatEmbeded);
 				} else {
 					/*
 					 * we could not find a suitable renderer - this should never happen!
@@ -125,7 +125,7 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 	 * @throws LayoutRenderingException
 	 * @throws IOException
 	 */
-	private <T extends Resource> void renderResponse(final String layoutName, final String requPath, final List<Post<T>> posts, final String loginUserName, final HttpServletResponse response) throws LayoutRenderingException, IOException {
+	private <T extends Resource> void renderResponse(final String layoutName, final String requPath, final List<Post<T>> posts, final String loginUserName, final HttpServletResponse response, final boolean formatEmbeded) throws LayoutRenderingException, IOException {
 
 		final LAYOUT layout = layoutRenderer.getLayout(layoutName, loginUserName);
 
@@ -147,7 +147,7 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 		/*
 		 * do the real rendering
 		 */
-		layoutRenderer.renderLayout(layout, posts, response.getOutputStream());
+		layoutRenderer.renderLayout(layout, posts, response.getOutputStream(), formatEmbeded);
 	}
 
 	
