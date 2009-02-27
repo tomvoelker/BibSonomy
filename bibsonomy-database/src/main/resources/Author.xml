@@ -4,14 +4,15 @@
 <sqlMap namespace="Author">
 
 	<select id="getAuthors" resultMap="AuthorCommon.author">
-		SELECT ctr, last_name
-		FROM (
-			SELECT ctr, last_name
-			FROM author
+        SELECT ctr, last_name
+        FROM (
+            SELECT SUM(ctr) AS ctr, last_name
+            FROM author
+            GROUP BY last_name
 			ORDER BY ctr DESC
-			LIMIT 100
-		) AS tab
-		ORDER BY last_name
+            LIMIT 100
+        ) AS tab
+        ORDER BY last_name
 	</select>
 
 </sqlMap>
