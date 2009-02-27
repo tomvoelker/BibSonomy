@@ -209,7 +209,7 @@ INSERT INTO `ids` VALUES
 (4,  1,  'cycle id'),
 (5,  0,  'extended_fields_id'),
 (7,  0,  'scraper_metadata_id'),
-(12, 24, 'grouptas id');
+(12, 28, 'grouptas id');
 
 
 -- 
