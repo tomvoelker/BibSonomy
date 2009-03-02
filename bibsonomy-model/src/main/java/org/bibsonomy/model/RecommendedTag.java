@@ -36,5 +36,10 @@ public class RecommendedTag extends Tag implements Comparable<Tag> {
 		this.confidence = confidence;
 	}
 	
+	@Override
+	public String toString() {
+		return super.toString() + " (score=" + score + ", confidence=" + confidence + ")";
+	}
+	
 
 }
