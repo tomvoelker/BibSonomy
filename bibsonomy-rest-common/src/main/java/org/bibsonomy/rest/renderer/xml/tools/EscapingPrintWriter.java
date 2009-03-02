@@ -55,6 +55,6 @@ public class EscapingPrintWriter extends Writer {
 	 */
 	@Override
 	public void write(char[] cbuf, int off, int len) throws IOException {
-		this.pw.write(XmlUtils.removeXmlControlCharacters(cbuf), off, len);
+		this.pw.write(XmlUtils.removeXmlControlCharacters(cbuf, true), off, len);
 	}
 }
