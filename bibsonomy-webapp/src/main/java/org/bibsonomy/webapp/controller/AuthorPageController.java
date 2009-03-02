@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.systemstags.SystemTags;
+import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.util.ValidationUtils;
@@ -24,34 +26,48 @@ public class AuthorPageController extends SingleResourceListController implement
 		LOGGER.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
 
-		final String authorName = command.getRequestedAuthor();
+		// get author query - it might still contain some system tags at this point!
+		String authorQuery = command.getRequestedAuthor();
 
 		// if no author given throw error 		
-		if (!ValidationUtils.present(authorName)) {
+		if (!ValidationUtils.present(authorQuery)) {
 			LOGGER.error("Invalid query /author without author name");
 			throw new MalformedURLSchemeException("error.author_page_without_authorname");
-		}		
-				
-		// set grouping entity and grouping name
-		final GroupingEntity groupingEntity = GroupingEntity.VIEWABLE;
+		}
+						
+		// set grouping entity = ALL
+		final GroupingEntity groupingEntity = GroupingEntity.ALL;
+		
 		/*
 		 * FIXME: the query supports only ONE tag!
 		 */
 		final List<String> requTags = command.getRequestedTagsList();
-		
+				
+		// check for further system tags
+		List<String> sysTags = SystemTagsUtil.extractSystemTagsFromString(authorQuery, " ");
+		if (sysTags.size() > 0) {
+			// remove them from the query
+			authorQuery = removeSystemtagsFromQuery(authorQuery, sysTags);
+			// add them to the tags list
+			requTags.addAll(sysTags);
+		}
+				
+		// add the requested author as a system tag
+		requTags.add(SystemTagsUtil.buildSystemTagString(SystemTags.AUTHOR, authorQuery));
+				
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
 		
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {
-			this.setList(command, resourceType, groupingEntity, null, requTags, null, null, null, authorName, command.getListCommand(resourceType).getEntriesPerPage());
+			this.setList(command, resourceType, groupingEntity, null, requTags, null, null, null, null, command.getListCommand(resourceType).getEntriesPerPage());
 			this.postProcessAndSortList(command, resourceType);
 		}		
 		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(command.getFormat())) {
-			this.setTags(command, BibTex.class, groupingEntity, null, null, requTags, null, null, 0, 1000, authorName);
+			this.setTags(command, BibTex.class, groupingEntity, null, null, requTags, null, null, 0, 1000, null);
 			this.endTiming();
 			return Views.AUTHORPAGE;			
 		}
@@ -62,5 +78,14 @@ public class AuthorPageController extends SingleResourceListController implement
 	
 	public AuthorResourceCommand instantiateCommand() {
 		return new AuthorResourceCommand();
+	}
+	
+	
+	private String removeSystemtagsFromQuery(String authorQuery, List<String> sysTags) {
+		for (String sysTag : sysTags) {
+			// remove them from author query string
+			authorQuery = authorQuery.replace(sysTag, "");
+		}
+		return authorQuery;
 	}
 }
