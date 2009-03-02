@@ -54,16 +54,33 @@
 	
 	<!--  +
 		  | Get list of pairs containing given bookmark's most popular tag name and frequency
+		  | - Only take public posts into account!
 		  + -->
 	<select id="getMostPopularTagsForBookmark" parameterClass="postParam" resultMap="RecommendationLogCommon.tagFrequency">
 		SELECT tag_lower as first, COUNT(tag_lower) as second 
 		  FROM tas t 
-		WHERE user_name = #userName# 
+		    JOIN bookmark b USING (content_id)
+		  WHERE b.book_url_hash = #intraHash#
+		    AND b.group = 0
+		  GROUP BY tag_lower 
+		  ORDER BY COUNT(tag_lower) DESC 
+		  LIMIT #range#
+	</select>
+	
+	<!--  +
+		  | Get list of pairs containing given publication's most popular tag name and frequency
+		  + -->
+	<select id="getMostPopularTagsForBibTeX" parameterClass="postParam" resultMap="RecommendationLogCommon.tagFrequency">
+		SELECT tag_lower as first, COUNT(tag_lower) as second 
+		  FROM tas t
+		    JOIN bibtex b USING (content_id) 
+		WHERE b.simhash2 = #intraHash#
+		  AND b.group = 0 
 		GROUP BY tag_lower 
 		ORDER BY COUNT(tag_lower) DESC 
 		LIMIT #range#
-	</select>
-	
+	</select>	
+		
 	<!-- +
 		 | Get number of tags used by 
 		 + --> 
@@ -71,6 +88,28 @@
 		SELECT COUNT(DISTINCT tag_lower) 
 		FROM tas 
 		WHERE user_name = #userName#
+	</select>
+
+	<!-- +
+		 | Get number of tags for bookmark 
+		 + --> 
+	<select id="getNumberOfTagsForBookmark" parameterClass="string" resultClass="integer">
+		SELECT COUNT(DISTINCT tag_lower) 
+		  FROM tas 
+		    JOIN bookmark b USING (content_id)  
+		  WHERE b.book_url_hash = #intraHash#
+		    AND b.group = 0
+	</select>
+	
+		<!-- +
+		 | Get number of tags used by 
+		 + --> 
+	<select id="getNumberOfTagsForBibTeX" parameterClass="string" resultClass="integer">
+		SELECT COUNT(DISTINCT tag_lower) 
+		  FROM tas
+		    JOIN bibtex b USING (content_id) 
+		  WHERE b.simhash2 = #intraHash#
+		    AND b.group = 0
 	</select>
 
 	<!--+

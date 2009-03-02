@@ -24,7 +24,9 @@ import org.bibsonomy.recommender.tags.TagRecommender;
 public class MostPopularByUserTagRecommender implements TagRecommender {
 	private static final Logger log = Logger.getLogger(DBAccess.class);
 	
-	private static final int MAX_NUMBER_OF_TAGS = 5;
+	private static final int DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND = 5;
+	
+	private int numberOfTagsToRecommend = DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND;	
 	
 	public void addRecommendedTags(final SortedSet<RecommendedTag> recommendedTags, final Post<? extends Resource> post) {
 		recommendedTags.addAll(getRecommendedTags(post));
@@ -50,7 +52,7 @@ public class MostPopularByUserTagRecommender implements TagRecommender {
 				 */
 				final Integer count = DBAccess.getNumberOfTagsForUser(username);
 				
-				final List<Pair<String,Integer>> tags = DBAccess.getMostPopularTagsForUser(username, MAX_NUMBER_OF_TAGS);
+				final List<Pair<String,Integer>> tags = DBAccess.getMostPopularTagsForUser(username, numberOfTagsToRecommend);
 				for (Pair<String,Integer> tag : tags) {
 					// TODO: use some sensible confidence value
 					final double tmp = (1.0*tag.getSecond())/count;
@@ -63,5 +65,20 @@ public class MostPopularByUserTagRecommender implements TagRecommender {
 		}
 		// all done
 		return result;
+	}
+	
+	/**
+	 * @return The (maximal) number of tags this recommender shall return.
+	 */
+	public int getNumberOfTagsToRecommend() {
+		return this.numberOfTagsToRecommend;
+	}
+
+	/** Set the (maximal) number of tags this recommender shall return. The default is {@value #DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND}.
+	 * 
+	 * @param numberOfTagsToRecommend
+	 */
+	public void setNumberOfTagsToRecommend(int numberOfTagsToRecommend) {
+		this.numberOfTagsToRecommend = numberOfTagsToRecommend;
 	}
 }
