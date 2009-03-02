@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.systemstags.SystemTags;
+import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.BibtexkeyCommand;
@@ -38,7 +40,7 @@ public class BibtexkeyPageController extends SingleResourceListController implem
 			// disable manual setting of start value for homepage
 			command.getListCommand(resourceType).setStart(0);
 			ArrayList<String> listWithBibtexKey = new ArrayList<String>();
-			listWithBibtexKey.add("sys:bibtexkey:"+command.getRequestedKey());
+			listWithBibtexKey.add(SystemTagsUtil.buildSystemTagString(SystemTags.BIBTEXKEY, command.getRequestedKey()));
 			setList(command, resourceType, GroupingEntity.ALL, null, listWithBibtexKey, null, null, null, null, 20);
 			
 			postProcessAndSortList(command, resourceType);

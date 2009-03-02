@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.systemstags.SystemTags;
+import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -58,7 +60,7 @@ public class PopularPageController extends MultiResourceListController implement
 		do{
 			for (final Class<? extends Resource> resourceType : listsToInitialise) {
 				//overwrite with systemtag
-				tags.set(0, "sys:days:" + begin);
+				tags.set(0, SystemTagsUtil.buildSystemTagString(SystemTags.DAYS, begin));
 				//determine the value of popular days, e.g. the last 10 days
 				days = this.logic.getPostStatistics(resourceType, groupingEntity, null, tags, null, order, null, 0, this.getEntriesPerPage(), null, null);
 				//only retrieve and set the requested resource lists if days > 0
