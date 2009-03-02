@@ -39,6 +39,28 @@ import org.bibsonomy.util.HashUtils;
  */
 public class UserUtils {
 
+	
+	/** Checks, if the given user is the special DBLP user 
+	 * (which has some special rights).
+	 *  
+	 * @param user
+	 * @return <code>true</code>, if <code>user</code> is the DBLP user.
+	 */
+	public static boolean isDBLPUser(final User user) {
+		return isDBLPUser(user.getName());
+	}
+	
+	
+	/** Checks, if the given user name is the special DBLP user 
+	 * (which has some special rights).
+	 *  
+	 * @param userName - the name of the user in question.
+	 * @return <code>true</code>, if <code>user</code> is the DBLP user.
+	 */
+	public static boolean isDBLPUser(final String userName) {
+		return "dblp".equalsIgnoreCase(userName);
+	}
+	
 	/**
 	 * Generates an Api key with a MD5 message digest from a random number.
 	 * 
