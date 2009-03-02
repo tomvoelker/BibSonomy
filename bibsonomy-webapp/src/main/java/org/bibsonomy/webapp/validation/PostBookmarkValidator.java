@@ -69,7 +69,7 @@ public class PostBookmarkValidator implements Validator<EditBookmarkCommand> {
 		 * if no valid (after parsing) tags given, issue an error
 		 */
 		final Set<Tag> tags = post.getTags();
-		if (tags == null || tags.isEmpty()) {
+		if (tags != null && tags.isEmpty() && !errors.hasFieldErrors("tags")) {
 			errors.rejectValue("tags", "error.field.valid.tags");
 		}
 		
