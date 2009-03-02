@@ -28,7 +28,7 @@ public class BatchAuthors {
 
 	private final static String PID_FILE = "batch_authors.pid";
 	private static long lastId;
-	private static Logger logger = Logger.getRootLogger();
+	private static Logger logger = Logger.getLogger(BatchAuthors.class);
 
 
 
@@ -71,7 +71,8 @@ public class BatchAuthors {
 			String mn = "";
 			for(int i = 1; i < (subNames.length - 1); ++i) {
 				mn +=  subNames[i].trim();
-			}			
+			}
+			return mn;
 		}
 		return "";
 	}
@@ -86,8 +87,11 @@ public class BatchAuthors {
 	 * @throws SQLException
 	 */
 	private static Map<String, Author> fetchBibtexAuthors(AuthorDB db) throws SQLException {
-		ResultSet rs = db.getBibtexAuthors(lastId);
-		long last = 0;
+		ResultSet rs = db.getBibtexAuthors(lastId);		
+		// memory consumption here: 280 MB (result set)
+		
+		// last content Id fetched
+		long lastContentId = 0;
 		
 		TexEncode enc = new TexEncode();
 		Map<String, Author> bibtexAuthorMap = new HashMap<String, Author>(1500000);
@@ -109,24 +113,29 @@ public class BatchAuthors {
 			// split author field
 			authors = rs.getString(1).split(" and ");
 			
-			// memory consumption here: 280 MB (result set) 
-			
+			// get content ID from result
+			lastContentId = rs.getLong(2);
+						
 			// loop over all authors			
 			for(int i = 0; i < authors.length; i++) {
 				authors[i] = authors[i].trim();
 				authors[i] = enc.encode(authors[i]);
 				if(authors[i].length() > 2) {
-					//Author a = new Author();
+					// we split the author name already here - if we do it in the
+					// getFirstName... - functions, we consume a lot of temporary 
+					// memory
 					subNames = authors[i].split(" ");
+					// create new author object
 					Author a = new Author(getFirstName(subNames),
 							getMiddleName(subNames),
-							getLastName(subNames), authors[i]);							
-					a.getContentIds().add(rs.getLong(2));
+							getLastName(subNames), authors[i]);
+					// add current content ID to author object
+					a.getContentIds().add(lastContentId);
 					// check if author is already in map
 					if (bibtexAuthorMap.containsKey(authors[i]) ) {
 						// is contained -> add content id
 						if(authors[i].length() > 2) {
-							bibtexAuthorMap.get(authors[i]).getContentIds().add(rs.getLong(2));
+							bibtexAuthorMap.get(authors[i]).getContentIds().add(lastContentId);
 						}
 					}
 					else {
@@ -136,21 +145,22 @@ public class BatchAuthors {
 				}
 			} // end for
 			
-			if (c % 10000 == 0) {
+			if (c % 1000 == 0) {
 				logger.info("nr. of bibtex authors: " + bibtexAuthorMap.size());
 				long memUsed = ( Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() ) / 1024;
-				logger.info("memory used: " + memUsed + " KB"); 
+				logger.info("memory used: " + memUsed + " KB");
+				logger.info("Calling GC...");
+				System.gc();
 			}
-			last = rs.getLong(2);
 		}
+						
+		lastId = lastContentId;
 		
-		// force GC - otherwise we tend to run out of memory...
-		//System.gc();
-		//long memUsed = ( Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() ) / 1024;
-		//logger.info("memory used after GC: " + memUsed + " KB");
-				
-		lastId = last;
+		// clean memory
 		rs = null;
+		enc = null;
+		System.gc();
+		
 		return bibtexAuthorMap;
 	}
 	
@@ -182,8 +192,7 @@ public class BatchAuthors {
 				Author a = new Author(enc.encode(getFirstName(subNames)),
 						enc.encode(getMiddleName(subNames)),
 						enc.encode(getLastName(subNames)),
-						enc.encode(authorName));
-				
+						enc.encode(authorName));				
 				a.getContentIds().add(rs.getLong(3));
 				a.setAuthorId(rs.getLong(1));
 				authorMap.put(authorName, a);	
@@ -195,11 +204,16 @@ public class BatchAuthors {
 				logger.info("nr. of bibtex authors: " + authorMap.size());
 				long memUsed = ( Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() ) / 1024;
 				logger.info("memory used: " + memUsed + " KB"); 
+				logger.info("Calling GC...");
+				System.gc();				
 			}			
 		}
 		
+		// clean memory
 		rs = null;
 		enc = null;
+		System.gc();
+		
 		return authorMap;
 	}
 	
