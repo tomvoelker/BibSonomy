@@ -83,7 +83,7 @@ public class ForGroupTag extends SystemTag {
 		// first check preconditions: user is member of given group
 		//--------------------------------------------------------------------
 		String groupName = getValue();
-		getPermissionDb().ensureMemberOfGroup(post.getUser().getName(), groupName, session);
+		getPermissionDb().ensureMemberOfNonSpecialGroup(post.getUser().getName(), groupName, session);
 			
 		
 		// get group and corresponding user
