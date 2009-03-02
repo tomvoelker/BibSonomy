@@ -67,6 +67,14 @@ CREATE TABLE recommender_selectormap(
 	PRIMARY KEY (query_id, selector_id)
 ) DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS recommender_selection;
+CREATE TABLE recommender_selection (
+	query_id BIGINT(20) UNSIGNED NOT NULL DEFAULT '0', 
+	setting_id BIGINT(20) UNSIGNED NOT NULL DEFAULT '0', 
+	PRIMARY KEY (query_id, setting_id)
+) DEFAULT CHARSET=utf8;
+
+
 DROP TABLE IF EXISTS `recommender_bookmark`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;

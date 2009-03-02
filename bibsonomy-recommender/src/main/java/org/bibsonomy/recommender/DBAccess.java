@@ -190,7 +190,30 @@ public class DBAccess extends AbstractDatabaseManager {
 		return selectorID;
 	}
 
-
+	/**
+	 * Add id of recommender selected for given query.
+	 * 
+	 * @param qid query_id 
+	 * @param sid recommender's setting id
+	 * @throws SQLException 
+	 */
+	public static void addSelectedRecommender(Long qid, Long sid) throws SQLException {
+		SqlMapClient sqlMap = getSqlMapInstance();
+	   	try {
+    		sqlMap.startTransaction();
+    		
+    		RecQuerySettingParam queryMap = new RecQuerySettingParam();
+    		queryMap.setQid(qid); 
+    		queryMap.setSid(sid);
+    		// insert recommender settings
+    		sqlMap.insert("addQuerySelection", queryMap);
+    		
+    		sqlMap.commitTransaction();
+    	} finally {
+    		sqlMap.endTransaction();
+    	}				
+	}
+	
 	/**
 	 * Add recommender's recommended tags.
 	 * 
@@ -288,6 +311,19 @@ public class DBAccess extends AbstractDatabaseManager {
 	    return queryResult;
 	}		
 	
+	/**
+	 * Get list of recommender settings which where selected for given query.
+	 * 
+	 * @param qid query_id
+	 * @return list of recommender settings 
+	 * @throws SQLException 
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<Long> getSelectedRecommenderIDs(Long qid) throws SQLException {
+		List<Long> queryResult = (List<Long>)getSqlMapInstance().queryForList("getQuerySelection", qid);
+	    // all done.
+	    return queryResult;
+	}
 	
 	/**
 	 * Get list of newest tas entries
@@ -410,6 +446,28 @@ public class DBAccess extends AbstractDatabaseManager {
 	 */
 	public static RecSettingParam getRecommender(Long sid) throws SQLException {
 		return (RecSettingParam)getSqlMapInstance().queryForObject("getRecommenderByID", sid);
+	}
+	
+	/**
+	 * Get list of all recommenders (id) which delivered tags in given query.
+	 * @param qid query id
+	 * @return list of ids
+	 * @throws SQLException 
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<Long> getActiveRecommenderIDs(Long qid) throws SQLException {
+		return (List<Long>)getSqlMapInstance().queryForList("getRecommenderIDsForQuery", qid);
+	}
+
+	/**
+	 * Get list of all recommenders (id) which delivered tags in given query.
+	 * @param qid query id
+	 * @return list of ids
+	 * @throws SQLException 
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<Long> getAllRecommenderIDs(Long qid) throws SQLException {
+		return (List<Long>)getSqlMapInstance().queryForList("getAllRecommenderIDsForQuery", qid);
 	}
 
 	/**
