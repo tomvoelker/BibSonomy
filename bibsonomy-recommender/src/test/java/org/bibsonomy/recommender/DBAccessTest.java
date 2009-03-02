@@ -1,20 +1,17 @@
 package org.bibsonomy.recommender;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
-import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
-import org.bibsonomy.common.enums.GroupID;
-import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -22,10 +19,12 @@ import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.recommender.multiplexer.MultiplexingTagRecommender;
 import org.bibsonomy.recommender.params.RecQueryParam;
 import org.bibsonomy.recommender.params.RecSettingParam;
 import org.bibsonomy.recommender.params.SelectorSettingParam;
+import org.bibsonomy.recommender.testutil.JNDITestDatabaseBinder;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -46,6 +45,17 @@ public class DBAccessTest {
 		obj.testAddNewSelector();
 		obj.testAddSelectedTags();
     }
+	
+	@Before
+	public void setUp() {
+		// bind datasource access via JNDI
+		JNDITestDatabaseBinder.bind();
+	}
+	
+	@After
+	public void tearDown() {
+		JNDITestDatabaseBinder.unbind();
+	}
 	
 	/**
 	 * Test registering a new recommender

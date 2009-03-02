@@ -3,14 +3,6 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
 "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
 <sqlMapConfig>
 	<!--
-		Die properties-Datei stellt diverse Name/Wert-Paare (name=value)
-		bereit, die in dieser Konfigurationsdatei einfach mit Platzhaltern der
-		Form “${driver}” referenziert werden können. Die properties-Datei ist
-		üblicherweise im Klassenpfad angegeben. Eine properties-Datei Angabe
-		ist optional.
-	-->
-	<properties resource="SqlMapConfig_recommender.properties" />
-	<!--
 		Die folgende Einstellungen spezifizieren Details der SqlMap
 		Konfiguration wie zum Beispiel das Transaktion Management. Sie sind
 		alle optional (Details im Handbuch).
@@ -60,11 +52,8 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
 		properties aus oben angegebener properties-Datei.
 	-->
 	<transactionManager type="JDBC">
-		<dataSource type="SIMPLE">
-			<property name="JDBC.Driver" value="${driver}" />
-			<property name="JDBC.ConnectionURL" value="${url}" />
-			<property name="JDBC.Username" value="${username}" />
-			<property name="JDBC.Password" value="${password}" />
+		<dataSource type="JNDI">
+			<property name="DataSource" value="java:comp/env/jdbc/bibsonomy_recommender"/>
 		</dataSource>
 	</transactionManager>
 	<!--

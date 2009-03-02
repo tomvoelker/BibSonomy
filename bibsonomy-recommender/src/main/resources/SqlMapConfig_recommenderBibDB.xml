@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
 <sqlMapConfig>
-	<!--
-		The properties (name=value) in the file specified here can be used
-		placeholders in this config file (e.g. ${driver}. The file is usually
-		relative to the classpath and is optional.
-	-->
-	<properties resource="SqlMapConfig_recommender.properties" />
 
 	<!--
 		These settings control SqlMap configuration details, primarily to do
@@ -32,11 +26,8 @@
 		resource
 	-->
 	<transactionManager type="JDBC">
-		<dataSource type="SIMPLE">
-			<property name="JDBC.Driver" value="${driver}" />
-			<property name="JDBC.ConnectionURL" value="${jdbc.url.bibDB}" />
-			<property name="JDBC.Username" value="${username.bibDB}" />
-			<property name="JDBC.Password" value="${password.bibDB}" />
+		<dataSource type="JNDI">
+			<property name="DataSource" value="java:comp/env/jdbc/bibsonomy"/>
 		</dataSource>
 	</transactionManager>
 
