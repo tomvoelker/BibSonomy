@@ -1,0 +1,1 @@
+<p>\begin{author}\format[AuthorLastFirstAbbreviator,AuthorAndsReplacer,HTMLChars]{\author}: \end{author}<i>\begin{title}\format[HTMLChars]{\title}. \end{title}</i>\begin{address}\format[HTMLChars]{\address}, \end{address}\begin{school}\format[HTMLChars]{\school}, \end{school}\begin{type}\format[HTMLChars]{\type}, \end{type}\begin{year}\format[HTMLChars]{\year}\end{year}</p>

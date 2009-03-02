@@ -173,8 +173,22 @@
 	</layout>
 	<layout name="din1505">
 		<displayName>DIN 1505</displayName>
-		<description>HTML output format according to the German Institute for Standardization (DIN).</description>
+		<description>
+			HTML output format according to the German Institute for
+			Standardization (DIN).
+		</description>
 		<baseFileName>din1505</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="mms">
+		<displayName>DIN 1505 MMS</displayName>
+		<description>
+			HTML output format according to the German Institute for
+			Standardization (DIN). Special version of the
+			Mensch-Maschine-Systemtechnik Institute.
+		</description>
+		<baseFileName>din1505mms</baseFileName>
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
