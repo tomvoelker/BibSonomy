@@ -200,7 +200,9 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param groupName 
 	 * @param session 
 	 */
-	public void ensureMemberOfGroup(final String userName, final String groupName, DBSession session) {
+	public void ensureMemberOfNonSpecialGroup(final String userName, final String groupName, DBSession session) {
+		if( GroupID.isSpecialGroup(groupName))
+			throw new ValidationException("Special groups not allowed for this system tag.");
 		final Integer groupID = this.groupDb.getGroupIdByGroupNameAndUserName(groupName, userName, session);
 		if( groupID==GroupID.INVALID.getId() )
 			throw new ValidationException("You are not authorized to perform the requested operation.");
