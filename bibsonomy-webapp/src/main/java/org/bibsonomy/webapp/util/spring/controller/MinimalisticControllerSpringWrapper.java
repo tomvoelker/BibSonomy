@@ -3,6 +3,8 @@
  */
 package org.bibsonomy.webapp.util.spring.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +26,7 @@ import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
@@ -43,6 +46,8 @@ import org.springframework.web.servlet.mvc.BaseCommandController;
  */
 public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends BaseCommandController {
 	private static final String CONTROLLER_ATTR_NAME = "minctrlatrr";
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
 	private String controllerBeanName;
 	private static final Logger LOGGER = Logger.getLogger(MinimalisticControllerSpringWrapper.class);
 	
@@ -209,6 +214,18 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 	@Override
 	protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
 		super.initBinder(request, binder);
+
+		/*
+		 * Register a custom date editor to support binding of date fields.
+		 * 
+		 * FIXME: This is a HACK to allow the DBLP update to set the date of 
+		 * (bookmark) posts. The problem is, that the date format is now fixed 
+		 * for ALL our controllers, since we can't override this initBinder
+		 * method (since we're using this MinimalisticController ... wrapper)
+		 *  
+		 */
+		binder.registerCustomEditor(Date.class, new CustomDateEditor(DATE_FORMAT,false));
+
 		/*
 		 * setting the dis/allowed fields for the binder
 		 */
