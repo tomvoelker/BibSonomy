@@ -24,6 +24,8 @@
 package org.bibsonomy.util;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -220,5 +222,19 @@ public class StringUtils {
 		} 
 		return sb.toString();
 	}
+	
+	/**
+	 * Implode a String array into a single string, delimited by a given delimiter
+	 * 
+	 * @param pieces -
+	 * 			an array of strings
+	 * @param delim -
+	 * 			a delimiter
+	 * @return concatenated representation of the string array
+	 */
+	public static String implodeStringArray(String[] pieces, String delim) {
+		return implodeStringCollection(Arrays.asList(pieces), delim);
+	}
+	
     
 }
