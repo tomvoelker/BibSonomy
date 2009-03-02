@@ -188,7 +188,8 @@
 			Standardization (DIN). Special version of the
 			Mensch-Maschine-Systemtechnik Institute.
 		</description>
-		<baseFileName>din1505mms</baseFileName>
+		<directory>mms</directory>
+		<baseFileName>mms</baseFileName>
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
