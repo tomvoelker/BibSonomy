@@ -27,6 +27,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.model.util.tagparser.TagString3Lexer;
 import org.bibsonomy.model.util.tagparser.TagString3Parser;
 import org.bibsonomy.util.ValidationUtils;
@@ -214,6 +215,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 	 */
 	@SuppressWarnings("unchecked")
 	private View handleUpdatePost(EditBookmarkCommand command, final RequestWrapperContext context, final User loginUser, final Post<Bookmark> post, final String intraHashToUpdate) {
+		final String loginUserName = loginUser.getName();
 		/*
 		 * we're editing an existing post
 		 */
@@ -223,7 +225,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 			 * ckey is invalid, so this is probably the first call --> get post
 			 * from DB
 			 */
-			final Post<Bookmark> dbPost = (Post<Bookmark>) logic.getPostDetails(intraHashToUpdate, loginUser.getName());
+			final Post<Bookmark> dbPost = (Post<Bookmark>) logic.getPostDetails(intraHashToUpdate, loginUserName);
 			if (dbPost == null) {
 				/*
 				 * invalid intra hash: post could not be found
@@ -266,7 +268,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 			/*
 			 * URL has changed -> check, if new URL already bookmarked
 			 */
-			final Post<Bookmark> dbPost = (Post<Bookmark>) logic.getPostDetails(post.getResource().getIntraHash(), loginUser.getName());
+			final Post<Bookmark> dbPost = (Post<Bookmark>) logic.getPostDetails(post.getResource().getIntraHash(), loginUserName);
 			if (dbPost != null) {
 				log.debug("user already owns this URL ... handling update");
 				/*
@@ -293,12 +295,17 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		final List<Post<?>> posts = new LinkedList<Post<?>>();
 		posts.add(post);
 		/*
-		 * update date TODO: don't we want to keep the posting date unchanged
-		 * and only update the date? --> actually, this does currently not work,
-		 * since the DBLogic doesn't set the date and thus we get a NPE from the
-		 * database
+		 * Overwrite the date with the current date, if not posted by the DBLP user.
 		 */
-		post.setDate(new Date());
+		if (!UserUtils.isDBLPUser(loginUserName)) {
+			/*
+			 * update date TODO: don't we want to keep the posting date unchanged
+			 * and only update the date? --> actually, this does currently not work,
+			 * since the DBLogic doesn't set the date and thus we get a NPE from the
+			 * database
+			 */
+			post.setDate(new Date());	
+		}
 		/*
 		 * update post in DB
 		 */
@@ -314,9 +321,10 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		/*
 		 * leave if and reach final redirect
 		 */
-		return finalRedirect(command.isJump(), loginUser.getName(), post.getResource().getUrl());
+		return finalRedirect(command.isJump(), loginUserName, post.getResource().getUrl());
 	}
 
+	
 	/**
 	 * Create the final redirect after successful creating / updating a post. if
 	 * jump is <code>true</code>, we redirect to the given postUrl. Otherwise
@@ -350,6 +358,8 @@ public class PostBookmarkController extends SingleResourceListController impleme
 
 	@SuppressWarnings("unchecked")
 	private View handleCreatePost(EditBookmarkCommand command, final RequestWrapperContext context, final User loginUser, final Post<Bookmark> post) {
+		final String loginUserName = loginUser.getName();
+
 		/*
 		 * no intra hash given --> user posts a new entry (which might already
 		 * exist!)
@@ -359,7 +369,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		 * check, if post already exists
 		 */
 		post.getResource().recalculateHashes();
-		final Post<Bookmark> dbPost = (Post<Bookmark>) logic.getPostDetails(post.getResource().getIntraHash(), loginUser.getName());
+		final Post<Bookmark> dbPost = (Post<Bookmark>) logic.getPostDetails(post.getResource().getIntraHash(), loginUserName);
 		if (dbPost != null) {
 			log.debug("user already owns this URL ... handling update");
 			/*
@@ -422,7 +432,12 @@ public class PostBookmarkController extends SingleResourceListController impleme
 			return getPostBookmarkView(command, loginUser);
 		}
 
-		post.setDate(new Date());
+		/*
+		 * Overwrite the date with the current date, if not posted by the DBLP user.
+		 */
+		if (!UserUtils.isDBLPUser(loginUserName)) {
+			post.setDate(new Date());
+		}
 
 		/*
 		 * create list for posting
@@ -436,7 +451,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		final String createPosts = logic.createPosts(posts).get(0);
 		log.debug("created post: " + createPosts);
 
-		return finalRedirect(command.isJump(), loginUser.getName(), post.getResource().getUrl());
+		return finalRedirect(command.isJump(), loginUserName, post.getResource().getUrl());
 	}
 
 	/**
