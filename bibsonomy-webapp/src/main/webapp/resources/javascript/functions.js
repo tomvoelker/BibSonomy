@@ -1005,7 +1005,6 @@ function xget_event (event) {
 		}
 	}
 
-	/*	removes all the crap ;)	*/
 	function clearSuggestion() {
 
 		var sg = document.getElementById("suggested");
@@ -1016,13 +1015,11 @@ function xget_event (event) {
 				copyRows[i].style.backgroundColor = "";
 			}
 		}
+		
 		while(sg.hasChildNodes())
 			sg.removeChild(sg.firstChild);
 	}
 	
-	/*
-	 * Sammlung, an welchen Stellen sich eine Relation befindet
-	 */
 	
 	function getRelations(input) {
 		var relList = new Array();
