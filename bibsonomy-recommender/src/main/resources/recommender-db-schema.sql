@@ -16,7 +16,8 @@ CREATE TABLE recommender_result(
 	score DOUBLE NOT NULL,
 	confidence DOUBLE NOT NULL,
 	tag VARCHAR(255) NOT NULL,
-	PRIMARY KEY (query_id, setting_id, tag)
+   PRIMARY KEY (result_id),
+   UNIQUE KEY (query_id, setting_id, tag)
 ) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS recommender_recommendations;
