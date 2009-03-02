@@ -12,6 +12,13 @@
    <uri></uri>
    <info>Some helpers to shorten syntax</info>
 
+	<tag>
+		<name>cdata</name>
+		<tagclass>tags.CData</tagclass>
+		<bodycontent>empty</bodycontent>
+		<info>Writes an XML CDATA section around the given content</info>
+	</tag> 
+
   <tag>
     <name>encode</name>
     <tagclass>tags.Encode</tagclass>
