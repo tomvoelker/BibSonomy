@@ -53,7 +53,7 @@
 		<p>
  	      <fmt:message key="post.resource.suggested"/>
           <br/>
-          <span id="suggested" class="suggtag"></span>
+          <span><span id="suggested" class="suggtag"></span>${mtl:ch('nbsp')}</span>
 		</p>
     
 	</fieldset>		

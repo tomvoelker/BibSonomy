@@ -26,6 +26,8 @@
 				<td>
 	                <!-- select box for "other" groups -->
 	                <form:select path="relevantGroups" size="5">
+                        <fmt:message var="pleaseselect" key="post.resource.select"/>
+                        <form:option value="" label="${pleaseselect}"/>
 	                	<form:options items="${groups}" onclick="showTagSets(event)" itemLabel="${fn:escapeXml('name')}" itemValue="${fn:escapeXml('name')}"/>
 	                </form:select>
 	            </td>
