@@ -39,9 +39,7 @@
 	min-width: 900px;
 }
 
-#nice_tnav { /*border-top-width: 1px;
-	border-top-style: solid;
-	border-top-color: #D5D5D5;*/
+#nice_tnav { 
 	border-bottom-width: 1px;
 	border-bottom-style: solid;
 	border-bottom-color: #AEAEAE;
@@ -139,7 +137,7 @@
 
 /* Drop Down Menu */
 #nice_tnav .nicedropmenudiv {
-	width: 200px;
+	min-width: 200px;
 	position: absolute;
 	border-right: 1px solid #6F6F6F;
 	border-left: 1px solid #6F6F6F;
