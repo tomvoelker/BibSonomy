@@ -6,6 +6,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SearchEntity;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.DBSession;
@@ -31,11 +32,11 @@ public class GetBibTexByAuthorAndTag extends BibTexChainElement {
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return (param.getGrouping() == GroupingEntity.VIEWABLE &&
+		return (SearchEntity.AUTHOR.equals(param.getSearchEntity()) &&
+				present(param.getSearch()) && 
 				!present(param.getBibtexKey()) &&
 				present(param.getTagIndex()) &&
 				!present(param.getHash()) &&
-				nullOrEqual(param.getOrder(), Order.ADDED) &&
-				present(param.getSearch()));
+				nullOrEqual(param.getOrder(), Order.ADDED));
 	}
 }

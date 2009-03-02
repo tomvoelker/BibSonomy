@@ -37,6 +37,7 @@ public class GetTagsByGroup extends TagChainElement {
 		return (param.getGrouping() == GroupingEntity.GROUP &&
 				present(param.getRequestedGroupName()) &&
 				!present(param.getTagIndex()) &&
-				!present(param.getRegex()));
+				!present(param.getRegex()) &&
+				!present(param.getSearch()));
 	}
 }

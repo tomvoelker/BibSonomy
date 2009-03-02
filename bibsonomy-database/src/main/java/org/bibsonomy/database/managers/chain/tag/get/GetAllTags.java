@@ -28,6 +28,7 @@ public class GetAllTags extends TagChainElement {
 		return (param.getGrouping() == GroupingEntity.ALL &&
 				param.getOrder() != Order.POPULAR &&
 				!present(param.getTagIndex()) &&
-				!present(param.getHash()));
+				!present(param.getHash()) &&
+				!present(param.getSearch()));
 	}
 }

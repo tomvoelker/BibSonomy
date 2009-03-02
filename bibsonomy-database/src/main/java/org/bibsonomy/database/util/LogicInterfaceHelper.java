@@ -1,10 +1,14 @@
 package org.bibsonomy.database.util;
 
+import java.util.Arrays;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.SearchEntity;
+import org.bibsonomy.database.managers.chain.ChainElement;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
@@ -19,6 +23,9 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.UserUtils;
+import org.bibsonomy.util.StringUtils;
+
+import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
 
 /**
  * Supplies methods to adapt the LogicInterface to the database layer.
@@ -28,6 +35,8 @@ import org.bibsonomy.model.util.UserUtils;
  * @version $Id$
  */
 public class LogicInterfaceHelper {
+	
+	protected static final Logger logger = Logger.getLogger(ChainElement.class);
 
 	/**
 	 * Builds a param object for the given parameters from the LogicInterface.
@@ -75,8 +84,11 @@ public class LogicInterfaceHelper {
 		
 		param.setUserName(authUser);
 		param.setGrouping(grouping);
+		
+		// default search searches over all possible fields
 		if (search != null) {
 			param.setSearch(search);
+			param.setSearchEntity(SearchEntity.ALL);
 		}
 		if (grouping != GroupingEntity.GROUP) {
 			param.setRequestedUserName(groupingName);
@@ -104,6 +116,7 @@ public class LogicInterfaceHelper {
 		if (tags != null) {
 			for (String tag : tags) {
 				tag = tag.trim();
+				logger.debug("working on input tag: " + tag);
 
 				if (tag.length() > 2) {
 					if (tag.contains(":")) {
@@ -162,12 +175,16 @@ public class LogicInterfaceHelper {
 
 	private static boolean handleSystemTag(String tag, GenericParam param) {
 
+		logger.debug("working on possible system tag " + tag);
 		String tagName;
+		String tagValue;
 		String[] tags = tag.split(":");
 		if (tag.startsWith("sys:") || tag.startsWith("system:")) {
 			tagName = tags[1];
+			tagValue = StringUtils.implodeStringArray(Arrays.copyOfRange(tags, 2, tags.length), ":").trim();
 		} else {
 			tagName = tags[0];
+			tagValue = StringUtils.implodeStringArray(Arrays.copyOfRange(tags, 1, tags.length), ":").trim();
 		}
 
 		SystemTagType sTag = SystemTagFactory.createTag(tagName, tag.substring(tag.indexOf(tagName) + tagName.length()));
@@ -175,18 +192,79 @@ public class LogicInterfaceHelper {
 			GroupingEntity ge = GroupingEntity.getGroupingEntity(SystemTagFactory.getAttributeValue(sTag, SystemTagFactory.GROUPING));
 			if (ge != null) {
 				param.setGrouping(ge);
+				logger.debug("set grouping entity to " + ge);
+				if (GroupingEntity.USER.equals(ge)) {
+					param.setRequestedUserName(tagValue);
+				}
+				if (GroupingEntity.GROUP.equals(ge)) {
+					param.setRequestedGroupName(tagValue);
+				}
 			}
 			return true;
 		} else if (tagName.equals("bibtexkey")) {
-			// :bibtexkey:
-			((BibTexParam) param).setBibtexKey(tag.substring(14).trim());
+			// :bibtexkey: add bibtex key to param object
+			((BibTexParam) param).setBibtexKey(tagValue);
+			logger.debug("set bibtex key to " + tagValue + " after matching for bibtexkey system tag");
 			return true;
 		} else if (tagName.equals("days")) {
-			// clear the tagindex and set the value
+			// :days: clear the tagindex and set the value
 			param.getTagIndex().clear();
-			param.setDays(Integer.parseInt(tag.substring(9).trim()));
-		}
-
+			param.setDays(Integer.parseInt(tagValue));
+			logger.debug("set days to " + tagValue + " after matching for days system tag");
+			return true;
+		} else if (tagName.equals("author")) {
+			// sys:author: set search entity accordingly
+			param.setSearchEntity(SearchEntity.AUTHOR);
+			param.setSearch(tagValue);
+			logger.debug("set search to " + tagValue + " after matching for author system tag");
+			return true;
+		} else if (tagName.equals("user")) {
+			// this is just a workaround until the SystemTagFactory stuff above is working
+			param.setGrouping(GroupingEntity.USER);
+			param.setRequestedUserName(tagValue);
+			logger.debug("set grouping to 'user' and requestedUserName to " + tagValue + " after matching for user system tag");
+			return true;
+		} else if (tagName.equals("group")) {
+			// this is just a workaround until the SystemTagFactory stuff above is working
+			param.setGrouping(GroupingEntity.GROUP);
+			param.setRequestedGroupName(tagValue);
+			logger.debug("set grouping to 'group' and requestedGroupName to " + tagValue + " after matching for group system tag");
+			return true;
+		} else if (tagName.equals("year")) {
+			// this just another workaround until the System Tags implementation works correctly
+			if (! (param instanceof BibTexParam) ) {
+				// do nothing for bookmarks here
+				return true;
+			}
+			// 1st case: year explicitly given
+            if (tagValue.matches("[12]{1}[0-9]{3}")) {
+            	((BibTexParam) param).setYear(tagValue);
+            	logger.debug("Set year to " + tagValue + "after matching year system tag");
+            	return true;
+            } 
+            // 2nd case: range (e.g. 2001-2006)
+            else if (tagValue.matches("[12]{1}[0-9]{3}-[12]{1}[0-9]{3}")) {
+                String[] years = tagValue.split("-");
+                ((BibTexParam) param).setFirstYear(years[0]);
+                ((BibTexParam) param).setLastYear(years[1]);
+            	logger.debug("Set firstyear/lastyear to " + years[0] + "/" + years[1] + "after matching year system tag");
+            	return true;
+            }
+            // 3rd case: upper bound (e.g -2005) means all years before 2005 
+            else if(tagValue.matches("-[12]{1}[0-9]{3}")) {
+            	((BibTexParam) param).setLastYear(tagValue.substring(1,tagValue.length()));
+            	logger.debug("Set lastyear to " + tagValue + "after matching year system tag");
+            	return true;
+            }
+            // 4th case: lower bound (e.g 1998-) means all years since 1998 
+            else if(tagValue.matches("[12]{1}[0-9]{3}-")) {
+            	((BibTexParam) param).setFirstYear(tagValue.substring(0,tagValue.length()-1));
+            	logger.debug("Set firstyear to " + tagValue + "after matching year system tag");
+            	return true;            	
+            }			
+			
+		}		
+		
 		return false;
 	}
 
@@ -213,4 +291,5 @@ public class LogicInterfaceHelper {
 			throw new RuntimeException("Can't instantiate param: " + type.getName());
 		}
 	}
+	
 }

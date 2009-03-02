@@ -12,6 +12,7 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.SearchEntity;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.model.BibTex;
@@ -154,6 +155,7 @@ public abstract class GenericParam {
 	private Order order;
 	private GroupingEntity grouping;
 	private FilterEntity filter;
+	private SearchEntity searchEntity;
 	/*
      * the days of a popular resource
      * TODO: please document use better. This are not really
@@ -573,5 +575,13 @@ public abstract class GenericParam {
 
 	public void setDays(int days) {
 		this.days = days;
+	}
+
+	public void setSearchEntity(SearchEntity searchEntity) {
+		this.searchEntity = searchEntity;
+	}
+
+	public SearchEntity getSearchEntity() {
+		return searchEntity;
 	}	
 }

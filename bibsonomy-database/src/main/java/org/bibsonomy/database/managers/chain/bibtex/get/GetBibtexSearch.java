@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SearchEntity;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.DBSession;
@@ -30,6 +31,7 @@ public class GetBibtexSearch extends BibTexChainElement {
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
 		return (param.getGrouping() == GroupingEntity.ALL &&
+				SearchEntity.ALL.equals(param.getSearchEntity()) &&				
 				!present(param.getBibtexKey()) &&
 				present(param.getSearch()));
 	}

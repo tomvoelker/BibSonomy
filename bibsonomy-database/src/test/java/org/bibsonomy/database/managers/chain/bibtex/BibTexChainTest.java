@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SearchEntity;
 import org.bibsonomy.database.managers.chain.AbstractChainTest;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibTexByAuthor;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibTexByAuthorAndTag;
@@ -276,13 +277,14 @@ public class BibTexChainTest extends AbstractChainTest {
 	 */
 	@Test
 	public void getBibtexByAuthor() {
-		this.bibtexParam.setGrouping(GroupingEntity.VIEWABLE);
+		this.bibtexParam.setGrouping(GroupingEntity.ALL);
 		this.bibtexParam.setRequestedUserName(null);
 		this.bibtexParam.setHash(null);
 		this.bibtexParam.setOrder(null);
 		this.bibtexParam.setTagIndex(null);
 		this.bibtexParam.setGroupId(-1);
 		this.bibtexParam.setSearch("Grahl");
+		this.bibtexParam.setSearchEntity(SearchEntity.AUTHOR);
 		this.bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, this.chainStatus);
 		assertEquals(GetBibTexByAuthor.class, this.chainStatus.getChainElement().getClass());
 	}
@@ -297,6 +299,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setOrder(null);
 		this.bibtexParam.setRequestedGroupName(null);
 		this.bibtexParam.setSearch("Grahl");
+		this.bibtexParam.setSearchEntity(SearchEntity.AUTHOR);
 		this.bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, this.chainStatus);
 		assertEquals(GetBibTexByAuthorAndTag.class, this.chainStatus.getChainElement().getClass());
 	}
@@ -311,6 +314,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setGroupId(GroupID.PUBLIC.getId());
 		this.bibtexParam.setRequestedUserName(null);
 		this.bibtexParam.setLimit(350);
+		this.bibtexParam.setSearchEntity(SearchEntity.ALL);
 		this.bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, this.chainStatus);
 		assertEquals(GetBibtexSearch.class, this.chainStatus.getChainElement().getClass());
 	}

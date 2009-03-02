@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="Common">
@@ -325,10 +324,14 @@
 				</isNotNull>
 			</isNotNull>
 			<isNotNull property="firstYear">
+				<isNull property="lastYear">
 				CAST(b.year AS SIGNED) >= #firstYear#
+				</isNull>
 			</isNotNull>
 			<isNotNull property="lastYear">
+				<isNull property="firstYear">
 				CAST(b.year AS SIGNED) &lt;= #lastYear#
+				</isNull>
 			</isNotNull>
 		</dynamic>
 	</sql>
