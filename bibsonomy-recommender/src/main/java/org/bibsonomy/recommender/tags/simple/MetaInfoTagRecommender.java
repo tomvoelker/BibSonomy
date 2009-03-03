@@ -13,7 +13,7 @@ import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.RecommendedTagComparator;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.tags.TagRecommenderConnector;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.util.XmlUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -70,9 +70,9 @@ public class MetaInfoTagRecommender implements TagRecommenderConnector {
 	private String getKeywordsForUrl(String url) {
 		String keywordsStr = "";
 		try {
-			final Document headElement = WebUtils.parseHTMLFromURL(new URL(url));
+			final Document document = XmlUtils.getDOM(new URL(url));
 			
-			final NodeList metaList = headElement.getElementsByTagName("meta");
+			final NodeList metaList = document.getElementsByTagName("meta");
 			for (int i = 0; i < metaList.getLength(); i++) {
 				final Element metaElement = (Element) metaList.item(i);
 				
