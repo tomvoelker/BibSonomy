@@ -143,9 +143,8 @@ public class XmlUtils {
 	 * @return The DOM tree of the XML string.
 	 */
 	public static Document getDOM(final String content) {
-		final Tidy tidy = new Tidy();
-		tidy.setQuiet(true);
-		tidy.setShowWarnings(false);// turns off warning lines
+		
+		final Tidy tidy = getTidy();
 		
 		// we don't know the encoding now ... so we assume utf8
 		tidy.setInputEncoding("UTF-8");
@@ -153,6 +152,13 @@ public class XmlUtils {
 		return tidy.parseDOM(new ByteArrayInputStream(content.getBytes()), null);
 	}
 	
+	private static Tidy getTidy() {
+		final Tidy tidy = new Tidy();
+		tidy.setQuiet(true);
+		tidy.setShowWarnings(false);// turns off warning lines
+		tidy.setShowErrors(0); // turn off error printing
+		return tidy;
+	}
 	
 	/** Extract the text in one parent node and all its children (recursively!). 
 	 * 
@@ -187,9 +193,8 @@ public class XmlUtils {
 	 * @throws IOException if html file could not be parsed. 
 	 */
 	public static Document getDOM(final URL inputURL) throws IOException {
-			final Tidy tidy = new Tidy();
-			tidy.setQuiet(true);
-			tidy.setShowWarnings(false);
+			final Tidy tidy = getTidy();
+			
 			final String encodingName = WebUtils.extractCharset(((HttpURLConnection)inputURL.openConnection()).getContentType());
 			tidy.setInputEncoding(encodingName);
 			return tidy.parseDOM(inputURL.openConnection().getInputStream(), null);

@@ -3,6 +3,12 @@ package org.bibsonomy.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import junit.framework.Assert;
+
 import org.junit.Test;
 import org.w3c.dom.Document;
 
@@ -60,6 +66,18 @@ public class XmlUtilsTest {
 		}
 	}
 
+	
+	@Test
+	public void testGetDom() {
+		try {
+			Assert.assertNotNull(XmlUtils.getDOM(new URL("http://www.bibsonomy.org/")));
+		} catch (MalformedURLException ex) {
+			fail(ex.getMessage());
+		} catch (IOException ex) {
+			fail(ex.getMessage());
+		}
+	}
+	
 
 	public static class XMLParsingThreadimplements implements Runnable {
 		private final String name;
