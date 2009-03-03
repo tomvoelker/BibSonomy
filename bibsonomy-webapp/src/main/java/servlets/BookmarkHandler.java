@@ -49,12 +49,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.log4j.Logger;
+import org.bibsonomy.util.XmlUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.tidy.Configuration;
-import org.w3c.tidy.Tidy;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -420,20 +419,8 @@ public class BookmarkHandler extends HttpServlet{
 
 
 	private LinkedList<Bookmark> getBookmarksFromFirefox(File bookmarkFile, String currUser, int groupid) throws FileNotFoundException {
-		LinkedList<Bookmark> bookmarks = null;			
 
-		Tidy tidy = new Tidy();
-		//disable error printing 
-		tidy.setShowWarnings(false);
-		tidy.setQuiet(true);
-		tidy.setCharEncoding(Configuration.UTF8); // Firefox Bookmarks.html defaults to UTF-8 (for Firefox > 2.0 bookmarks are stored differently, anyway)
-
-		//LOCAL-TEST!
-		//File f = new File( ".mozilla/firefox/jynb3833.default/bookmarks.html" );
-		//InputStream in = new FileInputStream( f );
-
-		InputStream in = new FileInputStream(bookmarkFile);
-		org.w3c.dom.Document document = tidy.parseDOM(in, null);		
+		final Document document = XmlUtils.getDOM(new FileInputStream(bookmarkFile));
 
 		//DEBUG INFOS ERZEUGEN
 		//File fout = new File("Desktop/TEST_OUT.html");
@@ -442,15 +429,15 @@ public class BookmarkHandler extends HttpServlet{
 
 		//get first DL-node containing all links and folders
 		try {
-			Node mainFolder = document.getElementsByTagName("body").item(0).getChildNodes().item(1);
+			final Node mainFolder = document.getElementsByTagName("body").item(0).getChildNodes().item(1);
 			if (mainFolder != null) {
-				bookmarks = createBookmarks(mainFolder, null, null, currUser, groupid);
+				return createBookmarks(mainFolder, null, null, currUser, groupid);
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			log.fatal("Error on importing FireFox bookmarks: " + e);
 		}
 
-		return bookmarks;
+		return null;
 	}	
 
 	/**
