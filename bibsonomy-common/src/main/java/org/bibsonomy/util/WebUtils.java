@@ -1,5 +1,6 @@
 package org.bibsonomy.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,10 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 import org.w3c.tidy.Tidy;
 
 /**
@@ -27,15 +25,6 @@ public class WebUtils {
 	
 	private static final String CHARSET = "charset=";
 	
-	// 2009/02/03,fei: take character encodings into account
-	// FIXME: Version up to 7 of jTidy use some strange proprietary 
-	//        encoding naming scheme - we have to map them to java 
-	private enum ENCODING_NAMES {
-		raw, ASCII, ISO8859_1, UTF8, 
-		JIS, MacRoman, UnicodeLittle, 
-		UnicodeBig, Unicode, Cp1252, Big5, 
-		SJIS};	
-
 	/**
 	 * Do a POST request to the given URL with the given content. Assume the charset of the result to be charset.
 	 * 
@@ -155,27 +144,50 @@ public class WebUtils {
 			tidy.setQuiet(true);
 			tidy.setShowWarnings(false);
 
-			// 2009/02/03,fei: take character encodings into account
-			// FIXME: Version up to 7 of jTidy use some strange proprietary 
-			//        encoding naming scheme - we have to map them to java 
-			//        Better switch to newer library
-			String encodingName = getCharset((HttpURLConnection)inputURL.openConnection());
-			int encodingNr = 3;   // default to UTF-8
-			try{
-				encodingNr = ENCODING_NAMES.valueOf(encodingName).ordinal();
-			} catch (Exception ex) {
-			}
-			tidy.setCharEncoding(encodingNr);
+			final String encodingName = getCharset((HttpURLConnection)inputURL.openConnection());
+			tidy.setInputEncoding(encodingName);
 			return tidy.parseDOM(inputURL.openConnection().getInputStream(), null);
 	}
+	
+	/**
+	 * Parse html file from given string into DOM tree.
+	 * 
+	 * @param content - content of the web page
+	 * @return parsed DOM tree
+	 */
+	public static Document parseHTMLFromString(final String content) {
+			final Tidy tidy = new Tidy();
+			tidy.setQuiet(true);
+			tidy.setShowWarnings(false);
 
+			// we don't know the encoding now ... so we assume utf8
+			tidy.setInputEncoding("UTF-8");
+			return tidy.parseDOM(new ByteArrayInputStream(content.getBytes()), null);
+	}
+
+	
+	
 	/** Extracts the charset ID of a web page as returned by the server.
 	 * 
 	 * @param urlConn
 	 * @return
 	 */
 	private static String getCharset(final HttpURLConnection urlConn) {
-		final String contentType = urlConn.getContentType();
+		return extractCharset(urlConn.getContentType());
+	}
+
+	/**
+	 * Extracts the charset from the given string. The string should resemble
+	 * the content type header of an HTTP request. Valid examples are:
+	 * <ul>
+	 * <li>text/html; charset=utf-8; qs=1</li>
+	 * <li>
+	 * </ul>
+	 *
+	 * @param contentType
+	 * @return - The charset.
+	 */
+	public static String extractCharset(final String contentType) {
 		/*
 		 * this typically looks like that:
 		 * text/html; charset=utf-8; qs=1
