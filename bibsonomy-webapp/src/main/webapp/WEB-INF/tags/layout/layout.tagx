@@ -20,6 +20,7 @@
 	<jsp:directive.attribute name="displayIntroduction" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>	
+    <jsp:directive.attribute name="beforeBodyClose" fragment="true"/>
 	<jsp:directive.attribute name="headerExt" fragment="true" />
 	<jsp:directive.attribute name="sidebar" fragment="true" />
 	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>	
@@ -269,6 +270,9 @@
 					</script>
 				</div>
 				</div>
+        
+                <jsp:invoke fragment="beforeBodyClose"/>
+        
 			</body>
 		</jsp:body>
 	</jsp:element>

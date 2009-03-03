@@ -11,7 +11,7 @@
 	
 	<fieldset style="border: 1px solid #069; background-color: #eee; position:relative;">
 		<legend><form:label path="tags" ><fmt:message key="post.resource.tags"/>*</form:label></legend>
-        <form:input id="inpf" path="tags" tabindex="4" autocomplete="off" size="60" onclick="setActiveInputField(this.id); enableHandler();" onfocus="setActiveInputField(this.id); enableHandler()" onblur="disableHandler()"  />
+        <form:input autocomplete="off" id="inpf" path="tags" tabindex="4" size="60" onclick="setActiveInputField(this.id); enableHandler();" onfocus="setActiveInputField(this.id); enableHandler()" onblur="disableHandler()"  />
         (<fmt:message key="post.resource.spaceseparated"/>)
         
         <!-- name="tags"  -->
@@ -53,7 +53,7 @@
 		<p>
  	      <fmt:message key="post.resource.suggested"/>
           <br/>
-          <span><span id="suggested" class="suggtag"></span>${mtl:ch('nbsp')}</span>
+          <span><span id="suggested" class="suggtag"></span> ${mtl:ch('nbsp')}</span>
 		</p>
     
 	</fieldset>		

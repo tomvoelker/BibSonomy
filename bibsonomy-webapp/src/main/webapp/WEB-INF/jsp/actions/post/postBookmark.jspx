@@ -29,6 +29,7 @@
 		<jsp:attribute name="content">
 		
 			<script type="text/javascript">
+              //<mtl:cdata>
 				<![CDATA[
 					function checkUrlForTitle(  ){
 						//alert(document.getElementById("postBookmark.resource.url").value);
@@ -114,6 +115,7 @@
 						populateSuggestionsFromRecommendations(tagSuggestions);
 					}
 				]]>
+              //</mtl:cdata>
 			</script>					
 				<errors:global errors="${errors}"/>
      			<div style="float left;width:97%;margin-left:10px">
@@ -126,7 +128,7 @@
                         </c:if>
 
                       
-                	<form:form action="/postBookmark" method="POST">
+                	<form:form action="/postBookmark" method="post">
                 		<fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
 							<fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
 								<legend><fmt:message key="general"/></legend>
@@ -173,7 +175,7 @@
                                         <input type="hidden" name="jump" value="${fn:escapeXml(command.jump)}"/>
 		                                <form:hidden path="intraHashToUpdate"/>
 										<input type="reset"  tabindex="5" value="${reset}" />
-										<input type="submit" tabindex="6" value="${save}" onClick="clear_tags();"/>
+										<input type="submit" tabindex="6" value="${save}" onclick="clear_tags();"/>
 									</td>
 								</tr>
 							</table>	
@@ -183,7 +185,7 @@
           
                     <div id="scrapable" style="display:none">
                       <br/>
-                      <form:form action="/BibtexHandler" method="POST">      
+                      <form:form action="/BibtexHandler" method="post" id="bibtex_snippet">      
                           <fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
                               <fieldset style="border:0px; position:relative;">
                                 <h2><fmt:message key="post.meta.recommended"/>: <fmt:message key="post.meta.save_as_publication"/></h2>
@@ -214,6 +216,12 @@
 				</script>
 		</jsp:attribute>
 		
+    
+    
+    
+    
+    
+    
 		<jsp:attribute name="sidebar">
 		
 			<!-- display tags -->
@@ -223,82 +231,83 @@
 			</li>
 		</jsp:attribute>
 
+       <jsp:attribute name="beforeBodyClose">
+       
+       
+       
+       
+       
+       
+        <script type="text/javascript">
+      //<mtl:cdata>
+    <![CDATA[   
+      checkUrlForTitle();
+
+      var queryString = "";
+      if( getPostParameter("${pageContext.request.queryString}", "intraHashToUpdate") ) {
+        queryString = "url="+document.getElementById('post.resource.url').value;
+      } else {
+        queryString = "${pageContext.request.queryString}";
+      }
+      $.ajax({
+        type: "GET",
+        url: "/ajax/getBookmarkRecommendedTags",
+        data: queryString,
+        success: function(msg){
+          handleRecommendedTags(msg)
+        }
+      });
+
+      $.ajax({
+          type: "GET",
+          url: "/json/tags/user/${command.context.loginUser.name}",
+          data: "",
+          success: function(data){
+                      populateSuggestionsFromJSON(data);
+                     }
+      });
+      
+            scraping();
+    
+      function scraping(){
+        if(document.getElementById("post.resource.url").value.length > 'http://'.length){
+          var req = ajaxInit();
+          if(req){
+            req.open("GET", '/scrapingservice?url='+encodeURIComponent(document.getElementById("post.resource.url").value)+'&format=bibtex', true); // Request starten
+            req.onreadystatechange = function() {
+                if ( req.readyState == 4 ) {
+                    if ( req.status == 200 ) {
+                      handle(req);
+                    }
+                }
+            };
+            req.send(null);
+          }
+        }
+      }
+
+      function handle(request){
+        var textfield = document.getElementById("bib");
+        if(request.responseText != ''){
+          textfield.value = request.responseText;
+          showHide("scrapable");
+        }
+      }
+
+      function showHide(id){
+        var bibtexBox = document.getElementById(id);
+        if(bibtexBox.value != ''){
+          bibtexBox.style.display = '';
+        }else{
+          bibtexBox.style.display = 'hidden';
+        }
+      }
+    ]]> 
+      //</mtl:cdata>
+  </script>
+       
+       </jsp:attribute>
+
 	</layout:paneLayout>
-
-	<script type="text/javascript">
-		<![CDATA[		
-			//----------------------------------------------------------------
-	    	// suggest title
-			//----------------------------------------------------------------
-			checkUrlForTitle();
-			//----------------------------------------------------------------
-		    // load recommended tags (via ajax request using jQuery
-			//----------------------------------------------------------------
-			// if post is referenced via intrahash we get the url from form content
-			var queryString = "";
-			if( getPostParameter("${pageContext.request.queryString}", "intraHashToUpdate") ) {
-				queryString = "url="+document.getElementById('post.resource.url').value;
-			} else {
-				queryString = "${pageContext.request.queryString}";
-			}
-			$.ajax({
-			  type: "GET",
-			  url: "/ajax/getBookmarkRecommendedTags",
-			  data: queryString,
-			  success: function(msg){
-			    handleRecommendedTags(msg)
-			  }
-			});
-			//----------------------------------------------------------------
-		    // load tags for tag suggestion via json using ajax library jQuery
-			//----------------------------------------------------------------
-			$.ajax({
-				  type: "GET",
-				  url: "/json/tags/user/${command.context.loginUser.name}",
-				  data: "",
-				  success: function(data){
-					            populateSuggestionsFromJSON(data);
-			               }
-			});
-			//Save tags from tagcloud in lists
-			// setOps();
-			scraping();
-		
-			function scraping(){
-				//check url. if no url is set, the value of post.resource.url is 'http://'
-				if(document.getElementById("post.resource.url").value.length > 'http://'.length){
-					var req = ajaxInit();
-					if(req){
-						req.open("GET", '/scrapingservice?url='+encodeURIComponent(document.getElementById("post.resource.url").value)+'&format=bibtex', true); // Request starten
-						req.onreadystatechange = function() {
-						    if ( req.readyState == 4 ) {
-						        if ( req.status == 200 ) {
-						        	handle(req);
-						        }
-						    }
-						};
-						req.send(null);
-					}
-				}
-			}
-
-			function handle(request){
-				var textfield = document.getElementById("bib");
-				if(request.responseText != ''){
-					textfield.value = request.responseText;
-					showHide("scrapable");
-				}
-			}
-
-			function showHide(id){
-				var bibtexBox = document.getElementById(id);
-				if(bibtexBox.value != ''){
-					bibtexBox.style.display = '';
-				}else{
-					bibtexBox.style.display = 'hidden';
-				}
-			}
-		]]>	 		
-	</script>
 
 </jsp:root>

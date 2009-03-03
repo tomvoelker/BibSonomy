@@ -19,7 +19,7 @@
 	
 	<fieldset style="border: 1px solid #069; background-color: #eee; position:relative;">
 		<legend>
-			<form:label path="post.groups">
+			<form:label path="groups">
 				<fmt:message key="post.resource.viewablefor"/>*
 			</form:label>
 		</legend>
