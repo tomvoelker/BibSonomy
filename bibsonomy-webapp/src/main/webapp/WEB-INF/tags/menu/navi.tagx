@@ -77,9 +77,12 @@
 			<c:url var="groupsUrl" value="/groups" context="${projectContext}"/>
 			<a id="nav_groups" href="${groupsUrl}" rel="grp_menu"><img src="${resdir}/image/nice_box_arrow.png" alt="" /> <fmt:message key="navi.groups"/></a>
 		</li>
-		<li>
-			<!-- dropdown menu for groups -->
+  
+        <!-- dropdown menu for groups -->
+        <c:if test="${not empty loginUser.groups}">
+		  <li>
 		  	<div id="grp_menu" class="nicedropmenudiv">
+                
                 <table class="tnav_group">
 				  <c:forEach var="grp" items="${loginUser.groups}">
                     <tr>
@@ -97,7 +100,9 @@
 				  </c:forEach>
                 </table>  	
 			</div>											
-		</li>
+	 	 </li>
+        </c:if>
+        
 		<li>
 			<c:url var="popularUrl" value="/popular" context="${projectContext}"/>
 			<a id="nav_popular" href="${popularUrl}"><fmt:message key="navi.popular"/></a>
