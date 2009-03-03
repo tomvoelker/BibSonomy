@@ -1,8 +1,10 @@
 package org.bibsonomy.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
+import org.w3c.dom.Document;
 
 /**
  * Tests XMLUtils
@@ -17,6 +19,12 @@ public class XmlUtilsTest {
     "\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C" +
     "\u001D\u001E\u001F\uFFFE\uFFFF";	
 	
+    
+	private static final String HTML_END = "</p></body></html>";
+	private static final String HTML_START = "<html><head><title>HALLO</title><body><p>";
+	private static final String[] MESSAGES = new String[] {"Hello", "Salut", "Hallo", "Buon giorno", "Haai", "Hi", "Barev"};
+
+    
     @Test
 	public void removeXmlControlCharacters() {
     	
@@ -40,6 +48,43 @@ public class XmlUtilsTest {
 		cleaned = XmlUtils.removeXmlControlCharacters(s, true);
 		assertEquals("\uFFFD", cleaned);
 		
+	}
+
+	/**
+	 * Tests also thread safety!
+	 */
+	@Test
+	public void testGetDOM() {
+		for (int i = 0; i < 10; i++) {
+			new Thread(new XMLParsingThreadimplements(("thread " + i))).start();
+		}
+	}
+
+
+	public static class XMLParsingThreadimplements implements Runnable {
+		private final String name;
+
+		public XMLParsingThreadimplements(final String name) {
+			this.name = name;
+		}
+
+		public void run() {
+			try {
+				for (final String message: MESSAGES) {
+					final String text = message + " " + name + "!";
+					
+					final Document dom = XmlUtils.getDOM(HTML_START + text + HTML_END);
+
+					final String nodeValue = dom.getChildNodes().item(0).getNextSibling().getChildNodes().item(1).getChildNodes().item(0).getChildNodes().item(0).getNodeValue();
+					assertEquals(text, nodeValue);
+					Thread.sleep(10);
+				}
+			} catch (final Exception e) {
+				System.err.println(e);
+				e.printStackTrace();
+				fail(e.getMessage());
+			}
+		}
 	}
 	
 	

@@ -131,41 +131,7 @@ public class WebUtils {
 			throw ioe;
 		}
 	}
-	
-	/**
-	 * Parse html file from given URL into DOM tree.
-	 * 
-	 * @param inputURL file's url
-	 * @return parsed DOM tree
-	 * @throws IOException if html file could not be parsed. 
-	 */
-	public static Document parseHTMLFromURL(final URL inputURL) throws IOException {
-			final Tidy tidy = new Tidy();
-			tidy.setQuiet(true);
-			tidy.setShowWarnings(false);
 
-			final String encodingName = getCharset((HttpURLConnection)inputURL.openConnection());
-			tidy.setInputEncoding(encodingName);
-			return tidy.parseDOM(inputURL.openConnection().getInputStream(), null);
-	}
-	
-	/**
-	 * Parse html file from given string into DOM tree.
-	 * 
-	 * @param content - content of the web page
-	 * @return parsed DOM tree
-	 */
-	public static Document parseHTMLFromString(final String content) {
-			final Tidy tidy = new Tidy();
-			tidy.setQuiet(true);
-			tidy.setShowWarnings(false);
-
-			// we don't know the encoding now ... so we assume utf8
-			tidy.setInputEncoding("UTF-8");
-			return tidy.parseDOM(new ByteArrayInputStream(content.getBytes()), null);
-	}
-
-	
 	
 	/** Extracts the charset ID of a web page as returned by the server.
 	 * 

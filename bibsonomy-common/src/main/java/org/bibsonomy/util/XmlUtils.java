@@ -1,8 +1,16 @@
 package org.bibsonomy.util;
 
-import it.unimi.dsi.fastutil.chars.CharArrayList;
-import it.unimi.dsi.fastutil.chars.CharArrays;
 import it.unimi.dsi.fastutil.chars.CharOpenHashSet;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.tidy.Tidy;
 
 /**
  * Some utility functions for working with XML
@@ -118,6 +126,73 @@ public class XmlUtils {
      */
     public static char removeXmlControlCharacters(char c) {
     	return XmlUtils.removeXmlControlCharacter(c, false);
-    }       
+    }
+    
+	/*
+	 * As soon as we know that JTidy is thread safe, we can use a static instance of it
+	 */
+//	private static final Tidy tidy = new Tidy();
+//	static {
+//		tidy.setQuiet(true);
+//		tidy.setShowWarnings(false);// turns off warning lines
+//	}
+
+	/** Parses a page and returns the DOM
+	 * 
+	 * @param content - The XML as string.
+	 * @return The DOM tree of the XML string.
+	 */
+	public static Document getDOM(final String content) {
+		final Tidy tidy = new Tidy();
+		tidy.setQuiet(true);
+		tidy.setShowWarnings(false);// turns off warning lines
+		
+		// we don't know the encoding now ... so we assume utf8
+		tidy.setInputEncoding("UTF-8");
+		
+		return tidy.parseDOM(new ByteArrayInputStream(content.getBytes()), null);
+	}
+	
+	
+	/** Extract the text in one parent node and all its children (recursively!). 
+	 * 
+	 * @param node
+	 * @return All text below the given node.
+	 */
+	public static String getText(final Node node) {
+		final StringBuffer text = new StringBuffer();
+
+		final String value = node.getNodeValue();
+
+		if (value != null){
+			text.append(value);
+		}
+
+		if (node.hasChildNodes()) {
+			final NodeList children = node.getChildNodes();
+			for (int i = 0; i < children.getLength(); i++) {
+				text.append(getText(children.item(i)));
+			}
+		}
+
+		return text.toString();
+	}
+	
+	
+	/**
+	 * Parse html file from given URL into DOM tree.
+	 * 
+	 * @param inputURL file's url
+	 * @return parsed DOM tree
+	 * @throws IOException if html file could not be parsed. 
+	 */
+	public static Document getDOM(final URL inputURL) throws IOException {
+			final Tidy tidy = new Tidy();
+			tidy.setQuiet(true);
+			tidy.setShowWarnings(false);
+			final String encodingName = WebUtils.extractCharset(((HttpURLConnection)inputURL.openConnection()).getContentType());
+			tidy.setInputEncoding(encodingName);
+			return tidy.parseDOM(inputURL.openConnection().getInputStream(), null);
+	}
 	
 }
