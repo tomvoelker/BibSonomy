@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.chars.CharOpenHashSet;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -143,14 +144,42 @@ public class XmlUtils {
 	 * @return The DOM tree of the XML string.
 	 */
 	public static Document getDOM(final String content) {
-		
-		final Tidy tidy = getTidy();
-		
-		// we don't know the encoding now ... so we assume utf8
-		tidy.setInputEncoding("UTF-8");
-		
-		return tidy.parseDOM(new ByteArrayInputStream(content.getBytes()), null);
+		return getDOM(new ByteArrayInputStream(content.getBytes()));
 	}
+
+	
+	/**
+	 * Parse html file from given URL into DOM tree.
+	 * 
+	 * @param inputURL file's url
+	 * @return parsed DOM tree
+	 * @throws IOException if html file could not be parsed. 
+	 */
+	public static Document getDOM(final URL inputURL) throws IOException {
+			final Tidy tidy = getTidy();
+			
+			final String encodingName = WebUtils.extractCharset(((HttpURLConnection)inputURL.openConnection()).getContentType());
+			tidy.setInputEncoding(encodingName);
+			return tidy.parseDOM(inputURL.openConnection().getInputStream(), null);
+	}
+	
+
+	/**
+	 * Parse html file from given input stream into DOM tree.
+	 * 
+	 * @param inputStream 
+	 * @return parsed DOM tree
+	 * @throws IOException if html file could not be parsed. 
+	 */
+	public static Document getDOM(final InputStream inputStream) {
+			final Tidy tidy = getTidy();
+			
+			// we don't know the encoding now ... so we assume utf8
+			tidy.setInputEncoding("UTF-8");
+
+			return tidy.parseDOM(inputStream, null);
+	}
+	
 	
 	private static Tidy getTidy() {
 		final Tidy tidy = new Tidy();
@@ -184,20 +213,6 @@ public class XmlUtils {
 		return text.toString();
 	}
 	
-	
-	/**
-	 * Parse html file from given URL into DOM tree.
-	 * 
-	 * @param inputURL file's url
-	 * @return parsed DOM tree
-	 * @throws IOException if html file could not be parsed. 
-	 */
-	public static Document getDOM(final URL inputURL) throws IOException {
-			final Tidy tidy = getTidy();
-			
-			final String encodingName = WebUtils.extractCharset(((HttpURLConnection)inputURL.openConnection()).getContentType());
-			tidy.setInputEncoding(encodingName);
-			return tidy.parseDOM(inputURL.openConnection().getInputStream(), null);
-	}
+
 	
 }
