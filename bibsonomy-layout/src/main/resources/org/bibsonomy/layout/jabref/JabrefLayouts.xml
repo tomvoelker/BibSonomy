@@ -193,4 +193,38 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
+	<layout name="din1505year">
+		<displayName>DIN 1505, grouped by year</displayName>
+		<description>
+			HTML output format according to the German Institute for
+			Standardization (DIN). Special version of the
+			Mensch-Maschine-Systemtechnik Institute, grouped by year.
+		</description>
+		<directory>din1505year</directory>
+		<baseFileName>din1505year</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="harvardhtml">
+		<displayName>Harvard (HTML version)</displayName>
+		<description>
+			HTML output format formatted according to the Harvard bibliography
+			style guidelines.
+		</description>
+		<directory>harvardhtml</directory>
+		<baseFileName>harvard</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+		<layout name="harvardhtmlyear">
+		<displayName>Harvard (HTML version), grouped by year</displayName>
+		<description>
+			HTML output format formatted according to the Harvard bibliography
+			style guidelines and grouped by year
+		</description>
+		<directory>harvardhtmlyear</directory>
+		<baseFileName>harvard</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
 </layouts>
