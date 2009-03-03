@@ -46,6 +46,7 @@
 		  <fmt:message key="post.resource.recommendation"/>
           <br/>
 		  <span id="tagField"></span>
+		  ${mtl:ch('nbsp')}
 		</p>
         <!--+
             | show suggestions
@@ -53,7 +54,7 @@
 		<p>
  	      <fmt:message key="post.resource.suggested"/>
           <br/>
-          <span><span id="suggested" class="suggtag"></span> ${mtl:ch('nbsp')}</span>
+          <span><span id="suggested" class="suggtag">${mtl:ch('nbsp')}</span>${mtl:ch('nbsp')}</span>
 		</p>
     
 	</fieldset>		
