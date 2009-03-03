@@ -1,4 +1,4 @@
-#bmicon_unselected a {
+.bmicon_unselected a {
 	background-image: url(/resources/image/starblue_unselected.png);
 	margin: 0px;
 	padding: 0px;
@@ -8,7 +8,7 @@
 	height: 16px;
 }
 
-#bmicon_unselected a:hover {
+.bmicon_unselected a:hover {
 	background-image: url(/resources/image/starblue_hover.png);
 	margin: 0px;
 	padding: 0px;
@@ -18,7 +18,7 @@
 	height: 16px;
 }
 
-#bmicon_selected a {
+.bmicon_selected a {
 	background-image: url(/resources/image/starblue_selected.png);
 	margin: 0px;
 	padding: 0px;

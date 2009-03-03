@@ -267,7 +267,6 @@
                      }
       });
       
-            scraping();
     
       function scraping(){
         if(document.getElementById("post.resource.url").value.length > 'http://'.length){
@@ -302,6 +301,10 @@
           bibtexBox.style.display = 'hidden';
         }
       }
+      
+      scraping();
+    
+      
     ]]> 
       //</mtl:cdata>
   </script>

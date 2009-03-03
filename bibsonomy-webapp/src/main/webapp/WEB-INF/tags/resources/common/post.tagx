@@ -19,18 +19,21 @@
    
 	<li class="bm">
 
-		<c:choose>
+        <!-- only display icon when user is logged in and does NOT visit his own userpage  -->
+        <c:if test="${command.context.userLoggedIn and command.requestedUser ne loginUserName}">
+  		  <c:choose>
 			<c:when test="${loginUserName eq post.user.name}">
-				<div id="bmicon_selected" title="${alreadyOwn}">
+				<div class="bmicon_selected" title="${alreadyOwn}">
 					<jsp:invoke fragment="bmicon"/>
 				</div>
 			</c:when>
 			<c:otherwise>
-				<div id="bmicon_unselected" title="${copyThisPost}">
+				<div class="bmicon_unselected" title="${copyThisPost}">
 					<jsp:invoke fragment="bmicon"/>
 				</div>
 			</c:otherwise>
-		</c:choose>
+		  </c:choose>
+        </c:if>
 		
 		<div class="bmtitle"><jsp:invoke fragment="title"/></div>
 		<div class="bmdesc"> <jsp:invoke fragment="desc"/> </div>
