@@ -1,6 +1,5 @@
 package org.bibsonomy.scraper.url.kde.ieee;
 
-import java.io.ByteArrayInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -15,13 +14,12 @@ import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.WebUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.tidy.Configuration;
-import org.w3c.tidy.Tidy;
 
 /** Scraper for journals from IEEE Explore.
  * @author rja
@@ -126,11 +124,7 @@ public class IEEEXploreJournalProceedingsScraper extends UrlScraper {
 
 
 			//-- get the html doc and parse the DOM
-			Tidy tidy = new Tidy();
-			tidy.setQuiet(true);
-			tidy.setCharEncoding(Configuration.UTF8);
-			tidy.setShowWarnings(false); // turn off warning lines
-			Document doc = tidy.parseDOM(new ByteArrayInputStream(sc.getPageContent().getBytes()), null);
+			final Document document = WebUtils.parseHTMLFromString(sc.getPageContent());
 
 			//get the abstract block
 			String ident1 = "<span class=\"sectionHeaders\">Abstract</span><br>";
@@ -143,7 +137,7 @@ public class IEEEXploreJournalProceedingsScraper extends UrlScraper {
 			 * Iterate through all spans
 			 */
 			pres = null;
-			pres = doc.getElementsByTagName("span"); //get all <span>-Tags
+			pres = document.getElementsByTagName("span"); //get all <span>-Tags
 			for (int i = 0; i < pres.getLength(); i++) {
 				Node curr = pres.item(i);
 				Element g = (Element)curr;
@@ -173,7 +167,7 @@ public class IEEEXploreJournalProceedingsScraper extends UrlScraper {
 			 * */
 			pres = null;
 			NodeList match = null;
-			pres = doc.getElementsByTagName("p"); //get all <p>-Tags
+			pres = document.getElementsByTagName("p"); //get all <p>-Tags
 			for (int i=0; i<pres.getLength(); i++){
 				currNode = pres.item(i);
 				temp = currNode.getChildNodes();
