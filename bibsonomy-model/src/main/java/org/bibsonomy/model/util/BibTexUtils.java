@@ -225,15 +225,13 @@ public class BibTexUtils {
 	 * @param bib
 	 * @return String bibtexString
 	 * 
-	 * TODO: check handling  of misc = {}... field
-	 * 
 	 */
 	public static String toBibtexString(BibTex bib) {
 		try {
 			final BeanInfo bi = Introspector.getBeanInfo(bib.getClass());
 			
-			final String[] excludeFields = { "simHash0", "simHash1", "simHash2", "simHash3", "entrytype", "bibtexKey" };
-			
+			final String[] excludeFields = { "misc", "simHash0", "simHash1", "simHash2", "simHash3", "entrytype", "bibtexKey" };
+						
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append("@");
 			buffer.append(bib.getEntrytype());
@@ -253,7 +251,14 @@ public class BibTexUtils {
 					buffer.append("},\n");					
 				}
 			}
-			buffer.delete(buffer.length()-2, buffer.length()-1); // remove last comma
+			if (bib.getMiscFields() != null && bib.getMiscFields().size() > 0) {
+				// parse the misc field
+				BibTexUtils.serializeMiscFields(bib);
+				buffer.append(bib.getMisc() + "\n");
+			}
+			else {
+				buffer.delete(buffer.length()-2, buffer.length()-1); // remove last comma
+			}
 			buffer.append("}");	
 			return buffer.toString();
 		} catch (IntrospectionException ex) {
