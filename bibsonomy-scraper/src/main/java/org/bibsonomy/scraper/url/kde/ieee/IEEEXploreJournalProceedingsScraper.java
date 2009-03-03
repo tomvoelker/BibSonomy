@@ -14,7 +14,7 @@ import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.UrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.util.XmlUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -124,7 +124,7 @@ public class IEEEXploreJournalProceedingsScraper extends UrlScraper {
 
 
 			//-- get the html doc and parse the DOM
-			final Document document = WebUtils.parseHTMLFromString(sc.getPageContent());
+			final Document document = XmlUtils.getDOM(sc.getPageContent());
 
 			//get the abstract block
 			String ident1 = "<span class=\"sectionHeaders\">Abstract</span><br>";

@@ -13,8 +13,7 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.scraper.util.BibTeXUtils;
-import org.bibsonomy.scraper.util.XMLUtils;
-import org.w3c.dom.DOMException;
+import org.bibsonomy.util.XmlUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -46,7 +45,7 @@ public class SpiresScraper extends UrlScraper{
 					bibtexUrl = new URL(url.toString() + "&" + FORMAT_WWWBRIEFBIBTEX);
 				}
 				
-				final Document temp = XMLUtils.getDOM(sc.getContentAsString(bibtexUrl));
+				final Document temp = XmlUtils.getDOM(sc.getContentAsString(bibtexUrl));
 				
 				//extract the bibtex snippet which is embedded in pre tags
 				String bibtex = null;

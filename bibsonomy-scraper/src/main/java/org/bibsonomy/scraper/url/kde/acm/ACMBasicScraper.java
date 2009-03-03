@@ -15,8 +15,8 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.scraper.util.BibTeXUtils;
-import org.bibsonomy.scraper.util.XMLUtils;
 import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.util.XmlUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -122,12 +122,12 @@ public class ACMBasicScraper extends UrlScraper {
 									  */
 									final Node nextSibling = p.getNextSibling();
 									if (nextSibling != null && "p".equals(nextSibling.getNodeName())) {
-										abstrct = XMLUtils.getText(nextSibling);
+										abstrct = XmlUtils.getText(nextSibling);
 									} else {
 										/*
 										 * If the innermost <p> is missing, we take the text of the <p ...> at hand
 										 */
-										abstrct = XMLUtils.getText(p);
+										abstrct = XmlUtils.getText(p);
 									}
 									break;
 								}
