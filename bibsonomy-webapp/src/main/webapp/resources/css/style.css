@@ -1097,19 +1097,17 @@ fieldset #tagField, fieldset #suggested,fieldset #copytags{
 	margin-left: 0px;	
 }
 
-fieldset table {
-	margin: 0px;
+.inline50left{
+	width:50%;
+	display: inline;
 }
 
-#fsgroupBox 
-{
-	background-color: yellow;
-	position: relative;
+.inline50right{
+	width:50%;
+	display: inline;
+	margin-left: 50%;
 }
 
-#fsgroupBox table
-{
-	margin: 2px;
-	background-color: red;
-	width: 100%;
+.inline50right fieldset, .inline50left fieldset{
+	width: 50%;
 }
