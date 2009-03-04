@@ -24,6 +24,17 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
+	<layout name="simplehtmlyear">
+		<displayName>Simple HTML, grouped by year</displayName>
+		<description>
+			An HTML layout without any header or footer but very nice
+			output. This is useful for integrating publication lists
+			into other HTML pages, grouped by year
+		</description>
+		<baseFileName>simplehtmlyear</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>	
 	<layout name="tablerefs">
 		<displayName>HTML table</displayName>
 		<description>
@@ -61,6 +72,19 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
+	<layout name="tablerefsabsbibsortembed">
+		<displayName>
+			HTML table (with Abstract &amp; BibTeX, sortable) - embedded version
+		</displayName>
+		<description>
+			Similar to TableRefsAbsBib, but includes possibility to sort
+			the table by each column.
+		</description>
+		<directory>tablerefsabsbibsortembed</directory>
+		<baseFileName>tablerefsabsbibsort</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>	
 	<layout name="docbook">
 		<displayName>DocBook</displayName>
 		<description>
@@ -181,6 +205,16 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
+	<layout name="din1505year">
+		<displayName>DIN 1505, grouped by year</displayName>
+		<description>
+			HTML output format according to the German Institute for
+			Standardization (DIN), grouped by year.
+		</description>
+		<baseFileName>din1505year</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>		
 	<layout name="mms">
 		<displayName>DIN 1505 MMS</displayName>
 		<description>
@@ -193,15 +227,15 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
-	<layout name="din1505year">
-		<displayName>DIN 1505, grouped by year</displayName>
+	<layout name="mmsyear">
+		<displayName>DIN 1505 MMS, grouped by year</displayName>
 		<description>
 			HTML output format according to the German Institute for
 			Standardization (DIN). Special version of the
 			Mensch-Maschine-Systemtechnik Institute, grouped by year.
 		</description>
-		<directory>din1505year</directory>
-		<baseFileName>din1505year</baseFileName>
+		<directory>mmsyear</directory>
+		<baseFileName>mmsyear</baseFileName>
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
@@ -216,7 +250,7 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
-		<layout name="harvardhtmlyear">
+	<layout name="harvardhtmlyear">
 		<displayName>Harvard (HTML version), grouped by year</displayName>
 		<description>
 			HTML output format formatted according to the Harvard bibliography
