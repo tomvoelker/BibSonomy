@@ -150,31 +150,51 @@
 								</fieldset>
 							</fieldset>
 					    	<post:tagfield tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
-
-								<div class="inline50right">
-									<post:relevantForBox groups="${loginUser.groups}"/>
-									<c:if test="${not empty loginUser.groups}">
-										<post:relevantForBox groups="${loginUser.groups}"/>
-									</c:if>	
-								</div>
-
-								<div class="inline50left">
-									<post:groupBox post="${command.post}" groups="${loginUser.groups}"/>
-								</div>
-								<div>
-									<post:tagSets groups="${loginUser.groups}"/>
-									<!-- This comment is needed, otherwise this will result in an self-closing element -->
-								</div>
-								<div>
-									<c:set var="save"><fmt:message key="save"/></c:set>
-	                                <c:set var="reset"><fmt:message key="resetbutton"/></c:set>
-	                                <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
-	                                      <input type="hidden" name="jump" value="${fn:escapeXml(command.jump)}"/>
-	                                <form:hidden path="intraHashToUpdate"/>
-									<input type="reset"  tabindex="5" value="${reset}" />
-									<input type="submit" tabindex="6" value="${save}" onclick="clear_tags();"/>
-								</div>
-							
+					    	<div id="fsgroupBox">
+								<table>
+								   <colgroup>
+										<c:if test="${not empty loginUser.groups}">
+								      		<col width="50%"/>
+								      		<col width="50%"/>
+										</c:if>	
+										<c:if test="${empty loginUser.groups}">
+								      		<col width="100%"/>
+								      		<col width="0%"/>
+										</c:if>	
+								   </colgroup>
+									<tbody>
+										<tr>
+											<td>
+												<post:groupBox post="${command.post}" groups="${loginUser.groups}"/>
+											</td>
+										
+											<c:if test="${not empty loginUser.groups}">
+											<td>
+												<post:relevantForBox groups="${loginUser.groups}"/>
+											</td>
+											</c:if>	
+											<!-- This comment is needed, otherwise this will result in an self-closing element -->
+										</tr>
+										<tr>
+											<td colspan="2">
+												<post:tagSets groups="${loginUser.groups}"/>
+											<!-- This comment is needed, otherwise this will result in an self-closing element -->
+											</td>
+										</tr>
+										<tr>
+											<td colspan="2" align="center">
+												<c:set var="save"><fmt:message key="save"/></c:set>
+				                                <c:set var="reset"><fmt:message key="resetbutton"/></c:set>
+				                                <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
+		                                        <input type="hidden" name="jump" value="${fn:escapeXml(command.jump)}"/>
+				                                <form:hidden path="intraHashToUpdate"/>
+												<input type="reset"  tabindex="5" value="${reset}" />
+												<input type="submit" tabindex="6" value="${save}" onclick="clear_tags();"/>
+											</td>
+										</tr>
+									</tbody>
+								</table>	
+							</div>		
 						</fieldset>
 					</form:form>
           
