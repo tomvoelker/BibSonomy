@@ -39,13 +39,13 @@ public class JabrefLayouts {
 	 * name.
 	 */
 	private static final String[] subLayouts = new String[] {
-		"", 									/* the default layout - should always exist; renders one entry */
-		"." + LayoutPart.BEGIN.name(), 			/* the beginning - is added to the beginning of the rendered entries */
-		"." + LayoutPart.EMBEDDEDBEGIN.name(),	/* the beginning - for embedded layouts */
-		"." + LayoutPart.END.name(),			/* the end - is added to the end of the rendered entries */
-		"." + LayoutPart.EMBEDDEDEND.name(),	/* the end - for embedded layouts */
-		".article",								/* ****************************************************** */ 
-		".inbook",								/* the remaining sublayouts are for different entry types */
+		"", 											     /* the default layout - should always exist; renders one entry */
+		"." + LayoutPart.BEGIN.name().toLowerCase(), 	     /* the beginning - is added to the beginning of the rendered entries */
+		"." + LayoutPart.EMBEDDEDBEGIN.name().toLowerCase(), /* the beginning - for embedded layouts */
+		"." + LayoutPart.END.name().toLowerCase(),			 /* the end - is added to the end of the rendered entries */
+		"." + LayoutPart.EMBEDDEDEND.name().toLowerCase(),	 /* the end - for embedded layouts */
+		".article",								             /* ****************************************************** */ 
+		".inbook",								             /* the remaining sublayouts are for different entry types */
 		".book",
 		".booklet",
 		".incollection",
@@ -112,8 +112,10 @@ public class JabrefLayouts {
 			 */
 			for (final String subLayout: subLayouts) {
 				final String fileName = filePath + jabrefLayout.getBaseFileName() + subLayout + JabrefLayoutUtils.layoutFileExtension;
+				log.debug("trying to load sublayout " + fileName + "...");
 				final Layout layout = loadLayout(fileName);
 				if (layout != null) {
+					log.debug("... success!");
 					jabrefLayout.addSubLayout(subLayout, layout);
 				}
 			}
