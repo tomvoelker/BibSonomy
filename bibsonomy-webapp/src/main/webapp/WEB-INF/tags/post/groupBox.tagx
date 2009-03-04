@@ -31,14 +31,14 @@
                           <form:radiobutton path="abstractGrouping" onclick="toggleGroupBox()" value="private" /> <fmt:message key="post.resource.private"/><br/>
                           <form:radiobutton path="abstractGrouping" onclick="toggleGroupBox()" value="other" id="post.groups.other"/>   <fmt:message key="post.resource.other"/>
                        </td>
-					<td style="width:10px"></td>
+					<td style="width:10px"><!-- This comment is needed, otherwise this will result in an self-closing element --></td>
 					<td>
                           <!-- select box for "other" groups TODO: allow multiple groups-->
                           <form:select multiple="false" path="groups" size="5" id="post.groups.other2">
                               <form:option label="friends" value="friends"/>
                         	  <form:options items="${groups}" itemValue="name" itemLabel="name"/>
                           </form:select>
-                          <div class="postBookmarkNotValidTip"><form:errors path="groups" /></div>
+                          <div class="postBookmarkNotValidTip"><form:errors path="groups" /><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
                        </td>
 				</tr>
 			</table>

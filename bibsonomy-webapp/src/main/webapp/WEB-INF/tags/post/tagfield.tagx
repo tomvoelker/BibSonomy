@@ -19,43 +19,41 @@
 
         <!-- allow user to confirm tags containing comma or semicolon -->
         <c:if test="${containsComma}">
-          <p>
+          <div>
             <form:checkbox path="acceptComma"/><form:label path="acceptComma"><fmt:message key="post.resource.tags.comma"/></form:label>
-          </p>
+          </div>
         </c:if>
         <!--+
             | show copied tags if available
             +-->
 		<c:if test="${not empty command.copytags}">
-			<p>
+			<div>
 				<fmt:message key="post.resource.copytags" />
 				<br/>
-				<span id="copytags">
+				<div id="copytags">
 				<c:forEach var="tag" items="${command.copytags}">
 					<a href="javascript:copytag('inpf', '${fn:escapeXml(tag.name)}')">
-						<c:out value="${tag.name}" />
+						<c:out value="${tag.name} " />
 					</a>
 				</c:forEach>
-				</span>
-			</p>
+				</div>
+			</div>
 		</c:if>
         <!--+
             | show recommendations
             +-->
-		<p>
+		<div>
 		  <fmt:message key="post.resource.recommendation"/>
-          <br/>
-		  <span id="tagField"></span>
-		  ${mtl:ch('nbsp')}
-		</p>
+		  <div id="tagField"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
+		</div>
+
         <!--+
             | show suggestions
             +-->
-		<p>
+		<div>
  	      <fmt:message key="post.resource.suggested"/>
-          <br/>
-          <span><span id="suggested" class="suggtag">${mtl:ch('nbsp')}</span>${mtl:ch('nbsp')}</span>
-		</p>
+          <div id="suggested" class="suggtag"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
+		</div>
     
 	</fieldset>		
 

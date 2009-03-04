@@ -391,7 +391,7 @@ div.bibentry {
 }
 
 #copytags, #tagField, #suggested {
-	margin-left: 2ex;
+	margin-left: 2ex !important;
 }
 
 #itembox {
@@ -1057,4 +1057,59 @@ table.vmiddle td{
 
 .unapi-id {
   display: none;
+}
+
+
+fieldset {
+	padding: 10px;
+	display: block;
+}
+
+fieldset div {
+	margin: 8px 0px 2px 0px;
+
+}
+
+fieldset #tagField, fieldset #suggested,fieldset #copytags{
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px 0px 0px;
+	height: 2.2ex;
+}
+
+#inpf {
+	margin-top: 5px;
+}
+
+#post.resource.url {
+	margin: 0px;
+	padding: 0px;
+}
+
+.fsnoborder {
+	border:0px;
+	padding-top: 1px;
+	padding-bottom: 1px;
+	margin-top: 8px;
+}
+
+.fsnoborder legend{
+	padding-left: 2px;	
+	margin-left: 0px;	
+}
+
+fieldset table {
+	margin: 0px;
+}
+
+#fsgroupBox 
+{
+	background-color: yellow;
+	position: relative;
+}
+
+#fsgroupBox table
+{
+	margin: 2px;
+	background-color: red;
+	width: 100%;
 }

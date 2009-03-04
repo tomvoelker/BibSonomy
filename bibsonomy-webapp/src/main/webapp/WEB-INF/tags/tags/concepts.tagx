@@ -17,7 +17,7 @@
 
 	<!-- show buttons to hide/show all of the users (own!) relations -->		
 	<c:if test="${usersOwnRelations}">
-		<span>
+		<div>
 			<ul class="floatul">
 				<li>
 					<!-- load localized strings -->
@@ -37,7 +37,7 @@
 						</a>)
 				</li>
 			</ul>
-		</span>	     	  
+		</div>	     	  
   	</c:if>
 
 	<ul id="relations">
