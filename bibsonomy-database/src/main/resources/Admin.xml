@@ -28,7 +28,7 @@
 	</update>
 	
 	<update id="flagSpammerEvaluation" parameterClass="adminParam">
-		UPDATE evaluation SET $evaluator$ = #prediction#
+		UPDATE evaluation SET $evaluator$ = #prediction#, $evalDate$ = #updatedAt#
 		WHERE user_name = #userName#
 	</update>
 
@@ -59,12 +59,10 @@
 		LIMIT #limit#
 	</select>
 	
-	<select id="getBibtexUsers" resultMap="UserCommon.userWithPrediction" parameterClass="adminParam">
-		SELECT * 
-		FROM user u, prediction p, bibtex b
-		WHERE u.user_name = p.user_name 
-		AND u.updated_at = p.updated_at
-		AND b.user_name = p.user_name
+	<select id="getBibtexUsers" resultMap="AdminCommon.userPredictionWithUserProperties" parameterClass="adminParam">
+		SELECT * FROM user u 
+		JOIN prediction p ON (u.user_name = p.user_name AND u.updated_at = p.updated_at)
+		JOIN bibtex b ON (u.user_name = b.user_name)
 		GROUP BY u.user_name
 		ORDER BY u.updated_at DESC
 		LIMIT #limit#
@@ -95,7 +93,7 @@
 	</update>
 
 	<select id="getClassifierHistory" resultMap="AdminCommon.userPrediction" parameterClass="string">
-		SELECT <include refid="commonPredictionAttributes"/>  FROM log_prediction 
+		SELECT user_name, updated_at, <include refid="commonPredictionAttributes"/>  FROM log_prediction 
 		WHERE user_name  = #userName# AND algorithm != 'admin' 
 		ORDER BY updated_at DESC LIMIT 25
 	</select>

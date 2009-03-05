@@ -4,21 +4,27 @@
 <sqlMap namespace="AdminCommon">
 	
 	<resultMap id="userPrediction" class="user">
-		<result property="name"   		column="user_name"  javaType="string"  />
 		<result property="prediction"   column="prediction" javaType="integer" />
 		<result property="updatedAt"   	column="updated_at" javaType="date" />
 		<result property="algorithm"   	column="algorithm"  javaType="string" />
 		<result property="mode"         column="mode"       javaType="string" />
 		<result property="confidence"   column="confidence" javaType="double" />		
 	</resultMap>
+	
+	<resultMap id="userPredictionWithUserProperties" class="user" extends="UserCommon.user">
+		<result property="prediction"   column="prediction" javaType="integer" />
+		<result property="algorithm"   	column="algorithm"  javaType="string" />
+		<result property="mode"         column="mode"       javaType="string" />
+		<result property="confidence"   column="confidence" javaType="double" />		
+	</resultMap>
 
-	<resultMap id="userPredictionAndSpammer" class="user" extends="userPrediction">		
+	<resultMap id="userPredictionAndSpammer" class="user" extends="userPredictionWithUserProperties">		
 		<result property="spammer"   	column="spammer"  	javaType="boolean" />	
 		<result property="updatedBy"   	column="updated_by" javaType="string" />
 	</resultMap>
 
 	<sql id="commonPredictionAttributes">
-		user_name, prediction, updated_at, algorithm, mode, confidence
+		prediction, algorithm, mode, confidence
 	</sql>
 
 </sqlMap>
