@@ -17,32 +17,30 @@
 	<jsp:directive.attribute name="groups" type="java.util.List" required="true"/>
     <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	
-	<fieldset style="border: 1px solid #069; background-color: #eee; position:relative;">
-		<legend>
-			<form:label path="groups">
-				<fmt:message key="post.resource.viewablefor"/>*
-			</form:label>
-		</legend>
-			<table class="vmiddle">
-				<tr>
-					<td>
-                          <!-- radio buttons for public, private, other -->
-                          <form:radiobutton path="abstractGrouping" onclick="toggleGroupBox()" value="public" /> <fmt:message key="post.resource.public"/><br/>
-                          <form:radiobutton path="abstractGrouping" onclick="toggleGroupBox()" value="private" /> <fmt:message key="post.resource.private"/><br/>
-                          <form:radiobutton path="abstractGrouping" onclick="toggleGroupBox()" value="other" id="post.groups.other"/>   <fmt:message key="post.resource.other"/>
-                       </td>
-					<td style="width:10px"><!-- This comment is needed, otherwise this will result in an self-closing element --></td>
-					<td>
-                          <!-- select box for "other" groups TODO: allow multiple groups-->
-                          <form:select multiple="false" path="groups" size="5" id="post.groups.other2">
-                              <form:option label="friends" value="friends"/>
-                        	  <form:options items="${groups}" itemValue="name" itemLabel="name"/>
-                          </form:select>
-                          <div class="postBookmarkNotValidTip"><form:errors path="groups" /><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
-                       </td>
-				</tr>
-			</table>
-	</fieldset>	
+	<div id="groupBoxleft">
+		<fieldset id="fsgroupBoxleft">
+			<legend>
+				<form:label path="groups">
+					<fmt:message key="post.resource.viewablefor"/>*
+				</form:label>
+			</legend>
+	
+			<div style="float: left;">
+	                          <!-- radio buttons for public, private, other -->
+	                          <form:radiobutton path="abstractGrouping" onclick="toggleGroupBox()" value="public" /> <fmt:message key="post.resource.public"/><br/>
+	                          <form:radiobutton path="abstractGrouping" onclick="toggleGroupBox()" value="private" /> <fmt:message key="post.resource.private"/><br/>
+	                          <form:radiobutton path="abstractGrouping" onclick="toggleGroupBox()" value="other" id="post.groups.other"/>   <fmt:message key="post.resource.other"/>
+			</div>
+			<div style="margin-left: 10ex;">
+	                          <!-- select box for "other" groups TODO: allow multiple groups-->
+	                          <form:select multiple="false" path="groups" size="5" id="post.groups.other2">
+	                              <form:option label="friends" value="friends"/>
+	                        	  <form:options items="${groups}" itemValue="name" itemLabel="name"/>
+	                          </form:select>
+	                          <div class="postBookmarkNotValidTip"><form:errors path="groups" /><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
+			</div>
+		</fieldset>
+	</div>	
 	<script type="text/javascript">
 	<![CDATA[
       

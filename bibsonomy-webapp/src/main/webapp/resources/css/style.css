@@ -1073,7 +1073,7 @@ fieldset div {
 fieldset #tagField, fieldset #suggested,fieldset #copytags{
 	margin: 0px 0px 0px 0px;
 	padding: 0px 0px 0px 0px;
-	height: 2.2ex;
+	min-height: 2.5ex;
 }
 
 #inpf {
@@ -1090,6 +1090,7 @@ fieldset #tagField, fieldset #suggested,fieldset #copytags{
 	padding-top: 1px;
 	padding-bottom: 1px;
 	margin-top: 8px;
+	padding-left: 0px;
 }
 
 .fsnoborder legend{
@@ -1097,18 +1098,34 @@ fieldset #tagField, fieldset #suggested,fieldset #copytags{
 	margin-left: 0px;	
 }
 
-fieldset table {
-	margin: 0px;
+#fsgroupBoxleft, #fsgroupBoxright {
+	border: 1px solid #069;
+	background-color: #eee;
+	padding:10px;
+	min-height: 15ex;
 }
 
-#fsgroupBox 
-{
+#groupBoxleft, #groupBoxright {
 	position: relative;
-	width: 100%;
+	display: inline;
+	width: 49.8%;
 }
 
-#fsgroupBox table
-{
-	margin: 0px;
-	width: 100%;
+
+#groupBoxleft {
+	float:left;
 }
+
+#groupBoxright {
+	float:right;
+}
+
+
+.clearfloat {
+  clear: both;
+}
+
+.p {
+padding-top:1px;	
+}
+

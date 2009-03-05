@@ -17,26 +17,25 @@
 	<jsp:directive.attribute name="groups" type="java.util.List" required="true" description="The groups the user is a member of."/>
   
   
-	<fieldset style="border: 1px solid #069; background-color: #eee; position:relative;">
-		<legend>
-			<fmt:message key="post.resource.relevantfor"/>
-		</legend>	
-		<table class="vmiddle">
-			<tr>
-				<td>
-	                <!-- select box for "other" groups -->
-	                <form:select path="relevantGroups" size="5">
-                        <fmt:message var="pleaseselect" key="post.resource.select"/>
-                        <form:option value="" label="${pleaseselect}"/>
-	                	<form:options items="${groups}" onclick="showTagSets(event)" itemLabel="${fn:escapeXml('name')}" itemValue="${fn:escapeXml('name')}"/>
-	                </form:select>
-	            </td>
-	            <td>
-	            	<p class="info_bold"><fmt:message key="post.resource.relevant"/></p>
-	            </td>
-	        </tr>
-	    </table>
-				
-	</fieldset>		
-
+	<div id="groupBoxright">
+		<fieldset id="fsgroupBoxright">
+			<legend>
+				<fmt:message key="post.resource.relevantfor"/>
+			</legend>	
+	
+			<div style="float: left;">
+		                <!-- select box for "other" groups -->
+		                <form:select path="relevantGroups" size="5">
+	                        <fmt:message var="pleaseselect" key="post.resource.select"/>
+	                        <form:option value="" label="${pleaseselect}"/>
+		                	<form:options items="${groups}" onclick="showTagSets(event)" itemLabel="${fn:escapeXml('name')}" itemValue="${fn:escapeXml('name')}"/>
+		                </form:select>
+			</div>
+			<div style="margin: 6px 0px 0ex 15em;" class="info_bold">
+		            	<fmt:message key="post.resource.relevant"/>
+			</div>
+	
+					
+		</fieldset>		
+	</div>
 </jsp:root>

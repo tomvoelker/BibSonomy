@@ -118,7 +118,7 @@
               //</mtl:cdata>
 			</script>					
 				<errors:global errors="${errors}"/>
-     			<div style="float left;width:97%;margin-left:10px">
+     			<div style="float left;width:97%;margin-left:10px; padding-bottom: 13px;">
 						<h2 style="text-align: center; margin-bottom: 0"><fmt:message key="post.resource.editbookmark"/></h2>
                         
                         <c:if test="${not empty command.diffPost}">
@@ -129,75 +129,55 @@
 
                       
                 	<form:form action="/postBookmark" method="post">
-                		<fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
-							<fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
-								<legend><fmt:message key="general"/></legend>
-								<fieldset class="fsnoborder" style="position:relative;">
-									<legend><form:label path="post.resource.url" ><fmt:message key="post.resource.url"/>*</form:label></legend>
-									<form:input path="post.resource.url" tabindex="1" size="60" />
-									<div class="postBookmarkNotValidTip"><form:errors path="post.resource.url" /></div>
-								</fieldset>	
-								<fieldset class="fsnoborder" style="position:relative;">
-									<legend><form:label path="post.resource.title" ><fmt:message key="post.resource.title"/>*</form:label></legend>
-									<form:input path="post.resource.title" tabindex="2" size="60"/>
-									<div class="postBookmarkNotValidTip"><form:errors path="post.resource.title" /></div>
-	                                <div id="suggestion.title"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
-								</fieldset>	
-								<fieldset class="fsnoborder" style="position:relative;">
-									<legend><form:label path="post.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label></legend>
-									<form:textarea path="post.description" tabindex="3" cols="69" rows="3" onkeyup="sz(this);" />
-									<div id="suggestion.description"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
+	                	<div id="fsform">
+	                		<fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
+								<fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
+									<legend><fmt:message key="general"/></legend>
+									<fieldset class="fsnoborder" style="position:relative;">
+										<legend><form:label path="post.resource.url" ><fmt:message key="post.resource.url"/>*</form:label></legend>
+										<form:input path="post.resource.url" tabindex="1" size="60" />
+										<div class="postBookmarkNotValidTip"><form:errors path="post.resource.url" /></div>
+									</fieldset>	
+									<fieldset class="fsnoborder" style="position:relative;">
+										<legend><form:label path="post.resource.title" ><fmt:message key="post.resource.title"/>*</form:label></legend>
+										<form:input path="post.resource.title" tabindex="2" size="60"/>
+										<div class="postBookmarkNotValidTip"><form:errors path="post.resource.title" /></div>
+		                                <div id="suggestion.title"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
+									</fieldset>	
+									<fieldset class="fsnoborder" style="position:relative;">
+										<legend><form:label path="post.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label></legend>
+										<form:textarea path="post.description" tabindex="3" cols="69" rows="3" onkeyup="sz(this);" />
+										<div id="suggestion.description"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
+									</fieldset>
 								</fieldset>
+						    	<post:tagfield tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
+	
+									<c:if test="${not empty loginUser.groups}">
+										<post:relevantForBox groups="${loginUser.groups}"/>
+									</c:if>	
+	
+									<post:groupBox post="${command.post}" groups="${loginUser.groups}"/>
+	
+									<div class="clearfloat p">
+										<post:tagSets groups="${loginUser.groups}"/>
+									</div>
+	
+	
+									<div class="clearfloat p">
+										<c:set var="save"><fmt:message key="save"/></c:set>
+		                                <c:set var="reset"><fmt:message key="resetbutton"/></c:set>
+		                                <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
+	                                       <input type="hidden" name="jump" value="${fn:escapeXml(command.jump)}"/>
+		                                <form:hidden path="intraHashToUpdate"/>
+										<input type="reset"  tabindex="5" value="${reset}" />
+										<input type="submit" tabindex="6" value="${save}" onclick="clear_tags();"/>
+									</div>
+	
 							</fieldset>
-					    	<post:tagfield tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
-					    	<div id="fsgroupBox">
-								<table>
-								   <colgroup>
-										<c:if test="${not empty loginUser.groups}">
-								      		<col width="50%"/>
-								      		<col width="50%"/>
-										</c:if>	
-										<c:if test="${empty loginUser.groups}">
-								      		<col width="100%"/>
-								      		<col width="0%"/>
-										</c:if>	
-								   </colgroup>
-									<tbody>
-										<tr>
-											<td>
-												<post:groupBox post="${command.post}" groups="${loginUser.groups}"/>
-											</td>
-										
-											<c:if test="${not empty loginUser.groups}">
-											<td>
-												<post:relevantForBox groups="${loginUser.groups}"/>
-											</td>
-											</c:if>	
-											<!-- This comment is needed, otherwise this will result in an self-closing element -->
-										</tr>
-										<tr>
-											<td colspan="2">
-												<post:tagSets groups="${loginUser.groups}"/>
-											<!-- This comment is needed, otherwise this will result in an self-closing element -->
-											</td>
-										</tr>
-										<tr>
-											<td colspan="2" align="center">
-												<c:set var="save"><fmt:message key="save"/></c:set>
-				                                <c:set var="reset"><fmt:message key="resetbutton"/></c:set>
-				                                <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
-		                                        <input type="hidden" name="jump" value="${fn:escapeXml(command.jump)}"/>
-				                                <form:hidden path="intraHashToUpdate"/>
-												<input type="reset"  tabindex="5" value="${reset}" />
-												<input type="submit" tabindex="6" value="${save}" onclick="clear_tags();"/>
-											</td>
-										</tr>
-									</tbody>
-								</table>	
-							</div>		
-						</fieldset>
+						</div>
 					</form:form>
-          
+
+         
                     <div id="scrapable" style="display:none">
                       <br/>
                       <form:form action="/BibtexHandler" method="post" id="bibtex_snippet">      
