@@ -393,10 +393,6 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		}
 		log.debug("wow, post is completely new! So ... return until no errors and then store it");
 		/*
-		 * post is completely new -> validate!
-		 */
-		org.springframework.validation.ValidationUtils.invokeValidator(getValidator(), command, errors);
-		/*
 		 * parse the tags
 		 */
 		try {
@@ -409,6 +405,10 @@ public class PostBookmarkController extends SingleResourceListController impleme
 			log.warn("error parsing tags", e);
 			errors.rejectValue("tags", "error.field.valid.tags.parseerror");
 		}
+		/*
+		 * post is completely new -> validate!
+		 */
+		org.springframework.validation.ValidationUtils.invokeValidator(getValidator(), command, errors);
 
 		/*
 		 * return to form until validation passes
