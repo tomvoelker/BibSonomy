@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
@@ -145,7 +146,7 @@ public class BatchAuthors {
 				}
 			} // end for
 			
-			if (c % 1000 == 0) {
+			if (c % 10000 == 0) {
 				logger.info("nr. of bibtex authors: " + bibtexAuthorMap.size());
 				long memUsed = ( Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() ) / 1024;
 				logger.info("memory used: " + memUsed + " KB");
@@ -238,48 +239,73 @@ public class BatchAuthors {
 	 * @throws SQLException
 	 */
 	private static void blastData(AuthorDB db, Map<String, Author> bibtexAuthorMap, Map<String, Author> authorMap) throws SQLException {
-		Map<String, Author> updateAuthorMap = new HashMap<String, Author>();
-		Map<String, Author> insertAuthorMap = new HashMap<String, Author>();
+		//Map<String, Author> updateAuthorMap = new HashMap<String, Author>();
+		//Map<String, Author> insertAuthorMap = new HashMap<String, Author>();
+		ArrayList<Author> insertAuthors = new ArrayList<Author>();
+		ArrayList<Author> updateAuthors = new ArrayList<Author>();
 		
 		ArrayList<Long> removeList = new ArrayList<Long>();
 		
-		logger.info("Computing which authors to insert / update...");
-		for(String s : sortHashMap(bibtexAuthorMap).keySet()) {
-
+		String s;		
+		Author a;
+		Iterator<String> it = bibtexAuthorMap.keySet().iterator();
+		logger.info("Computing which authors to insert / update...");		
+		while (it.hasNext()) {
+		//for(String s : sortHashMap(bibtexAuthorMap).keySet()) {
+			s = it.next();
+			a = bibtexAuthorMap.get(s);
 			if(authorMap.containsKey(s)) {
 				// just a stupid validation for the count of the content id's to increase the performace
-				if(authorMap.get(s).getContentIds().size() == bibtexAuthorMap.get(s).getContentIds().size()) {
+				if(authorMap.get(s).getContentIds().size() == a.getContentIds().size()) {
 					authorMap.remove(s);
-					bibtexAuthorMap.remove(s);
+					//bibtexAuthorMap.remove(s);
 				} else {
-					updateAuthorMap.put(s, bibtexAuthorMap.get(s));
-					updateAuthorMap.get(s).setAuthorId(authorMap.get(s).getAuthorId());
+					// updateAuthorMap.put(s, bibtexAuthorMap.get(s));
+					// set author id
+					a.setAuthorId(authorMap.get(s).getAuthorId());
+										
+					//updateAuthorMap.get(s).setAuthorId(authorMap.get(s).getAuthorId());
 					
 					removeList.clear();
-					for(long l : bibtexAuthorMap.get(s).getContentIds()) {
+					for(long l : a.getContentIds()) {
 						if(authorMap.get(s).getContentIds().contains(l)) {
 							removeList.add(l);
 						}
 					}
 					
 					for(long l : removeList) {
-						updateAuthorMap.get(s).getContentIds().remove(l);
+						// remove content ids
+						a.getContentIds().remove(l);
 					}
+					// remember author to update
+					updateAuthors.add(a);
 					
 					authorMap.remove(s);
-					bibtexAuthorMap.remove(s);
+					//bibtexAuthorMap.remove(s);
 				}
 			} else {
-				insertAuthorMap.put(s, bibtexAuthorMap.get(s));
+				//insertAuthorMap.put(s, bibtexAuthorMap.get(s));
+				insertAuthors.add(a);
 				authorMap.remove(s);
-				bibtexAuthorMap.remove(s);
+				//bibtexAuthorMap.remove(s);
 			}
 		}
 		
+		logger.info("Calling GC...");
+		System.gc();
+		
 		logger.info("Inserting authors...");
-		for(String s : sortHashMap(insertAuthorMap).keySet()) {
+		for (int i = 0; i < insertAuthors.size(); i++) { 
+		// for(String s : sortHashMap(insertAuthorMap).keySet()) {
+			if (i % 10000 == 0) {
+				logger.info("nr. of bibtex authors inserted: " + i);
+				long memUsed = ( Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() ) / 1024;
+				logger.info("memory used: " + memUsed + " KB");
+				logger.info("calling GC...");
+				System.gc();
+			}
 			try {
-				db.insertAuthor(insertAuthorMap.get(s));
+				db.insertAuthor(insertAuthors.get(i));
 			} catch(Exception e) {
 				e.printStackTrace();
 				logger.fatal(e.getMessage());
@@ -288,9 +314,17 @@ public class BatchAuthors {
 		}
 		
 		logger.info("Updating authors...");
-		for(String s : sortHashMap(updateAuthorMap).keySet()) {
+		for (int j = 0; j < insertAuthors.size(); j++) {
+		// for(String s : sortHashMap(updateAuthorMap).keySet()) {
+			if (j % 10000 == 0) {
+				logger.info("nr. of bibtex authors updated: " + j);
+				long memUsed = ( Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() ) / 1024;
+				logger.info("memory used: " + memUsed + " KB");
+				logger.info("calling GC...");
+				System.gc();				
+			}			
 			try {
-				db.updateAuthor(updateAuthorMap.get(s));
+				db.updateAuthor(updateAuthors.get(j));
 			} catch(Exception e) {
 				e.printStackTrace();
 				logger.fatal(e.getMessage());
