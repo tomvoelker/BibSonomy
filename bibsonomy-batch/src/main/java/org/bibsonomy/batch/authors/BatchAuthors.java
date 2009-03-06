@@ -198,7 +198,9 @@ public class BatchAuthors {
 				a.setAuthorId(rs.getLong(1));
 				authorMap.put(authorName, a);	
 			} else {
-				authorMap.get(authorName).getContentIds().add(rs.getLong(3));
+				if(!authorMap.get(authorName).getContentIds().contains(rs.getLong(3))) {
+					authorMap.get(authorName).getContentIds().add(rs.getLong(3));
+				}
 			}
 			
 			if (c % 10000 == 0) {
@@ -314,7 +316,7 @@ public class BatchAuthors {
 		}
 		
 		logger.info("Updating authors...");
-		for (int j = 0; j < insertAuthors.size(); j++) {
+		for (int j = 0; j < updateAuthors.size(); j++) {
 		// for(String s : sortHashMap(updateAuthorMap).keySet()) {
 			if (j % 10000 == 0) {
 				logger.info("nr. of bibtex authors updated: " + j);
