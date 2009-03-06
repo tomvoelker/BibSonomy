@@ -34,6 +34,7 @@ import java.util.HashMap;
 public class TexEncode {
 
 	private static HashMap<String, String> texMap = new HashMap<String, String>();
+	private static final String CURLS = "[()]*[{}]*[\\[\\]]*";
 
 	// marko with most count of curly brackets have to lead this array
 	private static final String[] TEX = { 
@@ -51,7 +52,14 @@ public class TexEncode {
 		"{\\'e}", 		"{\\'o}", 		"{\\'u}", 
 		"{\\'E}", 		"{\\~n}", 		"{\"A}", 
 		"{\"O}", 		"{\"U}", 		"{\"a}", 
-		"{\"o}", 		"{\"u}", 		"{\\~N}" 
+		"{\"o}", 		"{\"u}", 		"{\\~N}", 
+		"\\\"{A}", 		"\\\"{O}", 		"\\\"{U}", 		
+		"\\\"{a}", 		"\\\"{o}", 		"\\\"{u}",
+		"\\'{\\i}",		"{\\'i}",		"\\`{e}",
+		"\\c{C}",		"\\c{c}",		"{\\~A}",
+		"{\\~a}",		"\\\"E",		"\\\"e",
+		"\\\"A", 		"\\\"O", 		"\\\"U", 		
+		"\\\"a", 		"\\\"o", 		"\\\"u"
 	};
 
 	private static final String[] UNICODE = { 
@@ -69,7 +77,14 @@ public class TexEncode {
 		"\u00E9", 		"\u00F3", 		"\u00FA", 
 		"\u00C9", 		"\u00F1", 		"\u00C4", 	
 		"\u00D6", 		"\u00DC", 		"\u00E4", 
-		"\u00FC", 		"\u00F6", 		"\u00D1" 
+		"\u00FC", 		"\u00F6", 		"\u00D1",
+		"\u00C4", 		"\u00D6", 		"\u00DC", 		
+		"\u00E4", 		"\u00FC", 		"\u00F6",
+		"\u00ED",		"\u00ED",		"\u00E8",
+		"\u00C7", 		"\u00E7",		"\u00C3",
+		"\u00E3",		"\u00CB",		"\u00EB",
+		"\u00C4", 		"\u00D6", 		"\u00DC", 		
+		"\u00E4", 		"\u00FC", 		"\u00F6"
 	};
 
 
@@ -100,7 +115,7 @@ public class TexEncode {
 					s = s.replace(TEX[i], UNICODE[i]);
 				}
 			}
-			return s.trim();
+			return s.trim().replaceAll(CURLS, "");
 		}
 		return "";
 	}

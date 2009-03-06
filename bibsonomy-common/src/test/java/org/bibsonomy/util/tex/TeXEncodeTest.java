@@ -39,7 +39,7 @@ public class TeXEncodeTest extends TestCase {
 	 */
 	public void testEncoding() {
 		String unclean = "";
-		String clean = "ÇçïîìíåÅæÆßÄÖÜäääÄÖÜäëüöàèòùêôâûáéóúÉñÄÖÜäüöÑ";
+		String clean = "ÇçïîìíåÅæÆßÄÖÜäääÄÖÜäëüöàèòùêôâûáéóúÉñÄÖÜäüöÑÄÖÜäüöííèÇçÃãËëÄÖÜäüö";
 		
 		encoder = new TexEncode();
 		
@@ -87,6 +87,30 @@ public class TeXEncodeTest extends TestCase {
 		encoder = new TexEncode();
 		
 		assertEquals(encoder.encode(unclean), clean);
+	}
+	
+	/**
+	 * tests a few new replacements
+	 */
+	public void testEncodingWithSpecialUmlauts() {
+		String unclean = "foo\\\"{U}\\\"Abar";
+		String clean = "fooÜÄbar";
+
+		encoder = new TexEncode();
+		
+		assertEquals(encoder.encode(unclean), clean);		
+	}
+	
+	/**
+	 * test for curl replacements
+	 */
+	public void testEncodingWithCurls() {
+		String unclean = "{){{}/()as)[[)]";
+		String clean = "/as";
+
+		encoder = new TexEncode();
+		
+		assertEquals(encoder.encode(unclean), clean);		
 	}
 
 }
