@@ -517,7 +517,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 	 */
 	private void initRelevantForTags(final EditBookmarkCommand command, final Post<Bookmark> post) {
 		final Set<Tag> tags = post.getTags();
-		
+		final List<Group> groups = command.getContext().getLoginUser().getGroups();
 		final List<String> relevantGroups = command.getRelevantGroups();
 		/*
 		 * null check neccessary, because Spring sets the list to null, when no group 
@@ -525,7 +525,14 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		 */
 		if (relevantGroups != null) {
 			for (final String relevantGroup : relevantGroups) {
-				tags.add(new Tag(SYS_RELEVANT_FOR + relevantGroup));
+				/*
+				 * ignore groups the user is not a member of
+				 */
+				if (groups.contains(new Group(relevantGroup))) {
+					tags.add(new Tag(SYS_RELEVANT_FOR + relevantGroup));
+				} else {
+					log.info("ignored relevantFor group '" + relevantGroup + "' because user is not member of it");
+				}
 			}
 		}
 	}
