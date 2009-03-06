@@ -55,7 +55,8 @@ public class MetaInfoTagRecommender implements TagRecommenderConnector {
 				for( int i=0; i<keywords.length; i++ ){
 					if(keywords[i].length()>0)
 						// FIXME: compute sensible confidence/score values.
-						result.add(new RecommendedTag(keywords[i].toLowerCase(),0.5,0));
+						// FIXME: Normalizing of tags should be done in some central helper class
+						result.add(new RecommendedTag(keywords[i].toLowerCase().trim().replaceAll("\\s*", "_"),0.5,0));
 				}
 			}
 		}
