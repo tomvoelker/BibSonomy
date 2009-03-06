@@ -1,7 +1,7 @@
 package org.bibsonomy.batch.authors;
 
 import java.util.ArrayList;
-import java.util.Vector;
+import java.util.HashSet;
 
 /**
  * @author nmrd
@@ -10,7 +10,7 @@ import java.util.Vector;
 public class Author {
 
 	private long authorId;
-	private Vector<Long> contentId;
+	private HashSet<Long> contentId;
 	private String firstName;
 	private String middleName;
 	private String lastName;
@@ -29,7 +29,7 @@ public class Author {
 		this.lastName = lastName;
 		this.bibtexName = bibtexName;
 		
-		contentId = new Vector<Long>();
+		contentId = new HashSet<Long>();
 		
 	}
 	
@@ -57,7 +57,7 @@ public class Author {
 	/**
 	 * @return Vector<Long> : content ids
 	 */
-	public Vector<Long> getContentIds() {
+	public HashSet<Long> getContentIds() {
 		return this.contentId;
 	}
 
@@ -65,7 +65,7 @@ public class Author {
 	/**
 	 * @param contentId
 	 */
-	public void setContentId(final Vector<Long> contentId) {
+	public void setContentId(final HashSet<Long> contentId) {
 		this.contentId = contentId;
 	}
 

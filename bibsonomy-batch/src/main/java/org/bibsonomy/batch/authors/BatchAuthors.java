@@ -198,9 +198,7 @@ public class BatchAuthors {
 				a.setAuthorId(rs.getLong(1));
 				authorMap.put(authorName, a);	
 			} else {
-				if(!authorMap.get(authorName).getContentIds().contains(rs.getLong(3))) {
-					authorMap.get(authorName).getContentIds().add(rs.getLong(3));
-				}
+				authorMap.get(authorName).getContentIds().add(rs.getLong(3));
 			}
 			
 			if (c % 10000 == 0) {
