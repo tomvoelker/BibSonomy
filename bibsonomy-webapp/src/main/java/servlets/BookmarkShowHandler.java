@@ -26,7 +26,7 @@ import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.url.URLCompositeScraper;
+import org.bibsonomy.scraper.UrlCompositeScraper;
 
 import recommender.RecommenderFrontEnd;
 import resources.Bookmark;
@@ -164,8 +164,8 @@ public class BookmarkShowHandler extends HttpServlet{
 			ScrapingContext sc = new ScrapingContext(new URL(url));
 
 			//get all scrapers except the snippetscraper
-			URLCompositeScraper test = new URLCompositeScraper();
-
+			UrlCompositeScraper test = new UrlCompositeScraper();
+			
 			//if the bookmark is scrapable return the bibtexresult 
 			if (test.scrape(sc)){
 				return sc.getBibtexResult();
