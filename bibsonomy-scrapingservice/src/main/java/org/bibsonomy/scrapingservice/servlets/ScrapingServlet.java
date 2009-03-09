@@ -200,7 +200,10 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 				 */
 				final JSONWriter writer = new JSONWriter(response.getOutputStream());
 				response.setContentType("application/json");
-				writer.write(urlPatterns);
+				writer.write(0, "{\n");
+				writer.write(1, "\"patterns\" : ");
+				writer.write(1, urlPatterns);
+				writer.write(0, "}\n");
 				return;
 			} else {
 				bean.setErrorMessage("Requested format '" + format + "' not supported.");

@@ -24,15 +24,19 @@ public class JSONWriterTest {
 		
 		System.out.println("------------------------------------------------------");
 		try {
-			writer.write(scraper.getUrlPatterns());
+			writer.write(0, "{\n");
+			writer.write(1, "\"patterns\" : ");
+			writer.write(1, scraper.getUrlPatterns());
+			writer.write(0, "}\n");
 		} catch (UnsupportedEncodingException e) {
 			Assert.fail(e.getMessage());
 		} catch (IOException e) {
 			Assert.fail(e.getMessage());
 		}
 		System.out.println("------------------------------------------------------");
-		
-		
 	}
+	
+	
+	
 }
 

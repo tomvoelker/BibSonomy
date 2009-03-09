@@ -18,6 +18,20 @@ import org.bibsonomy.scraper.Tuple;
  */
 public class JSONWriter {
 
+	private static final String[] depths = new String[] {
+		"", 
+		"\t", 
+		"\t\t", 
+		"\t\t\t", 
+		"\t\t\t\t", 
+		"\t\t\t\t\t", 
+		"\t\t\t\t\t\t", 
+		"\t\t\t\t\t\t\t",
+		"\t\t\t\t\t\t\t\t\t",
+		"\t\t\t\t\t\t\t\t\t\t",
+		"\t\t\t\t\t\t\t\t\t\t\t",
+	};
+	
 	private final OutputStream outputStream;
 	
 	public JSONWriter (final OutputStream outputStream) {
@@ -25,27 +39,47 @@ public class JSONWriter {
 		this.outputStream = outputStream;
 	}
 	
-	public void write(final Collection<Tuple<Pattern, Pattern>> patterns) throws UnsupportedEncodingException, IOException {
+	public void write(int depth, final Collection<Tuple<Pattern, Pattern>> patterns) throws UnsupportedEncodingException, IOException {
 		int ctr = 0;
 		int max = patterns.size();
-		outputStream.write("[\n".getBytes("UTF-8"));
+		write(depth, "[\n");
 		for (final Tuple<Pattern, Pattern> tuple : patterns) {
 			ctr++;
-			outputStream.write("\t{\n".getBytes("UTF-8"));
+			depth++;
+			write(depth, "{\n");
 			
-			outputStream.write(("\t\t\"host\" : \"" + tuple.getFirst()  + "\",\n").getBytes("UTF-8"));
-			outputStream.write(("\t\t\"path\" : \"" + tuple.getSecond() + "\"\n").getBytes("UTF-8"));
-
-			outputStream.write("\t}".getBytes("UTF-8"));
+			depth++;
+			write(depth, "\"host\" : \"" + tuple.getFirst()  + "\",\n");
+			write(depth, "\"path\" : \"" + tuple.getSecond() + "\"\n");
+			depth--;
+			
+			write(depth, "}");
 			if (ctr < max) {
 				/*
 				 * not the last element: print delimiter
 				 */
-				outputStream.write(",".getBytes("UTF-8"));
+				write(",");
 			}
-			outputStream.write("\n".getBytes("UTF-8"));
+			write("\n");
+			depth--;
 		}
-		outputStream.write("]\n".getBytes("UTF-8"));
+		write(depth, "]\n");
 	}
+	
+	public void write(final String s) throws UnsupportedEncodingException, IOException {
+		outputStream.write(s.getBytes("UTF-8"));
+	}
+	
+	public void write(final int depth, final String s) throws UnsupportedEncodingException, IOException {
+		outputStream.write((getDepth(depth) + s).getBytes("UTF-8"));
+	}
+	
+	
+	private static String getDepth(final int depth) {
+		if (depth >= depths.length) return depths[depths.length - 1];
+		return depths[depth];
+	}
+	
+	
 }
 
