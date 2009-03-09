@@ -185,7 +185,8 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 				response.getOutputStream().write("".getBytes("UTF-8"));
 				return;
 			}
-		} else if (action != null && "info".equals(action)) { 
+		} else if (action != null && "info".equals(action)) {
+			log.info("action = info");
 			/*
 			 * print information about the available scrapers
 			 * currently: patterns of url scrapers in JSON format
@@ -193,10 +194,12 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 			 */
 			final List<Tuple<Pattern, Pattern>> urlPatterns = urlCompositeScraper.getUrlPatterns();
 			if ("json".equals(format)) {
+				log.info("format = json");
 				/*
 				 * only supported format currently
 				 */
 				final JSONWriter writer = new JSONWriter(response.getOutputStream());
+				response.setContentType("application/json");
 				writer.write(urlPatterns);
 				return;
 			} else {

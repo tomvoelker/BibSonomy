@@ -1,6 +1,5 @@
 package org.bibsonomy.scrapingservice.writers;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -19,11 +18,11 @@ import org.bibsonomy.scraper.Tuple;
  */
 public class JSONWriter {
 
-	private final BufferedOutputStream outputStream;
+	private final OutputStream outputStream;
 	
 	public JSONWriter (final OutputStream outputStream) {
 		super();
-		this.outputStream = new BufferedOutputStream(outputStream);
+		this.outputStream = outputStream;
 	}
 	
 	public void write(final Collection<Tuple<Pattern, Pattern>> patterns) throws UnsupportedEncodingException, IOException {
@@ -47,10 +46,6 @@ public class JSONWriter {
 			outputStream.write("\n".getBytes("UTF-8"));
 		}
 		outputStream.write("]\n".getBytes("UTF-8"));
-	}
-	
-	public void close() throws IOException {
-		outputStream.close();
 	}
 }
 
