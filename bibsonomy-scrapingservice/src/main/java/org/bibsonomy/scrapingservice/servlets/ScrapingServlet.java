@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -39,12 +41,15 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.scraper.KDEScraperFactory;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlCompositeScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.scraper.exceptions.UseageFailureException;
 import org.bibsonomy.scrapingservice.beans.ScrapingResultBean;
+import org.bibsonomy.scrapingservice.writers.JSONWriter;
 import org.bibsonomy.scrapingservice.writers.RDFWriter;
 
 import bibtex.parser.ParseException;
@@ -63,6 +68,13 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 
 	private static final Logger log = Logger.getLogger(ScrapingServlet.class);
 
+	/**
+	 * Scrapers used in this servlet.
+	 */
+	private static final Scraper compositeScraper = new KDEScraperFactory().getScraper();
+	private static final UrlCompositeScraper urlCompositeScraper = new UrlCompositeScraper();
+
+	
 	public ScrapingServlet() {
 		super();
 	}   	
@@ -70,12 +82,19 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		final String urlString = request.getParameter("url");
 		final String selection = request.getParameter("selection");
-		final String format = request.getParameter("format");
+		final String format    = request.getParameter("format");
+		final String action    = request.getParameter("action");
+
+		
+		final ScrapingResultBean bean = new ScrapingResultBean();
+		request.setAttribute("bean", bean);
 
 		log.info("Scraping service called with url " + urlString);
 
 		if (urlString != null && !urlString.trim().equals("")) {
-			final ScrapingResultBean bean = new ScrapingResultBean();
+			/*
+			 * url given -> try to scrape
+			 */
 
 			try {
 				final URL url = new URL(urlString);
@@ -84,8 +103,6 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 
 				final ScrapingContext context = new ScrapingContext(url);
 				context.setSelectedText(selection);
-
-				final Scraper compositeScraper = new KDEScraperFactory().getScraper();
 
 				if (compositeScraper.scrape(context)) {
 					bean.setBibtex(context.getBibtexResult());
@@ -168,7 +185,24 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 				response.getOutputStream().write("".getBytes("UTF-8"));
 				return;
 			}
-			request.setAttribute("bean", bean);
+		} else if (action != null && "info".equals(action)) { 
+			/*
+			 * print information about the available scrapers
+			 * currently: patterns of url scrapers in JSON format
+			 * TODO: use better parameter names 
+			 */
+			final List<Tuple<Pattern, Pattern>> urlPatterns = urlCompositeScraper.getUrlPatterns();
+			if ("json".equals(format)) {
+				/*
+				 * only supported format currently
+				 */
+				final JSONWriter writer = new JSONWriter(response.getOutputStream());
+				writer.write(urlPatterns);
+				return;
+			} else {
+				bean.setErrorMessage("Requested format '" + format + "' not supported.");
+			}
+			
 		}
 
 
