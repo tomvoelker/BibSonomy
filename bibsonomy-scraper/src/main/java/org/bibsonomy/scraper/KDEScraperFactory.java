@@ -7,7 +7,6 @@ import org.bibsonomy.scraper.generic.HighwireScraper;
 import org.bibsonomy.scraper.generic.UnAPIScraper;
 import org.bibsonomy.scraper.id.kde.isbn.ISBNScraper;
 import org.bibsonomy.scraper.snippet.SnippetScraper;
-import org.bibsonomy.scraper.url.URLCompositeScraper;
 
 /**  
  * Configures the scrapers used by BibSonomy.
@@ -22,7 +21,7 @@ public class KDEScraperFactory {
 	 */
 	public CompositeScraper getScraper () {
 		final CompositeScraper scraper = new CompositeScraper();
-		scraper.addScraper(new URLCompositeScraper());
+		scraper.addScraper(new UrlCompositeScraper());
 		
 		// this scraper always crawls the content and thus accepts ALL URLs!
 		scraper.addScraper(new UnAPIScraper());

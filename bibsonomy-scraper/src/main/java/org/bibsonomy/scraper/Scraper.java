@@ -38,7 +38,7 @@ public interface Scraper {
     /** Checks if this scraper can scrape the given context.
      * <br/>
      * Note that some scrapers might need to download the contents to check
-     * if they can scrape it. This should not hold for {@link UrlScraper}s.
+     * if they can scrape it. This should not hold for {@link AbstractUrlScraper}s.
      * 
      * @param scrapingContext
      * @return <code>true</code> if the given {@link ScrapingContext} is 
