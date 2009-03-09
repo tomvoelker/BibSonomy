@@ -25,8 +25,6 @@ public class JSONWriterTest {
 		System.out.println("------------------------------------------------------");
 		try {
 			writer.write(scraper.getUrlPatterns());
-			writer.close();
-
 		} catch (UnsupportedEncodingException e) {
 			Assert.fail(e.getMessage());
 		} catch (IOException e) {
